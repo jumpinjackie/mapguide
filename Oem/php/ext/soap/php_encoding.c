@@ -17,7 +17,7 @@
   |          Dmitry Stogov <dmitry@zend.com>                             |
   +----------------------------------------------------------------------+
 */
-/* $Id: php_encoding.c,v 1.103.2.21.2.21 2007/01/05 15:06:55 iliaa Exp $ */
+/* $Id: php_encoding.c,v 1.103.2.21.2.38 2007/10/17 12:08:45 dmitry Exp $ */
 
 #include <time.h>
 
@@ -270,7 +270,94 @@ static encodePtr find_encoder_by_type_name(sdlPtr sdl, const char *type)
 	return NULL;
 }
 
-xmlNodePtr master_to_xml(encodePtr encode, zval *data, int style, xmlNodePtr parent)
+static zend_bool soap_check_zval_ref(zval *data, xmlNodePtr node TSRMLS_DC) {
+	xmlNodePtr *node_ptr;
+
+	if (SOAP_GLOBAL(ref_map)) {
+		if (Z_TYPE_P(data) == IS_OBJECT) {
+			data = (zval*)zend_objects_get_address(data TSRMLS_CC);
+		}
+		if (zend_hash_index_find(SOAP_GLOBAL(ref_map), (ulong)data, (void**)&node_ptr) == SUCCESS) {
+			xmlAttrPtr attr = (*node_ptr)->properties;
+			char *id;
+			smart_str prefix = {0};
+
+			if (*node_ptr == node) {
+				return 0;
+			}
+			xmlNodeSetName(node, (*node_ptr)->name);
+			xmlSetNs(node, (*node_ptr)->ns);
+			if (SOAP_GLOBAL(soap_version) == SOAP_1_1) {
+				while (1) {
+					attr = get_attribute(attr, "id");
+					if (attr == NULL || attr->ns == NULL) {
+						break;
+					}
+					attr = attr->next;
+				}
+				if (attr) {
+					id = (char*)attr->children->content;
+					smart_str_appendc(&prefix, '#');
+					smart_str_appends(&prefix, id);
+					smart_str_0(&prefix);
+					id = prefix.c;
+				} else {
+					SOAP_GLOBAL(cur_uniq_ref)++;
+					smart_str_appendl(&prefix, "#ref", 4);
+					smart_str_append_long(&prefix, SOAP_GLOBAL(cur_uniq_ref));
+					smart_str_0(&prefix);
+					id = prefix.c;
+					xmlSetProp((*node_ptr), BAD_CAST("id"), BAD_CAST(id+1));
+				}
+				xmlSetProp(node, BAD_CAST("href"), BAD_CAST(id));
+			} else {
+				attr = get_attribute_ex(attr, "id", SOAP_1_2_ENC_NAMESPACE);
+				if (attr) {
+					id = (char*)attr->children->content;
+					smart_str_appendc(&prefix, '#');
+					smart_str_appends(&prefix, id);
+					smart_str_0(&prefix);
+					id = prefix.c;
+				} else {
+					SOAP_GLOBAL(cur_uniq_ref)++;
+					smart_str_appendl(&prefix, "#ref", 4);
+					smart_str_append_long(&prefix, SOAP_GLOBAL(cur_uniq_ref));
+					smart_str_0(&prefix);
+					id = prefix.c;
+					set_ns_prop((*node_ptr), SOAP_1_2_ENC_NAMESPACE, "id", id+1);
+				}
+				set_ns_prop(node, SOAP_1_2_ENC_NAMESPACE, "ref", id);
+			}
+			smart_str_free(&prefix);
+			return 1;
+		} else {
+			zend_hash_index_update(SOAP_GLOBAL(ref_map), (ulong)data, (void**)&node, sizeof(xmlNodePtr), NULL);
+		}
+	}
+	return 0;
+}
+
+static zend_bool soap_check_xml_ref(zval **data, xmlNodePtr node TSRMLS_DC)
+{
+	zval **data_ptr;
+
+	if (SOAP_GLOBAL(ref_map)) {
+		if (zend_hash_index_find(SOAP_GLOBAL(ref_map), (ulong)node, (void**)&data_ptr) == SUCCESS) {
+			if (*data != *data_ptr) {
+				zval_ptr_dtor(data);
+				*data = *data_ptr;
+				(*data)->is_ref = 1;
+				(*data)->refcount++;
+				return 1;
+			}
+		} else {
+			zend_hash_index_update(SOAP_GLOBAL(ref_map), (ulong)node, (void**)data, sizeof(zval*), NULL);
+		}
+	}
+	return 0;
+}
+
+static xmlNodePtr master_to_xml_int(encodePtr encode, zval *data, int style, xmlNodePtr parent, int check_class_map)
 {
 	xmlNodePtr node = NULL;
 	TSRMLS_FETCH();
@@ -341,7 +428,7 @@ xmlNodePtr master_to_xml(encodePtr encode, zval *data, int style, xmlNodePtr par
 			xmlSetNs(node, nsp);
 		}
 	} else {
-		if (SOAP_GLOBAL(class_map) && data &&
+		if (check_class_map && SOAP_GLOBAL(class_map) && data &&
 		    Z_TYPE_P(data) == IS_OBJECT &&
 		    !Z_OBJPROP_P(data)->nApplyCount) {
 			zend_class_entry *ce = Z_OBJCE_P(data);
@@ -360,7 +447,10 @@ xmlNodePtr master_to_xml(encodePtr encode, zval *data, int style, xmlNodePtr par
 				    zend_hash_get_current_key_ex(SOAP_GLOBAL(class_map), &type_name, &type_len, &idx, 0, &pos) == HASH_KEY_IS_STRING) {
 
 				    /* TODO: namespace isn't stored */
-			    	encodePtr enc = get_encoder(SOAP_GLOBAL(sdl), SOAP_GLOBAL(sdl)->target_ns, type_name);
+			    	encodePtr enc = NULL;
+			    	if (SOAP_GLOBAL(sdl)) {
+			    		enc = get_encoder(SOAP_GLOBAL(sdl), SOAP_GLOBAL(sdl)->target_ns, type_name);
+			    	}
 			    	if (enc) {
 			    		encode = enc;
 				 	} else if (SOAP_GLOBAL(sdl)) {
@@ -397,6 +487,11 @@ xmlNodePtr master_to_xml(encodePtr encode, zval *data, int style, xmlNodePtr par
 		}
 	}
 	return node;
+}
+
+xmlNodePtr master_to_xml(encodePtr encode, zval *data, int style, xmlNodePtr parent)
+{
+	return master_to_xml_int(encode, data, style, parent, 1);
 }
 
 static zval *master_to_zval_int(encodePtr encode, xmlNodePtr data)
@@ -769,13 +864,50 @@ static xmlNodePtr to_xml_string(encodeTypePtr type, zval *data, int style, xmlNo
 			efree(str);
 			str = estrdup((char*)xmlBufferContent(out));
 			new_len = n;
-		} else if (!php_libxml_xmlCheckUTF8(BAD_CAST(str))) {
-			soap_error1(E_ERROR,  "Encoding: string '%s' is not a valid utf-8 string", str);
 		}
 		xmlBufferFree(out);
 		xmlBufferFree(in);
-	} else if (!php_libxml_xmlCheckUTF8(BAD_CAST(str))) {
-		soap_error1(E_ERROR,  "Encoding: string '%s' is not a valid utf-8 string", str);
+	}
+
+	if (!php_libxml_xmlCheckUTF8(BAD_CAST(str))) {
+		char *err = emalloc(new_len + 8);
+		char c;
+		int i;
+		
+		memcpy(err, str, new_len+1);
+		for (i = 0; (c = err[i++]);) {
+			if ((c & 0x80) == 0) {
+			} else if ((c & 0xe0) == 0xc0) {
+				if ((err[i] & 0xc0) != 0x80) {
+					break;
+				}
+				i++;
+			} else if ((c & 0xf0) == 0xe0) {
+				if ((err[i] & 0xc0) != 0x80 || (err[i+1] & 0xc0) != 0x80) {
+					break;
+				}
+				i += 2;
+			} else if ((c & 0xf8) == 0xf0) {
+				if ((err[i] & 0xc0) != 0x80 || (err[i+1] & 0xc0) != 0x80 || (err[i+2] & 0xc0) != 0x80) {
+					break;
+				}
+				i += 3;
+			} else {
+				break;
+			}
+		}
+		if (c) {
+			err[i-1] = '\\';
+			err[i++] = 'x';
+			err[i++] = ((unsigned char)c >> 4) + ((((unsigned char)c >> 4) > 9) ? ('a' - 10) : '0');
+			err[i++] = (c & 15) + (((c & 15) > 9) ? ('a' - 10) : '0');
+			err[i++] = '.';
+			err[i++] = '.';
+			err[i++] = '.';
+			err[i++] = 0;
+		}
+
+		soap_error1(E_ERROR,  "Encoding: string '%s' is not a valid utf-8 string", err);
 	}
 
 	text = xmlNewTextLen(BAD_CAST(str), new_len);
@@ -937,7 +1069,7 @@ static xmlNodePtr to_xml_long(encodeTypePtr type, zval *data, int style, xmlNode
 	if (Z_TYPE_P(data) == IS_DOUBLE) {
 		char s[256];
 
-		sprintf(s, "%0.0F",floor(Z_DVAL_P(data)));
+		snprintf(s, sizeof(s), "%0.0F",floor(Z_DVAL_P(data)));
 		xmlNodeSetContent(ret, BAD_CAST(s));
 	} else {
 		zval tmp = *data;
@@ -1076,9 +1208,10 @@ static zval* get_zval_property(zval* object, char* name TSRMLS_DC)
 		zval *data;
 		zend_class_entry *old_scope;
 
+		INIT_PZVAL(&member);
 		ZVAL_STRING(&member, name, 0);
 		old_scope = EG(scope);
-	  EG(scope) = Z_OBJCE_P(object);
+		EG(scope) = Z_OBJCE_P(object);
 		data = Z_OBJ_HT_P(object)->read_property(object, &member, BP_VAR_IS TSRMLS_CC);
 		if (data == EG(uninitialized_zval_ptr)) {
 			/* Hack for bug #32455 */
@@ -1109,9 +1242,10 @@ static void unset_zval_property(zval* object, char* name TSRMLS_DC)
 		zval member;
 		zend_class_entry *old_scope;
 
+		INIT_PZVAL(&member);
 		ZVAL_STRING(&member, name, 0);
 		old_scope = EG(scope);
-	  EG(scope) = Z_OBJCE_P(object);
+		EG(scope) = Z_OBJCE_P(object);
 		Z_OBJ_HT_P(object)->unset_property(object, &member TSRMLS_CC);
 		EG(scope) = old_scope;
 	} else if (Z_TYPE_P(object) == IS_ARRAY) {
@@ -1221,7 +1355,8 @@ static void model_to_zval_object(zval *ret, sdlContentModelPtr model, xmlNodePtr
 							add_next_index_zval(array, val);
 						} while ((node = get_node(node->next, model->u.element->name)) != NULL);
 						val = array;
-					} else if ((SOAP_GLOBAL(features) & SOAP_SINGLE_ELEMENT_ARRAYS) &&
+					} else if ((Z_TYPE_P(val) != IS_NULL || !model->u.element->nillable) &&
+					           (SOAP_GLOBAL(features) & SOAP_SINGLE_ELEMENT_ARRAYS) &&
 					           (model->max_occurs == -1 || model->max_occurs > 1)) {
 						zval *array;
 
@@ -1302,14 +1437,20 @@ static zval *to_zval_object_ex(encodeTypePtr type, xmlNodePtr data, zend_class_e
 			if (enc) {
 				zval *base;
 
-				MAKE_STD_ZVAL(ret);
+				ALLOC_INIT_ZVAL(ret);
+				if (soap_check_xml_ref(&ret, data TSRMLS_CC)) {
+					return ret;
+				}
 
 				object_init_ex(ret, ce);
 				base = master_to_zval_int(enc, data);
 				set_zval_property(ret, "_", base TSRMLS_CC);
 			} else {
-				MAKE_STD_ZVAL(ret);
+				ALLOC_INIT_ZVAL(ret);
 				FIND_XML_NULL(data, ret);
+				if (soap_check_xml_ref(&ret, data TSRMLS_CC)) {
+					return ret;
+				}
 				object_init_ex(ret, ce);
 			}
 		} else if (sdlType->kind == XSD_TYPEKIND_EXTENSION &&
@@ -1334,6 +1475,9 @@ static zval *to_zval_object_ex(encodeTypePtr type, xmlNodePtr data, zend_class_e
 					ret = master_to_zval_int(sdlType->encode, data);
 				}
 				FIND_XML_NULL(data, ret);
+				if (soap_check_xml_ref(&ret, data TSRMLS_CC)) {
+					return ret;
+				}
 				if (get_zval_property(ret, "any" TSRMLS_CC) != NULL) {
 					unset_zval_property(ret, "any" TSRMLS_CC);
 					redo_any = 1;
@@ -1345,15 +1489,21 @@ static zval *to_zval_object_ex(encodeTypePtr type, xmlNodePtr data, zend_class_e
 			} else {
 				zval *base;
 
-				MAKE_STD_ZVAL(ret);
+				ALLOC_INIT_ZVAL(ret);
+				if (soap_check_xml_ref(&ret, data TSRMLS_CC)) {
+					return ret;
+				}
 
 				object_init_ex(ret, ce);
 				base = master_to_zval_int(sdlType->encode, data);
 				set_zval_property(ret, "_", base TSRMLS_CC);
 			}
 		} else {
-			MAKE_STD_ZVAL(ret);
+			ALLOC_INIT_ZVAL(ret);
 			FIND_XML_NULL(data, ret);
+			if (soap_check_xml_ref(&ret, data TSRMLS_CC)) {
+				return ret;
+			}
 			object_init_ex(ret, ce);
 		}
 		if (sdlType->model) {
@@ -1399,10 +1549,13 @@ static zval *to_zval_object_ex(encodeTypePtr type, xmlNodePtr data, zend_class_e
 		}
 	} else {
 
-		MAKE_STD_ZVAL(ret);
+		ALLOC_INIT_ZVAL(ret);
 		FIND_XML_NULL(data, ret);
-		object_init_ex(ret, ce);
+		if (soap_check_xml_ref(&ret, data TSRMLS_CC)) {
+			return ret;
+		}
 
+		object_init_ex(ret, ce);
 		trav = data->children;
 
 		while (trav != NULL) {
@@ -1497,6 +1650,8 @@ static int model_to_xml_object(xmlNodePtr node, sdlContentModelPtr model, zval *
 						property = xmlNewNode(NULL, BAD_CAST("BOGUS"));
 						xmlAddChild(node, property);
 						set_xsi_nil(property);
+					} else if (Z_TYPE_P(data) == IS_NULL && model->min_occurs == 0) {
+						return 1;
 					} else {
 						property = master_to_xml(enc, data, style, node);
 						if (property->children && property->children->content &&
@@ -1574,8 +1729,10 @@ static int model_to_xml_object(xmlNodePtr node, sdlContentModelPtr model, zval *
 
 			zend_hash_internal_pointer_reset_ex(model->u.content, &pos);
 			while (zend_hash_get_current_data_ex(model->u.content, (void**)&tmp, &pos) == SUCCESS) {
-				if (!model_to_xml_object(node, *tmp, object, style, model->min_occurs > 0 TSRMLS_CC)) {
-					return 0;
+				if (!model_to_xml_object(node, *tmp, object, style, (*tmp)->min_occurs > 0 TSRMLS_CC)) {
+					if ((*tmp)->min_occurs > 0) {
+						return 0;
+					}
 				}
 				zend_hash_move_forward_ex(model->u.content, &pos);
 			}
@@ -1652,6 +1809,7 @@ static xmlNodePtr to_xml_object(encodeTypePtr type, zval *data, int style, xmlNo
 		xmlAddChild(parent, xmlParam);
 		if (style == SOAP_ENCODED) {
 			set_xsi_nil(xmlParam);
+			set_ns_and_type(xmlParam, type);
 		}
 		return xmlParam;
 	}
@@ -1715,10 +1873,13 @@ static xmlNodePtr to_xml_object(encodeTypePtr type, zval *data, int style, xmlNo
 			xmlAddChild(parent, xmlParam);
 		}
 
+		if (soap_check_zval_ref(data, xmlParam TSRMLS_CC)) {
+			return xmlParam;
+		}
 		if (prop != NULL) {
-		  sdlTypePtr array_el;
+			sdlTypePtr array_el;
 
-		  if (Z_TYPE_P(data) == IS_ARRAY &&
+			if (Z_TYPE_P(data) == IS_ARRAY &&
 		      !is_map(data) &&
 		      sdlType->attributes == NULL &&
 		      sdlType->model != NULL &&
@@ -1792,6 +1953,9 @@ static xmlNodePtr to_xml_object(encodeTypePtr type, zval *data, int style, xmlNo
 		xmlParam = xmlNewNode(NULL, BAD_CAST("BOGUS"));
 		xmlAddChild(parent, xmlParam);
 
+		if (soap_check_zval_ref(data, xmlParam TSRMLS_CC)) {
+			return xmlParam;
+		}
 		if (prop != NULL) {
 			i = zend_hash_num_elements(prop);
 			zend_hash_internal_pointer_reset(prop);
@@ -2044,7 +2208,17 @@ static xmlNodePtr to_xml_array(encodeTypePtr type, zval *data, int style, xmlNod
 	xmlParam = xmlNewNode(NULL, BAD_CAST("BOGUS"));
 	xmlAddChild(parent, xmlParam);
 
-	FIND_ZVAL_NULL(data, xmlParam, style);
+	if (!data || Z_TYPE_P(data) == IS_NULL) {
+		if (style == SOAP_ENCODED) {
+			set_xsi_nil(xmlParam);
+			if (SOAP_GLOBAL(features) & SOAP_USE_XSI_ARRAY_TYPE) {
+				set_ns_and_type_ex(xmlParam, (soap_version == SOAP_1_1) ? SOAP_1_1_ENC_NAMESPACE : SOAP_1_2_ENC_NAMESPACE, "Array");
+			} else {
+				set_ns_and_type(xmlParam, type);
+			}
+		}
+		return xmlParam;
+	}
 
 	if (Z_TYPE_P(data) == IS_ARRAY) {
 		sdlAttributePtr *arrayType;
@@ -2217,7 +2391,11 @@ static xmlNodePtr to_xml_array(encodeTypePtr type, zval *data, int style, xmlNod
 		efree(dims);
 	}
 	if (style == SOAP_ENCODED) {
-		set_ns_and_type(xmlParam, type);
+		if (SOAP_GLOBAL(features) & SOAP_USE_XSI_ARRAY_TYPE) {
+			set_ns_and_type_ex(xmlParam, (soap_version == SOAP_1_1) ? SOAP_1_1_ENC_NAMESPACE : SOAP_1_2_ENC_NAMESPACE, "Array");
+		} else {
+			set_ns_and_type(xmlParam, type);
+		}
 	}
 	return xmlParam;
 }
@@ -2551,7 +2729,7 @@ static xmlNodePtr guess_xml_convert(encodeTypePtr type, zval *data, int style, x
 	} else {
 		enc = get_conversion(IS_NULL);
 	}
-	ret = master_to_xml(enc, data, style, parent);
+	ret = master_to_xml_int(enc, data, style, parent, 0);
 /*
 	if (style == SOAP_LITERAL && SOAP_GLOBAL(sdl)) {
 		set_ns_and_type(ret, &enc->details);
@@ -2676,12 +2854,12 @@ static xmlNodePtr to_xml_datetime_ex(encodeTypePtr type, zval *data, char *forma
 
 		/* Time zone support */
 #ifdef HAVE_TM_GMTOFF
-		sprintf(tzbuf, "%c%02d:%02d", (ta->tm_gmtoff < 0) ? '-' : '+', abs(ta->tm_gmtoff / 3600), abs( (ta->tm_gmtoff % 3600) / 60 ));
+		snprintf(tzbuf, sizeof(tzbuf), "%c%02d:%02d", (ta->tm_gmtoff < 0) ? '-' : '+', abs(ta->tm_gmtoff / 3600), abs( (ta->tm_gmtoff % 3600) / 60 ));
 #else
 # ifdef __CYGWIN__
-		sprintf(tzbuf, "%c%02d:%02d", ((ta->tm_isdst ? _timezone - 3600:_timezone)>0)?'-':'+', abs((ta->tm_isdst ? _timezone - 3600 : _timezone) / 3600), abs(((ta->tm_isdst ? _timezone - 3600 : _timezone) % 3600) / 60));
+		snprintf(tzbuf, sizeof(tzbuf), "%c%02d:%02d", ((ta->tm_isdst ? _timezone - 3600:_timezone)>0)?'-':'+', abs((ta->tm_isdst ? _timezone - 3600 : _timezone) / 3600), abs(((ta->tm_isdst ? _timezone - 3600 : _timezone) % 3600) / 60));
 # else
-		sprintf(tzbuf, "%c%02d:%02d", ((ta->tm_isdst ? timezone - 3600:timezone)>0)?'-':'+', abs((ta->tm_isdst ? timezone - 3600 : timezone) / 3600), abs(((ta->tm_isdst ? timezone - 3600 : timezone) % 3600) / 60));
+		snprintf(tzbuf, sizeof(tzbuf), "%c%02d:%02d", ((ta->tm_isdst ? timezone - 3600:timezone)>0)?'-':'+', abs((ta->tm_isdst ? timezone - 3600 : timezone) / 3600), abs(((ta->tm_isdst ? timezone - 3600 : timezone) % 3600) / 60));
 # endif
 #endif
 		if (strcmp(tzbuf,"+00:00") == 0) {
@@ -2886,8 +3064,18 @@ static xmlNodePtr to_xml_any(encodeTypePtr type, zval *data, int style, xmlNodeP
 		ret = xmlNewTextLen(BAD_CAST(Z_STRVAL(tmp)), Z_STRLEN(tmp));
 		zval_dtor(&tmp);
 	}
+
 	ret->name = xmlStringTextNoenc;
-	xmlAddChild(parent, ret);
+	ret->parent = parent;
+	ret->doc = parent->doc;
+	ret->prev = parent->last;
+	ret->next = NULL;
+	if (parent->last) {
+		parent->last->next = ret;
+	} else {
+		parent->children = ret;
+	}
+	parent->last = ret;
 
 	return ret;
 }
@@ -3013,9 +3201,9 @@ xmlNodePtr sdl_guess_convert_xml(encodeTypePtr enc, zval *data, int style, xmlNo
 			if (type->encode &&
 			    (type->encode->details.type == IS_ARRAY ||
 			     type->encode->details.type == SOAP_ENC_ARRAY)) {
-				ret = to_xml_array(enc, data, style, parent);
+				return to_xml_array(enc, data, style, parent);
 			} else {
-				ret = to_xml_object(enc, data, style, parent);
+				return to_xml_object(enc, data, style, parent);
 			}
 			break;
 		default:
@@ -3186,6 +3374,25 @@ void encode_reset_ns()
 {
 	TSRMLS_FETCH();
 	SOAP_GLOBAL(cur_uniq_ns) = 0;
+	SOAP_GLOBAL(cur_uniq_ref) = 0;
+	if (SOAP_GLOBAL(ref_map)) {
+		zend_hash_destroy(SOAP_GLOBAL(ref_map));
+	} else {
+		SOAP_GLOBAL(ref_map) = emalloc(sizeof(HashTable));
+	}
+	zend_hash_init(SOAP_GLOBAL(ref_map), 0, NULL, NULL, 0);
+}
+
+void encode_finish()
+{
+	TSRMLS_FETCH();
+	SOAP_GLOBAL(cur_uniq_ns) = 0;
+	SOAP_GLOBAL(cur_uniq_ref) = 0;
+	if (SOAP_GLOBAL(ref_map)) {
+		zend_hash_destroy(SOAP_GLOBAL(ref_map));
+		efree(SOAP_GLOBAL(ref_map));
+		SOAP_GLOBAL(ref_map) = NULL;
+	}
 }
 
 encodePtr get_conversion(int encode)
@@ -3206,8 +3413,12 @@ static int is_map(zval *array)
 	int i, count = zend_hash_num_elements(Z_ARRVAL_P(array));
 
 	zend_hash_internal_pointer_reset(Z_ARRVAL_P(array));
-	for (i = 0;i < count;i++) {
-		if (zend_hash_get_current_key_type(Z_ARRVAL_P(array)) == HASH_KEY_IS_STRING) {
+	for (i = 0; i < count; i++) {
+		char *str_index;
+		ulong num_index;
+
+		if (zend_hash_get_current_key(Z_ARRVAL_P(array), &str_index, &num_index, 0) == HASH_KEY_IS_STRING ||
+		    num_index != i) {
 			return TRUE;
 		}
 		zend_hash_move_forward(Z_ARRVAL_P(array));

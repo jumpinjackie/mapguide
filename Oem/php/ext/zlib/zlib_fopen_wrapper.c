@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: zlib_fopen_wrapper.c,v 1.46.2.1.2.2 2007/01/01 09:36:10 sebastian Exp $ */
+/* $Id: zlib_fopen_wrapper.c,v 1.46.2.1.2.4 2007/05/08 12:08:17 dmitry Exp $ */
 
 #define _GNU_SOURCE
 
@@ -130,7 +130,7 @@ php_stream *php_stream_gzopen(php_stream_wrapper *wrapper, char *path, char *mod
 		int fd;
 
 		if (SUCCESS == php_stream_cast(innerstream, PHP_STREAM_AS_FD, (void **) &fd, REPORT_ERRORS)) {
-			self->gz_file = gzdopen(fd, mode);
+			self->gz_file = gzdopen(dup(fd), mode);
 			self->stream = innerstream;
 			if (self->gz_file)	{
 				stream = php_stream_alloc_rel(&php_stream_gzio_ops, self, 0, mode);

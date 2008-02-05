@@ -41,6 +41,8 @@ POSSIBILITY OF SUCH DAMAGE.
 /* This module contains the external function pcre_config(). */
 
 
+#include <config.h>
+
 #include "pcre_internal.h"
 
 
@@ -58,7 +60,7 @@ Arguments:
 Returns:           0 if data returned, negative on error
 */
 
-PCRE_DATA_SCOPE int
+PCRE_EXP_DEFN int
 pcre_config(int what, void *where)
 {
 switch (what)

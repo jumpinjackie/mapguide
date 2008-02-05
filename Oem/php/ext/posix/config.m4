@@ -1,5 +1,5 @@
 dnl
-dnl $Id: config.m4,v 1.12.4.4 2007/01/05 21:31:56 pollita Exp $
+dnl $Id: config.m4,v 1.12.4.5 2007/03/01 11:23:54 tony2001 Exp $
 dnl
 
 PHP_ARG_ENABLE(posix,whether to enable POSIX-like functions,
@@ -28,5 +28,7 @@ int main(int argc, char *argv[])
     AC_DEFINE(HAVE_TTYNAME_R, 1, [Whether you have a working ttyname_r])
   ],[
     AC_MSG_RESULT([no, posix_ttyname() will be thread-unsafe])
+  ], [
+    AC_MSG_RESULT([no, cannot detect working ttyname_r() when cross compiling. posix_ttyname() will be thread-unsafe])
   ])
 fi

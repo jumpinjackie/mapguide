@@ -15,7 +15,7 @@
    | Author: Wez Furlong <wez@thebrainroom.com>                           |
    +----------------------------------------------------------------------+
  */
-/* $Id: proc_open.c,v 1.36.2.1.2.8 2007/01/09 16:27:17 dmitry Exp $ */
+/* $Id: proc_open.c,v 1.36.2.1.2.17 2007/09/12 11:42:43 nlopess Exp $ */
 
 #if 0 && (defined(__linux__) || defined(sun) || defined(__IRIX__))
 # define _BSD_SOURCE 		/* linux wants this when XOPEN mode is on */
@@ -95,6 +95,10 @@ static php_process_env_t _php_array_to_envp(zval *environment, int is_persistent
 	cnt = zend_hash_num_elements(Z_ARRVAL_P(environment));
 	
 	if (cnt < 1) {
+#ifndef PHP_WIN32
+		env.envarray = (char **) pecalloc(1, sizeof(char *), is_persistent);
+#endif
+		env.envp = (char *) pecalloc(4, 1, is_persistent);
 		return env;
 	}
 
@@ -276,7 +280,7 @@ static int php_make_safe_mode_command(char *cmd, char **safecmd, int is_persiste
 
 	sep = zend_memrchr(arg0, PHP_DIR_SEPARATOR, larg0);
 
-	spprintf(safecmd, 0, "%s%c%s%s", PG(safe_mode_exec_dir), (sep ? *sep : '/'), (sep ? "" : arg0), (space ? cmd + larg0 : ""));
+	spprintf(safecmd, 0, "%s%s%s%s", PG(safe_mode_exec_dir), (sep ? sep : "/"), (sep ? "" : arg0), (space ? cmd + larg0 : ""));
 
 	efree(arg0);
 	arg0 = php_escape_shell_cmd(*safecmd);
@@ -300,7 +304,7 @@ PHP_MINIT_FUNCTION(proc_open)
 }
 /* }}} */
 
-/* {{{ proto int proc_terminate(resource process [, long signal])
+/* {{{ proto bool proc_terminate(resource process [, long signal])
    kill a process opened by proc_open */
 PHP_FUNCTION(proc_terminate)
 {
@@ -315,13 +319,18 @@ PHP_FUNCTION(proc_terminate)
 	ZEND_FETCH_RESOURCE(proc, struct php_process_handle *, &zproc, -1, "process", le_proc_open);
 	
 #ifdef PHP_WIN32
-	TerminateProcess(proc->childHandle, 255);
+	if (TerminateProcess(proc->childHandle, 255)) {
+		RETURN_TRUE;
+	} else {
+		RETURN_FALSE;
+	}
 #else
-	kill(proc->child, sig_no);
+	if (kill(proc->child, sig_no) == 0) {
+		RETURN_TRUE;
+	} else {
+		RETURN_FALSE;
+	}
 #endif
-	
-	zend_list_delete(Z_LVAL_P(zproc));
-	RETURN_LONG(FG(pclose_ret));
 }
 /* }}} */
 
@@ -668,6 +677,12 @@ PHP_FUNCTION(proc_open)
 #ifdef PHP_WIN32
 				descriptors[ndesc].childend = dup_fd_as_handle(fd);
 				_close(fd);
+
+				/* simulate the append mode by fseeking to the end of the file
+				this introduces a potential race-condition, but it is the best we can do, though */
+				if (strchr(Z_STRVAL_PP(zmode), 'a')) {
+					SetFilePointer(descriptors[ndesc].childend, 0, NULL, FILE_END);
+				}
 #else
 				descriptors[ndesc].childend = fd;
 #endif
@@ -740,12 +755,11 @@ PHP_FUNCTION(proc_open)
 	}
 	
 	if (bypass_shell) {
-		newprocok = CreateProcess(NULL, command, &security, &security, TRUE, NORMAL_PRIORITY_CLASS, env.envp, cwd, &si, &pi);
+		newprocok = CreateProcess(NULL, command, &security, &security, TRUE, NORMAL_PRIORITY_CLASS|CREATE_NO_WINDOW, env.envp, cwd, &si, &pi);
 	} else {
-		command_with_cmd = emalloc(command_len + sizeof(COMSPEC_9X) + 1 + sizeof(" /c "));
-		sprintf(command_with_cmd, "%s /c %s", GetVersion() < 0x80000000 ? COMSPEC_NT : COMSPEC_9X, command);
+		spprintf(&command_with_cmd, 0, "%s /c %s", GetVersion() < 0x80000000 ? COMSPEC_NT : COMSPEC_9X, command);
 
-		newprocok = CreateProcess(NULL, command_with_cmd, &security, &security, TRUE, NORMAL_PRIORITY_CLASS, env.envp, cwd, &si, &pi);
+		newprocok = CreateProcess(NULL, command_with_cmd, &security, &security, TRUE, NORMAL_PRIORITY_CLASS|CREATE_NO_WINDOW, env.envp, cwd, &si, &pi);
 		
 		efree(command_with_cmd);
 	}
@@ -780,6 +794,9 @@ PHP_FUNCTION(proc_open)
 	channel.errfd = -1;
 	/* Duplicate the command as processing downwards will modify it*/
 	command_dup = strdup(command);
+	if (!command_dup) {
+		goto exit_fail;
+	}
 	/* get a number of args */
 	construct_argc_argv(command_dup, NULL, &command_num_args, NULL);
 	child_argv = (char**) malloc((command_num_args + 1) * sizeof(char*));
@@ -939,10 +956,14 @@ PHP_FUNCTION(proc_open)
 						break;
 				}
 #ifdef PHP_WIN32
-				stream = php_stream_fopen_from_fd(_open_osfhandle((long)descriptors[i].parentend,
+				stream = php_stream_fopen_from_fd(_open_osfhandle((zend_intptr_t)descriptors[i].parentend,
 							descriptors[i].mode_flags), mode_string, NULL);
 #else
 				stream = php_stream_fopen_from_fd(descriptors[i].parentend, mode_string, NULL);
+# if defined(F_SETFD) && defined(FD_CLOEXEC)
+				/* mark the descriptor close-on-exec, so that it won't be inherited by potential other children */
+				fcntl(descriptors[i].parentend, F_SETFD, FD_CLOEXEC);
+# endif
 #endif
 				if (stream) {
 					zval *retfp;

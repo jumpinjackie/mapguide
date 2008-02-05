@@ -37,6 +37,8 @@ POSSIBILITY OF SUCH DAMAGE.
 -----------------------------------------------------------------------------
 */
 
+#include <config.h>
+
 #include <ctype.h>
 #include <locale.h>
 #include <stdio.h>
@@ -46,17 +48,18 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
 
-#include "config.h"
-#include "pcre.h"
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
+#include <pcre.h>
 
 #define FALSE 0
 #define TRUE 1
 
 typedef int BOOL;
 
-#define VERSION "4.3 01-Jun-2006"
 #define MAX_PATTERN_COUNT 100
 
 #if BUFSIZ > 8192
@@ -64,7 +67,6 @@ typedef int BOOL;
 #else
 #define MBUFTHIRD 8192
 #endif
-
 
 /* Values for the "filenames" variable, which specifies options for file name
 output. The order is important; it is assumed that a file name is wanted for
@@ -83,6 +85,10 @@ enum { DEE_READ, DEE_SKIP };
 #define PO_LINE_MATCH     0x0002
 #define PO_FIXED_STRINGS  0x0004
 
+/* Line ending types */
+
+enum { EL_LF, EL_CR, EL_CRLF, EL_ANY, EL_ANYCRLF };
+
 
 
 /*************************************************
@@ -100,8 +106,7 @@ static const char *jfriedl_prefix = "";
 static const char *jfriedl_postfix = "";
 #endif
 
-static int  endlinebyte = '\n';     /* Last byte of endline sequence */
-static int  endlineextra = 0;       /* Extra bytes for endline sequence */
+static int  endlinetype;
 
 static char *colour_string = (char *)"1;31";
 static char *colour_option = NULL;
@@ -115,8 +120,8 @@ static char *locale = NULL;
 static const unsigned char *pcretables = NULL;
 
 static int  pattern_count = 0;
-static pcre **pattern_list;
-static pcre_extra **hints_list;
+static pcre **pattern_list = NULL;
+static pcre_extra **hints_list = NULL;
 
 static char *include_pattern = NULL;
 static char *exclude_pattern = NULL;
@@ -142,6 +147,7 @@ static BOOL number = FALSE;
 static BOOL only_matching = FALSE;
 static BOOL quiet = FALSE;
 static BOOL silent = FALSE;
+static BOOL utf8 = FALSE;
 
 /* Structure for options and list of them */
 
@@ -189,7 +195,7 @@ static option_item optionlist[] = {
   { OP_STRING,    N_LABEL,  &stdin_name,       "label=name",    "set name for standard input" },
   { OP_STRING,    N_LOCALE, &locale,           "locale=locale", "use the named locale" },
   { OP_NODATA,    'M',      NULL,              "multiline",     "run in multiline mode" },
-  { OP_STRING,    'N',      &newline,          "newline=type",  "specify newline type (CR, LR, CRLF)" },
+  { OP_STRING,    'N',      &newline,          "newline=type",  "specify newline type (CR, LF, CRLF, ANYCRLF or ANY)" },
   { OP_NODATA,    'n',      NULL,              "line-number",   "print line number with output lines" },
   { OP_NODATA,    'o',      NULL,              "only-matching", "show only the part of the line that matched" },
   { OP_NODATA,    'q',      NULL,              "quiet",         "suppress output, just set return code" },
@@ -219,6 +225,16 @@ static const char *prefix[] = {
 static const char *suffix[] = {
   "", "\\b", ")$",   ")$",   "\\E", "\\E\\b", "\\E)$",   "\\E)$" };
 
+/* UTF-8 tables - used only when the newline setting is "any". */
+
+const int utf8_table3[] = { 0xff, 0x1f, 0x0f, 0x07, 0x03, 0x01};
+
+const char utf8_table4[] = {
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+  3,3,3,3,3,3,3,3,4,4,4,4,5,5,5,5 };
+
 
 
 /*************************************************
@@ -231,7 +247,7 @@ although at present the only ones are for Unix, Win32, and for "no support". */
 
 /************* Directory scanning in Unix ***********/
 
-#if IS_UNIX
+#if defined HAVE_SYS_STAT_H && defined HAVE_DIRENT_H && defined HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
@@ -263,7 +279,7 @@ for (;;)
   if (strcmp(dent->d_name, ".") != 0 && strcmp(dent->d_name, "..") != 0)
     return dent->d_name;
   }
-return NULL;   /* Keep compiler happy; never executed */
+/* Control never reaches here */
 }
 
 static void
@@ -301,7 +317,7 @@ Lionel Fourquaux. David Burgess added a patch to define INVALID_FILE_ATTRIBUTES
 when it did not exist. */
 
 
-#elif HAVE_WIN32API
+#elif HAVE_WINDOWS_H
 
 #ifndef STRICT
 # define STRICT
@@ -423,8 +439,8 @@ FALSE;
 typedef void directory_type;
 
 int isdirectory(char *filename) { return 0; }
-directory_type * opendirectory(char *filename) {}
-char *readdirectory(directory_type *dir) {}
+directory_type * opendirectory(char *filename) { return (directory_type*)0;}
+char *readdirectory(directory_type *dir) { return (char*)0;}
 void closedirectory(directory_type *dir) {}
 
 
@@ -448,7 +464,7 @@ return FALSE;
 
 
 
-#if ! HAVE_STRERROR
+#ifndef HAVE_STRERROR
 /*************************************************
 *     Provide strerror() for non-ANSI libraries  *
 *************************************************/
@@ -467,6 +483,271 @@ if (n < 0 || n >= sys_nerr) return "unknown error number";
 return sys_errlist[n];
 }
 #endif /* HAVE_STRERROR */
+
+
+
+/*************************************************
+*             Find end of line                   *
+*************************************************/
+
+/* The length of the endline sequence that is found is set via lenptr. This may
+be zero at the very end of the file if there is no line-ending sequence there.
+
+Arguments:
+  p         current position in line
+  endptr    end of available data
+  lenptr    where to put the length of the eol sequence
+
+Returns:    pointer to the last byte of the line
+*/
+
+static char *
+end_of_line(char *p, char *endptr, int *lenptr)
+{
+switch(endlinetype)
+  {
+  default:      /* Just in case */
+  case EL_LF:
+  while (p < endptr && *p != '\n') p++;
+  if (p < endptr)
+    {
+    *lenptr = 1;
+    return p + 1;
+    }
+  *lenptr = 0;
+  return endptr;
+
+  case EL_CR:
+  while (p < endptr && *p != '\r') p++;
+  if (p < endptr)
+    {
+    *lenptr = 1;
+    return p + 1;
+    }
+  *lenptr = 0;
+  return endptr;
+
+  case EL_CRLF:
+  for (;;)
+    {
+    while (p < endptr && *p != '\r') p++;
+    if (++p >= endptr)
+      {
+      *lenptr = 0;
+      return endptr;
+      }
+    if (*p == '\n')
+      {
+      *lenptr = 2;
+      return p + 1;
+      }
+    }
+  break;
+
+  case EL_ANYCRLF:
+  while (p < endptr)
+    {
+    int extra = 0;
+    register int c = *((unsigned char *)p);
+
+    if (utf8 && c >= 0xc0)
+      {
+      int gcii, gcss;
+      extra = utf8_table4[c & 0x3f];  /* Number of additional bytes */
+      gcss = 6*extra;
+      c = (c & utf8_table3[extra]) << gcss;
+      for (gcii = 1; gcii <= extra; gcii++)
+        {
+        gcss -= 6;
+        c |= (p[gcii] & 0x3f) << gcss;
+        }
+      }
+
+    p += 1 + extra;
+
+    switch (c)
+      {
+      case 0x0a:    /* LF */
+      *lenptr = 1;
+      return p;
+
+      case 0x0d:    /* CR */
+      if (p < endptr && *p == 0x0a)
+        {
+        *lenptr = 2;
+        p++;
+        }
+      else *lenptr = 1;
+      return p;
+
+      default:
+      break;
+      }
+    }   /* End of loop for ANYCRLF case */
+
+  *lenptr = 0;  /* Must have hit the end */
+  return endptr;
+
+  case EL_ANY:
+  while (p < endptr)
+    {
+    int extra = 0;
+    register int c = *((unsigned char *)p);
+
+    if (utf8 && c >= 0xc0)
+      {
+      int gcii, gcss;
+      extra = utf8_table4[c & 0x3f];  /* Number of additional bytes */
+      gcss = 6*extra;
+      c = (c & utf8_table3[extra]) << gcss;
+      for (gcii = 1; gcii <= extra; gcii++)
+        {
+        gcss -= 6;
+        c |= (p[gcii] & 0x3f) << gcss;
+        }
+      }
+
+    p += 1 + extra;
+
+    switch (c)
+      {
+      case 0x0a:    /* LF */
+      case 0x0b:    /* VT */
+      case 0x0c:    /* FF */
+      *lenptr = 1;
+      return p;
+
+      case 0x0d:    /* CR */
+      if (p < endptr && *p == 0x0a)
+        {
+        *lenptr = 2;
+        p++;
+        }
+      else *lenptr = 1;
+      return p;
+
+      case 0x85:    /* NEL */
+      *lenptr = utf8? 2 : 1;
+      return p;
+
+      case 0x2028:  /* LS */
+      case 0x2029:  /* PS */
+      *lenptr = 3;
+      return p;
+
+      default:
+      break;
+      }
+    }   /* End of loop for ANY case */
+
+  *lenptr = 0;  /* Must have hit the end */
+  return endptr;
+  }     /* End of overall switch */
+}
+
+
+
+/*************************************************
+*         Find start of previous line            *
+*************************************************/
+
+/* This is called when looking back for before lines to print.
+
+Arguments:
+  p         start of the subsequent line
+  startptr  start of available data
+
+Returns:    pointer to the start of the previous line
+*/
+
+static char *
+previous_line(char *p, char *startptr)
+{
+switch(endlinetype)
+  {
+  default:      /* Just in case */
+  case EL_LF:
+  p--;
+  while (p > startptr && p[-1] != '\n') p--;
+  return p;
+
+  case EL_CR:
+  p--;
+  while (p > startptr && p[-1] != '\n') p--;
+  return p;
+
+  case EL_CRLF:
+  for (;;)
+    {
+    p -= 2;
+    while (p > startptr && p[-1] != '\n') p--;
+    if (p <= startptr + 1 || p[-2] == '\r') return p;
+    }
+  return p;   /* But control should never get here */
+
+  case EL_ANY:
+  case EL_ANYCRLF:
+  if (*(--p) == '\n' && p > startptr && p[-1] == '\r') p--;
+  if (utf8) while ((*p & 0xc0) == 0x80) p--;
+
+  while (p > startptr)
+    {
+    register int c;
+    char *pp = p - 1;
+
+    if (utf8)
+      {
+      int extra = 0;
+      while ((*pp & 0xc0) == 0x80) pp--;
+      c = *((unsigned char *)pp);
+      if (c >= 0xc0)
+        {
+        int gcii, gcss;
+        extra = utf8_table4[c & 0x3f];  /* Number of additional bytes */
+        gcss = 6*extra;
+        c = (c & utf8_table3[extra]) << gcss;
+        for (gcii = 1; gcii <= extra; gcii++)
+          {
+          gcss -= 6;
+          c |= (pp[gcii] & 0x3f) << gcss;
+          }
+        }
+      }
+    else c = *((unsigned char *)pp);
+
+    if (endlinetype == EL_ANYCRLF) switch (c)
+      {
+      case 0x0a:    /* LF */
+      case 0x0d:    /* CR */
+      return p;
+
+      default:
+      break;
+      }
+
+    else switch (c)
+      {
+      case 0x0a:    /* LF */
+      case 0x0b:    /* VT */
+      case 0x0c:    /* FF */
+      case 0x0d:    /* CR */
+      case 0x85:    /* NEL */
+      case 0x2028:  /* LS */
+      case 0x2029:  /* PS */
+      return p;
+
+      default:
+      break;
+      }
+
+    p = pp;  /* Back one character */
+    }        /* End of loop for ANY case */
+
+  return startptr;  /* Hit start of data */
+  }     /* End of overall switch */
+}
+
+
 
 
 
@@ -495,13 +776,13 @@ if (after_context > 0 && lastmatchnumber > 0)
   int count = 0;
   while (lastmatchrestart < endptr && count++ < after_context)
     {
+    int ellength;
     char *pp = lastmatchrestart;
     if (printname != NULL) fprintf(stdout, "%s-", printname);
     if (number) fprintf(stdout, "%d-", lastmatchnumber++);
-    while (*pp != endlinebyte) pp++;
-    fwrite(lastmatchrestart, 1, pp - lastmatchrestart + (1 + endlineextra),
-      stdout);
-    lastmatchrestart = pp + 1;
+    pp = end_of_line(pp, endptr, &ellength);
+    fwrite(lastmatchrestart, 1, pp - lastmatchrestart, stdout);
+    lastmatchrestart = pp;
     }
   hyphenpending = TRUE;
   }
@@ -558,7 +839,7 @@ way, the buffer is shifted left and re-filled. */
 
 while (ptr < endptr)
   {
-  int i;
+  int i, endlinelength;
   int mrc = 0;
   BOOL match = FALSE;
   char *t = ptr;
@@ -571,10 +852,9 @@ while (ptr < endptr)
   line. In multiline mode the PCRE_FIRSTLINE option is used for compiling, so
   that any match is constrained to be in the first line. */
 
-  linelength = 0;
-  while (t < endptr && *t++ != endlinebyte) linelength++;
-  length = multiline? endptr - ptr : linelength;
-
+  t = end_of_line(t, endptr, &endlinelength);
+  linelength = t - ptr - endlinelength;
+  length = multiline? (size_t)(endptr - ptr) : linelength;
 
   /* Extra processing for Jeffrey Friedl's debugging. */
 
@@ -706,13 +986,13 @@ while (ptr < endptr)
 
       if (after_context > 0 && lastmatchnumber > 0)
         {
+        int ellength;
         int linecount = 0;
         char *p = lastmatchrestart;
 
         while (p < ptr && linecount < after_context)
           {
-          while (*p != endlinebyte) p++;
-          p++;
+          p = end_of_line(p, ptr, &ellength);
           linecount++;
           }
 
@@ -725,10 +1005,9 @@ while (ptr < endptr)
           char *pp = lastmatchrestart;
           if (printname != NULL) fprintf(stdout, "%s-", printname);
           if (number) fprintf(stdout, "%d-", lastmatchnumber++);
-          while (*pp != endlinebyte) pp++;
-          fwrite(lastmatchrestart, 1, pp - lastmatchrestart +
-            (1 + endlineextra), stdout);
-          lastmatchrestart = pp + 1;
+          pp = end_of_line(pp, endptr, &ellength);
+          fwrite(lastmatchrestart, 1, pp - lastmatchrestart, stdout);
+          lastmatchrestart = pp;
           }
         if (lastmatchrestart != ptr) hyphenpending = TRUE;
         }
@@ -754,8 +1033,7 @@ while (ptr < endptr)
                linecount < before_context)
           {
           linecount++;
-          p--;
-          while (p > buffer && p[-1] != endlinebyte) p--;
+          p = previous_line(p, buffer);
           }
 
         if (lastmatchnumber > 0 && p > lastmatchrestart && !hyphenprinted)
@@ -763,12 +1041,13 @@ while (ptr < endptr)
 
         while (p < ptr)
           {
+          int ellength;
           char *pp = p;
           if (printname != NULL) fprintf(stdout, "%s-", printname);
           if (number) fprintf(stdout, "%d-", linenumber - linecount--);
-          while (*pp != endlinebyte) pp++;
-          fwrite(p, 1, pp - p + (1 + endlineextra), stdout);
-          p = pp + 1;
+          pp = end_of_line(pp, endptr, &ellength);
+          fwrite(p, 1, pp - p, stdout);
+          p = pp;
           }
         }
 
@@ -783,16 +1062,26 @@ while (ptr < endptr)
 
       /* In multiline mode, we want to print to the end of the line in which
       the end of the matched string is found, so we adjust linelength and the
-      line number appropriately. Because the PCRE_FIRSTLINE option is set, the
-      start of the match will always be before the first newline sequence. */
+      line number appropriately, but only when there actually was a match
+      (invert not set). Because the PCRE_FIRSTLINE option is set, the start of
+      the match will always be before the first newline sequence. */
 
       if (multiline)
         {
-        char *endmatch = ptr + offsets[1];
-        t = ptr;
-        while (t < endmatch) { if (*t++ == endlinebyte) linenumber++; }
-        while (endmatch < endptr && *endmatch != endlinebyte) endmatch++;
-        linelength = endmatch - ptr;
+        int ellength;
+        char *endmatch = ptr;
+        if (!invert)
+          {
+          endmatch += offsets[1];
+          t = ptr;
+          while (t < endmatch)
+            {
+            t = end_of_line(t, endptr, &ellength);
+            if (t <= endmatch) linenumber++; else break;
+            }
+          }
+        endmatch = end_of_line(endmatch, endptr, &ellength);
+        linelength = endmatch - ptr - ellength;
         }
 
       /*** NOTE: Use only fwrite() to output the data line, so that binary
@@ -824,9 +1113,7 @@ while (ptr < endptr)
         fprintf(stdout, "%c[00m", 0x1b);
         fwrite(ptr + offsets[1], 1, linelength - offsets[1], stdout);
         }
-      else fwrite(ptr, 1, linelength, stdout);
-
-      fprintf(stdout, "\n");
+      else fwrite(ptr, 1, linelength + endlinelength, stdout);
       }
 
     /* End of doing what has to be done for a match */
@@ -836,13 +1123,31 @@ while (ptr < endptr)
     /* Remember where the last match happened for after_context. We remember
     where we are about to restart, and that line's number. */
 
-    lastmatchrestart = ptr + linelength + 1;
+    lastmatchrestart = ptr + linelength + endlinelength;
     lastmatchnumber = linenumber + 1;
+    }
+
+  /* For a match in multiline inverted mode (which of course did not cause
+  anything to be printed), we have to move on to the end of the match before
+  proceeding. */
+
+  if (multiline && invert && match)
+    {
+    int ellength;
+    char *endmatch = ptr + offsets[1];
+    t = ptr;
+    while (t < endmatch)
+      {
+      t = end_of_line(t, endptr, &ellength);
+      if (t <= endmatch) linenumber++; else break;
+      }
+    endmatch = end_of_line(endmatch, endptr, &ellength);
+    linelength = endmatch - ptr - ellength;
     }
 
   /* Advance to after the newline and increment the line number. */
 
-  ptr += linelength + 1;
+  ptr += linelength + endlinelength;
   linenumber++;
 
   /* If we haven't yet reached the end of the file (the buffer is full), and
@@ -1098,14 +1403,13 @@ switch(letter)
   case 'q': quiet = TRUE; break;
   case 'r': dee_action = dee_RECURSE; break;
   case 's': silent = TRUE; break;
-  case 'u': options |= PCRE_UTF8; break;
+  case 'u': options |= PCRE_UTF8; utf8 = TRUE; break;
   case 'v': invert = TRUE; break;
   case 'w': process_options |= PO_WORD_MATCH; break;
   case 'x': process_options |= PO_LINE_MATCH; break;
 
   case 'V':
-  fprintf(stderr, "pcregrep version %s using ", VERSION);
-  fprintf(stderr, "PCRE version %s\n", pcre_version());
+  fprintf(stderr, "pcregrep version %s\n", pcre_version());
   exit(0);
   break;
 
@@ -1181,7 +1485,11 @@ sprintf(buffer, "%s%.*s%s", prefix[process_options], MBUFTHIRD, pattern,
   suffix[process_options]);
 pattern_list[pattern_count] =
   pcre_compile(buffer, options, &error, &errptr, pcretables);
-if (pattern_list[pattern_count++] != NULL) return TRUE;
+if (pattern_list[pattern_count] != NULL)
+  {
+  pattern_count++;
+  return TRUE;
+  }
 
 /* Handle compile errors */
 
@@ -1231,14 +1539,16 @@ compile_pattern(char *pattern, int options, char *filename, int count)
 {
 if ((process_options & PO_FIXED_STRINGS) != 0)
   {
+  char *eop = pattern + strlen(pattern);
   char buffer[MBUFTHIRD];
   for(;;)
     {
-    char *p = strchr(pattern, endlinebyte);
-    if (p == NULL)
+    int ellength;
+    char *p = end_of_line(pattern, eop, &ellength);
+    if (ellength == 0)
       return compile_single_pattern(pattern, options, filename, count);
-    sprintf(buffer, "%.*s", p - pattern - endlineextra, pattern);
-    pattern = p + 1;
+    sprintf(buffer, "%.*s", (int)(p - pattern - ellength), pattern);
+    pattern = p;
     if (!compile_single_pattern(buffer, options, filename, count))
       return FALSE;
     }
@@ -1261,13 +1571,16 @@ int i, j;
 int rc = 1;
 int pcre_options = 0;
 int cmd_pattern_count = 0;
+int hint_count = 0;
 int errptr;
 BOOL only_one_at_top;
 char *patterns[MAX_PATTERN_COUNT];
 const char *locale_from = "--locale";
 const char *error;
 
-/* Set the default line ending value from the default in the PCRE library. */
+/* Set the default line ending value from the default in the PCRE library;
+"lf", "cr", "crlf", and "any" are supported. Anything else is treated as "lf".
+*/
 
 (void)pcre_config(PCRE_CONFIG_NEWLINE, &i);
 switch(i)
@@ -1275,6 +1588,8 @@ switch(i)
   default:                 newline = (char *)"lf"; break;
   case '\r':               newline = (char *)"cr"; break;
   case ('\r' << 8) | '\n': newline = (char *)"crlf"; break;
+  case -1:                 newline = (char *)"any"; break;
+  case -2:                 newline = (char *)"anycrlf"; break;
   }
 
 /* Process the options */
@@ -1332,7 +1647,7 @@ for (i = 1; i < argc; i++)
         else                 /* Special case xxx=data */
           {
           int oplen = equals - op->long_name;
-          int arglen = (argequals == NULL)? strlen(arg) : argequals - arg;
+          int arglen = (argequals == NULL)? (int)strlen(arg) : argequals - arg;
           if (oplen == arglen && strncmp(arg, op->long_name, oplen) == 0)
             {
             option_data = arg + arglen;
@@ -1351,8 +1666,8 @@ for (i = 1; i < argc; i++)
         char buff2[24];
         int baselen = opbra - op->long_name;
         sprintf(buff1, "%.*s", baselen, op->long_name);
-        sprintf(buff2, "%s%.*s", buff1, strlen(op->long_name) - baselen - 2,
-          opbra + 1);
+        sprintf(buff2, "%s%.*s", buff1,
+          (int)strlen(op->long_name) - baselen - 2, opbra + 1);
         if (strcmp(arg, buff1) == 0 || strcmp(arg, buff2) == 0)
           break;
         }
@@ -1565,16 +1880,27 @@ if (colour_option != NULL && strcmp(colour_option, "never") != 0)
 if (strcmp(newline, "cr") == 0 || strcmp(newline, "CR") == 0)
   {
   pcre_options |= PCRE_NEWLINE_CR;
-  endlinebyte = '\r';
+  endlinetype = EL_CR;
   }
 else if (strcmp(newline, "lf") == 0 || strcmp(newline, "LF") == 0)
   {
   pcre_options |= PCRE_NEWLINE_LF;
+  endlinetype = EL_LF;
   }
 else if (strcmp(newline, "crlf") == 0 || strcmp(newline, "CRLF") == 0)
   {
   pcre_options |= PCRE_NEWLINE_CRLF;
-  endlineextra = 1;
+  endlinetype = EL_CRLF;
+  }
+else if (strcmp(newline, "any") == 0 || strcmp(newline, "ANY") == 0)
+  {
+  pcre_options |= PCRE_NEWLINE_ANY;
+  endlinetype = EL_ANY;
+  }
+else if (strcmp(newline, "anycrlf") == 0 || strcmp(newline, "ANYCRLF") == 0)
+  {
+  pcre_options |= PCRE_NEWLINE_ANYCRLF;
+  endlinetype = EL_ANYCRLF;
   }
 else
   {
@@ -1630,7 +1956,7 @@ hints_list = (pcre_extra **)malloc(MAX_PATTERN_COUNT * sizeof(pcre_extra *));
 if (pattern_list == NULL || hints_list == NULL)
   {
   fprintf(stderr, "pcregrep: malloc failed\n");
-  return 2;
+  goto EXIT2;
   }
 
 /* If no patterns were provided by -e, and there is no file provided by -f,
@@ -1649,7 +1975,7 @@ for (j = 0; j < cmd_pattern_count; j++)
   {
   if (!compile_pattern(patterns[j], pcre_options, NULL,
        (j == 0 && cmd_pattern_count == 1)? 0 : j + 1))
-    return 2;
+    goto EXIT2;
   }
 
 /* Compile the regular expressions that are provided in a file. */
@@ -1673,7 +1999,7 @@ if (pattern_filename != NULL)
       {
       fprintf(stderr, "pcregrep: Failed to open %s: %s\n", pattern_filename,
         strerror(errno));
-      return 2;
+      goto EXIT2;
       }
     filename = pattern_filename;
     }
@@ -1686,7 +2012,7 @@ if (pattern_filename != NULL)
     linenumber++;
     if (buffer[0] == 0) continue;   /* Skip blank lines */
     if (!compile_pattern(buffer, pcre_options, filename, linenumber))
-      return 2;
+      goto EXIT2;
     }
 
   if (f != stdin) fclose(f);
@@ -1702,8 +2028,9 @@ for (j = 0; j < pattern_count; j++)
     char s[16];
     if (pattern_count == 1) s[0] = 0; else sprintf(s, " number %d", j);
     fprintf(stderr, "pcregrep: Error while studying regex%s: %s\n", s, error);
-    return 2;
+    goto EXIT2;
     }
+  hint_count++;
   }
 
 /* If there are include or exclude patterns, compile them. */
@@ -1716,7 +2043,7 @@ if (exclude_pattern != NULL)
     {
     fprintf(stderr, "pcregrep: Error in 'exclude' regex at offset %d: %s\n",
       errptr, error);
-    return 2;
+    goto EXIT2;
     }
   }
 
@@ -1728,14 +2055,17 @@ if (include_pattern != NULL)
     {
     fprintf(stderr, "pcregrep: Error in 'include' regex at offset %d: %s\n",
       errptr, error);
-    return 2;
+    goto EXIT2;
     }
   }
 
 /* If there are no further arguments, do the business on stdin and exit. */
 
 if (i >= argc)
-  return pcregrep(stdin, (filenames > FN_DEFAULT)? stdin_name : NULL);
+  {
+  rc = pcregrep(stdin, (filenames > FN_DEFAULT)? stdin_name : NULL);
+  goto EXIT;
+  }
 
 /* Otherwise, work through the remaining arguments as files or directories.
 Pass in the fact that there is only one argument at top level - this suppresses
@@ -1752,7 +2082,22 @@ for (; i < argc; i++)
     else if (frc == 0 && rc == 1) rc = 0;
   }
 
+EXIT:
+if (pattern_list != NULL)
+  {
+  for (i = 0; i < pattern_count; i++) free(pattern_list[i]);
+  free(pattern_list);
+  }
+if (hints_list != NULL)
+  {
+  for (i = 0; i < hint_count; i++) free(hints_list[i]);
+  free(hints_list);
+  }
 return rc;
+
+EXIT2:
+rc = 2;
+goto EXIT;
 }
 
 /* End of pcregrep */

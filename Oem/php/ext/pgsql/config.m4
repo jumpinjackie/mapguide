@@ -1,9 +1,6 @@
 dnl
-dnl $Id: config.m4,v 1.46.2.1.2.3 2006/10/06 21:45:10 iliaa Exp $
+dnl $Id: config.m4,v 1.46.2.1.2.5 2007/07/11 21:51:55 jani Exp $
 dnl
-
-AC_DEFUN([PHP_PGSQL_CHECK_FUNCTIONS],[
-])
 
 PHP_ARG_WITH(pgsql,for PostgreSQL support,
 [  --with-pgsql[=DIR]      Include PostgreSQL support.  DIR is the PostgreSQL
@@ -63,7 +60,7 @@ if test "$PHP_PGSQL" != "no"; then
   fi
 
   if test -z "$PGSQL_INCLUDE" -a -z "$PGSQL_LIBDIR" ; then
-    AC_MSG_ERROR([Unable to find libpq anywhere under $withval])
+    AC_MSG_ERROR([Unable to find libpq anywhere under $PGSQL_SEARCH_PATHS])
   fi
 
   AC_DEFINE(HAVE_PGSQL,1,[Whether to build PostgreSQL support or not])
@@ -89,6 +86,7 @@ if test "$PHP_PGSQL" != "no"; then
   AC_CHECK_LIB(pq, PQputCopyData,AC_DEFINE(HAVE_PQPUTCOPYDATA,1,[PostgreSQL 7.4 or later]))
   AC_CHECK_LIB(pq, PQputCopyEnd,AC_DEFINE(HAVE_PQPUTCOPYEND,1,[PostgreSQL 7.4 or later]))
   AC_CHECK_LIB(pq, PQgetCopyData,AC_DEFINE(HAVE_PQGETCOPYDATA,1,[PostgreSQL 7.4 or later]))
+  AC_CHECK_LIB(pq, PQfreemem,AC_DEFINE(HAVE_PQFREEMEM,1,[PostgreSQL 7.4 or later]))
   AC_CHECK_LIB(pq, PQsetErrorVerbosity,AC_DEFINE(HAVE_PQSETERRORVERBOSITY,1,[PostgreSQL 7.4 or later]))
   AC_CHECK_LIB(pq, PQftable,AC_DEFINE(HAVE_PQFTABLE,1,[PostgreSQL 7.4 or later]))
   AC_CHECK_LIB(pq, PQescapeStringConn, AC_DEFINE(HAVE_PQESCAPE_CONN,1,[PostgreSQL 8.1.4 or later]))

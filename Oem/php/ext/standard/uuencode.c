@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: uuencode.c,v 1.5.2.1.2.3 2007/01/01 09:36:09 sebastian Exp $ */
+/* $Id: uuencode.c,v 1.5.2.1.2.5 2007/10/04 13:31:11 jani Exp $ */
 
 /*
  * Portions of this code are based on Berkeley's uuencode/uudecode
@@ -65,7 +65,7 @@
 
 #define PHP_UU_DEC(c) (((c) - ' ') & 077)
 
-PHPAPI int php_uuencode(char *src, int src_len, char **dest)
+PHPAPI int php_uuencode(char *src, int src_len, char **dest) /* {{{ */
 {
 	int len = 45;
 	char *p, *s, *e, *ee;
@@ -122,8 +122,9 @@ PHPAPI int php_uuencode(char *src, int src_len, char **dest)
 
 	return (p - *dest);
 }
+/* }}} */
 
-PHPAPI int php_uudecode(char *src, int src_len, char **dest)
+PHPAPI int php_uudecode(char *src, int src_len, char **dest) /* {{{ */
 {
 	int len, total_len=0;
 	char *s, *e, *p, *ee;
@@ -182,6 +183,7 @@ err:
 	efree(*dest);
 	return -1;
 }
+/* }}} */
 
 /* {{{ proto string convert_uuencode(string data) 
    uuencode a string */
@@ -213,10 +215,19 @@ PHP_FUNCTION(convert_uudecode)
 
 	dst_len = php_uudecode(src, src_len, &dst);
 	if (dst_len < 0) {
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "The given parameter is not a valid uuencoded string.");
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "The given parameter is not a valid uuencoded string");
 		RETURN_FALSE;
 	}
 
 	RETURN_STRINGL(dst, dst_len, 0);
 }
 /* }}} */
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: noet sw=4 ts=4 fdm=marker
+ * vim<600: noet sw=4 ts=4
+ */

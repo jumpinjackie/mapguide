@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: memory.c,v 1.8.2.6.2.15 2007/02/03 16:40:05 helly Exp $ */
+/* $Id: memory.c,v 1.8.2.6.2.17 2007/02/22 23:26:03 helly Exp $ */
 
 #define _GNU_SOURCE
 #include "php.h"
@@ -260,14 +260,14 @@ static int php_stream_memory_set_option(php_stream *stream, int option, int valu
 					if (newsize <= ms->fsize) {
 						if (newsize < ms->fpos) {
 							ms->fpos = newsize;
-						} else {
-							ms->data = erealloc(ms->data, newsize);
-							memset(ms->data+ms->fsize, 0, newsize - ms->fsize);
-							ms->fsize = newsize;
 						}
+					} else {
+						ms->data = erealloc(ms->data, newsize);
+						memset(ms->data+ms->fsize, 0, newsize - ms->fsize);
 						ms->fsize = newsize;
-						return PHP_STREAM_OPTION_RETURN_OK;
 					}
+					ms->fsize = newsize;
+					return PHP_STREAM_OPTION_RETURN_OK;
 			}
 		default:
 			return PHP_STREAM_OPTION_RETURN_NOTIMPL;
@@ -282,7 +282,7 @@ PHPAPI php_stream_ops	php_stream_memory_ops = {
 	php_stream_memory_seek,
 	php_stream_memory_cast,
 	php_stream_memory_stat,
-	NULL /* php_stream_memory_set_option */
+	php_stream_memory_set_option
 };
 
 
@@ -729,7 +729,7 @@ static php_stream * php_stream_url_wrap_rfc2397(php_stream_wrapper *wrapper, cha
 	return stream;
 }
 
-static php_stream_wrapper_ops php_stream_rfc2397_wops = {
+PHPAPI php_stream_wrapper_ops php_stream_rfc2397_wops = {
 	php_stream_url_wrap_rfc2397,
 	NULL, /* close */
 	NULL, /* fstat */
@@ -742,7 +742,7 @@ static php_stream_wrapper_ops php_stream_rfc2397_wops = {
 	NULL  /* rmdir */
 };
 
-php_stream_wrapper php_stream_rfc2397_wrapper =	{
+PHPAPI php_stream_wrapper php_stream_rfc2397_wrapper =	{
 	&php_stream_rfc2397_wops,
 	NULL,
 	1, /* is_url */

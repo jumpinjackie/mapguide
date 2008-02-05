@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_compile.c,v 1.647.2.27.2.29 2007/02/01 15:23:46 dmitry Exp $ */
+/* $Id: zend_compile.c,v 1.647.2.27.2.41 2007/09/20 14:11:31 jani Exp $ */
 
 #include <zend_language_parser.h>
 #include "zend.h"
@@ -25,6 +25,7 @@
 #include "zend_constants.h"
 #include "zend_llist.h"
 #include "zend_API.h"
+#include "zend_exceptions.h"
 
 #ifdef ZEND_MULTIBYTE
 #include "zend_multibyte.h"
@@ -83,14 +84,13 @@ static void build_runtime_defined_function_key(zval *result, char *name, int nam
 
 	/* NULL, name length, filename length, last accepting char position length */
 	result->value.str.len = 1+name_length+strlen(filename)+char_pos_len;
-	result->value.str.val = (char *) emalloc(result->value.str.len+1);
 #ifdef ZEND_MULTIBYTE
 	/* must be binary safe */
+	result->value.str.val = (char *) safe_emalloc(result->value.str.len, 1, 1);
 	result->value.str.val[0] = '\0';
-	memcpy(result->value.str.val+1, name, name_length);
-	sprintf(result->value.str.val+1+name_length, "%s%s", filename, char_pos_buf);
+	sprintf(result->value.str.val+1, "%s%s%s", name, filename, char_pos_buf);
 #else
-	sprintf(result->value.str.val, "%c%s%s%s", '\0', name, filename, char_pos_buf);
+	zend_spprintf(&result->value.str.val, 0, "%c%s%s%s", '\0', name, filename, char_pos_buf);
 #endif /* ZEND_MULTIBYTE */
 	result->type = IS_STRING;
 	result->refcount = 1;
@@ -941,24 +941,25 @@ void zend_do_init_string(znode *result TSRMLS_DC)
 }
 
 
-void zend_do_add_char(znode *result, znode *op1, znode *op2 TSRMLS_DC)
-{
-	zend_op *opline = get_next_op(CG(active_op_array) TSRMLS_CC);
-
-	opline->opcode = ZEND_ADD_CHAR;
-	opline->op1 = *op1;
-	opline->op2 = *op2;
-	opline->op2.op_type = IS_CONST;
-	opline->result = opline->op1;
-	*result = opline->result;
-}
-
-
 void zend_do_add_string(znode *result, znode *op1, znode *op2 TSRMLS_DC)
 {
-	zend_op *opline = get_next_op(CG(active_op_array) TSRMLS_CC);
+	zend_op *opline;
 
-	opline->opcode = ZEND_ADD_STRING;
+	if (Z_STRLEN(op2->u.constant) > 1) {
+		opline = get_next_op(CG(active_op_array) TSRMLS_CC);
+		opline->opcode = ZEND_ADD_STRING;
+	} else if (Z_STRLEN(op2->u.constant) == 1) {
+		int ch = *Z_STRVAL(op2->u.constant);
+
+		/* Free memory and use ZEND_ADD_CHAR in case of 1 character strings */
+		efree(Z_STRVAL(op2->u.constant));
+		ZVAL_LONG(&op2->u.constant, ch);
+		opline = get_next_op(CG(active_op_array) TSRMLS_CC);
+		opline->opcode = ZEND_ADD_CHAR;
+	} else { /* String can be empty after a variable at the end of a heredoc */
+		efree(Z_STRVAL(op2->u.constant));
+		return;
+	}
 	opline->op1 = *op1;
 	opline->op2 = *op2;
 	opline->op2.op_type = IS_CONST;
@@ -1067,6 +1068,7 @@ void zend_do_begin_function_declaration(znode *function_token, znode *function_n
 	int function_begin_line = function_token->u.opline_num;
 	zend_uint fn_flags;
 	char *lcname;
+	zend_bool orig_interactive;
 
 	if (is_method) {
 		if (CG(active_class_entry)->ce_flags & ZEND_ACC_INTERFACE) {
@@ -1086,11 +1088,14 @@ void zend_do_begin_function_declaration(znode *function_token, znode *function_n
 	function_token->u.op_array = CG(active_op_array);
 	lcname = zend_str_tolower_dup(name, name_len);
 
+	orig_interactive = CG(interactive);
+	CG(interactive) = 0;
 	init_op_array(&op_array, ZEND_USER_FUNCTION, INITIAL_OP_ARRAY_SIZE TSRMLS_CC);
+	CG(interactive) = orig_interactive;
 
 	op_array.function_name = name;
 	op_array.return_reference = return_reference;
-	op_array.fn_flags = fn_flags;
+	op_array.fn_flags |= fn_flags;
 	op_array.pass_rest_by_reference = 0;
 
 	op_array.scope = is_method?CG(active_class_entry):NULL;
@@ -1261,9 +1266,18 @@ void zend_do_end_function_declaration(znode *function_token TSRMLS_DC)
 
 void zend_do_receive_arg(zend_uchar op, znode *var, znode *offset, znode *initialization, znode *class_type, znode *varname, zend_uchar pass_by_reference TSRMLS_DC)
 {
-	zend_op *opline = get_next_op(CG(active_op_array) TSRMLS_CC);
+	zend_op *opline;
 	zend_arg_info *cur_arg_info;
 
+	if (CG(active_op_array)->scope &&
+		((CG(active_op_array)->fn_flags & ZEND_ACC_STATIC) == 0) &&
+		(Z_TYPE(varname->u.constant) == IS_STRING) &&
+		(Z_STRLEN(varname->u.constant) == sizeof("this")-1) &&
+		(memcmp(Z_STRVAL(varname->u.constant), "this", sizeof("this")) == 0)) {
+		zend_error(E_COMPILE_ERROR, "Cannot re-assign $this");
+	}
+
+	opline = get_next_op(CG(active_op_array) TSRMLS_CC);
 	CG(active_op_array)->num_args++;
 	opline->opcode = op;
 	opline->result = *var;
@@ -1476,12 +1490,15 @@ void zend_do_begin_class_member_function_call(znode *class_name, znode *method_n
 	opline->op2 = *method_name;
 
 	if (opline->op2.op_type == IS_CONST) {
+		char *lcname = zend_str_tolower_dup(Z_STRVAL(opline->op2.u.constant), Z_STRLEN(opline->op2.u.constant));
 		if ((sizeof(ZEND_CONSTRUCTOR_FUNC_NAME)-1) == Z_STRLEN(opline->op2.u.constant) &&
-		    memcmp(Z_STRVAL(opline->op2.u.constant), ZEND_CONSTRUCTOR_FUNC_NAME, sizeof(ZEND_CONSTRUCTOR_FUNC_NAME)-1) == 0) {
+		    memcmp(lcname, ZEND_CONSTRUCTOR_FUNC_NAME, sizeof(ZEND_CONSTRUCTOR_FUNC_NAME)-1) == 0) {
 			zval_dtor(&opline->op2.u.constant);
 			SET_UNUSED(opline->op2);
+			efree(lcname);
 		} else {
-			zend_str_tolower(opline->op2.u.constant.value.str.val, opline->op2.u.constant.value.str.len);
+			efree(opline->op2.u.constant.value.str.val);
+			opline->op2.u.constant.value.str.val = lcname;
 		}
 	}
 
@@ -1535,11 +1552,11 @@ void zend_do_pass_param(znode *param, zend_uchar op, int offset TSRMLS_DC)
 	if (original_op==ZEND_SEND_REF
 		&& !CG(allow_call_time_pass_reference)) {
 		zend_error(E_COMPILE_WARNING,
-					"Call-time pass-by-reference has been deprecated;  "
+					"Call-time pass-by-reference has been deprecated; "
 					"If you would like to pass it by reference, modify the declaration of %s().  "
 					"If you would like to enable call-time pass-by-reference, you can set "
-					"allow_call_time_pass_reference to true in your INI file.  ",
-					(function_ptr?function_ptr->common.function_name:"[runtime function name]"));
+					"allow_call_time_pass_reference to true in your INI file",
+					(function_ptr ? function_ptr->common.function_name : "[runtime function name]"));
 	}
 
 	if (function_ptr) {
@@ -3094,7 +3111,18 @@ void zend_do_fetch_property(znode *result, znode *object, znode *property TSRMLS
 	zend_llist_add_element(fetch_list_ptr, &opline);
 }
 
-
+void zend_do_halt_compiler_register(TSRMLS_D)
+{
+	char *name, *cfilename;
+	char haltoff[] = "__COMPILER_HALT_OFFSET__";
+	int len, clen;
+	cfilename = zend_get_compiled_filename(TSRMLS_C);
+	clen = strlen(cfilename);
+	zend_mangle_property_name(&name, &len, haltoff,
+		sizeof("__COMPILER_HALT_OFFSET__") - 1, cfilename, clen, 0);
+	zend_register_long_constant(name, len+1, zend_get_scanned_file_offset(TSRMLS_C), CONST_CS, 0 TSRMLS_CC);
+	pefree(name, 0);
+}
 
 void zend_do_declare_implicit_property(TSRMLS_D)
 {
@@ -3416,6 +3444,7 @@ void zend_do_list_end(znode *result, znode *expr TSRMLS_DC)
 						opline->opcode = ZEND_FETCH_DIM_TMP_VAR;
 						break;
 				}
+				opline->extended_value = ZEND_FETCH_ADD_LOCK;
 			} else {
 				opline->opcode = ZEND_FETCH_DIM_R;
 			}
@@ -3427,7 +3456,6 @@ void zend_do_list_end(znode *result, znode *expr TSRMLS_DC)
 			Z_TYPE(opline->op2.u.constant) = IS_LONG;
 			Z_LVAL(opline->op2.u.constant) = *((int *) dimension->data);
 			INIT_PZVAL(&opline->op2.u.constant);
-			opline->extended_value = ZEND_FETCH_ADD_LOCK;
 			last_container = opline->result;
 			dimension = dimension->next;
 		}
@@ -3783,7 +3811,11 @@ void zend_do_foreach_cont(znode *foreach_token, znode *open_brackets_token, znod
 		/* Change "write context" into "read context" */
 		fetch->extended_value = 0;  /* reset ZEND_FE_RESET_VARIABLE */
 		while (fetch != end) {
-			(--fetch)->opcode -= 3; /* FETCH_W -> FETCH_R */
+			--fetch;
+			if (fetch->opcode == ZEND_FETCH_DIM_W && fetch->op2.op_type == IS_UNUSED) {
+				zend_error(E_COMPILE_ERROR, "Cannot use [] for reading");
+			}
+			fetch->opcode -= 3; /* FETCH_W -> FETCH_R */
 		}
 		/* prevent double SWITCH_FREE */
 		zend_stack_top(&CG(foreach_copy_stack), (void **) &foreach_copy);
@@ -3896,24 +3928,6 @@ void zend_do_declare_end(znode *declare_token TSRMLS_DC)
 	if ((get_next_op_number(CG(active_op_array)) - declare_token->u.opline_num) - ((Z_LVAL(CG(declarables).ticks))?1:0)) {
 		CG(declarables) = *declarables;
 	}
-}
-
-
-void zend_do_end_heredoc(TSRMLS_D)
-{
-	int opline_num = get_next_op_number(CG(active_op_array))-1;
-	zend_op *opline = &CG(active_op_array)->opcodes[opline_num];
-
-	if (opline->opcode != ZEND_ADD_STRING) {
-		return;
-	}
-
-	opline->op2.u.constant.value.str.val[(opline->op2.u.constant.value.str.len--)-1] = 0;
-	if (opline->op2.u.constant.value.str.len>0) {
-		if (opline->op2.u.constant.value.str.val[opline->op2.u.constant.value.str.len-1]=='\r') {
-			opline->op2.u.constant.value.str.val[(opline->op2.u.constant.value.str.len--)-1] = 0;
-		}
-	}	
 }
 
 
@@ -4105,12 +4119,12 @@ int zendlex(znode *zendlval TSRMLS_DC)
 {
 	int retval;
 
-again:
 	if (CG(increment_lineno)) {
 		CG(zend_lineno)++;
 		CG(increment_lineno) = 0;
 	}
 
+again:
 	Z_TYPE(zendlval->u.constant) = IS_LONG;
 	retval = lex_scan(&zendlval->u.constant TSRMLS_CC);
 	switch (retval) {
@@ -4121,8 +4135,7 @@ again:
 			goto again;
 
 		case T_CLOSE_TAG:
-			if (LANG_SCNG(yy_text)[LANG_SCNG(yy_leng)-1]=='\n'
-				|| (LANG_SCNG(yy_text)[LANG_SCNG(yy_leng)-2]=='\r' && LANG_SCNG(yy_text)[LANG_SCNG(yy_leng)-1])) {
+			if (LANG_SCNG(yy_text)[LANG_SCNG(yy_leng)-1] != '>') {
 				CG(increment_lineno) = 1;
 			}
 			retval = ';'; /* implicit ; */
@@ -4171,7 +4184,7 @@ ZEND_API void zend_initialize_class_data(zend_class_entry *ce, zend_bool nullify
 			CG(static_members) = realloc(CG(static_members), (n+1)*sizeof(HashTable*));
 			CG(static_members)[n] = NULL;
 		}
-		ce->static_members = (HashTable*)n;
+		ce->static_members = (HashTable*)(zend_intptr_t)n;
 #else
 		ce->static_members = NULL;
 #endif

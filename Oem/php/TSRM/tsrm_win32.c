@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: tsrm_win32.c,v 1.27.2.1.2.2 2007/01/01 09:35:45 sebastian Exp $ */
+/* $Id: tsrm_win32.c,v 1.27.2.1.2.7 2007/04/16 08:09:54 dmitry Exp $ */
 
 #include <stdio.h>
 #include <fcntl.h>
@@ -219,7 +219,7 @@ TSRM_API FILE *popen_ex(const char *command, const char *type, const char *cwd, 
 
 	cmd = (char*)malloc(strlen(command)+strlen(TWG(comspec))+sizeof(" /c "));
 	sprintf(cmd, "%s /c %s", TWG(comspec), command);
-	if (!CreateProcess(NULL, cmd, &security, &security, security.bInheritHandle, NORMAL_PRIORITY_CLASS, env, cwd, &startup, &process)) {
+	if (!CreateProcess(NULL, cmd, &security, &security, security.bInheritHandle, NORMAL_PRIORITY_CLASS|CREATE_NO_WINDOW, env, cwd, &startup, &process)) {
 		return NULL;
 	}
 	free(cmd);
@@ -228,10 +228,10 @@ TSRM_API FILE *popen_ex(const char *command, const char *type, const char *cwd, 
 	proc = process_get(NULL TSRMLS_CC);
 
 	if (read) {
-		fno = _open_osfhandle((long)in, _O_RDONLY | mode);
+		fno = _open_osfhandle((tsrm_intptr_t)in, _O_RDONLY | mode);
 		CloseHandle(out);
 	} else {
-		fno = _open_osfhandle((long)out, _O_WRONLY | mode);
+		fno = _open_osfhandle((tsrm_intptr_t)out, _O_WRONLY | mode);
 		CloseHandle(in);
 	}
 
@@ -280,15 +280,16 @@ TSRM_API int shmget(int key, int size, int flags)
 	info_handle = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, shm_info);
 
 	if ((!shm_handle && !info_handle)) {
-		if (flags & IPC_EXCL) {
-			return -1;
-		}
 		if (flags & IPC_CREAT) {
 			shm_handle	= CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, size, shm_segment);
 			info_handle	= CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(shm->descriptor), shm_info);
 			created		= TRUE;
 		}
 		if ((!shm_handle || !info_handle)) {
+			return -1;
+		}
+	} else {
+		if (flags & IPC_EXCL) {
 			return -1;
 		}
 	}

@@ -20,7 +20,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: php_cli.c,v 1.129.2.13.2.12 2007/01/01 09:36:12 sebastian Exp $ */
+/* $Id: php_cli.c,v 1.129.2.13.2.22 2007/08/08 23:51:24 stas Exp $ */
 
 #include "php.h"
 #include "php_globals.h"
@@ -91,6 +91,9 @@
 
 #include "php_getopt.h"
 
+PHPAPI extern char *php_ini_opened_path;
+PHPAPI extern char *php_ini_scanned_files;
+
 #ifndef O_BINARY
 #define O_BINARY 0
 #endif
@@ -105,15 +108,16 @@
 #define PHP_MODE_REFLECTION_FUNCTION    8
 #define PHP_MODE_REFLECTION_CLASS       9
 #define PHP_MODE_REFLECTION_EXTENSION   10
+#define PHP_MODE_REFLECTION_EXT_INFO    11
+#define PHP_MODE_SHOW_INI_CONFIG        12
 
 #define HARDCODED_INI			\
 	"html_errors=0\n"			\
 	"register_argc_argv=1\n"	\
 	"implicit_flush=1\n"		\
 	"output_buffering=0\n"		\
-	"max_execution_time=0\n"    \
+	"max_execution_time=0\n"	\
 	"max_input_time=-1\n"
-
 
 static char *php_optarg = NULL;
 static int php_optind = 1;
@@ -154,16 +158,20 @@ static const opt_struct OPTIONS[] = {
 	{12,  1, "re"},
 	{12,  1, "rextension"},
 #endif
+	{13,  1, "ri"},
+	{13,  1, "rextinfo"},
+	{14,  0, "ini"},
 	{'-', 0, NULL} /* end of args */
 };
 
-static int print_module_info(zend_module_entry *module, void *arg TSRMLS_DC)
+static int print_module_info(zend_module_entry *module TSRMLS_DC) /* {{{ */
 {
 	php_printf("%s\n", module->name);
-	return 0;
+	return ZEND_HASH_APPLY_KEEP;
 }
+/* }}} */
 
-static int module_name_cmp(const void *a, const void *b TSRMLS_DC)
+static int module_name_cmp(const void *a, const void *b TSRMLS_DC) /* {{{ */
 {
 	Bucket *f = *((Bucket **) a);
 	Bucket *s = *((Bucket **) b);
@@ -171,8 +179,9 @@ static int module_name_cmp(const void *a, const void *b TSRMLS_DC)
 	return strcasecmp(((zend_module_entry *)f->pData)->name,
 				  ((zend_module_entry *)s->pData)->name);
 }
+/* }}} */
 
-static void print_modules(TSRMLS_D)
+static void print_modules(TSRMLS_D) /* {{{ */
 {
 	HashTable sorted_registry;
 	zend_module_entry tmp;
@@ -180,39 +189,42 @@ static void print_modules(TSRMLS_D)
 	zend_hash_init(&sorted_registry, 50, NULL, NULL, 1);
 	zend_hash_copy(&sorted_registry, &module_registry, NULL, &tmp, sizeof(zend_module_entry));
 	zend_hash_sort(&sorted_registry, zend_qsort, module_name_cmp, 0 TSRMLS_CC);
-	zend_hash_apply_with_argument(&sorted_registry, (apply_func_arg_t) print_module_info, NULL TSRMLS_CC);
+	zend_hash_apply(&sorted_registry, (apply_func_t) print_module_info TSRMLS_CC);
 	zend_hash_destroy(&sorted_registry);
 }
+/* }}} */
 
-static int print_extension_info(zend_extension *ext, void *arg TSRMLS_DC)
+static int print_extension_info(zend_extension *ext, void *arg TSRMLS_DC) /* {{{ */
 {
 	php_printf("%s\n", ext->name);
-	return 0;
+	return ZEND_HASH_APPLY_KEEP;
 }
+/* }}} */
 
-static int extension_name_cmp(const zend_llist_element **f,
-							  const zend_llist_element **s TSRMLS_DC)
+static int extension_name_cmp(const zend_llist_element **f, const zend_llist_element **s TSRMLS_DC) /* {{{ */
 {
 	return strcmp(((zend_extension *)(*f)->data)->name,
 				  ((zend_extension *)(*s)->data)->name);
 }
+/* }}} */
 
-static void print_extensions(TSRMLS_D)
+static void print_extensions(TSRMLS_D) /* {{{ */
 {
 	zend_llist sorted_exts;
 
 	zend_llist_copy(&sorted_exts, &zend_extensions);
 	sorted_exts.dtor = NULL;
 	zend_llist_sort(&sorted_exts, extension_name_cmp TSRMLS_CC);
-	zend_llist_apply_with_argument(&sorted_exts, (llist_apply_with_arg_func_t) print_extension_info, NULL TSRMLS_CC);
+	zend_llist_apply(&sorted_exts, (llist_apply_func_t) print_extension_info TSRMLS_CC);
 	zend_llist_destroy(&sorted_exts);
 }
+/* }}} */
 
 #ifndef STDOUT_FILENO
 #define STDOUT_FILENO 1
 #endif
 
-static inline size_t sapi_cli_single_write(const char *str, uint str_length)
+static inline size_t sapi_cli_single_write(const char *str, uint str_length) /* {{{ */
 {
 #ifdef PHP_WRITE_STDOUT
 	long ret;
@@ -229,8 +241,9 @@ static inline size_t sapi_cli_single_write(const char *str, uint str_length)
 	return ret;
 #endif
 }
+/* }}} */
 
-static int sapi_cli_ub_write(const char *str, uint str_length TSRMLS_DC)
+static int sapi_cli_ub_write(const char *str, uint str_length TSRMLS_DC) /* {{{ */
 {
 	const char *ptr = str;
 	uint remaining = str_length;
@@ -259,9 +272,9 @@ static int sapi_cli_ub_write(const char *str, uint str_length TSRMLS_DC)
 
 	return str_length;
 }
+/* }}} */
 
-
-static void sapi_cli_flush(void *server_context)
+static void sapi_cli_flush(void *server_context) /* {{{ */
 {
 	/* Ignore EBADF here, it's caused by the fact that STDIN/STDOUT/STDERR streams
 	 * are/could be closed before fflush() is called.
@@ -272,11 +285,12 @@ static void sapi_cli_flush(void *server_context)
 #endif
 	}
 }
+/* }}} */
 
 static char *php_self = "";
 static char *script_filename = "";
 
-static void sapi_cli_register_variables(zval *track_vars_array TSRMLS_DC)
+static void sapi_cli_register_variables(zval *track_vars_array TSRMLS_DC) /* {{{ */
 {
 	/* In CGI mode, we consider the environment to be a part of the server
 	 * variables
@@ -292,14 +306,15 @@ static void sapi_cli_register_variables(zval *track_vars_array TSRMLS_DC)
 	/* just make it available */
 	php_register_variable("DOCUMENT_ROOT", "", track_vars_array TSRMLS_CC);
 }
+/* }}} */
 
-
-static void sapi_cli_log_message(char *message)
+static void sapi_cli_log_message(char *message) /* {{{ */
 {
 	fprintf(stderr, "%s\n", message);
 }
+/* }}} */
 
-static int sapi_cli_deactivate(TSRMLS_D)
+static int sapi_cli_deactivate(TSRMLS_D) /* {{{ */
 {
 	fflush(stdout);
 	if(SG(request_info).argv0) {
@@ -308,40 +323,44 @@ static int sapi_cli_deactivate(TSRMLS_D)
 	}
 	return SUCCESS;
 }
+/* }}} */
 
-static char* sapi_cli_read_cookies(TSRMLS_D)
+static char* sapi_cli_read_cookies(TSRMLS_D) /* {{{ */
 {
 	return NULL;
 }
+/* }}} */
 
-static int sapi_cli_header_handler(sapi_header_struct *h, sapi_headers_struct *s TSRMLS_DC)
+static int sapi_cli_header_handler(sapi_header_struct *h, sapi_headers_struct *s TSRMLS_DC) /* {{{ */
 {
 	/* free allocated header line */
 	efree(h->header);
 	/* avoid pushing headers into SAPI headers list */
 	return 0;
 }
+/* }}} */
 
-static int sapi_cli_send_headers(sapi_headers_struct *sapi_headers TSRMLS_DC)
+static int sapi_cli_send_headers(sapi_headers_struct *sapi_headers TSRMLS_DC) /* {{{ */
 {
 	/* We do nothing here, this function is needed to prevent that the fallback
 	 * header handling is called. */
 	return SAPI_HEADER_SENT_SUCCESSFULLY;
 }
+/* }}} */
 
-static void sapi_cli_send_header(sapi_header_struct *sapi_header, void *server_context TSRMLS_DC)
+static void sapi_cli_send_header(sapi_header_struct *sapi_header, void *server_context TSRMLS_DC) /* {{{ */
 {
 }
+/* }}} */
 
-
-static int php_cli_startup(sapi_module_struct *sapi_module)
+static int php_cli_startup(sapi_module_struct *sapi_module) /* {{{ */
 {
 	if (php_module_startup(sapi_module, NULL, 0)==FAILURE) {
 		return FAILURE;
 	}
 	return SUCCESS;
 }
-
+/* }}} */
 
 /* {{{ sapi_cli_ini_defaults */
 
@@ -446,19 +465,22 @@ static void php_cli_usage(char *argv0)
 				"  args...          Arguments passed to script. Use -- args when first argument\n"
 				"                   starts with - or script is read from stdin\n"
 				"\n"
+				"  --ini            Show configuration file names\n"
+				"\n"
 #if (HAVE_REFLECTION)
 				"  --rf <name>      Show information about function <name>.\n"
 				"  --rc <name>      Show information about class <name>.\n"
 				"  --re <name>      Show information about extension <name>.\n"
-				"\n"
 #endif
+				"  --ri <name>      Show configuration for extension <name>.\n"
+				"\n"
 				, prog, prog, prog, prog, prog, prog);
 }
 /* }}} */
 
 static php_stream *s_in_process = NULL;
 
-static void cli_register_file_handles(TSRMLS_D)
+static void cli_register_file_handles(TSRMLS_D) /* {{{ */
 {
 	zval *zin, *zout, *zerr;
 	php_stream *s_in, *s_out, *s_err;
@@ -482,7 +504,13 @@ static void cli_register_file_handles(TSRMLS_D)
 		if (s_err) php_stream_close(s_err);
 		return;
 	}
-	
+
+#if PHP_DEBUG
+	/* do not close stdout and stderr */
+	s_out->flags |= PHP_STREAM_FLAG_NO_CLOSE;
+	s_err->flags |= PHP_STREAM_FLAG_NO_CLOSE;
+#endif
+
 	s_in_process = s_in;
 
 	php_stream_to_zval(s_in,  zin);
@@ -514,6 +542,7 @@ static void cli_register_file_handles(TSRMLS_D)
 	FREE_ZVAL(zout);
 	FREE_ZVAL(zerr);
 }
+/* }}} */
 
 static const char *param_mode_conflict = "Either execute direct code, process stdin or use a file.\n";
 
@@ -564,9 +593,7 @@ int main(int argc, char *argv[])
 	zend_file_handle file_handle;
 /* temporary locals */
 	int behavior=PHP_MODE_STANDARD;
-#ifdef HAVE_REFLECTION
 	char *reflection_what = NULL;
-#endif
 	int orig_optind=php_optind;
 	char *orig_optarg=php_optarg;
 	char *arg_free=NULL, **arg_excp=&arg_free;
@@ -580,10 +607,6 @@ int main(int argc, char *argv[])
 	int hide_argv = 0;
 /* end of temporary locals */
 #ifdef ZTS
-	zend_compiler_globals *compiler_globals;
-	zend_executor_globals *executor_globals;
-	php_core_globals *core_globals;
-	sapi_globals_struct *sapi_globals;
 	void ***tsrm_ls;
 #endif
 #ifdef PHP_CLI_WIN32_NO_CONSOLE
@@ -621,10 +644,11 @@ int main(int argc, char *argv[])
 
 #ifdef ZTS
 	tsrm_startup(1, 1, 0, NULL);
+	tsrm_ls = ts_resource(0);
 #endif
 
-	cli_sapi_module.php_ini_path_override = NULL;
 	cli_sapi_module.ini_defaults = sapi_cli_ini_defaults;
+	cli_sapi_module.php_ini_path_override = NULL;
 	cli_sapi_module.phpinfo_as_text = 1;
 	sapi_startup(&cli_sapi_module);
 
@@ -642,13 +666,16 @@ int main(int argc, char *argv[])
 
 	while ((c = php_getopt(argc, argv, OPTIONS, &php_optarg, &php_optind, 0))!=-1) {
 		switch (c) {
-		case 'c':
-			cli_sapi_module.php_ini_path_override = strdup(php_optarg);
-			break;
-		case 'n':
-			cli_sapi_module.php_ini_ignore = 1;
-			break;
-		case 'd': {
+			case 'c':
+				if (cli_sapi_module.php_ini_path_override) {
+					free(cli_sapi_module.php_ini_path_override);
+				}
+ 				cli_sapi_module.php_ini_path_override = strdup(php_optarg);
+				break;
+			case 'n':
+				cli_sapi_module.php_ini_ignore = 1;
+				break;
+			case 'd': {
 				/* define ini entries on command line */
 				int len = strlen(php_optarg);
 				char *val;
@@ -686,16 +713,8 @@ int main(int argc, char *argv[])
 
 	cli_sapi_module.executable_location = argv[0];
 
-#ifdef ZTS
-	compiler_globals = ts_resource(compiler_globals_id);
-	executor_globals = ts_resource(executor_globals_id);
-	core_globals = ts_resource(core_globals_id);
-	sapi_globals = ts_resource(sapi_globals_id);
-	tsrm_ls = ts_resource(0);
-#endif
-
 	/* startup after we get the above ini override se we get things right */
-	if (php_module_startup(&cli_sapi_module, NULL, 0)==FAILURE) {
+	if (cli_sapi_module.startup(&cli_sapi_module)==FAILURE) {
 		/* there is no way to see if we must call zend_ini_deactivate()
 		 * since we cannot check if EG(ini_directives) has been initialised
 		 * because the executor's constructor does not set initialize it.
@@ -948,6 +967,13 @@ int main(int argc, char *argv[])
 				reflection_what = php_optarg;
 				break;
 #endif
+			case 13:
+				behavior=PHP_MODE_REFLECTION_EXT_INFO;
+				reflection_what = php_optarg;
+				break;
+			case 14:
+				behavior = PHP_MODE_SHOW_INI_CONFIG;
+				break;
 			default:
 				break;
 			}
@@ -1215,6 +1241,8 @@ int main(int argc, char *argv[])
 					zend_execute_data execute_data;
 
 					switch (behavior) {
+						default:
+							break;
 						case PHP_MODE_REFLECTION_FUNCTION:
 							if (strstr(reflection_what, "::")) {
 								pce = reflection_method_ptr;
@@ -1255,6 +1283,34 @@ int main(int argc, char *argv[])
 					break;
 				}
 #endif /* reflection */
+			case PHP_MODE_REFLECTION_EXT_INFO:
+				{
+					int len = strlen(reflection_what);
+					char *lcname = zend_str_tolower_dup(reflection_what, len);
+					zend_module_entry *module;
+
+					if (zend_hash_find(&module_registry, lcname, len+1, (void**)&module) == FAILURE) {
+						if (!strcmp(reflection_what, "main")) {
+							display_ini_entries(NULL);
+						} else {
+							zend_printf("Extension '%s' not present.\n", reflection_what);
+							exit_status = 1;
+						}
+					} else {
+						php_info_print_module(module TSRMLS_CC);
+					}
+					
+					efree(lcname);
+					break;
+				}
+			case PHP_MODE_SHOW_INI_CONFIG:
+				{
+					zend_printf("Configuration File (php.ini) Path: %s\n", PHP_CONFIG_FILE_PATH);
+					zend_printf("Loaded Configuration File:         %s\n", php_ini_opened_path ? php_ini_opened_path : "(none)");
+					zend_printf("Scan for additional .ini files in: %s\n", *PHP_CONFIG_FILE_SCAN_DIR ? PHP_CONFIG_FILE_SCAN_DIR : "(none)");
+					zend_printf("Additional .ini files parsed:      %s\n", php_ini_scanned_files ? php_ini_scanned_files : "(none)");
+					break;
+				}
 			}
 		}
 

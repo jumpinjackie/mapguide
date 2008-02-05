@@ -26,7 +26,7 @@
    | PHP 4.0 updates:  Zeev Suraski <zeev@zend.com>                       |
    +----------------------------------------------------------------------+
  */
-/* $Id: php_imap.c,v 1.208.2.7.2.16 2007/01/18 14:03:38 tony2001 Exp $ */
+/* $Id: php_imap.c,v 1.208.2.7.2.26 2007/07/31 00:31:10 stas Exp $ */
 
 #define IMAP41
 
@@ -475,10 +475,10 @@ PHP_MINIT_FUNCTION(imap)
 	auth_link(&auth_gss);		/* link in the gss authenticator */
 #endif
 	auth_link(&auth_pla);		/* link in the plain authenticator */
+#endif
 
 #ifdef HAVE_IMAP_SSL
 	ssl_onceonlyinit ();
-#endif
 #endif
 
 	/* lets allow NIL */
@@ -1173,7 +1173,7 @@ PHP_FUNCTION(imap_headers)
 		tmp[3] = cache->answered ? 'A' : ' ';
 		tmp[4] = cache->deleted ? 'D' : ' ';
 		tmp[5] = cache->draft ? 'X' : ' ';
-		sprintf(tmp + 6, "%4ld) ", cache->msgno);
+		snprintf(tmp + 6, sizeof(tmp) - 6, "%4ld) ", cache->msgno);
 		mail_date(tmp+11, cache);
 		tmp[22] = ' ';
 		tmp[23] = '\0';
@@ -1625,13 +1625,13 @@ PHP_FUNCTION(imap_headerinfo)
 	add_property_string(return_value, "Deleted", cache->deleted ? "D" : " ", 1);
 	add_property_string(return_value, "Draft", cache->draft ? "X" : " ", 1);
 	
-	sprintf(dummy, "%4ld", cache->msgno);
+	snprintf(dummy, sizeof(dummy), "%4ld", cache->msgno);
 	add_property_string(return_value, "Msgno", dummy, 1);
 	
 	mail_date(dummy, cache);
 	add_property_string(return_value, "MailDate", dummy, 1);
 	
-	sprintf(dummy, "%ld", cache->rfc822_size); 
+	snprintf(dummy, sizeof(dummy), "%ld", cache->rfc822_size); 
 	add_property_string(return_value, "Size", dummy, 1);
 	
 	add_property_long(return_value, "udate", mail_longdate(cache));
@@ -2215,6 +2215,9 @@ PHP_FUNCTION(imap_utf8)
 	if (dest.data) {
 		free(dest.data);
 	}
+	if (src.data && src.data != dest.data) {
+		free(src.data);
+	}
 }
 /* }}} */
 
@@ -2374,7 +2377,7 @@ PHP_FUNCTION(imap_utf7_decode)
 #if PHP_DEBUG
 	/* warn if we computed outlen incorrectly */
 	if (outp - out != outlen) {
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "outp - out [%d] != outlen [%d]", outp - out, outlen);
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "outp - out [%ld] != outlen [%d]", outp - out, outlen);
 	}
 #endif
 
@@ -2493,7 +2496,7 @@ PHP_FUNCTION(imap_utf7_encode)
 #if PHP_DEBUG
 	/* warn if we computed outlen incorrectly */
 	if (outp - out != outlen) {
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "outp - out [%d] != outlen [%d]", outp - out, outlen);
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "outp - out [%ld] != outlen [%d]", outp - out, outlen);
 	}
 #endif
 
@@ -2953,7 +2956,7 @@ PHP_FUNCTION(imap_mail_compose)
 	BODY *bod=NULL, *topbod=NULL;
 	PART *mypart=NULL, *part;
 	PARAMETER *param, *disp_param = NULL, *custom_headers_param = NULL, *tmp_param = NULL;
-	char tmp[SENDBUFLEN + 1], *mystring=NULL, *t=NULL, *tempstring=NULL;
+	char *tmp=NULL, *mystring=NULL, *t=NULL, *tempstring=NULL;
 	int toppart = 0;
 
 	if (ZEND_NUM_ARGS() != 2 || zend_get_parameters_ex(2, &envelope, &body) == FAILURE) {
@@ -3185,7 +3188,7 @@ PHP_FUNCTION(imap_mail_compose)
 						disp_param->next = tmp_param;
 						tmp_param = disp_param;
 					}
-				bod->parameter = disp_param;
+					bod->parameter = disp_param;
 				}
 			}
 			if (zend_hash_find(Z_ARRVAL_PP(data), "subtype", sizeof("subtype"), (void **) &pvalue)== SUCCESS) {
@@ -3255,6 +3258,9 @@ PHP_FUNCTION(imap_mail_compose)
 	}
 
 	rfc822_encode_body_7bit(env, topbod);
+
+	tmp = emalloc(SENDBUFLEN + 1);
+
 	rfc822_header(tmp, env, topbod);
 
 	/* add custom envelope headers */
@@ -3304,7 +3310,7 @@ PHP_FUNCTION(imap_mail_compose)
 		/* yucky default */
 			if (!cookie) {
 				cookie = "-";  
-			} else if (strlen(cookie) > (sizeof(tmp) - 2 - 2)) {  /* validate cookie length -- + CRLF */
+			} else if (strlen(cookie) > (SENDBUFLEN - 2 - 2 - 2)) {  /* validate cookie length -- + CRLF * 2 */
 				php_error_docref(NULL TSRMLS_CC, E_WARNING, "The boudary should be no longer then 4kb");
 				RETVAL_FALSE;
 				goto done;	
@@ -3312,18 +3318,14 @@ PHP_FUNCTION(imap_mail_compose)
 
 		/* for each part */
 			do {
-				t=tmp;
-			/* build cookie */
-				sprintf(t, "--%s%s", cookie, CRLF);
-
+				t = tmp;
+			
 			/* append mini-header */
+				*t = '\0';
 				rfc822_write_body_header(&t, &part->body);
 
-			/* write terminating blank line */
-				strcat(t, CRLF);
-
 			/* output cookie, mini-header, and contents */
-				spprintf(&tempstring, 0, "%s%s", mystring, tmp);
+				spprintf(&tempstring, 0, "%s--%s%s%s%s", mystring, cookie, CRLF, tmp, CRLF);
 				efree(mystring);
 				mystring=tempstring;
 
@@ -3335,13 +3337,13 @@ PHP_FUNCTION(imap_mail_compose)
 			} while ((part = part->next)); /* until done */
 
 			/* output trailing cookie */
-			spprintf(&tempstring, 0, "%s--%s--%s", mystring, tmp, CRLF);
+			spprintf(&tempstring, 0, "%s--%s--%s", mystring, cookie, CRLF);
 			efree(mystring);
 			mystring=tempstring;
 	} else if (bod) {
-			spprintf(&tempstring, 0, "%s%s%s", mystring, bod->contents.text.data, CRLF);
-			efree(mystring);
-			mystring=tempstring;
+		spprintf(&tempstring, 0, "%s%s%s", mystring, bod->contents.text.data, CRLF);
+		efree(mystring);
+		mystring=tempstring;
 	} else {
 		efree(mystring);
 		RETVAL_FALSE;
@@ -3350,6 +3352,9 @@ PHP_FUNCTION(imap_mail_compose)
 
 	RETVAL_STRING(tempstring, 0);
 done:
+	if (tmp) {
+		efree(tmp);
+	}
 	mail_free_body(&topbod);
 	mail_free_envelope(&env);
 }
@@ -3372,7 +3377,8 @@ int _php_imap_mail(char *to, char *subject, char *message, char *headers, char *
 	char *tsm_errmsg = NULL;
 	ADDRESS *addr;
 	char *bufferTo = NULL, *bufferCc = NULL, *bufferBcc = NULL, *bufferHeader = NULL;
-	int offset, bufferLen = 0;;
+	int offset, bufferLen = 0;
+	size_t bt_len;
 
 	if (headers) {
 		bufferLen += strlen(headers);
@@ -3394,15 +3400,21 @@ int _php_imap_mail(char *to, char *subject, char *message, char *headers, char *
 		strlcat(bufferHeader, to, bufferLen + 1);
 		strlcat(bufferHeader, "\r\n", bufferLen + 1);
 		tempMailTo = estrdup(to);
-		bufferTo = (char *)emalloc(strlen(to) + 1);
+		bt_len = strlen(to);
+		bufferTo = (char *)safe_emalloc(bt_len, 1, 1);
+		bt_len++;
 		offset = 0;
 		addr = NULL;
 		rfc822_parse_adrlist(&addr, tempMailTo, NULL);
 		while (addr) {
-			if (strcmp(addr->host, ERRHOST) == 0) {
+			if (addr->host == NULL || strcmp(addr->host, ERRHOST) == 0) {
 				PHP_IMAP_BAD_DEST;
 			} else {
-				offset += sprintf(bufferTo + offset, "%s@%s,", addr->mailbox, addr->host);
+				bufferTo = safe_erealloc(bufferTo, bt_len, 1, strlen(addr->mailbox));
+				bt_len += strlen(addr->mailbox);
+				bufferTo = safe_erealloc(bufferTo, bt_len, 1, strlen(addr->host));
+				bt_len += strlen(addr->host);
+				offset += slprintf(bufferTo + offset, bt_len - offset, "%s@%s,", addr->mailbox, addr->host);
 			}
 			addr = addr->next;
 		}
@@ -3417,15 +3429,21 @@ int _php_imap_mail(char *to, char *subject, char *message, char *headers, char *
 		strlcat(bufferHeader, cc, bufferLen + 1);
 		strlcat(bufferHeader, "\r\n", bufferLen + 1);
 		tempMailTo = estrdup(cc);
-		bufferCc = (char *)emalloc(strlen(cc) + 1);
+		bt_len = strlen(cc);
+		bufferCc = (char *)safe_emalloc(bt_len, 1, 1);
+		bt_len++;
 		offset = 0;
 		addr = NULL;
 		rfc822_parse_adrlist(&addr, tempMailTo, NULL);
 		while (addr) {
-			if (strcmp(addr->host, ERRHOST) == 0) {
+			if (addr->host == NULL || strcmp(addr->host, ERRHOST) == 0) {
 				PHP_IMAP_BAD_DEST;
 			} else {
-				offset += sprintf(bufferCc + offset, "%s@%s,", addr->mailbox, addr->host);
+				bufferCc = safe_erealloc(bufferCc, bt_len, 1, strlen(addr->mailbox));
+				bt_len += strlen(addr->mailbox);
+				bufferCc = safe_erealloc(bufferCc, bt_len, 1, strlen(addr->host));
+				bt_len += strlen(addr->host);
+				offset += slprintf(bufferCc + offset, bt_len - offset, "%s@%s,", addr->mailbox, addr->host);
 			}
 			addr = addr->next;
 		}
@@ -3437,15 +3455,21 @@ int _php_imap_mail(char *to, char *subject, char *message, char *headers, char *
 
 	if (bcc && *bcc) {
 		tempMailTo = estrdup(bcc);
-		bufferBcc = (char *)emalloc(strlen(bcc) + 1);
+		bt_len = strlen(bcc);
+		bufferBcc = (char *)safe_emalloc(bt_len, 1, 1);
+		bt_len++;
 		offset = 0;
 		addr = NULL;
 		rfc822_parse_adrlist(&addr, tempMailTo, NULL);
 		while (addr) {
-			if (strcmp(addr->host, ERRHOST) == 0) {
+			if (addr->host == NULL || strcmp(addr->host, ERRHOST) == 0) {
 				PHP_IMAP_BAD_DEST;
 			} else {
-				offset += sprintf(bufferBcc + offset, "%s@%s,", addr->mailbox, addr->host);
+				bufferBcc = safe_erealloc(bufferBcc, bt_len, 1, strlen(addr->mailbox));
+				bt_len += strlen(addr->mailbox);
+				bufferBcc = safe_erealloc(bufferBcc, bt_len, 1, strlen(addr->host));
+				bt_len += strlen(addr->host);
+				offset += slprintf(bufferBcc + offset, bt_len - offset, "%s@%s,", addr->mailbox, addr->host);
 			}
 			addr = addr->next;
 		}
@@ -3871,7 +3895,7 @@ static void _php_imap_parse_address (ADDRESS *addresslist, char **fulladdress, z
 	addresstmp = addresslist;
 
 	if ((len = _php_imap_address_size(addresstmp))) {
-		tmpstr = (char *) malloc(len + 1);
+		tmpstr = (char *) pemalloc(len + 1, 1);
 		tmpstr[0] = '\0';
 		rfc822_write_address(tmpstr, addresstmp);
 		*fulladdress = tmpstr;
@@ -4292,7 +4316,7 @@ static char *php_mail_gets(readfn_t f, void *stream, unsigned long size, GETS_DA
 		}
 		return NULL;
 	} else {
-		char *buf = malloc(size + 1);
+		char *buf = pemalloc(size + 1, 1);
 		
 		if (f(stream, size, buf)) {
 			buf[size] = '\0';

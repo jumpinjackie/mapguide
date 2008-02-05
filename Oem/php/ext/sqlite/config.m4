@@ -1,12 +1,10 @@
-dnl $Id: config.m4,v 1.41.2.1 2005/11/30 04:50:03 wez Exp $
+dnl $Id: config.m4,v 1.41.2.1.2.2 2007/07/03 17:25:35 sniper Exp $
 dnl config.m4 for extension sqlite
 dnl vim:et:ts=2:sw=2
 
 PHP_ARG_WITH(sqlite, for sqlite support,
-[  --without-sqlite        Do not include sqlite support.
-                          Use --with-sqlite=DIR to specify DIR where
-                          Sqlite include and library files are located,
-                          if not using bundled library.], yes)
+[  --without-sqlite        Do not include sqlite support.  DIR is the sqlite base
+                          install directory [BUNDLED]], yes)
 
 PHP_ARG_ENABLE(sqlite-utf8, whether to enable UTF-8 support in sqlite (default: ISO-8859-1),
 [  --enable-sqlite-utf8      SQLite: Enable UTF-8 support for SQLite], no, no)
@@ -91,7 +89,7 @@ if test "$PHP_SQLITE" != "no"; then
     # use bundled library
     PHP_PROG_LEMON
     SQLITE_MODULE_TYPE=builtin
-    PHP_SQLITE_CFLAGS="-I@ext_builddir@/libsqlite/src $pdo_inc_path"
+    PHP_SQLITE_CFLAGS="-I@ext_srcdir@/libsqlite/src -I@ext_builddir@/libsqlite/src $pdo_inc_path"
     sqlite_extra_sources="libsqlite/src/opcodes.c \
         libsqlite/src/parse.c libsqlite/src/encode.c \
         libsqlite/src/auth.c libsqlite/src/btree.c libsqlite/src/build.c \

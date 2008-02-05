@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_execute.h,v 1.84.2.4.2.6 2007/01/10 15:58:07 dmitry Exp $ */
+/* $Id: zend_execute.h,v 1.84.2.4.2.8 2007/07/21 00:35:14 jani Exp $ */
 
 #ifndef ZEND_EXECUTE_H
 #define ZEND_EXECUTE_H
@@ -146,7 +146,7 @@ ZEND_API int zval_update_constant_ex(zval **pp, void *arg, zend_class_entry *sco
 static inline void zend_ptr_stack_clear_multiple(TSRMLS_D)
 {
 	void **p = EG(argument_stack).top_element-2;
-	int delete_count = (ulong) *p;
+	int delete_count = (int)(zend_uintptr_t) *p;
 
 	EG(argument_stack).top -= (delete_count+2);
 	while (--delete_count>=0) {
@@ -160,7 +160,7 @@ static inline void zend_ptr_stack_clear_multiple(TSRMLS_D)
 static inline int zend_ptr_stack_get_arg(int requested_arg, void **data TSRMLS_DC)
 {
 	void **p = EG(argument_stack).top_element-2;
-	int arg_count = (ulong) *p;
+	int arg_count = (int)(zend_uintptr_t) *p;
 
 	if (requested_arg>arg_count) {
 		return FAILURE;
@@ -186,8 +186,8 @@ ZEND_API zend_class_entry *zend_fetch_class(char *class_name, uint class_name_le
 void zend_verify_abstract_class(zend_class_entry *ce TSRMLS_DC);
 
 #ifdef ZEND_WIN32
-void zend_init_timeout_thread();
-void zend_shutdown_timeout_thread();
+void zend_init_timeout_thread(void);
+void zend_shutdown_timeout_thread(void);
 #define WM_REGISTER_ZEND_TIMEOUT		(WM_USER+1)
 #define WM_UNREGISTER_ZEND_TIMEOUT		(WM_USER+2)
 #endif

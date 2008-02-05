@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: assert.c,v 1.60.2.3.2.4 2007/01/01 09:36:08 sebastian Exp $ */
+/* $Id: assert.c,v 1.60.2.3.2.6 2007/02/16 16:35:04 dmitry Exp $ */
 
 /* {{{ includes/startup/misc */
 
@@ -286,6 +286,13 @@ PHP_FUNCTION(assert_options)
 		break;
 
 	case ASSERT_CALLBACK:
+		if (ASSERTG(callback) != NULL) {
+			RETVAL_ZVAL(ASSERTG(callback), 1, 0);
+		} else if (ASSERTG(cb)) {
+			RETVAL_STRING(ASSERTG(cb), 1);
+		} else {
+			RETVAL_NULL();
+		}
 		if (ac == 2) {
 			if (ASSERTG(callback)) {
 				zval_ptr_dtor(&ASSERTG(callback));
@@ -293,7 +300,7 @@ PHP_FUNCTION(assert_options)
 			ASSERTG(callback) = *value;
 			zval_add_ref(value);
 		}
-		RETURN_TRUE;
+		return;
 		break;
 
 	default:

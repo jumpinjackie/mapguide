@@ -6,7 +6,7 @@ Sybase-CT server message handler
 <?php
 /* This file is part of PHP test framework for ext/sybase_ct
  *
- * $Id: test_msghandler_handled.phpt,v 1.1 2004/07/11 16:07:07 thekid Exp $
+ * $Id: test_msghandler_handled.phpt,v 1.1.6.2 2007/05/22 11:38:57 thekid Exp $
  */
 
   require('test.inc');
@@ -20,6 +20,7 @@ Sybase-CT server message handler
         return;
         
       case 174:     // The function 'GETDATE' requires 0 arguments.
+      case 11021:   // Function GETDATE invoked with wrong number or type of argument(s)
         printf("*** Caught '%s'\n", trim($text));
         return;
     }
@@ -45,7 +46,7 @@ Sybase-CT server message handler
 --EXPECTF--
 bool(true)
 >>> Query: select getdate(NULL)
-*** Caught 'The function 'GETDATE' requires 0 arguments.'
+*** Caught '%s'
 <<< Return: boolean
 bool(false)
 >>> Query: print "Hi"
@@ -64,6 +65,5 @@ Cannot handle message #249
 
 Warning: sybase_query(): Sybase:  Server message:  Syntax error during explicit conversion of VARCHAR value 'notadate' to a DATETIME field.
  (severity 16, procedure N/A) in %s on line %d
-<<< Return: resource
-array(0) {
-}
+<<< Return: boolean
+bool(false)

@@ -18,7 +18,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: interbase.c,v 1.225.2.4.2.4 2007/01/18 15:54:19 tony2001 Exp $ */
+/* $Id: interbase.c,v 1.225.2.4.2.7 2007/02/28 10:37:07 bjori Exp $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -542,7 +542,7 @@ PHP_MINFO_FUNCTION(ibase)
 #endif
 
 #ifdef FB_API_VER
-	sprintf( (s = tmp), "Firebird API version %d", FB_API_VER);
+	snprintf( (s = tmp), sizeof(tmp), "Firebird API version %d", FB_API_VER);
 #elif (SQLDA_CURRENT_VERSION > 1)
 	s =  "Interbase 7.0 and up";
 #elif !defined(DSC_null)
@@ -595,19 +595,19 @@ int _php_ibase_attach_db(char **args, int *len, long *largs, isc_db_handle *db T
 
 	for (i = 0; i < sizeof(dpb_args); ++i) {
 		if (dpb_args[i] && args[i] && len[i] && buf_len > 0) {
-			dpb_len = snprintf(dpb, buf_len, "%c%c%s", dpb_args[i],(unsigned char)len[i],args[i]);
+			dpb_len = slprintf(dpb, buf_len, "%c%c%s", dpb_args[i],(unsigned char)len[i],args[i]);
 			dpb += dpb_len;
 			buf_len -= dpb_len;
 		}
 	}
 	if (largs[BUF] && buf_len > 0) {
-		dpb_len = snprintf(dpb, buf_len, "%c\2%c%c", isc_dpb_num_buffers, 
+		dpb_len = slprintf(dpb, buf_len, "%c\2%c%c", isc_dpb_num_buffers, 
 			(char)(largs[BUF] >> 8), (char)(largs[BUF] & 0xff));
 		dpb += dpb_len;
 		buf_len -= dpb_len;
 	}
 	if (largs[SYNC] && buf_len > 0) {
-		dpb_len = sprintf(dpb, buf_len, "%c\1%c", isc_dpb_force_write, largs[SYNC] == isc_spb_prp_wm_sync ? 1 : 0);
+		dpb_len = slprintf(dpb, buf_len, "%c\1%c", isc_dpb_force_write, largs[SYNC] == isc_spb_prp_wm_sync ? 1 : 0);
 		dpb += dpb_len;
 		buf_len -= dpb_len;
 	}
@@ -1170,7 +1170,7 @@ PHP_FUNCTION(ibase_gen_id)
 
 	PHP_IBASE_LINK_TRANS(link, ib_link, trans);
 	
-	sprintf(query, "SELECT GEN_ID(%s,%ld) FROM rdb$database", generator, inc);
+	snprintf(query, sizeof(query), "SELECT GEN_ID(%s,%ld) FROM rdb$database", generator, inc);
 
 	/* allocate a minimal descriptor area */
 	out_sqlda.sqln = out_sqlda.sqld = 1;
@@ -1192,10 +1192,11 @@ PHP_FUNCTION(ibase_gen_id)
 	/* don't return the generator value as a string unless it doesn't fit in a long */
 #if SIZEOF_LONG < 8
 	if (result < LONG_MIN || result > LONG_MAX) {
-		char res[24];
+		char *res;
+		int l;
 
-		sprintf(res, "%" LL_MASK "d", result);
-		RETURN_STRING(res,1);
+		l = spprintf(&res, 0, "%" LL_MASK "d", result);
+		RETURN_STRINGL(res, l, 0);
 	}
 #endif
 	RETURN_LONG((long)result);

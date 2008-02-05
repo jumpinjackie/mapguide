@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: bcmath.c,v 1.62.2.2.2.5 2007/01/01 09:35:48 sebastian Exp $ */
+/* $Id: bcmath.c,v 1.62.2.2.2.8 2007/06/08 00:41:57 iliaa Exp $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -31,7 +31,7 @@
 #include "php_bcmath.h"
 #include "libbcmath/src/bcmath.h"
 
-ZEND_DECLARE_MODULE_GLOBALS(bcmath);
+ZEND_DECLARE_MODULE_GLOBALS(bcmath)
 static PHP_GINIT_FUNCTION(bcmath);
 static PHP_GSHUTDOWN_FUNCTION(bcmath);
 
@@ -142,7 +142,7 @@ ZEND_GET_MODULE(bcmath)
 
 /* {{{ PHP_INI */
 PHP_INI_BEGIN()
-	STD_PHP_INI_ENTRY("bcmath.scale", "0", PHP_INI_ALL, OnUpdateLong, bc_precision, zend_bcmath_globals, bcmath_globals)
+	STD_PHP_INI_ENTRY("bcmath.scale", "0", PHP_INI_ALL, OnUpdateLongGEZero, bc_precision, zend_bcmath_globals, bcmath_globals)
 PHP_INI_END()
 /* }}} */
 
@@ -229,7 +229,7 @@ PHP_FUNCTION(bcadd)
 					WRONG_PARAM_COUNT;
 				}
 				convert_to_long_ex(scale_param);
-				scale = (int) (Z_LVAL_PP(scale_param) < 0) ? 0 : Z_LVAL_PP(scale_param);
+				scale = (int) ((int)Z_LVAL_PP(scale_param) < 0) ? 0 : Z_LVAL_PP(scale_param);
 				break;
 		default:
 				WRONG_PARAM_COUNT;
@@ -275,7 +275,7 @@ PHP_FUNCTION(bcsub)
 					WRONG_PARAM_COUNT;
 				}
 				convert_to_long_ex(scale_param);
-				scale = (int) (Z_LVAL_PP(scale_param) < 0) ? 0 : Z_LVAL_PP(scale_param);
+				scale = (int) ((int)Z_LVAL_PP(scale_param) < 0) ? 0 : Z_LVAL_PP(scale_param);
 				break;
 		default:
 				WRONG_PARAM_COUNT;
@@ -321,7 +321,7 @@ PHP_FUNCTION(bcmul)
 					WRONG_PARAM_COUNT;
 				}
 				convert_to_long_ex(scale_param);
-				scale = (int) (Z_LVAL_PP(scale_param) < 0) ? 0 : Z_LVAL_PP(scale_param);
+				scale = (int) ((int)Z_LVAL_PP(scale_param) < 0) ? 0 : Z_LVAL_PP(scale_param);
 				break;
 		default:
 				WRONG_PARAM_COUNT;
@@ -367,7 +367,7 @@ PHP_FUNCTION(bcdiv)
 					WRONG_PARAM_COUNT;
 				}
 				convert_to_long_ex(scale_param);
-				scale = (int) (Z_LVAL_PP(scale_param) < 0) ? 0 : Z_LVAL_PP(scale_param);
+				scale = (int) ((int)Z_LVAL_PP(scale_param) < 0) ? 0 : Z_LVAL_PP(scale_param);
 				break;
 		default:
 				WRONG_PARAM_COUNT;
@@ -449,6 +449,7 @@ PHP_FUNCTION(bcpowmod)
 	int left_len, right_len, modulous_len;
 	bc_num first, second, mod, result;
 	long scale = BCG(bc_precision);
+	int scale_int;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sss|l", &left, &left_len, &right, &right_len, &modulous, &modulous_len, &scale) == FAILURE) {
 		return;
@@ -461,13 +462,20 @@ PHP_FUNCTION(bcpowmod)
 	php_str2num(&first, left TSRMLS_CC);
 	php_str2num(&second, right TSRMLS_CC);
 	php_str2num(&mod, modulous TSRMLS_CC);
-	bc_raisemod(first, second, mod, &result, scale TSRMLS_CC);
-	if (result->n_scale > scale) {
-		result->n_scale = scale;
+
+	scale_int = (int) ((int)scale < 0) ? 0 : scale;
+
+	if (bc_raisemod(first, second, mod, &result, scale_int TSRMLS_CC) != -1) {
+		if (result->n_scale > scale) {
+			result->n_scale = scale;
+		}
+		Z_STRVAL_P(return_value) = bc_num2str(result);
+		Z_STRLEN_P(return_value) = strlen(Z_STRVAL_P(return_value));
+		Z_TYPE_P(return_value) = IS_STRING;
+	} else {
+		RETVAL_FALSE;
 	}
-	Z_STRVAL_P(return_value) = bc_num2str(result);
-	Z_STRLEN_P(return_value) = strlen(Z_STRVAL_P(return_value));
-	Z_TYPE_P(return_value) = IS_STRING;
+	
 	bc_free_num(&first);
 	bc_free_num(&second);
 	bc_free_num(&mod);
@@ -495,7 +503,7 @@ PHP_FUNCTION(bcpow)
 					WRONG_PARAM_COUNT;
 				}
 				convert_to_long_ex(scale_param);
-				scale = (int) (Z_LVAL_PP(scale_param) < 0) ? 0 : Z_LVAL_PP(scale_param);
+				scale = (int) ((int)Z_LVAL_PP(scale_param) < 0) ? 0 : Z_LVAL_PP(scale_param);
 				break;
 		default:
 				WRONG_PARAM_COUNT;
@@ -541,7 +549,7 @@ PHP_FUNCTION(bcsqrt)
 					WRONG_PARAM_COUNT;
 				}
 				convert_to_long_ex(scale_param);
-				scale = (int) (Z_LVAL_PP(scale_param) < 0) ? 0 : Z_LVAL_PP(scale_param);
+				scale = (int) ((int)Z_LVAL_PP(scale_param) < 0) ? 0 : Z_LVAL_PP(scale_param);
 				break;
 		default:
 				WRONG_PARAM_COUNT;
@@ -584,7 +592,7 @@ PHP_FUNCTION(bccomp)
 					WRONG_PARAM_COUNT;
 				}
 				convert_to_long_ex(scale_param);
-				scale = (int) (Z_LVAL_PP(scale_param) < 0) ? 0 : Z_LVAL_PP(scale_param);
+				scale = (int) ((int)Z_LVAL_PP(scale_param) < 0) ? 0 : Z_LVAL_PP(scale_param);
 				break;
 		default:
 				WRONG_PARAM_COUNT;

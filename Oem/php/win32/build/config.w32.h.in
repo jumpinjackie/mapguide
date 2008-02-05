@@ -1,6 +1,6 @@
 /*
 	Build Configuration Template for Win32.
-	$Id: config.w32.h.in,v 1.7.2.4.2.1 2006/11/10 09:56:16 dmitry Exp $
+	$Id: config.w32.h.in,v 1.7.2.4.2.3 2007/07/11 17:36:56 johannes Exp $
 */
 
 /* Default PHP / PEAR directories */
@@ -56,7 +56,6 @@
 #undef HAVE_SETITIMER
 #undef HAVE_IODBC
 #define HAVE_LIBDL 1
-#define HAVE_SENDMAIL 1
 #define HAVE_GETTIMEOFDAY 1
 #define HAVE_PUTENV 1
 #define HAVE_LIMITS_H 1
@@ -151,6 +150,8 @@
 /* vs.net 2005 has a 64-bit time_t.  This will likely break
  * 3rdParty libs that were built with older compilers; switch
  * back to 32-bit */
-#define _USE_32BIT_TIME_T 1
+#ifndef _WIN64
+# define _USE_32BIT_TIME_T 1
+#endif
 #define HAVE_STDLIB_H 1
 

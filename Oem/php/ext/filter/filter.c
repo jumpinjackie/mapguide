@@ -19,7 +19,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: filter.c,v 1.52.2.38 2007/01/01 09:36:00 sebastian Exp $ */
+/* $Id: filter.c,v 1.52.2.39 2007/04/04 20:50:26 pajoye Exp $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -275,7 +275,7 @@ PHP_MINFO_FUNCTION(filter)
 {
 	php_info_print_table_start();
 	php_info_print_table_row( 2, "Input Validation and Filtering", "enabled" );
-	php_info_print_table_row( 2, "Revision", "$Revision: 1.52.2.38 $");
+	php_info_print_table_row( 2, "Revision", "$Revision: 1.52.2.39 $");
 	php_info_print_table_end();
 
 	DISPLAY_INI_ENTRIES();
@@ -776,8 +776,10 @@ PHP_FUNCTION(filter_input_array)
 		return;
 	}
 
-	if (op && ( (Z_TYPE_PP(op) == IS_LONG && !PHP_FILTER_ID_EXISTS(Z_LVAL_PP(op)))
-		|| Z_TYPE_PP(op) != IS_ARRAY)) {
+	if (op
+		&& (Z_TYPE_PP(op) != IS_ARRAY)
+		&& (Z_TYPE_PP(op) == IS_LONG && !PHP_FILTER_ID_EXISTS(Z_LVAL_PP(op)))
+		) {
 		RETURN_FALSE;
 	}
 
@@ -815,8 +817,10 @@ PHP_FUNCTION(filter_var_array)
 		return;
 	}
 
-	if (op && ( (Z_TYPE_PP(op) == IS_LONG && !PHP_FILTER_ID_EXISTS(Z_LVAL_PP(op)))
-		|| Z_TYPE_PP(op) != IS_ARRAY)) {
+	if (op
+		&& (Z_TYPE_PP(op) != IS_ARRAY)
+		&& (Z_TYPE_PP(op) == IS_LONG && !PHP_FILTER_ID_EXISTS(Z_LVAL_PP(op)))
+		) {
 		RETURN_FALSE;
 	}
 

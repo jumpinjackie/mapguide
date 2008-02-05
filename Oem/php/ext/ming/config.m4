@@ -1,5 +1,5 @@
 dnl
-dnl $Id: config.m4,v 1.22.2.6.2.3 2007/01/06 19:25:31 nlopess Exp $
+dnl $Id: config.m4,v 1.22.2.6.2.4 2007/03/06 10:13:40 tony2001 Exp $
 dnl
 
 PHP_ARG_WITH(ming, for MING support,
@@ -80,7 +80,7 @@ yes
   AC_TRY_COMPILE([
 #include <ming.h>
   ], [
-int main(void) { SWFMovie_output(NULL, NULL, NULL, 0); return 0; }
+SWFMovie_output(NULL, NULL, NULL, 0);
   ], [
     AC_DEFINE(HAVE_MING_MOVIE_LEVEL, 1, [ ])
   ], [])

@@ -1,13 +1,14 @@
 <?php
 /* This file is part of PHP test framework for ext/sybase_ct
  *
- * $Id: test.inc,v 1.4 2004/02/10 20:39:08 thekid Exp $ 
+ * $Id: test.inc,v 1.4.6.3 2007/05/22 11:36:55 thekid Exp $ 
  */
 
   // Change if needed
   define('HOST',     '****');
   define('USER',     '****');
   define('PASSWORD', '****');
+  define('TEMPDB',   'tempdb');
 
   // {{{ bool sybase_msg_handler(int msgnumber, int severity, int state, int line, string text)
   //     Handles server messages
@@ -28,7 +29,7 @@
   
     // {{{ public static bool static_handler(int msgnumber, int severity, int state, int line, string text)
     //     Handles server messages
-    function static_handler($msgnumber, $severity, $state, $line, $text) {
+    static function static_handler($msgnumber, $severity, $state, $line, $text) {
       return sybase_msg_handler($msgnumber, $severity, $state, $line, $text);
     }
     // }}}
@@ -78,7 +79,8 @@
   // {{{ mixed sybase_select_single(resource dbh, string query)
   //     Fires an SQL query and returns the first value from the first row
   function sybase_select_single($dbh, $query) {
-    return array_shift(sybase_fetch_row(sybase_query($query, $dbh)));
+    $a = sybase_fetch_row(sybase_query($query, $dbh));
+    return array_shift($a);
   }
   // }}}
 ?>

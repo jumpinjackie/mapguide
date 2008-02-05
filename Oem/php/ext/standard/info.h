@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: info.h,v 1.38.2.1.2.3 2007/01/01 09:36:08 sebastian Exp $ */
+/* $Id: info.h,v 1.38.2.1.2.5 2007/06/09 11:44:08 sniper Exp $ */
 
 #ifndef INFO_H
 #define INFO_H
@@ -66,6 +66,7 @@ PHP_FUNCTION(php_egg_logo_guid);
 PHP_FUNCTION(php_sapi_name);
 PHP_FUNCTION(php_uname);
 PHP_FUNCTION(php_ini_scanned_files);
+PHP_FUNCTION(php_ini_loaded_file);
 PHPAPI char *php_info_html_esc(char *string TSRMLS_DC);
 PHPAPI void php_info_html_esc_write(char *string, int str_len TSRMLS_DC);
 PHPAPI void php_print_info_htmlhead(TSRMLS_D);
@@ -81,6 +82,7 @@ PHPAPI void php_info_print_table_end(void);
 PHPAPI void php_info_print_box_start(int bg);
 PHPAPI void php_info_print_box_end(void);
 PHPAPI void php_info_print_hr(void);
+PHPAPI void php_info_print_module(zend_module_entry *module TSRMLS_DC);
 PHPAPI char *php_logo_guid(void);
 PHPAPI char *php_get_uname(char mode);
 

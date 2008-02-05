@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend.c,v 1.308.2.12.2.31 2007/01/12 14:37:46 dmitry Exp $ */
+/* $Id: zend.c,v 1.308.2.12.2.35 2007/07/21 00:35:14 jani Exp $ */
 
 #include "zend.h"
 #include "zend_extensions.h"
@@ -147,7 +147,7 @@ static void print_hash(zend_write_func_t write_func, HashTable *ht, int indent, 
 			case HASH_KEY_IS_LONG:
 				{
 					char key[25];
-					sprintf(key, "%ld", num_key);
+					snprintf(key, sizeof(key), "%ld", num_key);
 					ZEND_PUTS_EX(key);
 				}
 				break;
@@ -214,8 +214,7 @@ ZEND_API void zend_make_printable_zval(zval *expr, zval *expr_copy, int *use_cop
 			}
 			break;
 		case IS_RESOURCE:
-			expr_copy->value.str.val = (char *) emalloc(sizeof("Resource id #") + MAX_LENGTH_OF_LONG);
-			expr_copy->value.str.len = sprintf(expr_copy->value.str.val, "Resource id #%ld", expr->value.lval);
+			expr_copy->value.str.len = zend_spprintf(&expr_copy->value.str.val, 0, "Resource id #%ld", expr->value.lval);
 			break;
 		case IS_ARRAY:
 			expr_copy->value.str.len = sizeof("Array")-1;
@@ -561,7 +560,7 @@ static void scanner_globals_ctor(zend_scanner_globals *scanner_globals_p TSRMLS_
 	scanner_globals_p->yy_start_stack = 0;
 }
 
-void zend_init_opcodes_handlers();
+void zend_init_opcodes_handlers(void);
 
 int zend_startup(zend_utility_functions *utility_functions, char **extensions, int start_builtin_functions)
 {
@@ -812,7 +811,7 @@ void zend_append_version_info(zend_extension *extension)
 }
 
 
-ZEND_API char *get_zend_version()
+ZEND_API char *get_zend_version(void)
 {
 	return zend_version_info;
 }
@@ -1079,7 +1078,7 @@ ZEND_API void zend_error(int type, const char *format, ...)
 	}
 }
 
-#if defined(__GNUC__) && !defined(__INTEL_COMPILER) && !defined(DARWIN) && !defined(__hpux) && !defined(_AIX)
+#if defined(__GNUC__) && !defined(__INTEL_COMPILER) && !defined(DARWIN) && !defined(__hpux) && !defined(_AIX) && !defined(__osf__)
 void zend_error_noreturn(int type, const char *format, ...) __attribute__ ((alias("zend_error"),noreturn));
 #endif
 
@@ -1147,6 +1146,9 @@ ZEND_API int zend_execute_scripts(int type TSRMLS_DC, zval **retval, int file_co
 							zval_ptr_dtor(&retval2);
 						}
 					} else {
+						if (!EG(exception)) {
+							EG(exception) = old_exception;
+						}
 						zend_exception_error(EG(exception) TSRMLS_CC);
 					}
 					efree(params);
@@ -1201,8 +1203,7 @@ ZEND_API char *zend_make_compiled_string_description(char *name TSRMLS_DC)
 		cur_lineno = 0;
 	}
 
-	compiled_string_description = emalloc(sizeof(COMPILED_STRING_DESCRIPTION_FORMAT)+strlen(name)+strlen(cur_filename)+MAX_LENGTH_OF_LONG);
-	sprintf(compiled_string_description, COMPILED_STRING_DESCRIPTION_FORMAT, cur_filename, cur_lineno, name);
+	zend_spprintf(&compiled_string_description, 0, COMPILED_STRING_DESCRIPTION_FORMAT, cur_filename, cur_lineno, name);
 	return compiled_string_description;
 }
 

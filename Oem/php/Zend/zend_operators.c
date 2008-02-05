@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_operators.c,v 1.208.2.4.2.19 2007/01/01 09:35:47 sebastian Exp $ */
+/* $Id: zend_operators.c,v 1.208.2.4.2.23 2007/07/21 00:35:14 jani Exp $ */
 
 #include <ctype.h>
 
@@ -29,6 +29,7 @@
 #include "zend_API.h"
 #include "zend_multiply.h"
 #include "zend_strtod.h"
+#include "zend_exceptions.h"
 
 #define LONG_SIGN_MASK (1L << (8*sizeof(long)-1))
 
@@ -185,13 +186,21 @@ ZEND_API void convert_scalar_to_number(zval *op TSRMLS_DC)
 		}																	\
 	}
 
-#define DVAL_TO_LVAL(d, l) \
+#ifdef _WIN64
+# define DVAL_TO_LVAL(d, l) \
+	if ((d) > LONG_MAX) { \
+		(l) = (long)(unsigned long)(__int64) (d); \
+	} else { \
+		(l) = (long) (d); \
+	}
+#else
+# define DVAL_TO_LVAL(d, l) \
 	if ((d) > LONG_MAX) { \
 		(l) = (unsigned long) (d); \
 	} else { \
 		(l) = (long) (d); \
 	}
-
+#endif
 
 #define zendi_convert_to_long(op, holder, result)					\
 	if (op == result) {												\
@@ -550,21 +559,18 @@ ZEND_API void _convert_to_string(zval *op ZEND_FILE_LINE_DC)
 			TSRMLS_FETCH();
 
 			zend_list_delete(op->value.lval);
-			op->value.str.val = (char *) emalloc(sizeof("Resource id #") + MAX_LENGTH_OF_LONG);
-			op->value.str.len = sprintf(op->value.str.val, "Resource id #%ld", tmp);
+			op->value.str.len = zend_spprintf(&op->value.str.val, 0, "Resource id #%ld", tmp);
 			break;
 		}
 		case IS_LONG:
 			lval = op->value.lval;
 
-			op->value.str.val = (char *) emalloc_rel(MAX_LENGTH_OF_LONG + 1);
-			op->value.str.len = zend_sprintf(op->value.str.val, "%ld", lval);  /* SAFE */
+			op->value.str.len = zend_spprintf(&op->value.str.val, 0, "%ld", lval);  /* SAFE */
 			break;
 		case IS_DOUBLE: {
 			TSRMLS_FETCH();
 			dval = op->value.dval;
-			op->value.str.val = (char *) emalloc_rel(MAX_LENGTH_OF_DOUBLE + EG(precision) + 1);
-			op->value.str.len = zend_sprintf(op->value.str.val, "%.*G", (int) EG(precision), dval);  /* SAFE */
+			op->value.str.len = zend_spprintf(&op->value.str.val, 0, "%.*G", (int) EG(precision), dval);  /* SAFE */
 			/* %G already handles removing trailing zeros from the fractional part, yay */
 			break;
 		}
@@ -1396,6 +1402,11 @@ ZEND_API int compare_function(zval *result, zval *op1, zval *op2 TSRMLS_DC)
 
 	/* If both are objects sharing the same comparision handler then use is */
 	if (eq_comp) {
+		if (Z_OBJ_HANDLE_P(op1) == Z_OBJ_HANDLE_P(op2)) {
+			/* object handles are identical, apprently this is the same object */
+			ZVAL_LONG(result, 0);
+			COMPARE_RETURN_AND_FREE(SUCCESS);
+		}
 		ZVAL_LONG(result, Z_OBJ_HT_P(op1)->compare_objects(op1, op2 TSRMLS_CC));
 		COMPARE_RETURN_AND_FREE(SUCCESS);
 	}
@@ -1831,7 +1842,7 @@ ZEND_API int zval_is_true(zval *op)
 }
 
 #ifdef ZEND_USE_TOLOWER_L
-ZEND_API void zend_update_current_locale()
+ZEND_API void zend_update_current_locale(void)
 {
 	current_locale = _get_current_locale();
 }
@@ -2031,13 +2042,9 @@ ZEND_API void zend_compare_objects(zval *result, zval *o1, zval *o2 TSRMLS_DC)
 
 ZEND_API void zend_locale_sprintf_double(zval *op ZEND_FILE_LINE_DC)
 {
-	double dval = op->value.dval;
-	
 	TSRMLS_FETCH();
-	
-	op->value.str.val = (char *) emalloc_rel(MAX_LENGTH_OF_DOUBLE + EG(precision) + 1);
-	sprintf(op->value.str.val, "%.*G", (int) EG(precision), dval);
-	op->value.str.len = strlen(op->value.str.val);
+
+	op->value.str.len = zend_spprintf(&op->value.str.val, 0, "%.*G", (int) EG(precision), (double)op->value.dval);
 }
 
 /*

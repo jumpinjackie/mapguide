@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_constants.c,v 1.71.2.5.2.4 2007/01/01 09:35:46 sebastian Exp $ */
+/* $Id: zend_constants.c,v 1.71.2.5.2.7 2007/07/27 16:29:11 dmitry Exp $ */
 
 #include "zend.h"
 #include "zend_constants.h"
@@ -259,25 +259,26 @@ ZEND_API int zend_get_constant_ex(char *name, uint name_len, zval *result, zend_
 				retval = 0;
 			}
 		}
-		efree(class_name);
 
 		if (retval && ce) {
 			if (zend_hash_find(&((*ce)->constants_table), constant_name, const_name_len+1, (void **) &ret_constant) != SUCCESS) {
 				retval = 0;
 			}
 		} else {
+			zend_error(E_ERROR, "Class '%s' not found", class_name);
 			retval = 0;
 		}
+		efree(class_name);
 
 		if (retval) {
-			zval_update_constant(ret_constant, (void*)1 TSRMLS_CC);
+			zval_update_constant_ex(ret_constant, (void*)1, *ce TSRMLS_CC);
 			*result = **ret_constant;
 			zval_copy_ctor(result);
 		}
-		
+
 		return retval;
 	}
-	
+
 	if (zend_hash_find(EG(zend_constants), name, name_len+1, (void **) &c) == FAILURE) {
 		lookup_name = estrndup(name, name_len);
 		zend_str_tolower(lookup_name, name_len);
@@ -287,7 +288,26 @@ ZEND_API int zend_get_constant_ex(char *name, uint name_len, zval *result, zend_
 				retval=0;
 			}
 		} else {
-			retval=0;
+			char haltoff[] = "__COMPILER_HALT_OFFSET__";
+			if (!EG(in_execution)) {
+				retval = 0;
+			} else if (name_len == sizeof("__COMPILER_HALT_OFFSET__") - 1 && memcmp(haltoff, name, name_len) == 0) {
+				char *cfilename, *haltname;
+				int len, clen;
+				cfilename = zend_get_executed_filename(TSRMLS_C);
+				clen = strlen(cfilename);
+				/* check for __COMPILER_HALT_OFFSET__ */
+				zend_mangle_property_name(&haltname, &len, haltoff,
+					sizeof("__COMPILER_HALT_OFFSET__") - 1, cfilename, clen, 0);
+				if (zend_hash_find(EG(zend_constants), haltname, len+1, (void **) &c) == SUCCESS) {
+					retval = 1;
+				} else {
+					retval=0;
+				}
+				pefree(haltname, 0);
+			} else {
+				retval = 0;
+			}
 		}
 		efree(lookup_name);
 	}
@@ -326,7 +346,8 @@ ZEND_API int zend_register_constant(zend_constant *c TSRMLS_DC)
 		name = c->name;
 	}
 
-	if (zend_hash_add(EG(zend_constants), name, c->name_len, (void *) c, sizeof(zend_constant), NULL)==FAILURE) {
+	if ((strncmp(name, "__COMPILER_HALT_OFFSET__", sizeof("__COMPILER_HALT_OFFSET__") - 1) == 0) ||
+			zend_hash_add(EG(zend_constants), name, c->name_len, (void *) c, sizeof(zend_constant), NULL)==FAILURE) {
 		zend_error(E_NOTICE,"Constant %s already defined", name);
 		free(c->name);
 		if (!(c->flags & CONST_PERSISTENT)) {

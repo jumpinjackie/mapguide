@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: getopt.c,v 1.8.2.1.2.1 2007/01/01 09:36:12 sebastian Exp $ */
+/* $Id: getopt.c,v 1.8.2.1.2.6 2007/06/04 09:47:54 tony2001 Exp $ */
 
 #include <stdio.h>
 #include <string.h>
@@ -28,7 +28,7 @@
 #define OPTERRARG (3)
 
 
-static int php_opt_error(int argc, char * const *argv, int oint, int optchr, int err, int show_err)
+static int php_opt_error(int argc, char * const *argv, int oint, int optchr, int err, int show_err) /* {{{ */
 {
 	if (show_err)
 	{
@@ -51,8 +51,9 @@ static int php_opt_error(int argc, char * const *argv, int oint, int optchr, int
 	}
 	return('?');
 }
+/* }}} */
 
-int php_getopt(int argc, char* const *argv, const opt_struct opts[], char **optarg, int *optind, int show_err)
+int php_getopt(int argc, char* const *argv, const opt_struct opts[], char **optarg, int *optind, int show_err) /* {{{ */
 {
 	static int optchr = 0;
 	static int dash = 0; /* have already seen the - */
@@ -79,29 +80,35 @@ int php_getopt(int argc, char* const *argv, const opt_struct opts[], char **opta
 	}
 	if ((argv[*optind][0] == '-') && (argv[*optind][1] == '-')) {
 		/* '--' indicates end of args if not followed by a known long option name */
+		if (argv[*optind][2] == '\0') {
+			(*optind)++;
+			return(EOF);
+		}
+
 		while (1) {
 			opts_idx++;
 			if (opts[opts_idx].opt_char == '-') {
 				(*optind)++;
-				return(EOF);
+				return(php_opt_error(argc, argv, *optind-1, optchr, OPTERRARG, show_err));
 			} else if (opts[opts_idx].opt_name && !strcmp(&argv[*optind][2], opts[opts_idx].opt_name)) {
 				break;
 			}
 		}
 		optchr = 0;
-		dash = 1;
-		arg_start = 2 + strlen(opts[opts_idx].opt_name);
-	}
-	if (!dash) {
-		dash = 1;
-		optchr = 1;
-	}
-
-	/* Check if the guy tries to do a -: kind of flag */
-	if (argv[*optind][optchr] == ':') {
 		dash = 0;
-		(*optind)++;
-		return (php_opt_error(argc, argv, *optind-1, optchr, OPTERRCOLON, show_err));
+		arg_start = 2 + strlen(opts[opts_idx].opt_name);
+	} else {
+		if (!dash) {
+			dash = 1;
+			optchr = 1;
+		}
+		/* Check if the guy tries to do a -: kind of flag */
+		if (argv[*optind][optchr] == ':') {
+			dash = 0;
+			(*optind)++;
+			return (php_opt_error(argc, argv, *optind-1, optchr, OPTERRCOLON, show_err));
+		}
+		arg_start = 1 + optchr;
 	}
 	if (opts_idx < 0) {
 		while (1) {
@@ -115,6 +122,7 @@ int php_getopt(int argc, char* const *argv, const opt_struct opts[], char **opta
 					(*optind)++;
 				} else {
 					optchr++;
+					arg_start++;
 				}
 				return(php_opt_error(argc, argv, errind, errchr, OPTERRNF, show_err));
 			} else if (argv[*optind][optchr] == opts[opts_idx].opt_char) {
@@ -138,7 +146,8 @@ int php_getopt(int argc, char* const *argv, const opt_struct opts[], char **opta
 		}
 		return opts[opts_idx].opt_char;
 	} else {
-		if (arg_start == 2) {
+		/* multiple options specified as one (exclude long opts) */
+		if (arg_start >= 2 && !((argv[*optind][0] == '-') && (argv[*optind][1] == '-'))) {
 			if (!argv[*optind][optchr+1])
 			{
 				dash = 0;
@@ -154,3 +163,13 @@ int php_getopt(int argc, char* const *argv, const opt_struct opts[], char **opta
 	assert(0);
 	return(0);	/* never reached */
 }
+/* }}} */
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: sw=4 ts=4 fdm=marker
+ * vim<600: sw=4 ts=4
+ */

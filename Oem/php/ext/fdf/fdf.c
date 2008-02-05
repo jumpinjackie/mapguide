@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: fdf.c,v 1.89.2.2.2.8 2007/01/03 04:05:12 iliaa Exp $ */
+/* $Id: fdf.c,v 1.89.2.2.2.9 2007/03/05 21:54:46 stas Exp $ */
 
 /* FdfTk lib 2.0 is a Complete C/C++ FDF Toolkit available from
    http://beta1.adobe.com/ada/acrosdk/forms.html. */
@@ -1105,7 +1105,7 @@ PHP_FUNCTION(fdf_save_string)
 					RETVAL_FALSE;
 					goto err;
 				}
-				buf = emalloc(stat.st_size +1);
+				buf = safe_emalloc(1, stat.st_size, 1);
 				fread(buf, stat.st_size, 1, fp);
 				buf[stat.st_size] = '\0';
 				fclose(fp);

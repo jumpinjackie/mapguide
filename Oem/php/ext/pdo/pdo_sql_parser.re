@@ -16,7 +16,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: pdo_sql_parser.re,v 1.28.2.4.2.7 2007/02/01 00:12:39 iliaa Exp $ */
+/* $Id: pdo_sql_parser.re,v 1.28.2.4.2.10 2007/10/29 22:37:25 iliaa Exp $ */
 
 #include "php.h"
 #include "php_pdo_driver.h"
@@ -28,6 +28,7 @@
 #define PDO_PARSER_EOI 4
 
 #define RET(i) {s->cur = cursor; return i; }
+#define SKIP_ONE(i) {s->cur = s->tok + 1; return 1; }
 
 #define YYCTYPE         unsigned char
 #define YYCURSOR        cursor
@@ -45,7 +46,7 @@ static int scan(Scanner *s)
 
 	s->tok = cursor;
 	/*!re2c
-	BINDCHR		= [:][a-zA-Z0-9_]+;
+	BINDCHR		= [:][a-zA-Z0-9_-]+;
 	QUESTION	= [?];
 	SPECIALS	= [:?"'];
 	MULTICHAR	= [:?];
@@ -57,9 +58,9 @@ static int scan(Scanner *s)
 		(["] ([^"])* ["])		{ RET(PDO_PARSER_TEXT); }
 		(['] ([^'])* ['])		{ RET(PDO_PARSER_TEXT); }
 		MULTICHAR{2,}							{ RET(PDO_PARSER_TEXT); }
-		BINDCHR									{ RET(PDO_PARSER_BIND); }
+		BINDCHR						{ RET(PDO_PARSER_BIND); }
 		QUESTION								{ RET(PDO_PARSER_BIND_POS); }
-		SPECIALS								{ RET(PDO_PARSER_TEXT); }
+		SPECIALS								{ SKIP_ONE(PDO_PARSER_TEXT); }
 		(ANYNOEOF\SPECIALS)+ 					{ RET(PDO_PARSER_TEXT); }
 		EOF										{ RET(PDO_PARSER_EOI); }
 	*/	
@@ -96,6 +97,10 @@ PDO_API int pdo_parse_params(pdo_stmt_t *stmt, char *inquery, int inquery_len,
 	while((t = scan(&s)) != PDO_PARSER_EOI) {
 		if (t == PDO_PARSER_BIND || t == PDO_PARSER_BIND_POS) {
 			if (t == PDO_PARSER_BIND) {
+				int len = s.cur - s.tok;
+				if ((inquery < (s.cur - len)) && isalnum(*(s.cur - len - 1))) {
+					continue;
+				}
 				query_type |= PDO_PLACEHOLDER_NAMED;
 			} else {
 				query_type |= PDO_PLACEHOLDER_POSITIONAL;
@@ -155,13 +160,25 @@ PDO_API int pdo_parse_params(pdo_stmt_t *stmt, char *inquery, int inquery_len,
 	}
 
 	if (params && bindno != zend_hash_num_elements(params) && stmt->supports_placeholders == PDO_PLACEHOLDER_NONE) {
+		/* extra bit of validation for instances when same params are bound more then once */
+		if (query_type != PDO_PLACEHOLDER_POSITIONAL && bindno > zend_hash_num_elements(params)) {
+			int ok = 1;
+			for (plc = placeholders; plc; plc = plc->next) {
+				if (zend_hash_find(params, plc->pos, plc->len, (void**) &param) == FAILURE) {
+					ok = 0;
+					break;
+				}
+			}
+			if (ok) {
+				goto safe;
+			}
+		}
 		pdo_raise_impl_error(stmt->dbh, stmt, "HY093", "number of bound variables does not match number of tokens" TSRMLS_CC);
 		ret = -1;
 		goto clean_up;
 	}
-
+safe:
 	/* what are we going to do ? */
-	
 	if (stmt->supports_placeholders == PDO_PLACEHOLDER_NONE) {
 		/* query generation */
 

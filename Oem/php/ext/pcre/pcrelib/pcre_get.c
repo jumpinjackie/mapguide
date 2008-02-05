@@ -43,6 +43,8 @@ from the subject string after a regex match has succeeded. The original idea
 for these functions came from Scott Wimer. */
 
 
+#include <config.h>
+
 #include "pcre_internal.h"
 
 
@@ -436,7 +438,6 @@ pcre_get_named_substring(const pcre *code, const char *subject, int *ovector,
 int n = get_first_set(code, stringname, ovector);
 if (n <= 0) return n;
 return pcre_get_substring(subject, ovector, stringcount, n, stringptr);
-
 }
 
 

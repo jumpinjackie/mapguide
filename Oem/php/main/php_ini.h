@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: php_ini.h,v 1.45.2.3.2.1 2007/01/01 09:36:11 sebastian Exp $ */
+/* $Id: php_ini.h,v 1.45.2.3.2.3 2007/08/31 07:48:05 jani Exp $ */
 
 #ifndef PHP_INI_H
 #define PHP_INI_H
@@ -27,7 +27,10 @@ BEGIN_EXTERN_C()
 int php_init_config(TSRMLS_D);
 int php_shutdown_config(void);
 void php_ini_register_extensions(TSRMLS_D);
-zval *cfg_get_entry(char *name, uint name_length);
+PHPAPI zval *cfg_get_entry(char *name, uint name_length);
+PHPAPI int cfg_get_long(char *varname, long *result);
+PHPAPI int cfg_get_double(char *varname, double *result);
+PHPAPI int cfg_get_string(char *varname, char **result);
 END_EXTERN_C()
 
 #define PHP_INI_USER	ZEND_INI_USER
@@ -65,6 +68,7 @@ END_EXTERN_C()
 #define PHP_INI_STAGE_ACTIVATE		ZEND_INI_STAGE_ACTIVATE
 #define PHP_INI_STAGE_DEACTIVATE	ZEND_INI_STAGE_DEACTIVATE
 #define PHP_INI_STAGE_RUNTIME		ZEND_INI_STAGE_RUNTIME
+#define PHP_INI_STAGE_HTACCESS		ZEND_INI_STAGE_HTACCESS
 
 #define php_ini_boolean_displayer_cb	zend_ini_boolean_displayer_cb
 #define php_ini_color_displayer_cb		zend_ini_color_displayer_cb

@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_object_handlers.c,v 1.135.2.6.2.19 2007/01/10 15:58:07 dmitry Exp $ */
+/* $Id: zend_object_handlers.c,v 1.135.2.6.2.22 2007/07/24 11:39:55 dmitry Exp $ */
 
 #include "zend.h"
 #include "zend_globals.h"
@@ -42,8 +42,8 @@
   set, we call __set handler. If it fails, we do not change the array.
 
   for both handlers above, when we are inside __get/__set, no further calls for
-  __get/__set for these objects will be made, to prevent endless recursion and
-  enable accessors to change properties array.
+  __get/__set for this property of this object will be made, to prevent endless 
+  recursion and enable accessors to change properties array.
 
   if we have __call and method which is not part of the class function table is
   called, we cal __call handler.
@@ -152,7 +152,7 @@ static int zend_verify_property_access(zend_property_info *property_info, zend_c
 		case ZEND_ACC_PROTECTED:
 			return zend_check_protected(property_info->ce, EG(scope));
 		case ZEND_ACC_PRIVATE:
-			if (ce==EG(scope) && EG(scope)) {
+			if ((ce==EG(scope) || property_info->ce == EG(scope)) && EG(scope)) {
 				return 1;
 			} else {
 				return 0;
@@ -800,7 +800,9 @@ static union _zend_function *zend_std_get_method(zval **object_ptr, char *method
 		/* Ensure that we haven't overridden a private function and end up calling
 		 * the overriding public function...
 		 */
-		if (EG(scope) && fbc->op_array.fn_flags & ZEND_ACC_CHANGED) {
+		if (EG(scope) &&
+		    is_derived_class(fbc->common.scope, EG(scope)) &&
+		    fbc->op_array.fn_flags & ZEND_ACC_CHANGED) {
 			zend_function *priv_fbc;
 
 			if (zend_hash_find(&EG(scope)->function_table, lc_method_name, method_len+1, (void **) &priv_fbc)==SUCCESS

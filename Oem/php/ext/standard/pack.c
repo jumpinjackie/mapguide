@@ -15,7 +15,7 @@
    | Author: Chris Schneider <cschneid@relog.ch>                          |
    +----------------------------------------------------------------------+
  */
-/* $Id: pack.c,v 1.57.2.5.2.2 2007/01/01 09:36:08 sebastian Exp $ */
+/* $Id: pack.c,v 1.57.2.5.2.6 2007/09/22 15:25:46 iliaa Exp $ */
 
 #include "php.h"
 
@@ -56,6 +56,9 @@
 
 #define INC_OUTPUTPOS(a,b) \
 	if ((a) < 0 || ((INT_MAX - outputpos)/((int)b)) < (a)) { \
+		efree(argv);	\
+		efree(formatcodes);	\
+		efree(formatargs);	\
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Type %c: integer overflow in format string", code); \
 		RETURN_FALSE; \
 	} \
@@ -635,6 +638,12 @@ PHP_FUNCTION(unpack)
 			case 'd':
 				size = sizeof(double);
 				break;
+
+			default:
+				php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid format type %c", type);
+				zval_dtor(return_value);
+				RETURN_FALSE;
+				break;
 		}
 
 		/* Do actual unpacking */
@@ -644,10 +653,10 @@ PHP_FUNCTION(unpack)
 
 			if (arg != 1 || namelen == 0) {
 				/* Need to add element number to name */
-				sprintf(n, "%.*s%d", namelen, name, i + 1);
+				snprintf(n, sizeof(n), "%.*s%d", namelen, name, i + 1);
 			} else {
 				/* Truncate name to next format code or end of string */
-				sprintf(n, "%.*s", namelen, name);
+				snprintf(n, sizeof(n), "%.*s", namelen, name);
 			}
 
 			if (size != 0 && size != -1 && INT_MAX - size + 1 < inputpos) {
@@ -760,7 +769,7 @@ PHP_FUNCTION(unpack)
 							issigned = input[inputpos + (machine_little_endian ? (sizeof(int) - 1) : 0)] & 0x80;
 						} else if (sizeof(long) > 4 && (input[inputpos + machine_endian_long_map[3]] & 0x80) == 0x80) {
 							v = ~INT_MAX;
-                                                }
+						}
 
 						v |= php_unpack(&input[inputpos], sizeof(int), issigned, int_map);
 						add_assoc_long(return_value, n, v);
@@ -775,15 +784,17 @@ PHP_FUNCTION(unpack)
 						int *map = machine_endian_long_map;
 						long v = 0;
 
-						if (type == 'l') {
+						if (type == 'l' || type == 'L') {
 							issigned = input[inputpos + (machine_little_endian ? 3 : 0)] & 0x80;
 						} else if (type == 'N') {
+							issigned = input[inputpos] & 0x80;
 							map = big_endian_long_map;
 						} else if (type == 'V') {
+							issigned = input[inputpos + 3] & 0x80;
 							map = little_endian_long_map;
 						}
 
-						if (sizeof(long) > 4 && (input[inputpos + machine_endian_long_map[3]] & 0x80) == 0x80) {
+						if (sizeof(long) > 4 && issigned) {
 							v = ~INT_MAX;
 						}
 

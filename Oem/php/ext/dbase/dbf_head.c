@@ -157,6 +157,9 @@ int get_dbf_field(dbhead_t *dbh, dbfield_t *dbf)
 		dbf->db_flen = dbfield.dbf_flen[0];
 		dbf->db_fdc = dbfield.dbf_flen[1];
 		break;
+            case 'D':
+		dbf->db_flen = 8;
+		break;
 	    default:
 	    	dbf->db_flen = get_short(dbfield.dbf_flen);
 		break;
@@ -184,7 +187,7 @@ int put_dbf_field(dbhead_t *dbh, dbfield_t *dbf)
 	/* build the on disk field info */
 	scp = dbf->db_fname; dcp = dbfield.dbf_name;
 
-	strncpy(dbfield.dbf_name, dbf->db_fname, DBF_NAMELEN);
+	strlcpy(dbfield.dbf_name, dbf->db_fname, DBF_NAMELEN + 1);
 
 	dbfield.dbf_type = dbf->db_type;
 	switch (dbf->db_type) {
@@ -215,7 +218,7 @@ void put_dbf_info(dbhead_t *dbh)
 	int		fcnt;
 
 	if ((cp = db_cur_date(NULL))) {
-		strncpy(dbh->db_date, cp, 8);
+		strlcpy(dbh->db_date, cp, 9);
 		free(cp);
 	}
 	put_dbf_head(dbh);
@@ -232,16 +235,16 @@ char *get_dbf_f_fmt(dbfield_t *dbf)
 	/* build the field format for printf */
 	switch (dbf->db_type) {
 	   case 'C':
-		sprintf(format, "%%-%ds", dbf->db_flen);
+		snprintf(format, sizeof(format), "%%-%ds", dbf->db_flen);
 		break;
 	   case 'N':
 	   case 'L':
 	   case 'D':
 	   case 'F':
-		sprintf(format, "%%%ds", dbf->db_flen);
+		snprintf(format, sizeof(format), "%%%ds", dbf->db_flen);
 		break;
 	   case 'M':
-		strcpy(format, "%s");
+		strlcpy(format, "%s", sizeof(format));
 		break;
 	   default:
 		return NULL;

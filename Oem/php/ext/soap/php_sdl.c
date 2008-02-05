@@ -17,7 +17,7 @@
   |          Dmitry Stogov <dmitry@zend.com>                             |
   +----------------------------------------------------------------------+
 */
-/* $Id: php_sdl.c,v 1.88.2.12.2.6 2007/01/01 09:36:06 sebastian Exp $ */
+/* $Id: php_sdl.c,v 1.88.2.12.2.9 2007/05/21 13:13:50 dmitry Exp $ */
 
 #include "php_soap.h"
 #include "ext/libxml/php_libxml.h"
@@ -654,6 +654,7 @@ static sdlPtr load_wsdl(zval *this_ptr, char *struri TSRMLS_DC)
 		for (i = 0; i < n; i++) {
 			xmlNodePtr *tmp, service;
 			xmlNodePtr trav, port;
+			int has_soap_port = 0;
 
 			zend_hash_get_current_data(&ctx.services, (void **)&tmp);
 			service = *tmp;
@@ -716,8 +717,15 @@ static sdlPtr load_wsdl(zval *this_ptr, char *struri TSRMLS_DC)
 				  trav2 = trav2->next;
 				}
 				if (!address) {
-					soap_error0(E_ERROR, "Parsing WSDL: No address associated with <port>");
+					if (has_soap_port || trav->next || i < n-1) {
+						efree(tmpbinding);
+						trav = trav->next;
+						continue;
+					} else {
+						soap_error0(E_ERROR, "Parsing WSDL: No address associated with <port>");
+					}
 				}
+				has_soap_port = 1;
 
 				location = get_attribute(address->properties, "location");
 				if (!location) {
@@ -1250,7 +1258,7 @@ static void sdl_deserialize_type(sdlTypePtr type, sdlTypePtr *types, encodePtr *
 
 	WSDL_CACHE_GET_INT(i, in);
 	if (i > 0) {
-		elements = emalloc((i+1) * sizeof(sdlTypePtr));
+		elements = safe_emalloc((i+1), sizeof(sdlTypePtr), 0);
 		elements[0] = NULL;
 		type->elements = emalloc(sizeof(HashTable));
 		zend_hash_init(type->elements, i, NULL, delete_type, 0);
@@ -1479,7 +1487,7 @@ static sdlPtr get_sdl_from_cache(const char *fn, const char *uri, time_t t, time
 	WSDL_CACHE_GET_INT(num_encoders, &in);
 
 	i = num_groups+num_types+num_elements;
-	types = emalloc((i+1)*sizeof(sdlTypePtr));
+	types = safe_emalloc((i+1), sizeof(sdlTypePtr), 0);
 	types[0] = NULL;
 	while (i > 0) {
 		types[i] = emalloc(sizeof(sdlType));
@@ -1492,7 +1500,7 @@ static sdlPtr get_sdl_from_cache(const char *fn, const char *uri, time_t t, time
 	while (enc->details.type != END_KNOWN_TYPES) {
 		i++; enc++;
 	}
-	encoders = emalloc((i+1)*sizeof(encodePtr));
+	encoders = safe_emalloc((i+1), sizeof(encodePtr), 0);
 	i = num_encoders;
 	encoders[0] = NULL;
 	while (i > 0) {
@@ -1550,7 +1558,7 @@ static sdlPtr get_sdl_from_cache(const char *fn, const char *uri, time_t t, time
 
 	/* deserialize bindings */
 	WSDL_CACHE_GET_INT(num_bindings, &in);
-	bindings = emalloc(num_bindings*sizeof(sdlBindingPtr));
+	bindings = safe_emalloc(num_bindings, sizeof(sdlBindingPtr), 0);
 	if (num_bindings > 0) {
 		sdl->bindings = emalloc(sizeof(HashTable));
 		zend_hash_init(sdl->bindings, num_bindings, NULL, delete_binding, 0);
@@ -1576,7 +1584,7 @@ static sdlPtr get_sdl_from_cache(const char *fn, const char *uri, time_t t, time
 	WSDL_CACHE_GET_INT(num_func, &in);
 	zend_hash_init(&sdl->functions, num_func, NULL, delete_function, 0);
 	if (num_func > 0) {
-		functions = emalloc(num_func*sizeof(sdlFunctionPtr));
+		functions = safe_emalloc(num_func, sizeof(sdlFunctionPtr), 0);
 		for (i = 0; i < num_func; i++) {
 			int binding_num, num_faults;
 			sdlFunctionPtr func = emalloc(sizeof(sdlFunction));

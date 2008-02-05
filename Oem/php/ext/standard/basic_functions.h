@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: basic_functions.h,v 1.139.2.4.2.4 2007/01/01 09:36:08 sebastian Exp $ */
+/* $Id: basic_functions.h,v 1.139.2.4.2.6 2007/07/21 01:24:26 jani Exp $ */
 
 #ifndef BASIC_FUNCTIONS_H
 #define BASIC_FUNCTIONS_H
@@ -45,7 +45,6 @@ PHP_RSHUTDOWN_FUNCTION(basic);
 PHP_MINFO_FUNCTION(basic);
 
 PHP_FUNCTION(constant);
-PHP_FUNCTION(toggle_short_open_tag);
 PHP_FUNCTION(sleep);
 PHP_FUNCTION(usleep);
 #if HAVE_NANOSLEEP
@@ -242,7 +241,7 @@ typedef struct {
 #define SAFE_MODE_PROTECTED_ENV_VARS	"LD_LIBRARY_PATH"
 #define SAFE_MODE_ALLOWED_ENV_VARS		"PHP_"
 
-PHPAPI double php_get_nan();
-PHPAPI double php_get_inf();
+PHPAPI double php_get_nan(void);
+PHPAPI double php_get_inf(void);
 
 #endif /* BASIC_FUNCTIONS_H */

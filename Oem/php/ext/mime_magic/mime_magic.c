@@ -15,7 +15,7 @@
   | Author: Hartmut Holzgraefe  <hholzgra@php.net>                       |
   +----------------------------------------------------------------------+
 
-  $Id: mime_magic.c,v 1.42.2.5.2.5 2007/01/01 09:36:03 sebastian Exp $ 
+  $Id: mime_magic.c,v 1.42.2.5.2.7 2007/06/07 08:44:41 tony2001 Exp $ 
 
   This module contains a lot of stuff taken from Apache mod_mime_magic,
   so the license section is a little bit longer than usual:
@@ -1156,21 +1156,29 @@ static int fsmagic(zval *what TSRMLS_DC)
 	php_stream_statbuf stat_ssb;
 
 	switch (Z_TYPE_P(what)) {
-	case IS_STRING:
-		if(!php_stream_stat_path(Z_STRVAL_P(what), &stat_ssb)) {
-			return MIME_MAGIC_OK;
-		}
-		break;
-	case IS_RESOURCE:
-		{
-			php_stream *stream;
-
-			php_stream_from_zval_no_verify(stream, &what);
-			if(!php_stream_stat(stream, &stat_ssb)) {
-				return MIME_MAGIC_OK;
+		case IS_STRING:
+			if (php_stream_stat_path_ex(Z_STRVAL_P(what), PHP_STREAM_URL_STAT_QUIET, &stat_ssb, NULL)) {
+				if (MIME_MAGIC_G(debug)) {
+					php_error_docref(NULL TSRMLS_CC, E_WARNING, "Non-statable file path (%s)", Z_STRVAL_P(what));
+				}
+				return MIME_MAGIC_ERROR;
 			}
-		}
-		break;
+			break;
+		case IS_RESOURCE:
+			{
+				php_stream *stream;
+	
+				php_stream_from_zval_no_verify(stream, &what);
+				if (php_stream_stat(stream, &stat_ssb)) {
+					if (MIME_MAGIC_G(debug)) {
+						php_error_docref(NULL TSRMLS_CC, E_WARNING, "Non-statable file path (%s)", Z_STRVAL_P(what));
+					}
+					return MIME_MAGIC_ERROR;
+				}
+			}
+			break;
+		default:
+			return MIME_MAGIC_OK;
 	}
 
     switch (stat_ssb.sb.st_mode & S_IFMT) {
@@ -1756,6 +1764,9 @@ static void mprint(union VALUETYPE *p, struct magic *m)
 		{
 			char ctimebuf[52];
 			pp = php_ctime_r((time_t *) &p->l, ctimebuf);
+			if (!pp) {
+				return;
+			}
 			if ((rt = strchr(pp, '\n')) != NULL) {
 				*rt = '\0';
 			}

@@ -18,7 +18,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: dl.c,v 1.106.2.1.2.1 2007/01/01 09:36:08 sebastian Exp $ */
+/* $Id: dl.c,v 1.106.2.1.2.5 2007/09/18 20:19:34 stas Exp $ */
 
 #include "php.h"
 #include "dl.h"
@@ -70,6 +70,11 @@ PHP_FUNCTION(dl)
 		RETURN_FALSE;
 	} else if (PG(safe_mode)) {
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Dynamically loaded extensions aren't allowed when running in Safe Mode");
+		RETURN_FALSE;
+	}
+
+	if (Z_STRLEN_PP(file) >= MAXPATHLEN) {
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "File name exceeds the maximum allowed length of %d characters", MAXPATHLEN);
 		RETURN_FALSE;
 	}
 
@@ -125,12 +130,17 @@ void php_dl(zval *file, int type, zval *return_value, int start_now TSRMLS_DC)
 	if (extension_dir && extension_dir[0]){
 		int extension_dir_len = strlen(extension_dir);
 
-		libpath = emalloc(extension_dir_len+Z_STRLEN_P(file)+2);
+		if (type == MODULE_TEMPORARY) {
+			if (strchr(Z_STRVAL_P(file), '/') != NULL || strchr(Z_STRVAL_P(file), DEFAULT_SLASH) != NULL) {
+				php_error_docref(NULL TSRMLS_CC, E_WARNING, "Temporary module name should contain only filename");
+				RETURN_FALSE;
+			}
+		}
 
 		if (IS_SLASH(extension_dir[extension_dir_len-1])) {
-			sprintf(libpath, "%s%s", extension_dir, Z_STRVAL_P(file)); /* SAFE */
+			spprintf(&libpath, 0, "%s%s", extension_dir, Z_STRVAL_P(file));
 		} else {
-			sprintf(libpath, "%s%c%s", extension_dir, DEFAULT_SLASH, Z_STRVAL_P(file)); /* SAFE */
+			spprintf(&libpath, 0, "%s%c%s", extension_dir, DEFAULT_SLASH, Z_STRVAL_P(file));
 		}
 	} else {
 		libpath = estrndup(Z_STRVAL_P(file), Z_STRLEN_P(file));
@@ -191,8 +201,9 @@ void php_dl(zval *file, int type, zval *return_value, int start_now TSRMLS_DC)
 			int zend_api;
 			unsigned char zend_debug, zts;
 
-			if((  ((struct pre_4_1_0_module_entry *)module_entry)->zend_api > 20000000)
-			   &&(((struct pre_4_1_0_module_entry *)module_entry)->zend_api < 20010901)) {
+			if ((((struct pre_4_1_0_module_entry *)module_entry)->zend_api > 20000000) &&
+				(((struct pre_4_1_0_module_entry *)module_entry)->zend_api < 20010901)
+			) {
 				name       = ((struct pre_4_1_0_module_entry *)module_entry)->name;
 				zend_api   = ((struct pre_4_1_0_module_entry *)module_entry)->zend_api;
 				zend_debug = ((struct pre_4_1_0_module_entry *)module_entry)->zend_debug;

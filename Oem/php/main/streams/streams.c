@@ -19,7 +19,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: streams.c,v 1.82.2.6.2.10 2007/01/15 17:07:07 tony2001 Exp $ */
+/* $Id: streams.c,v 1.82.2.6.2.18 2007/08/08 07:01:49 jani Exp $ */
 
 #define _GNU_SOURCE
 #include "php.h"
@@ -278,6 +278,10 @@ PHPAPI int _php_stream_free(php_stream *stream, int close_options TSRMLS_DC) /* 
 	int remove_rsrc = 1;
 	int preserve_handle = close_options & PHP_STREAM_FREE_PRESERVE_HANDLE ? 1 : 0;
 	int release_cast = 1;
+
+	if (stream->flags & PHP_STREAM_FLAG_NO_CLOSE) {
+		preserve_handle = 1;
+	}
 
 #if STREAM_DEBUG
 fprintf(stderr, "stream_free: %s:%p[%s] in_free=%d opts=%08x\n", stream->ops->label, stream, stream->orig_path, stream->in_free, close_options);
@@ -1309,7 +1313,7 @@ PHPAPI size_t _php_stream_copy_to_stream(php_stream *src, php_stream *dest, size
 		p = php_stream_mmap_range(src, php_stream_tell(src), maxlen, PHP_STREAM_MAP_MODE_SHARED_READONLY, &mapped);
 
 		if (p) {
-			haveread = php_stream_write(dest, p, mapped);
+			mapped = php_stream_write(dest, p, mapped);
 
 			php_stream_mmap_unmap(src);
 
@@ -1553,7 +1557,7 @@ PHPAPI php_stream_wrapper *php_stream_locate_url_wrapper(const char *path, char 
 #ifdef PHP_WIN32
 			if (localhost == 0 && path[n+3] != '\0' && path[n+3] != '/' && path[n+4] != ':')	{
 #else
-			if (localhost == 0 && path[n+3] != '/')	{
+			if (localhost == 0 && path[n+3] != '\0' && path[n+3] != '/') {
 #endif
 				if (options & REPORT_ERRORS) {
 					php_error_docref(NULL TSRMLS_CC, E_WARNING, "remote host file access not supported, %s", path);
@@ -1602,7 +1606,11 @@ PHPAPI php_stream_wrapper *php_stream_locate_url_wrapper(const char *path, char 
 		return &php_plain_files_wrapper;
 	}
 
-	if ((wrapperpp && (*wrapperpp)->is_url) && (!PG(allow_url_fopen) || ((options & STREAM_OPEN_FOR_INCLUDE) && !PG(allow_url_include))) ) {
+	if (wrapperpp && (*wrapperpp)->is_url && 	    
+        (options & STREAM_DISABLE_URL_PROTECTION) == 0 &&
+	    (!PG(allow_url_fopen) || 
+	     (((options & STREAM_OPEN_FOR_INCLUDE) ||
+	       PG(in_user_include)) && !PG(allow_url_include)))) {
 		if (options & REPORT_ERRORS) {
 			php_error_docref(NULL TSRMLS_CC, E_WARNING, "URL file-access is disabled in the server configuration");
 		}
@@ -1765,10 +1773,14 @@ PHPAPI php_stream *_php_stream_open_wrapper_ex(char *path, char *mode, int optio
 	}
 
 	if (wrapper) {
-
-		stream = wrapper->wops->stream_opener(wrapper,
+		if (!wrapper->wops->stream_opener) {
+			php_stream_wrapper_log_error(wrapper, options ^ REPORT_ERRORS TSRMLS_CC,
+					"wrapper does not support stream open");
+		} else {
+			stream = wrapper->wops->stream_opener(wrapper,
 				path_to_open, mode, options ^ REPORT_ERRORS,
 				opened_path, context STREAMS_REL_CC TSRMLS_CC);
+		}
 
 		/* if the caller asked for a persistent stream but the wrapper did not
 		 * return one, force an error here */
@@ -1801,6 +1813,9 @@ PHPAPI php_stream *_php_stream_open_wrapper_ex(char *path, char *mode, int optio
 			case PHP_STREAM_UNCHANGED:
 				return stream;
 			case PHP_STREAM_RELEASED:
+				if (newstream->orig_path) {
+					pefree(newstream->orig_path, persistent);
+				}
 				newstream->orig_path = pestrdup(path, persistent);
 				return newstream;
 			default:

@@ -294,6 +294,16 @@ Shows information about class
 .IR name
 Shows information about extension
 .B name
+.TP
+.PD 0
+.B \-\-rextinfo
+.IR name
+.TP
+.PD 1
+.B \-\-ri
+.IR name
+Shows configuration for extension
+.B name
 .SH FILES
 .TP 15
 .B php\-cli.ini
@@ -377,7 +387,7 @@ found at:
 .SH AUTHORS
 The PHP Group: Thies C. Arntzen, Stig Bakken, Andi Gutmans, Rasmus Lerdorf, Sam Ruby, Sascha Schumann, Zeev Suraski, Jim Winstead, Andrei Zmievski.
 .P
-Additional work for the CLI sapi was done by Edin Kadribasic and Marcus Boerger.
+Additional work for the CLI sapi was done by Edin Kadribasic, Marcus Boerger and Johannes Schlueter.
 .P
 A List of active developers can be found here:
 .PD 0

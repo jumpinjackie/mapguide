@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: type.c,v 1.30.2.2.2.2 2007/01/01 09:36:09 sebastian Exp $ */
+/* $Id: type.c,v 1.30.2.2.2.3 2007/02/24 02:17:27 helly Exp $ */
 
 #include "php.h"
 #include "php_incomplete_class.h"
@@ -64,8 +64,7 @@ PHP_FUNCTION(gettype)
 		   int res_len;
 
 		   res_len = sizeof("object of type ")-1 + Z_OBJCE_P(arg)->name_length;
-		   result = (char *) emalloc(res_len+1);
-		   sprintf(result, "object of type %s", Z_OBJCE_P(arg)->name);
+		   spprintf(&result, 0, "object of type %s", Z_OBJCE_P(arg)->name);
 		   RETVAL_STRINGL(result, res_len, 0);
 		   }
 		 */

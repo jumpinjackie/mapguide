@@ -16,7 +16,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: php_pdo_oci_int.h,v 1.4.2.2.2.1 2007/01/01 09:36:05 sebastian Exp $ */
+/* $Id: php_pdo_oci_int.h,v 1.4.2.2.2.4 2007/08/31 21:08:48 sixd Exp $ */
 
 #include <oci.h>
 
@@ -31,15 +31,15 @@ typedef struct {
 typedef struct {
 	OCIServer	*server;
 	OCISession	*session;
-	OCIEnv 		*env;
+	OCIEnv		*env;
 	OCIError	*err;
-	OCISvcCtx 	*svc;
+	OCISvcCtx	*svc;
 	/* OCI9; 0 == use NLS_LANG */
 	ub2			charset;
 	sword		last_err;
 
-	unsigned attached:1;
-	unsigned _reserved:31;
+	unsigned	attached:1;
+	unsigned	_reserved:31;
 
 	pdo_oci_error_info einfo;
 } pdo_oci_db_handle;
@@ -62,15 +62,15 @@ typedef struct {
 	OCIStmt		*stmt;
 	OCIError	*err;
 	sword		last_err;
-	ub2		stmt_type;
-	ub4		exec_type;
+	ub2			stmt_type;
+	ub4			exec_type;
 	pdo_oci_column *cols;
 	pdo_oci_error_info einfo;
 	unsigned int have_blobs:1;
 } pdo_oci_stmt;
 
 typedef struct {
-	OCIBind 	*bind;	/* allocated by OCI */
+	OCIBind		*bind;	/* allocated by OCI */
 	sb2			oci_type;
 	sb2			indicator;
 	ub2			retcode;
@@ -86,9 +86,15 @@ extern const ub4 PDO_OCI_INIT_MODE;
 extern pdo_driver_t pdo_oci_driver;
 extern OCIEnv *pdo_oci_Env;
 
-ub4 _oci_error(OCIError *err, pdo_dbh_t *dbh, pdo_stmt_t *stmt, char *what, sword status, const char *file, int line TSRMLS_DC);
-#define oci_drv_error(w)	_oci_error(H->err, dbh, NULL, w, H->last_err, __FILE__, __LINE__ TSRMLS_CC)
-#define oci_stmt_error(w)	_oci_error(S->err, stmt->dbh, stmt, w, S->last_err, __FILE__, __LINE__ TSRMLS_CC)
+ub4 _oci_error(OCIError *err, pdo_dbh_t *dbh, pdo_stmt_t *stmt, char *what, sword status, int isinit, const char *file, int line TSRMLS_DC);
+#define oci_init_error(w)	_oci_error(H->err, dbh, NULL, w, H->last_err, TRUE, __FILE__, __LINE__ TSRMLS_CC)
+#define oci_drv_error(w)	_oci_error(H->err, dbh, NULL, w, H->last_err, FALSE, __FILE__, __LINE__ TSRMLS_CC)
+#define oci_stmt_error(w)	_oci_error(S->err, stmt->dbh, stmt, w, S->last_err, FALSE, __FILE__, __LINE__ TSRMLS_CC)
 
 extern struct pdo_stmt_methods oci_stmt_methods;
 
+/* Default prefetch size in number of rows */
+#define PDO_OCI_PREFETCH_DEFAULT 100
+
+/* Arbitrary assumed row length for prefetch memory limit calcuation */
+#define PDO_OCI_PREFETCH_ROWSIZE 1024

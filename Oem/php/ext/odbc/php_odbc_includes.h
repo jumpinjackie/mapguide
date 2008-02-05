@@ -18,7 +18,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: php_odbc_includes.h,v 1.12.2.1.2.3 2007/01/01 09:36:04 sebastian Exp $ */
+/* $Id: php_odbc_includes.h,v 1.12.2.1.2.4 2007/03/13 00:04:38 stas Exp $ */
 
 #ifndef PHP_ODBC_INCLUDES_H
 #define PHP_ODBC_INCLUDES_H
@@ -236,7 +236,6 @@ typedef struct odbc_result_value {
 
 typedef struct odbc_result {
 	ODBC_SQL_STMT_T stmt;
-	int id;
 	odbc_result_value *values;
 	SWORD numcols;
 	SWORD numparams;

@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: php_date.c,v 1.43.2.45.2.38 2007/01/03 14:46:23 derick Exp $ */
+/* $Id: php_date.c,v 1.43.2.45.2.51 2007/07/12 18:59:05 derick Exp $ */
 
 #include "php.h"
 #include "php_streams.h"
@@ -25,6 +25,7 @@
 #include "php_ini.h"
 #include "ext/standard/info.h"
 #include "ext/standard/php_versioning.h"
+#include "ext/standard/php_math.h"
 #include "php_date.h"
 #include "lib/timelib.h"
 #include <time.h>
@@ -297,6 +298,7 @@ static void date_object_free_storage_timezone(void *object TSRMLS_DC);
 static zend_object_value date_object_new_date(zend_class_entry *class_type TSRMLS_DC);
 static zend_object_value date_object_new_timezone(zend_class_entry *class_type TSRMLS_DC);
 static zend_object_value date_object_clone_date(zval *this_ptr TSRMLS_DC);
+static int date_object_compare_date(zval *d1, zval *d2 TSRMLS_DC);
 static zend_object_value date_object_clone_timezone(zval *this_ptr TSRMLS_DC);
 
 /* This is need to ensure that session extension request shutdown occurs 1st, because it uses the date extension */ 
@@ -527,7 +529,7 @@ PHP_MINFO_FUNCTION(date)
 	
 	php_info_print_table_start();
 	php_info_print_table_row(2, "date/time support", "enabled");
-	php_info_print_table_row(2, "Timezone Database Version", tzdb->version);
+	php_info_print_table_row(2, "\"Olson\" Timezone Database Version", tzdb->version);
 	php_info_print_table_row(2, "Timezone Database", php_date_global_timezone_db_enabled ? "external" : "internal");
 	php_info_print_table_row(2, "Default timezone", guess_timezone(tzdb TSRMLS_CC));
 	php_info_print_table_end();
@@ -576,16 +578,18 @@ static char* guess_timezone(const timelib_tzdb *tzdb TSRMLS_DC)
 	{
 		struct tm *ta, tmbuf;
 		time_t     the_time;
-		char      *tzid;
+		char      *tzid = NULL;
 		
 		the_time = time(NULL);
 		ta = php_localtime_r(&the_time, &tmbuf);
-		tzid = timelib_timezone_id_from_abbr(ta->tm_zone, ta->tm_gmtoff, ta->tm_isdst);
+		if (ta) {
+			tzid = timelib_timezone_id_from_abbr(ta->tm_zone, ta->tm_gmtoff, ta->tm_isdst);
+		}
 		if (! tzid) {
 			tzid = "UTC";
 		}
 		
-		php_error_docref(NULL TSRMLS_CC, E_STRICT, DATE_TZ_ERRMSG "We selected '%s' for '%s/%.1f/%s' instead", tzid, ta->tm_zone, (float) (ta->tm_gmtoff / 3600), ta->tm_isdst ? "DST" : "no DST");
+		php_error_docref(NULL TSRMLS_CC, E_STRICT, DATE_TZ_ERRMSG "We selected '%s' for '%s/%.1f/%s' instead", tzid, ta ? ta->tm_zone : "Unknown", ta ? (float) (ta->tm_gmtoff / 3600) : 0, ta ? (ta->tm_isdst ? "DST" : "no DST") : "Unknown");
 		return tzid;
 	}
 #endif
@@ -748,66 +752,67 @@ static char *date_format(char *format, int format_len, timelib_time *t, int loca
 	for (i = 0; i < format_len; i++) {
 		switch (format[i]) {
 			/* day */
-			case 'd': length = snprintf(buffer, 32, "%02d", (int) t->d); break;
-			case 'D': length = snprintf(buffer, 32, "%s", php_date_short_day_name(t->y, t->m, t->d)); break;
-			case 'j': length = snprintf(buffer, 32, "%d", (int) t->d); break;
-			case 'l': length = snprintf(buffer, 32, "%s", php_date_full_day_name(t->y, t->m, t->d)); break;
-			case 'S': length = snprintf(buffer, 32, "%s", english_suffix(t->d)); break;
-			case 'w': length = snprintf(buffer, 32, "%d", (int) timelib_day_of_week(t->y, t->m, t->d)); break;
-			case 'N': length = snprintf(buffer, 32, "%d", (int) timelib_iso_day_of_week(t->y, t->m, t->d)); break;
-			case 'z': length = snprintf(buffer, 32, "%d", (int) timelib_day_of_year(t->y, t->m, t->d)); break;
+			case 'd': length = slprintf(buffer, 32, "%02d", (int) t->d); break;
+			case 'D': length = slprintf(buffer, 32, "%s", php_date_short_day_name(t->y, t->m, t->d)); break;
+			case 'j': length = slprintf(buffer, 32, "%d", (int) t->d); break;
+			case 'l': length = slprintf(buffer, 32, "%s", php_date_full_day_name(t->y, t->m, t->d)); break;
+			case 'S': length = slprintf(buffer, 32, "%s", english_suffix(t->d)); break;
+			case 'w': length = slprintf(buffer, 32, "%d", (int) timelib_day_of_week(t->y, t->m, t->d)); break;
+			case 'N': length = slprintf(buffer, 32, "%d", (int) timelib_iso_day_of_week(t->y, t->m, t->d)); break;
+			case 'z': length = slprintf(buffer, 32, "%d", (int) timelib_day_of_year(t->y, t->m, t->d)); break;
 
 			/* week */
-			case 'W': length = snprintf(buffer, 32, "%02d", (int) isoweek); break; /* iso weeknr */
-			case 'o': length = snprintf(buffer, 32, "%d", (int) isoyear); break; /* iso year */
+			case 'W': length = slprintf(buffer, 32, "%02d", (int) isoweek); break; /* iso weeknr */
+			case 'o': length = slprintf(buffer, 32, "%d", (int) isoyear); break; /* iso year */
 
 			/* month */
-			case 'F': length = snprintf(buffer, 32, "%s", mon_full_names[t->m - 1]); break;
-			case 'm': length = snprintf(buffer, 32, "%02d", (int) t->m); break;
-			case 'M': length = snprintf(buffer, 32, "%s", mon_short_names[t->m - 1]); break;
-			case 'n': length = snprintf(buffer, 32, "%d", (int) t->m); break;
-			case 't': length = snprintf(buffer, 32, "%d", (int) timelib_days_in_month(t->y, t->m)); break;
+			case 'F': length = slprintf(buffer, 32, "%s", mon_full_names[t->m - 1]); break;
+			case 'm': length = slprintf(buffer, 32, "%02d", (int) t->m); break;
+			case 'M': length = slprintf(buffer, 32, "%s", mon_short_names[t->m - 1]); break;
+			case 'n': length = slprintf(buffer, 32, "%d", (int) t->m); break;
+			case 't': length = slprintf(buffer, 32, "%d", (int) timelib_days_in_month(t->y, t->m)); break;
 
 			/* year */
-			case 'L': length = snprintf(buffer, 32, "%d", timelib_is_leap((int) t->y)); break;
-			case 'y': length = snprintf(buffer, 32, "%02d", (int) t->y % 100); break;
-			case 'Y': length = snprintf(buffer, 32, "%04d", (int) t->y); break;
+			case 'L': length = slprintf(buffer, 32, "%d", timelib_is_leap((int) t->y)); break;
+			case 'y': length = slprintf(buffer, 32, "%02d", (int) t->y % 100); break;
+			case 'Y': length = slprintf(buffer, 32, "%s%04d", t->y < 0 ? "-" : "", abs((int) t->y)); break;
 
 			/* time */
-			case 'a': length = snprintf(buffer, 32, "%s", t->h >= 12 ? "pm" : "am"); break;
-			case 'A': length = snprintf(buffer, 32, "%s", t->h >= 12 ? "PM" : "AM"); break;
+			case 'a': length = slprintf(buffer, 32, "%s", t->h >= 12 ? "pm" : "am"); break;
+			case 'A': length = slprintf(buffer, 32, "%s", t->h >= 12 ? "PM" : "AM"); break;
 			case 'B': {
 				int retval = (((((long)t->sse)-(((long)t->sse) - ((((long)t->sse) % 86400) + 3600))) * 10) / 864);			
 				while (retval < 0) {
 					retval += 1000;
 				}
 				retval = retval % 1000;
-				length = snprintf(buffer, 32, "%03d", retval);
+				length = slprintf(buffer, 32, "%03d", retval);
 				break;
 			}
-			case 'g': length = snprintf(buffer, 32, "%d", (t->h % 12) ? (int) t->h % 12 : 12); break;
-			case 'G': length = snprintf(buffer, 32, "%d", (int) t->h); break;
-			case 'h': length = snprintf(buffer, 32, "%02d", (t->h % 12) ? (int) t->h % 12 : 12); break;
-			case 'H': length = snprintf(buffer, 32, "%02d", (int) t->h); break;
-			case 'i': length = snprintf(buffer, 32, "%02d", (int) t->i); break;
-			case 's': length = snprintf(buffer, 32, "%02d", (int) t->s); break;
+			case 'g': length = slprintf(buffer, 32, "%d", (t->h % 12) ? (int) t->h % 12 : 12); break;
+			case 'G': length = slprintf(buffer, 32, "%d", (int) t->h); break;
+			case 'h': length = slprintf(buffer, 32, "%02d", (t->h % 12) ? (int) t->h % 12 : 12); break;
+			case 'H': length = slprintf(buffer, 32, "%02d", (int) t->h); break;
+			case 'i': length = slprintf(buffer, 32, "%02d", (int) t->i); break;
+			case 's': length = slprintf(buffer, 32, "%02d", (int) t->s); break;
+			case 'u': length = slprintf(buffer, 32, "%06d", (int) floor(t->f * 1000000)); break;
 
 			/* timezone */
-			case 'I': length = snprintf(buffer, 32, "%d", localtime ? offset->is_dst : 0); break;
+			case 'I': length = slprintf(buffer, 32, "%d", localtime ? offset->is_dst : 0); break;
 			case 'P': rfc_colon = 1; /* break intentionally missing */
-			case 'O': length = snprintf(buffer, 32, "%c%02d%s%02d",
+			case 'O': length = slprintf(buffer, 32, "%c%02d%s%02d",
 											localtime ? ((offset->offset < 0) ? '-' : '+') : '+',
 											localtime ? abs(offset->offset / 3600) : 0,
 											rfc_colon ? ":" : "",
 											localtime ? abs((offset->offset % 3600) / 60) : 0
 							  );
 					  break;
-			case 'T': length = snprintf(buffer, 32, "%s", localtime ? offset->abbr : "GMT"); break;
-			case 'e': length = snprintf(buffer, 32, "%s", localtime ? t->tz_info->name : "UTC"); break;
-			case 'Z': length = snprintf(buffer, 32, "%d", localtime ? offset->offset : 0); break;
+			case 'T': length = slprintf(buffer, 32, "%s", localtime ? offset->abbr : "GMT"); break;
+			case 'e': length = slprintf(buffer, 32, "%s", localtime ? t->tz_info->name : "UTC"); break;
+			case 'Z': length = slprintf(buffer, 32, "%d", localtime ? offset->offset : 0); break;
 
 			/* full date/time */
-			case 'c': length = snprintf(buffer, 32, "%04d-%02d-%02dT%02d:%02d:%02d%c%02d:%02d",
+			case 'c': length = slprintf(buffer, 32, "%04d-%02d-%02dT%02d:%02d:%02d%c%02d:%02d",
 							                (int) t->y, (int) t->m, (int) t->d,
 											(int) t->h, (int) t->i, (int) t->s,
 											localtime ? ((offset->offset < 0) ? '-' : '+') : '+',
@@ -815,7 +820,7 @@ static char *date_format(char *format, int format_len, timelib_time *t, int loca
 											localtime ? abs((offset->offset % 3600) / 60) : 0
 							  );
 					  break;
-			case 'r': length = snprintf(buffer, 32, "%3s, %02d %3s %04d %02d:%02d:%02d %c%02d%02d",
+			case 'r': length = slprintf(buffer, 32, "%3s, %02d %3s %04d %02d:%02d:%02d %c%02d%02d",
 							                php_date_short_day_name(t->y, t->m, t->d),
 											(int) t->d, mon_short_names[t->m - 1],
 											(int) t->y, (int) t->h, (int) t->i, (int) t->s,
@@ -824,7 +829,7 @@ static char *date_format(char *format, int format_len, timelib_time *t, int loca
 											localtime ? abs((offset->offset % 3600) / 60) : 0
 							  );
 					  break;
-			case 'U': length = snprintf(buffer, 32, "%lld", (timelib_sll) t->sse); break;
+			case 'U': length = slprintf(buffer, 32, "%lld", (timelib_sll) t->sse); break;
 
 			case '\\': if (i < format_len) i++; /* break intentionally missing */
 
@@ -1459,6 +1464,7 @@ static void date_register_classes(TSRMLS_D)
 	date_ce_date = zend_register_internal_class_ex(&ce_date, NULL, NULL TSRMLS_CC);
 	memcpy(&date_object_handlers_date, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 	date_object_handlers_date.clone_obj = date_object_clone_date;
+	date_object_handlers_date.compare_objects = date_object_compare_date;
 
 #define REGISTER_DATE_CLASS_CONST_STRING(const_name, value) \
 	zend_declare_class_constant_stringl(date_ce_date, const_name, sizeof(const_name)-1, value, sizeof(value)-1 TSRMLS_CC);
@@ -1528,6 +1534,27 @@ static zend_object_value date_object_clone_date(zval *this_ptr TSRMLS_DC)
 	}
 	
 	return new_ov;
+}
+
+static int date_object_compare_date(zval *d1, zval *d2 TSRMLS_DC)
+{
+	if (Z_TYPE_P(d1) == IS_OBJECT && Z_TYPE_P(d2) == IS_OBJECT &&
+		instanceof_function(Z_OBJCE_P(d1), date_ce_date TSRMLS_CC) &&
+		instanceof_function(Z_OBJCE_P(d2), date_ce_date TSRMLS_CC)) {
+		php_date_obj *o1 = zend_object_store_get_object(d1 TSRMLS_CC);
+		php_date_obj *o2 = zend_object_store_get_object(d2 TSRMLS_CC);
+		
+		if (!o1->time->sse_uptodate) {
+			timelib_update_ts(o1->time, o1->time->tz_info);
+		}
+		if (!o2->time->sse_uptodate) {
+			timelib_update_ts(o2->time, o2->time->tz_info);
+		}
+		
+		return (o1->time->sse == o2->time->sse) ? 0 : ((o1->time->sse < o2->time->sse) ? -1 : 1);
+	}
+	
+	return 1;
 }
 
 static inline zend_object_value date_object_new_timezone_ex(zend_class_entry *class_type, php_timezone_obj **ptr TSRMLS_DC)
@@ -1713,7 +1740,7 @@ PHP_FUNCTION(date_parse)
 	parsed_time = timelib_strtotime(date, date_len, &error, DATE_TIMEZONEDB);
 	array_init(return_value);
 #define PHP_DATE_PARSE_DATE_SET_TIME_ELEMENT(name, elem) \
-	if (parsed_time->elem == -1) {               \
+	if (parsed_time->elem == -99999) {               \
 		add_assoc_bool(return_value, #name, 0); \
 	} else {                                       \
 		add_assoc_long(return_value, #name, parsed_time->elem); \
@@ -1725,7 +1752,7 @@ PHP_FUNCTION(date_parse)
 	PHP_DATE_PARSE_DATE_SET_TIME_ELEMENT(minute,    i);
 	PHP_DATE_PARSE_DATE_SET_TIME_ELEMENT(second,    s);
 	
-	if (parsed_time->f == -1) {
+	if (parsed_time->f == -99999) {
 		add_assoc_bool(return_value, "fraction", 0);
 	} else {
 		add_assoc_double(return_value, "fraction", parsed_time->f);
@@ -2244,7 +2271,7 @@ static void php_do_date_sunrise_sunset(INTERNAL_FUNCTION_PARAMETERS, int calc_su
 	int             rs;
 	timelib_time   *t;
 	timelib_tzinfo *tzi;
-	char            retstr[6];
+	char           *retstr;
 	
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l|ldddd", &time, &retformat, &latitude, &longitude, &zenith, &gmt_offset) == FAILURE) {
 		RETURN_FALSE;
@@ -2302,16 +2329,15 @@ static void php_do_date_sunrise_sunset(INTERNAL_FUNCTION_PARAMETERS, int calc_su
 		RETURN_LONG(calc_sunset ? set : rise);
 	}
 	N = (calc_sunset ? h_set : h_rise) + gmt_offset;
-	while (N > 24) {
-		N -= 24;
+
+	if (N > 24 || N < 0) {
+		N -= floor(N / 24) * 24;
 	}
-	while (N < 0) {
-		N += 24;
-	}
+
 	switch (retformat) {
 		case SUNFUNCS_RET_STRING:
-			sprintf(retstr, "%02d:%02d", (int) N, (int) (60 * (N - (int) N)));
-			RETURN_STRINGL(retstr, 5, 1);
+			spprintf(&retstr, 0, "%02d:%02d", (int) N, (int) (60 * (N - (int) N)));
+			RETURN_STRINGL(retstr, 5, 0);
 			break;
 		case SUNFUNCS_RET_DOUBLE:
 			RETURN_DOUBLE(N);
@@ -2364,7 +2390,7 @@ PHP_FUNCTION(date_sun_info)
 	array_init(return_value);
 	
 	/* Get sun up/down and transit */
-	rs = timelib_astro_rise_set_altitude(t, latitude, longitude, -35.0/60, 1, &ddummy, &ddummy, &rise, &set, &transit);
+	rs = timelib_astro_rise_set_altitude(t, longitude, latitude, -35.0/60, 1, &ddummy, &ddummy, &rise, &set, &transit);
 	switch (rs) {
 		case -1: /* always below */
 			add_assoc_bool(return_value, "sunrise", 0);
@@ -2384,7 +2410,7 @@ PHP_FUNCTION(date_sun_info)
 	add_assoc_long(return_value, "transit", timelib_date_to_int(t2, &dummy));
 
 	/* Get civil twilight */
-	rs = timelib_astro_rise_set_altitude(t, latitude, longitude, -6.0, 0, &ddummy, &ddummy, &rise, &set, &transit);
+	rs = timelib_astro_rise_set_altitude(t, longitude, latitude, -6.0, 0, &ddummy, &ddummy, &rise, &set, &transit);
 	switch (rs) {
 		case -1: /* always below */
 			add_assoc_bool(return_value, "civil_twilight_begin", 0);
@@ -2402,7 +2428,7 @@ PHP_FUNCTION(date_sun_info)
 	}
 
 	/* Get nautical twilight */
-	rs = timelib_astro_rise_set_altitude(t, latitude, longitude, -12.0, 0, &ddummy, &ddummy, &rise, &set, &transit);
+	rs = timelib_astro_rise_set_altitude(t, longitude, latitude, -12.0, 0, &ddummy, &ddummy, &rise, &set, &transit);
 	switch (rs) {
 		case -1: /* always below */
 			add_assoc_bool(return_value, "nautical_twilight_begin", 0);
@@ -2420,7 +2446,7 @@ PHP_FUNCTION(date_sun_info)
 	}
 
 	/* Get astronomical twilight */
-	rs = timelib_astro_rise_set_altitude(t, latitude, longitude, -18.0, 0, &ddummy, &ddummy, &rise, &set, &transit);
+	rs = timelib_astro_rise_set_altitude(t, longitude, latitude, -18.0, 0, &ddummy, &ddummy, &rise, &set, &transit);
 	switch (rs) {
 		case -1: /* always below */
 			add_assoc_bool(return_value, "astronomical_twilight_begin", 0);

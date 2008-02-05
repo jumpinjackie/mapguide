@@ -1,5 +1,5 @@
 dnl
-dnl $Id: config.m4,v 1.69.4.6 2007/01/23 12:37:21 bjori Exp $
+dnl $Id: config.m4,v 1.69.4.7 2007/02/11 09:25:32 tony2001 Exp $
 dnl
 
 AC_DEFUN([IMAP_INC_CHK],[if test -r "$i$1/c-client.h"; then
@@ -137,7 +137,7 @@ if test "$PHP_IMAP" != "no"; then
     if test "$ac_cv_utf8_mime2text" = "new"; then
       AC_DEFINE(HAVE_NEW_MIME2TEXT, 1, [Whether utf8_mime2text() has new signature])
     fi
-    CFLAGS=$old_CPPFLAGS
+    CFLAGS=$old_CFLAGS
 
     old_CFLAGS=$CFLAGS
     CFLAGS="-I$IMAP_INC_DIR"
@@ -152,7 +152,7 @@ if test "$PHP_IMAP" != "no"; then
          ac_cv_u8t_canonical=no
       ])
     )
-    CFLAGS=$old_CPPFLAGS
+    CFLAGS=$old_CFLAGS
 
     if test "$ac_cv_u8t_canonical" = "no" && test "$ac_cv_utf8_mime2text" = "new"; then
 		AC_MSG_ERROR([utf8_mime2text() has new signature, but U8T_CANONICAL is missing. This should not happen. Check config.log for additional information.])

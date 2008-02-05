@@ -18,7 +18,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: var.c,v 1.203.2.7.2.14 2007/01/01 09:36:09 sebastian Exp $ */
+/* $Id: var.c,v 1.203.2.7.2.19 2007/10/04 13:31:11 jani Exp $ */
 
 
 
@@ -39,6 +39,7 @@
 #define Z_REFCOUNT_PP(a) ((*a)->refcount)
 
 /* }}} */
+
 /* {{{ php_var_dump */
 
 static int php_array_element_dump(zval **zv, int num_args, va_list args, zend_hash_key *hash_key)
@@ -51,12 +52,6 @@ static int php_array_element_dump(zval **zv, int num_args, va_list args, zend_ha
 	if (hash_key->nKeyLength==0) { /* numeric key */
 		php_printf("%*c[%ld]=>\n", level + 1, ' ', hash_key->h);
 	} else { /* string key */
-		if (va_arg(args, int) && hash_key->arKey[0] == '\0') { 
-			/* XXX: perhaps when we are inside the class we should permit access to 
-			 * private & protected values
-			 */
-			return 0;
-		}
 		php_printf("%*c[\"", level + 1, ' ');
 		PHPWRITE(hash_key->arKey, hash_key->nKeyLength - 1);
 		php_printf("\"]=>\n");
@@ -149,7 +144,7 @@ PHPAPI void php_var_dump(zval **struc, int level TSRMLS_DC)
 		php_element_dump_func = php_object_property_dump;
 head_done:
 		if (myht) {
-			zend_hash_apply_with_arguments(myht, (apply_func_args_t) php_element_dump_func, 1, level, (Z_TYPE_PP(struc) == IS_ARRAY ? 0 : 1));
+			zend_hash_apply_with_arguments(myht, (apply_func_args_t) php_element_dump_func, 1, level);
 		}
 		if (level > 1) {
 			php_printf("%*c", level-1, ' ');
@@ -170,8 +165,6 @@ head_done:
 }
 
 /* }}} */
-
-
 
 /* {{{ proto void var_dump(mixed var)
    Dumps a string representation of variable to output */
@@ -350,7 +343,6 @@ PHP_FUNCTION(debug_zval_dump)
 }
 /* }}} */
 
-
 /* {{{ php_var_export */
 
 static int php_array_element_export(zval **zv, int num_args, va_list args, zend_hash_key *hash_key)
@@ -413,7 +405,7 @@ PHPAPI void php_var_export(zval **struc, int level TSRMLS_DC)
 		php_printf("%ld", Z_LVAL_PP(struc));
 		break;
 	case IS_DOUBLE:
-		php_printf("%.*G", (int) EG(precision), Z_DVAL_PP(struc));
+		php_printf("%.*H", (int) EG(precision), Z_DVAL_PP(struc));
 		break;
 	case IS_STRING:
 		tmp_str = php_addcslashes(Z_STRVAL_PP(struc), Z_STRLEN_PP(struc), &tmp_len, 0, "'\\\0", 3 TSRMLS_CC);
@@ -458,7 +450,6 @@ PHPAPI void php_var_export(zval **struc, int level TSRMLS_DC)
 
 /* }}} */
 
-
 /* {{{ proto mixed var_export(mixed var [, bool return])
    Outputs or returns a string representation of a variable */
 PHP_FUNCTION(var_export)
@@ -483,8 +474,6 @@ PHP_FUNCTION(var_export)
 }
 /* }}} */
 
-
-
 /* {{{ php_var_serialize */
 
 static void php_var_serialize_intern(smart_str *buf, zval *struc, HashTable *var_hash TSRMLS_DC);
@@ -500,8 +489,8 @@ static inline int php_add_var_hash(HashTable *var_hash, zval *var, void *var_old
 	   by its object handle and the class entry since 5.0. */
 	if ((Z_TYPE_P(var) == IS_OBJECT) && Z_OBJ_HT_P(var)->get_class_entry) {
 		p = smart_str_print_long(id + sizeof(id) - 1,
-				(((unsigned long)Z_OBJCE_P(var) << 5)
-				| ((unsigned long)Z_OBJCE_P(var) >> (sizeof(long) * 8 - 5)))
+				(((size_t)Z_OBJCE_P(var) << 5)
+				| ((size_t)Z_OBJCE_P(var) >> (sizeof(long) * 8 - 5)))
 				+ (long) Z_OBJ_HANDLE_P(var));
 		*(--p) = 'O';
 		len = id + sizeof(id) - 1 - p;
@@ -600,7 +589,7 @@ static void php_var_serialize_class(smart_str *buf, zval *struc, zval *retval_pt
 			if (Z_TYPE_PP(name) != IS_STRING) {
 				php_error_docref(NULL TSRMLS_CC, E_NOTICE, "__sleep should return an array only "
 						"containing the names of instance-variables to "
-						"serialize.");
+						"serialize");
 				/* we should still add element even if it's not OK,
 				   since we already wrote the length of the array before */
 				smart_str_appendl(buf,"N;", 2);
@@ -753,7 +742,7 @@ static void php_var_serialize_intern(smart_str *buf, zval *struc, HashTable *var
 							} else {
 								php_error_docref(NULL TSRMLS_CC, E_NOTICE, "__sleep should return an array only "
 												 "containing the names of instance-variables to "
-												 "serialize.");
+												 "serialize");
 								/* we should still add element even if it's not OK,
 				   				since we already wrote the length of the array before */
 								smart_str_appendl(buf,"N;", 2);
@@ -878,6 +867,7 @@ PHP_FUNCTION(serialize)
 }
 
 /* }}} */
+
 /* {{{ proto mixed unserialize(string variable_representation)
    Takes a string representation of variable and recreates it */
 

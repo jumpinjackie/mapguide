@@ -20,7 +20,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: php_odbc.c,v 1.189.2.4.2.4 2007/01/16 18:56:06 iliaa Exp $ */
+/* $Id: php_odbc.c,v 1.189.2.4.2.7 2007/03/13 00:04:38 stas Exp $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -544,9 +544,9 @@ PHP_MINFO_FUNCTION(odbc)
 
 	php_info_print_table_start();
 	php_info_print_table_header(2, "ODBC Support", "enabled");
-	sprintf(buf, "%ld", ODBCG(num_persistent));
+	snprintf(buf, sizeof(buf), "%ld", ODBCG(num_persistent));
 	php_info_print_table_row(2, "Active Persistent Links", buf);
-	sprintf(buf, "%ld", ODBCG(num_links));
+	snprintf(buf, sizeof(buf), "%ld", ODBCG(num_links));
 	php_info_print_table_row(2, "Active Links", buf);
 	php_info_print_table_row(2, "ODBC library", PHP_ODBC_TYPE);
 #ifndef PHP_WIN32
@@ -587,6 +587,10 @@ void odbc_sql_error(ODBC_SQL_ERROR_PARAMS)
 		do {
 	 */
 	rc = SQLError(henv, conn, stmt, state, &error, errormsg, sizeof(errormsg)-1, &errormsgsize);
+	if (rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
+		snprintf(state, sizeof(state), "HY000");
+		snprintf(errormsg, sizeof(errormsg), "Failed to fetch error message");
+	}
 	if (conn_resource) {
 		memcpy(conn_resource->laststate, state, sizeof(state));
 		memcpy(conn_resource->lasterrormsg, errormsg, sizeof(errormsg));
@@ -911,11 +915,10 @@ PHP_FUNCTION(odbc_prepare)
 	} else {
 		result->values = NULL;
 	}
-	result->id = zend_list_insert(result, le_result);	
 	zend_list_addref(conn->id);
 	result->conn_ptr = conn;
 	result->fetched = 0;
-	RETURN_RESOURCE(result->id);
+	ZEND_REGISTER_RESOURCE(return_value, result, le_result);  
 }
 /* }}} */
 
@@ -1158,7 +1161,7 @@ PHP_FUNCTION(odbc_cursor)
 						result->stmt, state, &error, errormsg,
 						sizeof(errormsg)-1, &errormsgsize);
 			if (!strncmp(state,"S1015",5)) {
-				sprintf(cursorname,"php_curs_%d", (int)result->stmt);
+				snprintf(cursorname, max_len+1, "php_curs_%d", (int)result->stmt);
 				if (SQLSetCursorName(result->stmt,cursorname,SQL_NTS) != SQL_SUCCESS) {
 					odbc_sql_error(result->conn_ptr, result->stmt, "SQLSetCursorName");
 					RETVAL_FALSE;
@@ -1224,7 +1227,7 @@ PHP_FUNCTION(odbc_data_source)
 
 	if (rc != SQL_SUCCESS) {
 		/* ummm.... he did it */
-		odbc_sql_error(conn, NULL, "SQLDataSources");
+		odbc_sql_error(conn, SQL_NULL_HSTMT, "SQLDataSources");
 		RETURN_FALSE;
 	}
 
@@ -1331,12 +1334,10 @@ PHP_FUNCTION(odbc_exec)
 	} else {
 		result->values = NULL;
 	}
-	result->id = zend_list_insert(result, le_result);
 	zend_list_addref(conn->id);
 	result->conn_ptr = conn;
 	result->fetched = 0;
-	
-	RETURN_RESOURCE(result->id);
+	ZEND_REGISTER_RESOURCE(return_value, result, le_result);
 }
 /* }}} */
 
@@ -2040,7 +2041,7 @@ PHP_FUNCTION(odbc_free_result)
 		result->values = NULL;
 	}
 			
-	zend_list_delete(result->id);
+	zend_list_delete(Z_LVAL_PP(pv_res));
 	
 	RETURN_TRUE;
 }
@@ -2151,8 +2152,7 @@ int odbc_sqlconnect(odbc_connection **conn, char *db, char *uid, char *pwd, int 
 		if (strstr((char*)db, ";")) {
 			direct = 1;
 			if (uid && !strstr ((char*)db, "uid") && !strstr((char*)db, "UID")) {
-				ldb = (char*) emalloc(strlen(db) + strlen(uid) + strlen(pwd) + 12);
-				sprintf(ldb, "%s;UID=%s;PWD=%s", db, uid, pwd);
+				spprintf(&ldb, 0, "%s;UID=%s;PWD=%s", db, uid, pwd);
 			} else {
 				ldb_len = strlen(db)+1;
 				ldb = (char*) emalloc(ldb_len);
