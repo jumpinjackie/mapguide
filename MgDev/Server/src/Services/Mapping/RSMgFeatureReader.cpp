@@ -538,7 +538,9 @@ FdoIFeatureReader* RSMgFeatureReader::GetInternalReader()
 
     MgServerGwsFeatureReader* gfr = dynamic_cast<MgServerGwsFeatureReader*>(m_reader);
     if (gfr)
-        return gfr->GetFeatureIterator();
+    {
+        return gfr->GetJoinFeatureReader();
+    }
 
     // encountered a case we don't handle
     _ASSERT(false);

@@ -1420,7 +1420,7 @@ public:
     void                        IncrementKeyIndex()     { m_joinKeyIndex++; }
     void                        ResetKeyIndex()         { m_joinKeyIndex=0; }
 protected:
-    FdoStringP                  GetSecondaryAsString(FdoDataType dtSecondary, FdoString* propname);
+    FdoDataValue*               GetSecondaryDataValue(FdoDataType dtSecondary, FdoString* propname);
 
     EGwsCursorPosition      m_pos;
     int                     m_joinKeyIndex;
