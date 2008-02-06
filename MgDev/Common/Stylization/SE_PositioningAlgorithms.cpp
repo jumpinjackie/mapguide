@@ -137,6 +137,9 @@ void SE_PositioningAlgorithms::Default(SE_ApplyContext* applyCtx,
     // need to convert centroid to screen units
     se_renderer->WorldToScreenPoint(cx, cy, cx, cy);
 
+    // also account for any viewport rotation
+    angleRad += se_renderer->GetWorldToScreenRotation();
+
     // see StylizationEngine::Stylize for a detailed explanation of these transforms
     bool yUp = se_renderer->YPointsUp();
     SE_Matrix xformLabel;
@@ -246,6 +249,9 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
         cw = 0.5*(symbol_bounds.maxx + symbol_bounds.minx);
     }
 
+    // get the viewport rotation
+    double w2sAngleRad = se_renderer->GetWorldToScreenRotation();
+
     // take into account rotation of the symbol - find increased extents
     // of the symbol bounds due to the rotation
     double op_pts[16];
@@ -274,10 +280,14 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
         cwsn = cw * sn;     chsn = ch * sn;
         cwcs = cw * cs;     chcs = ch * cs;
 
-        // Find the octant that the marker is rotated into, and shift the points accordingly.
+        // Find the octant that the symbol is rotated into, and shift the points accordingly.
         // This way the overpost points are still within 22.5 degrees of an axis-aligned box
         // (position 0 will always be the closest to Center-Right).
-        double nangle = fmod(symbol_rot_rad * M_180PI, 360.0);
+        // NOTE: The symbol rotation includes the viewport rotation.  We want to use the
+        //       relative angle between these to compute the quadrant (it's the angle of
+        //       the symbol relative to the viewport which matters).
+        double relativeAngle = symbol_rot_rad - w2sAngleRad;
+        double nangle = fmod(relativeAngle * M_180PI, 360.0);
         if (nangle < 0.0)
             nangle += 360.0;
         int i = (((int)((nangle/45.0) + 0.5)) << 1) & 0x0000000f; // i is 2 * the octant
@@ -320,6 +330,9 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
     double yScale = yUp? 1.0 : -1.0; // which way does y go in the renderer?
 
     double angleRad = rpstyle->angleRad;
+
+    // also account for the viewport rotation
+    angleRad += w2sAngleRad;
 
     if (foundSingleText)
     {
@@ -637,6 +650,9 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_ApplyContext*  applyCt
     SE_Matrix symxf;
     shieldIndex = 0;
 
+    // account for any viewport rotation
+    double angleRad = se_renderer->GetWorldToScreenRotation();
+
     // init position along the whole geometry to the start offset
     double drawpos = startOffset;
 
@@ -649,6 +665,7 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_ApplyContext*  applyCt
         while (pt < last)
         {
             symxf.setIdentity();
+            symxf.rotate(angleRad);
 
             // current line segment
 
@@ -689,12 +706,12 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_ApplyContext*  applyCt
                         memcpy(rlStyle->bounds, symbolVectors[shieldIndex].front()->bounds, sizeof(rlStyle->bounds));
                         SE_RenderStyle* clonedStyle = se_renderer->CloneRenderStyle(rlStyle);
 
-                        SE_LabelInfo info(symxf.x2, symxf.y2, RS_Units_Device, 0, clonedStyle);
+                        SE_LabelInfo info(symxf.x2, symxf.y2, RS_Units_Device, angleRad, clonedStyle);
                         se_renderer->ProcessSELabelGroup(&info, 1, RS_OverpostType_AllFit, rlStyle->addToExclusionRegions, geometry);
                     }
                     else
                     {
-                        se_renderer->DrawSymbol(symbolVectors[shieldIndex], symxf, 0.0);
+                        se_renderer->DrawSymbol(symbolVectors[shieldIndex], symxf, angleRad);
 
                         // TODO: if this is ever needed ...
 //                      if (rlStyle->addToExclusionRegions)
