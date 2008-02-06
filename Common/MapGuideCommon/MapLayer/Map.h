@@ -69,9 +69,9 @@ template class MG_MAPGUIDE_API Ptr<MgMap>;
 /// try
 /// {
 ///     // Include constants like MgServiceType::ResourceService
-///     include 'C:\\Inetpub\\wwwroot\\PhpMapAgent\\MgConstants.php';
+///     include 'C:\Inetpub\wwwroot\PhpMapAgent\MgConstants.php';
 ///     // Initialize
-///     MgInitializeWebTier('C:\\Inetpub\\wwwroot\\PhpMapAgent\\webconfig.ini');
+///     MgInitializeWebTier('C:\Inetpub\wwwroot\PhpMapAgent\webconfig.ini');
 ///     // Establish a connection with a MapGuide site.
 ///     $user = new MgUserInformation('Administrator', 'admin');
 ///     $siteConnection = new MgSiteConnection();
