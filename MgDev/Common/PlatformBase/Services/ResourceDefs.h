@@ -58,6 +58,8 @@ PUBLISHED_API:
     ////////////////////////////////////////////////////////////////
     /// The repository is a \link session_repository session repository \endlink,
     /// used to store temporary data.
+    /// \note1
+    ///
     static const STRING Session;      ///\if INTERNAL value("Session") \endif
 
 INTERNAL_API:
@@ -82,13 +84,15 @@ PUBLISHED_API:
     /// \brief
     /// This resource is the runtime definition of a map.
     ///
+    /// \note1
+    ///
     /// \remarks
     /// It is stored in the session repository to represent the
     /// currently visible layers and viewed extents of a map. It is
     /// constructed using a \link MgResourceType::MapDefinition MapDefinition \endlink
     /// (created by a tool such as  Autodesk Studio)
     /// and may contain additional layers which have been added "on
-    /// the fly" by a web application. See \link Mapping_Service_Module Mapping Service \endlink
+    /// the fly" by a web application. See \ref Maps_and_Layers_Module "Maps and Layers"
     /// for more details.
     ///
     static const STRING Map;                ///\if INTERNAL value("Map") \endif
@@ -96,6 +100,8 @@ PUBLISHED_API:
     ////////////////////////////////////////////////////////////////
     /// \brief
     /// This resource is a map definition.
+    ///
+    /// \note1
     ///
     /// \remarks
     /// It represents an authored map and contains references to a \link MgResourceType::MapDefinition LayerDefinition \endlink
@@ -123,6 +129,8 @@ PUBLISHED_API:
     /// \brief
     /// This resource is a \link drawing_source drawing source \endlink.
     ///
+    /// \note1
+    ///
     /// \remarks
     /// The resource contains information required by MapGuide
     /// to access data contained in a DWF.
@@ -145,6 +153,8 @@ PUBLISHED_API:
     /// \brief
     /// This resource is a folder.
     ///
+    /// \note1
+    ///
     /// \remarks
     /// Folders in a repository operate in a similar manner to file
     /// system folders. They contain other resources and can be
@@ -156,6 +166,8 @@ PUBLISHED_API:
     /// \brief
     /// This resource is a load procedure definition.
     ///
+    /// \note1
+    ///
     /// \remarks
     /// It records how to load specific data.
     ///
@@ -164,6 +176,8 @@ PUBLISHED_API:
     ////////////////////////////////////////////////////////////////
     /// \brief
     /// This resource is a print layout.
+    ///
+    /// \note1
     ///
     /// \remarks
     /// A print layout defines how a map is printed. It sets the size
@@ -175,6 +189,8 @@ PUBLISHED_API:
     ////////////////////////////////////////////////////////////////
     /// \brief
     /// This resource is the runtime definition of a selection.
+    ///
+    /// \note1
     ///
     /// \remarks
     /// It is stored in the session repository to represent the
@@ -195,6 +211,8 @@ PUBLISHED_API:
     /// \brief
     /// This resource is a library of symbols.
     ///
+    /// \note1
+    ///
     /// \remarks
     /// Tools such as Autodesk Studio can create symbol libraries from a number of sources.
     /// These symbols can then be placed on a map to represent points
@@ -207,6 +225,8 @@ PUBLISHED_API:
     /// This resource represents the screen layout for a specific
     /// map.
     ///
+    /// \note1
+    ///
     /// \remarks
     /// Web layouts determine the location and content of toolbars,
     /// the viewed map area, the legend, and viewed items.
@@ -218,6 +238,8 @@ PUBLISHED_API:
     ////////////////////////////////////////////////////////////////
     /// \brief
     /// This resource represents a web application definition
+    ///
+    /// \note1
     ///
     /// \remarks
     /// Application definitions determine the location and content of toolbars,
@@ -238,11 +260,13 @@ INTERNAL_API:
 /// \brief
 /// Substitution tags used within the XML file for a resource.
 ///
+/// \note1
+///
 /// \remarks
 /// These tags are replaced by the resource service during
 /// processing. This enables the resource service to manage the
 /// storage of \link resource_data resource data \endlink.
-/// For more information, see the <i>MapGuide Developer's Guide</i>.
+/// For more information, see the \DevGuide.
 ///
 /// \todo
 /// [[Add examples for all these. ]]
@@ -319,6 +343,8 @@ PUBLISHED_API:
     /// \brief
     /// Data name for adding default credentials to a resource.
     ///
+    /// \note1
+    ///
     /// \remarks
     /// For an example, see \link MgResourceService::SetResourceData SetResourceData \endlink.
     ///
@@ -330,8 +356,10 @@ PUBLISHED_API:
 /// \brief
 /// Defines the different types of \link resource_data resource data \endlink.
 ///
+/// \note1
+///
 /// \remarks
-/// For more information, see the <i>MapGuide Developer's Guide</i>.
+/// For more information, see the \DevGuide.
 ///
 /// \ingroup Resource_Service_classes
 ///
@@ -405,6 +433,8 @@ PUBLISHED_API:
 /// \brief
 /// Types of resource permissions.
 ///
+/// \note1
+///
 /// \ingroup Resource_Service_classes
 ///
 class MG_PLATFORMBASE_API MgResourcePermission
@@ -459,6 +489,8 @@ INTERNAL_API:
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Types of unmanaged data that can be returned
+///
+/// \note1
 ///
 /// \ingroup Resource_Service_classes
 ///
