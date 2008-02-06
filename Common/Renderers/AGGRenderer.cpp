@@ -1576,7 +1576,7 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth)
 // can only be applied to polygon feature geometry types.
 void AGGRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 {
-    bool clip = wcscmp(style->clippingControl, L"Clip") == 0;
+    bool clip = (!style->solidFill && wcscmp(style->clippingControl, L"Clip") == 0);
     if (clip)
         SetPolyClip(ctx->geometry, style->bufferWidth);
 
