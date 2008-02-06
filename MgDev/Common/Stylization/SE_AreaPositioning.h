@@ -29,7 +29,7 @@
 class SE_AreaPositioning
 {
 public:
-    SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* style);
+    SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* style, double w2sAngleRad);
     ~SE_AreaPositioning();
 
     const double& PatternRotation();

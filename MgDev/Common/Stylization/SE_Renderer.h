@@ -66,6 +66,9 @@ public:
     virtual void WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy) = 0;
     virtual void ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy) = 0;
 
+    // returns the viewport rotation angle, in radians CCW
+    STYLIZATION_API virtual double GetWorldToScreenRotation();
+
     virtual double GetPixelsPerMillimeterScreen() = 0;
     virtual double GetPixelsPerMillimeterWorld() = 0;
 
@@ -90,12 +93,6 @@ public:
 
     // helper methods
     void ProcessLineLabels(LineBuffer* geometry, SE_RenderLineStyle* style);
-
-protected:
-    STYLIZATION_API virtual void DrawScreenRaster(unsigned char* data, int length,
-                                                  RS_ImageFormat format, int native_width,
-                                                  int native_height, SE_Tuple* uv_quads,
-                                                  SE_Tuple* xy_quads, int txlength);
 
 private:
     void ComputeSegmentLengths(LineBuffer* geometry, double* segLens);

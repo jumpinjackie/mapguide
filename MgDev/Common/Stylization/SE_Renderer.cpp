@@ -27,8 +27,6 @@
 
 using namespace MDFMODEL_NAMESPACE;
 
-#define PXF_BUF_LEN 500
-#define PXF_SEG_DELTA 1e-2
 
 SE_Renderer::SE_Renderer()
 : m_bp(NULL)
@@ -45,12 +43,14 @@ SE_Renderer::~SE_Renderer()
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 void SE_Renderer::SetRenderSelectionMode(bool mode)
 {
     SetRenderSelectionMode(mode, 0x0000FF00);
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 void SE_Renderer::SetRenderSelectionMode(bool mode, int rgba)
 {
     m_bSelectionMode = mode;
@@ -70,6 +70,16 @@ void SE_Renderer::SetRenderSelectionMode(bool mode, int rgba)
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+// Returns the viewport rotation angle, in radians CCW.
+double SE_Renderer::GetWorldToScreenRotation()
+{
+    // default is no rotation
+    return 0.0;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 // Called when applying a point style on a feature geometry.  Point styles can
 // be applied to all feature geometry types.
 void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style, RS_Bounds* bounds)
@@ -96,6 +106,9 @@ void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style,
 
     angleRad += style->angleRad;
 
+    // also account for any viewport rotation
+    angleRad += GetWorldToScreenRotation();
+
     SE_Matrix xform;
     bool yUp = YPointsUp();
 
@@ -111,7 +124,7 @@ void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style,
         double x, y;
         featGeom->get_point(i, x, y);
 
-        // transform to screen space -- feature geometry is in [the original] mapping space
+        // transform to screen space - feature geometry is in [the original] mapping space
         WorldToScreenPoint(x, y, x, y);
 
         xform = xformbase;
@@ -138,6 +151,7 @@ void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // Called when applying a line style on a feature geometry.  Line styles can
 // only be applied to linestring and polygon feature geometry types.
 void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
@@ -241,6 +255,7 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // Called when applying an area style on a feature geometry.  Area styles can
 // can only be applied to polygon feature geometry types.
 void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
@@ -265,11 +280,12 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
     LineBuffer* xfgeom = LineBufferPool::NewLineBuffer(m_bp, featGeom->point_count());
     TransformLB(ctx->geometry, xfgeom, w2s, true);
 
-    SE_AreaPositioning ap(xfgeom, style);
+    // account for any viewport rotation
+    SE_AreaPositioning ap(xfgeom, style, GetWorldToScreenRotation());
+    double baserot = ap.PatternRotation();
 
     SE_Matrix xform;
     SE_Matrix xformbase = *ctx->xform;
-    double baserot = ap.PatternRotation();
     xformbase.rotate(baserot);
 
     for (const SE_Tuple* pos = ap.NextLocation(); pos != NULL; pos = ap.NextLocation())
@@ -281,6 +297,7 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                              const SE_Matrix& xform,
                              double angleRad,
@@ -289,7 +306,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
 {
     RS_Bounds extents(DBL_MAX, DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX, -DBL_MAX);
 
-    for (unsigned i = 0; i < symbol.size(); i++)
+    for (unsigned i=0; i<symbol.size(); ++i)
     {
         SE_RenderPrimitive* primitive = symbol[i];
 
@@ -386,6 +403,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 void SE_Renderer::AddLabel(LineBuffer* geom, SE_RenderStyle* style, const SE_Matrix& xform, double angleRad)
 {
     // clone the SE_RenderStyle so that the label renderer can keep track
@@ -398,18 +416,21 @@ void SE_Renderer::AddLabel(LineBuffer* geom, SE_RenderStyle* style, const SE_Mat
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 void SE_Renderer::SetBufferPool(SE_BufferPool* pool)
 {
     m_bp = pool;
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 const RS_F_Point* SE_Renderer::GetLastSymbolExtent()
 {
     return m_lastSymbolExtent;
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // cloning of render styles - unfortunate but necessary for delay-drawing labels
 SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
 {
@@ -558,6 +579,7 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // This method computes the segment lengths for the geometry.  For a given
 // contour with N points starting at index M, the length for the entire
 // contour is stored at location M, while the segment lengths are stored at
@@ -604,6 +626,7 @@ void SE_Renderer::ComputeSegmentLengths(LineBuffer* geometry, double* segLens)
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // This method computes group lengths.  The segGroups array is the one
 // obtained from ComputeSegmentGroups.
 void SE_Renderer::ComputeGroupLengths(double* segLens, int numGroups, int* segGroups, double* groupLens)
@@ -622,6 +645,7 @@ void SE_Renderer::ComputeGroupLengths(double* segLens, int numGroups, int* segGr
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // This method groups together segments for the specified contour based on
 // the supplied vertex angle limit.  Any pair of segments are part of the
 // same group if their relative angle is less then the vertex angle limit.
@@ -718,6 +742,7 @@ int SE_Renderer::ComputeSegmentGroups(LineBuffer* geometry, int contour, double 
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // Computes the point distribution for a group, given its start offset, end
 // end offset, and repeat.
 //
@@ -853,6 +878,7 @@ void SE_Renderer::ComputeGroupDistribution(double groupLen, double startOffset, 
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // Distributes symbols along a polyline using the OverlapNone vertex control option.
 void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyle* style, double* segLens)
 {
@@ -868,9 +894,22 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
     double baseAngleCos = cos(baseAngleRad);
     double baseAngleSin = sin(yUp? baseAngleRad : -baseAngleRad);
 
-    double angleRad = baseAngleRad;
-    double angleCos = baseAngleCos;
-    double angleSin = baseAngleSin;
+    // account for any viewport rotation
+    double w2sAngleRad = GetWorldToScreenRotation();
+
+    double angleRad, angleCos, angleSin;
+    if (w2sAngleRad == 0.0)
+    {
+        angleRad = baseAngleRad;
+        angleCos = baseAngleCos;
+        angleSin = baseAngleSin;
+    }
+    else
+    {
+        angleRad = baseAngleRad + w2sAngleRad;
+        angleCos = cos(angleRad);
+        angleSin = sin(yUp? angleRad : -angleRad);
+    }
 
     // screen coordinates of current line segment
     double segX0, segY0, segX1, segY1;
@@ -1145,6 +1184,7 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // Distributes feature labels along a polyline.
 void SE_Renderer::ProcessLineLabels(LineBuffer* geometry, SE_RenderLineStyle* style)
 {
@@ -1162,9 +1202,22 @@ void SE_Renderer::ProcessLineLabels(LineBuffer* geometry, SE_RenderLineStyle* st
     double baseAngleCos = cos(baseAngleRad);
     double baseAngleSin = sin(yUp? baseAngleRad : -baseAngleRad);
 
-    double angleRad = baseAngleRad;
-    double angleCos = baseAngleCos;
-    double angleSin = baseAngleSin;
+    // account for any viewport rotation
+    double w2sAngleRad = GetWorldToScreenRotation();
+
+    double angleRad, angleCos, angleSin;
+    if (w2sAngleRad == 0.0)
+    {
+        angleRad = baseAngleRad;
+        angleCos = baseAngleCos;
+        angleSin = baseAngleSin;
+    }
+    else
+    {
+        angleRad = baseAngleRad + w2sAngleRad;
+        angleCos = cos(angleRad);
+        angleSin = sin(yUp? angleRad : -angleRad);
+    }
 
     // screen coordinates of current line segment
     double segX0, segY0, segX1, segY1;
@@ -1268,6 +1321,7 @@ void SE_Renderer::ProcessLineLabels(LineBuffer* geometry, SE_RenderLineStyle* st
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // Distributes symbols along a polyline using the OverlapDirect vertex control option.
 // This setting is intended to only be used in the context of point symbols.  These
 // symbols are simply drawn without any wrapping, truncation, or other modification.
@@ -1296,9 +1350,22 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
     double baseAngleCos = cos(baseAngleRad);
     double baseAngleSin = sin(yUp? baseAngleRad : -baseAngleRad);
 
-    double angleRad = baseAngleRad;
-    double angleCos = baseAngleCos;
-    double angleSin = baseAngleSin;
+    // also account for any viewport rotation
+    double w2sAngleRad = GetWorldToScreenRotation();
+
+    double angleRad, angleCos, angleSin;
+    if (w2sAngleRad == 0.0)
+    {
+        angleRad = baseAngleRad;
+        angleCos = baseAngleCos;
+        angleSin = baseAngleSin;
+    }
+    else
+    {
+        angleRad = baseAngleRad + w2sAngleRad;
+        angleCos = cos(angleRad);
+        angleSin = sin(yUp? angleRad : -angleRad);
+    }
 
     // screen coordinates of current line segment
     double segX0, segY0, segX1, segY1;
@@ -1507,6 +1574,7 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // Distributes symbols along a polyline using the OverlapWrap vertex control option.
 void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyle* style)
 {
@@ -1532,12 +1600,4 @@ void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyl
     }
 
     LineBufferPool::FreeLineBuffer(m_bp, xfgeom);
-}
-
-
-void SE_Renderer::DrawScreenRaster(unsigned char* /*data*/, int /*length*/,
-                                   RS_ImageFormat /*format*/, int /*native_width*/,
-                                   int /*native_height*/, SE_Tuple* /*uv_quads*/,
-                                   SE_Tuple* /*xy_quads*/, int /*txlength*/)
-{
 }
