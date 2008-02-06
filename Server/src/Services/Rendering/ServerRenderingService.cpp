@@ -799,7 +799,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                     MgConfigProperties::FeatureServicePropertyDataCacheSize,
                     selectionSize,
                     MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize);
-            
+
                 for (int s=0; s<selLayers->GetCount(); s++)
                 {
                     Ptr<MgLayerBase> selLayer = selLayers->GetItem(s);
@@ -1250,7 +1250,3 @@ SE_Renderer* MgServerRenderingService::CreateRenderer(int width,
     else
         return new GDRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);
 }
-
-
-
-
