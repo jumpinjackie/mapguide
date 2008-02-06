@@ -1830,6 +1830,18 @@ void AGGRenderer::SetWorldToScreenTransform(SE_Matrix& xform)
 }
 
 
+void AGGRenderer::WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy)
+{
+    m_xform.transform(inx, iny, ox, oy);
+}
+
+
+void AGGRenderer::ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy)
+{
+    m_ixform.transform(inx, iny, ox, oy);
+}
+
+
 double AGGRenderer::GetPixelsPerMillimeterScreen()
 {
     return m_dpi / MILLIMETERS_PER_INCH;
@@ -1854,20 +1866,6 @@ void AGGRenderer::AddExclusionRegion(RS_F_Point* fpts, int npts)
 }
 
 
-void AGGRenderer::WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy)
-{
-    //TODO: assumes no rotation of the viewport
-    m_xform.transform(inx, iny, ox, oy);
-}
-
-
-void AGGRenderer::ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy)
-{
-    //TODO: assumes no rotation of the viewport
-    m_ixform.transform(inx, iny, ox, oy);
-}
-
-
 //labeling -- this is the entry API for adding SE labels
 //to the label mananger
 void AGGRenderer::ProcessSELabelGroup(SE_LabelInfo*   labels,
@@ -1876,8 +1874,6 @@ void AGGRenderer::ProcessSELabelGroup(SE_LabelInfo*   labels,
                                       bool            exclude,
                                       LineBuffer*     path)
 {
-    //pass labels to the label renderer here
-
     //check if we are rendering a selection -- bail if so
     if (m_bSelectionMode)
         return;

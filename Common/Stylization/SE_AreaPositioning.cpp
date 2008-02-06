@@ -19,7 +19,8 @@
 #include "SE_GeometryOperations.h"
 #include <float.h>
 
-SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* style)
+
+SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* style, double w2sAngleRad)
 {
     SE_Tuple min = SE_Tuple(geom->bounds().minx, geom->bounds().miny);
     SE_Tuple max = SE_Tuple(geom->bounds().maxx, geom->bounds().maxy);
@@ -29,21 +30,22 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
         double slope;
         geom->Centroid(LineBuffer::ctArea, &m_base_pt.x, &m_base_pt.y, &slope);
     }
-    /* Use parametric coordinates where [(0,0), (1,1)] is the extent of the polygon bounding box. */
     else if (wcscmp(style->originControl, L"Local") == 0)
     {
+        // use parametric coordinates where [(0,0), (1,1)] is the extent of the polygon bounding box
         m_base_pt = min + (max - min) * SE_Tuple(style->origin[0], style->origin[1]);
     }
-    /* Global */
     else
     {
+        // Global
         m_base_pt.x = style->origin[0];
         m_base_pt.y = style->origin[1];
     }
 
-    /* Angle is the same direction as longest segment */
+    m_angle_rad = style->angleRad;
     if (wcscmp(style->angleControl, L"FromGeometry") == 0)
     {
+        // angle is the same direction as longest segment
         double maxlensq = -1.0;
         SE_Tuple dir;
 
@@ -71,14 +73,18 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
 
         m_angle_rad = atan2(dir.y, dir.x);
     }
-    /* FromAngle */
     else
-        m_angle_rad = style->angleRad;
+    {
+        // FromAngle
+
+        // here we need to account for the viewport rotation
+        m_angle_rad = style->angleRad + w2sAngleRad;
+    }
 
     double cosa = cos(m_angle_rad);
     double sina = sin(m_angle_rad);
 
-    m_h_vec = SE_Tuple(cosa, sina) * style->repeat[0];
+    m_h_vec = SE_Tuple( cosa, sina) * style->repeat[0];
     m_v_vec = SE_Tuple(-sina, cosa) * style->repeat[1];
 
     SE_Tuple sym_bnd_min, sym_bnd_max;
@@ -194,7 +200,7 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
 
 SE_AreaPositioning::~SE_AreaPositioning()
 {
-    if(m_v_buf != m_v_min)
+    if (m_v_buf != m_v_min)
         delete[] m_v_min;
 }
 
