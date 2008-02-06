@@ -28,6 +28,7 @@
 using namespace MDFMODEL_NAMESPACE;
 
 
+///////////////////////////////////////////////////////////////////////////////
 SE_Renderer::SE_Renderer()
 : m_bp(NULL)
 , m_bSelectionMode(false)
@@ -38,6 +39,7 @@ SE_Renderer::SE_Renderer()
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 SE_Renderer::~SE_Renderer()
 {
 }
@@ -277,6 +279,23 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 
     SE_Matrix w2s;
     GetWorldToScreenTransform(w2s);
+
+    //--------------------------------------------------------------
+    // special code to handle simple solid fill styles
+    //--------------------------------------------------------------
+
+    if (style->solidFill)
+    {
+        // just draw it and bail out of the layout function
+        SE_RenderPolygon* rp = (SE_RenderPolygon*)style->symbol[0];
+
+        if (m_bSelectionMode)
+            DrawScreenPolygon(featGeom, &w2s, m_selFillColor);
+        else
+            DrawScreenPolygon(featGeom, &w2s, rp->fill);
+        return;
+    }
+
     LineBuffer* xfgeom = LineBufferPool::NewLineBuffer(m_bp, featGeom->point_count());
     TransformLB(ctx->geometry, xfgeom, w2s, true);
 

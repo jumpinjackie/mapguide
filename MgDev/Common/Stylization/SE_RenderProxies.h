@@ -230,6 +230,8 @@ struct SE_RenderAreaStyle : public SE_RenderStyle
     double origin[2];
     double repeat[2];
     double bufferWidth;
+
+    bool solidFill;
 };
 
 
