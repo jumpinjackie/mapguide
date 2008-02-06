@@ -173,7 +173,7 @@ PUBLISHED_API:
     /// // Get a resource identifier for the library
     /// $resourceID = new MgResourceIdentifier('Library://');
     /// // Read the new content from a file
-    /// $byteSource = new MgByteSource('C:DataRepositoryContent.xml');
+    /// $byteSource = new MgByteSource('C:\Data\Repository\Content.xml');
     /// // Put that MgByteSource into an MgByteReader
     /// $byteReader = $byteSource->GetReader();
     /// // Update the repository content
@@ -240,7 +240,7 @@ PUBLISHED_API:
     /// \htmlinclude PHPExampleTop.html
     /// \code
     /// // Assuming $resourceService is already initialized.
-    /// $filepath = 'C:DataPackagespackage.mgp';
+    /// $filepath = 'C:\Data\Packages\package.mgp';
     /// $byteSource = new MgByteSource($filepath);
     /// $byteReader = $byteSource->GetReader();
     /// $resourceService->ApplyResourcePackage($byteReader);
@@ -605,12 +605,12 @@ PUBLISHED_API:
     /// \code
     /// $resourceID= new MgResourceIdentifier("Library://Geography/World.MapDefinition");
     ///
-    /// $content  = "C:DataMapsWorld.MapDefinition";
+    /// $content  = "C:\Data\Maps\World.MapDefinition";
     /// $content_byteSource = new MgByteSource($content);
     /// $content_byteSource->setMimeType("text/xml");
     /// $content_byteReader = $content_byteSource->GetReader();
     ///
-    /// $header   = "C:DataMapsResourceDocumentHeader.xml";
+    /// $header   = "C:\Data\Maps\Resource\DocumentHeader.xml";
     /// $header_byteSource = new MgByteSource($header);
     /// $header_byteSource->setMimeType("text/xml");
     /// $header_byteReader = $header_byteSource->GetReader();
@@ -1194,7 +1194,7 @@ PUBLISHED_API:
     /// // Assuming that $resourceService has already been initialized
     /// // Assuming that 'Library://Geography/Calgary points of interest.FeatureSource' has already been added to the repository
     /// $resourceID = new MgResourceIdentifier('Library://Geography/Calgary points of interest.FeatureSource');
-    /// $byteSource = new MgByteSource('C:DataCalgaryDataCalgary points.sdf');
+    /// $byteSource = new MgByteSource('C:\Data\Calgary\Data\Calgary_points.sdf');
     /// $data = $byteSource->GetReader();
     /// $resourceService->SetResourceData($resourceID, 'locations of points of interest', 'File', $data);
     /// \endcode
@@ -1203,7 +1203,7 @@ PUBLISHED_API:
     /// \code
     /// // Assuming that 'Library://Geography/Calgary symbols.SymbolSet' has already been added to the repository
     /// $resourceID = new MgResourceIdentifier('Library://Geography/Trees.SymbolLibrary');
-    /// $byteSource = new MgByteSource('C:DataCalgaryDatamarkers.dwf');
+    /// $byteSource = new MgByteSource('C:\Data\Calgary\Data\markers.dwf');
     /// $data = $byteSource->GetReader();
     /// $resourceService->SetResourceData($resourceID, 'symbols for points of interest', 'Stream', $data);
     /// \endcode
@@ -1213,7 +1213,7 @@ PUBLISHED_API:
     /// \code
     /// // Assuming that 'Library://Geography/database connnection.FeatureSource' has already been added to the repository
     /// $resourceID = new MgResourceIdentifier('Library://Geography/database connnection.FeatureSource');
-    /// $byteSource = new MgByteSource('C:DataCalgaryDatacredentials.txt');
+    /// $byteSource = new MgByteSource('C:\Data\Calgary\Data\credentials.txt');
     /// $data = $byteSource->GetReader();
     /// $dataName = new MgResourceDataName();
     /// $resourceService->SetResourceData($resourceID, MgResourceDataName::UserCredentials, 'String', $data);
@@ -1388,7 +1388,7 @@ PUBLISHED_API:
     /// $resourceID = new MgResourceIdentifier("Library://Geography/Calgary points of interest.FeatureSource");
     /// $byteReader = $resourceService->GetResourceData($resourceID, "locations of points of interest");
     /// $byteSink = new MgByteSink($byteReader);
-    /// $byteSink->ToFile('C:temppoints.sdf');
+    /// $byteSink->ToFile('C:\temp\points.sdf');
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///

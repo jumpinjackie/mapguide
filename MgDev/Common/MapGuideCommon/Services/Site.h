@@ -196,7 +196,7 @@ PUBLISHED_API:
     /// is stored back in the MgUserInformation object. This is necessary for GetCurrentSession to work.
     /// \code
     /// // Initialize the web tier
-    /// MgInitializeWebTier('C:\\Inetpub\\wwwroot\\PhpMapAgent\\webconfig.ini');
+    /// MgInitializeWebTier('C:\Inetpub\wwwroot\PhpMapAgent\webconfig.ini');
     ///
     /// // Establish a connection to a site.
     /// $userInformation = new MgUserInformation('Administrator', 'admin');

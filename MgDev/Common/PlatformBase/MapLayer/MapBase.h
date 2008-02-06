@@ -72,9 +72,9 @@ typedef map<double, double, less<double> > SORTEDSCALES;
 /// try
 /// {
 ///     // Include constants like MgServiceType::ResourceService
-///     include 'C:\\Inetpub\\wwwroot\\PhpMapAgent\\MgConstants.php';
+///     include 'C:\Inetpub\wwwroot\PhpMapAgent\MgConstants.php';
 ///     // Initialize
-///     MgInitializeWebTier('C:\\Inetpub\\wwwroot\\PhpMapAgent\\webconfig.ini');
+///     MgInitializeWebTier('C:\Inetpub\wwwroot\PhpMapAgent\webconfig.ini');
 ///     // Establish a connection with a MapGuide site.
 ///     $user = new MgUserInformation('Administrator', 'admin');
 ///     $siteConnection = new MgSiteConnection();
@@ -500,7 +500,7 @@ PUBLISHED_API:
     /// Loads the map object from a session repository.
     ///
     /// \remarks
-    /// For more information, see \link Mapping_Service_Module Mapping Service \endlink.
+    /// For more information, see \ref Maps_and_Layers_Module "Maps and Layers".
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
