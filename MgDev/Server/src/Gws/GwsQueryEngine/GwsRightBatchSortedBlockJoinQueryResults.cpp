@@ -117,39 +117,35 @@ bool CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()
 
             if(bRet)
             {
-                FdoPtr<FdoDataValue> dataValue = (FdoDataValue*)m_joinkeys.GetItem(m_joinKeyIndex);
-                FdoStringP keyValue;
-                if(dataValue->GetDataType() == FdoDataType_String )
-                {
-                    // Get the actual string value
-                    keyValue = ((FdoStringValue*)dataValue.p)->GetString();
-                }
-                else
-                {
-                    // Convert it to a string
-                    keyValue = dataValue->ToString();
-                }
-
                 bool bIsNullResult = m_reader->IsNull(propname);
                 if(!bIsNullResult)
                 {
-                    FdoStringP secondary = L""; // NOXLATE
-                    secondary = GetSecondaryAsString(dtSecondary, propname);
+                    FdoPtr<FdoDataValue> dataValuePrimary = (FdoDataValue*)m_joinkeys.GetItem(m_joinKeyIndex);
+                    FdoPtr<FdoDataValue> dataValueSecondary = GetSecondaryDataValue(dtSecondary, propname);
+                    int compare = GWSFdoUtilities::CompareDataValues(dataValuePrimary, dataValueSecondary);
 
                     #ifdef _DEBUG_BATCHSORT_JOIN
-                    printf("*** Comparing - KV:%S, S:%S = %d ***\n", (FdoString*)keyValue, (FdoString*)secondary, wcscmp(keyValue,secondary));
+                    printf("*** Comparing - KV:%S, S:%S = %d ***\n", dataValuePrimary->ToString(), dataValueSecondary->ToString(), compare);
                     #endif
 
-                    if(wcscmp(keyValue,L"UY") == 0)
+                    if(compare == 0) // (keyValue == secondary)
                     {
-                        int x = 0;
-                    }
+                        #ifdef _DEBUG_BATCHSORT_JOIN
+                        printf("*** MATCH - KV:%S = S:%S ***\n", dataValuePrimary->ToString(), dataValueSecondary->ToString());
+                        #endif
+                        m_pool->AddFeature (this);
 
-                    if(wcscmp(keyValue,secondary) < 0)
+                        bDone = true;
+
+                        // What about one-to-one and one-to-many?
+                        m_pos = eBeforeFirstRow;
+                        bRet = true;
+                    }
+                    else if(compare == -1) // (keyValue < secondary)
                     {
                         // No Match
                         #ifdef _DEBUG_BATCHSORT_JOIN
-                        printf("*** NO MATCH - KV:%S < S:%S ***\n", (FdoString*)keyValue, (FdoString*)secondary);
+                        printf("*** NO MATCH - KV:%S < S:%S ***\n", dataValuePrimary->ToString(), dataValueSecondary->ToString());
                         #endif
 
                         // Secondary key is after primary key and thus requires the primary to be advanced.
@@ -204,29 +200,20 @@ bool CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()
                             bRet = false;
                         }
                     }
-                    else if(wcscmp(keyValue,secondary) == 0)
-                    {
-                        #ifdef _DEBUG_BATCHSORT_JOIN
-                        printf("*** MATCH - KV:%S = S:%S ***\n", (FdoString*)keyValue, (FdoString*)secondary);
-                        #endif
-                        m_pool->AddFeature (this);
-
-                        bDone = true;
-
-                        // What about one-to-one and one-to-many?
-                        m_pos = eBeforeFirstRow;
-                        bRet = true;
-                    }
                     else
                     {
                         // No Match
                         #ifdef _DEBUG_BATCHSORT_JOIN
-                        printf("*** NO MATCH - KV:%S != S:%S ***\n", (FdoString*)keyValue, (FdoString*)secondary);
+                        printf("*** NO MATCH - KV:%S != S:%S ***\n", dataValuePrimary->ToString(), dataValueSecondary->ToString());
                         #endif
 
                         // We want to continue reading from the secondary if we can
                         m_pos = eBeforeFirstRow;
                     }
+                }
+                else
+                {
+                    // NULL property
                 }
             }
             else
@@ -340,7 +327,9 @@ EGwsStatus CGwsRightBatchSortedBlockJoinQueryResults::SetRelatedValues (
         Close ();
 
         FdoString* propname = m_joincols->GetString (0);
-        WSTR filter = propname;
+        WSTR filter = L"\"";
+        filter += propname;
+        filter += L"\"";
         filter += L" IN ("; // NOXLATE
 
         FdoPtr<FdoFilter> pFilter;
@@ -384,9 +373,9 @@ EGwsStatus CGwsRightBatchSortedBlockJoinQueryResults::SetRelatedValues (
     return stat;
 }
 
-FdoStringP CGwsRightBatchSortedBlockJoinQueryResults::GetSecondaryAsString(FdoDataType dtSecondary, FdoString* propname)
+FdoDataValue* CGwsRightBatchSortedBlockJoinQueryResults::GetSecondaryDataValue(FdoDataType dtSecondary, FdoString* propname)
 {
-    FdoStringP secondary = L""; // NOXLATE
+    FdoPtr<FdoDataValue> secondary;
 
     switch (dtSecondary)
     {
@@ -395,7 +384,7 @@ FdoStringP CGwsRightBatchSortedBlockJoinQueryResults::GetSecondaryAsString(FdoDa
                 FdoByte result = m_reader->GetByte(propname);
                 FdoPtr<FdoByteValue> val = FdoByteValue::Create();
                 val->SetByte(result);
-                secondary = val->ToString();
+                secondary = val;
             }
             break;
         case FdoDataType_Int16:
@@ -403,7 +392,7 @@ FdoStringP CGwsRightBatchSortedBlockJoinQueryResults::GetSecondaryAsString(FdoDa
                 FdoInt16 result = m_reader->GetInt16(propname);
                 FdoPtr<FdoInt16Value> val = FdoInt16Value::Create();
                 val->SetInt16(result);
-                secondary = val->ToString();
+                secondary = val;
             }
             break;
         case FdoDataType_Int32:
@@ -411,7 +400,7 @@ FdoStringP CGwsRightBatchSortedBlockJoinQueryResults::GetSecondaryAsString(FdoDa
                 FdoInt32 result = m_reader->GetInt32(propname);
                 FdoPtr<FdoInt32Value> val = FdoInt32Value::Create();
                 val->SetInt32(result);
-                secondary = val->ToString();
+                secondary = val;
             }
             break;
         case FdoDataType_Int64:
@@ -419,7 +408,7 @@ FdoStringP CGwsRightBatchSortedBlockJoinQueryResults::GetSecondaryAsString(FdoDa
                 FdoInt64 result = m_reader->GetInt64(propname);
                 FdoPtr<FdoInt64Value> val = FdoInt64Value::Create();
                 val->SetInt64(result);
-                secondary = val->ToString();
+                secondary = val;
             }
             break;
         case FdoDataType_Single:
@@ -427,7 +416,7 @@ FdoStringP CGwsRightBatchSortedBlockJoinQueryResults::GetSecondaryAsString(FdoDa
                 float result = m_reader->GetSingle(propname);
                 FdoPtr<FdoSingleValue> val = FdoSingleValue::Create();
                 val->SetSingle(result);
-                secondary = val->ToString();
+                secondary = val;
             }
             break;
         case FdoDataType_Double:
@@ -435,7 +424,7 @@ FdoStringP CGwsRightBatchSortedBlockJoinQueryResults::GetSecondaryAsString(FdoDa
                 double result = m_reader->GetDouble(propname);
                 FdoPtr<FdoDoubleValue> val = FdoDoubleValue::Create();
                 val->SetDouble(result);
-                secondary = val->ToString();
+                secondary = val;
             }
             break;
         case FdoDataType_Decimal:
@@ -443,7 +432,7 @@ FdoStringP CGwsRightBatchSortedBlockJoinQueryResults::GetSecondaryAsString(FdoDa
                 double result = m_reader->GetDouble(propname);
                 FdoPtr<FdoDecimalValue> val = FdoDecimalValue::Create();
                 val->SetDecimal(result);
-                secondary = val->ToString();
+                secondary = val;
             }
             break;
         case FdoDataType_String:
@@ -451,14 +440,14 @@ FdoStringP CGwsRightBatchSortedBlockJoinQueryResults::GetSecondaryAsString(FdoDa
                 FdoStringP result = m_reader->GetString(propname);
                 FdoPtr<FdoStringValue> val = FdoStringValue::Create();
                 val->SetString(result);
-                secondary = val->GetString();
+                secondary = val;
             }
             break;
         default:
             break;
     }
 
-    return secondary;
+    return secondary.Detach();
 }
 
 bool CGwsRightBatchSortedBlockJoinQueryResults::IsNull (FdoString* propertyName)

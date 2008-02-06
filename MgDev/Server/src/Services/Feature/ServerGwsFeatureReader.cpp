@@ -45,6 +45,7 @@ MgServerGwsFeatureReader::MgServerGwsFeatureReader(
                                                   m_bForceOneToOne);
     m_removeFromPoolOnDestruction = false;
     m_bNoMoreData = false;
+    m_classDef = NULL;
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.MgServerGwsFeatureReader")
 }
@@ -65,6 +66,8 @@ MgServerGwsFeatureReader::MgServerGwsFeatureReader()
     m_expressionEngine = NULL;
     m_filter = NULL;
     m_removeFromPoolOnDestruction = false;
+    m_bNoMoreData = false;
+    m_classDef = NULL;
 }
 
 //////////////////////////////////////////////////////////////////
@@ -104,6 +107,9 @@ MgServerGwsFeatureReader::~MgServerGwsFeatureReader()
 
 void MgServerGwsFeatureReader::SetFilter(FdoFilter* filter)
 {
+    // Create the join reader
+    m_joinReader = new MgJoinFeatureReader(this);
+
     if(NULL != filter)
     {
         #ifdef _DEBUG
@@ -114,7 +120,6 @@ void MgServerGwsFeatureReader::SetFilter(FdoFilter* filter)
         m_filter = SAFE_ADDREF(filter);
 
         // Create the reader used by the expression engine
-        m_joinReader = new MgJoinFeatureReader(this);
         FdoPtr<FdoClassDefinition> fdoClassDef = m_joinReader->GetClassDefinition();
         m_expressionEngine = FdoExpressionEngine::Create(m_joinReader, fdoClassDef, NULL);
 
@@ -355,14 +360,19 @@ MgClassDefinition* MgServerGwsFeatureReader::GetClassDefinition()
 
     Ptr<MgClassDefinition> classDef;
 
-    MG_FEATURE_SERVICE_TRY()
+    if(NULL == m_classDef.p)
+    {
+        MG_FEATURE_SERVICE_TRY()
 
-    Ptr<MgServerGwsGetFeatures> gwsGetFeatures = new MgServerGwsGetFeatures(m_gwsFeatureIteratorCopy, m_attributeNameDelimiters, m_primaryExtendedFeatureDescription);
-    gwsGetFeatures->SetRelationNames(FdoPtr<FdoStringCollection>(m_gwsGetFeatures->GetRelationNames()));
-    gwsGetFeatures->SetExtensionName(m_gwsGetFeatures->GetExtensionName());
-    classDef = gwsGetFeatures->GetMgClassDefinition(false);
+        Ptr<MgServerGwsGetFeatures> gwsGetFeatures = new MgServerGwsGetFeatures(m_gwsFeatureIteratorCopy, m_attributeNameDelimiters, m_primaryExtendedFeatureDescription);
+        gwsGetFeatures->SetRelationNames(FdoPtr<FdoStringCollection>(m_gwsGetFeatures->GetRelationNames()));
+        gwsGetFeatures->SetExtensionName(m_gwsGetFeatures->GetExtensionName());
+        m_classDef = gwsGetFeatures->GetMgClassDefinition(false);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetClassDefinition")
+        MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetClassDefinition")
+    }
+
+    classDef = m_classDef;
 
     return classDef.Detach();
 }
@@ -385,14 +395,19 @@ MgClassDefinition* MgServerGwsFeatureReader::GetClassDefinitionNoXml()
 
     Ptr<MgClassDefinition> classDef;
 
-    MG_FEATURE_SERVICE_TRY()
+    if(NULL == m_classDef.p)
+    {
+        MG_FEATURE_SERVICE_TRY()
 
-    Ptr<MgServerGwsGetFeatures> gwsGetFeatures = new MgServerGwsGetFeatures(m_gwsFeatureIteratorCopy, m_attributeNameDelimiters, m_primaryExtendedFeatureDescription);
-    gwsGetFeatures->SetRelationNames(FdoPtr<FdoStringCollection>(m_gwsGetFeatures->GetRelationNames()));
-    gwsGetFeatures->SetExtensionName(m_gwsGetFeatures->GetExtensionName());
-    classDef = gwsGetFeatures->GetMgClassDefinition(false);
+        Ptr<MgServerGwsGetFeatures> gwsGetFeatures = new MgServerGwsGetFeatures(m_gwsFeatureIteratorCopy, m_attributeNameDelimiters, m_primaryExtendedFeatureDescription);
+        gwsGetFeatures->SetRelationNames(FdoPtr<FdoStringCollection>(m_gwsGetFeatures->GetRelationNames()));
+        gwsGetFeatures->SetExtensionName(m_gwsGetFeatures->GetExtensionName());
+        classDef = gwsGetFeatures->GetMgClassDefinition(false);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetClassDefinitionNoXml")
+        MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetClassDefinitionNoXml")
+    }
+
+    classDef = m_classDef;
 
     return classDef.Detach();
 }
@@ -1227,4 +1242,9 @@ void MgServerGwsFeatureReader::ParseSecondaryPropertyName(CREFSTRING inputPropNa
             relationName = inputPropName.substr(0, nPropStartIndex).c_str();
         }
     }
+}
+
+FdoIFeatureReader* MgServerGwsFeatureReader::GetJoinFeatureReader()
+{
+    return FDO_SAFE_ADDREF(m_joinReader.p);
 }

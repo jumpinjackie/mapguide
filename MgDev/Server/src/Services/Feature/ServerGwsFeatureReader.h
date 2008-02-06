@@ -310,6 +310,7 @@ INTERNAL_API:
     IGWSFeatureIterator* GetFeatureIterator();
     void DeterminePropertyFeatureSource(CREFSTRING inputPropName, IGWSFeatureIterator** gwsFeatureIter, STRING& parsedPropName);
     void SetFilter(FdoFilter* filter);
+    FdoIFeatureReader* GetJoinFeatureReader();
 
 private:
 
@@ -328,6 +329,8 @@ private:
     FdoPtr<MgJoinFeatureReader> m_joinReader;
     FdoPtr<FdoExpressionEngine> m_expressionEngine;
     FdoPtr<FdoFilter> m_filter;
+
+    Ptr<MgClassDefinition> m_classDef;
 
     void ParseSecondaryPropertyName(CREFSTRING inputPropName, CREFSTRING delimiter, CREFSTRING secondaryProp, STRING& relationName, STRING& parsedPropName);
 

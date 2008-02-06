@@ -1257,6 +1257,16 @@ bool CGwsBatchSortedBlockJoinQueryResults::QuickSortCompare(PrimaryCacheEntry* c
         FdoDataType dataType = compareADataValue->GetDataType();
         switch (dataType)
         {
+            case FdoDataType_Int16:
+                {
+                    FdoInt16 compareAValue = ((FdoInt16Value*)(compareADataValue.p))->GetInt16();
+                    FdoInt16 compareBValue = ((FdoInt16Value*)(compareBDataValue.p))->GetInt16();
+                    if(compareAValue < compareBValue)
+                    {
+                        bResult = true;
+                    }
+                }
+                break;
             case FdoDataType_Int32:
                 {
                     FdoInt32 compareAValue = ((FdoInt32Value*)(compareADataValue.p))->GetInt32();
@@ -1267,13 +1277,57 @@ bool CGwsBatchSortedBlockJoinQueryResults::QuickSortCompare(PrimaryCacheEntry* c
                     }
                 }
                 break;
+            case FdoDataType_Int64:
+                {
+                    FdoInt64 compareAValue = ((FdoInt64Value*)(compareADataValue.p))->GetInt64();
+                    FdoInt64 compareBValue = ((FdoInt64Value*)(compareBDataValue.p))->GetInt64();
+                    if(compareAValue < compareBValue)
+                    {
+                        bResult = true;
+                    }
+                }
+                break;
+            case FdoDataType_Single:
+                {
+                    float compareAValue = ((FdoSingleValue*)(compareADataValue.p))->GetSingle();
+                    float compareBValue = ((FdoSingleValue*)(compareBDataValue.p))->GetSingle();
+                    if(compareAValue < compareBValue)
+                    {
+                        bResult = true;
+                    }
+                }
+                break;
+            case FdoDataType_Double:
+                {
+                    double compareAValue = ((FdoDoubleValue*)(compareADataValue.p))->GetDouble();
+                    double compareBValue = ((FdoDoubleValue*)(compareBDataValue.p))->GetDouble();
+                    if(compareAValue < compareBValue)
+                    {
+                        bResult = true;
+                    }
+                }
+                break;
+            case FdoDataType_Decimal:
+                {
+                    double compareAValue = ((FdoDecimalValue*)(compareADataValue.p))->GetDecimal();
+                    double compareBValue = ((FdoDecimalValue*)(compareBDataValue.p))->GetDecimal();
+                    if(compareAValue < compareBValue)
+                    {
+                        bResult = true;
+                    }
+                }
+                break;
             case FdoDataType_String:
+                {
                     FdoStringP compareAValue = ((FdoStringValue*)(compareADataValue.p))->GetString();
                     FdoStringP compareBValue = ((FdoStringValue*)(compareBDataValue.p))->GetString();
                     if(wcscmp(compareAValue, compareBValue) < 0)
                     {
                         bResult = true;
                     }
+                }
+                break;
+            default:
                 break;
         }
     }
