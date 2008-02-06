@@ -793,8 +793,8 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
                 // single segment to the symbol repeat (the unmodified one)
                 double len = lb->x_coord(1) - lb->x_coord(0);
 
-                // repeat must be within 1/1000 of a pixel for us to assume solid line (this
-                // is only to avoid FP precision issues, in reality they would be exactly equal)
+                // repeat must be within 1/10 of a pixel for us to assume solid line (this is
+                // only to avoid FP precision issues, in reality they would be exactly equal)
                 if (fabs(len - origRepeat) < 0.1)
                     render->solidLine = true;
             }
@@ -826,6 +826,8 @@ void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
     render->repeat[0]   = repeat[0].evaluate(cxt->exec)   * fabs(cxt->xform->x0);
     render->repeat[1]   = repeat[1].evaluate(cxt->exec)   * fabs(cxt->xform->y1);
     render->bufferWidth = bufferWidth.evaluate(cxt->exec) * fabs(cxt->xform->x0);
+    double origRepeatX  = render->repeat[0];
+    double origRepeatY  = render->repeat[1];
 
     // It makes no sense to distribute symbols using repeat values which are much
     // less than one pixel.  We'll scale up any values less than 0.25 to 0.5.
@@ -842,6 +844,64 @@ void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
 
     // evaluate all the primitives too
     SE_Style::evaluate(cxt);
+
+    // special code to check if we have a simple solid fill
+    render->solidFill = false;
+    if (origRepeatX > 0.0 && origRepeatY > 0.0)
+    {
+        SE_RenderPrimitiveList& rs = render->symbol;
+
+        // check if it is a single symbol that is not a label participant
+        if (rs.size() == 1
+            && rs[0]->type == SE_RenderPolygonPrimitive
+            && !render->drawLast
+            && !render->addToExclusionRegions)
+        {
+            SE_RenderPolygon* rp = (SE_RenderPolygon*)rs[0];
+            LineBuffer* lb = rp->geometry->xf_buffer();
+
+            // make sure it has no edge style
+            if ((rp->lineStroke.color & 0xFF000000) == 0)
+            {
+                // check if it is a rectangle
+                if (lb->cntr_count() == 1 &&
+                    lb->point_count() == 5 &&
+                    lb->contour_closed(0))
+                {
+                    // case 1: first segment is horizontal
+                    if (lb->y_coord(1) == lb->y_coord(0) &&
+                        lb->x_coord(2) == lb->x_coord(1) &&
+                        lb->y_coord(3) == lb->y_coord(2) &&
+                        lb->x_coord(4) == lb->x_coord(3))
+                    {
+                        // now make sure the rectangle fills the repeat region
+                        double lenX = lb->x_coord(1) - lb->x_coord(0);
+                        double lenY = lb->y_coord(2) - lb->y_coord(1);
+
+                        // repeats must be within 1/10 of a pixel for us to assume solid fill (this is
+                        // only to avoid FP precision issues, in reality they would be exactly equal)
+                        if (fabs(lenX - origRepeatX) < 0.1 && fabs(lenY - origRepeatY) < 0.1)
+                            render->solidFill = true;
+                    }
+                    // case 2: first segment is vertical
+                    else if (lb->x_coord(1) == lb->x_coord(0) &&
+                             lb->y_coord(2) == lb->y_coord(1) &&
+                             lb->x_coord(3) == lb->x_coord(2) &&
+                             lb->y_coord(4) == lb->y_coord(3))
+                    {
+                        // now make sure the rectangle fills the repeat region
+                        double lenY = lb->y_coord(1) - lb->y_coord(0);
+                        double lenX = lb->x_coord(2) - lb->x_coord(1);
+
+                        // repeats must be within 1/10 of a pixel for us to assume solid fill (this is
+                        // only to avoid FP precision issues, in reality they would be exactly equal)
+                        if (fabs(lenX - origRepeatX) < 0.1 && fabs(lenY - origRepeatY) < 0.1)
+                            render->solidFill = true;
+                    }
+                }
+            }
+        }
+    }
 }
 
 
