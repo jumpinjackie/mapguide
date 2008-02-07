@@ -52,7 +52,7 @@ void MgOpQueryFeatureProperties::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpQueryFeatureProperties::Execute()\n")));
 
-    MG_LOG_OPERATION_MESSAGE(L"QueryFeatures");
+    MG_LOG_OPERATION_MESSAGE(L"QueryFeatureProperties");
 
     MG_TRY()
 
@@ -63,6 +63,7 @@ void MgOpQueryFeatureProperties::Execute()
     if (7 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = map->GetResourceId();
         map->SetDelayedLoadResourceService(m_resourceService);
 
         Ptr<MgStringCollection> layerNames = (MgStringCollection*)m_stream->GetObject();
@@ -83,7 +84,7 @@ void MgOpQueryFeatureProperties::Execute()
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(resource->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgStringCollection");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();

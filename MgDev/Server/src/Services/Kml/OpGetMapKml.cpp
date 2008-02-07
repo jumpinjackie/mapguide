@@ -63,6 +63,8 @@ void MgOpGetMapKml::Execute()
     if (4 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = map->GetResourceId();
+
         double dpi;
         m_stream->GetDouble(dpi);
         STRING agentUri;
@@ -73,8 +75,8 @@ void MgOpGetMapKml::Execute()
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"double");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(resource->ToString().c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(dpi);
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(agentUri.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
