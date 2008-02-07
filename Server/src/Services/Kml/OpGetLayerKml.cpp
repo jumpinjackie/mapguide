@@ -63,6 +63,7 @@ void MgOpGetLayerKml::Execute()
     if (8 == m_packet.m_NumArguments)
     {
         Ptr<MgLayer> layer = (MgLayer*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = layer->GetLayerDefinition();
         Ptr<MgEnvelope> extents = (MgEnvelope*)m_stream->GetObject();
         INT32 width;
         m_stream->GetInt32(width);
@@ -79,12 +80,12 @@ void MgOpGetLayerKml::Execute()
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgLayer");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(resource->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgEnvelope");
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"INT32");
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"INT32");
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"double");
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"INT32");
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(width);
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(height);
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(dpi);
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(drawOrder);
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(agentUri.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();

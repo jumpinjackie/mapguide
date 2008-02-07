@@ -63,6 +63,7 @@ void MgOpRenderTile::Execute()
     if (4 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = map->GetResourceId();
         map->SetDelayedLoadResourceService(m_resourceService);
 
         STRING baseMapLayerGroupName;
@@ -77,13 +78,13 @@ void MgOpRenderTile::Execute()
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(resource->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(baseMapLayerGroupName.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"tileCol");
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileCol);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"tileRow");
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileRow);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();

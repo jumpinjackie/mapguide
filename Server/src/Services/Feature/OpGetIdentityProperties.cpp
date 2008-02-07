@@ -54,7 +54,7 @@ void MgOpGetIdentityProperties::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetIdentityProperties::Execute()\n")));
 
-    MG_LOG_OPERATION_MESSAGE(L"MgOpGetIdentityProperties");
+    MG_LOG_OPERATION_MESSAGE(L"GetIdentityProperties");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -78,7 +78,7 @@ void MgOpGetIdentityProperties::Execute()
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(resource->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(schemaName.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();

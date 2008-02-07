@@ -64,22 +64,26 @@ void MgOpGenerateMap::Execute()
     {
         STRING sessionId, mapAgentUri;
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = map->GetResourceId();
         map->SetDelayedLoadResourceService(m_resourceService);
 
         m_stream->GetString(sessionId);
         m_stream->GetString(mapAgentUri);
         Ptr<MgDwfVersion> dwfVersion = (MgDwfVersion*)m_stream->GetObject();
+        STRING version = dwfVersion->GetFileVersion();
+        version += L"/";
+        version += dwfVersion->GetSchemaVersion();
 
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(resource->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(sessionId.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(mapAgentUri.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgDwfVersion");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(version);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();

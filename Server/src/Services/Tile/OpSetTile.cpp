@@ -52,7 +52,7 @@ void MgOpSetTile::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpSetTile::Execute()\n")));
 
-    MG_LOG_OPERATION_MESSAGE(L"GetTile");
+    MG_LOG_OPERATION_MESSAGE(L"SetTile");
 
     MG_TRY()
 
@@ -65,6 +65,7 @@ void MgOpSetTile::Execute()
         Ptr<MgByteReader> img = (MgByteReader*)m_stream->GetObject();
 
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = map->GetResourceId();
         map->SetDelayedLoadResourceService(m_resourceService);
 
         INT32 scaleIndex = 0;
@@ -84,15 +85,15 @@ void MgOpSetTile::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgByteReader");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(resource->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"scaleIndex");
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(scaleIndex);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(baseMapLayerGroupName.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"tileCol");
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileCol);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"tileRow");
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileRow);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();

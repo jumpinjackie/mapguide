@@ -66,6 +66,7 @@ void MgOpMQueryFeatures::Execute()
     {
         STRING layerName, coordinateSpace;
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = map->GetResourceId();
         map->SetDelayedLoadResourceService(m_resourceService);
 
         m_stream->GetString(layerName);
@@ -74,7 +75,7 @@ void MgOpMQueryFeatures::Execute()
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(resource->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(layerName.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
