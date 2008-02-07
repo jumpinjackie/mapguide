@@ -29,13 +29,13 @@
 #define MG_CONFIG_MAX_FS_CACHE_TIMELIMIT                MG_CONFIG_MAX_INT32
 
 #define MG_CONFIG_MIN_FS_CACHE_TIMERINTERVAL            0
-#define MG_CONFIG_MAX_FS_CACHE_TIMERINTERVAL            86400 // 24 hours
+#define MG_CONFIG_MAX_FS_CACHE_TIMERINTERVAL            MG_CONFIG_MAX_INT32
 
 #define MG_CONFIG_MIN_CACHE_SIZE                        1
 #define MG_CONFIG_MAX_CACHE_SIZE                        MG_CONFIG_MAX_INT32
 
 #define MG_CONFIG_MIN_CONNECTION_POOL_SIZE              1
-#define MG_CONFIG_MAX_CONNECTION_POOL_SIZE              100
+#define MG_CONFIG_MAX_CONNECTION_POOL_SIZE              1024
 
 #define MG_CONFIG_MIN_CONNECTIONS                       1
 #define MG_CONFIG_MAX_CONNECTIONS                       1024
@@ -50,13 +50,13 @@
 #define MG_CONFIG_MAX_THREAD_POOL_SIZE                  1024
 
 #define MG_CONFIG_MIN_TIMEOUT                           1
-#define MG_CONFIG_MAX_TIMEOUT                           86400
+#define MG_CONFIG_MAX_TIMEOUT                           MG_CONFIG_MAX_INT32
 
 #define MG_CONFIG_MIN_TIMER_INTERVAL                    1
 #define MG_CONFIG_MAX_TIMER_INTERVAL                    MG_CONFIG_MAX_INT32
 
 #define MG_CONFIG_MIN_JOIN_QUERY_BATCH_SIZE             1
-#define MG_CONFIG_MAX_JOIN_QUERY_BATCH_SIZE             1024
+#define MG_CONFIG_MAX_JOIN_QUERY_BATCH_SIZE             10000
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Length ranges of string properties
