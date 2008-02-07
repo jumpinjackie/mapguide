@@ -114,7 +114,7 @@ void ByteSourceFileImpl::Rename(CREFSTRING newName)
 void ByteSourceFileImpl::LoadFile(CREFSTRING filename)
 {
     //Use ACE open insted of _wfopen to allow Linux compatibility
-    m_file = ACE_OS::open(MG_WCHAR_TO_TCHAR(filename), 0, FILE_SHARE_READ, 0);
+    m_file = ACE_OS::open(MG_WCHAR_TO_TCHAR(filename), 0, ACE_DEFAULT_OPEN_PERMS, 0);
     if(m_file == ACE_INVALID_HANDLE)
     {
         MgStringCollection arguments;
