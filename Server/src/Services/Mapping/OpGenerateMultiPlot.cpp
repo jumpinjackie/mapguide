@@ -71,13 +71,16 @@ void MgOpGenerateMultiPlot::Execute()
         }
 
         Ptr<MgDwfVersion> dwfVersion = (MgDwfVersion*)m_stream->GetObject();
+        STRING version = dwfVersion->GetFileVersion();
+        version += L"/";
+        version += dwfVersion->GetSchemaVersion();
 
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMapPlotCollection");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgDwfVersion");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(version);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();

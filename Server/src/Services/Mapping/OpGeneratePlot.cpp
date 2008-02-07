@@ -63,22 +63,26 @@ void MgOpGeneratePlot::Execute()
     if (4 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = map->GetResourceId();
         map->SetDelayedLoadResourceService(m_resourceService);
 
         Ptr<MgPlotSpecification> plotSpec = (MgPlotSpecification*)m_stream->GetObject();
         Ptr<MgLayout> layout = (MgLayout*)m_stream->GetObject();
         Ptr<MgDwfVersion> dwfVersion = (MgDwfVersion*)m_stream->GetObject();
+        STRING version = dwfVersion->GetFileVersion();
+        version += L"/";
+        version += dwfVersion->GetSchemaVersion();
 
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(resource->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgPlotSpecification");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgLayout");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgDwfVersion");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(version);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
@@ -91,6 +95,7 @@ void MgOpGeneratePlot::Execute()
     else if (6 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = map->GetResourceId();
         map->SetDelayedLoadResourceService(m_resourceService);
 
         Ptr<MgEnvelope> extents = (MgEnvelope*)m_stream->GetObject();
@@ -99,21 +104,24 @@ void MgOpGeneratePlot::Execute()
         Ptr<MgPlotSpecification> plotSpec = (MgPlotSpecification*)m_stream->GetObject();
         Ptr<MgLayout> layout = (MgLayout*)m_stream->GetObject();
         Ptr<MgDwfVersion> dwfVersion = (MgDwfVersion*)m_stream->GetObject();
+        STRING version = dwfVersion->GetFileVersion();
+        version += L"/";
+        version += dwfVersion->GetSchemaVersion();
 
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(resource->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgEnvelope");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"bool");
+        MG_LOG_OPERATION_MESSAGE_ADD_BOOL(expandToFit);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgPlotSpecification");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgLayout");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgDwfVersion");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(version);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
@@ -126,6 +134,7 @@ void MgOpGeneratePlot::Execute()
     else if (7 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = map->GetResourceId();
         map->SetDelayedLoadResourceService(m_resourceService);
 
         double centerX = 0.0;
@@ -138,21 +147,24 @@ void MgOpGeneratePlot::Execute()
         Ptr<MgPlotSpecification> plotSpec = (MgPlotSpecification*)m_stream->GetObject();
         Ptr<MgLayout> layout = (MgLayout*)m_stream->GetObject();
         Ptr<MgDwfVersion> dwfVersion = (MgDwfVersion*)m_stream->GetObject();
+        STRING version = dwfVersion->GetFileVersion();
+        version += L"/";
+        version += dwfVersion->GetSchemaVersion();
 
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(resource->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgCoordinate");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"double");
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(scale);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgPlotSpecification");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgLayout");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgDwfVersion");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(version);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();

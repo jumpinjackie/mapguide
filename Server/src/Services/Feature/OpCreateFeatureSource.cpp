@@ -54,7 +54,7 @@ void MgOpCreateFeatureSource::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpCreateFeatureSource::Execute()\n")));
 
-    MG_LOG_OPERATION_MESSAGE(L"SelectFeatures");
+    MG_LOG_OPERATION_MESSAGE(L"CreateFeatureSource");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -73,7 +73,7 @@ void MgOpCreateFeatureSource::Execute()
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(resource->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgCreateSdfParams");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();

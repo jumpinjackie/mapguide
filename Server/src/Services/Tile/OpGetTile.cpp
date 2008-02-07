@@ -65,6 +65,8 @@ void MgOpGetTile::Execute()
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
         map->SetDelayedLoadResourceService(m_resourceService);
 
+        Ptr<MgResourceIdentifier> resource = map->GetResourceId();
+
         STRING baseMapLayerGroupName;
         m_stream->GetString(baseMapLayerGroupName);
 
@@ -77,13 +79,13 @@ void MgOpGetTile::Execute()
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(resource->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(baseMapLayerGroupName.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"tileCol");
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileCol);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"tileRow");
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileRow);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
@@ -112,15 +114,15 @@ void MgOpGetTile::Execute()
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(mapDefinition->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(baseMapLayerGroupName.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"tileCol");
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileCol);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"tileRow");
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileRow);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(scale);
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(scale);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
