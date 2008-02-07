@@ -54,7 +54,7 @@ void MgOpGetCapabilities::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetCapabilities::Execute()\n")));
 
-    MG_LOG_OPERATION_MESSAGE(L"ExecuteSqlQuery");
+    MG_LOG_OPERATION_MESSAGE(L"GetCapabilities");
 
     MG_FEATURE_SERVICE_TRY()
 

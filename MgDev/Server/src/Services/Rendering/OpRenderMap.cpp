@@ -63,6 +63,7 @@ void MgOpRenderMap::Execute()
     if (4 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = map->GetResourceId();
         map->SetDelayedLoadResourceService(m_resourceService);
 
         Ptr<MgSelection> selection = (MgSelection*)m_stream->GetObject();
@@ -78,7 +79,7 @@ void MgOpRenderMap::Execute()
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(resource->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSelection");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
@@ -97,6 +98,7 @@ void MgOpRenderMap::Execute()
     else if (8 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = map->GetResourceId();
         map->SetDelayedLoadResourceService(m_resourceService);
 
         Ptr<MgSelection> selection = (MgSelection*)m_stream->GetObject();
@@ -122,7 +124,7 @@ void MgOpRenderMap::Execute()
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(resource->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSelection");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
@@ -149,6 +151,7 @@ void MgOpRenderMap::Execute()
     else if (9 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = map->GetResourceId();
         map->SetDelayedLoadResourceService(m_resourceService);
 
         Ptr<MgSelection> selection = (MgSelection*)m_stream->GetObject();
@@ -177,7 +180,7 @@ void MgOpRenderMap::Execute()
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(resource->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSelection");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
