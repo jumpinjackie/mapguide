@@ -635,7 +635,7 @@ void LineBuffer::ArcTo(double cx, double cy, double a, double b, double startRad
         {
             c0x = cx + a * ellx;
             c0y = cy + b * elly;
-            LineTo(c0x, c0y);
+            MoveTo(c0x, c0y);
         }
         else
         {
