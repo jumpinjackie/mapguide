@@ -171,7 +171,7 @@ void EMapUpdateRenderer::EndMap()
         {
             std::wstring layerid = (*iditer).guid();
             AddW2DResource( *iter,
-                NULL, //no attributre data for labels
+                NULL, //no attribute data for labels
                 DWFXML::kzRole_Graphics2dOverlay,
                 layerid.c_str(),
                 (const double*)anTransform,
