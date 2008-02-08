@@ -7,7 +7,7 @@ dnl Configure.in for MapGuide Open Source
 AC_INIT(mapguide,2.0.0,http://mapguide.osgeo.org)
 AC_CONFIG_SRCDIR(configure.in)
 AM_INIT_AUTOMAKE
-AM_INIT_AUTOMAKE([1.9 tar-ustar])
+AM_INIT_AUTOMAKE([1.9 tar-pax])
 
 AC_PREFIX_DEFAULT(/usr/local/mapguideopensource)
 
