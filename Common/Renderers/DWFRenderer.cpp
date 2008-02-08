@@ -240,7 +240,8 @@ DWFRenderer::DWFRenderer()
   m_bHaveViewport(false),
   m_bHaveLabels(false),
   m_drawableCount(0),
-  m_labelMacroCount(0)
+  m_labelMacroCount(0),
+  m_linePatternActive(true)
 {
     m_lLayerStreams.reserve(8);
     m_lLabelStreams.reserve(8);
@@ -472,6 +473,9 @@ void DWFRenderer::StartLayer(RS_LayerUIInfo* layerInfo, RS_FeatureClassInfo* cla
 
     // remember the layer info
     m_layerInfo = layerInfo;
+
+    // initialize the pattern tracking flag
+    m_linePatternActive = true;
 }
 
 
@@ -595,26 +599,50 @@ void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
 
     WriteStroke(fill.outline());
 
-    //apply line style if needed
+    bool oldLinePatternActive = m_linePatternActive;
+
+    //determine pattern to apply
+    WT_Line_Pattern lpat(WT_Line_Pattern::Solid);
+    WT_Dash_Pattern dpat(WT_Dash_Pattern::kNull);
     if ((_wcsnicmp(fill.outline().style().c_str(), L"Solid", 6) != 0))
     {
-        WT_Line_Pattern lpat(WT_Line_Pattern::Solid);
-        WT_Dash_Pattern dpat(WT_Dash_Pattern::kNull);
         int patid = ConvertToDashPattern(fill.outline().style().c_str(), m_dpi, fill.outline().width() / METERS_PER_INCH * m_dpi, dpat, lpat);
-
-        if (patid < WT_Line_Pattern::Count)
-            m_w2dFile->desired_rendition().line_pattern() = lpat;
-        else
-            m_w2dFile->desired_rendition().dash_pattern() = dpat;
+        m_linePatternActive = patid < WT_Line_Pattern::Count;
     }
     else
-        m_w2dFile->desired_rendition().line_pattern() = WT_Line_Pattern(WT_Line_Pattern::Solid);
+        m_linePatternActive = true;
+
+    //apply the line or dash pattern
+    if (m_linePatternActive)
+    {
+        if (m_linePatternActive != oldLinePatternActive)
+        {
+            // We're switching from a dash pattern back to a line pattern.  We need to
+            // force Whip to write out the line pattern opcode, otherwise the drawable
+            // will be rendered with the dash pattern.  We do this by setting a line
+            // pattern on the actual rendition (not the desired rendition) which is
+            // s different than the one we want.
+            m_w2dFile->rendition().line_pattern() = WT_Line_Pattern::Illegal;
+        }
+
+        m_w2dFile->desired_rendition().line_pattern() = lpat;
+    }
+    else
+    {
+        if (m_linePatternActive != oldLinePatternActive)
+        {
+            // We're switching from a line pattern back to a dash pattern.  We need to
+            // force Whip to write out the dash pattern opcode, otherwise the drawable
+            // will be rendered with the line pattern.  We do this by setting a dash
+            // pattern on the actual rendition (not the desired rendition) which is
+            // different than the one we want.
+            m_w2dFile->rendition().dash_pattern() = WT_Dash_Pattern::kNull;
+        }
+
+        m_w2dFile->desired_rendition().dash_pattern() = dpat;
+    }
 
     WritePolylines(geom);
-
-    //zero out the dash pattern -- must do when done with it
-    if (m_w2dFile->desired_rendition().dash_pattern() != WT_Dash_Pattern::kNull)
-        m_w2dFile->desired_rendition().dash_pattern() = WT_Dash_Pattern::kNull;
 
     if (m_obsMesh)
         m_obsMesh->ProcessPoint(geom->x_coord(0), geom->y_coord(0));
@@ -638,29 +666,52 @@ void DWFRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
 
     WriteStroke(lsym);
 
-    //apply line style if needed
     LineBuffer* workbuffer = srclb->Optimize(m_drawingScale, &m_lbPool);
 
-    //apply line style if needed
+    bool oldLinePatternActive = m_linePatternActive;
+
+    //determine pattern to apply
+    WT_Line_Pattern lpat(WT_Line_Pattern::Solid);
+    WT_Dash_Pattern dpat(WT_Dash_Pattern::kNull);
     if ((_wcsnicmp(lsym.style().c_str(), L"Solid", 6) != 0))
     {
-        WT_Line_Pattern lpat(WT_Line_Pattern::Solid);
-        WT_Dash_Pattern dpat(WT_Dash_Pattern::kNull);
         int patid = ConvertToDashPattern(lsym.style().c_str(), m_dpi, lsym.width() / METERS_PER_INCH * m_dpi, dpat, lpat);
-
-        if (patid < WT_Line_Pattern::Count)
-            m_w2dFile->desired_rendition().line_pattern() = lpat;
-        else
-            m_w2dFile->desired_rendition().dash_pattern() = dpat;
+        m_linePatternActive = patid < WT_Line_Pattern::Count;
     }
     else
-        m_w2dFile->desired_rendition().line_pattern() = WT_Line_Pattern(WT_Line_Pattern::Solid);
+        m_linePatternActive = true;
+
+    //apply the line or dash pattern
+    if (m_linePatternActive)
+    {
+        if (m_linePatternActive != oldLinePatternActive)
+        {
+            // We're switching from a dash pattern back to a line pattern.  We need to
+            // force Whip to write out the line pattern opcode, otherwise the drawable
+            // will be rendered with the dash pattern.  We do this by setting a line
+            // pattern on the actual rendition (not the desired rendition) which is
+            // s different than the one we want.
+            m_w2dFile->rendition().line_pattern() = WT_Line_Pattern::Illegal;
+        }
+
+        m_w2dFile->desired_rendition().line_pattern() = lpat;
+    }
+    else
+    {
+        if (m_linePatternActive != oldLinePatternActive)
+        {
+            // We're switching from a line pattern back to a dash pattern.  We need to
+            // force Whip to write out the dash pattern opcode, otherwise the drawable
+            // will be rendered with the line pattern.  We do this by setting a dash
+            // pattern on the actual rendition (not the desired rendition) which is
+            // different than the one we want.
+            m_w2dFile->rendition().dash_pattern() = WT_Dash_Pattern::kNull;
+        }
+
+        m_w2dFile->desired_rendition().dash_pattern() = dpat;
+    }
 
     WritePolylines(workbuffer);
-
-    //zero out the dash pattern -- must do when done with it
-    if (m_w2dFile->desired_rendition().dash_pattern() != WT_Dash_Pattern::kNull)
-        m_w2dFile->desired_rendition().dash_pattern() = WT_Dash_Pattern::kNull;
 
     if (m_obsMesh)
         m_obsMesh->ProcessPoint(workbuffer->x_coord(0), workbuffer->y_coord(0));
