@@ -377,13 +377,14 @@ WT_Result agr_process_filledEllipse (WT_Filled_Ellipse & filledEllipse, WT_File 
     double major = rewriter->ScaleW2DNumber(file, filledEllipse.major());
     double minor = rewriter->ScaleW2DNumber(file, filledEllipse.minor());
 
-    double start = filledEllipse.start_degree();
-    double end = filledEllipse.end_degree();
+    double start = filledEllipse.start_degree() * (M_PI / 180.0);
+    double end = filledEllipse.end_degree() * (M_PI / 180.0);
 
     LineBuffer* ell = LineBufferPool::NewLineBuffer(rewriter->GetPool(), 20);
 
     ell->SetDrawingScale(1.0);
-    ell->ArcTo(dstpts->x_coord(0), dstpts->y_coord(0), major, minor, start * (M_PI / 180.0), end * (M_PI / 180.0));
+    ell->MoveTo(dstpts->x_coord(0) + major * cos(start), dstpts->y_coord(0) + minor * sin(start));
+    ell->ArcTo(dstpts->x_coord(0), dstpts->y_coord(0), major, minor, start , end);
 
     AGGRenderer::DrawScreenPolygon((agg_context*)rewriter->GetW2DTargetImage() ,ell, NULL, color.argb());
 
@@ -427,8 +428,8 @@ WT_Result agr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
     double major = rewriter->ScaleW2DNumber(file, outlineEllipse.major());
     double minor = rewriter->ScaleW2DNumber(file, outlineEllipse.minor());
 
-    double start = outlineEllipse.start_degree();
-    double end = outlineEllipse.end_degree();
+    double start = outlineEllipse.start_degree() * (M_PI / 180.0);
+    double end = outlineEllipse.end_degree() * (M_PI / 180.0);
 
     //get W2D line weight
     double thick = rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value());
@@ -436,7 +437,8 @@ WT_Result agr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
     LineBuffer* ell = LineBufferPool::NewLineBuffer(rewriter->GetPool(), 20);
 
     ell->SetDrawingScale(1.0);
-    ell->ArcTo(dstpts->x_coord(0), dstpts->y_coord(0), major, minor, start * (M_PI / 180.0), end * (M_PI / 180.0));
+    ell->MoveTo(dstpts->x_coord(0) + major * cos(start), dstpts->y_coord(0) + minor * sin(start));
+    ell->ArcTo(dstpts->x_coord(0), dstpts->y_coord(0), major, minor, start, end);
 
     SE_LineStroke lineStroke(color.argb(), thick);
     AGGRenderer::DrawScreenPolyline((agg_context*)rewriter->GetW2DTargetImage(),ell, NULL, lineStroke);
