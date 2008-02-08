@@ -715,11 +715,9 @@ RS_Bounds StylizationUtil::GetCompositeSymbolizationBounds(CompositeSymbolizatio
     std::vector<SE_Symbolization*> styles;
     visitor.Convert(styles, csym);
 
-    // create an expression engine with our custom functions
-    FdoPtr<FdoExpressionEngine> exec = ExpressionHelper::GetExpressionEngine(pSERenderer, NULL);
-
+    // calculate bounds - symbol geometries cannot use expressions, so no expression engine is needed
     RS_Bounds symBounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
-    GetCompositeSymbolizationBoundsInternal(styles, pSERenderer, sman, &pool, exec, symBounds);
+    GetCompositeSymbolizationBoundsInternal(styles, pSERenderer, sman, &pool, NULL, symBounds);
 
     // clean up
     for (std::vector<SE_Symbolization*>::iterator iter = styles.begin(); iter != styles.end(); iter++)
