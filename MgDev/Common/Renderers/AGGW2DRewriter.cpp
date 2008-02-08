@@ -374,25 +374,16 @@ WT_Result agr_process_filledEllipse (WT_Filled_Ellipse & filledEllipse, WT_File 
     if (!dstpts)
         return WT_Result::Success;
 
-//  double major = rewriter->ScaleW2DNumber(file, filledEllipse.major());
-//  double minor = rewriter->ScaleW2DNumber(file, filledEllipse.minor());
+    double major = rewriter->ScaleW2DNumber(file, filledEllipse.major());
+    double minor = rewriter->ScaleW2DNumber(file, filledEllipse.minor());
 
-    //negate because GD is left-handed coords
-//  float end   = 360.f - filledEllipse.start_degree();
-//  float start = 360.f - filledEllipse.end_degree();
-
-    /*
-    //TODO: is this needed with AGG?
-    //gd does not like negative angles (it's sin/cos lookup table doesn't)
-    while (start < 0.f)
-    {
-        start += 360.f;
-        end   += 360.f;
-    }
-    */
+    double start = filledEllipse.start_degree();
+    double end = filledEllipse.end_degree();
 
     LineBuffer* ell = LineBufferPool::NewLineBuffer(rewriter->GetPool(), 20);
-    ell->MoveTo(dstpts->x_coord(0), dstpts->y_coord(0));
+
+    ell->SetDrawingScale(1.0);
+    ell->ArcTo(dstpts->x_coord(0), dstpts->y_coord(0), major, minor, start * (M_PI / 180.0), end * (M_PI / 180.0));
 
     AGGRenderer::DrawScreenPolygon((agg_context*)rewriter->GetW2DTargetImage() ,ell, NULL, color.argb());
 
@@ -433,32 +424,19 @@ WT_Result agr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
     if (!dstpts)
         return WT_Result::Success;
 
-//  double major = rewriter->ScaleW2DNumber(file, outlineEllipse.major());
-//  double minor = rewriter->ScaleW2DNumber(file, outlineEllipse.minor());
+    double major = rewriter->ScaleW2DNumber(file, outlineEllipse.major());
+    double minor = rewriter->ScaleW2DNumber(file, outlineEllipse.minor());
 
-    //negate because GD is left-handed coords
-//  float end   = 360.f - outlineEllipse.start_degree();
-//  float start = 360.f - outlineEllipse.end_degree();
-
-    //TODO: is this needed with AGG?
-    /*
-    //gd does not like negative angles (it's sin/cos lookup table doesn't)
-    while (start < 0.f)
-    {
-        start += 360.f;
-        end   += 360.f;
-    }
-    */
-
-    ////////////////////////
-    // handle thickness
+    double start = outlineEllipse.start_degree();
+    double end = outlineEllipse.end_degree();
 
     //get W2D line weight
     double thick = rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value());
 
     LineBuffer* ell = LineBufferPool::NewLineBuffer(rewriter->GetPool(), 20);
 
-    ell->MoveTo(dstpts->x_coord(0), dstpts->y_coord(0));
+    ell->SetDrawingScale(1.0);
+    ell->ArcTo(dstpts->x_coord(0), dstpts->y_coord(0), major, minor, start * (M_PI / 180.0), end * (M_PI / 180.0));
 
     SE_LineStroke lineStroke(color.argb(), thick);
     AGGRenderer::DrawScreenPolyline((agg_context*)rewriter->GetW2DTargetImage(),ell, NULL, lineStroke);
