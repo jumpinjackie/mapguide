@@ -115,12 +115,16 @@ static int mgmapagent_handler (request_rec *r)
 
     // Construct self Url.  It is embedded into the output stream
     // of some requests (like GetMap).  Use a fully qualified URL.
-    // TODO: Do we need to worry about https:// here?
     string serverName = GetServerVariable(r, MapAgentStrings::ServerName);
     string serverPort = GetServerVariable(r, MapAgentStrings::ServerPort);
     string scriptName = GetServerVariable(r, MapAgentStrings::ScriptName);
 
-    string url = MapAgentStrings::Http;
+    string sSecure = GetServerVariable(r, MapAgentStrings::Secure);
+    const char * secure = sSecure.c_str();
+    bool isSecure = (secure != NULL && !stricmp(secure, "on"));  // NOXLATE
+
+    string url = isSecure ? MapAgentStrings::Https : MapAgentStrings::Http;
+
     if (!serverName.empty() && !serverPort.empty() && !scriptName.empty())
     {
         url.append(serverName);
