@@ -21,7 +21,9 @@
 const char* MapAgentStrings::ServerName = "SERVER_NAME";
 const char* MapAgentStrings::ServerPort = "SERVER_PORT";
 const char* MapAgentStrings::ScriptName = "SCRIPT_NAME";
+const char* MapAgentStrings::Secure = "HTTPS";
 const char* MapAgentStrings::Http = "http://";
+const char* MapAgentStrings::Https = "https://";
 const char* MapAgentStrings::QueryString = "QUERY_STRING";
 const char* MapAgentStrings::RequestMethod = "REQUEST_METHOD";
 const char* MapAgentStrings::HttpAuth = "HTTP_AUTHORIZATION";
