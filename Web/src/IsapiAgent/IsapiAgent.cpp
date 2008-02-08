@@ -53,9 +53,7 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
 
     // Construct self Url.  It is embedded into the output stream
     // of some requests (like GetMap).  Use a fully qualified URL.
-    // TODO: Do we need to worry about https:// here?
     DWORD size = 1024;
-
     char serverName[1024];
     pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::ServerName, serverName, &size);
 
@@ -67,7 +65,13 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
     char scriptName[1024];
     pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::ScriptName, scriptName, &size);
 
-    string url = MapAgentStrings::Http;
+    size = 1024;
+    char secure[1024];
+    pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::Secure, secure, &size);
+
+    bool isSecure = (secure != NULL && !stricmp(secure, "on"));  // NOXLATE
+
+    string url = isSecure? MapAgentStrings::Https : MapAgentStrings::Http;
     if (NULL != serverName && NULL != serverPort && NULL != scriptName)
     {
         url.append(serverName);

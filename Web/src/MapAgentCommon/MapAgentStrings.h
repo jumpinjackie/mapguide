@@ -24,7 +24,9 @@ public:
     const static char* ServerName;
     const static char* ServerPort;
     const static char* ScriptName;
+    const static char* Secure;
     const static char* Http;
+    const static char* Https;
     const static char* QueryString;
     const static char* RequestMethod;
     const static char* HttpAuth;
