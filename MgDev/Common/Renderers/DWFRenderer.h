@@ -341,6 +341,10 @@ private:
     EMapHatchPatternFactory* m_hatchFac;
     EMapFillPatternFactory* m_fillFac;
 
+    // used when rendering polyline / polygon features to track if a
+    // line or dash pattern was last used
+    bool m_linePatternActive;
+
     /////////////////////////////////////////////////////////
     // Functions and structures used during insertion of W2Ds
     /////////////////////////////////////////////////////////
