@@ -117,7 +117,7 @@ int main ()
         char* serverPort = getenv(MapAgentStrings::ServerPort);
         char* scriptName = getenv(MapAgentStrings::ScriptName);
         char* secure = getenv(MapAgentStrings::Secure);  
-        string url = secure != NULL && (!stricmp(secure, "on") || !stricmp(secure, "true")) ? MapAgentStrings::Https : MapAgentStrings::Http;  // NOXLATE
+        string url = secure != NULL && (!_stricmp(secure, "on") || !_stricmp(secure, "true")) ? MapAgentStrings::Https : MapAgentStrings::Http;  // NOXLATE
         if (NULL != serverName && NULL != serverPort && NULL != scriptName)
         {
             url.append(serverName);
