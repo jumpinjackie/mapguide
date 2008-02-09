@@ -121,7 +121,7 @@ static int mgmapagent_handler (request_rec *r)
 
     string sSecure = GetServerVariable(r, MapAgentStrings::Secure);
     const char * secure = sSecure.c_str();
-    bool isSecure = (secure != NULL && !stricmp(secure, "on"));  // NOXLATE
+    bool isSecure = (secure != NULL && !_stricmp(secure, "on"));  // NOXLATE
 
     string url = isSecure ? MapAgentStrings::Https : MapAgentStrings::Http;
 
