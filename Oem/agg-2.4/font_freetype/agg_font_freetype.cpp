@@ -742,11 +742,35 @@ namespace agg
     }
 
     //------------------------------------------------------------------------
-    bool font_engine_freetype_base::char_map(FT_Encoding char_map)
+    bool font_engine_freetype_base::char_map(FT_Encoding encoding)
     {
         if(m_cur_face)
         {
-            m_last_error = FT_Select_Charmap(m_cur_face, m_char_map);
+            //Sets a required charmap
+            //TODO: Right now it only handles Unicode and
+            //related encodings, mainly in order to detect the case
+            //of MS Symbol, which requires the glyph to be tweaked before mapping
+            //to a glyph index.
+            FT_CharMap charmap;
+            for (int i = 0; i < m_cur_face->num_charmaps; i++)
+            {
+                charmap = m_cur_face->charmaps[i];
+
+                if (encoding == FT_ENCODING_UNICODE)
+                {
+                    if (charmap->encoding == FT_ENCODING_MS_SYMBOL
+                        || charmap->encoding == FT_ENCODING_UNICODE
+                        || charmap->encoding == FT_ENCODING_ADOBE_CUSTOM
+                        || charmap->encoding == FT_ENCODING_ADOBE_STANDARD)
+                    {
+                        m_last_error = FT_Set_Charmap(m_cur_face, charmap);
+                        if (m_last_error == 0) 
+                            m_char_map = charmap->encoding;
+                        break;
+                    }
+                }
+            }
+
             if(m_last_error == 0)
             {
                 update_signature();
@@ -900,10 +924,29 @@ namespace agg
     //------------------------------------------------------------------------
     bool font_engine_freetype_base::prepare_glyph(unsigned glyph_code)
     {
+        if (m_char_map == FT_ENCODING_MS_SYMBOL)
+        {
+            //A fix for MS Symbol encoding -- glyph needs to be ORed with 0xf000
+            //for some reason
+            glyph_code |= 0xf000;
+        }
+
         m_glyph_index = FT_Get_Char_Index(m_cur_face, glyph_code);
+
+        
+        //In cases where we need to decompose the outline
+        //we need to tell FreeType specifically to ignore bitmap
+        //representations of the font at this font size and give us
+        //the outline instead.
+        int no_bitmap = FT_LOAD_NO_BITMAP;
+
+        if (   m_glyph_rendering == glyph_ren_native_mono 
+            || m_glyph_rendering == glyph_ren_native_gray8)
+            no_bitmap = 0;
+
         m_last_error = FT_Load_Glyph(m_cur_face, 
                                      m_glyph_index, 
-                                     m_hinting ? FT_LOAD_DEFAULT : FT_LOAD_NO_HINTING);
+                                     m_hinting ? (FT_LOAD_DEFAULT | no_bitmap) : (FT_LOAD_NO_HINTING | no_bitmap));
 //                                     m_hinting ? FT_LOAD_FORCE_AUTOHINT : FT_LOAD_NO_HINTING);
         if(m_last_error == 0)
         {
