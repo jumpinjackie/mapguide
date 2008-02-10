@@ -1280,6 +1280,8 @@ void AGGRenderer::DrawString(agg_context*     cxt,
 
         //load the font
         bool res = cxt->feng.load_font(futf8, 0, agg::glyph_ren_agg_gray8);
+        cxt->feng.char_map(FT_ENCODING_UNICODE);
+
         if (!res) return;
 
         cxt->last_font = font;
@@ -1359,6 +1361,8 @@ void AGGRenderer::MeasureString(const RS_String& s,
         DWFCore::DWFString::EncodeUTF8(font->m_filename.c_str(), lenf * sizeof(wchar_t), futf8, lenbytesf);
 
         bool res1 = c()->feng.load_font(futf8, 0, agg::glyph_ren_agg_gray8);
+        c()->feng.char_map(FT_ENCODING_UNICODE);
+        
         if (!res1) return;
         c()->last_font = font;
         font_changed = true;
