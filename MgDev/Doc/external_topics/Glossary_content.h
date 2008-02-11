@@ -1,14 +1,9 @@
 /**
 \addtogroup content
 <p>
-  For a resource, the content is an XML file which defines all
-  the attributes that MapGuide needs to use that resource.
-  It may refer to other resources or to
-  \link resource_data resource data \endlink.
+  For a resource, the content is XML data that is stored in the 
+  repository. Different types of resource use different schemas.
 </p>
-<p>
-  For a repository, the content is an XML file that can contain
-  an optional description of the repository.
 <TABLE class="RuledTable">
   <tr>
     <th>Item</th>
@@ -16,51 +11,47 @@
   </tr>
   <tr>
     <td>Repository</td>
-    <td>RepositoryContent</td>
+    <td>\ref RepositoryContent_schema "RepositoryContent schema"</td>
+  </tr>
+  <tr>
+    <td>Application definition resource</td>
+    <td>\ref ApplicationDefinition_schema "ApplicationDefinition schema"</td>
   </tr>
   <tr>
     <td>Drawing source resource</td>
-    <td>DrawingSource</td>
+    <td>\ref DrawingSource_schema "DrawingSource schema"</td>
   </tr>
   <tr>
     <td>Feature source resource</td>
-    <td>FeatureSource</td>
-  </tr>
-  <tr>
-    <td>Import rules resource</td>
-    <td>[[?]]</td>
+    <td>\ref FeatureSource_schema "FeatureSource schema"</td>
   </tr>
   <tr>
     <td>Layer definition resource</td>
-    <td>LayerDefinition</td>
+    <td>\ref LayerDefinition_schema "LayerDefinition schema"</td>
   </tr>
   <tr>
     <td>Load procedure resource</td>
-    <td>LoadProcedure</td>
-  </tr>
-  <tr>
-    <td>Map resource</td>
-    <td>[[?]]</td>
+    <td>\ref LoadProcedure_schema "LoadProcedure schema"</td>
   </tr>
   <tr>
     <td>Map definition resource</td>
-    <td>MapDefinition</td>
+    <td>\ref MapDefinition_schema "MapDefinition schema"</td>
   </tr>
   <tr>
     <td>Print layout resource</td>
-    <td>PrintLayout</td>
+    <td>\ref PrintLayout_schema "PrintLayout schema"</td>
   </tr>
   <tr>
-    <td>Raster import rules resource</td>
-    <td>[[?]]</td>
+    <td>Symbol definition resource</td>
+    <td>\ref SymbolDefinition_schema "SymbolDefinition schema"</td>
   </tr>
   <tr>
     <td>Symbol library resource</td>
-    <td>SymbolLibrary</td>
+    <td>\ref SymbolLibrary_schema "SymbolLibrary schema"</td>
   </tr>
   <tr>
     <td>Web layout resource</td>
-    <td>WebLayout</td>
+    <td>\ref WebLayout_schema "WebLayout schema"</td>
   </tr>
 </TABLE>
 <h3>See Also</h3>
@@ -78,8 +69,6 @@
   <li>
     \link MgResourceService::UpdateRepository UpdateRepository \endlink
   </li>
-  <li>
-    \link RepositoryContent_schema RepositoryContent \endlink schema</li>
     
 </ul>
 

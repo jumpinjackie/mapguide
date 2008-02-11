@@ -132,7 +132,6 @@ template class MG_GEOMETRY_API Ptr<MgAgfReaderWriter>;
 /// // In the MgFeatureReader to MgGeometry direction:
 /// containsPoint11QryOpt = new MgFeatureQueryOptions();
 /// containsPoint11QryOpt.SetFilter("theFeatureGeometry CONTAINS GEOMFROMTEXT( 'POINT(1 1)' )");
-/// // the creation of the MgFeatureService object is specific to the Map or MapGuide platform
 /// // the MgResourceIdentifier object, resourceId, is the feature source being queried
 /// featureReader = featureService.SelectFeatures(resourceId, className, containsPoint11QryOpt);
 /// while (featureReader.ReadNext())

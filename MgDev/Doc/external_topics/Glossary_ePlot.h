@@ -1,6 +1,6 @@
 /**
 \addtogroup ePlot
-
+\note1
 <p>
 A \link DWF DWF \endlink file designed for hardcopy printout. ePlots are
 self contained.

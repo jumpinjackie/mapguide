@@ -60,12 +60,12 @@
   method for listing the names of the feature source partitions
   within a relational database. You can then construct a
   connection string for each partition and test it using 
-  \link MgFeatureService::TestConnection MgFeatureService::TestConnection Method (CREFSTRING\, CREFSTRING) \endlink.
+  \link MgFeatureService::TestConnection(CREFSTRING,CREFSTRING) MgFeatureService::TestConnection(providerName, connectionString) \endlink.
 </p>
 <p>
   After the installation of the feature source in the
   repository, connection is done by a different 
-  \link MgFeatureService::TestConnection TestConnection \endlink
+  \link MgFeatureService::TestConnection(MgResourceIdentifier*) MgFeatureService::TestConnection(resource) \endlink
   method that takes the feature source's resource identifier as
   an argument.
 </p>
@@ -106,10 +106,10 @@
   the path is <i>C:\\Program Files\\Common Files\\Autodesk
   Shared\\GIS\\FDO\\2.0\\Oracle</i>.
 </p>
-<h3> Example Connection String </h3>
-<p>
-  Username=smith;Password=test;Service=TuxService;DataStore=TUX
-</p>
+<p> Example Connection String </p>
+\code
+Username=smith;Password=test;Service=TuxService;DataStore=TUX
+\endcode
 <p>
   All parameters are required.
 </p>
@@ -123,48 +123,49 @@
   The Service property value identifies an entry in the <i>tnsnames.ora</i> file located in the Oracle instance or Oracle client
   installation on the local host.
 </p>
-<h3> Example Feature Source XML File </h3>
+\htmlinclude xmlExampleTop.html
+<p>Feature Source XML File</p>
 <p>
   The filename is TuxService.FeatureSource.
 </p>
-<pre>
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;FeatureSource version=&quot;1.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance &quot; xsi:noNamespaceSchemaLocation=&quot;FeatureSource-1.0.0.xsd&quot;&gt;
-  &lt;Provider&gt;Autodesk.Oracle.2.0&lt;/Provider&gt;
-  &lt;ConnectionProperties&gt;
-    &lt;ConnectionProperty&gt;
-      &lt;Name&gt;DataStore&lt;/Name&gt;
-      &lt;Value&gt;TUX&lt;/Value&gt;
-    &lt;/ConnectionProperty&gt;
-    &lt;ConnectionProperty&gt;
-      &lt;Name&gt;Username&lt;/Name&gt;
-      &lt;Value&gt;smith&lt;/Value&gt;
-    &lt;/ConnectionProperty&gt;
-    &lt;ConnectionProperty&gt;
-      &lt;Name&gt;Password&lt;/Name&gt;
-      &lt;Value&gt;test&lt;/Value&gt;
-    &lt;/ConnectionProperty&gt;
-    &lt;ConnectionProperty&gt;
-      &lt;Name&gt;Service&lt;/Name&gt;
-      &lt;Value&gt;TuxService&lt;/Value&gt;
-    &lt;/ConnectionProperty&gt;
-  &lt;/ConnectionProperties&gt;
-  &lt;Configuration/&gt;
-  &lt;SpatialContext/&gt;
-  &lt;LongTransaction/&gt;
-&lt;/FeatureSource&gt;
-</pre>
+\code
+<?xml version="1.0" encoding="UTF-8"?>
+<FeatureSource version="1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance " xsi:noNamespaceSchemaLocation="FeatureSource-1.0.0.xsd">
+  <Provider>Autodesk.Oracle.2.0</Provider>
+  <ConnectionProperties>
+    <ConnectionProperty>
+      <Name>DataStore</Name>
+      <Value>TUX</Value>
+    </ConnectionProperty>
+    <ConnectionProperty>
+      <Name>Username</Name>
+      <Value>smith</Value>
+    </ConnectionProperty>
+    <ConnectionProperty>
+      <Name>Password</Name>
+      <Value>test</Value>
+    </ConnectionProperty>
+    <ConnectionProperty>
+      <Name>Service</Name>
+      <Value>TuxService</Value>
+    </ConnectionProperty>
+  </ConnectionProperties>
+  <Configuration/>
+  <SpatialContext/>
+  <LongTransaction/>
+</FeatureSource>
+\endcode
+\htmlinclude ExampleBottom.html
 <h3> Autodesk.ArcSDE.1.0 Provider </h3>
 <p>
   The feature source is a relational database. Access to it is
   indirect. The provider talks to an ArcSDE client, which talks
   to the ArcSDE server, which talks to the feature source.
 </p>
-<h4> Example Connection String </h4>
-<p>
-  Username=smith;Password=test;Server=otwhost1;Instance=sde_inst1;Datastore=Default
-  Datastore
-</p>
+<p> Example Connection String </p>
+\code
+Username=smith;Password=test;Server=otwhost1;Instance=sde_inst1;Datastore=Default Datastore
+\endcode
 <p>
   All parameters are required.
 </p>
@@ -174,7 +175,7 @@
 </p>
 <p>
   The instance value must appear in the services file on the
-  local host. The path is <i>C:\\WINDOWS\\system32\\drivers\\etc\\services</i>.
+  local host. The path is <em>C:\\WINDOWS\\system32\\drivers\\etc\\services</em>.
   An example entry is &quot;sde_inst1 5151/tcp \#ArcSDE Server
   listening port&quot;.
 </p>
@@ -185,76 +186,80 @@
   A value of &quot;Default Datastore&quot; indicates that only one
   partition exists.
 </p>
-<h4> Example Feature Source XML File </h4>
-The filename is <i>sde_inst1.FeatureSource</i>.
-<pre>
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;FeatureSource version=&quot;1.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance &quot; xsi:noNamespaceSchemaLocation=&quot;FeatureSource-1.0.0.xsd&quot;&gt;
-  &lt;Provider&gt;Autodesk.ArcSDE.1.0&lt;/Provider&gt;
-  &lt;ConnectionProperties&gt;
-    &lt;ConnectionProperty&gt;
-      &lt;Name&gt;Datastore&lt;/Name&gt;
-      &lt;Value&gt;Default Datastore&lt;/Value&gt;
-    &lt;/ConnectionProperty&gt;
-    &lt;ConnectionProperty&gt;
-      &lt;Name&gt;Username&lt;/Name&gt;
-      &lt;Value&gt;smith&lt;/Value&gt;
-    &lt;/ConnectionProperty&gt;
-    &lt;ConnectionProperty&gt;
-      &lt;Name&gt;Password&lt;/Name&gt;
-      &lt;Value&gt;test&lt;/Value&gt;
-    &lt;/ConnectionProperty&gt;
-    &lt;ConnectionProperty&gt;
-      &lt;Name&gt;Server&lt;/Name&gt;
-      &lt;Value&gt;otwhost1&lt;/Value&gt;
-    &lt;/ConnectionProperty&gt;
-    &lt;ConnectionProperty&gt;
-      &lt;Name&gt;Instance&lt;/Name&gt;
-      &lt;Value&gt;sde_inst1&lt;/Value&gt;
-    &lt;/ConnectionProperty&gt;
-  &lt;/ConnectionProperties&gt;
-  &lt;Configuration/&gt;
-  &lt;SpatialContext/&gt;
-&lt;LongTransaction/&gt;
-&lt;/FeatureSource&gt;
-</pre>
+\htmlinclude xmlExampleTop.html
+<p>Feature Source XML File </p>
+The filename is <em>sde_inst1.FeatureSource</em>.
+\code
+<?xml version="1.0" encoding="UTF-8"?>
+<FeatureSource version="1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance " xsi:noNamespaceSchemaLocation="FeatureSource-1.0.0.xsd">
+  <Provider>Autodesk.ArcSDE.1.0</Provider>
+  <ConnectionProperties>
+    <ConnectionProperty>
+      <Name>Datastore</Name>
+      <Value>Default Datastore</Value>
+    </ConnectionProperty>
+    <ConnectionProperty>
+      <Name>Username</Name>
+      <Value>smith</Value>
+    </ConnectionProperty>
+    <ConnectionProperty>
+      <Name>Password</Name>
+      <Value>test</Value>
+    </ConnectionProperty>
+    <ConnectionProperty>
+      <Name>Server</Name>
+      <Value>otwhost1</Value>
+    </ConnectionProperty>
+    <ConnectionProperty>
+      <Name>Instance</Name>
+      <Value>sde_inst1</Value>
+    </ConnectionProperty>
+  </ConnectionProperties>
+  <Configuration/>
+  <SpatialContext/>
+<LongTransaction/>
+</FeatureSource>
+\endcode
+\htmlinclude ExampleBottom.html
 <h3> Autodesk.Sdf.3.0 Provider</h3>
 <p>
   The feature source is a file. As part of installing the
   feature source in the repository, the <i>.sdf</i> file is
   loaded into the repository.
 </p>
-<h4>Example Connection String</h4>
-<p>
-  File=C:/SDFFeatureResources/testSDF.sdf;ReadOnly=FALSE
-</p>
+<p>Example Connection String</p>
+\code
+File=C:/SDFFeatureResources/testSDF.sdf;ReadOnly=FALSE
+\endcode
 <p>
   The File parameter is mandatory, and the ReadOnly parameter
   defaults to FALSE.
 </p>
-<h4> Example Feature Source XML File </h4>
+\htmlinclude xmlExampleTop.html
+<p>Feature Source XML File </p>
 <p>
   The ConnectionProperty element whose Name is File has a Value
   element that is a symbolic reference to the location of the <i>.sdf</i> file in the repository.
 </p>
-<pre>
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;FeatureSource version=&quot;1.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance &quot; xsi:noNamespaceSchemaLocation=&quot;FeatureSource-1.0.0.xsd&quot;&gt;
-  &lt;Provider&gt;Autodesk.Sdf.3.0&lt;/Provider&gt;
-  &lt;ConnectionProperties&gt;
-    &lt;ConnectionProperty&gt;
-      &lt;Name&gt;File&lt;/Name&gt;
-      &lt;Value&gt;%MG_DATA_FILE_PATH%&lt;/Value&gt;
-    &lt;/ConnectionProperty&gt;
-    &lt;ConnectionProperty&gt;
-      &lt;Name&gt;ReadOnly&lt;/Name&gt;
-      &lt;Value&gt;FALSE&lt;/Value&gt;
-    &lt;/ConnectionProperty&gt;
-  &lt;/ConnectionProperties&gt;
-  &lt;SpatialContext/&gt;
-  &lt;LongTransaction/&gt;
-&lt;/FeatureSource&gt;
-</pre>
+\code
+<?xml version="1.0" encoding="UTF-8"?>
+<FeatureSource version="1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance " xsi:noNamespaceSchemaLocation="FeatureSource-1.0.0.xsd">
+  <Provider>Autodesk.Sdf.3.0</Provider>
+  <ConnectionProperties>
+    <ConnectionProperty>
+      <Name>File</Name>
+      <Value>%MG_DATA_FILE_PATH%</Value>
+    </ConnectionProperty>
+    <ConnectionProperty>
+      <Name>ReadOnly</Name>
+      <Value>FALSE</Value>
+    </ConnectionProperty>
+  </ConnectionProperties>
+  <SpatialContext/>
+  <LongTransaction/>
+</FeatureSource>
+\endcode
+\htmlinclude ExampleBottom.html
 <h3> Autodesk.Shp.1.0 Provider </h3>
 <p>
   The feature source is a set of up to 4 related files,
@@ -284,48 +289,52 @@ The filename is <i>sde_inst1.FeatureSource</i>.
   feature source XML file is a symbolic reference to the
   location of the shapefiles in the repository.
 </p>
-<h4> Example Connection String </h4>
-<p>
-  DefaultFileLocation=C:/SHPFeatureResources;TemporaryFileLocation=C:/SHPFeatureResources
-</p>
-<h4> Example Feature Source XML File </h4>
-<pre>
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;FeatureSource version=&quot;1.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance &quot; xsi:noNamespaceSchemaLocation=&quot;FeatureSource-1.0.0.xsd&quot;&gt;
-  &lt;Provider&gt;Autodesk.Shp.1.0&lt;/Provider&gt;
-  &lt;ConnectionProperties&gt;
-    &lt;ConnectionProperty&gt;
-      &lt;Name&gt;DefaultFileLocation&lt;/Name&gt;
-      &lt;Value&gt;%MG_DATA_FILE_PATH%&lt;/Value&gt;
-    &lt;/ConnectionProperty&gt;
-    &lt;ConnectionProperty&gt;
-      &lt;Name&gt;TemporaryFileLocation&lt;/Name&gt;
-    &lt;/ConnectionProperty&gt;
-  &lt;/ConnectionProperties&gt;
-  &lt;SpatialContext/&gt;
-  &lt;LongTransaction/&gt;
-&lt;/FeatureSource&gt;
-</pre>
+<p> Example Connection String </p>
+\code
+DefaultFileLocation=C:/SHPFeatureResources;TemporaryFileLocation=C:/SHPFeatureResources
+\endcode
+\htmlinclude xmlExampleTop.html
+<p>Feature Source XML File </p>
+\code
+<?xml version="1.0" encoding="UTF-8"?>
+<FeatureSource version="1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance " xsi:noNamespaceSchemaLocation="FeatureSource-1.0.0.xsd">
+  <Provider>Autodesk.Shp.1.0</Provider>
+  <ConnectionProperties>
+    <ConnectionProperty>
+      <Name>DefaultFileLocation</Name>
+      <Value>%MG_DATA_FILE_PATH%</Value>
+    </ConnectionProperty>
+    <ConnectionProperty>
+      <Name>TemporaryFileLocation</Name>
+    </ConnectionProperty>
+  </ConnectionProperties>
+  <SpatialContext/>
+  <LongTransaction/>
+</FeatureSource>
+\endcode
+\htmlinclude ExampleBottom.html
 <h3> Autodesk.RFP.1.0 Provider </h3>
-<h4> Example Connection String </h4>
-<p>
-  DefaultRasterFileLocation=C:/RasterFeatureResources
-</p>
-<h4> Example Feature Source XML File </h4>
-<pre>
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;FeatureSource version=&quot;1.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance &quot; xsi:noNamespaceSchemaLocation=&quot;FeatureSource-1.0.0.xsd&quot;&gt;
-  &lt;Provider&gt;Autodesk.RFP.1.0&lt;/Provider&gt;
-  &lt;ConnectionProperties&gt;
-    &lt;ConnectionProperty&gt;
-      &lt;Name&gt;DefaultRasterFileLocation&lt;/Name&gt;
-      &lt;Value&gt;%MG_DATA_FILE_PATH%&lt;/Value&gt;
-    &lt;/ConnectionProperty&gt;
-  &lt;/ConnectionProperties&gt;
-  &lt;SpatialContext/&gt;
-  &lt;LongTransaction/&gt;
-&lt;/FeatureSource&gt;
-</pre>
+<p> Example Connection String </p>
+\code
+DefaultRasterFileLocation=C:/RasterFeatureResources
+\endcode
+\htmlinclude xmlExampleTop.html
+<p>Feature Source XML File </p>
+\code
+<?xml version="1.0" encoding="UTF-8"?>
+<FeatureSource version="1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance " xsi:noNamespaceSchemaLocation="FeatureSource-1.0.0.xsd">
+  <Provider>Autodesk.RFP.1.0</Provider>
+  <ConnectionProperties>
+    <ConnectionProperty>
+      <Name>DefaultRasterFileLocation</Name>
+      <Value>%MG_DATA_FILE_PATH%</Value>
+    </ConnectionProperty>
+  </ConnectionProperties>
+  <SpatialContext/>
+  <LongTransaction/>
+</FeatureSource>
+\endcode
+\htmlinclude ExampleBottom.html
 <h3>Autodesk.ODBC.1.0 Provider</h3>
 <p>
   Typically you use this provider is to access text-based
@@ -378,42 +387,45 @@ The filename is <i>sde_inst1.FeatureSource</i>.
   Microsoft Access Setup/OK. The filename that you enter will
   be given an extension of <i>.dsn</i>.
 </p>
-<h4> Example Connection String </h4>
-<p>
-  DataSourceName=Country
-</p>
-<h4> Example Feature Source XML File </h4>
-<pre>
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;FeatureSource version=&quot;1.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance &quot; xsi:noNamespaceSchemaLocation=&quot;FeatureSource-1.0.0.xsd&quot;&gt;
-  &lt;Provider&gt;Autodesk.ODBC.1.0&lt;/Provider&gt;
-  &lt;ConnectionProperties&gt;
-    &lt;ConnectionProperty&gt;
-      &lt;Name&gt;DataSourceName&lt;/Name&gt;
-      &lt;Value&gt;Country&lt;/Value&gt;
-    &lt;/ConnectionProperty&gt;
-    &lt;ConnectionProperty&gt;
-      &lt;Name&gt;UserId&lt;/Name&gt;
-    &lt;/ConnectionProperty&gt;
-    &lt;ConnectionProperty&gt;
-      &lt;Name&gt;Password&lt;/Name&gt;
-    &lt;/ConnectionProperty&gt;
-  &lt;/ConnectionProperties&gt;
-  &lt;Configuration/&gt;
-  &lt;SpatialContext/&gt;
-  &lt;LongTransaction/&gt;
-&lt;/FeatureSource&gt;
-</pre>
-<h4> Example ResourceDocumentHeader XML File </h4>
-<pre>
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;!-- Valid according to XML Spy --&gt;
-&lt;ResourceDocumentHeader xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance &quot; xsi:noNamespaceSchemaLocation=&quot;ResourceDocumentHeader-1.0.0.xsd&quot;&gt;
-  &lt;Security&gt;
-    &lt;Inherited&gt;true&lt;/Inherited&gt;
-  &lt;/Security&gt;
-&lt;/ResourceDocumentHeader&gt;
-</pre>
+<p> Example Connection String </p>
+\code
+DataSourceName=Country
+\endcode
+\htmlinclude xmlExampleTop.html
+<p>Feature Source XML File </p>
+\code
+<?xml version="1.0" encoding="UTF-8"?>
+<FeatureSource version="1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance " xsi:noNamespaceSchemaLocation="FeatureSource-1.0.0.xsd">
+  <Provider>Autodesk.ODBC.1.0</Provider>
+  <ConnectionProperties>
+    <ConnectionProperty>
+      <Name>DataSourceName</Name>
+      <Value>Country</Value>
+    </ConnectionProperty>
+    <ConnectionProperty>
+      <Name>UserId</Name>
+    </ConnectionProperty>
+    <ConnectionProperty>
+      <Name>Password</Name>
+    </ConnectionProperty>
+  </ConnectionProperties>
+  <Configuration/>
+  <SpatialContext/>
+  <LongTransaction/>
+</FeatureSource>
+\endcode
+\htmlinclude ExampleBottom.html
+\htmlinclude xmlExampleTop.html
+<p>ResourceDocumentHeader XML File</p>
+\code
+<?xml version="1.0" encoding="UTF-8"?>
+<ResourceDocumentHeader xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance " xsi:noNamespaceSchemaLocation="ResourceDocumentHeader-1.0.0.xsd">
+  <Security>
+    <Inherited>true</Inherited>
+  </Security>
+</ResourceDocumentHeader>
+\endcode
+\htmlinclude ExampleBottom.html
 <h2>Examples</h2>
 <p>
   The code samples here how to add feature sources to the
@@ -422,6 +434,7 @@ The filename is <i>sde_inst1.FeatureSource</i>.
   feature source, see 
   \link MgFeatureService::TestConnection MgFeatureService::TestConnection Method (MgResourceIdentifier*)\endlink.
 </p>
+\htmlinclude PHPExampleTop.html
 <p>
   The first example adds a resource to the repository for a
   connection to an FDO Provider for Oracle. Since the
@@ -430,27 +443,28 @@ The filename is <i>sde_inst1.FeatureSource</i>.
   FeatureSource XML containing the property values for the
   connection to the provider.
 </p>
-<h3>PHP</h3>
-<pre>
-&lt;?php
+\code
+<?php
 // creating the resource in the repository for a
 // connection to an FDO Provider for Oracle
-// first arg to $resourceService-&gt;SetResource()
-$featSrcResIdArg = &quot;Library://FeatureService/testOracle.FeatureSource&quot;;
+// first arg to $resourceService->SetResource()
+$featSrcResIdArg = "Library://FeatureService/testOracle.FeatureSource";
 $featSrcResId = new MgResourceIdentifier($featSrcResIdArg);
 
-// second arg to $resourceService-&gt;SetResource()
+// second arg to $resourceService->SetResource()
 $featSrcFileByteContent = new MgByteSource($pathToFeatSrcFile);
-$featSrcFileReaderContent = $featSrcFileByteContent-&gt;GetReader();
+$featSrcFileReaderContent = $featSrcFileByteContent->GetReader();
 
-// third arg to $resourceService-&gt;SetResource()
+// third arg to $resourceService->SetResource()
 $headerPathByteContent = new MgByteSource($headerPath);
-$headerPathReaderContent = $headerPathByteContent-&gt;GetReader();
+$headerPathReaderContent = $headerPathByteContent->GetReader();
 
 // add the resource to the repository
-$resourceService-&gt;SetResource($featSrcResId, $featSrcFileReaderContent, $headerPathReaderContent);
-?&gt;
-</pre>
+$resourceService->SetResource($featSrcResId, $featSrcFileReaderContent, $headerPathReaderContent);
+?>
+\endcode
+\htmlinclude ExampleBottom.html
+\htmlinclude PHPExampleTop.html
 The second example adds a resource to the repository for a
 connection to an FDO Provider for SDF. Since the connection
 is to a file, you must call MgResourceService::SetResource
@@ -458,34 +472,34 @@ passing in the FeatureSource XML containing the property
 values for the connection to the SDF file, and you must call
 MgResourceService::SetResourceData passing in the contents of
 the SDF file.
-<h3>PHP</h3>
-<pre>
-&lt;?php
+\code
+<?php
 // creating the resource in the repository for a
 // connection to an FDO Provider for SDF
-// first arg to $resourceService-&gt;SetResource()
-$featSrcResIdArg = &quot;Library://FeatureService/testSDF.FeatureSource&quot;;
+// first arg to $resourceService->SetResource()
+$featSrcResIdArg = "Library://FeatureService/testSDF.FeatureSource";
 $featSrcResId = new MgResourceIdentifier($featSrcResIdArg);
 
-// second arg to $resourceService-&gt;SetResource()
+// second arg to $resourceService->SetResource()
 $featSrcFileByteContent = new MgByteSource($pathToFeatSrcFile);
-$featSrcFileReaderContent = $featSrcFileByteContent-&gt;GetReader();
+$featSrcFileReaderContent = $featSrcFileByteContent->GetReader();
 
-// third arg to $resourceService-&gt;SetResource()
+// third arg to $resourceService->SetResource()
 $headerPathByteContent = new MgByteSource($headerPath);
-$headerPathReaderContent = $headerPathByteContent-&gt;GetReader();
+$headerPathReaderContent = $headerPathByteContent->GetReader();
 
 // add the resource to the repository
-$resourceService-&gt;SetResource($featSrcResId, $featSrcFileReaderContent, $headerPathReaderContent);
+$resourceService->SetResource($featSrcResId, $featSrcFileReaderContent, $headerPathReaderContent);
 
 // add the contents of the SDF file to the repository
 $fileByteContent = new MgByteSource($pathToDataFile);
-$fileReader = $fileByteContent-&gt;GetReader();
-$resourceService-&gt;SetResourceData($featSrcResId, $fileName, &quot;File&quot;, $fileReader);
-?&gt;
-</pre>
-<h3>C#</h3>
-<pre>
+$fileReader = $fileByteContent->GetReader();
+$resourceService->SetResourceData($featSrcResId, $fileName, "File", $fileReader);
+?>
+\endcode
+\htmlinclude ExampleBottom.html
+\htmlinclude CSharpExampleTop.html
+\code
 using OSGeo.MapGuide;
 using OSGeo.MapGuide.Schema.FeatureSource;
 // The MgResourceService example code shows the creation of an instance.
@@ -534,5 +548,6 @@ public void ConnectToSdfFeatureClassFile(MgResourceIdentifier resourceId,
 	resourceService.SetResource(resourceId, source.GetReader(), null);
 }
 
-</pre>
+\endcode
+\htmlinclude ExampleBottom.html
 **/

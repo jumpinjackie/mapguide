@@ -952,6 +952,8 @@ PUBLISHED_API:
     /// \brief
     /// Set the active long transaction name for a feature source.
     ///
+    /// \note1
+    ///
     /// \remarks
     /// The long transaction name is associated with the caller's session.  If
     /// no session is set then the method throws an MgSessionNotFoundException.
@@ -1087,6 +1089,8 @@ PUBLISHED_API:
     /// specified resource identifier, using the given feature source
     /// parameters.
     ///
+    /// \note1
+    ///
     /// \remarks
     /// MgFeatureSourceParams is an abstract class. Currently the
     /// only concrete class is MgCreateSdfParams, and the only
@@ -1123,6 +1127,8 @@ PUBLISHED_API:
     /// \brief
     /// Retrieves schema information about a set of feature classes for a given feature source.
     ///
+    /// \note1
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// virtual MgByteReader CreateFeatureSource(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses);
@@ -1151,6 +1157,8 @@ PUBLISHED_API:
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Retrieves feature information based on the supplied criteria.
+    ///
+    /// \note1
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
