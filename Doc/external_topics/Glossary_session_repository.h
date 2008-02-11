@@ -1,6 +1,6 @@
 /**
 \addtogroup session_repository
-
+\note1
 <p>
 One of the two types of \link resource_repository resource repositories \endlink
 . Session repositories hold data only for the user's current

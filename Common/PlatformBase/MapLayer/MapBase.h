@@ -286,6 +286,8 @@ PUBLISHED_API:
     /// \brief
     /// Gets the identifier of the session associated with this map.
     ///
+    /// \note1
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// string GetSessionId();
@@ -307,6 +309,8 @@ PUBLISHED_API:
     /// Gets an identifier that can be used to uniquely identify this
     /// map.
     ///
+    /// \note1
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// string GetObjectId();
@@ -327,6 +331,8 @@ PUBLISHED_API:
     /// \brief
     /// Returns the resource identifier that specifies the location
     /// of the map definition that was used to create this map.
+    ///
+    /// \note1
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -434,6 +440,8 @@ PUBLISHED_API:
     /// definition, and a name for the map. This method is used for
     /// MapGuide Viewers or for offline map production.
     ///
+    /// \note1
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// void Create(MgResourceService resourceService, MgResourceIdentifier mapDefinition, string mapName);
@@ -474,6 +482,8 @@ PUBLISHED_API:
     /// is used for the WMS service implementation and creates a map
     /// without any layers.
     ///
+    /// \note1
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// void Create(string mapSRS, MgEnvelope mapExtent, string mapName);
@@ -498,6 +508,8 @@ PUBLISHED_API:
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Loads the map object from a session repository.
+    ///
+    /// \note1
     ///
     /// \remarks
     /// For more information, see \ref Maps_and_Layers_Module "Maps and Layers".
@@ -543,6 +555,8 @@ PUBLISHED_API:
     /// \brief
     /// Gets the current center point of the map, in the spatial
     /// reference system of the map.
+    ///
+    /// \note1
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -674,6 +688,8 @@ PUBLISHED_API:
     /// \brief
     /// Gets the number of finite display scales in the map.
     ///
+    /// \note1
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// int GetFiniteDisplayScaleCount();
@@ -693,6 +709,8 @@ PUBLISHED_API:
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the finite display scale at the specified index.
+    ///
+    /// \note1
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -782,6 +800,8 @@ INTERNAL_API:
 
     /// \brief
     /// Sets the current center point of the map, in the spatial reference system of the map
+    ///
+    /// \note1
     ///
     /// \param center
     /// Center of the map

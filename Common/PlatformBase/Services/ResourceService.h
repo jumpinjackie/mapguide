@@ -127,6 +127,8 @@ PUBLISHED_API:
     /// Updates the \link header header \endlink and \link content content \endlink
     /// of the specified repository.
     ///
+    /// \note1
+    ///
     /// \remarks
     /// This method can only be used on a repository that already
     /// exists.
@@ -211,14 +213,12 @@ PUBLISHED_API:
     /// \brief
     /// Applies a package of resource changes to the repository.
     ///
+    /// \note1
+    ///
     /// \remarks
     /// This method only works on "Library" repository.
     /// Cross repository (Library:// and Session:a2c8e5ba//) changes in a single
     /// package are not supported.
-    /// Packages can be created by Autodesk Studio or by the
-    /// Autodesk Studio API. See the Studio help or the <i>Autodesk Studio API Reference</i>.
-    ///
-    /// \note1
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// virtual void ApplyResourcePackage(MgByteReader resourcePackage);
@@ -510,7 +510,7 @@ PUBLISHED_API:
     /// the location must match one of the types defined in \link MgResourceType MgResourceType \endlink.
     /// It is case sensitive.
     /// \n
-    /// MapGuide will automatically create any folders
+    /// \ProdName will automatically create any folders
     /// required.
     ///
     /// \param content (MgByteReader)
@@ -982,6 +982,8 @@ PUBLISHED_API:
     /// Gets the \link header header \endlink associated with
     /// the specified resource.
     ///
+    /// \note1
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// virtual MgByteReader GetResourceHeader(MgResourceIdentifier resource);
@@ -1021,6 +1023,8 @@ PUBLISHED_API:
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Changes the \link owner owner \endlink of a resource.
+    ///
+    /// \note1
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -1083,6 +1087,8 @@ PUBLISHED_API:
     /// Sets the permissions for all descendants of a specified
     /// folder to be inherited from the folder.
     ///
+    /// \note1
+    ///
     /// \remarks
     /// For example, if the folder "Library://Geography/" contains a
     /// map and a subfolder containing two feature sources, using
@@ -1141,10 +1147,7 @@ PUBLISHED_API:
     /// \remarks
     /// This uploads the data and stores it in the repository. It
     /// does not perform any necessary conversion (for example,
-    /// converting a version 2 SDF file into a version 3 SDF). If the
-    /// data needs to be converted into a form that can be used with
-    /// the MapGuide server, you must use the Studio application
-    /// or the Studio API.
+    /// converting a version 2 SDF file into a version 3 SDF). 
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -1168,7 +1171,7 @@ PUBLISHED_API:
     /// then MgResourceTag::Username and
     /// MgResourceTag::Password can be inserted into the
     /// XML content document to represent provider specific
-    /// username and/or password. See the example below.
+    /// username and/or password. 
     /// \n
     /// If
     /// resource data with the same name has already been
@@ -1338,7 +1341,7 @@ PUBLISHED_API:
     /// \exception MgDuplicateResourceDataException
     ///
     /// \note
-    /// In a feature source, this method does not rename anything in the connection properties, since MapGuide cannot tell
+    /// In a feature source, this method does not rename anything in the connection properties, since \ProdName cannot tell
     /// if the connection properties should be changed.  You may need
     /// to recreate the feature source or edit the XML for the feature source.
     ///
@@ -1469,6 +1472,8 @@ PUBLISHED_API:
     /// Gets the \link content content \endlink for the
     /// specified repository.
     ///
+    /// \note1
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// virtual MgByteReader GetRepositoryContent(MgResourceIdentifier resource);
@@ -1509,6 +1514,8 @@ PUBLISHED_API:
     /// \brief
     /// Gets the \link header header \endlink of the specified
     /// repository.
+    ///
+    /// \note1
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -1600,7 +1607,6 @@ PUBLISHED_API:
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Checks to see if the specified resource exists.
-    /// resource.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -1625,6 +1631,8 @@ PUBLISHED_API:
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Enumerate unmanaged data
+    ///
+    /// \note1
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

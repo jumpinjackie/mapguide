@@ -1,6 +1,6 @@
 /** 
 \addtogroup eMap
-
+\note1
 <p>
 A \link DWF DWF \endlink file containing metadata about the image to be
 displayed. The DWF Viewer uses this metadata, along with

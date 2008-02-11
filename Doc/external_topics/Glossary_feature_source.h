@@ -7,9 +7,6 @@ through the Autodesk FDO providers. Feature sources include
 data from raster, SDF, and SHP files and from databases. They
 support rule based stylization (theming).
 </p>
-<p>
-Feature sources are created through Studio.
-</p>
 
 <h3>
 See Also</h3>

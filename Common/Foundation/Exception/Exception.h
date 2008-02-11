@@ -30,7 +30,7 @@ class MgStringCollection;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Base class for all MapGuide exceptions.
+/// Base class for exceptions.
 ///
 class MG_FOUNDATION_API MgException : public MgSerializable
 {
