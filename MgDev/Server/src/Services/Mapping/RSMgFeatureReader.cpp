@@ -436,7 +436,7 @@ const wchar_t* RSMgFeatureReader::GetAsString(const wchar_t* propertyName)
             {
                 double dVal = GetDouble(propertyName);
                 wchar_t temp[MAX_STRING];
-                swprintf(temp, MAX_STRING, L"%lf", dVal);
+                swprintf(temp, MAX_STRING, L"%.15g", dVal);
                 m_cachePropValue = temp;
             }
             break;
@@ -468,7 +468,7 @@ const wchar_t* RSMgFeatureReader::GetAsString(const wchar_t* propertyName)
             {
                 float fVal = GetSingle(propertyName);
                 wchar_t temp[MAX_STRING];
-                swprintf(temp, MAX_STRING, L"%f", fVal);
+                swprintf(temp, MAX_STRING, L"%.7g", fVal);
                 m_cachePropValue = temp;
             }
             break;
