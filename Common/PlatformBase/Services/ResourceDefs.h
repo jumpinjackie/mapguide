@@ -90,7 +90,6 @@ PUBLISHED_API:
     /// It is stored in the session repository to represent the
     /// currently visible layers and viewed extents of a map. It is
     /// constructed using a \link MgResourceType::MapDefinition MapDefinition \endlink
-    /// (created by a tool such as  Autodesk Studio)
     /// and may contain additional layers which have been added "on
     /// the fly" by a web application. See \ref Maps_and_Layers_Module "Maps and Layers"
     /// for more details.
@@ -112,6 +111,8 @@ PUBLISHED_API:
     /// resource, which records the current state of a map as it is
     /// being viewed by an end user.
     ///
+    /// \see \ref MapDefinition_schema "MapDefinition schema"
+    ///
     static const STRING MapDefinition;      ///\if INTERNAL value("MapDefinition") \endif
 
     ////////////////////////////////////////////////////////////////
@@ -122,6 +123,8 @@ PUBLISHED_API:
     /// It represents the stylization for a specific map layer. It
     /// may also reference \link drawing_source DrawingSources \endlink and \link feature_source FeatureSources \endlink
     /// depending on the source of the data.
+    ///
+    /// \see \ref LayerDefinition_schema "LayerDefinition schema"
     ///
     static const STRING LayerDefinition;    ///\if INTERNAL value("LayerDefinition") \endif
 
@@ -135,6 +138,8 @@ PUBLISHED_API:
     /// The resource contains information required by MapGuide
     /// to access data contained in a DWF.
     ///
+    /// \see \ref DrawingSource_schema "DrawingSource schema"
+    ///
     static const STRING DrawingSource;      ///\if INTERNAL value("DrawingSource") \endif
 
     ////////////////////////////////////////////////////////////////
@@ -144,8 +149,10 @@ PUBLISHED_API:
     /// \remarks
     /// Feature sources access data through FDO data providers like
     /// the Oracle FDO provider or the SDF FDO provider. The resource
-    /// contains information required by MapGuide to access the
+    /// content contains the information required to access the
     /// data.
+    ///
+    /// \see \ref FeatureSource_schema "FeatureSource schema"
     ///
     static const STRING FeatureSource;      ///\if INTERNAL value("FeatureSource") \endif
 
@@ -171,6 +178,8 @@ PUBLISHED_API:
     /// \remarks
     /// It records how to load specific data.
     ///
+    /// \see \ref LoadProcedure_schema "LoadProcedure schema"
+    ///
     static const STRING LoadProcedure;      ///\if INTERNAL value("LoadProcedure") \endif
 
     ////////////////////////////////////////////////////////////////
@@ -183,6 +192,8 @@ PUBLISHED_API:
     /// A print layout defines how a map is printed. It sets the size
     /// and resolution of the map on paper and also determines the
     /// location of direction arrows, legends, and other features.
+    ///
+    /// \see \ref PrintLayout_schema "PrintLayout schema"
     ///
     static const STRING PrintLayout;        ///\if INTERNAL value("PrintLayout") \endif
 
@@ -205,6 +216,8 @@ PUBLISHED_API:
     /// \remarks
     /// It represents the stylization for a specific symbol.
     ///
+    /// \see \ref SymbolDefinition_schema "SymbolDefinition schema"
+    ///
     static const STRING SymbolDefinition;    ///\if INTERNAL value("SymbolDefinition") \endif
 
     ////////////////////////////////////////////////////////////////
@@ -214,9 +227,10 @@ PUBLISHED_API:
     /// \note1
     ///
     /// \remarks
-    /// Tools such as Autodesk Studio can create symbol libraries from a number of sources.
-    /// These symbols can then be placed on a map to represent points
+    /// Symbols from a symbol library can be placed on a map to represent points
     /// of interest. Symbol libraries are referenced from \link MgResourceType::LayerDefinition LayerDefinitions \endlink.
+    ///
+    /// \see \ref SymbolLibrary_schema "SymbolLibrary schema"
     ///
     static const STRING SymbolLibrary;      ///\if INTERNAL vvalue("SymbolLibrary") \endif
 
@@ -231,7 +245,8 @@ PUBLISHED_API:
     /// Web layouts determine the location and content of toolbars,
     /// the viewed map area, the legend, and viewed items.
     /// \n
-    /// You can create web layouts through tools such as Autodesk Studio.
+    ///
+    /// \see \ref WebLayout_schema "WebLayout schema"
     ///
     static const STRING WebLayout;          ///\if INTERNAL value("WebLayout") \endif
 
@@ -244,8 +259,8 @@ PUBLISHED_API:
     /// \remarks
     /// Application definitions determine the location and content of toolbars,
     /// the viewed map area, the legend, and viewed items.
-    /// \n
-    /// You can create application definitions through tools such as Autodesk Studio.
+    ///
+    /// \see \ref ApplicationDefinition_schema "ApplicationDefinition schema"
     ///
     static const STRING ApplicationDefinition;          ///\if INTERNAL value("ApplicationDefinition") \endif
 
@@ -373,6 +388,7 @@ PUBLISHED_API:
     /////////////////////////////////////////////////////////////////
     /// \brief
     /// Resource data stored as a file on disk.
+    /// \note1
     ///
     /// \remarks
     /// MapGuide creates a separate directory for each resource
@@ -391,6 +407,7 @@ PUBLISHED_API:
     /// \brief
     /// Stream resource data is stored as a binary stream in the
     /// repository database.
+    /// \note1
     ///
     /// \remarks
     /// Streams provide quick access to smaller data sets like symbol
@@ -402,6 +419,7 @@ PUBLISHED_API:
     ////////////////////////////////////////////////////////////////
     /// \brief
     /// Resource data is stored as a string.
+    /// \note1
     ///
     /// \remarks
     /// Strings are typically used for small pieces of text, such as

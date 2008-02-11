@@ -37,10 +37,6 @@ template class MG_PLATFORMBASE_API Ptr<MgResourceIdentifier>;
 /// America/World.MapDefinition</c>) define the resource within
 /// the repository.
 /// \n
-/// The complete identifier (for example, <c>Library://Maps/North
-/// America/World.MapDefinition</c>) uniquely defines the
-/// resource for a given MapGuide site server.
-/// \n
 /// If the resource is a folder (for example, <c>Library://Maps/North
 /// America/</c>), you must include the trailing slash.
 ///

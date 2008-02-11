@@ -37,20 +37,22 @@ composed of layers, where each layer represents data from a single feature sourc
 </p>
 <p>
 	The structure of the layer definition and its attributes are specified as an xml schema.
-	Assuming that you have installed MapGuide Enterprise 2008 in the default location,
-	you will find the schema file in "C:\\Program Files\\Autodesk\\MapGuideEnterprise2008\\Server\\Schema.
-	There are two versions: LayerDefinition-1.0.0.xsd and LayerDefinition-1.1.0.xsd.
-	The 1.0.0 version is common to AutoCAD Map 3D 2008 and MapGuide Enterprise 2008.
-	The 1.1.0 version is specific to MapGuide Enterprise 2008.
+	See \ref LayerDefinition_schema "LayerDefinition schema" for details.
 </p>
 <p>
 	To use the schema in your C# code, you must first convert it to a C# class using the
 	Microsoft .NET Framework SDK v2.0 command-line tool, xsd.exe.
 	The invocation string used for this project is
-	"xsd.exe LayerDefinition-1.0.0.xsd /l:CS /n:OSGeo.MapGuide.Schema.LayerDefinition /c".
+	\code
+	xsd.exe LayerDefinition-1.0.0.xsd /l:CS /n:OSGeo.MapGuide.Schema.LayerDefinition /c
+	\endcode
 	Run the command from the SDK command prompt.
 	Get an SDK command prompt by clicking Start > Programs > Microsoft .NET Framework SDK v2.0 > SDK Command Prompt.
-	Type "xsd.exe -h" to get option descriptions. The /l option is programming language. CS stands
+	Type 
+	\code
+	xsd.exe -h
+	\endcode
+	to get option descriptions. The /l option is programming language. CS stands
 	for C#. The /n option is namespace. The /c option is the direction to generate classes.
 </p>
 <p>

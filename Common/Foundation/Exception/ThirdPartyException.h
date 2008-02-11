@@ -25,9 +25,9 @@
 /// Base class for third party exceptions.
 ///
 /// \remarks
-/// Third party exceptions are thrown from FDO, BerkeleyDB
-/// and other components used by MapGuide that are not part of
-/// MapGuide itself.
+/// Third party exceptions are thrown from components such as FDO
+/// that are used by \ProdName but are not part of
+/// \ProdName itself.
 ///
 class MG_FOUNDATION_API MgThirdPartyException : public MgException
 {
