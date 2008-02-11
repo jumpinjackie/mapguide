@@ -137,7 +137,7 @@ void SE_ExpressionBase::ParseColorExpression(const MdfModel::MdfString& exprstr,
 {
     // set to schema default
     val.expression = NULL;
-    val.value.argb = defaultValue;
+    val.defValue.argb = defaultValue;
 
     // process any parameters in the expression
     const wchar_t* defValue = ReplaceParameters(exprstr);
@@ -150,8 +150,11 @@ void SE_ExpressionBase::ParseColorExpression(const MdfModel::MdfString& exprstr,
         unsigned int tempVal;
         int ret = swscanf(defValue, L"%X%n", &tempVal, &chars);
         if (ret == 1 && chars == wcslen(defValue))
-            val.value.argb = tempVal;
+            val.defValue.argb = tempVal;
     }
+
+    // Initially the value is the default
+    val.value.argb = val.defValue.argb;
 
     size_t len = m_buffer.size();
     if (len == 0)
@@ -185,7 +188,7 @@ void SE_ExpressionBase::ParseDoubleExpression(const MdfModel::MdfString& exprstr
 {
     // set to schema default
     val.expression = NULL;
-    val.value = defaultValue;
+    val.defValue = defaultValue;
 
     // process any parameters in the expression
     const wchar_t* defValue = ReplaceParameters(exprstr);
@@ -198,8 +201,11 @@ void SE_ExpressionBase::ParseDoubleExpression(const MdfModel::MdfString& exprstr
         double tempVal;
         int ret = swscanf(defValue, L"%lf%n", &tempVal, &chars);
         if (ret == 1 && chars == wcslen(defValue))
-            val.value = tempVal;
+            val.defValue = tempVal;
     }
+
+    // Initially the value is the default
+    val.value = val.defValue;
 
     size_t len = m_buffer.size();
     if (len == 0)
@@ -233,7 +239,7 @@ void SE_ExpressionBase::ParseIntegerExpression(const MdfModel::MdfString& exprst
 {
     // set to schema default
     val.expression = NULL;
-    val.value = defaultValue;
+    val.defValue = defaultValue;
 
     // process any parameters in the expression
     const wchar_t* defValue = ReplaceParameters(exprstr);
@@ -246,8 +252,11 @@ void SE_ExpressionBase::ParseIntegerExpression(const MdfModel::MdfString& exprst
         int tempVal;
         int ret = swscanf(defValue, L"%d%n", &tempVal, &chars);
         if (ret == 1 && chars == wcslen(defValue))
-            val.value = tempVal;
+            val.defValue = tempVal;
     }
+
+    // Initially the value is the default
+    val.value = val.defValue;
 
     size_t len = m_buffer.size();
     if (len == 0)
@@ -281,7 +290,7 @@ void SE_ExpressionBase::ParseBooleanExpression(const MdfModel::MdfString& exprst
 {
     // set to schema default
     val.expression = NULL;
-    val.value = defaultValue;
+    val.defValue = defaultValue;
 
     // process any parameters in the expression
     const wchar_t* defValue = ReplaceParameters(exprstr);
@@ -291,10 +300,13 @@ void SE_ExpressionBase::ParseBooleanExpression(const MdfModel::MdfString& exprst
     if (defValue)
     {
         if (_wcsnicmp(defValue, L"true", 5) == 0)
-            val.value = true;
+            val.defValue = true;
         else if (_wcsnicmp(defValue, L"false", 6) == 0)
-            val.value = false;
+            val.defValue = false;
     }
+
+    // Initially the value is the default
+    val.value = val.defValue;
 
     if (m_buffer.empty())
         return;
@@ -380,16 +392,10 @@ void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr
 
     // process any parameters in the expression
     const wchar_t* defValue = ReplaceParameters(exprstr);
+    val.setDefValue( UnquoteLiteral(defValue? defValue : defaultValue) );
 
     if (m_buffer.empty())
-    {
-        // set the value to the default
-        // modify val.value directly to avoid doing another copy
-        delete[] val.value;
-        val.value = UnquoteLiteral(defValue? defValue : defaultValue);
-
-        return;
-    }
+        return;  // Nothing more to parse.
 
     // try to parse the string
     const wchar_t* str = m_buffer.c_str();
@@ -402,8 +408,7 @@ void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr
         copy[len] = L'\0';
 
         // modify val.value directly to avoid doing another copy
-        delete[] val.value;
-        val.value = copy;
+        val.setValue( copy );
 
         return;
     }
@@ -412,16 +417,10 @@ void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr
     if (allowedValues && wcsstr(allowedValues, str))
     {
         // found it - set the value to a copy
-        delete[] val.value;
-        val.value = DuplicateString(str);
+        val.setValue( DuplicateString(str) );
 
         return;
     }
-
-    // set the value to the default
-    // modify val.value directly to avoid doing another copy
-    delete[] val.value;
-    val.value = UnquoteLiteral(defValue? defValue : exprstr.c_str());
 
     // We have an expression - parse it using FDO.  If the parse
     // call fails then the value stays at the default.

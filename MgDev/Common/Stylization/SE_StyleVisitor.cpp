@@ -566,12 +566,12 @@ void SE_StyleVisitor::VisitImage(Image& image)
         {
             // if we have non-empty resource ID then use it, otherwise
             // use the ID of any parent symbol definition
-            const wchar_t* resourceId = primitive->pngResourceId.value;
+            const wchar_t* resourceId = primitive->pngResourceId.getValue();
             if (wcslen(resourceId) == 0)
                 resourceId = primitive->resId;
 
             if (m_resources)
-                m_resources->GetImageData(resourceId, primitive->pngResourceName.value, primitive->imageData);
+                m_resources->GetImageData(resourceId, primitive->pngResourceName.getValue(), primitive->imageData);
         }
         else
         {
