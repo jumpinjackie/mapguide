@@ -197,13 +197,18 @@ bool MgServerGwsFeatureReader::ReadNext()
                     try
                     {
                         secondaryIter = m_gwsFeatureIterator->GetJoinedFeatures(i);
-                        CHECKNULL(secondaryIter, L"MgServerGwsFeatureReader.ReadNext");
-
-                        if (secondaryIter->ReadNext())
+                        if(NULL != secondaryIter.p)
                         {
-                            // Since key values in this Pair do not need to be unqiue, we will use it to store the delimiter string that is defined
-                            // for the extended properties that originate from this secondary feature source
-                            m_secondaryGwsFeatureIteratorMap.insert(GwsFeatureIteratorPair(attributeNameDelimiter, secondaryIter));
+                            if (secondaryIter->ReadNext())
+                            {
+                                // Since key values in this Pair do not need to be unqiue, we will use it to store the delimiter string that is defined
+                                // for the extended properties that originate from this secondary feature source
+                                m_secondaryGwsFeatureIteratorMap.insert(GwsFeatureIteratorPair(attributeNameDelimiter, secondaryIter));
+                            }
+                            else
+                            {
+                                m_bAdvancePrimaryIterator = true;
+                            }
                         }
                         else
                         {
@@ -284,12 +289,18 @@ bool MgServerGwsFeatureReader::ReadNext()
                             try
                             {
                                 FdoPtr<IGWSFeatureIterator> featureIter2 = m_gwsFeatureIterator->GetJoinedFeatures(i);
-                                CHECKNULL(featureIter2, L"MgServerGwsFeatureReader.ReadNext");
-                                if (featureIter2->ReadNext())
+                                if(NULL != featureIter2.p)
                                 {
-                                    // Since key values in this Pair do not need to be unqiue, we will use it to store the delimiter string that is defined
-                                    // for the extended properties that originate from this secondary feature source
-                                    m_secondaryGwsFeatureIteratorMap.insert(GwsFeatureIteratorPair(attributeNameDelimiter, featureIter2));
+                                    if (featureIter2->ReadNext())
+                                    {
+                                        // Since key values in this Pair do not need to be unqiue, we will use it to store the delimiter string that is defined
+                                        // for the extended properties that originate from this secondary feature source
+                                        m_secondaryGwsFeatureIteratorMap.insert(GwsFeatureIteratorPair(attributeNameDelimiter, featureIter2));
+                                    }
+                                    else
+                                    {
+                                        m_bAdvancePrimaryIterator = true;
+                                    }
                                 }
                                 else
                                 {
@@ -402,7 +413,7 @@ MgClassDefinition* MgServerGwsFeatureReader::GetClassDefinitionNoXml()
         Ptr<MgServerGwsGetFeatures> gwsGetFeatures = new MgServerGwsGetFeatures(m_gwsFeatureIteratorCopy, m_attributeNameDelimiters, m_primaryExtendedFeatureDescription);
         gwsGetFeatures->SetRelationNames(FdoPtr<FdoStringCollection>(m_gwsGetFeatures->GetRelationNames()));
         gwsGetFeatures->SetExtensionName(m_gwsGetFeatures->GetExtensionName());
-        classDef = gwsGetFeatures->GetMgClassDefinition(false);
+        m_classDef = gwsGetFeatures->GetMgClassDefinition(false);
 
         MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetClassDefinitionNoXml")
     }
