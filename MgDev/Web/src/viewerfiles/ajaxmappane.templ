@@ -3650,6 +3650,14 @@ function OnMouseWheel(event)
       &nbsp;
     </div>
     <div class="PopupMenu" id="InfoMenu"></div>
-    <input id="KeyTarget" type="hidden" onKeyDown="return KeyPressed(event);" style="position: absolute; left: 0px; right: 0px; width: 0px; height: 0px" >
+    <!--[if gte IE 6]>
+      <input id="KeyTarget" type="text" onKeyDown="return KeyPressed(event);" style="position: absolute; left: 0px; right: 0px; width: 0px; height: 0px" >
+    <![endif]-->
+    <!--[if lt IE 6]>
+      <input id="KeyTarget" type="hidden" onKeyDown="return KeyPressed(event);" style="position: absolute; left: 0px; right: 0px; width: 0px; height: 0px" >
+    <![endif]-->
+    <![if !IE]>
+      <input id="KeyTarget" type="hidden" onKeyDown="return KeyPressed(event);" style="position: absolute; left: 0px; right: 0px; width: 0px; height: 0px" >
+    <![endif]>
 </body>
 </html>
