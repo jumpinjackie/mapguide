@@ -1,7 +1,7 @@
 #ifndef _BINARYREADER_H
 #define _BINARYREADER_H
 //
-//  Copyright (C) 2004-2007 by Autodesk, Inc.
+//  Copyright (C) 2004-2008 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
