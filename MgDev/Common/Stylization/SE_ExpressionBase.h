@@ -46,11 +46,20 @@ struct SE_Color
             unsigned char b, g, r, a; // argb, but little endian
         } comps;
         unsigned int argb;
+    } defValue; //g++ doesn't like nameless structs, otherwise things would be far cleaner
+
+    union
+    {
+        struct
+        {
+            unsigned char b, g, r, a; // argb, but little endian
+        } comps;
+        unsigned int argb;
     } value; //g++ doesn't like nameless structs, otherwise things would be far cleaner
 
     FdoExpression* expression;
 
-    SE_INLINE SE_Color() : expression(NULL) { value.argb = 0; }
+    SE_INLINE SE_Color() : expression(NULL) { defValue.argb = 0; value.argb = 0; }
     ~SE_Color() { if (expression) expression->Release(); }
 
     // Retrieve argb color
@@ -58,6 +67,7 @@ struct SE_Color
     {
         if (expression)
         {
+            value.argb = defValue.argb;
             try
             {
                 FdoPtr<FdoLiteralValue> lval = exec->Evaluate(expression);
@@ -69,13 +79,14 @@ struct SE_Color
             }
         }
 
-        // return the last set value
+        // return the value
         return value.argb;
     }
 
-    SE_INLINE bool empty() { return value.argb == 0 && expression == NULL; }
+    SE_INLINE bool empty() { return defValue.argb == 0 && value.argb == 0 && expression == NULL; }
     SE_INLINE void operator=(SE_Color& c)
     {
+        defValue.argb = c.defValue.argb;
         value.argb = c.value.argb;
         expression = FDO_SAFE_ADDREF(c.expression);
     }
@@ -85,16 +96,18 @@ struct SE_Color
 //////////////////////////////////////////////////////////////////////////////
 struct SE_Double
 {
+    double defValue;
     double value;
     FdoExpression* expression;
 
-    SE_INLINE SE_Double() : value(0.0), expression(NULL) { }
+    SE_INLINE SE_Double() : defValue(0.0), value(0.0), expression(NULL) { }
     ~SE_Double() { if (expression) expression->Release(); }
 
     SE_INLINE double evaluate(FdoExpressionEngine* exec)
     {
         if (expression)
         {
+            value = defValue;
             try
             {
                 FdoPtr<FdoLiteralValue> lval = exec->Evaluate(expression);
@@ -106,12 +119,13 @@ struct SE_Double
             }
         }
 
-        // return the last set value
+        // return the value
         return value;
     }
 
     SE_INLINE void operator=(SE_Double& d)
     {
+        defValue = d.defValue;
         value = d.value;
         expression = FDO_SAFE_ADDREF(d.expression);
     }
@@ -121,16 +135,18 @@ struct SE_Double
 //////////////////////////////////////////////////////////////////////////////
 struct SE_Integer
 {
+    int defValue;
     int value;
     FdoExpression* expression;
 
-    SE_INLINE SE_Integer() : value(0), expression(NULL) { }
+    SE_INLINE SE_Integer() : defValue(0), value(0), expression(NULL) { }
     ~SE_Integer() { if (expression) expression->Release(); }
 
     SE_INLINE int evaluate(FdoExpressionEngine* exec)
     {
         if (expression)
         {
+            value = defValue;
             try
             {
                 FdoPtr<FdoLiteralValue> lval = exec->Evaluate(expression);
@@ -142,12 +158,13 @@ struct SE_Integer
             }
         }
 
-        // return the last set value
+        // return the value
         return value;
     }
 
     SE_INLINE void operator=(SE_Integer& i)
     {
+        defValue = i.defValue;
         value = i.value;
         expression = FDO_SAFE_ADDREF(i.expression);
     }
@@ -157,16 +174,18 @@ struct SE_Integer
 //////////////////////////////////////////////////////////////////////////////
 struct SE_Boolean
 {
+    bool defValue;
     bool value;
     FdoExpression* expression;
 
-    SE_INLINE SE_Boolean() : value(false), expression(NULL) { }
+    SE_INLINE SE_Boolean() : defValue(false), value(false), expression(NULL) { }
     ~SE_Boolean() { if (expression) expression->Release(); }
 
     SE_INLINE bool evaluate(FdoExpressionEngine* exec)
     {
         if (expression)
         {
+            value = defValue;
             try
             {
                 FdoPtr<FdoLiteralValue> lval = exec->Evaluate(expression);
@@ -178,12 +197,13 @@ struct SE_Boolean
             }
         }
 
-        // return the last set value
+        // return the value
         return value;
     }
 
     SE_INLINE void operator=(SE_Boolean& b)
     {
+        defValue = b.defValue;
         value = b.value;
         expression = FDO_SAFE_ADDREF(b.expression);
     }
@@ -193,22 +213,53 @@ struct SE_Boolean
 //////////////////////////////////////////////////////////////////////////////
 struct SE_String
 {
-    wchar_t* value;
     FdoExpression* expression;
 
-    SE_INLINE SE_String() : value(NULL), expression(NULL) { }
+    wchar_t* defValue;
+    void setDefValue( wchar_t* newDefValue )
+    {
+        delete[] defValue;
+        defValue = newDefValue;
+    }
+    const wchar_t* getDefValue()
+    {
+        return  defValue;
+    }
+
+    wchar_t* value;
+    void setValue( wchar_t* newValue )
+    {
+        delete[] value;
+        value = newValue;
+    }
+    const wchar_t* getValue()
+    {
+        static const wchar_t* sEmpty = L"";
+        if ( value )
+            return  value;
+        else
+        if ( defValue )
+            return defValue;
+        else
+            return sEmpty;
+    }
+
+    SE_INLINE SE_String() : value(NULL), defValue(NULL), expression(NULL) { }
     ~SE_String()
     {
         delete[] value;
+        delete[] defValue;
         if (expression)
             expression->Release();
     }
 
     SE_INLINE const wchar_t* evaluate(FdoExpressionEngine* exec)
     {
-        static const wchar_t* sEmpty = L"";
         if (expression)
         {
+            delete[] value;
+            value = NULL;
+
             try
             {
                 FdoPtr<FdoLiteralValue> lval = exec->Evaluate(expression);
@@ -216,7 +267,6 @@ struct SE_String
                 if (newValue)
                 {
                     // the expression was successfully evaluated - update the value
-                    delete[] value;
                     size_t len = wcslen(newValue) + 1;
                     value = new wchar_t[len];
                     wcscpy(value, newValue);
@@ -228,8 +278,8 @@ struct SE_String
             }
         }
 
-        // return the last set value
-        return value? value : sEmpty;
+        // return the value
+        return getValue();
     }
 
     SE_INLINE void operator=(const wchar_t* s)
@@ -248,6 +298,17 @@ struct SE_String
 
     SE_INLINE void operator=(SE_String& s)
     {
+        delete[] defValue;
+
+        if (s.defValue)
+        {
+            size_t len = wcslen(s.defValue) + 1;
+            wchar_t* copy = new wchar_t[len];
+            defValue = wcscpy(copy, s.defValue);
+        }
+        else
+            defValue = NULL;
+
         delete[] value;
 
         if (s.value)

@@ -283,9 +283,9 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 
     bool initialPass = (instanceRenderingPass == 0 && symbolRenderingPass == 0);
     RS_String rs_tip, rs_url;
-    if (seTip->expression || seTip->value)
+    if (seTip->expression || wcslen(seTip->getValue()) > 0)
         rs_tip = seTip->evaluate(exec);
-    if (seUrl->expression || seUrl->value)
+    if (seUrl->expression || wcslen(seUrl->getValue()) > 0)
         rs_url = seUrl->evaluate(exec);
     RS_String& rs_thm = rule->legendLabel;
     m_serenderer->StartFeature(reader, initialPass, rs_tip.empty()? NULL : &rs_tip, rs_url.empty()? NULL : &rs_url, rs_thm.empty()? NULL : &rs_thm);
