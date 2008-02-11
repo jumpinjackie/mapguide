@@ -68,7 +68,7 @@ function ExecuteCommand()
         if(opt.selected)
         {
             if(selIndex > 0)
-                layerSet = "," + layerSet;
+                layerSet = layerSet + ",";
             layerSet += layerNames.options[i].text;
             selIndex ++;
         }
