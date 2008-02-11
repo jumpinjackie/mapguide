@@ -2,7 +2,7 @@
 \addtogroup resource_repository
 <p>
   A resource repository stores all the files and configuration
-  information used by MapGuide.
+  information used by \ProdName.
 </p>
 <h3>See Also</h3>
 <ul>

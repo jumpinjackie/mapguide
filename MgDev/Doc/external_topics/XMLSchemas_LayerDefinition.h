@@ -5,8 +5,7 @@
 There are now two versions of the LayerDefinition schema.
 </P>
 <P>
-All layer definitions from MapGuide versions prior to MapGuide OpenSource 1.2 use version 1.0.0.  New layers created or updated in tools such as 
-Autodesk Studio 2008 will use version 1.1.0.
+All layer definitions from MapGuide versions prior to MapGuide OpenSource 1.2 use version 1.0.0.  
 </P>
 <P>
 You don't need to use the new version unless you want to make use of the new features supported by the new version:

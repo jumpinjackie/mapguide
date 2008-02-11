@@ -2,8 +2,7 @@
 \addtogroup drawing_source
 
 <p>
-A resource containing a \link DWF DWF \endlink. Drawing sources are
-created by Autodesk Studio by loading a DWG or DWF file.
+A resource containing a \link DWF DWF \endlink. 
 </p>
 <p>
 The Autodesk DWG file format is optimized for a CAD application not the web,

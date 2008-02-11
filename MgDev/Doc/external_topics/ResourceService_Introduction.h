@@ -8,8 +8,7 @@
 	A resource repository stores all the files and configuration
 	information used by MapGuide. There are two types of
 	repository. The <i>library</i> is used for persistent
-	storage. It corresponds to what is shown in the Site Explorer
-	when you use the Studio application. There may also be <i>session</i> repositories. These hold data only for the user's current
+	storage. There may also be <i>session</i> repositories. These hold data only for the user's current
 	session, and are automatically deleted by the 
 	MapGuide server if they have not been used for a certain
 	length of time. MapGuide creates session
@@ -63,6 +62,7 @@
 	<li>MgResourceService::DeleteResource</li>
 	<li>MgResourceService::EnumerateReferences</li>
 	<li>MgResourceService::EnumerateResources</li>
+	<li>MgResourceService::EnumerateUnmanagedData</li>
 	<li>MgResourceService::GetResourceContent</li>
 	<li>MgResourceService::GetResourceHeader</li>
 	<li>MgResourceService::GetResourceMetadata</li>
