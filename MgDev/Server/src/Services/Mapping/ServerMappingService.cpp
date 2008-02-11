@@ -400,8 +400,20 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
     //set up the map coord sys to lat lon transformation -- for use by the observation mesh
     if (dstCs)
     {
-        Ptr<MgCoordinateSystem> ll84 = m_pCSFactory->Create(SRS_LL84);
-        xformToLL = new MgCSTrans(dstCs, ll84);
+        //don't create an observation mesh for an aribtrary XY coordinate system
+        if(dstCs->GetType() != MgCoordinateSystemType::Arbitrary)
+        {
+            try
+            {
+                Ptr<MgCoordinateSystem> ll84 = m_pCSFactory->Create(SRS_LL84);
+                xformToLL = new MgCSTrans(dstCs, ll84);
+            }
+            catch(MgException* mge)
+            {
+                mge->Release();
+                xformToLL = NULL;
+            }
+        }
     }
 
     //set up map-specific params, like bg color, scale, etc.
