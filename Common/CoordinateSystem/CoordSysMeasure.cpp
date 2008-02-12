@@ -91,21 +91,13 @@ double CCoordinateSystemMeasure::GetDistance(double x1, double y1, double x2, do
             distance = m_coordSys->MeasureGreatCircleDistance(x1, y1, x2, y2);
         }
     }
-    catch(MgException* e)
+    catch (MgException* e)
     {
-        STRING message = e->GetMessage();
-        SAFE_RELEASE(e);
-
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemMeasureFailedException(L"MgCoordinateSystemMeasure.GetDistance", __LINE__, __WFILE__, &arguments, L"", NULL);
+        e->Raise();
     }
-    catch(...)
+    catch (...)
     {
-        STRING message = L"Unexpected error.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemMeasureFailedException(L"MgCoordinateSystemMeasure.GetDistance", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemMeasureFailedException(L"MgCoordinateSystem.GetDistance", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 
     return distance;
@@ -140,21 +132,13 @@ double CCoordinateSystemMeasure::GetAzimuth(double x1, double y1, double x2, dou
     {
         azimuth = m_coordSys->GetAzimuth(x1, y1, x2, y2);
     }
-    catch(MgException* e)
+    catch (MgException* e)
     {
-        STRING message = e->GetMessage();
-        SAFE_RELEASE(e);
-
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemComputationFailedException(L"MgCoordinateSystemMeasure.GetAzimuth", __LINE__, __WFILE__, &arguments, L"", NULL);
+        e->Raise();
     }
-    catch(...)
+    catch (...)
     {
-        STRING message = L"Unexpected error.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemComputationFailedException(L"MgCoordinateSystemMeasure.GetAzimuth", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemComputationFailedException(L"MgCoordinateSystemMeasure.GetAzimuth", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 
     return azimuth;
@@ -193,21 +177,13 @@ void CCoordinateSystemMeasure::GetCoordinate(double xStart, double yStart, doubl
         x = coord->GetX();
         y = coord->GetY();
     }
-    catch(MgException* e)
+    catch (MgException* e)
     {
-        STRING message = e->GetMessage();
-        SAFE_RELEASE(e);
-
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemComputationFailedException(L"MgCoordinateSystemMeasure.GetCoordinate", __LINE__, __WFILE__, &arguments, L"", NULL);
+        e->Raise();
     }
     catch(...)
     {
-        STRING message = L"Unexpected error.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemComputationFailedException(L"MgCoordinateSystemMeasure.GetCoordinate", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemComputationFailedException(L"MgCoordinateSystemMeasure.GetCoordinate", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 }
 

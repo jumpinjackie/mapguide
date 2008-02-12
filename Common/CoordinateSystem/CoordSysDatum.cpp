@@ -326,14 +326,14 @@ MgDisposableCollection* CCoordinateSystemDatum::GetGeodeticTransformations(MgCoo
 
     if (NULL == pNew.p)
     {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetGeodeticTransformations", __LINE__, __WFILE__, NULL, L"MgOutOfMemoryException", NULL);
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetGeodeticTransformations", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     pColl = new MgDisposableCollection;
 
     if (NULL == pColl.p)
     {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetGeodeticTransformations", __LINE__, __WFILE__, NULL, L"MgOutOfMemoryException", NULL);
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetGeodeticTransformations", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     pColl->Add(pNew);

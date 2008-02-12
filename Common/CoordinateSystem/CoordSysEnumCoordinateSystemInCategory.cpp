@@ -151,7 +151,7 @@ MgStringCollection* CCoordinateSystemEnumCoordinateSystemInCategory::NextName(UI
     pOutput=new MgStringCollection;
     if (!pOutput)
     {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.NextName", __LINE__, __WFILE__, NULL, L"MgOutOfMemoryException", NULL);
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.NextName", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     wchar_t* pstr;
     for (; m_iter != m_kpListCoordinateSystemNames->end(); m_iter++)
@@ -171,7 +171,7 @@ MgStringCollection* CCoordinateSystemEnumCoordinateSystemInCategory::NextName(UI
         pstr = Convert_Ascii_To_Wide(kpName);
         if (NULL == pstr)
         {
-            throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.NextName", __LINE__, __WFILE__, NULL, L"MgOutOfMemoryException", NULL);
+            throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.NextName", __LINE__, __WFILE__, NULL, L"", NULL);
         }
         pOutput->Add(pstr);
         delete[] pstr;
@@ -303,7 +303,7 @@ bool CCoordinateSystemEnumCoordinateSystemInCategory::IsFilteredOut(const char *
     wchar_t* pStr = Convert_Ascii_To_Wide(kpName);
     if (NULL == pStr)
     {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.IsFilteredOut", __LINE__, __WFILE__, NULL, L"MgOutOfMemoryException", NULL);
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.IsFilteredOut", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     bool bIsFiltered=IsFilteredOut(pStr);
     delete[] pStr;

@@ -148,10 +148,7 @@ MgCoordinateSystem* CCoordinateSystem::CreateClone()
 
     if (NULL == coordSys.p)
     {
-        STRING message = L"Could not allocate MgCoordinateSystem.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgOutOfMemoryException(L"MgCoordinateSystem.CreateClone", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgOutOfMemoryException(L"MgCoordinateSystem.CreateClone", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     coordSys->m_ogrSrs = NULL;
@@ -192,10 +189,7 @@ MgCoordinateSystem* CCoordinateSystem::CreateClone()
         {
             delete coordSys;
 
-            STRING message = L"Could not create coordinate system forward transformation with specified coordinate systems.";
-            MgStringCollection arguments;
-            arguments.Add(message);
-            throw new MgInvalidCoordinateSystemException(L"MgCoordinateSystem.CreateClone", __LINE__, __WFILE__, &arguments, L"", NULL);
+            throw new MgInvalidCoordinateSystemException(L"MgCoordinateSystem.CreateClone", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemFailedToCreateCoordinateSystemForwardTransformation", NULL);
         }
 
         // No datum shift is done. You must use the CoordinateSystemTransform class for that.
@@ -204,10 +198,7 @@ MgCoordinateSystem* CCoordinateSystem::CreateClone()
         {
             delete coordSys;
 
-            STRING message = L"Could not create coordinate system inverse transformation with specified coordinate systems.";
-            MgStringCollection arguments;
-            arguments.Add(message);
-            throw new MgInvalidCoordinateSystemException(L"MgCoordinateSystem.CreateClone", __LINE__, __WFILE__, &arguments, L"", NULL);
+            throw new MgInvalidCoordinateSystemException(L"MgCoordinateSystem.CreateClone", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemFailedToCreateCoordinateSystemInverseTransformation", NULL);
         }
     }
 
@@ -386,48 +377,41 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
                                 m_transformForward = CCoordinateSystemTransformation::CreateCoordinateTransformation(m_ogrSrs, m_latLonSrs, false);
                                 if(NULL == m_transformForward)
                                 {
-                                    STRING message = L"Could not create coordinate system forward transformation with specified coordinate systems.";
-                                    MgStringCollection arguments;
-                                    arguments.Add(message);
-                                    throw new MgInvalidCoordinateSystemException(L"MgCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, &arguments, L"", NULL);
+                                    throw new MgInvalidCoordinateSystemException(L"MgCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemFailedToCreateCoordinateSystemForwardTransformation", NULL);
                                 }
 
                                 // No datum shift is done. You must use the CoordinateSystemTransform class for that.
                                 m_transformInverse = CCoordinateSystemTransformation::CreateCoordinateTransformation(m_latLonSrs, m_ogrSrs, false);
                                 if(NULL == m_transformInverse)
                                 {
-                                    STRING message = L"Could not create coordinate system inverse transformation with specified coordinate systems.";
-                                    MgStringCollection arguments;
-                                    arguments.Add(message);
-                                    throw new MgInvalidCoordinateSystemException(L"MgCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, &arguments, L"", NULL);
+                                    throw new MgInvalidCoordinateSystemException(L"MgCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemFailedToCreateCoordinateSystemInverseTransformation", NULL);
                                 }
                             }
                             else
                             {
-                                STRING message = L"Could not parse the OGC WKT.";
-
+                                STRING message;
                                 const char* errMsg = CPLGetLastErrorMsg();
-                                if(errMsg)
+        
+                                if (NULL != errMsg)
                                 {
                                     wchar_t* strError = Convert_Ascii_To_Wide(errMsg);
-                                    message += L" ";
-                                    message += strError;
-
-                                    delete [] strError;
-                                    strError = NULL;
+            
+                                    if (NULL != strError)
+                                    {
+                                        message = strError;
+                                        delete [] strError;
+                                    }
                                 }
 
                                 MgStringCollection arguments;
+                                arguments.Add(ogcWkt);
                                 arguments.Add(message);
-                                throw new MgInvalidCoordinateSystemException(L"MgCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, &arguments, L"", NULL);
+                                throw new MgInvalidCoordinateSystemException(L"MgCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemFailedToParseWktWithInternalError", &arguments);
                             }
                         }
                         else
                         {
-                            STRING message = L"Could not allocate OGRSpatialReference.";
-                            MgStringCollection arguments;
-                            arguments.Add(message);
-                            throw new MgOutOfMemoryException(L"MgCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, &arguments, L"", NULL);
+                            throw new MgOutOfMemoryException(L"MgCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, NULL, L"", NULL);
                         }
                     }
 
@@ -482,22 +466,24 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
 
                     if(OGRERR_NONE != error)
                     {
-                        STRING message = L"Could not convert OGC WKT to PROJ4.";
-
+                        STRING message;
                         const char* errMsg = CPLGetLastErrorMsg();
-                        if(errMsg)
+        
+                        if (NULL != errMsg)
                         {
                             wchar_t* strError = Convert_Ascii_To_Wide(errMsg);
-                            message += L" ";
-                            message += strError;
-
-                            delete [] strError;
-                            strError = NULL;
+            
+                            if (NULL != strError)
+                            {
+                                message = strError;
+                                delete [] strError;
+                            }
                         }
 
                         MgStringCollection arguments;
+                        arguments.Add(ogcWkt);
                         arguments.Add(message);
-                        throw new MgInvalidCoordinateSystemException(L"MgCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, &arguments, L"", NULL);
+                        throw new MgInvalidCoordinateSystemException(L"MgCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemFailedToCreateCoordinateSystemFromWktWithInternalError", &arguments);
                     }
 
                     // We try and pull this information out of the WKT, but they are not guaranteed to be there.
@@ -589,30 +575,30 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
             }
             else
             {
-                STRING message = L"Could not parse the OGC WKT.";
-
+            
+                STRING message;
                 const char* errMsg = CPLGetLastErrorMsg();
-                if(errMsg)
+        
+                if (NULL != errMsg)
                 {
                     wchar_t* strError = Convert_Ascii_To_Wide(errMsg);
-                    message += L" ";
-                    message += strError;
-
-                    delete [] strError;
-                    strError = NULL;
+            
+                    if (NULL != strError)
+                    {
+                        message = strError;
+                        delete [] strError;
+                    }
                 }
 
                 MgStringCollection arguments;
+                arguments.Add(ogcWkt);
                 arguments.Add(message);
-                throw new MgInvalidCoordinateSystemException(L"MgCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, &arguments, L"", NULL);
+                throw new MgInvalidCoordinateSystemException(L"MgCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemFailedToParseWktWithInternalError", &arguments);
             }
         }
         else
         {
-            STRING message = L"Could not allocate OGRSpatialReference.";
-            MgStringCollection arguments;
-            arguments.Add(message);
-            throw new MgOutOfMemoryException(L"MgCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, &arguments, L"", NULL);
+            throw new MgOutOfMemoryException(L"MgCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, NULL, L"", NULL);
         }
     }
     catch (MgException* e)
@@ -717,10 +703,7 @@ void CCoordinateSystem::ConvertFromLonLat(double lon, double lat, double& x, dou
     }
     catch(...)
     {
-        STRING message = L"Unexpected error.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertFromLonLat", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertFromLonLat", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 }
 
@@ -783,10 +766,7 @@ void CCoordinateSystem::ConvertFromLonLat(double lon[], double lat[], double x[]
     }
     catch(...)
     {
-        STRING message = L"Unexpected error.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertFromLonLat", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertFromLonLat", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 }
 
@@ -840,10 +820,7 @@ void CCoordinateSystem::ConvertToLonLat(double x, double y, double& lon, double&
     }
     catch(...)
     {
-        STRING message = L"Unexpected error.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertToLonLat", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertToLonLat", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 }
 
@@ -906,10 +883,7 @@ void CCoordinateSystem::ConvertToLonLat(double x[], double y[], double lon[], do
     }
     catch(...)
     {
-        STRING message = L"Unexpected error.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertToLonLat", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertToLonLat", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 }
 
@@ -942,10 +916,7 @@ double CCoordinateSystem::ConvertCoordinateSystemUnitsToMeters(double units)
     }
     catch(...)
     {
-        STRING message = L"Unexpected error.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertCoordinateSystemUnitsToMeters", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertCoordinateSystemUnitsToMeters", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 
     return meters;
@@ -984,10 +955,7 @@ double CCoordinateSystem::ConvertMetersToCoordinateSystemUnits(double meters)
     }
     catch(...)
     {
-        STRING message = L"Unexpected error.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertMetersToCoordinateSystemUnits", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertMetersToCoordinateSystemUnits", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 
     return units;
@@ -1022,10 +990,7 @@ double CCoordinateSystem::MeasureEuclideanDistance(double x1, double y1, double 
     }
     catch(...)
     {
-        STRING message = L"Unexpected error.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemMeasureFailedException(L"MgCoordinateSystem.MeasureEuclideanDistance", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemMeasureFailedException(L"MgCoordinateSystem.MeasureEuclideanDistance", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 
     return distance;
@@ -1060,10 +1025,7 @@ double CCoordinateSystem::MeasureGreatCircleDistance(double x1, double y1, doubl
     // and there must be a Great Circle path between the points.
     if(m_coordinateSystemType == MgCoordinateSystemType::Arbitrary)
     {
-        STRING message = L"MeasureGreatCircleDistance does not work with Arbitrary coordinate systems.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgInvalidCoordinateSystemTypeException(L"MgCoordinateSystem.MeasureGreatCircleDistance", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgInvalidCoordinateSystemTypeException(L"MgCoordinateSystem.MeasureGreatCircleDistance", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemMustNotBeArbitrary", NULL);
     }
 
     // Lock all threads
@@ -1141,10 +1103,7 @@ double CCoordinateSystem::MeasureGreatCircleDistance(double x1, double y1, doubl
     }
     catch(...)
     {
-        STRING message = L"Unexpected error.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemMeasureFailedException(L"MgCoordinateSystem.MeasureGreatCircleDistance", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemMeasureFailedException(L"MgCoordinateSystem.MeasureGreatCircleDistance", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 
     return distance;
@@ -1271,10 +1230,7 @@ double CCoordinateSystem::GetAzimuth(double x1, double y1, double x2, double y2)
     }
     catch(...)
     {
-        STRING message = L"Unexpected error.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemComputationFailedException(L"MgCoordinateSystem.GetAzimuth", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemComputationFailedException(L"MgCoordinateSystem.GetAzimuth", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 
     return azimuth;
@@ -1396,10 +1352,7 @@ void CCoordinateSystem::GetCoordinate(double xStart, double yStart, double azimu
     }
     catch(...)
     {
-        STRING message = L"Unexpected error.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemComputationFailedException(L"MgCoordinateSystem.GetCoordinate", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemComputationFailedException(L"MgCoordinateSystem.GetCoordinate", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 }
 
@@ -1541,38 +1494,36 @@ STRING CCoordinateSystem::ConvertWktToCoordinateSystemCode(CREFSTRING ogcWkt)
             proj4 = NULL;
         }
 
-        STRING message = L"Unexpected error.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToCoordinateSystemCode", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToCoordinateSystemCode", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 
     if(error != OGRERR_NONE)
     {
-        STRING message = L"Could not determine code because of internal OGR error.";
-
+        STRING message;
         const char* errMsg = CPLGetLastErrorMsg();
-        if(errMsg)
+        
+        if (NULL != errMsg)
         {
             wchar_t* strError = Convert_Ascii_To_Wide(errMsg);
-            message += L" ";
-            message += strError;
-
-            delete [] strError;
-            strError = NULL;
+            
+            if (NULL != strError)
+            {
+                message = strError;
+                delete [] strError;
+            }
         }
 
         MgStringCollection arguments;
+        arguments.Add(ogcWkt);
         arguments.Add(message);
-        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToCoordinateSystemCode", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToCoordinateSystemCode", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemFailedToConvertWktToCodeWithInternalError", &arguments);
     }
 
     if(code.empty())
     {
-        STRING message = L"Could not determine OGC WKT from the code.";
         MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToCoordinateSystemCode", __LINE__, __WFILE__, &arguments, L"", NULL);
+        arguments.Add(ogcWkt);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToCoordinateSystemCode", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemFailedToConvertWktToCode", &arguments);
     }
 
     return code;
@@ -1773,39 +1724,36 @@ STRING CCoordinateSystem::ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode)
             wkt = NULL;
         }
 
-        STRING message = L"Unexpected error.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertCoordinateSystemCodeToWkt", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertCoordinateSystemCodeToWkt", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 
     if(error != OGRERR_NONE)
     {
-        STRING message = L"Unsupported coordinate system code: ";
-
+        STRING message;
         const char* errMsg = CPLGetLastErrorMsg();
-        if(errMsg)
+        
+        if (NULL != errMsg)
         {
             wchar_t* strError = Convert_Ascii_To_Wide(errMsg);
-            message += csCode;
-            message += L". ";
-            message += strError;
-
-            delete [] strError;
-            strError = NULL;
+            
+            if (NULL != strError)
+            {
+                message = strError;
+                delete [] strError;
+            }
         }
 
         MgStringCollection arguments;
+        arguments.Add(csCode);
         arguments.Add(message);
-        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertCoordinateSystemCodeToWkt", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertCoordinateSystemCodeToWkt", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemFailedToConvertCodeToWktWithInternalError", &arguments);
     }
 
     if(ogcWkt.empty())
     {
-        STRING message = L"Unsupported coordinate system code.";
         MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertCoordinateSystemCodeToWkt", __LINE__, __WFILE__, &arguments, L"", NULL);
+        arguments.Add(csCode);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertCoordinateSystemCodeToWkt", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemFailedToConvertCodeToWkt", &arguments);
     }
 
     return ogcWkt;
@@ -2008,10 +1956,7 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
             epsgWkt = NULL;
         }
 
-        STRING message = L"Unexpected error.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertEpsgCodeToWkt", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertEpsgCodeToWkt", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 
     if(epsgWkt)
@@ -2020,10 +1965,8 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
         epsgWkt = NULL;
     }
 
-    if(OGRERR_NONE != error)
+    if (OGRERR_NONE != error)
     {
-        const char* errMsg = CPLGetLastErrorMsg();
-
         char buffer[255] = { 0 };
         #ifdef _WIN32
         itoa(code, buffer, 10);
@@ -2032,27 +1975,32 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
         #endif
 
         wchar_t* strCode = Convert_Ascii_To_Wide(buffer);
+        STRING epsgCode;
+        
+        if (NULL != strCode)
+        {
+            epsgCode = strCode;
+            delete [] strCode;
+        }
 
-        STRING message = L"Failed to convert EPSG code \"";
-        message += strCode;
-        message += L"\" to WKT.";
-
-        delete [] strCode;
-        strCode = NULL;
-
-        if(errMsg)
+        STRING message;
+        const char* errMsg = CPLGetLastErrorMsg();
+        
+        if (NULL != errMsg)
         {
             wchar_t* strError = Convert_Ascii_To_Wide(errMsg);
-            message += L" ";
-            message += strError;
-
-            delete [] strError;
-            strError = NULL;
+            
+            if (NULL != strError)
+            {
+                message = strError;
+                delete [] strError;
+            }
         }
 
         MgStringCollection arguments;
+        arguments.Add(epsgCode);
         arguments.Add(message);
-        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertEpsgCodeToWkt", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertEpsgCodeToWkt", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemFailedToConvertEpsgCodeToWktWithInternalError", &arguments);
     }
 
     return wkt;
@@ -2101,18 +2049,16 @@ long CCoordinateSystem::ConvertWktToEpsgCode(CREFSTRING wkt)
                 code = ::atoi(authroityCode);
                 if(code == 0)
                 {
-                    STRING message = L"Failed to convert WKT to EPSG code.";
                     MgStringCollection arguments;
-                    arguments.Add(message);
-                    throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, &arguments, L"", NULL);
+                    arguments.Add(wkt);
+                    throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemFailedToConvertWktToEpsgCode", &arguments);
                 }
             }
             else
             {
-                STRING message = L"Failed to convert WKT to EPSG code.";
                 MgStringCollection arguments;
-                arguments.Add(message);
-                throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, &arguments, L"", NULL);
+                arguments.Add(wkt);
+                throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemFailedToConvertWktToEpsgCode", &arguments);
             }
         }
     }
@@ -2122,42 +2068,29 @@ long CCoordinateSystem::ConvertWktToEpsgCode(CREFSTRING wkt)
     }
     catch(...)
     {
-        STRING message = L"Unexpected error.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 
-    if(OGRERR_NONE != error)
+    if (OGRERR_NONE != error)
     {
+        STRING message;
         const char* errMsg = CPLGetLastErrorMsg();
 
-        char buffer[255] = { 0 };
-        #ifdef _WIN32
-        itoa(code, buffer, 10);
-        #else
-        snprintf(buffer, 255, "%d", code);
-        #endif
-        wchar_t* strCode = Convert_Ascii_To_Wide(buffer);
-
-        STRING message = L"Failed to convert WKT to EPSG code.";
-
-        delete [] strCode;
-        strCode = NULL;
-
-        if(errMsg)
+        if (NULL != errMsg)
         {
             wchar_t* strError = Convert_Ascii_To_Wide(errMsg);
-            message += L" ";
-            message += strError;
-
-            delete [] strError;
-            strError = NULL;
+            
+            if (NULL != strError)
+            {
+                message = strError;
+                delete [] strError;
+            }
         }
 
         MgStringCollection arguments;
+        arguments.Add(wkt);
         arguments.Add(message);
-        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemFailedToConvertWktToEpsgCodeWithInternalError", &arguments);
     }
 
     return code;
@@ -2170,7 +2103,7 @@ MgCoordinate* CCoordinateSystem::ConvertFromLonLat(MgCoordinate* lonLat)
     if (NULL == lonLat)
     {
         throw new MgNullArgumentException(
-            L"MgCoordinateSystemTransform.ConvertFromLonLat",
+            L"CCoordinateSystemTransform.ConvertFromLonLat",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -2188,10 +2121,7 @@ MgCoordinate* CCoordinateSystem::ConvertFromLonLat(MgCoordinate* lonLat)
     }
     catch(...)
     {
-        STRING message = L"Unexpected error.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.ConvertFromLonLat", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertFromLonLat", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 
     return coord.Detach();
@@ -2204,7 +2134,7 @@ MgCoordinate* CCoordinateSystem::ConvertToLonLat(MgCoordinate* coordinate)
     if (NULL == coordinate)
     {
         throw new MgNullArgumentException(
-            L"MgCoordinateSystemTransform.ConvertToLonLat",
+            L"CCoordinateSystemTransform.ConvertToLonLat",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -2222,10 +2152,7 @@ MgCoordinate* CCoordinateSystem::ConvertToLonLat(MgCoordinate* coordinate)
     }
     catch(...)
     {
-        STRING message = L"Unexpected error.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.ConvertToLonLat", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertToLonLat", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 
     return coord.Detach();
@@ -2238,7 +2165,7 @@ double CCoordinateSystem::MeasureEuclideanDistance(MgCoordinate* coord1, MgCoord
     if (NULL == coord1 || NULL == coord2)
     {
         throw new MgNullArgumentException(
-            L"MgCoordinateSystemTransform.MeasureEuclideanDistance",
+            L"CCoordinateSystemTransform.MeasureEuclideanDistance",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -2252,10 +2179,7 @@ double CCoordinateSystem::MeasureEuclideanDistance(MgCoordinate* coord1, MgCoord
     }
     catch(...)
     {
-        STRING message = L"Unexpected error.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.MeasureEuclideanDistance", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.MeasureEuclideanDistance", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 
     return distance;
@@ -2268,7 +2192,7 @@ double CCoordinateSystem::MeasureGreatCircleDistance(MgCoordinate* coord1, MgCoo
     if (NULL == coord1 || NULL == coord2)
     {
         throw new MgNullArgumentException(
-            L"MgCoordinateSystemTransform.MeasureGreatCircleDistance",
+            L"CCoordinateSystemTransform.MeasureGreatCircleDistance",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -2282,10 +2206,7 @@ double CCoordinateSystem::MeasureGreatCircleDistance(MgCoordinate* coord1, MgCoo
     }
     catch(...)
     {
-        STRING message = L"Unexpected error.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.MeasureGreatCircleDistance", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.MeasureGreatCircleDistance", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 
     return distance;
@@ -2298,7 +2219,7 @@ double CCoordinateSystem::GetAzimuth(MgCoordinate* coord1, MgCoordinate* coord2)
     if (NULL == coord1 || NULL == coord2)
     {
         throw new MgNullArgumentException(
-            L"MgCoordinateSystemTransform.GetAzimuth",
+            L"CCoordinateSystemTransform.GetAzimuth",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -2312,10 +2233,7 @@ double CCoordinateSystem::GetAzimuth(MgCoordinate* coord1, MgCoordinate* coord2)
     }
     catch(...)
     {
-        STRING message = L"Unexpected error.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.GetAzimuth", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.GetAzimuth", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 
     return azimuth;
@@ -2326,7 +2244,7 @@ MgCoordinate* CCoordinateSystem::GetCoordinate(MgCoordinate* coord, double azimu
     if (NULL == coord)
     {
         throw new MgNullArgumentException(
-            L"MgCoordinateSystem.GetCoordinate",
+            L"CCoordinateSystem.GetCoordinate",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 

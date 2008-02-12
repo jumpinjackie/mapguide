@@ -53,7 +53,7 @@ EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Destructor for a MgCoordinateSystemConversionFailedException object.
+    /// Destructor for a MgInvalidCoordinateSystemTypeException object.
     ///
     virtual ~MgInvalidCoordinateSystemTypeException() throw();
 
