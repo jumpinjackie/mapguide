@@ -25,8 +25,10 @@
 #endif
 
 #include "ServerManager.h"
+#include "SessionManager.h"
 #include "LogType.h"
 #include "SessionInfo.h"
+#include "Connection.h"
 
 class MgLogThread;
 
@@ -52,21 +54,21 @@ class MgLogThread;
   } while (0)
 
 //TODO: Log macros need session information such as client ID, version etc.
-#define MG_LOG_ACCESS_ENTRY(Entry) \
+#define MG_LOG_ACCESS_ENTRY(Entry, Client, ClientIp, UserName) \
   do { \
     MgLogManager* pMan = MgLogManager::GetInstance(); \
     if(pMan->IsAccessLogEnabled()) \
     { \
-        pMan->LogAccessEntry(Entry); \
+        pMan->LogAccessEntry(Entry, Client, ClientIp, UserName); \
     } \
   } while (0)
 
-#define MG_LOG_ADMIN_ENTRY(Entry) \
+#define MG_LOG_ADMIN_ENTRY(Entry, Client, ClientIp, UserName) \
   do { \
     MgLogManager* pMan = MgLogManager::GetInstance(); \
     if(pMan->IsAdminLogEnabled()) \
     { \
-        pMan->LogAdminEntry(Entry); \
+        pMan->LogAdminEntry(Entry, Client, ClientIp, UserName); \
     } \
   } while (0)
 
@@ -75,7 +77,8 @@ class MgLogThread;
     MgLogManager* pMan = MgLogManager::GetInstance(); \
     if(pMan->IsAuthenticationLogEnabled()) \
     { \
-        pMan->LogAuthenticationEntry(Entry); \
+        MG_CONNECTION_INFO \
+        pMan->LogAuthenticationEntry(Entry, connInfoClient.c_str(), connInfoClientIp.c_str(), connInfoUserName.c_str()); \
     } \
   } while (0)
 
@@ -84,7 +87,8 @@ class MgLogThread;
     MgLogManager* pMan = MgLogManager::GetInstance(); \
     if(pMan->IsErrorLogEnabled()) \
     { \
-        pMan->LogErrorEntry(Entry); \
+        MG_CONNECTION_INFO \
+        pMan->LogErrorEntry(Entry, connInfoClient.c_str(), connInfoClientIp.c_str(), connInfoUserName.c_str()); \
     } \
   } while (0)
 
@@ -93,7 +97,8 @@ class MgLogThread;
     MgLogManager* pMan = MgLogManager::GetInstance(); \
     if(pMan->IsErrorLogEnabled()) \
     { \
-        pMan->LogErrorEntry(Entry, StackTrace); \
+        MG_CONNECTION_INFO \
+        pMan->LogErrorEntry(Entry, connInfoClient.c_str(), connInfoClientIp.c_str(), connInfoUserName.c_str(), StackTrace); \
     } \
   } while (0)
 
@@ -111,14 +116,16 @@ class MgLogThread;
     MgLogManager* pMan = MgLogManager::GetInstance(); \
     if(pMan->IsTraceLogEnabled()) \
     { \
-        pMan->LogTraceEntry(Entry); \
+        MG_CONNECTION_INFO \
+        pMan->LogTraceEntry(Entry, connInfoClient.c_str(), connInfoClientIp.c_str(), connInfoUserName.c_str()); \
     } \
   } while (0)
 
 #define MG_LOG_OPERATION_MESSAGE(Operation) \
     wchar_t bufferConversion[255]; \
     bufferConversion[0] = 0; \
-    STRING operationMessage = Operation;
+    STRING operationMessage = Operation; \
+    MG_CONNECTION_INFO
 
 #define MG_LOG_OPERATION_MESSAGE_INIT(Version, Arguments) \
     operationMessage += L"."; \
@@ -168,10 +175,72 @@ class MgLogThread;
     }
 
 #define MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY() \
-    MG_LOG_ACCESS_ENTRY(operationMessage.c_str());
+    MG_LOG_ACCESS_ENTRY(operationMessage.c_str(), connInfoClient.c_str(), connInfoClientIp.c_str(), connInfoUserName.c_str());
 
 #define MG_LOG_OPERATION_MESSAGE_ADMIN_ENTRY() \
-    MG_LOG_ADMIN_ENTRY(operationMessage.c_str());
+    MG_LOG_ADMIN_ENTRY(operationMessage.c_str(), connInfoClient.c_str(), connInfoClientIp.c_str(), connInfoUserName.c_str());
+
+#define MG_CONNECTION_INFO \
+    STRING connInfoClient = L""; \
+    STRING connInfoClientIp = L""; \
+    STRING connInfoUserName = L""; \
+    MgUserInformation* pUserInfo = MgUserInformation::GetCurrentUserInfo(); \
+    MgConnection* pConnection = MgConnection::GetCurrentConnection(); \
+    /* Get client version. This needs to come from the web tier. */ \
+    /* For logs involving operations, this will be stored in MgUserInformation. */ \
+    /* Otherwise, for session logging, the info will be retrieved from the connection object. */ \
+    if(NULL != pUserInfo && pUserInfo->GetClientAgent().length() > 0) \
+    { \
+        connInfoClient = MgUtil::EncodeXss(pUserInfo->GetClientAgent()); \
+    } \
+    else \
+    { \
+        if (NULL != pConnection) \
+        { \
+            connInfoClient = MgUtil::EncodeXss(pConnection->GetClientAgent()); \
+        } \
+    } \
+    /* Get client IP. This needs to come from the web tier. */ \
+    /* For logs involving operations this will be stored in MgUserInformation. */ \
+    /* Otherwise, for session logging, the info will be retrieved from the connection object. */ \
+    if (NULL != pUserInfo && pUserInfo->GetClientIp().length() > 0) \
+    { \
+        connInfoClientIp = pUserInfo->GetClientIp(); \
+    } \
+    else \
+    { \
+        if (NULL != pConnection) \
+        { \
+            connInfoClientIp = pConnection->GetClientIp(); \
+        } \
+    } \
+    /* Get user name. */ \
+    if (pUserInfo && pUserInfo->GetUserName().length() > 0) \
+    { \
+        connInfoUserName = pUserInfo->GetUserName(); \
+    } \
+    else if (pConnection!= NULL) \
+    { \
+        connInfoUserName = pConnection->GetUserName(); \
+    } \
+    /* Do we have a username? */ \
+    if(connInfoUserName.length() == 0) \
+    { \
+        /* Try getting the user name from the session ID */ \
+        if (pUserInfo && pUserInfo->GetMgSessionId().length() > 0) \
+        { \
+            try \
+            { \
+                connInfoUserName = MgSessionManager::GetUserName(pUserInfo->GetMgSessionId()); \
+            } \
+            catch(MgSessionExpiredException* e) \
+            { \
+                /* The session ID has expired so we cannot look up the username. */ \
+                SAFE_RELEASE(e); \
+                connInfoUserName = L""; \
+            } \
+        } \
+    }
 
 class MG_SERVER_MANAGER_API MgLogManager : public MgGuardDisposable
 {
@@ -193,12 +262,12 @@ public:
 
     // Log entry methods
     void LogSystemEntry(ACE_Log_Priority priority, CREFSTRING entry);
-    void LogAccessEntry(CREFSTRING opId);
-    void LogAdminEntry(CREFSTRING opId);
-    void LogAuthenticationEntry(CREFSTRING entry);
-    void LogErrorEntry(CREFSTRING entry, CREFSTRING stackTrace = L"");
+    void LogAccessEntry(CREFSTRING opId, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName);
+    void LogAdminEntry(CREFSTRING opId, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName);
+    void LogAuthenticationEntry(CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName);
+    void LogErrorEntry(CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName, CREFSTRING stackTrace = L"");
     void LogSessionEntry(const MgSessionInfo& sessionInfo);
-    void LogTraceEntry(CREFSTRING entry);
+    void LogTraceEntry(CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName);
     void LogSystemErrorEntry(MgException* except);
 
     // Access log methods
@@ -394,16 +463,13 @@ private:
     void AddString(REFSTRING entry, CREFSTRING value);
 
     // Add the parameter specified in the configuration file to the log entry
-    void AddClient(REFSTRING entry);
-    void AddClientIp(REFSTRING entry);
-    void AddDuration(REFSTRING entry);
+    void AddClient(REFSTRING entry, CREFSTRING client);
+    void AddClientIp(REFSTRING entry, CREFSTRING clientIp);
     void AddError(REFSTRING entry, CREFSTRING error);
     void AddInfo(REFSTRING entry, CREFSTRING info);
     void AddOpId(REFSTRING entry, CREFSTRING opId);
-    void AddOpsProcessed(REFSTRING entry);
-    void AddOpsReceived(REFSTRING entry);
     void AddStackTrace(REFSTRING entry, CREFSTRING stackTrace);
-    void AddUserName(REFSTRING entry);
+    void AddUserName(REFSTRING entry, CREFSTRING userName);
 
     // Check if the log file has reached the maximum size
     bool IsMaxSizeExceeded(CREFSTRING logFilename);

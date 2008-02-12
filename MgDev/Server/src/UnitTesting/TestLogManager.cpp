@@ -1575,7 +1575,7 @@ void TestLogManager::TestCase_LogAccessEntry()
     pMgLogManager->SetAccessLogEnabled(true);
 
     STRING entry = L"TestAccessEntry";
-    MG_LOG_ACCESS_ENTRY(entry);
+    MG_LOG_ACCESS_ENTRY(entry, L"TestClient", L"TestClientIp", L"TestUser");
 
     // Give the server time to write out the entry as it is on a different thread
     ACE_OS::sleep(2);
@@ -1619,7 +1619,7 @@ void TestLogManager::TestCase_LogAdminEntry()
     pMgLogManager->SetAdminLogEnabled(true);
 
     STRING entry = L"TestAdminEntry";
-    MG_LOG_ADMIN_ENTRY(entry);
+    MG_LOG_ADMIN_ENTRY(entry, L"TestClient", L"TestClientIp", L"TestUser");
 
     // Give the server time to write out the entry as it is on a different thread
     ACE_OS::sleep(2);
