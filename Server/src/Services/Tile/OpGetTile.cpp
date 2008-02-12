@@ -79,7 +79,7 @@ void MgOpGetTile::Execute()
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(resource->ToString().c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(baseMapLayerGroupName.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
@@ -114,7 +114,7 @@ void MgOpGetTile::Execute()
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(mapDefinition->ToString().c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapDefinition) ? L"MgResourceIdentifier" : mapDefinition->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(baseMapLayerGroupName.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();

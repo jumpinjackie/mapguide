@@ -72,7 +72,7 @@ void MgOpGetSection::Execute()
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(identifier->ToString().c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == identifier) ? L"MgResourceIdentifier" : identifier->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(sectionName.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
