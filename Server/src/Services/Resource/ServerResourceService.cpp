@@ -114,6 +114,8 @@ MgServerResourceService::~MgServerResourceService()
 ///
 void MgServerResourceService::OpenRepositories()
 {
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+
     MG_RESOURCE_SERVICE_TRY()
 
     ACE_ASSERT(NULL == sm_siteRepository && NULL == sm_sessionRepository && NULL == sm_libraryRepository);
@@ -246,6 +248,8 @@ MgByteReader* MgServerResourceService::EnumerateRepositories(
 void MgServerResourceService::CreateRepository(MgResourceIdentifier* resource,
     MgByteReader* content, MgByteReader* header)
 {
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+
     MG_RESOURCE_SERVICE_TRY()
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::CreateRepository()");
@@ -304,6 +308,8 @@ void MgServerResourceService::CreateRepository(MgResourceIdentifier* resource,
 
 void MgServerResourceService::DeleteRepository(MgResourceIdentifier* resource)
 {
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+
     MG_RESOURCE_SERVICE_TRY()
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::DeleteRepository()");
@@ -2083,6 +2089,8 @@ bool MgServerResourceService::HasPermission(MgResourceIdentifier* resource,
 
 void MgServerResourceService::PerformRepositoryCheckpoints(UINT32 flags)
 {
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+
     MG_RESOURCE_SERVICE_TRY()
 
     if (NULL != sm_libraryRepository)
