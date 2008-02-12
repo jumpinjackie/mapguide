@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2007 by Autodesk, Inc.
+//  Copyright (C) 2004-2008 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -520,10 +520,9 @@ MgEnvelope* CCoordinateSystemTransform::Transform(MgEnvelope* envelope)
     }
     catch(...)
     {
-        STRING message = L"Unexpected error.";
         MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, &arguments, L"", NULL);
+        arguments.Add(L""); // dummy argument
+        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, &arguments, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 
     return pEnvelope;
@@ -551,9 +550,8 @@ void CCoordinateSystemTransform::InternalTransform(double* x, double* y, double*
                     if (TRUE != m_transformForward->TransformEx(numPts, x, y, z, NULL))
                     {
                         //if proj failed to convert, generate an exception
-                        STRING message = L"PROJ4 failed to transform the data.";
                         MgStringCollection arguments;
-                        arguments.Add(message);
+                        arguments.Add(L""); // dummy argument
                         throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.InternalTransform", __LINE__, __WFILE__, &arguments, L"", NULL);
                     }
                 }
@@ -591,9 +589,8 @@ void CCoordinateSystemTransform::InternalTransform(double* x, double* y, double*
                     if (TRUE != m_transformForward->TransformEx(numPts, x, y, z, NULL))
                     {
                         //if proj failed to convert, generate an exception
-                        STRING message = L"PROJ4 failed to transform the data.";
                         MgStringCollection arguments;
-                        arguments.Add(message);
+                        arguments.Add(L""); // dummy argument
                         throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.InternalTransform", __LINE__, __WFILE__, &arguments, L"", NULL);
                     }
                 }
@@ -616,10 +613,9 @@ void CCoordinateSystemTransform::InternalTransform(double* x, double* y, double*
     }
     catch(...)
     {
-        STRING message = L"Unexpected error.";
         MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.InternalTransform", __LINE__, __WFILE__, &arguments, L"", NULL);
+        arguments.Add(L""); // dummy argument
+        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.InternalTransform", __LINE__, __WFILE__, &arguments, L"MgCoordinateSystemUnexpectedError", NULL);
     }
 }
 
