@@ -26,18 +26,12 @@
 //////////////////////////////////////////////////////////////////////////////
 RasterAdapter::RasterAdapter(LineBufferPool* lbp) : GeometryAdapter(lbp)
 {
-    m_pGridData = NULL;
-    m_pGridStylizer = NULL;
 }
 
 
 //////////////////////////////////////////////////////////////////////////////
 RasterAdapter::~RasterAdapter()
 {
-    if(m_pGridData != NULL)
-        delete m_pGridData;
-    if(m_pGridStylizer != NULL)
-        delete m_pGridStylizer;
 }
 
 
@@ -103,10 +97,11 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
 
         //TODO: check if we need to move Map's AdjustResolutionWithExtent method and
         //adjust the resolution imgW, imgH here.
-        m_pGridData = new GridData(Point2D(imgExt.minx, imgExt.miny),
+        GridData* pGridData = new GridData(Point2D(imgExt.minx, imgExt.miny),
                                    imgExt.width(), imgExt.height(),
                                    imgW, imgH);
-        m_pGridStylizer = new GridStylizer();
+
+        GridStylizer* pGridStylizer = new GridStylizer();
 
         wchar_t bandName[10];
         //NOTE!!!Only supporting 1 band at this time. Otherwize we have to call SetCurrentBand()
@@ -114,14 +109,14 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
         //band.
         swprintf(bandName, 10, /*NOXLATE*/L"%d", 1);
         //raster->SetCurrentBand(i);
-        m_pGridData->ReadRaster(raster, bandName, imgW, imgH,
+        pGridData->ReadRaster(raster, bandName, imgW, imgH,
                                 imgExt.minx, imgExt.miny, imgExt.maxx, imgExt.maxy, true);
 
-        bool succeeded = m_pGridStylizer->ApplyStyles(m_pGridData, surfStyle, style);
+        bool succeeded = pGridStylizer->ApplyStyles(pGridData, surfStyle, style);
         if(succeeded)
         {
            //use GDRenderer
-            Band* pColorBand = m_pGridData->GetColorBand();
+            Band* pColorBand = pGridData->GetColorBand();
             renderer->StartFeature(features, initialPass, NULL, NULL, NULL);
 
             MdfModel::HillShade* hillShadeStyle = style->GetHillShade();
@@ -210,6 +205,8 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
                 delete reader; //caller deletes reader
             }
         }
+        delete pGridData;
+        delete pGridStylizer;
     }
 }
 
@@ -398,4 +395,5 @@ void RasterAdapter::DecodeBitonal(RS_InputStream* is, const RS_Color& fg, const 
             *dstptr++ = (bits & mask)? fgc : bgc;
     }
 }
+
 
