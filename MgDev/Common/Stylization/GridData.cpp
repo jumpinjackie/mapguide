@@ -110,22 +110,26 @@ GridData::~GridData()
         if (*itr)
         {
             delete *itr;
+            *itr = NULL;
         }
     }
 
     if (NULL != m_pColorBand)
     {
         delete m_pColorBand;
+        m_pColorBand = NULL;
     }
 
     if (NULL != m_pDrapedColorBand)
     {
         delete m_pDrapedColorBand;
+        m_pDrapedColorBand = NULL;
     }
 
     if (NULL != m_pStylizedBand)
     {
         delete m_pStylizedBand;
+        m_pStylizedBand = NULL;
     }
 }
 
@@ -693,6 +697,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
             {
                 //Fix DID 885517
             }
+            delete reader; // caller deletes reader
         }
     }
     catch(...)
