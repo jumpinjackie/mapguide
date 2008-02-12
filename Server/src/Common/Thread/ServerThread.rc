@@ -67,7 +67,7 @@ BEGIN
             VALUE "FileDescription", "ServerThread Dynamic Link Library"
             VALUE "FileVersion", "1, 0, 0, 1"
             VALUE "InternalName", "MgServerThread"
-            VALUE "LegalCopyright", "Copyright (C) 2006-2007 Autodesk, Inc."
+            VALUE "LegalCopyright", "Copyright (C) 2006-2008 Autodesk, Inc."
             VALUE "OriginalFilename", "MgServerThread.dll"
             VALUE "ProductName", "MapGuide Open Source"
             VALUE "ProductVersion", "1, 0, 0, 1"

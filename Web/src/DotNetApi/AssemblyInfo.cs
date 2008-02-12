@@ -28,7 +28,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Open Source Geospatial Foundation")]
 [assembly: AssemblyProduct("MapGuide Open Source")]
-[assembly: AssemblyCopyright("Copyright (C) 2006-2007 by Autodesk, Inc.")]
+[assembly: AssemblyCopyright("Copyright (C) 2006-2008 by Autodesk, Inc.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
