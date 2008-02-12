@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2007 by Autodesk, Inc.
+//  Copyright (C) 2007-2008 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -432,7 +432,7 @@ WT_Result agr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
     double end = outlineEllipse.end_degree() * (M_PI / 180.0);
 
     //get W2D line weight
-    double thick = rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value());
+    double thick = max(1.0, rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value()));
 
     LineBuffer* ell = LineBufferPool::NewLineBuffer(rewriter->GetPool(), 20);
 
@@ -486,9 +486,8 @@ WT_Result agr_process_polygon (WT_Polygon & polygon, WT_File & file)
 }
 
 
-WT_Result agr_process_polytriangle (WT_Polytriangle & /*polytriangle*/, WT_File & /*file*/)
+WT_Result agr_process_polytriangle (WT_Polytriangle & polytriangle, WT_File & file)
 {
-    /*
     if (file.rendition().visibility().visible() == WD_False)
         return WT_Result::Success;
 
@@ -509,23 +508,18 @@ WT_Result agr_process_polytriangle (WT_Polytriangle & /*polytriangle*/, WT_File 
             color = override;
     }
 
-    int gdc = ConvertColor((gdImagePtr)rewriter->GetW2DTargetImage(), color);
-
     WT_Logical_Point* srcpts = polytriangle.points();
 
-    const RS_D_Point* dstpts = rewriter->ProcessW2DPoints(file, srcpts, polytriangle.count(), true);
+    LineBuffer*  dstpts = rewriter->ProcessW2DPoints(file, srcpts, polytriangle.count(), true);
 
     if (dstpts)
     {
         for (int i=2; i < polytriangle.count(); i++)
         {
-            gdImageFilledPolygon((gdImagePtr)rewriter->GetW2DTargetImage(),
-                                (gdPointPtr)(dstpts + i - 2),
-                                3,
-                                gdc);
+			rewriter->DrawScreenPolygon(dstpts, NULL, (unsigned int) color.argb());
         }
     }
-*/
+
     return WT_Result::Success;
 }
 
@@ -626,7 +620,7 @@ WT_Result agr_process_polyline (WT_Polyline & polyline, WT_File & file)
 
     if (dstpts)
     {
-        double thick = rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value());
+        double thick = max(1.0, rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value()));
         SE_LineStroke lineStroke(color.argb(), thick);
         AGGRenderer::DrawScreenPolyline((agg_context*)rewriter->GetW2DTargetImage(), dstpts, NULL, lineStroke);
         LineBufferPool::FreeLineBuffer(rewriter->GetPool(), dstpts);
