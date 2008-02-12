@@ -33,10 +33,7 @@ CCoordinateSystemCategory::CCoordinateSystemCategory(MgCoordinateSystemCatalog *
     m_coordinateSystems = new CoordinateSystemInformationVector();
     if (m_coordinateSystems == NULL)
     {
-        STRING message = L"Could not allocate CoordinateSystemInformationVector.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgOutOfMemoryException(L"CCoordinateSystemCategory.CCoordinateSystemCategory", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgOutOfMemoryException(L"CCoordinateSystemCategory.CCoordinateSystemCategory", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 }
 
@@ -119,7 +116,7 @@ STRING CCoordinateSystemCategory::GetName()
     wchar_t *pName = Convert_Ascii_To_Wide(m_categoryName.name);
     if (!pName)
     {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.GetName", __LINE__, __WFILE__, NULL, L"MgOutOfMemoryException", NULL);
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.GetName", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     sName=pName;
@@ -143,7 +140,7 @@ void CCoordinateSystemCategory::SetName(CREFSTRING sName)
     char *pName = Convert_Wide_To_Ascii(sName.c_str()); //need to delete [] pName
     if (!pName)
     {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.SetName", __LINE__, __WFILE__, NULL, L"MgOutOfMemoryException", NULL);
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.SetName", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     strcpy(m_categoryName.name, pName);
     delete [] pName;

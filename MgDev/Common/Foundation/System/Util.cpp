@@ -804,7 +804,6 @@ STRING MgUtil::ReplaceEscapeCharInXml(CREFSTRING str)
     return newStr;
 }
 
-
 STRING MgUtil::GetResourceMessage(CREFSTRING section, CREFSTRING messageId)
 {
     STRING str;
@@ -812,15 +811,22 @@ STRING MgUtil::GetResourceMessage(CREFSTRING section, CREFSTRING messageId)
     MG_TRY()
 
     MgConfiguration* configuration = MgConfiguration::GetInstance();
+    assert(NULL != configuration);
     MgResources* resources = MgResources::GetInstance();
-    STRING locale;
+    assert(NULL != resources);
+    
+    if (NULL != configuration && NULL != resources)
+    {
+        STRING locale;
 
-    configuration->GetStringValue(
-        MgFoundationConfigProperties::GeneralPropertiesSection,
-        MgFoundationConfigProperties::GeneralPropertyDefaultMessageLocale,
-        locale,
-        MgFoundationConfigProperties::DefaultGeneralPropertyDefaultMessageLocale);
-    str = resources->GetStringResource(locale, section, messageId);
+        configuration->GetStringValue(
+            MgFoundationConfigProperties::GeneralPropertiesSection,
+            MgFoundationConfigProperties::GeneralPropertyDefaultMessageLocale,
+            locale,
+            MgFoundationConfigProperties::DefaultGeneralPropertyDefaultMessageLocale);
+
+        str = resources->GetStringResource(locale, section, messageId);
+    }
 
     // If no message is found, we do not fail.
 
