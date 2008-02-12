@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2008 by Autodesk, Inc.
+//  Copyright (C) 2004-2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -16,11 +16,9 @@
 //
 
 #include "MapGuideCommon.h"
-#include "Connection.h"
 #include "LogEntryData.h"
 #include "LogManager.h"
 #include "LogThread.h"
-#include "SessionManager.h"
 
 const int MAX_BUF       = 16384;
 const int MAX_LINES     = 512;
@@ -1388,7 +1386,7 @@ void MgLogManager::LogSystemEntry(ACE_Log_Priority priority, CREFSTRING entry)
     QueueLogEntry(mltSystem, entry, priority);
 }
 
-void MgLogManager::LogAccessEntry(CREFSTRING opId)
+void MgLogManager::LogAccessEntry(CREFSTRING opId, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName)
 {
     // Message to be entered into the log
     STRING logEntry;
@@ -1411,15 +1409,15 @@ void MgLogManager::LogAccessEntry(CREFSTRING opId)
 
             if (MgLogManager::ClientParam == param)
             {
-                AddClient(logEntry);
+                AddClient(logEntry, client);
             }
             else if (MgLogManager::ClientIpParam == param)
             {
-                AddClientIp(logEntry);
+                AddClientIp(logEntry, clientIp);
             }
             else if (MgLogManager::UserParam == param)
             {
-                AddUserName(logEntry);
+                AddUserName(logEntry, userName);
             }
             else if (MgLogManager::OpIdParam == param)
             {
@@ -1446,7 +1444,7 @@ void MgLogManager::LogAccessEntry(CREFSTRING opId)
     QueueLogEntry(mltAccess, logEntry, LM_INFO);
 }
 
-void MgLogManager::LogAdminEntry(CREFSTRING opId)
+void MgLogManager::LogAdminEntry(CREFSTRING opId, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName)
 {
     // Message to be entered into the log
     STRING logEntry;
@@ -1469,15 +1467,15 @@ void MgLogManager::LogAdminEntry(CREFSTRING opId)
 
             if (MgLogManager::ClientParam == param)
             {
-                AddClient(logEntry);
+                AddClient(logEntry, client);
             }
             else if (MgLogManager::ClientIpParam == param)
             {
-                AddClientIp(logEntry);
+                AddClientIp(logEntry, clientIp);
             }
             else if (MgLogManager::UserParam == param)
             {
-                AddUserName(logEntry);
+                AddUserName(logEntry, userName);
             }
             else if (MgLogManager::OpIdParam == param)
             {
@@ -1504,7 +1502,7 @@ void MgLogManager::LogAdminEntry(CREFSTRING opId)
     QueueLogEntry(mltAdmin, logEntry, LM_INFO);
 }
 
-void MgLogManager::LogAuthenticationEntry(CREFSTRING entry)
+void MgLogManager::LogAuthenticationEntry(CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName)
 {
     // Message to be entered into the log
     STRING logEntry;
@@ -1527,15 +1525,15 @@ void MgLogManager::LogAuthenticationEntry(CREFSTRING entry)
 
             if (MgLogManager::ClientParam == param)
             {
-                AddClient(logEntry);
+                AddClient(logEntry, client);
             }
             else if (MgLogManager::ClientIpParam == param)
             {
-                AddClientIp(logEntry);
+                AddClientIp(logEntry, clientIp);
             }
             else if (MgLogManager::UserParam == param)
             {
-                AddUserName(logEntry);
+                AddUserName(logEntry, userName);
             }
         }
     }
@@ -1556,7 +1554,7 @@ void MgLogManager::LogAuthenticationEntry(CREFSTRING entry)
     QueueLogEntry(mltAuthentication, logEntry, LM_INFO);
 }
 
-void MgLogManager::LogErrorEntry(CREFSTRING entry, CREFSTRING stackTrace)
+void MgLogManager::LogErrorEntry(CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName, CREFSTRING stackTrace)
 {
     // Message to be entered into the log
     STRING logEntry;
@@ -1579,15 +1577,15 @@ void MgLogManager::LogErrorEntry(CREFSTRING entry, CREFSTRING stackTrace)
 
             if (MgLogManager::ClientParam == param)
             {
-                AddClient(logEntry);
+                AddClient(logEntry, client);
             }
             else if (MgLogManager::ClientIpParam == param)
             {
-                AddClientIp(logEntry);
+                AddClientIp(logEntry, clientIp);
             }
             else if (MgLogManager::UserParam == param)
             {
-                AddUserName(logEntry);
+                AddUserName(logEntry, userName);
             }
             else if (MgLogManager::ErrorParam == param)
             {
@@ -1681,11 +1679,11 @@ void MgLogManager::LogSessionEntry(const MgSessionInfo& sessionInfo)
     else
     {
         logEntry = L"Unable to log session message.";
-        LogErrorEntry(logEntry, mgException->GetDetails());
+        LogErrorEntry(logEntry, L"", L"", L"", mgException->GetDetails());
     }
 }
 
-void MgLogManager::LogTraceEntry(CREFSTRING entry)
+void MgLogManager::LogTraceEntry(CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName)
 {
     // Message to be entered into the log
     STRING logEntry;
@@ -1708,15 +1706,15 @@ void MgLogManager::LogTraceEntry(CREFSTRING entry)
 
             if (MgLogManager::ClientParam == param)
             {
-                AddClient(logEntry);
+                AddClient(logEntry, client);
             }
             else if (MgLogManager::ClientIpParam == param)
             {
-                AddClientIp(logEntry);
+                AddClientIp(logEntry, clientIp);
             }
             else if (MgLogManager::UserParam == param)
             {
-                AddUserName(logEntry);
+                AddUserName(logEntry, userName);
             }
             else if (MgLogManager::InfoParam == param)
             {
@@ -2002,7 +2000,7 @@ void MgLogManager::WriteLogMessage(enum MgLogType logType, CREFSTRING message, A
         if (mgException != NULL)
         {
             STRING entry = L"Unable to log system message";
-            LogErrorEntry(entry);
+            LogErrorEntry(entry, L"", L"", L"");
         }
 
         pAce->release();
@@ -2153,7 +2151,7 @@ void MgLogManager::WriteLogMessage(enum MgLogType logType, CREFSTRING message, A
                 if (mgException != 0 && logType != mltError)
                 {
                     STRING entry = L"Unable to log message to " + filename;
-                    LogErrorEntry(entry);
+                    LogErrorEntry(entry, L"", L"", L"");
                 }
 
                 // Check if log size has exceeded the maximum size
@@ -3082,73 +3080,16 @@ void MgLogManager::AddString(REFSTRING entry, CREFSTRING value)
     entry += value;
 }
 
-void MgLogManager::AddClient(REFSTRING entry)
+void MgLogManager::AddClient(REFSTRING entry, CREFSTRING client)
 {
     AddDelimiter(entry);
-
-    // Get client version. This needs to come from the web tier.
-    // For logs involving operations, this will be stored in MgUserInformation.
-    // Otherwise, for session logging, the info will be retrieved from the connection object.
-    MgUserInformation* pUserInfo = MgUserInformation::GetCurrentUserInfo();
-
-    if (NULL != pUserInfo && pUserInfo->GetClientAgent().length() > 0)
-    {
-        entry += MgUtil::EncodeXss(pUserInfo->GetClientAgent());
-    }
-    else
-    {
-        MgConnection* pConnection = MgConnection::GetCurrentConnection();
-
-        if (NULL != pConnection)
-        {
-            entry += MgUtil::EncodeXss(pConnection->GetClientAgent());
-        }
-    }
+    entry += client;
 }
 
-void MgLogManager::AddClientIp(REFSTRING entry)
+void MgLogManager::AddClientIp(REFSTRING entry, CREFSTRING clientIp)
 {
     AddDelimiter(entry);
-
-    // Get client IP. This needs to come from the web tier.
-    // For logs involving operations this will be stored in MgUserInformation.
-    // Otherwise, for session logging, the info will be retrieved from the connection object.
-    MgUserInformation* pUserInfo = MgUserInformation::GetCurrentUserInfo();
-
-    if (NULL != pUserInfo && pUserInfo->GetClientIp().length() > 0)
-    {
-        entry += pUserInfo->GetClientIp();
-    }
-    else
-    {
-        MgConnection* pConnection = MgConnection::GetCurrentConnection();
-
-        if (NULL != pConnection)
-        {
-            entry += pConnection->GetClientIp();
-        }
-    }
-}
-
-void MgLogManager::AddDuration(REFSTRING entry)
-{
-    AddDelimiter(entry);
-
-    double connectionTime = 0;
-
-    MgConnection* pConnection = MgConnection::GetCurrentConnection();
-    if (pConnection != NULL)
-    {
-        // Get connection duration (milliseconds)
-        connectionTime = pConnection->GetConnectionTime();
-    }
-
-    // Convert milliseconds to seconds
-    char duration[256];
-    duration[0] = 0;
-    sprintf(duration, "%.6f", connectionTime/1000);
-
-    entry += MgUtil::MultiByteToWideChar(string(duration));
+    entry += clientIp;
 }
 
 void MgLogManager::AddError(REFSTRING entry, CREFSTRING error)
@@ -3236,78 +3177,10 @@ void MgLogManager::AddOpId(REFSTRING entry, CREFSTRING opId)
     entry += MgUtil::EncodeXss(opId);
 }
 
-void MgLogManager::AddOpsProcessed(REFSTRING entry)
+void MgLogManager::AddUserName(REFSTRING entry, CREFSTRING userName)
 {
     AddDelimiter(entry);
-
-    INT32 nOperations = 0;
-
-    MgConnection* pConnection = MgConnection::GetCurrentConnection();
-    if (pConnection != NULL)
-    {
-        nOperations = pConnection->GetProcessedOperations();
-    }
-
-    STRING opsProcessed = L"";
-    MgUtil::Int32ToString(nOperations, opsProcessed);
-    entry += opsProcessed;
-}
-
-void MgLogManager::AddOpsReceived(REFSTRING entry)
-{
-    AddDelimiter(entry);
-
-    INT32 nOperations = 0;
-
-    MgConnection* pConnection = MgConnection::GetCurrentConnection();
-    if (pConnection != NULL)
-    {
-        nOperations = pConnection->GetReceivedOperations();
-    }
-
-    STRING opsReceived = L"";
-    MgUtil::Int32ToString(nOperations, opsReceived);
-    entry += opsReceived;
-}
-
-void MgLogManager::AddUserName(REFSTRING entry)
-{
-    AddDelimiter(entry);
-
-    STRING username = L"";
-
-    // Get user.
-    MgUserInformation* pUserInfo = MgUserInformation::GetCurrentUserInfo();
-    MgConnection* pConnection = MgConnection::GetCurrentConnection();
-    if (pUserInfo && pUserInfo->GetUserName().length() > 0)
-    {
-        username = pUserInfo->GetUserName();
-    }
-    else if (pConnection!= NULL)
-    {
-        username = pConnection->GetUserName();
-    }
-
-    // Do we have a username?
-    if(username.length() == 0)
-    {
-        // Try getting the user name from the session ID
-        if (pUserInfo && pUserInfo->GetMgSessionId().length() > 0)
-        {
-            try
-            {
-                username = MgSessionManager::GetUserName(pUserInfo->GetMgSessionId());
-            }
-            catch(MgSessionExpiredException* e)
-            {
-                // The session ID has expired so we cannot look up the username.
-                SAFE_RELEASE(e);
-                username = L"";
-            }
-        }
-    }
-
-    entry += username;
+    entry += userName;
 }
 
 bool MgLogManager::IsMaxSizeExceeded(CREFSTRING logFileName)
