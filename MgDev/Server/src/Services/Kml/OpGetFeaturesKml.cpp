@@ -78,7 +78,7 @@ void MgOpGetFeaturesKml::Execute()
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(resource->ToString().c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgEnvelope");
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(width);
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(height);
