@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2007 by Autodesk, Inc.
+//  Copyright (C) 2004-2008 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -85,7 +85,7 @@ void MgOpSetTile::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgByteReader");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(resource->ToString().c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(scaleIndex);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();

@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2007 by Autodesk, Inc.
+//  Copyright (C) 2004-2008 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -69,7 +69,7 @@ void MgOpGetDrawing::Execute()
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(identifier->ToString().c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == identifier) ? L"MgResourceIdentifier" : identifier->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
