@@ -85,8 +85,7 @@ PUBLISHED_API:
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
     /// $coord1 is New York City, and $coord2 is Boston,
-    /// Massachusetts. $distance is 361777.95418396 meters. See \link MgCoordinateSystemMeasure::MgCoordinateSystemMeasure MgCoordinateSystemMeasure::MgCoordinateSystemMeasure Constructor (MgCoordinateSystem*) \endlink
-    /// for the code for creating $coordSysMeasure.
+    /// Massachusetts. $distance is 361777.95418396 meters. 
     /// \code
     /// $geometryFactory = new MgGeometryFactory();
     /// $coord1 = $geometryFactory->CreateCoordinateXY(-74.806394, 40.714169);
@@ -161,8 +160,7 @@ PUBLISHED_API:
     /// \htmlinclude PHPExampleTop.html
     /// (-74.806394, 40.714169) is New York City, and (-71.061342,
     /// 42.355892) is Boston, Massachusetts. $distance is
-    /// 361777.95418396 meters. See \link MgCoordinateSystemMeasure::MgCoordinateSystemMeasure MgCoordinateSystemMeasure::MgCoordinateSystemMeasure Constructor (MgCoordinateSystem*) \endlink
-    /// for the code for creating $coordSysMeasure.
+    /// 361777.95418396 meters. 
     /// \code
     /// $distance = $coordSysMeasure->Getdistance(-74.806394, 40.714169, -71.061342, 42.355892);
     /// \endcode
@@ -230,8 +228,7 @@ PUBLISHED_API:
     /// \htmlinclude PHPExampleTop.html
     /// $coord1 is New York City, and $coord2 is Boston,
     /// Massachusetts. $azimuth12 is 58.507421025167, and $azimuth21
-    /// = -119.00856518347. See \link MgCoordinateSystemMeasure::MgCoordinateSystemMeasure MgCoordinateSystemMeasure::MgCoordinateSystemMeasure Constructor (MgCoordinateSystem*) \endlink
-    /// for the code for creating $coordSysMeasure.
+    /// = -119.00856518347. 
     /// \code
     /// $geometryFactory = new MgGeometryFactory();
     /// $coord1 = $geometryFactory->CreateCoordinateXY(-74.806394, 40.714169);
@@ -308,8 +305,7 @@ PUBLISHED_API:
     /// \htmlinclude PHPExampleTop.html
     /// (-74.806394, 40.714169) is New York City, and (-71.061342,
     /// 42.355892) is Boston, Massachusetts. $azimuth12 is
-    /// 58.507421025167, and $azimuth21 = -119.00856518347. See \link MgCoordinateSystemMeasure::MgCoordinateSystemMeasure MgCoordinateSystemMeasure::MgCoordinateSystemMeasure Constructor (MgCoordinateSystem*) \endlink
-    /// for the code for creating $coordSysMeasure.
+    /// 58.507421025167, and $azimuth21 = -119.00856518347. 
     /// \code
     /// $azimuth12 = $coordSysMeasure->GetAzimuth(-74.806394, 40.714169, -71.061342, 42.355892);
     /// $azimuth21 = $coordSysMeasure->GetAzimuth(-71.061342, 42.355892, -74.806394, 40.714169);
@@ -375,8 +371,7 @@ PUBLISHED_API:
     ///
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
-    /// See \link MgCoordinateSystemMeasure::MgCoordinateSystemMeasure MgCoordinateSystemMeasure::MgCoordinateSystemMeasure Constructor (MgCoordinateSystem*) \endlink
-    /// for the code for creating $coordSysMeasure. See \link MgCoordinateSystemMeasure::GetAzimuth MgCoordinateSystemMeasure::GetAzimuth Method (MgCoordinate*, MgCoordinate*) \endlink
+    /// See \link MgCoordinateSystemMeasure::GetAzimuth MgCoordinateSystemMeasure::GetAzimuth Method (MgCoordinate*, MgCoordinate*) \endlink
     /// for the code creating $azimuth12 and $azimuth21. See \link MgCoordinateSystemMeasure::GetDistance MgCoordinateSystemMeasure::GetDistance Method (MgCoordinate*, MgCoordinate*) \endlink
     /// for the code computing the distance between the coordinates.
     /// The longitude and latitude of $coord12 is the same as the
@@ -462,8 +457,7 @@ PUBLISHED_API:
     ///
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
-    /// See \link MgCoordinateSystemMeasure::MgCoordinateSystemMeasure MgCoordinateSystemMeasure::MgCoordinateSystemMeasure Constructor (MgCoordinateSystem*) \endlink
-    /// for the code for creating $coordSysMeasure. See \link MgCoordinateSystemMeasure::GetAzimuth MgCoordinateSystemMeasure::GetAzimuth Method (MgCoordinate*, MgCoordinate*) \endlink
+    /// See \link MgCoordinateSystemMeasure::GetAzimuth MgCoordinateSystemMeasure::GetAzimuth Method (MgCoordinate*, MgCoordinate*) \endlink
     /// for the code creating $azimuth12 and $azimuth21. See \link MgCoordinateSystemMeasure::GetDistance MgCoordinateSystemMeasure::GetDistance Method (MgCoordinate*, MgCoordinate*) \endlink
     /// for the code computing the distance between the coordinates.
     /// The longitude and latitude of $coord12 is (-71.061342,
@@ -518,8 +512,7 @@ PUBLISHED_API:
     ///
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
-    /// See \link MgCoordinateSystemMeasure::MgCoordinateSystemMeasure MgCoordinateSystemMeasure::MgCoordinateSystemMeasure Constructor (MgCoordinateSystem*) \endlink
-    /// for the code for creating $coordSysMeasure. For this
+    /// For this
     /// particular $coordSysMeasure, the value of $lowerLeft is
     /// (-180, -90) and the value of $upperRight is (180, 90). The
     /// width of the envelope is 360, and the height is 180.
