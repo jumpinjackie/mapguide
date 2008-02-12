@@ -2361,7 +2361,12 @@ void LineBuffer::PolylineCentroid(int cntr, double* cx, double* cy, double* slop
     *cy = (*(j+1)) + fact*dy;
 
     // compute the slope (as a rotation)
-    *slope = atan2(dy, dx);
+    double lineSlope;
+    if (dx == 0.0)
+        lineSlope = (dy < 0.0)? -std::numeric_limits<double>::infinity() : std::numeric_limits<double>::infinity();
+    else
+        lineSlope = dy / dx;
+    *slope = atan(lineSlope);
 }
 
 
