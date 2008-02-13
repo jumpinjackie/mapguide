@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2007 by Autodesk, Inc.
+//  Copyright (C) 2004-2008 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -28,6 +28,18 @@ class MgDataReaderCreator : public MgDisposable
 public:
 
     MgDataReader* Execute(const std::vector<double>& in)
+    {
+        // We convert to appropriate types here
+        std::vector<T> values;
+        ConvertVector(in, values);
+
+        // Use the converted vector
+        Ptr<MgPropertyDefinitionCollection> propDefCol = this->GetPropertyDefinitions();
+        Ptr<MgBatchPropertyCollection> bpCol = this->GetBatchCollection(values);
+        return new MgProxyDataReader(bpCol, propDefCol);
+    }
+
+    MgDataReader* Execute(const std::vector<INT64>& in)
     {
         // We convert to appropriate types here
         std::vector<T> values;
@@ -106,6 +118,16 @@ public:
     }
 
     void ConvertVector(const std::vector<double>& in, std::vector<T>& values)
+    {
+        // There will always be only few values and therefore copy should be fine.
+        int cnt = (int)in.size();
+        for(int i = 0; i < cnt; i++)
+        {
+            values.push_back((T)in[i]);
+        }
+    }
+
+    void ConvertVector(const std::vector<INT64>& in, std::vector<T>& values)
     {
         // There will always be only few values and therefore copy should be fine.
         int cnt = (int)in.size();

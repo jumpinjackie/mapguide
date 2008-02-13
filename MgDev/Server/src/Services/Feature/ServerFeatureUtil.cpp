@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2007 by Autodesk, Inc.
+//  Copyright (C) 2004-2008 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -381,7 +381,9 @@ void MgServerFeatureUtil::ValidateCustomConstraints(FdoFunction* customFunction)
 double MgServerFeatureUtil::Minimum(VECTOR& v)
 {
     int cnt = (int)v.size();
-    double min = DoubleMaxValue;
+    if (cnt <= 0)
+        throw new MgIndexOutOfRangeException(L"MgServerFeatureUtil.Minimum", __LINE__, __WFILE__, NULL, L"", NULL);
+    double min = v[0];
     for (int i=0; i < cnt; i++)
     {
         double val = v[i];
@@ -391,13 +393,45 @@ double MgServerFeatureUtil::Minimum(VECTOR& v)
     return min;
 }
 
+INT64 MgServerFeatureUtil::Minimum(VECTOR_INT64& v)
+{
+    int cnt = (int)v.size();
+    if (cnt <= 0)
+        throw new MgIndexOutOfRangeException(L"MgServerFeatureUtil.Minimum", __LINE__, __WFILE__, NULL, L"", NULL);
+    INT64 min = v[0];
+    for (int i=0; i < cnt; i++)
+    {
+        INT64 val = v[i];
+        if (val < min)
+            min = val;
+    }
+    return min;
+}
+
 double MgServerFeatureUtil::Maximum(VECTOR& v)
 {
     int cnt = (int)v.size();
-    double max = -DoubleMaxValue;
+    if (cnt <= 0)
+        throw new MgIndexOutOfRangeException(L"MgServerFeatureUtil.Maximum", __LINE__, __WFILE__, NULL, L"", NULL);
+    double max = v[0];
     for (int i=0; i < cnt; i++)
     {
         double val = v[i];
+        if (val > max)
+            max = val;
+    }
+    return max;
+}
+
+INT64 MgServerFeatureUtil::Maximum(VECTOR_INT64& v)
+{
+    int cnt = (int)v.size();
+    if (cnt <= 0)
+        throw new MgIndexOutOfRangeException(L"MgServerFeatureUtil.Maximum", __LINE__, __WFILE__, NULL, L"", NULL);
+    INT64 max = v[0];
+    for (int i=0; i < cnt; i++)
+    {
+        INT64 val = v[i];
         if (val > max)
             max = val;
     }
