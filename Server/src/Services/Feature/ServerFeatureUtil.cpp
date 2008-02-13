@@ -384,7 +384,7 @@ double MgServerFeatureUtil::Minimum(VECTOR& v)
     if (cnt <= 0)
         throw new MgIndexOutOfRangeException(L"MgServerFeatureUtil.Minimum", __LINE__, __WFILE__, NULL, L"", NULL);
     double min = v[0];
-    for (int i=0; i < cnt; i++)
+    for (int i = 1; i < cnt; ++i)
     {
         double val = v[i];
         if (val < min)
@@ -399,7 +399,7 @@ INT64 MgServerFeatureUtil::Minimum(VECTOR_INT64& v)
     if (cnt <= 0)
         throw new MgIndexOutOfRangeException(L"MgServerFeatureUtil.Minimum", __LINE__, __WFILE__, NULL, L"", NULL);
     INT64 min = v[0];
-    for (int i=0; i < cnt; i++)
+    for (int i = 1; i < cnt; ++i)
     {
         INT64 val = v[i];
         if (val < min)
@@ -414,7 +414,7 @@ double MgServerFeatureUtil::Maximum(VECTOR& v)
     if (cnt <= 0)
         throw new MgIndexOutOfRangeException(L"MgServerFeatureUtil.Maximum", __LINE__, __WFILE__, NULL, L"", NULL);
     double max = v[0];
-    for (int i=0; i < cnt; i++)
+    for (int i = 1; i < cnt; ++i)
     {
         double val = v[i];
         if (val > max)
@@ -429,7 +429,7 @@ INT64 MgServerFeatureUtil::Maximum(VECTOR_INT64& v)
     if (cnt <= 0)
         throw new MgIndexOutOfRangeException(L"MgServerFeatureUtil.Maximum", __LINE__, __WFILE__, NULL, L"", NULL);
     INT64 max = v[0];
-    for (int i=0; i < cnt; i++)
+    for (int i = 1; i < cnt; ++i)
     {
         INT64 val = v[i];
         if (val > max)
