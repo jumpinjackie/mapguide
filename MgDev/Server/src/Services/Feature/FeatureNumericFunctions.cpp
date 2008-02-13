@@ -88,22 +88,63 @@ MgReader* MgFeatureNumericFunctions::Execute()
     CHECKNULL((MgReader*)m_reader, L"MgFeatureNumericFunctions.Execute");
     CHECKNULL(m_customFunction, L"MgFeatureNumericFunctions.Execute");
 
-    VECTOR v1, v2;
-
+    Ptr<MgReader> reader;
     MG_LOG_TRACE_ENTRY(L"MgFeatureNumericFunctions::Execute");
     // TODO: Can this be optimized to process them as they are read?
     // TODO: Should we put a limit on double buffer
-    while(m_reader->ReadNext())
+    INT32 funcCode = -1;
+    bool supported = MgServerFeatureUtil::FindCustomFunction(m_customFunction, funcCode);
+    if (supported)
     {
-        // TODO: Add support for Geometry extents
-        double val = GetValue();
-        v1.push_back(val);
+        // In case we have int64 but is a custom function use double to evaluate it.
+        // Since we don't have a type which can make operations with big numbers we will fix only Unique/Min/Max functions
+        // Even if we treat int64 different from double we don't solve the issue with truncation error.
+        // If we emulate SUM adding two big numbers we will get overflow even we use int64, e.g.:
+        // Int64 val1 = 9223372036854775806;
+        // Int64 val2 = 9223372036854775807;
+        // Int64 sum = val1 + val2; // the sum value will be -3 so is overflow error
+        // In the future we will need to implement a type which can handle int64 numbers without getting overflow a sum/avg is calculated.
+        // Since all other functions calculate a sum we will use double, at least to be able to get the right result for small numbers.
+        if (m_type != MgPropertyType::Int64 && (funcCode != MINIMUM && funcCode != MAXIMUM && funcCode != UNIQUE))
+        {
+            VECTOR values, distValues;
+            while(m_reader->ReadNext())
+            {
+                // TODO: Add support for Geometry extents
+                double val = GetValue();
+                values.push_back(val);
+            }
+            // Calulate the distribution on the collected values
+            CalculateDistribution(values, distValues);
+            
+            // Create FeatureReader from distribution values
+            reader = GetReader(distValues);
+        }
+        else
+        {
+            VECTOR_INT64 values, distValues;
+            while(m_reader->ReadNext())
+            {
+                INT64 int64Val = 0;
+                if (!m_reader->IsNull(m_propertyName))
+                    int64Val = m_reader->GetInt64(m_propertyName);
+                values.push_back(int64Val);
+            }
+            
+            // Calulate the distribution on the collected values
+            CalculateDistribution(values, distValues);
+            
+            // Create FeatureReader from distribution values
+            Ptr<MgInt64DataReaderCreator> drCreator = new MgInt64DataReaderCreator(m_propertyAlias);
+            reader = drCreator->Execute(distValues);
+        }
     }
-
-    // Calulate the distribution on the collected values
-    CalculateDistribution(v1,v2);
-    // Create FeatureReader from distribution values
-    Ptr<MgReader> reader = GetReader(v2);
+    else
+    {
+        // just return an emty reader
+        VECTOR distValues;
+        reader = GetReader(distValues);
+    }
 
     return SAFE_ADDREF((MgReader*)reader);
 }
@@ -250,8 +291,16 @@ void MgFeatureNumericFunctions::GetMinimum(VECTOR &values, VECTOR &distValues)
     // TODO: Change this algorithm to take reader directly instead of vector
 
     // find the range of the data values
-    double min = MgServerFeatureUtil::Minimum(values);
-    distValues.push_back(min);
+    distValues.push_back(MgServerFeatureUtil::Minimum(values));
+}
+
+
+void MgFeatureNumericFunctions::GetMinimum(VECTOR_INT64 &values, VECTOR_INT64 &distValues)
+{
+    // TODO: Change this algorithm to take reader directly instead of vector
+
+    // find the range of the data values
+    distValues.push_back(MgServerFeatureUtil::Minimum(values));
 }
 
 
@@ -260,9 +309,16 @@ void MgFeatureNumericFunctions::GetMaximum(VECTOR &values, VECTOR &distValues)
     // TODO: Change this algorithm to take reader directly instead of vector
 
     // find the range of the data values
+    distValues.push_back(MgServerFeatureUtil::Maximum(values));
+}
+
+
+void MgFeatureNumericFunctions::GetMaximum(VECTOR_INT64 &values, VECTOR_INT64 &distValues)
+{
+    // TODO: Change this algorithm to take reader directly instead of vector
+
     // find the range of the data values
-    double max = MgServerFeatureUtil::Maximum(values);
-    distValues.push_back(max);
+    distValues.push_back(MgServerFeatureUtil::Maximum(values));
 }
 
 
@@ -328,6 +384,35 @@ void MgFeatureNumericFunctions::CalculateDistribution(VECTOR& values, VECTOR& di
             case UNIQUE:
             {
                 MgUniqueFunction<double>::Execute(values, distValues);
+                break;
+            }
+        }
+    }
+}
+
+void MgFeatureNumericFunctions::CalculateDistribution(VECTOR_INT64& values, VECTOR_INT64& distValues)
+{
+    INT32 funcCode = -1;
+    // Get the arguments from the FdoFunction
+    bool supported = MgServerFeatureUtil::FindCustomFunction(m_customFunction, funcCode);
+
+    if (supported)
+    {
+        switch(funcCode)
+        {
+            case MINIMUM:
+            {
+                GetMinimum(values, distValues);
+                break;
+            }
+            case MAXIMUM:
+            {
+                GetMaximum(values, distValues);
+                break;
+            }
+            case UNIQUE:
+            {
+                MgUniqueFunction<INT64>::Execute(values, distValues);
                 break;
             }
         }
@@ -676,6 +761,11 @@ void MgFeatureNumericFunctions::GetMeanValue(VECTOR &values, VECTOR &distValues)
 void MgFeatureNumericFunctions::GetUniqueValue(VECTOR &values, VECTOR &distValues)
 {
     MgUniqueFunction<double>::Execute(values, distValues);
+}
+
+void MgFeatureNumericFunctions::GetUniqueValue(VECTOR_INT64 &values, VECTOR_INT64 &distValues)
+{
+    MgUniqueFunction<INT64>::Execute(values, distValues);
 }
 
 //-------------------------------------------------------------------------

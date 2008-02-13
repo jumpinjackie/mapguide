@@ -33,6 +33,8 @@
 #define EXTENT              9
 
 typedef vector <double> VECTOR;
+typedef vector <INT64> VECTOR_INT64;
+
 #define DoubleMaxValue  DBL_MAX
 
 #define DoubleNegativeInfinity numeric_limits<double>::infinity()
@@ -57,7 +59,9 @@ public:
 
     static void ValidateCustomConstraints(FdoFunction* customFunction);
     static double Minimum(VECTOR& v);
+    static INT64 Minimum(VECTOR_INT64& v);
     static double Maximum(VECTOR& v);
+    static INT64 Maximum(VECTOR_INT64& v);
     static FdoSpatialOperations GetFdoSpatialOperation(INT32 spatialOp);
     static INT32 GetMgFeaturePropertyType(FdoPropertyType fdoPropType);
     static MgRaster* GetMgRaster(FdoIRaster* raster, STRING propName);
