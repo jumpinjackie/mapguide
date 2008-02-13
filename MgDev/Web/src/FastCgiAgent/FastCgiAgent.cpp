@@ -126,7 +126,9 @@ int main ()
             char* serverPort = getenv(CgiStrings::ServerPort);
             char* scriptName = getenv(CgiStrings::ScriptName);
             char* secure = getenv("HTTPS");  // NOXLATE
-            string url = secure != NULL && (!stricmp(secure, "on") || !stricmp(secure, "true")) ? "https://" : CgiStrings::Http;  // NOXLATE
+            string url = secure != NULL && 
+                (!strcmp(secure, "on") || !strcmp(secure, "ON") || !strcmp(secure, "true") || !strcmp(secure, "TRUE")) // NOXLATE
+                ? "https://" : CgiStrings::Http;  // NOXLATE
             if (NULL != serverName && NULL != serverPort && NULL != scriptName)
             {
                 url.append(serverName);

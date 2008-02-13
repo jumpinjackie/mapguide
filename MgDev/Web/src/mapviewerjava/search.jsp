@@ -133,18 +133,12 @@ String searchError;
             outStream.write(Substitute(templ, vals));
 
             MgClassDefinition classDef = features.GetClassDefinition();
-            MgPropertyDefinitionCollection idProps = classDef.GetIdentityProperties();
-            boolean multiIds = idProps.GetCount() > 1;
-            ArrayList idPropNames = new ArrayList(idProps.GetCount());
-            String idPropName = "";
-            String idPropTypes[];
-            for(j = 0; j < idProps.GetCount(); j++)
+            MgPropertyDefinitionCollection classDefProps = classDef.GetIdentityProperties();
+            ArrayList idPropNames = new ArrayList(classDefProps.GetCount());
+            for(j = 0; j < classDefProps.GetCount(); j++)
             {
-                MgPropertyDefinition idProp = idProps.GetItem(j);
-                if(multiIds)
-                    idPropNames.add(idProp.GetName());
-                else
-                    idPropName = idProp.GetName();
+                MgPropertyDefinition idProp = classDefProps.GetItem(j);
+                idPropNames.add(idProp.GetName());
             }
 
             //table headings
@@ -175,59 +169,67 @@ String searchError;
                     String prop = (String)resProps.get(i);
                     int propType = features.GetPropertyType(prop);
                     String val = "";
-                    //TODO: to use the constants from MgPropertyType, make them constants...
                     switch(propType)
                     {
-                        case /*MgPropertyType.Boolean*/ 1:
+                        case MgPropertyType.Boolean:
                             val = features.GetBoolean(prop)? "True": "False";
                             break;
-                        case /*MgPropertyType.Single*/ 4:
+                        case MgPropertyType.Single:
                             val = String.valueOf(features.GetSingle(prop));
                             break;
-                        case /*MgPropertyType.Double*/ 5:
+                        case MgPropertyType.Double:
                             val = String.valueOf(features.GetDouble(prop));
                             break;
-                        case /*MgPropertyType.Int16*/ 6:
+                        case MgPropertyType.Int16:
                             val = String.valueOf(features.GetInt16(prop));
                             break;
-                        case /*MgPropertyType.Int32*/ 7:
+                        case MgPropertyType.Int32:
                             val = String.valueOf(features.GetInt32(prop));
                             break;
-                        case /*MgPropertyType.Int64*/ 8:
+                        case MgPropertyType.Int64:
                             val = String.valueOf(features.GetInt64(prop));
                             break;
-                        case /*MgPropertyType.String*/ 9:
+                        case MgPropertyType.String:
                             val = features.GetString(prop);
+                            break;
+                        case MgPropertyType.DateTime:
+                            val = features.GetDateTime(prop).ToString();
                             break;
                     }
 
                     // Generate XML to select this feature
                     //
                     MgSelection sel = new MgSelection(map);
-                    if(multiIds)
-                        throw new SearchError(MgLocalizer.GetString("SEARCHNOMULTIPROP", locale), searchError);  //TODO is it still unsupported in MgSelection?
-                    else
+                    MgPropertyCollection idProps = new MgPropertyCollection();
+                    for (Iterator it = idPropNames.iterator(); it.hasNext(); )
                     {
-                        if(i == 0)
-                            idPropType = features.GetPropertyType(idPropName);
-                        switch(idPropType)
+                        String id = (String) it.next();
+                        idPropType = features.GetPropertyType(id);
+                        switch (idPropType)
                         {
-                            case /*MgPropertyType.Int32*/ 7:
-                                sel.AddFeatureIdInt32(layer, featureClassName, features.GetInt32(idPropName));
+                            case MgPropertyType.Int32:
+                                idProps.Add(new MgInt32Property(id, features.GetInt32(id)));
                                 break;
-                            case /*MgPropertyType.String*/ 9:
-                                sel.AddFeatureIdString(layer, featureClassName, features.GetString(idPropName));
+                            case MgPropertyType.String:
+                                idProps.Add(new MgStringProperty(id, features.GetString(id)));
                                 break;
-                            case /*MgPropertyType.Int64*/ 8:
-                                sel.AddFeatureIdInt64(layer, featureClassName, features.GetInt64(idPropName));
+                            case MgPropertyType.Int64:
+                                idProps.Add(new MgInt64Property(id, features.GetInt64(id)));
                                 break;
-                            case /*MgPropertyType.Double*/ 5:
-                                sel.AddFeatureIdDouble(layer, featureClassName, features.GetDouble(idPropName));
+                            case MgPropertyType.Double:
+                                idProps.Add(new MgDoubleProperty(id, features.GetDouble(id)));
+                                break;
+                            case MgPropertyType.Single:
+                                idProps.Add(new MgSingleProperty(id, features.GetSingle(id)));
+                                break;
+                            case MgPropertyType.DateTime:
+                                idProps.Add(new MgDateTimeProperty(id, features.GetDateTime(id)));
                                 break;
                             default:
                                 throw new SearchError(MessageFormat.format(MgLocalizer.GetString("SEARCHTYYPENOTSUP", locale), new Object[] {String.valueOf(idPropType)}), searchError);
                         }
                     }
+                    sel.AddFeatureIds(layer, featureClassName, idProps);
                     String selText = EscapeForHtml(sel.ToXml());
 
                     outStream.write("<td class=\"" + ((row%2)==0 ? "Search" : "Search2") + "\" id=\"" + row +  ":" + i + "\" onmousemove=\"SelectRow(" + row + ")\" onclick=\"CellClicked('" + selText + "')\">&nbsp;" + val + "</td>\n");

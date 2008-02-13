@@ -124,18 +124,12 @@ String searchError;
                 Response.Write(Substitute(templ, vals));
 
                 MgClassDefinition classDef = features.GetClassDefinition();
-                MgPropertyDefinitionCollection idProps = classDef.GetIdentityProperties();
-                bool multiIds = idProps.GetCount() > 1;
-                ArrayList idPropNames = new ArrayList(idProps.GetCount());
-                String idPropName = "";
-                String[] idPropTypes;
-                for (int j = 0; j < idProps.GetCount(); j++)
+                MgPropertyDefinitionCollection classDefProps = classDef.GetIdentityProperties();
+                ArrayList idPropNames = new ArrayList(classDefProps.GetCount());
+                for (int j = 0; j < classDefProps.GetCount(); j++)
                 {
-                    MgPropertyDefinition idProp = idProps.GetItem(j);
-                    if (multiIds)
-                        idPropNames.Add(idProp.GetName());
-                    else
-                        idPropName = idProp.GetName();
+                    MgPropertyDefinition idProp = classDefProps.GetItem(j);
+                    idPropNames.Add(idProp.GetName());
                 }
 
                 //table headings
@@ -189,35 +183,43 @@ String searchError;
                             case MgPropertyType.String:
                                 val = features.GetString(prop);
                                 break;
+                            case MgPropertyType.DateTime:
+                                val = features.GetDateTime(prop).ToString();
+                                break;
                         }
 
                         // Generate XML to selection this feature
                         //
                         MgSelection sel = new MgSelection(map);
-                        if (multiIds)
-                            throw new SearchError(MgLocalizer.GetString("SEARCHNOMULTIPROP", locale), searchError);
-                        else
+                        MgPropertyCollection idProps = new MgPropertyCollection();
+                        foreach (string id in idPropNames)
                         {
-                            if (i == 0)
-                                idPropType = features.GetPropertyType(idPropName);
+                            idPropType = features.GetPropertyType(id);
                             switch (idPropType)
                             {
                                 case MgPropertyType.Int32:
-                                    sel.AddFeatureIdInt32(layer, featureClassName, features.GetInt32(idPropName));
+                                    idProps.Add(new MgInt32Property(id, features.GetInt32(id)));
                                     break;
                                 case MgPropertyType.String:
-                                    sel.AddFeatureIdString(layer, featureClassName, features.GetString(idPropName));
+                                    idProps.Add(new MgStringProperty(id, features.GetString(id)));
                                     break;
                                 case MgPropertyType.Int64:
-                                    sel.AddFeatureIdInt64(layer, featureClassName, features.GetInt64(idPropName));
+                                    idProps.Add(new MgInt64Property(id, features.GetInt64(id)));
                                     break;
                                 case MgPropertyType.Double:
-                                    sel.AddFeatureIdDouble(layer, featureClassName, features.GetDouble(idPropName));
+                                    idProps.Add(new MgDoubleProperty(id, features.GetDouble(id)));
+                                    break;
+                                case MgPropertyType.Single:
+                                    idProps.Add(new MgSingleProperty(id, features.GetSingle(id)));
+                                    break;
+                                case MgPropertyType.DateTime:
+                                    idProps.Add(new MgDateTimeProperty(id, features.GetDateTime(id)));
                                     break;
                                 default:
                                     throw new SearchError(String.Format(MgLocalizer.GetString("SEARCHTYYPENOTSUP", locale), new Object[] { idPropType.ToString() }), searchError);
                             }
                         }
+                        sel.AddFeatureIds(layer, featureClassName, idProps);
                         String selText = EscapeForHtml(sel.ToXml());
 
                         Response.Write(String.Format("<td class=\"{0}\" id=\"{1}:{2}\" onmousemove=\"SelectRow({3})\" onclick=\"CellClicked('{4}')\">&nbsp;{5}</td>\n", (row % 2) == 0 ? "Search" : "Search2", row, i, row, selText, val));

@@ -658,36 +658,43 @@ bool MgDateTime::operator!=(const MgDateTime& dt) const
 
 void MgDateTime::Serialize(MgStream* stream)
 {
-    stream->WriteInt16(m_year);
-    stream->WriteByte((BYTE)m_month);
-    stream->WriteByte((BYTE)m_day);
-    stream->WriteByte((BYTE)m_hour);
-    stream->WriteByte((BYTE)m_minute);
-    stream->WriteByte((BYTE)m_second);
-    stream->WriteInt32(m_microsecond);
+    Ptr<MgStreamHelper> helper = stream->GetStreamHelper();
+    helper->WriteUINT16(m_year);
+    helper->WriteUINT8((BYTE)m_month);
+    helper->WriteUINT8((BYTE)m_day);
+    helper->WriteUINT8((BYTE)m_hour);
+    helper->WriteUINT8((BYTE)m_minute);
+    helper->WriteUINT8((BYTE)m_second);
+    helper->WriteUINT32(m_microsecond);
 }
 
 void MgDateTime::Deserialize(MgStream* stream)
 {
     BYTE ch;
-    stream->GetInt16(m_year);
+    Ptr<MgStreamHelper> helper = stream->GetStreamHelper();
 
-    stream->GetByte(ch);
+    UINT16 val;
+    helper->GetUINT16(val);
+    m_year = (INT16) val;
+
+    helper->GetUINT8(ch);
     m_month = INT8(ch);
 
-    stream->GetByte(ch);
+    helper->GetUINT8(ch);
     m_day = (INT8)ch;
 
-    stream->GetByte(ch);
+    helper->GetUINT8(ch);
     m_hour = (INT8)ch;
 
-    stream->GetByte(ch);
+    helper->GetUINT8(ch);
     m_minute = (INT8)ch;
 
-    stream->GetByte(ch);
+    helper->GetUINT8(ch);
     m_second = (INT8)ch;
 
-    stream->GetInt32(m_microsecond);
+    UINT32 val2;
+    helper->GetUINT32(val2);
+    m_microsecond = (INT32) val2;
 }
 
 ///----------------------------------------------------------------------------

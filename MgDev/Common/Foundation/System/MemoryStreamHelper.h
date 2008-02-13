@@ -117,6 +117,15 @@ class MG_FOUNDATION_API MgMemoryStreamHelper : public MgStreamHelper
 
     //////////////////////////////////////////////////////////////////
     /// \brief
+    /// Writes a single. This routine should be platform independant
+    ///
+    /// \param value
+    /// single to write
+    ///
+    MgStreamStatus WriteSingle( float value );
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
     /// Writes a null terminated string.  Only works for strings up to
     /// 1k in size.
     ///
