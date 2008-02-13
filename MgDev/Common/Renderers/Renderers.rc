@@ -67,7 +67,7 @@ BEGIN
             VALUE "FileDescription", "Renderers Dynamic Link Library"
             VALUE "FileVersion", "1, 0, 0, 1"
             VALUE "InternalName", "MgRenderers"
-            VALUE "LegalCopyright", "Copyright (C) 2006-2007 Autodesk, Inc."
+            VALUE "LegalCopyright", "Copyright (C) 2006-2008 by Autodesk, Inc."
             VALUE "OriginalFilename", "MgRenderers.dll"
             VALUE "ProductName", "MapGuide Open Source"
             VALUE "ProductVersion", "1, 0, 0, 1"
