@@ -248,7 +248,6 @@ PUBLISHED_API:
     /// \htmlinclude ExampleBottom.html
     ///
     /// \exception MgNullArgumentException
-    /// \exception MgInvalidResourcePackageException
     /// \exception MgInvalidRepositoryTypeException
     /// \exception MgInvalidRepositoryNameException
     /// \exception MgInvalidResourcePathException
