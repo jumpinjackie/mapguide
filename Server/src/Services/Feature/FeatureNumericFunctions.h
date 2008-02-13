@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2007 by Autodesk, Inc.
+//  Copyright (C) 2004-2008 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -43,6 +43,8 @@ private:
     void Initialize(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias);
 
     void CalculateDistribution(VECTOR& values, VECTOR& distValues);
+    // do not call this method for other functions than MINIMUM, MAXIMUM, UNIQUE
+    void CalculateDistribution(VECTOR_INT64& values, VECTOR_INT64& distValues);
     MgReader* GetReader(VECTOR& distValues);
 
 
@@ -62,8 +64,11 @@ private:
     void GetMeanValue(VECTOR &values, VECTOR &distValues);
     void GetStandardDeviation(VECTOR &values, VECTOR &distValues);
     void GetUniqueValue(VECTOR &values, VECTOR &distValues);
+    void GetUniqueValue(VECTOR_INT64 &values, VECTOR_INT64 &distValues);
     void GetMinimum(VECTOR &values, VECTOR &distValues);
+    void GetMinimum(VECTOR_INT64 &values, VECTOR_INT64 &distValues);
     void GetMaximum(VECTOR &values, VECTOR &distValues);
+    void GetMaximum(VECTOR_INT64 &values, VECTOR_INT64 &distValues);
 
     // Utility methods
     bool IsInf(double x);
