@@ -67,7 +67,7 @@ BEGIN
             VALUE "FileDescription", "ServerKmlService Dynamic Link Library"
             VALUE "FileVersion", "1, 0, 0, 1"
             VALUE "InternalName", "MgServerKmlService"
-            VALUE "LegalCopyright", "Copyright (C) 2006-2008 Autodesk, Inc."
+            VALUE "LegalCopyright", "Copyright (C) 2006-2008 by Autodesk, Inc."
             VALUE "OriginalFilename", "MgServerKmlService.dll"
             VALUE "ProductName", "MapGuide Open Source"
             VALUE "ProductVersion", "1, 0, 0, 1"

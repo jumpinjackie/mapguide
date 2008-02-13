@@ -67,7 +67,7 @@ BEGIN
             VALUE "FileDescription", "ServerRenderingService Dynamic Link Library"
             VALUE "FileVersion", "1, 0, 0, 1"
             VALUE "InternalName", "MgServerRenderingService"
-            VALUE "LegalCopyright", "Copyright (C) 2006-2008 Autodesk, Inc."
+            VALUE "LegalCopyright", "Copyright (C) 2006-2008 by Autodesk, Inc."
             VALUE "OriginalFilename", "MgServerRenderingService.dll"
             VALUE "ProductName", "MapGuide Open Source"
             VALUE "ProductVersion", "1, 0, 0, 1"
