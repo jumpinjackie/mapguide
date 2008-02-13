@@ -10,7 +10,7 @@
 // manner of such use.
 //
 //
-//  Copyright (C) 2004-2007 by Autodesk, Inc.
+//  Copyright (C) 2004-2008 by Autodesk, Inc.
 //
 //  By using this code, you are agreeing to the terms and conditions of
 //  the License Agreement included in the documentation for this code.
