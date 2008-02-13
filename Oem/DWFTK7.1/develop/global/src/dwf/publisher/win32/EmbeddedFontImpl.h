@@ -1,5 +1,5 @@
 ///
-//  Copyright (C) 1996-2007 by Autodesk, Inc.
+//  Copyright (C) 1996-2008 by Autodesk, Inc.
 //
 //  By using this code, you are agreeing to the terms and conditions of
 //  the License Agreement included in the documentation for this code.
