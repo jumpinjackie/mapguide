@@ -1670,4 +1670,3 @@ void MgServerGwsGetFeatures::SetFilter(FdoExpressionEngine* expressionEngine, Fd
     m_expressionEngine = FDO_SAFE_ADDREF(expressionEngine);
     m_filter = FDO_SAFE_ADDREF(filter);
 }
-

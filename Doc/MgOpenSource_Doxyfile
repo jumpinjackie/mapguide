@@ -75,7 +75,7 @@ WARN_IF_UNDOCUMENTED   = YES
 WARN_IF_DOC_ERROR      = YES
 WARN_NO_PARAMDOC       = YES
 WARN_FORMAT            = "$file:$line: $text  "
-WARN_LOGFILE           = MgOpenSource_warning_logfile.txt
+WARN_LOGFILE           = MgOpenSource_warn_log.txt
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
@@ -173,7 +173,7 @@ HTML_OUTPUT            = MgOpensource_WebAPIReference
 HTML_FILE_EXTENSION    = .htm
 HTML_HEADER            = headers_and_footers/header.html
 HTML_FOOTER            = headers_and_footers/footer.html
-HTML_STYLESHEET        = css/custom.css
+HTML_STYLESHEET        = css/mg_open_source.css
 HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = NO
 HTML_DYNAMIC_SECTIONS  = YES
