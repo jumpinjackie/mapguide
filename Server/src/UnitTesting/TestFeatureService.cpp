@@ -1767,6 +1767,8 @@ void TestFeatureService::TestCase_BenchmarkSelectFeatures()
 ///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_ConcurrentAccess()
 {
+    std:vector<MgFeatureReader*> featureReaders;
+
     try
     {
         #ifdef _DEBUG
@@ -1796,71 +1798,46 @@ void TestFeatureService::TestCase_ConcurrentAccess()
 
         // Use up all of the connections
 
+        MgConfiguration* configuration = MgConfiguration::GetInstance();
+        assert(NULL != configuration);
+        INT32 nDataConnectionPoolSize = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize;
+
+        configuration->GetIntValue(
+            MgConfigProperties::FeatureServicePropertiesSection,
+            MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize,
+            nDataConnectionPoolSize,
+            MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize);
+
         // Create readers
-        Ptr<MgFeatureReader> reader1  = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader2  = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader3  = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader4  = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader5  = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader6  = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader7  = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader8  = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader9  = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader10 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader11 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader12 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader13 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader14 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader15 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader16 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader17 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader18 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader19 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader20 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader21 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader22 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader23 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader24 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader25 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader26 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader27 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader28 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader29 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader30 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader31 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader32 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader33 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader34 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader35 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader36 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader37 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader38 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader39 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader40 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader41 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader42 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader43 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader44 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader45 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader46 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader47 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader48 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader49 = pService->SelectFeatures(resource, className, options);
-        Ptr<MgFeatureReader> reader50 = pService->SelectFeatures(resource, className, options);
+        
+        for (INT32 i = 0; i < nDataConnectionPoolSize; ++i)
+        {
+            featureReaders.push_back(pService->SelectFeatures(resource, className, options));
+        }
 
         // Create another reader - this one should timeout and throw exception
         Ptr<MgFeatureReader> readerFail;
         CPPUNIT_ASSERT_THROW_MG(readerFail = pService->SelectFeatures(resource, className, options), MgAllProviderConnectionsUsedException*);
 
-        // Close one of the open readers
-        reader1->Close();
-        reader1 = NULL;
+        if (!featureReaders.empty())
+        {
+            MgFeatureReader* reader = featureReaders[featureReaders.size() - 1];
+            
+            if (NULL != reader)
+            {
+                // Close one of the open readers
+                reader->Close();
+                SAFE_RELEASE(reader);
+                featureReaders.pop_back();
 
-        // Create another reader - this one should succeed
-        Ptr<MgFeatureReader> readerSuccess = pService->SelectFeatures(resource, className, options);
-        bool bResult = readerSuccess->ReadNext();
-        CPPUNIT_ASSERT(bResult);
-
+                // Create another reader - this one should succeed
+                Ptr<MgFeatureReader> readerSuccess = pService->SelectFeatures(resource, className, options);
+                bool bResult = readerSuccess->ReadNext();
+                CPPUNIT_ASSERT(bResult);
+                featureReaders.push_back(readerSuccess.Detach());
+            }
+        }
+        
         #ifdef _DEBUG
         if(pFdoConnectionManager)
         {
@@ -1882,6 +1859,20 @@ void TestFeatureService::TestCase_ConcurrentAccess()
     }
     catch(...)
     {
+        for (size_t i = 0; i < featureReaders.size(); ++i)
+        {
+            SAFE_RELEASE(featureReaders[i]);
+        }
+
+        featureReaders.clear();
+
         throw;
     }
+
+    for (size_t i = 0; i < featureReaders.size(); ++i)
+    {
+        SAFE_RELEASE(featureReaders[i]);
+    }
+
+    featureReaders.clear();
 }
