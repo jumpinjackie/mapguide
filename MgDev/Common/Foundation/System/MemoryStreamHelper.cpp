@@ -228,7 +228,7 @@ MgStreamHelper::MgStreamStatus MgMemoryStreamHelper::GetDouble(double& data, boo
     INT64 intData = 0;
 
     MgStreamHelper::MgStreamStatus stat = GetINT64(intData, blocking, peeking);
-    memcpy((void*)&data, (void*)intData, sizeof(double));
+    memcpy((void*)&data, (void*)&intData, sizeof(double));
 
     return stat;
 };
