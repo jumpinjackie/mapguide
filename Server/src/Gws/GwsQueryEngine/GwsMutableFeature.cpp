@@ -1211,4 +1211,3 @@ unsigned char* CGwsMutableFeature::ToBuffer(int& bufLen)
     wrtr.WriteFeature(pClassDef, buf, m_pProperties);
     return wrtr.ToBuffer(bufLen);
 }
-
