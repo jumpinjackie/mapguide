@@ -21,3 +21,10 @@ doxygen MgOpenSource_Doxyfile > MGOpenSource_run_log.txt
 echo Doxygen generation is complete. The error log is in 'MgOpenSource_warn_log.txt'.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+
+echo Running the post processor ...
+perl -w PostProcessor/post_process.MgOpenSource.pl
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+echo All done.
+
