@@ -710,7 +710,7 @@ ul.jxSubMenu a.jxDisabled:hover {
     position: relative;
     border-left: none;
     /* note this is hard coded into jx.js Jx.Dialog initialize function - change there as well as here */
-    height: 0px;
+    height: 30px;
     overflow: hidden;
     display: block;
     text-align: right;

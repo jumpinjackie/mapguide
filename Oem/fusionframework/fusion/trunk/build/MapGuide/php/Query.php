@@ -2,7 +2,7 @@
 /**
  * Query
  *
- * $Id: Query.php 1199 2008-01-22 16:11:54Z madair $
+ * $Id: Query.php 1234 2008-02-15 19:34:41Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -61,7 +61,7 @@ try {
         }
     }
     /* a filter expression to apply, in the form of an FDO SQL statement */
-    $filter = isset($_REQUEST['filter']) ? str_replace(array('*', '"'), array('%', "'"),html_entity_decode(urldecode( $_REQUEST['filter']))) : false;
+    $filter = isset($_REQUEST['filter']) ? str_replace(array('*', '"'), array('%', "'"),html_entity_decode(urldecode( $_REQUEST['filter']))) : '';
     //echo "<!-- filter: $filter -->\n";
     /* a spatial filter in the form on a WKT geometry */
     $spatialFilter = (isset($_REQUEST['spatialfilter']) && $_REQUEST['spatialfilter'] != '') ? urldecode($_REQUEST['spatialfilter']) : false;
@@ -74,16 +74,6 @@ try {
     $map = new MgMap();
     $map->Open($resourceService, $mapName);
 
-
-
-
-    /* add the spatial filter if provided.  It is expected to come as a
-       WKT string, so we need to convert it to an MgGeometry */
-    if ($spatialFilter !== false ) {
-        //echo 'setting spatial filter<br>';
-        $wktRW = new MgWktReaderWriter();
-        $geom = $wktRW->Read($spatialFilter);
-    }
     /* add the features to the map selection and save it*/
     $selection = new MgSelection($map);
     
@@ -156,13 +146,42 @@ try {
                 $queryOptions->AddFeatureProperty($geomName);
             }
 
-            /* add the attribute query if provided */
-            if ($filter !== false) {
-                //echo "<!-- setting filter $filter -->\n";
-                $queryOptions->SetFilter($filter);
+            //get the layer filter value if supplied
+            $layerReader = $resourceService->GetResourceContent($layerObj->GetLayerDefinition());
+            $xmldoc = DOMDocument::loadXML(ByteReaderToString($layerReader));
+            $xpathObj = new domXPath($xmldoc);
+            $xpathStr = "/LayerDefinition/VectorLayerDefinition/Filter"; //TODO: need this for DWF or Grid layers?
+            $xpathQuery = $xpathObj->query($xpathStr);
+            $layerFilter = '';
+            if ($xpathQuery->length > 0) {
+              $layerFilter = $xpathQuery->item(0)->nodeValue;
+            }
+            /* create the combined filter value*/
+            if ($filter!='' && $layerFilter!='') {
+                $filter = "(".$filter.") AND (".$layerFilter.")";
+            } else {
+                $filter = $filter.$layerFilter;
+            }
+            if ($filter!='') {
+              //echo "/* setting filter:".$filter."*/";
+              $queryOptions->SetFilter($filter);
             }
 
             if ($spatialFilter !== false ) {
+                $spatialContext = $featureService->GetSpatialContexts($featureResId, true);
+                $srsLayerWkt = false;
+                if ($spatialContext != null && $spatialContext->ReadNext() != null) {
+                    $srsLayerWkt = $spatialContext->GetCoordinateSystemWkt();
+                    /* skip this layer if the srs is empty */
+                }
+                if ($srsLayerWkt == null) {
+                    $srsLayerWkt = $srsDefMap;
+                }
+                /* create a coordinate system from the layer's SRS wkt */
+                $srsLayer = $srsFactory->Create($srsLayerWkt);
+                $srsXform = $srsFactory->GetTransform($srsMap, $srsLayer);
+                $wktRW = new MgWktReaderWriter();
+                $geom = $wktRW->Read($spatialFilter, $srsXform);
                 $queryOptions->SetSpatialFilter($featureGeometryName, $geom, $variant);
             }
 
@@ -174,6 +193,13 @@ try {
                 echo $e->GetDetails() . "\n";
                 echo $e->GetStackTrace() . "\n";
             }
+            
+            //debug block
+            //$testSelection = new MgSelection($map);
+            //$testSelection->AddFeatures($layerObj, $featureReader, $maxFeatures);
+            //$featureReader->Close();
+            //echo "/* features selected:".$testSelection->ToXML()."*/";
+            //$featureReader = $featureService->SelectFeatures($featureResId, $class, $queryOptions);
 
             $layerName = $layerObj->GetName();
             array_push($properties->layers, $layerName);
@@ -312,7 +338,7 @@ try {
     $selection->Save($resourceService, $mapName);
 
     //print_r($properties);
-    //echo var2json($properties);
+    //echo "/* SelectionXML:".$selection->ToXML()."*/";
 
     header('Content-type: text/x-json');
     header('X-JSON: true');

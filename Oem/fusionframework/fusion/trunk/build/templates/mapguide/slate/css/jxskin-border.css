@@ -1,4 +1,4 @@
-/**
+jx/**
  * @project         Jx
  * @revision        $Id: jxskin-border.css 418 2007-09-19 22:56:20Z fwarnock $
  * @author          Fred Warnock (fwarnock@dmsolutions.ca)
@@ -688,7 +688,7 @@ ul.jxSubMenu a.jxDisabled:hover {
     position: relative;
     border-left: none;
     /* note this is hard coded into jx.js Jx.Dialog initialize function - change there as well as here */
-    height: 0px;
+    height: 30px;
     overflow: hidden;
     display: block;
     text-align: right;
@@ -768,4 +768,5 @@ iframe.jxDialogShim {
   background-repeat: no-repeat;
   background-position: center center;
 }
+
 

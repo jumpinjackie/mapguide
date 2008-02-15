@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Print
  *
- * $Id: Print.js 1186 2008-01-15 15:51:54Z madair $
+ * $Id: Print.js 1232 2008-02-15 19:16:45Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -54,6 +54,8 @@ Fusion.Widget.Print.prototype = {
         var showNorthArrow =json.ShowNorthArrow ? json.ShowNorthArrow[0] : 'false';
         this.showNorthArrow = (showNorthArrow.toLowerCase() == 'true' || showNorthArrow == '1');
         
+        this.imageBaseUrl = json.ImageBaseUrl ? json.ImageBaseUrl[0] : null;
+        
         this.dialogContentURL = Fusion.getFusionURL() + widgetTag.location + 'Print/Print.html';
         this.printablePageURL = Fusion.getFusionURL() + widgetTag.location + 'Print/printablepage.php';
         Fusion.addWidgetStyleSheet(widgetTag.location + 'Print/Print.css');
@@ -85,8 +87,9 @@ Fusion.Widget.Print.prototype = {
                 id: 'printablePage',
                 contentURL : this.dialogContentURL,
                 onContentLoaded: this.contentLoaded.bind(this),
-                width: 320,
-                height: 200,
+                imageBaseUrl: this.imageBaseUrl,
+                width: 350,
+                resizeable: true,
                 top: (size.height-200)/2,
                 left: (size.width-320)/2,
                 buttons: ['generate', 'cancel'],

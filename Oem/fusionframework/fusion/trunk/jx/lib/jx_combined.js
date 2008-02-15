@@ -5798,7 +5798,7 @@ Control.Slider.prototype = {
   }
 }/**********************************************************************
  *
- * $Id: jx_combined.js 459 2008-01-09 21:28:14Z madair $
+ * $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
  *
  * purpose: general purpose GUI components based on Prototype and 
  *          scriptaculous.
@@ -5851,7 +5851,6 @@ if (!("console" in window) || !("firebug" in console)) {
         window.console[names[i]] = function() {};
     }
 }
-
 /* inspired by extjs, removes css image flicker and related problems in IE 6 */
 var ua = navigator.userAgent.toLowerCase();
 var isIE = ua.indexOf("msie") > -1,
@@ -5970,18 +5969,16 @@ Jx.imagesLoading = 0; //counter for number of concurrent image loads
  * and limit image loading to 2 at a time.
  */
 Jx.addToImgQueue = function(obj) {
-  //if this image was already requested (i.e. it's in cache) just set it directly
-  if (this.imgLoaded[obj.src]) {
-    obj.domElement.src = obj.src;
-
-  //otherwise stick it in te queue
-  } else {
-    this.imgQueue.push(obj);
-    this.imgLoaded[obj.src] = true;
-  }
-
-  //start the queue managementt process
-  this.checkImgQueue();
+    if (Jx.imgLoaded[obj.src]) {
+        //if this image was already requested (i.e. it's in cache) just set it directly
+        obj.domElement.src = obj.src;
+    } else {
+        //otherwise stick it in te queue
+        Jx.imgQueue.push(obj);
+        Jx.imgLoaded[obj.src] = true;
+    }
+    //start the queue management process
+    Jx.checkImgQueue();
 };
 
 /**
@@ -5990,10 +5987,10 @@ Jx.addToImgQueue = function(obj) {
  * An internal method that ensures no more than 2 images are loading at a time.
  */
 Jx.checkImgQueue = function() {
-  //console.log(this.imgQueue.length+":"+this.imagesLoading);
-  if (this.imagesLoading < 2) this.loadNextImg();
-  if (this.imgQueue.length > 0) setTimeout(this.checkImgQueue.bind(this), 25);
-
+    //console.log(this.imgQueue.length+":"+this.imagesLoading);
+    while (Jx.imagesLoading < 2 && Jx.imgQueue.length > 0) {
+        Jx.loadNextImg();
+    }
 };
 
 /**
@@ -6002,13 +5999,13 @@ Jx.checkImgQueue = function() {
  * An internal method actually populate the DOM element with the image source.
  */
 Jx.loadNextImg = function() {
-  var obj = this.imgQueue.shift();
-  if (obj) {
-    ++this.imagesLoading;
-    obj.domElement.onload = function(){--Jx.imagesLoading};
-    obj.domElement.onerror = function(){--Jx.imagesLoading};
-    obj.domElement.src = obj.src;
-  }
+    var obj = Jx.imgQueue.shift();
+    if (obj) {
+        ++Jx.imagesLoading;
+        obj.domElement.onload = function(){--Jx.imagesLoading; Jx.checkImgQueue();};
+        obj.domElement.onerror = function(){--Jx.imagesLoading; Jx.checkImgQueue();};
+        obj.domElement.src = obj.src;
+    }
 }; 
 
 
@@ -6810,7 +6807,7 @@ Jx.ContentLoader.prototype = {
     }
 };/**********************************************************************
  *
- * $Id: jx_combined.js 459 2008-01-09 21:28:14Z madair $
+ * $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
  *
  * purpose: Implementation of a generic button widget and several
  *          useful subclasses.
@@ -7406,7 +7403,7 @@ Object.extend(Jx.Button.Picker.prototype, {
     
 });/**********************************************************************
  *
- * $Id: jx_combined.js 459 2008-01-09 21:28:14Z madair $
+ * $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
  *
  * purpose: Implementation of a color selection panel.
  *
@@ -8067,7 +8064,7 @@ Object.extend(Jx.Button.Color.prototype, {
 });
 /**
  * @project         Jx
- * @revision        $Id: jx_combined.js 459 2008-01-09 21:28:14Z madair $
+ * @revision        $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -8980,7 +8977,7 @@ Jx.Dialog.prototype = {
 Object.extend(Jx.Dialog.prototype, Jx.UniqueId.prototype);
 Object.extend(Jx.Dialog.prototype, Jx.ContentLoader.prototype);/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 459 2008-01-09 21:28:14Z madair $
+ * @revision        $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -9708,7 +9705,7 @@ Jx.Grid.prototype = {
     }
 };/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 459 2008-01-09 21:28:14Z madair $
+ * @revision        $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -10086,7 +10083,7 @@ Jx.Constraint.prototype = {
     }
 };/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 459 2008-01-09 21:28:14Z madair $
+ * @revision        $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -10437,7 +10434,7 @@ Object.extend(Jx.ContextMenu.prototype, {
     }
 });/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 459 2008-01-09 21:28:14Z madair $
+ * @revision        $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -10712,7 +10709,7 @@ Jx.Panel.prototype = {
 Object.extend(Jx.Panel.prototype, Jx.UniqueId.prototype);
 Object.extend(Jx.Panel.prototype, Jx.ContentLoader.prototype);/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 459 2008-01-09 21:28:14Z madair $
+ * @revision        $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -10912,7 +10909,7 @@ Jx.Picker.prototype = {
 };
 Object.extend(Jx.Picker.prototype, Jx.Listener.prototype);/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 459 2008-01-09 21:28:14Z madair $
+ * @revision        $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -11509,7 +11506,7 @@ Jx.Splitter.Snapper.prototype = {
     }
 };/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 459 2008-01-09 21:28:14Z madair $
+ * @revision        $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -11558,7 +11555,7 @@ Jx.StatusbarItem.prototype = {
     }
 };/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 459 2008-01-09 21:28:14Z madair $
+ * @revision        $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -11721,7 +11718,7 @@ Jx.TabBox.prototype = {
 Object.extend(Jx.TabBox.prototype, Jx.Listener.prototype);
 /**********************************************************************
  *
- * $Id: jx_combined.js 459 2008-01-09 21:28:14Z madair $
+ * $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
  *
  * purpose: Implement a toolbar control.
  *
@@ -11912,7 +11909,7 @@ Jx.ToolbarSeparator.prototype = {
 
 /**
  * @project         Jx
- * @revision        $Id: jx_combined.js 459 2008-01-09 21:28:14Z madair $
+ * @revision        $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */

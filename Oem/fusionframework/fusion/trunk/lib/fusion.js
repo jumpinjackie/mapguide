@@ -1,7 +1,7 @@
 /**
  * Fusion
  *
- * $Id: fusion.js 1201 2008-01-22 19:37:02Z madair $
+ * $Id: fusion.js 1227 2008-02-14 21:02:42Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -288,7 +288,12 @@ Fusion = {
         if (options.applicationDefinition) {
             this.applicationDefinitionURL = options.applicationDefinitionURL;            
         } else {
-            this.applicationDefinitionURL = this.getQueryParam('ApplicationDefinition') || 'ApplicationDefinition.xml';
+            var queryAppDef = this.getQueryParam('ApplicationDefinition');
+            if (queryAppDef) {
+                this.applicationDefinitionURL = queryAppDef.split('+').join(' ');
+            } else {
+                this.applicationDefinitionURL = 'ApplicationDefinition.xml';
+            }
         }
         
         this.initializeLocale();
@@ -352,6 +357,9 @@ Fusion = {
     initializeLocale: function(locale) {
       this.locale = locale ? locale : window._FusionLocale;
       OpenLayers.String.langCode = this.locale;
+      if (!OpenLayers.Strings[this.locale]) {
+        OpenLayers.Strings[this.locale] = OpenLayers.Strings[OpenLayers.String.defaultLangCode];
+      }
       OpenLayers.Util.extend(OpenLayers.Strings[this.locale], Fusion.Strings[this.locale]);
     },
     

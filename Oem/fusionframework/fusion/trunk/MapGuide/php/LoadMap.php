@@ -2,7 +2,7 @@
 /**
  * LoadMap
  *
- * $Id: LoadMap.php 1177 2008-01-11 01:34:12Z madair $
+ * $Id: LoadMap.php 1226 2008-02-14 20:57:26Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -275,7 +275,7 @@ function OutputLayerInfo($layer, $resourceService, $featureService)
     echo "propertyMappings:{";
     $sep = '';
     foreach($mappings as $name => $value) {
-        echo $sep."$name:'$value'";
+        echo $sep."'$name':'$value'";
         $sep = ',';
     }
     echo "},";
