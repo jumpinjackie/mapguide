@@ -1260,6 +1260,7 @@ protected:
     void    ClearIteratorCache();
     void QuickSort(std::vector<PrimaryCacheEntry*>& cache, FdoInt32 left, FdoInt32 right);
     bool QuickSortCompare(PrimaryCacheEntry* compareA, PrimaryCacheEntry* compareB);
+    void ShowPrimaryCache();
 
     IGWSFeatureIterator* m_primaryFeatureIterator;
 
@@ -1419,6 +1420,7 @@ public:
 
     void                        IncrementKeyIndex()     { m_joinKeyIndex++; }
     void                        ResetKeyIndex()         { m_joinKeyIndex=0; }
+    void                        SetPrimaryKeyNull(bool bValue)  { m_bPrimaryKeyNull=bValue; }
 protected:
     FdoDataValue*               GetSecondaryDataValue(FdoDataType dtSecondary, FdoString* propname);
 
@@ -1426,6 +1428,7 @@ protected:
     int                     m_joinKeyIndex;
     bool                    m_bMoreData;
     bool                    m_bNullEntry;
+    bool                    m_bPrimaryKeyNull;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
