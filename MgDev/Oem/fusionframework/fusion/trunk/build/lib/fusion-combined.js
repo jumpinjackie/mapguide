@@ -616,7 +616,7 @@ Fusion.Lib.ApplicationDefinition.prototype = {
      */
      getMapByIndice : function(indice) {
          var map = null;
-         if (this.widgetSets.length < indice) {
+         if (this.widgetSets.length > indice) {
              map = this.widgetSets[indice].getMapWidget();
          }
          return map;
@@ -5020,7 +5020,7 @@ GxSelectionObjectLayer.prototype = {
 /**
  * Fusion.Maps.MapGuide
  *
- * $Id: MapGuide.js 1191 2008-01-17 20:03:01Z madair $
+ * $Id: MapGuide.js 1233 2008-02-15 19:30:53Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -5538,6 +5538,25 @@ Fusion.Maps.MapGuide.prototype = {
     },
             
     /**
+     * Function: getLayerByName
+     * 
+     * Returns the MapGuide layer object as identified by the layer name
+     */
+    getLayerByName : function(name)
+    {
+        var oLayer = null;
+        for (var i=0; i<this.aLayers.length; i++)
+        {
+            if (this.aLayers[i].layerName == name)
+            {
+                oLayer = this.aLayers[i];
+                break;
+            }
+        }
+        return oLayer;
+    },
+
+    /**
      * Function: isMapLoaded
      * 
      * Returns true if the Map has been laoded succesfully form the server
@@ -5635,6 +5654,7 @@ Fusion.Maps.MapGuide.prototype = {
         //this.processFeatureInfo(xmlDoc.documentElement, false, 1);
         //this.processFeatureInfo(xmlOut, false, 2);
       }
+      this.newSelection();
       if (zoomTo) {
         var mgRequest = new Fusion.Lib.MGRequest.MGGetFeatureSetEnvelope(this.getSessionID(), this.getMapName(), sel );
         Fusion.oBroker.dispatchRequest(mgRequest, this.zoomToSelection.bind(this));
@@ -6081,6 +6101,401 @@ Fusion.Maps.MapGuide.StyleItem.prototype = {
         return url + "OPERATION=GETLEGENDIMAGE&SESSION=" + layer.oMap.getSessionID() + "&VERSION=1.0.0&SCALE=" + fScale + "&LAYERDEFINITION=" + encodeURIComponent(layer.resourceId) + "&THEMECATEGORY=" + this.categoryIndex + "&TYPE=" + this.geometryType;
     }
 };
+/**
+ * Fusion API AjaxViewer API layer
+ *
+ * $Id: MapGuide.js 1204 2008-02-01 19:41:53Z madair $
+ *
+ * Copyright (c) 2007, DM Solutions Group Inc.
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
+/***************************************************************************
+* This is a simple API layer to mimick the MapGuide ajaxviewer API
+
+*These are the functions I hacked in to the sample app scripts. They are largely functional, but additional functionality is required ? the Refresh method could use an option to update the legend too (or maybe that should be a separate function) and SetSelectionXML should update the selection panel (if present) ? or maybe that should be a separate call too
+
+
+*/
+var mapWidgetId = 'Map';
+
+function Refresh() {
+    var Fusion = window.top.Fusion;
+    var mapWidget = Fusion.getWidgetById(mapWidgetId);
+    if (mapWidget && mapWidget.isMapLoaded()) {
+        mapWidget.redraw();
+    }
+}
+
+function SetSelectionXML(selectionXml) {
+    var Fusion = window.top.Fusion;
+    var mapWidget = Fusion.getWidgetById(mapWidgetId);
+    if (mapWidget && mapWidget.isMapLoaded()) {
+        mapWidget.setSelection(selectionXml, true, true);
+    }
+}
+
+function ZoomToView(x, y, scale, refresh) {
+    var Fusion = window.top.Fusion;
+    var mapWidget = Fusion.getWidgetById(mapWidgetId);
+    if (mapWidget && mapWidget.isMapLoaded()) {
+        var extent = mapWidget.getExtentFromPoint(x, y, scale);
+        mapWidget.setExtents(extent);
+    }
+}
+
+function DigitizePoint(handler) {
+    if (handler) {
+      var Fusion = window.top.Fusion;
+      var mapWidget = Fusion.getWidgetById(mapWidgetId);
+      var digitizer = new Fusion.Tool.Canvas.Point(mapWidget);
+      digitizer.mouseUp = PointHandlers.prototype.mouseUp;
+      Object.inheritFrom(digitizer, Fusion.Tool.Canvas.prototype, []);
+      digitizer.handler = handler;
+      digitizer.activateCanvas();
+    }
+}
+
+function DigitizeLine(handler) {
+    if (handler) {
+      var Fusion = window.top.Fusion;
+      var mapWidget = Fusion.getWidgetById(mapWidgetId);
+      var digitizer = new Fusion.Tool.Canvas.Line(mapWidget);
+      digitizer.mouseDown = LineHandlers.prototype.mouseDown;
+      digitizer.mouseMove = LineHandlers.prototype.mouseMove;
+      Object.inheritFrom(digitizer, Fusion.Tool.Canvas.prototype, []);
+      digitizer.handler = handler;
+      digitizer.activateCanvas();
+    }
+}
+
+function DigitizeLineString(handler) {
+    if (handler) {
+      var Fusion = window.top.Fusion;
+      var mapWidget = Fusion.getWidgetById(mapWidgetId);
+      var digitizer = new Fusion.Tool.Canvas.Line(mapWidget);
+      digitizer.mouseDown = MultiPointHandlers.prototype.mouseDown;
+      digitizer.mouseMove = MultiPointHandlers.prototype.mouseMove;
+      digitizer.dblClick = MultiPointHandlers.prototype.dblClick;
+      Object.inheritFrom(digitizer, Fusion.Tool.Canvas.prototype, []);
+      digitizer.handler = handler;
+      digitizer.activateCanvas();
+    }
+}
+
+function DigitizeRectangle(handler) {
+    if (handler) {
+      var Fusion = window.top.Fusion;
+      var mapWidget = Fusion.getWidgetById(mapWidgetId);
+      var digitizer = new Fusion.Tool.Canvas.Polygon(mapWidget);
+      digitizer.mouseDown = RectangleHandlers.prototype.mouseDown;
+      digitizer.mouseMove = RectangleHandlers.prototype.mouseMove;
+      Object.inheritFrom(digitizer, Fusion.Tool.Canvas.prototype, []);
+      digitizer.handler = handler;
+      digitizer.activateCanvas();
+    }
+}
+
+function DigitizePolygon(handler) {
+    if (handler) {
+      var Fusion = window.top.Fusion;
+      var mapWidget = Fusion.getWidgetById(mapWidgetId);
+      var digitizer = new Fusion.Tool.Canvas.Polygon(mapWidget);
+      digitizer.mouseDown = MultiPointHandlers.prototype.mouseDown;
+      digitizer.mouseMove = MultiPointHandlers.prototype.mouseMove;
+      digitizer.dblClick = MultiPointHandlers.prototype.dblClick;
+      Object.inheritFrom(digitizer, Fusion.Tool.Canvas.prototype, []);
+      digitizer.handler = handler;
+      digitizer.activateCanvas();
+    }
+}
+
+Fusion.Tool.Canvas.prototype.getMap = function() {
+  return Fusion.getWidgetById(mapWidgetId);
+}
+
+Fusion.Tool.Canvas.prototype.deactivateCanvas = function() {
+    var map = this.getMap();
+    map.deregisterForEvent(Fusion.Event.MAP_RESIZED, this.resizeCanvasFn);
+    map.stopObserveEvent('mousemove', this.mouseMoveCB);
+    map.stopObserveEvent('mouseup', this.mouseUpCB);
+    map.stopObserveEvent('mousedown', this.mouseDownCB);
+    map.stopObserveEvent('dblclick', this.dblClickCB);
+}
+
+
+PointHandlers = Class.create();
+PointHandlers.prototype = {
+    mouseUp: function(e) {
+        var p = this.getMap().getEventPosition(e);
+        var point = this.getMap().pixToGeo(p.x, p.y);
+        this.setPoint(point.x, point.y);
+        this.clearContext();
+        this.draw(this.context);
+        this.isDigitizing = false;
+        this.deactivateCanvas();
+        this.handler(new Point(point.x, point.y));
+    }
+}
+    
+LineHandlers = Class.create();
+LineHandlers.prototype = {
+    mouseDown: function(e) {
+        if (Event.isLeftClick(e)) {
+            var p = this.getMap().getEventPosition(e);
+
+            if (!this.isDigitizing) {
+                this.segments = [];
+                var point = this.getMap().pixToGeo(p.x, p.y);
+                var from = new Fusion.Tool.Canvas.Node(point.x,point.y, this.getMap());
+                var to = new Fusion.Tool.Canvas.Node(point.x,point.y, this.getMap());
+                var seg = new Fusion.Tool.Canvas.Segment(from,to);
+                seg.setEditing(true);
+                this.addSegment(seg);
+                this.clearContext();
+                this.draw(this.context);     
+
+                this.isDigitizing = true;
+            } else {
+                this.isDigitizing = false;
+                var seg = this.lastSegment();
+                seg.setEditing(false);
+                //seg = this.extendLine();
+                this.clearContext();
+                this.draw(this.context);
+                this.deactivateCanvas();
+                
+                this.clean();
+                var ls = new LineString();
+                var nodes = this.getNodes();
+                for (var i=0; i<nodes.length; ++i) {
+                  var node = nodes[i];
+                  ls.AddPoint(new Point(node.x, node.y));
+                }
+                this.handler(ls);
+                
+            }
+        }
+    },
+
+    mouseMove: function(e) {
+        //console.log('SelectRadius.mouseMove');
+        if (!this.isDigitizing) {
+            return;
+        }
+    
+        var p = this.getMap().getEventPosition(e);
+        var seg = this.lastSegment();
+        seg.to.setPx(p.x,p.y);
+        seg.to.updateGeo();
+        this.clearContext();
+        this.draw(this.context);
+    },
+}
+    
+RectangleHandlers = Class.create();
+RectangleHandlers.prototype = {
+    mouseDown: function(e) {
+        if (Event.isLeftClick(e)) {
+            var p = this.getMap().getEventPosition(e);
+
+            if (!this.isDigitizing) {
+                this.segments = [];
+                var point = this.getMap().pixToGeo(p.x, p.y);
+                var from = new Fusion.Tool.Canvas.Node(point.x,point.y, this.getMap());
+                var to = new Fusion.Tool.Canvas.Node(point.x,point.y, this.getMap());
+                this.seg1 = new Fusion.Tool.Canvas.Segment(from,to);
+                this.addSegment(this.seg1);
+                from = new Fusion.Tool.Canvas.Node(point.x,point.y, this.getMap());
+                to = new Fusion.Tool.Canvas.Node(point.x,point.y, this.getMap());
+                this.seg2 = new Fusion.Tool.Canvas.Segment(from,to);
+                this.addSegment(this.seg2);
+                from = new Fusion.Tool.Canvas.Node(point.x,point.y, this.getMap());
+                to = new Fusion.Tool.Canvas.Node(point.x,point.y, this.getMap());
+                this.seg3 = new Fusion.Tool.Canvas.Segment(from,to);
+                this.addSegment(this.seg3);
+                from = new Fusion.Tool.Canvas.Node(point.x,point.y, this.getMap());
+                to = new Fusion.Tool.Canvas.Node(point.x,point.y, this.getMap());
+                this.seg4 = new Fusion.Tool.Canvas.Segment(from,to);
+                this.addSegment(this.seg4);
+                this.clearContext();
+                this.draw(this.context);     
+
+                this.isDigitizing = true;
+            } else {
+                this.clearContext();
+                this.draw(this.context);
+                this.deactivateCanvas();
+                
+                this.clean();
+                var p1 = new Point(this.seg1.from.x,this.seg1.from.y);
+                var p2 = new Point(this.seg3.from.x,this.seg3.from.y);
+                var rect = new Rectangle(p1, p2);
+                this.handler(rect);
+                
+            }
+        }
+    },
+
+    mouseMove: function(e) {
+        //console.log('SelectRadius.mouseMove');
+        if (!this.isDigitizing) {
+            return;
+        }
+    
+        var p = this.getMap().getEventPosition(e);
+        this.seg1.to.setPx(p.x, this.seg1.from.py);
+        this.seg1.to.updateGeo();
+        this.seg2.from.setPx(p.x, this.seg1.from.py);
+        this.seg2.from.updateGeo();
+        this.seg2.to.setPx(p.x, p.y);
+        this.seg2.to.updateGeo();
+        this.seg3.from.setPx(p.x, p.y);
+        this.seg3.from.updateGeo();
+        this.seg3.to.setPx(this.seg1.from.px, p.y);
+        this.seg3.to.updateGeo();
+        this.seg4.from.setPx(this.seg1.from.px, p.y);
+        this.seg4.from.updateGeo();
+        this.clearContext();
+        this.draw(this.context);
+    },
+}
+    
+MultiPointHandlers = Class.create();
+MultiPointHandlers.prototype = {
+    mouseDown: function(e) {
+        if (Event.isLeftClick(e)) {
+            var p = this.getMap().getEventPosition(e);
+
+            if (!this.isDigitizing) {
+                this.segments = [];
+                var point = this.getMap().pixToGeo(p.x, p.y);
+                var from = new Fusion.Tool.Canvas.Node(point.x,point.y, this.getMap());
+                var to = new Fusion.Tool.Canvas.Node(point.x,point.y, this.getMap());
+                var seg = new Fusion.Tool.Canvas.Segment(from,to);
+                seg.setEditing(true);
+                this.addSegment(seg);
+                this.clearContext();
+                this.draw(this.context);     
+
+                this.isDigitizing = true;
+            } else {
+                var seg = this.lastSegment();
+                seg.setEditing(false);
+                seg = this.extendLine();
+                seg.setEditing(true);
+                this.clearContext();
+                this.draw(this.context);
+            }
+        }
+    },
+
+    mouseMove: function(e) {
+        //console.log('SelectRadius.mouseMove');
+        if (!this.isDigitizing) {
+            return;
+        }
+    
+        var p = this.getMap().getEventPosition(e);
+        var seg = this.lastSegment();
+        seg.to.setPx(p.x,p.y);
+        seg.to.updateGeo();
+        this.clearContext();
+        this.draw(this.context);
+    },
+    
+    dblClick: function(e) {
+        //console.log('Digitizer.dblClick');
+        if (!this.isDigitizing) {
+            return;
+        }
+        this.event = e;
+        var p = this.getMap().getEventPosition(e);
+        var point = this.getMap().pixToGeo(p.x, p.y);
+        var seg = this.lastSegment();
+        seg.setEditing(false);
+        seg.to.set(point.x,point.y);
+        this.clearContext();
+        this.draw(this.context);
+        this.isDigitizing = false;
+        this.deactivateCanvas();
+        
+        this.clean();
+        var ls = new LineString();
+        var nodes = this.getNodes();
+        for (var i=0; i<nodes.length; ++i) {
+          var node = nodes[i];
+          ls.AddPoint(new Point(node.x, node.y));
+        }
+        this.handler(ls);
+    }
+}
+    
+function Point(x, y) {
+    this.X = x;
+    this.Y = y;
+}
+
+function LineString()
+{
+    this.points = new Array();
+    this.Count = 0;
+
+    this.AddPoint = function(pt)
+    {
+        this.points.push(pt);
+        this.Count ++;
+    }
+
+    this.Point = function(i)
+    {
+        if(i < 0 || i >= this.points.length)
+            return null;
+        return this.points[i];
+    }
+}
+
+function Circle()
+{
+    this.Center = null;
+    this.Radius = 0;
+
+    this.SetRadius = function(pt)
+    {
+        dx = pt.X - this.Center.X;
+        dy = pt.Y - this.Center.Y;
+        this.Radius = Math.sqrt(dx*dx + dy*dy);
+    }
+}
+
+function Rectangle(p1, p2)
+{
+    this.Point1 = p1;
+    this.Point2 = p2;
+}
+
+function Polygon()
+{
+    this.LineStringInfo = LineString;
+    this.LineStringInfo();
+}
+
 /**
  * Fusion.Maps.MapServer
  *
@@ -6947,7 +7362,7 @@ Fusion.Maps.MapServer.StyleItem.prototype = {
         return url + '?'+params;
     }
 };
-ï»¿Fusion.Strings.en = {
+Fusion.Strings.en = {
 'scriptFailed': 'failed to load script: {0}',
 'configParseError': 'Error parsing fusion configuration file, initialization aborted',
 'configLoadError': 'Error loading fusion configuration file, initialization aborted',
@@ -6983,12 +7398,14 @@ Fusion.Maps.MapServer.StyleItem.prototype = {
 'legendTitle': 'Legend',
 'selectionPanelTitle': 'Selection',
 'ovmapTitle': 'Overview Map',
+'ovmapTitleShort': 'Overview',
 'taskPaneTitle': 'Tasks',
 'segment': 'Segment {0}',
 'calculating': 'calculating ...',
 
 'end': ''
-};ï»¿Fusion.Strings.fr = {
+};
+Fusion.Strings.fr = {
 'scriptFailed': 'failed to load script: {0}',
 'configParseError': 'Error parsing fusion configuration file, initialization aborted',
 'configLoadError': 'Error loading fusion configuration file, initialization aborted',
@@ -7025,12 +7442,14 @@ Fusion.Maps.MapServer.StyleItem.prototype = {
 'legendTitle': 'Legend',
 'selectionPanelTitle': 'SÃ©lection',
 'ovmapTitle': 'Overview Map',
+'ovmapTitleShort': 'Overview',
 'taskPaneTitle': 'Tasks',
 'segment': 'Segment {0}',
 'calculating': 'calculating ...',
 
 'end': ''
-};/**
+};
+/**
  * Fusion.Widget.About
  *
  * $Id: $
@@ -9677,7 +10096,7 @@ Fusion.Widget.Maptip.prototype =
 /**
  * Fusion.Widget.Measure
  *
- * $Id: Measure.js 1184 2008-01-11 23:40:51Z assefa $
+ * $Id: Measure.js 1228 2008-02-14 21:04:43Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -9863,6 +10282,14 @@ Fusion.Widget.Measure.prototype = {
     showPanel : function() {
         if (this.sTarget) {
             var url = this.sBaseUrl;
+            var queryStr = 'locale='+Fusion.locale;
+            if (url.indexOf('?') < 0) {
+                url += '?';
+            } else if (url.slice(-1) != '&') {
+                url += '&';
+            }
+            url += queryStr;
+            
             var taskPaneTarget = Fusion.getWidgetById(this.sTarget);
             var pageElement = $(this.sTarget);
             if ( taskPaneTarget ) {
@@ -10893,7 +11320,7 @@ Fusion.Widget.PanQuery.prototype = {
 };/**
  * Fusion.Widget.Print
  *
- * $Id: Print.js 1186 2008-01-15 15:51:54Z madair $
+ * $Id: Print.js 1232 2008-02-15 19:16:45Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -10946,6 +11373,8 @@ Fusion.Widget.Print.prototype = {
         var showNorthArrow =json.ShowNorthArrow ? json.ShowNorthArrow[0] : 'false';
         this.showNorthArrow = (showNorthArrow.toLowerCase() == 'true' || showNorthArrow == '1');
         
+        this.imageBaseUrl = json.ImageBaseUrl ? json.ImageBaseUrl[0] : null;
+        
         this.dialogContentURL = Fusion.getFusionURL() + widgetTag.location + 'Print/Print.html';
         this.printablePageURL = Fusion.getFusionURL() + widgetTag.location + 'Print/printablepage.php';
         Fusion.addWidgetStyleSheet(widgetTag.location + 'Print/Print.css');
@@ -10977,8 +11406,9 @@ Fusion.Widget.Print.prototype = {
                 id: 'printablePage',
                 contentURL : this.dialogContentURL,
                 onContentLoaded: this.contentLoaded.bind(this),
-                width: 320,
-                height: 200,
+                imageBaseUrl: this.imageBaseUrl,
+                width: 350,
+                resizeable: true,
                 top: (size.height-200)/2,
                 left: (size.width-320)/2,
                 buttons: ['generate', 'cancel'],

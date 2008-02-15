@@ -1,6 +1,6 @@
 /**********************************************************************
  *
- * $Id: jxcore.js 430 2007-10-11 15:06:07Z pspencer $
+ * $Id: jxcore.js 500 2008-02-15 19:51:57Z madair $
  *
  * purpose: general purpose GUI components based on Prototype and 
  *          scriptaculous.
@@ -53,7 +53,6 @@ if (!("console" in window) || !("firebug" in console)) {
         window.console[names[i]] = function() {};
     }
 }
-
 /* inspired by extjs, removes css image flicker and related problems in IE 6 */
 var ua = navigator.userAgent.toLowerCase();
 var isIE = ua.indexOf("msie") > -1,
@@ -172,18 +171,16 @@ Jx.imagesLoading = 0; //counter for number of concurrent image loads
  * and limit image loading to 2 at a time.
  */
 Jx.addToImgQueue = function(obj) {
-  //if this image was already requested (i.e. it's in cache) just set it directly
-  if (this.imgLoaded[obj.src]) {
-    obj.domElement.src = obj.src;
-
-  //otherwise stick it in te queue
-  } else {
-    this.imgQueue.push(obj);
-    this.imgLoaded[obj.src] = true;
-  }
-
-  //start the queue managementt process
-  this.checkImgQueue();
+    if (Jx.imgLoaded[obj.src]) {
+        //if this image was already requested (i.e. it's in cache) just set it directly
+        obj.domElement.src = obj.src;
+    } else {
+        //otherwise stick it in te queue
+        Jx.imgQueue.push(obj);
+        Jx.imgLoaded[obj.src] = true;
+    }
+    //start the queue management process
+    Jx.checkImgQueue();
 };
 
 /**
@@ -192,10 +189,10 @@ Jx.addToImgQueue = function(obj) {
  * An internal method that ensures no more than 2 images are loading at a time.
  */
 Jx.checkImgQueue = function() {
-  //console.log(this.imgQueue.length+":"+this.imagesLoading);
-  if (this.imagesLoading < 2) this.loadNextImg();
-  if (this.imgQueue.length > 0) setTimeout(this.checkImgQueue.bind(this), 25);
-
+    //console.log(this.imgQueue.length+":"+this.imagesLoading);
+    while (Jx.imagesLoading < 2 && Jx.imgQueue.length > 0) {
+        Jx.loadNextImg();
+    }
 };
 
 /**
@@ -204,13 +201,13 @@ Jx.checkImgQueue = function() {
  * An internal method actually populate the DOM element with the image source.
  */
 Jx.loadNextImg = function() {
-  var obj = this.imgQueue.shift();
-  if (obj) {
-    ++this.imagesLoading;
-    obj.domElement.onload = function(){--Jx.imagesLoading};
-    obj.domElement.onerror = function(){--Jx.imagesLoading};
-    obj.domElement.src = obj.src;
-  }
+    var obj = Jx.imgQueue.shift();
+    if (obj) {
+        ++Jx.imagesLoading;
+        obj.domElement.onload = function(){--Jx.imagesLoading; Jx.checkImgQueue();};
+        obj.domElement.onerror = function(){--Jx.imagesLoading; Jx.checkImgQueue();};
+        obj.domElement.src = obj.src;
+    }
 }; 
 
 

@@ -10,6 +10,171 @@
 /* =================================== */
 
 
+/* ============= */
+/* DIALOG STYLES */
+/* ============= */
+
+.jxDialogContainer {
+}
+
+.jxDialog {
+    border: 1px solid #666;
+    background-color: #d9d9d9;
+    margin: 6px;
+}
+
+.jxDialogModal {
+    background-color: #000;
+    opacity: .2;
+    -moz-opacity: .2;
+    filter: Alpha(opacity=20);
+}
+
+.jxDialogBgTL {
+    top: 0px;
+    left: 0px;
+}
+
+.jxDialogBgTL img {
+    width: 12px;
+    height: 12px;
+}
+
+.jxDialogBgT {
+    top: 0px;
+    left: 12px;
+}
+
+.jxDialogBgT img {
+    height: 12px;
+}
+
+.jxDialogBgTR {
+    top: 0px;
+    right: 0px;
+}
+
+.jxDialogBgTR img {
+    width: 12px;
+    height: 12px;
+}
+
+.jxDialogBgR {
+    top: 12px;
+    right: 0px;
+}
+
+.jxDialogBgR img {
+    width: 12px;
+}
+
+.jxDialogBgBR {
+    bottom: 0px;
+    right: 0px;
+}
+
+.jxDialogBgBR img {
+    width: 12px;
+    height: 12px;
+}
+
+.jxDialogBgB {
+    bottom: 0px;
+    left: 12px;
+}
+
+.jxDialogBgB img {
+    height: 12px;
+}
+
+.jxDialogBgBL {
+    bottom: 0px;
+    left: 0px;
+}
+
+.jxDialogBgBL img {
+    width: 12px;
+    height: 12px;
+}
+
+.jxDialogBgL {
+    top: 12px;
+    left: 0px;
+}
+
+.jxDialogBgL img {
+    width: 12px;
+}
+
+.jxDialogTitle {
+    background-color: #ccc;
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
+    border-bottom: 1px solid #999;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+    text-align: center;
+    height: 22px;
+    line-height: 22px;
+    cursor: move;
+}
+
+.jxDialogContent {
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
+    padding: 0px;
+}
+
+.jxDialogAction {
+    border-left: 1px solid #fff;
+    height: 30px;
+    text-align: right;
+    margin-right:15px;
+}
+
+.jxDialogAction input {
+    margin: 5px;
+    margin-left:0px;
+}
+
+.jxDialogCloseButton, 
+.jxDialogHelpButton {
+    width: 20px;
+    height: 20px;
+    top: 0px;
+    right: 2px;
+    padding: 0px;
+    margin: 0px; 
+    border: 0px;
+}
+
+.jxDialogHelpButton {
+  right: 22px;
+}
+
+.jxDialogCloseButton img, 
+.jxDialogHelpButton img {
+  border: 0px;
+  /* the margin needs to make up the difference between it's width/height
+     and the width/height of the parent a */
+  margin: 0px;
+  /* width/height has to be the actual image width/height */
+  width: 20px;
+  height: 20px;
+}
+
+.jxDialogResize {
+    width: 20px;
+    height: 20px;
+/*    bottom: 0px;
+    right: 0px; */
+    border: 0px;
+    cursor: se-resize;
+    background-image: url(../images/dialog_resize.png);
+}
+
+
 /* ================= */
 /* JX TOOLBAR STYLES */
 /* ================= */

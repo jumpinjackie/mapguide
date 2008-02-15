@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Measure
  *
- * $Id: Measure.js 1184 2008-01-11 23:40:51Z assefa $
+ * $Id: Measure.js 1228 2008-02-14 21:04:43Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -187,6 +187,14 @@ Fusion.Widget.Measure.prototype = {
     showPanel : function() {
         if (this.sTarget) {
             var url = this.sBaseUrl;
+            var queryStr = 'locale='+Fusion.locale;
+            if (url.indexOf('?') < 0) {
+                url += '?';
+            } else if (url.slice(-1) != '&') {
+                url += '&';
+            }
+            url += queryStr;
+            
             var taskPaneTarget = Fusion.getWidgetById(this.sTarget);
             var pageElement = $(this.sTarget);
             if ( taskPaneTarget ) {

@@ -1,7 +1,7 @@
 /**
  * Fusion.Maps.MapGuide
  *
- * $Id: MapGuide.js 1191 2008-01-17 20:03:01Z madair $
+ * $Id: MapGuide.js 1233 2008-02-15 19:30:53Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -519,6 +519,25 @@ Fusion.Maps.MapGuide.prototype = {
     },
             
     /**
+     * Function: getLayerByName
+     * 
+     * Returns the MapGuide layer object as identified by the layer name
+     */
+    getLayerByName : function(name)
+    {
+        var oLayer = null;
+        for (var i=0; i<this.aLayers.length; i++)
+        {
+            if (this.aLayers[i].layerName == name)
+            {
+                oLayer = this.aLayers[i];
+                break;
+            }
+        }
+        return oLayer;
+    },
+
+    /**
      * Function: isMapLoaded
      * 
      * Returns true if the Map has been laoded succesfully form the server
@@ -616,6 +635,7 @@ Fusion.Maps.MapGuide.prototype = {
         //this.processFeatureInfo(xmlDoc.documentElement, false, 1);
         //this.processFeatureInfo(xmlOut, false, 2);
       }
+      this.newSelection();
       if (zoomTo) {
         var mgRequest = new Fusion.Lib.MGRequest.MGGetFeatureSetEnvelope(this.getSessionID(), this.getMapName(), sel );
         Fusion.oBroker.dispatchRequest(mgRequest, this.zoomToSelection.bind(this));
