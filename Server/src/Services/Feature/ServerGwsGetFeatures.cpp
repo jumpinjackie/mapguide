@@ -28,11 +28,13 @@ MgServerGwsGetFeatures::MgServerGwsGetFeatures()
     m_classDef = NULL;
     m_relationNames = NULL;
     m_gwsFeatureReader = NULL;
+    m_gwsFeatureIterator = NULL;
     m_bReadNextDone = false;
 }
 
 
-MgServerGwsGetFeatures::MgServerGwsGetFeatures(IGWSFeatureIterator* gwsFeatureReader,
+MgServerGwsGetFeatures::MgServerGwsGetFeatures(MgServerGwsFeatureReader* gwsFeatureReader,
+                                               IGWSFeatureIterator* gwsFeatureIterator,
                                                MgStringCollection* attributeNameDelimiters,
                                                IGWSExtendedFeatureDescription* primaryExtendedFeatureDescription,
                                                bool bForceOneToOne)
@@ -42,7 +44,10 @@ MgServerGwsGetFeatures::MgServerGwsGetFeatures(IGWSFeatureIterator* gwsFeatureRe
     m_featureSet = NULL;
     m_classDef = NULL;
     m_relationNames = NULL;
-    m_gwsFeatureReader = FDO_SAFE_ADDREF(gwsFeatureReader);
+
+    m_gwsFeatureReader = gwsFeatureReader;
+    m_gwsFeatureIterator = SAFE_ADDREF(gwsFeatureIterator);
+
     m_attributeNameDelimiters = SAFE_ADDREF(attributeNameDelimiters);
     m_primaryExtendedFeatureDescription = FDO_SAFE_ADDREF(primaryExtendedFeatureDescription);
 
@@ -54,21 +59,21 @@ MgServerGwsGetFeatures::MgServerGwsGetFeatures(IGWSFeatureIterator* gwsFeatureRe
 
 MgServerGwsGetFeatures::~MgServerGwsGetFeatures()
 {
-    ClearGwsFeatureReader();
+    ClearGwsFeatureIterator();
 }
 
-void MgServerGwsGetFeatures::ClearGwsFeatureReader()
+void MgServerGwsGetFeatures::ClearGwsFeatureIterator()
 {
-    if (m_gwsFeatureReader != NULL)
-        m_gwsFeatureReader->Close();
+    if (m_gwsFeatureIterator != NULL)
+        m_gwsFeatureIterator->Close();
 
-    FDO_SAFE_RELEASE(m_gwsFeatureReader);
+    FDO_SAFE_RELEASE(m_gwsFeatureIterator);
 }
 
 //////////////////////////////////////////////////////////////////
 MgFeatureSet* MgServerGwsGetFeatures::GetFeatures(INT32 count)
 {
-    CHECKNULL(m_gwsFeatureReader, L"MgServerGwsGetFeatures.GetFeatures");
+    CHECKNULL(m_gwsFeatureIterator, L"MgServerGwsGetFeatures.GetFeatures");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -122,14 +127,14 @@ MgFeatureSet* MgServerGwsGetFeatures::GetFeatures(INT32 count)
 /////
 MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(bool bSerialize)
 {
-    CHECKNULL(m_gwsFeatureReader, L"MgServerGwsGetFeatures.GetMgClassDefinition");
+    CHECKNULL(m_gwsFeatureIterator, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
     MG_FEATURE_SERVICE_TRY()
 
     if (NULL == (MgClassDefinition*)m_classDef)
     {
         // Retrieve FdoClassDefinition
-        FdoPtr<FdoClassDefinition> fdoClassDefinition = m_gwsFeatureReader->GetClassDefinition();
+        FdoPtr<FdoClassDefinition> fdoClassDefinition = m_gwsFeatureIterator->GetClassDefinition();
         CHECKNULL((FdoClassDefinition*)fdoClassDefinition, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
         // Convert FdoClassDefinition to MgClassDefinition
@@ -137,11 +142,11 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(bool bSerialize)
         CHECKNULL((MgClassDefinition*)mgClassDef, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
         // Advance the primary feature source iterator
-        if (m_gwsFeatureReader->ReadNext())
+        if (m_gwsFeatureIterator->ReadNext())
         {
             // Retrieve the secondary feature source iterators, get the property definitions and add to class definition
             FdoPtr<IGWSExtendedFeatureDescription> desc;
-            m_gwsFeatureReader->DescribeFeature(&desc);
+            m_gwsFeatureIterator->DescribeFeature(&desc);
 
             int nSecondaryFeatures = desc->GetCount();
             if (nSecondaryFeatures > 0)
@@ -157,7 +162,7 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(bool bSerialize)
             {
                 try
                 {
-                    FdoPtr<IGWSFeatureIterator> featureIter = m_gwsFeatureReader->GetJoinedFeatures(i);
+                    FdoPtr<IGWSFeatureIterator> featureIter = m_gwsFeatureIterator->GetJoinedFeatures(i);
                     if (featureIter)
                     {
                         STRING attributeNameDelimiter = m_attributeNameDelimiters->GetItem(i);
@@ -209,8 +214,20 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(bool bSerialize)
                 }
                 catch (FdoException* e)
                 {
+                    STRING messageId;
+                    MgStringCollection arguments;
+                    wchar_t* buf = (wchar_t*)e->GetExceptionMessage();
+
+                    if (NULL != buf)
+                    {
+                        messageId = L"MgFormatInnerExceptionMessage";
+                        arguments.Add(buf);
+                    }
+
                     FDO_SAFE_RELEASE(e);
-                    continue;
+
+                    throw new MgFdoException(L"MgServerGwsGetFeatures.GetMgClassDefinition",
+                        __LINE__, __WFILE__, NULL, messageId, &arguments);
                 }
             }
 
@@ -596,7 +613,7 @@ MgGeometricPropertyDefinition* MgServerGwsGetFeatures::GetGeometricPropertyDefin
 //////////////////////////////////////////////////////////////////
 void MgServerGwsGetFeatures::AddFeatures(INT32 count)
 {
-    CHECKNULL((FdoIFeatureReader*)m_gwsFeatureReader, L"MgServerGwsGetFeatures.AddFeatures");
+    CHECKNULL((FdoIFeatureReader*)m_gwsFeatureIterator, L"MgServerGwsGetFeatures.AddFeatures");
     CHECKNULL((MgFeatureSet*)m_featureSet, L"MgServerGwsGetFeatures.AddFeatures");
 
     INT32 desiredFeatures = 0;
@@ -671,7 +688,7 @@ void MgServerGwsGetFeatures::AddFeatures(INT32 count)
 //////////////////////////////////////////////////////////////////
 void MgServerGwsGetFeatures::AddFeature(MgPropertyDefinitionCollection* propDefCol)
 {
-    CHECKNULL((IGWSFeatureIterator*)m_gwsFeatureReader, L"MgServerGwsGetFeatures.AddFeature");
+    CHECKNULL((IGWSFeatureIterator*)m_gwsFeatureIterator, L"MgServerGwsGetFeatures.AddFeature");
     CHECKNULL((MgPropertyDefinitionCollection*)propDefCol, L"MgServerGwsGetFeatures.AddFeature");
 
     Ptr<MgPropertyCollection> propCol = new MgPropertyCollection();
@@ -1191,7 +1208,7 @@ MgByteReader* MgServerGwsGetFeatures::SerializeToXml(FdoClassDefinition* classDe
 //////////////////////////////////////////////////////////////////
 MgByteReader* MgServerGwsGetFeatures::GetRaster(INT32 xSize, INT32 ySize, STRING rasterPropName)
 {
-    CHECKNULL(m_gwsFeatureReader, L"MgServerGwsGetFeatures.GetRaster");
+    CHECKNULL(m_gwsFeatureIterator, L"MgServerGwsGetFeatures.GetRaster");
     //CHECKNULL(m_classDef, L"MgServerGwsGetFeatures.GetRaster");
 
     Ptr<MgByteReader> byteReader;
@@ -1213,7 +1230,7 @@ MgByteReader* MgServerGwsGetFeatures::GetRaster(INT32 xSize, INT32 ySize, STRING
     }
 
     // If this property is requested then we fetch the raster data
-    byteReader = MgServerFeatureUtil::GetRaster(m_gwsFeatureReader, rasterPropName, xSize, ySize);
+    byteReader = MgServerFeatureUtil::GetRaster(m_gwsFeatureIterator, rasterPropName, xSize, ySize);
 */
 
     throw new MgNotImplementedException(L"MgServerGwsGetFeatures.GetRaster",
@@ -1332,7 +1349,7 @@ MgByteReader* MgServerGwsGetFeatures::GetLOBFromFdo(CREFSTRING propName, IGWSFea
 
 bool MgServerGwsGetFeatures::DeterminePropertyFeatureSource(CREFSTRING inputPropName, IGWSFeatureIterator** gwsFeatureIter, STRING& parsedPropName)
 {
-    CHECKNULL(m_gwsFeatureReader, L"MgServerGwsGetFeatures.DeterminePropertyFeatureSource");
+    CHECKNULL(m_gwsFeatureIterator, L"MgServerGwsGetFeatures.DeterminePropertyFeatureSource");
 
     bool bPropertyFound = false;
 
@@ -1361,7 +1378,7 @@ bool MgServerGwsGetFeatures::DeterminePropertyFeatureSource(CREFSTRING inputProp
     // Check if the input propName is prefixed with the relationName
     // by comparing with primary feature source property names
     FdoPtr<IGWSExtendedFeatureDescription> primaryDesc;
-    m_gwsFeatureReader->DescribeFeature(&primaryDesc);
+    m_gwsFeatureIterator->DescribeFeature(&primaryDesc);
     FdoPtr<FdoStringCollection> primaryPropNames = primaryDesc->PropertyNames();
     int nPrimaryDescCount = primaryDesc->GetCount();
 
@@ -1370,7 +1387,7 @@ bool MgServerGwsGetFeatures::DeterminePropertyFeatureSource(CREFSTRING inputProp
     {
         // No prefix, but the property name does exist in the primary feature source
         parsedPropName = inputPropName;
-        *gwsFeatureIter = m_gwsFeatureReader;
+        *gwsFeatureIter = m_gwsFeatureIterator;
         bPropertyFound = true;
     }
     else
@@ -1462,211 +1479,16 @@ STRING MgServerGwsGetFeatures::GetExtensionName()
 
 bool MgServerGwsGetFeatures::ReadNext()
 {
-    bool retVal = false;
-
-    MG_FEATURE_SERVICE_TRY()
-
-    bool bDone = false;
-
-    // Check to see if there is more data
-    // This flag is used because of a ReadNext() defect with the join engine and FDO
-    // which when you do another ReadNext() after a return result of false for a ReadNext()
-    // it resets and returns true and allows reading to continue.
-    if(m_bNoMoreData)
-    {
-        bDone = true;
-    }
-
-    while(!bDone)
-    {
-        // Advance the reader
-        FdoPtr<IGWSFeatureIterator> secondaryIter;
-
-        if (m_bForceOneToOne || m_bAdvancePrimaryIterator)
-        {
-            // advance the primary feature source iterator
-            retVal = m_gwsFeatureReader->ReadNext();
-            if(false == retVal)
-            {
-                // This flag is used because of a ReadNext() defect with the join engine and FDO
-                // which when you do another ReadNext() after a return result of false for a ReadNext()
-                // it resets and returns true and allows reading to continue.
-                m_bNoMoreData = true;
-            }
-
-            m_secondaryGwsFeatureIteratorMap.clear();
-            m_bAdvancePrimaryIterator = false;
-
-            if (retVal)
-            {
-                // retrieve the secondary feature source iterators, advance the iterators and store into a collection
-
-                //  Check if a delimiter has been defined for each Attribute Relate,
-                //  i.e. the number of delimiters collected should equal the number of joined secondary features
-                if (m_attributeNameDelimiters->GetCount() != (INT32)m_primaryExtendedFeatureDescription->GetCount())
-                {
-                    // Should never get here
-                    throw new MgInvalidArgumentException(L"MgServerGwsGetFeatures.ReadNext", __LINE__, __WFILE__, NULL, L"MgInvalidCollectionSize", NULL);
-                }
-
-                for (int i = 0; i < m_primaryExtendedFeatureDescription->GetCount(); i++)
-                {
-                    // Retrieve the AttributeNameDelimiter from the collection for the properties from this secondary feature source
-                    STRING attributeNameDelimiter = m_attributeNameDelimiters->GetItem(i);
-
-                    try
-                    {
-                        secondaryIter = m_gwsFeatureReader->GetJoinedFeatures(i);
-                        CHECKNULL(secondaryIter, L"MgServerGwsGetFeatures.ReadNext");
-
-                        if (secondaryIter->ReadNext())
-                        {
-                            // Since key values in this Pair do not need to be unqiue, we will use it to store the delimiter string that is defined
-                            // for the extended properties that originate from this secondary feature source
-                            m_secondaryGwsFeatureIteratorMap.insert(GwsFeatureIteratorPair(attributeNameDelimiter, secondaryIter));
-                        }
-                        else
-                        {
-                            m_bAdvancePrimaryIterator = true;
-                        }
-                    }
-                    catch (FdoException* e)
-                    {
-                        FDO_SAFE_RELEASE(e);
-                        continue;
-                    }
-                }
-            }
-        }
-        else
-        {
-                // advance the secondary iterator
-                IGWSFeatureIterator* secondaryFeatureIter = NULL;
-
-                // Advance the last iterator inserted into the collection until no more features.
-                // Then remove from the collection.
-                // Repeat until the collection is empty.
-
-                GwsFeatureIteratorMap::iterator iter;
-                if (m_secondaryGwsFeatureIteratorMap.size() > 0)
-                {
-                    iter = m_secondaryGwsFeatureIteratorMap.begin();
-                    secondaryFeatureIter = iter->second;
-                    retVal = secondaryFeatureIter->ReadNext();
-                }
-
-                if (!retVal)
-                {
-                    if (!m_secondaryGwsFeatureIteratorMap.empty())
-                    {
-                        m_secondaryGwsFeatureIteratorMap.erase(iter);
-                    }
-                    if (m_secondaryGwsFeatureIteratorMap.size() > 0)
-                    {
-                        iter = m_secondaryGwsFeatureIteratorMap.begin();
-                        secondaryFeatureIter = iter->second;
-                        retVal = secondaryFeatureIter->ReadNext();
-                    }
-                }
-
-                // if no more secondary records, then advance the primary reader (along with its associated secondary reader)
-                if (!retVal)
-                {
-                    // advance the primary feature source iterator
-                    retVal = m_gwsFeatureReader->ReadNext();
-                    if(false == retVal)
-                    {
-                        // This flag is used because of a ReadNext() defect with the join engine and FDO
-                        // which when you do another ReadNext() after a return result of false for a ReadNext()
-                        // it resets and returns true and allows reading to continue.
-                        m_bNoMoreData = true;
-                    }
-                    m_bAdvancePrimaryIterator = false;
-
-                    if (retVal)
-                    {
-                        // retrieve the secondary feature source iterators, advance the iterators and store into a collection
-                        m_secondaryGwsFeatureIteratorMap.clear();
-
-                        //  Check if each a delimiter has been defined for each Attribute Relate,
-                        //  i.e. the number of delimiters collected should equal the number of joined secondary features
-                        if (m_attributeNameDelimiters->GetCount() != (INT32)m_primaryExtendedFeatureDescription->GetCount())
-                        {
-                            // Should never get here
-                            throw new MgInvalidArgumentException(L"MgServerGwsGetFeatures.ReadNext", __LINE__, __WFILE__, NULL, L"MgInvalidCollectionSize", NULL);
-                        }
-
-                        for (int i = 0; i < m_primaryExtendedFeatureDescription->GetCount(); i++)
-                        {
-                            // Retrieve the AttributeNameDelimiter from the collection for the properties from this secondary feature source
-                            STRING attributeNameDelimiter = m_attributeNameDelimiters->GetItem(i);
-
-                            try
-                            {
-                                FdoPtr<IGWSFeatureIterator> featureIter2 = m_gwsFeatureReader->GetJoinedFeatures(i);
-                                CHECKNULL(featureIter2, L"MgServerGwsGetFeatures.ReadNext");
-                                if (featureIter2->ReadNext())
-                                {
-                                    // Since key values in this Pair do not need to be unqiue, we will use it to store the delimiter string that is defined
-                                    // for the extended properties that originate from this secondary feature source
-                                    m_secondaryGwsFeatureIteratorMap.insert(GwsFeatureIteratorPair(attributeNameDelimiter, featureIter2));
-                                }
-                                else
-                                {
-                                    m_bAdvancePrimaryIterator = true;
-                                }
-                            }
-                            catch (FdoException* e)
-                            {
-                                FDO_SAFE_RELEASE(e);
-                                continue;
-                            }
-                        }
-                    }
-                }
-        }
-
-        if(!m_bAdvancePrimaryIterator)
-        {
-            if(true == retVal)
-            {
-                // Are we doing a post filter?
-                if(NULL != m_expressionEngine.p)
-                {
-                    // Check if the data matches the filter
-                    bool bFilterMatch = m_expressionEngine->ProcessFilter(m_filter);
-                    if(bFilterMatch)
-                    {
-                        // The reader is on a feature that matches the filter
-                        bDone = true;
-                    }
-                    else
-                    {
-                        // The reader is on a feature that does NOT match the filter
-                        // Reset the return value and loop again
-                        retVal = false;
-                    }
-                }
-                else
-                {
-                    bDone = true;
-                }
-            }
-            else
-            {
-                // Nothing more to read
-                bDone = true;
-            }
-        }
-    }
-
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsGetFeatures.ReadNext")
-
-    return retVal;
+    return m_gwsFeatureReader->ReadNext();
 }
 
 void MgServerGwsGetFeatures::SetFilter(FdoExpressionEngine* expressionEngine, FdoFilter* filter)
 {
     m_expressionEngine = FDO_SAFE_ADDREF(expressionEngine);
     m_filter = FDO_SAFE_ADDREF(filter);
+}
+
+MgServerGwsFeatureReader* MgServerGwsGetFeatures::GetGwsFeatureReader()
+{
+    return SAFE_ADDREF(m_gwsFeatureReader);
 }

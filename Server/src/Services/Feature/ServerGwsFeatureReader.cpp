@@ -39,7 +39,8 @@ MgServerGwsFeatureReader::MgServerGwsFeatureReader(
     // Get the Extended Feature Description
     m_gwsFeatureIterator->DescribeFeature(&m_primaryExtendedFeatureDescription);
 
-    m_gwsGetFeatures = new MgServerGwsGetFeatures(gwsFeatureIterator,
+    m_gwsGetFeatures = new MgServerGwsGetFeatures(this,
+                                                  m_gwsFeatureIterator,
                                                   m_attributeNameDelimiters, 
                                                   m_primaryExtendedFeatureDescription,
                                                   m_bForceOneToOne);
@@ -196,10 +197,12 @@ bool MgServerGwsFeatureReader::ReadNext()
 
                     try
                     {
+                        retVal = false;
                         secondaryIter = m_gwsFeatureIterator->GetJoinedFeatures(i);
                         if(NULL != secondaryIter.p)
                         {
-                            if (secondaryIter->ReadNext())
+                            retVal = secondaryIter->ReadNext();
+                            if (retVal)
                             {
                                 // Since key values in this Pair do not need to be unqiue, we will use it to store the delimiter string that is defined
                                 // for the extended properties that originate from this secondary feature source
@@ -219,6 +222,18 @@ bool MgServerGwsFeatureReader::ReadNext()
                     {
                         FDO_SAFE_RELEASE(e);
                         continue;
+                    }
+                }
+
+                if(m_bForceOneToOne)
+                {
+                    if(retVal)
+                    {
+                        bDone = true;
+                    }
+                    else
+                    {
+                        // Secondary failed
                     }
                 }
             }
@@ -336,6 +351,7 @@ bool MgServerGwsFeatureReader::ReadNext()
                         // The reader is on a feature that does NOT match the filter
                         // Reset the return value and loop again
                         retVal = false;
+                        bDone = false;
                     }
                 }
                 else
@@ -375,7 +391,7 @@ MgClassDefinition* MgServerGwsFeatureReader::GetClassDefinition()
     {
         MG_FEATURE_SERVICE_TRY()
 
-        Ptr<MgServerGwsGetFeatures> gwsGetFeatures = new MgServerGwsGetFeatures(m_gwsFeatureIteratorCopy, m_attributeNameDelimiters, m_primaryExtendedFeatureDescription);
+        Ptr<MgServerGwsGetFeatures> gwsGetFeatures = new MgServerGwsGetFeatures(this, m_gwsFeatureIteratorCopy, m_attributeNameDelimiters, m_primaryExtendedFeatureDescription);
         gwsGetFeatures->SetRelationNames(FdoPtr<FdoStringCollection>(m_gwsGetFeatures->GetRelationNames()));
         gwsGetFeatures->SetExtensionName(m_gwsGetFeatures->GetExtensionName());
         m_classDef = gwsGetFeatures->GetMgClassDefinition(false);
@@ -410,7 +426,7 @@ MgClassDefinition* MgServerGwsFeatureReader::GetClassDefinitionNoXml()
     {
         MG_FEATURE_SERVICE_TRY()
 
-        Ptr<MgServerGwsGetFeatures> gwsGetFeatures = new MgServerGwsGetFeatures(m_gwsFeatureIteratorCopy, m_attributeNameDelimiters, m_primaryExtendedFeatureDescription);
+        Ptr<MgServerGwsGetFeatures> gwsGetFeatures = new MgServerGwsGetFeatures(this, m_gwsFeatureIteratorCopy, m_attributeNameDelimiters, m_primaryExtendedFeatureDescription);
         gwsGetFeatures->SetRelationNames(FdoPtr<FdoStringCollection>(m_gwsGetFeatures->GetRelationNames()));
         gwsGetFeatures->SetExtensionName(m_gwsGetFeatures->GetExtensionName());
         m_classDef = gwsGetFeatures->GetMgClassDefinition(false);
@@ -949,11 +965,6 @@ void MgServerGwsFeatureReader::Close()
             featPool->Remove(m_gwsGetFeatures);
     }
 
-    // Force the expression engine to clean up
-    m_filter = NULL;
-    m_expressionEngine = NULL;
-    m_joinReader = NULL;
-
     if (!m_secondaryGwsFeatureIteratorMap.empty())
     {
         for (GwsFeatureIteratorMap::iterator iter = m_secondaryGwsFeatureIteratorMap.begin();
@@ -984,6 +995,11 @@ void MgServerGwsFeatureReader::Close()
     m_attributeNameDelimiters = NULL;
     SAFE_RELEASE(m_gwsGetFeatures);
     m_primaryExtendedFeatureDescription = NULL;
+
+    // Force the expression engine to clean up
+    m_filter = NULL;
+    m_expressionEngine = NULL;
+    m_joinReader = NULL;
 
     // Let the FDO Connection Manager know that we are no longer using a FDO provider connection.
     MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();

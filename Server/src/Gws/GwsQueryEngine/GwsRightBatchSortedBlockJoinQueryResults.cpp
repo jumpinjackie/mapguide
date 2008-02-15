@@ -35,6 +35,7 @@ CGwsRightBatchSortedBlockJoinQueryResults::CGwsRightBatchSortedBlockJoinQueryRes
     m_joinKeyIndex = 0;
     m_bMoreData = true;
     m_bNullEntry = false;
+    m_bPrimaryKeyNull = false;
 }
 
 CGwsRightBatchSortedBlockJoinQueryResults::~CGwsRightBatchSortedBlockJoinQueryResults () throw()
@@ -61,13 +62,11 @@ bool CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()
     printf("  ReadNext() - JoinKeys:\n%S\n", buffer);
     #endif
 
-    if (m_usepool) {
-        // reading from the pool
-        if (m_poolpos + 1 < m_pool->GetCount ()) {
-            m_poolpos ++;
-            return true;
-        }
-        return false;
+    // Check if primary key is NULL
+    if(m_bPrimaryKeyNull)
+    {
+        m_bNullEntry = true;
+        return true;
     }
 
     FdoPtr<IGWSQueryDefinition> pQueryDef;
@@ -133,7 +132,6 @@ bool CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()
                         #ifdef _DEBUG_BATCHSORT_JOIN
                         printf("*** MATCH - KV:%S = S:%S ***\n", dataValuePrimary->ToString(), dataValueSecondary->ToString());
                         #endif
-                        m_pool->AddFeature (this);
 
                         bDone = true;
 
@@ -161,9 +159,19 @@ bool CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()
                             // Outer Join
                             if(eAfterJoinRow == m_pos)
                             {
-                                m_pos = eOnJoinRow;
-                                bDone = true;
-                                bRet = false;
+                                if(bOneToOneJoin)
+                                {
+                                    bAddNull = true;
+                                    m_pos = eOnJoinRow;
+                                    bDone = true;
+                                    bRet = true;
+                                }
+                                else
+                                {
+                                    m_pos = eOnJoinRow;
+                                    bDone = true;
+                                    bRet = false;
+                                }
                             }
                             else if(eBeforeFirstRow == m_pos)
                             {
@@ -214,6 +222,7 @@ bool CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()
                 else
                 {
                     // NULL property
+                    bAddNull = true;
                 }
             }
             else
@@ -275,7 +284,6 @@ bool CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()
         #ifdef _DEBUG_BATCHSORT_JOIN
         printf("*** Adding NULL secondary ***\n");
         #endif
-        m_pool->AddFeature (NULL);
         m_bNullEntry = true;
         bRet = true;
     }
@@ -302,22 +310,6 @@ EGwsStatus CGwsRightBatchSortedBlockJoinQueryResults::SetRelatedValues (
     #ifdef _DEBUG_BATCHSORT_JOIN
     printf("  SetRelatedValues()\n");
     #endif
-        if (m_joinkeys == vals) {
-            if (! m_neverusepooling) {
-                // this completes features pool
-                if (! m_bClosed) {
-                    while (ReadNext ())
-                        ;
-                    Close ();
-                }
-            }
-            m_usepool = true;
-            m_poolpos = -1;
-            return eGwsOk;
-        }
-        m_pool->Reset ();
-        m_usepool = false;
-        m_poolpos = -1;
 
     // The code below is similar to the base class, but we want to use an IN clause in order to
     // do a batch comparison instead of the typical = and LIKE operators.
@@ -350,8 +342,15 @@ EGwsStatus CGwsRightBatchSortedBlockJoinQueryResults::SetRelatedValues (
         pFilter = FdoFilter::Parse(filter.c_str());
         m_prepquery->SetFilter (pFilter);
 
+#ifdef _DEBUG_BATCHSORT_JOIN
+    long dwStartQuery = GetTickCount();
+#endif
         IGWSFeatureIterator * fiter = NULL;
+        // This query takes a considerable amount of time
         stat = m_prepquery->Execute (& fiter);
+#ifdef _DEBUG_BATCHSORT_JOIN
+    printf("***** SetRelatedValues() - IN clause query total time = %6.4f (s)\n", (GetTickCount()-dwStartQuery)/1000.0);
+#endif
         if (IGWSException::IsError (stat)) {
             PushStatus (stat);
             return stat;
@@ -452,11 +451,6 @@ FdoDataValue* CGwsRightBatchSortedBlockJoinQueryResults::GetSecondaryDataValue(F
 
 bool CGwsRightBatchSortedBlockJoinQueryResults::IsNull (FdoString* propertyName)
 {
-    if (m_usepool) {
-        FdoPtr<IGWSFeature> f = GetPooledFeature ();
-        return f->IsNull (propertyName);
-    }
-
     if(m_bNullEntry)
     {
         return true;
