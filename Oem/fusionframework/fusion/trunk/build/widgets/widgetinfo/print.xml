@@ -46,4 +46,12 @@
     <DefaultValue>false</DefaultValue>
     <IsMandatory>false</IsMandatory>
   </Parameter>
+  <Parameter>
+    <Name>ImageBaseUrl</Name>
+    <Description>relative URL to the images directory for dialog</Description>
+    <Type>string</Type>
+    <Label>Image Base URL</Label>
+    <DefaultValue></DefaultValue>
+    <IsMandatory>false</IsMandatory>
+  </Parameter>
 </WidgetInfo>

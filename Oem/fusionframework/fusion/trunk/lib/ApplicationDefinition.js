@@ -335,7 +335,7 @@ Fusion.Lib.ApplicationDefinition.prototype = {
      */
      getMapByIndice : function(indice) {
          var map = null;
-         if (this.widgetSets.length < indice) {
+         if (this.widgetSets.length > indice) {
              map = this.widgetSets[indice].getMapWidget();
          }
          return map;

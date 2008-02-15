@@ -1197,10 +1197,12 @@
       <Type>Print</Type>
       <StatusItem>Get printer-friendly page.</StatusItem>
       <Extension xsi:type="CustomContentType">
-        <ShowPrintUI>false</ShowPrintUI>
+        <ShowPrintUI>true</ShowPrintUI>
+        <ShowTitle>true</ShowTitle>
         <PageTitle>Some Title</PageTitle>
-        <ShowLegend>false</ShowLegend>
-        <ShowNorthArrow>false</ShowNorthArrow>
+        <ShowLegend>true</ShowLegend>
+        <ShowNorthArrow>true</ShowNorthArrow>
+        <ImageBaseUrl>images/</ImageBaseUrl>
       </Extension>
       <ImageUrl>images/stdicons/icon_print.gif</ImageUrl>
       <ImageClass/>
@@ -1238,7 +1240,10 @@
       <Name>Maptip</Name>
       <Type>Maptip</Type>
       <StatusItem/>
-      <Extension/>
+      <Extension>
+        <Target>NewWindow</Target>
+        <WinFeatures>menubar=no,location=yes,resizable=yes,status=no</WinFeatures>
+      </Extension>
     </Widget>
     
     </WidgetSet>

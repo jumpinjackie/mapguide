@@ -383,10 +383,11 @@
       <Type>Print</Type>
       <StatusItem>Get printer-friendly page.</StatusItem>
       <Extension xsi:type="CustomContentType">
-        <ShowPrintUI>false</ShowPrintUI>
+        <ShowPrintUI>true</ShowPrintUI>
         <PageTitle>Some Title</PageTitle>
         <ShowLegend>false</ShowLegend>
         <ShowNorthArrow>false</ShowNorthArrow>
+        <ImageBaseUrl>images/</ImageBaseUrl>
       </Extension>
       <ImageUrl>images/stdicons/icon_print.gif</ImageUrl>
       <ImageClass/>

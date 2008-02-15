@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApplicationDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="ApplicationDefinition-1.0.0.xsd">
+  <Title>Fusion Standard Sample Application</Title>
+  <MapSet xsi:type="MapSetType">
+    <MapGroup id="mapguide" xsi:type="MapType">
+      <Map xsi:type="MapGuideLayerType">
+        <Type>MapGuide</Type>
+        <SingleTile>true</SingleTile>
+        <Extension>
+          <ResourceId>Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition</ResourceId>
+        </Extension>
+      </Map>
+    </MapGroup>
+  </MapSet>
+  <WidgetSet xsi:type="WidgetSetType">
+    <Container xsi:type="UiItemContainerType">
+      <Name>Toolbar</Name>
+      <Type>Toolbar</Type>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>ZoomIn</Widget>
+      </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>ZoomOut</Widget>
+      </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>Pan</Widget>
+      </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>InitialMapView</Widget>
+      </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>About</Widget>
+      </Item>
+    </Container>
+    <Container xsi:type="UiItemContainerType">
+      <Name>APITools</Name>
+      <Type>Toolbar</Type>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>ZoomToViewAPI</Widget>
+      </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>RefreshAPI</Widget>
+      </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>SetSelectionXMLAPI</Widget>
+      </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>DigitizePointAPI</Widget>
+      </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>DigitizeLineAPI</Widget>
+      </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>DigitizeLineStringAPI</Widget>
+      </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>DigitizeRectangleAPI</Widget>
+      </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>DigitizePolygonAPI</Widget>
+      </Item>
+    </Container>
+    <MapWidget xsi:type="WidgetType">
+      <Name>Map</Name>
+      <Type>Map</Type>
+      <StatusText>The map.</StatusText>
+      <MapId>mapguide</MapId>
+    </MapWidget>
+    <Widget xsi:type="UiWidgetType">
+      <Name>Pan</Name>
+      <Type>Pan</Type>
+      <StatusText>Drag the map to view areas out of range.</StatusText>
+      <ImageUrl>images/icons/pan.png</ImageUrl>
+      <ImageClass/>
+      <Tooltip>Pan mode</Tooltip>
+      <Label/>
+      <Disabled/>
+    </Widget>
+    <Widget xsi:type="UiWidgetType">
+      <Name>ZoomIn</Name>
+      <Type>Zoom</Type>
+      <StatusText>Zoom in on an area.</StatusText>
+      <Extension xsi:type="CustomContentType">
+        <Tolerance>5</Tolerance>
+        <Factor>2</Factor>
+      </Extension>
+      <ImageUrl>images/icons/zoom-in.png</ImageUrl>
+      <ImageClass/>
+      <Tooltip>Zoom rectangle.</Tooltip>
+      <Label/>
+      <Disabled/>
+    </Widget>
+    <Widget xsi:type="UiWidgetType">
+      <Name>ZoomOut</Name>
+      <Type>ZoomOnClick</Type>
+      <StatusText>Zoom out by a preset increment</StatusText>
+      <Extension xsi:type="CustomContentType">
+        <Factor>0.5</Factor>
+      </Extension>
+      <ImageUrl>images/icons/zoom-out.png</ImageUrl>
+      <ImageClass/>
+      <Tooltip>Zoom In</Tooltip>
+      <Label/>
+      <Disabled/>
+    </Widget>
+    <Widget xsi:type="UiWidgetType">
+      <Name>InitialMapView</Name>
+      <Type>InitialMapView</Type>
+      <StatusText>Fit the extents of the map to the window</StatusText>
+      <Extension xsi:type="CustomContentType">
+        <ViewType>extent</ViewType>
+      </Extension>
+      <ImageUrl>images/icons/zoom-full.png</ImageUrl>
+      <ImageClass/>
+      <Tooltip>Initial Map View</Tooltip>
+      <Label>Initial Map View</Label>
+      <Disabled/>
+    </Widget>
+    <Widget xsi:type="UiWidgetType">
+      <Name>About</Name>
+      <Type>About</Type>
+      <StatusText/>
+      <ImageUrl>images/icons/about.png</ImageUrl>
+      <ImageClass/>
+      <Tooltip/>
+      <Label>About</Label>
+      <Disabled/>
+    </Widget>
+    <Widget xsi:type="WidgetType">
+      <Name>Legend</Name>
+      <Type>Legend</Type>
+    </Widget>
+    <Widget xsi:type="WidgetType">
+      <Name>SelectionPanel</Name>
+      <Type>SelectionPanel</Type>
+    </Widget>
+    
+    <!-- A set of widgets to demonstrate the MapGuideViewer API layer -->
+    <Widget xsi:type="UiWidgetType">
+      <Name>ZoomToViewAPI</Name>
+      <Type>InvokeScript</Type>
+      <StatusText/>
+      <ImageUrl/>
+      <ImageClass/>
+      <Tooltip/>
+      <Label>Zoom to view</Label>
+      <Disabled/>
+      <Extension>
+        <Script>testZoomToView()</Script>
+      </Extension>
+    </Widget>
+    <Widget xsi:type="UiWidgetType">
+      <Name>RefreshAPI</Name>
+      <Type>InvokeScript</Type>
+      <StatusText/>
+      <ImageUrl/>
+      <ImageClass/>
+      <Tooltip/>
+      <Label>Refresh</Label>
+      <Disabled/>
+      <Extension>
+        <Script>Refresh()</Script>
+      </Extension>
+    </Widget>
+    <Widget xsi:type="UiWidgetType">
+      <Name>SetSelectionXMLAPI</Name>
+      <Type>InvokeScript</Type>
+      <StatusText/>
+      <ImageUrl/>
+      <ImageClass/>
+      <Tooltip/>
+      <Label>Set Selection</Label>
+      <Disabled/>
+      <Extension>
+        <Script>testSetSelectionXML()</Script>
+      </Extension>
+    </Widget>
+    <Widget xsi:type="UiWidgetType">
+      <Name>DigitizePointAPI</Name>
+      <Type>InvokeScript</Type>
+      <StatusText/>
+      <ImageUrl/>
+      <ImageClass/>
+      <Tooltip/>
+      <Label>Digitize Point</Label>
+      <Disabled/>
+      <Extension>
+        <Script>testDigitizePoint()</Script>
+      </Extension>
+    </Widget>
+    <Widget xsi:type="UiWidgetType">
+      <Name>DigitizeLineAPI</Name>
+      <Type>InvokeScript</Type>
+      <StatusText/>
+      <ImageUrl/>
+      <ImageClass/>
+      <Tooltip/>
+      <Label>Digitize Line</Label>
+      <Disabled/>
+      <Extension>
+        <Script>testDigitizeLine()</Script>
+      </Extension>
+    </Widget>
+    <Widget xsi:type="UiWidgetType">
+      <Name>DigitizeLineStringAPI</Name>
+      <Type>InvokeScript</Type>
+      <StatusText/>
+      <ImageUrl/>
+      <ImageClass/>
+      <Tooltip/>
+      <Label>Digitize LineString</Label>
+      <Disabled/>
+      <Extension>
+        <Script>testDigitizeLineString()</Script>
+      </Extension>
+    </Widget>
+    <Widget xsi:type="UiWidgetType">
+      <Name>DigitizeRectangleAPI</Name>
+      <Type>InvokeScript</Type>
+      <StatusText/>
+      <ImageUrl/>
+      <ImageClass/>
+      <Tooltip/>
+      <Label>Digitize Rectangle</Label>
+      <Disabled/>
+      <Extension>
+        <Script>testDigitizeRectangle()</Script>
+      </Extension>
+    </Widget>
+    <Widget xsi:type="UiWidgetType">
+      <Name>DigitizePolygonAPI</Name>
+      <Type>InvokeScript</Type>
+      <StatusText/>
+      <ImageUrl/>
+      <ImageClass/>
+      <Tooltip/>
+      <Label>Digitize Polygon</Label>
+      <Disabled/>
+      <Extension>
+        <Script>testDigitizePolygon()</Script>
+      </Extension>
+    </Widget>
+  </WidgetSet>
+  <Extension/>
+</ApplicationDefinition>
