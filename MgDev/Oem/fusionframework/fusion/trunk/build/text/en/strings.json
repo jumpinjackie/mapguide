@@ -1,4 +1,4 @@
-﻿Fusion.Strings.en = {
+Fusion.Strings.en = {
 'scriptFailed': 'failed to load script: {0}',
 'configParseError': 'Error parsing fusion configuration file, initialization aborted',
 'configLoadError': 'Error loading fusion configuration file, initialization aborted',
@@ -34,6 +34,7 @@
 'legendTitle': 'Legend',
 'selectionPanelTitle': 'Selection',
 'ovmapTitle': 'Overview Map',
+'ovmapTitleShort': 'Overview',
 'taskPaneTitle': 'Tasks',
 'segment': 'Segment {0}',
 'calculating': 'calculating ...',

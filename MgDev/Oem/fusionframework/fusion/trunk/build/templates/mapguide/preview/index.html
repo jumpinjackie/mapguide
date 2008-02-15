@@ -24,6 +24,13 @@
         border-bottom: 1px solid #999;
     }
 
+    #Maptip {
+        display: none;
+        border: 1px solid #000;
+        background-color: #E5DAC7;
+        padding: 4px;
+    }
+
 </style>
 <!--[if IE]>
 <style>
@@ -33,6 +40,7 @@
 Fusion.useCompressed = false;   //true means use compressed versions of libraries
                                //set to false for debugging
 window.onload = function() {
+    Fusion.initializeLocale();  //need to call this first if String.Translate is to be used in the onload
     /* make 'thePage' just fill the browser window and resize automagically
        the user resizes the browser */
     new Jx.Layout('thePage');
@@ -45,11 +53,11 @@ window.onload = function() {
 
     var splitter = new Jx.Splitter('Splitter', {elements: [$('PanelPane'), $('Map')], containerOptions: [{width: 200}, {}]});
 
-    var tab1 = new Jx.Tab('Legend');
+    var tab1 = new Jx.Tab(OpenLayers.String.translate('legendTitle'));
     tab1.content.id = 'Legend';
-    var tab2 = new Jx.Tab('Selection');
+    var tab2 = new Jx.Tab(OpenLayers.String.translate('selectionPanelTitle'));
     tab2.content.id = 'SelectionPanel';
-    var tab3 = new Jx.Tab('Overview');
+    var tab3 = new Jx.Tab(OpenLayers.String.translate('ovmapTitleShort'));
     tab3.content.id = 'OverviewMap';
     var tabbox = new Jx.TabBox('PanelPane');
     tabbox.add(tab1,tab2,tab3);
