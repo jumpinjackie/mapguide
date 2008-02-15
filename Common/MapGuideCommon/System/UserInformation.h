@@ -23,6 +23,7 @@
 /// Locale codes are 2 letter language codes defined by ISO 639-1. Please refer
 /// to http://www.loc.gov/standards/iso639-2/php/English_list.php
 #define MG_LOCALE_LENGTH    2
+#define MG_EXTENDED_LOCALE_LENGTH    5
 
 #define MG_API_VERSION(major,minor,phase) ((major<<16) + (minor<<8) + phase)
 
