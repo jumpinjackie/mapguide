@@ -77,6 +77,8 @@
                 $propertyList = $classDef->GetProperties();
                 echo '<h1>' . sprintf(DisplayHeadings::ClassName, $className) . '</h1>';
 
+                echo 'Total Entries: ' . $totalEntries . '<br><br>';
+
                 if($totalEntries>$maxEntries)
                 {
                     DisplayPaging($index, $resName, $schemaName, $className, $sessionId, $maxEntries, $currentPage, $maxPage, $lastEntry);

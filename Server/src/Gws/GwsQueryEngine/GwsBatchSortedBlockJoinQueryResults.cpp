@@ -157,14 +157,25 @@ bool CGwsBatchSortedBlockJoinQueryResults::ReadNext ()
 
     if(m_pPrimaryCache.size() > 0)
     {
-        m_pPrimaryCacheIterator++;
-
-        // Update the key index
-        CGwsRightBatchSortedBlockJoinQueryResults* right = dynamic_cast<CGwsRightBatchSortedBlockJoinQueryResults*>(m_right);
-        if(NULL != right)
+        // Check if primary key is NULL
+        // Read from the cache
+        PrimaryCacheEntry* cacheEntry = *m_pPrimaryCacheIterator;
+        if(cacheEntry->primaryKey->IsNull())
         {
-            right->IncrementKeyIndex();
+            // The secondary key index doesn't need to be advanced because the previous read next involved a primary with a NULL key
+            // which skips reading from the secondary
         }
+        else
+        {
+            // Update the key index
+            CGwsRightBatchSortedBlockJoinQueryResults* right = dynamic_cast<CGwsRightBatchSortedBlockJoinQueryResults*>(m_right);
+            if(NULL != right)
+            {
+                right->IncrementKeyIndex();
+            }
+        }
+
+        m_pPrimaryCacheIterator++;
     }
 
     if(m_pPrimaryCacheIterator == m_pPrimaryCache.end())
@@ -181,9 +192,11 @@ bool CGwsBatchSortedBlockJoinQueryResults::ReadNext ()
 
     // Read the left side
     bool bRes = CGwsFeatureIterator::ReadNext ();
-
-    // Read the right side
-    bRes = SetupBatchRightSide(bRes);
+    if(bRes)
+    {
+        // Read the right side
+        bRes = SetupBatchRightSide(bRes);
+    }
 
     return bRes;
 }
@@ -199,15 +212,9 @@ IGWSFeatureIterator * CGwsBatchSortedBlockJoinQueryResults::GetJoinedFeatures (i
     if (iJoin >= fdsc->GetCount ())
         GWS_THROW (eGwsIndexOutOfBounds);
 
-    if (iJoin < m_prepquery->GetPathLength () - 1) {
-        if (m_prepquery->QueryType () == eGwsQueryLeftOuterJoin ||
-            m_prepquery->QueryType () == eGwsQueryEqualJoin)
-        {
-            CGwsJoinQueryResults * jqr = dynamic_cast<CGwsJoinQueryResults*> (m_reader.p);
-            assert (jqr);
-            return jqr->GetJoinedFeatures (iJoin);
-        }
-    }
+    // We only support a single join for now
+    if(1 < fdsc->GetCount())
+        GWS_THROW (eGwsNotSupported);
 
     return GetJoinedFeatures ();
 }
@@ -231,6 +238,28 @@ IGWSFeatureIterator * CGwsBatchSortedBlockJoinQueryResults::GetJoinedFeatures ()
         CopyStatus (* m_right); // TODO: candidate for exception throwing
         return NULL;
     }
+
+    // Check if primary key is NULL
+    // Read from the cache
+    PrimaryCacheEntry* cacheEntry = *m_pPrimaryCacheIterator;
+    if(cacheEntry->primaryKey->IsNull())
+    {
+        // Let the secondary know that the primary key is NULL
+        CGwsRightBatchSortedBlockJoinQueryResults* right = dynamic_cast<CGwsRightBatchSortedBlockJoinQueryResults*>(m_right);
+        if(NULL != right)
+        {
+            right->SetPrimaryKeyNull(true);
+        }
+    }
+    else
+    {
+        CGwsRightBatchSortedBlockJoinQueryResults* right = dynamic_cast<CGwsRightBatchSortedBlockJoinQueryResults*>(m_right);
+        if(NULL != right)
+        {
+            right->SetPrimaryKeyNull(false);
+        }
+    }
+
     m_right->AddRef ();
     return m_right;
 
@@ -341,90 +370,92 @@ FdoDataValueCollection * CGwsBatchSortedBlockJoinQueryResults::GetJoinValues ()
             {
                 FdoPtr<FdoDataValue> primary = cacheEntry->primaryKey;
                 FdoDataType dtPrimary = primary->GetDataType();
-
-                // We need to match primary data type to secondary join data type
-                FdoDataType dtSecondary = dtPrimary;
-                if (m_right)
+                if(!primary->IsNull())
                 {
-                    FdoPtr<FdoStringCollection> joinColumns = m_right->GetJoinColumns();
-                    FdoString* propname = joinColumns->GetString (0);
-                    CGwsPropertyDesc propDesc = m_right->GetPropertyDescriptor(propname);
-                    dtSecondary = propDesc.m_dataprop;
-                }
+                    // We need to match primary data type to secondary join data type
+                    FdoDataType dtSecondary = dtPrimary;
+                    if (m_right)
+                    {
+                        FdoPtr<FdoStringCollection> joinColumns = m_right->GetJoinColumns();
+                        FdoString* propname = joinColumns->GetString (0);
+                        CGwsPropertyDesc propDesc = m_right->GetPropertyDescriptor(propname);
+                        dtSecondary = propDesc.m_dataprop;
+                    }
 
-                switch (dtPrimary)
-                {
-                    case FdoDataType_Byte:
-                    case FdoDataType_Int16:
-                    case FdoDataType_Int32:
-                    case FdoDataType_Int64:
-                    case FdoDataType_Decimal:
-                    case FdoDataType_Single:
-                    case FdoDataType_Double:
-                        switch (dtSecondary)
-                        {
-                            case FdoDataType_Byte:
-                            case FdoDataType_Int16:
-                            case FdoDataType_Int32:
-                            case FdoDataType_Int64:
-                            case FdoDataType_Decimal:
-                            case FdoDataType_Single:
-                            case FdoDataType_Double:
-                                val = primary;
-                                break;
+                    switch (dtPrimary)
+                    {
+                        case FdoDataType_Byte:
+                        case FdoDataType_Int16:
+                        case FdoDataType_Int32:
+                        case FdoDataType_Int64:
+                        case FdoDataType_Decimal:
+                        case FdoDataType_Single:
+                        case FdoDataType_Double:
+                            switch (dtSecondary)
+                            {
+                                case FdoDataType_Byte:
+                                case FdoDataType_Int16:
+                                case FdoDataType_Int32:
+                                case FdoDataType_Int64:
+                                case FdoDataType_Decimal:
+                                case FdoDataType_Single:
+                                case FdoDataType_Double:
+                                    val = primary;
+                                    break;
 
-                            case FdoDataType_String:
-                                // Convert primary to string
-                                {
-                                    FdoStringP strPrimVal = primary->ToString();
-                                    FdoPtr<FdoStringValue> strval = FdoStringValue::Create();
-                                    strval->SetString(strPrimVal);
-                                    val = strval;
-                                }
-                                break;
-                        }
-                        break;
-
-
-                    case FdoDataType_String:
-                        switch (dtSecondary)
-                        {
-                            case FdoDataType_String:
-                                val = primary;
-                                break;
-
-                            case FdoDataType_Byte:
-                            case FdoDataType_Int16:
-                            case FdoDataType_Int32:
-                            case FdoDataType_Int64:
-                            case FdoDataType_Decimal:
-                            case FdoDataType_Single:
-                            case FdoDataType_Double:
-                                // Convert primary string to number
-                                {
-                                    FdoStringP strPrimVal = primary->ToString();
-
-                                    // Remove the single quote from the string
-                                    FdoStringP quote = "'";           // NOXLATE
-                                    FdoStringP emptyString = "";      // NOXLATE
-                                    strPrimVal = strPrimVal.Replace(quote, emptyString);
-
-                                    if (strPrimVal.IsNumber())
+                                case FdoDataType_String:
+                                    // Convert primary to string
                                     {
-                                        FdoPtr<FdoDoubleValue> dval = FdoDoubleValue::Create();
-                                        dval->SetDouble(strPrimVal.ToDouble());
-                                        val = dval;
+                                        FdoStringP strPrimVal = primary->ToString();
+                                        FdoPtr<FdoStringValue> strval = FdoStringValue::Create();
+                                        strval->SetString(strPrimVal);
+                                        val = strval;
                                     }
-                                }
-                                break;
-                        }
-                }
+                                    break;
+                            }
+                            break;
 
-                if(val)
-                {
-                    if (dvcol == NULL)
-                        dvcol = (CGwsDataValueCollection *) CGwsDataValueCollection::Create ();
-                    dvcol->Add (val);
+
+                        case FdoDataType_String:
+                            switch (dtSecondary)
+                            {
+                                case FdoDataType_String:
+                                    val = primary;
+                                    break;
+
+                                case FdoDataType_Byte:
+                                case FdoDataType_Int16:
+                                case FdoDataType_Int32:
+                                case FdoDataType_Int64:
+                                case FdoDataType_Decimal:
+                                case FdoDataType_Single:
+                                case FdoDataType_Double:
+                                    // Convert primary string to number
+                                    {
+                                        FdoStringP strPrimVal = primary->ToString();
+
+                                        // Remove the single quote from the string
+                                        FdoStringP quote = "'";           // NOXLATE
+                                        FdoStringP emptyString = "";      // NOXLATE
+                                        strPrimVal = strPrimVal.Replace(quote, emptyString);
+
+                                        if (strPrimVal.IsNumber())
+                                        {
+                                            FdoPtr<FdoDoubleValue> dval = FdoDoubleValue::Create();
+                                            dval->SetDouble(strPrimVal.ToDouble());
+                                            val = dval;
+                                        }
+                                    }
+                                    break;
+                            }
+                    }
+
+                    if(val)
+                    {
+                        if (dvcol == NULL)
+                            dvcol = (CGwsDataValueCollection *) CGwsDataValueCollection::Create ();
+                        dvcol->Add (val);
+                    }
                 }
             }
         }
@@ -1259,8 +1290,21 @@ bool CGwsBatchSortedBlockJoinQueryResults::QuickSortCompare(PrimaryCacheEntry* c
         {
             case FdoDataType_Int16:
                 {
-                    FdoInt16 compareAValue = ((FdoInt16Value*)(compareADataValue.p))->GetInt16();
-                    FdoInt16 compareBValue = ((FdoInt16Value*)(compareBDataValue.p))->GetInt16();
+                    FdoInt16 compareAValue = 0;
+                    FdoInt16 compareBValue = 0;
+
+                    // Check for NULL data values
+                    if(!compareADataValue->IsNull())
+                    {
+                        compareAValue = ((FdoInt16Value*)(compareADataValue.p))->GetInt16();
+                    }
+
+                    // Check for NULL data values
+                    if(!compareBDataValue->IsNull())
+                    {
+                        compareBValue = ((FdoInt16Value*)(compareBDataValue.p))->GetInt16();
+                    }
+
                     if(compareAValue < compareBValue)
                     {
                         bResult = true;
@@ -1269,8 +1313,21 @@ bool CGwsBatchSortedBlockJoinQueryResults::QuickSortCompare(PrimaryCacheEntry* c
                 break;
             case FdoDataType_Int32:
                 {
-                    FdoInt32 compareAValue = ((FdoInt32Value*)(compareADataValue.p))->GetInt32();
-                    FdoInt32 compareBValue = ((FdoInt32Value*)(compareBDataValue.p))->GetInt32();
+                    FdoInt32 compareAValue = 0;
+                    FdoInt32 compareBValue = 0;
+
+                    // Check for NULL data values
+                    if(!compareADataValue->IsNull())
+                    {
+                        compareAValue = ((FdoInt32Value*)(compareADataValue.p))->GetInt32();
+                    }
+
+                    // Check for NULL data values
+                    if(!compareBDataValue->IsNull())
+                    {
+                        compareBValue = ((FdoInt32Value*)(compareBDataValue.p))->GetInt32();
+                    }
+
                     if(compareAValue < compareBValue)
                     {
                         bResult = true;
@@ -1279,8 +1336,21 @@ bool CGwsBatchSortedBlockJoinQueryResults::QuickSortCompare(PrimaryCacheEntry* c
                 break;
             case FdoDataType_Int64:
                 {
-                    FdoInt64 compareAValue = ((FdoInt64Value*)(compareADataValue.p))->GetInt64();
-                    FdoInt64 compareBValue = ((FdoInt64Value*)(compareBDataValue.p))->GetInt64();
+                    FdoInt64 compareAValue = 0;
+                    FdoInt64 compareBValue = 0;
+
+                    // Check for NULL data values
+                    if(!compareADataValue->IsNull())
+                    {
+                        compareAValue = ((FdoInt64Value*)(compareADataValue.p))->GetInt64();
+                    }
+
+                    // Check for NULL data values
+                    if(!compareBDataValue->IsNull())
+                    {
+                        compareBValue = ((FdoInt64Value*)(compareBDataValue.p))->GetInt64();
+                    }
+
                     if(compareAValue < compareBValue)
                     {
                         bResult = true;
@@ -1289,8 +1359,21 @@ bool CGwsBatchSortedBlockJoinQueryResults::QuickSortCompare(PrimaryCacheEntry* c
                 break;
             case FdoDataType_Single:
                 {
-                    float compareAValue = ((FdoSingleValue*)(compareADataValue.p))->GetSingle();
-                    float compareBValue = ((FdoSingleValue*)(compareBDataValue.p))->GetSingle();
+                    float compareAValue = 0.0;
+                    float compareBValue = 0.0;
+
+                    // Check for NULL data values
+                    if(!compareADataValue->IsNull())
+                    {
+                        compareAValue = ((FdoSingleValue*)(compareADataValue.p))->GetSingle();
+                    }
+
+                    // Check for NULL data values
+                    if(!compareBDataValue->IsNull())
+                    {
+                        compareBValue = ((FdoSingleValue*)(compareBDataValue.p))->GetSingle();
+                    }
+
                     if(compareAValue < compareBValue)
                     {
                         bResult = true;
@@ -1299,8 +1382,21 @@ bool CGwsBatchSortedBlockJoinQueryResults::QuickSortCompare(PrimaryCacheEntry* c
                 break;
             case FdoDataType_Double:
                 {
-                    double compareAValue = ((FdoDoubleValue*)(compareADataValue.p))->GetDouble();
-                    double compareBValue = ((FdoDoubleValue*)(compareBDataValue.p))->GetDouble();
+                    double compareAValue = 0.0;
+                    double compareBValue = 0.0;
+
+                    // Check for NULL data values
+                    if(!compareADataValue->IsNull())
+                    {
+                        compareAValue = ((FdoDoubleValue*)(compareADataValue.p))->GetDouble();
+                    }
+
+                    // Check for NULL data values
+                    if(!compareBDataValue->IsNull())
+                    {
+                        compareBValue = ((FdoDoubleValue*)(compareBDataValue.p))->GetDouble();
+                    }
+
                     if(compareAValue < compareBValue)
                     {
                         bResult = true;
@@ -1309,8 +1405,21 @@ bool CGwsBatchSortedBlockJoinQueryResults::QuickSortCompare(PrimaryCacheEntry* c
                 break;
             case FdoDataType_Decimal:
                 {
-                    double compareAValue = ((FdoDecimalValue*)(compareADataValue.p))->GetDecimal();
-                    double compareBValue = ((FdoDecimalValue*)(compareBDataValue.p))->GetDecimal();
+                    double compareAValue = 0.0;
+                    double compareBValue = 0.0;
+
+                    // Check for NULL data values
+                    if(!compareADataValue->IsNull())
+                    {
+                        compareAValue = ((FdoDecimalValue*)(compareADataValue.p))->GetDecimal();
+                    }
+
+                    // Check for NULL data values
+                    if(!compareBDataValue->IsNull())
+                    {
+                        compareBValue = ((FdoDecimalValue*)(compareBDataValue.p))->GetDecimal();
+                    }
+
                     if(compareAValue < compareBValue)
                     {
                         bResult = true;
@@ -1319,8 +1428,20 @@ bool CGwsBatchSortedBlockJoinQueryResults::QuickSortCompare(PrimaryCacheEntry* c
                 break;
             case FdoDataType_String:
                 {
-                    FdoStringP compareAValue = ((FdoStringValue*)(compareADataValue.p))->GetString();
-                    FdoStringP compareBValue = ((FdoStringValue*)(compareBDataValue.p))->GetString();
+                    FdoStringP compareAValue = L"";
+                    FdoStringP compareBValue = L"";
+
+                    // Check for NULL data values
+                    if(!compareADataValue->IsNull())
+                    {
+                        compareAValue = ((FdoStringValue*)(compareADataValue.p))->GetString();
+                    }
+
+                    if(!compareBDataValue->IsNull())
+                    {
+                        compareBValue = ((FdoStringValue*)(compareBDataValue.p))->GetString();
+                    }
+
                     if(wcscmp(compareAValue, compareBValue) < 0)
                     {
                         bResult = true;
@@ -1333,4 +1454,49 @@ bool CGwsBatchSortedBlockJoinQueryResults::QuickSortCompare(PrimaryCacheEntry* c
     }
 
     return bResult;
+}
+
+void CGwsBatchSortedBlockJoinQueryResults::ShowPrimaryCache()
+{
+    for ( size_t i=0;i<m_pPrimaryCache.size();i++ )
+    {
+        PrimaryCacheEntry* primaryCacheEntry = m_pPrimaryCache.at(i);
+        if(primaryCacheEntry)
+        {
+            FdoString* val = L"";
+            if(primaryCacheEntry->primaryKey->IsNull())
+            {
+                val = L"<NULL>";
+            }
+            else
+            {
+                val = primaryCacheEntry->primaryKey->ToString();
+            }
+
+            printf("%d) Key=%S  Properties=%d\n", i+1, val, primaryCacheEntry->propertyCollection.size());
+            for(size_t j=0;j<primaryCacheEntry->propertyCollection.size();j++)
+            {
+                PropertyCacheEntry* propertyCacheEntry = primaryCacheEntry->propertyCollection.at(j);
+                if(propertyCacheEntry)
+                {
+                    if(propertyCacheEntry->dataValue)
+                    {
+                        if(propertyCacheEntry->dataValue->IsNull())
+                        {
+                            val = L"<NULL>";
+                        }
+                        else
+                        {
+                            val = propertyCacheEntry->dataValue->ToString();
+                        }
+                    }
+                    else
+                    {
+                        val = L"Geometry Data";
+                    }
+                    printf("  %S\n", val);
+                }
+            }
+        }
+    }
 }
