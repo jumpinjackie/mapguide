@@ -1337,7 +1337,11 @@ bool MgServerFeatureService::CloseGwsFeatureReader(INT32 gwsFeatureReader)
     // release the MgServerGwsGetFeatures's reference to the reader - this causes the
     // reader to be destroyed and release its reference to the MgServerGwsGetFeatures
     if (featId != NULL)
-        featId->ClearGwsFeatureReader();
+    {
+        featId->ClearGwsFeatureIterator();
+        Ptr<MgServerGwsFeatureReader> gwsReader = featId->GetGwsFeatureReader();
+        gwsReader->Close();
+    }
 
     MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
     CHECKNULL(featPool, L"MgServerFeatureService.CloseGwsFeatureReader");

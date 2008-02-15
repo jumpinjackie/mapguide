@@ -29,13 +29,15 @@ typedef std::pair<STRING, IGWSFeatureIterator*> GwsFeatureIteratorPair;
 
 class FdoExpressionEngine;
 class FdoFilter;
+class MgServerGwsFeatureReader;
 
 class MgServerGwsGetFeatures : public MgServerFeatureProcessor
 {
 public:
 
     MgServerGwsGetFeatures();
-    MgServerGwsGetFeatures(IGWSFeatureIterator* gwsFeatureReader, 
+    MgServerGwsGetFeatures(MgServerGwsFeatureReader* gwsFeatureReader,
+                           IGWSFeatureIterator* gwsFeatureIterator,
                            MgStringCollection* attributeNameDelimiters, 
                            IGWSExtendedFeatureDescription* primaryExtendedFeatureDescription,
                            bool bForceOneToOne = true);
@@ -57,7 +59,8 @@ public:
 
     FdoStringCollection* GetRelationNames();
     STRING GetExtensionName();
-    void ClearGwsFeatureReader();
+    void ClearGwsFeatureIterator();
+    MgServerGwsFeatureReader* GetGwsFeatureReader();
     void SetFilter(FdoExpressionEngine* expressionEngine, FdoFilter* filter);
 
 protected:
@@ -90,7 +93,8 @@ private:
 
 private:
 
-    IGWSFeatureIterator*                 m_gwsFeatureReader;
+    MgServerGwsFeatureReader*            m_gwsFeatureReader;
+    IGWSFeatureIterator*                 m_gwsFeatureIterator;
     Ptr<MgStringCollection>              m_attributeNameDelimiters;
     Ptr<MgFeatureSet>                    m_featureSet;
     Ptr<MgClassDefinition>               m_classDef;
