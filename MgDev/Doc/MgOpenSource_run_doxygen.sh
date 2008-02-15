@@ -1,4 +1,3 @@
-#!/bin/bash
 ############################################################################# 
 ## Delete the old files
 echo Deleting old files ...
