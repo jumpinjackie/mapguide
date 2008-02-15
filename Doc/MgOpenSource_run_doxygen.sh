@@ -38,4 +38,4 @@ echo Doxygen generation is complete. See 'MgOpenSource_warn_log.txt'.
 perl -w PostProcessor/post_process.MgOpenSource.pl
 
 ################################################################### 
-echo All done.
+echo All done. 
