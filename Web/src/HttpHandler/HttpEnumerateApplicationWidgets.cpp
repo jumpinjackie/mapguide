@@ -252,17 +252,28 @@ void MgHttpEnumerateApplicationWidgets::FindWidgets(MgStringCollection* widgets,
     ACE_DIR* directory = ACE_OS::opendir(ACE_TEXT_WCHAR_TO_TCHAR(localeRootFolder.c_str()));
     if (directory == NULL)
     {
-        // If no locale-specific directory exists, open the default directory
-        if(locale != WIDGETINFO_DEFAULT_LOCALE)
-        {
-            localeRootFolder = rootFolder + L"/" + WIDGETINFO_DEFAULT_LOCALE;
-            directory = ACE_OS::opendir(ACE_TEXT_WCHAR_TO_TCHAR(localeRootFolder.c_str()));
-        }
-        // If no default locale folder exists, try the root folder
-        if (directory == NULL)
-        {
-            localeRootFolder = rootFolder;
-            directory = ACE_OS::opendir(ACE_TEXT_WCHAR_TO_TCHAR(localeRootFolder.c_str()));
+		// If no locale-specific directory exists, then if the locale is an extended local (5 characters), 
+		// truncate the locale to the 2 character "parent" locale and try again
+		if (MG_EXTENDED_LOCALE_LENGTH == locale.length())
+		{
+			STRING parentLocale = rootFolder + L"/" + locale.substr(0, 2);
+			directory = ACE_OS::opendir(ACE_TEXT_WCHAR_TO_TCHAR(parentLocale.c_str()));
+		}
+
+		if (directory == NULL)
+		{
+			// If no locale-specific directory exists, open the default directory
+			if(locale != WIDGETINFO_DEFAULT_LOCALE)
+			{
+				localeRootFolder = rootFolder + L"/" + WIDGETINFO_DEFAULT_LOCALE;
+				directory = ACE_OS::opendir(ACE_TEXT_WCHAR_TO_TCHAR(localeRootFolder.c_str()));
+			}
+			// If no default locale folder exists, try the root folder
+			if (directory == NULL)
+			{
+				localeRootFolder = rootFolder;
+				directory = ACE_OS::opendir(ACE_TEXT_WCHAR_TO_TCHAR(localeRootFolder.c_str()));
+			}
         }
     }
 
