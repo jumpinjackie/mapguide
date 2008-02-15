@@ -155,6 +155,11 @@ const STRING MgResources::KmlService                    = L"KmlService";
 const STRING MgResources::Stylization                   = L"Stylization";
 const STRING MgResources::WhiteSpace                    = L"\n\r\t ";
 
+// for locale
+static const STRING ResourceFilenameDash	= L"-";            // Do not translate
+static const int ExtendedLocaleLength		= 5;            
+static const int ExtendedLocaleDashLocation = 2;            
+static const int ParentLocaleLength			= 2;            
 
 MgResources::MgResources()
 {
@@ -271,16 +276,51 @@ void MgResources::LoadResources(CREFSTRING locale)
         m_resourceCache.erase(iterator);
     }
 
+    STRING strResourceFilename = GetResourceFilename(locale);
+
+	// five character locales are required to be of the form lower-upper - verify this
+	if (ExtendedLocaleLength == locale.length())
+	{
+		STRING lowerPart = MgUtil::ToLower(locale.substr(0,3));
+		STRING upperPart = MgUtil::ToUpper(locale.substr(3,2));
+		if (lowerPart.compare(locale.substr(0,3)) != 0 ||
+			upperPart.compare(locale.substr(3,2)) != 0)
+		{
+			MgStringCollection arguments;
+			arguments.Add(strResourceFilename.c_str());
+			arguments.Add(locale.c_str());
+
+			throw new MgResourcesLoadFailedException(L"MgResources.LoadResources",
+				__LINE__, __WFILE__, &arguments, L"", NULL);
+		}
+	}
+
     ResourceFile* pResources = new ResourceFile();
     if (NULL != pResources)
     {
-        STRING strResourceFilename = GetResourceFilename(locale);
-
-        if (true == ParseFile(strResourceFilename, pResources))
+		bool bSuccess = false;
+		if (MgFileUtil::PathnameExists(strResourceFilename) && true == ParseFile(strResourceFilename, pResources))
         {
             m_resourceCache[locale] = pResources;
+			bSuccess = true;
         }
-        else
+        else 
+		{
+			if (ExtendedLocaleLength == locale.length() && ExtendedLocaleDashLocation == (int)locale.find(ResourceFilenameDash))
+			{
+				// if the locale is of the form "en-GB", and there wasn't a matching resource file,
+				// try to find the resource file of the parent locale, i.e. "en"
+				STRING strParentLocale = locale.substr(0, ParentLocaleLength);
+				STRING strParentResourceFilename = GetResourceFilename(strParentLocale);
+				if (MgFileUtil::PathnameExists(strParentResourceFilename) && true == ParseFile(strParentResourceFilename, pResources))
+				{
+					m_resourceCache[locale] = pResources;
+					bSuccess = true;
+				}
+			}
+		}
+		
+		if (!bSuccess)
         {
             MgStringCollection arguments;
             arguments.Add(strResourceFilename.c_str());
