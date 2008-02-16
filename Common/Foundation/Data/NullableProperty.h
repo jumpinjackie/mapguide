@@ -82,6 +82,26 @@ PUBLISHED_API:
     ///
     bool IsNull();
 
+INTERNAL_API:
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Serialize data to TCP/IP stream
+    ///
+    /// \param stream
+    /// Stream
+    ///
+    virtual void Serialize(MgStream* stream);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Deserialize data from TCP/IP stream
+    ///
+    /// \param stream
+    /// Stream
+    ///
+    virtual void Deserialize(MgStream* stream);
+
 protected:
 
     /// Constructor

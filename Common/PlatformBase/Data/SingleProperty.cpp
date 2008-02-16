@@ -139,6 +139,7 @@ void MgSingleProperty::ToXml(string &str, bool includeType, string rootElmName)
 ///</param>
 void MgSingleProperty::Serialize(MgStream* stream)
 {
+    MgNullableProperty::Serialize(stream);
     stream->WriteString(GetName());
     stream->WriteSingle(m_value);
 }
@@ -152,6 +153,7 @@ void MgSingleProperty::Serialize(MgStream* stream)
 ///</param>
 void MgSingleProperty::Deserialize(MgStream* stream)
 {
+    MgNullableProperty::Deserialize(stream);
     STRING str;
 
     stream->GetString(str);

@@ -144,6 +144,7 @@ void MgFeatureProperty::ToXml(string &str, bool includeType, string rootElmName)
 
 void MgFeatureProperty::Serialize(MgStream* stream)
 {
+    MgNullableProperty::Serialize(stream);
     stream->WriteString(GetName());
     stream->WriteObject(m_value);
 }
@@ -158,6 +159,7 @@ void MgFeatureProperty::Serialize(MgStream* stream)
 
 void MgFeatureProperty::Deserialize(MgStream* stream)
 {
+    MgNullableProperty::Deserialize(stream);
     STRING str;
 
     stream->GetString(str);
