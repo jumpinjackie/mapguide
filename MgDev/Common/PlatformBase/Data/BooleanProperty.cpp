@@ -139,6 +139,7 @@ void MgBooleanProperty::ToXml(string &str, bool includeType, string rootElmName)
 ///</param>
 void MgBooleanProperty::Serialize(MgStream* stream)
 {
+    MgNullableProperty::Serialize(stream);
     stream->WriteString(GetName());
     stream->WriteBoolean(m_value);
 }
@@ -152,6 +153,7 @@ void MgBooleanProperty::Serialize(MgStream* stream)
 ///</param>
 void MgBooleanProperty::Deserialize(MgStream* stream)
 {
+    MgNullableProperty::Deserialize(stream);
     STRING str;
 
     stream->GetString(str);

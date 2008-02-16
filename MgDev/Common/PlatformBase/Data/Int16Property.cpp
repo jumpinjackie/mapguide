@@ -146,6 +146,7 @@ void MgInt16Property::ToXml(string &str, bool includeType, string rootElmName)
 ///</param>
 void MgInt16Property::Serialize(MgStream* stream)
 {
+    MgNullableProperty::Serialize(stream);
     stream->WriteString(GetName());
     stream->WriteInt16(m_value);
 }
@@ -159,6 +160,7 @@ void MgInt16Property::Serialize(MgStream* stream)
 ///</param>
 void MgInt16Property::Deserialize(MgStream* stream)
 {
+    MgNullableProperty::Deserialize(stream);
     STRING str;
 
     stream->GetString(str);

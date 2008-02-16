@@ -73,3 +73,33 @@ void MgNullableProperty::CheckNull()
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 }
+
+//////////////////////////////////////////////////////////////////
+///<summary>
+/// Serialize data to TCP/IP stream
+///</summary>
+///<param name="stream">
+/// Stream
+///</param>
+void MgNullableProperty::Serialize(MgStream* stream)
+{
+    stream->WriteString(GetName());
+    stream->WriteBoolean(m_bIsNull);
+}
+
+//////////////////////////////////////////////////////////////////
+///<summary>
+/// Deserialize data from TCP/IP stream
+///</summary>
+///<param name="stream">
+/// Stream
+///</param>
+void MgNullableProperty::Deserialize(MgStream* stream)
+{
+    STRING str;
+
+    stream->GetString(str);
+    SetName(str);
+
+    stream->GetBoolean(m_bIsNull);
+}

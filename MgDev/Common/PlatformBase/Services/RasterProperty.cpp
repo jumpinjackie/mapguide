@@ -124,6 +124,7 @@ void MgRasterProperty::ToXml(string &str, bool includeType, string rootElmName)
 
 void MgRasterProperty::Serialize(MgStream* stream)
 {
+    MgNullableProperty::Serialize(stream);
     stream->WriteString(GetName());
     stream->WriteObject((MgRaster*)m_value);
 }
@@ -138,6 +139,7 @@ void MgRasterProperty::Serialize(MgStream* stream)
 
 void MgRasterProperty::Deserialize(MgStream* stream)
 {
+    MgNullableProperty::Deserialize(stream);
     STRING str;
 
     stream->GetString(str);
