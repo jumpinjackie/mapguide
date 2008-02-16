@@ -460,3 +460,199 @@ bool CGwsRightBatchSortedBlockJoinQueryResults::IsNull (FdoString* propertyName)
         return CGwsFeatureIterator::IsNull (propertyName);
     }
 }
+
+FdoString * CGwsRightBatchSortedBlockJoinQueryResults::GetString (FdoString * propertyName)
+{
+    if(m_bNullEntry)
+    {
+        GWS_THROW(eGwsFailed);
+    }
+    else
+    {
+        return CGwsFeatureIterator::GetString (propertyName);
+    }
+}
+
+bool CGwsRightBatchSortedBlockJoinQueryResults::GetBoolean  (FdoString* propertyName)
+{
+    if(m_bNullEntry)
+    {
+        GWS_THROW(eGwsFailed);
+    }
+    else
+    {
+        return CGwsFeatureIterator::GetBoolean (propertyName);
+    }
+}
+
+FdoByte  CGwsRightBatchSortedBlockJoinQueryResults::GetByte (FdoString* propertyName)
+{
+    if(m_bNullEntry)
+    {
+        GWS_THROW(eGwsFailed);
+    }
+    else
+    {
+        return CGwsFeatureIterator::GetByte (propertyName);
+    }
+}
+
+FdoDateTime CGwsRightBatchSortedBlockJoinQueryResults::GetDateTime (FdoString* propertyName)
+{
+    if(m_bNullEntry)
+    {
+        GWS_THROW(eGwsFailed);
+    }
+    else
+    {
+        return CGwsFeatureIterator::GetDateTime (propertyName);
+    }
+}
+
+double CGwsRightBatchSortedBlockJoinQueryResults::GetDouble   (FdoString* propertyName)
+{
+    if(m_bNullEntry)
+    {
+        GWS_THROW(eGwsFailed);
+    }
+    else
+    {
+        return CGwsFeatureIterator::GetDouble (propertyName);
+    }
+}
+
+FdoInt16 CGwsRightBatchSortedBlockJoinQueryResults::GetInt16 (FdoString* propertyName)
+{
+    if(m_bNullEntry)
+    {
+        GWS_THROW(eGwsFailed);
+    }
+    else
+    {
+        return CGwsFeatureIterator::GetInt16 (propertyName);
+    }
+}
+
+FdoInt32 CGwsRightBatchSortedBlockJoinQueryResults::GetInt32 (FdoString* propertyName)
+{
+    if(m_bNullEntry)
+    {
+        GWS_THROW(eGwsFailed);
+    }
+    else
+    {
+        return CGwsFeatureIterator::GetInt32 (propertyName);
+    }
+}
+FdoInt64 CGwsRightBatchSortedBlockJoinQueryResults::GetInt64    (FdoString* propertyName)
+{
+    if(m_bNullEntry)
+    {
+        GWS_THROW(eGwsFailed);
+    }
+    else
+    {
+        return CGwsFeatureIterator::GetInt64 (propertyName);
+    }
+}
+
+float CGwsRightBatchSortedBlockJoinQueryResults::GetSingle   (FdoString* propertyName)
+{
+    if(m_bNullEntry)
+    {
+        GWS_THROW(eGwsFailed);
+    }
+    else
+    {
+        return CGwsFeatureIterator::GetSingle (propertyName);
+    }
+}
+
+FdoLOBValue* CGwsRightBatchSortedBlockJoinQueryResults::GetLOB (FdoString* propertyName)
+{
+    if(m_bNullEntry)
+    {
+        GWS_THROW(eGwsFailed);
+    }
+    else
+    {
+        return CGwsFeatureIterator::GetLOB (propertyName);
+    }
+}
+
+FdoIStreamReader* CGwsRightBatchSortedBlockJoinQueryResults::GetLOBStreamReader(const wchar_t* propertyName )
+{
+    if(m_bNullEntry)
+    {
+        GWS_THROW(eGwsFailed);
+    }
+    else
+    {
+        return CGwsFeatureIterator::GetLOBStreamReader (propertyName);
+    }
+}
+
+FdoIRaster* CGwsRightBatchSortedBlockJoinQueryResults::GetRaster (FdoString* propertyName)
+{
+    if(m_bNullEntry)
+    {
+        GWS_THROW(eGwsFailed);
+    }
+    else
+    {
+        return CGwsFeatureIterator::GetRaster (propertyName);
+    }
+}
+
+const FdoByte * CGwsRightBatchSortedBlockJoinQueryResults::GetGeometry (FdoString* propertyName, FdoInt32 * count)
+{
+    if(m_bNullEntry)
+    {
+        GWS_THROW(eGwsFailed);
+    }
+    else
+    {
+        return CGwsFeatureIterator::GetGeometry (propertyName, count);
+    }
+}
+
+FdoByteArray* CGwsRightBatchSortedBlockJoinQueryResults::GetGeometry (FdoString* propertyName)
+{
+    if(m_bNullEntry)
+    {
+        GWS_THROW(eGwsFailed);
+    }
+    else
+    {
+        return CGwsFeatureIterator::GetGeometry (propertyName);
+    }
+}
+
+FdoIFeatureReader* CGwsRightBatchSortedBlockJoinQueryResults::GetFeatureObject(FdoString* propertyName)
+{
+    if(m_bNullEntry)
+    {
+        GWS_THROW(eGwsFailed);
+    }
+    else
+    {
+        return CGwsFeatureIterator::GetFeatureObject (propertyName);
+    }
+}
+
+FdoDataValue *  CGwsRightBatchSortedBlockJoinQueryResults::GetDataValue (FdoString* propertyName)
+{
+    if(m_bNullEntry)
+    {
+        GWS_THROW(eGwsFailed);
+    }
+    else
+    {
+        return CGwsFeatureIterator::GetDataValue (propertyName);
+    }
+}
+
+FdoByteArray * CGwsRightBatchSortedBlockJoinQueryResults::GetOriginalGeometry (FdoString* propertyName)
+{
+    return GetGeometry (propertyName);
+}
