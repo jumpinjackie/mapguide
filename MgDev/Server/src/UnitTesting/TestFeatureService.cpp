@@ -1767,7 +1767,7 @@ void TestFeatureService::TestCase_BenchmarkSelectFeatures()
 ///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_ConcurrentAccess()
 {
-    std:vector<MgFeatureReader*> featureReaders;
+    vector<MgFeatureReader*> featureReaders;
 
     try
     {
