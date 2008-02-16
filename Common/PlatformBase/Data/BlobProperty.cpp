@@ -152,6 +152,7 @@ void MgBlobProperty::ToXml(string &str, bool includeType, string rootElmName)
 ///</param>
 void MgBlobProperty::Serialize(MgStream* stream)
 {
+    MgNullableProperty::Serialize(stream);
     stream->WriteString(GetName());
     stream->WriteStream(m_value);
 }
@@ -165,6 +166,7 @@ void MgBlobProperty::Serialize(MgStream* stream)
 ///</param>
 void MgBlobProperty::Deserialize(MgStream* stream)
 {
+    MgNullableProperty::Deserialize(stream);
     STRING str;
 
     stream->GetString(str);

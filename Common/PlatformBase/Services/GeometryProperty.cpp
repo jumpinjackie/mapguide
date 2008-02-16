@@ -156,6 +156,7 @@ void MgGeometryProperty::ToXml(string &str, bool includeType, string rootElmName
 
 void MgGeometryProperty::Serialize(MgStream* stream)
 {
+    MgNullableProperty::Serialize(stream);
     stream->WriteString(GetName());
     Ptr<MgByteReader> byteReader = this->GetValue();
     stream->WriteStream(byteReader);
@@ -171,6 +172,7 @@ void MgGeometryProperty::Serialize(MgStream* stream)
 
 void MgGeometryProperty::Deserialize(MgStream* stream)
 {
+    MgNullableProperty::Deserialize(stream);
     STRING str;
 
     stream->GetString(str);

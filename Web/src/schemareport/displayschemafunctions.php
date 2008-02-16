@@ -23,6 +23,12 @@
 
 function GetPropertyName($featureReader, $property, $propertyType)
 {
+    if($featureReader->IsNull($property))
+    {
+        $val = FormText::NullProperty;
+        return $val;
+    }
+
     switch ($propertyType) {
         case MgPropertyType::Boolean :
             $val = $featureReader->GetBoolean($property);

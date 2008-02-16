@@ -61,6 +61,8 @@ class FormText
     const InputSchema = "Schema:";
     const InputClass = "Class:";
     const FindButton = "Find";
+    const EmptyString = "&ltempty&gt";
+    const NullProperty = "&ltnull&gt";
 }
 
 // ---------------------------------------------------------

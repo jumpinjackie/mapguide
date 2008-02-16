@@ -145,6 +145,7 @@ void MgInt32Property::ToXml(string &str, bool includeType, string rootElmName)
 ///</param>
 void MgInt32Property::Serialize(MgStream* stream)
 {
+    MgNullableProperty::Serialize(stream);
     stream->WriteString(GetName());
     stream->WriteInt32(m_value);
 }
@@ -158,6 +159,7 @@ void MgInt32Property::Serialize(MgStream* stream)
 ///</param>
 void MgInt32Property::Deserialize(MgStream* stream)
 {
+    MgNullableProperty::Deserialize(stream);
     STRING str;
 
     stream->GetString(str);

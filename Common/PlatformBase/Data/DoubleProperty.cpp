@@ -145,6 +145,7 @@ void MgDoubleProperty::ToXml(string &str, bool includeType, string rootElmName)
 ///</param>
 void MgDoubleProperty::Serialize(MgStream* stream)
 {
+    MgNullableProperty::Serialize(stream);
     stream->WriteString(GetName());
     stream->WriteDouble(m_value);
 }
@@ -158,6 +159,7 @@ void MgDoubleProperty::Serialize(MgStream* stream)
 ///</param>
 void MgDoubleProperty::Deserialize(MgStream* stream)
 {
+    MgNullableProperty::Deserialize(stream);
     STRING str;
 
     stream->GetString(str);

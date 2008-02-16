@@ -122,7 +122,7 @@
                                 if(strlen($property))
                                     echo '<td nowrap>' . $property . '</td>';
                                 else
-                                    echo '<td>N/A</td>';
+                                    echo '<td>' . FormText::EmptyString . '</td>';
                             }
                             catch (MgException $joinE)
                             {
