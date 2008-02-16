@@ -140,6 +140,7 @@ void MgByteProperty::ToXml(string &str, bool includeType, string rootElmName)
 ///</param>
 void MgByteProperty::Serialize(MgStream* stream)
 {
+    MgNullableProperty::Serialize(stream);
     stream->WriteString(GetName());
     stream->WriteByte(m_value);
 }
@@ -153,6 +154,7 @@ void MgByteProperty::Serialize(MgStream* stream)
 ///</param>
 void MgByteProperty::Deserialize(MgStream* stream)
 {
+    MgNullableProperty::Deserialize(stream);
     STRING str;
 
     stream->GetString(str);

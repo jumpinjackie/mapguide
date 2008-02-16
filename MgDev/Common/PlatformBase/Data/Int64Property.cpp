@@ -141,6 +141,7 @@ void MgInt64Property::Dispose()
 ///</param>
 void MgInt64Property::Serialize(MgStream* stream)
 {
+    MgNullableProperty::Serialize(stream);
     stream->WriteString(GetName());
     stream->WriteInt64(m_value);
 }
@@ -154,6 +155,7 @@ void MgInt64Property::Serialize(MgStream* stream)
 ///</param>
 void MgInt64Property::Deserialize(MgStream* stream)
 {
+    MgNullableProperty::Deserialize(stream);
     STRING str;
 
     stream->GetString(str);

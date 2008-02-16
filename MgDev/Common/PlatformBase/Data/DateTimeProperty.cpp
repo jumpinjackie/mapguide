@@ -141,6 +141,7 @@ void MgDateTimeProperty::ToXml(string &str, bool includeType, string rootElmName
 ///</param>
 void MgDateTimeProperty::Serialize(MgStream* stream)
 {
+    MgNullableProperty::Serialize(stream);
     stream->WriteString(GetName());
     stream->WriteObject(m_value);
 }
@@ -154,6 +155,7 @@ void MgDateTimeProperty::Serialize(MgStream* stream)
 ///</param>
 void MgDateTimeProperty::Deserialize(MgStream* stream)
 {
+    MgNullableProperty::Deserialize(stream);
     STRING str;
 
     stream->GetString(str);

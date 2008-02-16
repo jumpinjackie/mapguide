@@ -146,6 +146,7 @@ void MgStringProperty::ToXml(string &str, bool onlyKey, bool includeType, string
 ///</param>
 void MgStringProperty::Serialize(MgStream* stream)
 {
+    MgNullableProperty::Serialize(stream);
     stream->WriteString(GetName());
     stream->WriteString(m_value);
 }
@@ -159,6 +160,7 @@ void MgStringProperty::Serialize(MgStream* stream)
 ///</param>
 void MgStringProperty::Deserialize(MgStream* stream)
 {
+    MgNullableProperty::Deserialize(stream);
     STRING str;
 
     stream->GetString(str);
