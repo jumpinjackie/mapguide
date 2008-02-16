@@ -1416,7 +1416,41 @@ public:
     virtual EGwsStatus          SetRelatedValues (const GWSFeatureId & vals);
 
     GWS_QUERYENGINE_API
-    virtual bool                IsNull      (FdoString* propertyName);
+    virtual bool            IsNull      (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoString   *   GetString   (FdoString * propname);
+    GWS_QUERYENGINE_API
+    virtual bool            GetBoolean  (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoByte         GetByte     (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoDateTime     GetDateTime (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual double          GetDouble   (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoInt16        GetInt16    (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoInt32        GetInt32    (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoInt64        GetInt64    (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual float           GetSingle   (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoLOBValue*    GetLOB      (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoIStreamReader* GetLOBStreamReader(const wchar_t* propertyName );
+    GWS_QUERYENGINE_API
+    virtual FdoIRaster*     GetRaster   (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual const FdoByte * GetGeometry (FdoString* propertyName, FdoInt32 * count) ;
+    GWS_QUERYENGINE_API
+    virtual FdoByteArray*   GetGeometry (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoIFeatureReader* GetFeatureObject(FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoDataValue *  GetDataValue (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoByteArray*   GetOriginalGeometry (FdoString* propertyName);
 
     void                        IncrementKeyIndex()     { m_joinKeyIndex++; }
     void                        ResetKeyIndex()         { m_joinKeyIndex=0; }
