@@ -51,19 +51,20 @@ class EMapRenderer : public DWFRenderer
 {
 public:
     RENDERERS_API EMapRenderer(const RS_String& filename,
-                               const RS_String& agentUri);
+                               const RS_String& agentUri,
+                               bool             allowVSLines,
+                               bool             allowVSAreas);
 
     RENDERERS_API virtual ~EMapRenderer();
 
 
     ///////////////////////////////////////////////////////////////////
     // DWFRenderer overloads
-    //
+
     RENDERERS_API virtual void StartLayer(RS_LayerUIInfo*      layerInfo,
                                           RS_FeatureClassInfo* classInfo);
 
     RENDERERS_API virtual void EndLayer();
-
 
     RENDERERS_API virtual void StartMap(RS_MapUIInfo*    mapInfo,
                                         RS_Bounds&       extents,
@@ -76,7 +77,6 @@ public:
 
     ///////////////////////////////////////////////////////////////////
     // EMap specific stuff:
-    //
 
     //adds a scale range to current layer
     RENDERERS_API virtual void AddScaleRange(double min,

@@ -193,7 +193,10 @@ private:
     Ptr<MgDrawingService> m_svcDrawing;
     Ptr<MgCoordinateSystemFactory> m_pCSFactory;
 
+    // these will eventually be removed
     STRING m_renderername;
+    bool m_bAllowVSLines;
+    bool m_bAllowVSAreas;
 };
 
 #endif

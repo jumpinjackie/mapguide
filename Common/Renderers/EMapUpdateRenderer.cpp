@@ -58,9 +58,11 @@
 #define TOP_LABEL_W2D_ZORDER 2000000000.0
 
 
-EMapUpdateRenderer::EMapUpdateRenderer( const RS_String& filename,
-                                        unsigned int     sequenceId
-                       ) : DWFRenderer()
+EMapUpdateRenderer::EMapUpdateRenderer(const RS_String& filename,
+                                       unsigned int     sequenceId,
+                                       bool             allowVSLines,
+                                       bool             allowVSAreas)
+                                       : DWFRenderer(allowVSLines, allowVSAreas)
 {
     m_uuid = new DWFUUID;
     m_sequenceId = sequenceId;
@@ -74,13 +76,12 @@ EMapUpdateRenderer::~EMapUpdateRenderer()
 }
 
 
-void EMapUpdateRenderer::StartMap(  RS_MapUIInfo*    mapInfo,
-                                    RS_Bounds&       extents,
-                                    double           mapScale,
-                                    double           dpi,
-                                    double           metersPerUnit,
-                                    CSysTransformer* xformToLL
-                                    )
+void EMapUpdateRenderer::StartMap(RS_MapUIInfo*    mapInfo,
+                                  RS_Bounds&       extents,
+                                  double           mapScale,
+                                  double           dpi,
+                                  double           metersPerUnit,
+                                  CSysTransformer* xformToLL)
 {
     //init super
     DWFRenderer::StartMap(mapInfo, extents, mapScale, dpi, metersPerUnit, xformToLL);
@@ -275,8 +276,7 @@ void EMapUpdateRenderer::AddW2DResource(DWFCore::DWFBufferOutputStream* w2dStrea
                                         const wchar_t*  parentId,
                                         const double*   transform,
                                         const double*   clip,
-                                        double          zorder
-                                        )
+                                        double          zorder)
 {
     //
     // define the resource - this must be allocated on the heap
@@ -531,10 +531,10 @@ void EMapUpdateRenderer::AddLayerInfo(RS_LayerUIInfo& layerInfo)
 //This is because we do the layer command processing outside of the normal
 //StartLayer->EndLayer loop, which the EMapRenderer has the luxury of using,
 //since EMapRenderer does not need to worry about generating layer graphics also
-void EMapUpdateRenderer::AddScaleRange( RS_String& layerGuid,
-                                        double min,
-                                        double max,
-                                        std::list<RS_UIGraphic>* uiGraphics )
+void EMapUpdateRenderer::AddScaleRange(RS_String& layerGuid,
+                                       double min,
+                                       double max,
+                                       std::list<RS_UIGraphic>* uiGraphics)
 {
     DWFEMapLayer* pLayer = m_hAddedLayers[layerGuid];
 

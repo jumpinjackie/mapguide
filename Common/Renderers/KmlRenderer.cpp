@@ -30,8 +30,14 @@ const double ELEV_FACTOR = 0.1;
 
 
 //default constructor
-KmlRenderer::KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents,
-        double scale, double dpi, double metersPerUnit, int drawOrder) :
+KmlRenderer::KmlRenderer(KmlContent* kmlContent,
+                         RS_Bounds& extents,
+                         double scale,
+                         double dpi,
+                         double metersPerUnit,
+                         int drawOrder,
+                         bool allowVSLines,
+                         bool allowVSAreas) :
     m_mainContent(kmlContent),
     m_kmlContent(kmlContent),
     m_styleContent(NULL),
@@ -43,7 +49,9 @@ KmlRenderer::KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents,
     m_styleId(0),
     m_extents(extents),
     m_drawOrder(drawOrder),
-    m_elevation(0),
+    m_bAllowVSLines(allowVSLines),
+    m_bAllowVSAreas(allowVSAreas),
+    m_elevation(0.0),
     m_extrude(false),
     m_elevType(RS_ElevationType_RelativeToGround),
     m_metersPerUnit(metersPerUnit)
@@ -748,31 +756,46 @@ void KmlRenderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style,
 
 void KmlRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 {
-    RS_Color black(0,0,0,255);
-    RS_LineStroke ls(black, 0.0, L"Solid", RS_Units_Device);
-
-    //try to get some line style information from the SE symbol
-    if (style->symbol.size())
+    if (m_bAllowVSLines)
     {
-        for (size_t i=0; i<style->symbol.size(); i++)
-        {
-            SE_RenderPrimitive* rp = style->symbol[i];
+        RS_Color black(0,0,0,255);
+        RS_LineStroke ls(black, 0.0, L"Solid", RS_Units_Device);
 
-            if (rp->type == SE_RenderPolylinePrimitive)
+        // try to get some line style information from the SE symbol
+        if (style->symbol.size())
+        {
+            for (size_t i=0; i<style->symbol.size(); i++)
             {
-                ls.color() = RS_Color::FromARGB(((SE_RenderPolyline*)rp)->lineStroke.color);
-                ls.width() = ((SE_RenderPolyline*)rp)->lineStroke.weight / GetPixelsPerMillimeterScreen() * 0.001; //convert from pixels to meters
+                SE_RenderPrimitive* rp = style->symbol[i];
+
+                if (rp->type == SE_RenderPolylinePrimitive)
+                {
+                    ls.color() = RS_Color::FromARGB(((SE_RenderPolyline*)rp)->lineStroke.color);
+                    ls.width() = ((SE_RenderPolyline*)rp)->lineStroke.weight / GetPixelsPerMillimeterScreen() * 0.001; //convert from pixels to meters
+                }
             }
         }
-    }
 
-    //forward the feature to the regular ProcessPolyline API
-    ProcessPolyline(ctx->geometry, ls);
+        // forward the feature to the regular ProcessPolyline API
+        ProcessPolyline(ctx->geometry, ls);
+    }
+    else
+    {
+        // render the polyline as solid black lines
+        RS_Color black(0,0,0,255);
+        RS_LineStroke ls(black, 0.0, L"Solid", RS_Units_Device);
+
+        // forward the feature to the regular ProcessPolyline API
+        ProcessPolyline(ctx->geometry, ls);
+    }
 }
 
 
 void KmlRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 {
+    if (!m_bAllowVSAreas)
+        return; // don't draw any area style
+
     //not implemented upstream yet, but let's do something anyway
 
     RS_FillStyle fs;

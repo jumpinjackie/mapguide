@@ -215,7 +215,7 @@ WT_Result my_seek(WT_File & /*file*/, int /*distance*/, int & /*amount_seeked*/)
 //-----------------------------------------------------------------------------
 
 
-DWFRenderer::DWFRenderer()
+DWFRenderer::DWFRenderer(bool allowVSLines, bool allowVSAreas)
 : m_mapInfo(NULL),
   m_layerInfo(NULL),
   m_featureClass(NULL),
@@ -241,7 +241,9 @@ DWFRenderer::DWFRenderer()
   m_bHaveLabels(false),
   m_drawableCount(0),
   m_labelMacroCount(0),
-  m_linePatternActive(true)
+  m_linePatternActive(true),
+  m_bAllowVSLines(allowVSLines),
+  m_bAllowVSAreas(allowVSAreas)
 {
     m_lLayerStreams.reserve(8);
     m_lLabelStreams.reserve(8);
@@ -2270,6 +2272,31 @@ void DWFRenderer::Init(RS_Bounds& extents)
 //             SE Renderer
 //
 //-----------------------------------------------------------------------------
+
+
+void DWFRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
+{
+    if (m_bAllowVSLines)
+        SE_Renderer::ProcessLine(ctx, style);
+    else
+    {
+        // render the polyline as solid black lines
+        SE_LineStroke lineStroke(0xFF000000, 0.0);
+
+        SE_Matrix w2s;
+        GetWorldToScreenTransform(w2s);
+        DrawScreenPolyline(ctx->geometry, &w2s, lineStroke);
+    }
+}
+
+
+void DWFRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
+{
+    if (!m_bAllowVSAreas)
+        return; // don't draw any area style
+
+    SE_Renderer::ProcessArea(ctx, style);
+}
 
 
 void DWFRenderer::DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, const SE_LineStroke& lineStroke)

@@ -153,7 +153,8 @@ const STRING MgConfigProperties::GeneralPropertyWorkerThreadPoolSize            
 const INT32  MgConfigProperties::DefaultGeneralPropertyWorkerThreadPoolSize                 = 10;
 const STRING MgConfigProperties::GeneralPropertyRenderer                                    = L"Renderer";
 const STRING MgConfigProperties::DefaultGeneralPropertyRenderer                             = L"GD";
-
+const STRING MgConfigProperties::GeneralPropertyEnableVectorSymbolizationLines              = L"EnableVectorSymbolizationLines";
+const bool   MgConfigProperties::DefaultGeneralPropertyEnableVectorSymbolizationLines       = false;
 
 // ******************************************************************
 // Administrative Connection Properties
@@ -265,7 +266,6 @@ const STRING MgConfigProperties::DefaultMappingServicePropertyLegendFont        
 const STRING MgConfigProperties::RenderingServicePropertiesSection                          = L"RenderingServiceProperties";
 const STRING MgConfigProperties::RenderingServicePropertyTileExtentOffset                   = L"TileExtentOffset";
 const double MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset            = 0.35;
-
 
 // ******************************************************************
 // Font Alias Mappings section
