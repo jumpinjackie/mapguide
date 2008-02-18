@@ -41,11 +41,13 @@ using namespace DWFCore;
 using namespace std;
 
 
-EPlotRenderer::EPlotRenderer(const RS_String&  filename,
-                             double         pageWidth,
-                             double         pageHeight,
-                             const RS_String&  pageUnits
-                             ) : DWFRenderer(), m_dMapOffsetX(0), m_dMapOffsetY(0), m_bLayoutPlot(false)
+EPlotRenderer::EPlotRenderer(const RS_String& filename,
+                             double           pageWidth,
+                             double           pageHeight,
+                             const RS_String& pageUnits,
+                             bool             allowVSLines,
+                             bool             allowVSAreas)
+                             : DWFRenderer(allowVSLines, allowVSAreas), m_dMapOffsetX(0), m_dMapOffsetY(0), m_bLayoutPlot(false)
 {
     m_dPageWidth = pageWidth;
     m_dPageHeight = pageHeight;
@@ -80,12 +82,12 @@ EPlotRenderer::~EPlotRenderer()
 }
 
 
-void EPlotRenderer::StartMap( RS_MapUIInfo*    mapInfo,
-                              RS_Bounds&       extents,
-                              double           mapScale,
-                              double           dpi,
-                              double           metersPerUnit,
-                              CSysTransformer* /*xformToLL*/ )
+void EPlotRenderer::StartMap(RS_MapUIInfo*    mapInfo,
+                             RS_Bounds&       extents,
+                             double           mapScale,
+                             double           dpi,
+                             double           metersPerUnit,
+                             CSysTransformer* /*xformToLL*/)
 {
     m_bFirst = true;
 
@@ -153,7 +155,6 @@ void EPlotRenderer::StartMap( RS_MapUIInfo*    mapInfo,
                                                     mapInfo->bgcolor().argb(),
                                                     &oPaper) );
 }
-
 
 
 void EPlotRenderer::EndMap()

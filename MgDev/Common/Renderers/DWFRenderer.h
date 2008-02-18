@@ -82,7 +82,7 @@ typedef std::vector<DWFToolkit::DWFObjectDefinitionResource*> objdefres_list;
 class DWFRenderer : public SE_Renderer, public RS_FontEngine
 {
 public:
-    RENDERERS_API DWFRenderer();
+    RENDERERS_API DWFRenderer(bool allowVSLines, bool allowVSAreas);
     RENDERERS_API virtual ~DWFRenderer();
 
     ///////////////////////////////////
@@ -171,6 +171,9 @@ public:
     ////////////////////////////////////////////////
     // SE_Renderer
     //
+    virtual void ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style);
+    virtual void ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style);
+
     virtual void DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, const SE_LineStroke& lineStroke);
     virtual void DrawScreenPolygon(LineBuffer* geom, const SE_Matrix* xform, unsigned int fill);
     virtual void DrawScreenRaster(unsigned char* data, int length,
@@ -344,6 +347,10 @@ private:
     // used when rendering polyline / polygon features to track if a
     // line or dash pattern was last used
     bool m_linePatternActive;
+
+    //these will eventually be removed
+    bool m_bAllowVSLines;
+    bool m_bAllowVSAreas;
 
     /////////////////////////////////////////////////////////
     // Functions and structures used during insertion of W2Ds

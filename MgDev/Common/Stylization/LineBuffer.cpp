@@ -1880,7 +1880,7 @@ int LineBuffer::ClipCode(RS_Bounds& b, double x, double y)
 
 //------------------------------------------------------------------------------
 //
-// FUNCTION: OpsClipLine().
+// FUNCTION: ClipLine().
 //
 // PURPOSE: Clip a line (given in application coordinates) against the
 //          specified clip rectangle using the Cohen-Sutherland clipping

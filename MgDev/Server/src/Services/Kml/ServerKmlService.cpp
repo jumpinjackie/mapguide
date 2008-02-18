@@ -39,6 +39,8 @@ IMPLEMENT_CREATE_SERVICE(MgServerKmlService)
 MgServerKmlService::MgServerKmlService() : MgKmlService()
 {
     m_csFactory = new MgCoordinateSystemFactory();
+
+    MgMappingUtil::GetVSRenderingFlags(m_bAllowVSLines, m_bAllowVSAreas);
 }
 
 
@@ -470,7 +472,7 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
                 fcInfo.add_mapping(m->GetName(), m->GetValue());
             }
 
-            KmlRenderer renderer(&kmlContent, bounds, scale, dpi, metersPerUnit, drawOrder);
+            KmlRenderer renderer(&kmlContent, bounds, scale, dpi, metersPerUnit, drawOrder, m_bAllowVSLines, m_bAllowVSAreas);
             SEMgSymbolManager sman(m_svcResource);
             DefaultStylizer stylizer(&sman);
             renderer.StartLayer(&layerInfo, &fcInfo);

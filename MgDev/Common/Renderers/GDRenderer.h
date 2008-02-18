@@ -54,9 +54,11 @@ public:
     RENDERERS_API GDRenderer(int width,
                              int height,
                              RS_Color& bgColor,
+                             bool allowVSLines,
+                             bool allowVSAreas,
                              bool requiresClipping,
-                             bool localOverposting = false,
-                             double tileExtentOffset = 0.0);
+                             bool localOverposting,
+                             double tileExtentOffset);
     RENDERERS_API virtual ~GDRenderer();
 
     ///////////////////////////////////
@@ -147,6 +149,9 @@ public:
     ////////////////////////////////////////////////
     // SE_Renderer
     //
+    virtual void ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style);
+    virtual void ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style);
+
     virtual void SetRenderSelectionMode(bool mode);
     virtual void SetRenderSelectionMode(bool mode, int rgba);
 
@@ -245,6 +250,10 @@ private:
     RS_FillStyle m_selFill;
 
     LabelRendererBase* m_labeler;
+
+    //these will eventually be removed
+    bool m_bAllowVSLines;
+    bool m_bAllowVSAreas;
 
     /////////////////////////////////////////////////////////
     //
