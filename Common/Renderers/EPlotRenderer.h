@@ -44,7 +44,9 @@ public:
     RENDERERS_API EPlotRenderer(const RS_String& filename,
                                 double           pageWidth,
                                 double           pageHeight,
-                                const RS_String& pageUnits);
+                                const RS_String& pageUnits,
+                                bool             allowVSLines,
+                                bool             allowVSAreas);
 
     RENDERERS_API virtual ~EPlotRenderer();
 

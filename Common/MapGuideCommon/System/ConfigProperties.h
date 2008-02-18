@@ -123,8 +123,12 @@ EXTERNAL_API:
     static const STRING DefaultGeneralPropertyWmsDocumentPath;          /// value("Wms/")
 
     /// Sets desired image renderer
-    static const STRING GeneralPropertyRenderer;       /// value("Renderer")
-    static const STRING DefaultGeneralPropertyRenderer;/// value("GD")
+    static const STRING GeneralPropertyRenderer;                        /// value("Renderer")
+    static const STRING DefaultGeneralPropertyRenderer;                 /// value("GD")
+
+    /// Specifies whether rendering of new vector symbolization lines is enabled
+    static const STRING GeneralPropertyEnableVectorSymbolizationLines;      /// value("EnableVectorSymbolizationLines")
+    static const bool DefaultGeneralPropertyEnableVectorSymbolizationLines; /// value(false)
 
 INTERNAL_API:
 
@@ -272,7 +276,7 @@ EXTERNAL_API:
     static const INT32 DefaultFeatureServicePropertyCacheTimeLimit;             /// value(86400)
 
     /// Sets the time duration (in seconds) between cache timelimit checks
-    static const STRING FeatureServicePropertyCacheTimerInterval;                /// value("CacheTimerInterval")
+    static const STRING FeatureServicePropertyCacheTimerInterval;               /// value("CacheTimerInterval")
     static const INT32 DefaultFeatureServicePropertyCacheTimerInterval;         /// value(3600)
 
     /// Sets the maximum number of features fetched to reduce the network traffic
@@ -304,8 +308,8 @@ EXTERNAL_API:
     static const INT32 DefaultFeatureServicePropertyDataConnectionTimerInterval;/// value(60)
 
     /// Sets the batch size used by the join query algorithm
-    static const STRING FeatureServicePropertyJoinQueryBatchSize;                    /// value("JoinQueryBatchSize")
-    static const INT32 DefaultFeatureServicePropertyJoinQueryBatchSize;              /// value(100)
+    static const STRING FeatureServicePropertyJoinQueryBatchSize;               /// value("JoinQueryBatchSize")
+    static const INT32 DefaultFeatureServicePropertyJoinQueryBatchSize;         /// value(100)
 
     /// MAPPING SERVICE PROPERTIES SECTION -------------------------------------------------------------------------------
 
@@ -324,7 +328,6 @@ EXTERNAL_API:
     /// Sets the maximum request extent offset to use when requesting features for a tile, specified as a factor of the tile size
     static const STRING RenderingServicePropertyTileExtentOffset;       /// value("TileExtentOffset")
     static const double DefaultRenderingServicePropertyTileExtentOffset;/// value(0.35)
-
 
     /// FONT ALIASES SECTION -----------------------------------------------------------------------------
 
@@ -426,12 +429,12 @@ EXTERNAL_API:
     static const STRING DefaultTileServicePropertyTileCachePath;        /// value("Repositories/TileCache/")
 
     // Sets the number of columns of tiles per folder
-    static const STRING TileServicePropertyTileColumnsPerFolder;       /// value("TileColumnsPerFolder")
-    static const INT32 DefaultTileServicePropertyTileColumnsPerFolder; /// value(30)
+    static const STRING TileServicePropertyTileColumnsPerFolder;        /// value("TileColumnsPerFolder")
+    static const INT32 DefaultTileServicePropertyTileColumnsPerFolder;  /// value(30)
 
     // Sets the number of rows of tiles per folder
-    static const STRING TileServicePropertyTileRowsPerFolder;          /// value("TileRowsPerFolder")
-    static const INT32 DefaultTileServicePropertyTileRowsPerFolder;    /// value(30)
+    static const STRING TileServicePropertyTileRowsPerFolder;           /// value("TileRowsPerFolder")
+    static const INT32 DefaultTileServicePropertyTileRowsPerFolder;     /// value(30)
 
     // Sets the image size and format (PNG/JPG) of the tiles
     static const STRING TileServicePropertyTileSizeX;                   /// value("DefaultTileSizeX");

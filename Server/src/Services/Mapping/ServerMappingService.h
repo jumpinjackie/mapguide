@@ -132,6 +132,10 @@ class MG_SERVER_MAPPING_API MgServerMappingService : public MgMappingService
         Ptr<MgResourceService> m_svcResource;
         Ptr<MgDrawingService> m_svcDrawing;
         Ptr<MgCoordinateSystemFactory> m_pCSFactory;
+
+        // these will eventually be removed
+        bool m_bAllowVSLines;
+        bool m_bAllowVSAreas;
 };
 
 #endif
