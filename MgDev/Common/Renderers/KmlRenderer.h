@@ -33,8 +33,14 @@ typedef std::map<KmlPolyStyle, int> KmlPolyStyleIdMap;
 class KmlRenderer : public SE_Renderer
 {
 public:
-    RENDERERS_API KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents,
-                              double scale, double dpi, double metersPerUnit, int drawOrder);
+    RENDERERS_API KmlRenderer(KmlContent* kmlContent,
+                              RS_Bounds& extents,
+                              double scale,
+                              double dpi,
+                              double metersPerUnit,
+                              int drawOrder,
+                              bool allowVSLines,
+                              bool allowVSAreas);
     RENDERERS_API virtual ~KmlRenderer();
 
     ///////////////////////////////////
@@ -180,6 +186,10 @@ private:
     bool m_extrude;
     double m_metersPerUnit;
     RS_ElevationType m_elevType;
+
+    //these will eventually be removed
+    bool m_bAllowVSLines;
+    bool m_bAllowVSAreas;
 };
 
 #endif

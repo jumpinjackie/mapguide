@@ -37,8 +37,10 @@
 #include "dwfemap/package/LayerGroup.h"
 
 EMapRenderer::EMapRenderer(const RS_String& filename,
-                           const RS_String& agentUri
-                           ) : DWFRenderer()
+                           const RS_String& agentUri,
+                           bool             allowVSLines,
+                           bool             allowVSAreas)
+                           : DWFRenderer(allowVSLines, allowVSAreas)
 {
     m_pPage = NULL;
     m_uuid = new DWFUUID;
@@ -58,8 +60,7 @@ void EMapRenderer::StartMap(RS_MapUIInfo*    mapInfo,
                             double           mapScale,
                             double           dpi,
                             double           metersPerUnit,
-                            CSysTransformer* xformToLL
-                            )
+                            CSysTransformer* xformToLL)
 {
     //init super first
     DWFRenderer::StartMap(mapInfo, extents, mapScale, dpi, metersPerUnit, xformToLL);
@@ -146,10 +147,9 @@ void EMapRenderer::StartLayer(RS_LayerUIInfo*      layerInfo,
 
 
 //adds a scale range to current layer
-void EMapRenderer::AddScaleRange (  double min,
-                                    double max,
-                                    std::list<RS_UIGraphic>* uiGraphics
-                                 )
+void EMapRenderer::AddScaleRange(double min,
+                                 double max,
+                                 std::list<RS_UIGraphic>* uiGraphics)
 {
     // Construct two scaleRanges to add to the Layer
     DWFScaleRange* pScaleR = DWFCORE_ALLOC_OBJECT( DWFScaleRange(

@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef STYLIZATIONUTIL_H
-#define STYLIZATIONUTIL_H
+#ifndef MAPPINGUTIL_H
+#define MAPPINGUTIL_H
 
 #include "ServerMappingDllExport.h"
 #include "MapGuideCommon.h"
@@ -76,6 +76,8 @@ public:
 
     static MgByteReader* DrawFTS(MgResourceService* svcResource, MdfModel::FeatureTypeStyle* fts, INT32 imgWidth, INT32 imgHeight, INT32 themeCategory);
     static double ComputeStylizationOffset(MgMap* map, MdfModel::VectorScaleRange* scaleRange, double scale);
+
+    static void GetVSRenderingFlags(bool& bAllowVSLines, bool& bAllowVSAreas);
 };
 
 #endif

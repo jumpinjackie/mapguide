@@ -50,18 +50,22 @@ class AGGRenderer : public SE_Renderer, public RS_FontEngine
 
 public:
     RENDERERS_API AGGRenderer(int width,
-                                int height,
-                                unsigned int* backbuffer,
-                                bool requiresClipping,
-                                bool localOverposting = false,
-                                double tileExtentOffset = 0.0);
+                              int height,
+                              unsigned int* backbuffer,
+                              bool allowVSLines,
+                              bool allowVSAreas,
+                              bool requiresClipping,
+                              bool localOverposting,
+                              double tileExtentOffset);
 
     RENDERERS_API AGGRenderer(int width,
-                               int height,
-                               RS_Color& bgColor,
-                               bool requiresClipping,
-                               bool localOverposting = false,
-                               double tileExtentOffset = 0.0);
+                              int height,
+                              RS_Color& bgColor,
+                              bool allowVSLines,
+                              bool allowVSAreas,
+                              bool requiresClipping,
+                              bool localOverposting,
+                              double tileExtentOffset);
     RENDERERS_API virtual ~AGGRenderer();
 
 
@@ -96,9 +100,6 @@ public:
                                             double            zOffset = 0.0,
                                             double            zExtrusion = 0.0,
                                             RS_ElevationType  zOffsetType = RS_ElevationType_RelativeToGround);
-
-
-    RENDERERS_API virtual void ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style);
 
     RENDERERS_API virtual void ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill);
 
@@ -191,7 +192,8 @@ public:
                                            bool             exclude,
                                            LineBuffer*      path);
 
-    //virtual void ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style);
+    RENDERERS_API virtual void ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style);
+    RENDERERS_API virtual void ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style);
 
     RENDERERS_API virtual RS_FontEngine* GetRSFontEngine();
 
@@ -259,6 +261,10 @@ private:
     SE_LineStroke m_lineStroke;
 
     LabelRendererBase* m_labeler;
+
+    //these will eventually be removed
+    bool m_bAllowVSLines;
+    bool m_bAllowVSAreas;
 
 private:
     //target image for W2D rewriter -- equal to either the target map
