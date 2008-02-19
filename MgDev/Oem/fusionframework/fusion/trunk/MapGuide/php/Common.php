@@ -2,7 +2,7 @@
 /**
  * Common
  *
- * $Id: Common.php 1034 2007-11-21 16:36:46Z pspencer $
+ * $Id: Common.php 1235 2008-02-19 15:32:56Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -84,7 +84,8 @@ try {
          * credentials.  Handle this here, but keep the session the same.
          */
         $sessionID = $_REQUEST['session'];
-        session_start($sessionID);
+        session_id(str_replace('_', '-', $sessionID));
+        session_start();
         
         /* current user is re-authenticating or not? */
         if (isset($_REQUEST['username']) && isset($_REQUEST['password'])) {
