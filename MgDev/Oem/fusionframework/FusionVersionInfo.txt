@@ -1,10 +1,14 @@
 Current version:
 
 Date = 2008/02/15 15:05 MST
-Fusion revision = 1234
-Jx revision = 500
+Fusion revision = 1236
+Jx revision = 503
 
 Previous updates:
+
+Date = 2008/02/15 15:05 MST
+Fusion revision = 1234
+Jx revision = 500
 
 New internal branch 
 Date = 2008/01/23 15:54 MST
