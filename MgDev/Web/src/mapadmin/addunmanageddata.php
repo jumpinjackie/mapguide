@@ -33,7 +33,7 @@ try
     $menuCategory = UNMANAGEDDATA_MANAGEMENT_MENU_ITEM;
     $menuItem = ADD_UNMANAGEDDATA_MENU_ITEM;
     $pageTitle = ADD_UNMANAGEDDATA_TITLE;
-    $helpPage = 'HelpDocs/adding_and_deleting_unmanageddata.htm';
+    $helpPage = 'HelpDocs/about_external_files.htm';
     $pageName = 'AddUnmanagedDataPage';
     $formName = 'AddUnmanagedDataForm';
     $homePage = 'unmanageddatamanagement.php';

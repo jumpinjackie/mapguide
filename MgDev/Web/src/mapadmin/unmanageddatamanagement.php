@@ -30,7 +30,7 @@ try
     $menuCategory = UNMANAGEDDATA_MANAGEMENT_MENU_ITEM;
     $pageTitle = UNMANAGEDDATA_MANAGEMENT_MENU_ITEM;
 
-    $helpPage = 'HelpDocs/managing_unmanageddata.htm';
+    $helpPage = 'HelpDocs/about_external_files.htm';
     $pageName = 'UnmanagedDataManagementPage';
     $formName = 'UnmanagedDataManagementForm';
     $homePage = NULL;
