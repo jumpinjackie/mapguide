@@ -516,11 +516,11 @@ WT_Result agr_process_polytriangle (WT_Polytriangle & polytriangle, WT_File & fi
     {
         LineBuffer lb(4);
 
-        for (int i=2; i < polytriangle.count(); i+=3)
+        for (int i=2; i < polytriangle.count(); i++)
         {
             lb.MoveTo(dstpts->x_coord(i-2), dstpts->y_coord(i-2));
-            lb.MoveTo(dstpts->x_coord(i-1), dstpts->y_coord(i-1));
-            lb.MoveTo(dstpts->x_coord(i  ), dstpts->y_coord(i  ));
+            lb.LineTo(dstpts->x_coord(i-1), dstpts->y_coord(i-1));
+            lb.LineTo(dstpts->x_coord(i  ), dstpts->y_coord(i  ));
             lb.Close();
 
 			rewriter->DrawScreenPolygon(&lb, NULL, (unsigned int) color.argb());
