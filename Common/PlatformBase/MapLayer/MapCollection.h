@@ -29,7 +29,7 @@ class MgMap;
 
 /////////////////////////////////////////////////////////////////
 /// \brief
-/// Manipulates collections of MgMap objects.
+/// Manipulates collections of MgMapBase objects.
 ///
 class MG_PLATFORMBASE_API MgMapCollection : public MgDisposable
 {
@@ -62,20 +62,20 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// MgMap GetItem(int index);
+    /// MgMapBase GetItem(int index);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// MgMap GetItem(int index);
+    /// MgMapBase GetItem(int index);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// MgMap GetItem(int index);
+    /// MgMapBase GetItem(int index);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param index (int)
     /// Index of the map to get.
     ///
     /// \return
-    /// Returns the specified MgMap object.
+    /// Returns the specified MgMapBase object.
     ///
     /// \exception MgOutOfRangeException if the index is invalid.
     ///
@@ -87,20 +87,20 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// MgMap GetItem(string name);
+    /// MgMapBase GetItem(string name);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// MgMap GetItem(String name);
+    /// MgMapBase GetItem(String name);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// MgMap GetItem(string name);
+    /// MgMapBase GetItem(string name);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param name (String/string)
     /// Name of the map to get.
     ///
     /// \return
-    /// Returns the specified MgMap object.
+    /// Returns the specified MgMapBase object.
     ///
     /// \exception MgInvalidArgumentException if the name does not exist in
     ///  the collection.
@@ -114,20 +114,20 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// void SetItem(int index, MgMap value);
+    /// void SetItem(int index, MgMapBase value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// void SetItem(int index, MgMap value);
+    /// void SetItem(int index, MgMapBase value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// void SetItem(int index, MgMap value);
+    /// void SetItem(int index, MgMapBase value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param index (int)
     /// Position in the collection to set the
-    /// MgMap.
-    /// \param value (MgMap)
-    /// MgMap to be set in the collection.
+    /// MgMapBase.
+    /// \param value (MgMapBase)
+    /// MgMapBase to be set in the collection.
     ///
     /// \return
     /// Returns nothing.
@@ -142,17 +142,17 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// void Add(MgMap value);
+    /// void Add(MgMapBase value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// void Add(MgMap value);
+    /// void Add(MgMapBase value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// void Add(MgMap value);
+    /// void Add(MgMapBase value);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param value (MgMap)
-    /// MgMap to be added to the collection.
+    /// \param value (MgMapBase)
+    /// MgMapBase to be added to the collection.
     ///
     /// \return
     /// Returns nothing.
@@ -169,20 +169,20 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// void Insert(int index, MgMap value);
+    /// void Insert(int index, MgMapBase value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// void Insert(int index, MgMap value);
+    /// void Insert(int index, MgMapBase value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// void Insert(int index, MgMap value);
+    /// void Insert(int index, MgMapBase value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param index (int)
     /// Position in the collection to insert the
-    /// MgMap.
-    /// \param value (MgMap)
-    /// MgMap to be inserted in the collection.
+    /// MgMapBase.
+    /// \param value (MgMapBase)
+    /// MgMapBase to be inserted in the collection.
     ///
     /// \return
     /// Returns nothing.
@@ -218,17 +218,17 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// bool Remove(MgMap value);
+    /// bool Remove(MgMapBase value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// bool Remove(MgMap value);
+    /// bool Remove(MgMapBase value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// bool Remove(MgMap value);
+    /// bool Remove(MgMapBase value);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param value (MgMap)
-    /// MgMap to be removed
+    /// \param value (MgMapBase)
+    /// MgMapBase to be removed
     ///
     /// \return
     /// Returns true if removal was successful.
@@ -292,17 +292,17 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// bool Contains(MgMap value);
+    /// bool Contains(MgMapBase value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// boolean Contains(MgMap value);
+    /// boolean Contains(MgMapBase value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// bool Contains(MgMap value);
+    /// bool Contains(MgMapBase value);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param value (MgMap)
-    /// The MgMap to look for.
+    /// \param value (MgMapBase)
+    /// The MgMapBase to look for.
     ///
     /// \return
     /// Returns true if the collection contains the specified map,
@@ -340,16 +340,16 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// int IndexOf(MgMap value);
+    /// int IndexOf(MgMapBase value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// int IndexOf(MgMap value);
+    /// int IndexOf(MgMapBase value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// int IndexOf(MgMap value);
+    /// int IndexOf(MgMapBase value);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param value (MgMap)
+    /// \param value (MgMapBase)
     /// Value of the item to get the index of.
     ///
     /// \return

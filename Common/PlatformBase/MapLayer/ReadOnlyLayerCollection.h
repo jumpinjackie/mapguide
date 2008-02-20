@@ -27,7 +27,7 @@ template class MG_PLATFORMBASE_API Ptr<MgReadOnlyLayerCollection>;
 
 /////////////////////////////////////////////////////////////////
 /// \brief
-/// Provides read only access to a collection of MgLayer objects.
+/// Provides read only access to a collection of MgLayerBase objects.
 ///
 /// \todo
 ///   * [[TO DO: add samples for this section.]]
@@ -63,13 +63,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// MgLayer GetItem(int index);
+    /// MgLayerBase GetItem(int index);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// MgLayer GetItem(int index);
+    /// MgLayerBase GetItem(int index);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// MgLayer GetItem(int index);
+    /// MgLayerBase GetItem(int index);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param index (int)
@@ -88,17 +88,17 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// bool Contains(MgLayer value);
+    /// bool Contains(MgLayerBase value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// boolean Contains(MgLayer value);
+    /// boolean Contains(MgLayerBase value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// bool Contains(MgLayer value);
+    /// bool Contains(MgLayerBase value);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param value (MgLayer)
-    /// MgLayer to search for.
+    /// \param value (MgLayerBase)
+    /// MgLayerBase to search for.
     ///
     /// \return
     /// Returns true if the collection contains the specified item,
@@ -112,17 +112,17 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// int IndexOf(MgLayer value);
+    /// int IndexOf(MgLayerBase value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// int IndexOf(MgLayer value);
+    /// int IndexOf(MgLayerBase value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// int IndexOf(MgLayer value);
+    /// int IndexOf(MgLayerBase value);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param value (MgLayer)
-    /// MgLayer to search for.
+    /// \param value (MgLayerBase)
+    /// MgLayerBase to search for.
     ///
     /// \return
     /// Returns the layer's index if the collection contains the

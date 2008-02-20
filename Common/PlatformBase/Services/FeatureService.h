@@ -112,36 +112,6 @@ class MgBatchPropertyCollection;
 ///   </li>
 /// </ul>
 ///
-/// <!-- Example (PHP) -->
-/// \htmlinclude PHPExampleTop.html
-/// \code
-/// <?php
-/// include "C:\Program Files\MapGuideOpenSource\WebExtensions\www\mapviewerphp\constants.php";
-/// $webconfigiDotIniPath = "C:\Program Files\MapGuideOpenSource\WebExtensions\www\webconfig.ini"
-/// MgInitializeWebTier($webconfigiDotIniPath);
-/// $adminUser = new MgUserInformation("Administrator", "admin");
-/// $siteConnection = new MgSiteConnection();
-/// $siteConnection->Open($adminUser);
-/// $siteConnection->CreateService(MgServiceType::FeatureService);
-/// ?>
-/// \endcode
-/// \htmlinclude ExampleBottom.html
-///
-/// <!-- Example (C#) -->
-/// \htmlinclude CSharpExampleTop.html
-/// \code
-/// using OSGeo.MapGuide;
-/// String webConfigFilename = <path to webconfig.ini file>;
-/// MapGuideApi.MgInitializeWebTier(webConfigFilename);
-/// MgUserInformation userInfo = new MgUserInformation("Administrator", "admin");
-/// MgSiteConnection siteConnection = new MgSiteConnection();
-/// siteConnection.Open(userInfo);
-/// // Create the MgFeatureService and MgResourceService
-/// MgResourceService resourceService = siteConnection.CreateService(MgServiceType.ResourceService) as MgResourceService;
-/// MgFeatureService featureService = siteConnection.CreateService(MgServiceType.FeatureService) as MgFeatureService;
-/// \endcode
-/// \htmlinclude ExampleBottom.html
-///
 class MG_PLATFORMBASE_API MgFeatureService : public MgService
 {
 PUBLISHED_API:
