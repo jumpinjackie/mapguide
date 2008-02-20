@@ -238,11 +238,8 @@ PUBLISHED_API:
     /// Constructs an empty un-initialized MgMap object.
     ///
     /// \remarks
-    /// This method has been depreciated. Use the following method:
-    /// MgMap(MgSiteConnection siteConnection)
-    /// The instance of MgMap cannot be used until either the \link MgMapBase::Create Create \endlink
-    /// or \link MgMapBase::Open Open \endlink
-    /// method is called.
+    /// This method has been deprecated. Use the following method:
+    /// \link MgMap(MgSiteConnection*) MgMap(MgSiteConnection* siteConnection) \endlink.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -254,11 +251,6 @@ PUBLISHED_API:
     /// \htmlinclude PHPSyntaxTop.html
     /// MgMap();
     /// \htmlinclude SyntaxBottom.html
-    ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMapBase::Create Create \endlink.
-    /// \htmlinclude ExampleBottom.html
     ///
     MgMap();
 
@@ -267,11 +259,11 @@ PUBLISHED_API:
     /// Constructs an MgMap object that takes an MgSiteConnection instance.
     ///
     /// \remarks
-    /// The instance of MgMap cannot be used until either the \link MgMapBase::Create Create \endlink
-    /// or \link MgMapBase::Open Open \endlink
+    /// The instance of MgMap cannot be used until either the \link MgMap::Create(MgResourceIdentifier*,CREFSTRING) Create() \endlink
+    /// or \link MgMap::Open(CREFSTRING) Open() \endlink 
     /// method is called.
-    /// Session ID is required for this MgMap constructor.
-    /// MgMap cannot exist in the Library repository.
+    /// Session ID is required for this constructor.
+    /// An MgMap object cannot exist in the Library repository.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -284,13 +276,13 @@ PUBLISHED_API:
     /// MgMap(MgSiteConnection siteConnection);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param siteConnection (MgSiteConnection)
+    /// \param siteConnection
     /// An MgSiteConnection instance the MgMap object can use to
     /// allocate service instances.
     ///
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMapBase::Create Create \endlink.
+    /// See \link MgMap::Create(MgResourceIdentifier*,CREFSTRING) Create() \endlink.
     /// \code
     /// $siteConn = new MgSiteConnection();
     /// $userInfo = new MgUserInformation();
@@ -309,8 +301,8 @@ PUBLISHED_API:
     /// MapGuide Viewers or for offline map production.
     ///
     /// \remarks
-    /// This method has been depreciated. Use the following method:
-    /// void Create(MgResourceIdentifier mapDefinition, string mapName)
+    /// This method has been deprecated. Use the following method:
+    /// \link MgMap::Create(MgResourceIdentifier*,CREFSTRING) Create(MgResourceIdentifier mapDefinition, string mapName) \endlink.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -323,14 +315,14 @@ PUBLISHED_API:
     /// void Create(MgResourceService resourceService, MgResourceIdentifier mapDefinition, string mapName);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param resourceService (MgResourceService)
+    /// \param resourceService
     /// An MgResourceService that can be used to
     /// retrieve the map definition.
-    /// \param mapDefinition (MgResourceIdentifier)
+    /// \param mapDefinition
     /// An MgResourceIdentifier that specifies the
     /// location of the map definition in a resource
     /// repository.
-    /// \param mapName (String/string)
+    /// \param mapName 
     /// A string that specifies the name of the map.
     ///
     /// <!-- Example (PHP) -->
@@ -362,11 +354,11 @@ PUBLISHED_API:
     /// void Create(MgResourceIdentifier mapDefinition, string mapName);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param mapDefinition (MgResourceIdentifier)
+    /// \param mapDefinition 
     /// An MgResourceIdentifier that specifies the
     /// location of the map definition in a resource
     /// repository.
-    /// \param mapName (String/string)
+    /// \param mapName 
     /// A string that specifies the name of the map.
     ///
     /// \return
@@ -402,12 +394,12 @@ PUBLISHED_API:
     /// void Create(string mapSRS, MgEnvelope mapExtent, string mapName);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param mapSRS (String/string)
+    /// \param mapSRS 
     /// A string specifying the spatial reference system in OpenGIS WKT
     /// format.
-    /// \param mapExtent (MgEnvelope)
+    /// \param mapExtent 
     /// An MgEnvelope defining the overall extent of the map.
-    /// \param mapName (String/string)
+    /// \param mapName 
     /// A string that specifies the name of the map.
     ///
     virtual void Create(CREFSTRING mapSRS, MgEnvelope* mapExtent, CREFSTRING mapName);
@@ -417,9 +409,9 @@ PUBLISHED_API:
     /// Loads the map object from a session repository.
     ///
     /// \remarks
-    /// This method has been depreciated. Use the following method:
-    /// void Open(string mapName)
-    /// For more information, see \link Mapping_Service_Module Mapping Service \endlink.
+    /// This method has been deprecated. Use the following method:
+    /// \link MgMap::Open(CREFSTRING) Open(string mapName) \endlink.
+    /// For more information, see \link Maps_and_Layers_Module Maps and Layers \endlink.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -432,10 +424,10 @@ PUBLISHED_API:
     /// virtual void Open(MgResourceService resourceService, string mapName);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param resourceService (MgResourceService)
+    /// \param resourceService 
     /// An MgResourceService that can be used to retrieve
     /// the map.
-    /// \param mapName (String/string)
+    /// \param mapName 
     /// A string that specifies the name of the map. This
     /// is the name that was specified when \link MgMapBase::Create Create \endlink
     /// was called to create the map object.
@@ -463,7 +455,7 @@ PUBLISHED_API:
     /// Loads the map object from a session repository.
     ///
     /// \remarks
-    /// For more information, see \link Mapping_Service_Module Mapping Service \endlink.
+    /// For more information, see \link Maps_and_Layers_Module Maps and Layers \endlink.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -476,7 +468,7 @@ PUBLISHED_API:
     /// virtual void Open(string mapName);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param mapName (String/string)
+    /// \param mapName 
     /// A string that specifies the name of the map. This
     /// is the name that was specified when \link MgMapBase::Create Create \endlink
     /// was called to create the map object.
@@ -504,8 +496,8 @@ PUBLISHED_API:
     /// Saves the Map using the specified resource service.
     ///
     /// \remarks
-    /// This method has been depreciated. Use the following method:
-    /// void Open(string mapName)
+    /// This method has been deprecated. Use the following method:
+    /// \link Save() Save() \endlink.
     /// This method assumes a valid resource identifier has already
     /// been established via either Open or Save.
     ///
