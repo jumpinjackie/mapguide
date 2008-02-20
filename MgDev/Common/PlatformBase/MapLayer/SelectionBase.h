@@ -38,13 +38,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// MgSelection(MgMap map);
+    /// MgSelectionBase(MgMapBase map);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// MgSelection(MgMap map);
+    /// MgSelectionBase(MgMapBase map);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// MgSelection(MgMap map);
+    /// MgSelectionBase(MgMapBase map);
     /// \htmlinclude SyntaxBottom.html
     ///
     MgSelectionBase(MgMapBase* map);
@@ -55,13 +55,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// MgSelection(MgMap map, string xmlSelectionString);
+    /// MgSelectionBase(MgMapBase map, string xmlSelectionString);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// MgSelection(MgMap map, String xmlSelectionString);
+    /// MgSelectionBase(MgMapBase map, String xmlSelectionString);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// MgSelection(MgMap map, string xmlSelectionString);
+    /// MgSelectionBase(MgMapBase map, string xmlSelectionString);
     /// \htmlinclude SyntaxBottom.html
     ///
     MgSelectionBase(MgMapBase* map, CREFSTRING xmlSelectionString);
@@ -186,13 +186,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// void AddFeatures(MgLayer layer, MgFeatureReader features, int nFeatures);
+    /// void AddFeatures(MgLayerBase layer, MgFeatureReader features, int nFeatures);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// void AddFeatures(MgLayer layer, MgFeatureReader features, int nFeatures);
+    /// void AddFeatures(MgLayerBase layer, MgFeatureReader features, int nFeatures);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// void AddFeatures(MgLayer layer, MgFeatureReader features, int nFeatures);
+    /// void AddFeatures(MgLayerBase layer, MgFeatureReader features, int nFeatures);
     /// \htmlinclude SyntaxBottom.html
     ///
     void AddFeatures(MgLayerBase* layer, MgFeatureReader* features, INT32 nFeatures);
@@ -203,13 +203,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// void AddFeatureIds(MgLayer layer, string className, MgPropertyCollection identityProperties);
+    /// void AddFeatureIds(MgLayerBase layer, string className, MgPropertyCollection identityProperties);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// void AddFeatureIds(MgLayer layer, String className, MgPropertyCollection identityProperties);
+    /// void AddFeatureIds(MgLayerBase layer, String className, MgPropertyCollection identityProperties);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// void AddFeatureIds(MgLayer layer, string className, MgPropertyCollection identityProperties);
+    /// void AddFeatureIds(MgLayerBase layer, string className, MgPropertyCollection identityProperties);
     /// \htmlinclude SyntaxBottom.html
     ///
     void AddFeatureIds(MgLayerBase* layer, CREFSTRING className, MgPropertyCollection* identityProperties);
@@ -220,13 +220,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// void AddFeatureIdInt16(MgLayer layer, string className, short identifier);
+    /// void AddFeatureIdInt16(MgLayerBase layer, string className, short identifier);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// void AddFeatureIdInt16(MgLayer layer, String className, short identifier);
+    /// void AddFeatureIdInt16(MgLayerBase layer, String className, short identifier);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// void AddFeatureIdInt16(MgLayer layer, string className, int identifier);
+    /// void AddFeatureIdInt16(MgLayerBase layer, string className, int identifier);
     /// \htmlinclude SyntaxBottom.html
     ///
     void AddFeatureIdInt16(MgLayerBase* layer, CREFSTRING className, INT16 identifier);
@@ -237,13 +237,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// void AddFeatureIdInt32(MgLayer layer, string className, int identifier);
+    /// void AddFeatureIdInt32(MgLayerBase layer, string className, int identifier);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// void AddFeatureIdInt32(MgLayer layer, String className, int identifier);
+    /// void AddFeatureIdInt32(MgLayerBase layer, String className, int identifier);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// void AddFeatureIdInt32(MgLayer layer, string className, int identifier);
+    /// void AddFeatureIdInt32(MgLayerBase layer, string className, int identifier);
     /// \htmlinclude SyntaxBottom.html
     ///
     void AddFeatureIdInt32(MgLayerBase* layer, CREFSTRING className, INT32 identifier);
@@ -254,13 +254,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// void AddFeatureIdInt64(MgLayer layer, string className, long identifier);
+    /// void AddFeatureIdInt64(MgLayerBase layer, string className, long identifier);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// void AddFeatureIdInt64(MgLayer layer, String className, long identifier);
+    /// void AddFeatureIdInt64(MgLayerBase layer, String className, long identifier);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// void AddFeatureIdInt64(MgLayer layer, string className, string identifier);
+    /// void AddFeatureIdInt64(MgLayerBase layer, string className, string identifier);
     /// \htmlinclude SyntaxBottom.html
     ///
     void AddFeatureIdInt64(MgLayerBase* layer, CREFSTRING className, INT64 identifier);
@@ -271,13 +271,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// void AddFeatureIdString(MgLayer layer, string className, string identifier);
+    /// void AddFeatureIdString(MgLayerBase layer, string className, string identifier);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// void AddFeatureIdString(MgLayer layer, String className, String identifier);
+    /// void AddFeatureIdString(MgLayerBase layer, String className, String identifier);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// void AddFeatureIdString(MgLayer layer, string className, string identifier);
+    /// void AddFeatureIdString(MgLayerBase layer, string className, string identifier);
     /// \htmlinclude SyntaxBottom.html
     ///
     void AddFeatureIdString(MgLayerBase* layer, CREFSTRING className, CREFSTRING identifier);
@@ -288,13 +288,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// void AddFeatureIdDouble(MgLayer layer, string className, double identifier);
+    /// void AddFeatureIdDouble(MgLayerBase layer, string className, double identifier);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// void AddFeatureIdDouble(MgLayer layer, String className, double identifier);
+    /// void AddFeatureIdDouble(MgLayerBase layer, String className, double identifier);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// void AddFeatureIdDouble(MgLayer layer, string className, double identifier);
+    /// void AddFeatureIdDouble(MgLayerBase layer, string className, double identifier);
     /// \htmlinclude SyntaxBottom.html
     ///
     void AddFeatureIdDouble(MgLayerBase* layer, CREFSTRING className, double identifier);
@@ -357,17 +357,17 @@ PUBLISHED_API:
     /// Does a particular layer and class have selections.
     ///
     /// \remarks
-    /// The class name can be obtained from the layer with MgLayer::GetFeatureClassName.
+    /// The class name can be obtained from the layer with MgLayerBase::GetFeatureClassName.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// bool Contains(MgLayer layer, string className);
+    /// bool Contains(MgLayerBase layer, string className);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// boolean Contains(MgLayer layer, String className);
+    /// boolean Contains(MgLayerBase layer, String className);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// bool Contains(MgLayer layer, string className);
+    /// bool Contains(MgLayerBase layer, string className);
     /// \htmlinclude SyntaxBottom.html
     ///
     bool Contains(MgLayerBase* layer, CREFSTRING className);
@@ -379,13 +379,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// string GenerateFilter(MgLayer layer, string className);
+    /// string GenerateFilter(MgLayerBase layer, string className);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// String GenerateFilter(MgLayer layer, String className);
+    /// String GenerateFilter(MgLayerBase layer, String className);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// string GenerateFilter(MgLayer layer, string className);
+    /// string GenerateFilter(MgLayerBase layer, string className);
     /// \htmlinclude SyntaxBottom.html
     ///
     STRING GenerateFilter(MgLayerBase* layer, CREFSTRING className);

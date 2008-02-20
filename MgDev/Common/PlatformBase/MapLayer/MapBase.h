@@ -54,180 +54,9 @@ typedef map<double, double, less<double> > SORTEDSCALES;
 /// \brief
 /// Defines the runtime state of a map.
 /// 
-/// \remarks
-/// This corresponds with the state of the map as seen by the
-/// client. Note that this may differ from the MapDefinition
-/// stored in the resource repository. For example, the user may
-/// have altered the scale or hidden layers.
-/// \n
-/// You can use the Save and Open methods to store the runtime
-/// state into the session repository and retrieve it from the
-/// session repository.
+/// \note This is a base class. In most cases it is best to use a class
+    /// derived from this class. See \ref Maps_and_Layers_Module "Maps and Layers" for details.
 /// 
-/// <!-- Example (PHP) -->
-/// \htmlinclude PHPExampleTop.html
-/// This example shows information about a map:
-/// \code
-/// <?php
-/// try
-/// {
-///     // Include constants like MgServiceType::ResourceService
-///     include 'C:\Inetpub\wwwroot\PhpMapAgent\MgConstants.php';
-///     // Initialize
-///     MgInitializeWebTier('C:\Inetpub\wwwroot\PhpMapAgent\webconfig.ini');
-///     // Establish a connection with a MapGuide site.
-///     $user = new MgUserInformation('Administrator', 'admin');
-///     $siteConnection = new MgSiteConnection();
-///     $siteConnection->Open($user);
-///     // Create a session repository
-///     $site = $siteConnection->GetSite();
-///     $sessionID = $site->CreateSession();
-///     $user->SetMgSessionId($sessionID);
-///     // Get an instance of the required services.
-///     $resourceService = $siteConnection->CreateService(MgServiceType::ResourceService);
-///     $mappingService = $siteConnection->CreateService(MgServiceType::MappingService);
-///
-///     // Get a runtime map from a map definition
-///     $resourceID = new  MgResourceIdentifier('Library://Calgary/Maps/Calgary.MapDefinition');
-///     $map = new MgMap();
-///     $map->Create($resourceService, $resourceID, 'Calgary');
-///
-///     // Show information about the map
-///     echo "Name of map:               '" . $map->GetName() . "'n";
-///     echo "   Session ID of map:      " . $map->GetSessionId() . "n";
-///     echo "   Object ID:              " . $map->GetObjectId() . "n";
-///
-///     $envelope = $map->GetDataExtent();
-///     echo "   Envelope:               ";
-///     PrintEnvelope($envelope);
-///
-///     $extent = $map->GetMapExtent();
-///     echo "   lower left coordinate:  ";
-///     PrintCoordinate( $extent->GetLowerLeftCoordinate() );
-///     echo "   upper right coordinate: " ;
-///     PrintCoordinate( $extent->GetUpperRightCoordinate() );
-///
-///     $point = $map->GetViewCenter();
-///     echo "   view center:            ";
-///     PrintPoint($point);
-///
-///     echo "   View scale:             " . $map->GetViewScale() . "n";
-///     echo "   Display dpi:            " . $map->GetDisplayDpi() . "n";
-///     echo "   Display width:          " . $map->GetDisplayWidth() . "n";
-///     echo "   Display height:         " . $map->GetDisplayHeight() . "n";
-///
-///     $layerCollection = $map->GetLayers();
-///     echo "   Layers: n";
-///     PrintLayerCollection( $layerCollection );
-///
-///     $layerGroupCollection = $map->GetLayerGroups();
-///     echo "   Layer groups: n";
-///     PrintLayerGroupCollection( $layerGroupCollection );
-///
-///     echo "   Finite display scales: n";
-///     PrintFiniteDisplayScales( $map );
-///
-///     echo "Done n";
-/// }
-/// catch (MgException $e)
-/// {
-///     echo "ERROR: " . $e->GetMessage() . "n";
-///     echo $e->GetDetails() . "n";
-///     echo $e->GetStackTrace() . "n";
-/// }
-///
-/// /********************************************************************/
-/// function PrintEnvelope($envelope)
-/// {
-///     echo "depth = " . $envelope->GetDepth() . ", height = " . $envelope->GetHeight() . ", width = " . $envelope->GetWidth() . "n";
-/// }
-///
-/// /********************************************************************/
-/// function PrintCoordinate($coordinate)
-/// {
-///     echo "(" . $coordinate->GetX() . ", " . $coordinate->GetY() . ", " . $coordinate->GetZ() . ") n";
-/// }
-///
-/// /********************************************************************/
-/// function PrintPoint($point)
-/// {
-///     PrintCoordinate( $point->GetCoordinate() );
-/// }
-///
-/// /********************************************************************/
-/// function PrintLayerCollection($layerCollection)
-/// {
-///     for ($i = 0; $i < $layerCollection->GetCount(); $i++)
-///     {
-///         $layer = $layerCollection->GetItem($i);
-///         echo "      layer #" . ($i + 1) . ": n" ;
-///         PrintLayer($layer);
-///     }
-/// }
-///
-/// /********************************************************************/
-/// function PrintLayer($layer)
-/// {
-///     echo "      name:                '" . $layer->GetName() . "'n";
-///     $layerDefinition = $layer->GetLayerDefinition();
-///     echo "      layer definition:    '" . $layerDefinition->ToString()  . "'n";
-///     echo "      legend label:        '" . $layer->GetLegendLabel()  . "'n";
-///     echo "      display in legend:   " . ConvertBooleanToString($layer->GetDisplayInLegend()) . "n";
-///     echo "      expand in legend:    " . ConvertBooleanToString($layer->GetExpandInLegend()) . "n";
-///     echo "      selectable:          " . ConvertBooleanToString($layer->GetSelectable()) . "n";
-///     echo "      potentially visible: " . ConvertBooleanToString($layer->GetVisible()) . "n";
-///     echo "      actually visible:    " . ConvertBooleanToString($layer->IsVisible()) . "n";
-///     echo "      needs refresh:       " . ConvertBooleanToString($layer->NeedsRefresh()) . "n";
-/// }
-///
-/// /********************************************************************/
-/// function PrintLayerGroupCollection($layerGroupCollection)
-/// {
-///     for ($i = 0; $i < $layerGroupCollection->GetCount(); $i++)
-///     {
-///         $layerGroup = $layerGroupCollection->GetItem($i);
-///         echo "      layer group #" . ($i + 1) . ": " ;
-///         PrintLayerGroup($layerGroup);
-///     }
-/// }
-///
-/// /********************************************************************/
-/// function PrintLayerGroup($layerGroup)
-/// {
-///     echo "      layer group name        '" . $layerGroup->GetName() . "'n";
-///     echo "      display in legend:      " . ConvertBooleanToString($layerGroup->GetDisplayInLegend()) . "n";
-///     echo "      expand in legend:       " . ConvertBooleanToString($layerGroup->GetExpandInLegend()) . "n";
-///     $parentGroup = $layerGroup->GetGroup();
-///     echo "      group                   " . $parentGroup->GetName() . "n";
-///     echo "      legend label            " . $layerGroup->GetLegendLabel() . "n";
-///     echo "      object ID               " . $layerGroup->GetObjectId() . "n";
-///     echo "      potentially visible:    " . ConvertBooleanToString($layerGroup->GetVisible()) . "n";
-///     echo "      actually visible:       " . ConvertBooleanToString($layerGroup->IsVisible()) . "n";
-/// }
-///
-/// /********************************************************************/
-/// function PrintFiniteDisplayScales($map)
-/// {
-///     for ($i = 0; $i < $map->GetFiniteDisplayScaleCount(); $i++)
-///     {
-///         echo "      finite display scale #" . ($i + 1) . ": " . $map->GetFiniteDisplayScaleAt($i) . "'n";
-///     }
-/// }
-///
-/// /********************************************************************/
-/// // Converts a boolean to "yes" or "no".
-/// function ConvertBooleanToString($boolean)
-/// {
-///     if (is_bool($boolean))
-///         return ($boolean ? "yes" : "no");
-///     else
-///         return "ERROR in ConvertBooleanToString.";
-/// }
-///
-/// /********************************************************************/
-/// ?>
-/// \endcode
-/// \htmlinclude ExampleBottom.html
 class MG_PLATFORMBASE_API MgMapBase : public MgResource
 {
     MG_DECL_DYNCREATE()
@@ -237,28 +66,21 @@ PUBLISHED_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Constructs an empty un-initialized MgMap object.
+    /// Constructs an empty un-initialized MgMapBase object.
     ///
-    /// \remarks
-    /// The instance of MgMap cannot be used until either the \link MgMapBase::Create Create \endlink
-    /// or \link MgMapBase::Open Open \endlink
-    /// method is called.
-    ///
+    /// \note This is a base class. In most cases it is best to use a class
+    /// derived from this class. See \ref Maps_and_Layers_Module "Maps and Layers" for details.
+    /// 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// MgMap();
+    /// MgMapBase();
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// MgMap();
+    /// MgMapBase();
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// MgMap();
+    /// MgMapBase();
     /// \htmlinclude SyntaxBottom.html
-    ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMapBase::Create Create \endlink.
-    /// \htmlinclude ExampleBottom.html
     ///
     MgMapBase();
 
@@ -395,7 +217,7 @@ PUBLISHED_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Returns this maps layers.
+    /// Returns this map's layers.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -415,7 +237,7 @@ PUBLISHED_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Returns this maps layer groups.
+    /// Returns this map's layer groups.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -436,7 +258,7 @@ PUBLISHED_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Initializes a new MgMap object given a resource service, map
+    /// Initializes a new MgMapBase object given a resource service, map
     /// definition, and a name for the map. This method is used for
     /// MapGuide Viewers or for offline map production.
     ///
@@ -453,31 +275,21 @@ PUBLISHED_API:
     /// void Create(MgResourceService resourceService, MgResourceIdentifier mapDefinition, string mapName);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param resourceService (MgResourceService)
+    /// \param resourceService 
     /// An MgResourceService that can be used to
     /// retrieve the map definition.
-    /// \param mapDefinition (MgResourceIdentifier)
+    /// \param mapDefinition 
     /// An MgResourceIdentifier that specifies the
     /// location of the map definition in a resource
     /// repository.
-    /// \param mapName (String/string)
+    /// \param mapName 
     /// A string that specifies the name of the map.
-    ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// \code
-    /// // Assuming the resource service has already been intialized
-    /// $resourceID = new  MgResourceIdentifier('Library://Calgary/Maps/Calgary.MapDefinition');
-    /// $map = new MgMap();
-    /// $map->Create($resourceService, $resourceID, 'Calgary');
-    /// \endcode
-    /// \htmlinclude ExampleBottom.html
     ///
     virtual void Create(MgResourceService* resourceService, MgResourceIdentifier* mapDefinition, CREFSTRING mapName);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Initializes a new Map object given a spatial reference system,
+    /// Initializes a new MgMapBase object given a spatial reference system,
     /// spatial extent of the map, and a name for the map. This method
     /// is used for the WMS service implementation and creates a map
     /// without any layers.
@@ -495,12 +307,12 @@ PUBLISHED_API:
     /// void Create(string mapSRS, MgEnvelope mapExtent, string mapName);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param mapSRS (String/string)
+    /// \param mapSRS 
     /// A string specifying the spatial reference system in OpenGIS WKT
     /// format.
-    /// \param mapExtent (MgEnvelope)
+    /// \param mapExtent 
     /// An MgEnvelope defining the overall extent of the map.
-    /// \param mapName (String/string)
+    /// \param mapName 
     /// A string that specifies the name of the map.
     ///
     virtual void Create(CREFSTRING mapSRS, MgEnvelope* mapExtent, CREFSTRING mapName);
@@ -525,25 +337,16 @@ PUBLISHED_API:
     /// virtual void Open(MgResourceService resourceService, string mapName);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param resourceService (MgResourceService)
+    /// \param resourceService 
     /// An MgResourceService that can be used to retrieve
     /// the map.
-    /// \param mapName (String/string)
+    /// \param mapName 
     /// A string that specifies the name of the map. This
     /// is the name that was specified when \link MgMapBase::Create Create \endlink
     /// was called to create the map object.
     ///
     /// \return
     /// Returns nothing.
-    ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// \code
-    /// // Assuming the resource service has already been initialized
-    /// $map = new MgMap();
-    /// $map->Open($resourceService, 'Calgary');
-    /// \endcode
-    /// \htmlinclude ExampleBottom.html
     ///
     /// \todo
     ///   * [[Job for Philip: If I move that overview to the
@@ -723,7 +526,7 @@ PUBLISHED_API:
     /// int GetFiniteDisplayScaleAt(int index);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param index (int)
+    /// \param index 
     /// Index of the finite display scale to get.
     ///
     /// \return
@@ -791,7 +594,7 @@ INTERNAL_API:
     virtual LayerRefreshMode GetLayerRefreshMode();
 
     /// \brief
-    /// Destruct a MgMap object
+    /// Destruct a MgMapBase object
     ///
     /// \return
     /// Nothing

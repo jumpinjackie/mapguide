@@ -295,7 +295,7 @@ PUBLISHED_API:
     /// bool Contains(MgLayerGroup value);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param value (MgLayer)
+    /// \param value (MgLayerGroup)
     /// MgLayerGroup to search for.
     ///
     /// \return
@@ -343,7 +343,7 @@ PUBLISHED_API:
     /// int IndexOf(MgLayerGroup value);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param value (MgLayer)
+    /// \param value (MgLayerBase)
     /// MgLayerGroup to search for.
     ///
     /// \return

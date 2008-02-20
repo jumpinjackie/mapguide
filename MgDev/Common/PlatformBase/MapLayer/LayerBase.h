@@ -55,17 +55,17 @@ PUBLISHED_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Creates a MgLayer object from a layer definition.
+    /// Creates an MgLayerBase object from a layer definition.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// MgLayer(MgResourceIdentifier layerDefinition, MgResourceService resourceService);
+    /// MgLayerBase(MgResourceIdentifier layerDefinition, MgResourceService resourceService);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// MgLayer(MgResourceIdentifier layerDefinition, MgResourceService resourceService);
+    /// MgLayerBase(MgResourceIdentifier layerDefinition, MgResourceService resourceService);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// MgLayer(MgResourceIdentifier layerDefinition, MgResourceService resourceService);
+    /// MgLayerBase(MgResourceIdentifier layerDefinition, MgResourceService resourceService);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param layerDefinition (MgResourceIdentifier)
@@ -110,8 +110,8 @@ PUBLISHED_API:
     /// Sets the name of the layer.
     ///
     /// \remarks
-    /// The name must be unique in MgMap. An exception will be thrown
-    /// when this layer is added to MgMap if the name already exists.
+    /// The name must be unique in MgMapBase. An exception will be thrown
+    /// when this layer is added to MgMapBase if the name already exists.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -859,7 +859,7 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Creates an empty MgLayer object
+    /// Creates an empty MgLayerBase object
     ///
     MgLayerBase();
 
@@ -963,7 +963,7 @@ INTERNAL_API:
 
 protected:
     /// \brief
-    /// Destruct a MgLayer object
+    /// Destruct a MgLayerBase object
     ///
     /// \return
     /// Nothing
