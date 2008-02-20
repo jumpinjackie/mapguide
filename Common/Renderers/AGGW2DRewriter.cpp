@@ -432,7 +432,7 @@ WT_Result agr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
     double end = outlineEllipse.end_degree() * (M_PI / 180.0);
 
     //get W2D line weight
-    double thick = max(1.0, rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value()));
+    double thick = rs_max(1.0, rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value()));
 
     LineBuffer* ell = LineBufferPool::NewLineBuffer(rewriter->GetPool(), 20);
 
@@ -514,9 +514,18 @@ WT_Result agr_process_polytriangle (WT_Polytriangle & polytriangle, WT_File & fi
 
     if (dstpts)
     {
+        LineBuffer lb(4);
+
         for (int i=2; i < polytriangle.count(); i++)
         {
-			rewriter->DrawScreenPolygon(dstpts, NULL, (unsigned int) color.argb());
+            lb.MoveTo(dstpts->x_coord(i-2), dstpts->y_coord(i-2));
+            lb.LineTo(dstpts->x_coord(i-1), dstpts->y_coord(i-1));
+            lb.LineTo(dstpts->x_coord(i  ), dstpts->y_coord(i  ));
+            lb.Close();
+
+			rewriter->DrawScreenPolygon(&lb, NULL, (unsigned int) color.argb());
+
+            lb.Reset();
         }
     }
 
@@ -620,7 +629,7 @@ WT_Result agr_process_polyline (WT_Polyline & polyline, WT_File & file)
 
     if (dstpts)
     {
-        double thick = max(1.0, rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value()));
+        double thick = rs_max(1.0, rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value()));
         SE_LineStroke lineStroke(color.argb(), thick);
         AGGRenderer::DrawScreenPolyline((agg_context*)rewriter->GetW2DTargetImage(), dstpts, NULL, lineStroke);
         LineBufferPool::FreeLineBuffer(rewriter->GetPool(), dstpts);
