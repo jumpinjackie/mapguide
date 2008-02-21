@@ -774,16 +774,31 @@ MgEnvelope* MgSelectionBase::GetExtents(MgFeatureService* featureService)
             STRING featureResId = layer->GetFeatureSourceId();
             STRING clsName = layer->GetFeatureClassName();
             STRING geomName = layer->GetFeatureGeometryName();
-            STRING filterText = this->GenerateFilter(layer, clsName);
 
-            Ptr<MgEnvelope> clsEnv = GetFeatureExtents(featureService,featureResId,clsName,filterText,geomName);
-            if (env != NULL)
+            INT32 selectionSize = MgFoundationConfigProperties::DefaultGeneralPropertySelectionFilterSize;
+            MgConfiguration* configuration = MgConfiguration::GetInstance();
+            assert(NULL != configuration);
+
+            configuration->GetIntValue(
+                MgFoundationConfigProperties::GeneralPropertiesSection,
+                MgFoundationConfigProperties::GeneralPropertySelectionFilterSize,
+                selectionSize,
+                MgFoundationConfigProperties::DefaultGeneralPropertySelectionFilterSize);
+
+            Ptr<MgStringCollection> filters = this->GenerateFilters(layer, clsName, selectionSize);
+            INT32 numFilter = (NULL == filters) ? 0 : filters->GetCount();
+
+            for (INT32 i = 0; i < numFilter; ++i)
             {
-                env->ExpandToInclude(clsEnv);
-            }
-            else
-            {
-                env = clsEnv.Detach();
+                Ptr<MgEnvelope> clsEnv = GetFeatureExtents(featureService, featureResId, clsName, filters->GetItem(i), geomName);
+                if (env != NULL)
+                {
+                    env->ExpandToInclude(clsEnv);
+                }
+                else
+                {
+                    env = clsEnv.Detach();
+                }
             }
         }
     }

@@ -792,15 +792,15 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                 Ptr<MgReadOnlyLayerCollection> modLayers = new MgReadOnlyLayerCollection();
                 Ptr<MgStringCollection> overrideFilters = new MgStringCollection();
 
-                INT32 selectionSize = MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize;
+                INT32 selectionSize = MgFoundationConfigProperties::DefaultGeneralPropertySelectionFilterSize;
                 MgConfiguration* configuration = MgConfiguration::GetInstance();
                 assert(NULL != configuration);
 
                 configuration->GetIntValue(
-                    MgConfigProperties::FeatureServicePropertiesSection,
-                    MgConfigProperties::FeatureServicePropertyDataCacheSize,
+                    MgFoundationConfigProperties::GeneralPropertiesSection,
+                    MgFoundationConfigProperties::GeneralPropertySelectionFilterSize,
                     selectionSize,
-                    MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize);
+                    MgFoundationConfigProperties::DefaultGeneralPropertySelectionFilterSize);
 
                 for (int s=0; s<selLayers->GetCount(); s++)
                 {
