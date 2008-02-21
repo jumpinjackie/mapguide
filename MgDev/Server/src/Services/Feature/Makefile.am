@@ -188,6 +188,7 @@ noinst_HEADERS = $(include_SOURCES) \
   DoubleDataReaderCreator.h \
   FeatureNumericFunctions.h \
   FeatureStringFunctions.h \
+  ByteDataReaderCreator.h \
   Int16DataReaderCreator.h \
   Int32DataReaderCreator.h \
   Int64DataReaderCreator.h \

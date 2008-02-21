@@ -26,6 +26,7 @@
 #include "UniqueFunction.h"
 #include "DataReaderCreator.h"
 #include "DoubleDataReaderCreator.h"
+#include "ByteDataReaderCreator.h"
 #include "Int16DataReaderCreator.h"
 #include "Int32DataReaderCreator.h"
 #include "Int64DataReaderCreator.h"
@@ -105,7 +106,7 @@ MgReader* MgFeatureNumericFunctions::Execute()
         // Int64 sum = val1 + val2; // the sum value will be -3 so is overflow error
         // In the future we will need to implement a type which can handle int64 numbers without getting overflow a sum/avg is calculated.
         // Since all other functions calculate a sum we will use double, at least to be able to get the right result for small numbers.
-        if (m_type != MgPropertyType::Int64 && (funcCode != MINIMUM && funcCode != MAXIMUM && funcCode != UNIQUE))
+        if (!(m_type == MgPropertyType::Int64 && (funcCode == MINIMUM || funcCode == MAXIMUM || funcCode == UNIQUE)))
         {
             VECTOR values, distValues;
             while(m_reader->ReadNext())
@@ -157,6 +158,7 @@ void MgFeatureNumericFunctions::CheckSupportedPropertyType()
     {
         case MgPropertyType::DateTime:
         case MgPropertyType::Double:
+        case MgPropertyType::Byte:
         case MgPropertyType::Int16:
         case MgPropertyType::Int32:
         case MgPropertyType::Int64:
@@ -187,6 +189,11 @@ double MgFeatureNumericFunctions::GetValue()
             case MgPropertyType::Double:
             {
                 val = (double)m_reader->GetDouble(m_propertyName);
+                break;
+            }
+            case MgPropertyType::Byte:
+            {
+                val = (double)m_reader->GetByte(m_propertyName);
                 break;
             }
             case MgPropertyType::Int16:
@@ -428,6 +435,12 @@ MgReader* MgFeatureNumericFunctions::GetReader(VECTOR& distValues)
         case MgPropertyType::Double:
         {
             Ptr<MgDoubleDataReaderCreator> drCreator = new MgDoubleDataReaderCreator(m_propertyAlias);
+            dataReader = drCreator->Execute(distValues);
+            break;
+        }
+        case MgPropertyType::Byte:
+        {
+            Ptr<MgByteDataReaderCreator> drCreator = new MgByteDataReaderCreator(m_propertyAlias);
             dataReader = drCreator->Execute(distValues);
             break;
         }
