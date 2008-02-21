@@ -66,6 +66,10 @@ EXTERNAL_API:
     static const STRING GeneralPropertyTcpIpMtu;                        /// value("TcpIpMtu")
     static const INT32 DefaultGeneralPropertyTcpIpMtu;                  /// value(1460)
 
+    /// Selection Filter Size
+    static const STRING GeneralPropertySelectionFilterSize;             /// value("SelectionFilterSize")
+    static const INT32 DefaultGeneralPropertySelectionFilterSize;       /// value(20)
+
 public:
 
     // Common Configuration Validation Information Maps
