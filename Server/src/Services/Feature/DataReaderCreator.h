@@ -140,6 +140,7 @@ public:
     // The following GetProperty methods must be overridden by derived class
     virtual MgProperty* GetProperty(double val)     {return NULL;}
     virtual MgProperty* GetProperty(float val)      {return NULL;}
+    virtual MgProperty* GetProperty(INT8 val)      {return NULL;}
     virtual MgProperty* GetProperty(INT16 val)      {return NULL;}
     virtual MgProperty* GetProperty(INT32 val)      {return NULL;}
     virtual MgProperty* GetProperty(INT64 val)      {return NULL;}

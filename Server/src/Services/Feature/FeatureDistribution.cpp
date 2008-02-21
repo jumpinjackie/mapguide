@@ -50,6 +50,7 @@ MgFeatureDistribution* MgFeatureDistribution::CreateDistributionFunction(MgReade
     {
         case MgPropertyType::DateTime:
         case MgPropertyType::Double:
+        case MgPropertyType::Byte:
         case MgPropertyType::Int16:
         case MgPropertyType::Int32:
         case MgPropertyType::Int64:
