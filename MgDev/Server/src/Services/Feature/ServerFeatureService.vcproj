@@ -1097,6 +1097,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ByteDataReaderCreator.h"
+			>
+		</File>
+		<File
 			RelativePath=".\ByteSourceRasterStreamImpl.cpp"
 			>
 			<FileConfiguration
