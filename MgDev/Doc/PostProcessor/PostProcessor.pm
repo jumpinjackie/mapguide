@@ -1,12 +1,26 @@
 #!/usr/bin/perl -w
 #############################################################
+#  Copyright (C) 2008 by Autodesk, Inc.
+#
+#  This library is free software; you can redistribute it and/or
+#  modify it under the terms of version 2.1 of the GNU Lesser
+#  General Public License as published by the Free Software Foundation.
+#
+#  This library is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#  Lesser General Public License for more details.
+#
+#  You should have received a copy of the GNU Lesser General Public
+#  License along with this library; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+#
+#############################################################
 #	PostProcessor.pm
 #	=================
 #
-#	Called by "post_process.MgEnterprise.pl"  
+#	Called by "post_process.MgOpenSource.pl".
 #
-#	TO DO:
-#		- Test: will this run on UNIX?
 #
 #	History:
 # 		v 1.0 	- Written by Philip Sharman, 2008.02.12
@@ -15,23 +29,14 @@
 #				  slashes and backslashes in file paths. 
 #				- Moved the main part ('do_it') to here instead of in the calling script.
 #				  PHS, 2008.02.14
+#		v 1.2	- Changed to not use any external Perl modules, to make it easier to
+#				  distribute.  PHS, 2008.02.20
 #############################################################
 package PostProcessor;
-use Readonly;
-use Perl6::Slurp;
-use File::Find; # See http://search.cpan.org/~nwclark/perl-5.8.7/lib/File/Find.pm [Does this come installed with Perl now?]
-
-# Flush output to screen after every "print" so we can see what it going on immediately
-# See Perl Best Practices, page 226.
-use IO::Handle;
-*STDOUT->autoflush();
+use File::Find;
 
 
-# For debugging ...
-#	# Get the current directory and its parent.
-#	# NOTE: Opening a file changes the current directory to the directory where the file is.  So 
-#	# grab the current directory at the top of the script, before we open any files.
-#	
+## Uncomment for testing and debugging ...
 #	my $DIRECTORY_SEPARATOR = '\\';
 #	print "DIRECTORY_SEPARATOR = $DIRECTORY_SEPARATOR \n"; 
 #	
@@ -47,25 +52,6 @@ return 1; # Included files must return this.
 ################################################################### 
 ###		Subroutines
 ################################################################### 
-# Do it all
-sub do_it
-{
-	my $start_time = time();
-	$INPUT_DIRECTORY = change_relative_path_to_absolute($INPUT_DIRECTORY);
-	print "Post processing '$INPUT_DIRECTORY' ... \n\n"; 
-	
-	# Do it
-	show_global_variables(); # (for debugging)
-	delete_file_list();
-	remove_SWIG_commands_from_directory($INPUT_DIRECTORY);
-	change_title();
-	fix_links_in_directory($INPUT_DIRECTORY);
-	
-	# All done
-	print "\nPost processing is complete. (Time taken = ", convert_seconds_to_hms_string((time() - $start_time)) , ".)\n"; 
-}
-
-################################################################### 
 # Deletes the 'File List' and 'File Members' from the TOC.
 sub delete_file_list
 {
@@ -78,8 +64,8 @@ sub delete_file_list
 		return;
 	}
 	
-	# Slurp the input file into a variable
-	my $text = Perl6::Slurp::slurp $toc_file;		
+	# Slurp the input file into a variable	
+	my $text = slurp($toc_file);		
 	
 	
 	# 1) Delete 'File List'
@@ -129,7 +115,7 @@ sub change_title
 	}
 	
 	# Slurp the input file into a variable
-	my $text = Perl6::Slurp::slurp $index_file;		
+	my $text =slurp($index_file);		
 	
 	# Change it
 	my $okay = ( $text =~ s/<title>Doxygen Documentation<\/title>/<title>$TITLE<\/title>/s );
@@ -227,7 +213,7 @@ sub remove_SWIG_commands_from_file
 #		}
 		
 		# Slurp the input file into a variable
-		my $text = Perl6::Slurp::slurp $fullPath;		
+		my $text = slurp($fullPath);		
 		
 		($FILE_HAS_BEEN_CHANGED, $text) = remove_SWIG_commands_from_text($text, $fullPath);
 		
@@ -259,7 +245,7 @@ sub remove_SWIG_commands_from_text #	($text, $path)
 	# 1) Remove titles that refer to __get etc.  (The titles are never seen because they all appear in framesets anywyay, but it is nice to be clean.)
 	#    Change 'title="__get"' to ''.
 	# 1a) Show what we're about to change.
-	Readonly my $TITLE_REGEX => qr{
+	my $TITLE_REGEX = qr{
 										(									# $1 (captured just so we can print it below)		
 											title=\"							# title="
 												(									# one or more:
@@ -287,7 +273,7 @@ sub remove_SWIG_commands_from_text #	($text, $path)
 	# --------------------------------------------------- #
 	# 2) Deal with paragraphs
 	# 2a) Show what we're about to change
-	Readonly my $PARAGRAPH_REGEX => qr{
+	my $PARAGRAPH_REGEX = qr{
 											(									# $1 (captured just so we can print it below)		
 												<p>\s*								# <p>
 												(										# one or more:
@@ -314,7 +300,7 @@ sub remove_SWIG_commands_from_text #	($text, $path)
 	# --------------------------------------------------- #
 	# 3) Deal with other text (e.g., ">__get, __set<" or ">__get, __set Gets the widget")
 	# 3a) Show what we're about to change
-	Readonly my $OTHER_REGEX => qr{
+	my $OTHER_REGEX = qr{
 									(										# $1 (captured just so we can print it below)	
 										>									# >
 										(										# $2 (the part to replace)
@@ -398,7 +384,7 @@ sub fix_links_in_file	# ($path)
 		}
 	
 		# Slurp the input file into a variable
-		my $text = Perl6::Slurp::slurp $path;			
+		my $text = slurp($path);			
 	
 		($FILE_HAS_BEEN_CHANGED, $text) = fix_links_in_text($text, $path);
 		
@@ -427,7 +413,7 @@ sub fix_links_in_text	# ($text, $path)
 	my $FILE_HAS_BEEN_CHANGED = $FALSE;
 	
 	# Change it	
-	Readonly my $MAIN_PAGE_REGEX => '<li><a href="\.\./\.\./main\.htm"><span>Main&nbsp;Page<\/span></a></li>';
+	my $MAIN_PAGE_REGEX = '<li><a href="\.\./\.\./main\.htm"><span>Main&nbsp;Page<\/span></a></li>';
 	if ($text =~ /$MAIN_PAGE_REGEX/)
 	{
 		if ($VERBOSE) { print "Changing Main Page link in '$path'.\n"; }
@@ -435,7 +421,7 @@ sub fix_links_in_text	# ($text, $path)
 		$FILE_HAS_BEEN_CHANGED = $TRUE;
 	}
 	
-	Readonly my $MODULES_REGEX => '<li><a href="\.\./\.\./modules\.htm"><span>Modules</span></a></li>';
+	my $MODULES_REGEX = '<li><a href="\.\./\.\./modules\.htm"><span>Modules</span></a></li>';
 	if ($text =~ /$MODULES_REGEX/)
 	{
 		if ($VERBOSE) { print "Changing Modules link in '$path'.\n"; }
@@ -443,7 +429,7 @@ sub fix_links_in_text	# ($text, $path)
 		$FILE_HAS_BEEN_CHANGED = $TRUE;
 	}
 	
-	Readonly my $NAMESPACES_REGEX => '<li><a href="\.\./\.\./namespaces\.htm"><span>Namespaces</span></a></li>';
+	my $NAMESPACES_REGEX = '<li><a href="\.\./\.\./namespaces\.htm"><span>Namespaces</span></a></li>';
 	if ($text =~ /$NAMESPACES_REGEX/)
 	{
 		if ($VERBOSE) { print "Changing Namespaces link in '$path'.\n"; }
@@ -451,7 +437,7 @@ sub fix_links_in_text	# ($text, $path)
 		$FILE_HAS_BEEN_CHANGED = $TRUE;
 	}
 		
-	Readonly my $CLASSES_REGEX => '<li><a href="\.\./\.\./classes\.htm"><span>Classes</span></a></li>';
+	my $CLASSES_REGEX = '<li><a href="\.\./\.\./classes\.htm"><span>Classes</span></a></li>';
 	if ($text =~ /$CLASSES_REGEX/)
 	{
 		if ($VERBOSE) { print "Changing Classes link in '$path'.\n"; }
@@ -459,7 +445,7 @@ sub fix_links_in_text	# ($text, $path)
 		$FILE_HAS_BEEN_CHANGED = $TRUE;	
 	}	
 		
-	Readonly my $FILES_REGEX => '<li><a href="\.\./\.\./files\.htm"><span>Files</span></a></li>';
+	my $FILES_REGEX = '<li><a href="\.\./\.\./files\.htm"><span>Files</span></a></li>';
 	if ($text =~ /$FILES_REGEX/)
 	{
 		if ($VERBOSE) { print "Removed Files link in '$path'.\n"; }
@@ -538,3 +524,21 @@ sub convert_seconds_to_hms_string	# ($seconds)
 }
 
 ###################################################################
+# Slurps the entire contents of a file into a scalar vaiable.
+# Returns the text.
+#
+# See http://www.perl.com/pub/a/2003/11/21/slurp.html
+sub slurp 	# ($file)
+{
+	my $file = shift;
+	my $file_handle = 'INPUT';
+	
+	local( $/ ) ;
+	open( $file_handle, $file ) or die "*** FATAL ERROR: Could not read from '$file_handle'.\n";
+	my $text = <$file_handle>;
+	close $file_handle;
+	
+	return $text;
+}
+
+################################################################### 
