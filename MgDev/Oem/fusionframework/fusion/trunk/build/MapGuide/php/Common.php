@@ -2,7 +2,7 @@
 /**
  * Common
  *
- * $Id: Common.php 1235 2008-02-19 15:32:56Z madair $
+ * $Id: Common.php 1237 2008-02-20 23:46:47Z cclaydon $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -29,21 +29,21 @@
  *          setting up the user and site connection.
  *****************************************************************************/
 
-/* 
+/*
  * If MapGuide Web Server Extensions are not installed in the default
- * location, you may need to edit these values to reflect the actual 
- * installation path.  You do not need to modify any other values in 
+ * location, you may need to edit these values to reflect the actual
+ * installation path.  You do not need to modify any other values in
  * this file to configure Fusion.
  */
- 
+
 $defaultInstallDir = dirname(__FILE__)."/../../../../../";
-$defaultExtensionDir = realpath($defaultInstallDir . "WebServerExtensions/www/");
+$defaultExtensionDir = realpath($defaultInstallDir . "webserverextensions/www/");
 
 /**
  * Developer's notes:
  *
  * This file should be included by all server-side scripts.  It includes some
- * default paths to install locations and manages all session-related and 
+ * default paths to install locations and manages all session-related and
  * user-related stuff except for actually creating a session.
  *
  * It also creates a MgResourceService instance for use by other scripts
@@ -86,7 +86,7 @@ try {
         $sessionID = $_REQUEST['session'];
         session_id(str_replace('_', '-', $sessionID));
         session_start();
-        
+
         /* current user is re-authenticating or not? */
         if (isset($_REQUEST['username']) && isset($_REQUEST['password'])) {
             $user = new MgUserInformation($_REQUEST['username'], $_REQUEST['password']);
@@ -94,13 +94,13 @@ try {
         } else {
             $user = new MgUserInformation($sessionID);
         }
-        
+
         /* open a connection to the site.  This will generate exceptions if the user
          * is set up properly - not found, invalid password etc
          */
         $siteConnection = new MgSiteConnection();
         $siteConnection->Open($user);
-        
+
         /* MgUserInformation doesn't tell us who is logged in so we store it
          * in the php session for convenience
          */
@@ -148,7 +148,7 @@ try {
 //common resource service to be used by all scripts
 $resourceService = $siteConnection->CreateService(MgServiceType::ResourceService);
 
-if (isset($_REQUEST['mapname'])) { 
+if (isset($_REQUEST['mapname'])) {
     $mapName = $_REQUEST['mapname'];
     $mapResourceID = new MgResourceIdentifier( 'Session:'.$sessionID.'//'.$mapName.'.MapDefinition');
     $mapStateID = new MgResourceIdentifier('Session:'.$sessionID.'//'.$mapName.'.'.MgResourceType::Map);
@@ -245,7 +245,7 @@ function GetDecimalFromLocalizedString($numberString, $locale)
         {
             $numberString = str_replace($thousandSeparator, "", $numberString);
         }
-        
+
         // Replace localized decimal separators with "."
         $decimalSeparator = GetLocalizedString("DECIMALSEPARATOR", $locale);
         if($decimalSeparator != null && strlen($decimalSeparator) > 0 && $decimalSeparator != ".")
