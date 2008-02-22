@@ -26,12 +26,15 @@
 
 MgServerSqlCommand::MgServerSqlCommand()
 {
+    m_featureConnection = NULL;
     m_fdoConn = NULL;
 }
 
 MgServerSqlCommand::~MgServerSqlCommand()
 {
+    // The FDO connection must be released before the parent object is released
     FDO_SAFE_RELEASE(m_fdoConn);
+    m_featureConnection = NULL;
 }
 
 // Executes the describe schema command and serializes the schema to XML
@@ -106,20 +109,22 @@ void MgServerSqlCommand::Validate(MgResourceIdentifier* resource, CREFSTRING sql
     }
 
     // Connect to provider
-    MgServerFeatureConnection msfc(resource);
-    if ( !msfc.IsConnectionOpen() )
+    m_featureConnection = new MgServerFeatureConnection(resource);
+    if (m_featureConnection->IsConnectionOpen() )
+    {
+        m_fdoConn = m_featureConnection->GetConnection();
+        m_providerName = m_featureConnection->GetProviderName();
+
+        // Check whether command is supported by provider
+        if (!m_featureConnection->SupportsCommand(commandType))
+        {
+            // TODO: specify which argument and message, once we have the mechanism
+            STRING message = MgServerFeatureUtil::GetMessage(L"MgCommandNotSupported");
+            throw new MgInvalidOperationException(L"MgServerSqlCommand.Validate", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+    }
+    else
     {
         throw new MgConnectionFailedException(L"MgServerSqlCommand::Validate", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    m_fdoConn = msfc.GetConnection();
-    m_providerName = msfc.GetProviderName();
-
-    // Check whether command is supported by provider
-    if (!msfc.SupportsCommand(commandType))
-    {
-        // TODO: specify which argument and message, once we have the mechanism
-        STRING message = MgServerFeatureUtil::GetMessage(L"MgCommandNotSupported");
-        throw new MgInvalidOperationException(L"MgServerSqlCommand.Validate", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 }
