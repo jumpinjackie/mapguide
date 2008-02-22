@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>Navigator</Type>
+  <LocalizedType>Navigator</LocalizedType>
   <Description>In-map navigator widget</Description>
   <Location></Location>
   <Label>Navigator</Label>

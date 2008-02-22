@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>Maptip</Type>
+  <LocalizedType>Map Tip</LocalizedType>
   <Description>A widget to display information about features under the mouse as it hovers over the map</Description>
   <Location></Location>
   <Label>Map tip</Label>

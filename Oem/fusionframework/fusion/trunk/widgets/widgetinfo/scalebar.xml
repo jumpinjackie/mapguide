@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>Scalebar</Type>
+  <LocalizedType>Scale Bar</LocalizedType>
   <Description>Outputs a cartographic scalebar</Description>
   <Location></Location>
   <Label>Scalebar</Label>

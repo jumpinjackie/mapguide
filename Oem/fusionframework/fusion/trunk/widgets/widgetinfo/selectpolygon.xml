@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>SelectPolygon</Type>
+  <LocalizedType>Select Polygon</LocalizedType>
   <Description>Perform a selection using a polygon</Description>
   <Location></Location>
   <Label>Select Polygon</Label>

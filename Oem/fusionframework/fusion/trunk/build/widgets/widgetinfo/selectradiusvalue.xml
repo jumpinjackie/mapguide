@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>SelectRadiusValue</Type>
+  <LocalizedType>Select Radius Value</LocalizedType>
   <Description>A widget to allow the user can manually enter a radius for the SelectRadius widget</Description>
   <Location></Location>
   <Label>Select radius value</Label>

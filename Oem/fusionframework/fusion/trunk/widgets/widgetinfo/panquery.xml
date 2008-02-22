@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>PanQuery</Type>
+  <LocalizedType>Pan Query</LocalizedType>
   <Description>A widget that combines pan and query actions.  If the mouse did not move, a query is issued, otherwise a pan is performed</Description>
   <Location></Location>
   <Label>Pan query</Label>

@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>SelectRadius</Type>
+  <LocalizedType>Select Radius</LocalizedType>
   <Description>Perform a selection within a certain radius of a click</Description>
   <Label>Select Radius</Label>
   <Tooltip>Click to select within a radius</Tooltip>

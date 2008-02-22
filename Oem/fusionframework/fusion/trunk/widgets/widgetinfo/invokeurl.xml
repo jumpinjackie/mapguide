@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>InvokeURL</Type>
+  <LocalizedType>Invoke URL</LocalizedType>
   <Description>A widget to call up a URL into the TaskPane, a new window or HTML element. The map name and Session ID are automatically added to the URL, as well as any additional parameters specifed</Description>
   <Location></Location>
   <Label>Invoke URL</Label>

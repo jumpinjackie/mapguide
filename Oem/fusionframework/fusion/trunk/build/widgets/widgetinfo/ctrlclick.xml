@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>CTRLClick</Type>
+  <LocalizedType>CTRL Click</LocalizedType>
   <Description>Launch a window with a CTRL click if a URL expression is set on the layer</Description>
   <Location></Location>
   <Label>CTRLClick</Label>
