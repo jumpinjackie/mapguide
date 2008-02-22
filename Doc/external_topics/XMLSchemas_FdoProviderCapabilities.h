@@ -140,5 +140,13 @@ FeatureProviderCapabilities
         Dimensionality
 </pre>
 
-<a href="../../xml_schemas/FdoProviderCapabilities/FdoProviderCapabilities.html">Details</a>
+<P>
+There are now two versions of the FdoProviderCapabilities schema.
+</P>
+<P>
+Version 1.1.0 was introduced in MapGuide Open Source 2.0.
+</P>
+
+<a href="../../xml_schemas/FdoProviderCapabilities/FdoProviderCapabilities.html">FdoProviderCapabilities-1.0.0.xsd -  Details</a><BR>
+<a href="../../xml_schemas/FdoProviderCapabilities110/FdoProviderCapabilities.htm">FdoProviderCapabilities-1.1.0.xsd -  Details</a>
 **/
