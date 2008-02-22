@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>ZoomOnClick</Type>
+  <LocalizedType>Zoom on Click</LocalizedType>
   <Description>Zoom the map by a fixed amount when a button is clicked</Description>
   <Location></Location>
   <Label>ZoomOnClick</Label>

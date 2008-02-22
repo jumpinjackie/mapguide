@@ -3,6 +3,7 @@
 <ApplicationDefinitionWidgetInfoSet xsi:noNamespaceSchemaLocation="ApplicationDefinitionInfo-1.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <WidgetInfo>
   <Type>String</Type>
+  <LocalizedType>String</LocalizedType>
   <Description>String</Description>
   <Location>String</Location>
   <Label>String</Label>

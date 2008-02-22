@@ -1,5 +1,6 @@
 <WidgetInfo>
     <Type>BufferPanel</Type>
+    <LocalizedType>Buffer Panel</LocalizedType>
     <Description>This widget will perform a buffering operation on selected features in the Map.  Either a popup window or the task pane will be used to gather user input, depending on the setting of the Target parameter</Description>
     <Label>Buffer</Label>
     <Tooltip>Click to create a buffer</Tooltip>

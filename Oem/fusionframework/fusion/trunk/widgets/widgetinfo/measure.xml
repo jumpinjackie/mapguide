@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>Measure</Type>
+  <LocalizedType>Measure</LocalizedType>
   <Description>A widget that allows measurements to be made on the map</Description>
   <Location></Location>
   <Label>Measure</Label>

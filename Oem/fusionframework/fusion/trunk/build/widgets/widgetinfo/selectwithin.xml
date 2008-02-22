@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>SelectWithin</Type>
+  <LocalizedType>Select Within</LocalizedType>
   <Description>A widget to perform a selection within a currently selected set of features</Description>
   <Location></Location>
   <Label>Select within</Label>

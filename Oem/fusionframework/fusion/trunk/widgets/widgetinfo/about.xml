@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>About</Type>
+  <LocalizedType>About</LocalizedType>
   <Description>This widget displays information about the application including the license and copyright information retrieved from a URL set as a parameter</Description>
   <Location></Location>
   <Label>About</Label>

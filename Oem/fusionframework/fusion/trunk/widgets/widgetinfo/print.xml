@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>Print</Type>
+  <LocalizedType>Print</LocalizedType>
   <Description>Produces a printable version of the page</Description>
   <Label>Print</Label>
   <Tooltip>Print the current map view</Tooltip>

@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>Help</Type>
+  <LocalizedType>Help</LocalizedType>
   <Description>Outputs a user help page</Description>
   <Location></Location>
   <Label>Help</Label>

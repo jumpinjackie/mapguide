@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>ViewOptions</Type>
+  <LocalizedType>View Options</LocalizedType>
   <Description>A widget to allow selection of the display units for various widgets</Description>
   <Location></Location>
   <Label>Options</Label>

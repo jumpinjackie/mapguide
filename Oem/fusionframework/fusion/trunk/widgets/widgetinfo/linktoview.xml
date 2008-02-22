@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>LinkToView</Type>
+  <LocalizedType>Link to View</LocalizedType>
   <Description>Displays a hyperlink to the current view of the application</Description>
   <Location></Location>
   <Label>Link to view</Label>
