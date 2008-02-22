@@ -3877,7 +3877,7 @@ Fusion.Tool.Search.prototype = {
 /**
  * Fusion.Widget.Map
  *
- * $Id: Map.js 1198 2008-01-22 16:09:38Z madair $
+ * $Id: Map.js 1243 2008-02-22 16:43:04Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -4919,10 +4919,10 @@ GxSelectionObjectLayer.prototype = {
 
         this.aElements = [];
 
-        this.nProperties = o[layerName].propertynames.length;
+        this.nProperties = o[layerName].propertyvalues.length;
 
         this.aPropertiesName = [];
-        this.aPropertiesName  = o[layerName].propertynames;
+        this.aPropertiesName  = o[layerName].propertyvalues;
 
         this.aPropertiesTypes = [];
         this.aPropertiesTypes = o[layerName].propertytypes;
@@ -5020,7 +5020,7 @@ GxSelectionObjectLayer.prototype = {
 /**
  * Fusion.Maps.MapGuide
  *
- * $Id: MapGuide.js 1233 2008-02-15 19:30:53Z madair $
+ * $Id: MapGuide.js 1252 2008-02-22 22:36:46Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -5091,6 +5091,22 @@ Fusion.Maps.MapGuide.prototype = {
         this.selectionType = extension.SelectionType ? extension.SelectionType[0] : 'INTERSECTS';
         this.ratio = extension.MapRatio ? extension.MapRatio[0] : 1.0;
         
+        //add in the handler for CTRL-click actions for the map, not an overviewmap
+        if (this.bIsMapWidgetLayer) {
+          var ctrlClickEnabled = true;
+          if (extension.DisableCtrlClick && extension.DisableCtrlClick[0] == 'true') {
+              ctrlClickEnabled = false;
+          }
+          if (ctrlClickEnabled) {
+            this.map = this.mapWidget.oMapOL;
+            this.handler = new OpenLayers.Handler.Click(this,
+                                  {click: this.mouseUpCRTLClick.bind(this)},
+                                  {keyMask: OpenLayers.Handler.MOD_CTRL});
+            this.handler.activate();
+            this.nTolerance = 2; //pixels, default pixel tolernace for a point click; TBD make this configurable
+          }
+        }
+       
         this.sMapResourceId = mapTag.resourceId ? mapTag.resourceId : '';
         
         rootOpts = {
@@ -5633,12 +5649,7 @@ Fusion.Maps.MapGuide.prototype = {
       *
       * sets a Selection XML back to the server
       */
-    zoomToSelection: function(r) {
-      var xmlDoc = r.responseXML.documentElement;
-      var x = xmlDoc.getElementsByTagName('X');
-      var y = xmlDoc.getElementsByTagName('Y');
-      //double the veiwport
-      var extent = new OpenLayers.Bounds(x[0].firstChild.nodeValue,y[0].firstChild.nodeValue,x[1].firstChild.nodeValue,y[1].firstChild.nodeValue);
+    zoomToSelection: function(extent) {
       var center = extent.getCenterPixel();
       var size = extent.getSize();
       extent.left = center.x - 2*size.w;
@@ -5648,29 +5659,14 @@ Fusion.Maps.MapGuide.prototype = {
       this.mapWidget.setExtents(extent);
     },  
 
-    processSelection: function(sel, requery, zoomTo, json) {
-      if (requery) {
-        //xmlDoc = (new DOMParser()).parseFromString(r.responseXML, "text/xml");
-        //this.processFeatureInfo(xmlDoc.documentElement, false, 1);
-        //this.processFeatureInfo(xmlOut, false, 2);
-      }
-      this.newSelection();
-      if (zoomTo) {
-        var mgRequest = new Fusion.Lib.MGRequest.MGGetFeatureSetEnvelope(this.getSessionID(), this.getMapName(), sel );
-        Fusion.oBroker.dispatchRequest(mgRequest, this.zoomToSelection.bind(this));
-      } else {
-        this.mapWidget.redraw();
-      }
-    },
-
-    setSelection: function (selText, requery, zoomTo) {
+    setSelection: function (selText, zoomTo) {
+      this.mapWidget._addWorker();
       var sl = Fusion.getScriptLanguage();
       var setSelectionScript = this.arch + '/' + sl  + '/SetSelection.' + sl;
       var params = 'mapname='+this.getMapName()+"&session="+this.getSessionID();
       params += '&selection=' + encodeURIComponent(selText);
-      params += '&queryinfo=' + (requery? "1": "0");
       params += '&seq=' + Math.random();
-      var options = {onSuccess: this.processSelection.bind(this, selText, requery, zoomTo), parameters:params, asynchronous:false};
+      var options = {onSuccess: this.processQueryResults.bind(this, zoomTo), parameters:params, asynchronous:false};
       Fusion.ajaxRequest(setSelectionScript, options);
     },
 
@@ -5757,7 +5753,7 @@ Fusion.Maps.MapGuide.prototype = {
     /**
        Call back function when slect functions are called (eg queryRect)
     */
-    processQueryResults : function(r) {
+    processQueryResults : function(zoomTo, r) {
         this.mapWidget._removeWorker();
         if (r.responseText) {   //TODO: make the equivalent change to MapServer.js
             var oNode;
@@ -5783,9 +5779,15 @@ Fusion.Maps.MapGuide.prototype = {
                   }
                 }
               }
+              
+              if (zoomTo) {
+                var ext = oNode.extents
+                var extents = new OpenLayers.Bounds(ext.minx, ext.miny, ext.maxx, ext.maxy);
+                this.zoomToSelection(extents);
+              }
               this.newSelection();
             } else {
-              //this.drawMap();
+              this.clearSelection();
               return;
             }
         }
@@ -5816,7 +5818,7 @@ Fusion.Maps.MapGuide.prototype = {
         var sessionid = this.getSessionID();
 
         var params = 'mapname='+this._sMapname+"&session="+sessionid+'&spatialfilter='+geometry+'&maxfeatures='+maxFeatures+filter+'&layers='+layers+'&variant='+selectionType+extend+computed;
-        var options = {onSuccess: this.processQueryResults.bind(this), 
+        var options = {onSuccess: this.processQueryResults.bind(this, false), 
                                      parameters: params};
         Fusion.ajaxRequest(loadmapScript, options);
     },
@@ -5888,6 +5890,50 @@ Fusion.Maps.MapGuide.prototype = {
 
     loadEnd: function() {
         this.mapWidget._removeWorker();
+    },
+    
+  /**
+     * called when there is a click on the map holding the CTRL key: query features at that postion.
+     **/
+    mouseUpCRTLClick: function(evt) {
+      if (evt.ctrlKey) {
+        var min = this.mapWidget.pixToGeo(evt.xy.x-this.nTolerance, evt.xy.y-this.nTolerance);
+        var max = this.mapWidget.pixToGeo(evt.xy.x+this.nTolerance, evt.xy.y+this.nTolerance);
+        if (!min) {
+          return;
+        }   
+        var sGeometry = 'POLYGON(('+ min.x + ' ' +  min.y + ', ' +  min.x + ' ' +  max.y + ', ' + max.x + ' ' +  max.y + ', ' + max.x + ' ' +  min.y + ', ' + min.x + ' ' +  min.y + '))';
+        //var sGeometry = 'POINT('+ min.x + ' ' +  min.y + ')';
+
+        var maxFeatures = 1;
+        var persist = 0;
+        var selection = 'INTERSECTS';
+        var layerNames = '';
+        var sep = '';
+        for (var i=0; i<this.aLayers.length; ++i) {
+          layerNames += sep + this.aLayers[i].layerName;
+          sep = ',';
+        }
+        var r = new Fusion.Lib.MGRequest.MGQueryMapFeatures(this.mapWidget.getSessionID(),
+                                                            this._sMapname,
+                                                            sGeometry,
+                                                            maxFeatures, persist, selection, layerNames);
+        Fusion.oBroker.dispatchRequest(r, this.crtlClickDisplay.bind(this));
+      }
+    },
+
+    /**
+     * open a window if a URL is defined for the feature.
+     **/
+    crtlClickDisplay: function(r) {
+        //console.log('ctrlclcik  _display');
+        if (r.responseXML) {
+            var d = new DomNode(r.responseXML);
+            var h = d.getNodeText('Hyperlink');
+            if (h != '') {
+                window.open(h, "");
+            }
+        }
     },
     
     pingServer: function() {
@@ -6128,10 +6174,6 @@ Fusion.Maps.MapGuide.StyleItem.prototype = {
 
 /***************************************************************************
 * This is a simple API layer to mimick the MapGuide ajaxviewer API
-
-*These are the functions I hacked in to the sample app scripts. They are largely functional, but additional functionality is required ? the Refresh method could use an option to update the legend too (or maybe that should be a separate function) and SetSelectionXML should update the selection panel (if present) ? or maybe that should be a separate call too
-
-
 */
 var mapWidgetId = 'Map';
 
@@ -6169,6 +6211,16 @@ function DigitizePoint(handler) {
       Object.inheritFrom(digitizer, Fusion.Tool.Canvas.prototype, []);
       digitizer.handler = handler;
       digitizer.activateCanvas();
+      
+      //add a listener to update the position of the features
+      var mapWidget = Fusion.getWidgetById(mapWidgetId);
+      mapWidget.registerForEvent(Fusion.Event.MAP_EXTENTS_CHANGED, 
+        function(){
+          digitizer.updatePx();
+          digitizer.clearContext();
+          digitizer.draw(digitizer.context);
+        }
+      );
     }
 }
 
@@ -6182,6 +6234,16 @@ function DigitizeLine(handler) {
       Object.inheritFrom(digitizer, Fusion.Tool.Canvas.prototype, []);
       digitizer.handler = handler;
       digitizer.activateCanvas();
+      
+      //add a listener to update the position of the features
+      var mapWidget = Fusion.getWidgetById(mapWidgetId);
+      mapWidget.registerForEvent(Fusion.Event.MAP_EXTENTS_CHANGED, 
+        function(){
+          digitizer.updatePx();
+          digitizer.clearContext();
+          digitizer.draw(digitizer.context);
+        }
+      );
     }
 }
 
@@ -6196,6 +6258,16 @@ function DigitizeLineString(handler) {
       Object.inheritFrom(digitizer, Fusion.Tool.Canvas.prototype, []);
       digitizer.handler = handler;
       digitizer.activateCanvas();
+      
+      //add a listener to update the position of the features
+      var mapWidget = Fusion.getWidgetById(mapWidgetId);
+      mapWidget.registerForEvent(Fusion.Event.MAP_EXTENTS_CHANGED, 
+        function(){
+          digitizer.updatePx();
+          digitizer.clearContext();
+          digitizer.draw(digitizer.context);
+        }
+      );
     }
 }
 
@@ -6209,6 +6281,16 @@ function DigitizeRectangle(handler) {
       Object.inheritFrom(digitizer, Fusion.Tool.Canvas.prototype, []);
       digitizer.handler = handler;
       digitizer.activateCanvas();
+      
+      //add a listener to update the position of the features
+      var mapWidget = Fusion.getWidgetById(mapWidgetId);
+      mapWidget.registerForEvent(Fusion.Event.MAP_EXTENTS_CHANGED, 
+        function(){
+          digitizer.updatePx();
+          digitizer.clearContext();
+          digitizer.draw(digitizer.context);
+        }
+      );
     }
 }
 
@@ -6223,6 +6305,16 @@ function DigitizePolygon(handler) {
       Object.inheritFrom(digitizer, Fusion.Tool.Canvas.prototype, []);
       digitizer.handler = handler;
       digitizer.activateCanvas();
+      
+      //add a listener to update the position of the features
+      var mapWidget = Fusion.getWidgetById(mapWidgetId);
+      mapWidget.registerForEvent(Fusion.Event.MAP_EXTENTS_CHANGED, 
+        function(){
+          digitizer.updatePx();
+          digitizer.clearContext();
+          digitizer.draw(digitizer.context);
+        }
+      );
     }
 }
 
@@ -7362,7 +7454,7 @@ Fusion.Maps.MapServer.StyleItem.prototype = {
         return url + '?'+params;
     }
 };
-Fusion.Strings.en = {
+ï»¿Fusion.Strings.en = {
 'scriptFailed': 'failed to load script: {0}',
 'configParseError': 'Error parsing fusion configuration file, initialization aborted',
 'configLoadError': 'Error loading fusion configuration file, initialization aborted',
@@ -7402,10 +7494,16 @@ Fusion.Strings.en = {
 'taskPaneTitle': 'Tasks',
 'segment': 'Segment {0}',
 'calculating': 'calculating ...',
+'panWest': 'Pan West',
+'panEast': 'Pan East',
+'panSouth': 'Pan South',
+'panNorth': 'Pan North',
+'zoomOut': 'Zoom Out',
+'zoomIn': 'Zoom In',
 
 'end': ''
 };
-Fusion.Strings.fr = {
+ï»¿Fusion.Strings.fr = {
 'scriptFailed': 'failed to load script: {0}',
 'configParseError': 'Error parsing fusion configuration file, initialization aborted',
 'configLoadError': 'Error loading fusion configuration file, initialization aborted',
@@ -7446,6 +7544,12 @@ Fusion.Strings.fr = {
 'taskPaneTitle': 'Tasks',
 'segment': 'Segment {0}',
 'calculating': 'calculating ...',
+'panWest': 'Ouest',
+'panEast': 'Est',
+'panSouth': 'Sud',
+'panNorth': 'Nord',
+'zoomOut': 'Cliquer pour rÃ©duire',
+'zoomIn': 'Cliquer pour agrandir',
 
 'end': ''
 };
@@ -9880,7 +9984,7 @@ Fusion.Widget.MapMenu.prototype =
 };/**
  * Fusion.Widget.Maptip
  *
- * $Id: Maptip.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: Maptip.js 1254 2008-02-22 22:43:51Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -9935,6 +10039,7 @@ Fusion.Widget.Maptip.prototype =
     delay: null,
     aLayers: null,
     bOverTip: false,
+    sWinFeatures : 'menubar=no,location=no,resizable=no,status=no',
     
     initialize : function(widgetTag)
     {
@@ -9942,7 +10047,12 @@ Fusion.Widget.Maptip.prototype =
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, true]);
         var json = widgetTag.extension;
         
+        this.sTarget = json.Target ? json.Target[0] : "MaptipWindow";
+        if (json.WinFeatures) {
+          this.sWinFeatures = json.WinFeatures[0];
+        }
         this.delay = json.Delay ? parseInt(json.Delay[0]) : 350;
+        this.nTolerance = json.Tolerance ? parseInt(json.Tolerance[0]) : 2;
         
         this.aLayers = [];
         if (json.Layer) {
@@ -9951,18 +10061,29 @@ Fusion.Widget.Maptip.prototype =
             }
         }
         
-        this.domObj.parentNode.removeChild(this.domObj);
-        this.domObj.style.position = 'absolute';
+        //prepare the container div for the maptips
+        Fusion.addWidgetStyleSheet(widgetTag.location + 'Maptip/Maptip.css');
+        if (this.domObj) {
+          this.domObj.parentNode.removeChild(this.domObj);
+        } else {
+          this.domObj = document.createElement('div');
+        }
+        this.domObj.className = 'maptipContainer';
         this.domObj.style.display = 'none';
         this.domObj.style.top = '0px';
         this.domObj.style.left = '0px';
-        this.domObj.style.zIndex = 101;
+        
+        //create an iframe to stick behind the maptip to prevent clicks being passed through to the map
+        this.iframe = document.createElement('iframe');
+        this.iframe.className = 'maptipShim';
+        this.iframe.scrolling = 'no';
+        this.iframe.frameborder = 0;
         
         Event.observe(this.domObj, 'mouseover', this.mouseOverTip.bind(this));
         Event.observe(this.domObj, 'mouseout', this.mouseOutTip.bind(this));
         
         var oDomElem =  this.getMap().getDomObj();
-        oDomElem.appendChild(this.domObj);
+        document.getElementsByTagName('BODY')[0].appendChild(this.domObj);
         
         this.getMap().observeEvent('mousemove', this.mouseMove.bind(this));
         this.getMap().observeEvent('mouseout', this.mouseOut.bind(this));
@@ -9986,18 +10107,11 @@ Fusion.Widget.Maptip.prototype =
             return;
         }
         var p = this.getMap().getEventPosition(e);
-        if (!this.oCurrentPosition) {
-            this.oCurrentPosition = p;
-        } else {
+        this.oCurrentPosition = p;
+        this.oMapTipPosition = {x:Event.pointerX(e), y:Event.pointerY(e)};
+        if (this.oCurrentPosition) {
             window.clearTimeout(this.nTimer);
             this.nTimer = null;
-            if (this.oMapTipPosition && this.bIsVisible &&
-                Math.abs(this.oMapTipPosition.x -this.oCurrentPosition.x) > 3 &&
-                Math.abs(this.oMapTipPosition.y - this.oCurrentPosition.y) > 3) {
-                /*console.log('mouseMove: set hide timer');*/
-                this.nHideTimer = window.setTimeout(this.hideMaptip.bind(this), 250);
-            }
-            this.oCurrentPosition = p;
         }
         this.nTimer = window.setTimeout(this.showMaptip.bind(this), this.delay);
         //Event.stop(e);
@@ -10009,33 +10123,27 @@ Fusion.Widget.Maptip.prototype =
         if (map == null) {
           return;
         }
-        var cellSize = map._nCellSize;
-        cellSize = 1e-6;
 
         var oBroker = Fusion.oBroker;
         var x = this.oCurrentPosition.x;
         var y = this.oCurrentPosition.y;
-        var min = map.pixToGeo(x, y);
+        var min = map.pixToGeo(x-this.nTolerance, y-this.nTolerance);
+        var max = map.pixToGeo(x+this.nTolerance, y+this.nTolerance);
         //this can fail if no map is loaded
         if (!min) {
             return;
         }
-        min.x -= cellSize;
-        min.y -= cellSize;
-        var max = map.pixToGeo(x, y);
-        max.x += cellSize;
-        max.y += cellSize;
         var sGeometry = 'POLYGON(('+ min.x + ' ' +  min.y + ', ' +  min.x + ' ' +  max.y + ', ' + max.x + ' ' +  max.y + ', ' + max.x + ' ' +  min.y + ', ' + min.x + ' ' +  min.y + '))';
 
         //var sGeometry = 'POINT('+ min.x + ' ' +  min.y + ')';
 
-         var maxFeatures = 1;
-         var persist = 0;
-         var selection = 'INTERSECTS';
+        var maxFeatures = 1;
+        var persist = 0;
+        var selection = 'INTERSECTS';
         var maps = this.getMap().getAllMaps();
-         //TODO: possibly make the layer names configurable?
-         var layerNames = this.aLayers.toString();
-         var r = new Fusion.Lib.MGRequest.MGQueryMapFeatures(maps[0].getSessionID(),
+        //TODO: possibly make the layer names configurable?
+        var layerNames = this.aLayers.toString();
+        var r = new Fusion.Lib.MGRequest.MGQueryMapFeatures(maps[0].getSessionID(),
                                         maps[0]._sMapname,
                                         sGeometry,
                                         maxFeatures, persist, selection, layerNames);
@@ -10046,19 +10154,48 @@ Fusion.Widget.Maptip.prototype =
     _display: function(r) {
       //console.log('maptip _display');
         if (r.responseXML) {
+            this.domObj.innerHTML = '&nbsp;';
+            var contentDiv = document.createElement('div');
+            contentDiv.className = 'maptipContent';
+            this.domObj.appendChild(contentDiv);
+            
+            var empty = true;
             this.bIsVisible = true;
-            this.oMapTipPosition = {x:this.oCurrentPosition.x, y: this.oCurrentPosition.y};
             var d = new DomNode(r.responseXML);
             var t = d.getNodeText('Tooltip');
             if (t != '') {
-                t = t.replace(/\\n/g, "<br>");
-                this.domObj.innerHTML = t;
+              t = t.replace(/\\n/g, "<br>");
+              contentDiv.innerHTML = t;
+              empty = false;
+            }
+            var h = d.getNodeText('Hyperlink');
+            if (h != '') {
+              var linkDiv = document.createElement('div');
+              var a = document.createElement('a');
+              a.innerHTML = h;
+              a.href = 'javascript:void(0)';
+              a.onclick = this.openLink.bindAsEventListener(this, h);
+              linkDiv.appendChild(a);
+              contentDiv.appendChild(linkDiv);
+              empty = false;
+            }
+            if (!empty) {
                 this.domObj.style.visibility = 'hidden';
                 this.domObj.style.display = 'block';
                 var size = Element.getDimensions(this.domObj);
-                this.domObj.style.top = (this.oCurrentPosition.y - size.height) + 'px';
-                this.domObj.style.left = this.oCurrentPosition.x + 'px';
+                this.domObj.style.top = (this.oMapTipPosition.y - size.height) + 'px';
+                this.domObj.style.left = (this.oMapTipPosition.x) + 'px';
+                
+                if (!window.opera) {
+                    contentDiv.appendChild(this.iframe);
+                    var size = Element.getContentBoxSize(this.domObj);
+                    this.iframe.style.width = size.width + "px";
+                    this.iframe.style.height = size.height + "px";
+                }
+                
                 this.domObj.style.visibility = 'visible';
+            } else {
+                this.hideMaptip();
             }
         } else {
             this.bIsVisible = false;
@@ -10068,14 +10205,13 @@ Fusion.Widget.Maptip.prototype =
     hideMaptip: function() {
       //console.log('hideMaptip');
         this.bIsVisible = false;
-        this.hideTimer = window.setTimeout(this._hide.bind(this),250);
+        this.hideTimer = window.setTimeout(this._hide.bind(this),10);
     },
     
     _hide: function() {
       //console.log('maptip _hide');
         this.hideTimer = null;
         this.domObj.style.display = 'none';
-        this.domObj.innerHTML = '&nbsp;';
         this.oMapTipPosition = null;
     },
     
@@ -10090,13 +10226,28 @@ Fusion.Widget.Maptip.prototype =
       //console.log('mouseOutTip');
         this.nHideTimer = window.setTimeout(this.hideMaptip.bind(this), 250);
         this.bOverTip = false;
-    }
+    },
     
+    openLink : function(evt, url) {
+        var taskPaneTarget = Fusion.getWidgetById(this.sTarget);
+        if ( taskPaneTarget ) {
+            taskPaneTarget.setContent(url);
+        } else {
+            var pageElement = $(this.sTarget);
+            if ( pageElement ) {
+                pageElement.src = url;
+            } else {
+                window.open(url, this.sTarget, this.sWinFeatures);
+            }
+        }
+        OpenLayers.Event.stop(evt, true);
+        return false;
+    }
 };
 /**
  * Fusion.Widget.Measure
  *
- * $Id: Measure.js 1228 2008-02-14 21:04:43Z madair $
+ * $Id: Measure.js 1256 2008-02-22 22:48:02Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -10160,10 +10311,10 @@ Fusion.Widget.Measure.prototype = {
     mType: null,
 
     /* Precision of the distance displayed */
-    distPrecision: 0,
+    distPrecision: 4,
     
     /* Precision of the area displayed */
-    areaPrecision: 0,
+    areaPrecision: 4,
     
     /* an HTML container to put the current distance in */
     measureTip: null,
@@ -10193,8 +10344,8 @@ Fusion.Widget.Measure.prototype = {
         this.asCursor = ['crosshair'];
         var json = widgetTag.extension;
         this.units = (json.Units && (json.Units[0] != '')) ?  Fusion.unitFromName(json.Units[0]): this.units;
-        this.distPrecision = json.DistancePrecision ? json.DistancePrecision[0] : 2;
-        this.areaPrecision = json.AreaPrecision ? json.AreaPrecision[0] : 2;  
+        this.distPrecision = json.DistancePrecision ? json.DistancePrecision[0] : 4;
+        this.areaPrecision = json.AreaPrecision ? json.AreaPrecision[0] : 4;  
         
         this.sTarget = json.Target ? json.Target[0] : "";
         this.sBaseUrl = Fusion.getFusionURL() + 'widgets/Measure/Measure.php';
@@ -10283,6 +10434,7 @@ Fusion.Widget.Measure.prototype = {
         if (this.sTarget) {
             var url = this.sBaseUrl;
             var queryStr = 'locale='+Fusion.locale;
+            queryStr += '&ts='+(new Date()).getTime();
             if (url.indexOf('?') < 0) {
                 url += '?';
             } else if (url.slice(-1) != '&') {
@@ -10495,8 +10647,7 @@ Fusion.Widget.Measure.prototype = {
               if (mapUnits != this.units) {
                 o.distance = Fusion.convert(mapUnits, this.units, o.distance);
               }
-              var p = Math.pow(10,this.distPrecision);
-              var d = Math.round(o.distance*p)/p;
+              var d = o.distance.toPrecision(this.distPrecision);
               
               marker.setDistance(d);
               this.positionMarker(marker, segment);
@@ -10556,7 +10707,7 @@ Fusion.Widget.Measure.DistanceMarker.prototype = {
     setUnits: function(units) {
         this.unit = units;
         this.unitAbbr = Fusion.unitAbbr(units);
-        if (this.distance) {
+        if (this.distance != null) {
             this.setDistance(this.distance);
         }
     },
@@ -10566,7 +10717,7 @@ Fusion.Widget.Measure.DistanceMarker.prototype = {
     },
     
     getDistanceLabel: function() {
-        if (this.distance) {
+        if (this.distance!=null) {
             var distance = this.distance;
             return distance + ' ' + this.unitAbbr;            
         } else {
@@ -10589,7 +10740,7 @@ Fusion.Widget.Measure.DistanceMarker.prototype = {
             this.isCalculating = true;
             this.domObj.innerHTML = '';
             this.domObj.appendChild(this.calculatingImg);
-            this.distance = false;
+            this.distance = null;
             this.triggerEvent(Fusion.Event.MARKER_DISTANCE_CHANGED, this);
         }
     },
@@ -10651,48 +10802,48 @@ Fusion.Widget.Navigator.prototype = {
 
         var a = document.createElement('area');
         a.shape = 'poly';
-        a.alt = 'Pan East';
-        a.title = 'Pan East';
+        a.alt = OpenLayers.String.translate('panEast');
+        a.title = OpenLayers.String.translate('panEast');
         a.coords = '27,176, 27,177, 40,190, 44,182, 44,159';
         Event.observe(a, 'mouseup', this.pan.bindAsEventListener(this, this.panAmount/100, 0) );
         m.appendChild(a);
 
         var a = document.createElement('area');
         a.shape = 'poly';
-        a.alt = 'Pan West';
-        a.title = 'Pan West';
+        a.alt = OpenLayers.String.translate('panWest');
+        a.title = OpenLayers.String.translate('panWest');
         a.coords = '24,177, 24,176, 7,159, 7,182, 11,190';
         Event.observe(a, 'mouseup', this.pan.bindAsEventListener(this, -this.panAmount/100, 0) );
         m.appendChild(a);
 
         var a = document.createElement('area');
         a.shape = 'poly';
-        a.alt = 'Pan South';
-        a.title = 'Pan South';
+        a.alt = OpenLayers.String.translate('panSouth');
+        a.title = OpenLayers.String.translate('panSouth');
         a.coords = '25,178, 12,191, 21,197, 30,197, 39,191, 26,178';
         Event.observe(a, 'mouseup', this.pan.bindAsEventListener(this, 0, -this.panAmount/100) );
         m.appendChild(a);
 
         var a = document.createElement('area');
         a.shape = 'poly';
-        a.alt = 'Pan North';
-        a.title = 'Pan North';
+        a.alt = OpenLayers.String.translate('panNorth');
+        a.title = OpenLayers.String.translate('panNorth');
         a.coords = '26,175, 43,158, 8,158, 25,175';
         Event.observe(a, 'mouseup', this.pan.bindAsEventListener(this, 0, this.panAmount/100) );
         m.appendChild(a);
 
         var a = document.createElement('area');
         a.shape = 'circle';
-        a.alt = 'Zoom Out';
-        a.title = 'Zoom Out';
+        a.alt = OpenLayers.String.translate('zoomOut');
+        a.title = OpenLayers.String.translate('zoomOut');
         a.coords = '25,142,8';
         Event.observe(a, 'mouseup', this.zoom.bindAsEventListener(this, 1/this.zoomFactor) );
         m.appendChild(a);
 
         var a = document.createElement('area');
         a.shape = 'circle';
-        a.alt = 'Zoom In';
-        a.title = 'Zoom In';
+        a.alt = OpenLayers.String.translate('zoomIn');
+        a.title = OpenLayers.String.translate('zoomIn');
         a.coords = '25,34,8';
         Event.observe(a, 'mouseup', this.zoom.bindAsEventListener(this, this.zoomFactor) );
         m.appendChild(a);
@@ -11052,7 +11203,7 @@ Fusion.Widget.OverviewMap.prototype = {
 /**
  * Fusion.Widget.Pan
  *
- * $Id: Pan.js 1122 2007-12-13 22:40:00Z madair $
+ * $Id: Pan.js 1252 2008-02-22 22:36:46Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -11088,6 +11239,7 @@ Fusion.Widget.Pan.prototype = {
         Object.inheritFrom(this, Fusion.Tool.ButtonBase.prototype, []);
         this.control = new OpenLayers.Control.DragPan();
         this.getMap().oMapOL.addControl(this.control);
+        this.control.handler.keyMask = 0;
         
         this.cursorNormal = ["url('images/grab.cur'),move", 'grab', '-moz-grab', 'move'];
         this.cursorDrag = ["url('images/grabbing.cur'),move", 'grabbing', '-moz-grabbing', 'move'];
@@ -12017,7 +12169,7 @@ Fusion.Widget.Search.prototype = {
 /**
  * Fusion.Widget.Select
  *
- * $Id: Select.js 1121 2007-12-13 22:13:01Z madair $
+ * $Id: Select.js 1252 2008-02-22 22:36:46Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -12052,7 +12204,6 @@ Fusion.Widget.Select.prototype =  {
     nTolerance : 3,     //default pixel tolernace for a point click
     bActiveOnly: false, //only select feature(s) on the active layer?
     maxFeatures: 0,     //deafult of 0 selects all features (i.e. no maximum)
-    keyModifiers: 0,    //set during event handling to indicate modifier key states
     
     initialize : function(widgetTag) {
         //console.log('Select.initialize');
@@ -12084,9 +12235,9 @@ Fusion.Widget.Select.prototype =  {
         }
         
         this.map = this.getMap().oMapOL;
-        this.handler = new OpenLayers.Handler.Box(this,{done: this.execute});
-        this.handler.dragHandler.up = this.setModifiers.bind(this);
-        this.handler.dragHandler.down = this.clearModifiers.bind(this);
+        this.handler = new OpenLayers.Handler.Box(this,{done: this.execute},{keyMask:0});
+        this.shiftHandler = new OpenLayers.Handler.Box(this,{done: this.extend},
+                                        {keyMask:OpenLayers.Handler.MOD_SHIFT});
     },
     
     enable: function() {
@@ -12116,6 +12267,7 @@ Fusion.Widget.Select.prototype =  {
        */
     activate : function() {
         this.handler.activate();
+        this.shiftHandler.activate();
         this.getMap().setCursor(this.asCursor);
         /*icon button*/
         this._oButton.activateTool();
@@ -12128,6 +12280,7 @@ Fusion.Widget.Select.prototype =  {
        **/
     deactivate : function() {
         this.handler.deactivate();
+        this.shiftHandler.deactivate();
         this.getMap().setCursor('auto');
         /*icon button*/
         this._oButton.deactivateTool();
@@ -12141,10 +12294,10 @@ Fusion.Widget.Select.prototype =  {
         *   position will be either an instance of OpenLayers.Bounds when the mouse has
         *   moved, or an OpenLayers.Pixel for click without dragging on the map
         **/
-    execute : function(position) {
+    execute : function(position, extend) {
         //ctrl click is used to launch a URL defined on the feature. See ClickCTRL widget
         if (this.keyModifiers & OpenLayers.Handler.MOD_CTRL) {
-          return;
+          //return;
         }
         
         var nRight, nTop;
@@ -12185,13 +12338,23 @@ Fusion.Widget.Select.prototype =  {
             }
         }
         
-        if (this.keyModifiers & OpenLayers.Handler.MOD_SHIFT) {
+        if (extend) {
             options.extendSelection = true;
         }
         
         this.getMap().query(options);
     },
 
+    /**
+        * handler for extending the selection when the shift key is pressed
+        *
+        * Parameters:
+        * evt - the OpenLayers.Event object that is being responded to
+        */
+    extend: function(position) {
+        this.execute(position, true);
+    },
+    
     /**
         * calculate the keyboard modifier mask for this event 
         *
@@ -13550,7 +13713,7 @@ Fusion.Widget.ViewSize.prototype = {
 /**
  * Fusion.Widget.Zoom
  *
- * $Id: Zoom.js 1121 2007-12-13 22:13:01Z madair $
+ * $Id: Zoom.js 1252 2008-02-22 22:36:46Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -13585,7 +13748,6 @@ Fusion.Widget.Zoom.prototype =
     nTolerance : 5,
     nFactor : 2,
     zoomIn: true,
-    keyModifiers: 0,    //set during event handling to indicate modifier key states
     
     initialize : function(widgetTag)
     {
@@ -13604,9 +13766,9 @@ Fusion.Widget.Zoom.prototype =
         this.keypressWatcher = this.keypressHandler.bind(this);
         
         this.map = this.getMap().oMapOL;
-        this.handler = new OpenLayers.Handler.Box(this, {done: this.execute});
-        this.handler.dragHandler.up = this.setModifiers.bind(this);
-        this.handler.dragHandler.down = this.clearModifiers.bind(this);
+        this.handler = new OpenLayers.Handler.Box(this, {done: this.execute}, {keyMask:0});
+        this.shiftHandler = new OpenLayers.Handler.Box(this, {done: this.altZoom}, 
+                                        {keyMask:OpenLayers.Handler.MOD_SHIFT});
     },
 
    /**
@@ -13629,6 +13791,7 @@ Fusion.Widget.Zoom.prototype =
     {
         //console.log('Zoom.activate');
         this.handler.activate();
+        this.shiftHandler.activate();
         /*cursor*/
         if (this.zoomIn) {
             this.getMap().setCursor(this.zoomInCursor);
@@ -13648,6 +13811,7 @@ Fusion.Widget.Zoom.prototype =
     {
         //console.log('Zoom.deactivate');
         this.handler.deactivate();
+        this.shiftHandler.deactivate();
         this.getMap().setCursor('auto');
         /*icon button*/
         this._oButton.deactivateTool();
@@ -13661,11 +13825,11 @@ Fusion.Widget.Zoom.prototype =
      * Parameters:
      * position - {<OpenLayers.Bounds>} or {<OpenLayers.Pixel>}
      */
-    execute: function (position) {
+    execute: function (position, altZoom) {
         /* if the last event had a shift modifier, swap the sense of this
                 tool - zoom in becomes out and zoom out becomes in */
         var zoomIn = this.zoomIn;
-        if (this.keyModifiers & OpenLayers.Handler.MOD_SHIFT) {
+        if (altZoom) {
             zoomIn = !zoomIn;
         }
         if (position instanceof OpenLayers.Bounds) {
@@ -13700,28 +13864,15 @@ Fusion.Widget.Zoom.prototype =
     },
 
     /**
-        * calculate the keyboard modifier mask for this event 
+        * handler for zooming when the shift key is pressed.  This changes it from in to out or vice versa
         *
         * Parameters:
-        * evt - the OpenLayers.Event object that is being responded to
+        * position - {<OpenLayers.Bounds>} or {<OpenLayers.Pixel>}
         */
-    setModifiers: function(evt) {
-        this.keyModifiers =
-            (evt.shiftKey ? OpenLayers.Handler.MOD_SHIFT : 0) |
-            (evt.ctrlKey  ? OpenLayers.Handler.MOD_CTRL  : 0) |
-            (evt.altKey   ? OpenLayers.Handler.MOD_ALT   : 0);
+    altZoom: function(position) {
+        this.execute(position, true);
     },
     
-    /**
-        * clears the keyboard modifier mask for this event 
-        *
-        * Parameters:
-        * evt - the OpenLayers.Event object that is being responded to
-        */
-    clearModifiers: function(evt) {
-      this.keyModifiers = 0;
-    },
-
     /**
         * allows run-time setting of widget parameters 
         *

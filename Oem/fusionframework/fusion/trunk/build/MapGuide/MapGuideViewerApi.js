@@ -25,10 +25,6 @@
 
 /***************************************************************************
 * This is a simple API layer to mimick the MapGuide ajaxviewer API
-
-*These are the functions I hacked in to the sample app scripts. They are largely functional, but additional functionality is required ? the Refresh method could use an option to update the legend too (or maybe that should be a separate function) and SetSelectionXML should update the selection panel (if present) ? or maybe that should be a separate call too
-
-
 */
 var mapWidgetId = 'Map';
 
@@ -66,6 +62,16 @@ function DigitizePoint(handler) {
       Object.inheritFrom(digitizer, Fusion.Tool.Canvas.prototype, []);
       digitizer.handler = handler;
       digitizer.activateCanvas();
+      
+      //add a listener to update the position of the features
+      var mapWidget = Fusion.getWidgetById(mapWidgetId);
+      mapWidget.registerForEvent(Fusion.Event.MAP_EXTENTS_CHANGED, 
+        function(){
+          digitizer.updatePx();
+          digitizer.clearContext();
+          digitizer.draw(digitizer.context);
+        }
+      );
     }
 }
 
@@ -79,6 +85,16 @@ function DigitizeLine(handler) {
       Object.inheritFrom(digitizer, Fusion.Tool.Canvas.prototype, []);
       digitizer.handler = handler;
       digitizer.activateCanvas();
+      
+      //add a listener to update the position of the features
+      var mapWidget = Fusion.getWidgetById(mapWidgetId);
+      mapWidget.registerForEvent(Fusion.Event.MAP_EXTENTS_CHANGED, 
+        function(){
+          digitizer.updatePx();
+          digitizer.clearContext();
+          digitizer.draw(digitizer.context);
+        }
+      );
     }
 }
 
@@ -93,6 +109,16 @@ function DigitizeLineString(handler) {
       Object.inheritFrom(digitizer, Fusion.Tool.Canvas.prototype, []);
       digitizer.handler = handler;
       digitizer.activateCanvas();
+      
+      //add a listener to update the position of the features
+      var mapWidget = Fusion.getWidgetById(mapWidgetId);
+      mapWidget.registerForEvent(Fusion.Event.MAP_EXTENTS_CHANGED, 
+        function(){
+          digitizer.updatePx();
+          digitizer.clearContext();
+          digitizer.draw(digitizer.context);
+        }
+      );
     }
 }
 
@@ -106,6 +132,16 @@ function DigitizeRectangle(handler) {
       Object.inheritFrom(digitizer, Fusion.Tool.Canvas.prototype, []);
       digitizer.handler = handler;
       digitizer.activateCanvas();
+      
+      //add a listener to update the position of the features
+      var mapWidget = Fusion.getWidgetById(mapWidgetId);
+      mapWidget.registerForEvent(Fusion.Event.MAP_EXTENTS_CHANGED, 
+        function(){
+          digitizer.updatePx();
+          digitizer.clearContext();
+          digitizer.draw(digitizer.context);
+        }
+      );
     }
 }
 
@@ -120,6 +156,16 @@ function DigitizePolygon(handler) {
       Object.inheritFrom(digitizer, Fusion.Tool.Canvas.prototype, []);
       digitizer.handler = handler;
       digitizer.activateCanvas();
+      
+      //add a listener to update the position of the features
+      var mapWidget = Fusion.getWidgetById(mapWidgetId);
+      mapWidget.registerForEvent(Fusion.Event.MAP_EXTENTS_CHANGED, 
+        function(){
+          digitizer.updatePx();
+          digitizer.clearContext();
+          digitizer.draw(digitizer.context);
+        }
+      );
     }
 }
 

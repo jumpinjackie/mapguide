@@ -1,7 +1,7 @@
 /**
  * Fusion.Maps.MapGuide
  *
- * $Id: MapGuide.js 1233 2008-02-15 19:30:53Z madair $
+ * $Id: MapGuide.js 1252 2008-02-22 22:36:46Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -72,6 +72,22 @@ Fusion.Maps.MapGuide.prototype = {
         this.selectionType = extension.SelectionType ? extension.SelectionType[0] : 'INTERSECTS';
         this.ratio = extension.MapRatio ? extension.MapRatio[0] : 1.0;
         
+        //add in the handler for CTRL-click actions for the map, not an overviewmap
+        if (this.bIsMapWidgetLayer) {
+          var ctrlClickEnabled = true;
+          if (extension.DisableCtrlClick && extension.DisableCtrlClick[0] == 'true') {
+              ctrlClickEnabled = false;
+          }
+          if (ctrlClickEnabled) {
+            this.map = this.mapWidget.oMapOL;
+            this.handler = new OpenLayers.Handler.Click(this,
+                                  {click: this.mouseUpCRTLClick.bind(this)},
+                                  {keyMask: OpenLayers.Handler.MOD_CTRL});
+            this.handler.activate();
+            this.nTolerance = 2; //pixels, default pixel tolernace for a point click; TBD make this configurable
+          }
+        }
+       
         this.sMapResourceId = mapTag.resourceId ? mapTag.resourceId : '';
         
         rootOpts = {
@@ -614,12 +630,7 @@ Fusion.Maps.MapGuide.prototype = {
       *
       * sets a Selection XML back to the server
       */
-    zoomToSelection: function(r) {
-      var xmlDoc = r.responseXML.documentElement;
-      var x = xmlDoc.getElementsByTagName('X');
-      var y = xmlDoc.getElementsByTagName('Y');
-      //double the veiwport
-      var extent = new OpenLayers.Bounds(x[0].firstChild.nodeValue,y[0].firstChild.nodeValue,x[1].firstChild.nodeValue,y[1].firstChild.nodeValue);
+    zoomToSelection: function(extent) {
       var center = extent.getCenterPixel();
       var size = extent.getSize();
       extent.left = center.x - 2*size.w;
@@ -629,29 +640,14 @@ Fusion.Maps.MapGuide.prototype = {
       this.mapWidget.setExtents(extent);
     },  
 
-    processSelection: function(sel, requery, zoomTo, json) {
-      if (requery) {
-        //xmlDoc = (new DOMParser()).parseFromString(r.responseXML, "text/xml");
-        //this.processFeatureInfo(xmlDoc.documentElement, false, 1);
-        //this.processFeatureInfo(xmlOut, false, 2);
-      }
-      this.newSelection();
-      if (zoomTo) {
-        var mgRequest = new Fusion.Lib.MGRequest.MGGetFeatureSetEnvelope(this.getSessionID(), this.getMapName(), sel );
-        Fusion.oBroker.dispatchRequest(mgRequest, this.zoomToSelection.bind(this));
-      } else {
-        this.mapWidget.redraw();
-      }
-    },
-
-    setSelection: function (selText, requery, zoomTo) {
+    setSelection: function (selText, zoomTo) {
+      this.mapWidget._addWorker();
       var sl = Fusion.getScriptLanguage();
       var setSelectionScript = this.arch + '/' + sl  + '/SetSelection.' + sl;
       var params = 'mapname='+this.getMapName()+"&session="+this.getSessionID();
       params += '&selection=' + encodeURIComponent(selText);
-      params += '&queryinfo=' + (requery? "1": "0");
       params += '&seq=' + Math.random();
-      var options = {onSuccess: this.processSelection.bind(this, selText, requery, zoomTo), parameters:params, asynchronous:false};
+      var options = {onSuccess: this.processQueryResults.bind(this, zoomTo), parameters:params, asynchronous:false};
       Fusion.ajaxRequest(setSelectionScript, options);
     },
 
@@ -738,7 +734,7 @@ Fusion.Maps.MapGuide.prototype = {
     /**
        Call back function when slect functions are called (eg queryRect)
     */
-    processQueryResults : function(r) {
+    processQueryResults : function(zoomTo, r) {
         this.mapWidget._removeWorker();
         if (r.responseText) {   //TODO: make the equivalent change to MapServer.js
             var oNode;
@@ -764,9 +760,15 @@ Fusion.Maps.MapGuide.prototype = {
                   }
                 }
               }
+              
+              if (zoomTo) {
+                var ext = oNode.extents
+                var extents = new OpenLayers.Bounds(ext.minx, ext.miny, ext.maxx, ext.maxy);
+                this.zoomToSelection(extents);
+              }
               this.newSelection();
             } else {
-              //this.drawMap();
+              this.clearSelection();
               return;
             }
         }
@@ -797,7 +799,7 @@ Fusion.Maps.MapGuide.prototype = {
         var sessionid = this.getSessionID();
 
         var params = 'mapname='+this._sMapname+"&session="+sessionid+'&spatialfilter='+geometry+'&maxfeatures='+maxFeatures+filter+'&layers='+layers+'&variant='+selectionType+extend+computed;
-        var options = {onSuccess: this.processQueryResults.bind(this), 
+        var options = {onSuccess: this.processQueryResults.bind(this, false), 
                                      parameters: params};
         Fusion.ajaxRequest(loadmapScript, options);
     },
@@ -869,6 +871,50 @@ Fusion.Maps.MapGuide.prototype = {
 
     loadEnd: function() {
         this.mapWidget._removeWorker();
+    },
+    
+  /**
+     * called when there is a click on the map holding the CTRL key: query features at that postion.
+     **/
+    mouseUpCRTLClick: function(evt) {
+      if (evt.ctrlKey) {
+        var min = this.mapWidget.pixToGeo(evt.xy.x-this.nTolerance, evt.xy.y-this.nTolerance);
+        var max = this.mapWidget.pixToGeo(evt.xy.x+this.nTolerance, evt.xy.y+this.nTolerance);
+        if (!min) {
+          return;
+        }   
+        var sGeometry = 'POLYGON(('+ min.x + ' ' +  min.y + ', ' +  min.x + ' ' +  max.y + ', ' + max.x + ' ' +  max.y + ', ' + max.x + ' ' +  min.y + ', ' + min.x + ' ' +  min.y + '))';
+        //var sGeometry = 'POINT('+ min.x + ' ' +  min.y + ')';
+
+        var maxFeatures = 1;
+        var persist = 0;
+        var selection = 'INTERSECTS';
+        var layerNames = '';
+        var sep = '';
+        for (var i=0; i<this.aLayers.length; ++i) {
+          layerNames += sep + this.aLayers[i].layerName;
+          sep = ',';
+        }
+        var r = new Fusion.Lib.MGRequest.MGQueryMapFeatures(this.mapWidget.getSessionID(),
+                                                            this._sMapname,
+                                                            sGeometry,
+                                                            maxFeatures, persist, selection, layerNames);
+        Fusion.oBroker.dispatchRequest(r, this.crtlClickDisplay.bind(this));
+      }
+    },
+
+    /**
+     * open a window if a URL is defined for the feature.
+     **/
+    crtlClickDisplay: function(r) {
+        //console.log('ctrlclcik  _display');
+        if (r.responseXML) {
+            var d = new DomNode(r.responseXML);
+            var h = d.getNodeText('Hyperlink');
+            if (h != '') {
+                window.open(h, "");
+            }
+        }
     },
     
     pingServer: function() {

@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Measure
  *
- * $Id: Measure.js 1228 2008-02-14 21:04:43Z madair $
+ * $Id: Measure.js 1256 2008-02-22 22:48:02Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -65,10 +65,10 @@ Fusion.Widget.Measure.prototype = {
     mType: null,
 
     /* Precision of the distance displayed */
-    distPrecision: 0,
+    distPrecision: 4,
     
     /* Precision of the area displayed */
-    areaPrecision: 0,
+    areaPrecision: 4,
     
     /* an HTML container to put the current distance in */
     measureTip: null,
@@ -98,8 +98,8 @@ Fusion.Widget.Measure.prototype = {
         this.asCursor = ['crosshair'];
         var json = widgetTag.extension;
         this.units = (json.Units && (json.Units[0] != '')) ?  Fusion.unitFromName(json.Units[0]): this.units;
-        this.distPrecision = json.DistancePrecision ? json.DistancePrecision[0] : 2;
-        this.areaPrecision = json.AreaPrecision ? json.AreaPrecision[0] : 2;  
+        this.distPrecision = json.DistancePrecision ? json.DistancePrecision[0] : 4;
+        this.areaPrecision = json.AreaPrecision ? json.AreaPrecision[0] : 4;  
         
         this.sTarget = json.Target ? json.Target[0] : "";
         this.sBaseUrl = Fusion.getFusionURL() + 'widgets/Measure/Measure.php';
@@ -188,6 +188,7 @@ Fusion.Widget.Measure.prototype = {
         if (this.sTarget) {
             var url = this.sBaseUrl;
             var queryStr = 'locale='+Fusion.locale;
+            queryStr += '&ts='+(new Date()).getTime();
             if (url.indexOf('?') < 0) {
                 url += '?';
             } else if (url.slice(-1) != '&') {
@@ -400,8 +401,7 @@ Fusion.Widget.Measure.prototype = {
               if (mapUnits != this.units) {
                 o.distance = Fusion.convert(mapUnits, this.units, o.distance);
               }
-              var p = Math.pow(10,this.distPrecision);
-              var d = Math.round(o.distance*p)/p;
+              var d = o.distance.toPrecision(this.distPrecision);
               
               marker.setDistance(d);
               this.positionMarker(marker, segment);
@@ -461,7 +461,7 @@ Fusion.Widget.Measure.DistanceMarker.prototype = {
     setUnits: function(units) {
         this.unit = units;
         this.unitAbbr = Fusion.unitAbbr(units);
-        if (this.distance) {
+        if (this.distance != null) {
             this.setDistance(this.distance);
         }
     },
@@ -471,7 +471,7 @@ Fusion.Widget.Measure.DistanceMarker.prototype = {
     },
     
     getDistanceLabel: function() {
-        if (this.distance) {
+        if (this.distance!=null) {
             var distance = this.distance;
             return distance + ' ' + this.unitAbbr;            
         } else {
@@ -494,7 +494,7 @@ Fusion.Widget.Measure.DistanceMarker.prototype = {
             this.isCalculating = true;
             this.domObj.innerHTML = '';
             this.domObj.appendChild(this.calculatingImg);
-            this.distance = false;
+            this.distance = null;
             this.triggerEvent(Fusion.Event.MARKER_DISTANCE_CHANGED, this);
         }
     },

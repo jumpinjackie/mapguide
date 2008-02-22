@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Zoom
  *
- * $Id: Zoom.js 1121 2007-12-13 22:13:01Z madair $
+ * $Id: Zoom.js 1252 2008-02-22 22:36:46Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -36,7 +36,6 @@ Fusion.Widget.Zoom.prototype =
     nTolerance : 5,
     nFactor : 2,
     zoomIn: true,
-    keyModifiers: 0,    //set during event handling to indicate modifier key states
     
     initialize : function(widgetTag)
     {
@@ -55,9 +54,9 @@ Fusion.Widget.Zoom.prototype =
         this.keypressWatcher = this.keypressHandler.bind(this);
         
         this.map = this.getMap().oMapOL;
-        this.handler = new OpenLayers.Handler.Box(this, {done: this.execute});
-        this.handler.dragHandler.up = this.setModifiers.bind(this);
-        this.handler.dragHandler.down = this.clearModifiers.bind(this);
+        this.handler = new OpenLayers.Handler.Box(this, {done: this.execute}, {keyMask:0});
+        this.shiftHandler = new OpenLayers.Handler.Box(this, {done: this.altZoom}, 
+                                        {keyMask:OpenLayers.Handler.MOD_SHIFT});
     },
 
    /**
@@ -80,6 +79,7 @@ Fusion.Widget.Zoom.prototype =
     {
         //console.log('Zoom.activate');
         this.handler.activate();
+        this.shiftHandler.activate();
         /*cursor*/
         if (this.zoomIn) {
             this.getMap().setCursor(this.zoomInCursor);
@@ -99,6 +99,7 @@ Fusion.Widget.Zoom.prototype =
     {
         //console.log('Zoom.deactivate');
         this.handler.deactivate();
+        this.shiftHandler.deactivate();
         this.getMap().setCursor('auto');
         /*icon button*/
         this._oButton.deactivateTool();
@@ -112,11 +113,11 @@ Fusion.Widget.Zoom.prototype =
      * Parameters:
      * position - {<OpenLayers.Bounds>} or {<OpenLayers.Pixel>}
      */
-    execute: function (position) {
+    execute: function (position, altZoom) {
         /* if the last event had a shift modifier, swap the sense of this
                 tool - zoom in becomes out and zoom out becomes in */
         var zoomIn = this.zoomIn;
-        if (this.keyModifiers & OpenLayers.Handler.MOD_SHIFT) {
+        if (altZoom) {
             zoomIn = !zoomIn;
         }
         if (position instanceof OpenLayers.Bounds) {
@@ -151,28 +152,15 @@ Fusion.Widget.Zoom.prototype =
     },
 
     /**
-        * calculate the keyboard modifier mask for this event 
+        * handler for zooming when the shift key is pressed.  This changes it from in to out or vice versa
         *
         * Parameters:
-        * evt - the OpenLayers.Event object that is being responded to
+        * position - {<OpenLayers.Bounds>} or {<OpenLayers.Pixel>}
         */
-    setModifiers: function(evt) {
-        this.keyModifiers =
-            (evt.shiftKey ? OpenLayers.Handler.MOD_SHIFT : 0) |
-            (evt.ctrlKey  ? OpenLayers.Handler.MOD_CTRL  : 0) |
-            (evt.altKey   ? OpenLayers.Handler.MOD_ALT   : 0);
+    altZoom: function(position) {
+        this.execute(position, true);
     },
     
-    /**
-        * clears the keyboard modifier mask for this event 
-        *
-        * Parameters:
-        * evt - the OpenLayers.Event object that is being responded to
-        */
-    clearModifiers: function(evt) {
-      this.keyModifiers = 0;
-    },
-
     /**
         * allows run-time setting of widget parameters 
         *

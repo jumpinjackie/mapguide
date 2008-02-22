@@ -25,14 +25,10 @@
  */
 
 include('Common.php');
-include('Utilities.php');
 include('../../common/php/Utilities.php');
+include('Utilities.php');
 
-    $mapName = "";
-    $sessionId = "";
     $selText = "";
-    $queryInfo = false;
-
     GetRequestParameters();
 
     try
@@ -41,65 +37,147 @@ include('../../common/php/Utilities.php');
         //
         $map = new MgMap();
         $map->Open($resourceService, $mapName);
-
         // Create the selection set and save it
-        $sel = new MgSelection($map);
-        if($selText != "")
-            $sel->FromXml($selText);
-        $sel->Save($resourceService, $mapName);
-
-        if($queryInfo) {
-            //Query feature info for the feature in the selection set. This will return the current set
-            //along with property info
-            //There must be only one feature in the feature set
-            $layers = $sel->GetLayers();
-            if($layers == null || $layers->GetCount() != 1) {
-                echo "Error: There must be exactly one feature in the set."; ///NOXLATE dbg report only
-                return;
-            }
-            $layer = $layers->GetItem(0);
-            $featureClassName = $layer->GetFeatureClassName();
-            $filter = $sel->GenerateFilter($layer, $featureClassName);
-            $featureSrvc = $siteConnection->CreateService(MgServiceType::FeatureService);
-            $query = new MgFeatureQueryOptions();
-            $query->SetFilter($filter);
-            $featureSource = new MgResourceIdentifier($layer->GetFeatureSourceId());
-            $features = $featureSrvc->SelectFeatures($featureSource, $featureClassName, $query);
-            $featCount = 0;
-            while($features->ReadNext()) 
-            {
-                if($featCount++ == 1)
-                    break;
-            }
-            if($featCount != 1) {
-                echo "Error: There must be exactly one feature in the set."; ///NOXLATE dbg report only
-                return;
-            }
-            $renderingSrvc = $siteConnection->CreateService(MgServiceType::RenderingService);
-            $layerNames = new MgStringCollection();
-            $layerNames->Add($layer->GetName());
-            $featInfo = $renderingSrvc->QueryFeatures($map, $layerNames, NULL, MgFeatureSpatialOperations::Intersects, $selText, 1, 2);
-            //header('Content-Type: text/xml; charset: UTF-8');
-            //echo $featInfo->ToXml()->ToString();
-            header('Content-type: text/x-json');
-            header('X-JSON: true');
-            echo xml2json($featInfo->ToXml());
+        $selection = new MgSelection($map);
+        if($selText != "") {
+            $selection->FromXml($selText);
         }
+        $selection->Save($resourceService, $mapName);
+        
+        //now return a data struture which is the same as Query.php
+        $featureService = $siteConnection->CreateService(MgServiceType::FeatureService);
+        
+        /* Get the map SRS - we use this to convert distances */
+        $srsFactory = new MgCoordinateSystemFactory();
+        //safely get an SRS ... (in Utilities)
+        $srsDefMap = GetMapSRS($map);
+        $srsMap = $srsFactory->Create($srsDefMap);
+
+        /*holds selection array*/
+        $properties = NULL;
+        $properties->layers = array();
+
+        //process 
+        header('Content-type: text/x-json');
+        header('X-JSON: true');
+        $layers = $selection->GetLayers();
+        $nLayers = $layers->GetCount();
+        echo "/* nLayers:".$nLayers."*/";
+        for ($i=0; $i<$nLayers; $i++) {
+            $oLayer = $layers->GetItem($i);
+            $featureResId = new MgResourceIdentifier($oLayer->GetFeatureSourceId());
+            /* the class that is used for this layer will be used to select  features */
+            $class = $oLayer->GetFeatureClassName();
+
+            /* select the features */
+            $queryOptions = new MgFeatureQueryOptions();
+            
+            //TODO : seems that property mapping breaks the selection ????
+            //could it be that $selection->AddFeatures($layerObj, $featureReader, 0) is
+            //the one causing a problem when the properies are limited ?
+            $mappings = $_SESSION['property_mappings'][$oLayer->GetObjectId()];
+            if (0 && count($mappings) > 0) {
+                foreach($mappings as $name => $value) {
+                    $queryOptions->AddFeatureProperty($name);
+                    //echo "$name $value <br>\n";
+                }
+                $geomName = $oLayer->GetFeatureGeometryName();
+                $queryOptions->AddFeatureProperty($geomName);
+            }
+            
+            $filter = $selection->GenerateFilter($oLayer, $class);
+            $queryOptions->SetFilter($filter);
+            $featureReader = $featureService->SelectFeatures($featureResId, $class, $queryOptions);
+            //$featureReader = $selection->GetSelectedFeatures($oLayer, $class, true );//this doesn't seem to work but would replace much of the above code
+
+            $layerName = $oLayer->GetName();
+            array_push($properties->layers, $layerName);
+
+            $spatialContext = $featureService->GetSpatialContexts($featureResId, true);
+            $srsLayerWkt = false;
+            if($spatialContext != null && $spatialContext->ReadNext() != null) {
+                $srsLayerWkt = $spatialContext->GetCoordinateSystemWkt();
+                /* skip this layer if the srs is empty */
+            }
+            if ($srsLayerWkt == null) {
+                $srsLayerWkt = $srsDefMap;
+            }
+            /* create a coordinate system from the layer's SRS wkt */
+            $srsLayer = $srsFactory->Create($srsLayerWkt);
+
+            // exclude layer if:
+            //  the map is non-arbitrary and the layer is arbitrary or vice-versa
+            //     or
+            //  layer and map are both arbitrary but have different units
+            //
+            $bLayerSrsIsArbitrary = ($srsLayer->GetType() == MgCoordinateSystemType::Arbitrary);
+            $bMapSrsIsArbitrary = ($srsMap->GetType() == MgCoordinateSystemType::Arbitrary);
+            $bComputedProperties = false;
+            $bNeedsTransform = false;
+            if (($bLayerSrsIsArbitrary != $bMapSrsIsArbitrary) ||
+                ($bLayerSrsIsArbitrary && ($srsLayer->GetUnits() != $srsMap->GetUnits()))) {
+                $bComputedProperties = false;
+            } else {
+                $srsTarget = null;
+                $srsXform = null;
+                $bNeedsTransform = ($srsLayer->GetUnitScale() != 1.0);
+            }
+
+            $properties = BuildSelectionArray($featureReader, $layerName, $properties,
+                                              $bComputedProperties,
+                                              $srsLayer, $bNeedsTransform, $oLayer);
+            $featureReader->Close();
+        }
+        
+        $result = NULL;
+        $result->hasSelection = false;
+        if ($layers && $layers->GetCount() >= 0)
+        {
+            $result->hasSelection = true;
+            $oExtents = $selection->GetExtents($featureService);
+            if ($oExtents)
+            {
+                $oMin = $oExtents->GetLowerLeftCoordinate();
+                $oMax = $oExtents->GetUpperRightCoordinate();
+                $result->extents = NULL;
+                $result->extents->minx = $oMin->GetX();
+                $result->extents->miny = $oMin->GetY();
+                $result->extents->maxx = $oMax->GetX();
+                $result->extents->maxy = $oMax->GetY();
+
+                /*keep the full extents of the selection when saving the selection in the session*/
+                $properties->extents = NULL;
+                $properties->extents->minx = $oMin->GetX();
+                $properties->extents->miny = $oMin->GetY();
+                $properties->extents->maxx = $oMax->GetX();
+                $properties->extents->maxy = $oMax->GetY();
+            }
+            $result->layers = array();
+            for ($i=0; $i<$layers->GetCount(); $i++) {
+              $layer = $layers->GetItem($i);
+              $layerName = $layer->GetName();
+              array_push($result->layers, $layerName);
+              $layerClassName = $layer->GetFeatureClassName();
+              $filter = $selection->GenerateFilter($layer, $layerClassName);
+              $a = explode('OR', $filter);
+              $result->$layerName->featureCount = count($a);
+            }
+
+            /*save selection in the session*/
+            $_SESSION['selection_array'] = $properties;
+        }
+        echo var2json($result);
 
 
     } catch(MgException $e) {
-        echo "ClearSelection Exception: " . $e->GetDetails();
+        echo "/* SetSelection Exception: " . $e->GetDetails()."*/";
     }
 
 function GetParameters($params)
 {
-    global $mapName, $sessionId, $selText, $queryInfo;
+    global $selText;
 
-    $mapName = $params['mapname'];
-    $sessionId = $params['session'];
     $selText = UnescapeMagicQuotes($params['selection']);
-    if(isset($params['queryinfo']))
-        $queryInfo = $params['queryinfo'] == "1";
 }
 
 
