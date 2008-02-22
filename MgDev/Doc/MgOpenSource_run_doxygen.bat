@@ -17,10 +17,12 @@ xcopy /s /y "xml_schemas\*"								MgOpensource_WebAPIReference\xml_schemas\
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
 :: Run Doxygen
 
+echo Running Doxygen ...
 doxygen MgOpenSource_Doxyfile > MGOpenSource_run_log.txt
 echo Doxygen generation is complete. The error log is in 'MgOpenSource_warn_log.txt'.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+;: Post Process 
 
 echo Running the post processor ...
 perl -w PostProcessor/post_process.MgOpenSource.pl
