@@ -87,37 +87,41 @@ MgStringCollection* MgServerGetConnectionPropertyValues::GetConnectionPropertyVa
 
     // Connect to provider
     MgServerFeatureConnection msfc(providerName, decryptedPartialConnString);
-    FdoPtr<FdoIConnection> fdoConn = msfc.GetConnection();
-    CHECKNULL((FdoIConnection*)fdoConn, L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues");
-
-    // Get Connection Info
-    FdoPtr<FdoIConnectionInfo> connInfo = fdoConn->GetConnectionInfo();
-    CHECKNULL((FdoIConnectionInfo*)connInfo, L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues");
-
-    // Get Connection Property Dictionary
-    FdoPtr<FdoIConnectionPropertyDictionary> fdoConnPropDict = connInfo->GetConnectionProperties();
-    CHECKNULL((FdoIConnectionPropertyDictionary*)fdoConnPropDict, L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues");
-
-    bool enumerable = fdoConnPropDict->IsPropertyEnumerable((FdoString*)propertyName.c_str());
-    if (!enumerable)
     {
-        MgStringCollection arguments;
-        arguments.Add(L"2");
-        arguments.Add(propertyName);
+        // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up before the parent object
+        // otherwise it leaves the FDO connection marked as still in use.
+        FdoPtr<FdoIConnection> fdoConn = msfc.GetConnection();
+        CHECKNULL((FdoIConnection*)fdoConn, L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues");
 
-        throw new MgInvalidArgumentException(L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues",
-            __LINE__, __WFILE__, &arguments, L"MgPropertyNotEnumerable", NULL);
-    }
+        // Get Connection Info
+        FdoPtr<FdoIConnectionInfo> connInfo = fdoConn->GetConnectionInfo();
+        CHECKNULL((FdoIConnectionInfo*)connInfo, L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues");
 
-    FdoInt32 cnt = 0;
-    FdoString** propertyValues = fdoConnPropDict->EnumeratePropertyValues((FdoString*)propertyName.c_str(), cnt);
+        // Get Connection Property Dictionary
+        FdoPtr<FdoIConnectionPropertyDictionary> fdoConnPropDict = connInfo->GetConnectionProperties();
+        CHECKNULL((FdoIConnectionPropertyDictionary*)fdoConnPropDict, L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues");
 
-    if (propertyValues != NULL && cnt > 0)
-    {
-        stringCol = new MgStringCollection();
-        for( FdoInt32 i=0; i < cnt; i++ )
+        bool enumerable = fdoConnPropDict->IsPropertyEnumerable((FdoString*)propertyName.c_str());
+        if (!enumerable)
         {
-            stringCol->Add(propertyValues[i]);
+            MgStringCollection arguments;
+            arguments.Add(L"2");
+            arguments.Add(propertyName);
+
+            throw new MgInvalidArgumentException(L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues",
+                __LINE__, __WFILE__, &arguments, L"MgPropertyNotEnumerable", NULL);
+        }
+
+        FdoInt32 cnt = 0;
+        FdoString** propertyValues = fdoConnPropDict->EnumeratePropertyValues((FdoString*)propertyName.c_str(), cnt);
+
+        if (propertyValues != NULL && cnt > 0)
+        {
+            stringCol = new MgStringCollection();
+            for( FdoInt32 i=0; i < cnt; i++ )
+            {
+                stringCol->Add(propertyValues[i]);
+            }
         }
     }
 
