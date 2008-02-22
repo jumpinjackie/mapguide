@@ -369,14 +369,9 @@ RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeatur
         STRING func = clipFunc->ToString();
         options->AddComputedProperty(L"clipped_raster", func);
 
-        //TODO: do we really need the spatial filter for RFP layers?
-        //If not, we can safely remove that code which will effectively
-        //make the whole raster request provider-agnostic
-        if (geom == L"Image")
-        {
-            options->SetSpatialFilter(geom, poly, MgFeatureSpatialOperations::Intersects);
-        }
-        else if (geom == L"Raster")
+        options->SetSpatialFilter(geom, poly, MgFeatureSpatialOperations::Intersects);
+
+        if (geom == L"Raster")
         {
             //WMS provider raster property is called "Raster"
             options->AddFeatureProperty(L"FeatId");
