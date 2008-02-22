@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>OverviewMap</Type>
+  <LocalizedType>Overview Map</LocalizedType>
   <Description>A key map to locate the vewing area of the primary map</Description>
   <Location></Location>
   <Label>Overview map</Label>

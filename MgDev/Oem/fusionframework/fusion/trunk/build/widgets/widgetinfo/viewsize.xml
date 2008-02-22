@@ -1,6 +1,7 @@
 <!-- this widget doesn't work the same was as the scale entry in the existing AJAX viewer, so we may make a new one -->
 <WidgetInfo>
   <Type>ViewSize</Type>
+  <LocalizedType>View Size</LocalizedType>
   <Description>Display the size of the current view in user-definable units</Description>
   <Location></Location>
   <Label>ViewSize</Label>

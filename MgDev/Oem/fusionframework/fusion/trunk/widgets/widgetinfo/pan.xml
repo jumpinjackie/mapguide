@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>Pan</Type>
+  <LocalizedType>Pan</LocalizedType>
   <Description>Pans the map</Description>
   <Location></Location>
   <Label>Pan</Label>

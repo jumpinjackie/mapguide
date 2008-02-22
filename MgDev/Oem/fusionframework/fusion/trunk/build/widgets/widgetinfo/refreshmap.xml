@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>RefreshMap</Type>
+  <LocalizedType>Refresh Map</LocalizedType>
   <Description>A widget that redraws the map</Description>
   <Location></Location>
   <Label>Refresh</Label>

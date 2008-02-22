@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>CursorPosition</Type>
+  <LocalizedType>Cursor Position</LocalizedType>
   <Description>Provides dynamic cursor tracking as it moves over the map</Description>
   <Label>CursorPosition</Label>
   <Tooltip>this will display the cursor position</Tooltip>
