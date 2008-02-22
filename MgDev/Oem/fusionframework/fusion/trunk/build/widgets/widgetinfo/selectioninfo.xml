@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>SelectionInfo</Type>
+  <LocalizedType>Selection Info</LocalizedType>
   <Description>Displays the number of features and number of layers in the current selection.</Description>
   <Location></Location>
   <Label>Selection info</Label>

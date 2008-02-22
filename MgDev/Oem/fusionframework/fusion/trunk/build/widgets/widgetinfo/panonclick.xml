@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>PanOnClick</Type>
+  <LocalizedType>Pan on Click</LocalizedType>
   <Description>Pans the map in the specified diretion on a click</Description>
   <Location></Location>
   <Label>Pan on click</Label>

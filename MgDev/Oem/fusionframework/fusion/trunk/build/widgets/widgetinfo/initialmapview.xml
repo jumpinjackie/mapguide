@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>InitialMapView</Type>
+  <LocalizedType>Initial Map View</LocalizedType>
   <Description>A widget that will zoom the map to the full extents</Description>
   <Location></Location>
   <Label>Zoom Extents</Label>

@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>Select</Type>
+  <LocalizedType>Select</LocalizedType>
   <Description>A widget that allows selection of features on a map</Description>
   <Location></Location>
   <Label>Select</Label>

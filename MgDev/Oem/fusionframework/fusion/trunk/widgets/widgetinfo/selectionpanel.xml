@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>SelectionPanel</Type>
+  <LocalizedType>Selection Panel</LocalizedType>
   <Description>The SelectionPanel widget displays attributes for the features that are selected on the map.</Description>
   <Location></Location>
   <Label>Selection Panel</Label>

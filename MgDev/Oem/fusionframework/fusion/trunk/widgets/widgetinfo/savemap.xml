@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>SaveMap</Type>
+  <LocalizedType>Save Map</LocalizedType>
   <Description>A widget to save the map as an image</Description>
   <Label>Save map</Label>
   <Tooltip>Click to save the map as an image</Tooltip>

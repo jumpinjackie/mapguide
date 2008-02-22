@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>InvokeScript</Type>
+  <LocalizedType>Invoke Script</LocalizedType>
   <Description>A widget to execute arbitrary javascript</Description>
   <Location></Location>
   <Label>Invoke script</Label>

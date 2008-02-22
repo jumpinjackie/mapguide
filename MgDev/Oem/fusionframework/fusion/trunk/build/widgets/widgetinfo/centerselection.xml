@@ -1,5 +1,6 @@
 <WidgetInfo>
   <Type>CenterSelection</Type>
+  <LocalizedType>Center Selection</LocalizedType>
   <Description>Center the current selection, if any, but maintain the current scale if possible. Zoom out if not</Description>
   <Location></Location>
   <Label>Center selection</Label>
