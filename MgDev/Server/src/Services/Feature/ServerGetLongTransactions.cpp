@@ -46,53 +46,57 @@ MgLongTransactionReader* MgServerGetLongTransactions::GetLongTransactions(MgReso
     MgServerFeatureConnection msfc(resId);
 
     // connection must be open to retrieve list of active contexts
-    if ( !msfc.IsConnectionOpen() )
+    if ( msfc.IsConnectionOpen() )
+    {
+        // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up before the parent object
+        // otherwise it leaves the FDO connection marked as still in use.
+        FdoPtr<FdoIConnection> fdoConn = msfc.GetConnection();
+        m_providerName = msfc.GetProviderName();
+
+        // Check whether command is supported by provider
+        if (!msfc.SupportsCommand((INT32)FdoCommandType_GetLongTransactions))
+        {
+            // TODO: specify which argument and message, once we have the mechanism
+            STRING message = MgServerFeatureUtil::GetMessage(L"MgCommandNotSupported");
+            throw new MgInvalidOperationException(L"MgServerGetLongTransactions.GetLongTransactions", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        FdoPtr<FdoIGetLongTransactions> fdoCommand = (FdoIGetLongTransactions*)fdoConn->CreateCommand(FdoCommandType_GetLongTransactions);
+        CHECKNULL((FdoIGetLongTransactions*)fdoCommand, L"MgServerGetLongTransactions.GetLongTransactions");
+
+        // Execute the command
+        FdoPtr<FdoILongTransactionReader> longTransactionReader = fdoCommand->Execute();
+        CHECKNULL((FdoILongTransactionReader*)longTransactionReader, L"MgServerGetLongTransactions.GetLongTransactions");
+
+        mgLongTransactionReader = new MgLongTransactionReader();
+        while (longTransactionReader->ReadNext())
+        {
+            // If only active long transaction is required skip all others
+            if (bActiveOnly)
+            {
+                if (!longTransactionReader->IsActive())
+                    continue;
+            }
+
+            // Set providername for which long transaction reader is executed
+            mgLongTransactionReader->SetProviderName(m_providerName);
+
+            // Add transaction data to the long transaction reader
+            Ptr<MgLongTransactionData> longTransactionData = GetLongTransactionData(longTransactionReader);
+            CHECKNULL((MgLongTransactionData*)longTransactionData, L"MgServerGetLongTransactions.GetLongTransactions");
+            mgLongTransactionReader->AddLongTransactionData(longTransactionData);
+
+            // If only active long transaction is required skip all others
+            if (bActiveOnly)
+            {
+                if (longTransactionReader->IsActive())
+                    break;
+            }
+        }
+    }
+    else
     {
         throw new MgConnectionFailedException(L"MgServerGetLongTransactions::GetLongTransactions()", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    FdoPtr<FdoIConnection> fdoConn = msfc.GetConnection();
-    m_providerName = msfc.GetProviderName();
-
-    // Check whether command is supported by provider
-    if (!msfc.SupportsCommand((INT32)FdoCommandType_GetLongTransactions))
-    {
-        // TODO: specify which argument and message, once we have the mechanism
-        STRING message = MgServerFeatureUtil::GetMessage(L"MgCommandNotSupported");
-        throw new MgInvalidOperationException(L"MgServerGetLongTransactions.GetLongTransactions", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    FdoPtr<FdoIGetLongTransactions> fdoCommand = (FdoIGetLongTransactions*)fdoConn->CreateCommand(FdoCommandType_GetLongTransactions);
-    CHECKNULL((FdoIGetLongTransactions*)fdoCommand, L"MgServerGetLongTransactions.GetLongTransactions");
-
-    // Execute the command
-    FdoPtr<FdoILongTransactionReader> longTransactionReader = fdoCommand->Execute();
-    CHECKNULL((FdoILongTransactionReader*)longTransactionReader, L"MgServerGetLongTransactions.GetLongTransactions");
-
-    mgLongTransactionReader = new MgLongTransactionReader();
-    while (longTransactionReader->ReadNext())
-    {
-        // If only active long transaction is required skip all others
-        if (bActiveOnly)
-        {
-            if (!longTransactionReader->IsActive())
-                continue;
-        }
-
-        // Set providername for which long transaction reader is executed
-        mgLongTransactionReader->SetProviderName(m_providerName);
-
-        // Add transaction data to the long transaction reader
-        Ptr<MgLongTransactionData> longTransactionData = GetLongTransactionData(longTransactionReader);
-        CHECKNULL((MgLongTransactionData*)longTransactionData, L"MgServerGetLongTransactions.GetLongTransactions");
-        mgLongTransactionReader->AddLongTransactionData(longTransactionData);
-
-        // If only active long transaction is required skip all others
-        if (bActiveOnly)
-        {
-            if (longTransactionReader->IsActive())
-                break;
-        }
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetLongTransactions.GetLongTransactions")

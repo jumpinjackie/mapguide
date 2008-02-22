@@ -67,96 +67,98 @@ void MgServerCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* reso
     STRING sdfProvider = L"OSGeo.SDF"; // NOXLATE
     STRING sdfConnString = L""; // NOXLATE
     MgServerFeatureConnection msfc(sdfProvider, sdfConnString);
-
-    FdoPtr<FdoIConnection> conn =  msfc.GetConnection();
-
-    if (conn == NULL)
     {
-        throw new MgConnectionFailedException(L"MgServerCreateFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+        // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up before the parent object
+        // otherwise it leaves the FDO connection marked as still in use.
+        FdoPtr<FdoIConnection> conn =  msfc.GetConnection();
+
+        if (conn == NULL)
+        {
+            throw new MgConnectionFailedException(L"MgServerCreateFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
 
 
-    //TSW TODO: Create temporary file name here...
-    STRING tempFileName = MgFileUtil::GenerateTempFileName(true, STRING(L"tmp"), STRING(L"sdf"));
+        //TSW TODO: Create temporary file name here...
+        STRING tempFileName = MgFileUtil::GenerateTempFileName(true, STRING(L"tmp"), STRING(L"sdf"));
 
-    // Use the custom command to initially create the datastore
-    FdoPtr<FdoICreateDataStore> createDsCmd = static_cast<FdoICreateDataStore*>(conn->CreateCommand(FdoCommandType_CreateDataStore));
-    FdoPtr<FdoIDataStorePropertyDictionary> dsProp = createDsCmd->GetDataStoreProperties();
-    dsProp->SetProperty (L"File", tempFileName.c_str());
-    createDsCmd->Execute();
+        // Use the custom command to initially create the datastore
+        FdoPtr<FdoICreateDataStore> createDsCmd = static_cast<FdoICreateDataStore*>(conn->CreateCommand(FdoCommandType_CreateDataStore));
+        FdoPtr<FdoIDataStorePropertyDictionary> dsProp = createDsCmd->GetDataStoreProperties();
+        dsProp->SetProperty (L"File", tempFileName.c_str());
+        createDsCmd->Execute();
 
-    //now open the connection to the newly created file
-    STRING connstr = std::wstring(L"File=") + tempFileName; // NOXLATE
-    conn->SetConnectionString(connstr.c_str());
+        //now open the connection to the newly created file
+        STRING connstr = std::wstring(L"File=") + tempFileName; // NOXLATE
+        conn->SetConnectionString(connstr.c_str());
 
-    conn->Open();
+        conn->Open();
 
-    // Create the spatialcontext
-    FdoPtr<FdoICreateSpatialContext> spatialContext = (FdoICreateSpatialContext*)conn->CreateCommand(FdoCommandType_CreateSpatialContext);
-    spatialContext->SetCoordinateSystemWkt(params->GetCoordinateSystemWkt().c_str());
-    spatialContext->SetDescription(params->GetSpatialContextDescription().c_str());
-    spatialContext->SetName(params->GetSpatialContextName().c_str());
-    spatialContext->SetXYTolerance(params->GetXYTolerance());
-    spatialContext->SetZTolerance(params->GetZTolerance());
-    spatialContext->Execute();
+        // Create the spatialcontext
+        FdoPtr<FdoICreateSpatialContext> spatialContext = (FdoICreateSpatialContext*)conn->CreateCommand(FdoCommandType_CreateSpatialContext);
+        spatialContext->SetCoordinateSystemWkt(params->GetCoordinateSystemWkt().c_str());
+        spatialContext->SetDescription(params->GetSpatialContextDescription().c_str());
+        spatialContext->SetName(params->GetSpatialContextName().c_str());
+        spatialContext->SetXYTolerance(params->GetXYTolerance());
+        spatialContext->SetZTolerance(params->GetZTolerance());
+        spatialContext->Execute();
 
-    // Create and set the schema
-    MgServerDescribeSchema descSchema;
-    Ptr<MgFeatureSchema> featureSchema = params->GetFeatureSchema();
-    FdoPtr<FdoFeatureSchema> fdoSchema = descSchema.GetFdoFeatureSchema(featureSchema);
-    FdoPtr<FdoIApplySchema> applyschema = (FdoIApplySchema*)conn->CreateCommand(FdoCommandType_ApplySchema);
-    applyschema->SetFeatureSchema(fdoSchema);
-    applyschema->Execute();
+        // Create and set the schema
+        MgServerDescribeSchema descSchema;
+        Ptr<MgFeatureSchema> featureSchema = params->GetFeatureSchema();
+        FdoPtr<FdoFeatureSchema> fdoSchema = descSchema.GetFdoFeatureSchema(featureSchema);
+        FdoPtr<FdoIApplySchema> applyschema = (FdoIApplySchema*)conn->CreateCommand(FdoCommandType_ApplySchema);
+        applyschema->SetFeatureSchema(fdoSchema);
+        applyschema->Execute();
 
-    // In general, the Close() should not be called directly on the FdoConnection
-    // because connections should be pooled by the FdoConnectionManager.
-    // In this case, the MgServerFeatureConnection object was created with an
-    // empty connection string, which leads to the connection to be unmanaged by the pool.
-    // Thus, it is ok to call Close() here.
-    conn->Close();
+        // In general, the Close() should not be called directly on the FdoConnection
+        // because connections should be pooled by the FdoConnectionManager.
+        // In this case, the MgServerFeatureConnection object was created with an
+        // empty connection string, which leads to the connection to be unmanaged by the pool.
+        // Thus, it is ok to call Close() here.
+        conn->Close();
 
-    // Create a FeatureSource for the new sdf
-    // This is hardcoded and nasty.  Is there a better way to implement this?
-    // NOXLATE
+        // Create a FeatureSource for the new sdf
+        // This is hardcoded and nasty.  Is there a better way to implement this?
+        // NOXLATE
 
-    STRING resourceFile = resource->GetName() + L".sdf";
+        STRING resourceFile = resource->GetName() + L".sdf";
 
-    STRING featureSource = L"<FeatureSource xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"FeatureSource-1.0.0.xsd\" version=\"1.0.0\">\n\
+        STRING featureSource = L"<FeatureSource xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"FeatureSource-1.0.0.xsd\" version=\"1.0.0\">\n\
 <Provider>OSGeo.SDF</Provider>\n\
   <Parameter>\n\
     <Name>File</Name>\n";
 
-    featureSource += L"     <Value>%MG_DATA_FILE_PATH%" + resourceFile + L"</Value>\n";
-    featureSource += L"     </Parameter>\n\
+        featureSource += L"     <Value>%MG_DATA_FILE_PATH%" + resourceFile + L"</Value>\n";
+        featureSource += L"     </Parameter>\n\
   <Parameter>\n\
     <Name>ReadOnly</Name>\n\
     <Value>FALSE</Value>\n\
   </Parameter>\n\
 </FeatureSource>";
 
-    // Use the Resource Service to create the new feature source.
+        // Use the Resource Service to create the new feature source.
 
-    string utf8Text = MgUtil::WideCharToMultiByte(featureSource);
+        string utf8Text = MgUtil::WideCharToMultiByte(featureSource);
 
-    Ptr<MgByteSource> xmlSource = new MgByteSource((BYTE_ARRAY_IN) utf8Text.c_str(), (INT32)utf8Text.length());
-    Ptr<MgByteReader> xmlReader = xmlSource->GetReader();
+        Ptr<MgByteSource> xmlSource = new MgByteSource((BYTE_ARRAY_IN) utf8Text.c_str(), (INT32)utf8Text.length());
+        Ptr<MgByteReader> xmlReader = xmlSource->GetReader();
 
-    Ptr<MgByteSource> sdfSource = new MgByteSource(tempFileName, true);
-    Ptr<MgByteReader> sdfReader = sdfSource->GetReader();
+        Ptr<MgByteSource> sdfSource = new MgByteSource(tempFileName, true);
+        Ptr<MgByteReader> sdfReader = sdfSource->GetReader();
 
-    MgServiceManager* serviceMan = MgServiceManager::GetInstance();
-    Ptr<MgResourceService> resourceService;
-    if (NULL != serviceMan)
-    {
-        resourceService = dynamic_cast<MgResourceService*>(
-        serviceMan->RequestService(MgServiceType::ResourceService));
+        MgServiceManager* serviceMan = MgServiceManager::GetInstance();
+        Ptr<MgResourceService> resourceService;
+        if (NULL != serviceMan)
+        {
+            resourceService = dynamic_cast<MgResourceService*>(
+            serviceMan->RequestService(MgServiceType::ResourceService));
+        }
+
+        if (NULL != (MgResourceService*)resourceService)
+        {
+            resourceService->SetResource(resource, xmlReader, NULL);
+            resourceService->SetResourceData(resource, resourceFile, MgResourceDataType::File, sdfReader);
+        }
     }
-
-    if (NULL != (MgResourceService*)resourceService)
-    {
-        resourceService->SetResource(resource, xmlReader, NULL);
-        resourceService->SetResourceData(resource, resourceFile, MgResourceDataType::File, sdfReader);
-    }
-
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerCreateFeatureSource.CreateFeatureSource")
 }

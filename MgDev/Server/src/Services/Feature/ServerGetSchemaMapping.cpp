@@ -37,80 +37,81 @@ MgByteReader* MgServerGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName
 
     MG_FEATURE_SERVICE_TRY()
 
-    // Connect to the provider
-    FdoPtr<FdoIConnection> fdoConnection;
-
     STRING data = partialConnString;
     MgUnmanagedDataManager::SubstituteDataPathAliases(data);
 
+    // Connect to the provider
     MgServerFeatureConnection msfc(providerName, data);
     if (( msfc.IsConnectionOpen() ) || ( msfc.IsConnectionPending() ))
     {
+        // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up before the parent object
+        // otherwise it leaves the FDO connection marked as still in use.
+        FdoPtr<FdoIConnection> fdoConnection;
         fdoConnection = msfc.GetConnection();
+
+        // Create the memory stream
+        FdoIoMemoryStreamP fmis = FdoIoMemoryStream::Create();
+        CHECKNULL((FdoIoMemoryStream*)fmis, L"MgServerGetSchemaMapping.GetSchemaMapping");
+
+        FdoXmlWriterP writer = FdoXmlWriter::Create(fmis);
+
+        FdoPtr<FdoXmlSpatialContextFlags> flags = FdoXmlSpatialContextFlags::Create();
+        flags->SetIncludeDefault(true);
+
+        // Serialize the spatial contexts
+        FdoXmlSpatialContextSerializer::XmlSerialize(
+            fdoConnection,
+            FdoXmlSpatialContextWriterP(
+                FdoXmlSpatialContextWriter::Create(writer)
+            ),
+            flags
+        );
+
+        // Get the schema
+        FdoPtr<FdoIDescribeSchema> fdoDescribeSchemaCommand = (FdoIDescribeSchema*)fdoConnection->CreateCommand(FdoCommandType_DescribeSchema);
+        CHECKNULL((FdoIDescribeSchema*)fdoDescribeSchemaCommand, L"MgServerGetSchemaMapping.GetSchemaMapping");
+
+        // Execute the command
+        FdoPtr<FdoFeatureSchemaCollection> fdoFeatureSchemaCollection;
+        fdoFeatureSchemaCollection = fdoDescribeSchemaCommand->Execute();
+        CHECKNULL((FdoFeatureSchemaCollection*)fdoFeatureSchemaCollection, L"MgServerGetSchemaMapping.GetSchemaMapping");
+
+        // Write to memory stream
+        fdoFeatureSchemaCollection->WriteXml(writer);
+
+        // Get the schema mapping
+        FdoPtr<FdoIDescribeSchemaMapping> fdoDescribeSchemaMappingCommand = (FdoIDescribeSchemaMapping*)fdoConnection->CreateCommand(FdoCommandType_DescribeSchemaMapping);
+        CHECKNULL((FdoIDescribeSchemaMapping*)fdoDescribeSchemaMappingCommand, L"MgServerGetSchemaMapping.GetSchemaMapping");
+
+        fdoDescribeSchemaMappingCommand->SetIncludeDefaults(true);
+
+        // Execute the command
+        FdoPtr<FdoPhysicalSchemaMappingCollection> fdoPhysicalSchemaMappingCollection;
+        fdoPhysicalSchemaMappingCollection = fdoDescribeSchemaMappingCommand->Execute();
+        CHECKNULL((FdoPhysicalSchemaMappingCollection*)fdoPhysicalSchemaMappingCollection, L"MgServerGetSchemaMapping.GetSchemaMapping");
+
+        // Write to memory stream
+        fdoPhysicalSchemaMappingCollection->WriteXml(writer);
+
+        // Close the XML writer
+        writer->Close();
+
+        fmis->Reset(); // TODO: We should not be calling reset here. A defect in FDO should be fixed.
+
+        FdoInt64 len = fmis->GetLength();
+        m_bytes = new FdoByte[(size_t)len];
+        CHECKNULL(m_bytes, L"MgServerGetSchemaMapping.GetSchemaMapping");
+
+        fmis->Read(m_bytes, (FdoSize)len);
+
+        Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)m_bytes, (INT32)len);
+        byteSource->SetMimeType(MgMimeType::Xml);
+        byteReader = byteSource->GetReader();
     }
     else
     {
         throw new MgConnectionFailedException(L"MgServerGetSchemaMapping::GetSchemaMapping()", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-
-    // Create the memory stream
-    FdoIoMemoryStreamP fmis = FdoIoMemoryStream::Create();
-    CHECKNULL((FdoIoMemoryStream*)fmis, L"MgServerGetSchemaMapping.GetSchemaMapping");
-
-    FdoXmlWriterP writer = FdoXmlWriter::Create(fmis);
-
-    FdoPtr<FdoXmlSpatialContextFlags> flags = FdoXmlSpatialContextFlags::Create();
-    flags->SetIncludeDefault(true);
-
-    // Serialize the spatial contexts
-    FdoXmlSpatialContextSerializer::XmlSerialize(
-        fdoConnection,
-        FdoXmlSpatialContextWriterP(
-            FdoXmlSpatialContextWriter::Create(writer)
-        ),
-        flags
-    );
-
-    // Get the schema
-    FdoPtr<FdoIDescribeSchema> fdoDescribeSchemaCommand = (FdoIDescribeSchema*)fdoConnection->CreateCommand(FdoCommandType_DescribeSchema);
-    CHECKNULL((FdoIDescribeSchema*)fdoDescribeSchemaCommand, L"MgServerGetSchemaMapping.GetSchemaMapping");
-
-    // Execute the command
-    FdoPtr<FdoFeatureSchemaCollection> fdoFeatureSchemaCollection;
-    fdoFeatureSchemaCollection = fdoDescribeSchemaCommand->Execute();
-    CHECKNULL((FdoFeatureSchemaCollection*)fdoFeatureSchemaCollection, L"MgServerGetSchemaMapping.GetSchemaMapping");
-
-    // Write to memory stream
-    fdoFeatureSchemaCollection->WriteXml(writer);
-
-    // Get the schema mapping
-    FdoPtr<FdoIDescribeSchemaMapping> fdoDescribeSchemaMappingCommand = (FdoIDescribeSchemaMapping*)fdoConnection->CreateCommand(FdoCommandType_DescribeSchemaMapping);
-    CHECKNULL((FdoIDescribeSchemaMapping*)fdoDescribeSchemaMappingCommand, L"MgServerGetSchemaMapping.GetSchemaMapping");
-
-    fdoDescribeSchemaMappingCommand->SetIncludeDefaults(true);
-
-    // Execute the command
-    FdoPtr<FdoPhysicalSchemaMappingCollection> fdoPhysicalSchemaMappingCollection;
-    fdoPhysicalSchemaMappingCollection = fdoDescribeSchemaMappingCommand->Execute();
-    CHECKNULL((FdoPhysicalSchemaMappingCollection*)fdoPhysicalSchemaMappingCollection, L"MgServerGetSchemaMapping.GetSchemaMapping");
-
-    // Write to memory stream
-    fdoPhysicalSchemaMappingCollection->WriteXml(writer);
-
-    // Close the XML writer
-    writer->Close();
-
-    fmis->Reset(); // TODO: We should not be calling reset here. A defect in FDO should be fixed.
-
-    FdoInt64 len = fmis->GetLength();
-    m_bytes = new FdoByte[(size_t)len];
-    CHECKNULL(m_bytes, L"MgServerGetSchemaMapping.GetSchemaMapping");
-
-    fmis->Read(m_bytes, (FdoSize)len);
-
-    Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)m_bytes, (INT32)len);
-    byteSource->SetMimeType(MgMimeType::Xml);
-    byteReader = byteSource->GetReader();
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetSchemaMapping.GetSchemaMapping")
 

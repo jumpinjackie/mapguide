@@ -46,61 +46,65 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
         MgServerFeatureConnection msfc(resId);
 
         // connection must be open to retrieve list of active contexts
-        if ( !msfc.IsConnectionOpen() )
+        if ( msfc.IsConnectionOpen() )
+        {
+            // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up before the parent object
+            // otherwise it leaves the FDO connection marked as still in use.
+            FdoPtr<FdoIConnection> fdoConn = msfc.GetConnection();
+            m_providerName = msfc.GetProviderName();
+
+            MgCacheManager* cacheManager = MgCacheManager::GetInstance();
+            Ptr<MgSpatialContextCacheItem> cacheItem = cacheManager->GetSpatialContextCacheItem(resId);
+            MgSpatialContextInfo* spatialContextInfo = cacheItem->Get();
+
+            // Check whether command is supported by provider
+            if (!msfc.SupportsCommand((INT32)FdoCommandType_GetSpatialContexts))
+            {
+                // TODO: specify which argument and message, once we have the mechanism
+                STRING message = MgServerFeatureUtil::GetMessage(L"MgCommandNotSupported");
+                throw new MgInvalidOperationException(L"MgServerGetSpatialContexts.GetSpatialContexts", __LINE__, __WFILE__, NULL, L"", NULL);
+            }
+
+            FdoPtr<FdoIGetSpatialContexts> fdoCommand = (FdoIGetSpatialContexts*)fdoConn->CreateCommand(FdoCommandType_GetSpatialContexts);
+            CHECKNULL((FdoIGetSpatialContexts*)fdoCommand, L"MgServerGetSpatialContexts.GetSpatialContexts");
+
+            // Execute the command
+            FdoPtr<FdoISpatialContextReader> spatialReader = fdoCommand->Execute();
+            CHECKNULL((FdoISpatialContextReader*)spatialReader, L"MgServerGetSpatialContexts.GetSpatialContexts");
+
+            mgSpatialContextReader = new MgSpatialContextReader();
+            while (spatialReader->ReadNext())
+            {
+                // If only active spatial context is required skip all others
+                if (bActiveOnly)
+                {
+                    if (!spatialReader->IsActive())
+                        continue;
+                }
+
+                // Set providername for which spatial reader is executed
+                mgSpatialContextReader->SetProviderName(m_providerName);
+
+                Ptr<MgSpatialContextData> spatialData = GetSpatialContextData(spatialReader, spatialContextInfo);
+                CHECKNULL((MgSpatialContextData*)spatialData, L"MgServerGetSpatialContexts.GetSpatialContexts");
+
+                // Add spatial data to the spatialcontext reader
+                mgSpatialContextReader->AddSpatialData(spatialData);
+
+                // If only active spatial context is required skip all others
+                if (bActiveOnly)
+                {
+                    if (spatialReader->IsActive())
+                        break;
+                }
+            }
+
+            m_featureServiceCache->SetSpatialContextReader(resId, bActiveOnly, mgSpatialContextReader.p);
+        }
+        else
         {
             throw new MgConnectionFailedException(L"MgServerGetSpatialContexts::GetSpatialContexts()", __LINE__, __WFILE__, NULL, L"", NULL);
         }
-
-        FdoPtr<FdoIConnection> fdoConn = msfc.GetConnection();
-        m_providerName = msfc.GetProviderName();
-
-        MgCacheManager* cacheManager = MgCacheManager::GetInstance();
-        Ptr<MgSpatialContextCacheItem> cacheItem = cacheManager->GetSpatialContextCacheItem(resId);
-        MgSpatialContextInfo* spatialContextInfo = cacheItem->Get();
-
-        // Check whether command is supported by provider
-        if (!msfc.SupportsCommand((INT32)FdoCommandType_GetSpatialContexts))
-        {
-            // TODO: specify which argument and message, once we have the mechanism
-            STRING message = MgServerFeatureUtil::GetMessage(L"MgCommandNotSupported");
-            throw new MgInvalidOperationException(L"MgServerGetSpatialContexts.GetSpatialContexts", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        FdoPtr<FdoIGetSpatialContexts> fdoCommand = (FdoIGetSpatialContexts*)fdoConn->CreateCommand(FdoCommandType_GetSpatialContexts);
-        CHECKNULL((FdoIGetSpatialContexts*)fdoCommand, L"MgServerGetSpatialContexts.GetSpatialContexts");
-
-        // Execute the command
-        FdoPtr<FdoISpatialContextReader> spatialReader = fdoCommand->Execute();
-        CHECKNULL((FdoISpatialContextReader*)spatialReader, L"MgServerGetSpatialContexts.GetSpatialContexts");
-
-        mgSpatialContextReader = new MgSpatialContextReader();
-        while (spatialReader->ReadNext())
-        {
-            // If only active spatial context is required skip all others
-            if (bActiveOnly)
-            {
-                if (!spatialReader->IsActive())
-                    continue;
-            }
-
-            // Set providername for which spatial reader is executed
-            mgSpatialContextReader->SetProviderName(m_providerName);
-
-            Ptr<MgSpatialContextData> spatialData = GetSpatialContextData(spatialReader, spatialContextInfo);
-            CHECKNULL((MgSpatialContextData*)spatialData, L"MgServerGetSpatialContexts.GetSpatialContexts");
-
-            // Add spatial data to the spatialcontext reader
-            mgSpatialContextReader->AddSpatialData(spatialData);
-
-            // If only active spatial context is required skip all others
-            if (bActiveOnly)
-            {
-                if (spatialReader->IsActive())
-                    break;
-            }
-        }
-
-        m_featureServiceCache->SetSpatialContextReader(resId, bActiveOnly, mgSpatialContextReader.p);
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetSpatialContexts.GetSpatialContexts")

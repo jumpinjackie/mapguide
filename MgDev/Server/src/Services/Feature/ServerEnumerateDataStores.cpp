@@ -39,53 +39,55 @@ MgByteReader* MgServerEnumerateDataStores::EnumerateDataStores(CREFSTRING provid
     MG_FEATURE_SERVICE_TRY()
 
     // Connect to the provider
-    FdoPtr<FdoIConnection> fdoConnection;
     FdoPtr<FdoIDataStoreReader> fdoDataStoreReader;
 
     MgServerFeatureConnection msfc(providerName, partialConnString);
     if (( msfc.IsConnectionOpen() ) || ( msfc.IsConnectionPending() ))
     {
+        // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up before the parent object
+        // otherwise it leaves the FDO connection marked as still in use.
+        FdoPtr<FdoIConnection> fdoConnection;
         fdoConnection = msfc.GetConnection();
+
+        FdoPtr<FdoIListDataStores> fdoCommand = (FdoIListDataStores*)fdoConnection->CreateCommand(FdoCommandType_ListDataStores);
+        CHECKNULL((FdoIListDataStores*)fdoCommand, L"MgServerEnumerateDataStores.EnumerateDataStores");
+
+        fdoCommand->SetIncludeNonFdoEnabledDatastores(true);
+
+        // Execute the command
+        fdoDataStoreReader = fdoCommand->Execute();
+        CHECKNULL((FdoIDataStoreReader*)fdoDataStoreReader, L"MgServerEnumerateDataStores.EnumerateDataStores");
+
+        // Add Feature Provider element
+        DOMElement* rootElem = m_xmlUtil->GetRootNode();
+
+        while(fdoDataStoreReader->ReadNext())
+        {
+            FdoString* dataStoreName = fdoDataStoreReader->GetName();
+            const char *name = MgUtil::WideCharToMultiByte(dataStoreName);
+
+            DOMElement* featureProviderElem = m_xmlUtil->AddChildNode(rootElem, "DataStore" /* NOXLATE */);
+
+            // Add DataStore Name
+            m_xmlUtil->AddTextNode(featureProviderElem, "Name" /* NOXLATE */, name);
+
+            // Add FDO Enabled
+            m_xmlUtil->AddTextNode(featureProviderElem, "FdoEnabled" /* NOXLATE */, fdoDataStoreReader->GetIsFdoEnabled());
+
+            delete[] name;
+            name = NULL;
+        }
+
+        // Close the reader
+        fdoDataStoreReader->Close();
+
+        // Convert the XML to a byte reader
+        byteReader = m_xmlUtil->ToReader();
     }
     else
     {
         throw new MgConnectionFailedException(L"MgServerEnumerateDataStores::EnumerateDataStores()", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-
-    FdoPtr<FdoIListDataStores> fdoCommand = (FdoIListDataStores*)fdoConnection->CreateCommand(FdoCommandType_ListDataStores);
-    CHECKNULL((FdoIListDataStores*)fdoCommand, L"MgServerEnumerateDataStores.EnumerateDataStores");
-
-    fdoCommand->SetIncludeNonFdoEnabledDatastores(true);
-
-    // Execute the command
-    fdoDataStoreReader = fdoCommand->Execute();
-    CHECKNULL((FdoIDataStoreReader*)fdoDataStoreReader, L"MgServerEnumerateDataStores.EnumerateDataStores");
-
-    // Add Feature Provider element
-    DOMElement* rootElem = m_xmlUtil->GetRootNode();
-
-    while(fdoDataStoreReader->ReadNext())
-    {
-        FdoString* dataStoreName = fdoDataStoreReader->GetName();
-        const char *name = MgUtil::WideCharToMultiByte(dataStoreName);
-
-        DOMElement* featureProviderElem = m_xmlUtil->AddChildNode(rootElem, "DataStore" /* NOXLATE */);
-
-        // Add DataStore Name
-        m_xmlUtil->AddTextNode(featureProviderElem, "Name" /* NOXLATE */, name);
-
-        // Add FDO Enabled
-        m_xmlUtil->AddTextNode(featureProviderElem, "FdoEnabled" /* NOXLATE */, fdoDataStoreReader->GetIsFdoEnabled());
-
-        delete[] name;
-        name = NULL;
-    }
-
-    // Close the reader
-    fdoDataStoreReader->Close();
-
-    // Convert the XML to a byte reader
-    byteReader = m_xmlUtil->ToReader();
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerEnumerateDataStores.EnumerateDataStores")
 

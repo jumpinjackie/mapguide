@@ -23,6 +23,8 @@
 #include "System/XmlUtil.h"
 #include "Fdo.h"
 
+class MgServerFeatureConnection;
+
 class MgServerSqlCommand
 {
 public:
@@ -38,6 +40,7 @@ private:
     STRING                  m_providerName;
     STRING                  m_sqlStatement;
     FdoIConnection*         m_fdoConn;
+    Ptr<MgServerFeatureConnection> m_featureConnection;
 };
 
 #endif
