@@ -43,48 +43,48 @@ Fusion.Widget.Navigator.prototype = {
 
         var a = document.createElement('area');
         a.shape = 'poly';
-        a.alt = 'Pan East';
-        a.title = 'Pan East';
+        a.alt = OpenLayers.String.translate('panEast');
+        a.title = OpenLayers.String.translate('panEast');
         a.coords = '27,176, 27,177, 40,190, 44,182, 44,159';
         Event.observe(a, 'mouseup', this.pan.bindAsEventListener(this, this.panAmount/100, 0) );
         m.appendChild(a);
 
         var a = document.createElement('area');
         a.shape = 'poly';
-        a.alt = 'Pan West';
-        a.title = 'Pan West';
+        a.alt = OpenLayers.String.translate('panWest');
+        a.title = OpenLayers.String.translate('panWest');
         a.coords = '24,177, 24,176, 7,159, 7,182, 11,190';
         Event.observe(a, 'mouseup', this.pan.bindAsEventListener(this, -this.panAmount/100, 0) );
         m.appendChild(a);
 
         var a = document.createElement('area');
         a.shape = 'poly';
-        a.alt = 'Pan South';
-        a.title = 'Pan South';
+        a.alt = OpenLayers.String.translate('panSouth');
+        a.title = OpenLayers.String.translate('panSouth');
         a.coords = '25,178, 12,191, 21,197, 30,197, 39,191, 26,178';
         Event.observe(a, 'mouseup', this.pan.bindAsEventListener(this, 0, -this.panAmount/100) );
         m.appendChild(a);
 
         var a = document.createElement('area');
         a.shape = 'poly';
-        a.alt = 'Pan North';
-        a.title = 'Pan North';
+        a.alt = OpenLayers.String.translate('panNorth');
+        a.title = OpenLayers.String.translate('panNorth');
         a.coords = '26,175, 43,158, 8,158, 25,175';
         Event.observe(a, 'mouseup', this.pan.bindAsEventListener(this, 0, this.panAmount/100) );
         m.appendChild(a);
 
         var a = document.createElement('area');
         a.shape = 'circle';
-        a.alt = 'Zoom Out';
-        a.title = 'Zoom Out';
+        a.alt = OpenLayers.String.translate('zoomOut');
+        a.title = OpenLayers.String.translate('zoomOut');
         a.coords = '25,142,8';
         Event.observe(a, 'mouseup', this.zoom.bindAsEventListener(this, 1/this.zoomFactor) );
         m.appendChild(a);
 
         var a = document.createElement('area');
         a.shape = 'circle';
-        a.alt = 'Zoom In';
-        a.title = 'Zoom In';
+        a.alt = OpenLayers.String.translate('zoomIn');
+        a.title = OpenLayers.String.translate('zoomIn');
         a.coords = '25,34,8';
         Event.observe(a, 'mouseup', this.zoom.bindAsEventListener(this, this.zoomFactor) );
         m.appendChild(a);

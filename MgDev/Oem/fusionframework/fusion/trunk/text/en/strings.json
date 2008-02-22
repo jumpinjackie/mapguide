@@ -1,4 +1,4 @@
-Fusion.Strings.en = {
+﻿Fusion.Strings.en = {
 'scriptFailed': 'failed to load script: {0}',
 'configParseError': 'Error parsing fusion configuration file, initialization aborted',
 'configLoadError': 'Error loading fusion configuration file, initialization aborted',
@@ -38,6 +38,12 @@ Fusion.Strings.en = {
 'taskPaneTitle': 'Tasks',
 'segment': 'Segment {0}',
 'calculating': 'calculating ...',
+'panWest': 'Pan West',
+'panEast': 'Pan East',
+'panSouth': 'Pan South',
+'panNorth': 'Pan North',
+'zoomOut': 'Zoom Out',
+'zoomIn': 'Zoom In',
 
 'end': ''
 };

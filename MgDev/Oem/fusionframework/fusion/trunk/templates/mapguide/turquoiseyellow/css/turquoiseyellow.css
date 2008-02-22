@@ -424,18 +424,18 @@ img {
 }
 
 #LegendContainer.tabContent {
-    overflow: hidden;
+    overflow: auto;
+    padding: 0 0 2px 0;
 }
 
 #Legend {
     background-color: #fff;
     background-image: none;
+    overflow: auto;
     /*
     border: 0px solid #000;
-    margin: 1px;
-    */
-    height: 100%;
-    overflow: auto;
+    margin: 0 0 4px 0;
+  */
 }
 
 

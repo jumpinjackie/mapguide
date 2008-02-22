@@ -1,10 +1,14 @@
 Current version:
 
+Date = 2008/02/22 16:07 MST
+Fusion revision = 1257
+Jx revision = 505
+
+Previous updates:
+
 Date = 2008/02/15 15:05 MST
 Fusion revision = 1236
 Jx revision = 503
-
-Previous updates:
 
 Date = 2008/02/15 15:05 MST
 Fusion revision = 1234
