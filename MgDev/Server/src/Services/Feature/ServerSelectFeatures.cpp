@@ -1018,6 +1018,8 @@ void MgServerSelectFeatures::UpdateCommandOnCalculation(MgResourceIdentifier* fe
                     MgServerFeatureConnection fcConnection(featureSourceId);
                     if ( fcConnection.IsConnectionOpen() )
                     {
+                        // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up before the parent object
+                        // otherwise it leaves the FDO connection marked as still in use.
                         FdoPtr<FdoIConnection> conn = fcConnection.GetConnection();
                         FdoPtr<FdoIDescribeSchema>  descSchema = (FdoIDescribeSchema *) conn->CreateCommand (FdoCommandType_DescribeSchema);
                         FdoPtr <FdoFeatureSchemaCollection> schemas = (FdoFeatureSchemaCollection *) descSchema->Execute ();
@@ -1095,6 +1097,8 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
             MgServerFeatureConnection msfcLeft(featureSourceIdentifier);
             if ( msfcLeft.IsConnectionOpen() )
             {
+                // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up before the parent object
+                // otherwise it leaves the FDO connection marked as still in use.
                 FdoPtr<FdoIConnection> connLeft = msfcLeft.GetConnection();
                 pool->AddConnection(primaryConnectionName.c_str(), connLeft);
             }
@@ -1222,6 +1226,8 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
                     MgServerFeatureConnection msfcRight(secondaryFeatureSource);
                     if ( msfcRight.IsConnectionOpen() )
                     {
+                        // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up before the parent object
+                        // otherwise it leaves the FDO connection marked as still in use.
                         FdoPtr<FdoIConnection> connRight = msfcRight.GetConnection();
                         pool->AddConnection(secondaryConnectionName.c_str(), connRight);
                     }
