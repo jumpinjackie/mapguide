@@ -81,7 +81,18 @@ FdoInt32 MgServerFdoFeatureReader::GetDepth()
 ///
 const FdoByte * MgServerFdoFeatureReader::GetGeometry(FdoString* propertyName, FdoInt32 * count)
 {
-    return m_internalReader->GetGeometry(propertyName, count);
+    if(m_internalReader->IsNull(propertyName))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetGeometry",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetGeometry(propertyName, count);
+    }
 }
 
 /// \brief
@@ -97,7 +108,18 @@ const FdoByte * MgServerFdoFeatureReader::GetGeometry(FdoString* propertyName, F
 ///
 FdoByteArray* MgServerFdoFeatureReader::GetGeometry(FdoString* propertyName)
 {
-    return m_internalReader->GetGeometry(propertyName);
+    if(m_internalReader->IsNull(propertyName))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetGeometry",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetGeometry(propertyName);
+    }
 }
 
 /// \brief
@@ -113,7 +135,18 @@ FdoByteArray* MgServerFdoFeatureReader::GetGeometry(FdoString* propertyName)
 ///
 FdoIFeatureReader* MgServerFdoFeatureReader::GetFeatureObject(FdoString* propertyName)
 {
-    return m_internalReader->GetFeatureObject(propertyName);
+    if(m_internalReader->IsNull(propertyName))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetFeatureObject",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetFeatureObject(propertyName);
+    }
 }
 
 /// \brief
@@ -129,7 +162,18 @@ FdoIFeatureReader* MgServerFdoFeatureReader::GetFeatureObject(FdoString* propert
 ///
 bool MgServerFdoFeatureReader::GetBoolean(FdoString* propertyName)
 {
-    return m_internalReader->GetBoolean(propertyName);
+    if(m_internalReader->IsNull(propertyName))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetBoolean",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetBoolean(propertyName);
+    }
 }
 
 /// \brief
@@ -145,7 +189,18 @@ bool MgServerFdoFeatureReader::GetBoolean(FdoString* propertyName)
 ///
 FdoByte MgServerFdoFeatureReader::GetByte(FdoString* propertyName)
 {
-    return m_internalReader->GetByte(propertyName);
+    if(m_internalReader->IsNull(propertyName))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetByte",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetByte(propertyName);
+    }
 }
 
 /// \brief
@@ -161,7 +216,18 @@ FdoByte MgServerFdoFeatureReader::GetByte(FdoString* propertyName)
 ///
 FdoDateTime MgServerFdoFeatureReader::GetDateTime(FdoString* propertyName)
 {
-    return m_internalReader->GetDateTime(propertyName);
+    if(m_internalReader->IsNull(propertyName))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetDateTime",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetDateTime(propertyName);
+    }
 }
 
 /// \brief
@@ -177,7 +243,18 @@ FdoDateTime MgServerFdoFeatureReader::GetDateTime(FdoString* propertyName)
 ///
 double MgServerFdoFeatureReader::GetDouble(FdoString* propertyName)
 {
-    return m_internalReader->GetDouble(propertyName);
+    if(m_internalReader->IsNull(propertyName))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetDouble",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetDouble(propertyName);
+    }
 }
 
 /// \brief
@@ -193,7 +270,18 @@ double MgServerFdoFeatureReader::GetDouble(FdoString* propertyName)
 ///
 FdoInt16 MgServerFdoFeatureReader::GetInt16(FdoString* propertyName)
 {
-    return m_internalReader->GetInt16(propertyName);
+    if(m_internalReader->IsNull(propertyName))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetInt16",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetInt16(propertyName);
+    }
 }
 
 /// \brief
@@ -209,7 +297,18 @@ FdoInt16 MgServerFdoFeatureReader::GetInt16(FdoString* propertyName)
 ///
 FdoInt32 MgServerFdoFeatureReader::GetInt32(FdoString* propertyName)
 {
-    return m_internalReader->GetInt32(propertyName);
+    if(m_internalReader->IsNull(propertyName))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetInt32",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetInt32(propertyName);
+    }
 }
 
 /// \brief
@@ -225,7 +324,18 @@ FdoInt32 MgServerFdoFeatureReader::GetInt32(FdoString* propertyName)
 ///
 FdoInt64 MgServerFdoFeatureReader::GetInt64(FdoString* propertyName)
 {
-    return m_internalReader->GetInt64(propertyName);
+    if(m_internalReader->IsNull(propertyName))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetInt64",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetInt64(propertyName);
+    }
 }
 
 /// \brief
@@ -241,7 +351,18 @@ FdoInt64 MgServerFdoFeatureReader::GetInt64(FdoString* propertyName)
 ///
 float MgServerFdoFeatureReader::GetSingle(FdoString* propertyName)
 {
-    return m_internalReader->GetSingle(propertyName);
+    if(m_internalReader->IsNull(propertyName))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetSingle",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetSingle(propertyName);
+    }
 }
 
 /// \brief
@@ -257,7 +378,18 @@ float MgServerFdoFeatureReader::GetSingle(FdoString* propertyName)
 ///
 FdoString* MgServerFdoFeatureReader::GetString(FdoString* propertyName)
 {
-    return m_internalReader->GetString(propertyName);
+    if(m_internalReader->IsNull(propertyName))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetString",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetString(propertyName);
+    }
 }
 
 /// \brief
@@ -273,7 +405,18 @@ FdoString* MgServerFdoFeatureReader::GetString(FdoString* propertyName)
 ///
 FdoLOBValue* MgServerFdoFeatureReader::GetLOB(FdoString* propertyName)
 {
-    return m_internalReader->GetLOB(propertyName);
+    if(m_internalReader->IsNull(propertyName))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetLOB",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetLOB(propertyName);
+    }
 }
 
 /// \brief
@@ -291,7 +434,18 @@ FdoLOBValue* MgServerFdoFeatureReader::GetLOB(FdoString* propertyName)
 ///
 FdoIStreamReader* MgServerFdoFeatureReader::GetLOBStreamReader(const wchar_t* propertyName )
 {
-    return m_internalReader->GetLOBStreamReader(propertyName);
+    if(m_internalReader->IsNull(propertyName))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetLOBStreamReader",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetLOBStreamReader(propertyName);
+    }
 }
 
 /// \brief
@@ -321,7 +475,18 @@ bool MgServerFdoFeatureReader::IsNull(FdoString* propertyName)
 ///
 FdoIRaster* MgServerFdoFeatureReader::GetRaster(FdoString* propertyName)
 {
-    return m_internalReader->GetRaster(propertyName);
+    if(m_internalReader->IsNull(propertyName))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetRaster",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetRaster(propertyName);
+    }
 }
 
 /// \brief

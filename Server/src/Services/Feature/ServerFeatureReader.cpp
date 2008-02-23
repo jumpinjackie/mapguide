@@ -205,7 +205,18 @@ bool MgServerFeatureReader::GetBoolean(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    retVal = m_fdoReader->GetBoolean(propertyName.c_str());
+    if(m_fdoReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetBoolean",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        retVal = m_fdoReader->GetBoolean(propertyName.c_str());
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetBoolean");
 
@@ -229,7 +240,18 @@ BYTE MgServerFeatureReader::GetByte(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    retVal = (BYTE)m_fdoReader->GetByte(propertyName.c_str());
+    if(m_fdoReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetByte",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        retVal = (BYTE)m_fdoReader->GetByte(propertyName.c_str());
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetByte");
 
@@ -253,9 +275,20 @@ MgDateTime* MgServerFeatureReader::GetDateTime(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    FdoDateTime val = m_fdoReader->GetDateTime(propertyName.c_str());
-    retVal = new MgDateTime((INT16)val.year, (INT8)val.month, (INT8)val.day,
-                            (INT8)val.hour, (INT8)val.minute, val.seconds);
+    if(m_fdoReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetDateTime",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        FdoDateTime val = m_fdoReader->GetDateTime(propertyName.c_str());
+        retVal = new MgDateTime((INT16)val.year, (INT8)val.month, (INT8)val.day,
+                                (INT8)val.hour, (INT8)val.minute, val.seconds);
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetDateTime");
 
@@ -279,7 +312,18 @@ float MgServerFeatureReader::GetSingle(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    retVal = m_fdoReader->GetSingle(propertyName.c_str());
+    if(m_fdoReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetSingle",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        retVal = m_fdoReader->GetSingle(propertyName.c_str());
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetSingle");
 
@@ -303,7 +347,18 @@ double MgServerFeatureReader::GetDouble(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    retVal = m_fdoReader->GetDouble(propertyName.c_str());
+    if(m_fdoReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetDouble",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        retVal = m_fdoReader->GetDouble(propertyName.c_str());
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetDouble");
 
@@ -327,7 +382,18 @@ INT16 MgServerFeatureReader::GetInt16(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    retVal = (INT16)m_fdoReader->GetInt16(propertyName.c_str());
+    if(m_fdoReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetInt16",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        retVal = (INT16)m_fdoReader->GetInt16(propertyName.c_str());
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetInt16");
 
@@ -351,7 +417,18 @@ INT32 MgServerFeatureReader::GetInt32(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    retVal = (INT32)m_fdoReader->GetInt32(propertyName.c_str());
+    if(m_fdoReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetInt32",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        retVal = (INT32)m_fdoReader->GetInt32(propertyName.c_str());
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetInt32");
 
@@ -377,7 +454,18 @@ INT64 MgServerFeatureReader::GetInt64(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    retVal = (INT64)m_fdoReader->GetInt64(propertyName.c_str());
+    if(m_fdoReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetInt64",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        retVal = (INT64)m_fdoReader->GetInt64(propertyName.c_str());
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetInt64");
 
@@ -401,11 +489,22 @@ STRING MgServerFeatureReader::GetString(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    INT32 length = 0;
-    const wchar_t* str = this->GetString(propertyName.c_str(), length);
-    if (str != NULL)
+    if(m_fdoReader->IsNull(propertyName.c_str()))
     {
-        retVal = str;
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetString",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        INT32 length = 0;
+        const wchar_t* str = this->GetString(propertyName.c_str(), length);
+        if (str != NULL)
+        {
+            retVal = str;
+        }
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetString");
@@ -430,7 +529,18 @@ MgByteReader* MgServerFeatureReader::GetBLOB(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    byteReader = m_getFeatures->GetLOBFromFdo(propertyName, m_fdoReader);
+    if(m_fdoReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetBLOB",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        byteReader = m_getFeatures->GetLOBFromFdo(propertyName, m_fdoReader);
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetBLOB");
 
@@ -454,7 +564,18 @@ MgByteReader* MgServerFeatureReader::GetCLOB(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    byteReader = m_getFeatures->GetLOBFromFdo(propertyName, m_fdoReader);
+    if(m_fdoReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetCLOB",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        byteReader = m_getFeatures->GetLOBFromFdo(propertyName, m_fdoReader);
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetCLOB");
 
@@ -479,13 +600,24 @@ MgFeatureReader* MgServerFeatureReader::GetFeatureObject(CREFSTRING propertyName
 
     MG_FEATURE_SERVICE_TRY()
 
-    FdoPtr<FdoIFeatureReader> featureObjectReader = m_fdoReader->GetFeatureObject(propertyName.c_str());
-
-    if (featureObjectReader != NULL)
+    if(m_fdoReader->IsNull(propertyName.c_str()))
     {
-        // Create a feature reader identifier
-        Ptr<MgServerFeatureReaderIdentifier> featReaderId = new MgServerFeatureReaderIdentifier(featureObjectReader);
-        featureReader = new MgServerFeatureReader(featReaderId);
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetFeatureObject",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        FdoPtr<FdoIFeatureReader> featureObjectReader = m_fdoReader->GetFeatureObject(propertyName.c_str());
+
+        if (featureObjectReader != NULL)
+        {
+            // Create a feature reader identifier
+            Ptr<MgServerFeatureReaderIdentifier> featReaderId = new MgServerFeatureReaderIdentifier(featureObjectReader);
+            featureReader = new MgServerFeatureReader(featReaderId);
+        }
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetFeatureObject");
@@ -510,14 +642,25 @@ MgByteReader* MgServerFeatureReader::GetGeometry(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    INT32 len;
-    BYTE_ARRAY_OUT data = this->GetGeometry(propertyName.c_str(), len);
-
-    if (data != NULL)
+    if(m_fdoReader->IsNull(propertyName.c_str()))
     {
-        Ptr<MgByte> mgBytes = new MgByte((BYTE_ARRAY_IN)data, len, MgByte::None);
-        Ptr<MgByteSource> bSource = new MgByteSource(mgBytes);
-        retVal = bSource->GetReader();
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetGeometry",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        INT32 len;
+        BYTE_ARRAY_OUT data = this->GetGeometry(propertyName.c_str(), len);
+
+        if (data != NULL)
+        {
+            Ptr<MgByte> mgBytes = new MgByte((BYTE_ARRAY_IN)data, len, MgByte::None);
+            Ptr<MgByteSource> bSource = new MgByteSource(mgBytes);
+            retVal = bSource->GetReader();
+        }
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetGeometry");
@@ -542,33 +685,45 @@ MgRaster* MgServerFeatureReader::GetRaster(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    FdoPtr<FdoIRaster> raster = m_fdoReader->GetRaster(propertyName.c_str());
-    CHECKNULL((FdoIRaster*)raster, L"MgServerFeatureReader.GetRaster");
-
-    retVal = MgServerFeatureUtil::GetMgRaster(raster, propertyName);
-    CHECKNULL((MgRaster*)retVal, L"MgServerFeatureReader.GetRaster");
-
-    // Set the service to MgRaster for GetRaster operation called in GetStream method
-    MgServiceManager* serviceMan = MgServiceManager::GetInstance();
-    assert(NULL != serviceMan);
-
-    // Get the service from service manager
-    Ptr<MgFeatureService> featureService = dynamic_cast<MgFeatureService*>(
-        serviceMan->RequestService(MgServiceType::FeatureService));
-    assert(featureService != NULL);
-
-    retVal->SetMgService(featureService);
-    retVal->SetHandle((INT32)m_getFeatures);
-
-    // Collect the feature reader into a pool for GetRaster operation
-    MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
-    CHECKNULL(featPool, L"MgServerFeatureReader.GetRaster");
-
-    if (!featPool->Contains(m_getFeatures))
+    if(m_fdoReader->IsNull(propertyName.c_str()))
     {
-        featPool->Add(m_getFeatures); // Add the reference
-        m_removeFromPoolOnDestruction = true;
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetRaster",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
     }
+    else
+    {
+        FdoPtr<FdoIRaster> raster = m_fdoReader->GetRaster(propertyName.c_str());
+        CHECKNULL((FdoIRaster*)raster, L"MgServerFeatureReader.GetRaster");
+
+        retVal = MgServerFeatureUtil::GetMgRaster(raster, propertyName);
+        CHECKNULL((MgRaster*)retVal, L"MgServerFeatureReader.GetRaster");
+
+        // Set the service to MgRaster for GetRaster operation called in GetStream method
+        MgServiceManager* serviceMan = MgServiceManager::GetInstance();
+        assert(NULL != serviceMan);
+
+        // Get the service from service manager
+        Ptr<MgFeatureService> featureService = dynamic_cast<MgFeatureService*>(
+            serviceMan->RequestService(MgServiceType::FeatureService));
+        assert(featureService != NULL);
+
+        retVal->SetMgService(featureService);
+        retVal->SetHandle((INT32)m_getFeatures);
+
+        // Collect the feature reader into a pool for GetRaster operation
+        MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
+        CHECKNULL(featPool, L"MgServerFeatureReader.GetRaster");
+
+        if (!featPool->Contains(m_getFeatures))
+        {
+            featPool->Add(m_getFeatures); // Add the reference
+            m_removeFromPoolOnDestruction = true;
+        }
+    }
+
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetRaster");
 
     return retVal.Detach();
@@ -706,7 +861,15 @@ BYTE_ARRAY_OUT MgServerFeatureReader::GetGeometry(CREFSTRING propertyName, INT32
 
     MG_FEATURE_SERVICE_TRY()
 
-    if(!m_fdoReader->IsNull(propertyName.c_str()))
+    if(m_fdoReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetGeometry",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         FdoInt32 len = 0;
         data = m_fdoReader->GetGeometry(propertyName.c_str(), &len);
@@ -725,7 +888,7 @@ BYTE_ARRAY_OUT MgServerFeatureReader::GetGeometry(CREFSTRING propertyName, INT32
 /// is NULL</summary>
 /// <param name="propertyName">Property name.</param>
 /// <returns>Returns the string value.</returns>
-const wchar_t* MgServerFeatureReader::GetString(CREFSTRING propName, INT32& length)
+const wchar_t* MgServerFeatureReader::GetString(CREFSTRING propertyName, INT32& length)
 {
     CHECKNULL(m_fdoReader, L"MgServerFeatureReader.GetString");
 
@@ -733,10 +896,21 @@ const wchar_t* MgServerFeatureReader::GetString(CREFSTRING propName, INT32& leng
 
     MG_FEATURE_SERVICE_TRY()
 
-    retVal = m_fdoReader->GetString(propName.c_str());
-    if (retVal != NULL)
+    if(m_fdoReader->IsNull(propertyName.c_str()))
     {
-        length = (INT32)wcslen((const wchar_t*)retVal);
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetString",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        retVal = m_fdoReader->GetString(propertyName.c_str());
+        if (retVal != NULL)
+        {
+            length = (INT32)wcslen((const wchar_t*)retVal);
+        }
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetString");
