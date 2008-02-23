@@ -205,7 +205,18 @@ bool MgServerSqlDataReader::GetBoolean(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    retVal = m_sqlReader->GetBoolean(propertyName.c_str());
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetBoolean",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        retVal = m_sqlReader->GetBoolean(propertyName.c_str());
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetBoolean");
 
@@ -227,7 +238,18 @@ BYTE MgServerSqlDataReader::GetByte(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    retVal = (BYTE)m_sqlReader->GetByte(propertyName.c_str());
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetByte",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        retVal = (BYTE)m_sqlReader->GetByte(propertyName.c_str());
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetByte");
 
@@ -249,9 +271,20 @@ MgDateTime* MgServerSqlDataReader::GetDateTime(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    FdoDateTime val = m_sqlReader->GetDateTime(propertyName.c_str());
-    retVal = new MgDateTime((INT16)val.year, (INT8)val.month, (INT8)val.day,
-                            (INT8)val.hour, (INT8)val.minute, val.seconds);
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetDateTime",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        FdoDateTime val = m_sqlReader->GetDateTime(propertyName.c_str());
+        retVal = new MgDateTime((INT16)val.year, (INT8)val.month, (INT8)val.day,
+                                (INT8)val.hour, (INT8)val.minute, val.seconds);
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetDateTime");
 
@@ -273,7 +306,18 @@ float MgServerSqlDataReader::GetSingle(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    retVal = m_sqlReader->GetSingle(propertyName.c_str());
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetSingle",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        retVal = m_sqlReader->GetSingle(propertyName.c_str());
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetSingle");
 
@@ -295,7 +339,18 @@ double MgServerSqlDataReader::GetDouble(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    retVal = m_sqlReader->GetDouble(propertyName.c_str());
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetDouble",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        retVal = m_sqlReader->GetDouble(propertyName.c_str());
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetDouble");
 
@@ -317,7 +372,18 @@ INT16 MgServerSqlDataReader::GetInt16(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    retVal = (INT16)m_sqlReader->GetInt16(propertyName.c_str());
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetInt16",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        retVal = (INT16)m_sqlReader->GetInt16(propertyName.c_str());
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetInt16");
 
@@ -339,7 +405,18 @@ INT32 MgServerSqlDataReader::GetInt32(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    retVal = (INT32)m_sqlReader->GetInt32(propertyName.c_str());
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetInt32",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        retVal = (INT32)m_sqlReader->GetInt32(propertyName.c_str());
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetInt32");
 
@@ -363,7 +440,18 @@ INT64 MgServerSqlDataReader::GetInt64(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    retVal = (INT64)m_sqlReader->GetInt64(propertyName.c_str());
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetInt64",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        retVal = (INT64)m_sqlReader->GetInt64(propertyName.c_str());
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetInt64");
 
@@ -385,11 +473,22 @@ STRING MgServerSqlDataReader::GetString(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    INT32 length = 0;
-    const wchar_t* str = this->GetString(propertyName.c_str(), length);
-    if (str != NULL)
+    if(m_sqlReader->IsNull(propertyName.c_str()))
     {
-        retVal = str;
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetString",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        INT32 length = 0;
+        const wchar_t* str = this->GetString(propertyName.c_str(), length);
+        if (str != NULL)
+        {
+            retVal = str;
+        }
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetString");
@@ -412,7 +511,18 @@ MgByteReader* MgServerSqlDataReader::GetBLOB(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    byteReader = this->GetLOB(propertyName);
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetBLOB",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        byteReader = this->GetLOB(propertyName);
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetBLOB");
 
@@ -434,7 +544,18 @@ MgByteReader* MgServerSqlDataReader::GetCLOB(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    byteReader = this->GetLOB(propertyName);
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetCLOB",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        byteReader = this->GetLOB(propertyName);
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetCLOB");
 
@@ -456,15 +577,26 @@ MgByteReader* MgServerSqlDataReader::GetGeometry(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    INT32 len;
-    BYTE_ARRAY_OUT data = this->GetGeometry(propertyName.c_str(), len);
-
-    if (data != NULL)
+    if(m_sqlReader->IsNull(propertyName.c_str()))
     {
-        Ptr<MgByte> mgBytes = new MgByte((BYTE_ARRAY_IN)data, len);
-        Ptr<MgByteSource> bSource = new MgByteSource(mgBytes);
-        bSource->SetMimeType(MgMimeType::Agf);
-        retVal = bSource->GetReader();
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetGeometry",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        INT32 len;
+        BYTE_ARRAY_OUT data = this->GetGeometry(propertyName.c_str(), len);
+
+        if (data != NULL)
+        {
+            Ptr<MgByte> mgBytes = new MgByte((BYTE_ARRAY_IN)data, len);
+            Ptr<MgByteSource> bSource = new MgByteSource(mgBytes);
+            bSource->SetMimeType(MgMimeType::Agf);
+            retVal = bSource->GetReader();
+        }
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetGeometry");
@@ -473,26 +605,37 @@ MgByteReader* MgServerSqlDataReader::GetGeometry(CREFSTRING propertyName)
 }
 
 
-MgByteReader* MgServerSqlDataReader::GetLOB(CREFSTRING propName)
+MgByteReader* MgServerSqlDataReader::GetLOB(CREFSTRING propertyName)
 {
     CHECKNULL(m_sqlReader, L"MgServerSqlDataReader.GetLOB");
 
     Ptr<MgByteReader> byteReader;
 
-    // TODO: We need to switch to FdoIStreamReader when we have streaming capability in MgByteReader
-    FdoPtr<FdoLOBValue> fdoVal = m_sqlReader->GetLOB(propName.c_str());
-    if (fdoVal != NULL)
+    if(m_sqlReader->IsNull(propertyName.c_str()))
     {
-        FdoPtr<FdoByteArray> byteArray = fdoVal->GetData();
-        if (byteArray != NULL)
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetLOB",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        // TODO: We need to switch to FdoIStreamReader when we have streaming capability in MgByteReader
+        FdoPtr<FdoLOBValue> fdoVal = m_sqlReader->GetLOB(propertyName.c_str());
+        if (fdoVal != NULL)
         {
-            FdoByte* bytes = byteArray->GetData();
-            FdoInt32 len = byteArray->GetCount();
-            Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)bytes,(INT32)len);
-            // TODO: We need to differentiate between CLOB and BLOB
-            // TODO: How do we fine the MimeType of data for CLOB
-            byteSource->SetMimeType(MgMimeType::Binary);
-            byteReader = byteSource->GetReader();
+            FdoPtr<FdoByteArray> byteArray = fdoVal->GetData();
+            if (byteArray != NULL)
+            {
+                FdoByte* bytes = byteArray->GetData();
+                FdoInt32 len = byteArray->GetCount();
+                Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)bytes,(INT32)len);
+                // TODO: We need to differentiate between CLOB and BLOB
+                // TODO: How do we fine the MimeType of data for CLOB
+                byteSource->SetMimeType(MgMimeType::Binary);
+                byteReader = byteSource->GetReader();
+            }
         }
     }
     return byteReader.Detach();
@@ -627,7 +770,15 @@ BYTE_ARRAY_OUT MgServerSqlDataReader::GetGeometry(CREFSTRING propertyName, INT32
     // TODO: direct pointer on geometry
     FdoByte* data = NULL;
 
-    if(!m_sqlReader->IsNull(propertyName.c_str()))
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetGeometry",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         FdoPtr<FdoByteArray> byteArray = m_sqlReader->GetGeometry(propertyName.c_str());
         length = (INT32)byteArray->GetCount();
@@ -644,7 +795,7 @@ BYTE_ARRAY_OUT MgServerSqlDataReader::GetGeometry(CREFSTRING propertyName, INT32
 /// is NULL</summary>
 /// <param name="propertyName">Property name.</param>
 /// <returns>Returns the string value.</returns>
-const wchar_t* MgServerSqlDataReader::GetString(CREFSTRING propName, INT32& length)
+const wchar_t* MgServerSqlDataReader::GetString(CREFSTRING propertyName, INT32& length)
 {
     CHECKNULL(m_sqlReader, L"MgServerSqlDataReader.GetString");
 
@@ -652,10 +803,21 @@ const wchar_t* MgServerSqlDataReader::GetString(CREFSTRING propName, INT32& leng
 
     MG_FEATURE_SERVICE_TRY()
 
-    retVal = m_sqlReader->GetString(propName.c_str());
-    if (retVal != NULL)
+    if(m_sqlReader->IsNull(propertyName.c_str()))
     {
-        length = (INT32)wcslen((const wchar_t*)retVal);
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetString",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        retVal = m_sqlReader->GetString(propertyName.c_str());
+        if (retVal != NULL)
+        {
+            length = (INT32)wcslen((const wchar_t*)retVal);
+        }
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetString");

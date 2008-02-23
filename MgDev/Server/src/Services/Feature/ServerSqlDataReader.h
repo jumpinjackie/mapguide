@@ -253,7 +253,7 @@ INTERNAL_API:
     ~MgServerSqlDataReader();
     void Deserialize(MgStream* stream);
     void Serialize(MgStream* stream);
-    MgByteReader* GetLOB(CREFSTRING propName);
+    MgByteReader* GetLOB(CREFSTRING propertyName);
 
 private:
 

@@ -252,7 +252,7 @@ INTERNAL_API:
     ~MgServerDataReader();
     void Deserialize(MgStream* stream);
     void Serialize(MgStream* stream);
-    MgByteReader* GetLOB(CREFSTRING propName);
+    MgByteReader* GetLOB(CREFSTRING propertyName);
     STRING GetRasterPropertyName();
     MgByteReader* GetRaster(INT32 xSize, INT32 ySize, STRING rasterPropName);
 
