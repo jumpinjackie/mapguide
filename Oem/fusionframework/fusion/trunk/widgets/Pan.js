@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Pan
  *
- * $Id: Pan.js 1122 2007-12-13 22:40:00Z madair $
+ * $Id: Pan.js 1252 2008-02-22 22:36:46Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -37,6 +37,7 @@ Fusion.Widget.Pan.prototype = {
         Object.inheritFrom(this, Fusion.Tool.ButtonBase.prototype, []);
         this.control = new OpenLayers.Control.DragPan();
         this.getMap().oMapOL.addControl(this.control);
+        this.control.handler.keyMask = 0;
         
         this.cursorNormal = ["url('images/grab.cur'),move", 'grab', '-moz-grab', 'move'];
         this.cursorDrag = ["url('images/grabbing.cur'),move", 'grabbing', '-moz-grabbing', 'move'];

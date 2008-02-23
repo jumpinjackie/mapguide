@@ -35,9 +35,9 @@
     <Description>Precision of the distance displayed</Description>
     <Type>integer</Type>
     <Label>DistancePrecision</Label>
-    <Min>0</Min>
-    <Max>6</Max>
-    <DefaultValue>2</DefaultValue>
+    <Min>1</Min>
+    <Max>8</Max>
+    <DefaultValue>4</DefaultValue>
     <IsMandatory>false</IsMandatory>
   </Parameter>
   <Parameter>
@@ -45,9 +45,9 @@
     <Description>Precision of the area displayed</Description>
     <Type>integer</Type>
     <Label>Area Precision</Label>
-    <Min>0</Min>
-    <Max>6</Max>
-    <DefaultValue>2</DefaultValue>
+    <Min>1</Min>
+    <Max>8</Max>
+    <DefaultValue>4</DefaultValue>
     <IsMandatory>false</IsMandatory>
   </Parameter>
   <Parameter>

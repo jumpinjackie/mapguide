@@ -2,7 +2,7 @@
 /**
  * LoadMap
  *
- * $Id: LoadMap.php 1226 2008-02-14 20:57:26Z madair $
+ * $Id: LoadMap.php 1239 2008-02-22 16:23:40Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -175,8 +175,8 @@ function buildScaleRanges($layer) {
             $type = 1;
         }
     }
-    $typeStyles = array("PointTypeStyle", "LineTypeStyle", "AreaTypeStyle");
-    $ruleNames = array("PointRule", "LineRule", "AreaRule", );
+    $typeStyles = array("PointTypeStyle", "LineTypeStyle", "AreaTypeStyle", "CompositeTypeStyle");
+    $ruleNames = array("PointRule", "LineRule", "AreaRule", "CompositeRule");
     $output = 'scaleRanges: [';
     $scaleSep = '';
     for($sc = 0; $sc < $scaleRanges->length; $sc++)

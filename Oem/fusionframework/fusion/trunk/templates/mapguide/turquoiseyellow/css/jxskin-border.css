@@ -777,7 +777,9 @@ ul.jxSubMenu a.jxDisabled:hover {
 #Left .jxSplitterBar {
   height: 2px;
   cursor: move;
-  background-color: #fff;;
+  background-color: #fff;
+  line-height: 0px;
+  font-size: 0px;
 }
 
 #StatusBar .jxSplitterBar {
