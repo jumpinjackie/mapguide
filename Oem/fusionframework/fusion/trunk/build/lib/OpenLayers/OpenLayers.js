@@ -12332,6 +12332,7 @@ OpenLayers.Layer.MapGuide = OpenLayers.Class(OpenLayers.Layer.Grid, {
             params.setviewcenterx = center.lon;
             params.setviewcentery = center.lat;
             params.setviewscale = this.map.getScale();
+            params.requiresclipping = "1";
             if (this.options.showLayers) params.showlayers = this.options.showLayers;
             if (this.options.hideLayers) params.hidelayers = this.options.hideLayers;
             if (this.options.showGroups) params.showgroups = this.options.showGroups;
