@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Maptip
  *
- * $Id: Maptip.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: Maptip.js 1254 2008-02-22 22:43:51Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -56,6 +56,7 @@ Fusion.Widget.Maptip.prototype =
     delay: null,
     aLayers: null,
     bOverTip: false,
+    sWinFeatures : 'menubar=no,location=no,resizable=no,status=no',
     
     initialize : function(widgetTag)
     {
@@ -63,7 +64,12 @@ Fusion.Widget.Maptip.prototype =
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, true]);
         var json = widgetTag.extension;
         
+        this.sTarget = json.Target ? json.Target[0] : "MaptipWindow";
+        if (json.WinFeatures) {
+          this.sWinFeatures = json.WinFeatures[0];
+        }
         this.delay = json.Delay ? parseInt(json.Delay[0]) : 350;
+        this.nTolerance = json.Tolerance ? parseInt(json.Tolerance[0]) : 2;
         
         this.aLayers = [];
         if (json.Layer) {
@@ -72,18 +78,29 @@ Fusion.Widget.Maptip.prototype =
             }
         }
         
-        this.domObj.parentNode.removeChild(this.domObj);
-        this.domObj.style.position = 'absolute';
+        //prepare the container div for the maptips
+        Fusion.addWidgetStyleSheet(widgetTag.location + 'Maptip/Maptip.css');
+        if (this.domObj) {
+          this.domObj.parentNode.removeChild(this.domObj);
+        } else {
+          this.domObj = document.createElement('div');
+        }
+        this.domObj.className = 'maptipContainer';
         this.domObj.style.display = 'none';
         this.domObj.style.top = '0px';
         this.domObj.style.left = '0px';
-        this.domObj.style.zIndex = 101;
+        
+        //create an iframe to stick behind the maptip to prevent clicks being passed through to the map
+        this.iframe = document.createElement('iframe');
+        this.iframe.className = 'maptipShim';
+        this.iframe.scrolling = 'no';
+        this.iframe.frameborder = 0;
         
         Event.observe(this.domObj, 'mouseover', this.mouseOverTip.bind(this));
         Event.observe(this.domObj, 'mouseout', this.mouseOutTip.bind(this));
         
         var oDomElem =  this.getMap().getDomObj();
-        oDomElem.appendChild(this.domObj);
+        document.getElementsByTagName('BODY')[0].appendChild(this.domObj);
         
         this.getMap().observeEvent('mousemove', this.mouseMove.bind(this));
         this.getMap().observeEvent('mouseout', this.mouseOut.bind(this));
@@ -107,18 +124,11 @@ Fusion.Widget.Maptip.prototype =
             return;
         }
         var p = this.getMap().getEventPosition(e);
-        if (!this.oCurrentPosition) {
-            this.oCurrentPosition = p;
-        } else {
+        this.oCurrentPosition = p;
+        this.oMapTipPosition = {x:Event.pointerX(e), y:Event.pointerY(e)};
+        if (this.oCurrentPosition) {
             window.clearTimeout(this.nTimer);
             this.nTimer = null;
-            if (this.oMapTipPosition && this.bIsVisible &&
-                Math.abs(this.oMapTipPosition.x -this.oCurrentPosition.x) > 3 &&
-                Math.abs(this.oMapTipPosition.y - this.oCurrentPosition.y) > 3) {
-                /*console.log('mouseMove: set hide timer');*/
-                this.nHideTimer = window.setTimeout(this.hideMaptip.bind(this), 250);
-            }
-            this.oCurrentPosition = p;
         }
         this.nTimer = window.setTimeout(this.showMaptip.bind(this), this.delay);
         //Event.stop(e);
@@ -130,33 +140,27 @@ Fusion.Widget.Maptip.prototype =
         if (map == null) {
           return;
         }
-        var cellSize = map._nCellSize;
-        cellSize = 1e-6;
 
         var oBroker = Fusion.oBroker;
         var x = this.oCurrentPosition.x;
         var y = this.oCurrentPosition.y;
-        var min = map.pixToGeo(x, y);
+        var min = map.pixToGeo(x-this.nTolerance, y-this.nTolerance);
+        var max = map.pixToGeo(x+this.nTolerance, y+this.nTolerance);
         //this can fail if no map is loaded
         if (!min) {
             return;
         }
-        min.x -= cellSize;
-        min.y -= cellSize;
-        var max = map.pixToGeo(x, y);
-        max.x += cellSize;
-        max.y += cellSize;
         var sGeometry = 'POLYGON(('+ min.x + ' ' +  min.y + ', ' +  min.x + ' ' +  max.y + ', ' + max.x + ' ' +  max.y + ', ' + max.x + ' ' +  min.y + ', ' + min.x + ' ' +  min.y + '))';
 
         //var sGeometry = 'POINT('+ min.x + ' ' +  min.y + ')';
 
-         var maxFeatures = 1;
-         var persist = 0;
-         var selection = 'INTERSECTS';
+        var maxFeatures = 1;
+        var persist = 0;
+        var selection = 'INTERSECTS';
         var maps = this.getMap().getAllMaps();
-         //TODO: possibly make the layer names configurable?
-         var layerNames = this.aLayers.toString();
-         var r = new Fusion.Lib.MGRequest.MGQueryMapFeatures(maps[0].getSessionID(),
+        //TODO: possibly make the layer names configurable?
+        var layerNames = this.aLayers.toString();
+        var r = new Fusion.Lib.MGRequest.MGQueryMapFeatures(maps[0].getSessionID(),
                                         maps[0]._sMapname,
                                         sGeometry,
                                         maxFeatures, persist, selection, layerNames);
@@ -167,19 +171,48 @@ Fusion.Widget.Maptip.prototype =
     _display: function(r) {
       //console.log('maptip _display');
         if (r.responseXML) {
+            this.domObj.innerHTML = '&nbsp;';
+            var contentDiv = document.createElement('div');
+            contentDiv.className = 'maptipContent';
+            this.domObj.appendChild(contentDiv);
+            
+            var empty = true;
             this.bIsVisible = true;
-            this.oMapTipPosition = {x:this.oCurrentPosition.x, y: this.oCurrentPosition.y};
             var d = new DomNode(r.responseXML);
             var t = d.getNodeText('Tooltip');
             if (t != '') {
-                t = t.replace(/\\n/g, "<br>");
-                this.domObj.innerHTML = t;
+              t = t.replace(/\\n/g, "<br>");
+              contentDiv.innerHTML = t;
+              empty = false;
+            }
+            var h = d.getNodeText('Hyperlink');
+            if (h != '') {
+              var linkDiv = document.createElement('div');
+              var a = document.createElement('a');
+              a.innerHTML = h;
+              a.href = 'javascript:void(0)';
+              a.onclick = this.openLink.bindAsEventListener(this, h);
+              linkDiv.appendChild(a);
+              contentDiv.appendChild(linkDiv);
+              empty = false;
+            }
+            if (!empty) {
                 this.domObj.style.visibility = 'hidden';
                 this.domObj.style.display = 'block';
                 var size = Element.getDimensions(this.domObj);
-                this.domObj.style.top = (this.oCurrentPosition.y - size.height) + 'px';
-                this.domObj.style.left = this.oCurrentPosition.x + 'px';
+                this.domObj.style.top = (this.oMapTipPosition.y - size.height) + 'px';
+                this.domObj.style.left = (this.oMapTipPosition.x) + 'px';
+                
+                if (!window.opera) {
+                    contentDiv.appendChild(this.iframe);
+                    var size = Element.getContentBoxSize(this.domObj);
+                    this.iframe.style.width = size.width + "px";
+                    this.iframe.style.height = size.height + "px";
+                }
+                
                 this.domObj.style.visibility = 'visible';
+            } else {
+                this.hideMaptip();
             }
         } else {
             this.bIsVisible = false;
@@ -189,14 +222,13 @@ Fusion.Widget.Maptip.prototype =
     hideMaptip: function() {
       //console.log('hideMaptip');
         this.bIsVisible = false;
-        this.hideTimer = window.setTimeout(this._hide.bind(this),250);
+        this.hideTimer = window.setTimeout(this._hide.bind(this),10);
     },
     
     _hide: function() {
       //console.log('maptip _hide');
         this.hideTimer = null;
         this.domObj.style.display = 'none';
-        this.domObj.innerHTML = '&nbsp;';
         this.oMapTipPosition = null;
     },
     
@@ -211,6 +243,21 @@ Fusion.Widget.Maptip.prototype =
       //console.log('mouseOutTip');
         this.nHideTimer = window.setTimeout(this.hideMaptip.bind(this), 250);
         this.bOverTip = false;
-    }
+    },
     
+    openLink : function(evt, url) {
+        var taskPaneTarget = Fusion.getWidgetById(this.sTarget);
+        if ( taskPaneTarget ) {
+            taskPaneTarget.setContent(url);
+        } else {
+            var pageElement = $(this.sTarget);
+            if ( pageElement ) {
+                pageElement.src = url;
+            } else {
+                window.open(url, this.sTarget, this.sWinFeatures);
+            }
+        }
+        OpenLayers.Event.stop(evt, true);
+        return false;
+    }
 };

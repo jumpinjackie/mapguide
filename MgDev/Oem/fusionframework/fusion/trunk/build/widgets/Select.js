@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Select
  *
- * $Id: Select.js 1121 2007-12-13 22:13:01Z madair $
+ * $Id: Select.js 1252 2008-02-22 22:36:46Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -36,7 +36,6 @@ Fusion.Widget.Select.prototype =  {
     nTolerance : 3,     //default pixel tolernace for a point click
     bActiveOnly: false, //only select feature(s) on the active layer?
     maxFeatures: 0,     //deafult of 0 selects all features (i.e. no maximum)
-    keyModifiers: 0,    //set during event handling to indicate modifier key states
     
     initialize : function(widgetTag) {
         //console.log('Select.initialize');
@@ -68,9 +67,9 @@ Fusion.Widget.Select.prototype =  {
         }
         
         this.map = this.getMap().oMapOL;
-        this.handler = new OpenLayers.Handler.Box(this,{done: this.execute});
-        this.handler.dragHandler.up = this.setModifiers.bind(this);
-        this.handler.dragHandler.down = this.clearModifiers.bind(this);
+        this.handler = new OpenLayers.Handler.Box(this,{done: this.execute},{keyMask:0});
+        this.shiftHandler = new OpenLayers.Handler.Box(this,{done: this.extend},
+                                        {keyMask:OpenLayers.Handler.MOD_SHIFT});
     },
     
     enable: function() {
@@ -100,6 +99,7 @@ Fusion.Widget.Select.prototype =  {
        */
     activate : function() {
         this.handler.activate();
+        this.shiftHandler.activate();
         this.getMap().setCursor(this.asCursor);
         /*icon button*/
         this._oButton.activateTool();
@@ -112,6 +112,7 @@ Fusion.Widget.Select.prototype =  {
        **/
     deactivate : function() {
         this.handler.deactivate();
+        this.shiftHandler.deactivate();
         this.getMap().setCursor('auto');
         /*icon button*/
         this._oButton.deactivateTool();
@@ -125,10 +126,10 @@ Fusion.Widget.Select.prototype =  {
         *   position will be either an instance of OpenLayers.Bounds when the mouse has
         *   moved, or an OpenLayers.Pixel for click without dragging on the map
         **/
-    execute : function(position) {
+    execute : function(position, extend) {
         //ctrl click is used to launch a URL defined on the feature. See ClickCTRL widget
         if (this.keyModifiers & OpenLayers.Handler.MOD_CTRL) {
-          return;
+          //return;
         }
         
         var nRight, nTop;
@@ -169,13 +170,23 @@ Fusion.Widget.Select.prototype =  {
             }
         }
         
-        if (this.keyModifiers & OpenLayers.Handler.MOD_SHIFT) {
+        if (extend) {
             options.extendSelection = true;
         }
         
         this.getMap().query(options);
     },
 
+    /**
+        * handler for extending the selection when the shift key is pressed
+        *
+        * Parameters:
+        * evt - the OpenLayers.Event object that is being responded to
+        */
+    extend: function(position) {
+        this.execute(position, true);
+    },
+    
     /**
         * calculate the keyboard modifier mask for this event 
         *

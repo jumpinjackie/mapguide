@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Map
  *
- * $Id: Map.js 1198 2008-01-22 16:09:38Z madair $
+ * $Id: Map.js 1243 2008-02-22 16:43:04Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -1043,10 +1043,10 @@ GxSelectionObjectLayer.prototype = {
 
         this.aElements = [];
 
-        this.nProperties = o[layerName].propertynames.length;
+        this.nProperties = o[layerName].propertyvalues.length;
 
         this.aPropertiesName = [];
-        this.aPropertiesName  = o[layerName].propertynames;
+        this.aPropertiesName  = o[layerName].propertyvalues;
 
         this.aPropertiesTypes = [];
         this.aPropertiesTypes = o[layerName].propertytypes;

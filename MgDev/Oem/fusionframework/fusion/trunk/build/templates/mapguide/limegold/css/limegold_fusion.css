@@ -369,7 +369,7 @@ img {
 }
 
 #LegendContainer.tabContent {
-    overflow: hidden;
+    overflow: auto;
 }
 
 #Legend {
@@ -378,8 +378,8 @@ img {
     /*
     border: 0px solid #000;
     margin: 1px;
-    */
     height: 100%;
+    */
     overflow: auto;
 }
 /********************************************************
