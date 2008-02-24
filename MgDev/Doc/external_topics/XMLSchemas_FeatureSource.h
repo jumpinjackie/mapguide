@@ -27,5 +27,5 @@ FeatureSource version=&lt;string&gt;
    LongTransaction?
 </pre>
 
-<a href="../../xml_schemas/FeatureSource/FeatureSource.html">Details</a>
+<a href="../../xml_schemas/FeatureSource/FeatureSource.htm">Details</a>
 **/

@@ -3,6 +3,14 @@
 	The text for these groups is contained in the "external topics" directory.
 	-->
 	
+	<!-- ------------ ApplicationDefinition ---------------------- -->
+	\defgroup ApplicationDefinition_schema ApplicationDefinition
+	\ingroup XML_Schemas_Module	
+	
+	<!-- ------------ ApplicationDefinitionInfo ---------------------- -->
+	\defgroup ApplicationDefinitionInfo_schema ApplicationDefinitionInfo
+	\ingroup XML_Schemas_Module		
+	
 	<!-- ------------ BatchPropertyCollection ---------------------- -->
 	\defgroup BatchPropertyCollection_schema BatchPropertyCollection
 	\ingroup XML_Schemas_Module	
@@ -21,6 +29,10 @@
 	
 	<!-- ------------ DrawingSource ---------------------- -->
 	\defgroup DrawingSource_schema DrawingSource
+	\ingroup XML_Schemas_Module
+	
+	<!-- ------------ FdoProviderCapabilities ---------------------- -->
+	\defgroup FdoProviderCapabilities_schema FdoProviderCapabilities
 	\ingroup XML_Schemas_Module
 	
 	<!-- ------------ FdoLongTransactionList ---------------------- -->
@@ -42,7 +54,7 @@
 	<!-- ------------ FeatureSet_schema ---------------------- -->
 	\defgroup FeatureSet_schema FeatureSet	
 	\ingroup XML_Schemas_Module
-		<!-- (Note: There is also an FeatureSet class.) -->
+	<!-- (Note: There is also an FeatureSet class.) -->
 	
 	<!-- ------------ FeatureSource---------------------- -->
 	\defgroup FeatureSource_schema FeatureSource	
