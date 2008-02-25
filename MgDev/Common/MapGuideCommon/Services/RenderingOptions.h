@@ -35,13 +35,19 @@ PUBLISHED_API:
 
     /////////////////////////////////////////////////////////////////
     /// \brief
-    /// rendering behavior values
+    /// Rendering behavior values.
+    /// \n
+    /// \c RenderSelection - Renders the selected feature(s).
+    /// \n
+    /// \c RenderLayers - Renders the features on the map.
+    /// \n
+    /// \c KeepSelection - Renders the selected feature(s) even if they are outside the current scale.
     ///
     enum
     {
-        RenderSelection = 1,    // Renders the selected feature(s)
-        RenderLayers = 2,       // Renders the features on the map
-        KeepSelection = 4       // Renders the selected feature(s) even if they are outside the current scale
+        RenderSelection = 1,    
+        RenderLayers = 2,       
+        KeepSelection = 4      
     };
 
     /////////////////////////////////////////////////////////////////
