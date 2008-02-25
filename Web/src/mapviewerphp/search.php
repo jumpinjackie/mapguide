@@ -120,16 +120,11 @@
 
             $classDef = $features->GetClassDefinition();
             $idProps = $classDef->GetIdentityProperties();
-            $multiIds = $idProps->GetCount() > 1;
             $idPropNames = array();
-            $idPropTypes = array();
-            for($j = 0, $count = count($idProps); $j < $count; $j++)
+            for($j = 0; $j < $idProps->GetCount(); $j++)
             {
                 $idProp = $idProps->GetItem($j);
-                if($multiIds)
-                    array_push($idPropNames, $idProp->GetName());
-                else
-                    $idPropName = $idProp->GetName();
+                array_push($idPropNames, $idProp->GetName());
             }
 
             //table headings
@@ -182,35 +177,43 @@
                         case MgPropertyType::String:
                             $val = $features->GetString($propName);
                             break;
+                        case MgPropertyType::DateTime:
+                            $val = $features->GetDateTime($propName)->ToString();
+                            break;
                     }
 
                     // Generate XML to selection this feature
                     //
                     $sel = new MgSelection($map);
-                    if($multiIds)
-                        throw new SearchError(GetLocalizedString("SEARCHNOMULTIPROP", $locale), $searchError);
-                    else
+                    $idProps = new MgPropertyCollection();
+                    foreach ($idPropNames as $id)
                     {
-                        if($i == 0)
-                            $idPropType = $features->GetPropertyType($idPropName);
+                        $idPropType = $features->GetPropertyType($id);
                         switch($idPropType)
                         {
                             case MgPropertyType::Int32:
-                                $sel->AddFeatureIdInt32($layer, $featureClassName, $features->GetInt32($idPropName));
+                                $idProps->Add(new MgInt32Property($id, $features->GetInt32($id)));
                                 break;
                             case MgPropertyType::String:
-                                $sel->AddFeatureIdString($layer, $featureClassName, $features->GetString($idPropName));
+                                $idProps->Add(new MgStringProperty($id, $features->GetString($id)));
                                 break;
                             case MgPropertyType::Int64:
-                                $sel->AddFeatureIdInt64($layer, $featureClassName, $features->GetInt64($idPropName));
+                                $idProps->Add(new MgInt64Property($id, $features->GetInt64($id)));
                                 break;
                             case MgPropertyType::Double:
-                                $sel->AddFeatureIdDouble($layer, $featureClassName, $features->GetDouble($idPropName));
+                                $idProps->Add(new MgDoubleProperty($id, $features->GetDouble($id)));
+                                break;
+                            case MgPropertyType::Single:
+                                $idProps->Add(new MgSingleProperty($id, $features->GetSingle($id)));
+                                break;
+                            case MgPropertyType::DateTime:
+                                $idProps->Add(new MgDateTimeProperty($id, $features->GetDateTime($id)));
                                 break;
                             default:
                                 throw new SearchError(FormatMessage("SEARCHTYYPENOTSUP", $locale, array($idPropType)), $searchError);
                         }
                     }
+                    $sel->AddFeatureIds($layer, $featureClassName, $idProps);
                     $selText = EscapeForHtml($sel->ToXml(), true);
 
                     echo sprintf("<td class=\"%s\" id=\"%d:%d\" onmousemove=\"SelectRow(%d)\" onclick=\"CellClicked('%s')\">&nbsp;%s</td>\n", !($row%2)? "Search" : "Search2", $row, $i, $row, $selText, $val);
