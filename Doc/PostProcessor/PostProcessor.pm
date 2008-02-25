@@ -19,8 +19,32 @@
 #	PostProcessor.pm
 #	=================
 #
-#	Called by "post_process.MgOpenSource.pl".
+#	This is called by "post_process.MgOpenSource.pl".
 #
+#	Purpose:
+#		Does some post-processing of the HTML files produced
+#		by Doxygen, to fix things that we cannot configure
+#	    through Doxygen.
+#
+#		1) Removes the "File List", "File Members", and "Namespaces" nodes from the Table Of Contents.
+#		2) Removes '__get', '__set', and '__inherit'. (These are SWIG commands
+#		   but because they are in the comments they get picked up by Doxygen.)
+#		3) Sets the title to be shown in the web browser.
+#		4) Fixes the links in the top-of-page tabs on the first page (index.htm)
+#		   the user sees.
+#		   (If you have DISABLE_INDEX set to NO, the default, in the Doxygen
+# 		    configuration file, then Doxygen puts tabs at the top of each page,
+#			with links to "Main Page, "Modules", etc.  We don't want to show
+#  		    the "Files" or "Namespaces" tab, so we set DISABLE_INDEX to YES, and add the desired tabs
+#		    to our custom header (which we specify via HTML_HEADER).
+#			We also have CREATE_SUBDIRS set to YES, so some pages are in
+#			subdirectories, and some are at the root level.  The links in
+#			our custom header are fine for pages in subdirectories, but need
+#			to be fixed for pages in the root level.  (EG, index.htm.)
+#		5) Changes the default name of the top node in the Table Of Contents,
+#		   "Root", to something more informative.
+#		6) Makes similar changes in the index.hhc and index.hhp files.  (These
+#	       will be present if we are compiling the help into a .CHM.)
 #
 #	History:
 # 		v 1.0 	- Written by Philip Sharman, 2008.02.12
@@ -31,21 +55,11 @@
 #				  PHS, 2008.02.14
 #		v 1.2	- Changed to not use any external Perl modules, to make it easier to
 #				  distribute.  PHS, 2008.02.20
+#		v 1.3	- Added 'change_root()', 'remove_namespace()', 'remove_namespace_from_HHC()' etc.  
+#                 PHS, 2008.02.24
 #############################################################
 package PostProcessor;
 use File::Find;
-
-
-## Uncomment for testing and debugging ...
-#	my $DIRECTORY_SEPARATOR = '\\';
-#	print "DIRECTORY_SEPARATOR = $DIRECTORY_SEPARATOR \n"; 
-#	
-##	remove_SWIG_commands_from_directory('..\MgEnterprise_HTML');
-#	$VERBOSE = 1;
-#	$TRUE = 1;
-#	$FALSE = not $TRUE;
-#	remove_SWIG_commands_from_directory('C:\OSGeo+Perforce\mapguide\MgDev\Doc\API\HTML\PostProcessor\TEST_POST_PROCESSING_INPUT');
-
 
 return 1; # Included files must return this.
 
@@ -93,7 +107,7 @@ sub delete_file_list
 	# Write to the output file. 
 	if ($okay1 and $okay2)
 	{
-		open (OUTPUT, ">", $toc_file) or die ("Cannot write too '$toc_file'. ($!) "); 
+		open (OUTPUT, ">", $toc_file) or die ("*** FATAL ERROR in delete_file_list: Cannot write too '$toc_file'. ($!) "); 
 		print OUTPUT "$text\n";
 		close OUTPUT;
 		print "Saved: '$toc_file'.\n"; 
@@ -103,10 +117,11 @@ sub delete_file_list
 
 ################################################################### 
 # Change the tile in index.htm.
+#
+# Uses $INPUT_DIRECTORY.
 sub change_title
 {
 	my $index_file = "$INPUT_DIRECTORY$DIRECTORY_SEPARATOR" . 'index.htm';
-	my $index_file_new = $index_file;	
 	
 	if (not -e $index_file)
 	{
@@ -115,28 +130,26 @@ sub change_title
 	}
 	
 	# Slurp the input file into a variable
-	my $text =slurp($index_file);		
+	my $text = slurp($index_file);		
 	
 	# Change it
-	my $okay = ( $text =~ s/<title>Doxygen Documentation<\/title>/<title>$TITLE<\/title>/s );
-	if ($okay)
-	{
-		print "Changed the title in '$index_file'.\n"; 
-	}
-	else
-	{
-		print "*** ERROR in change_title: We could not change the title in '$index_file'. ***\n"; 
-	}
+	my $changes_were_made = ( $text =~ s/<title>Doxygen Documentation<\/title>/<title>$TITLE<\/title>/s );
 
 	# Write to the output file. 
-	if ($okay)
+	if ($changes_were_made)
 	{
-		open (OUTPUT, ">", $index_file) or die ("Cannot write to '$index_file'. ($!) "); 
+		print "Changed the title in '$index_file'.\n"; 
+		
+		open (OUTPUT, ">", $index_file) or die ("*** FATAL ERROR in change_title: Cannot write to '$index_file'. ($!) "); 
 		print OUTPUT "$text\n";
 		close OUTPUT;
 		print "Saved: '$index_file'.\n"; 
 		print "--------------------------------\n"; 
 	}
+	else
+	{
+		print "*** ERROR in change_title: We could not change the title in '$index_file'. ***\n"; 
+	}	
 }
 
 #######################################################
@@ -165,7 +178,7 @@ sub remove_SWIG_commands_from_directory #	($directory)
 	my @directories_to_search;
 	push(@directories_to_search, $directory);
 	find(\&remove_SWIG_commands_from_file, @directories_to_search );
-	print "\n"; 
+	
 }
 
 ################################################################### 
@@ -349,9 +362,11 @@ sub fix_links_in_directory #	($directory)
 	# Check the directory exists
 	if (! -e $directory)
 	{
-		die "ERORR: Cannot find the directory '$directory'. \n";
+		die "*** FATAL ERORR in fix_links_in_directory: Cannot find the directory '$directory'. \n";
 	}
 
+	print "Fixing links in directory '$directory'.\n"; 
+	
 	my $file;
 	opendir DIR, $directory;
 	foreach my $item (sort readdir(DIR))		# $item is the short name, e.g. "file.htm"
@@ -392,7 +407,7 @@ sub fix_links_in_file	# ($path)
 		if ($FILE_HAS_BEEN_CHANGED) 
 		{ 			
 			# Save the file
-			open (OUTPUT, ">", $path) or die ("*** FATAL ERROR in xxx: Cannot write to '$path'. ($!) "); 
+			open (OUTPUT, ">", $path) or die ("*** FATAL ERROR in fix_links_in_file: Cannot write to '$path'. ($!) "); 
 			print OUTPUT "$text\n";
 			print "Saved: '$path'.\n"; 
 			close OUTPUT; 
@@ -421,6 +436,14 @@ sub fix_links_in_text	# ($text, $path)
 		$FILE_HAS_BEEN_CHANGED = $TRUE;
 	}
 	
+	my $OVERVIEW_REGEX = '<li><a href="\.\./\.\./main\.htm"><span>Overview<\/span></a></li>';
+	if ($text =~ /$OVERVIEW_REGEX/)
+	{
+		if ($VERBOSE) { print "Changing Overview link in '$path'.\n"; }
+		$text =~  	s@$OVERVIEW_REGEX@<li><a href=\"main.htm\"><span>Overview</span></a></li>@;	
+		$FILE_HAS_BEEN_CHANGED = $TRUE;
+	}
+		
 	my $MODULES_REGEX = '<li><a href="\.\./\.\./modules\.htm"><span>Modules</span></a></li>';
 	if ($text =~ /$MODULES_REGEX/)
 	{
@@ -453,14 +476,15 @@ sub fix_links_in_text	# ($text, $path)
 		$FILE_HAS_BEEN_CHANGED = $TRUE;	
 	}
 	
-	# Check that we got them all
-	if ($text =~ /(.{0,10}<a href="\.\..{0,30})/) # "
+	# Check that we got them all.
+	# There shouldn't be any more instances of '<a href="..'
+	if ($text =~ /(.{0,10}<a href="\.\..{0,30})/)          # "
 	{
 		print "*** WARNING in fix_links_in_file: The file '$path'\nstill needs links fixed because of this:\n\t'$1'. *** \n";
 	}
 		
 	return ($FILE_HAS_BEEN_CHANGED, $text);
-}
+} # end of fix_links_in_text
 		
 ################################################################### 
 sub show_global_variables
@@ -468,6 +492,7 @@ sub show_global_variables
 	print "DIRECTORY_SEPARATOR = '$DIRECTORY_SEPARATOR' \n"; 
 	print "INPUT_DIRECTORY =     '$INPUT_DIRECTORY' \n"; 
 	print "TITLE =               '$TITLE' \n"; 
+	print "ROOT =                '$ROOT' \n"; 
 	print "TRUE =                '$TRUE' \n"; 
 	print "FALSE =               '$FALSE' \n"; 
 	print "VERBOSE =             '$VERBOSE' \n"; 
@@ -534,11 +559,318 @@ sub slurp 	# ($file)
 	my $file_handle = 'INPUT';
 	
 	local( $/ ) ;
-	open( $file_handle, $file ) or die "*** FATAL ERROR: Could not read from '$file_handle'.\n";
+	open( $file_handle, $file ) or die "*** FATAL ERROR in slurp: Could not read from '$file_handle'.\n";
 	my $text = <$file_handle>;
 	close $file_handle;
 	
 	return $text;
+}
+
+###################################################################
+# By default, Doxygen calls the top node of the Table of Contents "Root".
+# Change it to $ROOT.
+sub change_root
+{
+	my $toc_file = "$INPUT_DIRECTORY$DIRECTORY_SEPARATOR" . 'tree.htm';
+	
+	if (not -e $toc_file)
+	{
+		print "*** ERROR in change_root: We could not find the TOC file: '$toc_file'. ***\n"; 
+		return;
+	}
+	
+	# Slurp the input file into a variable
+	my $text = slurp($toc_file);
+	
+	my $FILE_HAS_BEEN_CHANGED = $FALSE;
+	($FILE_HAS_BEEN_CHANGED, $text) = change_root_in_text($text);
+	
+	# If the file has been changed, save it
+	if ($FILE_HAS_BEEN_CHANGED) 
+	{ 	
+		print "Changed the root to '$ROOT' in the TOC.\n"; 
+						
+		# Save the file
+		open (OUTPUT, ">", $toc_file) or die ("*** FATAL ERROR in change_root: Cannot write to '$toc_file'. ($!) "); 
+		print OUTPUT "$text\n";
+		print "Saved: '$toc_file'.\n"; 
+		close OUTPUT; 
+		
+		print "--------------------------------\n"; 
+	}	
+	else
+	{
+		print "*** ERROR in change_root: We could not change the root in '$toc_file'. ***\n"; 
+	}		
+}
+
+###################################################################
+# This is called by 'change_root'.
+# (Splitting this off into a separate subroutine makes it easier to write 
+# unit tests for it.)
+#
+# Returns (FILE_HAS_BEEN_CHANGED, $text)
+sub change_root_in_text	# ($text)
+{
+	my $text = shift;
+	
+	# Change it
+	my $changes_were_made = ( $text =~ s/<h3>Root<\/h3>/<h3>$ROOT<\/h3>/ );
+	
+	return ($changes_were_made, $text);
+}
+
+################################################################### 
+# Removes the 'Namespace' node from the Table Of Contents (tree.htm).
+sub remove_namespace
+{
+	my $toc_file = "$INPUT_DIRECTORY$DIRECTORY_SEPARATOR" . 'tree.htm';
+	
+	if (not -e $toc_file)
+	{
+		print "*** ERROR in remove_namespace: We could not find the TOC file: '$toc_file'. ***\n"; 
+		return;
+	}
+	
+	# Slurp the input file into a variable
+	my $text = slurp($toc_file);
+	
+	my $FILE_HAS_BEEN_CHANGED = $FALSE;
+	($FILE_HAS_BEEN_CHANGED, $text) = remove_namespace_in_text($text);
+	
+	# If the file has been changed, save it
+	if ($FILE_HAS_BEEN_CHANGED) 
+	{ 		
+		print "Removed the Namespace node from the TOC.\n"; 	
+				
+		# Save the file	
+		open (OUTPUT, ">", $toc_file) or die ("*** FATAL ERROR in remove_namespace: Cannot write to '$toc_file'. ($!) "); 
+		print OUTPUT "$text\n";
+		print "Saved: '$toc_file'.\n"; 
+		close OUTPUT; 
+		
+		print "--------------------------------\n"; 
+	}		
+	else
+	{
+		print "*** ERROR in remove_namespace: We could not remove the Namespace node in '$toc_file'. ***\n"; 
+	}	
+}
+
+###################################################################
+# This is called by 'remove_namespace'.
+# (Splitting this off into a separate subroutine makes it easier to write 
+# unit tests for it.)
+#
+# Returns (FILE_HAS_BEEN_CHANGED, $text)
+sub remove_namespace_in_text	# ($text)
+{
+	my $text = shift;
+	
+	# Change it
+	my $changes_were_made = ( $text =~ s/<p><img.*?><img.*?><a.*?href=\"namespaces.htm\".*?>Namespace\sList<\/a><\/p>// );
+
+	return ($changes_were_made, $text);
+}
+
+################################################################### 
+# Removes the 'Namespace' node from the index.hhc file. (This file
+# will exist only if we are compiling the help into a .CHM.)
+sub remove_namespace_from_HHC
+{
+	my $hhc_file = "$INPUT_DIRECTORY$DIRECTORY_SEPARATOR" . 'index.hhc';
+	
+	if (not -e $hhc_file)
+	{
+		print "*** ERROR in remove_namespace_from_HHC: We could not find the TOC file: '$hhc_file'. ***\n"; 
+		return;
+	}
+	
+	# Slurp the input file into a variable
+	my $text = slurp($hhc_file);
+	
+	my $FILE_HAS_BEEN_CHANGED = $FALSE;
+	($FILE_HAS_BEEN_CHANGED, $text) = remove_namespace_from_hhc_text($text);
+	
+	# If the file has been changed, save it
+	if ($FILE_HAS_BEEN_CHANGED) 
+	{ 		
+		print "Removed the Namespace node from index.HHC.\n"; 
+					
+		# Save the file		
+		open (OUTPUT, ">", $hhc_file) or die ("*** FATAL ERROR in remove_namespace_from_HHC: Cannot write to '$hhc_file'. ($!) "); 
+		print OUTPUT "$text\n";
+		print "Saved: '$hhc_file'.\n"; 
+		close OUTPUT; 
+		
+		print "--------------------------------\n"; 
+	}		
+	else
+	{
+		print "*** ERROR in remove_namespace_from_HHC: We could not remove the Namespace node in '$hhc_file'. ***\n"; 
+	}	
+}
+
+################################################################### 
+# This is called by 'remove_namespace_from_HHC'.
+# (Splitting this off into a separate subroutine makes it easier to write 
+# unit tests for it.)
+#
+# Returns (FILE_HAS_BEEN_CHANGED, $text)
+sub remove_namespace_from_hhc_text	# ($text)
+{
+	my $text = shift;
+	
+	# Change it
+	my $changes_were_made = ( $text =~ s/<LI>\s*<OBJECT[^>]*?><param[^>]*?value=\"Namespace\sList\">\s*<param[^>]*?value=\"namespaces.htm\"><param.*?><\/OBJECT>\s*<UL>\s*<LI><OBJECT[^>]*?><param[^>]*?><param[^>].*?><param[^>]*?>\s*<\/OBJECT>\s*<\/UL>// );
+
+	return ($changes_were_made, $text);
+}
+
+################################################################### 
+# Removes the 'File List' node from the index.hhc file. (This file
+# will exist only if we are compiling the help into a .CHM.)
+sub remove_file_list_from_HHC
+{
+	my $hhc_file = "$INPUT_DIRECTORY$DIRECTORY_SEPARATOR" . 'index.hhc';
+	
+	if (not -e $hhc_file)
+	{
+		print "*** ERROR in remove_file_list_from_HHC: We could not find the HCC file: '$hhc_file'. ***\n"; 
+		return;
+	}
+	
+	# Slurp the input file into a variable
+	my $text = slurp($hhc_file);
+	
+	my $FILE_HAS_BEEN_CHANGED = $FALSE;
+	($FILE_HAS_BEEN_CHANGED, $text) = remove_file_list_from_hhc_text($text);
+	
+	# If the file has been changed, save it
+	if ($FILE_HAS_BEEN_CHANGED) 
+	{ 	
+		print "Removed the File List node from the index.HHC.\n"; 	
+						
+		# Save the file	
+		open (OUTPUT, ">", $hhc_file) or die ("*** FATAL ERROR in remove_file_list_from_HHC: Cannot write to '$hhc_file'. ($!) "); 
+		print OUTPUT "$text\n";
+		print "Saved: '$hhc_file'.\n"; 
+		close OUTPUT; 
+		
+		print "--------------------------------\n"; 
+	}		
+	else
+	{
+		print "*** ERROR in remove_file_list_from_HHC: We could not remove the File List node in '$hhc_file'. ***\n"; 
+	}	
+}
+
+################################################################### 
+# This is called by 'remove_file_list_from_HHC'.
+# (Splitting this off into a separate subroutine makes it easier to write 
+# unit tests for it.)
+#
+# Returns (FILE_HAS_BEEN_CHANGED, $text)
+sub remove_file_list_from_hhc_text	# ($text)
+{
+	my $text = shift;
+	
+	# Change it
+	my $changes_were_made = ( $text =~ s/<LI>\s*<OBJECT[^>]*>\s*<param[^>]*value=\"File List\">\s*<param[^>]*value=\"files.htm\">\s*<param[^>]*><\/OBJECT>\s*<UL>.*?<\/UL>//s );
+
+	return ($changes_were_made, $text);
+}
+
+################################################################### 
+# Removes the 'File Members' node from the index.hhc file. (This file
+# will exist only if we are compiling the help into a .CHM.)
+sub remove_file_members_from_HHC
+{
+	my $hhc_file = "$INPUT_DIRECTORY$DIRECTORY_SEPARATOR" . 'index.hhc';
+	
+	if (not -e $hhc_file)
+	{
+		print "*** ERROR in remove_file_members_from_HHC: We could not find the HCC file: '$hhc_file'. ***\n"; 
+		return;
+	}
+	
+	# Slurp the input file into a variable
+	my $text = slurp($hhc_file);
+	
+	my $FILE_HAS_BEEN_CHANGED = $FALSE;
+	($FILE_HAS_BEEN_CHANGED, $text) = remove_file_members_from_hhc_text($text);
+	
+	# If the file has been changed, save it
+	if ($FILE_HAS_BEEN_CHANGED) 
+	{ 	
+		print "Removed the File Members node from the index.HHC.\n"; 	
+						
+		# Save the file	
+		open (OUTPUT, ">", $hhc_file) or die ("*** FATAL ERROR in remove_file_members_from_HHC: Cannot write to '$hhc_file'. ($!) "); 
+		print OUTPUT "$text\n";
+		print "Saved: '$hhc_file'.\n"; 
+		close OUTPUT; 
+		
+		print "--------------------------------\n"; 
+	}		
+	else
+	{
+		print "*** ERROR in remove_file_members_from_HHC: We could not remove the File Members node in '$hhc_file'. ***\n"; 
+	}	
+}
+
+################################################################### 
+# This is called by 'remove_file_members_from_HHC'.
+# (Splitting this off into a separate subroutine makes it easier to write 
+# unit tests for it.)
+#
+# Returns (FILE_HAS_BEEN_CHANGED, $text)
+sub remove_file_members_from_hhc_text	# ($text)
+{
+	my $text = shift;
+	
+	# Change it
+	my $changes_were_made = ( $text =~ s/<LI>\s*<OBJECT[^>]*>\s*<param[^>]*value=\"File Members\">\s*<param[^>]*>\s*<param[^>]*>\s*<\/OBJECT>//s );
+	
+	return ($changes_were_made, $text);
+}
+
+################################################################### 
+# Sets the title in index.HHP. (This file will exist only if we are 
+# compiling the help into a .CHM.)
+sub change_title_in_HHP
+{
+	my $hhp_file = "$INPUT_DIRECTORY$DIRECTORY_SEPARATOR" . 'index.hhp';
+	
+	if (not -e $hhp_file)
+	{
+		print "*** ERROR in change_title_in_HHP: We could not find the HHP file: '$hhp_file'. ***\n"; 
+		return;
+	}
+	
+	# Slurp the input file into a variable
+	my $text = slurp($hhp_file);
+	
+	my $FILE_HAS_BEEN_CHANGED = $FALSE;
+	$FILE_HAS_BEEN_CHANGED = ( $text =~ s/^Title=.*$/Title=$TITLE/m );
+	
+	# If the file has been changed, save it
+	if ($FILE_HAS_BEEN_CHANGED) 
+	{ 	
+		print "Changed the title in index.hhp.\n"; 	
+						
+		# Save the file	
+		open (OUTPUT, ">", $hhp_file) or die ("*** FATAL ERROR in change_title_in_HHP: Cannot write to '$hhp_file'. ($!) "); 
+		print OUTPUT "$text\n";
+		print "Saved: '$hhp_file'.\n"; 
+		close OUTPUT; 
+		
+		print "--------------------------------\n"; 
+	}		
+	else
+	{
+		print "*** ERROR in change_title_in_HHP: We could not set the title in '$hhp_file'. ***\n"; 
+	}	
 }
 
 ################################################################### 
