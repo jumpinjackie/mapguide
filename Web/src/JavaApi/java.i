@@ -21,23 +21,26 @@
 %typemap(javain) STRINGPARAM "$javainput"
 %typemap(in) STRINGPARAM
 {
-    if ($input == NULL)
+    if($input == NULL)
        $1 = std::wstring(L"");
     else
     {
+        int len = jenv->GetStringLength($input);
+        const jchar *pstr = jenv->GetStringChars($input, 0);
+        if (!pstr)
+            $1 = std::wstring(L"ERROR: SWIG string conversion"); 
+        else
+        {
 #ifdef WIN32
-    const jchar* pstr = jenv->GetStringChars($input, 0);
-    if (!pstr)
-        return $null;
-    $1 =  std::wstring((const wchar_t*)pstr);
-    jenv->ReleaseStringChars($input, pstr);
+            $1 =  std::wstring((const wchar_t*)pstr, len);
 #else
-    int len = jenv->GetStringLength($input);
-    XMLCh* pu16 = (XMLCh*)jenv->GetStringChars($input, 0);
-    lstring u32String;
-    UnicodeString::UTF16toUTF32(pu16, u32String);
-    $1 =  std::wstring((const wchar_t*)u32String.c_str());
+            xstring u16String = xstring((XMLCh*)pstr, len);
+            lstring u32String;
+            UnicodeString::UTF16toUTF32(u16String.c_str(),u32String);
+            $1 =  std::wstring((const wchar_t*) u32String.c_str());
 #endif
+            jenv->ReleaseStringChars($input, pstr);
+        }
     }
 }
 
@@ -51,11 +54,11 @@
 %typemap(out) STRING
 {
 #ifdef WIN32
-    jresult = jenv->NewString((const jchar*)result.c_str(), (jsize)result.length());
+    jresult = jenv->NewString((const jchar *)result.c_str(), (jsize)result.length());
 #else
     xstring u16String;
-    UnicodeString::UTF32toUTF16((const LCh*)result.c_str(), u16String);
-    jresult = jenv->NewString((const jchar*)u16String.c_str(), (jsize)u16String.length());
+    UnicodeString::UTF32toUTF16((const LCh*) result.c_str(), u16String);
+    jresult = jenv->NewString((const jchar *)u16String.c_str(), (jsize)u16String.length());
 #endif
 }
 
