@@ -193,8 +193,11 @@ PUBLISHED_API:
     /// Sets the desired locale for the user.
     ///
     /// \remarks
-    /// Locale codes are 2 letter language codes defined by ISO 639-1. Please refer
-    /// to http://www.loc.gov/standards/iso639-2/php/English_list.php
+    /// The locale code can be either a 2 letter language code defined by ISO 639-1, for example 'en',
+    /// or a [language]-[country] code as allowed by the HTTP Accept-Language header, for example 'en-us' or 'en-gb'.
+    /// Please refer
+    /// to http://www.loc.gov/standards/iso639-2/php/English_list.php and 
+    /// http://www.w3.org/International/questions/qa-accept-lang-locales
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -209,7 +212,7 @@ PUBLISHED_API:
     ///
     /// \param locale (String/string)
     /// Input
-    /// Three letter locale code
+    /// Locale code
     ///
     /// \return
     /// Returns nothing
@@ -221,10 +224,13 @@ PUBLISHED_API:
     /// Retrieves the locale for the user.
     ///
     /// \remarks
-    /// Locale codes are 2 letter language codes defined by ISO 639-1. Please refer
-    /// to http://www.loc.gov/standards/iso639-2/php/English_list.php
+    /// The locale code can be either a 2 letter language code defined by ISO 639-1, for example 'en',
+    /// or a [language]-[country] code as allowed by the HTTP Accept-Language header, for example 'en-us' or 'en-gb'.
+    /// Please refer
+    /// to http://www.loc.gov/standards/iso639-2/php/English_list.php and 
+    /// http://www.w3.org/International/questions/qa-accept-lang-locales
     /// \n
-    /// Locale will only be available if SetLocale has been called on the user information
+    /// The locale will only be available if SetLocale has been called on the user information
     /// object or if the user information was initialized with a session identifier.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
@@ -239,7 +245,7 @@ PUBLISHED_API:
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \return
-    /// Three letter locale code
+    /// Locale code
     ///
     STRING GetLocale();
 
