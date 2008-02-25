@@ -158,6 +158,7 @@ PUBLISHED_API:
     ///
     virtual double GetM() = 0;  /// __get
 
+EXTERNAL_API:
     ////////////////////////////////////////////////////////////
     /// \brief
     /// The value of this constant is NAN. In a PHP context, the
