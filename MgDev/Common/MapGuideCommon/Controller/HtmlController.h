@@ -78,6 +78,9 @@ INTERNAL_API:
     /// \param bKeepSelection
     /// Input
     /// true if you want to keep the selection
+    /// \param bClip
+    /// Input
+    /// true if you want to clip the feature geometry
     ///
     /// \return
     /// A byte reader containing the map image
