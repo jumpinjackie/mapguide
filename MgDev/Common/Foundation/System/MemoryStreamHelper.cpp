@@ -206,7 +206,7 @@ MgStreamHelper::MgStreamStatus MgMemoryStreamHelper::GetNullTermString( REFSTRIN
         {
             string mbBuf = buf;
             data = MgUtil::MultiByteToWideChar(mbBuf);
-            stat = GetData(buf, endBuf-buf, true, peeking);
+            stat = GetData(buf, endBuf-buf+1, true, peeking);
         }
     }
 
@@ -318,6 +318,14 @@ MgStreamHelper::MgStreamStatus MgMemoryStreamHelper::WriteINT64( INT64 value )
     if (MgStreamHelper::mssDone == stat) stat = WriteUINT32(word);
 
     return stat;
+}
+
+MgStreamHelper::MgStreamStatus MgMemoryStreamHelper::WriteSingle( float value )
+{
+    UINT32 word = 0;
+    memcpy((void*)&word, (void*)&value, sizeof(float));
+    UINT32 tcpValue = MG_HTONL(word);
+    return WriteBytes((unsigned char*)&tcpValue, sizeof(UINT32));
 }
 
 MgStreamHelper::MgStreamStatus MgMemoryStreamHelper::WriteDouble( double value )
