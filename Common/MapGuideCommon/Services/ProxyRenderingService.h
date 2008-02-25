@@ -193,6 +193,36 @@ EXTERNAL_API:
     /// \param selection
     /// Input
     /// map feature selection. Specifies the selected features on the map
+    /// \param format
+    /// Input
+    /// image format. Defines the format of the resulting image
+    /// \param bKeepSelection
+    /// Input
+    /// true if you want to keep the selection
+    /// \param bKeepSelection
+    /// Input
+    /// true if you want to clip feature geometry
+    ///
+    /// \return
+    /// A byte reader containing the rendered image
+    ///
+    virtual MgByteReader* RenderMap(
+        MgMap* map,
+        MgSelection* selection,
+        CREFSTRING format,
+        bool bKeepSelection,
+        bool bClip);
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Renders the specified MgMap to the requested image format.
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param selection
+    /// Input
+    /// map feature selection. Specifies the selected features on the map
     /// \param extents
     /// Input
     /// map extents. Specifies the extents for the map

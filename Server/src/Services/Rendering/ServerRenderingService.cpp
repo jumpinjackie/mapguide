@@ -321,6 +321,15 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                                                   CREFSTRING format,
                                                   bool bKeepSelection)
 {
+    return RenderMap(map, selection, format, bKeepSelection, false);
+}
+
+MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
+                                                  MgSelection* selection,
+                                                  CREFSTRING format,
+                                                  bool bKeepSelection,
+                                                  bool bClip)
+{
     Ptr<MgByteReader> ret;
 
     MG_TRY()
@@ -338,7 +347,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
     Ptr<MgColor> bgColor = new MgColor(col.red(), col.green(), col.blue(), col.alpha());
 
     // punt to more specific RenderMap API
-    ret = RenderMap(map, selection, center, scale, map->GetDisplayWidth(), map->GetDisplayHeight(), bgColor, format, bKeepSelection);
+    ret = RenderMap(map, selection, center, scale, map->GetDisplayWidth(), map->GetDisplayHeight(), bgColor, format, bKeepSelection, bClip);
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMap")
 
@@ -477,6 +486,20 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                                                   CREFSTRING format,
                                                   bool bKeepSelection)
 {
+    return RenderMap(map, selection, center, scale, width, height, backgroundColor, format, bKeepSelection, false);
+}
+
+MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
+                                                  MgSelection* selection,
+                                                  MgCoordinate* center,
+                                                  double scale,
+                                                  INT32 width,
+                                                  INT32 height,
+                                                  MgColor* backgroundColor,
+                                                  CREFSTRING format,
+                                                  bool bKeepSelection,
+                                                  bool bClip)
+{
     Ptr<MgByteReader> ret;
 
     MG_TRY()
@@ -511,7 +534,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                      backgroundColor->GetAlpha());
 
     // initialize the appropriate map renderer
-    SE_Renderer* dr = CreateRenderer(width, height, bgcolor, false);
+    SE_Renderer* dr = CreateRenderer(width, height, bgcolor, bClip);
 
     // call the internal helper API to do all the stylization overhead work
     ret = RenderMapInternal(map, selection, NULL, dr, width, height, format, scale, b, false, bKeepSelection);

@@ -283,6 +283,56 @@ MgByteReader* MgProxyRenderingService::RenderMap(
 }
 
 
+
+/////////////////////////////////////////////////////////////////
+/// <summary>
+/// Renders the specified MgMap to the requested image format.
+/// </summary>
+/// <param name="map">Input
+/// map object containing current state of map.
+/// </param>
+/// <param name="selection">Input
+/// map feature selection. Specifies the selected features on the map
+/// </param>
+/// <param name="format">Input
+/// image format. Defines the format of the resulting image
+/// </param>
+/// <param name="bKeepSelection">Input
+/// true if you want to keep the selection
+/// </param>
+/// <param name="bClip">Input
+/// true if you want to clip feature geometry
+/// </param>
+/// <returns>
+/// A byte reader containing the rendered image
+/// </returns>
+MgByteReader* MgProxyRenderingService::RenderMap(
+    MgMap* map,
+    MgSelection* selection,
+    CREFSTRING format,
+    bool bKeepSelection,
+    bool bClip)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                          // Connection
+                        MgCommand::knObject,                // Return type expected
+                        MgRenderingServiceOpId::RenderMap4, // Command Code
+                        5,                                  // No of arguments
+                        Rendering_Service,                  // Service Id
+                        BUILD_VERSION(1,0,0),               // Operation version
+                        MgCommand::knObject, map,           // Argument#1
+                        MgCommand::knObject, selection,     // Argument#2
+                        MgCommand::knString, &format,       // Argument#3
+                        MgCommand::knInt8, (INT8)bKeepSelection, // Argument#4
+                        MgCommand::knInt8, (INT8)bClip,     // Argument#5
+                        MgCommand::knNone);                 // End of arguments
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}
+
+
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Renders the specified MgMap to the requested image format.
