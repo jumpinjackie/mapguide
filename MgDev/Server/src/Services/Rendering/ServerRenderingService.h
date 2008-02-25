@@ -65,6 +65,12 @@ public:
 
     virtual MgByteReader* RenderMap(MgMap* map,
                                     MgSelection* selection,
+                                    CREFSTRING format,
+                                    bool bKeepSelection,
+                                    bool bClip);
+
+    virtual MgByteReader* RenderMap(MgMap* map,
+                                    MgSelection* selection,
                                     MgEnvelope* extents,
                                     INT32 width,
                                     INT32 height,
@@ -98,6 +104,17 @@ public:
                                     MgColor* backgroundColor,
                                     CREFSTRING format,
                                     bool bKeepSelection);
+
+    virtual MgByteReader* RenderMap(MgMap* map,
+                                    MgSelection* selection,
+                                    MgCoordinate* center,
+                                    double scale,
+                                    INT32 width,
+                                    INT32 height,
+                                    MgColor* backgroundColor,
+                                    CREFSTRING format,
+                                    bool bKeepSelection,
+                                    bool bClip);
 
     virtual MgByteReader* RenderMapLegend(MgMap* map,
                                           INT32 width,

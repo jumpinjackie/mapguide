@@ -172,6 +172,7 @@ public:
     static const STRING reqRenderingScaleIndex;
     static const STRING reqRenderingLayerAttributeFilter;
     static const STRING reqRenderingKeepSelection;
+    static const STRING reqRenderingClip;
     static const STRING reqRenderingBehavior;
     static const STRING reqRenderingSelectionColor;
 

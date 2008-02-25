@@ -234,6 +234,7 @@ const STRING MgHttpResourceStrings::reqRenderingPersist = L"PERSIST";
 const STRING MgHttpResourceStrings::reqRenderingScaleIndex = L"SCALEINDEX";
 const STRING MgHttpResourceStrings::reqRenderingLayerAttributeFilter = L"LAYERATTRIBUTEFILTER";
 const STRING MgHttpResourceStrings::reqRenderingKeepSelection = L"KEEPSELECTION";
+const STRING MgHttpResourceStrings::reqRenderingClip = L"CLIP";
 const STRING MgHttpResourceStrings::reqRenderingBehavior = L"BEHAVIOR";
 const STRING MgHttpResourceStrings::reqRenderingSelectionColor = L"SELECTIONCOLOR";
 
