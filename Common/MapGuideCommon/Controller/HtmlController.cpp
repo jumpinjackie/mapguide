@@ -60,7 +60,7 @@ MgByteReader* MgHtmlController::GetDynamicMapOverlayImage(CREFSTRING mapName, Mg
 // Processes a GetMapImage request from the Viewer and returns an image of the specified map.
 //
 MgByteReader* MgHtmlController::GetMapImage(MgMap* map, MgSelection* selection,
-    CREFSTRING format, MgPropertyCollection* mapViewCommands, bool bKeepSelection)
+    CREFSTRING format, MgPropertyCollection* mapViewCommands, bool bKeepSelection, bool bClip)
 {
     // Apply map view commands
     ApplyMapViewCommands(map, mapViewCommands);
@@ -73,7 +73,7 @@ MgByteReader* MgHtmlController::GetMapImage(MgMap* map, MgSelection* selection,
     Ptr<MgRenderingService> service = (MgRenderingService*)(GetService(MgServiceType::RenderingService));
 
     // Call the C++ API
-    return service->RenderMap(map, selection, format, bKeepSelection);
+    return service->RenderMap(map, selection, format, bKeepSelection, bClip);
 }
 
 //////////////////////////////////////////////////////////////////

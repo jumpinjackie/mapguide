@@ -87,7 +87,8 @@ INTERNAL_API:
         MgSelection* selection,
         CREFSTRING format,
         MgPropertyCollection* mapViewCommands,
-        bool bKeepSelection);
+        bool bKeepSelection,
+        bool bClip);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
