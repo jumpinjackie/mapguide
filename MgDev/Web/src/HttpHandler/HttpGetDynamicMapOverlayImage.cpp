@@ -50,7 +50,7 @@ MgHttpGetDynamicMapOverlayImage::MgHttpGetDynamicMapOverlayImage(MgHttpRequest *
         STRING keepSelection = params->GetParameterValue(MgHttpResourceStrings::reqRenderingKeepSelection);
         if(!keepSelection.empty())
         {
-            m_bKeepSelection = (keepSelection.c_str() == L"1");
+            m_bKeepSelection = (keepSelection == L"1");
         }
     }
     else if (version == MG_API_VERSION(2,0,0))

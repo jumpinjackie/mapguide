@@ -95,6 +95,45 @@ void MgOpRenderMap::Execute()
 
         EndExecution(byteReader);
     }
+    else if (5 == m_packet.m_NumArguments)
+    {
+        Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = map->GetResourceId();
+        map->SetDelayedLoadResourceService(m_resourceService);
+
+        Ptr<MgSelection> selection = (MgSelection*)m_stream->GetObject();
+        if(selection)
+            selection->SetMap(map);
+
+        STRING format;
+        m_stream->GetString(format);
+
+        bool bKeepSelection = false;
+        m_stream->GetBoolean(bKeepSelection);
+
+        bool bClip = false;
+        m_stream->GetBoolean(bClip);
+
+        BeginExecution();
+
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSelection");
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
+        MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bClip);
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+        Validate();
+
+        Ptr<MgByteReader> byteReader =
+            m_service->RenderMap(map, selection, format, bKeepSelection, bClip);
+
+        EndExecution(byteReader);
+    }
     else if (8 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();

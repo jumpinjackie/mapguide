@@ -56,6 +56,7 @@ private:
     STRING m_mapDefinition;
     STRING m_mapFormat;
     bool   m_bKeepSelection;
+    bool   m_bClip;
 };
 
 #endif  // _FS_GET_MAP_IMAGE_H
