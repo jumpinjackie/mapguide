@@ -519,6 +519,13 @@ PUBLISHED_API:
     ///
     bool IsDateTime();
 
+EXTERNAL_API:
+
+    /// \brief
+    /// Returns date time object as a string
+    ///
+    STRING ToString();
+
 INTERNAL_API:
 
     MgDateTime(INT16 year, INT8 month, INT8 day, INT8 hour, INT8 minute, float seconds);
@@ -539,7 +546,6 @@ INTERNAL_API:
     void Serialize(MgStream* stream);
     void Deserialize(MgStream* stream);
 
-    STRING ToString();
     STRING ToXmlString(bool utc = true);
     string ToXmlStringUtf8(bool utc = true);
     time_t ToTimeValue();

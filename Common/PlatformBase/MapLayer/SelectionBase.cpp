@@ -284,6 +284,16 @@ void MgSelectionBase::AddFeatures(MgLayerBase* layer, MgFeatureReader* featureRe
             case MgPropertyType::Double:
                 m_stream->WriteDouble(featureReader->GetDouble(idIter->name));
                 break;
+            case MgPropertyType::Single:
+                m_stream->WriteSingle(featureReader->GetSingle(idIter->name));
+                break;
+            case MgPropertyType::DateTime:
+                {
+                Ptr<MgDateTime> dateTime = featureReader->GetDateTime(idIter->name);
+                Ptr<MgStream> tempStream = new MgStream(m_stream);
+                dateTime->Serialize(tempStream);
+                }
+                break;
             default:
                 break;
             }
@@ -337,6 +347,20 @@ void MgSelectionBase::AddFeatureIds(MgLayerBase* layer, CREFSTRING className, Mg
             {
             MgDoubleProperty* propDouble = dynamic_cast<MgDoubleProperty*>((MgProperty*)prop);
             m_stream->WriteDouble(propDouble->GetValue());
+            }
+            break;
+        case MgPropertyType::Single:
+            {
+            MgSingleProperty* propSingle = dynamic_cast<MgSingleProperty*>((MgProperty*)prop);
+            m_stream->WriteSingle(propSingle->GetValue());
+            }
+            break;
+        case MgPropertyType::DateTime:
+            {
+            MgDateTimeProperty* dateTimeProp = dynamic_cast<MgDateTimeProperty*>((MgProperty*)prop);
+            Ptr<MgDateTime> dateTime = dateTimeProp->GetValue();
+            Ptr<MgStream> tempStream = new MgStream(m_stream);
+            dateTime->Serialize(tempStream);
             }
             break;
         default:
@@ -537,8 +561,20 @@ MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
                 }
 
                 selText.append(idIter->name);
-                selText.append(L"=");
 
+                // Fdo has operator= quirks with single, int64, and datetime.
+                // Use a LIKE for these types
+                if (idIter->type == MgPropertyType::Single
+                    || idIter->type == MgPropertyType::Int64
+                    || idIter->type == MgPropertyType::DateTime)
+                {
+                    selText.append(L" LIKE ");
+                }
+                else
+                {
+                    selText.append(L"=");
+                }
+  
                 switch (idIter->type)
                 {
                 case MgPropertyType::Int16:
@@ -574,17 +610,25 @@ MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
                         INT64 id;
                         m_stream->GetINT64(id);
 
-                        // couldn't find a precanned converter...
                         string buf;
-                        char digit[2];
-                        digit[0] = '\0'; digit[1] = '\0';
-                        while (id > 0)
+                        if (id == 0)
                         {
-                            digit[0] = ((char)(id % 10) + '0');
-                            buf.append(digit);
-                            id /= 10;
+                            buf = "0";
                         }
-                        reverse(buf.begin(), buf.end());
+                        else
+                        {
+                            // couldn't find a precanned converter...
+                            
+                            char digit[2];
+                            digit[0] = '\0'; digit[1] = '\0';
+                            while (id > 0)
+                            {
+                                digit[0] = ((char)(id % 10) + '0');
+                                buf.append(digit);
+                                id /= 10;
+                            }
+                            reverse(buf.begin(), buf.end());
+                        }
 
                         STRING str = MgUtil::MultiByteToWideChar(buf);
 
@@ -626,6 +670,14 @@ MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
                         STRING str = MgUtil::MultiByteToWideChar(tmp);
 
                         selText.append(str);
+                    }
+                    break;
+                case MgPropertyType::DateTime:
+                    {
+                        Ptr<MgDateTime> dateTime = new MgDateTime();
+                        Ptr<MgStream> tempStream = new MgStream(m_stream);
+                        dateTime->Deserialize(tempStream);
+                        selText.append(dateTime->ToString());
                     }
                     break;
                 default:
