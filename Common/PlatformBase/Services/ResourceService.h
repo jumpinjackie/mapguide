@@ -1148,6 +1148,12 @@ PUBLISHED_API:
     /// does not perform any necessary conversion (for example,
     /// converting a version 2 SDF file into a version 3 SDF). 
     ///
+    /// \note
+    /// If you load raster files though the MapGuide Studio UI, they are converted to .TIF format.  However, raster files loaded 
+    /// through the API are not converted, so the API supports more file formats than the UI.  The API supports 
+    /// all the formats supported by the FDO Provider for Raster.  For details, see the appendix "Autodesk FDO Provider for Raster" 
+    /// in the <em>FDO Developer's Guide</em>.
+    /// 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// virtual void SetResourceData(MgResourceIdentifier resource, string dataName, string dataType, MgByteReader data);
