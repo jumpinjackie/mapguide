@@ -5020,7 +5020,7 @@ GxSelectionObjectLayer.prototype = {
 /**
  * Fusion.Maps.MapGuide
  *
- * $Id: MapGuide.js 1252 2008-02-22 22:36:46Z madair $
+ * $Id: MapGuide.js 1262 2008-02-25 16:00:37Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -13474,9 +13474,9 @@ Fusion.Widget.TaskPane.prototype =
         //we need to trigger an initial resize after the panel
         //is added to the DOM
         this.oTaskPane.domObj.resize();
-        this.setContent(this.initialTask);
         
         Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, this.setTaskMenu.bind(this));
+        this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, this.setContent.bind(this,this.initialTask));
     },
     
     updateButtons: function() {
@@ -13507,6 +13507,20 @@ Fusion.Widget.TaskPane.prototype =
         if (this.nCurrentTask < this.aExecutedTasks.length) {
             this.aExecutedTasks.splice(this.nCurrentTask, this.aExecutedTasks.length - this.nCurrentTask);
         }
+        
+        //add in default Fusion parameters to the URL
+        var map = this.getMap();
+        var params = [];
+        params.push('LOCALE='+Fusion.locale);
+        params.push('SESSION='+map.getSessionID());
+        params.push('MAPNAME='+map.getMapName());
+        if (url.indexOf('?') < 0) {
+            url += '?';
+        } else if (url.slice(-1) != '&') {
+            url += '&';
+        }
+        url += params.join('&');
+        
         this.aExecutedTasks.push(url);
         ++this.nCurrentTask;
         this.iframe.src = url;
