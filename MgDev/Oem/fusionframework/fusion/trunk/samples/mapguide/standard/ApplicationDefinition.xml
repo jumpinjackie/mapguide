@@ -3,7 +3,7 @@
   <Title>Fusion Standard Sample Application</Title>
   <MapSet xsi:type="MapSetType">
     <MapGroup id="mapguide" xsi:type="MapType">
-      <!-- should be centered on intersection of Lower Falls Rd and S.Taylor Dr. 
+      <!-- Example of setting up an initial view different than the map's full extents
       <InitialView xsi:type="MapViewType">
           <CenterX>-87.745061</CenterX>
           <CenterY>43.740283</CenterY>
@@ -18,11 +18,6 @@
       </Map>
     </MapGroup>
     <MapGroup id="mapguide-tiled" xsi:type="MapType">
-      <!--InitialView xsi:type="MapViewType">
-        <CenterX>1500000</CenterX> 
-        <CenterY>-161000</CenterY>
-        <Scale>3000000</Scale>
-      </InitialView-->
       <Map xsi:type="MapGuideLayerType">
         <Type>MapGuide</Type>
         <SingleTile>false</SingleTile>
@@ -41,6 +36,7 @@
       </Map>
     </MapGroup>
   </MapSet>
+  
   <WidgetSet xsi:type="WidgetSetType">
       <Container xsi:type="UiItemContainerType">
         <Name>ContextMenu</Name>
@@ -229,10 +225,6 @@
           <Function>Widget</Function>
           <Widget>toolbarSearch</Widget>
         </Item>
-        <Item>
-          <Function>Widget</Function>
-          <Widget>DisplayPoints</Widget>
-        </Item>
         <Item xsi:type="WidgetItemType">
           <Function>Widget</Function>
           <Widget>ActivityIndicator</Widget>
@@ -260,24 +252,12 @@
         <MenuContainer>ContextMenu</MenuContainer>
       </Extension>
     </MapWidget>
-    <Widget>
-      <Name>DisplayPoints</Name>
-      <Type>InvokeScript</Type>
-      <StatusText/>
-      <Extension>
-        <Script>displayPoints()</Script>
-      </Extension>
-      <ImageUrl/>
-      <ImageClass/>
-      <Tooltip>display points</Tooltip>
-      <Label>points</Label>
-      <Disabled/>
-    </Widget>
     <Widget xsi:type="WidgetType">
       <Name>OverviewMap</Name>
       <Type>OverviewMap</Type>
       <Description/>
       <Extension xsi:type="CustomContentType">
+        <!-- point to a different MapGroup map ID to load a different map for the overview -->
         <!--MapId>mapguideGmapKey</MapId-->
       </Extension>
     </Widget>
@@ -695,11 +675,10 @@
         <Precision>4</Precision>
       </Extension>
     </Widget>
-    <!--Widget xsi:type="WidgetType">
-          <Name>SelectionInfo</Name>
-          <Type>SelectionInfo</Type>
-          <StatusText/>
-    </Widget-->
+    <Widget xsi:type="WidgetType">
+      <Name>SelectionInfo</Name>
+      <Type>SelectionInfo</Type>
+    </Widget>
     <Widget xsi:type="WidgetType">
           <Name>EditableScale</Name>
           <Type>EditableScale</Type>
@@ -719,11 +698,11 @@
         <Type>Legend</Type>
         <StatusText/>
     </Widget>
-    <!-- <Widget xsi:type="WidgetType">
-            <Name>SelectionPanel</Name>
-            <Type>SelectionPanel</Type>
-            <StatusText/>
-        </Widget> -->
+    <Widget xsi:type="WidgetType">
+        <Name>SelectionPanel</Name>
+        <Type>SelectionPanel</Type>
+        <StatusText/>
+    </Widget> 
     <Widget xsi:type="WidgetType">
         <Name>TaskPane</Name>
         <Type>TaskPane</Type>
@@ -731,6 +710,13 @@
         <Extension>
           <MenuContainer>TaskContextMenu</MenuContainer>
         </Extension>
+    </Widget>
+    <Widget xsi:type="WidgetType">
+      <Name>Maptip</Name>
+      <Type>Maptip</Type>
+      <Extension>
+        <Target>TaskPane</Target>
+      </Extension>
     </Widget>
   </WidgetSet>
   <Extension/>

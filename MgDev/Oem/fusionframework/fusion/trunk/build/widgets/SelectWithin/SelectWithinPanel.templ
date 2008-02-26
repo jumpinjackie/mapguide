@@ -84,7 +84,7 @@ function ExecuteCommand()
     var mapWidget = GetParent().Fusion.getMapByName(mapName);
     var map = mapWidget.aMaps[0];
     var params = "mapname=" + encodeURIComponent(mapName) + "&session=" + sessionId + "&layers=" + encodeURIComponent(layerSet);
-    var options = {onSuccess: map.processQueryResults.bind(map), onFailure: selectedError, parameters:params};
+    var options = {onSuccess: map.processQueryResults.bind(map, false), onFailure: selectedError, parameters:params};
     GetParent().Fusion.ajaxRequest(webAgent, options);
 }
 
