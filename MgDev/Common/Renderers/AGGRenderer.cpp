@@ -1700,9 +1700,7 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
     if (srclb->geom_count() == 0)
         return; //if you have no geoms, why do you call us at all?
 
-    double weightpx = lineStroke.weight;
-    if (weightpx == 0.0)
-        weightpx = 1.0;
+    double weightpx = max(1.0, lineStroke.weight);
 
     //add to the agg path storage -- here it doesn't matter
     //how many geometries there are in the line buffer,
