@@ -328,6 +328,7 @@ function Property(name, value)
     var digitizing = false;
     var cancelTgt;
     var locale = '%s';
+    var openHlinkText = safari ? "__#OPENHYPERLINKSAFARI#__" : "__#OPENHYPERLINK#__";
     %s
 
 
@@ -3293,7 +3294,7 @@ function DisplayHyperlinkTip(x,y)
     else
         ttinfo = "";
     if(hlData.url != "")
-        urlinfo = "&nbsp;Ctrl + click to open link (" + hlData.url + ")&nbsp;";
+        urlinfo = "&nbsp;" + openHlinkText + " (" + hlData.url + ")&nbsp;";
     else
         urlinfo = "";
     document.getElementById("hlph").innerHTML = '<div style="visibility: hidden;" id="hlTip">' + ttinfo + urlinfo + '</div>';
