@@ -1,7 +1,7 @@
 /**
  * Fusion.Maps.MapGuide
  *
- * $Id: MapGuide.js 1252 2008-02-22 22:36:46Z madair $
+ * $Id: MapGuide.js 1262 2008-02-25 16:00:37Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
