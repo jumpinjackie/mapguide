@@ -217,6 +217,8 @@ ENDSEL                  = CTRL + click to end
 ENDSELSAFARI            = SHIFT + click to end
 DECIMALSEPARATOR        = .
 THOUSANDSEPARATOR       = ,
+OPENHYPERLINK           = CTRL + click to open link
+OPENHYPERLINKSAFARI     = SHIFT + click to open link
 
 # Main Frame
 NEEDLOGIN               = You must enter a valid login ID and password to access this site
