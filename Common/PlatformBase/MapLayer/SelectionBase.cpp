@@ -561,19 +561,7 @@ MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
                 }
 
                 selText.append(idIter->name);
-
-                // Fdo has operator= quirks with single, int64, and datetime.
-                // Use a LIKE for these types
-                if (idIter->type == MgPropertyType::Single
-                    || idIter->type == MgPropertyType::Int64
-                    || idIter->type == MgPropertyType::DateTime)
-                {
-                    selText.append(L" LIKE ");
-                }
-                else
-                {
-                    selText.append(L"=");
-                }
+                selText.append(L"=");
   
                 switch (idIter->type)
                 {
