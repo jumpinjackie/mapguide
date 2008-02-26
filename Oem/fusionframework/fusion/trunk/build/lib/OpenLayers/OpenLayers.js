@@ -9012,7 +9012,7 @@ OpenLayers.Handler.Click = OpenLayers.Class(OpenLayers.Handler, {
                 this.clearTimer();
             } else {
                 // set the timer, send evt only if single is true
-                var clickEvent = this.single ? evt : null;
+                var clickEvent = this.single ? OpenLayers.Util.extend({},evt):null;
                 this.timerId = window.setTimeout(
                     OpenLayers.Function.bind(this.delayedCall, this, clickEvent),
                     this.delay
