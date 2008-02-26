@@ -660,8 +660,8 @@ MgPropertyDefinitionCollection* MgFeatureServiceCache::GetFeatureClassIdentityPr
         data = entry->GetFeatureClassIdentityProperties();
 
         if (NULL != data.p
-            && entry->GetFeatureSchemaName() != featureSchemaName
-            && entry->GetFeatureClassName() != featureClassName)
+            && (entry->GetFeatureSchemaName() != featureSchemaName
+            || entry->GetFeatureClassName() != featureClassName))
         {
             data = NULL;
         }
