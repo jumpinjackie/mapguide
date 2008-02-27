@@ -88,6 +88,7 @@ PUBLISHED_API:
     /// \return
     /// Returns Count of all selected features.
     ///
+    /// \note2
     INT32 GetSelectedFeaturesCount(MgLayerBase* layer, CREFSTRING className);
 
     /// \brief
@@ -115,6 +116,7 @@ PUBLISHED_API:
     /// Returns a feature reader containing all the features for the given
     /// feature class in this selection.
     ///
+    /// \note2
     virtual MgFeatureReader* GetSelectedFeatures(MgLayerBase* layer, CREFSTRING className, bool mappedOnly);
 
     /// Returns the selected feature data for the specified feature class.
@@ -141,6 +143,7 @@ PUBLISHED_API:
     /// Returns a feature reader containing all the features for the given
     /// feature class in this selection.
     ///
+    /// \note2
     virtual MgFeatureReader* GetSelectedFeatures(MgLayerBase* layer, CREFSTRING className, MgStringCollection* propertyNames);
 
     /////////////////////////////////////////////////////////////////

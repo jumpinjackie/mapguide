@@ -91,6 +91,7 @@ PUBLISHED_API:
     /// Returns a feature reader containing all the features for the given
     /// feature class in this selection.
     ///
+    /// \note2
     MgFeatureReader* GetSelectedFeatures(MgLayerBase* layer, CREFSTRING className, bool mappedOnly);
 
     /// Returns the selected feature data for the specified feature class.
@@ -117,6 +118,7 @@ PUBLISHED_API:
     /// Returns a feature reader containing all the features for the given
     /// feature class in this selection.
     ///
+    /// \note2
     MgFeatureReader* GetSelectedFeatures(MgLayerBase* layer, CREFSTRING className, MgStringCollection* propertyNames);
 
     /////////////////////////////////////////////////////////////////
