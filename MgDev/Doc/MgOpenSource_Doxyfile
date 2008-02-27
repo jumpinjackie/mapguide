@@ -28,6 +28,7 @@ TAB_SIZE               = 4
 ALIASES                = ProdName="MapGuide Open Source"
 ALIASES               += DevGuide="<em>MapGuide Open Source Developer's Guide</em>"
 ALIASES               += note1=""
+ALIASES               += note2=""
 OPTIMIZE_OUTPUT_FOR_C  = NO
 OPTIMIZE_OUTPUT_JAVA   = NO
 BUILTIN_STL_SUPPORT    = NO
