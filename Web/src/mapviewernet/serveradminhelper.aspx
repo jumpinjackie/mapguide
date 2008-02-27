@@ -103,7 +103,7 @@ private void Page_Load(object sender, System.EventArgs e)
                 break;
             case "GETTOTALOPERATIONTIME":
                 nTime = infoProp.GetItem("TotalOperationTime") as MgInt32Property;
-                Response.Write("Total Operation Time: " + nTime.GetValue().ToString() + " milliseconds");
+                Response.Write("Total Operation Time: " + nTime.GetValue().ToString() + " seconds");
                 break;
             case "GETADMINQUEUECOUNT":
                 MgInt32Property nCount = infoProp.GetItem("AdminOperationsQueueCount") as MgInt32Property;
