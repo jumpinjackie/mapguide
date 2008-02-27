@@ -220,13 +220,13 @@ void AGGRenderer::Save(const RS_String& filename, const RS_String& format)
 
 void AGGRenderer::Save(const RS_String& filename, const RS_String& format, int width, int height)
 {
-    AGGImageIO::Save(filename, format, m_rows, m_width, m_height, width, height, m_bgcolor.alpha() == 255);
+    AGGImageIO::Save(filename, format, m_rows, m_width, m_height, width, height, m_bgcolor);
 }
 
 
 RS_ByteData* AGGRenderer::Save(const RS_String& format, int width, int height)
 {
-    return AGGImageIO::Save(format, m_rows, m_width, m_height, width, height, m_bgcolor.alpha() == 255);
+    return AGGImageIO::Save(format, m_rows, m_width, m_height, width, height, m_bgcolor);
 }
 
 
