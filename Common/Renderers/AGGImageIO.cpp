@@ -27,6 +27,8 @@
 //NOTE: We do not use gd for reading or writing PNG since internally gd drops a bit
 //from the alpha channel, which is not desirable for high quality output
 
+#include "GDUtils.h"
+
 #pragma warning(disable : 4611)
 
 
@@ -661,10 +663,10 @@ int read_png(png_write_context* cxt, int& retwidth, int& retheight, unsigned cha
 
 bool AGGImageIO::Save(const RS_String& filename, const RS_String& format,
                  unsigned int* src, int src_width, int src_height,
-                 int dst_width, int dst_height, bool drop_alpha)
+                 int dst_width, int dst_height, RS_Color& bgColor)
 {
     //get the in-memory image stream
-    RS_ByteData* data = Save(format, src, src_width, src_height, dst_width, dst_height, drop_alpha);
+    RS_ByteData* data = Save(format, src, src_width, src_height, dst_width, dst_height, bgColor);
 
     if (data == NULL)
         return false;
@@ -698,8 +700,10 @@ bool AGGImageIO::Save(const RS_String& filename, const RS_String& format,
 
 RS_ByteData* AGGImageIO::Save(const RS_String& format,
                   unsigned int* src, int src_width, int src_height,
-                  int dst_width, int dst_height, bool drop_alpha)
+                  int dst_width, int dst_height, RS_Color& bgColor)
 {
+    bool drop_alpha = bgColor.alpha() == 255;
+
     if (dst_width <= 0)
         dst_width = 1;
     if (dst_height <= 0)
@@ -717,7 +721,7 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
         AGGRenderer::DrawScreenRaster(aggcxt, (unsigned char*)src, src_width * src_height * 4, RS_ImageFormat_NATIVE, src_width, src_height,
             dst_width * 0.5, dst_height * 0.5, dst_width, -dst_height, 0);
 
-        RS_ByteData* data = Save(format, aggcxt->m_rows, dst_width, dst_height, dst_width, dst_height, drop_alpha);
+        RS_ByteData* data = Save(format, aggcxt->m_rows, dst_width, dst_height, dst_width, dst_height, bgColor);
 
         delete aggcxt;
 
@@ -729,7 +733,9 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
 
         UnmultiplyAlpha(src, src_width * src_height);
 
-        if (format == L"PNG" || format == L"PNG8") //TODO: PNG8 is regarded as PNG here, should be treated separately
+        //NOTE: We do not use gd for reading or writing PNG since internally gd drops a bit
+        //from the alpha channel, which is not desirable for high quality output
+        if (format == L"PNG")
         {
             png_write_context cxt;
             memset(&cxt, 0, sizeof(cxt));
@@ -739,9 +745,20 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
             delete [] cxt.buf;
             return byteData;
         }
-        else if (format == L"JPG" || format == L"GIF")
+        else if (format == L"JPG" || format == L"GIF" || format == L"PNG8")
         {
             gdImagePtr gdimg = gdImageCreateTrueColor(dst_width, dst_height);
+
+            int bgc = ConvertColor(gdimg, bgColor);
+
+            // initialize the destination image to the bg color (temporarily turn
+            // off alpha blending so the fill has the supplied alpha)
+            gdImageAlphaBlending(gdimg, 0);
+            gdImageFilledRectangle(gdimg, 0, 0, gdImageSX(gdimg)-1, gdImageSY(gdimg)-1, bgc);
+
+            // set any transparent color
+            if (bgColor.alpha() != 255)
+                gdImageColorTransparent(gdimg, bgc);
 
             unsigned int* ptr = src;
             for (int j=0; j<dst_height; j++)
@@ -756,10 +773,31 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
                     int g = (c >> 8) & 0xff;
                     int r = c & 0xff;
 
-                    int gdc = gdImageColorAllocateAlpha(gdimg, r, g, b, a);
-                    gdImageSetPixel(gdimg, i, j, gdc);
+                    // skip any fully transparent pixels so a transparent
+                    // background color will show through
+                    if (a != 0) 
+                    {
+                        int gdc = gdImageColorAllocateAlpha(gdimg, r, g, b, a);
+                        gdImageSetPixel(gdimg, i, j, gdc);
+                    }
                 }
             }
+
+            gdImageAlphaBlending(gdimg, 1);
+
+            // Make output image non-interlaced --- it's a little faster to compress that way.
+            gdImageInterlace(gdimg, 0);
+
+            // Make sure the alpha values get saved -- but only if required
+            // it is faster not to save them and makes a smaller PNG
+            if (bgColor.alpha() != 255)
+                gdImageSaveAlpha(gdimg, 1);
+            else
+                gdImageSaveAlpha(gdimg, 0);
+
+            //convert to 256 color paletted image for PNG8, GIF
+            if (format == L"GIF" || format == L"PNG8")
+                gdImageTrueColorToPalette(gdimg, 0, 256);
 
             //get an in-memory image stream
             int size = 0;
@@ -769,6 +807,8 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
                 data = (unsigned char*)gdImageGifPtr(gdimg, &size);
             else if (format == L"JPG")  // MgImageFormats::Jpeg
                 data = (unsigned char*)gdImageJpegPtr(gdimg, &size, 75);
+            else if (format == L"PNG8")   // MgImageFormats::Png8
+                data = (unsigned char*)gdImagePngPtr(gdimg, &size);
 
             std::auto_ptr<RS_ByteData> byteData;
             byteData.reset((NULL == data)? NULL : new RS_ByteData(data, size));
