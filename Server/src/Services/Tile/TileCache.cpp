@@ -83,8 +83,8 @@ void MgTileCache::Initialize()
             format,
             MgConfigProperties::DefaultTileServicePropertyImageFormat);
 
-        // Only allow PNG and JPG as tile formats
-        if (format == MgImageFormats::Png || format == MgImageFormats::Jpeg)
+        // Only allow PNG, PNG8 and JPG as tile formats
+        if (format == MgImageFormats::Png || format == MgImageFormats::Png8 || format == MgImageFormats::Jpeg)
         {
             MgTileParameters::tileFormat = format;
         }
