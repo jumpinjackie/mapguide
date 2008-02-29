@@ -1,0 +1,14 @@
+/* GBU Pubs default style overrides. All GBU books should ref this css. The  */
+/* following rules modify rules defined in the Autodesk default cpm.css.     */
+
+/* hide browse button set */
+div.browse {
+display: none;
+}
+
+/* hide browse button info */
+div.button-info {
+display: none;
+}
+
+
