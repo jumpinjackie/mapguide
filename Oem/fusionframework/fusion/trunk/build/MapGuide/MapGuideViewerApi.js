@@ -249,7 +249,7 @@ LineHandlers.prototype = {
         seg.to.updateGeo();
         this.clearContext();
         this.draw(this.context);
-    },
+    }
 }
     
 RectangleHandlers = Class.create();
@@ -317,7 +317,7 @@ RectangleHandlers.prototype = {
         this.seg4.from.updateGeo();
         this.clearContext();
         this.draw(this.context);
-    },
+    }
 }
     
 MultiPointHandlers = Class.create();

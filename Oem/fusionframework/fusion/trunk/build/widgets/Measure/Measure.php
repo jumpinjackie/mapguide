@@ -48,67 +48,6 @@
     <style type="text/css" media="screen">
         @import url(Measure.css);
     </style>
-    <script type="text/javascript" charset="utf-8">
-        var Fusion;
-        var OpenLayers;
-        var measureWidgets;
-        var currentWidget;
-        window.onload = function() {
-            Fusion = window.top.Fusion;
-            OpenLayers = window.top.OpenLayers;
-            measureWidgets = Fusion.getWidgetsByType('Measure');
-            for (var i=0; i<measureWidgets.length; i++) {
-              measureWidgets[i].registerForEvent(Fusion.Event.MEASURE_NEW_SEGMENT, measureNewSegment);
-              measureWidgets[i].registerForEvent(Fusion.Event.MEASURE_CLEAR, measureClear);  
-            }
-        };
-        
-        function measureNewSegment(eventId, widget, marker) {
-            marker.registerForEvent(Fusion.Event.MARKER_DISTANCE_CHANGED, measureSegmentUpdate)
-            var tbody = document.getElementById('segmentTBody');
-            var segmentId = tbody.childNodes.length + 1;
-            var tr = document.createElement('tr');
-            tr.marker = marker;
-            var td = document.createElement('td');
-            td.innerHTML = OpenLayers.String.translate('segment ',segmentId);
-            tr.appendChild(td);
-            var td = document.createElement('td');
-            td.innerHTML = '...';
-            tr.appendChild(td);
-            tbody.appendChild(tr);
-        }
-        
-        function measureSegmentUpdate(eventId, marker) {
-            var distanceText = OpenLayers.String.translate('calculating');
-            var distanceValue = 0;
-            var distance = marker.getDistanceLabel();
-            if (distance) {
-                distanceText = distance;
-                distanceValue = parseFloat(distance);
-            }
-            var totalDistance = 0;
-            var tbody = document.getElementById('segmentTBody');
-            for (var i=0; i<tbody.childNodes.length; i++) {
-                if (tbody.childNodes[i].marker == marker) {
-                    tbody.childNodes[i].childNodes[1].innerHTML = distanceText;
-                }
-                totalDistance += parseFloat(tbody.childNodes[i].childNodes[1].innerHTML);
-            }
-            var tDist = document.getElementById('totalDistance');
-            tDist.innerHTML = totalDistance + ' ' + marker.unitAbbr;
-        }
-        
-        function measureClear() {
-            var tbody = document.getElementById('segmentTBody');
-            while(tbody.firstChild) {
-                tbody.firstChild.marker.deregisterForEvent(Fusion.Event.MARKER_DISTANCE_CHANGED, measureSegmentUpdate);
-                tbody.firstChild.marker = null;
-                tbody.removeChild(tbody.firstChild);
-            }
-            var tDist = document.getElementById('totalDistance');
-            tDist.innerHTML = '';
-        }
-    </script>
 </head>
 <body id="MeasurementWidgetResults">
     <h1><?php echo $title ?></h1>
