@@ -16,6 +16,10 @@ body#MeasurementWidgetResults  {
   z-index: 200;
 }
 
+.divMeasureTotal {
+  z-index: 201;
+}
+
 #MeasurementWidgetResults table, 
 #MeasurementWidgetResults tbody, 
 #MeasurementWidgetResults thead, 

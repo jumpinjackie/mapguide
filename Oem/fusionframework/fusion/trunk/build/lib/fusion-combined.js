@@ -6398,7 +6398,7 @@ LineHandlers.prototype = {
         seg.to.updateGeo();
         this.clearContext();
         this.draw(this.context);
-    },
+    }
 }
     
 RectangleHandlers = Class.create();
@@ -6466,7 +6466,7 @@ RectangleHandlers.prototype = {
         this.seg4.from.updateGeo();
         this.clearContext();
         this.draw(this.context);
-    },
+    }
 }
     
 MultiPointHandlers = Class.create();
@@ -8616,7 +8616,7 @@ Fusion.Widget.EditableScale.prototype = {
 };/**
  * Fusion.Widget.ExtentHistory
  *
- * $Id: ExtentHistory.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: ExtentHistory.js 1277 2008-02-29 20:03:08Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -8652,6 +8652,7 @@ Fusion.Widget.ExtentHistory.prototype = {
     events: [],
     aHistory: [],
     sDirection: null,
+    EPS: 0.00000001,  //percentage difference allowed in bounds values for test for equal
     initialize : function(widgetTag) {
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, false]);
         Object.inheritFrom(this, Fusion.Tool.ButtonBase.prototype, []);
@@ -8700,13 +8701,10 @@ Fusion.Widget.ExtentHistory.prototype = {
             this.aHistory['index'] = 0;
         } else {
             var aExtents = this.aHistory['history'][this.aHistory['index']];
-            if (aExtents.top == extents.top &&
-                aExtents.bottom == extents.bottom &&
-                aExtents.left == extents.left &&
-                aExtents.right == extents.right) {
+            if (this.boundsEqual(extents, aExtents)) {
                 return;
             }
-            //clear forward history if we have gone backwards at some point
+            //clear forward history if we zoom to a different extent than contained in the history
             if (this.aHistory['index'] != (this.aHistory['history'].length - 1)) {
                 this.aHistory['history'] = this.aHistory['history'].slice(0, this.aHistory['index'] + 1);
             }
@@ -8746,8 +8744,42 @@ Fusion.Widget.ExtentHistory.prototype = {
                 this.triggerEvent(Fusion.Event.HISTORY_CHANGED);
             }
         }
+    },
+    
+    /* 
+      * test if 2 OpenLayers.Bounds objects are equal to within some precision
+      */
+    boundsEqual: function(b1, b2) {
+      var equal = false;
+      
+      //prevent divide by 0 errors
+      var offset = 100;
+      if (b2.top == 0) {
+        b1.top += offset;
+        b2.top += offset;
+      }
+      if (b2.bottom == 0) {
+        b1.bottom += offset;
+        b2.bottom += offset;
+      }
+      if (b2.left == 0) {
+        b1.left += offset;
+        b2.left += offset;
+      }
+      if (b2.right == 0) {
+        b1.right += offset;
+        b2.right += offset;
+      }
+      //calculate difference as percentage so all ranges of coordinates can be accommodated
+      equal = (Math.abs(b1.top - b2.top)/b2.top < this.EPS &&
+               Math.abs(b1.bottom - b2.bottom)/b2.bottom < this.EPS &&
+               Math.abs(b1.left - b2.left)/b2.left < this.EPS &&
+               Math.abs(b1.right - b2.right)/b2.right < this.EPS);
+      return equal;
     }
-};/**
+};
+
+/**
  * Fusion.Widget.Help
  *
  * $Id: $
@@ -10247,7 +10279,7 @@ Fusion.Widget.Maptip.prototype =
 /**
  * Fusion.Widget.Measure
  *
- * $Id: Measure.js 1256 2008-02-22 22:48:02Z madair $
+ * $Id: Measure.js 1283 2008-02-29 20:55:59Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -10281,10 +10313,9 @@ Fusion.Constant.MEASURE_TYPE_DISTANCE = 0;
 Fusion.Constant.MEASURE_TYPE_AREA = 1;
 Fusion.Constant.MEASURE_TYPE_BOTH = 2;
 
-Fusion.Event.MEASURE_NEW_SEGMENT = Fusion.Event.lastEventId++;
 Fusion.Event.MEASURE_SEGMENT_UPDATE = Fusion.Event.lastEventId++;
-Fusion.Event.MEASURE_SEGMENT_COMPLETE = Fusion.Event.lastEventId++;
 Fusion.Event.MEASURE_CLEAR = Fusion.Event.lastEventId++;
+Fusion.Event.MEASURE_COMPLETE = Fusion.Event.lastEventId++;
 
 Fusion.Widget.Measure = Class.create();
 Fusion.Widget.Measure.prototype = {
@@ -10302,7 +10333,6 @@ Fusion.Widget.Measure.prototype = {
     //cumulativeArea
     cumulativeArea: 0,
     lastArea: 0,
-    aAreas: [],
     
     /* the units to display distances in */
     units: Fusion.UNKNOWN,
@@ -10316,18 +10346,6 @@ Fusion.Widget.Measure.prototype = {
     /* Precision of the area displayed */
     areaPrecision: 4,
     
-    /* an HTML container to put the current distance in */
-    measureTip: null,
-        
-    /* Static position of Tooltip Box TOP */
-    measureTipPositionTop: null,
-   
-    /* Static position of Tooltip Box LEFT */ 
-    measureTipPositionLeft: null,
-    
-    /* Tooltip appearance: static or dynamic */
-    tooltipType: '',
-
     /* Style for the distance line used for distance draw */   
     distanceNormalStyle: null,
 
@@ -10344,8 +10362,8 @@ Fusion.Widget.Measure.prototype = {
         this.asCursor = ['crosshair'];
         var json = widgetTag.extension;
         this.units = (json.Units && (json.Units[0] != '')) ?  Fusion.unitFromName(json.Units[0]): this.units;
-        this.distPrecision = json.DistancePrecision ? json.DistancePrecision[0] : 4;
-        this.areaPrecision = json.AreaPrecision ? json.AreaPrecision[0] : 4;  
+        this.distPrecision = json.DistancePrecision ? parseInt(json.DistancePrecision[0]) : 4;
+        this.areaPrecision = json.AreaPrecision ? parseInt(json.AreaPrecision[0]) : 4;  
         
         this.sTarget = json.Target ? json.Target[0] : "";
         this.sBaseUrl = Fusion.getFusionURL() + 'widgets/Measure/Measure.php';
@@ -10375,17 +10393,16 @@ Fusion.Widget.Measure.prototype = {
         this.distanceMarkers = [];
         this.distances = [];
         
-        this.registerEventID(Fusion.Event.MEASURE_NEW_SEGMENT);
-        this.registerEventID(Fusion.Event.MEASURE_SEGMENT_COMPLETE);
         this.registerEventID(Fusion.Event.MEASURE_SEGMENT_UPDATE);
         this.registerEventID(Fusion.Event.MEASURE_CLEAR);
+        this.registerEventID(Fusion.Event.MEASURE_COMPLETE);
+        
         this.getMap().registerForEvent(Fusion.Event.MAP_EXTENTS_CHANGED, this.resetCanvas.bind(this));
         this.keyHandler = this.onKeyPress.bind(this);
         Fusion.addWidgetStyleSheet(widgetTag.location + 'Measure/Measure.css');
 
-        this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, this.setUnits.bind(this));
+        this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, this.setUnits.bind(this, this.units));
         this.registerParameter('Units');
-        
     },
     
     onKeyPress: function(e) {
@@ -10413,8 +10430,6 @@ Fusion.Widget.Measure.prototype = {
      * reset area and/or distance vars
      */    
     initVars: function() {
-        this.aDistances = [];
-        this.aAreas = [];
         this.cumulativeDistance = 0;
         this.lastDistance = 0;
         this.cumulativeArea = 0;
@@ -10427,14 +10442,13 @@ Fusion.Widget.Measure.prototype = {
         this.initVars();
         this.triggerEvent(Fusion.Event.MEASURE_CLEAR, this);
         Event.observe(document,"keypress",this.keyHandler);
-        this.showPanel();
+        this.loadDisplayPanel();
     },
     
-    showPanel : function() {
+    loadDisplayPanel : function() {
         if (this.sTarget) {
             var url = this.sBaseUrl;
             var queryStr = 'locale='+Fusion.locale;
-            queryStr += '&ts='+(new Date()).getTime();
             if (url.indexOf('?') < 0) {
                 url += '?';
             } else if (url.slice(-1) != '&') {
@@ -10443,16 +10457,28 @@ Fusion.Widget.Measure.prototype = {
             url += queryStr;
             
             var taskPaneTarget = Fusion.getWidgetById(this.sTarget);
-            var pageElement = $(this.sTarget);
+            var outputWin = window;
             if ( taskPaneTarget ) {
                 taskPaneTarget.setContent(url);
+                outputWin = taskPaneTarget.iframe.contentWindow;
             } else {
-                if ( pageElement ) {
-                    pageElement.src = url;
-                } else {
-                    window.open(url, this.sTarget, this.sWinFeatures);
-                }
+                outputWin = window.open(url, this.sTarget, this.sWinFeatures);
             }
+            this.registerForEvent(Fusion.Event.MEASURE_CLEAR, this.clearDisplay.bind(this, outputWin));  
+            this.registerForEvent(Fusion.Event.MEASURE_SEGMENT_UPDATE, this.updateDisplay.bind(this, outputWin));
+            this.registerForEvent(Fusion.Event.MEASURE_COMPLETE, this.updateDisplay.bind(this, outputWin));
+        } else {
+            this.totalDistanceMarker = new Fusion.Widget.Measure.DistanceMarker(this.units, this.distPrecision, 'Total:');
+            var oDomElem =  this.getMap().getDomObj();
+            if (!this.totalDistanceMarker.domObj.parentNode || 
+                this.totalDistanceMarker.domObj.parentNode != oDomElem) {
+                oDomElem.appendChild(this.totalDistanceMarker.domObj);
+            }
+            Element.addClassName(this.totalDistanceMarker.domObj, 'divMeasureTotal');
+            this.totalDistanceMarker.domObj.style.display = 'none';
+            this.registerForEvent(Fusion.Event.MEASURE_CLEAR, this.clearTotalDistance.bind(this));  
+            this.registerForEvent(Fusion.Event.MEASURE_SEGMENT_UPDATE, this.updateTotalDistance.bind(this));
+            this.registerForEvent(Fusion.Event.MEASURE_COMPLETE, this.updateTotalDistance.bind(this));
         }
     },    
     
@@ -10524,7 +10550,7 @@ Fusion.Widget.Measure.prototype = {
                 this.updateMarker(this.lastMarker, lastSegment, e);
             }
             //create a new marker
-            this.lastMarker = new Fusion.Widget.Measure.DistanceMarker(this.units);
+            this.lastMarker = new Fusion.Widget.Measure.DistanceMarker(this.units, this.distPrecision);
             this.distanceMarkers.push(this.lastMarker);
             this.clearContext();
             this.feature.draw(this.context);
@@ -10544,10 +10570,7 @@ Fusion.Widget.Measure.prototype = {
         }
         var offset = {x:0,y:0};
         var oElement = this.getMap().getDomObj();
-        var target = e.target || e.srcElement;
-        if (target.id != 'featureDigitizer') { 
-            return;
-        }
+        //var target = e.target || e.srcElement;
         if (this.delayUpdateTimer) {
             window.clearTimeout(this.delayUpdateTimer);
         }
@@ -10559,11 +10582,15 @@ Fusion.Widget.Measure.prototype = {
         lastSegment.to.set(gp.x,gp.y);
         this.clearContext();
         this.feature.draw(this.context);
-        this.delayUpdateTimer = window.setTimeout(this.delayUpdate.bind(this, lastSegment, e), 250);
         this.lastMarker.setCalculating();
-        this.triggerEvent(Fusion.Event.MEASURE_SEGMENT_UPDATE, this, this.lastMarker, null);
+        this.delayUpdateTimer = window.setTimeout(this.delayUpdate.bind(this, lastSegment, e), 100);
         
         this.positionMarker(this.lastMarker, lastSegment);
+        if (this.totalDistanceMarker) {
+          var size = this.totalDistanceMarker.getSize();
+          this.totalDistanceMarker.domObj.style.top = (p.y - size.height) + 'px';
+          this.totalDistanceMarker.domObj.style.left = p.x + 'px';
+        }
     },
     
     delayUpdate: function(lastSegment, e) {
@@ -10597,6 +10624,11 @@ Fusion.Widget.Measure.prototype = {
         }  
 
         this.isDigitizing = false;
+        
+        //mousedown creates a new segment before dblClick so remove the last one
+        var lastMarker = this.distanceMarkers.pop();
+        lastMarker.destroy();
+        this.triggerEvent(Fusion.Event.MEASURE_COMPLETE);                    
     },
     
     positionMarker: function(marker, segment) {
@@ -10604,7 +10636,6 @@ Fusion.Widget.Measure.prototype = {
         if (!marker.domObj.parentNode || 
             marker.domObj.parentNode != oDomElem) {
             oDomElem.appendChild(marker.domObj);
-            this.triggerEvent(Fusion.Event.MEASURE_NEW_SEGMENT, this, marker);
         }
         var size = marker.getSize();
         var t = (segment.from.py + segment.to.py - size.height)/2 ;
@@ -10647,23 +10678,89 @@ Fusion.Widget.Measure.prototype = {
               if (mapUnits != this.units) {
                 o.distance = Fusion.convert(mapUnits, this.units, o.distance);
               }
-              var d = o.distance.toPrecision(this.distPrecision);
               
-              marker.setDistance(d);
+              marker.setDistance(o.distance);
               this.positionMarker(marker, segment);
-                if (segment == this.feature.lastSegment()) {
-                    this.triggerEvent(Fusion.Event.MEASURE_SEGMENT_UPDATE, this, marker, d);                    
-                } else {
-                    this.triggerEvent(Fusion.Event.MEASURE_SEGMENT_COMPLETE, this, marker, d);
-                }
+              this.triggerEvent(Fusion.Event.MEASURE_SEGMENT_UPDATE);                    
             }
         }
     },
     
-    setUnits: function() {
-      if (this.units == Fusion.UNKNOWN) {
-        this.setParameter('Units',this.getMap().getUnits());
+  /*
+      * updates the summary display if it is loaded in a window somewhere
+      */
+    updateDisplay: function(outputWin) {
+        var outputDoc = outputWin.document;
+        var tbody = outputDoc.getElementById('segmentTBody');
+        if (tbody) {
+            this.clearDisplay(outputWin);
+            var totalDistance = 0;
+            var units = Fusion.unitAbbr(this.units);
+            for (var i=0; i<this.distanceMarkers.length; i++) {
+                var distance = this.distanceMarkers[i].getDistance();
+                totalDistance += distance;
+            
+                var tr = outputDoc.createElement('tr');
+                var td = outputDoc.createElement('td');
+                td.innerHTML = OpenLayers.String.translate('segment',i+1);
+                tr.appendChild(td);
+                td = outputDoc.createElement('td');
+                td.innerHTML = distance.toPrecision(this.distPrecision)+ ' ' + units;
+                tr.appendChild(td);
+                tbody.appendChild(tr);
+            }
+            var tDist = outputDoc.getElementById('totalDistance');
+            tDist.innerHTML = totalDistance.toPrecision(this.distPrecision) + ' ' + units;
+        }
+    },
+    
+  /*
+      * updates the summary display if it is loaded in a window somewhere
+      */
+    updateTotalDistance: function() {
+      if (this.distanceMarkers.length > 1) {
+        var totalDistance = 0;
+        var units = Fusion.unitAbbr(this.units);
+        for (var i=0; i<this.distanceMarkers.length; i++) {
+            var distance = this.distanceMarkers[i].getDistance();
+            totalDistance += distance;
+        }
+        this.totalDistanceMarker.domObj.style.display = 'block';
+        this.totalDistanceMarker.setDistance(totalDistance);
       }
+    },
+    
+  /*
+      *clears the summary display if it is loaded in a window somewhere
+      */
+    clearDisplay: function(outputWin) {
+        var outputDoc = outputWin.document;
+        var tbody = outputDoc.getElementById('segmentTBody');
+        if (tbody) {
+          while(tbody.firstChild) {
+              tbody.firstChild.marker = null;
+              tbody.removeChild(tbody.firstChild);
+          }
+          var tDist = outputDoc.getElementById('totalDistance');
+          tDist.innerHTML = '';
+        }
+    },
+    
+  /*
+      *clears the summary display if it is loaded in a window somewhere
+      */
+    clearTotalDistance: function() {
+      this.totalDistanceMarker.domObj.style.display = 'none';
+    },
+    
+  /*
+     * Callback method for the MAP_LOADED event
+     * Set the units to whatever is specified in the AppDef, or the mapUnits if not specified
+     * Subsequent calls from a ViewOptions widget would override the value specified.
+     */
+    setUnits: function(units) {
+      units = (units == Fusion.UNKNOWN)?Fusion.unitFromName(this.getMap().getUnits()):units;
+      this.setParameter('Units', Fusion.unitName(units));
     },
 
     setParameter: function(param, value) {
@@ -10673,43 +10770,43 @@ Fusion.Widget.Measure.prototype = {
             for (var i=0; i<this.distanceMarkers.length; i++) {
                 this.distanceMarkers[i].setUnits(this.units);
             }
+            if (this.totalDistanceMarker) {
+              this.totalDistanceMarker.setUnits(this.units);
+            }
         }
     }
 };
 
-Fusion.Event.MARKER_DISTANCE_CHANGED = Fusion.Event.lastEventId++;
-
+/*
+* A class for handling the 'tooltip' for the distance measurement.  Markers also hold the distance
+values and all markers are held in an array in the Measure widget for access.
+*/
 Fusion.Widget.Measure.DistanceMarker = Class.create();
 Fusion.Widget.Measure.DistanceMarker.prototype = {
     calculatingImg: null,
-    isCalculating: false,
-    distance: null,
-    initialize: function( units) {
-        Object.inheritFrom(this, Fusion.Lib.EventMgr, []);
-        this.registerEventID(Fusion.Event.MARKER_DISTANCE_CHANGED);
+    distance: 0,
+    initialize: function(units, precision, label) {
+        this.precision = precision;
+        this.label = label ? label:'';
         this.domObj = document.createElement('div');
         this.domObj.className = 'divMeasureMarker';
-        this.setUnits(units);
         this.calculatingImg = document.createElement('img');
         this.calculatingImg.src = Fusion.getFusionURL() + 'widgets/Measure/MeasurePending.gif';
         this.calculatingImg.width = 19;
         this.calculatingImg.height = 4;
+        this.setUnits(units);
         this.setCalculating();
     },
     
     destroy: function() {
-        Fusion.Lib.EventMgr.destroy.apply(this, []);
-        if (this.domObj.parentNode) {
-            this.domObj.parentNode.removeChild(this.domObj);
-        }
+      if (this.domObj.parentNode) {
+          this.domObj.parentNode.removeChild(this.domObj);
+      }
     },
     
     setUnits: function(units) {
         this.unit = units;
         this.unitAbbr = Fusion.unitAbbr(units);
-        if (this.distance != null) {
-            this.setDistance(this.distance);
-        }
     },
     
     getDistance: function() {
@@ -10717,12 +10814,7 @@ Fusion.Widget.Measure.DistanceMarker.prototype = {
     },
     
     getDistanceLabel: function() {
-        if (this.distance!=null) {
-            var distance = this.distance;
-            return distance + ' ' + this.unitAbbr;            
-        } else {
-            return false;
-        }
+      return this.label + ' ' + this.distance.toPrecision(this.precision) + ' ' + this.unitAbbr;            
     },
     
     setDistance: function(distance) {
@@ -10731,19 +10823,15 @@ Fusion.Widget.Measure.DistanceMarker.prototype = {
         }
         this.distance = distance;
         this.domObj.innerHTML = this.getDistanceLabel();
-        this.isCalculating = false;
-        this.triggerEvent(Fusion.Event.MARKER_DISTANCE_CHANGED, this);
     },
     
     setCalculating: function() {
-        if (!this.isCalculating) {
-            this.isCalculating = true;
+        if (!this.calculatingImg.parentNode) {
             this.domObj.innerHTML = '';
             this.domObj.appendChild(this.calculatingImg);
-            this.distance = null;
-            this.triggerEvent(Fusion.Event.MARKER_DISTANCE_CHANGED, this);
         }
     },
+    
     getSize: function() {
         var size =  Element.getDimensions(this.domObj);
         var imgSize = {width:19, height:4};
@@ -10753,7 +10841,6 @@ Fusion.Widget.Measure.DistanceMarker.prototype = {
         if (size.height < imgSize.height) {
             size.height += imgSize.height;
         }
-        
         return size;
     }
 };
