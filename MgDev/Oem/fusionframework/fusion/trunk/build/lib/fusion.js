@@ -1,7 +1,7 @@
 /**
  * Fusion
  *
- * $Id: fusion.js 1227 2008-02-14 21:02:42Z madair $
+ * $Id: fusion.js 1286 2008-02-29 20:59:57Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -357,8 +357,13 @@ Fusion = {
     initializeLocale: function(locale) {
       this.locale = locale ? locale : window._FusionLocale;
       OpenLayers.String.langCode = this.locale;
+      
+      //check if strings are defined for specified locale, if not, set them to the default locale
       if (!OpenLayers.Strings[this.locale]) {
         OpenLayers.Strings[this.locale] = OpenLayers.Strings[OpenLayers.String.defaultLangCode];
+      }
+      if (!Fusion.Strings[this.locale]) {
+        Fusion.Strings[this.locale] = Fusion.Strings[OpenLayers.String.defaultLangCode];
       }
       OpenLayers.Util.extend(OpenLayers.Strings[this.locale], Fusion.Strings[this.locale]);
     },
