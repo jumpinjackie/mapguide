@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test id="11.5.2">
+  <category>xquery</category>
+  <description>W3C Use Cases (PARTS)</description>
+  <program name='dbxml_test_driver' />
+
+  <!-- stuff that applies to the entire test -->
+  <indexSpecification>
+    <node>part</node>
+    <index>edge-element-presence</index>
+  </indexSpecification>
+  <indexSpecification>
+    <node>partid</node>
+    <index>edge-attribute-equality-double</index>
+  </indexSpecification>
+  <indexSpecification>
+    <node>partof</node>
+    <index>edge-attribute-equality-double</index>
+  </indexSpecification>
+  <indexSpecification>
+    <node>name</node>
+    <index>edge-attribute-equality-string</index>
+  </indexSpecification>
+
+  <document>partlist.xml</document>
+
+  <!-- individual tests -->
+  <base>
+    <query>PARTS-Q1.xquery</query>
+  </base>
+</test>
+

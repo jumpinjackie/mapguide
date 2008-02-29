@@ -1,0 +1,6 @@
+base referer
+rect $classXMemory.html 7,9 90,33
+rect $classParser.html 114,9 175,33
+rect $classXMLDocumentHandler.html 199,9 362,33
+rect $classXMLErrorReporter.html 386,9 519,33
+rect $classXMLEntityHandler.html 543,9 677,33

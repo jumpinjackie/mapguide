@@ -1,0 +1,5 @@
+// -*- MPC -*-
+// gnudll.mpt,v 1.8 2003/12/30 15:18:22 dhinton Exp
+
+conditional_include "idl_compiler"
+conditional_include "common"

@@ -1,0 +1,6 @@
+The XQilla software is a combination of what was previously two
+separate libraries -- Pathan and and XQuery library.  Each
+has its own license file in this directory.  See these files
+for license information for XQilla:
+    Pathan -- LICENSE.pathan.txt
+    XQuery -- LICENSE.xquery.txt

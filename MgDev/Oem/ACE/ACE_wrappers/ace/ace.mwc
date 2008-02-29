@@ -1,0 +1,10 @@
+//  -*- MPC -*-
+// ace.mwc,v 1.4 2003/12/16 13:19:41 elliott_c Exp
+
+workspace {
+  ace.mpc
+  QoS
+  RMCast
+  SSL
+  TMCast
+}

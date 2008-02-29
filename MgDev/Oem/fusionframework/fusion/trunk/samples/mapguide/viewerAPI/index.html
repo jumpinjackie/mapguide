@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Simple Fusion Application</title>
+<!-- change the source of the following tag to point to your fusion installation -->
+<!--script type="text/javascript" src="../../../lib/fusion.js"></script-->
+<script type="text/javascript" src="../../../lib/fusion.js"></script>
+<script type="text/javascript" src="../../../MapGuide/MapGuideViewerAPI.js"></script>
+
+<style type="text/css">
+    @import url(../../../jx/css/jxskin-graphic.css);
+</style>
+
+<script type="text/javascript">
+window.onload = function() {
+    new Jx.Layout('thePage');
+    new Jx.Layout('Splitter', {top: 60});
+    var splitter = new Jx.Splitter('Splitter', {elements: [$('PanelPane'), $('Map')], containerOptions: [{width: 200}, {}]});
+    
+    var p1 = new Jx.Panel({label: OpenLayers.String.translate('legendTitle')});
+    p1.content.id = 'Legend';
+    var p2 = new Jx.Panel({label: OpenLayers.String.translate('selectionPanelTitle')});
+    p2.content.id = 'SelectionPanel';
+    var pm = new Jx.PanelManager('PanelPane', [p1, p2]);
+            
+    Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, fusionInitialized);
+    Fusion.initialize();
+}
+
+function fusionInitialized() {
+    $('thePage').resize();
+}
+
+function testZoomToView() {
+  ZoomToView(-87.745061, 43.740283, 8000);
+}
+
+function testSetSelectionXML() {
+  var mapWidget = Fusion.getWidgetById('Map');
+  var layer = mapWidget.aMaps[0].getLayerByName('Parcels');
+  var xml = '<?xml version="1.0" encoding="UTF-8"?>';
+  xml += '<FeatureSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FeatureSet-1.0.0.xsd">';
+  xml += '<Layer id="'+layer.uniqueId+'">';
+  xml += '<Class id="SHP_Schema:Parcels"><ID>MSYAAA==</ID></Class>';
+  xml += '</Layer></FeatureSet>';
+  SetSelectionXML(xml);
+}
+
+function testDigitizePoint() {
+  DigitizePoint(showGeometry);
+}
+
+function testDigitizeLine() {
+  DigitizeLine(showGeometry);
+}
+
+function testDigitizeLineString() {
+  DigitizeLineString(showGeometry);
+}
+
+function testDigitizeRectangle() {
+  DigitizeRectangle(showGeometry);
+}
+
+function testDigitizePolygon() {
+  DigitizePolygon(showGeometry);
+}
+
+function showGeometry(geom) {
+  var out = '';
+  if (geom.points) {
+    out += 'Multipoints: ';
+    for (var i=0; i<geom.points.length; ++i) {
+      out += ' x:'+geom.points[i].X;
+      out += ' y:'+geom.points[i].Y;
+    }
+  } else if (geom.Point1 && geom.Point2) {
+    out += 'Rectangle: ';
+    out += ' x:'+geom.Point1.X;
+    out += ' y:'+geom.Point1.Y;
+    out += ' x:'+geom.Point2.X;
+    out += ' y:'+geom.Point2.Y;
+  } else {
+    out += 'Point: ';
+    out += ' x:'+geom.X;
+    out += ' y:'+geom.Y;
+  }
+  alert("geometry is: "+out);
+}
+
+</script>
+</head>
+
+<body>
+  <div id='thePage'>
+    <div id="Toolbar"></div>
+    <div id="APITools"></div>
+    <div id="Splitter">
+      <div id="Map"></div>
+      <div id="PanelPane"></div>
+    </div>
+  </div>
+</body>
+</html>

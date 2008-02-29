@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding='ISO-8859-1' standalone='yes' ?>
+<TestRun>
+	<FailedTests>
+		<FailedTest id="2">
+			<Name>HttpMappingPhpTest::testaddrepositories</Name>
+			<FailureType />			<Location>
+				<File>D:\MgDev\UnitTest\WebTier\HttpMapping\PHP5\HttpMappingPhpTest.php</File>
+				<Line>67</Line>
+				<File>D:\MgDev\UnitTest\WebTier\HttpMapping\PHP5\RunTestPhp5.php</File>
+				<Line>37</Line>
+				<File>D:\MgDev\UnitTest\WebTier\HttpMapping\PHP5\RunTestPhp5.php</File>
+				<Line>72</Line>
+			</Location>
+			<Message>expected same:  &lt;7&gt;  was not:  &lt;12&gt; </Message>
+		</FailedTest>
+	</FailedTests>
+	<SuccessfulTests>
+		<Test id="1">
+			<name>HttpMappingPhpTest::testenumeraterepositories</name>
+		</Test>
+	</SuccessfulTests>
+	<Statistics>
+		<Tests>2</Tests>
+		<FailuresTotal>1</FailuresTotal>
+		<Errors>0</Errors>
+		<Failures>1</Failures>
+	</Statistics>
+</TestRun>

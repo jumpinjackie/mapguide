@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="SQLite">
+</Property><Property Name="Solution File" Value="C:\MgDev\UnitTest\SQLite\src\SQLite.sln">
+</Property><Property Name="Date" Value="Wednesday, November 09, 2005">
+</Property><Property Name="Time" Value="16:40 PM">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="SQLite.sln" Description="File successfully backed up as C:\MgDev\UnitTest\SQLite\src\SQLite.sln.old">
+</Event><Event ErrorLevel="2" Project="sqliteVM" Source="SqliteVM\sqliteVM.vcproj" Description="The project file 'C:\MgDev\UnitTest\SQLite\src\SqliteVM\sqliteVM.vcproj' cannot be updated to this Visual Studio 2005 version format because it is read-only on disk. Please set the permissions on the project file and re-open it to migrate the project.">
+</Event><Event ErrorLevel="2" Project="SQLiteUnitTest" Source="SQLiteUnitTest\SQLiteUnitTest.vcproj" Description="The project file 'C:\MgDev\UnitTest\SQLite\src\SQLiteUnitTest\SQLiteUnitTest.vcproj' cannot be updated to this Visual Studio 2005 version format because it is read-only on disk. Please set the permissions on the project file and re-open it to migrate the project.">
+</Event><Event ErrorLevel="2" Project="SQLitePhpApi" Source="SQLitePhpApi\SQLitePhpApi.vcproj" Description="The project file 'C:\MgDev\UnitTest\SQLite\src\SQLitePhpApi\SQLitePhpApi.vcproj' cannot be updated to this Visual Studio 2005 version format because it is read-only on disk. Please set the permissions on the project file and re-open it to migrate the project.">
+</Event><Event ErrorLevel="2" Project="SQLite" Source="SQLite3\SQLite.vcproj" Description="The project file 'C:\MgDev\UnitTest\SQLite\src\SQLite3\SQLite.vcproj' cannot be updated to this Visual Studio 2005 version format because it is read-only on disk. Please set the permissions on the project file and re-open it to migrate the project.">
+</Event><Event ErrorLevel="2" Project="SqliteDotNet" Source="SqliteDotNet\SqliteDotNet.vcproj" Description="The project file 'C:\MgDev\UnitTest\SQLite\src\SqliteDotNet\SqliteDotNet.vcproj' cannot be updated to this Visual Studio 2005 version format because it is read-only on disk. Please set the permissions on the project file and re-open it to migrate the project.">
+</Event><Event ErrorLevel="2" Project="SqliteGUI" Source="SqliteGUI\SqliteGUI.csproj" Description="Project file is not writable: C:\MgDev\UnitTest\SQLite\src\SqliteGUI\SqliteGUI.csproj">
+</Event><Event ErrorLevel="0" Project="SqliteGUI" Source="SqliteGUI\SqliteGUI.csproj" Description="Project file successfully backed up as C:\MgDev\UnitTest\SQLite\src\SqliteGUI\SqliteGUI.csproj.old">
+</Event><Event ErrorLevel="2" Project="SqliteGUI" Source="SqliteGUI\SqliteGUI.csproj" Description="Unable to save converted project file.">
+</Event><Event ErrorLevel="3" Project="SqliteGUI" Source="SqliteGUI\SqliteGUI.csproj" Description="Not Converted">
+</Event><Event ErrorLevel="2" Project="" Source="SQLite.sln" Description="Solution file 'C:\MgDev\UnitTest\SQLite\src\SQLite.sln' cannot be converted because it is read-only on disk. To convert the solution, change the permissions on the solution file to allow modification and re-open it.">
+</Event><Event ErrorLevel="3" Project="" Source="SQLite.sln" Description="Not Converted">
+</Event></UpgradeLog>

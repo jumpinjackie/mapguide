@@ -1,0 +1,12 @@
+// set.mpc,v 1.1 2003/08/23 19:32:56 dhinton Exp
+
+project (asnmp_example_set) : aceexe {
+  exename = set
+  after += asnmp_lib
+  libs  += asnmp
+  includes += $(ACE_ROOT)/ASNMP
+  source_files {
+    set
+  }
+}
+

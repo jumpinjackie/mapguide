@@ -1,0 +1,9 @@
+// -*- MPC -*-
+// event.mpb,v 1.4 2003/12/30 15:18:22 dhinton Exp
+
+project : naming, messaging {
+  after     += CosEvent
+  libs      += TAO_CosEvent
+  comps     += CosEvent
+  tagchecks += CosEvent
+}

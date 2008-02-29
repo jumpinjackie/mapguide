@@ -1,0 +1,494 @@
+/********************************************************
+  Noble Studios - 05/21/07
+  ns_adsk.css
+  Mapguide Layout
+********************************************************/
+
+html {
+  height: 100%;
+}
+
+body {
+  width:  100%;
+  height:  100%;
+  overflow:  hidden;
+  background-color: #ffffff;
+}
+
+  
+body, table {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 75%;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  color: #000000;
+}
+
+img {
+  border: none;
+}
+
+
+/********************************************************
+  Overall Structure
+********************************************************/
+#AppContainer {
+}
+
+#Map {
+  position: absolute;
+  top: 83px;
+  right: 218px;
+  bottom: 22px;
+  background: url(../images/mapBackground.gif) repeat-x #efefef bottom;
+  overflow: hidden;
+}
+
+#Maptip {
+    display: none;
+    border: 1px solid #000;
+    background-color: #E5DAC7;
+    padding: 4px;
+}
+/**********************************************************
+  JX Toolbar
+**********************************************************/
+#Toolbar {
+  z-index: 2;
+  background: url(../images/ToolbarBackground.gif) repeat-x;
+}
+
+#ToolbarSecondary {
+  z-index: 1;
+  background: url(../images/ToolbarSubBackground.gif) repeat-x;
+}
+
+
+#Toolbar a.jxButton,
+#ToolbarSecondary a.jxButton {
+  padding: 3px;
+}
+
+#Toolbar a.jxButton {
+  margin-top: 1px;
+}
+
+#Toolbar a.jxButton:hover,
+#ToolbarSecondary a.jxButton:hover {
+  background: #eefadf;
+}
+
+.seperator {
+  padding: 4px 10px;
+  background: url(../images/seperator.gif) no-repeat center;
+}
+  
+#linkTaskMenu {
+  position: absolute;
+  right: 15px;
+}
+
+
+/********************************************************
+  FileMenu
+********************************************************/
+
+#FileMenu {
+  z-index: 3;
+}
+
+#FileMenu ul.jxToolbar {
+  margin-top: 10px;
+}
+
+#FileMenu a.jxButton {
+  padding: 1px 5px;
+  border: 1px solid #fff;
+}
+
+#FileMenu  a.jxButton:hover {
+  font-size: 11px;
+  color: #000000;
+  text-decoration: none;
+  background-color: #fdec7c;
+  border: 1px solid #000;
+}
+
+#FileMenu a.jxButtonMenu span.jxButtonContent, 
+#FileMenu a.jxButtonFlyout span.jxButtonContent {
+  padding: 0px;
+}
+
+#FileMenu a.jxButtonMenu span.jxButtonSpan, 
+#FileMenu a.jxButtonFlyout span.jxButtonSpan {
+  background-image: none;
+}
+
+/********************************************************
+  Menus
+********************************************************/
+
+#Toolbar ul.jxMenu a.jxButton, 
+#Toolbar ul.jxSubMenu a.jxButton,
+#ToolbarSecondary ul.jxMenu a.jxButton, 
+#ToolbarSecondary ul.jxSubMenu a.jxButton,
+#FileMenu ul.jxMenu a.jxButton, 
+#FileMenu ul.jxSubMenu a.jxButton {
+  padding: 0px;
+}
+
+#Toolbar ul.jxMenu a.jxButton:hover, 
+#Toolbar ul.jxSubMenu a.jxButton:hover,
+#ToolbarSecondary ul.jxMenu a.jxButton:hover, 
+#ToolbarSecondary ul.jxSubMenu a.jxButton:hover,
+#FileMenu ul.jxMenu a.jxButton:hover, 
+#FileMenu ul.jxSubMenu a.jxButton:hover {
+  padding: 0px;
+  background-color: #CFECA9;
+  border: 1px solid #CFECA9;
+}
+
+#Toolbar ul.jxMenu span.jxButtonLabel, 
+#Toolbar ul.jxSubMenu span.jxButtonLabel,
+#ToolbarSecondary ul.jxMenu span.jxButtonLabel, 
+#ToolbarSecondary ul.jxSubMenu span.jxButtonLabel,
+#FileMenu ul.jxMenu span.jxButtonLabel, 
+#FileMenu ul.jxSubMenu span.jxButtonLabel {
+  color: #000000;
+}
+
+/********************************************************
+  Status bar
+********************************************************/
+
+#StatusbarContainer {
+  border-top: 1px solid #000000;
+  background: #fffebe;
+  color: #ffffff;
+  line-height: 22px;
+  font-size: 10px;
+  vertical-align: middle;
+}
+
+#Statusbar .jxSplitterBar {
+    width: 1px;
+    border-left: 1px solid #999;
+    border-right: 1px solid #fff;
+    cursor: 'col-resize';
+}
+
+#Statusbar .spanCursorPosition, 
+#Statusbar .spanViewSize, 
+#Statusbar .spanSelectionInfo {
+  padding: 4px 10px;
+}
+
+.inputEditableScale {
+  font: normal 10px Verdana, Arial, Helvetica, sans-serif;
+}
+
+#pbmg {
+  position: absolute;
+  right: 1px;
+  padding-top: 1px;
+}
+
+/********************************************************
+  Sidebar
+********************************************************/
+
+#Sidebar {
+  position: absolute;
+  top: 83px;
+  bottom: 22px;
+  width: 218px;
+  right: 0px;
+  overflow: hidden;
+  display: block;
+}
+
+#SidebarContent {
+  position: absolute;
+  width: 210px;
+  top: 0px;
+  bottom: 0px;
+  right: 0px;
+  left: 8px;
+}
+
+#SidebarCollapse {
+  position: absolute;
+  width: 8px;
+  height: 100%;
+  background: url(../images/sidebarCollapseBackground.gif) repeat-y #000;
+  overflow: hidden;
+  z-index: 1;
+}
+
+
+#SidebarCollapseButton {
+  display: block;
+  width: 8px;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  position: absolute;
+  height: 100%;
+  font-size: 0px;
+  line-height: 0px;
+}
+
+.jxSnapOpened #SidebarCollapseButton {
+  background: url(../images/sidebarCloseButton.gif) center no-repeat;
+}
+
+.jxSnapClosed #SidebarCollapseButton {
+  background: url(../images/sidebarOpenButton.gif) center no-repeat;
+}
+  
+/**********************************************************
+  Sidebar Tabs
+**********************************************************/
+#Sidebar {
+  
+}
+
+#Sidebar .jxTabSetContainer {
+  background-color: #fcc500;
+  border: 1px solid #000000;
+  border-top: 1px solid #fcc500;
+}
+
+#Sidebar .jxToolbarContainer {
+  padding: 0px;
+  margin: 0px;
+}
+
+#Sidebar .jxBarTop ul.jxToolbar {
+}
+
+#Sidebar .jxBarTop .jxToolItem {
+}
+
+#Sidebar .jxTabItem {
+  margin: 0px 1px 0px 0px;
+}
+
+#Sidebar .jxBarTop a.jxTab {
+  padding: 0px 0px 0px 4px;
+  margin: 0px;
+  background-image: url(../images/taskTab_Left.gif);
+  background-repeat: no-repeat;
+  background-position: left top;
+}
+
+#Sidebar .jxBarTop a.jxTab:hover, 
+#Sidebar .jxBarTop a.jxTab:active {
+  text-decoration: underline;
+}
+
+#Sidebar .jxBarTop a.jxTab span.jxButtonSpan {
+  padding: 6px 5px 6px 1px;
+  font-size: 11px;
+  font-weight: bold;
+  background-image: url(../images/taskTab_Right.gif);
+  background-repeat: no-repeat;
+  background-position: right top;
+}
+
+#Sidebar .jxBarTop a.jxTab span.jxButtonLabel {
+  display: block;
+  padding: 3px 0px 0px 0px;
+  text-align: center;
+}
+
+  
+#Sidebar .jxBarTop a.tabActive {
+  background-image: url(../images/taskTabSD_Left.gif);
+}
+
+#Sidebar .jxBarTop a.tabActive span.jxButtonSpan {
+  background-image: url(../images/taskTabSD_Right.gif);
+}
+
+/**********************************************************
+  Sidebar Panels
+**********************************************************/
+  
+#Sidebar .jxPanelBar {
+  position: relative;
+  overflow: hidden;
+}
+
+#Sidebar .jxPanel {
+  background: #fcc500;
+  overflow: auto;
+  height: 100px;
+  border-left: 1px solid #000000;
+  border-right: 1px solid #000000;
+}
+
+#Sidebar .jxPanelTitle {
+  font: bold 1em Verdana, Arial, Helvetica, sans-serif;
+  color: #ffffff;
+  letter-spacing: -.8px;
+  position: relative;
+  overflow: hidden;
+  height: 25px;
+  border-bottom: 1px solid #000000;
+  display: block;
+}
+
+#Sidebar .jxPanelLabel {
+  height: 25px;
+  display: block;
+  width: 75px;
+  margin-left: 10px;
+}
+
+#Sidebar .jxPanelMaximize {
+  display: block;
+  float: left;
+  padding: 0px 5px;
+  z-index: 2;
+}
+
+#Sidebar #OverviewMap {
+  height: 177px;
+  padding-left: 3px;
+  padding-top: 3px;
+}
+
+#Sidebar #Tasks {
+  display: block;
+  visibility: visible;
+  position: relative;
+  overflow: hidden;
+  height: 300px;
+}
+
+#LegendContainer.tabContent {
+    overflow: auto;
+}
+
+#Legend {
+    background-color: #fff;
+    background-image: none;
+    /*
+    border: 0px solid #000;
+    margin: 1px;
+    height: 100%;
+    */
+    overflow: auto;
+}
+/********************************************************
+  Panels
+********************************************************/
+
+.jxPanel {
+  background: url(../images/jxPanelBackround.gif) no-repeat #cccccc left top;
+  overflow: hidden;
+  position: relative;
+  width: 210px;
+  height: 100px;
+  margin: 0px 0 2px 0px;
+}
+
+.jxPanelContent {
+  background: url(../images/jxPanelBottom.gif) bottom left no-repeat;
+  position: absolute;
+  width: 210px;
+  height: 100px;
+}
+
+.jxPanelBar {
+  position: relative;
+  overflow: hidden;
+  height: 23px;
+  width: 210px;
+  background: url(../images/jxPanelBarLeft.gif) no-repeat left top;
+}
+
+.jxPanelTitle {
+  position: absolute;
+  overflow: hidden;
+  height: 23px;
+  width: 210px;
+  left: 2px;
+  background: url(../images/jxPanelBarBackground.gif) repeat-x left top;
+}
+
+.jxPanelLabel {
+  font: bold 11px Verdana, Arial, Helvetica, sans-serif;
+  color: #ffffff;
+  display: block;
+  float: left;
+  padding: 3px 0px 2px 20px;
+}
+
+.jxPanelMaximize {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 10px;
+  height: 10px;
+}
+
+#TaskTools {
+  padding: 5px 8px;
+  background: url(../../05/images/moduleTaskToolbarBackground.gif) no-repeat;
+  width: 206px;
+  overflow: hidden;
+  height: 20px;
+}
+
+#TaskPane {
+  padding: 2px 3px 2px 3px;
+  border-top: 1px solid #8d9aa3;
+  bottom: 0px;
+  background: #ffffff;
+  width: 203px;
+  height: 260px;
+  overflow: auto;
+}
+
+#TaskTools_TaskMenu {
+  float: right;
+  margin-right: 20px;
+}
+
+#SelectionPanel {
+  background-color: #fff;
+}
+
+
+
+
+#TaskPane {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+#OverviewMap {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.inputEditableScale {
+  font: normal 10px Verdana, Arial, Helvetica, sans-serif;
+}
+
+#Navigator {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  display: block;
+  z-index: 100;
+}
+
+.jxTree a, .jxTreeRoot a {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+}

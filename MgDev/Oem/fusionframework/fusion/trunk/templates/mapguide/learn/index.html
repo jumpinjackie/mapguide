@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Sample DMSG Fusion Application</title>
+
+<!-- change the source of the following tag to point to your fusion installation -->
+<script type="text/javascript" src="http://demo01.dmsolutions.ca/mapguide/fusion-beta/lib/fusion.js"></script>
+
+<style type="text/css">
+    @import url(template.css);
+</style>
+
+<script type="text/javascript">
+
+
+window.onload = function() {
+
+    /* make 'thePage' just fill the browser window and resize automagically
+       the user resizes the browser */
+    new Jx.Layout('thePage');
+
+    /* the height of toolbars.  For jxskin-border,
+     * its 28 and for jxskin-graphic its 30 */
+    var h = 30;
+    new Jx.Layout('Main', {bottom: 22, right: 250});
+    new Jx.Layout('Statusbar', {height: 22, top: null});
+    new Jx.Layout('TaskPane', {bottom: 22, width: 250, left: null});
+    new Jx.Layout('Toolbar', {height: h, bottom: null});
+    new Jx.Layout('Splitter', {top: h});
+
+    /* create a split between the map and panels */
+    var splitter = new Jx.Splitter('Splitter', {elements: [$('PanelPane'), $('Map')], containerOptions: [{width: 200}, {}]});
+
+    /* create a Status Bar */
+    new Jx.Splitter('Statusbar', {elements: [$('CursorPosition'), $('SelectionInfo'), $('EditableScale'), $('ViewSize'), $('LinkToView'), $('PoweredBy')], containerOptions: [{}, {}, {}, {}, {}, {width: 143, maxWidth: 143, minWidth: 143}]});
+
+    /* create the Panels */
+    var p1 = new Jx.Panel({label: 'Legend'});
+    p1.content.id = 'Legend';
+    var p2 = new Jx.Panel({label: 'Selection'});
+    p2.content.id = 'SelectionPanel';
+    var p3 = new Jx.Panel({label: 'Overview Map'});
+    p3.content.id = 'OverviewMap';
+    var pm = new Jx.PanelManager('PanelPane', [p1, p2, p3]);
+
+    /* show the page contents after Jx Layout has initialized */
+    $('thePage').resize();
+    $('thePage').style.visibility = 'visible';
+
+    /* initialize Fusion */
+    Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, fusionInitialized);
+    Fusion.registerForEvent(Fusion.Event.FUSION_ERROR, fusionError);
+    Fusion.initialize();
+}
+
+function fusionError(eventId, error) {
+    /* alert error messages here if in debug mode */
+}
+
+function fusionInitialized() {
+    $('thePage').resize();
+    var l = new Jx.Layout($('Toolbar').childNodes[0]);
+    l.resize();
+    var widgets = Fusion.getWidgetsByType('ActivityIndicator');
+    Element.addClassName(widgets[0].domObj, 'activityIndicator');
+}
+
+</script>
+</head>
+
+<body>
+<div id="thePage" style="visibility: hidden">
+    <div id="Main">
+        <div id="Toolbar"></div>
+        <div id="Splitter">
+            <div id="PanelPane"></div>
+            <div id="Map"></div>
+        </div>
+    </div>
+    <div id="TaskPane"></div>
+    <div id="Statusbar">
+        <div id="CursorPosition" class="statusBarItem">Cursor Position</div>
+        <div id="SelectionInfo" class="statusBarItem">0 features selected.</div>
+        <div id="EditableScale" class="statusBarItem"></div>
+        <div id="ViewSize" class="statusBarItem"></div>
+        <div id="LinkToView" class="statusBarItem">permalink</div>
+        <div id="PoweredBy" class="statusBarItem">
+            <a href="http://mapguide.osgeo.org/" target="_blank">
+                <img src="images/PoweredBy_en.gif" width="137" height="18" border="0">
+            </a>
+        </div>
+    </div>
+</div>
+
+<div id="BusyIndicator" style="visibility: hidden;">
+    <img src="images/icon_loading.gif" width="30" height="14">
+</div>
+<div id="MeasureResult"></div>
+
+</body>
+</html>

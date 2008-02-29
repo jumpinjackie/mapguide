@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Jx.Dialog Test Page</title>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1" />
+<script type="text/javascript" src="../lib/styleswitcher.js"></script>
+<script type="text/javascript" src="../scriptaculous/prototype.js"></script>
+<script type="text/javascript" src="../jx.js"></script>
+<script  type="text/javascript">
+window.onload = function() {
+    
+    
+    new Jx.Layout('thePage', {top: 20, right: 20, bottom: 20, left: 20});
+    $('thePage').resize();
+
+    var d1 = new Jx.Dialog(
+        {
+            title: 'dialog 1', 
+            modal: false, 
+            parentObj: 'thePage', 
+            contentHTML: '<h2>Content HTML</h2><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>', 
+            helpURL: 'test_help.html'
+        }
+    );
+    
+    var d2 = new Jx.Dialog(
+        {
+            title: 'dialog 2', 
+            modal: false, 
+            parentObj: 'thePage', 
+            left: 200, 
+            top: 50, 
+            contentID: 'inlineContent', 
+            helpHTML: '<h2>Help HTML</h2><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>',
+            resizeable: true
+        }
+    );
+    
+    var d3 = new Jx.Dialog(
+        {
+            title: 'dialog 3', 
+            modal: true, 
+            left: 400, 
+            top: 100,
+            width: 400,
+            height: 400,
+            contentURL: 'test_content.html',
+            onContentLoaded: digestContent,
+            helpID: 'inlineHelp',
+            buttons: ['ok', 'cancel']
+        }
+    );
+    
+    var a1 = new Jx.Action(d1.open.bind(d1));
+    var a2 = new Jx.Action(d2.open.bind(d2));
+    var a3 = new Jx.Action(d3.open.bind(d3));
+    
+    var toolbar = new Jx.Toolbar('toolbar');
+    var b1 = new Jx.Button(a1, {label: 'dialog 1'});
+    var b2 = new Jx.Button(a2, {label: 'dialog 2'});
+    var b3 = new Jx.Button(a3, {label: 'dialog 3'});
+    toolbar.add(b1, b2, b3);
+    
+    function digestContent(dialog) {
+        dialog.registerIds(['updateMe'], dialog.content);
+        dialog.getObj('updateMe').innerHTML = 'content updated!';
+    }
+}
+
+</script>
+
+<style type="text/css">
+  @import url(../css/tests.css);
+</style>
+
+<link rel="stylesheet" type="text/css" href="../css/jxskin-border.css" title="Border" />
+<link rel="alternate stylesheet" type="text/css" href="../css/jxskin-graphic.css" title="Graphic" />
+
+</head>
+<body>
+
+<div id="ssSwitcher">
+  <label>Skin: 
+    <select onchange="setActiveStyleSheet(this.options[this.selectedIndex].value)">
+      <option value="Border">Border</option>
+      <option value="Graphic">Graphic</option>
+    </select>
+  </label>
+</div>
+<div id="thePage">
+  <h1>Jx.Dialog Test Page</h1>
+  <div id="toolbar"></toolbar>
+</div>
+<div id='inlineContent'>
+  <h2>Inline Content</h2>
+  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+</div>
+<div id='inlineHelp'>
+  <h2>Inline Help</h2>
+  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+</div>
+
+</body>
+</html>

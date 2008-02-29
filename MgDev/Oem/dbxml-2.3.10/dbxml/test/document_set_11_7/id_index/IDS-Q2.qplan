@@ -1,0 +1,52 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="parttree" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <ForBinding name="p">
+          <DbXmlNav>
+            <QueryPlanFunction result="collection" container="11.7.3.dbxml">
+              <OQPlan>R(edge-attribute-equality-double,part.@id,>=,'1',<=,'10')</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="child" name="partlist" nodeType="element"/>
+            <DbXmlStep axis="child" name="part" nodeType="element"/>
+            <DbXmlFilter>
+              <DbXmlCompare name="greater_than_equal" join="attribute" name="id" nodeType="attribute">
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="1" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+                </Sequence>
+              </DbXmlCompare>
+            </DbXmlFilter>
+            <DbXmlFilter>
+              <DbXmlCompare name="less_than_equal" join="attribute" name="id" nodeType="attribute">
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="10" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+                </Sequence>
+              </DbXmlCompare>
+            </DbXmlFilter>
+          </DbXmlNav>
+        </ForBinding>
+        <Sort>
+          <Specification modifier="ascending|empty_least">
+            <TreatAs>
+              <PromoteUntyped uri="http://www.w3.org/2001/XMLSchema" name="string">
+                <Atomize>
+                  <DbXmlNav>
+                    <Variable name="p"/>
+                    <DbXmlStep axis="attribute" name="id" nodeType="attribute"/>
+                  </DbXmlNav>
+                </Atomize>
+              </PromoteUntyped>
+              <SequenceType occurrence="zero_or_one" testType="anything"/>
+            </TreatAs>
+          </Specification>
+        </Sort>
+        <Variable name="p"/>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

@@ -1,0 +1,140 @@
+<!--
+revision  $Id: stylelabel.html,v 1.16 2006/06/09 13:27:18 pspencer Exp $
+copyright &copy; 2006 DM Solutions Group Inc.
+released under LGPL License with MapGuide Open Source (see index.html)
+-->
+<fieldset>
+  <legend>Label</legend>
+  <div class="fieldsetFixSmall"></div>
+  <table class="formTableSmall">
+    <tbody>
+      <tr>
+        <th class="formThSmall"><label for="dialog.stylelabel.property">Property to display:</label></th>
+        <td><select class="wideSelect" id="dialog.stylelabel.property" name="dialog.stylelabel.property"></select></td>
+        <td class="formTdButton"><input type="button" class="smallButton" name="dialog.stylelabel.chooseproperty" id="dialog.stylelabel.chooseproperty" value="..."></td>
+      </tr>
+      <tr>
+        <th class="formThSmall"><label for="dialog.stylelabel.font">Font:</label></th>
+        <td><input type="text" class="wideText" id="dialog.stylelabel.font" name="dialog.stylelabel.font" value=""/></td>
+        <td class="formTdButton">&nbsp;</td>
+      </tr>
+      <tr>
+        <th class="formThSmall"><label for="dialog.stylelabel.size">Size:</label></th>
+        <td><input type="text" class="wideText" id="dialog.stylelabel.size" name="dialog.stylelabel.size"/></td>
+        <td class="formTdButton"><input type="button" class="smallButton" name="dialog.stylelabel.choosesize" id="dialog.stylelabel.choosesize" value="..."></td>
+      </tr>
+      <tr>
+        <th class="formThSmall"><label>Format:</label></th>
+        <td><label for="dialog.stylelabel.bold"><input type="checkbox" id="dialog.stylelabel.bold"><b>Bold</b> </label>
+            <label for="dialog.stylelabel.italic"><input type="checkbox" id="dialog.stylelabel.italic"><i>Italics</i> </label>
+            <label for="dialog.stylelabel.underline"><input type="checkbox" id="dialog.stylelabel.underline"><u>Underline</u> </label></td>
+        <td class="formTdButton">&nbsp;</td>
+      </tr>
+    </tbody>
+  </table>
+</fieldset>
+
+<fieldset>
+  <legend>Style</legend>
+  <div class="fieldsetFixSmall"></div>
+  <table class="formTableSmall">
+    <tbody>
+      <tr>
+        <th class="formThSmall"><label for="dialog.stylelabelcolor">Text Color:</label></th>
+        <td class="formTdSmall"><input type="text" class="smallText" id="dialog.stylelabel.color" name="dialog.stylelabel.color" value=""/></td>
+        <td><div class="previewInput" id="dialog.stylelabel.colorpreview"></div></td>
+        <td class="formTdButton"><input type="button" class="smallButton" name="dialog.stylelabel.choosecolor" id="dialog.stylelabel.choosecolor" value="..." disabled></td>
+      </tr>
+      <tr>
+        <th class="formThSmall"><label for="dialog.stylelabel.bgstyle">Background Style:</label></th>
+        <td colspan="2"><select class="wideSelect" id="dialog.stylelabel.bgstyle" name="dialog.stylelabel.bgstyle">
+            <option selected>Ghosted</option>
+            <option>Opaque</option>
+            <option>Transparent</option>
+          </select></td>
+        <td class="formTdButton">&nbsp;</td>
+      </tr>
+      <tr>
+        <th class="formThSmall"><label for="dialog.stylelabel.bgcolor">Background Color:</label></th>
+        <td class="formTdSmall"><input type="text" class="smallText" id="dialog.stylelabel.bgcolor" name="dialog.stylelabel.bgcolor" value=""/></td>
+        <td><div class="previewInput" id="dialog.stylelabel.bgcolorpreview"></div></td>
+        <td class="formTdButton"><input type="button" class="smallButton" name="dialog.stylelabel.choosebgcolor" id="dialog.stylelabel.choosebgcolor" value="..." disabled></td>
+      </tr>
+    </tbody>
+  </table>
+</fieldset>
+
+<fieldset>
+  <legend>Orientation</legend>
+  <div class="fieldsetFixSmall"></div>
+  <table class="formTableSmall">
+    <tbody>
+      <tr>
+        <th class="formThSmall"><label>&nbsp;</label></th>
+        <td class="formTd"><label for="dialog.stylelabel.fixedlabels"><input type="checkbox" name="dialog.stylelabel.fixedlabels" id="dialog.stylelabel.fixedlabels" value="">Labels are fixed (not dynamic)</label></td>
+        <td class="formTdButton">&nbsp;</td>
+      </tr>
+      <tr>
+        <th class="formThSmall"><label for="dialog.stylelabel.horizontal">Horizontal Alignment:</label></th>
+        <td><select class="wideSelect" id="dialog.stylelabel.horizontal" name="dialog.stylelabel.horizontal">
+            <option selected>Center</option>
+            <option>Left</option>
+            <option>Right</option>
+          </select></td>
+        <td class="formTdButton"><input type="button" class="smallButton" name="dialog.stylelabel.choosehorizontal" id="dialog.stylelabel.choosehorizontal" value="..."></td>
+      </tr>
+      <tr>
+        <th class="formThSmall"><label for="dialog.stylelabel.vertical">Vertical Alignment:</label></th>
+        <td><select class="wideSelect" id="dialog.stylelabel.vertical" name="dialog.stylelabel.vertical">
+            <option selected>Baseline</option>
+            <option>Bottom</option>
+            <option>Capline</option>
+            <option>Halfline</option>
+            <option>Top</option>
+          </select></td>
+        <td class="formTdButton"><input type="button" class="smallButton" name="dialog.stylelabel.choosevertical" id="dialog.stylelabel.choosevertical" value="..."></td>
+      </tr>
+      <tr>
+        <th class="formThSmall"><label for="dialog.stylelabel.rotation">Rotation:</label></th>
+        <td><input type="text" class="wideText" id="dialog.stylelabel.rotation" name="dialog.stylelabel.rotation"/></td>
+        <td class="formTdButton"><input type="button" class="smallButton" name="dialog.stylelabel.chooserotation" id="dialog.stylelabel.chooserotation" value="..."></td>
+      </tr>
+      <tr>
+        <th class="formThSmall"><label>&nbsp;</label></th>
+        <td class="formTd"><label for="dialog.stylelabel.allowobscure"><input type="checkbox" name="dialog.stylelabel.allowobscure" id="dialog.stylelabel.allowobscure" value="">Allow other labels to obscure feature symbols on this layer</label></td>
+        <td class="formTdButton">&nbsp;</td>
+      </tr>
+    </tbody>
+  </table>
+</fieldset>
+
+<fieldset>
+  <legend>Units</legend>
+  <div class="fieldsetFixSmall"></div>
+  <table class="formTableSmall">
+    <tbody>
+      <tr>
+        <th class="formThSmall"><label for="dialog.stylelabel.context">Size context:</label></th>
+        <td><select id="dialog.stylelabel.context" name="dialog.stylelabel.context" disabled>
+            <option value="DeviceUnits" selected>Device space</option>
+            <option value="MappingUnits">Map space</option>
+          </select></td>
+        <th class="formThSmall2"><label for="dialog.stylelabel.units">Size units:</label></th>
+        <td><select id="dialog.stylelabel.units" name="dialog.stylelabel.units">
+            <option value="Points" selected>Points</option>
+            <option value="Inches">Inches</option>
+            <option value="Millimeters">Millimeters</option>
+            <option value="Centimeters">Centimeters</option>
+          </select></td>
+      </tr>
+    </tbody>
+  </table>
+</fieldset>
+
+<!--
+<table class="formTableSmall">
+  <tr>
+    <td><div class="stylePreviewBox"></div></td>
+  </tr>
+</table>
+-->

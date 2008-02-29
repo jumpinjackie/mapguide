@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<project>
+    <project_entity ID="debugger">
+        <connectionInfo use_defaults="true" tempFilesLocation="C:\Documents and Settings\wekeltr" debug_mode="local" serverHost="http://localhost/php/phptest.php" port="10000"/>
+        <breakpoints/>
+        <watches/>
+    </project_entity>
+    <project_entity ID="project_roots">
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\ApiUnitTests.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\DrawingServiceAPI.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\DrawingServiceHttpRequests.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\ExecuteOperation.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\FeatureServiceAPI.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\FeatureServiceHttpRequests.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\HtmlPrinter.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\HttpRequest.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\HttpUnitTests.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\index.html"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\LocaleTest.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\MapLayerAPI.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\MappingServiceAPI.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\MappingServiceHttpRequests.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\Menu.html"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\ResourceServiceAPI.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\ResourceServiceHttpRequests.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\Result.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\Run.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\RunTests.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\ServerAdminAPI.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\setResourceData.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\SiteServiceAPI.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\SiteServiceHttpRequests.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\utf8test.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\Utils.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\Validate.php"/>
+        <vfile name="C:\MgDev\UnitTest\WebTier\Php\ValidateUtils.php"/>
+    </project_entity>
+    <project_entity ID="bookmarks"/>
+    <project_entity ID="editor_component" selectedEditor="2">
+        <openEditors>
+            <editor fileName="C:\MgDev\UnitTest\WebTier\Php\utf8test.php" caretPosition="152" clone="false" encoding="UTF-8"/>
+            <editor fileName="C:\MgDev\UnitTest\WebTier\Php\ResourceServiceHttpRequests.php" caretPosition="2470" clone="false" encoding="UTF-8"/>
+            <editor fileName="C:\MgDev\UnitTest\WebTier\Php\HttpRequest.php" caretPosition="0" clone="false" encoding="UTF-8"/>
+            <editor fileName="C:\MgDev\UnitTest\WebTier\Php\RunTests.php" caretPosition="319" clone="false" encoding="UTF-8"/>
+            <editor fileName="C:\MgDev\UnitTest\WebTier\Php\Run.php" caretPosition="5365" clone="false" encoding="UTF-8"/>
+            <editor fileName="C:\MgDev\UnitTest\WebTier\Php\ApiUnitTests.php" caretPosition="299" clone="false" encoding="UTF-8"/>
+            <editor fileName="C:\MgDev\UnitTest\WebTier\Php\HttpUnitTests.php" caretPosition="306" clone="false" encoding="UTF-8"/>
+            <editor fileName="C:\MgDev\Web\src\PHPMapAgent\helper.php" caretPosition="0" clone="false" encoding="UTF-8"/>
+            <editor fileName="C:\MgDev\UnitTest\WebTier\Php\Validate.php" caretPosition="0" clone="false" encoding="UTF-8"/>
+            <editor fileName="C:\MgDev\UnitTest\WebTier\Php\HtmlPrinter.php" caretPosition="0" clone="false" encoding="UTF-8"/>
+            <editor fileName="C:\MgDev\UnitTest\WebTier\Php\Utils.php" caretPosition="6677" clone="false" encoding="UTF-8"/>
+            <editor fileName="C:\MgDev\UnitTest\WebTier\Php\DrawingServiceAPI.php" caretPosition="786" clone="false" encoding="UTF-8"/>
+            <editor fileName="C:\MgDev\Web\src\PHPMapAgent\MapAgent.php" caretPosition="0" clone="false" encoding="UTF-8"/>
+            <editor fileName="C:\MgDev\UnitTest\WebTier\Php\MappingServiceAPI.php" caretPosition="0" clone="false" encoding="UTF-8"/>
+            <editor fileName="C:\MgDev\UnitTest\WebTier\Php\MapLayerAPI.php" caretPosition="12330" clone="false" encoding="UTF-8"/>
+            <editor fileName="C:\MgDev\Web\src\MapGuidePhpApi\MgConstants.php" caretPosition="846" clone="false" encoding="UTF-8"/>
+            <editor fileName="C:\MgDev\UnitTest\WebTier\Php\FeatureServiceAPI.php" caretPosition="0" clone="false" encoding="UTF-8"/>
+            <editor fileName="C:\MgDev\UnitTest\WebTier\Php\SiteServiceAPI.php" caretPosition="2296" clone="false" encoding="UTF-8"/>
+            <editor fileName="C:\MgDev\UnitTest\WebTier\Php\ServerAdminAPI.php" caretPosition="1464" clone="false" encoding="UTF-8"/>
+        </openEditors>
+    </project_entity>
+    <project_entity ID="CVS">
+        <lastArguments>
+            <CVSCommand commandType="update"/>
+            <CVSCommand commandType="commit"/>
+            <CVSCommand commandType="add"/>
+            <CVSCommand commandType="status"/>
+            <CVSCommand commandType="diff"/>
+        </lastArguments>
+    </project_entity>
+</project>

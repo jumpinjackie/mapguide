@@ -1,0 +1,7 @@
+// -*- MPC -*-
+// amh.mpb,v 1.2 2003/12/30 15:18:22 dhinton Exp
+
+project {
+  requires += ami // There is no separate 
+  idlflags += -GH
+}

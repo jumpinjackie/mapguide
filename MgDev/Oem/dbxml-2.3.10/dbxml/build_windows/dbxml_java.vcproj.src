@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="@project_name@"
+	SccProjectName=""
+	SccLocalPath=""
+	Keyword="MFCProj">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="@outdir@\$(ConfigurationName)"
+			IntermediateDirectory=".\$(OutDir)\@project_name@"
+			ConfigurationType="2"
+			UseOfMFC="2"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				MinimalRebuild="TRUE"
+				AdditionalIncludeDirectories=".,../include,@DB_HOME@/include,@DB_HOME@/build_windows,@DB_HOME@,@XERCES_WINHOME@/include,@XERCES_WINHOME@/src,@include@"
+				PreprocessorDefinitions="DBXML_CREATE_DLL;CONFIG_TEST;WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE=1"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\$(OutDir)/@project_name@.pch"
+				AssemblerListingLocation=".\$(OutDir)/"
+				ObjectFile=".\$(OutDir)/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="3"
+				CompileAs="0"
+				DisableSpecificWarnings="4244,4541,4700"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				CommandLine="mkdir &quot;.\$(OutDir)\classes\dummy&quot; &quot;.\@jar_dest@/dummy&quot; 
+echo compiling Berkeley DB XML Java classes
+javac -source 1.4 -g -d ./$(OutDir)/classes -classpath @jar_dest@/db.jar;./$(OutDir)/classes;@DB_HOME@/build_windows/./$(OutDir)/db.jar ../src/java/com/sleepycat/dbxml/*.java ../src/java/com/sleepycat/db/*.java
+echo creating dbxml jar file
+cd &quot;./$(OutDir)/classes&quot;
+jar cf ../../@jar_dest@/dbxml.jar com/sleepycat/dbxml/*.class com/sleepycat/db/*.class
+echo compiling Berkeley DB XML Java examples
+cd ../..
+javac -source 1.4 -g -d ./$(OutDir)/classes -classpath @jar_dest@/dbxml.jar;@jar_dest@/db.jar;./$(OutDir)/dbxml.jar;./$(OutDir)/classes;@DB_HOME@/build_windows/./$(OutDir)/db.jar ../examples/java/gettingStarted/*.java ../examples/java/basic/*.java
+echo creating example jar file
+cd &quot;./$(OutDir)/classes&quot;
+jar cf ../../@jar_dest@/dbxmlexamples.jar dbxml/gettingStarted/*.class dbxml/basic/*.class
+cd ..\..
+rmdir &quot;.\$(OutDir)\classes\dummy&quot; &quot;.\@jar_dest@\dummy&quot; 
+echo Java build finished"
+				Outputs="force_compilation.txt"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="@DB_LIB@d.lib @DBXML_LIBNAME@d.lib"
+				OutputFile="$(OutDir)/@DBXML_JAVA_LIBNAME@d.dll"
+				ProgramDataBaseFile="$(OutDir)/@DBXML_JAVA_LIBNAME@.pdb"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(OutDir);@DB_HOME@/build_windows/$(OutDir)"
+				GenerateDebugInformation="TRUE"
+				ImportLibrary="$(OutDir)/@DBXML_JAVA_LIBNAME@d.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG;_CRT_SECURE_NO_DEPRECATE=1"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\$(OutDir)/@project_name@.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"
+CommandLine="xcopy *.jar @JAVA_INSTALL@ /F/Y
+installProj.bat @DBXML_JAVA_LIBNAME@ dll $(OutDir) debug"
+Description="Copying .jar and library files to install directory"
+/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG;_CRT_SECURE_NO_DEPRECATE=1"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="@outdir@\$(ConfigurationName)"
+			IntermediateDirectory=".\$(OutDir)\@project_name@"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				MinimalRebuild="TRUE"
+				InlineFunctionExpansion="2"
+				AdditionalIncludeDirectories=".,../include,@DB_HOME@/include,@DB_HOME@/build_windows,@DB_HOME@,@XERCES_WINHOME@/include,@XERCES_WINHOME@/src,@include@"
+				PreprocessorDefinitions="DBXML_CREATE_DLL;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE=1"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\$(OutDir)/@project_name@.pch"
+				AssemblerListingLocation=".\$(OutDir)/"
+				ObjectFile=".\$(OutDir)/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"
+				DisableSpecificWarnings="4244,4541,4700"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				CommandLine="mkdir &quot;.\$(OutDir)\classes\dummy&quot; &quot;.\@jar_dest@\dummy&quot; 
+echo compiling Berkeley DB XML Java classes
+javac -source 1.4 -g -d ./$(OutDir)/classes -classpath @jar_dest@/db.jar;./$(OutDir)/classes;@DB_HOME@/build_windows/./$(OutDir)/db.jar ../src/java/com/sleepycat/dbxml/*.java ../src/java/com/sleepycat/db/*.java
+echo creating dbxml jar file
+cd &quot;./$(OutDir)/classes&quot;
+jar cf ../../@jar_dest@/dbxml.jar com/sleepycat/dbxml/*.class com/sleepycat/db/*.class
+echo compiling Berkeley DB XML Java examples
+cd ../..
+javac -source 1.4 -g -d ./$(OutDir)/classes -classpath @jar_dest@/dbxml.jar;@jar_dest@/db.jar;./$(OutDir)/dbxml.jar;./$(OutDir)/classes;@DB_HOME@/build_windows/./$(OutDir)/db.jar ../examples/java/gettingStarted/*.java ../examples/java/basic/*.java
+echo creating example jar file
+cd &quot;./$(OutDir)/classes&quot;
+jar cf ../../@jar_dest@/dbxmlexamples.jar dbxml/gettingStarted/*.class dbxml/basic/*.class
+cd ..\..
+rmdir &quot;.\$(OutDir)\classes\dummy&quot; &quot;.\@jar_dest@\dummy&quot; 
+echo Java build finished"
+				Outputs="force_compilation.txt"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="@DB_LIB@.lib @DBXML_LIBNAME@.lib"
+				OutputFile="$(OutDir)/@DBXML_JAVA_LIBNAME@.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(OutDir);@DB_HOME@/build_windows/$(OutDir)"
+				GenerateDebugInformation="FALSE"
+				ImportLibrary="$(OutDir)/@DBXML_JAVA_LIBNAME@.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG;_CRT_SECURE_NO_DEPRECATE=1"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\$(OutDir)/@project_name@.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"
+CommandLine="xcopy *.jar @JAVA_INSTALL@ /F/Y
+installProj.bat @DBXML_JAVA_LIBNAME@ dll $(OutDir) release"
+Description="Copying .jar and library files to install directory"
+/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG;_CRT_SECURE_NO_DEPRECATE=1"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug AMD64|Win32"
+			OutputDirectory="@outdir@\$(ConfigurationName)"
+			IntermediateDirectory=".\$(OutDir)\@project_name@"
+			ConfigurationType="2"
+			UseOfMFC="2"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				MinimalRebuild="TRUE"
+				AdditionalIncludeDirectories=".,../include,@DB_HOME@/include,@DB_HOME@/build_windows,@DB_HOME@,@XERCES_WINHOME@/include,@XERCES_WINHOME@/src,@include@"
+				PreprocessorDefinitions="DBXML_CREATE_DLL;CONFIG_TEST;WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE=1"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\$(OutDir)/@project_name@.pch"
+				AssemblerListingLocation=".\$(OutDir)/"
+				ObjectFile=".\$(OutDir)/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="3"
+				CompileAs="0"
+				DisableSpecificWarnings="4244,4541,4700"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				CommandLine="mkdir &quot;.\$(OutDir)\classes\dummy&quot; &quot;.\@jar_dest@/dummy&quot; 
+echo compiling Berkeley DB XML Java classes
+javac -source 1.4 -g -d ./$(OutDir)/classes -classpath @jar_dest@/db.jar;./$(OutDir)/classes;@DB_HOME@/build_windows/./$(OutDir)/db.jar ../src/java/com/sleepycat/dbxml/*.java ../src/java/com/sleepycat/db/*.java
+echo creating dbxml jar file
+cd &quot;./$(OutDir)/classes&quot;
+jar cf ../../@jar_dest@/dbxml.jar com/sleepycat/dbxml/*.class com/sleepycat/db/*.class
+echo compiling Berkeley DB XML Java examples
+cd ../..
+javac -source 1.4 -g -d ./$(OutDir)/classes -classpath @jar_dest@/dbxml.jar;@jar_dest@/db.jar;./$(OutDir)/dbxml.jar;./$(OutDir)/classes;@DB_HOME@/build_windows/./$(OutDir)/db.jar ../examples/java/gettingStarted/*.java ../examples/java/basic/*.java
+echo creating example jar file
+cd &quot;./$(OutDir)/classes&quot;
+jar cf ../../@jar_dest@/dbxmlexamples.jar dbxml/gettingStarted/*.class dbxml/basic/*.class
+cd ..\..
+rmdir &quot;.\$(OutDir)\classes\dummy&quot; &quot;.\@jar_dest@\dummy&quot; 
+echo Java build finished"
+				Outputs="force_compilation.txt"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="@DB_LIB@d.lib @DBXML_LIBNAME@d.lib"
+				OutputFile="$(OutDir)/@DBXML_JAVA_LIBNAME@d.dll"
+				ProgramDataBaseFile="$(OutDir)/@DBXML_JAVA_LIBNAME@.pdb"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(OutDir);@DB_HOME@/build_windows/$(OutDir)"
+				GenerateDebugInformation="TRUE"
+				ImportLibrary="$(OutDir)/@DBXML_JAVA_LIBNAME@d.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG;_CRT_SECURE_NO_DEPRECATE=1"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\$(OutDir)/@project_name@.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"
+CommandLine="xcopy *.jar @JAVA_INSTALL@ /F/Y
+installProj.bat @DBXML_JAVA_LIBNAME@ dll $(OutDir) debug"
+Description="Copying .jar and library files to install directory"
+/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG;_CRT_SECURE_NO_DEPRECATE=1"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release AMD64|Win32"
+			OutputDirectory="@outdir@\$(ConfigurationName)"
+			IntermediateDirectory=".\$(OutDir)\@project_name@"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				MinimalRebuild="TRUE"
+				InlineFunctionExpansion="2"
+				AdditionalIncludeDirectories=".,../include,@DB_HOME@/include,@DB_HOME@/build_windows,@DB_HOME@,@XERCES_WINHOME@/include,@XERCES_WINHOME@/src,@include@"
+				PreprocessorDefinitions="DBXML_CREATE_DLL;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE=1"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\$(OutDir)/@project_name@.pch"
+				AssemblerListingLocation=".\$(OutDir)/"
+				ObjectFile=".\$(OutDir)/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"
+				DisableSpecificWarnings="4244,4541,4700"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				CommandLine="mkdir &quot;.\$(OutDir)\classes\dummy&quot; &quot;.\@jar_dest@\dummy&quot; 
+echo compiling Berkeley DB XML Java classes
+javac -source 1.4 -g -d ./$(OutDir)/classes -classpath @jar_dest@/db.jar;./$(OutDir)/classes;@DB_HOME@/build_windows/./$(OutDir)/db.jar ../src/java/com/sleepycat/dbxml/*.java ../src/java/com/sleepycat/db/*.java
+echo creating dbxml jar file
+cd &quot;./$(OutDir)/classes&quot;
+jar cf ../../@jar_dest@/dbxml.jar com/sleepycat/dbxml/*.class com/sleepycat/db/*.class
+echo compiling Berkeley DB XML Java examples
+cd ../..
+javac -source 1.4 -g -d ./$(OutDir)/classes -classpath @jar_dest@/dbxml.jar;@jar_dest@/db.jar;./$(OutDir)/dbxml.jar;./$(OutDir)/classes;@DB_HOME@/build_windows/./$(OutDir)/db.jar ../examples/java/gettingStarted/*.java ../examples/java/basic/*.java
+echo creating example jar file
+cd &quot;./$(OutDir)/classes&quot;
+jar cf ../../@jar_dest@/dbxmlexamples.jar dbxml/gettingStarted/*.class dbxml/basic/*.class
+cd ..\..
+rmdir &quot;.\$(OutDir)\classes\dummy&quot; &quot;.\@jar_dest@\dummy&quot; 
+echo Java build finished"
+				Outputs="force_compilation.txt"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="@DB_LIB@.lib @DBXML_LIBNAME@.lib"
+				OutputFile="$(OutDir)/@DBXML_JAVA_LIBNAME@.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(OutDir);@DB_HOME@/build_windows/$(OutDir)"
+				GenerateDebugInformation="FALSE"
+				ImportLibrary="$(OutDir)/@DBXML_JAVA_LIBNAME@.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG;_CRT_SECURE_NO_DEPRECATE=1"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\$(OutDir)/@project_name@.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"
+CommandLine="xcopy *.jar @JAVA_INSTALL@ /F/Y
+installProj.bat @DBXML_JAVA_LIBNAME@ dll $(OutDir) release"
+Description="Copying .jar and library files to install directory"
+/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG;_CRT_SECURE_NO_DEPRECATE=1"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug IA64|Win32"
+			OutputDirectory="@outdir@\$(ConfigurationName)"
+			IntermediateDirectory=".\$(OutDir)\@project_name@"
+			ConfigurationType="2"
+			UseOfMFC="2"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				MinimalRebuild="TRUE"
+				AdditionalIncludeDirectories=".,../include,@DB_HOME@/include,@DB_HOME@/build_windows,@DB_HOME@,@XERCES_WINHOME@/include,@XERCES_WINHOME@/src,@include@"
+				PreprocessorDefinitions="DBXML_CREATE_DLL;CONFIG_TEST;WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE=1"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\$(OutDir)/@project_name@.pch"
+				AssemblerListingLocation=".\$(OutDir)/"
+				ObjectFile=".\$(OutDir)/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="3"
+				CompileAs="0"
+				DisableSpecificWarnings="4244,4541,4700"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				CommandLine="mkdir &quot;.\$(OutDir)\classes\dummy&quot; &quot;.\@jar_dest@/dummy&quot; 
+echo compiling Berkeley DB XML Java classes
+javac -source 1.4 -g -d ./$(OutDir)/classes -classpath @jar_dest@/db.jar;./$(OutDir)/classes;@DB_HOME@/build_windows/./$(OutDir)/db.jar ../src/java/com/sleepycat/dbxml/*.java ../src/java/com/sleepycat/db/*.java
+echo creating dbxml jar file
+cd &quot;./$(OutDir)/classes&quot;
+jar cf ../../@jar_dest@/dbxml.jar com/sleepycat/dbxml/*.class com/sleepycat/db/*.class
+echo compiling Berkeley DB XML Java examples
+cd ../..
+javac -source 1.4 -g -d ./$(OutDir)/classes -classpath @jar_dest@/dbxml.jar;@jar_dest@/db.jar;./$(OutDir)/dbxml.jar;./$(OutDir)/classes;@DB_HOME@/build_windows/./$(OutDir)/db.jar ../examples/java/gettingStarted/*.java ../examples/java/basic/*.java
+echo creating example jar file
+cd &quot;./$(OutDir)/classes&quot;
+jar cf ../../@jar_dest@/dbxmlexamples.jar dbxml/gettingStarted/*.class dbxml/basic/*.class
+cd ..\..
+rmdir &quot;.\$(OutDir)\classes\dummy&quot; &quot;.\@jar_dest@\dummy&quot; 
+echo Java build finished"
+				Outputs="force_compilation.txt"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="@DB_LIB@d.lib @DBXML_LIBNAME@d.lib"
+				OutputFile="$(OutDir)/@DBXML_JAVA_LIBNAME@d.dll"
+				ProgramDataBaseFile="$(OutDir)/@DBXML_JAVA_LIBNAME@.pdb"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(OutDir);@DB_HOME@/build_windows/$(OutDir)"
+				GenerateDebugInformation="TRUE"
+				ImportLibrary="$(OutDir)/@DBXML_JAVA_LIBNAME@d.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG;_CRT_SECURE_NO_DEPRECATE=1"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\$(OutDir)/@project_name@.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"
+CommandLine="xcopy *.jar @JAVA_INSTALL@ /F/Y
+installProj.bat @DBXML_JAVA_LIBNAME@ dll $(OutDir) debug"
+Description="Copying .jar and library files to install directory"
+/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG;_CRT_SECURE_NO_DEPRECATE=1"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release IA64|Win32"
+			OutputDirectory="@outdir@\$(ConfigurationName)"
+			IntermediateDirectory=".\$(OutDir)\@project_name@"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				MinimalRebuild="TRUE"
+				InlineFunctionExpansion="2"
+				AdditionalIncludeDirectories=".,../include,@DB_HOME@/include,@DB_HOME@/build_windows,@DB_HOME@,@XERCES_WINHOME@/include,@XERCES_WINHOME@/src,@include@"
+				PreprocessorDefinitions="DBXML_CREATE_DLL;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE=1"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\$(OutDir)/@project_name@.pch"
+				AssemblerListingLocation=".\$(OutDir)/"
+				ObjectFile=".\$(OutDir)/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"
+				DisableSpecificWarnings="4244,4541,4700"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				CommandLine="mkdir &quot;.\$(OutDir)\classes\dummy&quot; &quot;.\@jar_dest@\dummy&quot; 
+echo compiling Berkeley DB XML Java classes
+javac -source 1.4 -g -d ./$(OutDir)/classes -classpath @jar_dest@/db.jar;./$(OutDir)/classes;@DB_HOME@/build_windows/./$(OutDir)/db.jar ../src/java/com/sleepycat/dbxml/*.java ../src/java/com/sleepycat/db/*.java
+echo creating dbxml jar file
+cd &quot;./$(OutDir)/classes&quot;
+jar cf ../../@jar_dest@/dbxml.jar com/sleepycat/dbxml/*.class com/sleepycat/db/*.class
+echo compiling Berkeley DB XML Java examples
+cd ../..
+javac -source 1.4 -g -d ./$(OutDir)/classes -classpath @jar_dest@/dbxml.jar;@jar_dest@/db.jar;./$(OutDir)/dbxml.jar;./$(OutDir)/classes;@DB_HOME@/build_windows/./$(OutDir)/db.jar ../examples/java/gettingStarted/*.java ../examples/java/basic/*.java
+echo creating example jar file
+cd &quot;./$(OutDir)/classes&quot;
+jar cf ../../@jar_dest@/dbxmlexamples.jar dbxml/gettingStarted/*.class dbxml/basic/*.class
+cd ..\..
+rmdir &quot;.\$(OutDir)\classes\dummy&quot; &quot;.\@jar_dest@\dummy&quot; 
+echo Java build finished"
+				Outputs="force_compilation.txt"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="@DB_LIB@.lib @DBXML_LIBNAME@.lib"
+				OutputFile="$(OutDir)/@DBXML_JAVA_LIBNAME@.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(OutDir);@DB_HOME@/build_windows/$(OutDir)"
+				GenerateDebugInformation="FALSE"
+				ImportLibrary="$(OutDir)/@DBXML_JAVA_LIBNAME@.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG;_CRT_SECURE_NO_DEPRECATE=1"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\$(OutDir)/@project_name@.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"
+CommandLine="xcopy *.jar @JAVA_INSTALL@ /F/Y
+installProj.bat @DBXML_JAVA_LIBNAME@ dll $(OutDir) release"
+Description="Copying .jar and library files to install directory"
+/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG;_CRT_SECURE_NO_DEPRECATE=1"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+@SOURCE_FILES@
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

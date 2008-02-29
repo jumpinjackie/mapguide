@@ -1,0 +1,21 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="result" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <DbXmlNav>
+        <LookupIndex container="11.5.5.dbxml">
+          <DocumentQP index="node-metadata-equality-string" operation="eq" child="name:http://www.sleepycat.com/2002/dbxml" value="sgml.xml">
+            <PresenceQP index="edge-element-presence-none" operation="eq" parent="intro" child="para"/>
+          </DocumentQP>
+        </LookupIndex>
+        <DbXmlFilter>
+          <DbXmlStep axis="parent-of-child" name="intro" nodeType="element"/>
+        </DbXmlFilter>
+      </DbXmlNav>
+    </Children>
+  </DOMConstructor>
+</XQuery>

@@ -1,0 +1,247 @@
+<HTML><HEAD><SCRIPT language="JavaScript" src="../resources/script.js" type="text/javascript"></SCRIPT><TITLE>Xerces-C++: XMLUniDefs.hpp Source File</TITLE><link href="XercesApi.css" rel="stylesheet" type="text/css"></HEAD><BODY alink="#ff0000" bgcolor="#ffffff" leftmargin="4" link="#0000ff" marginheight="4" marginwidth="4" text="#000000" topmargin="4" vlink="#0000aa"><TABLE border="0" cellpadding="0" cellspacing="0" width="620"><TR><TD align="left" height="60" rowspan="3" valign="top" width="135"><IMG border="0" height="60" hspace="0" src="../resources/logo.gif" vspace="0" width="135"></TD><TD align="left" colspan="4" height="5" valign="top" width="456"><IMG border="0" height="5" hspace="0" src="../resources/line.gif" vspace="0" width="456"></TD><TD align="left" height="60" rowspan="3" valign="top" width="29"><IMG border="0" height="60" hspace="0" src="../resources/right.gif" vspace="0" width="29"></TD></TR><TR><TD align="left" bgcolor="#0086b2" colspan="4" height="35" valign="top" width="456"><IMG alt="" border="0" height="35" hspace="0" src="../graphics/api-header.jpg" vspace="0" width="456"></TD></TR><TR><TD align="left" height="20" valign="top" width="168"><IMG border="0" height="20" hspace="0" src="../resources/bottom.gif" vspace="0" width="168"></TD><TD align="left" height="20" valign="top" width="96"><A href="http://xml.apache.org/" onMouseOut="rolloverOff('xml');" onMouseOver="rolloverOn('xml');" target="new"><IMG alt="http://xml.apache.org/" border="0" height="20" hspace="0" name="xml" onLoad="rolloverLoad('xml','../resources/button-xml-hi.gif','../resources/button-xml-lo.gif');" src="../resources/button-xml-lo.gif" vspace="0" width="96"></A></TD><TD align="left" height="20" valign="top" width="96"><A href="http://www.apache.org/" onMouseOut="rolloverOff('asf');" onMouseOver="rolloverOn('asf');" target="new"><IMG alt="http://www.apache.org/" border="0" height="20" hspace="0" name="asf" onLoad="rolloverLoad('asf','../resources/button-asf-hi.gif','../resources/button-asf-lo.gif');" src="../resources/button-asf-lo.gif" vspace="0" width="96"></A></TD><TD align="left" height="20" valign="top" width="96"><A href="http://www.w3.org/" onMouseOut="rolloverOff('w3c');" onMouseOver="rolloverOn('w3c');" target="new"><IMG alt="http://www.w3.org/" border="0" height="20" hspace="0" name="w3c" onLoad="rolloverLoad('w3c','../resources/button-w3c-hi.gif','../resources/button-w3c-lo.gif');" src="../resources/button-w3c-lo.gif" vspace="0" width="96"></A></TD></TR></TABLE><TABLE border="0" cellpadding="0" cellspacing="0" width="620"><TR><TD align="left" valign="top" width="120"><IMG border="0" height="14" hspace="0" src="../resources/join.gif" vspace="0" width="120"><BR>
+  <A href="../../index.html" onMouseOut="rolloverOff('side-ext-2');" onMouseOver="rolloverOn('side-ext-2');"><IMG alt="Home" border="0" height="12" hspace="0" name="side-ext-2" onLoad="rolloverLoad('side-ext-2','../graphics/ext-2-label-2.jpg','../graphics/ext-2-label-3.jpg');" src="../graphics/ext-2-label-3.jpg" vspace="0" width="120"></A><BR>
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+     <A href="../index.html" onMouseOut="rolloverOff('side-index');" onMouseOver="rolloverOn('side-index');"><IMG alt="Readme" border="0" height="12" hspace="0" name="side-index" onLoad="rolloverLoad('side-index','../graphics/index-label-2.jpg','../graphics/index-label-3.jpg');" src="../graphics/index-label-3.jpg" vspace="0" width="120"></A><BR>
+     <A href="../charter.html" onMouseOut="rolloverOff('side-charter');" onMouseOver="rolloverOn('side-charter');"><IMG alt="Charter" border="0" height="12" hspace="0" name="side-charter" onLoad="rolloverLoad('side-charter','../graphics/charter-label-2.jpg','../graphics/charter-label-3.jpg');" src="../graphics/charter-label-3.jpg" vspace="0" width="120"></A><BR>
+     <A href="../releases.html" onMouseOut="rolloverOff('side-releases');" onMouseOver="rolloverOn('side-releases');"><IMG alt="Release Info" border="0" height="12" hspace="0" name="side-releases" onLoad="rolloverLoad('side-releases','../graphics/releases-label-2.jpg','../graphics/releases-label-3.jpg');" src="../graphics/releases-label-3.jpg" vspace="0" width="120"></A><BR>
+     
+     
+
+
+
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+     <A href="../install.html" onMouseOut="rolloverOff('side-install');" onMouseOver="rolloverOn('side-install');"><IMG alt="Installation" border="0" height="12" hspace="0" name="side-install" onLoad="rolloverLoad('side-install','../graphics/install-label-2.jpg','../graphics/install-label-3.jpg');" src="../graphics/install-label-3.jpg" vspace="0" width="120"></A><BR>
+     <A href="http://xml.apache.org/xerces-c/download.cgi" onMouseOut="rolloverOff('side-ext-20');" onMouseOver="rolloverOn('side-ext-20');"><IMG alt="Download" border="0" height="12" hspace="0" name="side-ext-20" onLoad="rolloverLoad('side-ext-20','../graphics/ext-20-label-2.jpg','../graphics/ext-20-label-3.jpg');" src="../graphics/ext-20-label-3.jpg" vspace="0" width="120"></A><BR>
+     <A href="../build.html" onMouseOut="rolloverOff('side-build');" onMouseOver="rolloverOn('side-build');"><IMG alt="Build Instructions" border="0" height="12" hspace="0" name="side-build" onLoad="rolloverLoad('side-build','../graphics/build-label-2.jpg','../graphics/build-label-3.jpg');" src="../graphics/build-label-3.jpg" vspace="0" width="120"></A><BR>
+     
+     
+     
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+     <A href="../faqs.html" onMouseOut="rolloverOff('side-faqs');" onMouseOver="rolloverOn('side-faqs');"><IMG alt="FAQs" border="0" height="12" hspace="0" name="side-faqs" onLoad="rolloverLoad('side-faqs','../graphics/faqs-label-2.jpg','../graphics/faqs-label-3.jpg');" src="../graphics/faqs-label-3.jpg" vspace="0" width="120"></A><BR>
+
+     <A href="../samples.html" onMouseOut="rolloverOff('side-samples');" onMouseOver="rolloverOn('side-samples');"><IMG alt="Samples" border="0" height="12" hspace="0" name="side-samples" onLoad="rolloverLoad('side-samples','../graphics/samples-label-2.jpg','../graphics/samples-label-3.jpg');" src="../graphics/samples-label-3.jpg" vspace="0" width="120"></A><BR>
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+
+     <A href="../api.html" onMouseOut="rolloverOff('side-api');" onMouseOver="rolloverOn('side-api');"><IMG alt="API Docs" border="0" height="12" hspace="0" name="side-api" onLoad="rolloverLoad('side-api','../graphics/api-label-2.jpg','../graphics/api-label-3.jpg');" src="../graphics/api-label-3.jpg" vspace="0" width="120"></A><BR>
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+     <A href="../ApacheDOMC++Binding.html" onMouseOut="rolloverOff('side-ext-70');" onMouseOver="rolloverOn('side-ext-70');"><IMG alt="DOM C++ Binding" border="0" height="12" hspace="0" name="side-ext-70" onLoad="rolloverLoad('side-ext-70','../graphics/ext-70-label-2.jpg','../graphics/ext-70-label-3.jpg');" src="../graphics/ext-70-label-3.jpg" vspace="0" width="120"></A><BR>
+
+     <IMG alt="Programming" border="0" height="12" hspace="0" src="../graphics/program-label-1.jpg" vspace="0" width="120"><BR>
+     
+     
+     
+     
+     
+     
+     
+
+     <A href="../migrate.html" onMouseOut="rolloverOff('side-migrate');" onMouseOver="rolloverOn('side-migrate');"><IMG alt="Migration Guide" border="0" height="12" hspace="0" name="side-migrate" onLoad="rolloverLoad('side-migrate','../graphics/migrate-label-2.jpg','../graphics/migrate-label-3.jpg');" src="../graphics/migrate-label-3.jpg" vspace="0" width="120"></A><BR>
+     
+     
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+  <A href="../feedback.html" onMouseOut="rolloverOff('side-feedback');" onMouseOver="rolloverOn('side-feedback');"><IMG alt="Feedback" border="0" height="12" hspace="0" name="side-feedback" onLoad="rolloverLoad('side-feedback','../graphics/feedback-label-2.jpg','../graphics/feedback-label-3.jpg');" src="../graphics/feedback-label-3.jpg" vspace="0" width="120"></A><BR>
+  <A href="bug-report.html" onMouseOut="rolloverOff('side-bug-report');" onMouseOver="rolloverOn('side-bug-report');"><IMG alt="Bug-Reporting" border="0" height="12" hspace="0" name="side-bug-report" onLoad="rolloverLoad('side-bug-report','../graphics/bug-report-label-2.jpg','../graphics/bug-report-label-3.jpg');" src="../graphics/bug-report-label-3.jpg" vspace="0" width="120"></A><BR>
+  <A href="../pdf.html" onMouseOut="rolloverOff('side-pdf');" onMouseOver="rolloverOn('side-pdf');"><IMG alt="PDF Document" border="0" height="12" hspace="0" name="side-pdf" onLoad="rolloverLoad('side-pdf','../graphics/pdf-label-2.jpg','../graphics/pdf-label-3.jpg');" src="../graphics/pdf-label-3.jpg" vspace="0" width="120"></A><BR>
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+   
+<A href="http://svn.apache.org/viewcvs.cgi/xerces/?root=Apache-SVN" onMouseOut="rolloverOff('side-ext-102');" onMouseOver="rolloverOn('side-ext-102');"><IMG alt="Source Repository" border="0" height="12" hspace="0" name="side-ext-102" onLoad="rolloverLoad('side-ext-102','../graphics/ext-102-label-2.jpg','../graphics/ext-102-label-3.jpg');" src="../graphics/ext-102-label-3.jpg" vspace="0" width="120"></A><BR>
+
+   
+<A href="http://marc.theaimsgroup.com/?l=xerces-c-users" onMouseOut="rolloverOff('side-ext-104');" onMouseOver="rolloverOn('side-ext-104');"><IMG alt="User Mail Archive" border="0" height="12" hspace="0" name="side-ext-104" onLoad="rolloverLoad('side-ext-104','../graphics/ext-104-label-2.jpg','../graphics/ext-104-label-3.jpg');" src="../graphics/ext-104-label-3.jpg" vspace="0" width="120"></A><BR>
+
+   
+<A href="http://marc.theaimsgroup.com/?l=xerces-c-dev" onMouseOut="rolloverOff('side-ext-106');" onMouseOver="rolloverOn('side-ext-106');"><IMG alt="Devel Mail Archive" border="0" height="12" hspace="0" name="side-ext-106" onLoad="rolloverLoad('side-ext-106','../graphics/ext-106-label-2.jpg','../graphics/ext-106-label-3.jpg');" src="../graphics/ext-106-label-3.jpg" vspace="0" width="120"></A><BR>
+
+
+
+
+<IMG border="0" height="14" hspace="0" src="../resources/close.gif" vspace="0" width="120"><BR></TD><TD align="left" valign="top" width="500"><TABLE border="0" cellpadding="3" cellspacing="0"><TR><TD>
+    <TABLE border="0" cellpadding="0" cellspacing="0" width="494"><TR><TD bgcolor="#FFFFFF" colspan="2" width="494"><TABLE border="0" cellpadding="0" cellspacing="0" width="494"><TR><TD bgcolor="#039acc" height="1" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD><TD bgcolor="#039acc" height="1" width="492"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="492"></TD><TD bgcolor="#0086b2" height="1" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD></TR><TR><TD bgcolor="#039acc" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD><TD bgcolor="#0086b2" width="492"><FONT color="#ffffff" face="arial,helvetica,sanserif" size="+1"><IMG border="0" height="2" hspace="0" src="../resources/void.gif" vspace="0" width="2"><B>API Docs for SAX and DOM</B></FONT></TD><TD bgcolor="#017299" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD></TR><TR><TD bgcolor="#0086b2" height="1" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD><TD bgcolor="#017299" height="1" width="492"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="492"></TD><TD bgcolor="#017299" height="1" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD></TR></TABLE></TD></TR><TR><TD width="10">&nbsp;</TD><TD width="484"><FONT color="#000000" face="arial,helvetica,sanserif">
+
+	    <P>
+<!-- Generated by Doxygen 1.4.1 -->
+<div class="qindex"><a class="qindex" href="index.html">Main&nbsp;Page</a> | <a class="qindex" href="hierarchy.html">Class&nbsp;Hierarchy</a> | <a class="qindex" href="classes.html">Alphabetical&nbsp;List</a> | <a class="qindex" href="annotated.html">Class&nbsp;List</a> | <a class="qindex" href="dirs.html">Directories</a> | <a class="qindex" href="files.html">File&nbsp;List</a> | <a class="qindex" href="functions.html">Class&nbsp;Members</a> | <a class="qindex" href="globals.html">File&nbsp;Members</a> | <a class="qindex" href="pages.html">Related&nbsp;Pages</a></div>
+<div class="nav">
+<a class="el" href="dir_000000.html">src</a>&nbsp;/&nbsp;<a class="el" href="dir_000001.html">xercesc</a>&nbsp;/&nbsp;<a class="el" href="dir_000003.html">util</a></div>
+<h1>XMLUniDefs.hpp</h1><a href="XMLUniDefs_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><pre class="fragment">00001 <span class="comment">/*</span>
+00002 <span class="comment"> * Copyright 1999-2001,2004 The Apache Software Foundation.</span>
+00003 <span class="comment"> * </span>
+00004 <span class="comment"> * Licensed under the Apache License, Version 2.0 (the "License");</span>
+00005 <span class="comment"> * you may not use this file except in compliance with the License.</span>
+00006 <span class="comment"> * You may obtain a copy of the License at</span>
+00007 <span class="comment"> * </span>
+00008 <span class="comment"> *      http://www.apache.org/licenses/LICENSE-2.0</span>
+00009 <span class="comment"> * </span>
+00010 <span class="comment"> * Unless required by applicable law or agreed to in writing, software</span>
+00011 <span class="comment"> * distributed under the License is distributed on an "AS IS" BASIS,</span>
+00012 <span class="comment"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+00013 <span class="comment"> * See the License for the specific language governing permissions and</span>
+00014 <span class="comment"> * limitations under the License.</span>
+00015 <span class="comment"> */</span>
+00016 
+00017 <span class="comment">/*</span>
+00018 <span class="comment"> * $Id: XMLUniDefs.hpp 176026 2004-09-08 13:57:07Z peiyongz $</span>
+00019 <span class="comment"> */</span>
+00020 <span class="preprocessor">#if !defined(XMLUNIDEFS_HPP)</span>
+<a name="l00021"></a><a class="code" href="XMLUniDefs_8hpp.html#a0">00021</a> <span class="preprocessor"></span><span class="preprocessor">#define XMLUNIDEFS_HPP</span>
+00022 <span class="preprocessor"></span>
+00023 <span class="preprocessor">#include &lt;<a class="code" href="XercesDefs_8hpp.html">xercesc/util/XercesDefs.hpp</a>&gt;</span>
+00024 
+00025 <a class="code" href="XercesDefs_8hpp.html#a3">XERCES_CPP_NAMESPACE_BEGIN</a>
+00026 
+00027 <span class="comment">// ---------------------------------------------------------------------------</span>
+00028 <span class="comment">//  Constants for the Unicode characters of interest to us in an XML parser</span>
+00029 <span class="comment">//  We don't put these inside the class because then they could not be const</span>
+00030 <span class="comment">//  inline values, which would have significant performance ramifications.</span>
+00031 <span class="comment">//</span>
+00032 <span class="comment">//  We cannot use a namespace because of the requirement to support old</span>
+00033 <span class="comment">//  compilers.</span>
+00034 <span class="comment">// ---------------------------------------------------------------------------</span>
+<a name="l00035"></a><a class="code" href="XMLUniDefs_8hpp.html#a1">00035</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a1">chNull</a>                  = 0x00;
+<a name="l00036"></a><a class="code" href="XMLUniDefs_8hpp.html#a2">00036</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a2">chHTab</a>                  = 0x09;
+<a name="l00037"></a><a class="code" href="XMLUniDefs_8hpp.html#a3">00037</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a3">chLF</a>                    = 0x0A;
+<a name="l00038"></a><a class="code" href="XMLUniDefs_8hpp.html#a4">00038</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a4">chVTab</a>                  = 0x0B;
+<a name="l00039"></a><a class="code" href="XMLUniDefs_8hpp.html#a5">00039</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a5">chFF</a>                    = 0x0C;
+<a name="l00040"></a><a class="code" href="XMLUniDefs_8hpp.html#a6">00040</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a6">chCR</a>                    = 0x0D;
+<a name="l00041"></a><a class="code" href="XMLUniDefs_8hpp.html#a7">00041</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a7">chAmpersand</a>             = 0x26;
+<a name="l00042"></a><a class="code" href="XMLUniDefs_8hpp.html#a8">00042</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a8">chAsterisk</a>              = 0x2A;
+<a name="l00043"></a><a class="code" href="XMLUniDefs_8hpp.html#a9">00043</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a9">chAt</a>                    = 0x40;
+<a name="l00044"></a><a class="code" href="XMLUniDefs_8hpp.html#a10">00044</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a10">chBackSlash</a>             = 0x5C;
+<a name="l00045"></a><a class="code" href="XMLUniDefs_8hpp.html#a11">00045</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a11">chBang</a>                  = 0x21;
+<a name="l00046"></a><a class="code" href="XMLUniDefs_8hpp.html#a12">00046</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a12">chCaret</a>                 = 0x5E;
+<a name="l00047"></a><a class="code" href="XMLUniDefs_8hpp.html#a13">00047</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a13">chCloseAngle</a>            = 0x3E;
+<a name="l00048"></a><a class="code" href="XMLUniDefs_8hpp.html#a14">00048</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a14">chCloseCurly</a>            = 0x7D;
+<a name="l00049"></a><a class="code" href="XMLUniDefs_8hpp.html#a15">00049</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a15">chCloseParen</a>            = 0x29;
+<a name="l00050"></a><a class="code" href="XMLUniDefs_8hpp.html#a16">00050</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a16">chCloseSquare</a>           = 0x5D;
+<a name="l00051"></a><a class="code" href="XMLUniDefs_8hpp.html#a17">00051</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a17">chColon</a>                 = 0x3A;
+<a name="l00052"></a><a class="code" href="XMLUniDefs_8hpp.html#a18">00052</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a18">chComma</a>                 = 0x2C;
+<a name="l00053"></a><a class="code" href="XMLUniDefs_8hpp.html#a19">00053</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a19">chDash</a>                  = 0x2D;
+<a name="l00054"></a><a class="code" href="XMLUniDefs_8hpp.html#a20">00054</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a20">chDollarSign</a>            = 0x24;
+<a name="l00055"></a><a class="code" href="XMLUniDefs_8hpp.html#a21">00055</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a21">chDoubleQuote</a>           = 0x22;
+<a name="l00056"></a><a class="code" href="XMLUniDefs_8hpp.html#a22">00056</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a22">chEqual</a>                 = 0x3D;
+<a name="l00057"></a><a class="code" href="XMLUniDefs_8hpp.html#a23">00057</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a23">chForwardSlash</a>          = 0x2F;
+<a name="l00058"></a><a class="code" href="XMLUniDefs_8hpp.html#a24">00058</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a24">chGrave</a>                 = 0x60;
+<a name="l00059"></a><a class="code" href="XMLUniDefs_8hpp.html#a25">00059</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a25">chNEL</a>                   = 0x85;
+<a name="l00060"></a><a class="code" href="XMLUniDefs_8hpp.html#a26">00060</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a26">chOpenAngle</a>             = 0x3C;
+<a name="l00061"></a><a class="code" href="XMLUniDefs_8hpp.html#a27">00061</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a27">chOpenCurly</a>             = 0x7B;
+<a name="l00062"></a><a class="code" href="XMLUniDefs_8hpp.html#a28">00062</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a28">chOpenParen</a>             = 0x28;
+<a name="l00063"></a><a class="code" href="XMLUniDefs_8hpp.html#a29">00063</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a29">chOpenSquare</a>            = 0x5B;
+<a name="l00064"></a><a class="code" href="XMLUniDefs_8hpp.html#a30">00064</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a30">chPercent</a>               = 0x25;
+<a name="l00065"></a><a class="code" href="XMLUniDefs_8hpp.html#a31">00065</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a31">chPeriod</a>                = 0x2E;
+<a name="l00066"></a><a class="code" href="XMLUniDefs_8hpp.html#a32">00066</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a32">chPipe</a>                  = 0x7C;
+<a name="l00067"></a><a class="code" href="XMLUniDefs_8hpp.html#a33">00067</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a33">chPlus</a>                  = 0x2B;
+<a name="l00068"></a><a class="code" href="XMLUniDefs_8hpp.html#a34">00068</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a34">chPound</a>                 = 0x23;
+<a name="l00069"></a><a class="code" href="XMLUniDefs_8hpp.html#a35">00069</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a35">chQuestion</a>              = 0x3F;
+<a name="l00070"></a><a class="code" href="XMLUniDefs_8hpp.html#a36">00070</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a36">chSingleQuote</a>           = 0x27;
+<a name="l00071"></a><a class="code" href="XMLUniDefs_8hpp.html#a37">00071</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a37">chSpace</a>                 = 0x20;
+<a name="l00072"></a><a class="code" href="XMLUniDefs_8hpp.html#a38">00072</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a38">chSemiColon</a>             = 0x3B;
+<a name="l00073"></a><a class="code" href="XMLUniDefs_8hpp.html#a39">00073</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a39">chTilde</a>                 = 0x7E;
+<a name="l00074"></a><a class="code" href="XMLUniDefs_8hpp.html#a40">00074</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a40">chUnderscore</a>            = 0x5F;
+00075 
+<a name="l00076"></a><a class="code" href="XMLUniDefs_8hpp.html#a41">00076</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a41">chSwappedUnicodeMarker</a>  = XMLCh(0xFFFE);
+<a name="l00077"></a><a class="code" href="XMLUniDefs_8hpp.html#a42">00077</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a42">chUnicodeMarker</a>         = XMLCh(0xFEFF);
+00078 
+<a name="l00079"></a><a class="code" href="XMLUniDefs_8hpp.html#a43">00079</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a43">chDigit_0</a>               = 0x30;
+<a name="l00080"></a><a class="code" href="XMLUniDefs_8hpp.html#a44">00080</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a44">chDigit_1</a>               = 0x31;
+<a name="l00081"></a><a class="code" href="XMLUniDefs_8hpp.html#a45">00081</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a45">chDigit_2</a>               = 0x32;
+<a name="l00082"></a><a class="code" href="XMLUniDefs_8hpp.html#a46">00082</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a46">chDigit_3</a>               = 0x33;
+<a name="l00083"></a><a class="code" href="XMLUniDefs_8hpp.html#a47">00083</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a47">chDigit_4</a>               = 0x34;
+<a name="l00084"></a><a class="code" href="XMLUniDefs_8hpp.html#a48">00084</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a48">chDigit_5</a>               = 0x35;
+<a name="l00085"></a><a class="code" href="XMLUniDefs_8hpp.html#a49">00085</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a49">chDigit_6</a>               = 0x36;
+<a name="l00086"></a><a class="code" href="XMLUniDefs_8hpp.html#a50">00086</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a50">chDigit_7</a>               = 0x37;
+<a name="l00087"></a><a class="code" href="XMLUniDefs_8hpp.html#a51">00087</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a51">chDigit_8</a>               = 0x38;
+<a name="l00088"></a><a class="code" href="XMLUniDefs_8hpp.html#a52">00088</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a52">chDigit_9</a>               = 0x39;
+00089 
+<a name="l00090"></a><a class="code" href="XMLUniDefs_8hpp.html#a53">00090</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a53">chLatin_A</a>               = 0x41;
+<a name="l00091"></a><a class="code" href="XMLUniDefs_8hpp.html#a54">00091</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a54">chLatin_B</a>               = 0x42;
+<a name="l00092"></a><a class="code" href="XMLUniDefs_8hpp.html#a55">00092</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a55">chLatin_C</a>               = 0x43;
+<a name="l00093"></a><a class="code" href="XMLUniDefs_8hpp.html#a56">00093</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a56">chLatin_D</a>               = 0x44;
+<a name="l00094"></a><a class="code" href="XMLUniDefs_8hpp.html#a57">00094</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a57">chLatin_E</a>               = 0x45;
+<a name="l00095"></a><a class="code" href="XMLUniDefs_8hpp.html#a58">00095</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a58">chLatin_F</a>               = 0x46;
+<a name="l00096"></a><a class="code" href="XMLUniDefs_8hpp.html#a59">00096</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a59">chLatin_G</a>               = 0x47;
+<a name="l00097"></a><a class="code" href="XMLUniDefs_8hpp.html#a60">00097</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a60">chLatin_H</a>               = 0x48;
+<a name="l00098"></a><a class="code" href="XMLUniDefs_8hpp.html#a61">00098</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a61">chLatin_I</a>               = 0x49;
+<a name="l00099"></a><a class="code" href="XMLUniDefs_8hpp.html#a62">00099</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a62">chLatin_J</a>               = 0x4A;
+<a name="l00100"></a><a class="code" href="XMLUniDefs_8hpp.html#a63">00100</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a63">chLatin_K</a>               = 0x4B;
+<a name="l00101"></a><a class="code" href="XMLUniDefs_8hpp.html#a64">00101</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a64">chLatin_L</a>               = 0x4C;
+<a name="l00102"></a><a class="code" href="XMLUniDefs_8hpp.html#a65">00102</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a65">chLatin_M</a>               = 0x4D;
+<a name="l00103"></a><a class="code" href="XMLUniDefs_8hpp.html#a66">00103</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a66">chLatin_N</a>               = 0x4E;
+<a name="l00104"></a><a class="code" href="XMLUniDefs_8hpp.html#a67">00104</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a67">chLatin_O</a>               = 0x4F;
+<a name="l00105"></a><a class="code" href="XMLUniDefs_8hpp.html#a68">00105</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a68">chLatin_P</a>               = 0x50;
+<a name="l00106"></a><a class="code" href="XMLUniDefs_8hpp.html#a69">00106</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a69">chLatin_Q</a>               = 0x51;
+<a name="l00107"></a><a class="code" href="XMLUniDefs_8hpp.html#a70">00107</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a70">chLatin_R</a>               = 0x52;
+<a name="l00108"></a><a class="code" href="XMLUniDefs_8hpp.html#a71">00108</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a71">chLatin_S</a>               = 0x53;
+<a name="l00109"></a><a class="code" href="XMLUniDefs_8hpp.html#a72">00109</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a72">chLatin_T</a>               = 0x54;
+<a name="l00110"></a><a class="code" href="XMLUniDefs_8hpp.html#a73">00110</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a73">chLatin_U</a>               = 0x55;
+<a name="l00111"></a><a class="code" href="XMLUniDefs_8hpp.html#a74">00111</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a74">chLatin_V</a>               = 0x56;
+<a name="l00112"></a><a class="code" href="XMLUniDefs_8hpp.html#a75">00112</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a75">chLatin_W</a>               = 0x57;
+<a name="l00113"></a><a class="code" href="XMLUniDefs_8hpp.html#a76">00113</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a76">chLatin_X</a>               = 0x58;
+<a name="l00114"></a><a class="code" href="XMLUniDefs_8hpp.html#a77">00114</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a77">chLatin_Y</a>               = 0x59;
+<a name="l00115"></a><a class="code" href="XMLUniDefs_8hpp.html#a78">00115</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a78">chLatin_Z</a>               = 0x5A;
+00116 
+<a name="l00117"></a><a class="code" href="XMLUniDefs_8hpp.html#a79">00117</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a79">chLatin_a</a>               = 0x61;
+<a name="l00118"></a><a class="code" href="XMLUniDefs_8hpp.html#a80">00118</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a80">chLatin_b</a>               = 0x62;
+<a name="l00119"></a><a class="code" href="XMLUniDefs_8hpp.html#a81">00119</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a81">chLatin_c</a>               = 0x63;
+<a name="l00120"></a><a class="code" href="XMLUniDefs_8hpp.html#a82">00120</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a82">chLatin_d</a>               = 0x64;
+<a name="l00121"></a><a class="code" href="XMLUniDefs_8hpp.html#a83">00121</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a83">chLatin_e</a>               = 0x65;
+<a name="l00122"></a><a class="code" href="XMLUniDefs_8hpp.html#a84">00122</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a84">chLatin_f</a>               = 0x66;
+<a name="l00123"></a><a class="code" href="XMLUniDefs_8hpp.html#a85">00123</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a85">chLatin_g</a>               = 0x67;
+<a name="l00124"></a><a class="code" href="XMLUniDefs_8hpp.html#a86">00124</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a86">chLatin_h</a>               = 0x68;
+<a name="l00125"></a><a class="code" href="XMLUniDefs_8hpp.html#a87">00125</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a87">chLatin_i</a>               = 0x69;
+<a name="l00126"></a><a class="code" href="XMLUniDefs_8hpp.html#a88">00126</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a88">chLatin_j</a>               = 0x6A;
+<a name="l00127"></a><a class="code" href="XMLUniDefs_8hpp.html#a89">00127</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a89">chLatin_k</a>               = 0x6B;
+<a name="l00128"></a><a class="code" href="XMLUniDefs_8hpp.html#a90">00128</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a90">chLatin_l</a>               = 0x6C;
+<a name="l00129"></a><a class="code" href="XMLUniDefs_8hpp.html#a91">00129</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a91">chLatin_m</a>               = 0x6D;
+<a name="l00130"></a><a class="code" href="XMLUniDefs_8hpp.html#a92">00130</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a92">chLatin_n</a>               = 0x6E;
+<a name="l00131"></a><a class="code" href="XMLUniDefs_8hpp.html#a93">00131</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a93">chLatin_o</a>               = 0x6F;
+<a name="l00132"></a><a class="code" href="XMLUniDefs_8hpp.html#a94">00132</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a94">chLatin_p</a>               = 0x70;
+<a name="l00133"></a><a class="code" href="XMLUniDefs_8hpp.html#a95">00133</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a95">chLatin_q</a>               = 0x71;
+<a name="l00134"></a><a class="code" href="XMLUniDefs_8hpp.html#a96">00134</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a96">chLatin_r</a>               = 0x72;
+<a name="l00135"></a><a class="code" href="XMLUniDefs_8hpp.html#a97">00135</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a97">chLatin_s</a>               = 0x73;
+<a name="l00136"></a><a class="code" href="XMLUniDefs_8hpp.html#a98">00136</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a98">chLatin_t</a>               = 0x74;
+<a name="l00137"></a><a class="code" href="XMLUniDefs_8hpp.html#a99">00137</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a99">chLatin_u</a>               = 0x75;
+<a name="l00138"></a><a class="code" href="XMLUniDefs_8hpp.html#a100">00138</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a100">chLatin_v</a>               = 0x76;
+<a name="l00139"></a><a class="code" href="XMLUniDefs_8hpp.html#a101">00139</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a101">chLatin_w</a>               = 0x77;
+<a name="l00140"></a><a class="code" href="XMLUniDefs_8hpp.html#a102">00140</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a102">chLatin_x</a>               = 0x78;
+<a name="l00141"></a><a class="code" href="XMLUniDefs_8hpp.html#a103">00141</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a103">chLatin_y</a>               = 0x79;
+<a name="l00142"></a><a class="code" href="XMLUniDefs_8hpp.html#a104">00142</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a104">chLatin_z</a>               = 0x7A;
+00143 
+<a name="l00144"></a><a class="code" href="XMLUniDefs_8hpp.html#a105">00144</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a105">chYenSign</a>               = 0xA5;
+<a name="l00145"></a><a class="code" href="XMLUniDefs_8hpp.html#a106">00145</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a106">chWonSign</a>               = 0x20A9;
+00146 
+<a name="l00147"></a><a class="code" href="XMLUniDefs_8hpp.html#a107">00147</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a107">chLineSeparator</a>         = 0x2028;
+<a name="l00148"></a><a class="code" href="XMLUniDefs_8hpp.html#a108">00148</a> <span class="keyword">const</span> XMLCh <a class="code" href="XMLUniDefs_8hpp.html#a108">chParagraphSeparator</a>    = 0x2029;
+00149 
+00150 <a class="code" href="XercesDefs_8hpp.html#a4">XERCES_CPP_NAMESPACE_END</a>
+00151 
+00152 <span class="preprocessor">#endif</span>
+</pre></div>    </FONT></TD></TR></TABLE><BR>
+</TD></TR></TABLE></TD></TR></TABLE><BR><TABLE border="0" cellpadding="0" cellspacing="0" width="620"><TR><TD bgcolor="#0086b2"><IMG height="1" src="images/dot.gif" width="1" alt=""></TD></TR><TR><TD align="center"><FONT color="#0086b2" size="-1"><I>
+              Copyright &copy; 1994-2004 The Apache Software Foundation.
+              All Rights Reserved.
+            </I></FONT></TD></TR></TABLE></BODY></HTML>

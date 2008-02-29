@@ -1,0 +1,8 @@
+base referer
+rect $XSComplexTypeDefinition_8hpp.html 213,8 424,32
+rect $XSSimpleTypeDefinition_8hpp.html 220,56 417,80
+rect $PSVIAttribute_8hpp.html 490,8 621,32
+rect $XSFacet_8hpp.html 505,56 606,80
+rect $XSMultiValueFacet_8hpp.html 473,104 638,128
+rect $PSVIAttributeList_8hpp.html 688,8 842,32
+rect $PSVIHandler_8hpp.html 892,8 1017,32

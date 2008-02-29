@@ -1,0 +1,102 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="result" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <ForBinding name="i">
+          <Function name="{http://www.w3.org/2005/xpath-functions}:distinct-values">
+            <Atomize>
+              <LookupIndex container="11.5.3.dbxml">
+                <DocumentQP index="node-metadata-equality-string" operation="eq" child="name:http://www.sleepycat.com/2002/dbxml" value="bids.xml">
+                  <PresenceQP index="edge-element-equality-string" operation="prefix" child="itemno"/>
+                </DocumentQP>
+              </LookupIndex>
+            </Atomize>
+          </Function>
+        </ForBinding>
+        <LetBinding name="b">
+          <DbXmlNav>
+            <LookupIndex container="11.5.3.dbxml">
+              <DocumentQP index="node-metadata-equality-string" operation="eq" child="name:http://www.sleepycat.com/2002/dbxml" value="bids.xml">
+                <ValueQP index="edge-element-equality-string" operation="eq" parent="bid_tuple" child="itemno">
+                  <Variable name="i"/>
+                </ValueQP>
+              </DocumentQP>
+            </LookupIndex>
+            <Join type="parent-of-child" return="argument">
+              <DbXmlNav>
+                <QueryPlanFunction result="document" container="11.5.3.dbxml">
+                  <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'bids.xml',P(edge-element-equality-string,prefix,bid_tuple.itemno))</OQPlan>
+                </QueryPlanFunction>
+                <DbXmlStep axis="descendant" name="bid_tuple" nodeType="element"/>
+              </DbXmlNav>
+            </Join>
+          </DbXmlNav>
+          <Where>
+            <Operator name="greater_than_equal">
+              <Function name="{http://www.w3.org/2005/xpath-functions}:count">
+                <Variable name="b"/>
+              </Function>
+              <Sequence>
+                <AnyAtomicTypeConstructor value="3" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+              </Sequence>
+            </Operator>
+          </Where>
+        </LetBinding>
+        <LetBinding name="avgbid">
+          <Function name="{http://www.w3.org/2005/xpath-functions}:avg">
+            <Atomize>
+              <DocumentOrder>
+                <DbXmlNav>
+                  <Variable name="b"/>
+                  <DbXmlStep axis="child" name="bid" nodeType="element"/>
+                </DbXmlNav>
+              </DocumentOrder>
+            </Atomize>
+          </Function>
+        </LetBinding>
+        <Sort>
+          <Specification modifier="descending|empty_least">
+            <TreatAs>
+              <Variable name="avgbid"/>
+              <SequenceType occurrence="zero_or_one" testType="anything"/>
+            </TreatAs>
+          </Specification>
+        </Sort>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="popular_item" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <DOMConstructor type="element">
+              <Name>
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="itemno" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+                </Sequence>
+              </Name>
+              <Children>
+                <Variable name="i"/>
+              </Children>
+            </DOMConstructor>
+            <DOMConstructor type="element">
+              <Name>
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="avgbid" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+                </Sequence>
+              </Name>
+              <Children>
+                <Variable name="avgbid"/>
+              </Children>
+            </DOMConstructor>
+          </Children>
+        </DOMConstructor>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

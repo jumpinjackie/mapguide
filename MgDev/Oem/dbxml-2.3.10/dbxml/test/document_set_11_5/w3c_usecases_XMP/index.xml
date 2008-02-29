@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test id="11.5.8">
+  <category>xquery</category>
+  <description>W3C Use Cases (XMP)</description>
+  <program name='dbxml_test_driver' />
+
+  <!-- stuff that applies to the entire test -->
+  <indexSpecification>
+    <node>publisher</node>
+    <index>edge-element-equality-string</index>
+  </indexSpecification>
+  <indexSpecification>
+    <node>year</node>
+    <index>edge-attribute-equality-double</index>
+  </indexSpecification>
+  <indexSpecification>
+    <node>last</node>
+    <index>edge-element-equality-string</index>
+  </indexSpecification>
+  <indexSpecification>
+    <node>first</node>
+    <index>edge-element-equality-string</index>
+  </indexSpecification>
+  <indexSpecification>
+    <node>title</node>
+    <index>edge-element-equality-string</index>
+  </indexSpecification>
+
+  <document>bib.xml</document>
+  <document>books.xml</document>
+  <document>prices.xml</document>
+  <document>reviews.xml</document>
+
+  <!-- individual tests -->
+  <base>
+    <query>XMP-Q1.xquery</query>
+    <query>XMP-Q2.xquery</query>
+    <query>XMP-Q3.xquery</query>
+    <query>XMP-Q4.xquery</query>
+    <query>XMP-Q5.xquery</query>
+    <query>XMP-Q6.xquery</query>
+    <query>XMP-Q7.xquery</query>
+    <query>XMP-Q8.xquery</query>
+    <query>XMP-Q9.xquery</query>
+    <query>XMP-Q10.xquery</query>
+    <query>XMP-Q11.xquery</query>
+    <query>XMP-Q12.xquery</query>
+  </base>
+</test>
+

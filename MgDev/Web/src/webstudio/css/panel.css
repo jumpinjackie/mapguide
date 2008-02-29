@@ -1,0 +1,566 @@
+/**
+ * @project         MapGuide Open Source Web Studio
+ * @revision        $Id: panel.css,v 1.59 2006/06/09 16:25:50 fwarnock Exp $
+ * @copyright       &copy; 2006 DM Solutions Group Inc.
+ * released under LGPL License with MapGuide Open Source (see index.html)
+ */
+
+/* ============ */
+/* PANEL STYLES */
+/* ============ */
+
+th, td, select, textarea, input, p, a, label, legend {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+}
+
+th, legend {
+  font-weight: normal;
+}
+
+a img {
+  border: 0px;
+}
+
+iframe.previewFrame {
+  width: 100%;
+  height: 100%;
+  border: 0px solid #fff;
+  margin: 0px;
+  padding: 0px;
+  overflow: auto;
+  display:block;
+}
+
+fieldset {
+  position: relative;
+  display: block;
+  width: auto;
+  margin: 6px;
+  padding: 5px;
+  padding-top: 0px;
+  border: 1px solid #bbb;
+  white-space: normal;
+}
+
+legend {
+  font-weight:bold;
+}
+
+label, input {
+  display: inline;
+  position: relative;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  padding: 0;
+  margin:0;
+  border: 0;
+  empty-cells: show;
+}
+
+td, th {
+  padding: 0;
+  margin:0;
+  border: 0;
+}
+
+div.fieldsetFix, div.fieldsetFixSmall, div.fieldsetFixTiny {
+  border: none;
+  padding: 0px;
+  margin:0px;
+  height: 1px;
+  white-space: nowrap;
+  font-size: 1px;
+  line-height: 1px;
+}
+
+div.fieldsetFix {
+  width: 500px;
+}
+
+div.fieldsetFixSmall {
+  width: 200px;
+}
+
+div.fieldsetFixTiny {
+  width: 100px;
+}
+
+
+iframe.uploadIframe {
+  width: 100%;
+  height: 50px;
+  border: 0px;
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
+  display:block;
+}
+
+/* formTable is a table that contains a form */
+
+.formTableDiv {
+  width: 100%;
+}
+
+table.formTable {
+  width: 100%;
+  min-width: 500px;
+  border-collapse: separate;
+  border-spacing: 5px;
+ }
+
+table.formTableSmall {
+  width: 100%;
+  min-width: 200px;
+  border-collapse: separate;
+  border-spacing: 5px;
+}
+
+table.tableFixed {
+  table-layout: fixed;
+}
+
+td.formTd {
+  vertical-align: top;
+}
+
+td.formTdButton {
+  width: 30px;
+  vertical-align: top;
+  text-align: center;
+}
+
+td.formTdSmall {
+  width: 100px;
+}
+
+th.formTh {
+  width: 150px;
+  text-align: left;
+}
+
+th.formThSmall {
+  width: 100px;
+  text-align: left;
+}
+
+th.formThSmall2 {
+  width: 80px;
+  text-align: left;
+  padding-left:15px;
+}
+
+th.formThSmall label {
+  width: 100px;
+  white-space: nowrap;
+}
+
+/*th.formTh label {
+  width: 200px;
+}*/
+
+.colLabel {
+  font-weight: bold;
+}
+
+table.formTable p, table.formTable dl {
+  color: #666;
+}
+
+label.wideLabel {
+  display: block;
+  position: relative;
+  width: 100%;
+}
+
+input.wideFile {
+  width:100%;
+}
+
+select.wideSelect {
+  width: 100%;
+  display: inline;
+  position: relative;
+  top: 0;
+}
+
+input.smallSelect {
+  width: 100px;
+}
+
+textarea.wideArea {
+  width: 100%;
+}
+
+input.wideText {
+  /* set to 99% for firefox */
+  width: 99%;
+}
+
+input.smallText {
+  width: 100px;
+}
+
+input.smallButton {
+  width: 30px;
+}
+
+input.normalButton {
+  width: 75px;
+}
+
+/* scriptaculous edit-in-place styles*/
+#editor_field_form {
+  position: relative;
+  display:inline;
+  vertical-align: top;
+}
+
+#editor_field_form input.editor_field {
+  width: 50%;
+  vertical-align: top;
+}
+
+#editor_field_form a.editor_cancel {
+  /*vertical-align bottom for ie */
+  vertical-align: middle;
+}
+
+#editor_field_form img{
+  vertical-align: middle;
+}
+
+div.previewInput, div.previewInputSmall {
+  display: block;
+  position: relative;
+  height: 20px;
+  text-decoration: none;
+  white-space: nowrap;
+  line-height: 20px;
+  color: #000;
+  padding: 0px;
+  margin: 0px;
+  border: 1px solid #999;
+  background-color: #ccc;
+  background-position: right top;
+  background-repeat: no-repeat;
+}
+
+div.previewInputSmall {
+  width: 100px;
+}
+
+div.previewInput a, div.previewInputSmall a {
+  display: block;
+  position: relative;
+  height: 20px;
+  text-decoration: none;
+  white-space: nowrap;
+  line-height: 20px;
+  color: #000;
+  padding: 0px;
+  margin: 0px;
+  border: 0px;
+  background-color: #fff;
+  background-position: right top;
+  background-repeat: no-repeat;
+}
+
+a.imageButton {
+  display: block;
+  border: 1px solid #d9d9d9;
+  padding: 1px;
+  margin: 1px; 
+  width: 24px;
+  height:24px;
+}
+
+.snapContent a.imageButton {
+  border: 1px solid #f0f0f0;
+}
+
+a.imageButton:hover {
+  border-top: 1px solid #fff;
+  border-left: 1px solid #fff;
+  border-bottom: 1px solid #999;
+  border-right: 1px solid #999;
+}
+
+a.imageButton:active {
+  border-bottom: 1px solid #fff;
+  border-right: 1px solid #fff;
+  border-top: 1px solid #999;
+  border-left: 1px solid #999;
+}
+
+a.imageButtonDisabled {   
+  opacity: 0.4; /* css 3 */
+  -moz-opacity: 0.4; /* moz-specific */
+  filter: Alpha(opacity=40); /* IE only */
+}
+
+a.imageButtonDisabled:hover {   
+  border: 1px solid #d9d9d9;
+}
+
+a.imageButton img {
+  border: 0px;
+  /* the margin needs to make up the difference between it's width/height
+     and the width/height of the parent a */
+  margin: 2px;
+  /* width/height has to be the actual image width/height */
+  width: 20px;
+  height: 20px;
+}
+
+/* dataTable are tables that contains a tabular data */
+
+/* dataTableDiv holds a dataTable, and scrolls it */
+.dataTableDiv {
+  border-top: 1px solid #999;
+  border-bottom: 1px solid #fff;
+  border-left: 1px solid #999;
+  border-right: 1px solid #fff;
+  background-color: #fff;
+  /* must set to 100% so box resizes with window resize */
+  width: 100%;
+  /* must set height for overflow to work in IE */
+  height: 200px;
+  /* scroll bars appear when the box is smaller than the table inside it */
+  overflow: auto;
+}
+
+table.dataTable {
+  border-collapse: collapse;
+  border-spacing: 0px;
+  border-top: 1px solid #fff;
+  border-left: 1px solid #fff;
+}
+
+table.dataTable td, table.dataTable th {
+  border: 1px solid #ccc;
+  padding: 0px;
+  padding-left: 4px;
+  padding-right: 4px;
+  vertical-align: top;
+}
+
+table.dataTable tr {
+  background-color: #fff;
+}
+
+table.dataTable th {
+  border: 1px solid #999;
+  background-color: #d9d9d9;
+  text-align: left;
+  white-space: nowrap;
+}
+
+table.dataTable td {
+  text-align: left;
+  white-space: nowrap;
+}
+
+table.dataTable td.dataTableMarker, table.dataTable th.dataTableMarker {
+  width: 15px;
+  padding: 0px;
+}
+
+table.dataTable tr.selectedRow {
+  background-color: #E1EDFA; 
+  /*background-color: #ffffcc; */
+}
+
+table.dataTable tr.activeRow {
+  background-color: #AFD4FA;
+  /*background-color: #ddffaa; */
+}
+
+.selectedMarker {
+  background-image: url('../images/menu_item_arrow_grey.png');
+  background-position: 2px top;
+  background-repeat: no-repeat;
+}
+
+table.dataTable th.activeMarker {
+  background-image: url('../images/menu_item_arrow.png');
+  background-position: 2px top;
+  background-repeat: no-repeat;
+ /* background-color: #b3d979;*/
+  background-color: #98B8D9
+}
+
+
+/* ===================== */
+/* PANEL SPECIFIC STYLES */
+/* ===================== */
+
+/* =================== */
+/* DATA SETTINGS PANEL */
+/* =================== */
+
+div.dataListDiv {
+  height:160px;
+}
+
+ul.dataList {
+  display: block;
+  margin: 0px;
+  padding: 0px;
+  border: none;
+  list-style-type: none;
+}
+
+ul.dataList li {
+  display: block;
+  margin: 0px;
+  padding: 0px;
+  padding-left:5px;
+  border: none;
+  height:18px;
+  line-height:18px;
+  white-space: nowrap;
+}
+
+/* ================= */
+/* LAYER STYLE PANEL */
+/* ================= */
+
+.scaleRangesDiv {
+  border-top: 1px solid #999;
+  border-bottom: 1px solid #fff;
+  border-left: 1px solid #999;
+  border-right: 1px solid #fff;
+  margin: 5px;
+}
+
+#scaleRangesTableDiv {
+  height: 300px;
+  border: 0px solid #fff;
+  border-bottom: 1px solid #999;
+  border-right: 1px solid #999;
+}
+
+/* Scale ranges table in layer style panel */
+table.layerRangesTable {
+  table-layout: fixed;
+  /* set width for firefox so parent overflow works*/
+  width: 643px;
+  border-collapse: collapse;
+  border-spacing: 0px;
+}
+
+/* Rules sub-table nested in scale ranges table in layer style panel */
+table.layerRulesTable {
+  table-layout:fixed;
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0px;
+}
+
+
+table.layerRangesTable td, table.layerRulesTable td {
+  width: 100px;
+  min-width: 100px;
+  white-space: nowrap;
+  padding: 2px;
+}  
+
+/* styles for cells that contain rules tables */
+table.layerRangesTable td.layerRulesTd {
+  border: 1px solid #999;
+  padding: 2px;
+}
+
+table.dataTable th.layerRangesTh {
+  width: 100px;
+}
+
+table.dataTable th.layerRangesMarkerTh {
+  width: 20px;
+}
+
+table.dataTable th.layerRangesLastTh {
+  width: 105px;
+}
+
+.previewArea {
+  position: relative;
+  width: 100%;
+  height: 17px;
+  overflow: hidden;
+  cursor: auto;
+}
+
+
+/* ================ */
+/* PROPERTIES PANEL */
+/* ================ */
+
+#referencesTableDiv {
+  border: 0px solid #fff;
+  border-top: 1px solid #999;
+}
+
+
+/* ================ */
+/* MAP LAYERS PANEL */
+/* ================ */
+
+.layersTabBox {
+  min-width: 500px;
+}
+
+table.mapLayersTable {
+  border-top: 1px solid #fff;
+  border-collapse: collapse;
+  border-spacing: 0px;
+}
+
+td.mapLayersTd {
+  width: 40%;
+}
+
+td.mapLayersSettingsTd {
+  border: 1px solid #999;
+  vertical-align: top;
+}
+
+div.mapLayersSettingsDiv {
+  border-top: 1px solid #fff;
+  border-right: 1px solid #999;
+  border-bottom: 1px solid #999;
+  border-left: 1px solid #fff;
+}
+
+.mapLayersBox {
+  border-right: 1px solid #999;
+  background-color: #fff;
+  overflow: auto;
+  width: 100%;
+  height: 275px;
+}
+
+table.baseScalesTable {
+  width: 300px;
+  min-width: 300px;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border-spacing: 0px;
+}
+
+ol.baseScaleList{
+  padding: 0px;
+  margin: 0px;
+  margin-left: 20px;
+  padding-left: 5px;
+}
+
+ol.baseScaleList li{
+  padding: 0px;
+  margin: 1px;
+}

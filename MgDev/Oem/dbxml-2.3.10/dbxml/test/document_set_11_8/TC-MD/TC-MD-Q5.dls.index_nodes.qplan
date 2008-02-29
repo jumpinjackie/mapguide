@@ -1,0 +1,41 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="a">
+      <DbXmlNav>
+        <LookupIndex container="11.8.3.dbxml">
+          <ValueQP index="node-attribute-equality-string" operation="eq" child="id" value="9"/>
+        </LookupIndex>
+        <Join type="parent-of-attribute" return="argument">
+          <DbXmlNav>
+            <QueryPlanFunction result="collection" container="11.8.3.dbxml">
+              <OQPlan>V(node-attribute-equality-string,@id,=,'9')</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="child" name="article" nodeType="element"/>
+          </DbXmlNav>
+        </Join>
+      </DbXmlNav>
+    </ForBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="HeadingOfSection" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <DocumentOrder>
+          <DbXmlNav>
+            <Variable name="a"/>
+            <DbXmlStep axis="child" name="body" nodeType="element"/>
+            <Predicate>
+              <DbXmlStep axis="child" name="section" nodeType="element"/>
+              <Sequence>
+                <AnyAtomicTypeConstructor value="1" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+              </Sequence>
+            </Predicate>
+            <DbXmlStep axis="attribute" name="heading" nodeType="attribute"/>
+          </DbXmlNav>
+        </DocumentOrder>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

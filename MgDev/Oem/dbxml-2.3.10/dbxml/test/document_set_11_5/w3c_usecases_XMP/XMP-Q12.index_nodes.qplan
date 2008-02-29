@@ -1,0 +1,174 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="bib" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <ForBinding name="book1">
+          <DbXmlNav>
+            <QueryPlanFunction result="document" container="11.5.8.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'bib.xml',U)</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="descendant" name="book" nodeType="element"/>
+          </DbXmlNav>
+        </ForBinding>
+        <ForBinding name="book2">
+          <DbXmlNav>
+            <QueryPlanFunction result="document" container="11.5.8.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'bib.xml',U)</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="descendant" name="book" nodeType="element"/>
+          </DbXmlNav>
+          <Where>
+            <Operator name="and">
+              <Operator name="node-order">
+                <TreatAs>
+                  <Variable name="book1"/>
+                  <SequenceType occurrence="zero_or_one" testType="node"/>
+                </TreatAs>
+                <TreatAs>
+                  <Variable name="book2"/>
+                  <SequenceType occurrence="zero_or_one" testType="node"/>
+                </TreatAs>
+              </Operator>
+              <Function name="{http://www.w3.org/2005/xpath-functions}:not">
+                <Function name="{http://www.w3.org/2005/xpath-functions}:exists">
+                  <DbXmlNav>
+                    <Variable name="book1"/>
+                    <DbXmlCompare name="equal" join="child" name="title" nodeType="element">
+                      <OQPlan>V(edge-element-equality-string,book.title,=,'[to be calculated]')</OQPlan>
+                      <Atomize>
+                        <DbXmlNav>
+                          <Variable name="book2"/>
+                          <DbXmlStep axis="child" name="title" nodeType="element">
+                            <OQPlan>P(edge-element-equality-string,prefix,book.title)</OQPlan>
+                          </DbXmlStep>
+                        </DbXmlNav>
+                      </Atomize>
+                    </DbXmlCompare>
+                  </DbXmlNav>
+                </Function>
+              </Function>
+            </Operator>
+          </Where>
+        </ForBinding>
+        <LetBinding name="aut1">
+          <FLWOR>
+            <ForBinding name="a">
+              <DbXmlNav>
+                <Variable name="book1"/>
+                <DbXmlStep axis="child" name="author" nodeType="element"/>
+              </DbXmlNav>
+            </ForBinding>
+            <Sort>
+              <Specification modifier="ascending|empty_least">
+                <TreatAs>
+                  <PromoteUntyped uri="http://www.w3.org/2001/XMLSchema" name="string">
+                    <Atomize>
+                      <DbXmlNav>
+                        <Variable name="a"/>
+                        <DbXmlStep axis="child" name="last" nodeType="element">
+                          <OQPlan>P(edge-element-equality-string,prefix,author.last)</OQPlan>
+                        </DbXmlStep>
+                      </DbXmlNav>
+                    </Atomize>
+                  </PromoteUntyped>
+                  <SequenceType occurrence="zero_or_one" testType="anything"/>
+                </TreatAs>
+              </Specification>
+              <Specification modifier="ascending|empty_least">
+                <TreatAs>
+                  <PromoteUntyped uri="http://www.w3.org/2001/XMLSchema" name="string">
+                    <Atomize>
+                      <DbXmlNav>
+                        <Variable name="a"/>
+                        <DbXmlStep axis="child" name="first" nodeType="element">
+                          <OQPlan>P(edge-element-equality-string,prefix,author.first)</OQPlan>
+                        </DbXmlStep>
+                      </DbXmlNav>
+                    </Atomize>
+                  </PromoteUntyped>
+                  <SequenceType occurrence="zero_or_one" testType="anything"/>
+                </TreatAs>
+              </Specification>
+            </Sort>
+            <Variable name="a"/>
+          </FLWOR>
+        </LetBinding>
+        <LetBinding name="aut2">
+          <FLWOR>
+            <ForBinding name="a">
+              <DbXmlNav>
+                <Variable name="book2"/>
+                <DbXmlStep axis="child" name="author" nodeType="element"/>
+              </DbXmlNav>
+            </ForBinding>
+            <Sort>
+              <Specification modifier="ascending|empty_least">
+                <TreatAs>
+                  <PromoteUntyped uri="http://www.w3.org/2001/XMLSchema" name="string">
+                    <Atomize>
+                      <DbXmlNav>
+                        <Variable name="a"/>
+                        <DbXmlStep axis="child" name="last" nodeType="element">
+                          <OQPlan>P(edge-element-equality-string,prefix,author.last)</OQPlan>
+                        </DbXmlStep>
+                      </DbXmlNav>
+                    </Atomize>
+                  </PromoteUntyped>
+                  <SequenceType occurrence="zero_or_one" testType="anything"/>
+                </TreatAs>
+              </Specification>
+              <Specification modifier="ascending|empty_least">
+                <TreatAs>
+                  <PromoteUntyped uri="http://www.w3.org/2001/XMLSchema" name="string">
+                    <Atomize>
+                      <DbXmlNav>
+                        <Variable name="a"/>
+                        <DbXmlStep axis="child" name="first" nodeType="element">
+                          <OQPlan>P(edge-element-equality-string,prefix,author.first)</OQPlan>
+                        </DbXmlStep>
+                      </DbXmlNav>
+                    </Atomize>
+                  </PromoteUntyped>
+                  <SequenceType occurrence="zero_or_one" testType="anything"/>
+                </TreatAs>
+              </Specification>
+            </Sort>
+            <Variable name="a"/>
+          </FLWOR>
+          <Where>
+            <Function name="{http://www.w3.org/2005/xpath-functions}:deep-equal">
+              <Variable name="aut1"/>
+              <Variable name="aut2"/>
+            </Function>
+          </Where>
+        </LetBinding>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="book-pair" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <DbXmlNav>
+              <Variable name="book1"/>
+              <DbXmlStep axis="child" name="title" nodeType="element">
+                <OQPlan>P(edge-element-equality-string,prefix,book.title)</OQPlan>
+              </DbXmlStep>
+            </DbXmlNav>
+            <DbXmlNav>
+              <Variable name="book2"/>
+              <DbXmlStep axis="child" name="title" nodeType="element">
+                <OQPlan>P(edge-element-equality-string,prefix,book.title)</OQPlan>
+              </DbXmlStep>
+            </DbXmlNav>
+          </Children>
+        </DOMConstructor>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

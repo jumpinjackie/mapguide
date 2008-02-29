@@ -1,0 +1,46 @@
+/* CSS Document for Tests.html */
+
+h1, h2, h3, p, div, span, a, li {
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+#thePage {
+  padding: 10px;
+  border: 2px dotted #ccc;
+  margin: 10px;
+}
+
+#pageHeader {
+  background-color: #99CC33;
+  border-bottom: 2px solid #999933;
+}
+
+h1 {
+  text-align: center;
+  font-size: 40px;
+  color: #fff;
+  line-height: 150px;
+}
+
+#pageFooter {
+  text-align: right;
+  background-color: #99CC33;
+  border-top: 2px solid #999933;
+}
+
+#leftSide {
+  border: 2px solid #999933;
+  margin: 2px 2px 2px 1px;
+}
+
+#rightSide {
+  border: 2px solid #999933;
+  margin: 2px 0px 2px 1px;
+}
+
+#navToolbar {
+  position: absolute;
+  top: 170px;
+  left: 220px;
+  border: 2px dotted #ccc;
+}

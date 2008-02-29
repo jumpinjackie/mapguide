@@ -1,0 +1,459 @@
+<HTML><HEAD><SCRIPT language="JavaScript" src="../resources/script.js" type="text/javascript"></SCRIPT><TITLE>Xerces-C++: XMLFormatter.hpp Source File</TITLE><link href="XercesApi.css" rel="stylesheet" type="text/css"></HEAD><BODY alink="#ff0000" bgcolor="#ffffff" leftmargin="4" link="#0000ff" marginheight="4" marginwidth="4" text="#000000" topmargin="4" vlink="#0000aa"><TABLE border="0" cellpadding="0" cellspacing="0" width="620"><TR><TD align="left" height="60" rowspan="3" valign="top" width="135"><IMG border="0" height="60" hspace="0" src="../resources/logo.gif" vspace="0" width="135"></TD><TD align="left" colspan="4" height="5" valign="top" width="456"><IMG border="0" height="5" hspace="0" src="../resources/line.gif" vspace="0" width="456"></TD><TD align="left" height="60" rowspan="3" valign="top" width="29"><IMG border="0" height="60" hspace="0" src="../resources/right.gif" vspace="0" width="29"></TD></TR><TR><TD align="left" bgcolor="#0086b2" colspan="4" height="35" valign="top" width="456"><IMG alt="" border="0" height="35" hspace="0" src="../graphics/api-header.jpg" vspace="0" width="456"></TD></TR><TR><TD align="left" height="20" valign="top" width="168"><IMG border="0" height="20" hspace="0" src="../resources/bottom.gif" vspace="0" width="168"></TD><TD align="left" height="20" valign="top" width="96"><A href="http://xml.apache.org/" onMouseOut="rolloverOff('xml');" onMouseOver="rolloverOn('xml');" target="new"><IMG alt="http://xml.apache.org/" border="0" height="20" hspace="0" name="xml" onLoad="rolloverLoad('xml','../resources/button-xml-hi.gif','../resources/button-xml-lo.gif');" src="../resources/button-xml-lo.gif" vspace="0" width="96"></A></TD><TD align="left" height="20" valign="top" width="96"><A href="http://www.apache.org/" onMouseOut="rolloverOff('asf');" onMouseOver="rolloverOn('asf');" target="new"><IMG alt="http://www.apache.org/" border="0" height="20" hspace="0" name="asf" onLoad="rolloverLoad('asf','../resources/button-asf-hi.gif','../resources/button-asf-lo.gif');" src="../resources/button-asf-lo.gif" vspace="0" width="96"></A></TD><TD align="left" height="20" valign="top" width="96"><A href="http://www.w3.org/" onMouseOut="rolloverOff('w3c');" onMouseOver="rolloverOn('w3c');" target="new"><IMG alt="http://www.w3.org/" border="0" height="20" hspace="0" name="w3c" onLoad="rolloverLoad('w3c','../resources/button-w3c-hi.gif','../resources/button-w3c-lo.gif');" src="../resources/button-w3c-lo.gif" vspace="0" width="96"></A></TD></TR></TABLE><TABLE border="0" cellpadding="0" cellspacing="0" width="620"><TR><TD align="left" valign="top" width="120"><IMG border="0" height="14" hspace="0" src="../resources/join.gif" vspace="0" width="120"><BR>
+  <A href="../../index.html" onMouseOut="rolloverOff('side-ext-2');" onMouseOver="rolloverOn('side-ext-2');"><IMG alt="Home" border="0" height="12" hspace="0" name="side-ext-2" onLoad="rolloverLoad('side-ext-2','../graphics/ext-2-label-2.jpg','../graphics/ext-2-label-3.jpg');" src="../graphics/ext-2-label-3.jpg" vspace="0" width="120"></A><BR>
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+     <A href="../index.html" onMouseOut="rolloverOff('side-index');" onMouseOver="rolloverOn('side-index');"><IMG alt="Readme" border="0" height="12" hspace="0" name="side-index" onLoad="rolloverLoad('side-index','../graphics/index-label-2.jpg','../graphics/index-label-3.jpg');" src="../graphics/index-label-3.jpg" vspace="0" width="120"></A><BR>
+     <A href="../charter.html" onMouseOut="rolloverOff('side-charter');" onMouseOver="rolloverOn('side-charter');"><IMG alt="Charter" border="0" height="12" hspace="0" name="side-charter" onLoad="rolloverLoad('side-charter','../graphics/charter-label-2.jpg','../graphics/charter-label-3.jpg');" src="../graphics/charter-label-3.jpg" vspace="0" width="120"></A><BR>
+     <A href="../releases.html" onMouseOut="rolloverOff('side-releases');" onMouseOver="rolloverOn('side-releases');"><IMG alt="Release Info" border="0" height="12" hspace="0" name="side-releases" onLoad="rolloverLoad('side-releases','../graphics/releases-label-2.jpg','../graphics/releases-label-3.jpg');" src="../graphics/releases-label-3.jpg" vspace="0" width="120"></A><BR>
+     
+     
+
+
+
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+     <A href="../install.html" onMouseOut="rolloverOff('side-install');" onMouseOver="rolloverOn('side-install');"><IMG alt="Installation" border="0" height="12" hspace="0" name="side-install" onLoad="rolloverLoad('side-install','../graphics/install-label-2.jpg','../graphics/install-label-3.jpg');" src="../graphics/install-label-3.jpg" vspace="0" width="120"></A><BR>
+     <A href="http://xml.apache.org/xerces-c/download.cgi" onMouseOut="rolloverOff('side-ext-20');" onMouseOver="rolloverOn('side-ext-20');"><IMG alt="Download" border="0" height="12" hspace="0" name="side-ext-20" onLoad="rolloverLoad('side-ext-20','../graphics/ext-20-label-2.jpg','../graphics/ext-20-label-3.jpg');" src="../graphics/ext-20-label-3.jpg" vspace="0" width="120"></A><BR>
+     <A href="../build.html" onMouseOut="rolloverOff('side-build');" onMouseOver="rolloverOn('side-build');"><IMG alt="Build Instructions" border="0" height="12" hspace="0" name="side-build" onLoad="rolloverLoad('side-build','../graphics/build-label-2.jpg','../graphics/build-label-3.jpg');" src="../graphics/build-label-3.jpg" vspace="0" width="120"></A><BR>
+     
+     
+     
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+     <A href="../faqs.html" onMouseOut="rolloverOff('side-faqs');" onMouseOver="rolloverOn('side-faqs');"><IMG alt="FAQs" border="0" height="12" hspace="0" name="side-faqs" onLoad="rolloverLoad('side-faqs','../graphics/faqs-label-2.jpg','../graphics/faqs-label-3.jpg');" src="../graphics/faqs-label-3.jpg" vspace="0" width="120"></A><BR>
+
+     <A href="../samples.html" onMouseOut="rolloverOff('side-samples');" onMouseOver="rolloverOn('side-samples');"><IMG alt="Samples" border="0" height="12" hspace="0" name="side-samples" onLoad="rolloverLoad('side-samples','../graphics/samples-label-2.jpg','../graphics/samples-label-3.jpg');" src="../graphics/samples-label-3.jpg" vspace="0" width="120"></A><BR>
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+
+     <A href="../api.html" onMouseOut="rolloverOff('side-api');" onMouseOver="rolloverOn('side-api');"><IMG alt="API Docs" border="0" height="12" hspace="0" name="side-api" onLoad="rolloverLoad('side-api','../graphics/api-label-2.jpg','../graphics/api-label-3.jpg');" src="../graphics/api-label-3.jpg" vspace="0" width="120"></A><BR>
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+     <A href="../ApacheDOMC++Binding.html" onMouseOut="rolloverOff('side-ext-70');" onMouseOver="rolloverOn('side-ext-70');"><IMG alt="DOM C++ Binding" border="0" height="12" hspace="0" name="side-ext-70" onLoad="rolloverLoad('side-ext-70','../graphics/ext-70-label-2.jpg','../graphics/ext-70-label-3.jpg');" src="../graphics/ext-70-label-3.jpg" vspace="0" width="120"></A><BR>
+
+     <IMG alt="Programming" border="0" height="12" hspace="0" src="../graphics/program-label-1.jpg" vspace="0" width="120"><BR>
+     
+     
+     
+     
+     
+     
+     
+
+     <A href="../migrate.html" onMouseOut="rolloverOff('side-migrate');" onMouseOver="rolloverOn('side-migrate');"><IMG alt="Migration Guide" border="0" height="12" hspace="0" name="side-migrate" onLoad="rolloverLoad('side-migrate','../graphics/migrate-label-2.jpg','../graphics/migrate-label-3.jpg');" src="../graphics/migrate-label-3.jpg" vspace="0" width="120"></A><BR>
+     
+     
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+  <A href="../feedback.html" onMouseOut="rolloverOff('side-feedback');" onMouseOver="rolloverOn('side-feedback');"><IMG alt="Feedback" border="0" height="12" hspace="0" name="side-feedback" onLoad="rolloverLoad('side-feedback','../graphics/feedback-label-2.jpg','../graphics/feedback-label-3.jpg');" src="../graphics/feedback-label-3.jpg" vspace="0" width="120"></A><BR>
+  <A href="bug-report.html" onMouseOut="rolloverOff('side-bug-report');" onMouseOver="rolloverOn('side-bug-report');"><IMG alt="Bug-Reporting" border="0" height="12" hspace="0" name="side-bug-report" onLoad="rolloverLoad('side-bug-report','../graphics/bug-report-label-2.jpg','../graphics/bug-report-label-3.jpg');" src="../graphics/bug-report-label-3.jpg" vspace="0" width="120"></A><BR>
+  <A href="../pdf.html" onMouseOut="rolloverOff('side-pdf');" onMouseOver="rolloverOn('side-pdf');"><IMG alt="PDF Document" border="0" height="12" hspace="0" name="side-pdf" onLoad="rolloverLoad('side-pdf','../graphics/pdf-label-2.jpg','../graphics/pdf-label-3.jpg');" src="../graphics/pdf-label-3.jpg" vspace="0" width="120"></A><BR>
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+   
+<A href="http://svn.apache.org/viewcvs.cgi/xerces/?root=Apache-SVN" onMouseOut="rolloverOff('side-ext-102');" onMouseOver="rolloverOn('side-ext-102');"><IMG alt="Source Repository" border="0" height="12" hspace="0" name="side-ext-102" onLoad="rolloverLoad('side-ext-102','../graphics/ext-102-label-2.jpg','../graphics/ext-102-label-3.jpg');" src="../graphics/ext-102-label-3.jpg" vspace="0" width="120"></A><BR>
+
+   
+<A href="http://marc.theaimsgroup.com/?l=xerces-c-users" onMouseOut="rolloverOff('side-ext-104');" onMouseOver="rolloverOn('side-ext-104');"><IMG alt="User Mail Archive" border="0" height="12" hspace="0" name="side-ext-104" onLoad="rolloverLoad('side-ext-104','../graphics/ext-104-label-2.jpg','../graphics/ext-104-label-3.jpg');" src="../graphics/ext-104-label-3.jpg" vspace="0" width="120"></A><BR>
+
+   
+<A href="http://marc.theaimsgroup.com/?l=xerces-c-dev" onMouseOut="rolloverOff('side-ext-106');" onMouseOver="rolloverOn('side-ext-106');"><IMG alt="Devel Mail Archive" border="0" height="12" hspace="0" name="side-ext-106" onLoad="rolloverLoad('side-ext-106','../graphics/ext-106-label-2.jpg','../graphics/ext-106-label-3.jpg');" src="../graphics/ext-106-label-3.jpg" vspace="0" width="120"></A><BR>
+
+
+
+
+<IMG border="0" height="14" hspace="0" src="../resources/close.gif" vspace="0" width="120"><BR></TD><TD align="left" valign="top" width="500"><TABLE border="0" cellpadding="3" cellspacing="0"><TR><TD>
+    <TABLE border="0" cellpadding="0" cellspacing="0" width="494"><TR><TD bgcolor="#FFFFFF" colspan="2" width="494"><TABLE border="0" cellpadding="0" cellspacing="0" width="494"><TR><TD bgcolor="#039acc" height="1" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD><TD bgcolor="#039acc" height="1" width="492"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="492"></TD><TD bgcolor="#0086b2" height="1" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD></TR><TR><TD bgcolor="#039acc" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD><TD bgcolor="#0086b2" width="492"><FONT color="#ffffff" face="arial,helvetica,sanserif" size="+1"><IMG border="0" height="2" hspace="0" src="../resources/void.gif" vspace="0" width="2"><B>API Docs for SAX and DOM</B></FONT></TD><TD bgcolor="#017299" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD></TR><TR><TD bgcolor="#0086b2" height="1" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD><TD bgcolor="#017299" height="1" width="492"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="492"></TD><TD bgcolor="#017299" height="1" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD></TR></TABLE></TD></TR><TR><TD width="10">&nbsp;</TD><TD width="484"><FONT color="#000000" face="arial,helvetica,sanserif">
+
+	    <P>
+<!-- Generated by Doxygen 1.4.1 -->
+<div class="qindex"><a class="qindex" href="index.html">Main&nbsp;Page</a> | <a class="qindex" href="hierarchy.html">Class&nbsp;Hierarchy</a> | <a class="qindex" href="classes.html">Alphabetical&nbsp;List</a> | <a class="qindex" href="annotated.html">Class&nbsp;List</a> | <a class="qindex" href="dirs.html">Directories</a> | <a class="qindex" href="files.html">File&nbsp;List</a> | <a class="qindex" href="functions.html">Class&nbsp;Members</a> | <a class="qindex" href="globals.html">File&nbsp;Members</a> | <a class="qindex" href="pages.html">Related&nbsp;Pages</a></div>
+<div class="nav">
+<a class="el" href="dir_000000.html">src</a>&nbsp;/&nbsp;<a class="el" href="dir_000001.html">xercesc</a>&nbsp;/&nbsp;<a class="el" href="dir_000006.html">framework</a></div>
+<h1>XMLFormatter.hpp</h1><a href="XMLFormatter_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><pre class="fragment">00001 <span class="comment">/*</span>
+00002 <span class="comment"> * Copyright 1999-2000,2004 The Apache Software Foundation.</span>
+00003 <span class="comment"> * </span>
+00004 <span class="comment"> * Licensed under the Apache License, Version 2.0 (the "License");</span>
+00005 <span class="comment"> * you may not use this file except in compliance with the License.</span>
+00006 <span class="comment"> * You may obtain a copy of the License at</span>
+00007 <span class="comment"> * </span>
+00008 <span class="comment"> *      http://www.apache.org/licenses/LICENSE-2.0</span>
+00009 <span class="comment"> * </span>
+00010 <span class="comment"> * Unless required by applicable law or agreed to in writing, software</span>
+00011 <span class="comment"> * distributed under the License is distributed on an "AS IS" BASIS,</span>
+00012 <span class="comment"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+00013 <span class="comment"> * See the License for the specific language governing permissions and</span>
+00014 <span class="comment"> * limitations under the License.</span>
+00015 <span class="comment"> */</span>
+00016 
+00017 <span class="comment">/*</span>
+00018 <span class="comment"> * $Id: XMLFormatter.hpp 202337 2005-06-29 08:35:12Z amassari $</span>
+00019 <span class="comment"> */</span>
+00020 
+00021 <span class="preprocessor">#if !defined(XMLFORMATTER_HPP)</span>
+<a name="l00022"></a><a class="code" href="XMLFormatter_8hpp.html#a0">00022</a> <span class="preprocessor"></span><span class="preprocessor">#define XMLFORMATTER_HPP</span>
+00023 <span class="preprocessor"></span>
+00024 <span class="preprocessor">#include &lt;<a class="code" href="PlatformUtils_8hpp.html">xercesc/util/PlatformUtils.hpp</a>&gt;</span>
+00025 
+00026 <a class="code" href="XercesDefs_8hpp.html#a3">XERCES_CPP_NAMESPACE_BEGIN</a>
+00027 
+00028 <span class="keyword">class </span><a class="code" href="classXMLFormatTarget.html">XMLFormatTarget</a>;
+00029 <span class="keyword">class </span><a class="code" href="classXMLTranscoder.html">XMLTranscoder</a>;
+00030 
+<a name="l00040"></a><a class="code" href="classXMLFormatter.html">00040</a> <span class="keyword">class </span><a class="code" href="XercesDefs_8hpp.html#a10"></a> XMLFormatter : <span class="keyword">public</span> <a class="code" href="classXMemory.html">XMemory</a>
+00041 {
+00042 <span class="keyword">public</span>:
+00043     <span class="comment">// -----------------------------------------------------------------------</span>
+00044     <span class="comment">//  Class types</span>
+00045     <span class="comment">// -----------------------------------------------------------------------</span>
+<a name="l00123"></a><a class="code" href="classXMLFormatter.html#z554_0">00123</a> <span class="comment"></span>    <span class="keyword">enum</span> EscapeFlags
+00124     {
+00125         NoEscapes
+00126         , StdEscapes
+00127         , AttrEscapes
+00128         , CharEscapes
+00129 
+00130         <span class="comment">// Special values, don't use directly</span>
+00131         , EscapeFlags_Count
+00132         , DefaultEscape     = 999
+00133     };
+00134 
+<a name="l00151"></a><a class="code" href="classXMLFormatter.html#z554_1">00151</a>     <span class="keyword">enum</span> UnRepFlags
+00152     {
+00153         UnRep_Fail
+00154         , UnRep_CharRef
+00155         , UnRep_Replace
+00156 
+00157         , DefaultUnRep      = 999
+00158     };
+00160 
+00161 
+00162     <span class="comment">// -----------------------------------------------------------------------</span>
+00163     <span class="comment">//  Constructors and Destructor</span>
+00164     <span class="comment">// -----------------------------------------------------------------------</span>
+00176 <span class="comment"></span>    XMLFormatter
+00177     (
+00178         <span class="keyword">const</span>   XMLCh* <span class="keyword">const</span>            outEncoding
+00179         , <span class="keyword">const</span> XMLCh* <span class="keyword">const</span>            docVersion
+00180         ,       <a class="code" href="classXMLFormatTarget.html">XMLFormatTarget</a>* <span class="keyword">const</span>  target
+00181         , <span class="keyword">const</span> EscapeFlags             escapeFlags = NoEscapes
+00182         , <span class="keyword">const</span> UnRepFlags              unrepFlags = UnRep_Fail
+00183         ,       <a class="code" href="classMemoryManager.html">MemoryManager</a>* <span class="keyword">const</span>    manager = XMLPlatformUtils::fgMemoryManager
+00184     );
+00185 
+00186     XMLFormatter
+00187     (
+00188         <span class="keyword">const</span>   <span class="keywordtype">char</span>* <span class="keyword">const</span>             outEncoding
+00189         , <span class="keyword">const</span> <span class="keywordtype">char</span>* <span class="keyword">const</span>             docVersion
+00190         ,       <a class="code" href="classXMLFormatTarget.html">XMLFormatTarget</a>* <span class="keyword">const</span>  target
+00191         , <span class="keyword">const</span> EscapeFlags             escapeFlags = NoEscapes
+00192         , <span class="keyword">const</span> UnRepFlags              unrepFlags = UnRep_Fail
+00193         ,       <a class="code" href="classMemoryManager.html">MemoryManager</a>* <span class="keyword">const</span>    manager = XMLPlatformUtils::fgMemoryManager
+00194     );
+00195 
+00196     XMLFormatter
+00197     (
+00198         <span class="keyword">const</span>   XMLCh* <span class="keyword">const</span>            outEncoding
+00199         ,       <a class="code" href="classXMLFormatTarget.html">XMLFormatTarget</a>* <span class="keyword">const</span>  target
+00200         , <span class="keyword">const</span> EscapeFlags             escapeFlags = NoEscapes
+00201         , <span class="keyword">const</span> UnRepFlags              unrepFlags = UnRep_Fail
+00202         ,       <a class="code" href="classMemoryManager.html">MemoryManager</a>* <span class="keyword">const</span>    manager = XMLPlatformUtils::fgMemoryManager
+00203     );
+00204 
+00205     XMLFormatter
+00206     (
+00207         <span class="keyword">const</span>   <span class="keywordtype">char</span>* <span class="keyword">const</span>             outEncoding
+00208         ,       <a class="code" href="classXMLFormatTarget.html">XMLFormatTarget</a>* <span class="keyword">const</span>  target
+00209         , <span class="keyword">const</span> EscapeFlags             escapeFlags = NoEscapes
+00210         , <span class="keyword">const</span> UnRepFlags              unrepFlags = UnRep_Fail
+00211         ,       <a class="code" href="classMemoryManager.html">MemoryManager</a>* <span class="keyword">const</span>    manager = XMLPlatformUtils::fgMemoryManager
+00212     );
+00213     
+00214     ~XMLFormatter();
+00216 
+00217 
+00218     <span class="comment">// -----------------------------------------------------------------------</span>
+00219     <span class="comment">//  Formatting methods</span>
+00220     <span class="comment">// -----------------------------------------------------------------------</span>
+00230 <span class="comment"></span>    <span class="keywordtype">void</span> formatBuf
+00231     (
+00232         <span class="keyword">const</span>   XMLCh* <span class="keyword">const</span>    toFormat
+00233         , <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>    count
+00234         , <span class="keyword">const</span> EscapeFlags     escapeFlags = DefaultEscape
+00235         , <span class="keyword">const</span> UnRepFlags      unrepFlags = DefaultUnRep
+00236     );
+00237 
+00241     XMLFormatter&amp; <span class="keyword">operator</span>&lt;&lt;
+00242     (
+00243         <span class="keyword">const</span>   XMLCh* <span class="keyword">const</span>    toFormat
+00244     );
+00245 
+00246     XMLFormatter&amp; <span class="keyword">operator</span>&lt;&lt;
+00247     (
+00248         <span class="keyword">const</span>   XMLCh           toFormat
+00249     );
+00250 
+00251     <span class="keywordtype">void</span> writeBOM(<span class="keyword">const</span> XMLByte* <span class="keyword">const</span> toFormat
+00252                 , <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>   count);
+00253 
+00255 
+00256     <span class="comment">// -----------------------------------------------------------------------</span>
+00257     <span class="comment">//  Getter methods</span>
+00258     <span class="comment">// -----------------------------------------------------------------------</span>
+00265 <span class="comment"></span>    <span class="keyword">const</span> XMLCh* getEncodingName() <span class="keyword">const</span>;
+00266 
+00270     <span class="keyword">inline</span> <span class="keyword">const</span> <a class="code" href="classXMLTranscoder.html">XMLTranscoder</a>*   getTranscoder() <span class="keyword">const</span>;
+00271 
+00273 
+00274     <span class="comment">// -----------------------------------------------------------------------</span>
+00275     <span class="comment">//  Setter methods</span>
+00276     <span class="comment">// -----------------------------------------------------------------------</span>
+00282 <span class="comment"></span>    <span class="keywordtype">void</span> setEscapeFlags
+00283     (
+00284         <span class="keyword">const</span>   EscapeFlags     newFlags
+00285     );
+00286 
+00290     <span class="keywordtype">void</span> setUnRepFlags
+00291     (
+00292         <span class="keyword">const</span>   UnRepFlags      newFlags
+00293     );
+00294 
+00299     XMLFormatter&amp; <span class="keyword">operator</span>&lt;&lt;
+00300     (
+00301         <span class="keyword">const</span>   EscapeFlags     newFlags
+00302     );
+00303 
+00308     XMLFormatter&amp; <span class="keyword">operator</span>&lt;&lt;
+00309     (
+00310         <span class="keyword">const</span>   UnRepFlags      newFlags
+00311     );
+00313 
+00314 
+00315     <span class="comment">// -----------------------------------------------------------------------</span>
+00316     <span class="comment">//  Getter methods</span>
+00317     <span class="comment">// -----------------------------------------------------------------------</span>
+00323 <span class="comment"></span>    EscapeFlags getEscapeFlags() <span class="keyword">const</span>;
+00324 
+00328     UnRepFlags getUnRepFlags() <span class="keyword">const</span>;
+00330 
+00331 <span class="keyword">private</span> :
+00332     <span class="comment">// -----------------------------------------------------------------------</span>
+00333     <span class="comment">//  Unimplemented constructors and operators</span>
+00334     <span class="comment">// -----------------------------------------------------------------------</span>
+00335     XMLFormatter();
+00336     XMLFormatter(<span class="keyword">const</span> XMLFormatter&amp;);
+00337     XMLFormatter&amp; operator=(<span class="keyword">const</span> XMLFormatter&amp;);
+00338 
+00339 
+00340     <span class="comment">// -----------------------------------------------------------------------</span>
+00341     <span class="comment">//  Private class constants</span>
+00342     <span class="comment">// -----------------------------------------------------------------------</span>
+00343     <span class="keyword">enum</span> Constants
+00344     {
+00345         kTmpBufSize     = 16 * 1024
+00346     };
+00347 
+00348 
+00349     <span class="comment">// -----------------------------------------------------------------------</span>
+00350     <span class="comment">//  Private helper methods</span>
+00351     <span class="comment">// -----------------------------------------------------------------------</span>
+00352     <span class="keyword">const</span> <a class="code" href="XercesDefs_8hpp.html#a17">XMLByte</a>* getCharRef(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> &amp; count, 
+00353                               XMLByte*      &amp;ref, 
+00354                               <span class="keyword">const</span> XMLCh *  stdRef);  
+00355  
+00356     <span class="keywordtype">void</span> writeCharRef(<span class="keyword">const</span> XMLCh &amp;toWrite);
+00357     <span class="keywordtype">void</span> writeCharRef(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> toWrite);
+00358 
+00359     <span class="keywordtype">bool</span> inEscapeList(<span class="keyword">const</span> XMLFormatter::EscapeFlags escStyle
+00360                     , <span class="keyword">const</span> XMLCh                     toCheck);
+00361                               
+00362 
+00363     <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> handleUnEscapedChars(<span class="keyword">const</span> XMLCh *                  srcPtr, 
+00364                                       <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>             count, 
+00365                                       <span class="keyword">const</span> UnRepFlags               unrepFlags);
+00366 
+00367     <span class="keywordtype">void</span> specialFormat
+00368     (
+00369         <span class="keyword">const</span>   XMLCh* <span class="keyword">const</span>    toFormat
+00370         , <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>    count
+00371         , <span class="keyword">const</span> EscapeFlags     escapeFlags
+00372     );
+00373 
+00374 
+00375     <span class="comment">// -----------------------------------------------------------------------</span>
+00376     <span class="comment">//  Private, non-virtual methods</span>
+00377     <span class="comment">//</span>
+00378     <span class="comment">//  fEscapeFlags</span>
+00379     <span class="comment">//      The escape flags we were told to use in formatting. These are</span>
+00380     <span class="comment">//      defaults set in the ctor, which can be overridden on a particular</span>
+00381     <span class="comment">//      call.</span>
+00382     <span class="comment">//</span>
+00383     <span class="comment">//  fOutEncoding</span>
+00384     <span class="comment">//      This the name of the output encoding. Saved mainly for meaningful</span>
+00385     <span class="comment">//      error messages.</span>
+00386     <span class="comment">//</span>
+00387     <span class="comment">//  fTarget</span>
+00388     <span class="comment">//      This is the target object for the formatting operation.</span>
+00389     <span class="comment">//</span>
+00390     <span class="comment">//  fUnRepFlags</span>
+00391     <span class="comment">//      The unrepresentable flags that indicate how to react when a</span>
+00392     <span class="comment">//      character cannot be represented in the target encoding.</span>
+00393     <span class="comment">//</span>
+00394     <span class="comment">//  fXCoder</span>
+00395     <span class="comment">//      This the transcoder that we will use. It is created using the</span>
+00396     <span class="comment">//      encoding name we were told to use.</span>
+00397     <span class="comment">//</span>
+00398     <span class="comment">//  fTmpBuf</span>
+00399     <span class="comment">//      An output buffer that we use to transcode chars into before we</span>
+00400     <span class="comment">//      send them off to be output.</span>
+00401     <span class="comment">//</span>
+00402     <span class="comment">//  fAposRef</span>
+00403     <span class="comment">//  fAmpRef</span>
+00404     <span class="comment">//  fGTRef</span>
+00405     <span class="comment">//  fLTRef</span>
+00406     <span class="comment">//  fQuoteRef</span>
+00407     <span class="comment">//      These are character refs for the standard char refs, in the</span>
+00408     <span class="comment">//      output encoding. They are faulted in as required, by transcoding</span>
+00409     <span class="comment">//      them from fixed Unicode versions.</span>
+00410     <span class="comment">//</span>
+00411     <span class="comment">//  fIsXML11</span>
+00412     <span class="comment">//      for performance reason, we do not store the actual version string</span>
+00413     <span class="comment">//      and do the string comparison again and again.</span>
+00414     <span class="comment">//</span>
+00415     <span class="comment">// -----------------------------------------------------------------------</span>
+00416     EscapeFlags                 fEscapeFlags;
+00417     XMLCh*                      fOutEncoding;
+00418     <a class="code" href="classXMLFormatTarget.html">XMLFormatTarget</a>*            fTarget;
+00419     UnRepFlags                  fUnRepFlags;
+00420     <a class="code" href="classXMLTranscoder.html">XMLTranscoder</a>*              fXCoder;
+00421     <a class="code" href="XercesDefs_8hpp.html#a17">XMLByte</a>                     fTmpBuf[kTmpBufSize + 4];
+00422     <a class="code" href="XercesDefs_8hpp.html#a17">XMLByte</a>*                    fAposRef;
+00423     <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>                fAposLen;
+00424     <a class="code" href="XercesDefs_8hpp.html#a17">XMLByte</a>*                    fAmpRef;
+00425     <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>                fAmpLen;
+00426     <a class="code" href="XercesDefs_8hpp.html#a17">XMLByte</a>*                    fGTRef;
+00427     <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>                fGTLen;
+00428     <a class="code" href="XercesDefs_8hpp.html#a17">XMLByte</a>*                    fLTRef;
+00429     <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>                fLTLen;
+00430     <a class="code" href="XercesDefs_8hpp.html#a17">XMLByte</a>*                    fQuoteRef;
+00431     <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>                fQuoteLen;
+00432     <span class="keywordtype">bool</span>                        fIsXML11;
+00433     <a class="code" href="classMemoryManager.html">MemoryManager</a>*              fMemoryManager;
+00434 };
+00435 
+00436 
+<a name="l00437"></a><a class="code" href="classXMLFormatTarget.html">00437</a> <span class="keyword">class </span><a class="code" href="XercesDefs_8hpp.html#a10"></a> XMLFormatTarget : <span class="keyword">public</span> <a class="code" href="classXMemory.html">XMemory</a>
+00438 {
+00439 <span class="keyword">public</span>:
+00440     <span class="comment">// -----------------------------------------------------------------------</span>
+00441     <span class="comment">//  Constructors and Destructor</span>
+00442     <span class="comment">// -----------------------------------------------------------------------</span>
+<a name="l00443"></a><a class="code" href="classXMLFormatTarget.html#a0">00443</a>     <span class="keyword">virtual</span> ~XMLFormatTarget() {}
+00444 
+00445 
+00446     <span class="comment">// -----------------------------------------------------------------------</span>
+00447     <span class="comment">//  Virtual interface</span>
+00448     <span class="comment">// -----------------------------------------------------------------------</span>
+00449     <span class="keyword">virtual</span> <span class="keywordtype">void</span> writeChars
+00450     (
+00451           <span class="keyword">const</span> <a class="code" href="XercesDefs_8hpp.html#a17">XMLByte</a>* <span class="keyword">const</span>      toWrite
+00452         , <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>        count
+00453         ,       XMLFormatter* <span class="keyword">const</span> formatter
+00454     ) = 0;
+00455 
+<a name="l00456"></a><a class="code" href="classXMLFormatTarget.html#a2">00456</a>     <span class="keyword">virtual</span> <span class="keywordtype">void</span> flush() {};
+00457 
+00458 
+00459 <span class="keyword">protected</span> :
+00460     <span class="comment">// -----------------------------------------------------------------------</span>
+00461     <span class="comment">//  Hidden constructors and operators</span>
+00462     <span class="comment">// -----------------------------------------------------------------------</span>
+<a name="l00463"></a><a class="code" href="classXMLFormatTarget.html#b0">00463</a>     XMLFormatTarget() {};
+00464 
+00465 <span class="keyword">private</span>:
+00466     <span class="comment">// -----------------------------------------------------------------------</span>
+00467     <span class="comment">//  Unimplemented constructors and operators</span>
+00468     <span class="comment">// -----------------------------------------------------------------------</span>
+00469     XMLFormatTarget(<span class="keyword">const</span> XMLFormatTarget&amp;);
+00470     XMLFormatTarget&amp; operator=(<span class="keyword">const</span> XMLFormatTarget&amp;);
+00471 };
+00472 
+00473 
+00474 <span class="comment">// ---------------------------------------------------------------------------</span>
+00475 <span class="comment">//  XMLFormatter: Getter methods</span>
+00476 <span class="comment">// ---------------------------------------------------------------------------</span>
+<a name="l00477"></a><a class="code" href="classXMLFormatter.html#z560_0">00477</a> <span class="keyword">inline</span> <span class="keyword">const</span> XMLCh* <a class="code" href="classXMLFormatter.html#z560_0">XMLFormatter::getEncodingName</a>()<span class="keyword"> const</span>
+00478 <span class="keyword"></span>{
+00479     <span class="keywordflow">return</span> fOutEncoding;
+00480 }
+00481 
+<a name="l00482"></a><a class="code" href="classXMLFormatter.html#z560_1">00482</a> <span class="keyword">inline</span> <span class="keyword">const</span> <a class="code" href="classXMLTranscoder.html">XMLTranscoder</a>* <a class="code" href="classXMLFormatter.html#z560_1">XMLFormatter::getTranscoder</a>()<span class="keyword"> const</span>
+00483 <span class="keyword"></span>{
+00484     <span class="keywordflow">return</span> fXCoder;
+00485 }
+00486 
+00487 <span class="comment">// ---------------------------------------------------------------------------</span>
+00488 <span class="comment">//  XMLFormatter: Setter methods</span>
+00489 <span class="comment">// ---------------------------------------------------------------------------</span>
+<a name="l00490"></a><a class="code" href="classXMLFormatter.html#z562_0">00490</a> <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="classXMLFormatter.html#z562_0">XMLFormatter::setEscapeFlags</a>(<span class="keyword">const</span> EscapeFlags newFlags)
+00491 {
+00492     fEscapeFlags = newFlags;
+00493 }
+00494 
+<a name="l00495"></a><a class="code" href="classXMLFormatter.html#z562_1">00495</a> <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code" href="classXMLFormatter.html#z562_1">XMLFormatter::setUnRepFlags</a>(<span class="keyword">const</span> UnRepFlags newFlags)
+00496 {
+00497     fUnRepFlags = newFlags;
+00498 }
+00499 
+00500 
+<a name="l00501"></a><a class="code" href="classXMLFormatter.html#z562_2">00501</a> <span class="keyword">inline</span> XMLFormatter&amp; <a class="code" href="classXMLFormatter.html#z558_1">XMLFormatter::operator&lt;&lt;</a>(<span class="keyword">const</span> EscapeFlags newFlags)
+00502 {
+00503     fEscapeFlags = newFlags;
+00504     <span class="keywordflow">return</span> *<span class="keyword">this</span>;
+00505 }
+00506 
+<a name="l00507"></a><a class="code" href="classXMLFormatter.html#z562_3">00507</a> <span class="keyword">inline</span> XMLFormatter&amp; <a class="code" href="classXMLFormatter.html#z558_1">XMLFormatter::operator&lt;&lt;</a>(<span class="keyword">const</span> UnRepFlags newFlags)
+00508 {
+00509     fUnRepFlags = newFlags;
+00510     <span class="keywordflow">return</span> *<span class="keyword">this</span>;
+00511 }
+00512 
+00513 <span class="comment">// ---------------------------------------------------------------------------</span>
+00514 <span class="comment">//  XMLFormatter: Getter methods</span>
+00515 <span class="comment">// ---------------------------------------------------------------------------</span>
+<a name="l00516"></a><a class="code" href="classXMLFormatter.html#z564_0">00516</a> <span class="keyword">inline</span> <a class="code" href="classXMLFormatter.html#z554_0">XMLFormatter::EscapeFlags</a> <a class="code" href="classXMLFormatter.html#z564_0">XMLFormatter::getEscapeFlags</a>()<span class="keyword"> const</span>
+00517 <span class="keyword"></span>{
+00518     <span class="keywordflow">return</span> fEscapeFlags;
+00519 }
+00520 
+<a name="l00521"></a><a class="code" href="classXMLFormatter.html#z564_1">00521</a> <span class="keyword">inline</span> <a class="code" href="classXMLFormatter.html#z554_1">XMLFormatter::UnRepFlags</a> <a class="code" href="classXMLFormatter.html#z564_1">XMLFormatter::getUnRepFlags</a>()<span class="keyword"> const</span>
+00522 <span class="keyword"></span>{
+00523     <span class="keywordflow">return</span> fUnRepFlags;
+00524 }
+00525 
+00526 <a class="code" href="XercesDefs_8hpp.html#a4">XERCES_CPP_NAMESPACE_END</a>
+00527 
+00528 <span class="preprocessor">#endif</span>
+</pre></div>    </FONT></TD></TR></TABLE><BR>
+</TD></TR></TABLE></TD></TR></TABLE><BR><TABLE border="0" cellpadding="0" cellspacing="0" width="620"><TR><TD bgcolor="#0086b2"><IMG height="1" src="images/dot.gif" width="1" alt=""></TD></TR><TR><TD align="center"><FONT color="#0086b2" size="-1"><I>
+              Copyright &copy; 1994-2004 The Apache Software Foundation.
+              All Rights Reserved.
+            </I></FONT></TD></TR></TABLE></BODY></HTML>

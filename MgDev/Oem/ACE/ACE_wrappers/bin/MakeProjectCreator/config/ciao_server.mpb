@@ -1,0 +1,7 @@
+// -*- MPC -*-
+// ciao_server.mpb,v 1.4 2003/12/30 15:18:22 dhinton Exp
+
+project : ciao_component {
+  after += CIAO_Server
+  libs    += CIAO_Server
+}

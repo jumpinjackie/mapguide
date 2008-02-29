@@ -1,0 +1,7 @@
+// -*- MPC -*-
+// dynamicany.mpb,v 1.2 2003/12/30 15:18:22 dhinton Exp
+
+project : taolib {
+  after   += DynamicAny
+  libs    += TAO_DynamicAny
+}

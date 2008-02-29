@@ -1,0 +1,10 @@
+// -*- MPC -*-
+// ftorbutils.mpb,v 1.4 2003/12/30 15:18:22 dhinton Exp
+
+project : iormanip, portableserver {
+  after     += FTORB_Utils 
+  libs      += TAO_FTORB_Utils 
+  comps     += FTORB_Utils
+  tagchecks += FTORB_Utils
+}
+

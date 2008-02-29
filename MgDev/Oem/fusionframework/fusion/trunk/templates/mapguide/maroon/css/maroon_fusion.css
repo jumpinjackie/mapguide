@@ -1,0 +1,415 @@
+/********************************************************
+  Noble Studios - 05/21/07
+  ns_adsk.css
+  Mapguide Layout
+********************************************************/
+
+html {
+  height: 100%;
+}
+
+body {
+  width:  100%;
+  height:  100%;
+  overflow:  hidden;
+  background-image: url(../images/background.gif);
+  background-repeat: repeat-x;
+  background-color: #3e5c5f;
+}
+
+  
+body, table {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 75%;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  color: #000000;
+}
+
+img {
+  border: none;
+}
+
+
+/********************************************************
+  Overall Structure
+********************************************************/
+#AppContainer {
+  border: 1px solid #000000;
+  border-bottom: none;
+}
+
+#Right {
+  width: 220px;
+  position: absolute;
+  overflow: hidden;
+  
+  right: 10px;
+  top: 78px;
+  bottom: 20px;
+  background: #ffffff;
+  border-left: 1px solid #000000;
+  border-right: 1px solid #000000;
+}
+
+#Map {
+  background: #ffffff;
+  z-index: 10;
+  overflow: hidden;
+  border-bottom: 1px solid #000000;
+}
+
+#Maptip {
+  display: none;
+  border: 1px solid #000;
+  background-color: #E5DAC7;
+  padding: 4px;
+}
+
+/********************************************************
+  ToolBar
+********************************************************/
+#Toolbar {
+  background: #500000;
+  border-bottom: 1px solid #000000;
+  border-left: 1px solid #000000;
+  border-right: 1px solid #000000;
+  z-index: 1;
+}
+
+#ToolbarVertical {
+  padding: 10px 0px 0 0px;
+  background: #500000;
+  border-left: 1px solid #000000;
+  border-right: 1px solid #000000;
+  border-bottom: 1px solid #000000;
+  z-index: 1;
+}
+
+
+#Toolbar a.jxButton {
+  padding: 3px 4px 3px 4px;
+}
+
+
+#Toolbar a.jxButton:hover,
+#ToolbarVertical a.jxButton:hover {
+  background-color: #733333;
+}
+
+#Toolbar span.jxButtonLabel,
+#ToolbarVertical a.jxButtonLabel {
+  color: #fff;
+}
+
+a.jxButtonMenu span.jxButtonEmptyLabel, 
+a.jxButtonFlyout span.jxButtonEmptyLabel  {
+  /* expand empty labels that have a menu */
+  overflow:  visible;
+}
+
+  
+.jxButtonMenu a span.jxButtonLabel, 
+.jxButtonFlyout a span.jxButtonLabel  {
+  background-image:  url(../images/iconFileMenuDownArrow.gif);
+  background-position:  right top;
+  background-repeat:  no-repeat;
+  padding-right:  16px;
+}
+
+  
+.seperator {
+  padding: 4px 10px;
+  width: 1px;
+  background: url(../images/seperator.gif) no-repeat center;
+}
+
+  
+.seperatorVertical {
+  padding: 10px 4px;
+  height: 1px;
+  background: url(../images/seperatorVertical.gif) no-repeat center;
+}
+
+#Toolbar ul.jxMenu a.jxButton, 
+#Toolbar ul.jxSubMenu a.jxButton {
+  padding: 0px;
+}
+
+#Toolbar ul.jxMenu a.jxButton:hover, 
+#Toolbar ul.jxSubMenu a.jxButton:hover,
+#ToolbarVertical ul.jxMenu a.jxButton:hover, 
+#ToolbarVertical ul.jxSubMenu a.jxButton:hover {
+  background-image: none;
+  background-color: #DEDEDE;
+  border: 1px solid #DEDEDE;
+}
+
+#Toolbar ul.jxMenu span.jxButtonLabel, 
+#Toolbar ul.jxSubMenu a.jxButtonLabel,
+#ToolbarVertical ul.jxMenu span.jxButtonLabel, 
+#ToolbarVertical ul.jxSubMenu a.jxButtonLabel {
+  color: #000;;
+}
+
+
+/********************************************************
+  FileMenu
+********************************************************/
+/*
+  fileMenu is wrapper for main application menu
+*/
+#FileMenu {
+  background-image: url(../images/fileMenuBackground.gif);
+  background-repeat: repeat-x;
+  background-color: #ad1b25;
+  background-position: center;
+  border: 1px solid #000000;
+  z-index: 2;
+}
+
+#FileMenu a.jxButton {
+  padding: 4px 4px 3px 4px;
+}
+
+#FileMenu span.jxButtonIcon.jxButtonLabel {
+  padding-left: 0px;
+}
+
+#FileMenu a.jxButton:hover {
+  background-image: url(../images/fileMenuBackgroundOver.gif);
+  background-repeat: repeat-x;
+  background-color: #ad1b25;
+  background-position: center;
+}
+
+#FileMenu span.jxButtonLabel {
+  color: #fff;
+}
+
+#FileMenu ul.jxMenu span.jxButtonIcon.jxButtonLabel,
+#FileMenu ul.jxSubMenu span.jxButtonIcon.jxButtonLabel {
+  padding-left: 22px;
+}
+
+#FileMenu a.jxButtonMenu span.jxButtonSpan, 
+#FileMenu a.jxButtonFlyout span.jxButtonSpan {
+  background-image: none;
+}
+
+#FileMenu a.jxButtonMenu span.jxButtonContent, 
+#FileMenu a.jxButtonFlyout span.jxButtonContent {
+  padding-right: 0px;
+}
+
+#FileMenu ul.jxMenu a.jxButton, 
+#FileMenu ul.jxSubMenu a.jxButton {
+  padding: 0px;
+}
+
+#FileMenu ul.jxMenu a.jxButton:hover, 
+#FileMenu ul.jxSubMenu a.jxButton:hover {
+  background-image: none;
+  background-color: #DEDEDE;
+  border: 1px solid #DEDEDE;
+}
+
+#FileMenu ul.jxMenu span.jxButtonLabel, 
+#FileMenu ul.jxSubMenu a.jxButtonLabel {
+  color: #000;;
+}
+
+
+
+/********************************************************
+  Status bar
+********************************************************/
+#StatusbarContainer {
+    border-top: 1px solid #000000;
+    background: #ad1b25;
+    color: #ffffff;
+    line-height: 22px;
+    font-size: 10px;
+    vertical-align: middle;
+}
+
+#Statusbar .jxSplitterBar {
+    width: 1px;
+    border-left: 1px solid #999;
+    border-right: 1px solid #fff;
+    cursor: 'col-resize';
+    margin-top: 1px;
+}
+
+#Statusbar .spanCursorPosition, 
+#Statusbar .spanViewSize, 
+#Statusbar .spanSelectionInfo {
+  padding: 4px 10px;
+}
+
+.inputEditableScale {
+  font: normal 10px Verdana, Arial, Helvetica, sans-serif;
+}
+
+#pbmg {
+  position: absolute;
+  right: 1px;
+  padding-top: 1px;
+}
+  
+/********************************************************
+  Sidebar
+********************************************************/
+.jxPanelBar {
+  margin-left: 8px;
+  height: 20px;
+}
+
+#Sidebar {
+  border-right: 1px solid #000;
+}
+
+.jxPanel {
+  background: #ffffff;
+  overflow: auto;
+  height: 100px;
+  margin-left: 8px;
+  border: none;
+}
+
+.jxPanelTitle {
+  font: bold 1em Verdana, Arial, Helvetica, sans-serif;
+  color: #ffffff;
+  height: 12px;
+  background-image: url(../images/fileMenuBackground.gif);
+  background-repeat: repeat-x;
+  background-color: #ad1b25;
+  background-position: center;
+  border: none;
+  border-bottom: 1px solid #000000;
+}
+
+.jxPanelMaximize {
+  display: block;
+  float: left;
+  padding: 0px 5px;
+  z-index: 2;
+}
+
+.jxPanelContent {
+  border: none;
+}
+
+.jxPanelLabel {
+  font: bold 11px Verdana, Arial, Helvetica, sans-serif;
+  color: #ffffff;
+  display: block;
+  float: left;
+  padding: 3px 0px 2px 20px;
+}
+
+.jxPanelMaximize {
+  display: block;
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 16px;
+  height: 16px;
+}
+
+a.jxPanelMaximize img, 
+a.jxPanelHelp img, 
+a.jxPanelLoading img {
+  width: 16px;
+  height: 16px;
+}
+  
+#Tasks {
+  display: block;
+  visibility: visible;
+  height: 250px;
+}
+
+#TaskTools {
+  padding: 5px 8px;
+  background: #ffffff;
+  border-bottom: 1px solid #8e99a3;
+}
+
+
+#TaskPane {
+  padding: 2px 4px 2px 10px;
+}
+
+.TaskMenuIcon {
+  float: right;
+}
+
+  
+#OverviewMap {
+  height: 180px;
+}
+
+#OverviewMapContent {
+  border: 1px solid #ffffff;
+  height: 177px;
+}
+
+#SidebarCollapse {
+  position: absolute;
+  width: 8px;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+  background: url(../images/sidebarCollapseBackground.gif) repeat-y #000;
+  z-index: 1;
+}
+
+#SidebarCollapseButton {
+  display: block;
+  width: 8px;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  position: absolute;
+  height: 100%;
+  font-size: 1px;
+}
+
+.jxSnapOpened #SidebarCollapseButton {
+  background: url(../images/sidebarCloseButton.gif) center no-repeat;
+}
+
+.jxSnapClosed #SidebarCollapseButton {
+  background: url(../images/sidebarOpenButton.gif) center no-repeat;
+}
+  
+#TaskPane {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/*#Legend {
+    width: 100%;
+    height: 100%;
+}
+*/
+.inputEditableScale {
+  font: normal 10px Verdana, Arial, Helvetica, sans-serif;
+}
+
+#Navigator {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  display: block;
+  z-index: 100;
+}
+
+.jxTree a, .jxTreeRoot a {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+}

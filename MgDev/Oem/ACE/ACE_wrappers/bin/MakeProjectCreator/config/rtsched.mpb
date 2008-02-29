@@ -1,0 +1,9 @@
+// -*- MPC -*-
+// rtsched.mpb,v 1.4 2003/12/30 15:18:22 dhinton Exp
+
+project : naming {
+  after     += RTSched
+  libs      += TAO_RTSched
+  comps     += Sched
+  tagchecks += Sched
+}

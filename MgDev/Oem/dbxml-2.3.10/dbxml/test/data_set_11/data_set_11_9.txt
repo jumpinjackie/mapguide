@@ -1,0 +1,19 @@
+# See the file LICENSE for redistribution information.
+#
+# Copyright (c) 2002,2006 Oracle.  All rights reserved.
+#
+# $Id: data_set_11_9.txt,v 1.5 2006/10/30 17:46:16 bostic Exp $
+#
+# QP tests
+# Sequence operators (union, intersect, except)
+
+# TODO specify and implement!
+# e.g.
+# union(collection("dbxml:/a")/foo, collection("dbxml:/a")/bar)
+# intersect(collection("dbxml:/a")/foo, collection("dbxml:/a")/bar)
+# except(collection("dbxml:/a")/foo, collection("dbxml:/a")/bar)
+
+# may need the facility to specify XML documents/content to load
+
+TEST 11.9
+TITLE Sequence functions

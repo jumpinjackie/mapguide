@@ -1,0 +1,105 @@
+/**
+ * @project         Jx
+ * @revision        $Id: picker.css 316 2007-06-19 20:28:53Z pspencer $
+ * @author          Fred Warnock (fwarnock@dmsolutions.ca)
+ * @copyright       &copy; 2006 DM Solutions Group Inc.
+ */
+
+/* ============= */
+/* PICKER STYLES */
+/* ============= */
+
+/* the jx Picker is intended to replace lists and combo boxes that require 
+   a richer set of features such as text input, images and styles in the
+   selection list and better control over the list size. */
+
+div.jxPicker {
+  position: relative;
+  display: block;
+  padding: 0px;
+  padding-right: 22px;
+  margin: 0px;
+  border: 0px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size:11px;
+  z-index: 1;
+}
+
+.jxPickerDiscloser {
+  position: absolute;
+  right: 3px;
+  top: 3px;
+}
+
+.jxPickerDiscloser img {
+  width: 16px;
+  height: 16px;
+  border: 0px;
+}
+
+.jxPickerInput {
+  position: relative;
+  display: block;
+  float: left;
+  /*padding-right: 16px;*/
+  line-height: 24px;
+  height: 24px;
+}
+
+div.jxPickerOptions {
+  position: absolute;
+  top: 100%;
+  left: 0px;
+  width: 100%;
+  height: auto;
+  background-color: #fff;
+  overflow: auto;
+  border: 1px solid #333;
+  color: #000;
+  z-index: 1;
+  display: none;
+  text-align: right;
+}
+
+div.jxPickerOptions ul {
+  position: relative;
+  display: block;
+  margin: 0px;
+  padding: 0px;
+  border: none;
+  list-style-type: none;
+}
+
+div.jxPickerOptions li {
+  position: relative;
+  display: block;
+  margin: 0px;
+  padding: 0px;
+  border: none;
+  height:20px;
+}
+
+div.jxPickerOptions a {
+  position: relative;
+  display: block;
+  text-decoration: none;
+  white-space: nowrap;
+  /* this value needs to be the height of it's parent
+     minus it's own margin, padding and border values */ 
+  line-height:20px;
+  /* height needs to be set for IE.  Same value as line height. */
+  height: 20px;
+  color: #000;
+  background-position: right top;
+  background-repeat: no-repeat;
+}
+
+div.jxPickerOptions a:hover {
+  background-color: #E1EDFA; 
+  /*background-color: #ffffcc; */
+}
+
+div.jxPickerOptions a.selected {
+  font-weight: bold;
+  background-color: #ffffb3;
+}

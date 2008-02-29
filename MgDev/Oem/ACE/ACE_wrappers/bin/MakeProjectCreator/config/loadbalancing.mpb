@@ -1,0 +1,9 @@
+// -*- MPC -*-
+// loadbalancing.mpb,v 1.5 2003/12/30 15:18:22 dhinton Exp
+
+project : messaging, naming, portablegroup {
+  libs      += TAO_CosLoadBalancing
+  after     += CosLoadBalancing
+  comps     += CosLoadBalancing
+  tagchecks += CosLoadBalancing
+}

@@ -1,0 +1,68 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="a">
+      <Function name="{http://www.w3.org/2005/xpath-functions}:distinct-values">
+        <Atomize>
+          <DbXmlNav>
+            <QueryPlanFunction result="collection" container="11.8.1.dbxml">
+              <OQPlan>n(P(edge-element-presence-none,=,root:http://www.sleepycat.com/2002/dbxml.order),V(node-element-equality-double,total,>,'11000'),P(node-element-equality-string,prefix,customer_id))</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="child" name="order" nodeType="element"/>
+            <DbXmlFilter>
+              <DbXmlCompare name="greater_than" join="child" name="total" nodeType="element">
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="11000.0" typeuri="http://www.w3.org/2001/XMLSchema" typename="decimal"/>
+                </Sequence>
+              </DbXmlCompare>
+            </DbXmlFilter>
+            <DbXmlStep axis="child" name="customer_id" nodeType="element"/>
+          </DbXmlNav>
+        </Atomize>
+      </Function>
+    </ForBinding>
+    <LetBinding name="b">
+      <DbXmlNav>
+        <QueryPlanFunction result="collection" container="11.8.1.dbxml">
+          <OQPlan>n(V(node-element-equality-string,customer_id,=,'[to be calculated]'),P(edge-element-presence-none,=,root:http://www.sleepycat.com/2002/dbxml.order))</OQPlan>
+        </QueryPlanFunction>
+        <DbXmlStep axis="child" name="order" nodeType="element"/>
+        <DbXmlFilter>
+          <DbXmlCompare name="equal" join="child" name="customer_id" nodeType="element">
+            <Variable name="a"/>
+          </DbXmlCompare>
+        </DbXmlFilter>
+      </DbXmlNav>
+    </LetBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="Output" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="CustKey" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Variable name="a"/>
+          </Children>
+        </DOMConstructor>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="NumberOfOrders" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Function name="{http://www.w3.org/2005/xpath-functions}:count">
+              <Variable name="b"/>
+            </Function>
+          </Children>
+        </DOMConstructor>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

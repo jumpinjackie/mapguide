@@ -1,0 +1,38 @@
+		Berkeley DB XML Examples README
+
+This directory contains example code for the
+language bindings supported by BDB XML, including
+C++, Java, and Python.  Examples for PHP and Perl are
+in their corresponding src subdirectories (see src/php
+and src/perl).
+
+This is a brief overview of the example structure:
+
+cxx/gettingStarted
+java/gettingStarted
+	These are examples associated with the C++ and
+	Java Getting Started Guide documentation provided
+	with BDB XML.
+
+cxx/basic
+java/basic
+python/basic
+	Simple examples of BDB XML usage:
+	helloWorld -- as basic as it gets
+	helloWorldTxn -- basic, with transactions
+	query -- simple query and results handling
+	queryTxn -- simple query and results handling using transactions
+	... need a couple more
+
+TBD add "advanced" directory (cxx/advanced, ...)
+	o indexes
+	o use of checkpoints
+	o deadlock handling
+	o app server example
+	o scripting integration with other stuff???
+	
+	
+
+
+
+

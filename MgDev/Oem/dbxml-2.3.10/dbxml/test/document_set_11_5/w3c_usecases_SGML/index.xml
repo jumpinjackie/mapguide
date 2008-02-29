@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test id="11.5.5">
+  <category>xquery</category>
+  <description>W3C Use Cases (SGML)</description>
+  <program name='dbxml_test_driver' />
+  <addArg>--validate</addArg>
+
+  <!-- stuff that applies to the entire test -->
+  <indexSpecification>
+    <node>report</node>
+    <index>node-element-presence</index>
+  </indexSpecification>
+  <indexSpecification>
+    <node>para</node>
+    <index>edge-element-presence</index>
+  </indexSpecification>
+  <indexSpecification>
+    <node>section</node>
+    <index>edge-element-presence</index>
+  </indexSpecification>
+  <indexSpecification>
+    <node>security</node>
+    <index>edge-attribute-equality-string</index>
+  </indexSpecification>
+  <indexSpecification>
+    <node>title</node>
+    <index>node-element-substring-string</index>
+  </indexSpecification>
+  <indexSpecification>
+    <node>topicid</node>
+    <index>edge-attribute-equality-string</index>
+  </indexSpecification>
+  <indexSpecification>
+    <node>xrefid</node>
+    <index>edge-attribute-equality-string</index>
+  </indexSpecification>
+
+  <document>sgml.xml</document>
+
+  <!-- individual tests -->
+  <base>
+    <query>SGML-Q1.xquery</query>
+    <query>SGML-Q2.xquery</query>
+    <query>SGML-Q3.xquery</query>
+    <query>SGML-Q4.xquery</query>
+    <query>SGML-Q5.xquery</query>
+    <query>SGML-Q6.xquery</query>
+    <query>SGML-Q7.xquery</query>
+    <query>SGML-Q8a.xquery</query>
+    <query>SGML-Q8b.xquery</query>
+    <query>SGML-Q9.xquery</query>
+    <query>SGML-Q10.xquery</query>
+  </base>
+</test>
+

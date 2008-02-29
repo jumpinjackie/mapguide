@@ -1,0 +1,34 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="a">
+      <DbXmlNav>
+        <QueryPlanFunction result="collection" container="11.8.3.dbxml">
+          <OQPlan>U</OQPlan>
+        </QueryPlanFunction>
+        <DbXmlStep axis="child" name="article" nodeType="element"/>
+        <DbXmlStep axis="child" name="prolog" nodeType="element"/>
+      </DbXmlNav>
+      <Where>
+        <Function name="{http://www.w3.org/2005/xpath-functions}:empty">
+          <DbXmlNav>
+            <Variable name="a"/>
+            <DbXmlStep axis="child" name="genre" nodeType="element"/>
+          </DbXmlNav>
+        </Function>
+      </Where>
+    </ForBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="NoGenre" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <DbXmlNav>
+          <Variable name="a"/>
+          <DbXmlStep axis="child" name="title" nodeType="element"/>
+        </DbXmlNav>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

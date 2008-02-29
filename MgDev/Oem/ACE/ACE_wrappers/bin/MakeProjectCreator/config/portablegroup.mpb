@@ -1,0 +1,9 @@
+// -*- MPC -*-
+// portablegroup.mpb,v 1.5 2003/12/30 15:18:22 dhinton Exp
+
+project : naming, minimum_corba {
+  libs      += TAO_PortableGroup
+  after     += PortableGroup
+  comps     += PortableGroup
+  tagchecks += PortableGroup
+}

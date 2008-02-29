@@ -1,0 +1,44 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="result" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <ForBinding name="id">
+          <DbXmlNav>
+            <LookupIndex container="11.5.5.dbxml">
+              <DocumentQP index="node-metadata-equality-string" operation="eq" child="name:http://www.sleepycat.com/2002/dbxml" value="sgml.xml">
+                <PresenceQP index="edge-attribute-equality-string" operation="prefix" parent="xref" child="xrefid"/>
+              </DocumentQP>
+            </LookupIndex>
+            <DbXmlFilter>
+              <DbXmlStep axis="parent-of-attribute" name="xref" nodeType="element"/>
+            </DbXmlFilter>
+          </DbXmlNav>
+        </ForBinding>
+        <DbXmlNav>
+          <LookupIndex container="11.5.5.dbxml">
+            <DocumentQP index="node-metadata-equality-string" operation="eq" child="name:http://www.sleepycat.com/2002/dbxml" value="sgml.xml">
+              <ValueQP index="edge-attribute-equality-string" operation="eq" parent="topic" child="topicid">
+                <Atomize>
+                  <Variable name="id"/>
+                </Atomize>
+              </ValueQP>
+            </DocumentQP>
+          </LookupIndex>
+          <Join type="parent-of-attribute" return="argument">
+            <DbXmlNav>
+              <QueryPlanFunction result="document" container="11.5.5.dbxml">
+                <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'sgml.xml',P(edge-attribute-equality-string,prefix,topic.@topicid))</OQPlan>
+              </QueryPlanFunction>
+              <DbXmlStep axis="descendant" name="topic" nodeType="element"/>
+            </DbXmlNav>
+          </Join>
+        </DbXmlNav>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

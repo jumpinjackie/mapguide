@@ -1,0 +1,289 @@
+/**
+ * @project         MapGuide Open Source Web Studio
+ * @revision        $Id: help.css,v 1.8 2006/06/13 17:30:22 fwarnock Exp $
+ * @copyright       &copy; 2006 DM Solutions Group Inc.
+ * released under LGPL License with MapGuide Open Source (see index.html)
+ */
+
+body.helpContentPage, body.helpTopicsPage {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  background-color: #fff;
+  background-image: url(../images/panel_white_bg.png);
+  background-repeat: repeat-x;
+  background-position: left top;
+  background-attachment: fixed !important/* ; removing the semicolin so firefox skips the style */
+  background-attachment: fixed; /* repeating this style as a hack for firefox to skip the attachment*/
+}
+
+body.helpTopicsPage {
+  background-color: #f0f0f0;
+  background-image: url(../images/panel_grey_bg.png);
+  padding: 0px;
+}
+
+/* ================= */
+/* TOPIC TREE STYLES */
+/* ================= */
+
+.helpTopicsPage h1 {
+  margin: 0px;
+  padding: 10px;
+  background-color: #5299CC;
+  color: #fff;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+
+ul.helpTopics, ul.helpTopics ul {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  /* relative positioning is required for IE to fix the peek-a-boo bug */
+  position:relative;
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+}
+
+ul.helpTopics {
+  margin-left: 10px;
+}
+
+ul.helpTopics li {
+  /* relative positioning is required for IE to fix the peek-a-boo bug */
+  position:relative;
+  margin: 0px;
+  padding: 0px;
+  white-space: nowrap;
+}
+
+ ul.helpTopics ul li {
+  /* indent nested list items */
+  margin-left: 16px;
+ }
+
+ul.helpTopics li a {
+  margin: 0px;
+  padding: 0px;
+  padding-left: 2px;
+  color: #0C9BC7;
+  text-decoration: none;
+  /* height and line height need to be the same to center labels correctly */
+  /* they need to be an even number so branches line up properly */
+  line-height: 20px;
+  height: 20px;
+}
+
+ul.helpTopics li a:hover {
+  color: #007399;
+  background-color: #E1EDFA; 
+  text-decoration: underline;
+}
+
+/* =================== */
+/* HELP CONTENT STYLES */
+/* =================== */
+
+.helpPanel {
+  padding: 10px;
+}
+
+.helpPanel .helpPanel {
+  /* this is to collapse padding for the getting Started Guide */
+  padding: 0px;
+}
+
+.helpPanel img {
+  margin: 0px 5px 0px 5px;
+}
+
+.helpPanel p, .helpPanel a, .helpPanel li, .helpPanel dt, .helpPanel dd {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+}
+
+.helpPanel H1, .helpPanel H2, .helpPanel H3, .helpPanel H4 {
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 0px;
+  margin: 22px 5px 15px 5px;
+  color: #666;
+}
+
+.helpPanel H1 {
+  margin-top: 5px;
+  font-size: 20px;
+  color: #5299CC;
+}
+
+.helpPanel H2 {
+  font-size: 17px;
+  border-bottom: 2px solid #eee;
+}
+
+.helpPanel H3 {
+  font-size: 13px;
+}
+
+.helpPanel H4 {
+  font-size: 13px;
+}
+
+.helpPanel P {
+  line-height: 16px;
+  color: #333;
+  margin: 6px 5px 6px 5px;
+}
+
+.helpPanel DL, .helpPanel UL, .helpPanel OL  {
+  margin-left: 0px 5px 0px 5px;
+}
+
+.helpPanel DT, .helpPanel DD, .helpPanel LI {
+  color: #333;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  line-height: 16px;
+}
+
+.helpPanel DT {
+  font-weight: bold;
+  margin-top: 9px;
+  margin-left: 5px;
+}
+
+.helpPanel A {
+  color: #0C9BC7;
+  text-decoration: none;
+}
+
+.helpPanel A:hover {
+  color: #007399;
+  text-decoration: underline;
+}
+
+
+/* ================== */
+/* DIALOG HELP STYLES */
+/* ================== */
+
+.jxDialogHelp p, .jxDialogHelp a, .jxDialogHelp li, .jxDialogHelp dt, .jxDialogHelp dd {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+}
+
+.jxDialogHelp H1, .jxDialogHelp H2, .jxDialogHelp H3, .jxDialogHelp H4 {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0px;
+  padding: 10px 5px 10px 5px;
+  color: #666;
+}
+
+.jxDialogHelp H1 {
+  padding: 5px;
+  margin-bottom: 5px;
+  font-size: 17px;
+  background-color: #5299CC;
+  color: #fff;
+}
+
+.jxDialogHelp H2 {
+  font-size: 14px;
+}
+
+.jxDialogHelp H3 {
+  font-size: 12px;
+}
+
+.jxDialogHelp H4 {
+  font-size: 12px;
+}
+
+.jxDialogHelp P {
+  line-height: 14px;
+  color: #333;
+  margin: 0px 5px 10px 5px;
+}
+
+.jxDialogHelp DL, .jxDialogHelp UL, .jxDialogHelp OL {
+  margin: 0px;
+  padding: 0px;
+  margin: 0px 5px 10px 5px;
+}
+
+.jxDialogHelp DT, .jxDialogHelp DD, .jxDialogHelp LI {
+  margin: 0px;
+  padding: 0px;
+  margin: 5px 5px 5px 15px;
+  line-height: 14px;
+  color: #333;
+}
+
+.jxDialogHelp DT {
+  margin-top: 10px;
+  margin-left: 0px;
+  font-weight: bold;
+}
+
+.jxDialogHelp DD {
+  margin-left: 15px;
+}
+
+.jxDialogHelp A {
+  color: #0C9BC7;
+  text-decoration: none;
+}
+
+.jxDialogHelp A:hover {
+  color: #007399;
+  text-decoration: underline;
+}
+
+
+/* CUSTOM CLASSES FOR ABOUT DIALOG */
+
+#aboutDialog h1 {
+  font-size: 18px;
+}
+
+#aboutDialog h2 {
+  font-size: 14px;
+}
+
+#aboutDialog dt {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+#aboutDialog dd {
+  margin-left: 0px;
+}
+
+#aboutDialog ul {
+  margin: 0px;
+  padding: 0px;
+  list-style-type: none;
+}
+
+#aboutDialog li {
+  margin: 0px;
+  padding: 0px;
+}
+
+/* COLOR OVERIDES */
+
+.helpPanel .green {
+  color: #5BC70C;
+}
+
+.helpPanel .blue {
+  color: #0C9BC7;
+}
+
+.helpPanel .orange {
+  color: #F5860F;
+}
+
+

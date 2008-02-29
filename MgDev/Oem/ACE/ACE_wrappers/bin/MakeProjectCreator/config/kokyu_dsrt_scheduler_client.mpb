@@ -1,0 +1,5 @@
+// -*- MPC -*-
+// kokyu_dsrt_scheduler_client.mpb,v 1.2 2003/12/30 15:18:22 dhinton Exp
+
+project : taoclient, kokyu_dsrt_schedulers {
+}

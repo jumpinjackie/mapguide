@@ -1,0 +1,27 @@
+<!--
+User interface for print options
+-->
+<style type="text/css">
+#PrintUI select, #PrintUI .inputText {
+  width: 300px;
+}
+
+#PrintUI .block {
+  display: block;
+	float: none;
+}
+</style>
+
+<div id="PrintUI">
+  <fieldset id="PrintOptions">
+	  <legend>Options</legend>
+	  	<label class="block"><input name="dialog.print.showtitle" id="dialog.print.showtitle" type="checkbox" value="showtitle" checked>
+			Show Title?</label>
+		<label class="block">Title</label>
+		<input id="dialog.print.title" type="text" class="inputText" />
+		<label class="block"><input name="dialog.print.showlegend" id="dialog.print.showlegend" type="checkbox" value="showlegend" checked>
+			Show Legend?</label>
+		<label class="block"><input name="dialog.print.shownortharrow" id="dialog.print.shownortharrow" type="checkbox" value="shownortharrow" checked>
+			Show North Arrow?</label>
+  </fieldset>
+</div>

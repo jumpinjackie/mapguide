@@ -1,0 +1,7 @@
+// -*- MPC -*-
+// dsnotifylogadmin.mpb,v 1.3 2003/12/30 15:18:22 dhinton Exp
+
+project : dseventlogadmin, notification, naming {
+  after      += DsNotifyLogAdmin
+  libs       += TAO_DsNotifyLogAdmin
+}

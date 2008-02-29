@@ -1,0 +1,37 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="ord">
+      <DbXmlNav>
+        <QueryPlanFunction result="collection" container="11.8.1.dbxml">
+          <OQPlan>n(P(edge-element-presence-none,=,root:http://www.sleepycat.com/2002/dbxml.order),V(node-element-equality-double,discount_rate,>,'0.02'))</OQPlan>
+        </QueryPlanFunction>
+        <DbXmlStep axis="child" name="order" nodeType="element">
+          <OQPlan>P(edge-element-presence-none,=,root:http://www.sleepycat.com/2002/dbxml.order)</OQPlan>
+        </DbXmlStep>
+      </DbXmlNav>
+      <Where>
+        <EveryFLWOR>
+          <ForBinding name="item">
+            <DocumentOrder>
+              <DbXmlNav>
+                <Variable name="ord"/>
+                <DbXmlStep axis="child" name="order_lines" nodeType="element"/>
+                <DbXmlStep axis="child" name="order_line" nodeType="element"/>
+              </DbXmlNav>
+            </DocumentOrder>
+          </ForBinding>
+          <DbXmlNav>
+            <Variable name="item"/>
+            <DbXmlCompare name="greater_than" join="child" name="discount_rate" nodeType="element">
+              <OQPlan>V(node-element-equality-double,discount_rate,>,'0.02')</OQPlan>
+              <Sequence>
+                <AnyAtomicTypeConstructor value="0.02" typeuri="http://www.w3.org/2001/XMLSchema" typename="decimal"/>
+              </Sequence>
+            </DbXmlCompare>
+          </DbXmlNav>
+        </EveryFLWOR>
+      </Where>
+    </ForBinding>
+    <Variable name="ord"/>
+  </FLWOR>
+</XQuery>

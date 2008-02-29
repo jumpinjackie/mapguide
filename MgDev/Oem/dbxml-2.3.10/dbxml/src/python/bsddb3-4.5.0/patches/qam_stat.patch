@@ -1,0 +1,19 @@
+*** qam\qam_stat.c.save	Tue Dec 05 16:13:17 2000
+--- qam\qam_stat.c	Tue Dec 05 16:13:53 2000
+***************
+*** 144,150 ****
+
+  done:
+  	/* Discard the meta-data page. */
+! 	if ((ret = memp_fput(dbp->mpf, meta, !F_ISSET(dbp, DB_AM_RDONLY))) != 0)
+  		goto err;
+  	(void)__LPUT(dbc, lock);
+
+--- 144,150 ----
+
+  done:
+  	/* Discard the meta-data page. */
+! 	if ((ret = memp_fput(dbp->mpf, meta, F_ISSET(dbp, DB_AM_RDONLY) ? 0 : DB_MPOOL_DIRTY )) != 0)
+  		goto err;
+  	(void)__LPUT(dbc, lock);
+

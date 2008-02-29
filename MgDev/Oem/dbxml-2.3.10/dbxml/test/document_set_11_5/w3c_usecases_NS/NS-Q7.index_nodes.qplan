@@ -1,0 +1,61 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="Q7" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <ForBinding name="a">
+          <DbXmlNav>
+            <QueryPlanFunction result="document" container="11.5.1.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'auction.xml',U)</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="descendant" prefix="ma" uri="http://www.example.com/AuctionWatch" name="Auction" nodeType="element"/>
+          </DbXmlNav>
+        </ForBinding>
+        <LetBinding name="seller_id">
+          <DocumentOrder>
+            <DbXmlNav>
+              <Variable name="a"/>
+              <DbXmlStep axis="child" prefix="ma" uri="http://www.example.com/AuctionWatch" name="Trading_Partners" nodeType="element"/>
+              <DbXmlStep axis="child" prefix="ma" uri="http://www.example.com/AuctionWatch" name="Seller" nodeType="element"/>
+              <DbXmlStep axis="child" uri="*" name="ID" nodeType="element"/>
+            </DbXmlNav>
+          </DocumentOrder>
+        </LetBinding>
+        <LetBinding name="buyer_id">
+          <DocumentOrder>
+            <DbXmlNav>
+              <Variable name="a"/>
+              <DbXmlStep axis="child" prefix="ma" uri="http://www.example.com/AuctionWatch" name="Trading_Partners" nodeType="element"/>
+              <DbXmlStep axis="child" prefix="ma" uri="http://www.example.com/AuctionWatch" name="High_Bidder" nodeType="element"/>
+              <DbXmlStep axis="child" uri="*" name="ID" nodeType="element"/>
+            </DbXmlNav>
+          </DocumentOrder>
+          <Where>
+            <Operator name="equal">
+              <Function name="{http://www.w3.org/2005/xpath-functions}:namespace-uri">
+                <TreatAs>
+                  <Variable name="seller_id"/>
+                  <SequenceType occurrence="zero_or_one" testType="node"/>
+                </TreatAs>
+              </Function>
+              <Function name="{http://www.w3.org/2005/xpath-functions}:namespace-uri">
+                <TreatAs>
+                  <Variable name="buyer_id"/>
+                  <SequenceType occurrence="zero_or_one" testType="node"/>
+                </TreatAs>
+              </Function>
+            </Operator>
+          </Where>
+        </LetBinding>
+        <DbXmlNav>
+          <Variable name="a"/>
+          <DbXmlStep axis="child" prefix="ma" uri="http://www.example.com/AuctionWatch" name="AuctionHomepage" nodeType="element"/>
+        </DbXmlNav>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

@@ -1,0 +1,19 @@
+<XQuery>
+  <DbXmlNav>
+    <QueryPlanFunction result="collection" container="11.8.3.dbxml">
+      <OQPlan>n(P(node-element-presence-none,=,author),P(node-element-equality-string,prefix,name),V(node-attribute-equality-string,@id,=,'2'))</OQPlan>
+    </QueryPlanFunction>
+    <DbXmlStep axis="child" name="article" nodeType="element"/>
+    <DbXmlFilter>
+      <DbXmlCompare name="equal" join="attribute" name="id" nodeType="attribute">
+        <Sequence>
+          <AnyAtomicTypeConstructor value="2" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+        </Sequence>
+      </DbXmlCompare>
+    </DbXmlFilter>
+    <DbXmlStep axis="child" name="prolog" nodeType="element"/>
+    <DbXmlStep axis="child" uri="*" name="*" nodeType="element"/>
+    <DbXmlStep axis="child" name="author" nodeType="element"/>
+    <DbXmlStep axis="child" name="name" nodeType="element"/>
+  </DbXmlNav>
+</XQuery>

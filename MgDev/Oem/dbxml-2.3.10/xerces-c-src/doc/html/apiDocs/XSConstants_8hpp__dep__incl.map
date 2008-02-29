@@ -1,0 +1,17 @@
+base referer
+rect $XSObject_8hpp.html 189,344 298,368
+rect $XSAnnotation_8hpp.html 389,8 522,32
+rect $XSAttributeDeclaration_8hpp.html 361,56 550,80
+rect $XSAttributeGroupDefinition_8hpp.html 347,104 563,128
+rect $XSAttributeUse_8hpp.html 383,152 527,176
+rect $XSElementDeclaration_8hpp.html 361,200 550,224
+rect $XSIDCDefinition_8hpp.html 381,248 530,272
+rect $XSModel_8hpp.html 403,296 507,320
+rect $XSModelGroup_8hpp.html 383,344 527,368
+rect $XSModelGroupDefinition_8hpp.html 355,392 555,416
+rect $XSMultiValueFacet_8hpp.html 373,440 538,464
+rect $XSNamespaceItem_8hpp.html 371,488 539,512
+rect $XSNotationDeclaration_8hpp.html 361,536 550,560
+rect $XSParticle_8hpp.html 398,584 513,608
+rect $XSTypeDefinition_8hpp.html 378,632 533,656
+rect $XSWildcard_8hpp.html 394,680 517,704

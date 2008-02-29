@@ -1,0 +1,119 @@
+Fusion Installation Instructions
+--------------------------------
+
+About Fusion
+------------
+
+Fusion is a toolkit for building web-mapping applications on top of
+MapGuide Open Source/Enterprise (MGOS/E).
+
+Pre-requisites
+--------------
+
+You must first obtain and correctly install MGOS/E and one of the
+Web Server Extension API languages.  Currently, Fusion only supports
+PHP.
+
+Once you have a working MapGuide OS/E installation with PHP API
+extensions, you can install Fusion.
+
+Obtaining Fusion
+----------------
+
+Fusion is available from .....
+
+Installing Fusion
+-----------------
+
+NOTE: It is HIGHLY RECOMMENDED that you install Fusion inside the
+WebServerExtensions/www directory of your MGOS/E installation.
+
+Fusion must be installed on the same server as your MGOS/E Web Server
+Extensions because it uses the API included with the Web Server
+Extensions.  
+
+To install Fusion, simply extract your Fusion source code package 
+(either tar.gz or zip file).  By default, Fusion is configured to be
+installed into the 'www' directory of your WebServerExtensions installation.
+You may install Fusion into a different location, as long as you follow
+the Configuring Fusion steps below.
+
+Configuring Fusion
+------------------
+
+If you installed Fusion into the WebServerExtensions/www directory, and your
+WebServerExtensions are installed in C:\Program Files, Fusion is ready to
+go.
+
+If the Web Server Extensions are installed elsewhere, you must now 
+change the default values in the following file:
+
+fusion/mapguide/php/Common.php
+
+At the beginning of this file are two lines as follows:
+
+$defaultInstallDir = "C:/Program Files/MapGuideOpenSource/";
+$defaultExtensionDir = $installDir . "WebServerExtensions/www/";
+
+Modify these lines to point to your actual installation path.
+
+If Fusion is not installed inside the WebServerExtensions/www directory,
+you must configure your web server to provide web access to Fusion.
+
+Doing this is dependent on the actual web server you have installed.  You 
+need to set up alias (Apache) or virtual directory (IIS) to the 'fusion'
+directory and configure it to allow execution of PHP scripts.
+
+If you do not know how to configure your web server to do this, please
+move the 'fusion' directory to the WebServerExtensions/www directory.
+
+Testing your Installation
+-------------------------
+
+Fusion comes with some sample applications in the samples directory.  To
+test your Fusion installation, you need to modify these applications for
+your particular setup and then load the applications.  If you get a map,
+everything is good!
+
+To configure the sample applications, you need to edit the following files:
+
+* index.html
+
+  look for the <script> tag that includes fusion.js and modify the url
+  appropriately.  It is configured to use localhost:8008, which will 
+  work for local installations of MGOS/E
+  
+* redirect.php
+
+  the sample applications use the Anonymous user by default.  If you have
+  modified MGOS/E default user configuration or would like to use a
+  different user name and password (for instance, if you need a user
+  that has the Author role), then you can modify the $username and
+  $password variables near the top of this file.  Note that these values
+  are not accessible to the user of the application (see Fusion Developer's
+  guide for more details on why redirect.php is needed and what it does).
+  
+* WebLayout.xml
+
+  the sample applications are configured to load the Sheboygan sample
+  map that is freely available with MGOS/E.  If you do not have this
+  sample data set installed, have installed it in a different location
+  than the default, or simply wish to use a different map, you will need
+  to edit this file.  Look for the following block:
+  
+  <Command xsi:type="MapCommandType">
+      <Name>Map</Name>
+      <Label>Map</Label>
+      <TargetViewer>All</TargetViewer>
+      <Action>MGMap</Action>
+      <ResourceId>Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition</ResourceId>
+  </Command>
+  
+  Change the ResourceId tag to point to the appropriate MapDefinition.
+
+Getting Help
+------------
+
+If you are having trouble getting fusion running ...
+
+$Id: INSTALLATION.TXT 496 2007-03-20 20:32:22Z pspencer $

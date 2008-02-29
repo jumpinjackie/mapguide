@@ -1,0 +1,7 @@
+// -*- MPC -*-
+// mfc.mpb,v 1.2 2003/12/30 15:18:22 dhinton Exp
+
+project {
+  requires += mfc
+  macros   += _AFX_DLL ACE_HAS_MFC
+}

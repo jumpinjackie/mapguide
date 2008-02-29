@@ -1,0 +1,14 @@
+// -*- MPC -*-
+// qt_reactor.mpb,v 1.2 2003/12/30 15:18:22 dhinton Exp
+
+feature(qt) {
+  MOC_Files {
+    QtReactor.h
+  }
+
+  Source_Files(ACE_COMPONENTS) {
+    Demux {
+      QtReactor_moc.cpp
+    }
+  }
+}

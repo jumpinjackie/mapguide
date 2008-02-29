@@ -1,0 +1,5 @@
+base referer
+rect $classSAXNotRecognizedException.html 7,158 210,182
+rect $classSAXNotSupportedException.html 234,158 429,182
+rect $classSAXParseException.html 453,158 597,182
+rect $classXMemory.html 290,9 373,33

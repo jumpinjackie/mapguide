@@ -1,0 +1,73 @@
+<XQuery>
+  <FLWOR>
+    <LetBinding name="allbikes">
+      <DbXmlNav>
+        <QueryPlanFunction result="document" container="11.5.3.dbxml">
+          <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'items.xml',n(u(V(node-element-substring-string,description,substring,'Bicycle'),V(node-element-substring-string,description,substring,'Tricycle')),P(edge-element-equality-string,prefix,item_tuple.itemno)))</OQPlan>
+        </QueryPlanFunction>
+        <DbXmlStep axis="descendant" name="item_tuple" nodeType="element"/>
+        <DbXmlFilter>
+          <Operator name="or">
+            <DbXmlContains join="child" name="description" nodeType="element">
+              <OQPlan>V(node-element-substring-string,description,substring,'Bicycle')</OQPlan>
+              <Sequence>
+                <AnyAtomicTypeConstructor value="Bicycle" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+              </Sequence>
+            </DbXmlContains>
+            <DbXmlContains join="child" name="description" nodeType="element">
+              <OQPlan>V(node-element-substring-string,description,substring,'Tricycle')</OQPlan>
+              <Sequence>
+                <AnyAtomicTypeConstructor value="Tricycle" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+              </Sequence>
+            </DbXmlContains>
+          </Operator>
+        </DbXmlFilter>
+      </DbXmlNav>
+    </LetBinding>
+    <LetBinding name="bikebids">
+      <DbXmlNav>
+        <LookupIndex container="11.5.3.dbxml">
+          <DocumentQP index="node-metadata-equality-string" operation="eq" child="name:http://www.sleepycat.com/2002/dbxml" value="bids.xml">
+            <ValueQP index="edge-element-equality-string" operation="eq" parent="bid_tuple" child="itemno">
+              <Atomize>
+                <DbXmlNav>
+                  <Variable name="allbikes"/>
+                  <DbXmlStep axis="child" name="itemno" nodeType="element">
+                    <OQPlan>P(edge-element-equality-string,prefix,item_tuple.itemno)</OQPlan>
+                  </DbXmlStep>
+                </DbXmlNav>
+              </Atomize>
+            </ValueQP>
+          </DocumentQP>
+        </LookupIndex>
+        <Join type="parent-of-child" return="argument">
+          <DbXmlNav>
+            <QueryPlanFunction result="document" container="11.5.3.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'bids.xml',P(edge-element-equality-string,prefix,bid_tuple.itemno))</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="descendant" name="bid_tuple" nodeType="element"/>
+          </DbXmlNav>
+        </Join>
+      </DbXmlNav>
+    </LetBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="high_bid" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <Function name="{http://www.w3.org/2005/xpath-functions}:max">
+          <Atomize>
+            <DocumentOrder>
+              <DbXmlNav>
+                <Variable name="bikebids"/>
+                <DbXmlStep axis="child" name="bid" nodeType="element"/>
+              </DbXmlNav>
+            </DocumentOrder>
+          </Atomize>
+        </Function>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

@@ -1,0 +1,85 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="a">
+      <Function name="{http://www.w3.org/2005/xpath-functions}:distinct-values">
+        <Atomize>
+          <DocumentOrder>
+            <DbXmlNav>
+              <LookupIndex container="11.8.2.dbxml">
+                <ValueQP index="node-element-equality-string" operation="gte" child="date_of_release" value="1990-01-01"/>
+              </LookupIndex>
+              <Join type="parent-of-child" return="argument">
+                <DbXmlNav>
+                  <QueryPlanFunction result="collection" container="11.8.2.dbxml">
+                    <OQPlan>n(P(node-element-equality-string,prefix,name),R(node-element-equality-string,date_of_release,>=,'1990-01-01',<,'1991-01-01'))</OQPlan>
+                  </QueryPlanFunction>
+                  <DbXmlStep axis="child" name="catalog" nodeType="element"/>
+                  <DbXmlStep axis="child" name="item" nodeType="element"/>
+                </DbXmlNav>
+              </Join>
+              <Join type="child" return="context_item">
+                <LookupIndex container="11.8.2.dbxml">
+                  <ValueQP index="node-element-equality-string" operation="lt" child="date_of_release" value="1991-01-01"/>
+                </LookupIndex>
+              </Join>
+              <DbXmlStep axis="child" name="publisher" nodeType="element"/>
+              <DbXmlStep axis="child" name="name" nodeType="element">
+                <OQPlan>P(node-element-equality-string,prefix,name)</OQPlan>
+              </DbXmlStep>
+            </DbXmlNav>
+          </DocumentOrder>
+        </Atomize>
+      </Function>
+    </ForBinding>
+    <LetBinding name="b">
+      <DbXmlNav>
+        <LookupIndex container="11.8.2.dbxml">
+          <ValueQP index="node-element-equality-string" operation="eq" child="name">
+            <Variable name="a"/>
+          </ValueQP>
+        </LookupIndex>
+        <Join type="parent-of-child" return="argument">
+          <DbXmlNav>
+            <QueryPlanFunction result="collection" container="11.8.2.dbxml">
+              <OQPlan>P(node-element-equality-string,prefix,name)</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="child" name="catalog" nodeType="element"/>
+            <DbXmlStep axis="child" name="item" nodeType="element"/>
+            <DbXmlStep axis="child" name="publisher" nodeType="element"/>
+          </DbXmlNav>
+        </Join>
+      </DbXmlNav>
+    </LetBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="Output" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="Publisher" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Variable name="a"/>
+          </Children>
+        </DOMConstructor>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="NumberOfItems" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Function name="{http://www.w3.org/2005/xpath-functions}:count">
+              <Variable name="b"/>
+            </Function>
+          </Children>
+        </DOMConstructor>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<!--
+  The above Strict doctype and <?xml ?> tag should be left as is.
+  The doctype is valid, but a bug in IE causes it to incorrectly render certain elements.
+  Adding the <?xml ?> tag causes IE to  revert to quirks mode, which fixes its box model rendering.
+-->
+<!--
+/**
+ * @project         MapGuide Open Source Web Studio
+ * @revision        $Id: index.html,v 1.43 2006/06/21 12:54:43 fwarnock Exp $
+ * @fileoverview    this is the main HTML page for the application
+ * @author          Paul Spencer (pspencer@dmsolutions.ca)
+ * @author          Zak James (zjames@dmsolutions.ca)
+ * @author          Fred Warnock (fwarnock@dmsolutions.ca)
+ * @copyright       &copy; 2006 DM Solutions Group Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of version 2.1 of the GNU Lesser
+ * General Public License as published by the Free Software Foundation.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+-->
+<head>
+<title>MapGuide Studio Open Source Web Studio</title>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1" />
+
+<style type="text/css">
+  /* import jx style sheets first*/
+  @import url(css/menu.css);
+  @import url(css/status.css);
+  @import url(css/toolbar.css);
+  @import url(css/snap.css);
+  @import url(css/tabs.css);
+  @import url(css/tree.css);
+  @import url(css/list.css);
+  @import url(css/panel.css);
+  @import url(css/dialog.css);
+  @import url(css/picker.css);
+  @import url(css/help.css);
+  /* import application style sheet last */
+  @import url(css/app.css);
+</style>
+
+<!--[if IE]>
+<style>
+  @import url(css/panel_ie.css);
+</style>
+<![endif]-->
+
+<!-- The total size of javascript files being loaded if we load them individually is
+     on the order of 680 kb.  By loading them all in a single script and enabling
+     output compression, it reduces the size to 109 kb.  This is substantial and
+     doesn't even include stripping comments (which may possibly reduce the size
+     by up to 50%).
+     
+     For developers/debugging, you probably want to load the individual files
+     directly and not use loadapi.php until you are ready to deploy.  For regular
+     users, loadapi should be fine (except that it is php only)
+-->
+<script type="text/javascript" src="js/scriptaculous/lib/prototype.js"></script>
+<script type="text/javascript" src="js/scriptaculous/src/scriptaculous.js"></script>
+
+<!-- 
+<script type="text/javascript" src="loadapi.php"></script>
+
+-->
+<script type="text/javascript" src="js/scriptaculous/lib/prototype.js"></script>
+<script type="text/javascript" src="js/scriptaculous/src/scriptaculous.js"></script>
+<script type="text/javascript" src="js/jx.js"></script>
+<script type="text/javascript" src="js/WSApplication.js"></script>
+<script type="text/javascript" src="js/WSBroker.js"></script>
+<script type="text/javascript" src="js/WSFactory.js"></script>
+<script type="text/javascript" src="js/WSView.js"></script>
+<script type="text/javascript" src="js/WSDialog.js"></script>
+<script type="text/javascript" src="js/WSUtility.js"></script>
+
+<script type="text/javascript">
+//this gets everything going
+var theApp
+window.onload = function() { theApp = new WSApplication(); }
+
+function setHelpTopic(topic) {
+  theApp.showHelpTopic(topic);
+}
+</script>
+
+</head>
+
+<body>
+<div id="menuBar"></div>
+<div id="toolBar"></div>
+<div id="thePage"></div>
+</body>
+</html>

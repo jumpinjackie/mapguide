@@ -1,0 +1,5 @@
+// -*- MPC -*-
+// taolib_with_idl.mpb,v 1.7 2004/01/07 18:15:34 elliott_c Exp
+
+project : taolib, taoidldefaults {
+}

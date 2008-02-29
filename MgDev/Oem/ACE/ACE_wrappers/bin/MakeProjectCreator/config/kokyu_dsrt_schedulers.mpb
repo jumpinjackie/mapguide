@@ -1,0 +1,8 @@
+// -*- MPC -*-
+// kokyu_dsrt_schedulers.mpb,v 1.4 2003/12/30 15:18:22 dhinton Exp
+
+project(kokyu_dsrt_schedulers) : rtcorba, kokyu, rtscheduling {
+  after   += Kokyu_DSRT_Schedulers 
+  libs    += Kokyu_DSRT_Schedulers
+  includes += $(TAO_ROOT)/examples/Kokyu_dsrt_schedulers
+}

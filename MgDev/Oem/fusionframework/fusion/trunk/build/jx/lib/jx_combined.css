@@ -1,0 +1,1135 @@
+/*
+Copyright (c) 2006, Yahoo! Inc. All rights reserved.
+Code licensed under the BSD License:
+http://developer.yahoo.net/yui/license.txt
+version: 0.11.0
+*/
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td{margin:0;padding:0;}
+table{border-collapse:collapse;border-spacing:0;}
+fieldset,img{border:0;}
+address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}
+ol,ul {list-style:none;}
+caption,th {text-align:left;}
+h1,h2,h3,h4,h5,h6{font-size:100%;}
+q:before,q:after{content:'';}
+/*
+DMSG additions for Jx
+*/
+a{outline:none;}
+.png24{filter:expression(Jx.applyPNGFilter(this))}
+.jxClearer{display:block;position:relative;float:none;clear:both;font-size:0;line-height:0;width:0;height:0;margin:0;padding:0;}
+.jxDisabled{opacity:0.4;-moz-opacity:0.4;filter:Alpha(opacity=40);}
+/**
+ * @project         Jx
+ * @revision        $Id: jx_combined.css 455 2007-12-10 21:25:43Z pspencer $
+ * @author          Fred Warnock (fwarnock@dmsolutions.ca)
+ * @copyright       &copy; 2006 DM Solutions Group Inc.
+ */
+
+/* ============= */
+/* BUTTON STYLES */
+/* ============= */
+
+div.jxButtonContainer {
+  display: block;
+  position: relative;
+  float: left;
+}
+
+/* jxButtons consist of an A, containing a SPAN, which contains an image.
+   Buttons can use the sliding door technique with background images to horizontally
+   accomodate icons with labels. */
+
+a.jxButton {
+  display: block;
+  position: relative;
+  float: left;
+}
+
+span.jxButtonSpan {
+  /* If using background images, the SPAN contains the right side of the background */
+  /* use padding to make space between the icon and button edge */
+  /* padding-left: 0px;*/ /* butts up to the left of the button bg image */
+  display: block;
+  position: relative;
+  float: left;
+  font-size: 0px;
+  line-height: 0px;
+}
+
+img.jxButtonIcon {
+  position: relative;
+  float: left;
+}
+
+span.jxButtonLabel {
+  display: block;
+  position: relative;
+  float: left;
+  cursor: pointer;
+}
+
+span.jxButtonLabel.jxButtonEmptyLabel {
+  /* collapse empty labels */
+  padding: 0px;
+  width: 0px;
+  overflow: hidden;
+}
+
+.jxButtonMenu a span.jxButtonLabel.jxButtonEmptyLabel, 
+a.jxButtonFlyout span.jxButtonLabel.jxButtonEmptyLabel {
+  /* expand empty labels that have a menu */
+  overflow: visible;
+}
+
+span.jxButtonEmptyLabel {
+  /* collapse empty labels for FF */
+}
+
+.jxFlyout {
+    position: absolute;
+    display: block;
+    clear: both;
+    float: none;
+    top: 100%;
+    left: 0px;
+    z-index: 100;
+}
+
+.jxButtonContentTop .jxFlyout {
+  top: auto;
+  bottom: 100%;
+}
+
+.jxButtonContentLeft .jxFlyout  {
+  left: auto;
+  right: 0px;
+}
+/**
+ * @project         Jx
+ * @revision        $Id: jx_combined.css 455 2007-12-10 21:25:43Z pspencer $
+ * @author          Fred Warnock (fwarnock@dmsolutions.ca)
+ * @copyright       &copy; 2006 DM Solutions Group Inc.
+ */
+
+/* =================== */
+/* COLOR PICKER STYLES */
+/* =================== */
+
+/*.jxColorPicker {
+    position: absolute;
+    display: none;
+    top: 100%;
+    width: 212px;
+    left: 0px;
+    border: 1px solid #000;
+    padding: 2px;
+    background-color: #eee;
+}*/
+
+.jxColorBar {
+    position: relative;
+}
+
+table.jxColorGrid {
+    position: relative;
+    border-collapse: collapse;
+    empty-cells: show;
+    clear:both;
+}
+
+.jxColorGrid td {
+    border: 1px solid #000;
+}
+
+.jxColorGrid td.emptyCell {
+    border: 0px solid #000;
+}
+
+.jxColorGrid td.emptyCell span {
+    display: block;
+    width: 7px;
+    height: 7px;
+    line-height: 0px;
+    font-size: 0px;
+    border: 0px solid #000;
+    padding: 1px;
+    margin: 0px;
+}
+
+.jxColorGrid a.colorSwatch {
+    display: block;
+    width: 7px;
+    height: 7px;
+    line-height: 0px;
+    font-size: 0px;
+    border: 0px solid #000;
+    margin: 0px;
+    padding: 1px;
+}
+
+.jxColorGrid a.borderWhite:hover {
+    border: 1px solid #fff;
+    padding: 0px;
+}
+
+.jxColorGrid a.borderBlack:hover {
+    border: 1px solid #000;
+    padding: 0px;
+}
+
+input.jxHexInput {
+    width: 55px;
+    vertical-align: middle;
+}
+
+input.jxAlphaInput {
+    width: 30px;
+    vertical-align: middle;
+}
+
+div.jxColorPreview {
+    float: left;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #000;
+    margin: 2px;
+    vertical-align: middle;
+    background-image: url('../images/grid.png');
+}
+
+div.jxColorButtonPreview {
+    float: left;
+    width: 14px;
+    height: 14px;
+    border: 1px solid #000;
+    background-image: url('../images/grid.png');
+}
+
+div.jxColorButtonPreview div {
+    width: 14px;
+    height: 14px;
+    position: absolute;
+}
+
+div.jxColorPreview img {
+    position: absolute;
+    z-index: 0;
+}
+
+div.jxColorPreview div {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    z-index: 1;
+}
+
+
+label.jxColorLabel,
+label.jxAlphaLabel {
+    width: auto;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    line-height: 24px;
+    padding: 2px;
+    vertical-align: middle;
+}
+
+a.jxColorClose {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 20px;
+    height: 20px;
+}
+
+a.jxColorClose img {
+    width: 20px;
+    height: 20px;
+}/**
+ * @project         Jx
+ * @revision        $Id: jx_combined.css 455 2007-12-10 21:25:43Z pspencer $
+ * @author          Fred Warnock (fwarnock@dmsolutions.ca)
+ * @copyright       &copy; 2006 DM Solutions Group Inc.
+ */
+
+/* ============= */
+/* DIALOG STYLES */
+/* ============= */
+
+.jxDialogContainer {
+    position:absolute;
+    display: block;
+    font-size: 0px;
+    line-height: 0px;
+}
+
+.jxDialog {
+    position:absolute;
+    display: block;
+}
+
+.jxDialogModal {
+    position: absolute;
+    display: block;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+}
+
+.jxDialogBgTL, 
+.jxDialogBgT,
+.jxDialogBgTR,
+.jxDialogBgR,
+.jxDialogBgBR,
+.jxDialogBgB,
+.jxDialogBgBL,
+.jxDialogBgL {
+    position: absolute;
+}
+
+.jxDialogBgTL img,
+.jxDialogBgT img,
+.jxDialogBgTR img,
+.jxDialogBgR img,
+.jxDialogBgBR img,
+.jxDialogBgB img,
+.jxDialogBgBL img,
+.jxDialogBgL img {
+    position: relative;
+}
+
+.jxDialogTitle {
+    position: relative;
+    display: block;
+}
+
+
+/* the Dialog Help Area is likely to be depricated */
+
+.jxDialogHelp {
+    position: absolute;
+    left: 100%;
+    top: 21px;
+    width: 200px;
+    height: 100px;
+    border: 1px solid #999;
+    background-color: #fff;
+    overflow: auto;
+    padding: 0px;
+}
+
+.jxDialogHelpCloseButton {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+}
+
+.jxDialogContent {
+    position:relative;
+    overflow: auto;    
+    display: block;
+}
+
+.jxDialogAction {
+    position: relative;
+    overflow: hidden;
+    display: block;
+}
+
+.jxDialogCloseButton, 
+.jxDialogHelpButton {
+    position: absolute;
+    display: block;
+}
+
+.jxDialogResize {
+    position: absolute;
+}
+
+iframe.jxDialogShim {
+    position:absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    filter: Alpha(opacity:0);
+    opacity: 0;
+    -moz-opacity: 0;
+    z-index: -1;
+}.jxGridContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-left: 0px solid #96a7b4;
+    border-top: 0px solid #96a7b4;
+    border-right: 1px solid #96a7b4;
+    border-bottom: 1px solid #96a7b4;
+    overflow: hidden;
+    font-family: Arial, Verdana, sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+}
+
+.jxGridTable {
+    position: relative;
+    table-layout: fixed;
+    border-collapse: collapse;
+    border-style: none;
+    width: 0px;
+}
+
+.jxGridColHeadHide {
+    height: 0px;
+    line-height: 0px;
+    font-size: 0px;
+    background-color: #fff;
+    white-space: normal;
+}
+
+.jxGridColHeadHide p, .jxGridRowHeadHide p {
+    font-size: 0px;
+    line-height: 0px;
+    height: 0px;
+    margin: 0px;
+    padding: 0px;
+}
+
+.jxGridRowHeadHide {
+    width: 0px;
+    white-space: normal;
+}
+
+.jxGridCell {
+    border-right: 1px solid #cecece;
+    border-bottom: 1px solid #cecece;
+    overflow: hidden;
+    padding-left: 3px;
+    padding-right: 3px;
+    overflow: hidden;
+    /* can change this to normal */
+    white-space: nowrap;
+    /* only applies in IE and Safari right now */
+    text-overflow: ellipsis;
+}
+
+.jxGridColHead {
+    border-top: 0px solid  #96a7b4;
+    border-right: 1px solid #96a7b4;
+    border-bottom: 1px solid #96a7b4;
+    border-left: 0px solid  #96a7b4;
+    background-color: #ebebeb;
+    text-align: center;
+    font-weight: bold;
+    color: #45525f;
+}
+
+.jxGridRowHead {
+    border-top: 0px solid #96a7b4;
+    border-right: 1px solid #96a7b4;
+    border-bottom: 1px solid #96a7b4;
+    border-left: 0px solid #96a7b4;
+    background-color:  #ebebeb;
+    text-align: center;
+    font-weight: bold;
+    color: #45525f;
+}
+
+.jxGridRowAll {
+    background-color: #fff;
+}
+
+.jxGridRowOdd {
+    /*background-color: pink;*/
+}
+
+.jxGridRowEven {
+    /*background-color: lime;*/
+}
+
+.jxGridRowOdd td {
+    border-right: 1px solid #999;
+    border-bottom: 1px solid #999;
+}
+
+.jxGridRowEven td {
+    border-right: 1px solid #999;
+    border-bottom: 1px solid #999;
+}
+
+.jxGridRowSelected {
+    background-color: #dae6f2;
+}
+
+.jxGridColumnSelected {
+    background-color: #dae6f2;
+}
+
+.jxGridCellSelected {
+    background-color: #dae6f2;
+}
+
+.jxGridRowPrelight {
+    background-color: #f2f2f2;
+}
+
+.jxGridCellPrelight {
+    /*background-color: green;*/
+}
+
+.jxGridRowHeaderPrelight {
+    background-color: #dfdfdf;
+}
+
+.jxGridColumnHeaderPrelight {
+    background-color: #dfdfdf;
+}
+
+.jxGridRowHeaderSelected {
+    background-color: #6d7f8e;
+    color: #fff;
+}
+
+.jxGridColumnHeaderSelected {
+    background-color: #6d7f8e;
+    color: #fff;
+}/**
+ * @project         Jx
+ * @revision        $Id: jx_combined.css 455 2007-12-10 21:25:43Z pspencer $
+ * @author          Fred Warnock (fwarnock@dmsolutions.ca)
+ * @copyright       &copy; 2006 DM Solutions Group Inc.
+ */
+
+/* ============== */
+/* JX MENU STYLES */
+/* ============== */
+
+/* Jx Menus and Sub-menus are all built out of nested ULs
+   For this to work visually, the margins and padding need to be flattened
+   out, and the list marker needs to be hidden
+*/
+
+ul.jxMenu, ul.jxSubMenu {
+  /* this allows menus and submenus to be re-positioned */
+  position: absolute;
+  display: block;
+  clear: both;
+  float: none;
+  /* this allows menus and sub menus to appear above everything */
+  z-index: 100;
+  list-style-type: none;
+}
+
+ul.jxMenu {
+    top: 100%;
+    left: 0px;
+}
+
+.jxButtonContentTop ul.jxMenu {
+  top: auto;
+  bottom: 100%;
+}
+
+.jxButtonContentLeft ul.jxMenu  {
+  left: auto;
+  right: 0px;
+}
+
+li.jxMenuItem, li.jxSubMenuItem {
+  /* This is needed for IE to make sure submenus don't open space in the parent menu */
+  display: inline;
+  clear: both;
+  float: none;
+}
+
+li.jxMenuItem div.jxButtonContainer {
+  float: none;
+}
+
+ul.jxMenu a, ul.jxSubMenu a {
+  display: block;
+  text-decoration: none;
+  white-space: nowrap;
+  clear: both;
+  float: none;
+}
+
+ul.jxMenu img, ul.jxSubMenu img {
+	padding-right: 5px;
+}
+
+ul.jxMenu span, ul.jxSubMenu span {
+  display: block;
+/*  clear: both; */ /*this caused a problem where menu's with images wrapped*/
+  float: none;
+}
+
+ul.jxMenu span.jxMenuSeparator {
+	display: block;
+}
+
+iframe.jxMenuShim {
+    position:absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    filter: Alpha(opacity:0);
+    opacity: 0;
+    -moz-opacity: 0;
+    z-index: -1;
+}/**
+ * @project         Jx
+ * @revision        $Id: jx_combined.css 455 2007-12-10 21:25:43Z pspencer $
+ * @author          Fred Warnock (fwarnock@dmsolutions.ca)
+ * @copyright       &copy; 2006 DM Solutions Group Inc.
+ */
+
+/* =============== */
+/* JX PANEL STYLES */
+/* =============== */
+
+.jxPanel {
+  position:relative;
+}
+
+/* the content panel inside a panel */
+.jxPanelContent {
+  /* position relative is required for panels to work correctly in safari */
+  position: relative;
+  display: block;
+  /* set the width to 100% to make the content resize properly when the container resizes */
+  width: 100%;
+  /* height gets set by javascript */
+  height: auto;
+  /* content gains scroll bars as needed */
+  overflow: auto;
+  border-top: 1px solid #fff;
+  border-bottom: 1px solid #999;
+  margin: 0px;
+  padding: 0px;
+  border-top: none;
+  background-color: #fff;
+  /*white-space: nowrap;*/ /* need wrapping off for trees */
+}
+
+/* ======================= */
+/* JX PANEL MANAGER STYLES */
+/* ======================= */
+
+.jxPanelTitle {
+  /* position relative is required for panel dragging to work correctly in safari */
+  position:relative;
+  width: 100%;
+  background-image: url(../images/snap_bg.png);
+  background-repeat: repeat-x;
+  background-position: left top;
+  border-top: 1px solid #fff;
+  border-bottom: 1px solid #666;
+  /* note this is hard coded into jx.js JxPanel initialize function - change there as well as here */
+  height: 22px;
+  margin: 0;
+  padding: 0;
+  /* this prevents lines from wrapping when content is resized */
+  white-space: nowrap;
+/*  -moz-box-sizing: border-box;*/
+}
+
+.jxPanelLabel {
+  /* make room for the loading spinner */
+  padding-left: 25px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  /* line-height vertically aligns the label in the containing div.  In the border
+     box model, this should be the containers height less padding and borders.  In
+     the content box model, it should be the height of the container.  */
+  line-height:21px;
+  /* make the text align properly with an neighbouring inline image */
+  /*vertical-align: top;*/
+  color: #000;
+}
+
+a.jxPanelMaximize, 
+a.jxPanelHelp {
+  position: absolute;
+  top: 1px;
+  padding: 0px;
+  margin: 0px; 
+  border: 0px;
+  width: 20px;
+  height: 20px;
+}
+
+.jxPanelTitle a.jxPanelHelp {
+  right: 20px;
+}
+
+.jxPanelTitle a.jxPanelMaximize {
+  right: 2px;
+}
+
+/* removed - this is a WebStudio specific style and needs to be moved there when
+   we update WebStudio */
+
+/*
+.jxPanelTitle a.jxPanelClose {
+  right: 2px;
+  z-index: 10;
+
+}
+*/
+
+a.jxPanelMaximize img,  
+a.jxPanelHelp img, 
+a.jxPanelLoading img {
+  border: 0px;
+  /* the margin needs to make up the difference between it's width/height
+     and the width/height of the parent a */
+  margin: 0px;
+  /* width/height has to be the actual image width/height */
+  width: 20px;
+  height: 20px;
+}
+
+a.jxPanelLoading img {
+  visibility:hidden;
+  position: absolute;
+  top: 1px;
+  left: 2px;
+}
+/**
+ * @project         Jx
+ * @revision        $Id: jx_combined.css 455 2007-12-10 21:25:43Z pspencer $
+ * @author          Fred Warnock (fwarnock@dmsolutions.ca)
+ * @copyright       &copy; 2006 DM Solutions Group Inc.
+ */
+
+/* ============= */
+/* PICKER STYLES */
+/* ============= */
+
+/* the jx Picker is intended to replace lists and combo boxes that require 
+   a richer set of features such as text input, images and styles in the
+   selection list and better control over the list size. */
+
+div.jxPicker {
+  position: relative;
+  display: block;
+  padding: 0px;
+  padding-right: 22px;
+  margin: 0px;
+  border: 0px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size:11px;
+  z-index: 1;
+}
+
+.jxPickerDiscloser {
+  position: absolute;
+  right: 3px;
+  top: 3px;
+}
+
+.jxPickerDiscloser img {
+  width: 16px;
+  height: 16px;
+  border: 0px;
+}
+
+.jxPickerInput {
+  position: relative;
+  display: block;
+  float: left;
+  /*padding-right: 16px;*/
+  line-height: 24px;
+  height: 24px;
+}
+
+div.jxPickerOptions {
+  position: absolute;
+  top: 100%;
+  left: 0px;
+  width: 100%;
+  height: auto;
+  background-color: #fff;
+  overflow: auto;
+  border: 1px solid #333;
+  color: #000;
+  z-index: 1;
+  display: none;
+  text-align: right;
+}
+
+div.jxPickerOptions ul {
+  position: relative;
+  display: block;
+  margin: 0px;
+  padding: 0px;
+  border: none;
+  list-style-type: none;
+}
+
+div.jxPickerOptions li {
+  position: relative;
+  display: block;
+  margin: 0px;
+  padding: 0px;
+  border: none;
+  height:20px;
+}
+
+div.jxPickerOptions a {
+  position: relative;
+  display: block;
+  text-decoration: none;
+  white-space: nowrap;
+  /* this value needs to be the height of it's parent
+     minus it's own margin, padding and border values */ 
+  line-height:20px;
+  /* height needs to be set for IE.  Same value as line height. */
+  height: 20px;
+  color: #000;
+  background-position: right top;
+  background-repeat: no-repeat;
+}
+
+div.jxPickerOptions a:hover {
+  background-color: #E1EDFA; 
+  /*background-color: #ffffcc; */
+}
+
+div.jxPickerOptions a.selected {
+  font-weight: bold;
+  background-color: #ffffb3;
+}
+/**
+ * @project         Jx
+ * @revision        $Id: jx_combined.css 455 2007-12-10 21:25:43Z pspencer $
+ * @author          Fred Warnock (fwarnock@dmsolutions.ca)
+ * @copyright       &copy; 2006 DM Solutions Group Inc.
+ */
+
+/* ================ */
+/* STATUSBAR STYLES */
+/* ================ */
+
+.jxStatusbar {
+  display: block;
+  position: relative;
+  width: 100%;
+  background-color: #d9d9d9;
+  border-top: 1px solid #fff;
+  border-bottom: 1px solid #999;
+  border-left: 1px solid #fff;
+  border-right: 1px solid #999;
+}
+
+.jxTray {
+  display: block;
+  position: relative;
+  float: left;
+  background-color: #d9d9d9;
+  border-top: 1px solid #999;
+  border-bottom: 1px solid #fff;
+  border-left: 1px solid #999;
+  border-right: 1px solid #fff;
+  margin: 1px;
+}
+
+.jxStatusbar .clearer {
+  display: block;
+  position: relative;
+  float:none;
+  clear: left; 
+  font-size: 0;
+  line-height: 0; 
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+}
+
+/**
+ * @project         Jx
+ * @revision        $Id: jx_combined.css 455 2007-12-10 21:25:43Z pspencer $
+ * @author          Fred Warnock (fwarnock@dmsolutions.ca)
+ * @copyright       &copy; 2006 DM Solutions Group Inc.
+ */
+
+/* ========== */
+/* TAB STYLES */
+/* ========== */
+
+/* Note: There are some specific styles for IE in tabs_ie.css
+
+   The tabBox consists of a box containing a tabbar and the tab content areas.
+   It can be used within the body or nested within another object.
+*/
+
+.jxTabSetContainer {
+  /* This is an example of a container that can be used to hold a tabBox
+     the position need to be explicitly set, as well as the width and height. */
+  position: relative; 
+  display: block;
+}
+
+.tabContent {
+  /* the width and height need to be set to 100% to:
+     1. fill the tab box area
+     2. allow a scrolling content area in IE */
+  display: none;
+  position: relative;
+  width:100%;
+  height: 100%;
+  overflow: auto;
+}
+
+.tabContentActive {
+  display: block;
+}
+
+/* TAB BOX MODE */
+.jxTabBoxTop .jxBarTop,
+.jxTabBoxBottom .jxBarBottom,
+.jxTabBoxLeft .jxBarLeft,
+.jxTabBoxRight .jxBarRight {
+  position: absolute;
+}
+
+
+/* The tabbar is built out of a UL
+   The tab background uses the sliding door technique so tabs can expand to
+   accomodate content up to 200 px wide (top/bottom tabs) or 200px high
+   (left/right tabs).  All parts and states of the tab BG graphics are in the 
+   same image so they can be treated like sprites.
+
+   Horizontal tabs can contain text or an image label.  Vertical tabs need an
+   image label.
+*/
+
+/**
+ * @project         Jx
+ * @revision        $Id: jx_combined.css 455 2007-12-10 21:25:43Z pspencer $
+ * @author          Fred Warnock (fwarnock@dmsolutions.ca)
+ * @copyright       &copy; 2006 DM Solutions Group Inc.
+ */
+
+/* ============== */
+/* TOOLBAR STYLES */
+/* ============== */
+
+/* Multiple toolbars can be housed in  the toolbar container the container will expand
+   vertically to accomodate wrapped toolbars */
+.jxToolbarContainer {
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+/* Horizontally oriented toolbars */
+.jxBarTop, 
+.jxBarBottom {
+  width: 100%; /* fills the width, may be needed for JS style sniffing */
+  height: auto; /* since the last element clears the float, a height may not be needed */
+}
+
+/* Vertically oriented toolbars */
+.jxBarLeft, 
+.jxBarRight {
+  width: auto;
+  height: 100%;
+}
+
+/* a label can optionally be used preceeding a toolbar.
+   the line height is used to center the label relative to the toolbar. */
+.toolbarLabel {
+  display: block;
+  position: relative;
+  float: left;
+}
+
+/* The jx toolbar is built out of a UL
+   For this to work visually, the margins and padding need to be flattened
+   out, and the list markers need to be hidden 
+   UL's are floated left so multiple toolbars can be in the samae row.
+   In IE, the UL needs to have a specified width to prevent button wrapping. */
+
+ul.jxToolbar {
+  display: block;
+  position: relative;
+  float: left;
+  list-style-type: none;
+}
+
+/* LI's are floated to the left, to make a horizontal row of buttons*/
+li.jxToolItem {
+  display: block;
+  position: relative;
+  float: left;
+  font-size: 0px;
+  line-height: 0px;
+}
+
+/* Seperator height should match that of button images
+   and the margins+padding+border should add up to the same total too. */
+li.jxToolItem  .separator {
+  display: block;
+  position: relative;
+  float: left;
+  font-size: 0px;
+  line-height: 0px;
+}
+
+/* Vertically oriented toolbars need floats cleared */
+.jxBarLeft label.toolbarLabel,
+.jxBarLeft ul.jxToolbar,
+.jxBarLeft li.jxToolItem,
+.jxBarRight label.toolbarLabel,
+.jxBarRight ul.jxToolbar,
+.jxBarRight li.jxToolItem
+{
+  clear: both;
+}
+
+
+/* DEPRICATED STYLES */
+
+/* Vertically oriented toolbars do not need to fill their containers horizontally */
+.verticalToolbar {
+  width: auto;
+}
+
+/* Vertically oriented toolbars need floats cleared */
+.verticalToolbar label.toolbarLabel,
+.verticalToolbar ul.jxToolbar,
+.verticalToolbar li.jxToolItem
+{
+  clear: both;
+}
+
+/**
+ * @project         Jx
+ * @revision        $Id: jx_combined.css 455 2007-12-10 21:25:43Z pspencer $
+ * @author          Fred Warnock (fwarnock@dmsolutions.ca)
+ * @copyright       &copy; 2006 DM Solutions Group Inc.
+ */
+
+/* =========== */
+/* TREE STYLES */
+/* =========== */
+
+/* The jx tree built out of nested ULs
+   For this to work visually, the margins and padding need to be flattened
+   out, and the list marker needs to be hidden
+*/
+
+
+.jxTree, .jxTreeRoot {
+  /* relative positioning is required for IE to fix the peek-a-boo bug */
+  position:relative;
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+}
+
+.jxTreeNest {
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+  background-repeat: repeat-y;
+  background-position: left top;
+}
+
+/* Node Classes */
+
+.jxTree li, .jxTreeRoot li {
+  /* relative positioning is required for IE to fix the peek-a-boo bug */
+  position:relative;
+  margin: 0px;
+  padding: 0px;
+  background-repeat: no-repeat;
+  /* background branches may need to shift up/down according to height of the node */
+  background-position: left top;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.jxTree li {
+  margin-left: 16px;
+}
+
+.jxTree li.jxDisabled, .jxTreeRoot li.jxDisabled {   
+  opacity: 0.4; /* css 3 */
+  -moz-opacity: 0.4; /* moz-specific */
+  filter: Alpha(opacity=40); /* IE only */
+}
+
+.jxTree a, .jxTreeRoot a {
+  margin: 0px;
+  padding: 0px;
+  padding-left: 2px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  color: #000;
+  text-decoration: none;
+  /* Line Height needs to be an even number so branches line up properly */
+  line-height: 20px;
+}
+
+.jxTree a:hover, .jxTreeRoot a:hover {
+  background-color: #E1EDFA; 
+  /*background-color: #ffffcc; */
+}
+
+.jxTree img, .jxTreeRoot img {
+  border: 0px;
+  width: 16px;
+  height: 16px;
+}
+
+.jxTreeNest         {background-image: url(../images/tree_vert_line.png);}
+.jxTreeNode         {background-image: url(../images/tree_node.png);}
+.jxTreeNodeLast     {background-image: url(../images/tree_last_node.png);}
+
+.jxTreeDropzone {
+  text-decoration:underline;
+  font-weight:bold;
+}
+
+.jxTreeSelectedNode {
+  background-color: #AFD4FA;
+  /*background-color: #ddffaa; */
+  font-weight:bold;
+}
+
+.jxTreeCutNode {
+  opacity: 0.4; /* css 3 */
+  -moz-opacity: 0.4; /* moz-specific */
+  filter: Alpha(opacity=40); /* IE only */
+}
+
+.jxTreeCutNode a:hover {
+  background-color: #fff; 
+}
+
+.jxTreeNode, .jxTreeNodeLast {
+/*    width: 100%;*/
+}
+
+.jxTreeNode a, .jxTreeNode img, .jxTreeNode input {
+    vertical-align: middle;
+}
+
+.jxTreeNodeLast a, .jxTreeNodeLast img, .jxTreeNodeLast input {
+    vertical-align: middle;
+}
+
+.jxTreeNodeImage {
+}
+
+.jxTreeNodeIcon {
+    margin: 0px;
+}

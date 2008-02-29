@@ -1,0 +1,37 @@
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ACE", "ACE.vcproj", "{790470CD-FECA-1BAD-6757-8A6317CF8A12}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RMCast", "RMCast\RMCast.vcproj", "{6952E1FE-FECA-1BAD-5646-8D280B15AEE5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{790470CD-FECA-1BAD-6757-8A6317CF8A12} = {790470CD-FECA-1BAD-6757-8A6317CF8A12}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TMCast", "TMCast\TMCast.vcproj", "{6954E1FE-FECA-1BAD-5646-8F6A0B75AEE5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{790470CD-FECA-1BAD-6757-8A6317CF8A12} = {790470CD-FECA-1BAD-6757-8A6317CF8A12}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{790470CD-FECA-1BAD-6757-8A6317CF8A12}.Debug|Win32.ActiveCfg = Debug|Win32
+		{790470CD-FECA-1BAD-6757-8A6317CF8A12}.Debug|Win32.Build.0 = Debug|Win32
+		{790470CD-FECA-1BAD-6757-8A6317CF8A12}.Release|Win32.ActiveCfg = Release|Win32
+		{790470CD-FECA-1BAD-6757-8A6317CF8A12}.Release|Win32.Build.0 = Release|Win32
+		{6952E1FE-FECA-1BAD-5646-8D280B15AEE5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6952E1FE-FECA-1BAD-5646-8D280B15AEE5}.Debug|Win32.Build.0 = Debug|Win32
+		{6952E1FE-FECA-1BAD-5646-8D280B15AEE5}.Release|Win32.ActiveCfg = Release|Win32
+		{6952E1FE-FECA-1BAD-5646-8D280B15AEE5}.Release|Win32.Build.0 = Release|Win32
+		{6954E1FE-FECA-1BAD-5646-8F6A0B75AEE5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6954E1FE-FECA-1BAD-5646-8F6A0B75AEE5}.Debug|Win32.Build.0 = Debug|Win32
+		{6954E1FE-FECA-1BAD-5646-8F6A0B75AEE5}.Release|Win32.ActiveCfg = Release|Win32
+		{6954E1FE-FECA-1BAD-5646-8F6A0B75AEE5}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

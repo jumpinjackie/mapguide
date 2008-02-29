@@ -1,0 +1,7 @@
+// -*- MPC -*-
+// taoexe.mpb,v 1.8 2004/01/07 18:15:34 elliott_c Exp
+
+project : aceexe, taoversion, taodefaults, taoidldefaults {
+  after += TAO
+  libs  += TAO
+}

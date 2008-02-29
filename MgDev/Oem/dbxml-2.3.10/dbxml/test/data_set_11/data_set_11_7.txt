@@ -1,0 +1,24 @@
+# See the file LICENSE for redistribution information.
+#
+# Copyright (c) 2002,2006 Oracle.  All rights reserved.
+#
+# $Id: data_set_11_7.txt,v 1.5 2006/10/30 17:46:16 bostic Exp $
+#
+# QP tests
+# Node functions
+
+TEST 11.7
+TITLE Node functions
+
+11.7.1
+root()
+Root(RS,RA(RS,SS(RS,)))
+
+11.7.2
+/foo/root()
+Root(RA(SS()))
+
+11.7.3
+/foo/bar/root()
+Root(RA(SS()))
+

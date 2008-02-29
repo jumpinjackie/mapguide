@@ -1,0 +1,7 @@
+// -*- MPC -*-
+// svc_utils.mpb,v 1.2 2003/12/30 15:18:22 dhinton Exp
+
+project : portableserver, taolib_with_idl {
+  after   += Svc_Utils
+  libs    += TAO_Svc_Utils
+}

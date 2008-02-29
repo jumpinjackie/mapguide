@@ -1,0 +1,8 @@
+// -*- MPC -*-
+// rmcast.mpb,v 1.3 2003/12/30 15:18:22 dhinton Exp
+
+project : acelib {
+  requires += rmcast
+  after    += RMCast
+  libs     += ACE_RMCast
+}

@@ -1,0 +1,10 @@
+base referer
+rect $classContentHandler.html 16,8 133,32
+rect $classDefaultHandler.html 190,128 302,152
+rect $classDeclHandler.html 26,56 122,80
+rect $classDocumentHandler.html 8,296 141,320
+rect $classHandlerBase.html 196,224 297,248
+rect $classDTDHandler.html 26,152 122,176
+rect $classEntityResolver.html 18,200 130,224
+rect $classErrorHandler.html 25,248 124,272
+rect $classLexicalHandler.html 18,104 130,128

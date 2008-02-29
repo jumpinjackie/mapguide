@@ -1,0 +1,6 @@
+// -*- MPC -*-
+// taoversion.mpb,v 1.19 2003/12/30 15:18:22 dhinton Exp
+
+project {
+  version = 1.3.6
+}

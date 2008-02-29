@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="gb2312"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="Target"
+	>
+	<UserMacro
+		Name="build"
+		Value="build\windows_$(PlatformName)\$(ConfigurationName)"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="db-4.5.20"
+		Value="db-4.5.20/build_windows/$(build)"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="xqilla"
+		Value="xqilla/Win32Projects\VC7.1/$(build)"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="ACE"
+		Value="ACE\ACE_wrappers\ace\$(build)"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="dbxml-2.3.10"
+		Value="dbxml-2.3.10\dbxml\build_windows\$(build)"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="xerces-c-src"
+		Value="xerces-c-src\Projects\Win32\VC7.1\xerces-all\XercesLib/$(build)"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="dbxml"
+		Value="dbxml\build_windows\$(build)"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="Csmap"
+		Value="Csmap\$(build)"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="geos"
+		Value="geos-2.2.0\VisualStudio\$(build)"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="pdbDirFileName"
+		Value="$(OutDir)\$(TargetName).pdb"
+		PerformEnvironmentSet="true"
+	/>
+</VisualStudioPropertySheet>

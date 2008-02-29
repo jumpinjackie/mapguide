@@ -1,0 +1,22 @@
+<XQuery>
+  <DocumentOrder>
+    <DbXmlNav>
+      <QueryPlanFunction result="collection" container="11.8.2.dbxml">
+        <OQPlan>V(node-attribute-equality-string,@id,=,'I5')</OQPlan>
+      </QueryPlanFunction>
+      <DbXmlStep axis="child" name="catalog" nodeType="element"/>
+      <DbXmlStep axis="child" name="item" nodeType="element"/>
+      <DbXmlFilter>
+        <DbXmlCompare name="equal" join="attribute" name="id" nodeType="attribute">
+          <Sequence>
+            <AnyAtomicTypeConstructor value="I5" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+          </Sequence>
+        </DbXmlCompare>
+      </DbXmlFilter>
+      <DbXmlStep axis="descendant" name="ISBN" nodeType="element"/>
+      <DbXmlStep axis="child">
+        <ItemType testType="text"/>
+      </DbXmlStep>
+    </DbXmlNav>
+  </DocumentOrder>
+</XQuery>

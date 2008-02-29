@@ -1,0 +1,87 @@
+<!--
+revision  $Id: stylearea.html,v 1.16 2006/06/09 13:27:18 pspencer Exp $
+copyright &copy; 2006 DM Solutions Group Inc.
+released under LGPL License with MapGuide Open Source (see index.html)
+-->
+<fieldset style="z-index:2">
+  <legend>Fill</legend>
+  <div class="fieldsetFixSmall"></div>
+  <table class="formTableSmall">
+    <tbody>
+      <tr>
+        <th class="formThSmall"><label>Pattern:</label></th>
+        <td colspan="2"><div class="previewInput areaPicker" id="dialog.stylearea.fillpattern"><a href="#" id="dialog.stylearea.fillpatternpreview"></a></div></td>
+        <td class="formTdButton"><input type="button" class="smallButton" name="dialog.stylearea.choosefillpattern" id="dialog.stylearea.choosefillpattern" value="..."></td>
+      </tr>
+      <tr>
+        <th class="formThSmall"><label for="dialog.stylearea.fgcolor">Foreground Color:</label></th>
+        <td class="formTdSmall"><input type="text" class="smallText" id="dialog.stylearea.fgcolor" name="dialog.stylearea.fgcolor" value=""/></td>
+        <td><div class="previewInput" id="dialog.stylearea.fgcolorpreview"></div></td>
+        <td class="formTdButton"><input type="button" class="smallButton" name="dialog.stylearea.choosefgcolor" id="dialog.stylearea.choosefgcolor" value="..." disabled></td>
+      </tr>
+      <tr>
+        <th class="formThSmall"><label for="dialog.stylearea.bgcolor">Background Color:</label></th>
+        <td class="formTdSmall"><input type="text" class="smallText" id="dialog.stylearea.bgcolor" name="dialog.stylearea.bgcolor" value=""/></td>
+        <td><div class="previewInput" id="dialog.stylearea.bgcolorpreview"></div></td>
+        <td class="formTdButton"><input type="button" class="smallButton" name="dialog.stylearea.choosebgcolor" id="dialog.stylearea.choosebgcolor" value="..." disabled></td>
+      </tr>
+    </tbody>
+  </table>
+</fieldset>
+
+<fieldset style="z-index:1">
+  <legend>Border</legend>
+  <div class="fieldsetFixSmall"></div>
+  <table class="formTableSmall">
+    <tbody>
+      <tr>
+        <th class="formThSmall"><label>Pattern:</label></th>
+        <td colspan="2"><div class="previewInput linePicker" id="dialog.stylearea.edgepattern"><a href="#" id="dialog.stylearea.edgepatternpreview"></a></div></td>
+        <td class="formTdButton"><input type="button" class="smallButton" name="dialog.stylearea.chooseedgepattern" id="dialog.stylearea.chooseedgepattern" value="..."></td>
+      </tr>
+      <tr>
+        <th class="formThSmall"><label for="dialog.stylearea.thickness">Thickness:</label></th>
+        <td class="formTdSmall"><input type="text" class="smallText" id="dialog.stylearea.thickness" name="dialog.stylearea.thickness" value=""/></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <th class="formThSmall"><label for="dialog.stylearea.color">Color:</label></th>
+        <td><input type="text" class="smallText" id="dialog.stylearea.color" name="dialog.stylearea.color" value=""/></td>
+        <td><div class="previewInput" id="dialog.stylearea.colorpreview"></div></td>
+        <td class="formTdButton"><input type="button" class="smallButton" name="dialog.stylearea.choosecolor" id="dialog.stylearea.choosecolor" value="..." disabled></td>
+      </tr>
+    </tbody>
+  </table>
+</fieldset>
+
+<fieldset>
+  <legend>Units</legend>
+  <div class="fieldsetFixSmall"></div>
+  <table class="formTableSmall">
+    <tbody>
+      <tr>
+        <th class="formThSmall"><label for="dialog.stylearea.context">Size context:</label></th>
+        <td><select id="dialog.stylearea.context" name="dialog.stylearea.context" disabled>
+            <option value="DeviceUnits" selected>Device space</option>
+            <option value="MappingUnits">Map space</option>
+          </select></td>
+        <th class="formThSmall2"><label for="dialog.stylearea.units">Size units:</label></th>
+        <td><select id="dialog.stylearea.units" name="dialog.stylearea.units">
+            <option value="Points" selected>Points</option>
+            <option value="Inches">Inches</option>
+            <option value="Millimeters">Millimeters</option>
+            <option value="Centimeters">Centimeters</option>
+          </select></td>
+      </tr>
+    </tbody>
+  </table>
+</fieldset>
+
+<!--
+<table class="formTableSmall">
+  <tr>
+    <td><div class="stylePreviewBox"></div></td>
+  </tr>
+</table>
+-->

@@ -1,0 +1,9 @@
+// -*- MPC -*-
+// ftclientorb.mpb,v 1.2 2003/12/30 15:18:22 dhinton Exp
+
+project : ftorbutils {
+  after     += FT_ClientORB 
+  libs      += TAO_FT_ClientORB
+  comps     += FT_ClientORB
+  tagchecks += FT_ClientORB
+}

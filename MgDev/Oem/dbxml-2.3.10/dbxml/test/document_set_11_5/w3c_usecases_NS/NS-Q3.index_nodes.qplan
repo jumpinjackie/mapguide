@@ -1,0 +1,20 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="Q3" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <DbXmlNav>
+        <QueryPlanFunction result="document" container="11.5.1.dbxml">
+          <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'auction.xml',U)</OQPlan>
+        </QueryPlanFunction>
+        <DbXmlStep axis="descendant" uri="*" name="*" nodeType="element"/>
+        <DbXmlFilter>
+          <DbXmlStep axis="attribute" prefix="dt" uri="http://www.w3.org/2001/XMLSchema" name="*" nodeType="attribute"/>
+        </DbXmlFilter>
+      </DbXmlNav>
+    </Children>
+  </DOMConstructor>
+</XQuery>

@@ -1,0 +1,68 @@
+#
+# Functions used only by BDB XML
+#
+# This script uses several bash extensions that are convenient
+# since we "know" it will always run under Cygwin: shell functions,
+# 'return', declaration of 'local' variables, $(command) syntax,
+# ${#X} (counting chars), ${X#regexp} (searching) $((expr)) (arithmetic)
+#
+# These functions use 'global' variables:
+#   ERRORLOG             - a filename
+#   PRODUCT_NAME         - e.g. "Berkeley DB"
+#   PRODUCT_VERSION      - e.g. "4.1.25", derived from dist/RELEASE
+#   PRODUCT_STAGE        - the staging directory for temp files and builds
+#   PRODUCT_LICENSEDIR   - the tree containing LICENSE and README
+#   PRODUCT_SUB_BLDDIR  - top of the subproduct build e.g. "dbxml-2.0.1/dbxml"
+#   PRODUCT_BLDDIR       - top of the build tree e.g. "dbxml-2.0.1"
+#   PRODUCT_SRCDIR       - the dir we unzip to e.g. "dbxml-2.0.1"
+#   PRODUCT_DBBUILDDIR   - where build_unix dir is for Berkeley DB (for Perl)
+#   PRODUCT_SHARED_WINMSIDIR   - where the master winmsi directory is
+#   PRODUCT_IMAGEDIR     - where the images are (usually winmsi/images)
+#   PRODUCT_ZIP_FILEFMT  - what zip file looks like e.g. "db-X.Y.Z.NC.zip"
+#   PRODUCT_MSI_FILEFMT  - what msi file looks like e.g. "db-X.Y.Z.NC.msi"
+#
+# Some of these may seem redundant, but there are options to take
+# an already built tree from a different place than where we'll unzip
+# to and take our sources from, for example.  This allows a lot of flexibility
+# for development and debugging (especially when these trees can be huge).
+
+# CreateDbXmlPerl()
+# Build Perl interface for BDB XML
+#
+CreateDbXmlPerl() {
+
+    local here=`pwd`
+    Progress "building perl for BDB XML (using Windows tools)"
+    mkdir -p ${PRODUCT_BLDDIR}/perl
+    cd ${PRODUCT_SUB_BLDDIR}/src/perl
+    cmd.exe /x /c call build.bat
+    status=$?
+    cat winbld.out >>$ERRORLOG
+    if [ -s winbld.err -o "$status" != 0 ]; then
+       cat winbld.err >> $ERRORLOG
+       Error "Errors during windows build of Perl"
+       exit 1
+    fi
+    cd $here
+}
+
+# CreateDbXmlPython()
+# Build Python interface for BDB XML
+#
+# Note: BDB XML version is handled by the s_release script,
+# but if pybsddb number
+# or python release changes, some editing is necessary
+#
+CreateDbXmlPython() {
+
+    local here=`pwd`
+    Progress "building python for BDB XML"
+    cd ${PRODUCT_SUB_BLDDIR}/src/python/bsddb3-4.5.0
+    mkdir -p ${PRODUCT_BLDDIR}/python
+    python setup.dbxml.py bdist_wininst >> $ERRORLOG
+    cp -f dist/bsddb3-4.5.0.win32-py2.4.exe ${PRODUCT_BLDDIR}/python
+    cd ..
+    python setup.py bdist_wininst >> $ERRORLOG
+    cp -f dist/dbxml-2.3.10.win32-py2.4.exe ${PRODUCT_BLDDIR}/python
+    cd $here
+}

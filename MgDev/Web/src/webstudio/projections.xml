@@ -1,0 +1,17 @@
+<projections>
+    <projection>
+        <description>NAD83</description>
+        <epsg>4269</epsg>
+        <wkt>GEOGCS["NAD83",DATUM["North_American_Datum_1983",SPHEROID["GRS 1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]]</wkt>
+    </projection>
+    <projection>
+        <description>WGS 84</description>
+        <epsg>4326</epsg>
+        <wkt>GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]]</wkt>
+    </projection>
+    <projection>
+        <description>NAD83 / NRCan LCC Canada</description>
+        <epsg>42304</epsg>
+        <wkt>PROJCS["NAD83 / NRCan LCC Canada",GEOGCS["NAD83",DATUM["North_American_Datum_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Decimal_Degree",0.0174532925199433]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["central_meridian",-95.0],PARAMETER["latitude_of_origin",49.0],PARAMETER["standard_parallel_1",49.0],PARAMETER["standard_parallel_2",77.0],PARAMETER["false_easting",0.0],PARAMETER["false_northing",0.0],UNIT["Meter",1],AUTHORITY["EPSG","42304"]]</wkt>
+    </projection>
+</projections>

@@ -1,0 +1,4 @@
+base referer
+rect $classPSVIAttribute.html 8,158 112,182
+rect $classPSVIElement.html 136,158 240,182
+rect $classXMemory.html 82,9 165,33

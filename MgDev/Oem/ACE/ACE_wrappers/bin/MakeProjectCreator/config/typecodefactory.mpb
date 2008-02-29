@@ -1,0 +1,7 @@
+// -*- MPC -*-
+// typecodefactory.mpb,v 1.2 2003/12/30 15:18:22 dhinton Exp
+
+project : ifr_client {
+  libs    += TAO_TypeCodeFactory
+  after   += TypeCodeFactory
+}

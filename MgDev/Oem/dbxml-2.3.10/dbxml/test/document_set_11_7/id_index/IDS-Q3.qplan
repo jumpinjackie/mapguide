@@ -1,0 +1,26 @@
+<XQuery>
+  <DocumentOrder>
+    <DbXmlNav>
+      <QueryPlanFunction result="collection" container="11.7.3.dbxml">
+        <OQPlan>V(node-attribute-equality-string,@name,prefix,'eng')</OQPlan>
+      </QueryPlanFunction>
+      <DbXmlStep axis="descendant-or-self" uri="*" name="*" nodeType="element"/>
+      <DbXmlStep axis="attribute" name="name" nodeType="attribute"/>
+      <DbXmlFilter>
+        <Function name="{http://www.w3.org/2005/xpath-functions}:starts-with">
+          <TreatAs>
+            <PromoteUntyped uri="http://www.w3.org/2001/XMLSchema" name="string">
+              <Atomize>
+                <ContextItem/>
+              </Atomize>
+            </PromoteUntyped>
+            <SequenceType occurrence="zero_or_one" testType="atomic-type" type="http://www.w3.org/2001/XMLSchema:string"/>
+          </TreatAs>
+          <Sequence>
+            <AnyAtomicTypeConstructor value="eng" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+          </Sequence>
+        </Function>
+      </DbXmlFilter>
+    </DbXmlNav>
+  </DocumentOrder>
+</XQuery>

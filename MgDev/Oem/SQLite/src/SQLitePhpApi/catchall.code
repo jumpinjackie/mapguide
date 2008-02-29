@@ -1,0 +1,6 @@
+
+void onCatchAll(const char* proxyfname TSRMLS_DC)
+{
+    ExecuteErrorException* e = new ExecuteErrorException(L"", __LINE__, __WFILE__, L"Unspecified C++ exception");
+    ThrowPHPExceptionWrapper(e TSRMLS_CC);
+}

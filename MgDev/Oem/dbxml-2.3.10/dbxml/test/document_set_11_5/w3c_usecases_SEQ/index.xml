@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test id="11.5.4">
+  <category>xquery</category>
+  <description>W3C Use Cases (SEQ)</description>
+  <program name='dbxml_test_driver' />
+
+  <!-- stuff that applies to the entire test -->
+  <indexSpecification>
+    <node>section.title</node>
+    <index>edge-element-equality-string</index>
+  </indexSpecification>
+  <indexSpecification>
+    <node>action</node>
+    <index>node-element-presence</index>
+  </indexSpecification>
+  <indexSpecification>
+    <node>incision</node>
+    <index>node-element-presence</index>
+  </indexSpecification>
+
+  <document>report1.xml</document>
+
+  <!-- individual tests -->
+  <base>
+    <query>SEQ-Q1.xquery</query>
+    <query>SEQ-Q2.xquery</query>
+    <query>SEQ-Q3.xquery</query>
+    <query>SEQ-Q4.xquery</query>
+    <query>SEQ-Q5.xquery</query>
+    <query>SEQ-Q5a.xquery</query>
+    <query>SEQ-Q5b.xquery</query>
+  </base>
+</test>
+
