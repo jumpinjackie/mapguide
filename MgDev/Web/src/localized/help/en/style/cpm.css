@@ -1,10 +1,29 @@
-/* 01/12/2007 Bill Crawford - Implemented gray banners                           */
+/* 01/12/2007 Bill Crawford - Implemented gray banners. */
+
 /* 02/02/2007 Bill Crawford - Fixed breadcrumbs not visible until you mouse over */
-/* 02/06/2007 Bill Crawford - Edited 'body' to reduce margin-bottom from 1200px  */
-/* to 20pt to reduce deep blank region at ends of topics.                        */
-/* 02/11/2007 Bill Crawford - Added 'div.codeBlock' and 'div.codeBlock           */
-/* pre.codeLine' to eliminate unwanted space between lines in code blocks and    */
-/* provide a code block background color                                         */
+
+/* 02/06/2007 Bill Crawford - Edited 'body' to reduce margin-bottom from 1200px 
+/*            to 20pt to reduce deep blank region at ends of topics. */
+
+/* 02/11/2007 Bill Crawford - Added 'div.codeBlock' and 'div.codeBlock 
+/*            pre.codeLine' to eliminate unwanted space between lines in code 
+/*            blocks and provide a code block background color */
+
+/* 09/27/2007 Bill Crawford - Appended rules for workflow tables. */
+
+/* 10/02/2007 Bill Crawford - Defect fixes for workflow tables. */
+
+/* 10/12/2007 Bill Crawford - Added ul.bullet_no selector. <ul> elements are */
+/*            assigned to this class when the 'bullet' attribute of the */
+/*            corresponding UList element in Framemaker is set to "no". */
+
+/* 10/12/2007 Bill Crawford - Added 'ul ul' and 'ul ul ul' selectors to allow 
+              explicit control over bullet style in nested bullet lists. */
+
+/* 12/03/2007 Bill Crawford - Added font attributes to 'div.task-title' and 
+              removed all font attribs but font-weight from 'div.task-title a' 
+              and 'div.task-title-last a' so that font style of task titles 
+              match whether they are links or not. */
 
 BODY {
 background-color: #ffffff;
@@ -137,6 +156,10 @@ ul li {
 margin-bottom: 0pt;
 margin-top: 10pt;
 padding-left: 6pt;
+}
+
+ul.bullet_no {
+list-style-type: none;
 }
 
 OL
@@ -338,20 +361,17 @@ P.codeSpace {}
 
 SPAN.codeLiteral {}
 
-/* Added 02/11/2007 Bill C */
 div.codeBlock {
 margin-top: 8pt;
 padding: 8pt;
 background: #feb;
 }
 
-/* Added 02/11/2007 Bill C */
 div.codeBlock pre.codeLine {
 margin-top: 0pt;
 margin-bottom: 0pt;
 }
 
-/* Added 02/11/2007 Bill C */
 @media print {
 
     div.codeBlock {
@@ -512,6 +532,8 @@ SPAN.glyphSpecial {}
 
 SPAN.glyphRegistered {}
 
+SPAN.glyph_additional {font-family: Symbol}
+
 A.webLink {}
 
 SPAN.fileName {}
@@ -585,7 +607,7 @@ padding-left: 1;
 
 } /* @media print */
 
-/* begin ask-me stuff */
+/* ask-me stuff */
 
 form.ask-me {
 width: 275;
@@ -612,9 +634,7 @@ height: 23;
 margin-bottom: 2pt;
 }
 
-/* end ask-me stuff */
-
-/* begin link to parent topic */
+/* link to parent topic */
 
 div.head-parent-link span.head-parent-link {
 font-weight : normal;
@@ -638,8 +658,6 @@ color: #347;
 text-decoration: underline;
 }
 
-/* end link to parent topic */
-
 /* browse button set */
 div.browse {
 position: relative;
@@ -647,7 +665,6 @@ text-align: right;
 width: 0;
 margin-top: 2;
 float: right;
-display: none;  /* hidden by default */
 }
 
 /* browse button images */
@@ -658,10 +675,9 @@ margin-left: 2px;
 /* browse button info */
 div.button-info {
 text-align: right;
-display: none;  /* hidden by default */
 }
 
-/* browse button titles that display onmouseover */
+/* where browse button titles display onmouseover */
 span#infoline {
 padding-right: 0;
 padding-top: 2;
@@ -786,4 +802,129 @@ span.RelatedContentHidden {
 span.DefaultContentHidden {
    display: none;
 }
+
+/* -----------------------------------------------------------------------------------------------
+   Workflow tables
+----------------------------------------------------------------------------------------------- */
+
+table.workflow {
+text-align: center;
+border-collapse: collapse;
+margin-top: 10pt;
+margin-right: 15pt;
+}
+
+tr.task {
+vertical-align: center;
+height: 1px;
+}
+
+/* set min width of columns */
+div.task-title-min-width {
+height: 1px;
+width: 249px;
+}
+
+div.task-summary-min-width {
+height: 1px;
+width: 300px;
+}
+
+/* task-title column */
+td.task-title {
+height: 87px;
+width: 220px;
+background-image: url(../images/task-button-a.png);
+background-repeat: no-repeat;
+padding-left: 10px;
+padding-right: 17px;
+padding-bottom: 10px;
+}
+
+td.task-title-last {
+height: 87px;
+width: 220px;
+background-image: url(../images/task-button-last-a.png);
+background-repeat: no-repeat;
+padding-left: 10px;
+padding-right: 17px;
+padding-bottom: 10px;
+}
+
+div.task-title {
+font-family: helvetica, arial;
+font-size: 10pt;
+line-height: 11pt;
+font-weight: bold;
+color: #383838;
+}
+
+div.task-title a, 
+div.task-title-last a { 
+/* div.task-title-last selectors, here and in the next four rules, are    */
+/* compensating for an xsl defect - delete them when the defect is fixed  */
+font-weight: bold;
+display: block;
+}
+
+div.task-title a:link, 
+div.task-title-last a:link {
+color: #46a;
+text-decoration: none;
+}
+
+div.task-title a:visited, 
+div.task-title-last a:visited {
+color: #46a;
+text-decoration: none;
+}
+
+div.task-title a:hover, 
+div.task-title-last a:hover {
+text-decoration: underline;
+}
+
+div.task-title a:active, 
+div.task-title-last a:active {
+color: #e24;
+text-decoration: none;
+}
+
+/* task-link column */
+td.task-link {
+width: 30px;
+}
+
+td.task-link img {
+position: relative;
+top: -1px;
+}
+
+/* task-summary column */
+td.task-summary {
+padding-top: 4pt;
+padding-bottom: 4pt;
+padding-left: 10pt;
+padding-right: 10pt;
+background: #e6eada;
+text-align: left;
+width: 100%;
+}
+
+span.task-summary {
+font-family: helvetica, arial;
+font-size: 10pt;
+line-height: 11pt;
+}
+
+/* task-arrow */
+tr.task-arrow {
+font-size: 8pt;
+}
+
+td.task-arrow-left img {
+position: relative;
+left: -2px;
+}
+
 
