@@ -561,20 +561,8 @@ MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
                 }
 
                 selText.append(idIter->name);
+                selText.append(L"=");
 
-                // Fdo has operator= quirks with single, int64, and datetime.
-                // Use a LIKE for these types
-                if (idIter->type == MgPropertyType::Single
-                    || idIter->type == MgPropertyType::Int64
-                    || idIter->type == MgPropertyType::DateTime)
-                {
-                    selText.append(L" LIKE ");
-                }
-                else
-                {
-                    selText.append(L"=");
-                }
-  
                 switch (idIter->type)
                 {
                 case MgPropertyType::Int16:
@@ -618,7 +606,7 @@ MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
                         else
                         {
                             // couldn't find a precanned converter...
-                            
+
                             char digit[2];
                             digit[0] = '\0'; digit[1] = '\0';
                             while (id > 0)
@@ -693,7 +681,7 @@ MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
             if (filterReserved == false)
             {
                 size_t listSize = (selectionSize > 0) ? selectionSize : selList->size();
-                
+
                 filter.reserve(listSize * selText.length() * 2);
                 filterReserved = true;
             }
@@ -713,7 +701,7 @@ MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
                 bFirstSel = false;
             }
         }
-        
+
         if (!filter.empty())
         {
             filters->Add(filter);
@@ -733,14 +721,14 @@ STRING MgSelectionBase::GenerateFilter(MgLayerBase* layer, CREFSTRING className)
 {
     STRING filter;
     Ptr<MgStringCollection> filters = GenerateFilters(layer, className, -1);
-    
+
     if (NULL != filters && filters->GetCount() > 0)
     {
         assert(1 == filters->GetCount());
         filter = filters->GetItem(0);
         assert(!filter.empty());
-    }    
-    
+    }
+
     return filter;
 }
 
