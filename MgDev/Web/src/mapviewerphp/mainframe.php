@@ -164,7 +164,7 @@ function BuildViewer($forDwf = true)
         //
         $srcToolbar = $showToolbar? ('src="' . $vpath . 'toolbar.php?LOCALE=' . $locale . '"'): '';
         $srcStatusbar = $showStatusbar? ('src="' . $vpath . 'statusbar.php?LOCALE=' . $locale . '"') : "";
-        $srcTaskFrame = $showTaskPane? ('src="' . $vpath . 'taskframe.php?TASK=' . $taskPaneUrl . '&WEBLAYOUT=' . urlencode($webLayoutDefinition) . '&DWF=' . ($forDwf? "1": "0") . '&SESSION=' . ($orgSessionId != ""? $orgSessionId: "") . '&LOCALE=' . $locale . '"') : '';
+        $srcTaskFrame = $showTaskPane? ('src="' . $vpath . 'taskframe.php?TASK=' . $taskPaneUrl . '&WEBLAYOUT=' . urlencode($webLayoutDefinition) . '&DWF=' . ($forDwf? "1": "0") . '&SESSION=' . ($sessionId != ""? $sessionId: "") . '&LOCALE=' . $locale . '"') : '';
         $srcTaskBar = 'src="' . $vpath . 'taskbar.php?LOCALE=' . $locale . '"';
 
         //view center
@@ -469,7 +469,7 @@ function BuildViewer($forDwf = true)
         $homePageUrl = $taskPaneUrl;
         if(strncasecmp($homePageUrl, "http://", 7) != 0)
             $homePageUrl = $vpath . $homePageUrl;
-            
+
         //load the HTML template and format it
         //
         $templ = Localize(file_get_contents("../viewerfiles/mainframe.templ"), $locale, GetClientOS());
