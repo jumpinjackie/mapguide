@@ -2,7 +2,7 @@
 /**
  * Utilities.php
  *
- * $Id: Utilities.php 1199 2008-01-22 16:11:54Z madair $
+ * $Id: Utilities.php 1301 2008-03-04 21:57:45Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -670,80 +670,89 @@ function GetPropertyValueFromFeatReader($featureReader, $propertyType, $property
 {
     $val = "";
 
-    switch ($propertyType)
-    {
-       case MgPropertyType::Null :
-         //fwrite($logFileHandle, "$propertyName is a null propertyn");
-         $val= "";
-         break;
-       case MgPropertyType::Boolean :
-         $val = $featureReader->GetBoolean($propertyName);
-         //$valStr = printBoolean($val);
-         break;
-       case MgPropertyType::Byte :
-         $val = $featureReader->GetByte($propertyName);
-         break;
-       case MgPropertyType::DateTime :
-         $val = $featureReader->GetDateTime($propertyName);
-         //$valStr = printDateTime($val);
-         break;
-       case MgPropertyType::Single :
-         $val = $featureReader->GetSingle($propertyName);
-         break;
-       case MgPropertyType::Double :
-         $val = $featureReader->GetDouble($propertyName);
-         break;
-       case MgPropertyType::Int16 :
-         $val = $featureReader->GetInt16($propertyName);
-         break;
-       case MgPropertyType::Int32 :
-         $val = $featureReader->GetInt32($propertyName);
-         break;
-       case MgPropertyType::Int64 :
-         $val = $featureReader->GetInt64($propertyName);
-         break;
-       case MgPropertyType::String :
-         $val = $featureReader->GetString($propertyName);
-         break;
-       case MgPropertyType::Blob :
-         //fwrite($logFileHandle, "$propertyName is blobn");
-         break;
-       case MgPropertyType::Clob :
-         //fwrite($logFileHandle, "$propertyName is clobn");
-              break;
-       case MgPropertyType::Feature :
-         /*
-              $val = $featureReader->GetFeatureObject($propertyName);
-             if ($val != NULL) {
-                  fwrite($logFileHandle, "$propertyName is a featuren");
-                  printFeatureReader($val);
-             }
-         */
-         break;
-       case MgPropertyType::Geometry :
-         /*
-              fwrite($logFileHandle, "$propertyName is a geometryn");
-              $val = $featureReader->GetGeometry($propertyName);
-              if ($val != NULL) {
-                 $aGeometry = $agfReaderWriter->Read($val);
-                 //$aGeometry->Envelope();
-                 $wktRepresentation = $wktReaderWriter->Write($aGeometry);
-                 fwrite($logFileHandle, "WKT Representation: "$wktRepresentation"n");
-              } else {
-                 fwrite($logFileHandle, "This geometry property is nulln");
-              }
-         */
-         break;
-       case MgPropertyType::Raster :
-         /*
-              $val = $featureReader->GetRaster($propertyName);
-             fwrite($logFileHandle, "$propertyName is a rastern");
-         */
-         break;
-       default :
-         $val = "";
+    try {
+        switch ($propertyType)
+        {
+           case MgPropertyType::Null :
+             //fwrite($logFileHandle, "$propertyName is a null propertyn");
+             $val= "";
+             break;
+           case MgPropertyType::Boolean :
+             $val = $featureReader->GetBoolean($propertyName);
+             //$valStr = printBoolean($val);
+             break;
+           case MgPropertyType::Byte :
+             $val = $featureReader->GetByte($propertyName);
+             break;
+           case MgPropertyType::DateTime :
+             $val = $featureReader->GetDateTime($propertyName);
+             //$valStr = printDateTime($val);
+             break;
+           case MgPropertyType::Single :
+             $val = $featureReader->GetSingle($propertyName);
+             break;
+           case MgPropertyType::Double :
+             $val = $featureReader->GetDouble($propertyName);
+             break;
+           case MgPropertyType::Int16 :
+             $val = $featureReader->GetInt16($propertyName);
+             break;
+           case MgPropertyType::Int32 :
+             $val = $featureReader->GetInt32($propertyName);
+             break;
+           case MgPropertyType::Int64 :
+             $val = $featureReader->GetInt64($propertyName);
+             break;
+           case MgPropertyType::String :
+             $val = $featureReader->GetString($propertyName);
+             break;
+           case MgPropertyType::Blob :
+             //fwrite($logFileHandle, "$propertyName is blobn");
+             break;
+           case MgPropertyType::Clob :
+             //fwrite($logFileHandle, "$propertyName is clobn");
+                  break;
+           case MgPropertyType::Feature :
+             /*
+                  $val = $featureReader->GetFeatureObject($propertyName);
+                 if ($val != NULL) {
+                      fwrite($logFileHandle, "$propertyName is a featuren");
+                      printFeatureReader($val);
+                 }
+             */
+             break;
+           case MgPropertyType::Geometry :
+             /*
+                  fwrite($logFileHandle, "$propertyName is a geometryn");
+                  $val = $featureReader->GetGeometry($propertyName);
+                  if ($val != NULL) {
+                     $aGeometry = $agfReaderWriter->Read($val);
+                     //$aGeometry->Envelope();
+                     $wktRepresentation = $wktReaderWriter->Write($aGeometry);
+                     fwrite($logFileHandle, "WKT Representation: "$wktRepresentation"n");
+                  } else {
+                     fwrite($logFileHandle, "This geometry property is nulln");
+                  }
+             */
+             break;
+           case MgPropertyType::Raster :
+             /*
+                  $val = $featureReader->GetRaster($propertyName);
+                 fwrite($logFileHandle, "$propertyName is a rastern");
+             */
+             break;
+           default :
+             $val = "";
+        }
+    } catch (MgException $e) {
+        //this switch block seems to throw an exception rather for null property values rather than just returning 
+        //a null value, so catch the exception here and set value to an empty string
+        $val = "";
     }
 
+    if ( null == $val ) {
+      $val = "";
+    }
     return $val;
 }
 
@@ -821,7 +830,11 @@ function BuildSelectionArray($featureReader, $layerName, $properties, $bComputed
                         try {
                             $ageom = $geom->Transform($srsXform);
                             $geom = $ageom;
-                        } catch (MgException $ee) {}
+                        } catch (MgException $ee) {
+                          echo "/*transform exception:";
+                          echo "ERROR: " . $ee->GetMessage() . "\n";
+                          echo $ee->GetDetails() . "\n*/";
+                        }
                     }
 
                     if ($geom->GetDimension() > 1) {
@@ -850,7 +863,6 @@ function BuildSelectionArray($featureReader, $layerName, $properties, $bComputed
             $value = htmlentities($value);
             $value = addslashes($value);
             $value = preg_replace( "/\r?\n/", "<br>", $value );
-            $aTmp = $properties->$layerName->values[$properties->$layerName->numelements];
             array_push($properties->$layerName->values[$properties->$layerName->numelements], $value);
             //$properties->$layerName->values[$properties->$layerName->numelements][$propname] = $value;
         }

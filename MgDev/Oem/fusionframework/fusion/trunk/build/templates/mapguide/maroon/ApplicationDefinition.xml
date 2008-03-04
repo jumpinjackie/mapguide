@@ -24,15 +24,6 @@
         </Extension>
       </Map>
     </MapGroup>
-    <MapGroup id="sheboyganOverview" xsi:type="MapType">
-      <Map xsi:type="MapGuideLayerType">
-        <Type>MapGuide</Type>
-        <SingleTile>true</SingleTile>
-        <Extension>
-          <ResourceId>Library://Samples/Sheboygan/Maps/SheboyganOverview.MapDefinition</ResourceId>
-        </Extension>
-      </Map>
-    </MapGroup>
   </MapSet>
 
 <!-- ****************************************** 
@@ -697,8 +688,8 @@
         <Type>both</Type>
         <MeasureTooltipContainer>MeasureResult</MeasureTooltipContainer>
         <MeasureTooltipType>dynamic</MeasureTooltipType>
-        <DistancePrecision>0</DistancePrecision>
-        <AreaPrecision>0</AreaPrecision>
+        <DistancePrecision>4</DistancePrecision>
+        <AreaPrecision>4</AreaPrecision>
         <Units>meters</Units>
       </Extension>
       <ImageUrl>images/stdicons/icon_measure.gif</ImageUrl>
@@ -809,8 +800,8 @@
         <Type>both</Type>
         <MeasureTooltipContainer>MeasureResult</MeasureTooltipContainer>
         <MeasureTooltipType>dynamic</MeasureTooltipType>
-        <DistancePrecision>0</DistancePrecision>
-        <AreaPrecision>0</AreaPrecision>
+        <DistancePrecision>4</DistancePrecision>
+        <AreaPrecision>4</AreaPrecision>
         <Units>meters</Units>
         <Target>TaskPane</Target>
       </Extension>
@@ -1088,10 +1079,6 @@
     <Widget xsi:type="WidgetType">
       <Name>OverviewMap</Name>
       <Type>OverviewMap</Type>
-      <Description/>
-      <Extension xsi:type="CustomContentType">
-        <MapId>sheboyganOverview</MapId>
-      </Extension>
     </Widget>
 
 

@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.SelectRadius
  *
- * $Id: SelectRadius.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: SelectRadius.js 1307 2008-03-04 22:14:22Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -104,7 +104,6 @@ Fusion.Widget.SelectRadius.prototype = {
         this._oButton.activateTool();
         if (!this.circle) {
             this.circle = new Fusion.Tool.Canvas.Circle(this.getMap());
-            this.circle.setCenter(0);
         }
     },
 
@@ -131,10 +130,12 @@ Fusion.Widget.SelectRadius.prototype = {
         //console.log('SelectRadius.mouseDown');
         if (Event.isLeftClick(e)) {
             var p = this.getMap().getEventPosition(e);
-
+            var point = this.getMap().pixToGeo(p.x, p.y);
+            var radius = this.getMap().pixToGeoMeasure(this.defaultRadius);
+            
             if (!this.isDigitizing) {
-                this.circle.setCenter(p.x, p.y);
-                this.circle.setRadius(this.defaultRadius);
+                this.circle.setCenter(point.x, point.y);
+                this.circle.setRadius(radius);
                 this.clearContext();
                 this.circle.draw(this.context);     
                 this.isDigitizing = true;
@@ -163,11 +164,13 @@ Fusion.Widget.SelectRadius.prototype = {
             return;
         }
     
-        var p = this.getMap().getEventPosition(e);
+        var map = this.getMap();
+        var p = map.getEventPosition(e);
+        var point = map.pixToGeo(p.x, p.y);
         var center = this.circle.center;
         
-        var radius = Math.sqrt(Math.pow(center.x-p.x,2) + Math.pow(center.y-p.y,2));
-        if (radius > this.nTolerance) {
+        var radius = Math.sqrt(Math.pow(center.x-point.x,2) + Math.pow(center.y-point.y,2));
+        if (map.geoToPixMeasure(radius) > this.nTolerance) {
             this.circle.setRadius(radius);
         }
         this.clearContext();
@@ -178,7 +181,7 @@ Fusion.Widget.SelectRadius.prototype = {
             var size = Element.getDimensions(this.radiusTip);
             this.radiusTip.style.top = (p.y - size.height*2) + 'px';
             this.radiusTip.style.left = p.x + 'px';
-            var r = this.getMap().pixToGeoMeasure(this.circle.radius);
+            var r = map.pixToGeoMeasure(this.circle.radius);
             this.radiusTip.innerHTML = r;
         }
         
@@ -190,8 +193,8 @@ Fusion.Widget.SelectRadius.prototype = {
             //this.circle.draw(this.context);
             this.clearContext();
             this.isDigitizing = false;
-            var center = this.getMap().pixToGeo(this.circle.center.x, this.circle.center.y);
-            var radius = this.getMap().pixToGeoMeasure(this.circle.radius);
+            var center = this.circle.center;
+            var radius = this.circle.radius;
             this.execute(center, radius);
         }
         
@@ -228,7 +231,7 @@ Fusion.Widget.SelectRadius.prototype = {
         
         var options = {};
         options.geometry = wkt;
-        options.selectionType = "inside";
+        options.selectionType = this.selectionType;
 
         if (this.bActiveOnly) {
             var layer = this.getMap().getActiveLayer();

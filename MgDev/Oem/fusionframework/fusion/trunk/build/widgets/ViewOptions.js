@@ -56,9 +56,7 @@ Fusion.Widget.ViewOptions.prototype =
         }
 
         this.displayUnits = json.DisplayUnits ? json.DisplayUnits[0] : false;
-        if (!this.displayUnits) {
-            this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, this.setMapUnits.bind(this));
-        }
+        this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, this.setMapUnits.bind(this));
     },
     
     //action to perform when the button is clicked
@@ -67,7 +65,8 @@ Fusion.Widget.ViewOptions.prototype =
     },
 
     setMapUnits: function() {
-      this.setViewOptions(this.getMap().getUnits());
+      var units = this.displayUnits ? this.displayUnits : this.getMap().getUnits();
+      this.setViewOptions(units);
     },
     
     setViewOptions: function(data) {

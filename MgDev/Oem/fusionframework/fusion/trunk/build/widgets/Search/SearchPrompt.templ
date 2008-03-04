@@ -49,7 +49,7 @@ function InitDocument()
     var widget = GetParent().Fusion.getWidgetById(widgetId);
     resultColumns = widget.resultColumns;
 
-    document.getElementById('title').innerHTML = widget.sName;  //TODO use a better property than this
+    document.getElementById('title').innerHTML = widget.title;  //TODO use a better property than this
     document.getElementById('prompt').innerHTML = widget.prompt;  //TODO use a better property than this
     document.getElementById('target').value = widget.sTarget;  //TODO use a better property than this
     document.getElementById('filter').value = widget.filter;  //TODO use a better property than this

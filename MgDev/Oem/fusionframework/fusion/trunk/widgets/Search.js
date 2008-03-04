@@ -50,7 +50,7 @@ Fusion.Widget.Search.prototype = {
         this.filter = json.Filter ? json.Filter[0] : "";
         this.limit = json.MatchLimit ? json.MatchLimit[0] : 100;
         this.resultColumns = json.ResultColumns ? json.ResultColumns[0].Column : [];
-
+        this.title = json.Title ? json.Title[0] : widgetTag.label;
     },
 
     execute : function() {
