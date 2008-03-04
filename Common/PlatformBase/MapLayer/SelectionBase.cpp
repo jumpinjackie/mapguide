@@ -719,12 +719,27 @@ MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
 ///
 STRING MgSelectionBase::GenerateFilter(MgLayerBase* layer, CREFSTRING className)
 {
-    STRING filter;
-    Ptr<MgStringCollection> filters = GenerateFilters(layer, className, -1);
+    INT32 selectionSize = MgFoundationConfigProperties::DefaultGeneralPropertySelectionFilterSize;
+    MgConfiguration* configuration = MgConfiguration::GetInstance();
+    assert(NULL != configuration);
 
+    configuration->GetIntValue(
+        MgFoundationConfigProperties::GeneralPropertiesSection,
+        MgFoundationConfigProperties::GeneralPropertySelectionFilterSize,
+        selectionSize,
+        MgFoundationConfigProperties::DefaultGeneralPropertySelectionFilterSize);
+
+    // TODO: Tempoary fix to prevent a crash when the filter exceeds what FDO can handle.
+    // Calling GenerateFilters with a selectionSize of -1 which means all of them can generate a filter too big for FDO to handle. 
+    // Unfortunatly, most feature sources do not support the generated filter with more then 250 ORed items so we must restrict this
+    // by breaking it down into a collection of smaller filters.
+    STRING filter;
+    Ptr<MgStringCollection> filters = GenerateFilters(layer, className, selectionSize);
+
+    // TODO: This returns the 1st string in the string collection which most likely is not the complete filter.
     if (NULL != filters && filters->GetCount() > 0)
     {
-        assert(1 == filters->GetCount());
+//        assert(1 == filters->GetCount());
         filter = filters->GetItem(0);
         assert(!filter.empty());
     }
