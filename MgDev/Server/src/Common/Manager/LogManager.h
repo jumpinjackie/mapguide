@@ -184,62 +184,70 @@ class MgLogThread;
     STRING connInfoClient = L""; \
     STRING connInfoClientIp = L""; \
     STRING connInfoUserName = L""; \
-    MgUserInformation* pUserInfo = MgUserInformation::GetCurrentUserInfo(); \
-    MgConnection* pConnection = MgConnection::GetCurrentConnection(); \
-    /* Get client version. This needs to come from the web tier. */ \
-    /* For logs involving operations, this will be stored in MgUserInformation. */ \
-    /* Otherwise, for session logging, the info will be retrieved from the connection object. */ \
-    if(NULL != pUserInfo && pUserInfo->GetClientAgent().length() > 0) \
+    try \
     { \
-        connInfoClient = MgUtil::EncodeXss(pUserInfo->GetClientAgent()); \
-    } \
-    else \
-    { \
-        if (NULL != pConnection) \
+        MgUserInformation* pUserInfo = MgUserInformation::GetCurrentUserInfo(); \
+        MgConnection* pConnection = MgConnection::GetCurrentConnection(); \
+        /* Get client version. This needs to come from the web tier. */ \
+        /* For logs involving operations, this will be stored in MgUserInformation. */ \
+        /* Otherwise, for session logging, the info will be retrieved from the connection object. */ \
+        if(NULL != pUserInfo && pUserInfo->GetClientAgent().length() > 0) \
         { \
-            connInfoClient = MgUtil::EncodeXss(pConnection->GetClientAgent()); \
+            connInfoClient = MgUtil::EncodeXss(pUserInfo->GetClientAgent()); \
         } \
-    } \
-    /* Get client IP. This needs to come from the web tier. */ \
-    /* For logs involving operations this will be stored in MgUserInformation. */ \
-    /* Otherwise, for session logging, the info will be retrieved from the connection object. */ \
-    if (NULL != pUserInfo && pUserInfo->GetClientIp().length() > 0) \
-    { \
-        connInfoClientIp = pUserInfo->GetClientIp(); \
-    } \
-    else \
-    { \
-        if (NULL != pConnection) \
+        else \
         { \
-            connInfoClientIp = pConnection->GetClientIp(); \
-        } \
-    } \
-    /* Get user name. */ \
-    if (pUserInfo && pUserInfo->GetUserName().length() > 0) \
-    { \
-        connInfoUserName = pUserInfo->GetUserName(); \
-    } \
-    else if (pConnection!= NULL) \
-    { \
-        connInfoUserName = pConnection->GetUserName(); \
-    } \
-    /* Do we have a username? */ \
-    if(connInfoUserName.length() == 0) \
-    { \
-        /* Try getting the user name from the session ID */ \
-        if (pUserInfo && pUserInfo->GetMgSessionId().length() > 0) \
-        { \
-            try \
+            if (NULL != pConnection) \
             { \
-                connInfoUserName = MgSessionManager::GetUserName(pUserInfo->GetMgSessionId()); \
-            } \
-            catch(MgSessionExpiredException* e) \
-            { \
-                /* The session ID has expired so we cannot look up the username. */ \
-                SAFE_RELEASE(e); \
-                connInfoUserName = L""; \
+                connInfoClient = MgUtil::EncodeXss(pConnection->GetClientAgent()); \
             } \
         } \
+        /* Get client IP. This needs to come from the web tier. */ \
+        /* For logs involving operations this will be stored in MgUserInformation. */ \
+        /* Otherwise, for session logging, the info will be retrieved from the connection object. */ \
+        if (NULL != pUserInfo && pUserInfo->GetClientIp().length() > 0) \
+        { \
+            connInfoClientIp = pUserInfo->GetClientIp(); \
+        } \
+        else \
+        { \
+            if (NULL != pConnection) \
+            { \
+                connInfoClientIp = pConnection->GetClientIp(); \
+            } \
+        } \
+        /* Get user name. */ \
+        if (pUserInfo && pUserInfo->GetUserName().length() > 0) \
+        { \
+            connInfoUserName = pUserInfo->GetUserName(); \
+        } \
+        else if (pConnection!= NULL) \
+        { \
+            connInfoUserName = pConnection->GetUserName(); \
+        } \
+        /* Do we have a username? */ \
+        if(connInfoUserName.length() == 0) \
+        { \
+            /* Try getting the user name from the session ID */ \
+            if (pUserInfo && pUserInfo->GetMgSessionId().length() > 0) \
+            { \
+                try \
+                { \
+                    connInfoUserName = MgSessionManager::GetUserName(pUserInfo->GetMgSessionId()); \
+                } \
+                catch(MgSessionExpiredException* e) \
+                { \
+                    /* The session ID has expired so we cannot look up the username. */ \
+                    SAFE_RELEASE(e); \
+                    connInfoUserName = L""; \
+                } \
+            } \
+        } \
+    } \
+    catch(MgException* e) \
+    { \
+        /* Ignore exception */ \
+        SAFE_RELEASE(e); \
     }
 
 class MG_SERVER_MANAGER_API MgLogManager : public MgGuardDisposable
