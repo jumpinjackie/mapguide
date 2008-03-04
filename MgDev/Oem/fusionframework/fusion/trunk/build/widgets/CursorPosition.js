@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.CursorPosition
  *
- * $Id: CursorPosition.js 1129 2007-12-18 20:29:35Z pspencer $
+ * $Id: CursorPosition.js 1289 2008-03-01 22:22:40Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -83,14 +83,14 @@ Fusion.Widget.CursorPosition.prototype = {
         this.enable = Fusion.Widget.CursorPosition.prototype.enable;
         this.disable = Fusion.Widget.CursorPosition.prototype.enable;
         
-        this.mouseMoveWatcher = this.mouseMove.bind(this);
-        this.mouseOutWatcher = this.mouseOut.bind(this);
-
         this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, this.setUnits.bind(this));
         this.registerParameter('Units');
     },
     
     enable: function() {
+        this.mouseMoveWatcher = this.mouseMove.bind(this);
+        this.mouseOutWatcher = this.mouseOut.bind(this);
+
         this.getMap().observeEvent('mousemove', this.mouseMoveWatcher);
         this.getMap().observeEvent('mouseout', this.mouseOutWatcher);
     },

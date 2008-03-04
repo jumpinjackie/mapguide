@@ -21,15 +21,6 @@
         </Extension>
       </Map>
     </MapGroup>
-    <MapGroup id="sheboyganOverview" xsi:type="MapType">
-      <Map xsi:type="MapGuideLayerType">
-        <Type>MapGuide</Type>
-        <SingleTile>true</SingleTile>
-        <Extension>
-          <ResourceId>Library://Samples/Sheboygan/Maps/SheboyganOverview.MapDefinition</ResourceId>
-        </Extension>
-      </Map>
-    </MapGroup>
   </MapSet>
 
 
@@ -300,10 +291,6 @@
     <Widget xsi:type="WidgetType">
       <Name>OverviewMap</Name>
       <Type>OverviewMap</Type>
-      <Description/>
-      <Extension xsi:type="CustomContentType">
-        <MapId>sheboyganOverview</MapId>
-      </Extension>
     </Widget>
     
 <!--                           -->
@@ -478,8 +465,8 @@
         <Type>both</Type>
         <MeasureTooltipContainer>MeasureResult</MeasureTooltipContainer>
         <MeasureTooltipType>dynamic</MeasureTooltipType>
-        <DistancePrecision>0</DistancePrecision>
-        <AreaPrecision>0</AreaPrecision>
+        <DistancePrecision>5</DistancePrecision>
+        <AreaPrecision>5</AreaPrecision>
       </Extension>
       <ImageUrl>images/stdicons/icon_measure.gif</ImageUrl>
       <ImageClass/>
@@ -761,8 +748,8 @@
         <Type>both</Type>
         <MeasureTooltipContainer>MeasureResult</MeasureTooltipContainer>
         <MeasureTooltipType>dynamic</MeasureTooltipType>
-        <DistancePrecision>0</DistancePrecision>
-        <AreaPrecision>0</AreaPrecision>
+        <DistancePrecision>5</DistancePrecision>
+        <AreaPrecision>5</AreaPrecision>
       </Extension>
       <ImageUrl>images/stdicons/icon_measure.gif</ImageUrl>
       <ImageClass/>
