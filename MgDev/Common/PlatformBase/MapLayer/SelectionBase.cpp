@@ -562,7 +562,7 @@ MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
 
                 selText.append(idIter->name);
                 selText.append(L"=");
-  
+
                 switch (idIter->type)
                 {
                 case MgPropertyType::Int16:
@@ -606,7 +606,7 @@ MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
                         else
                         {
                             // couldn't find a precanned converter...
-                            
+
                             char digit[2];
                             digit[0] = '\0'; digit[1] = '\0';
                             while (id > 0)
@@ -681,7 +681,7 @@ MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
             if (filterReserved == false)
             {
                 size_t listSize = (selectionSize > 0) ? selectionSize : selList->size();
-                
+
                 filter.reserve(listSize * selText.length() * 2);
                 filterReserved = true;
             }
@@ -701,7 +701,7 @@ MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
                 bFirstSel = false;
             }
         }
-        
+
         if (!filter.empty())
         {
             filters->Add(filter);
@@ -719,16 +719,31 @@ MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
 ///
 STRING MgSelectionBase::GenerateFilter(MgLayerBase* layer, CREFSTRING className)
 {
+    INT32 selectionSize = MgFoundationConfigProperties::DefaultGeneralPropertySelectionFilterSize;
+    MgConfiguration* configuration = MgConfiguration::GetInstance();
+    assert(NULL != configuration);
+
+    configuration->GetIntValue(
+        MgFoundationConfigProperties::GeneralPropertiesSection,
+        MgFoundationConfigProperties::GeneralPropertySelectionFilterSize,
+        selectionSize,
+        MgFoundationConfigProperties::DefaultGeneralPropertySelectionFilterSize);
+
+    // TODO: Tempoary fix to prevent a crash when the filter exceeds what FDO can handle.
+    // Calling GenerateFilters with a selectionSize of -1 which means all of them can generate a filter too big for FDO to handle. 
+    // Unfortunatly, most feature sources do not support the generated filter with more then 250 ORed items so we must restrict this
+    // by breaking it down into a collection of smaller filters.
     STRING filter;
-    Ptr<MgStringCollection> filters = GenerateFilters(layer, className, -1);
-    
+    Ptr<MgStringCollection> filters = GenerateFilters(layer, className, selectionSize);
+
+    // TODO: This returns the 1st string in the string collection which most likely is not the complete filter.
     if (NULL != filters && filters->GetCount() > 0)
     {
-        assert(1 == filters->GetCount());
+//        assert(1 == filters->GetCount());
         filter = filters->GetItem(0);
         assert(!filter.empty());
-    }    
-    
+    }
+
     return filter;
 }
 
