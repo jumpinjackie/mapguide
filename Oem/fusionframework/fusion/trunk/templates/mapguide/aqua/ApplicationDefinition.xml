@@ -16,15 +16,6 @@
         </Extension>
       </Map>
     </MapGroup>
-    <MapGroup id="sheboyganOverview" xsi:type="MapType">
-      <Map xsi:type="MapGuideLayerType">
-        <Type>MapGuide</Type>
-        <SingleTile>true</SingleTile>
-        <Extension>
-          <ResourceId>Library://Samples/Sheboygan/Maps/SheboyganOverview.MapDefinition</ResourceId>
-        </Extension>
-      </Map>
-    </MapGroup>
   </MapSet>
   <WidgetSet xsi:type="WidgetSetType">
 <!-- ****************************************** 
@@ -374,9 +365,6 @@
       <Name>OverviewMap</Name>
       <Type>OverviewMap</Type>
       <Description/>
-      <Extension xsi:type="CustomContentType">
-        <!--MapId>sheboyganOverview</MapId-->
-      </Extension>
     </Widget>
     <Widget xsi:type="UiWidgetType">
       <Name>GetPrintablePage</Name>
@@ -655,8 +643,8 @@
         <Type>both</Type>
         <MeasureTooltipContainer>MeasureResult</MeasureTooltipContainer>
         <MeasureTooltipType>dynamic</MeasureTooltipType>
-        <DistancePrecision>0</DistancePrecision>
-        <AreaPrecision>0</AreaPrecision>
+        <DistancePrecision>5</DistancePrecision>
+        <AreaPrecision>5</AreaPrecision>
         <Target>TaskPane</Target>
         <Units>meters</Units>
       </Extension>
@@ -674,8 +662,8 @@
         <Type>both</Type>
         <MeasureTooltipContainer>MeasureResult</MeasureTooltipContainer>
         <MeasureTooltipType>dynamic</MeasureTooltipType>
-        <DistancePrecision>0</DistancePrecision>
-        <AreaPrecision>0</AreaPrecision>
+        <DistancePrecision>5</DistancePrecision>
+        <AreaPrecision>5</AreaPrecision>
         <Target>TaskPane</Target>
         <Units>meters</Units>
       </Extension>
@@ -951,8 +939,8 @@
         <Type>both</Type>
         <MeasureTooltipContainer>MeasureResult</MeasureTooltipContainer>
         <MeasureTooltipType>dynamic</MeasureTooltipType>
-        <DistancePrecision>0</DistancePrecision>
-        <AreaPrecision>0</AreaPrecision>
+        <DistancePrecision>5</DistancePrecision>
+        <AreaPrecision>5</AreaPrecision>
         <Target>TaskPane</Target>
         <Units>meters</Units>
       </Extension>

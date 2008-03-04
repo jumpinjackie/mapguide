@@ -1174,7 +1174,10 @@ Fusion.Lib.ApplicationDefinition.Item.prototype = {
                                container instanceof Jx.ContextMenu ||
                                container instanceof Jx.SubMenu) {
                         var widget = widgetTag.create(widgetSet, '');
+                        widget.id = name; 
                         if (widget.oMenu) {   //for widgets that extend MenuBase
+                          widget.oMenu.domObj.id = name;
+                          widget.oMenu.domObj.widget = widget;
                           container.add(widget.oMenu);
                         } else {
                           var action = new Jx.Action(widget.activateTool.bind(widget));
@@ -1182,6 +1185,8 @@ Fusion.Lib.ApplicationDefinition.Item.prototype = {
                           opt.label = widgetTag.label;
                           opt.image = widgetTag.imageUrl;
                           var menuItem = new Jx.MenuItem(action, opt);
+                          menuItem.domObj.id = name;
+                          menuItem.domObj.widget = widget;
                           container.add(menuItem);
                         }
                     }
@@ -2548,7 +2553,7 @@ Fusion.Tool.Button.prototype = {
 /**
  * Fusion.Tool.Canvas
  *
- * $Id: CanvasTool.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: CanvasTool.js 1307 2008-03-04 22:14:22Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -2817,13 +2822,8 @@ Fusion.Tool.Canvas.Circle.prototype = {
     },
     
     setRadius: function(r) {
-        if (r > 1 || r < -1) {
-            this.radius = Math.abs(r);
-            this.radiusPx = this.map.geoToPixMeasure(this.radius);
-        } else {
-            this.radius = 1;
-            this.radiusPx = 1;
-        }
+        this.radius = Math.abs(r);
+        this.radiusPx = this.map.geoToPixMeasure(this.radius);
     },
     
     draw: function( context ) {
@@ -8395,7 +8395,7 @@ Fusion.Widget.ColorPicker.prototype =
 };/**
  * Fusion.Widget.CursorPosition
  *
- * $Id: CursorPosition.js 1129 2007-12-18 20:29:35Z pspencer $
+ * $Id: CursorPosition.js 1289 2008-03-01 22:22:40Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -8477,14 +8477,14 @@ Fusion.Widget.CursorPosition.prototype = {
         this.enable = Fusion.Widget.CursorPosition.prototype.enable;
         this.disable = Fusion.Widget.CursorPosition.prototype.enable;
         
-        this.mouseMoveWatcher = this.mouseMove.bind(this);
-        this.mouseOutWatcher = this.mouseOut.bind(this);
-
         this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, this.setUnits.bind(this));
         this.registerParameter('Units');
     },
     
     enable: function() {
+        this.mouseMoveWatcher = this.mouseMove.bind(this);
+        this.mouseOutWatcher = this.mouseOut.bind(this);
+
         this.getMap().observeEvent('mousemove', this.mouseMoveWatcher);
         this.getMap().observeEvent('mouseout', this.mouseOutWatcher);
     },
@@ -12213,7 +12213,7 @@ Fusion.Widget.Search.prototype = {
         this.filter = json.Filter ? json.Filter[0] : "";
         this.limit = json.MatchLimit ? json.MatchLimit[0] : 100;
         this.resultColumns = json.ResultColumns ? json.ResultColumns[0].Column : [];
-
+        this.title = json.Title ? json.Title[0] : widgetTag.label;
     },
 
     execute : function() {
@@ -12694,7 +12694,7 @@ Fusion.Widget.SelectPolygon.prototype = {
 /**
  * Fusion.Widget.SelectRadius
  *
- * $Id: SelectRadius.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: SelectRadius.js 1307 2008-03-04 22:14:22Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -12797,7 +12797,6 @@ Fusion.Widget.SelectRadius.prototype = {
         this._oButton.activateTool();
         if (!this.circle) {
             this.circle = new Fusion.Tool.Canvas.Circle(this.getMap());
-            this.circle.setCenter(0);
         }
     },
 
@@ -12824,10 +12823,12 @@ Fusion.Widget.SelectRadius.prototype = {
         //console.log('SelectRadius.mouseDown');
         if (Event.isLeftClick(e)) {
             var p = this.getMap().getEventPosition(e);
-
+            var point = this.getMap().pixToGeo(p.x, p.y);
+            var radius = this.getMap().pixToGeoMeasure(this.defaultRadius);
+            
             if (!this.isDigitizing) {
-                this.circle.setCenter(p.x, p.y);
-                this.circle.setRadius(this.defaultRadius);
+                this.circle.setCenter(point.x, point.y);
+                this.circle.setRadius(radius);
                 this.clearContext();
                 this.circle.draw(this.context);     
                 this.isDigitizing = true;
@@ -12856,11 +12857,13 @@ Fusion.Widget.SelectRadius.prototype = {
             return;
         }
     
-        var p = this.getMap().getEventPosition(e);
+        var map = this.getMap();
+        var p = map.getEventPosition(e);
+        var point = map.pixToGeo(p.x, p.y);
         var center = this.circle.center;
         
-        var radius = Math.sqrt(Math.pow(center.x-p.x,2) + Math.pow(center.y-p.y,2));
-        if (radius > this.nTolerance) {
+        var radius = Math.sqrt(Math.pow(center.x-point.x,2) + Math.pow(center.y-point.y,2));
+        if (map.geoToPixMeasure(radius) > this.nTolerance) {
             this.circle.setRadius(radius);
         }
         this.clearContext();
@@ -12871,7 +12874,7 @@ Fusion.Widget.SelectRadius.prototype = {
             var size = Element.getDimensions(this.radiusTip);
             this.radiusTip.style.top = (p.y - size.height*2) + 'px';
             this.radiusTip.style.left = p.x + 'px';
-            var r = this.getMap().pixToGeoMeasure(this.circle.radius);
+            var r = map.pixToGeoMeasure(this.circle.radius);
             this.radiusTip.innerHTML = r;
         }
         
@@ -12883,8 +12886,8 @@ Fusion.Widget.SelectRadius.prototype = {
             //this.circle.draw(this.context);
             this.clearContext();
             this.isDigitizing = false;
-            var center = this.getMap().pixToGeo(this.circle.center.x, this.circle.center.y);
-            var radius = this.getMap().pixToGeoMeasure(this.circle.radius);
+            var center = this.circle.center;
+            var radius = this.circle.radius;
             this.execute(center, radius);
         }
         
@@ -12921,7 +12924,7 @@ Fusion.Widget.SelectRadius.prototype = {
         
         var options = {};
         options.geometry = wkt;
-        options.selectionType = "inside";
+        options.selectionType = this.selectionType;
 
         if (this.bActiveOnly) {
             var layer = this.getMap().getActiveLayer();
@@ -13688,9 +13691,7 @@ Fusion.Widget.ViewOptions.prototype =
         }
 
         this.displayUnits = json.DisplayUnits ? json.DisplayUnits[0] : false;
-        if (!this.displayUnits) {
-            this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, this.setMapUnits.bind(this));
-        }
+        this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, this.setMapUnits.bind(this));
     },
     
     //action to perform when the button is clicked
@@ -13699,7 +13700,8 @@ Fusion.Widget.ViewOptions.prototype =
     },
 
     setMapUnits: function() {
-      this.setViewOptions(this.getMap().getUnits());
+      var units = this.displayUnits ? this.displayUnits : this.getMap().getUnits();
+      this.setViewOptions(units);
     },
     
     setViewOptions: function(data) {

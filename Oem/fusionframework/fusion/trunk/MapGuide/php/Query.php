@@ -2,7 +2,7 @@
 /**
  * Query
  *
- * $Id: Query.php 1234 2008-02-15 19:34:41Z madair $
+ * $Id: Query.php 1301 2008-03-04 21:57:45Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -268,7 +268,9 @@ try {
             echo $onfe->GetStackTrace() . "\n";
         } catch (MgException $e) {
             //what should we do with general exceptions?
-            echo "general exception";
+            echo "/*general exception:";
+            echo "ERROR: " . $e->GetMessage();
+            echo $e->GetDetails() . "*/";
         }
     }
 

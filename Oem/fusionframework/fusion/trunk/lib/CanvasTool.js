@@ -1,7 +1,7 @@
 /**
  * Fusion.Tool.Canvas
  *
- * $Id: CanvasTool.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: CanvasTool.js 1307 2008-03-04 22:14:22Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -270,13 +270,8 @@ Fusion.Tool.Canvas.Circle.prototype = {
     },
     
     setRadius: function(r) {
-        if (r > 1 || r < -1) {
-            this.radius = Math.abs(r);
-            this.radiusPx = this.map.geoToPixMeasure(this.radius);
-        } else {
-            this.radius = 1;
-            this.radiusPx = 1;
-        }
+        this.radius = Math.abs(r);
+        this.radiusPx = this.map.geoToPixMeasure(this.radius);
     },
     
     draw: function( context ) {
