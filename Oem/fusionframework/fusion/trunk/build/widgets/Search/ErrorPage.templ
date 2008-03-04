@@ -31,15 +31,18 @@ var popup = %s;
 
 function InitDocument()
 {
-    GetParent().Refresh();
+    var map = GetParent().Fusion.getMapByName(mapName);
+    map.reloadMap();
 }
 
 function Back()
 {
-    if(popup)
-        self.close();
-    else
-        GetParent().GotoHomePage();
+    if (popup) {
+        history.back();
+    } else {
+        var TaskPaneId=this.frameElement.taskPaneId;
+        GetParent().Fusion.getWidgetById(TaskPaneId).goHome();  
+    }
 }
 
 function GetParent()

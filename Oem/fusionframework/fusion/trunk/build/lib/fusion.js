@@ -1,7 +1,7 @@
 /**
  * Fusion
  *
- * $Id: fusion.js 1286 2008-02-29 20:59:57Z madair $
+ * $Id: fusion.js 1300 2008-03-04 20:04:56Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -88,6 +88,7 @@ Fusion.bootstrap = function() {
         var n = s.indexOf('lib/fusion.js');
         if (n != -1) {
             gszFusionURL = s.substring(0,n);
+            FusionScriptObject = aScripts[i];
             /* import the compressed version of jx and its CSS */
             Jx.baseURL = gszFusionURL + 'jx/';
             Jx.COMBINED_CSS = true;
@@ -97,7 +98,6 @@ Fusion.bootstrap = function() {
             break;
         }
     }
-    document.write('<style id="fusionStyleSheets" type="text/css"></style>');
 };
 
 Fusion.bootstrap();
@@ -887,34 +887,13 @@ Fusion = {
         return false;
     },
 
-    getFusionStylesheet: function() {
-        if (!Fusion.styleSheet) {
-            for (var i=0; i<document.styleSheets.length; i++) {
-                var ss = document.styleSheets[i];
-                if (ss.ownerNode && ss.ownerNode.id == 'fusionStyleSheets') {
-                    Fusion.styleSheet = ss;
-                    break;
-                } else if (ss.owningElement && ss.owningElement.id == 'fusionStyleSheets') {
-                    Fusion.styleSheet = ss;
-                    break;
-                }
-            }
-        }
-        return Fusion.styleSheet;
-    },
-
     addWidgetStyleSheet: function(url) {
-        var ss = this.getFusionStylesheet();
-        if (ss) {
-            if (ss.addImport) {
-                ss.addImport(Fusion.getFusionURL() + url);
-            } else if (ss.insertRule) {
-                ss.insertRule('@import url('+Fusion.getFusionURL() + url+');', ss.cssRules.length);
-            }
-        } else {
-            Fusion.reportError(new Fusion.Error(Fusion.Error.WARNING, 
-                            OpenLayers.String.translate('importFailed', url)));
-        }
+        var lnk = document.createElement('link');
+        var hd = document.getElementsByTagName('HEAD')[0];
+        hd.insertBefore(lnk, FusionScriptObject);
+        lnk.type = 'text/css';
+        lnk.rel='stylesheet';
+        lnk.href = Fusion.getFusionURL()+url;
     },
 
     parseQueryString: function() {

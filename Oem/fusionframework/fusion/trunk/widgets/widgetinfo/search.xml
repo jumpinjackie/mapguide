@@ -58,4 +58,12 @@
     <DefaultValue></DefaultValue>
     <IsMandatory>false</IsMandatory>
   </Parameter>
+  <Parameter>
+    <Name>Title</Name>
+    <Description>The title to use for the search form</Description>
+    <Type>String</Type>
+    <Label>Title</Label>
+    <DefaultValue></DefaultValue>
+    <IsMandatory>false</IsMandatory>
+  </Parameter>
 </WidgetInfo>

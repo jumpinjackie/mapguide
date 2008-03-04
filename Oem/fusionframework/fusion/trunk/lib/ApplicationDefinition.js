@@ -893,7 +893,10 @@ Fusion.Lib.ApplicationDefinition.Item.prototype = {
                                container instanceof Jx.ContextMenu ||
                                container instanceof Jx.SubMenu) {
                         var widget = widgetTag.create(widgetSet, '');
+                        widget.id = name; 
                         if (widget.oMenu) {   //for widgets that extend MenuBase
+                          widget.oMenu.domObj.id = name;
+                          widget.oMenu.domObj.widget = widget;
                           container.add(widget.oMenu);
                         } else {
                           var action = new Jx.Action(widget.activateTool.bind(widget));
@@ -901,6 +904,8 @@ Fusion.Lib.ApplicationDefinition.Item.prototype = {
                           opt.label = widgetTag.label;
                           opt.image = widgetTag.imageUrl;
                           var menuItem = new Jx.MenuItem(action, opt);
+                          menuItem.domObj.id = name;
+                          menuItem.domObj.widget = widget;
                           container.add(menuItem);
                         }
                     }
