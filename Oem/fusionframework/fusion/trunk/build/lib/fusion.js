@@ -1,7 +1,7 @@
 /**
  * Fusion
  *
- * $Id: fusion.js 1300 2008-03-04 20:04:56Z pspencer $
+ * $Id: fusion.js 1331 2008-03-06 20:45:49Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -511,9 +511,15 @@ Fusion = {
         var agt=navigator.userAgent.toLowerCase();
         for (var i=this.aLoadingScripts.length-1; i>=0; i--) {
             var s = this.aLoadingScripts[i];
-            if (s.readyState == 'loaded' ||
-                s.readyState == 'complete' ||
-                (agt.indexOf("safari") != -1 && s.readyState == null)) {
+            if (agt.indexOf('safari') != -1) {
+                var widgetName = s.id.substring(s.id.lastIndexOf('/')+1, s.id.indexOf('.js'));
+                var b;
+                eval ('b = typeof Fusion.Widget.'+widgetName+' == "function";');
+                if (b) {
+                    this.scriptLoaded(s.id);
+                }
+            } else if (s.readyState == 'loaded' ||
+                s.readyState == 'complete') {
                 this.scriptLoaded(s.id);
             }
         }

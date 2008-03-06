@@ -60,7 +60,7 @@ var fusionError = function(eventId, error) {
 }
 
 var fusionInitialized = function() {
-    $('AppContainer').resize();
+    $('AppContainer').resize({forceResize: true});
 }
 
 var showOverviewMap = function() {
@@ -142,9 +142,6 @@ var showSelectionPanel = function() {
   </div>
   
 </div>
-
-<div id="Legend"></div>
-<div id="SelectionPanel"></div>
 <div id="OverviewMap"></div>
 <div id="Maptip"></div>
 
