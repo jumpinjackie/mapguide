@@ -36,8 +36,8 @@ window.onload = function() {
                                  layout:'vertical',
                                  containerOptions: [{left: 8},{left: 8, height: 214}]});
 
+  /* create dynamic content */
   tabbox1 = new Jx.TabBox('Top');
-
   tab1 = new Jx.Tab(OpenLayers.String.translate('taskPaneTitle'));
   tab1.content.id = 'TaskPane';
   tab2 = new Jx.Tab(OpenLayers.String.translate('legendTitle'));
@@ -74,7 +74,7 @@ var fusionError = function(eventId, error) {
 }
 
 var fusionInitialized = function() {
-    $('AppContainer').resize();
+    $('AppContainer').resize({forceResize: true});
     //Fusion.getWidgetById('ToolbarSecondary').checkPosition();
 }
 
@@ -139,10 +139,6 @@ var showSelectionPanel = function() {
 
 </div>
 
-<div id="TaskPane"></div>
-<div id="Legend"></div>
-<div id="Selection"></div>
-<div id="OverviewMap"></div>
 <div id="Maptip"></div>
 
 </body>
