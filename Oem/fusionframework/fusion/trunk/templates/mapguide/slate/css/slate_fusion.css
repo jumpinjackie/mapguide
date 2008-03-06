@@ -42,6 +42,7 @@ img {
   background: url(../images/mapBackground.gif) repeat-x #efefef bottom;
   overflow: hidden;
   position: absolute;
+  z-index: 0;
 }
 
 #Maptip {
