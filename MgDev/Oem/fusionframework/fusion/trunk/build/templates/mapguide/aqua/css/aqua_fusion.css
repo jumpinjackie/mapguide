@@ -39,6 +39,7 @@ img {
 #Map {
   background: url(../images/mapBackground.gif) repeat-x #efefef bottom;
   overflow: hidden;
+  z-index: 0;
 }
 
 #Maptip {
@@ -54,10 +55,12 @@ img {
 
 #Toolbar {
   background: url(../images/ToolbarBackground.gif) repeat-x;
+  z-index: 1;
 }
 
 #ToolbarVertical {
   background: url(../images/ToolbarVerticalBackground.gif) repeat-y;
+  z-index: 1;
 }
 
 #Toolbar ul.jxToolbar {

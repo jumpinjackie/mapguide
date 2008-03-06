@@ -34,6 +34,7 @@ window.onload = function() {
                                  containerOptions: [{},{minWidth:8, width: 218}],
                                  snappers: [null,$('SidebarCollapse')]});
   
+  /* create dynamic content */
   panel1 = new Jx.Panel({label: OpenLayers.String.translate('legendTitle'), imageBaseUrl: 'images/'});
   panel1.content.id = 'Legend';
   panel2 = new Jx.Panel({label: OpenLayers.String.translate('selectionPanelTitle'), imageBaseUrl: 'images/'});
@@ -57,7 +58,7 @@ var fusionError = function(eventId, error) {
 }
 
 var fusionInitialized = function() {
-    $('AppContainer').resize();
+    $('AppContainer').resize({forceResize: true});
     //Fusion.getWidgetById('Navigator').checkPosition();
 }
 
@@ -112,7 +113,7 @@ var showSelectionPanel = function() {
   </div>
 
 </div>
-<div id="Legend"></div>
+
 <div id="Maptip"></div>
 
 </body>
