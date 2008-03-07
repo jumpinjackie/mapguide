@@ -46,6 +46,11 @@ public:
     virtual void Dispose();
 
 private:
+    void AddSignatures(FdoSignatureDefinitionCollection* signatures,
+        FdoArgumentDefinition* expression, FdoArgumentDefinition* defaultValue,
+        FdoArgumentDefinition* rangeMin, FdoArgumentDefinition* rangeMax,
+        FdoArgumentDefinition* value, FdoDataType returnType);
+
     FdoFunctionDefinition* m_functionDefinition;
 };
 
