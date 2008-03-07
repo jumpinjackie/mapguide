@@ -941,7 +941,7 @@ void TestRenderingService::TestCase_SymbologyPolygons()
 //    RS_LineStroke stroke(RS_Color(0), 0, L"Solid", RS_Units_Device);
 //    RS_FillStyle fillstyle(stroke, RS_Color(255,0,0,255), RS_Color(0), L"Solid");
 //
-//    AGGRenderer* agg = new AGGRenderer(1024, 1024, RS_Color(0xffffffff), true, true, false, false, 0.0);
+//    AGGRenderer* agg = new AGGRenderer(1024, 1024, RS_Color(0xffffffff), false, false, 0.0);
 //
 //    agg->StartMap(NULL, RS_Bounds(0,0,0,1024,1024,0), 1.0, 1.0, 1.0, NULL);
 //

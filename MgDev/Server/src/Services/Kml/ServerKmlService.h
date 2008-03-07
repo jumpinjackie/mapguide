@@ -133,10 +133,6 @@ private:
     Ptr<MgDrawingService> m_svcDrawing;
     Ptr<MgRenderingService> m_svcRendering;
     Ptr<MgCoordinateSystemFactory> m_csFactory;
-
-    // these will eventually be removed
-    bool m_bAllowVSLines;
-    bool m_bAllowVSAreas;
 };
 
 #endif

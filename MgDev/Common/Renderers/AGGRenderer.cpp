@@ -78,8 +78,6 @@ bool font_flip_y = !flip_y;
 AGGRenderer::AGGRenderer(int width,
                          int height,
                          unsigned int* backbuffer,
-                         bool allowVSLines,
-                         bool allowVSAreas,
                          bool requiresClipping,
                          bool localOverposting,
                          double tileExtentOffset)
@@ -92,8 +90,6 @@ m_symbolManager(NULL),
 m_mapInfo(NULL),
 m_layerInfo(NULL),
 m_fcInfo(NULL),
-m_bAllowVSLines(allowVSLines),
-m_bAllowVSAreas(allowVSAreas),
 m_bRequiresClipping(requiresClipping),
 m_bLocalOverposting(localOverposting),
 m_imsym(NULL),
@@ -123,8 +119,6 @@ m_bownbuffer(false)
 AGGRenderer::AGGRenderer(int width,
                          int height,
                          RS_Color& bgColor,
-                         bool allowVSLines,
-                         bool allowVSAreas,
                          bool requiresClipping,
                          bool localOverposting,
                          double tileExtentOffset)
@@ -139,8 +133,6 @@ m_layerInfo(NULL),
 m_fcInfo(NULL),
 m_bIsSymbolW2D(false),
 m_bHaveViewport(false),
-m_bAllowVSLines(allowVSLines),
-m_bAllowVSAreas(allowVSAreas),
 m_bRequiresClipping(requiresClipping),
 m_bLocalOverposting(localOverposting),
 m_imsym(NULL),
@@ -975,10 +967,12 @@ double AGGRenderer::GetMapScale()
     return m_mapScale;
 }
 
+
 double AGGRenderer::GetDrawingScale()
 {
     return m_drawingScale;
 }
+
 
 RS_Bounds& AGGRenderer::GetBounds()
 {
@@ -995,6 +989,12 @@ double AGGRenderer::GetDpi()
 double AGGRenderer::GetMetersPerUnit()
 {
     return m_metersPerUnit;
+}
+
+
+bool AGGRenderer::YPointsUp()
+{
+    return true;
 }
 
 
@@ -1588,9 +1588,6 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth)
 // can only be applied to polygon feature geometry types.
 void AGGRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 {
-    if (!m_bAllowVSAreas)
-        return; // don't draw any area style
-
     bool clip = (!style->solidFill && wcscmp(style->clippingControl, L"Clip") == 0);
     if (clip)
         SetPolyClip(ctx->geometry, style->bufferWidth);
@@ -1599,22 +1596,6 @@ void AGGRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 
     if (clip)
         SetPolyClip(NULL,0);
-}
-
-
-void AGGRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
-{
-    if (m_bAllowVSLines)
-        SE_Renderer::ProcessLine(ctx, style);
-    else
-    {
-        // render the polyline as solid black lines
-        SE_LineStroke lineStroke(0xFF000000, 0.0);
-
-        SE_Matrix w2s;
-        GetWorldToScreenTransform(w2s);
-        DrawScreenPolyline(ctx->geometry, &w2s, lineStroke);
-    }
 }
 
 

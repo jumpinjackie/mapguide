@@ -51,9 +51,7 @@ class EMapRenderer : public DWFRenderer
 {
 public:
     RENDERERS_API EMapRenderer(const RS_String& filename,
-                               const RS_String& agentUri,
-                               bool             allowVSLines,
-                               bool             allowVSAreas);
+                               const RS_String& agentUri);
 
     RENDERERS_API virtual ~EMapRenderer();
 

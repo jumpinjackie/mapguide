@@ -52,8 +52,6 @@ public:
     RENDERERS_API AGGRenderer(int width,
                               int height,
                               unsigned int* backbuffer,
-                              bool allowVSLines,
-                              bool allowVSAreas,
                               bool requiresClipping,
                               bool localOverposting,
                               double tileExtentOffset);
@@ -61,8 +59,6 @@ public:
     RENDERERS_API AGGRenderer(int width,
                               int height,
                               RS_Color& bgColor,
-                              bool allowVSLines,
-                              bool allowVSAreas,
                               bool requiresClipping,
                               bool localOverposting,
                               double tileExtentOffset);
@@ -192,14 +188,13 @@ public:
                                            bool             exclude,
                                            LineBuffer*      path);
 
-    RENDERERS_API virtual void ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style);
     RENDERERS_API virtual void ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style);
 
     RENDERERS_API virtual RS_FontEngine* GetRSFontEngine();
 
     RENDERERS_API virtual void AddExclusionRegion(RS_F_Point* fpts, int npts);
 
-    RENDERERS_API  virtual bool YPointsUp() { return true; }
+    RENDERERS_API  virtual bool YPointsUp();
 
     RENDERERS_API void AddDWFContent(RS_InputStream *,CSysTransformer *,const RS_String &,const RS_String &,const RS_String &);
 
@@ -261,10 +256,6 @@ private:
     SE_LineStroke m_lineStroke;
 
     LabelRendererBase* m_labeler;
-
-    //these will eventually be removed
-    bool m_bAllowVSLines;
-    bool m_bAllowVSAreas;
 
 private:
     //target image for W2D rewriter -- equal to either the target map
