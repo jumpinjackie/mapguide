@@ -103,8 +103,6 @@ static CInitGD sg_InitGD;
 GDRenderer::GDRenderer(int width,
                        int height,
                        RS_Color& bgColor,
-                       bool allowVSLines,
-                       bool allowVSAreas,
                        bool requiresClipping,
                        bool localOverposting,
                        double tileExtentOffset)
@@ -119,8 +117,6 @@ m_symbolManager(NULL),
 m_mapInfo(NULL),
 m_layerInfo(NULL),
 m_featureClassInfo(NULL),
-m_bAllowVSLines(allowVSLines),
-m_bAllowVSAreas(allowVSAreas),
 m_bRequiresClipping(requiresClipping),
 m_bIsSymbolW2D(false),
 m_bHaveViewport(false),
@@ -2142,31 +2138,6 @@ void GDRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
 // SE_Renderer implementation
 /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////
-
-
-void GDRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
-{
-    if (m_bAllowVSLines)
-        SE_Renderer::ProcessLine(ctx, style);
-    else
-    {
-        // render the polyline as solid black lines
-        SE_LineStroke lineStroke(0xFF000000, 0.0);
-
-        SE_Matrix w2s;
-        GetWorldToScreenTransform(w2s);
-        DrawScreenPolyline(ctx->geometry, &w2s, lineStroke);
-    }
-}
-
-
-void GDRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
-{
-    if (!m_bAllowVSAreas)
-        return; // don't draw any area style
-
-    SE_Renderer::ProcessArea(ctx, style);
-}
 
 
 void GDRenderer::_TransferPoints(LineBuffer* plb, const SE_Matrix* xform)

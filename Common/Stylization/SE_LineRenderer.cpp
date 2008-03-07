@@ -21,7 +21,7 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// Used with ProcessLineJoin
+// Used with ProcessLineOverlapWrap
 struct HotSpot
 {
     // the position of the hotspot vertex point, in rendering space

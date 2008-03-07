@@ -37,10 +37,8 @@
 #include "dwfemap/package/LayerGroup.h"
 
 EMapRenderer::EMapRenderer(const RS_String& filename,
-                           const RS_String& agentUri,
-                           bool             allowVSLines,
-                           bool             allowVSAreas)
-                           : DWFRenderer(allowVSLines, allowVSAreas)
+                           const RS_String& agentUri)
+                           : DWFRenderer()
 {
     m_pPage = NULL;
     m_uuid = new DWFUUID;

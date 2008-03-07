@@ -126,10 +126,6 @@ EXTERNAL_API:
     static const STRING GeneralPropertyRenderer;                        /// value("Renderer")
     static const STRING DefaultGeneralPropertyRenderer;                 /// value("GD")
 
-    /// Specifies whether rendering of new vector symbolization lines is enabled
-    static const STRING GeneralPropertyEnableVectorSymbolizationLines;      /// value("EnableVectorSymbolizationLines")
-    static const bool DefaultGeneralPropertyEnableVectorSymbolizationLines; /// value(false)
-
 INTERNAL_API:
 
     static const STRING GeneralPropertyWorkerThreadPoolSize;            /// value("WorkerThreadPoolSize")

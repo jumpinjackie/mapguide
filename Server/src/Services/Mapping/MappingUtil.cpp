@@ -24,7 +24,6 @@
 #include "Stylizer.h"
 #include "SymbolVisitor.h"
 #include "SLDSymbols.h"
-#include "SE_BufferPool.h"
 #include "SE_StyleVisitor.h"
 #include "SEMgSymbolManager.h"
 #include "TransformCache.h"
@@ -1057,11 +1056,8 @@ MgByteReader* MgMappingUtil::DrawFTS(MgResourceService* svcResource,
 
     RS_Color bgcolor(255, 255, 255, 255);
 
-    bool bAllowVSLines, bAllowVSAreas;
-    MgMappingUtil::GetVSRenderingFlags(bAllowVSLines, bAllowVSAreas);
-
     // get the right renderer going
-    AGGRenderer er(imgWidth, imgHeight, bgcolor, bAllowVSLines, bAllowVSAreas, false, false, 0.0);
+    AGGRenderer er(imgWidth, imgHeight, bgcolor, false, false, 0.0);
 
     // and also set up symbol managers for it
     SEMgSymbolManager se_sman(svcResource);
@@ -1087,13 +1083,4 @@ MgByteReader* MgMappingUtil::DrawFTS(MgResourceService* svcResource,
     }
 
     return NULL;
-}
-
-
-// Returns values indicating whether new line / area styles are enabled.
-// This method will eventually be removed.
-void MgMappingUtil::GetVSRenderingFlags(bool& bAllowVSLines, bool& bAllowVSAreas)
-{
-    bAllowVSLines = true;
-    bAllowVSAreas = true;
 }

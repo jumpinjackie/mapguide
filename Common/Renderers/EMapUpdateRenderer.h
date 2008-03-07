@@ -52,9 +52,7 @@ class EMapUpdateRenderer : public DWFRenderer
 {
 public:
     RENDERERS_API EMapUpdateRenderer(const RS_String& filename,
-                                     unsigned int     sequenceId,
-                                     bool             allowVSLines,
-                                     bool             allowVSAreas);
+                                     unsigned int     sequenceId);
 
     RENDERERS_API virtual ~EMapUpdateRenderer();
 
