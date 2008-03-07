@@ -21,6 +21,8 @@
 #include "ExpressionHelper.h"
 #include "Foundation.h"
 
+// until we can specify variable arguments, create signatures up to this many range/value pairs
+const static int MAX_RANGE_SIGNATURE_SIZE = 16;
 
 ExpressionFunctionRange::ExpressionFunctionRange()
 {
@@ -40,6 +42,27 @@ ExpressionFunctionRange* ExpressionFunctionRange::Create()
 }
 
 
+void ExpressionFunctionRange::AddSignatures(FdoSignatureDefinitionCollection* signatures,
+                   FdoArgumentDefinition* expression, FdoArgumentDefinition* defaultValue,
+                   FdoArgumentDefinition* rangeMin, FdoArgumentDefinition* rangeMax,
+                   FdoArgumentDefinition* value, FdoDataType returnType)
+{
+    for (int num=1; num<=MAX_RANGE_SIGNATURE_SIZE; num++)
+    {
+        FdoPtr<FdoArgumentDefinitionCollection> args = FdoArgumentDefinitionCollection::Create();
+        args->Add(expression);
+        args->Add(defaultValue);
+        for (int i=0; i<num; i++)
+        {
+            args->Add(rangeMin);
+            args->Add(rangeMax);
+            args->Add(value);
+        }
+        signatures->Add(FdoSignatureDefinition::Create(returnType, args));
+    }
+}
+
+
 FdoFunctionDefinition* ExpressionFunctionRange::GetFunctionDefinition()
 {
     if (!m_functionDefinition)
@@ -47,22 +70,35 @@ FdoFunctionDefinition* ExpressionFunctionRange::GetFunctionDefinition()
         STRING funcDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionRANGE_Description");
         STRING expVDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionRANGE_ExpressionDescription");
         STRING defVDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionRANGE_DefaultValueDescription");
-        STRING varVDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionRANGE_VariableDescription");
+        STRING minVDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionRANGE_MinDescription");
+        STRING maxVDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionRANGE_MaxDescription");
+        STRING valVDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionRANGE_ValueDescription");
 
-        FdoPtr<FdoArgumentDefinition> arg1 = FdoArgumentDefinition::Create(L"expression"  , expVDesc.c_str(), FdoDataType_String); // NOXLATE
-        FdoPtr<FdoArgumentDefinition> arg2 = FdoArgumentDefinition::Create(L"defaultValue", defVDesc.c_str(), FdoDataType_String); // NOXLATE
-        FdoPtr<FdoArgumentDefinition> arg3 = FdoArgumentDefinition::Create(L"..."         , varVDesc.c_str(), FdoDataType_String); // NOXLATE
+        // the expression builder treats all numerical types the same, so only use Doubles for numerical arguments
+        FdoPtr<FdoArgumentDefinition> argExpString = FdoArgumentDefinition::Create(L"expression"  , expVDesc.c_str(), FdoDataType_String); // NOXLATE
+        FdoPtr<FdoArgumentDefinition> argMinString = FdoArgumentDefinition::Create(L"rangeMin"    , minVDesc.c_str(), FdoDataType_String); // NOXLATE
+        FdoPtr<FdoArgumentDefinition> argMaxString = FdoArgumentDefinition::Create(L"rangeMax"    , maxVDesc.c_str(), FdoDataType_String); // NOXLATE
+        FdoPtr<FdoArgumentDefinition> argDefString = FdoArgumentDefinition::Create(L"defaultValue", defVDesc.c_str(), FdoDataType_String); // NOXLATE
+        FdoPtr<FdoArgumentDefinition> argValString = FdoArgumentDefinition::Create(L"value"       , valVDesc.c_str(), FdoDataType_String); // NOXLATE
+        FdoPtr<FdoArgumentDefinition> argExpDouble = FdoArgumentDefinition::Create(L"expression"  , expVDesc.c_str(), FdoDataType_Double); // NOXLATE
+        FdoPtr<FdoArgumentDefinition> argDefDouble = FdoArgumentDefinition::Create(L"defaultValue", defVDesc.c_str(), FdoDataType_Double); // NOXLATE
+        FdoPtr<FdoArgumentDefinition> argValDouble = FdoArgumentDefinition::Create(L"value"       , valVDesc.c_str(), FdoDataType_Double); // NOXLATE
+        FdoPtr<FdoArgumentDefinition> argMinDouble = FdoArgumentDefinition::Create(L"rangeMin"    , minVDesc.c_str(), FdoDataType_Double); // NOXLATE
+        FdoPtr<FdoArgumentDefinition> argMaxDouble = FdoArgumentDefinition::Create(L"rangeMax"    , maxVDesc.c_str(), FdoDataType_Double); // NOXLATE
 
-        FdoPtr<FdoArgumentDefinitionCollection> args = FdoArgumentDefinitionCollection::Create();
-        args->Add(arg1);
-        args->Add(arg2);
-        args->Add(arg3);
+        // create signatures for all combinations of keys (string, number) and values (string, number)
+        // TODO: when it becomes possible, create signature with variable arguments to handle very large cases
+        FdoPtr<FdoSignatureDefinitionCollection> signatures = FdoSignatureDefinitionCollection::Create();
+        AddSignatures(signatures, argExpString, argDefString, argMinString, argMaxString, argValString, FdoDataType_String);
+        AddSignatures(signatures, argExpString, argDefDouble, argMinString, argMaxString, argValDouble, FdoDataType_Double);
+        AddSignatures(signatures, argExpDouble, argDefString, argMinDouble, argMaxDouble, argValString, FdoDataType_String);
+        AddSignatures(signatures, argExpDouble, argDefDouble, argMinDouble, argMaxDouble, argValDouble, FdoDataType_Double);
 
-        m_functionDefinition = FdoFunctionDefinition::Create(L"RANGE", // NOXLATE
+        m_functionDefinition = FdoFunctionDefinition::Create(L"Range", // NOXLATE
                                                              funcDesc.c_str(),
-                                                             FdoDataType_String,
-                                                             args,
-                                                             FdoFunctionCategoryType_Custom);
+                                                             false,
+                                                             signatures,
+                                                             FdoFunctionCategoryType_Conversion);
     }
 
     return FDO_SAFE_ADDREF(m_functionDefinition);
