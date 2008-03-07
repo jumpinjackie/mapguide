@@ -17,13 +17,9 @@
 
 #include "stdafx.h"
 #include "SE_Renderer.h"
-#include "SE_LineBuffer.h"
-#include "RS_FontEngine.h"
-#include "SE_Bounds.h"
-#include "SE_GeometryOperations.h"
+#include "SE_LineRenderer.h"
 #include "SE_AreaPositioning.h"
-
-#include "SE_JoinProcessor.h"
+#include "RS_FontEngine.h"
 
 using namespace MDFMODEL_NAMESPACE;
 
@@ -193,13 +189,6 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
     }
 
     //--------------------------------------------------------------
-    // remaining code needs segment lengths
-    //--------------------------------------------------------------
-
-    double* segLens = (double*)alloca(sizeof(double)*featGeom->point_count());
-    ComputeSegmentLengths(featGeom, segLens);
-
-    //--------------------------------------------------------------
     // handle the case repeat <= 0 - here we ignore vertex control
     //--------------------------------------------------------------
 
@@ -213,7 +202,7 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
         style->vertexAngleLimit = M_PI + 1.0;   // any value greater than M_PI
         style->repeat = DBL_MAX;
 
-        ProcessLineOverlapDirect(featGeom, style, segLens);
+        ProcessLineOverlapDirect(featGeom, style);
 
         style->vertexAngleLimit = old_val;
         style->repeat = old_rep;
@@ -226,11 +215,11 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 
     if (wcscmp(style->vertexControl, L"OverlapNone") == 0)
     {
-        ProcessLineOverlapNone(featGeom, style, segLens);
+        ProcessLineOverlapNone(featGeom, style);
     }
     else if (wcscmp(style->vertexControl, L"OverlapDirect") == 0)
     {
-        ProcessLineOverlapDirect(featGeom, style, segLens);
+        ProcessLineOverlapDirect(featGeom, style);
     }
     else
     {
@@ -250,9 +239,9 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 
         // currently only handle the vector-only case - fall back to OverlapNone otherwise
         if (vectorOnly)
-            ProcessLineOverlapWrap(featGeom, style);
+            SE_LineRenderer::ProcessLineOverlapWrap(this, featGeom, style);
         else
-            ProcessLineOverlapNone(featGeom, style, segLens);
+            ProcessLineOverlapNone(featGeom, style);
     }
 }
 
@@ -296,8 +285,19 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
         return;
     }
 
+    // transform the feature geometry to rendering space
     LineBuffer* xfgeom = LineBufferPool::NewLineBuffer(m_bp, featGeom->point_count());
-    TransformLB(ctx->geometry, xfgeom, w2s, true);
+    *xfgeom = *featGeom;
+
+    int size = featGeom->point_count();
+    for (int i=0; i<size; ++i)
+        w2s.transform(xfgeom->x_coord(i), xfgeom->y_coord(i));
+
+    // recompute the bounds
+    RS_Bounds& bounds = const_cast<RS_Bounds&>(xfgeom->bounds());
+    bounds.minx = bounds.miny = bounds.minz = +DBL_MAX;
+    bounds.maxx = bounds.maxy = bounds.maxz = -DBL_MAX;
+    xfgeom->ComputeBounds(bounds);
 
     // account for any viewport rotation
     SE_AreaPositioning ap(xfgeom, style, GetWorldToScreenRotation());
@@ -311,8 +311,10 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
     {
         xform = xformbase;
         xform.translate(pos->x, pos->y);
-        DrawSymbol(style->symbol, xform, baserot, style->addToExclusionRegions, NULL);
+        DrawSymbol(style->symbol, xform, baserot, style->addToExclusionRegions);
     }
+
+    LineBufferPool::FreeLineBuffer(m_bp, xfgeom);
 }
 
 
@@ -320,8 +322,7 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                              const SE_Matrix& xform,
                              double angleRad,
-                             bool excludeRegion,
-                             SE_IJoinProcessor* processor)
+                             bool excludeRegion)
 {
     RS_Bounds extents(DBL_MAX, DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX, -DBL_MAX);
 
@@ -334,8 +335,6 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
             SE_RenderPolyline* rp = (SE_RenderPolyline*)primitive;
 
             LineBuffer* lb = rp->geometry->xf_buffer();
-            if (processor)
-                lb = processor->Transform(lb, m_bp);
 
             // update the extents with this primitive
             RS_Bounds lbnds;
@@ -359,9 +358,6 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
 
                 DrawScreenPolyline(lb, &xform, rp->lineStroke);
             }
-
-            if (processor)
-                LineBufferPool::FreeLineBuffer(m_bp, lb);
         }
         else if (primitive->type == SE_RenderTextPrimitive)
         {
@@ -432,6 +428,13 @@ void SE_Renderer::AddLabel(LineBuffer* geom, SE_RenderStyle* style, const SE_Mat
 
     SE_LabelInfo info(xform.x2, xform.y2, RS_Units_Device, angleRad, clonedStyle);
     ProcessSELabelGroup(&info, 1, RS_OverpostType_AllFit, style->addToExclusionRegions, geom);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+SE_BufferPool* SE_Renderer::GetBufferPool()
+{
+    return m_bp;
 }
 
 
@@ -899,7 +902,7 @@ void SE_Renderer::ComputeGroupDistribution(double groupLen, double startOffset, 
 
 ///////////////////////////////////////////////////////////////////////////////
 // Distributes symbols along a polyline using the OverlapNone vertex control option.
-void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyle* style, double* segLens)
+void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyle* style)
 {
     _ASSERT(style->repeat > 0.0);
 
@@ -938,6 +941,10 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
     double leftEdge = style->bounds[0].x;
     double rightEdge = style->bounds[1].x;
 
+    // get segment lengths
+    double* segLens = (double*)alloca(sizeof(double)*geometry->point_count());
+    ComputeSegmentLengths(geometry, segLens);
+
     // used for segment group calculations
     int* segGroups = (int*)alloca(2*sizeof(int)*geometry->point_count());
     double* groupLens = (double*)alloca(sizeof(double)*geometry->point_count());
@@ -959,7 +966,7 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
 
         // check if:
         // - the start offset goes beyond the end of the contour
-        // - the end offset goes beyond the end of the contour
+        // - the end offset goes beyond the beginning of the contour
         // - the start offset goes beyond the end offset
         double offsetSum = rs_max(style->startOffset, 0.0) + rs_max(style->endOffset, 0.0);
         if (offsetSum > segLens[start_seg_contour])
@@ -1207,10 +1214,6 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
 // Distributes feature labels along a polyline.
 void SE_Renderer::ProcessLineLabels(LineBuffer* geometry, SE_RenderLineStyle* style)
 {
-    // get the segment lengths
-    double* segLens = (double*)alloca(sizeof(double)*geometry->point_count());
-    ComputeSegmentLengths(geometry, segLens);
-
     SE_Matrix symxf;
     bool yUp = YPointsUp();
 
@@ -1247,6 +1250,10 @@ void SE_Renderer::ProcessLineLabels(LineBuffer* geometry, SE_RenderLineStyle* st
     double leftEdge = style->bounds[0].x;
     double rightEdge = style->bounds[1].x;
     double symWidth = rightEdge - leftEdge;
+
+    // get the segment lengths
+    double* segLens = (double*)alloca(sizeof(double)*geometry->point_count());
+    ComputeSegmentLengths(geometry, segLens);
 
     // iterate over the contours
     for (int j=0; j<geometry->cntr_count(); ++j)
@@ -1355,7 +1362,7 @@ void SE_Renderer::ProcessLineLabels(LineBuffer* geometry, SE_RenderLineStyle* st
 //     then no symbols are drawn
 //   - if StartOffset and EndOffset are both unspecified (< 0) then no symbols
 //     are drawn
-void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineStyle* style, double* segLens)
+void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineStyle* style)
 {
     _ASSERT(style->repeat > 0.0);
 
@@ -1369,7 +1376,7 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
     double baseAngleCos = cos(baseAngleRad);
     double baseAngleSin = sin(yUp? baseAngleRad : -baseAngleRad);
 
-    // also account for any viewport rotation
+    // account for any viewport rotation
     double w2sAngleRad = GetWorldToScreenRotation();
 
     double angleRad, angleCos, angleSin;
@@ -1392,6 +1399,10 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
     // this is the same for all contours / groups
     double repeat = style->repeat;
 
+    // get segment lengths
+    double* segLens = (double*)alloca(sizeof(double)*geometry->point_count());
+    ComputeSegmentLengths(geometry, segLens);
+
     // used for segment group calculations
     int* segGroups = (int*)alloca(2*sizeof(int)*geometry->point_count());
     double* groupLens = (double*)alloca(sizeof(double)*geometry->point_count());
@@ -1408,7 +1419,7 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
 
         // check if:
         // - the start offset goes beyond the end of the contour
-        // - the end offset goes beyond the end of the contour
+        // - the end offset goes beyond the beginning of the contour
         // - the start offset goes beyond the end offset
         double offsetSum = rs_max(style->startOffset, 0.0) + rs_max(style->endOffset, 0.0);
         if (offsetSum > segLens[start_seg_contour])
@@ -1590,33 +1601,4 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
             }
         }
     }
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-// Distributes symbols along a polyline using the OverlapWrap vertex control option.
-void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyle* style)
-{
-    SE_Matrix w2s;
-    GetWorldToScreenTransform(w2s);
-    LineBuffer* xfgeom = LineBufferPool::NewLineBuffer(m_bp, geometry->point_count());
-    TransformLB(geometry, xfgeom, w2s, false);
-
-    for (int i=0; i<xfgeom->cntr_count(); ++i)
-    {
-        SE_JoinProcessor processor(style->vertexJoin, SE_LineCap_None, xfgeom, i, style);
-        double position = style->startOffset;
-        while (position > processor.StartPosition())
-            position -= style->repeat;
-
-        // TODO: additional calls at beginning/end to account for offset action?
-        while (position < processor.EndPosition())
-        {
-            processor.UpdateLinePosition(position);
-            DrawSymbol(style->symbol, SE_Matrix::Identity, 0.0, style->addToExclusionRegions, &processor);
-            position += style->repeat;
-        }
-    }
-
-    LineBufferPool::FreeLineBuffer(m_bp, xfgeom);
 }

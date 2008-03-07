@@ -672,22 +672,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SE_Cap.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_Cap.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_ConvexHull.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_Deque.h"
-				>
-			</File>
-			<File
 				RelativePath=".\SE_ExpressionBase.cpp"
 				>
 			</File>
@@ -696,51 +680,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SE_GeometryOperations.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_GeometryOperations.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_Join.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_Join.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_JoinProcessor.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_JoinProcessor.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_JoinTransform.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_JoinTransform.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_LinearClip.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_LinearClip.h"
-				>
-			</File>
-			<File
 				RelativePath=".\SE_LineBuffer.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\SE_LineBuffer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_LineRenderer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_LineRenderer.h"
 				>
 			</File>
 			<File

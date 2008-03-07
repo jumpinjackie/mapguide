@@ -25,9 +25,6 @@
 struct SE_Bounds;
 class SE_BufferPool;
 
-// don't use convex hulls for now
-//#define USE_CONVEX_HULL
-
 
 class SE_LineBuffer
 {
@@ -75,9 +72,6 @@ public:
     STYLIZATION_API SE_LineBuffer* Clone(bool keepPool = true);
 
 private:
-#ifdef USE_CONVEX_HULL
-    SE_Bounds* ComputeConvexHull(LineBuffer* plb);
-#endif
     SE_Bounds* GetSEBounds(RS_Bounds& bounds);
     void PopulateXFBuffer();
 
@@ -100,13 +94,6 @@ private:
 
     SE_Bounds* m_xf_bounds;
     LineBuffer* m_xf_buf;
-
-#ifdef USE_CONVEX_HULL
-    typedef std::vector< std::pair<double, double> > PointList;
-
-    // TODO: write a stack based allocator for this, or replace it
-    PointList m_ch_ptbuf;
-#endif
 };
 
 #endif
