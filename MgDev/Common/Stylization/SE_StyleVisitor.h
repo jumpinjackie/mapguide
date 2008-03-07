@@ -18,13 +18,10 @@
 #ifndef SE_STYLEVISITOR_H_
 #define SE_STYLEVISITOR_H_
 
+#include "SE_BufferPool.h"
 #include "SE_ExpressionBase.h"
 #include "SE_SymbolDefProxies.h"
 
-class SE_SymbolManager;
-class SE_LineBuffer;
-class SE_BufferPool;
-struct SE_Matrix;
 
 namespace MDFMODEL_NAMESPACE
 {
