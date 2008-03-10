@@ -244,15 +244,15 @@ inline size_t _dwfcore_compare_ascii_strings_no_case( const char* a, const char*
     //
     // max
     //
-#ifndef max
-#define max( a, b )    a >? b
+#ifndef dwf_max
+#define dwf_max( a, b )    ((a) > (b))? (a) : (b)
 #endif
 
     //
     // min
     //
-#ifndef min
-#define min( a, b )    a <? b
+#ifndef dwf_min
+#define dwf_min( a, b )    ((a) < (b))? (a) : (b)
 #endif
 
     //

@@ -235,14 +235,14 @@
     // max
     //
 #ifndef dwf_max
-#define dwf_max( a, b )    a >? b
+#define dwf_max( a, b )    ((a) > (b))? (a) : (b)
 #endif
 
     //
     // min
     //
 #ifndef dwf_min
-#define dwf_min( a, b )    a <? b
+#define dwf_min( a, b )    ((a) < (b))? (a) : (b)
 #endif
 
 
