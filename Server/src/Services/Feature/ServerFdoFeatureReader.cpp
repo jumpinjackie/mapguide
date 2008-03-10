@@ -475,7 +475,11 @@ bool MgServerFdoFeatureReader::IsNull(FdoString* propertyName)
 ///
 FdoIRaster* MgServerFdoFeatureReader::GetRaster(FdoString* propertyName)
 {
-    if(m_internalReader->IsNull(propertyName))
+    // TODO: The IsNull() check is returning true for WFS/WMS FDO providers when there is valid data. 
+    //       In this case it should really be returning false so that the data can be retrieved.
+    //       For now the check will be commented out until this can be resolved in FDO.
+    if(false) // TODO: Force the exception throwing code to be skipped until issue is resolved.
+//    if(m_internalReader->IsNull(propertyName))
     {
         MgStringCollection arguments;
         arguments.Add(propertyName);
