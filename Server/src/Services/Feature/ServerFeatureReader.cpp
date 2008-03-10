@@ -685,7 +685,11 @@ MgRaster* MgServerFeatureReader::GetRaster(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    if(m_fdoReader->IsNull(propertyName.c_str()))
+    // TODO: The IsNull() check is returning true for WFS/WMS FDO providers when there is valid data. 
+    //       In this case it should really be returning false so that the data can be retrieved.
+    //       For now the check will be commented out until this can be resolved in FDO.
+    if(false) // TODO: Force the exception throwing code to be skipped until issue is resolved.
+//    if(m_fdoReader->IsNull(propertyName.c_str()))
     {
         MgStringCollection arguments;
         arguments.Add(propertyName);
