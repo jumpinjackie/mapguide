@@ -150,8 +150,9 @@ void FeatureInfoRenderer::StartMap(RS_MapUIInfo*    mapInfo,
 {
     // remember the map info
     m_mapInfo = mapInfo;
-    m_metersPerUnit = metersPerUnit;
+    m_extents = extents;
     m_dpi = dpi;
+    m_metersPerUnit = metersPerUnit;
     m_scale = (dpi * metersPerUnit) / (METERS_PER_INCH * m_mapScale);
     WorldToScreenPoint(m_point[0], m_point[1], m_point[2], m_point[3]);
     InitFontEngine(this);
@@ -418,28 +419,22 @@ double FeatureInfoRenderer::GetDrawingScale()
 
 double FeatureInfoRenderer::GetMetersPerUnit()
 {
-    // not directly used - anything but zero is ok
     return m_metersPerUnit;
 }
 
 
 double FeatureInfoRenderer::GetDpi()
 {
-    // not directly used - anything but zero is ok
     return m_dpi;
 }
 
 
 RS_Bounds& FeatureInfoRenderer::GetBounds()
 {
-    // not directly used
     return m_extents;
 }
 
 
-// Note: if we don't return false, we will need to return correct
-//       bounds from GetBounds and we do not have them available
-//       here, since our feature query is not a bounds query
 bool FeatureInfoRenderer::RequiresClipping()
 {
     return false;
