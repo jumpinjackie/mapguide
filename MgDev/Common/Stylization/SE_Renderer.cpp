@@ -217,6 +217,11 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
     {
         ProcessLineOverlapNone(featGeom, style);
     }
+    else if (wcscmp(style->vertexControl, L"OverlapNoWrap") == 0)
+    {
+        // this deprecated option is treated as OverlapNone
+        ProcessLineOverlapNone(featGeom, style);
+    }
     else if (wcscmp(style->vertexControl, L"OverlapDirect") == 0)
     {
         ProcessLineOverlapDirect(featGeom, style);
@@ -949,6 +954,14 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
     int* segGroups = (int*)alloca(2*sizeof(int)*geometry->point_count());
     double* groupLens = (double*)alloca(sizeof(double)*geometry->point_count());
 
+    // configure the default path line stroke to use
+    SE_LineStroke dpLineStroke = style->dpLineStroke;
+    if (m_bSelectionMode)
+    {
+        dpLineStroke.color  = m_selLineStroke.color;
+        dpLineStroke.weight = m_selLineStroke.weight;
+    }
+
     // Used for drawing the centerline paths at vertices.  In the case of
     // a single contour the start/end points will need a MoveTo/LineTo,
     // while the interior points will need a MoveTo/LineTo/LineTo.
@@ -1139,7 +1152,7 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
                                 // aligning it with the left edge of the symbol
                                 // TODO: account for symbol rotation
                                 vertexLines.LineTo(symxf.x2 + dx_incr*leftEdge, symxf.y2 + dy_incr*leftEdge);
-                                DrawScreenPolyline(&vertexLines, NULL, style->dpLineStroke);
+                                DrawScreenPolyline(&vertexLines, NULL, dpLineStroke);
                                 vertexLines.Reset();
                             }
 
@@ -1166,7 +1179,7 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
                                 vertexLines.LineTo(symxf.x2, symxf.y2);
                                 if (k == end_group)
                                 {
-                                    DrawScreenPolyline(&vertexLines, NULL, style->dpLineStroke);
+                                    DrawScreenPolyline(&vertexLines, NULL, dpLineStroke);
                                     vertexLines.Reset();
                                 }
                             }
