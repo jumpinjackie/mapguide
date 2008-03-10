@@ -232,7 +232,7 @@ RSMgFeatureReader* MgMappingUtil::ExecuteFeatureQuery(MgFeatureService* svcFeatu
         // TODO: could it be an extension name and not a FeatureClassName?
         rdr = svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
     }
-    catch (MgFdoException* e)
+    catch (MgException* e)
     {
         e->Release();
 
@@ -244,7 +244,7 @@ RSMgFeatureReader* MgMappingUtil::ExecuteFeatureQuery(MgFeatureService* svcFeatu
             // TODO: could it be an extension name and not a FeatureClassName?
             rdr = svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
         }
-        catch (MgFdoException* e)
+        catch (MgException* e)
         {
             e->Release();
 
@@ -390,7 +390,7 @@ RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeatur
         // TODO: could it be an extension name and not a FeatureClassName?
         rdr = svcFeature->SelectFeatures(featResId, gl->GetFeatureName(), options);
     }
-    catch (MgFdoException* e)
+    catch (MgException* e)
     {
         e->Release();
 
