@@ -518,8 +518,8 @@ function InitDocument()
 
     minInfoWidth = 0;
 
-    legendCtrl = safari? document.getElementById("LegendCtrl"): frames["LegendCtrl"];
-    propertyCtrl = safari? document.getElementById("PropertyCtrl") : frames["PropertyCtrl"];
+    legendCtrl = safari1or2? document.getElementById("LegendCtrl"): frames["LegendCtrl"];
+    propertyCtrl = safari1or2? document.getElementById("PropertyCtrl"): frames["PropertyCtrl"];
 
     document.getElementById("LegendResizer").onmousedown = StartResizingLegend;
     window.onresize = OnSizeChanged;
@@ -878,7 +878,7 @@ function OnContextMenu(e)
     x = e.clientX;
     y = e.clientY;
 
-    if(IsInformationMenu(event))
+    if(IsInformationMenu(e))
         InformationContextMenu(x,y);
     else
     {
