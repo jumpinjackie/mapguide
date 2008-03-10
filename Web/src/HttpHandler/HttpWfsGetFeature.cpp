@@ -166,6 +166,7 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
                         // If so, break it up into its constituent parts
                         STRING sPrefix = sFeatureType.substr(0, delimPos);
                         STRING sClass  = sFeatureType.substr(delimPos+1);
+                        STRING sSchemaHash;
 
                         // Given the prefix, reconstitute the resource name
                         // If from HTTP POST, the namespace manager should have a record of it.
@@ -175,7 +176,7 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
                         // it might be by decoding the prefix's hash... this is fallible if the caller decided
                         // to use a different prefix, but didn't communicate the namespace associated with that
                         // prefix... buuuut.... there are limits to our tolerance.
-                        if(sResource.length() > 0 || oFeatureTypes.PrefixToFeatureSource(sPrefix,sResource)) {
+                        if(sResource.length() > 0 || oFeatureTypes.PrefixToFeatureSource(sPrefix,sResource, sSchemaHash)) {
                             // From these inquiries, we now have a resource ID, "Library://...FeatureSource"
                             // and the class name (the "Foo" part from the example above.)
                             Ptr<MgResourceIdentifier> featureSourceId = new MgResourceIdentifier(sResource);
@@ -217,7 +218,7 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
                             }
 
                             // Call the C++ API
-                            Ptr<MgByteReader> resultReader = featureService->GetWfsFeature(featureSourceId, sClass,
+                            Ptr<MgByteReader> resultReader = featureService->GetWfsFeature(featureSourceId, ((sSchemaHash.size()==0) ? sClass : sSchemaHash + _(":") + sClass),
                                 requiredProperties, m_getFeatureParams->GetSrs(), filter, numFeaturesToRetrieve);
 
                             // TODO How to determine number of features retrieved...?

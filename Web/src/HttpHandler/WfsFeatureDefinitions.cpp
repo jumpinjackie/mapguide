@@ -390,8 +390,22 @@ void MgWfsFeatureDefinitions::Initialize()
                 {
                     if(!requiredPrefixList->Contains(sPrefix))
                     {
-                        required = false;
-                        break;
+                        bool elemFound = false;
+                        STRING expPrefix = sPrefix + _("sn"); //NOXLATE
+                        for (int idx = 0; idx < requiredPrefixList->GetCount(); idx++)
+                        {
+                            STRING reqPrefix = requiredPrefixList->GetItem(idx);
+                            if (reqPrefix.find(expPrefix) != STRING::npos)
+                            {
+                                elemFound = true;
+                                break;
+                            }
+                        }
+                        if (!elemFound)
+                        {
+                            required = false;
+                            break;
+                        }
                     }
                 }
 
@@ -435,18 +449,29 @@ void MgWfsFeatureDefinitions::Initialize()
                     // What internally is known as the name is really
                     // the human-readable thing, which in OGC parlance is the title.
                     STRING sName = pClass->GetName();
+                    STRING sSchemaName = pSchema->GetName();
+                    
+                    STRING sHashSchemaName;
+                    if (pSchemas->GetCount() > 1)
+                    {
+                        // in case we have multiple schema add the hash string for schema name to be able to identify 
+                        // the class definition since we may have same class name on different schemas
+                        MgUtil::Int32ToString(StringHasher(sSchemaName.c_str()),sHashSchemaName);
+                        sHashSchemaName = _("sn")+ sHashSchemaName;
+                    }
 
+                    STRING newPrefix = sPrefix + sHashSchemaName;
                     // TODO: STALE?
                     // And what OGC wants to call a Name is really the internal
                     // cookie.  We use the stripped down resource name (source)
                     // plus the human-readable name
-                    STRING sFullName = sPrefix+_(":")+sName;
+                    STRING sFullName = newPrefix + _(":") + sName;
 
                     // Now, spew out everything we know about this class.
                     STRING sFeatureNameAttr(_("id='"));
                     sFeatureNameAttr += sFullName;
                     sFeatureNameAttr += _("' xmlns:");
-                    sFeatureNameAttr += sPrefix;
+                    sFeatureNameAttr += newPrefix;
                     sFeatureNameAttr += _("='");
                     sFeatureNameAttr += sResource;
                     sFeatureNameAttr += _("'");
@@ -555,21 +580,35 @@ bool MgWfsFeatureDefinitions::FeatureSourceToPrefix(CREFSTRING sFeatureSource,
 {
     STRING sHash;
     MgUtil::Int32ToString(StringHasher(sFeatureSource.c_str()),sHash);
-    sPrefix = _("ns")+ sHash;
+    sPrefix = _("ns")+ sHash; //NOXLATE
 
     return true;
 }
 
 
-bool MgWfsFeatureDefinitions::PrefixToFeatureSource(STRING sPrefix,REFSTRING sFeatureSource)
+bool MgWfsFeatureDefinitions::PrefixToFeatureSource(STRING sPrefix, REFSTRING sFeatureSource, REFSTRING sSchemaName)
 {
-
+    sSchemaName = _(""); // NOXLATE
     STRING sKey;
     sKey = _("xmlns:"); // NOXLATE
     sKey += sPrefix;
     sKey +=_("='");// NOXLATE
 
+    STRING::size_type iPosNs = sPrefix.find(_("ns")); //NOXLATE
+    if (iPosNs == 0) // prefix needs to strt with "ns"
+    {
+        iPosNs = sPrefix.find(_("sn")); // look for schema hash name
+        if(iPosNs != STRING::npos)
+            sSchemaName = sPrefix.substr(iPosNs); // get the value in case we have it
+    }
     STRING::size_type iPos = m_sSourcesAndClasses.find(sKey);
+    if(iPos == STRING::npos && iPosNs != STRING::npos)
+    {
+        sKey = _("xmlns:"); // NOXLATE
+        sKey += sPrefix.substr(0, iPosNs);
+        sKey +=_("='");// NOXLATE
+        iPos = m_sSourcesAndClasses.find(sKey);
+    }
     if(iPos != STRING::npos) {
         iPos += sKey.length(); // advance us past the key, we're pointing to the FeatureSource.
         STRING::size_type iEnd = m_sSourcesAndClasses.find(_("'"),iPos); // NOXLATE
@@ -603,6 +642,7 @@ unsigned MgWfsFeatureDefinitions::StringHasher(CPSZ pszString)
   }
   return uRet;
 }
+
 
 
 
