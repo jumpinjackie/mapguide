@@ -770,6 +770,7 @@ public:
 
 private:
 
+    unsigned StringHasher(FdoString* pszString);
     void FeatureSourceToString(MgResourceIdentifier* resource, string& resourceContent);
 };
 

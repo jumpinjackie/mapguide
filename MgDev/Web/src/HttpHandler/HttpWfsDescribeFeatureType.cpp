@@ -98,16 +98,17 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
         // TODO: assumes that this is GML type.
         //STRING sOutputFormat = origReqParams->GetParameterValue(_("OUTPUTFORMAT"));
 
-        STRING::size_type iPos = sFeatureTypes.find(_(":"));
+        STRING::size_type iPos = sFeatureTypes.find(_(":")); //NOXLATE
         if(iPos != STRING::npos) {
             STRING sPrefix = sFeatureTypes.substr(0,iPos);
             STRING sClass = sFeatureTypes.substr(iPos+1);
+            STRING sSchemaHash;
             STRING sResource; // TODO: look for this in arg, since POST may put it there to save us trouble.
 
-            if(oFeatureTypes.PrefixToFeatureSource(sPrefix,sResource)) {
+            if(oFeatureTypes.PrefixToFeatureSource(sPrefix, sResource, sSchemaHash)) {
                 MgResourceIdentifier idResource(sResource);
                 Ptr<MgStringCollection> pFeatureClasses = new MgStringCollection();
-                pFeatureClasses->Add(sClass);
+                pFeatureClasses->Add(((sSchemaHash.size()==0) ? sClass : sSchemaHash + _(":") + sClass)); //NOXLATE
 
                 Ptr<MgByteReader> response  = pFeatureService->DescribeWfsFeatureType(&idResource,pFeatureClasses);
 

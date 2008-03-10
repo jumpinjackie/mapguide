@@ -52,7 +52,7 @@ public:
     //   only if definitive feature source is not already known (via namespace)
     //   declaration (as might be the case for HTTP GET variants of GetFeature
     //   and DescribeFeatureType.)
-    bool PrefixToFeatureSource(STRING sPrefix,REFSTRING sFeatureSource);
+    bool PrefixToFeatureSource(STRING sPrefix, REFSTRING sFeatureSource, REFSTRING sSchemaName);
 
 private:
     bool   SkipElement(MgXmlParser& Input,CPSZ pszElementName);
