@@ -39,5 +39,3 @@ String templFile = "";
         Response.Write(ne.Message);
     }
 %>
-
-</script>

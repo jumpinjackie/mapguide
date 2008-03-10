@@ -166,12 +166,12 @@ var selectionAwareCmds = new Array();
 
 function ZoomToView(x,y,scale,refresh)
 {
-    mapFrame.ZoomToView(x,y,scale,refresh);
+    GetMapFrame().ZoomToView(x,y,scale,refresh);
 }
 
 function Refresh()
 {
-    mapFrame.Refresh();
+    GetMapFrame().Refresh();
 }
 
 function SetStatusMsg(msg)
@@ -191,14 +191,14 @@ function ExecuteMapAction(action)
         if(inMeasure)
             EndMeasure();
 
-    mapFrame.ExecuteMapAction(action);
+    GetMapFrame().ExecuteMapAction(action);
     if(hasToolbar == 1)
         tbFrame.OnCommandExecuted(action);
 }
 
 function GetMapFrame()
 {
-    return mapFrame;
+    return safari1or2? document.getElementById("mapFrame"): frames["mapFrame"];
 }
 
 function GetScriptFrame()
@@ -224,14 +224,14 @@ function GotoHomePage()
 function GettingStartedURL ()
 {
     if(defHome)
-        return homePage + "?WEBLAYOUT=" + encodeURIComponent(webLayout) + "&SESSION=" + mapFrame.GetSessionId() + "&LOCALE=" + locale + "&DWF=" + dwf;
+        return homePage + "?WEBLAYOUT=" + encodeURIComponent(webLayout) + "&SESSION=" + GetMapFrame().GetSessionId() + "&LOCALE=" + locale + "&DWF=" + dwf;
     else
-        return homePage + "?SESSION=" + mapFrame.GetSessionId() + "&LOCALE=" + locale + "&MAPNAME=" + encodeURIComponent(mapFrame.GetMapName());
+        return homePage + "?SESSION=" + GetMapFrame().GetSessionId() + "&LOCALE=" + locale + "&MAPNAME=" + encodeURIComponent(GetMapFrame().GetMapName());
 }
 
 function SetSelectionXML(xmlSet)
 {
-    mapFrame.SetSelectionXML(xmlSet);
+    GetMapFrame().SetSelectionXML(xmlSet);
 }
 
 function ExecuteCommand(index)
@@ -393,10 +393,10 @@ function OnCursorPosChanged(x, y)
         return true;
     try
     {
-        var latlon = mapFrame.IsLatLongDisplayUnits();
-        var pt = mapFrame.ScreenToMapUnits(x, y);
+        var latlon = GetMapFrame().IsLatLongDisplayUnits();
+        var pt = GetMapFrame().ScreenToMapUnits(x, y);
         if(latlon)
-            pt = mapFrame.MapUnitsToLatLon(pt.X, pt.Y);
+            pt = GetMapFrame().MapUnitsToLatLon(pt.X, pt.Y);
         x = FormatLocalizedDecimal(pt.X, 6);
         y = FormatLocalizedDecimal(pt.Y, 6);
 
@@ -475,7 +475,7 @@ function ClickMap(x, y)
 {
     if(!inMeasure)
         return false;
-    var newPoint = mapFrame.ScreenToMapUnits(x, y);
+    var newPoint = GetMapFrame().ScreenToMapUnits(x, y);
     if(pointBegin == null)
         pointBegin = newPoint;
     else
@@ -492,7 +492,7 @@ function ClickMap(x, y)
 
 function OnSelectionChanged()
 {
-    var selCount = mapFrame.GetSelectedCount();
+    var selCount = GetMapFrame().GetSelectedCount();
     if(hasStatusbar == 1)
         sbFrame.SetFeatureSelectedMsg(FormatMessage((selCount > 1? "__#FEATURESSELECTED#__": "__#FEATURESELECTED#__"), new Array(selCount, "unused")));
     var stateChanged = false;
@@ -508,7 +508,7 @@ function OnSelectionChanged()
                 if(layers.length > 0)
                 {
                     var disable = false;
-                    var selLayers = mapFrame.GetSelectedLayers();
+                    var selLayers = GetMapFrame().GetSelectedLayers();
                     for(var k=0; k < selLayers.length && !disable; k++)
                     {
                         var selLayer = selLayers[k];
@@ -557,10 +557,10 @@ function DisplayMapSize()
     if(hasStatusbar == 0)
         return;
     var mi = "__#MI#__", km = "__#KM#__", ft = "__#FT#__", i = "__#IN#__", mt = "__#MT#__",  cm = "__#CM#__";
-    var usEnglish = mapFrame.IsEnglishUnits();
-    var mpu = mapFrame.GetMetersPerUnits();
-    var w = mapFrame.GetMapWidth() * mpu;
-    var h = mapFrame.GetMapHeight() * mpu;
+    var usEnglish = GetMapFrame().IsEnglishUnits();
+    var mpu = GetMapFrame().GetMetersPerUnits();
+    var w = GetMapFrame().GetMapWidth() * mpu;
+    var h = GetMapFrame().GetMapHeight() * mpu;
     if(usEnglish) {
         w *= 3.28083988128;
         h *= 3.28083988128;
@@ -602,8 +602,8 @@ function DisplayMapSize()
 
 function SetOptions(engUnit, latLonUnit)
 {
-    mapFrame.SetEnglishUnits(engUnit);
-    mapFrame.SetLatLonDisplayUnits(latLonUnit);
+    GetMapFrame().SetEnglishUnits(engUnit);
+    GetMapFrame().SetLatLonDisplayUnits(latLonUnit);
     DisplayMapSize();
 }
 
@@ -614,20 +614,20 @@ function IsInitialView()
 
 function ExecutePrintCommand(index)
 {
-    mapFrame.Print(commands[index].layouts, title);
+    GetMapFrame().Print(commands[index].layouts, title);
 }
 
 function ExecutePrintablePageCommand(index)
 {
     if(inMeasure)
         EndMeasure();
-    var center = mapFrame.GetCenter();
-    OpenUrl("%s?SCALE=" + curScale + "&DPI=" + mapFrame.GetDPI() + "&CENTERX=" + center.X + "&CENTERY=" + center.Y, index);
+    var center = GetMapFrame().GetCenter();
+    OpenUrl("%s?SCALE=" + curScale + "&DPI=" + GetMapFrame().GetDPI() + "&CENTERX=" + center.X + "&CENTERY=" + center.Y, index);
 }
 
 function ExecuteMeasureCommand(index)
 {
-    if(mapFrame.IsDigitizing()) {
+    if(GetMapFrame().IsDigitizing()) {
         SetStatusMsg("__#DIGALREADYRUNNING#__");
         return;
     }
@@ -652,7 +652,7 @@ function ExecuteInvokeCommand(index)
         {
             param = cmd.params[i];
             if(param.value == "$CurrentSelection")
-                value = encodeURIComponent(mapFrame.GetSelectionXML());
+                value = encodeURIComponent(GetMapFrame().GetSelectionXML());
             else
                 value = param.value;
             params.push(param.key);
@@ -675,7 +675,7 @@ function ExecuteBufferCommand(index)
     if(inMeasure)
         EndMeasure();
     var cmd = commands[index];
-    OpenUrl("%s?US=" + (mapFrame.IsEnglishUnits()? "1" : "0"), index);
+    OpenUrl("%s?US=" + (GetMapFrame().IsEnglishUnits()? "1" : "0"), index);
 }
 
 function ExecuteSelectWithinCommand(index)
@@ -763,8 +763,8 @@ function AddStdParams(params, index)
     else
         params.push(taskWidth);
     params.push("LOCALE");  params.push(locale);
-    params.push("SESSION");  params.push(mapFrame.GetSessionId());
-    params.push("MAPNAME");  params.push(encodeURIComponent(mapFrame.GetMapName()));
+    params.push("SESSION");  params.push(GetMapFrame().GetSessionId());
+    params.push("MAPNAME");  params.push(encodeURIComponent(GetMapFrame().GetMapName()));
     params.push("TGT");  params.push(cmd.targetType);
     params.push("POPUP");  params.push(popup?1:0);
     params.push("CMDINDEX");  params.push(index);
@@ -791,7 +791,7 @@ function MakeUrl(url, index)
         url += "WIDTH=400";
     else
         url += "WIDTH=" + taskWidth;
-    url += "&LOCALE=" + locale + "&SESSION=" + mapFrame.GetSessionId() + "&MAPNAME=" + encodeURIComponent(mapFrame.GetMapName()) + "&TGT=" + cmd.targetType + "&POPUP=" + (popup?1:0) + "&CMDINDEX=" + index;
+    url += "&LOCALE=" + locale + "&SESSION=" + GetMapFrame().GetSessionId() + "&MAPNAME=" + encodeURIComponent(GetMapFrame().GetMapName()) + "&TGT=" + cmd.targetType + "&POPUP=" + (popup?1:0) + "&CMDINDEX=" + index;
     return url;
 }
 
@@ -813,7 +813,7 @@ function EnableCommand(cmd, enable)
 function GetMapUnitsType()
 {
     if(mapUnitsType == "")
-        mapUnitsType = mapFrame.GetMapUnitsType();
+        mapUnitsType = GetMapFrame().GetMapUnitsType();
     return mapUnitsType;
 }
         
@@ -830,9 +830,9 @@ function FormatLocalizedDecimal(numberValue, decimalPlaces)
 }
 
 </script>
+</head>
+
 
 %s
-</head>
-<body>
-</body>
+
 </html>
