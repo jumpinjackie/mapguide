@@ -241,529 +241,483 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
             maxPoints = numPoints;
     }
 
-    // allocate the hotspot array on the stack for performance
-    HotSpot* hotspots = (HotSpot*)alloca(maxPoints * sizeof(HotSpot));
+    LineBuffer** choppedBuffers = NULL;
 
-    // Create a "chopped up" LineBuffer for each polyline / polygon primitive
-    // in the symbol.  We need this because straight lines become curved when
-    // the warping is applied.
-    int maxChoppedSize = 0;
-    LineBuffer** choppedBuffers = (LineBuffer**)alloca(rs.size() * sizeof(LineBuffer*));
-    for (unsigned cur_prim=0; cur_prim<rs.size(); ++cur_prim)
+    // this try-catch is used to catch possible out-of-memory exceptions with the
+    // chopped buffers
+    try
     {
-        SE_RenderPrimitive* primitive = rs[cur_prim];
+        // allocate the hotspot array on the stack for performance
+        HotSpot* hotspots = (HotSpot*)alloca(maxPoints * sizeof(HotSpot));
 
-        if (primitive->type == SE_RenderPolygonPrimitive ||
-            primitive->type == SE_RenderPolylinePrimitive)
+        // Create a "chopped up" LineBuffer for each polyline / polygon primitive
+        // in the symbol.  We need this because straight lines become curved when
+        // the warping is applied.
+        int maxChoppedSize = 0;
+        choppedBuffers = (LineBuffer**)alloca(rs.size() * sizeof(LineBuffer*));
+        memset(choppedBuffers, 0, rs.size() * sizeof(LineBuffer*));
+        for (unsigned cur_prim=0; cur_prim<rs.size(); ++cur_prim)
         {
-            SE_RenderPolyline* pl = (SE_RenderPolyline*)primitive;
+            SE_RenderPrimitive* primitive = rs[cur_prim];
 
-            // create the chopped up LineBuffer for this primitive
-            LineBuffer* choppedBuffer = LineBufferPool::NewLineBuffer(lbp, 128, FdoDimensionality_XY, true);
-            SE_LineRenderer::ChopLineBuffer(pl->geometry->xf_buffer(), choppedBuffer);
-
-            // cache it
-            choppedBuffers[cur_prim] = choppedBuffer;
-
-            // keep track of the largest chopped buffer
-            int numPoints = choppedBuffer->point_count();
-            if (numPoints > maxChoppedSize)
-                maxChoppedSize = numPoints;
-
-            // update rendering attributes to account for the selection mode - it's
-            // ok to update these attributes and not revert them
-            if (renderer->m_bSelectionMode)
+            if (primitive->type == SE_RenderPolygonPrimitive ||
+                primitive->type == SE_RenderPolylinePrimitive)
             {
-                if (primitive->type == SE_RenderPolygonPrimitive)
+                SE_RenderPolyline* pl = (SE_RenderPolyline*)primitive;
+
+                // create the chopped up LineBuffer for this primitive
+                choppedBuffers[cur_prim] = LineBufferPool::NewLineBuffer(lbp, 128, FdoDimensionality_XY, true);
+                SE_LineRenderer::ChopLineBuffer(pl->geometry->xf_buffer(), choppedBuffers[cur_prim]);
+
+                // keep track of the largest chopped buffer
+                int numPoints = choppedBuffers[cur_prim]->point_count();
+                if (numPoints > maxChoppedSize)
+                    maxChoppedSize = numPoints;
+
+                // update rendering attributes to account for the selection mode - it's
+                // ok to update these attributes and not revert them
+                if (renderer->m_bSelectionMode)
                 {
-                    SE_RenderPolygon* pl = (SE_RenderPolygon*)primitive;
-                    pl->fill = renderer->m_selFillColor;
-                }
-
-                pl->lineStroke.color  = renderer->m_selLineStroke.color;
-                pl->lineStroke.weight = renderer->m_selLineStroke.weight;
-            }
-        }
-        else
-            choppedBuffers[cur_prim] = NULL;
-    }
-
-    // this will be our work buffer
-    LineBuffer geom(maxChoppedSize, FdoDimensionality_XY, true);
-
-    // for each contour
-    for (int cur_contour=0; cur_contour<geometry->cntr_count(); ++cur_contour)
-    {
-        // must have at least one segment
-        int numPoints = geometry->cntr_size(cur_contour);
-        if (numPoints < 2)
-            continue;
-
-        // make a list of hotspots where we go from one join to another
-        // or from join to straight line or from straight line to join
-        int ptCount = SE_LineRenderer::ConfigureHotSpots(renderer, geometry, cur_contour, style, styleBounds, hotspots);
-        double total_length = hotspots[ptCount-1].mid;
-
-        // check if:
-        // - the start offset goes beyond the end of the contour
-        // - the end offset goes beyond the beginning of the contour
-        // - the start offset goes beyond the end offset
-        double offsetSum = startOffsetMax + endOffsetMax;
-        if (offsetSum > total_length)
-            continue;
-
-        // set the distribution's start and end parametric values
-        // (the distribution will be clipped against these values)
-        double startpos = startOffsetMax;
-        double endpos   = total_length - endOffsetMax;
-
-        // calculate the initial draw position
-        double drawpos  = startpos;
-
-        if (style->startOffset < 0.0 && style->endOffset >= 0.0)
-        {
-            // only end offset is specified - adjust the draw position so we
-            // have: endpos = drawpos + i*increment
-            drawpos = fmod(endpos, increment);
-
-            // reduce the draw position by one increment if the initial style would
-            // still display
-            if (drawpos - increment + styleBounds.maxx >= 0.0)
-                drawpos -= increment;
-
-            // Roundoff error can lead to the final symbol position being slightly
-            // greater than endpos, which could lead to additional undesireable
-            // clipping of the final symbol.  Prevent this by reducing drawpos
-            // slightly (a fraction of the increment).
-            drawpos -= 1.0e-10 * increment;
-        }
-
-        // cache these for later use
-        HotSpot* first_hotspot = &hotspots[0];
-        HotSpot* last_hotspot = &hotspots[ptCount-1];
-
-        // find the first active hotspot for the distribution
-        double sym_minx = drawpos + styleBounds.minx;
-        double sym_maxx = drawpos + styleBounds.maxx;
-
-        int next_hotspot_index = 0;
-        HotSpot* next_hotspot = &hotspots[next_hotspot_index];
-        while (next_hotspot != last_hotspot && sym_minx >= next_hotspot->end)
-        {
-            next_hotspot_index++;
-            next_hotspot = &hotspots[next_hotspot_index];
-        }
-
-        // now draw symbols over the distribution
-        while (sym_minx <= endpos)
-        {
-            // compute x and y of draw position (remember - drawpos is in rendering
-            // units relative to the start of the polyline)
-
-            // get the distance to drawpos along the segment on the hotspot's entry side
-            // - a negative value means we're in the hotspot's entry region
-            // - a positive value means we're in the hotspot's exit region
-            double len_along_cur_seg = drawpos - next_hotspot->mid;
-
-            // just linear interpolation along the entry side of the hotspot
-            double xpos = next_hotspot->x + next_hotspot->cos_angle_start * len_along_cur_seg;
-            double ypos = next_hotspot->y + next_hotspot->sin_angle_start * len_along_cur_seg;
-
-            // we explicitly ignore any angleControl and angle settings
-            SE_Matrix xformStart;
-            xformStart.rotate(next_hotspot->sin_angle_start, next_hotspot->cos_angle_start);
-            xformStart.translate(xpos, ypos);
-
-            if (sym_maxx < next_hotspot->start && sym_maxx <= endpos)
-            {
-                // We are not yet in danger of a corner (or the end of the distribution).
-                // Just put the pedal to the metal and draw an unwarped symbol.
-                renderer->DrawSymbol(rs, xformStart, next_hotspot->angle_start);
-
-                drawpos += increment;
-                sym_minx = drawpos + styleBounds.minx;
-                sym_maxx = drawpos + styleBounds.maxx;
-            }
-            else
-            {
-                // we are approaching a join - slam on the brakes and think about turning
-
-                // loop over the symbol's primitive elements - we will handle them one by one
-                for (unsigned cur_prim=0; cur_prim<rs.size(); ++cur_prim)
-                {
-                    SE_RenderPrimitive* primitive = rs[cur_prim];
-
-                    // TODO: WCW - so far we can only warp polygons and polylines
-                    if (primitive->type == SE_RenderPolygonPrimitive ||
-                        primitive->type == SE_RenderPolylinePrimitive)
+                    if (primitive->type == SE_RenderPolygonPrimitive)
                     {
-                        // initialize our work buffer to the chopped line buffer
-                        geom = *choppedBuffers[cur_prim];
+                        SE_RenderPolygon* pl = (SE_RenderPolygon*)primitive;
+                        pl->fill = renderer->m_selFillColor;
+                    }
 
-                        //-------------------------------------------------------
-                        // apply the join warp to the chopped line buffer
-                        //-------------------------------------------------------
+                    pl->lineStroke.color  = renderer->m_selLineStroke.color;
+                    pl->lineStroke.weight = renderer->m_selLineStroke.weight;
+                }
+            }
+        }
 
-                        // go over the vertices and warp them according to where in the
-                        // hotspot they fall
-                        for (int i=0; i<geom.point_count(); ++i)
+        // this will be our work buffer
+        LineBuffer geom(maxChoppedSize, FdoDimensionality_XY, true);
+
+        // for each contour
+        for (int cur_contour=0; cur_contour<geometry->cntr_count(); ++cur_contour)
+        {
+            // must have at least one segment
+            int numPoints = geometry->cntr_size(cur_contour);
+            if (numPoints < 2)
+                continue;
+
+            // make a list of hotspots where we go from one join to another
+            // or from join to straight line or from straight line to join
+            int ptCount = SE_LineRenderer::ConfigureHotSpots(renderer, geometry, cur_contour, style, styleBounds, hotspots);
+            double total_length = hotspots[ptCount-1].mid;
+
+            // check if:
+            // - the start offset goes beyond the end of the contour
+            // - the end offset goes beyond the beginning of the contour
+            // - the start offset goes beyond the end offset
+            double offsetSum = startOffsetMax + endOffsetMax;
+            if (offsetSum > total_length)
+                continue;
+
+            // set the distribution's start and end parametric values
+            // (the distribution will be clipped against these values)
+            double startpos = startOffsetMax;
+            double endpos   = total_length - endOffsetMax;
+
+            // calculate the initial draw position
+            double drawpos  = startpos;
+
+            if (style->startOffset < 0.0 && style->endOffset >= 0.0)
+            {
+                // only end offset is specified - adjust the draw position so we
+                // have: endpos = drawpos + i*increment
+                drawpos = fmod(endpos, increment);
+
+                // reduce the draw position by one increment if the initial style would
+                // still display
+                if (drawpos - increment + styleBounds.maxx >= 0.0)
+                    drawpos -= increment;
+
+                // Roundoff error can lead to the final symbol position being slightly
+                // greater than endpos, which could lead to additional undesireable
+                // clipping of the final symbol.  Prevent this by reducing drawpos
+                // slightly (a fraction of the increment).
+                drawpos -= 1.0e-10 * increment;
+            }
+
+            // cache these for later use
+            HotSpot* first_hotspot = &hotspots[0];
+            HotSpot* last_hotspot = &hotspots[ptCount-1];
+
+            // find the first active hotspot for the distribution
+            double sym_minx = drawpos + styleBounds.minx;
+            double sym_maxx = drawpos + styleBounds.maxx;
+
+            int next_hotspot_index = 0;
+            HotSpot* next_hotspot = &hotspots[next_hotspot_index];
+            while (next_hotspot != last_hotspot && sym_minx >= next_hotspot->end)
+            {
+                next_hotspot_index++;
+                next_hotspot = &hotspots[next_hotspot_index];
+            }
+
+            // now draw symbols over the distribution
+            while (sym_minx <= endpos)
+            {
+                // compute x and y of draw position (remember - drawpos is in rendering
+                // units relative to the start of the polyline)
+
+                // get the distance to drawpos along the segment on the hotspot's entry side
+                // - a negative value means we're in the hotspot's entry region
+                // - a positive value means we're in the hotspot's exit region
+                double len_along_cur_seg = drawpos - next_hotspot->mid;
+
+                // just linear interpolation along the entry side of the hotspot
+                double xpos = next_hotspot->x + next_hotspot->cos_angle_start * len_along_cur_seg;
+                double ypos = next_hotspot->y + next_hotspot->sin_angle_start * len_along_cur_seg;
+
+                // we explicitly ignore any angleControl and angle settings
+                SE_Matrix xformStart;
+                xformStart.rotate(next_hotspot->sin_angle_start, next_hotspot->cos_angle_start);
+                xformStart.translate(xpos, ypos);
+
+                if (sym_maxx < next_hotspot->start && sym_maxx <= endpos)
+                {
+                    // We are not yet in danger of a corner (or the end of the distribution).
+                    // Just put the pedal to the metal and draw an unwarped symbol.
+                    renderer->DrawSymbol(rs, xformStart, next_hotspot->angle_start);
+
+                    drawpos += increment;
+                    sym_minx = drawpos + styleBounds.minx;
+                    sym_maxx = drawpos + styleBounds.maxx;
+                }
+                else
+                {
+                    // we are approaching a join - slam on the brakes and think about turning
+
+                    // loop over the symbol's primitive elements - we will handle them one by one
+                    for (unsigned cur_prim=0; cur_prim<rs.size(); ++cur_prim)
+                    {
+                        SE_RenderPrimitive* primitive = rs[cur_prim];
+
+                        // TODO: WCW - so far we can only warp polygons and polylines
+                        if (primitive->type == SE_RenderPolygonPrimitive ||
+                            primitive->type == SE_RenderPolylinePrimitive)
                         {
-                            double x = geom.x_coord(i);
-                            double y = geom.y_coord(i);
+                            // initialize our work buffer to the chopped line buffer
+                            geom = *choppedBuffers[cur_prim];
 
-                            // get the parametric location of this point along the line,
-                            // and store it in the buffer's z coordinate
-                            double xParam = drawpos + x;
-                            geom.z_coord(i) = xParam;
+                            //-------------------------------------------------------
+                            // apply the join warp to the chopped line buffer
+                            //-------------------------------------------------------
 
-                            // compute how far into the join this point is
-                            double remaining_len = xParam - next_hotspot->start;
-
-                            if (remaining_len <= 0.0)
+                            // go over the vertices and warp them according to where in the
+                            // hotspot they fall
+                            for (int i=0; i<geom.point_count(); ++i)
                             {
-                                // vertex not affected - it comes before the warp area
+                                double x = geom.x_coord(i);
+                                double y = geom.y_coord(i);
 
-                                // just transform the point to the starting segment space
-                                xformStart.transform(x, y);
-                                geom.x_coord(i) = x;
-                                geom.y_coord(i) = y;
-                            }
-                            else
-                            {
-                                // We are in the warp area and could potentially have to traverse
-                                // several hotspots since the symbol can be bigger than a segment
-                                // in the feature and overlap several line joins.
+                                // get the parametric location of this point along the line,
+                                // and store it in the buffer's z coordinate
+                                double xParam = drawpos + x;
+                                geom.z_coord(i) = xParam;
 
-                                // keep track of hotspots that we pass through
-                                HotSpot* hs = next_hotspot;
+                                // compute how far into the join this point is
+                                double remaining_len = xParam - next_hotspot->start;
 
-                                // now make our way along the original polyline
-                                // TODO: optimize this loop by keeping track of incremental transforms
-                                //       rather than snake along from the beginning hotspot for each
-                                //       point.  We can also precompute a lot of stuff and store it in
-                                //       the hotspot structures.
-                                while (remaining_len > 0.0 && hs <= last_hotspot)
+                                if (remaining_len <= 0.0)
                                 {
-                                    double join_entry_length = hs->mid - hs->start;
-                                    double join_length       = hs->end - hs->start;
-                                    double join_exit_length  = hs->end - hs->mid;
+                                    // vertex not affected - it comes before the warp area
 
-                                    double shear_mid, shear_start, shear_end;
-                                    if (y >= 0.0)
+                                    // just transform the point to the starting segment space
+                                    xformStart.transform(x, y);
+                                    geom.x_coord(i) = x;
+                                    geom.y_coord(i) = y;
+                                }
+                                else
+                                {
+                                    // We are in the warp area and could potentially have to traverse
+                                    // several hotspots since the symbol can be bigger than a segment
+                                    // in the feature and overlap several line joins.
+
+                                    // keep track of hotspots that we pass through
+                                    HotSpot* hs = next_hotspot;
+
+                                    // now make our way along the original polyline
+                                    // TODO: optimize this loop by keeping track of incremental transforms
+                                    //       rather than snake along from the beginning hotspot for each
+                                    //       point.  We can also precompute a lot of stuff and store it in
+                                    //       the hotspot structures.
+                                    while (remaining_len > 0.0 && hs <= last_hotspot)
                                     {
-                                        shear_mid   = hs->shear_mid_upper;
-                                        shear_start = hs->shear_start_upper;
-                                        shear_end   = hs->shear_end_upper;
-                                    }
-                                    else
-                                    {
-                                        shear_mid   = hs->shear_mid_lower;
-                                        shear_start = hs->shear_start_lower;
-                                        shear_end   = hs->shear_end_lower;
-                                    }
+                                        double join_entry_length = hs->mid - hs->start;
+                                        double join_length       = hs->end - hs->start;
+                                        double join_exit_length  = hs->end - hs->mid;
 
-                                    // are we on the outside or inside edge of the join?
-                                    bool outside = (y*shear_mid >= 0.0);
-
-                                    if (remaining_len <= join_entry_length)
-                                    {
-                                        // remaining distance ends in entry area of current hotspot
-                                        double dist_after_entry = remaining_len;
-
-                                        // compute warped position in entry area of current hotspot
-                                        // for non-centerline points
-                                        double shear = 0.0;
-                                        double scale = 1.0;
-                                        if (y != 0.0)
+                                        double shear_mid, shear_start, shear_end;
+                                        if (y >= 0.0)
                                         {
-                                            // must be true if y != 0
-                                            _ASSERT(affected_height > 0.0);
+                                            shear_mid   = hs->shear_mid_upper;
+                                            shear_start = hs->shear_start_upper;
+                                            shear_end   = hs->shear_end_upper;
+                                        }
+                                        else
+                                        {
+                                            shear_mid   = hs->shear_mid_lower;
+                                            shear_start = hs->shear_start_lower;
+                                            shear_end   = hs->shear_end_lower;
+                                        }
 
-                                            // get the shear at the point
-                                            double fact  = dist_after_entry / join_entry_length;
-                                            shear = shear_start + fact * (shear_mid - shear_start);
+                                        // are we on the outside or inside edge of the join?
+                                        bool outside = (y*shear_mid >= 0.0);
 
-                                            // compute the scale factor due to any miter or round join
-                                            if (outside)
+                                        if (remaining_len <= join_entry_length)
+                                        {
+                                            // remaining distance ends in entry area of current hotspot
+                                            double dist_after_entry = remaining_len;
+
+                                            // compute warped position in entry area of current hotspot
+                                            // for non-centerline points
+                                            double shear = 0.0;
+                                            double scale = 1.0;
+                                            if (y != 0.0)
                                             {
-                                                if (roundJoin)
+                                                // must be true if y != 0
+                                                _ASSERT(affected_height > 0.0);
+
+                                                // get the shear at the point
+                                                double fact  = dist_after_entry / join_entry_length;
+                                                shear = shear_start + fact * (shear_mid - shear_start);
+
+                                                // compute the scale factor due to any miter or round join
+                                                if (outside)
                                                 {
-                                                    // only scale if the shear line at this parametric location
-                                                    // extends past the hotspot vertex point
-                                                    double dd = (hs->mid - xParam) * affected_height_inv;
-                                                    if (fabs(shear) > dd)
+                                                    if (roundJoin)
                                                     {
-                                                        double as2 = 1.0 + shear*shear;
+                                                        // only scale if the shear line at this parametric location
+                                                        // extends past the hotspot vertex point
+                                                        double dd = (hs->mid - xParam) * affected_height_inv;
+                                                        if (fabs(shear) > dd)
+                                                        {
+                                                            double as2 = 1.0 + shear*shear;
 
-                                                        double rad = as2 - dd*dd;
-                                                        _ASSERT(rad >= 0.0);    // guaranteed due to previous if check
+                                                            double rad = as2 - dd*dd;
+                                                            _ASSERT(rad >= 0.0);    // guaranteed due to previous if check
 
-                                                        double numer = fabs(shear) * dd + sqrt(rad);
-                                                        double denom = as2;
+                                                            double numer = fabs(shear) * dd + sqrt(rad);
+                                                            double denom = as2;
+
+                                                            // only scale factors less than one should be applied
+                                                            if (numer < denom)
+                                                                scale = numer / denom;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        // miter / bevel join
+                                                        double dd = (hs->miter_start - xParam) * affected_height_inv;
+                                                        double numer = 1.0 + dd * fabs(shear_mid);
+                                                        double denom = 1.0 + shear_mid * shear;
 
                                                         // only scale factors less than one should be applied
                                                         if (numer < denom)
                                                             scale = numer / denom;
                                                     }
                                                 }
-                                                else
+
+                                                // if the previous hotspot abuts ours, then also compute the scale factor
+                                                // for its exit region since this can "bleed" into the current hotspot
+                                                if (hs != first_hotspot)
                                                 {
-                                                    // miter / bevel join
-                                                    double dd = (hs->miter_start - xParam) * affected_height_inv;
-                                                    double numer = 1.0 + dd * fabs(shear_mid);
-                                                    double denom = 1.0 + shear_mid * shear;
-
-                                                    // only scale factors less than one should be applied
-                                                    if (numer < denom)
-                                                        scale = numer / denom;
-                                                }
-                                            }
-
-                                            // if the previous hotspot abuts ours, then also compute the scale factor
-                                            // for its exit region since this can "bleed" into the current hotspot
-                                            if (hs != first_hotspot)
-                                            {
-                                                // In the case of a closed polyline we won't get in here for the
-                                                // starting hotspot, and so the computed points can be incorrect.
-                                                // That's ok though since this is for the entry side, and points on
-                                                // that side of the first hotspot will get clipped away.
-                                                HotSpot* hs1 = hs-1;
-                                                if (hs1->abuts_next_hotspot)
-                                                {
-                                                    double shear_mid1 = (y > 0.0)? hs1->shear_mid_upper : hs1->shear_mid_lower;
-
-                                                    bool outside1 = (y*shear_mid1 >= 0.0);
-                                                    if (outside1)
+                                                    // In the case of a closed polyline we won't get in here for the
+                                                    // starting hotspot, and so the computed points can be incorrect.
+                                                    // That's ok though since this is for the entry side, and points on
+                                                    // that side of the first hotspot will get clipped away.
+                                                    HotSpot* hs1 = hs-1;
+                                                    if (hs1->abuts_next_hotspot)
                                                     {
-                                                        if (roundJoin)
+                                                        double shear_mid1 = (y > 0.0)? hs1->shear_mid_upper : hs1->shear_mid_lower;
+
+                                                        bool outside1 = (y*shear_mid1 >= 0.0);
+                                                        if (outside1)
                                                         {
-                                                            // only scale if the shear line at this parametric location
-                                                            // extends past the hotspot vertex point
-                                                            double dd1 = (xParam - hs1->mid) * affected_height_inv;
-                                                            if (fabs(shear) > dd1)
+                                                            if (roundJoin)
                                                             {
-                                                                double as2 = 1.0 + shear*shear;
+                                                                // only scale if the shear line at this parametric location
+                                                                // extends past the hotspot vertex point
+                                                                double dd1 = (xParam - hs1->mid) * affected_height_inv;
+                                                                if (fabs(shear) > dd1)
+                                                                {
+                                                                    double as2 = 1.0 + shear*shear;
 
-                                                                double rad1 = as2 - dd1*dd1;
-                                                                _ASSERT(rad1 >= 0.0);   // guaranteed due to previous if check
+                                                                    double rad1 = as2 - dd1*dd1;
+                                                                    _ASSERT(rad1 >= 0.0);   // guaranteed due to previous if check
 
-                                                                double numer1 = fabs(shear) * dd1 + sqrt(rad1);
-                                                                double denom1 = as2;
+                                                                    double numer1 = fabs(shear) * dd1 + sqrt(rad1);
+                                                                    double denom1 = as2;
+
+                                                                    // use this scale factor if it's smaller
+                                                                    if (numer1 < scale * denom1)
+                                                                        scale = numer1 / denom1;
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                // miter / bevel join
+                                                                double dd1 = (xParam - hs1->miter_end) * affected_height_inv;
+                                                                double numer1 = 1.0 + dd1 * fabs(shear_mid1);
+                                                                double denom1 = 1.0 - shear_mid1 * shear;
 
                                                                 // use this scale factor if it's smaller
                                                                 if (numer1 < scale * denom1)
                                                                     scale = numer1 / denom1;
                                                             }
                                                         }
-                                                        else
-                                                        {
-                                                            // miter / bevel join
-                                                            double dd1 = (xParam - hs1->miter_end) * affected_height_inv;
-                                                            double numer1 = 1.0 + dd1 * fabs(shear_mid1);
-                                                            double denom1 = 1.0 - shear_mid1 * shear;
-
-                                                            // use this scale factor if it's smaller
-                                                            if (numer1 < scale * denom1)
-                                                                scale = numer1 / denom1;
-                                                        }
                                                     }
                                                 }
                                             }
+
+                                            // get the position of the start of the join
+                                            double warp_x = hs->x - hs->cos_angle_start * join_entry_length;
+                                            double warp_y = hs->y - hs->sin_angle_start * join_entry_length;
+
+                                            // compute the warped point relative to the end of the join
+                                            double txx = dist_after_entry + scale*y*shear;
+                                            double txy = scale*y;
+
+                                            SE_Matrix xform;
+                                            xform.rotate(hs->sin_angle_start, hs->cos_angle_start);
+                                            xform.transform(txx, txy);
+
+                                            // add this offset to the join's starting point
+                                            warp_x += txx;
+                                            warp_y += txy;
+
+                                            // update the geometry with the warped point
+                                            geom.x_coord(i) = warp_x;
+                                            geom.y_coord(i) = warp_y;
+
+                                            // done with this point
+                                            remaining_len = 0.0;
+                                            break;
                                         }
-
-                                        // get the position of the start of the join
-                                        double warp_x = hs->x - hs->cos_angle_start * join_entry_length;
-                                        double warp_y = hs->y - hs->sin_angle_start * join_entry_length;
-
-                                        // compute the warped point relative to the end of the join
-                                        double txx = dist_after_entry + scale*y*shear;
-                                        double txy = scale*y;
-
-                                        SE_Matrix xform;
-                                        xform.rotate(hs->sin_angle_start, hs->cos_angle_start);
-                                        xform.transform(txx, txy);
-
-                                        // add this offset to the join's starting point
-                                        warp_x += txx;
-                                        warp_y += txy;
-
-                                        // update the geometry with the warped point
-                                        geom.x_coord(i) = warp_x;
-                                        geom.y_coord(i) = warp_y;
-
-                                        // done with this point
-                                        remaining_len = 0.0;
-                                        break;
-                                    }
-                                    else if (remaining_len <= join_length)
-                                    {
-                                        // remaining distance ends in exit area of current hotspot
-                                        double dist_before_exit = join_length - remaining_len;
-
-                                        // compute warped position in exit area of current hotspot
-                                        // for non-centerline points
-                                        double shear = 0.0;
-                                        double scale = 1.0;
-                                        if (y != 0.0)
+                                        else if (remaining_len <= join_length)
                                         {
-                                            // must be true if y != 0
-                                            _ASSERT(affected_height > 0.0);
+                                            // remaining distance ends in exit area of current hotspot
+                                            double dist_before_exit = join_length - remaining_len;
 
-                                            // get the shear at the point (the shear factor at the exit
-                                            // side of the hotspot vertex point is negative shear_mid,
-                                            // hence -fact)
-                                            double fact  = dist_before_exit / join_exit_length;
-                                            shear = shear_end - fact * (shear_mid + shear_end);
-
-                                            // compute the scale factor due to any miter or round join
-                                            if (outside)
+                                            // compute warped position in exit area of current hotspot
+                                            // for non-centerline points
+                                            double shear = 0.0;
+                                            double scale = 1.0;
+                                            if (y != 0.0)
                                             {
-                                                if (roundJoin)
+                                                // must be true if y != 0
+                                                _ASSERT(affected_height > 0.0);
+
+                                                // get the shear at the point (the shear factor at the exit
+                                                // side of the hotspot vertex point is negative shear_mid,
+                                                // hence -fact)
+                                                double fact  = dist_before_exit / join_exit_length;
+                                                shear = shear_end - fact * (shear_mid + shear_end);
+
+                                                // compute the scale factor due to any miter or round join
+                                                if (outside)
                                                 {
-                                                    // only scale if the shear line at this parametric location
-                                                    // extends past the hotspot vertex point
-                                                    double dd = (xParam - hs->mid) * affected_height_inv;
-                                                    if (fabs(shear) > dd)
+                                                    if (roundJoin)
                                                     {
-                                                        double as2 = 1.0 + shear*shear;
+                                                        // only scale if the shear line at this parametric location
+                                                        // extends past the hotspot vertex point
+                                                        double dd = (xParam - hs->mid) * affected_height_inv;
+                                                        if (fabs(shear) > dd)
+                                                        {
+                                                            double as2 = 1.0 + shear*shear;
 
-                                                        double rad = as2 - dd*dd;
-                                                        _ASSERT(rad >= 0.0);    // guaranteed due to previous if check
+                                                            double rad = as2 - dd*dd;
+                                                            _ASSERT(rad >= 0.0);    // guaranteed due to previous if check
 
-                                                        double numer = fabs(shear) * dd + sqrt(rad);
-                                                        double denom = as2;
+                                                            double numer = fabs(shear) * dd + sqrt(rad);
+                                                            double denom = as2;
+
+                                                            // only scale factors less than one should be applied
+                                                            if (numer < denom)
+                                                                scale = numer / denom;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        // miter / bevel join
+                                                        double dd = (xParam - hs->miter_end) * affected_height_inv;
+                                                        double numer = 1.0 + dd * fabs(shear_mid);
+                                                        double denom = 1.0 - shear_mid * shear;
 
                                                         // only scale factors less than one should be applied
                                                         if (numer < denom)
                                                             scale = numer / denom;
                                                     }
                                                 }
-                                                else
+
+                                                // if we abut the next hotspot, then also compute the scale factor
+                                                // for its entry region since this can "bleed" into the current hotspot
+                                                if (hs != last_hotspot)
                                                 {
-                                                    // miter / bevel join
-                                                    double dd = (xParam - hs->miter_end) * affected_height_inv;
-                                                    double numer = 1.0 + dd * fabs(shear_mid);
-                                                    double denom = 1.0 - shear_mid * shear;
-
-                                                    // only scale factors less than one should be applied
-                                                    if (numer < denom)
-                                                        scale = numer / denom;
-                                                }
-                                            }
-
-                                            // if we abut the next hotspot, then also compute the scale factor
-                                            // for its entry region since this can "bleed" into the current hotspot
-                                            if (hs != last_hotspot)
-                                            {
-                                                // In the case of a closed polyline we won't get in here for the
-                                                // last hotspot, and so the computed points can be incorrect.
-                                                // That's ok though since this is for the exit side, and points on
-                                                // that side of the last hotspot will get clipped away.
-                                                HotSpot* hs1 = hs+1;
-                                                if (hs->abuts_next_hotspot)
-                                                {
-                                                    double shear_mid1 = (y >= 0.0)? hs1->shear_mid_upper : hs1->shear_mid_lower;
-
-                                                    bool outside1 = (y*shear_mid1 >= 0.0);
-                                                    if (outside1)
+                                                    // In the case of a closed polyline we won't get in here for the
+                                                    // last hotspot, and so the computed points can be incorrect.
+                                                    // That's ok though since this is for the exit side, and points on
+                                                    // that side of the last hotspot will get clipped away.
+                                                    HotSpot* hs1 = hs+1;
+                                                    if (hs->abuts_next_hotspot)
                                                     {
-                                                        if (roundJoin)
+                                                        double shear_mid1 = (y >= 0.0)? hs1->shear_mid_upper : hs1->shear_mid_lower;
+
+                                                        bool outside1 = (y*shear_mid1 >= 0.0);
+                                                        if (outside1)
                                                         {
-                                                            // only scale if the shear line at this parametric location
-                                                            // extends past the hotspot vertex point
-                                                            double dd1 = (hs1->mid - xParam) * affected_height_inv;
-                                                            if (fabs(shear) > dd1)
+                                                            if (roundJoin)
                                                             {
-                                                                double as2 = 1.0 + shear*shear;
+                                                                // only scale if the shear line at this parametric location
+                                                                // extends past the hotspot vertex point
+                                                                double dd1 = (hs1->mid - xParam) * affected_height_inv;
+                                                                if (fabs(shear) > dd1)
+                                                                {
+                                                                    double as2 = 1.0 + shear*shear;
 
-                                                                double rad1 = as2 - dd1*dd1;
-                                                                _ASSERT(rad1 >= 0.0);   // guaranteed due to previous if check
+                                                                    double rad1 = as2 - dd1*dd1;
+                                                                    _ASSERT(rad1 >= 0.0);   // guaranteed due to previous if check
 
-                                                                double numer1 = fabs(shear) * dd1 + sqrt(rad1);
-                                                                double denom1 = as2;
+                                                                    double numer1 = fabs(shear) * dd1 + sqrt(rad1);
+                                                                    double denom1 = as2;
+
+                                                                    // use this scale factor if it's smaller
+                                                                    if (numer1 < scale * denom1)
+                                                                        scale = numer1 / denom1;
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                // miter / bevel join
+                                                                double dd1 = (hs1->miter_start - xParam) * affected_height_inv;
+                                                                double numer1 = 1.0 + dd1 * fabs(shear_mid1);
+                                                                double denom1 = 1.0 + shear_mid1 * shear;
 
                                                                 // use this scale factor if it's smaller
                                                                 if (numer1 < scale * denom1)
                                                                     scale = numer1 / denom1;
                                                             }
                                                         }
-                                                        else
-                                                        {
-                                                            // miter / bevel join
-                                                            double dd1 = (hs1->miter_start - xParam) * affected_height_inv;
-                                                            double numer1 = 1.0 + dd1 * fabs(shear_mid1);
-                                                            double denom1 = 1.0 + shear_mid1 * shear;
-
-                                                            // use this scale factor if it's smaller
-                                                            if (numer1 < scale * denom1)
-                                                                scale = numer1 / denom1;
-                                                        }
                                                     }
                                                 }
                                             }
-                                        }
 
-                                        // get the position of the end of the join
-                                        double warp_x = hs->x + hs->cos_angle_end * join_exit_length;
-                                        double warp_y = hs->y + hs->sin_angle_end * join_exit_length;
+                                            // get the position of the end of the join
+                                            double warp_x = hs->x + hs->cos_angle_end * join_exit_length;
+                                            double warp_y = hs->y + hs->sin_angle_end * join_exit_length;
 
-                                        // compute the warped point relative to the end of the join
-                                        double txx = -dist_before_exit + scale*y*shear;
-                                        double txy = scale*y;
-
-                                        SE_Matrix xform;
-                                        xform.rotate(hs->sin_angle_end, hs->cos_angle_end);
-                                        xform.transform(txx, txy);
-
-                                        // add this offset to the join's ending point
-                                        warp_x += txx;
-                                        warp_y += txy;
-
-                                        // update the geometry with the warped point
-                                        geom.x_coord(i) = warp_x;
-                                        geom.y_coord(i) = warp_y;
-
-                                        // done with this point
-                                        remaining_len = 0.0;
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        // remaining distance passes the join completely and exits the join
-                                        remaining_len -= join_length;
-                                    }
-
-                                    if (!hs->abuts_next_hotspot && remaining_len > 0.0)
-                                    {
-                                        // if we are exiting the join and not immediately entering the
-                                        // next join, move along the straight line section that follows
-                                        // the join - here we do not need to do a miter warp since we are
-                                        // in a straight section (the start / end shear factors are zero)
-
-                                        // this is the total length of the straight section - that's the
-                                        // maximum length we can move without being affected by the next join
-                                        double dist_along_segment = (hs == last_hotspot)? DBL_MAX : (hs+1)->start - hs->end;
-
-                                        if (remaining_len <= dist_along_segment)
-                                        {
-                                            // compute position in straight line section past current hotspot
-
-                                            // get the distance from the exit segment's start point to the end of the join
-                                            double len_along_seg = join_exit_length + remaining_len;
-
-                                            // just linear interpolation from the start of the segment
-                                            double warp_x = hs->x + hs->cos_angle_end * len_along_seg;
-                                            double warp_y = hs->y + hs->sin_angle_end * len_along_seg;
-
-                                            // compute the rotated contribution due to y
-                                            double txx = 0.0;
-                                            double txy = y;
+                                            // compute the warped point relative to the end of the join
+                                            double txx = -dist_before_exit + scale*y*shear;
+                                            double txy = scale*y;
 
                                             SE_Matrix xform;
                                             xform.rotate(hs->sin_angle_end, hs->cos_angle_end);
                                             xform.transform(txx, txy);
 
-                                            // add this offset to the position
+                                            // add this offset to the join's ending point
                                             warp_x += txx;
                                             warp_y += txy;
 
@@ -777,25 +731,102 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
                                         }
                                         else
                                         {
-                                            remaining_len -= dist_along_segment;
+                                            // remaining distance passes the join completely and exits the join
+                                            remaining_len -= join_length;
                                         }
-                                    }
 
-                                    // go to the next hotspot
-                                    hs++;
+                                        if (!hs->abuts_next_hotspot && remaining_len > 0.0)
+                                        {
+                                            // if we are exiting the join and not immediately entering the
+                                            // next join, move along the straight line section that follows
+                                            // the join - here we do not need to do a miter warp since we are
+                                            // in a straight section (the start / end shear factors are zero)
+
+                                            // this is the total length of the straight section - that's the
+                                            // maximum length we can move without being affected by the next join
+                                            double dist_along_segment = (hs == last_hotspot)? DBL_MAX : (hs+1)->start - hs->end;
+
+                                            if (remaining_len <= dist_along_segment)
+                                            {
+                                                // compute position in straight line section past current hotspot
+
+                                                // get the distance from the exit segment's start point to the end of the join
+                                                double len_along_seg = join_exit_length + remaining_len;
+
+                                                // just linear interpolation from the start of the segment
+                                                double warp_x = hs->x + hs->cos_angle_end * len_along_seg;
+                                                double warp_y = hs->y + hs->sin_angle_end * len_along_seg;
+
+                                                // compute the rotated contribution due to y
+                                                double txx = 0.0;
+                                                double txy = y;
+
+                                                SE_Matrix xform;
+                                                xform.rotate(hs->sin_angle_end, hs->cos_angle_end);
+                                                xform.transform(txx, txy);
+
+                                                // add this offset to the position
+                                                warp_x += txx;
+                                                warp_y += txy;
+
+                                                // update the geometry with the warped point
+                                                geom.x_coord(i) = warp_x;
+                                                geom.y_coord(i) = warp_y;
+
+                                                // done with this point
+                                                remaining_len = 0.0;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                remaining_len -= dist_along_segment;
+                                            }
+                                        }
+
+                                        // go to the next hotspot
+                                        hs++;
+                                    }
                                 }
                             }
-                        }
 
-                        //-------------------------------------------------------
-                        // do any necessary polygon clip of the buffer against
-                        // the start/end, and then draw the warped buffer
-                        //-------------------------------------------------------
+                            //-------------------------------------------------------
+                            // do any necessary polygon clip of the buffer against
+                            // the start/end, and then draw the warped buffer
+                            //-------------------------------------------------------
 
-                        if (primitive->type == SE_RenderPolygonPrimitive)
-                        {
-                            SE_RenderPolygon* pl = (SE_RenderPolygon*)primitive;
-                            if ((pl->fill & 0xFF000000) != 0)
+                            if (primitive->type == SE_RenderPolygonPrimitive)
+                            {
+                                SE_RenderPolygon* pl = (SE_RenderPolygon*)primitive;
+                                if ((pl->fill & 0xFF000000) != 0)
+                                {
+                                    // use symbol bounds to quickly check whether we need to clip
+                                    // TODO: use the primitive's bounds and not the symbol bounds
+                                    LineBuffer* geomToDraw = &geom;
+                                    if (sym_minx < startpos || sym_maxx > endpos)
+                                    {
+                                        // check if symbol is completely outside clip region
+                                        if (sym_maxx < startpos || sym_minx > endpos)
+                                            geomToDraw = NULL;
+                                        else
+                                            geomToDraw = SE_LineRenderer::ClipPolygon(lbp, geom, startpos, endpos);
+                                    }
+
+                                    if (geomToDraw)
+                                    {
+                                        renderer->DrawScreenPolygon(geomToDraw, NULL, pl->fill);
+                                        if (geomToDraw != &geom)
+                                            LineBufferPool::FreeLineBuffer(lbp, geomToDraw);
+                                    }
+                                }
+                            }
+
+                            //-------------------------------------------------------
+                            // do any necessary polyline clip of the buffer against
+                            // the start/end, and then draw the warped buffer
+                            //-------------------------------------------------------
+
+                            SE_RenderPolyline* pl = (SE_RenderPolyline*)primitive;
+                            if ((pl->lineStroke.color & 0xFF000000) != 0)
                             {
                                 // use symbol bounds to quickly check whether we need to clip
                                 // TODO: use the primitive's bounds and not the symbol bounds
@@ -803,71 +834,49 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
                                 if (sym_minx < startpos || sym_maxx > endpos)
                                 {
                                     // check if symbol is completely outside clip region
-                                    if (sym_maxx < startpos || sym_minx > endpos)
+                                    if (sym_minx > endpos || sym_maxx < startpos)
                                         geomToDraw = NULL;
                                     else
-                                        geomToDraw = SE_LineRenderer::ClipPolygon(lbp, geom, startpos, endpos);
+                                        geomToDraw = SE_LineRenderer::ClipPolyline(lbp, geom, startpos, endpos);
                                 }
 
                                 if (geomToDraw)
                                 {
-                                    renderer->DrawScreenPolygon(geomToDraw, NULL, pl->fill);
+                                    renderer->DrawScreenPolyline(geomToDraw, NULL, pl->lineStroke);
                                     if (geomToDraw != &geom)
                                         LineBufferPool::FreeLineBuffer(lbp, geomToDraw);
                                 }
                             }
                         }
-
-                        //-------------------------------------------------------
-                        // do any necessary polyline clip of the buffer against
-                        // the start/end, and then draw the warped buffer
-                        //-------------------------------------------------------
-
-                        SE_RenderPolyline* pl = (SE_RenderPolyline*)primitive;
-                        if ((pl->lineStroke.color & 0xFF000000) != 0)
-                        {
-                            // use symbol bounds to quickly check whether we need to clip
-                            // TODO: use the primitive's bounds and not the symbol bounds
-                            LineBuffer* geomToDraw = &geom;
-                            if (sym_minx < startpos || sym_maxx > endpos)
-                            {
-                                // check if symbol is completely outside clip region
-                                if (sym_minx > endpos || sym_maxx < startpos)
-                                    geomToDraw = NULL;
-                                else
-                                    geomToDraw = SE_LineRenderer::ClipPolyline(lbp, geom, startpos, endpos);
-                            }
-
-                            if (geomToDraw)
-                            {
-                                renderer->DrawScreenPolyline(geomToDraw, NULL, pl->lineStroke);
-                                if (geomToDraw != &geom)
-                                    LineBufferPool::FreeLineBuffer(lbp, geomToDraw);
-                            }
-                        }
                     }
-                }
 
-                // we're finally done with the symbol draw, so move forward by the repeat amount
-                drawpos += increment;
-                sym_minx = drawpos + styleBounds.minx;
-                sym_maxx = drawpos + styleBounds.maxx;
+                    // we're finally done with the symbol draw, so move forward by the repeat amount
+                    drawpos += increment;
+                    sym_minx = drawpos + styleBounds.minx;
+                    sym_maxx = drawpos + styleBounds.maxx;
 
-                // also move on to the next segment if we've already cleared the corner
-                while (next_hotspot != last_hotspot && sym_minx >= next_hotspot->end)
-                {
-                    next_hotspot_index++;
-                    next_hotspot = &hotspots[next_hotspot_index];
+                    // also move on to the next segment if we've already cleared the corner
+                    while (next_hotspot != last_hotspot && sym_minx >= next_hotspot->end)
+                    {
+                        next_hotspot_index++;
+                        next_hotspot = &hotspots[next_hotspot_index];
+                    }
                 }
             }
         }
     }
+    catch (...)
+    {
+    }
 
     // free the chopped line buffers
-    for (unsigned cur_prim=0; cur_prim<rs.size(); ++cur_prim)
+    if (choppedBuffers)
     {
-        if (choppedBuffers[cur_prim] != NULL)
-            LineBufferPool::FreeLineBuffer(lbp, choppedBuffers[cur_prim]);
+        for (unsigned cur_prim=0; cur_prim<rs.size(); ++cur_prim)
+        {
+            if (choppedBuffers[cur_prim] != NULL)
+                LineBufferPool::FreeLineBuffer(lbp, choppedBuffers[cur_prim]);
+        }
     }
 }
 
