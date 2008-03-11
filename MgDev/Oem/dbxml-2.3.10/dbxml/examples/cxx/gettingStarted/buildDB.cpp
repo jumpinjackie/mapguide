@@ -7,6 +7,7 @@
 //
 
 #include <cassert>
+#include <stdlib.h>
 
 #include "myDb.hpp"
 

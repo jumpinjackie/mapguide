@@ -21,6 +21,7 @@
 #define __DBXMLNSNID_HPP
 
 #include "NsTypes.hpp"
+#include <cstring>
 
 #define NIDBUF_SIZE 50
 #define NID_BYTES_SIZE 5

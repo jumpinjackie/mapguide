@@ -33,6 +33,8 @@
  *
  */
 
+#include <stdlib.h>
+
 #include <dbxml/DbXml.hpp>
 
 using namespace DbXml;

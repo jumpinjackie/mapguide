@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <stdlib.h>
 #include "common_utils.h" // for signal handling
 
 #ifdef HAVE_GETOPT

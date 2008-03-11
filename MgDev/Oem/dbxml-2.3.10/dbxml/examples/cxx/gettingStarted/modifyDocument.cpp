@@ -9,6 +9,7 @@
 #include <fstream>
 #include <cstdio>
 #include <cassert>
+#include <stdlib.h>
 
 #include "dbxml/DbXml.hpp"
 
