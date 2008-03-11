@@ -18,7 +18,6 @@
 #include "stdafx.h"
 #include "LineStyleDef.h"
 #include <map>
-#include <string>
 
 
 // basic line styles

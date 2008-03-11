@@ -51,7 +51,7 @@ DWORD UninstallService();
 //////////////////////////////////////////////////////////////////
 /// <summary>
 /// </summary>
-int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
+int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 {
     int nResult = 0;
 

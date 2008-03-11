@@ -32,6 +32,9 @@
 #ifdef _WIN32
 #include <windows.h>
 #include <limits.h>
+#else
+#include <climits>
+#include <string>
 #endif
 
 #include <assert.h>

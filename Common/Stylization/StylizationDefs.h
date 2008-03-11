@@ -21,11 +21,14 @@
 // std headers
 #include <wchar.h>
 #include <string>
+#include <cstring>
+#include <memory>
 
 #include <float.h>
 #define _USE_MATH_DEFINES //for PI, etc
 #include <math.h>
 #include <limits>
+#include <climits>
 
 const double M_PI180 = (M_PI / 180.0);
 const double M_180PI = (180.0 / M_PI);
