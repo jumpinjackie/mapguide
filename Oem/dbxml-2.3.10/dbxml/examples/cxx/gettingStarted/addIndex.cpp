@@ -8,6 +8,7 @@
 
 #include <fstream>
 #include <cstdio>
+#include <stdlib.h>
 
 #include "dbxml/DbXml.hpp"
 

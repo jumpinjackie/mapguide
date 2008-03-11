@@ -272,12 +272,12 @@ clean_swigex()
 # Notes: none
 #**********************************************************
 
-init_bdxml()
+init_bdbxml()
 {
     LIB_NAME="BDBXML 2.3.10"
 }
 
-build_bdxml()
+build_bdbxml()
 {
     pushd dbxml-2.3.10
     sh ./buildall.sh
@@ -285,7 +285,7 @@ build_bdxml()
     popd
 }
 
-clean_bdxml()
+clean_bdbxml()
 {
     pushd dbxml-2.3.10
     sh ./buildall.sh --clean
@@ -593,7 +593,7 @@ clean_json()
 #**********************************************************
 
 pushd Oem
-for lib in ace dwfcore dwftk dwfemap geos php swigex bdxml cppunit imake gdal proj zlib libpng jpeg freetype gd agg json;
+for lib in ace dwfcore dwftk dwfemap geos php swigex bdbxml cppunit imake gdal proj zlib libpng jpeg freetype gd agg json;
 do
     echo "$lib: Initialization..........................."
     init_"$lib"

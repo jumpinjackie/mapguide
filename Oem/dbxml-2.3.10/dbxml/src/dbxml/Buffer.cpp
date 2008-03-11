@@ -11,6 +11,8 @@
 
 #include <sstream>
 #include <cassert>
+#include <stdlib.h>
+#include <cstring>
 
 using namespace std;
 using namespace DbXml;

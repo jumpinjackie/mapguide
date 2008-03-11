@@ -6,6 +6,8 @@
 // $Id: simpleAdd.cpp,v 1.14 2006/10/30 17:45:45 bostic Exp $
 //
 
+#include <stdlib.h>
+
 #include "dbxml/DbXml.hpp"
 
 using namespace DbXml;

@@ -109,6 +109,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <ctype.h>
+#include <limits.h>
 
 #if !defined(WIN32CE)
 #  include <time.h>

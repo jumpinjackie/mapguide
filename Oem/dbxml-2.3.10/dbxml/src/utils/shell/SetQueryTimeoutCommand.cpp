@@ -7,6 +7,7 @@
 //
 
 #include "SetQueryTimeoutCommand.hpp"
+#include <cstdlib>
 
 using namespace DbXml;
 using namespace std;

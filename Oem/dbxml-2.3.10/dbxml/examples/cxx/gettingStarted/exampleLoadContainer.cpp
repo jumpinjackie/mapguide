@@ -11,6 +11,7 @@
 #include <vector>
 #include <fstream>
 #include <time.h>
+#include <stdlib.h>
 
 using namespace DbXml;
 //some exception handling omitted for clarity

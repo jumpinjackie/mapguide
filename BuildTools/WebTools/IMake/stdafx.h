@@ -14,5 +14,7 @@
 #include <sstream>
 #include <time.h>
 #include <ctype.h>
+#include <cstdlib>
+#include <cstring>
 
 #endif

@@ -8,6 +8,7 @@
 
 #include <fstream>
 #include <string>
+#include <stdlib.h>
 
 #include "dbxml/DbXml.hpp"
 #include "Environment.hpp"

@@ -14,6 +14,8 @@
 #include <dbxml/DbXml.hpp>
 #include <iostream>
 #include <cerrno>
+#include <cstring>
+#include <stdlib.h>
 #include "common_utils.h"
 
 #include <db.h>
