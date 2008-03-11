@@ -18,6 +18,7 @@
 
 #include <memory>
 #include <string>
+#include <cstring>
 #include <geos/platform.h>
 #include <geos/geom.h>
 
