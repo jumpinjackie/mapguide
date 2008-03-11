@@ -37,6 +37,8 @@
 #define _wcsnicmp wcsncasecmp
 #define _wcsicmp wcscasecmp
 
+#include <memory>
+
 #endif //_WIN32
 
 // Xerces includes

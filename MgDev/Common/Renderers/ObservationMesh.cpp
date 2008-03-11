@@ -21,6 +21,7 @@
 #include "CSysTransformer.h"
 #include "RS_OutputStream.h"
 #include <map>
+#include <cstring>
 
 //desired observation mesh accuracy (in degrees)
 #define OM_TOLERANCE 1e-5

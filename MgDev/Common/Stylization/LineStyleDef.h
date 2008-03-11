@@ -18,6 +18,7 @@
 #ifndef LINESTYLEDEF_H_
 #define LINESTYLEDEF_H_
 
+#include "StylizationDefs.h"
 #include "StylizationAPI.h"
 #include "LineStyle.h"
 #include <vector>
