@@ -163,14 +163,15 @@ public:
 
     virtual double GetScreenUnitsPerMillimeterDevice();
     virtual double GetScreenUnitsPerMillimeterWorld();
+    virtual double GetScreenUnitsPerPixel();
 
     virtual RS_FontEngine* GetRSFontEngine();
 
-    virtual void ProcessSELabelGroup(SE_LabelInfo*    labels,
-                                     int              nlabels,
-                                     RS_OverpostType  type,
-                                     bool             exclude,
-                                     LineBuffer*      path = NULL);
+    virtual void ProcessSELabelGroup(SE_LabelInfo*   labels,
+                                     int             nlabels,
+                                     RS_OverpostType type,
+                                     bool            exclude,
+                                     LineBuffer*     path = NULL);
 
     virtual void AddExclusionRegion(RS_F_Point* fpts, int npts);
 

@@ -45,9 +45,9 @@ public:
     FdoExpressionEngine* exec;
     SE_SymbolManager* resources;
     double mm2su;
-    double mm2sud;
-    double mm2suw;
-    double tolerance;   // in screen units
+    double mm2sud;      // number of screen units per mm device
+    double mm2suw;      // number of screen units per mm world
+    double px2su;       // number of screen units per pixel
     SE_BufferPool* pool;
 };
 

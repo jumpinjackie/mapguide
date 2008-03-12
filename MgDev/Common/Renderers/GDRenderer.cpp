@@ -2341,6 +2341,13 @@ double GDRenderer::GetScreenUnitsPerMillimeterWorld()
 }
 
 
+// screen units are pixels
+double GDRenderer::GetScreenUnitsPerPixel()
+{
+    return 1.0;
+}
+
+
 RS_FontEngine* GDRenderer::GetRSFontEngine()
 {
     return this;

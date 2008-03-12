@@ -712,6 +712,13 @@ double KmlRenderer::GetScreenUnitsPerMillimeterWorld()
 }
 
 
+// screen units are pixels
+double KmlRenderer::GetScreenUnitsPerPixel()
+{
+    return 1.0;
+}
+
+
 RS_FontEngine* KmlRenderer::GetRSFontEngine()
 {
     return NULL;

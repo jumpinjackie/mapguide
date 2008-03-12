@@ -173,14 +173,21 @@ public:
 
     RENDERERS_API virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, const SE_LineStroke& lineStroke);
     RENDERERS_API virtual void DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill);
-    RENDERERS_API virtual void DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
-        double x, double y, double w, double h, double angledeg);
+    RENDERERS_API virtual void DrawScreenRaster(unsigned char* data, int length,
+                                                RS_ImageFormat format, int native_width, int native_height,
+                                                double x, double y, double w, double h, double angledeg);
     RENDERERS_API virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, RS_F_Point* path, int npts, double param_position);
+
+    RENDERERS_API virtual bool YPointsUp();
     RENDERERS_API virtual void GetWorldToScreenTransform(SE_Matrix& xform);
     RENDERERS_API virtual void WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy);
     RENDERERS_API virtual void ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy);
+
     RENDERERS_API virtual double GetScreenUnitsPerMillimeterDevice();
     RENDERERS_API virtual double GetScreenUnitsPerMillimeterWorld();
+    RENDERERS_API virtual double GetScreenUnitsPerPixel();
+
+    RENDERERS_API virtual RS_FontEngine* GetRSFontEngine();
 
     RENDERERS_API void ProcessSELabelGroup(SE_LabelInfo*    labels,
                                            int              nlabels,
@@ -190,28 +197,25 @@ public:
 
     RENDERERS_API virtual void ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style);
 
-    RENDERERS_API virtual RS_FontEngine* GetRSFontEngine();
-
     RENDERERS_API virtual void AddExclusionRegion(RS_F_Point* fpts, int npts);
-
-    RENDERERS_API  virtual bool YPointsUp();
 
     RENDERERS_API void AddDWFContent(RS_InputStream *,CSysTransformer *,const RS_String &,const RS_String &,const RS_String &);
 
     RENDERERS_API static void DrawScreenPolyline(agg_context* cxt, LineBuffer* polyline, const SE_Matrix* xform, const SE_LineStroke& lineStroke);
     RENDERERS_API static void DrawScreenPolygon(agg_context* cxt, LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill);
-    RENDERERS_API static void DrawScreenRaster(agg_context* cxt, unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
-        double x, double y, double w, double h, double angledeg);
+    RENDERERS_API static void DrawScreenRaster(agg_context* cxt, unsigned char* data, int length,
+                                               RS_ImageFormat format, int native_width, int native_height,
+                                               double x, double y, double w, double h, double angledeg);
 
     RENDERERS_API static void DrawString(agg_context*     cxt,
-                           const RS_String& s,
-                           double           x,
-                           double           y,
-                           double           width,
-                           double           height,
-                           const RS_Font*   font,
-                           RS_Color&        color,
-                           double           angle);
+                                         const RS_String& s,
+                                         double           x,
+                                         double           y,
+                                         double           width,
+                                         double           height,
+                                         const RS_Font*   font,
+                                         RS_Color&        color,
+                                         double           angle);
 
     RENDERERS_API void SetPolyClip(LineBuffer* polygon, double bufferWidth);
 
@@ -243,6 +247,7 @@ private:
 
     agg_context* m_context;
     agg_context* c() { return m_context; }
+
     //screen buffer
     unsigned int* m_rows;
     bool m_bownbuffer;

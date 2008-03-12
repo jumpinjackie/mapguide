@@ -267,7 +267,7 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
 
                 // create the chopped up LineBuffer for this primitive
                 choppedBuffers[cur_prim] = LineBufferPool::NewLineBuffer(lbp, 128, FdoDimensionality_XY, true);
-                SE_LineRenderer::ChopLineBuffer(pl->geometry->xf_buffer(), choppedBuffers[cur_prim]);
+                SE_LineRenderer::ChopLineBuffer(renderer, pl->geometry->xf_buffer(), choppedBuffers[cur_prim]);
 
                 // keep track of the largest chopped buffer
                 int numPoints = choppedBuffers[cur_prim]->point_count();
@@ -1380,12 +1380,15 @@ int SE_LineRenderer::ComputePoints(SE_Renderer* renderer, LineBuffer* geometry, 
         // check if the first and last points are identical
         if (x == lastx && y == lasty)
         {
+            // use an offset of 0.1 pixels
+            double offset = 0.1*renderer->GetScreenUnitsPerPixel();
+
             // they're identical - add a second hotspot and adjust both so we
             // have a short (yet valid) segment centered about the original point
             hotspots[1].x = hotspots[0].x;
             hotspots[1].y = hotspots[0].y;
-            hotspots[0].x -= 0.00001;   // TODO: WCW - base this off of renderer-units-per-pixel
-            hotspots[1].x += 0.00001;
+            hotspots[0].x -= offset;
+            hotspots[1].x += offset;
             ++ptCount;
 
             // set this so we don't enter the if block further down
@@ -1415,8 +1418,10 @@ int SE_LineRenderer::ComputePoints(SE_Renderer* renderer, LineBuffer* geometry, 
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void SE_LineRenderer::ChopLineBuffer(LineBuffer* inBuffer, LineBuffer* outBuffer)
+void SE_LineRenderer::ChopLineBuffer(SE_Renderer* renderer, LineBuffer* inBuffer, LineBuffer* outBuffer)
 {
+    double pixelsPerScreenUnit = 1.0 / renderer->GetScreenUnitsPerPixel();
+
     for (int j=0; j<inBuffer->cntr_count(); ++j)
     {
         int start = inBuffer->contour_start_point(j);
@@ -1434,12 +1439,13 @@ void SE_LineRenderer::ChopLineBuffer(LineBuffer* inBuffer, LineBuffer* outBuffer
             double dx = ex - sx;
             double dy = ey - sy;
 
-            double len = sqrt(dx*dx + dy*dy);
+            // get the length in pixels
+            double lenpx = sqrt(dx*dx + dy*dy) * pixelsPerScreenUnit;
 
-            // TODO: WCW - need correct pixel size check; is 4 also the correct amount?
-            if (len < 4.0)
+            // segments shorter than 4 pixels will not be chopped
+            // TODO: is 4 the correct amount?
+            if (lenpx < 4.0)
             {
-                // segment is too short - don't chop
                 outBuffer->LineTo(ex, ey);
             }
             else if (dx == 0.0)
@@ -1466,7 +1472,7 @@ void SE_LineRenderer::ChopLineBuffer(LineBuffer* inBuffer, LineBuffer* outBuffer
                 // joins, if the underlying rendering engine does not do subpixel
                 // positioning then the resulting lines may look too nervous.
                 // TODO: ideally we would account for the level of warping
-                int num_segs = ((int)len/2);
+                int num_segs = ((int)lenpx/2);
                 double x_incr = dx / num_segs;
                 double y_incr = dy / num_segs;
 

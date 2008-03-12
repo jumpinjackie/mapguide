@@ -129,7 +129,8 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
     else // default is Round
         ret->lineStroke.join = SE_LineJoin_Round;
 
-    ret->geometry->Transform(*cxt->xform, cxt->tolerance);
+    // use a tolerance of 0.25 pixels
+    ret->geometry->Transform(*cxt->xform, 0.25*cxt->px2su);
 
     // TODO: here we would implement a rotating calipers algorithm to get a tighter
     //       oriented box, but for now just get the axis-aligned bounds of the path
@@ -217,7 +218,8 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
     else // default is Round
         ret->lineStroke.join = SE_LineJoin_Round;
 
-    ret->geometry->Transform(*cxt->xform, cxt->tolerance);
+    // use a tolerance of 0.25 pixels
+    ret->geometry->Transform(*cxt->xform, 0.25*cxt->px2su);
 
     // TODO: here we would implement a rotating calipers algorithm to get a tighter
     //       oriented box, but for now just get the axis-aligned bounds of the path
@@ -602,7 +604,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                 case SE_RenderPolylinePrimitive:
                     {
                         SE_RenderPolyline* rp = (SE_RenderPolyline*)rsym;
-                        rp->geometry->Transform(totalxf, cxt->tolerance);
+                        rp->geometry->Transform(totalxf, 0.25*cxt->px2su);  // use a tolerance of 0.25 pixels
                         SE_Bounds* seb = rp->geometry->xf_bounds();
                         double margin = GetHalfWeightMargin(rp->lineStroke);
                         rp->bounds[0].x = seb->min[0] - margin;
@@ -694,12 +696,11 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
 
     // It makes no sense to distribute symbols using a repeat value which is much
     // less than one pixel.  We'll scale up any value less than 0.25 to 0.5.
-    // TODO: WCW - account for screen units per pixel
-    if (render->repeat > 0.0 && render->repeat < 0.25)
+    if (render->repeat > 0.0 && render->repeat < 0.25*cxt->px2su)
     {
         // just increase it by an integer multiple so the overall distribution
         // isn't affected
-        int factor = (int)(0.5 / render->repeat);
+        int factor = (int)(0.5*cxt->px2su / render->repeat);
         render->repeat *= factor;
     }
 
@@ -794,10 +795,9 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
                 // single segment to the symbol repeat (the unmodified one)
                 double len = lb->x_coord(1) - lb->x_coord(0);
 
-                // repeat must be within 1/10 of a pixel for us to assume solid line (this is
+                // repeat must be within 0.1 pixels for us to assume solid line (this is
                 // only to avoid FP precision issues, in reality they would be exactly equal)
-                // TODO: WCW - account for screen units per pixel
-                if (fabs(len - origRepeat) < 0.1)
+                if (fabs(len - origRepeat) < 0.1*cxt->px2su)
                     render->solidLine = true;
             }
         }
@@ -833,14 +833,13 @@ void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
 
     // It makes no sense to distribute symbols using repeat values which are much
     // less than one pixel.  We'll scale up any values less than 0.25 to 0.5.
-    // TODO: WCW - account for screen units per pixel
     for (int i=0; i<=1; ++i)
     {
-        if (render->repeat[i] > 0.0 && render->repeat[i] < 0.25)
+        if (render->repeat[i] > 0.0 && render->repeat[i] < 0.25*cxt->px2su)
         {
             // just increase it by an integer multiple so the overall distribution
             // isn't affected
-            int factor = (int)(0.5 / render->repeat[i]);
+            int factor = (int)(0.5*cxt->px2su / render->repeat[i]);
             render->repeat[i] *= factor;
         }
     }
@@ -881,10 +880,9 @@ void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
                         double lenX = lb->x_coord(1) - lb->x_coord(0);
                         double lenY = lb->y_coord(2) - lb->y_coord(1);
 
-                        // repeats must be within 1/10 of a pixel for us to assume solid fill (this is
+                        // repeats must be within 0.1 pixels for us to assume solid fill (this is
                         // only to avoid FP precision issues, in reality they would be exactly equal)
-                        // TODO: WCW - account for screen units per pixel
-                        if (fabs(lenX - origRepeatX) < 0.1 && fabs(lenY - origRepeatY) < 0.1)
+                        if (fabs(lenX - origRepeatX) < 0.1*cxt->px2su && fabs(lenY - origRepeatY) < 0.1*cxt->px2su)
                             render->solidFill = true;
                     }
                     // case 2: first segment is vertical
@@ -897,10 +895,9 @@ void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
                         double lenY = lb->y_coord(1) - lb->y_coord(0);
                         double lenX = lb->x_coord(2) - lb->x_coord(1);
 
-                        // repeats must be within 1/10 of a pixel for us to assume solid fill (this is
+                        // repeats must be within 0.1 pixels for us to assume solid fill (this is
                         // only to avoid FP precision issues, in reality they would be exactly equal)
-                        // TODO: WCW - account for screen units per pixel
-                        if (fabs(lenX - origRepeatX) < 0.1 && fabs(lenY - origRepeatY) < 0.1)
+                        if (fabs(lenX - origRepeatX) < 0.1*cxt->px2su && fabs(lenY - origRepeatY) < 0.1*cxt->px2su)
                             render->solidFill = true;
                     }
                 }
