@@ -137,29 +137,21 @@ public:
     {}
 
     virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, const SE_LineStroke& lineStroke);
-
-    virtual void DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill)
-    {
-        // regard Polygon as Polyline here
-        SE_LineStroke lineStroke(fill, 0.0, SE_LineCap_Round, SE_LineJoin_Round, 5.0);
-        DrawScreenPolyline(polygon, xform, lineStroke);
-    }
-
+    virtual void DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill);
     virtual void DrawScreenRaster(unsigned char* data, int length,
                                   RS_ImageFormat format, int native_width, int native_height,
                                   double x, double y, double w, double h, double angleDeg);
-
     virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy,
                                 RS_F_Point* path, int npts, double param_position);
 
     virtual bool YPointsUp();
-
     virtual void GetWorldToScreenTransform(SE_Matrix& xform);
     virtual void WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy);
     virtual void ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy);
 
     virtual double GetScreenUnitsPerMillimeterDevice();
     virtual double GetScreenUnitsPerMillimeterWorld();
+    virtual double GetScreenUnitsPerPixel();
 
     virtual RS_FontEngine* GetRSFontEngine();
 
@@ -173,9 +165,8 @@ public:
     virtual void AddExclusionRegion(RS_F_Point* fpts, int npts)
     {}
 
-
     ////////////////////////////////////////////////
-    // RS_FontEngine
+    // RS_FontEngine implementation
 
     virtual void MeasureString(const RS_String& s,
                                double           height,

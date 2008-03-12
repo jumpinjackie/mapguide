@@ -296,18 +296,16 @@ void DWFRenderer::StartMap( RS_MapUIInfo* mapInfo,
 
     double metersPerPixel = METERS_PER_INCH / m_dpi;
 
-    //TODO: we can compute the map scale
-    //given the extents and the screen bounds,
-    //so if it is not specified, do the default computation
+    // TODO: we can compute the map scale given the extents and the screen
+    //       bounds, so if it is not specified, do the default computation
 
-    //avoid 0 map scale
+    // avoid 0 map scale
     m_mapScale = (mapScale <= 0.0)? 1.0 : mapScale;
 
-    //compute drawing scale
-    //drawing scale is map scale converted to [mapping units] / [pixels]
+    // drawing scale is map scale converted to [mapping units] / [pixels]
     m_drawingScale = m_mapScale * metersPerPixel / m_metersPerUnit;
 
-    //scale used to convert to DWF logical coordinates in the range [0, 2^30-1]
+    // scale used to convert to DWF logical coordinates in the range [0, 2^30-1]
     m_scale = (double)(INT_MAX/2) / rs_max(m_extents.width(), m_extents.height());
 
     m_offsetX = m_extents.minx - 0.5*m_extents.width();
@@ -2371,6 +2369,9 @@ void DWFRenderer::DrawScreenPolygon(LineBuffer* geom, const SE_Matrix* xform, un
     if (fill == 0)
         return;
 
+    if (geom->point_count() == 0)
+        return;
+
     // draw to the active file if it's set
     WT_File* file = m_w2dActive? m_w2dActive : m_w2dFile;
 
@@ -2501,7 +2502,7 @@ void DWFRenderer::DrawScreenRaster(unsigned char* data,
         else if (format == RS_ImageFormat_PNG)
         {
             // compute the scaled size
-            double pixelsPerW2D = m_dpi / MILLIMETERS_PER_INCH / GetScreenUnitsPerMillimeterDevice();
+            double pixelsPerW2D = 1.0 / GetScreenUnitsPerPixel();
             double scaledW = w * pixelsPerW2D;
             double scaledH = h * pixelsPerW2D;
 
@@ -2649,6 +2650,16 @@ double DWFRenderer::GetScreenUnitsPerMillimeterWorld()
     // --------- * ----------- * -------------  =  --------
     // [ World ]   meter-world   1000 mm-world     mm-world
     return m_scale / m_metersPerUnit / 1000.0;
+}
+
+
+// returns number of W2D units per physical pixel
+double DWFRenderer::GetScreenUnitsPerPixel()
+{
+    // Start with:
+    //     GetScreenUnitsPerMillimeterDevice() * MILLIMETERS_PER_INCH / m_dpi
+    // and simplify it to get:
+    return m_scale * m_drawingScale;
 }
 
 
