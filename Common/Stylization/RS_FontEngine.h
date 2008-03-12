@@ -122,7 +122,7 @@ public:
 
     STYLIZATION_API void DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy);
 
-    STYLIZATION_API double MetersToPixels(RS_Units unit, double number);
+    STYLIZATION_API double MetersToScreenUnits(RS_Units unit, double number);
 
     STYLIZATION_API virtual const RS_Font* GetRenderingFont( RS_TextDef& tdef );
 

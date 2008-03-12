@@ -44,9 +44,9 @@ public:
     SE_Matrix* xform;
     FdoExpressionEngine* exec;
     SE_SymbolManager* resources;
-    double mm2pxw;
-    double mm2pxs;
-    double mm2px;
+    double mm2su;
+    double mm2sud;
+    double mm2suw;
     double tolerance;   // in screen units
     SE_BufferPool* pool;
 };

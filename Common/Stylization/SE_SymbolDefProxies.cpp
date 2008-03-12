@@ -88,7 +88,7 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
 
     ret->geometry = geometry->Clone();
 
-    double wx                  = weightScalable.evaluate(cxt->exec)? fabs(cxt->xform->x0) : cxt->mm2pxs;
+    double wx                  = weightScalable.evaluate(cxt->exec)? fabs(cxt->xform->x0) : cxt->mm2sud;
     ret->lineStroke.weight     = weight.evaluate(cxt->exec) * wx;
     ret->lineStroke.color      = color.evaluate(cxt->exec);
     ret->lineStroke.miterLimit = miterLimit.evaluate(cxt->exec);
@@ -96,10 +96,10 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
         ret->lineStroke.miterLimit = 0.0;
 
     // restrict the weight to something reasonable
-    double weightInMM = ret->lineStroke.weight / cxt->mm2pxs;
-    if (weightInMM > MAX_LINEWEIGHT_IN_MM)
-        ret->lineStroke.weight = MAX_LINEWEIGHT_IN_MM * cxt->mm2pxs;
-    else if (weightInMM < 0.0)
+    double devWeightInMM = ret->lineStroke.weight / cxt->mm2sud;
+    if (devWeightInMM > MAX_LINEWEIGHT_IN_MM)
+        ret->lineStroke.weight = MAX_LINEWEIGHT_IN_MM * cxt->mm2sud;
+    else if (devWeightInMM < 0.0)
         ret->lineStroke.weight = 0.0;
 
     const wchar_t* sCap = cap.evaluate(cxt->exec);
@@ -176,7 +176,7 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
     ret->geometry   = geometry->Clone();
     ret->fill       = fill.evaluate(cxt->exec);
 
-    double wx                  = weightScalable.evaluate(cxt->exec)? fabs(cxt->xform->x0) : cxt->mm2pxs;
+    double wx                  = weightScalable.evaluate(cxt->exec)? fabs(cxt->xform->x0) : cxt->mm2sud;
     ret->lineStroke.weight     = weight.evaluate(cxt->exec) * wx;
     ret->lineStroke.color      = color.evaluate(cxt->exec);
     ret->lineStroke.miterLimit = miterLimit.evaluate(cxt->exec);
@@ -184,10 +184,10 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
         ret->lineStroke.miterLimit = 0.0;
 
     // restrict the weight to something reasonable
-    double weightInMM = ret->lineStroke.weight / cxt->mm2pxs;
-    if (weightInMM > MAX_LINEWEIGHT_IN_MM)
-        ret->lineStroke.weight = MAX_LINEWEIGHT_IN_MM * cxt->mm2pxs;
-    else if (weightInMM < 0.0)
+    double devWeightInMM = ret->lineStroke.weight / cxt->mm2sud;
+    if (devWeightInMM > MAX_LINEWEIGHT_IN_MM)
+        ret->lineStroke.weight = MAX_LINEWEIGHT_IN_MM * cxt->mm2sud;
+    else if (devWeightInMM < 0.0)
         ret->lineStroke.weight = 0.0;
 
     const wchar_t* sCap = cap.evaluate(cxt->exec);
@@ -285,7 +285,7 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
     fontDef.name()  = fontName.evaluate(cxt->exec);
 
     // RS_TextDef expects font height to be in meters - convert it from mm
-    double wy              = heightScalable.evaluate(cxt->exec)? 0.001 * fabs(cxt->xform->y1) / cxt->mm2pxs : 0.001;
+    double wy              = heightScalable.evaluate(cxt->exec)? 0.001 * fabs(cxt->xform->y1) / cxt->mm2sud : 0.001;
     fontDef.height()       = height.evaluate(cxt->exec) * wy;
     textDef.obliqueAngle() = obliqueAngle.evaluate(cxt->exec);
     textDef.trackSpacing() = trackSpacing.evaluate(cxt->exec);
@@ -436,8 +436,8 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
     }
     else
     {
-        ret->extent[0] = fabs(extent[0].evaluate(cxt->exec) * cxt->mm2pxs);
-        ret->extent[1] = fabs(extent[1].evaluate(cxt->exec) * cxt->mm2pxs);
+        ret->extent[0] = fabs(extent[0].evaluate(cxt->exec) * cxt->mm2sud);
+        ret->extent[1] = fabs(extent[1].evaluate(cxt->exec) * cxt->mm2sud);
     }
 
     ret->angleRad = fmod(angleDeg.evaluate(cxt->exec), 360.0) * M_PI180;
@@ -659,8 +659,8 @@ void SE_PointStyle::evaluate(SE_EvalContext* cxt)
 
     render->angleRad = fmod(angleDeg.evaluate(cxt->exec), 360.0) * M_PI180;
 
-    // scale by xform->x0 and xform->y1 instead of mm2px, because these encompass
-    // mm2px as well as scaleX and scaleY
+    // scale by xform->x0 and xform->y1 instead of mm2su, because these encompass
+    // mm2su as well as scaleX and scaleY
     render->offset[0] = originOffset[0].evaluate(cxt->exec) * cxt->xform->x0;
     render->offset[1] = originOffset[1].evaluate(cxt->exec) * cxt->xform->y1;
 
@@ -685,8 +685,8 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
 
     render->angleRad = fmod(angleDeg.evaluate(cxt->exec), 360.0) * M_PI180;
 
-    // scale by xform->x0 and xform->y1 instead of mm2px, because these encompass
-    // mm2px as well as scaleX and scaleY
+    // scale by xform->x0 and xform->y1 instead of mm2su, because these encompass
+    // mm2su as well as scaleX and scaleY
     render->startOffset = startOffset.evaluate(cxt->exec) * fabs(cxt->xform->x0);
     render->endOffset   = endOffset.evaluate(cxt->exec)   * fabs(cxt->xform->x0);
     render->repeat      = repeat.evaluate(cxt->exec)      * fabs(cxt->xform->x0);
@@ -694,6 +694,7 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
 
     // It makes no sense to distribute symbols using a repeat value which is much
     // less than one pixel.  We'll scale up any value less than 0.25 to 0.5.
+    // TODO: WCW - account for screen units per pixel
     if (render->repeat > 0.0 && render->repeat < 0.25)
     {
         // just increase it by an integer multiple so the overall distribution
@@ -725,7 +726,7 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
     else // default is Round
         render->vertexJoin = SE_LineJoin_Round;
 
-    double wx                       = dpWeightScalable.evaluate(cxt->exec)? fabs(cxt->xform->x0) : cxt->mm2pxs;
+    double wx                       = dpWeightScalable.evaluate(cxt->exec)? fabs(cxt->xform->x0) : cxt->mm2sud;
     render->dpLineStroke.weight     = dpWeight.evaluate(cxt->exec) * wx;
     render->dpLineStroke.color      = dpColor.evaluate(cxt->exec);
     render->dpLineStroke.miterLimit = dpMiterLimit.evaluate(cxt->exec);
@@ -733,10 +734,10 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
         render->dpLineStroke.miterLimit = 0.0;
 
     // restrict the weight to something reasonable
-    double weightInMM = render->dpLineStroke.weight / cxt->mm2pxs;
-    if (weightInMM > MAX_LINEWEIGHT_IN_MM)
-        render->dpLineStroke.weight = MAX_LINEWEIGHT_IN_MM * cxt->mm2pxs;
-    else if (weightInMM < 0.0)
+    double devWeightInMM = render->dpLineStroke.weight / cxt->mm2sud;
+    if (devWeightInMM > MAX_LINEWEIGHT_IN_MM)
+        render->dpLineStroke.weight = MAX_LINEWEIGHT_IN_MM * cxt->mm2sud;
+    else if (devWeightInMM < 0.0)
         render->dpLineStroke.weight = 0.0;
 
     const wchar_t* sdpCap = dpCap.evaluate(cxt->exec);
@@ -795,6 +796,7 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
 
                 // repeat must be within 1/10 of a pixel for us to assume solid line (this is
                 // only to avoid FP precision issues, in reality they would be exactly equal)
+                // TODO: WCW - account for screen units per pixel
                 if (fabs(len - origRepeat) < 0.1)
                     render->solidLine = true;
             }
@@ -819,8 +821,8 @@ void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
 
     render->angleRad = fmod(angleDeg.evaluate(cxt->exec), 360.0) * M_PI180;
 
-    // scale by xform->x0 and xform->y1 instead of mm2px, because these encompass
-    // mm2px as well as scaleX and scaleY
+    // scale by xform->x0 and xform->y1 instead of mm2su, because these encompass
+    // mm2su as well as scaleX and scaleY
     render->origin[0]   = origin[0].evaluate(cxt->exec)   * cxt->xform->x0;
     render->origin[1]   = origin[1].evaluate(cxt->exec)   * cxt->xform->y1;
     render->repeat[0]   = repeat[0].evaluate(cxt->exec)   * fabs(cxt->xform->x0);
@@ -831,6 +833,7 @@ void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
 
     // It makes no sense to distribute symbols using repeat values which are much
     // less than one pixel.  We'll scale up any values less than 0.25 to 0.5.
+    // TODO: WCW - account for screen units per pixel
     for (int i=0; i<=1; ++i)
     {
         if (render->repeat[i] > 0.0 && render->repeat[i] < 0.25)
@@ -880,6 +883,7 @@ void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
 
                         // repeats must be within 1/10 of a pixel for us to assume solid fill (this is
                         // only to avoid FP precision issues, in reality they would be exactly equal)
+                        // TODO: WCW - account for screen units per pixel
                         if (fabs(lenX - origRepeatX) < 0.1 && fabs(lenY - origRepeatY) < 0.1)
                             render->solidFill = true;
                     }
@@ -895,6 +899,7 @@ void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
 
                         // repeats must be within 1/10 of a pixel for us to assume solid fill (this is
                         // only to avoid FP precision issues, in reality they would be exactly equal)
+                        // TODO: WCW - account for screen units per pixel
                         if (fabs(lenX - origRepeatX) < 0.1 && fabs(lenY - origRepeatY) < 0.1)
                             render->solidFill = true;
                     }

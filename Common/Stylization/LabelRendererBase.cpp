@@ -95,7 +95,7 @@ void LabelRendererBase::GetRotatedPoints(double x, double y, double width, doubl
 bool LabelRendererBase::CloseEnough(RS_F_Point& pt1, RS_F_Point& pt2)
 {
     double delta = fabs(pt2.y - pt1.y) + fabs(pt2.x - pt1.x);
-    return (delta <= 2.0); // 2 pixels is close enough
+    return (delta <= 2.0); // 2 screen units (pixels in our case) is close enough
 }
 
 
