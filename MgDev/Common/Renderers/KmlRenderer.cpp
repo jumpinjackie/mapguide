@@ -515,8 +515,7 @@ void KmlRenderer::WriteStyle(RS_FillStyle& fill)
     }
 
     char buffer[256];
-
-    int thisStyleId;
+    int thisStyleId = 0;
     KmlPolyStyle key(fill.outline().color().abgr(), _MeterToPixels(fill.outline().units(), fill.outline().width()), fill.color().abgr());
     KmlPolyStyleIdMap::iterator iter = m_polyStyleMap.find(key);
     if (iter != m_polyStyleMap.end())
@@ -699,13 +698,15 @@ void KmlRenderer::ScreenToWorldPoint(double& /*inx*/, double& /*iny*/, double& /
 }
 
 
-double KmlRenderer::GetPixelsPerMillimeterScreen()
+// returns number of pixels per millimeter device
+double KmlRenderer::GetScreenUnitsPerMillimeterDevice()
 {
     return STANDARD_DISPLAY_DPI / MILLIMETERS_PER_INCH; // wrong but not currently used
 }
 
 
-double KmlRenderer::GetPixelsPerMillimeterWorld()
+// returns number of pixels per millimeter world
+double KmlRenderer::GetScreenUnitsPerMillimeterWorld()
 {
     return STANDARD_DISPLAY_DPI / MILLIMETERS_PER_INCH / m_mapScale; // wrong but not currently used
 }
@@ -765,7 +766,7 @@ void KmlRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
             if (rp->type == SE_RenderPolylinePrimitive)
             {
                 ls.color() = RS_Color::FromARGB(((SE_RenderPolyline*)rp)->lineStroke.color);
-                ls.width() = ((SE_RenderPolyline*)rp)->lineStroke.weight / GetPixelsPerMillimeterScreen() * 0.001; //convert from pixels to meters
+                ls.width() = ((SE_RenderPolyline*)rp)->lineStroke.weight / GetScreenUnitsPerMillimeterDevice() * 0.001; //convert from screen units to meters
             }
         }
     }

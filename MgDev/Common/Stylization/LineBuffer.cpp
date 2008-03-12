@@ -670,7 +670,7 @@ void LineBuffer::TesselateCubicTo(double px1, double py1, double px2, double py2
     if (m_drawingScale != 0.0)
     {
         // If we have drawing scale available, use drawing scale to make sure
-        // the minimum segment length is equal to # of drawing units occupied
+        // the minimum segment length is equal to # of screen units occupied
         // by one pixel.  This ensures no "flat" segments are visible along
         // the curve.
 //      minSegLen = m_drawingScale;
@@ -791,7 +791,7 @@ void LineBuffer::TesselateQuadTo(double px1, double py1, double px2, double py2,
     //this code to determine how many times at most
     //we want to loop in the forward difference loop
 
-    double invscale = 1.0/pixelsperunit;
+    double invscale = 1.0 / pixelsperunit;
     double dt = rs_max(1.0e-2, invscale / diff); // * m_invscale;
     */
 
@@ -827,7 +827,7 @@ void LineBuffer::TesselateQuadTo(double px1, double py1, double px2, double py2,
         // slow but accurate
         //error += sqrt(dfx*dfx + dfy*dfy);
 
-        //faster but less accurste error estimate
+        //faster but less accurate error estimate
         w = fabs(dfx);
         h = fabs(dfy);
         error += rs_max(w, h);

@@ -160,7 +160,7 @@ void SE_PositioningAlgorithms::Default(SE_ApplyContext* applyCtx,
 
 void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
                                                 SE_RenderStyle*  rstyle,
-                                                double           mm2px)
+                                                double           mm2su)
 {
     SE_Renderer* se_renderer = applyCtx->renderer;
     LineBuffer* geometry = applyCtx->geometry;
@@ -219,15 +219,15 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
 
     // unrotated bounds
     RS_Bounds symbol_bounds(fpts[0].x, fpts[0].y, fpts[2].x, fpts[2].y);
-    double symbol_width  = symbol_bounds.width();   // symbol width in renderer pixels
-    double symbol_height = symbol_bounds.height();  // symbol height in renderer pixels
+    double symbol_width  = symbol_bounds.width();   // symbol width in screen units
+    double symbol_height = symbol_bounds.height();  // symbol height in screen units
 
     // we will offset the label 1 mm from the symbol
     double offsetmm = 1.0;              // offset in mm
-    double offset = offsetmm * mm2px;   // offset in renderer pixels
+    double offset = offsetmm * mm2su;   // offset in screen units
 
     // make sure we have at least one pixel's worth of offset
-    double screenUnitsPerPixel = MILLIMETERS_PER_INCH * se_renderer->GetPixelsPerMillimeterScreen() / se_renderer->GetDpi();
+    double screenUnitsPerPixel = MILLIMETERS_PER_INCH * se_renderer->GetScreenUnitsPerMillimeterDevice() / se_renderer->GetDpi();
     if (offset < screenUnitsPerPixel)
         offset = screenUnitsPerPixel;
 
@@ -478,7 +478,7 @@ void SE_PositioningAlgorithms::PathLabels(SE_ApplyContext* applyCtx,
 
 void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_ApplyContext*  applyCtx,
                                                        SE_RenderStyle*   rstyle,
-                                                       double            mm2px,
+                                                       double            mm2su,
                                                        RS_FeatureReader* featureReader,
                                                        SE_SymbolManager* symbolManager)
 {
@@ -502,7 +502,7 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_ApplyContext*  applyCt
     double increment = rlStyle->repeat;
 
     // the endOffset is used in this context as the increment between multiple shields in one group
-//  double incrementS = 10.0 * mm2px;
+//  double incrementS = 10.0 * mm2su;
     double incrementS = rlStyle->endOffset;
 
     // calc the overall length of this geometry
@@ -625,7 +625,7 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_ApplyContext*  applyCt
         rt->position[0] = 0.0;
         rt->position[1] = 0.0;
         rt->tdef.font().name() = L"Arial";
-        rt->tdef.font().height() = 10.0*0.001 / mm2px; // convert mm to meters
+        rt->tdef.font().height() = 10.0*0.001 / mm2su; // convert mm to meters
         rt->tdef.rotation() = 0.0;
 
         rt->tdef.halign() = RS_HAlignment_Center;

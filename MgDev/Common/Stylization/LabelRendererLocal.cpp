@@ -74,8 +74,8 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
     // TODO: take into account advanced labeling flag
 //  if (labels->advanced()) ... etc.
 
-    // in the case of linear geometry we'll label along the path, so
-    // prepare for that (transform to pixels, group into stitch groups)
+    // in the case of linear geometry we'll label along the path, so prepare
+    // for that (transform to screen space, group into stitch groups)
     if (geomType == FdoGeometryType_LineString || geomType == FdoGeometryType_MultiLineString)
     {
         // indicate that the current group will be labeled along the path
@@ -118,7 +118,7 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
 
         for (int i=0; i<path->cntr_count(); ++i)
         {
-            // now transform the points of the current contour to pixel space
+            // now transform the points of the current contour to screen space
             lblpathpts = path->cntr_size(i);
             lblpath = new RS_F_Point[lblpathpts];
 
@@ -808,7 +808,7 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LabelInfoLocal& info)
     if (!m_serenderer->YPointsUp())
         angleRad = -angleRad;
 
-    // transform insertion point into pixel space
+    // transform insertion point to screen space
     m_serenderer->WorldToScreenPoint(info.m_x, info.m_y, info.m_ins_point.x, info.m_ins_point.y);
 
     //-------------------------------------------------------
@@ -902,7 +902,7 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
 
     // how many times should we repeat the label along the path?
     // TODO: fine tune this formula
-    double repeat = PATH_LABEL_SEPARATION_INCHES * MILLIMETERS_PER_INCH * m_serenderer->GetPixelsPerMillimeterScreen();
+    double repeat = PATH_LABEL_SEPARATION_INCHES * MILLIMETERS_PER_INCH * m_serenderer->GetScreenUnitsPerMillimeterDevice();
     int numreps = (int)(segpos[info.m_numpts-1] / (repeat + info.m_tm.text_width));
     if (!numreps) numreps = 1;
 
@@ -976,10 +976,11 @@ bool LabelRendererLocal::ComputeSELabelBounds(LabelInfoLocal& info)
     info.m_numelems = 1;
     info.m_rotated_points = new RS_F_Point[4];
 
-    // get native symbol bounds (in pixels -- the render style is already scaled to pixels)
+    // get native symbol bounds (in screen units - the render style is already
+    // scaled to screen units)
     memcpy(info.m_rotated_points, info.m_sestyle->bounds, 4 * sizeof(RS_F_Point));
 
-    // translate and orient the bounds with the given angle and position of the symbol
+    // translate and orient the bounds with the given symbol angle and position
     // apply position and rotation to the native bounds of the symbol
     double angleRad = info.m_tdef.rotation() * M_PI180;
     SE_Matrix m;

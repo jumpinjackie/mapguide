@@ -179,8 +179,8 @@ public:
     RENDERERS_API virtual void GetWorldToScreenTransform(SE_Matrix& xform);
     RENDERERS_API virtual void WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy);
     RENDERERS_API virtual void ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy);
-    RENDERERS_API virtual double GetPixelsPerMillimeterScreen();
-    RENDERERS_API virtual double GetPixelsPerMillimeterWorld();
+    RENDERERS_API virtual double GetScreenUnitsPerMillimeterDevice();
+    RENDERERS_API virtual double GetScreenUnitsPerMillimeterWorld();
 
     RENDERERS_API void ProcessSELabelGroup(SE_LabelInfo*    labels,
                                            int              nlabels,

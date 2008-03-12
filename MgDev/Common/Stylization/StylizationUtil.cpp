@@ -357,14 +357,14 @@ void StylizationUtil::RenderLineSymbolization(LineSymbolization2D* lsym,
         {
             if (stroke->GetSizeContext() == MappingUnits)
             {
-                // for line widths in mapping units, scale so the widest line
-                // is half the height of the legend image
+                // For line widths in mapping units, scale so the widest line
+                // is half the height of the legend image.
                 edgeWidth = edgeWidth / maxLineWidth * 0.5 * height * metersPerPixel;
             }
             else if (edgeWidth > height * metersPerPixel)
             {
-                // for lines in device coords, ensure that the line is not wider
-                // than the height of the legend image. This is a performance
+                // For lines in device coords, ensure that the line is not wider
+                // than the height of the legend image.  This is a performance
                 // optimization and does not affect the appearance of the image
                 edgeWidth = height * metersPerPixel;
             }
@@ -508,13 +508,13 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     if (!symBounds.IsValid())
         return;
 
-    double mm2pxs = pSERenderer->GetPixelsPerMillimeterScreen();
-    double mm2pxw = pSERenderer->GetPixelsPerMillimeterWorld();
+    double mm2sud = pSERenderer->GetScreenUnitsPerMillimeterDevice();
+    double mm2suw = pSERenderer->GetScreenUnitsPerMillimeterWorld();
     double drawingScale = pSERenderer->GetDrawingScale();
     bool yUp = pSERenderer->YPointsUp();
 
-    // get the number of screen units (pixels for GD, logical units for DWF) per device pixel
-    double screenUnitsPerPixel = mm2pxs * MILLIMETERS_PER_INCH / pSERenderer->GetDpi();
+    // get the number of screen units (pixels for GD, W2D units for DWF) per device pixel
+    double screenUnitsPerPixel = mm2sud * MILLIMETERS_PER_INCH / pSERenderer->GetDpi();
 
     // check for degenerate bounds
     if (symBounds.width() == 0.0 && symBounds.height() == 0.0)
@@ -611,23 +611,23 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
         if (sym->drawLast.evaluate(exec))
             continue;
 
-        double mm2pxX = (sym->sizeContext == MappingUnits)? mm2pxw : mm2pxs;
-        double mm2pxY = yUp? mm2pxX : -mm2pxX;
+        double mm2suX = (sym->sizeContext == MappingUnits)? mm2suw : mm2sud;
+        double mm2suY = yUp? mm2suX : -mm2suX;
 
         // this time we scale by [S_si], [S_mm], and [S_a]
         SE_Matrix xformScale;
         xformScale.scale(sym->scale[0].evaluate(exec),
                          sym->scale[1].evaluate(exec));
-        xformScale.scale(mm2pxX, mm2pxY);
+        xformScale.scale(mm2suX, mm2suY);
         xformScale.scale(scale, scale);
 
         // initialize the style evaluation context
-        // NOTE: do not adjust the mm2px values by the scale factor
+        // NOTE: do not adjust the mm2su values by the scale factor
         SE_EvalContext evalCxt;
         evalCxt.exec = exec;
-        evalCxt.mm2px = mm2pxX;
-        evalCxt.mm2pxs = mm2pxs;
-        evalCxt.mm2pxw = mm2pxw;
+        evalCxt.mm2su = mm2suX;
+        evalCxt.mm2sud = mm2sud;
+        evalCxt.mm2suw = mm2suw;
         evalCxt.tolerance = 0.25 * screenUnitsPerPixel;
         evalCxt.pool = pool;
         evalCxt.fonte = pSERenderer->GetRSFontEngine();
@@ -664,8 +664,8 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
                     xformStyle.rotate(angleRad);
 
                     // symbol instance offset - must scale this by [S_mm], and [S_a]
-                    xformStyle.translate(sym->absOffset[0].evaluate(exec) * mm2pxX * scale,
-                                         sym->absOffset[1].evaluate(exec) * mm2pxY * scale);
+                    xformStyle.translate(sym->absOffset[0].evaluate(exec) * mm2suX * scale,
+                                         sym->absOffset[1].evaluate(exec) * mm2suY * scale);
 
                     break;
                 }
@@ -742,11 +742,11 @@ void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Sym
 
     SE_BufferPool* pool = pSERenderer->GetBufferPool();
 
-    double mm2pxs = pSERenderer->GetPixelsPerMillimeterScreen();
-    double mm2pxw = pSERenderer->GetPixelsPerMillimeterWorld();
+    double mm2sud = pSERenderer->GetScreenUnitsPerMillimeterDevice();
+    double mm2suw = pSERenderer->GetScreenUnitsPerMillimeterWorld();
 
-    // get the number of screen units (pixels for GD, logical units for DWF) per device pixel
-    double screenUnitsPerPixel = mm2pxs * MILLIMETERS_PER_INCH / pSERenderer->GetDpi();
+    // get the number of screen units (pixels for GD, W2D units for DWF) per device pixel
+    double screenUnitsPerPixel = mm2sud * MILLIMETERS_PER_INCH / pSERenderer->GetDpi();
 
     for (std::vector<SE_Symbolization*>::const_iterator iter = styles.begin(); iter != styles.end(); iter++)
     {
@@ -758,20 +758,20 @@ void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Sym
             continue;
 
         // keep y pointing up while we compute the bounds
-        double mm2pxX = (sym->sizeContext == MappingUnits)? mm2pxw : mm2pxs;
-        double mm2pxY = mm2pxX;
+        double mm2suX = (sym->sizeContext == MappingUnits)? mm2suw : mm2sud;
+        double mm2suY = mm2suX;
 
         SE_Matrix xformScale;
         xformScale.scale(sym->scale[0].evaluate(exec),
                          sym->scale[1].evaluate(exec));
-        xformScale.scale(mm2pxX, mm2pxY);
+        xformScale.scale(mm2suX, mm2suY);
 
         // initialize the style evaluation context
         SE_EvalContext evalCxt;
         evalCxt.exec = exec;
-        evalCxt.mm2px = mm2pxX;
-        evalCxt.mm2pxs = mm2pxs;
-        evalCxt.mm2pxw = mm2pxw;
+        evalCxt.mm2su = mm2suX;
+        evalCxt.mm2sud = mm2sud;
+        evalCxt.mm2suw = mm2suw;
         evalCxt.tolerance = 0.25 * screenUnitsPerPixel;
         evalCxt.pool = pool;
         evalCxt.fonte = pSERenderer->GetRSFontEngine();
@@ -802,8 +802,8 @@ void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Sym
                     xformStyle.rotate(ptStyle->angleRad);
 
                     // symbol instance offset
-                    xformStyle.translate(sym->absOffset[0].evaluate(exec) * mm2pxX,
-                                         sym->absOffset[1].evaluate(exec) * mm2pxY);
+                    xformStyle.translate(sym->absOffset[0].evaluate(exec) * mm2suX,
+                                         sym->absOffset[1].evaluate(exec) * mm2suY);
 
                     break;
                 }
