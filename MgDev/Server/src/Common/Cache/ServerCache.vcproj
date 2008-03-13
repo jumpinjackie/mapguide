@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;..\..\..\..\Common\Foundation;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\Geometry;..\..\..\..\Common\MdfModel;..\..\..\..\Oem\ACE\ACE_wrappers"
+				AdditionalIncludeDirectories=".;..\..\..\..\Common\Foundation;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\Geometry;..\..\..\..\Common\MdfModel;..\..\..\..\Oem\FDO\inc;..\..\..\..\Oem\ACE\ACE_wrappers"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_SERVER_CACHE_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -119,7 +119,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".;..\..\..\..\Common\Foundation;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\Geometry;..\..\..\..\Common\MdfModel;..\..\..\..\Oem\ACE\ACE_wrappers"
+				AdditionalIncludeDirectories=".;..\..\..\..\Common\Foundation;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\Geometry;..\..\..\..\Common\MdfModel;..\..\..\..\Oem\FDO\inc;..\..\..\..\Oem\ACE\ACE_wrappers"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_CACHE_EXPORTS"
 				RuntimeLibrary="2"
 				WarningLevel="3"

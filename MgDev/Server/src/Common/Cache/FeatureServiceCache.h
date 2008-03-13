@@ -65,8 +65,8 @@ public:
     void SetFeatureSchemaNames(MgResourceIdentifier* resource, MgStringCollection* featureSchemaNames);
     MgStringCollection* GetFeatureSchemaNames(MgResourceIdentifier* resource);
 
-    void SetFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, MgFeatureSchemaCollection* featureSchemaCollection);
-    MgFeatureSchemaCollection* GetFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName);
+    void SetFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, MgFeatureSchemaCollection* featureSchemaCollection, bool bSerialize);
+    MgFeatureSchemaCollection* GetFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, bool bSerialize);
 
     void SetFeatureSchemaXml(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, CREFSTRING featureSchemaXml);
     STRING GetFeatureSchemaXml(MgResourceIdentifier* resource, CREFSTRING featureSchemaName);
@@ -79,6 +79,9 @@ public:
 
     void SetFeatureClassIdentityProperties(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, CREFSTRING featureClassName, MgPropertyDefinitionCollection* featureClassIdentityProperties);
     MgPropertyDefinitionCollection* GetFeatureClassIdentityProperties(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, CREFSTRING featureClassName);
+
+    void SetFdoFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, FdoFeatureSchemaCollection* featureSchemaCollection);
+    FdoFeatureSchemaCollection* GetFdoFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName);
 
 protected:
 

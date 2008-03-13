@@ -21,6 +21,7 @@
 #include "ServerCacheEntry.h"
 #include "FeatureSourceCacheItem.h"
 #include "SpatialContextCacheItem.h"
+#include "Fdo.h"
 
 class MG_SERVER_CACHE_API MgFeatureServiceCacheEntry : public MgServerCacheEntry
 {
@@ -65,6 +66,9 @@ public:
     MgFeatureSchemaCollection* GetFeatureSchemaCollection();
     void SetFeatureSchemaCollection(MgFeatureSchemaCollection* featureSchemaCollection);
 
+    bool GetFeatureSchemaCollectionSerialized();
+    void SetFeatureSchemaCollectionSerialized(bool bSerialized);
+
     STRING GetFeatureSchemaXml();
     void SetFeatureSchemaXml(CREFSTRING featureSchemaXml);
 
@@ -76,6 +80,9 @@ public:
 
     MgPropertyDefinitionCollection* GetFeatureClassIdentityProperties();
     void SetFeatureClassIdentityProperties(MgPropertyDefinitionCollection* featureClassIdentityProperties);
+
+    FdoFeatureSchemaCollection* GetFdoFeatureSchemaCollection();
+    void SetFdoFeatureSchemaCollection(FdoFeatureSchemaCollection* featureSchemaCollection);
 
 /// Data Members
 
@@ -92,6 +99,7 @@ private:
     STRING m_featureSchemaName;
 
     Ptr<MgFeatureSchemaCollection> m_featureSchemaCollection;
+    bool m_featureSchemaCollectionSerialized;
     STRING m_featureSchemaXml;
     Ptr<MgStringCollection> m_featureClassNames;
 
@@ -99,6 +107,8 @@ private:
 
     Ptr<MgClassDefinition> m_featureClassDefinition;
     Ptr<MgPropertyDefinitionCollection> m_featureClassIdentityProperties;
+
+    FdoPtr<FdoFeatureSchemaCollection> m_FdoFeatureSchemaCollection;
 };
 
 /// Inline Methods
