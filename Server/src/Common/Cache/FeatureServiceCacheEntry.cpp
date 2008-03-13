@@ -66,11 +66,26 @@ void MgFeatureServiceCacheEntry::SetActiveFlag(bool active)
 
 void MgFeatureServiceCacheEntry::SetFeatureSchemaName(CREFSTRING featureSchemaName)
 {
+    if ( featureSchemaName != m_featureSchemaName ) 
+    {
+        SetFeatureSchemaCollection((MgFeatureSchemaCollection*) NULL);
+        SetFeatureSchemaXml(L"");
+        SetFdoFeatureSchemaCollection((FdoFeatureSchemaCollection*) NULL);
+        SetFeatureClassNames((MgStringCollection*) NULL);
+        SetFeatureClassName(L"");
+    }
+
     m_featureSchemaName = featureSchemaName;
+
 }
 
 void MgFeatureServiceCacheEntry::SetFeatureClassName(CREFSTRING featureClassName)
 {
+    if ( featureClassName != m_featureClassName ) 
+    {
+        SetFeatureClassDefinition((MgClassDefinition*) NULL);
+        SetFeatureClassIdentityProperties((MgPropertyDefinitionCollection*) NULL);
+    }
     m_featureClassName = featureClassName;
 }
 
@@ -102,6 +117,16 @@ void MgFeatureServiceCacheEntry::SetFeatureSchemaCollection(MgFeatureSchemaColle
 MgFeatureSchemaCollection* MgFeatureServiceCacheEntry::GetFeatureSchemaCollection()
 {
     return SAFE_ADDREF(m_featureSchemaCollection.p);
+}
+
+void MgFeatureServiceCacheEntry::SetFeatureSchemaCollectionSerialized(bool bSerialized)
+{
+    m_featureSchemaCollectionSerialized = bSerialized;
+}
+
+bool MgFeatureServiceCacheEntry::GetFeatureSchemaCollectionSerialized()
+{
+    return m_featureSchemaCollectionSerialized;
 }
 
 void MgFeatureServiceCacheEntry::SetFeatureSchemaXml(CREFSTRING featureSchemaXml)
@@ -143,3 +168,14 @@ MgPropertyDefinitionCollection* MgFeatureServiceCacheEntry::GetFeatureClassIdent
 {
     return SAFE_ADDREF(m_featureClassIdentityProperties.p);
 }
+
+void MgFeatureServiceCacheEntry::SetFdoFeatureSchemaCollection(FdoFeatureSchemaCollection* featureSchemaCollection)
+{
+    m_FdoFeatureSchemaCollection = SAFE_ADDREF(featureSchemaCollection);
+}
+
+FdoFeatureSchemaCollection* MgFeatureServiceCacheEntry::GetFdoFeatureSchemaCollection()
+{
+    return SAFE_ADDREF(m_FdoFeatureSchemaCollection.p);
+}
+

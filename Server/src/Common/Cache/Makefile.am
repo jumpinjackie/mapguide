@@ -10,7 +10,8 @@ INCLUDES = \
   -I../../../../Common/MapGuideCommon \
   -I../../../../Common/Geometry \
   -I../../../../Common/MdfModel \
-  -I../../../../Oem/ACE/ACE_wrappers
+  -I../../../../Oem/ACE/ACE_wrappers \
+  -I../../../../Oem/FDO/inc
 
 lib_LTLIBRARIES = libMgServerCache.la
 
