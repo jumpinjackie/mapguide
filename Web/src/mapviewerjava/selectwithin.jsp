@@ -113,39 +113,48 @@ MgGeometry MultiGeometryFromSelection(MgFeatureService featureSrvc, MgMap map, S
     for(int i = 0; i < selLayers.GetCount(); i++)
     {
         MgLayer layer = (MgLayer) selLayers.GetItem(i);
-        String filter = sel.GenerateFilter(layer, layer.GetFeatureClassName());
 
-        MgFeatureQueryOptions query = new MgFeatureQueryOptions();
-        query.SetFilter(filter);
-        MgResourceIdentifier featureSource = new MgResourceIdentifier(layer.GetFeatureSourceId());
-        MgFeatureReader features = featureSrvc.SelectFeatures(featureSource, layer.GetFeatureClassName(), query);
-
-        if(features != null)
+        // TODO:  How to get selectionSize?
+        int selectionSize = 20;
+        MgStringCollection filters = sel.GenerateFilters(layer, layer.GetFeatureClassName(), selectionSize);
+        
+        int numFilters = filters.GetCount();
+        
+        for (int filterIndex = 0; filterIndex < numFilters; filterIndex++)
         {
-            MgClassDefinition classDef = features.GetClassDefinition();
-            String geomPropName = classDef.GetDefaultGeometryPropertyName();
-            int j = 0;
-            boolean isPoly = true;
-            while(features.ReadNext())
+            String filter = filters.GetItem(filterIndex);
+            MgFeatureQueryOptions query = new MgFeatureQueryOptions();
+            query.SetFilter(filter);
+            MgResourceIdentifier featureSource = new MgResourceIdentifier(layer.GetFeatureSourceId());
+            MgFeatureReader features = featureSrvc.SelectFeatures(featureSource, layer.GetFeatureClassName(), query);
+
+            if(features != null)
             {
-                MgByteReader geomReader = features.GetGeometry(geomPropName);
-                MgGeometry geom = agfRW.Read(geomReader);
-                if(j++ == 0)
+                MgClassDefinition classDef = features.GetClassDefinition();
+                String geomPropName = classDef.GetDefaultGeometryPropertyName();
+                int j = 0;
+                boolean isPoly = true;
+                while(features.ReadNext())
                 {
-                    int type = geom.GetGeometryType();
-                    if(type == MgGeometryType.MultiPolygon || type == MgGeometryType.CurvePolygon || type == MgGeometryType.MultiCurvePolygon)
+                    MgByteReader geomReader = features.GetGeometry(geomPropName);
+                    MgGeometry geom = agfRW.Read(geomReader);
+                    if(j++ == 0)
                     {
-                        isPoly = false;
-                        polyOnly = false;
+                        int type = geom.GetGeometryType();
+                        if(type == MgGeometryType.MultiPolygon || type == MgGeometryType.CurvePolygon || type == MgGeometryType.MultiCurvePolygon)
+                        {
+                            isPoly = false;
+                            polyOnly = false;
+                        }
+                        else if(type != MgGeometryType.Polygon)
+                        {
+                            break;
+                        }
                     }
-                    else if(type != MgGeometryType.Polygon)
-                    {
-                        break;
-                    }
+                    geomColl.Add(geom);
                 }
-                geomColl.Add(geom);
+                features.Close();
             }
-            features.Close();
         }
     }
 

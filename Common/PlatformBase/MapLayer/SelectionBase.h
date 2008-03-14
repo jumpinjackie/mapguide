@@ -514,8 +514,6 @@ PUBLISHED_API:
     ///
     STRING GetResourceName(CREFSTRING sessionId, CREFSTRING mapName);
 
-INTERNAL_API:
-
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Generate a collection of FDO filter strings for the selections
@@ -525,6 +523,8 @@ INTERNAL_API:
     /// Collection of FDO filter strings.
     ///
     MgStringCollection* GenerateFilters(MgLayerBase* layer, CREFSTRING className, INT32 selectionSize);
+
+INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief

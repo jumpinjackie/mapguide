@@ -267,48 +267,58 @@ String locale;
                 srsXform = null;
 
             String featureClassName = selLayer.GetFeatureClassName();
-            String filter = sel.GenerateFilter(selLayer, featureClassName);
-            if(filter == null || filter.length() == 0)
-                continue;
 
-            MgFeatureQueryOptions query = new MgFeatureQueryOptions();
-            query.SetFilter(filter);
-
-            MgResourceIdentifier featureSource = new MgResourceIdentifier(selLayer.GetFeatureSourceId());
-
-            MgFeatureReader features = featureSrvc.SelectFeatures(featureSource, featureClassName, query);
-
-            if(features.ReadNext())
+            // TODO:  How to get selectionSize?            
+            int selectionSize = 20;
+            MgStringCollection filters = sel.GenerateFilters(selLayer, featureClassName, selectionSize);
+            
+            int numFilters = filters.GetCount();
+            
+            for (int filterIndex = 0; filterIndex < numFilters; filterIndex++)
             {
-                MgClassDefinition classDef = features.GetClassDefinition();
-                String geomPropName = classDef.GetDefaultGeometryPropertyName();
+               String filter = filters.GetItem(filterIndex);
+               if(filter == null || filter.length() == 0)
+                   continue;
 
-                do
-                {
-                    MgByteReader geomReader = features.GetGeometry(geomPropName);
-                    MgGeometry geom = agfRW.Read(geomReader);
+               MgFeatureQueryOptions query = new MgFeatureQueryOptions();
+               query.SetFilter(filter);
 
-                    if(merge == 0)
-                    {
-                        geomBuffer = geom.Buffer(dist, measure);
-                        if (geomBuffer != null)
-                        {
-                            if(srsXform != null)
-                                geomBuffer = (MgGeometry)geomBuffer.Transform(srsXform);
-                            AddFeatureToCollection(propCollection, agfRW, featId++, geomBuffer);
-                            bufferFeatures++;
-                        }
-                    }
-                    else
-                    {
-                        if(srsXform != null)
-                            geom = (MgGeometry)geom.Transform(srsXform);
-                        inputGeometries.Add(geom);
-                    }
-                }
-                while(features.ReadNext());
+               MgResourceIdentifier featureSource = new MgResourceIdentifier(selLayer.GetFeatureSourceId());
 
-                features.Close();
+               MgFeatureReader features = featureSrvc.SelectFeatures(featureSource, featureClassName, query);
+
+               if(features.ReadNext())
+               {
+                   MgClassDefinition classDef = features.GetClassDefinition();
+                   String geomPropName = classDef.GetDefaultGeometryPropertyName();
+
+                   do
+                   {
+                       MgByteReader geomReader = features.GetGeometry(geomPropName);
+                       MgGeometry geom = agfRW.Read(geomReader);
+
+                       if(merge == 0)
+                       {
+                           geomBuffer = geom.Buffer(dist, measure);
+                           if (geomBuffer != null)
+                           {
+                               if(srsXform != null)
+                                   geomBuffer = (MgGeometry)geomBuffer.Transform(srsXform);
+                               AddFeatureToCollection(propCollection, agfRW, featId++, geomBuffer);
+                               bufferFeatures++;
+                           }
+                       }
+                       else
+                       {
+                           if(srsXform != null)
+                               geom = (MgGeometry)geom.Transform(srsXform);
+                           inputGeometries.Add(geom);
+                       }
+                   }
+                   while(features.ReadNext());
+
+                   features.Close();
+               }
             }
         }
 
