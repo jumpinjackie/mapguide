@@ -248,48 +248,57 @@ String dataSource = "";
                 srsXform = null;
 
             String featureClassName = selLayer.GetFeatureClassName();
-            String filter = sel.GenerateFilter(selLayer, featureClassName);
-            if (filter == null || filter.Length == 0)
-                continue;
-
-            MgFeatureQueryOptions query = new MgFeatureQueryOptions();
-            query.SetFilter(filter);
-
-            MgResourceIdentifier featureSource = new MgResourceIdentifier(selLayer.GetFeatureSourceId());
-
-            MgFeatureReader features = featureSrvc.SelectFeatures(featureSource, featureClassName, query);
-
-            if (features.ReadNext())
+            
+            // TODO:  How to get selectionSize?
+            int selectionSize = 20;
+            MgStringCollection filters = sel.GenerateFilters(selLayer, featureClassName, selectionSize);
+            
+            int numFilter = filters.GetCount();
+            for (int filterIndex = 0; filterIndex < numFilter; filterIndex++)
             {
-                MgClassDefinition classDef = features.GetClassDefinition();
-                String geomPropName = classDef.GetDefaultGeometryPropertyName();
+                String filter = filters.GetItem(filterIndex);
+                if (filter == null || filter.Length == 0)
+                    continue;
 
-                do
+                MgFeatureQueryOptions query = new MgFeatureQueryOptions();
+                query.SetFilter(filter);
+
+                MgResourceIdentifier featureSource = new MgResourceIdentifier(selLayer.GetFeatureSourceId());
+
+                MgFeatureReader features = featureSrvc.SelectFeatures(featureSource, featureClassName, query);
+
+                if (features.ReadNext())
                 {
-                    MgByteReader geomReader = features.GetGeometry(geomPropName);
-                    MgGeometry geom = agfRW.Read(geomReader);
+                    MgClassDefinition classDef = features.GetClassDefinition();
+                    String geomPropName = classDef.GetDefaultGeometryPropertyName();
 
-                    if (merge == 0)
+                    do
                     {
-                        geomBuffer = geom.Buffer(dist, measure);
-                        if (geomBuffer != null)
+                        MgByteReader geomReader = features.GetGeometry(geomPropName);
+                        MgGeometry geom = agfRW.Read(geomReader);
+
+                        if (merge == 0)
+                        {
+                            geomBuffer = geom.Buffer(dist, measure);
+                            if (geomBuffer != null)
+                            {
+                                if (srsXform != null)
+                                    geomBuffer = (MgGeometry)geomBuffer.Transform(srsXform);
+                                AddFeatureToCollection(propCollection, agfRW, featId++, geomBuffer);
+                                bufferFeatures++;
+                            }
+                        }
+                        else
                         {
                             if (srsXform != null)
-                                geomBuffer = (MgGeometry)geomBuffer.Transform(srsXform);
-                            AddFeatureToCollection(propCollection, agfRW, featId++, geomBuffer);
-                            bufferFeatures++;
+                                geom = (MgGeometry)geom.Transform(srsXform);
+                            inputGeometries.Add(geom);
                         }
                     }
-                    else
-                    {
-                        if (srsXform != null)
-                            geom = (MgGeometry)geom.Transform(srsXform);
-                        inputGeometries.Add(geom);
-                    }
-                }
-                while (features.ReadNext());
+                    while (features.ReadNext());
 
-                features.Close();
+                    features.Close();
+                }
             }
         }
 

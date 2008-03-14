@@ -97,33 +97,47 @@ function MultiGeometryFromSelection($featureSrvc, $map, $selText)
     for($i = 0; $i < $selLayers->GetCount(); $i++)
     {
         $layer = $selLayers->GetItem($i);
-        $filter = $sel->GenerateFilter($layer, $layer->GetFeatureClassName());
-        $query = new MgFeatureQueryOptions();
-        $query->SetFilter($filter);
-        $featureSource = new MgResourceIdentifier($layer->GetFeatureSourceId());
-        $features = $featureSrvc->SelectFeatures($featureSource, $layer->GetFeatureClassName(), $query);
-        if($features)
+
+        // TODO:  How to get $selectionSize?
+        $selectionSize = 20;
+        $filters = $sel->GenerateFilters($layer, $layer->GetFeatureClassName(), $selectionSize);
+        
+        $numFilters = $filters->GetCount();
+        
+        for ($filterIndex = 0; $filterIndex < $numFilters; $filterIndex++)
         {
-            $classDef = $features->GetClassDefinition();
-            $geomPropName = $classDef->GetDefaultGeometryPropertyName();
-            $j = 0;
-            $isPoly = true;
-            while($features->ReadNext())
+            $filter = $filters->GetItem($filterIndex);
+            if ($filter == "")
+                continue;
+                
+            $query = new MgFeatureQueryOptions();
+            $query->SetFilter($filter);
+            $featureSource = new MgResourceIdentifier($layer->GetFeatureSourceId());
+            $features = $featureSrvc->SelectFeatures($featureSource, $layer->GetFeatureClassName(), $query);
+            if($features)
             {
-                $geomReader = $features->GetGeometry($geomPropName);
-                $geom = $agfRW->Read($geomReader);
-                if($j ++ == 0)
+                $classDef = $features->GetClassDefinition();
+                $geomPropName = $classDef->GetDefaultGeometryPropertyName();
+                $j = 0;
+                $isPoly = true;
+                while($features->ReadNext())
                 {
-                    $type = $geom->GetGeometryType();
-                    if($type == MgGeometryType::MultiPolygon || $type == MgGeometryType::CurvePolygon || $type == MgGeometryType::MultiCurvePolygon)
+                    $geomReader = $features->GetGeometry($geomPropName);
+                    $geom = $agfRW->Read($geomReader);
+                    if($j ++ == 0)
                     {
-                        $isPoly = false;
-                        $polyOnly = false;
+                        $type = $geom->GetGeometryType();
+                        if($type == MgGeometryType::MultiPolygon || $type == MgGeometryType::CurvePolygon || $type == MgGeometryType::MultiCurvePolygon)
+                        {
+                            $isPoly = false;
+                            $polyOnly = false;
+                        }
+                        else if($type != MgGeometryType::Polygon)
+                            break;
                     }
-                    else if($type != MgGeometryType::Polygon)
-                        break;
+                    $geomColl->Add($geom);
                 }
-                $geomColl->Add($geom);
+                $features->Close();
             }
         }
     }

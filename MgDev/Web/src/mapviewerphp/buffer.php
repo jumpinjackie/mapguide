@@ -235,48 +235,58 @@
                 $srsXform = null;
 
             $featureClassName = $selLayer->GetFeatureClassName();
-            $filter = $sel->GenerateFilter($selLayer, $featureClassName);
-            if($filter == "")
-                continue;
-
-            $query = new MgFeatureQueryOptions();
-            $query->SetFilter($filter);
-
-            $featureSource = new MgResourceIdentifier($selLayer->GetFeatureSourceId());
-
-            $features = $featureSrvc->SelectFeatures($featureSource, $featureClassName, $query);
-
-            if($features->ReadNext())
+            
+            // TODO:  How to get the $selectionSize??
+            $selectionSize = 20;
+            $filters = $sel->GenerateFilters($selLayer, $featureClassName, $selectionSize);
+            
+            $numFilter = $filters->GetCount();
+            for ($filterIndex = 0; $filterIndex < $numFilter; $filterIndex++)
             {
-                $classDef = $features->GetClassDefinition();
-                $geomPropName = $classDef->GetDefaultGeometryPropertyName();
+            
+                $filter = $filters->GetItem($filterIndex);
+                if($filter == "")
+                    continue;
+    
+                $query = new MgFeatureQueryOptions();
+                $query->SetFilter($filter);
+ 
+                $featureSource = new MgResourceIdentifier($selLayer->GetFeatureSourceId());
 
-                do
+                $features = $featureSrvc->SelectFeatures($featureSource, $featureClassName, $query);
+
+                if($features->ReadNext())
                 {
-                    $geomReader = $features->GetGeometry($geomPropName);
-                    $geom = $agfRW->Read($geomReader);
+                    $classDef = $features->GetClassDefinition();
+                    $geomPropName = $classDef->GetDefaultGeometryPropertyName();
 
-                    if(!$merge)
+                    do
                     {
-                        $geomBuffer = $geom->Buffer($dist, $measure);
-                        if($geomBuffer != null)
+                        $geomReader = $features->GetGeometry($geomPropName);
+                        $geom = $agfRW->Read($geomReader);
+
+                        if(!$merge)
+                        {
+                            $geomBuffer = $geom->Buffer($dist, $measure);
+                            if($geomBuffer != null)
+                            {
+                                if($srsXform != null)
+                                    $geomBuffer = $geomBuffer->Transform($srsXform);
+                                AddFeatureToCollection($propCollection, $agfRW, $featId++, $geomBuffer);
+                                $bufferFeatures++;
+                            }
+                        }
+                        else
                         {
                             if($srsXform != null)
-                                $geomBuffer = $geomBuffer->Transform($srsXform);
-                            AddFeatureToCollection($propCollection, $agfRW, $featId++, $geomBuffer);
-                            $bufferFeatures++;
+                                $geom = $geom->Transform($srsXform);
+                            $inputGeometries->Add($geom);
                         }
                     }
-                    else
-                    {
-                        if($srsXform != null)
-                            $geom = $geom->Transform($srsXform);
-                        $inputGeometries->Add($geom);
-                    }
-                }
-                while($features->ReadNext());
+                    while($features->ReadNext());
 
-                $features->Close();
+                    $features->Close();
+                }
             }
         }
 
