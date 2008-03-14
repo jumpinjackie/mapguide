@@ -523,7 +523,7 @@ WT_Result agr_process_polytriangle (WT_Polytriangle & polytriangle, WT_File & fi
             lb.LineTo(dstpts->x_coord(i  ), dstpts->y_coord(i  ));
             lb.Close();
 
-			rewriter->DrawScreenPolygon(&lb, NULL, (unsigned int) color.argb());
+            AGGRenderer::DrawScreenPolygon((agg_context*)rewriter->GetW2DTargetImage(), &lb, NULL, color.argb());
 
             lb.Reset();
         }
