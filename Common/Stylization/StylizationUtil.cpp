@@ -701,7 +701,9 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
 
 
 // Returns the bounds of the supplied composite symbolization in the context
-// of the supplied renderer.
+// of the supplied renderer.  The platform must be properly initialized via a
+// call to MgFoundation::LoadConfiguration (including specifying the path to
+// the resource file) in order for this method to work.
 RS_Bounds StylizationUtil::GetCompositeSymbolizationBounds(CompositeSymbolization* csym,
                                                            SE_Renderer* pSERenderer,
                                                            SE_SymbolManager* sman)
@@ -712,9 +714,12 @@ RS_Bounds StylizationUtil::GetCompositeSymbolizationBounds(CompositeSymbolizatio
     std::vector<SE_Symbolization*> styles;
     visitor.Convert(styles, csym);
 
+    // create an expression engine with our custom functions
+    FdoPtr<FdoExpressionEngine> exec = ExpressionHelper::GetExpressionEngine(pSERenderer, NULL);
+
     // calculate bounds - symbol geometries cannot use expressions, so no expression engine is needed
     RS_Bounds symBounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
-    GetCompositeSymbolizationBoundsInternal(styles, pSERenderer, sman, NULL, symBounds);
+    GetCompositeSymbolizationBoundsInternal(styles, pSERenderer, sman, exec, symBounds);
 
     // clean up
     for (std::vector<SE_Symbolization*>::iterator iter = styles.begin(); iter != styles.end(); iter++)
