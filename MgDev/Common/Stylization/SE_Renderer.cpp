@@ -1263,6 +1263,10 @@ void SE_Renderer::ProcessLineLabels(LineBuffer* geometry, SE_RenderLineStyle* st
     double rightEdge = style->bounds[1].x;
     double symWidth = rightEdge - leftEdge;
 
+    // repeat needs to be the separation (end of one label to start of the
+    // next) plus the symbol width
+    repeat += symWidth;
+
     // get the segment lengths
     double* segLens = (double*)alloca(sizeof(double)*geometry->point_count());
     ComputeSegmentLengths(geometry, segLens);
@@ -1281,8 +1285,11 @@ void SE_Renderer::ProcessLineLabels(LineBuffer* geometry, SE_RenderLineStyle* st
 
         // how many times should we repeat the symbol along the path?
         // TODO: fine tune this formula
-        int numSymbols = 1 + (int)(contourLen / (repeat + symWidth));
-        double startOffset = 0.5*(contourLen - (numSymbols - 1) * (repeat + symWidth));
+        int numSymbols = 1 + (int)((contourLen - symWidth) / repeat);
+        double startOffset = 0.5*(contourLen - (numSymbols - 1) * repeat);
+
+        // account for the symbol's extent to properly center it
+        startOffset -= 0.5*(leftEdge + rightEdge);
 
         //-------------------------------------------------------
         // draw symbols along the contour
