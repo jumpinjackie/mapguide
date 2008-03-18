@@ -1140,16 +1140,21 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
         printLayout->SetPlotCenter(center);
         printLayout->SetPlotScale(dMapScale);
 
-        // Get the map background color
-        RS_Color bgcolor;
-        StylizationUtil::ParseColor( map->GetBackgroundColor(), bgcolor);
-
         // Get the layout background color
         RS_Color layoutColor;
-        Ptr<MgColor> bgColor = printLayout->GetBackgroundColor();
-        layoutColor.red() = bgColor->GetRed();
-        layoutColor.green() = bgColor->GetGreen();
-        layoutColor.blue() = bgColor->GetBlue();
+        if (NULL != layout)
+        {
+            // a layout was supplied - use its background color
+            Ptr<MgColor> bgColor = printLayout->GetBackgroundColor();
+            layoutColor.red() = bgColor->GetRed();
+            layoutColor.green() = bgColor->GetGreen();
+            layoutColor.blue() = bgColor->GetBlue();
+        }
+        else
+        {
+            // no layout was supplied - use the map's background color
+            StylizationUtil::ParseColor(map->GetBackgroundColor(), layoutColor);
+        }
 
         // Get the session ID
         STRING sessionId;
@@ -1204,7 +1209,7 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
 
         // Define a polygon to represent the map extents and fill it with the map background color
         dr.StartLayer(NULL, NULL);
-        LineBuffer lb(4);
+        LineBuffer lb(5);
         lb.MoveTo(b.minx, b.miny);
         lb.LineTo(b.maxx, b.miny);
         lb.LineTo(b.maxx, b.maxy);
@@ -1212,7 +1217,7 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
         lb.Close();
 
         RS_LineStroke lineStroke;
-        RS_FillStyle fillStyle(lineStroke, bgcolor, layoutColor, L"Solid");  // NOXLATE
+        RS_FillStyle fillStyle(lineStroke, layoutColor, layoutColor, L"Solid");  // NOXLATE
         dr.ProcessPolygon(&lb, fillStyle);
         dr.EndLayer();
 
