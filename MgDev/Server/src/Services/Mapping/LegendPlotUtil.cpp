@@ -1410,9 +1410,7 @@ void MgLegendPlotUtil::AddLayoutElements(MgPrintLayout* layout, STRING mapName, 
 
     // Scalebar
     if (layout->ShowScalebar())
-    {
         AddScalebarElement(layout, mapBounds, dMapScale, dMetersPerMapUnit, dr, lineStroke);
-    }
 
     // North arrow
     if (layout->ShowNorthArrow())
