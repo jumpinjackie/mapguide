@@ -1140,21 +1140,16 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
         printLayout->SetPlotCenter(center);
         printLayout->SetPlotScale(dMapScale);
 
+        // Get the map background color
+        RS_Color bgcolor;
+        StylizationUtil::ParseColor( map->GetBackgroundColor(), bgcolor);
+
         // Get the layout background color
         RS_Color layoutColor;
-        if (NULL != layout)
-        {
-            // a layout was supplied - use its background color
-            Ptr<MgColor> bgColor = printLayout->GetBackgroundColor();
-            layoutColor.red() = bgColor->GetRed();
-            layoutColor.green() = bgColor->GetGreen();
-            layoutColor.blue() = bgColor->GetBlue();
-        }
-        else
-        {
-            // no layout was supplied - use the map's background color
-            StylizationUtil::ParseColor(map->GetBackgroundColor(), layoutColor);
-        }
+        Ptr<MgColor> bgColor = printLayout->GetBackgroundColor();
+        layoutColor.red() = bgColor->GetRed();
+        layoutColor.green() = bgColor->GetGreen();
+        layoutColor.blue() = bgColor->GetBlue();
 
         // Get the session ID
         STRING sessionId;
@@ -1217,7 +1212,7 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
         lb.Close();
 
         RS_LineStroke lineStroke;
-        RS_FillStyle fillStyle(lineStroke, layoutColor, layoutColor, L"Solid");  // NOXLATE
+        RS_FillStyle fillStyle(lineStroke, bgcolor, layoutColor, L"Solid");  // NOXLATE
         dr.ProcessPolygon(&lb, fillStyle);
         dr.EndLayer();
 
@@ -1241,6 +1236,7 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
 
         //construct one every time -- not really a bottleneck
         MgLegendPlotUtil lu(m_svcResource);
+
         // Now add the rest of the layout element to the page
         lu.AddLayoutElements(printLayout, (STRING)mapInfo.name(), mapResId->ToString(), map, layers, b, dMapScale, metersPerUnit, dr);
 
