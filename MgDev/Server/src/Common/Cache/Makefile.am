@@ -11,7 +11,7 @@ INCLUDES = \
   -I../../../../Common/Geometry \
   -I../../../../Common/MdfModel \
   -I../../../../Oem/ACE/ACE_wrappers \
-  -I../../../../Oem/FDO/inc
+  -I$(map_fdo_include)
 
 lib_LTLIBRARIES = libMgServerCache.la
 
