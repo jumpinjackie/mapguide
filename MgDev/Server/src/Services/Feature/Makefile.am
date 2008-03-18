@@ -24,8 +24,7 @@ INCLUDES = \
   -I../../Common/Base \
   -I../../Common/Cache \
   -I../../Common/Manager \
-  -I../../Common/ServerUtil \
-  -I../../../../Oem/FDO/inc
+  -I../../Common/ServerUtil 
 
 lib_LTLIBRARIES = libMgServerFeatureService.la
 
