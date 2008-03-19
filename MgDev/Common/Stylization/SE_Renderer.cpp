@@ -86,7 +86,7 @@ void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style,
     LineBuffer* featGeom = ctx->geometry;
 
     double angleRad = 0.0;
-    if (wcscmp(L"FromGeometry", style->angleControl) == 0)
+    if (style->angleControl == SE_AngleControl_FromGeometry)
     {
         switch (featGeom->geom_type())
         {
@@ -213,24 +213,12 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
     // check the vertex control type and call the appropriate helper
     //--------------------------------------------------------------
 
-    if (wcscmp(style->vertexControl, L"OverlapNone") == 0)
-    {
+    if (style->vertexControl == SE_VertexControl_OverlapNone)
         ProcessLineOverlapNone(featGeom, style);
-    }
-    else if (wcscmp(style->vertexControl, L"OverlapDirect") == 0)
-    {
+    else if (style->vertexControl == SE_VertexControl_OverlapDirect)
         ProcessLineOverlapDirect(featGeom, style);
-    }
-    else if (wcscmp(style->vertexControl, L"OverlapNoWrap") == 0)
-    {
-        // this deprecated option is treated as OverlapNone
-        ProcessLineOverlapNone(featGeom, style);
-    }
     else
-    {
-        // default is OverlapWrap
         SE_LineRenderer::ProcessLineOverlapWrap(this, featGeom, style);
-    }
 }
 
 
@@ -318,7 +306,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
     {
         SE_RenderPrimitive* primitive = symbol[i];
 
-        if (primitive->type == SE_RenderPolygonPrimitive || primitive->type == SE_RenderPolylinePrimitive)
+        if (primitive->type == SE_RenderPrimitive_Polygon || primitive->type == SE_RenderPrimitive_Polyline)
         {
             SE_RenderPolyline* rp = (SE_RenderPolyline*)primitive;
 
@@ -331,7 +319,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
 
             if (m_bSelectionMode)
             {
-                if (primitive->type == SE_RenderPolygonPrimitive)
+                if (primitive->type == SE_RenderPrimitive_Polygon)
                     DrawScreenPolygon(lb, &xform, m_selFillColor);
 
                 m_selLineStroke.cap        = rp->lineStroke.cap;
@@ -341,13 +329,13 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
             }
             else
             {
-                if (primitive->type == SE_RenderPolygonPrimitive)
+                if (primitive->type == SE_RenderPrimitive_Polygon)
                     DrawScreenPolygon(lb, &xform, ((SE_RenderPolygon*)primitive)->fill);
 
                 DrawScreenPolyline(lb, &xform, rp->lineStroke);
             }
         }
-        else if (primitive->type == SE_RenderTextPrimitive)
+        else if (primitive->type == SE_RenderPrimitive_Text)
         {
             SE_RenderText* tp = (SE_RenderText*)primitive;
 
@@ -371,7 +359,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
 
             DrawScreenText(tp->content, tdef, x, y, NULL, 0, 0.0);
         }
-        else if (primitive->type == SE_RenderRasterPrimitive)
+        else if (primitive->type == SE_RenderPrimitive_Raster)
         {
             SE_RenderRaster* rp = (SE_RenderRaster*)primitive;
             ImageData& imgData = rp->imageData;
@@ -447,7 +435,7 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
     // style specific properties
     switch (symbol->type)
     {
-    case SE_RenderPointStyleType:
+    case SE_RenderStyle_Point:
         {
             SE_RenderPointStyle* sps = (SE_RenderPointStyle*)symbol;
             SE_RenderPointStyle* dps = new SE_RenderPointStyle();
@@ -460,7 +448,7 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
         }
         break;
 
-    case SE_RenderLineStyleType:
+    case SE_RenderStyle_Line:
         {
             SE_RenderLineStyle* sls = (SE_RenderLineStyle*)symbol;
             SE_RenderLineStyle* dls = new SE_RenderLineStyle();
@@ -481,7 +469,7 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
         }
         break;
 
-    case SE_RenderAreaStyleType:
+    case SE_RenderStyle_Area:
         {
             SE_RenderAreaStyle* sas = (SE_RenderAreaStyle*)symbol;
             SE_RenderAreaStyle* das = new SE_RenderAreaStyle();
@@ -517,7 +505,7 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
 
         switch (rp->type)
         {
-        case SE_RenderPolygonPrimitive:
+        case SE_RenderPrimitive_Polygon:
             {
                 SE_RenderPolygon* sp = (SE_RenderPolygon*)rp;
                 SE_RenderPolygon* dp = new SE_RenderPolygon();
@@ -527,7 +515,7 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
             }
             // fall through
 
-        case SE_RenderPolylinePrimitive:
+        case SE_RenderPrimitive_Polyline:
             {
                 SE_RenderPolyline* sp = (SE_RenderPolyline*)rp;
                 if (!rpc)
@@ -542,7 +530,7 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
             }
             break;
 
-        case SE_RenderTextPrimitive:
+        case SE_RenderPrimitive_Text:
             {
                 SE_RenderText* st = (SE_RenderText*)rp;
                 SE_RenderText* dt = new SE_RenderText();
@@ -555,7 +543,7 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
             }
             break;
 
-        case SE_RenderRasterPrimitive:
+        case SE_RenderPrimitive_Raster:
             {
                 SE_RenderRaster* sr = (SE_RenderRaster*)rp;
                 SE_RenderRaster* dr = new SE_RenderRaster();
@@ -894,7 +882,6 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
     SE_Matrix symxf;
     bool yUp = YPointsUp();
 
-    bool fromGeom = (wcscmp(L"FromGeometry", style->angleControl) == 0);
     double baseAngleRad = style->angleRad;
 
     // precompute these - these are in renderer space, hence the check for yUp with the sine
@@ -1083,7 +1070,7 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
                     double dx_incr = (segX1 - segX0) * invlen;
                     double dy_incr = (segY1 - segY0) * invlen;
 
-                    if (fromGeom)
+                    if (style->angleControl == SE_AngleControl_FromGeometry)
                     {
                         angleCos = dx_incr*baseAngleCos - dy_incr*baseAngleSin;
                         angleSin = dy_incr*baseAngleCos + dx_incr*baseAngleSin;
@@ -1210,7 +1197,6 @@ void SE_Renderer::ProcessLineLabels(LineBuffer* geometry, SE_RenderLineStyle* st
     SE_Matrix symxf;
     bool yUp = YPointsUp();
 
-    bool fromGeom = (wcscmp(L"FromGeometry", style->angleControl) == 0);
     double baseAngleRad = style->angleRad;
 
     // precompute these - these are in renderer space, hence the check for yUp with the sine
@@ -1303,7 +1289,7 @@ void SE_Renderer::ProcessLineLabels(LineBuffer* geometry, SE_RenderLineStyle* st
                 double dx_incr = (segX1 - segX0) * invlen;
                 double dy_incr = (segY1 - segY0) * invlen;
 
-                if (fromGeom)
+                if (style->angleControl == SE_AngleControl_FromGeometry)
                 {
                     angleCos = dx_incr*baseAngleCos - dy_incr*baseAngleSin;
                     angleSin = dy_incr*baseAngleCos + dx_incr*baseAngleSin;
@@ -1368,7 +1354,6 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
     SE_Matrix symxf;
     bool yUp = YPointsUp();
 
-    bool fromGeom = (wcscmp(L"FromGeometry", style->angleControl) == 0);
     double baseAngleRad = style->angleRad;
 
     // precompute these - these are in renderer space, hence the check for yUp with the sine
@@ -1540,7 +1525,7 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
                     double dx_incr = (segX1 - segX0) * invlen;
                     double dy_incr = (segY1 - segY0) * invlen;
 
-                    if (fromGeom)
+                    if (style->angleControl == SE_AngleControl_FromGeometry)
                     {
                         angleCos = dx_incr*baseAngleCos - dy_incr*baseAngleSin;
                         angleSin = dy_incr*baseAngleCos + dx_incr*baseAngleSin;

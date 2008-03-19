@@ -649,7 +649,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
             SE_RenderStyle* rStyle = style->rstyle;
             switch (rStyle->type)
             {
-                case SE_RenderPointStyleType:
+                case SE_RenderStyle_Point:
                 {
                     SE_RenderPointStyle* ptStyle = (SE_RenderPointStyle*)(rStyle);
 
@@ -667,7 +667,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
                     break;
                 }
 
-                case SE_RenderLineStyleType:
+                case SE_RenderStyle_Line:
                 {
                     SE_RenderLineStyle* lnStyle = (SE_RenderLineStyle*)(rStyle);
 
@@ -678,7 +678,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
                     break;
                 }
 
-                case SE_RenderAreaStyleType:
+                case SE_RenderStyle_Area:
                 default:
                     break;
             }
@@ -790,7 +790,7 @@ void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Sym
             SE_RenderStyle* rStyle = style->rstyle;
             switch (rStyle->type)
             {
-                case SE_RenderPointStyleType:
+                case SE_RenderStyle_Point:
                 {
                     SE_RenderPointStyle* ptStyle = (SE_RenderPointStyle*)(rStyle);
 
@@ -807,7 +807,7 @@ void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Sym
                     break;
                 }
 
-                case SE_RenderLineStyleType:
+                case SE_RenderStyle_Line:
                 {
                     SE_RenderLineStyle* lnStyle = (SE_RenderLineStyle*)(rStyle);
 
@@ -817,7 +817,7 @@ void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Sym
                     break;
                 }
 
-                case SE_RenderAreaStyleType:
+                case SE_RenderStyle_Area:
                 default:
                     break;
             }
