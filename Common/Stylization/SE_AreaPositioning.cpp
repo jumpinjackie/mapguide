@@ -24,12 +24,12 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
     SE_Tuple min = SE_Tuple(geom->bounds().minx, geom->bounds().miny);
     SE_Tuple max = SE_Tuple(geom->bounds().maxx, geom->bounds().maxy);
 
-    if (wcscmp(style->originControl, L"Centroid") == 0)
+    if (style->originControl == SE_OriginControl_Centroid)
     {
         double slope;
         geom->Centroid(LineBuffer::ctArea, &m_base_pt.x, &m_base_pt.y, &slope);
     }
-    else if (wcscmp(style->originControl, L"Local") == 0)
+    else if (style->originControl == SE_OriginControl_Local)
     {
         // use parametric coordinates where [(0,0), (1,1)] is the extent of the polygon bounding box
         m_base_pt = min + (max - min) * SE_Tuple(style->origin[0], style->origin[1]);
@@ -42,7 +42,7 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
     }
 
     m_angle_rad = style->angleRad;
-    if (wcscmp(style->angleControl, L"FromGeometry") == 0)
+    if (style->angleControl == SE_AngleControl_FromGeometry)
     {
         // angle is the same direction as longest segment
         double maxlensq = -1.0;

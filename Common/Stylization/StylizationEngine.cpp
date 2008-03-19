@@ -411,9 +411,6 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
             }
         }
 
-        double mm2suX = (sym->sizeContext == MappingUnits)? mm2suw : mm2sud;
-        double mm2suY = yUp? mm2suX : -mm2suX;
-
         SE_Matrix xformScale;
         xformScale.scale(sym->scale[0].evaluate(exec),
                          sym->scale[1].evaluate(exec));
@@ -423,6 +420,8 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         // renderer is doing.  Normally we could just apply the world to screen transform to everything,
         // but in some cases we only apply it to the position of the symbol and then offset the symbol
         // geometry from there - so the symbol geometry needs to be pre-inverted.
+        double mm2suX = (sym->sizeContext == MappingUnits)? mm2suw : mm2sud;
+        double mm2suY = yUp? mm2suX : -mm2suX;
         xformScale.scale(mm2suX, mm2suY);
 
         // initialize the style evaluation context
@@ -479,7 +478,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
             // constant screen space render style
             style->evaluate(&evalCxt);
 
-            // why are these in the symbolization? fix this!
+            // TODO: why are these in the symbolization? fix this!
             style->rstyle->addToExclusionRegions = sym->addToExclusionRegions.evaluate(exec);
             style->rstyle->checkExclusionRegions = sym->checkExclusionRegions.evaluate(exec);
             style->rstyle->drawLast = sym->drawLast.evaluate(exec);
