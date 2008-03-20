@@ -344,9 +344,11 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
     txf.rotate(textDef.rotation() * M_PI180);
     txf.translate(ret->position[0], ret->position[1]);
 
-    // compute axis aligned bounds of the text primitive
+    // compute axis aligned bounds of the text primitive - these are
+    // initialized to the text position to ensure we get valid bounds
+    // for the case of an empty text string
     RS_F_Point fpts[4];
-    RS_Bounds xformBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
+    RS_Bounds xformBounds(ret->position[0], ret->position[1], ret->position[0], ret->position[1]);
 
     for (size_t k=0; k<tm.line_pos.size(); ++k)
     {
