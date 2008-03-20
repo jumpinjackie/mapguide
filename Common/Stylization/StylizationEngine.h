@@ -61,7 +61,6 @@ public:
                             MdfModel::VectorScaleRange*      range,
                             SE_Renderer*                     se_renderer,
                             RS_FeatureReader*                reader,
-                            FdoExpressionEngine*             exec,
                             CSysTransformer*                 xformer,
                             CancelStylization                cancel,
                             void*                            userData);
