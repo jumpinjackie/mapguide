@@ -366,7 +366,7 @@ void MgServerSelectFeatures::ApplyFilter()
     {
         regularFilter = FdoFilter::Parse(filterText.c_str());
         #ifdef _DEBUG
-        ACE_DEBUG((LM_ERROR, ACE_TEXT("FILTER:\n%W\n\n"), filterText.c_str()));
+        ACE_DEBUG((LM_ERROR, ACE_TEXT("FILTER(size=%d):\n%W\n\n"), filterText.length(), filterText.c_str()));
         #endif
     }
 
