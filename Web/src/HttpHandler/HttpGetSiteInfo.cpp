@@ -170,6 +170,12 @@ STRING MgHttpGetSiteInfo::GetXml(MgPropertyCollection* properties)
     xml += MgUtil::MultiByteToWideChar(tmpStr);
     xml += L"</TotalOperationTime>\n";
 
+    xml += L"\t\t<TotalActiveConnections>";
+    int32Prop = (MgInt32Property*)properties->GetItem(L"TotalActiveConnections");
+    MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
+    xml += MgUtil::MultiByteToWideChar(tmpStr);
+    xml += L"</TotalActiveConnections>\n";
+
     xml += L"\t\t<TotalConnections>";
     int32Prop = (MgInt32Property*)properties->GetItem(L"TotalConnections");
     MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);

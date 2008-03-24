@@ -35,7 +35,7 @@
               <xs:element name="AverageOperationTime" type="xs:integer"/>
               <xs:element name="CpuUtilization" type="xs:integer"/>
               <xs:element name="TotalOperationTime" type="xs:integer"/>
-              <xs:element name="ActiveConnections" type="xs:integer"/>
+              <xs:element name="TotalActiveConnections" type="xs:integer"/>
               <xs:element name="TotalConnections" type="xs:integer"/>
               <xs:element name="TotalOperationsProcessed" type="xs:integer"/>
               <xs:element name="TotalOperationsReceived" type="xs:integer"/>
