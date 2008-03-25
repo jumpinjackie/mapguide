@@ -4,7 +4,7 @@ dnl Configure.in for MapGuide Open Source
 # Variables
 # Following are the makefile directories
 #----------------------------------------------------------------------
-AC_INIT(mapguide,2.0.0,http://mapguide.osgeo.org)
+AC_INIT(mapguide,2.0.1,http://mapguide.osgeo.org)
 AC_CONFIG_SRCDIR(configure.in)
 AM_INIT_AUTOMAKE
 AM_INIT_AUTOMAKE([1.9 tar-pax])
