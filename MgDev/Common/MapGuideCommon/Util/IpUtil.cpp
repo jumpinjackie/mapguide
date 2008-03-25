@@ -290,11 +290,11 @@ bool MgIpUtil::HostNameToAddress(CREFSTRING name, REFSTRING address,
     bool strict)
 {
     // No conversion is needed if the input parameter already contains a host address.
+
     if (IsIpAddress(name, false))
     {
+        ValidateAddress(name, !IsLocalHost(name, false));
         address = name;
-
-        ValidateAddress(address, !IsLocalHost(name, false));
 
         return true;
     }
@@ -388,11 +388,10 @@ bool MgIpUtil::HostAddressToName(CREFSTRING address, REFSTRING name,
 {
     // No conversion is needed if the input parameter already contains a host name.
 
-    if (!IsIpAddress(address, false) && !IsLocalHost(address, false))
+    if (!IsIpAddress(address, false))
     {
+        ValidateAddress(address, !IsLocalHost(address, false));
         name = address;
-
-        ValidateAddress(name, strict);
 
         return true;
     }
@@ -463,54 +462,63 @@ bool MgIpUtil::HostAddressToName(CREFSTRING address, REFSTRING name,
 
 int MgIpUtil::CompareAddresses(CREFSTRING address1, CREFSTRING address2)
 {
-    if (IsIpAddress(address1, false) && IsIpAddress(address2, false) &&
-        !IsLocalHost(address1, false) && !IsLocalHost(address2, false))
+    int compareFlag = _wcsicmp(address1.c_str(), address2.c_str());
+
+    if (0 == compareFlag)
+    {
+        ValidateAddress(address1, !IsLocalHost(address1, false));
+        ValidateAddress(address2, !IsLocalHost(address2, false));
+    }
+    else if (IsIpAddress(address1, false) && IsIpAddress(address2, false) &&
+            !IsLocalHost(address1, false) && !IsLocalHost(address2, false))
     {
         ValidateAddress(address1);
         ValidateAddress(address2);
-
-        return _wcsicmp(address1.c_str(), address2.c_str());
-    }
-
-    ACE_INET_Addr inetAddr1((u_short)0, address1.c_str());
-    ACE_INET_Addr inetAddr2((u_short)0, address2.c_str());
-
-    if (inetAddr1 == inetAddr2)
-    {
-        // This is a workaround for the problem where the ACE_INET_Addr
-        // equality test above returns true when two different invalid
-        // addresses are specified.
-
-        STRING name1, name2;
-
-        if (HostAddressToName(address1, name1) ||
-            HostAddressToName(address2, name2))
-        {
-            return 0;
-        }
-        else
-        {
-            return _wcsicmp(name1.c_str(), name2.c_str());
-        }
     }
     else
     {
-        // This is a workaround for the problem where the ACE_INET_Addr
-        // equality test above returns false when address #1 is the fully
-        // qualified domain name of the local host and address #2 is the real
-        // IP address of the local host, and vice versa.
+        ACE_INET_Addr inetAddr1((u_short)0, address1.c_str());
+        ACE_INET_Addr inetAddr2((u_short)0, address2.c_str());
 
-        if (IsLocalHost(address1) && IsLocalHost(address2))
+        if (inetAddr1 == inetAddr2)
         {
-            return 0;
-        }
-        else if (inetAddr1 < inetAddr2)
-        {
-            return -1;
+            // This is a workaround for the problem where the ACE_INET_Addr
+            // equality test above returns true when two different invalid
+            // addresses are specified.
+
+            STRING name1, name2;
+
+            if (HostAddressToName(address1, name1) ||
+                HostAddressToName(address2, name2))
+            {
+                compareFlag = 0;
+            }
+            else
+            {
+                compareFlag = _wcsicmp(name1.c_str(), name2.c_str());
+            }
         }
         else
         {
-            return 1;
+            // This is a workaround for the problem where the ACE_INET_Addr
+            // equality test above returns false when address #1 is the fully
+            // qualified domain name of the local host and address #2 is the real
+            // IP address of the local host, and vice versa.
+
+            if (IsLocalHost(address1) && IsLocalHost(address2))
+            {
+                compareFlag = 0;
+            }
+            else if (inetAddr1 < inetAddr2)
+            {
+                compareFlag = -1;
+            }
+            else
+            {
+                compareFlag = 1;
+            }
         }
     }
+
+    return compareFlag;
 }
