@@ -48,10 +48,9 @@ public:
     SE_LineStyle* ProcessLineUsage(MdfModel::LineUsage& lineUsage);
     SE_AreaStyle* ProcessAreaUsage(MdfModel::AreaUsage& areaUsage);
 
-    STYLIZATION_API void Convert(std::vector<SE_Symbolization*>& styles, MdfModel::CompositeSymbolization* symbolization);
+    STYLIZATION_API void Convert(std::vector<SE_Symbolization*>& result, MdfModel::CompositeSymbolization* symbolization);
 
 private:
-    SE_Style* ParseSymbol(MdfModel::CompoundSymbolDefinition* symbol);
     bool ParseDouble(const wchar_t*& str, double& val);
     bool ParseDoublePair(const wchar_t*& str, double& x, double& y);
     bool ParseGeometry(const MdfModel::MdfString& geometry, SE_LineBuffer& buffer);

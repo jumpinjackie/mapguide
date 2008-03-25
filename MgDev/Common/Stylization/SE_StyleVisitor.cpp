@@ -662,6 +662,12 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
 {
     SetDefaultValues(&simpleSymbol);
 
+    // must have at least one primitive in order to render something
+    GraphicElementCollection* graphics = simpleSymbol.GetGraphics();
+    int nPrimitives = graphics->GetCount();
+    if (nPrimitives == 0)
+        return;
+
     // get the usage to work with
     PointUsage* pointUsage = simpleSymbol.GetPointUsage();
     LineUsage* lineUsage = simpleSymbol.GetLineUsage();
@@ -699,10 +705,8 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
     if (m_style == NULL)
         return;
 
-    GraphicElementCollection* graphics = simpleSymbol.GetGraphics();
-
-    int count = graphics->GetCount();
-    for (int i = 0; i < count; i++)
+    // process the primitives
+    for (int i=0; i<nPrimitives; ++i)
     {
         GraphicElement* elem = graphics->GetAt(i);
         elem->AcceptVisitor(*this);
@@ -720,6 +724,7 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
         m_primitive = NULL;
     }
 
+    // process the resize box
     ResizeBox* box = simpleSymbol.GetResizeBox();
     m_style->useBox = (box != NULL);
     if (m_style->useBox)
@@ -743,8 +748,9 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
 void SE_StyleVisitor::VisitCompoundSymbolDefinition(MdfModel::CompoundSymbolDefinition& compoundSymbol)
 {
     SimpleSymbolCollection* symbols = compoundSymbol.GetSymbols();
-    int len = symbols->GetCount();
-    for (int i = 0; i < len; i++)
+    int nSymbols = symbols->GetCount();
+
+    for (int i=0; i<nSymbols; ++i)
     {
         SimpleSymbol* sym = symbols->GetAt(i);
 
@@ -786,12 +792,12 @@ void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::
 
     m_resIdStack.clear();
 
-    SymbolInstanceCollection* symbols = symbolization->GetSymbolCollection();
-    int nSymbols = symbols->GetCount();
+    SymbolInstanceCollection* instances = symbolization->GetSymbolCollection();
+    int nInstances = instances->GetCount();
 
-    for (int i = 0; i < nSymbols; i++)
+    for (int i=0; i<nInstances; ++i)
     {
-        SymbolInstance* instance = symbols->GetAt(i);
+        SymbolInstance* instance = instances->GetAt(i);
 
         SetParameterValues(instance->GetParameterOverrides());
 
