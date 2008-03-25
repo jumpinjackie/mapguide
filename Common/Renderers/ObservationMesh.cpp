@@ -428,7 +428,7 @@ done:
     //then go through and do it, by moving faces
     //from the end of the face list into their positions
     //go in reverse order
-    for (int p=(int)toremove.size()-1; p>=0; p--)
+    for (int p=(int)toremove.size()-1; p>=0; --p)
     {
         int dead_face_index = toremove[p];
         if (dead_face_index == (int)m_vFaces.size()-1)

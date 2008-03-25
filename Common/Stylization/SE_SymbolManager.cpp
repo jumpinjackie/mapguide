@@ -32,7 +32,7 @@ bool SE_SymbolManager::GetImageData(const wchar_t* base64Data, const int size, I
     char* src_ascii = new char[size];
 
     char* ptr = src_ascii;
-    for (int i=0; i<size; i++)
+    for (int i=0; i<size; ++i)
     {
         char c = (char)base64Data[i];
         if (Base64::IsBase64(c))

@@ -313,7 +313,7 @@ PUBLISHED_API:
     ////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the user for the current session identifier.  An exception will
-    /// be thrown if the session is invalid or does not exist. 
+    /// be thrown if the session is invalid or does not exist.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

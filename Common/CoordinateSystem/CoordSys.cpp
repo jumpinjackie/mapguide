@@ -391,11 +391,11 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
                             {
                                 STRING message;
                                 const char* errMsg = CPLGetLastErrorMsg();
-        
+
                                 if (NULL != errMsg)
                                 {
                                     wchar_t* strError = Convert_Ascii_To_Wide(errMsg);
-            
+
                                     if (NULL != strError)
                                     {
                                         message = strError;
@@ -468,11 +468,11 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
                     {
                         STRING message;
                         const char* errMsg = CPLGetLastErrorMsg();
-        
+
                         if (NULL != errMsg)
                         {
                             wchar_t* strError = Convert_Ascii_To_Wide(errMsg);
-            
+
                             if (NULL != strError)
                             {
                                 message = strError;
@@ -575,14 +575,14 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
             }
             else
             {
-            
+
                 STRING message;
                 const char* errMsg = CPLGetLastErrorMsg();
-        
+
                 if (NULL != errMsg)
                 {
                     wchar_t* strError = Convert_Ascii_To_Wide(errMsg);
-            
+
                     if (NULL != strError)
                     {
                         message = strError;
@@ -1501,11 +1501,11 @@ STRING CCoordinateSystem::ConvertWktToCoordinateSystemCode(CREFSTRING ogcWkt)
     {
         STRING message;
         const char* errMsg = CPLGetLastErrorMsg();
-        
+
         if (NULL != errMsg)
         {
             wchar_t* strError = Convert_Ascii_To_Wide(errMsg);
-            
+
             if (NULL != strError)
             {
                 message = strError;
@@ -1731,11 +1731,11 @@ STRING CCoordinateSystem::ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode)
     {
         STRING message;
         const char* errMsg = CPLGetLastErrorMsg();
-        
+
         if (NULL != errMsg)
         {
             wchar_t* strError = Convert_Ascii_To_Wide(errMsg);
-            
+
             if (NULL != strError)
             {
                 message = strError;
@@ -1976,7 +1976,7 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
 
         wchar_t* strCode = Convert_Ascii_To_Wide(buffer);
         STRING epsgCode;
-        
+
         if (NULL != strCode)
         {
             epsgCode = strCode;
@@ -1985,11 +1985,11 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
 
         STRING message;
         const char* errMsg = CPLGetLastErrorMsg();
-        
+
         if (NULL != errMsg)
         {
             wchar_t* strError = Convert_Ascii_To_Wide(errMsg);
-            
+
             if (NULL != strError)
             {
                 message = strError;
@@ -2079,7 +2079,7 @@ long CCoordinateSystem::ConvertWktToEpsgCode(CREFSTRING wkt)
         if (NULL != errMsg)
         {
             wchar_t* strError = Convert_Ascii_To_Wide(errMsg);
-            
+
             if (NULL != strError)
             {
                 message = strError;

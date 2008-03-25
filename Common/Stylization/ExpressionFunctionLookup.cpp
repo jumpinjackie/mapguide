@@ -46,12 +46,12 @@ void ExpressionFunctionLookup::AddSignatures(FdoSignatureDefinitionCollection* s
     FdoArgumentDefinition* expression, FdoArgumentDefinition* defaultValue,
     FdoArgumentDefinition* index, FdoArgumentDefinition* value, FdoDataType returnType)
 {
-    for (int num=1; num<=MAX_LOOKUP_SIGNATURE_SIZE; num++)
+    for (int num=1; num<=MAX_LOOKUP_SIGNATURE_SIZE; ++num)
     {
         FdoPtr<FdoArgumentDefinitionCollection> args = FdoArgumentDefinitionCollection::Create();
         args->Add(expression);
         args->Add(defaultValue);
-        for (int i=0; i<num; i++)
+        for (int i=0; i<num; ++i)
         {
             args->Add(index);
             args->Add(value);

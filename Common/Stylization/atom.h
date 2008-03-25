@@ -189,7 +189,8 @@ public:
     // not found.
     const CHARTYPE* Find(const CHARTYPE chFind) const
     {
-        for(int i=0;i<m_iLength;i++) {
+        for(int i=0; i<m_iLength; ++i)
+        {
             if(m_pszStart[i] == chFind)
                 return m_pszStart+i;
         }
@@ -205,7 +206,7 @@ public:
         int iMax = m_iLength - sFind.Length();
         if(iMax >= 0) {
             StRange sPart = Part(0,sFind.Length());
-            for(int i=0; i<= iMax; i++, sPart.Move(1)) {
+            for(int i=0; i<= iMax; ++i, sPart.Move(1)) {
                 if(sPart == sFind)
                     return sPart.Start();
             }
@@ -312,8 +313,10 @@ public:
             return true;
         else if(this->m_iLength != oOther.m_iLength)
             return false;
-        else {
-            for(int i=0;i<this->m_iLength;i++) {
+        else
+        {
+            for(int i=0; i<this->m_iLength; ++i)
+            {
                 if(this->m_pszStart[i] != oOther.m_pszStart[i])
                     return false;
             }
@@ -420,7 +423,7 @@ public:
     // Copy/assignment operator.
     Matrix& operator= (const Matrix& oOther)
     {
-        for(int i=0;i<9;i++)
+        for(int i=0; i<9; ++i)
             this->m_pElements[i] = oOther.m_pElements[i];
 
         return *this;
@@ -429,7 +432,7 @@ public:
     // Assignment operator, assign from an array.
     Matrix& operator= (const NUMBER* m)
     {
-        for(int i=0;i<9;i++)
+        for(int i=0; i<9; ++i)
             this->m_pElements[i] = m[i];
 
         return *this;

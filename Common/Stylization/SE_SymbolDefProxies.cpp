@@ -650,7 +650,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                         rt->tdef.font().height() *= scaley; // TODO: should this only be done if HeightScalable is true?
                         rt->tdef.frameoffsetx() *= scalex;  // TODO: should this only be done if HeightScalable is true?
                         rt->tdef.frameoffsety() *= scaley;  // TODO: should this only be done if HeightScalable is true?
-                        for (int j=0; j<4; j++)
+                        for (int j=0; j<4; ++j)
                             growxf.transform(rt->bounds[j].x, rt->bounds[j].y);
                         break;
                     }
@@ -660,7 +660,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                         growxf.transform(rr->position[0], rr->position[1]);
                         rr->extent[0] *= scalex;    // TODO: should this only be done if ExtentScalable is true?
                         rr->extent[1] *= scaley;
-                        for (int j=0; j<4; j++)
+                        for (int j=0; j<4; ++j)
                             growxf.transform(rr->bounds[j].x, rr->bounds[j].y);
                         break;
                     }

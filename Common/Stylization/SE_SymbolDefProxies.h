@@ -285,7 +285,7 @@ struct SE_Symbolization
 //////////////////////////////////////////////////////////////////////////////
 struct SE_Rule
 {
-    std::vector<SE_Symbolization*> symbolization;
+    std::vector<SE_Symbolization*> symbolizations;
     RS_String legendLabel;  // no expressions on this guy?
     FdoFilter* filter;
 
@@ -297,10 +297,10 @@ struct SE_Rule
         if (filter)
             filter->Release();
 
-        for (std::vector<SE_Symbolization*>::iterator iter = symbolization.begin(); iter != symbolization.end(); iter++)
+        for (std::vector<SE_Symbolization*>::iterator iter = symbolizations.begin(); iter != symbolizations.end(); iter++)
             delete *iter;
 
-        symbolization.clear();
+        symbolizations.clear();
     }
 };
 

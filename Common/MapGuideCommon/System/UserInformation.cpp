@@ -23,8 +23,8 @@
 static ACE_thread_key_t g_threadLocalUserInformation = 0;
 
 // for locale
-static const int ExtendedLocaleSecondSepLocation = 5;            
-static const int ExtendedLocaleDashLocation		 = 2;            
+static const int ExtendedLocaleSecondSepLocation = 5;
+static const int ExtendedLocaleDashLocation      = 2;
 
 MG_IMPL_DYNCREATE(MgUserInformation);
 
@@ -159,18 +159,18 @@ void MgUserInformation::SetMgSessionId(CREFSTRING sessionId)
 
     if (sepChar > 0 && sepChar < (int)sessionId.length())
     {
-		// the locale can be either in the form "en" or "en-US"
-		STRING subStr = sessionId.substr(sepChar+1);
-		int dashChar = (int)subStr.find(L"-");
-		int secondSepChar = (int)subStr.find(L"_");
-		if (ExtendedLocaleDashLocation == dashChar && ExtendedLocaleSecondSepLocation == secondSepChar)
-		{
-			SetLocale(sessionId.substr(sepChar+1, MG_EXTENDED_LOCALE_LENGTH));
-		}
-		else
-		{
-			SetLocale(sessionId.substr(sepChar+1, MG_LOCALE_LENGTH));
-		}
+        // the locale can be either in the form "en" or "en-US"
+        STRING subStr = sessionId.substr(sepChar+1);
+        int dashChar = (int)subStr.find(L"-");
+        int secondSepChar = (int)subStr.find(L"_");
+        if (ExtendedLocaleDashLocation == dashChar && ExtendedLocaleSecondSepLocation == secondSepChar)
+        {
+            SetLocale(sessionId.substr(sepChar+1, MG_EXTENDED_LOCALE_LENGTH));
+        }
+        else
+        {
+            SetLocale(sessionId.substr(sepChar+1, MG_LOCALE_LENGTH));
+        }
         m_sessionId = sessionId;
     }
     else
@@ -192,32 +192,32 @@ void MgUserInformation::SetMgSessionId(CREFSTRING sessionId)
 ///</summary>
 void MgUserInformation::SetLocale(CREFSTRING locale)
 {
-	// the locale can be either in the form "en" or "en-US"
+    // the locale can be either in the form "en" or "en-US"
     if (MG_LOCALE_LENGTH != locale.length() && MG_EXTENDED_LOCALE_LENGTH != locale.length())
     {
         throw new MgLengthException(L"MgUserInformation.SetLocale",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-	if (MG_EXTENDED_LOCALE_LENGTH == locale.length())
-	{
-		int dashChar = (int)locale.find(L"-");
-		if (ExtendedLocaleDashLocation != dashChar)
-		{
-			throw new MgLengthException(L"MgUserInformation.SetLocale",
-				__LINE__, __WFILE__, NULL, L"", NULL);
-		}
-		else
-		{
-			// convert the locale to lower-upper form
-			m_locale = MgUtil::ToLower(locale.substr(0, 3)) + MgUtil::ToUpper(locale.substr(3));
-		}
-	}
-	else
-	{
-		// two-character locales remain case insensitive for legacy behavior
-		m_locale = locale;
-	}
+    if (MG_EXTENDED_LOCALE_LENGTH == locale.length())
+    {
+        int dashChar = (int)locale.find(L"-");
+        if (ExtendedLocaleDashLocation != dashChar)
+        {
+            throw new MgLengthException(L"MgUserInformation.SetLocale",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        else
+        {
+            // convert the locale to lower-upper form
+            m_locale = MgUtil::ToLower(locale.substr(0, 3)) + MgUtil::ToUpper(locale.substr(3));
+        }
+    }
+    else
+    {
+        // two-character locales remain case insensitive for legacy behavior
+        m_locale = locale;
+    }
 }
 
 

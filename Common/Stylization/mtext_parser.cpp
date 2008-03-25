@@ -926,7 +926,8 @@ ATOM::Status MTextParseInstance::Parse_S(TextRunElement& Run)
     const ATOM::CHARTYPE* pSep = NULL;
     ATOM::StRange denom;
 
-    for(int i=0;i<parm.Length();i++) {
+    for(int i=0; i<parm.Length(); ++i)
+    {
         switch(parm[i]) {
             case '/':
             case '#':
@@ -1028,7 +1029,8 @@ ATOM::Status MTextParseInstance::Parse_U(TextRunElement& Run)
         return Abandon(ATOM::Status::keUnexpectedCharacter,parm);
 
     int hd,iCodePoint=0;
-    for(int i=1; i<5; i++) {
+    for(int i=1; i<5; ++i)
+    {
         hd = HexChar(parm[i]);
         if(hd < 0)
             return Abandon(ATOM::Status::keInvalidArg,parm);
@@ -1493,7 +1495,8 @@ int MTextParseInstance::RgbToAci(ATOM::Color rgb)
     if(!(l & ATOM_COLOR_A_BITS)) // no alpha?
         l |= ATOM_COLOR_A_BITS; // force alpha to maximum.
 
-    for(int i=0;i<sizeof(sm_lAciColorTable)/sizeof(long); i++) {
+    for(int i=0; i<sizeof(sm_lAciColorTable)/sizeof(long); ++i)
+    {
         if(l == sm_lAciColorTable[i])
             return i;
     }
@@ -1506,7 +1509,8 @@ int MTextParseInstance::RgbToNearestAci(ATOM::Color rgb)
     double dDistSquaredToNearest = 1e308; //huge;
     int iIndexNearest = -1;
 
-    for(int i=0;i<sizeof(sm_lAciColorTable)/sizeof(long); i++) {
+    for(int i=0; i<sizeof(sm_lAciColorTable)/sizeof(long); ++i)
+    {
         long lAci = sm_lAciColorTable[i];
         long lRgb = rgb.LongARGB();
 

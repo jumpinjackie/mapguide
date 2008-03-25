@@ -538,7 +538,7 @@ bool MgCoordinateSystemFactory::IsValid(CREFSTRING wkt)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.IsValid", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    
+
     try
     {
         Ptr<MgCoordinateSystem> pCs=pConverter->WktToDefinition(MgCoordinateSystemWktFlavor::Unknown, wkt);

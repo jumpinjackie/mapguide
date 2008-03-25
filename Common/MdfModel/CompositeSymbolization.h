@@ -45,7 +45,7 @@ BEGIN_NAMESPACE_MDFMODEL
         CompositeSymbolization& operator=(CompositeSymbolization&);
 
         // Data members
-        SymbolInstanceCollection m_collSymbols;
+        SymbolInstanceCollection m_collInstances;
     };
 
 END_NAMESPACE_MDFMODEL

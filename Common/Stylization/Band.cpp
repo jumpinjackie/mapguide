@@ -526,9 +526,9 @@ void Band::CalculatedMinAndMax() const
     m_minz = +DBL_MAX;
     m_maxz = -DBL_MAX;
 
-    for (unsigned int i = 0; i < GetXCount(); i ++)
+    for (unsigned int i=0; i<GetXCount(); ++i)
     {
-        for (unsigned int j = 0; j < GetYCount(); j++)
+        for (unsigned int j=0; j<GetYCount(); ++j)
         {
             double dValue;
             bool ret = GetValueAsDouble(i,j,dValue);
@@ -610,22 +610,22 @@ UINT32 Band::GetBilinearColor(const Point2D& point) const
     int invalid = 0;
     if (!GetValue(i0, j0, UnsignedInt32, &z[0]))
     {
-        invalid++;
+        ++invalid;
         z[0] = 0;
     }
     if (!GetValue(i1, j0, UnsignedInt32, &z[1]))
     {
-        invalid++;
+        ++invalid;
         z[1] = 0;
     }
     if (!GetValue(i1, j1, UnsignedInt32, &z[2]))
     {
-        invalid++;
+        ++invalid;
         z[2] = 0;
     }
     if (!GetValue(i0, j1, UnsignedInt32, &z[3]))
     {
-        invalid++;
+        ++invalid;
         z[3] = 0;
     }
 

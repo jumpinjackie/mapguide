@@ -230,7 +230,7 @@ void RasterAdapter::DecodeRGBA(RS_InputStream* is, unsigned char* dst, int w, in
 
     unsigned char* padding = (unsigned char*)alloca(pad);
 
-    for (int j=0; j<h; j++)
+    for (int j=0; j<h; ++j)
     {
         int read = -1;
         int totalRead = 0;
@@ -265,7 +265,7 @@ void RasterAdapter::DecodeRGB(RS_InputStream* is, unsigned char* dst, int w, int
     unsigned char* row = (unsigned char*)alloca(pitch);
     unsigned int* dstptr = (unsigned int*)dst;
 
-    for (int j=0; j<h; j++)
+    for (int j=0; j<h; ++j)
     {
         int read = -1;
         int totalRead = 0;
@@ -279,7 +279,7 @@ void RasterAdapter::DecodeRGB(RS_InputStream* is, unsigned char* dst, int w, int
 
         //now convert from RGB to RGBA and copy to destination
         unsigned char* px = row;
-        for (int i=0; i<w; i++)
+        for (int i=0; i<w; ++i)
         {
             //inefficient, but whoever gave us an RGB-aligned raster
             //deserves it!
@@ -310,7 +310,7 @@ void RasterAdapter::DecodeMapped(RS_InputStream* is, RS_InputStream* pal, unsign
         //if there is no palette, use a standard grey scale mapping
         palette = (unsigned char*)alloca(256*sizeof(int));
 
-        for (int i=0; i<256; i++)
+        for (int i=0; i<256; ++i)
             ((int*)palette)[i] = 255 << 24 | i << 16 | i << 8 | i;
     }
 
@@ -322,7 +322,7 @@ void RasterAdapter::DecodeMapped(RS_InputStream* is, RS_InputStream* pal, unsign
     unsigned char* row = (unsigned char*)alloca(pitch);
     unsigned int* dstptr = (unsigned int*)dst;
 
-    for (int j=0; j<h; j++)
+    for (int j=0; j<h; ++j)
     {
         int read = -1;
         int totalRead = 0;
@@ -336,7 +336,8 @@ void RasterAdapter::DecodeMapped(RS_InputStream* is, RS_InputStream* pal, unsign
 
         //now convert from mapped to RGBA and copy to destination
         unsigned char* px = row;
-        for (int i=0; i<w; i++) *dstptr++ = ((int*)palette)[*px++];
+        for (int i=0; i<w; ++i)
+            *dstptr++ = ((int*)palette)[*px++];
     }
 }
 
@@ -357,7 +358,7 @@ void RasterAdapter::DecodeBitonal(RS_InputStream* is, const RS_Color& fg, const 
     unsigned char* row = (unsigned char*)alloca(pitch);
     unsigned int* dstptr = (unsigned int*)dst;
 
-    for (int j=0; j<h; j++)
+    for (int j=0; j<h; ++j)
     {
         int read = -1;
         int totalRead = 0;
@@ -372,7 +373,7 @@ void RasterAdapter::DecodeBitonal(RS_InputStream* is, const RS_Color& fg, const 
         //now convert from bitonal to RGBA and copy to destination
         unsigned char* px = row;
 
-        for (int i=0; i<rowSize; i++)
+        for (int i=0; i<rowSize; ++i)
         {
             unsigned char bits = *px++;
 

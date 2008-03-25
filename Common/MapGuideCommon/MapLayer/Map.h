@@ -50,7 +50,7 @@ template class MG_MAPGUIDE_API Ptr<MgMap>;
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// Defines the runtime state of a map.
-/// 
+///
 /// \remarks
 /// This corresponds with the state of the map as seen by the
 /// client. Note that this may differ from the MapDefinition
@@ -60,7 +60,7 @@ template class MG_MAPGUIDE_API Ptr<MgMap>;
 /// You can use the Save and Open methods to store the runtime
 /// state into the session repository and retrieve it from the
 /// session repository.
-/// 
+///
 /// <!-- Example (PHP) -->
 /// \htmlinclude PHPExampleTop.html
 /// This example shows information about a map:
@@ -225,7 +225,7 @@ template class MG_MAPGUIDE_API Ptr<MgMap>;
 /// ?>
 /// \endcode
 /// \htmlinclude ExampleBottom.html
-/// 
+///
 class MG_MAPGUIDE_API MgMap : public MgMapBase
 {
     MG_DECL_DYNCREATE()
@@ -260,7 +260,7 @@ PUBLISHED_API:
     ///
     /// \remarks
     /// The instance of MgMap cannot be used until either the \link MgMap::Create(MgResourceIdentifier*,CREFSTRING) Create() \endlink
-    /// or \link MgMap::Open(CREFSTRING) Open() \endlink 
+    /// or \link MgMap::Open(CREFSTRING) Open() \endlink
     /// method is called.
     /// Session ID is required for this constructor.
     /// An MgMap object cannot exist in the Library repository.
@@ -322,7 +322,7 @@ PUBLISHED_API:
     /// An MgResourceIdentifier that specifies the
     /// location of the map definition in a resource
     /// repository.
-    /// \param mapName 
+    /// \param mapName
     /// A string that specifies the name of the map.
     ///
     /// <!-- Example (PHP) -->
@@ -354,11 +354,11 @@ PUBLISHED_API:
     /// void Create(MgResourceIdentifier mapDefinition, string mapName);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param mapDefinition 
+    /// \param mapDefinition
     /// An MgResourceIdentifier that specifies the
     /// location of the map definition in a resource
     /// repository.
-    /// \param mapName 
+    /// \param mapName
     /// A string that specifies the name of the map.
     ///
     /// \return
@@ -394,12 +394,12 @@ PUBLISHED_API:
     /// void Create(string mapSRS, MgEnvelope mapExtent, string mapName);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param mapSRS 
+    /// \param mapSRS
     /// A string specifying the spatial reference system in OpenGIS WKT
     /// format.
-    /// \param mapExtent 
+    /// \param mapExtent
     /// An MgEnvelope defining the overall extent of the map.
-    /// \param mapName 
+    /// \param mapName
     /// A string that specifies the name of the map.
     ///
     virtual void Create(CREFSTRING mapSRS, MgEnvelope* mapExtent, CREFSTRING mapName);
@@ -424,10 +424,10 @@ PUBLISHED_API:
     /// virtual void Open(MgResourceService resourceService, string mapName);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param resourceService 
+    /// \param resourceService
     /// An MgResourceService that can be used to retrieve
     /// the map.
-    /// \param mapName 
+    /// \param mapName
     /// A string that specifies the name of the map. This
     /// is the name that was specified when \link MgMapBase::Create Create \endlink
     /// was called to create the map object.
@@ -468,7 +468,7 @@ PUBLISHED_API:
     /// virtual void Open(string mapName);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param mapName 
+    /// \param mapName
     /// A string that specifies the name of the map. This
     /// is the name that was specified when \link MgMapBase::Create Create \endlink
     /// was called to create the map object.

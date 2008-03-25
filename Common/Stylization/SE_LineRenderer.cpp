@@ -190,7 +190,7 @@ const double OPTIMIZE_DISTANCE_SQ = 1.96;
 //
 // The scale factor can then be derived to be:
 //
-//   L'    1 + |s1| * (xB - x')/H 
+//   L'    1 + |s1| * (xB - x')/H
 //  --- = ------------------------, all s1, s'
 //   L           1 + s1*s'
 //

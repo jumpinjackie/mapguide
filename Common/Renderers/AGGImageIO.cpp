@@ -775,7 +775,7 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
 
                     // skip any fully transparent pixels so a transparent
                     // background color will show through
-                    if (a != 0) 
+                    if (a != 0)
                     {
                         int gdc = gdImageColorAllocateAlpha(gdimg, r, g, b, a);
                         gdImageSetPixel(gdimg, i, j, gdc);

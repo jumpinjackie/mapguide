@@ -47,12 +47,12 @@ void ExpressionFunctionRange::AddSignatures(FdoSignatureDefinitionCollection* si
                    FdoArgumentDefinition* rangeMin, FdoArgumentDefinition* rangeMax,
                    FdoArgumentDefinition* value, FdoDataType returnType)
 {
-    for (int num=1; num<=MAX_RANGE_SIGNATURE_SIZE; num++)
+    for (int num=1; num<=MAX_RANGE_SIGNATURE_SIZE; ++num)
     {
         FdoPtr<FdoArgumentDefinitionCollection> args = FdoArgumentDefinitionCollection::Create();
         args->Add(expression);
         args->Add(defaultValue);
-        for (int i=0; i<num; i++)
+        for (int i=0; i<num; ++i)
         {
             args->Add(rangeMin);
             args->Add(rangeMax);

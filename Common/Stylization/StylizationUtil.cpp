@@ -159,7 +159,7 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
 
                 // render the symbolizations
                 LineSymbolizationCollection* lsc = rule->GetSymbolizations();
-                for (int j=0; j<lsc->GetCount(); j++)
+                for (int j=0; j<lsc->GetCount(); ++j)
                 {
                     LineSymbolization2D* lsym = lsc->GetAt(j);
                     StylizationUtil::RenderLineSymbolization(lsym, pSERenderer, 0.0, 0.0, imgWidth, imgHeight, maxLineWidth);
@@ -900,7 +900,7 @@ double StylizationUtil::GetMaxMappingSpaceLineWidth(FeatureTypeStyle* fts, int t
                         LineRule* lr = (LineRule*)lrc->GetAt(themeCategory);
                         LineSymbolizationCollection* lsc = lr->GetSymbolizations();
 
-                        for (int j=0; j<lsc->GetCount(); j++)
+                        for (int j=0; j<lsc->GetCount(); ++j)
                         {
                             LineSymbolization2D* lsym = lsc->GetAt(j);
                             Stroke* stroke = lsym->GetStroke();

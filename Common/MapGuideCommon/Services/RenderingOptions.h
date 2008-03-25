@@ -45,9 +45,9 @@ PUBLISHED_API:
     ///
     enum
     {
-        RenderSelection = 1,    
-        RenderLayers = 2,       
-        KeepSelection = 4       
+        RenderSelection = 1,
+        RenderLayers = 2,
+        KeepSelection = 4
     };
 
     /////////////////////////////////////////////////////////////////

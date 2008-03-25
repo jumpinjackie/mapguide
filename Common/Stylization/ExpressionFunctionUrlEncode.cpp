@@ -126,7 +126,7 @@ FdoLiteralValue* ExpressionFunctionUrlEncode::Evaluate(FdoLiteralValueCollection
         memset(sUrl, 0, urllenbytes * sizeof(char));
 
         size_t i, j;
-        for (i = j = 0; i < utf8lenbytes; ++i)
+        for (i=j=0; i<utf8lenbytes; ++i)
         {
             char chr = sutf8[i];
             if ((chr <= 0x20) || // a space or anything below it in value
@@ -171,7 +171,7 @@ FdoLiteralValue* ExpressionFunctionUrlEncode::Evaluate(FdoLiteralValueCollection
 
         // finally, convert to a wide string
         wchar_t* res = new wchar_t[j+1];
-        for (size_t k=0; k<j+1; k++)
+        for (size_t k=0; k<=j; ++k)
             res[k] = (wchar_t)sUrl[k];
 
         m_urlEncodeValue->SetString(res);

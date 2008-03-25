@@ -54,7 +54,7 @@ void CCoordinateSystemEnum::Initialize(
     Uninitialize();
 
     m_pmapSystemNameDescription = pmapSystemNameDescription;
-    m_pDict = SAFE_ADDREF(pDict); 
+    m_pDict = SAFE_ADDREF(pDict);
     m_iter = m_pmapSystemNameDescription->begin();
 }
 

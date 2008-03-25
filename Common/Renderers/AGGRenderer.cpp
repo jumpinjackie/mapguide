@@ -1364,7 +1364,7 @@ void AGGRenderer::MeasureString(const RS_String& s,
 
         bool res1 = c()->feng.load_font(futf8, 0, agg::glyph_ren_agg_gray8);
         c()->feng.char_map(FT_ENCODING_UNICODE);
-        
+
         if (!res1) return;
         c()->last_font = font;
         font_changed = true;

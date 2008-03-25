@@ -45,7 +45,7 @@ template class MG_GEOMETRY_API Ptr<MgWktReaderWriter>;
 /// // prints "POINT XY (0 0)" to screen
 /// echo "$agfTextPoint\n";
 /// \endcode
-/// \htmlinclude ExampleBottom.html  
+/// \htmlinclude ExampleBottom.html
 ///
 /// <!-- Example (C#) -->
 /// \htmlinclude CSharpExampleTop.html
@@ -68,8 +68,8 @@ template class MG_GEOMETRY_API Ptr<MgWktReaderWriter>;
 /// geometryAgfText = wktReaderWriter.Write(pt11);
 /// // geometryAgfText now contains the text representation of the geometry
 /// \endcode
-/// \htmlinclude ExampleBottom.html  
-/// 
+/// \htmlinclude ExampleBottom.html
+///
 class MG_GEOMETRY_API MgWktReaderWriter : public MgDisposable
 {
     MG_DECL_DYNCREATE()

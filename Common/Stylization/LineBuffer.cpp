@@ -628,7 +628,7 @@ void LineBuffer::ArcTo(double cx, double cy, double a, double b, double startRad
     double Ke = CubicApproxParameter(increment*0.5);
 
     double c0x, c0y, c3x(0.0), c3y(0.0);
-    for (int i=0; i<num_segs; i++)
+    for (int i=0; i<num_segs; ++i)
     {
         // move to start point
         if (i==0)
@@ -745,7 +745,7 @@ void LineBuffer::TesselateCubicTo(double px1, double py1, double px2, double py2
 
     // forward differencing loop
     int tMax = (int)(1.0/dt - 0.5);
-    for (int t=0; t<tMax; t++)
+    for (int t=0; t<tMax; ++t)
     {
         fx   += dfx;
         fy   += dfy;
@@ -817,7 +817,7 @@ void LineBuffer::TesselateQuadTo(double px1, double py1, double px2, double py2,
 
     //forward differencing loop
     int tMax = (int)(1.0/dt - 0.5);
-    for (int t=0; t<tMax; t++)
+    for (int t=0; t<tMax; ++t)
     {
         fx   += dfx;
         fy   += dfy;
@@ -898,7 +898,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
             if (is_multi)
                 num_geoms = *ireader++;
 
-            for (int q=0; q<num_geoms; q++)
+            for (int q=0; q<num_geoms; ++q)
             {
                 //skip past geometry type of subgeometry
                 //we know it is LineString or Polygon or Point respectively
@@ -924,7 +924,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                     m_geom_type == FdoGeometryType_MultiPolygon)
                     contour_count = *ireader++;
 
-                for (int i=0; i<contour_count; i++)
+                for (int i=0; i<contour_count; ++i)
                 {
                     int point_count = 1;
 
@@ -1012,7 +1012,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
             if (is_multi)
                 num_geoms = *ireader++;
 
-            for (int q=0; q<num_geoms; q++)
+            for (int q=0; q<num_geoms; ++q)
             {
                 //skip past geometry type of subgeometry
                 //we know it is CurveString or CurvePolygon respectively
@@ -1039,7 +1039,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                     real_geom_type == FdoGeometryType_MultiCurvePolygon)
                     contour_count = *ireader++; //#rings for polygons
 
-                for (int i=0; i<contour_count; i++)
+                for (int i=0; i<contour_count; ++i)
                 {
                     //*** ireader not valid from here down
                     double* dreader = (double*) ireader;
@@ -1052,7 +1052,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                     ireader = (int*)dreader;
                     int seg_count = *ireader++; //# curve segments
 
-                    for (int j = 0; j < seg_count; j++)
+                    for (int j = 0; j < seg_count; ++j)
                     {
                         int seg_type = *ireader++;
 
@@ -1090,7 +1090,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                             int num_pts = *ireader++;
                             dreader = (double*)ireader;
 
-                            for (int k = 0; k < num_pts; k++)
+                            for (int k=0; k<num_pts; ++k)
                             {
                                 READ_POINT(x, y, z);
                                 LineTo(x, y, z);
@@ -1167,7 +1167,7 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
                 WRITE_INT(os, num_geoms);
             }
 
-            for (int q=0; q<num_geoms; q++)
+            for (int q=0; q<num_geoms; ++q)
             {
                 //skip past geometry type of subgeometry
                 //we know it is LineString or Polygon or Point respectively
@@ -1210,7 +1210,7 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
                     WRITE_INT(os, contour_count);
                 }
 
-                for (int i=cntrindex; i< cntrindex + contour_count; i++)
+                for (int i=cntrindex; i< cntrindex + contour_count; ++i)
                 {
                     int point_count = 1;
 
@@ -1294,7 +1294,7 @@ LineBuffer* LineBuffer::Optimize(double drawingScale, LineBufferPool* lbp)
     //optimization
     int index = 0;
     double x, y, z=0.0, lx, ly, lz=0.0;
-    for (int i=0; i< m_cur_cntr+1; i++)
+    for (int i=0; i<=m_cur_cntr; ++i)
     {
         int numPoints = m_cntrs[i];
 
@@ -1308,7 +1308,7 @@ LineBuffer* LineBuffer::Optimize(double drawingScale, LineBufferPool* lbp)
             ret->MoveTo(x, y, z);
             index++;
 
-            for (int j=1; j< numPoints; j++)
+            for (int j=1; j<numPoints; ++j)
             {
                 x = m_pts[index][0];
                 y = m_pts[index][1];
@@ -1330,7 +1330,7 @@ LineBuffer* LineBuffer::Optimize(double drawingScale, LineBufferPool* lbp)
             int numAdded = 1;
 
             //middle points
-            for (int j=1; j< numPoints-1; j++)
+            for (int j=1; j<numPoints-1; ++j)
             {
                 x = m_pts[index][0];
                 y = m_pts[index][1];
@@ -1448,7 +1448,7 @@ LineBuffer* LineBuffer::ClipPoints(RS_Bounds& b, LineBuffer* dst)
 {
     dst->m_geom_type = m_geom_type;
 
-    for (int i=0; i<point_count(); i++)
+    for (int i=0; i<point_count(); ++i)
     {
         double x = m_pts[i][0];
         double y = m_pts[i][1];
@@ -1486,7 +1486,7 @@ LineBuffer* LineBuffer::ClipPolygon(RS_Bounds& b, LineBuffer* dest)
 
     //loop over all segments, MoveTos denote start of polygon
     //in a multipolygon
-    for (int i=0; i<m_cur_types; i++)
+    for (int i=0; i<m_cur_types; ++i)
     {
         if (m_types[i] == (unsigned char)stMoveTo)
         {
@@ -1818,7 +1818,7 @@ LineBuffer* LineBuffer::ClipPolyline(RS_Bounds& b, LineBuffer* dest)
 
     bool move = false;
 
-    for (int i=0; i<m_cur_types; i++)
+    for (int i=0; i<m_cur_types; ++i)
     {
         if (m_types[i] == (unsigned char)stMoveTo)
             move = true;
@@ -1937,7 +1937,7 @@ int LineBuffer::ClipLine(RS_Bounds& clipRect, double* line, double* RESTRICT ret
     double deltaY = ret[3] - ret[1];
 
     // try to clip against all four boundaries of the clip rectangle
-    for (int i = 0; i < 4; i++)
+    for (int i=0; i<4; ++i)
     {
         double x, y;
 
@@ -2141,7 +2141,7 @@ void LineBuffer::PolygonCentroidWMC(int cntr, double* cx, double* cy)
     double xSum = 0.0, ySum = 0.0, segLength, dx, dy;
     double totalLength = 0.0;
 
-    for (int i=0, k=1; k<len; i+=dpv, k++)
+    for (int i=0, k=1; k<len; i+=dpv, ++k)
     {
         dx = pts[i  ] - pts[i+dpv];
         dy = pts[i+1] - pts[i+dpv+1];
@@ -2269,7 +2269,7 @@ void LineBuffer::MultiPolygonCentroid(double* cx, double* cy)
     double maxarea = -DBL_MAX;
 
     // iterate over all contours in buffer, find largest area
-    for (int i=0; i<=m_cur_cntr; i++)
+    for (int i=0; i<=m_cur_cntr; ++i)
     {
         area = PolygonArea(i);
         if (area > maxarea)
@@ -2305,7 +2305,7 @@ void LineBuffer::MultiPolylineCentroid(double* cx, double* cy, double* slope)
     double len, maxlen(0);
 
     // iterate over all contours in buffer, find longest
-    for (int i = 0; i <= m_cur_cntr; i++)
+    for (int i=0; i<=m_cur_cntr; ++i)
     {
         len = PolylineLengthSqr(i);
         if (len>maxlen)
@@ -2384,7 +2384,7 @@ void LineBuffer::MultiPointCentroid(double* cx, double* cy)
     }
 
     double xSum = 0.0, ySum = 0.0;
-    for (int i=0; i<point_count(); i++)
+    for (int i=0; i<point_count(); ++i)
     {
         xSum += m_pts[i][0];
         ySum += m_pts[i][1];
@@ -2421,7 +2421,7 @@ bool LineBuffer::PointInPolygon(int contour, double& x, double& y)
     // get test bit for above/below X axis
     yflag0 = (vtx0Y >= y);
 
-    for (int j=0; j<numPts; j++)
+    for (int j=0; j<numPts; ++j)
     {
         vtx1X = pts[j][0];
         vtx1Y = pts[j][1];
@@ -2466,7 +2466,7 @@ bool LineBuffer::PointInPolygon(int contour, double& x, double& y)
 // point in any contour
 bool LineBuffer::PointInPolygon(double& x, double& y)
 {
-    for (int i = 0; i <= m_cur_cntr; i++)
+    for (int i=0; i<=m_cur_cntr; ++i)
     {
         if (LineBuffer::PointInPolygon(i, x, y))
             return true;
@@ -2498,7 +2498,7 @@ void LineBuffer::ComputeBounds(RS_Bounds& bounds)
     // update the bounds, if they're not already set
     if (!m_bounds.IsValid())
     {
-        for (int i=0; i<point_count();i++)
+        for (int i=0; i<point_count(); ++i)
         {
             double x = m_pts[i][0];
             double y = m_pts[i][1];

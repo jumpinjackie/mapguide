@@ -29,7 +29,7 @@ using namespace CSLibrary;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemDatumDictionary::CCoordinateSystemDatumDictionary(MgCoordinateSystemCatalog *pCatalog)
-    : m_pmapSystemNameDescription(NULL) 
+    : m_pmapSystemNameDescription(NULL)
 {
     m_pCatalog = SAFE_ADDREF(pCatalog);
 }
@@ -141,7 +141,7 @@ MgGuardDisposable* CCoordinateSystemDatumDictionary::Get(CREFSTRING sName)
 //This function looks for a datum definition in the set with
 //the specified name and, if found, creates an MgCoordinateSystemDatum and
 //returns it (user is responsible for freeing the def via Release()
-//function).  
+//function).
 //Throws an exception (if no such definition exists in the catalog).
 MgCoordinateSystemDatum* CCoordinateSystemDatumDictionary::GetDatum(CREFSTRING sName)
 {

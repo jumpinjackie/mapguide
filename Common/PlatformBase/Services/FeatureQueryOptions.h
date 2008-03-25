@@ -179,7 +179,7 @@ PUBLISHED_API:
     /// \htmlinclude ExampleBottom.html
     ///
     /// \exception MgInvalidArgumentException if aliasName or expression is empty
-    /// 
+    ///
     INT32 AddComputedProperty(CREFSTRING aliasName, CREFSTRING expression);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

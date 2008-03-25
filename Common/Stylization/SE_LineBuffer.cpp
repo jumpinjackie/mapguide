@@ -153,9 +153,9 @@ void SE_LineBuffer::SetGeometry(LineBuffer* srclb)
 {
     if (m_npts != 0)
         Reset();
-    int n_cntrs = srclb->cntr_count();
 
-    for (int i = 0; i < n_cntrs; i++)
+    int n_cntrs = srclb->cntr_count();
+    for (int i=0; i<n_cntrs; ++i)
     {
         int j = srclb->contour_start_point(i);
         int k = srclb->contour_end_point(i);

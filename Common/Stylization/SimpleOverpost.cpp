@@ -31,7 +31,7 @@ bool SimpleOverpost::Overlaps(RS_F_Point* pts, int npts)
     ComputeBounds(pts, npts, b);
 
     //look if the bounds overlaps current overpost regions
-    for (size_t i=0; i<m_excludes.size(); i++)
+    for (size_t i=0; i<m_excludes.size(); ++i)
     {
         RS_Bounds res = RS_Bounds::Intersect(b, m_excludes[i]);
         if (res.IsValid())
@@ -74,6 +74,6 @@ void SimpleOverpost::ComputeBounds(RS_F_Point* RESTRICT pts, int npts, RS_Bounds
     b.miny = b.maxy = pts[0].y;
     b.minz = b.maxz = 0;
 
-    for (int i=1; i<npts; i++)
+    for (int i=1; i<npts; ++i)
         b.add_point(pts[i]);
 }

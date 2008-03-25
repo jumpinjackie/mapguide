@@ -45,7 +45,7 @@
 ///      distance; coordinate 12 should be the same as coordinate2
 ///   <li> get coordinate21, given coordinate2, azimuth21 and
 ///      distance; coordinate 21 should be the same as coordinate1
-///	 </ol>
+/// </ol>
 ///
 class MG_GEOMETRY_API MgCoordinateSystemMeasure : public MgMeasure
 {
@@ -85,7 +85,7 @@ PUBLISHED_API:
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
     /// $coord1 is New York City, and $coord2 is Boston,
-    /// Massachusetts. $distance is 361777.95418396 meters. 
+    /// Massachusetts. $distance is 361777.95418396 meters.
     /// \code
     /// $geometryFactory = new MgGeometryFactory();
     /// $coord1 = $geometryFactory->CreateCoordinateXY(-74.806394, 40.714169);
@@ -160,7 +160,7 @@ PUBLISHED_API:
     /// \htmlinclude PHPExampleTop.html
     /// (-74.806394, 40.714169) is New York City, and (-71.061342,
     /// 42.355892) is Boston, Massachusetts. $distance is
-    /// 361777.95418396 meters. 
+    /// 361777.95418396 meters.
     /// \code
     /// $distance = $coordSysMeasure->Getdistance(-74.806394, 40.714169, -71.061342, 42.355892);
     /// \endcode
@@ -185,7 +185,7 @@ PUBLISHED_API:
     /// // distance has the value of geogCSDistance
     /// isEquivalent = Math.Abs(distance - geogCSDistance) < tolerance;
     /// \endcode
-    /// \htmlinclude ExampleBottom.html  
+    /// \htmlinclude ExampleBottom.html
     ///
     /// \exception MgCoordinateSystemMeasureFailedException
     ///
@@ -228,7 +228,7 @@ PUBLISHED_API:
     /// \htmlinclude PHPExampleTop.html
     /// $coord1 is New York City, and $coord2 is Boston,
     /// Massachusetts. $azimuth12 is 58.507421025167, and $azimuth21
-    /// = -119.00856518347. 
+    /// = -119.00856518347.
     /// \code
     /// $geometryFactory = new MgGeometryFactory();
     /// $coord1 = $geometryFactory->CreateCoordinateXY(-74.806394, 40.714169);
@@ -262,10 +262,10 @@ PUBLISHED_API:
     /// // azimuth has the value of geogCSAzimuth
     /// isEquivalent = Math.Abs(azimuth - geogCSAzimuth) < tolerance;
     /// \endcode
-    /// \htmlinclude ExampleBottom.html  
+    /// \htmlinclude ExampleBottom.html
     ///
     /// \exception MgCoordinateSystemMeasureFailedException
-    ///     
+    ///
     virtual double GetAzimuth(MgCoordinate* coord1, MgCoordinate* coord2)=0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -305,7 +305,7 @@ PUBLISHED_API:
     /// \htmlinclude PHPExampleTop.html
     /// (-74.806394, 40.714169) is New York City, and (-71.061342,
     /// 42.355892) is Boston, Massachusetts. $azimuth12 is
-    /// 58.507421025167, and $azimuth21 = -119.00856518347. 
+    /// 58.507421025167, and $azimuth21 = -119.00856518347.
     /// \code
     /// $azimuth12 = $coordSysMeasure->GetAzimuth(-74.806394, 40.714169, -71.061342, 42.355892);
     /// $azimuth21 = $coordSysMeasure->GetAzimuth(-71.061342, 42.355892, -74.806394, 40.714169);
@@ -330,10 +330,10 @@ PUBLISHED_API:
     /// // azimuth has the value of geogCSDistance
     /// isEquivalent = Math.Abs(azimuth - geogCSAzimuth) < tolerance;
     /// \endcode
-    /// \htmlinclude ExampleBottom.html      
+    /// \htmlinclude ExampleBottom.html
     ///
     /// \exception MgCoordinateSystemMeasureFailedException
-    ///    
+    ///
     virtual double GetAzimuth(double x1, double y1, double x2, double y2)=0;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -414,10 +414,10 @@ PUBLISHED_API:
     /// // the X and Y values of geogCSX1Y1Coord are equal to geogCSX1 and geogCSY1
     /// isEquivalent = Math.Abs(geogCSX1 - geogCSX1Y1Coord.GetX()) < tolerance && Math.Abs(geogCSY1 - geogCSX1Y1Coord.GetY()) < tolerance;
     /// \endcode
-    /// \htmlinclude ExampleBottom.html      
+    /// \htmlinclude ExampleBottom.html
     ///
     /// \exception MgCoordinateSystemMeasureFailedException
-    ///    
+    ///
      virtual MgCoordinate* GetCoordinate(MgCoordinate* coord, double azimuth, double distance)=0;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -488,7 +488,7 @@ PUBLISHED_API:
     /// // the X and Y values of geogCSX1Y1Coord are equal to geogCSX1 and geogCSY1
     /// isEquivalent = Math.Abs(geogCSX1 - geogCSX1Y1Coord.GetX()) < tolerance && Math.Abs(geogCSY1 - geogCSX1Y1Coord.GetY()) < tolerance;
     /// \endcode
-    /// \htmlinclude ExampleBottom.html      
+    /// \htmlinclude ExampleBottom.html
     ///
     /// \exception MgCoordinateSystemMeasureFailedException
     ///
@@ -548,10 +548,10 @@ PUBLISHED_API:
     /// isEquivalent = Math.Abs(geogCSMinX - lowerLeft.GetX()) < tolerance && Math.Abs(geogCSMinY - lowerLeft.GetY()) < tolerance;
     /// isEquivalent = Math.Abs(geogCSMaxX - upperRight.GetX()) < tolerance && Math.Abs(geogCSMaxY - upperRight.GetY()) < tolerance;
     /// \endcode
-    /// \htmlinclude ExampleBottom.html      
+    /// \htmlinclude ExampleBottom.html
     ///
     /// \exception MgCoordinateSystemMeasureFailedException
-    ///    
+    ///
     virtual MgEnvelope* GetEnvelope()=0;  /// __get
 
 INTERNAL_API:

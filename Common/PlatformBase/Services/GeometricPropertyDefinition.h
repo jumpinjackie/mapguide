@@ -236,7 +236,7 @@ PUBLISHED_API:
     /// \brief
     /// Sets the specific list of geometry types that can be stored in this
     /// geometric property. The provided value is a list of geometry types
-    /// that are supported. 
+    /// that are supported.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

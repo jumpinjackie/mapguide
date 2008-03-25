@@ -46,7 +46,7 @@ template class MG_GEOMETRY_API Ptr<MgAgfReaderWriter>;
 /// \n
 /// The stream of bytes contained in this MgByteReader object is
 /// in Autodesk Geometry Format (AGF).
-/// 
+///
 /// <!-- Example (PHP) -->
 /// \htmlinclude PHPExampleTop.html
 /// \code
@@ -76,8 +76,8 @@ template class MG_GEOMETRY_API Ptr<MgAgfReaderWriter>;
 /// # print "POINT XY (0 0)" to screen
 /// echo "$agfTextPoint\n";
 /// \endcode
-/// \htmlinclude ExampleBottom.html  
-/// 
+/// \htmlinclude ExampleBottom.html
+///
 /// <!-- Example (C#) -->
 /// \htmlinclude CSharpExampleTop.html
 /// \code
@@ -142,7 +142,7 @@ template class MG_GEOMETRY_API Ptr<MgAgfReaderWriter>;
 ///     // geometryText now contains the text representation of the geometry
 /// }
 /// \endcode
-/// \htmlinclude ExampleBottom.html  
+/// \htmlinclude ExampleBottom.html
 ///
 class MG_GEOMETRY_API MgAgfReaderWriter : public MgDisposable
 {

@@ -64,7 +64,7 @@ void PolygonAdapter::Stylize(Renderer*                   renderer,
     MdfModel::AreaRule* rule = NULL;
 
     // determine the rule for the feature
-    for (int i=0; i<arc->GetCount(); i++)
+    for (int i=0; i<arc->GetCount(); ++i)
     {
         rule = static_cast<MdfModel::AreaRule*>(arc->GetAt(i));
 

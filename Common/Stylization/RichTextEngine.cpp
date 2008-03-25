@@ -43,8 +43,8 @@ RichTextEngine::~RichTextEngine()
         delete pNext;
     }
 
-	if ( this->m_pHeadBlock )
-		delete this->m_pHeadBlock;
+    if ( this->m_pHeadBlock )
+        delete this->m_pHeadBlock;
 }
 
 
@@ -68,14 +68,14 @@ void RichTextEngine::InitEngine( RS_TextDef* pTDef )
     // Initialize font vals
     GetFontValues();
 
-	// Create initial block
-	this->m_pHeadBlock  = new AtomBlock( this->m_curPos, NULL, this->m_formatState );
-	this->m_pCurrBlock = this->m_pHeadBlock;
-	this->OpenNewLine( true );
-	this->m_numRuns = 0;
+    // Create initial block
+    this->m_pHeadBlock  = new AtomBlock( this->m_curPos, NULL, this->m_formatState );
+    this->m_pCurrBlock = this->m_pHeadBlock;
+    this->OpenNewLine( true );
+    this->m_numRuns = 0;
 
-	// Initialize bookmark table
-    for ( int i = 0; i < kiBookmarkTableSize; i++ )
+    // Initialize bookmark table
+    for ( int i=0; i<kiBookmarkTableSize; ++i )
     {
         this->m_bookmarks[i].x = 0.0;
         this->m_bookmarks[i].y = 0.0;
@@ -92,7 +92,7 @@ void RichTextEngine::GetTextDef( RS_TextDef* pTDef )
 
 void RichTextEngine::GetTransform( NUMBER xform[9] )
 {
-    for ( int i = 0; i < 9; i++ )
+    for ( int i=0; i<9; ++i )
         xform[i] = this->m_curXform[i];
 }
 
@@ -212,26 +212,26 @@ bool RichTextEngine::Parse( const RS_String& s, RS_TextMetrics* pTextMetrics )
 
         if ( parserSucceeded && this->m_numRuns > 0 && this->m_pHeadBlock )
         {
-			// Close any open blocks
-			while ( this->m_pCurrBlock )
-				this->CloseCurrentBlock();
+            // Close any open blocks
+            while ( this->m_pCurrBlock )
+                this->CloseCurrentBlock();
 
-			// Get adjustments for horizontal and vertical alignments
+            // Get adjustments for horizontal and vertical alignments
             // Note that we pick up alignment values from the tmpTextDef which was updated with calls to ApplyFormatChanges.
             // This way we use the final alignment settings which will reflect any local changes in the
             // formatted string.
-			RS_F_Point positionedExtent[4];
-			RS_F_Point alignmentAdjustment;
-			this->m_pHeadBlock->GetPositionedExtent( positionedExtent );
-			alignmentAdjustment.x = this->GetHorizontalAlignmentOffset( 
-				this->m_formatState.m_tmpTDef.halign(), 
-				positionedExtent );
+            RS_F_Point positionedExtent[4];
+            RS_F_Point alignmentAdjustment;
+            this->m_pHeadBlock->GetPositionedExtent( positionedExtent );
+            alignmentAdjustment.x = this->GetHorizontalAlignmentOffset(
+                this->m_formatState.m_tmpTDef.halign(),
+                positionedExtent );
             alignmentAdjustment.y = this->GetVerticalAlignmentOffset(
-				this->m_formatState.m_tmpTDef.valign(), 
-				this->m_pHeadBlock->GetUpperLeftCorner().y, 
-				this->m_pHeadBlock->GetCaplinePosition( this->m_yUp ), 
-				this->m_pHeadBlock->GetLowerRightCorner().y, 
-				this->m_pHeadBlock->GetBaselinePosition( this->m_yUp ) );
+                this->m_formatState.m_tmpTDef.valign(),
+                this->m_pHeadBlock->GetUpperLeftCorner().y,
+                this->m_pHeadBlock->GetCaplinePosition( this->m_yUp ),
+                this->m_pHeadBlock->GetLowerRightCorner().y,
+                this->m_pHeadBlock->GetBaselinePosition( this->m_yUp ) );
 
             // Fill out the RS_TextMetrics class
             pTextMetrics->line_pos.reserve( this->m_numRuns );
@@ -240,7 +240,7 @@ bool RichTextEngine::Parse( const RS_String& s, RS_TextMetrics* pTextMetrics )
             pTextMetrics->line_breaks.resize( this->m_numRuns );
             pTextMetrics->format_changes.reserve( this->m_numRuns );
             pTextMetrics->format_changes.resize( this->m_numRuns );
-			this->m_pHeadBlock->OutputData( alignmentAdjustment, pTextMetrics );
+            this->m_pHeadBlock->OutputData( alignmentAdjustment, pTextMetrics );
         }
         else
         if ( parserSucceeded && this->m_numRuns == 0 )
@@ -256,8 +256,8 @@ bool RichTextEngine::Parse( const RS_String& s, RS_TextMetrics* pTextMetrics )
     return parserSucceeded;
 }
 
-Status RichTextEngine::Abandon(IAbandonment* pAbandon,IEnvironment*) 
-{ 
+Status RichTextEngine::Abandon(IAbandonment* pAbandon,IEnvironment*)
+{
     Status retStatus;
 
     switch ( pAbandon->Reason().Result() )
@@ -278,7 +278,7 @@ Status RichTextEngine::Abandon(IAbandonment* pAbandon,IEnvironment*)
         retStatus = Status::keAbandoned;
         break;
     }
-            
+
     return retStatus;
 }
 
@@ -310,8 +310,8 @@ double RichTextEngine::ConvertToScreenUnits( double val, Measure::UnitType unit 
         ret = val;
         break;
     case Measure::kePoints:   // 1/72 of an inch; Twips = Points * 20, Pica = 12 Points
-		val = (val / 72.0) * 0.0254;
-		ret = this->m_pFontEngine->MetersToScreenUnits( RS_Units_Device, val );
+        val = (val / 72.0) * 0.0254;
+        ret = this->m_pFontEngine->MetersToScreenUnits( RS_Units_Device, val );
         break;
     case Measure::keEm:       // an "em" (1.0 times height of current font.)
         {
@@ -319,8 +319,8 @@ double RichTextEngine::ConvertToScreenUnits( double val, Measure::UnitType unit 
             // which reduces to the following:
             ret = val * this->m_formatState.m_actualHeight;
         }
-		break;
-	case Measure::keEx:        // The x-height (height of lower-case letter)
+        break;
+    case Measure::keEx:        // The x-height (height of lower-case letter)
         // Not supported by RS_Font
     case Measure::keProportion:// Scale, 1 = normal (100%), 2 = twice normal, etc.
         // Should be handled differently
@@ -334,18 +334,18 @@ double RichTextEngine::ConvertToScreenUnits( double val, Measure::UnitType unit 
 
 void RichTextEngine::ApplyLocation( const ILocation* pLocation )
 {
-	if ( !pLocation )
-		return;
+    if ( !pLocation )
+        return;
 
-	// Examine semantics
-	ILocation::SemanticType semantics = pLocation->Semantics();
-	bool openingNewBlock = (semantics & ILocation::keInlineBlock) != 0;
-	bool openingNewLine = ((semantics & ILocation::keRow) | (semantics & ILocation::keLine)) != 0;
-	if ( (semantics & ILocation::keEndInlineBlock) != 0 )
-		this->CloseCurrentBlock();
+    // Examine semantics
+    ILocation::SemanticType semantics = pLocation->Semantics();
+    bool openingNewBlock = (semantics & ILocation::keInlineBlock) != 0;
+    bool openingNewLine = ((semantics & ILocation::keRow) | (semantics & ILocation::keLine)) != 0;
+    if ( (semantics & ILocation::keEndInlineBlock) != 0 )
+        this->CloseCurrentBlock();
 
-	// Update the block's current position
-	const LocationParticle* pOperations = pLocation->Operations();
+    // Update the block's current position
+    const LocationParticle* pOperations = pLocation->Operations();
     while ( pOperations )
     {
         LocationParticle::LocationParticleType opType = pOperations->Type();
@@ -354,27 +354,27 @@ void RichTextEngine::ApplyLocation( const ILocation* pLocation )
         {
         case LocationParticle::keLineBreak:
             {
-				this->CloseCurrentLine();
+                this->CloseCurrentLine();
 
-				double leading = this->m_formatState.m_lineHeight - (this->m_formatState.m_fontAscent + this->m_formatState.m_fontDescent);
-				AtomLine* pPreviousLine = this->m_pCurrBlock->GetLastLine();
-				double previousLineMinDescentPos;
-				if ( pPreviousLine )
-					previousLineMinDescentPos = pPreviousLine->GetDescentPosition( this->m_yUp );
-				else
-				{
-					if ( this->m_yUp )
-						previousLineMinDescentPos = this->m_curPos.y - this->m_formatState.m_fontDescent;
-					else
-						previousLineMinDescentPos = this->m_curPos.y + this->m_formatState.m_fontDescent;
-				}
-				this->m_curPos.x = 0.0;
-				if ( this->m_yUp )
-					this->m_curPos.y = previousLineMinDescentPos - leading - this->m_formatState.m_fontAscent;
-				else
-					this->m_curPos.y = previousLineMinDescentPos + leading + this->m_formatState.m_fontAscent;
+                double leading = this->m_formatState.m_lineHeight - (this->m_formatState.m_fontAscent + this->m_formatState.m_fontDescent);
+                AtomLine* pPreviousLine = this->m_pCurrBlock->GetLastLine();
+                double previousLineMinDescentPos;
+                if ( pPreviousLine )
+                    previousLineMinDescentPos = pPreviousLine->GetDescentPosition( this->m_yUp );
+                else
+                {
+                    if ( this->m_yUp )
+                        previousLineMinDescentPos = this->m_curPos.y - this->m_formatState.m_fontDescent;
+                    else
+                        previousLineMinDescentPos = this->m_curPos.y + this->m_formatState.m_fontDescent;
+                }
+                this->m_curPos.x = 0.0;
+                if ( this->m_yUp )
+                    this->m_curPos.y = previousLineMinDescentPos - leading - this->m_formatState.m_fontAscent;
+                else
+                    this->m_curPos.y = previousLineMinDescentPos + leading + this->m_formatState.m_fontAscent;
 
-				this->OpenNewLine( false );
+                this->OpenNewLine( false );
             }
             break;
         case LocationParticle::keBookmark:
@@ -450,65 +450,65 @@ void RichTextEngine::ApplyLocation( const ILocation* pLocation )
 
     };
 
-	// Finish semantics
-	if ( openingNewBlock )
-		this->OpenNewBlock();
-	else
-	if ( openingNewLine )
-	{
-		this->CloseCurrentLine();
-		this->OpenNewLine( true );
-	}
+    // Finish semantics
+    if ( openingNewBlock )
+        this->OpenNewBlock();
+    else
+    if ( openingNewLine )
+    {
+        this->CloseCurrentLine();
+        this->OpenNewLine( true );
+    }
 }
 
 void RichTextEngine::OpenNewLine( bool fixedLine )
 {
-	this->m_pCurrLine = new AtomLine( this->m_curPos, this->m_pCurrBlock, this->m_formatState, fixedLine );
+    this->m_pCurrLine = new AtomLine( this->m_curPos, this->m_pCurrBlock, this->m_formatState, fixedLine );
 }
 
 void RichTextEngine::CloseCurrentLine()
 {
-	if ( !this->m_pCurrLine )
-		return;
+    if ( !this->m_pCurrLine )
+        return;
 
-	if ( this->m_pCurrLine->GetParentBlock() != this->m_pCurrBlock )
-		assert( false ); // This shouldn't happen
+    if ( this->m_pCurrLine->GetParentBlock() != this->m_pCurrBlock )
+        assert( false ); // This shouldn't happen
 
-	// Close the current line and account for any baseline adjustment
-	this->m_curPos.y += this->m_pCurrLine->Close( this->m_yUp );
+    // Close the current line and account for any baseline adjustment
+    this->m_curPos.y += this->m_pCurrLine->Close( this->m_yUp );
 
-	// Add current line to the current block
-	this->m_pCurrBlock->AddComponent( this->m_pCurrLine );
-	this->m_pCurrLine = NULL;
+    // Add current line to the current block
+    this->m_pCurrBlock->AddComponent( this->m_pCurrLine );
+    this->m_pCurrLine = NULL;
 }
 
 void RichTextEngine::OpenNewBlock()
 {
-	if ( !this->m_pCurrLine )
-		return;
+    if ( !this->m_pCurrLine )
+        return;
 
-	// Create a new block and its first line
-	this->m_pCurrBlock = new AtomBlock( this->m_curPos, this->m_pCurrLine, this->m_formatState );
-	this->OpenNewLine( true );
+    // Create a new block and its first line
+    this->m_pCurrBlock = new AtomBlock( this->m_curPos, this->m_pCurrLine, this->m_formatState );
+    this->OpenNewLine( true );
 }
 
 void RichTextEngine::CloseCurrentBlock()
 {
-	if ( !this->m_pCurrBlock )
-		return;
+    if ( !this->m_pCurrBlock )
+        return;
 
-	this->CloseCurrentLine();
+    this->CloseCurrentLine();
 
-	// Close the block and add to its parent line, if we have one.
-	this->m_pCurrBlock->Close( this->m_yUp );
-	this->m_pCurrLine = this->m_pCurrBlock->GetParentLine();
-	if ( this->m_pCurrLine )
-	{
-		this->m_pCurrLine->AddComponent( m_pCurrBlock );
-		this->m_pCurrBlock = this->m_pCurrLine->GetParentBlock();
-	}
-	else
-		this->m_pCurrBlock = NULL;
+    // Close the block and add to its parent line, if we have one.
+    this->m_pCurrBlock->Close( this->m_yUp );
+    this->m_pCurrLine = this->m_pCurrBlock->GetParentLine();
+    if ( this->m_pCurrLine )
+    {
+        this->m_pCurrLine->AddComponent( m_pCurrBlock );
+        this->m_pCurrBlock = this->m_pCurrLine->GetParentBlock();
+    }
+    else
+        this->m_pCurrBlock = NULL;
 }
 
 Status RichTextEngine::TextRun(ITextRun* pTextRun,IEnvironment*)
@@ -542,46 +542,46 @@ Status RichTextEngine::TextRun(ITextRun* pTextRun,IEnvironment*)
         pTransforms = pTransforms->Next();
     }
 
-	// Apply format changes to current state
-	this->ApplyFormatChanges( pFormatChanges );
+    // Apply format changes to current state
+    this->ApplyFormatChanges( pFormatChanges );
 
-	// Apply location changes to current position
-	this->ApplyLocation( pTextRun->Location() );
+    // Apply location changes to current position
+    this->ApplyLocation( pTextRun->Location() );
 
     // Make sure we have a current line
-	if ( !this->m_pCurrLine )
-	{
-		// This should not happent
-		assert( false );
-		delete pFormatChanges;
-	    return Status::keContinue;
-	}
+    if ( !this->m_pCurrLine )
+    {
+        // This should not happent
+        assert( false );
+        delete pFormatChanges;
+        return Status::keContinue;
+    }
 
-	// Add text run to current line
+    // Add text run to current line
     if ( this->m_formatState.m_tmpTDef.trackSpacing() == 1.0 )
-	{
-		AtomRun* pRun = new AtomRun( this->m_curPos, this->m_pCurrLine, this->m_formatState );
-		pRun->SetTextRun( pTextRun->Contents(), this->m_numRuns, pFormatChanges );
-		const RS_Font* pFont = this->m_pFontEngine->GetRenderingFont( this->m_formatState.m_tmpTDef );
-		pRun->Close( this->m_pFontEngine, pFont );
-		this->m_pCurrLine->AddComponent( pRun );
-		this->m_numRuns++;
-		this->m_curPos.x += pRun->GetWidth();
-	}
-	else
-	{
+    {
+        AtomRun* pRun = new AtomRun( this->m_curPos, this->m_pCurrLine, this->m_formatState );
+        pRun->SetTextRun( pTextRun->Contents(), this->m_numRuns, pFormatChanges );
+        const RS_Font* pFont = this->m_pFontEngine->GetRenderingFont( this->m_formatState.m_tmpTDef );
+        pRun->Close( this->m_pFontEngine, pFont );
+        this->m_pCurrLine->AddComponent( pRun );
+        this->m_numRuns++;
+        this->m_curPos.x += pRun->GetWidth();
+    }
+    else
+    {
         // Create a text run for each char.
         const RS_Font* pFont = this->m_pFontEngine->GetRenderingFont( this->m_formatState.m_tmpTDef );
-		double trackingVal = this->m_formatState.m_tmpTDef.trackSpacing();
-		StRange entireContents = pTextRun->Contents();
-		StRange charContent;
-        for ( int i = 0; i < entireContents.Length(); i++ )
+        double trackingVal = this->m_formatState.m_tmpTDef.trackSpacing();
+        StRange entireContents = pTextRun->Contents();
+        StRange charContent;
+        for ( int i=0; i<entireContents.Length(); ++i )
         {
             // First create the text run
-			wchar_t* charCopy = (wchar_t*)malloc(2 * sizeof(wchar_t));
+            wchar_t* charCopy = (wchar_t*)malloc(2 * sizeof(wchar_t));
             charCopy[0] = entireContents[i];
             charCopy[1] = L'\0';
-			charContent.Set( charCopy, 1 );
+            charContent.Set( charCopy, 1 );
 
             // The first char already has its list of style particles and transform particles. However, since
             // Transform particles do not persist from one run to the next, we need to repeat the transform
@@ -606,15 +606,15 @@ Status RichTextEngine::TextRun(ITextRun* pTextRun,IEnvironment*)
                     }
                     pTransforms = pTransforms->Next();
                 }
-				pFormatChanges = pCharTransforms;
+                pFormatChanges = pCharTransforms;
             }
 
-			// Create the run
-			AtomRun* pRun = new AtomRun( this->m_curPos, this->m_pCurrLine, this->m_formatState );
-			pRun->SetTextRun( charContent, this->m_numRuns, pFormatChanges );
-			pRun->Close( this->m_pFontEngine, pFont );
-			this->m_pCurrLine->AddComponent( pRun );
-			this->m_numRuns++;
+            // Create the run
+            AtomRun* pRun = new AtomRun( this->m_curPos, this->m_pCurrLine, this->m_formatState );
+            pRun->SetTextRun( charContent, this->m_numRuns, pFormatChanges );
+            pRun->Close( this->m_pFontEngine, pFont );
+            this->m_pCurrLine->AddComponent( pRun );
+            this->m_numRuns++;
 
             // Apply tracking value
             double charWidth = pRun->GetWidth();
@@ -623,7 +623,7 @@ Status RichTextEngine::TextRun(ITextRun* pTextRun,IEnvironment*)
                 // If tracking is greater than 1, we need to stretch the extent so that underline/overline will
                 // draw for the full extent of the char.  If less that 1, the overline/underline will overwrite
                 // a bit but we want the last char to have a complete overline/underline.
-				RS_F_Point* ext = pRun->GetExtent();
+                RS_F_Point* ext = pRun->GetExtent();
                 ext[1].x *= trackingVal;
                 ext[2].x = ext[1].x;
             }
@@ -631,9 +631,9 @@ Status RichTextEngine::TextRun(ITextRun* pTextRun,IEnvironment*)
             // Advance to the end of this char while allowing for tracking value.
             this->m_curPos.x += ( charWidth * trackingVal );
         }
-	}
+    }
 
-	return Status::keContinue;
+    return Status::keContinue;
 }
 
 
@@ -889,27 +889,27 @@ void RichTextEngine::ApplyFormatChanges( const Particle* pFormatChanges )
                 break;
 
             case StyleParticle::keJustification:
-				{
-					const JustificationStyleParticle* pJustificationParticle = static_cast<const JustificationStyleParticle*>( pStyleParticle );
-					Justification::Type justification = pJustificationParticle->Value();
-					switch ( justification )
-					{
-						case Justification::keRight:
-							this->m_formatState.m_tmpTDef.justify() = RS_Justify_Right;
-							break;
-						case Justification::keCentered:
-							this->m_formatState.m_tmpTDef.justify() = RS_Justify_Center;
-							break;
-						case Justification::keJustified:
-							this->m_formatState.m_tmpTDef.justify() = RS_Justify_Justify;
-							break;
-						case Justification::keLeft:
-						default:
-							this->m_formatState.m_tmpTDef.justify() = RS_Justify_Left;
-							break;
-					}
-				}
-				break;
+                {
+                    const JustificationStyleParticle* pJustificationParticle = static_cast<const JustificationStyleParticle*>( pStyleParticle );
+                    Justification::Type justification = pJustificationParticle->Value();
+                    switch ( justification )
+                    {
+                        case Justification::keRight:
+                            this->m_formatState.m_tmpTDef.justify() = RS_Justify_Right;
+                            break;
+                        case Justification::keCentered:
+                            this->m_formatState.m_tmpTDef.justify() = RS_Justify_Center;
+                            break;
+                        case Justification::keJustified:
+                            this->m_formatState.m_tmpTDef.justify() = RS_Justify_Justify;
+                            break;
+                        case Justification::keLeft:
+                        default:
+                            this->m_formatState.m_tmpTDef.justify() = RS_Justify_Left;
+                            break;
+                    }
+                }
+                break;
 
             // Unsupported style attributes - will be done if time permits
             case StyleParticle::keLineHeight:
@@ -994,26 +994,26 @@ void RichTextEngine::ApplyFormatChanges( const Particle* pFormatChanges )
 
 AtomBaseComponent::AtomBaseComponent( RS_F_Point position, AtomBaseComponent* pParent )
 {
-	this->m_pParent = pParent;
+    this->m_pParent = pParent;
 
-	if ( pParent )
-	{
-		RS_F_Point parentPosition;
-		pParent->GetPosition( parentPosition );
-		this->m_offset.x = position.x - parentPosition.x;
-		this->m_offset.y = position.y - parentPosition.y;
-	}
-	else
-		this->m_offset = position;
-	
-	this->m_extent[0].x = 0.0;
-	this->m_extent[1].x = 0.0;
-	this->m_extent[2].x = 0.0;
-	this->m_extent[3].x = 0.0;
-	this->m_extent[0].y = 0.0;
-	this->m_extent[1].y = 0.0;
-	this->m_extent[2].y = 0.0;
-	this->m_extent[3].y = 0.0;
+    if ( pParent )
+    {
+        RS_F_Point parentPosition;
+        pParent->GetPosition( parentPosition );
+        this->m_offset.x = position.x - parentPosition.x;
+        this->m_offset.y = position.y - parentPosition.y;
+    }
+    else
+        this->m_offset = position;
+
+    this->m_extent[0].x = 0.0;
+    this->m_extent[1].x = 0.0;
+    this->m_extent[2].x = 0.0;
+    this->m_extent[3].x = 0.0;
+    this->m_extent[0].y = 0.0;
+    this->m_extent[1].y = 0.0;
+    this->m_extent[2].y = 0.0;
+    this->m_extent[3].y = 0.0;
 }
 
 AtomBaseComponent::~AtomBaseComponent()
@@ -1022,100 +1022,100 @@ AtomBaseComponent::~AtomBaseComponent()
 
 RS_F_Point& AtomBaseComponent::Offset()
 {
-	return this->m_offset;
+    return this->m_offset;
 }
 
 void AtomBaseComponent::GetPosition( RS_F_Point& position )
 {
-	if ( this->m_pParent )
-	{
-		this->m_pParent->GetPosition( position );
-		position.x += this->m_offset.x;
-		position.y += this->m_offset.y;
-	}
-	else
-		position = this->m_offset;
+    if ( this->m_pParent )
+    {
+        this->m_pParent->GetPosition( position );
+        position.x += this->m_offset.x;
+        position.y += this->m_offset.y;
+    }
+    else
+        position = this->m_offset;
 }
 
 RS_F_Point* AtomBaseComponent::GetExtent()
 {
-	return this->m_extent;
+    return this->m_extent;
 }
 
 double AtomBaseComponent::GetWidth()
 {
-	return ( this->m_extent[1].x - this->m_extent[0].x );
+    return ( this->m_extent[1].x - this->m_extent[0].x );
 }
 
 void AtomBaseComponent::GetPositionedExtent( RS_F_Point* positionedExtent )
 {
-	for ( int i = 0; i < 4; i++ )
-	{
-		positionedExtent[i].x = this->m_offset.x + this->m_extent[i].x;
-		positionedExtent[i].y = this->m_offset.y + this->m_extent[i].y;
-	}
+    for ( int i=0; i<4; ++i )
+    {
+        positionedExtent[i].x = this->m_offset.x + this->m_extent[i].x;
+        positionedExtent[i].y = this->m_offset.y + this->m_extent[i].y;
+    }
 }
 
 RS_F_Point AtomBaseComponent::GetUpperLeftCorner()
 {
-	RS_F_Point upperLeftCorner = this->m_extent[3];
-	upperLeftCorner.x += this->m_offset.x;
-	upperLeftCorner.y += this->m_offset.y;
-	return upperLeftCorner;
+    RS_F_Point upperLeftCorner = this->m_extent[3];
+    upperLeftCorner.x += this->m_offset.x;
+    upperLeftCorner.y += this->m_offset.y;
+    return upperLeftCorner;
 }
 
 RS_F_Point AtomBaseComponent::GetLowerRightCorner()
 {
-	RS_F_Point lowerRightCorner = this->m_extent[1];
-	lowerRightCorner.x += this->m_offset.x;
-	lowerRightCorner.y += this->m_offset.y;
-	return lowerRightCorner;
+    RS_F_Point lowerRightCorner = this->m_extent[1];
+    lowerRightCorner.x += this->m_offset.x;
+    lowerRightCorner.y += this->m_offset.y;
+    return lowerRightCorner;
 }
 
 void AtomBaseComponent::Translate( RS_F_Point translation )
 {
-	this->m_offset.x += translation.x;
-	this->m_offset.y += translation.y;
+    this->m_offset.x += translation.x;
+    this->m_offset.y += translation.y;
 }
 
 void AtomBaseComponent::AddExtent( RS_F_Point* ext, bool yUp )
 {
-	if ( ext[0].x < this->m_extent[0].x )
-	{
-		this->m_extent[0].x = ext[0].x;
-		this->m_extent[3].x = ext[0].x;
-	}
-	if ( ext[1].x > this->m_extent[1].x )
-	{
-		this->m_extent[1].x = ext[1].x;
-		this->m_extent[2].x = ext[1].x;
-	}
-	if ( yUp )
-	{
-		if ( ext[0].y < this->m_extent[0].y )
-		{
-			this->m_extent[0].y = ext[0].y;
-			this->m_extent[1].y = ext[0].y;
-		}
-		if ( ext[2].y > this->m_extent[2].y )
-		{
-			this->m_extent[2].y = ext[2].y;
-			this->m_extent[3].y = ext[2].y;
-		}
-	}
-	else
-	{
-		if ( ext[0].y > this->m_extent[0].y )
-		{
-			this->m_extent[0].y = ext[0].y;
-			this->m_extent[1].y = ext[0].y;
-		}
-		if ( ext[2].y < this->m_extent[2].y )
-		{
-			this->m_extent[2].y = ext[2].y;
-			this->m_extent[3].y = ext[2].y;
-		}
-	}
+    if ( ext[0].x < this->m_extent[0].x )
+    {
+        this->m_extent[0].x = ext[0].x;
+        this->m_extent[3].x = ext[0].x;
+    }
+    if ( ext[1].x > this->m_extent[1].x )
+    {
+        this->m_extent[1].x = ext[1].x;
+        this->m_extent[2].x = ext[1].x;
+    }
+    if ( yUp )
+    {
+        if ( ext[0].y < this->m_extent[0].y )
+        {
+            this->m_extent[0].y = ext[0].y;
+            this->m_extent[1].y = ext[0].y;
+        }
+        if ( ext[2].y > this->m_extent[2].y )
+        {
+            this->m_extent[2].y = ext[2].y;
+            this->m_extent[3].y = ext[2].y;
+        }
+    }
+    else
+    {
+        if ( ext[0].y > this->m_extent[0].y )
+        {
+            this->m_extent[0].y = ext[0].y;
+            this->m_extent[1].y = ext[0].y;
+        }
+        if ( ext[2].y < this->m_extent[2].y )
+        {
+            this->m_extent[2].y = ext[2].y;
+            this->m_extent[3].y = ext[2].y;
+        }
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1123,132 +1123,132 @@ void AtomBaseComponent::AddExtent( RS_F_Point* ext, bool yUp )
 
 AtomBaseComponentCollection::AtomBaseComponentCollection( RS_F_Point position, AtomBaseComponent* pParent ) : AtomBaseComponent( position, pParent )
 {
-	this->m_components.clear();
+    this->m_components.clear();
 }
 
 AtomBaseComponentCollection::~AtomBaseComponentCollection()
 {
-	size_t numComponents = this->m_components.size();
-	for ( size_t i = 0; i < numComponents; i++ )
-		if ( m_components[i] )
-			delete this->m_components[i];
+    size_t numComponents = this->m_components.size();
+    for ( size_t i=0; i<numComponents; ++i )
+        if ( m_components[i] )
+            delete this->m_components[i];
 }
 
 void AtomBaseComponentCollection::AddComponent( AtomBaseComponent* pComponent )
 {
-	if ( pComponent )
-		this->m_components.push_back( pComponent );
+    if ( pComponent )
+        this->m_components.push_back( pComponent );
 }
 
 double AtomBaseComponentCollection::GetAscentPosition( bool yUp )
 {
-	size_t numComponents = this->m_components.size();
-	if ( numComponents == 0 )
-		return this->m_offset.y;
+    size_t numComponents = this->m_components.size();
+    if ( numComponents == 0 )
+        return this->m_offset.y;
 
-	double ascentPos;
-	double maxAscentPos = this->m_offset.y + this->m_components[0]->GetAscentPosition( yUp );
-	for ( size_t i = 1; i < numComponents; i++ )
-	{
-		ascentPos = this->m_offset.y + this->m_components[i]->GetAscentPosition( yUp );
-		if ( yUp )
-			maxAscentPos = ascentPos > maxAscentPos ? ascentPos : maxAscentPos;
-		else
-			maxAscentPos = ascentPos < maxAscentPos ? ascentPos : maxAscentPos;
-	}
+    double ascentPos;
+    double maxAscentPos = this->m_offset.y + this->m_components[0]->GetAscentPosition( yUp );
+    for ( size_t i=1; i<numComponents; ++i )
+    {
+        ascentPos = this->m_offset.y + this->m_components[i]->GetAscentPosition( yUp );
+        if ( yUp )
+            maxAscentPos = ascentPos > maxAscentPos ? ascentPos : maxAscentPos;
+        else
+            maxAscentPos = ascentPos < maxAscentPos ? ascentPos : maxAscentPos;
+    }
 
-	return maxAscentPos;
+    return maxAscentPos;
 }
 
 double AtomBaseComponentCollection::GetDescentPosition( bool yUp )
 {
-	size_t numComponents = this->m_components.size();
-	if ( numComponents == 0 )
-		return this->m_offset.y;
+    size_t numComponents = this->m_components.size();
+    if ( numComponents == 0 )
+        return this->m_offset.y;
 
-	double descentPos;
-	double minDescentPos = this->m_offset.y + this->m_components[0]->GetDescentPosition( yUp );
-	for ( size_t i = 1; i < numComponents; i++ )
-	{
-		descentPos = this->m_offset.y + this->m_components[i]->GetDescentPosition( yUp );
-		if ( yUp )
-			minDescentPos = descentPos < minDescentPos ? descentPos : minDescentPos;
-		else
-			minDescentPos = descentPos > minDescentPos ? descentPos : minDescentPos;
-	}
+    double descentPos;
+    double minDescentPos = this->m_offset.y + this->m_components[0]->GetDescentPosition( yUp );
+    for ( size_t i=1; i<numComponents; ++i )
+    {
+        descentPos = this->m_offset.y + this->m_components[i]->GetDescentPosition( yUp );
+        if ( yUp )
+            minDescentPos = descentPos < minDescentPos ? descentPos : minDescentPos;
+        else
+            minDescentPos = descentPos > minDescentPos ? descentPos : minDescentPos;
+    }
 
-	return minDescentPos;
+    return minDescentPos;
 }
 
 double AtomBaseComponentCollection::GetCaplinePosition( bool yUp )
 {
-	size_t numComponents = this->m_components.size();
-	if ( numComponents == 0 )
-		return this->m_offset.y;
+    size_t numComponents = this->m_components.size();
+    if ( numComponents == 0 )
+        return this->m_offset.y;
 
-	double caplinePos;
-	double maxCaplinePos = this->m_offset.y + this->m_components[0]->GetCaplinePosition( yUp );
-	for ( size_t i = 1; i < numComponents; i++ )
-	{
-		caplinePos = this->m_offset.y + this->m_components[i]->GetCaplinePosition( yUp );
-		if ( yUp )
-			maxCaplinePos = caplinePos > maxCaplinePos ? caplinePos : maxCaplinePos;
-		else
-			maxCaplinePos = caplinePos < maxCaplinePos ? caplinePos : maxCaplinePos;
-	}
+    double caplinePos;
+    double maxCaplinePos = this->m_offset.y + this->m_components[0]->GetCaplinePosition( yUp );
+    for ( size_t i=1; i<numComponents; ++i )
+    {
+        caplinePos = this->m_offset.y + this->m_components[i]->GetCaplinePosition( yUp );
+        if ( yUp )
+            maxCaplinePos = caplinePos > maxCaplinePos ? caplinePos : maxCaplinePos;
+        else
+            maxCaplinePos = caplinePos < maxCaplinePos ? caplinePos : maxCaplinePos;
+    }
 
-	return maxCaplinePos;
+    return maxCaplinePos;
 }
 
 double AtomBaseComponentCollection::GetBaselinePosition( bool yUp )
 {
-	size_t numComponents = this->m_components.size();
-	if ( numComponents == 0 )
-		return this->m_offset.y;
+    size_t numComponents = this->m_components.size();
+    if ( numComponents == 0 )
+        return this->m_offset.y;
 
-	double baselinePos;
-	double minBaselinePos = this->m_offset.y + this->m_components[0]->GetBaselinePosition( yUp );
-	for ( size_t i = 1; i < numComponents; i++ )
-	{
-		baselinePos = this->m_offset.y + this->m_components[i]->GetBaselinePosition( yUp );
-		if ( yUp )
-			minBaselinePos = baselinePos < minBaselinePos ? baselinePos : minBaselinePos;
-		else
-			minBaselinePos = baselinePos > minBaselinePos ? baselinePos : minBaselinePos;
-	}
+    double baselinePos;
+    double minBaselinePos = this->m_offset.y + this->m_components[0]->GetBaselinePosition( yUp );
+    for ( size_t i=1; i<numComponents; ++i )
+    {
+        baselinePos = this->m_offset.y + this->m_components[i]->GetBaselinePosition( yUp );
+        if ( yUp )
+            minBaselinePos = baselinePos < minBaselinePos ? baselinePos : minBaselinePos;
+        else
+            minBaselinePos = baselinePos > minBaselinePos ? baselinePos : minBaselinePos;
+    }
 
-	return minBaselinePos;
+    return minBaselinePos;
 }
 
 void AtomBaseComponentCollection::CalculateExtent( bool yUp )
 {
-	size_t numComponents = this->m_components.size();
-	if ( numComponents == 0 )
-		return;
+    size_t numComponents = this->m_components.size();
+    if ( numComponents == 0 )
+        return;
 
-	// Add the extents of the line's components
-	RS_F_Point positionedExt[4];
-	AtomBaseComponent* pComponent = this->m_components[0];
-	pComponent->GetPositionedExtent( this->m_extent );
-	for ( size_t i = 1; i < numComponents; i++ )
-	{
-		pComponent = this->m_components[i];
-		pComponent->GetPositionedExtent( positionedExt );
-		this->AddExtent( positionedExt, yUp );
-	}
+    // Add the extents of the line's components
+    RS_F_Point positionedExt[4];
+    AtomBaseComponent* pComponent = this->m_components[0];
+    pComponent->GetPositionedExtent( this->m_extent );
+    for ( size_t i=1; i<numComponents; ++i )
+    {
+        pComponent = this->m_components[i];
+        pComponent->GetPositionedExtent( positionedExt );
+        this->AddExtent( positionedExt, yUp );
+    }
 }
 
 void AtomBaseComponentCollection::OutputData( RS_F_Point parentPosition, RS_TextMetrics* pTextMetrics )
 {
-	this->Translate( parentPosition );
+    this->Translate( parentPosition );
 
-	size_t numComponents = this->m_components.size();
-	for ( size_t i = 0; i < numComponents; i++ )
-	{
-		this->m_components[i]->OutputData( this->m_offset, pTextMetrics );
-		delete this->m_components[i];
-		this->m_components[i] = NULL;
-	}
+    size_t numComponents = this->m_components.size();
+    for ( size_t i=0; i<numComponents; ++i )
+    {
+        this->m_components[i]->OutputData( this->m_offset, pTextMetrics );
+        delete this->m_components[i];
+        this->m_components[i] = NULL;
+    }
 }
 
 
@@ -1258,112 +1258,112 @@ void AtomBaseComponentCollection::OutputData( RS_F_Point parentPosition, RS_Text
 
 AtomRun::AtomRun( RS_F_Point position, AtomLine* pParentLine, RichTextFormatState& formatState ) : AtomBaseComponent( position, pParentLine )
 {
-	// A run must have a parent
-	assert( pParentLine );
+    // A run must have a parent
+    assert( pParentLine );
 
-	this->m_textRun = NULL;
-	this->m_textRunLen = 0;
-	this->m_textRunInd = 0;
-	this->m_charAdvances.clear();
-	this->m_pFormatChanges = NULL;
+    this->m_textRun = NULL;
+    this->m_textRunLen = 0;
+    this->m_textRunInd = 0;
+    this->m_charAdvances.clear();
+    this->m_pFormatChanges = NULL;
 
-	this->m_advanceAlignment = formatState.m_advanceAlignmentVal;
-	this->m_fontAscent = formatState.m_fontAscent;
-	this->m_fontCapline = formatState.m_fontCapline;
-	this->m_fontDescent = formatState.m_fontDescent;
-	this->m_actualHeight = formatState.m_actualHeight;
+    this->m_advanceAlignment = formatState.m_advanceAlignmentVal;
+    this->m_fontAscent = formatState.m_fontAscent;
+    this->m_fontCapline = formatState.m_fontCapline;
+    this->m_fontDescent = formatState.m_fontDescent;
+    this->m_actualHeight = formatState.m_actualHeight;
 }
 
 AtomRun::~AtomRun()
 {
-	// We only need to clean up here if OutputData was not called.
-	if ( this->m_textRun )
-		delete this->m_textRun;
-	if ( this->m_pFormatChanges )
-	{
-		Particle* pParticle = this->m_pFormatChanges;
-		this->m_pFormatChanges = (Particle*) this->m_pFormatChanges->Next();
-		delete pParticle;
-	}
+    // We only need to clean up here if OutputData was not called.
+    if ( this->m_textRun )
+        delete this->m_textRun;
+    if ( this->m_pFormatChanges )
+    {
+        Particle* pParticle = this->m_pFormatChanges;
+        this->m_pFormatChanges = (Particle*) this->m_pFormatChanges->Next();
+        delete pParticle;
+    }
 }
 
 void AtomRun::SetTextRun( StRange runContent, unsigned int runInd, Particle* pFormatChanges )
 {
-	this->m_textRunLen = runContent.Length();
-	this->m_textRunInd = runInd;
-	this->m_pFormatChanges = pFormatChanges;
-	this->m_textRun = (wchar_t*)malloc((this->m_textRunLen + 1) * sizeof(wchar_t));
-	wcsncpy(this->m_textRun, runContent.Start(), this->m_textRunLen);
-	this->m_textRun[this->m_textRunLen] = L'\0';
+    this->m_textRunLen = runContent.Length();
+    this->m_textRunInd = runInd;
+    this->m_pFormatChanges = pFormatChanges;
+    this->m_textRun = (wchar_t*)malloc((this->m_textRunLen + 1) * sizeof(wchar_t));
+    wcsncpy(this->m_textRun, runContent.Start(), this->m_textRunLen);
+    this->m_textRun[this->m_textRunLen] = L'\0';
 }
 
 void AtomRun::Close( RS_FontEngine* pFontEngine, const RS_Font* pFont )
 {
-	this->CalculateExtent( pFontEngine, pFont );
+    this->CalculateExtent( pFontEngine, pFont );
 }
 
 double AtomRun::GetAdvanceAlignment()
 {
-	return this->m_advanceAlignment;
+    return this->m_advanceAlignment;
 }
 
 void AtomRun::CalculateExtent( RS_FontEngine* pFontEngine, const RS_Font* pFont )
 {
-	if ( !pFontEngine || !pFont )
-		return;
+    if ( !pFontEngine || !pFont )
+        return;
 
     pFontEngine->MeasureString( this->m_textRun, this->m_actualHeight, pFont, 0.0, this->m_extent, NULL);
 }
 
 double AtomRun::GetAscentPosition( bool yUp )
 {
-	if ( yUp )
-		return this->m_offset.y + this->m_fontAscent;
-	else
-		return this->m_offset.y - this->m_fontAscent;
+    if ( yUp )
+        return this->m_offset.y + this->m_fontAscent;
+    else
+        return this->m_offset.y - this->m_fontAscent;
 }
 
 double AtomRun::GetDescentPosition( bool yUp )
 {
-	if ( yUp )
-		return this->m_offset.y - this->m_fontDescent;
-	else
-		return this->m_offset.y + this->m_fontDescent;
+    if ( yUp )
+        return this->m_offset.y - this->m_fontDescent;
+    else
+        return this->m_offset.y + this->m_fontDescent;
 }
 
 
 double AtomRun::GetCaplinePosition( bool yUp )
 {
-	if ( yUp )
-		return ( this->m_offset.y + this->m_fontCapline );
-	else
-		return ( this->m_offset.y - this->m_fontCapline );
+    if ( yUp )
+        return ( this->m_offset.y + this->m_fontCapline );
+    else
+        return ( this->m_offset.y - this->m_fontCapline );
 }
 
 double AtomRun::GetBaselinePosition( bool /*yUp*/ )
 {
-	return this->m_offset.y;
+    return this->m_offset.y;
 }
 
 void AtomRun::OutputData( RS_F_Point parentPosition, RS_TextMetrics* pTextMetrics )
 {
-	if ( !pTextMetrics )
-		return;
+    if ( !pTextMetrics )
+        return;
 
-	// Translate to absolute position
-	this->Translate( parentPosition );
+    // Translate to absolute position
+    this->Translate( parentPosition );
 
-	// Store data in TextMetrics 
-	this->GetPositionedExtent( pTextMetrics->line_pos[ this->m_textRunInd ].ext );
-	pTextMetrics->line_pos[ this->m_textRunInd ].hOffset = this->m_offset.x;
-	pTextMetrics->line_pos[ this->m_textRunInd ].vOffset = this->m_offset.y;
+    // Store data in TextMetrics
+    this->GetPositionedExtent( pTextMetrics->line_pos[ this->m_textRunInd ].ext );
+    pTextMetrics->line_pos[ this->m_textRunInd ].hOffset = this->m_offset.x;
+    pTextMetrics->line_pos[ this->m_textRunInd ].vOffset = this->m_offset.y;
     pTextMetrics->line_breaks[ this->m_textRunInd ] = this->m_textRun;
     pTextMetrics->format_changes[ this->m_textRunInd ] = this->m_pFormatChanges;
 
-	// Nothing to release
-	this->m_textRun = NULL;
-	this->m_textRunLen = 0;
-	this->m_pFormatChanges = NULL;
+    // Nothing to release
+    this->m_textRun = NULL;
+    this->m_textRunLen = 0;
+    this->m_pFormatChanges = NULL;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1371,11 +1371,11 @@ void AtomRun::OutputData( RS_F_Point parentPosition, RS_TextMetrics* pTextMetric
 
 AtomLine::AtomLine( RS_F_Point position, AtomBlock* pParentBlock, RichTextFormatState& formatState, bool fixedLine ) : AtomBaseComponentCollection( position, pParentBlock )
 {
-	// A line must have a parent
-	assert( pParentBlock );
+    // A line must have a parent
+    assert( pParentBlock );
 
-	this->m_initialAscent = formatState.m_fontAscent;
-	this->m_fixedLine = fixedLine;
+    this->m_initialAscent = formatState.m_fontAscent;
+    this->m_fixedLine = fixedLine;
 }
 
 AtomLine::~AtomLine()
@@ -1384,53 +1384,53 @@ AtomLine::~AtomLine()
 
 void AtomLine::ApplyAdvanceAlignment()
 {
-	size_t numComponents = this->m_components.size();
-	AtomRun* pRun;
-	double runTop, vAdjustment, advanceAlignment;
-	double lineTop = this->GetUpperLeftCorner().y;
-	for ( size_t i = 0; i < numComponents; i++ )
-	{
-		pRun = dynamic_cast<AtomRun*>(this->m_components[i]);
-		advanceAlignment = pRun ? pRun->GetAdvanceAlignment() : 0.0;
-		if ( advanceAlignment != 0.0 )
-		{
-			runTop= pRun->GetUpperLeftCorner().y;
-			vAdjustment = (lineTop - runTop) * advanceAlignment;
-			pRun->Offset().y = pRun->Offset().y + vAdjustment;
-		}
-	}
+    size_t numComponents = this->m_components.size();
+    AtomRun* pRun;
+    double runTop, vAdjustment, advanceAlignment;
+    double lineTop = this->GetUpperLeftCorner().y;
+    for ( size_t i=0; i<numComponents; ++i )
+    {
+        pRun = dynamic_cast<AtomRun*>(this->m_components[i]);
+        advanceAlignment = pRun ? pRun->GetAdvanceAlignment() : 0.0;
+        if ( advanceAlignment != 0.0 )
+        {
+            runTop= pRun->GetUpperLeftCorner().y;
+            vAdjustment = (lineTop - runTop) * advanceAlignment;
+            pRun->Offset().y = pRun->Offset().y + vAdjustment;
+        }
+    }
 }
 
 double AtomLine::AdjustBaseline( bool yUp )
 {
-	if ( this->m_components.empty() || this->m_fixedLine )
-		return 0.0;
+    if ( this->m_components.empty() || this->m_fixedLine )
+        return 0.0;
 
-	double vAdjustment = 0.0;
-	double lineAscent = fabs( this->GetAscentPosition( yUp ) );
-	if ( lineAscent > this->m_initialAscent )
-	{
-		if ( yUp )
-			vAdjustment = this->m_initialAscent - lineAscent;
-		else
-			vAdjustment = lineAscent - this->m_initialAscent;
-	}
+    double vAdjustment = 0.0;
+    double lineAscent = fabs( this->GetAscentPosition( yUp ) );
+    if ( lineAscent > this->m_initialAscent )
+    {
+        if ( yUp )
+            vAdjustment = this->m_initialAscent - lineAscent;
+        else
+            vAdjustment = lineAscent - this->m_initialAscent;
+    }
 
-	this->m_offset.y += vAdjustment;
-	return vAdjustment;
+    this->m_offset.y += vAdjustment;
+    return vAdjustment;
 }
 
 double AtomLine::Close( bool yUp )
 {
-	double baselineAdjustment = this->AdjustBaseline( yUp );
-	this->CalculateExtent( yUp );
-	this->ApplyAdvanceAlignment();
-	return baselineAdjustment;
+    double baselineAdjustment = this->AdjustBaseline( yUp );
+    this->CalculateExtent( yUp );
+    this->ApplyAdvanceAlignment();
+    return baselineAdjustment;
 }
 
 AtomBlock* AtomLine::GetParentBlock()
 {
-	return (AtomBlock*) this->m_pParent;
+    return (AtomBlock*) this->m_pParent;
 }
 
 
@@ -1439,7 +1439,7 @@ AtomBlock* AtomLine::GetParentBlock()
 
 AtomBlock::AtomBlock( RS_F_Point position, AtomLine* pParentLine, RichTextFormatState& formatState ) : AtomBaseComponentCollection( position, pParentLine )
 {
-	this->m_justification = formatState.m_tmpTDef.justify();
+    this->m_justification = formatState.m_tmpTDef.justify();
 }
 
 AtomBlock::~AtomBlock()
@@ -1449,56 +1449,56 @@ AtomBlock::~AtomBlock()
 
 void AtomBlock::Close( bool yUp )
 {
-	this->CalculateExtent( yUp );
-	this->ApplyJustification();
+    this->CalculateExtent( yUp );
+    this->ApplyJustification();
 }
 
 AtomLine* AtomBlock::GetParentLine()
 {
-	return (AtomLine*) this->m_pParent;
+    return (AtomLine*) this->m_pParent;
 }
 
 AtomLine* AtomBlock::GetLastLine()
 {
-	if ( !this->m_components.empty() )
-		return (AtomLine*) this->m_components[ this->m_components.size() - 1 ];
-	else
-		return NULL;
+    if ( !this->m_components.empty() )
+        return (AtomLine*) this->m_components[ this->m_components.size() - 1 ];
+    else
+        return NULL;
 }
 
 void AtomBlock::ApplyJustification()
 {
-	switch ( this->m_justification )
+    switch ( this->m_justification )
     {
-	case RS_Justify_Left:
-		break;  // We are already left-justified
+    case RS_Justify_Left:
+        break;  // We are already left-justified
 
     case RS_Justify_Center:
-		{
-			size_t numLines = this->m_components.size();
-			AtomBaseComponent* pLine;
-			for ( size_t i = 0; i < numLines; i++ )
-			{
-				pLine = this->m_components[i];
-				pLine->Offset().x += 0.5 * ( this->GetWidth() - pLine->GetWidth() );
-			}
-		}
+        {
+            size_t numLines = this->m_components.size();
+            AtomBaseComponent* pLine;
+            for ( size_t i=0; i<numLines; ++i )
+            {
+                pLine = this->m_components[i];
+                pLine->Offset().x += 0.5 * ( this->GetWidth() - pLine->GetWidth() );
+            }
+        }
         break;
 
     case RS_Justify_Right:
-		{
-			size_t numLines = this->m_components.size();
-			AtomBaseComponent* pLine;
-			for ( size_t i = 0; i < numLines; i++ )
-			{
-				pLine = this->m_components[i];
-				pLine->Offset().x += ( this->GetWidth() - pLine->GetWidth() );
-			}
-		}
+        {
+            size_t numLines = this->m_components.size();
+            AtomBaseComponent* pLine;
+            for ( size_t i=0; i<numLines; ++i )
+            {
+                pLine = this->m_components[i];
+                pLine->Offset().x += ( this->GetWidth() - pLine->GetWidth() );
+            }
+        }
         break;
 
-	case RS_Justify_Justify:
-		break; // Not supported
+    case RS_Justify_Justify:
+        break; // Not supported
     }
 }
 
