@@ -518,7 +518,7 @@ const RS_Font* FontManager::FindFont(const wstring& sfontname, bool bold, bool i
         ++it;
     }
 
-    //add to font cache map 
+    //add to font cache map
     entry.stylearray[index] = best;
     m_matchedCache[sfontname] = entry;
 

@@ -47,7 +47,7 @@ CompositeSymbolization::~CompositeSymbolization()
 //-------------------------------------------------------------------------
 SymbolInstanceCollection* CompositeSymbolization::GetSymbolCollection()
 {
-    return &this->m_collSymbols;
+    return &this->m_collInstances;
 }
 
 //-------------------------------------------------------------------------

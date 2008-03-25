@@ -35,7 +35,7 @@ template class MG_GEOMETRY_API Ptr<MgPoint>;
 /// class is constructed by calling a non-static
 /// MgGeometryFactory::CreatePoint() method and, once
 /// constructed, is immutable.
-/// 
+///
 /// <!-- Example (PHP) -->
 /// \htmlinclude PHPExampleTop.html
 /// The following code shows the construction of a point
@@ -84,8 +84,8 @@ template class MG_GEOMETRY_API Ptr<MgPoint>;
 /// // geometryAgfText now contains:
 /// // "POINT XY ( 1 1 )"
 /// \endcode
-/// \htmlinclude ExampleBottom.html  
-/// 
+/// \htmlinclude ExampleBottom.html
+///
 class MG_GEOMETRY_API MgPoint : public MgGeometry
 {
     MG_DECL_DYNCREATE()

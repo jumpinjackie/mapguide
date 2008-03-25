@@ -64,7 +64,7 @@ void PointAdapter::Stylize(Renderer*                   renderer,
     MdfModel::PointRule* rule = NULL;
 
     // determine the rule for the feature
-    for (int i=0; i<prc->GetCount(); i++)
+    for (int i=0; i<prc->GetCount(); ++i)
     {
         rule = static_cast<MdfModel::PointRule*>(prc->GetAt(i));
 
@@ -259,14 +259,14 @@ void PointAdapter::Stylize(Renderer*                   renderer,
                         if (nangle < 0.0)
                             nangle += 360.0;
                         int i = (((int)((nangle/45.0) + 0.5)) << 1) & 0x0000000f; // i is 2 * the octant
-                        op_pts[i++] = wcs - chsn;  op_pts[i++] = wsn + chcs;   i &= 0x0000000f; // & 15 does (mod 16)
-                        op_pts[i++] = wcs - hsn;   op_pts[i++] = wsn + hcs;    i &= 0x0000000f;
-                        op_pts[i++] = cwcs - hsn;  op_pts[i++] = cwsn + hcs;   i &= 0x0000000f;
-                        op_pts[i++] = nwcs - hsn;  op_pts[i++] = nwsn + hcs;   i &= 0x0000000f;
-                        op_pts[i++] = nwcs - chsn; op_pts[i++] = nwsn + chcs;  i &= 0x0000000f;
-                        op_pts[i++] = nwcs - nhsn; op_pts[i++] = nwsn + nhcs;  i &= 0x0000000f;
-                        op_pts[i++] = cwcs -nhsn;  op_pts[i++] = cwsn + nhcs;  i &= 0x0000000f;
-                        op_pts[i++] = wcs - nhsn;  op_pts[i]   = wsn + nhcs;
+                        op_pts[i++] =  wcs - chsn;  op_pts[i++] =  wsn + chcs;  i &= 0x0000000f; // & 15 does (mod 16)
+                        op_pts[i++] =  wcs -  hsn;  op_pts[i++] =  wsn +  hcs;  i &= 0x0000000f;
+                        op_pts[i++] = cwcs -  hsn;  op_pts[i++] = cwsn +  hcs;  i &= 0x0000000f;
+                        op_pts[i++] = nwcs -  hsn;  op_pts[i++] = nwsn +  hcs;  i &= 0x0000000f;
+                        op_pts[i++] = nwcs - chsn;  op_pts[i++] = nwsn + chcs;  i &= 0x0000000f;
+                        op_pts[i++] = nwcs - nhsn;  op_pts[i++] = nwsn + nhcs;  i &= 0x0000000f;
+                        op_pts[i++] = cwcs - nhsn;  op_pts[i++] = cwsn + nhcs;  i &= 0x0000000f;
+                        op_pts[i++] =  wcs - nhsn;  op_pts[i]   =  wsn + nhcs;
                     }
                     else
                     {

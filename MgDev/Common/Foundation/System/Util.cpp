@@ -609,7 +609,7 @@ INT32 MgUtil::ReplaceString(CREFSTRING oldValue, CREFSTRING newValue, REFSTRING 
         {
             str.reserve(std::min(str.length(), (size_t)::abs(int(replacements * (num2 - num1)))));
         }
-        
+
         while (wstring::npos != (index = str.find(oldValue, index)))
         {
             str.replace(index, num1, newValue, 0, num2);
@@ -644,7 +644,7 @@ INT32 MgUtil::ReplaceString(const string& oldValue, const string& newValue, stri
         {
             str.reserve(std::min(str.length(), (size_t)::abs(int(replacements * (num2 - num1)))));
         }
-        
+
         while (string::npos != (index = str.find(oldValue, index)))
         {
             str.replace(index, num1, newValue, 0, num2);
@@ -814,7 +814,7 @@ STRING MgUtil::GetResourceMessage(CREFSTRING section, CREFSTRING messageId)
     assert(NULL != configuration);
     MgResources* resources = MgResources::GetInstance();
     assert(NULL != resources);
-    
+
     if (NULL != configuration && NULL != resources)
     {
         STRING locale;

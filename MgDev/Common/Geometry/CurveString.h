@@ -177,8 +177,8 @@ template class MG_GEOMETRY_API Ptr<MgCurveString>;
 /// // geometryAgfText now contains:
 /// // "CURVESTRING XY (0 0(CIRCULARARCSEGMENT(1 1, 2 0), LINESTRINGSEGMENT(3 1, 3 2)))"
 /// \endcode
-/// \htmlinclude ExampleBottom.html  
-/// 
+/// \htmlinclude ExampleBottom.html
+///
 class MG_GEOMETRY_API MgCurveString : public MgCurve
 {
     MG_DECL_DYNCREATE()

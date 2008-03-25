@@ -43,7 +43,7 @@ template class MG_GEOMETRY_API Ptr<MgCurvePolygon>;
 /// An object of this type is constructed by calling the
 /// non-static MgGeometryFactory::CreateCurvePolygon() method
 /// and, once constructed, is immutable.
-/// 
+///
 /// <!-- Example (PHP) -->
 /// \htmlinclude PHPExampleTop.html
 /// The following code shows the construction of a circle, which
@@ -158,7 +158,7 @@ template class MG_GEOMETRY_API Ptr<MgCurvePolygon>;
 /// // geometryAgfText now contains:
 /// // "CURVEPOLYGON XY (( 0 2 (CIRCULARARCSEGMENT( 2 0, 4 2), CIRCULARARCSEGMENT( 2 4, 0 2))), ( 1 2 ( CIRCULARARCSEGMENT( 2 3, 3 2), CIRCULARARCSEGMENT( 2 1, 1 2))))"
 /// \endcode
-/// \htmlinclude ExampleBottom.html  
+/// \htmlinclude ExampleBottom.html
 ///
 class MG_GEOMETRY_API MgCurvePolygon : public MgRegion
 {

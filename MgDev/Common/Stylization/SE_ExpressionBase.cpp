@@ -31,7 +31,7 @@ void SE_ExpressionBase::SetParameterValues(OverrideCollection* overrides)
 {
     m_parameters.clear();
     int length = overrides->GetCount();
-    for (int i = 0; i < length; i++)
+    for (int i=0; i<length; ++i)
     {
         Override* over = overrides->GetAt(i);
         const wchar_t* name = over->GetParameterIdentifier().c_str();
@@ -50,7 +50,7 @@ void SE_ExpressionBase::SetDefaultValues(SimpleSymbolDefinition* definition)
     m_symbol = definition->GetName().c_str();
 
     int length = parameters->GetCount();
-    for (int i = 0; i < length; i++)
+    for (int i=0; i<length; ++i)
     {
         Parameter* param = parameters->GetAt(i);
         const wchar_t* name = param->GetIdentifier().c_str();

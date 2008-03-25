@@ -33,13 +33,14 @@ ATOM::IUniverse* ATOM::BigBang()
 UniverseElement::UniverseElement()
 : m_iCount(0)
 {
-    for(int i=0; i<MAX_PARSERS_IN_UNIVERSE; i++)
+    for(int i=0; i<MAX_PARSERS_IN_UNIVERSE; ++i)
         this->m_pRegistrants[i] = NULL;
 }
 
 ATOM::IGenerator** UniverseElement::Find(const ATOM::StRange& sName)
 {
-    for(int i=0; i<MAX_PARSERS_IN_UNIVERSE; i++) {
+    for(int i=0; i<MAX_PARSERS_IN_UNIVERSE; ++i)
+    {
         if(m_pRegistrants[i] && m_pRegistrants[i]->Name() == sName)
             return &m_pRegistrants[i];
     }
@@ -49,7 +50,8 @@ ATOM::IGenerator** UniverseElement::Find(const ATOM::StRange& sName)
 
 ATOM::IGenerator** UniverseElement::FindEmpty()
 {
-    for(int i=0; i<MAX_PARSERS_IN_UNIVERSE; i++) {
+    for(int i=0; i<MAX_PARSERS_IN_UNIVERSE; ++i)
+    {
         if(m_pRegistrants[i] == NULL)
             return &m_pRegistrants[i];
     }

@@ -129,7 +129,7 @@ template class MG_GEOMETRY_API Ptr<MgPolygon>;
 /// $polygonAgfText = $wktReaderWriter->Write($polygon);
 /// echo "AGF Text representation of line string: $polygonAgfText\n";
 /// \endcode
-/// \htmlinclude ExampleBottom.html  
+/// \htmlinclude ExampleBottom.html
 ///
 /// <!-- Example (C#) -->
 /// \htmlinclude CSharpExampleTop.html
@@ -189,8 +189,8 @@ template class MG_GEOMETRY_API Ptr<MgPolygon>;
 /// // geometryAgfText now contains:
 /// // "POLYGON XY ((1 1, 4 1, 4 4, 1 4, 1 1), (2 2, 2 3, 3 3, 3 2, 2 2))"
 /// \endcode
-/// \htmlinclude ExampleBottom.html  
-/// 
+/// \htmlinclude ExampleBottom.html
+///
 class MG_GEOMETRY_API MgPolygon : public MgRegion
 {
     MG_DECL_DYNCREATE()

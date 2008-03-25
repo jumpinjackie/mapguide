@@ -68,7 +68,7 @@ template class MG_GEOMETRY_API Ptr<MgMultiCurvePolygon>;
 /// which consists of two identical circles.
 /// The CreateAMultiCurvePolygonXY method calls the CreateACurvePolygonXY method.
 /// The code for the CreateACurvePolygonXY method is in the MgCurvePolygon example code.
-/// 
+///
 /// \code
 /// using OSGeo.MapGuide;
 /// private MgWktReaderWriter wktReaderWriter;
@@ -101,8 +101,8 @@ template class MG_GEOMETRY_API Ptr<MgMultiCurvePolygon>;
 /// // "MULTICURVEPOLYGON XY ((( 0 2 (CIRCULARARCSEGMENT( 2 0, 4 2), CIRCULARARCSEGMENT( 2 4, 0 2))), ( 1 2 ( CIRCULARARCSEGMENT( 2 3, 3 2), CIRCULARARCSEGMENT( 2 1, 1 2)))),
 /// //  (( 0 2 (CIRCULARARCSEGMENT( 2 0, 4 2), CIRCULARARCSEGMENT( 2 4, 0 2))), ( 1 2 ( CIRCULARARCSEGMENT( 2 3, 3 2), CIRCULARARCSEGMENT( 2 1, 1 2)))))"
 /// \endcode
-/// \htmlinclude ExampleBottom.html  
-/// 
+/// \htmlinclude ExampleBottom.html
+///
 class MG_GEOMETRY_API MgMultiCurvePolygon : public MgAggregateGeometry
 {
     MG_DECL_DYNCREATE()

@@ -56,7 +56,7 @@ PUBLISHED_API:
     /// \htmlinclude ExampleBottom.html
     ///
     MgCoordinateSystemFactory();
-    
+
     //////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Creates an MgCoordinateSystem instance given a definition of
@@ -132,8 +132,8 @@ PUBLISHED_API:
     /// geogCS = coordSysFactory.Create(geogCSWkt);
     /// projCS = coordSysFactory.Create(projCSWkt);
     /// \endcode
-    /// \htmlinclude ExampleBottom.html  
-    /// 
+    /// \htmlinclude ExampleBottom.html
+    ///
     virtual MgCoordinateSystem* Create(CREFSTRING wkt);
 
     //factory

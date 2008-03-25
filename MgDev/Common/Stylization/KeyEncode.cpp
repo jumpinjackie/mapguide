@@ -56,7 +56,7 @@ const char* KeyEncode::EncodeKey(RS_FeatureReader* reader)
     int count = 0;
     const wchar_t*const* idprops = reader->GetIdentPropNames(count);
 
-    for (int i=0; i<count; i++)
+    for (int i=0; i<count; ++i)
     {
         const wchar_t* name = idprops[i];
         int dataType = reader->GetPropertyType(name);

@@ -134,7 +134,7 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::CodeToDefinition(INT32 nFo
 
     MG_TRY()
 
-    // TODO - This roundtrip fails as it cannot identify some code, such as, EPSG:4012. 
+    // TODO - This roundtrip fails as it cannot identify some code, such as, EPSG:4012.
     //        This code comes back with a blank code, description and category in the pCsDestination which is different then before!
     STRING wkt = CCoordinateSystem::ConvertCoordinateSystemCodeToWkt(sCodeSource);
     pCsDestination = new CCoordinateSystem(wkt);

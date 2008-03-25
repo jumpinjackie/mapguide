@@ -268,8 +268,8 @@ template class MG_PLATFORMBASE_API Ptr<MgFeatureReader>;
 /// }
 ///
 /// \endcode
-/// \htmlinclude ExampleBottom.html  
-/// 
+/// \htmlinclude ExampleBottom.html
+///
 class MG_PLATFORMBASE_API MgFeatureReader : public MgReader
 {
     DECLARE_CLASSNAME(MgFeatureReader)

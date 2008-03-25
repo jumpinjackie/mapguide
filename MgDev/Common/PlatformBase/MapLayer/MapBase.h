@@ -53,10 +53,10 @@ typedef map<double, double, less<double> > SORTEDSCALES;
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// Defines the runtime state of a map.
-/// 
+///
 /// \note This is a base class. In most cases it is best to use a class
     /// derived from this class. See \ref Maps_and_Layers_Module "Maps and Layers" for details.
-/// 
+///
 class MG_PLATFORMBASE_API MgMapBase : public MgResource
 {
     MG_DECL_DYNCREATE()
@@ -70,7 +70,7 @@ PUBLISHED_API:
     ///
     /// \note This is a base class. In most cases it is best to use a class
     /// derived from this class. See \ref Maps_and_Layers_Module "Maps and Layers" for details.
-    /// 
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// MgMapBase();
@@ -275,14 +275,14 @@ PUBLISHED_API:
     /// void Create(MgResourceService resourceService, MgResourceIdentifier mapDefinition, string mapName);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param resourceService 
+    /// \param resourceService
     /// An MgResourceService that can be used to
     /// retrieve the map definition.
-    /// \param mapDefinition 
+    /// \param mapDefinition
     /// An MgResourceIdentifier that specifies the
     /// location of the map definition in a resource
     /// repository.
-    /// \param mapName 
+    /// \param mapName
     /// A string that specifies the name of the map.
     ///
     virtual void Create(MgResourceService* resourceService, MgResourceIdentifier* mapDefinition, CREFSTRING mapName);
@@ -307,12 +307,12 @@ PUBLISHED_API:
     /// void Create(string mapSRS, MgEnvelope mapExtent, string mapName);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param mapSRS 
+    /// \param mapSRS
     /// A string specifying the spatial reference system in OpenGIS WKT
     /// format.
-    /// \param mapExtent 
+    /// \param mapExtent
     /// An MgEnvelope defining the overall extent of the map.
-    /// \param mapName 
+    /// \param mapName
     /// A string that specifies the name of the map.
     ///
     virtual void Create(CREFSTRING mapSRS, MgEnvelope* mapExtent, CREFSTRING mapName);
@@ -337,10 +337,10 @@ PUBLISHED_API:
     /// virtual void Open(MgResourceService resourceService, string mapName);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param resourceService 
+    /// \param resourceService
     /// An MgResourceService that can be used to retrieve
     /// the map.
-    /// \param mapName 
+    /// \param mapName
     /// A string that specifies the name of the map. This
     /// is the name that was specified when \link MgMapBase::Create Create \endlink
     /// was called to create the map object.
@@ -526,7 +526,7 @@ PUBLISHED_API:
     /// int GetFiniteDisplayScaleAt(int index);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param index 
+    /// \param index
     /// Index of the finite display scale to get.
     ///
     /// \return

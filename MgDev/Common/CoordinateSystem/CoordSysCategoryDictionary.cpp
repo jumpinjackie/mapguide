@@ -153,7 +153,7 @@ void CCoordinateSystemCategoryDictionary::Modify(MgGuardDisposable *pDefinition)
 //Gets the def with the specified name from the set.
 MgGuardDisposable* CCoordinateSystemCategoryDictionary::Get(CREFSTRING sName)
 {
-    return GetCategory(sName); 
+    return GetCategory(sName);
 }
 
 //-----------------------------------------------------------------------------

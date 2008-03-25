@@ -145,7 +145,7 @@ MgGuardDisposable* CCoordinateSystemEllipsoidDictionary::Get(CREFSTRING sName)
 //This function looks for an ellipsoid definition in the set with
 //the specified name and, if found, creates an MgCoordinateSystemEllipsoid and
 //returns it (user is responsible for freeing the def via Release()
-//function).  
+//function).
 //Throws an exception if no such definition exists in the catalog.
 MgCoordinateSystemEllipsoid* CCoordinateSystemEllipsoidDictionary::GetEllipsoid(CREFSTRING sName)
 {

@@ -116,7 +116,7 @@ void IOLineUsage::Write(MdfStream& fd, LineUsage* lineUsage, Version* version)
     // been removed.  For all versions we now replace it with 'OverlapNone'.
     MdfString strVertexControl = lineUsage->GetVertexControl();
     if (strVertexControl.size() > 0 && _wcsicmp(strVertexControl.c_str(), L"\'OverlapNoWrap\'") == 0)   // NOXLATE
-        strVertexControl = L"\'OverlapNone\'";  // NOXLATE  
+        strVertexControl = L"\'OverlapNone\'";  // NOXLATE
 
     bool emitVertexControl = true;
     if (!version || (*version >= Version(1, 1, 0)))

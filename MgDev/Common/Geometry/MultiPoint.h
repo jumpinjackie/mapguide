@@ -93,8 +93,8 @@ template class MG_GEOMETRY_API Ptr<MgMultiPoint>;
 /// // geometryAgfText now contains:
 /// // "MULTIPOINT XY ( 1 1, 2 1 )"
 /// \endcode
-/// \htmlinclude ExampleBottom.html  
-/// 
+/// \htmlinclude ExampleBottom.html
+///
 class MG_GEOMETRY_API MgMultiPoint : public MgAggregateGeometry
 {
     MG_DECL_DYNCREATE()

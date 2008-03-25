@@ -449,29 +449,29 @@ bool Matrix3D::Invert(double zeroTolerance)
 
     double matArr[4][4];
     memcpy(matArr, Matrix3D::matArray, sizeof(double)*16);
-    matArr[0][0] = m00; matArr[0][1] = m01; matArr[0][2] = m02; matArr[0][3] = m03;
-    matArr[1][0] = m10; matArr[1][1] = m11; matArr[1][2] = m12; matArr[1][3] = m13;
-    matArr[2][0] = m20; matArr[2][1] = m21; matArr[2][2] = m22; matArr[2][3] = m23;
-    matArr[3][0] = m30; matArr[3][1] = m31; matArr[3][2] = m32; matArr[3][3] = m33;
+    matArr[0][0] = m00;     matArr[0][1] = m01;     matArr[0][2] = m02;     matArr[0][3] = m03;
+    matArr[1][0] = m10;     matArr[1][1] = m11;     matArr[1][2] = m12;     matArr[1][3] = m13;
+    matArr[2][0] = m20;     matArr[2][1] = m21;     matArr[2][2] = m22;     matArr[2][3] = m23;
+    matArr[3][0] = m30;     matArr[3][1] = m31;     matArr[3][2] = m32;     matArr[3][3] = m33;
 
     double invArr[4][4];
     memcpy(invArr, Matrix3D::invArray, sizeof(double)*16);
-    invArr[0][0] = 1.0;      invArr[0][1] = 0.0;      invArr[0][2] = 0.0;      invArr[0][3] = 0.0;
-    invArr[1][0] = 0.0;      invArr[1][1] = 1.0;      invArr[1][2] = 0.0;      invArr[1][3] = 0.0;
-    invArr[2][0] = 0.0;      invArr[2][1] = 0.0;      invArr[2][2] = 1.0;      invArr[2][3] = 0.0;
-    invArr[3][0] = 0.0;      invArr[3][1] = 0.0;      invArr[3][2] = 0.0;      invArr[3][3] = 1.0;
+    invArr[0][0] = 1.0;     invArr[0][1] = 0.0;     invArr[0][2] = 0.0;     invArr[0][3] = 0.0;
+    invArr[1][0] = 0.0;     invArr[1][1] = 1.0;     invArr[1][2] = 0.0;     invArr[1][3] = 0.0;
+    invArr[2][0] = 0.0;     invArr[2][1] = 0.0;     invArr[2][2] = 1.0;     invArr[2][3] = 0.0;
+    invArr[3][0] = 0.0;     invArr[3][1] = 0.0;     invArr[3][2] = 0.0;     invArr[3][3] = 1.0;
 
-    for (col=row=0; row<4; row++, col++)
+    for (col=row=0; row<4; ++row, ++col)
     {
         int pivIndex = col;
-        for (r=col+1; r<4; r++)
+        for (r=col+1; r<4; ++r)
         {
             if (fabs(matArr[r][col]) > fabs(matArr[pivIndex][col]))
                 pivIndex = r;
         }
         if (pivIndex != col)
         {
-            for (r=0; r<4; r++)
+            for (r=0; r<4; ++r)
             {
                 double temp1 = matArr[col][r];
                 double temp2 = invArr[col][r];
@@ -490,23 +490,23 @@ bool Matrix3D::Invert(double zeroTolerance)
 
         double recip = 1.0 / matArr[row][col];
 
-        for (c=col+1; c<4; c++)
+        for (c=col+1; c<4; ++c)
             matArr[row][c] *= recip;
 
-        for (c=0; c<4; c++)
+        for (c=0; c<4; ++c)
             invArr[row][c] *= recip;
 
-        for (r=0; r<4; r++)
+        for (r=0; r<4; ++r)
         {
             if (r == row)
                 continue;
 
             if (matArr[r][col] != 0.0)
             {
-                for (c=col+1; c<4; c++)
+                for (c=col+1; c<4; ++c)
                     matArr[r][c] -= matArr[r][col] * matArr[row][c];
 
-                for (c=0; c<4; c++)
+                for (c=0; c<4; ++c)
                     invArr[r][c] -= matArr[r][col] * invArr[row][c];
             }
         }
@@ -811,9 +811,9 @@ double Matrix3D::MinMagnitude()
 {
     // get the smallest non-zero magnitude
     double min = 1.0e308;   // close to the max double value
-    for (int i=0; i<3; i++)
+    for (int i=0; i<3; ++i)
     {
-        for (int j=0; j<3; j++)
+        for (int j=0; j<3; ++j)
         {
             double d = fabs(this->operator()(i, j));
             if (d != 0.0 && d < min)

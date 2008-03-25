@@ -27,7 +27,7 @@ using namespace CSLibrary;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemDictionary::CCoordinateSystemDictionary(MgCoordinateSystemCatalog *pCatalog)
-                            : m_pmapSystemNameDescription(NULL) 
+                            : m_pmapSystemNameDescription(NULL)
 {
     m_pCatalog = SAFE_ADDREF(pCatalog);
 }
@@ -138,7 +138,7 @@ MgGuardDisposable* CCoordinateSystemDictionary::Get(CREFSTRING sName)
 //This function looks for a coordsys definition in the set with
 //the specified name and, if found, creates an MgCoordinateSystem and
 //returns it (user is responsible for freeing the def via Release()
-//function).  
+//function).
 //Throws an exception if no such definition exists in the catalog.
 MgCoordinateSystem* CCoordinateSystemDictionary::GetCoordinateSystem(CREFSTRING sName)
 {

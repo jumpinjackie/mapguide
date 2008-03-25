@@ -102,8 +102,8 @@ template class MG_GEOMETRY_API Ptr<MgMultiLineString>;
 /// // geometryAgfText now contains:
 /// // "MULTILINESTRING XY ((0 1, 2 1), (1 1, 2 1))"
 /// \endcode
-/// \htmlinclude ExampleBottom.html  
-/// 
+/// \htmlinclude ExampleBottom.html
+///
 class MG_GEOMETRY_API MgMultiLineString : public MgAggregateGeometry
 {
     MG_DECL_DYNCREATE()

@@ -58,7 +58,7 @@ void PolygonUtils::AddLineBuffer(SORTEDRINGS& sortedRings, LineBuffer* lineBuffe
     if (lineBuffer == NULL)
         return;
 
-    for (int i = 0; i < lineBuffer->cntr_count(); i++)
+    for (int i=0; i<lineBuffer->cntr_count(); ++i)
     {
         AddRing(sortedRings, lineBuffer, i);
     }
@@ -270,7 +270,7 @@ int PolygonUtils::WindingNumber(RingData* rd, double ptX, double ptY)
 
     int nEdges = rd->ringPointCount() - 1;
     int first = rd->ringStartPoint();
-    for (int i = 0; i < nEdges; i++)
+    for (int i=0; i<nEdges; ++i)
     {
 
         double endPt1X;

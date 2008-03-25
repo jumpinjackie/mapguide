@@ -89,7 +89,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
     // extract all the composite styles once
     MdfModel::FeatureTypeStyleCollection* ftsc = range->GetFeatureTypeStyles();
     std::vector<CompositeTypeStyle*> compTypeStyles;
-    for (int i=0; i<ftsc->GetCount(); i++)
+    for (int i=0; i<ftsc->GetCount(); ++i)
     {
         MdfModel::FeatureTypeStyle* fts = ftsc->GetAt(i);
         if (FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts) == FeatureTypeStyleVisitor::ftsComposite)
@@ -175,7 +175,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
             if (lb->point_count())
             {
                 // stylize once for each composite type style
-                for (size_t i=0; i<numTypeStyles; i++)
+                for (size_t i=0; i<numTypeStyles; ++i)
                     Stylize(reader, exec, lb, compTypeStyles[i], &seTip, &seUrl, NULL,
                             instanceRenderingPass, symbolRenderingPass,
                             nextInstanceRenderingPass, nextSymbolRenderingPass);
@@ -254,7 +254,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 
             rulecache[i].legendLabel= r->GetLegendLabel();
 
-            m_visitor->Convert(rulecache[i].symbolization, r->GetSymbolization());
+            m_visitor->Convert(rulecache[i].symbolizations, r->GetSymbolization());
         }
     }
 
@@ -285,7 +285,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     if (rule == NULL)
         return;
 
-    std::vector<SE_Symbolization*>* symbolization = &rule->symbolization;
+    std::vector<SE_Symbolization*>* symbolizations = &rule->symbolizations;
 
     bool initialPass = (instanceRenderingPass == 0 && symbolRenderingPass == 0);
     RS_String rs_tip, rs_url;
@@ -297,7 +297,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     m_serenderer->StartFeature(reader, initialPass, rs_tip.empty()? NULL : &rs_tip, rs_url.empty()? NULL : &rs_url, rs_thm.empty()? NULL : &rs_thm);
 
     // it's possible to end up with no symbols - we're done in that case
-    if (symbolization->size() == 0)
+    if (symbolizations->size() == 0)
         return;
 
     double mm2sud = m_serenderer->GetScreenUnitsPerMillimeterDevice();
@@ -354,11 +354,11 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 
     // TODO: Obey the indices - get rid of the indices altogther - single pass!
 
-    SE_Symbolization* sym(NULL);
-    size_t nSym = symbolization->size();
-    for (size_t symIx=0; symIx<nSym; symIx++)
+    SE_Symbolization* sym = NULL;
+    size_t nSyms = symbolizations->size();
+    for (size_t symIx=0; symIx<nSyms; ++symIx)
     {
-        sym = (*symbolization)[symIx];
+        sym = (*symbolizations)[symIx];
 
         // process the instance rendering pass - negative rendering passes are
         // rendered with pass 0
@@ -453,7 +453,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         applyCtx.xform = &xformTrans;
 
         size_t nStyles = sym->styles.size();
-        for (size_t styIx=0; styIx<nStyles; styIx++)
+        for (size_t styIx=0; styIx<nStyles; ++styIx)
         {
             SE_Style* style = sym->styles[styIx];
 

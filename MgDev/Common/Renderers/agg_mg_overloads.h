@@ -58,14 +58,14 @@ loop1:  movdqa xmmword ptr [edi], xmm0;
         ;finish setting remaining <32 pixels using a non-SSE loop
         cld
         add ecx, 32
-        rep stosd 
+        rep stosd
     }
 }
 
 #endif
 
 
-template<class Blender, class RenBuf, class PixelT = agg::int32u> 
+template<class Blender, class RenBuf, class PixelT = agg::int32u>
 class pixfmt_alpha_blend_rgba_mg : public agg::pixfmt_alpha_blend_rgba<Blender, RenBuf, PixelT>
 {
 public:
@@ -75,25 +75,25 @@ public:
     typedef typename blender_type::color_type color_type;
     typedef typename color_type::value_type value_type;
     typedef typename color_type::calc_type calc_type;
-     
+
     enum base_scale_e
     {
         base_mask = color_type::base_mask
     };
 
-    explicit pixfmt_alpha_blend_rgba_mg() 
-        : agg::pixfmt_alpha_blend_rgba<Blender, RenBuf, PixelT>() 
+    explicit pixfmt_alpha_blend_rgba_mg()
+        : agg::pixfmt_alpha_blend_rgba<Blender, RenBuf, PixelT>()
     {
     }
 
-    explicit pixfmt_alpha_blend_rgba_mg(rbuf_type& rb) 
-        : agg::pixfmt_alpha_blend_rgba<Blender, RenBuf, PixelT>(rb) 
+    explicit pixfmt_alpha_blend_rgba_mg(rbuf_type& rb)
+        : agg::pixfmt_alpha_blend_rgba<Blender, RenBuf, PixelT>(rb)
     {
     }
 
     //--------------------------------------------------------------------
     void blend_solid_hspan(int x, int y,
-                           unsigned len, 
+                           unsigned len,
                            const color_type& c,
                            const agg::int8u* covers)
     {
@@ -120,7 +120,7 @@ public:
                     covers += 4;
                 }
                 while (covers < covers1);
-                    
+
                 int count = (int)(covers - covers0);
 
                 //if there are opaque pixels in a row, set them all at once
@@ -130,7 +130,7 @@ public:
 
 #if USE_SSE
                     if (count >= 64)
-                    {  
+                    {
                         set_row_sse(count, pdst, color);
                         pdst += count;
                     }
@@ -148,13 +148,13 @@ public:
                 //otherwise blend four pixels and loop again
                 else
                 {
-                   
+
                     for (int i=0; i<4; i++)
                     {
                         calc_type alpha = *covers++;
-                        if(alpha == 255) 
+                        if(alpha == 255)
                             *(agg::int32*)p = color;
-                        else 
+                        else
                             blender_type::blend_pix(p, c.r, c.g, c.b, alpha);
                         p += 4;
                     }
@@ -168,7 +168,7 @@ public:
             }
 
             //this repeats at most 3 times
-            while (len) 
+            while (len)
             {
                 calc_type cover = *covers++;
                 if(cover == 255)
@@ -179,12 +179,12 @@ public:
                 p += 4;
                 len--;
             }
-            
+
         }
         else if (c.a)
         {
             value_type* p = (value_type*)agg::pixfmt_alpha_blend_rgba<Blender, RenBuf, PixelT>::row_ptr(y) + (x << 2);
-            do 
+            do
             {
                 calc_type alpha = (calc_type(c.a) * (calc_type(*covers) + 1)) >> 8;
 
@@ -204,11 +204,11 @@ template<class ColorT> struct blender_gray_invert
     typedef ColorT color_type;
     typedef typename color_type::value_type value_type;
     typedef typename color_type::calc_type calc_type;
-    enum base_scale_e { 
+    enum base_scale_e {
         base_shift = color_type::base_shift,
     };
 
-    static AGG_INLINE void blend_pix(value_type* p, unsigned cv, 
+    static AGG_INLINE void blend_pix(value_type* p, unsigned cv,
                                      unsigned alpha, unsigned cover=0)
     {
         cv;

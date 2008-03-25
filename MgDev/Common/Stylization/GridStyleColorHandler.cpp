@@ -353,7 +353,7 @@ int GetNumProcessors()
     int num_cpus;
 
     //count how many bits are set in proc_mask
-    for (num_cpus = 0; proc_mask; num_cpus++)
+    for (num_cpus=0; proc_mask; ++num_cpus)
         proc_mask &= proc_mask - 1; // clear the least significant bit set
 #else
     // TODO: Linux implementation here
@@ -380,8 +380,8 @@ DWORD WINAPI GridStyleWorker(LPVOID param)
 
     int end = cxt->j + cxt->count;
 
-    for (int j = cxt->j; j<end; j++)
-        for (int i=0; i<(int)cxt->w; i++)
+    for (int j=cxt->j; j<end; ++j)
+        for (int i=0; i<(int)cxt->w; ++i)
             cxt->handler->Visit(i, j);
 
     return 0;
@@ -489,7 +489,7 @@ bool GridStyleColorHandler::Visit()
 
         const int step = 128; //each thread will process that many rows at a time
 
-        for (int i=0; i<num_cpus; i++)
+        for (int i=0; i<num_cpus; ++i)
         {
             cxts[i].count = step;
             cxts[i].handler = this;
@@ -504,7 +504,7 @@ bool GridStyleColorHandler::Visit()
             int thcount = 0;
 
             //kick off N threads, and give each a strip of the grid to work on
-            for (int i=0; i<num_cpus;i++)
+            for (int i=0; i<num_cpus; ++i)
             {
                 cxts[i].j = y;
 
@@ -529,7 +529,7 @@ bool GridStyleColorHandler::Visit()
             bool ret = true;
 
             //update status and kill the threads
-            for (int i=0; i<thcount; i++)
+            for (int i=0; i<thcount; ++i)
             {
                 CloseHandle(threads[i]);
                 threads[i] = NULL;

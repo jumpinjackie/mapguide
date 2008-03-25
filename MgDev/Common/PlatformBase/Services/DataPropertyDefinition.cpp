@@ -189,8 +189,8 @@ void MgDataPropertyDefinition::SetPrecision(INT32 precision)
 void MgDataPropertyDefinition::SetScale(INT32 scale)
 {
     // Scale property can have negative values.  When scale is negative,
-    // it means that the values must be mulitples of 10^-(scale), 
-    // i.e. when scale = -2, values must be multiples of 100.  
+    // it means that the values must be mulitples of 10^-(scale),
+    // i.e. when scale = -2, values must be multiples of 100.
     // Refer to FDO external id 1038260.01.
     m_scale = scale;
 }

@@ -169,7 +169,7 @@ void MgGeometricPropertyDefinition::SetGeometryTypes(INT32 types)
 /// <summary>
 /// Sets the specific list of geometry types that can be stored in this
 /// geometric property. The provided value is a list of geometry types
-/// that are supported. 
+/// that are supported.
 /// <param name="typeInfo">The specific set of geometry types that can be stored in this geometric property</param>
 void MgGeometricPropertyDefinition::SetSpecificGeometryTypes(MgGeometryTypeInfo * typeInfo)
 {
@@ -177,12 +177,12 @@ void MgGeometricPropertyDefinition::SetSpecificGeometryTypes(MgGeometryTypeInfo 
 
     // Just in case of a mis-match in the caller's code, where it sets
     // specific geometry types but later asks for non-specific ones, we'll update
-    // the non-specific ones here.  We'll only turn them on, not fully 
+    // the non-specific ones here.  We'll only turn them on, not fully
     // reset them, in case SetGeometryTypes is also called.
     INT32 geomTypeCount = m_geometryTypeInfo->GetCount();
     // The MgFeatureGeometricType definition has no "All" symbol, so we'll make the equivalent based on FdoGeometricType_All.
     INT32 allTypes = MgFeatureGeometricType::Point|MgFeatureGeometricType::Curve|MgFeatureGeometricType::Surface|MgFeatureGeometricType::Solid;
-    INT32 allSpecificTypes = 
+    INT32 allSpecificTypes =
         ( 1 << MgGeometryType::Point ) |
         ( 1 << MgGeometryType::MultiPoint ) |
         ( 1 << MgGeometryType::LineString ) |

@@ -166,17 +166,17 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
         if (!m_pSERenderer->YPointsUp())
             line_height = -line_height;
 
-		// Measure each line and track overall width of text
-		double textWidth = 0.0;
+        // Measure each line and track overall width of text
+        double textWidth = 0.0;
         for (size_t k=0; k<num_lines; ++k)
         {
             wchar_t* txt = line_breaks[k];
 
             // get the unrotated extent of this sub-string
-			MeasureString(txt, hgt, font, 0.0, ret.line_pos[k].ext, NULL);
-			double lineWidth = ret.line_pos[k].ext[1].x - ret.line_pos[k].ext[0].x;
-			if ( lineWidth > textWidth )
-				textWidth = lineWidth;
+            MeasureString(txt, hgt, font, 0.0, ret.line_pos[k].ext, NULL);
+            double lineWidth = ret.line_pos[k].ext[1].x - ret.line_pos[k].ext[0].x;
+            if ( lineWidth > textWidth )
+                textWidth = lineWidth;
 
             // horizontal offset depends on the sub-string width, while
             // vertical offset depends on the line of text
@@ -184,7 +184,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
             ret.line_pos[k].vOffset = 0.0;
         }
 
-		// base vertical and horizontal alignment offsets is the same for each line of text
+        // base vertical and horizontal alignment offsets is the same for each line of text
         double hAlignBaseOffset = GetHorizontalAlignmentOffset(tdef.halign(), textWidth );
         double vAlignBaseOffset = GetVerticalAlignmentOffset(tdef.valign(), font, hgt, line_height, num_lines);
 

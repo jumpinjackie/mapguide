@@ -104,8 +104,8 @@ template class MG_GEOMETRY_API Ptr<MgMultiPolygon>;
 /// // geometryAgfText now contains:
 /// // "MULTIPOLYGON XY ((( 0 0, 1 0, 1 1, 0 1, 0 0 )), (( 0 0, 1 0, 1 1, 0 1, 0 0 )))"
 /// \endcode
-/// \htmlinclude ExampleBottom.html  
-/// 
+/// \htmlinclude ExampleBottom.html
+///
 class MG_GEOMETRY_API MgMultiPolygon : public MgAggregateGeometry
 {
     MG_DECL_DYNCREATE()

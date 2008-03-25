@@ -470,7 +470,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
                     //allocate a row where we will do pixel conversion
                     unsigned char* row = new unsigned char[actualCols * 4];
 
-                    for (unsigned long y = 0; y < actualRows; ++y)
+                    for (unsigned long y=0; y<actualRows; ++y)
                     {
                         //FireOnStepQuery();
 
@@ -478,7 +478,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
                         pCurPos = pRasterData + y*rowLength; //source pixel pointer
                         unsigned char* pix = row; //destination pixel pointer
 
-                        for (unsigned int x = 0; x < actualCols; x++)
+                        for (unsigned int x=0; x<actualCols; ++x)
                         {
                             pix[1] = pCurPos[1];
                             pix[3] = pCurPos[3];

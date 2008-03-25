@@ -758,7 +758,7 @@ void LineStyleDef::SetStyleDef(StyleDefinition& styleDef, double drawingScale, d
     float scaledWeight = (float)((lineWeight < 0.0f)? -lineWeight : (lineWeight * drawingScale));
 
     // scale the style definition to map units
-    for (int i=0; i<m_nRuns; i++)
+    for (int i=0; i<m_nRuns; ++i)
     {
         m_pixelRuns[i] = styleDef.m_pixelRuns[i];
         bool isDot = IsDot(m_pixelRuns[i]);

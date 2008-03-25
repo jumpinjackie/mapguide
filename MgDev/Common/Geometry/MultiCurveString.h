@@ -105,8 +105,8 @@ template class MG_GEOMETRY_API Ptr<MgMultiCurveString>;
 /// geometryAgfText = wktReaderWriter.Write(mcsCsAs001120Ls203132CsAs001120Ls203132);
 /// // geometryAgfText now contains the AGF representation of the multi-curve string
 /// \endcode
-/// \htmlinclude ExampleBottom.html  
-/// 
+/// \htmlinclude ExampleBottom.html
+///
 class MG_GEOMETRY_API MgMultiCurveString : public MgAggregateGeometry
 {
     MG_DECL_DYNCREATE()

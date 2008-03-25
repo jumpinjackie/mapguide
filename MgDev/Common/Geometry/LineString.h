@@ -97,8 +97,8 @@ template class MG_GEOMETRY_API Ptr<MgLineString>;
 /// // geometryAgfText now contains:
 /// // "LINESTRING XY ( 1 1, 2 1 )"
 /// \endcode
-/// \htmlinclude ExampleBottom.html  
-/// 
+/// \htmlinclude ExampleBottom.html
+///
 class MG_GEOMETRY_API MgLineString : public MgCurve
 {
     MG_DECL_DYNCREATE()

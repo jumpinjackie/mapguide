@@ -1146,14 +1146,14 @@ PUBLISHED_API:
     /// \remarks
     /// This uploads the data and stores it in the repository. It
     /// does not perform any necessary conversion (for example,
-    /// converting a version 2 SDF file into a version 3 SDF). 
-    /// 
+    /// converting a version 2 SDF file into a version 3 SDF).
+    ///
     /// \note
-    /// If you load raster files though the MapGuide Studio UI, they are converted to .TIF format.  However, raster files loaded 
-    /// through the API are not converted, so the API supports more file formats than the UI.  The API supports 
-    /// all the formats supported by the FDO Provider for Raster.  For details, see the appendix "Autodesk FDO Provider for Raster" 
+    /// If you load raster files though the MapGuide Studio UI, they are converted to .TIF format.  However, raster files loaded
+    /// through the API are not converted, so the API supports more file formats than the UI.  The API supports
+    /// all the formats supported by the FDO Provider for Raster.  For details, see the appendix "Autodesk FDO Provider for Raster"
     /// in the <em>FDO Developer's Guide</em>.
-    /// 
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// virtual void SetResourceData(MgResourceIdentifier resource, string dataName, string dataType, MgByteReader data);
@@ -1176,7 +1176,7 @@ PUBLISHED_API:
     /// then MgResourceTag::Username and
     /// MgResourceTag::Password can be inserted into the
     /// XML content document to represent provider specific
-    /// username and/or password. 
+    /// username and/or password.
     /// \n
     /// If
     /// resource data with the same name has already been

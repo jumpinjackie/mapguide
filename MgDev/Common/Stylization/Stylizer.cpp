@@ -24,7 +24,7 @@
 ///</summary>
 MdfModel::VectorScaleRange* Stylizer::FindScaleRange(MdfModel::VectorScaleRangeCollection& src, double mapScale)
 {
-    for (int i=0; i<src.GetCount(); i++)
+    for (int i=0; i<src.GetCount(); ++i)
     {
         MdfModel::VectorScaleRange* r = src.GetAt(i);
 
@@ -41,7 +41,7 @@ MdfModel::VectorScaleRange* Stylizer::FindScaleRange(MdfModel::VectorScaleRangeC
 ///</summary>
 MdfModel::GridScaleRange* Stylizer::FindScaleRange(MdfModel::GridScaleRangeCollection& src, double mapScale)
 {
-    for (int i=0; i<src.GetCount(); i++)
+    for (int i=0; i<src.GetCount(); ++i)
     {
         MdfModel::GridScaleRange* r = src.GetAt(i);
 

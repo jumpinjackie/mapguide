@@ -25,7 +25,7 @@ MgCoordinateSystemCache MgCoordinateSystemCache::sm_coordinateSystemCache;
 /// Construct the object.
 ///
 /// \remarks
-/// Assuming the MG Server can hande a reasonable number of coordinate systems, 
+/// Assuming the MG Server can hande a reasonable number of coordinate systems,
 /// the Remove method is not exposed/implemented.
 ///
 MgCoordinateSystemCache::MgCoordinateSystemCache()
