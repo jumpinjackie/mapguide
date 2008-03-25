@@ -162,7 +162,30 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
         // initialize the line pos array with empty elements
         ret.line_pos.resize(num_lines);
 
-        // base vertical offset is the same for each line of text
+        // account for Y direction now that we have the base offset
+        if (!m_pSERenderer->YPointsUp())
+            line_height = -line_height;
+
+		// Measure each line and track overall width of text
+		double textWidth = 0.0;
+        for (size_t k=0; k<num_lines; ++k)
+        {
+            wchar_t* txt = line_breaks[k];
+
+            // get the unrotated extent of this sub-string
+			MeasureString(txt, hgt, font, 0.0, ret.line_pos[k].ext, NULL);
+			double lineWidth = ret.line_pos[k].ext[1].x - ret.line_pos[k].ext[0].x;
+			if ( lineWidth > textWidth )
+				textWidth = lineWidth;
+
+            // horizontal offset depends on the sub-string width, while
+            // vertical offset depends on the line of text
+            ret.line_pos[k].hOffset = 0.0;
+            ret.line_pos[k].vOffset = 0.0;
+        }
+
+		// base vertical and horizontal alignment offsets is the same for each line of text
+        double hAlignBaseOffset = GetHorizontalAlignmentOffset(tdef.halign(), textWidth );
         double vAlignBaseOffset = GetVerticalAlignmentOffset(tdef.valign(), font, hgt, line_height, num_lines);
 
         // account for Y direction now that we have the base offset
@@ -171,21 +194,16 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
 
         for (size_t k=0; k<num_lines; ++k)
         {
-            wchar_t* txt = line_breaks[k];
-
-            // get the unrotated extent of this sub-string
-            MeasureString(txt, hgt, font, 0.0, fpts, NULL);
-
             // horizontal offset depends on the sub-string width, while
             // vertical offset depends on the line of text
-            ret.line_pos[k].hOffset = GetHorizontalAlignmentOffset(tdef.halign(), fpts);
+            ret.line_pos[k].hOffset = hAlignBaseOffset + GetJustificationOffset(tdef.justify(), textWidth, ret.line_pos[k].ext);
             ret.line_pos[k].vOffset = vAlignBaseOffset - k*line_height;
 
             // remember unrotated extent of text
             for (int i=0; i<4; ++i)
             {
-                ret.line_pos[k].ext[i].x = fpts[i].x + ret.line_pos[k].hOffset;
-                ret.line_pos[k].ext[i].y = fpts[i].y + ret.line_pos[k].vOffset;
+                ret.line_pos[k].ext[i].x += ret.line_pos[k].hOffset;
+                ret.line_pos[k].ext[i].y += ret.line_pos[k].vOffset;
             }
         }
     }
@@ -546,7 +564,6 @@ bool RS_FontEngine::ScreenVectorPointsUp(double /*x*/, double y)
     // default assumes screen space is not rotated
     return (y > 0.0);
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy)
@@ -1018,22 +1035,47 @@ double RS_FontEngine::GetVerticalAlignmentOffset(RS_VAlignment vAlign, const RS_
 //////////////////////////////////////////////////////////////////////////////
 // Computes the X offset that must be applied to the unrotated text to
 // obtain the specified horizontal alignment.
-double RS_FontEngine::GetHorizontalAlignmentOffset(RS_HAlignment hAlign, RS_F_Point* extent)
+double RS_FontEngine::GetHorizontalAlignmentOffset(RS_HAlignment hAlign, double textWidth)
 {
     double offsetX = 0.0;
 
     switch (hAlign)
     {
     case RS_HAlignment_Left:
-        offsetX = -extent[0].x;
         break;
 
     case RS_HAlignment_Center:
-        offsetX = -0.5*(extent[0].x + extent[1].x);
+        offsetX = -0.5 * textWidth;
         break;
 
     case RS_HAlignment_Right:
-        offsetX = -extent[1].x;
+        offsetX = -textWidth;
+        break;
+    }
+
+    return offsetX;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Computes the X offset that must be applied to the unrotated text to
+// obtain the specified justification.
+double RS_FontEngine::GetJustificationOffset(RS_Justify justify, double textWidth, RS_F_Point* ext)
+{
+    double offsetX = 0.0;
+
+    switch (justify)
+    {
+    case RS_Justify_Left:
+    case RS_Justify_Justify:
+        offsetX = -ext[0].x;
+        break;
+
+    case RS_Justify_Center:
+        offsetX = 0.5 * (textWidth - ext[0].x - ext[1].x);
+        break;
+
+    case RS_Justify_Right:
+        offsetX = textWidth - ext[1].x;
         break;
     }
 
