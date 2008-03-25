@@ -134,7 +134,9 @@ private:
                                       double actual_height, double line_height,
                                       size_t numLines);
 
-    double GetHorizontalAlignmentOffset(RS_HAlignment hAlign, RS_F_Point* extent);
+    double GetJustificationOffset(RS_Justify justify, double textWidth, RS_F_Point* ext );
+
+    double GetHorizontalAlignmentOffset(RS_HAlignment hAlign, double lineWidth);
 
 public:
     SE_Renderer* m_pSERenderer;

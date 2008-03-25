@@ -337,6 +337,30 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
     else // default is Halfline
         textDef.valign() = RS_VAlignment_Half;
 
+    const wchar_t* justification = this->justification.evaluate(cxt->exec);
+    if (wcscmp(justification, L"FromAlignment") == 0)   // check this first since it's the most common
+    {
+        switch ( textDef.halign() ) {
+            case RS_HAlignment_Center:
+                textDef.justify() = RS_Justify_Center;
+                break;
+            case RS_HAlignment_Left:
+                textDef.justify() = RS_Justify_Left;
+                break;
+            case RS_HAlignment_Right:
+                textDef.justify() = RS_Justify_Right;
+                break;
+            }
+    }
+    else if (wcscmp(justification, L"Left") == 0)
+        textDef.justify() = RS_Justify_Left;
+    else if (wcscmp(justification, L"Right") == 0)
+        textDef.justify() = RS_Justify_Right;
+    else if (wcscmp(justification, L"Center") == 0)
+        textDef.justify() = RS_Justify_Center;
+    else if (wcscmp(justification, L"Justified") == 0)
+        textDef.justify() = RS_Justify_Justify;
+
     RS_TextMetrics tm;
     cxt->fonte->GetTextMetrics(ret->content, textDef, tm, false);
 
