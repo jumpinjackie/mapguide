@@ -173,10 +173,20 @@ void MgServerManager::Initialize(CREFSTRING locale)
     MgIpUtil::HostNameToAddress(localServerAddress, m_localServerAddress);
     MgIpUtil::HostNameToAddress(siteServerAddress, m_siteServerAddress);
 
-    STRING localHostAddress = MgIpUtil::GetLocalHostAddress();
-
     if (m_isSiteServer)
     {
+/*      // Uncomment the following check if we need to validate the local server address.
+        // For now, just use whatever was input by the user.
+        if (!MgIpUtil::IsLocalHost(m_localServerAddress))
+        {
+            MgStringCollection arguments;
+            arguments.Add(localServerAddress);
+
+            throw new MgInvalidIpAddressException(
+                L"MgServerManager.Initialize", __LINE__, __WFILE__, &arguments,
+                L"MgMachineIpMustBeLocalHost", NULL);
+        }
+*/
         if (0 != _wcsicmp(m_siteServerAddress.c_str(), m_localServerAddress.c_str()))
         {
             MgStringCollection arguments;
