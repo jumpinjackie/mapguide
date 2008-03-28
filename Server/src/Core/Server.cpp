@@ -724,6 +724,8 @@ int MgServer::open(void *args)
         if (locale.empty())
         {
             // Set the locale to the system default
+            // NOTE: windows may return a code-paged multi-byte string here
+            // e.g. in the case of "Norwegian (Bokmal)"
             serverLocale = ::setlocale(LC_ALL, "");
         }
         else
@@ -747,8 +749,6 @@ int MgServer::open(void *args)
                 __LINE__, __WFILE__, &whatArguments,
                 L"MgConfigurationPropertyValueIsInvalid", &whyArguments);
         }
-
-        STRING strLocale = MgUtil::MultiByteToWideChar(string(serverLocale));
 
         // Always use the "C" locale when dealing with numbers
         ::setlocale(LC_NUMERIC, "C");
@@ -996,7 +996,6 @@ int MgServer::open(void *args)
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Test Mode                     : %s\n"), m_bTestMode == true ? ACE_TEXT("true") : ACE_TEXT("false")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Test FDO                      : %s\n"), m_bTestFdo == true ? ACE_TEXT("true") : ACE_TEXT("false")));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n  General Properties:\n")));
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Locale                        : %s\n"), MG_WCHAR_TO_TCHAR(strLocale)));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Machine IP                    : %s\n"), MG_WCHAR_TO_TCHAR(loadBalanceManager->GetLocalServerAddress())));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Fdo path                      : %s\n"), MG_WCHAR_TO_TCHAR(fdoPath)));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Logs path                     : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetLogsPath())));
