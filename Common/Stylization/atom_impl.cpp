@@ -84,7 +84,7 @@ ATOM::StyleParticle& ATOM::StyleParticle::operator= (const ATOM::StyleParticle&)
 ATOM_STYLE_PARTICLE_IMPL(Typeface,            StRange)
 ATOM_STYLE_PARTICLE_IMPL(AltTypefaces,        StRange)           // Alternate typefaces, to be tried if Typeface isn't found.
 ATOM_STYLE_PARTICLE_IMPL(PitchFamily,         PitchFamily::Type) // Font-matching heuristics if font isn't known.
-ATOM_STYLE_PARTICLE_IMPL(CharacterSet,        int)               // Font-matching heuristics for which character set.
+ATOM_STYLE_PARTICLE_IMPL(CharacterSet,        CharacterSet::Type)// Font-matching heuristics for which character set.
 ATOM_STYLE_PARTICLE_IMPL(Size,                Measure)
 ATOM_STYLE_PARTICLE_IMPL(CapSize,             Measure)
 ATOM_STYLE_PARTICLE_IMPL(FontWeight,          FontWeight::Type)

@@ -138,6 +138,33 @@ enum RS_MarkerType
 
 
 //////////////////////////////////////////////////////////////////////////////
+// Note that these enum values are set to match the WIN32 charset values because it is expected that the 
+// CharacterSet value will most likely be used on a WIN32 platform to select a font.
+enum RS_CharacterSetType
+{
+    RS_CharSet_Undefined = -1,
+    RS_ANSI              = 0,
+    RS_Default           = 1,
+    RS_Symbol            = 2,
+    RS_Mac               = 77,
+    RS_ShiftJIS          = 128,
+    RS_Hangul            = 129,
+    RS_Johab             = 130,
+    RS_GB2312            = 134,
+    RS_Big5              = 136,
+    RS_Greek             = 161,
+    RS_Turkish           = 162,
+    RS_Vietnamese        = 163,
+    RS_Hebrew            = 177,
+    RS_Arabic            = 178,
+    RS_Baltic            = 186,
+    RS_Russian           = 204,
+    RS_Thai              = 222,
+    RS_EastEurope        = 238,
+    RS_OEM               = 255
+};
+
+//////////////////////////////////////////////////////////////////////////////
 class RS_Color
 {
 public:
@@ -287,7 +314,8 @@ public:
         m_height(12.0),
         m_name(L"Default"),
         m_style(RS_FontStyle_Regular),
-        m_units(RS_Units_Device)
+        m_units(RS_Units_Device),
+        m_charset(RS_CharSet_Undefined)
     {
     }
 
@@ -298,20 +326,36 @@ public:
         m_name(name),
         m_height(height),
         m_style(style),
-        m_units(units)
+        m_units(units),
+        m_charset(RS_CharSet_Undefined)
     {
     }
 
-    inline double&            height() { return m_height; }
-    inline RS_String&         name()   { return m_name; }
-    inline RS_FontStyle_Mask& style()  { return m_style; }
-    inline RS_Units&          units()  { return m_units; }
+    RS_FontDef(RS_String&          name,
+               double              height,
+               RS_FontStyle_Mask   style,
+               RS_Units            units,
+               RS_CharacterSetType charset) :
+        m_name(name),
+        m_height(height),
+        m_style(style),
+        m_units(units),
+        m_charset(charset)
+    {
+    }
+
+    inline double&              height() { return m_height; }
+    inline RS_String&           name()   { return m_name; }
+    inline RS_FontStyle_Mask&   style()  { return m_style; }
+    inline RS_Units&            units()  { return m_units; }
+    inline RS_CharacterSetType& charset(){ return m_charset; }
 
 private:
     double m_height;
     RS_String m_name;
     RS_FontStyle_Mask m_style;
     RS_Units m_units;
+    RS_CharacterSetType m_charset;
 };
 
 

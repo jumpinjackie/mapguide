@@ -1324,13 +1324,54 @@ public:
     };
 };
 
+// Note that these enum values are set to match the WIN32 charset values because it is expected that the 
+// CharacterSet value will most likely be used on a WIN32 platform to select a font.
+class CharacterSet
+{
+public:
+    enum Type {
+          keANSI          = 0,
+          keDefault       = 1,
+          keSymbol        = 2,
+
+          keMac           = 77,
+
+          keShiftJIS      = 128,
+
+          keHangul        = 129,
+          keJohab         = 130,
+
+          keGB2312        = 134,
+
+          keBig5          = 136,
+
+          keGreek         = 161,
+          keTurkish       = 162,
+          keVietnamese    = 163,
+
+          keHebrew        = 177,
+          keArabic        = 178,
+
+          keBaltic        = 186,
+
+          keRussian       = 204,
+
+          keThai          = 222,
+
+          keEastEurope    = 238,
+
+          keOEM           = 255
+    };
+};
+
+
 // These are the defined style particles.  All sinks should
 // accept at least a subset of these, and gracefully ignore
 // any particle it doesn't support, though in some cases it
 // may choose to abandon the parse (rare!)
 ATOM_STYLE_PARTICLE_DECL(Typeface,            StRange)           // Something like "Times new Roman" or "Sans Serif"
 ATOM_STYLE_PARTICLE_DECL(PitchFamily,         PitchFamily::Type)   // Font-matching heuristics if font isn't known.
-ATOM_STYLE_PARTICLE_DECL(CharacterSet,        int)               // Font-matching heuristics for which character set.
+ATOM_STYLE_PARTICLE_DECL(CharacterSet,        CharacterSet::Type)  // Font-matching heuristics for which character set.
 ATOM_STYLE_PARTICLE_DECL(AltTypefaces,        StRange)           // Alternate typefaces, to be tried if Typeface isn't found.
 ATOM_STYLE_PARTICLE_DECL(Size,                Measure)           // Typographical definition: cell height |   Mutually
 ATOM_STYLE_PARTICLE_DECL(CapSize,             Measure)           // Alternate definition: Cap height Size |   Exclusive
