@@ -87,6 +87,7 @@
     $errInvalidSessionTimeOut = "Site service session timeout is invalid.";
     $errInvalidSessionTimerInt = "Site service session timer interval is invalid.";
     $errCannotGetPackageStatus = "Cannot get package status: %s";
+    $errConnectionFailed = "Cannot establish connection.";
 
     // Confirmation Messages:
     $confSuccessfulDeletion = "%s has been successfully deleted.";

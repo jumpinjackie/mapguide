@@ -130,6 +130,10 @@
             }
         }
     }
+    catch ( MgConnectionFailedException $e)
+    {
+        $errorMsg = $errConnectionFailed;
+    }
     catch ( MgException $e )
     {
         $errorMsg = $errAuthenticationFailed;
