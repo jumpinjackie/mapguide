@@ -110,7 +110,8 @@ private:
     bool m_bForceOneToOne;
     bool m_bNoMoreData;
     bool m_bAdvanceSecondaryIterator;
-
+    bool m_bReadNextDone;
+    bool m_bReadNextHasData;
 };
 
 #endif
