@@ -258,7 +258,7 @@ ATOM::Status MTextParseInstance::Parse_f(TextRunElement& Run)
             break;
 
         case 'c':
-            Run.Style().AddDelta(ATOM::CharacterSetStyleParticle(_wtoi(s.Start()+1)));
+            Run.Style().AddDelta(ATOM::CharacterSetStyleParticle((ATOM::CharacterSet::Type)_wtoi(s.Start()+1)));
             break;
 
         case 'p':

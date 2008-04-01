@@ -736,9 +736,14 @@ void RichTextEngine::ApplyFormatChanges( const Particle* pFormatChanges )
                 }
                 break;
 
-            case StyleParticle::kePitchFamily:
             case StyleParticle::keCharacterSet:
-                // Not used by our font manager.
+                // Character Set
+                {
+                    // We know that the Atom CharacterSet::Type enum is defined the same as RS_CharacterSetType,
+                    // so we can simply typecast the value.
+                    const CharacterSetStyleParticle* pCharacterSetParticle = static_cast<const CharacterSetStyleParticle*>( pStyleParticle );
+                    fontDef.charset() = (RS_CharacterSetType) pCharacterSetParticle->Value();
+                }
                 break;
 
             case StyleParticle::keCapSize:
@@ -912,6 +917,7 @@ void RichTextEngine::ApplyFormatChanges( const Particle* pFormatChanges )
                 break;
 
             // Unsupported style attributes - will be done if time permits
+            case StyleParticle::kePitchFamily:
             case StyleParticle::keLineHeight:
             case StyleParticle::keAltTypefaces:
             case StyleParticle::keSize:
