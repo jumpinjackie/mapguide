@@ -29,6 +29,8 @@ MgServerGwsGetFeatures::MgServerGwsGetFeatures()
     m_relationNames = NULL;
     m_gwsFeatureReader = NULL;
     m_gwsFeatureIterator = NULL;
+    m_bReadNextDone = false;
+    m_bReadNextHasData = false;
 }
 
 
@@ -53,6 +55,8 @@ MgServerGwsGetFeatures::MgServerGwsGetFeatures(MgServerGwsFeatureReader* gwsFeat
     m_bForceOneToOne = bForceOneToOne;
     m_bAdvancePrimaryIterator = true;
     m_bNoMoreData = false;
+    m_bReadNextDone = false;
+    m_bReadNextHasData = false;
 }
 
 MgServerGwsGetFeatures::~MgServerGwsGetFeatures()
@@ -140,6 +144,7 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(bool bSerialize)
         // Advance the primary feature source iterator
         if (m_gwsFeatureIterator->ReadNext())
         {
+            m_bReadNextHasData = true;
             // Retrieve the secondary feature source iterators, get the property definitions and add to class definition
             FdoPtr<IGWSExtendedFeatureDescription> desc;
             m_gwsFeatureIterator->DescribeFeature(&desc);
@@ -269,6 +274,7 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(bool bSerialize)
                 mgClassDef->SetSerializedXml(str1);
             }
         }
+        m_bReadNextDone = true;
 
         // Store the it for future use
         m_classDef = SAFE_ADDREF((MgClassDefinition*)mgClassDef);
@@ -632,26 +638,34 @@ void MgServerGwsGetFeatures::AddFeatures(INT32 count)
 
         do
         {
-            // Advance the reader
-            // Read next throws exception which it should not (therefore we just ignore it)
-            try
+            if(m_bReadNextDone)
             {
-                found = ReadNext();
+                found = m_bReadNextHasData;
+                m_bReadNextDone = false;
             }
-            catch (FdoException* e)
+            else
             {
-                // Note: VB 05/10/06 The assert has been commented out as
-                // Linux does not remove them from a release build. The assert
-                // will cause the server to crash on Linux. The Oracle provider will throw
-                // an exception if the ReadNext() method is called after it returns false.
-                // This is a known problem and it is safe to ignore the exception.
-                //assert(false);
-                e->Release();
-                found = false;
-            }
-            catch(...)
-            {
-                found = false;
+                // Advance the reader
+                // Read next throws exception which it should not (therefore we just ignore it)
+                try
+                {
+                    found = ReadNext();
+                }
+                catch (FdoException* e)
+                {
+                    // Note: VB 05/10/06 The assert has been commented out as
+                    // Linux does not remove them from a release build. The assert
+                    // will cause the server to crash on Linux. The Oracle provider will throw
+                    // an exception if the ReadNext() method is called after it returns false.
+                    // This is a known problem and it is safe to ignore the exception.
+                    //assert(false);
+                    e->Release();
+                    found = false;
+                }
+                catch(...)
+                {
+                    found = false;
+                }
             }
 
             if(found)
