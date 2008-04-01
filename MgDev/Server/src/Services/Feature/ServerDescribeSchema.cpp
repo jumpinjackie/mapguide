@@ -170,10 +170,7 @@ FdoFeatureSchemaCollection* MgServerDescribeSchema::ExecuteDescribeSchema(MgReso
 
                 }  // End of the for-loop that iterates thru the secondary sources
 
-            }  // End of for loop that iterates thru the extensions in the feature source
-        
-
-            m_featureServiceCache->SetFdoFeatureSchemaCollection(resource, schemaName, ffsc);
+            }  // End of for loop that iterates thru the extensions in the feature source        
         }
         else
         {
@@ -547,6 +544,8 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
 
         }  // End loop thru all schemas
 
+        // The following sets ffsc to NULL
+        m_featureServiceCache->SetFdoFeatureSchemaCollection(resource, schemaName, ffsc);
         m_featureServiceCache->SetFeatureSchemaCollection(resource, schemaName, fsCollection.p, serialize);
     }
 
@@ -1341,6 +1340,8 @@ MgStringCollection* MgServerDescribeSchema::GetSchemas(MgResourceIdentifier* res
             }
         }
 
+        // The following sets ffsc to NULL
+        m_featureServiceCache->SetFdoFeatureSchemaCollection(resource, L"", ffsc);
         m_featureServiceCache->SetFeatureSchemaNames(resource, strCol.p);
     }
 
@@ -1386,6 +1387,8 @@ MgStringCollection* MgServerDescribeSchema::GetClasses(MgResourceIdentifier* res
             }
         }
 
+        // The following sets ffsc to NULL
+        m_featureServiceCache->SetFdoFeatureSchemaCollection(resource, schemaName, ffsc);
         m_featureServiceCache->SetFeatureClassNames(resource, schemaName, strCol.p);
     }
 
@@ -1603,6 +1606,8 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(Mg
             }  // end find identity properties for extension class
         }
 
+        // The following sets ffsc to NULL
+        m_featureServiceCache->SetFdoFeatureSchemaCollection(resource, schemaName, ffsc);
         m_featureServiceCache->SetFeatureClassIdentityProperties(resource, schemaName, className, idProps.p);
     }
 

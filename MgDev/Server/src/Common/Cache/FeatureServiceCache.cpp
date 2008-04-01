@@ -677,7 +677,16 @@ MgPropertyDefinitionCollection* MgFeatureServiceCache::GetFeatureClassIdentityPr
     return data.Detach();
 }
 
-void MgFeatureServiceCache::SetFdoFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, FdoFeatureSchemaCollection* featureSchemaCollection)
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Caches an FDO Feature Schema Collection
+/// The cache takes ownership of Feature Schema collection so the caller must not release it.
+/// This prevents a race condition that would occur if the caller does a release at the
+/// same time another thread tries to retrieve the schemas from this cache.
+/// The FDO Feature Schemas are not thread-safe.
+/// featureSchemaCollection will be NULL when this function exits.
+///
+void MgFeatureServiceCache::SetFdoFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, FdoPtr<FdoFeatureSchemaCollection>& featureSchemaCollection)
 {
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
@@ -700,7 +709,8 @@ void MgFeatureServiceCache::SetFdoFeatureSchemaCollection(MgResourceIdentifier* 
     }
 
     entry->SetFeatureSchemaName(featureSchemaName);
-    entry->SetFdoFeatureSchemaCollection(featureSchemaCollection);
+    entry->SetFdoFeatureSchemaCollection(featureSchemaCollection.p);
+    featureSchemaCollection = NULL;
 }
 
 FdoFeatureSchemaCollection* MgFeatureServiceCache::GetFdoFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName)
@@ -721,8 +731,18 @@ FdoFeatureSchemaCollection* MgFeatureServiceCache::GetFdoFeatureSchemaCollection
         {
             data = NULL;
         }
+        if (NULL != data.p)
+        {
+            // FDO Feature Schemas are not thread-safe so caller must take ownership.
+            // Remove the FDO schemas from the cache so that they won't be given to
+            // any other thread that calls this function.
+            // Caller is responsible for putting this schemas back in the cache when 
+            // done with them.
+            entry->SetFdoFeatureSchemaCollection((FdoFeatureSchemaCollection*) NULL);
+        }
     }
 
     return data.Detach();
 }
+
 

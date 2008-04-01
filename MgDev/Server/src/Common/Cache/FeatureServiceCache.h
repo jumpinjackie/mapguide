@@ -80,7 +80,7 @@ public:
     void SetFeatureClassIdentityProperties(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, CREFSTRING featureClassName, MgPropertyDefinitionCollection* featureClassIdentityProperties);
     MgPropertyDefinitionCollection* GetFeatureClassIdentityProperties(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, CREFSTRING featureClassName);
 
-    void SetFdoFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, FdoFeatureSchemaCollection* featureSchemaCollection);
+    void SetFdoFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, FdoPtr<FdoFeatureSchemaCollection>& featureSchemaCollection);
     FdoFeatureSchemaCollection* GetFdoFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName);
 
 protected:
