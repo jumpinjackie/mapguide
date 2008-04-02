@@ -34,7 +34,7 @@ public:
 private:
     static int ConfigureHotSpots(SE_Renderer* renderer, LineBuffer* geometry, int cur_contour, SE_RenderLineStyle* style, RS_Bounds& styleBounds, HotSpot* hotspots);
     static int ComputePoints(SE_Renderer* renderer, LineBuffer* geometry, int cur_contour, HotSpot* hotspots);
-    static void ChopLineBuffer(LineBuffer* inBuffer, LineBuffer* outBuffer);
+    static void ChopLineBuffer(SE_Renderer* renderer, LineBuffer* inBuffer, LineBuffer* outBuffer);
     static LineBuffer* ClipPolyline(LineBufferPool* lbp, LineBuffer& geometry, double zMin, double zMax);
     static LineBuffer* ClipPolygon(LineBufferPool* lbp, LineBuffer& geometry, double zMin, double zMax);
     static int ClipLine(double zMin, double zMax, double* line, double* ret);

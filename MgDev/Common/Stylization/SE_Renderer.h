@@ -71,6 +71,7 @@ public:
 
     virtual double GetScreenUnitsPerMillimeterDevice() = 0;
     virtual double GetScreenUnitsPerMillimeterWorld() = 0;
+    virtual double GetScreenUnitsPerPixel() = 0;
 
     virtual RS_FontEngine* GetRSFontEngine() = 0;
 

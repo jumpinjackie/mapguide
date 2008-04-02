@@ -513,9 +513,6 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     double drawingScale = pSERenderer->GetDrawingScale();
     bool yUp = pSERenderer->YPointsUp();
 
-    // get the number of screen units (pixels for GD, W2D units for DWF) per device pixel
-    double screenUnitsPerPixel = mm2sud * MILLIMETERS_PER_INCH / pSERenderer->GetDpi();
-
     // check for degenerate bounds
     if (symBounds.width() == 0.0 && symBounds.height() == 0.0)
     {
@@ -628,7 +625,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
         evalCxt.mm2su = mm2suX;
         evalCxt.mm2sud = mm2sud;
         evalCxt.mm2suw = mm2suw;
-        evalCxt.tolerance = 0.25 * screenUnitsPerPixel;
+        evalCxt.px2su = pSERenderer->GetScreenUnitsPerPixel();
         evalCxt.pool = pool;
         evalCxt.fonte = pSERenderer->GetRSFontEngine();
         evalCxt.xform = &xformScale;
@@ -745,9 +742,6 @@ void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Sym
     double mm2sud = pSERenderer->GetScreenUnitsPerMillimeterDevice();
     double mm2suw = pSERenderer->GetScreenUnitsPerMillimeterWorld();
 
-    // get the number of screen units (pixels for GD, W2D units for DWF) per device pixel
-    double screenUnitsPerPixel = mm2sud * MILLIMETERS_PER_INCH / pSERenderer->GetDpi();
-
     for (std::vector<SE_Symbolization*>::const_iterator iter = styles.begin(); iter != styles.end(); iter++)
     {
         // one per symbol instance
@@ -772,7 +766,7 @@ void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Sym
         evalCxt.mm2su = mm2suX;
         evalCxt.mm2sud = mm2sud;
         evalCxt.mm2suw = mm2suw;
-        evalCxt.tolerance = 0.25 * screenUnitsPerPixel;
+        evalCxt.px2su = pSERenderer->GetScreenUnitsPerPixel();
         evalCxt.pool = pool;
         evalCxt.fonte = pSERenderer->GetRSFontEngine();
         evalCxt.xform = &xformScale;

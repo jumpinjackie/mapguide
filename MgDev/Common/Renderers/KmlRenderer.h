@@ -133,6 +133,7 @@ public:
 
     virtual double GetScreenUnitsPerMillimeterDevice();
     virtual double GetScreenUnitsPerMillimeterWorld();
+    virtual double GetScreenUnitsPerPixel();
 
     virtual RS_FontEngine* GetRSFontEngine();
 
