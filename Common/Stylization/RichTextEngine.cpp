@@ -369,7 +369,7 @@ void RichTextEngine::GetFontValues()
 {
     RS_FontDef& fontDef = this->m_formatState.m_tmpTDef.font();
     RS_Font* pFont = (RS_Font*) this->m_pFontEngine->GetRenderingFont( this->m_formatState.m_tmpTDef );
-    this->m_actualHeight = this->m_pFontEngine->MetersToPixels( fontDef.units(), fontDef.height());
+    this->m_actualHeight = this->m_pFontEngine->MetersToScreenUnits( fontDef.units(), fontDef.height());
     double scale = this->m_actualHeight / pFont->m_units_per_EM;
     this->m_fontAscent = fabs( pFont->m_ascender * scale );
     this->m_fontDescent = fabs( pFont->m_descender * scale );
@@ -378,7 +378,7 @@ void RichTextEngine::GetFontValues()
     this->m_fontCapline = fabs( pFont->m_capheight * scale );
 }
 
-double RichTextEngine::ConvertToPixels( double val, Measure::UnitType unit )
+double RichTextEngine::ConvertToScreenUnits( double val, Measure::UnitType unit )
 {
     double ret;
     switch ( unit )
@@ -387,14 +387,14 @@ double RichTextEngine::ConvertToPixels( double val, Measure::UnitType unit )
         ret = 0.0;  // Value has no meaning in our context
         break;
     case Measure::keModel:    // Units of the surrounding model space
-        ret = this->m_pFontEngine->MetersToPixels( RS_Units_Model, val);
+        ret = this->m_pFontEngine->MetersToScreenUnits( RS_Units_Model, val );
         break;
-    case Measure::kePixels:   // Physical device units
+    case Measure::keDevice:   // Physical device units
         ret = val;
         break;
     case Measure::kePoints:   // 1/72 of an inch; Twips = Points * 20, Pica = 12 Points
-        val = (val * 72.0) * .0254;
-        ret = this->m_pFontEngine->MetersToPixels( RS_Units_Device, val );
+        val = (val / 72.0) * 0.0254;
+        ret = this->m_pFontEngine->MetersToScreenUnits( RS_Units_Device, val );
         break;
     case Measure::keEm:       // an "em" (1.0 times height of current font.)
         {
@@ -584,14 +584,14 @@ void RichTextEngine::ApplyLocationOperations( const ILocation* pLocation )
                 this->m_curX =
                     advanceMeasure.Units() == Measure::keProportion ?
                     this->m_curX *= advanceMeasure.Number() :
-                    this->m_curX += ConvertToPixels( advanceMeasure.Number(), advanceMeasure.Units() );
+                    this->m_curX += ConvertToScreenUnits( advanceMeasure.Number(), advanceMeasure.Units() );
                 if ( riseMeasure.Units() == Measure::keProportion )
                     this->m_curY *= riseMeasure.Number();
                 else
                 if ( this->m_yUp )
-                    this->m_curY += ConvertToPixels( riseMeasure.Number(), riseMeasure.Units() );
+                    this->m_curY += ConvertToScreenUnits( riseMeasure.Number(), riseMeasure.Units() );
                 else
-                    this->m_curY -= ConvertToPixels( riseMeasure.Number(), riseMeasure.Units() );
+                    this->m_curY -= ConvertToScreenUnits( riseMeasure.Number(), riseMeasure.Units() );
 
                 TrackLineMetrics();
             }

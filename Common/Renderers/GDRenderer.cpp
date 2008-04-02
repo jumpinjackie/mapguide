@@ -1136,12 +1136,6 @@ double GDRenderer::GetDpi()
 }
 
 
-double GDRenderer::GetMapToPixelScale()
-{
-    return m_scale;
-}
-
-
 bool GDRenderer::RequiresClipping()
 {
     return m_bRequiresClipping;
@@ -2333,13 +2327,15 @@ void GDRenderer::ScreenToWorldPoint(double& inx, double& iny, double& ox, double
 }
 
 
-double GDRenderer::GetPixelsPerMillimeterScreen()
+// returns number of pixels per millimeter device
+double GDRenderer::GetScreenUnitsPerMillimeterDevice()
 {
     return m_dpi / MILLIMETERS_PER_INCH;
 }
 
 
-double GDRenderer::GetPixelsPerMillimeterWorld()
+// returns number of pixels per millimeter world
+double GDRenderer::GetScreenUnitsPerMillimeterWorld()
 {
     return m_dpi / MILLIMETERS_PER_INCH / m_mapScale;
 }

@@ -366,13 +366,15 @@ void FeatureInfoRenderer::ScreenToWorldPoint(double& inx, double& iny, double& o
 }
 
 
-double FeatureInfoRenderer::GetPixelsPerMillimeterScreen()
+// returns number of pixels per millimeter device
+double FeatureInfoRenderer::GetScreenUnitsPerMillimeterDevice()
 {
     return m_dpi / MILLIMETERS_PER_INCH;
 }
 
 
-double FeatureInfoRenderer::GetPixelsPerMillimeterWorld()
+// returns number of pixels per millimeter world
+double FeatureInfoRenderer::GetScreenUnitsPerMillimeterWorld()
 {
     return m_dpi / MILLIMETERS_PER_INCH / m_mapScale;
 }

@@ -155,14 +155,11 @@ public:
     virtual bool YPointsUp();
 
     virtual void GetWorldToScreenTransform(SE_Matrix& xform);
-
     virtual void WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy);
-
     virtual void ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy);
 
-    virtual double GetPixelsPerMillimeterScreen();
-
-    virtual double GetPixelsPerMillimeterWorld();
+    virtual double GetScreenUnitsPerMillimeterDevice();
+    virtual double GetScreenUnitsPerMillimeterWorld();
 
     virtual RS_FontEngine* GetRSFontEngine();
 

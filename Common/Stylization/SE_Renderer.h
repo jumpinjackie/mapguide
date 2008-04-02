@@ -69,8 +69,8 @@ public:
     // returns the viewport rotation angle, in radians CCW
     STYLIZATION_API virtual double GetWorldToScreenRotation();
 
-    virtual double GetPixelsPerMillimeterScreen() = 0;
-    virtual double GetPixelsPerMillimeterWorld() = 0;
+    virtual double GetScreenUnitsPerMillimeterDevice() = 0;
+    virtual double GetScreenUnitsPerMillimeterWorld() = 0;
 
     virtual RS_FontEngine* GetRSFontEngine() = 0;
 

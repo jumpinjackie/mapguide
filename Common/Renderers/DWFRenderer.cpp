@@ -2501,9 +2501,9 @@ void DWFRenderer::DrawScreenRaster(unsigned char* data,
         else if (format == RS_ImageFormat_PNG)
         {
             // compute the scaled size
-            double screenPixelsPerW2D = m_dpi / MILLIMETERS_PER_INCH / GetPixelsPerMillimeterScreen();
-            double scaledW = w * screenPixelsPerW2D;
-            double scaledH = h * screenPixelsPerW2D;
+            double pixelsPerW2D = m_dpi / MILLIMETERS_PER_INCH / GetScreenUnitsPerMillimeterDevice();
+            double scaledW = w * pixelsPerW2D;
+            double scaledH = h * pixelsPerW2D;
 
             // don't allow images beyond the maximum size
             if (scaledW * scaledH > IMAGE_SIZE_MAX)
@@ -2514,8 +2514,8 @@ void DWFRenderer::DrawScreenRaster(unsigned char* data,
             double maxx = rs_max(ptsx[0], rs_max(ptsx[1], rs_max(ptsx[2], ptsx[3])));
             double miny = rs_min(ptsy[0], rs_min(ptsy[1], rs_min(ptsy[2], ptsy[3])));
             double maxy = rs_max(ptsy[0], rs_max(ptsy[1], rs_max(ptsy[2], ptsy[3])));
-            double rotatedW = (maxx - minx) * screenPixelsPerW2D;
-            double rotatedH = (maxy - miny) * screenPixelsPerW2D;
+            double rotatedW = (maxx - minx) * pixelsPerW2D;
+            double rotatedH = (maxy - miny) * pixelsPerW2D;
 
             // don't allow images beyond the maximum size
             if (rotatedW * rotatedH > IMAGE_SIZE_MAX)
@@ -2632,8 +2632,8 @@ void DWFRenderer::ScreenToWorldPoint(double& inx, double& iny, double& ox, doubl
 }
 
 
-// returns number of W2D units per millimeter screen
-double DWFRenderer::GetPixelsPerMillimeterScreen()
+// returns number of W2D units per millimeter device
+double DWFRenderer::GetScreenUnitsPerMillimeterDevice()
 {
     //  [ W2D ]     [ World ]     meter-world     mm-world      [ W2D ]
     // --------- * ----------- * ------------- * ---------  =  ---------
@@ -2643,7 +2643,7 @@ double DWFRenderer::GetPixelsPerMillimeterScreen()
 
 
 // returns number of W2D units per millimeter world
-double DWFRenderer::GetPixelsPerMillimeterWorld()
+double DWFRenderer::GetScreenUnitsPerMillimeterWorld()
 {
     //  [ W2D ]     [ World ]     meter-world       [ W2D ]
     // --------- * ----------- * -------------  =  --------

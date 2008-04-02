@@ -1852,13 +1852,15 @@ void AGGRenderer::ScreenToWorldPoint(double& inx, double& iny, double& ox, doubl
 }
 
 
-double AGGRenderer::GetPixelsPerMillimeterScreen()
+// returns number of pixels per millimeter device
+double AGGRenderer::GetScreenUnitsPerMillimeterDevice()
 {
     return m_dpi / MILLIMETERS_PER_INCH;
 }
 
 
-double AGGRenderer::GetPixelsPerMillimeterWorld()
+// returns number of pixels per millimeter world
+double AGGRenderer::GetScreenUnitsPerMillimeterWorld()
 {
     return m_dpi / MILLIMETERS_PER_INCH / m_mapScale;
 }

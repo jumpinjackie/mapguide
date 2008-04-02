@@ -82,7 +82,7 @@ public:
     void ClearCache();
 
 private:
-    void LayoutCustomLabel(const wchar_t* positioningAlgo, SE_ApplyContext* applyCtx, SE_RenderStyle* rstyle, double mm2px);
+    void LayoutCustomLabel(const wchar_t* positioningAlgo, SE_ApplyContext* applyCtx, SE_RenderStyle* rstyle, double mm2su);
 
 private:
     SE_Renderer* m_serenderer;

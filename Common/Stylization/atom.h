@@ -492,7 +492,7 @@ public:
 
         keModel,    // Units of the surrounding model space
 
-        kePixels,   // Physical device units
+        keDevice,   // Physical device units
         kePoints,   // 1/72 of an inch; Twips = Points * 20, Pica = 12 Points
                     //                                             qv http://en.wikipedia.org/wiki/Point_%28typography%29
 
