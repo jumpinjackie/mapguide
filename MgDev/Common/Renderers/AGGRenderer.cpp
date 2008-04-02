@@ -1582,7 +1582,7 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth)
 // can only be applied to polygon feature geometry types.
 void AGGRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 {
-    bool clip = (!style->solidFill && wcscmp(style->clippingControl, L"Clip") == 0);
+    bool clip = (!style->solidFill && style->clippingControl == SE_ClippingControl_Clip);
     if (clip)
         SetPolyClip(ctx->geometry, style->bufferWidth);
 
@@ -2070,7 +2070,7 @@ void AGGRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double 
 /*
 void AGGRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 {
-    if (wcscmp(style->vertexControl, L"OverlapWrap") != 0)
+    if (style->vertexControl != SE_VertexControl_OverlapWrap)
     {
         SE_Renderer::ProcessLine(ctx, style);
         return;

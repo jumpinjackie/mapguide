@@ -770,7 +770,7 @@ void KmlRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
         {
             SE_RenderPrimitive* rp = style->symbol[i];
 
-            if (rp->type == SE_RenderPolylinePrimitive)
+            if (rp->type == SE_RenderPrimitive_Polyline)
             {
                 ls.color() = RS_Color::FromARGB(((SE_RenderPolyline*)rp)->lineStroke.color);
                 ls.width() = ((SE_RenderPolyline*)rp)->lineStroke.weight / GetScreenUnitsPerMillimeterDevice() * 0.001; //convert from screen units to meters
@@ -797,7 +797,7 @@ void KmlRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
         {
             SE_RenderPrimitive* rp = style->symbol[i];
 
-            if (rp->type == SE_RenderPolygonPrimitive)
+            if (rp->type == SE_RenderPrimitive_Polygon)
             {
                 fs.color() = RS_Color::FromARGB(((SE_RenderPolygon*)rp)->fill);
                 fs.outline().color() = RS_Color::FromARGB(((SE_RenderPolygon*)rp)->lineStroke.color);
