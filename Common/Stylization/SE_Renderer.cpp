@@ -217,36 +217,19 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
     {
         ProcessLineOverlapNone(featGeom, style);
     }
+    else if (wcscmp(style->vertexControl, L"OverlapDirect") == 0)
+    {
+        ProcessLineOverlapDirect(featGeom, style);
+    }
     else if (wcscmp(style->vertexControl, L"OverlapNoWrap") == 0)
     {
         // this deprecated option is treated as OverlapNone
         ProcessLineOverlapNone(featGeom, style);
     }
-    else if (wcscmp(style->vertexControl, L"OverlapDirect") == 0)
-    {
-        ProcessLineOverlapDirect(featGeom, style);
-    }
     else
     {
         // default is OverlapWrap
-
-        // TODO: remove/integrate when joins work with rasters, text
-        bool vectorOnly = true;
-        SE_RenderPrimitiveList& rs = style->symbol;
-        for (SE_RenderPrimitiveList::const_iterator iter = rs.begin(); iter != rs.end(); iter++)
-        {
-            if ((*iter)->type != SE_RenderPolylinePrimitive && (*iter)->type != SE_RenderPolygonPrimitive)
-            {
-                vectorOnly = false;
-                break;
-            }
-        }
-
-        // currently only handle the vector-only case - fall back to OverlapNone otherwise
-        if (vectorOnly)
-            SE_LineRenderer::ProcessLineOverlapWrap(this, featGeom, style);
-        else
-            ProcessLineOverlapNone(featGeom, style);
+        SE_LineRenderer::ProcessLineOverlapWrap(this, featGeom, style);
     }
 }
 
@@ -372,19 +355,17 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
             for (int j=0; j<4; ++j)
                 extents.add_point(primitive->bounds[j]);
 
-            // TODO take into account rotation if drawing along a line and
-            // the angle control is "FromGeometry"
+            // get position and angle to use
             double x, y;
             xform.transform(tp->position[0], tp->position[1], x, y);
-
             RS_TextDef tdef = tp->tdef;
             tdef.rotation() += angleRad * M_180PI;
 
             if (m_bSelectionMode)
             {
-                tdef.textcolor() = m_textForeColor;
-                tdef.ghostcolor() = m_textBackColor;
-//              tdef.framecolor() = m_textBackColor;
+                tdef.textcolor()   = m_textForeColor;
+                tdef.ghostcolor()  = m_textBackColor;
+//              tdef.framecolor()  = m_textBackColor;
 //              tdef.opaquecolor() = m_textBackColor;
             }
 
@@ -401,8 +382,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                 for (int j=0; j<4; ++j)
                     extents.add_point(primitive->bounds[j]);
 
-                // TODO take into account rotation if drawing along a line and
-                // the angle control is "FromGeometry"
+                // get position and angle to use
                 double x, y;
                 xform.transform(rp->position[0], rp->position[1], x, y);
                 double angleDeg = (rp->angleRad + angleRad) * M_180PI;
