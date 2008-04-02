@@ -21,7 +21,7 @@
 #include "RS_OutputStream.h"
 
 
-// For point reduction loop -- point will be dropped if distance
+// For point reduction loop -- points will be dropped if distance
 // between them squared is more than 1.96 (i.e. 1.4 pixels).
 // Dave said 1.4 is a good number.
 #define OPTIMIZE_DISTANCE_SQ 1.96
@@ -1369,7 +1369,7 @@ LineBuffer* LineBuffer::Optimize(double drawingScale, LineBufferPool* lbp)
                 }
             }
 
-            //add last point for to ensure closure
+            //add last point to ensure closure
             x = m_pts[index][0];
             y = m_pts[index][1];
             if (m_bProcessZ)
@@ -1472,7 +1472,7 @@ LineBuffer* LineBuffer::ClipPolygon(RS_Bounds& b, LineBuffer* dest)
     //TODO: handle polygons that become multipolygons when clipped
     dest->m_geom_type = m_geom_type;
 
-    //unlike polylines, here we don't need to exapnd the clip region
+    //unlike polylines, here we don't need to expand the clip region
     //because we will still get a polygon point on the edge if we throw
     //away one which is just outside the edge (due to floating point precision)
     RS_Bounds clipRect( b.minx, b.miny, b.maxx, b.maxy);
@@ -1722,11 +1722,11 @@ void LineBuffer::FinalizeContour()
 //
 //     Input:
 //
-//         clipRect  - passes a reference to an OpsFloatExtent structure; the
+//         clipRect  - passes a reference to an RS_Bounds structure; the
 //                     structure pointed to contains the coordinates of the
 //                     corners of the clip rectangle.
-//         xClip     - passes the x coordinate of the clipped vertex.
-//         yClip     - passes the y coordiante of the clipped vertex.
+//         x         - passes the x coordinate of the clipped vertex.
+//         y         - passes the y coordiante of the clipped vertex.
 //
 // RETURNS: None.
 //
@@ -1735,18 +1735,18 @@ void LineBuffer::FinalizeContour()
 //------------------------------------------------------------------------------
 void LineBuffer::AppendLBClipVertex(RS_Bounds& clipRect, double x, double y, LineBuffer* lb, bool move)
 {
-    // if there is at least one edge in the output array, then determine if the
+    // If there is at least one edge in the output array, then determine if the
     // edge defined by the last two vertices in the array plus the new clip
-    // vertex induce a degenerate edge; the edge is considered degenerate if
-    // if doubles back on the last edge in the output array, and lies along
-    // one of the boundaries of the clip rectangle
+    // vertex induce a degenerate edge.  The edge is considered degenerate if
+    // it doubles back on the last edge in the output array, and lies along
+    // one of the boundaries of the clip rectangle.
 
     // TODO: NOT Z AWARE
     bool degenerate = false;
 
-    //only line segments can be degenerate -- a move indicates the start of a new
-    //polygon, so it is not degenerate.
-    int npts = move ? 0 : lb->m_cntrs[lb->m_cur_cntr];
+    // only line segments can be degenerate -- a move indicates the start of a new
+    // polygon, so it is not degenerate
+    int npts = move? 0 : lb->m_cntrs[lb->m_cur_cntr];
 
     if (npts > 1)
     {
@@ -1755,11 +1755,11 @@ void LineBuffer::AppendLBClipVertex(RS_Bounds& clipRect, double x, double y, Lin
         lb->get_point(lb->point_count()-2, x2, y2);
 
         degenerate = (x == x1 && x == x2 &&
-            (x == clipRect.minx || x == clipRect.maxx) &&
-            ((y <= y1 && y2 <= y1) || (y >= y1 && y2 >= y1))) ||
-            (y == y1 && y == y2 &&
-            (y == clipRect.miny || y == clipRect.maxy) &&
-            ((x <= x1 && x2 <= x1) || (x >= x1 && x2 >= x1)));
+                      (x == clipRect.minx || x == clipRect.maxx) &&
+                      ((y <= y1 && y2 <= y1) || (y >= y1 && y2 >= y1))) ||
+                     (y == y1 && y == y2 &&
+                      (y == clipRect.miny || y == clipRect.maxy) &&
+                      ((x <= x1 && x2 <= x1) || (x >= x1 && x2 >= x1)));
     }
 
     // else if there is only one vertex, and the new vertex is identical, then
@@ -1769,7 +1769,6 @@ void LineBuffer::AppendLBClipVertex(RS_Bounds& clipRect, double x, double y, Lin
         degenerate =   x == lb->x_coord(lb->point_count()-1)
                     && y == lb->y_coord(lb->point_count()-1);
     }
-
 
     // else not degenerate
     else
@@ -1870,11 +1869,11 @@ int LineBuffer::ClipCode(RS_Bounds& b, double x, double y)
         clipCode = INSIDE;
 
     if (y < b.miny)
-        return clipCode |= BOTTOM;
+        clipCode |= BOTTOM;
     else if (y > b.maxy)
-        return clipCode |= TOP;
-    else
-        return clipCode;
+        clipCode |= TOP;
+
+    return clipCode;
 }
 
 

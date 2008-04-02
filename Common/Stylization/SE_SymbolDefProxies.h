@@ -19,6 +19,7 @@
 #define SE_SYMBOLDEFPROXIES_H_
 
 #include "SE_LineBuffer.h"
+#include "SE_BufferPool.h"
 #include "SE_ExpressionBase.h"
 #include "SE_SymbolManager.h"
 

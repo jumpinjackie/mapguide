@@ -19,9 +19,6 @@
 #include "StylizationEngine.h"
 #include "SE_StyleVisitor.h"
 #include "SE_SymbolManager.h"
-#include "SE_LineBuffer.h"
-#include "SE_BufferPool.h"
-#include "SE_SymbolDefProxies.h"
 #include <wctype.h>
 
 using namespace MDFMODEL_NAMESPACE;

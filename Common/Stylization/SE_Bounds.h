@@ -47,7 +47,6 @@ public:
     STYLIZATION_API void Contained(double minx, double miny, double maxx, double maxy, double &growx, double &growy);
     STYLIZATION_API void Free();
     STYLIZATION_API SE_Bounds* Clone(bool keepPool = true);
-    STYLIZATION_API SE_Bounds* Union(SE_Bounds* bounds);
 };
 
 #endif

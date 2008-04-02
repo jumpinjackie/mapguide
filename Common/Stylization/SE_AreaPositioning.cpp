@@ -16,7 +16,6 @@
 //
 
 #include "SE_AreaPositioning.h"
-#include "SE_GeometryOperations.h"
 #include <float.h>
 
 
