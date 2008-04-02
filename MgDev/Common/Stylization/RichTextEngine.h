@@ -22,6 +22,7 @@
 #include "atom_element.h"
 #include "Stylization.h"
 #include "RendererStyles.h"
+#include "RS_Font.h"
 
 using namespace RichText::ATOM;
 
@@ -29,25 +30,151 @@ struct LinePos;
 class  SE_Renderer;
 class  RS_FontEngine;
 class  RS_TextMetrics;
+class  AtomRun;
+class  AtomLine;
+class  AtomBlock;
+class  RichTextFormatState;
 
-
-struct AtomBookmark
+class AtomBaseComponent
 {
-    double xPos;
-    double yPos;
+public:
+	AtomBaseComponent( RS_F_Point position, AtomBaseComponent* pParent );
+	~AtomBaseComponent();
+
+	// Virtuals which must be implemented by parent class
+	// Note that parent class must calculate the extent
+	virtual double		GetAscentPosition( bool yUp ) = 0;
+	virtual double		GetDescentPosition( bool yUp ) = 0;
+	virtual double		GetCaplinePosition( bool yUp ) = 0;
+	virtual double		GetBaselinePosition( bool yUp ) = 0;
+	virtual void		OutputData( RS_F_Point parentPosition, RS_TextMetrics* pTextMetrics ) = 0;
+
+	// Methods to access data
+	virtual RS_F_Point&	Offset();
+	virtual void		GetPosition( RS_F_Point& position );
+	virtual RS_F_Point*	GetExtent();
+	virtual double		GetWidth();
+	virtual void		GetPositionedExtent( RS_F_Point* positionedExtent );
+	virtual RS_F_Point	GetUpperLeftCorner();
+	virtual RS_F_Point	GetLowerRightCorner();
+	virtual void		AddExtent( RS_F_Point* ext, bool yUp );
+	virtual void		Translate( RS_F_Point translation );
+	
+protected:
+	RS_F_Point			m_offset;
+    RS_F_Point			m_extent[4];
+	AtomBaseComponent*	m_pParent;
 };
 
+class AtomBaseComponentCollection : public AtomBaseComponent
+{
+public:
+	// Construction
+	AtomBaseComponentCollection( RS_F_Point position, AtomBaseComponent* pParent );
+	~AtomBaseComponentCollection();
+
+	void AddComponent( AtomBaseComponent* pComponent );
+	void CalculateExtent( bool yUp );
+
+	// AtomBaseComponent
+	virtual double	GetAscentPosition( bool yUp );
+	virtual double	GetDescentPosition( bool yUp );
+	virtual double	GetCaplinePosition( bool yUp );
+	virtual double	GetBaselinePosition( bool yUp );
+	virtual void	OutputData( RS_F_Point parentPosition, RS_TextMetrics* pTextMetrics );
+
+protected:
+	// Ordered list of components in collection
+    std::vector<AtomBaseComponent*>	m_components;	
+};
+
+
+class AtomRun : public AtomBaseComponent
+{
+public:
+	// Construction
+	AtomRun( RS_F_Point position, AtomLine* pParentLine, RichTextFormatState &formatState );
+	~AtomRun();
+
+	void SetTextRun( StRange runContent, unsigned int runInd, Particle* pFormatChanges );
+	void Close( RS_FontEngine* pFontEngine, const RS_Font* pFont );
+	double	GetAdvanceAlignment();
+
+	// AtomBaseComponent
+	double	GetAscentPosition( bool yUp );
+	double	GetDescentPosition( bool yUp );
+	double	GetCaplinePosition( bool yUp );
+	double	GetBaselinePosition( bool yUp );
+	void	OutputData( RS_F_Point parentPosition, RS_TextMetrics* pTextMetrics );
+
+private:
+	void CalculateExtent( RS_FontEngine* pFontEngine, const RS_Font* pFont );
+
+	// The text run
+	wchar_t*			m_textRun;
+	size_t				m_textRunLen;
+	unsigned int		m_textRunInd;
+	std::vector<float>	m_charAdvances;
+	Particle*			m_pFormatChanges;
+
+	// Formatting values needed to calculate metrics and line post-processing
+    double              m_fontAscent;
+    double              m_fontDescent;
+    double              m_fontCapline;
+    double              m_actualHeight;
+	double              m_advanceAlignment;  // Used to track state of advance alignment multiplier
+};
+
+class AtomLine : public AtomBaseComponentCollection
+{
+public:
+	// Construction
+	AtomLine( RS_F_Point position, AtomBlock *pParentBlock, RichTextFormatState &formatState, bool fixedLine );
+	~AtomLine();
+
+	double		Close( bool yUp );
+	AtomBlock*	GetParentBlock();
+
+private:
+	double	AdjustBaseline( bool yUp );
+	void	ApplyAdvanceAlignment();
+
+	double	m_initialAscent;
+	bool	m_fixedLine;
+};
+
+
+class AtomBlock : public AtomBaseComponentCollection
+{
+public:
+	// Construction
+	AtomBlock( RS_F_Point position, AtomLine* pParentLine, RichTextFormatState& formatState );
+	~AtomBlock();
+
+	void		Close( bool yUp );
+	AtomLine*	GetParentLine();
+	AtomLine*	GetLastLine();
+
+private:
+	void		ApplyJustification();
+
+	RS_Justify	m_justification;
+};
 
 class RichTextFormatState
 {
 public:
     RS_TextDef              m_tmpTDef;
-    NUMBER                  m_trackingVal;          // Used to track state of tracking multiplier
-    NUMBER                  m_advanceAlignmentVal;  // Used to track state of advance alignment multiplier
 
-    RichTextFormatState*    m_pNext;   // Used to maintain a stack of states
+    NUMBER                  m_advanceAlignmentVal; 
+    double                  m_fontAscent;
+    double                  m_fontDescent;
+    double                  m_fontCapline;
+    double                  m_actualHeight;
+    double                  m_lineHeight;
+
+	RichTextFormatState*    m_pNext;   // Used to maintain a stack of states
 };
-
 
 class FormatStatePushPopParticle : public Particle
 {
@@ -83,11 +210,9 @@ public:
     STYLIZATION_API bool Parse( const RS_String& s, RS_TextMetrics* pTextMetrics );
     STYLIZATION_API void ApplyFormatChanges( const Particle* pFormatChanges );
     STYLIZATION_API void InitEngine( RS_TextDef* pTDef );
-    STYLIZATION_API void GetTextDef( RS_TextDef* pTDef );
+	STYLIZATION_API void GetTextDef( RS_TextDef* pTDef );
     STYLIZATION_API void GetTransform( NUMBER xform[9] );
-    STYLIZATION_API void GetRichTextFormatState( RichTextFormatState* pState );
 
-public:
     // Parser ISink implementation
     STYLIZATION_API Status Initialize(IEnvironment*) { m_parserSinkState = ISink::keInitialized; return Status::keContinue; }
     STYLIZATION_API Status TextRun(ITextRun*,IEnvironment*);
@@ -97,17 +222,16 @@ public:
     STYLIZATION_API IGenerator* GetGenerator() { return NULL; }
     STYLIZATION_API ICapability* GetMarkupCapabilities(/*...*/) { return NULL; }
 
-public:
-
 private:
     double GetHorizontalAlignmentOffset(RS_HAlignment hAlign, RS_F_Point* extent);
     double GetVerticalAlignmentOffset(RS_VAlignment vAlign, double textTop, double topCapline, double textBottom, double bottomBaseline );
-
-    void ApplyLocationOperations( const ILocation* pLocation );
-    double ConvertToScreenUnits( double val, Measure::UnitType unit );
-    void InitLine( bool fixed );
-    void TrackLineMetrics();
-    void GetFontValues();
+	void   ApplyLocation( const ILocation* pLocation );
+ 	double ConvertToScreenUnits( double val, Measure::UnitType unit );
+    void   GetFontValues();
+	void   OpenNewLine( bool fixedLine );
+	void   CloseCurrentLine();
+	void   OpenNewBlock();
+	void   CloseCurrentBlock();
 
 public:
     SE_Renderer*    m_pSERenderer;
@@ -118,39 +242,21 @@ private:
 
     SinkStateType                   m_parserSinkState;
 
-    // Current format values
+    // Current format state
     int                             m_stateDepth;           // Used to manage the format state stack
     RichTextFormatState             m_formatState;          // The format state stack
+    NUMBER                          m_curXform[9];
 
     // Current position
     bool                            m_yUp;                  // Axis orientation
-    double                          m_curX, m_curY;
-    NUMBER                          m_curXform[9];
+    RS_F_Point                      m_curPos;
+    RS_F_Point	                    m_bookmarks[ kiBookmarkTableSize ];  // Position bookmarks
 
-    // Text runs
+	// Block hierarchy
+	AtomBlock*						m_pHeadBlock;			// Outermost block
+	AtomBlock*						m_pCurrBlock;			// Current block
+	AtomLine*						m_pCurrLine;			// Current line
     unsigned int                    m_numRuns;
-    std::vector<LinePos>            m_line_pos;             // Their positions and extents
-    std::vector<RS_String>          m_line_breaks;          // Text runs
-    std::vector<const Particle*>    m_format_changes;       // Formatting for each run
-
-    // Line Metrics
-    bool                            m_fixedLine;            // Needed to manage baseline
-    double                          m_lineMinDescentPos;    // Needed to manage newlines
-    double                          m_lineMaxAscentPos;     // Needed to manage baseline
-    double                          m_topCapline;           // Needed for vertical alignment
-    double                          m_bottomBaseline;       // Needed for vertical alignment
-    unsigned int                    m_numLines;
-    std::vector<unsigned int>       m_lineStarts;           // Needed for horizontal alignment
-
-    // Current font values
-    double                          m_fontAscent;
-    double                          m_fontDescent;
-    double                          m_fontCapline;
-    double                          m_actualHeight;
-    double                          m_lineHeight;
-
-    // Position bookmarks
-    AtomBookmark                    m_bookmarks[ kiBookmarkTableSize ];
 
     ////////////////////////////////////Parser ISink variables///////////////////////////////////////////////////////////
 };
