@@ -20,6 +20,7 @@
 
 #include "MdfModel.h"
 #include <string>
+#include <cstring>
 using namespace std;
 
 // Define character type for UTF-16.  This is used by Xerces C++.

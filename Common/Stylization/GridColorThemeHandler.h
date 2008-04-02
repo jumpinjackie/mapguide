@@ -18,6 +18,7 @@
 #ifndef GRIDCOLORTHEMEHANDLER_H_
 #define GRIDCOLORTHEMEHANDLER_H_
 
+#include "StylizationDefs.h"
 #include "GridColorHandler.h"
 
 // Forward declaration.

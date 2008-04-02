@@ -34,6 +34,10 @@
 #include <limits.h>
 #else
 #define _ASSERT(x)
+
+#include <climits>
+#include <cstring>
+#include <string>
 #endif
 
 //#include "io.h"
