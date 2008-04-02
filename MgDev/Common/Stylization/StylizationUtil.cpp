@@ -205,8 +205,8 @@ void StylizationUtil::RenderPointSymbolization(PointSymbolization2D* psym,
                                                double x, double y,
                                                double width, double height)
 {
-    // sanity
-    _ASSERT(NULL != psym && NULL != pSERenderer);
+    // sanity (note - point symbolization can be NULL)
+    _ASSERT(NULL != pSERenderer);
     if (NULL == psym || NULL == pSERenderer)
         return;
 
