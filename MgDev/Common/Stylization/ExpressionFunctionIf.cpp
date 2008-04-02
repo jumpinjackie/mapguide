@@ -63,44 +63,44 @@ void ExpressionFunctionIf::SetExpressionEngine(FdoExpressionEngine* engine)
 }
 
 
+void ExpressionFunctionIf::AddSignature(FdoSignatureDefinitionCollection* signatures,
+                                        FdoArgumentDefinition* condition, FdoArgumentDefinition* trueValue,
+                                        FdoArgumentDefinition* falseValue, FdoDataType returnType)
+{
+    FdoPtr<FdoArgumentDefinitionCollection> args = FdoArgumentDefinitionCollection::Create();
+    args->Add(condition);
+    args->Add(trueValue);
+    args->Add(falseValue);
+    signatures->Add(FdoSignatureDefinition::Create(returnType, args));
+}
+
+
 FdoFunctionDefinition* ExpressionFunctionIf::GetFunctionDefinition()
 {
     if (!m_functionDefinition)
     {
         STRING funcDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionIF_Description");
-        STRING conADesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionIF_ConditionDescriptionA");
-        STRING conBDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionIF_ConditionDescriptionB");
+        STRING conADesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionIF_ConditionDescription");
         STRING tValDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionIF_TrueValueDescription");
         STRING fValDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionIF_FalseValueDescription");
 
-        FdoPtr<FdoArgumentDefinition> arg1a = FdoArgumentDefinition::Create(L"condition" , conADesc.c_str(), FdoDataType_Boolean); // NOXLATE
-        FdoPtr<FdoArgumentDefinition> arg1b = FdoArgumentDefinition::Create(L"condition" , conADesc.c_str(), FdoDataType_String);  // NOXLATE
-        FdoPtr<FdoArgumentDefinition> arg2  = FdoArgumentDefinition::Create(L"trueValue" , tValDesc.c_str(), FdoDataType_String);  // NOXLATE
-        FdoPtr<FdoArgumentDefinition> arg3  = FdoArgumentDefinition::Create(L"falseValue", fValDesc.c_str(), FdoDataType_String);  // NOXLATE
+        // the expression builder treats all numerical types the same, so only use Doubles for numerical arguments
+        FdoPtr<FdoArgumentDefinition> arg1expr    = FdoArgumentDefinition::Create(L"condition" , conADesc.c_str(), FdoDataType_String);  // NOXLATE
+        FdoPtr<FdoArgumentDefinition> arg2string  = FdoArgumentDefinition::Create(L"trueValue" , tValDesc.c_str(), FdoDataType_String);  // NOXLATE
+        FdoPtr<FdoArgumentDefinition> arg3string  = FdoArgumentDefinition::Create(L"falseValue", fValDesc.c_str(), FdoDataType_String);  // NOXLATE
+        FdoPtr<FdoArgumentDefinition> arg2double  = FdoArgumentDefinition::Create(L"trueValue" , tValDesc.c_str(), FdoDataType_Double);  // NOXLATE
+        FdoPtr<FdoArgumentDefinition> arg3double  = FdoArgumentDefinition::Create(L"falseValue", fValDesc.c_str(), FdoDataType_Double);  // NOXLATE
 
-        // signature A - uses a boolean value as the first argument
-        FdoPtr<FdoArgumentDefinitionCollection> argsa = FdoArgumentDefinitionCollection::Create();
-        argsa->Add(arg1a);
-        argsa->Add(arg2);
-        argsa->Add(arg3);
-        FdoPtr<FdoSignatureDefinition> siga = FdoSignatureDefinition::Create(FdoDataType_String, argsa);
-
-        // signature B - uses a boolean expression as the first argument
-        FdoPtr<FdoArgumentDefinitionCollection> argsb = FdoArgumentDefinitionCollection::Create();
-        argsb->Add(arg1b);
-        argsb->Add(arg2);
-        argsb->Add(arg3);
-        FdoPtr<FdoSignatureDefinition> sigb = FdoSignatureDefinition::Create(FdoDataType_String, argsb);
-
+        // create signatures for both types of values (string, number)
         FdoPtr<FdoSignatureDefinitionCollection> signatures = FdoSignatureDefinitionCollection::Create();
-        signatures->Add(siga);
-        signatures->Add(sigb);
+        AddSignature(signatures, arg1expr, arg2string, arg3string, FdoDataType_String);
+        AddSignature(signatures, arg1expr, arg2double, arg3double, FdoDataType_Double);
 
-        m_functionDefinition = FdoFunctionDefinition::Create(L"IF", // NOXLATE
+        m_functionDefinition = FdoFunctionDefinition::Create(L"If", // NOXLATE
                                                              funcDesc.c_str(),
                                                              false,
                                                              signatures,
-                                                             FdoFunctionCategoryType_Custom);
+                                                             FdoFunctionCategoryType_Conversion);
     }
 
     return FDO_SAFE_ADDREF(m_functionDefinition);
@@ -128,24 +128,22 @@ FdoLiteralValue* ExpressionFunctionIf::Evaluate(FdoLiteralValueCollection* liter
     // the engine must be set
     if (m_engine)
     {
-        // determine the condition value from a boolean or a string
+        // determine the condition value from a string
         FdoPtr<FdoDataValue> arg = static_cast<FdoDataValue*>(literalValues->GetItem(0));
         if (arg && arg->GetLiteralValueType() == FdoLiteralValueType_Data)
         {
             FdoDataValue* dataValue = static_cast<FdoDataValue*>(arg.p);
-            if (dataValue->GetDataType() != FdoDataType_String)
+            if (dataValue->GetDataType() == FdoDataType_String)
             {
-                // easy case of a non-string value
-                condition = ExpressionHelper::GetAsBoolean(dataValue);
-            }
-            else
-            {
-                // we have a string value, which can be an expression or filter
-                // TODO: cache parsed expression for greater efficiency
-                FdoString* condString = static_cast<FdoStringValue*>(dataValue)->GetString();
-                FdoPtr<FdoExpression> expr = FdoExpression::Parse(condString);
-                FdoPtr<FdoLiteralValue> lval = m_engine->Evaluate(expr);
-                condition = ExpressionHelper::GetAsBoolean(lval);
+                // string should be a filter.  if it isn't, return "false"
+                try
+                {
+                    // TODO: cache parsed filter for greater efficiency?
+                    FdoString* condString = static_cast<FdoStringValue*>(dataValue)->GetString();
+                    FdoPtr<FdoFilter> filter = FdoFilter::Parse(condString);
+                    condition = m_engine->ProcessFilter(filter);
+                }
+                catch (FdoException*) { } // value remains false
             }
         }
     }
