@@ -260,8 +260,7 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
         {
             SE_RenderPrimitive* primitive = rs[cur_prim];
 
-            if (primitive->type == SE_RenderPolygonPrimitive ||
-                primitive->type == SE_RenderPolylinePrimitive)
+            if (primitive->type == SE_RenderPrimitive_Polygon || primitive->type == SE_RenderPrimitive_Polyline)
             {
                 SE_RenderPolyline* pl = (SE_RenderPolyline*)primitive;
 
@@ -273,7 +272,7 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
                 // ok to update these attributes and not revert them
                 if (renderer->m_bSelectionMode)
                 {
-                    if (primitive->type == SE_RenderPolygonPrimitive)
+                    if (primitive->type == SE_RenderPrimitive_Polygon)
                     {
                         SE_RenderPolygon* pl = (SE_RenderPolygon*)primitive;
                         pl->fill = renderer->m_selFillColor;
@@ -283,7 +282,7 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
                     pl->lineStroke.weight = renderer->m_selLineStroke.weight;
                 }
             }
-            else if (primitive->type == SE_RenderTextPrimitive)
+            else if (primitive->type == SE_RenderPrimitive_Text)
             {
                 SE_RenderText* tp = (SE_RenderText*)primitive;
 
@@ -301,7 +300,7 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
 //                  tp->tdef.opaquecolor() = renderer->m_textBackColor;
                 }
             }
-            else if (primitive->type == SE_RenderRasterPrimitive)
+            else if (primitive->type == SE_RenderPrimitive_Raster)
             {
                 SE_RenderRaster* rp = (SE_RenderRaster*)primitive;
 
@@ -823,7 +822,7 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
 
                         switch (primitive->type)
                         {
-                            case SE_RenderPolygonPrimitive:
+                            case SE_RenderPrimitive_Polygon:
                             {
                                 // do any necessary polygon clip of the buffer against
                                 // the start/end, and then draw the warped buffer
@@ -853,7 +852,7 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
                                 // fall through to the polyline case
                             }
 
-                            case SE_RenderPolylinePrimitive:
+                            case SE_RenderPrimitive_Polyline:
                             {
                                 // do any necessary polyline clip of the buffer against
                                 // the start/end, and then draw the warped buffer
@@ -879,11 +878,10 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
                                             LineBufferPool::FreeLineBuffer(lbp, geomToDraw);
                                     }
                                 }
-
-                                break;
                             }
+                            break;
 
-                            case SE_RenderTextPrimitive:
+                            case SE_RenderPrimitive_Text:
                             {
                                 SE_RenderText* tp = (SE_RenderText*)primitive;
 
@@ -900,11 +898,10 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
 
                                     renderer->DrawScreenText(tp->content, tdef, x, y, NULL, 0, 0.0);
                                 }
-
-                                break;
                             }
+                            break;
 
-                            case SE_RenderRasterPrimitive:
+                            case SE_RenderPrimitive_Raster:
                             {
                                 SE_RenderRaster* rp = (SE_RenderRaster*)primitive;
                                 ImageData& imgData = rp->imageData;
@@ -924,9 +921,8 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
                                         renderer->DrawScreenRaster(imgData.data, imgData.size, imgData.format, imgData.width, imgData.height, x, y, rp->extent[0], rp->extent[1], angleDeg);
                                     }
                                 }
-
-                                break;
                             }
+                            break;
                         }
                     }
 

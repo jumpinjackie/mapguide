@@ -89,7 +89,7 @@ void SE_PositioningAlgorithms::Default(SE_ApplyContext* applyCtx,
 
     switch (rstyle->type)
     {
-        case SE_RenderPointStyleType:
+        case SE_RenderStyle_Point:
         {
             SE_RenderPointStyle* rpStyle = (SE_RenderPointStyle*)rstyle;
 
@@ -104,7 +104,7 @@ void SE_PositioningAlgorithms::Default(SE_ApplyContext* applyCtx,
             break;
         }
 
-        case SE_RenderLineStyleType:
+        case SE_RenderStyle_Line:
         {
             SE_RenderLineStyle* rlStyle = (SE_RenderLineStyle*)rstyle;
 
@@ -114,13 +114,13 @@ void SE_PositioningAlgorithms::Default(SE_ApplyContext* applyCtx,
 
             // account for the angle control
             angleRad = rlStyle->angleRad;
-            if (wcscmp(L"FromGeometry", rlStyle->angleControl) == 0)
+            if (rlStyle->angleControl == SE_AngleControl_FromGeometry)
                 angleRad += fAngleRad;
 
             break;
         }
 
-        case SE_RenderAreaStyleType:
+        case SE_RenderStyle_Area:
         {
             SE_RenderAreaStyle* raStyle = (SE_RenderAreaStyle*)rstyle;
 
@@ -177,7 +177,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
     }
 
     // eight surrounding labeling only works with point styles
-    if (rstyle->type != SE_RenderPointStyleType)
+    if (rstyle->type != SE_RenderStyle_Point)
         return;
 
     SE_RenderPointStyle* rpstyle = (SE_RenderPointStyle*)rstyle;
@@ -321,7 +321,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
     bool foundSingleText = false;
     if (rpstyle->symbol.size() == 1)
     {
-        if (rpstyle->symbol[0]->type == SE_RenderTextPrimitive)
+        if (rpstyle->symbol[0]->type == SE_RenderPrimitive_Text)
             foundSingleText = true;
     }
 
@@ -450,16 +450,16 @@ void SE_PositioningAlgorithms::PathLabels(SE_ApplyContext* applyCtx,
     }
 
     // in the case of a point style, just use the default placement algorithm
-    if (rstyle->type == SE_RenderPointStyleType)
+    if (rstyle->type == SE_RenderStyle_Point)
         return SE_PositioningAlgorithms::Default(applyCtx, rstyle);
 
     // path labeling using an area style is not supported
-    if (rstyle->type == SE_RenderAreaStyleType)
+    if (rstyle->type == SE_RenderStyle_Area)
         return;
 
     // if the symbol contains just a single text element then add the
     // text as a regular path label (non-symbol)
-    if (rstyle->symbol.size() == 1 && rstyle->symbol[0]->type == SE_RenderTextPrimitive)
+    if (rstyle->symbol.size() == 1 && rstyle->symbol[0]->type == SE_RenderPrimitive_Text)
     {
         SE_RenderText* rt = (SE_RenderText*)rstyle->symbol[0];
 
@@ -486,7 +486,7 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_ApplyContext*  applyCt
     LineBuffer* geometry = applyCtx->geometry;
 
     // this placement algorithm only applies to line styles
-    if (rstyle->type != SE_RenderLineStyleType)
+    if (rstyle->type != SE_RenderStyle_Line)
         return;
 
     // highway info format:  countryCode|type1|num1|type2|num2|type3|num3|...
@@ -747,7 +747,7 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_ApplyContext*  applyCt
     // 'un-assign' it, so that we can clean them up
     rlStyle->symbol.clear();
 
-    for (shieldIndex = 0; shieldIndex < shieldCount; shieldIndex++)
+    for (shieldIndex=0; shieldIndex<shieldCount; ++shieldIndex)
     {
         for (SE_RenderPrimitiveList::iterator iter = symbolVectors[shieldIndex].begin();
              iter != symbolVectors[shieldIndex].end();
@@ -756,11 +756,24 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_ApplyContext*  applyCt
             // necessary since destructor of SE_RenderPrimitive is not virtual
             switch ((*iter)->type)
             {
-                case SE_RenderPolylinePrimitive: delete (SE_RenderPolyline*)(*iter);break;
-                case SE_RenderPolygonPrimitive: delete (SE_RenderPolygon*)(*iter);break;
-                case SE_RenderRasterPrimitive: delete (SE_RenderRaster*)(*iter);break;
-                case SE_RenderTextPrimitive: delete (SE_RenderText*)(*iter);break;
-                default: throw; //means there is a bug
+                case SE_RenderPrimitive_Polyline:
+                    delete (SE_RenderPolyline*)(*iter);
+                    break;
+
+                case SE_RenderPrimitive_Polygon:
+                    delete (SE_RenderPolygon*)(*iter);
+                    break;
+
+                case SE_RenderPrimitive_Raster:
+                    delete (SE_RenderRaster*)(*iter);
+                    break;
+
+                case SE_RenderPrimitive_Text:
+                    delete (SE_RenderText*)(*iter);
+                    break;
+
+                default:
+                    throw; // means there is a bug
             }
         }
     }

@@ -80,11 +80,11 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
 
     const wchar_t* sResizeCtrl = resizeControl.evaluate(cxt->exec);
     if (wcscmp(sResizeCtrl, L"AddToResizeBox") == 0)
-        ret->resizeControl = SE_RenderAddToResizeBox;
+        ret->resizeControl = SE_ResizeControl_AddToResizeBox;
     else if (wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0)
-        ret->resizeControl = SE_RenderAdjustToResizeBox;
+        ret->resizeControl = SE_ResizeControl_AdjustToResizeBox;
     else // default is ResizeNone
-        ret->resizeControl = SE_RenderResizeNone;
+        ret->resizeControl = SE_ResizeControl_ResizeNone;
 
     ret->geometry = geometry->Clone();
 
@@ -168,14 +168,14 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
 
     const wchar_t* sResizeCtrl = resizeControl.evaluate(cxt->exec);
     if (wcscmp(sResizeCtrl, L"AddToResizeBox") == 0)
-        ret->resizeControl = SE_RenderAddToResizeBox;
+        ret->resizeControl = SE_ResizeControl_AddToResizeBox;
     else if (wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0)
-        ret->resizeControl = SE_RenderAdjustToResizeBox;
+        ret->resizeControl = SE_ResizeControl_AdjustToResizeBox;
     else // default is ResizeNone
-        ret->resizeControl = SE_RenderResizeNone;
+        ret->resizeControl = SE_ResizeControl_ResizeNone;
 
-    ret->geometry   = geometry->Clone();
-    ret->fill       = fill.evaluate(cxt->exec);
+    ret->geometry = geometry->Clone();
+    ret->fill     = fill.evaluate(cxt->exec);
 
     double wx                  = weightScalable.evaluate(cxt->exec)? fabs(cxt->xform->x0) : cxt->mm2sud;
     ret->lineStroke.weight     = weight.evaluate(cxt->exec) * wx;
@@ -256,11 +256,11 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
 
     const wchar_t* sResizeCtrl = resizeControl.evaluate(cxt->exec);
     if (wcscmp(sResizeCtrl, L"AddToResizeBox") == 0)
-        ret->resizeControl = SE_RenderAddToResizeBox;
+        ret->resizeControl = SE_ResizeControl_AddToResizeBox;
     else if (wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0)
-        ret->resizeControl = SE_RenderAdjustToResizeBox;
+        ret->resizeControl = SE_ResizeControl_AdjustToResizeBox;
     else // default is ResizeNone
-        ret->resizeControl = SE_RenderResizeNone;
+        ret->resizeControl = SE_ResizeControl_ResizeNone;
 
     ret->content     = content.evaluate(cxt->exec);
     ret->position[0] = position[0].evaluate(cxt->exec);
@@ -407,11 +407,11 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
 
     const wchar_t* sResizeCtrl = resizeControl.evaluate(cxt->exec);
     if (wcscmp(sResizeCtrl, L"AddToResizeBox") == 0)
-        ret->resizeControl = SE_RenderAddToResizeBox;
+        ret->resizeControl = SE_ResizeControl_AddToResizeBox;
     else if (wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0)
-        ret->resizeControl = SE_RenderAdjustToResizeBox;
+        ret->resizeControl = SE_ResizeControl_AdjustToResizeBox;
     else // default is ResizeNone
-        ret->resizeControl = SE_RenderResizeNone;
+        ret->resizeControl = SE_ResizeControl_ResizeNone;
 
     if (!imageData.data)
     {
@@ -507,13 +507,13 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
         rstyle->symbol.push_back(rsym);
 
         // add the primitive bounds to the overall render style bounds
-        if (!useBox || rsym->resizeControl != SE_RenderAdjustToResizeBox)
+        if (!useBox || rsym->resizeControl != SE_ResizeControl_AdjustToResizeBox)
             BoundsUnion(rstyle->bounds, rsym->bounds);
 
         // add the primitive bounds to the resize box, if necessary
         if (useBox)
         {
-            if (rsym->resizeControl == SE_RenderAddToResizeBox)
+            if (rsym->resizeControl == SE_ResizeControl_AddToResizeBox)
             {
                 // the symbol bounds min/max should be properly set (e.g. max > min)
                 minx1 = rs_min(minx1, rsym->bounds[0].x);
@@ -596,12 +596,12 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
         for (SE_RenderPrimitiveList::iterator rs = rstyle->symbol.begin(); rs != rstyle->symbol.end(); rs++)
         {
             SE_RenderPrimitive* rsym = *rs;
-            if (rsym->resizeControl == SE_RenderAdjustToResizeBox)
+            if (rsym->resizeControl == SE_ResizeControl_AdjustToResizeBox)
             {
                 switch (rsym->type)
                 {
-                case SE_RenderPolygonPrimitive:
-                case SE_RenderPolylinePrimitive:
+                case SE_RenderPrimitive_Polygon:
+                case SE_RenderPrimitive_Polyline:
                     {
                         SE_RenderPolyline* rp = (SE_RenderPolyline*)rsym;
                         rp->geometry->Transform(totalxf, 0.25*cxt->px2su);  // use a tolerance of 0.25 pixels
@@ -617,7 +617,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                         rp->bounds[3].y = seb->max[1] + margin;
                         break;
                     }
-                case SE_RenderTextPrimitive:
+                case SE_RenderPrimitive_Text:
                     {
                         SE_RenderText* rt = (SE_RenderText*)rsym;
                         growxf.transform(rt->position[0], rt->position[1]);
@@ -628,7 +628,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                             growxf.transform(rt->bounds[j].x, rt->bounds[j].y);
                         break;
                     }
-                case SE_RenderRasterPrimitive:
+                case SE_RenderPrimitive_Raster:
                     {
                         SE_RenderRaster* rr = (SE_RenderRaster*)rsym;
                         growxf.transform(rr->position[0], rr->position[1]);
@@ -657,7 +657,11 @@ void SE_PointStyle::evaluate(SE_EvalContext* cxt)
     delete rstyle;
     rstyle = render;
 
-    render->angleControl = angleControl.evaluate(cxt->exec);
+    const wchar_t* sAngleControl = angleControl.evaluate(cxt->exec);
+    if (wcscmp(sAngleControl, L"FromGeometry") == 0)
+        render->angleControl = SE_AngleControl_FromGeometry;
+    else // default is FromAngle
+        render->angleControl = SE_AngleControl_FromAngle;
 
     render->angleRad = fmod(angleDeg.evaluate(cxt->exec), 360.0) * M_PI180;
 
@@ -681,9 +685,28 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
     delete rstyle;
     rstyle = render;
 
-    render->angleControl  = angleControl.evaluate(cxt->exec);
-    render->unitsControl  = unitsControl.evaluate(cxt->exec);
-    render->vertexControl = vertexControl.evaluate(cxt->exec);
+    const wchar_t* sAngleControl = angleControl.evaluate(cxt->exec);
+    if (wcscmp(sAngleControl, L"FromAngle") == 0)
+        render->angleControl = SE_AngleControl_FromAngle;
+    else // default is FromGeometry
+        render->angleControl = SE_AngleControl_FromGeometry;
+
+    const wchar_t* sUnitsControl = unitsControl.evaluate(cxt->exec);
+    if (wcscmp(sUnitsControl, L"Parametric") == 0)
+        render->unitsControl = SE_UnitsControl_Parametric;
+    else // default is Absolute
+        render->unitsControl = SE_UnitsControl_Absolute;
+
+    const wchar_t* sVertexControl = vertexControl.evaluate(cxt->exec);
+    if (wcscmp(sVertexControl, L"OverlapNone") == 0)
+        render->vertexControl = SE_VertexControl_OverlapNone;
+    else if (wcscmp(sVertexControl, L"OverlapDirect") == 0)
+        render->vertexControl = SE_VertexControl_OverlapDirect;
+    else if (wcscmp(sVertexControl, L"OverlapNoWrap") == 0)
+        // this deprecated option is treated as OverlapNone
+        render->vertexControl = SE_VertexControl_OverlapNone;
+    else // default is OverlapWrap
+        render->vertexControl = SE_VertexControl_OverlapWrap;
 
     render->angleRad = fmod(angleDeg.evaluate(cxt->exec), 360.0) * M_PI180;
 
@@ -779,7 +802,7 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
 
         // check if it is a single symbol that is not a label participant
         if (rs.size() == 1
-            && rs[0]->type == SE_RenderPolylinePrimitive
+            && rs[0]->type == SE_RenderPrimitive_Polyline
             && !render->drawLast
             && !render->addToExclusionRegions)
         {
@@ -815,9 +838,27 @@ void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
     delete rstyle;
     rstyle = render;
 
-    render->angleControl    = angleControl.evaluate(cxt->exec);
-    render->originControl   = originControl.evaluate(cxt->exec);
-    render->clippingControl = clippingControl.evaluate(cxt->exec);
+    const wchar_t* sAngleControl = angleControl.evaluate(cxt->exec);
+    if (wcscmp(sAngleControl, L"FromGeometry") == 0)
+        render->angleControl = SE_AngleControl_FromGeometry;
+    else // default is FromAngle
+        render->angleControl = SE_AngleControl_FromAngle;
+
+    const wchar_t* sOriginControl = originControl.evaluate(cxt->exec);
+    if (wcscmp(sOriginControl, L"Centroid") == 0)
+        render->originControl = SE_OriginControl_Centroid;
+    else if (wcscmp(sOriginControl, L"Local") == 0)
+        render->originControl = SE_OriginControl_Local;
+    else // default is Global
+        render->originControl = SE_OriginControl_Global;
+
+    const wchar_t* sClippingControl = clippingControl.evaluate(cxt->exec);
+    if (wcscmp(sClippingControl, L"Inside") == 0)
+        render->clippingControl = SE_ClippingControl_Inside;
+    else if (wcscmp(sClippingControl, L"Overlap") == 0)
+        render->clippingControl = SE_ClippingControl_Overlap;
+    else // default is Clip
+        render->clippingControl = SE_ClippingControl_Clip;
 
     render->angleRad = fmod(angleDeg.evaluate(cxt->exec), 360.0) * M_PI180;
 
@@ -855,7 +896,7 @@ void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
 
         // check if it is a single symbol that is not a label participant
         if (rs.size() == 1
-            && rs[0]->type == SE_RenderPolygonPrimitive
+            && rs[0]->type == SE_RenderPrimitive_Polygon
             && !render->drawLast
             && !render->addToExclusionRegions)
         {

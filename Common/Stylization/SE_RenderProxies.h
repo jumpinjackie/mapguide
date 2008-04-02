@@ -25,24 +25,64 @@
 
 enum SE_RenderPrimitiveType
 {
-    SE_RenderPolylinePrimitive,
-    SE_RenderPolygonPrimitive,
-    SE_RenderTextPrimitive,
-    SE_RenderRasterPrimitive
+    SE_RenderPrimitive_Polyline,
+    SE_RenderPrimitive_Polygon,
+    SE_RenderPrimitive_Text,
+    SE_RenderPrimitive_Raster
 };
+
 
 enum SE_RenderStyleType
 {
-    SE_RenderPointStyleType,
-    SE_RenderLineStyleType,
-    SE_RenderAreaStyleType
+    SE_RenderStyle_Point,
+    SE_RenderStyle_Line,
+    SE_RenderStyle_Area
 };
 
-enum SE_RenderResizeControlType
+
+enum SE_ResizeControlType
 {
-    SE_RenderResizeNone,
-    SE_RenderAddToResizeBox,
-    SE_RenderAdjustToResizeBox
+    SE_ResizeControl_ResizeNone,
+    SE_ResizeControl_AddToResizeBox,
+    SE_ResizeControl_AdjustToResizeBox
+};
+
+
+enum SE_AngleControlType
+{
+    SE_AngleControl_FromAngle,
+    SE_AngleControl_FromGeometry
+};
+
+
+enum SE_UnitsControlType
+{
+    SE_UnitsControl_Absolute,
+    SE_UnitsControl_Parametric
+};
+
+
+enum SE_VertexControlType
+{
+    SE_VertexControl_OverlapNone,
+    SE_VertexControl_OverlapDirect,
+    SE_VertexControl_OverlapWrap
+};
+
+
+enum SE_OriginControlType
+{
+    SE_OriginControl_Global,
+    SE_OriginControl_Local,
+    SE_OriginControl_Centroid
+};
+
+
+enum SE_ClippingControlType
+{
+    SE_ClippingControl_Clip,
+    SE_ClippingControl_Inside,
+    SE_ClippingControl_Overlap
 };
 
 
@@ -53,7 +93,7 @@ enum SE_RenderResizeControlType
 struct SE_RenderPrimitive
 {
     SE_RenderPrimitiveType type;
-    SE_RenderResizeControlType resizeControl;
+    SE_ResizeControlType resizeControl;
     RS_F_Point bounds[4];
 };
 
@@ -65,7 +105,7 @@ struct SE_RenderPolyline : public SE_RenderPrimitive
 {
     SE_INLINE SE_RenderPolyline()
     {
-        type = SE_RenderPolylinePrimitive;
+        type = SE_RenderPrimitive_Polyline;
     }
     ~SE_RenderPolyline()
     {
@@ -83,7 +123,7 @@ struct SE_RenderPolygon : public SE_RenderPolyline
 {
     SE_INLINE SE_RenderPolygon()
     {
-        type = SE_RenderPolygonPrimitive;
+        type = SE_RenderPrimitive_Polygon;
     }
     ~SE_RenderPolygon()
     {}
@@ -97,7 +137,7 @@ struct SE_RenderText : public SE_RenderPrimitive
 {
     SE_INLINE SE_RenderText()
     {
-        type = SE_RenderTextPrimitive;
+        type = SE_RenderPrimitive_Text;
     }
 
     std::wstring content;
@@ -111,7 +151,7 @@ struct SE_RenderRaster : public SE_RenderPrimitive
 {
     SE_INLINE SE_RenderRaster()
     {
-        type = SE_RenderRasterPrimitive;
+        type = SE_RenderPrimitive_Raster;
     }
 
     ImageData imageData;
@@ -145,23 +185,26 @@ struct SE_RenderStyle
         for (SE_RenderPrimitiveList::iterator iter = symbol.begin(); iter != symbol.end(); iter++)
         {
             // necessary since destructor of SE_RenderPrimitive is not virtual
-            // we may want to figure out a better scheme to manage render primitives
             switch ((*iter)->type)
             {
-            case SE_RenderPolylinePrimitive:
-                delete (SE_RenderPolyline*)(*iter);
-                break;
-            case SE_RenderPolygonPrimitive:
-                delete (SE_RenderPolygon*)(*iter);
-                break;
-            case SE_RenderRasterPrimitive:
-                delete (SE_RenderRaster*)(*iter);
-                break;
-            case SE_RenderTextPrimitive:
-                delete (SE_RenderText*)(*iter);
-                break;
-            default:
-                throw; // means there is a bug
+                case SE_RenderPrimitive_Polyline:
+                    delete (SE_RenderPolyline*)(*iter);
+                    break;
+
+                case SE_RenderPrimitive_Polygon:
+                    delete (SE_RenderPolygon*)(*iter);
+                    break;
+
+                case SE_RenderPrimitive_Raster:
+                    delete (SE_RenderRaster*)(*iter);
+                    break;
+
+                case SE_RenderPrimitive_Text:
+                    delete (SE_RenderText*)(*iter);
+                    break;
+
+                default:
+                    throw; // means there is a bug
             }
         }
     }
@@ -181,10 +224,10 @@ struct SE_RenderStyle
 //////////////////////////////////////////////////////////////////////////////
 struct SE_RenderPointStyle : public SE_RenderStyle
 {
-    SE_INLINE SE_RenderPointStyle() : SE_RenderStyle(SE_RenderPointStyleType)
+    SE_INLINE SE_RenderPointStyle() : SE_RenderStyle(SE_RenderStyle_Point)
     {}
 
-    const wchar_t* angleControl;
+    SE_AngleControlType angleControl;
 
     double angleRad; // radians CCW
     double offset[2];
@@ -194,12 +237,12 @@ struct SE_RenderPointStyle : public SE_RenderStyle
 //////////////////////////////////////////////////////////////////////////////
 struct SE_RenderLineStyle : public SE_RenderStyle
 {
-    SE_INLINE SE_RenderLineStyle() : SE_RenderStyle(SE_RenderLineStyleType)
+    SE_INLINE SE_RenderLineStyle() : SE_RenderStyle(SE_RenderStyle_Line)
     {}
 
-    const wchar_t* angleControl;
-    const wchar_t* unitsControl;
-    const wchar_t* vertexControl;
+    SE_AngleControlType angleControl;
+    SE_UnitsControlType unitsControl;
+    SE_VertexControlType vertexControl;
 
     double angleRad; // radians CCW
     double startOffset;
@@ -219,12 +262,12 @@ struct SE_RenderLineStyle : public SE_RenderStyle
 //////////////////////////////////////////////////////////////////////////////
 struct SE_RenderAreaStyle : public SE_RenderStyle
 {
-    SE_INLINE SE_RenderAreaStyle() : SE_RenderStyle(SE_RenderAreaStyleType)
+    SE_INLINE SE_RenderAreaStyle() : SE_RenderStyle(SE_RenderStyle_Area)
     {}
 
-    const wchar_t* angleControl;
-    const wchar_t* originControl;
-    const wchar_t* clippingControl;
+    SE_AngleControlType angleControl;
+    SE_OriginControlType originControl;
+    SE_ClippingControlType clippingControl;
 
     double angleRad; // radians CCW
     double origin[2];
