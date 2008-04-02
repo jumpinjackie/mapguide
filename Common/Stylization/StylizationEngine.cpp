@@ -298,9 +298,6 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     double mm2suw = m_serenderer->GetScreenUnitsPerMillimeterWorld();
     bool yUp = m_serenderer->YPointsUp();
 
-    // get the number of screen units (pixels for GD, W2D units for DWF) per device pixel
-    double screenUnitsPerPixel = mm2sud * MILLIMETERS_PER_INCH / m_serenderer->GetDpi();
-
     // Here's a description of how the transforms work for point and line symbols.
     //
     // For point symbols we have the following transform stack:
@@ -434,7 +431,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         evalCxt.mm2su = mm2suX;
         evalCxt.mm2sud = mm2sud;
         evalCxt.mm2suw = mm2suw;
-        evalCxt.tolerance = 0.25 * screenUnitsPerPixel;
+        evalCxt.px2su = m_serenderer->GetScreenUnitsPerPixel();
         evalCxt.pool = m_pool;
         evalCxt.fonte = m_serenderer->GetRSFontEngine();
         evalCxt.xform = &xformScale;

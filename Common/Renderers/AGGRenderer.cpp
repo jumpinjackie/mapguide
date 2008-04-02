@@ -992,12 +992,6 @@ double AGGRenderer::GetMetersPerUnit()
 }
 
 
-bool AGGRenderer::YPointsUp()
-{
-    return true;
-}
-
-
 bool AGGRenderer::RequiresClipping()
 {
     return m_bRequiresClipping;
@@ -1827,6 +1821,12 @@ void AGGRenderer::DrawScreenPolygon(agg_context* c, LineBuffer* polygon, const S
 }
 
 
+bool AGGRenderer::YPointsUp()
+{
+    return true;
+}
+
+
 void AGGRenderer::GetWorldToScreenTransform(SE_Matrix& xform)
 {
     xform = m_xform;
@@ -1863,6 +1863,13 @@ double AGGRenderer::GetScreenUnitsPerMillimeterDevice()
 double AGGRenderer::GetScreenUnitsPerMillimeterWorld()
 {
     return m_dpi / MILLIMETERS_PER_INCH / m_mapScale;
+}
+
+
+// screen units are pixels
+double AGGRenderer::GetScreenUnitsPerPixel()
+{
+    return 1.0;
 }
 
 

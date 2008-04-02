@@ -258,6 +258,14 @@ void FeatureInfoRenderer::DrawScreenPolyline(LineBuffer* polyline, const SE_Matr
 }
 
 
+void FeatureInfoRenderer::DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill)
+{
+    // treat polygons as polylines
+    SE_LineStroke lineStroke(fill, 0.0, SE_LineCap_Round, SE_LineJoin_Round, 5.0);
+    DrawScreenPolyline(polygon, xform, lineStroke);
+}
+
+
 void FeatureInfoRenderer::DrawScreenRaster(unsigned char* data, int length,
                                            RS_ImageFormat format, int native_width, int native_height,
                                            double x, double y, double w, double h, double angleDeg)
@@ -377,6 +385,13 @@ double FeatureInfoRenderer::GetScreenUnitsPerMillimeterDevice()
 double FeatureInfoRenderer::GetScreenUnitsPerMillimeterWorld()
 {
     return m_dpi / MILLIMETERS_PER_INCH / m_mapScale;
+}
+
+
+// screen units are pixels
+double FeatureInfoRenderer::GetScreenUnitsPerPixel()
+{
+    return 1.0;
 }
 
 
