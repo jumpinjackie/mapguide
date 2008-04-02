@@ -66,8 +66,6 @@ MgServerMappingService::MgServerMappingService() :
     m_svcResource = NULL;
     m_svcDrawing = NULL;
     m_pCSFactory = new MgCoordinateSystemFactory();
-
-    MgMappingUtil::GetVSRenderingFlags(m_bAllowVSLines, m_bAllowVSAreas);
 }
 
 
@@ -143,7 +141,7 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
     //get a temporary file to write out EMap DWF to
     STRING dwfName = MgFileUtil::GenerateTempFileName(false, mdf->GetName());
 
-    EMapRenderer dr(dwfName, mapAgentUri, m_bAllowVSLines, m_bAllowVSAreas);
+    EMapRenderer dr(dwfName, mapAgentUri);
 
     //get the coordinate system unit scale
     MdfModel::MdfString srs = map->GetMapSRS();
@@ -433,7 +431,7 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
         sessionId = userInfo->GetMgSessionId();
 
     // prepare the renderer
-    EMapUpdateRenderer dr(dwfName, seqNo, m_bAllowVSLines, m_bAllowVSAreas);
+    EMapUpdateRenderer dr(dwfName, seqNo);
 
     RSMgSymbolManager mgr(m_svcResource);
     dr.SetSymbolManager(&mgr);
@@ -905,7 +903,7 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
     // TODO: clean the temp file name prefix
     STRING dwfName = MgFileUtil::GenerateTempFileName(false, L"default_prefix");
 
-    EPlotRenderer dr(dwfName.c_str(), 0, 0, L"inches", m_bAllowVSLines, m_bAllowVSAreas);  // NOXLATE
+    EPlotRenderer dr(dwfName.c_str(), 0, 0, L"inches");  // NOXLATE
 
     RSMgSymbolManager mgr(m_svcResource);
     dr.SetSymbolManager(&mgr);
@@ -1324,7 +1322,7 @@ MgByteReader* MgServerMappingService::GenerateLegendPlot(
     // get a temporary file to write out EPlot DWF to
     STRING dwfName = MgFileUtil::GenerateTempFileName(false, L"legendplot");
 
-    EPlotRenderer dr(dwfName, plotSpec->GetPaperWidth(), plotSpec->GetPaperHeight(), plotSpec->GetPageSizeUnits(), m_bAllowVSLines, m_bAllowVSAreas);
+    EPlotRenderer dr(dwfName, plotSpec->GetPaperWidth(), plotSpec->GetPaperHeight(), plotSpec->GetPageSizeUnits());
 
     RSMgSymbolManager mgr(m_svcResource);
     dr.SetSymbolManager(&mgr);

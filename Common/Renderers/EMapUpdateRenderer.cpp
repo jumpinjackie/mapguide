@@ -59,10 +59,8 @@
 
 
 EMapUpdateRenderer::EMapUpdateRenderer(const RS_String& filename,
-                                       unsigned int     sequenceId,
-                                       bool             allowVSLines,
-                                       bool             allowVSAreas)
-                                       : DWFRenderer(allowVSLines, allowVSAreas)
+                                       unsigned int     sequenceId)
+                                       : DWFRenderer()
 {
     m_uuid = new DWFUUID;
     m_sequenceId = sequenceId;

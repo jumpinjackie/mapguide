@@ -44,10 +44,8 @@ using namespace std;
 EPlotRenderer::EPlotRenderer(const RS_String& filename,
                              double           pageWidth,
                              double           pageHeight,
-                             const RS_String& pageUnits,
-                             bool             allowVSLines,
-                             bool             allowVSAreas)
-                             : DWFRenderer(allowVSLines, allowVSAreas), m_dMapOffsetX(0), m_dMapOffsetY(0), m_bLayoutPlot(false)
+                             const RS_String& pageUnits)
+                             : DWFRenderer(), m_dMapOffsetX(0), m_dMapOffsetY(0), m_bLayoutPlot(false)
 {
     m_dPageWidth = pageWidth;
     m_dPageHeight = pageHeight;

@@ -38,9 +38,7 @@ public:
                               double scale,
                               double dpi,
                               double metersPerUnit,
-                              int drawOrder,
-                              bool allowVSLines,
-                              bool allowVSAreas);
+                              int drawOrder);
     RENDERERS_API virtual ~KmlRenderer();
 
     ///////////////////////////////////
@@ -186,10 +184,6 @@ private:
     bool m_extrude;
     double m_metersPerUnit;
     RS_ElevationType m_elevType;
-
-    //these will eventually be removed
-    bool m_bAllowVSLines;
-    bool m_bAllowVSAreas;
 };
 
 #endif
