@@ -48,6 +48,10 @@ public:
     virtual void Dispose();
 
 private:
+    void AddSignature(FdoSignatureDefinitionCollection* signatures,
+        FdoArgumentDefinition* condition, FdoArgumentDefinition* trueValue,
+        FdoArgumentDefinition* falseValue, FdoDataType returnType);
+
 //  FdoExpression* ObtainFdoExpression(FdoString* exprStr);
 
 private:
