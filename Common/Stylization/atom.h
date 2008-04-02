@@ -167,7 +167,7 @@ public:
     // the indicated string range.
     StRange Part(int iStart,int iLen) const
     {
-        if(iStart < 0 || iStart >= m_iLength)
+        if(iStart < 0 || iStart > m_iLength)
             return StRange();
 
         if(iStart + iLen > m_iLength)
@@ -178,7 +178,7 @@ public:
     // Takes a "part" (ie substring) to end
     StRange Part(int iStart) const
     {
-        if(iStart < 0 || iStart >= m_iLength)
+        if(iStart < 0 || iStart > m_iLength)
             return StRange();
 
         return StRange(m_pszStart+iStart,m_iLength-iStart);
