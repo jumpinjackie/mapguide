@@ -19,7 +19,6 @@
 #include "SE_LineBuffer.h"
 #include "SE_Bounds.h"
 #include "SE_BufferPool.h"
-#include "SE_ConvexHull.h"
 #include "SE_RenderProxies.h"
 
 #include <algorithm>
@@ -207,63 +206,6 @@ SE_Bounds* SE_LineBuffer::GetSEBounds(RS_Bounds& bounds)
 }
 
 
-#ifdef USE_CONVEX_HULL
-struct PointLess : std::binary_function<std::pair<double, double>&, std::pair<double, double>&, bool>
-{
-public:
-    bool operator( ) (const std::pair<double, double>& a, const std::pair<double, double>& b) const
-    {
-        return (a.first < b.first) || (a.first == b.first && a.second < b.second);
-    }
-};
-
-
-struct PointUtil
-{
-    SE_INLINE double x(PointList::iterator iter)
-    {
-        return (*iter).first;
-    }
-
-    SE_INLINE double y(PointList::iterator iter)
-    {
-        return (*iter).second;
-    }
-
-    SE_INLINE bool equal(PointList::iterator a, PointList::iterator b)
-    {
-        return ((*a).first == (*b).first) && ((*a).second == (*b).second);
-    }
-};
-
-
-SE_Bounds* SE_LineBuffer::ComputeConvexHull(LineBuffer* plb)
-{
-    if (plb->cntr_count() == 0)
-        return NULL;
-
-    // There are linear time algorithms, but only for simple (nonintersecting) paths,
-    // which we cannot guarantee.
-    // TODO: In the unlikely event that this becomes a performance issue, figure out whether geometry
-    // is simple (once) at parse-time, and use the faster algorithm in the cases where
-    // it is (probably most cases).
-
-    for (int i = 0; i< plb->point_count(); i++)
-        m_ch_ptbuf.push_back(std::pair<double, double>(plb->x_coord(i), plb->y_coord(i)));
-
-    std::sort(m_ch_ptbuf.begin(), m_ch_ptbuf.end(), PointLess());
-    std::unique(m_ch_ptbuf.begin(), m_ch_ptbuf.end());
-
-    PointList::iterator end = m_ch_ptbuf.end();
-    PointList::iterator iter = m_ch_ptbuf.begin();
-
-    if (m_ch_ptbuf.size() < 2)
-        return NULL;
-    return AndrewHull<PointList::iterator, PointUtil>(iter, --end, (int)m_ch_ptbuf.size(), m_pool);
-}
-#endif
-
-
 void SE_LineBuffer::PopulateXFBuffer()
 {
     SE_LB_SegType* endseg = m_segs + m_nsegs;
@@ -359,12 +301,7 @@ void SE_LineBuffer::Transform(const SE_Matrix& xform, double tolerance)
     {
         RS_Bounds bounds;
         m_xf_buf->ComputeBounds(bounds);
-
-#ifdef USE_CONVEX_HULL
-        m_xf_bounds = ComputeConvexHull(m_xf_buf);
-#else
         m_xf_bounds = GetSEBounds(bounds);
-#endif
     }
 }
 

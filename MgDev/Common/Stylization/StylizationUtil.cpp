@@ -485,8 +485,8 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
                                                    double x, double y,
                                                    double width, double height)
 {
-    SE_BufferPool pool;
-    SE_StyleVisitor visitor(sman, &pool);
+    SE_BufferPool* pool = pSERenderer->GetBufferPool();
+    SE_StyleVisitor visitor(sman, pool);
 
     std::vector<SE_Symbolization*> styles;
     visitor.Convert(styles, csym);
@@ -499,7 +499,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     //-------------------------------------------------------
 
     RS_Bounds symBounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
-    GetCompositeSymbolizationBoundsInternal(styles, pSERenderer, sman, &pool, exec, symBounds);
+    GetCompositeSymbolizationBoundsInternal(styles, pSERenderer, sman, exec, symBounds);
 
     //-------------------------------------------------------
     // step 2 - bounds processing
@@ -629,7 +629,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
         evalCxt.mm2pxs = mm2pxs;
         evalCxt.mm2pxw = mm2pxw;
         evalCxt.tolerance = 0.25 * screenUnitsPerPixel;
-        evalCxt.pool = &pool;
+        evalCxt.pool = pool;
         evalCxt.fonte = pSERenderer->GetRSFontEngine();
         evalCxt.xform = &xformScale;
         evalCxt.resources = sman;
@@ -709,15 +709,15 @@ RS_Bounds StylizationUtil::GetCompositeSymbolizationBounds(CompositeSymbolizatio
                                                            SE_Renderer* pSERenderer,
                                                            SE_SymbolManager* sman)
 {
-    SE_BufferPool pool;
-    SE_StyleVisitor visitor(sman, &pool);
+    SE_BufferPool* pool = pSERenderer->GetBufferPool();
+    SE_StyleVisitor visitor(sman, pool);
 
     std::vector<SE_Symbolization*> styles;
     visitor.Convert(styles, csym);
 
     // calculate bounds - symbol geometries cannot use expressions, so no expression engine is needed
     RS_Bounds symBounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
-    GetCompositeSymbolizationBoundsInternal(styles, pSERenderer, sman, &pool, NULL, symBounds);
+    GetCompositeSymbolizationBoundsInternal(styles, pSERenderer, sman, NULL, symBounds);
 
     // clean up
     for (std::vector<SE_Symbolization*>::iterator iter = styles.begin(); iter != styles.end(); iter++)
@@ -733,13 +733,14 @@ RS_Bounds StylizationUtil::GetCompositeSymbolizationBounds(CompositeSymbolizatio
 void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Symbolization*> styles,
                                                               SE_Renderer* pSERenderer,
                                                               SE_SymbolManager* sman,
-                                                              SE_BufferPool* pool,
                                                               FdoExpressionEngine* exec,
                                                               RS_Bounds& bounds)
 {
     // make sure we have symbols
     if (styles.size() == 0)
         return;
+
+    SE_BufferPool* pool = pSERenderer->GetBufferPool();
 
     double mm2pxs = pSERenderer->GetPixelsPerMillimeterScreen();
     double mm2pxw = pSERenderer->GetPixelsPerMillimeterWorld();

@@ -27,7 +27,6 @@ using namespace MdfModel;
 class Renderer;
 class SE_Renderer;
 class SE_SymbolManager;
-class SE_BufferPool;
 struct SE_Symbolization;
 
 // Provides helper methods for:
@@ -74,7 +73,6 @@ private:
     static void GetCompositeSymbolizationBoundsInternal(std::vector<SE_Symbolization*> styles,
                                                         SE_Renderer* pSERenderer,
                                                         SE_SymbolManager* sman,
-                                                        SE_BufferPool* pool,
                                                         FdoExpressionEngine* exec,
                                                         RS_Bounds& bounds);
 };

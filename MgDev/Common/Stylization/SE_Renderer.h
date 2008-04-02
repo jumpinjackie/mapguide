@@ -19,9 +19,9 @@
 #define SE_RENDERER_H_
 
 #include "Renderer.h"
+#include "SE_BufferPool.h"
 #include "SE_SymbolDefProxies.h"
 #include "SE_RenderProxies.h"
-#include "SE_Tuple.h"
 
 class RS_FontEngine;
 class SE_IJoinProcessor;
@@ -45,8 +45,7 @@ public:
     // transform.  Note that since the transform converts to renderer space, its
     // rotation component must take into account whether y points up.
     STYLIZATION_API virtual void DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& xform,
-                                            double angleRad, bool excludeRegion = false,
-                                            SE_IJoinProcessor* processor = NULL);
+                                            double angleRad, bool excludeRegion = false);
 
     // Turns selection mode rendering on/off.
     STYLIZATION_API virtual void SetRenderSelectionMode(bool mode);
@@ -84,6 +83,7 @@ public:
     virtual void AddExclusionRegion(RS_F_Point* fpts, int npts) = 0;
 
     // miscellaneous
+    STYLIZATION_API SE_BufferPool* GetBufferPool();
     STYLIZATION_API void SetBufferPool(SE_BufferPool* pool);
     const RS_F_Point* GetLastSymbolExtent();
     SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol);
@@ -100,13 +100,8 @@ private:
     int ComputeSegmentGroups(LineBuffer* geometry, int contour, double vertexAngleLimit, double* segLens, int* segGroups);
     void ComputeGroupDistribution(double groupLen, double startOffset, double endOffset, double repeat, double symWidth,
                                   double& startPos, double& gap, int& numSymbols);
-    void ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyle* style, double* segLens);
-    void ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineStyle* style, double* segLens);
-
-    // TODO: integrate when joins work with rasters, text
-    void ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyle* style);
-
-    RS_F_Point m_lastSymbolExtent[4];
+    void ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyle* style);
+    void ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineStyle* style);
 
 protected:
     SE_BufferPool* m_bp;
@@ -116,6 +111,9 @@ protected:
     unsigned int m_selFillColor;
     RS_Color m_textForeColor;
     RS_Color m_textBackColor;
+
+private:
+    RS_F_Point m_lastSymbolExtent[4];
 };
 
 #endif
