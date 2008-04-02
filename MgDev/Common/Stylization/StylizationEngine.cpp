@@ -294,12 +294,12 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     if (symbolization->size() == 0)
         return;
 
-    double mm2pxs = m_serenderer->GetPixelsPerMillimeterScreen();
-    double mm2pxw = m_serenderer->GetPixelsPerMillimeterWorld();
+    double mm2sud = m_serenderer->GetScreenUnitsPerMillimeterDevice();
+    double mm2suw = m_serenderer->GetScreenUnitsPerMillimeterWorld();
     bool yUp = m_serenderer->YPointsUp();
 
-    // get the number of screen units (pixels for GD, logical units for DWF) per device pixel
-    double screenUnitsPerPixel = mm2pxs * MILLIMETERS_PER_INCH / m_serenderer->GetDpi();
+    // get the number of screen units (pixels for GD, W2D units for DWF) per device pixel
+    double screenUnitsPerPixel = mm2sud * MILLIMETERS_PER_INCH / m_serenderer->GetDpi();
 
     // Here's a description of how the transforms work for point and line symbols.
     //
@@ -312,7 +312,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     //   S_si = symbol instance scaling
     //   R_pu = point usage rotation
     //   T_si = symbol instance insertion offset
-    //   S_mm = scaling converting mm to pixels (also includes inverting y, if necessary)
+    //   S_mm = scaling converting mm to screen units (also includes inverting y, if necessary)
     //   T_fe = translation to the point feature
     //
     // This can be rewritten as:
@@ -336,7 +336,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     // where:
     //   S_si = symbol instance scaling
     //   R_lu = line usage rotation
-    //   S_mm = scaling converting mm to pixels (also includes inverting y, if necessary)
+    //   S_mm = scaling converting mm to screen units (also includes inverting y, if necessary)
     //   T_fe = translation along the line feature
     //
     // This is rewritten as:
@@ -414,8 +414,8 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
             }
         }
 
-        double mm2pxX = (sym->sizeContext == MappingUnits)? mm2pxw : mm2pxs;
-        double mm2pxY = yUp? mm2pxX : -mm2pxX;
+        double mm2suX = (sym->sizeContext == MappingUnits)? mm2suw : mm2sud;
+        double mm2suY = yUp? mm2suX : -mm2suX;
 
         SE_Matrix xformScale;
         xformScale.scale(sym->scale[0].evaluate(exec),
@@ -426,14 +426,14 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         // renderer is doing.  Normally we could just apply the world to screen transform to everything,
         // but in some cases we only apply it to the position of the symbol and then offset the symbol
         // geometry from there - so the symbol geometry needs to be pre-inverted.
-        xformScale.scale(mm2pxX, mm2pxY);
+        xformScale.scale(mm2suX, mm2suY);
 
         // initialize the style evaluation context
         SE_EvalContext evalCxt;
         evalCxt.exec = exec;
-        evalCxt.mm2px = mm2pxX;
-        evalCxt.mm2pxs = mm2pxs;
-        evalCxt.mm2pxw = mm2pxw;
+        evalCxt.mm2su = mm2suX;
+        evalCxt.mm2sud = mm2sud;
+        evalCxt.mm2suw = mm2suw;
         evalCxt.tolerance = 0.25 * screenUnitsPerPixel;
         evalCxt.pool = m_pool;
         evalCxt.fonte = m_serenderer->GetRSFontEngine();
@@ -442,8 +442,8 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 
         // initialize the style application context
         SE_Matrix xformTrans;
-        xformTrans.translate(sym->absOffset[0].evaluate(exec) * mm2pxX,
-                             sym->absOffset[1].evaluate(exec) * mm2pxY);
+        xformTrans.translate(sym->absOffset[0].evaluate(exec) * mm2suX,
+                             sym->absOffset[1].evaluate(exec) * mm2suY);
 
         SE_ApplyContext applyCtx;
         applyCtx.geometry = geometry;
@@ -490,7 +490,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
             const wchar_t* positioningAlgo = sym->positioningAlgorithm.evaluate(exec);
             if (wcslen(positioningAlgo) > 0)
             {
-                LayoutCustomLabel(positioningAlgo, &applyCtx, style->rstyle, mm2pxX);
+                LayoutCustomLabel(positioningAlgo, &applyCtx, style->rstyle, mm2suX);
             }
             else
             {
@@ -502,12 +502,12 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 }
 
 
-void StylizationEngine::LayoutCustomLabel(const wchar_t* positioningAlgo, SE_ApplyContext* applyCtx, SE_RenderStyle* rstyle, double mm2px)
+void StylizationEngine::LayoutCustomLabel(const wchar_t* positioningAlgo, SE_ApplyContext* applyCtx, SE_RenderStyle* rstyle, double mm2su)
 {
     // call the appropriate positioning algorithm based on the name
     if (wcscmp(positioningAlgo, L"EightSurrounding") == 0)
     {
-        SE_PositioningAlgorithms::EightSurrounding(applyCtx, rstyle, mm2px);
+        SE_PositioningAlgorithms::EightSurrounding(applyCtx, rstyle, mm2su);
     }
     else if (wcscmp(positioningAlgo, L"PathLabels") == 0)
     {
@@ -515,7 +515,7 @@ void StylizationEngine::LayoutCustomLabel(const wchar_t* positioningAlgo, SE_App
     }
     else if (wcscmp(positioningAlgo, L"MultipleHighwayShields") == 0)
     {
-        SE_PositioningAlgorithms::MultipleHighwaysShields(applyCtx, rstyle, mm2px, m_reader, m_resources);
+        SE_PositioningAlgorithms::MultipleHighwaysShields(applyCtx, rstyle, mm2su, m_reader, m_resources);
     }
     else if (wcscmp(positioningAlgo, L"Default") == 0)
     {

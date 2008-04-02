@@ -136,8 +136,6 @@ public:
     /////////////////////////////////////////////
     // GDRenderer specific
     //
-    RENDERERS_API double GetMapToPixelScale();
-
     RENDERERS_API RS_ByteData* Save(const RS_String& format, int width, int height);
     RENDERERS_API void Save(const RS_String& filename, const RS_String& format);
     RENDERERS_API void Save(const RS_String& filename, const RS_String& format, int width, int height);
@@ -163,8 +161,8 @@ public:
     virtual void WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy);
     virtual void ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy);
 
-    virtual double GetPixelsPerMillimeterScreen();
-    virtual double GetPixelsPerMillimeterWorld();
+    virtual double GetScreenUnitsPerMillimeterDevice();
+    virtual double GetScreenUnitsPerMillimeterWorld();
 
     virtual RS_FontEngine* GetRSFontEngine();
 

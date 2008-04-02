@@ -81,8 +81,8 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
     if (!font)
         return false;
 
-    // determine font height in renderer screen space
-    double hgt = MetersToPixels(tdef.font().units(), tdef.font().height());
+    // determine font height in screen units
+    double hgt = MetersToScreenUnits(tdef.font().units(), tdef.font().height());
 
     // store the font and height of this particular string
     ret.font = font;
@@ -636,11 +636,11 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
     }
 
     // calculate a 0.25 mm offset for ghosting - this value is in screen units
-    double offset = MetersToPixels(tdef.font().units(), 0.00025);
+    double offset = MetersToScreenUnits(tdef.font().units(), 0.00025);
 
     // truncate the offset to the nearest pixel so we get uniform ghosting around
     // the string (the same number of pixels on each side after rendering)
-    double screenUnitsPerPixel = MILLIMETERS_PER_INCH * m_pSERenderer->GetPixelsPerMillimeterScreen() / m_pSERenderer->GetDpi();
+    double screenUnitsPerPixel = MILLIMETERS_PER_INCH * m_pSERenderer->GetScreenUnitsPerMillimeterDevice() / m_pSERenderer->GetDpi();
     offset -= fmod(offset, screenUnitsPerPixel);
 
     // finally, make sure we have at least one pixel's worth of offset
@@ -669,7 +669,7 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
             pRichTextEngine->ApplyFormatChanges(tm.format_changes[k]);
             pRichTextEngine->GetTextDef(&tmpTDef);
             pFont = GetRenderingFont(tmpTDef);
-            fontHeight = MetersToPixels(tmpTDef.font().units(), tmpTDef.font().height());
+            fontHeight = MetersToScreenUnits(tmpTDef.font().units(), tmpTDef.font().height());
         }
 
         // add the rotated original offset for this line to the insertion point
@@ -700,10 +700,10 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
             m_lineStroke.weight = (double)pFont->m_underline_thickness * fontHeight / (double)pFont->m_units_per_EM;
 
             // restrict the weight to something reasonable
-            double mm2pxs = m_pSERenderer->GetPixelsPerMillimeterScreen();
-            double weightInMM = m_lineStroke.weight / mm2pxs;
-            if (weightInMM > MAX_LINEWEIGHT_IN_MM)
-                m_lineStroke.weight = MAX_LINEWEIGHT_IN_MM * mm2pxs;
+            double mm2sud = m_pSERenderer->GetScreenUnitsPerMillimeterDevice();
+            double devWeightInMM = m_lineStroke.weight / mm2sud;
+            if (devWeightInMM > MAX_LINEWEIGHT_IN_MM)
+                m_lineStroke.weight = MAX_LINEWEIGHT_IN_MM * mm2sud;
 
             // underline position w.r.t. baseline
             double line_pos = (double)tm.font->m_underline_position * tm.font_height / (double)tm.font->m_units_per_EM;
@@ -735,10 +735,10 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
             m_lineStroke.weight = (double)pFont->m_underline_thickness * fontHeight / (double)pFont->m_units_per_EM;
 
             // restrict the weight to something reasonable
-            double mm2pxs = m_pSERenderer->GetPixelsPerMillimeterScreen();
-            double weightInMM = m_lineStroke.weight / mm2pxs;
-            if (weightInMM > MAX_LINEWEIGHT_IN_MM)
-                m_lineStroke.weight = MAX_LINEWEIGHT_IN_MM * mm2pxs;
+            double mm2sud = m_pSERenderer->GetScreenUnitsPerMillimeterDevice();
+            double devWeightInMM = m_lineStroke.weight / mm2sud;
+            if (devWeightInMM > MAX_LINEWEIGHT_IN_MM)
+                m_lineStroke.weight = MAX_LINEWEIGHT_IN_MM * mm2sud;
 
             // overline position w.r.t. capline
             double fontCapline = pFont->m_capheight * fontHeight / pFont->m_units_per_EM;
@@ -865,11 +865,11 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
     }
 
     // calculate a 0.25 mm offset for ghosting - this value is in screen units
-    double offset = MetersToPixels(tdef.font().units(), 0.00025);
+    double offset = MetersToScreenUnits(tdef.font().units(), 0.00025);
 
     // truncate the offset to the nearest pixel so we get uniform ghosting around
     // the string (the same number of pixels on each side after rendering)
-    double screenUnitsPerPixel = MILLIMETERS_PER_INCH * m_pSERenderer->GetPixelsPerMillimeterScreen() / m_pSERenderer->GetDpi();
+    double screenUnitsPerPixel = MILLIMETERS_PER_INCH * m_pSERenderer->GetScreenUnitsPerMillimeterDevice() / m_pSERenderer->GetDpi();
     offset -= fmod(offset, screenUnitsPerPixel);
 
     // finally, make sure we have at least one pixel's worth of offset
@@ -910,10 +910,10 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
         m_lineStroke.weight = (double)tm.font->m_underline_thickness * tm.font_height / (double)tm.font->m_units_per_EM;
 
         // restrict the weight to something reasonable
-        double mm2pxs = m_pSERenderer->GetPixelsPerMillimeterScreen();
-        double weightInMM = m_lineStroke.weight / mm2pxs;
-        if (weightInMM > MAX_LINEWEIGHT_IN_MM)
-            m_lineStroke.weight = MAX_LINEWEIGHT_IN_MM * mm2pxs;
+        double mm2sud = m_pSERenderer->GetScreenUnitsPerMillimeterDevice();
+        double devWeightInMM = m_lineStroke.weight / mm2sud;
+        if (devWeightInMM > MAX_LINEWEIGHT_IN_MM)
+            m_lineStroke.weight = MAX_LINEWEIGHT_IN_MM * mm2sud;
 
         // underline position w.r.t. baseline
         double line_pos = (double)tm.font->m_underline_position * tm.font_height / (double)tm.font->m_units_per_EM;
@@ -1043,16 +1043,22 @@ double RS_FontEngine::GetHorizontalAlignmentOffset(RS_HAlignment hAlign, RS_F_Po
 
 //////////////////////////////////////////////////////////////////////////////
 // Scales an input length in meters in the specified units - device or
-// mapping - to a length in renderer screen space.
-double RS_FontEngine::MetersToPixels(RS_Units unit, double number)
+// mapping - to a length in screen units.
+double RS_FontEngine::MetersToScreenUnits(RS_Units unit, double number)
 {
-    double m2px = 1000.0 * m_pSERenderer->GetPixelsPerMillimeterScreen();
+    double m2su = 1000.0 * m_pSERenderer->GetScreenUnitsPerMillimeterDevice();
 
     double scale_factor;
     if (unit == RS_Units_Device)
-        scale_factor = m2px; //device units simply returns scale to convert meters to pixels
+    {
+        // device units simply returns scale to convert meters to screen units
+        scale_factor = m2su;
+    }
     else
-        scale_factor = m2px / m_pSERenderer->GetMapScale(); //for mapping space we also take map scale into account
+    {
+        // for mapping space we also take map scale into account
+        scale_factor = m2su / m_pSERenderer->GetMapScale();
+    }
 
     return number * scale_factor;
 }

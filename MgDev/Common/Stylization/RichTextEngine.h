@@ -104,7 +104,7 @@ private:
     double GetVerticalAlignmentOffset(RS_VAlignment vAlign, double textTop, double topCapline, double textBottom, double bottomBaseline );
 
     void ApplyLocationOperations( const ILocation* pLocation );
-    double ConvertToPixels( double val, Measure::UnitType unit );
+    double ConvertToScreenUnits( double val, Measure::UnitType unit );
     void InitLine( bool fixed );
     void TrackLineMetrics();
     void GetFontValues();

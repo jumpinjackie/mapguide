@@ -36,14 +36,14 @@ public:
 
     static void EightSurrounding(SE_ApplyContext* applyCtx,
                                  SE_RenderStyle*  rstyle,
-                                 double           mm2px);
+                                 double           mm2su);
 
     static void PathLabels(SE_ApplyContext* applyCtx,
                            SE_RenderStyle*  rstyle);
 
     static void MultipleHighwaysShields(SE_ApplyContext*  applyCtx,
                                         SE_RenderStyle*   rstyle,
-                                        double            mm2px,
+                                        double            mm2su,
                                         RS_FeatureReader* featureReader,
                                         SE_SymbolManager* symbolManager);
 };
