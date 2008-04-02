@@ -71,8 +71,6 @@ MgServerRenderingService::MgServerRenderingService() : MgRenderingService()
                           MgConfigProperties::GeneralPropertyRenderer,
                           m_renderername,
                           MgConfigProperties::DefaultGeneralPropertyRenderer);
-
-    MgMappingUtil::GetVSRenderingFlags(m_bAllowVSLines, m_bAllowVSAreas);
 }
 
 
@@ -1271,7 +1269,7 @@ SE_Renderer* MgServerRenderingService::CreateRenderer(int width,
                                                       double tileExtentOffset)
 {
     if (wcscmp(m_renderername.c_str(), L"AGG") == 0)
-        return new AGGRenderer(width, height, bgColor, m_bAllowVSLines, m_bAllowVSAreas, requiresClipping, localOverposting, tileExtentOffset);
+        return new AGGRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);
     else
-        return new GDRenderer(width, height, bgColor, m_bAllowVSLines, m_bAllowVSAreas, requiresClipping, localOverposting, tileExtentOffset);
+        return new GDRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);
 }

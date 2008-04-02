@@ -22,7 +22,6 @@
 #include "GridThemeParser.h"
 #include "Band.h"
 #include "GridData.h"
-#include "GeometryAlgorithms.h"
 
 //
 // GridColorThemeHandler
