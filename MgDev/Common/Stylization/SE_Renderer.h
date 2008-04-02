@@ -24,11 +24,12 @@
 #include "SE_RenderProxies.h"
 
 class RS_FontEngine;
-class SE_IJoinProcessor;
 
 
 class SE_Renderer : public Renderer
 {
+    friend class SE_LineRenderer;
+
 public:
     STYLIZATION_API SE_Renderer();
     STYLIZATION_API virtual ~SE_Renderer();

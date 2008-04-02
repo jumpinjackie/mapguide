@@ -269,6 +269,20 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
             int numPoints = choppedBuffer->point_count();
             if (numPoints > maxChoppedSize)
                 maxChoppedSize = numPoints;
+
+            // update rendering attributes to account for the selection mode - it's
+            // ok to update these attributes and not revert them
+            if (renderer->m_bSelectionMode)
+            {
+                if (primitive->type == SE_RenderPolygonPrimitive)
+                {
+                    SE_RenderPolygon* pl = (SE_RenderPolygon*)primitive;
+                    pl->fill = renderer->m_selFillColor;
+                }
+
+                pl->lineStroke.color  = renderer->m_selLineStroke.color;
+                pl->lineStroke.weight = renderer->m_selLineStroke.weight;
+            }
         }
         else
             choppedBuffers[cur_prim] = NULL;

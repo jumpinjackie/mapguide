@@ -450,11 +450,10 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         applyCtx.renderer = m_serenderer;
         applyCtx.xform = &xformTrans;
 
-        SE_Style* style(NULL);
         size_t nStyles = sym->styles.size();
         for (size_t styIx=0; styIx<nStyles; styIx++)
         {
-            style = sym->styles[styIx];
+            SE_Style* style = sym->styles[styIx];
 
             // process the symbol rendering pass - negative rendering passes are
             // rendered with pass 0
