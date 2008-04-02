@@ -70,9 +70,6 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
     // features and apply the feature styles in that range
     MdfModel::FeatureTypeStyleCollection* ftsc = scaleRange->GetFeatureTypeStyles();
 
-    // create an expression engine with our custom functions
-    FdoPtr<FdoExpressionEngine> exec = ExpressionHelper::GetExpressionEngine(renderer, features);
-
     // check if we have any composite type styles - if we find at least
     // one then we'll use it and ignore any other non-composite type styles
     // TODO: confirm this is the behavior we want
@@ -90,7 +87,7 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
     // composite type styles are handled by the new style engine
     if (foundComposite)
     {
-        this->m_styleEngine->StylizeVectorLayer(layer, scaleRange, (SE_Renderer*)renderer, features, exec, xformer, cancel, userData);
+        this->m_styleEngine->StylizeVectorLayer(layer, scaleRange, (SE_Renderer*)renderer, features, xformer, cancel, userData);
     }
     else
     {
@@ -135,7 +132,7 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
             // labels draw even if we are not drawing the actual geometry
             if (maxStyles == 0)
             {
-                nFeatures = StylizeVLHelper(layer, scaleRange, renderer, features, true, exec, xformer, cancel, userData);
+                nFeatures = StylizeVLHelper(layer, scaleRange, renderer, features, true, xformer, cancel, userData);
             }
             else
             {
@@ -167,7 +164,7 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
                         syms->Adopt(syms2->GetAt(rs_min(i, syms2->GetCount()-1)));
                     }
 
-                    nFeatures += StylizeVLHelper(layer, scaleRange, renderer, features, i==0, exec, xformer, cancel, userData);
+                    nFeatures += StylizeVLHelper(layer, scaleRange, renderer, features, i==0, xformer, cancel, userData);
 
                     // transfer line styles back to layer definition
                     for (int m=0; m<rules->GetCount(); m++)
@@ -200,7 +197,7 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
         }
         else
         {
-            nFeatures = StylizeVLHelper(layer, scaleRange, renderer, features, true, exec, xformer, cancel, userData);
+            nFeatures = StylizeVLHelper(layer, scaleRange, renderer, features, true, xformer, cancel, userData);
         }
 
         #ifdef _DEBUG
@@ -220,7 +217,6 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
                                      Renderer*                        renderer,
                                      RS_FeatureReader*                features,
                                      bool                             initialPass,
-                                     FdoExpressionEngine*             exec,
                                      CSysTransformer*                 xformer,
                                      CancelStylization                cancel,
                                      void*                            userData)
@@ -265,9 +261,15 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
     if (NULL == gpName)
         return 0;
 
-    int nFeatures = 0;
+    // create an expression engine with our custom functions
+    // NOTE: We must create a new engine for each call to StylizeVLHelper.  The
+    //       engine stores a weak reference to the RS_FeatureReader's internal
+    //       FdoIFeatureReader, and this internal reader is different for each
+    //       call to StylizeVLHelper.
+    FdoPtr<FdoExpressionEngine> exec = ExpressionHelper::GetExpressionEngine(renderer, features);
 
     // main loop over feature data
+    int nFeatures = 0;
     while (features->ReadNext())
     {
         #ifdef _DEBUG

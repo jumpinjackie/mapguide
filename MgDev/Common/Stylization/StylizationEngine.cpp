@@ -55,12 +55,11 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
                                            MdfModel::VectorScaleRange*      range,
                                            SE_Renderer*                     se_renderer,
                                            RS_FeatureReader*                reader,
-                                           FdoExpressionEngine*             exec,
                                            CSysTransformer*                 xformer,
                                            CancelStylization                cancel,
                                            void*                            userData)
 {
-    if (reader == NULL || exec == NULL)
+    if (reader == NULL)
         return;
 
     m_serenderer = se_renderer;
@@ -121,6 +120,13 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
         // for all but the first pass we need to reset the reader
         if (numPasses > 1)
             reader->Reset();
+
+        // create an expression engine with our custom functions
+        // NOTE: We must create a new engine with each rendering pass.  The engine
+        //       stores a weak reference to the RS_FeatureReader's internal
+        //       FdoIFeatureReader, and this internal reader is different for each
+        //       pass.
+        FdoPtr<FdoExpressionEngine> exec = ExpressionHelper::GetExpressionEngine(se_renderer, reader);
 
         while (reader->ReadNext())
         {
