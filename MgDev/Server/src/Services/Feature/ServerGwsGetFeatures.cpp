@@ -247,11 +247,9 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(bool bSerialize)
             // Pass the FdoClassDefinition to SerializeToXml
             if (bSerialize)
             {
-                // TODO: Need to optimize this ByteReader/ByteSink - too much conversion
                 STRING str;
                 Ptr<MgByteReader> byteReader = SerializeToXml(fdc);
-                MgByteSink sink(byteReader);
-                sink.ToString(str);
+                str = byteReader->ToString();
 
                 STRING str1 = L"";
 
