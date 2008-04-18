@@ -431,16 +431,16 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         xformScale.scale(mm2suX, mm2suY);
 
         // initialize the style evaluation context
-        SE_EvalContext evalCxt;
-        evalCxt.exec = exec;
-        evalCxt.mm2su = mm2suX;
-        evalCxt.mm2sud = mm2sud;
-        evalCxt.mm2suw = mm2suw;
-        evalCxt.px2su = m_serenderer->GetScreenUnitsPerPixel();
-        evalCxt.pool = m_pool;
-        evalCxt.fonte = m_serenderer->GetRSFontEngine();
-        evalCxt.xform = &xformScale;
-        evalCxt.resources = m_resources;
+        SE_EvalContext evalCtx;
+        evalCtx.exec = exec;
+        evalCtx.mm2su = mm2suX;
+        evalCtx.mm2sud = mm2sud;
+        evalCtx.mm2suw = mm2suw;
+        evalCtx.px2su = m_serenderer->GetScreenUnitsPerPixel();
+        evalCtx.pool = m_pool;
+        evalCtx.fonte = m_serenderer->GetRSFontEngine();
+        evalCtx.xform = &xformScale;
+        evalCtx.resources = m_resources;
 
         // initialize the style application context
         SE_Matrix xformTrans;
@@ -482,7 +482,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 
             // evaluate the style (all expressions inside it) and convert to a
             // constant screen space render style
-            style->evaluate(&evalCxt);
+            style->evaluate(&evalCtx);
 
             // TODO: why are these in the symbolization? fix this!
             style->rstyle->addToExclusionRegions = sym->addToExclusionRegions.evaluate(exec);

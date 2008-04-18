@@ -620,16 +620,16 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
 
         // initialize the style evaluation context
         // NOTE: do not adjust the mm2su values by the scale factor
-        SE_EvalContext evalCxt;
-        evalCxt.exec = exec;
-        evalCxt.mm2su = mm2suX;
-        evalCxt.mm2sud = mm2sud;
-        evalCxt.mm2suw = mm2suw;
-        evalCxt.px2su = pSERenderer->GetScreenUnitsPerPixel();
-        evalCxt.pool = pool;
-        evalCxt.fonte = pSERenderer->GetRSFontEngine();
-        evalCxt.xform = &xformScale;
-        evalCxt.resources = sman;
+        SE_EvalContext evalCtx;
+        evalCtx.exec = exec;
+        evalCtx.mm2su = mm2suX;
+        evalCtx.mm2sud = mm2sud;
+        evalCtx.mm2suw = mm2suw;
+        evalCtx.px2su = pSERenderer->GetScreenUnitsPerPixel();
+        evalCtx.pool = pool;
+        evalCtx.fonte = pSERenderer->GetRSFontEngine();
+        evalCtx.xform = &xformScale;
+        evalCtx.resources = sman;
 
         for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); siter++)
         {
@@ -639,7 +639,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
             // since the render styles are cached we need to reset these before
             // re-evaluating the style
             style->reset();
-            style->evaluate(&evalCxt);
+            style->evaluate(&evalCtx);
 
             // Each style type has additional transformations associated with it.  See
             // StylizationEngine::Stylize for a detailed explanation of these transforms.
@@ -766,22 +766,22 @@ void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Sym
         xformScale.scale(mm2suX, mm2suY);
 
         // initialize the style evaluation context
-        SE_EvalContext evalCxt;
-        evalCxt.exec = exec;
-        evalCxt.mm2su = mm2suX;
-        evalCxt.mm2sud = mm2sud;
-        evalCxt.mm2suw = mm2suw;
-        evalCxt.px2su = pSERenderer->GetScreenUnitsPerPixel();
-        evalCxt.pool = pool;
-        evalCxt.fonte = pSERenderer->GetRSFontEngine();
-        evalCxt.xform = &xformScale;
-        evalCxt.resources = sman;
+        SE_EvalContext evalCtx;
+        evalCtx.exec = exec;
+        evalCtx.mm2su = mm2suX;
+        evalCtx.mm2sud = mm2sud;
+        evalCtx.mm2suw = mm2suw;
+        evalCtx.px2su = pSERenderer->GetScreenUnitsPerPixel();
+        evalCtx.pool = pool;
+        evalCtx.fonte = pSERenderer->GetRSFontEngine();
+        evalCtx.xform = &xformScale;
+        evalCtx.resources = sman;
 
         for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); siter++)
         {
             // have one style per simple symbol definition
             SE_Style* style = *siter;
-            style->evaluate(&evalCxt);
+            style->evaluate(&evalCtx);
 
             // Each style type has additional transformations associated with it.  See
             // StylizationEngine::Stylize for a detailed explanation of these transforms.
