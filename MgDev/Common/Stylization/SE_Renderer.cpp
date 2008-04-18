@@ -283,7 +283,7 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
     SE_Matrix xformbase = *ctx->xform;
     xformbase.rotate(baserot);
 
-    for (const SE_Tuple* pos = ap.NextLocation(); pos != NULL; pos = ap.NextLocation())
+    for (const Point2D* pos = ap.NextLocation(); pos != NULL; pos = ap.NextLocation())
     {
         xform = xformbase;
         xform.translate(pos->x, pos->y);
