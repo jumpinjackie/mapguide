@@ -20,8 +20,9 @@
 
 #include "StylizationDefs.h"
 #include "SE_RenderProxies.h"
-#include "SE_Tuple.h"
+#include "Point2D.h"
 
+///////////////////////////////////////////////////////////////////////////////
 // This class generates the possible insertion points for the symbols to be drawn
 // in a hatch based on bounding box intersection.  Further checking must be done
 // to determine if every position is valid, although all valid positions will be
@@ -33,18 +34,23 @@ public:
     ~SE_AreaPositioning();
 
     const double& PatternRotation();
-    const SE_Tuple* NextLocation();
+    const Point2D* NextLocation();
+
+private:
+    static int ClipLine(double xMin, double xMax, const Point2D& p0, const Point2D& p1, double* ret);
+    static int ClipCode(double xMin, double xMax, double x);
 
 private:
     double    m_angle_rad;
 
-    int       m_h_neg_pos;
+    int       m_h_min;
+    int       m_h_max;
     int       m_h_pts;
-    SE_Tuple  m_base_pt;
-    SE_Tuple  m_v_vec;
-    SE_Tuple  m_h_vec;
+    Point2D   m_base_pt;
+    Vector2D  m_v_vec;
+    Vector2D  m_h_vec;
 
-    SE_Tuple  m_cur_pt;
+    Point2D   m_cur_pt;
     int       m_h_cur_pos;
     int       m_v_cur_pos;
 
@@ -55,4 +61,4 @@ private:
     int       m_v_buf[2*m_k_buf_size];
 };
 
-#endif // SE_AREA_POSITIONING_H
+#endif
