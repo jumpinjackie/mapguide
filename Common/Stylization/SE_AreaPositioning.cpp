@@ -244,7 +244,7 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
             m_v_min[i] = (int) ceil((ymin - symBounds.maxy) / repeatY);
             m_v_max[i] = (int)floor((ymax - symBounds.miny) / repeatY);
 
-            _ASSERT(m_v_max[i] - m_v_min[i] >= 0);
+            _ASSERT(m_v_max[i] - m_v_min[i] >= -1);
         }
         else
         {
