@@ -23,6 +23,7 @@
 #include "RS_FontEngine.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
 // assumes axis aligned bounds stored in src and dst (with y pointing up),
 // and the order of the points is CCW starting at the bottom left
 static void BoundsUnion(RS_F_Point* dst, RS_F_Point* src)
@@ -34,6 +35,7 @@ static void BoundsUnion(RS_F_Point* dst, RS_F_Point* src)
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // Compute a margin that we'll add to the primitive's bounds to account
 // for line weight.  This is only an approximation...
 static double GetHalfWeightMargin(const SE_LineStroke& lineStroke)
@@ -60,7 +62,7 @@ static double GetHalfWeightMargin(const SE_LineStroke& lineStroke)
 }
 
 
-
+///////////////////////////////////////////////////////////////////////////////
 SE_Style::~SE_Style()
 {
     for (SE_PrimitiveList::iterator iter = symbol.begin(); iter != symbol.end(); iter++)
@@ -70,7 +72,8 @@ SE_Style::~SE_Style()
 }
 
 
-SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
+///////////////////////////////////////////////////////////////////////////////
+SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* ctx)
 {
     // simple check for empty geometry
     if (geometry->Empty())
@@ -78,7 +81,7 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
 
     SE_RenderPolyline* ret = new SE_RenderPolyline();
 
-    const wchar_t* sResizeCtrl = resizeControl.evaluate(cxt->exec);
+    const wchar_t* sResizeCtrl = resizeControl.evaluate(ctx->exec);
     if (wcscmp(sResizeCtrl, L"AddToResizeBox") == 0)
         ret->resizeControl = SE_ResizeControl_AddToResizeBox;
     else if (wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0)
@@ -88,21 +91,21 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
 
     ret->geometry = geometry->Clone();
 
-    double wx                  = weightScalable.evaluate(cxt->exec)? fabs(cxt->xform->x0) : cxt->mm2sud;
-    ret->lineStroke.weight     = weight.evaluate(cxt->exec) * wx;
-    ret->lineStroke.color      = color.evaluate(cxt->exec);
-    ret->lineStroke.miterLimit = miterLimit.evaluate(cxt->exec);
+    double wx                  = weightScalable.evaluate(ctx->exec)? fabs(ctx->xform->x0) : ctx->mm2sud;
+    ret->lineStroke.weight     = weight.evaluate(ctx->exec) * wx;
+    ret->lineStroke.color      = color.evaluate(ctx->exec);
+    ret->lineStroke.miterLimit = miterLimit.evaluate(ctx->exec);
     if (ret->lineStroke.miterLimit < 0.0)
         ret->lineStroke.miterLimit = 0.0;
 
     // restrict the weight to something reasonable
-    double devWeightInMM = ret->lineStroke.weight / cxt->mm2sud;
+    double devWeightInMM = ret->lineStroke.weight / ctx->mm2sud;
     if (devWeightInMM > MAX_LINEWEIGHT_IN_MM)
-        ret->lineStroke.weight = MAX_LINEWEIGHT_IN_MM * cxt->mm2sud;
+        ret->lineStroke.weight = MAX_LINEWEIGHT_IN_MM * ctx->mm2sud;
     else if (devWeightInMM < 0.0)
         ret->lineStroke.weight = 0.0;
 
-    const wchar_t* sCap = cap.evaluate(cxt->exec);
+    const wchar_t* sCap = cap.evaluate(ctx->exec);
     if (wcscmp(sCap, L"Round") == 0)    // check this first since it's the most common
         ret->lineStroke.cap = SE_LineCap_Round;
     else if (wcscmp(sCap, L"None") == 0)
@@ -114,7 +117,7 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
     else // default is Round
         ret->lineStroke.cap = SE_LineCap_Round;
 
-    const wchar_t* sJoin = join.evaluate(cxt->exec);
+    const wchar_t* sJoin = join.evaluate(ctx->exec);
     if (wcscmp(sJoin, L"Round") == 0)   // check this first since it's the most common
         ret->lineStroke.join = SE_LineJoin_Round;
     else if (wcscmp(sJoin, L"None") == 0)
@@ -130,7 +133,7 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
         ret->lineStroke.join = SE_LineJoin_Round;
 
     // use a tolerance of 0.25 pixels
-    ret->geometry->Transform(*cxt->xform, 0.25*cxt->px2su);
+    ret->geometry->Transform(*ctx->xform, 0.25*ctx->px2su);
 
     // TODO: here we would implement a rotating calipers algorithm to get a tighter
     //       oriented box, but for now just get the axis-aligned bounds of the path
@@ -158,7 +161,8 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
 }
 
 
-SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
+///////////////////////////////////////////////////////////////////////////////
+SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* ctx)
 {
     // simple check for empty geometry
     if (geometry->Empty())
@@ -166,7 +170,7 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
 
     SE_RenderPolygon* ret = new SE_RenderPolygon();
 
-    const wchar_t* sResizeCtrl = resizeControl.evaluate(cxt->exec);
+    const wchar_t* sResizeCtrl = resizeControl.evaluate(ctx->exec);
     if (wcscmp(sResizeCtrl, L"AddToResizeBox") == 0)
         ret->resizeControl = SE_ResizeControl_AddToResizeBox;
     else if (wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0)
@@ -175,23 +179,23 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
         ret->resizeControl = SE_ResizeControl_ResizeNone;
 
     ret->geometry = geometry->Clone();
-    ret->fill     = fill.evaluate(cxt->exec);
+    ret->fill     = fill.evaluate(ctx->exec);
 
-    double wx                  = weightScalable.evaluate(cxt->exec)? fabs(cxt->xform->x0) : cxt->mm2sud;
-    ret->lineStroke.weight     = weight.evaluate(cxt->exec) * wx;
-    ret->lineStroke.color      = color.evaluate(cxt->exec);
-    ret->lineStroke.miterLimit = miterLimit.evaluate(cxt->exec);
+    double wx                  = weightScalable.evaluate(ctx->exec)? fabs(ctx->xform->x0) : ctx->mm2sud;
+    ret->lineStroke.weight     = weight.evaluate(ctx->exec) * wx;
+    ret->lineStroke.color      = color.evaluate(ctx->exec);
+    ret->lineStroke.miterLimit = miterLimit.evaluate(ctx->exec);
     if (ret->lineStroke.miterLimit < 0.0)
         ret->lineStroke.miterLimit = 0.0;
 
     // restrict the weight to something reasonable
-    double devWeightInMM = ret->lineStroke.weight / cxt->mm2sud;
+    double devWeightInMM = ret->lineStroke.weight / ctx->mm2sud;
     if (devWeightInMM > MAX_LINEWEIGHT_IN_MM)
-        ret->lineStroke.weight = MAX_LINEWEIGHT_IN_MM * cxt->mm2sud;
+        ret->lineStroke.weight = MAX_LINEWEIGHT_IN_MM * ctx->mm2sud;
     else if (devWeightInMM < 0.0)
         ret->lineStroke.weight = 0.0;
 
-    const wchar_t* sCap = cap.evaluate(cxt->exec);
+    const wchar_t* sCap = cap.evaluate(ctx->exec);
     if (wcscmp(sCap, L"Round") == 0)    // check this first since it's the most common
         ret->lineStroke.cap = SE_LineCap_Round;
     else if (wcscmp(sCap, L"None") == 0)
@@ -203,7 +207,7 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
     else // default is Round
         ret->lineStroke.cap = SE_LineCap_Round;
 
-    const wchar_t* sJoin = join.evaluate(cxt->exec);
+    const wchar_t* sJoin = join.evaluate(ctx->exec);
     if (wcscmp(sJoin, L"Round") == 0)   // check this first since it's the most common
         ret->lineStroke.join = SE_LineJoin_Round;
     else if (wcscmp(sJoin, L"None") == 0)
@@ -219,7 +223,7 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
         ret->lineStroke.join = SE_LineJoin_Round;
 
     // use a tolerance of 0.25 pixels
-    ret->geometry->Transform(*cxt->xform, 0.25*cxt->px2su);
+    ret->geometry->Transform(*ctx->xform, 0.25*ctx->px2su);
 
     // TODO: here we would implement a rotating calipers algorithm to get a tighter
     //       oriented box, but for now just get the axis-aligned bounds of the path
@@ -247,14 +251,15 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
 }
 
 
-SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
+///////////////////////////////////////////////////////////////////////////////
+SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* ctx)
 {
-    if (cxt->fonte == NULL)
+    if (ctx->fonte == NULL)
         return NULL;
 
     SE_RenderText* ret = new SE_RenderText();
 
-    const wchar_t* sResizeCtrl = resizeControl.evaluate(cxt->exec);
+    const wchar_t* sResizeCtrl = resizeControl.evaluate(ctx->exec);
     if (wcscmp(sResizeCtrl, L"AddToResizeBox") == 0)
         ret->resizeControl = SE_ResizeControl_AddToResizeBox;
     else if (wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0)
@@ -262,58 +267,58 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
     else // default is ResizeNone
         ret->resizeControl = SE_ResizeControl_ResizeNone;
 
-    ret->content     = content.evaluate(cxt->exec);
-    ret->position[0] = position[0].evaluate(cxt->exec);
-    ret->position[1] = position[1].evaluate(cxt->exec);
+    ret->content     = content.evaluate(ctx->exec);
+    ret->position[0] = position[0].evaluate(ctx->exec);
+    ret->position[1] = position[1].evaluate(ctx->exec);
 
-    cxt->xform->transform(ret->position[0], ret->position[1]);
+    ctx->xform->transform(ret->position[0], ret->position[1]);
 
     RS_TextDef& textDef = ret->tdef;
     RS_FontDef& fontDef = textDef.font();
 
-    textDef.rotation() = fmod(angleDeg.evaluate(cxt->exec), 360.0);   // in degrees
+    textDef.rotation() = fmod(angleDeg.evaluate(ctx->exec), 360.0);   // in degrees
 
     int style = RS_FontStyle_Regular;
-    if (bold.evaluate(cxt->exec))
+    if (bold.evaluate(ctx->exec))
         style |= RS_FontStyle_Bold;
-    if (italic.evaluate(cxt->exec))
+    if (italic.evaluate(ctx->exec))
         style |= RS_FontStyle_Italic;
-    if (underlined.evaluate(cxt->exec))
+    if (underlined.evaluate(ctx->exec))
         style |= RS_FontStyle_Underline;
-    if (overlined.evaluate(cxt->exec))
+    if (overlined.evaluate(ctx->exec))
         style |= RS_FontStyle_Overline;
 
     fontDef.style() = (RS_FontStyle_Mask)style;
-    fontDef.name()  = fontName.evaluate(cxt->exec);
+    fontDef.name()  = fontName.evaluate(ctx->exec);
 
     // RS_TextDef expects font height to be in meters - convert it from mm
-    double wy              = heightScalable.evaluate(cxt->exec)? 0.001 * fabs(cxt->xform->y1) / cxt->mm2sud : 0.001;
-    fontDef.height()       = height.evaluate(cxt->exec) * wy;
-    textDef.obliqueAngle() = obliqueAngle.evaluate(cxt->exec);
-    textDef.trackSpacing() = trackSpacing.evaluate(cxt->exec);
-    textDef.linespace()    = lineSpacing.evaluate(cxt->exec);
-    textDef.textcolor()    = RS_Color::FromARGB(textColor.evaluate(cxt->exec));
-    textDef.markup()       = markup.evaluate(cxt->exec);
+    double wy              = heightScalable.evaluate(ctx->exec)? 0.001 * fabs(ctx->xform->y1) / ctx->mm2sud : 0.001;
+    fontDef.height()       = height.evaluate(ctx->exec) * wy;
+    textDef.obliqueAngle() = obliqueAngle.evaluate(ctx->exec);
+    textDef.trackSpacing() = trackSpacing.evaluate(ctx->exec);
+    textDef.linespace()    = lineSpacing.evaluate(ctx->exec);
+    textDef.textcolor()    = RS_Color::FromARGB(textColor.evaluate(ctx->exec));
+    textDef.markup()       = markup.evaluate(ctx->exec);
 
     if (!ghostColor.empty())
     {
-        textDef.ghostcolor() = RS_Color::FromARGB(ghostColor.evaluate(cxt->exec));
+        textDef.ghostcolor() = RS_Color::FromARGB(ghostColor.evaluate(ctx->exec));
         textDef.textbg() |= RS_TextBackground_Ghosted;
     }
     if (!frameLineColor.empty())
     {
-        textDef.framecolor() = RS_Color::FromARGB(frameLineColor.evaluate(cxt->exec));
+        textDef.framecolor() = RS_Color::FromARGB(frameLineColor.evaluate(ctx->exec));
         textDef.textbg() |= RS_TextBackground_Framed;
     }
     if (!frameFillColor.empty())
     {
-        textDef.opaquecolor() = RS_Color::FromARGB(frameFillColor.evaluate(cxt->exec));
+        textDef.opaquecolor() = RS_Color::FromARGB(frameFillColor.evaluate(ctx->exec));
         textDef.textbg() |= RS_TextBackground_Opaque;
     }
-    textDef.frameoffsetx() = frameOffset[0].evaluate(cxt->exec) * fabs(cxt->xform->x0);
-    textDef.frameoffsety() = frameOffset[1].evaluate(cxt->exec) * fabs(cxt->xform->y1);
+    textDef.frameoffsetx() = frameOffset[0].evaluate(ctx->exec) * fabs(ctx->xform->x0);
+    textDef.frameoffsety() = frameOffset[1].evaluate(ctx->exec) * fabs(ctx->xform->y1);
 
-    const wchar_t* hAlign = hAlignment.evaluate(cxt->exec);
+    const wchar_t* hAlign = hAlignment.evaluate(ctx->exec);
     if (wcscmp(hAlign, L"Center") == 0)     // check this first since it's the most common
         textDef.halign() = RS_HAlignment_Center;
     else if (wcscmp(hAlign, L"Left") == 0)
@@ -323,7 +328,7 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
     else // default is Center
         textDef.halign() = RS_HAlignment_Center;
 
-    const wchar_t* vAlign = vAlignment.evaluate(cxt->exec);
+    const wchar_t* vAlign = vAlignment.evaluate(ctx->exec);
     if (wcscmp(vAlign, L"Halfline") == 0)   // check this first since it's the most common
         textDef.valign() = RS_VAlignment_Half;
     else if (wcscmp(vAlign, L"Bottom") == 0)
@@ -337,7 +342,7 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
     else // default is Halfline
         textDef.valign() = RS_VAlignment_Half;
 
-    const wchar_t* justification = this->justification.evaluate(cxt->exec);
+    const wchar_t* justification = this->justification.evaluate(ctx->exec);
     if (wcscmp(justification, L"FromAlignment") == 0)   // check this first since it's the most common
     {
         switch ( textDef.halign() ) {
@@ -362,7 +367,7 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
         textDef.justify() = RS_Justify_Justify;
 
     RS_TextMetrics tm;
-    cxt->fonte->GetTextMetrics(ret->content, textDef, tm, false);
+    ctx->fonte->GetTextMetrics(ret->content, textDef, tm, false);
 
     SE_Matrix txf;
     txf.rotate(textDef.rotation() * M_PI180);
@@ -393,7 +398,7 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
     // we do it separately because the offsets could be negative
     double offx = textDef.frameoffsetx();
     double offy = textDef.frameoffsety();
-    if (cxt->xform->y1 < 0.0)
+    if (ctx->xform->y1 < 0.0)
         offy = -offy;
 
     if (offx != 0.0 || offy != 0.0)
@@ -427,11 +432,12 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
 }
 
 
-SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
+///////////////////////////////////////////////////////////////////////////////
+SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* ctx)
 {
     SE_RenderRaster* ret = new SE_RenderRaster();
 
-    const wchar_t* sResizeCtrl = resizeControl.evaluate(cxt->exec);
+    const wchar_t* sResizeCtrl = resizeControl.evaluate(ctx->exec);
     if (wcscmp(sResizeCtrl, L"AddToResizeBox") == 0)
         ret->resizeControl = SE_ResizeControl_AddToResizeBox;
     else if (wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0)
@@ -443,32 +449,32 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
     {
         // if we have non-empty resource ID then use it, otherwise use
         // the ID of any parent symbol definition
-        const wchar_t* resourceId = pngResourceId.evaluate(cxt->exec);
+        const wchar_t* resourceId = pngResourceId.evaluate(ctx->exec);
         if (wcslen(resourceId) == 0)
             resourceId = resId;
-        cxt->resources->GetImageData(resourceId, pngResourceName.evaluate(cxt->exec), ret->imageData);
+        ctx->resources->GetImageData(resourceId, pngResourceName.evaluate(ctx->exec), ret->imageData);
     }
     else
     {
         ret->imageData = imageData;
     }
 
-    ret->position[0] = position[0].evaluate(cxt->exec);
-    ret->position[1] = position[1].evaluate(cxt->exec);
-    cxt->xform->transform(ret->position[0], ret->position[1]);
+    ret->position[0] = position[0].evaluate(ctx->exec);
+    ret->position[1] = position[1].evaluate(ctx->exec);
+    ctx->xform->transform(ret->position[0], ret->position[1]);
 
-    if (extentScalable.evaluate(cxt->exec))
+    if (extentScalable.evaluate(ctx->exec))
     {
-        ret->extent[0] = fabs(extent[0].evaluate(cxt->exec) * fabs(cxt->xform->x0));
-        ret->extent[1] = fabs(extent[1].evaluate(cxt->exec) * fabs(cxt->xform->y1));
+        ret->extent[0] = fabs(extent[0].evaluate(ctx->exec) * fabs(ctx->xform->x0));
+        ret->extent[1] = fabs(extent[1].evaluate(ctx->exec) * fabs(ctx->xform->y1));
     }
     else
     {
-        ret->extent[0] = fabs(extent[0].evaluate(cxt->exec) * cxt->mm2sud);
-        ret->extent[1] = fabs(extent[1].evaluate(cxt->exec) * cxt->mm2sud);
+        ret->extent[0] = fabs(extent[0].evaluate(ctx->exec) * ctx->mm2sud);
+        ret->extent[1] = fabs(extent[1].evaluate(ctx->exec) * ctx->mm2sud);
     }
 
-    ret->angleRad = fmod(angleDeg.evaluate(cxt->exec), 360.0) * M_PI180;
+    ret->angleRad = fmod(angleDeg.evaluate(ctx->exec), 360.0) * M_PI180;
 
     SE_Matrix rxf;
     rxf.rotate(ret->angleRad);
@@ -489,10 +495,19 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
 }
 
 
-void SE_Style::evaluate(SE_EvalContext* cxt)
+///////////////////////////////////////////////////////////////////////////////
+void SE_Style::reset()
+{
+    delete rstyle;
+    rstyle = NULL;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void SE_Style::evaluate(SE_EvalContext* ctx)
 {
     // evaluate values that are common to all styles
-    rstyle->renderPass = renderPass.evaluate(cxt->exec);
+    rstyle->renderPass = renderPass.evaluate(ctx->exec);
 
     //
     // evaluation of all primitives and also resize box stuff
@@ -504,14 +519,14 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
     if (useBox)
     {
         // get the initial resize box
-        double dx = resizePosition[0].evaluate(cxt->exec);
-        double dy = resizePosition[1].evaluate(cxt->exec);
-        double sx = 0.5*fabs(resizeSize[0].evaluate(cxt->exec));
-        double sy = 0.5*fabs(resizeSize[1].evaluate(cxt->exec));
+        double dx = resizePosition[0].evaluate(ctx->exec);
+        double dy = resizePosition[1].evaluate(ctx->exec);
+        double sx = 0.5*fabs(resizeSize[0].evaluate(ctx->exec));
+        double sy = 0.5*fabs(resizeSize[1].evaluate(ctx->exec));
 
         double ptAx, ptAy, ptBx, ptBy;
-        cxt->xform->transform(dx - sx, dy - sy, ptAx, ptAy);
-        cxt->xform->transform(dx + sx, dy + sy, ptBx, ptBy);
+        ctx->xform->transform(dx - sx, dy - sy, ptAx, ptAy);
+        ctx->xform->transform(dx + sx, dy + sy, ptBx, ptBy);
 
         // the transform may invert points (e.g. in y), so therefore
         // we need to compute min & max
@@ -526,7 +541,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
         SE_Primitive* sym = *src;
 
         // evaluate the render primitive
-        SE_RenderPrimitive* rsym = sym->evaluate(cxt);
+        SE_RenderPrimitive* rsym = sym->evaluate(ctx);
         if (!rsym)
             continue;
 
@@ -561,7 +576,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
         double transy0 = 0.0;
         double transx1 = 0.0;
         double transy1 = 0.0;
-        const wchar_t* sGrowCtrl = growControl.evaluate(cxt->exec);
+        const wchar_t* sGrowCtrl = growControl.evaluate(ctx->exec);
         if (wcscmp(sGrowCtrl, L"GrowInX") == 0)
         {
             if (sx0 != 0.0)
@@ -616,7 +631,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
         growxf.translate(transx1, transy1);   // step 3 - translate the new box so it has the same center as the grown box
 
         // build the full transform
-        SE_Matrix totalxf(*cxt->xform);
+        SE_Matrix totalxf(*ctx->xform);
         totalxf.premultiply(growxf);
 
         for (SE_RenderPrimitiveList::iterator rs = rstyle->symbol.begin(); rs != rstyle->symbol.end(); rs++)
@@ -630,7 +645,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                 case SE_RenderPrimitive_Polyline:
                     {
                         SE_RenderPolyline* rp = (SE_RenderPolyline*)rsym;
-                        rp->geometry->Transform(totalxf, 0.25*cxt->px2su);  // use a tolerance of 0.25 pixels
+                        rp->geometry->Transform(totalxf, 0.25*ctx->px2su);  // use a tolerance of 0.25 pixels
                         SE_Bounds* seb = rp->geometry->xf_bounds();
                         double margin = GetHalfWeightMargin(rp->lineStroke);
                         rp->bounds[0].x = seb->min[0] - margin;
@@ -650,7 +665,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                         rt->tdef.font().height() *= scaley; // TODO: should this only be done if HeightScalable is true?
                         rt->tdef.frameoffsetx() *= scalex;  // TODO: should this only be done if HeightScalable is true?
                         rt->tdef.frameoffsety() *= scaley;  // TODO: should this only be done if HeightScalable is true?
-                        for (int j=0; j<4; j++)
+                        for (int j=0; j<4; ++j)
                             growxf.transform(rt->bounds[j].x, rt->bounds[j].y);
                         break;
                     }
@@ -660,7 +675,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                         growxf.transform(rr->position[0], rr->position[1]);
                         rr->extent[0] *= scalex;    // TODO: should this only be done if ExtentScalable is true?
                         rr->extent[1] *= scaley;
-                        for (int j=0; j<4; j++)
+                        for (int j=0; j<4; ++j)
                             growxf.transform(rr->bounds[j].x, rr->bounds[j].y);
                         break;
                     }
@@ -673,166 +688,168 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
 }
 
 
-void SE_PointStyle::evaluate(SE_EvalContext* cxt)
+///////////////////////////////////////////////////////////////////////////////
+void SE_PointStyle::evaluate(SE_EvalContext* ctx)
 {
     // can skip out of evaluation if style is constant and has been evaluated once
     if (cacheable && rstyle)
         return;
 
-    SE_RenderPointStyle* render = new SE_RenderPointStyle();
+    SE_RenderPointStyle* style = new SE_RenderPointStyle();
     delete rstyle;
-    rstyle = render;
+    rstyle = style;
 
-    const wchar_t* sAngleControl = angleControl.evaluate(cxt->exec);
+    const wchar_t* sAngleControl = angleControl.evaluate(ctx->exec);
     if (wcscmp(sAngleControl, L"FromGeometry") == 0)
-        render->angleControl = SE_AngleControl_FromGeometry;
+        style->angleControl = SE_AngleControl_FromGeometry;
     else // default is FromAngle
-        render->angleControl = SE_AngleControl_FromAngle;
+        style->angleControl = SE_AngleControl_FromAngle;
 
-    render->angleRad = fmod(angleDeg.evaluate(cxt->exec), 360.0) * M_PI180;
+    style->angleRad = fmod(angleDeg.evaluate(ctx->exec), 360.0) * M_PI180;
 
     // scale by xform->x0 and xform->y1 instead of mm2su, because these encompass
     // mm2su as well as scaleX and scaleY
-    render->offset[0] = originOffset[0].evaluate(cxt->exec) * cxt->xform->x0;
-    render->offset[1] = originOffset[1].evaluate(cxt->exec) * cxt->xform->y1;
+    style->offset[0] = originOffset[0].evaluate(ctx->exec) * ctx->xform->x0;
+    style->offset[1] = originOffset[1].evaluate(ctx->exec) * ctx->xform->y1;
 
     // evaluate all the primitives too
-    SE_Style::evaluate(cxt);
+    SE_Style::evaluate(ctx);
 }
 
 
-void SE_LineStyle::evaluate(SE_EvalContext* cxt)
+///////////////////////////////////////////////////////////////////////////////
+void SE_LineStyle::evaluate(SE_EvalContext* ctx)
 {
     // can skip out of evaluation if style is constant and has been evaluated once
     if (cacheable && rstyle)
         return;
 
-    SE_RenderLineStyle* render = new SE_RenderLineStyle();
+    SE_RenderLineStyle* style = new SE_RenderLineStyle();
     delete rstyle;
-    rstyle = render;
+    rstyle = style;
 
-    const wchar_t* sAngleControl = angleControl.evaluate(cxt->exec);
+    const wchar_t* sAngleControl = angleControl.evaluate(ctx->exec);
     if (wcscmp(sAngleControl, L"FromAngle") == 0)
-        render->angleControl = SE_AngleControl_FromAngle;
+        style->angleControl = SE_AngleControl_FromAngle;
     else // default is FromGeometry
-        render->angleControl = SE_AngleControl_FromGeometry;
+        style->angleControl = SE_AngleControl_FromGeometry;
 
-    const wchar_t* sUnitsControl = unitsControl.evaluate(cxt->exec);
+    const wchar_t* sUnitsControl = unitsControl.evaluate(ctx->exec);
     if (wcscmp(sUnitsControl, L"Parametric") == 0)
-        render->unitsControl = SE_UnitsControl_Parametric;
+        style->unitsControl = SE_UnitsControl_Parametric;
     else // default is Absolute
-        render->unitsControl = SE_UnitsControl_Absolute;
+        style->unitsControl = SE_UnitsControl_Absolute;
 
-    const wchar_t* sVertexControl = vertexControl.evaluate(cxt->exec);
+    const wchar_t* sVertexControl = vertexControl.evaluate(ctx->exec);
     if (wcscmp(sVertexControl, L"OverlapNone") == 0)
-        render->vertexControl = SE_VertexControl_OverlapNone;
+        style->vertexControl = SE_VertexControl_OverlapNone;
     else if (wcscmp(sVertexControl, L"OverlapDirect") == 0)
-        render->vertexControl = SE_VertexControl_OverlapDirect;
+        style->vertexControl = SE_VertexControl_OverlapDirect;
     else if (wcscmp(sVertexControl, L"OverlapNoWrap") == 0)
         // this deprecated option is treated as OverlapNone
-        render->vertexControl = SE_VertexControl_OverlapNone;
+        style->vertexControl = SE_VertexControl_OverlapNone;
     else // default is OverlapWrap
-        render->vertexControl = SE_VertexControl_OverlapWrap;
+        style->vertexControl = SE_VertexControl_OverlapWrap;
 
-    render->angleRad = fmod(angleDeg.evaluate(cxt->exec), 360.0) * M_PI180;
+    style->angleRad = fmod(angleDeg.evaluate(ctx->exec), 360.0) * M_PI180;
 
     // scale by xform->x0 and xform->y1 instead of mm2su, because these encompass
     // mm2su as well as scaleX and scaleY
-    render->startOffset = startOffset.evaluate(cxt->exec) * fabs(cxt->xform->x0);
-    render->endOffset   = endOffset.evaluate(cxt->exec)   * fabs(cxt->xform->x0);
-    render->repeat      = repeat.evaluate(cxt->exec)      * fabs(cxt->xform->x0);
-    double origRepeat   = render->repeat;
+    style->startOffset = startOffset.evaluate(ctx->exec) * fabs(ctx->xform->x0);
+    style->endOffset   = endOffset.evaluate(ctx->exec)   * fabs(ctx->xform->x0);
+    style->repeat      = repeat.evaluate(ctx->exec)      * fabs(ctx->xform->x0);
+    double origRepeat  = style->repeat;
 
     // It makes no sense to distribute symbols using a repeat value which is much
     // less than one pixel.  We'll scale up any value less than 0.25 to 0.5.
-    if (render->repeat > 0.0 && render->repeat < 0.25*cxt->px2su)
+    if (style->repeat > 0.0 && style->repeat < 0.25*ctx->px2su)
     {
         // just increase it by an integer multiple so the overall distribution
         // isn't affected
-        int factor = (int)(0.5*cxt->px2su / render->repeat);
-        render->repeat *= factor;
+        int factor = (int)(0.5*ctx->px2su / style->repeat);
+        style->repeat *= factor;
     }
 
-    double angleLimit = vertexAngleLimit.evaluate(cxt->exec);
+    double angleLimit = vertexAngleLimit.evaluate(ctx->exec);
     if (angleLimit < 0.0)
         angleLimit = 0.0;
-    render->vertexAngleLimit = fmod(angleLimit, 360.0) * M_PI180;
-    render->vertexMiterLimit = vertexMiterLimit.evaluate(cxt->exec);
-    if (render->vertexMiterLimit < 0.0)
-        render->vertexMiterLimit = 0.0;
+    style->vertexAngleLimit = fmod(angleLimit, 360.0) * M_PI180;
+    style->vertexMiterLimit = vertexMiterLimit.evaluate(ctx->exec);
+    if (style->vertexMiterLimit < 0.0)
+        style->vertexMiterLimit = 0.0;
 
-    const wchar_t* sJoin = vertexJoin.evaluate(cxt->exec);
+    const wchar_t* sJoin = vertexJoin.evaluate(ctx->exec);
     if (wcscmp(sJoin, L"Round") == 0)       // check this first since it's the most common
-        render->vertexJoin = SE_LineJoin_Round;
+        style->vertexJoin = SE_LineJoin_Round;
     else if (wcscmp(sJoin, L"None") == 0)
-        render->vertexJoin = SE_LineJoin_None;
+        style->vertexJoin = SE_LineJoin_None;
     else if (wcscmp(sJoin, L"Bevel") == 0)
     {
-        render->vertexJoin = SE_LineJoin_Bevel;
-        render->vertexMiterLimit = 0.0;
+        style->vertexJoin = SE_LineJoin_Bevel;
+        style->vertexMiterLimit = 0.0;
     }
     else if (wcscmp(sJoin, L"Miter") == 0)
-        render->vertexJoin = SE_LineJoin_Miter;
+        style->vertexJoin = SE_LineJoin_Miter;
     else // default is Round
-        render->vertexJoin = SE_LineJoin_Round;
+        style->vertexJoin = SE_LineJoin_Round;
 
-    double wx                       = dpWeightScalable.evaluate(cxt->exec)? fabs(cxt->xform->x0) : cxt->mm2sud;
-    render->dpLineStroke.weight     = dpWeight.evaluate(cxt->exec) * wx;
-    render->dpLineStroke.color      = dpColor.evaluate(cxt->exec);
-    render->dpLineStroke.miterLimit = dpMiterLimit.evaluate(cxt->exec);
-    if (render->dpLineStroke.miterLimit < 0.0)
-        render->dpLineStroke.miterLimit = 0.0;
+    double wx                      = dpWeightScalable.evaluate(ctx->exec)? fabs(ctx->xform->x0) : ctx->mm2sud;
+    style->dpLineStroke.weight     = dpWeight.evaluate(ctx->exec) * wx;
+    style->dpLineStroke.color      = dpColor.evaluate(ctx->exec);
+    style->dpLineStroke.miterLimit = dpMiterLimit.evaluate(ctx->exec);
+    if (style->dpLineStroke.miterLimit < 0.0)
+        style->dpLineStroke.miterLimit = 0.0;
 
     // restrict the weight to something reasonable
-    double devWeightInMM = render->dpLineStroke.weight / cxt->mm2sud;
+    double devWeightInMM = style->dpLineStroke.weight / ctx->mm2sud;
     if (devWeightInMM > MAX_LINEWEIGHT_IN_MM)
-        render->dpLineStroke.weight = MAX_LINEWEIGHT_IN_MM * cxt->mm2sud;
+        style->dpLineStroke.weight = MAX_LINEWEIGHT_IN_MM * ctx->mm2sud;
     else if (devWeightInMM < 0.0)
-        render->dpLineStroke.weight = 0.0;
+        style->dpLineStroke.weight = 0.0;
 
-    const wchar_t* sdpCap = dpCap.evaluate(cxt->exec);
+    const wchar_t* sdpCap = dpCap.evaluate(ctx->exec);
     if (wcscmp(sdpCap, L"Round") == 0)      // check this first since it's the most common
-        render->dpLineStroke.cap = SE_LineCap_Round;
+        style->dpLineStroke.cap = SE_LineCap_Round;
     else if (wcscmp(sdpCap, L"None") == 0)
-        render->dpLineStroke.cap = SE_LineCap_None;
+        style->dpLineStroke.cap = SE_LineCap_None;
     else if (wcscmp(sdpCap, L"Square") == 0)
-        render->dpLineStroke.cap = SE_LineCap_Square;
+        style->dpLineStroke.cap = SE_LineCap_Square;
     else if (wcscmp(sdpCap, L"Triangle") == 0)
-        render->dpLineStroke.cap = SE_LineCap_Triangle;
+        style->dpLineStroke.cap = SE_LineCap_Triangle;
     else // default is Round
-        render->dpLineStroke.cap = SE_LineCap_Round;
+        style->dpLineStroke.cap = SE_LineCap_Round;
 
-    const wchar_t* sdpJoin = dpJoin.evaluate(cxt->exec);
+    const wchar_t* sdpJoin = dpJoin.evaluate(ctx->exec);
     if (wcscmp(sdpJoin, L"Round") == 0)     // check this first since it's the most common
-        render->dpLineStroke.join = SE_LineJoin_Round;
+        style->dpLineStroke.join = SE_LineJoin_Round;
     else if (wcscmp(sdpJoin, L"None") == 0)
-        render->dpLineStroke.join = SE_LineJoin_None;
+        style->dpLineStroke.join = SE_LineJoin_None;
     else if (wcscmp(sdpJoin, L"Bevel") == 0)
     {
-        render->dpLineStroke.join = SE_LineJoin_Bevel;
-        render->dpLineStroke.miterLimit = 0.0;
+        style->dpLineStroke.join = SE_LineJoin_Bevel;
+        style->dpLineStroke.miterLimit = 0.0;
     }
     else if (wcscmp(sdpJoin, L"Miter") == 0)
-        render->dpLineStroke.join = SE_LineJoin_Miter;
+        style->dpLineStroke.join = SE_LineJoin_Miter;
     else // default is Round
-        render->dpLineStroke.join = SE_LineJoin_Round;
+        style->dpLineStroke.join = SE_LineJoin_Round;
 
     // evaluate all the primitives too
-    SE_Style::evaluate(cxt);
+    SE_Style::evaluate(ctx);
 
     // special code to check if we have a simple straight solid line style
-    render->solidLine = false;
+    style->solidLine = false;
     if (origRepeat > 0.0)
     {
-        SE_RenderPrimitiveList& rs = render->symbol;
+        SE_RenderPrimitiveList& rplist = style->symbol;
 
         // check if it is a single symbol that is not a label participant
-        if (rs.size() == 1
-            && rs[0]->type == SE_RenderPrimitive_Polyline
-            && !render->drawLast
-            && !render->addToExclusionRegions)
+        if (rplist.size() == 1
+            && rplist[0]->type == SE_RenderPrimitive_Polyline
+            && !style->drawLast
+            && !style->addToExclusionRegions)
         {
-            SE_RenderPolyline* rp = (SE_RenderPolyline*)rs[0];
+            SE_RenderPolyline* rp = (SE_RenderPolyline*)rplist[0];
             LineBuffer* lb = rp->geometry->xf_buffer();
 
             // check if it is a horizontal line
@@ -846,87 +863,88 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
 
                 // repeat must be within 0.1 pixels for us to assume solid line (this is
                 // only to avoid FP precision issues, in reality they would be exactly equal)
-                if (fabs(len - origRepeat) < 0.1*cxt->px2su)
-                    render->solidLine = true;
+                if (fabs(len - origRepeat) < 0.1*ctx->px2su)
+                    style->solidLine = true;
             }
         }
     }
 }
 
 
-void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
+///////////////////////////////////////////////////////////////////////////////
+void SE_AreaStyle::evaluate(SE_EvalContext* ctx)
 {
     // can skip out of evaluation if style is constant and has been evaluated once
     if (cacheable && rstyle)
         return;
 
-    SE_RenderAreaStyle* render = new SE_RenderAreaStyle();
+    SE_RenderAreaStyle* style = new SE_RenderAreaStyle();
     delete rstyle;
-    rstyle = render;
+    rstyle = style;
 
-    const wchar_t* sAngleControl = angleControl.evaluate(cxt->exec);
+    const wchar_t* sAngleControl = angleControl.evaluate(ctx->exec);
     if (wcscmp(sAngleControl, L"FromGeometry") == 0)
-        render->angleControl = SE_AngleControl_FromGeometry;
+        style->angleControl = SE_AngleControl_FromGeometry;
     else // default is FromAngle
-        render->angleControl = SE_AngleControl_FromAngle;
+        style->angleControl = SE_AngleControl_FromAngle;
 
-    const wchar_t* sOriginControl = originControl.evaluate(cxt->exec);
+    const wchar_t* sOriginControl = originControl.evaluate(ctx->exec);
     if (wcscmp(sOriginControl, L"Centroid") == 0)
-        render->originControl = SE_OriginControl_Centroid;
+        style->originControl = SE_OriginControl_Centroid;
     else if (wcscmp(sOriginControl, L"Local") == 0)
-        render->originControl = SE_OriginControl_Local;
+        style->originControl = SE_OriginControl_Local;
     else // default is Global
-        render->originControl = SE_OriginControl_Global;
+        style->originControl = SE_OriginControl_Global;
 
-    const wchar_t* sClippingControl = clippingControl.evaluate(cxt->exec);
+    const wchar_t* sClippingControl = clippingControl.evaluate(ctx->exec);
     if (wcscmp(sClippingControl, L"Inside") == 0)
-        render->clippingControl = SE_ClippingControl_Inside;
+        style->clippingControl = SE_ClippingControl_Inside;
     else if (wcscmp(sClippingControl, L"Overlap") == 0)
-        render->clippingControl = SE_ClippingControl_Overlap;
+        style->clippingControl = SE_ClippingControl_Overlap;
     else // default is Clip
-        render->clippingControl = SE_ClippingControl_Clip;
+        style->clippingControl = SE_ClippingControl_Clip;
 
-    render->angleRad = fmod(angleDeg.evaluate(cxt->exec), 360.0) * M_PI180;
+    style->angleRad = fmod(angleDeg.evaluate(ctx->exec), 360.0) * M_PI180;
 
     // scale by xform->x0 and xform->y1 instead of mm2su, because these encompass
     // mm2su as well as scaleX and scaleY
-    render->origin[0]   = origin[0].evaluate(cxt->exec)   * cxt->xform->x0;
-    render->origin[1]   = origin[1].evaluate(cxt->exec)   * cxt->xform->y1;
-    render->repeat[0]   = repeat[0].evaluate(cxt->exec)   * fabs(cxt->xform->x0);
-    render->repeat[1]   = repeat[1].evaluate(cxt->exec)   * fabs(cxt->xform->y1);
-    render->bufferWidth = bufferWidth.evaluate(cxt->exec) * fabs(cxt->xform->x0);
-    double origRepeatX  = render->repeat[0];
-    double origRepeatY  = render->repeat[1];
+    style->origin[0]   = origin[0].evaluate(ctx->exec)   * ctx->xform->x0;
+    style->origin[1]   = origin[1].evaluate(ctx->exec)   * ctx->xform->y1;
+    style->repeat[0]   = repeat[0].evaluate(ctx->exec)   * fabs(ctx->xform->x0);
+    style->repeat[1]   = repeat[1].evaluate(ctx->exec)   * fabs(ctx->xform->y1);
+    style->bufferWidth = bufferWidth.evaluate(ctx->exec) * fabs(ctx->xform->x0);
+    double origRepeatX = style->repeat[0];
+    double origRepeatY = style->repeat[1];
 
     // It makes no sense to distribute symbols using repeat values which are much
     // less than one pixel.  We'll scale up any values less than 0.25 to 0.5.
     for (int i=0; i<=1; ++i)
     {
-        if (render->repeat[i] > 0.0 && render->repeat[i] < 0.25*cxt->px2su)
+        if (style->repeat[i] > 0.0 && style->repeat[i] < 0.25*ctx->px2su)
         {
             // just increase it by an integer multiple so the overall distribution
             // isn't affected
-            int factor = (int)(0.5*cxt->px2su / render->repeat[i]);
-            render->repeat[i] *= factor;
+            int factor = (int)(0.5*ctx->px2su / style->repeat[i]);
+            style->repeat[i] *= factor;
         }
     }
 
     // evaluate all the primitives too
-    SE_Style::evaluate(cxt);
+    SE_Style::evaluate(ctx);
 
     // special code to check if we have a simple solid fill
-    render->solidFill = false;
+    style->solidFill = false;
     if (origRepeatX > 0.0 && origRepeatY > 0.0)
     {
-        SE_RenderPrimitiveList& rs = render->symbol;
+        SE_RenderPrimitiveList& rplist = style->symbol;
 
         // check if it is a single symbol that is not a label participant
-        if (rs.size() == 1
-            && rs[0]->type == SE_RenderPrimitive_Polygon
-            && !render->drawLast
-            && !render->addToExclusionRegions)
+        if (rplist.size() == 1
+            && rplist[0]->type == SE_RenderPrimitive_Polygon
+            && !style->drawLast
+            && !style->addToExclusionRegions)
         {
-            SE_RenderPolygon* rp = (SE_RenderPolygon*)rs[0];
+            SE_RenderPolygon* rp = (SE_RenderPolygon*)rplist[0];
             LineBuffer* lb = rp->geometry->xf_buffer();
 
             // make sure it has no edge style
@@ -949,8 +967,8 @@ void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
 
                         // repeats must be within 0.1 pixels for us to assume solid fill (this is
                         // only to avoid FP precision issues, in reality they would be exactly equal)
-                        if (fabs(lenX - origRepeatX) < 0.1*cxt->px2su && fabs(lenY - origRepeatY) < 0.1*cxt->px2su)
-                            render->solidFill = true;
+                        if (fabs(lenX - origRepeatX) < 0.1*ctx->px2su && fabs(lenY - origRepeatY) < 0.1*ctx->px2su)
+                            style->solidFill = true;
                     }
                     // case 2: first segment is vertical
                     else if (lb->x_coord(1) == lb->x_coord(0) &&
@@ -964,8 +982,8 @@ void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
 
                         // repeats must be within 0.1 pixels for us to assume solid fill (this is
                         // only to avoid FP precision issues, in reality they would be exactly equal)
-                        if (fabs(lenX - origRepeatX) < 0.1*cxt->px2su && fabs(lenY - origRepeatY) < 0.1*cxt->px2su)
-                            render->solidFill = true;
+                        if (fabs(lenX - origRepeatX) < 0.1*ctx->px2su && fabs(lenY - origRepeatY) < 0.1*ctx->px2su)
+                            style->solidFill = true;
                     }
                 }
             }
@@ -974,26 +992,22 @@ void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 void SE_PointStyle::apply(SE_ApplyContext* ctx)
 {
     ctx->renderer->ProcessPoint(ctx, (SE_RenderPointStyle*)rstyle);
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 void SE_LineStyle::apply(SE_ApplyContext* ctx)
 {
     ctx->renderer->ProcessLine(ctx, (SE_RenderLineStyle*)rstyle);
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 void SE_AreaStyle::apply(SE_ApplyContext* ctx)
 {
     ctx->renderer->ProcessArea(ctx, (SE_RenderAreaStyle*)rstyle);
-}
-
-
-void SE_Style::reset()
-{
-    delete rstyle;
-    rstyle = NULL;
 }
