@@ -183,7 +183,6 @@ noinst_HEADERS = \
   SE_StyleVisitor.h \
   SE_SymbolDefProxies.h \
   SE_SymbolManager.h \
-  SE_Tuple.h \
   SimpleOverpost.h \
   SLDSymbols.h \
   stdafx.h \

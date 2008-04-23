@@ -908,8 +908,23 @@ void SE_AreaStyle::evaluate(SE_EvalContext* ctx)
 
     // scale by xform->x0 and xform->y1 instead of mm2su, because these encompass
     // mm2su as well as scaleX and scaleY
-    style->origin[0]   = origin[0].evaluate(ctx->exec)   * ctx->xform->x0;
-    style->origin[1]   = origin[1].evaluate(ctx->exec)   * ctx->xform->y1;
+    style->origin[0]   = origin[0].evaluate(ctx->exec);
+    style->origin[1]   = origin[1].evaluate(ctx->exec);
+    if (style->originControl != SE_OriginControl_Local)
+    {
+        // For non-local origin control the origin is in millimeters and must
+        // be scaled.
+        style->origin[0] *= ctx->xform->x0;
+        style->origin[1] *= ctx->xform->x0;
+    }
+    else
+    {
+        // For local origin control the origin is a parametric value which
+        // shouldn't be scaled.  In the case of the renderer Y pointing down
+        // we need to invert the y origin parametric value.
+        if (ctx->xform->y1 < 0.0)
+            style->origin[1] = 1.0 - style->origin[1];
+    }
     style->repeat[0]   = repeat[0].evaluate(ctx->exec)   * fabs(ctx->xform->x0);
     style->repeat[1]   = repeat[1].evaluate(ctx->exec)   * fabs(ctx->xform->y1);
     style->bufferWidth = bufferWidth.evaluate(ctx->exec) * fabs(ctx->xform->x0);
@@ -920,11 +935,13 @@ void SE_AreaStyle::evaluate(SE_EvalContext* ctx)
     // less than one pixel.  We'll scale up any values less than 0.25 to 0.5.
     for (int i=0; i<=1; ++i)
     {
-        if (style->repeat[i] > 0.0 && style->repeat[i] < 0.25*ctx->px2su)
+        // work with absolute value in case repeat is negative
+        double repeat = fabs(style->repeat[i]);
+        if (repeat > 0.0 && repeat < 0.25*ctx->px2su)
         {
             // just increase it by an integer multiple so the overall distribution
             // isn't affected
-            int factor = (int)(0.5*ctx->px2su / style->repeat[i]);
+            int factor = (int)(0.5*ctx->px2su / repeat);
             style->repeat[i] *= factor;
         }
     }
