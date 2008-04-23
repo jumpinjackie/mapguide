@@ -139,7 +139,7 @@ void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style,
         // get the symbol bounds after applying the transforms
         bounds->minx = bounds->miny = +DBL_MAX;
         bounds->maxx = bounds->maxy = -DBL_MAX;
-        for (int i=0; i<4; i++)
+        for (int i=0; i<4; ++i)
         {
             RS_F_Point xfpt;
             xformbase.transform(style->bounds[i].x, style->bounds[i].y, xfpt.x, xfpt.y);
@@ -283,7 +283,7 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
     SE_Matrix xformbase = *ctx->xform;
     xformbase.rotate(baserot);
 
-    for (const SE_Tuple* pos = ap.NextLocation(); pos != NULL; pos = ap.NextLocation())
+    for (const Point2D* pos = ap.NextLocation(); pos != NULL; pos = ap.NextLocation())
     {
         xform = xformbase;
         xform.translate(pos->x, pos->y);
@@ -498,7 +498,7 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
     ret->renderPass            = symbol->renderPass;
 
     // copy the graphics for the symbol
-    for (size_t i=0; i<symbol->symbol.size(); i++)
+    for (size_t i=0; i<symbol->symbol.size(); ++i)
     {
         SE_RenderPrimitive* rp = symbol->symbol[i];
         SE_RenderPrimitive* rpc = NULL;
