@@ -353,7 +353,7 @@ int GetNumProcessors()
     int num_cpus;
 
     //count how many bits are set in proc_mask
-    for (num_cpus = 0; proc_mask; num_cpus++)
+    for (num_cpus=0; proc_mask; ++num_cpus)
         proc_mask &= proc_mask - 1; // clear the least significant bit set
 #else
     // TODO: Linux implementation here
@@ -376,13 +376,13 @@ struct GridStyleContext
 
 DWORD WINAPI GridStyleWorker(LPVOID param)
 {
-    GridStyleContext* cxt = (GridStyleContext*)param;
+    GridStyleContext* ctx = (GridStyleContext*)param;
 
-    int end = cxt->j + cxt->count;
+    int end = ctx->j + ctx->count;
 
-    for (int j = cxt->j; j<end; j++)
-        for (int i=0; i<(int)cxt->w; i++)
-            cxt->handler->Visit(i, j);
+    for (int j=ctx->j; j<end; ++j)
+        for (int i=0; i<(int)ctx->w; ++i)
+            ctx->handler->Visit(i, j);
 
     return 0;
 }
@@ -484,17 +484,17 @@ bool GridStyleColorHandler::Visit()
 #ifdef _WIN32
         //Yes -- use all the cpus we have.
 
-        GridStyleContext* cxts = (GridStyleContext*)alloca(sizeof(GridStyleContext)*num_cpus);
+        GridStyleContext* ctx = (GridStyleContext*)alloca(sizeof(GridStyleContext)*num_cpus);
         HANDLE* threads = (HANDLE*)alloca(sizeof(HANDLE)*num_cpus);
 
         const int step = 128; //each thread will process that many rows at a time
 
-        for (int i=0; i<num_cpus; i++)
+        for (int i=0; i<num_cpus; ++i)
         {
-            cxts[i].count = step;
-            cxts[i].handler = this;
-            cxts[i].w = width;
-            cxts[i].thid = 0;
+            ctx[i].count = step;
+            ctx[i].handler = this;
+            ctx[i].w = width;
+            ctx[i].thid = 0;
 
             threads[i] = NULL;
         }
@@ -504,18 +504,18 @@ bool GridStyleColorHandler::Visit()
             int thcount = 0;
 
             //kick off N threads, and give each a strip of the grid to work on
-            for (int i=0; i<num_cpus;i++)
+            for (int i=0; i<num_cpus; ++i)
             {
-                cxts[i].j = y;
+                ctx[i].j = y;
 
                 if (y + step <= height)
-                    cxts[i].count = step;
+                    ctx[i].count = step;
                 else
-                    cxts[i].count = height - y;
+                    ctx[i].count = height - y;
 
                 y += step;
 
-                threads[i] = CreateThread(NULL, 0, GridStyleWorker, &cxts[i], 0, &cxts[i].thid);
+                threads[i] = CreateThread(NULL, 0, GridStyleWorker, &ctx[i], 0, &ctx[i].thid);
                 thcount++;
 
                 if (y >= height)
@@ -529,12 +529,12 @@ bool GridStyleColorHandler::Visit()
             bool ret = true;
 
             //update status and kill the threads
-            for (int i=0; i<thcount; i++)
+            for (int i=0; i<thcount; ++i)
             {
                 CloseHandle(threads[i]);
                 threads[i] = NULL;
-                cxts[i].thid = 0;
-                ret = ret && m_pReporter->Step(cxts[i].count);
+                ctx[i].thid = 0;
+                ret = ret && m_pReporter->Step(ctx[i].count);
             }
 
             if (!ret) return false; //did user cancel?
