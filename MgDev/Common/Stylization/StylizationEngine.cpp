@@ -143,7 +143,10 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
 
             try
             {
-                reader->GetGeometry(gpName, lb, xformer);
+                if (!reader->IsNull(gpName))
+                {
+                    reader->GetGeometry(gpName, lb, xformer);
+                }
             }
             catch (FdoException* e)
             {

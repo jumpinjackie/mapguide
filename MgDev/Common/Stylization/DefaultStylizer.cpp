@@ -284,7 +284,10 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
 
         try
         {
-            features->GetGeometry(gpName, lb, xformer);
+            if (!features->IsNull(gpName))
+            {
+                features->GetGeometry(gpName, lb, xformer);
+            }
         }
         catch (FdoException* e)
         {
