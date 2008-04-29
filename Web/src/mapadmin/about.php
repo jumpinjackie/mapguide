@@ -32,14 +32,24 @@
         $appVersion = SITE_ADMINISTRATOR_VERSION;
         $errorMsg = "";
 
-        $serverAdmin = new MgServerAdmin();
-        $serverAdmin->Open( $userInfo );
-        $serverVersion = GetVersion( $serverAdmin );
+        // Get Server
+        $selectedServerID = "Server";
+        $site = new MgSite();
+        $site->Open($userInfo);
+        $siteServerAddress = $site->GetCurrentSiteAddress();
+        GetServerSelection( $selectedServerID, $selectedServer );
+        $serverRec = GetDataForServer( $selectedServer );
+        if ( $serverRec == NULL )
+            throw new Exception( sprintf( $errNotFound, $selectedServer ) );
+        if ( !$serverRec->poweredUp )
+            throw new Exception( sprintf( $errServerIsDown, $selectedServer ) );
+
+        $serverVersion = $serverRec->version;
+            
     }
     catch ( MgException $e )
     {
-        CheckForFatalMgException( $e );
-        $errorMsg = $e->GetMessage();
+        $errorMsg = preg_replace("/%20/", " ", $errFatalError);
     }
     catch ( Exception $e )
     {
@@ -83,6 +93,7 @@
         <tr>
             <td class="aboutBoxText">
                 <?php
+                    DisplayErrorMsg( $errorMsg );
                     echo SERVER_TITLE.' (Version '.$serverVersion.')<br>';
                     echo APP_TITLE.' (Version '.$appVersion.')<br>';
                 ?>
