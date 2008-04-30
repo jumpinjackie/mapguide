@@ -26,6 +26,7 @@
 #include "Foundation.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
 void StylizationUtil::ParseColor(const MdfString& colorstr, RS_Color& rscol)
 {
     // string is in the form "AARRGGBB"
@@ -63,6 +64,7 @@ void StylizationUtil::ParseColor(const MdfString& colorstr, RS_Color& rscol)
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // Returns true if the expression evaluates to a constant value.
 bool StylizationUtil::ParseDouble(const MdfString& valstr, double& res)
 {
@@ -81,6 +83,7 @@ bool StylizationUtil::ParseDouble(const MdfString& valstr, double& res)
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // draws a preview of a given feature type style into an image
 void StylizationUtil::DrawStylePreview(int imgWidth,
                                        int imgHeight,
@@ -197,6 +200,7 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // Draws a preview of the supplied point symbolization.  The preview is sized to
 // fill the renderer image.  Calls to this method should be wrapped by the standard
 // calls to StartMap / StartLayer and EndMap / EndLayer.
@@ -325,6 +329,7 @@ void StylizationUtil::RenderPointSymbolization(PointSymbolization2D* psym,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // Draws a preview of the supplied line symbolization.  The preview is sized to
 // fill the renderer image.  Calls to this method should be wrapped by the standard
 // calls to StartMap / StartLayer and EndMap / EndLayer.
@@ -384,6 +389,7 @@ void StylizationUtil::RenderLineSymbolization(LineSymbolization2D* lsym,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // Draws a preview of the supplied area symbolization.  The preview is sized to
 // fill the renderer image.  Calls to this method should be wrapped by the standard
 // calls to StartMap / StartLayer and EndMap / EndLayer.
@@ -469,16 +475,10 @@ void StylizationUtil::RenderAreaSymbolization(AreaSymbolization2D* asym,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // Draws a preview of the supplied composite symbolization.  The preview is sized to
 // fill the renderer image.  Calls to this method should be wrapped by the standard
 // calls to StartMap / StartLayer and EndMap / EndLayer.
-//
-// TODO: issues with the current implementation:
-// - The symbol is currently drawn as a point symbol.  We'll need to change that
-//   to draw the symbol on a sample geometry matching the usage type.  E.g. in the
-//   case where the symbol specifies a LineUsage, we'll draw the symbol along an
-//   imaginary line that crosses the preview image.  Once again though the problem
-//   will be how to draw a meaningful preview in such a small image.
 void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
                                                    SE_Renderer* pSERenderer,
                                                    SE_SymbolManager* sman,
@@ -495,11 +495,11 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     FdoPtr<FdoExpressionEngine> exec = ExpressionHelper::GetExpressionEngine(pSERenderer, NULL);
 
     //-------------------------------------------------------
-    // step 1 - get the overall bounds for the symbolization
+    // step 1 - get the preview bounds for the symbolization
     //-------------------------------------------------------
 
     RS_Bounds symBounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
-    GetCompositeSymbolizationBoundsInternal(styles, pSERenderer, sman, exec, symBounds);
+    GetCompositeSymbolizationPreviewBounds(styles, pSERenderer, sman, exec, symBounds);
 
     //-------------------------------------------------------
     // step 2 - bounds processing
@@ -565,7 +565,8 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     //
     //   [T_fe] [S_mm] [T_si] [R_pu] [S_si] [T_pu] {Geom}
     //
-    // We'll add an additional scale factor [S_a] and translation [T_a] as follows:
+    // We'll add an additional scale factor [S_a] and translation [T_a] (point symbols
+    // only) as follows:
     //
     //   [T_a] [T_fe] [S_a] [S_mm] [T_si] [R_pu] [S_si] [T_pu] {Geom}
     //
@@ -578,22 +579,9 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     //   R_pu* = point usage rotation, with angle accounting for y-up or y-down
     //   T_pu* = point usage origin offset, using offsets scaled by S_a, S_mm, and S_si
 
-    // compute the scale factor we need to apply to the symbol to size it correctly
-    double scale = width / (drawingScale * symBounds.width());
-
-    // get the center of the scaled symbol
-    double symCtrX = 0.5*(symBounds.minx + symBounds.maxx) * scale;
-    double symCtrY = 0.5*(symBounds.miny + symBounds.maxy) * scale;
-
-    // get the center of the rectangle center
-    double mapCtrX = x + 0.5*width;
-    double mapCtrY = y + 0.5*height;
-    pSERenderer->WorldToScreenPoint(mapCtrX, mapCtrY, mapCtrX, mapCtrY);
-
-    // get the translation matrix which centers the symbol in the specified rectangle
-    SE_Matrix xformTrans;
-    xformTrans.translate(mapCtrX, mapCtrY);
-    xformTrans.translate(-symCtrX, yUp? -symCtrY : symCtrY);
+    // compute the scale factor we need to apply to the symbols to ensure they fully
+    // display in the preview
+    double scaleF = width / (drawingScale * symBounds.width());
 
     //-------------------------------------------------------
     // step 4 - re-evaluate and draw the symbolization
@@ -607,6 +595,20 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
         // skip labels
         if (sym->drawLast.evaluate(exec))
             continue;
+
+        // get the actual amount to scale the symbolization
+        double scale = scaleF;
+        switch (sym->geomContext)
+        {
+            case SymbolInstance::gcPolygon:
+            {
+                // in the case of polygon data don't scale down the area symbols
+                if (scale < 1.0)
+                    scale = 1.0;
+
+                break;
+            }
+        }
 
         double mm2suX = (sym->sizeContext == MappingUnits)? mm2suw : mm2sud;
         double mm2suY = yUp? mm2suX : -mm2suX;
@@ -631,6 +633,13 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
         evalCtx.xform = &xformScale;
         evalCtx.resources = sman;
 
+        // initialize the style application context
+        SE_Matrix xform;
+        SE_ApplyContext applyCtx;
+        applyCtx.geometry = NULL;   // gets set below
+        applyCtx.renderer = pSERenderer;
+        applyCtx.xform = &xform;
+
         for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); siter++)
         {
             // have one style per simple symbol definition
@@ -641,51 +650,101 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
             style->reset();
             style->evaluate(&evalCtx);
 
-            // Each style type has additional transformations associated with it.  See
-            // StylizationEngine::Stylize for a detailed explanation of these transforms.
-            SE_Matrix xformStyle;
-            double angleRad = 0.0;
-
             SE_RenderStyle* rStyle = style->rstyle;
             switch (rStyle->type)
             {
                 case SE_RenderStyle_Point:
                 {
+                    // don't call style->apply() since we do some special processing
+                    // to make the point symbol fill the preview image
+
                     SE_RenderPointStyle* ptStyle = (SE_RenderPointStyle*)(rStyle);
 
+                    // get the center of the scaled point symbol
+                    double symCtrX = 0.5*(symBounds.minx + symBounds.maxx) * scale;
+                    double symCtrY = 0.5*(symBounds.miny + symBounds.maxy) * scale;
+
+                    // get the center of the image rectangle
+                    double mapCtrX = x + 0.5*width;
+                    double mapCtrY = y + 0.5*height;
+                    pSERenderer->WorldToScreenPoint(mapCtrX, mapCtrY, mapCtrX, mapCtrY);
+
+                    // get the translation matrix which centers the symbol in the image rectangle
+                    SE_Matrix xformTrans;
+                    xformTrans.translate(mapCtrX, mapCtrY);
+                    xformTrans.translate(-symCtrX, yUp? -symCtrY : symCtrY);
+
                     // point usage offset (already scaled by [S_si], [S_mm], and [S_a])
+                    SE_Matrix xformStyle;
                     xformStyle.translate(ptStyle->offset[0], ptStyle->offset[1]);
 
                     // point usage rotation - assume geometry angle is zero
-                    angleRad = ptStyle->angleRad;
+                    double angleRad = ptStyle->angleRad;
                     xformStyle.rotate(angleRad);
 
                     // symbol instance offset - must scale this by [S_mm], and [S_a]
                     xformStyle.translate(sym->absOffset[0].evaluate(exec) * mm2suX * scale,
                                          sym->absOffset[1].evaluate(exec) * mm2suY * scale);
 
+                    // factor the translation into the transform and draw the symbol
+                    xformStyle.premultiply(xformTrans);
+                    pSERenderer->DrawSymbol(style->rstyle->symbol, xformStyle, angleRad);
+
                     break;
                 }
 
                 case SE_RenderStyle_Line:
                 {
-                    SE_RenderLineStyle* lnStyle = (SE_RenderLineStyle*)(rStyle);
+                    // set the preview geometry
+                    LineBuffer lb(3);
+                    switch (sym->geomContext)
+                    {
+                        case SymbolInstance::gcLineString:
+                        {
+                            // a horizontal line centered vertically in the preview image
+                            lb.SetGeometryType(FdoGeometryType_LineString);
+                            lb.MoveTo(x        , y + 0.5*height);
+                            lb.LineTo(x + width, y + 0.5*height);
+                            break;
+                        }
 
-                    // line usage rotation - assume geometry angle is zero
-                    angleRad = lnStyle->angleRad;
-                    xformStyle.rotate(angleRad);
+                        case SymbolInstance::gcPolygon:
+                        {
+                            // the bottom right edge of the rectangle filling the preview image
+                            lb.SetGeometryType(FdoGeometryType_LineString);
+                            lb.MoveTo(x        , y         );
+                            lb.LineTo(x + width, y         );
+                            lb.LineTo(x + width, y + height);
+                            break;
+                        }
+                    }
 
+                    // just apply the style to the preview geometry
+                    applyCtx.geometry = &lb;
+                    style->apply(&applyCtx);
                     break;
                 }
 
                 case SE_RenderStyle_Area:
+                {
+                    // set the preview geometry to a rectangle filling the preview image
+                    LineBuffer lb(5);
+                    lb.SetGeometryType(FdoGeometryType_Polygon);
+                    lb.MoveTo(x        , y         );
+                    lb.LineTo(x + width, y         );
+                    lb.LineTo(x + width, y + height);
+                    lb.LineTo(x        , y + height);
+                    lb.Close();
+
+                    // just apply the style to the preview geometry
+                    applyCtx.geometry = &lb;
+                    style->apply(&applyCtx);
+                    break;
+                }
+
                 default:
                     break;
             }
-
-            // factor the translation into the transform and draw the symbol
-            xformStyle.premultiply(xformTrans);
-            pSERenderer->DrawSymbol(style->rstyle->symbol, xformStyle, angleRad);
         }
     }
 
@@ -700,6 +759,167 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+// Computes the bounds used with previews of the supplied composite symbolization.
+// The returned bounds do not reflect the actual graphical bounds of the symbols.
+void StylizationUtil::GetCompositeSymbolizationPreviewBounds(std::vector<SE_Symbolization*> styles,
+                                                             SE_Renderer* pSERenderer,
+                                                             SE_SymbolManager* sman,
+                                                             FdoExpressionEngine* exec,
+                                                             RS_Bounds& bounds)
+{
+    // make sure we have symbols
+    if (styles.size() == 0)
+        return;
+
+    SE_BufferPool* pool = pSERenderer->GetBufferPool();
+
+    double mm2sud = pSERenderer->GetScreenUnitsPerMillimeterDevice();
+    double mm2suw = pSERenderer->GetScreenUnitsPerMillimeterWorld();
+
+    RS_Bounds fullBounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
+
+    for (std::vector<SE_Symbolization*>::const_iterator iter = styles.begin(); iter != styles.end(); iter++)
+    {
+        // one per symbol instance
+        SE_Symbolization* sym = *iter;
+
+        // skip labels
+        if (sym->drawLast.evaluate(exec))
+            continue;
+
+        // keep y pointing up while we compute the bounds
+        double mm2suX = (sym->sizeContext == MappingUnits)? mm2suw : mm2sud;
+        double mm2suY = mm2suX;
+
+        SE_Matrix xformScale;
+        xformScale.scale(sym->scale[0].evaluate(exec),
+                         sym->scale[1].evaluate(exec));
+        xformScale.scale(mm2suX, mm2suY);
+
+        // initialize the style evaluation context
+        SE_EvalContext evalCtx;
+        evalCtx.exec = exec;
+        evalCtx.mm2su = mm2suX;
+        evalCtx.mm2sud = mm2sud;
+        evalCtx.mm2suw = mm2suw;
+        evalCtx.px2su = pSERenderer->GetScreenUnitsPerPixel();
+        evalCtx.pool = pool;
+        evalCtx.fonte = pSERenderer->GetRSFontEngine();
+        evalCtx.xform = &xformScale;
+        evalCtx.resources = sman;
+
+        for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); siter++)
+        {
+            // have one style per simple symbol definition
+            SE_Style* style = *siter;
+            style->evaluate(&evalCtx);
+
+            // Each style type has additional transformations associated with it.  See
+            // StylizationEngine::Stylize for a detailed explanation of these transforms.
+            SE_Matrix xformStyle;
+
+            // The returned bounds are used to scale symbols so that they fully appear
+            // within a preview.  Some symbols, such as solid line or solid fill styles,
+            // look the same when scaled.  We therefore don't want these to be a contributing
+            // factor in the scaling, and therefore don't add their bounds to the returned
+            // bounds.
+            bool addBounds = true;
+
+            SE_RenderStyle* rStyle = style->rstyle;
+            switch (rStyle->type)
+            {
+                case SE_RenderStyle_Point:
+                {
+                    SE_RenderPointStyle* ptStyle = (SE_RenderPointStyle*)(rStyle);
+
+                    // point usage offset (already scaled)
+                    xformStyle.translate(ptStyle->offset[0], ptStyle->offset[1]);
+
+                    // point usage rotation - assume geometry angle is zero
+                    xformStyle.rotate(ptStyle->angleRad);
+
+                    // symbol instance offset
+                    xformStyle.translate(sym->absOffset[0].evaluate(exec) * mm2suX,
+                                         sym->absOffset[1].evaluate(exec) * mm2suY);
+
+                    break;
+                }
+
+                case SE_RenderStyle_Line:
+                {
+                    SE_RenderLineStyle* lnStyle = (SE_RenderLineStyle*)(rStyle);
+
+                    // see comment above the addBounds declaration
+                    if (lnStyle->solidLine)
+                        addBounds = false;
+
+                    // make the preview bounds width include two repetitions of the symbol
+                    double rep = fabs(2.0 * lnStyle->repeat);
+                    lnStyle->bounds[0].x = 0.0;
+                    lnStyle->bounds[1].x = rep;
+                    lnStyle->bounds[2].x = rep;
+                    lnStyle->bounds[3].x = 0.0;
+
+                    // line usage rotation - assume geometry angle is zero
+                    xformStyle.rotate(lnStyle->angleRad);
+
+                    break;
+                }
+
+                case SE_RenderStyle_Area:
+                {
+                    SE_RenderAreaStyle* arStyle = (SE_RenderAreaStyle*)(rStyle);
+
+                    // see comment above the addBounds declaration
+                    if (arStyle->solidFill)
+                        addBounds = false;
+
+                    // make the preview bounds width include two repetitions of the symbol
+                    double repX = fabs(2.0 * arStyle->repeat[0]);
+                    double repY = fabs(2.0 * arStyle->repeat[1]);
+                    arStyle->bounds[0] = RS_F_Point( 0.0,  0.0);
+                    arStyle->bounds[1] = RS_F_Point(repX,  0.0);
+                    arStyle->bounds[2] = RS_F_Point(repX, repY);
+                    arStyle->bounds[3] = RS_F_Point( 0.0, repY);
+
+                    // area usage rotation - assume geometry angle is zero
+                    xformStyle.rotate(arStyle->angleRad);
+
+                    break;
+                }
+
+                default:
+                    break;
+            }
+
+            // if the symbol def has graphic elements then we can add their bounds
+            if (style->rstyle->symbol.size() > 0)
+            {
+                for (int i=0; i<4; ++i)
+                {
+                    // account for any style-specific transform
+                    RS_F_Point pt = style->rstyle->bounds[i];
+                    xformStyle.transform(pt.x, pt.y);
+                    fullBounds.add_point(pt);
+                    if (addBounds)
+                        bounds.add_point(pt);
+                }
+            }
+        }
+    }
+
+    // If the symbolization contains only solid line or solid fill styles,
+    // then these all get rejected and the bounds are invalid.  Nevertheless
+    // we still want to return valid bounds so a preview will draw.  So in
+    // this case we just set the returned bounds to those which include
+    // the solid line and solid fill styles.
+    if (!bounds.IsValid() && fullBounds.IsValid())
+        bounds = fullBounds;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 // Returns the bounds of the supplied composite symbolization in the context
 // of the supplied renderer.  The platform must be properly initialized via a
 // call to MgFoundation::LoadConfiguration (including specifying the path to
@@ -731,6 +951,7 @@ RS_Bounds StylizationUtil::GetCompositeSymbolizationBounds(CompositeSymbolizatio
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // Computes the bounds of the supplied composite symbolization.
 void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Symbolization*> styles,
                                                               SE_Renderer* pSERenderer,
@@ -818,6 +1039,15 @@ void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Sym
                 }
 
                 case SE_RenderStyle_Area:
+                {
+                    SE_RenderAreaStyle* arStyle = (SE_RenderAreaStyle*)(rStyle);
+
+                    // area usage rotation - assume geometry angle is zero
+                    xformStyle.rotate(arStyle->angleRad);
+
+                    break;
+                }
+
                 default:
                     break;
             }
@@ -838,6 +1068,7 @@ void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Sym
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // Determine the maximum line width contained in the specified feature type style
 double StylizationUtil::GetMaxMappingSpaceLineWidth(FeatureTypeStyle* fts, int themeCategory)
 {

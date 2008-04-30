@@ -304,7 +304,11 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     double mm2suw = m_serenderer->GetScreenUnitsPerMillimeterWorld();
     bool yUp = m_serenderer->YPointsUp();
 
-    // Here's a description of how the transforms work for point and line symbols.
+    // Here's a description of how the transforms work for point / line / area symbols.
+    //
+    // =============
+    // Point Symbols
+    // =============
     //
     // For point symbols we have the following transform stack:
     //
@@ -331,6 +335,10 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     // during symbol evaluation.  The remaining transforms get applied in SE_Renderer::
     // ProcessPoint.
     //
+    // ============
+    // Line Symbols
+    // ============
+    //
     // For line symbols it's simple since the symbol instance insertion offset doesn't
     // apply, nor is there a line usage offset.  The stack looks like:
     //
@@ -351,6 +359,30 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     //
     // As with point symbols we apply [S_mm] and S_si] to the symbol during evaluation,
     // and the remaining transforms get applied in SE_Renderer::ProcessLine.
+    //
+    // ============
+    // Area Symbols
+    // ============
+    //
+    // Area symbols work the same as line symbols.  The stack looks like:
+    //
+    //   [T_fe] [S_mm] [R_au] [S_si] {Geom}
+    //
+    // where:
+    //   S_si = symbol instance scaling
+    //   R_au = area usage rotation
+    //   S_mm = scaling converting mm to screen units (also includes inverting y, if necessary)
+    //   T_fe = translation within the area feature
+    //
+    // This is rewritten as:
+    //
+    //   [T_fe] [R_au*] [S_mm] [S_si] {Geom}
+    //
+    // where:
+    //   R_lu* = area usage rotation, with angle accounting for y-up or y-down
+    //
+    // As with point symbols we apply [S_mm] and S_si] to the symbol during evaluation,
+    // and the remaining transforms get applied in SE_Renderer::ProcessArea.
 
     // TODO: Obey the indices - get rid of the indices altogther - single pass!
 
