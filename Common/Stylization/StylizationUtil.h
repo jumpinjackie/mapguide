@@ -75,6 +75,12 @@ private:
                                                         SE_SymbolManager* sman,
                                                         FdoExpressionEngine* exec,
                                                         RS_Bounds& bounds);
+
+    static void GetCompositeSymbolizationPreviewBounds(std::vector<SE_Symbolization*> styles,
+                                                       SE_Renderer* pSERenderer,
+                                                       SE_SymbolManager* sman,
+                                                       FdoExpressionEngine* exec,
+                                                       RS_Bounds& bounds);
 };
 
 #endif
