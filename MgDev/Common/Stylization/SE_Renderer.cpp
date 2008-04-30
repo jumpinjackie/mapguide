@@ -82,7 +82,7 @@ double SE_Renderer::GetWorldToScreenRotation()
 // be applied to all feature geometry types.
 void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style, RS_Bounds* bounds)
 {
-    // the feature geometry we're apply the style on...
+    // the feature geometry we're applying the style on...
     LineBuffer* featGeom = ctx->geometry;
 
     double angleRad = 0.0;
@@ -154,7 +154,7 @@ void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style,
 // only be applied to linestring and polygon feature geometry types.
 void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 {
-    // the feature geometry we're apply the style on...
+    // the feature geometry we're applying the style on...
     LineBuffer* featGeom = ctx->geometry;
 
     // can't apply a line style to point geometry types
@@ -227,7 +227,7 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 // can only be applied to polygon feature geometry types.
 void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 {
-    // the feature geometry we're apply the style on...
+    // the feature geometry we're applying the style on...
     LineBuffer* featGeom = ctx->geometry;
 
     // can't apply an area style to point and linestring geometry types
