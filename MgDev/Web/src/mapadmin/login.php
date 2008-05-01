@@ -73,9 +73,9 @@
             $userInfo = new MgUserInformation();
             $userInfo->SetMgUsernamePassword( $adminID, $adminPassword );
             $userInfo->SetLocale( $locale );
-            $clientAgent = array_key_exists( 'HTTP_USER_AGENT', $_SERVER ) ? $_SERVER['HTTP_USER_AGENT'] : "";
+            $clientAgent = GetClientAgent();
+            $clientIp = GetClientIp();
             $userInfo->SetClientAgent( $clientAgent );
-            $clientIp = array_key_exists( 'REMOTE_ADDR', $_SERVER ) ?  $_SERVER['REMOTE_ADDR'] : "";
             $userInfo->SetClientIp( $clientIp );
 
             // Create a Site object and open the Site Server.
