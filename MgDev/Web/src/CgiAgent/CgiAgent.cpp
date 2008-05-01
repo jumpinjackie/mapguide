@@ -116,6 +116,7 @@ int main ()
         char* serverName = getenv(MapAgentStrings::ServerName);
         char* serverPort = getenv(MapAgentStrings::ServerPort);
         char* scriptName = getenv(MapAgentStrings::ScriptName);
+        char* remoteAddr = getenv(MapAgentStrings::HttpRemoteAddr);
         char* secure = getenv(MapAgentStrings::Secure);  
         string url = secure != NULL && (!_stricmp(secure, "on") || !_stricmp(secure, "true")) ? MapAgentStrings::Https : MapAgentStrings::Http;  // NOXLATE
         if (NULL != serverName && NULL != serverPort && NULL != scriptName)
@@ -159,6 +160,13 @@ int main ()
             // If we have a QUERY_STRING then we are a GET request
             MapAgentGetParser::Parse(query, params);
         }
+
+		// check for CLIENTIP, if it's not there (and it shouldn't be), add it in using remoteAddr
+		if (!params->ContainsParameter(L"CLIENTIP")) // NOXLATE
+		{
+			STRING wRemoteAddr = MgUtil::MultiByteToWideChar(remoteAddr);
+			params->AddParameter(L"CLIENTIP", wRemoteAddr); // NOXLATE
+		}
 
         // Check for HTTP Basic Auth header
         char* auth = getenv(MapAgentStrings::HttpAuth);
