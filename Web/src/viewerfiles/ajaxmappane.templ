@@ -244,6 +244,7 @@ function Property(name, value)
 
 <script language="javascript">
 
+    var clientAgent = 'Ajax Viewer';
     var NONE=0, RESIZING=1, RESIZINGLEGEND=2, DRAGGING=3, PANNING=4, DRAGGINGCTRL=5;
     var RECT=1, CIRCLE=2, POLY=3, SLIDER=4, SCALE=6;
     var TILECX = %s, TILECY = %s;
@@ -1635,6 +1636,7 @@ function RequestMap(scale, centerX, centerY, showGroups, hideGroups, showLayers,
     var reqParams = "OPERATION=GETVISIBLEMAPEXTENT&VERSION=1.0.0&SESSION=" + sessionId + "&MAPNAME=" + encodeURIComponent(mapName) + "&SEQ=" + Math.random();
     reqParams += "&SETDISPLAYDPI=" + DPI + "&SETDISPLAYWIDTH=" + mapDevW + "&SETDISPLAYHEIGHT=" + mapDevH;
     reqParams += "&SETVIEWSCALE=" + scale + "&SETVIEWCENTERX=" + centerX + "&SETVIEWCENTERY=" + centerY;
+    reqParams += "&CLIENTAGENT=" + encodeURIComponent(clientAgent);
     if(showGroups != null)
         reqParams += "&SHOWGROUPS=" + showGroups;
     if(hideGroups != null)
@@ -1666,7 +1668,7 @@ function RequestMap(scale, centerX, centerY, showGroups, hideGroups, showLayers,
 
 function RequestMapImage(reqId)
 {
-    url = webAgent + "?OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=PNG&VERSION=1.0.0&SESSION=" + sessionId + "&MAPNAME=" + encodeComponent(mapName) + "&SEQ=" + Math.random()
+    url = webAgent + "?OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=PNG&VERSION=1.0.0&SESSION=" + sessionId + "&MAPNAME=" + encodeComponent(mapName) + "&SEQ=" + Math.random() + "&CLIENTAGENT=" + encodeComponent(clientAgent);
     document.getElementById("overlay").innerHTML =
             '<img class="mapImage" name="' + reqId + '" id="mapImage" src="' + url + '" width=' + mapDevW + ' height=' + mapDevH + ' border=0 vspace=0 hspace=0 style="visibility: hidden; width: ' + mapDevW + 'px; height: ' + mapDevH + 'px;" onload="return OnMapOverlayImageLoaded(event)">';
 }
@@ -2552,7 +2554,7 @@ function QueryFeatureInfo(geom, append, maxfeatures, which)
 {
     var url = webAgent;
     var req = url + "?OPERATION=QUERYMAPFEATURES&VERSION=1.0.0&PERSIST=1&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&SEQ=" + Math.random();
-    req += "&LAYERNAMES=" + encodeURIComponent(GetVisSelLayers()) + "&GEOMETRY=" + geom + "&SELECTIONVARIANT=INTERSECTS";
+    req += "&LAYERNAMES=" + encodeURIComponent(GetVisSelLayers()) + "&GEOMETRY=" + geom + "&SELECTIONVARIANT=INTERSECTS" + "&CLIENTAGENT=" + encodeURIComponent(clientAgent);
     if(maxfeatures != 0)
         req += "&MAXFEATURES=" + maxfeatures;
 
@@ -2753,7 +2755,7 @@ function ZoomSelection()
         return;
 
     var reqParams = "OPERATION=GETFEATURESETENVELOPE&VERSION=1.0.0&SESSION=" + sessionId + "&MAPNAME=" + encodeURIComponent(mapName) + "&SEQ=" + Math.random();
-    reqParams += "&FEATURESET=" + encodeURIComponent(selectionToXml());
+    reqParams += "&FEATURESET=" + encodeURIComponent(selectionToXml()) + "&CLIENTAGENT=" + encodeURIComponent(clientAgent);
 
     dr = CreateRequestHandler();
     dr.open("POST", webAgent, false);
@@ -3155,7 +3157,7 @@ function RequestTile(col, row, tilex, tiley)
         if(cell.loaded == "1")
             return 0;
         cell.loaded = "1";
-        url = webAgent + "?OPERATION=GETTILEIMAGE&VERSION=1.2.0&SESSION=" + sessionId + "&MAPDEFINITION=" + encodeComponent(mapDefinitionName) + "&BASEMAPLAYERGROUPNAME=" + encodeComponent(baseGroups[k]) + "&TILECOL=" + tilex + "&TILEROW=" + tiley + "&SCALEINDEX=" + sci;
+        url = webAgent + "?OPERATION=GETTILEIMAGE&VERSION=1.2.0&SESSION=" + sessionId + "&MAPDEFINITION=" + encodeComponent(mapDefinitionName) + "&BASEMAPLAYERGROUPNAME=" + encodeComponent(baseGroups[k]) + "&TILECOL=" + tilex + "&TILEROW=" + tiley + "&SCALEINDEX=" + sci + "&CLIENTAGENT=" + encodeComponent(clientAgent);
         tag = '<img id="' + (imgId) + '" width=' + TILECX + ' height=' + TILECY + ' border=0 vspace=0 hspace=0 src="' + url + '" style="visibility: hidden; width: ' + TILECX + 'px; height: ' + TILECY + 'px;" onload="OnTileLoaded(\'' + imgId + '\')">';
         imgId ++;
         cell.innerHTML = tag;
@@ -3258,7 +3260,7 @@ function RequestHyperLinkData(id, x, y, exec)
     pt1 = ScreenToMapUnits(x1,y1);
     pt2 = ScreenToMapUnits(x2,y2);
     geom = MakeWktPolygon(pt1.X, pt1.Y, pt2.X, pt2.Y);
-    reqParams = "OPERATION=QUERYMAPFEATURES&VERSION=1.0.0&PERSIST=0&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&SEQ=" + Math.random() + "&LAYERNAMES=" + encodeURIComponent(GetVisLayers()) + "&GEOMETRY=" + geom + "&SELECTIONVARIANT=INTERSECTS&MAXFEATURES=1&LAYERATTRIBUTEFILTER=5";
+    reqParams = "OPERATION=QUERYMAPFEATURES&VERSION=1.0.0&PERSIST=0&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&SEQ=" + Math.random() + "&LAYERNAMES=" + encodeURIComponent(GetVisLayers()) + "&GEOMETRY=" + geom + "&SELECTIONVARIANT=INTERSECTS&MAXFEATURES=1&LAYERATTRIBUTEFILTER=5" + "&CLIENTAGENT=" + encodeURIComponent(clientAgent);
     obj = new HlRequest(id, x, y, req, exec);
     req.onreadystatechange = obj.OnHl;
     try { req.send(reqParams); } catch(e) {}

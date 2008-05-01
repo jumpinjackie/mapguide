@@ -47,6 +47,8 @@ try
     InitializeWebTier();
 
     MgUserInformation cred = new MgUserInformation(sessionId);
+    cred.SetClientIp(GetClientIp(request));
+    cred.SetClientAgent(GetClientAgent());
 
     //connect to the site and get an instance of the resource service
     //

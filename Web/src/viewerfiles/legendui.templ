@@ -75,6 +75,8 @@ var iconDrawingLayer = '<img width="16" height ="16" src="../stdicons/lc_dwf.gif
 var iconThemeLayer = '<img width="16" height ="16" src="../stdicons/lc_theme.gif" />';
 var iconGroup = '<img width="16" height ="16" src="../stdicons/lc_group.gif" />';
 
+var clientAgent = 'Ajax Viewer';
+
 function GroupStats()
 {
     this.lyrgrpCount = 0;
@@ -169,7 +171,7 @@ function RequestThemeStyleIconImg(layer, scale, themeIndex, geomtype, iconId)
 
 function BuildIconRequest(layerDef, scale, themeIndex, geomtype)
 {
-    var iconRequest = GetMapFrame().GetWebAgent() + "?OPERATION=GETLEGENDIMAGE&SESSION=" + GetMapFrame().GetSessionId() + "&VERSION=1.0.0&SCALE=" + scale + "&LAYERDEFINITION=" + encodeURIComponent(layerDef) + "&THEMECATEGORY=" + themeIndex + "&TYPE=" + geomtype;
+    var iconRequest = GetMapFrame().GetWebAgent() + "?OPERATION=GETLEGENDIMAGE&SESSION=" + GetMapFrame().GetSessionId() + "&VERSION=1.0.0&SCALE=" + scale + "&LAYERDEFINITION=" + encodeURIComponent(layerDef) + "&THEMECATEGORY=" + themeIndex + "&TYPE=" + geomtype + "&CLIENTAGENT=" + encodeURIComponent(clientAgent);
     return iconRequest;
 }
             

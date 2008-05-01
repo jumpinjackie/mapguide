@@ -60,6 +60,9 @@ boolean dwf;
             //
             InitializeWebTier();
             MgUserInformation cred = new MgUserInformation(sessionId);
+            cred.SetClientIp(GetClientIp(request));
+            cred.SetClientAgent(GetClientAgent());
+
             MgSiteConnection site = new MgSiteConnection();
             site.Open(cred);
             MgResourceService resourceSrvc = (MgResourceService)site.CreateService(MgServiceType.ResourceService);

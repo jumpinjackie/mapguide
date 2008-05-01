@@ -65,6 +65,8 @@ $byteReader = $byteSource->GetReader();
 
 $cred = new MgUserInformation();
 $cred->SetMgUsernamePassword('Anonymous', '');
+$cred->SetClientIp(GetClientIp());
+$cred->SetClientAgent(GetClientAgent());
 
 $siteConn = new MgSiteConnection();
 $siteConn->Open($cred);

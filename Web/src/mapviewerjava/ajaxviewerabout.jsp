@@ -57,6 +57,9 @@ try
     //
     MgUserInformation userInfo = new MgUserInformation();
     userInfo.SetMgSessionId(sessionId);
+    userInfo.SetClientIp(GetClientIp(request));
+    userInfo.SetClientAgent(GetClientAgent());
+
     MgSite site = new MgSite();
     site.Open(userInfo);
     MgServerAdmin serverAdmin = new MgServerAdmin();

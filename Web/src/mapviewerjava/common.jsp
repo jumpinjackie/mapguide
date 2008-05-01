@@ -170,4 +170,19 @@ String EscapeForHtml(String str)
     return str;
 }
 
+String GetClientIp(HttpServletRequest request)
+{
+    String clientIp = request.getRemoteAddr();
+
+    if(clientIp != null)
+        return clientIp;
+    else
+        return "";
+}
+
+String GetClientAgent()
+{
+    return "Ajax Viewer";
+}
+
 %>

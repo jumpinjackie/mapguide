@@ -70,6 +70,10 @@ NameValueCollection cmds = null;
 
         MgSiteConnection site = new MgSiteConnection();
         cred.SetLocale(locale);
+
+        cred.SetClientIp(GetClientIp(Request));
+        cred.SetClientAgent(GetClientAgent());
+        
         site.Open(cred);
 
         if (createSession)
