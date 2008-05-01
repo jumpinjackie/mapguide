@@ -45,12 +45,14 @@
 
     $dataSource = "Session:" . $sessionId . "//Measure.FeatureSource";
     $layerDef = "Session:" . $sessionId . "//Measure.LayerDefinition";
-    
+
     try
     {
         InitializeWebTier();
 
         $cred = new MgUserInformation($sessionId);
+        $cred->SetClientIp(GetClientIp());
+        $cred->SetClientAgent(GetClientAgent());
 
         //connect to the site and get a feature service and a resource service instances
         $site = new MgSiteConnection();
@@ -80,14 +82,14 @@
         {
             $srsFactory = new MgCoordinateSystemFactory();
             $srsMap = $srsFactory->Create($srs);
-            
+
             $srsType = $srsMap->GetType();
             if($srsType == MgCoordinateSystemType::Geographic)
                 $distance = $srsMap->MeasureGreatCircleDistance($x1, $y1, $x2, $y2);
             else
                 $distance = $srsMap->MeasureEuclideanDistance($x1, $y1, $x2, $y2);
 
-            $distance = $srsMap->ConvertCoordinateSystemUnitsToMeters($distance);   
+            $distance = $srsMap->ConvertCoordinateSystemUnitsToMeters($distance);
             if(!$us)
                 $distance *= 0.001;             //get kilometers
             else

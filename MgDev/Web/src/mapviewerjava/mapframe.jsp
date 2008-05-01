@@ -81,6 +81,9 @@ String hlTgtName;
         //
         MgUserInformation userInfo = new MgUserInformation();
         userInfo.SetMgSessionId(sessionId);
+        userInfo.SetClientIp(GetClientIp(request));
+        userInfo.SetClientAgent(GetClientAgent());
+
         MgSiteConnection site = new MgSiteConnection();
         site.Open(userInfo);
 
@@ -152,7 +155,7 @@ String hlTgtName;
         //
         String templ = MgLocalizer.Localize(LoadTemplate("/viewerfiles/ajaxmappane.templ"), locale, GetClientOS(request));
         String vpath = GetSurroundVirtualPath(request);
-        String vals[] = { 
+        String vals[] = {
                     String.valueOf(tileSizeX),
                     String.valueOf(tileSizeY),
                     GetRootVirtualFolder(request) + "/mapagent/mapagent.fcgi",

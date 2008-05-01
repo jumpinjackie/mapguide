@@ -73,12 +73,14 @@ String searchError;
     searchError = MgLocalizer.GetString("SEARCHERROR", locale);
 
     GetRequestParameters(request);
-    
+
     try
     {
         InitializeWebTier();
 
         MgUserInformation cred = new MgUserInformation(sessionId);
+        cred.SetClientIp(GetClientIp(request));
+        cred.SetClientAgent(GetClientAgent());
 
         //connect to the site and get a feature service and a resource service instances
         MgSiteConnection site = new MgSiteConnection();

@@ -88,6 +88,10 @@ try
     //
     MgUserInformation userInfo = new MgUserInformation();
     userInfo.SetMgSessionId(sessionId);
+    userInfo.SetClientIp(GetClientIp(request));
+    userInfo.SetClientAgent(GetClientAgent());
+
+
     MgSiteConnection site = new MgSiteConnection();
     site.Open(userInfo);
     MgResourceService resourceSrvc = (MgResourceService)site.CreateService(MgServiceType.ResourceService);

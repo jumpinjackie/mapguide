@@ -33,6 +33,8 @@
         InitializeWebTier();
 
         $cred = new MgUserInformation($sessionId);
+        $cred->SetClientIp(GetClientIp());
+        $cred->SetClientAgent(GetClientAgent());
 
         //connect to the site and get an instance of each service used in this script
         //
