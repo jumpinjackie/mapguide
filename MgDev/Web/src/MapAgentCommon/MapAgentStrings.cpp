@@ -28,6 +28,7 @@ const char* MapAgentStrings::QueryString = "QUERY_STRING";
 const char* MapAgentStrings::RequestMethod = "REQUEST_METHOD";
 const char* MapAgentStrings::HttpAuth = "HTTP_AUTHORIZATION";
 const char* MapAgentStrings::HttpRemoteUser = "REMOTE_USER";
+const char* MapAgentStrings::HttpRemoteAddr = "REMOTE_ADDR";
 const char* MapAgentStrings::Username = "USERNAME";
 const char* MapAgentStrings::Password = "PASSWORD";
 const char* MapAgentStrings::PhysicalPath = "APPL_PHYSICAL_PATH";
