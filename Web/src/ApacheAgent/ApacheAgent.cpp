@@ -118,7 +118,7 @@ static int mgmapagent_handler (request_rec *r)
     string serverName = GetServerVariable(r, MapAgentStrings::ServerName);
     string serverPort = GetServerVariable(r, MapAgentStrings::ServerPort);
     string scriptName = GetServerVariable(r, MapAgentStrings::ScriptName);
-
+	string remoteAddr = GetServerVariable(r, MapAgentStrings::HttpRemoteAddr);
     string sSecure = GetServerVariable(r, MapAgentStrings::Secure);
     const char * secure = sSecure.c_str();
     bool isSecure = (secure != NULL && !_stricmp(secure, "on"));  // NOXLATE
@@ -150,6 +150,13 @@ static int mgmapagent_handler (request_rec *r)
     {
         MapAgentGetParser::Parse(query.c_str(), params);
     }
+
+	// check for CLIENTIP, if it's not there (and it shouldn't be), add it in using remoteAddr
+	if (!params->ContainsParameter(L"CLIENTIP")) // NOXLATE
+	{
+		STRING wRemoteAddr = MgUtil::MultiByteToWideChar(remoteAddr);
+		params->AddParameter(L"CLIENTIP", wRemoteAddr); // NOXLATE
+	}
 
     // Check for HTTP Basic Auth header
     string auth = GetServerVariable(r, MapAgentStrings::HttpAuth);

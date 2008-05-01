@@ -66,6 +66,10 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
     pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::ScriptName, scriptName, &size);
 
     size = 1024;
+    char remoteAddr[1024];
+    pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::HttpRemoteAddr, remoteAddr, &size);
+
+	size = 1024;
     char secure[1024];
     pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::Secure, secure, &size);
 
@@ -99,6 +103,13 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
         // If we have a QUERY_STRING then we are a GET request
         MapAgentGetParser::Parse(query, params);
     }
+
+	// check for CLIENTIP, if it's not there (and it shouldn't be), add it in using remoteAddr
+	if (!params->ContainsParameter(L"CLIENTIP")) // NOXLATE
+	{
+		STRING wRemoteAddr = MgUtil::MultiByteToWideChar(remoteAddr);
+		params->AddParameter(L"CLIENTIP", wRemoteAddr); // NOXLATE
+	}
 
     // Check for HTTP Basic Auth header
     size = 1024;
