@@ -246,12 +246,8 @@ RSMgFeatureReader* MgMappingUtil::ExecuteFeatureQuery(MgFeatureService* svcFeatu
         }
         catch (MgException* e)
         {
-            e->Release();
-
-            //finally try without a filter
-            // TODO: could it be an extension name and not a FeatureClassName?
-            options = NULL;
-            rdr = svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
+            // Feature selection failed.  Re-throw the exception so that it can be written to the logs.
+            throw e;
         }
     }
 

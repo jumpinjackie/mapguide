@@ -124,6 +124,20 @@ void MgServerGwsFeatureReader::SetFilter(FdoFilter* filter)
         FdoPtr<FdoClassDefinition> fdoClassDef = m_joinReader->GetClassDefinition();
         m_expressionEngine = FdoExpressionEngine::Create(m_joinReader, fdoClassDef, NULL);
 
+        try
+        {
+            // Validate the filter.  An Fdo exception is thrown if it is not valid.
+            m_expressionEngine->ValidateFilter(fdoClassDef, filter);
+        }
+        catch (FdoException* e)
+        {
+            //  Re-throw the exception so that it can be written to the logs.
+            throw e;
+        }
+        catch (...)
+        {
+        }
+
         // Let the underlying MgServerGwsGetFeatures object know about the filter
         m_gwsGetFeatures->SetFilter(m_expressionEngine, m_filter);
     }
