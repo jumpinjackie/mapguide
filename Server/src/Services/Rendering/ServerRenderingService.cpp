@@ -1142,10 +1142,11 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
             Ptr<MgCoordinateSystemTransform> trans = item? item->GetMgTransform() : NULL;
 
             Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
+            Ptr<MgGeometricEntity> queryGeom;
             if (geometry != NULL)
             {
                 //if we have a valid transform, get the request geom in layer's space
-                Ptr<MgGeometricEntity> queryGeom = SAFE_ADDREF(geometry);
+                queryGeom = SAFE_ADDREF(geometry);
 
                 if (trans)
                 {
@@ -1237,8 +1238,30 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                     int numFeaturesProcessed = selRenderer->GetNumFeaturesProcessed();
                     if (!numFeaturesProcessed && selRenderer->NeedPointTest())
                     {
-                        // TODO: if we can predict whether a layer contains point features, we will be smarter here and things will become faster
-                        Ptr<MgFeatureReader> rdr0 = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), NULL);
+                        // Construct a square selection area 400x larger than then previous area
+                        // centered around the centroid of the original selection area
+                        // Example:  a 4x4 pixel selection area becomes an 80x80 pixel selection area
+                        Ptr<MgPoint> centroid = queryGeom->GetCentroid();
+                        Ptr<MgCoordinate> ctr = centroid->GetCoordinate();
+                        double area = queryGeom->GetArea();
+                        double delta = sqrt(area) * 10.0;
+
+                        Ptr<MgCoordinateCollection> coordinates = new MgCoordinateCollection();
+                        Ptr<MgCoordinateXY> coord1 = new MgCoordinateXY(ctr->GetX() - delta, ctr->GetY() - delta);
+                        coordinates->Add(coord1);
+                        Ptr<MgCoordinateXY> coord2 = new MgCoordinateXY(ctr->GetX() - delta, ctr->GetY() + delta);
+                        coordinates->Add(coord2);
+                        Ptr<MgCoordinateXY> coord3 = new MgCoordinateXY(ctr->GetX() + delta, ctr->GetY() + delta);
+                        coordinates->Add(coord3);
+                        Ptr<MgCoordinateXY> coord4 = new MgCoordinateXY(ctr->GetX() + delta, ctr->GetY() - delta);
+                        coordinates->Add(coord4);
+                        coordinates->Add(coord1);
+
+                        Ptr<MgLinearRing> outerRing = new MgLinearRing(coordinates);
+                        Ptr<MgPolygon> polygon = new MgPolygon(outerRing, NULL);
+                        options->SetSpatialFilter(layer->GetFeatureGeometryName(), polygon, /*MgFeatureSpatialOperations*/selectionVariant);
+               
+                        Ptr<MgFeatureReader> rdr0 = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
                         RSMgFeatureReader rsrdr0(rdr0, m_svcFeature, featResId, NULL, vl->GetGeometry());
                         selRenderer->PointTest(true);
                         ds.StylizeVectorLayer(vl, selRenderer, &rsrdr0, NULL, scale, StylizeThatMany, selRenderer);
