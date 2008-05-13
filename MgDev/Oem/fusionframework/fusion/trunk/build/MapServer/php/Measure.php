@@ -1,7 +1,7 @@
 <?php
 /*****************************************************************************
  *
- * $Id: $
+ * $Id: Measure.php 1396 2008-05-08 15:34:30Z madair $
  *
  * Purpose: Measure a line segment and return the distance
  *
@@ -48,19 +48,14 @@ try {
     if (isset($_SESSION['maps']) && isset($_SESSION['maps'][$mapName])) {
         $oMap = ms_newMapObj($_SESSION['maps'][$mapName]);
     }
-    $shapeObj = ms_newShapeObj(MS_SHAPE_LINE);
-    $lineObj = ms_newLineObj();
-    $lineObj->addXY($x1,$y1);
-    $lineObj->addXY($x2,$y2);
-    $shapeObj->add($lineObj);
     if ($oMap->units == MS_DD)
       /*this already returns a meter*/
       $distance = distHaversine($x1,$y1, $x2,$y2);
     else
     {
-      $distance = $shapeObj->getLength($shapeObj);
-      /*convert to meter*/
-      $distance = GetMetersPerUnit($oMap->units)*$distance;
+        $distance = sqrt (pow(($x2 - $x1),2) + pow(($y2 - $y1),2));
+        /*convert to meter*/
+        $distance = GetMetersPerUnit($oMap->units)*$distance;
     }
       
     header('Content-type: text/x-json');

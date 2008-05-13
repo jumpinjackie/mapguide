@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Legend
  *
- * $Id: Legend.js 1168 2008-01-10 15:11:39Z madair $
+ * $Id: Legend.js 1332 2008-03-20 19:05:36Z pagameba $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -210,7 +210,6 @@ Fusion.Widget.Legend.prototype = {
         if (this.showRootFolder) {
             this.oRoot.setName(map.getMapTitle());
         }
-        this.oMapInfo = map.oMapInfo;
         var startGroup = map.layerRoot;
         if (!this.showMapFolder) {
           startGroup = map.layerRoot.groups[0];
@@ -247,7 +246,7 @@ Fusion.Widget.Legend.prototype = {
             group.legend.checkBox.checked = group.visible?true:false;
             Event.observe(group.legend.checkBox, 'click', this.stateChanged.bind(this, group));
             Event.observe(group.legend.treeItem.domObj, 'mouseover', this.setFolder.bind(this));
-            var groupInfo = this.getGroupInfoUrl(group.groupName);
+            var groupInfo = group.oMap.getGroupInfoUrl(group.groupName);
             if (groupInfo) {
                 var a = document.createElement('a');
                 a.href = groupInfo;
@@ -424,7 +423,7 @@ Fusion.Widget.Legend.prototype = {
         opt.imgTreeFolder = this.imgLayerThemeIcon;
         var folder = new Jx.TreeFolder(opt);
         folder.domObj.insertBefore(layer.legend.checkBox, folder.domObj.childNodes[1]);
-        var layerInfo = this.getLayerInfoUrl(layer.layerName);
+        var layerInfo = layer.oMap.getLayerInfoUrl(layer.layerName);
         if (layerInfo) {
             var a = document.createElement('a');
             a.href = layerInfo;
@@ -468,7 +467,7 @@ Fusion.Widget.Legend.prototype = {
         if (bCheckBox) {
             item.domObj.insertBefore(layer.legend.checkBox, item.domObj.childNodes[1]);
             /* only need to add layer info if it has a check box too */
-            var layerInfo = this.getLayerInfoUrl(layer.layerName);
+            var layerInfo = layer.oMap.getLayerInfoUrl(layer.layerName);
             if (layerInfo) {
                 var a = document.createElement('a');
                 a.href = layerInfo;
@@ -500,27 +499,5 @@ Fusion.Widget.Legend.prototype = {
                 obj.hide();
             }
         }
-    },
-    getGroupInfoUrl: function(groupName) {
-        if (this.oMapInfo) {
-            var groups = this.oMapInfo.links.groups;
-            for (var i=0; i<groups.length; i++) {
-                if (groups[i].name == groupName) {
-                    return groups[i].url;
-                }
-            }
-        }
-        return null;
-    },
-    getLayerInfoUrl: function(layerName) {
-        if (this.oMapInfo) {
-            var layers = this.oMapInfo.links.layers;
-            for (var i=0; i<layers.length; i++) {
-                if (layers[i].name == layerName) {
-                    return layers[i].url;
-                }
-            }
-        }
-        return null;
     }
 };

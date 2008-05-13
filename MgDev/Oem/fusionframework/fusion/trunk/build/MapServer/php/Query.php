@@ -2,7 +2,7 @@
 /**
  * Query
  *
- * $Id: Query.php 1079 2007-12-05 20:54:22Z pspencer $
+ * $Id: Query.php 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -81,8 +81,8 @@ if ($bExtendSelection) {
     $oMap->loadquery(getSessionSavePath()."query.qry");
 }
 
-$bComputedProperties = isset($_REQUEST['computed']) && strcasecmp($_REQUEST['computed'], 'true') == 0;
-
+$bComputedProperties = isset($_REQUEST['computed']) && strcasecmp($_REQUEST['computed'], 'true') == 0; 
+	
 $bAllLayers = false;
 $nLayers = count($layers);
 $nSelections = 0;
@@ -102,8 +102,9 @@ for ($i=0; $i<$nLayers; $i++) {
     }
     $oLayer->set('tolerance', 0);
     if ($oLayer->type ==  MS_LAYER_RASTER || $oLayer->type == MS_LAYER_QUERY ||
-        $oLayer->type ==  MS_LAYER_CIRCLE ||  $oLayer->type == MS_LAYER_CHART)
-      continue;
+        $oLayer->type ==  MS_LAYER_CIRCLE ||  $oLayer->type == MS_LAYER_CHART) {
+        continue;            
+    }
 
     
     if (@$oLayer->queryByShape($oSpatialFilter) == MS_SUCCESS) {
@@ -123,8 +124,7 @@ if ($bExtendSelection) {
 
 header('Content-type: text/x-json');
 header('X-JSON: true');
-if ($result->hasSelection) 
-{
+if ($result->hasSelection) {
     $oMap->savequery(getSessionSavePath()."query.qry");
     $result->queryFile = getSessionSavePath()."query.qry";
 
@@ -139,15 +139,13 @@ if ($result->hasSelection)
     
     $bFirstElement = 1;
     $nLayers = $oMap->numlayers;
-    for ($i=0; $i<$nLayers; $i++)
-    {
+    for ($i=0; $i<$nLayers; $i++) { 
         $oLayer = $oMap->GetLayer($i);
         $numResults = $oLayer->getNumResults();
-        if ($numResults == 0)
+        if ($numResults == 0){
           continue;
-
+        }
         $oLayer->open();
-
         $layerName = $oLayer->name != "" ? $oLayer->name : "Layer_".$i; 
         
         array_push($properties->layers, $layerName);
@@ -169,21 +167,70 @@ if ($result->hasSelection)
         $oRes = $oLayer->getResult(0);
         $oShape = $oLayer->getShape($oRes->tileindex,$oRes->shapeindex);
         $selFields = array();
-        while ( list($key,$val) = each($oShape->values) )
-        {
-            array_push($selFields, $key);
-
-            array_push($properties->$layerName->propertynames, $key);
-            //TODO : we should define away to give alias to field names
-            array_push($properties->$layerName->propertyvalues, $key);
-
-            //TODO we do not know the types of the attributes in MS. Just output 0
-            //we shouls possibly use OGR to get the attributes
-            array_push($properties->$layerName->propertytypes, 0);
+        
+        if (isset($_SESSION[$mapName][$layerName]['query_items'])) {
+            $aQueryItems = $_SESSION[$mapName][$layerName]['query_items'];
+        } else {
+            //token separator (for parsing displayed attributes on a query)
+            $tokenSeparator = ","; 
+            // checking if metadata "query_include_items" is set
+            $metadataItems = $oLayer->getMetaData('query_include_items');
+            if ( ($metadataItems == "") || ($metadataItems == "all") ) {
+                while ( list($key,$val) = each($oShape->values) ) {
+                    $aQueryItems[$key]  = NULL;
+                }
+            } else {
+              $token = strtok($metadataItems, $tokenSeparator);
+              while ($token !== false) {
+                  $aQueryItems[trim($token)] = NULL;
+                  $token = strtok($tokenSeparator);
+              }
+            }
+          
+            // checking if metadata "query_exclude_items" is set
+            $metadataItems = $oLayer->getMetaData('query_exclude_items');
+            if ($metadataItems != "") {
+                $token = strtok($metadataItems, $tokenSeparator);
+                while ($token !== false) {
+                    if (array_key_exists($token, $aQueryItems)) {
+                        unset($aQueryItems[$token]);
+                    }
+                    $token = strtok($tokenSeparator);
+                }
+            }
+            
+            // get all alias
+            while ( list($key,$val) = each($aQueryItems) ) {
+                $keyAlias = $oLayer->getMetaData("query_".$key."_alias");
+                trim($keyAlias);
+                if ($keyAlias != "") {
+                    $aQueryItems[$key] = $keyAlias;
+                }
+            }
+            $_SESSION[$mapName][$layerName]['query_items'] = $aQueryItems;
         }
         
-        for ($iRes=0; $iRes < $numResults; $iRes++)
-        {
+        $oShape = $oLayer->getShape($oRes->tileindex,$oRes->shapeindex);
+        while ( list($key,$val) = each($oShape->values) ) {
+            if (array_key_exists($key, $aQueryItems)) {
+                array_push($selFields, $key);
+
+                //we check if an alias if provided
+                if (isset($aQueryItems[$key]) && ($aQueryItems[$key] != "")){
+                    $key = $aQueryItems[$key];
+                }
+
+                array_push($properties->$layerName->propertynames, $key);
+                //TODO : we should define away to give alias to field names
+                array_push($properties->$layerName->propertyvalues, $key);
+
+                //TODO we do not know the types of the attributes in MS. Just output 0
+                //we shouls possibly use OGR to get the attributes
+                array_push($properties->$layerName->propertytypes, 0);
+            }
+        }
+        
+        for ($iRes=0; $iRes < $numResults; $iRes++) {
             $properties->$layerName->values[$iRes] = array();
             $properties->$layerName->metadata[$iRes] = array();
 
@@ -195,24 +242,25 @@ if ($result->hasSelection)
             $maxx =  $oShape->bounds->maxx;
             $maxy =  $oShape->bounds->maxy;
 
-            if ($bFirstElement)
-            {
+            if ($bFirstElement) {
                 $bFirstElement = 0;
                 $totalminx =  $minx;
                 $totalminy =  $miny;
                 $totalmaxx =  $maxx;
                 $totalmaxy =  $maxy;
-            }
-            else
-            {
-                if ($totalminx > $minx)
-                  $totalminx = $minx;
-                if ($totalminy > $miny)
-                  $totalminy = $miny;
-                if ($totalmaxx < $maxx)
-                  $totalmaxx = $maxx;
-                if ($totalmaxy < $maxy)
-                  $totalmaxy = $maxy;
+            } else {
+                if ($totalminx > $minx) {
+                    $totalminx = $minx;
+                }
+                if ($totalminy > $miny) {
+                    $totalminy = $miny;
+                }
+                if ($totalmaxx < $maxx) {
+                    $totalmaxx = $maxx;
+                }
+                if ($totalmaxy < $maxy) {
+                    $totalmaxy = $maxy;
+                }
             }
 
             //metadata : TODO dimension, area, length and distance are not set
@@ -229,8 +277,7 @@ if ($result->hasSelection)
             array_push($properties->$layerName->metadata[$iRes], $length);
 
             //field values
-            for($iField=0; $iField < count($selFields); $iField++)
-            {
+            for($iField=0; $iField < count($selFields); $iField++) {
                 $value = $oShape->values[$selFields[$iField]];
                 //$value = preg_replace( "/\r?\n/", "<br>", $value );
                 $value = str_replace("'", "\'", $value);

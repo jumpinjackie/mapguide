@@ -15,6 +15,7 @@
     var msie = agent.indexOf("msie") != -1;
     var safari = agent.indexOf("safari") != -1;
     var firefox = agent.indexOf("firefox") != -1;
+    var clientAgent = "Fusion Viewer";
     
     var webAgent = '%s';
     var scale = %s;
@@ -38,7 +39,7 @@
         {
             var legendElt = document.getElementById("Legend");
             legendElt.style.width = "180px";
-            legendElt.innerHTML = "<img id=\"legendImage\" width=\"180\" height=\"" + mapHeight + "\" src=\"" + webAgent + "?OPERATION=GETMAPLEGENDIMAGE&VERSION=1.0.0&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&WIDTH=180&HEIGHT=" + mapHeight + "&FORMAT=PNG\" style=\"visibility: hidden\" onload=\"OnImageLoaded('legendImage');\">";
+            legendElt.innerHTML = "<img id=\"legendImage\" width=\"180\" height=\"" + mapHeight + "\" src=\"" + webAgent + "?OPERATION=GETMAPLEGENDIMAGE&VERSION=1.0.0&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&CLIENTAGENT=" + encodeURIComponent(clientAgent) + "&WIDTH=180&HEIGHT=" + mapHeight + "&FORMAT=PNG\" style=\"visibility: hidden\" onload=\"OnImageLoaded('legendImage');\">";
         }
         else
             mapWidth += 180;
@@ -49,7 +50,7 @@
             document.getElementById("ScaleAndArrow").style.height = "0px";
         }
         
-        var imgReq = webAgent + "?OPERATION=GETMAPIMAGE&VERSION=1.0.0&FORMAT=PNG&LOCALE="+locale+"&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&SETDISPLAYWIDTH=" + mapWidth + "&SETDISPLAYHEIGHT=" + mapHeight + "&SETDISPLAYDPI=" + dpi + "&SETVIEWSCALE=" + scale + "&SETVIEWCENTERX=" + centerX + "&SETVIEWCENTERY=" + centerY + "&SEQ=" + Math.random();
+        var imgReq = webAgent + "?OPERATION=GETMAPIMAGE&VERSION=1.0.0&FORMAT=PNG&LOCALE="+locale+"&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&SETDISPLAYWIDTH=" + mapWidth + "&SETDISPLAYHEIGHT=" + mapHeight + "&SETDISPLAYDPI=" + dpi + "&SETVIEWSCALE=" + scale + "&SETVIEWCENTERX=" + centerX + "&SETVIEWCENTERY=" + centerY + "&SEQ=" + Math.random() + "&CLIENTAGENT=" + encodeURIComponent(clientAgent);
         
         var mapElt = document.getElementById("Map");
         mapElt.style.width = mapWidth + "px";

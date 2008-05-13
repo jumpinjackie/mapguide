@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.LinkToView
  *
- * $Id: $
+ * $Id: LinkToView.js 1328 2008-03-06 17:10:58Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -53,13 +53,13 @@ Fusion.Widget.LinkToView.prototype = {
           join = '&';
         }
 
-        this.anchorLabel = this.domObj.innerHTML;
+        this.anchorLabel = json.Label ? json.Label[0] : (this.domObj.innerHTML ? this.domObj.innerHTML : 'Link to View');
 
         this.anchor = document.createElement('a');
         this.anchor.className = 'anchorLinkToView';
         this.anchor.href = this.baseUrl;
         this.anchor.innerHTML = this.anchorLabel;
-        this.anchor.title = 
+        this.anchor.title = json.Tooltip ? json.Tooltip[0] : 'Right-click to copy or bookmark link to current view';
         this.domObj.innerHTML = '';
         this.domObj.appendChild(this.anchor);
 

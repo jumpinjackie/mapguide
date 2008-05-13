@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.SelectRadiusValue
  *
- * $Id: SelectRadiusValue.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: SelectRadiusValue.js 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -47,15 +47,16 @@ Fusion.Widget.SelectRadiusValue.prototype =  {
         this.label = json.Label ? json.Label[0] : '';
         this.className = json.ClassName ? json.ClassName[0] : '';
         
-        /* a container for the widget */
-        //this.domObj = document.createElement('div');
-        //this.domObj.className = this.className;
-        
+        this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, this.mapLoaded.bind(this));
+        this.getMap().registerForEvent(Fusion.Event.MAP_EXTENTS_CHANGED, this.mapExtentsChanged.bind(this));
+    },
+    
+    draw: function() {
         /* put in the label */
+        var units = this.getMap().getAllMaps()[0].units;
         this.domLabel = document.createElement('label');
         this.domLabel.className = this.className;
-        this.domLabel.innerHTML = this.label;
-        //this.domObj.appendChild(label);
+        this.domLabel.innerHTML = this.label + '(' + units + ')';
         
         /* put in the input */
         this.input = document.createElement('input');
@@ -65,19 +66,30 @@ Fusion.Widget.SelectRadiusValue.prototype =  {
         /* put into page */
         this.domObj.appendChild(this.domLabel);
         Event.observe(this.input, 'blur', this.onBlur.bind(this));
-        this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, this.mapLoaded.bind(this));
-        this.getMap().registerForEvent(Fusion.Event.MAP_EXTENTS_CHANGED, this.mapExtentsChanged.bind(this));
-        
     },
     
     mapLoaded: function() {
+        this.draw();
+        this.input.disabled = true;
         var widgets = Fusion.getWidgetsByType('SelectRadius');
         for (var i=0; i<widgets.length; i++) {
-            if (widgets[i].sName == this.radiusWidgetName) {
+            if (widgets[i].widgetTag.name == this.radiusWidgetName) {
                 this.widget = widgets[i];
+                this.widget.registerForEvent(Fusion.Event.RADIUS_WIDGET_ACTIVATED, this.dependantEnable.bind(this));
+                break;
             }
         }
         this.updateFromWidgetValue();
+    },
+    
+    dependantEnable: function(eventId, active) {
+        if (this.widget) {
+            if (active) {
+                this.input.disabled = false;
+            } else {
+                this.input.disabled = true;
+            }
+        }
     },
     
     mapExtentsChanged: function() {
@@ -90,14 +102,14 @@ Fusion.Widget.SelectRadiusValue.prototype =  {
     
     updateWidgetValue: function() {
         if (this.widget) {
-            var radius = this.getMap().geoToPixMeasure(this.input.getValue());
+            var radius = this.input.getValue();
             this.widget.setRadius(radius);
         }
     },
     
     updateFromWidgetValue: function() {
         if (this.widget) {
-            this.input.value = this.getMap().pixToGeoMeasure(this.widget.getRadius());
+            this.input.value = this.widget.getRadius();
         }
     }
 };

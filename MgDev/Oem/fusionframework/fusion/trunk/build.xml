@@ -8,7 +8,7 @@ Purpose         :   build file for ant tool
 Author     Date            Description
 M.Adair    09-July-2007  initial version copied from mapbuilder
 
-$Id: build.xml 1174 2008-01-10 21:25:43Z madair $
+$Id: build.xml 1406 2008-05-13 17:50:15Z madair $
 ***************************************************************************-->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -74,7 +74,7 @@ $Id: build.xml 1174 2008-01-10 21:25:43Z madair $
   <property environment="env"/>
   <property name="app.name" value="fusion"/>
   <property name="app.path" value="/${app.name}"/>
-  <property name="app.version" value="1.0-beta6"/>
+  <property name="app.version" value="1.0.6"/>
   <property name="build.home" value="${basedir}/build"/>
   <property name="deploy.home" value="${env.HTDOCS}/${app.name}"/>
   <property name="dist.home" value="${basedir}/dist"/>

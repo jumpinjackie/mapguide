@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Map
  *
- * $Id: Map.js 1243 2008-02-22 16:43:04Z madair $
+ * $Id: Map.js 1401 2008-05-09 17:32:10Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -638,6 +638,36 @@ Fusion.Widget.Map.prototype =
     pixToGeoMeasure : function(nPixels) {
         var resolution = this.oMapOL.getResolution();
         return (nPixels*resolution);
+    },
+    
+  /**
+     *
+     * initializes the meters per unit values when a new map is loaded.  Some systems make different 
+     * assumptions for the conversion of degrees to meters so this makes sure both Fusion and
+     * OpenLayers are using the same value.
+     *
+     * @param metersPerUnit the value returned by LoadMap.php for meters per unit
+     */
+    setMetersPerUnit: function(metersPerUnit) {
+        if (this._fMetersperunit < 0) {
+            Fusion.initUnits(metersPerUnit);
+            this._fMetersperunit = metersPerUnit;
+        } else {
+            if (metersPerUnit != this._fMetersperunit) {
+                Fusion.reportError(new Fusion.Error(Fusion.Error.WARNING, 
+                                    'meters per unit value already set'));
+            }
+        }
+    },
+    
+    /**
+     *
+     * returns the meters per unit value
+     *
+     * @return metersPerUnit the value as set when the map initialized
+     */
+    getMetersPerUnit: function() {
+        return this._fMetersperunit;
     },
     
     /**

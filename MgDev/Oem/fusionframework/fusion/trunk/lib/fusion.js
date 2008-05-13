@@ -1,7 +1,7 @@
 /**
  * Fusion
  *
- * $Id: fusion.js 1331 2008-03-06 20:45:49Z pspencer $
+ * $Id: fusion.js 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -891,6 +891,49 @@ Fusion = {
             return Fusion.fromMeter(unitsOut, Fusion.toMeter(unitsIn, value));
         }
         return false;
+    },
+    
+  /**
+     * initializes the meters per unit values when a new map is loaded.  Some systems make different 
+     * assumptions for the conversion of degrees to meters so this makes sure both Fusion and
+     * OpenLayers are using the same value.
+     *
+     * @param metersPerUnit the value returned by LoadMap.php for meters per unit
+     */
+    initUnits: function(metersPerUnit) {
+        var eps = 1000;
+        if (Math.abs(metersPerUnit-Fusion.aMeterPerUnit[Fusion.DEGREES]) < eps){
+            Fusion.aMeterPerUnit[Fusion.DEGREES] = metersPerUnit;
+            Fusion.aMeterPerUnit[Fusion.DECIMALDEGREES] = metersPerUnit;
+            Fusion.aMeterPerUnit[Fusion.DMX] = metersPerUnit;
+            var inverse = 1.0/metersPerUnit;
+            Fusion.aUnitPerMeter[Fusion.DEGREES] = inverse;
+            Fusion.aUnitPerMeter[Fusion.DECIMALDEGREES] = inverse;
+            Fusion.aUnitPerMeter[Fusion.DMX] = inverse;
+            
+            var inPerUnit = OpenLayers.INCHES_PER_UNIT.m * metersPerUnit;
+            OpenLayers.INCHES_PER_UNIT["dd"] = inPerUnit;
+            OpenLayers.INCHES_PER_UNIT["degrees"] = inPerUnit;
+        }
+    },
+    
+  /**
+     * find the OpenLayers units identifier given the Fusion metersPerUnit value
+     *
+     * @param metersPerUnit the value returned by LoadMap.php for meters per unit
+     */
+    getClosestUnits: function(metersPerUnit) {
+        var units = "degrees";
+        var minDiff = 100000000;
+        for (var key in OpenLayers.INCHES_PER_UNIT) {
+            var newDiff = Math.abs((metersPerUnit * 39.3701) - OpenLayers.INCHES_PER_UNIT[key]);
+            if(newDiff < minDiff)
+            {
+                minDiff = newDiff;
+                units = key;
+            }
+        }
+        return units;
     },
 
     addWidgetStyleSheet: function(url) {

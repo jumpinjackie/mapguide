@@ -1,0 +1,5 @@
+Jx is an open source library available from http://jxlib.org/.  A copy of a specific version of Jx is included with Fusion.  The current version is:
+
+Jx 1.0.3
+
+You may replace jx with any version including an svn version.  However, Fusion may not work with newer versions.  Also, Fusion requires the combined or compressed version of Jx.  See Jx documentation for information on building the combined and compressed versions.

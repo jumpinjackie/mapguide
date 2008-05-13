@@ -268,7 +268,7 @@ OpenLayers = {
 /**
  * Constant: VERSION_NUMBER
  */
-OpenLayers.VERSION_NUMBER="$Revision: 5560 $";
+OpenLayers.VERSION_NUMBER="$Revision: 1326 $";
 /* ======================================================================
     OpenLayers/Util.js
    ====================================================================== */

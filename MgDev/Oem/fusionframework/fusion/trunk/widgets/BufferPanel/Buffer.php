@@ -2,7 +2,7 @@
 /**
  * Buffer
  *
- * $Id: $
+ * $Id: Buffer.php 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -282,9 +282,8 @@
                     }
                 }
                 while($features->ReadNext());
-
-                $features->Close();
             }
+            $features->Close();
         }
 
         if($merge)

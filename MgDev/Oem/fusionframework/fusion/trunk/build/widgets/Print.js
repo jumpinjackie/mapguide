@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Print
  *
- * $Id: Print.js 1232 2008-02-15 19:16:45Z madair $
+ * $Id: Print.js 1333 2008-03-20 19:40:07Z assefa $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -89,9 +89,10 @@ Fusion.Widget.Print.prototype = {
                 onContentLoaded: this.contentLoaded.bind(this),
                 imageBaseUrl: this.imageBaseUrl,
                 width: 350,
+                height: 250,
                 resizeable: true,
-                top: (size.height-200)/2,
-                left: (size.width-320)/2,
+                top: (size.height-250)/2,
+                left: (size.width-350)/2,
                 buttons: ['generate', 'cancel'],
                 handler: this.handler.bind(this)
             };
