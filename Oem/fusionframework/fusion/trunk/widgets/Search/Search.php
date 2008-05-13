@@ -2,7 +2,7 @@
 /**
  * Search
  *
- * $Id: $
+ * $Id: Search.php 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -228,10 +228,20 @@
     }
     catch(MgException $ae)
     {
+        if($features)
+        {
+            // Close the feature reader
+            $features->Close();
+        }
         OnError($searchError, $ae->GetDetails());
     }
     catch(SearchError $e)
     {
+        if($features)
+        {
+            // Close the feature reader
+            $features->Close();
+        }
         OnError($e->title, $e->getMessage());
     }
 

@@ -21,7 +21,7 @@ a{outline:none;}
 .jxDisabled{opacity:0.4;-moz-opacity:0.4;filter:Alpha(opacity=40);}
 /**
  * @project         Jx
- * @revision        $Id: jx_combined.css 455 2007-12-10 21:25:43Z pspencer $
+ * @revision        $Id: button.css 396 2007-09-05 01:24:59Z pspencer $
  * @author          Fred Warnock (fwarnock@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -107,7 +107,7 @@ span.jxButtonEmptyLabel {
 }
 /**
  * @project         Jx
- * @revision        $Id: jx_combined.css 455 2007-12-10 21:25:43Z pspencer $
+ * @revision        $Id: color.css 404 2007-09-10 20:03:57Z fwarnock $
  * @author          Fred Warnock (fwarnock@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -249,7 +249,7 @@ a.jxColorClose img {
     height: 20px;
 }/**
  * @project         Jx
- * @revision        $Id: jx_combined.css 455 2007-12-10 21:25:43Z pspencer $
+ * @revision        $Id: dialog.css 512 2008-03-07 21:15:45Z pspencer $
  * @author          Fred Warnock (fwarnock@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -266,8 +266,8 @@ a.jxColorClose img {
 }
 
 .jxDialog {
-    position:absolute;
     display: block;
+    z-index: 1;
 }
 
 .jxDialogModal {
@@ -497,7 +497,7 @@ iframe.jxDialogShim {
     color: #fff;
 }/**
  * @project         Jx
- * @revision        $Id: jx_combined.css 455 2007-12-10 21:25:43Z pspencer $
+ * @revision        $Id: menu.css 406 2007-09-13 14:42:18Z pspencer $
  * @author          Fred Warnock (fwarnock@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -582,7 +582,7 @@ iframe.jxMenuShim {
     z-index: -1;
 }/**
  * @project         Jx
- * @revision        $Id: jx_combined.css 455 2007-12-10 21:25:43Z pspencer $
+ * @revision        $Id: panel.css 375 2007-08-21 14:36:10Z fwarnock $
  * @author          Fred Warnock (fwarnock@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -702,7 +702,7 @@ a.jxPanelLoading img {
 }
 /**
  * @project         Jx
- * @revision        $Id: jx_combined.css 455 2007-12-10 21:25:43Z pspencer $
+ * @revision        $Id: picker.css 516 2008-03-10 23:21:04Z pspencer $
  * @author          Fred Warnock (fwarnock@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -725,6 +725,8 @@ div.jxPicker {
   font-family: Arial, Helvetica, sans-serif;
   font-size:11px;
   z-index: 1;
+  line-height: 24px;
+  float: left;
 }
 
 .jxPickerDiscloser {
@@ -746,6 +748,7 @@ div.jxPicker {
   /*padding-right: 16px;*/
   line-height: 24px;
   height: 24px;
+  padding: 0px 10px;
 }
 
 div.jxPickerOptions {
@@ -794,6 +797,7 @@ div.jxPickerOptions a {
   color: #000;
   background-position: right top;
   background-repeat: no-repeat;
+  padding: 0px 4px;
 }
 
 div.jxPickerOptions a:hover {
@@ -807,54 +811,7 @@ div.jxPickerOptions a.selected {
 }
 /**
  * @project         Jx
- * @revision        $Id: jx_combined.css 455 2007-12-10 21:25:43Z pspencer $
- * @author          Fred Warnock (fwarnock@dmsolutions.ca)
- * @copyright       &copy; 2006 DM Solutions Group Inc.
- */
-
-/* ================ */
-/* STATUSBAR STYLES */
-/* ================ */
-
-.jxStatusbar {
-  display: block;
-  position: relative;
-  width: 100%;
-  background-color: #d9d9d9;
-  border-top: 1px solid #fff;
-  border-bottom: 1px solid #999;
-  border-left: 1px solid #fff;
-  border-right: 1px solid #999;
-}
-
-.jxTray {
-  display: block;
-  position: relative;
-  float: left;
-  background-color: #d9d9d9;
-  border-top: 1px solid #999;
-  border-bottom: 1px solid #fff;
-  border-left: 1px solid #999;
-  border-right: 1px solid #fff;
-  margin: 1px;
-}
-
-.jxStatusbar .clearer {
-  display: block;
-  position: relative;
-  float:none;
-  clear: left; 
-  font-size: 0;
-  line-height: 0; 
-  width: 1px;
-  height: 1px;
-  margin: 0;
-  padding: 0;
-}
-
-/**
- * @project         Jx
- * @revision        $Id: jx_combined.css 455 2007-12-10 21:25:43Z pspencer $
+ * @revision        $Id: tabs.css 512 2008-03-07 21:15:45Z pspencer $
  * @author          Fred Warnock (fwarnock@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -874,6 +831,11 @@ div.jxPickerOptions a.selected {
      the position need to be explicitly set, as well as the width and height. */
   position: relative; 
   display: block;
+
+}
+
+.jxTabSetContainer  .jxToolbarContainer {
+  z-index: auto;
 }
 
 .tabContent {
@@ -889,6 +851,14 @@ div.jxPickerOptions a.selected {
 
 .tabContentActive {
   display: block;
+}
+
+/* TAB BOX MODE */
+.jxTabBoxTop,
+.jxTabBoxBottom,
+.jxTabBoxLeft,
+.jxTabBoxRight {
+  overflow: visible;
 }
 
 /* TAB BOX MODE */
@@ -912,7 +882,7 @@ div.jxPickerOptions a.selected {
 
 /**
  * @project         Jx
- * @revision        $Id: jx_combined.css 455 2007-12-10 21:25:43Z pspencer $
+ * @revision        $Id: toolbar.css 369 2007-07-26 17:24:23Z fwarnock $
  * @author          Fred Warnock (fwarnock@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -1012,7 +982,7 @@ li.jxToolItem  .separator {
 
 /**
  * @project         Jx
- * @revision        $Id: jx_combined.css 455 2007-12-10 21:25:43Z pspencer $
+ * @revision        $Id: tree.css 324 2007-06-20 19:04:54Z pspencer $
  * @author          Fred Warnock (fwarnock@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */

@@ -1,7 +1,7 @@
 /**
  * Fusion.Lib.ApplicationDefinition
  *
- * $Id: $
+ * $Id: ApplicationDefinition.js 1400 2008-05-09 17:30:51Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -418,61 +418,85 @@ Fusion.Lib.ApplicationDefinition.MapGroup.prototype = {
         if (jsonNode.Map instanceof Array) {
             for (var i=0; i<jsonNode.Map.length; i++) {
                 var map = new Fusion.Lib.ApplicationDefinition.Map(jsonNode.Map[i]);
+                var links = {groups:[], layers:[]};
+                var mapEvents = {layerEvents:{},groupEvents:{}};
+                if (jsonNode.Map[i].Extension) {
+                    var extension = jsonNode.Map[i].Extension[0];
+                    if (extension.Links) {
+                        /* process Groups */
+                        if (extension.Links[0].Group instanceof Array) {
+                            for (var j=0; j<extension.Links[0].Group.length; j++) {
+                                var group = extension.Links[0].Group[j];
+                                links.groups.push({name:group.Name,url:group.Url});
+                            }
+                        }
+                        if (extension.Links[0].Layer instanceof Array) {
+                            for (var j=0; j<extension.Links[0].Layer.length; j++) {
+                                var layer = extension.Links[0].Layer[j];
+                                links.layers.push({name:layer.Name,url:layer.Url});
+                            }
+                        }
+                    }
+                    /* process layer events */
+                    //TODO: Should this be called MapEvents?
+                    if (extension.MapEvents) {
+                        if (extension.MapEvents[0].Layer instanceof Array) {
+                            for (var j=0; j<extension.MapEvents[0].Layer.length; j++) {
+                                var layer = extension.MapEvents[0].Layer[j];
+                                var layerObj = {};
+                                layerObj.name = layer.Name[0];
+                                layerObj.onEnable = [];
+                                if (layer.OnEnable instanceof Array) {
+                                    layerObj.onEnable = this.parseMapEventSubBlock(layer.OnEnable[0]);
+                                }
+                                layerObj.onDisable = [];
+                                if (layer.OnDisable instanceof Array) {
+                                    layerObj.onDisable = this.parseMapEventSubBlock(layer.OnDisable[0]);
+                                }
+                                mapEvents.layerEvents[layerObj.name] = layerObj;
+                            }
+                        }
+                        if (extension.MapEvents[0].Group instanceof Array) {
+                            for (var j=0; j<extension.MapEvents[0].Group.length; j++) {
+                                var group = extension.MapEvents[0].Group[j];
+                                var groupObj = {};
+                                groupObj.name = group.Name[0];
+                                groupObj.onEnable = [];
+                                if (layer.OnEnable instanceof Array) {
+                                    groupObj.onEnable = this.parseMapEventSubBlock(group.OnEnable[0]);
+                                }
+                                groupObj.onDisable = [];
+                                if (layer.OnDisable instanceof Array) {
+                                    groupObj.onDisable = this.parseMapEventSubBlock(group.OnDisable[0]);
+                                }
+                                mapEvents.groupEvents[groupObj.name] = groupObj;
+                            }
+                        }
+                    }
+                }
+                map.mapInfo = {links: links, mapEvents: mapEvents};
                 this.maps.push(map);
             }
         } else {
             //TODO: do we need a warning that there are no layers in this map?
         }
-        this.links = {groups:[], layers:[]};
-        this.layerEvents = {};
-        if (jsonNode.Extension) {
-            var extension = jsonNode.Extension[0];
-            if (extension.Links) {
-                /* process Groups */
-                if (extension.Links[0].Group instanceof Array) {
-                    for (var j=0; j<extension.Links[0].Group.length; j++) {
-                        var group = extension.Links[0].Group[j];
-                        this.links.groups.push({name:group.Name,url:group.Url});
-                    }
-                }
-                if (extension.Links[0].Layer instanceof Array) {
-                    for (var j=0; j<extension.Links[0].Layer.length; j++) {
-                        var layer = extension.Links[0].Layer[j];
-                        this.links.layers.push({name:layer.Name,url:layer.Url});
-                    }
-                }
+    },
+    
+    parseMapEventSubBlock: function(block) {
+        var a = [];
+        if (block.Layer && block.Layer instanceof Array) {
+            for (var i=0; i<block.Layer.length; i++) {
+                var layer = block.Layer[i];
+                a.push({type: 'layer', name:layer.Name[0], enable: layer.Enable[0] == 'true' ? true : false});
             }
-            /* process layer events */
-            //TODO: Should this be called MapEvents?
-            if (extension.LayerEvents) {
-                if (extension.LayerEvents[0].Layer instanceof Array) {
-                    for (var j=0; j<extension.LayerEvents[0].Layer.length; j++) {
-                        var layer = extension.LayerEvents[0].Layer[j];
-                        var layerObj = {};
-                        layerObj.name = layer.Name[0];
-                        layerObj.onEnable = [];
-                        layerObj.onDisable = [];
-                        
-                        if (layer.OnEnable instanceof Array) {
-                            for (var k=0; k<layer.OnEnable[0].Layer.length; k++) {
-                                var kLayer = layer.OnEnable[0].Layer[k];
-                                layerObj.onEnable.push({name:kLayer.Name[0], enable: kLayer.Enable[0] == 'true' ? true : false});
-                            }
-                        }
-                        if (layer.OnDisable instanceof Array) {
-                            for (var k=0; k<layer.OnDisable[0].Layer.length; k++) {
-                                var kLayer = layer.OnDisable[0].Layer[k];
-                                layerObj.onDisable.push({name:kLayer.Name[0], enable: kLayer.Enable[0] == 'true' ? true : false});
-                            }
-                        }
-                        this.layerEvents[layerObj.name] = layerObj;
-                    }
-                }
-            }
-        } else {
-            this.extension = {};
         }
-        
+        if (block.Group && block.Group instanceof Array) {
+            for (var i=0; i<block.Group.length; i++) {
+                var group = block.Group[i];
+                a.push({type: 'group', name:group.Name[0], enable: group.Enable[0] == 'true' ? true : false});
+            }            
+        }
+        return a;
     },
     
     getInitialView: function() {
@@ -739,7 +763,7 @@ Fusion.Lib.ApplicationDefinition.Container.prototype = {
             this.createWidgets(widgetSet, container);
         }
         if (container && container.domObj.jxLayout) {
-            container.domObj.jxLayout.resize();
+            container.domObj.jxLayout.resize({forceResize: true});
         }
     },
     

@@ -1,4 +1,4 @@
-﻿Fusion.Strings.fr = {
+Fusion.Strings.fr = {
 'scriptFailed': 'failed to load script: {0}',
 'configParseError': 'Error parsing fusion configuration file, initialization aborted',
 'configLoadError': 'Error loading fusion configuration file, initialization aborted',

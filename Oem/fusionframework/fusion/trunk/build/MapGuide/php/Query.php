@@ -2,7 +2,7 @@
 /**
  * Query
  *
- * $Id: Query.php 1301 2008-03-04 21:57:45Z madair $
+ * $Id: Query.php 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -115,6 +115,7 @@ try {
 
             $className = $layerObj->GetFeatureClassName();
             if (!$layerObj->GetSelectable() || !$layerObj->IsVisible() ||
+                $className=='RedlineSchema:Redline' ||
                 !$className || $className=='rasters:RasterType' ||$className=='') {
                 continue;
             }
@@ -179,7 +180,12 @@ try {
                 }
                 /* create a coordinate system from the layer's SRS wkt */
                 $srsLayer = $srsFactory->Create($srsLayerWkt);
-                $srsXform = $srsFactory->GetTransform($srsMap, $srsLayer);
+                $verMajor = subStr(GetSiteVersion(), 0,1);
+                if ($verMajor == '1') {
+                  $srsXform = new MgCoordinateSystemTransform($srsMap, $srsLayer);
+                } else {
+                  $srsXform = $srsFactory->GetTransform($srsMap, $srsLayer);
+                }
                 $wktRW = new MgWktReaderWriter();
                 $geom = $wktRW->Read($spatialFilter, $srsXform);
                 $queryOptions->SetSpatialFilter($featureGeometryName, $geom, $variant);

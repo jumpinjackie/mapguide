@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.ViewOptions
  *
- * $Id: $
+ * $Id: ViewOptions.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a

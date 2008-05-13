@@ -2,7 +2,7 @@
 /**
  * Xml2JSON
  *
- * $Id: Xml2JSON.php 967 2007-10-16 16:03:17Z madair $
+ * $Id: Xml2JSON.php 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -30,15 +30,32 @@ include(dirname(__FILE__).'/Utilities.php');
 
 if (isset($_FILES['xml'])) {
     $xml = file_get_contents($_FILES['xml']['tmp_name']);
-} else {
+} elseif (isset($_SERVER['HTTP_HOST'])) {
     $REQUEST_VARS = array_merge($_GET, $_POST);
-
     if (!isset($REQUEST_VARS['xml'])) {
         die('xml not set');
     }
-
+    header('Content-type: text/plain');
+    header('X-JSON: true');
     $xml = rawurldecode ($REQUEST_VARS['xml']);
     $xml = str_replace('\"', '"', $xml);
+    $xml = str_replace('&quot;', "'", $xml);
+} elseif (isset($argv)) {
+    $cliArgs = arguments($argv);
+    if (isset($cliArgs['obj'])) {
+        $jsObject = $cliArgs['obj'];
+    } else {
+        $jsObject = "Fusion.appDefJson";
+    }
+    if (isset($cliArgs['file'])) {
+        $xml = file_get_contents($cliArgs['file']);
+        if (!$xml) {
+            die('file not found:'.$cliArgs['file']);
+        }
+        echo $jsObject."=";
+    }
+} else {
+    die('no XML input');
 }
 //print_r($xml);
 $document = DOMDocument::loadXML($xml);
@@ -46,8 +63,5 @@ if ($document == null) {
     die ('/* invalid xml document:'.$xml.' */');
 }
 $root = $document->documentElement;
-
-header('Content-type: text/plain');
-header('X-JSON: true');
-echo '{"' . $root->tagName . '":' . xml2json($root) . '}';
+echo '{"' . $root->tagName . '":' . xml2json($root) . '};';
 ?>

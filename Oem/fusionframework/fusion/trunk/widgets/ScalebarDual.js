@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.ScalebarDual
  *
- * $Id: Scalebar.js 1084 2007-12-06 16:58:52Z madair $
+ * $Id: ScalebarDual.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -38,38 +38,39 @@ Fusion.Widget.ScalebarDual.prototype = {
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, false]);
 
         var json = widgetTag.extension;
-        
+
         this.content = $(this.getName());
-        
+
         var scaleDiv = document.createElement('div');
         Element.addClassName(scaleDiv, 'scaleDiv');
         Element.addClassName(scaleDiv, 'scaleMetric');
         this.content.appendChild(scaleDiv);
-        
+
         this.metricDiv = document.createElement('div');
-        this.metricDiv.style.backgroundColor = 'olive';//remove this when css is done
         Element.addClassName(this.metricDiv, 'scaleLabel');
         scaleDiv.appendChild(this.metricDiv);
-        
+
         scaleDiv = document.createElement('div');
         Element.addClassName(scaleDiv, 'scaleDiv');
         Element.addClassName(scaleDiv, 'scaleImperial');
         this.content.appendChild(scaleDiv);
-        
+
         this.imperialDiv = document.createElement('div');
-        this.imperialDiv.style.backgroundColor = 'green';//remove this when css is done
         Element.addClassName(this.imperialDiv, 'scaleLabel');
         scaleDiv.appendChild(this.imperialDiv);
-        
+
         Element.addClassName(this.domObj, 'dualScalebar');
-        
+
         this.getMap().registerForEvent(Fusion.Event.MAP_EXTENTS_CHANGED, this.extentsChangedCB.bind(this));
         this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, this.extentsChangedCB.bind(this));
+
+        Fusion.addWidgetStyleSheet(widgetTag.location + '/ScalebarDual/ScalebarDual.css');
+
     },
 
     extentsChangedCB : function() {
       var maxWidth = this.content.getWidth();
-      
+
       //TODO: support projected data
       var map = this.getMap();
       var oExtent = map.getCurrentExtents();
@@ -80,7 +81,7 @@ Fusion.Widget.ScalebarDual.prototype = {
       if (units == 'degrees' || units == 'dd' ) {   //TODO: add case for units='ft'
         var cp = oExtent.getCenterLonLat();
         if (Math.abs(cp.lat) > 89.9) return;
-        
+
         var ddPerPixel = res;
         var metersPerDD = 110570;
         //adjust for latitude
@@ -126,7 +127,7 @@ Fusion.Widget.ScalebarDual.prototype = {
           } else {
             miDone = true;
           }
-          
+
           kmBarLength = km / kmPerPixel;
           miBarLength = mi / miPerPixel;
       }
@@ -135,11 +136,11 @@ Fusion.Widget.ScalebarDual.prototype = {
           ft = (Math.floor(mi * 52.8) * 100);
           miBarLength = ft / ftPerPixel;
       }
-      
+
       var sbMax = Math.max(kmBarLength, miBarLength) + 2;
       this.content.style.width = Math.round(sbMax) + 'px';
       //(document.getElementById(this.id)).style.width = sbMax + 'px';
-      this.metricDiv.style.width = Math.round(kmBarLength - 0) + "px";  //0 was 24 why?
+      this.metricDiv.parentNode.style.width = Math.round(kmBarLength - 0) + "px";  //0 was 24 why?
       //for small values, convert units
       if (km <= 0.5) {
           this.metricDiv.innerHTML = km * 1000 + " m";

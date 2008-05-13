@@ -30,4 +30,4 @@ docs      - automatically generates class documentation from the source code
 
 
 
-$Id: BUILDING.TXT 716 2007-08-17 13:04:50Z pspencer $
+$Id: BUILDING.TXT 1326 2008-03-05 23:28:14Z pspencer $
