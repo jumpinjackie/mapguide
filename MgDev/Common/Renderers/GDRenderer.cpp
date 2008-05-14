@@ -535,7 +535,7 @@ void GDRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allow
         use_mdef = RS_MarkerDef(RS_MarkerType_Marker,
                                 mdef.width(),
                                 mdef.height(),
-                                0.5, 0.5,
+                                mdef.insx(), mdef.insy(),
                                 mdef.rotation(),
                                 mdef.units(),
                                 SLDType_Square,
