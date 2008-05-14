@@ -26,7 +26,7 @@
 #define SAFE_RELEASE(x) {if (x) (x)->Release(); (x) = NULL;}
 #define SAFE_ADDREF(x)  ((x != NULL) ? ((x)->AddRef(), (x)) : NULL)
 
-class MgException;
+class MgNullReferenceException;
 
 /// \cond INTERNAL
 //This class ensures T implements AddRef() and Release() and also ensures
