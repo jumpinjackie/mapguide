@@ -582,14 +582,14 @@ void SE_StyleVisitor::VisitImage(Image& image)
     ParseDoubleExpression(image.GetSizeX(), primitive->extent[0], 5.0);
     ParseDoubleExpression(image.GetSizeY(), primitive->extent[1], 5.0);
     ParseDoubleExpression(image.GetAngle(), primitive->angleDeg, 0.0);
-    ParseBooleanExpression(image.GetSizeScalable(), primitive->extentScalable, true);
+    ParseBooleanExpression(image.GetSizeScalable(), primitive->sizeScalable, true);
 
     primitive->cacheable = !(primitive->position[0].expression
                           || primitive->position[1].expression
                           || primitive->extent[0].expression
                           || primitive->extent[1].expression
                           || primitive->angleDeg.expression
-                          || primitive->extentScalable.expression)
+                          || primitive->sizeScalable.expression)
                           && primitive->imageData.data;
 }
 
