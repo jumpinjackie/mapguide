@@ -134,6 +134,10 @@ void SE_PositioningAlgorithms::Default(SE_ApplyContext* applyCtx,
         }
     }
 
+    // don't add a label if we can't compute the centroid
+    if (_isnan(cx) || _isnan(cy))
+        return;
+
     // need to convert centroid to screen units
     se_renderer->WorldToScreenPoint(cx, cy, cx, cy);
 
@@ -193,6 +197,11 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
     double cx = 0.0;
     double cy = 0.0;
     geometry->Centroid(LineBuffer::ctPoint, &cx, &cy, NULL);
+
+    // don't add a label if we can't compute the centroid
+    if (_isnan(cx) || _isnan(cy))
+        return;
+
     se_renderer->WorldToScreenPoint(cx, cy, cx, cy);
 
     // Get the extent of the last drawn point symbol so that we know how much to offset
@@ -210,7 +219,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
     SE_Matrix ixform;
     ixform.translate(-cx, -cy);     // factor out point position
     ixform.rotate(-symbol_rot_rad); // factor out rotation
-    for (int i=0; i<4; i++)
+    for (int i=0; i<4; ++i)
         ixform.transform(fpts[i].x, fpts[i].y);
 
     bool yUp = se_renderer->YPointsUp();
@@ -507,7 +516,7 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_ApplyContext*  applyCt
 
     // calc the overall length of this geometry
     double totalLen = 0.0;
-    for (int i = 0; i < geometry->cntr_count(); i++)
+    for (int i=0; i<geometry->cntr_count(); ++i)
     {
         int pt = geometry->contour_start_point(i);
         int last = geometry->contour_end_point(i);
@@ -563,7 +572,7 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_ApplyContext*  applyCt
     std::wstring countryCode = highwayInfo.getFirstToken();
 
     int shieldIndex;
-    for (shieldIndex = 0; shieldIndex < shieldCount; shieldIndex++)
+    for (shieldIndex=0; shieldIndex<shieldCount; ++shieldIndex)
     {
         std::wstring shieldType = highwayInfo.getNextToken();
         std::wstring highwayNum = highwayInfo.getNextToken();
@@ -656,7 +665,7 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_ApplyContext*  applyCt
     // init position along the whole geometry to the start offset
     double drawpos = startOffset;
 
-    for (int j=0; j<geometry->cntr_count(); j++)
+    for (int j=0; j<geometry->cntr_count(); ++j)
     {
         // current polyline
         int pt = geometry->contour_start_point(j);
