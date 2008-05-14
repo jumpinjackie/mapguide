@@ -79,7 +79,7 @@ public:
 #endif
     {
         if (nNull != 0)
-            throw; // ::Create(MgException::NLSGetMessage(_NLSID(_2_BADPARAMETER)));
+            throw new MgNullReferenceException(L"Ptr.Ptr", __LINE__, __WFILE__, NULL, L"", NULL);
         p = NULL;
     }
     */
@@ -123,7 +123,7 @@ public:
 #endif
     {
         if (p==NULL)
-            throw; // ::Create(MgException::NLSGetMessage(_NLSID(_2_BADPARAMETER)));
+            throw new MgNullReferenceException(L"Ptr.operator*", __LINE__, __WFILE__, NULL, L"", NULL);
         return *p;
     }
 
@@ -134,7 +134,7 @@ public:
 #endif
     {
         if (p!=NULL)
-            throw; // ::Create(MgException::NLSGetMessage(_NLSID(_2_BADPARAMETER)));
+            throw new MgNullReferenceException(L"Ptr.operator&", __LINE__, __WFILE__, NULL, L"", NULL);
         return &p;
     }
 
@@ -145,7 +145,7 @@ public:
 #endif
     {
         if (p==NULL)
-            throw; // ::Create(MgException::NLSGetMessage(_NLSID(_2_BADPARAMETER)));
+            throw new MgNullReferenceException(L"Ptr.operator->", __LINE__, __WFILE__, NULL, L"", NULL);
         return (_NoAddRefReleaseOnPtr<T>*)p;
     }
 
