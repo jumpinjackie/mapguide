@@ -2,7 +2,7 @@
 /**
  * UserManager
  *
- * $Id: UserManager.php 1193 2008-01-18 21:45:25Z zak $
+ * $Id: UserManager.php 1204 2008-02-01 19:41:53Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -504,23 +504,6 @@ class FusionUser {
         $result .= "</User>\n";
         return $result;
     }
-}
-
-
-function ByteReaderToString($byteReader)
-{
-    $buffer = '';
-    do
-    {
-        $data = str_pad("\0", 50000, "\0");
-        $len = $byteReader->Read($data, 50000);
-        if ($len > 0)
-        {
-            $buffer = $buffer . substr($data, 0, $len);
-        }
-    } while ($len > 0);
-
-    return $buffer;
 }
 
 function Test() {

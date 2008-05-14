@@ -2,7 +2,7 @@
 /**
  * SelectWithin
  *
- * $Id: $
+ * $Id: SelectWithin.php 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -173,6 +173,7 @@ function MultiGeometryFromSelection($featureSrvc, $resourceSrvc, $map, $mapName)
                 }
                 $geomColl->Add($geom);
             }
+            $features->Close();
         }
     }
     if($geomColl->GetCount() == 0)

@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Zoom
  *
- * $Id: Zoom.js 1252 2008-02-22 22:36:46Z madair $
+ * $Id: Zoom.js 1253 2008-02-22 22:40:00Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a

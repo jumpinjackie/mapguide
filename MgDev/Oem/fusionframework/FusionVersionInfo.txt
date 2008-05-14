@@ -1,10 +1,15 @@
 Current version:
 
+*** Switched to Fusion Vault on OSGeo ***
+Tagged revision 1.0.6
+Date = 2008/05/13 18:15 MST
+Fusion revision = 1406
+
+Previous updates:
+
 Date = 2008/03/06 13:08 MST
 Fusion revision = 1331
 Jx revision = 511
-
-Previous updates:
 
 Date = 2008/03/04 15:47 MST
 Fusion revision = 1312

@@ -1,6 +1,6 @@
 /**
  * @project         Jx
- * @revision        $Id: jxskin-border.css 443 2007-10-26 22:03:29Z fwarnock $
+ * @revision        $Id: jxskin-border.css 512 2008-03-07 21:15:45Z pspencer $
  * @author          Fred Warnock (fwarnock@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -115,7 +115,6 @@
     font-weight: bold;
     font-size: 12px;
     text-align: center;
-    /* note this is hard coded into jx.js Jx.Dialog initialize function - change there as well as here */
     height: 22px;
     line-height: 22px;
     cursor: move;
@@ -129,7 +128,6 @@
 
 .jxDialogAction {
     border-left: 1px solid #fff;
-    /* note this is hard coded into jx.js Jx.Dialog initialize function - change there as well as here */
     height: 30px;
     text-align: right;
     margin-right:15px;
