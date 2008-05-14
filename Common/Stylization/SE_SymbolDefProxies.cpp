@@ -91,7 +91,7 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* ctx)
 
     ret->geometry = geometry->Clone();
 
-    double wx                  = weightScalable.evaluate(ctx->exec)? fabs(ctx->xform->x0) : ctx->mm2sud;
+    double wx                  = weightScalable.evaluate(ctx->exec)? fabs(ctx->xform->x0) : ctx->mm2su;
     ret->lineStroke.weight     = weight.evaluate(ctx->exec) * wx;
     ret->lineStroke.color      = color.evaluate(ctx->exec);
     ret->lineStroke.miterLimit = miterLimit.evaluate(ctx->exec);
@@ -181,7 +181,7 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* ctx)
     ret->geometry = geometry->Clone();
     ret->fill     = fill.evaluate(ctx->exec);
 
-    double wx                  = weightScalable.evaluate(ctx->exec)? fabs(ctx->xform->x0) : ctx->mm2sud;
+    double wx                  = weightScalable.evaluate(ctx->exec)? fabs(ctx->xform->x0) : ctx->mm2su;
     ret->lineStroke.weight     = weight.evaluate(ctx->exec) * wx;
     ret->lineStroke.color      = color.evaluate(ctx->exec);
     ret->lineStroke.miterLimit = miterLimit.evaluate(ctx->exec);
@@ -463,7 +463,7 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* ctx)
     ret->position[1] = position[1].evaluate(ctx->exec);
     ctx->xform->transform(ret->position[0], ret->position[1]);
 
-    if (extentScalable.evaluate(ctx->exec))
+    if (sizeScalable.evaluate(ctx->exec))
     {
         ret->extent[0] = fabs(extent[0].evaluate(ctx->exec) * fabs(ctx->xform->x0));
         ret->extent[1] = fabs(extent[1].evaluate(ctx->exec) * fabs(ctx->xform->y1));
@@ -673,7 +673,7 @@ void SE_Style::evaluate(SE_EvalContext* ctx)
                     {
                         SE_RenderRaster* rr = (SE_RenderRaster*)rsym;
                         growxf.transform(rr->position[0], rr->position[1]);
-                        rr->extent[0] *= scalex;    // TODO: should this only be done if ExtentScalable is true?
+                        rr->extent[0] *= scalex;    // TODO: should this only be done if SizeScalable is true?
                         rr->extent[1] *= scaley;
                         for (int j=0; j<4; ++j)
                             growxf.transform(rr->bounds[j].x, rr->bounds[j].y);
@@ -793,7 +793,7 @@ void SE_LineStyle::evaluate(SE_EvalContext* ctx)
     else // default is Round
         style->vertexJoin = SE_LineJoin_Round;
 
-    double wx                      = dpWeightScalable.evaluate(ctx->exec)? fabs(ctx->xform->x0) : ctx->mm2sud;
+    double wx                      = dpWeightScalable.evaluate(ctx->exec)? fabs(ctx->xform->x0) : ctx->mm2su;
     style->dpLineStroke.weight     = dpWeight.evaluate(ctx->exec) * wx;
     style->dpLineStroke.color      = dpColor.evaluate(ctx->exec);
     style->dpLineStroke.miterLimit = dpMiterLimit.evaluate(ctx->exec);
