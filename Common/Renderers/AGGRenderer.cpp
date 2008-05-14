@@ -534,7 +534,7 @@ void AGGRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allo
         use_mdef = RS_MarkerDef(RS_MarkerType_Marker,
                                 mdef.width(),
                                 mdef.height(),
-                                0.5, 0.5,
+                                mdef.insx(), mdef.insy(),
                                 mdef.rotation(),
                                 mdef.units(),
                                 SLDType_Square,
@@ -851,6 +851,12 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
             double cx = dst.minx + dst.width() * (0.5 - refX);
             double cy = dst.miny + dst.height() * (0.5 - refY);
+
+            SE_Matrix mtx;
+            mtx.translate(-dst.minx, -dst.miny);
+            mtx.rotate(angleRad);
+            mtx.translate(dst.minx, dst.miny);
+            mtx.transform(cx, cy);
 
             WorldToScreenPoint(cx, cy, cx, cy);
 
