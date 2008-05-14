@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Buffer
  *
- * $Id: Buffer.js 1134 2007-12-19 18:03:28Z zak $
+ * $Id: Buffer.js 1325 2008-03-05 22:07:43Z zak $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -212,6 +212,7 @@ Fusion.Widget.Buffer.prototype = {
         var s = aMaps[0].arch + '/' + Fusion.getScriptLanguage() + "/Buffer." + Fusion.getScriptLanguage();
         var params = {};
         params.parameters = 'locale='+Fusion.locale +
+                            '&merge=1' +
                             '&session='+aMaps[0].getSessionID() +
                             '&mapname='+ aMaps[0].getMapName()+
                             layer+distance+borderColor+fillColor; 

@@ -2,7 +2,7 @@
 /**
  * LoadMap
  *
- * $Id: LoadMap.php 1239 2008-02-22 16:23:40Z madair $
+ * $Id: LoadMap.php 1240 2008-02-22 16:25:46Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a

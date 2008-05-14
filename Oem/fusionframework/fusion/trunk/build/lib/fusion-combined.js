@@ -282,7 +282,7 @@ Fusion.Error.prototype = {
 };/**
  * Fusion.Lib.ApplicationDefinition
  *
- * $Id: $
+ * $Id: ApplicationDefinition.js 1400 2008-05-09 17:30:51Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -699,61 +699,85 @@ Fusion.Lib.ApplicationDefinition.MapGroup.prototype = {
         if (jsonNode.Map instanceof Array) {
             for (var i=0; i<jsonNode.Map.length; i++) {
                 var map = new Fusion.Lib.ApplicationDefinition.Map(jsonNode.Map[i]);
+                var links = {groups:[], layers:[]};
+                var mapEvents = {layerEvents:{},groupEvents:{}};
+                if (jsonNode.Map[i].Extension) {
+                    var extension = jsonNode.Map[i].Extension[0];
+                    if (extension.Links) {
+                        /* process Groups */
+                        if (extension.Links[0].Group instanceof Array) {
+                            for (var j=0; j<extension.Links[0].Group.length; j++) {
+                                var group = extension.Links[0].Group[j];
+                                links.groups.push({name:group.Name,url:group.Url});
+                            }
+                        }
+                        if (extension.Links[0].Layer instanceof Array) {
+                            for (var j=0; j<extension.Links[0].Layer.length; j++) {
+                                var layer = extension.Links[0].Layer[j];
+                                links.layers.push({name:layer.Name,url:layer.Url});
+                            }
+                        }
+                    }
+                    /* process layer events */
+                    //TODO: Should this be called MapEvents?
+                    if (extension.MapEvents) {
+                        if (extension.MapEvents[0].Layer instanceof Array) {
+                            for (var j=0; j<extension.MapEvents[0].Layer.length; j++) {
+                                var layer = extension.MapEvents[0].Layer[j];
+                                var layerObj = {};
+                                layerObj.name = layer.Name[0];
+                                layerObj.onEnable = [];
+                                if (layer.OnEnable instanceof Array) {
+                                    layerObj.onEnable = this.parseMapEventSubBlock(layer.OnEnable[0]);
+                                }
+                                layerObj.onDisable = [];
+                                if (layer.OnDisable instanceof Array) {
+                                    layerObj.onDisable = this.parseMapEventSubBlock(layer.OnDisable[0]);
+                                }
+                                mapEvents.layerEvents[layerObj.name] = layerObj;
+                            }
+                        }
+                        if (extension.MapEvents[0].Group instanceof Array) {
+                            for (var j=0; j<extension.MapEvents[0].Group.length; j++) {
+                                var group = extension.MapEvents[0].Group[j];
+                                var groupObj = {};
+                                groupObj.name = group.Name[0];
+                                groupObj.onEnable = [];
+                                if (layer.OnEnable instanceof Array) {
+                                    groupObj.onEnable = this.parseMapEventSubBlock(group.OnEnable[0]);
+                                }
+                                groupObj.onDisable = [];
+                                if (layer.OnDisable instanceof Array) {
+                                    groupObj.onDisable = this.parseMapEventSubBlock(group.OnDisable[0]);
+                                }
+                                mapEvents.groupEvents[groupObj.name] = groupObj;
+                            }
+                        }
+                    }
+                }
+                map.mapInfo = {links: links, mapEvents: mapEvents};
                 this.maps.push(map);
             }
         } else {
             //TODO: do we need a warning that there are no layers in this map?
         }
-        this.links = {groups:[], layers:[]};
-        this.layerEvents = {};
-        if (jsonNode.Extension) {
-            var extension = jsonNode.Extension[0];
-            if (extension.Links) {
-                /* process Groups */
-                if (extension.Links[0].Group instanceof Array) {
-                    for (var j=0; j<extension.Links[0].Group.length; j++) {
-                        var group = extension.Links[0].Group[j];
-                        this.links.groups.push({name:group.Name,url:group.Url});
-                    }
-                }
-                if (extension.Links[0].Layer instanceof Array) {
-                    for (var j=0; j<extension.Links[0].Layer.length; j++) {
-                        var layer = extension.Links[0].Layer[j];
-                        this.links.layers.push({name:layer.Name,url:layer.Url});
-                    }
-                }
+    },
+    
+    parseMapEventSubBlock: function(block) {
+        var a = [];
+        if (block.Layer && block.Layer instanceof Array) {
+            for (var i=0; i<block.Layer.length; i++) {
+                var layer = block.Layer[i];
+                a.push({type: 'layer', name:layer.Name[0], enable: layer.Enable[0] == 'true' ? true : false});
             }
-            /* process layer events */
-            //TODO: Should this be called MapEvents?
-            if (extension.LayerEvents) {
-                if (extension.LayerEvents[0].Layer instanceof Array) {
-                    for (var j=0; j<extension.LayerEvents[0].Layer.length; j++) {
-                        var layer = extension.LayerEvents[0].Layer[j];
-                        var layerObj = {};
-                        layerObj.name = layer.Name[0];
-                        layerObj.onEnable = [];
-                        layerObj.onDisable = [];
-                        
-                        if (layer.OnEnable instanceof Array) {
-                            for (var k=0; k<layer.OnEnable[0].Layer.length; k++) {
-                                var kLayer = layer.OnEnable[0].Layer[k];
-                                layerObj.onEnable.push({name:kLayer.Name[0], enable: kLayer.Enable[0] == 'true' ? true : false});
-                            }
-                        }
-                        if (layer.OnDisable instanceof Array) {
-                            for (var k=0; k<layer.OnDisable[0].Layer.length; k++) {
-                                var kLayer = layer.OnDisable[0].Layer[k];
-                                layerObj.onDisable.push({name:kLayer.Name[0], enable: kLayer.Enable[0] == 'true' ? true : false});
-                            }
-                        }
-                        this.layerEvents[layerObj.name] = layerObj;
-                    }
-                }
-            }
-        } else {
-            this.extension = {};
         }
-        
+        if (block.Group && block.Group instanceof Array) {
+            for (var i=0; i<block.Group.length; i++) {
+                var group = block.Group[i];
+                a.push({type: 'group', name:group.Name[0], enable: group.Enable[0] == 'true' ? true : false});
+            }            
+        }
+        return a;
     },
     
     getInitialView: function() {
@@ -1020,7 +1044,7 @@ Fusion.Lib.ApplicationDefinition.Container.prototype = {
             this.createWidgets(widgetSet, container);
         }
         if (container && container.domObj.jxLayout) {
-            container.domObj.jxLayout.resize();
+            container.domObj.jxLayout.resize({forceResize: true});
         }
     },
     
@@ -1445,7 +1469,7 @@ Fusion.Lib.ApplicationDefinition.SearchCondition.prototype = {
 /**
  * Fusion.Lib.MGBroker
  *
- * $Id: MGBroker.js 974 2007-10-16 20:55:51Z madair $
+ * $Id: MGBroker.js 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -1588,7 +1612,7 @@ Fusion.Lib.MGRequest.prototype = {
      */
     initializeRequest : function() {
         this.options = { method:'post' };
-        this.parameters = { version : '1.0.0', locale : Fusion.locale };
+        this.parameters = { version : '1.0.0', locale : Fusion.locale, clientagent : 'Fusion Viewer' };
     },
     
     /**
@@ -2041,11 +2065,13 @@ Object.extend(  Fusion.Lib.MGRequest.MGQueryMapFeatures.prototype, {
      * @param maxFeatures {integer} number of maximum results (-1 to indicate no maximum)
      * @param selectionPersist {boolean} save the selection (valid values are 0 and 1) 
      * @param selectionVariant {String} indicates the spatial operation. Valid values are 'INTERSECTS', ...
-     *@param layerNames {String} comma separated list of layer names to include in the query
+     * @param layerNames {String} comma separated list of layer names to include in the query
+     * @param layerAttributeFilter {integer} bitmask determining layer selection behaviour (1=visible layers,
+     *          2=selectable layers, 4=layers with tooltips)
      *
      * @return {Object} an instance of Fusion.Lib.MGRequest.MGQueryMapFeatures
      */
-    initialize : function( sessionId, mapName, geometry, maxFeatures, persist, selectionVariant, layerNames ) 
+    initialize : function( sessionId, mapName, geometry, maxFeatures, persist, selectionVariant, layerNames, layerAttributeFilter ) 
     {
         this.initializeRequest();
         this.setParams( {
@@ -2056,7 +2082,8 @@ Object.extend(  Fusion.Lib.MGRequest.MGQueryMapFeatures.prototype, {
             maxFeatures: maxFeatures,
             persist: persist,
             selectionVariant: selectionVariant,
-            layerNames: layerNames
+            layerNames: layerNames,
+            layerAttributeFilter: layerAttributeFilter
         } );
     }
 });
@@ -2373,7 +2400,7 @@ Fusion.Tool.ButtonBase.prototype = {
 /**
  * Fusion.Tool.MenuBase
  *
- * $Id: $
+ * $Id: MenuBase.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -2553,7 +2580,7 @@ Fusion.Tool.Button.prototype = {
 /**
  * Fusion.Tool.Canvas
  *
- * $Id: CanvasTool.js 1307 2008-03-04 22:14:22Z madair $
+ * $Id: CanvasTool.js 1308 2008-03-04 22:15:11Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -3506,7 +3533,8 @@ Fusion.Tool.Canvas.Style.prototype = {
             }
         }
     }
-};/**
+};
+/**
  * Fusion.Tool.Click
  *
  * $Id: ClickTool.js 970 2007-10-16 20:09:08Z madair $
@@ -3877,7 +3905,7 @@ Fusion.Tool.Search.prototype = {
 /**
  * Fusion.Widget.Map
  *
- * $Id: Map.js 1243 2008-02-22 16:43:04Z madair $
+ * $Id: Map.js 1401 2008-05-09 17:32:10Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -4516,6 +4544,36 @@ Fusion.Widget.Map.prototype =
         return (nPixels*resolution);
     },
     
+  /**
+     *
+     * initializes the meters per unit values when a new map is loaded.  Some systems make different 
+     * assumptions for the conversion of degrees to meters so this makes sure both Fusion and
+     * OpenLayers are using the same value.
+     *
+     * @param metersPerUnit the value returned by LoadMap.php for meters per unit
+     */
+    setMetersPerUnit: function(metersPerUnit) {
+        if (this._fMetersperunit < 0) {
+            Fusion.initUnits(metersPerUnit);
+            this._fMetersperunit = metersPerUnit;
+        } else {
+            if (metersPerUnit != this._fMetersperunit) {
+                Fusion.reportError(new Fusion.Error(Fusion.Error.WARNING, 
+                                    'meters per unit value already set'));
+            }
+        }
+    },
+    
+    /**
+     *
+     * returns the meters per unit value
+     *
+     * @return metersPerUnit the value as set when the map initialized
+     */
+    getMetersPerUnit: function() {
+        return this._fMetersperunit;
+    },
+    
     /**
      *
      * convert geographic into pixels.
@@ -5020,7 +5078,7 @@ GxSelectionObjectLayer.prototype = {
 /**
  * Fusion.Maps.MapGuide
  *
- * $Id: MapGuide.js 1262 2008-02-25 16:00:37Z madair $
+ * $Id: MapGuide.js 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -5070,6 +5128,8 @@ Fusion.Maps.MapGuide.prototype = {
 
     //the resource id of the current MapDefinition
     _sResourceId: null,
+
+    clientAgent: 'Fusion Viewer',
     
     initialize : function(map, mapTag, isMapWidgetLayer) {
         // console.log('MapGuide.initialize');
@@ -5086,7 +5146,7 @@ Fusion.Maps.MapGuide.prototype = {
         if (isMapWidgetLayer != null) {
             this.bIsMapWidgetLayer = isMapWidgetLayer;
         }
-        
+        this.mapInfo = mapTag.mapInfo;
         var extension = mapTag.extension; //TBD: this belongs in layer tag?
         this.selectionType = extension.SelectionType ? extension.SelectionType[0] : 'INTERSECTS';
         this.ratio = extension.MapRatio ? extension.MapRatio[0] : 1.0;
@@ -5100,8 +5160,8 @@ Fusion.Maps.MapGuide.prototype = {
           if (ctrlClickEnabled) {
             this.map = this.mapWidget.oMapOL;
             this.handler = new OpenLayers.Handler.Click(this,
-                                  {click: this.mouseUpCRTLClick.bind(this)},
-                                  {keyMask: OpenLayers.Handler.MOD_CTRL});
+                {click: OpenLayers.Function.bind(this.mouseUpCRTLClick, this)},
+                {keyMask: OpenLayers.Handler.MOD_CTRL});
             this.handler.activate();
             this.nTolerance = 2; //pixels, default pixel tolernace for a point click; TBD make this configurable
           }
@@ -5138,21 +5198,22 @@ Fusion.Maps.MapGuide.prototype = {
             this.session[0] = this;
             var sl = Fusion.getScriptLanguage();
             var scriptURL = this.arch + '/' + sl + '/CreateSession.' + sl;
-            var options = {onComplete: this.createSessionCB.bind(this)};
+            var options = {onSuccess: OpenLayers.Function.bind(this.createSessionCB, this)};
             Fusion.ajaxRequest(scriptURL,options);  
         }
         if (this.session[0] instanceof Fusion.Maps.MapGuide) {
             // console.log('register for event');
-            this.session[0].registerForEvent(Fusion.Event.MAP_SESSION_CREATED, this.mapSessionCreated.bind(this));
+            this.session[0].registerForEvent(Fusion.Event.MAP_SESSION_CREATED, 
+                OpenLayers.Function.bind(this.mapSessionCreated, this));
         } else {
             this.mapSessionCreated();
         }
     },
     
-    createSessionCB : function(r, json) {
-        if (r.status == 200 && json) {
+    createSessionCB : function(xhr) {
+        if (xhr.status == 200) {
             var o;
-            eval('o='+r.responseText);
+            eval('o='+xhr.responseText);
             this.session[0] = o.sessionId;
             this.triggerEvent(Fusion.Event.MAP_SESSION_CREATED);
         }
@@ -5162,7 +5223,7 @@ Fusion.Maps.MapGuide.prototype = {
         if (this.sMapResourceId != '') {
             this.loadMap(this.sMapResourceId);
         }
-        window.setInterval(this.pingServer.bind(this), this.keepAliveInterval * 1000);
+        window.setInterval(OpenLayers.Function.bind(this.pingServer, this), this.keepAliveInterval * 1000);
     },
 
     sessionReady: function() {
@@ -5223,20 +5284,20 @@ Fusion.Maps.MapGuide.prototype = {
         
         var sessionid = this.getSessionID();
         
-        var params = 'mapid='+resourceId+"&session="+sessionid;
-        var options = {onSuccess: this.mapLoaded.bind(this), parameters:params};
+        var params = {'mapid': resourceId, "session": sessionid};
+        var options = {onSuccess: OpenLayers.Function.bind(this.mapLoaded,this), 
+                       parameters:params};
         Fusion.ajaxRequest(loadmapScript, options);
     },
     
-    mapLoaded: function(r, json) {
-        if (json) {
+    mapLoaded: function(r) {
+        if (r.status == 200) {
             var o;
             eval('o='+r.responseText);
             this._sResourceId = o.mapId;
             this._sMapname = o.mapName;
             this._sMapTitle = o.mapTitle;
-            this._fMetersperunit = o.metersPerUnit;
-            this.mapWidget._fMetersperunit = this._fMetersperunit;
+            this.mapWidget.setMetersPerUnit(o.metersPerUnit);
 
             this._oMaxExtent = OpenLayers.Bounds.fromArray(o.extent); 
 
@@ -5300,13 +5361,10 @@ Fusion.Maps.MapGuide.prototype = {
               }
             }
 
-            //TODO: get this from the layerTag.extension
-            //this.oMapInfo = Fusion.oConfigMgr.getMapInfo(this._sResourceId);
-
             //set projection units and code if supplied
             //TODO: consider passing the metersPerUnit value into the framework
             //to allow for scaling that doesn't match any of the pre-canned units
-            this.units = this.getClosestUnits(o.metersPerUnit);
+            this.units = Fusion.getClosestUnits(o.metersPerUnit);
             
             //add in scales array if supplied
             if (o.FiniteDisplayScales && o.FiniteDisplayScales.length>0) {
@@ -5337,29 +5395,10 @@ Fusion.Maps.MapGuide.prototype = {
               this.triggerEvent(Fusion.Event.MAP_LOADED);
             }
             this.bMapLoaded = true;
-        } else {
-            Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 
-                OpenLayers.String.translate('mapLoadError', r.responseText)));
         }
         this.mapWidget._removeWorker();
     },
     
-    getClosestUnits: function(metrsPerUnit) {
-        
-        var units = "degrees";
-        var minDiff = 100000000;
-        for (var key in OpenLayers.INCHES_PER_UNIT)        
-        {
-            var newDiff = Math.abs((metrsPerUnit * 39.3701) - OpenLayers.INCHES_PER_UNIT[key]);
-            if(newDiff < minDiff)
-            {
-                minDiff = newDiff;
-                units = key;
-            }
-        }
-        return units;
-    },
-
 //TBD: this function not yet converted for OL    
     reloadMap: function() {
         
@@ -5379,13 +5418,12 @@ Fusion.Maps.MapGuide.prototype = {
         
         var sessionid = this.getSessionID();
         
-        var params = 'mapname='+this._sMapname+"&session="+sessionid;
-        var options = {onSuccess: this.mapReloaded.bind(this), 
-                      onException: this.reloadFailed.bind(this),
-                      parameters: params};
+        var params = {'mapname': this._sMapname, 'session': sessionid};
+        var options = {
+              onSuccess: OpenLayers.Function.bind(this.mapReloaded,this), 
+              onException: OpenLayers.Function.bind(this.reloadFailed, this),
+              parameters: params};
         Fusion.ajaxRequest(loadmapScript, options);
-        
-        
     },
 
     reloadFailed: function(r) {
@@ -5395,8 +5433,8 @@ Fusion.Maps.MapGuide.prototype = {
     },
 
 //TBD: this function not yet converted for OL    
-    mapReloaded: function(r,json) {
-        if (json) {
+    mapReloaded: function(r) {
+        if (r.status == 200) {
             var o;
             eval('o='+r.responseText);
             this.parseMapLayersAndGroups(o);
@@ -5412,9 +5450,6 @@ Fusion.Maps.MapGuide.prototype = {
             this.oldLayers = null;
             this.mapWidget.triggerEvent(Fusion.Event.MAP_RELOADED);
             this.drawMap();
-        } else {
-            Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 
-                OpenLayers.String.translate('mapLoadError', r.responseText)));
         }
         this.mapWidget._removeWorker();
     },
@@ -5423,18 +5458,20 @@ Fusion.Maps.MapGuide.prototype = {
         var sl = Fusion.getScriptLanguage();
         var loadmapScript = this.arch + '/' + sl  + '/SetLayers.' + sl;
         
-        var sessionid = this.getSessionID();
+        var params = {
+            'mapname': this._sMapname, 
+            'session': this.getSessionID(),
+            'layerindex': aLayerIndex.join()
+        };
         
-        var params = 'mapname='+this._sMapname+"&session="+sessionid;
-        params += '&layerindex=' + aLayerIndex.join();
-        
-        var options = {onSuccess: this.mapLayersReset.bind(this, aLayerIndex), 
-                                     parameters: params};
+        var options = {
+            onSuccess: OpenLayers.Function.bind(this.mapLayersReset, this, aLayerIndex), 
+            parameters: params};
         Fusion.ajaxRequest(loadmapScript, options);
     },
     
-    mapLayersReset: function(aLayerIndex,r,json) {  
-      if (json) {
+    mapLayersReset: function(aLayerIndex,r) {  
+      if (r.status == 200) {
         var o;
         eval('o='+r.responseText);
             if (o.success) {
@@ -5486,7 +5523,8 @@ Fusion.Maps.MapGuide.prototype = {
             return;
         }
         
-        var options = {
+        var params = {
+          ts : (new Date()).getTime(),  //add a timestamp to prevent caching on the server
           showLayers : this.aShowLayers.length > 0 ? this.aShowLayers.toString() : null,
           hideLayers : this.aHideLayers.length > 0 ? this.aHideLayers.toString() : null,
           showGroups : this.aShowGroups.length > 0 ? this.aShowGroups.toString() : null,
@@ -5499,8 +5537,7 @@ Fusion.Maps.MapGuide.prototype = {
         this.aHideGroups = [];
         this.aRefreshLayers = [];
 
-        this.oLayerOL.addOptions(options);
-        this.oLayerOL.mergeNewParams({ts : (new Date()).getTime()});
+        this.oLayerOL.mergeNewParams(params);
         if (this.queryLayer) this.queryLayer.redraw();
     },
 
@@ -5533,18 +5570,20 @@ Fusion.Maps.MapGuide.prototype = {
       if ( bSingleTile ) {
         params = {        //single tile params
           session : this.getSessionID(),
-          mapname : this._sMapname
+          mapname : this._sMapname,
+          clientagent : this.clientAgent
         };
-        layerOptions.showLayers = this.aShowLayers.length > 0 ? this.aShowLayers.toString() : null;
-        layerOptions.hideLayers = this.aHideLayers.length > 0 ? this.aHideLayers.toString() : null;
-        layerOptions.showGroups = this.aShowGroups.length > 0 ? this.aShowGroups.toString() : null;
-        layerOptions.hideGroups = this.aHideGroups.length > 0 ? this.aHideGroups.toString() : null;
-        layerOptions.refreshLayers = this.aRefreshLayers.length > 0 ? this.aRefreshLayers.toString() : null;
+        params.showLayers = this.aShowLayers.length > 0 ? this.aShowLayers.toString() : null;
+        params.hideLayers = this.aHideLayers.length > 0 ? this.aHideLayers.toString() : null;
+        params.showGroups = this.aShowGroups.length > 0 ? this.aShowGroups.toString() : null;
+        params.hideGroups = this.aHideGroups.length > 0 ? this.aHideGroups.toString() : null;
+        params.refreshLayers = this.aRefreshLayers.length > 0 ? this.aRefreshLayers.toString() : null;
 
       } else {
         params = {      //tiled version
           mapdefinition: this._sResourceId,
-          basemaplayergroupname: this.groupName  //assumes only one group for now
+          basemaplayergroupname: this.groupName,  //assumes only one group for now
+          clientagent : this.clientAgent
         };
       }
 
@@ -5583,8 +5622,8 @@ Fusion.Maps.MapGuide.prototype = {
 
     hasSelection: function() { return this.bSelectionOn; },
     
-    getSelectionCB : function(userFunc, layers, startend, r, json) {
-      if (json) 
+    getSelectionCB : function(userFunc, layers, startend, r) {
+      if (r.status == 200) 
       {
           var o;
           eval("o="+r.responseText);
@@ -5663,10 +5702,14 @@ Fusion.Maps.MapGuide.prototype = {
       this.mapWidget._addWorker();
       var sl = Fusion.getScriptLanguage();
       var setSelectionScript = this.arch + '/' + sl  + '/SetSelection.' + sl;
-      var params = 'mapname='+this.getMapName()+"&session="+this.getSessionID();
-      params += '&selection=' + encodeURIComponent(selText);
-      params += '&seq=' + Math.random();
-      var options = {onSuccess: this.processQueryResults.bind(this, zoomTo), parameters:params, asynchronous:false};
+      var params = {
+          'mapname': this.getMapName(),
+          'session': this.getSessionID(),
+          'selection': encodeURIComponent(selText),
+          'seq': Math.random()
+      };
+      var options = {onSuccess: OpenLayers.Function.bind(this.processQueryResults, this, zoomTo), 
+                     parameters:params, asynchronous:false};
       Fusion.ajaxRequest(setSelectionScript, options);
     },
 
@@ -5703,9 +5746,14 @@ Fusion.Maps.MapGuide.prototype = {
           //this.mapWidget._addWorker();
           // this._bSelectionIsLoading = true;
           var s = this.arch + '/' + Fusion.getScriptLanguage() + "/Selection." + Fusion.getScriptLanguage() ;
-          var params = {parameters:'session='+this.getSessionID()+'&mapname='+ this._sMapname +'&layers='+layers+'&startcount='+startcount, 
-                        onComplete: this.getSelectionCB.bind(this, userFunc, layers, startcount)};
-          Fusion.ajaxRequest(s, params);
+          var options = {
+              parameters: {'session': this.getSessionID(),
+                          'mapname': this._sMapname,
+                          'layers': layers,
+                          'startcount': startcount},
+              onSuccess: OpenLayers.Function.bind(this.getSelectionCB, this, userFunc, layers, startcount)
+          };
+          Fusion.ajaxRequest(s, options);
       }
     },
 
@@ -5733,9 +5781,13 @@ Fusion.Maps.MapGuide.prototype = {
     */
     clearSelection : function() {
       if (this.hasSelection()) {
-        var s = this.arch + '/' + Fusion.getScriptLanguage() + "/ClearSelection." + Fusion.getScriptLanguage() ;
-        var params = {parameters:'session='+this.getSessionID()+'&mapname='+ this._sMapname, onComplete: this.selectionCleared.bind(this)};
-        Fusion.ajaxRequest(s, params);
+          var s = this.arch + '/' + Fusion.getScriptLanguage() + "/ClearSelection." + Fusion.getScriptLanguage() ;
+          var options = {
+              parameters: {'session': this.getSessionID(),
+                          'mapname': this._sMapname},
+              onSuccess: OpenLayers.Function.bind(this.selectionCleared, this)
+          };
+          Fusion.ajaxRequest(s, options);
       }
     },
 
@@ -5764,7 +5816,8 @@ Fusion.Maps.MapGuide.prototype = {
                 if (!this.queryLayer) {
                   this.queryLayer = this.createOLLayer("query layer", false, true);
                   this.mapWidget.oMapOL.addLayer(this.queryLayer);
-                  this.mapWidget.registerForEvent(Fusion.Event.MAP_LOADING, this.removeQueryLayer.bind(this));
+                  this.mapWidget.registerForEvent(Fusion.Event.MAP_LOADING, 
+                        OpenLayers.Function.bind(this.removeQueryLayer, this));
                 } else {
                   this.queryLayer.setVisibility(true);
                 }
@@ -5804,75 +5857,131 @@ Fusion.Maps.MapGuide.prototype = {
           this.aLayers[j].selectedFeatureCount = 0;
         }
 
-        var geometry = options.geometry || '';
-        var maxFeatures = options.maxFeatures || 0; //zero means select all features
         var bPersistant = options.persistent || true;
-        var selectionType = options.selectionType || this.selectionType;
-        var filter = options.filter ? '&filter='+options.filter : '';
-        var layers = options.layers || '';
-        var extend = options.extendSelection ? '&extendselection=true' : '';
-        var computed = options.computedProperties ? '&computed=true' : '';
+        var zoomTo = options.zoomTo ?  true : false;
         var sl = Fusion.getScriptLanguage();
         var loadmapScript = this.arch + '/' + sl  + '/Query.' + sl;
 
-        var sessionid = this.getSessionID();
-
-        var params = 'mapname='+this._sMapname+"&session="+sessionid+'&spatialfilter='+geometry+'&maxfeatures='+maxFeatures+filter+'&layers='+layers+'&variant='+selectionType+extend+computed;
-        var options = {onSuccess: this.processQueryResults.bind(this, false), 
-                                     parameters: params};
-        Fusion.ajaxRequest(loadmapScript, options);
+        var params = {
+            'mapname': this._sMapname,
+            'session': this.getSessionID(),
+            'spatialfilter': options.geometry || '',
+            'maxfeatures': options.maxFeatures || 0, //zero means select all features
+            'layers': options.layers || '',
+            'variant': options.selectionType || this.selectionType
+        }
+        if (options.filter) {
+            params.filter= options.filter;
+        }
+        if (options.extendSelection) {
+            params.extendselection = true;
+        }
+        if (options.computedProperties) {
+            params.computed = true;
+        }
+        var ajaxOptions = {
+            onSuccess: OpenLayers.Function.bind(this.processQueryResults, this, zoomTo), 
+            parameters: params};
+        Fusion.ajaxRequest(loadmapScript, ajaxOptions);
     },
     
-    showLayer: function( layer ) {
-        if (this.oMapInfo && this.oMapInfo.layerEvents[layer.layerName]) {
-            var layerEvent = this.oMapInfo.layerEvents[layer.layerName];
-            for (var i=0; i<layerEvent.onEnable.length; i++) {
-                var l = this.layerRoot.findLayer(layerEvent.onEnable[i].name);
-                if (l) {
-                    if (layerEvent.onEnable[i].enable) {
-                        l.show();
-                    } else {
-                        l.hide();
+    processLayerEvents: function(layer, isEnabling) {
+        if (this.mapInfo && this.mapInfo.mapEvents.layerEvents[layer.layerName]) {
+            var layerEvent = this.mapInfo.mapEvents.layerEvents[layer.layerName];
+            var events = isEnabling ? layerEvent.onEnable : layerEvent.onDisable;
+            for (var i=0; i<events.length; i++) {
+                var o = events[i];
+                if (o.type == 'layer') {
+                    var l = this.layerRoot.findLayer(o.name);
+                    if (l) {
+                        if (o.enable) {
+                            l.show(true);
+                        } else {
+                            l.hide(true);
+                        }
+                    }
+                    
+                } else if (o.type == 'group') {
+                    var g = this.layerRoot.findGroupByAttribute('groupName', o.name);
+                    if (g) {
+                        if (o.enable) {
+                            g.show(true);
+                        } else {
+                            g.hide(true);
+                        }
                     }
                 }
             }
         }
-        this.aShowLayers.push(layer.uniqueId);
-        this.drawMap();
     },
     
-    hideLayer: function( layer ) {
-        if (this.oMapInfo && this.oMapInfo.layerEvents[layer.layerName]) {
-            var layerEvent = this.oMapInfo.layerEvents[layer.layerName];
-            for (var i=0; i<layerEvent.onDisable.length; i++) {
-                var l = this.layerRoot.findLayer(layerEvent.onDisable[i].name);
-                if (l) {
-                    if (layerEvent.onDisable[i].enable) {
-                        l.show();
-                    } else {
-                        l.hide();
+    processGroupEvents: function(group, isEnabling) {
+        if (this.mapInfo && this.mapInfo.mapEvents.groupEvents[group.groupName]) {
+            var groupEvent = this.mapInfo.mapEvents.groupEvents[group.groupName];
+            var events = isEnabling ? groupEvent.onEnable : groupEvent.onDisable;
+            for (var i=0; i<events.length; i++) {
+                var o = events[i];
+                if (o.type == 'layer') {
+                    var l = this.layerRoot.findLayer(o.name);
+                    if (l) {
+                        if (o.enable) {
+                            l.show(true);
+                        } else {
+                            l.hide(true);
+                        }
+                    }
+                    
+                } else if (o.type == 'group') {
+                    var g = this.layerRoot.findGroupByAttribute('groupName', o.name);
+                    if (g) {
+                        if (o.enable) {
+                            g.show(true);
+                        } else {
+                            g.hide(true);
+                        }
                     }
                 }
             }
-        }        
+        }
+    },
+        
+    showLayer: function( layer, noDraw ) {
+        this.processLayerEvents(layer, true);
+        this.aShowLayers.push(layer.uniqueId);
+        if (!noDraw) {
+            this.drawMap();
+        }
+    },
+    
+    hideLayer: function( layer, noDraw ) {
+        this.processLayerEvents(layer, false);
         this.aHideLayers.push(layer.uniqueId);
-        this.drawMap();
+        if (!noDraw) {
+            this.drawMap();
+        }
     },
-    showGroup: function( group ) {
-      if (group.groupName == 'layerRoot') {
-        this.oLayerOL.setVisibility(true);
-      } else {
-        this.aShowGroups.push(group.uniqueId);
-        this.drawMap();
-      }
+    
+    showGroup: function( group, noDraw ) {
+        this.processGroupEvents(group, true);
+        if (group.groupName == 'layerRoot') {
+            this.oLayerOL.setVisibility(true);
+        } else {
+            this.aShowGroups.push(group.uniqueId);
+            if (!noDraw) {
+                this.drawMap();
+            }
+        }
     },
-    hideGroup: function( group ) {
-      if (group.groupName == 'layerRoot') {
-        this.oLayerOL.setVisibility(false);
-      } else {
-        this.aHideGroups.push(group.uniqueId);
-        this.drawMap();
-      }
+    hideGroup: function( group, noDraw ) {
+        this.processGroupEvents(group, false);
+        if (group.groupName == 'layerRoot') {
+            this.oLayerOL.setVisibility(false);
+        } else {
+            this.aHideGroups.push(group.uniqueId);
+            if (!noDraw) {
+                this.drawMap();
+            }
+        }
     },
     refreshLayer: function( layer ) {
         this.aRefreshLayers.push(layer.uniqueId);        
@@ -5909,6 +6018,7 @@ Fusion.Maps.MapGuide.prototype = {
         var persist = 0;
         var selection = 'INTERSECTS';
         var layerNames = '';
+        var layerAttributeFilter = 3;
         var sep = '';
         for (var i=0; i<this.aLayers.length; ++i) {
           layerNames += sep + this.aLayers[i].layerName;
@@ -5917,7 +6027,8 @@ Fusion.Maps.MapGuide.prototype = {
         var r = new Fusion.Lib.MGRequest.MGQueryMapFeatures(this.mapWidget.getSessionID(),
                                                             this._sMapname,
                                                             sGeometry,
-                                                            maxFeatures, persist, selection, layerNames);
+                                                            maxFeatures, persist, selection, layerNames, 
+                                                            layerAttributeFilter);
         Fusion.oBroker.dispatchRequest(r, this.crtlClickDisplay.bind(this));
       }
     },
@@ -5939,8 +6050,30 @@ Fusion.Maps.MapGuide.prototype = {
     pingServer: function() {
         var s = this.arch + '/' + Fusion.getScriptLanguage() + "/Common." + Fusion.getScriptLanguage() ;
         var params = {};
-        params.parameters = 'session='+this.getSessionID();
+        params.parameters = {'session': this.getSessionID()};
         Fusion.ajaxRequest(s, params);
+    },
+    getGroupInfoUrl: function(groupName) {
+        if (this.mapInfo) {
+            var groups = this.mapInfo.links.groups;
+            for (var i=0; i<groups.length; i++) {
+                if (groups[i].name == groupName) {
+                    return groups[i].url;
+                }
+            }
+        }
+        return null;
+    },
+    getLayerInfoUrl: function(layerName) {
+        if (this.mapInfo) {
+            var layers = this.mapInfo.links.layers;
+            for (var i=0; i<layers.length; i++) {
+                if (layers[i].name == layerName) {
+                    return layers[i].url;
+                }
+            }
+        }
+        return null;
     }
 };
     
@@ -5949,7 +6082,6 @@ Fusion.Maps.MapGuide.prototype = {
 *
 * Implements the map layer groups for MapGuide services
 */
-
 Fusion.Maps.MapGuide.Group = Class.create();
 Fusion.Maps.MapGuide.Group.prototype = {
     oMap: null,
@@ -5967,22 +6099,22 @@ Fusion.Maps.MapGuide.Group.prototype = {
         this.actuallyVisible = o.actuallyVisible;
     },
     
-    show: function() {
+    show: function(noDraw) {
         if (this.visible) {
             return;
         }
-        this.oMap.showGroup(this);
+        this.oMap.showGroup(this, noDraw ? true : false);
         this.visible = true;
         if (this.legend && this.legend.checkBox) {
             this.legend.checkBox.checked = true;
         }
     },
     
-    hide: function() {
+    hide: function(noDraw) {
         if (!this.visible) {
             return;
         }
-        this.oMap.hideGroup(this);
+        this.oMap.hideGroup(this, noDraw ? true : false);
         this.visible = false;
         if (this.legend && this.legend.checkBox) {
             this.legend.checkBox.checked = false;
@@ -6062,22 +6194,22 @@ Fusion.Maps.MapGuide.Layer.prototype = {
         return null;
     },
 
-    show: function() {
+    show: function(noDraw) {
         if (this.visible) {
             return;
         }
-        this.oMap.showLayer(this);
+        this.oMap.showLayer(this, noDraw ? true : false);
         this.set('visible', true);
         if (this.legend && this.legend.checkBox) {
             this.legend.checkBox.checked = true;
         }
     },
 
-    hide: function() {
+    hide: function(noDraw) {
         if (!this.visible) {
             return;
         }
-        this.oMap.hideLayer(this);
+        this.oMap.hideLayer(this, noDraw ? true : false);
         this.set('visible',false);
         if (this.legend && this.legend.checkBox) {
             this.legend.checkBox.checked = false;
@@ -6094,7 +6226,6 @@ Fusion.Maps.MapGuide.Layer.prototype = {
 *
 * Implements a scale range object for MapGuide services
 */
-
 Fusion.Maps.MapGuide.ScaleRange = Class.create();
 Fusion.Maps.MapGuide.ScaleRange.prototype = {
     styles: null,
@@ -6117,7 +6248,8 @@ Fusion.Maps.MapGuide.ScaleRange.prototype = {
         }
     },
     contains: function(fScale) {
-        return fScale >= this.minScale && fScale <= this.maxScale;
+        var testScale = Math.round(fScale);
+        return testScale >= this.minScale && testScale <= this.maxScale;
     }
 };
 
@@ -6129,6 +6261,7 @@ Fusion.Maps.MapGuide.ScaleRange.prototype = {
 
 Fusion.Maps.MapGuide.StyleItem = Class.create();
 Fusion.Maps.MapGuide.StyleItem.prototype = {
+    clientAgent: 'Fusion Viewer',
     initialize: function(o, staticIcon) {
         this.legendLabel = o.legendLabel;
         this.filter = o.filter;
@@ -6144,13 +6277,13 @@ Fusion.Maps.MapGuide.StyleItem.prototype = {
     },
     getLegendImageURL: function(fScale, layer) {
         var url = Fusion.getConfigurationItem('mapguide', 'mapAgentUrl');
-        return url + "OPERATION=GETLEGENDIMAGE&SESSION=" + layer.oMap.getSessionID() + "&VERSION=1.0.0&SCALE=" + fScale + "&LAYERDEFINITION=" + encodeURIComponent(layer.resourceId) + "&THEMECATEGORY=" + this.categoryIndex + "&TYPE=" + this.geometryType;
+        return url + "OPERATION=GETLEGENDIMAGE&SESSION=" + layer.oMap.getSessionID() + "&VERSION=1.0.0&SCALE=" + fScale + "&LAYERDEFINITION=" + encodeURIComponent(layer.resourceId) + "&THEMECATEGORY=" + this.categoryIndex + "&TYPE=" + this.geometryType + "&CLIENTAGENT=" + encodeURIComponent(this.clientAgent);
     }
 };
 /**
  * Fusion API AjaxViewer API layer
  *
- * $Id: MapGuide.js 1204 2008-02-01 19:41:53Z madair $
+ * $Id: MapGuideViewerApi.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -6398,7 +6531,7 @@ LineHandlers.prototype = {
         seg.to.updateGeo();
         this.clearContext();
         this.draw(this.context);
-    }
+    },
 }
     
 RectangleHandlers = Class.create();
@@ -6466,7 +6599,7 @@ RectangleHandlers.prototype = {
         this.seg4.from.updateGeo();
         this.clearContext();
         this.draw(this.context);
-    }
+    },
 }
     
 MultiPointHandlers = Class.create();
@@ -6591,7 +6724,7 @@ function Polygon()
 /**
  * Fusion.Maps.MapServer
  *
- * $Id: MapServer.js 1188 2008-01-15 16:10:51Z madair $
+ * $Id: MapServer.js 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -6614,7 +6747,7 @@ function Polygon()
  */
 
 /******************************************************************************
- * Class: Fusion.Maps.MapServer 
+ * Class: Fusion.Maps.MapServer
  *
  * Implementation of the map widget for MapServer CGI interface services
 */
@@ -6638,17 +6771,19 @@ Fusion.Maps.MapServer.prototype = {
     bMapLoaded : false,
     bIsMapWidgetLayer : true,  //Setthis to false for overview map layers
     bLayersReversed: true,     //MS returns layers bottom-most layer first, we treat layer order in reverse sense
+    mapMetadataKeys: null,
+    layerMetadataKeys: null,
 
     //the map file
     sMapFile: null,
-    
+
     //imagetype
     _sImageType : 'png',
-    
+
     initialize : function(map, mapTag, isMapWidgetLayer) {
         //console.log('Fusion.Maps.MapServer.initialize');
         Object.inheritFrom(this, Fusion.Lib.EventMgr, []);
-                
+
         this.registerEventID(Fusion.Event.MAP_SESSION_CREATED);
         this.registerEventID(Fusion.Event.MAP_SELECTION_ON);
         this.registerEventID(Fusion.Event.MAP_SELECTION_OFF);
@@ -6665,7 +6800,7 @@ Fusion.Maps.MapServer.prototype = {
         var extension = mapTag.extension;
         this.ratio = extension.MapRatio ? extension.MapRatio[0] : '1.0';
         //this.selectionType = extension.SelectionType ? extension.SelectionType[0] : 'INTERSECTS';
-        
+
         rootOpts = {
           displayInLegend: this.bDisplayInLegend,
           expandInLegend: this.bExpandInLegend,
@@ -6677,8 +6812,11 @@ Fusion.Maps.MapServer.prototype = {
           //TODO: set other opts for group initialization as required
         };
         this.layerRoot = new Fusion.Maps.MapServer.Group(rootOpts,this);
-        
+
         this.sMapFile = extension.MapFile ? extension.MapFile[0] : '';
+
+        this.mapMetadataKeys = extension.MapMetadata ? extension.MapMetadata[0] : null;
+        this.layerMetadataKeys = extension.LayerMetadata ? extension.LayerMetadata[0] : null;
 
         this.bSingleTile = mapTag.singleTile;// this is set by the AppDef.Map object
 
@@ -6698,7 +6836,7 @@ Fusion.Maps.MapServer.prototype = {
             var sl = Fusion.getScriptLanguage();
             var scriptURL = this.arch + '/' + sl + '/CreateSession.' + sl;
             var options = {onComplete: this.createSessionCB.bind(this)};
-            Fusion.ajaxRequest(scriptURL,options);  
+            Fusion.ajaxRequest(scriptURL,options);
         }
         if (this.session[0] instanceof Fusion.Maps.MapServer) {
             this.session[0].registerForEvent(Fusion.Event.MAP_SESSION_CREATED, this.mapSessionCreated.bind(this));
@@ -6706,7 +6844,7 @@ Fusion.Maps.MapServer.prototype = {
             this.mapSessionCreated();
         }
     },
-    
+
     createSessionCB : function(r, json) {
         if (r.status == 200 && json) {
             var o;
@@ -6730,18 +6868,18 @@ Fusion.Maps.MapServer.prototype = {
     getSessionID: function() {
         return this.session[0];
     },
-    
+
     getMapName: function() {
         return this._sMapname;
     },
-    
+
     getMapTitle: function() {
         return this._sMapTitle;
     },
-    
+
     loadMap: function(mapfile, options) {
         while (this.mapWidget.isBusy()) {
-	        this.mapWidget._removeWorker(); 
+	        this.mapWidget._removeWorker();
 		}
         this.bMapLoaded = false;
         //console.log('loadMap: ' + resourceId);
@@ -6754,59 +6892,68 @@ Fusion.Maps.MapServer.prototype = {
             this.sMapFile = mapfile;
             return;
         }
-        
+
         if (this.bIsMapWidgetLayer) {
             this.mapWidget.triggerEvent(Fusion.Event.MAP_LOADING);
         } else {
             this.triggerEvent(Fusion.Event.MAP_LOADING);
         }
         this.mapWidget._addWorker();
-        
+
         this._fScale = -1;
         this._nDpi = 72;
-        
+
         options = options || {};
-        
+
         this._oMaxExtent = null;
         this.aVisibleLayers = options.showlayers || [];
         this.aVisibleGroups = options.showgroups || [];
         this.aLayers = [];
-        
+
         this.oSelection = null;
         this.aSelectionCallbacks = [];
         this._bSelectionIsLoading = false;
 
         var sl = Fusion.getScriptLanguage();
         var loadmapScript = this.arch + '/' + sl  + '/LoadMap.' + sl;
-        
+
         var sessionid = this.getSessionID();
-        
-        var params = 'mapfile='+mapfile+"&session="+sessionid;
-        var options = {onSuccess: this.mapLoaded.bind(this), 
+
+        var metadata = '';
+        if (this.mapMetadataKeys) {
+            metadata += '&map_metadata='+this.mapMetadataKeys;
+        }
+        if (this.layerMetadataKeys) {
+            metadata += '&layer_metadata='+this.layerMetadataKeys;
+        }
+
+        var params = 'mapfile='+mapfile+"&session="+sessionid+metadata;
+        var options = {onSuccess: this.mapLoaded.bind(this),
                                      parameters: params};
         Fusion.ajaxRequest(loadmapScript, options);
     },
-    
-    mapLoaded: function(r, json) {
-        if (json)  
-        { 
-            var o; 
-            eval('o='+r.responseText); 
-            this._sMapFile = o.mapId;
-            this._sMapname = o.mapName; 
-            this._sMapTitle = o.mapTitle;
-            this._fMetersperunit = o.metersPerUnit; 
-            this.mapWidget._fMetersperunit = this._fMetersperunit;
-            this._sImageType = o.imagetype; 
 
-            this._oMaxExtent = OpenLayers.Bounds.fromArray(o.extent); 
-            
+    mapLoaded: function(r, json) {
+        if (json)
+        {
+            var o;
+            eval('o='+r.responseText);
+            this._sMapFile = o.mapId;
+            this._sMapname = o.mapName;
+            this._sMapTitle = o.mapTitle;
+            this.mapWidget.setMetersPerUnit(o.metersPerUnit);
+            this._sImageType = o.imagetype;
+            this.metadata = o.metadata;
+
+            this._oMaxExtent = OpenLayers.Bounds.fromArray(o.extent);
+
             this.layerRoot.clear();
             this.layerRoot.legendLabel = this._sMapTitle;
-            
+
             this.parseMapLayersAndGroups(o);
-      			var minScale = 1.0e10;
-      			var maxScale = 0;
+
+            var minScale = 1.0e10;
+            var maxScale = 0;
             for (var i=0; i<this.aLayers.length; i++) {
               if (this.aLayers[i].visible) {
                   this.aVisibleLayers.push(this.aLayers[i].layerName);
@@ -6818,36 +6965,23 @@ Fusion.Maps.MapServer.prototype = {
             if (minScale <= 0) {
               minScale = 1.0;
             }
-            
+
             if (o.dpi) {
                 OpenLayers.DOTS_PER_INCH = o.dpi;
             }
 
+            //to allow for scaling that doesn't match any of the pre-canned units
+            this.units = Fusion.getClosestUnits(o.metersPerUnit);
+            
             var layerOptions = {
-      				singleTile: true, 
+      				singleTile: true,
       				ratio: this.ratio,
+              units: this.units,
       				maxExtent : this._oMaxExtent,
               maxResolution : 'auto',
       				minScale : maxScale,	//OL interpretation of min/max scale is reversed from Fusion
       				maxScale : minScale
       			};
-
-            //set OpenLayer projection units and code if supplied (OL defaults units to degrees)
-            if (o.metersPerUnit == 0.0254)
-               layerOptions.units = 'inches';
-            else if (o.metersPerUnit == 0.3048)
-               layerOptions.units = 'ft';
-            else if (o.metersPerUnit == 1609.344)
-               layerOptions.units = 'mi';
-            else if (o.metersPerUnit == 1)
-               layerOptions.units = 'm';
-               //layerOptions.projection = 'EPSG:42304';  //TODO: not necessary, but can this be supplied by LoadMap?
-            else if (o.metersPerUnit == 1000)
-               layerOptions.units = 'km';
-            else if (o.metersPerUnit == 111118.7516)
-               layerOptions.units = 'dd';
-
-            //this.mapWidget.setMapOptions(oMapOptions);
 
             //create the OL layer for this Map layer
             var params = {
@@ -6882,15 +7016,15 @@ Fusion.Maps.MapServer.prototype = {
             }
 
             this.bMapLoaded = true;
-        }  
-        else 
+        }
+        else
         {
-            Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 
+            Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL,
 					'Failed to load requested map:\n'+r.responseText));
         }
         this.mapWidget._removeWorker();
     },
-    
+
     reloadMap: function() {
         this.mapWidget._addWorker();
         this.aShowLayers = [];
@@ -6900,22 +7034,33 @@ Fusion.Maps.MapServer.prototype = {
         this.aRefreshLayers = [];
         this.layerRoot.clear();
         this.aLayers = [];
-        
+
         var sl = Fusion.getScriptLanguage();
         var loadmapScript = this.arch + '/' + sl  + '/LoadMap.' + sl;
-        
+
         var sessionid = this.getSessionID();
-        
-        var params = 'mapname='+this._sMapname+"&session="+sessionid;
-        var options = {onSuccess: this.mapReloaded.bind(this), 
+        var metadata = '';
+        if (this.mapMetadataKeys) {
+            metadata += '&map_metadata='+this.mapMetadataKeys;
+        }
+        if (this.layerMetadataKeys) {
+            metadata += '&layer_metadata='+this.layerMetadataKeys;
+        }
+
+        var params = 'mapname='+this._sMapname+"&session="+sessionid+metadata;
+        var options = {onSuccess: this.mapReloaded.bind(this),
                                      parameters: params};
         Fusion.ajaxRequest(loadmapScript, options);
     },
-    
+
     mapReloaded: function(r,json) {  /* update this with OL code */
         if (json) {
             var o;
             eval('o='+r.responseText);
+
+            //can metadata change?
+            //this.metadata = o.metadata;
+
             this.parseMapLayersAndGroups(o);
             this.aVisibleLayers = [];
             for (var i=0; i<this.aLayers.length; i++) {
@@ -6926,25 +7071,25 @@ Fusion.Maps.MapServer.prototype = {
             this.drawMap();
             this.mapWidget.triggerEvent(Fusion.Event.MAP_RELOADED);
         } else {
-            Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 
+            Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL,
                 OpenLayers.String.translate('mapLoadError', r.responseText)));
         }
         this.mapWidget._removeWorker();
     },
-    
+
     reorderLayers: function(aLayerIndex) {
         var sl = Fusion.getScriptLanguage();
         var loadmapScript = this.arch + '/' + sl  + '/SetLayers.' + sl;
-        
+
         var sessionid = this.getSessionID();
         var params = 'mapname='+this._sMapname+"&session="+sessionid;
         params += '&layerindex=' + aLayerIndex.join();
-		
-        var options = {onSuccess: this.mapLayersReset.bind(this, aLayerIndex), 
+
+        var options = {onSuccess: this.mapLayersReset.bind(this, aLayerIndex),
                                      parameters: params};
         Fusion.ajaxRequest(loadmapScript, options);
     },
-    
+
     mapLayersReset: function(aLayerIndex,r,json) {
       if (json) {
         var o;
@@ -6953,7 +7098,7 @@ Fusion.Maps.MapServer.prototype = {
   				var layerCopy = this.aLayers.clone();
   				this.aLayers = [];
   				this.aVisibleLayers = [];
-  			
+
           for (var i=0; i<aLayerIndex.length; ++i) {
             this.aLayers.push( layerCopy[ aLayerIndex[i] ] );
             if (this.aLayers[i].visible) {
@@ -6961,7 +7106,7 @@ Fusion.Maps.MapServer.prototype = {
             }
   				}
   				//this.layerRoot.clear();
-  			
+
   				this.drawMap();
   				this.triggerEvent(Fusion.Event.MAP_LAYER_ORDER_CHANGED);
   			} else {
@@ -6969,7 +7114,7 @@ Fusion.Maps.MapServer.prototype = {
   			}
       }
     },
-			
+
     parseMapLayersAndGroups: function(o) {
         for (var i=0; i<o.groups.length; i++) {
             var group = new Fusion.Maps.MapServer.Group(o.groups[i], this);
@@ -6997,7 +7142,7 @@ Fusion.Maps.MapServer.prototype = {
 
     /**
      * Function: isMapLoaded
-     * 
+     *
      * Returns true if the Map has been laoded succesfully form the server
      */
     isMapLoaded: function() {
@@ -7007,19 +7152,25 @@ Fusion.Maps.MapServer.prototype = {
     getScale : function() {
         return this.mapWidget.getScale();
     },
-    
+
     updateLayer: function() {   //to be fleshed out, add query file to layer if selection, call this before draw
       if (this.hasSelection()) {
           this.oLayerOL.addOptions({queryfile: this._sQueryfile});
       }
     },
-    
+
     drawMap: function() {
-        if (!this.bMapLoaded) {
+        if (!this.bMapLoaded || this.deferredDraw) {
             return;
         }
-
-        var params = { layers: this.aVisibleLayers.join(' '), ts : (new Date()).getTime()};
+        var aLayers = [];
+        for (var i=0; i<this.aLayers.length; i++) {
+            var l = this.aLayers[i];
+            if (l.isVisible()) {
+                aLayers.push(l.layerName);
+            }
+        }
+        var params = { layers: /*this.aVisibleLayers */aLayers.join(' '), ts : (new Date()).getTime()};
         if (this.hasSelection()) {
             params['queryfile']=this._sQueryfile;
         } else {
@@ -7027,7 +7178,7 @@ Fusion.Maps.MapServer.prototype = {
         }
         this.oLayerOL.mergeNewParams(params);
     },
-    
+
     showLayer: function( sLayer ) {
         this.aVisibleLayers.push(sLayer);
         this.drawMap();
@@ -7048,7 +7199,12 @@ Fusion.Maps.MapServer.prototype = {
         this.oLayerOL.setVisibility(true);
       } else {
         this.aVisibleGroups.push(sGroup);
-        //TODO: manipulate aVisibleLayers based on layers in the group
+        var group = this.layerRoot.findGroup(sGroup);
+        this.deferredDraw = true;
+        for (var i=0; i<group.layers.length; ++i) {
+          group.layers[i].show();
+        }
+        this.deferredDraw = false;
         this.drawMap();
       }
     },
@@ -7063,7 +7219,12 @@ Fusion.Maps.MapServer.prototype = {
                 break;
             }
         }
-        //TODO: manipulate aVisibleLayers based on layers in the group
+        var group = this.layerRoot.findGroup(sGroup);
+        this.deferredDraw = true;
+        for (var i=0; i<group.layers.length; ++i) {
+          group.layers[i].hide();
+        }
+        this.deferredDraw = false;
         this.drawMap();
       }
     },
@@ -7075,7 +7236,7 @@ Fusion.Maps.MapServer.prototype = {
     hasSelection: function() { return this.bSelectionOn; },
 
     getSelectionCB : function(userFunc, layers, startend, r, json) {
-      if (json) 
+      if (json)
       {
           var o;
           eval("o="+r.responseText);
@@ -7084,7 +7245,7 @@ Fusion.Maps.MapServer.prototype = {
           userFunc(oSelection);
       }
     },
-    
+
     /**
      * advertise a new selection is available and redraw the map
      */
@@ -7142,25 +7303,25 @@ Fusion.Maps.MapServer.prototype = {
      *        selection has loaded
      * @param layers {string} Optional parameter.  A comma separated
      *        list of layer names (Roads,Parcels). If it is not
-     *        given, all the layers that have a selection will be used  
+     *        given, all the layers that have a selection will be used
      *
      * @param startcount {string} Optional parameter.  A comma separated
      *        list of a statinh index and the number of features to be retured for
      *        each layer given in the layers parameter. Index starts at 0
      *        (eg: 0:4,2:6 : return 4 elements for the first layers starting at index 0 and
      *         six elements for layer 2 starting at index 6). If it is not
-     *        given, all the elemsnts will be returned.  
+     *        given, all the elemsnts will be returned.
      */
     getSelection : function(userFunc, layers, startcount) {
-        
-        if (userFunc) 
+
+        if (userFunc)
         {
             var s = this.arch + '/' + Fusion.getScriptLanguage() + "/Selection." + Fusion.getScriptLanguage() ;
-            var params = {parameters:'session='+this.getSessionID()+'&mapname='+ this._sMapname+ '&layers='+layers+'&startcount='+startcount+'&queryfile='+this._sQueryfile, 
+            var params = {parameters:'session='+this.getSessionID()+'&mapname='+ this._sMapname+ '&layers='+layers+'&startcount='+startcount+'&queryfile='+this._sQueryfile,
                           onComplete: this.getSelectionCB.bind(this, userFunc, layers, startcount)};
             Fusion.ajaxRequest(s, params);
         }
-        
+
     },
 
     /**
@@ -7168,7 +7329,7 @@ Fusion.Maps.MapServer.prototype = {
     */
     clearSelection : function() {
       if (!this.aLayers) return;
-      
+
         //clear the selection count for the layers
         for (var j=0; j<this.aLayers.length; ++j) {
           this.aLayers[j].selectedFeatureCount = 0;
@@ -7185,12 +7346,12 @@ Fusion.Maps.MapServer.prototype = {
     /**
        Call back function when slect functions are called (eg queryRect)
     */
-    processQueryResults : function(r, json) {
+    processQueryResults : function(zoomTo, r, json) {
         this.mapWidget._removeWorker();
         if (json) {
             var o;
             eval("o="+r.responseText);
-            if (!o.hasSelection) { 
+            if (!o.hasSelection) {
                 //this.drawMap();
                 return;
             } else {
@@ -7204,6 +7365,11 @@ Fusion.Maps.MapServer.prototype = {
                   }
                 }
                 this.newSelection();
+                if (zoomTo) {
+                var ext = oNode.extents
+                var extents = new OpenLayers.Bounds(ext.minx, ext.miny, ext.maxx, ext.maxy);
+                this.zoomToSelection(extents);
+              }
             }
         }
     },
@@ -7212,7 +7378,7 @@ Fusion.Maps.MapServer.prototype = {
     */
     query : function(options) {
         this.mapWidget._addWorker();
-        
+
         //clear the selection count for the layers
         for (var j=0; j<this.aLayers.length; ++j) {
           this.aLayers[j].selectedFeatureCount = 0;
@@ -7230,35 +7396,52 @@ Fusion.Maps.MapServer.prototype = {
         }
         var extend = options.extendSelection ? '&extendselection=true' : '';
         var computed = options.computedProperties ? '&computed=true' : '';
-
+        var zoomTo = options.zoomTo || false;
         var sl = Fusion.getScriptLanguage();
         var loadmapScript = this.arch + '/' + sl  + '/Query.' + sl;
 
         var sessionid = this.getSessionID();
 
         var params = 'mapname='+this._sMapname+"&session="+sessionid+'&spatialfilter='+geometry+'&maxfeatures='+maxFeatures+filter+'&layers='+layers+'&variant='+selectionType+extend;
-        var options = {onSuccess: this.processQueryResults.bind(this), 
+        var options = {onSuccess: this.processQueryResults.bind(this, zoomTo),
                                      parameters: params};
         Fusion.ajaxRequest(loadmapScript, options);
     },
-    
+
     loadStart: function() {
       this.mapWidget._addWorker();
     },
-    
+
     loadEnd: function() {
       this.mapWidget._removeWorker();
     },
-    
+
     pingServer: function() {
         var s = this.arch + '/' + Fusion.getScriptLanguage() + "/Common." + Fusion.getScriptLanguage() ;
         var params = {};
         params.parameters = 'session='+this.getSessionID();
         Fusion.ajaxRequest(s, params);
-    }
+  },
+
+    getGroupInfoUrl: function(groupName) {
+      return null;
+   },
+
+    getLayerInfoUrl: function(layerName) {
+      return null;
+  },
+
+  getMetadata: function(key) {
+      if (typeof this.metadata[key] != 'undefined') {
+          return this.metadata[key];
+      } else {
+          return '';
+      }
+  }
+
 };
 
-    
+
 /******************************************************************************
  * Class: Fusion.Maps.MapServer.Group
  *
@@ -7281,26 +7464,27 @@ Fusion.Maps.MapServer.Group.prototype = {
         this.visible = o.visible;
         this.actuallyVisible = o.actuallyVisible;
     },
-    
+
     clear: function() {
         Fusion.Widget.Map.Group.prototype.clear.apply(this, []);
         //this.oMap = null;
     },
-     
+
     show: function() {
-        this.oMap.showGroup(this.groupName);
         this.visible = true;
+        this.oMap.showGroup(this.groupName);
     },
-    
+
     hide: function() {
-        this.oMap.hideGroup(this.groupName);
         this.visible = false;
+        this.oMap.hideGroup(this.groupName);
     },
-    
+
     isVisible: function() {
-        return this.visible;
+        var bParentVisible = (this.parentGroup && this.parentGroup.isVisible) ? this.parentGroup.isVisible() : true;
+        return this.visible && bParentVisible;
     }
-    
+
 };
 
 var MSLAYER_POINT_TYPE = 0;
@@ -7317,11 +7501,11 @@ var MSLAYER_RASTER_TYPE = 4;
 
 Fusion.Maps.MapServer.Layer = Class.create();
 Fusion.Maps.MapServer.Layer.prototype = {
-    
+
     scaleRanges: null,
-    
+
     oMap: null,
-    
+
     initialize: function(o, oMap) {
         this.uniqueId = o.uniqueId;
         Object.inheritFrom(this, Fusion.Widget.Map.Layer.prototype, [this.uniqueId]);
@@ -7339,6 +7523,7 @@ Fusion.Maps.MapServer.Layer.prototype = {
         this.actuallyVisible = o.actuallyVisible;
         this.editable = o.editable;
         this.parentGroup = o.parentGroup;
+        this.metadata = o.metadata;
         this.scaleRanges = [];
     		this.minScale = 1.0e10;
     		this.maxScale = 0;
@@ -7349,13 +7534,13 @@ Fusion.Maps.MapServer.Layer.prototype = {
       			this.maxScale = Math.max(this.maxScale, scaleRange.maxScale);
         }
     },
-    
+
     clear: function() {
         Fusion.Widget.Map.Layer.prototype.clear.apply(this, []);
         this.oMap = null;
         this.legend = null;
     },
-    
+
     supportsType: function(type) {
         for (var i=0; i<this.layerTypes.length; i++) {
             if (this.layerTypes[i] == type) {
@@ -7364,7 +7549,7 @@ Fusion.Maps.MapServer.Layer.prototype = {
         }
         return false;
     },
-    
+
     getScaleRange: function(fScale) {
         for (var i=0; i<this.scaleRanges.length; i++) {
             if (this.scaleRanges[i].contains(fScale)) {
@@ -7375,17 +7560,26 @@ Fusion.Maps.MapServer.Layer.prototype = {
     },
 
     show: function() {
-        this.oMap.showLayer(this.layerName);
         this.set('visible', true);
+        this.oMap.showLayer(this.layerName);
     },
 
     hide: function() {
-        this.oMap.hideLayer(this.layerName);
         this.set('visible',false);
+        this.oMap.hideLayer(this.layerName);
     },
 
     isVisible: function() {
-        return this.visible;
+        var bParentVisible = this.parentGroup ? this.parentGroup.isVisible() : true;
+        return this.visible && bParentVisible;
+    },
+
+    getMetadata: function(key) {
+        if (typeof this.metadata[key] != 'undefined') {
+            return this.metadata[key];
+        } else {
+            return '';
+        }
     }
 };
 
@@ -7405,7 +7599,7 @@ Fusion.Maps.MapServer.ScaleRange.prototype = {
         if (!o.styles) {
             return;
         }
-        
+
         /*special case : if there are no classes and it is a raster layer
           we set it to use the default static raster icon*/
         if (o.styles.length == 0 && bRaster)
@@ -7417,7 +7611,7 @@ Fusion.Maps.MapServer.ScaleRange.prototype = {
           tmpsyle.staticIcon = true;
           var styleItem = new Fusion.Maps.MapServer.StyleItem(tmpsyle, tmpsyle.staticIcon);
           this.styles.push(styleItem);
-        }    
+        }
         else
         {
           var staticIcon = o.styles.length>=1 ? false : bRaster;
@@ -7428,7 +7622,8 @@ Fusion.Maps.MapServer.ScaleRange.prototype = {
         }
     },
     contains: function(fScale) {
-        return fScale >= this.minScale && fScale <= this.maxScale;
+        var testScale = Math.round(fScale);
+        return testScale >= this.minScale && testScale <= this.maxScale;
     }
 };
 
@@ -7503,7 +7698,7 @@ Fusion.Maps.MapServer.StyleItem.prototype = {
 
 'end': ''
 };
-ï»¿Fusion.Strings.fr = {
+Fusion.Strings.fr = {
 'scriptFailed': 'failed to load script: {0}',
 'configParseError': 'Error parsing fusion configuration file, initialization aborted',
 'configLoadError': 'Error loading fusion configuration file, initialization aborted',
@@ -7556,7 +7751,7 @@ Fusion.Maps.MapServer.StyleItem.prototype = {
 /**
  * Fusion.Widget.About
  *
- * $Id: $
+ * $Id: About.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -7629,7 +7824,7 @@ Fusion.Widget.About.prototype =
 /**
  * Fusion.Widget.ActivityIndicator
  *
- * $Id: $
+ * $Id: ActivityIndicator.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -7685,7 +7880,7 @@ Fusion.Widget.ActivityIndicator.prototype =  {
 /**
  * Fusion.Widget.Buffer
  *
- * $Id: Buffer.js 1134 2007-12-19 18:03:28Z zak $
+ * $Id: Buffer.js 1325 2008-03-05 22:07:43Z zak $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -7896,6 +8091,7 @@ Fusion.Widget.Buffer.prototype = {
         var s = aMaps[0].arch + '/' + Fusion.getScriptLanguage() + "/Buffer." + Fusion.getScriptLanguage();
         var params = {};
         params.parameters = 'locale='+Fusion.locale +
+                            '&merge=1' +
                             '&session='+aMaps[0].getSessionID() +
                             '&mapname='+ aMaps[0].getMapName()+
                             layer+distance+borderColor+fillColor; 
@@ -7912,7 +8108,7 @@ Fusion.Widget.Buffer.prototype = {
 /**
  * Fusion.Widget.BufferPanel
  *
- * $Id: $
+ * $Id: BufferPanel.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -8045,7 +8241,7 @@ Fusion.Widget.BufferPanel.prototype = {
 /**
  * Fusion.Widget.CTRLClick
  *
- * $Id: $
+ * $Id: CTRLClick.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -8158,7 +8354,7 @@ Fusion.Widget.CTRLClick.prototype =
 /**
  * Fusion.Widget.CenterSelection
  *
- * $Id: CenterSelection.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: CenterSelection.js 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -8218,12 +8414,13 @@ Fusion.Widget.CenterSelection.prototype = {
      * @param selection the active selection, or null if there is none
      */
     centerSelection : function(selection) {
-        var extents = this.getMap().getCurrentExtents();
+        var map = this.getMap(); 
+        var extents = map.getCurrentExtents();
         var curWidth = extents[2] - extents[0];
         var curHeight = extents[3] - extents[1];
         
-        var ll = selection.getLowerLeftCoord();
-        var ur = selection.getUpperRightCoord();
+        var ll = selection[map.getMapName()].getLowerLeftCoord();
+        var ur = selection[map.getMapName()].getUpperRightCoord();
         
         var newWidth = ur.x - ll.x;
         var newHeight = ur.y - ll.y;
@@ -8231,14 +8428,14 @@ Fusion.Widget.CenterSelection.prototype = {
         if (newWidth < curWidth && newHeight < curHeight) {
             var cx = (ur.x + ll.x) / 2;
             var cy = (ur.y + ll.y) / 2;
-            this.getMap().zoom(cx,cy,1);
+            map.zoom(cx,cy,1);
         } else {
             var buffer = 0.1;
             var minx = ll.x-newWidth*buffer;
             var miny = ll.y-newHeight*buffer;
             var maxx = ur.x+newWidth*buffer;
             var maxy = ur.y+newHeight*buffer;
-            this.getMap().setExtents(new OpenLayers.Bounds(minx,miny,maxx,maxy));
+            map.setExtents(new OpenLayers.Bounds(minx,miny,maxx,maxy));
         }
     },
 
@@ -8395,7 +8592,7 @@ Fusion.Widget.ColorPicker.prototype =
 };/**
  * Fusion.Widget.CursorPosition
  *
- * $Id: CursorPosition.js 1289 2008-03-01 22:22:40Z madair $
+ * $Id: CursorPosition.js 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -8505,8 +8702,9 @@ Fusion.Widget.CursorPosition.prototype = {
             p = map.pixToGeo(p.x, p.y);
             if (p) {
                 if (this.units != Fusion.UNKNOWN) {
-                    p.x = Fusion.fromMeter(this.units, p.x * map._fMetersperunit);
-                    p.y = Fusion.fromMeter(this.units, p.y * map._fMetersperunit);
+                    var convFactor = map.getMetersPerUnit();
+                    p.x = Fusion.fromMeter(this.units, p.x * convFactor);
+                    p.y = Fusion.fromMeter(this.units, p.y * convFactor);
                 }
                 if (this.precision >= 0) {
                     var factor = Math.pow(10,this.precision);
@@ -8517,7 +8715,6 @@ Fusion.Widget.CursorPosition.prototype = {
         }
         if (p) {
             var unitAbbr = Fusion.unitAbbr(this.units);
-        
             this.domSpan.innerHTML = this.template.replace('{x}',p.x).replace('{y}',p.y).replace('{units}', unitAbbr).replace('{units}', unitAbbr);
         }
     },
@@ -8537,7 +8734,7 @@ Fusion.Widget.CursorPosition.prototype = {
 /**
  * Fusion.Widget.EditableScale
  *
- * $Id: $
+ * $Id: EditableScale.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -8616,7 +8813,7 @@ Fusion.Widget.EditableScale.prototype = {
 };/**
  * Fusion.Widget.ExtentHistory
  *
- * $Id: ExtentHistory.js 1277 2008-02-29 20:03:08Z madair $
+ * $Id: ExtentHistory.js 1278 2008-02-29 20:03:47Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -8782,7 +8979,7 @@ Fusion.Widget.ExtentHistory.prototype = {
 /**
  * Fusion.Widget.Help
  *
- * $Id: $
+ * $Id: Help.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -8864,7 +9061,7 @@ Fusion.Widget.Help.prototype = {
 /**
  * Fusion.Widget.InitialMapView
  *
- * $Id: $
+ * $Id: InitialMapView.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -8956,7 +9153,7 @@ Fusion.Widget.InvokeScript.prototype = {
 };/**
  * Fusion.Widget.InvokeURL
  *
- * $Id: $
+ * $Id: InvokeURL.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -9080,7 +9277,7 @@ Fusion.Widget.InvokeURL.prototype = {
 /**
  * Fusion.Widget.LayerManager
  *
- * $Id: LayerManager.js 978 2007-10-17 18:24:46Z pspencer $
+ * $Id: LayerManager.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -9352,7 +9549,7 @@ Fusion.Widget.LayerManager.prototype = {
 /**
  * Fusion.Widget.Legend
  *
- * $Id: Legend.js 1168 2008-01-10 15:11:39Z madair $
+ * $Id: Legend.js 1332 2008-03-20 19:05:36Z pagameba $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -9561,7 +9758,6 @@ Fusion.Widget.Legend.prototype = {
         if (this.showRootFolder) {
             this.oRoot.setName(map.getMapTitle());
         }
-        this.oMapInfo = map.oMapInfo;
         var startGroup = map.layerRoot;
         if (!this.showMapFolder) {
           startGroup = map.layerRoot.groups[0];
@@ -9598,7 +9794,7 @@ Fusion.Widget.Legend.prototype = {
             group.legend.checkBox.checked = group.visible?true:false;
             Event.observe(group.legend.checkBox, 'click', this.stateChanged.bind(this, group));
             Event.observe(group.legend.treeItem.domObj, 'mouseover', this.setFolder.bind(this));
-            var groupInfo = this.getGroupInfoUrl(group.groupName);
+            var groupInfo = group.oMap.getGroupInfoUrl(group.groupName);
             if (groupInfo) {
                 var a = document.createElement('a');
                 a.href = groupInfo;
@@ -9775,7 +9971,7 @@ Fusion.Widget.Legend.prototype = {
         opt.imgTreeFolder = this.imgLayerThemeIcon;
         var folder = new Jx.TreeFolder(opt);
         folder.domObj.insertBefore(layer.legend.checkBox, folder.domObj.childNodes[1]);
-        var layerInfo = this.getLayerInfoUrl(layer.layerName);
+        var layerInfo = layer.oMap.getLayerInfoUrl(layer.layerName);
         if (layerInfo) {
             var a = document.createElement('a');
             a.href = layerInfo;
@@ -9819,7 +10015,7 @@ Fusion.Widget.Legend.prototype = {
         if (bCheckBox) {
             item.domObj.insertBefore(layer.legend.checkBox, item.domObj.childNodes[1]);
             /* only need to add layer info if it has a check box too */
-            var layerInfo = this.getLayerInfoUrl(layer.layerName);
+            var layerInfo = layer.oMap.getLayerInfoUrl(layer.layerName);
             if (layerInfo) {
                 var a = document.createElement('a');
                 a.href = layerInfo;
@@ -9851,34 +10047,12 @@ Fusion.Widget.Legend.prototype = {
                 obj.hide();
             }
         }
-    },
-    getGroupInfoUrl: function(groupName) {
-        if (this.oMapInfo) {
-            var groups = this.oMapInfo.links.groups;
-            for (var i=0; i<groups.length; i++) {
-                if (groups[i].name == groupName) {
-                    return groups[i].url;
-                }
-            }
-        }
-        return null;
-    },
-    getLayerInfoUrl: function(layerName) {
-        if (this.oMapInfo) {
-            var layers = this.oMapInfo.links.layers;
-            for (var i=0; i<layers.length; i++) {
-                if (layers[i].name == layerName) {
-                    return layers[i].url;
-                }
-            }
-        }
-        return null;
     }
 };
 /**
  * Fusion.Widget.LinkToView
  *
- * $Id: $
+ * $Id: LinkToView.js 1328 2008-03-06 17:10:58Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -9930,13 +10104,13 @@ Fusion.Widget.LinkToView.prototype = {
           join = '&';
         }
 
-        this.anchorLabel = this.domObj.innerHTML;
+        this.anchorLabel = json.Label ? json.Label[0] : (this.domObj.innerHTML ? this.domObj.innerHTML : 'Link to View');
 
         this.anchor = document.createElement('a');
         this.anchor.className = 'anchorLinkToView';
         this.anchor.href = this.baseUrl;
         this.anchor.innerHTML = this.anchorLabel;
-        this.anchor.title = 
+        this.anchor.title = json.Tooltip ? json.Tooltip[0] : 'Right-click to copy or bookmark link to current view';
         this.domObj.innerHTML = '';
         this.domObj.appendChild(this.anchor);
 
@@ -9953,7 +10127,7 @@ Fusion.Widget.LinkToView.prototype = {
 /**
  * Fusion.Widget.MapMenu
  *
- * $Id: MapMenu.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: MapMenu.js 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -9988,6 +10162,7 @@ Fusion.Widget.MapMenu.prototype =
 {
     domObj: null,
     oMenu: null,
+    mapGroupData: null,
     sRootFolder: '',
     aMenus : null,
     initialize : function(widgetTag)
@@ -9998,25 +10173,133 @@ Fusion.Widget.MapMenu.prototype =
         this.enable();
         
         var json = widgetTag.extension;
+        
+        //If no folder is specified for enumeration, build a menu
+        //from the mapgroup alone. Folders are only supported with MapGuide.
+        //Otherwise, create a hash of mapgroup resourceId to mapGroup data
+        //to be used to assign mapgroup extensions to enumerated maps.
+        
         var mapGroups = Fusion.applicationDefinition.mapGroups;
+        this.mapGroupData = {};
         for (var i=0; i<mapGroups.length; i++) {
             var mapGroup = mapGroups[i];
-            var opt = {};
-            opt.label = mapGroup.mapId;
-            var data = mapGroup;
-            var action = new Jx.Action(this.switchMap.bind(this, data));
-            var menuItem = new Jx.MenuItem(action,opt);
-            this.oMenu.add(menuItem);
+            if (json.Folder) {
+                this.mapGroupData[mapGroup.maps[0].resourceId] = mapGroup; 
+            } else {
+                var opt = {};
+                opt.label = mapGroup.mapId;
+                var data = mapGroup;
+                var action = new Jx.Action(this.switchMap.bind(this, data));
+                var menuItem = new Jx.MenuItem(action,opt);
+                this.oMenu.add(menuItem);
+            }
+        }
+        
+        //get the mapdefinitions as xml if there  is a folder specified
+        //in the widget tag. All subfolders will be enumerated.
+        //FIXME: this should be platform agnostic, Library:// isn't!
+        //FIXME: use JSON rather than XML        
+        this.arch = this.getMap().getAllMaps()[0].arch;
+        if (this.arch == 'MapGuide' && json.Folder) {
+            this.sRootFolder = json.Folder ? json.Folder[0] : 'Library://';
+            var s =       this.arch + '/' + Fusion.getScriptLanguage() +
+                          '/MapMenu.' + Fusion.getScriptLanguage();
+            var params =  {parameters:'folder='+this.sRootFolder,
+                          onComplete: this.processMapMenu.bind(this)};
+            Fusion.ajaxRequest(s, params);
+        };
+
+    },
+
+    processMapMenu: function(r) {
+        if (r.responseXML) {
+            this.aMenus = {};
+            var node = new DomNode(r.responseXML);
+            var mapNode = node.findFirstNode('MapDefinition');
+            while (mapNode) {
+                
+                var sId = mapNode.getNodeText('ResourceId');
+                var sPath = sId.replace(this.sRootFolder, '');
+                if (sPath.lastIndexOf('/') > -1) {
+                    sPath = sPath.slice(0, sPath.lastIndexOf('/'));
+                    this.createFolders(sPath);
+                } else {
+                    sPath = '';
+                }
+                var opt = {};
+                opt.label = mapNode.getNodeText('Name');
+                
+                // check for mapgroup data and if there is none,
+                // create a maptag that will be passed to the map
+                // widget constructor 
+                var data = null;
+                if (this.mapGroupData[mapNode.getNodeText('ResourceId')]) {
+                    data = this.mapGroupData[mapNode.getNodeText('ResourceId')];
+                } else {
+                    data = {maps:[{'resourceId':mapNode.getNodeText('ResourceId'),
+                            'singleTile':true,
+                            'type': this.arch,
+                            'extension':{'ResourceId': [mapNode.getNodeText('ResourceId')]}
+                           }]};
+                    //set up needed accessor
+                    data.getInitialView = function() {
+                        return this.initialView;
+                    };
+                }
+                var action = new Jx.Action(this.switchMap.bind(this, data));
+                var menuItem = new Jx.MenuItem(action,opt);
+                
+                if (sPath == '') {
+                    this.oMenu.add(menuItem);
+                }else {
+                    this.aMenus[sPath].add(menuItem);
+                }
+                
+                mapNode = node.findNextNode('MapDefinition');
+            }
         }
     },
     
+    createFolders: function(sId) {
+        var aPath = sId.split('/');
+        //loop through folders, creating them if they don't exist
+        var sParent = '';
+        var sSep = '';
+        for (var i=0; i < aPath.length; i++) {
+            if (!this.aMenus[sParent + sSep + aPath[i]]){
+                var opt = {label:aPath[i]};
+                var menu = new Jx.SubMenu(opt);
+                if (sParent == '') {
+                    this.oMenu.add(menu);
+                } else {
+                    this.aMenus[sParent].add(menu);
+                }
+                this.aMenus[sParent + sSep + aPath[i]] = menu;
+            }
+            sParent = sParent + sSep + aPath[i];
+            sSep = '/';
+        };
+    },
+    
+    //action to perform when the button is clicked
+    activateTool: function() {
+        this.oMenu.show();
+    },
+        
+    //change the map, preserving current extents
     switchMap: function(data) {
+        var ce = this.getMap().getCurrentExtents();
+        data.initialView = {minX:ce.left,
+                            minY:ce.bottom,
+                            maxX:ce.right,
+                            maxY:ce.top
+                            };        
         this.getMap().loadMapGroup(data);
     }
 };/**
  * Fusion.Widget.Maptip
  *
- * $Id: Maptip.js 1254 2008-02-22 22:43:51Z madair $
+ * $Id: Maptip.js 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -10172,15 +10455,17 @@ Fusion.Widget.Maptip.prototype =
         var maxFeatures = 1;
         var persist = 0;
         var selection = 'INTERSECTS';
+        // only select visible layers with maptips defined (1+4)
+        var layerAttributeFilter = 5;
         var maps = this.getMap().getAllMaps();
         //TODO: possibly make the layer names configurable?
         var layerNames = this.aLayers.toString();
         var r = new Fusion.Lib.MGRequest.MGQueryMapFeatures(maps[0].getSessionID(),
                                         maps[0]._sMapname,
                                         sGeometry,
-                                        maxFeatures, persist, selection, layerNames);
-        oBroker.dispatchRequest(r, 
-        this._display.bind(this));
+                                        maxFeatures, persist, selection, layerNames,
+                                        layerAttributeFilter);
+        oBroker.dispatchRequest(r, this._display.bind(this));
 
     },
     _display: function(r) {
@@ -10244,7 +10529,7 @@ Fusion.Widget.Maptip.prototype =
       //console.log('maptip _hide');
         this.hideTimer = null;
         this.domObj.style.display = 'none';
-        this.oMapTipPosition = null;
+        //this.oMapTipPosition = null;
     },
     
     mouseOverTip: function() {
@@ -10279,7 +10564,7 @@ Fusion.Widget.Maptip.prototype =
 /**
  * Fusion.Widget.Measure
  *
- * $Id: Measure.js 1283 2008-02-29 20:55:59Z madair $
+ * $Id: Measure.js 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -10692,6 +10977,7 @@ Fusion.Widget.Measure.prototype = {
     updateDisplay: function(outputWin) {
         var outputDoc = outputWin.document;
         var tbody = outputDoc.getElementById('segmentTBody');
+        var value;
         if (tbody) {
             this.clearDisplay(outputWin);
             var totalDistance = 0;
@@ -10705,12 +10991,24 @@ Fusion.Widget.Measure.prototype = {
                 td.innerHTML = OpenLayers.String.translate('segment',i+1);
                 tr.appendChild(td);
                 td = outputDoc.createElement('td');
-                td.innerHTML = distance.toPrecision(this.distPrecision)+ ' ' + units;
+                if (this.distPrecision == 0) {
+                  value = Math.floor(distance);
+                }
+                else {
+                  value = distance.toPrecision(this.distPrecision);
+                }
+                td.innerHTML = value + ' ' + units;
                 tr.appendChild(td);
                 tbody.appendChild(tr);
             }
             var tDist = outputDoc.getElementById('totalDistance');
-            tDist.innerHTML = totalDistance.toPrecision(this.distPrecision) + ' ' + units;
+            if (this.distPrecision == 0) {
+                  value = Math.floor(totalDistance);
+            }
+            else {
+              value = totalDistance.toPrecision(this.distPrecision);
+            }
+            tDist.innerHTML = value + ' ' + units;
         }
     },
     
@@ -10814,7 +11112,15 @@ Fusion.Widget.Measure.DistanceMarker.prototype = {
     },
     
     getDistanceLabel: function() {
-      return this.label + ' ' + this.distance.toPrecision(this.precision) + ' ' + this.unitAbbr;            
+      var value;
+      if (this.precision == 0) {
+        value = Math.floor(this.distance);
+      }
+      else {
+          value = this.distance.toPrecision(this.precision);
+      }
+
+      return this.label + ' ' + value + ' ' + this.unitAbbr;  
     },
     
     setDistance: function(distance) {
@@ -10847,7 +11153,7 @@ Fusion.Widget.Measure.DistanceMarker.prototype = {
 /**
  * Fusion.Widget.Navigator
  *
- * $Id: $
+ * $Id: Navigator.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -11290,7 +11596,7 @@ Fusion.Widget.OverviewMap.prototype = {
 /**
  * Fusion.Widget.Pan
  *
- * $Id: Pan.js 1252 2008-02-22 22:36:46Z madair $
+ * $Id: Pan.js 1253 2008-02-22 22:40:00Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -11354,7 +11660,8 @@ Fusion.Widget.Pan.prototype = {
         /*icon button*/
         this._oButton.deactivateTool();
     }
-};/**
+};
+/**
  * Fusion.Widget.PanOnClick
  *
  * $Id: PanOnClick.js 970 2007-10-16 20:09:08Z madair $
@@ -11559,7 +11866,7 @@ Fusion.Widget.PanQuery.prototype = {
 };/**
  * Fusion.Widget.Print
  *
- * $Id: Print.js 1232 2008-02-15 19:16:45Z madair $
+ * $Id: Print.js 1333 2008-03-20 19:40:07Z assefa $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -11647,9 +11954,10 @@ Fusion.Widget.Print.prototype = {
                 onContentLoaded: this.contentLoaded.bind(this),
                 imageBaseUrl: this.imageBaseUrl,
                 width: 350,
+                height: 250,
                 resizeable: true,
-                top: (size.height-200)/2,
-                left: (size.width-320)/2,
+                top: (size.height-250)/2,
+                left: (size.width-350)/2,
                 buttons: ['generate', 'cancel'],
                 handler: this.handler.bind(this)
             };
@@ -11736,7 +12044,7 @@ Fusion.Widget.Print.prototype = {
 /**
  * Fusion.Widget.RefreshMap
  *
- * $Id: $
+ * $Id: RefreshMap.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -11784,7 +12092,7 @@ Fusion.Widget.RefreshMap.prototype =  {
 /**
  * Fusion.Widget.SaveMap
  *
- * $Id: SaveMap.js 1169 2008-01-10 16:21:12Z pspencer $
+ * $Id: SaveMap.js 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -11826,25 +12134,66 @@ Fusion.Widget.SaveMap.prototype = {
     iframe : null,
     printLayout : null,
     printScale : null,
+    imageWidth : null,
+    imageHeight : null,
     initialize : function(widgetTag) {
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, false]);
-        Object.inheritFrom(this, Fusion.Tool.ButtonBase.prototype, []);
 
         var json = widgetTag.extension;
         this.format = (json.Format && json.Format[0] != '')?
                        json.Format[0] : 'png';
         
         //for DWF, parse printLayouts and build menu
-        if (this.format == 'DWF') {
-            if (json.ResourceId) {
-                this.printLayout = json.ResourceId[0];
-                if (json.Scale) {
-                    this.printScale =  json.Scale[0];
-                }
-            } else {
-                //TODO: Warning that the widget is improperly configured
-                //because we need  print layout for this to work.
-                //TODO: deactivate the widget?
+        if (this.format == 'DWF' && json.PrintLayout.length) {
+            Object.inheritFrom(this, Fusion.Tool.MenuBase.prototype, []);
+            
+            var layouts = json.PrintLayout;
+            for (var i = 0; i < layouts.length; i++) {
+                var layout = layouts[i];
+                var opt = {};
+                opt.label = layout.Name[0];
+                var data = {rid:layout.ResourceId[0]};
+                if (layout.PageHeight) {
+                    data.pageHeight = layout.PageHeight[0];
+                };
+                if (layout.PageWidth) {
+                    data.pageWidth = layout.PageWidth[0];
+                };
+                if (layout.Margins) {
+                    data.margins = [layout.Margins[0].Top[0],
+                                    layout.Margins[0].Left[0],
+                                    layout.Margins[0].Right[0],
+                                    layout.Margins[0].Bottom[0]];
+                };
+                var menuItem = null;
+                if (layout.Scale) {
+                    //create entries for weblayout specified scales
+                    menuItem = new Jx.SubMenu(opt);
+                    for (var j=0; j < layout.Scale.length; j++) {
+                        data.scale = layout.Scale[j];
+                        var scaleAction = new Jx.Action(this.setLayout.bind(this, data));
+                        var subMenuItem = new Jx.MenuItem(scaleAction,{label:data.scale});
+                        menuItem.add(subMenuItem);
+                    }
+                    //add an entry for current scale
+                    var currentScaleAction = new Jx.Action(this.setLayout.bind(this, data));
+                    var currentScaleItem = new Jx.MenuItem(currentScaleAction,
+                                                         {label:'Current Scale'});
+                    menuItem.add(currentScaleItem);
+                } else {
+                    //if there are no scales, the layout is used with current scale
+                    var action = new Jx.Action(this.setLayout.bind(this, data));
+                    menuItem = new Jx.MenuItem(action,opt);
+                };
+                this.oMenu.add(menuItem);
+            }
+        } else {
+            Object.inheritFrom(this, Fusion.Tool.ButtonBase.prototype, []);
+            if (json.Width && json.Width[0] != '') {
+                this.imageWidth = json.Width[0];
+            }
+            if (json.Height && json.Height[0] != '') {
+                this.imageHeight = json.Height[0];
             }
         }
 
@@ -11855,6 +12204,16 @@ Fusion.Widget.SaveMap.prototype = {
         Fusion.Tool.ButtonBase.prototype.enable.apply(this, []);
     },
     
+    setLayout: function(data) {
+        this.printScale = data.scale;
+        this.printLayout = data.rid;
+        this.pageHeight = data.pageHeight;
+        this.pageWidth = data.pageWidth;
+        this.pageMargins = data.margins;
+
+        this.activateTool();
+    },
+
     /**
      * called when the button is clicked by the Fusion.Tool.ButtonBase widget
      * prompts user to save the map.
@@ -11868,28 +12227,43 @@ Fusion.Widget.SaveMap.prototype = {
         }
         var szLayout = '';
         var szScale = '';
+        var szPageHeight = '';
+        var szPageWidth = '';
+        var szPageMargins = '';
         if (this.format === 'DWF') {
             if (this.printLayout) {
                 szLayout = '&layout=' + this.printLayout;                
             } else {
-                //TODO: issue an error?
+                alert('DWF Save is not properly configured.');
                 return;
             }
             if (this.printScale) {
                 szScale = '&scale=' + this.printScale;
+            }            
+            if (this.pageHeight) {
+                szPageHeight = '&pageheight=' + this.pageHeight;
+            }
+            if (this.pageWidth) {
+                szPageWidth = '&pagewidth=' + this.pageWidth;
+            }
+            if (this.pageMargins) {
+                szPageMargins = '&margins=' + this.pageMargins.join(',');
             }
         }
-        //TODO: revisit Fusion.getWebAgentURL
-		var m = this.getMap().aMaps[0];
+        var szHeight = '';
+        if (this.imageHeight) {
+            szHeight = '&height=' + this.imageHeight;
+        }
+        var szWidth = '';
+        if (this.imageWidth) {
+            szWidth = '&width=' + this.imageWidth;
+        }
+        var m = this.getMap().aMaps[0];
         if(navigator.appVersion.match(/\bMSIE\b/)) {
-            //var url = Fusion.getWebAgentURL() + "OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=PNG&VERSION=1.0.0&SESSION=" + this.getMap().getSessionID() + "&MAPNAME=" + this.getMap().getMapName() + "&SEQ=" + Math.random();
-            
-            var url = Fusion.fusionURL + '/' + m.arch + '/' + Fusion.getScriptLanguage() + "/SaveMapFrame." + Fusion.getScriptLanguage() + '?session='+m.getSessionID() + '&mapname=' + m.getMapName() + '&format=' + this.format + szLayout;
-            //this.iframe.src = url;
+            var url = Fusion.fusionURL + '/' + m.arch + '/' + Fusion.getScriptLanguage() + "/SaveMapFrame." + Fusion.getScriptLanguage() + '?session='+m.getSessionID() + '&mapname=' + m.getMapName() + '&format=' + this.format + szLayout + szWidth + szHeight + szPageHeight + szPageWidth + szPageMargins;
             w = open(url, "Save", 'menubar=no,height=200,width=300');
         } else {
-            var s = Fusion.fusionURL + '/' + m.arch + '/' + Fusion.getScriptLanguage() + "/SaveMap." + Fusion.getScriptLanguage() + '?session='+m.getSessionID() + '&mapname=' + m.getMapName() + '&format=' + this.format + szLayout;
-            //console.log(s);
+            var s = Fusion.fusionURL + '/' + m.arch + '/' + Fusion.getScriptLanguage() + "/SaveMap." + Fusion.getScriptLanguage() + '?session='+m.getSessionID() + '&mapname=' + m.getMapName() + '&format=' + this.format + szLayout + szWidth + szHeight + szPageHeight + szPageWidth + szPageMargins;
             
             this.iframe.src = s;
         }
@@ -12008,7 +12382,7 @@ Fusion.Widget.Scalebar.prototype = {
 /**
  * Fusion.Widget.ScalebarDual
  *
- * $Id: Scalebar.js 1084 2007-12-06 16:58:52Z madair $
+ * $Id: ScalebarDual.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -12045,38 +12419,39 @@ Fusion.Widget.ScalebarDual.prototype = {
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, false]);
 
         var json = widgetTag.extension;
-        
+
         this.content = $(this.getName());
-        
+
         var scaleDiv = document.createElement('div');
         Element.addClassName(scaleDiv, 'scaleDiv');
         Element.addClassName(scaleDiv, 'scaleMetric');
         this.content.appendChild(scaleDiv);
-        
+
         this.metricDiv = document.createElement('div');
-        this.metricDiv.style.backgroundColor = 'olive';//remove this when css is done
         Element.addClassName(this.metricDiv, 'scaleLabel');
         scaleDiv.appendChild(this.metricDiv);
-        
+
         scaleDiv = document.createElement('div');
         Element.addClassName(scaleDiv, 'scaleDiv');
         Element.addClassName(scaleDiv, 'scaleImperial');
         this.content.appendChild(scaleDiv);
-        
+
         this.imperialDiv = document.createElement('div');
-        this.imperialDiv.style.backgroundColor = 'green';//remove this when css is done
         Element.addClassName(this.imperialDiv, 'scaleLabel');
         scaleDiv.appendChild(this.imperialDiv);
-        
+
         Element.addClassName(this.domObj, 'dualScalebar');
-        
+
         this.getMap().registerForEvent(Fusion.Event.MAP_EXTENTS_CHANGED, this.extentsChangedCB.bind(this));
         this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, this.extentsChangedCB.bind(this));
+
+        Fusion.addWidgetStyleSheet(widgetTag.location + '/ScalebarDual/ScalebarDual.css');
+
     },
 
     extentsChangedCB : function() {
       var maxWidth = this.content.getWidth();
-      
+
       //TODO: support projected data
       var map = this.getMap();
       var oExtent = map.getCurrentExtents();
@@ -12087,7 +12462,7 @@ Fusion.Widget.ScalebarDual.prototype = {
       if (units == 'degrees' || units == 'dd' ) {   //TODO: add case for units='ft'
         var cp = oExtent.getCenterLonLat();
         if (Math.abs(cp.lat) > 89.9) return;
-        
+
         var ddPerPixel = res;
         var metersPerDD = 110570;
         //adjust for latitude
@@ -12133,7 +12508,7 @@ Fusion.Widget.ScalebarDual.prototype = {
           } else {
             miDone = true;
           }
-          
+
           kmBarLength = km / kmPerPixel;
           miBarLength = mi / miPerPixel;
       }
@@ -12142,11 +12517,11 @@ Fusion.Widget.ScalebarDual.prototype = {
           ft = (Math.floor(mi * 52.8) * 100);
           miBarLength = ft / ftPerPixel;
       }
-      
+
       var sbMax = Math.max(kmBarLength, miBarLength) + 2;
       this.content.style.width = Math.round(sbMax) + 'px';
       //(document.getElementById(this.id)).style.width = sbMax + 'px';
-      this.metricDiv.style.width = Math.round(kmBarLength - 0) + "px";  //0 was 24 why?
+      this.metricDiv.parentNode.style.width = Math.round(kmBarLength - 0) + "px";  //0 was 24 why?
       //for small values, convert units
       if (km <= 0.5) {
           this.metricDiv.innerHTML = km * 1000 + " m";
@@ -12164,7 +12539,7 @@ Fusion.Widget.ScalebarDual.prototype = {
 /**
  * Fusion.Widget.Search
  *
- * $Id: $
+ * $Id: Search.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -12256,7 +12631,7 @@ Fusion.Widget.Search.prototype = {
 /**
  * Fusion.Widget.Select
  *
- * $Id: Select.js 1252 2008-02-22 22:36:46Z madair $
+ * $Id: Select.js 1253 2008-02-22 22:40:00Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -12694,7 +13069,7 @@ Fusion.Widget.SelectPolygon.prototype = {
 /**
  * Fusion.Widget.SelectRadius
  *
- * $Id: SelectRadius.js 1307 2008-03-04 22:14:22Z madair $
+ * $Id: SelectRadius.js 1317 2008-03-05 19:34:45Z zak $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -12798,6 +13173,8 @@ Fusion.Widget.SelectRadius.prototype = {
         if (!this.circle) {
             this.circle = new Fusion.Tool.Canvas.Circle(this.getMap());
         }
+        /*map units for tool tip*/
+        this.units = this.getMap().getAllMaps()[0].units;
     },
 
     /**
@@ -12840,7 +13217,10 @@ Fusion.Widget.SelectRadius.prototype = {
             this.radiusTip.style.top = (p.y - size.height*2) + 'px';
             this.radiusTip.style.left = p.x + 'px';
             var r = this.getMap().pixToGeoMeasure(this.circle.radius);
-            this.radiusTip.innerHTML = r;
+            if (this.units == 'm' || this.units == 'ft') {
+                r = Math.round(r * 100)/100;
+            }
+            this.radiusTip.innerHTML = r + this.units;
         }
     },
 
@@ -12875,7 +13255,10 @@ Fusion.Widget.SelectRadius.prototype = {
             this.radiusTip.style.top = (p.y - size.height*2) + 'px';
             this.radiusTip.style.left = p.x + 'px';
             var r = map.pixToGeoMeasure(this.circle.radius);
-            this.radiusTip.innerHTML = r;
+            if (this.units == 'm' || this.units == 'ft') {
+                r = Math.round(r * 100)/100;
+            }
+            this.radiusTip.innerHTML = r + this.units;
         }
         
     },
@@ -12954,7 +13337,7 @@ Fusion.Widget.SelectRadius.prototype = {
 /**
  * Fusion.Widget.SelectRadiusValue
  *
- * $Id: SelectRadiusValue.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: SelectRadiusValue.js 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -13000,15 +13383,16 @@ Fusion.Widget.SelectRadiusValue.prototype =  {
         this.label = json.Label ? json.Label[0] : '';
         this.className = json.ClassName ? json.ClassName[0] : '';
         
-        /* a container for the widget */
-        //this.domObj = document.createElement('div');
-        //this.domObj.className = this.className;
-        
+        this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, this.mapLoaded.bind(this));
+        this.getMap().registerForEvent(Fusion.Event.MAP_EXTENTS_CHANGED, this.mapExtentsChanged.bind(this));
+    },
+    
+    draw: function() {
         /* put in the label */
+        var units = this.getMap().getAllMaps()[0].units;
         this.domLabel = document.createElement('label');
         this.domLabel.className = this.className;
-        this.domLabel.innerHTML = this.label;
-        //this.domObj.appendChild(label);
+        this.domLabel.innerHTML = this.label + '(' + units + ')';
         
         /* put in the input */
         this.input = document.createElement('input');
@@ -13018,19 +13402,30 @@ Fusion.Widget.SelectRadiusValue.prototype =  {
         /* put into page */
         this.domObj.appendChild(this.domLabel);
         Event.observe(this.input, 'blur', this.onBlur.bind(this));
-        this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, this.mapLoaded.bind(this));
-        this.getMap().registerForEvent(Fusion.Event.MAP_EXTENTS_CHANGED, this.mapExtentsChanged.bind(this));
-        
     },
     
     mapLoaded: function() {
+        this.draw();
+        this.input.disabled = true;
         var widgets = Fusion.getWidgetsByType('SelectRadius');
         for (var i=0; i<widgets.length; i++) {
-            if (widgets[i].sName == this.radiusWidgetName) {
+            if (widgets[i].widgetTag.name == this.radiusWidgetName) {
                 this.widget = widgets[i];
+                this.widget.registerForEvent(Fusion.Event.RADIUS_WIDGET_ACTIVATED, this.dependantEnable.bind(this));
+                break;
             }
         }
         this.updateFromWidgetValue();
+    },
+    
+    dependantEnable: function(eventId, active) {
+        if (this.widget) {
+            if (active) {
+                this.input.disabled = false;
+            } else {
+                this.input.disabled = true;
+            }
+        }
     },
     
     mapExtentsChanged: function() {
@@ -13043,20 +13438,20 @@ Fusion.Widget.SelectRadiusValue.prototype =  {
     
     updateWidgetValue: function() {
         if (this.widget) {
-            var radius = this.getMap().geoToPixMeasure(this.input.getValue());
+            var radius = this.input.getValue();
             this.widget.setRadius(radius);
         }
     },
     
     updateFromWidgetValue: function() {
         if (this.widget) {
-            this.input.value = this.getMap().pixToGeoMeasure(this.widget.getRadius());
+            this.input.value = this.widget.getRadius();
         }
     }
 };/**
  * Fusion.Widget.SelectWithin
  *
- * $Id: $
+ * $Id: SelectWithin.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -13183,7 +13578,7 @@ Fusion.Widget.SelectWithin.prototype = {
 /**
  * Fusion.Widget.SelectionInfo
  *
- * $Id: $
+ * $Id: SelectionInfo.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -13271,7 +13666,7 @@ Fusion.Widget.SelectionInfo.prototype = {
 /**
  * Fusion.Widget.SelectionPanel
  *
- * $Id: $
+ * $Id: SelectionPanel.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -13447,7 +13842,7 @@ Fusion.Widget.SelectionPanel.prototype = {
 /**
  * Fusion.Widget.TaskPane
  *
- * $Id: $
+ * $Id: TaskPane.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -13636,7 +14031,7 @@ Fusion.Widget.TaskPane.prototype =
 /**
  * Fusion.Widget.ViewOptions
  *
- * $Id: $
+ * $Id: ViewOptions.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -13717,10 +14112,11 @@ Fusion.Widget.ViewOptions.prototype =
         }
       }
     }
-};/**
+};
+/**
  * Fusion.Widget.ViewSize
  *
- * $Id: $
+ * $Id: ViewSize.js 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -13786,8 +14182,9 @@ Fusion.Widget.ViewSize.prototype = {
             var gw = map.pixToGeoMeasure(p.w);
             var gh = map.pixToGeoMeasure(p.h);
             if (this.units != Fusion.UNKNOWN) {
-                gw = Fusion.fromMeter(this.units, gw * map._fMetersperunit);
-                gh = Fusion.fromMeter(this.units, gh * map._fMetersperunit);
+                var convFactor = map.getMetersPerUnit();
+                gw = Fusion.fromMeter(this.units, gw * convFactor);
+                gh = Fusion.fromMeter(this.units, gh * convFactor);
             }
             if (this.precision >= 0) {
                 var factor = Math.pow(10,this.precision);
@@ -13816,7 +14213,7 @@ Fusion.Widget.ViewSize.prototype = {
 /**
  * Fusion.Widget.Zoom
  *
- * $Id: Zoom.js 1252 2008-02-22 22:36:46Z madair $
+ * $Id: Zoom.js 1253 2008-02-22 22:40:00Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a

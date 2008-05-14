@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.SaveMap
  *
- * $Id: SaveMap.js 1169 2008-01-10 16:21:12Z pspencer $
+ * $Id: SaveMap.js 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -43,25 +43,66 @@ Fusion.Widget.SaveMap.prototype = {
     iframe : null,
     printLayout : null,
     printScale : null,
+    imageWidth : null,
+    imageHeight : null,
     initialize : function(widgetTag) {
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, false]);
-        Object.inheritFrom(this, Fusion.Tool.ButtonBase.prototype, []);
 
         var json = widgetTag.extension;
         this.format = (json.Format && json.Format[0] != '')?
                        json.Format[0] : 'png';
         
         //for DWF, parse printLayouts and build menu
-        if (this.format == 'DWF') {
-            if (json.ResourceId) {
-                this.printLayout = json.ResourceId[0];
-                if (json.Scale) {
-                    this.printScale =  json.Scale[0];
-                }
-            } else {
-                //TODO: Warning that the widget is improperly configured
-                //because we need  print layout for this to work.
-                //TODO: deactivate the widget?
+        if (this.format == 'DWF' && json.PrintLayout.length) {
+            Object.inheritFrom(this, Fusion.Tool.MenuBase.prototype, []);
+            
+            var layouts = json.PrintLayout;
+            for (var i = 0; i < layouts.length; i++) {
+                var layout = layouts[i];
+                var opt = {};
+                opt.label = layout.Name[0];
+                var data = {rid:layout.ResourceId[0]};
+                if (layout.PageHeight) {
+                    data.pageHeight = layout.PageHeight[0];
+                };
+                if (layout.PageWidth) {
+                    data.pageWidth = layout.PageWidth[0];
+                };
+                if (layout.Margins) {
+                    data.margins = [layout.Margins[0].Top[0],
+                                    layout.Margins[0].Left[0],
+                                    layout.Margins[0].Right[0],
+                                    layout.Margins[0].Bottom[0]];
+                };
+                var menuItem = null;
+                if (layout.Scale) {
+                    //create entries for weblayout specified scales
+                    menuItem = new Jx.SubMenu(opt);
+                    for (var j=0; j < layout.Scale.length; j++) {
+                        data.scale = layout.Scale[j];
+                        var scaleAction = new Jx.Action(this.setLayout.bind(this, data));
+                        var subMenuItem = new Jx.MenuItem(scaleAction,{label:data.scale});
+                        menuItem.add(subMenuItem);
+                    }
+                    //add an entry for current scale
+                    var currentScaleAction = new Jx.Action(this.setLayout.bind(this, data));
+                    var currentScaleItem = new Jx.MenuItem(currentScaleAction,
+                                                         {label:'Current Scale'});
+                    menuItem.add(currentScaleItem);
+                } else {
+                    //if there are no scales, the layout is used with current scale
+                    var action = new Jx.Action(this.setLayout.bind(this, data));
+                    menuItem = new Jx.MenuItem(action,opt);
+                };
+                this.oMenu.add(menuItem);
+            }
+        } else {
+            Object.inheritFrom(this, Fusion.Tool.ButtonBase.prototype, []);
+            if (json.Width && json.Width[0] != '') {
+                this.imageWidth = json.Width[0];
+            }
+            if (json.Height && json.Height[0] != '') {
+                this.imageHeight = json.Height[0];
             }
         }
 
@@ -72,6 +113,16 @@ Fusion.Widget.SaveMap.prototype = {
         Fusion.Tool.ButtonBase.prototype.enable.apply(this, []);
     },
     
+    setLayout: function(data) {
+        this.printScale = data.scale;
+        this.printLayout = data.rid;
+        this.pageHeight = data.pageHeight;
+        this.pageWidth = data.pageWidth;
+        this.pageMargins = data.margins;
+
+        this.activateTool();
+    },
+
     /**
      * called when the button is clicked by the Fusion.Tool.ButtonBase widget
      * prompts user to save the map.
@@ -85,28 +136,43 @@ Fusion.Widget.SaveMap.prototype = {
         }
         var szLayout = '';
         var szScale = '';
+        var szPageHeight = '';
+        var szPageWidth = '';
+        var szPageMargins = '';
         if (this.format === 'DWF') {
             if (this.printLayout) {
                 szLayout = '&layout=' + this.printLayout;                
             } else {
-                //TODO: issue an error?
+                alert('DWF Save is not properly configured.');
                 return;
             }
             if (this.printScale) {
                 szScale = '&scale=' + this.printScale;
+            }            
+            if (this.pageHeight) {
+                szPageHeight = '&pageheight=' + this.pageHeight;
+            }
+            if (this.pageWidth) {
+                szPageWidth = '&pagewidth=' + this.pageWidth;
+            }
+            if (this.pageMargins) {
+                szPageMargins = '&margins=' + this.pageMargins.join(',');
             }
         }
-        //TODO: revisit Fusion.getWebAgentURL
-		var m = this.getMap().aMaps[0];
+        var szHeight = '';
+        if (this.imageHeight) {
+            szHeight = '&height=' + this.imageHeight;
+        }
+        var szWidth = '';
+        if (this.imageWidth) {
+            szWidth = '&width=' + this.imageWidth;
+        }
+        var m = this.getMap().aMaps[0];
         if(navigator.appVersion.match(/\bMSIE\b/)) {
-            //var url = Fusion.getWebAgentURL() + "OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=PNG&VERSION=1.0.0&SESSION=" + this.getMap().getSessionID() + "&MAPNAME=" + this.getMap().getMapName() + "&SEQ=" + Math.random();
-            
-            var url = Fusion.fusionURL + '/' + m.arch + '/' + Fusion.getScriptLanguage() + "/SaveMapFrame." + Fusion.getScriptLanguage() + '?session='+m.getSessionID() + '&mapname=' + m.getMapName() + '&format=' + this.format + szLayout;
-            //this.iframe.src = url;
+            var url = Fusion.fusionURL + '/' + m.arch + '/' + Fusion.getScriptLanguage() + "/SaveMapFrame." + Fusion.getScriptLanguage() + '?session='+m.getSessionID() + '&mapname=' + m.getMapName() + '&format=' + this.format + szLayout + szWidth + szHeight + szPageHeight + szPageWidth + szPageMargins;
             w = open(url, "Save", 'menubar=no,height=200,width=300');
         } else {
-            var s = Fusion.fusionURL + '/' + m.arch + '/' + Fusion.getScriptLanguage() + "/SaveMap." + Fusion.getScriptLanguage() + '?session='+m.getSessionID() + '&mapname=' + m.getMapName() + '&format=' + this.format + szLayout;
-            //console.log(s);
+            var s = Fusion.fusionURL + '/' + m.arch + '/' + Fusion.getScriptLanguage() + "/SaveMap." + Fusion.getScriptLanguage() + '?session='+m.getSessionID() + '&mapname=' + m.getMapName() + '&format=' + this.format + szLayout + szWidth + szHeight + szPageHeight + szPageWidth + szPageMargins;
             
             this.iframe.src = s;
         }

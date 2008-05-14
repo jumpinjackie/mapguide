@@ -40,6 +40,7 @@ var layerSet = "";
 var webAgent = '%s';
 var mapName = '%s';
 var sessionId = '%s';
+var zoomTo = false;
 
 function InitDocument()
 {
@@ -83,9 +84,23 @@ function ExecuteCommand()
 
     var mapWidget = GetParent().Fusion.getMapByName(mapName);
     var map = mapWidget.aMaps[0];
-    var params = "mapname=" + encodeURIComponent(mapName) + "&session=" + sessionId + "&layers=" + encodeURIComponent(layerSet);
-    var options = {onSuccess: map.processQueryResults.bind(map, false), onFailure: selectedError, parameters:params};
+    var params = {
+      "mapname": encodeURIComponent(mapName),
+      "session": sessionId,
+      "layers": encodeURIComponent(layerSet)
+    };
+    var options = {
+      onSuccess: selectedSuccess,
+      onFailure: selectedError, 
+      parameters:params
+    };
     GetParent().Fusion.ajaxRequest(webAgent, options);
+}
+
+function selectedSuccess(r) {
+    var mapWidget = GetParent().Fusion.getMapByName(mapName);
+    var map = mapWidget.aMaps[0];
+    map.processQueryResults(zoomTo, r);
 }
 
 function selectedError(r) {

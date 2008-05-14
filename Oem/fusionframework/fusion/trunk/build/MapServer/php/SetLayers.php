@@ -2,7 +2,7 @@
 /**
  * SetLayers
  *
- * $Id: Selection.php 963 2007-10-16 15:37:30Z madair $
+ * $Id: SetLayers.php 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a

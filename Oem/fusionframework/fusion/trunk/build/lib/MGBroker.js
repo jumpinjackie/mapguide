@@ -1,7 +1,7 @@
 /**
  * Fusion.Lib.MGBroker
  *
- * $Id: MGBroker.js 974 2007-10-16 20:55:51Z madair $
+ * $Id: MGBroker.js 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -144,7 +144,7 @@ Fusion.Lib.MGRequest.prototype = {
      */
     initializeRequest : function() {
         this.options = { method:'post' };
-        this.parameters = { version : '1.0.0', locale : Fusion.locale };
+        this.parameters = { version : '1.0.0', locale : Fusion.locale, clientagent : 'Fusion Viewer' };
     },
     
     /**
@@ -597,11 +597,13 @@ Object.extend(  Fusion.Lib.MGRequest.MGQueryMapFeatures.prototype, {
      * @param maxFeatures {integer} number of maximum results (-1 to indicate no maximum)
      * @param selectionPersist {boolean} save the selection (valid values are 0 and 1) 
      * @param selectionVariant {String} indicates the spatial operation. Valid values are 'INTERSECTS', ...
-     *@param layerNames {String} comma separated list of layer names to include in the query
+     * @param layerNames {String} comma separated list of layer names to include in the query
+     * @param layerAttributeFilter {integer} bitmask determining layer selection behaviour (1=visible layers,
+     *          2=selectable layers, 4=layers with tooltips)
      *
      * @return {Object} an instance of Fusion.Lib.MGRequest.MGQueryMapFeatures
      */
-    initialize : function( sessionId, mapName, geometry, maxFeatures, persist, selectionVariant, layerNames ) 
+    initialize : function( sessionId, mapName, geometry, maxFeatures, persist, selectionVariant, layerNames, layerAttributeFilter ) 
     {
         this.initializeRequest();
         this.setParams( {
@@ -612,7 +614,8 @@ Object.extend(  Fusion.Lib.MGRequest.MGQueryMapFeatures.prototype, {
             maxFeatures: maxFeatures,
             persist: persist,
             selectionVariant: selectionVariant,
-            layerNames: layerNames
+            layerNames: layerNames,
+            layerAttributeFilter: layerAttributeFilter
         } );
     }
 });

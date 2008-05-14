@@ -2,7 +2,7 @@
 /**
  * Buffer
  *
- * $Id: Buffer.php 1132 2007-12-19 14:34:36Z zak $
+ * $Id: Buffer.php 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -43,11 +43,10 @@ try {
         exit;
     }
 
-    /* currently no way to set this, but if we did provide a way, it
-       would allow creation of multiple buffers on individual objects
-       in the selection rather than a combined buffer */
-    $merge = false;
-
+    /* if merge is set, buffer the entire selection as one instead of creating buffers
+           * on each selected feature
+           */
+    $merge = ((isset($_REQUEST['merge'])) && $_REQUEST['merge'] == 1)?true:false;
     $layerName = $_REQUEST['layer'];
     $distance = $_REQUEST['distance'];
     $fillColor = $_REQUEST['fillcolor'];
@@ -159,12 +158,10 @@ try {
             $layerSrsWkt = $spatialContext->GetCoordinateSystemWkt();
             /* skip this layer if the srs is empty */
             if($layerSrsWkt == "") {
-                $excludedLayers ++;
                 continue;
             }
         } else {
             /* skip this layer if there is no spatial context at all */
-            $excludedLayers ++;
             continue;
         }
 
@@ -183,7 +180,6 @@ try {
         //
         if(($arbitraryDsSrs != $arbitraryMapSrs) || ($arbitraryDsSrs && ($dsSrsUnits != $mapSrsUnits)))
         {
-            $excludedLayers ++;
             continue;
         }
 
@@ -192,15 +188,24 @@ try {
         $dist = $layerCs->ConvertMetersToCoordinateSystemUnits($distance);
 
         // calculate great circle unless data source srs is arbitrary
+        $verMajor = subStr(GetSiteVersion(), 0,1);
         if(!$arbitraryDsSrs) {
-            $measure = new MgCoordinateSystemMeasure($layerCs);
+            if ($verMajor == '1') {
+              $measure = new MgCoordinateSystemMeasure($layerCs);
+            } else {
+              $measure = $layerCs->GetMeasure();
+            }
         } else {
             $measure = null;
         }
 
         // create a SRS transformer if necessary.
         if($layerSrsWkt != $srsDefMap) {
-            $srsXform = $srsFactory->GetTransform($layerCs, $srsMap);
+            if ($verMajor == '1') {
+              $srsXform = new MgCoordinateSystemTransform($layerCs, $srsMap);
+            } else {
+              $srsXform = $srsFactory->GetTransform($layerCs, $srsMap);
+            }
         } else {
             $srsXform = null;
         }
@@ -236,7 +241,12 @@ try {
         if($inputGeometries->GetCount() > 0) {
             $dist = $srsMap->ConvertMetersToCoordinateSystemUnits($distance);
             if(!$arbitraryMapSrs) {
-                $measure = $srsMap->GetMeasure();
+                $verMajor = subStr(GetSiteVersion(), 0,1);
+                if ($verMajor == '1') {
+                    $measure = new MgCoordinateSystemMeasure($srsMap);
+                } else {
+                    $measure = $srsMap->GetMeasure();
+                }
             } else {
                 $measure = null;
             }

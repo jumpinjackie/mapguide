@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.ExtentHistory
  *
- * $Id: ExtentHistory.js 1277 2008-02-29 20:03:08Z madair $
+ * $Id: ExtentHistory.js 1278 2008-02-29 20:03:47Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a

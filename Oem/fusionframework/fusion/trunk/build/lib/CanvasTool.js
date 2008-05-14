@@ -1,7 +1,7 @@
 /**
  * Fusion.Tool.Canvas
  *
- * $Id: CanvasTool.js 1307 2008-03-04 22:14:22Z madair $
+ * $Id: CanvasTool.js 1308 2008-03-04 22:15:11Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a

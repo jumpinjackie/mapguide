@@ -2,7 +2,7 @@
 /**
  * Common
  *
- * $Id: Common.php 1237 2008-02-20 23:46:47Z cclaydon $
+ * $Id: Common.php 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -74,6 +74,8 @@ try {
         $username = isset($_REQUEST['username']) ? $_REQUEST['username'] : 'Anonymous';
         $password = isset($_REQUEST['password']) ? $_REQUEST['password'] : '';
         $user = new MgUserInformation($username, $password);
+        $user->SetClientIp(GetClientIp());
+        $user->SetClientAgent(GetClientAgent());
         $siteConnection = new MgSiteConnection();
         $siteConnection->Open($user);
     } else {
@@ -90,9 +92,13 @@ try {
         /* current user is re-authenticating or not? */
         if (isset($_REQUEST['username']) && isset($_REQUEST['password'])) {
             $user = new MgUserInformation($_REQUEST['username'], $_REQUEST['password']);
+            $user->SetClientIp(GetClientIp());
+            $user->SetClientAgent(GetClientAgent());
             $user->SetMgSessionId($sessionID);
         } else {
             $user = new MgUserInformation($sessionID);
+            $user->SetClientIp(GetClientIp());
+            $user->SetClientAgent(GetClientAgent());
         }
 
         /* open a connection to the site.  This will generate exceptions if the user
@@ -118,7 +124,6 @@ try {
     echo "</Exception>";
     exit;
 } catch (MgUserNotFoundException $unfe) {
-    header("HTTP/1.0 500 Internal Server Error");
     header('Content-type: text/xml');
     echo "<Exception>";
     echo "<Type>User Not Found</Type>";
@@ -256,5 +261,29 @@ function GetDecimalFromLocalizedString($numberString, $locale)
     return $numberString;
 }
 
+function GetClientIp()
+{
+    $clientIp = '';
+    if (array_key_exists('HTTP_CLIENT_IP', $_SERVER)
+        && strcasecmp($_SERVER['HTTP_CLIENT_IP'], 'unknown') != 0)
+    {
+        $clientIp = $_SERVER['HTTP_CLIENT_IP'];
+    }
+    else if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)
+        && strcasecmp($_SERVER['HTTP_X_FORWARDED_FOR'], 'unknown') != 0)
+    {
+        $clientIp = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else if (array_key_exists('REMOTE_ADDR', $_SERVER))
+    {
+        $clientIp = $_SERVER['REMOTE_ADDR'];
+    }
+    return $clientIp;
+}
+
+function GetClientAgent()
+{
+    return "Fusion Viewer";
+}
 
 ?>

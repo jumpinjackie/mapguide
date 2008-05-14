@@ -10,4 +10,12 @@
   <ImageClass></ImageClass>
   <StandardUi>true</StandardUi>
   <ContainableBy>Any</ContainableBy>
+  <Parameter>
+    <Name>Folder</Name>
+    <Label>MapDefinition root folder</Label>
+    <Type>string</Type>
+    <Description>The hierarchy below this folder will be searched for MapDefinitions to display</Description>
+    <DefaultValue>Library://</DefaultValue>
+    <IsMandatory>0</IsMandatory>
+  </Parameter>
 </WidgetInfo>

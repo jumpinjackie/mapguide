@@ -1,7 +1,7 @@
 /**
  * Fusion API AjaxViewer API layer
  *
- * $Id: MapGuide.js 1204 2008-02-01 19:41:53Z madair $
+ * $Id: MapGuideViewerApi.js 1326 2008-03-05 23:28:14Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -249,7 +249,7 @@ LineHandlers.prototype = {
         seg.to.updateGeo();
         this.clearContext();
         this.draw(this.context);
-    }
+    },
 }
     
 RectangleHandlers = Class.create();
@@ -317,7 +317,7 @@ RectangleHandlers.prototype = {
         this.seg4.from.updateGeo();
         this.clearContext();
         this.draw(this.context);
-    }
+    },
 }
     
 MultiPointHandlers = Class.create();

@@ -5,7 +5,7 @@
  *  For details, see the Prototype web site: http://prototype.conio.net/
  ******************************************************************************
  * Jx UI Library, version 1.0
- * Copyright (c) 2005, DM Solutions Group Inc.
+ * Copyright &copy; 2008, DM Solutions Group Inc.
  * Jx is freely distributable under the terms of an MIT-style license.
  *****************************************************************************/
 /*  Prototype JavaScript framework, version 1.5.0
@@ -5796,19 +5796,21 @@ Control.Slider.prototype = {
       this.options.onChange(this.values.length>1 ? this.values : this.value, this);
     this.event = null;
   }
-}/**********************************************************************
+}/**
+ * $Id: jxcore.js 512 2008-03-07 21:15:45Z pspencer $
  *
- * $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
+ * Title: Jx Core
  *
- * purpose: general purpose GUI components based on Prototype and 
- *          scriptaculous.
+ * Purpose: 
+ * Implementation of core and base classes for Jx components.
  *
- * author: Paul Spencer (pspencer@dmsolutions.ca)
+ * Author: 
+ * Paul Spencer (pspencer@dmsolutions.ca)
  *
- **********************************************************************
- *
- * Copyright (c) 2005, DM Solutions Group Inc.
- *
+ * Copyright:
+ * Copyright &copy; 2008, DM Solutions Group Inc.
+ */
+/******************************************************************************
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -5826,9 +5828,7 @@ Control.Slider.prototype = {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
- *
- **********************************************************************/ 
- 
+ *****************************************************************************/ 
 /**
  * Class: Jx
  * Jx is a global singleton object that contains the entire Jx library
@@ -5909,7 +5909,7 @@ Jx.importRules = {};
 Jx.importRulesIE = {};
 
 /**
- * Function: addStyleSheet
+ * Method: addStyleSheet
  *
  * Individual components of Jx call this function to get their
  * style sheets imported at run time.
@@ -5934,7 +5934,7 @@ Jx.addStyleSheet = function(styleSheet, ieOnly) {
 Jx.addStyleSheet('reset.css');
 
 /**
- * Function: applyPNGFilter
+ * Method: applyPNGFilter
  *
  * Static method that applies the PNG Filter Hack for IE browsers
  * when showing 24bit PNG's.  Used automatically for img tags with
@@ -6026,7 +6026,7 @@ Jx.loadNextImg = function() {
 Jx.Listener = Class.create();
 Jx.Listener.prototype = {
     /**
-     * Function: addListener
+     * Method: addListener
      *
      * add a listener to the provided list.
      *
@@ -6038,7 +6038,7 @@ Jx.Listener.prototype = {
      */
     addListener: function (list,obj) {list.push(obj);},
     /**
-     * Function: removeListener
+     * Method: removeListener
      *
      * remove a listener from the provided list.
      *
@@ -6051,7 +6051,7 @@ Jx.Listener.prototype = {
     removeListener: function(list,obj) {
         for(var i=0;i<list.length;i++) {if (list[i] == obj) {list.splice(i,1); break;}}},
     /**
-     * Function: processEvent
+     * Method: processEvent
      *
      * call each listener with a given method and event.
      *
@@ -6095,7 +6095,7 @@ Jx.UniqueId.prototype = {
      */
     uniqueIdRefs: null,
     /**
-     * Function: initUniqueId
+     * Method: initUniqueId
      * 
      * initialize the UniqueId object.  This must be called prior to
      * calling the <registerIds> function.  Typically, it is called
@@ -6105,7 +6105,7 @@ Jx.UniqueId.prototype = {
         this.uniqueIdRefs = [];
     },
     /**
-     * Function: deregisterIds
+     * Method: deregisterIds
      *
      * removes all registered ids
      */
@@ -6113,7 +6113,7 @@ Jx.UniqueId.prototype = {
         this.uniqueIdRefs.length = 0;
     },
     /**
-     * Function: registerIds
+     * Method: registerIds
      *
      * searches the domObj for each of the ids passed in and
      * obtains a unique reference to them so that subsequent
@@ -6136,7 +6136,7 @@ Jx.UniqueId.prototype = {
         }
     },
     /**
-     * Function: getObj
+     * Method: getObj
      *
      * return an object by id if it was previously registered
      *
@@ -6219,14 +6219,14 @@ Jx.Action.prototype = {
      */
     enabled : null,
     /**
-     * Constructor: initialize
+     * Constructor: Jx.Action
      * 
      * construct a new instance of Jx.Action that invokes a function
      * when activated
      *
-     * Parameter: {Function} f
+     * Parameters: 
      *
-     * the function that this action triggers
+     * f - {Function} the function that this action triggers
      */
     initialize: function(f) {
         this.pcl = [];
@@ -6234,31 +6234,31 @@ Jx.Action.prototype = {
         this.actionPerformed = f;
     },
     /**
-     * Function: addPropertyChangeListener
+     * Method: addPropertyChangeListener
      *
      * add a property change listener to this action.  When the enabled
      * state of the action changes, all property change listeners are
      * notified through their propertyChanged method.
      *
-     * Parameter: {Object} obj
+     * Parameters: 
      *
-     * the object to notify of property changes
+     * obj - {Object} the object to notify of property changes
      */
     addPropertyChangeListener: function(obj){this.addListener(this.pcl, obj);},
     /**
-     * Function: removePropertyChangeListener
+     * Method: removePropertyChangeListener
      *
      * remove a property change listener from this action.
      *
-     * Parameter: {Object} obj
+     * Parameters: 
      *
-     * the property change listener to remove.
+     * obj - {Object} the property change listener to remove.
      */
     removePropertyChangeListener: function(obj) {
         this.removeListener(this.pcl, obj);
     },
     /**
-     * Function: isEnabled
+     * Method: isEnabled
      * 
      * return whether the action is currently enabled or not.
      *
@@ -6266,13 +6266,13 @@ Jx.Action.prototype = {
      */
     isEnabled: function() {return this.enabled;},
     /**
-     * Function: setEnabled
+     * Method: setEnabled
      *
      * set the state of this action.
      *
-     * Parameter: {Boolean} b
+     * Parameters: 
      *
-     * a boolean value to set enabled state of this action to.
+     * b - {Boolean} a boolean value to set enabled state of this action to.
      */
     setEnabled: function(b){
         /* prevent unnecessary propogation of propertyChanged */
@@ -6283,42 +6283,42 @@ Jx.Action.prototype = {
         this.processEvent(this.pcl,'propertyChanged',this);
     },
     /**
-     * Function: bindTo
+     * Method: bindTo
      *
      * convenience function to bind an item to this action.  This
      * adds the item as a property change listener to the action
      * and adds the action as an ActionListener to the item.
      *
-     * Parameter: {Object} item
+     * Parameters: 
      *
-     * the object to bind the action to.
+     * item - {Object} the object to bind the action to.
      */
     bindTo : function( item ) {
         this.addPropertyChangeListener(item);
         item.addActionListener(this);
     },
     /**
-     * Function: unbindFrom
+     * Method: unbindFrom
      *
      * convenience function to undo a binding between an object and
      * this action.
      *
-     * Parameter: {Object} item
+     * Parameters: 
      *
-     * the object to unbind from this action.
+     * item - {Object} the object to unbind from this action.
      */
     unbindFrom: function(item) {
         this.removePropertyChangeListener(item);
         item.removeActionListener(this);
     },
     /**
-     * Function: actionPerformed
+     * Method: actionPerformed
      *
      * placeholder function to conform to the ActionListener interface.
      *
-     * Parameter: {Object} obj
+     * Parameters: 
      *
-     * the object that performed the action.
+     * obj - {Object} the object that performed the action.
      */
     actionPerformed : function(obj) { alert('actionPerformed'); }
 };
@@ -6333,14 +6333,14 @@ Object.extend(Jx.Action.prototype, Jx.Listener.prototype);
  */
 Object.extend( Element, {
     /**
-     * Function: getBoxSizing
+     * Method: getBoxSizing
      *
      * return the box sizing of an element, one of 'content-box' or 
      *'border-box'.
      *
-     * Parameter: {Object} elem
+     * Parameters: 
      *
-     * the element to get the box sizing of.
+     * elem - {Object} the element to get the box sizing of.
      *
      * Return: {String} the box sizing of the element.
      */
@@ -6367,14 +6367,14 @@ Object.extend( Element, {
       return result;
     },
     /**
-     * Function: getContentBoxSize
+     * Method: getContentBoxSize
      *
      * return the size of the content area of an element.  This is the size of
      * the element less margins, padding, and borders.
      *
-     * Parameter: {Object} elem
+     * Parameters: 
      *
-     * the element to get the content size of.
+     * elem - {Object} the element to get the content size of.
      *
      * Return: {Object} an object with two properties, width and height, that
      * are the size of the content area of the measured element.
@@ -6392,14 +6392,14 @@ Object.extend( Element, {
       return {width: w, height: h};
     },
     /**
-     * Function: getBorderBoxSize
+     * Method: getBorderBoxSize
      *
      * return the size of the border area of an element.  This is the size of
      * the element less margins.
      *
-     * Parameter: {Object} elem
+     * Parameters: 
      *
-     * the element to get the border sizing of.
+     * elem - {Object} the element to get the border sizing of.
      *
      * Return: {Object} an object with two properties, width and height, that
      * are the size of the border area of the measured element.
@@ -6413,7 +6413,7 @@ Object.extend( Element, {
       return {width: w, height: h}; 
     },
     /**
-     * Function: setContentBoxSize
+     * Method: setContentBoxSize
      *
      * set either or both of the width and height of an element to
      * the provided size.  This function ensures that the content
@@ -6421,13 +6421,11 @@ Object.extend( Element, {
      * size of the element may be larger depending on padding and
      * borders.
      *
-     * Parameter: {Object} elem
+     * Parameters: 
      *
-     * the element to set the content area of.
+     * elem - {Object} the element to set the content area of.
      *
-     * Parameter: {Object} size
-     *
-     * an object with a width and/or height property that is the size to set
+     * size - {Object} an object with a width and/or height property that is the size to set
      * the content area of the element to.
      */
     setContentBoxSize : function(elem, size) {
@@ -6459,7 +6457,7 @@ Object.extend( Element, {
         }
     },
     /**
-     * Function: setBorderBoxSize
+     * Method: setBorderBoxSize
      *
      * set either or both of the width and height of an element to
      * the provided size.  This function ensures that the border
@@ -6467,13 +6465,11 @@ Object.extend( Element, {
      * content areaof the element may be larger depending on padding and
      * borders.
      *
-     * Parameter: {Object} elem
+     * Parameters: 
      *
-     * the element to set the border size of.
+     * elem - {Object} the element to set the border size of.
      *
-     * Parameter: {Object} size
-     *
-     * an object with a width and/or height property that is the size to set
+     * size - {Object} an object with a width and/or height property that is the size to set
      * the content area of the element to.
      */
     setBorderBoxSize : function(elem, size) {
@@ -6506,13 +6502,13 @@ Object.extend( Element, {
       }
     },
     /**
-     * Function: getPaddingSize
+     * Method: getPaddingSize
      *
      * returns the padding for each edge of an element
      *
-     * Parameter: elem
+     * Parameters: 
      *
-     * The element to get the padding for.
+     * elem - {Object} The element to get the padding for.
      *
      * Return: {Object} an object with properties left, top, right and bottom
      * that contain the associated padding values.
@@ -6528,13 +6524,13 @@ Object.extend( Element, {
       return {left:l, top:t, right: r, bottom: b};
     },
     /**
-     * Function: getBorderSize
+     * Method: getBorderSize
      *
      * returns the border size for each edge of an element
      *
-     * Parameter: elem
+     * Parameters: 
      *
-     * The element to get the borders for.
+     * elem - {Object} The element to get the borders for.
      *
      * Return: {Object} an object with properties left, top, right and bottom
      * that contain the associated border values.
@@ -6550,13 +6546,13 @@ Object.extend( Element, {
       return {left:l, top:t, right: r, bottom: b};
     },
     /**
-     * Function: getMarginSize
+     * Method: getMarginSize
      *
      * returns the margin size for each edge of an element
      *
-     * Parameter: elem
+     * Parameters: 
      *
-     * The element to get the margins for.
+     * elem - {Object} The element to get the margins for.
      *
      * Return: {Object} an object with properties left, top, right and bottom
      * that contain the associated margin values.
@@ -6572,14 +6568,14 @@ Object.extend( Element, {
       return {left:l, top:t, right: r, bottom: b};
     },
     /**
-     * Function: getNumber
+     * Method: getNumber
      *
      * safely parse a number and return its integer value.  A NaN value 
      * returns 0.  CSS size values are also parsed correctly.
      *
-     * Parameter: {Mixed} n
+     * Parameters: 
      *
-     * the string or object to parse.
+     * n - {Mixed} the string or object to parse.
      *
      * Return: {Integer} the integer value that the parameter represents
      */
@@ -6588,7 +6584,7 @@ Object.extend( Element, {
       return result;
     },
     /**
-     * Function: getPageDimensions
+     * Method: getPageDimensions
      *
      * return the dimensions of the browser client area.
      *
@@ -6599,7 +6595,7 @@ Object.extend( Element, {
         return {width: Element.getInsideWindowWidth(), height: Element.getInsideWindowHeight()};
     },
     /**
-     * Function: getInsideWindowWidth
+     * Method: getInsideWindowWidth
      *
      * returns the width of the browser client area
      *
@@ -6617,7 +6613,7 @@ Object.extend( Element, {
         return 0; 
     },
     /**
-     * Function: getInsideWindowHeight
+     * Method: getInsideWindowHeight
      *
      * returns the height of the browser client area
      *
@@ -6635,7 +6631,7 @@ Object.extend( Element, {
         return 0; 
     },
     /**
-     * Function: toggleMeasurable
+     * Method: toggleMeasurable
      *
      * toggles an element's display style property so it can be
      * measured.  If the element has display: none, it is
@@ -6645,9 +6641,9 @@ Object.extend( Element, {
      * changes.  This allows an element to be measured in
      * various ways.
      *
-     * Parameter: {Object} elem
+     * Parameters: 
      *
-     * the element to measure.
+     * elem - {Object} the element to measure.
      */
     toggleMeasurable: function(elem) {
         if (Element.getStyle(elem, 'display') == 'none') {
@@ -6694,22 +6690,18 @@ Jx.ContentLoader.prototype = {
      */ 
     bContentLoaded: false,
     /**
-     * Function: contentLoaded
+     * Method: contentLoaded
      * 
      * callback function that handles remote content
      *
-     * Parameter: element
+     * Parameters: 
      *
-     * the element to put the content into
+     * element - {Object} the element to put the content into
      *
-     * Parameter: options
-     *
-     * the options that were passed to loadContent originally, only
+     * options - {Object} the options that were passed to loadContent originally, only
      * used to get the optional onContentLoaded callback function.
      *
-     * Parameter: r
-     *
-     * the XmlHttpRequest object that has the content.
+     * r - {XmlHttpRequest} the XmlHttpRequest object that has the content.
      */
     contentLoaded: function(element, options, r) { 
         element.innerHTML = r.responseText;
@@ -6719,18 +6711,16 @@ Jx.ContentLoader.prototype = {
         }
     },
     /**
-     * Function: contentLoadFailed
+     * Method: contentLoadFailed
      * 
      * callback function that handles failure to load remote content
      *
-     * Parameter: options
+     * Parameters: 
      *
-     * the options that were passed to loadContent originally, only
+     * options - {Object} the options that were passed to loadContent originally, only
      * used to get the optional onContentLoadedFailed callback function.
      *
-     * Parameter: r
-     *
-     * the XmlHttpRequest object that has the failure code
+     * r - {XmlHttpRequest} the XmlHttpRequest object that has the failure code
      */
     contentLoadFailed: function(options, r) {
         this.bContentLoaded = false;
@@ -6739,40 +6729,28 @@ Jx.ContentLoader.prototype = {
         }
     },
     /**
-     * Function: loadContent
+     * Method: loadContent
      *
      * triggers loading of content based on parameters passed in the
      * options parameter.  The options parameter can have the following
      * attributes:
      *
-     * content - an HTMLElement object, it is appended to the element.
+     * Parameters: 
+     * element - {Object} the element to insert the content into
+     * options - {Object} an object containing the attributes indicating what 
+     * content to load.
      *
-     * contentID - a string containing the ID of an HTML element to append
-     * to the element.
-     * 
-     * contentHTML - a string containing HTML that is inserted as the innerHTML
-     * of the element.
-     *
-     * contentURL - a string containing a URL to some content.  The content is
-     * loaded using an XmlHttpRequest and inserted into the element when it is
-     * loaded.  The url *must* be to the same domain as the current page,
-     * otherwise the same domain policy will prevent loading of the content.
-     *
-     * onContentLoaded - a function object that is called when the content has
-     * been successfully loaded.  Primarily useful when using the contentURL
-     * method of loading content.
-     *
+     * Options:
+     * content - {HTMLElement} an HTML element that becomes the content
+     * contentID - {String} the id of an element to use as the content
+     * contentURL - {String} URL to get the content remotely
+     * contentHTML - {String} some HTML to use as the innerHTML of the content
+     *      area.
+     * onContentLoaded - {Function} a function to call when the content is 
+     *      loaded.
      * onContentLoadFailed - a function object that is called if the content
-     * fails to load, primarily useful when using the contentURL method of
-     * loading content.
-     *
-     * Parameter: element
-     *
-     * the element to insert the content into
-     *
-     * Parameter: options
-     *
-     * an object containing the attributes indicating what content to load.
+     *      fails to load, primarily useful when using the contentURL method of
+     *      loading content.
      */     
     loadContent: function(element, options) {
         options = options || {};
@@ -6805,19 +6783,22 @@ Jx.ContentLoader.prototype = {
             options.onContentLoaded();
         }
     }
-};/**********************************************************************
+};/**
+ * $Id: jxbutton.js 512 2008-03-07 21:15:45Z pspencer $
  *
- * $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
+ * Title: Jx.Button
  *
- * purpose: Implementation of a generic button widget and several
- *          useful subclasses.
+ * Purpose: 
+ * Implementation of a generic button widget and several
+ * useful subclasses.
  *
- * author: Paul Spencer (pspencer@dmsolutions.ca)
+ * Author: 
+ * Paul Spencer (pspencer@dmsolutions.ca)
  *
- **********************************************************************
- *
- * Copyright (c) 2005, DM Solutions Group Inc.
- *
+ * Copyright:
+ * Copyright &copy; 2008, DM Solutions Group Inc.
+ */
+/******************************************************************************
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -6835,9 +6816,7 @@ Jx.ContentLoader.prototype = {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
- *
- **********************************************************************/
- 
+ *****************************************************************************/
 /**
  * Class: Jx.Button
  *
@@ -6893,53 +6872,44 @@ Object.extend(Jx.Button.prototype, Jx.Listener.prototype);
 Object.extend(Jx.Button.prototype, {
     /**
      * Property: {Array} al
-     *
      * an array of action listeners that are attached to the button.
      */
     al: null,
     /**
      * Property: {Object} domObj
-     *
      * the HTML element that is inserted into the DOM for this button
      */
     domObj: null,
     /**
      * Property: {Boolean} enabled
-     *
      * whether the button is enabled or not.  This is controlled by
      * the Action object that the button is associated with.
      */
     enabled:null,
     /**
-     * Function: initialize
-     *
+     * Constructor: Jx.Button
      * create a new button.
      *
      * Parameters:
+     * action - {Object} the action to trigger for this button.
+     * options - {Object} an object containing optional properties for this
+     * button as below.
      *
-     * action {Object} the action to trigger for this button.
-     *
-     * options {Object} an object containing optional properties for this
-     * button. It can have the following attributes:
-     *
+     * Options:
      * image - optional.  A string value that is the url to load the image to
-     * display in this button.  The default styles size this image to 16 x 16.
-     * If not provided, then the button will have no icon.
-     *
+     *      display in this button.  The default styles size this image to 16 x 16.
+     *      If not provided, then the button will have no icon.
      * tooltip - optional.  A string value to use as the alt/title attribute of
-     * the <A> tag that wraps the button, resulting in a tooltip that appears 
-     * when the user hovers the mouse over a button in most browsers.  If 
-     * not provided, the button will have no tooltip.
-     *
+     *      the <A> tag that wraps the button, resulting in a tooltip that appears 
+     *      when the user hovers the mouse over a button in most browsers.  If 
+     *      not provided, the button will have no tooltip.
      * label - optional.  A string value that is used as a label on the button.
-     *
      * disabledClass - optional.  A string value that is the name of a CSS class
-     * to put on the <A> tag if the button is in a disabled state. If not 
-     * provided, the default class jxDisabled is used. You may provide 
-     * your own class or override jxDisabled.
-     *
+     *      to put on the <A> tag if the button is in a disabled state. If not 
+     *      provided, the default class jxDisabled is used. You may provide 
+     *      your own class or override jxDisabled.
      * imgClass - optional.  A string value that is the name of a CSS class to
-     * put on the <IMG> element.  The default value is jxButtonIcon.
+     *      put on the <IMG> element.  The default value is jxButtonIcon.
      */
     initialize : function( action, options ) {
         options = options || {};
@@ -7007,8 +6977,7 @@ Object.extend(Jx.Button.prototype, {
         }
     },
     /**
-     * Function: onclick
-     * 
+     * Method: onclick
      * triggered when the user clicks the button, processes the
      * actionPerformed event
      */
@@ -7019,39 +6988,33 @@ Object.extend(Jx.Button.prototype, {
         return false;
     },
     /**
-     * Function: addActionListener
-     * 
+     * Method: addActionListener
      * add an action listener to the button
      *
-     * Parameters: {Object} obj
-     *
-     * the object to add as an action listener
+     * Parameters: 
+     * obj - {Object} the object to add as an action listener
      */
     addActionListener: function(obj) { 
         this.addListener(this.al,obj); 
     },
     /**
-     * Function: removeActionListener
-     * 
+     * Method: removeActionListener
      * remove an action listener from the button
      *
-     * Parameter: {Object} obj
-     *
-     * the object to remove.
+     * Parameters: 
+     * obj - {Object} the object to remove.
      */
     removeActionListener : function(obj) { 
         this.removeListener(this.al, obj);
     },
     /**
-     * Function: propertyChanged
-     *
+     * Method: propertyChanged
      * implements the PropertyChangeListener interface
      * for handling the enabled state changing on the action
      * associated with this button
      *
-     * Parameter: {Object} obj
-     *
-     * the action that is changing state
+     * Parameters:
+     * obj - {Object} the action that is changing state
      */
     propertyChanged: function(obj) {
         this.enabled = obj.isEnabled();
@@ -7062,13 +7025,11 @@ Object.extend(Jx.Button.prototype, {
         }
     },
     /**
-     * Function: setImage
-     *
+     * Method: setImage
      * set the image of this button to a new image URL
      *
-     * Parameter: {String} path
-     *
-     * the new url to use as the image for this button
+     * Parameters:
+     * path - {String} the new url to use as the image for this button
      */
     setImage: function(path) {
         if (this.domImg) {
@@ -7076,14 +7037,14 @@ Object.extend(Jx.Button.prototype, {
         }
     },
     /**
-     * Function: setLabel
+     * Method: setLabel
      * 
      * sets the text of the button.  Only works if a label was supplied
      * when the button was constructed
      *
-     * Parameter: {String} label
+     * Parametera: 
      *
-     * the new label for the button
+     * label - {String} the new label for the button
      */
     setLabel: function(label) {
         if (this.domLabel) {
@@ -7091,13 +7052,11 @@ Object.extend(Jx.Button.prototype, {
         }
     },
     /**
-     * Function: setTooltip
-     *
+     * Method: setTooltip
      * sets the tooltip displayed by the button
      *
-     * Parameter: {String} tooltip
-     *
-     * the new tooltip
+     * Parameters: 
+     * tooltip - {String} the new tooltip
      */
     setTooltip: function(tooltip) {
         if (this.domImg) {
@@ -7120,17 +7079,21 @@ Jx.Button.Flyout = Class.create();
 Object.extend(Jx.Button.Flyout.prototype, Jx.Button.prototype);
 Object.extend(Jx.Button.Flyout.prototype, Jx.ContentLoader.prototype);
 Object.extend(Jx.Button.Flyout.prototype, {
+    /**
+     * Property: content
+     * {HTMLElement} a reference to the DOM node that contains the flyout 
+     * content
+     */
     content: null,
     /**
-     * Constructor: initialize
-     *
+     * Constructor: Jx.Button.Flyout
      * construct a new instance of a flyout button.  The single options
      * argument takes the same parameters as <Jx.Button.initialize> plus
      * content loading options as per <Jx.ContentLoader>.
      *
-     * Parameters: {Object} options
-     *
-     * an options object used to initialize the button
+     * Parameters: 
+     * options - {Object} an options object used to initialize the button.
+     * See <Jx.Button::Jx.Button>
      */
     initialize: function(options) {
         options = options || {};
@@ -7155,7 +7118,11 @@ Object.extend(Jx.Button.Flyout.prototype, {
         this.hideWatcher = this.clickHandler.bindAsEventListener(this);
     },
     
-    show: function(e) {
+    /**
+     * Method: show
+     * Show the flyout content
+     */
+    show: function() {
         if (!window.opera && !this.iframe.parentNode) {
             this.content.appendChild(this.iframe);
         }
@@ -7164,19 +7131,29 @@ Object.extend(Jx.Button.Flyout.prototype, {
         Event.observe(document, 'click', this.hideWatcher);
     },
     
+    /**
+     * Method: hide
+     * Hide the flyout content
+     */
     hide: function() {
         this.content.style.display = 'none';
         Event.stopObserving(window, 'keypress', this.keypressWatcher);    
         Event.stopObserving(document, 'click', this.hideWatcher);
     },
-    /* hide flyout if the user clicks outside of the flyout */
+    /**
+     * Method: clickHandler
+     * hide flyout if the user clicks outside of the flyout 
+     */
     clickHandler: function(e) {
         var elm = Event.element(e);
         if (!Element.descendantOf(elm, this.domObj.parentNode)) {
             this.hide();
         }
     },
-    /* hide flyout if the user presses the ESC key */
+    /**
+     * Method: keypressHandler
+     * hide flyout if the user presses the ESC key 
+     */
     keypressHandler: function(e) {
         var charCode=(e.charCode)?e.charCode:e.keyCode;
         if (charCode == Event.KEY_ESC) {
@@ -7203,28 +7180,19 @@ Jx.Button.Multi = Class.create();
 Jx.Button.Multi.prototype = {
     /**
      * Property: {<Jx.Button>} activeButton
-     *
      * the currently selected button
      */
     activeButton: null,
     /**
      * Property: {Array} buttons
-     *
      * an array of all available buttons
      */
     buttons: null,
     /**
-     * Constructor: initialize
-     *
-     * construct a new instance of Jx.Button.Multi.  The constructor
-     * takes a single options parameter which is the same as the 
-     * <Jx.Button.initialize> options object.
-     *
-     * Parameters: {Object} options
-     *
-     * an options object used to initialize the button
+     * Constructor: Jx.Button.Multi
+     * construct a new instance of Jx.Button.Multi.
      */
-    initialize: function(options) {
+    initialize: function() {
         this.buttons = [];
         this.content = document.createElement('div');
         this.tb = new Jx.Toolbar(this.content, 'right');
@@ -7239,16 +7207,14 @@ Jx.Button.Multi.prototype = {
         this.domObj.appendChild(this.flyout.domObj);
     },
     /**
-     * Function: add
-     *
+     * Method: add
      * adds one or more buttons to the Multi button.  The first button
      * added becomes the active button initialize.  This function 
      * takes a variable number of arguments, each of which is expected
      * to be an instance of <Jx.Button>.
      *
-     * Parameter: {<Jx.Button>} button
-     * 
-     * a <Jx.Button> instance, may be repeated in the parameter list
+     * Parameters: 
+     * button - {<Jx.Button>} a <Jx.Button> instance, may be repeated in the parameter list
      */
     add: function() {
         for (var i=0; i<arguments.length; i++) {
@@ -7266,13 +7232,11 @@ Jx.Button.Multi.prototype = {
         }
     },
     /**
-     * Function: setActiveButton
-     *
+     * Method: setActiveButton
      * update the menu item to be the requested button.
      *
-     * Parameter: {<Jx.Button>} button
-     *
-     * a <Jx.Button> instance that was added to this multi button.
+     * Parameters: 
+     * button - {<Jx.Button>} a <Jx.Button> instance that was added to this multi button.
      */
     setActiveButton: function(button) {
         while(this.buttonContainer.childNodes.length > 0) {
@@ -7281,14 +7245,12 @@ Jx.Button.Multi.prototype = {
         this.buttonContainer.appendChild(button.domObj);
     },
     /**
-     * Function: setButton
-     *
+     * Method: setButton
      * update the active button in the menu item, trigger the button's action
      * and hide the flyout that contains the buttons.
      *
-     * Parameter: {<Jx.Button>} button
-     *
-     * The button to set as the active button
+     * Parameters: 
+     * button - {<Jx.Button>} The button to set as the active button
      */
     setButton: function(button) {
         this.setActiveButton(button);
@@ -7309,19 +7271,16 @@ Object.extend(Jx.Button.Picker.prototype, Jx.Button.Flyout.prototype);
 Object.extend(Jx.Button.Picker.prototype, {
     /**
      * Property: {HTMLElement} ul
-     *
      * the UL element that contains the items to pick from
      */
     ul: null,
     /**
      * Property {HTMLElement} selectedItem
-     *
      * the currently selected item
      */
     selectedItem: null,
     /**
-     * Constructor: initialize
-     *
+     * Constructor: Jx.Button.Picker
      * construct a new instance of <Jx.Button.Picker>
      */
     initialize: function() {
@@ -7331,13 +7290,11 @@ Object.extend(Jx.Button.Picker.prototype, {
         Element.removeClassName(this.domLabel, 'jxButtonEmptyLabel');
     },
     /**
-     * Function: add
-     *
+     * Method: add
      * adds one or more items to the picker, passed as separate arguments.
      *
-     * Parameter: {Object} item
-     *
-     * can be present one or more times in the argument list.  The item
+     * Parameters: 
+     * item - {Object} can be present one or more times in the argument list.  The item
      * to be added can be a Jx object with a domObj property, a string,
      * or an HTML element reference.
      */
@@ -7364,13 +7321,11 @@ Object.extend(Jx.Button.Picker.prototype, {
         }
     },
     /**
-     * Function: clickHandler
-     *
+     * Method: clickHandler
      * handle the user selecting an item in the list
      *
-     * Parameter: {Event} e
-     *
-     * the event object associated with the click event
+     * Parameters: 
+     * e - {Event} the event object associated with the click event
      */
     clickHandler: function(e) {
         var elm = Event.element(e);
@@ -7385,13 +7340,11 @@ Object.extend(Jx.Button.Picker.prototype, {
         }
     },
     /**
-     * Function: updateButton
-     *
+     * Method: updateButton
      * updates the button to contain the picked item
      *
-     * Parameter: {HTMLElement} a
-     *
-     * the A tag that the user clicked on
+     * Parameters: 
+     * a - {HTMLElement} the A tag that the user clicked on
      */
     updateButton: function(a) {
         while(this.domLabel.childNodes.length > 0) {
@@ -7401,18 +7354,21 @@ Object.extend(Jx.Button.Picker.prototype, {
         this.selectedItem = a.firstChild;
     }
     
-});/**********************************************************************
+});/**
+ * $Id: jxcolor.js 512 2008-03-07 21:15:45Z pspencer $
  *
- * $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
+ * Title: Jx.Color
  *
- * purpose: Implementation of a color selection panel.
+ * Purpose: 
+ * Implementation of a color selection panel.
  *
- * author: Paul Spencer (pspencer@dmsolutions.ca)
+ * Author: 
+ * Paul Spencer (pspencer@dmsolutions.ca)
  *
- **********************************************************************
- *
- * Copyright (c) 2005, DM Solutions Group Inc.
- *
+ * Copyright:
+ * Copyright &copy; 2008, DM Solutions Group Inc.
+ */
+/******************************************************************************
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -7430,10 +7386,10 @@ Object.extend(Jx.Button.Picker.prototype, {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
- *
- **********************************************************************/
+ *****************************************************************************/
  
 Jx.addStyleSheet('color/color.css');
+
 /**
  * Class: Jx.ColorPanel
  *
@@ -7468,48 +7424,41 @@ Jx.ColorPanel = Class.create();
 Jx.ColorPanel.prototype = {
     /**
      * Property: {HTMLElement} domObj
-     *
      * the HTML element representing the color panel
      */
     domObj: null,
     /**
      * Property {String} color
-     * 
      * the currently selected colour, in hex format
      */
     color: null,
     /**
      * Property: {Float} alpha
-     *
      * the current alpha value, between 0 (transparent) and 1 (opaque)
      */
     alpha: null,
     /**
      * Property: {Array} ccl
-     * 
      * color change property listeners
      */
     ccl: null,
     /**
      * Property: {Array} hexColors
-     *
      * an array of valid hex values that are used to build a web-safe
      * palette
      */
     hexColors: ['00', '33', '66', '99', 'CC', 'FF'],
     /**
-     * Constructor: initialize
+     * Constructor: Jx.ColorPanel
+     * initialize a new instance of Jx.ColorPanel
      *
-     * initialize a new instance of Jx.ColorPicker
-     *
-     * Parameter: {Object} options
-     *
-     * an object containing a variable list of optional initialization
+     * Parameters: 
+     * options - {Object} an object containing a variable list of optional initialization
      * parameters.
      *
+     * Options:
      * color - a colour to initialize the panel with, defaults to #000000
      *         (black) if not specified.
-     *
      * alpha - an alpha value to initialize the panel with, defaults to 1
      *         (opaque) if not specified.
      */
@@ -7688,13 +7637,11 @@ Jx.ColorPanel.prototype = {
     },
     
     /**
-     * Function: swatchOver
-     *
+     * Method: swatchOver
      * handle the mouse moving over a colour swatch by updating the preview
      *
-     * Parameter: {Event} e
-     *
-     * the mousemove event object
+     * Parameters: 
+     * e - {Event} the mousemove event object
      */
     swatchOver: function(e) {
         var a = Event.element(e);
@@ -7704,14 +7651,12 @@ Jx.ColorPanel.prototype = {
     },
     
     /**
-     * Function: swatchClick
-     *
+     * Method: swatchClick
      * handle mouse click on a swatch by updating the color and hiding the
      * panel.
      *
-     * Parameter: {Event} e
-     *
-     * the mouseclick event object
+     * Parameters: 
+     * e - {Event} the mouseclick event object
      */
     swatchClick: function(e) {
         var a = Event.element(e);
@@ -7722,8 +7667,7 @@ Jx.ColorPanel.prototype = {
     },
     
     /**
-     * Function: colorChanged
-     *
+     * Method: colorChanged
      * handle the user entering a new colour value manually by updating the
      * selected colour if the entered value is valid HEX.
      */
@@ -7739,8 +7683,7 @@ Jx.ColorPanel.prototype = {
     },
     
     /**
-     * Function: alphaChanged
-     *
+     * Method: alphaChanged
      * handle the user entering a new alpha value manually by updating the
      * selected alpha if the entered value is valid alpha (0-100).
      */
@@ -7753,13 +7696,11 @@ Jx.ColorPanel.prototype = {
     },
     
     /**
-     * Function: setColor
-     *
+     * Method: setColor
      * set the colour represented by this colour panel
      *
-     * Parameter: {String} color
-     *
-     * the new hex color value
+     * Parameters: 
+     * color - {String} the new hex color value
      */
     setColor: function( color ) {
         this.colorInput.value = color;
@@ -7767,13 +7708,11 @@ Jx.ColorPanel.prototype = {
     },
     
     /**
-     * Function: setAlpha
-     *
+     * Method: setAlpha
      * set the alpha represented by this colour panel
      *
-     * Parameter: {Integer} alpha
-     *
-     * the new alpha value (between 0 and 100)
+     * Parameters: 
+     * alpha - {Integer} the new alpha value (between 0 and 100)
      */
     setAlpha: function( alpha ) {
         this.alphaInput.value = alpha;
@@ -7781,8 +7720,7 @@ Jx.ColorPanel.prototype = {
     },
     
     /**
-     * Function: updateSelected
-     *
+     * Method: updateSelected
      * update the colour panel user interface based on the current
      * colour and alpha values
      */
@@ -7802,8 +7740,7 @@ Jx.ColorPanel.prototype = {
     },
     
     /**
-     * Function: show
-     *
+     * Method: show
      * show the panel
      */
     show: function() {
@@ -7812,8 +7749,7 @@ Jx.ColorPanel.prototype = {
     },
     
     /**
-     * Function: hide
-     *
+     * Method: hide
      * hide the panel
      */
     hide: function() {
@@ -7823,14 +7759,12 @@ Jx.ColorPanel.prototype = {
     },
     
     /**
-     * Function: keypressHandler
-     *
+     * Method: keypressHandler
      * handle the user pressing a key.  If the key is the ESC key, then
      * hide the color panel
      *
-     * Parameter: {Event} e
-     *
-     * The keypress event
+     * Parameters: 
+     * e - {Event} The keypress event
      */
     keypressHandler: function(e) {
         var charCode=(e.charCode)?e.charCode:e.keyCode;
@@ -7839,24 +7773,20 @@ Jx.ColorPanel.prototype = {
         }
     },
     /**
-     * Function: addColorChangeListener
-     *
+     * Method: addColorChangeListener
      * add a colour change listener, an object that has a colorChanged
      * function.
      *
-     * Parameter: {Object} obj
-     *
-     * The colour change listener to call when the colour changes.
+     * Parameters: 
+     * obj - {Object} The colour change listener to call when the colour changes.
      */
     addColorChangeListener: function(obj){this.addListener(this.ccl, obj);},
     /**
-     * Function: removeColorChangeListener
-     *
+     * Method: removeColorChangeListener
      * remove a previously added colour change listener
      *
-     * Parameter: {Object} obj
-     *
-     * The colour change listener to remove
+     * Parameters: 
+     * obj - {Object} The colour change listener to remove
      */
     removeColorChangeListener: function(obj) {
         this.removeListener(this.ccl, obj);
@@ -7871,14 +7801,14 @@ Object.extend(Jx.ColorPanel.prototype, Jx.Listener.prototype);
  * preview of the currently selected color.  Clicking the button opens
  * the color panel.
  *
- * Extends: <Jx.Button.Flyout>
+ * Inherits From:
+ * <Jx.Button.Flyout>
  */
 Jx.Button.Color = Class.create();
 Object.extend(Jx.Button.Color.prototype, Jx.Button.Flyout.prototype);
 Object.extend(Jx.Button.Color.prototype, {
     /**
      * Property: { Array } colorPanel
-     *
      * By declaring this property as an array in the prototype, the
      * array is used for all instances making it a Class property.
      * A <Jx.ColorPanel> instance used by all color buttons is made the
@@ -7887,13 +7817,11 @@ Object.extend(Jx.Button.Color.prototype, {
     colorPanel: [],
     /**
      * Property: {HTMLElement} swatch
-     *
      * a div used to represent the current colour in the button.
      */
     swatch: null,
     /**
      * Property: {String} color
-     *
      * the current colour of this button in hex.  We have to maintain
      * it here because we share a colour panel with all other colour
      * buttons
@@ -7901,7 +7829,6 @@ Object.extend(Jx.Button.Color.prototype, {
     color: null,
     /**
      * Property: {Integer} alpha
-     *
      * the current alpha of this button.  We have to maintain
      * it here because we share a colour panel with all other colour
      * buttons
@@ -7909,25 +7836,22 @@ Object.extend(Jx.Button.Color.prototype, {
     alpha: null,
     /**
      * Property: {Array} ccl
-     * 
      * color change property listeners
      */
     ccl: null,
     /**
-     * Constructor: initialize
-     *
+     * Constructor: Jx.Button.Color
      * initialize a new colour button.
      *
-     * Parameter: {Object} options
-     *
-     * an object containing a variable list of optional initialization
+     * Parameters: 
+     * options - {Object} an object containing a variable list of optional initialization
      * parameters.
      *
+     * Options:
      * color - a colour to initialize the panel with, defaults to #000000
-     *         (black) if not specified.
-     *
+     *      (black) if not specified.
      * alpha - an alpha value to initialize the panel with, defaults to 1
-     *         (opaque) if not specified.
+     *      (opaque) if not specified.
      */
      
     initialize: function(options) {
@@ -7955,8 +7879,7 @@ Object.extend(Jx.Button.Color.prototype, {
     },
     
     /**
-     * Function: show
-     * 
+     * Method: show
      * show the color panel when the user clicks the button
      */
     show: function() {
@@ -7977,8 +7900,7 @@ Object.extend(Jx.Button.Color.prototype, {
     },
     
     /**
-     * Function: hide
-     *
+     * Method: hide
      * hide the colour panel
      */    
     hide: function() {
@@ -7988,13 +7910,11 @@ Object.extend(Jx.Button.Color.prototype, {
     },
     
     /**
-     * Function: setColor
-     *
+     * Method: setColor
      * set the colour represented by this colour panel
      *
-     * Parameter: {String} color
-     *
-     * the new hex color value
+     * Parameters: 
+     * color - {String} the new hex color value
      */
     setColor: function(color) {
         this.color = color;
@@ -8002,13 +7922,11 @@ Object.extend(Jx.Button.Color.prototype, {
     },
     
     /**
-     * Function: setAlpha
-     *
+     * Method: setAlpha
      * set the alpha represented by this colour panel
      *
-     * Parameter: {Integer} alpha
-     *
-     * the new alpha value (between 0 and 100)
+     * Parameters: 
+     * alpha - {Integer} the new alpha value (between 0 and 100)
      */
     setAlpha: function(alpha) {
         this.alpha = alpha;
@@ -8016,8 +7934,7 @@ Object.extend(Jx.Button.Color.prototype, {
     },
     
     /**
-     * Function: colorChanged
-     *
+     * Method: colorChanged
      * colorChangeListener callback function when the user changes
      * the colour in the panel (just update the preview).
      */
@@ -8028,6 +7945,10 @@ Object.extend(Jx.Button.Color.prototype, {
         this.processEvent(this.ccl,'colorChanged',this);
     },
     
+    /**
+     * Method: updateSwatch
+     * Update the swatch color for the current color
+     */
     updateSwatch: function() {
         this.selectedSwatch.style.backgroundColor = this.color;
         if (this.alpha < 100) {
@@ -8039,44 +7960,63 @@ Object.extend(Jx.Button.Color.prototype, {
         }
     },
     /**
-     * Function: addColorChangeListener
-     *
+     * Method: addColorChangeListener
      * add a colour change listener, an object that has a colorChanged
      * function.
      *
-     * Parameter: {Object} obj
-     *
-     * The colour change listener to call when the colour changes.
+     * Parameters: 
+     * obj - {Object} The colour change listener to call when the colour changes.
      */
     addColorChangeListener: function(obj){this.addListener(this.ccl, obj);},
     /**
-     * Function: removeColorChangeListener
-     *
+     * Method: removeColorChangeListener
      * remove a previously added colour change listener
      *
-     * Parameter: {Object} obj
-     *
-     * The colour change listener to remove
+     * Parameters: 
+     * obj - {Object} The colour change listener to remove
      */
     removeColorChangeListener: function(obj) {
         this.removeListener(this.ccl, obj);
     }
 });
 /**
- * @project         Jx
- * @revision        $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
- * @author          Paul Spencer (pspencer@dmsolutions.ca)
- * @copyright       &copy; 2006 DM Solutions Group Inc.
+ * $Id: jxdialog.js 512 2008-03-07 21:15:45Z pspencer $
+ *
+ * Title: Jx.Dialog
+ *
+ * Purpose: 
+ * Implementation of a javascript Dialog for Jx.
+ *
+ * Author: 
+ * Paul Spencer (pspencer@dmsolutions.ca)
+ *
+ * Copyright:
+ * Copyright &copy; 2008, DM Solutions Group Inc.
  */
+/******************************************************************************
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
 
 Jx.addStyleSheet('dialog/dialog.css');
 
 /**
  * Class: Jx.Dialog
- *
- * Extends: <Jx.ContentLoader>
- *
- * Extends: <Jx.UniqueId>
  *
  * A Jx.Dialog implements a floating dialog.  Dialogs represent a useful way
  * to present users with certain information or application controls.
@@ -8103,46 +8043,48 @@ Jx.addStyleSheet('dialog/dialog.css');
  * (code)
  * var dialog = new Jx.Dialog({});
  * (end)
+ *
+ * Inherits From:
+ * <Jx.ContentLoader>, <Jx.UniqueId>
  */
 Jx.Dialog = Class.create();
 Jx.Dialog.prototype = {
     /**
      * Property: {Function} onClose
-     * 
      * if specified by the caller, this is a function to invoke
      * when the dialog closes.
      */
     onClose : null,
     /**
      * Property: {Function} onOpen
-     * 
      * if specified by the caller, this is a function to invoke
      * when the dialog opens.
      */
     onOpen : null,
     /**
      * Property: {Function} onChange
-     * 
      * if specified by the caller, this is a function to invoke
      * when any input element in the dialog is changed.
      */
     onChange : null,
     /**
      * Property: {String} title
-     * 
      * the text to display in the title bar of the dialog.
      */
     title : null,
     /**
      * Property: {HTMLElement} content
-     * 
      * the content area element of the dialog, used to load user-
      * specified content into.
      */
     content : null,
     /**
+     * Property: {HTMLElement} action
+     * the action area element of the dialog, used for buttons.
+     */
+    action : null,
+    /**
      * Property: {Object} values
-     * 
      * when dialog content is loaded, the content is inspected for input
      * elements and a record of them is keep in this object for later
      * reference.
@@ -8150,7 +8092,6 @@ Jx.Dialog.prototype = {
     values : null,
     /**
      * Property: {Object} actions
-     * 
      * when dialog content is loaded, the content is inspected for
      * input elements of type 'button' and a record of them is
      * kept in this object for later reference.
@@ -8158,25 +8099,23 @@ Jx.Dialog.prototype = {
     actions : null,
     /**
      * Property: {Function} handler
-     * 
      * if specified by the caller, this is a function to invoke
      * when an input of type button is clicked by the user.
      */
     handler : null,
     /**
-     * TODO: remove this property, it is provided by Jx.ContentLoader.
+     * TODO: Jx.Dialog.bContentLoaded
+     * remove this property, it is provided by Jx.ContentLoader.
      */
     bContentLoaded : null,
     /**
      * Property: {Array} zIndex
-     * 
      * class variable containing the last assigned z-index so that
      * dialogs stack correctly.
      */
     zIndex: [101],
     /**
      * Property: {Array} stack
-     * 
      * class variable containing the list of visible dialogs used to
      * manage the z-index of non-modal dialogs.  This allows the user
      * to click a dialog and have it appear in front of other dialogs.
@@ -8184,121 +8123,99 @@ Jx.Dialog.prototype = {
     stack: [],
     /**
      * Property: {HTMLElement} blanket
-     * 
      * modal dialogs prevent interaction with the rest of the application
      * while they are open, this element is displayed just under the
      * dialog to prevent the user from clicking anything.
      */
     blanket: null,
+    
+    /**
+     * Property: firstShow
+     * {Boolean} true if the dialog has not been made visible yet.  This
+     * facilitates resizing of <Jx.Layout> managed elements in the dialog
+     */
+    firstShow: true,
+    
     /**
      * Property: {Boolean} modal
-     * 
      * whether or not the dialog is modal.
      */
     modal: true,
     /**
-     * Constructor: initialize
-     *
+     * Constructor: Jx.Dialog
      * Construct a new instance of Jx.Dialog
      *
-     * Parameter: {Object} options
+     * Parameters: 
+     * options - {Object} an object containing options for the dialog.
      *
-     * an object containing some or all of the following options
-     *
+     * Options:
      * onChange - (optional) {Function} a function to call if the user changes
-     * the value of any input in the dialog
-     *
+     *      the value of any input in the dialog
      * onClose - (optional) {Function} a function to call when the user closes
-     * the dialog
-     *
+     *      the dialog
      * onOpen - (optional) {Function} a function to call when the user opens
-     * the dialog
-     *
+     *      the dialog
      * onContentLoaded - (optional) {Function} a function to call when the
-     * content of the dialog has been loaded, used primarily with
-     * asynchronous content
-     *
+     *      content of the dialog has been loaded, used primarily with
+     *      asynchronous content
      * handler - (optional) {Function} a function to call when the user clicks
-     * on any input of type 'button' in the dialog
-     *
+     *      on any input of type 'button' in the dialog
      * modal - (optional) {Boolean} controls whether the dialog will be modal
-     * or not.  The default is to create modal dialogs.
-     *
+     *      or not.  The default is to create modal dialogs.
      * top - (optional) {Integer} the distance in pixels to initially place
-     * the dialog from the top edge of its container.  Default is 0 unless
-     * bottom is specified, in which case the top value is not used.
-     *
+     *      the dialog from the top edge of its container.  Default is 0 unless
+     *      bottom is specified, in which case the top value is not used.
      * bottom - (optional) {Integer} the distance in pixels to initially place
-     * the dialog from the bottom edge of its container.  Default is null, which
-     * means that the dialog is not positioned relative to the bottom of its
-     * container.  If top and bottom are specified, top is used.
-     *
+     *      the dialog from the bottom edge of its container.  Default is null, which
+     *      means that the dialog is not positioned relative to the bottom of its
+     *      container.  If top and bottom are specified, top is used.
      * left - (optional) {Integer} the distance in pixels to initially place
-     * the dialog from the left edge of its container.
-     *
+     *      the dialog from the left edge of its container.
      * right - (optional) {Integer} the distance in pixels to initially place
-     * the dialog from the right edge of its container.  Default is null, which
-     * means that the dialog is not positioned relative to the right of its
-     * container.  If left and right are specified, left is used.
-     *
+     *      the dialog from the right edge of its container.  Default is null, which
+     *      means that the dialog is not positioned relative to the right of its
+     *      container.  If left and right are specified, left is used.
      * width - (optional) {Integer} the initial width in pixels of the dialog.
-     * The default value is 250 if not specified.
-     *
+     *      The default value is 250 if not specified.
      * height - (optional) {Integer} the initial height in pixels of the 
-     * dialog. The default value is 250 if not specified.
-     *
+     *      dialog. The default value is 250 if not specified.
      * title - (optional) {String} the title of the dialog box.  "New Dialog"
-     * is the default value.
-     * 
+     *      is the default value.
      * titleHeight - (optional) {Integer} the height, in pixels, of the
-     * dialog's title bar.  The default value is 22, and works with the default
-     * dialog styles.  Only change this value is you are overriding the
-     * default style of the dialog's title bar
-     *
+     *      dialog's title bar.  The default value is 22, and works with the default
+     *      dialog styles.  Only change this value is you are overriding the
+     *      default style of the dialog's title bar
      * closeImg - (optional) {String} URL to an image to use for the close
-     * button in the dialog title bar area.  The default value is to use
-     * the close image provided by Jx.  Only override this value if you are
-     * changing the default style of the dialog's title bar.
-     *
+     *      button in the dialog title bar area.  The default value is to use
+     *      the close image provided by Jx.  Only override this value if you are
+     *      changing the default style of the dialog's title bar.
      * helpID - (optional) {String} passed to <Jx.ContentLoader> for loading
-     * help content.
-     *
+     *      help content.
      * helpURL - (optional) {String} passed to <Jx.ContentLoader> for loading
-     * help content.
-     *
+     *      help content.
      * helpHTML - (optional) {String} passed to <Jx.ContentLoader> for loading
-     * help content.
-     *
+     *      help content.
      * help - (optional) {Object} passed to <Jx.ContentLoader> for loading
-     * help content.
-     *
+     *      help content.
      * contentID - (optional) {String} passed to <Jx.ContentLoader> for loading
-     * dialog content.
-     * 
+     *      dialog content.
      * contentURL - (optional) {String} passed to <Jx.ContentLoader> for loading
-     * dialog content.
-     * 
+     *      dialog content.
      * contentHTML - (optional) {String} passed to <Jx.ContentLoader> for loading
-     * dialog content.
-     * 
+     *      dialog content.
      * content - (optional) {Object} passed to <Jx.ContentLoader> for loading
-     * dialog content.
-     *
+     *      dialog content.
      * buttons - (optional) {Array} an array of strings that contain the labels
-     * for buttons to create in the Action area of the dialog.
-     *
+     *      for buttons to create in the Action area of the dialog.
      * id - (optional) {String} an HTML ID to assign to the dialog, primarily
-     * used for applying CSS styles to specific dialogs
-     *
+     *      used for applying CSS styles to specific dialogs
      * parentObj - (optional) {HTMLElement} a reference to an HTML element that
-     * the dialog is to be contained by.  The default value is for the dialog
-     * to be contained by the body element.
-     *
+     *      the dialog is to be contained by.  The default value is for the dialog
+     *      to be contained by the body element.
      * resizeable - (optional) {Boolean} determines whether the dialog is
-     * resizeable by the user or not.  Default is false.
-     *
+     *      resizeable by the user or not.  Default is false.
      * imageBaseUrl - (optional) {String} the path to the various dialog edge
-     * images.  If not specified, then Jx.baseURL is used.
+     *      images.  If not specified, then Jx.baseURL is used.
      */
     initialize: function(options) {
         this.initUniqueId();
@@ -8322,8 +8239,6 @@ Jx.Dialog.prototype = {
         var r = (typeof options.right != 'undefined') ? options.right : null;
         var t = (typeof options.top != 'undefined') ? options.top : (b != null ? null : 0);
         var l = (typeof options.left != 'undefined') ? options.left : (r != null ? null : 0);
-        //var t = (options.top && options.top > 0) ? options.top : 0;
-        //var l = (options.left && options.left > 0) ? options.left : 0;
         
         this.blanket = document.createElement('div');
         this.blanket.className = 'jxDialogModal';
@@ -8331,7 +8246,6 @@ Jx.Dialog.prototype = {
         
         if (!window.opera && this.modal) {
             var iframe = document.createElement('iframe');
-            //iframe.src = 'javascript:false';
             iframe.className = 'jxDialogShim';
             iframe.scrolling = 'no';
             iframe.frameborder = 0;
@@ -8339,37 +8253,72 @@ Jx.Dialog.prototype = {
             if (options.parentObj) {
                 $(options.parentObj).appendChild(this.blanket);
             } else {
-                document.body.appendChild(this.blanket);            
+                document.body.appendChild(this.blanket);
+                var temp = new Jx.Layout(this.blanket);
+                temp.resize();
             }        
         }
-        /* create the dialog box first so we can measure it */
-        var d2 = document.createElement('div');
-        d2.style.width = w + 'px';
-        d2.style.height = h + 'px';
-        d2.className = 'jxDialog';
-        
-        this.title = document.createElement('div');
-        this.title.className = 'jxDialogTitle';
-        /* this is required for IE and Opera */
-        //this.title.style.height = '22px';
-        
-        // It would be best to just let the CSS decide this.
-        // Element.setBorderBoxSize(this.title, {height:options.titleHeight || 22});
-        
+
+        /* dragHandle is the title bar */
         this.dragHandle = document.createElement('div');
-        this.dragHandle.innerHTML = options.title || '';
+        this.dragHandle.innerHTML = options.title || '&nbsp;';
         this.dragHandle.style.width = '100%';
-        this.title.appendChild(this.dragHandle);
+        
+        var domObj = document.createElement('div');
+        domObj.className = 'jxDialogContainer';
+        this.domObj = domObj;
+        /* set the id if passed in through options */
+        if (options.id) {
+            domObj.id = options.id;
+        }
+
+        var dialogObj = document.createElement('div');
+        dialogObj.className = 'jxDialog';
+        this.innerDialogObj = dialogObj;
+        
+        var titleObj = document.createElement('div');
+        titleObj.className = 'jxDialogTitle';
+        this.title = titleObj;
+        titleObj.appendChild(this.dragHandle);
         
         /* element must be in the page to be measured */
-        this.title.style.visibility = 'hidden';
-        document.getElementsByTagName('BODY')[0].appendChild(this.title);
-        var titleHeight = Element.getBorderBoxSize(this.title);
-        document.getElementsByTagName('BODY')[0].removeChild(this.title);
-        this.title.style.visibility = '';
+        titleObj.style.visibility = 'hidden';
+        document.getElementsByTagName('BODY')[0].appendChild(titleObj);
+        this.titleHeight = Element.getBorderBoxSize(titleObj).height;
+        document.getElementsByTagName('BODY')[0].removeChild(titleObj);
+        titleObj.style.visibility = '';
         
-        d2.appendChild(this.title);
+        var contentObj = document.createElement('div');
+        contentObj.className = 'jxDialogContent';
+        this.content = contentObj;
         
+        domObj.appendChild(dialogObj);
+        dialogObj.appendChild(titleObj);
+        dialogObj.appendChild(contentObj);
+                
+        new Jx.Layout(dialogObj, {width: w, height: h});
+        new Jx.Layout(titleObj, {top: 0, left: 0, right: 0, bottom: null, height: this.titleHeight, width: null});
+
+        /* optional 'action' area for buttons if necessary */
+        this.actionHeight = 0;
+        if (options.buttons) {
+            var actionObj = document.createElement('div');
+            actionObj.className = 'jxDialogAction';
+            actionObj.style.visibility = 'hidden';
+            document.getElementsByTagName('BODY')[0].appendChild(actionObj);
+            this.actionHeight = parseInt(Element.getStyle(actionObj, 'height'));
+            document.getElementsByTagName('BODY')[0].removeChild(actionObj);
+            actionObj.style.visibility = '';
+            dialogObj.appendChild(actionObj);
+            new Jx.Layout(actionObj, {top: null, left: 0, right: 0, bottom: 0, height: this.actionHeight, width: null});
+            this.action = actionObj;
+            this.setButtons(options.buttons);
+        }
+
+        new Jx.Layout(contentObj, {top: this.titleHeight, left: 0, right: 0, bottom: this.actionHeight});
+        
+        
+        /* build the decorations for the title bar */
         var atag = document.createElement('a');
         atag.href = 'javascript:void(0)';
         atag.className = 'jxDialogCloseButton';
@@ -8385,39 +8334,22 @@ Jx.Dialog.prototype = {
         close.alt = 'Close Dialog';
         close.title = 'Close Dialog';
         atag.appendChild(close);
-        this.title.appendChild(atag);
+        titleObj.appendChild(atag);
         
         if (options.helpID || options.helpHTML || options.helpURL || options.help) {
+            /* put a button in the title bar to open help */
             var atag2 = document.createElement('a');
             atag2.href = 'javascript:void(0)';
             atag2.className = 'jxDialogHelpButton';
             atag2.onclick = this.toggleHelp.bindAsEventListener(this);
-            //TODO: don't add help in title if it isn't needed
             var help = document.createElement('img');
             help.src = this.imageBaseUrl + 'icon_quickhelp.png';
             help.alt = 'Help';
             help.title = 'Help';
             atag2.appendChild(help);
-            this.title.appendChild(atag2);
-        }
-        
-        this.action = document.createElement('div');
-        this.action.className = 'jxDialogAction';
-        // It would be best to just let the CSS decide this.
-        //Element.setBorderBoxSize(this.action, {height:30});
-        /* element must be in the page to be measured */
-        this.action.style.visibility = 'hidden';
-        document.getElementsByTagName('BODY')[0].appendChild(this.action);
-        var actionHeight = parseInt(Element.getStyle(this.action, 'height'));
-        document.getElementsByTagName('BODY')[0].removeChild(this.action);
-        this.action.style.visibility = '';
-        
-        var contentHeight = h - titleHeight.height - actionHeight;
-        this.content = document.createElement('div');
-        this.content.className = 'jxDialogContent';
-        Element.setBorderBoxSize(this.content, {height: contentHeight});
-        
-        if (options.helpID || options.helpHTML || options.helpURL || options.help) {
+            titleObj.appendChild(atag2);
+
+            /* make the help area */
             this.help = document.createElement('div');
             this.help.className = 'jxDialogHelp';
             this.help.style.display = 'none';
@@ -8429,67 +8361,59 @@ Jx.Dialog.prototype = {
             helpOpts.contentHTML = options.helpHTML;
             helpOpts.onContentLoaded = this.onHelpContentLoaded.bind(this);
             this.loadContent(this.help, helpOpts);
-            d2.appendChild(this.help);
+            dialogObj.appendChild(this.help);
         }
         
-        d2.appendChild(this.content);
-        
-        if (options.buttons) {
-            this.setButtons(options.buttons);
-        }
-        
-        d2.appendChild(this.action);
         var contentOpts = {};
         contentOpts.contentID = options.contentID;
         contentOpts.content = options.content;
         contentOpts.contentURL = options.contentURL;
         contentOpts.contentHTML = options.contentHTML;
         contentOpts.onContentLoaded = this.onDialogContentLoaded.bind(this);
-        
-        this.loadContent(this.content, contentOpts);
-        
+        this.loadContent(contentObj, contentOpts);
+                
         /* element must be in the page to be measured */
-        d2.style.visibility = 'hidden';
-        document.body.appendChild(d2);
+        dialogObj.style.visibility = 'hidden';
+        document.body.appendChild(dialogObj);
+        //force an initial size calculation
+        dialogObj.resize();
         
         /* the outer box needs to be sized to the border box size plus margins
          * of the inner box.
          */
          
-        this.dialogBoxSize = Element.getBorderBoxSize(d2);
-        this.dialogBoxMargins = Element.getMarginSize(d2);
+        this.dialogBoxSize = Element.getBorderBoxSize(dialogObj);
+        this.dialogBoxMargins = Element.getMarginSize(dialogObj);
         
         var containerSize = {width: this.dialogBoxSize.width, height: this.dialogBoxSize.height};
         containerSize.width += this.dialogBoxMargins.left + this.dialogBoxMargins.right; 
         containerSize.height += this.dialogBoxMargins.top + this.dialogBoxMargins.bottom;
         
-        document.body.removeChild(d2);
-        d2.style.visibility = '';
+        document.body.removeChild(dialogObj);
+        dialogObj.style.visibility = '';
+        domObj.appendChild(dialogObj);
         
         /* now create overall container with the correct size */
-        var d = document.createElement('div');
-        d.className = 'jxDialogContainer';
-        d.style.display = "none";
-        // this line seemes to be very wrong
-        d.id = options.id;
-        Element.setBorderBoxSize(d, {width:(containerSize.width), height:(containerSize.height)});
+        domObj.style.display = "none";
         
-        d.style.position = 'absolute';
+        Element.setBorderBoxSize(domObj, {width:(containerSize.width), height:(containerSize.height)});
+        
+        domObj.style.position = 'absolute';
         if (t != null) {
-            d.style.top = (t) + 'px';
+            domObj.style.top = (t) + 'px';
         } else {
-            d.style.bottom = (b) + 'px';
+            domObj.style.bottom = (b) + 'px';
         }
         if (l != null) {
-            d.style.left = (l) + 'px';
+            domObj.style.left = (l) + 'px';
         } else {
-            d.style.right = (r) + 'px';
+            domObj.style.right = (r) + 'px';
         }
 
         if (options.parentObj) {
-            $(options.parentObj).appendChild(d);
+            $(options.parentObj).appendChild(domObj);
         } else {
-            document.body.appendChild(d);            
+            document.body.appendChild(domObj);            
         }
 
         /* Background */
@@ -8507,7 +8431,7 @@ Jx.Dialog.prototype = {
         img.src = this.imageBaseUrl + 'dialog_glow_tl.png';
         img.className = 'png24'; /* apply png hack for IE */
         imgContainer.appendChild(img);
-        d.appendChild(imgContainer);
+        domObj.appendChild(imgContainer);
         this.decorationOffsets.top += parseInt(Element.getStyle(img,'width'));
         this.decorationOffsets.left += parseInt(Element.getStyle(img,'height'));
 
@@ -8518,7 +8442,7 @@ Jx.Dialog.prototype = {
         img.src = this.imageBaseUrl + 'dialog_glow_tr.png';
         img.className = 'png24'; /* apply png hack for IE */
         imgContainer.appendChild(img);
-        d.appendChild(imgContainer);
+        domObj.appendChild(imgContainer);
         this.decorationOffsets.top += parseInt(Element.getStyle(img,'width'));
         this.decorationOffsets.right += parseInt(Element.getStyle(img,'height'));
 
@@ -8529,7 +8453,7 @@ Jx.Dialog.prototype = {
         img.src = this.imageBaseUrl + 'dialog_glow_br.png';
         img.className = 'png24'; /* apply png hack for IE */
         imgContainer.appendChild(img);
-        d.appendChild(imgContainer);
+        domObj.appendChild(imgContainer);
         this.decorationOffsets.bottom += parseInt(Element.getStyle(img,'width'));
         this.decorationOffsets.right += parseInt(Element.getStyle(img,'height'));
 
@@ -8540,7 +8464,7 @@ Jx.Dialog.prototype = {
         img.src = this.imageBaseUrl + 'dialog_glow_bl.png';
         img.className = 'png24'; /* apply png hack for IE */
         imgContainer.appendChild(img);
-        d.appendChild(imgContainer);
+        domObj.appendChild(imgContainer);
         this.decorationOffsets.bottom += parseInt(Element.getStyle(img,'width'));
         this.decorationOffsets.left += parseInt(Element.getStyle(img,'height'));
 
@@ -8552,7 +8476,7 @@ Jx.Dialog.prototype = {
         img.className = 'png24'; /* apply png hack for IE */
         img.style.width = containerSize.width-this.decorationOffsets.top + 'px';
         imgContainer.appendChild(img);
-        d.appendChild(imgContainer);
+        domObj.appendChild(imgContainer);
         this.topImg = img;
 
         /* bottom */
@@ -8563,7 +8487,7 @@ Jx.Dialog.prototype = {
         img.className = 'png24'; /* apply png hack for IE */
         img.style.width = containerSize.width-this.decorationOffsets.bottom + 'px';
         imgContainer.appendChild(img);
-        d.appendChild(imgContainer);
+        domObj.appendChild(imgContainer);
         this.bottomImg = img;
 
         /* left */
@@ -8574,7 +8498,7 @@ Jx.Dialog.prototype = {
         img.className = 'png24'; /* apply png hack for IE */
         img.style.height = containerSize.height-this.decorationOffsets.left + 'px';
         imgContainer.appendChild(img);
-        d.appendChild(imgContainer);
+        domObj.appendChild(imgContainer);
         this.leftImg = img;
 
         /* right */
@@ -8585,17 +8509,13 @@ Jx.Dialog.prototype = {
         img.className = 'png24'; /* apply png hack for IE */
         img.style.height = containerSize.height-this.decorationOffsets.right + 'px';
         imgContainer.appendChild(img);
-        d.appendChild(imgContainer);
+        domObj.appendChild(imgContainer);
         this.rightImg = img;
 
-        d.appendChild(d2);
         
-        Event.observe(d, 'mousedown', this.mouseDown.bind(this));
+        Event.observe(domObj, 'mousedown', this.mouseDown.bind(this));
         Event.observe(this.title, 'mousedown', this.mouseDown.bind(this));
-        
-        this.domObj = d;
-        this.innerDialogObj = d2;
-        
+                
         if (options.resizeable) {
             this.resizeHandle = document.createElement('div');
             this.resizeHandle.className = 'jxDialogResize';
@@ -8613,8 +8533,7 @@ Jx.Dialog.prototype = {
         this.bOpen = false;
     },
     /**
-     * Function: mouseDown
-     *
+     * Method: mouseDown
      * handle the user clicking the title area, promote the dialog to the
      * top of the stack so it is fully visible to the user.
      */
@@ -8630,46 +8549,36 @@ Jx.Dialog.prototype = {
         }
     },
     /** 
-     * Function: ondrag
-     *
+     * Method: ondrag
      * callback function for user-resizing of the dialog
      *
-     * Parameter: obj
-     *
-     * a drag object that indicates what happened.
+     * Parameters: 
+     * obj - {Object} a drag object that indicates what happened.
      */
     ondrag: function(obj) {
         this.mouseDown();
         
         var delta = obj.currentDelta();
         //delta is top/left of resize image.  Bottom/right of the dialog needs to be
-        //adjusted for size of image (20x20) and for the shadow (6x6) resulting in
-        //an additional 14 pixels from the top/left of the resize image.
-        var deltaX = delta[0] + this.resizeHandleSize.width - this.dialogBoxMargins.left - this.dialogBoxMargins.right;
-        var deltaY = delta[1] + this.resizeHandleSize.height - this.dialogBoxMargins.top - this.dialogBoxMargins.bottom;
+        //adjusted for size of image (20x20).
+        var deltaX = delta[0] + this.resizeHandleSize.width;
+        var deltaY = delta[1] + this.resizeHandleSize.height;
         this.resize({width: deltaX, height: deltaY});
     },
     /**
-     * Function: resize
-     *
+     * Method: resize
      * programmatically resize the dialog in either or both dimensions
      *
-     * Parameter: {Object} newSize
-     *
-     * an object containing either or both 'width' and 'height' properties
+     * Parameters: 
+     * newSize - {Object} an object containing either or both 'width' and 'height' properties
      * that hold the new width or height in pixels
      */
     resize: function(newSize) {
-        var obj = this.title.parentNode;
-        var titleSize = Element.getBorderBoxSize(this.title);
-        var actionSize = Element.getBorderBoxSize(this.action);
-        var oldDisplay = this.domObj.style.display;
-        var oldVisibility = this.domObj.style.visibility;
-        if (oldDisplay == 'none') {
-            this.domObj.style.visibility = 'hidden';
-            this.domObj.style.display = 'block';
-        }
-        /* sizing logic
+
+        /* let jxLayout manage the internal stuff */
+        this.innerDialogObj.resize(newSize);
+                
+        /* sizing logic for container
          *
          * we need to set the size of this.innerDialogObj to the requested size
          * then size the title, content and action area within it and expand
@@ -8677,57 +8586,37 @@ Jx.Dialog.prototype = {
          * images appropriately too.
          */
         if (newSize.width) {
-            var outerWidth = newSize.width + this.dialogBoxMargins.left + this.dialogBoxMargins.right;
+            var outerWidth = newSize.width;
             Element.setBorderBoxSize(this.domObj, {width: outerWidth});
-            /* setBorderBoxSize accommodates margins, which we don't want in this case so use outerWidth
-             * and it all events out to the right number in the end
-             */
-            Element.setBorderBoxSize(obj, {width:outerWidth});
             Element.setBorderBoxSize(this.topImg, {width:outerWidth-this.decorationOffsets.top});
             Element.setBorderBoxSize(this.bottomImg, {width:outerWidth-this.decorationOffsets.bottom});
-            var contentSize = Element.getContentBoxSize(obj);
-            //Element.setBorderBoxSize(this.content, {width:contentSize.width});
         }
         if (newSize.height) {
-            var outerHeight = newSize.height + this.dialogBoxMargins.top + this.dialogBoxMargins.bottom;
+            var outerHeight = newSize.height;
             Element.setBorderBoxSize(this.domObj, {height: outerHeight});
-            Element.setBorderBoxSize(obj, {height:outerHeight});
             Element.setBorderBoxSize(this.leftImg, {height:outerHeight-this.decorationOffsets.left});
             Element.setBorderBoxSize(this.rightImg, {height:outerHeight-this.decorationOffsets.right});
-            var contentH = newSize.height-titleSize.height-actionSize.height;
-            Element.setBorderBoxSize(this.content, {height:contentH});
             if (this.help) {
-                Element.setBorderBoxSize(this.help, {height:newSize.height - titleSize.height});
+                Element.setBorderBoxSize(this.help, {height:newSize.height - this.titleHeight});
             }
-        }
-        if (oldDisplay == 'none') {
-            this.domObj.style.visibility = oldVisibility;
-            this.domObj.style.display = 'none';
-        }
-        if (this.content.resize) {
-          this.content.resize();
         }
     },
     /**
-     * Function: setTitle
-     *
+     * Method: setTitle
      * set the text of the dialog title.
      *
-     * Parameter: {String} title
-     *
-     * the new title
+     * Parameters: 
+     * title - {String} the new title
      */
     setTitle: function( title ) {
         this.title.childNodes[0].innerHTML = title;
     },
     /**
-     * Function: setButtons
-     *
+     * Method: setButtons
      * create buttons in the action area of the dialog
      *
-     * Parameter: {Array} buttons
-     *
-     * an array of strings containing the labels to place on the
+     * Parameters: 
+     * buttons - {Array} an array of strings containing the labels to place on the
      * buttons.  One button is created for each label.
      */
     setButtons: function(buttons) {
@@ -8745,14 +8634,12 @@ Jx.Dialog.prototype = {
         }
     },
     /**
-     * Function: processInputs
-     * 
+     * Method: processInputs
      * look through the DOM obj for nodes of type INPUT and register
      * for events on them.
      *
-     * Parameter: {HTMLElement} obj
-     *
-     * the DOM obj to process
+     * Parameters: 
+     * obj - {HTMLElement} the DOM obj to process
      */
     processInputs : function(obj) {
         for (var i=0;i<obj.childNodes.length; i++) {
@@ -8775,17 +8662,12 @@ Jx.Dialog.prototype = {
         }
     },
     /**
-     * Function: buttonHandler
-     *
+     * Method: buttonHandler
      * handle button events, dispatching to user handler if required.
      *
-     * Parameter: {HTMLElement} input
-     *
-     * the input element that triggered a click event
-     *
-     * Parameter: {Event} event
-     *
-     * the event object
+     * Parameters: 
+     * input - {HTMLElement} the input element that triggered a click event
+     * event - {Event} the event object
      */
     buttonHandler : function(input, event) {
         if (this.handler) {
@@ -8793,17 +8675,12 @@ Jx.Dialog.prototype = {
         }
     },
     /**
-     * Function: onChangeHandler
-     *
+     * Method: onChangeHandler
      * handle onchange events, dispatching to user handler if required.
      *
-     * Parameter: {HTMLElement} input
-     *
-     * the input element that triggered an onchange event
-     *
-     * Parameter: {Event} event
-     *
-     * the event object
+     * Parameters: 
+     * input - {HTMLElement} the input element that triggered an onchange event
+     * event - {Event} the event object
      */
     onChangeHandler: function(input, event) {
         if (this.onChange) {
@@ -8811,14 +8688,12 @@ Jx.Dialog.prototype = {
         }
     },
     /**
-     * Function: getValue
-     *
+     * Method: getValue
      * retrieve the value of an input element in the dialog.  This is done
      * safely so depending on the type of the input.
      *
-     * Parameter: {String} name
-     *
-     * the id of the element to get the value of
+     * Parameters: 
+     * name - {String} the id of the element to get the value of
      *
      * Returns: {String} the value or an empty string.
      */
@@ -8837,29 +8712,23 @@ Jx.Dialog.prototype = {
         return result;
     },
     /**
-     * Function: setValue
-     *
+     * Method: setValue
      * set the value of an input element in the dialog.  This is done
      * safely  depending on the type of the input.
      *
-     * Parameter: {String} name
-     *
-     * the id of the element to set the value of
-     *
-     * Parameter: {String} value
-     *
-     * the value to set
+     * Parameters: 
+     * name - {String} the id of the element to set the value of
+     * value - {String} the value to set
      */
     setValue : function( name, value ) {
         if (typeof this.values[name] != 'undefined') {
-            if (this.values[name].type == 'text') {
+            if (this.values[name].type == 'text' || this.values[name].type == 'hidden') {
                 this.values[name].value = value;
             }
         }
     },
     /**
-     * Function: show
-     *
+     * Method: show
      * show the dialog
      */
     show : function( ) {
@@ -8873,11 +8742,11 @@ Jx.Dialog.prototype = {
         Effect.Appear(this.domObj, {duration: 0.1});
         this.domObj.style.display = 'block';
         new Draggable(this.domObj, {handle:this.dragHandle, starteffect: false, endeffect: false});
-        
+        this.content.resize({forceResize: this.firstShow});
+        this.firstShow = false;
     },
     /**
-     * Function: hide
-     *
+     * Method: hide
      * hide the dialog
      */
     hide : function() {
@@ -8896,8 +8765,7 @@ Jx.Dialog.prototype = {
         
     },
     /**
-     * Function: open
-     *
+     * Method: open
      * open the dialog.  This may be delayed depending on the 
      * asynchronous loading of dialog content.  The onOpen
      * callback function is called when the dialog actually
@@ -8913,8 +8781,7 @@ Jx.Dialog.prototype = {
         }
     },
     /**
-     * Function: close
-     * 
+     * Method: close
      * close the dialog and trigger the onClose callback function
      * if necessary
      */
@@ -8924,8 +8791,7 @@ Jx.Dialog.prototype = {
         if (this.onClose) this.onClose();
     },
     /**
-     * Function: onDialogContentLoaded
-     *
+     * Method: onDialogContentLoaded
      * handle the dialog content being loaded.  This triggers
      * processing of inputs and the onContentLoaded callback
      * function (if necessary).  Also, if the dialog was previously
@@ -8944,8 +8810,7 @@ Jx.Dialog.prototype = {
         }
     },
     /**
-     * Function: onHelpContentLoaded
-     *
+     * Method: onHelpContentLoaded
      * handle the help content being loaded.  
      */
     onHelpContentLoaded : function() {
@@ -8958,15 +8823,14 @@ Jx.Dialog.prototype = {
         this.help.appendChild(img);
     },
     /**
-     * Function: toggleHelp
-     *
+     * Method: toggleHelp
      * show or hide the help panel.
      */
     toggleHelp: function() { 
         if (this.help.isVisible) {
             Effect.Fade(this.help, {duration: 0.3});
         } else {
-            var actionSize = Element.getBorderBoxSize(this.action);
+            var actionSize = this.action ? Element.getBorderBoxSize(this.action) : {width: 0, height: 0};
             var contentSize = Element.getBorderBoxSize(this.content);
             Element.setBorderBoxSize(this.help, {height:contentSize.height+actionSize.height});
             Effect.Appear(this.help, {duration: 0.3});
@@ -8976,16 +8840,13 @@ Jx.Dialog.prototype = {
 };
 Object.extend(Jx.Dialog.prototype, Jx.UniqueId.prototype);
 Object.extend(Jx.Dialog.prototype, Jx.ContentLoader.prototype);/**
- * @project         Jx
- * @revision        $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
- * @author          Paul Spencer (pspencer@dmsolutions.ca)
- * @copyright       &copy; 2006 DM Solutions Group Inc.
- */
-
-/* our default css styles */
-Jx.addStyleSheet('grid/grid.css');
-
-/**
+ * $Id: jxgrid.js 512 2008-03-07 21:15:45Z pspencer $
+ *
+ * Title: Jx.Grid
+ *
+ * Purpose: 
+ * Implementation of a javascript Grid control for Jx.
+ *
  * Jx.Grid is a tabular control with convenient controls for resizing columns,
  * sorting, and inline editing.  It is created inside another element, typically a
  * div.  If the div is resizable (for instance it fills the page or there is a
@@ -8996,86 +8857,143 @@ Jx.addStyleSheet('grid/grid.css');
  * that control its appearance and functionality.
  *
  * Jx.Grid renders data that comes from an external source.  This external 
- * source, called the model, must implement the following interface:
+ * source, called the model, must implement the following interface.
  *
- * addGridListener(l)
+ * *Mandatory Functions*
+ *
+ * addGridListener(l) - mandatory
  * mandatory.  This function accepts one argument, l, which is the listener
  * to add.  The model can then call the gridChanged() method on the grid
  * listener object when something in the model changes.
  * 
- * removeGridListener(l)
+ * removeGridListener(l) - mandatory
  * mandatory.  This function accepts one argument, l, which is the listener
  * to remove.  The listener should have been previously added using
  * addGridListener.
  * 
- * getColumnCount()
+ * getColumnCount() - mandatory
  * mandatory.  This function returns the number of columns of data in the 
  * model as an integer value.
  * 
- * getColumnHeaderHTML(column)
+ * getColumnHeaderHTML(column) - mandatory
  * mandatory. This function returns an HTML string to be placed in the
  * column header for the given column index.
  * 
- * getColumnHeaderHeight();
+ * getColumnHeaderHeight() - mandatory
  * mandatory.  This function returns an integer which is the height of the
  * column header row in pixels.
  * 
- * getColumnWidth(column)
+ * getColumnWidth(column) - mandatory
  * mandatory.  This function returns an integer which is the width of the
  * given column in pixels.
  * 
- * setColumnWidth(column, width)
+ * getRowHeaderHTML(row) - mandatory
+ * mandatory.  This function returns an HTML string to be placed in the row
+ * header for the given row index
+ * 
+ * getRowHeaderWidth() - mandatory
+ * mandatory.  This function returns an integer which is the width of the row
+ * header column in pixels.
+ * 
+ * getRowHeight(row) - mandatory
+ * mandatory.  This function returns an integer which is the height of the
+ * given row in pixels.
+ * 
+ * getRowCount() - mandatory
+ * mandatory.  This function returns the number of rows of data in the model
+ * as an integer value.
+ * 
+ * getValueAt(row, column) - mandatory
+ * mandatory.  This function returns an HTML string which is the text to place
+ * in the cell at the given row and column.
+ * 
+ * isCellEditable(row, column) - mandatory
+ * mandatory.  This function returns a boolean value to indicate if a given
+ * cell is editable by the user.
+ *
+ * *Optional Functions*
+ *  
+ * setColumnWidth(column, width) - optional
  * optional.  This function is called with a column index and width in pixels
  * when a column is resized.  This function is only required if the grid
  * allows resizeable columns.
  * 
- * getRowHeaderHTML(row)
- * mandatory.  This function returns an HTML string to be placed in the row
- * header for the given row index
- * 
- * getRowHeaderWidth()
- * mandatory.  This function returns an integer which is the width of the row
- * header column in pixels.
- * 
- * getRowHeight(row)
- * mandatory.  This function returns an integer which is the height of the
- * given row in pixels.
- * 
- * getRowCount()
- * mandatory.  This function returns the number of rows of data in the model
- * as an integer value.
- * 
- * getValueAt(row, column)
- * mandatory.  This function returns an HTML string which is the text to place
- * in the cell at the given row and column.
- * 
- * isCellEditable(row, column) 
- * mandatory.  This function returns a boolean value to indicate if a given
- * cell is editable by the user.
- * 
- * setValueAt(row, column, value) 
+ * setValueAt(row, column, value) - optional
  * optional.  This function is called with the row and column of a cell and a
  * new value for the cell.  It is mandatory to provide this function if any of
  * the cells in the model are editable.
  * 
- * rowSelected(row)
+ * rowSelected(row) - optional
  * optional.  This function is called by the grid to indicate that the user
  * has selected a row by clicking on the row header.
  * 
- * columnSelected(column)
+ * columnSelected(column) - optional
  * optional.  This function is called by the grid to indicate that the user
  * has selected a column by clicking on the column header.
  * 
- * cellSelected(row, column)
+ * cellSelected(row, column) - optional
  * optional.  This function is called by the grid to indicate that the user
  * has selected a cell by clicking on the cell in the grid.
+ *
+ * Author: 
+ * Paul Spencer (pspencer@dmsolutions.ca)
+ *
+ * Copyright:
+ * Copyright &copy; 2008, DM Solutions Group Inc.
+ */
+/******************************************************************************
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
+
+/* our default css styles */
+Jx.addStyleSheet('grid/grid.css');
+
+/**
+ * Class: Jx.Grid
+ * A tabular control that has fixed scrolling headers on the rows and columns
+ * like a spreadsheet.
  */
 Jx.Grid = Class.create();
 Jx.Grid.prototype = {
     domObj : null,
     model : null,
     /**
+     * Constructor: Jx.Grid
      * construct a new instance of Jx.Grid within the domObj
+     *
+     * Parameters:
+     * domObj - {HTMLElement} the HTML element to create the grid inside.
+     *          The grid will resize to fill the domObj.
+     * options - you can specify some options as attributes of a
+     * generic object.
+     *
+     * Options:
+     * alternateRowColors - defaults to false.  If set to true, then
+     *      alternating CSS classes are used for rows
+     * rowHeaders - defaults to false.  If set to true, then a column
+     *      of row header cells are displayed.
+     * columnHeaders - defaults to false.  If set to true, then a column
+     *      of row header cells are displayed.
+     * rowSelection - defaults to false.  If set to true, allow the
+     *      user to select rows.
+     * cellSelection - defaults to false.  If set to true, allow the
+     *      user to select cells.
      */
     initialize : function( domObj, options ) {
         this.domObj = $(domObj);
@@ -9141,6 +9059,7 @@ Jx.Grid.prototype = {
     },
     
     /**
+     * Method: onScroll
      * handle the grid scrolling by updating the position of the headers
      */
     onScroll: function() {
@@ -9148,11 +9067,16 @@ Jx.Grid.prototype = {
         this.rowObj.scrollTop = this.gridObj.scrollTop;        
     },
     
+    /**
+     * Method: sizeChanged
+     * Handle the container of the grid resizing
+     */
     sizeChanged: function() {
         this.resize();
     },
     
     /**
+     * Method: resize
      * resize the grid to fit inside its container.  This involves knowing something
      * about the model it is displaying (the height of the column header and the
      * width of the row header) so nothing happens if no model is set
@@ -9162,7 +9086,9 @@ Jx.Grid.prototype = {
             return;
         }
         
-        /* TODO: if not showing column or row, do this differently */
+        /* TODO: Jx.Grid.resize
+         * if not showing column or row, should we handle the resize differently
+         */
         var colHeight = this.showColumnHeader ? this.model.getColumnHeaderHeight() : 1;
         var rowWidth = this.showRowHeader ? this.model.getRowHeaderWidth() : 1;
         
@@ -9189,8 +9115,12 @@ Jx.Grid.prototype = {
     },
     
     /**
+     * Method: setModel
      * set the model for the grid to display.  If a model is attached to the grid
      * it is removed and the new model is displayed.
+     * 
+     * Parameters:
+     * model - {Object} the model to use for this grid
      */
     setModel: function(model) {
         if (this.model) {
@@ -9208,6 +9138,7 @@ Jx.Grid.prototype = {
     },
     
     /**
+     * Method: destroyGrid
      * destroy the contents of the grid safely
      */
     destroyGrid: function() {
@@ -9230,6 +9161,7 @@ Jx.Grid.prototype = {
     },
     
     /**
+     * Method: createGrid
      * create the grid for the current model
      */
     createGrid: function() {
@@ -9406,9 +9338,14 @@ Jx.Grid.prototype = {
     },
     
     /**
+     * Method: setRowHeaderHeight
      * set the height of a row.  This is used internally to adjust the height of
      * the row header when cell contents wrap.  A limitation of the table structure
      * is that overflow: hidden on a td will work horizontally but not vertically
+     *
+     * Parameters:
+     * row - {Integer} the row to set the height for
+     * height - {Integer} the height to set the row (in pixels)
      */
     setRowHeaderHeight: function(row, height) {
         //this.rowTableHead.childNodes[row+1].childNodes[0].style.height = (height) + 'px';
@@ -9416,8 +9353,15 @@ Jx.Grid.prototype = {
     },
     
     /**
+     * Method: gridChanged
      * called through the grid listener interface when data has changed in the
      * underlying model
+     *
+     * Parameters:
+     * model - {Object} the model that changed
+     * row - {Integer} the row that changed
+     * col - {Integer} the column that changed
+     * value - {Mixed} the new value
      */
     gridChanged: function(model, row, col, value) {
         if (this.model == model) {
@@ -9426,9 +9370,12 @@ Jx.Grid.prototype = {
     },
     
     /** 
+     * Method: prelightRowHeader
      * apply the jxGridRowHeaderPrelight style to the header cell of a row.
      * This removes the style from the previously pre-lit row header.
      * 
+     * Parameters:
+     * row - {Integer} the row to pre-light the header cell of
      */
     prelightRowHeader: function(row) {
         var cell = (row >= 0 && row < this.rowTableHead.rows.length-1) ? this.rowTableHead.rows[row+1].cells[1] : null;
@@ -9444,9 +9391,12 @@ Jx.Grid.prototype = {
     },
     
     /** 
+     * Method: prelightColumnHeader
      * apply the jxGridColumnHeaderPrelight style to the header cell of a column.
      * This removes the style from the previously pre-lit column header.
      * 
+     * Parameters:
+     * col - {Integer} the column to pre-light the header cell of
      */
     prelightColumnHeader: function(col) {
         if (this.colTableBody.rows.length == 0) {
@@ -9465,9 +9415,12 @@ Jx.Grid.prototype = {
     },
     
     /** 
+     * Method: prelightRow
      * apply the jxGridRowPrelight style to row.
      * This removes the style from the previously pre-lit row.
      * 
+     * Parameters:
+     * row - {Integer} the row to pre-light
      */
     prelightRow: function(row) {
         var tr = (row >= 0 && row < this.gridTableBody.rows.length-1) ? this.gridTableBody.rows[row+1] : null;
@@ -9485,19 +9438,31 @@ Jx.Grid.prototype = {
     },
     
     /** 
+     * Method: prelightColumn
      * apply the jxGridColumnPrelight style to a column.
      * This removes the style from the previously pre-lit column.
      * 
+     * Parameters:
+     * col - {Integer} the column to pre-light
+     *
+     * TODO: Jx.Grid.prelightColumn
      * Not Yet Implemented.
      */
     prelightColumn: function(col) {
-        /* todo implement column prelighting (possibly) */
+        /* TODO: Jx.Grid.prelightColumn
+         * implement column prelighting (possibly) 
+         */
         this.prelightColumnHeader(col);
     },
     
     /** 
+     * Method: prelightCell
      * apply the jxGridCellPrelight style to a cell.
      * This removes the style from the previously pre-lit cell.
+     *
+     * Parameters:
+     * row - {Integer} the row of the cell to pre-light
+     * col - {Integer} the column of the cell to pre-light
      */
     prelightCell: function(row, col) {
          var td = (row >=0 && col >=0 && row < this.gridTableBody.rows.length - 1 && col < this.gridTableBody.rows[row+1].cells.length - 1) ? this.gridTableBody.rows[row+1].cells[col+1] : null;
@@ -9515,13 +9480,18 @@ Jx.Grid.prototype = {
     },
     
     /** 
+     * Method: selectCell
      * Select a cell and apply the jxGridCellSelected style to it.
      * This deselects a previously selected cell.
      *
      * If the model supports cell selection, it should implement
      * a cellSelected function to receive notification of the selection.
+     *
+     * Parameters:
+     * row - {Integer} the row of the cell to select
+     * col - {Integer} the column of the cell to select
      */
-    selectCell: function(row, col, bSelected) {
+    selectCell: function(row, col) {
          var td = (row >=0 && col >=0 && row < this.gridTableBody.rows.length - 1 && col < this.gridTableBody.rows[row+1].cells.length - 1) ? this.gridTableBody.rows[row+1].cells[col+1] : null;
          if (!td) {
              return;
@@ -9535,15 +9505,20 @@ Jx.Grid.prototype = {
     },
     
     /** 
+     * Method: selectRowHeader
      * Apply the jxGridRowHeaderSelected style to the row header cell of a
      * selected row.
+     *
+     * Parameters:
+     * row - {Integer} the row header to select
+     * selected - {Boolean} the new state of the row header
      */
-    selectRowHeader: function(row, bSelected) {
+    selectRowHeader: function(row, selected) {
         var cell = (row >= 0 && row < this.rowTableHead.rows.length-1) ? this.rowTableHead.rows[row+1].cells[1] : null;
         if (!cell) {
             return;
         }
-        if (bSelected) {
+        if (selected) {
             Element.addClassName(cell, 'jxGridRowHeaderSelected');
         } else {
             Element.removeClassName(cell, 'jxGridRowHeaderSelected');
@@ -9551,28 +9526,38 @@ Jx.Grid.prototype = {
     },
     
     /** 
+     * Method: selectRow
      * Select a row and apply the jxGridRowSelected style to it.
      *
      * If the model supports row selection, it should implement
      * a rowSelected function to receive notification of the selection.
+     *
+     * Parameters:
+     * row - {Integer} the row to select
+     * selected - {Boolean} the new state of the row
      */
-    selectRow: function(row, bSelected) {
+    selectRow: function(row, selected) {
         var tr = (row >= 0 && row < this.gridTableBody.rows.length - 1) ? this.gridTableBody.rows[row+1] : null;
         if (tr) {
-            if (bSelected) {
+            if (selected) {
                 Element.addClassName(tr, 'jxGridRowSelected');
             } else {
                 Element.removeClassName(tr, 'jxGridRowSelected');
             }
         }
-        this.selectRowHeader(row, bSelected);
+        this.selectRowHeader(row, selected);
     },
     
     /** 
+     * method: selectColumnHeader
      * Apply the jxGridColumnHeaderSelected style to the column header cell of a
      * selected column.
+     *
+     * Parameters:
+     * col - {Integer} the column header to select
+     * selected - {Boolean} the new state of the column header
      */
-    selectColumnHeader: function(col, bSelected) {
+    selectColumnHeader: function(col, selected) {
         if (this.colTableBody.rows.length == 0) {
             return;
         }
@@ -9581,7 +9566,7 @@ Jx.Grid.prototype = {
             return; 
         }
         
-        if (bSelected) {
+        if (selected) {
             Element.addClassName(cell, 'jxGridColumnHeaderSelected');
         } else {
             Element.removeClassName(cell, 'jxGridColumnHeaderSelected');
@@ -9589,13 +9574,18 @@ Jx.Grid.prototype = {
     },
     
     /** 
+     * Method: selectColumn
      * Select a column.
      * This deselects a previously selected column.
+     *
+     * Parameters:
+     * col - {Integer} the column to select
+     * selected - {Boolean} the new state of the column
      */
-    selectColumn: function(col, bSelected) {
+    selectColumn: function(col, selected) {
         /* todo: implement column selection */
         if (col >= 0 && col < this.gridTable.rows[0].cells.length) {
-            if (bSelected) {
+            if (selected) {
                 for (var i=0; i<this.gridTable.rows.length; i++) {
                     Element.removeClassName(this.gridTable.rows[i].cells[this.selectedColumn + 1], 'jxGridColumnSelected');
                 }
@@ -9606,32 +9596,68 @@ Jx.Grid.prototype = {
                 
             }
         }
-        this.selectColumnHeader(col, bSelected);
+        this.selectColumnHeader(col, selected);
     },
     
     /**
+     * Method: onMouseMoveGrid
      * handle the mouse moving over the main grid.  This pre-lights the cell,
      * and subsquently the row and column (and headers).
+     *
+     * Parameters:
+     * e - {Event} the browser event object
      */
     onMouseMoveGrid: function(e) {
         var rc = this.getRowColumnFromEvent(e);
         this.prelightCell(rc.row, rc.column);
     },
     
+    /**
+     * Method: onMouseMoveRowHeader
+     * handle the mouse moving over the row header cells.  This pre-lights
+     * the row and subsequently the row header.
+     *
+     * Parameters:
+     * e - {Event} the browser event object
+     */
     onMouseMoveRowHeader: function(e) {
         var rc = this.getRowColumnFromEvent(e);
         this.prelightRow(rc.row);
     },
 
+    /**
+     * Method: onMouseMoveColumnHeader
+     * handle the mouse moving over the column header cells.  This pre-lights
+     * the column and subsequently the column header.
+     *
+     * Parameters:
+     * e - {Event} the browser event object
+     */
     onMouseMoveColumnHeader: function(e) {
         var rc = this.getRowColumnFromEvent(e);
         this.prelightColumn(rc.column);
     },
     
     /**
-     * handle the user clicking on the grid.  This triggers cell selection
-     * and ultimately row and column (and header) styling changes and an
-     * event to the model (if a cellSelected function is provided)
+     * Method: onClickGrid
+     * handle the user clicking on the grid.  This triggers an
+     * event to the model (if a cellSelected function is provided).
+     *
+     * The following is an example of a function in the model that selects
+     * a row when the cellSelected function is called and deselects any rows
+     * that are currently selected.
+     *
+     * (code)
+     * cellSelected: function(grid, row,col) { 
+     *    if (this.selectedRow != null) {
+     *        grid.selectRow(this.selectedRow, false);
+     *    }
+     *    this.selectedRow = row;
+     *    grid.selectRow(row, true);
+     * }
+     *
+     * Parameters:
+     * e - {Event} the browser event object
      */
     onClickGrid: function(e) {
         var rc = this.getRowColumnFromEvent(e);
@@ -9643,13 +9669,31 @@ Jx.Grid.prototype = {
     },
     
     /**
-     * handle the user clicking on the row header.  This triggers row
-     * selection and row (and header) styling changes and an
-     * event to the model (if a rowSelected function is provided)
+     * Method: onClickRowHeader
+     * handle the user clicking on the row header.  This triggers an
+     * event to the model (if a rowSelected function is provided) which
+     * can then select the row if desired.  
+     *
+     * The following is an example of a function in the model that selects
+     * a row when the rowSelected function is called and deselects any rows
+     * that are currently selected.  More complex code could be written to 
+     * allow the user to select multiple rows.
+     *
+     * (code)
+     * rowSelected: function(grid, row) {
+     *    if (this.selectedRow != null) {
+     *        grid.selectRow(this.selectedRow, false);
+     *    }
+     *    this.selectedRow = row;
+     *    grid.selectRow(row, true);
+     * }
+     * (end)
+     *
+     * Parameters:
+     * e - {Event} the browser event object
      */
     onClickRowHeader: function(e) {
         var rc = this.getRowColumnFromEvent(e);
-        //this.selectRow(rc.row);
         
         if (this.model.rowSelected) {
             this.model.rowSelected(this, rc.row);
@@ -9657,13 +9701,31 @@ Jx.Grid.prototype = {
     },
     
     /**
+     * Method: onClickColumnHeader
      * handle the user clicking on the column header.  This triggers column
      * selection and column (and header) styling changes and an
      * event to the model (if a columnSelected function is provided)
+     *
+     * The following is an example of a function in the model that selects
+     * a column when the columnSelected function is called and deselects any 
+     * columns that are currently selected.  More complex code could be written
+     * to allow the user to select multiple columns.
+     *
+     * (code)
+     * colSelected: function(grid, col) {
+     *    if (this.selectedColumn != null) {
+     *        grid.selectColumn(this.selectedColumn, false);
+     *    }
+     *    this.selectedColumn = col;
+     *    grid.selectColumn(col, true);
+     * }
+     * (end)
+     *
+     * Parameters:
+     * e - {Event} the browser event object
      */
     onClickColumnHeader: function(e) {
         var rc = this.getRowColumnFromEvent(e);
-        //this.selectColumn(rc.column);
         
         if (this.model.columnSelected) {
             this.model.columnSelected(this, rc.column);
@@ -9671,12 +9733,16 @@ Jx.Grid.prototype = {
     },
     
     /**
+     * method: getRowColumnFromEvent
      * retrieve the row and column indexes from an event click.
      * This function is used by the grid, row header and column
      * header to safely get these numbers.
      *
      * If the event isn't valid (i.e. it wasn't on a TD or TH) then
      * the returned values will be -1, -1
+     *
+     * Parameters:
+     * e - {Event} the browser event object
      *
      * @return Object an object with two properties, row and column,
      *         that contain the row and column that was clicked
@@ -9704,11 +9770,38 @@ Jx.Grid.prototype = {
         return {row:row,column:col};
     }
 };/**
- * @project         Jx
- * @revision        $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
- * @author          Paul Spencer (pspencer@dmsolutions.ca)
- * @copyright       &copy; 2006 DM Solutions Group Inc.
+ * $Id: jxlayout.js 512 2008-03-07 21:15:45Z pspencer $
+ *
+ * Title: Jx.Layout
+ *
+ * Purpose: 
+ * Implementation of a javascript layout engine for Jx.
+ *
+ * Author: 
+ * Paul Spencer (pspencer@dmsolutions.ca)
+ *
+ * Copyright:
+ * Copyright &copy; 2008, DM Solutions Group Inc.
  */
+/******************************************************************************
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
 
 /**
  * Class: Jx.Layout
@@ -9726,54 +9819,64 @@ Jx.Grid.prototype = {
  * var myContainer = new Jx.Layout('myDiv', options);
  * (end)
  *
- * Options can be passed to the Jx.Layout as an object with some, all, or none
- * of the following properties:
- *
- * position - how to position the element, either 'absolute' or 'relative'.
- *      The default (if not passed) is 'absolute'.  When using
- *      'absolute' positioning, both the width and height are
- *      controlled by Jx.Layout.  If 'relative' positioning is used
- *      then only the width is controlled, allowing the height to
- *      be controlled by its content.
- * left - the distance (in pixels) to maintain the left edge of the element
- *      from its parent element.  The default value is 0.  If this is set
- *      to 'null', then the left edge can be any distance from its parent
- *      based on other parameters.
- * right - the distance (in pixels) to maintain the right edge of the element
- *      from its parent element.  The default value is 0.  If this is set
- *      to 'null', then the right edge can be any distance from its parent
- *      based on other parameters.
- * top - the distance (in pixels) to maintain the top edge of the element
- *      from its parent element.  The default value is 0.  If this is set
- *      to 'null', then the top edge can be any distance from its parent
- *      based on other parameters.
- * bottom - the distance (in pixels) to maintain the bottom edge of the element
- *      from its parent element.  The default value is 0.  If this is set
- *      to 'null', then the bottom edge can be any distance from its parent
- *      based on other parameters.
- * width - the width (in pixels) of the element.  The default value is null.
- *      If this is set to 'null', then the width can be any value based on
- *      other parameters.
- * height - the height (in pixels) of the element.  The default value is null.
- *      If this is set to 'null', then the height can be any value based on
- *      other parameters.
- * minWidth - the minimum width that the element can be sized to.  The default
- *      value is 0.
- * minHeight - the minimum height that the element can be sized to.  The
- *      default value is 0.
- * maxWidth - the maximum width that the element can be sized to.  The default
- *      value is -1, which means no maximum.
- * maxHeight - the maximum height that the element can be sized to.  The
- *      default value is -1, which means no maximum.
+ * Inherits From:
+ * <Jx.Listener>
  */
  
 Jx.Layout = Class.create();
 Jx.Layout.prototype = {
     scl: null,
-    initialize: function(element, options) {
+    /**
+     * Constructor: Jx.Layout
+     * Create a new instance of Jx.Layout.
+     *
+     * Parameters:
+     * domObj - {HTMLElement} element or id to apply the layout to
+     * options - {Object} options can be passed to the Jx.Layout as an object
+     * with some, all, or none of the options below.
+     *
+     * Options:
+     * position - how to position the element, either 'absolute' or 'relative'.
+     *    The default (if not passed) is 'absolute'.  When using
+     *    'absolute' positioning, both the width and height are
+     *    controlled by Jx.Layout.  If 'relative' positioning is used
+     *    then only the width is controlled, allowing the height to
+     *    be controlled by its content.
+     * left - the distance (in pixels) to maintain the left edge of the element
+     *    from its parent element.  The default value is 0.  If this is set
+     *    to 'null', then the left edge can be any distance from its parent
+     *    based on other parameters.
+     * right - the distance (in pixels) to maintain the right edge of the element
+     *    from its parent element.  The default value is 0.  If this is set
+     *    to 'null', then the right edge can be any distance from its parent
+     *    based on other parameters.
+     * top - the distance (in pixels) to maintain the top edge of the element
+     *    from its parent element.  The default value is 0.  If this is set
+     *    to 'null', then the top edge can be any distance from its parent
+     *    based on other parameters.
+     * bottom - the distance (in pixels) to maintain the bottom edge of the element
+     *    from its parent element.  The default value is 0.  If this is set
+     *    to 'null', then the bottom edge can be any distance from its parent
+     *    based on other parameters.
+     * width - the width (in pixels) of the element.  The default value is null.
+     *    If this is set to 'null', then the width can be any value based on
+     *    other parameters.
+     * height - the height (in pixels) of the element.  The default value is null.
+     *    If this is set to 'null', then the height can be any value based on
+     *    other parameters.
+     * minWidth - the minimum width that the element can be sized to.  The default
+     *    value is 0.
+     * minHeight - the minimum height that the element can be sized to.  The
+     *    default value is 0.
+     * maxWidth - the maximum width that the element can be sized to.  The default
+     *    value is -1, which means no maximum.
+     * maxHeight - the maximum height that the element can be sized to.  The
+     *    default value is -1, which means no maximum.
+     */
+    initialize: function(domObj, options) {
         options = options || {};
         this.options = new Jx.Constraint(options);
-        this.domObj = $(element);
+        this.domObj = $(domObj);
         this.domObj.resize = this.resize.bind(this);
         this.domObj.style.position = this.options.position;
         this.domObj.jxLayout = this;
@@ -9785,7 +9888,12 @@ Jx.Layout.prototype = {
         this.scl = [];
     },
     
-    windowResize: function() {
+    /**
+     * Method: windowResize
+     * when the window is resized, any Jx.Layout controlled elements that are
+     * direct children of the BODY element are resized
+     */
+     windowResize: function() {
         if (this.resizeTimer) {
             window.clearTimeout(this.resizeTimer);
             this.resizeTimer = null;
@@ -9793,20 +9901,48 @@ Jx.Layout.prototype = {
         this.resizeTimer = window.setTimeout(this.resize.bind(this), 250);
     },
     
-    resize: function(options) {
+    /**
+     * Method: resize
+     * resize the element controled by this Jx.Layout object.
+     *
+     * Parameters:
+     * options - new options to apply, see <Jx.Layout::Jx.Layout>
+     */
+     resize: function(options) {
         this.resizeTimer = null;
+        var needsResize = false;
         if (options) {
             for (var i in options) {
-                this.options[i] = options[i];
+                if (this.options[i] != options[i]) {
+                    needsResize = true;
+                    this.options[i] = options[i];
+                }
+            }
+            if (options.forceResize) {
+                needsResize = true;
             }
         }
-        //console.log('Jx.Layout.resize '+this.domObj.id);
+        
+        
         var parentSize;
         if (this.domObj.parentNode.tagName == 'BODY') {
             parentSize = Element.getPageDimensions();
         } else {
             parentSize = Element.getContentBoxSize(this.domObj.parentNode);
         }
+        
+        if (this.lastParentSize && !needsResize) {
+            needsResize = (this.lastParentSize.width != parentSize.width || 
+                          this.lastParentSize.height != parentSize.height);
+        } else {
+            needsResize = true;
+        }
+        this.lastParentSize = parentSize;
+        
+        if (!needsResize) {
+            return;
+        }
+        
         var l, t, w, h;
         
         /* calculate left and width */
@@ -10029,7 +10165,7 @@ Jx.Layout.prototype = {
                 }
             }
         }
-        
+                
         this.domObj.style.position = this.options.position;
         if (this.options.position == 'absolute') {
             var padding = Element.getPaddingSize(this.domObj.parentNode);
@@ -10045,24 +10181,43 @@ Jx.Layout.prototype = {
             Element.setBorderBoxSize(this.domObj, sizeOpts);
         }
         
-        
+        var o = {forceResize: options ? options.forceResize : false};
         for (var i=0; i<this.domObj.childNodes.length; i++) {
             var c = this.domObj.childNodes[i];
             if (c.resize) {
-                c.resize();
+                c.resize(o);
             }
         }
         this.processEvent(this.scl,'sizeChanged',this);
     },
-    addSizeChangeListener: function(o){this.addListener(this.scl, o);},
-    removeSizeChangeListener: function(o) {
+    /**
+     * Method: addSizeChangeListener
+     * add a size change listener to be notified when the size of the
+     * element changes.
+     *
+     * Parameters:
+     * obj - {Object} a size change listener
+     */
+     addSizeChangeListener: function(obj){this.addListener(this.scl, obj);},
+    /**
+     * Method: removeSizeChangeListener
+     * remove a size change listener 
+     *
+     * Parameters:
+     * obj - {Object} a size change listener
+     */
+     removeSizeChangeListener: function(o) {
         this.removeListener(this.scl, o);
     }
 };
-
 Object.extend(Jx.Layout.prototype, Jx.Listener.prototype);
 
-
+/**
+ * Class: Jx.Constraint
+ * A utility class used with <Jx.Layout> to represent the current
+ * set of constraints on an element.  This object is not intended
+ * to be instantiated directly by a user
+ */
 Jx.Constraint = Class.create();
 Jx.Constraint.prototype = {
     position: 'absolute',
@@ -10082,29 +10237,106 @@ Jx.Constraint.prototype = {
         }
     }
 };/**
- * @project         Jx
- * @revision        $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
- * @author          Paul Spencer (pspencer@dmsolutions.ca)
- * @copyright       &copy; 2006 DM Solutions Group Inc.
+ * $Id: jxmenu.js 512 2008-03-07 21:15:45Z pspencer $
+ *
+ * Title: Jx.Menu
+ *
+ * Purpose: 
+ * Implementation of a javascript menuing system for Jx.
+ *
+ * Author: 
+ * Paul Spencer (pspencer@dmsolutions.ca)
+ *
+ * Copyright:
+ * Copyright &copy; 2008, DM Solutions Group Inc.
  */
+/******************************************************************************
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
+
 
  Jx.addStyleSheet('menu/menu.css');
  Jx.addStyleSheet('button/button.css');
 
-
+/**
+ * Class: Jx.MenuItem
+ * A menu item is a single entry in a menu.  It is typically composed of
+ * a label and an optional icon.  Selecting the menu item triggers an
+ * action.
+ */
 Jx.MenuItem = Class.create();
 Object.extend(Jx.MenuItem.prototype, Jx.Listener.prototype);
 Object.extend(Jx.MenuItem.prototype, {
+    /**
+     * Property: al
+     * {Array} action listeners
+     */
     al: null,
+    /**
+     * Property: domObj
+     * {HTMLElement} the HTML element for this menu item.
+     */
     domObj: null,
+    /**
+     * Property: parent
+     * {<Jx.SubMenu> or <Jx.Menu>} the menu that contains the menu item.
+     */
     parent: null,
+    /**
+     * Property: enabled
+     * {Boolean} whether the menu item is enabled or not
+     */
     enabled: false,
+    /**
+     * Property: button
+     * {<Jx.Button>} the clickable part of the menu item is managed as a
+     * <Jx.Button>
+     */
     button: null,
+    /**
+     * Constructor: Jx.MenuItem
+     * Create a new instance of Jx.MenuItem
+     *
+     * Parameters:
+     * action - {<Jx.Action>} the action to invoke when the menu item is
+     *          invoked
+     * options - {Object} an object containing options as below.
+     * 
+     * Options:
+     * image - {String} URL to an image to use as an icon on this menu item
+     * label - {String} the label for the menu item.
+     */
     initialize: function(action, options) {
         this.initializeItem(options);
         action.bindTo(this);
         this.propertyChanged(action);
     },
+    /**
+     * Method: initializeItem
+     * Internal method to initalize the button for this menu item.
+     *
+     * Parameters:
+     * options - {Object} an object containing options as below.
+     *
+     * Options:
+     * image - {String} URL to an image to use as an icon on this menu item
+     * label - {String} the label for the menu item.     */
     initializeItem: function(options) { 
         if (!options.image) {
             options.image = Jx.baseURL + 'images/a_pixel.png';
@@ -10128,13 +10360,50 @@ Object.extend(Jx.MenuItem.prototype, {
         
         this.domObj.appendChild(this.button.domObj);
     },
-    setParent: function(o) {
-        this.parent = o;
+    /**
+     * Method: setParent
+     * Set the parent of this menu item
+     *
+     * Parameters:
+     * obj - {Object} the new parent
+     */
+    setParent: function(obj) {
+        this.parent = obj;
     },
+    /**
+     * Method: hide
+     * Hide the menu item.
+     */
     hide: function() {},
+    /**
+     * Method: show
+     * Show the menu item
+     */
     show: function() {},
-    addActionListener: function(o) { this.addListener(this.al,o); },
-    removeActionListener : function(o) { this.removeListener(this.al, o); },
+    /**
+     * Method: addActionListener
+     * Add an action listener to this menu item
+     *
+     * Parameters:
+     * obj - {Object} the action listener
+     */
+    addActionListener: function(obj) { this.addListener(this.al,obj); },
+    /**
+     * Method: removeActionListener
+     * Remove an action listener from this menu item
+     *
+     * Parameters:
+     * obj - {Object} the action listener
+     */
+    removeActionListener : function(obj) { this.removeListener(this.al, obj); },
+    /**
+     * Method: processActionEvent
+     * Process an action event by informing any action listeners that the action
+     * associated with this menu item and hiding the menu.
+     *
+     * Parameters:
+     * e - {Event} the event associated with the user clicking on the menu item
+     */
     processActionEvent: function(e) { 
         if (this.enabled) {
             this.processEvent(this.al, 'actionPerformed', this);
@@ -10143,14 +10412,29 @@ Object.extend(Jx.MenuItem.prototype, {
             }
         }
     },
-    propertyChanged: function(o) {
-        this.enabled = o.isEnabled();
+    /**
+     * Method: propertyChanged
+     * Track when a property of the action changes and update the state of the
+     * menu item accordingly.
+     *
+     * Parameters:
+     * obj - {<Jx.Action>} the action object
+     */
+    propertyChanged: function(obj) {
+        this.enabled = obj.isEnabled();
         if (this.enabled) {
             Element.removeClassName( this.domObj.childNodes[0].childNodes[0], 'jxDisabled' );
         } else {
             Element.addClassName( this.domObj.childNodes[0].childNodes[0], 'jxDisabled' );
         }
     },
+    /**
+     * Method: onmouseover
+     * handle the mouse moving over the menu item
+     *
+     * Parameters:
+     * e - {Event} the mousemove event
+     */
     onmouseover: function(e) {
         var target = Event.element(e);
         if (this.parent && this.parent.setVisibleItem) {
@@ -10160,10 +10444,27 @@ Object.extend(Jx.MenuItem.prototype, {
     }
 });
 
+/**
+ * Class: Jx.MenuSeparator
+ * A convenience class to create a visual separator in a menu.
+ */
 Jx.MenuSeparator = Class.create();
 Object.extend(Jx.MenuSeparator.prototype, {
+    /**
+     * Property: domObj
+     * {HTMLElement} the HTML element that the separator is contained
+     * within
+     */
     domObj: null,
+    /**
+     * Property: parent
+     * {<Jx.Menu>, <Jx.SubMenu>} the menu that the separator is in.
+     */
     parent: null,
+    /**
+     * Constructor: Jx.MenuSeparator
+     * Create a new instance of a menu separator
+     */
     initialize: function() {
         this.domObj = document.createElement('li');
         this.domObj.className = 'jxMenuItem';
@@ -10172,20 +10473,67 @@ Object.extend(Jx.MenuSeparator.prototype, {
         span.innerHTML = '&nbsp;';
         this.domObj.appendChild(span);
     },
+    /**
+     * Method: setParent
+     * Set the parent of this menu item
+     *
+     * Parameters:
+     * obj - {Object} the new parent
+     */
+    setParent: function(obj) {
+        this.parent = obj;
+    },
+    /**
+     * Method: hide
+     * Hide the menu item.
+     */
     hide: function() {},
-    show: function() {},
-    setParent: function(o) {
-        this.parent = o;
-    }
+    /**
+     * Method: show
+     * Show the menu item
+     */
+    show: function() {}
 });
 
+/**
+ * Class: Jx.SubMenu
+ * A sub menu contains menu items within a main menu or another
+ * sub menu.
+ *
+ * Inherits From:
+ * <Jx.MenuItem>
+ */
 Jx.SubMenu = Class.create();
 Object.extend(Jx.SubMenu.prototype, Jx.MenuItem.prototype);
 Object.extend(Jx.SubMenu.prototype, {
-    subMenu: null,
+    /**
+     * Property: subDomObj
+     * {HTMLElement} the HTML container for the sub menu.
+     */
+    subDomObj: null,
+    /**
+     * Property: parent
+     * {<Jx.Menu> or <Jx.SubMenu>} the menu or sub menu that this sub menu
+     * belongs
+     */
     parent: null,
+    /**
+     * Property: visibleItem
+     * {<Jx.MenuItem>} the visible item within the menu
+     */
     visibleItem: null,
+    /**
+     * Property: items
+     * {Array} the menu items that are in this sub menu.
+     */
     items: null,
+    /**
+     * Constructor: Jx.SubMenu
+     * Create a new instance of Jx.SubMenu
+     *
+     * Parameters:
+     * options - see <Jx.MenuItem::Jx.MenuItem>
+     */
     initialize: function(options) { 
         this.open = false;
         this.items = [];
@@ -10204,9 +10552,20 @@ Object.extend(Jx.SubMenu.prototype, {
         // this.button.domObj.appendChild(this.subDomObj);
         this.domObj.appendChild(this.subDomObj);
     },
-    setParent: function(o) {
-        this.parent = o;
+    /**
+     * Method: setParent
+     * Set the parent of this sub menu
+     *
+     * Parameters:
+     * obj - {Object} the parent
+     */
+    setParent: function(obj) {
+        this.parent = obj;
     },
+    /**
+     * Method: show
+     * Show the sub menu
+     */
     show: function() {
         if (this.open || this.items.length == 0) {
             return;
@@ -10223,6 +10582,10 @@ Object.extend(Jx.SubMenu.prototype, {
         }
         this.setActive(true);
     },
+    /**
+     * Method: hide
+     * Hide the sub menu
+     */
     hide: function() {
         if (!this.open) {
             return;
@@ -10237,6 +10600,14 @@ Object.extend(Jx.SubMenu.prototype, {
         }
         this.visibleItem = null;
     },
+    /**
+     * Method: add
+     * Add menu items to the sub menu.
+     *
+     * Parameters:
+     * item - {<Jx.MenuItem>} the menu item to add.  Multiple menu items
+     * can be added by passing multiple arguments to this function.
+     */
     add : function() { /* menu */
         for (var i=0; i<arguments.length; i++) {
             var item = arguments[i];
@@ -10245,6 +10616,14 @@ Object.extend(Jx.SubMenu.prototype, {
             this.subDomObj.appendChild(item.domObj);
         }
     },
+    /**
+     * Method: insertBefore
+     * Insert a menu item before another menu item.
+     *
+     * Parameters:
+     * newItem - {<Jx.MenuItem>} the menu item to insert
+     * targetItem - {<Jx.MenuItem>} the menu item to insert before
+     */
     insertBefore: function(newItem, targetItem) {
         var bInserted = false;
         for (var i=0; i<this.items.length; i++) {
@@ -10259,6 +10638,13 @@ Object.extend(Jx.SubMenu.prototype, {
             this.add(newItem);
         }
     },
+    /**
+     * Method: remove
+     * Remove a single menu item from the menu.
+     *
+     * Parameters:
+     * item - {<Jx.MenuItem} the menu item to remove.
+     */
     remove: function(item) {
         for (var i=0; i<this.items.length; i++) {
             if (this.items[i] == item) {
@@ -10268,6 +10654,12 @@ Object.extend(Jx.SubMenu.prototype, {
             }
         }
     },
+    /**
+     * Method: processActionEvent
+     * Process an action event coming from the menu item that
+     * represents the sub menu in its parent by showing or hiding
+     * the sub menu.
+     */
     processActionEvent: function(e) { 
         if (this.open) { 
             this.hide(); 
@@ -10276,11 +10668,27 @@ Object.extend(Jx.SubMenu.prototype, {
         }
         return Event.stop(e);
     },
+    /**
+     * Method: deactivate
+     * Deactivate the sub menu
+     *
+     * Parameters:
+     * e - {Event} the event that triggered the menu being
+     * deactivated.
+     */
     deactivate: function(e) {
         if (this.parent) {
             this.parent.deactivate(e);            
         }
     },
+    /**
+     * Method: isActive
+     * Indicate if this sub menu is active
+     *
+     * Returns:
+     * {Boolean} true if the <Jx.Menu> that ultimately contains
+     * this sub menu is active, false otherwise.
+     */
     isActive: function() { 
         if (this.parent) {
             return this.parent.isActive();
@@ -10288,29 +10696,84 @@ Object.extend(Jx.SubMenu.prototype, {
             return false;
         }
     },
-    setActive: function(b) { 
+    /**
+     * Method: setActive
+     * Set the active state of the <Jx.Menu> that contains this sub menu
+     *
+     * Parameters:
+     * isActive - {Boolean} the new active state
+     */
+    setActive: function(isActive) { 
         if (this.parent && this.parent.setActive) {
-            this.parent.setActive(b);
+            this.parent.setActive(isActive);
         }
     },
-    setVisibleItem: function(o) {
-        if (this.visibleItem != o) {
+    /**
+     * Method: setVisibleItem
+     * Set a sub menu of this menu to be visible and hide the previously
+     * visible one.
+     *
+     * Parameters: 
+     * obj - {<Jx.SubMenu>} the sub menu that should be visible
+     */
+    setVisibleItem: function(obj) {
+        if (this.visibleItem != obj) {
             if (this.visibleItem && this.visibleItem.hide) {
                 this.visibleItem.hide();
             }
-            this.visibleItem = o;
+            this.visibleItem = obj;
             this.visibleItem.show();
         }
     }
 });
 
+/**
+ * Class: Jx.Menu
+ * A main menu as opposed to a sub menu that lives inside the menu.
+ *
+ * TODO: Jx.Menu
+ * revisit this to see if Jx.Menu and Jx.SubMenu can be merged into
+ * a single implementation.
+ */
 Jx.Menu = Class.create();
 Jx.Menu.prototype = {
+    /**
+     * Property: domObj
+     * {HTMLElement} The HTML element containing the menu.
+     */
     domObj : null,
+    /**
+     * Property: buttonObj
+     * {<Jx.Button>} The button that represents this menu in a toolbar and
+     * opens the menu.
+     */
     buttonObj : null,
+    /**
+     * Property: subDomObj
+     * {HTMLElement} the HTML element that contains the menu items
+     * within the menu.
+     */
     subDomObj : null,
+    /**
+     * Property: items
+     * {Array} the items in this menu
+     */
     items : null,
+    /**
+     * Property: menus
+     * {Array} Class variable that contains a reference to all
+     * menus shared by all menu instances.
+     */
     menus : [],
+    /**
+     * Constructor: Jx.Menu
+     * Create a new instance of Jx.Menu.
+     *
+     * Parameters:
+     * options - {Object} an options object passed directly to the
+     * <Jx.Button> when creating the button that triggers this menu.
+     * If options is not passed, then no button is created.
+     */
     initialize : function(options) {
         /* stores menu items and sub menus */
         this.items = [];
@@ -10345,6 +10808,14 @@ Jx.Menu.prototype = {
         /* pre-bind the hide function for efficiency */
         this.hideWatcher = this.hide.bindAsEventListener(this);
     },
+    /**
+     * Method: add
+     * Add menu items to the sub menu.
+     *
+     * Parameters:
+     * item - {<Jx.MenuItem>} the menu item to add.  Multiple menu items
+     * can be added by passing multiple arguments to this function.
+     */
     add : function() {
         for (var i=0; i<arguments.length; i++) {
             var item = arguments[i];
@@ -10353,13 +10824,37 @@ Jx.Menu.prototype = {
             this.subDomObj.appendChild(item.domObj);
         }
     },
+    /**
+     * Method: deactivate
+     * Deactivate the menu by hiding it.
+     */
     deactivate: function() { this.hide(); },
-    actionPerformed : function(o) {this.hide();},
+    /**
+     * Method: actionPerformed
+     * Any action performed in the menu ultimately calls this
+     * method to hide the menu.
+     */
+    actionPerformed : function() {this.hide();},
+    /**
+     * Method: onMouseOver
+     * Handle the user moving the mouse over the button for this menu
+     * by showing this menu and hiding the other menu.
+     *
+     * Parameters:
+     * e - {Event} the mouse event
+     */
     onMouseOver: function(e) {
         if (this.menus[0] && this.menus[0] != this) {
             this.show(e);
         }
     },
+    /**
+     * Method: hide
+     * Hide the menu.
+     *
+     * Parameters:
+     * e - {Event} the mouse event
+     */
     hide: function(e) {
         if (e) {
             var root = Event.findElement(e, 'LI');
@@ -10376,6 +10871,13 @@ Jx.Menu.prototype = {
         Event.stopObserving(document, 'click', this.hideWatcher, true);
         this.subDomObj.style.display = 'none';  
     },
+    /**
+     * Method: show
+     * Show the menu
+     *
+     * Parameters:
+     * e - {Event} the mouse event
+     */
     show : function(e) {
         if (this.menus[0] && this.menus[0] != this) {
             this.menus[0].hide(e);
@@ -10397,20 +10899,45 @@ Jx.Menu.prototype = {
         /* fix bug in IE that closes the menu as it opens because of bubbling */
         Event.observe(document, 'click', this.hideWatcher, true);
     },
-    setVisibleItem: function(o) {
-        if (this.visibleItem != o) {
+    /**
+     * Method: setVisibleItem
+     * Set the sub menu that is currently open
+     *
+     * Parameters:
+     * obj- {<Jx.SubMenu>} the sub menu that just became visible
+     */
+    setVisibleItem: function(obj) {
+        if (this.visibleItem != obj) {
             if (this.visibleItem && this.visibleItem.hide) {
                 this.visibleItem.hide();
             }
-            this.visibleItem = o;
+            this.visibleItem = obj;
             this.visibleItem.show();
         }
     }
 };
 
+/**
+ * Class: Jx.ContextMenu
+ * A <Jx.Menu> that has no button but can be opened at a specific 
+ * browser location to implement context menus (for instance).
+ *
+ * Inherits From:
+ * <Jx.Menu>
+ */
 Jx.ContextMenu = Class.create();
 Object.extend(Jx.ContextMenu.prototype, Jx.Menu.prototype);
 Object.extend(Jx.ContextMenu.prototype, {
+    /**
+     * Constructor: Jx.ContextMenu
+     * create a new context menu
+     *
+     * Parameters:
+     * id - {HTMLElement} element or id to make this the context menu
+     * for.  The menu hooks the oncontextmenu event of the element
+     * and shows itself at the mouse position where the right-click
+     * happened.
+     */
     initialize : function(id) {
         Jx.Menu.prototype.initialize.apply(this, []);
         document.getElementsByTagName('BODY')[0].appendChild(this.subDomObj);
@@ -10418,33 +10945,88 @@ Object.extend(Jx.ContextMenu.prototype, {
             $(id).oncontextmenu = this.show.bindAsEventListener(this);;
         }
     },
+    /**
+     * Method: show
+     * Show the context menu at the location of the mouse click
+     *
+     * Parameters:
+     * e - {Event} the mouse event
+     */
     show : function(e) {
         this.subDomObj.style.left = Event.pointerX(e) + "px";
         this.subDomObj.style.top = Event.pointerY(e) + "px";
         Jx.Menu.prototype.show.apply(this, [e]);
-    },
-    setVisibleItem: function(o) {
-        if (this.visibleItem != o) {
-            if (this.visibleItem && this.visibleItem.hide) {
-                this.visibleItem.hide();
-            }
-            this.visibleItem = o;
-            this.visibleItem.show();
-        }    
     }
 });/**
- * @project         Jx
- * @revision        $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
- * @author          Paul Spencer (pspencer@dmsolutions.ca)
- * @copyright       &copy; 2006 DM Solutions Group Inc.
+ * $Id: jxpanel.js 512 2008-03-07 21:15:45Z pspencer $
+ *
+ * Title: Jx.Panel
+ *
+ * Purpose: 
+ * Implementation of a javascript panels for Jx.  Panels are vertically 
+ * oriented areas that can be resized by the user dragging the panel title
+ * bar.
+ *
+ * Author: 
+ * Paul Spencer (pspencer@dmsolutions.ca)
+ *
+ * Copyright:
+ * Copyright &copy; 2008, DM Solutions Group Inc.
  */
- Jx.addStyleSheet('panel/panel.css');
+/******************************************************************************
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
 
+Jx.addStyleSheet('panel/panel.css');
+
+/**
+ * Class: Jx.PanelManager
+ * A panel manager manages a set of panels within a DOM element.
+ */
 Jx.PanelManager = Class.create();
 Jx.PanelManager.prototype = {
+    /**
+     * Property: panels
+     * {Array} the panels being managed by the manager
+     */
     panels: null,
+    /**
+     * Property: height
+     * {Integer} the height of the container, cached for speed
+     */
     height: null,
-    
+    /**
+     * Property: firstLayout
+     * {Boolean} true until the panel manager has first been resized
+     */
+    firstLayout: true,
+    /**
+     * Constructor: Jx.PanelManager
+     * Create a new instance of Jx.PanelManager.
+     *
+     * Parameters:
+     * domObj - {HTMLElement} the HTML element that will contain the panels
+     * panels - {Array} the panels to go into the PanelManager
+     *
+     * TODO: Jx.PanelManager.initialize
+     * Remove the panels parameter in favour of an add method.
+     */
     initialize: function(domObj, panels) {
         this.domObj = $(domObj);
         this.panels = panels;
@@ -10458,16 +11040,45 @@ Jx.PanelManager.prototype = {
         this.splitter = new Jx.Splitter(this.domObj, {splitInto: panels.length+1,
                                                      layout: 'vertical',
                                                      elements: elements });
+        /* redirect splitter sizeChanged so we can capture the first time the
+         * splitter is layed out in the client in a way that we can measure
+         * the title bar heights
+         */
+        this.splitter.sizeChanged = this.sizeChanged.bind(this);
+        /* create the bars for the panel manager */
         for (var i=0; i<this.panels.length; i++) {
-            this.splitter.bars[i].appendChild(panels[i].title);
-            this.splitter.bars[i].style.height = Element.getBorderBoxSize(panels[i].title).height + 'px';
+            var panel = this.panels[i];
+            this.splitter.bars[i].appendChild(panel.title);
+            this.splitter.bars[i].style.height = Element.getBorderBoxSize(panel.title).height + 'px';
             Element.removeClassName(this.splitter.bars[i], 'jxSplitterBar');
             Element.addClassName(this.splitter.bars[i], 'jxPanelBar');
-            panels[i].manager = this;
+            panel.manager = this;
+        }
+    },
+    /**
+     * Method: sizeChanged
+     * called when the size of the container of the splitter changes.  This tracks the
+     * first time the panel titles have a non-zero height (i.e. they are put in the
+     * DOM and are visible) and recalculates the panel title height then.
+     */ 
+    sizeChanged: function() {
+        if (this.firstLayout) {
+            if (Element.getBorderBoxSize(this.panels[0].title).height != 0) {
+                for (var i=0; i<this.splitter.bars.length; i++) {
+                    var panel = this.panels[i];
+                    this.splitter.bars[i].style.height = Element.getBorderBoxSize(panel.title).height + 'px';
+                    this.splitter.bars[i].size = null;
+                }
+                this.firstLayout = false;
+                Jx.Splitter.prototype.sizeChanged.apply(this.splitter, []);            
+            }
+        } else {
+            Jx.Splitter.prototype.sizeChanged.apply(this.splitter, []);            
         }
     },
     
     /**
+     * Method: maximizePanel
      * Maximize the panel, taking up all available space (taking into
      * consideration any minimum or maximum values)
      */
@@ -10503,24 +11114,41 @@ Jx.PanelManager.prototype = {
         panel.domObj.jxLayout.resize({top: t, height:b - t, bottom: null});
     }
 };
-Jx.Panel = Class.create();
+
 /**
- * Jx.Panel
+ * Class: Jx.Panel
+ * A panel that can be displayed inside a panel manager.
  */
+Jx.Panel = Class.create();
 Jx.Panel.prototype = {
-    /** the DOM object that holds the label in the title bar. */
+    /** 
+     * Property: labelObj
+     * the DOM object that holds the label in the title bar. 
+     */
     labelObj : null,
-    /** the DOM object that holds the button objects in the title bar. */
-    // buttonObj : null,
-    /** the state of this panel */
+    /**
+     * Property: state
+     * the state of this panel 
+     */
     state : 'open',
-    /* track the busy state of this panel - used to control a 'loading' image */
+    /**
+     * Property: busyCount
+     * track the busy state of this panel - used to control a 'loading' image 
+     */
     busyCount : null,
+    /**
+     * Property: bContentReady
+     * {Boolean} is the content ready to be displayed?
+     */
     bContentReady : null,
+    /**
+     * Property: onContentReady
+     * {Function} a function to call when the content is ready
+     */
     onContentReady : null,
     
     /** 
-     * @constructor
+     * Constructor: Jx.Panel
      * Initialize a new Jx.Panel instance
      *
      * Options:
@@ -10534,6 +11162,9 @@ Jx.Panel.prototype = {
      * statusbar - element to use as the statusbar
      * helpCallback - function to call when the user clicks the contextual help button
      * state - initial state of the panel (open or closed)
+     *
+     * Inherits From:
+     * <Jx.UniqueId>, <Jx.ContentLoader>
      */
     initialize : function(options){
         //console.log("Jx.Panel::initialize('"+options.label+"')");
@@ -10542,7 +11173,8 @@ Jx.Panel.prototype = {
         /* set up the title object */
         this.title = document.createElement('div');
         this.title.className = "jxPanelTitle";
-        //TODO: Opera is broken because it doesn't report the height of the
+        //TODO: Jx.Panel.initialize
+        //Opera is broken because it doesn't report the height of the
         //title bars at all unless set through javascript
         //this is a hack until we can figure out from css what the height is
         this.title.style.height = '22px';
@@ -10632,26 +11264,62 @@ Jx.Panel.prototype = {
         this.busyCount = 0;
         this.bContentReady = false;
     },
+    /**
+     * Method: setLabel
+     * Set the label in the title bar of this panel
+     *
+     * Parameters:
+     * s - {String} the new label
+     */
     setLabel: function(s) {
         this.labelObj.innerHTML = s;
     },
+    /**
+     * Method: getLabel
+     * Get the label of the title bar of this panel
+     *
+     * Returns: 
+     * {String} the label
+     */
     getLabel: function() {
         return this.labelObj.innerHTML;
     },
+    /**
+     * Method: finalize
+     * Clean up the panel
+     */
     finalize: function() {
         this.domObj = null;
         this.deregisterIds();
     },
+    /**
+     * Method: maximize
+     * Maximize this panel
+     */
     maximize: function() {
         if (this.manager) {
             this.manager.maximizePanel(this);
         }
     },
+    /**
+     * Method: setContent
+     * set the content of this panel to some HTML
+     *
+     * Parameters:
+     * html - {String} the new HTML to go in the panel
+     */
     setContent : function (html) {
         //console.log('Jx.Panel::setContent()');
         this.content.innerHTML = html;
         this.bContentReady = true;
     },
+    /**
+     * Method: setContentURL
+     * Set the content of this panel to come from some URL.
+     *
+     * Parameters:
+     * url - {String} URL to some HTML content for this panel
+     */
     setContentURL : function (url) {
         this.bContentReady = false;
         this.setBusy(true);
@@ -10668,6 +11336,14 @@ Jx.Panel.prototype = {
                      requestHeaders: ['If-Modified-Since', 'Sat, 1 Jan 2000 00:00:00 GMT']};
         var a = new Ajax.Request( url, opts);
     },
+    /**
+     * Method: panelContentLoaded
+     * When the content of the panel is loaded from a remote URL, this 
+     * method is called when the ajax request returns.
+     *
+     * Parameters:
+     * r - {XmlHttpRequest} the XmlHttpRequest object
+     */
     panelContentLoaded: function(r) {
         this.content.innerHTML = r.responseText;
         this.bContentReady = true;
@@ -10676,10 +11352,23 @@ Jx.Panel.prototype = {
             window.setTimeout(this.onContentReady.bind(this),1);
         }
     },
-    setBusy : function(b) {
-        this.busyCount += b?1:-1;
+    /**
+     * Method: setBusy
+     * Set the panel as busy or not busy, which displays a loading image
+     * in the title bar.
+     *
+     * Parameters:
+     * isBusy - {Boolean} the busy state
+     */
+    setBusy : function(isBusy) {
+        this.busyCount += isBusy?1:-1;
         this.loadingObj.img.style.visibility = (this.busyCount>0)?'visible':'hidden';
     },
+    /**
+     * Method: sizeChanged
+     * handle the size of the container changing by resizing the various
+     * elements of the panel.
+     */
     sizeChanged: function() {
         var top = 0;
         var bottom = 0;
@@ -10708,30 +11397,88 @@ Jx.Panel.prototype = {
 };
 Object.extend(Jx.Panel.prototype, Jx.UniqueId.prototype);
 Object.extend(Jx.Panel.prototype, Jx.ContentLoader.prototype);/**
- * @project         Jx
- * @revision        $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
- * @author          Paul Spencer (pspencer@dmsolutions.ca)
- * @copyright       &copy; 2006 DM Solutions Group Inc.
+ * $Id: jxpicker.js 516 2008-03-10 23:21:04Z pspencer $
+ *
+ * Title: Jx.Picker
+ *
+ * Purpose: 
+ * Implementation of a javascript Pick List for Jx.  This is analagous to an 
+ * HTML select except that it allows other things to be put in the list.  The
+ * selected item from the list can also be editable.
+ *
+ * Author: 
+ * Paul Spencer (pspencer@dmsolutions.ca)
+ *
+ * Copyright:
+ * Copyright &copy; 2008, DM Solutions Group Inc.
  */
+/******************************************************************************
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
 
- Jx.addStyleSheet('picker/picker.css');
+Jx.addStyleSheet('picker/picker.css');
 
-
+/**
+ * Class: Jx.Picker
+ * A drop down list of selectable items that can be any HTML.
+ *
+ * Inherits From:
+ * <Jx.Listener>
+ */
 Jx.Picker = Class.create();
 Jx.Picker.prototype = {
-    /** selection listeners */
+    /** 
+     * Property: sl
+     * {Array} selection listeners 
+     */
     sl : null,
     
-    /** the div that contains the control, used to show/hide the control */
+    /** 
+     * Property: domObj
+     * {HTMLElement} the div that contains the control, 
+     * used to show/hide the control 
+     */
     domObj : null,
-    /** the ul that contains the selectable items */
+    /** 
+     * Property: ul
+     * {HTMLElement} the ul that contains the selectable items 
+     */
     ul : null,
-    /** current selection in the list */
+    /**
+     * Property: currentSelection
+     * {Object} current selection in the list 
+     */
     currentSelection : null,
     
-    /** editable? **/
+    /**
+     * Property: isEditable
+     * {Boolean} is the selected item editable? 
+     **/
     isEditable: false,
-    /** constructor */
+    /** 
+     * Constructor: Jx.Picker
+     * create a new instance of Jx.Picker
+     *
+     * Options:
+     * editable - {Boolean} defaults to false.  If true, then the selected item
+     * is editable.
+     */
     initialize: function(options) {
         options = options || {};
         
@@ -10780,6 +11527,14 @@ Jx.Picker.prototype = {
         this.sl = [];
     },
     
+    /**
+     * Method: onKeyPress
+     * Handle the user pressing a key by looking for an ENTER key to set the
+     * value.
+     *
+     * Parameters:
+     * e - {Event} the keypress event
+     */
     onKeyPress: function(e) {
         var charCode = (e.charCode) ? e.charCode : ((e.keyCode) ? e.keyCode : e.which);
         if (charCode == Event.KEY_RETURN) {
@@ -10787,20 +11542,28 @@ Jx.Picker.prototype = {
         }
     },
     
+    /**
+     * Method: valueChanged
+     * When the value is changed, propogate the change to the selection 
+     * listeners
+     */
     valueChanged: function() {
         this.processEvent(this.sl, 'selectionChanged', this);
     },
     
     /**
+     * Method: add
      * add a new item to the pick list
      *
-     * @param selected {boolean} whether the item is initially selected or not
+     * Parameters:
+     * domObj - {HTMLElement} the element to add
+     * idx - {Integer} the index to add the element add
      */
     add: function(domObj, idx) {
         var li = document.createElement('li');
         var a = document.createElement('a');
         a.href="javascript:void(0)";
-
+        
         if (typeof(domObj) == 'string') {
             a.innerHTML = domObj;
         } else {
@@ -10814,8 +11577,18 @@ Jx.Picker.prototype = {
         } else {
             this.domList.appendChild(li);
         }
+        if (this.getValue() == '') {
+            this.setValue(a.childNodes[0]);
+        }
     },
     
+    /**
+     * Method: remove
+     * Remove the item at the given index
+     *
+     * Parameters:
+     * idx - {Integer} the item to remove.
+     */
     remove: function(idx) {
         if (idx > 0 && idx < this.domList.childNodes.length) {
             this.domList.removeChild(this.domList.childNodes[idx]);
@@ -10823,9 +11596,11 @@ Jx.Picker.prototype = {
     },
     
     /**
+     * Method: pick
      * user has clicked something in the list, select it
      *
-     * @param e {Event} the mouse event from the user's click
+     * Parameters:
+     * e - {Event} the mouse event from the user's click
      */
     pick: function(e) {
         var target = Event.element(e);
@@ -10836,6 +11611,14 @@ Jx.Picker.prototype = {
         }
         this.close();
     },
+    /**
+     * Method: setValue
+     * set the value of the picker
+     *
+     * Parameters:
+     * value - {Object} the new value.  May be a string, a text node, or
+     * another DOM element.
+     */
     setValue: function(value) {
         if (this.isEditable) {
             if (typeof(value) == 'string') {
@@ -10856,11 +11639,18 @@ Jx.Picker.prototype = {
         }
     },
     
+    /**
+     * Method: getValue
+     * Return the current value
+     *
+     * Returns:
+     * {Object} returns the currently selected item
+     */
     getValue: function() {
         value = '';
         if (this.isEditable) {
             value = this.domInput.value;
-        } else {
+        } else if (this.domInput.childNodes.length > 0) {
             if (this.domInput.childNodes[0].nodeType == 3) {
                 value = this.domInput.innerHTML;
             } else {
@@ -10870,6 +11660,10 @@ Jx.Picker.prototype = {
         return value;
     },
     
+    /**
+     * Method: toggle
+     * Toggle the display of the list associated with the picker
+     */
     toggle: function() {
         if (this.domListDiv.style.display == 'block') {
             this.close();
@@ -10878,7 +11672,11 @@ Jx.Picker.prototype = {
         }
     },
     
-    open: function(selection) {
+    /**
+     * Method: open
+     * Open the pick list
+     */
+    open: function() {
         if (!this.keypressListener) {
             this.keypressListener = this.keypress.bindAsEventListener(this);
         }
@@ -10886,69 +11684,152 @@ Jx.Picker.prototype = {
         Event.observe(document, 'keypress', this.keypressListener);
         //Effect.SlideDown(this.domObj, 0.2);
     },
+    /**
+     * Method: keypress
+     * Handle a key press event when the list is open so we can close it if the
+     * user hits the ESC key.
+     *
+     * Parameters:
+     * e - {Event} the keypress event
+     */
     keypress: function(e) {
         var charCode=(e.charCode)?e.charCode:e.keyCode;
         if (charCode == Event.KEY_ESC) {
             this.close();
         }
     },
+    /**
+     * Method: close
+     * Close the picker.
+     */
     close: function() {
         this.domListDiv.style.display = 'none';
         Event.stopObserving(document, 'keypress', this.keypressListener);
         //Effect.SlideUp(this.domObj, 0.2);
     },
-    addSelectionListener: function(o) {
-        this.addListener(this.sl, o);
-    },
-    removeSelectionListener: function(o) {
-        this.removeListener(this.sl, o);
-    },
+    /**
+     * Method: addSelectionListener
+     * Add a selection listener to the picker
+     *
+     * Parameters:
+     * obj - {Object} the selection listener
+     */
+    addSelectionListener: function(obj) { this.addListener(this.sl, obj); },
+    /**
+     * Method: removeSelectionListener
+     * Remove a selection listener to the picker
+     *
+     * Parameters:
+     * obj - {Object} the selection listener
+     */
+    removeSelectionListener: function(obj) { this.removeListener(this.sl, obj); },
+    /**
+     * Method: getSelection
+     * return the current selection
+     *
+     * Returns:
+     * {Object} the current selection or an empty string.
+     */
     getSelection: function() {
         return this.currentSelection ? this.currentSelection.name : '';
     }
 };
 Object.extend(Jx.Picker.prototype, Jx.Listener.prototype);/**
- * @project         Jx
- * @revision        $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
- * @author          Paul Spencer (pspencer@dmsolutions.ca)
- * @copyright       &copy; 2006 DM Solutions Group Inc.
+ * $Id: jxsplitter.js 512 2008-03-07 21:15:45Z pspencer $
+ *
+ * Title: Jx.Splitter
+ *
+ * Purpose: 
+ * Implementation of a javascript Splitter for Jx.
+ *
+ * Author: 
+ * Paul Spencer (pspencer@dmsolutions.ca)
+ *
+ * Copyright:
+ * Copyright &copy; 2008, DM Solutions Group Inc.
  */
- 
-/* a Jx.Splitter creates two or more containers within a parent container
+/******************************************************************************
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
+  
+/**
+ * Class: Jx.Splitter
+ * a Jx.Splitter creates two or more containers within a parent container
  * and provides user control over the size of the containers.  The split
  * can be made horizontally or vertically.
- *
+ * 
  * A horizontal split creates containers that divide the space horizontally
  * with vertical bars between the containers.  A vertical split divides
  * the space vertically and creates horizontal bars between the containers.
- *
- * When constructing a splitter object, you can specify the following
- * options:
- *
- * splitInto - integer, the number of containers to create.  The default value
- * is 2 if splitInto is not provided or is less than 2.
- *
- * layout - string, one of 'horizontal' or 'vertical'.  Default is 'horizontal'.
- *
- * containerOptions - array, an array of Jx.LayoutObj objects that are used
- * to initialize the containers.  The array itself is optional, as are indexes
- * within the array.  For any container that does not have an associated
- * option in this array, there is a default Jx.LayoutObj that provides the
- * default behaviour - left, top, right and bottom are 0, width and height are
- * null.  This array can be used to create containers that have minimum and/or
- * maximum sizes.
  */
  
 Jx.Splitter = Class.create();
-/**
- * abstract base class for creating a splitter within an element
- * Use JxHorizontalSplitter or JxVerticalSplitter
- */
 Jx.Splitter.prototype = {
+    /**
+     * Property: domObj
+     * {HTMLElement} the element being split
+     */
     domObj: null,
+    /**
+     * Property: elements
+     * {Array} an array of elements that are displayed in each of the split 
+     * areas
+     */
     elements: null,
+    /**
+     * Property: bars
+     * {Array} an array of the bars between each of the elements used to
+     * resize the split areas.
+     */
     bars: null,
+    /**
+     * Property: firstUpdate
+     * {Boolean} track the first resize event so that unexposed Jx things
+     * can be forced to calculate their size the first time they are exposed.
+     */
     firstUpdate: true,
+    /**
+     * Constructor: Jx.Splitter
+     * Create a new instance of Jx.Splitter
+     *
+     * Parameters:
+     * domObj - {HTMLElement} the element or id of the element to split
+     * options - {Object} optional arguments specified as properties of
+     * this object are as below.
+     *
+     * Options:
+     * elements - {Array} an array of elements to put into the split areas.
+     *      If splitInto is not set, then it is calculated from the length of
+     *      this array.
+     * splitInto - {Integer} the number of elements to split the domObj into.
+     *      If not set, then the length of the elements option is used, or 2 if
+     *      elements is not specified.  If splitInto is specified and elements
+     *      is specified, then splitInto is used.  If there are more elements than
+     *      splitInto specifies, then the extras are ignored.  If there are less
+     *      elements than splitInto specifies, then extras are created.
+     * containerOptions - {Array} an array of objects that provide options
+     *      for the <Jx.Layout> constraints on each element.
+     * layout - {String} either 'horizontal' or 'vertical', indicating the
+     *      direction in which the domObj is to be split.
+     * snappers - {Array} an array of objects which can be used to snap
+     *      elements open or closed.
+     */
     initialize: function(domObj, options) {
         options = options || {};  
         
@@ -10993,7 +11874,14 @@ Jx.Splitter.prototype = {
             }
         }
     },
-    prepareElement: function(options){
+    /**
+     * Method: prepareElement
+     * Prepare a new, empty element to go into a split area.
+     *
+     * Returns:
+     * {HTMLElement} an HTMLElement that goes into a split area.
+     */
+    prepareElement: function(){
         var o = document.createElement('div');
         o.style.position = 'absolute';
         o.leftBar = null;
@@ -11001,6 +11889,13 @@ Jx.Splitter.prototype = {
         return o;
     },
     
+    /**
+     * Method: prepareBar
+     * Prepare a new, empty bar to go into between split areas.
+     *
+     * Returns:
+     * {HTMLElement} an HTMLElement that becomes a bar.
+     */
     prepareBar: function() {
         var o = document.createElement('div');
         o.className = 'jxSplitterBar';
@@ -11011,6 +11906,11 @@ Jx.Splitter.prototype = {
         return o;
     },
     
+    /**
+     * Method: establishConstraints
+     * Setup the initial set of constraints that set the behaviour of the
+     * bars between the elements in the split area.
+     */
     establishConstraints: function() {
         if (this.layout == 'horizontal') {
             for (var i=0; i< this.bars.length; i++) {
@@ -11042,7 +11942,15 @@ Jx.Splitter.prototype = {
         Draggables.addObserver(this);
     },
     
-    /* a bar has been moved */
+    /**
+     * Method: onEnd
+     * Handle the end of a drag event on a bar.
+     *
+     * Parameters:
+     * eventName - {String} the name associated with the drag event
+     * obj - {HTMLElement} the bar that was dragged
+     * event - {Event} the event object associated with the drag
+     */
     onEnd: function(eventName, obj, event) {
         if (obj.element.splitterObj != this) {
             return;
@@ -11054,6 +11962,16 @@ Jx.Splitter.prototype = {
         }
     },
     
+    /**
+     * Method: dragHorizontal
+     * In a horizontally split container, handle a bar being dragged left or
+     * right by resizing the elements on either side of the bar.
+     *
+     * Parameters:
+     * eventName - {String} the name associated with the drag event
+     * obj - {HTMLElement} the bar that was dragged
+     * event - {Event} the event object associated with the drag
+     */
     dragHorizontal: function(eventName, obj, event) {
         var leftEdge = parseInt(obj.element.style.left);
         var leftSide = obj.element.leftSide;
@@ -11140,7 +12058,16 @@ Jx.Splitter.prototype = {
         }
     },
     
-    /* a bar has been moved */
+    /**
+     * Method: dragVertical
+     * In a vertically split container, handle a bar being dragged up or
+     * down by resizing the elements on either side of the bar.
+     *
+     * Parameters:
+     * eventName - {String} the name associated with the drag event
+     * obj - {HTMLElement} the bar that was dragged
+     * event - {Event} the event object associated with the drag
+     */
     dragVertical: function(eventName, obj, event) {
         /* top edge of the bar */
         var topEdge = parseInt(obj.element.style.top);
@@ -11237,6 +12164,10 @@ Jx.Splitter.prototype = {
         }
     },
     
+    /**
+     * Method: sizeChanged
+     * handle the size of the container being changed.
+     */
     sizeChanged: function() {
         if (this.layout == 'horizontal') {
             this.horizontalResize();
@@ -11245,6 +12176,10 @@ Jx.Splitter.prototype = {
         }
     },
     
+    /**
+     * Method: horizontalResize
+     * Resize a horizontally layed-out container
+     */
     horizontalResize: function() {
         var availableSpace = Element.getContentBoxSize(this.domObj).width;
         var overallWidth = availableSpace;
@@ -11340,6 +12275,10 @@ Jx.Splitter.prototype = {
          }
     },
     
+    /**
+     * Method: verticalResize
+     * Resize a vertically layed out container.
+     */
     verticalResize: function() { 
         var availableSpace = Element.getContentBoxSize(this.domObj).height;
         var overallHeight = availableSpace;
@@ -11437,12 +12376,45 @@ Jx.Splitter.prototype = {
     }
 };
 
+/**
+ * Class: Jx.Splitter.Snapper
+ * A helper class to create an element that can snap a split panel open or
+ * closed.
+ */
 Jx.Splitter.Snapper = Class.create();
 Jx.Splitter.Snapper.prototype = {
+    /**
+     * Property: snapper
+     * {HTMLElement} the DOM element of the snapper (the thing that gets
+     * clicked).
+     */
     snapper: null,
+    /**
+     * Property: element
+     * {HTMLElement} An element of the <Jx.Splitter> that gets controlled
+     * by this snapper
+     */
     element: null,
+    /**
+     * Property: splitter
+     * {<Jx.Splitter>} the splitter that this snapper is associated with.
+     */
     splitter: null,
+    /**
+     * Property: layout
+     * {String} track the layout of the splitter for convenience.
+     */
     layout: 'vertical',
+    /**
+     * Constructor: Jx.Splitter.Snapper
+     * Create a new Jx.Splitter.Snapper
+     *
+     * Parameters:
+     * snapper - {HTMLElement} the clickable thing that snaps the element
+     *           open and closed
+     * element - {HTMLElement} the element that gets controlled by the snapper
+     * splitter - {<Jx.Splitter>} the splitter that this all happens inside of.
+     */
     initialize: function(snapper, element, splitter) {
         this.snapper = snapper;
         this.element = element;
@@ -11462,6 +12434,10 @@ Jx.Splitter.Snapper.prototype = {
         Event.observe(snapper, 'click', this.toggleElement.bind(this));
     },
     
+    /**
+     * Method: toggleElement
+     * Snap the element open or closed.
+     */
     toggleElement: function() {
         var size = Element.getBorderBoxSize(this.element);
         var newSize = {};
@@ -11484,6 +12460,11 @@ Jx.Splitter.Snapper.prototype = {
         this.splitter.sizeChanged();
     },
     
+    /**
+     * Method: sizeChanged
+     * Handle the size of the element changing to see if the
+     * toggle state has changed.
+     */
     sizeChanged: function() {
         var size = Element.getBorderBoxSize(this.element);
         if (this.layout == 'vertical') {
@@ -11505,68 +12486,88 @@ Jx.Splitter.Snapper.prototype = {
         }
     }
 };/**
- * @project         Jx
- * @revision        $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
- * @author          Paul Spencer (pspencer@dmsolutions.ca)
- * @copyright       &copy; 2006 DM Solutions Group Inc.
- */
-
-
-/**
+ * $Id: jxtab.js 512 2008-03-07 21:15:45Z pspencer $
  *
- */
-Jx.Statusbar = Class.create();
-Jx.Statusbar.prototype = {
-    items : null,
-    domObj : null,
-    initialize : function(domObj) {
-        this.domObj = document.createElement('ul');
-        this.domObj.className = 'jxStatusBar';
-        $(domObj).appendChild(this.domObj);
-    },
-    add : function( ) {
-        for (var i=0; i<arguments.length; i++) {
-            arguments[i].statusbar = this;
-            var li = document.createElement('li');
-            li.className = 'jxTray';
-            li.appendChild(arguments[i].domObj);
-            this.domObj.appendChild(li);
-        }
-    }
-};
-
-/**
+ * Title: Jx.Tab
  *
+ * Purpose: 
+ * Implementation of a javascript tabbed panel capability for Jx.
+ *
+ * Author: 
+ * Paul Spencer (pspencer@dmsolutions.ca)
+ *
+ * Copyright:
+ * Copyright &copy; 2008, DM Solutions Group Inc.
  */
-Jx.StatusbarItem = Class.create();
-Jx.StatusbarItem.prototype = {
-    domObj: null,
-    statusbar: null,
-    initialize : function( ) {
-        this.domObj = document.createElement('div');
-    },
-    
-    setContentHTML: function(s) {
-        this.domObj.innerHTML = s;
-    },
-    
-    setContentObj: function(o) {
-        this.domObj.appendChild(o);
-    }
-};/**
- * @project         Jx
- * @revision        $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
- * @author          Paul Spencer (pspencer@dmsolutions.ca)
- * @copyright       &copy; 2006 DM Solutions Group Inc.
- */
-
+/******************************************************************************
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
 Jx.addStyleSheet('tab/tabs.css');
 Jx.addStyleSheet('tabs/tabs_ie.css', true);
 
+/**
+ * Class: Jx.TabSet
+ * A TabSet manages a set of <Jx.Tab> content areas by ensuring that only one
+ * of the content areas is visible (i.e. the active tab).  TabSet does not
+ * manage the actual tabs.  The instances of <Jx.Tab> that are to be managed
+ * as a set have to be added to both a TabSet and a <Jx.Toolbar>.  The content
+ * areas of the <Jx.Tab>s are sized to fit the content area that the TabSet
+ * is managing.
+ *
+ * (code)
+ * var tabBar = new Jx.Toolbar('tabBar');
+ * var tabSet = new Jx.TabSet('tabArea');
+ * 
+ * var tab1 = new Jx.Tab('tab 1', {contentID: 'content1'});
+ * var tab2 = new Jx.Tab('tab 2', {contentID: 'content2'});
+ * var tab3 = new Jx.Tab('tab 3', {contentID: 'content3'});
+ * var tab4 = new Jx.Tab('tab 4', {contentURL: 'test_content.html'});
+ * 
+ * tabSet.add(t1, t2, t3, t4);
+ * tabBar.add(t1, t2, t3, t4);
+ * (end)
+ *
+ * Inherits From:
+ * <Jx.Listener>
+ */
 Jx.TabSet = Class.create();
 Jx.TabSet.prototype = {
+    /**
+     * Property: domObj
+     * {HTMLElement} The HTML element that represents this tab set in the DOM.
+     * The content areas of each tab are sized to fill the domObj.
+     */
     domObj : null,
+    /**
+     * Property: sl
+     * {Array} array of selection listeners.
+     */
     sl: null,
+    /**
+     * Constructor: Jx.TabSet
+     * Create a new instance of <Jx.TabSet> within a specific element of
+     * the DOM.
+     *
+     * Parameters:
+     * domObj - {HTMLElement} an element or id of an element to put the
+     * content of the tabs into.
+     */
     initialize : function(domObj) {
         this.domObj = $(domObj);
         if (!Element.hasClassName(this.domObj, 'jxTabSetContainer')) {
@@ -11574,12 +12575,20 @@ Jx.TabSet.prototype = {
         }
         this.sl = [];
     },
-    /*
-     * NOT REQUIRED ???
+    /**
+     * Method: sizeChanged
+     * Respond to the size of the container changing.
+     *
+     * TODO: is this needed?
      */
     sizeChanged: function() { 
       this.resizeTabBox(); 
     },
+    /**
+     * Method: resizeTabBox
+     * Resize the tab set content area and propogate the changes to
+     * each of the tabs managed by the tab set.
+     */
     resizeTabBox: function() {
     
         var parentSize = Element.getContentBoxSize(this.domObj.parentNode);
@@ -11596,11 +12605,19 @@ Jx.TabSet.prototype = {
              }
             Element.setBorderBoxSize(this.domObj.childNodes[i], {height: parentSize.height});
             if (this.domObj.childNodes[i].resize) {
-                this.domObj.childNodes[i].resize();
+                this.domObj.childNodes[i].resize({forceResize: true});
             }
         }
     },
     
+    /**
+     * Method: add
+     * Add one or more <Jx.Tab>s to the TabSet.
+     *
+     * Parameters:
+     * tab - {<Jx.Tab>} an instance of <Jx.Tab> to add to the tab set.  More
+     * than one tab can be added by passing extra parameters to this method.
+     */
     add : function() {
         for (var i=0; i<arguments.length; i++) {
             var tab = arguments[i];
@@ -11611,9 +12628,23 @@ Jx.TabSet.prototype = {
             }
         }
     },
-    remove : function(tab) {
-        //TODO
-    },
+    /**
+     * Method: remove
+     * Remove a tab from the TabSet.
+     *
+     * Parameters:
+     * tab - {<Jx.Tab>} the tab to remove.
+     *
+     * TODO: Implement remove for Jx.TabSet
+     */
+    remove : function(tab) {},
+    /**
+     * Method: setActiveTab
+     * Set the active tab to the one passed to this method
+     *
+     * Parameters:
+     * tab - {<Jx.Tab>} the tab to make active.
+     */
     setActiveTab: function(tab) {
         if (this.activeTab) {
             Element.removeClassName(this.activeTab.domObj, 'tabActive');
@@ -11623,28 +12654,95 @@ Jx.TabSet.prototype = {
         Element.addClassName(this.activeTab.domObj, 'tabActive');
         Element.addClassName(this.activeTab.content, 'tabContentActive');
         if (this.activeTab.content.resize) {
-          this.activeTab.content.resize();
+          this.activeTab.content.resize({forceResize: true});
         }
     },
+    /**
+     * Method: selectionChanged
+     * Handle selection changing on the tabs themselves and activate the
+     * appropriate tab in response.
+     *
+     * Parameters:
+     * tab - {<Jx.Tab>} the tab to make active.
+     */
     selectionChanged: function(tab) {
         this.setActiveTab(tab);
         this.processEvent(this.sl, 'selectionChanged', tab);
     },
-    addSelectionListener: function(o) {
-        this.addListener(this.sl, o);
-    },
-    removeSelectionListener: function(o) {
-        this.removeListener(this.sl, o);
-    }
+    /**
+     * Method: addSelectionListener
+     * Add a selection listener
+     *
+     * Parameters:
+     * obj - {Object} the selection listener to add
+     */
+    addSelectionListener: function(obj) { this.addListener(this.sl, obj); },
+    /**
+     * Method: removeSelectionListener
+     * Remove a selection listener
+     *
+     * Parameters:
+     * obj - {Object} the selection listener to remove
+     */
+    removeSelectionListener: function(obj) { this.removeListener(this.sl, obj); }
 };
 Object.extend(Jx.TabSet.prototype, Jx.Listener.prototype);
 
+/**
+ * Class: Jx.Tab
+ * A single tab in a tab set.  A tab has a label (displayed in the tab) and a
+ * content area that is displayed when the tab is active.  A tab has to be
+ * added to both a <Jx.TabSet> (for the content) and <Jx.Toolbar> (for the
+ * actual tab itself) in order to be useful.  Alternately, you can use
+ * a <Jx.TabBox> which combines both into a single control at the cost of
+ * some flexibility in layout options.
+ *
+ * A tab is a <Jx.ContentLoader> and you can specify the initial content of
+ * the tab using any of the methods supported by 
+ * <Jx.ContentLoader::loadContent>.  You can acccess the actual DOM element
+ * that contains the content (if you want to dynamically insert content
+ * for instance) via the <Jx.Tab::content> property.
+ *
+ * (code)
+ * var tab1 = new Jx.Tab('tab 1', {contentID: 'content1'});
+ * (end)
+ *
+ * Inherits From:
+ * <Jx.Listener>, <Jx.ContentLoader>
+ */
 Jx.Tab = Class.create();
 Jx.Tab.prototype = {
+    /**
+     * Property: domObj
+     * {HTMLElement} The button that is used to activate the tab.
+     */
     domObj: null,
+    /**
+     * Property: content
+     * {HTMLElement} The content area that is displayed when the tab is active.
+     */
     content: null,
+    /**
+     * Property: name
+     * {String} the name of the tab is also the label.
+     */
     name: null,
+    /**
+     * Property: sl
+     * {Array} an array of selection listeners.
+     */
     sl: null,
+    /**
+     * Constructor: Jx.Tab
+     * Create a new instance of Jx.Tab.
+     *
+     * Parameters:
+     * name - {String} the name (and label) of the tab.
+     * options - {Object} an object containing options that are used
+     * to control the appearance of the tab.  See 
+     * <Jx.ContentLoader::loadContent> and <Jx.Layout::Jx.Layout> for
+     * valid options.
+     */
     initialize : function(name, options) {
         this.sl = [];
         options = options || {};
@@ -11658,32 +12756,76 @@ Jx.Tab.prototype = {
         // rename the element from jxButton to jxTab
         // Element.removeClassName(this.domObj, 'jxButton');
         Element.addClassName(this.domObj, 'jxTab');
-        new Jx.Layout(this.content, {position: 'relative'});
+        new Jx.Layout(this.content, options);
         //this.content.resize = this.resize.bind(this);
     },
+    /**
+     * Method: clicked
+     * Handle the tab being clicked by generating a selectionChanged
+     * event.
+     */
     clicked: function() {
         this.processEvent(this.sl, 'selectionChanged', this);
         this.domObj.childNodes[0].blur();
     },
-    addSelectionListener: function(o) {
-        this.addListener(this.sl, o);
-    },
-    removeSelectionListener: function(o) {
-        this.removeListener(this.sl, o);
-    }
+    /**
+     * Method: addSelectionListener
+     * Add a selection listener
+     *
+     * Parameters:
+     * obj - {Object} the selection listener to add
+     */
+    addSelectionListener: function(obj) { this.addListener(this.sl, obj); },
+    /**
+     * Method: removeSelectionListener
+     * Remove a selection listener
+     *
+     * Parameters:
+     * obj - {Object} the selection listener to remove
+     */
+    removeSelectionListener: function(obj) { this.removeListener(this.sl, obj); }
 };
 Object.extend(Jx.Tab.prototype, Jx.Listener.prototype);
 Object.extend(Jx.Tab.prototype, Jx.ContentLoader.prototype);
 
+/**
+ * Class: Jx.TabBox
+ * A convenience class to handle the common case of a single toolbar
+ * directly attached to the content area of the tabs.  It manages both a
+ * <Jx.Toolbar> and a <Jx.TabSet> so that you don't have to.  If you are using
+ * a TabBox, then tabs only have to be added to the TabBox rather than to
+ * both a <Jx.TabSet> and a <Jx.Toolbar>.
+ *
+ * (code)
+ * var tabBox = new Jx.TabBox('subTabArea', 'top');
+ * 
+ * var tab1 = new Jx.Tab('Tab 1', {contentID: 'content4'});
+ * var tab2 = new Jx.Tab('Tab 2', {contentID: 'content5'});
+ * 
+ * tabBox.add(tab1, tab2);
+ * (end)
+ *
+ * Inherits From:
+ * <Jx.Listener>
+ */
 Jx.TabBox = Class.create();
 Jx.TabBox.prototype = {
-    panel: null,
+    /**
+     * Property: tabBar
+     * {<Jx.Toolbar>} the toolbar for this tab box.
+     */
     tabBar: null,
+    /**
+     * Property: tabSet
+     * {<Jx.TabSet>} the tab set for this tab box.
+     */
     tabSet: null,
+    /**
+     * Constructor: Jx.TabBox
+     */
     initialize : function(domObj, position) {
         var parent = $(domObj);
         position = position || 'top';
-        //this.panel = new Jx.Panel(parent);
         var tabBarDiv = document.createElement('div');
         parent.appendChild(tabBarDiv);
         this.tabBar = new Jx.Toolbar(tabBarDiv, position);
@@ -11706,28 +12848,55 @@ Jx.TabBox.prototype = {
         }
         this.sl = [];
     },
-    /* TODO: shouldn't be needed ??? */
+    /**
+     * Method: sizeChanged
+     * Handle the size of the content area of the tab box changing.
+     *
+     * TODO: is this needed?
+     */
     sizeChanged: function() { this.tabSet.sizeChanged(); },
     
+    /**
+     * Method: add
+     * Add one or more <Jx.Tab>s to the TabBox.
+     *
+     * Parameters:
+     * tab - {<Jx.Tab>} an instance of <Jx.Tab> to add to the tab box.  More
+     * than one tab can be added by passing extra parameters to this method.
+     * Unlike <Jx.TabSet>, tabs do not have to be added to a separate 
+     * <Jx.Toolbar>.
+     */
     add : function() { 
         this.tabBar.add.apply(this.tabBar, arguments); 
         this.tabSet.add.apply(this.tabSet, arguments); 
     },
+    /**
+     * Method: remove
+     * Remove a tab from the TabSet.
+     *
+     * Parameters:
+     * tab - {<Jx.Tab>} the tab to remove.
+     *
+     * TODO: implement remove for Jx.TabBox.
+     */
     remove : function(tab) { /* TODO */ }
 };
 Object.extend(Jx.TabBox.prototype, Jx.Listener.prototype);
-/**********************************************************************
+/**
+ * $Id: jxtoolbar.js 512 2008-03-07 21:15:45Z pspencer $
  *
- * $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
+ * Title: Jx.Toolbar
  *
- * purpose: Implement a toolbar control.
+ * Purpose: 
+ * Implementation of a javascript Toolbar for Jx.
  *
- * author: Paul Spencer (pspencer@dmsolutions.ca)
+ * Author: 
+ * Paul Spencer (pspencer@dmsolutions.ca)
  *
- **********************************************************************
- *
- * Copyright (c) 2005, DM Solutions Group Inc.
- *
+ * Copyright:
+ * Copyright &copy; 2008, DM Solutions Group Inc.
+ */
+/******************************************************************************
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -11745,9 +12914,7 @@ Object.extend(Jx.TabBox.prototype, Jx.Listener.prototype);
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
- *
- **********************************************************************/
-
+ *****************************************************************************/
 /**
  * import stylesheets
  */
@@ -11781,12 +12948,44 @@ Jx.addStyleSheet('button/button.css');
  *
  * myToolbar.add(myButton, new Jx.ToolbarSeparator(), myElement);
  * (end)
+ *
+ * While a toolbar is generally a *dumb* container, it serves a special purpose
+ * for menus by providing some infrastructure so that menus can behave
+ * properly.
+ *
+ * In general, almost anything can be placed in a Toolbar, and mixed with 
+ * anything else.
  */
 Jx.Toolbar = Class.create();
 Jx.Toolbar.prototype = {
+    /**
+     * Property: items
+     * {Array} an array of the things in the toolbar.
+     */
     items : null,
+    /**
+     * Property: domObj
+     * {HTMLElement} the HTML element that the toolbar lives in
+     */
     domObj : null,
-    bActive : false, /* from menubar */
+    /**
+     * Property: isActive
+     * When a toolbar contains <Jx.Menu> instances, they want to know
+     * if any menu in the toolbar is active and this is how they
+     * find out.
+     */
+    isActive : false,
+    /**
+     * Constructor: Jx.Toolbar
+     * Create a new instance of Jx.Toolbar.
+     *
+     * Parameters:
+     * domObj - {HTMLElement} object reference or id to place the toolbar in.
+     * position - one of 'top', 'right', 'bottom', or 'left', indicates how
+     * the toolbar is being placed in the page and may influence the behaviour
+     * of items in the toolbar that open sub panels, they will tend to open
+     * them towards the center of the page.  Default is top.
+     */
     initialize : function(domObj, position) {
         var parent = $(domObj);
         this.domObj = document.createElement('ul');
@@ -11820,6 +13019,17 @@ Jx.Toolbar.prototype = {
         this.deactivateWatcher = this.deactivate.bindAsEventListener(this);
         
     },
+    /**
+     * Method: add
+     * Add an item to the toolbar.  If the item being added is a Jx component
+     * with a domObj property, the domObj is added.  If the item being added
+     * is an LI element, then it is given a CSS class of *jxToolItem*.
+     * Otherwise, the thing is wrapped in a <Jx.ToolbarItem>.
+     *
+     * Parameters:
+     * thing - {Object} the thing to add.  More than one thing can be added
+     * by passing multiple arguments.
+     */
     add : function( ) {
         for (var i=0; i<arguments.length; i++) {
             var thing = arguments[i];
@@ -11838,29 +13048,53 @@ Jx.Toolbar.prototype = {
             }
         }
     },
-    /* menu functions */
-    deactivate: function(e) {
+    /**
+     * Method: deactivate
+     * Deactivate the Toolbar (when it is acting as a menu bar).
+     */
+    deactivate: function() {
         for (var i=0; i<this.items.length; i++) {
             this.items[i].hide();
         }
         this.setActive(false);
     },
+    /**
+     * Method: isActive
+     * Indicate if the toolbar is currently active (as a menu bar)
+     *
+     * Returns:
+     * {Boolean}
+     */
     isActive: function() { 
-        return this.bActive; 
+        return this.isActive; 
     },
+    /**
+     * Method: setActive
+     * Set the active state of the toolbar (for menus)
+     *
+     * Parameters: 
+     * b - {Boolean} the new state
+     */
     setActive: function(b) { 
-        this.bActive = b;
-        if (this.bActive) {
+        this.isActive = b;
+        if (this.isActive) {
             Event.observe(document, 'click', this.deactivateWatcher);
         } else {
             Event.stopObserving(document, 'click', this.deactivateWatcher);
         }
     },
-    setVisibleItem: function(o) {
-        if (this.visibleItem && this.visibleItem.hide && this.visibleItem != o) {
+    /**
+     * Method: setVisibleItem
+     * For menus, they want to know which menu is currently open.
+     *
+     * Parameters:
+     * obj - {<Jx.Menu>} the menu that just opened.
+     */
+    setVisibleItem: function(obj) {
+        if (this.visibleItem && this.visibleItem.hide && this.visibleItem != obj) {
             this.visibleItem.hide();
         }
-        this.visibleItem = o;
+        this.visibleItem = obj;
         if (this.isActive()) {
             this.visibleItem.show();
         }
@@ -11868,11 +13102,25 @@ Jx.Toolbar.prototype = {
 };
 
 /**
- *
+ * Class: Jx.ToolbarItem
+ * A helper class to provide a container for something to go into 
+ * a <Jx.Toolbar>.
  */
 Jx.ToolbarItem = Class.create();
 Jx.ToolbarItem.prototype = {
+    /**
+     * Property: domObj
+     * {HTMLElement} an element to contain the thing to be placed in the
+     * toolbar.
+     */
     domObj: null,
+    /**
+     * Constructor: Jx.ToolbarItem
+     * Create a new instance of Jx.ToolbarItem.
+     *
+     * Parameters:
+     * jxThing - {Object} the thing to be contained.
+     */
     initialize : function( jxThing ) {
         this.al = [];
         this.domObj = document.createElement('li');
@@ -11895,9 +13143,21 @@ Jx.ToolbarItem.prototype = {
     }
 };
 
+/**
+ * Class: Jx.ToolbarSeparator
+ * A helper class that represents a visual separator in a <Jx.Toolbar>
+ */
 Jx.ToolbarSeparator = Class.create();
 Jx.ToolbarSeparator.prototype = {
+    /**
+     * Property: domObj
+     * {HTMLElement} The DOM element that goes in the <Jx.Toolbar>
+     */
     domObj: null,
+    /**
+     * Constructor: Jx.ToolbarSeparator
+     * Create a new Jx.ToolbarSeparator
+     */
     initialize: function() {
         this.domObj = document.createElement('li');
         this.domObj.className = 'jxToolItem';
@@ -11908,18 +13168,45 @@ Jx.ToolbarSeparator.prototype = {
 };
 
 /**
- * @project         Jx
- * @revision        $Id: jx_combined.js 500 2008-02-15 19:51:57Z madair $
- * @author          Paul Spencer (pspencer@dmsolutions.ca)
- * @copyright       &copy; 2006 DM Solutions Group Inc.
+ * $Id: jxtree.js 512 2008-03-07 21:15:45Z pspencer $
+ *
+ * Title: Jx.Tree
+ *
+ * Purpose: 
+ * Implementation of a javascript Tree for Jx.
+ *
+ * Author: 
+ * Paul Spencer (pspencer@dmsolutions.ca)
+ *
+ * Copyright:
+ * Copyright &copy; 2008, DM Solutions Group Inc.
  */
+/******************************************************************************
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/
 
 Jx.addStyleSheet('tree/tree.css');
 Jx.addStyleSheet('tree/tree_ie.css', true);
 
 /**
- * Jx.TreeItem is an item in a tree.  An item is a leaf node that has
- * no children.
+ * Class: Jx.TreeItem 
+ * An item in a tree.  An item is a leaf node that has no children.
  *
  * Jx.TreeItem supports selection listeners.  When an item in the tree
  * is selected by the user, listeners are called by invoking the
@@ -11932,20 +13219,87 @@ Jx.addStyleSheet('tree/tree_ie.css', true);
  * selection change is passed to the listener as a lastEvent
  * member of the tree item object.  You can use this to determine
  * if the item was clicked, double-clicked, right clicked etc.
+ *
+ * Inherits From:
+ * <Jx.Listener>
  */
 Jx.TreeItem = Class.create();
 Jx.TreeItem.prototype = {
+    /**
+     * Property: data
+     * {Object} arbitrary data associated with the TreeItem
+     */
     data : null,
+    /**
+     * Property: domObj
+     * {HTMLElement} a reference to the HTML element that is the TreeItem
+     * in the DOM
+     */
     domObj : null,
+    /**
+     * Property: parent
+     * {Object} the folder or tree that this item belongs to
+     */
     parent : null,
+    /**
+     * Property: currentClassName
+     * {String} the current CSS class name for this TreeItem.
+     *
+     * TODO: Property currentClassName
+     * This property does not appear to be used?
+     */
     currentClassName : null,
+    /**
+     * Property: onClick
+     * {Function} callback function to invoke with the TreeItem is clicked
+     */
     onClick : null,
+    /**
+     * Property: sl
+     * {Array} an array of selection listeners
+     */
     sl : null,
+    /**
+     * Property: enabled
+     * {Boolean} is the TreeItem enabled or not?
+     */
     enabled : null,
+    /**
+     * Property: contextMenu
+     *
+     * {<Jx.ContextMenu>} an optional context menu for the TreeItem
+     */
     contextMenu : null,
+    /**
+     * Constructor: Jx.TreeItem
+     * Create a new instance of Jx.TreeItem with the associated options
+     *
+     * Parameters:
+     * options - {Object} an object containing the below optional
+     * attributes that control how the TreeItem functions.
+     *
+     * Options:
+     * label - {String} the label to display for the TreeItem
+     * data - {Object} any arbitrary data to be associated with the TreeItem
+     * contextMenu - {<Jx.ContextMenu>} the context menu to trigger if there
+     *      is a right click on the node
+     * imgNode - {String} URL to an image to use for the node of this 
+     *      TreeItem.  Not sure if this should ever be set.
+     * imgIcon - {String} URL to an image to use as the icon next to the
+     *      label of this TreeItem
+     * enabled - {Boolean} the initial state of the TreeItem.  If the 
+     *      TreeItem is not enabled, it cannot be clicked.
+     */
     initialize : function( options ) {
         this.initializeItem(options);
     },
+    /**
+     * Method: initializeItem
+     * internal method to initialize the TreeItem.
+     *
+     * Parameters: 
+     * options - See <Jx.TreeItem::Jx.TreeItem>
+     */
     initializeItem: function(options) {
         options = options || {};
         this.sl = [];
@@ -11996,7 +13350,15 @@ Jx.TreeItem.prototype = {
         clearer.className = 'jxClearer';
         this.domObj.appendChild(clearer);
     },
+    /**
+     * Method: finalize
+     * Clean up the TreeItem and remove all DOM references
+     */
     finalize: function() { this.finalizeItem(); },
+    /**
+     * Method: finalizeItem
+     * Clean up the TreeItem and remove all DOM references
+     */
     finalizeItem: function() {  
         if (!this.domObj) {
             return;
@@ -12013,7 +13375,14 @@ Jx.TreeItem.prototype = {
         this.domObj.jxTreeItem = null;
         this.domObj = null;
     },
-    clone : function(node) {
+    /**
+     * Method: clone
+     * Create a clone of the TreeItem
+     * 
+     * Returns: 
+     * {<Jx.TreeItem>} a copy of the TreeItem
+     */
+    clone : function() {
         var options = { label : this.domObj.childNodes[2].innerHTML, 
                         data : this.data,
                         onClick : this.onClick,
@@ -12023,14 +13392,18 @@ Jx.TreeItem.prototype = {
         var item = new Jx.TreeItem(options);
         return item;
     },
-    update : function(bDescend) {
-        var bLast
-        if (arguments.length > 1) {
-            bLast = arguments[1];
-        } else {
-            bLast = (this.parent && this.parent.isLastNode(this));
-        }
-        if (bLast) {
+    /**
+     * Method: update
+     * Update the CSS of the TreeItem's DOM element in case it has changed
+     * position
+     *
+     * Parameters:
+     * shouldDescend - {Boolean} propagate changes to child nodes?
+     */
+    update : function(shouldDescend) {
+        var isLast = (arguments.length > 1) ? arguments[1] : 
+                     (this.parent && this.parent.isLastNode(this));
+        if (isLast) {
             Element.removeClassName(this.domObj, 'jxTreeNode');
             Element.addClassName(this.domObj, 'jxTreeNodeLast');
         } else {
@@ -12038,10 +13411,26 @@ Jx.TreeItem.prototype = {
             Element.addClassName(this.domObj, 'jxTreeNode');
         }
     },
+    /**
+     * Method: selected
+     * Called when the DOM element for the TreeItem is clicked, the
+     * node is selected.
+     *
+     * Parameters:
+     * e - {Event} the DOM event
+     */
     selected : function(e) {
         this.lastEvent = e?e:event;
         this.processEvent(this.sl,'selectionChanged',this);
     },
+    /**
+     * Method: showMenu
+     * Called when the DOM element for the TreeItem is right-clicked.  The
+     * node is selected and the context menu displayed (if there is one).
+     *
+     * Parameters:
+     * e - {Event} the DOM event
+     */
     showMenu: function(e) {
         this.lastEvent = e?e:event;
         this.processEvent(this.sl,'selectionChanged',this);
@@ -12050,12 +13439,48 @@ Jx.TreeItem.prototype = {
         }
         Event.stop(e);
     },
-    addSelectionListener: function(o){this.addListener(this.sl, o);},
-    removeSelectionListener: function(o) {this.removeListener(this.sl, o);},
+    /**
+     * Method: addSelectionListener
+     * Add a selection listener.
+     *
+     * Parameters:
+     * obj - {Object} the object to add as a selection listener
+     */
+    addSelectionListener: function(obj){this.addListener(this.sl, obj);},
+    /**
+     * Method: removeSelectionListener
+     * Remove a selection listener.
+     *
+     * Parameters:
+     * obj - {Object} the object to remove as a selection listener
+     */
+    removeSelectionListener: function(obj) {this.removeListener(this.sl, obj);},
+    /**
+     * Method: getName
+     * Get the label associated with a TreeItem
+     *
+     * Returns: 
+     * {String} the name
+     */
     getName : function() { return this.domObj.childNodes[2].innerHTML; },
+    /**
+     * Method: setName
+     * Set the label of a TreeItem
+     *
+     * Parameters:
+     * name - {String} the new label
+     */
     setName : function(name) { this.domObj.childNodes[2].innerHTML = name; },
-    propertyChanged : function(o) {
-        this.enabled = o.isEnabled();
+    /**
+     * Method: propertyChanged
+     * A property of an object has changed, synchronize the state of the 
+     * TreeItem with the state of the object
+     *
+     * Parameters:
+     * obj - {Object} the object whose state has changed
+     */
+    propertyChanged : function(obj) {
+        this.enabled = obj.isEnabled();
         if (this.enabled) {
             Element.removeClassName(this.domObj, 'jxDisabled');
         } else {
@@ -12065,16 +13490,66 @@ Jx.TreeItem.prototype = {
 };
 Object.extend(Jx.TreeItem.prototype, Jx.Listener.prototype);
 
+/**
+ * Class: Jx.TreeFolder
+ *
+ * A Jx.TreeFolder is an item in a tree that can contain other items.  It is
+ * expandable and collapsible.
+ *
+ * Inherits From:
+ * <Jx.TreeItem>
+ */
 Jx.TreeFolder = Class.create();
 Object.extend(Jx.TreeFolder.prototype, Jx.TreeItem.prototype);
 Object.extend(Jx.TreeFolder.prototype, {
+    /**
+     * Property: subDomObj
+     * {HTMLElement} an HTML container for the things inside the folder
+     */
     subDomObj : null,
+    /**
+     * Property: nodes
+     * {Array} an array of references to the javascript objects that are
+     * children of this folder
+     */
     nodes : null,
+    /**
+     * Property: isOpen
+     * {Boolean} is the folder open or not?
+     */
     isOpen : false,
+    /**
+     * Property: dl
+     * {Array} disclosure listeners
+     */
     dl : null,
+    /**
+     * Constructor: Jx.TreeFolder
+     * Create a new instance of Jx.TreeFolder
+     *
+     * Parameters:
+     * options - {Object} an object containing any of the options of a
+     * <Jx.TreeItem> (see <Jx.TreeItem::Jx.TreeItem>) plus the following
+     * optional attributes that control how the TreeFolder functions.
+     *
+     * Options:
+     * imgTreePlus - {String} a URL to an image for opening the folder
+     * imgTreeMinus - {String} a URL to an image for closing the folder
+     * imgTreeFolder - {String} a URL to an image to represent the folder
+     *      when it is closed
+     * imgTreeFolderOpen - {String} a URL to an image to represent the folder
+     *      when it is open
+     */
     initialize : function( options ) {
         this.initializeFolder(options);
     },
+    /**
+     * Method: initializeFolder
+     * Internal method for initializing a folder.
+     *
+     * Parameters:
+     * options - {Object} see <Jx.TreeFolder::Jx.TreeFolder> for options.
+     */
     initializeFolder : function(options) {
         options = options || {};
         this.initializeItem(options);
@@ -12106,11 +13581,19 @@ Object.extend(Jx.TreeFolder.prototype, {
         }
     //this.makeDroppable();
     },
+    /**
+     * Method: finalize
+     * Clean up a TreeFolder.
+     */
     finalize: function() {
         this.finalizeFolder();
         this.finalizeItem();
         this.subDomObj = null;
     },
+    /**
+     * Method: finalizeFolder
+     * Internal method to clean up folder-related stuff.
+     */
     finalizeFolder: function() {
         this.domObj.childNodes[0].onclick = null;
         for (var i=this.nodes.length-1; i>=0; i--) {
@@ -12174,7 +13657,14 @@ Object.extend(Jx.TreeFolder.prototype, {
         });
     },
     */
-    clone : function(node) {
+    /**
+     * Method: clone
+     * Create a clone of the TreeFolder
+     * 
+     * Returns: 
+     * {<Jx.TreeFolder>} a copy of the TreeFolder
+     */
+    clone : function() {
         var options = { label : this.domObj.childNodes[2].innerHTML, 
                         data : this.data,
                         onClick : this.onClick,
@@ -12189,6 +13679,17 @@ Object.extend(Jx.TreeFolder.prototype, {
         }
         return node;
     },
+    /**
+     * Method: isLastNode
+     * Indicates if a node is the last thing in the folder.
+     *
+     * Parameters:
+     * node - {Jx.TreeItem} the node to check
+     *
+     * Returns:
+     *
+     * {Boolean}
+     */
     isLastNode : function(node) {
         if (this.nodes.length == 0) {
             return false;
@@ -12196,6 +13697,14 @@ Object.extend(Jx.TreeFolder.prototype, {
             return this.nodes[this.nodes.length-1] == node;
         }
     },
+    /**
+     * Method: update
+     * Update the CSS of the TreeFolder's DOM element in case it has changed
+     * position.
+     *
+     * Parameters:
+     * shouldDescend - {Boolean} propagate changes to child nodes?
+     */
     update : function(bDescend) {
         /* avoid update if not attached to tree yet */
         if (!this.parent) return;
@@ -12234,8 +13743,11 @@ Object.extend(Jx.TreeFolder.prototype, {
         }
     },
     /**
+     * Method: append
      * append a node at the end of the sub-tree
-     * @param node {Object} the node to append.
+     *
+     * Parameters:
+     * node - {Object} the node to append.
      */
     append : function( node ) {
         node.parent = this;
@@ -12244,9 +13756,12 @@ Object.extend(Jx.TreeFolder.prototype, {
         this.update(true);
     },
     /**
+     * Method: insert
      * insert a node after refNode.  If refNode is null, insert at beginning
-     * @param node {Object} the node to insert
-     * @param refNode {Object} the node to insert before
+     *
+     * Parameters:
+     * node - {Object} the node to insert
+     * refNode - {Object} the node to insert before
      */
     insert : function( node, refNode ) {
         node.parent = this;
@@ -12288,8 +13803,11 @@ Object.extend(Jx.TreeFolder.prototype, {
         //    this.parent.update(true);        
     },
     /**
+     * Method: remove
      * remove the specified node from the tree
-     * @param node {Object} the node to remove
+     *
+     * Parameters:
+     * node - {Object} the node to remove
      */
     remove : function(node) {
         node.parent = null;
@@ -12304,6 +13822,17 @@ Object.extend(Jx.TreeFolder.prototype, {
         //if (this.parent)
         //    this.parent.update(true);        
     },
+    /**
+     * Method: replace
+     * Replace a node with another node
+     *
+     * Parameters:
+     * newNode - {Object} the node to put into the tree
+     * refNode - {Object} the node to replace
+     *
+     * Returns:
+     * {Boolean} true if the replacement was successful.
+     */
     replace: function( newNode, refNode ) {
         //walk all nodes looking for the ref node. 
         var b = false;
@@ -12321,9 +13850,12 @@ Object.extend(Jx.TreeFolder.prototype, {
     },
     
     /**
+     * Method: clicked
      * handle the user clicking on this folder by expanding or
      * collapsing it.
-     * @param e {Event} the event object
+     *
+     * Parameters: 
+     * e - {Event} the event object
      */
     clicked : function(e) {
         e = e?e:event;
@@ -12333,20 +13865,52 @@ Object.extend(Jx.TreeFolder.prototype, {
             this.expand();
         }
     },
+    /**
+     * Method: expand
+     * Expands the folder
+     */
     expand : function() {
         this.isOpen = true;
         this.subDomObj.style.display = 'block';
         this.update(true);
         this.processEvent(this.dl, 'disclosed', this);    
     },
+    /**
+     * Method: collapse
+     * Collapses the folder
+     */
     collapse : function() {
         this.isOpen = false;
         this.subDomObj.style.display = 'none';
         this.update(true);
         this.processEvent(this.dl, 'disclosed', this);
     },
-    addDisclosureListener: function(o){this.addListener(this.dl, o);},
-    removeDisclosureListener: function(o) {this.removeListener(this.dl, o);},
+    /**
+     * Method: addDisclosureListener
+     * Add a disclosure (when the folder is opened) listener
+     *
+     * Parameters:
+     * obj - {Object} a discloser listener to add
+     */
+    addDisclosureListener: function(obj){this.addListener(this.dl, obj);},
+    /**
+     * Method: removeDisclosureListener
+     * Remove a disclosure listener
+     *
+     * Parameters:
+     * obj - {Object} a discloser listener to remove
+     */
+    removeDisclosureListener: function(obj) {this.removeListener(this.dl, obj);},
+    /**
+     * Method: findChild
+     * Get a reference to a child node by recursively searching the tree
+     * 
+     * Parameters:
+     * path - {Array} an array of labels of nodes to search for
+     *
+     * Returns:
+     * {Object} the node or null if the path was not found
+     */
     findChild : function(path) {
         //path is empty - we are asking for this node
         if (path.length == 0)
@@ -12373,9 +13937,23 @@ Object.extend(Jx.TreeFolder.prototype, {
     }
 });
 
+/**
+ * Class: Jx.Tree
+ * Jx.Tree displays hierarchical data in a tree structure of folders and nodes.
+ *
+ * Inherits From:
+ * <Jx.TreeFolder>
+ */
 Jx.Tree = Class.create();
 Object.extend( Jx.Tree.prototype, Jx.TreeFolder.prototype );
 Object.extend( Jx.Tree.prototype, {
+    /**
+     * Constructor: Jx.Tree
+     * Create a new instance of Jx.Tree
+     *
+     * Parameters:
+     * id - {String} the id of the DOM element to create the tree inside.
+     */
     initialize : function( id ) {
         this.subDomObj = document.createElement('ul');
         this.subDomObj.className = 'jxTreeRoot';
@@ -12384,10 +13962,18 @@ Object.extend( Jx.Tree.prototype, {
         this.dl = [];
         this.isOpen = true;
     },
+    /**
+     * Method: finalize
+     * Clean up a Jx.Tree instance
+     */
     finalize: function() { 
         this.clear(); 
         this.subDomObj.parentNode.removeChild(this.subDomObj); 
     },
+    /**
+     * Method: clear
+     * Clear the tree of all child nodes
+     */
     clear: function() {
         for (var i=this.nodes.length-1; i>=0; i--) {
             this.subDomObj.removeChild(this.nodes[i].domObj);
@@ -12395,7 +13981,15 @@ Object.extend( Jx.Tree.prototype, {
             this.nodes.pop();
         }
     },
-    update : function(bDescend) {
+    /**
+     * Method: update
+     * Update the CSS of the Tree's DOM element in case it has changed
+     * position
+     *
+     * Parameters:
+     * shouldDescend - {Boolean} propagate changes to child nodes?
+     */
+    update: function(shouldDescend) {
         var bLast = true;
         if (this.subDomObj)
         {
@@ -12405,36 +13999,61 @@ Object.extend( Jx.Tree.prototype, {
                 Element.addClassName(this.subDomObj, 'jxTreeNest');
             }
         }
-        if (this.nodes && bDescend)
+        if (this.nodes && shouldDescend) {
             this.nodes.each(function(n){n.update(false);});
+        }
     },
     /**
-     * append a node at the end of the sub-tree
-     * @param node {Object} the node to append.
+     * Method: append
+     * Append a node at the end of the sub-tree
+     * 
+     * Parameters:
+     * node - {Object} the node to append.
      */
-    append : function( node ) {
+    append: function( node ) {
         node.parent = this;
         this.nodes.push(node);
         this.subDomObj.appendChild( node.domObj );
         this.update(true);        
     }
-});/* this file is to be loaded/included after all other Jx files */
+});/**
+ * this file is to be loaded/included after all other Jx files 
+ *
+ * Copyright &copy; 2008, DM Solutions Group Inc.
+ */
+/******************************************************************************
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************/ 
 
 if (Jx.COMBINED_CSS) {
     //console.log('Jx.COMBINED_CSS');
-    document.write('<style type="text/css">@import url('+Jx.baseURL+'lib/jx_combined.css);</style>');
+    document.write('<link type="text/css" rel="stylesheet" href="'+Jx.baseURL+'lib/jx_combined.css" />\n');
 } else {
     //console.log('no Jx.COMBINED_CSS');
-    document.write('<style type="text/css">');
     for (var styleSheet in Jx.importRules) {
         var url = Jx.baseURL+styleSheet;
-        document.write('@import url('+url+');');
+        document.write('<link type="text/css" rel="stylesheet" href="'+url+'" />\n');
     }
-    document.write('</style>');
-    document.write('<!--[if IE]><style type="text/css">');
+    document.write('<!--[if IE]>');
     for (var styleSheet in Jx.importRulesIE) {
         var url = Jx.baseURL+styleSheet;
-        document.write('@import url('+url+');');
+        document.write('<link type="text/css" rel="stylesheet" href="'+url+'" />\n');
     }
-    document.write('</style><![endif]-->\n');
+    document.write('<![endif]-->\n');
 }

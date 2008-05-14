@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Maptip
  *
- * $Id: Maptip.js 1254 2008-02-22 22:43:51Z madair $
+ * $Id: Maptip.js 1396 2008-05-08 15:34:30Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -157,15 +157,17 @@ Fusion.Widget.Maptip.prototype =
         var maxFeatures = 1;
         var persist = 0;
         var selection = 'INTERSECTS';
+        // only select visible layers with maptips defined (1+4)
+        var layerAttributeFilter = 5;
         var maps = this.getMap().getAllMaps();
         //TODO: possibly make the layer names configurable?
         var layerNames = this.aLayers.toString();
         var r = new Fusion.Lib.MGRequest.MGQueryMapFeatures(maps[0].getSessionID(),
                                         maps[0]._sMapname,
                                         sGeometry,
-                                        maxFeatures, persist, selection, layerNames);
-        oBroker.dispatchRequest(r, 
-        this._display.bind(this));
+                                        maxFeatures, persist, selection, layerNames,
+                                        layerAttributeFilter);
+        oBroker.dispatchRequest(r, this._display.bind(this));
 
     },
     _display: function(r) {
@@ -229,7 +231,7 @@ Fusion.Widget.Maptip.prototype =
       //console.log('maptip _hide');
         this.hideTimer = null;
         this.domObj.style.display = 'none';
-        this.oMapTipPosition = null;
+        //this.oMapTipPosition = null;
     },
     
     mouseOverTip: function() {
