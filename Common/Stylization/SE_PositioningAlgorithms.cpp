@@ -134,6 +134,10 @@ void SE_PositioningAlgorithms::Default(SE_ApplyContext* applyCtx,
         }
     }
 
+    // don't add a label if we can't compute the centroid
+    if (_isnan(cx) || _isnan(cy))
+        return;
+
     // need to convert centroid to screen units
     se_renderer->WorldToScreenPoint(cx, cy, cx, cy);
 
@@ -193,6 +197,11 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
     double cx = 0.0;
     double cy = 0.0;
     geometry->Centroid(LineBuffer::ctPoint, &cx, &cy, NULL);
+
+    // don't add a label if we can't compute the centroid
+    if (_isnan(cx) || _isnan(cy))
+        return;
+
     se_renderer->WorldToScreenPoint(cx, cy, cx, cy);
 
     // Get the extent of the last drawn point symbol so that we know how much to offset
