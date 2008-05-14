@@ -849,11 +849,10 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
             int imsymw = m_imsym->rb.width();
             int imsymh = m_imsym->rb.height();
 
-            double cx = dst.minx + dst.width() * (0.5 - refX);
-            double cy = dst.miny + dst.height() * (0.5 - refY);
+            double cx = dst.width() * (0.5 - refX);
+            double cy = dst.height() * (0.5 - refY);
 
             SE_Matrix mtx;
-            mtx.translate(-dst.minx, -dst.miny);
             mtx.rotate(angleRad);
             mtx.translate(dst.minx, dst.miny);
             mtx.transform(cx, cy);
