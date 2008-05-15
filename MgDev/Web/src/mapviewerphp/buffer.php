@@ -55,6 +55,8 @@
         InitializeWebTier();
 
         $cred = new MgUserInformation($sessionId);
+        $cred->SetClientIp(GetClientIp());
+        $cred->SetClientAgent(GetClientAgent());
 
         //connect to the site and get a feature service and a resource service instances
         $site = new MgSiteConnection();
@@ -235,22 +237,22 @@
                 $srsXform = null;
 
             $featureClassName = $selLayer->GetFeatureClassName();
-            
+
             // TODO:  How to get the $selectionSize??
             $selectionSize = 20;
             $filters = $sel->GenerateFilters($selLayer, $featureClassName, $selectionSize);
-            
+
             $numFilter = $filters->GetCount();
             for ($filterIndex = 0; $filterIndex < $numFilter; $filterIndex++)
             {
-            
+
                 $filter = $filters->GetItem($filterIndex);
                 if($filter == "")
                     continue;
-    
+
                 $query = new MgFeatureQueryOptions();
                 $query->SetFilter($filter);
- 
+
                 $featureSource = new MgResourceIdentifier($selLayer->GetFeatureSourceId());
 
                 $features = $featureSrvc->SelectFeatures($featureSource, $featureClassName, $query);

@@ -32,6 +32,8 @@
         InitializeWebTier();
 
         $cred = new MgUserInformation($sessionId);
+        $cred->SetClientIp(GetClientIp());
+        $cred->SetClientAgent(GetClientAgent());
 
         //connect to the site and get an instance of the resoucre service
         //
@@ -68,7 +70,7 @@
             $featureSource = new MgResourceIdentifier($layer->GetFeatureSourceId());
             $features = $featureSrvc->SelectFeatures($featureSource, $featureClassName, $query);
             $featCount = 0;
-            while($features->ReadNext()) 
+            while($features->ReadNext())
             {
                 if($featCount++ == 1)
                     break;

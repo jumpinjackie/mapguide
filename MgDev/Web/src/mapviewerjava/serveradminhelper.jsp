@@ -26,28 +26,30 @@
 <%
 
     PrintWriter outStream = response.getWriter();
-        
+
     try
     {
         response.setContentType("text/html; charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
 
         outStream.write("<b>MapGuide Server Admin Service Tests</b><p>");
-        
+
         InitializeWebTier();
-        
+
         MgUserInformation cred = new MgUserInformation();
         cred.SetMgUsernamePassword("Administrator", "admin");
         cred.SetLocale(GetDefaultLocale());
-        
+        cred.SetClientIp(GetClientIp(request));
+        cred.SetClientAgent(GetClientAgent());
+
         MgServerAdmin serverAdmin = new MgServerAdmin();
         serverAdmin.Open("localhost", cred);
-        
+
         String operation = request.getParameter("OPERATION");
 
         // Get all information properties
         MgPropertyCollection infoProp = serverAdmin.GetInformationProperties();
-        
+
         if (operation.equals("ONLINE"))
         {
             serverAdmin.BringOnline();
@@ -142,5 +144,5 @@
     	outStream.write(mge.GetMessage());
     	outStream.write(mge.GetDetails());
     }
-        
+
 %>

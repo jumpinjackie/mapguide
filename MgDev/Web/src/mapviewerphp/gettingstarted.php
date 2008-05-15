@@ -61,6 +61,9 @@
             //
             InitializeWebTier();
             $cred = new MgUserInformation($sessionId);
+            $cred->SetClientIp(GetClientIp());
+            $cred->SetClientAgent(GetClientAgent());
+
             $site = new MgSiteConnection();
             $site->Open($cred);
             $wli = new MgResourceIdentifier($webLayout);

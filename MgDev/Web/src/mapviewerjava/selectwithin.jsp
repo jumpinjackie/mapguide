@@ -43,6 +43,8 @@ String dwf = "";
         InitializeWebTier();
 
         MgUserInformation cred = new MgUserInformation(sessionId);
+        cred.SetClientIp(GetClientIp(request));
+        cred.SetClientAgent(GetClientAgent());
 
         //connect to the site and get an instance of each service used in this script
         //
@@ -117,9 +119,9 @@ MgGeometry MultiGeometryFromSelection(MgFeatureService featureSrvc, MgMap map, S
         // TODO:  How to get selectionSize?
         int selectionSize = 20;
         MgStringCollection filters = sel.GenerateFilters(layer, layer.GetFeatureClassName(), selectionSize);
-        
+
         int numFilters = filters.GetCount();
-        
+
         for (int filterIndex = 0; filterIndex < numFilters; filterIndex++)
         {
             String filter = filters.GetItem(filterIndex);

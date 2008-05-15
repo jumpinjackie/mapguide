@@ -60,6 +60,8 @@ String dataSource = "";
             InitializeWebTier();
 
             MgUserInformation cred = new MgUserInformation(sessionId);
+            cred.SetClientIp(GetClientIp(Request));
+            cred.SetClientAgent(GetClientAgent());
 
             //connect to the site and get a feature service and a resource service instances
             MgSiteConnection site = new MgSiteConnection();

@@ -33,6 +33,8 @@
         InitializeWebTier();
 
         $cred = new MgUserInformation($sessionId);
+        $cred->SetClientIp(GetClientIp());
+        $cred->SetClientAgent(GetClientAgent());
 
         //connect to the site and get an instance of each service used in this script
         //
@@ -101,15 +103,15 @@ function MultiGeometryFromSelection($featureSrvc, $map, $selText)
         // TODO:  How to get $selectionSize?
         $selectionSize = 20;
         $filters = $sel->GenerateFilters($layer, $layer->GetFeatureClassName(), $selectionSize);
-        
+
         $numFilters = $filters->GetCount();
-        
+
         for ($filterIndex = 0; $filterIndex < $numFilters; $filterIndex++)
         {
             $filter = $filters->GetItem($filterIndex);
             if ($filter == "")
                 continue;
-                
+
             $query = new MgFeatureQueryOptions();
             $query->SetFilter($filter);
             $featureSource = new MgResourceIdentifier($layer->GetFeatureSourceId());

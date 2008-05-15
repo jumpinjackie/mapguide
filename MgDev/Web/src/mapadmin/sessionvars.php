@@ -180,8 +180,8 @@
             // Set up user info
             $userInfo = new MgUserInformation();
             $userInfo->SetMgSessionId( $adminSession );
-            $userInfo->setClientAgent( $clientAgent );
-            $userInfo->setClientIp( $clientIp );
+            $userInfo->SetClientAgent( $clientAgent );
+            $userInfo->SetClientIp( $clientIp );
 
             // Create a Site object and open the Site Server.
             $site = new MgSite();

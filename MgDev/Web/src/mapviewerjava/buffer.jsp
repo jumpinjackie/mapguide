@@ -86,6 +86,8 @@ String locale;
         InitializeWebTier();
 
         MgUserInformation cred = new MgUserInformation(sessionId);
+        cred.SetClientIp(GetClientIp(request));
+        cred.SetClientAgent(GetClientAgent());
 
         //connect to the site and get a feature service and a resource service instances
         MgSiteConnection site = new MgSiteConnection();
@@ -268,12 +270,12 @@ String locale;
 
             String featureClassName = selLayer.GetFeatureClassName();
 
-            // TODO:  How to get selectionSize?            
+            // TODO:  How to get selectionSize?
             int selectionSize = 20;
             MgStringCollection filters = sel.GenerateFilters(selLayer, featureClassName, selectionSize);
-            
+
             int numFilters = filters.GetCount();
-            
+
             for (int filterIndex = 0; filterIndex < numFilters; filterIndex++)
             {
                String filter = filters.GetItem(filterIndex);

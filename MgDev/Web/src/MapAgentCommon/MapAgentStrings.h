@@ -31,6 +31,10 @@ public:
     const static char* RequestMethod;
     const static char* HttpAuth;
     const static char* HttpRemoteUser;
+    const static char* RemoteAddr;
+    const static char* HttpClientIp;
+    const static char* HttpXForwardedFor;
+    const static char* Unknown;
     const static char* Username;
     const static char* Password;
     const static char* PhysicalPath;

@@ -170,4 +170,26 @@ String EscapeForHtml(String str)
     return str;
 }
 
+String GetClientIp(HttpServletRequest request)
+{
+    String result = "";
+    String httpClientIp = request.getHeader("HTTP_CLIENT_IP");
+    String httpXFF = request.getHeader("HTTP_X_FORWARDED_FOR");
+    String remoteAddr = request.getRemoteAddr();
+
+    if(httpClientIp != null && !httpClientIp.equals("") && !httpClientIp.equalsIgnoreCase("unknown"))
+        result = httpClientIp;
+    else if(httpXFF != null && !httpXFF.equals("") && !httpXFF.equalsIgnoreCase("unknown"))
+        result = httpXFF;
+    else if (remoteAddr != null)
+        result = remoteAddr;
+
+    return result;
+}
+
+String GetClientAgent()
+{
+    return "Ajax Viewer";
+}
+
 %>

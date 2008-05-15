@@ -122,7 +122,7 @@ function GetDecimalFromLocalizedString($numberString, $locale)
         {
             $numberString = str_replace($thousandSeparator, "", $numberString);
         }
-        
+
         // Replace localized decimal separators with "."
         $decimalSeparator = GetLocalizedString("DECIMALSEPARATOR", $locale);
         if($decimalSeparator != null && strlen($decimalSeparator) > 0 && $decimalSeparator != ".")
@@ -131,6 +131,31 @@ function GetDecimalFromLocalizedString($numberString, $locale)
         }
     }
     return $numberString;
+}
+
+function GetClientIp()
+{
+    $clientIp = '';
+    if (array_key_exists('HTTP_CLIENT_IP', $_SERVER)
+        && strcasecmp($_SERVER['HTTP_CLIENT_IP'], 'unknown') != 0)
+    {
+        $clientIp = $_SERVER['HTTP_CLIENT_IP'];
+    }
+    else if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)
+        && strcasecmp($_SERVER['HTTP_X_FORWARDED_FOR'], 'unknown') != 0)
+    {
+        $clientIp = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else if (array_key_exists('REMOTE_ADDR', $_SERVER))
+    {
+        $clientIp = $_SERVER['REMOTE_ADDR'];
+    }
+    return $clientIp;
+}
+
+function GetClientAgent()
+{
+    return "Ajax Viewer";
 }
 
 ?>

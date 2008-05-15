@@ -53,6 +53,8 @@
         InitializeWebTier();
 
         $cred = new MgUserInformation($sessionId);
+        $cred->SetClientIp(GetClientIp());
+        $cred->SetClientAgent(GetClientAgent());
 
         //connect to the site and get a feature service and a resource service instances
         $site = new MgSiteConnection();

@@ -43,6 +43,8 @@ try
     // Set up user info
     $userInfo = new MgUserInformation();
     $userInfo->SetMgSessionId($sessionId);
+    $userInfo->SetClientIp(GetClientIp());
+    $userInfo->SetClientAgent(GetClientAgent());
 
     // Create a Site object and open the Site Server.
     $site = new MgSite();

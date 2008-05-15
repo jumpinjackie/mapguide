@@ -52,6 +52,9 @@ String serverVersion = "##Unknown";
         // Obtain server version info
         //
         MgUserInformation userInfo = new MgUserInformation(sessionId);
+        userInfo.SetClientIp(GetClientIp(Request));
+        userInfo.SetClientAgent(GetClientAgent());
+        
         MgSite site = new MgSite();
         site.Open(userInfo);
         MgServerAdmin serverAdmin = new MgServerAdmin();

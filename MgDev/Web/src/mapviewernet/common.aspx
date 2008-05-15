@@ -164,4 +164,25 @@ String EscapeForHtml(String str)
     return str;
 }
 
+String GetClientIp(HttpRequest request)
+{
+    String result = "";
+    String httpClientIp = request.ServerVariables["HTTP_CLIENT_IP"];
+    String httpXFF = request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+    String remoteAddr = request.ServerVariables["REMOTE_ADDR"];
+    
+    if (httpClientIp != null && "" != httpClientIp && String.Compare(httpClientIp, "unknown", true) != 0)
+        result = httpClientIp;
+    else if (httpXFF != null && "" != httpXFF && String.Compare(httpXFF, "unknown", true) != 0)
+        result = httpXFF;
+    else if (remoteAddr != null)
+        result =  remoteAddr;
+
+    return result;
+}
+
+String GetClientAgent()
+{
+    return "Ajax Viewer";
+}
 </script>
