@@ -53,30 +53,43 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
 
     // Construct self Url.  It is embedded into the output stream
     // of some requests (like GetMap).  Use a fully qualified URL.
+    // 
+    // If the GetServerVariable method does not find the specified variable, it returns false, 
+    // and the LPSTR parameter is NOT set to NULL, but remains uninitialized. 
+    // So checking for NULL is not sufficient.
     DWORD size = 1024;
     char serverName[1024];
-    pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::ServerName, serverName, &size);
+    BOOL bServerName = pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::ServerName, serverName, &size);
 
     size = 1024;
     char serverPort[1024];
-    pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::ServerPort, serverPort, &size);
+    BOOL bServerPort = pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::ServerPort, serverPort, &size);
 
     size = 1024;
     char scriptName[1024];
-    pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::ScriptName, scriptName, &size);
+    BOOL bScriptName = pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::ScriptName, scriptName, &size);
 
     size = 1024;
     char remoteAddr[1024];
-    pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::HttpRemoteAddr, remoteAddr, &size);
+    BOOL bRemoteAddr = pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::RemoteAddr, remoteAddr, &size);
 
-	size = 1024;
+    size = 1024;
+    char httpClientIp[1024];
+    BOOL bHttpClientIp = pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::HttpClientIp, httpClientIp, &size);
+
+    size = 1024;
+    char httpXFF[1024];
+    BOOL bHttpXFF = pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::HttpXForwardedFor, httpXFF, &size);
+
+    size = 1024;
     char secure[1024];
-    pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::Secure, secure, &size);
+    BOOL bSecure = pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::Secure, secure, &size);
 
-    bool isSecure = (secure != NULL && !stricmp(secure, "on"));  // NOXLATE
+    bool isSecure = (bSecure && secure != NULL && !stricmp(secure, "on"));  // NOXLATE
 
     string url = isSecure? MapAgentStrings::Https : MapAgentStrings::Http;
-    if (NULL != serverName && NULL != serverPort && NULL != scriptName)
+    if (bServerName && bServerPort && bScriptName 
+        && NULL != serverName && NULL != serverPort && NULL != scriptName)
     {
         url.append(serverName);
         url += ':';
@@ -104,18 +117,34 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
         MapAgentGetParser::Parse(query, params);
     }
 
-	// check for CLIENTIP, if it's not there (and it shouldn't be), add it in using remoteAddr
-	if (!params->ContainsParameter(L"CLIENTIP")) // NOXLATE
-	{
-		STRING wRemoteAddr = MgUtil::MultiByteToWideChar(remoteAddr);
-		params->AddParameter(L"CLIENTIP", wRemoteAddr); // NOXLATE
-	}
+    // check for CLIENTIP, if it's not there (and it shouldn't be), 
+    // add it in using httpClientIp. httpXFF or remoteAddr
+    if (!params->ContainsParameter(L"CLIENTIP")) // NOXLATE
+    {
+        if (bHttpClientIp && NULL != httpClientIp && strlen(httpClientIp) > 0
+            && _stricmp(httpClientIp, MapAgentStrings::Unknown) != 0)
+        {
+            STRING wHttpClientIp = MgUtil::MultiByteToWideChar(httpClientIp);
+            params->AddParameter(L"CLIENTIP", wHttpClientIp); // NOXLATE
+        }
+        else if (bHttpXFF && NULL != httpXFF && strlen(httpXFF) > 0
+            && _stricmp(httpXFF, MapAgentStrings::Unknown) != 0)
+        {
+            STRING wHttpXFF = MgUtil::MultiByteToWideChar(httpXFF);
+            params->AddParameter(L"CLIENTIP", wHttpXFF); // NOXLATE
+        }
+        else if (bRemoteAddr && NULL != remoteAddr && strlen(remoteAddr) > 0)
+        {
+            STRING wRemoteAddr = MgUtil::MultiByteToWideChar(remoteAddr);
+            params->AddParameter(L"CLIENTIP", wRemoteAddr); // NOXLATE
+        }
+    }
 
     // Check for HTTP Basic Auth header
     size = 1024;
     char auth[1024];
-    pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::HttpAuth, auth, &size);
-    bool gotAuth = MapAgentCommon::ParseAuth(auth, params);
+    BOOL bAuth = pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::HttpAuth, auth, &size);
+    bool gotAuth = bAuth && MapAgentCommon::ParseAuth(auth, params);
 
     if (!gotAuth)
     {

@@ -91,7 +91,21 @@
 
     function GetClientIp()
     {
-        $clientIp = array_key_exists( 'REMOTE_ADDR', $_SERVER ) ?  $_SERVER['REMOTE_ADDR'] : "";
+        $clientIp = '';
+        if (array_key_exists('HTTP_CLIENT_IP', $_SERVER)
+            && strcasecmp($_SERVER['HTTP_CLIENT_IP'], 'unknown') != 0)
+        {
+            $clientIp = $_SERVER['HTTP_CLIENT_IP'];
+        }
+        else if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)
+            && strcasecmp($_SERVER['HTTP_X_FORWARDED_FOR'], 'unknown') != 0)
+        {
+            $clientIp = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        }
+        else if (array_key_exists('REMOTE_ADDR', $_SERVER))
+        {
+            $clientIp = $_SERVER['REMOTE_ADDR'];
+        }
         return $clientIp;
     }
 

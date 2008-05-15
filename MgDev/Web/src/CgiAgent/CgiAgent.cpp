@@ -116,7 +116,9 @@ int main ()
         char* serverName = getenv(MapAgentStrings::ServerName);
         char* serverPort = getenv(MapAgentStrings::ServerPort);
         char* scriptName = getenv(MapAgentStrings::ScriptName);
-        char* remoteAddr = getenv(MapAgentStrings::HttpRemoteAddr);
+        char* remoteAddr = getenv(MapAgentStrings::RemoteAddr);
+        char* httpClientIp = getenv(MapAgentStrings::HttpClientIp);
+        char* httpXFF = getenv(MapAgentStrings::HttpXForwardedFor);
         char* secure = getenv(MapAgentStrings::Secure);  
         string url = secure != NULL && (!_stricmp(secure, "on") || !_stricmp(secure, "true")) ? MapAgentStrings::Https : MapAgentStrings::Http;  // NOXLATE
         if (NULL != serverName && NULL != serverPort && NULL != scriptName)
@@ -161,12 +163,28 @@ int main ()
             MapAgentGetParser::Parse(query, params);
         }
 
-		// check for CLIENTIP, if it's not there (and it shouldn't be), add it in using remoteAddr
-		if (!params->ContainsParameter(L"CLIENTIP")) // NOXLATE
-		{
-			STRING wRemoteAddr = MgUtil::MultiByteToWideChar(remoteAddr);
-			params->AddParameter(L"CLIENTIP", wRemoteAddr); // NOXLATE
-		}
+        // check for CLIENTIP, if it's not there (and it shouldn't be), 
+        // add it in using httpClientIp. httpXFF or remoteAddr
+        if (!params->ContainsParameter(L"CLIENTIP")) // NOXLATE
+        {
+            if (NULL != httpClientIp && strlen(httpClientIp) > 0
+                && _stricmp(httpClientIp, MapAgentStrings::Unknown) != 0)
+            {
+                STRING wHttpClientIp = MgUtil::MultiByteToWideChar(httpClientIp);
+                params->AddParameter(L"CLIENTIP", wHttpClientIp); // NOXLATE
+            }
+            else if (NULL != httpXFF && strlen(httpXFF) > 0
+                && _stricmp(httpXFF, MapAgentStrings::Unknown) != 0)
+            {
+                STRING wHttpXFF = MgUtil::MultiByteToWideChar(httpXFF);
+                params->AddParameter(L"CLIENTIP", wHttpXFF); // NOXLATE
+            }
+            else if (NULL != remoteAddr && strlen(remoteAddr) > 0)
+            {
+                STRING wRemoteAddr = MgUtil::MultiByteToWideChar(remoteAddr);
+                params->AddParameter(L"CLIENTIP", wRemoteAddr); // NOXLATE
+            }
+        }
 
         // Check for HTTP Basic Auth header
         char* auth = getenv(MapAgentStrings::HttpAuth);
