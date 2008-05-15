@@ -172,12 +172,19 @@ String EscapeForHtml(String str)
 
 String GetClientIp(HttpServletRequest request)
 {
-    String clientIp = request.getRemoteAddr();
+    String result = "";
+    String httpClientIp = request.getHeader("HTTP_CLIENT_IP");
+    String httpXFF = request.getHeader("HTTP_X_FORWARDED_FOR");
+    String remoteAddr = request.getRemoteAddr();
 
-    if(clientIp != null)
-        return clientIp;
-    else
-        return "";
+    if(httpClientIp != null && !httpClientIp.equals("") && !httpClientIp.equalsIgnoreCase("unknown"))
+        result = httpClientIp;
+    else if(httpXFF != null && !httpXFF.equals("") && !httpXFF.equalsIgnoreCase("unknown"))
+        result = httpXFF;
+    else if (remoteAddr != null)
+        result = remoteAddr;
+
+    return result;
 }
 
 String GetClientAgent()

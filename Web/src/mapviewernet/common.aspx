@@ -166,11 +166,19 @@ String EscapeForHtml(String str)
 
 String GetClientIp(HttpRequest request)
 {
-    String clientIp = request.ServerVariables["REMOTE_ADDR"];
-    if (clientIp != null)
-        return clientIp;
-    else
-        return "";
+    String result = "";
+    String httpClientIp = request.ServerVariables["HTTP_CLIENT_IP"];
+    String httpXFF = request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+    String remoteAddr = request.ServerVariables["REMOTE_ADDR"];
+    
+    if (httpClientIp != null && "" != httpClientIp && String.Compare(httpClientIp, "unknown", true) != 0)
+        result = httpClientIp;
+    else if (httpXFF != null && "" != httpXFF && String.Compare(httpXFF, "unknown", true) != 0)
+        result = httpXFF;
+    else if (remoteAddr != null)
+        result =  remoteAddr;
+
+    return result;
 }
 
 String GetClientAgent()
