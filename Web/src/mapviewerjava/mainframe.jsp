@@ -69,6 +69,10 @@ try
 
     MgSiteConnection site = new MgSiteConnection();
     cred.SetLocale(locale);
+
+    cred.SetClientIp(GetClientIp(request));
+    cred.SetClientAgent(GetClientAgent());
+
     site.Open(cred);
 
     if(createSession)
@@ -468,7 +472,7 @@ try
     String homePageUrl = taskPaneUrl;
     if(homePageUrl.substring(0, 7).compareToIgnoreCase("http://") != 0)
         homePageUrl = vpath + homePageUrl;
-        
+
     //load the HTML template and format it
     //
     String templ = MgLocalizer.Localize(LoadTemplate("/viewerfiles/mainframe.templ"), locale, GetClientOS(request));

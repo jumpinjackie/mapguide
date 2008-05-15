@@ -69,6 +69,9 @@
         //
         $userInfo = new MgUserInformation();
         $userInfo->SetMgSessionId($sessionId);
+        $userInfo->SetClientIp(GetClientIp());
+        $userInfo->SetClientAgent(GetClientAgent());
+
         $site = new MgSiteConnection();
         $site->Open($userInfo);
         $resourceSrvc = $site->CreateService(MgServiceType::ResourceService);

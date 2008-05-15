@@ -69,6 +69,10 @@ function BuildViewer($forDwf = true)
 
         $site = new MgSiteConnection();
         $cred->SetLocale($locale);
+
+        $cred->SetClientIp(GetClientIp());
+        $cred->SetClientAgent(GetClientAgent());
+
         $site->Open($cred);
 
         if($createSession)

@@ -59,6 +59,8 @@
                 MgInitializeWebTier ($configFilePath);
 
                 $userInfo = new MgUserInformation($sessionId);
+                $userInfo->SetClientIp(GetClientIp());
+                $userInfo->SetClientAgent(GetClientAgent());
                 $site = new MgSiteConnection();
                 $site->Open($userInfo);
 

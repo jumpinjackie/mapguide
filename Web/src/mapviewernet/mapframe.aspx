@@ -87,6 +87,9 @@ String hlTgtName;
             // create the map instance and store it with the session
             //
             MgUserInformation userInfo = new MgUserInformation(sessionId);
+            userInfo.SetClientIp(GetClientIp(Request));
+            userInfo.SetClientAgent(GetClientAgent());
+
             MgSiteConnection site = new MgSiteConnection();
             site.Open(userInfo);
 
