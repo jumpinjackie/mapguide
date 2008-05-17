@@ -79,7 +79,11 @@ public:
 #endif
     {
         if (nNull != 0)
+#if _MSC_VER < 1500
+            throw; // ::Create(MgException::NLSGetMessage(_NLSID(_2_BADPARAMETER)));
+#else
             throw new MgNullReferenceException(L"Ptr.Ptr", __LINE__, __WFILE__, NULL, L"", NULL);
+#endif
         p = NULL;
     }
     */
@@ -123,7 +127,11 @@ public:
 #endif
     {
         if (p==NULL)
+#if _MSC_VER < 1500
+            throw; // ::Create(MgException::NLSGetMessage(_NLSID(_2_BADPARAMETER)));
+#else
             throw new MgNullReferenceException(L"Ptr.operator*", __LINE__, __WFILE__, NULL, L"", NULL);
+#endif
         return *p;
     }
 
@@ -134,7 +142,11 @@ public:
 #endif
     {
         if (p!=NULL)
+#if _MSC_VER < 1500
+            throw; // ::Create(MgException::NLSGetMessage(_NLSID(_2_BADPARAMETER)));
+#else
             throw new MgNullReferenceException(L"Ptr.operator&", __LINE__, __WFILE__, NULL, L"", NULL);
+#endif
         return &p;
     }
 
@@ -145,7 +157,11 @@ public:
 #endif
     {
         if (p==NULL)
+#if _MSC_VER < 1500
+            throw; // ::Create(MgException::NLSGetMessage(_NLSID(_2_BADPARAMETER)));
+#else
             throw new MgNullReferenceException(L"Ptr.operator->", __LINE__, __WFILE__, NULL, L"", NULL);
+#endif
         return (_NoAddRefReleaseOnPtr<T>*)p;
     }
 
