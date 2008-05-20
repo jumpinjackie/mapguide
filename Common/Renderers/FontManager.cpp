@@ -19,7 +19,6 @@
 #include "FontManager.h"
 #include "UnicodeString.h"
 #include <algorithm>
-#include <wchar.h>
 
 #ifdef _WIN32
 #include "shlobj.h"
@@ -32,6 +31,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <errno.h>
+#include <wctype.h>
 #endif
 
 
