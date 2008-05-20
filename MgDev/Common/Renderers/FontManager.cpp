@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "FontManager.h"
 #include "UnicodeString.h"
+#include <algorithm>
 
 #ifdef _WIN32
 #include "shlobj.h"
@@ -32,15 +33,15 @@
 #include <errno.h>
 #endif
 
+
 //  local functions
-void make_lower_case(char* s)
+wstring ToLower(const wstring& source)
 {
-    while (*s)
-    {
-        *s = (char)tolower((int)*s);
-        s++;
-    }
+    wstring lower = source;
+    std::transform(lower.begin(), lower.end(), lower.begin(), ::towlower);
+    return lower;
 }
+
 
 //  static initializations
 FontManager FontManager::m_manager;
@@ -67,7 +68,7 @@ FontManager::~FontManager()
 
     it = m_facemap.begin();
 
-    //  clean up entries
+    // clean up entries
     while (it != m_facemap.end())
     {
         pEntry = (FaceMapEntryType*)(*it).second;
@@ -86,10 +87,10 @@ FontManager::~FontManager()
 
     m_fontAliases.clear();
 
-    //  clear map
+    // clear map
     m_facemap.clear();
 
-    //  clean up fontlist
+    // clean up fontlist
     FontListIterator it_font;
     RS_Font* font = NULL;
 
@@ -102,7 +103,7 @@ FontManager::~FontManager()
         ++it_font;
     }
 
-    //  clean fontlist
+    // clean fontlist
     m_fontlist.clear();
 
     // clean up the library
@@ -127,30 +128,30 @@ int FontManager::get_face(const char* filename, FT_Long index, FT_Face* face)
     FaceMapIterator it;               //  an interator
     FaceMapEntryType* pEntry = NULL;  //  pointer to loaded font data
 
-    //  look for face in map
+    // look for face in map
     it = m_facemap.find(filename);
 
     if (it != m_facemap.end())
     {
-        //  found an entry
+        // found an entry
         pEntry = (FaceMapEntryType*)(*it).second;
 
-        //  create a new face
+        // create a new face
         ret = FT_New_Memory_Face(m_library, (FT_Byte*)pEntry->pData, (FT_Long)pEntry->length, index, face);
     }
     else
     {
-        //  ok, we have to load it
+        // ok, we have to load it
 //      ret = FT_New_Face(m_library, filename, index, face);
 
         pEntry = load_file(filename);
 
         if (pEntry)
         {
-            //  insert the entry into the map
+            // insert the entry into the map
             m_facemap.insert(FaceMapPair(filename, pEntry));
 
-            //  create a new face
+            // create a new face
             ret = FT_New_Memory_Face(m_library, (FT_Byte*)pEntry->pData, (FT_Long)pEntry->length, index, face);
         }
         else
@@ -208,7 +209,7 @@ FaceMapEntryType* FontManager::load_file(const char* filename)
 
 
 #ifdef _WIN32
-//  initialize the font list
+// initialize the font list
 void FontManager::init_font_list()
 {
     int error = 0;
@@ -221,7 +222,7 @@ void FontManager::init_font_list()
     if (S_OK == hres)
         fontdir = fontpath;
 
-    //  enum fonts
+    // enum fonts
     if (!fontdir.empty())
     {
         wstring dir(fontdir);
@@ -233,14 +234,14 @@ void FontManager::init_font_list()
         BOOL bOK = TRUE;
         while (bOK && hFile != INVALID_HANDLE_VALUE)
         {
-            //  do we have a file?
+            // do we have a file?
             if (!(FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
             {
-                //  ok, load up the face information
                 wstring entryName(fontdir);
                 entryName += L"\\";
                 entryName += FindFileData.cFileName;
 
+                // ok, load up the face information
                 FT_Face face = NULL;
                 FT_Long index = 0;
                 FT_Long num_faces = 0;
@@ -253,17 +254,17 @@ void FontManager::init_font_list()
 
                     if (!error)
                     {
-                        //  init num_faces if necessary
+                        // init num_faces if necessary
                         if (!num_faces)
                             num_faces = face->num_faces;
                     }
 
                     create_font(face, index, entryName.c_str());
 
-                    //  dispose of face
+                    // dispose of face
                     FT_Done_Face(face);
 
-                    //  increment our face index
+                    // increment our face index
                     index++;
                 }
                 while (!error && index < num_faces);
@@ -276,7 +277,7 @@ void FontManager::init_font_list()
     }
 }
 #else
-//  initialize the font list
+// initialize the font list
 void FontManager::init_font_list()
 {
     int error = 0;
@@ -298,7 +299,7 @@ void FontManager::init_font_list()
             struct stat st;
             if (stat(entryName.c_str(), &st) == 0)
             {
-                //  ok, load up the face information
+                // ok, load up the face information
                 FT_Face face = NULL;
                 FT_Long index = 0;
                 FT_Long num_faces = 0;
@@ -307,12 +308,12 @@ void FontManager::init_font_list()
                 {
                     error = FT_New_Face(m_library, entryName.c_str(), index, &face);
 
-                    //  TODO:  revisit using the font manager here
-                    //error = m_FM->get_face(entryName.c_str(), index, &face);
+                    // TODO:  revisit using the font manager here
+//                  error = m_FM->get_face(entryName.c_str(), index, &face);
 
                     if (!error)
                     {
-                        //  init num_faces if necessary
+                        // init num_faces if necessary
                         if (!num_faces)
                             num_faces = face->num_faces;
                     }
@@ -321,10 +322,10 @@ void FontManager::init_font_list()
                     UnicodeString::MultiByteToWideChar(entryName.c_str(), en);
                     create_font(face, index, en.c_str());
 
-                    //  dispose of face
+                    // dispose of face
                     FT_Done_Face(face);
 
-                    //  increment our face index
+                    // increment our face index
                     index++;
                 }
                 while (!error && index < num_faces);
@@ -332,7 +333,7 @@ void FontManager::init_font_list()
         }
         else
         {
-            //  either we got an error or there are no more entries
+            // either we got an error or there are no more entries
             closedir(pCurrent);
             pCurrent = NULL;    //  break out of while loop
         }
@@ -341,68 +342,87 @@ void FontManager::init_font_list()
 #endif  //  _WIN32
 
 
-//  create a font with the given face information
+// create a font with the given face information
 void FontManager::create_font(FT_Face face, FT_Long index, wchar_t const* filename)
 {
-    //  do we have a valid face?
+    // do we have a valid face?
     if (!face)
         return;
 
-    //  create a font
+    // create a font
     RS_Font* font = new RS_Font();
 
-    //  set font attributes
+    // process family name
     wstring familyname;
     UnicodeString::MultiByteToWideChar(face->family_name, familyname);
+    familyname = ToLower(familyname);
 
-#ifdef _WIN32
-    wchar_t* buf = (wchar_t*)alloca(sizeof(wchar_t) * (familyname.length()+1));
-    wcscpy(buf, familyname.c_str());
-    wcslwr(buf);
-    buf[familyname.length()] = 0;
-    familyname = buf;
-#else
-    string tempstr;
-    UnicodeString::WideCharToMultiByte(familyname.c_str(), tempstr);
-    make_lower_case((char*)tempstr.c_str());
-    UnicodeString::MultiByteToWideChar(tempstr.c_str(), familyname);
-#endif
-
-    font->m_familyname = familyname;
-
-    wstring fullname;
-    fullname += familyname;
-    fullname += L" ";
-
+    // process style name
     wstring stylename;
     UnicodeString::MultiByteToWideChar(face->style_name, stylename);
-    fullname += stylename;
+    stylename = ToLower(stylename);
 
-#ifdef _WIN32
-    buf = (wchar_t*)alloca(sizeof(wchar_t) * (fullname.length()+1));
-    wcscpy(buf, fullname.c_str());
-    wcslwr(buf);
-    buf[fullname.length()] = 0;
-    fullname = buf;
-#else
-    tempstr.clear();
-    UnicodeString::WideCharToMultiByte(fullname.c_str(), tempstr);
-    make_lower_case((char*)tempstr.c_str());
-    UnicodeString::MultiByteToWideChar(tempstr.c_str(), fullname);
-#endif
+    // The style name often includes the strings "regular" / "bold" / "italic",
+    // and these correspond to the bold / italic attributes for the font.  We
+    // don't want these strings to be part of the font's full name, however, as
+    // this will affect font matching.  The font matching checks for bold / italic
+    // attributes happen separately through the style flags.
+    size_t indStr;
+    wstring repStr;
+    const wchar_t* empty = L"";
 
+    // remove occurrences of "regular"
+    repStr = L"regular";// NOXLATE
+    while ((indStr = stylename.find(repStr)) != wstring::npos)
+        stylename.replace(indStr, repStr.length(), empty, 0);
+
+    // remove occurrences of "bold"
+    repStr = L"bold";   // NOXLATE
+    while ((indStr = stylename.find(repStr)) != wstring::npos)
+        stylename.replace(indStr, repStr.length(), empty, 0);
+
+    // remove occurrences of "italic"
+    repStr = L"italic"; // NOXLATE
+    while ((indStr = stylename.find(repStr)) != wstring::npos)
+        stylename.replace(indStr, repStr.length(), empty, 0);
+
+    // remove any remaining leading / trailing whitespace
+    repStr = L" ";
+    if (!stylename.empty())
+    {
+        // remove the trailing whitespace first
+        indStr = stylename.find_last_of(repStr);
+        if (indStr == stylename.length()-1)
+            stylename.replace(indStr, repStr.length(), empty, 0);
+
+        indStr = stylename.find(repStr);
+        if (indStr == 0)
+            stylename.replace(indStr, repStr.length(), empty, 0);
+    }
+
+    // process full name
+    wstring fullname;
+    fullname += familyname;
+    if (!stylename.empty())
+    {
+        fullname += L" ";
+        fullname += stylename;
+    }
+
+    // remember information
+    font->m_familyname = familyname;
     font->m_fullname = fullname;
     font->m_filename = filename;
     font->m_index = index;
 
-    //remember font style
+    // remember font style
     if (face->style_flags & FT_STYLE_FLAG_ITALIC)
         font->m_italic = true;
 
     if (face->style_flags & FT_STYLE_FLAG_BOLD)
         font->m_bold = true;
 
-    //remember font metrics
+    // remember font metrics
     font->m_ascender = face->ascender;
     font->m_descender = face->descender;
     font->m_units_per_EM = face->units_per_EM;
@@ -410,7 +430,7 @@ void FontManager::create_font(FT_Face face, FT_Long index, wchar_t const* filena
     font->m_underline_position = face->underline_position;
     font->m_underline_thickness = face->underline_thickness;
 
-    //  add the font
+    // add the font
     m_fontlist.push_front(font);
 }
 
@@ -435,7 +455,7 @@ FontList* FontManager::GetFontList()
 //
 const RS_Font* FontManager::FindFont(const wstring& sfontname, bool bold, bool italic)
 {
-    //first see if we cached the font match so we don't have to iterate
+    // first see if we cached the font match so we don't have to iterate
     NameCacheEntry entry = m_matchedCache[sfontname];
     int index = (int)bold | ((int)italic << 1);
     if (entry.stylearray[index])
@@ -443,7 +463,7 @@ const RS_Font* FontManager::FindFont(const wstring& sfontname, bool bold, bool i
 
     const wchar_t* fontname = sfontname.c_str();
 
-    // If there is an alias for the font use that instead
+    // if there is an alias for the font use that instead
     for (FontMapIterator fmi = m_fontAliases.begin(); fmi != m_fontAliases.end(); fmi++)
     {
         const wchar_t* alias = (*fmi).first->c_str();
@@ -454,30 +474,14 @@ const RS_Font* FontManager::FindFont(const wstring& sfontname, bool bold, bool i
         }
     }
 
-    FontListIterator it = m_fontlist.begin();
-
-    size_t len = wcslen(fontname);
-    wchar_t* buf = (wchar_t*)alloca(sizeof(wchar_t) * (len+1));
-
-#ifdef _WIN32
-    wcscpy(buf, fontname);
-    wcslwr(buf);
-#else
-    //I think ::towlower can be used on Linux without
-    //having to go through multibyte. TODO
-    string tempstr;
-    UnicodeString::WideCharToMultiByte(fontname, tempstr);
-    make_lower_case((char*)tempstr.c_str());
-    wstring fn;
-    UnicodeString::MultiByteToWideChar(tempstr.c_str(), fn);
-    wcscpy(buf, fn.c_str());
-#endif
-    buf[len] = 0;
+    wstring lowername = ToLower(sfontname);
+    const wchar_t* buf = lowername.c_str();
 
     int score = 0;
     RS_Font* current = NULL;
     RS_Font* best = NULL;
 
+    FontListIterator it = m_fontlist.begin();
     while (it != m_fontlist.end())
     {
         int tempscore = 0;
@@ -486,29 +490,36 @@ const RS_Font* FontManager::FindFont(const wstring& sfontname, bool bold, bool i
         if (NULL == best)
             best = current;
 
-        //  check full name (really the family here)
+        // check full name (really the family here)
         if (wcsstr(current->m_fullname.c_str(), buf) != NULL)
         {
             tempscore += 2;
 
-            //see if specified font name is exactly equal to font family
-            //This will cut down on wrong match for family variations like
-            //Arial Black vs. Arial Narrow vs. Arial
-            //no need for a case-insensiteive compare since all names
-            //are already converted to lower case
+            // See if the specified font name is exactly equal to the font
+            // family.  This cuts down on wrong matches for variations like
+            // Arial vs. Arial Unicode MS.  No need for a case-insensitive
+            // compare since all names are already converted to lower case.
             if (wcscmp(current->m_familyname.c_str(), buf) == 0)
-                tempscore ++;
+                tempscore++;
+
+            // Within a family we still need to do some checks.  For example,
+            // the Arial family has both Arial Regular and Arial Black, and
+            // with only the above checks both of these return the same score
+            // if we just ask for "Arial".  Bump the score if the specified
+            // font name exactly matches the full name.
+            if (wcscmp(current->m_fullname.c_str(), buf) == 0)
+                tempscore++;
         }
 
-        //  check bold
+        // check bold
         if (bold == current->m_bold)
             tempscore++;
 
-        //  check italic
+        // check italic
         if (italic == current->m_italic)
             tempscore++;
 
-        //  is the current font a better match?
+        // is the current font a better match?
         if (tempscore > score)
         {
             best = current;
@@ -518,10 +529,10 @@ const RS_Font* FontManager::FindFont(const wstring& sfontname, bool bold, bool i
         ++it;
     }
 
-    //add to font cache map
+    // add to font cache map
     entry.stylearray[index] = best;
     m_matchedCache[sfontname] = entry;
 
-    //  return matched font
+    // return matched font
     return best;
 }
