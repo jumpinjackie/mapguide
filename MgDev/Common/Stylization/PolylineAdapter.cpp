@@ -111,6 +111,10 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
     {
         MdfModel::LineSymbolization2D* lsym = lsymc->GetAt(i);
 
+        // don't render if there's no symbolization
+        if (lsym == NULL)
+            continue;
+
         // quick check if style is already cached
         RS_LineStroke* cachedStyle = m_hLineSymCache[lsym];
         if (cachedStyle)

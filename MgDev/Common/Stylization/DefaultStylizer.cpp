@@ -161,7 +161,9 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
 
                         MdfModel::LineSymbolizationCollection* syms = lr->GetSymbolizations();
                         MdfModel::LineSymbolizationCollection* syms2 = tmpSyms[m];
-                        syms->Adopt(syms2->GetAt(rs_min(i, syms2->GetCount()-1)));
+
+                        int index = rs_min(i, syms2->GetCount()-1);
+                        syms->Adopt(syms2->GetAt(index));
                     }
 
                     nFeatures += StylizeVLHelper(layer, scaleRange, renderer, features, i==0, xformer, cancel, userData);
