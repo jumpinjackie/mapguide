@@ -64,7 +64,7 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
     MdfModel::LineRule* rule = NULL;
 
     // determine the rule for the feature
-    for (int i=0; i<lrc->GetCount(); i++)
+    for (int i=0; i<lrc->GetCount(); ++i)
     {
         rule = static_cast<MdfModel::LineRule*>(lrc->GetAt(i));
 
@@ -107,9 +107,13 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
                            theme.empty()? NULL : &theme,
                            zOffset, zExtrusion, elevType);
 
-    for (int i=0; i<lsymc->GetCount(); i++)
+    for (int i=0; i<lsymc->GetCount(); ++i)
     {
         MdfModel::LineSymbolization2D* lsym = lsymc->GetAt(i);
+
+        // don't render if there's no symbolization
+        if (lsym == NULL)
+            continue;
 
         // quick check if style is already cached
         RS_LineStroke* cachedStyle = m_hLineSymCache[lsym];

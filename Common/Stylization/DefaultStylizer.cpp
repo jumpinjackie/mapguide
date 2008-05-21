@@ -74,7 +74,7 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
     // one then we'll use it and ignore any other non-composite type styles
     // TODO: confirm this is the behavior we want
     bool foundComposite = false;
-    for (int i=0; i<ftsc->GetCount(); i++)
+    for (int i=0; i<ftsc->GetCount(); ++i)
     {
         MdfModel::FeatureTypeStyle* fts = ftsc->GetAt(i);
         if (FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts) == FeatureTypeStyleVisitor::ftsComposite)
@@ -111,7 +111,7 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
             // and away from the layer definition.  Also obtain the maximum # of
             // styles for all the rules.
             int maxStyles = 0;
-            for (int k=0; k<rules->GetCount(); k++)
+            for (int k=0; k<rules->GetCount(); ++k)
             {
                 MdfModel::LineRule* lr = (MdfModel::LineRule*)rules->GetAt(k);
                 MdfModel::LineSymbolizationCollection* syms = lr->GetSymbolizations();
@@ -138,7 +138,7 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
             {
                 // now for each separate line style - run a feature query
                 // and stylization loop with that single style
-                for (int i=0; i<maxStyles; i++)
+                for (int i=0; i<maxStyles; ++i)
                 {
                     // reset reader if this is not the first time we stylize the feature
                     if (i > 0)
@@ -150,7 +150,7 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
 
                     // for each rule, transfer a single line style from the temporary
                     // collection to the layer definition
-                    for (int m=0; m<rules->GetCount(); m++)
+                    for (int m=0; m<rules->GetCount(); ++m)
                     {
                         MdfModel::LineRule* lr = (MdfModel::LineRule*)rules->GetAt(m);
 
@@ -161,13 +161,15 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
 
                         MdfModel::LineSymbolizationCollection* syms = lr->GetSymbolizations();
                         MdfModel::LineSymbolizationCollection* syms2 = tmpSyms[m];
-                        syms->Adopt(syms2->GetAt(rs_min(i, syms2->GetCount()-1)));
+
+                        int index = rs_min(i, syms2->GetCount()-1);
+                        syms->Adopt(syms2->GetAt(index));
                     }
 
                     nFeatures += StylizeVLHelper(layer, scaleRange, renderer, features, i==0, xformer, cancel, userData);
 
                     // transfer line styles back to layer definition
-                    for (int m=0; m<rules->GetCount(); m++)
+                    for (int m=0; m<rules->GetCount(); ++m)
                     {
                         MdfModel::LineRule* lr = (MdfModel::LineRule*)rules->GetAt(m);
 
@@ -183,7 +185,7 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
 
             // move composite line styles back to original layer definition
             // collection so that it frees them up when we destroy it
-            for (int m=0; m<rules->GetCount(); m++)
+            for (int m=0; m<rules->GetCount(); ++m)
             {
                 MdfModel::LineRule* lr = (MdfModel::LineRule*)rules->GetAt(m);
                 MdfModel::LineSymbolizationCollection* syms = lr->GetSymbolizations();
@@ -273,7 +275,7 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
     while (features->ReadNext())
     {
         #ifdef _DEBUG
-        nFeatures++;
+        ++nFeatures;
         #endif
 
         LineBuffer* lb = LineBufferPool::NewLineBuffer(m_lbPool, 8, FdoDimensionality_Z, false);
@@ -319,7 +321,7 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
             // we need to stylize once for each FeatureTypeStyle that matches
             // the geometry type (Note: this may have to change to match
             // feature classes)
-            for (int i=0; i<ftsc->GetCount(); i++)
+            for (int i=0; i<ftsc->GetCount(); ++i)
             {
                 MdfModel::FeatureTypeStyle* fts = ftsc->GetAt(i);
                 adapter->Stylize(renderer, features, initialPass, exec, lb, fts, lrTip, lrUrl, elevSettings);
