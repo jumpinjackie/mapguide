@@ -258,7 +258,7 @@ WT_Trusted_Font_Item::WT_Trusted_Font_Item(   WT_Integer32 index,
 void WT_Trusted_Font_Item::set(  WT_Integer32       index,
                         WT_Unsigned_Integer16 const *   font_name)
 {
-    m_font_name.set(WT_String::wcslen(font_name), font_name);
+    m_font_name.set(static_cast<int>(WT_String::wcslen(font_name)), font_name);
     m_index = index;
 }
 

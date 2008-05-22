@@ -207,7 +207,7 @@ png_decompress_chunk(png_structp png_ptr, int comp_type,
             if (text ==  NULL)
             {
                text_size = prefix_size + png_sizeof(msg) + 1;
-               text = (png_charp)png_malloc_warn(png_ptr, text_size);
+               text = (png_charp)png_malloc_warn(png_ptr, (png_uint_32)text_size);
                if (text ==  NULL)
                  {
                     png_free(png_ptr,chunkdata);
@@ -231,7 +231,7 @@ png_decompress_chunk(png_structp png_ptr, int comp_type,
             {
                text_size = prefix_size +
                    png_ptr->zbuf_size - png_ptr->zstream.avail_out;
-               text = (png_charp)png_malloc_warn(png_ptr, text_size + 1);
+               text = (png_charp)png_malloc_warn(png_ptr, (png_uint_32)(text_size + 1));
                if (text ==  NULL)
                  {
                     png_free(png_ptr,chunkdata);
@@ -294,7 +294,7 @@ png_decompress_chunk(png_structp png_ptr, int comp_type,
          text_size=prefix_size;
          if (text ==  NULL)
          {
-            text = (png_charp)png_malloc_warn(png_ptr, text_size+1);
+            text = (png_charp)png_malloc_warn(png_ptr, (png_uint_32)(text_size+1));
             if (text == NULL)
               {
                 png_free(png_ptr, chunkdata);
@@ -985,7 +985,7 @@ png_handle_iCCP(png_structp png_ptr, png_infop info_ptr, png_uint_32 length)
    png_bytep pC;
    png_charp profile;
    png_uint_32 skip = 0;
-   png_uint_32 profile_size, profile_length;
+   png_size_t profile_size, profile_length;
    png_size_t slength, prefix_length, data_length;
 
    png_debug(1, "in png_handle_iCCP\n");
@@ -1084,7 +1084,7 @@ png_handle_iCCP(png_structp png_ptr, png_infop info_ptr, png_uint_32 length)
    }
 
    png_set_iCCP(png_ptr, info_ptr, chunkdata, compression_type,
-                chunkdata + prefix_length, profile_length);
+                chunkdata + prefix_length, (png_uint_32)profile_length);
    png_free(png_ptr, chunkdata);
 }
 #endif /* PNG_READ_iCCP_SUPPORTED */
@@ -1100,7 +1100,7 @@ png_handle_sPLT(png_structp png_ptr, png_infop info_ptr, png_uint_32 length)
 #ifdef PNG_NO_POINTER_INDEXING
    png_sPLT_entryp pp;
 #endif
-   int data_length, entry_size, i;
+   png_size_t data_length, entry_size, i;
    png_uint_32 skip = 0;
    png_size_t slength;
 
@@ -2973,7 +2973,7 @@ png_read_start_row(png_structp png_ptr)
 
          row_bytes = PNG_ROWBYTES(png_ptr->pixel_depth,png_ptr->iwidth) + 1;
 
-         png_ptr->irowbytes = (png_size_t)row_bytes;
+         png_ptr->irowbytes = row_bytes;
          if((png_uint_32)png_ptr->irowbytes != row_bytes)
             png_error(png_ptr, "Rowbytes overflow in png_read_start_row");
    }

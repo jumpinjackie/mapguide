@@ -59,13 +59,13 @@ static int trimDynamic (dynamicPtr * dp);
 static void gdFreeDynamicCtx (struct gdIOCtx *ctx);
 static dynamicPtr *newDynamic (int initialSize, void *data, int freeOKFlag);
 
-static int dynamicPutbuf (struct gdIOCtx *, const void *, int);
+static int dynamicPutbuf (struct gdIOCtx *, const void *, size_t);
 static void dynamicPutchar (struct gdIOCtx *, int a);
 
-static int dynamicGetbuf (gdIOCtxPtr ctx, void *buf, int len);
+static int dynamicGetbuf (gdIOCtxPtr ctx, void *buf, size_t len);
 static int dynamicGetchar (gdIOCtxPtr ctx);
 
-static int dynamicSeek (struct gdIOCtx *, const int);
+static int dynamicSeek (struct gdIOCtx *, const size_t);
 static long dynamicTell (struct gdIOCtx *);
 
 /* return data as a dynamic pointer */
@@ -179,7 +179,7 @@ dynamicTell (struct gdIOCtx *ctx)
 }
 
 static int
-dynamicSeek (struct gdIOCtx *ctx, const int pos)
+dynamicSeek (struct gdIOCtx *ctx, const size_t pos)
 {
   int bytesNeeded;
   dynamicPtr *dp;
@@ -215,10 +215,10 @@ dynamicSeek (struct gdIOCtx *ctx, const int pos)
   /* Extend the logical size if we seek beyond EOF. */
   if (pos > dp->logicalSize)
     {
-      dp->logicalSize = pos;
+      dp->logicalSize = (int)pos;
     };
 
-  dp->pos = pos;
+  dp->pos = (int)pos;
 
   return TRUE;
 }
@@ -243,7 +243,7 @@ newDynamic (int initialSize, void *data, int freeOKFlag)
 }
 
 static int
-dynamicPutbuf (struct gdIOCtx *ctx, const void *buf, int size)
+dynamicPutbuf (struct gdIOCtx *ctx, const void *buf, size_t size)
 {
   dpIOCtx *dctx;
   dctx = (dpIOCtx *) ctx;
@@ -274,7 +274,7 @@ dynamicPutchar (struct gdIOCtx *ctx, int a)
 }
 
 static int
-dynamicGetbuf (gdIOCtxPtr ctx, void *buf, int len)
+dynamicGetbuf (gdIOCtxPtr ctx, void *buf, size_t len)
 {
   int rlen, remain;
   dpIOCtxPtr dctx;

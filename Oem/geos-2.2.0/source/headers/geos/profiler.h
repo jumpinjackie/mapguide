@@ -67,7 +67,7 @@ public:
 	double getAvg() const;
 
 	/** \brief Return number of timings */
-	unsigned int getNumTimings() const;
+	size_t getNumTimings() const;
 
 	/** \brief Profile name */
 	string name;

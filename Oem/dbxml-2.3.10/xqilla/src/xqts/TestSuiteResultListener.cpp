@@ -169,14 +169,14 @@ bool KnownErrorChecker::printReport() const
   if(!nowFail_.empty() || !nowPass_.empty()) {
     cout << "************************************************************************" << endl;
     if(!nowFail_.empty()) {
-      cout << nowFail_.size() << " unexpected failures:" << endl;
+      cout << (unsigned int)nowFail_.size() << " unexpected failures:" << endl;
       for(vector<string>::const_iterator i = nowFail_.begin(); i != nowFail_.end(); ++i) {
         cout << "\t" << *i << endl;
       }
     }
 
     if(!nowPass_.empty()) {
-      cout << nowPass_.size() << " unexpected passes:" << endl;
+      cout << (unsigned int)nowPass_.size() << " unexpected passes:" << endl;
       for(vector<string>::const_iterator j = nowPass_.begin(); j != nowPass_.end(); ++j) {
         cout << "\t" << *j << endl;
       }
@@ -285,8 +285,8 @@ void ConsoleResultListener::endTestGroup()
   --testDepth_;
   needNewline_ = false;
 
-  int nColonPos = m_szFullTestName.find_last_of(":");
-  if(nColonPos != -1)
+  size_t nColonPos = m_szFullTestName.find_last_of(":");
+  if(nColonPos != (size_t)-1)
     m_szFullTestName = string(m_szFullTestName.c_str(), nColonPos);
   else
     m_szFullTestName = "";

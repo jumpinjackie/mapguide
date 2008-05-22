@@ -31,11 +31,11 @@ public:
 	virtual void setContextItem(const Item::Ptr &item);
 	virtual void setExternalContextNode(const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *node);
 
-	virtual unsigned int getContextPosition() const;
-	virtual void setContextPosition(unsigned int pos);
+	virtual size_t getContextPosition() const;
+	virtual void setContextPosition(size_t pos);
 
-	virtual unsigned int getContextSize() const;
-	virtual void setContextSize(unsigned int size);
+	virtual size_t getContextSize() const;
+	virtual void setContextSize(size_t size);
 
 	virtual void trace(const XMLCh* message1, const XMLCh* message2);
 
@@ -71,8 +71,8 @@ protected:
 	ModuleResolver *moduleResolver_;
 
 	Item::Ptr contextItem_;
-	unsigned int contextPosition_;
-	unsigned int contextSize_;
+	size_t contextPosition_;
+	size_t contextSize_;
 };
 
 class AutoRunQueryPlansReset

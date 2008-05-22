@@ -393,7 +393,7 @@ NodeIterators* DOMDocumentImpl::getNodeIterators() const
 void DOMDocumentImpl::removeNodeIterator(DOMNodeIteratorImpl* nodeIterator)
 {
     if (fNodeIterators != 0) {
-        XMLSize_t sz = fNodeIterators->size();
+        unsigned int sz = fNodeIterators->size();
         if (sz !=0) {
             for (XMLSize_t i =0; i<sz; i++) {
                 if (fNodeIterators->elementAt(i) == nodeIterator) {

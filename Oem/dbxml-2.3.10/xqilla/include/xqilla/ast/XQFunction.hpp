@@ -29,7 +29,7 @@ class XQILLA_API XQFunction : public ASTNodeImpl
 {
 
 public:
-  XQFunction(const XMLCh* name, unsigned int argsFrom, unsigned int argsTo, const char* paramDecl, const VectorOfASTNodes &args, XPath2MemoryManager* memMgr);
+    XQFunction(const XMLCh* name, size_t argsFrom, size_t argsTo, const char* paramDecl,const VectorOfASTNodes &args, XPath2MemoryManager* memMgr);
   virtual ~XQFunction();
 
   const XMLCh* getFunctionURI()const;
@@ -46,21 +46,21 @@ public:
   ASTNode *calculateSRCForArguments(StaticContext *context, bool checkTimezone = false, bool numericFunction = false);
 
   /** casts the expression given as a parameter into the appropriate type and returns the guaranteed correctly typed objects in a sequence  */
-  virtual Result getParamNumber(unsigned int number, DynamicContext* context, int flags=0) const;
+  virtual Result getParamNumber(size_t number, DynamicContext* context, int flags=0) const;
 
   /** returns the number of parameters passed into the function */
-  unsigned int getNumArgs() const;
+  size_t getNumArgs() const;
 
 protected:
 
   /** Helper method, produces a single ATStringOrDerived from the output of getParamNumber(). If getParamNumber() returns anything other than a single string, an exception is thrown. */
-  static const unsigned int UNLIMITED;
+  static const size_t UNLIMITED;
 
   //parse the supplied string of comma separated arguments into vector of SequenceTypes
   void parseParamDecl(const char* paramString, XPath2MemoryManager *mm);
 
   const XMLCh *_fName, *_fURI, *_signature;
-  const unsigned int _nArgsFrom, _nArgsTo;
+  const size_t _nArgsFrom, _nArgsTo;
 
   std::vector<SequenceType*, XQillaAllocator<SequenceType*> > _paramDecl;
 

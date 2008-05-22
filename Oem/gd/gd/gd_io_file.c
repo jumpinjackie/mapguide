@@ -41,12 +41,12 @@ fileIOCtx;
 
 gdIOCtx *newFileCtx (FILE * f);
 
-static int fileGetbuf (gdIOCtx *, void *, int);
-static int filePutbuf (gdIOCtx *, const void *, int);
+static int fileGetbuf (gdIOCtx *, void *, size_t);
+static int filePutbuf (gdIOCtx *, const void *, size_t);
 static void filePutchar (gdIOCtx *, int);
 static int fileGetchar (gdIOCtx * ctx);
 
-static int fileSeek (struct gdIOCtx *, const int);
+static int fileSeek (struct gdIOCtx *, const size_t);
 static long fileTell (struct gdIOCtx *);
 static void gdFreeFileCtx (gdIOCtx * ctx);
 
@@ -85,7 +85,7 @@ gdFreeFileCtx (gdIOCtx * ctx)
 
 
 static int
-filePutbuf (gdIOCtx * ctx, const void *buf, int size)
+filePutbuf (gdIOCtx * ctx, const void *buf, size_t size)
 {
   fileIOCtx *fctx;
   fctx = (fileIOCtx *) ctx;
@@ -95,7 +95,7 @@ filePutbuf (gdIOCtx * ctx, const void *buf, int size)
 }
 
 static int
-fileGetbuf (gdIOCtx * ctx, void *buf, int size)
+fileGetbuf (gdIOCtx * ctx, void *buf, size_t size)
 {
   fileIOCtx *fctx;
   fctx = (fileIOCtx *) ctx;
@@ -127,11 +127,11 @@ fileGetchar (gdIOCtx * ctx)
 
 
 static int
-fileSeek (struct gdIOCtx *ctx, const int pos)
+fileSeek (struct gdIOCtx *ctx, const size_t pos)
 {
   fileIOCtx *fctx;
   fctx = (fileIOCtx *) ctx;
-  return (fseek (fctx->f, pos, SEEK_SET) == 0);
+  return (fseek (fctx->f, (long)pos, SEEK_SET) == 0);
 }
 
 static long

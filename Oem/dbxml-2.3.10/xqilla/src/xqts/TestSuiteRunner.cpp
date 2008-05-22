@@ -62,11 +62,11 @@ void TestSuiteRunner::testResults(const TestCase &testCase, const std::string &x
           XercesDOMParser parser;
           parser.setDoNamespaces(true);
 
-          MemBufInputSource memSrc1((XMLByte*)outputResult.c_str(), outputResult.size(), "", false);
+          MemBufInputSource memSrc1((XMLByte*)outputResult.c_str(), (unsigned int)outputResult.size(), "", false);
           parser.parse(memSrc1);
           DOMDocument* doc1 = parser.getDocument();
 
-          MemBufInputSource memSrc2((XMLByte*)expectedResult.c_str(), expectedResult.size(), "", false);
+          MemBufInputSource memSrc2((XMLByte*)expectedResult.c_str(), (unsigned int)expectedResult.size(), "", false);
           parser.parse(memSrc2);
           DOMDocument* doc2 = parser.getDocument();
           passed = compareNodes(doc1, doc2);

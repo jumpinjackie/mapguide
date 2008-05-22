@@ -402,7 +402,7 @@ ACE_WIN32_Asynch_Read_Stream::read (ACE_Message_Block &message_block,
                   -1);
 
   // Shared read
-  ssize_t return_val = this->shared_read (result);
+  int return_val = this->shared_read (result);
 
   // Upon errors
   if (return_val == -1)
@@ -827,7 +827,7 @@ ACE_WIN32_Asynch_Write_Stream::write (ACE_Message_Block &message_block,
                   -1);
 
   // Shared write
-  ssize_t return_val = this->shared_write (result);
+  int return_val = this->shared_write (result);
 
   // Upon errors
   if (return_val == -1)
@@ -1268,7 +1268,7 @@ ACE_WIN32_Asynch_Read_File::read (ACE_Message_Block &message_block,
                   -1);
 
   // Shared read
-  ssize_t return_val = this->shared_read (result);
+  int return_val = this->shared_read (result);
 
   // Upon errors
   if (return_val == -1)
@@ -1666,7 +1666,7 @@ ACE_WIN32_Asynch_Write_File::write (ACE_Message_Block &message_block,
                   -1);
 
   // Shared write
-  ssize_t return_val = this->shared_write (result);
+  int return_val = static_cast<int>(this->shared_write (result));
 
   // Upon errors
   if (return_val == -1)
@@ -3385,7 +3385,7 @@ ACE_WIN32_Asynch_Read_Dgram::recv (ACE_Message_Block *message_block,
                   -1);
 
   // do the scatter/gather recv
-  int initiate_result = ACE_OS::recvfrom (result->handle (),
+  ssize_t initiate_result = ACE_OS::recvfrom (result->handle (),
                                           iov,
                                           iovcnt,
                                           number_of_bytes_recvd,
@@ -3710,7 +3710,7 @@ ACE_WIN32_Asynch_Write_Dgram::send (ACE_Message_Block *message_block,
 
   // do the scatter/gather send
 
-  int initiate_result = ACE_OS::sendto (result->handle (),
+  ssize_t initiate_result = ACE_OS::sendto (result->handle (),
                                         iov,
                                         iovcnt,
                                         number_of_bytes_sent,

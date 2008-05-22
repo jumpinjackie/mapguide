@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="XercesLib"
 	ProjectGUID="{152CE948-F659-4206-A50A-1D2B9658EF96}"
+	RootNamespace="XercesLib"
 	>
 	<Platforms>
 		<Platform
@@ -118,8 +119,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory=".\$(build)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\..\Build\Win64\VC7.1\Release"
+			IntermediateDirectory=".\..\..\..\..\..\Build\Win64\VC7.1\Release\obj"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops;..\..\..\..\..\..\..\..\TargetX64.vsprops"
 			UseOfMFC="0"
@@ -159,6 +160,7 @@
 				ObjectFile="$(IntDir)\"
 				ProgramDataBaseFileName="$(IntDir)\vc80.pdb"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 				CompileAs="0"
 			/>
@@ -310,8 +312,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory=".\$(build)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory=".\..\..\..\..\..\Build\Win64\VC7.1\Debug"
+			IntermediateDirectory=".\..\..\..\..\..\Build\Win64\VC7.1\Debug\obj"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops;..\..\..\..\..\..\..\..\TargetX64.vsprops"
 			UseOfMFC="0"
@@ -340,13 +342,14 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\..\..\..\src"
-				PreprocessorDefinitions="_CRTDBG_MAP_ALLOC;PROJ_SAX2;_DEBUG;PROJ_XMLPARSER;PROJ_XMLUTIL;PROJ_PARSERS;PROJ_SAX4C;PROJ_DOM;PROJ_VALIDATORS;XML_SINGLEDLL;WIN64;_WINDOWS;XML_USE_WIN32_TRANSCODER;XML_USE_WIN32_MSGLOADER;XML_USE_NETACCESSOR_WINSOCK"
+				PreprocessorDefinitions="_CRTDBG_MAP_ALLOC;PROJ_SAX2;_DEBUG;PROJ_XMLPARSER;PROJ_XMLUTIL;PROJ_PARSERS;PROJ_SAX4C;PROJ_DOM;PROJ_VALIDATORS;XML_SINGLEDLL;WIN32;_WINDOWS;XML_USE_WIN32_TRANSCODER;XML_USE_WIN32_MSGLOADER;XML_USE_NETACCESSOR_WINSOCK"
 				RuntimeLibrary="3"
 				PrecompiledHeaderFile=".\$(OutDir)/XercesLib.pch"
 				AssemblerListingLocation=".\$(OutDir)/"
 				ObjectFile="$(IntDir)\"
 				ProgramDataBaseFileName="$(IntDir)\vc80.pdb"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 				CompileAs="0"
 			/>

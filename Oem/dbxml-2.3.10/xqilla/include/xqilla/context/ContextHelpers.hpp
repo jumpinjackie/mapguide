@@ -81,8 +81,8 @@ public:
   }
 
   Item::Ptr oldContextItem;
-  unsigned int oldContextPosition;
-  unsigned int oldContextSize;
+  size_t oldContextPosition;
+  size_t oldContextSize;
 
 private:
   DynamicContext* context_;

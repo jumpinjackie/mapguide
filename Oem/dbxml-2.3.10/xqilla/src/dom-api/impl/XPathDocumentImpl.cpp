@@ -133,7 +133,7 @@ DOMNode *XPathDocumentImpl::insertBefore(DOMNode *newChild, DOMNode *refChild)
         XMLSize_t sz = ranges->size();
         if (sz != 0) {
             for (XMLSize_t i =0; i<sz; i++) {
-                ranges->elementAt(i)->updateRangeForInsertedNode(newChild);
+                ranges->elementAt((int)i)->updateRangeForInsertedNode(newChild);
             }
         }
     }

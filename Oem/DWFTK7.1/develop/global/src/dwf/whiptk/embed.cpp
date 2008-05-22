@@ -308,7 +308,7 @@ WT_Result WT_Embed::set_MIME_type(char const * type, WT_File & file)
 WT_Result WT_Embed::set_MIME_type(WT_Unsigned_Integer16 const * type, WT_File & file)
 {
     m_incarnation = file.next_incarnation();
-    m_MIME_type.set(WT_String::wcslen(type),type);
+    m_MIME_type.set(static_cast<int>(WT_String::wcslen(type)),type);
     return WT_Result::Success;
 }
 
@@ -324,7 +324,7 @@ WT_Result WT_Embed::set_MIME_subtype(char const * subtype, WT_File & file)
 WT_Result WT_Embed::set_MIME_subtype(WT_Unsigned_Integer16 const * subtype, WT_File & file)
 {
     m_incarnation = file.next_incarnation();
-    m_MIME_subtype.set(WT_String::wcslen(subtype),subtype);
+    m_MIME_subtype.set(static_cast<int>(WT_String::wcslen(subtype)),subtype);
     return WT_Result::Success;
 }
 
@@ -340,7 +340,7 @@ WT_Result WT_Embed::set_MIME_options(char const * options, WT_File & file)
 WT_Result WT_Embed::set_MIME_options(WT_Unsigned_Integer16 const * options, WT_File & file)
 {
     m_incarnation = file.next_incarnation();
-    m_MIME_options.set(WT_String::wcslen(options),options);
+    m_MIME_options.set(static_cast<int>(WT_String::wcslen(options)),options);
     return WT_Result::Success;
 }
 
@@ -356,7 +356,7 @@ WT_Result WT_Embed::set_description(char const * description, WT_File & file)
 WT_Result WT_Embed::set_description(WT_Unsigned_Integer16 const * description, WT_File & file)
 {
     m_incarnation = file.next_incarnation();
-    m_description.set(WT_String::wcslen(description),description);
+    m_description.set(static_cast<int>(WT_String::wcslen(description)),description);
     return WT_Result::Success;
 }
 
@@ -372,7 +372,7 @@ WT_Result WT_Embed::set_filename(char const * filename, WT_File & file)
 WT_Result WT_Embed::set_filename(WT_Unsigned_Integer16 const * filename, WT_File & file)
 {
     m_incarnation = file.next_incarnation();
-    m_filename.set(WT_String::wcslen(filename),filename);
+    m_filename.set(static_cast<int>(WT_String::wcslen(filename)),filename);
     return WT_Result::Success;
 }
 
@@ -388,6 +388,6 @@ WT_Result WT_Embed::set_url(char const * url, WT_File & file)
 WT_Result WT_Embed::set_url(WT_Unsigned_Integer16 const * url, WT_File & file)
 {
     m_incarnation = file.next_incarnation();
-    m_url.set(WT_String::wcslen(url),url);
+    m_url.set(static_cast<int>(WT_String::wcslen(url)),url);
     return WT_Result::Success;
 }

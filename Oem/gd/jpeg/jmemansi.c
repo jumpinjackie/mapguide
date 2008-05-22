@@ -77,9 +77,9 @@ jpeg_free_large (j_common_ptr cinfo, void FAR * object, size_t sizeofobject)
 #define DEFAULT_MAX_MEM		1000000L /* default: one megabyte */
 #endif
 
-GLOBAL(long)
-jpeg_mem_available (j_common_ptr cinfo, long min_bytes_needed,
-		    long max_bytes_needed, long already_allocated)
+GLOBAL(size_t)
+jpeg_mem_available (j_common_ptr cinfo, size_t min_bytes_needed,
+		    size_t max_bytes_needed, size_t already_allocated)
 {
   return cinfo->mem->max_memory_to_use - already_allocated;
 }

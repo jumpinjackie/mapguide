@@ -78,7 +78,7 @@ ACE_SOCK_IO::recvv (iovec *io_vec,
                       -1);
       io_vec->iov_len = this->recv (io_vec->iov_base,
                                     inlen);
-      return io_vec->iov_len;
+      return static_cast<u_long>(io_vec->iov_len);
     }
   else
     return 0;

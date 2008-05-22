@@ -38,6 +38,26 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="..\..\bin\debug64"
+			IntermediateDirectory="..\..\obj\debug64\DotNetApi"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f Makefile debug64"
+				ReBuildCommandLine="nmake -a -f Makefile debug64"
+				CleanCommandLine="nmake -f Makefile cleandebug64"
+				Output="..\..\bin\debug64\MapGuideDotNetApid.dll"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="..\..\bin\release"
 			IntermediateDirectory="..\..\obj\release\DotNetApi"
@@ -58,37 +78,17 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="0"
-			>
-			<Tool
-				Name="VCNMakeTool"
-				BuildCommandLine="nmake -f Makefile debug"
-				ReBuildCommandLine="nmake -a -f Makefile debug"
-				CleanCommandLine="nmake -f Makefile cleandebug"
-				Output="..\..\bin\debug\MapGuideDotNetApid.dll"
-				PreprocessorDefinitions=""
-				IncludeSearchPath=""
-				ForcedIncludes=""
-				AssemblySearchPath=""
-				ForcedUsingAssemblies=""
-				CompileAsManaged=""
-			/>
-		</Configuration>
-		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\..\bin\release64"
+			IntermediateDirectory="..\..\obj\release64\DotNetApi"
 			ConfigurationType="0"
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake -f Makefile release"
-				ReBuildCommandLine="nmake -a -f Makefile release"
-				CleanCommandLine="nmake -f Makefile cleanrelease"
-				Output="..\..\bin\release\MapGuideDotNetApi.dll"
+				BuildCommandLine="nmake -f Makefile release64"
+				ReBuildCommandLine="nmake -a -f Makefile release64"
+				CleanCommandLine="nmake -f Makefile cleanrelease64"
+				Output="..\..\bin\release64\MapGuideDotNetApi.dll"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
 				ForcedIncludes=""

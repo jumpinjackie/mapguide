@@ -14,13 +14,13 @@ extern "C" {
 typedef struct gdIOCtx
 {
   int (*getC) (struct gdIOCtx *);
-  int (*getBuf) (struct gdIOCtx *, void *, int);
+  int (*getBuf) (struct gdIOCtx *, void *, size_t);
 
   void (*putC) (struct gdIOCtx *, int);
-  int (*putBuf) (struct gdIOCtx *, const void *, int);
+  int (*putBuf) (struct gdIOCtx *, const void *, size_t);
 
   /* seek must return 1 on SUCCESS, 0 on FAILURE. Unlike fseek! */
-  int (*seek) (struct gdIOCtx *, const int);
+  int (*seek) (struct gdIOCtx *, const size_t);
 
   long (*tell) (struct gdIOCtx *);
 
@@ -35,17 +35,17 @@ void Putword (int w, gdIOCtx * ctx);
 void Putchar (int c, gdIOCtx * ctx);
 
  void gdPutC (const unsigned char c, gdIOCtx * ctx);
- int gdPutBuf (const void *, int, gdIOCtx *);
+ int gdPutBuf (const void *, size_t, gdIOCtx *);
  void gdPutWord (int w, gdIOCtx * ctx);
  void gdPutInt (int w, gdIOCtx * ctx);
 
  int gdGetC (gdIOCtx * ctx);
- int gdGetBuf (void *, int, gdIOCtx *);
+ int gdGetBuf (void *, size_t, gdIOCtx *);
  int gdGetByte (int *result, gdIOCtx * ctx);
  int gdGetWord (int *result, gdIOCtx * ctx);
  int gdGetInt (int *result, gdIOCtx * ctx);
 
- int gdSeek (gdIOCtx * ctx, const int);
+ int gdSeek (gdIOCtx * ctx, const size_t);
  long gdTell (gdIOCtx * ctx);
 
 #endif

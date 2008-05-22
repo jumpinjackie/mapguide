@@ -55,12 +55,12 @@ public:
     return qname.getRawBuffer();
   }
 	
-  virtual unsigned int getMinArgs() const
+  virtual size_t getMinArgs() const
   {
     return TYPE::minArgs;
   }
 
-  virtual unsigned int getMaxArgs() const
+  virtual size_t getMaxArgs() const
   {
     return TYPE::maxArgs;
   }

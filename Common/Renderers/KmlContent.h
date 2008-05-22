@@ -41,7 +41,7 @@ public:
     RENDERERS_API std::string GetString();
 
 private:
-    void WriteString(const char* szString, int length, bool lineBreak);
+    void WriteString(const char* szString, std::streamsize length, bool lineBreak);
     std::stringbuf m_content;
 };
 

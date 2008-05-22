@@ -115,7 +115,7 @@ static void model_to_shell( MxModel *m,
 	    iptr_out += 4;
 	}
     }
-    *flist_len = iptr_out - flist;
+    *flist_len = (int)(iptr_out - flist);
 
     /* in this block we create vmap_final, if appropriate */
     if( vmap_final != NULL )
@@ -171,7 +171,7 @@ static void model_to_shell_flist_only(
             iptr_out += 4;
         }
     }
-    *flist_len = iptr_out - flist;
+    *flist_len = (int)(iptr_out - flist);
 
 } /* end function model_to_shell_flist_only */
 

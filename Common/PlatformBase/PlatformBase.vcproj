@@ -99,8 +99,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\bin\debug64"
+			IntermediateDirectory="..\obj\debug64\PlatformBase"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -146,10 +146,10 @@
 				AdditionalDependencies="ACEd.lib"
 				OutputFile="$(OutDir)\MgPlatformBased.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib"
+				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib64"
 				GenerateDebugInformation="true"
 				SubSystem="2"
-				ImportLibrary="..\lib\debug\MgPlatformBased.lib"
+				ImportLibrary="..\lib\debug64\MgPlatformBased.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -257,8 +257,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\bin\release64"
+			IntermediateDirectory="..\obj\release64\PlatformBase"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -301,12 +301,12 @@
 				AdditionalDependencies="ACE.lib"
 				OutputFile="$(OutDir)\MgPlatformBase.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib"
+				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib64"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="..\lib\release\MgPlatformBase.lib"
+				ImportLibrary="..\lib\release64\MgPlatformBase.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -2745,7 +2745,23 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					ExcludedFromBuild="true"
 					>
 					<Tool

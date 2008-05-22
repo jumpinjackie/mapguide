@@ -502,7 +502,7 @@ TK_Status TK_Shell::EnumerateEdges () alter
         *enumptr++ = mp_edge_enumeration[i];
         *enumptr++ = mp_edge_enumeration[i+1];
     }
-    mp_edgecount = (enumptr - mp_edge_enumeration) / 2;
+    mp_edgecount = (int)((enumptr - mp_edge_enumeration) / 2);
     return TK_Normal;
 }
 

@@ -101,6 +101,90 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="..\bin\debug64"
+			IntermediateDirectory="..\obj\debug64\MdfParser"
+			ConfigurationType="2"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MDFPARSER_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
+				MinimalRebuild="true"
+				ExceptionHandling="2"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				WarningLevel="3"
+				WarnAsError="false"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				IgnoreImportLibrary="false"
+				AdditionalDependencies="xerces-c_2D.lib"
+				OutputFile="$(OutDir)\MgMdfParserd.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;..\..\Oem\dbxml-2.3.10\lib64&quot;"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)\MgMdfParserd.pdb"
+				SubSystem="2"
+				ImportLibrary="..\lib\debug64\MgMdfParserd.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="..\bin\release"
 			IntermediateDirectory="..\obj\release\MdfParser"
@@ -181,92 +265,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="2"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MDFPARSER_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
-				MinimalRebuild="true"
-				ExceptionHandling="2"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				WarningLevel="3"
-				WarnAsError="false"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2D.lib"
-				OutputFile="$(OutDir)\MgMdfParserd.dll"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Oem\dbxml-2.3.10\lib"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)\MgMdfParserd.pdb"
-				SubSystem="2"
-				ImportLibrary="..\lib\debug\MgMdfParserd.lib"
-				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\bin\release64"
+			IntermediateDirectory="..\obj\release64\MdfParser"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -310,13 +311,13 @@
 				AdditionalDependencies="xerces-c_2.lib"
 				OutputFile="$(OutDir)\MgMdfParser.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Oem\dbxml-2.3.10\lib"
+				AdditionalLibraryDirectories="&quot;..\..\Oem\dbxml-2.3.10\lib64&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgMdfParser.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="..\lib\release\MgMdfParser.lib"
+				ImportLibrary="..\lib\release64\MgMdfParser.lib"
 				TargetMachine="17"
 			/>
 			<Tool

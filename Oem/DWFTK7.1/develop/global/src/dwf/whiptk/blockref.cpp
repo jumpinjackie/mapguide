@@ -580,7 +580,7 @@ WT_Result WT_BlockRef::serialize(WT_File & file, WT_Boolean bAsPartOfList, WT_Bo
         if(!bAsPartOfList && !bForBlockSizeRewrite) {
             WD_CHECK((file.stream_tell_action())(file, (unsigned long *)&m_file_offset));
             ((WT_BlockRef *) this)->m_file_offset -=
-                ((file.tab_level() + strlen(WD_NEWLINE) ) * sizeof(WT_Byte));
+                ((file.tab_level() + (int)strlen(WD_NEWLINE) ) * sizeof(WT_Byte));
             WD_CHECK( file.set_block_size_for_tail_blockref(
                 ((WT_BlockRef *) this)->m_file_offset) );
         }

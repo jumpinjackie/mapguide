@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="dbxml"
 	ProjectGUID="{0047EDFC-C26D-49D0-9559-029FA38B3839}"
+	RootNamespace="dbxml"
 	>
 	<Platforms>
 		<Platform
@@ -82,7 +83,7 @@
 				OutputFile="$(OutDir)/libdbxml23d.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(OutDir);../../xerces-c-src/Build/Win32/VC7.1/$(ConfigurationName);../../db-4.5.20/build_windows/$(ConfigurationName);../../xqilla/build/windows/vc7.1/$(ConfigurationName)"
+				AdditionalLibraryDirectories="&quot;$(OutDir)&quot;;&quot;../../xerces-c-src/Build/Win32/VC7.1/$(ConfigurationName)&quot;;&quot;../../db-4.5.20/build_windows/$(ConfigurationName)&quot;;&quot;../../xqilla/build/windows/vc7.1/$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/libdbxml23d.pdb"
 				ImportLibrary="$(OutDir)/libdbxml23d.lib"
@@ -117,8 +118,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory=".\$(build)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\build_windows\$(ConfigurationName)64"
+			IntermediateDirectory=".\$(OutDir)\dbxml"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops;..\..\..\..\TargetX64.vsprops"
 			UseOfMFC="0"
@@ -161,6 +162,7 @@
 				ObjectFile="$(IntDir)\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 				CompileAs="0"
 			/>
@@ -177,11 +179,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libdb45d.lib xerces-c_2d.lib xqilla10d.lib"
+				AdditionalDependencies="xqilla10d.lib libdb45d.lib xerces-c_2d.lib"
 				OutputFile="$(OutDir)/libdbxml23d.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;$(OutDir)&quot;;&quot;../../$(xerces-c-src)&quot;;&quot;../../$(db-4.5.20)&quot;;&quot;../../$(xqilla)&quot;"
+				AdditionalLibraryDirectories="&quot;&amp;(outdir)&quot;;&quot;../../xerces-c-src/Build/Win64/VC7.1/$(ConfigurationName)&quot;;&quot;../../db-4.5.20/build_windows/$(ConfigurationName)64&quot;;&quot;../../xqilla/build/windows/vc7.1/$(ConfigurationName)64&quot;"
+				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/libdbxml23d.pdb"
 				ImportLibrary="$(OutDir)/libdbxml23d.lib"
@@ -211,7 +214,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Copying libraries to install directory"
-				CommandLine="copyFiles7.bat&#x0D;&#x0A;installProj.bat libdbxml23 dll $(OutDir) debug copyLib&#x0D;&#x0A;"
+				CommandLine="copyFiles7_win64.bat&#x0D;&#x0A;installProj_win64.bat libdbxml23 dll $(OutDir) debug copyLib&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -317,8 +320,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory=".\$(build)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\build_windows\$(ConfigurationName)64"
+			IntermediateDirectory=".\$(OutDir)\dbxml"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops;..\..\..\..\TargetX64.vsprops"
 			UseOfMFC="0"
@@ -363,6 +366,7 @@
 				ObjectFile="$(IntDir)\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 				CompileAs="0"
 			/>
@@ -383,7 +387,7 @@
 				OutputFile="$(OutDir)/libdbxml23.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;$(OutDir)&quot;;&quot;../../$(xerces-c-src)&quot;;&quot;../../$(db-4.5.20)&quot;;&quot;../../$(xqilla)&quot;"
+				AdditionalLibraryDirectories="&quot;$(OutDir)&quot;;&quot;../../xerces-c-src/Build/Win64/VC7.1/$(ConfigurationName)&quot;;&quot;../../db-4.5.20/build_windows/$(ConfigurationName)64&quot;;&quot;../../xqilla/build/windows/vc7.1/$(ConfigurationName)64&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/libdbxml23.pdb"
 				ImportLibrary="$(OutDir)/libdbxml23.lib"
@@ -413,7 +417,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Copying libraries to install directory"
-				CommandLine="copyFiles7.bat&#x0D;&#x0A;installProj.bat libdbxml23 dll $(OutDir) release copyLib&#x0D;&#x0A;"
+				CommandLine="copyFiles7_win64.bat&#x0D;&#x0A;installProj_win64.bat libdbxml23 dll $(OutDir) release copyLib&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration

@@ -69,7 +69,7 @@ void WT_Layer::set(char const * layer_name, WT_File & file)
 void WT_Layer::set(WT_Unsigned_Integer16 const * layer_name, WT_File & file)
 {
     m_incarnation = file.next_incarnation();
-    m_layer_name.set(WT_String::wcslen(layer_name),layer_name);
+    m_layer_name.set(static_cast<int>(WT_String::wcslen(layer_name)),layer_name);
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -29,7 +29,7 @@ public:
 
 private:
   XERCES_CPP_NAMESPACE_QUALIFIER DOMNamedNodeMap *nodeMap_;
-  unsigned int i_;
+  size_t i_;
 };
 
 #endif

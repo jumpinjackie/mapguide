@@ -136,13 +136,13 @@ void  WT_Named_View_List::add_named_view (WT_Named_View & named_view)
 ///////////////////////////////////////////////////////////////////////////
 WT_Named_View * WT_Named_View_List::find_named_view_from_name (char const * name)
 {
-    return find_named_view_from_name(WT_String(strlen(name),name));
+    return find_named_view_from_name(WT_String((int)strlen(name),name));
 }
 
 ///////////////////////////////////////////////////////////////////////////
 WT_Named_View * WT_Named_View_List::find_named_view_from_name (WT_Unsigned_Integer16 const * name)
 {
-    return find_named_view_from_name(WT_String(WT_String::wcslen(name),name));
+    return find_named_view_from_name(WT_String(static_cast<int>(WT_String::wcslen(name)),name));
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -23,7 +23,7 @@ ACE_Time_Value::operator const timeval * () const
 }
 
 ACE_INLINE void
-ACE_Time_Value::set (long sec, long usec)
+ACE_Time_Value::set (time_t sec, long usec)
 {
   // ACE_OS_TRACE ("ACE_Time_Value::set");
   this->tv_.tv_sec = sec;
@@ -89,7 +89,7 @@ ACE_Time_Value::ACE_Time_Value (void)
 }
 
 ACE_INLINE
-ACE_Time_Value::ACE_Time_Value (long sec, long usec)
+ACE_Time_Value::ACE_Time_Value (time_t sec, long usec)
 {
   // ACE_OS_TRACE ("ACE_Time_Value::ACE_Time_Value");
   this->set (sec, usec);
@@ -97,7 +97,7 @@ ACE_Time_Value::ACE_Time_Value (long sec, long usec)
 
 // Returns number of seconds.
 
-ACE_INLINE long
+ACE_INLINE time_t
 ACE_Time_Value::sec (void) const
 {
   // ACE_OS_TRACE ("ACE_Time_Value::sec");
@@ -107,7 +107,7 @@ ACE_Time_Value::sec (void) const
 // Sets the number of seconds.
 
 ACE_INLINE void
-ACE_Time_Value::sec (long sec)
+ACE_Time_Value::sec (time_t sec)
 {
   // ACE_OS_TRACE ("ACE_Time_Value::sec");
   this->tv_.tv_sec = sec;

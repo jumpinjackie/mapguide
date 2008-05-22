@@ -53,7 +53,7 @@ inline bool ISNAN(float& d)
 ///</summary>
 inline int Double2Int(double flt)
 {
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(_WIN64)
     //the default state of the FPU is to use rounding when truncating from floating point
     //to integer, so we can use that here
     int val;

@@ -154,10 +154,10 @@ WT_Result WT_Text_VAlign::serialize(WT_File & file) const
        // Extended Binary Output
        WD_CHECK (file.write((WT_Byte)'{'));                     // Write out EXB opener
 
-       WD_CHECK (file.write((WT_Integer32)                      // Write out 4 byte packer
+       WD_CHECK (file.write((WT_Integer32)(                     // Write out 4 byte packer
                             sizeof(WT_Integer16) +              // opcode
                             sizeof(WT_Byte)      +              // eAlignment
-                            sizeof(WT_Byte)));                   // EXBO closer '}'
+                            sizeof(WT_Byte))));                 // EXBO closer '}'
 
        WD_CHECK (file.write((WT_Integer16)WD_EXBO_TEXT_VALIGN));// Write out opcode
        WD_CHECK (file.write((WT_Byte)m_eAlignment));            // Write out enum value

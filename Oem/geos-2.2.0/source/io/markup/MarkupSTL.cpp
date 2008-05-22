@@ -46,7 +46,7 @@ bool CMarkupSTL::SetDoc( const char* szDoc )
 	// Starting size of position array: 1 element per 64 bytes of document
 	// Tight fit when parsing small doc, only 0 to 2 reallocs when parsing large doc
 	// Start at 8 when creating new document
-	int nStartSize = m_strDoc.size() / 64 + 8;
+	size_t nStartSize = m_strDoc.size() / 64 + 8;
 	if ( m_aPos.size() < nStartSize )
 		m_aPos.resize( nStartSize );
 
@@ -118,7 +118,7 @@ bool CMarkupSTL::Save( const char* szFileName )
 	if ( fp )
 	{
 		// Save string
-		int nFileLen = m_strDoc.size();
+		size_t nFileLen = m_strDoc.size();
 		if ( ! nFileLen )
 			bResult = true;
 		else if ( fwrite( m_strDoc.c_str(), nFileLen, 1, fp ) == 1 )
@@ -846,7 +846,7 @@ bool CMarkupSTL::x_SetData( int iPos, const char* szData, int nCDATA )
 		// Pre-adjust since <NAME/> becomes <NAME>data</NAME>
 		string strTagName = x_GetTagName( iPos );
 		m_aPos[iPos].nStartR -= 1;
-		m_aPos[iPos].nEndL -= (1 + strTagName.size());
+ 		m_aPos[iPos].nEndL -= (1 + strTagName.size());
 		string strFormat;
 		strFormat = ">";
 		strFormat += strInsert;

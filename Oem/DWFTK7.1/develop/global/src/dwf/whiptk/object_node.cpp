@@ -70,7 +70,7 @@ void WT_Object_Node::set(WT_File & file, WT_Integer32 object_node_num, WT_Unsign
 {
     m_incarnation = file.next_incarnation();
     m_object_node_num = object_node_num;
-    m_object_node_name.set(WT_String::wcslen(object_node_name),object_node_name);
+    m_object_node_name.set(static_cast<int>(WT_String::wcslen(object_node_name)),object_node_name);
 }
 
 ///////////////////////////////////////////////////////////////////////////

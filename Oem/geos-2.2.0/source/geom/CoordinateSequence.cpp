@@ -133,8 +133,8 @@ bool CoordinateSequence::equals(CoordinateSequence *cl1,CoordinateSequence *cl2)
 void
 CoordinateSequence::add(const vector<Coordinate>* vc,bool allowRepeated)
 {
-	unsigned int size=vc->size();
-	for(unsigned int i=0; i<size; i++) {
+	size_t size=vc->size();
+	for(size_t i=0; i<size; i++) {
 		add((*vc)[i],allowRepeated);
 	}
 }

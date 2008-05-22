@@ -121,7 +121,7 @@ class ACE_Export ACE_SString
 {
 public:
   /// No position constant
-  static const int npos;
+  static const size_t npos;
 
   /// Default constructor.
   ACE_SString (ACE_Allocator *alloc = 0);
@@ -184,23 +184,23 @@ public:
 
   /// Comparison operator that will match substrings.  Returns the
   /// slot of the first location that matches, else -1.
-  int strstr (const ACE_SString &s) const;
+  size_t strstr (const ACE_SString &s) const;
 
   /// Find <str> starting at pos.  Returns the slot of the first
   /// location that matches (will be >= pos), else npos.
-  int find (const ACE_SString &str, int pos = 0) const;
+  size_t find (const ACE_SString &str, int pos = 0) const;
 
   /// Find <s> starting at pos.  Returns the slot of the first
   /// location that matches (will be >= pos), else npos.
-  int find (const char *s, int pos = 0) const;
+  size_t find (const char *s, int pos = 0) const;
 
   /// Find <c> starting at pos.  Returns the slot of the first
   /// location that matches (will be >= pos), else npos.
-  int find (char c, int pos = 0) const;
+  size_t find (char c, int pos = 0) const;
 
   /// Find <c> starting at pos (counting from the end).  Returns the
   /// slot of the first location that matches, else npos.
-  int rfind (char c, int pos = npos) const;
+  size_t rfind (char c, int pos = npos) const;
 
   /// Equality comparison operator (must match entire string).
   int operator == (const ACE_SString &s) const;
@@ -470,7 +470,7 @@ public:
   ~ACE_Auto_String_Free (void);
 
   char* operator* () const;
-  char operator[] (int i) const;
+  char operator[] (size_t i) const;
   char* get (void) const;
   char* release (void);
   void reset (char* p = 0);

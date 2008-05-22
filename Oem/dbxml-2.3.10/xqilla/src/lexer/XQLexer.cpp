@@ -140,7 +140,6 @@ extern int yyleng;
  */
 typedef unsigned int yy_size_t;
 
-
 struct yy_buffer_state
 	{
 	std::istream* yy_input_file;
@@ -15408,7 +15407,7 @@ int yyFlexLexer::LexerInput( YY_CHAR* buf, int max_size )
 	if ( yyin->bad() )
 		return -1;
 	else
-		return ( yyin->gcount() / sizeof( YY_CHAR ) );
+		return (int)( yyin->gcount() / sizeof( YY_CHAR ) );
 #endif
 	}
 
@@ -15665,7 +15664,7 @@ int yyFlexLexer::yyinput()
 
 		else
 			{ /* need more input */
-			int offset = yy_c_buf_p - yytext_ptr;
+			int offset = (int)(yy_c_buf_p - yytext_ptr);
 			++yy_c_buf_p;
 
 			switch ( yy_get_next_buffer() )

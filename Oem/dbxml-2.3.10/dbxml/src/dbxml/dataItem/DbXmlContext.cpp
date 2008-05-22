@@ -67,22 +67,22 @@ void DbXmlContext::setExternalContextNode(const XERCES_CPP_NAMESPACE_QUALIFIER D
 	DBXML_ASSERT(false);
 }
 
-unsigned int DbXmlContext::getContextPosition() const
+size_t DbXmlContext::getContextPosition() const
 {
 	return contextPosition_;
 }
 
-void DbXmlContext::setContextPosition(unsigned int pos)
+void DbXmlContext::setContextPosition(size_t pos)
 {
 	contextPosition_ = pos;
 }
 
-unsigned int DbXmlContext::getContextSize() const
+size_t DbXmlContext::getContextSize() const
 {
 	return contextSize_;
 }
 
-void DbXmlContext::setContextSize(unsigned int size)
+void DbXmlContext::setContextSize(size_t size)
 {
 	contextSize_ = size;
 }

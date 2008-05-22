@@ -344,7 +344,7 @@ void DirectedEdgeStar::computeDepths(DirectedEdge *de){
 	int targetLastDepth=de->getDepth(Position::RIGHT);
 
 	// compute the depths from this edge up to the end of the edge array
-	int nextDepth=computeDepths(edgeIndex+1, edgeList->size(), startDepth);
+	int nextDepth=computeDepths(edgeIndex+1, (int)edgeList->size(), startDepth);
 	// compute the depths for the initial part of the array
 	int lastDepth=computeDepths(0,edgeIndex,nextDepth);
 	if (lastDepth!=targetLastDepth)

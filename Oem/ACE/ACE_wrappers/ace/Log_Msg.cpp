@@ -435,7 +435,7 @@ u_long ACE_Log_Msg::flags_ = ACE_Log_Msg::STDERR;
 pid_t ACE_Log_Msg::pid_ = -1;
 
 /// Current offset of msg_[].
-int ACE_Log_Msg::msg_off_ = 0;
+ptrdiff_t ACE_Log_Msg::msg_off_ = 0;
 
 /// Default per-thread priority mask
 /// By default, no priorities are enabled.
@@ -908,7 +908,7 @@ ACE_Log_Msg::log (ACE_Log_Priority log_priority,
 
   va_start (argp, format_str);
 
-  int result = this->log (format_str,
+  ssize_t const result = this->log (format_str,
                           log_priority,
                           argp);
   va_end (argp);
@@ -932,7 +932,7 @@ ACE_Log_Msg::log (ACE_Log_Priority log_priority,
 
   va_start (argp, format_str);
 
-  int result = this->log (ACE_TEXT_ANTI_TO_TCHAR (format_str),
+  ssize_t result = this->log (ACE_TEXT_ANTI_TO_TCHAR (format_str),
                           log_priority,
                           argp);
   va_end (argp);

@@ -265,7 +265,7 @@ public:
 		stream->read(reinterpret_cast<char *>(buf), 8);
 		if ( stream->eof() )
 			throw new ParseException("Unespected EOF parsing WKB");
-		return ByteOrderValues::getLong(buf, byteOrder);
+		return (long)ByteOrderValues::getLong(buf, byteOrder);
 	}
 
 	double readDouble() // throws ParseException

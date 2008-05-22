@@ -278,7 +278,7 @@ void WT_Named_View::set(const char * name)
 void WT_Named_View::set(WT_Unsigned_Integer16 const * name)
 {
     m_has_been_serialized = WD_False;
-    m_name.set(WT_String::wcslen(name),name);
+    m_name.set(static_cast<int>(WT_String::wcslen(name)),name);
 }
 
 ///////////////////////////////////////////////////////////////////////////

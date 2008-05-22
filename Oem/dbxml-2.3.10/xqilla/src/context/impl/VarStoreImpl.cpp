@@ -239,7 +239,7 @@ XMLCh* VarStoreImpl::print(XERCES_CPP_NAMESPACE_QUALIFIER MemoryManager* memMgr)
           VarHashEntry<Sequence>* pEntry=const_cast<Scope<Sequence>*>(index)->get(it->first,it->second);
 
           Sequence value(pEntry->getValue());
-          unsigned int len=value.getLength();
+          size_t len=value.getLength();
           if(len>0) {
             if(len==1)
               buf.append(value.first()->asString(&xp2c));

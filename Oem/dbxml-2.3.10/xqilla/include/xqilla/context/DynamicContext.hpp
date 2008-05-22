@@ -48,14 +48,14 @@ public:
   virtual void setExternalContextNode(const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *node) = 0;
 
   /** Get the context position */
-  virtual unsigned int getContextPosition() const = 0;
+  virtual size_t getContextPosition() const = 0;
   /** Set the context position */ 
-  virtual void setContextPosition(unsigned int pos) = 0;
+  virtual void setContextPosition(size_t pos) = 0;
 
   /** Get the context size */
-  virtual unsigned int getContextSize() const = 0;
+  virtual size_t getContextSize() const = 0;
   /** Set the context size */
-  virtual void setContextSize(unsigned int size) = 0;
+  virtual void setContextSize(size_t size) = 0;
   
   /** get the variable store */
   virtual VariableStore* getVariableStore() = 0;

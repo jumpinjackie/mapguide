@@ -135,7 +135,7 @@ void WT_Informational::set(char const * string)
 ///////////////////////////////////////////////////////////////////////////
 void WT_Informational::set(WT_Unsigned_Integer16 const * string)
 {
-    m_string.set(WT_String::wcslen(string),string);
+    m_string.set(static_cast<int>(WT_String::wcslen(string)),string);
 }
 
 ///////////////////////////////////////////////////////////////////////////

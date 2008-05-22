@@ -54,7 +54,7 @@ ACE_System_Time::~ACE_System_Time (void)
 // Get the local system time.
 
 int
-ACE_System_Time::get_local_system_time (ACE_UINT32 &time_out)
+ACE_System_Time::get_local_system_time (time_t & time_out)
 {
   ACE_TRACE ("ACE_System_Time::get_local_system_time");
   time_out = ACE_OS::time (0);
@@ -72,7 +72,7 @@ ACE_System_Time::get_local_system_time (ACE_Time_Value &time_out)
 // Get the system time of the central time server.
 
 int
-ACE_System_Time::get_master_system_time (ACE_UINT32 &time_out)
+ACE_System_Time::get_master_system_time (time_t &time_out)
 {
   ACE_TRACE ("ACE_System_Time::get_master_system_time");
 
@@ -91,7 +91,7 @@ ACE_System_Time::get_master_system_time (ACE_UINT32 &time_out)
 	this->delta_time_ = (long *) temp;
     }
 
-  ACE_UINT32 local_time;
+  time_t local_time;
 
   // If delta_time is positive, it means that the system clock is
   // ahead of our local clock so add delta to the local time to get an
@@ -114,7 +114,7 @@ int
 ACE_System_Time::get_master_system_time (ACE_Time_Value &time_out)
 {
   ACE_TRACE ("ACE_System_Time::get_master_system_time");
-  ACE_UINT32 to;
+  time_t to;
   if (this->get_master_system_time (to) == -1)
     return -1;
   time_out.sec (to);

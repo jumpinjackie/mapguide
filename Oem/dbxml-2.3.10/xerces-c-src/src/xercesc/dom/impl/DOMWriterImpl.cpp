@@ -821,7 +821,7 @@ void DOMWriterImpl::processNode(const DOMNode* const nodeToWrite, int level)
                 // Output any attributes on this element
                 setURCharRef();
                 DOMNamedNodeMap *attributes = nodeToWrite->getAttributes();
-                int attrCount = attributes->getLength();
+                XMLSize_t attrCount = attributes->getLength();
 
                 // check if the namespace for the current node is already defined
                 const XMLCh* prefix = nodeToWrite->getPrefix();
@@ -864,7 +864,7 @@ void DOMWriterImpl::processNode(const DOMNode* const nodeToWrite, int level)
                 }
 
                 bool discard = getFeature(DISCARD_DEFAULT_CONTENT_ID);
-                for (int i = 0; i < attrCount; i++)
+                for (XMLSize_t i = 0; i < attrCount; i++)
                 {
                     DOMAttrSPtr  attribute = (DOMAttr*)attributes->item(i);
 

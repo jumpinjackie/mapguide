@@ -529,7 +529,7 @@ ACE_CDR::consolidate (ACE_Message_Block *dst,
     ptrdiff_t(src->rd_ptr ()) % ACE_CDR::MAX_ALIGNMENT;
   ptrdiff_t dstalign =
     ptrdiff_t(dst->rd_ptr ()) % ACE_CDR::MAX_ALIGNMENT;
-  int offset = srcalign - dstalign;
+  ptrdiff_t offset = srcalign - dstalign;
   if (offset < 0)
     offset += ACE_CDR::MAX_ALIGNMENT;
   dst->rd_ptr (offset);

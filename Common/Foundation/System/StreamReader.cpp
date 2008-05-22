@@ -459,10 +459,10 @@ MgByteReader* MgStreamReader::GetStream(bool enableDirect)
                 }
                 else
                 {
-                    UINT32 dataWritten = 0;
+                    ssize_t dataWritten = 0;
                     while (dataWritten < len)
                     {
-                        int written = ACE_OS::write(file, &temp[dataWritten], len-dataWritten);
+                        ssize_t written = ACE_OS::write(file, &temp[dataWritten], len-dataWritten);
                         if (written > 0)
                         {
                             dataWritten += written;

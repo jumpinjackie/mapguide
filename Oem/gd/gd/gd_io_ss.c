@@ -43,9 +43,9 @@ ssIOCtx;
 
 typedef struct ssIOCtx *ssIOCtxPtr;
 
-static int sourceGetbuf (gdIOCtx *, void *, int);
+static int sourceGetbuf (gdIOCtx *, void *, size_t);
 static int sourceGetchar (gdIOCtx * ctx);
-static int sinkPutbuf (gdIOCtx * ctx, const void *buf, int size);
+static int sinkPutbuf (gdIOCtx * ctx, const void *buf, size_t size);
 static void sinkPutchar (gdIOCtx * ctx, int a);
 static void gdFreeSsCtx (gdIOCtx * ctx);
 
@@ -85,7 +85,7 @@ gdFreeSsCtx (gdIOCtx * ctx)
 
 
 static int
-sourceGetbuf (gdIOCtx * ctx, void *buf, int size)
+sourceGetbuf (gdIOCtx * ctx, void *buf, size_t size)
 {
   ssIOCtx *lctx;
   int res;
@@ -134,7 +134,7 @@ sourceGetchar (gdIOCtx * ctx)
 }
 
 static int
-sinkPutbuf (gdIOCtx * ctx, const void *buf, int size)
+sinkPutbuf (gdIOCtx * ctx, const void *buf, size_t size)
 {
   ssIOCtxPtr lctx;
   int res;

@@ -65,8 +65,8 @@ void DateUtils::formatNumber(const MAPM &value, int minDigits, XERCES_CPP_NAMESP
     buffer.append(XERCES_CPP_NAMESPACE_QUALIFIER chDash);
   }
 
-  int length = strlen(str);
-  for(int i = length; i < minDigits; ++i) {
+  size_t length = strlen(str);
+  for(int i = (int)length; i < minDigits; ++i) {
     buffer.append(XERCES_CPP_NAMESPACE_QUALIFIER chDigit_0);
   }
 

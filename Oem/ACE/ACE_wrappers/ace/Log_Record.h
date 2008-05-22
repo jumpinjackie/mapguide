@@ -61,7 +61,7 @@ public:
    */
   ACE_Log_Record (void);
   ACE_Log_Record (ACE_Log_Priority lp,
-                  long time_stamp,
+                  time_t time_stamp,
                   long pid);
   ACE_Log_Record (ACE_Log_Priority lp,
                   const ACE_Time_Value &time_stamp,
@@ -180,7 +180,7 @@ private:
   ACE_UINT32 type_;
 
   /// Time that the logging record was generated.
-  ACE_UINT32 secs_;
+  time_t secs_;
   ACE_UINT32 usecs_;
 
   /// Id of process that generated the logging record.

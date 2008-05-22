@@ -339,7 +339,7 @@ int WT_FIFO<_ItemType>::pointer_to_index(_ItemType const * ptr) const
     WD_Assert(ptr >= m_buffer);
     WD_Assert(ptr < (m_buffer + m_capacity));
 
-    int    pseudo_index = ptr - m_buffer;
+    int    pseudo_index = static_cast<int>(ptr - m_buffer);
 
     // See if we wrap around or not
     if (pseudo_index < m_start)

@@ -99,8 +99,8 @@ DOMNode * DOMNamedNodeMapImpl::getNamedItem(const XMLCh *name) const
     if(fBuckets[hash]==0)
         return 0;
 
-    int i = 0;
-    int size = fBuckets[hash]->size();
+    XMLSize_t i = 0;
+    XMLSize_t size = fBuckets[hash]->size();
     for (i = 0; i < size; ++i) {
         DOMNode *n=fBuckets[hash]->elementAt(i);
         if(XMLString::equals(name,n->getNodeName()))
@@ -128,8 +128,8 @@ DOMNode * DOMNamedNodeMapImpl::removeNamedItem(const XMLCh *name)
     if(fBuckets[hash]==0)
         throw DOMException(DOMException::NOT_FOUND_ERR, 0, GetDOMNamedNodeMapMemoryManager);
 
-    int i = 0;
-    int size = fBuckets[hash]->size();
+    XMLSize_t i = 0;
+    XMLSize_t size = fBuckets[hash]->size();
     for (i = 0; i < size; ++i) {
         DOMNode *n=fBuckets[hash]->elementAt(i);
         if(XMLString::equals(name,n->getNodeName())) {
@@ -174,8 +174,8 @@ DOMNode * DOMNamedNodeMapImpl::setNamedItem(DOMNode * arg)
     if(fBuckets[hash]==0)
         fBuckets[hash] = new (doc) DOMNodeVector(doc, 3);
 
-    int i = 0;
-    int size = fBuckets[hash]->size();
+    XMLSize_t i = 0;
+    XMLSize_t size = fBuckets[hash]->size();
     for (i = 0; i < size; ++i) {
         DOMNode *n=fBuckets[hash]->elementAt(i);
         if(XMLString::equals(name,n->getNodeName())) {
@@ -197,8 +197,8 @@ void DOMNamedNodeMapImpl::setReadOnly(bool readOnl, bool deep)
         for (int index = 0; index < MAP_SIZE; index++) {
             if(fBuckets[index]==0)
                 continue;
-            int sz = fBuckets[index]->size();
-            for (int i=0; i<sz; ++i)
+            XMLSize_t sz = fBuckets[index]->size();
+            for (XMLSize_t i=0; i<sz; ++i)
                 castToNodeImpl(fBuckets[index]->elementAt(i))->setReadOnly(readOnl, deep);
         }
     }
@@ -215,8 +215,8 @@ DOMNode *DOMNamedNodeMapImpl::getNamedItemNS(const XMLCh *namespaceURI, const XM
         if(fBuckets[index]==0)
             continue;
 
-        int i = 0;
-        int size = fBuckets[index]->size();
+        XMLSize_t i = 0;
+        XMLSize_t size = fBuckets[index]->size();
         for (i = 0; i < size; ++i) {
             DOMNode *n=fBuckets[index]->elementAt(i);
             const XMLCh * nNamespaceURI = n->getNamespaceURI();
@@ -266,8 +266,8 @@ DOMNode * DOMNamedNodeMapImpl::setNamedItemNS(DOMNode *arg)
         if(fBuckets[index]==0)
             continue;
 
-        int i = 0;
-        int size = fBuckets[index]->size();
+        XMLSize_t i = 0;
+        XMLSize_t size = fBuckets[index]->size();
         for (i = 0; i < size; ++i) {
             DOMNode *n=fBuckets[index]->elementAt(i);
             const XMLCh * nNamespaceURI = n->getNamespaceURI();
@@ -309,8 +309,8 @@ DOMNode *DOMNamedNodeMapImpl::removeNamedItemNS(const XMLCh *namespaceURI,
         if(fBuckets[index]==0)
             continue;
 
-        int i = 0;
-        int size = fBuckets[index]->size();
+        XMLSize_t i = 0;
+        XMLSize_t size = fBuckets[index]->size();
         for (i = 0; i < size; ++i) {
             DOMNode *n=fBuckets[index]->elementAt(i);
             const XMLCh * nNamespaceURI = n->getNamespaceURI();

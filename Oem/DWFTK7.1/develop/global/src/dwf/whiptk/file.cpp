@@ -148,7 +148,7 @@ void WT_File::set_filename(char const * name)
 //////////////////////////////////////////////////////////////////////////////////
 void WT_File::set_filename(WT_Unsigned_Integer16 const * name)
 {
-    m_filename.set(WT_String::wcslen(name),name);
+    m_filename.set(static_cast<int>(WT_String::wcslen(name)),name);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -792,7 +792,7 @@ WT_Result WT_File::decompress_seek(int count, int & num_seeked)
 #if DESIRED_CODE (WHIP_OUTPUT)
 WT_Result WT_File::write(char const * str)
 {
-    return compress_write(strlen(str), str);
+    return compress_write((int)strlen(str), str);
 }
 #else
 WT_Result WT_File::write(char const *)
@@ -872,7 +872,7 @@ WT_Result WT_File::write_quoted_string(WT_Unsigned_Integer16 const * string)
     if( heuristics().allow_binary_data() )
     {
         WD_CHECK( write((WT_Byte)'{') );
-        WT_Integer32 l = WT_String::wcslen(string);
+        WT_Integer32 l = static_cast<WT_Integer32>(WT_String::wcslen(string));
         WD_CHECK( write(l) );
         WD_CHECK( write(l,string) );
         WD_CHECK( write((WT_Byte)'}') );
@@ -1447,7 +1447,7 @@ WT_Result WT_File::write_uncompressed_tab_level()
 
     WD_Assert(tab_level() >= 0);
 
-    WD_CHECK(m_stream_write_action(*this, strlen(WD_NEWLINE), WD_NEWLINE));
+    WD_CHECK(m_stream_write_action(*this, (int)strlen(WD_NEWLINE), WD_NEWLINE));
 
     for (int loop = 0; loop < tab_level(); loop++)
         WD_CHECK(write_uncompressed(' '));
@@ -1463,7 +1463,7 @@ WT_Result WT_File::write_uncompressed_tab_level()
 #if DESIRED_CODE (WHIP_OUTPUT)
 WT_Result WT_File::write_uncompressed(char const * str)
 {
-    WD_CHECK(m_stream_write_action(*this, strlen(str), str));
+    WD_CHECK(m_stream_write_action(*this, (int)strlen(str), str));
     return WT_Result::Success;
 }
 #else
@@ -3087,7 +3087,7 @@ WT_Result WT_File::default_read(WT_File & file,
     if (feof(fp))
         return WT_Result::End_Of_File_Error;
 
-    bytes_read = fread(buffer, sizeof(WT_Byte), desired_bytes, fp);
+    bytes_read = (int)fread(buffer, sizeof(WT_Byte), desired_bytes, fp);
 
     if (!bytes_read)
         return WT_Result::Unknown_File_Read_Error;
@@ -3290,7 +3290,7 @@ WT_Result WT_File::default_write(WT_File & file, int size, void const * buffer)
     if (!file.stream_user_data())
         return WT_Result::File_Write_Error;
 
-    bytes_writen = fwrite(buffer, 1, size, (FILE *)file.stream_user_data());
+    bytes_writen = (int)fwrite(buffer, 1, size, (FILE *)file.stream_user_data());
     if (bytes_writen != size)
         return WT_Result::File_Write_Error;
     else

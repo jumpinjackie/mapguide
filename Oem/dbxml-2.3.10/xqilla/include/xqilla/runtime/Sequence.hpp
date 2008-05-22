@@ -46,7 +46,7 @@ public:
   Sequence(XERCES_CPP_NAMESPACE_QUALIFIER MemoryManager* memMgr =
            XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils::fgMemoryManager);
   /// construct and reserve space for n elements
-  Sequence(unsigned int n, XERCES_CPP_NAMESPACE_QUALIFIER MemoryManager* memMgr =
+  Sequence(size_t n, XERCES_CPP_NAMESPACE_QUALIFIER MemoryManager* memMgr =
            XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils::fgMemoryManager);
   // copy constructor
   Sequence(const Sequence&, XERCES_CPP_NAMESPACE_QUALIFIER MemoryManager* memMgr);
@@ -77,10 +77,10 @@ public:
   Sequence::const_reverse_iterator rend(void) const;
 
   ///Returns the number of nodes in the list                        
-  unsigned int getLength(void) const;
+  size_t getLength(void) const;
 
   ///Return the indexth item in the collection 
-  const Item::Ptr &item(unsigned int index) const;
+  const Item::Ptr &item(size_t index) const;
   ///Return the indexth item in the collection - takes ATDecimalOrDerived
   const Item::Ptr &item(const ATDecimalOrDerived::Ptr &index) const;
 

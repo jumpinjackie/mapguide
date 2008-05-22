@@ -207,7 +207,7 @@ namespace ACE_Utils
             return;
           }
         ACE_CString thr_pid_str (thr_pid_buf);
-        int pos = thr_pid_str.find ('-');
+        size_t pos = thr_pid_str.find ('-');
         if (pos == -1)
           ACE_DEBUG ((LM_DEBUG,
                       "ACE_UUID::ACE_UUID - "
@@ -235,7 +235,7 @@ namespace ACE_Utils
       {
         // Get a buffer exactly the correct size. Use the nil UUID as a
         // gauge.  Don't forget the trailing nul.
-        int UUID_STRING_LENGTH = 36 + thr_id_.length () + pid_.length ();
+        size_t UUID_STRING_LENGTH = 36 + thr_id_.length () + pid_.length ();
         char *buf;
 
         if ((thr_id_.length () != 0) && (pid_.length () != 0))

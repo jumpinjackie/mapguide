@@ -296,8 +296,8 @@ WT_URL const & WT_URL::operator=(WT_URL const & url)
 void WT_URL::set(WT_Integer32 index, WT_Unsigned_Integer16 const *address, WT_Unsigned_Integer16 const *friendly_name)
 {
     WT_URL_Item item;
-    item.address().set(WT_String::wcslen(address), address);
-    item.friendly_name().set(WT_String::wcslen(friendly_name), friendly_name);
+    item.address().set(static_cast<int>(WT_String::wcslen(address)), address);
+    item.friendly_name().set(static_cast<int>(WT_String::wcslen(friendly_name)), friendly_name);
     item.index() = index;
     add_url(item);
 }

@@ -127,12 +127,12 @@ const XMLCh *XQUserFunction::getQName() const
   return m_qname.getRawBuffer();
 }
 
-unsigned int XQUserFunction::getMinArgs() const
+size_t XQUserFunction::getMinArgs() const
 {
   return m_pParams==NULL?0:m_pParams->size();
 }
 
-unsigned int XQUserFunction::getMaxArgs() const
+size_t XQUserFunction::getMaxArgs() const
 {
   return m_pParams==NULL?0:m_pParams->size();
 }
@@ -329,7 +329,7 @@ Result XQUserFunction::XQFunctionEvaluator::createResult(DynamicContext* context
 
 ASTNode* XQUserFunction::XQFunctionEvaluator::staticResolution(StaticContext* context)
 {
-  unsigned int nDefinedArgs = m_pFuncDef->m_pParams ? m_pFuncDef->m_pParams->size() : 0;
+  size_t nDefinedArgs = m_pFuncDef->m_pParams ? m_pFuncDef->m_pParams->size() : 0;
   if(_args.size() != nDefinedArgs) {
     XERCES_CPP_NAMESPACE_QUALIFIER XMLBuffer buf;
     buf.set(X("Function '"));
@@ -363,7 +363,7 @@ ASTNode* XQUserFunction::XQFunctionEvaluator::staticTyping(StaticContext* contex
     _src.copy(m_pFuncDef->_src);
   }
 
-  unsigned int nDefinedArgs = m_pFuncDef->m_pParams ? m_pFuncDef->m_pParams->size() : 0;
+  size_t nDefinedArgs = m_pFuncDef->m_pParams ? m_pFuncDef->m_pParams->size() : 0;
   if(nDefinedArgs > 0) {
     VectorOfASTNodes::iterator argIt = _args.begin();
     for(VectorOfFunctionParameters::iterator defIt = m_pFuncDef->m_pParams->begin();
@@ -411,7 +411,7 @@ Item::Ptr XQUserFunction::XQFunctionEvaluator::FunctionEvaluatorResult::next(Dyn
   if(_toDo) {
     _toDo = false;
 
-    int nDefinedArgs = _di->getFunctionDefinition()->getParams() ? _di->getFunctionDefinition()->getParams()->size() : 0;
+    size_t nDefinedArgs = _di->getFunctionDefinition()->getParams() ? _di->getFunctionDefinition()->getParams()->size() : 0;
 
     VectorOfParamBindings varValues;
     if(nDefinedArgs > 0) {

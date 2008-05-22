@@ -166,8 +166,8 @@ bool
 Node::isIncidentEdgeInResult() const
 {
 	vector<EdgeEnd*>*v = edges->getEdges();
-	unsigned int size = v->size();
-	for (unsigned int i=0; i<size; i++)
+	size_t size = v->size();
+	for (size_t i=0; i<size; i++)
 	{
 		DirectedEdge *de = (DirectedEdge *)(*v)[i];
 		if ( de->getEdge()->isInResult() ) return true;

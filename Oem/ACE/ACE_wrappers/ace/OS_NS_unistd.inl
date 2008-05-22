@@ -825,7 +825,7 @@ ACE_OS::read (ACE_HANDLE handle, void *buf, size_t len,
 #endif /* ACE_WIN32 */
 }
 
-ACE_INLINE int
+ACE_INLINE ssize_t
 ACE_OS::readlink (const char *path, char *buf, size_t bufsiz)
 {
   ACE_OS_TRACE ("ACE_OS::readlink");
@@ -876,7 +876,7 @@ ACE_OS::pipe (ACE_HANDLE fds[])
 #endif /* !ACE_WIN32 */
 
 ACE_INLINE void *
-ACE_OS::sbrk (int brk)
+ACE_OS::sbrk (intptr_t brk)
 {
 #if defined (ACE_LACKS_SBRK)
   ACE_UNUSED_ARG (brk);

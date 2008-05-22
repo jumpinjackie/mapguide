@@ -3951,7 +3951,7 @@ TK_Status TK_Polyhedron::write_vertex_marker_symbols (BStreamFileToolkit & tk) a
                                 mp_subprogress++;
                             }   nobreak;
                             case 2: {
-                                if ((status = PutData(tk, mp_vmsymbolstrings[mp_progress], strlen(mp_vmsymbolstrings[mp_progress]))) != TK_Normal)
+                                if ((status = PutData(tk, mp_vmsymbolstrings[mp_progress], (int)strlen(mp_vmsymbolstrings[mp_progress]))) != TK_Normal)
                                     return status;
                                 mp_subprogress = 0;
                             }   break;
@@ -4645,7 +4645,7 @@ TK_Status TK_Polyhedron::write_edge_patterns (BStreamFileToolkit & tk) alter {
                                 mp_subprogress++;
                             }   nobreak;
                             case 2: {
-                                if ((status = PutData(tk, mp_epatternstrings[mp_progress], strlen(mp_epatternstrings[mp_progress]))) != TK_Normal)
+                                if ((status = PutData(tk, mp_epatternstrings[mp_progress], (int)strlen(mp_epatternstrings[mp_progress]))) != TK_Normal)
                                     return status;
                                 mp_subprogress = 0;
                             }   break;

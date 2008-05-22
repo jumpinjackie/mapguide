@@ -153,7 +153,7 @@ ACE_NS_WString::ACE_NS_WString (const ACE_USHORT16 *s,
 
 // *****************************************************************
 
-const int ACE_SString::npos = -1;
+const size_t ACE_SString::npos = -1;
 
 ACE_ALLOC_HOOK_DEFINE(ACE_SString)
 
