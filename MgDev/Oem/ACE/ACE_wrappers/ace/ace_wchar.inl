@@ -46,7 +46,7 @@ ACE_Wide_To_Ascii::convert (const wchar_t *wstr)
 
   int len = wtemp - wstr + 1;
 # else  /* ACE_WIN32 */
-  int len = ::wcslen (wstr) + 1;
+  size_t len = ::wcslen (wstr) + 1;
 # endif /* ACE_WIN32 */
 
   char *str = new char[len];
@@ -94,7 +94,7 @@ ACE_Ascii_To_Wide::convert (const char *str)
   UINT cp = GetACP ();
   int len = ::MultiByteToWideChar (cp, 0, str, -1, 0, 0);
 # else /* ACE_WIN32 */
-  int len = strlen (str) + 1;
+  size_t len = strlen (str) + 1;
 # endif /* ACE_WIN32 */
 
   wchar_t *wstr = new wchar_t[len];
@@ -104,7 +104,7 @@ ACE_Ascii_To_Wide::convert (const char *str)
 # elif defined (VXWORKS)
   ::mbstowcs (wstr, str, len);
 # else /* ACE_WIN32 */
-  for (int i = 0; i < len; i++)
+  for (size_t i = 0; i < len; i++)
     {
       char *t = ACE_const_cast (char *, str);
       wstr[i] = ACE_static_cast (wchar_t, *(t + i));

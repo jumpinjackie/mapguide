@@ -839,7 +839,7 @@ __repmgr_write_some(dbenv, conn)
 		output = STAILQ_FIRST(&conn->outbound_queue);
 		msg = output->msg;
 		if ((bytes = send(conn->fd, &msg->data[output->offset],
-		    (size_t)msg->length - output->offset, 0)) == SOCKET_ERROR) {
+		    (int)(msg->length - output->offset), 0)) == SOCKET_ERROR) {
 			if ((ret = net_errno) == WOULDBLOCK)
 				return (0);
 			else {

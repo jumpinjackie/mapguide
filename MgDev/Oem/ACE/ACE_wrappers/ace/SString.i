@@ -165,7 +165,7 @@ ACE_SString::compare (const ACE_SString &s) const
   return ACE_OS::strcmp (this->rep_, s.rep_);
 }
 
-ACE_INLINE int
+ACE_INLINE size_t
 ACE_SString::find (const char *s, int pos) const
 {
   char *substr = this->rep_ + pos;
@@ -176,7 +176,7 @@ ACE_SString::find (const char *s, int pos) const
     return pointer - this->rep_;
 }
 
-ACE_INLINE int
+ACE_INLINE size_t
 ACE_SString::find (char c, int pos) const
 {
   char *substr = this->rep_ + pos;
@@ -187,7 +187,7 @@ ACE_SString::find (char c, int pos) const
     return pointer - this->rep_;
 }
 
-ACE_INLINE int
+ACE_INLINE size_t
 ACE_SString::strstr (const ACE_SString &s) const
 {
   ACE_TRACE ("ACE_SString::strstr");
@@ -195,13 +195,13 @@ ACE_SString::strstr (const ACE_SString &s) const
   return this->find (s.rep_);
 }
 
-ACE_INLINE int
+ACE_INLINE size_t
 ACE_SString::find (const ACE_SString &str, int pos) const
 {
   return this->find (str.rep_, pos);
 }
 
-ACE_INLINE int
+ACE_INLINE size_t
 ACE_SString::rfind (char c, int pos) const
 {
   if (pos == ACE_SString::npos)
@@ -272,7 +272,7 @@ ACE_Auto_String_Free::operator* (void) const
 }
 
 ACE_INLINE char
-ACE_Auto_String_Free::operator[] (int i) const
+ACE_Auto_String_Free::operator[] (size_t i) const
 {
   return this->p_[i];
 }

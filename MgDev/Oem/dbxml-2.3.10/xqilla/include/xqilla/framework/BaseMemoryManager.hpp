@@ -58,8 +58,8 @@ public:
   virtual void reset();
 
   virtual void dumpStatistics() const;
-  virtual unsigned long getAllocatedObjectCount() const { return objectsAllocated_; }
-  virtual unsigned long getTotalAllocatedMemory() const { return totalMemoryAllocated_; }
+  virtual size_t getAllocatedObjectCount() const { return objectsAllocated_; }
+  virtual size_t getTotalAllocatedMemory() const { return totalMemoryAllocated_; }
   virtual const StringPool *getStringPool() const {
 	  return fStringPool;
   }
@@ -110,8 +110,8 @@ protected:
 
   MemList *fCurrentBlock;
 
-  unsigned long objectsAllocated_;
-  unsigned long totalMemoryAllocated_;
+  size_t objectsAllocated_;
+  size_t totalMemoryAllocated_;
 
   StringPool *fStringPool;
 

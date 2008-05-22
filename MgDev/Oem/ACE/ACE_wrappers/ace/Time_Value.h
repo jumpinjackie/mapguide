@@ -115,7 +115,7 @@ public:
   ACE_Time_Value (void);
 
   /// Constructor.
-  ACE_Time_Value (long sec, long usec = 0);
+  ACE_Time_Value (time_t sec, long usec = 0);
 
   // = Methods for converting to/from various time formats.
 
@@ -131,7 +131,7 @@ public:
 # endif /* ACE_WIN32 */
 
   /// Initializes the ACE_Time_Value from two longs.
-  void set (long sec, long usec);
+  void set (time_t sec, long usec);
 
   /// Initializes the ACE_Time_Value from a double, which is assumed to be
   /// in second format, with any remainder treated as microseconds.
@@ -190,10 +190,10 @@ public:
    * @note The semantics of this method differs from the msec()
    *       method.
    */
-  long sec (void) const;
+  time_t sec (void) const;
 
   /// Set seconds.
-  void sec (long sec);
+  void sec (time_t sec);
 
   /// Get microseconds.
   /**

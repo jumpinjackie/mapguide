@@ -136,21 +136,21 @@ WT_String::WT_String(int length, char const * string)
 ///////////////////////////////////////////////////////////////////////////
 WT_String const & WT_String::operator= ( WT_Unsigned_Integer16 const * string )
 {
-    set(string?wcslen(string):0,string);
+    set(string?static_cast<int>(wcslen(string)):0,string);
     return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////
 WT_String const & WT_String::operator= (WT_Byte const * string)
 {
-    set(string?strlen((char*)string):0,string);
+    set(string?static_cast<int>(strlen((char*)string)):0,string);
     return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////
 WT_String const & WT_String::operator= (char const * string)
 {
-    set(string?strlen(string):0,string);
+    set(string?static_cast<int>(strlen(string)):0,string);
     return *this;
 }
 
@@ -435,7 +435,7 @@ WT_Result WT_String::materialize(WT_File & file)
                 (char*&)m_ascii_string,
                 65536) );
 
-        m_length = strlen((char*)m_ascii_string);
+        m_length = static_cast<WT_Integer32>(strlen((char*)m_ascii_string));
         if(!m_length)
             *this = WT_String::kNull;
 

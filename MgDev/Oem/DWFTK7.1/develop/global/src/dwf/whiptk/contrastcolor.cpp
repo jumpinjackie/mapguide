@@ -91,9 +91,9 @@ WT_Result   WT_Contrast_Color::serialize (WT_File & file) const
         WD_CHECK (file.write((WT_Byte)'{'));                            // Write out EXBO opener
         
         WD_CHECK (file.write((WT_Integer32)                             // Write out 4 byte packer
-                             sizeof(WT_Integer16) +                     // opcode
+                             (sizeof(WT_Integer16) +                     // opcode
                              sizeof(WT_RGBA32)    +                     // color
-                             sizeof(WT_Byte)));                         // EXBO closer '}'
+                             sizeof(WT_Byte))));                         // EXBO closer '}'
 
         WD_CHECK (file.write((WT_Integer16)WD_EXBO_SET_CONTRAST_COLOR));  // Write out opcode 
         WD_CHECK (file.write(m_color));                                     // Write out color value 

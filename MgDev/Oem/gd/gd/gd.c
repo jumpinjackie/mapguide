@@ -1511,8 +1511,8 @@ BGD_DECLARE(void) gdImageCharUp (gdImagePtr im, gdFontPtr f, int x, int y, int c
 BGD_DECLARE(void) gdImageString (gdImagePtr im, gdFontPtr f,
                                  int x, int y, unsigned char *s, int color)
 {
-    int i;
-    int l;
+    size_t i;
+    size_t l;
     l = strlen ((char *) s);
     for (i = 0; (i < l); i++)
     {
@@ -1524,8 +1524,8 @@ BGD_DECLARE(void) gdImageString (gdImagePtr im, gdFontPtr f,
 BGD_DECLARE(void) gdImageStringUp (gdImagePtr im, gdFontPtr f,
                                    int x, int y, unsigned char *s, int color)
 {
-    int i;
-    int l;
+    size_t i;
+    size_t l;
     l = strlen ((char *) s);
     for (i = 0; (i < l); i++)
     {

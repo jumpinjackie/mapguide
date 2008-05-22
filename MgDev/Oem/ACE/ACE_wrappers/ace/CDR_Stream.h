@@ -331,10 +331,10 @@ public:
 
   /// set the global size of serialized wchars. This may be different
   /// than the size of a wchar_t.
-  static void wchar_maxbytes (int );
+  static void wchar_maxbytes (size_t max_bytes);
 
   /// access the serialized size of wchars.
-  static int wchar_maxbytes (void);
+  static size_t wchar_maxbytes (void);
 
   /**
    * Return alignment of the wr_ptr(), with respect to the start of
@@ -478,7 +478,7 @@ protected:
    * or not having a native wchar codeset defined, the maxbytes is
    * set to zero, indicating no wchar data is allowed.
    */
-  static int wchar_maxbytes_;
+  static size_t wchar_maxbytes_;
 };
 
 // ****************************************************************

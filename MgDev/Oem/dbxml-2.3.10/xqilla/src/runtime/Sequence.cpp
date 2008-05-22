@@ -54,7 +54,7 @@ Sequence::Sequence(const Sequence &s, MemoryManager* memMgr)
   joinSequence(s);
 }
 
-Sequence::Sequence(unsigned int n, MemoryManager* memMgr)
+Sequence::Sequence(size_t n, MemoryManager* memMgr)
   : _itemList(XQillaAllocator<Item::Ptr>(memMgr))
 {
     _itemList.reserve(n);
@@ -88,7 +88,7 @@ const Item::Ptr &Sequence::second() const
 }
 
 // might return NULL
-const Item::Ptr &Sequence::item(unsigned int index) const
+const Item::Ptr &Sequence::item(size_t index) const
 {
   return _itemList[index];
 }
@@ -145,7 +145,7 @@ Sequence::const_reverse_iterator Sequence::rend(void) const
   return _itemList.rend();
 }
 
-unsigned int Sequence::getLength(void) const
+size_t Sequence::getLength(void) const
 {
   return _itemList.size();
 }

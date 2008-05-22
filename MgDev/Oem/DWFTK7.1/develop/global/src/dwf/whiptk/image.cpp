@@ -1376,7 +1376,7 @@ inline WT_Result WT_Image::add_code (WT_Huffman::Code const &    code)
         }
     }
 
-    m_data_size = current_dest_pos - m_data;
+    m_data_size = static_cast<WT_Integer32>(current_dest_pos - m_data);
 
     return WT_Result::Success;
 }

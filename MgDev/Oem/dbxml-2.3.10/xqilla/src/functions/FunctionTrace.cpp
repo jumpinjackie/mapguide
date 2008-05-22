@@ -55,7 +55,7 @@ Sequence FunctionTrace::collapseTreeInternal(DynamicContext* context, int flags)
   Sequence value = getParamNumber(1, context)->toSequence(context);
   Sequence label = getParamNumber(2, context)->toSequence(context);
   XERCES_CPP_NAMESPACE_QUALIFIER XMLBuffer valueStr(1023, context->getMemoryManager());
-  unsigned int len=value.getLength();
+  size_t len=value.getLength();
   if(len>0)
   {
       if(len==1)

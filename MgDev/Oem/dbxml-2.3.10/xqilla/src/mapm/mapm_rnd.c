@@ -162,7 +162,7 @@ mrnd->m_apm_exponent -= 15;
 /****************************************************************************/
 void	M_reverse_string(char *s)
 {
-int	ct;
+size_t	ct;
 char	ch, *p1, *p2;
 
 if ((ct = strlen(s)) <= 1)
@@ -194,7 +194,7 @@ void	M_get_rnd_seed(M_APM mm)
 {
 int              millisec;
 time_t 		 timestamp;
-unsigned long    ul;
+time_t           ul;
 char             ss[32], buf1[48], buf2[32];
 struct timeb     timebuffer;
 M_APM		 atmp;
@@ -205,7 +205,7 @@ ftime(&timebuffer);
 
 millisec  = (int)timebuffer.millitm;    
 timestamp = timebuffer.time;
-ul        = (unsigned long)(timestamp / 7);
+ul        = (timestamp / 7);
 ul       += timestamp + 537;
 strcpy(ss,ctime(&timestamp));        /* convert to string and copy to ss */
 

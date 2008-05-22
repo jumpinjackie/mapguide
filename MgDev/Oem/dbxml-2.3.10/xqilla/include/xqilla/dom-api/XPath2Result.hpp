@@ -156,7 +156,7 @@ public:
    * @exception XPathException
    * TYPE_ERR: raised if resultType is not SNAPSHOT_RESULT.
    */
-  virtual unsigned long getSnapshotLength() const = 0;
+  virtual size_t getSnapshotLength() const = 0;
 
   /**
    * Iterates and returns true if the current result is the next item from the
@@ -181,7 +181,7 @@ public:
    * @exception XPathException
    * TYPE_ERR: raised if resultType is not SNAPSHOT_RESULT.
    */
-  virtual bool snapshotItem(unsigned long index) = 0;
+  virtual bool snapshotItem(size_t index) = 0;
   //@}
 
   /** @name Non-standard Extension */

@@ -287,8 +287,8 @@ void WT_URL_Item::set(  WT_Integer32                    index,
                         WT_Unsigned_Integer16 const *   address,
                         WT_Unsigned_Integer16 const *   friendly_name)
 {
-    m_address.set(WT_String::wcslen(address), address);
-    m_friendly_name.set(WT_String::wcslen(friendly_name), friendly_name);
+    m_address.set(static_cast<int>(WT_String::wcslen(address)), address);
+    m_friendly_name.set(static_cast<int>(WT_String::wcslen(friendly_name)), friendly_name);
     m_index = index;
     m_emitted = WD_False;
 }

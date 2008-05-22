@@ -10577,7 +10577,7 @@ void TK_Unicode_Options::SetOptions (unsigned short const * options) alter {
     auto        unsigned int                length;
 
     while (*sp != 0) ++sp;
-    length = sp - options;
+    length = (int)(sp - options);
 
     SetOptions (length);
     memcpy (m_string, options, length*sizeof(unsigned short));

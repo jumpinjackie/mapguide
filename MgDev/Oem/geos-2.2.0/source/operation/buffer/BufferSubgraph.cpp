@@ -105,7 +105,7 @@ void BufferSubgraph::add(Node *node, vector<Node*> *nodeStack){
 }
 
 void BufferSubgraph::clearVisitedEdges() {
-	for(unsigned int i=0, sz=dirEdgeList->size(); i<sz; ++i)
+	for(size_t i=0, sz=dirEdgeList->size(); i<sz; ++i)
 	{
 		DirectedEdge *de=(*dirEdgeList)[i];
 		de->setVisited(false);
@@ -264,8 +264,8 @@ BufferSubgraph::getEnvelope()
 {
 	if (env == NULL) {
 		env = new Envelope();
-		unsigned int size = dirEdgeList->size();
-		for(unsigned int i=0; i<size; ++i)
+		size_t size = dirEdgeList->size();
+		for(size_t i=0; i<size; ++i)
 		{
 			DirectedEdge *dirEdge=(*dirEdgeList)[i];
 			const CoordinateSequence *pts = dirEdge->getEdge()->getCoordinates();

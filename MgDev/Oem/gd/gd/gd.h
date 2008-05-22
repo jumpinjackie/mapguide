@@ -283,7 +283,7 @@ BGD_DECLARE(gdImagePtr) gdImageCreateFromJpegPtr (int size, void *data);
 
   typedef struct
   {
-    int (*source) (void *context, char *buffer, int len);
+    int (*source) (void *context, char *buffer, size_t len);
     void *context;
   }
   gdSource, *gdSourcePtr;
@@ -598,7 +598,7 @@ BGD_DECLARE(void *) gdImageGifAnimEndPtr(int *size);
 /* context will be passed to your sink function. */
   typedef struct
   {
-    int (*sink) (void *context, const char *buffer, int len);
+    int (*sink) (void *context, const char *buffer, size_t len);
     void *context;
   }
   gdSink, *gdSinkPtr;

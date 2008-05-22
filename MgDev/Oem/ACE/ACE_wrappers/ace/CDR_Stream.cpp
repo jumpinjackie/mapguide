@@ -13,7 +13,7 @@ ACE_RCSID (ace,
 
 // ****************************************************************
 
-int ACE_OutputCDR::wchar_maxbytes_ = sizeof (ACE_CDR::WChar);
+size_t ACE_OutputCDR::wchar_maxbytes_ = sizeof (ACE_CDR::WChar);
 
 ACE_OutputCDR::ACE_OutputCDR (size_t size,
                               int byte_order,
@@ -105,12 +105,12 @@ ACE_OutputCDR::ACE_OutputCDR (ACE_Message_Block *data,
 }
 
 /*static*/ void
-ACE_OutputCDR::wchar_maxbytes (int maxbytes)
+ACE_OutputCDR::wchar_maxbytes (size_t maxbytes)
 {
   ACE_OutputCDR::wchar_maxbytes_ = maxbytes;
 }
 
-/*static*/ int
+/*static*/ size_t
 ACE_OutputCDR::wchar_maxbytes ()
 {
   return ACE_OutputCDR::wchar_maxbytes_;
@@ -162,10 +162,10 @@ ACE_OutputCDR::grow_and_adjust (size_t size,
         ptrdiff_t(tmp->rd_ptr ()) % ACE_CDR::MAX_ALIGNMENT;
       ptrdiff_t curalign =
         ptrdiff_t(this->current_alignment_) % ACE_CDR::MAX_ALIGNMENT;
-      int offset = curalign - tmpalign;
+      ptrdiff_t offset = curalign - tmpalign;
       if (offset < 0)
         offset += ACE_CDR::MAX_ALIGNMENT;
-      tmp->rd_ptr (offset);
+      tmp->rd_ptr (static_cast<size_t> (offset));
       tmp->wr_ptr (tmp->rd_ptr ());
 
       // grow the chain and set the current block.

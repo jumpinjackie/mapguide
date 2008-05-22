@@ -101,6 +101,90 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="..\bin\debug64"
+			IntermediateDirectory="..\obj\debug64\Stylization"
+			ConfigurationType="2"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\MdfModel;..\Foundation;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\FDO\inc;..\..\Oem\FDO\inc\ExpressionEngine"
+				PreprocessorDefinitions="WIN32;_WIN64;_DEBUG;_WINDOWS;_USRDLL;STYLIZATION_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
+				MinimalRebuild="true"
+				ExceptionHandling="2"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+				ShowIncludes="false"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="Fdo.lib FdoCommon.lib ExpressionEngine.lib"
+				OutputFile="$(OutDir)\MgStylizationd.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\..\Oem\FDO\lib64"
+				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;ExpressionEngine.dll"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)\MgStylizationd.pdb"
+				SubSystem="2"
+				ImportLibrary="..\lib\debug64\MgStylizationd.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="..\bin\release"
 			IntermediateDirectory="..\obj\release\Stylization"
@@ -187,92 +271,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="2"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\FDO\inc;..\..\Oem\FDO\inc\ExpressionEngine"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;STYLIZATION_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
-				MinimalRebuild="true"
-				ExceptionHandling="2"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				WarningLevel="4"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib FdoCommon.lib ExpressionEngine.lib"
-				OutputFile="$(OutDir)\MgStylizationd.dll"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Oem\FDO\lib"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;ExpressionEngine.dll"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)\MgStylizationd.pdb"
-				SubSystem="2"
-				ImportLibrary="..\lib\debug\MgStylizationd.lib"
-				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\bin\release64"
+			IntermediateDirectory="..\obj\release64\Stylization"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -299,11 +300,11 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="false"
-				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\FDO\inc;..\..\Oem\FDO\inc\ExpressionEngine"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;STYLIZATION_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
+				AdditionalIncludeDirectories="..\MdfModel;..\Foundation;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\FDO\inc;..\..\Oem\FDO\inc\ExpressionEngine"
+				PreprocessorDefinitions="WIN32;WIN64;_NDEBUG;_WINDOWS;_USRDLL;STYLIZATION_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
-				WarningLevel="4"
+				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
@@ -321,14 +322,14 @@
 				AdditionalDependencies="Fdo.lib FdoCommon.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\MgStylization.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Oem\FDO\lib"
+				AdditionalLibraryDirectories="..\..\Oem\FDO\lib64"
 				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;ExpressionEngine.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgStylization.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="..\lib\release\MgStylization.lib"
+				ImportLibrary="..\lib\release64\MgStylization.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -749,6 +750,10 @@
 			</File>
 			<File
 				RelativePath=".\SE_SymbolManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_Tuple.h"
 				>
 			</File>
 			<File

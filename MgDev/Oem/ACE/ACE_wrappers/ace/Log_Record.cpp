@@ -118,7 +118,7 @@ ACE_Log_Record::msg_data (const ACE_TCHAR *data)
 }
 
 ACE_Log_Record::ACE_Log_Record (ACE_Log_Priority lp,
-                                long ts_sec,
+                                time_t ts_sec,
                                 long p)
   : length_ (0),
     type_ (ACE_UINT32 (lp)),
@@ -134,7 +134,7 @@ ACE_Log_Record::ACE_Log_Record (ACE_Log_Priority lp,
                                 long p)
   : length_ (0),
     type_ (ACE_UINT32 (lp)),
-    secs_ ((ACE_UINT32) ts.sec ()),
+    secs_ (ts.sec ()),
     usecs_ ((ACE_UINT32) ts.usec ()),
     pid_ (ACE_UINT32 (p))
 {

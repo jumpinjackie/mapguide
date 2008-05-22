@@ -2371,7 +2371,7 @@ static int compute_opcodes(
                             status = STATUS_ERROR;
                             goto done;
                         }
-                        bi = b - ea->edges;
+                        bi = (int)(b - ea->edges);
                         bi2 = N[bi];
                         b2 = ea->edges + bi2;
                         ASSERT( P[N[bi]] == bi );

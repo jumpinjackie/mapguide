@@ -54,14 +54,14 @@ public:
 
   /// Get the local system time, i.e., the value returned by
   /// <ACE_OS::time>.
-  static int get_local_system_time (ACE_UINT32 &time_out);
+  static int get_local_system_time (time_t & time_out);
 
   /// Get the local system time, i.e., the value returned by
   /// <ACE_OS::time>.
   static int get_local_system_time (ACE_Time_Value &time_out);
 
   /// Get the system time of the central time server.
-  int get_master_system_time (ACE_UINT32 &time_out);
+  int get_master_system_time (time_t & time_out);
 
   /// Get the system time of the central time server.
   int get_master_system_time (ACE_Time_Value &time_out);

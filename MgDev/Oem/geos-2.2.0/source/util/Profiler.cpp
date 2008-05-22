@@ -78,7 +78,7 @@ Profile::getTot() const
 	return totaltime;
 }
 
-unsigned int
+size_t
 Profile::getNumTimings() const
 {
 	return timings.size();

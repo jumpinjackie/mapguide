@@ -62,8 +62,8 @@ vector<DepthSegment*>*
 SubgraphDepthLocater::findStabbedSegments(Coordinate &stabbingRayLeftPt)
 {
 	vector<DepthSegment*> *stabbedSegments=new vector<DepthSegment*>();
-	unsigned int size = subgraphs->size();
-	for (unsigned int i=0; i<size; ++i)
+	size_t size = subgraphs->size();
+	for (size_t i=0; i<size; ++i)
 	{
 		BufferSubgraph *bsg=(*subgraphs)[i];
 

@@ -136,10 +136,10 @@ public:
   void dump (void) const;
 
 protected:
-  long target_;
+  ptrdiff_t target_;
 
   /// Keep track of our offset from the base pointer.
-  long base_offset_;
+  ptrdiff_t base_offset_;
 };
 
 /**

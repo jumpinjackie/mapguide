@@ -357,7 +357,7 @@ BinHTTPURLInputStream::BinHTTPURLInputStream(const XMLURL& urlSource, const XMLN
     if (portNumber != 80)
     {
         strcat(fBuffer, ":");
-        int i = strlen(fBuffer);
+        size_t i = strlen(fBuffer);
         _itoa(portNumber, fBuffer+i, 10);
     }
     strcat(fBuffer, "\r\n");

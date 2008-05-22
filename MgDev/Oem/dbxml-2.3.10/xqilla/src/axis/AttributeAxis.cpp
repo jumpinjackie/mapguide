@@ -33,7 +33,7 @@ const DOMNode *AttributeAxis::nextNode(DynamicContext *context)
 {
   const DOMNode *result = 0;
   if(nodeMap_ != 0) {
-    unsigned int nLen=nodeMap_->getLength();
+    size_t nLen=nodeMap_->getLength();
     if(i_==0 && nodeTest_!=0 && nodeTest_->getItemType()==0 && 
        !nodeTest_->getNamespaceWildcard() && !nodeTest_->getNameWildcard())
     {

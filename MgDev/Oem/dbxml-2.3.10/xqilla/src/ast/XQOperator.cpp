@@ -55,7 +55,7 @@ void XQOperator::removeArgument(unsigned int index)
 
 unsigned int XQOperator::getNumArgs() const
 {
-  return _args.size();
+  return (unsigned int)_args.size();
 }
 
 const XMLCh* XQOperator::getOperatorName() const

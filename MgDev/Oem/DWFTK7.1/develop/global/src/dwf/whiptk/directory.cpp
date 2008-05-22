@@ -279,7 +279,7 @@ WT_Result WT_Directory::serialize(WT_File & file) const
         //reduce the file offset by the size of characters that would
         //have been possibly written by the call to write_tab_level fn.
         ((WT_Directory *) this)->m_file_offset -=
-            ((file.tab_level() + strlen(WD_NEWLINE) ) * sizeof(WT_Byte));
+            ((file.tab_level() + (int)strlen(WD_NEWLINE) ) * sizeof(WT_Byte));
 
         WD_CHECK (file.write("(Directory "));
         WD_CHECK (file.write_padded_ascii(item_count));

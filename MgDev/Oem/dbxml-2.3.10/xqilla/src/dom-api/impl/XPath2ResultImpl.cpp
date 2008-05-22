@@ -258,7 +258,7 @@ bool XPath2FirstResultImpl::getInvalidIteratorState() const {
   return false;
 }
 
-unsigned long XPath2FirstResultImpl::getSnapshotLength() const {
+size_t XPath2FirstResultImpl::getSnapshotLength() const {
   string error = errorMessage(XPath2Result::SNAPSHOT_RESULT, XPath2Result::FIRST_RESULT);
   throw XQillaException(DOMXPathException::TYPE_ERR, X(error.c_str()));
 }
@@ -268,7 +268,7 @@ bool XPath2FirstResultImpl::iterateNext() {
   throw XQillaException(DOMXPathException::TYPE_ERR, X(error.c_str()));
 }
 
-bool XPath2FirstResultImpl::snapshotItem(unsigned long index) {
+bool XPath2FirstResultImpl::snapshotItem(size_t index) {
   string error = errorMessage(XPath2Result::SNAPSHOT_RESULT, XPath2Result::FIRST_RESULT);
   throw XQillaException(DOMXPathException::TYPE_ERR, X(error.c_str()));
 }
@@ -328,7 +328,7 @@ bool XPath2SnapshotResultImpl::getInvalidIteratorState() const {
   return false;
 }
 
-unsigned long XPath2SnapshotResultImpl::getSnapshotLength() const {
+size_t XPath2SnapshotResultImpl::getSnapshotLength() const {
   return _sequence->getLength();
 }
 
@@ -337,7 +337,7 @@ bool XPath2SnapshotResultImpl::iterateNext() {
   throw XQillaException(DOMXPathException::TYPE_ERR, X(error.c_str()));
 }
 
-bool XPath2SnapshotResultImpl::snapshotItem(unsigned long index) {
+bool XPath2SnapshotResultImpl::snapshotItem(size_t index) {
   //Reached end of set, return false
   if(index >= _sequence->getLength()) {
     _currentItem = 0;
@@ -436,13 +436,13 @@ bool XPath2IteratorResultImpl::iterateNext()
   return true;
 }
 
-unsigned long XPath2IteratorResultImpl::getSnapshotLength() const
+size_t XPath2IteratorResultImpl::getSnapshotLength() const
 {
   string error = errorMessage(XPath2Result::SNAPSHOT_RESULT, XPath2Result::ITERATOR_RESULT);
   throw XQillaException(DOMXPathException::TYPE_ERR, X(error.c_str()));
 }
 
-bool XPath2IteratorResultImpl::snapshotItem(unsigned long index)
+bool XPath2IteratorResultImpl::snapshotItem(size_t index)
 {
   string error = errorMessage(XPath2Result::SNAPSHOT_RESULT, XPath2Result::ITERATOR_RESULT);
   throw XQillaException(DOMXPathException::TYPE_ERR, X(error.c_str()));

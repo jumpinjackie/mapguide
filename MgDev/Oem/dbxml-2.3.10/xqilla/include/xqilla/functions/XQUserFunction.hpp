@@ -92,8 +92,8 @@ public:
   virtual const XMLCh* getName() const;
   virtual const XMLCh *getURI() const;
   virtual const XMLCh *getQName() const;
-  virtual unsigned int getMinArgs() const;
-  virtual unsigned int getMaxArgs() const;
+  virtual size_t getMinArgs() const;
+  virtual size_t getMaxArgs() const;
 
   virtual const XMLCh* getFullName() const;
   const VectorOfFunctionParameters* getParams() const;

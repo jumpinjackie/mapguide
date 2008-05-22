@@ -385,7 +385,7 @@ void HU_OptimizeShell (
             ++pp;
         } until (++vp == ve);
 
-        *out_point_count = pp - out_points;
+        *out_point_count = (int)(pp - out_points);
     }
 
     // Repack the face list, excluding duplicate vertices and blowing away degenerate faces
@@ -425,7 +425,7 @@ void HU_OptimizeShell (
                         *out_listp++ = prev_index = index;
                 }
 
-                face_length = out_listp - face_length_ptr - 1;
+                face_length = (int)(out_listp - face_length_ptr - 1);
                 if (face_length < 3) {
                     if (face_mapping != null) *face_mapping++ = UNTOUCHED;
                     out_listp -= face_length + 1;
@@ -440,7 +440,7 @@ void HU_OptimizeShell (
             } until (listp == liste);
 
             if (out_face_list_length != null)
-                *out_face_list_length = out_listp - out_face_list;
+                *out_face_list_length = (int)(out_listp - out_face_list);
         }
         else
             *out_face_list_length = 0;

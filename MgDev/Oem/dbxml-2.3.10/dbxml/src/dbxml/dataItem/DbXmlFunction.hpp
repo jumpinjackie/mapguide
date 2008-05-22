@@ -53,10 +53,10 @@ public:
 	const XMLCh *getQName() const {
 		return qname.getRawBuffer();
 	}
-	unsigned int getMinArgs() const {
+	size_t getMinArgs() const {
 		return TYPE::minArgs;
 	}
-	unsigned int getMaxArgs() const {
+	size_t getMaxArgs() const {
 		return TYPE::maxArgs;
 	}
 private:

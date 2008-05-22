@@ -98,7 +98,7 @@ XQContextImpl::XQContextImpl(XERCES_CPP_NAMESPACE_QUALIFIER MemoryManager* memMg
   // static context //
   ////////////////////
   _contextItemType.flags = StaticType::ITEM_TYPE;
-  _xpath1Compatibility = false;    // according to Formal Semantics, § 4.1.1
+  _xpath1Compatibility = false;    // according to Formal Semantics, ?4.1.1
   _ordering = ORDERING_ORDERED;
 
   _globalNSResolver = new (&_internalMM) XQillaNSResolverImpl(&_internalMM, 0); // resolve acc.to null node
@@ -488,12 +488,12 @@ void XQContextImpl::addCustomFunction(FuncFactory *func)
   _functionTable->insertFunction(func);
 }
 
-void XQContextImpl::setContextSize(unsigned int size)
+void XQContextImpl::setContextSize(size_t size)
 {
   _contextSize = size;
 }
 
-void XQContextImpl::setContextPosition(unsigned int pos)
+void XQContextImpl::setContextPosition(size_t pos)
 {
   _contextPosition = pos;
 }
@@ -513,12 +513,12 @@ VariableTypeStore* XQContextImpl::getVariableTypeStore()
   return _varTypeStore;
 }
 
-unsigned int XQContextImpl::getContextSize() const
+size_t XQContextImpl::getContextSize() const
 {
   return _contextSize;
 }
 
-unsigned int XQContextImpl::getContextPosition() const
+size_t XQContextImpl::getContextPosition() const
 {
   return _contextPosition;
 }

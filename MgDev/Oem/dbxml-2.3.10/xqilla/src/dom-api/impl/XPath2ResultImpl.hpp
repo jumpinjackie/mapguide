@@ -78,8 +78,8 @@ public:
   virtual bool getInvalidIteratorState() const;
   virtual bool iterateNext();
 
-  virtual unsigned long getSnapshotLength() const;
-  virtual bool snapshotItem(unsigned long index);
+  virtual size_t getSnapshotLength() const;
+  virtual bool snapshotItem(size_t index);
 };
 
 class XQILLA_API XPath2SnapshotResultImpl : public XPath2ResultImpl
@@ -100,8 +100,8 @@ public:
   virtual bool getInvalidIteratorState() const;
   virtual bool iterateNext();
 
-  virtual unsigned long getSnapshotLength() const;
-  virtual bool snapshotItem(unsigned long index);
+  virtual size_t getSnapshotLength() const;
+  virtual bool snapshotItem(size_t index);
 
 private:
   Sequence *_sequence;
@@ -124,8 +124,8 @@ public:
   virtual bool getInvalidIteratorState() const;
   virtual bool iterateNext();
 
-  virtual unsigned long getSnapshotLength() const;
-  virtual bool snapshotItem(unsigned long index);
+  virtual size_t getSnapshotLength() const;
+  virtual bool snapshotItem(size_t index);
 
 private:
   Result _results;

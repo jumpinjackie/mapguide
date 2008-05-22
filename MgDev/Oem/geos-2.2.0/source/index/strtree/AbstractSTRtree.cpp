@@ -38,12 +38,12 @@ AbstractSTRtree::AbstractSTRtree(int newNodeCapacity):
 }
 
 AbstractSTRtree::~AbstractSTRtree() {
-	unsigned int ibsize = itemBoundables->size();
-	for (unsigned int i=0; i<ibsize; i++)
+	size_t ibsize = itemBoundables->size();
+	for (size_t i=0; i<ibsize; i++)
 		delete (*itemBoundables)[i];
 	delete itemBoundables;
-	unsigned int nsize = nodes->size();
-	for (unsigned int i=0; i<nsize; i++)
+	size_t nsize = nodes->size();
+	for (size_t i=0; i<nsize; i++)
 		delete (*nodes)[i];
 	delete nodes;
 	//delete root;
@@ -90,8 +90,8 @@ AbstractSTRtree::createParentBoundables(vector<Boundable*> *childBoundables, int
 	parentBoundables->push_back(createNode(newLevel));
 	vector<Boundable*> *sortedChildBoundables=sortBoundables(childBoundables);
 
-	unsigned int scbsize = sortedChildBoundables->size();
-	for(unsigned int i=0; i<scbsize; i++) {
+	size_t scbsize = sortedChildBoundables->size();
+	for(size_t i=0; i<scbsize; i++) {
 		Boundable *childBoundable=(AbstractNode*)(*sortedChildBoundables)[i];
 
 		if (lastNode(parentBoundables)->getChildBoundables()->size()==(unsigned int)nodeCapacity)
@@ -190,8 +190,8 @@ AbstractSTRtree::query(const void* searchBounds,
 {
 	vector<Boundable*> *vb=node->getChildBoundables();
 
-	unsigned int vbsize=vb->size();
-	for(unsigned int i=0;i<vbsize;i++)
+	size_t vbsize=vb->size();
+	for(size_t i=0;i<vbsize;i++)
 	{
 		Boundable *childBoundable=(*vb)[i];
 		if (!getIntersectsOp()->intersects(childBoundable->getBounds(),searchBounds))
@@ -234,8 +234,8 @@ AbstractSTRtree::boundablesAtLevel(int level,AbstractNode* top,vector<Boundable*
 		return;
 	}
 	vector<Boundable*> *vb=top->getChildBoundables();
-	unsigned int vbsize = vb->size();
-	for(unsigned int i=0; i<vbsize; i++) {
+	size_t vbsize = vb->size();
+	for(size_t i=0; i<vbsize; i++) {
 		Boundable *boundable=(*vb)[i];
 		if (typeid(*boundable)==typeid(AbstractNode)) {
 			boundablesAtLevel(level,(AbstractNode*) boundable,boundables);

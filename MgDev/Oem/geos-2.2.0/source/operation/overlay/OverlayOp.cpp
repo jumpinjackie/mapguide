@@ -684,9 +684,9 @@ OverlayOp::computeOverlay(int opCode)
 	polyBuilder.add(graph);
 
 	vector<Geometry*> *gv=polyBuilder.getPolygons();
-	unsigned int gvSize=gv->size();
+	size_t gvSize=gv->size();
 	resultPolyList=new vector<Polygon*>(gvSize);
-	for(unsigned int i=0; i<gvSize; ++i) {
+	for(size_t i=0; i<gvSize; ++i) {
 		(*resultPolyList)[i]=(Polygon*)(*gv)[i];
 	}
 	delete gv;

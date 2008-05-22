@@ -1242,7 +1242,7 @@ TK_Status BStreamFileToolkit::ReadBuffer (char alter * buffer, int size, int alt
                 return Error( "end of stream" );
             }
 
-            amount_read = _pInputStream->read( buffer, size );
+            amount_read = (int) _pInputStream->read( buffer, size );
         }
         catch (DWFException&)
         {
@@ -1336,7 +1336,8 @@ TK_Status BStreamFileToolkit::GetFileSize (unsigned long & size) alter
     {
         try
         {
-            size = _pInputStream->available();
+            //TODO: Risk in 64bit platform
+            size = (unsigned long)_pInputStream->available();
             return TK_Normal;
         }
         catch (DWFException&)
@@ -2334,7 +2335,7 @@ TK_Status BStreamFileToolkit::Read_Stream_File () {
         if (GetLogging()) {
             LogEntry (filename);
             LogEntry ("\n");
-            log_bar (this, '-', strlen (filename));
+            log_bar (this, '-', (int)strlen (filename));
             SetOpcodeSequence();
         }
 

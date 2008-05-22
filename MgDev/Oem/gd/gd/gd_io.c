@@ -148,7 +148,7 @@ gdGetInt (int *result, gdIOCtx * ctx)
 }
 
 int
-gdPutBuf (const void *buf, int size, gdIOCtx * ctx)
+gdPutBuf (const void *buf, size_t size, gdIOCtx * ctx)
 {
   IO_DBG (printf ("Putting buf...\n"));
   return (ctx->putBuf) (ctx, buf, size);
@@ -156,14 +156,14 @@ gdPutBuf (const void *buf, int size, gdIOCtx * ctx)
 }
 
 int
-gdGetBuf (void *buf, int size, gdIOCtx * ctx)
+gdGetBuf (void *buf, size_t size, gdIOCtx * ctx)
 {
   return (ctx->getBuf) (ctx, buf, size);
 }
 
 
 int
-gdSeek (gdIOCtx * ctx, const int pos)
+gdSeek (gdIOCtx * ctx, const size_t pos)
 {
   IO_DBG (printf ("Seeking...\n"));
   return ((ctx->seek) (ctx, pos));

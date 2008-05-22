@@ -43,7 +43,7 @@ png_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
 void PNGAPI
 png_default_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
 {
-   png_uint_32 check;
+    png_size_t check;
 
 #if defined(_WIN32_WCE)
    if ( !WriteFile((HANDLE)(png_ptr->io_ptr), data, length, &check, NULL) )
@@ -66,7 +66,7 @@ png_default_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
 void PNGAPI
 png_default_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
 {
-   png_uint_32 check;
+   png_size_t check;
    png_byte *near_data;  /* Needs to be "png_byte *" instead of "png_bytep" */
    png_FILE_p io_ptr;
 

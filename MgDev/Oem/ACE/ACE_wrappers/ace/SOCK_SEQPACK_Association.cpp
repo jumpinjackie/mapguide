@@ -138,7 +138,7 @@ ACE_SOCK_SEQPACK_Association::get_local_addrs (ACE_INET_Addr *addrs, size_t &siz
 
   // Physical size of this array is its logical size multiplied by
   // the physical size of one of its elements.
-  int physical_size = size * sizeof(sockaddr_in);
+  size_t physical_size = size * sizeof(sockaddr_in);
 
   /* Clear the array */
   ACE_OS::memset(addr_structs.get(),
@@ -148,10 +148,11 @@ ACE_SOCK_SEQPACK_Association::get_local_addrs (ACE_INET_Addr *addrs, size_t &siz
   /* Populate the array with real values from the getsockname system
      call.  The variables addr_structs and phycisal_size are
      modified. */
+  int name_size = static_cast<int> (physical_size);
   if (ACE_OS::getsockname (this->get_handle (),
                            ACE_reinterpret_cast (sockaddr *,
                                                  addr_structs.get()),
-                           &physical_size) == -1)
+                           &name_size) == -1)
     return -1;
 
   /* Calculate the NEW physical size of the array */
@@ -269,7 +270,7 @@ ACE_SOCK_SEQPACK_Association::get_remote_addrs (ACE_INET_Addr *addrs, size_t &si
 
   // Physical size of this array is its logical size multiplied by
   // the physical size of one of its elements.
-  int physical_size = size * sizeof(sockaddr_in);
+  size_t physical_size = size * sizeof(sockaddr_in);
 
   /* Clear the array */
   ACE_OS::memset(addr_structs.get(),
@@ -279,10 +280,11 @@ ACE_SOCK_SEQPACK_Association::get_remote_addrs (ACE_INET_Addr *addrs, size_t &si
   /* Populate the array with real values from the getpeername system
      call.  The variables addr_structs and phycisal_size are
      modified. */
+  int name_size = static_cast<int> (physical_size);
   if (ACE_OS::getpeername (this->get_handle (),
                            ACE_reinterpret_cast (sockaddr *,
                                                  addr_structs.get()),
-                           &physical_size) == -1)
+                           &name_size) == -1)
     return -1;
 
   /* Calculate the NEW physical size of the array */

@@ -25,7 +25,7 @@ const XMLCh FunctionConcat::name[] = {
   XERCES_CPP_NAMESPACE_QUALIFIER chNull 
 };
 const unsigned int FunctionConcat::minArgs = 2;
-const unsigned int FunctionConcat::maxArgs = UNLIMITED;
+const unsigned int FunctionConcat::maxArgs = (unsigned int) UNLIMITED;
 
 /**
  * fn:concat($arg1 as xdt:anyAtomicType?, $arg2 as xdt:anyAtomicType?, ...) as xs:string

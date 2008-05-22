@@ -147,9 +147,9 @@ png_write_sig(png_structp png_ptr)
 typedef struct
 {
     char *input;   /* the uncompressed input data */
-    int input_len;   /* its length */
-    int num_output_ptr; /* number of output pointers used */
-    int max_output_ptr; /* size of output_ptr */
+    png_size_t input_len;   /* its length */
+    png_size_t num_output_ptr; /* number of output pointers used */
+    png_size_t max_output_ptr; /* size of output_ptr */
     png_charpp output_ptr; /* array of pointers to output */
 } compression_state;
 
@@ -224,7 +224,7 @@ png_text_compress(png_structp png_ptr,
          /* make sure the output array has room */
          if (comp->num_output_ptr >= comp->max_output_ptr)
          {
-            int old_max;
+            png_size_t old_max;
 
             old_max = comp->max_output_ptr;
             comp->max_output_ptr = comp->num_output_ptr + 4;
@@ -274,7 +274,7 @@ png_text_compress(png_structp png_ptr,
             /* check to make sure our output array has room */
             if (comp->num_output_ptr >= comp->max_output_ptr)
             {
-               int old_max;
+               png_size_t old_max;
 
                old_max = comp->max_output_ptr;
                comp->max_output_ptr = comp->num_output_ptr + 4;
@@ -1312,7 +1312,7 @@ png_write_tEXt(png_structp png_ptr, png_charp key, png_charp text,
       text_len = png_strlen(text);
 
    /* make sure we include the 0 after the key */
-   png_write_chunk_start(png_ptr, (png_bytep)png_tEXt, (png_uint_32)key_len+text_len+1);
+   png_write_chunk_start(png_ptr, (png_bytep)png_tEXt, (png_uint_32)(key_len+text_len+1));
    /*
     * We leave it to the application to meet PNG-1.0 requirements on the
     * contents of the text.  PNG-1.0 through PNG-1.2 discourage the use of
@@ -1520,7 +1520,7 @@ png_write_pCAL(png_structp png_ptr, png_charp purpose, png_int_32 X0,
       null terminator for the last parameter. */
    for (i = 0; i < nparams; i++)
    {
-      params_len[i] = png_strlen(params[i]) + (i == nparams - 1 ? 0 : 1);
+      params_len[i] = (png_uint_32)png_strlen(params[i]) + (i == nparams - 1 ? 0 : 1);
       png_debug2(3, "pCAL parameter %d length = %lu\n", i, params_len[i]);
       total_len += (png_size_t)params_len[i];
    }

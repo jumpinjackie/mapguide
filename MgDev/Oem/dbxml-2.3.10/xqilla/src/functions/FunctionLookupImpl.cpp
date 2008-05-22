@@ -66,13 +66,13 @@ void FunctionLookupImpl::terminate()
 
 void FunctionLookupImpl::replaceFunction(FuncFactory *func)
 {
-    unsigned int secondaryKey = SECONDARY_KEY(func);
+    unsigned int secondaryKey = (unsigned int)SECONDARY_KEY(func);
     _funcTable.put((void*)func->getQName(), secondaryKey, func);
 }
 
 void FunctionLookupImpl::insertFunction(FuncFactory *func)
 {
-    unsigned int secondaryKey = SECONDARY_KEY(func);
+    unsigned int secondaryKey = (unsigned int)SECONDARY_KEY(func);
 
     // Use similar algorithm to lookup in order to detect overlaps
     // in argument numbers
@@ -124,7 +124,7 @@ ASTNode* FunctionLookupImpl::lookUpFunction(const XMLCh* URI, const XMLCh* fname
     key.set(fname);
     key.append(URI);
     iterator.setPrimaryKey(key.getRawBuffer());
-    unsigned int nargs = args.size();
+    size_t nargs = args.size();
     while(iterator.hasMoreElements())
     {
         FuncFactory *entry= &(iterator.nextElement());

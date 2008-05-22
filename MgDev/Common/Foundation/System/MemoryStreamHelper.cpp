@@ -218,7 +218,7 @@ MgStreamHelper::MgStreamStatus MgMemoryStreamHelper::GetSingle(float& data, bool
     float fData = 0.0;
 
     MgStreamHelper::MgStreamStatus stat = GetData(&fData, sizeof(fData), blocking, peeking);
-    data = MG_NTOHL(fData);
+    data = (float)MG_NTOHL(fData);
 
     return stat;
 };

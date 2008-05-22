@@ -48,7 +48,7 @@ protected:
   class PredicateFilterResult : public ResultImpl
   {
   public:
-    PredicateFilterResult(const Result &parent, const ASTNode *pred, unsigned int contextSize);
+    PredicateFilterResult(const Result &parent, const ASTNode *pred, size_t contextSize);
     Item::Ptr next(DynamicContext *context);
     void skip();
     std::string asString(DynamicContext *context, int indent) const;
@@ -56,8 +56,8 @@ protected:
     bool todo_;
     Result parent_;
     const ASTNode *pred_;
-    unsigned int contextPos_;
-    unsigned int contextSize_;
+    size_t contextPos_;
+    size_t contextSize_;
     Item::Ptr first_;
     Item::Ptr second_;
   };
@@ -65,7 +65,7 @@ protected:
   class NonNumericPredicateFilterResult : public ResultImpl
   {
   public:
-    NonNumericPredicateFilterResult(const Result &parent, const ASTNode *pred, unsigned int contextSize);
+    NonNumericPredicateFilterResult(const Result &parent, const ASTNode *pred, size_t contextSize);
     Item::Ptr next(DynamicContext *context);
     void skip();
     std::string asString(DynamicContext *context, int indent) const;
@@ -73,14 +73,14 @@ protected:
     bool todo_;
     Result parent_;
     const ASTNode *pred_;
-    unsigned int contextPos_;
-    unsigned int contextSize_;
+    size_t contextPos_;
+    size_t contextSize_;
   };
 
   class NumericPredicateFilterResult : public ResultImpl
   {
   public:
-    NumericPredicateFilterResult(const Result &parent, const ASTNode *pred, unsigned int contextSize);
+    NumericPredicateFilterResult(const Result &parent, const ASTNode *pred, size_t contextSize);
     Item::Ptr next(DynamicContext *context);
     void skip();
     std::string asString(DynamicContext *context, int indent) const;
@@ -88,7 +88,7 @@ protected:
     bool todo_;
     Result parent_;
     const ASTNode *pred_;
-    unsigned int contextSize_;
+    size_t contextSize_;
   };
 
   ASTNode *expr_;

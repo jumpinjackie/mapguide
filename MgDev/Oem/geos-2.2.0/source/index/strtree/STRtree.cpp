@@ -162,9 +162,9 @@ STRAbstractNode::computeBounds()
 {
 	Envelope* bounds=NULL;
 	vector<Boundable*> *b=getChildBoundables();
-	unsigned int bsize=b->size();
+	size_t bsize=b->size();
 	if ( bsize ) bounds=new Envelope(*(Envelope*)(*b)[0]->getBounds());
-	for(unsigned int i=1; i<bsize; i++) {
+	for(size_t i=1; i<bsize; i++) {
 		Boundable* childBoundable=(*b)[i];
 		bounds->expandToInclude((Envelope*)childBoundable->getBounds());
 	}

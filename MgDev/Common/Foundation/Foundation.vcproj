@@ -101,10 +101,9 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory=".\$(build)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\bin\debug64"
+			IntermediateDirectory="..\obj\debug64\Foundation"
 			ConfigurationType="2"
-			InheritedPropertySheets="..\..\TargetX64.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -150,11 +149,11 @@
 				AdditionalDependencies="ACEd.lib xerces-c_2D.lib"
 				OutputFile="$(OutDir)\MgFoundationd.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;..\..\Oem\$(ACE)&quot;;&quot;..\..\Oem\dbxml-2.3.10\$(xerces-c-src)&quot;"
+				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib64;&quot;..\..\Oem\dbxml-2.3.10\lib64&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgFoundationd.pdb"
 				SubSystem="2"
-				ImportLibrary="$(OutDir)\MgFoundationd.lib"
+				ImportLibrary="..\lib\debug64\MgFoundationd.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -264,8 +263,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory=".\$(build)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\bin\release64"
+			IntermediateDirectory="..\obj\release64\Foundation"
 			ConfigurationType="2"
 			InheritedPropertySheets="..\..\TargetX64.vsprops"
 			CharacterSet="1"
@@ -310,13 +309,13 @@
 				AdditionalDependencies="ACE.lib xerces-c_2.lib"
 				OutputFile="$(OutDir)\MgFoundation.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;..\..\Oem\$(ACE)&quot;;&quot;..\..\Oem\dbxml-2.3.10\$(xerces-c-src)&quot;"
+				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib64;&quot;..\..\Oem\dbxml-2.3.10\lib64&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgFoundation.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="$(OutDir)\MgFoundation.lib"
+				ImportLibrary="..\lib\release64\MgFoundation.lib"
 				TargetMachine="17"
 			/>
 			<Tool

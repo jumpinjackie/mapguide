@@ -222,7 +222,7 @@ __repmgr_add_buffer(v, address, length)
 	size_t length;
 {
 	v->vectors[v->count].iov_base = address;
-	v->vectors[v->count++].iov_len = length;
+	v->vectors[v->count++].iov_len = (unsigned long)length;
 	v->total_bytes += length;
 }
 
@@ -267,7 +267,7 @@ __repmgr_update_consumed(v, byte_count)
 			byte_count -= iov->iov_len;
 		} else {
 			/* Adjust length of remaining portion of vector. */
-			iov->iov_len -= byte_count;
+			iov->iov_len -= (unsigned long)byte_count;
 			if (iov->iov_len > 0) {
 				/*
 				 * Still some left in this vector.  Adjust base

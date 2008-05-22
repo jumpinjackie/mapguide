@@ -29,7 +29,7 @@ WT_Viewport::WT_Viewport(
     , m_temp_point_set(WD_Null)
     , m_temp_opcode(WD_Null)
     , m_fields_defined(0)
-    , m_name(strlen(name),name)
+    , m_name(static_cast<int>(strlen(name)),name)
     , m_incarnation(file.next_incarnation())
 {
     m_contour_set = new WT_Contour_Set(file, count, points);
@@ -48,7 +48,7 @@ WT_Viewport::WT_Viewport(
     , m_temp_point_set(WD_Null)
     , m_temp_opcode(WD_Null)
     , m_fields_defined(0)
-    , m_name(WT_String::wcslen(name),name)
+    , m_name(static_cast<int>(WT_String::wcslen(name)),name)
     , m_incarnation(file.next_incarnation())
 {
     m_contour_set = new WT_Contour_Set(file, count, points);
