@@ -26,8 +26,6 @@
 #define SAFE_RELEASE(x) {if (x) (x)->Release(); (x) = NULL;}
 #define SAFE_ADDREF(x)  ((x != NULL) ? ((x)->AddRef(), (x)) : NULL)
 
-class MgNullReferenceException;
-
 /// \cond INTERNAL
 //This class ensures T implements AddRef() and Release() and also ensures
 //you can't call it through the Ptr
@@ -79,11 +77,8 @@ public:
 #endif
     {
         if (nNull != 0)
-#if _MSC_VER < 1500
-            throw; // ::Create(MgException::NLSGetMessage(_NLSID(_2_BADPARAMETER)));
-#else
-            throw new MgNullReferenceException(L"Ptr.Ptr", __LINE__, __WFILE__, NULL, L"", NULL);
-#endif
+            throw std::logic_error("NULL pointer.");
+
         p = NULL;
     }
     */
@@ -127,11 +122,8 @@ public:
 #endif
     {
         if (p==NULL)
-#if _MSC_VER < 1500
-            throw; // ::Create(MgException::NLSGetMessage(_NLSID(_2_BADPARAMETER)));
-#else
-            throw new MgNullReferenceException(L"Ptr.operator*", __LINE__, __WFILE__, NULL, L"", NULL);
-#endif
+            throw std::logic_error("NULL pointer.");
+
         return *p;
     }
 
@@ -142,11 +134,8 @@ public:
 #endif
     {
         if (p!=NULL)
-#if _MSC_VER < 1500
-            throw; // ::Create(MgException::NLSGetMessage(_NLSID(_2_BADPARAMETER)));
-#else
-            throw new MgNullReferenceException(L"Ptr.operator&", __LINE__, __WFILE__, NULL, L"", NULL);
-#endif
+            throw std::logic_error("NULL pointer.");
+
         return &p;
     }
 
@@ -157,11 +146,8 @@ public:
 #endif
     {
         if (p==NULL)
-#if _MSC_VER < 1500
-            throw; // ::Create(MgException::NLSGetMessage(_NLSID(_2_BADPARAMETER)));
-#else
-            throw new MgNullReferenceException(L"Ptr.operator->", __LINE__, __WFILE__, NULL, L"", NULL);
-#endif
+            throw std::logic_error("NULL pointer.");
+
         return (_NoAddRefReleaseOnPtr<T>*)p;
     }
 
