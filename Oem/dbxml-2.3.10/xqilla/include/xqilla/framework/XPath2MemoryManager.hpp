@@ -109,6 +109,14 @@ public:
     _memMgr=o._memMgr;
   }
 
+#if _MSC_VER >= 1500
+  // Needed for Visual Studio 2008      
+  template<class _Tp1> XQillaAllocator(const XQillaAllocator<_Tp1>& o)
+  {
+    _memMgr = o._memMgr;
+  }
+#endif
+
   pointer allocate(size_t _n, const void* = 0)
   {
     if(_n==1)
@@ -153,7 +161,6 @@ public:
     return 0xFFFFFFFF;
   }
     
-protected:
   char _singleton[sizeof(_Tp)];
   XERCES_CPP_NAMESPACE_QUALIFIER MemoryManager* _memMgr;
 };
