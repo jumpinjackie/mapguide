@@ -753,10 +753,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SE_Tuple.h"
-				>
-			</File>
-			<File
 				RelativePath=".\StylizationEngine.cpp"
 				>
 			</File>
