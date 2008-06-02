@@ -1364,7 +1364,7 @@ void AGGRenderer::MeasureString(const RS_String& s,
 
         bool res1 = c()->feng.load_font(futf8, 0, agg::glyph_ren_agg_gray8);
         c()->feng.char_map(FT_ENCODING_UNICODE);
-        
+
         if (!res1) return;
         c()->last_font = font;
         font_changed = true;
@@ -1649,6 +1649,33 @@ void AGGRenderer::_TransferPoints(agg_context* c, LineBuffer* srcLB, const SE_Ma
             //last point of the contour being equal
             if (tx == sx && ty == sy)
                 c->ps.close_polygon();
+            else if (ptlast == 1)
+            {
+                // only two points in the buffer - check if this corresponds to a dot
+                double dx = tx - sx;
+                double dy = ty - sy;
+                double len2 = dx*dx + dy*dy;
+
+                // Although dots are replaced by lines with length LINE_SEGMENT_DOT_SIZE,
+                // it's possible that the lines end up somewhat larger in the wrapping
+                // case due to warping.  We therefore perform the check against a 10 times
+                // larger length.  In the future it might be worth relaxing this to simply
+                // check for any segment less than one pixel in length.
+                if (len2 < 100.0*LINE_SEGMENT_DOT_SIZE*LINE_SEGMENT_DOT_SIZE)
+                {
+                    // found a dot - draw it as a 1-pixel long line
+                    double len = sqrt(len2);
+                    dx /= len;
+                    dy /= len;
+                    c->ps.move_to(tx-0.5*dx, ty-0.5*dy);
+                    c->ps.line_to(tx+0.5*dx, ty+0.5*dy);
+                }
+                else
+                {
+                    // a normal line segment
+                    c->ps.line_to(tx, ty);
+                }
+            }
             else
                 c->ps.line_to(tx, ty);
 
