@@ -36,6 +36,11 @@ struct SE_RenderStyle;
 #define MAX_LINEWEIGHT_IN_MM 1000.0
 
 
+// Zero-length path segments (dots) are replaced with horizontal lines of
+// this length.
+#define LINE_SEGMENT_DOT_SIZE 1.0e-5
+
+
 //////////////////////////////////////////////////////////////////////////////
 class SE_EvalContext
 {
