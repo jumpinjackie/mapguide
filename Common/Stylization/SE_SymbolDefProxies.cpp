@@ -132,8 +132,34 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* ctx)
     else // default is Round
         ret->lineStroke.join = SE_LineJoin_Round;
 
-    // use a tolerance of 0.25 pixels
+    // populate the line buffer - use a tolerance of 0.25 pixels
     ret->geometry->Transform(*ctx->xform, 0.25*ctx->px2su);
+
+    // If the line buffer contains dots (zero-length segments) then replace them
+    // with very short horizontal lines.  When the symbol gets applied to the
+    // geometry these segments will then have the correct orientation, and this
+    // allows them to be nicely renderered.
+    LineBuffer* lb = ret->geometry->xf_buffer();
+    int numContours = lb->cntr_count();
+    for (int i=0; i<numContours; ++i)
+    {
+        if (lb->cntr_size(i) == 2)
+        {
+            int j0 = lb->contour_start_point(i);
+            int j1 = j0 + 1;
+
+            double& sx = lb->x_coord(j0);
+            double& sy = lb->y_coord(j0);
+            double& ex = lb->x_coord(j1);
+            double& ey = lb->y_coord(j1);
+
+            if (sx == ex && sy == ey)
+            {
+                sx -= 0.5*LINE_SEGMENT_DOT_SIZE;
+                ex += 0.5*LINE_SEGMENT_DOT_SIZE;
+            }
+        }
+    }
 
     // TODO: here we would implement a rotating calipers algorithm to get a tighter
     //       oriented box, but for now just get the axis-aligned bounds of the path
