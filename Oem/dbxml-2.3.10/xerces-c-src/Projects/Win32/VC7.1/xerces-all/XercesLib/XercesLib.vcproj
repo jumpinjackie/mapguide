@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="XercesLib"
 	ProjectGUID="{152CE948-F659-4206-A50A-1D2B9658EF96}"
 	RootNamespace="XercesLib"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -90,6 +91,8 @@
 				OptimizeReferences="2"
 				SetChecksum="true"
 				BaseAddress="0x12000000"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="..\..\..\..\..\Build\Win32\VC7.1\Release/xerces-c_2.lib"
 			/>
 			<Tool
@@ -111,7 +114,242 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory=".\..\..\..\..\..\Build\Win32\VC7.1\Debug"
+			IntermediateDirectory=".\..\..\..\..\..\Build\Win32\VC7.1\Debug\obj"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\..\..\..\..\Build\Win32\VC7.1\Debug/XercesLib.tlb"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\..\..\..\src"
+				PreprocessorDefinitions="_CRTDBG_MAP_ALLOC;PROJ_SAX2;_DEBUG;PROJ_XMLPARSER;PROJ_XMLUTIL;PROJ_PARSERS;PROJ_SAX4C;PROJ_DOM;PROJ_VALIDATORS;XML_SINGLEDLL;WIN32;_WINDOWS;XML_USE_WIN32_TRANSCODER;XML_USE_WIN32_MSGLOADER;XML_USE_NETACCESSOR_WINSOCK"
+				RuntimeLibrary="3"
+				PrecompiledHeaderFile=".\..\..\..\..\..\Build\Win32\VC7.1\Debug\obj/XercesLib.pch"
+				AssemblerListingLocation=".\..\..\..\..\..\Build\Win32\VC7.1\Debug\obj/"
+				ObjectFile=".\..\..\..\..\..\Build\Win32\VC7.1\Debug\obj/"
+				ProgramDataBaseFileName=".\..\..\..\..\..\Build\Win32\VC7.1\Debug\obj/"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="ws2_32.lib advapi32.lib"
+				OutputFile="..\..\..\..\..\Build\Win32\VC7.1\Debug/xerces-c_2_7D.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\..\..\..\..\Build\Win32\VC7.1\Debug"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile=".\..\..\..\..\..\Build\Win32\VC7.1\Debug/xerces-c_2_7D.pdb"
+				SubSystem="2"
+				SetChecksum="true"
+				BaseAddress="0x12000000"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="..\..\..\..\..\Build\Win32\VC7.1\Debug/xerces-c_2D.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Static Release|Win32"
+			OutputDirectory=".\..\..\..\..\..\Build\Win32\VC7.1\StaticRelease"
+			IntermediateDirectory=".\..\..\..\..\..\Build\Win32\VC7.1\StaticRelease\obj"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\..\..\..\..\Build\Win32\VC7.1\StaticRelease/XercesLib.tlb"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="1"
+				InlineFunctionExpansion="2"
+				AdditionalIncludeDirectories="..\..\..\..\..\src"
+				PreprocessorDefinitions="NDEBUG;PLATFORM_WIN32;_CRTDBG_MAP_ALLOC;PROJ_XMLPARSER;PROJ_XMLUTIL;PROJ_PARSERS;PROJ_SAX4C;PROJ_SAX2;PROJ_DOM;PROJ_VALIDATORS;WIN32;_WINDOWS;XML_USE_WIN32_TRANSCODER;XML_USE_INMEM_MESSAGELOADER;XML_USE_NETACCESSOR_WINSOCK;XML_LIBRARY"
+				StringPooling="true"
+				RuntimeLibrary="0"
+				PrecompiledHeaderFile=".\..\..\..\..\..\Build\Win32\VC7.1\StaticRelease\obj/XercesLib.pch"
+				AssemblerListingLocation=".\..\..\..\..\..\Build\Win32\VC7.1\StaticRelease\obj/"
+				ObjectFile=".\..\..\..\..\..\Build\Win32\VC7.1\StaticRelease\obj/"
+				ProgramDataBaseFileName=".\..\..\..\..\..\Build\Win32\VC7.1\StaticRelease\obj/"
+				WarningLevel="3"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="..\..\..\..\..\Build\Win32\VC7.1\StaticRelease/Xerces-c_static_2.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Static Debug|Win32"
+			OutputDirectory=".\..\..\..\..\..\Build\Win32\VC7.1\StaticDebug"
+			IntermediateDirectory=".\..\..\..\..\..\Build\Win32\VC7.1\StaticDebug\obj"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\..\..\..\..\Build\Win32\VC7.1\StaticDebug/XercesLib.tlb"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\..\..\..\src"
+				PreprocessorDefinitions="_CRTDBG_MAP_ALLOC;PROJ_SAX2;_DEBUG;PROJ_XMLPARSER;PROJ_XMLUTIL;PROJ_PARSERS;PROJ_SAX4C;PROJ_DOM;PROJ_VALIDATORS;WIN32;_WINDOWS;XML_USE_WIN32_TRANSCODER;XML_USE_INMEM_MESSAGELOADER;XML_USE_NETACCESSOR_WINSOCK;XML_LIBRARY"
+				RuntimeLibrary="1"
+				PrecompiledHeaderFile=".\..\..\..\..\..\Build\Win32\VC7.1\StaticDebug\obj/XercesLib.pch"
+				AssemblerListingLocation=".\..\..\..\..\..\Build\Win32\VC7.1\StaticDebug\obj/"
+				ObjectFile=".\..\..\..\..\..\Build\Win32\VC7.1\StaticDebug\obj/"
+				ProgramDataBaseFileName=".\..\..\..\..\..\Build\Win32\VC7.1\StaticDebug\obj/"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="..\..\..\..\..\Build\Win32\VC7.1\StaticDebug/Xerces-c_static_2D.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -192,98 +430,6 @@
 				BaseAddress="0x12000000"
 				ImportLibrary="$(OutDir)/xerces-c_2.lib"
 				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug|Win32"
-			OutputDirectory=".\..\..\..\..\..\Build\Win32\VC7.1\Debug"
-			IntermediateDirectory=".\..\..\..\..\..\Build\Win32\VC7.1\Debug\obj"
-			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="true"
-				TargetEnvironment="1"
-				TypeLibraryName=".\..\..\..\..\..\Build\Win32\VC7.1\Debug/XercesLib.tlb"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\..\src"
-				PreprocessorDefinitions="_CRTDBG_MAP_ALLOC;PROJ_SAX2;_DEBUG;PROJ_XMLPARSER;PROJ_XMLUTIL;PROJ_PARSERS;PROJ_SAX4C;PROJ_DOM;PROJ_VALIDATORS;XML_SINGLEDLL;WIN32;_WINDOWS;XML_USE_WIN32_TRANSCODER;XML_USE_WIN32_MSGLOADER;XML_USE_NETACCESSOR_WINSOCK"
-				RuntimeLibrary="3"
-				PrecompiledHeaderFile=".\..\..\..\..\..\Build\Win32\VC7.1\Debug\obj/XercesLib.pch"
-				AssemblerListingLocation=".\..\..\..\..\..\Build\Win32\VC7.1\Debug\obj/"
-				ObjectFile=".\..\..\..\..\..\Build\Win32\VC7.1\Debug\obj/"
-				ProgramDataBaseFileName=".\..\..\..\..\..\Build\Win32\VC7.1\Debug\obj/"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="ws2_32.lib advapi32.lib"
-				OutputFile="..\..\..\..\..\Build\Win32\VC7.1\Debug/xerces-c_2_7D.dll"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\..\..\Build\Win32\VC7.1\Debug"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\..\..\..\..\..\Build\Win32\VC7.1\Debug/xerces-c_2_7D.pdb"
-				SubSystem="2"
-				SetChecksum="true"
-				BaseAddress="0x12000000"
-				ImportLibrary="..\..\..\..\..\Build\Win32\VC7.1\Debug/xerces-c_2D.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -404,80 +550,6 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Static Release|Win32"
-			OutputDirectory=".\..\..\..\..\..\Build\Win32\VC7.1\StaticRelease"
-			IntermediateDirectory=".\..\..\..\..\..\Build\Win32\VC7.1\StaticRelease\obj"
-			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="true"
-				TargetEnvironment="1"
-				TypeLibraryName=".\..\..\..\..\..\Build\Win32\VC7.1\StaticRelease/XercesLib.tlb"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="1"
-				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="..\..\..\..\..\src"
-				PreprocessorDefinitions="NDEBUG;PLATFORM_WIN32;_CRTDBG_MAP_ALLOC;PROJ_XMLPARSER;PROJ_XMLUTIL;PROJ_PARSERS;PROJ_SAX4C;PROJ_SAX2;PROJ_DOM;PROJ_VALIDATORS;WIN32;_WINDOWS;XML_USE_WIN32_TRANSCODER;XML_USE_INMEM_MESSAGELOADER;XML_USE_NETACCESSOR_WINSOCK;XML_LIBRARY"
-				StringPooling="true"
-				RuntimeLibrary="0"
-				PrecompiledHeaderFile=".\..\..\..\..\..\Build\Win32\VC7.1\StaticRelease\obj/XercesLib.pch"
-				AssemblerListingLocation=".\..\..\..\..\..\Build\Win32\VC7.1\StaticRelease\obj/"
-				ObjectFile=".\..\..\..\..\..\Build\Win32\VC7.1\StaticRelease\obj/"
-				ProgramDataBaseFileName=".\..\..\..\..\..\Build\Win32\VC7.1\StaticRelease\obj/"
-				WarningLevel="3"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\..\..\Build\Win32\VC7.1\StaticRelease/Xerces-c_static_2.lib"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
 			Name="Static Release|x64"
 			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
@@ -534,79 +606,6 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile="..\..\..\..\..\Build\Win32\VC7.1\StaticRelease/Xerces-c_static_2.lib"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Static Debug|Win32"
-			OutputDirectory=".\..\..\..\..\..\Build\Win32\VC7.1\StaticDebug"
-			IntermediateDirectory=".\..\..\..\..\..\Build\Win32\VC7.1\StaticDebug\obj"
-			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="true"
-				TargetEnvironment="1"
-				TypeLibraryName=".\..\..\..\..\..\Build\Win32\VC7.1\StaticDebug/XercesLib.tlb"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\..\src"
-				PreprocessorDefinitions="_CRTDBG_MAP_ALLOC;PROJ_SAX2;_DEBUG;PROJ_XMLPARSER;PROJ_XMLUTIL;PROJ_PARSERS;PROJ_SAX4C;PROJ_DOM;PROJ_VALIDATORS;WIN32;_WINDOWS;XML_USE_WIN32_TRANSCODER;XML_USE_INMEM_MESSAGELOADER;XML_USE_NETACCESSOR_WINSOCK;XML_LIBRARY"
-				RuntimeLibrary="1"
-				PrecompiledHeaderFile=".\..\..\..\..\..\Build\Win32\VC7.1\StaticDebug\obj/XercesLib.pch"
-				AssemblerListingLocation=".\..\..\..\..\..\Build\Win32\VC7.1\StaticDebug\obj/"
-				ObjectFile=".\..\..\..\..\..\Build\Win32\VC7.1\StaticDebug\obj/"
-				ProgramDataBaseFileName=".\..\..\..\..\..\Build\Win32\VC7.1\StaticDebug\obj/"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\..\..\Build\Win32\VC7.1\StaticDebug/Xerces-c_static_2D.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -1293,23 +1292,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|x64"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							DisableLanguageExtensions="false"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
 						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							DisableLanguageExtensions="false"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1325,7 +1308,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Static Release|x64"
+						Name="Static Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1333,7 +1316,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Static Debug|Win32"
+						Name="Release|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							DisableLanguageExtensions="false"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							DisableLanguageExtensions="false"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Static Release|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1374,7 +1373,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|x64"
+						Name="Debug|Win32"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -1382,7 +1381,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Win32"
+						Name="Release|x64"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -1410,7 +1409,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|x64"
+						Name="Debug|Win32"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -1418,7 +1417,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Win32"
+						Name="Release|x64"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -1446,23 +1445,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|x64"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							DisableLanguageExtensions="false"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
 						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							DisableLanguageExtensions="false"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1479,7 +1462,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Static Release|x64"
+						Name="Static Debug|Win32"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -1488,7 +1471,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Static Debug|Win32"
+						Name="Release|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							DisableLanguageExtensions="false"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							DisableLanguageExtensions="false"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Static Release|x64"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -1538,7 +1537,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|x64"
+						Name="Debug|Win32"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -1546,7 +1545,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Debug|Win32"
+						Name="Release|x64"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -1579,23 +1578,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|x64"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							DisableLanguageExtensions="false"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
 						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							DisableLanguageExtensions="false"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1611,7 +1594,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Static Release|x64"
+						Name="Static Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1619,7 +1602,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Static Debug|Win32"
+						Name="Release|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							DisableLanguageExtensions="false"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							DisableLanguageExtensions="false"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Static Release|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1656,23 +1655,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|x64"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							DisableLanguageExtensions="false"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
 						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							DisableLanguageExtensions="false"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1688,7 +1671,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Static Release|x64"
+						Name="Static Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1696,7 +1679,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Static Debug|Win32"
+						Name="Release|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							DisableLanguageExtensions="false"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							DisableLanguageExtensions="false"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Static Release|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1728,23 +1727,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Release|x64"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							DisableLanguageExtensions="false"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
 						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							DisableLanguageExtensions="false"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1760,7 +1743,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Static Release|x64"
+						Name="Static Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1768,7 +1751,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="Static Debug|Win32"
+						Name="Release|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							DisableLanguageExtensions="false"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							DisableLanguageExtensions="false"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Static Release|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4069,23 +4068,7 @@
 				/>
 			</FileConfiguration>
 			<FileConfiguration
-				Name="Release|x64"
-				>
-				<Tool
-					Name="VCResourceCompilerTool"
-					AdditionalIncludeDirectories="..\..\..\..\..\src\xercesc\util\Platforms\Win32;$(NoInherit)"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
 				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCResourceCompilerTool"
-					AdditionalIncludeDirectories="..\..\..\..\..\src\xercesc\util\Platforms\Win32;$(NoInherit)"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|x64"
 				>
 				<Tool
 					Name="VCResourceCompilerTool"
@@ -4102,7 +4085,7 @@
 				/>
 			</FileConfiguration>
 			<FileConfiguration
-				Name="Static Release|x64"
+				Name="Static Debug|Win32"
 				ExcludedFromBuild="true"
 				>
 				<Tool
@@ -4111,7 +4094,23 @@
 				/>
 			</FileConfiguration>
 			<FileConfiguration
-				Name="Static Debug|Win32"
+				Name="Release|x64"
+				>
+				<Tool
+					Name="VCResourceCompilerTool"
+					AdditionalIncludeDirectories="..\..\..\..\..\src\xercesc\util\Platforms\Win32;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|x64"
+				>
+				<Tool
+					Name="VCResourceCompilerTool"
+					AdditionalIncludeDirectories="..\..\..\..\..\src\xercesc\util\Platforms\Win32;$(NoInherit)"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Static Release|x64"
 				ExcludedFromBuild="true"
 				>
 				<Tool

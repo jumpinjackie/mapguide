@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ACE", "ACE\ACE_wrappers\ace\ACE.vcproj", "{790470CD-FECA-1BAD-6757-8A6317CF8A12}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "db_dll", "dbxml-2.3.10\db-4.5.20\build_windows\db_dll.vcproj", "{8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F}"
