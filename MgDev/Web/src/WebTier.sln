@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CgiAgent", "CgiAgent\CgiAgent.vcproj", "{DA3459C2-1430-499F-996F-218DA3DD755D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5287A594-4D4F-43FE-A281-E279AB708CF1} = {5287A594-4D4F-43FE-A281-E279AB708CF1}

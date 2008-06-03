@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ServerCore", "src\Core\ServerCore.vcproj", "{FDF553DE-0D30-4456-8A84-5009C9EAAED2}"
 	ProjectSection(ProjectDependencies) = postProject
 		{531778C6-C340-40F2-B403-9B58B8121AAB} = {531778C6-C340-40F2-B403-9B58B8121AAB}
