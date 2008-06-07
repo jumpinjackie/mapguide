@@ -1481,54 +1481,46 @@ MgByteReader* MgServerMappingService::QueryFeatures(MgMap* map,
 }
 
 
-//---------------------------------------------------------
-// Private helper methods
-//---------------------------------------------------------
-
-
-//gets an instance of the feature service using the service manager
-void MgServerMappingService::InitializeFeatureService()
-{
-    MgServiceManager* serviceMan = MgServiceManager::GetInstance();
-    assert(NULL != serviceMan);
-
-    m_svcFeature = dynamic_cast<MgFeatureService*>(
-        serviceMan->RequestService(MgServiceType::FeatureService));
-    assert(m_svcFeature != NULL);
-}
-
-
-//gets an instance of the resource service using the service manager
-void MgServerMappingService::InitializeResourceService()
-{
-    MgServiceManager* serviceMan = MgServiceManager::GetInstance();
-    assert(NULL != serviceMan);
-
-    m_svcResource = dynamic_cast<MgResourceService*>(
-        serviceMan->RequestService(MgServiceType::ResourceService));
-    assert(m_svcResource != NULL);
-}
-
-
-//gets an instance of the drawing service using the service manager
-void MgServerMappingService::InitializeDrawingService()
-{
-    MgServiceManager* serviceMan = MgServiceManager::GetInstance();
-    assert(NULL != serviceMan);
-
-    m_svcDrawing = dynamic_cast<MgDrawingService*>(
-        serviceMan->RequestService(MgServiceType::DrawingService));
-    assert(m_svcDrawing != NULL);
-}
-
-
+///----------------------------------------------------------------------------
+/// <summary>
+/// Returns the legend image for the specified layer.
+/// </summary>
+/// <param name="scale">
+/// The scale at which the symbolization is requested.
+/// </param>
+/// <param name="imgWidth">
+/// The requested image width in pixels.
+/// </param>
+/// <param name="imgHeight">
+/// The requested image height in pixels.
+/// </param>
+/// <param name="format">
+/// Image format, from MgImageFormats. Example: PNG, JPG, PNG8, etc …
+/// </param>
+/// <param name="geomType">
+/// The type of symbolization required: -1=any, 1=Point, 2=Line, 3=Area, 4=Composite
+/// </param>
+/// <param name="themeCategory">
+/// The value indicating which theme category swatch to return.
+/// Used when there is a theme defined at this scale. An exception will be
+/// thrown if a requested them category doesn't exist.
+/// </param>
+/// <returns>
+/// A stream representing the legend image.  The default returned image format
+/// will be PNG8 unless a different supported format is requested. An exception
+/// will be thrown if an unsupported image format is requested.
+/// </returns>
+/// <exceptions>
+/// MgException
+/// </exceptions>
+///----------------------------------------------------------------------------
 MgByteReader* MgServerMappingService::GenerateLegendImage(MgResourceIdentifier* resource,
-                                            double     scale,
-                                            INT32      imgWidth,
-                                            INT32      imgHeight,
-                                            CREFSTRING format,
-                                            INT32      geomType,
-                                            INT32      themeCategory)
+    double     scale,
+    INT32      imgWidth,
+    INT32      imgHeight,
+    CREFSTRING format,
+    INT32      geomType,
+    INT32      themeCategory)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -1571,27 +1563,40 @@ MgByteReader* MgServerMappingService::GenerateLegendImage(MgResourceIdentifier* 
         //we have the scale range... find the feature style
         if (range)
         {
-            MdfModel::FeatureTypeStyleCollection* ftsc = range->GetFeatureTypeStyles();
-            int numFTS = ftsc->GetCount();
-
             MdfModel::FeatureTypeStyle* fts = NULL;
 
-            //if just one style use that
-            if (numFTS == 1)
-                fts = ftsc->GetAt(0);
-            else
+            // The "geometry type" specifies which flavor of feature type style to use,
+            // while the theme category is a 0-based value which specifies the actual
+            // type style to use.  So if I have a scale range with two composite type
+            // styles, the first with 3 rules and the second with 2 rules, then the
+            // theme category can range from 0 to 4: 0,1,2 refer to the 3 rules in the
+            // 1st type style, while 3,4 refer to the 2 rules in the 2nd type style.
+            MdfModel::FeatureTypeStyleCollection* ftsc = range->GetFeatureTypeStyles();
+            int numFTS = ftsc->GetCount();
+            for (int j=0; j<numFTS; ++j)
             {
-                //find the right feature type style in the collection
-                //by matching it against the requested geometry type
-                for (int j=0; j<numFTS; ++j)
+                // filter the type styles
+                MdfModel::FeatureTypeStyle* temp = ftsc->GetAt(j);
+                if (!FeatureTypeStyleSupportsGeomType(temp, geomType))
+                    continue;
+
+                // make sure we have rules
+                RuleCollection* rules = temp->GetRules();
+                if (!rules)
+                    continue;
+
+                // check if the theme category refers to one of these rules (note: a
+                // value of -1 matches anything)
+                int numRules = rules->GetCount();
+                if (themeCategory >= -1 && themeCategory < numRules)
                 {
-                    MdfModel::FeatureTypeStyle* temp = ftsc->GetAt(j);
-                    if (FeatureTypeStyleSupportsGeometry(temp, geomType, themeCategory))
-                    {
-                        fts = temp;
-                        break;
-                    }
+                    // found it
+                    fts = temp;
+                    break;
                 }
+
+                // adjust the theme category, and move to the next type style
+                themeCategory -= numRules;
             }
 
             if (fts)
@@ -1626,116 +1631,75 @@ MgByteReader* MgServerMappingService::GenerateLegendImage(MgResourceIdentifier* 
 }
 
 
-// Returns true if the supplied feature type style is compatible with the supplied geometry type.
-bool MgServerMappingService::FeatureTypeStyleSupportsGeometry(MdfModel::FeatureTypeStyle* fts, INT32 geomType, INT32 themeCategory)
+//---------------------------------------------------------
+// Private helper methods
+//---------------------------------------------------------
+
+
+//gets an instance of the feature service using the service manager
+void MgServerMappingService::InitializeFeatureService()
+{
+    MgServiceManager* serviceMan = MgServiceManager::GetInstance();
+    assert(NULL != serviceMan);
+
+    m_svcFeature = dynamic_cast<MgFeatureService*>(
+        serviceMan->RequestService(MgServiceType::FeatureService));
+    assert(m_svcFeature != NULL);
+}
+
+
+//gets an instance of the resource service using the service manager
+void MgServerMappingService::InitializeResourceService()
+{
+    MgServiceManager* serviceMan = MgServiceManager::GetInstance();
+    assert(NULL != serviceMan);
+
+    m_svcResource = dynamic_cast<MgResourceService*>(
+        serviceMan->RequestService(MgServiceType::ResourceService));
+    assert(m_svcResource != NULL);
+}
+
+
+//gets an instance of the drawing service using the service manager
+void MgServerMappingService::InitializeDrawingService()
+{
+    MgServiceManager* serviceMan = MgServiceManager::GetInstance();
+    assert(NULL != serviceMan);
+
+    m_svcDrawing = dynamic_cast<MgDrawingService*>(
+        serviceMan->RequestService(MgServiceType::DrawingService));
+    assert(m_svcDrawing != NULL);
+}
+
+
+// Returns true if the supplied feature type style is compatible with the
+// supplied geometry type: 1=Point, 2=Line, 3=Area, 4=Composite
+bool MgServerMappingService::FeatureTypeStyleSupportsGeomType(MdfModel::FeatureTypeStyle* fts, INT32 geomType)
 {
     if (fts == NULL)
         return false;
 
+    // a value of -1 matches any
+    if (geomType == -1)
+        return true;
+
     FeatureTypeStyleVisitor::eFeatureTypeStyle ftsType = FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts);
 
-    // composite type styles require some digging
-    if (ftsType == FeatureTypeStyleVisitor::ftsComposite)
+    switch (ftsType)
     {
-        RuleCollection* rules = fts->GetRules();
-        if (!rules)
-            return false;
+        case FeatureTypeStyleVisitor::ftsPoint:
+            return (geomType == 1);
 
-        // for composite type styles we need to pay attention to the category
+        case FeatureTypeStyleVisitor::ftsLine:
+            return (geomType == 2);
 
-        // if there's one rule then always use it
-        if (rules->GetCount() == 1)
-            themeCategory = 0;
+        case FeatureTypeStyleVisitor::ftsArea:
+            return (geomType == 3);
 
-        // validate category index
-        if (themeCategory < 0 || themeCategory >= rules->GetCount())
-            return false;
-
-        // get correct theme rule
-        CompositeRule* rule = (CompositeRule*)rules->GetAt(themeCategory);
-
-        CompositeSymbolization* csym = rule->GetSymbolization();
-        if (csym)
-        {
-            SymbolInstanceCollection* symbolInstances = csym->GetSymbolCollection();
-            for (int i=0; i<symbolInstances->GetCount(); ++i)
-            {
-                SymbolInstance* symbolInstance = symbolInstances->GetAt(i);
-
-                // use the geometry context to determine if the composite type style is compatible
-                SymbolInstance::GeometryContext geomContext = symbolInstance->GetGeometryContext();
-
-                if (geomContext == SymbolInstance::gcUnspecified)
-                    return true;
-
-                switch (geomType)
-                {
-                    case MgGeometryType::Point:
-                    case MgGeometryType::MultiPoint:
-                        if (geomContext == SymbolInstance::gcPoint)
-                            return true;
-                        break;
-
-                    case MgGeometryType::LineString:
-                    case MgGeometryType::MultiLineString:
-                    case MgGeometryType::CurveString:
-                    case MgGeometryType::MultiCurveString:
-                        if (geomContext == SymbolInstance::gcLineString)
-                            return true;
-                        break;
-
-                    case MgGeometryType::Polygon:
-                    case MgGeometryType::MultiPolygon:
-                    case MgGeometryType::CurvePolygon:
-                    case MgGeometryType::MultiCurvePolygon:
-                        if (geomContext == SymbolInstance::gcPolygon)
-                            return true;
-                        break;
-
-                    case MgGeometryType::MultiGeometry:
-                    default:
-                        // just accept the first one
-                        return true;
-                }
-            }
-        }
-
-        // composite type style is incompatible
-        return false;
+        case FeatureTypeStyleVisitor::ftsComposite:
+            return (geomType == 4);
     }
 
-    // non-composite type style - the category is irrelevant...
-    switch (geomType)
-    {
-        case MgGeometryType::Point:
-        case MgGeometryType::MultiPoint:
-            if (ftsType == FeatureTypeStyleVisitor::ftsPoint)
-                return true;
-            break;
-
-        case MgGeometryType::LineString:
-        case MgGeometryType::MultiLineString:
-        case MgGeometryType::CurveString:
-        case MgGeometryType::MultiCurveString:
-            if (ftsType == FeatureTypeStyleVisitor::ftsLine)
-                return true;
-            break;
-
-        case MgGeometryType::Polygon:
-        case MgGeometryType::MultiPolygon:
-        case MgGeometryType::CurvePolygon:
-        case MgGeometryType::MultiCurvePolygon:
-            if (ftsType == FeatureTypeStyleVisitor::ftsArea)
-                return true;
-            break;
-
-        case MgGeometryType::MultiGeometry:
-        default:
-            // just accept the first one
-            return true;
-    }
-
-    // non-composite type style is incompatible
     return false;
 }
 
