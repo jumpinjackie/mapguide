@@ -340,9 +340,11 @@ function BuildLayerDefinitionData($resSrvc, $resId, $layerVarName, &$output)
         {
             $typeStyle = $scaleRange->getElementsByTagName($typeStyles[$ts]);
             $catIndex = 0;
-            for($st = 0; $st < $typeStyle->length; $st++) {
+            for($st = 0; $st < $typeStyle->length; $st++)
+            {
                 $rules = $typeStyle->item(0)->getElementsByTagName($ruleNames[$ts]);
-                for($r = 0; $r < $rules->length; $r++) {
+                for($r = 0; $r < $rules->length; $r++)
+                {
                     $rule = $rules->item($r);
                     $label = $rule->getElementsByTagName("LegendLabel");
                     $filter = $rule->getElementsByTagName("Filter");
@@ -351,7 +353,8 @@ function BuildLayerDefinitionData($resSrvc, $resId, $layerVarName, &$output)
                     $filterText = $filter->length==1? $filter->item(0)->nodeValue: "";
 
                     $output = $output . sprintf("%s.children[%d] = new StyleItem(\"%s\", \"%s\", %d, %d);\n",
-                                                $scaleRangeVarName, $styleIndex++,
+                                                $scaleRangeVarName,
+                                                $styleIndex++,
                                                 StrEscape(trim($labelText)),
                                                 StrEscape(trim($filterText)),
                                                 $ts+1,

@@ -419,12 +419,12 @@ void BuildLayerDefinitionData(MgResourceService resSrvc, MgResourceIdentifier re
                 break;
 
             int styleIndex = 0;
-
             for(int ts=0; ts < typeStyles.length; ts++)
             {
                 NodeList typeStyle = scaleRange.getElementsByTagName(typeStyles[ts]);
                 int catIndex = 0;
-                for(int st = 0; st < typeStyle.getLength(); st++) {
+                for(int st = 0; st < typeStyle.getLength(); st++)
+                {
                     NodeList rules = ((Element)typeStyle.item(st)).getElementsByTagName(ruleNames[ts]);
                     for(int r = 0; r < rules.getLength(); r++)
                     {
@@ -437,27 +437,23 @@ void BuildLayerDefinitionData(MgResourceService resSrvc, MgResourceIdentifier re
                         {
                             NodeList subItems = label.item(0).getChildNodes();
                             if(subItems != null && subItems.getLength() > 0)
-                            {
                                 labelText = subItems.item(0).getNodeValue();
-                            }
                         }
                         String filterText = "";
                         if(filter != null && filter.getLength() > 0)
                         {
                             NodeList subItems2 = filter.item(0).getChildNodes();
                             if(subItems2 != null && subItems2.getLength() > 0)
-                            {
                                 filterText = subItems2.item(0).getNodeValue();
-                            }
                         }
 
                         output = output + String.format("%s.children[%d] = new StyleItem(\"%s\", \"%s\", %d, %d);\n",
-                                                    new Object[]{scaleRangeVarName, Integer.valueOf(styleIndex++),
+                                                    new Object[]{scaleRangeVarName,
+                                                    Integer.valueOf(styleIndex++),
                                                     StrEscape(labelText.trim()),
                                                     StrEscape(filterText.trim()),
                                                     ts+1,
-                                                    catIndex++
-                                                    });
+                                                    catIndex++});
                     }
                 }
             }

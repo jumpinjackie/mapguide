@@ -699,6 +699,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
                     LineBuffer lb(3);
                     switch (sym->geomContext)
                     {
+                        case SymbolInstance::gcUnspecified:
                         case SymbolInstance::gcLineString:
                         {
                             // a horizontal line centered vertically in the preview image
