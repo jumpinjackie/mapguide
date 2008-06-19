@@ -586,6 +586,9 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
             }
             else if (gl)
             {
+                // TODO: FDO RFP - Make FdoPtr's reference counter thread-safe.
+                static ACE_Recursive_Thread_Mutex sg_fdoRfpMutex;
+
                 #ifdef _DEBUG
                 long dwLayerStart = GetTickCount();
                 #endif
@@ -610,7 +613,12 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     MdfModel::MdfString featureName = gl->GetFeatureName();
 
                     //get a transform from layer coord sys to map coord sys
-                    TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, gl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
+                    TransformCache* item = NULL;
+                    {
+                        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sg_fdoRfpMutex));
+                        item = TransformCache::GetLayerToMapTransform(transformCache, gl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
+                    }
+
                     Ptr<MgCoordinateSystem> layerCs = item? item->GetCoordSys() : NULL;
                     MgCSTrans* xformer = item? item->GetTransform() : NULL;
 
@@ -669,7 +677,10 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     }
 
                     //perform the raster query
-                    rsReader = ExecuteRasterQuery(svcFeature, extent, gl, overrideFilter.c_str(), dstCs, layerCs, width, height);
+                    {
+                        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sg_fdoRfpMutex));
+                        rsReader = ExecuteRasterQuery(svcFeature, extent, gl, overrideFilter.c_str(), dstCs, layerCs, width, height);
+                    }
 
                     if (NULL != rsReader)
                     {

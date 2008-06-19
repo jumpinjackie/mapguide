@@ -115,8 +115,12 @@ void MgCacheManager::Initialize()
 ///
 void MgCacheManager::ClearCaches()
 {
-    m_featureServiceCache.Clear();
+    // The mutex usage and the method call order here are important
+    // because they ensure all the caches are in sync.
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_featureServiceCache.m_mutex));
+
     m_fdoConnectionManager->ClearCache();
+    m_featureServiceCache.Clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -127,8 +131,12 @@ void MgCacheManager::NotifyResourcesChanged(CREFSTRING resource)
 {
     if (STRING::npos != resource.rfind(MgResourceType::FeatureSource))
     {
-        m_featureServiceCache.RemoveEntry(resource);
+        // The mutex usage and the method call order here are important
+        // because they ensure all the caches are in sync.
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_featureServiceCache.m_mutex));
+
         m_fdoConnectionManager->RemoveCachedFdoConnection(resource);
+        m_featureServiceCache.RemoveEntry(resource);
     }
 }
 
@@ -140,8 +148,12 @@ void MgCacheManager::NotifyResourcesChanged(MgResourceIdentifier* resource)
 {
     if (NULL != resource && resource->IsResourceTypeOf(MgResourceType::FeatureSource))
     {
-        m_featureServiceCache.RemoveEntry(resource);
+        // The mutex usage and the method call order here are important
+        // because they ensure all the caches are in sync.
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_featureServiceCache.m_mutex));
+
         m_fdoConnectionManager->RemoveCachedFdoConnection(resource);
+        m_featureServiceCache.RemoveEntry(resource);
     }
 }
 

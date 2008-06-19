@@ -51,38 +51,38 @@ public:
     void SetActiveFlag(bool active);
     bool GetActiveFlag() const;
 
-    void SetFeatureSchemaName(CREFSTRING featureSchemaName);
-    CREFSTRING GetFeatureSchemaName() const;
-
-    void SetFeatureClassName(CREFSTRING featureClassName);
-    CREFSTRING GetFeatureClassName() const;
-
     MgSpatialContextReader* GetSpatialContextReader();
     void SetSpatialContextReader(MgSpatialContextReader* spatialContextReader);
 
     MgStringCollection* GetFeatureSchemaNames();
     void SetFeatureSchemaNames(MgStringCollection* featureSchemaNames);
 
+    void SetFeatureSchemaName(CREFSTRING featureSchemaName);
+    STRING GetFeatureSchemaName() const;
+
+    bool GetFeatureSchemaCollectionSerialized() const;
+    void SetFeatureSchemaCollectionSerialized(bool serialized);
+
     MgFeatureSchemaCollection* GetFeatureSchemaCollection();
     void SetFeatureSchemaCollection(MgFeatureSchemaCollection* featureSchemaCollection);
 
-    bool GetFeatureSchemaCollectionSerialized();
-    void SetFeatureSchemaCollectionSerialized(bool bSerialized);
+    FdoFeatureSchemaCollection* GetFdoFeatureSchemaCollection();
+    void SetFdoFeatureSchemaCollection(FdoFeatureSchemaCollection* featureSchemaCollection);
 
-    STRING GetFeatureSchemaXml();
+    STRING GetFeatureSchemaXml() const;
     void SetFeatureSchemaXml(CREFSTRING featureSchemaXml);
 
     MgStringCollection* GetFeatureClassNames();
     void SetFeatureClassNames(MgStringCollection* featureClassNames);
+
+    void SetFeatureClassName(CREFSTRING featureClassName);
+    STRING GetFeatureClassName() const;
 
     MgClassDefinition* GetFeatureClassDefinition();
     void SetFeatureClassDefinition(MgClassDefinition* featureClassDefinition);
 
     MgPropertyDefinitionCollection* GetFeatureClassIdentityProperties();
     void SetFeatureClassIdentityProperties(MgPropertyDefinitionCollection* featureClassIdentityProperties);
-
-    FdoFeatureSchemaCollection* GetFdoFeatureSchemaCollection();
-    void SetFdoFeatureSchemaCollection(FdoFeatureSchemaCollection* featureSchemaCollection);
 
 /// Data Members
 
@@ -98,8 +98,11 @@ private:
 
     STRING m_featureSchemaName;
 
-    Ptr<MgFeatureSchemaCollection> m_featureSchemaCollection;
     bool m_featureSchemaCollectionSerialized;
+    Ptr<MgFeatureSchemaCollection> m_featureSchemaCollection;
+
+    FdoPtr<FdoFeatureSchemaCollection> m_fdoFeatureSchemaCollection;
+
     STRING m_featureSchemaXml;
     Ptr<MgStringCollection> m_featureClassNames;
 
@@ -107,8 +110,6 @@ private:
 
     Ptr<MgClassDefinition> m_featureClassDefinition;
     Ptr<MgPropertyDefinitionCollection> m_featureClassIdentityProperties;
-
-    FdoPtr<FdoFeatureSchemaCollection> m_FdoFeatureSchemaCollection;
 };
 
 /// Inline Methods
@@ -118,12 +119,22 @@ inline bool MgFeatureServiceCacheEntry::GetActiveFlag() const
     return m_active;
 }
 
-inline CREFSTRING MgFeatureServiceCacheEntry::GetFeatureSchemaName() const
+inline STRING MgFeatureServiceCacheEntry::GetFeatureSchemaName() const
 {
     return m_featureSchemaName;
 }
 
-inline CREFSTRING MgFeatureServiceCacheEntry::GetFeatureClassName() const
+inline bool MgFeatureServiceCacheEntry::GetFeatureSchemaCollectionSerialized() const
+{
+    return m_featureSchemaCollectionSerialized;
+}
+
+inline STRING MgFeatureServiceCacheEntry::GetFeatureSchemaXml() const
+{
+    return m_featureSchemaXml;
+}
+
+inline STRING MgFeatureServiceCacheEntry::GetFeatureClassName() const
 {
     return m_featureClassName;
 }

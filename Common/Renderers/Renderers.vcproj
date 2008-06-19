@@ -686,6 +686,14 @@
 			</File>
 		</Filter>
 		<File
+			RelativePath=".\CriticalSection.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\CriticalSection.h"
+			>
+		</File>
+		<File
 			RelativePath=".\Renderers.h"
 			>
 		</File>

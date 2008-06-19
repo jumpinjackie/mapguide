@@ -546,7 +546,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
 
         // The following sets ffsc to NULL
         m_featureServiceCache->SetFdoFeatureSchemaCollection(resource, schemaName, ffsc);
-        m_featureServiceCache->SetFeatureSchemaCollection(resource, schemaName, fsCollection.p, serialize);
+        m_featureServiceCache->SetFeatureSchemaCollection(resource, schemaName, serialize, fsCollection.p);
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.DescribeSchema")

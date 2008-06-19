@@ -65,8 +65,8 @@ public:
     void SetFeatureSchemaNames(MgResourceIdentifier* resource, MgStringCollection* featureSchemaNames);
     MgStringCollection* GetFeatureSchemaNames(MgResourceIdentifier* resource);
 
-    void SetFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, MgFeatureSchemaCollection* featureSchemaCollection, bool bSerialize);
-    MgFeatureSchemaCollection* GetFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, bool bSerialize);
+    void SetFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, bool serialized, MgFeatureSchemaCollection* featureSchemaCollection);
+    MgFeatureSchemaCollection* GetFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, bool serialized);
 
     void SetFeatureSchemaXml(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, CREFSTRING featureSchemaXml);
     STRING GetFeatureSchemaXml(MgResourceIdentifier* resource, CREFSTRING featureSchemaName);
@@ -94,6 +94,8 @@ protected:
 /// Data Members
 
 private:
+
+    friend class MgCacheManager;
 
     MgFeatureServiceCacheEntries m_featureServiceCacheEntries;
 };

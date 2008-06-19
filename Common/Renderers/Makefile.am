@@ -23,6 +23,7 @@ libMgRenderers_la_SOURCES = \
   AGGW2DRewriter.cpp \
   AGGFillPatterns.cpp \
   ../../Oem/agg-2.4/font_freetype/agg_font_freetype.cpp \
+  CriticalSection.cpp \
   DWFRenderer.cpp \
   EMapRenderer.cpp \
   EMapUpdateRenderer.cpp \
@@ -49,6 +50,7 @@ noinst_HEADERS = \
   agg_mg_overloads.h \
   AGGW2DRewriter.h \
   AGGFillPatterns.h \
+  CriticalSection.h \
   DWFRenderer.h \
   DWFRSInputStream.h \
   EMapRenderer.h \
