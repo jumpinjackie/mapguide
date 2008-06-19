@@ -1270,6 +1270,11 @@ void AGGRenderer::DrawString(agg_context*     cxt,
                              RS_Color&        color,
                              double           angleRad)
 {
+    if (NULL == font)
+    {
+        return;
+    }
+
     // Don't draw the text if height > 16384 pixels, since memory usage when
     // evaluating the glyphs will get too large.  16394 pixels should be
     // more than enough (e.g. this allows 13" high text on a 1200dpi device).

@@ -23,7 +23,8 @@
 /// Construct the object.
 ///
 MgFeatureServiceCacheEntry::MgFeatureServiceCacheEntry() :
-    m_active(false)
+    m_active(false),
+    m_featureSchemaCollectionSerialized(false)
 {
 }
 
@@ -66,26 +67,27 @@ void MgFeatureServiceCacheEntry::SetActiveFlag(bool active)
 
 void MgFeatureServiceCacheEntry::SetFeatureSchemaName(CREFSTRING featureSchemaName)
 {
-    if ( featureSchemaName != m_featureSchemaName ) 
+    if (!m_featureSchemaName.empty() && featureSchemaName != m_featureSchemaName)
     {
+        SetFeatureSchemaCollectionSerialized(false);
         SetFeatureSchemaCollection((MgFeatureSchemaCollection*) NULL);
-        SetFeatureSchemaXml(L"");
         SetFdoFeatureSchemaCollection((FdoFeatureSchemaCollection*) NULL);
+        SetFeatureSchemaXml(L"");
         SetFeatureClassNames((MgStringCollection*) NULL);
         SetFeatureClassName(L"");
     }
 
     m_featureSchemaName = featureSchemaName;
-
 }
 
 void MgFeatureServiceCacheEntry::SetFeatureClassName(CREFSTRING featureClassName)
 {
-    if ( featureClassName != m_featureClassName ) 
+    if (!m_featureClassName.empty() && featureClassName != m_featureClassName)
     {
         SetFeatureClassDefinition((MgClassDefinition*) NULL);
         SetFeatureClassIdentityProperties((MgPropertyDefinitionCollection*) NULL);
     }
+
     m_featureClassName = featureClassName;
 }
 
@@ -109,6 +111,11 @@ MgStringCollection* MgFeatureServiceCacheEntry::GetFeatureSchemaNames()
     return SAFE_ADDREF(m_featureSchemaNames.p);
 }
 
+void MgFeatureServiceCacheEntry::SetFeatureSchemaCollectionSerialized(bool serialized)
+{
+    m_featureSchemaCollectionSerialized = serialized;
+}
+
 void MgFeatureServiceCacheEntry::SetFeatureSchemaCollection(MgFeatureSchemaCollection* featureSchemaCollection)
 {
     m_featureSchemaCollection = SAFE_ADDREF(featureSchemaCollection);
@@ -119,24 +126,9 @@ MgFeatureSchemaCollection* MgFeatureServiceCacheEntry::GetFeatureSchemaCollectio
     return SAFE_ADDREF(m_featureSchemaCollection.p);
 }
 
-void MgFeatureServiceCacheEntry::SetFeatureSchemaCollectionSerialized(bool bSerialized)
-{
-    m_featureSchemaCollectionSerialized = bSerialized;
-}
-
-bool MgFeatureServiceCacheEntry::GetFeatureSchemaCollectionSerialized()
-{
-    return m_featureSchemaCollectionSerialized;
-}
-
 void MgFeatureServiceCacheEntry::SetFeatureSchemaXml(CREFSTRING featureSchemaXml)
 {
     m_featureSchemaXml = featureSchemaXml;
-}
-
-STRING MgFeatureServiceCacheEntry::GetFeatureSchemaXml()
-{
-    return m_featureSchemaXml;
 }
 
 void MgFeatureServiceCacheEntry::SetFeatureClassNames(MgStringCollection* featureClassNames)
@@ -171,11 +163,14 @@ MgPropertyDefinitionCollection* MgFeatureServiceCacheEntry::GetFeatureClassIdent
 
 void MgFeatureServiceCacheEntry::SetFdoFeatureSchemaCollection(FdoFeatureSchemaCollection* featureSchemaCollection)
 {
-    m_FdoFeatureSchemaCollection = SAFE_ADDREF(featureSchemaCollection);
+    // Note that the caller must ensure this pointer's reference counter is
+    // thread safe when calling this method.
+    m_fdoFeatureSchemaCollection = FDO_SAFE_ADDREF(featureSchemaCollection);
 }
 
 FdoFeatureSchemaCollection* MgFeatureServiceCacheEntry::GetFdoFeatureSchemaCollection()
 {
-    return SAFE_ADDREF(m_FdoFeatureSchemaCollection.p);
+    // Note that the caller must ensure this pointer's reference counter is
+    // thread safe when calling this method.
+    return FDO_SAFE_ADDREF(m_fdoFeatureSchemaCollection.p);
 }
-
