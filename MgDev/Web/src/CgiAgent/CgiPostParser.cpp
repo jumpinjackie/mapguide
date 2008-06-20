@@ -122,7 +122,7 @@ void CgiPostParser::Parse(MgHttpRequestParam* params)
         string content = contentType;
         DumpMessage("Content type: %s", content.c_str());
 
-        if (content == MapAgentStrings::UrlEncoded)
+        if (content.find(MapAgentStrings::UrlEncoded) == 0)
         {
             m_buf[nBytes] = '\0';
 
