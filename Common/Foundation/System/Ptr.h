@@ -23,6 +23,8 @@
 #pragma once
 #endif
 
+#include <stdexcept>
+
 #define SAFE_RELEASE(x) {if (x) (x)->Release(); (x) = NULL;}
 #define SAFE_ADDREF(x)  ((x != NULL) ? ((x)->AddRef(), (x)) : NULL)
 
