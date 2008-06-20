@@ -90,7 +90,7 @@ void ApachePostParser::Parse(MgHttpRequestParam* params)
         content.append(type);
     }
 
-    if (content == MapAgentStrings::UrlEncoded && totalBytes > 0)
+    if (content.find(MapAgentStrings::UrlEncoded) == 0 && totalBytes > 0)
     {
         m_pBuffer[totalBytes] = '\0';
 
@@ -164,6 +164,7 @@ void ApachePostParser::Parse(MgHttpRequestParam* params)
 
     MG_CATCH_AND_THROW(L"ApachePostParser.Parse");
 }
+
 
 
 
