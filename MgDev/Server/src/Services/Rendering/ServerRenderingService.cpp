@@ -878,7 +878,10 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
     // get a byte representation of the image
     auto_ptr<RS_ByteData> data;
 
-    STRING format = options->GetImageFormat();
+    STRING imageFormat = options->GetImageFormat();
+    // Both AGG and GD expect the format to be an uppercase string
+    STRING format = MgUtil::ToUpper(imageFormat);
+
     if (wcscmp(m_renderername.c_str(), L"AGG") == 0)
         data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight));
     else
