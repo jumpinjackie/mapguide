@@ -67,7 +67,7 @@ void MgFeatureServiceCacheEntry::SetActiveFlag(bool active)
 
 void MgFeatureServiceCacheEntry::SetFeatureSchemaName(CREFSTRING featureSchemaName)
 {
-    if (!m_featureSchemaName.empty() && featureSchemaName != m_featureSchemaName)
+    if (featureSchemaName != m_featureSchemaName)
     {
         SetFeatureSchemaCollectionSerialized(false);
         SetFeatureSchemaCollection((MgFeatureSchemaCollection*) NULL);
@@ -82,7 +82,7 @@ void MgFeatureServiceCacheEntry::SetFeatureSchemaName(CREFSTRING featureSchemaNa
 
 void MgFeatureServiceCacheEntry::SetFeatureClassName(CREFSTRING featureClassName)
 {
-    if (!m_featureClassName.empty() && featureClassName != m_featureClassName)
+    if (featureClassName != m_featureClassName)
     {
         SetFeatureClassDefinition((MgClassDefinition*) NULL);
         SetFeatureClassIdentityProperties((MgPropertyDefinitionCollection*) NULL);
