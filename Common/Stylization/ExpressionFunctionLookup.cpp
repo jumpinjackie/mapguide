@@ -56,7 +56,9 @@ void ExpressionFunctionLookup::AddSignatures(FdoSignatureDefinitionCollection* s
             args->Add(index);
             args->Add(value);
         }
-        signatures->Add(FdoSignatureDefinition::Create(returnType, args));
+
+        FdoPtr<FdoSignatureDefinition> sig = FdoSignatureDefinition::Create(returnType, args);
+        signatures->Add(sig);
     }
 }
 
