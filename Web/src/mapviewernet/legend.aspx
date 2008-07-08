@@ -430,7 +430,8 @@ void BuildLayerDefinitionData(MgResourceService resSrvc, MgResourceIdentifier re
             {
                 XmlNodeList typeStyle = scaleRange.GetElementsByTagName(typeStyles[ts]);
                 int catIndex = 0;
-                for(int st = 0; st < typeStyle.Count; st++) {
+                for(int st = 0; st < typeStyle.Count; st++)
+                {
                     XmlNodeList rules = ((XmlElement)typeStyle[st]).GetElementsByTagName(ruleNames[ts]);
                     for(int r = 0; r < rules.Count; r++)
                     {
@@ -440,14 +441,10 @@ void BuildLayerDefinitionData(MgResourceService resSrvc, MgResourceIdentifier re
 
                         String labelText = "";
                         if(label != null && label.Count > 0 && label[0].ChildNodes.Count > 0)
-                        {
                             labelText = label[0].ChildNodes[0].Value;
-                        }
                         String filterText = "";
                         if(filter != null && filter.Count > 0 && filter[0].ChildNodes.Count > 0)
-                        {
                             filterText = filter[0].ChildNodes[0].Value;
-                        }
 
                         output = output + String.Format("{0}.children[{1}] = new StyleItem(\"{2}\", \"{3}\", {4}, {5});\n",
                                                     scaleRangeVarName,

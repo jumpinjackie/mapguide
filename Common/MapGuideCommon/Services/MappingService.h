@@ -336,12 +336,11 @@ PUBLISHED_API:
     /// Input
     /// The requested image height in pixels.
     /// \param format (String/string)
+    /// Input
     /// Image format, from MgImageFormats. Example: PNG, JPG, PNG8, etc …
     /// \param geomType (int)
     /// Input
-    /// Geometry type, from MgFeatureGeometricType.
-    /// Example: 0=Point, 1=Curve, 2=Surface
-    /// The value indicating the type of symbolization required.
+    /// The type of symbolization required: 1=Point, 2=Line, 3=Area, 4=Composite
     /// \param themeCategory (int)
     /// Input
     /// The value indicating which theme category swatch to return.
