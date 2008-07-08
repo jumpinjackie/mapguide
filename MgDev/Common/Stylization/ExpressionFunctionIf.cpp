@@ -71,7 +71,9 @@ void ExpressionFunctionIf::AddSignature(FdoSignatureDefinitionCollection* signat
     args->Add(condition);
     args->Add(trueValue);
     args->Add(falseValue);
-    signatures->Add(FdoSignatureDefinition::Create(returnType, args));
+
+    FdoPtr<FdoSignatureDefinition> sig = FdoSignatureDefinition::Create(returnType, args);
+    signatures->Add(sig);
 }
 
 

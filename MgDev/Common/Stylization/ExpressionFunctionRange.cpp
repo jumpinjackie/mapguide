@@ -58,7 +58,9 @@ void ExpressionFunctionRange::AddSignatures(FdoSignatureDefinitionCollection* si
             args->Add(rangeMax);
             args->Add(value);
         }
-        signatures->Add(FdoSignatureDefinition::Create(returnType, args));
+
+        FdoPtr<FdoSignatureDefinition> sig = FdoSignatureDefinition::Create(returnType, args);
+        signatures->Add(sig);
     }
 }
 
