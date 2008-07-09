@@ -162,8 +162,6 @@ INTERNAL_API:
 
 protected:
 
-    virtual void NotifyResourcesChanged(MgSerializableCollection* resources) {};
-
     /////////////////////////////////////////////////////////////////
     /// \brief
     /// Get the class Id

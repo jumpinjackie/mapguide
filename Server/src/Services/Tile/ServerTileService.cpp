@@ -78,6 +78,17 @@ MgServerTileService::~MgServerTileService()
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
+/// Determine if the tile cache is empty.
+///
+bool MgServerTileService::IsTileCacheEmpty() const
+{
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
+
+    return sm_mapCache.empty();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Detect if the tile file has been locked by another thread or process.
 ///
 bool MgServerTileService::DetectTileLockFile(CREFSTRING lockPathname)

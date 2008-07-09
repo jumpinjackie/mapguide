@@ -1547,7 +1547,7 @@ bool MgServerFeatureService::NotifyResourcesChanged(const set<STRING>& resources
         {
             MG_FEATURE_SERVICE_TRY()
 
-            cacheManager->NotifyResourcesChanged(*i);
+            cacheManager->NotifyResourceChanged(*i);
 
             MG_FEATURE_SERVICE_CATCH(L"MgServerFeatureService.NotifyResourcesChanged")
 
@@ -1599,7 +1599,7 @@ bool MgServerFeatureService::NotifyResourcesChanged(MgSerializableCollection* re
 
                 MG_FEATURE_SERVICE_TRY()
 
-                cacheManager->NotifyResourcesChanged(resource);
+                cacheManager->NotifyResourceChanged(resource);
 
                 MG_FEATURE_SERVICE_CATCH(L"MgServerFeatureService.NotifyResourcesChanged")
 

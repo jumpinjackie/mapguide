@@ -119,7 +119,7 @@ protected:
     void AbortTransaction();
 
     virtual void UpdateDateModifiedResourceSet(CREFSTRING resource) {};
-    virtual void UpdateChangedResourceSet(MgResourceIdentifier& resource) {};
+    virtual void NotifyResourceChanged(MgResourceIdentifier& resource) {};
 
 /// Data Members
 

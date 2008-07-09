@@ -782,7 +782,7 @@ MgByteReader* MgSiteResourceContentManager::EnumerateGroupsByUser(
     string query = "collection('";
     query += m_container.getName();
     query += "')";
-    query += "/Group/Users/User/Name[text()=\"";
+    query += "/Group/Users/User/Name[.=\"";
     query += MgUtil::WideCharToMultiByte(user);
     query += "\"]";
 
@@ -1231,7 +1231,7 @@ void MgSiteResourceContentManager::GrantGroupMembershipsToUsers(
 
             // Set up an XQuery.
 
-            string query = "/Group/Users/User/Name/text()=\"";
+            string query = "/Group/Users/User/Name/.=\"";
             query += MgUtil::WideCharToMultiByte(userId);
             query += "\"";
 
@@ -1443,7 +1443,7 @@ MgStringCollection* MgSiteResourceContentManager::EnumerateRolesOfUser(
     string query = "collection('";
     query += m_container.getName();
     query += "')";
-    query += "/Role/Users/User/Name[text()=\"";
+    query += "/Role/Users/User/Name[.=\"";
     query += MgUtil::WideCharToMultiByte(user);
     query += "\"]";
 
@@ -1497,7 +1497,7 @@ MgStringCollection* MgSiteResourceContentManager::EnumerateRolesOfGroup(
     string query = "collection('";
     query += m_container.getName();
     query += "')";
-    query += "/Role/Groups/Group/Name[text()=\"";
+    query += "/Role/Groups/Group/Name[.=\"";
     query += MgUtil::WideCharToMultiByte(group);
     query += "\"]";
 
@@ -1621,7 +1621,7 @@ void MgSiteResourceContentManager::GrantRoleMembershipsToUsers(
 
             // Set up an XQuery.
 
-            string query = "/Role/Users/User/Name/text()=\"";
+            string query = "/Role/Users/User/Name/.=\"";
             query += MgUtil::WideCharToMultiByte(userId);
             query += "\"";
 
@@ -1853,7 +1853,7 @@ void MgSiteResourceContentManager::GrantRoleMembershipsToGroups(
 
             // Set up an XQuery.
 
-            string query = "/Role/Groups/Group/Name/text()=\"";
+            string query = "/Role/Groups/Group/Name/.=\"";
             query += MgUtil::WideCharToMultiByte(groupId);
             query += "\"";
 
@@ -2077,7 +2077,7 @@ MgStringCollection* MgSiteResourceContentManager::RemoveUserFromAllGroups(
     string query = "collection('";
     query += m_container.getName();
     query += "')";
-    query += "/Group/Users/User/Name[text()=\"";
+    query += "/Group/Users/User/Name[.=\"";
     query += MgUtil::WideCharToMultiByte(userId);
     query += "\"]";
 
@@ -2194,7 +2194,7 @@ MgStringCollection* MgSiteResourceContentManager::RemoveUserFromAllRoles(
     string query = "collection('";
     query += m_container.getName();
     query += "')";
-    query += "/Role/Users/User/Name[text()=\"";
+    query += "/Role/Users/User/Name[.=\"";
     query += MgUtil::WideCharToMultiByte(userId);
     query += "\"]";
 
@@ -2309,7 +2309,7 @@ MgStringCollection* MgSiteResourceContentManager::RemoveGroupFromAllRoles(
     string query = "collection('";
     query += m_container.getName();
     query += "')";
-    query += "/Role/Groups/Group/Name[text()=\"";
+    query += "/Role/Groups/Group/Name[.=\"";
     query += MgUtil::WideCharToMultiByte(groupId);
     query += "\"]";
 

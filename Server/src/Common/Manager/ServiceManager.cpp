@@ -490,10 +490,20 @@ void MgServiceManager::DispatchResourceChangeNotifications()
 
         if (NULL != changedResources.p && changedResources->GetCount() > 0)
         {
-            Ptr<MgSerializableCollection> affectedResources =
-                resourceService->EnumerateParentMapDefinitions(changedResources);
+            // Notify the tile service of the resources changed.
+            
+            Ptr<MgSerializableCollection> affectedResources;
+            Ptr<MgService> service = RequestLocalService(MgServiceType::TileService);
+            MgServerTileService* tileService = dynamic_cast<MgServerTileService*>(service.p);
+            ACE_ASSERT(NULL != tileService);
 
-            NotifyTileServiceOnResourcesChanged(affectedResources, false);
+            if (NULL != tileService && !tileService->IsTileCacheEmpty())
+            {
+                affectedResources = resourceService->EnumerateParentMapDefinitions(changedResources);
+                tileService->NotifyResourcesChanged(affectedResources, false);
+            }
+
+            // Dispatch resource change notifications to support servers.
 
             INT32 serviceFlags = (MgServiceFlag::FeatureService | MgServiceFlag::TileService);
             Ptr<MgStringCollection> serverAddresses =

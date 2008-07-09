@@ -100,7 +100,7 @@ public:
 
 protected:
 
-    virtual void UpdateChangedResourceSet(MgResourceIdentifier& resource);
+    virtual void NotifyResourceChanged(MgResourceIdentifier& resource);
 
 private:
 

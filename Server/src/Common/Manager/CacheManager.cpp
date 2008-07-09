@@ -127,7 +127,7 @@ void MgCacheManager::ClearCaches()
 /// \brief
 /// Notify the applicable caches of the changed resource.
 ///
-void MgCacheManager::NotifyResourcesChanged(CREFSTRING resource)
+void MgCacheManager::NotifyResourceChanged(CREFSTRING resource)
 {
     if (STRING::npos != resource.rfind(MgResourceType::FeatureSource))
     {
@@ -144,7 +144,7 @@ void MgCacheManager::NotifyResourcesChanged(CREFSTRING resource)
 /// \brief
 /// Notify the applicable caches of the changed resource.
 ///
-void MgCacheManager::NotifyResourcesChanged(MgResourceIdentifier* resource)
+void MgCacheManager::NotifyResourceChanged(MgResourceIdentifier* resource)
 {
     if (NULL != resource && resource->IsResourceTypeOf(MgResourceType::FeatureSource))
     {
