@@ -27,11 +27,13 @@
 //the Stylizer knows how to catch and release. It does not know about
 //MgExceptions so it can't properly release them
 #define RSFR_TRY() try {
-#define RSFR_CATCH()   }                                \
-                       catch (MgException* ex)          \
-                       {                                \
-                           ex->Release();               \
-                           throw FdoException::Create();\
+#define RSFR_CATCH()   }                                                                    \
+                       catch (MgException* ex)                                              \
+                       {                                                                    \
+                           STRING message;                                                  \
+                           message = ex->GetMessage();                                      \
+                           ex->Release();                                                   \
+                           throw FdoException::Create(message.c_str());                     \
                        }
 
 
@@ -273,11 +275,14 @@ const wchar_t* RSMgFeatureReader::GetString(const wchar_t* propertyName)
     //Ignore FDO exceptions.  May simply be a null string value.
     catch (MgException* ex)
     {
+        STRING message;
+        message = ex->GetMessage();
+
         bool shouldThrow = (NULL == dynamic_cast<MgFdoException*>(ex));
         ex->Release();
         if (shouldThrow)
         {
-            throw FdoException::Create();
+            throw FdoException::Create(message.c_str());
         }
     }
 
@@ -298,7 +303,7 @@ LineBuffer* RSMgFeatureReader::GetGeometry(const wchar_t*   propertyName,
     //This is incorrect, but I am not sure if any other code that uses the API relies on that
     //so let's check for null and throw the exception
     if (!agf)
-        throw FdoException::Create();
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_60_NULL_POINTER)));
 
     //TODO: should we really automatically allocate a LineBuffer
     //if user did not give us one?
