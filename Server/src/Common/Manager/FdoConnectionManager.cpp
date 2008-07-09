@@ -438,7 +438,14 @@ void MgFdoConnectionManager::RemoveExpiredFdoConnections()
                         if(time > m_nFdoConnectionTimeout)
                         {
                             // Connection has expired so close it and remove it
-                            pFdoConnectionCacheEntry->pFdoConnection->Close();
+                            try
+                            {
+                                pFdoConnectionCacheEntry->pFdoConnection->Close();
+                            }
+                            catch(FdoException* e)
+                            {
+                                FDO_SAFE_RELEASE(e);
+                            }
 
                             // Release any resource
                             FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
@@ -939,7 +946,14 @@ bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING resource, bool
                             if(1 == refCount)
                             {
                                 // Close the connection
-                                pFdoConnectionCacheEntry->pFdoConnection->Close();
+                                try
+                                {
+                                    pFdoConnectionCacheEntry->pFdoConnection->Close();
+                                }
+                                catch(FdoException* e)
+                                {
+                                    FDO_SAFE_RELEASE(e);
+                                }
 
                                 // Release any resource
                                 FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
@@ -1125,7 +1139,14 @@ bool MgFdoConnectionManager::UpdateFdoConnectionCache(CREFSTRING provider)
                                 if(1 == refCount)
                                 {
                                     // Close the connection
-                                    pFdoConnectionCacheEntry->pFdoConnection->Close();
+                                    try
+                                    {
+                                        pFdoConnectionCacheEntry->pFdoConnection->Close();
+                                    }
+                                    catch(FdoException* e)
+                                    {
+                                        FDO_SAFE_RELEASE(e);
+                                    }
 
                                     // Release any resource
                                     FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
@@ -1257,7 +1278,14 @@ void MgFdoConnectionManager::ClearCache()
 
                                 // The FDO cache is the only one with a reference
                                 // Close the connection
-                                pFdoConnectionCacheEntry->pFdoConnection->Close();
+                                try
+                                {
+                                    pFdoConnectionCacheEntry->pFdoConnection->Close();
+                                }
+                                catch(FdoException* e)
+                                {
+                                    FDO_SAFE_RELEASE(e);
+                                }
 
                                 // Release any resource
                                 FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
@@ -1518,7 +1546,14 @@ void MgFdoConnectionManager::RemoveUnusedFdoConnections()
                                     #endif
 
                                     // Close the connection
-                                    pFdoConnectionCacheEntry->pFdoConnection->Close();
+                                    try
+                                    {
+                                        pFdoConnectionCacheEntry->pFdoConnection->Close();
+                                    }
+                                    catch(FdoException* e)
+                                    {
+                                        FDO_SAFE_RELEASE(e);
+                                    }
 
                                     // Release any resource
                                     FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
