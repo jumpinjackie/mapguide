@@ -147,13 +147,18 @@ MgApplicationResourceContentManager* MgApplicationRepositoryManager::GetApplicat
 
 ///////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Insert the specified resource into the changed resource set.
+/// Notify the applicable caches of the changed resource.
 ///
-void MgApplicationRepositoryManager::UpdateChangedResourceSet(
+void MgApplicationRepositoryManager::NotifyResourceChanged(
     MgResourceIdentifier& resource)
 {
     if (!resource.IsFolder())
     {
+        // Request the cache manager to release the lock on the resource/data
+        // file that may be currently opened by the FDO connection manager.
+        MgCacheManager::GetInstance()->NotifyResourceChanged(&resource);
+
+        // Insert the specified resource into the changed resource set.
         m_changedResources.insert(resource.ToString());
     }
 }
@@ -785,9 +790,8 @@ void MgApplicationRepositoryManager::SetResourceData(
 
     if (MgResourceDataType::File == dataType)
     {
-        // Request the cache manager to release the lock on the data file that
-        // may be currently opened by the FDO connection manager.
-        MgCacheManager::GetInstance()->NotifyResourcesChanged(resource);
+        // Notify the applicable caches of the changed resource.
+        NotifyResourceChanged(*resource);
 
         // Set the tag first to ensure the data name/type is unique within
         // the resource.
@@ -927,9 +931,8 @@ void MgApplicationRepositoryManager::DeleteResourceData(
 
     if (MgResourceDataType::File == dataType)
     {
-        // Request the cache manager to release the lock on the data file that
-        // may be currently opened by the FDO connection manager.
-        MgCacheManager::GetInstance()->NotifyResourcesChanged(resource);
+        // Notify the applicable caches of the changed resource.
+        NotifyResourceChanged(*resource);
 
         MgTagInfo filePathTag;
         tagMan.GetTag(MgResourceTag::DataFilePath, filePathTag);
@@ -1025,9 +1028,8 @@ void MgApplicationRepositoryManager::RenameResourceData(
 
     if (MgResourceDataType::File == dataType)
     {
-        // Request the cache manager to release the lock on the data file that
-        // may be currently opened by the FDO connection manager.
-        MgCacheManager::GetInstance()->NotifyResourcesChanged(resource);
+        // Notify the applicable caches of the changed resource.
+        NotifyResourceChanged(*resource);
 
         MgTagInfo filePathTag;
         tagMan.GetTag(MgResourceTag::DataFilePath, filePathTag);
@@ -1250,9 +1252,8 @@ void MgApplicationRepositoryManager::DeleteResourceData(
 
         if (MgResourceDataType::File == dataType)
         {
-            // Request the cache manager to release the lock on the data file that
-            // may be currently opened by the FDO connection manager.
-            MgCacheManager::GetInstance()->NotifyResourcesChanged(resource);
+            // Notify the applicable caches of the changed resource.
+            NotifyResourceChanged(*resource);
 
             assert(!filePath.empty());
             STRING pathname = filePath;

@@ -54,6 +54,7 @@ public:
 
     virtual INT32 GetDefaultTileSizeY();
 
+    virtual bool IsTileCacheEmpty() const;
     virtual bool NotifyResourcesChanged(MgSerializableCollection* resources,
         bool strict = true);
 

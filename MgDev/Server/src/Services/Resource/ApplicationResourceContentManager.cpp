@@ -71,7 +71,7 @@ MgByteReader* MgApplicationResourceContentManager::EnumerateReferences(
     string query = "collection('";
     query += m_container.getName();
     query += "')";
-    query += "//*/ResourceId[text()=\"";
+    query += "//*/ResourceId[.=\"";
     query += resourceId;
     query += "\"]";
 
@@ -163,7 +163,7 @@ void MgApplicationResourceContentManager::EnumerateParentMapDefinitions(
             query += " or ";
         }
 
-        query += "text()=\"";
+        query += ".=\"";
         query += *i;
         query += "\"";
     }

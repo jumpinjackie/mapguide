@@ -2177,9 +2177,6 @@ void MgServerResourceService::UpdateChangedResources(const set<STRING>& resource
 {
     if (!resources.empty())
     {
-        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
-        serviceManager->NotifyFeatureServiceOnResourcesChanged(resources);
-
         ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
         for (set<STRING>::const_iterator i = resources.begin();

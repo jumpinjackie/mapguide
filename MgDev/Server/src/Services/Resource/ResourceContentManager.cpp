@@ -613,13 +613,13 @@ void MgResourceContentManager::PutDocument(MgResourceIdentifier& resource,
 
     CheckParentPermission(resource, MgResourcePermission::ReadWrite);
 
+    // Notify the applicable caches of the changed resource.
+
+    m_repositoryMan.NotifyResourceChanged(resource);
+
     // Insert the resource.
 
     MgResourceDefinitionManager::PutDocument(xmlDoc, updateContext);
-
-    // Update the changed resource set.
-
-    m_repositoryMan.UpdateChangedResourceSet(resource);
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceContentManager.PutDocument")
 }
@@ -656,13 +656,13 @@ void MgResourceContentManager::UpdateDocument(MgResourceIdentifier& resource,
 
     CheckPermission(resource, MgResourcePermission::ReadWrite);
 
+    // Notify the applicable caches of the changed resource.
+
+    m_repositoryMan.NotifyResourceChanged(resource);
+
     // Update the resource.
 
     MgResourceDefinitionManager::UpdateDocument(xmlDoc, updateContext);
-
-    // Update the changed resource set.
-
-    m_repositoryMan.UpdateChangedResourceSet(resource);
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceContentManager.UpdateDocument")
 }
@@ -692,13 +692,13 @@ void MgResourceContentManager::DeleteDocument(MgResourceIdentifier& resource,
 
     DeleteResourceData(&resource, xmlDoc);
 
+    // Notify the applicable caches of the changed resource.
+
+    m_repositoryMan.NotifyResourceChanged(resource);
+
     // Delete the resource.
 
     MgResourceDefinitionManager::DeleteDocument(xmlDoc, updateContext);
-
-    // Update the changed resource set.
-
-    m_repositoryMan.UpdateChangedResourceSet(resource);
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceContentManager.DeleteDocument")
 }

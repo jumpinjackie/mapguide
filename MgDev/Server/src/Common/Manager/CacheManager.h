@@ -52,8 +52,8 @@ public:
     void Initialize();
     void ClearCaches();
 
-    void NotifyResourcesChanged(CREFSTRING resource);
-    void NotifyResourcesChanged(MgResourceIdentifier* resource);
+    void NotifyResourceChanged(CREFSTRING resource);
+    void NotifyResourceChanged(MgResourceIdentifier* resource);
 
     MgFeatureServiceCache* GetFeatureServiceCache();
 
