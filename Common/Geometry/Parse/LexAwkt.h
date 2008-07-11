@@ -94,6 +94,7 @@ private:
 
     /// Lexical analyzer state
     wchar_t*        m_line;         // Points to parsed string
+    size_t          m_length;       // Length of parsed string
     INT32       m_cc;           // Current position in the input string
     wchar_t         m_ch;           // Current character in the input string
     INT32       m_prevToken;    // Previous token type for internal use
