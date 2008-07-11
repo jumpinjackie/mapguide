@@ -186,6 +186,8 @@ inline double make_double(GisUInt32 n, GisUInt32 f, INT32 m)
 GisLexAwkt::GisLexAwkt(wchar_t* str)
 {
     m_line = str;
+    // Cache the parsed string length to avoid poor performance of calls to wcslen in a large loop.
+    m_length = GisStringUtility::StringLength(m_line);
     m_prevToken = GisToken_Start;
     m_lastToken = GisToken_Start;
     m_token = GisToken_Start;
@@ -207,7 +209,7 @@ const wchar_t GisLexAwkt::if_getch()
 {
     wchar_t c;
 
-    if (m_cc >= (INT32)GisStringUtility::StringLength(m_line))
+    if ((size_t)m_cc >= m_length)
     {
         c = '\0';
     }
