@@ -1413,13 +1413,17 @@ double AtomLine::AdjustBaseline( bool yUp )
         return 0.0;
 
     double vAdjustment = 0.0;
-    double lineAscent = fabs( this->GetAscentPosition( yUp ) );
-    if ( lineAscent > this->m_initialAscent )
+    double lineAscentPos = fabs( this->GetAscentPosition( yUp ) );
+    double initialLineAscentPos = yUp ? 
+        fabs( this->m_offset.y + this->m_initialAscent ): 
+        fabs( this->m_offset.y - this->m_initialAscent );
+
+    if ( lineAscentPos > initialLineAscentPos )
     {
         if ( yUp )
-            vAdjustment = this->m_initialAscent - lineAscent;
+            vAdjustment = initialLineAscentPos - lineAscentPos;
         else
-            vAdjustment = lineAscent - this->m_initialAscent;
+            vAdjustment = lineAscentPos - initialLineAscentPos;
     }
 
     this->m_offset.y += vAdjustment;
