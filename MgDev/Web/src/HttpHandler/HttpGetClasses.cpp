@@ -65,7 +65,7 @@ void MgHttpGetClasses::Execute(MgHttpResponse& hResponse)
     // call the C++ APIs
     Ptr<MgStringCollection> classes = service->GetClasses(&resId, schema);
     Ptr<MgByteReader> byteReader = classes->ToXml();
-    
+
     //Convert to alternate response format, if necessary
     ProcessFormatConversion(byteReader);
 

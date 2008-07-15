@@ -450,11 +450,11 @@ void MgWfsFeatureDefinitions::Initialize()
                     // the human-readable thing, which in OGC parlance is the title.
                     STRING sName = pClass->GetName();
                     STRING sSchemaName = pSchema->GetName();
-                    
+
                     STRING sHashSchemaName;
                     if (pSchemas->GetCount() > 1)
                     {
-                        // in case we have multiple schema add the hash string for schema name to be able to identify 
+                        // in case we have multiple schema add the hash string for schema name to be able to identify
                         // the class definition since we may have same class name on different schemas
                         MgUtil::Int32ToString(StringHasher(sSchemaName.c_str()),sHashSchemaName);
                         sHashSchemaName = _("sn")+ sHashSchemaName;

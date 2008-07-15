@@ -1263,7 +1263,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                         Ptr<MgLinearRing> outerRing = new MgLinearRing(coordinates);
                         Ptr<MgPolygon> polygon = new MgPolygon(outerRing, NULL);
                         options->SetSpatialFilter(layer->GetFeatureGeometryName(), polygon, /*MgFeatureSpatialOperations*/selectionVariant);
-               
+
                         Ptr<MgFeatureReader> rdr0 = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
                         RSMgFeatureReader rsrdr0(rdr0, m_svcFeature, featResId, NULL, vl->GetGeometry());
                         selRenderer->PointTest(true);

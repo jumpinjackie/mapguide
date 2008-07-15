@@ -153,17 +153,17 @@ static int mgmapagent_handler (request_rec *r)
         MapAgentGetParser::Parse(query.c_str(), params);
     }
 
-    // check for CLIENTIP, if it's not there (and it shouldn't be), 
+    // check for CLIENTIP, if it's not there (and it shouldn't be),
     // add it in using httpClientIp. httpXFF or remoteAddr
     if (!params->ContainsParameter(L"CLIENTIP")) // NOXLATE
     {
-        if (!httpClientIp.empty() 
+        if (!httpClientIp.empty()
             && _stricmp(httpClientIp.c_str(), MapAgentStrings::Unknown) != 0)
         {
             STRING wHttpClientIp = MgUtil::MultiByteToWideChar(httpClientIp);
             params->AddParameter(L"CLIENTIP", wHttpClientIp); // NOXLATE
         }
-        else if (!httpXFF.empty() 
+        else if (!httpXFF.empty()
             && _stricmp(httpXFF.c_str(), MapAgentStrings::Unknown) != 0)
         {
             STRING wHttpXFF = MgUtil::MultiByteToWideChar(httpXFF);

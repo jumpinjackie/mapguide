@@ -107,7 +107,7 @@ int MgRepository::VerifyAccess(CREFSTRING dirPath,
                 __LINE__, __WFILE__, &whatArguments, L"MgRepositoryVersionMismatch", &whyArguments);
         }
     }
-    
+
     return dbVersion;
 }
 

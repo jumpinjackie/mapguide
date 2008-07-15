@@ -120,7 +120,7 @@ public:
     FdoThreadCapability GetThreadModel()
     {
         ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, (FdoThreadCapability)-1));
-        return m_threadModel; 
+        return m_threadModel;
     }
 
     void SetThreadModel(FdoThreadCapability tm)
@@ -141,7 +141,7 @@ public:
     bool GetKeepCached()
     {
         ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
-        return m_bKeepCached; 
+        return m_bKeepCached;
     }
 
     void SetKeepCached(bool bKeepCached)

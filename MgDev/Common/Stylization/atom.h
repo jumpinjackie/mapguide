@@ -1324,7 +1324,7 @@ public:
     };
 };
 
-// Note that these enum values are set to match the WIN32 charset values because it is expected that the 
+// Note that these enum values are set to match the WIN32 charset values because it is expected that the
 // CharacterSet value will most likely be used on a WIN32 platform to select a font.
 class CharacterSet
 {

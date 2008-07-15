@@ -56,7 +56,7 @@ void MgWmsFeatureProperties::GenerateDefinitions(MgUtilDictionary& dictionary)
         if(stringProp != NULL)
         {
             STRING name = MgUtil::ReplaceEscapeCharInXml(stringProp->GetName());
-            
+
             // Skip the special layer name property
             if(szcmp(name.c_str(), _("_MgLayerName")) != 0)
             {

@@ -415,7 +415,6 @@ void TestRenderingService::TestEnd()
         Ptr<MgResourceIdentifier> sdres5 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/AreaSymbol.SymbolDefinition");
         m_svcResource->DeleteResource(sdres5);
 
-
        #ifdef _DEBUG
         MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
         if(pFdoConnectionManager)
@@ -463,7 +462,7 @@ void TestRenderingService::TestCase_RenderDynamicOverlay()
             Ptr<MgByteReader> rdr1 = m_svcRendering->RenderDynamicOverlay(map, NULL, L"PNG");
             rdr1->ToFile(L"../UnitTestFiles/RenderDynamicOverlay75k.png");
 //        }
-        
+
         map->SetViewScale(12000.0);
 
 //        for (int i=0; i<100; i++)
@@ -474,7 +473,6 @@ void TestRenderingService::TestCase_RenderDynamicOverlay()
 
 //        clock_t t1 = clock();
 //        printf ("delta clock %d\n", t1 - t0);
-        
     }
     catch (MgException* e)
     {
@@ -906,7 +904,7 @@ void TestRenderingService::TestCase_SymbologyPolygons()
         map->SetDisplayDpi(96);
         map->SetDisplayWidth(1024);
         map->SetDisplayHeight(1024);
-  
+
         map->SetViewScale(12000.0);
         Ptr<MgByteReader> rdr2 = m_svcRendering->RenderMap(map, NULL, L"PNG");
         rdr2->ToFile(L"../UnitTestFiles/SymbologyPolygons.png");
@@ -930,7 +928,7 @@ void TestRenderingService::TestCase_SymbologyPolygons()
 //    lb.LineTo(207, 203);
 //    lb.Close();
 //*/
-//    
+//
 //    LineBuffer lb(8);
 //    lb.MoveTo(1,1);
 //    lb.LineTo(1023, 1);

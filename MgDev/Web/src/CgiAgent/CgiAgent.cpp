@@ -119,7 +119,7 @@ int main ()
         char* remoteAddr = getenv(MapAgentStrings::RemoteAddr);
         char* httpClientIp = getenv(MapAgentStrings::HttpClientIp);
         char* httpXFF = getenv(MapAgentStrings::HttpXForwardedFor);
-        char* secure = getenv(MapAgentStrings::Secure);  
+        char* secure = getenv(MapAgentStrings::Secure);
         string url = secure != NULL && (!_stricmp(secure, "on") || !_stricmp(secure, "true")) ? MapAgentStrings::Https : MapAgentStrings::Http;  // NOXLATE
         if (NULL != serverName && NULL != serverPort && NULL != scriptName)
         {
@@ -163,7 +163,7 @@ int main ()
             MapAgentGetParser::Parse(query, params);
         }
 
-        // check for CLIENTIP, if it's not there (and it shouldn't be), 
+        // check for CLIENTIP, if it's not there (and it shouldn't be),
         // add it in using httpClientIp. httpXFF or remoteAddr
         if (!params->ContainsParameter(L"CLIENTIP")) // NOXLATE
         {

@@ -84,7 +84,7 @@ void MgXmlJsonConvert::XmlToJsonNode(DOMNode *node)
             attribute = attributes->item(i);
             MgUtil::WideCharToMultiByte(X2W(attribute->getNodeName()), nodeName);
             MgUtil::WideCharToMultiByte(X2W(attribute->getNodeValue()), nodeValue);
-            
+
             // Write the attribute as a single array element
             m_jsonDoc.BeginArray(1, "@" + nodeName);
             m_jsonDoc.SetArrayValue(0, nodeValue);
@@ -182,7 +182,7 @@ void MgXmlJsonConvert::ProcessObjectNode(DOMNode *node)
     {
         string textContent;
         MgUtil::WideCharToMultiByte(X2W(node->getTextContent()), textContent);
-        
+
         // Write the text as a single array element
         m_jsonDoc.BeginArray(1, nodeName);
         m_jsonDoc.SetArrayValue(0, textContent);

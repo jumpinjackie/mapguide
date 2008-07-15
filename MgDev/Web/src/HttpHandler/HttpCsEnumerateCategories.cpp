@@ -57,7 +57,7 @@ void MgHttpCsEnumerateCategories::Execute(MgHttpResponse& hResponse)
 
     // Convert to requested response format, if necessary
     ProcessFormatConversion(byteReader);
-    
+
     hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpCsEnumerateCategories.Execute")

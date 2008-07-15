@@ -38,7 +38,7 @@ public:
     MgServerGwsGetFeatures();
     MgServerGwsGetFeatures(MgServerGwsFeatureReader* gwsFeatureReader,
                            IGWSFeatureIterator* gwsFeatureIterator,
-                           MgStringCollection* attributeNameDelimiters, 
+                           MgStringCollection* attributeNameDelimiters,
                            IGWSExtendedFeatureDescription* primaryExtendedFeatureDescription,
                            bool bForceOneToOne = true);
     ~MgServerGwsGetFeatures();

@@ -67,7 +67,7 @@ void MgHttpDescribeSchema::Execute(MgHttpResponse& hResponse)
 
     // Convert to multibyte
     string mbXmlSchema = MgUtil::WideCharToMultiByte(xmlSchema);
-    
+
     // Create a byte reader.
     Ptr<MgByteReader> byteReader = MgUtil::GetByteReader(mbXmlSchema, (STRING*)&MgMimeType::Xml);
 
