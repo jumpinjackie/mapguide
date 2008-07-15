@@ -223,14 +223,14 @@ bool RichTextEngine::Parse( const RS_String& s, RS_TextMetrics* pTextMetrics )
             RS_F_Point positionedExtent[4];
             RS_F_Point alignmentAdjustment;
             this->m_pHeadBlock->GetPositionedExtent( positionedExtent );
-            alignmentAdjustment.x = this->GetHorizontalAlignmentOffset( 
-                this->m_formatState.m_tmpTDef.halign(), 
+            alignmentAdjustment.x = this->GetHorizontalAlignmentOffset(
+                this->m_formatState.m_tmpTDef.halign(),
                 positionedExtent );
             alignmentAdjustment.y = this->GetVerticalAlignmentOffset(
-                this->m_formatState.m_tmpTDef.valign(), 
-                this->m_pHeadBlock->GetUpperLeftCorner().y, 
-                this->m_pHeadBlock->GetCaplinePosition( this->m_yUp ), 
-                this->m_pHeadBlock->GetLowerRightCorner().y, 
+                this->m_formatState.m_tmpTDef.valign(),
+                this->m_pHeadBlock->GetUpperLeftCorner().y,
+                this->m_pHeadBlock->GetCaplinePosition( this->m_yUp ),
+                this->m_pHeadBlock->GetLowerRightCorner().y,
                 this->m_pHeadBlock->GetBaselinePosition( this->m_yUp ) );
 
             // Fill out the RS_TextMetrics class
@@ -256,8 +256,8 @@ bool RichTextEngine::Parse( const RS_String& s, RS_TextMetrics* pTextMetrics )
     return parserSucceeded;
 }
 
-Status RichTextEngine::Abandon(IAbandonment* pAbandon,IEnvironment*) 
-{ 
+Status RichTextEngine::Abandon(IAbandonment* pAbandon,IEnvironment*)
+{
     Status retStatus;
 
     switch ( pAbandon->Reason().Result() )
@@ -278,7 +278,7 @@ Status RichTextEngine::Abandon(IAbandonment* pAbandon,IEnvironment*)
         retStatus = Status::keAbandoned;
         break;
     }
-            
+
     return retStatus;
 }
 
@@ -1005,7 +1005,7 @@ AtomBaseComponent::AtomBaseComponent( RS_F_Point position, AtomBaseComponent* pP
     }
     else
         this->m_offset = position;
-    
+
     this->m_extent[0].x = 0.0;
     this->m_extent[1].x = 0.0;
     this->m_extent[2].x = 0.0;
@@ -1353,7 +1353,7 @@ void AtomRun::OutputData( RS_F_Point parentPosition, RS_TextMetrics* pTextMetric
     // Translate to absolute position
     this->Translate( parentPosition );
 
-    // Store data in TextMetrics 
+    // Store data in TextMetrics
     this->GetPositionedExtent( pTextMetrics->line_pos[ this->m_textRunInd ].ext );
     pTextMetrics->line_pos[ this->m_textRunInd ].hOffset = this->m_offset.x;
     pTextMetrics->line_pos[ this->m_textRunInd ].vOffset = this->m_offset.y;
@@ -1407,13 +1407,17 @@ double AtomLine::AdjustBaseline( bool yUp )
         return 0.0;
 
     double vAdjustment = 0.0;
-    double lineAscent = fabs( this->GetAscentPosition( yUp ) );
-    if ( lineAscent > this->m_initialAscent )
+    double lineAscentPos = fabs( this->GetAscentPosition( yUp ) );
+    double initialLineAscentPos = yUp ?
+        fabs( this->m_offset.y + this->m_initialAscent ):
+        fabs( this->m_offset.y - this->m_initialAscent );
+
+    if ( lineAscentPos > initialLineAscentPos )
     {
         if ( yUp )
-            vAdjustment = this->m_initialAscent - lineAscent;
+            vAdjustment = initialLineAscentPos - lineAscentPos;
         else
-            vAdjustment = lineAscent - this->m_initialAscent;
+            vAdjustment = lineAscentPos - initialLineAscentPos;
     }
 
     this->m_offset.y += vAdjustment;
