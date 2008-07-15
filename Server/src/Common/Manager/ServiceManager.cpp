@@ -491,7 +491,7 @@ void MgServiceManager::DispatchResourceChangeNotifications()
         if (NULL != changedResources.p && changedResources->GetCount() > 0)
         {
             // Notify the tile service of the resources changed.
-            
+
             Ptr<MgSerializableCollection> affectedResources;
             Ptr<MgService> service = RequestLocalService(MgServiceType::TileService);
             MgServerTileService* tileService = dynamic_cast<MgServerTileService*>(service.p);

@@ -1332,7 +1332,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
 
 void MgServerSelectFeatures::ParseQualifiedClassNameForCalculation(MdfModel::Extension* extension, CREFSTRING qualifiedClassName, STRING& schemaName, STRING& className)
 {
-    CHECKNULL(extension, L"MgServerSelectFeatures.ParseQualifiedClassNameForCalculation");    
+    CHECKNULL(extension, L"MgServerSelectFeatures.ParseQualifiedClassNameForCalculation");
 
     STRING::size_type nIndex = qualifiedClassName.rfind(CLASSNAME_QUALIFIER);
 

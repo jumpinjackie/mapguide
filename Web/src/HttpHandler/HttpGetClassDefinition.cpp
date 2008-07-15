@@ -67,10 +67,10 @@ void MgHttpGetClassDefinition::Execute(MgHttpResponse& hResponse)
     Ptr<MgClassDefinition> classDef = service->GetClassDefinition(&resId, schema, className);
     string xml;
     classDef->ToXml(xml);
-    
+
     // Create a byte reader.
     Ptr<MgByteReader> byteReader = MgUtil::GetByteReader(xml, (STRING*)&MgMimeType::Xml);
-    
+
     //Convert to alternate response format, if necessary
     ProcessFormatConversion(byteReader);
 

@@ -1414,8 +1414,8 @@ double AtomLine::AdjustBaseline( bool yUp )
 
     double vAdjustment = 0.0;
     double lineAscentPos = fabs( this->GetAscentPosition( yUp ) );
-    double initialLineAscentPos = yUp ? 
-        fabs( this->m_offset.y + this->m_initialAscent ): 
+    double initialLineAscentPos = yUp ?
+        fabs( this->m_offset.y + this->m_initialAscent ):
         fabs( this->m_offset.y - this->m_initialAscent );
 
     if ( lineAscentPos > initialLineAscentPos )
@@ -1511,5 +1511,3 @@ void AtomBlock::ApplyJustification()
         break; // Not supported
     }
 }
-
-

@@ -63,13 +63,13 @@ void MgHttpGetConnectionPropertyValues::Execute(MgHttpResponse& hResponse)
 
     // call the C++ API
     Ptr<MgStringCollection> properties = service->GetConnectionPropertyValues(provider, m_propertyName, partialConnProps);
-    
+
     // Get the properties as XML
     Ptr<MgByteReader> byteReader = properties->ToXml();
 
     // Convert to requested response format, if necessary
     ProcessFormatConversion(byteReader);
-   
+
     hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetConnectionPropertyValues.Execute")

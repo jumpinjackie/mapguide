@@ -41,7 +41,7 @@ MgServerGwsFeatureReader::MgServerGwsFeatureReader(
 
     m_gwsGetFeatures = new MgServerGwsGetFeatures(this,
                                                   m_gwsFeatureIterator,
-                                                  m_attributeNameDelimiters, 
+                                                  m_attributeNameDelimiters,
                                                   m_primaryExtendedFeatureDescription,
                                                   m_bForceOneToOne);
     m_removeFromPoolOnDestruction = false;
@@ -997,7 +997,7 @@ MgRaster* MgServerGwsFeatureReader::GetRaster(CREFSTRING propertyName)
     DeterminePropertyFeatureSource(propertyName, &gwsFeatureIter, parsedPropertyName);
     CHECKNULL(gwsFeatureIter, L"MgServerGwsFeatureReader.GetRaster");
 
-    // TODO: The IsNull() check is returning true for WFS/WMS FDO providers when there is valid data. 
+    // TODO: The IsNull() check is returning true for WFS/WMS FDO providers when there is valid data.
     //       In this case it should really be returning false so that the data can be retrieved.
     //       For now the check will be commented out until this can be resolved in FDO.
     if(false) // TODO: Force the exception throwing code to be skipped until issue is resolved.

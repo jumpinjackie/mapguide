@@ -1809,7 +1809,7 @@ void TestFeatureService::TestCase_ConcurrentAccess()
             MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize);
 
         // Create readers
-        
+
         for (INT32 i = 0; i < nDataConnectionPoolSize; ++i)
         {
             featureReaders.push_back(pService->SelectFeatures(resource, className, options));
@@ -1822,7 +1822,7 @@ void TestFeatureService::TestCase_ConcurrentAccess()
         if (!featureReaders.empty())
         {
             MgFeatureReader* reader = featureReaders[featureReaders.size() - 1];
-            
+
             if (NULL != reader)
             {
                 // Close one of the open readers
@@ -1837,7 +1837,7 @@ void TestFeatureService::TestCase_ConcurrentAccess()
                 featureReaders.push_back(readerSuccess.Detach());
             }
         }
-        
+
         #ifdef _DEBUG
         if(pFdoConnectionManager)
         {

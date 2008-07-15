@@ -120,7 +120,7 @@ void MgSiteRepository::SetupIndices()
             "",
             MgResourceInfo::sm_elementName,
             "edge-element-equality-string");
-            
+
         m_dbVersion = MG_DBXML_CURRENT_VERSION;
     }
 }

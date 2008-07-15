@@ -288,7 +288,7 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING provider, CREFSTRING con
 
     // The connection string may contain substitution tags that need updating
     STRING updatedConnectionString = connectionString;
-    
+
     SubstituteConnectionTags(updatedConnectionString);
 
     // Connection string should have something.
@@ -1841,7 +1841,7 @@ STRING MgFdoConnectionManager::GetFdoCacheInfo()
                         STRING key = iter->first;
 
                         ScrambleConnectionTags(key); // for security reason
-                        
+
                         info += L"<Name>";
                         info += key;
                         info += L"</Name>\n";
@@ -1957,7 +1957,7 @@ void MgFdoConnectionManager::ScrambleConnectionTags(REFSTRING connectionStr)
             {
                 connectionStr.reserve(num2 - num1);
             }
-        
+
             connectionStr.replace(pos1, num1, value, pos2, num2);
         }
     }

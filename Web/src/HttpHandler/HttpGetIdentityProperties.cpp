@@ -66,7 +66,7 @@ void MgHttpGetIdentityProperties::Execute(MgHttpResponse& hResponse)
     // call the C++ APIs
     Ptr<MgPropertyDefinitionCollection> identityProps = service->GetIdentityProperties(&resId, schema, className);
     Ptr<MgByteReader> byteReader = identityProps->ToXml();
-    
+
     //Convert to alternate response format, if necessary
     ProcessFormatConversion(byteReader);
 

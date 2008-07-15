@@ -625,7 +625,7 @@ FdoFeatureSchemaCollection* MgFeatureServiceCache::GetFdoFeatureSchemaCollection
             // FDO Feature Schemas are not thread-safe so caller must take ownership.
             // Remove the FDO schemas from the cache so that they won't be given to
             // any other thread that calls this function.
-            // Caller is responsible for putting this schemas back in the cache when 
+            // Caller is responsible for putting this schemas back in the cache when
             // done with them.
             entry->SetFdoFeatureSchemaCollection((FdoFeatureSchemaCollection*) NULL);
         }

@@ -117,7 +117,7 @@ MgReader* MgFeatureNumericFunctions::Execute()
             }
             // Calulate the distribution on the collected values
             CalculateDistribution(values, distValues);
-            
+
             // Create FeatureReader from distribution values
             reader = GetReader(distValues);
         }
@@ -131,10 +131,10 @@ MgReader* MgFeatureNumericFunctions::Execute()
                     int64Val = m_reader->GetInt64(m_propertyName);
                 values.push_back(int64Val);
             }
-            
+
             // Calulate the distribution on the collected values
             CalculateDistribution(values, distValues);
-            
+
             // Create FeatureReader from distribution values
             Ptr<MgInt64DataReaderCreator> drCreator = new MgInt64DataReaderCreator(m_propertyAlias);
             reader = drCreator->Execute(distValues);

@@ -101,7 +101,7 @@ int MgLibraryRepository::VerifyAccess(CREFSTRING repositoryPath)
         repositoryPath,
         MgUtil::MultiByteToWideChar(MgRepository::LibraryResourceDataStreamDatabaseName),
         false);
-        
+
    return dbVersion;
 }
 
@@ -157,7 +157,7 @@ void MgLibraryRepository::SetupIndices()
             MgResourceInfo::sm_metadataUri,
             MgResourceInfo::sm_metadataNames[MgResourceInfo::Owner],
             "node-metadata-equality-string");
-            
+
         m_dbVersion = MG_DBXML_CURRENT_VERSION;
     }
 }

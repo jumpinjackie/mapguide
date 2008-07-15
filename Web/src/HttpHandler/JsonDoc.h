@@ -106,8 +106,8 @@ private:
 
     stack<MgJsonNode *> m_tree;
     MgJsonNode *m_root;
-    
-    // We use the FastWriter class here to produce very compact output 
+
+    // We use the FastWriter class here to produce very compact output
     // with minimal linebreaks and spaces. StyledWriter could be used instead
     // if a more structured format was desired.
     FastWriter m_writer;

@@ -53,9 +53,9 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
 
     // Construct self Url.  It is embedded into the output stream
     // of some requests (like GetMap).  Use a fully qualified URL.
-    // 
-    // If the GetServerVariable method does not find the specified variable, it returns false, 
-    // and the LPSTR parameter is NOT set to NULL, but remains uninitialized. 
+    //
+    // If the GetServerVariable method does not find the specified variable, it returns false,
+    // and the LPSTR parameter is NOT set to NULL, but remains uninitialized.
     // So checking for NULL is not sufficient.
     DWORD size = 1024;
     char serverName[1024];
@@ -88,7 +88,7 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
     bool isSecure = (bSecure && secure != NULL && !stricmp(secure, "on"));  // NOXLATE
 
     string url = isSecure? MapAgentStrings::Https : MapAgentStrings::Http;
-    if (bServerName && bServerPort && bScriptName 
+    if (bServerName && bServerPort && bScriptName
         && NULL != serverName && NULL != serverPort && NULL != scriptName)
     {
         url.append(serverName);
@@ -117,7 +117,7 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
         MapAgentGetParser::Parse(query, params);
     }
 
-    // check for CLIENTIP, if it's not there (and it shouldn't be), 
+    // check for CLIENTIP, if it's not there (and it shouldn't be),
     // add it in using httpClientIp. httpXFF or remoteAddr
     if (!params->ContainsParameter(L"CLIENTIP")) // NOXLATE
     {

@@ -170,7 +170,7 @@ FdoFeatureSchemaCollection* MgServerDescribeSchema::ExecuteDescribeSchema(MgReso
 
                 }  // End of the for-loop that iterates thru the secondary sources
 
-            }  // End of for loop that iterates thru the extensions in the feature source        
+            }  // End of for loop that iterates thru the extensions in the feature source
         }
         else
         {

@@ -212,12 +212,12 @@ void MgHttpEnumerateApplicationTemplates::FindTemplates(MgStringCollection* temp
         locale = TEMPLATEINFO_DEFAULT_LOCALE;
     }
     STRING localeRootFolder = rootFolder + L"/" + locale;
-    
+
     // Open the locale-specific directory
     ACE_DIR* directory = ACE_OS::opendir(ACE_TEXT_WCHAR_TO_TCHAR(localeRootFolder.c_str()));
     if (directory == NULL)
     {
-        // If no locale-specific directory exists, then if the locale is an extended local (5 characters), 
+        // If no locale-specific directory exists, then if the locale is an extended local (5 characters),
         // truncate the locale to the 2 character "parent" locale and try again
         if (MG_EXTENDED_LOCALE_LENGTH == locale.length())
         {
