@@ -46,7 +46,8 @@ bool MgStreamHelper::IsConnected()
 
 //////////////////////////////////////////////////////////////////
 /// \brief
-/// Standard protocol handling for strings.  Uses WriteBytes internally
+/// Standard protocol handling for strings, via the UTF-16 standard.
+/// Uses WriteBytes internally.
 ///
 MgStreamHelper::MgStreamStatus MgStreamHelper::WriteString(CREFSTRING str)
 {
@@ -64,7 +65,8 @@ MgStreamHelper::MgStreamStatus MgStreamHelper::WriteString(CREFSTRING str)
 
 //////////////////////////////////////////////////////////////////
 /// \brief
-/// Standard protocol handling for strings.  Uses GetData internally
+/// Standard protocol handling for strings, via the UTF-16 standard.
+/// Uses GetData internally.
 ///
 MgStreamHelper::MgStreamStatus MgStreamHelper::GetString(REFSTRING wcStr)
 {
