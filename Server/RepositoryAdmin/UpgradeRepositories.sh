@@ -1,5 +1,5 @@
 #!/bin/sh
-export LD_LIBRARY_PATH=$(pwd)/../bin
+export LD_LIBRARY_PATH=$(pwd)/../bin:$LD_LIBRARY_PATH
 
 echo 
 echo 
