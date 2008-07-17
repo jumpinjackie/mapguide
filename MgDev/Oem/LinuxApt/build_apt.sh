@@ -122,7 +122,7 @@ check_tomcat_install ()
 echo Apache Httpd build started
 pushd httpd-2.2.4
 ./configure --prefix=$INSTALLWEB/apache2 --enable-mods-shared=all \
---with-port=$PORT
+--with-included-apr --with-port=$PORT
 check_apache_build
 make
 check_apache_build
