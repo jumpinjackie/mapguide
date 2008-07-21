@@ -1,6 +1,7 @@
 var agent = navigator.userAgent.toLowerCase();
 var msie = agent.indexOf("msie") != -1;
 var firefox = agent.indexOf("firefox") != -1;
+var opera = agent.indexOf("opera") != -1;
 
 var safariIndex = agent.indexOf("safari");
 var safari1or2 = false;
