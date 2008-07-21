@@ -228,14 +228,29 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
 
     MdfModel::FeatureTypeStyleCollection* ftsc = scaleRange->GetFeatureTypeStyles();
 
-    // extract hyperlink and tooltip info - this is
-    // invariant, so do outside of feature iterator loop
-    const MdfModel::MdfString& mdfTip = layer->GetToolTip();
-    const MdfModel::MdfString& mdfUrl = layer->GetUrl();
-    const MdfModel::MdfString* lrTip = mdfTip.empty()? NULL : &mdfTip;
-    const MdfModel::MdfString* lrUrl = mdfUrl.empty()? NULL : &mdfUrl;
-
-    // elevation settings - also invariant
+    // Extract hyperlink and tooltip expressions, only if required.
+    // Note that the expression is the same for all features in the layer,
+    // so we retrieve it outside of the feature iterator loop.
+    const MdfModel::MdfString* lrTip = NULL;
+    const MdfModel::MdfString* lrUrl = NULL;
+	if(renderer->SupportsTooltips())
+	{
+		const MdfModel::MdfString& mdfTip = layer->GetToolTip();
+		if(!mdfTip.empty())
+		{
+			lrTip = &mdfTip;
+		}
+	}
+	if(renderer->SupportsHyperlinks())
+	{
+		const MdfModel::MdfString& mdfUrl = layer->GetUrl();
+		if(!mdfUrl.empty())
+		{
+			lrUrl = &mdfUrl;
+		}
+	}
+	
+	// elevation settings - also invariant
     RS_ElevationSettings* elevSettings = NULL;
     MdfModel::ElevationSettings* modelElevSettings = scaleRange->GetElevationSettings();
     if (modelElevSettings != NULL)
