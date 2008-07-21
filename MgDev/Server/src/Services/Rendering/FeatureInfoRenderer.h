@@ -39,8 +39,14 @@ public:
                         SE_Renderer* impRenderer = NULL);
     virtual ~FeatureInfoRenderer();
 
-    ///////////////////////////////////
+	///////////////////////////////////
     // Renderer implementation
+
+	// Set to true to enable processing of tooltips
+    virtual bool SupportsTooltips(){return true;}
+
+	// Set to true to enable processing of hyperlinks
+	virtual bool SupportsHyperlinks(){return true;}
 
     virtual void StartMap(RS_MapUIInfo*    mapInfo,
                           RS_Bounds&       extents,
