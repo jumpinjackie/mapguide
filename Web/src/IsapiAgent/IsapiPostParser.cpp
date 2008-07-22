@@ -117,7 +117,7 @@ void IsapiPostParser::Parse(MgHttpRequestParam* params)
 
     string content = m_pECB->lpszContentType;
 
-    if (content == MapAgentStrings::UrlEncoded)
+    if (content.find(MapAgentStrings::UrlEncoded) == 0)
     {
         m_pBuffer[dwTotalBytes] = '\0';  // null terminate
 
@@ -191,6 +191,7 @@ void IsapiPostParser::Parse(MgHttpRequestParam* params)
 
     MG_CATCH_AND_THROW(L"IsapiPostParser.Parse");
 }
+
 
 
 
