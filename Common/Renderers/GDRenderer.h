@@ -133,6 +133,13 @@ public:
 
     virtual bool RequiresLabelClipping();
 
+    // Set to false to disable processing of tooltips
+    virtual bool SupportsTooltips(){return false;}
+
+    // Set to false to disable processing of hyperlinks
+    virtual bool SupportsHyperlinks(){return false;}
+
+
     /////////////////////////////////////////////
     // GDRenderer specific
     //

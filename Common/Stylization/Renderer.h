@@ -40,11 +40,11 @@ public:
     {
     }
 
-	// By default, set the renderer not to process tooltip expressions
-    virtual bool SupportsTooltips(){return false;}
+    // By default, set the renderer to process tooltip expressions
+    virtual bool SupportsTooltips(){return true;}
 
-	// By default, set the renderer not to process hyperlink expressions
-	virtual bool SupportsHyperlinks(){return false;}
+    // By default, set the renderer to process hyperlink expressions
+    virtual bool SupportsHyperlinks(){return true;}
 
 	///<summary>
     /// Initializes the Renderer with mapping context information

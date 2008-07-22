@@ -34,6 +34,12 @@ public:
                         double mapScale);
     virtual ~FeaturePropRenderer();
 
+    // Set to false to disable processing of tooltips
+    virtual bool SupportsTooltips(){return false;}
+
+    // Set to false to disable processing of hyperlinks
+    virtual bool SupportsHyperlinks(){return false;}
+
     virtual void StartFeature(RS_FeatureReader* feature,
                               bool              initialPass,
                               const RS_String*  tooltip = NULL,
