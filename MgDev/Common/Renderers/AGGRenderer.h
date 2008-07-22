@@ -219,6 +219,13 @@ public:
 
     RENDERERS_API void SetPolyClip(LineBuffer* polygon, double bufferWidth);
 
+    // Set to false to disable processing of tooltips
+    virtual bool SupportsTooltips(){return false;}
+
+    // Set to false to disable processing of hyperlinks
+    virtual bool SupportsHyperlinks(){return false;}
+
+
 private:
     double _MeterToMapSize(RS_Units unit, double number);
 
