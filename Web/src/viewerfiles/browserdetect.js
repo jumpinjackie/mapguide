@@ -1,5 +1,4 @@
 var agent = navigator.userAgent.toLowerCase();
-var msie = agent.indexOf("msie") != -1;
 var firefox = agent.indexOf("firefox") != -1;
 var opera = agent.indexOf("opera") != -1;
 
@@ -18,5 +17,23 @@ if(safariIndex != -1)
     else
     {
         safari1or2 = true;
+    }
+}
+
+var msieIndex = agent.indexOf("msie");
+var msie = false;
+var msie7plus = false;
+var msie6minus = false;
+if(msieIndex != -1)
+{
+    msie = true;
+    var msieVersion = agent.substr(msieIndex + 5, 1);
+    if(parseFloat(msieVersion) >= 7)
+    {
+        msie7plus = true;
+    }
+    else
+    {
+        msie6minus = true;
     }
 }
