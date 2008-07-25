@@ -53,9 +53,17 @@ MgServerGetProviderCapabilities::MgServerGetProviderCapabilities(CREFSTRING prov
     FdoPtr<IConnectionManager> connManager = FdoFeatureAccessManager::GetConnectionManager();
     CHECKNULL(connManager, L"MgServerGetProviderCapabilities.MgServerGetProviderCapabilities");
 
+    // Remove the version from the provider name
+    STRING providerNoVersion = providerName;
+    MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
+    if (NULL != fdoConnectionManager)
+    {
+        providerNoVersion = fdoConnectionManager->UpdateProviderName(providerName);
+    }
+
     // TODO: Should this connection be cached?
     // use a smart pointer until the end in case there's an exception
-    FdoPtr<FdoIConnection> fdoConn = connManager->CreateConnection(providerName.c_str());
+    FdoPtr<FdoIConnection> fdoConn = connManager->CreateConnection(providerNoVersion.c_str());
     CHECKNULL(fdoConn, L"MgServerGetProviderCapabilities.MgServerGetProviderCapabilities");
 
     m_xmlUtil = new MgXmlUtil();
@@ -65,7 +73,7 @@ MgServerGetProviderCapabilities::MgServerGetProviderCapabilities(CREFSTRING prov
 
     // no more risk of exceptions, so we can now assign these
     m_fdoConn = fdoConn.Detach();
-    m_providerName = providerName;
+    m_providerName = providerNoVersion;
     MgUserInformation* userInfo =  MgUserInformation::GetCurrentUserInfo();
     m_version = userInfo->GetApiVersion();
 }
