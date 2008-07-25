@@ -19,6 +19,7 @@
 #include "ServiceManager.h"
 #include "SecurityManager.h"
 #include "LogManager.h"
+#include "LogDetail.h"
 
 // Process-wide MgLoadBalanceManager
 Ptr<MgLoadBalanceManager> MgLoadBalanceManager::sm_loadBalanceManager = (MgLoadBalanceManager*)NULL;
@@ -1009,7 +1010,8 @@ STRING MgLoadBalanceManager::RequestServer(INT32 serviceType)
 
     MG_TRY()
 
-    MG_LOG_TRACE_ENTRY(L"MgLoadBalanceManager::RequestServer()");
+    MgLogDetail logDetail(MgServiceType::SiteService,MgLogDetail::Trace,L"MgLoadBalanceManager.RequestServer",mgStackParams);
+    logDetail.Create();
 
     MG_CHECK_RANGE(serviceType, 0, MgServerInformation::sm_knMaxNumberServices - 1,
         L"MgLoadBalanceManager.RequestServer");

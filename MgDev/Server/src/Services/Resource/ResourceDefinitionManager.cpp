@@ -128,7 +128,7 @@ MgByteReader* MgResourceDefinitionManager::GetRepository(
     byteSource->SetMimeType(MgMimeType::Xml);
     byteReader = byteSource->GetReader();
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceDefinitionManager.GetRepository")
+    MG_RESOURCE_CONTAINER_CATCH_AND_THROW(L"MgResourceDefinitionManager.GetRepository")
 
     return SAFE_ADDREF((MgByteReader*)byteReader);
 }
@@ -224,7 +224,7 @@ void MgResourceDefinitionManager::DeleteResource(
         m_repositoryMan.UpdateDateModifiedResourceSet(resource->GetFullPath(true));
     }
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceDefinitionManager.DeleteResource")
+    MG_RESOURCE_CONTAINER_CATCH_AND_THROW(L"MgResourceDefinitionManager.DeleteResource")
 }
 
 ///----------------------------------------------------------------------------
@@ -258,7 +258,7 @@ void MgResourceDefinitionManager::UpdateResource(
 
     UpdateDocument(resource, xmlDoc, updateContext);
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceDefinitionManager.UpdateResource")
+    MG_RESOURCE_CONTAINER_CATCH_AND_THROW(L"MgResourceDefinitionManager.UpdateResource")
 }
 
 ///----------------------------------------------------------------------------
@@ -317,7 +317,7 @@ MgByteReader* MgResourceDefinitionManager::GetResource(
     byteSource->SetMimeType(MgMimeType::Xml);
     byteReader = byteSource->GetReader();
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceDefinitionManager.GetResource")
+    MG_RESOURCE_CONTAINER_CATCH_AND_THROW(L"MgResourceDefinitionManager.GetResource")
 
     return SAFE_ADDREF((MgByteReader*)byteReader);
 }
@@ -356,7 +356,7 @@ bool MgResourceDefinitionManager::FindResource(const string& mbResourcePathname)
         found = true;
     }
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceDefinitionManager.FindResource")
+    MG_RESOURCE_CONTAINER_CATCH_AND_THROW(L"MgResourceDefinitionManager.FindResource")
 
     return found;
 }
@@ -426,7 +426,7 @@ void MgResourceDefinitionManager::ValidateDocument(XmlDocument& xmlDoc)
         ValidateDocument(resource, rootName, schemaName);
     }
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceDefinitionManager.ValidateDocument")
+    MG_RESOURCE_CONTAINER_CATCH_AND_THROW(L"MgResourceDefinitionManager.ValidateDocument")
 }
 
 ///----------------------------------------------------------------------------
@@ -482,7 +482,7 @@ bool MgResourceDefinitionManager::GetDocument(const string& resourcePathname,
         }
     }
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceDefinitionManager.GetDocument")
+    MG_RESOURCE_CONTAINER_CATCH_AND_THROW(L"MgResourceDefinitionManager.GetDocument")
 
     return found;
 }
@@ -551,7 +551,7 @@ void MgResourceDefinitionManager::PutDocument(XmlDocument& xmlDoc,
         }
     }
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceDefinitionManager.PutDocument")
+    MG_RESOURCE_CONTAINER_CATCH_AND_THROW(L"MgResourceDefinitionManager.PutDocument")
 }
 
 ///----------------------------------------------------------------------------
@@ -598,7 +598,7 @@ void MgResourceDefinitionManager::UpdateDocument(XmlDocument& xmlDoc,
         }
     }
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceDefinitionManager.UpdateDocument")
+    MG_RESOURCE_CONTAINER_CATCH_AND_THROW(L"MgResourceDefinitionManager.UpdateDocument")
 }
 
 ///----------------------------------------------------------------------------
@@ -642,5 +642,22 @@ void MgResourceDefinitionManager::DeleteDocument(XmlDocument& xmlDoc,
         }
     }
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceDefinitionManager.DeleteDocument")
+    MG_RESOURCE_CONTAINER_CATCH_AND_THROW(L"MgResourceDefinitionManager.DeleteDocument")
+}
+
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Formats the method name to include the repository type.
+/// </summary>
+///
+///----------------------------------------------------------------------------
+
+STRING MgResourceDefinitionManager::FormatMethodName(CREFSTRING methodName)
+{
+    STRING errorText = methodName;
+    errorText.append(L" (");
+    errorText.append(MgUtil::MultiByteToWideChar(m_container.getName()));
+    errorText.append(L")");
+    return errorText;
 }

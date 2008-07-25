@@ -26,6 +26,7 @@
 #include "SiteRepositoryManager.h"
 #include "SiteResourceContentManager.h"
 #include "UnmanagedDataManager.h"
+#include "LogDetail.h"
 
 INT32 MgServerResourceService::sm_retryAttempts = 10;
 ACE_Time_Value MgServerResourceService::sm_retryInterval;
@@ -688,13 +689,17 @@ void MgServerResourceService::SetResource(MgResourceIdentifier* resource,
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    MG_LOG_TRACE_ENTRY(L"MgServerResourceService::SetResource()");
-
     if (NULL == resource)
     {
         throw new MgNullArgumentException(
             L"MgServerResourceService.SetResource", __LINE__, __WFILE__, NULL, L"", NULL);
     }
+
+    MgLogDetail logDetail(MgServiceType::ResourceService, MgLogDetail::Trace, L"MgServerResourceService.SetResource", mgStackParams);
+    logDetail.AddResourceIdentifier(L"Id", resource);
+    logDetail.AddInt64(L"ContentSize", NULL != content ? content->GetLength() : 0);
+    logDetail.AddInt64(L"HeaderSize", NULL != header ? header->GetLength() : 0);
+    logDetail.Create();
 
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));
@@ -858,13 +863,16 @@ MgByteReader* MgServerResourceService::GetResourceContent(
 
     MG_RESOURCE_SERVICE_TRY()
 
-    MG_LOG_TRACE_ENTRY(L"MgServerResourceService::GetResourceContent()");
-
     if (NULL == resource)
     {
         throw new MgNullArgumentException(
             L"MgServerResourceService.GetResourceContent", __LINE__, __WFILE__, NULL, L"", NULL);
     }
+
+    MgLogDetail logDetail(MgServiceType::ResourceService, MgLogDetail::Trace, L"MgServerResourceService.GetResourceContent", mgStackParams);
+    logDetail.AddResourceIdentifier(L"Id", resource);
+    logDetail.AddString(L"Tags", preProcessTags);
+    logDetail.Create();
 
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));
@@ -897,13 +905,15 @@ MgByteReader* MgServerResourceService::GetResourceHeader(
 
     MG_RESOURCE_SERVICE_TRY()
 
-    MG_LOG_TRACE_ENTRY(L"MgServerResourceService::GetResourceHeader()");
-
     if (NULL == resource)
     {
         throw new MgNullArgumentException(
             L"MgServerResourceService.GetResourceHeader", __LINE__, __WFILE__, NULL, L"", NULL);
     }
+
+    MgLogDetail logDetail(MgServiceType::ResourceService, MgLogDetail::Trace, L"MgServerResourceService.GetResourceHeader", mgStackParams);
+    logDetail.AddResourceIdentifier(L"Id", resource);
+    logDetail.Create();
 
     if (!resource->IsRepositoryTypeOf(MgRepositoryType::Library))
     {
@@ -1267,13 +1277,18 @@ void MgServerResourceService::SetResourceData(MgResourceIdentifier* resource,
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    MG_LOG_TRACE_ENTRY(L"MgServerResourceService::SetResourceData()");
-
     if (NULL == resource || NULL == data || dataName.empty() || dataType.empty())
     {
         throw new MgNullArgumentException(
             L"MgServerResourceService.SetResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
     }
+
+    MgLogDetail logDetail(MgServiceType::ResourceService, MgLogDetail::Trace, L"MgServerResourceService.SetResourceData", mgStackParams);
+    logDetail.AddResourceIdentifier(L"Id", resource);
+    logDetail.AddString(L"DataName", dataName);
+    logDetail.AddString(L"DataType", dataType);
+    logDetail.AddInt64(L"Size", data->GetLength());
+    logDetail.Create();
 
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));
@@ -1395,13 +1410,17 @@ MgByteReader* MgServerResourceService::GetResourceData(
 
     MG_RESOURCE_SERVICE_TRY()
 
-    MG_LOG_TRACE_ENTRY(L"MgServerResourceService::GetResourceData()");
-
     if (NULL == resource || dataName.empty())
     {
         throw new MgNullArgumentException(
             L"MgServerResourceService.GetResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
     }
+
+    MgLogDetail logDetail(MgServiceType::ResourceService, MgLogDetail::Trace, L"MgServerResourceService.GetResourceData", mgStackParams);
+    logDetail.AddResourceIdentifier(L"Id", resource);
+    logDetail.AddString(L"DataName", dataName);
+    logDetail.AddString(L"Tags", preProcessTags);
+    logDetail.Create();
 
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));

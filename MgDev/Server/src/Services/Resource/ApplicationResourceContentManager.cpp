@@ -119,7 +119,7 @@ MgByteReader* MgApplicationResourceContentManager::EnumerateReferences(
     byteSource->SetMimeType(MgMimeType::Xml);
     byteReader = byteSource->GetReader();
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgApplicationResourceContentManager.EnumerateReferences")
+    MG_RESOURCE_CONTAINER_CATCH_AND_THROW(L"MgApplicationResourceContentManager.EnumerateReferences")
 
     return byteReader.Detach();
 }
@@ -211,7 +211,7 @@ void MgApplicationResourceContentManager::EnumerateParentMapDefinitions(
         }
     }
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgApplicationResourceContentManager.EnumerateParentMapDefinitions")
+    MG_RESOURCE_CONTAINER_CATCH_AND_THROW(L"MgApplicationResourceContentManager.EnumerateParentMapDefinitions")
 }
 
 ///----------------------------------------------------------------------------
@@ -280,7 +280,7 @@ MgByteReader* MgApplicationResourceContentManager::EnumerateResourceData(
     byteSource->SetMimeType(MgMimeType::Xml);
     byteReader = byteSource->GetReader();
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgApplicationResourceContentManager.EnumerateResourceData")
+    MG_RESOURCE_CONTAINER_CATCH_AND_THROW(L"MgApplicationResourceContentManager.EnumerateResourceData")
 
     return byteReader.Detach();
 }
@@ -312,7 +312,7 @@ XmlDocument MgApplicationResourceContentManager::GetResourceTags(
 
     MgUtil::MultiByteToWideChar(tagValue.asString(), resourceTags);
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgApplicationResourceContentManager.GetResourceTags")
+    MG_RESOURCE_CONTAINER_CATCH_AND_THROW(L"MgApplicationResourceContentManager.GetResourceTags")
 
     return xmlDoc;
 }
@@ -366,7 +366,7 @@ void MgApplicationResourceContentManager::SetResourceTags(
 
     UpdateDocument(resource, xmlDoc, updateContext);
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgApplicationResourceContentManager.SetResourceTags")
+    MG_RESOURCE_CONTAINER_CATCH_AND_THROW(L"MgApplicationResourceContentManager.SetResourceTags")
 }
 
 ///----------------------------------------------------------------------------
@@ -392,5 +392,5 @@ void MgApplicationResourceContentManager::DeleteResourceData(MgResourceIdentifie
         m_repositoryMan.DeleteResourceData(resourceTags, resource);
     }
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgApplicationResourceContentManager.DeleteResourceData")
+    MG_RESOURCE_CONTAINER_CATCH_AND_THROW(L"MgApplicationResourceContentManager.DeleteResourceData")
 }

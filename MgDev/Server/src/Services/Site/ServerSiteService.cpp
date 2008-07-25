@@ -23,6 +23,7 @@
 #include "ServiceManager.h"
 #include "SiteServiceUtil.h"
 #include "LongTransactionManager.h"
+#include "LogDetail.h"
 
 IMPLEMENT_CREATE_SERVICE(MgServerSiteService)
 
@@ -684,10 +685,18 @@ MgStringCollection* MgServerSiteService::Authenticate(
     MgUserInformation* userInformation, MgStringCollection* requiredRoles,
     bool returnAssignedRoles)
 {
-    MG_LOG_TRACE_ENTRY(L"MgServerSiteService::Authenticate()");
+    Ptr<MgStringCollection> assignedRoles;
 
-    Ptr<MgStringCollection> assignedRoles = MgSecurityManager::Authenticate(
-        userInformation, requiredRoles, returnAssignedRoles);
+    MG_TRY()
+
+    MgLogDetail logDetail(MgServiceType::SiteService, MgLogDetail::Trace, L"MgServerSiteService.Authenticate", mgStackParams);
+    logDetail.AddString(L"Session",userInformation->GetMgSessionId());
+    logDetail.AddString(L"UserName",userInformation->GetUserName());
+    logDetail.Create();
+
+    assignedRoles = MgSecurityManager::Authenticate(userInformation, requiredRoles, returnAssignedRoles);
+
+    MG_CATCH_AND_THROW(L"MgServerSiteService.Authenticate")
 
     return assignedRoles.Detach();
 }
@@ -947,7 +956,9 @@ STRING MgServerSiteService::RequestServer(INT32 serviceType)
 
     MG_SITE_SERVICE_TRY()
 
-    MG_LOG_TRACE_ENTRY(L"MgServerSiteService::RequestServer()");
+    MgLogDetail logDetail(MgServiceType::SiteService, MgLogDetail::Trace, L"MgServerSiteService.RequestServer", mgStackParams);
+    logDetail.AddInt32(L"ServiceType", serviceType);
+    logDetail.Create();
 
     MG_CHECK_RANGE(serviceType, 0, MgServerInformation::sm_knMaxNumberServices - 1,
         L"MgServerSiteService.RequestServer");

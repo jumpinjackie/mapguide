@@ -29,6 +29,11 @@
 #include "FontManager.h"
 #include "LongTransactionManager.h"
 
+#include "Stylizer.h"
+#include "Bounds.h"
+#include "Renderer.h"
+#include "StylizationUtil.h"
+
 #ifdef _DEBUG
 void DebugOutput(const ACE_TCHAR* format, ...)
 {
@@ -181,6 +186,8 @@ void MgServer::ParseArgs (INT32 argc, ACE_TCHAR *argv[])
 {
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::ParseArgs()\n")));
 
+    char* buf = (char*) malloc(1024*1024*20);
+    buf[5] = 34;
     if(argc > 1)
     {
         // Remove the "/" character
@@ -976,6 +983,9 @@ int MgServer::open(void *args)
             // user's locale.  The Server uses thread locale storage to save user information so this callback
             // is easy to implement.
             MgException::RegisterLocaleCallback(MgServer::LocaleCallback);
+
+            // Initialize Stylizer callback mechanism for non-fatal FDO exceptions
+            MgStylizationUtil::InitializeStylizerCallback();
 
 #ifdef _DEBUG
             MgEventTimer& connectionTimer = m_eventTimerManager.GetEventTimer(MgEventTimer::ConnectionTimeout);

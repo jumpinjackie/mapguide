@@ -44,6 +44,7 @@
 #include "FilterUtil.h"
 #include "LongTransactionManager.h"
 #include "TransformCache.h"
+#include "LogDetail.h"
 
 #include <Fdo/Xml/FeatureSerializer.h>
 #include <Fdo/Xml/FeatureWriter.h>
@@ -350,10 +351,28 @@ MgFeatureReader* MgServerFeatureService::SelectFeatures( MgResourceIdentifier* r
                                                          CREFSTRING className,
                                                          MgFeatureQueryOptions* options )
 {
-    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::SelectFeatures()");
+    Ptr<MgFeatureReader> reader;
+
+    MG_TRY()
+
+    if (NULL == resource || NULL == options)
+    {
+        throw new MgNullArgumentException(
+            L"MgServerFeatureService.SelectFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::Trace, L"MgServerFeatureService.SelectFeatures", mgStackParams);
+    logDetail.AddResourceIdentifier(L"Resource", resource);
+    logDetail.AddString(L"ClassName", className);
+    logDetail.AddObject(L"Options", options);
+    logDetail.Create();
 
     MgServerSelectFeatures mssf;
-    return (MgFeatureReader*)mssf.SelectFeatures(resource, className, options, false);
+    reader = (MgFeatureReader*)mssf.SelectFeatures(resource, className, options, false);
+
+    MG_CATCH_AND_THROW(L"MgServerFeatureService.SelectFeatures")
+
+    return reader.Detach();
 }
 
 
@@ -636,10 +655,27 @@ INT32 MgServerFeatureService::ExecuteSqlNonQuery( MgResourceIdentifier* resource
 MgSpatialContextReader* MgServerFeatureService::GetSpatialContexts( MgResourceIdentifier* resource,
                                                                    bool bActiveOnly)
 {
-    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetSpatialContexts()");
+    Ptr<MgSpatialContextReader> reader;
+
+    MG_TRY()
+
+    if (NULL == resource)
+    {
+        throw new MgNullArgumentException(
+            L"MgServerFeatureService.GetSpatialContexts", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::Trace, L"MgServerFeatureService.GetSpatialContexts", mgStackParams);
+    logDetail.AddResourceIdentifier(L"Id", resource);
+    logDetail.AddBool(L"ActiveOnly", bActiveOnly);
+    logDetail.Create();
 
     MgServerGetSpatialContexts msgsc;
-    return msgsc.GetSpatialContexts(resource, bActiveOnly);
+    reader = msgsc.GetSpatialContexts(resource, bActiveOnly);
+
+    MG_CATCH_AND_THROW(L"MgServerFeatureService.GetSpatialContexts")
+
+    return reader.Detach();
 }
 
 

@@ -327,6 +327,30 @@
 			>
 		</File>
 		<File
+			RelativePath=".\LogDetail.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\LogDetail.h"
+			>
+		</File>
+		<File
 			RelativePath=".\LogEntryData.cpp"
 			>
 			<FileConfiguration
