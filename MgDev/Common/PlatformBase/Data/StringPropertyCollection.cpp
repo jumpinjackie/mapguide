@@ -445,3 +445,23 @@ MgPropertyCollection* MgStringPropertyCollection::GetPropertyCollection()
 {
     return SAFE_ADDREF((MgPropertyCollection*)m_strProperty);
 }
+
+STRING MgStringPropertyCollection::GetLogString()
+{
+    STRING tmp = L"";
+    if (m_strProperty->GetCount() == 0) return tmp;
+
+    tmp = L"{";
+    for (int i=0; i < m_strProperty->GetCount(); i++)
+    {
+        Ptr<MgStringProperty> prop = dynamic_cast<MgStringProperty*>(m_strProperty->GetItem(i));
+        ACE_ASSERT(NULL != prop.p);
+        tmp += L"{";
+        tmp += prop->GetName();
+        tmp += L"=";
+        tmp += prop->GetValue();
+        tmp += L"}";
+    }
+    tmp += L"}";
+    return tmp;
+}

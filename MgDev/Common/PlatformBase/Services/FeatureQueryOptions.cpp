@@ -360,3 +360,73 @@ bool MgFeatureQueryOptions::GetBinaryOperator()
 {
     return m_binaryOp;
 }
+
+STRING MgFeatureQueryOptions::GetLogString()
+{
+    
+    STRING tmp = L"{";
+
+    Ptr<MgStringCollection> classProp = GetClassProperties();
+    STRING value = classProp->GetLogString();
+    if (!value.empty())
+    {
+        tmp += L"{ClassProps=";
+        tmp += value;
+        tmp += L"}";
+    }
+
+    Ptr<MgStringPropertyCollection> computed = GetComputedProperties();
+    value = computed->GetLogString(); 
+    if (!value.empty())
+    {
+        tmp += L"{ComputedProps=";
+        tmp += value;
+        tmp += L"}";
+    }
+
+    Ptr<MgStringCollection> orderingProp = GetOrderingProperties();
+    value = orderingProp.p != NULL ? orderingProp->GetLogString() : L"";
+    if (!value.empty())
+    {
+        tmp += L"{OrderingProps=";
+        tmp += value;
+        tmp += L"}{OrderOption=";
+        STRING intval;
+        MgUtil::Int32ToString(GetOrderOption(),intval);
+        tmp += intval;
+        tmp += L"}";
+    }
+
+    tmp += L"{Operator=";
+    tmp += GetBinaryOperator() ? L"1}" : L"0}";
+
+    value = GetFilter();
+    if (!value.empty())
+    {
+        tmp += L"{Filter=";
+        tmp += value;
+        tmp += L"}";
+    }
+
+    STRING geomProp = GetGeometryProperty();
+    if (!geomProp.empty())
+    {
+        tmp += L"{GeomProp=";
+        tmp += geomProp;
+        tmp += L"}{GeomOp=";
+        STRING geomOp = MgFeatureSpatialOperations::ToString(GetSpatialOperation());
+        tmp += geomOp;
+        tmp += L"}";
+        Ptr<MgGeometry> geom = GetGeometry();
+        if (geom.p != NULL)
+        {
+            tmp += L"{Geometry=";
+            tmp += geom->ToAwkt(false);
+            tmp += L"}";
+        }
+    }  
+
+    tmp += L"}";
+
+    return tmp;
+}

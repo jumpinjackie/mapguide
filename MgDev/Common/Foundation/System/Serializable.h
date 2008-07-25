@@ -57,6 +57,16 @@ INTERNAL_API:
     /// Stream
     ///
     virtual void Deserialize(MgStream* stream) = 0;
+
+    //////////////////////////////////////////////////////////
+    /// \brief
+    /// Builds a log friendly string representation
+    ///
+    /// \return
+    /// String suitable for logs
+    ///
+    virtual STRING GetLogString();
+
 };
 /// \endcond
 

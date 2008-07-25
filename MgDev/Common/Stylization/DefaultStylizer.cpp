@@ -31,6 +31,8 @@
 
 const RS_String s_Empty(L"");
 
+extern void ProcessStylizerException(FdoException* exception, int line, wchar_t* file);
+
 DefaultStylizer::DefaultStylizer(SE_SymbolManager* sman)
 {
     m_pRasterAdapter = NULL;
@@ -159,7 +161,7 @@ void DefaultStylizer::StylizeVectorLayer(const MdfModel::VectorLayerDefinition* 
             {
                 //geometry could be null in which case FDO throws an exception
                 //we move on to the next feature
-                e->Release();
+                ProcessStylizerException(e, __LINE__, __WFILE__);
                 m_lbPool->FreeLineBuffer(lb);
                 continue;
             }

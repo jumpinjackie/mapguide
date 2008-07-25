@@ -26,6 +26,7 @@
 //#define DEBUG_LABELS
 
 extern int ConvertColor(gdImagePtr i, RS_Color& c);
+extern void ProcessStylizerException(FdoException* exception, int line, wchar_t* file);
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -49,7 +50,7 @@ LabelRendererLocal::~LabelRendererLocal()
     }
     catch (FdoException* e)
     {
-        e->Release();
+        ProcessStylizerException(e, __LINE__, __WFILE__);
     }
     catch (...)
     {

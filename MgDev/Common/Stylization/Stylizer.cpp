@@ -51,3 +51,22 @@ MdfModel::GridScaleRange* Stylizer::FindScaleRange(MdfModel::GridScaleRangeColle
 
     return NULL;
 }
+
+// Non-fatal stylizer exception logging mechanism.
+static StylizerExceptionCallback g_stylizerExceptionCallback = NULL;
+
+void SetStylizerExceptionCallback(StylizerExceptionCallback callbackFunction)
+{
+    g_stylizerExceptionCallback = callbackFunction;
+}
+
+void ProcessStylizerException(FdoException* exception, int line, wchar_t* file)
+{
+    if (NULL != g_stylizerExceptionCallback)
+    {
+        (*g_stylizerExceptionCallback)(exception, line, file);
+    }
+    exception->Release();
+}
+
+

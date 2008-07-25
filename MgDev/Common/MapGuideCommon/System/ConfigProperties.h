@@ -78,6 +78,10 @@ EXTERNAL_API:
     static const STRING GeneralPropertyLogsDelimiter;                   /// value("LogsDelimiter")
     static const STRING DefaultGeneralPropertyLogsDelimiter;            /// value("\t")
 
+    /// Log detail level for services
+    static const STRING GeneralPropertyLogsDetail;                   /// value("LogsDetail")
+    static const STRING DefaultGeneralPropertyLogsDetail;            /// value("")
+
     /// Root folder for server's log files
     static const STRING GeneralPropertyLogsPath;                        /// value("LogsPath")
     static const STRING DefaultGeneralPropertyLogsPath;                 /// value("Logs/")

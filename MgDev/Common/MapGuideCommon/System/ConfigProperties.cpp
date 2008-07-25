@@ -127,6 +127,8 @@ const STRING MgConfigProperties::GeneralPropertyLicenseServerPath               
 const STRING MgConfigProperties::DefaultGeneralPropertyLicenseServerPath                    = L"";
 const STRING MgConfigProperties::GeneralPropertyLogsDelimiter                               = L"LogsDelimiter";
 const STRING MgConfigProperties::DefaultGeneralPropertyLogsDelimiter                        = L"\t";
+const STRING MgConfigProperties::GeneralPropertyLogsDetail                                  = L"LogsDetail";
+const STRING MgConfigProperties::DefaultGeneralPropertyLogsDetail                           = L"";
 const STRING MgConfigProperties::GeneralPropertyLogsPath                                    = L"LogsPath";
 const STRING MgConfigProperties::DefaultGeneralPropertyLogsPath                             = L"Logs/";
 const STRING MgConfigProperties::GeneralPropertyMachineIp                                   = L"MachineIp";
@@ -450,6 +452,7 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviGeneralProperties[] =
     { MgConfigProperties::GeneralPropertyFdoPath                                    , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
     { MgConfigProperties::GeneralPropertyLicenseServerPath                          , MgPropertyType::String    , MG_CONFIG_MIN_OPTIONAL_STRING_LENGTH  , MG_CONFIG_MAX_OPTIONAL_STRING_LENGTH  , L""                                       },
     { MgConfigProperties::GeneralPropertyLogsDelimiter                              , MgPropertyType::String    , 1                                     , 128                                   , L""                                       },
+    { MgConfigProperties::GeneralPropertyLogsDetail                                 , MgPropertyType::String    , MG_CONFIG_MIN_OPTIONAL_STRING_LENGTH  , MG_CONFIG_MAX_OPTIONAL_STRING_LENGTH  , L""                                       },
     { MgConfigProperties::GeneralPropertyLogsPath                                   , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
     { MgConfigProperties::GeneralPropertyMachineIp                                  , MgPropertyType::String    , MG_CONFIG_MIN_IP_ADDRESS_LENGTH       , MG_CONFIG_MAX_IP_ADDRESS_LENGTH       , L""                                       },
     { MgConfigProperties::GeneralPropertyMaxLogFileSize                             , MgPropertyType::Int32     , 1                                     , 2000000                               , L""                                       },

@@ -165,7 +165,7 @@ void SE_ExpressionBase::ParseColorExpression(const MdfModel::MdfString& exprstr,
     }
     catch (FdoException* e)
     {
-        e->Release();
+        ProcessStylizerException(e, __LINE__, __WFILE__);
     }
 }
 
@@ -203,7 +203,7 @@ void SE_ExpressionBase::ParseDoubleExpression(const MdfModel::MdfString& exprstr
     }
     catch (FdoException* e)
     {
-        e->Release();
+        ProcessStylizerException(e, __LINE__, __WFILE__);
     }
 }
 
@@ -241,7 +241,7 @@ void SE_ExpressionBase::ParseIntegerExpression(const MdfModel::MdfString& exprst
     }
     catch (FdoException* e)
     {
-        e->Release();
+        ProcessStylizerException(e, __LINE__, __WFILE__);
     }
 }
 
@@ -289,7 +289,7 @@ void SE_ExpressionBase::ParseBooleanExpression(const MdfModel::MdfString& exprst
     }
     catch (FdoException* e)
     {
-        e->Release();
+        ProcessStylizerException(e, __LINE__, __WFILE__);
     }
 }
 
@@ -380,6 +380,6 @@ void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr
     }
     catch (FdoException* e)
     {
-        e->Release();
+        ProcessStylizerException(e, __LINE__, __WFILE__);
     }
 }

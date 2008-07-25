@@ -40,7 +40,8 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Retrieve the formatted exception message.
+    /// Retrieve the formatted exception message.  This is the localized and
+    /// end user readable string.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -61,7 +62,10 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Retrieve the formatted exception details.
+    /// Retrieve the formatted exception details.  This includes the user readable
+    /// string and the stack of method names which generated the error.  This string
+    /// provides more information to web application developers than the message.
+    /// If a method does not have any parameters it will be omitted from the details.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -82,7 +86,9 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Retrieve the formatted exception stack trace.
+    /// Retrieve the formatted exception stack trace.  This includes file and line
+    /// numbers, method names, and method parameters.  This string is useful for
+    /// debugging !MapGuide.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -96,7 +102,7 @@ PUBLISHED_API:
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \return
-    /// Call stack trace
+    /// Call stack trace with method parameters
     ///
     STRING GetStackTrace() throw();
 
@@ -156,6 +162,22 @@ EXTERNAL_API:
     /// File name to add to call stack
     ///
     void AddStackTraceInfo(CREFSTRING methodName, INT32 lineNumber, CREFSTRING fileName) throw();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Add updated stack information to the exception.
+    ///
+    /// \param methodName
+    /// Unqualified method name to add to call stack
+    /// \param methodParams
+    /// String of method parameters to add to call stack
+    /// \param lineNumber
+    /// Line number to add to call stack
+    /// \param fileName
+    /// File name to add to call stack
+    ///
+    void AddStackTraceInfo(CREFSTRING methodName, CREFSTRING methodParams, INT32 lineNumber, CREFSTRING fileName) throw();
+
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -236,9 +258,15 @@ protected:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
+    /// Format the details using the specified locale.
+    ///
+    STRING FormatDetails(CREFSTRING locale) throw();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
     /// Format the stack trace using the specified locale.
     ///
-    STRING FormatStackTrace(CREFSTRING locale, bool includeAll) throw();
+    STRING FormatStackTrace(CREFSTRING locale) throw();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -267,6 +295,15 @@ private:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
+    /// Add the specified method params to the collection.
+    ///
+    /// \param methodParams
+    /// Method params where the exception occurred
+    ///
+    void AddMethodParams(CREFSTRING methodParams) throw();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
     /// Add the specified line number to the collection.
     ///
     /// \param lineNumber
@@ -287,6 +324,9 @@ protected:
 
     /// Collection of method names which trace the stack leading up to the exception.
     MgStringCollection m_methodNames;
+
+    /// Collection of method parameters which trace the stack leading up to the exception.
+    MgStringCollection m_methodParams;
 
     /// Collection of line numbers which trace the stack leading up to the exception.
     MgStringCollection m_lineNumbers;

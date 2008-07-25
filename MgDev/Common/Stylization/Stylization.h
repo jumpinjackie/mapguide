@@ -91,6 +91,20 @@
 //FDO headers
 #include "Fdo.h"
 
+
+#ifndef __WFILE__
+// Wide character version of __FILE__ macro
+#define WIDEN2(x) L ## x
+#define WIDEN(x) WIDEN2(x)
+#define __WFILE__ WIDEN(__FILE__)
+#endif
+
+//Non-fatal FDO exception logging mechanism
+//Implementation is defined in Stylizer.cpp
+typedef void (*StylizerExceptionCallback)(FdoException* exception, int line, wchar_t* file);
+void ProcessStylizerException(FdoException* exception);
+STYLIZATION_API void SetStylizerExceptionCallback(StylizerExceptionCallback callbackFunction);
+
 //avoid linux warnings
 static const void* avoid_warning1 = (void*)FDO_ACTIVELONGTRANSACTION;
 static const void* avoid_warning2 = (void*)FDO_ROOTLONGTRANSACTION;

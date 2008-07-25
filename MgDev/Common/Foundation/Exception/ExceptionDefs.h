@@ -48,6 +48,7 @@
 ///
 #define MG_TRY()                                                              \
     Ptr<MgException> mgException;                                             \
+    STRING mgStackParams;                                                     \
                                                                               \
     try                                                                       \
     {                                                                         \
@@ -57,7 +58,7 @@
     catch (MgException* e)                                                    \
     {                                                                         \
         mgException = e;                                                      \
-        mgException->AddStackTraceInfo(methodName, __LINE__, __WFILE__);      \
+        mgException->AddStackTraceInfo(methodName, mgStackParams, __LINE__, __WFILE__);      \
     }                                                                         \
     catch (exception& e)                                                      \
     {                                                                         \

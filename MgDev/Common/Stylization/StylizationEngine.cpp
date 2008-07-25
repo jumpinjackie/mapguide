@@ -35,6 +35,8 @@
 
 using namespace MDFMODEL_NAMESPACE;
 
+extern void ProcessStylizerException(FdoException* exception, int line, wchar_t* file);
+
 
 StylizationEngine::StylizationEngine(SE_SymbolManager* resources) :
     m_resources(resources),
@@ -142,7 +144,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
             {
                 //geometry could be null in which case FDO throws an exception
                 //we move on to the next feature
-                e->Release();
+                ProcessStylizerException(e, __LINE__, __WFILE__);
                 m_lbPool->FreeLineBuffer(lb);
                 continue;
             }
@@ -231,7 +233,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
                 }
                 catch (FdoException* e)
                 {
-                    e->Release();
+                    ProcessStylizerException(e, __LINE__, __WFILE__);
                 }
             }
 

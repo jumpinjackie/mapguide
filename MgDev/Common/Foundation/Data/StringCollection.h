@@ -339,6 +339,15 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////
     /// \brief
+    /// Builds a log friendly string representation
+    ///
+    /// \return
+    /// String suitable for logs
+    ///
+    STRING GetLogString();
+
+    //////////////////////////////////////////////////////////
+    /// \brief
     /// Creates a string collection by parsing a string.
     /// Each element in the string is separated by the specified
     /// delimiter. If no delimiter is specified, a comma is used.
