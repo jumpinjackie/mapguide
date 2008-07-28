@@ -27,7 +27,7 @@
 /// \remarks
 /// A resource path cannot contain:
 /// <ul>
-///     <li>any of the following characters % * : | \ ? < ’ & ” > =
+///     <li>any of the following characters % * : | \ ? < ' & " > =
 ///     </li>
 ///     <li>a space at the begin or at the end
 ///     </li>

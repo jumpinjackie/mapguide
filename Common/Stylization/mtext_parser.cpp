@@ -64,7 +64,7 @@ This parser also supports
 to the IReferenceResolver)
 
 General Format:
-%<\EvalId FieldCode \f “Format” \href “Link”>%
+%<\EvalId FieldCode \f "Format" \href "Link">%
 
 Example of use of field notation:
 Drawing created by %<\AcVar author>% on %<\AcVar SaveDate \f "M/d/yyyy">%
