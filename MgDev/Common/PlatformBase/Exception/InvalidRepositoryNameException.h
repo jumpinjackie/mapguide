@@ -26,7 +26,7 @@
 /// \remarks
 /// A repository name cannot contain spaces at the beginning or the end,
 /// nor can it contain any of the following characters:
-///   % * : | \ ? < ’ & ” > = /
+///   % * : | \ ? < ' & " > = /
 ///
 class MG_PLATFORMBASE_API MgInvalidRepositoryNameException : public MgApplicationException
 {

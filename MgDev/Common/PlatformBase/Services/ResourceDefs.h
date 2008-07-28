@@ -27,8 +27,8 @@
 class MG_PLATFORMBASE_API MgReservedCharacterSet
 {
 INTERNAL_API:
-    static const STRING Name;        /// Reserved characters in names = "%*:|\?<’&”>=/".
-    static const STRING Path;        /// Reserved characters in paths = "%*:|\?<’&”>=".
+    static const STRING Name;        /// Reserved characters in names = "%*:|\?<'&">=/".
+    static const STRING Path;        /// Reserved characters in paths = "%*:|\?<'&">=".
     static const STRING WhiteSpace;  /// White space characters = " t r n v f".
 };
 /// \endcond

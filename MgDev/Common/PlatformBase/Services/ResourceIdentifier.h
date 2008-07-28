@@ -74,7 +74,7 @@ PUBLISHED_API:
     /// \param resource (String/string)
     /// The location of a document or a folder.\n The
     /// string cannot be empty. It can contain spaces but
-    /// cannot contain any of the characters %*:|?<’&”>=\n If
+    /// cannot contain any of the characters %*:|?<'&">=\n If
     /// the resource is a folder, you must include the trailing
     /// slash.
     ///
@@ -357,7 +357,7 @@ PUBLISHED_API:
     /// \param path (String/string)
     /// Resource path within the repository. It can contain
     /// spaces but cannot contain any of the characters
-    /// %*:|?<’&”>=\n \n Do not include
+    /// %*:|?<'&">=\n \n Do not include
     /// the repository part of the identifier (for example, <c>Library://</c>).
     /// Do not include the trailing slash.
     ///
@@ -430,7 +430,7 @@ PUBLISHED_API:
     /// \param name (String/string)
     /// Resource name. It can contain spaces but
     /// cannot contain any of the characters
-    /// %*:|?<’&”>=
+    /// %*:|?<'&">=
     ///
     /// \return
     /// Returns nothing.
