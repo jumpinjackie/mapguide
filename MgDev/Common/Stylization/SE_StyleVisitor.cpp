@@ -488,6 +488,7 @@ void SE_StyleVisitor::VisitPath(Path& path)
         ParseStringExpression(path.GetLineCap(), primitive->cap, Path::sLineCapDefault, Path::sLineCapValues);
         ParseStringExpression(path.GetLineJoin(), primitive->join, Path::sLineJoinDefault, Path::sLineJoinValues);
         ParseDoubleExpression(path.GetLineMiterLimit(), primitive->miterLimit, 5.0);
+        ParseStringExpression(path.GetResizeControl(), primitive->resizeControl, GraphicElement::sResizeControlDefault, GraphicElement::sResizeControlValues);
 
         // if the color is transparent there's no point in drawing this
         // path, so change it to black
@@ -499,7 +500,8 @@ void SE_StyleVisitor::VisitPath(Path& path)
                               || primitive->weightScalable.expression
                               || primitive->cap.expression
                               || primitive->join.expression
-                              || primitive->miterLimit.expression);
+                              || primitive->miterLimit.expression
+                              || primitive->resizeControl.expression);
     }
     else
     {
@@ -514,6 +516,7 @@ void SE_StyleVisitor::VisitPath(Path& path)
         ParseStringExpression(path.GetLineCap(), primitive->cap, Path::sLineCapDefault, Path::sLineCapValues);
         ParseStringExpression(path.GetLineJoin(), primitive->join, Path::sLineJoinDefault, Path::sLineJoinValues);
         ParseDoubleExpression(path.GetLineMiterLimit(), primitive->miterLimit, 5.0);
+        ParseStringExpression(path.GetResizeControl(), primitive->resizeControl, GraphicElement::sResizeControlDefault, GraphicElement::sResizeControlValues);
 
         primitive->cacheable = !(primitive->weight.expression
                               || primitive->color.expression
@@ -521,7 +524,8 @@ void SE_StyleVisitor::VisitPath(Path& path)
                               || primitive->weightScalable.expression
                               || primitive->cap.expression
                               || primitive->join.expression
-                              || primitive->miterLimit.expression);
+                              || primitive->miterLimit.expression
+                              || primitive->resizeControl.expression);
     }
 }
 
@@ -583,13 +587,15 @@ void SE_StyleVisitor::VisitImage(Image& image)
     ParseDoubleExpression(image.GetSizeY(), primitive->extent[1], 5.0);
     ParseDoubleExpression(image.GetAngle(), primitive->angleDeg, 0.0);
     ParseBooleanExpression(image.GetSizeScalable(), primitive->sizeScalable, true);
+    ParseStringExpression(image.GetResizeControl(), primitive->resizeControl, GraphicElement::sResizeControlDefault, GraphicElement::sResizeControlValues);
 
     primitive->cacheable = !(primitive->position[0].expression
                           || primitive->position[1].expression
                           || primitive->extent[0].expression
                           || primitive->extent[1].expression
                           || primitive->angleDeg.expression
-                          || primitive->sizeScalable.expression)
+                          || primitive->sizeScalable.expression
+                          || primitive->resizeControl.expression)
                           && primitive->imageData.data;
 }
 
@@ -625,6 +631,7 @@ void SE_StyleVisitor::VisitText(Text& text)
     ParseColorExpression(text.GetTextColor(), primitive->textColor, 0xff000000);
     ParseColorExpression(text.GetGhostColor(), primitive->ghostColor, 0);
     ParseStringExpression(text.GetMarkup(), primitive->markup, Text::sMarkupDefault);
+    ParseStringExpression(text.GetResizeControl(), primitive->resizeControl, GraphicElement::sResizeControlDefault, GraphicElement::sResizeControlValues);
 
     TextFrame* frame = text.GetFrame();
     if (frame)
@@ -646,6 +653,9 @@ void SE_StyleVisitor::VisitText(Text& text)
                           || primitive->bold.expression
                           || primitive->italic.expression
                           || primitive->underlined.expression
+                          || primitive->overlined.expression
+                          || primitive->obliqueAngle.expression
+                          || primitive->trackSpacing.expression
                           || primitive->hAlignment.expression
                           || primitive->vAlignment.expression
                           || primitive->justification.expression
@@ -654,7 +664,9 @@ void SE_StyleVisitor::VisitText(Text& text)
                           || primitive->frameLineColor.expression
                           || primitive->frameFillColor.expression
                           || primitive->frameOffset[0].expression
-                          || primitive->frameOffset[1].expression);
+                          || primitive->frameOffset[1].expression
+                          || primitive->markup.expression
+                          || primitive->resizeControl.expression);
 }
 
 
@@ -713,7 +725,6 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
 
         if (m_primitive)
         {
-            ParseStringExpression(elem->GetResizeControl(), m_primitive->resizeControl, GraphicElement::sResizeControlDefault, GraphicElement::sResizeControlValues);
             m_style->symbol.push_back(m_primitive);
 
             // update the style's cacheable flag to take into account
@@ -738,8 +749,13 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
         m_style->cacheable &= !(m_style->resizeSize[0].expression
                              || m_style->resizeSize[1].expression
                              || m_style->resizePosition[0].expression
-                             || m_style->resizePosition[1].expression);
+                             || m_style->resizePosition[1].expression
+                             || m_style->growControl.expression);
     }
+
+    // the symbolization's scales also affect the evaluated style
+    m_style->cacheable &= !(m_symbolization->scale[0].expression
+                         || m_symbolization->scale[1].expression);
 
     m_symbolization->styles.push_back(m_style);
 }
