@@ -66,22 +66,19 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
                                       bool             exclude,
                                       LineBuffer*      path)
 {
-    // bail if there are too many path labels
-    if (m_pathCount > 1000)
-        return;
-
-    BeginOverpostGroup(type, true, exclude);
-
     // get the geometry type
     int geomType = (path != NULL)? path->geom_type() : FdoGeometryType_None;
-
-    // TODO: take into account advanced labeling flag
-//  if (labels->advanced()) ... etc.
 
     // in the case of linear geometry we'll label along the path, so prepare
     // for that (transform to screen space, group into stitch groups)
     if (geomType == FdoGeometryType_LineString || geomType == FdoGeometryType_MultiLineString)
     {
+        // bail if there are too many path labels
+        if (m_pathCount > 1000)
+            return;
+
+        BeginOverpostGroup(type, true, exclude);
+
         // indicate that the current group will be labeled along the path
         m_labelGroups.back().m_algo = laCurve;
 
@@ -132,9 +129,13 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
             offset += lblpathpts;
             m_pathCount++;
         }
+
+        EndOverpostGroup();
     }
     else
     {
+        BeginOverpostGroup(type, true, exclude);
+
         // case of a simple label
         for (int i=0; i<nlabels; ++i)
         {
@@ -147,9 +148,9 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
             LabelInfo lrinfo(info->x() + offx, info->y() + offy, text, info->tdef());
             m_labelGroups.back().m_labels.push_back(lrinfo);
         }
-    }
 
-    EndOverpostGroup();
+        EndOverpostGroup();
+    }
 }
 
 

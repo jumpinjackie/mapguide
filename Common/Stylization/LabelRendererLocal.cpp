@@ -71,9 +71,6 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
     // get the geometry type
     int geomType = (path != NULL)? path->geom_type() : FdoGeometryType_None;
 
-    // TODO: take into account advanced labeling flag
-//  if (labels->advanced()) ... etc.
-
     // in the case of linear geometry we'll label along the path, so prepare
     // for that (transform to screen space, group into stitch groups)
     if (geomType == FdoGeometryType_LineString || geomType == FdoGeometryType_MultiLineString)
