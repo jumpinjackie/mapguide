@@ -275,10 +275,21 @@ MgByteReader* MgServerFeatureService::GetCapabilities( CREFSTRING providerName )
 MgFeatureSchemaCollection* MgServerFeatureService::DescribeSchema( MgResourceIdentifier* resource,
                                                       CREFSTRING schemaName )
 {
-    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::DescribeSchema()");
+    Ptr<MgFeatureSchemaCollection> schema;
+
+    MG_TRY()
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::Trace, L"MgServerFeatureService.DescribeSchema", mgStackParams);
+    logDetail.AddResourceIdentifier(L"Resource", resource);
+    logDetail.AddString(L"SchemaName", schemaName);
+    logDetail.Create();
 
     MgServerDescribeSchema msds;
-    return msds.DescribeSchema(resource, schemaName);
+    schema = msds.DescribeSchema(resource, schemaName);
+
+    MG_CATCH_AND_THROW(L"MgServerFeatureService.DescribeSchema");
+
+    return schema.Detach();
 }
 
 
@@ -307,10 +318,21 @@ MgFeatureSchemaCollection* MgServerFeatureService::DescribeSchema( MgResourceIde
 STRING MgServerFeatureService::DescribeSchemaAsXml( MgResourceIdentifier* resource,
                                                       CREFSTRING schemaName )
 {
-    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::DescribeSchemaAsXml()");
+    STRING schema;
+
+    MG_TRY()
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::Trace, L"MgServerFeatureService.DescribeSchemaAsXml", mgStackParams);
+    logDetail.AddResourceIdentifier(L"Resource", resource);
+    logDetail.AddString(L"SchemaName", schemaName);
+    logDetail.Create();
 
     MgServerDescribeSchema msds;
-    return msds.DescribeSchemaAsXml(resource, schemaName);
+    schema = msds.DescribeSchemaAsXml(resource, schemaName);
+
+    MG_CATCH_AND_THROW(L"MgServerFeatureService.DescribeSchemaAsXml");
+
+    return schema;
 }
 
 
