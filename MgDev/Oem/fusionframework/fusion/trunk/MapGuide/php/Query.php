@@ -158,16 +158,17 @@ try {
               $layerFilter = $xpathQuery->item(0)->nodeValue;
             }
             /* create the combined filter value*/
+	    $combinedFilter='';
             if ($filter!='' && $layerFilter!='') {
-                $filter = "(".$filter.") AND (".$layerFilter.")";
+                $combinedFilter = "(".$filter.") AND (".$layerFilter.")";
             } else {
-                $filter = $filter.$layerFilter;
+                $combinedFilter = $filter.$layerFilter;
             }
-            if ($filter!='') {
-              //echo "/* setting filter:".$filter."*/";
-              $queryOptions->SetFilter($filter);
+            if ($combinedFilter!='') {
+              //echo "/* setting combinedFilter:".$combinedFilter."*/";
+              $queryOptions->SetFilter($combinedFilter);
             }
-
+	  
             if ($spatialFilter !== false ) {
                 $spatialContext = $featureService->GetSpatialContexts($featureResId, true);
                 $srsLayerWkt = false;
