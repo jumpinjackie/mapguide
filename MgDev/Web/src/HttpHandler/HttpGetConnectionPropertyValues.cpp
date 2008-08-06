@@ -65,6 +65,10 @@ void MgHttpGetConnectionPropertyValues::Execute(MgHttpResponse& hResponse)
     Ptr<MgStringCollection> properties = service->GetConnectionPropertyValues(provider, m_propertyName, partialConnProps);
 
     // Get the properties as XML
+    if (properties == NULL)
+    {
+        properties = new MgStringCollection();
+    }
     Ptr<MgByteReader> byteReader = properties->ToXml();
 
     // Convert to requested response format, if necessary
