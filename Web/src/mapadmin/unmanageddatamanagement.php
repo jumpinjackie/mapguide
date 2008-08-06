@@ -194,6 +194,7 @@ catch ( Exception $e )
                     <br>
                     Configure aliases to external folders containing spatial files such as Raster, SDF, and SHP.
                     You can then connect directly to these external files, instead of loading them into the MapGuide Library.
+                    Restart the MapGuide Server process to apply the changes.
                     <br><br>
                 </div>
 
