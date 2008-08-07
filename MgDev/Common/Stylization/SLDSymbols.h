@@ -61,7 +61,7 @@ static const double SLD_CIRCLE[] = {
         circpt( 8.0), circpt( 9.0), circpt(10.0), circpt(11.0),
         circpt(12.0), circpt(13.0), circpt(14.0), circpt(15.0),
         circpt(16.0), circpt(17.0), circpt(18.0), circpt(19.0),
-        circpt(20.0)
+        circpt( 0.0)
 };
 
 
