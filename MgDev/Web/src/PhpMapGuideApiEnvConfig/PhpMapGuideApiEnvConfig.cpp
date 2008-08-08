@@ -80,7 +80,7 @@ PHP_MINIT_FUNCTION(CustomExtModule)
 /* compiled module information */
 zend_module_entry CustomExtModule_module_entry = {
     STANDARD_MODULE_HEADER,
-    "MapGuideHelper Module",
+    "MapGuideApiEnvConfig Module",
     CustomExtModule_functions,
     PHP_MINIT(CustomExtModule), NULL, NULL, NULL, NULL,
     NO_VERSION_YET, STANDARD_MODULE_PROPERTIES
