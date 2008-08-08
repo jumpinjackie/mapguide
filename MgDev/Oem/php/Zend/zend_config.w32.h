@@ -47,8 +47,11 @@ typedef unsigned int uint;
 #define HAVE_CLASS_ISTDIOSTREAM
 #define istdiostream stdiostream
 
+#if !defined(_MSC_VER) || defined(__MINGW32__)
 #define snprintf _snprintf
 #define vsnprintf _vsnprintf
+#endif
+
 #define strcasecmp(s1, s2) stricmp(s1, s2)
 #define strncasecmp(s1, s2, n) strnicmp(s1, s2, n)
 #define zend_isinf(a)	((_fpclass(a) == _FPCLASS_PINF) || (_fpclass(a) == _FPCLASS_NINF))
