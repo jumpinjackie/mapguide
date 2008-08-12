@@ -51,6 +51,9 @@ LineBuffer::LineBuffer(int size, FdoDimensionality dimensionality, bool bIgnoreZ
     m_cntrs_len(0),
     m_cur_cntr(-1), //will increment with first MoveTo segment
     m_cur_geom(-1),
+    m_arcs_sp_len(0),
+    m_arcs_sp(NULL),
+    m_cur_arcs_sp(-1),
     m_geom_type(0),
     m_drawingScale(0.0)
 {
@@ -80,6 +83,9 @@ LineBuffer::LineBuffer() :
     m_cur_cntr(-1),
     m_cur_geom(-1),
     m_geom_type(0),
+    m_arcs_sp_len(0),
+    m_arcs_sp(NULL),
+    m_cur_arcs_sp(-1),
     m_drawingScale(0.0),
     m_dimensionality(FdoDimensionality_XY),
     m_bIgnoreZ(true),
@@ -98,6 +104,7 @@ LineBuffer::~LineBuffer()
     delete[] m_cntrs;
     delete[] m_csp;
     delete[] m_num_geomcntrs;
+    delete[] m_arcs_sp;
 }
 
 
@@ -113,6 +120,8 @@ void LineBuffer::Reset(FdoDimensionality dimensionality, bool bIgnoreZ)
     m_cur_geom = -1;
     m_num_geomcntrs[0] = 0;
     m_drawingScale = 0.0;
+
+    m_cur_arcs_sp = -1;
 
     m_bounds.minx = m_bounds.miny = +DBL_MAX;
     m_bounds.maxx = m_bounds.maxy = -DBL_MAX;
@@ -178,6 +187,16 @@ LineBuffer& LineBuffer::operator=(const LineBuffer& src)
 
     m_cur_geom = src.m_cur_geom;
     memcpy(m_num_geomcntrs, src.m_num_geomcntrs, sizeof(int)*(1+m_cur_geom));
+
+    // arc start points
+    if (m_arcs_sp_len < src.m_arcs_sp_len)
+    {
+        delete[] m_arcs_sp;
+        m_arcs_sp_len = src.m_arcs_sp_len;
+        m_arcs_sp = new int[m_arcs_sp_len];
+    }
+    m_cur_arcs_sp = src.m_cur_arcs_sp;
+    memcpy(m_arcs_sp, src.m_arcs_sp, sizeof(int)*(1+m_cur_arcs_sp));
 
     return *this;
 }
@@ -359,6 +378,35 @@ void LineBuffer::ResizeContours(int n)
 }
 
 
+void LineBuffer::ResizeArcsSpArray()
+{
+    // double the capacity of the arc start point array
+    if (m_arcs_sp_len == 0)
+        ResizeArcsSpArray(4);
+    else
+        ResizeArcsSpArray(2 * m_arcs_sp_len);
+}
+
+
+void LineBuffer::ResizeArcsSpArray(int n)
+{
+    if (n <= m_arcs_sp_len) // unnecessary at the very least
+        return;
+
+    // new arc start point array
+    int* tempArcsSp = new int[n];
+
+    // copy data
+    if (m_arcs_sp)
+        memcpy(tempArcsSp, m_arcs_sp, sizeof(int)*(1+m_cur_arcs_sp));
+
+    // cleanup
+    delete[] m_arcs_sp;
+    m_arcs_sp = tempArcsSp;
+    m_arcs_sp_len = n;
+}
+
+
 LineBuffer& LineBuffer::operator+=(LineBuffer& other)
 {
     // only if there is something to copy
@@ -368,6 +416,7 @@ LineBuffer& LineBuffer::operator+=(LineBuffer& other)
     // make sure there is room
     EnsurePoints(other.point_count());
     EnsureContours(other.cntr_count());
+    EnsureArcsSpArray(other.arcs_sp_length());
 
     // copy contours
     memcpy(m_cntrs+m_cur_cntr+1, other.m_cntrs, sizeof(int)*(1+other.m_cur_cntr));
@@ -378,6 +427,12 @@ LineBuffer& LineBuffer::operator+=(LineBuffer& other)
 
     // copy point data
     memcpy(m_pts + m_cur_types, other.m_pts, sizeof(double)*(other.point_count() * 3));
+
+    // copy arc start points
+    memcpy(m_arcs_sp+m_cur_arcs_sp+1, other.m_arcs_sp, sizeof(int)*(1+other.m_cur_arcs_sp));
+    for (int i = m_cur_arcs_sp + 1; i < m_cur_arcs_sp + other.m_cur_arcs_sp + 2; ++i)
+        m_arcs_sp[i] += m_cur_types;
+    m_cur_arcs_sp += other.m_cur_arcs_sp + 1;
 
     // copy segment types
     memcpy(m_types + m_cur_types, other.m_types, other.m_cur_types);
@@ -481,8 +536,16 @@ void LineBuffer::CircularArcTo3D(double x0, double y0, double z0, double x1, dou
     // Avoid tesselation and draw two line segments
     if (normal.lengthSqrd() < 1.0e-12)
     {
+        // store off arc start point index
+        EnsureArcsSpArray(2);
+        m_arcs_sp[++m_cur_arcs_sp] = m_cur_types - 1;
+
         LineTo(x1, y1, z1);
         LineTo(x2, y2, z2);
+
+        // store off arc end point index (want index of start point of last seg)
+        m_arcs_sp[++m_cur_arcs_sp] = m_cur_types - 2;
+
         return;
     }
     normal.normalize();
@@ -547,8 +610,16 @@ void LineBuffer::CircularArcTo2D(double x0, double y0, double x1, double y1, dou
 
         if (areaRatio < 1.0e-10)
         {
+            // store off arc start point index
+            EnsureArcsSpArray(2);
+            m_arcs_sp[++m_cur_arcs_sp] = m_cur_types - 1;
+
             LineTo(x1, y1);
             LineTo(x2, y2);
+
+            // store off arc end point index (want index of start point of last seg)
+            m_arcs_sp[++m_cur_arcs_sp] = m_cur_types - 2;
+
             return;
         }
     }
@@ -608,6 +679,10 @@ void LineBuffer::ArcTo(double cx, double cy, double a, double b, double startRad
     if (extent == 0.0)
         return;
 
+    // store off arc start point index
+    EnsureArcsSpArray(2);
+    m_arcs_sp[++m_cur_arcs_sp] = m_cur_types - 1;
+
     double extentA = fabs(extent);
     if (extentA > PI2)
     {
@@ -657,6 +732,9 @@ void LineBuffer::ArcTo(double cx, double cy, double a, double b, double startRad
 
         TesselateCubicTo(c0x, c0y, c1x, c1y, c2x, c2y, c3x, c3y);
     }
+
+    // store off arc end point index (want index of start point of last seg)
+    m_arcs_sp[++m_cur_arcs_sp] = m_cur_types - 2;
 }
 
 
