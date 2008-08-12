@@ -60,6 +60,11 @@ class RS_OutputStream;
 // Point Data:     {0,0,0},{1,1,0},{2,2,0},{3,3,0},{4,4,0},{5,5,0}
 // Contour Data:   {2, 2, 1}
 // Geometry Data:  {2, 1}
+//
+// If there are arc segments in the geometry that were tessellated,
+// then the m_arcs_sp array contains one pair for each tessellated
+// arc segment.  The pair contains the vertex indices (into the
+// m_pts array) of the start and end segments of the tesselated arc.
 class LineBuffer
 {
 public:
@@ -146,8 +151,11 @@ public:
     inline const RS_Bounds& bounds() const;
     inline void EnsurePoints(int n);
     inline void EnsureContours(int n);
+    inline void EnsureArcsSpArray(int n);
     inline int contour_start_point(int contour) const;
     inline int contour_end_point(int contour) const;
+    inline int arcs_sp_length() const;
+    inline int* arcs_sp_array() const;
     inline void get_point(int n, double&x, double&y, double& z) const;
     inline void get_point(int n, double&x, double&y) const;
     inline double& x_coord(int n) const;
@@ -192,10 +200,14 @@ private:
     bool m_bProcessZ;
     FdoDimensionality m_dimensionality;
     double m_drawingScale;
+    int m_arcs_sp_len;          // length of m_arcs_sp array
+    int m_cur_arcs_sp;          // current index into m_arcs_sp
+    int* m_arcs_sp;             // arc start points array
 
     void Resize();
     void ResizeContours();
     void ResizeNumGeomContours(int size);
+    void ResizeArcsSpArray();
 
     void AddToBounds(double x, double y, double z = 0.0);
 
@@ -228,6 +240,7 @@ private:
 
     void ResizePoints(int n);    // new size of array # of points
     void ResizeContours(int n);
+    void ResizeArcsSpArray(int n);
 };
 
 
@@ -340,6 +353,16 @@ void LineBuffer::EnsureContours(int n)
 }
 
 
+void LineBuffer::EnsureArcsSpArray(int n)
+{
+    // need to have space for n additional arcs start points
+    int needed = m_cur_arcs_sp + n + 1;
+    // existing array not large enough
+    if (needed > m_arcs_sp_len)
+        ResizeArcsSpArray(2 * needed);
+}
+
+
 void LineBuffer::append_segment(SegType type, const double& x, const double& y, const double& z)
 {
     m_pts[m_cur_types][0] = x;
@@ -381,6 +404,18 @@ int LineBuffer::contour_start_point(int contour) const
 int LineBuffer::contour_end_point(int contour) const
 {
     return m_csp[contour] + m_cntrs[contour] - 1;
+}
+
+
+int LineBuffer::arcs_sp_length() const
+{
+    return m_cur_arcs_sp + 1;
+}
+
+
+int* LineBuffer::arcs_sp_array() const
+{
+    return m_arcs_sp;
 }
 
 
