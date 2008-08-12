@@ -49,7 +49,7 @@ LineBuffer::LineBuffer(int size, FdoDimensionality dimensionality, bool bIgnoreZ
     m_cntrs(NULL),
     m_csp(NULL),
     m_cntrs_len(0),
-    m_cur_cntr(-1), //will increment with first MoveTo segment
+    m_cur_cntr(-1), // will increment with first MoveTo segment
     m_cur_geom(-1),
     m_arcs_sp_len(0),
     m_arcs_sp(NULL),
@@ -57,7 +57,7 @@ LineBuffer::LineBuffer(int size, FdoDimensionality dimensionality, bool bIgnoreZ
     m_geom_type(0),
     m_drawingScale(0.0)
 {
-    ResizePoints(rs_max(size,2));
+    ResizePoints(rs_max(size, 2));
     ResizeContours(4);
     m_dimensionality = dimensionality;
     m_bIgnoreZ = bIgnoreZ;
@@ -111,7 +111,7 @@ LineBuffer::~LineBuffer()
 void LineBuffer::Reset(FdoDimensionality dimensionality, bool bIgnoreZ)
 {
     m_cur_types = 0;
-    m_cur_cntr = -1;//will increment with first MoveTo segment
+    m_cur_cntr = -1; // will increment with first MoveTo segment
 
     m_bIgnoreZ = bIgnoreZ;
     m_dimensionality = dimensionality;
@@ -232,12 +232,13 @@ void LineBuffer::MoveTo(double x, double y, double z)
     increment_contour();
 
     // NewGeometry() is a new API to allow for multiple geometries within a
-    // LineBuffer. It is called from LoadFromFgf() but may not be called from
-    // code building a LineBuffer using the API. Make sure that NewGeometry()
+    // LineBuffer.  It is called from LoadFromFgf() but may not be called from
+    // code building a LineBuffer using the API.  Make sure that NewGeometry()
     // gets called once.
     if (m_cur_geom < 0)
         NewGeometry();
     _ASSERT(m_cur_geom >= 0 && m_cur_geom < m_num_geomcntrs_len);
+
     // increment the number of contours for this geometry
     m_num_geomcntrs[m_cur_geom] += 1;
 
@@ -251,7 +252,7 @@ void LineBuffer::LineTo(double x, double y, double z)
         Resize();
 
     // Check to see if incoming points are 2D (no Z) and need to be transfomed
-    // back into 3D space.  This is used by 3D circular arc tesselation
+    // back into 3D space.  This is used by 3D circular arc tessellation.
     if (m_bTransform2DPoints)
     {
         Point3D pt(x, y, z);
@@ -276,7 +277,7 @@ void LineBuffer::Close()
     if (m_types[m_cur_types-1] == (unsigned char)stMoveTo)
         return;
 
-    // find out if it is already closed
+    // find out if it's already closed
     if (contour_closed(m_cur_cntr))
         return;
 
@@ -312,14 +313,14 @@ void LineBuffer::AddToBounds(double x, double y, double z)
 
 void LineBuffer::Resize()
 {
-    // double the capacity of the arrays
-    ResizePoints(2 * point_capacity());
+    // double the capacity of the point arrays
+    ResizePoints(2 * m_types_len);
 }
 
 
 void LineBuffer::ResizePoints(int n)
 {
-    if (n <= point_capacity()) // unnecessary at the very least
+    if (n <= m_types_len) // unnecessary at the very least
         return;
 
     // new point array
@@ -444,7 +445,7 @@ LineBuffer& LineBuffer::operator+=(LineBuffer& other)
     memcpy(m_num_geomcntrs + m_cur_geom + 1,
            other.m_num_geomcntrs,
            sizeof(int)*(1+other.m_cur_geom));
-    m_cur_geom += other.m_cur_geom + 1;   // follows same pattern as contour
+    m_cur_geom += other.m_cur_geom + 1; // follows same pattern as contour
 
     m_bounds.add_point(RS_F_Point(other.m_bounds.minx, other.m_bounds.miny));
     m_bounds.add_point(RS_F_Point(other.m_bounds.maxx, other.m_bounds.maxy));
@@ -467,7 +468,7 @@ void LineBuffer::ResizeNumGeomContours(int size)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ////
-////                          Curve tesselation
+////                          Curve tessellation
 ////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -477,9 +478,6 @@ void LineBuffer::CircularArcTo(double x1, double y1, double x2, double y2)
 {
     _ASSERT(point_count() > 0);
 
-    //get the start point
-    double x0, y0, z0;
-
     // NOTE: This is really an error condition.  The user has specified that
     // LineBuffer should have Z, but is now calling the circular arc routine
     // with no Z value.  Assert and draw nothing.
@@ -487,6 +485,8 @@ void LineBuffer::CircularArcTo(double x1, double y1, double x2, double y2)
 
     if (!m_bProcessZ)
     {
+        // get the start point
+        double x0, y0, z0;
         last_point(x0, y0, z0);
         CircularArcTo2D(x0, y0, x1, y1, x2, y2);
     }
@@ -497,7 +497,7 @@ void LineBuffer::CircularArcTo(double x1, double y1, double z1, double x2, doubl
 {
     _ASSERT(point_count() > 0);
 
-    //get the start point
+    // get the start point
     double x0, y0, z0;
     last_point(x0, y0, z0);
     if (m_bProcessZ)
@@ -507,9 +507,9 @@ void LineBuffer::CircularArcTo(double x1, double y1, double z1, double x2, doubl
 }
 
 
-// 3D circular arc tesselation.
-// We transform the 3D circlular arc into the XY Z=0 plane and then tesselate using
-// the 2D circular arc tesselation algorithm.  Then we transform the points back
+// 3D circular arc tessellation.
+// We transform the 3D circular arc into the XY Z=0 plane and then tessellate using
+// the 2D circular arc tessellation algorithm.  Then we transform the points back
 // into the original plane of the 3D circular arc.
 void LineBuffer::CircularArcTo3D(double x0, double y0, double z0, double x1, double y1, double z1, double x2, double y2, double z2)
 {
@@ -517,9 +517,9 @@ void LineBuffer::CircularArcTo3D(double x0, double y0, double z0, double x1, dou
     Point3D mid(x1, y1, z1);
     Point3D end(x2, y2, z2);
 
-    // Avoid tesselation if two points are equal.  This is considered an error
-    // condition because two points don't define a circular arc segment.
-    // This also means we can't draw full circles as there is no way to specify one.
+    // Avoid tessellation if two points are equal.  This is considered an error
+    // condition because two points don't define a circular arc segment.  This
+    // also means we can't draw full circles as there is no way to specify one.
     if (start == mid || mid == end || start == end)
     {
         LineTo(x1, y1, z1);
@@ -527,13 +527,13 @@ void LineBuffer::CircularArcTo3D(double x0, double y0, double z0, double x1, dou
         return;
     }
 
-    // Compute normal
+    // compute normal
     Vector3D p0p2(end.x-start.x, end.y-start.y, end.z-start.z);
     Vector3D p0p1(mid.x-start.x, mid.y-start.y, mid.z-start.z);
     Vector3D normal = p0p2.crossProduct(p0p1);
 
-    // If normal has near zero length, then points are co-linear.
-    // Avoid tesselation and draw two line segments
+    // If normal has near zero length, then points are co-linear.  Avoid
+    // tessellation and draw two line segments.
     if (normal.lengthSqrd() < 1.0e-12)
     {
         // store off arc start point index
@@ -551,9 +551,9 @@ void LineBuffer::CircularArcTo3D(double x0, double y0, double z0, double x1, dou
     normal.normalize();
 
     // Create the coordinate system transform for the arc's coordinate system.
-    // Do this by using P0P2 as the major axis, then compute minor axis
+    // Do this by using p0p2 as the major axis, then compute minor axis
     // (third perpendicular) by taking cross product of normal and major axis.
-    // Use P0 as the arbitrary origin of the coordinate system.
+    // Use p0 as the arbitrary origin of the coordinate system.
     Vector3D majorAxis = p0p2;
     majorAxis.normalize();
     Vector3D minorAxis = normal.crossProduct(majorAxis);
@@ -576,7 +576,7 @@ void LineBuffer::CircularArcTo3D(double x0, double y0, double z0, double x1, dou
     // be transformed back into 3D space.
     m_bTransform2DPoints = true;
 
-    // Tesselate arc in 2d and store in point list
+    // Tessellate arc in 2D and store in point list
     CircularArcTo2D(startPrime.x, startPrime.y, midPrime.x, midPrime.y, endPrime.x, endPrime.y);
 
     m_bTransform2DPoints = false;
@@ -585,7 +585,7 @@ void LineBuffer::CircularArcTo3D(double x0, double y0, double z0, double x1, dou
 
 void LineBuffer::CircularArcTo2D(double x0, double y0, double x1, double y1, double x2, double y2)
 {
-    //now we can compute the circle that those 3 points describe
+    // now we can compute the circle that those 3 points describe
     double dx1 = x1 - x0;
     double dy1 = y1 - y0;
     double dx2 = x2 - x0;
@@ -593,8 +593,8 @@ void LineBuffer::CircularArcTo2D(double x0, double y0, double x1, double y1, dou
 
     double area = 0.5 * (dx1 * dy2 - dx2 * dy1);
 
-    //if it is almost a straight line, avoid numeric instability
-    //by just adding two lines instead of tesselating a curve
+    // if it's almost a straight line, avoid numeric instability
+    // by just adding two lines instead of tessellating a curve
     double minx = rs_min(x0, rs_min (x1, x2));
     double maxx = rs_max(x0, rs_max (x1, x2));
     double miny = rs_min(y0, rs_min (y1, y2));
@@ -602,8 +602,8 @@ void LineBuffer::CircularArcTo2D(double x0, double y0, double x1, double y1, dou
 
     double boxArea = (maxx - minx) * (maxy - miny);
 
-    //TODO: in case the area of the bounding box is 0,
-    //we may need special handling for arcs that represent a full circle
+    // TODO: in case the area of the bounding box is 0, we may need
+    //       special handling for arcs that represent a full circle
     if (fabs(boxArea) > 1.0e-20)
     {
         double areaRatio = fabs(area) / boxArea;
@@ -628,8 +628,8 @@ void LineBuffer::CircularArcTo2D(double x0, double y0, double x1, double y1, dou
     double sqLen20 = dx2 * dx2 + dy2 * dy2;
     double invArea = 1.0 / area;
 
-    //find center point and radius of circuscribing circle using
-    //formulas from Geometric Tools (Schneider & Eberly)
+    // find center point and radius of circumscribing circle using
+    // formulas from Geometric Tools (Schneider & Eberly)
     double cx = x0 + 0.25 * invArea * (dy2 * sqLen10 - dy1 * sqLen20);
     double cy = y0 + 0.25 * invArea * (dx1 * sqLen20 - dx2 * sqLen10);
 
@@ -638,18 +638,18 @@ void LineBuffer::CircularArcTo2D(double x0, double y0, double x1, double y1, dou
 
     double r = sqrt(rdx*rdx + rdy*rdy);
 
-    //start and end angles of circular arc, in radians
+    // start and end angles of circular arc, in radians
     double startAngle = atan2(y0 - cy, x0 - cx);
     double endAngle = atan2(y2 - cy, x2 - cx);
 
-    //now fix the start and end angles so that the cubic approximation
-    //tracks the arc in the correct direction
-    if (area < 0.0) //CW
+    // now fix the start and end angles so that the cubic approximation
+    // tracks the arc in the correct direction
+    if (area < 0.0) // CW
     {
         if (startAngle < endAngle)
             startAngle += 2.0 * M_PI;
     }
-    else //CCW
+    else // CCW
     {
         if (startAngle > endAngle)
             endAngle += 2.0 * M_PI;
@@ -660,15 +660,14 @@ void LineBuffer::CircularArcTo2D(double x0, double y0, double x1, double y1, dou
 }
 
 
-//computes cubic spline parameter to be used
-//when approximating an elliptical arc
+// computes cubic spline parameter to be used when approximating an elliptical arc
 double LineBuffer::CubicApproxParameter(double halfAngle)
 {
-    //small angle case
+    // small angle case
     if (fabs(halfAngle) < 5.0e-4)
         return (2.0/3.0) * halfAngle;
 
-    //otherwise use sin/cos
+    // otherwise use sin/cos
     return (4.0/3.0) * (1.0 - cos(halfAngle)) / sin(halfAngle);
 }
 
@@ -690,9 +689,9 @@ void LineBuffer::ArcTo(double cx, double cy, double a, double b, double startRad
         extentA = PI2;
     }
 
-    //we will approximate one full ellipse by 8 cubics
-    //so here compute what portion of a full ellipse we have
-    //so that we know how many cubics will be needed
+    // we will approximate one full ellipse by 8 cubics, so here compute
+    // what portion of a full ellipse we have so that we know how many
+    // cubics will be needed
     int num_segs = (int)ceil(8.0 * extentA / PI2);
     double increment = extent / num_segs;
 
@@ -730,7 +729,7 @@ void LineBuffer::ArcTo(double cx, double cy, double a, double b, double startRad
         c3x = cx + ellx * a;
         c3y = cy + elly * b;
 
-        TesselateCubicTo(c0x, c0y, c1x, c1y, c2x, c2y, c3x, c3y);
+        TessellateCubicTo(c0x, c0y, c1x, c1y, c2x, c2y, c3x, c3y);
     }
 
     // store off arc end point index (want index of start point of last seg)
@@ -738,12 +737,12 @@ void LineBuffer::ArcTo(double cx, double cy, double a, double b, double startRad
 }
 
 
-void LineBuffer::TesselateCubicTo(double px1, double py1, double px2, double py2, double px3, double py3, double px4, double py4)
+void LineBuffer::TessellateCubicTo(double px1, double py1, double px2, double py2, double px3, double py3, double px4, double py4)
 {
     double w = m_bounds.width();
     double h = m_bounds.height();
     double minSegLen = 0.0;
-    double dt = INV_TESSELATION_ITERATIONS; //= 1.0 / 100.0 Iterate 100 times through loop
+    double dt = INV_TESSELLATION_ITERATIONS; //= 1.0 / 100.0 Iterate 100 times through loop
 
     if (m_drawingScale != 0.0)
     {
@@ -756,7 +755,7 @@ void LineBuffer::TesselateCubicTo(double px1, double py1, double px2, double py2
         // Setting the minimum segment length to the drawing scale creates so
         // many segments in dense drawings at high zoom levels that we run out
         // of memory.  Use the larger of the drawing scale and one two hundredth
-        // of the "size" of the arc we are tesselating.  This compromise seems
+        // of the "size" of the arc we are tessellating.  This compromise seems
         // to work in all "reasonable" cases.
 
         // Compute bounding box of the four control points of the curve
@@ -783,7 +782,7 @@ void LineBuffer::TesselateCubicTo(double px1, double py1, double px2, double py2
 
         // Ensure that the # of loop iterations is at most 100 or # of pixels
         // covered (whichever is smaller).
-        dt = rs_max(INV_TESSELATION_ITERATIONS, (1.0 / numPixels));
+        dt = rs_max(INV_TESSELLATION_ITERATIONS, (1.0 / numPixels));
     }
     else
     {
@@ -793,7 +792,7 @@ void LineBuffer::TesselateCubicTo(double px1, double py1, double px2, double py2
         // curve with respect to the full bounds of the line buffer data.
         double maxdim = rs_max(w, h);
 
-        // minimum length of tesselation segment, set to 1/100 of the bounds
+        // minimum length of tessellation segment, set to 1/100 of the bounds
         minSegLen = maxdim * 0.01;
     }
 
@@ -832,7 +831,8 @@ void LineBuffer::TesselateCubicTo(double px1, double py1, double px2, double py2
         ddfy += dddfy;
         ddfx += dddfx;
 
-//      error += sqrt(dfx*dfx + dfy*dfy);   //slow but accurate for flattening
+        // slow but accurate for flattening
+//      error += sqrt(dfx*dfx + dfy*dfy);
 
         // faster but less accurate error estimate
         w = fabs(dfx);
@@ -850,36 +850,34 @@ void LineBuffer::TesselateCubicTo(double px1, double py1, double px2, double py2
 }
 
 
-void LineBuffer::TesselateQuadTo(double px1, double py1, double px2, double py2, double px3, double py3)
+void LineBuffer::TessellateQuadTo(double px1, double py1, double px2, double py2, double px3, double py3)
 {
-    //we will base the max number of segments to use for approximation
-    //on the bounds of the full line buffer contents
-    //TODO: as an improvement we could take the bounds of this particular curve
-    //with respect to the full bounds of the line buffer data.
+    // We will base the max number of segments to use for approximation
+    // on the bounds of the full line buffer contents.
+    // TODO: as an improvement we could take the bounds of this particular curve
+    //       with respect to the full bounds of the line buffer data.
     double w = m_bounds.width();
     double h = m_bounds.height();
     double maxdim = rs_max(w, h);
 
-    //minimum length of tesselation segment
-    //set to 1/100 of the bounds
+    // minimum length of tessellation segment set to 1/100 of the bounds
     double minSegLen = maxdim * 0.01;
 
     /*
-    //if we know the pixels per mapping unit ratio, we can use
-    //this code to determine how many times at most
-    //we want to loop in the forward difference loop
-
+    // if we know the pixels per mapping unit ratio, we can use
+    // this code to determine how many times at most
+    // we want to loop in the forward difference loop
     double invscale = 1.0 / pixelsperunit;
     double dt = rs_max(1.0e-2, invscale / diff); // * m_invscale;
     */
 
-    //but for now we will iterate 100 times
-    double dt = INV_TESSELATION_ITERATIONS;
+    // but for now we will iterate 100 times
+    double dt = INV_TESSELLATION_ITERATIONS;
 
     double dt2 = dt*dt;
 
-    double ax = px1 - 2.0*px2 + px3;        //replace 2* by addition?
-    double ay = py1 - 2.0*py2 + py3;        //replace 2* by addition?
+    double ax = px1 - 2.0*px2 + px3;    // replace 2* by addition?
+    double ay = py1 - 2.0*py2 + py3;    // replace 2* by addition?
 
     double bx = 2.0*(px2-px1);
     double by = 2.0*(py2-py1);
@@ -903,14 +901,14 @@ void LineBuffer::TesselateQuadTo(double px1, double py1, double px2, double py2,
         dfy  += ddfy;
 
         // slow but accurate
-        //error += sqrt(dfx*dfx + dfy*dfy);
+//      error += sqrt(dfx*dfx + dfy*dfy);
 
-        //faster but less accurate error estimate
+        // faster but less accurate error estimate
         w = fabs(dfx);
         h = fabs(dfy);
         error += rs_max(w, h);
 
-        if (error >= minSegLen)  // how many pixels should each line be?)
+        if (error >= minSegLen)  // how many pixels should each line be?
         {
             LineTo(fx, fy);
             error = 0.0;
@@ -930,7 +928,8 @@ void LineBuffer::TesselateQuadTo(double px1, double py1, double px2, double py2,
 ///////////////////////////////////////////////////////////////////////////////
 
 
-//simple helper macro that reads x and y and (possibly) z and skips m and does coord sys transform
+// simple helper macro that reads x and y and (possibly) z and skips m and
+// does coord sys transform
 #define READ_POINT(x, y, z) \
     x = *dreader++;         \
     y = *dreader++;         \
@@ -971,18 +970,18 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
             double y;
             double z;
 
-            //in case of multipolygon or multilinestring or multipoint,
-            //read poly or linestring count
+            // in case of multipolygon or multilinestring or multipoint,
+            // read poly or linestring count
             if (is_multi)
                 num_geoms = *ireader++;
 
             for (int q=0; q<num_geoms; ++q)
             {
-                //skip past geometry type of subgeometry
-                //we know it is LineString or Polygon or Point respectively
+                // skip past geometry type of subgeometry
+                // we know it is LineString or Polygon or Point respectively
                 if (is_multi) *ireader++;
 
-                //read cordinate typeB
+                // read cordinate typeB
                 FdoDimensionality dim = (FdoDimensionality)*ireader++;
 
                 // ensure that all dimensionalities of each geometry are the same
@@ -1006,8 +1005,8 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                 {
                     int point_count = 1;
 
-                    //point geoms do not have a point count, since
-                    //each piece is just one point each
+                    // point geoms do not have a point count, since
+                    // each piece is just one point each
                     if (m_geom_type != FdoGeometryType_MultiPoint &&
                         m_geom_type != FdoGeometryType_Point)
                         point_count = *ireader++;
@@ -1023,9 +1022,9 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
 
                     if (point_count == 1)
                     {
-                        //if current contour is just a point, add a second point
-                        //for easier time in the line style algorithm
-                        //but only do this for line and polygons, not points!!!!!
+                        // if current contour is just a point, add a second point
+                        // for easier time in the line style algorithm
+                        // but only do this for line and polygons, not points!!!!!
                         if (m_geom_type != FdoGeometryType_MultiPoint &&
                             m_geom_type != FdoGeometryType_Point)
                             LineTo(x, y, z);
@@ -1085,19 +1084,19 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
             double y;
             double z;
 
-            //in case of multicurvepolygon or multicurvestring
-            //read poly or linestring count
+            // in case of multicurvepolygon or multicurvestring
+            // read poly or linestring count
             if (is_multi)
                 num_geoms = *ireader++;
 
             for (int q=0; q<num_geoms; ++q)
             {
-                //skip past geometry type of subgeometry
-                //we know it is CurveString or CurvePolygon respectively
+                // skip past geometry type of subgeometry
+                // we know it is CurveString or CurvePolygon respectively
                 if (is_multi)
                     *ireader++;
 
-                //read cordinate typeB
+                // read cordinate typeB
                 FdoDimensionality dim = (FdoDimensionality)*ireader++;
 
                 // ensure that all dimensionalities of each geometry are the same
@@ -1115,7 +1114,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
 
                 if (real_geom_type == FdoGeometryType_CurvePolygon ||
                     real_geom_type == FdoGeometryType_MultiCurvePolygon)
-                    contour_count = *ireader++; //#rings for polygons
+                    contour_count = *ireader++; // # rings for polygons
 
                 for (int i=0; i<contour_count; ++i)
                 {
@@ -1124,11 +1123,11 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
 
                     READ_POINT(x, y, z);
 
-                    MoveTo(x, y, z); //first point is always a move
+                    MoveTo(x, y, z); // first point is always a move
 
                     // ireader valid again
                     ireader = (int*)dreader;
-                    int seg_count = *ireader++; //# curve segments
+                    int seg_count = *ireader++; // # curve segments
 
                     for (int j = 0; j < seg_count; ++j)
                     {
@@ -1137,11 +1136,11 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                         switch (seg_type)
                         {
                         case FdoGeometryComponentType_CircularArcSegment:
-                            dreader = (double*)ireader;
 
-                            //circular arc: read midpont and endpoint
-                            //first point was either the start point or
-                            //the last point if the previous segment
+                            // circular arc: read midpont and endpoint
+                            // first point was either the start point or
+                            // the last point of the previous segment
+                            dreader = (double*)ireader;
 
                             double midx;
                             double midy;
@@ -1162,9 +1161,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
 
                         case FdoGeometryComponentType_LineStringSegment:
 
-                            //line string segment -- just read the points
-                            //and do LineTos
-
+                            // line string segment - just read the points and do LineTos
                             int num_pts = *ireader++;
                             dreader = (double*)ireader;
 
@@ -1184,14 +1181,14 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                     {
                         Close();
                     }
-                } //contour count of polygons
+                }
             }
             break;
         }
 
         case FdoGeometryType_MultiGeometry:
         {
-            //can't do that yet
+            // can't do that yet
             break;
         }
     }
@@ -1207,7 +1204,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
     os->write(&val3, 8);   }    \
 
 
-//AGF writer
+// AGF writer
 void LineBuffer::ToAgf(RS_OutputStream* os)
 {
     int ptindex = 0;
@@ -1215,7 +1212,7 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
 
     switch (m_geom_type)
     {
-        //all the linear types...
+        // all the linear types...
         case FdoGeometryType_MultiLineString:
         case FdoGeometryType_MultiPolygon:
         case FdoGeometryType_MultiPoint:
@@ -1223,7 +1220,7 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
         case FdoGeometryType_Polygon:
         case FdoGeometryType_Point:
         {
-            //write geometry type
+            // write geometry type
             WRITE_INT(os, m_geom_type);
 
             bool is_multi = (m_geom_type == FdoGeometryType_MultiLineString ||
@@ -1231,13 +1228,13 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
                              m_geom_type == FdoGeometryType_MultiPoint);
 
             // the coordinate type
-            //int skip = 0; //0=XY, 1=XYZ or XYM, 2 = XYZM
+//          int skip = 0; //0=XY, 1=XYZ or XYM, 2 = XYZM
             double x;
             double y;
             double z;
 
-            //in case of multipolygon or multilinestring or multipoint,
-            //read poly or linestring count
+            // in case of multipolygon or multilinestring or multipoint,
+            // read poly or linestring count
             int num_geoms = m_cur_geom + 1;
             if (is_multi)
             {
@@ -1247,8 +1244,8 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
 
             for (int q=0; q<num_geoms; ++q)
             {
-                //skip past geometry type of subgeometry
-                //we know it is LineString or Polygon or Point respectively
+                // skip past geometry type of subgeometry
+                // we know it is LineString or Polygon or Point respectively
                 if (is_multi)
                 {
                     switch (m_geom_type)
@@ -1265,7 +1262,7 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
                     }
                 }
 
-                //write cordinate type
+                // write cordinate type
                 // If user specifies ignored Z, then we don't have Z values
                 // even though m_dimensionality indicates we do.
                 // Write out FdoDimensionality_XY in this case.
@@ -1292,8 +1289,8 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
                 {
                     int point_count = 1;
 
-                    //point geoms do not have a point count, since
-                    //each piece is just one point each
+                    // point geoms do not have a point count, since
+                    // each piece is just one point each
                     if ((m_geom_type != FdoGeometryType_MultiPoint)
                         && (m_geom_type != FdoGeometryType_Point))
                     {
@@ -1342,8 +1339,8 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
         case FdoGeometryType_MultiCurveString:
         case FdoGeometryType_MultiCurvePolygon:
         {
-            //TODO: the LineBuffer is already tesselated, so in case of these
-            //we need to actually use a tesselated type, i.e. the code above
+            // TODO: the LineBuffer is already tessellated, so in case of these
+            // we need to actually use a tessellated type, i.e. the code above
             break;
         }
     }
@@ -1359,24 +1356,24 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
 ///////////////////////////////////////////////////////////////////////////////
 
 
-//WARNING: caller responsible for deleting resulting line buffer
+// WARNING: caller responsible for deleting resulting line buffer
 LineBuffer* LineBuffer::Optimize(double drawingScale, LineBufferPool* lbp)
 {
     // the minimum allowed separation
     double d2Min = OPTIMIZE_DISTANCE_SQ * drawingScale * drawingScale;
 
-    //don't set any offset for new linebuffer, because it is already applied,
-    //and MoveTo and LineTo would apply it again. Instead, set at end
+    // don't set any offset for new linebuffer, because it is already applied,
+    // and MoveTo and LineTo would apply it again. Instead, set at end
     LineBuffer* ret = LineBufferPool::NewLineBuffer(lbp, m_cur_types, m_dimensionality, m_bIgnoreZ);
 
-    //optimization
+    // optimization
     int index = 0;
     double x, y, z=0.0, lx, ly, lz=0.0;
     for (int i=0; i<=m_cur_cntr; ++i)
     {
         int numPoints = m_cntrs[i];
 
-        //if not enough points, just add the entire contour
+        // if not enough points, just add the entire contour
         if (numPoints < MIN_RING_SIZE_TO_OPTIMIZE)
         {
             x = m_pts[index][0];
@@ -1398,7 +1395,7 @@ LineBuffer* LineBuffer::Optimize(double drawingScale, LineBufferPool* lbp)
         }
         else
         {
-            //add first point
+            // add first point
             lx = m_pts[index][0];
             ly = m_pts[index][1];
             if (m_bProcessZ)
@@ -1407,7 +1404,7 @@ LineBuffer* LineBuffer::Optimize(double drawingScale, LineBufferPool* lbp)
             index++;
             int numAdded = 1;
 
-            //middle points
+            // middle points
             for (int j=1; j<numPoints-1; ++j)
             {
                 x = m_pts[index][0];
@@ -1447,7 +1444,7 @@ LineBuffer* LineBuffer::Optimize(double drawingScale, LineBufferPool* lbp)
                 }
             }
 
-            //add last point to ensure closure
+            // add last point to ensure closure
             x = m_pts[index][0];
             y = m_pts[index][1];
             if (m_bProcessZ)
@@ -1461,10 +1458,10 @@ LineBuffer* LineBuffer::Optimize(double drawingScale, LineBufferPool* lbp)
 }
 
 
-//WARNING: caller is responsible for deleting resulting line buffer
-//if return is equal to this pointer, no clipping was needed (geometry was
-//fully inside given box), so no need to free it
-//if return pointer is NULL, geometry was fully outside the clip box
+// WARNING: caller is responsible for deleting resulting line buffer
+// if return is equal to this pointer, no clipping was needed (geometry was
+// fully inside given box), so no need to free it
+// if return pointer is NULL, geometry was fully outside the clip box
 LineBuffer* LineBuffer::Clip(RS_Bounds& b, GeomOperationType clipType, LineBufferPool* lbp)
 {
     // We don't handle 3D clipping correctly yet
@@ -1472,14 +1469,14 @@ LineBuffer* LineBuffer::Clip(RS_Bounds& b, GeomOperationType clipType, LineBuffe
     if (hasZ())
         return this;
 
-    //check if line buffer is fully contained in box
+    // check if line buffer is fully contained in box
     if (   b.minx <= m_bounds.minx
         && b.maxx >= m_bounds.maxx
         && b.miny <= m_bounds.miny
         && b.maxy >= m_bounds.maxy)
         return this;
 
-    //check if line buffer is completely outside box
+    // check if line buffer is completely outside box
     if (   m_bounds.minx > b.maxx
         || m_bounds.miny > b.maxy
         || m_bounds.maxx < b.minx
@@ -1546,13 +1543,13 @@ LineBuffer* LineBuffer::ClipPolygon(RS_Bounds& b, LineBuffer* dest)
 {
     _ASSERT(dest);
 
-    //TODO: NOT Z AWARE
-    //TODO: handle polygons that become multipolygons when clipped
+    // TODO: NOT Z AWARE
+    // TODO: handle polygons that become multipolygons when clipped
     dest->m_geom_type = m_geom_type;
 
-    //unlike polylines, here we don't need to expand the clip region
-    //because we will still get a polygon point on the edge if we throw
-    //away one which is just outside the edge (due to floating point precision)
+    // unlike polylines, here we don't need to expand the clip region
+    // because we will still get a polygon point on the edge if we throw
+    // away one which is just outside the edge (due to floating point precision)
     RS_Bounds clipRect( b.minx, b.miny, b.maxx, b.maxy);
 
     LineBuffer* ret = dest;
@@ -1562,14 +1559,14 @@ LineBuffer* LineBuffer::ClipPolygon(RS_Bounds& b, LineBuffer* dest)
 
     bool move = false;
 
-    //loop over all segments, MoveTos denote start of polygon
-    //in a multipolygon
+    // loop over all segments, MoveTos denote start of polygon
+    // in a multipolygon
     for (int i=0; i<m_cur_types; ++i)
     {
         if (m_types[i] == (unsigned char)stMoveTo)
         {
-            //if last segment added to ret was a move, roll it back
-            //otherwise close the last contour
+            // if last segment added to ret was a move, roll it back
+            // otherwise close the last contour
             if (i)
                 ret->FinalizeContour();
             move = true;
@@ -1750,32 +1747,32 @@ LineBuffer* LineBuffer::ClipPolygon(RS_Bounds& b, LineBuffer* dest)
         }
     }
 
-    //roll back or close the last contour
+    // roll back or close the last contour
     ret->FinalizeContour();
 
     return ret;
 }
 
 
-// called by the polygon clipper in order to weed out contours that are incomplete
-// after clipping (i.e. they have a single point or two points)
+// Called by the polygon clipper in order to weed out contours that are
+// incomplete after clipping (i.e. they have a single point or two points).
 void LineBuffer::FinalizeContour()
 {
-    //if last segment added to ret was a move, roll it back one point
+    // if last segment added to ret was a move, roll it back one point
     if (m_cur_types > 0 && m_types[m_cur_types-1] == (unsigned char)stMoveTo)
     {
-        m_cur_types --; //roll back the MoveTo segment
-        m_cur_cntr --;  //roll back the contour count by 1 also
+        m_cur_types--; // roll back the MoveTo segment
+        m_cur_cntr--;  // roll back the contour count by 1 also
         m_num_geomcntrs[m_cur_geom] -= 1;
 
         if (m_num_geomcntrs[m_cur_geom] == 0)
             m_cur_geom--;
     }
-    //if last segment was only a line, take it out also
+    // if last segment was only a line, take it out also
     else if (m_cur_types > 1 && m_types[m_cur_types-2] == (unsigned char)stMoveTo)
     {
-        m_cur_types -= 2;   //roll back 2 segment types
-        m_cur_cntr --;      //roll back the contour count by 1
+        m_cur_types -= 2;   // roll back 2 segment types
+        m_cur_cntr--;       // roll back the contour count by 1
 
         m_num_geomcntrs[m_cur_geom] -= 1;
 
@@ -1875,8 +1872,8 @@ LineBuffer* LineBuffer::ClipPolyline(RS_Bounds& b, LineBuffer* dest)
 {
     _ASSERT(dest);
 
-    //TODO: NOT Z AWARE
-    //TODO: handle polylines that become multipolylines when clipped
+    // TODO: NOT Z AWARE
+    // TODO: handle polylines that become multipolylines when clipped
     dest->m_geom_type = m_geom_type;
 
     // expand clip region a little so that we don't throw
@@ -1909,7 +1906,7 @@ LineBuffer* LineBuffer::ClipPolyline(RS_Bounds& b, LineBuffer* dest)
             if (res == 0)
                 continue;
 
-            if (res == 1) //second point was not clipped
+            if (res == 1) // second point was not clipped
             {
                 if (move)
                     ret->MoveTo(bline[0], bline[1]);
@@ -1919,7 +1916,7 @@ LineBuffer* LineBuffer::ClipPolyline(RS_Bounds& b, LineBuffer* dest)
                 move = false;
             }
 
-            if (res == 2) //second point was clipped
+            if (res == 2) // second point was clipped
             {
                 if (move)
                     ret->MoveTo(bline[0], bline[1]);
@@ -2140,7 +2137,7 @@ void LineBuffer::PolygonCentroid(int cntr, double* cx, double* cy)
     if (PointInPolygon(cntr, *cx, *cy))
         return;
 
-    //TODO: what do we do if none of the centroids are inside the polygon?
+    // TODO: what do we do if none of the centroids are inside the polygon?
     *cx = std::numeric_limits<double>::quiet_NaN();
     *cy = std::numeric_limits<double>::quiet_NaN();
     return;
@@ -2328,8 +2325,8 @@ double LineBuffer::PolygonArea(int cntr)
 
 void LineBuffer::MultiPolygonCentroid(double* cx, double* cy)
 {
-    // Computes the centroid of a MultiPolygon.  This is defined
-    // to be the centroid of the largest polygon (polygon whose outer
+    // Computes the centroid of a MultiPolygon.  This is defined to
+    // be the centroid of the largest polygon (polygon whose outer
     // ring has the largest area).
 
     if (point_count() == 0)
@@ -2363,8 +2360,8 @@ void LineBuffer::MultiPolygonCentroid(double* cx, double* cy)
 
 void LineBuffer::MultiPolylineCentroid(double* cx, double* cy, double* slope)
 {
-    // Computes the centroid of a MultiPolyline.  This is defined
-    // to be the centroid of the longest polyline.
+    // Computes the centroid of a MultiPolyline.  This is defined to
+    // be the centroid of the longest polyline.
 
     if (point_count() == 0)
     {
@@ -2453,7 +2450,7 @@ void LineBuffer::MultiPointCentroid(double* cx, double* cy)
     if (len == 0)
         return;
 
-    //case of single point
+    // case of single point
     if (len == 1)
     {
         *cx = m_pts[0][0];
@@ -2602,6 +2599,7 @@ void LineBuffer::SetDrawingScale(double drawingScale)
     m_drawingScale = drawingScale;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ////
@@ -2612,7 +2610,7 @@ void LineBuffer::SetDrawingScale(double drawingScale)
 
 
 //--------------------------------------------------------
-// Pooling -- it's very basic.
+// Pooling -- it's very basic
 //--------------------------------------------------------
 
 LineBufferPool::LineBufferPool()

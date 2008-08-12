@@ -38,10 +38,10 @@
 
 #define PI2 6.283185307179586476925286766559    //2*pi
 
-//defines how many iterations to use when tesselating
+//defines how many iterations to use when tessellating
 //qudratics, cubics and spirals. We use up to 100 iterations
-#define TESSELATION_ITERATIONS 100
-#define INV_TESSELATION_ITERATIONS 0.01
+#define TESSELLATION_ITERATIONS 100
+#define INV_TESSELLATION_ITERATIONS 0.01
 
 class LineBufferPool;
 class CSysTransformer;
@@ -64,12 +64,12 @@ class RS_OutputStream;
 // If there are arc segments in the geometry that were tessellated,
 // then the m_arcs_sp array contains one pair for each tessellated
 // arc segment.  The pair contains the vertex indices (into the
-// m_pts array) of the start and end segments of the tesselated arc.
+// m_pts array) of the start and end segments of the tessellated arc.
 class LineBuffer
 {
 public:
     // LineBuffer segment types.  Some day we might actually store
-    // curve segments instead of tesselating them
+    // curve segments instead of tessellating them
     enum SegType
     {
         stMoveTo  = 0,
@@ -134,7 +134,7 @@ public:
     // checks for a point in any contour
     STYLIZATION_API bool PointInPolygon(double& x, double& y);
 
-    // sets the drawing scale (used for arc tesselation)
+    // sets the drawing scale (used for arc tessellation)
     STYLIZATION_API void SetDrawingScale(double drawingScale);
 
     // the inline stuff
@@ -164,7 +164,7 @@ public:
     inline bool contour_closed(int cntr) const;
 
     // Adds point without checking for available space, updating the bounds, or applying
-    // the 3d transform. Thus, Ensure{Points, Contours}, and possibly ComputeBounds must
+    // the 3D transform. Thus, Ensure{Points, Contours}, and possibly ComputeBounds must
     // be called (although not NewGeometry).
     inline void UnsafeMoveTo(double x, double y, double z=0.0);
     inline void UnsafeLineTo(double x, double y, double z=0.0);
@@ -235,8 +235,8 @@ private:
     double PolylineLengthSqr(int cntr);
 
     double CubicApproxParameter(double halfAngle);
-    void TesselateCubicTo(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4);
-    void TesselateQuadTo(double x1, double y1, double x2, double y2, double x3, double y3);
+    void TessellateCubicTo(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4);
+    void TessellateQuadTo(double x1, double y1, double x2, double y2, double x3, double y3);
 
     void ResizePoints(int n);    // new size of array # of points
     void ResizeContours(int n);
@@ -338,25 +338,25 @@ void LineBuffer::EnsurePoints(int n)
     // need to have space for n additional points
     int needed = point_count() + n;
     // existing array not large enough
-    if (needed > point_capacity())
-        ResizePoints(2 * rs_max(needed, point_capacity()));
+    if (needed > m_types_len)
+        ResizePoints(2 * needed);
 }
 
 
 void LineBuffer::EnsureContours(int n)
 {
     // need to have space for n additional contours
-    int needed = m_cur_cntr + n + 1;
+    int needed = cntr_count() + n;
     // existing array not large enough
     if (needed > m_cntrs_len)
-        ResizeContours(2 * rs_max(needed, m_cntrs_len));
+        ResizeContours(2 * needed);
 }
 
 
 void LineBuffer::EnsureArcsSpArray(int n)
 {
     // need to have space for n additional arcs start points
-    int needed = m_cur_arcs_sp + n + 1;
+    int needed = arcs_sp_length() + n;
     // existing array not large enough
     if (needed > m_arcs_sp_len)
         ResizeArcsSpArray(2 * needed);
@@ -471,8 +471,8 @@ void LineBuffer::UnsafeMoveTo(double x, double y, double z)
         NewGeometry();
 
     m_num_geomcntrs[m_cur_geom] += 1;
-    /* This may be unsafe, but in the debug build, you won't
-     * err unknowingly */
+
+    // this may be unsafe, but in the debug build, you won't err unknowingly
     _ASSERT(m_cur_types <= m_types_len);
     _ASSERT(m_cur_cntr < m_cntrs_len);
     _ASSERT(m_cur_geom < m_num_geomcntrs_len);
