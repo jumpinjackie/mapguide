@@ -1056,6 +1056,7 @@ double RS_FontEngine::GetHorizontalAlignmentOffset(RS_HAlignment hAlign, double 
     return offsetX;
 }
 
+
 //////////////////////////////////////////////////////////////////////////////
 // Computes the X offset that must be applied to the unrotated text to
 // obtain the specified justification.
@@ -1088,51 +1089,51 @@ double RS_FontEngine::GetJustificationOffset(RS_Justify justify, double textWidt
 // mapping - to a length in screen units.
 double RS_FontEngine::MetersToScreenUnits(RS_Units unit, double number)
 {
-    double m2su = 1000.0 * m_pSERenderer->GetScreenUnitsPerMillimeterDevice();
-
     double scale_factor;
     if (unit == RS_Units_Device)
     {
-        // device units simply returns scale to convert meters to screen units
-        scale_factor = m2su;
+        // get scale to convert device meters to screen units
+        scale_factor = 1000.0 * m_pSERenderer->GetScreenUnitsPerMillimeterDevice();
     }
     else
     {
-        // for mapping space we also take map scale into account
-        scale_factor = m2su / m_pSERenderer->GetMapScale();
+        // get scale to convert world meters to screen units
+        scale_factor = 1000.0 * m_pSERenderer->GetScreenUnitsPerMillimeterWorld();
     }
 
     return number * scale_factor;
 }
 
 
-// This method exists to insure that all fonts perform some special handling for font attributes
-// which may not be consistently supported across our renderers.
+//////////////////////////////////////////////////////////////////////////////
+// This method exists to insure that all fonts perform some special handling
+// for font attributes which may not be consistently supported across our
+// renderers.
 const RS_Font* RS_FontEngine::GetRenderingFont( RS_TextDef& tdef )
 {
     const RS_Font* pFont;
 
-    // Presently, not all of our renderers permit us to apply a transform to the font.
-    // The skew matrix is used for obliquing.  We will substitute italics for
-    // obliquing until we can set a transform.
-    if ( tdef.obliqueAngle() != 0.0 )
+    // Presently, not all of our renderers permit us to apply a transform to
+    // the font.  The skew matrix is used for obliquing.  We will substitute
+    // italics for obliquing until we can set a transform.
+    if (tdef.obliqueAngle() != 0.0)
     {
         RS_TextDef tmpTDef = tdef;
-        int& style = (int&) tmpTDef.font().style();
+        int& style = (int&)tmpTDef.font().style();
         style |= RS_FontStyle_Italic;
-        pFont = FindFont( tmpTDef.font() );
+        pFont = FindFont(tmpTDef.font());
     }
     else
-        pFont = FindFont( tdef.font() );
+        pFont = FindFont(tdef.font());
 
     // Make sure there is a capheight value
     if (NULL != pFont && 0 == pFont->m_capheight)
     {
-        //happy hack to get the capline since FreeType doesn't know it
+        // happy hack to get the capline since FreeType doesn't know it
         RS_F_Point fpts[4];
         MeasureString(L"A", pFont->m_units_per_EM, pFont, 0.0, fpts, NULL);
 
-        //set it on the font, so that we don't have to measure it all the time
+        // set it on the font, so that we don't have to measure it all the time
         ((RS_Font*)pFont)->m_capheight = (short)fabs(fpts[2].y - fpts[1].y);
     }
 
