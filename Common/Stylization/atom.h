@@ -388,15 +388,16 @@ private:
  **********************************************************************/
 
 // This is a 3x3 matrix
-#define _00 0
-#define _01 1
-#define _02 2
-#define _10 3
-#define _11 4
-#define _12 5
-#define _20 6
-#define _21 7
-#define _22 8
+#define elem_00 0
+#define elem_01 1
+#define elem_02 2
+#define elem_10 3
+#define elem_11 4
+#define elem_11 4
+#define elem_12 5
+#define elem_20 6
+#define elem_21 7
+#define elem_22 8
 // Essentially just wraps a 9-element array of NUMBERS;
 // provides basic operator access.  Note: Matrix never
 // "owns" the array it refers to.

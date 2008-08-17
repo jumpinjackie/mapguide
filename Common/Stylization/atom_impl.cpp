@@ -179,9 +179,9 @@ void ArbitraryTransformParticle::SetMatrix(ATOM::Matrix& m) const
 bool ArbitraryTransformParticle::IsIdentity() const
 {
     NUMBER* pMat = (NUMBER*)this->m_v;
-    return pMat[_00] == 1 && pMat[_01] == 0 && pMat[_02] == 0
-        && pMat[_10] == 0 && pMat[_11] == 1 && pMat[_12] == 0
-        && pMat[_20] == 0 && pMat[_21] == 0 && pMat[_22] == 1;
+    return pMat[elem_00] == 1 && pMat[elem_01] == 0 && pMat[elem_02] == 0
+        && pMat[elem_10] == 0 && pMat[elem_11] == 1 && pMat[elem_12] == 0
+        && pMat[elem_20] == 0 && pMat[elem_21] == 0 && pMat[elem_22] == 1;
 }
 
 
@@ -468,35 +468,35 @@ void Matrix::operator*= (const NUMBER* o)
 {
     NUMBER m[9];
 
-    m[_00] = m_pElements[_00]*o[_00]
-           + m_pElements[_01]*o[_10]
-           + m_pElements[_02]*o[_20];
-    m[_01] = m_pElements[_00]*o[_01]
-           + m_pElements[_01]*o[_11]
-           + m_pElements[_02]*o[_21];
-    m[_02] = m_pElements[_00]*o[_02]
-           + m_pElements[_01]*o[_12]
-           + m_pElements[_02]*o[_22];
+    m[elem_00] = m_pElements[elem_00]*o[elem_00]
+               + m_pElements[elem_01]*o[elem_10]
+               + m_pElements[elem_02]*o[elem_20];
+    m[elem_01] = m_pElements[elem_00]*o[elem_01]
+               + m_pElements[elem_01]*o[elem_11]
+               + m_pElements[elem_02]*o[elem_21];
+    m[elem_02] = m_pElements[elem_00]*o[elem_02]
+               + m_pElements[elem_01]*o[elem_12]
+               + m_pElements[elem_02]*o[elem_22];
 
-    m[_10] = m_pElements[_10]*o[_00]
-           + m_pElements[_11]*o[_10]
-           + m_pElements[_12]*o[_20];
-    m[_11] = m_pElements[_10]*o[_01]
-           + m_pElements[_11]*o[_11]
-           + m_pElements[_12]*o[_21];
-    m[_12] = m_pElements[_10]*o[_02]
-           + m_pElements[_11]*o[_12]
-           + m_pElements[_12]*o[_22];
+    m[elem_10] = m_pElements[elem_10]*o[elem_00]
+               + m_pElements[elem_11]*o[elem_10]
+               + m_pElements[elem_12]*o[elem_20];
+    m[elem_11] = m_pElements[elem_10]*o[elem_01]
+               + m_pElements[elem_11]*o[elem_11]
+               + m_pElements[elem_12]*o[elem_21];
+    m[elem_12] = m_pElements[elem_10]*o[elem_02]
+               + m_pElements[elem_11]*o[elem_12]
+               + m_pElements[elem_12]*o[elem_22];
 
-    m[_20] = m_pElements[_20]*o[_00]
-           + m_pElements[_21]*o[_10]
-           + m_pElements[_22]*o[_20];
-    m[_21] = m_pElements[_20]*o[_01]
-           + m_pElements[_21]*o[_11]
-           + m_pElements[_22]*o[_21];
-    m[_22] = m_pElements[_20]*o[_02]
-           + m_pElements[_21]*o[_12]
-           + m_pElements[_22]*o[_22];
+    m[elem_20] = m_pElements[elem_20]*o[elem_00]
+               + m_pElements[elem_21]*o[elem_10]
+               + m_pElements[elem_22]*o[elem_20];
+    m[elem_21] = m_pElements[elem_20]*o[elem_01]
+               + m_pElements[elem_21]*o[elem_11]
+               + m_pElements[elem_22]*o[elem_21];
+    m[elem_22] = m_pElements[elem_20]*o[elem_02]
+               + m_pElements[elem_21]*o[elem_12]
+               + m_pElements[elem_22]*o[elem_22];
 
    *this = m;
 }
