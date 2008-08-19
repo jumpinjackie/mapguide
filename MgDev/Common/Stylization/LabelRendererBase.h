@@ -59,7 +59,7 @@ protected:
     void GetRotatedTextPoints(RS_TextMetrics& tm, double insx, double insy, double angleRad, RS_F_Point* rotatedPts);
     void GetRotatedPoints(double x, double y, double width, double height, double angleRad, RS_F_Point* rotatedPts);
     bool CloseEnough(RS_F_Point& pt1, RS_F_Point& pt2);
-    double MeterToMapSize(RS_Units unit, double number);
+    double MeterToMapSize(RS_Units units, double number);
 
 protected:
     SE_Renderer* m_serenderer;

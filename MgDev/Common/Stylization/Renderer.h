@@ -124,7 +124,8 @@ public:
     /// Feature Marker Symbols -- added to feature W2D and should also
     /// support selection.  Bounds should be an array of length 4,
     /// representing the bounds of the marker that is drawn, before
-    /// rotation.
+    /// rotation.  The bounds must be in meters in the same units as
+    /// the supplied RS_MarkerDef.
     ///</summary>
     virtual void ProcessMarker(LineBuffer*      lb,
                                RS_MarkerDef&    mdef,
