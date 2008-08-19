@@ -1122,9 +1122,9 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     //set actual (unrotated) bounds with new insertion point if a pointer was passed in
     if (bounds)
     {
-        bounds->minx = -refX * mdef.width();
+        bounds->minx =       -refX  * mdef.width();
         bounds->maxx = (1.0 - refX) * mdef.width();
-        bounds->miny = -refY * mdef.height();
+        bounds->miny =       -refY  * mdef.height();
         bounds->maxy = (1.0 - refY) * mdef.height();
     }
 

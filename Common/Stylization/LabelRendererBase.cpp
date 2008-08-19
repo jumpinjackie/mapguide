@@ -102,10 +102,10 @@ bool LabelRendererBase::CloseEnough(RS_F_Point& pt1, RS_F_Point& pt2)
 //////////////////////////////////////////////////////////////////////////////
 // Scales an input length in meters in the specified units - device or
 // mapping - to a length in mapping space.
-double LabelRendererBase::MeterToMapSize(RS_Units unit, double number)
+double LabelRendererBase::MeterToMapSize(RS_Units units, double number)
 {
     double scale_factor;
-    if (unit == RS_Units_Device) // in meters, fixed size
+    if (units == RS_Units_Device)   // in meters, fixed size
         scale_factor = m_serenderer->GetMapScale() / m_serenderer->GetMetersPerUnit();
     else
         scale_factor = 1.0 / m_serenderer->GetMetersPerUnit();
