@@ -192,8 +192,8 @@ void PointAdapter::Stylize(Renderer*                   renderer,
 
                     double op_pts[16];
 
-                    // offset labels by 1/2 mm offset from symbol's edge
-                    double offset = 0.0005;
+                    // offset the label from the symbol's edge
+                    double offset = 0.001 * POINT_LABEL_OFFSET_MM;  // in meters
                     if (def.rotation() != 0.0)
                     {
                         // if the text label has rotation put the text at least half the font height
