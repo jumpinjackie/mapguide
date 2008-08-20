@@ -232,9 +232,8 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
     double symbol_width  = symbol_bounds.width();   // symbol width in screen units
     double symbol_height = symbol_bounds.height();  // symbol height in screen units
 
-    // we will offset the label 1 mm from the symbol
-    double offsetmm = 1.0;              // offset in mm
-    double offset = offsetmm * mm2su;   // offset in screen units
+    // offset the label from the symbol's edge
+    double offset = POINT_LABEL_OFFSET_MM * mm2su;  // offset in screen units
 
     // make sure we have at least one pixel's worth of offset
     double screenUnitsPerPixel = MILLIMETERS_PER_INCH * se_renderer->GetScreenUnitsPerMillimeterDevice() / se_renderer->GetDpi();

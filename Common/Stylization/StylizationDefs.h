@@ -36,6 +36,9 @@ const double METERS_PER_INCH = 0.0254;
 const double MILLIMETERS_PER_INCH = 25.4;
 const double STANDARD_DISPLAY_DPI = 96.0;
 
+// the distance by which point labels are offset from the symbol's edge
+const double POINT_LABEL_OFFSET_MM = 1.0;
+
 #define SE_INLINE inline
 
 #ifdef _WIN32
