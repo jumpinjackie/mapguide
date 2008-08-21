@@ -393,13 +393,13 @@ void MgResourceIdentifier::ParseIdentifier(CREFSTRING resource)
     m_repositoryType = m_repositoryName = L"";
 
     // Get the repository type and name.
-    unsigned int firstPos = (unsigned int)resource.find(L':');
+    size_t firstPos = resource.find(L':');
 
     if (STRING::npos != firstPos)
     {
         m_repositoryType = resource.substr(0, firstPos);
         ++firstPos;
-        unsigned int secondPos = (unsigned int)resource.find(L"//", firstPos);
+        size_t secondPos = resource.find(L"//", firstPos);
 
         if (STRING::npos != secondPos)
         {
@@ -443,18 +443,18 @@ void MgResourceIdentifier::ParsePathname(CREFSTRING resource)
     m_path = m_name = m_type =  L"";
 
     // If length is zero, then the resource is of folder type.
-    unsigned int len = (unsigned int)resource.length();
+    size_t len = resource.length();
 
     if (len > 0)
     {
         // If last character is '/', means it is folder.
-        unsigned int firstPos = (unsigned int)resource.rfind(L'/');
+        size_t firstPos = resource.rfind(L'/');
 
         // Get the resource path, name, and type (foldername can also be a
         // resource name).
-        if ((len - 1) == firstPos)
+        if (STRING::npos != firstPos && (len - 1) == firstPos)
         {
-            unsigned int secondPos = (unsigned int)resource.rfind(L'/', firstPos - 1);
+            size_t secondPos = resource.rfind(L'/', firstPos - 1);
 
             if (STRING::npos != secondPos)
             {
@@ -476,7 +476,7 @@ void MgResourceIdentifier::ParsePathname(CREFSTRING resource)
             }
 
             ++firstPos;
-            unsigned int secondPos = (unsigned int)resource.rfind(L'.');
+            size_t secondPos = resource.rfind(L'.');
 
             if (STRING::npos != secondPos)
             {
