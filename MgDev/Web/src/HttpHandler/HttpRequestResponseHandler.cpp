@@ -177,6 +177,17 @@ void MgHttpRequestResponseHandler::InitializeCommonParameters(MgHttpRequest *hRe
         m_userInfo->SetClientIp(clientIp);
     }
 
+    // Short circuit the authentication check if no username or session is supplied.
+    // This will ensure that load balancing works correctly if browsers send an
+    // unauthenticated then an authenticated request.
+    //
+    // The check increments the load balanced servers so the unauthenticated HTTP request
+    // will eat up one of the servers and give uneven load balancing.
+    if (m_userInfo->GetUserName().empty() && m_userInfo->GetMgSessionId().empty())
+    {
+        throw new MgAuthenticationFailedException(L"MgHttpRequestResponseHandler.InitializeCommonParameters", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
     // And create the site connection
     m_siteConn = new MgSiteConnection();
     m_siteConn->Open(m_userInfo);
