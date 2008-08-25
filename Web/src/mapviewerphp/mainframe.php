@@ -77,8 +77,7 @@ function BuildViewer($forDwf = true)
 
         if($createSession)
         {
-            $site1 = new MgSite();
-            $site1->Open($cred);
+            $site1 = $site->GetSite();
             $sessionId = $site1->CreateSession();
             if($forDwf == false)
                 $orgSessionId = $sessionId;

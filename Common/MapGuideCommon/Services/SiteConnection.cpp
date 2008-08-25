@@ -491,19 +491,16 @@ MgConnectionProperties* MgSiteConnection::GetConnectionPropertiesFromSiteServer(
     }
     else
     {
-        // TODO: The following overhead could be eliminated if additional load
-        //       balancing is implemented on the Web Tier. Also, the
-        //       RequestServer API could be optimized to allow the Web Tier to
-        //       notify the site server when a support server is down.
-        Ptr<MgUserInformation> userInformation = m_connProp->GetUserInfo();
-        assert(NULL != userInformation.p);
-        Ptr<MgSite> site = new MgSite();
+        // We have deprecated support servers.  All load balanced servers
+        // should support all services.  With this change, we do not need to
+        // contact the site server to determine where to vector service requests.
+        //
+        // A site connection has already been established if we are looking for services.
+        // Just use the target and port from the existing connection.  This will
+        // bind all service requests to the machine initially connected to in
+        // the MgSiteConnection.Open call.
 
-        site->Open(userInformation, true);
-
-        STRING target = site->RequestServer(serviceType);
-
-        connProp = new MgConnectionProperties(userInformation.p, target, m_connProp->GetPort());
+        connProp = m_connProp;
     }
 
     return connProp.Detach();
@@ -549,15 +546,23 @@ void MgSiteConnection::Authenticate(MgUserInformation* userInformation)
 /// </summary>
 MgSite* MgSiteConnection::GetSite()
 {
-    // Get user information
-    Ptr<MgUserInformation> userInfo = m_connProp->GetUserInfo();
-
     Ptr<MgSite> site;
+
+    MgSiteManager* siteManager = MgSiteManager::GetInstance();
+    Ptr<MgSiteInfo> siteInfo = siteManager->GetSiteInfo(m_connProp->GetTarget(), m_connProp->GetPort());
+    Ptr<MgUserInformation> userInfo = m_connProp->GetUserInfo();
 
     if (NULL != userInfo.p)
     {
         site = new MgSite();
-        site->Open(userInfo);
+        if (NULL != siteInfo.p)
+        {
+            site->Open(userInfo, siteInfo);
+        }
+        else
+        {
+            site->Open(userInfo);
+        }
     }
     else
     {

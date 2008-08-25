@@ -78,8 +78,7 @@ NameValueCollection cmds = null;
 
         if (createSession)
         {
-            MgSite site1 = new MgSite();
-            site1.Open(cred);
+            MgSite site1 = site.GetSite();
             sessionId = site1.CreateSession();
             if (forDwf == 0)
             {
