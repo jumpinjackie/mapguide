@@ -24,6 +24,7 @@
 #include "GroupInfo.cpp"
 #include "LicenseManager.cpp"
 #include "LoadBalanceManager.cpp"
+#include "LogDetail.cpp"
 #include "LogEntryData.cpp"
 #include "LogManager.cpp"
 #include "LogThread.cpp"

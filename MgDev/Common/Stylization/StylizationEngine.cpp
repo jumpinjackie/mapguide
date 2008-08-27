@@ -30,6 +30,7 @@
 
 using namespace MDFMODEL_NAMESPACE;
 
+extern void ProcessStylizerException(FdoException* exception, int line, wchar_t* file);
 
 StylizationEngine::StylizationEngine(SE_SymbolManager* resources) :
     m_resources(resources),
@@ -251,7 +252,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
                 }
                 catch (FdoException* e)
                 {
-                    e->Release();
+                    ProcessStylizerException(e, __LINE__, __WFILE__);
                 }
             }
 
@@ -274,7 +275,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
             }
             catch (FdoException* e)
             {
-                e->Release();
+                ProcessStylizerException(e, __LINE__, __WFILE__);
             }
         }
 

@@ -78,6 +78,7 @@ public:
 
     bool FindResource(const string& mbResourcePathname);
     bool FindResource(CREFSTRING wcResourcePathname);
+    STRING FormatMethodName(CREFSTRING methodName);
 
     // Resource Permission related methods
 

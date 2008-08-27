@@ -474,6 +474,7 @@ INTERNAL_API:
 
     virtual void Serialize(MgStream* stream);
     virtual void Deserialize(MgStream* stream);
+    STRING GetLogString();
 
     virtual INT32 GetClassId() { return m_cls_id; }
     virtual void Dispose() { delete this; }

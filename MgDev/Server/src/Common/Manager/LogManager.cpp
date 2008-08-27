@@ -211,6 +211,7 @@ void MgLogManager::LoadConfigurationProperties()
     bool bLogEnabled;
     STRING logFileName;
     STRING logParameters;
+    STRING logDetail;
 
     // Maximum log file size
     pConfiguration->GetBoolValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyMaxLogFileSizeEnabled, m_useMaxLogSize, MgConfigProperties::DefaultGeneralPropertyMaxLogFileSizeEnabled);
@@ -218,6 +219,19 @@ void MgLogManager::LoadConfigurationProperties()
     // Log data delimiter
     pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyLogsDelimiter, m_delimiter, MgConfigProperties::DefaultGeneralPropertyLogsDelimiter);
     TranslateDelimiter();
+
+    // Logs detail level
+    pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyLogsDetail, logDetail, MgConfigProperties::DefaultGeneralPropertyLogsDetail);
+    m_logsDetail.resize(MgServerInformation::sm_knMaxNumberServices,0);
+    ParseLogService(MgServiceType::ResourceService, logDetail);
+    ParseLogService(MgServiceType::DrawingService, logDetail);
+    ParseLogService(MgServiceType::FeatureService, logDetail);
+    ParseLogService(MgServiceType::MappingService, logDetail);
+    ParseLogService(MgServiceType::RenderingService, logDetail);
+    ParseLogService(MgServiceType::TileService, logDetail);
+    ParseLogService(MgServiceType::KmlService, logDetail);
+    ParseLogService(MgServiceType::ServerAdminService, logDetail);
+    ParseLogService(MgServiceType::SiteService, logDetail);
 
     // Access Log
     pConfiguration->GetBoolValue(MgConfigProperties::AccessLogPropertiesSection, MgConfigProperties::AccessLogPropertyEnabled, bLogEnabled, MgConfigProperties::DefaultAccessLogPropertyEnabled);
@@ -1236,6 +1250,13 @@ void MgLogManager::SetTraceLogParameters(CREFSTRING parameters)
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetTraceLogParameters")
 }
 
+INT8 MgLogManager::GetDetailLevelForService(INT16 serviceNum)
+{
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, 0));
+
+    return m_logsDetail[serviceNum];
+}
+
 bool MgLogManager::ClearTraceLog()
 {
     bool bResult = false;
@@ -1381,6 +1402,38 @@ void MgLogManager::LogToStderr(ACE_Log_Msg* pAce)
     pAce->set_flags(ACE_Log_Msg::STDERR);
 }
 
+void MgLogManager::LogError(CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName, CREFSTRING stackTrace)
+{
+    // Errors are always logged to both the error and trace logs if enabled.
+    if(IsErrorLogEnabled())
+    {
+        LogErrorEntry(entry, client, clientIp, userName, stackTrace, MgResources::Error);
+    }
+    if(IsTraceLogEnabled())
+    {
+        LogTraceEntry(entry, client, clientIp, userName, stackTrace, MgResources::Error);
+    }
+}
+
+void MgLogManager::LogWarning(INT16 service, CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName, CREFSTRING stackTrace)
+{
+    // Warnings are only logged if the detail level for the service is high enough.
+    INT8 detailLevel = GetDetailLevelForService(service);
+
+    if (detailLevel >= MgLogDetail::Warning)
+    {
+        // Log entries to both error log and trace log, if applicable
+        if(IsErrorLogEnabled())
+        {
+            LogErrorEntry(entry, client, clientIp, userName, stackTrace, MgResources::Warning);
+        }
+        if(IsTraceLogEnabled())
+        {
+            LogTraceEntry(entry, client, clientIp, userName, stackTrace, MgResources::Warning);
+        }
+    }
+}
+
 void MgLogManager::LogSystemEntry(ACE_Log_Priority priority, CREFSTRING entry)
 {
     QueueLogEntry(mltSystem, entry, priority);
@@ -1392,6 +1445,9 @@ void MgLogManager::LogAccessEntry(CREFSTRING opId, CREFSTRING client, CREFSTRING
     STRING logEntry;
 
     MG_LOGMANAGER_TRY()
+
+    // Current threadid is first parameter
+    AddThreadId(logEntry);
 
     // Parse parameter string into an MgStringCollection
     Ptr<MgStringCollection> paramList = MgStringCollection::ParseCollection(
@@ -1554,12 +1610,15 @@ void MgLogManager::LogAuthenticationEntry(CREFSTRING entry, CREFSTRING client, C
     QueueLogEntry(mltAuthentication, logEntry, LM_INFO);
 }
 
-void MgLogManager::LogErrorEntry(CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName, CREFSTRING stackTrace)
+void MgLogManager::LogErrorEntry(CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName, CREFSTRING stackTrace, CREFSTRING type)
 {
     // Message to be entered into the log
     STRING logEntry;
 
     MG_LOGMANAGER_TRY()
+
+    // Current threadid is first parameter
+    AddThreadId(logEntry);
 
     // Parse parameter string into an MgStringCollection
     Ptr<MgStringCollection> paramList = MgStringCollection::ParseCollection(
@@ -1589,7 +1648,7 @@ void MgLogManager::LogErrorEntry(CREFSTRING entry, CREFSTRING client, CREFSTRING
             }
             else if (MgLogManager::ErrorParam == param)
             {
-                AddError(logEntry, entry);
+                AddError(logEntry, entry, type);
             }
             else if (MgLogManager::StackTraceParam == param)
             {
@@ -1679,16 +1738,19 @@ void MgLogManager::LogSessionEntry(const MgSessionInfo& sessionInfo)
     else
     {
         logEntry = L"Unable to log session message.";
-        LogErrorEntry(logEntry, L"", L"", L"", mgException->GetDetails());
+        LogError(logEntry, L"", L"", L"", mgException->GetDetails());
     }
 }
 
-void MgLogManager::LogTraceEntry(CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName)
+void MgLogManager::LogTraceEntry(CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName, CREFSTRING stackTrace, CREFSTRING type)
 {
     // Message to be entered into the log
     STRING logEntry;
 
     MG_LOGMANAGER_TRY()
+
+    // Current threadid is first parameter
+    AddThreadId(logEntry);
 
     // Parse parameter string into an MgStringCollection
     Ptr<MgStringCollection> paramList = MgStringCollection::ParseCollection(
@@ -1718,7 +1780,21 @@ void MgLogManager::LogTraceEntry(CREFSTRING entry, CREFSTRING client, CREFSTRING
             }
             else if (MgLogManager::InfoParam == param)
             {
-                AddInfo(logEntry, entry);
+                if (type.compare(L"") == 0)
+                {
+                    AddInfo(logEntry, entry);
+                }
+                else
+                {
+                    AddError(logEntry, entry, type);
+                }
+             }
+            else if (MgLogManager::StackTraceParam == param)
+            {
+                if (!logEntry.empty())
+                {
+                    AddStackTrace(logEntry, stackTrace);
+                }
             }
         }
     }
@@ -2000,7 +2076,7 @@ void MgLogManager::WriteLogMessage(enum MgLogType logType, CREFSTRING message, A
         if (mgException != NULL)
         {
             STRING entry = L"Unable to log system message";
-            LogErrorEntry(entry, L"", L"", L"");
+            LogError(entry, L"", L"", L"");
         }
 
         pAce->release();
@@ -2135,7 +2211,11 @@ void MgLogManager::WriteLogMessage(enum MgLogType logType, CREFSTRING message, A
 
                 // Get the current time in XML standard format.
                 MgDateTime currTime;
-                currTime.SetMicrosecond(0);
+                if (mltTrace != logType)
+                {
+                    // Generate sub-second timing only for trace log
+                    currTime.SetMicrosecond(0);
+                }
                 STRING logTime = currTime.ToXmlString(false);
 
 #ifdef _WIN32
@@ -2151,7 +2231,7 @@ void MgLogManager::WriteLogMessage(enum MgLogType logType, CREFSTRING message, A
                 if (mgException != 0 && logType != mltError)
                 {
                     STRING entry = L"Unable to log message to " + filename;
-                    LogErrorEntry(entry, L"", L"", L"");
+                    LogError(entry, L"", L"", L"");
                 }
 
                 // Check if log size has exceeded the maximum size
@@ -3092,18 +3172,12 @@ void MgLogManager::AddClientIp(REFSTRING entry, CREFSTRING clientIp)
     entry += clientIp;
 }
 
-void MgLogManager::AddError(REFSTRING entry, CREFSTRING error)
+void MgLogManager::AddError(REFSTRING entry, CREFSTRING error, CREFSTRING type)
 {
-/*
-    AddDelimiter(entry);
-
-    STRING err = MgUtil::ReplaceString(error, L"\n", L" ");
-    entry += MgResources::Error + L":" + err + L" ";
-*/
 #ifdef _WIN32
-    entry += L"\r\n " + MgResources::Error + L": ";
+    entry += L"\r\n " + type + L": ";
 #else
-    entry += L"\n " + MgResources::Error + L": ";
+    entry += L"\n " + type + L": ";
 #endif
 
     size_t size = error.size();
@@ -3134,6 +3208,12 @@ void MgLogManager::AddError(REFSTRING entry, CREFSTRING error)
 
 void MgLogManager::AddStackTrace(REFSTRING entry, CREFSTRING stackTrace)
 {
+    // Do not log empty stack traces
+    if (stackTrace.empty())
+    {
+        return;
+    }
+
 #ifdef _WIN32
     entry += L"\r\n " + MgResources::StackTrace + L":";
 #else
@@ -3175,6 +3255,16 @@ void MgLogManager::AddOpId(REFSTRING entry, CREFSTRING opId)
 {
     AddDelimiter(entry);
     entry += MgUtil::EncodeXss(opId);
+}
+
+void MgLogManager::AddThreadId(REFSTRING entry)
+{
+    AddDelimiter(entry);
+
+    ACE_thread_t threadId = ACE_OS::thr_self();
+    STRING threadString;
+    MgUtil::Int32ToString(threadId, threadString);
+    entry += threadString;
 }
 
 void MgLogManager::AddUserName(REFSTRING entry, CREFSTRING userName)
@@ -3728,7 +3818,16 @@ void MgLogManager::SetMaximumLogSize(INT32 size)
 
 void MgLogManager::SetLogDelimiter(CREFSTRING delimiter)
 {
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
     m_delimiter = delimiter;
+}
+
+STRING MgLogManager::GetLogDelimiter()
+{
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
+
+    return m_delimiter;
 }
 
 void MgLogManager::EnableMaximumLogSize(bool useMaxSize)
@@ -4163,6 +4262,53 @@ void MgLogManager::UpdateLogFilesTimestampCache()
         if (MgFileUtil::PathnameExists(traceLogFileName))
         {
             m_cacheTraceLogTimestamp = MgFileUtil::GetFileModificationTime(traceLogFileName);
+        }
+    }
+}
+
+void MgLogManager::ParseLogService(INT16 serviceType, CREFSTRING configString)
+{
+    STRING serviceString;
+    switch (serviceType)
+    {
+    case MgServiceType::ResourceService:
+        serviceString = MgResources::ResourceService;
+        break;
+    case MgServiceType::DrawingService:
+        serviceString = MgResources::DrawingService;
+        break;
+    case MgServiceType::FeatureService:
+        serviceString = MgResources::FeatureService;
+        break;
+    case MgServiceType::MappingService:
+        serviceString = MgResources::MappingService;
+        break;
+    case MgServiceType::RenderingService:
+        serviceString = MgResources::RenderingService;
+        break;
+    case MgServiceType::TileService:
+        serviceString = MgResources::TileService;
+        break;
+    case MgServiceType::KmlService:
+        serviceString = MgResources::KmlService;
+        break;
+    case MgServiceType::ServerAdminService:
+        serviceString = MgResources::ServerAdminService;
+        break;
+    case MgServiceType::SiteService:
+        serviceString = MgResources::SiteService;
+        break;
+    default:
+        break;
+    }
+
+    if (!serviceString.empty())
+    {
+        STRING::size_type pos = configString.find(serviceString);
+        if (pos != configString.npos)
+        {
+            pos = configString.find(L":",pos);
+            m_logsDetail[serviceType] = (INT8) MgUtil::StringToInt32(configString.substr(pos+1,1));
         }
     }
 }

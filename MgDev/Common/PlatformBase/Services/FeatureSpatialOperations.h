@@ -93,6 +93,51 @@ INTERNAL_API:
                 __LINE__, __WFILE__, &arguments, L"MgInvalidValueOutsideRange", NULL);
         }
     }
+
+    static STRING ToString(INT32 value)
+    {
+        STRING text;
+        switch (value)
+        {
+        case Contains:
+            text = L"Contains";  //NOXLATE
+            break;
+        case Crosses:
+            text = L"Crosses";  //NOXLATE
+            break;
+        case Disjoint:
+            text = L"Disjoint";  //NOXLATE
+            break;
+        case Equals:
+            text = L"Equals";  //NOXLATE
+            break;
+        case Intersects:
+            text = L"Intersects";  //NOXLATE
+            break;
+        case Overlaps:
+            text = L"Overlaps";  //NOXLATE
+            break;
+        case Touches:
+            text = L"Touches";  //NOXLATE
+            break;
+        case Within:
+            text = L"Within";  //NOXLATE
+            break;
+        case CoveredBy:
+            text = L"CoveredBy";  //NOXLATE
+            break;
+        case Inside:
+            text = L"Inside";  //NOXLATE
+            break;
+        case EnvelopeIntersects:
+            text = L"EnvelopeIntersects";  //NOXLATE
+            break;
+        default:
+            break;
+        }
+        return text;
+    }
+
 };
 /// \}
 

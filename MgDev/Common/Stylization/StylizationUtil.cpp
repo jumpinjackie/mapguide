@@ -189,7 +189,7 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
     }
     catch (FdoException* e)
     {
-        e->Release();
+        ProcessStylizerException(e, __LINE__, __WFILE__);
     }
     catch (...)
     {

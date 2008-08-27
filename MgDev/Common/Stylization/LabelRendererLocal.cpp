@@ -21,6 +21,8 @@
 
 //#define DEBUG_LABELS
 
+extern void ProcessStylizerException(FdoException* exception, int line, wchar_t* file);
+
 
 //////////////////////////////////////////////////////////////////////////////
 LabelRendererLocal::LabelRendererLocal(SE_Renderer* se_renderer, double tileExtentOffset)
@@ -42,7 +44,7 @@ LabelRendererLocal::~LabelRendererLocal()
     }
     catch (FdoException* e)
     {
-        e->Release();
+        ProcessStylizerException(e, __LINE__, __WFILE__);
     }
     catch (...)
     {

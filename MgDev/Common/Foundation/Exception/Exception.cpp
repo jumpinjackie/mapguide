@@ -129,6 +129,15 @@ void MgException::AddMethodName(CREFSTRING methodName) throw()
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
+/// Add the specified method params to the collection.
+///
+void MgException::AddMethodParams(CREFSTRING methodParams) throw()
+{
+    m_methodParams.Add(MgUtil::EncodeXss(methodParams));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Add the specified line number to the collection.
 ///
 void MgException::AddLineNumber(INT32 lineNumber) throw()
@@ -156,6 +165,16 @@ void MgException::AddFileName(CREFSTRING fileName) throw()
 void MgException::AddStackTraceInfo(CREFSTRING methodName, INT32 lineNumber,
     CREFSTRING fileName) throw()
 {
+    AddStackTraceInfo(methodName, L"", lineNumber, fileName);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Add updated stack information to the exception.
+///
+void MgException::AddStackTraceInfo(CREFSTRING methodName, CREFSTRING methodParams, INT32 lineNumber,
+    CREFSTRING fileName) throw()
+{
     // Do not add to the stack if the same method name is already currently
     // on the stack.
 
@@ -166,6 +185,7 @@ void MgException::AddStackTraceInfo(CREFSTRING methodName, INT32 lineNumber,
         if (methodName != m_methodNames.GetItem(stackSize - 1))
         {
             AddMethodName(methodName);
+            AddMethodParams(methodParams);
             AddLineNumber(lineNumber);
             AddFileName(fileName);
         }
@@ -173,6 +193,7 @@ void MgException::AddStackTraceInfo(CREFSTRING methodName, INT32 lineNumber,
     else
     {
         AddMethodName(methodName);
+        AddMethodParams(methodParams);
         AddLineNumber(lineNumber);
         AddFileName(fileName);
     }
@@ -185,6 +206,7 @@ void MgException::AddStackTraceInfo(CREFSTRING methodName, INT32 lineNumber,
 void MgException::Serialize(MgStream* stream) throw()
 {
     m_methodNames.Serialize(stream);
+    m_methodParams.Serialize(stream);
     m_lineNumbers.Serialize(stream);
     m_fileNames.Serialize(stream);
 
@@ -204,6 +226,7 @@ void MgException::Serialize(MgStream* stream) throw()
 void MgException::Deserialize(MgStream* stream) throw()
 {
     m_methodNames.Deserialize(stream);
+    m_methodParams.Deserialize(stream);
     m_lineNumbers.Deserialize(stream);
     m_fileNames.Deserialize(stream);
 
@@ -300,17 +323,18 @@ STRING MgException::FormatMessage(CREFSTRING locale, CREFSTRING section,
 /// \brief
 /// Format the stack trace using the specified locale.
 ///
-STRING MgException::FormatStackTrace(CREFSTRING locale, bool includeAll) throw()
+STRING MgException::FormatStackTrace(CREFSTRING locale) throw()
 {
     STRING stackTrace;
     const INT32 stackSize = m_methodNames.GetCount();
     assert(stackSize > 0);
+    assert(m_methodParams.GetCount() == stackSize);
     assert(m_lineNumbers.GetCount() == stackSize);
     assert(m_fileNames.GetCount() == stackSize);
 
     if (stackSize > 0)
     {
-        const INT32 startIndex = includeAll ? (stackSize - 1) : 0;
+        const INT32 startIndex = stackSize - 1;
 
         MG_TRY()
 
@@ -318,9 +342,7 @@ STRING MgException::FormatStackTrace(CREFSTRING locale, bool includeAll) throw()
 
         if (NULL != resources)
         {
-            STRING resourceId = includeAll ?
-                L"MgFormatAllExceptionStackTrace" :
-                L"MgFormatExceptionStackTrace";
+            STRING resourceId = L"MgFormatAllExceptionStackTrace";
             STRING resourceStr = resources->GetStringResource(locale,
                 MgResources::ErrorDescription, resourceId);
 
@@ -329,6 +351,7 @@ STRING MgException::FormatStackTrace(CREFSTRING locale, bool includeAll) throw()
                 MgStringCollection arguments;
 
                 arguments.Add(m_methodNames.GetItem(i));
+                arguments.Add(m_methodParams.GetItem(i));
                 arguments.Add(m_lineNumbers.GetItem(i));
                 arguments.Add(m_fileNames.GetItem(i));
 
@@ -341,15 +364,9 @@ STRING MgException::FormatStackTrace(CREFSTRING locale, bool includeAll) throw()
 
         if (stackTrace.empty())
         {
-            STRING methodStr = includeAll ?
-                MgResources::FormatExceptionLocationMethods :
-                MgResources::FormatExceptionLocationMethod;
-            STRING lineStr = includeAll ?
-                MgResources::FormatExceptionLocationLines :
-                MgResources::FormatExceptionLocationLine;
-            STRING fileStr = includeAll ?
-                MgResources::FormatExceptionLocationFiles :
-                MgResources::FormatExceptionLocationFile;
+            STRING methodStr = MgResources::FormatExceptionLocationMethods;
+            STRING lineStr = MgResources::FormatExceptionLocationLines;
+            STRING fileStr = MgResources::FormatExceptionLocationFiles;
 
             for (INT32 i = startIndex; i >= 0; --i)
             {
@@ -366,6 +383,53 @@ STRING MgException::FormatStackTrace(CREFSTRING locale, bool includeAll) throw()
 
     return stackTrace;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Format the details using the specified locale.
+///
+STRING MgException::FormatDetails(CREFSTRING locale) throw()
+{
+    STRING stackTrace;
+    const INT32 stackSize = m_methodNames.GetCount();
+    assert(stackSize > 0);
+    assert(m_methodParams.GetCount() == stackSize);
+
+    if (stackSize > 0)
+    {
+        const INT32 startIndex = stackSize - 1;
+
+        MG_TRY()
+
+        MgResources* resources = MgResources::GetInstance();
+
+        if (NULL != resources)
+        {
+            STRING resourceId = L"MgFormatAllExceptionDetail";
+            STRING resourceStr = resources->GetStringResource(locale,
+                MgResources::ErrorDescription, resourceId);
+
+            for (INT32 i = startIndex; i >= 0; --i)
+            {
+                if (!m_methodParams.GetItem(i).empty())
+                {
+                    MgStringCollection arguments;
+
+                    arguments.Add(m_methodNames.GetItem(i));
+                    arguments.Add(m_methodParams.GetItem(i));
+
+                    stackTrace += resources->FormatMessage(resourceStr, &arguments);
+                    stackTrace += L"\n";
+                }
+            }
+        }
+
+        MG_CATCH_AND_RELEASE()
+    }
+
+    return stackTrace;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -473,7 +537,7 @@ STRING MgException::GetDetails(CREFSTRING locale) throw()
     {
         m_details = GetMessage(locale);
         m_details += L"\n";
-        m_details += FormatStackTrace(locale, false);
+        m_details += FormatDetails(locale);
     }
 
     MG_CATCH_AND_RELEASE()
@@ -503,7 +567,7 @@ STRING MgException::GetStackTrace(CREFSTRING locale) throw()
 
     if (m_stackTrace.empty())
     {
-        m_stackTrace = FormatStackTrace(locale, true);
+        m_stackTrace = FormatStackTrace(locale);
     }
 
     MG_CATCH_AND_RELEASE()

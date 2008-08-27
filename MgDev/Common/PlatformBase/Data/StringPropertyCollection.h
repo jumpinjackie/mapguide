@@ -348,6 +348,15 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////
     /// \brief
+    /// Builds a log friendly string representation
+    ///
+    /// \return
+    /// String suitable for logs
+    ///
+    STRING GetLogString();
+
+    //////////////////////////////////////////////////////////
+    /// \brief
     /// Returns the property collection this string collection is based upon
     ///
     MgPropertyCollection* GetPropertyCollection();

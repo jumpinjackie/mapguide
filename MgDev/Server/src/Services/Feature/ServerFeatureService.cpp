@@ -45,6 +45,7 @@
 #include "LongTransactionManager.h"
 #include "TransformCache.h"
 #include "CacheManager.h"
+#include "LogDetail.h"
 
 #include <Fdo/Xml/FeatureSerializer.h>
 #include <Fdo/Xml/FeatureWriter.h>
@@ -282,10 +283,21 @@ MgByteReader* MgServerFeatureService::GetCapabilities( CREFSTRING providerName )
 MgFeatureSchemaCollection* MgServerFeatureService::DescribeSchema( MgResourceIdentifier* resource,
                                                       CREFSTRING schemaName )
 {
-    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::DescribeSchema()");
+    Ptr<MgFeatureSchemaCollection> schema;
 
-    MgServerDescribeSchema msds;
-    return msds.DescribeSchema(resource, schemaName);
+    MG_TRY()
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::Trace, L"MgServerFeatureService.DescribeSchema", mgStackParams);
+    logDetail.AddResourceIdentifier(L"Resource", resource);
+    logDetail.AddString(L"SchemaName", schemaName);
+    logDetail.Create();
+
+     MgServerDescribeSchema msds;
+    schema = msds.DescribeSchema(resource, schemaName);
+
+    MG_CATCH_AND_THROW(L"MgServerFeatureService.DescribeSchema");
+
+    return schema.Detach();
 }
 
 
@@ -314,10 +326,21 @@ MgFeatureSchemaCollection* MgServerFeatureService::DescribeSchema( MgResourceIde
 STRING MgServerFeatureService::DescribeSchemaAsXml( MgResourceIdentifier* resource,
                                                       CREFSTRING schemaName )
 {
-    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::DescribeSchemaAsXml()");
+    STRING schema;
 
-    MgServerDescribeSchema msds;
-    return msds.DescribeSchemaAsXml(resource, schemaName);
+    MG_TRY()
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::Trace, L"MgServerFeatureService.DescribeSchemaAsXml", mgStackParams);
+    logDetail.AddResourceIdentifier(L"Resource", resource);
+    logDetail.AddString(L"SchemaName", schemaName);
+    logDetail.Create();
+
+     MgServerDescribeSchema msds;
+    schema = msds.DescribeSchemaAsXml(resource, schemaName);
+
+    MG_CATCH_AND_THROW(L"MgServerFeatureService.DescribeSchemaAsXml");
+
+    return schema;
 }
 
 
@@ -360,8 +383,28 @@ MgFeatureReader* MgServerFeatureService::SelectFeatures( MgResourceIdentifier* r
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::SelectFeatures()");
 
+    Ptr<MgFeatureReader> reader;
+
+    MG_TRY()
+
+    if (NULL == resource || NULL == options)
+    {
+        throw new MgNullArgumentException(
+            L"MgServerFeatureService.SelectFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::Trace, L"MgServerFeatureService.SelectFeatures",mgStackParams);
+    logDetail.AddResourceIdentifier(L"Resource", resource);
+    logDetail.AddString(L"ClassName", className);
+    logDetail.AddObject(L"Options", options);
+    logDetail.Create();
+
     MgServerSelectFeatures mssf;
-    return (MgFeatureReader*)mssf.SelectFeatures(resource, className, options, false);
+    reader = (MgFeatureReader*)mssf.SelectFeatures(resource, className, options, false);
+
+    MG_CATCH_AND_THROW(L"MgServerFeatureService.SelectFeatures")
+
+    return reader.Detach();
 }
 
 
@@ -641,10 +684,27 @@ INT32 MgServerFeatureService::ExecuteSqlNonQuery( MgResourceIdentifier* resource
 MgSpatialContextReader* MgServerFeatureService::GetSpatialContexts( MgResourceIdentifier* resource,
                                                                    bool bActiveOnly)
 {
-    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetSpatialContexts()");
+    Ptr<MgSpatialContextReader> reader;
 
-    MgServerGetSpatialContexts msgsc;
-    return msgsc.GetSpatialContexts(resource, bActiveOnly);
+    MG_TRY()
+
+    if (NULL == resource)
+    {
+        throw new MgNullArgumentException(
+            L"MgServerFeatureService.GetSpatialContexts", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::Trace, L"MgServerFeatureService.GetSpatialContexts", mgStackParams);
+    logDetail.AddResourceIdentifier(L"Id", resource);
+    logDetail.AddBool(L"ActiveOnly", bActiveOnly);
+    logDetail.Create();
+
+     MgServerGetSpatialContexts msgsc;
+    reader = msgsc.GetSpatialContexts(resource, bActiveOnly);
+
+    MG_CATCH_AND_THROW(L"MgServerFeatureService.GetSpatialContexts")
+
+    return reader.Detach();
 }
 
 

@@ -23,6 +23,7 @@
 #include "ExpressionHelper.h"
 #include "Foundation.h"
 
+extern void ProcessStylizerException(FdoException* exception, int line, wchar_t* file);
 
 GeometryAdapter::GeometryAdapter(LineBufferPool* lbp)
 {
@@ -98,7 +99,7 @@ bool GeometryAdapter::EvalBoolean(const MdfModel::MdfString& exprstr, bool& res)
     catch (FdoException* e)
     {
         _ASSERT(false);
-        e->Release();
+        ProcessStylizerException(e, __LINE__, __WFILE__);
     }
     catch (...)
     {
@@ -156,7 +157,7 @@ bool GeometryAdapter::EvalDouble(const MdfModel::MdfString& exprstr, double& res
     catch (FdoException* e)
     {
         _ASSERT(false);
-        e->Release();
+        ProcessStylizerException(e, __LINE__, __WFILE__);
     }
     catch (...)
     {
@@ -198,7 +199,7 @@ bool GeometryAdapter::EvalString(const MdfModel::MdfString& exprstr, RS_String& 
     }
     catch (FdoException* e)
     {
-        e->Release();
+        ProcessStylizerException(e, __LINE__, __WFILE__);
     }
     catch (...)
     {
@@ -270,7 +271,7 @@ bool GeometryAdapter::EvalColor(const MdfModel::MdfString& exprstr, RS_Color& rs
         catch (FdoException* e)
         {
             _ASSERT(false);
-            e->Release();
+            ProcessStylizerException(e, __LINE__, __WFILE__);
             rscolor = RS_Color(0x000000FF);
             return false;
         }
@@ -733,7 +734,7 @@ bool GeometryAdapter::ExecFdoFilter(const MdfModel::MdfString* pExprstr)
         }
         catch (FdoException* e)
         {
-            e->Release();
+            ProcessStylizerException(e, __LINE__, __WFILE__);
             filter = NULL;
         }
     }
@@ -753,7 +754,7 @@ bool GeometryAdapter::ExecFdoFilter(const MdfModel::MdfString* pExprstr)
     }
     catch (FdoException* e)
     {
-        e->Release();
+        ProcessStylizerException(e, __LINE__, __WFILE__);
     }
 
     return res;
@@ -792,7 +793,7 @@ FdoExpression* GeometryAdapter::ObtainFdoExpression(const MdfModel::MdfString* p
     }
     catch (FdoException* e)
     {
-        e->Release();
+        ProcessStylizerException(e, __LINE__, __WFILE__);
         expr = NULL;
     }
 

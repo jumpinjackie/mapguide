@@ -195,7 +195,7 @@ FdoExpression* ExpressionFunctionIf::ObtainFdoExpression(FdoString* exprstr)
     }
     catch (FdoException* e)
     {
-        e->Release();
+        ProcessStylizerException(e, __LINE__, __WFILE__);
         expr = NULL;
     }
 

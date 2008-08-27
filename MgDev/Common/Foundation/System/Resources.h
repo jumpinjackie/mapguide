@@ -178,9 +178,6 @@ INTERNAL_API:
     static const STRING FailedToLoadStartupFile;
     static const STRING FailedToLoadConfigurationFile;
     static const STRING FailedToRetrieveMessage;
-    static const STRING FormatExceptionLocationMethod;
-    static const STRING FormatExceptionLocationLine;
-    static const STRING FormatExceptionLocationFile;
     static const STRING FormatExceptionLocationMethods;
     static const STRING FormatExceptionLocationLines;
     static const STRING FormatExceptionLocationFiles;
@@ -243,6 +240,7 @@ INTERNAL_API:
     static const STRING UnauthorizedAccess;
     static const STRING PermissionDenied;
     static const STRING Error;
+    static const STRING Warning;
     static const STRING StackTrace;
     static const STRING ErrorDescription;
     static const STRING BlankArgument;
