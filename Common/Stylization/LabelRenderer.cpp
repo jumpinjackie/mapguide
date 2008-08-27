@@ -21,6 +21,7 @@
 
 //#define DEBUG_LABELS
 
+extern void ProcessStylizerException(FdoException* exception, int line, wchar_t* file);
 
 //////////////////////////////////////////////////////////////////////////////
 LabelRenderer::LabelRenderer(SE_Renderer* se_renderer)
@@ -41,7 +42,7 @@ LabelRenderer::~LabelRenderer()
     }
     catch (FdoException* e)
     {
-        e->Release();
+        ProcessStylizerException(e, __LINE__, __WFILE__);
     }
     catch (...)
     {

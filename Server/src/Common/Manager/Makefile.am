@@ -40,6 +40,7 @@ include_SOURCES = \
   GroupInfo.cpp \
   LicenseManager.cpp \
   LoadBalanceManager.cpp \
+  LogDetail.cpp \
   LogEntryData.cpp \
   LogManager.cpp \
   LogThread.cpp \
@@ -72,6 +73,7 @@ noinst_HEADERS = $(include_SOURCES) \
   GroupInfo.h \
   LicenseManager.h \
   LoadBalanceManager.h \
+  LogDetail.h \
   LogEntryData.h \
   LogManager.h \
   LogThread.h \

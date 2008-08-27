@@ -29,6 +29,11 @@
 #include "LongTransactionManager.h"
 #include "CacheManager.h"
 
+#include "Stylizer.h"
+#include "Bounds.h"
+#include "Renderer.h"
+#include "MappingUtil.h"
+
 #ifdef _DEBUG
 void DebugOutput(const ACE_TCHAR* format, ...)
 {
@@ -985,6 +990,9 @@ int MgServer::open(void *args)
             // user's locale.  The Server uses thread locale storage to save user information so this callback
             // is easy to implement.
             MgException::RegisterLocaleCallback(MgServer::LocaleCallback);
+
+            // Initialize Stylizer callback mechanism for non-fatal FDO exceptions
+            MgMappingUtil::InitializeStylizerCallback();
 
 #ifdef _DEBUG
             MgEventTimer& connectionTimer = m_eventTimerManager.GetEventTimer(MgEventTimer::ConnectionTimeout);

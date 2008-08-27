@@ -106,4 +106,8 @@ const int MG_DBXML_CURRENT_VERSION = 6;
                                                                               \
     MG_RESOURCE_SERVICE_THROW()                                               \
 
+#define MG_RESOURCE_CONTAINER_CATCH_AND_THROW(methodName)                     \
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(FormatMethodName(methodName))
+
+
 #endif

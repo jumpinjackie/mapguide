@@ -367,3 +367,20 @@ void MgStringCollection::ValidateIndex(INT32 index) const
             __LINE__, __WFILE__, &arguments, L"MgInvalidValueTooSmall", NULL);
     }
 }
+
+STRING MgStringCollection::GetLogString()
+{
+    STRING tmp = L"";
+    if (m_strProperty.size() == 0) return tmp;
+
+    tmp = L"{";;
+    for (INT32 i=0; i < (INT32) m_strProperty.size(); i++)
+    {
+        tmp += L"{";
+        tmp += m_strProperty[i];
+        tmp += L"}";
+    }
+    tmp += L"}";
+    return tmp;
+}
+

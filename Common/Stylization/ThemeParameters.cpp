@@ -22,6 +22,7 @@
 
 static const wchar_t* sEmpty = L"";
 
+extern void ProcessStylizerException(FdoException* exception, int line, wchar_t* file);
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -35,7 +36,7 @@ ThemeParameters* ThemeParameters::Parse(const wchar_t* expressionString)
     }
     catch (FdoException* e)
     {
-        e->Release();
+        ProcessStylizerException(e, __LINE__, __WFILE__);
     }
 
     FdoFunction* function = dynamic_cast<FdoFunction*>(expression.p);

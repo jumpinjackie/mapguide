@@ -88,7 +88,7 @@ class MgLogThread;
     if(pMan->IsErrorLogEnabled()) \
     { \
         MG_CONNECTION_INFO \
-        pMan->LogErrorEntry(Entry, connInfoClient.c_str(), connInfoClientIp.c_str(), connInfoUserName.c_str()); \
+        pMan->LogError(Entry, connInfoClient.c_str(), connInfoClientIp.c_str(), connInfoUserName.c_str()); \
     } \
   } while (0)
 
@@ -98,9 +98,17 @@ class MgLogThread;
     if(pMan->IsErrorLogEnabled()) \
     { \
         MG_CONNECTION_INFO \
-        pMan->LogErrorEntry(Entry, connInfoClient.c_str(), connInfoClientIp.c_str(), connInfoUserName.c_str(), StackTrace); \
+        pMan->LogError(Entry, connInfoClient.c_str(), connInfoClientIp.c_str(), connInfoUserName.c_str(), StackTrace); \
     } \
   } while (0)
+
+#define MG_LOG_WARNING_ENTRY(Service, Entry, StackTrace) \
+  do { \
+    MgLogManager* pMan = MgLogManager::GetInstance(); \
+    MG_CONNECTION_INFO \
+    pMan->LogWarning(Service, Entry, connInfoClient.c_str(), connInfoClientIp.c_str(), connInfoUserName.c_str(), StackTrace); \
+  } while (0)
+
 
 #define MG_LOG_SESSION_ENTRY(sessionInfo) \
   do { \
@@ -265,17 +273,23 @@ public:
     CREFSTRING GetLogsPath();
     void SetMaximumLogSize(INT32 size);
     void SetLogDelimiter(CREFSTRING delimiter);
+    STRING GetLogDelimiter();
     void EnableMaximumLogSize(bool useMaxSize);
     bool IsMaximumLogSizeEnabled();
 
-    // Log entry methods
+     
+    // Logging mechanism for errors and warnings
+    void LogError(CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName, CREFSTRING stackTrace = L"");
+    void LogWarning(INT16 service, CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName, CREFSTRING stackTrace = L"");
+
+    // Log file entry methods
     void LogSystemEntry(ACE_Log_Priority priority, CREFSTRING entry);
     void LogAccessEntry(CREFSTRING opId, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName);
     void LogAdminEntry(CREFSTRING opId, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName);
     void LogAuthenticationEntry(CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName);
-    void LogErrorEntry(CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName, CREFSTRING stackTrace = L"");
+    void LogErrorEntry(CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName, CREFSTRING stackTrace, CREFSTRING type);
     void LogSessionEntry(const MgSessionInfo& sessionInfo);
-    void LogTraceEntry(CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName);
+    void LogTraceEntry(CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName, CREFSTRING stackTrace = L"", CREFSTRING type = L"");
     void LogSystemErrorEntry(MgException* except);
 
     // Access log methods
@@ -351,6 +365,7 @@ public:
     void SetTraceLogFileName(CREFSTRING filename);
     STRING GetTraceLogParameters();
     void SetTraceLogParameters(CREFSTRING parameters);
+    INT8 GetDetailLevelForService(INT16 serviceNum);
     bool ClearTraceLog();
     MgByteReader* GetTraceLog();
     MgByteReader* GetTraceLog(INT32 numEntries);
@@ -381,6 +396,7 @@ private:
     static STRING m_path;
     static INT32 m_maxLogSize;
     static STRING m_delimiter;
+    std::vector<INT8> m_logsDetail;
     static bool m_useMaxLogSize;
 
     // Strings that represent the parameters that are used in the configuration file
@@ -473,10 +489,11 @@ private:
     // Add the parameter specified in the configuration file to the log entry
     void AddClient(REFSTRING entry, CREFSTRING client);
     void AddClientIp(REFSTRING entry, CREFSTRING clientIp);
-    void AddError(REFSTRING entry, CREFSTRING error);
+    void AddError(REFSTRING entry, CREFSTRING error, CREFSTRING type);
     void AddInfo(REFSTRING entry, CREFSTRING info);
     void AddOpId(REFSTRING entry, CREFSTRING opId);
     void AddStackTrace(REFSTRING entry, CREFSTRING stackTrace);
+    void AddThreadId(REFSTRING entry);
     void AddUserName(REFSTRING entry, CREFSTRING userName);
 
     // Check if the log file has reached the maximum size
@@ -505,6 +522,8 @@ private:
 
     void AddDelimiter(REFSTRING entry);
     void TranslateDelimiter();
+
+    void ParseLogService(INT16 serviceType, CREFSTRING configString);
 
     // Helper function to determine and archive should be created based on the specified archive frequency
     bool CheckArchiveFrequency(enum MgLogType logType, CREFSTRING logFilename);

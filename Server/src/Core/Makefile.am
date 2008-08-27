@@ -8,6 +8,7 @@ INCLUDES = \
   -I../../../Oem/ACE/ACE_wrappers \
   -I../../../Oem/dbxml-2.3.10/xerces-c-src/src \
   -I $(map_fdo_include) \
+  -I $(map_fdo_include)/ExpressionEngine \
   -I../Common \
   -I../Common/Base \
   -I../Common/Cache \

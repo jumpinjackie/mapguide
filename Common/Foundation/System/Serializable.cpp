@@ -20,3 +20,8 @@
 MgSerializable::~MgSerializable()
 {
 }
+
+STRING MgSerializable::GetLogString()
+{
+    return L"";
+}

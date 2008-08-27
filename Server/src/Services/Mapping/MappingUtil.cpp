@@ -29,6 +29,11 @@
 #include "TransformCache.h"
 #include "StylizationUtil.h"
 
+//For logging
+#include "ServerManager.h"
+#include "LogManager.h"
+#include "LogDetail.h"
+
 #ifndef _WIN32
 #define _wcsnicmp wcsncasecmp
 
@@ -461,7 +466,12 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 
             Ptr<MgLayerGroup> group = mapLayer->GetGroup();
 
-            //base map layers are not editable
+            MgLogDetail logDetail(MgServiceType::MappingService, MgLogDetail::InternalTrace, L"MgMappingUtil.StylizeLayers", mgStackParams);
+            logDetail.AddString(L"Map",map->GetName());
+            logDetail.AddResourceIdentifier(L"LayerId",layerid);
+            logDetail.Create();
+
+			//base map layers are not editable
             bool bEditable = true;
             if (mapLayer->GetLayerType() == MgLayerType::BaseMap)
                 bEditable = false;
@@ -1091,3 +1101,39 @@ MgByteReader* MgMappingUtil::DrawFTS(MgResourceService* svcResource,
 
     return NULL;
 }
+
+void MgMappingUtilExceptionTrap(FdoException* except, int line, wchar_t* file)
+{
+    MG_TRY()
+
+    STRING messageId;
+    MgStringCollection arguments;
+    wchar_t* buf = (wchar_t*)except->GetExceptionMessage();
+
+    if (NULL != buf)
+    {
+        messageId = L"MgFormatInnerExceptionMessage";
+        arguments.Add(buf);
+    }
+
+    mgException = new MgFdoException(L"MgStylizationUtil.ExceptionTrap", line, file, NULL, messageId, &arguments);
+
+    MG_CATCH(L"MgStylizationUtil.ExceptionTrap")
+
+    MgServerManager* serverManager = MgServerManager::GetInstance();
+    STRING locale = (NULL == serverManager) ?
+        MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
+    STRING message = mgException->GetMessage(locale);
+    STRING details = mgException->GetDetails(locale);
+    STRING stackTrace = mgException->GetStackTrace(locale);
+
+    ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));
+    MG_LOG_WARNING_ENTRY(MgServiceType::MappingService, message.c_str(), stackTrace.c_str());
+}
+
+
+void MgMappingUtil::InitializeStylizerCallback()
+{
+    SetStylizerExceptionCallback(&MgMappingUtilExceptionTrap);
+}
+
