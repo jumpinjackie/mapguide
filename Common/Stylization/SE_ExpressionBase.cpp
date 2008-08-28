@@ -26,6 +26,7 @@
 
 using namespace MDFMODEL_NAMESPACE;
 
+extern void ProcessStylizerException(FdoException* exception, int line, wchar_t* file);
 
 void SE_ExpressionBase::SetParameterValues(OverrideCollection* overrides)
 {

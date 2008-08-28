@@ -94,7 +94,6 @@ typedef void (*StylizerExceptionCallback)(FdoException* exception, int line, wch
 void ProcessStylizerException(FdoException* exception);
 STYLIZATION_API void SetStylizerExceptionCallback(StylizerExceptionCallback callbackFunction);
 
-
 // avoid linux warnings
 #ifndef _WIN32
 static const void* avoid_warning1 = (void*)FDO_ACTIVELONGTRANSACTION;

@@ -25,6 +25,7 @@
 #include "SE_BufferPool.h"
 #include "Foundation.h"
 
+extern void ProcessStylizerException(FdoException* exception, int line, wchar_t* file);
 
 ///////////////////////////////////////////////////////////////////////////////
 void StylizationUtil::ParseColor(const MdfString& colorstr, RS_Color& rscol)
