@@ -53,7 +53,7 @@ RuleCollection* FeatureTypeStyle::GetRules()
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor for the ShowInLegend property of this FeatureType.
-//          Determines whether this feature type style will be show in the
+//          Determines whether this feature type style will be shown in the
 //          legend.
 // RETURNS: Default is true;
 //-------------------------------------------------------------------------
@@ -66,8 +66,8 @@ bool FeatureTypeStyle::IsShowInLegend() const
 // PURPOSE: Accessor for the ShowInLegend property of this FeatureType.
 // PARAMETERS:
 //      Input:
-//          bShowInLegend - Determines whether this feature type style will 
-//          be show in the legend..
+//          bShowInLegend - Determines whether this feature type style will
+//          be shown in the legend..
 //-------------------------------------------------------------------------
 void FeatureTypeStyle::SetShowInLegend(bool bShowInLegend)
 {

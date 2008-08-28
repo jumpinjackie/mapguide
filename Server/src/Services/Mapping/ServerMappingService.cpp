@@ -1727,8 +1727,9 @@ void MgServerMappingService::MakeUIGraphicsForScaleRange(std::list<RS_UIGraphic>
         case FeatureTypeStyleVisitor::ftsArea:
         case FeatureTypeStyleVisitor::ftsComposite:
             {
-                if(!fts->IsShowInLegend())
+                if (!fts->IsShowInLegend())
                     break;
+
                 MdfModel::RuleCollection* rules = fts->GetRules();
 
                 for (int i=0; i<rules->GetCount(); i++)

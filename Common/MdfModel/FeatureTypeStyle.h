@@ -59,6 +59,7 @@ BEGIN_NAMESPACE_MDFMODEL
         // Collection of Rules.
         RuleCollection m_collRules;
 
+        // ShowInLegend flag
         bool m_showInLegend;
     };
 
