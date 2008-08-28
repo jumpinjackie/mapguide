@@ -23,9 +23,6 @@
 #include <map>
 #include <string>
 
-extern void ProcessStylizerException(FdoException* exception, int line, wchar_t* file);
-
-
 // Parameters used in symbol definitions must be delimited by the '%' character,
 // e.g. <LineWeight>%WEIGHT%</LineWeight>.
 static const wchar_t sParameterDelimiter = L'%';
@@ -77,7 +74,7 @@ struct SE_Color
             }
             catch (FdoException* e)
             {
-                ProcessStylizerException(e, __LINE__, __WFILE__);
+                e->Release();
             }
         }
 
@@ -117,7 +114,7 @@ struct SE_Double
             }
             catch (FdoException* e)
             {
-                ProcessStylizerException(e, __LINE__, __WFILE__);
+                e->Release();
             }
         }
 
@@ -156,7 +153,7 @@ struct SE_Integer
             }
             catch (FdoException* e)
             {
-                ProcessStylizerException(e, __LINE__, __WFILE__);
+                e->Release();
             }
         }
 
@@ -195,7 +192,7 @@ struct SE_Boolean
             }
             catch (FdoException* e)
             {
-                ProcessStylizerException(e, __LINE__, __WFILE__);
+                e->Release();
             }
         }
 
@@ -276,7 +273,7 @@ struct SE_String
             }
             catch (FdoException* e)
             {
-                ProcessStylizerException(e, __LINE__, __WFILE__);
+                e->Release();
             }
         }
 
