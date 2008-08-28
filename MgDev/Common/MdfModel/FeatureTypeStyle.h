@@ -50,10 +50,16 @@ BEGIN_NAMESPACE_MDFMODEL
         // Visitor Pattern to be implemented by all subclasses
         virtual void AcceptVisitor(IFeatureTypeStyleVisitor& iftsVisitor) = 0;
 
+        // Property ShowInLegend
+        bool IsShowInLegend() const;
+        void SetShowInLegend(bool bShowInLegend);
+
     private:
         // Data members
         // Collection of Rules.
         RuleCollection m_collRules;
+
+        bool m_showInLegend;
     };
 
     typedef MdfOwnerCollection<FeatureTypeStyle> FeatureTypeStyleCollection;

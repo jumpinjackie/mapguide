@@ -27,7 +27,8 @@ using namespace MDFPARSER_NAMESPACE;
 CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, LineTypeStyle);
 ELEM_MAP_ENTRY(2, LineRule);
-ELEM_MAP_ENTRY(3, ExtendedData1);
+ELEM_MAP_ENTRY(3, ShowInLegend);
+ELEM_MAP_ENTRY(4, ExtendedData1);
 
 
 IOLineTypeStyle::IOLineTypeStyle(Version& version) : SAX2ElementHandler(version)
@@ -82,6 +83,8 @@ void IOLineTypeStyle::StartElement(const wchar_t* name, HandlerStack* handlerSta
 
 void IOLineTypeStyle::ElementChars(const wchar_t* ch)
 {
+    if(eShowInLegend == this->m_currElemId)
+        this->m_lineTypeStyle->SetShowInLegend(wstrToBool(ch));
 }
 
 
@@ -110,12 +113,32 @@ void IOLineTypeStyle::Write(MdfStream& fd, LineTypeStyle* lineTypeStyle, Version
     fd << tab() << startStr(sLineTypeStyle) << std::endl;
     inctab();
 
+    MdfStringStream fdExtData;
+
     // Property: Rules
     for (int i=0; i<lineTypeStyle->GetRules()->GetCount(); ++i)
         IOLineRule::Write(fd, static_cast<LineRule*>(lineTypeStyle->GetRules()->GetAt(i)), version);
 
+    // Property: ShowInLegend
+    if(!version || (*version >= Version(1, 3, 0)))
+    {
+        // version 1.3.0 has a ShowInLegend Property
+        fd << tab() << startStr(sShowInLegend);
+        fd << BoolToStr(lineTypeStyle->IsShowInLegend());
+        fd << tab() << endStr(sShowInLegend) << std::endl;
+    }
+    else
+    {
+        inctab();
+        // Early version, we will save the Show in Legend to ExtendedData1
+        fdExtData << tab() << startStr(sShowInLegend);
+        fdExtData << BoolToStr(lineTypeStyle->IsShowInLegend());
+        fdExtData << tab() << endStr(sShowInLegend) << std::endl;
+        dectab();
+    }
+
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, lineTypeStyle->GetUnknownXml(), version);
+    IOUnknown::Write(fd, lineTypeStyle->GetUnknownXml(),fdExtData.str(), version);
 
     dectab();
     fd << tab() << endStr(sLineTypeStyle) << std::endl;
