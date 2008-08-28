@@ -83,7 +83,7 @@ void IOAreaTypeStyle::StartElement(const wchar_t* name, HandlerStack* handlerSta
 
 void IOAreaTypeStyle::ElementChars(const wchar_t* ch)
 {
-    if(eShowInLegend == this->m_currElemId)
+    if (eShowInLegend == this->m_currElemId)
         this->m_areaTypeStyle->SetShowInLegend(wstrToBool(ch));
 }
 
@@ -120,7 +120,7 @@ void IOAreaTypeStyle::Write(MdfStream& fd, AreaTypeStyle* areaTypeStyle, Version
         IOAreaRule::Write(fd, static_cast<AreaRule*>(areaTypeStyle->GetRules()->GetAt(i)), version);
 
     // Property: ShowInLegend
-    if(!version || (*version >= Version(1, 3, 0)))
+    if (!version || (*version >= Version(1, 3, 0)))
     {
         // version 1.3.0 has a ShowInLegend Property
         fd << tab() << startStr(sShowInLegend);
@@ -130,7 +130,7 @@ void IOAreaTypeStyle::Write(MdfStream& fd, AreaTypeStyle* areaTypeStyle, Version
     else
     {
         inctab();
-        // Early version, we will save the Show in Legend to ExtendedData1
+        // earlier version - save ShowInLegend to ExtendedData1
         fdExtData << tab() << startStr(sShowInLegend);
         fdExtData << BoolToStr(areaTypeStyle->IsShowInLegend());
         fdExtData << tab() << endStr(sShowInLegend) << std::endl;
@@ -138,7 +138,7 @@ void IOAreaTypeStyle::Write(MdfStream& fd, AreaTypeStyle* areaTypeStyle, Version
     }
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, areaTypeStyle->GetUnknownXml(),fdExtData.str(), version);
+    IOUnknown::Write(fd, areaTypeStyle->GetUnknownXml(), fdExtData.str(), version);
 
     dectab();
     fd << tab() << endStr(sAreaTypeStyle) << std::endl;

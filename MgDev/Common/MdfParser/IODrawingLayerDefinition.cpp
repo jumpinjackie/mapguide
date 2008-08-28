@@ -134,14 +134,9 @@ void IODrawingLayerDefinition::Write(MdfStream& fd, DrawingLayerDefinition* draw
             // LDF in MapGuide 2006
             strVersion = L"1.0.0";
         }
-        else if ((*version >= Version(1, 0, 0)) && (*version <= Version(1, 2, 0)))
+        else if ((*version >= Version(1, 0, 0)) && (*version <= Version(1, 3, 0)))
         {
-            // LDF in MapGuide 2007 / 2008 / 2009
-            strVersion = version->ToString();
-        }
-        else if ((*version > Version(1, 2, 0)) && (*version <= Version(1, 3, 0)))
-        {
-            // LDF in MapGuide 2010
+            // LDF in MapGuide 2007 / 2008 / 2009 / 2010
             strVersion = version->ToString();
         }
         else

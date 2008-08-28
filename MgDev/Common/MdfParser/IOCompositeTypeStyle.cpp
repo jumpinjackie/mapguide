@@ -64,7 +64,7 @@ void IOCompositeTypeStyle::StartElement(const wchar_t* name, HandlerStack* handl
 
 void IOCompositeTypeStyle::ElementChars(const wchar_t* ch)
 {
-    if(this->m_currElemName == L"ShowInLegend")
+    if (this->m_currElemName == L"ShowInLegend")
         this->m_compositeTypeStyle->SetShowInLegend(wstrToBool(ch));
 }
 
@@ -109,7 +109,7 @@ void IOCompositeTypeStyle::Write(MdfStream& fd, CompositeTypeStyle* compositeTyp
     }
 
     // Property: ShowInLegend
-    if(!version || (*version >= Version(1, 3, 0)))
+    if (!version || (*version >= Version(1, 3, 0)))
     {
         // version 1.3.0 has a ShowInLegend Property
         fd << tab() << "<ShowInLegend>";
@@ -119,7 +119,7 @@ void IOCompositeTypeStyle::Write(MdfStream& fd, CompositeTypeStyle* compositeTyp
     else
     {
         inctab();
-        // Early version, we will save the Show in Legend to ExtendedData1
+        // earlier version - save ShowInLegend to ExtendedData1
         fdExtData << tab() << "<ShowInLegend>";
         fdExtData << BoolToStr(compositeTypeStyle->IsShowInLegend());
         fdExtData << tab() << "</ShowInLegend>" << std::endl;

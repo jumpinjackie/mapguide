@@ -168,7 +168,7 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vector
         }
         else if ((*version >= Version(1, 0, 0)) && (*version <= Version(1, 3, 0)))
         {
-            // LDF in MapGuide 2007 / 2008 / 2009
+            // LDF in MapGuide 2007 / 2008 / 2009 / 2010
             strVersion = version->ToString();
         }
         else
