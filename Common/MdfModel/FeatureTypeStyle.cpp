@@ -32,6 +32,7 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 FeatureTypeStyle::FeatureTypeStyle()
 {
+    m_showInLegend = true;
 }
 
 //-------------------------------------------------------------------------
@@ -48,4 +49,27 @@ FeatureTypeStyle::~FeatureTypeStyle()
 RuleCollection* FeatureTypeStyle::GetRules()
 {
     return &this->m_collRules;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE: Accessor for the ShowInLegend property of this FeatureType.
+//          Determines whether this feature type style will be show in the
+//          legend.
+// RETURNS: Default is true;
+//-------------------------------------------------------------------------
+bool FeatureTypeStyle::IsShowInLegend() const
+{
+    return this->m_showInLegend;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE: Accessor for the ShowInLegend property of this FeatureType.
+// PARAMETERS:
+//      Input:
+//          bShowInLegend - Determines whether this feature type style will 
+//          be show in the legend..
+//-------------------------------------------------------------------------
+void FeatureTypeStyle::SetShowInLegend(bool bShowInLegend)
+{
+    this->m_showInLegend = bShowInLegend;
 }

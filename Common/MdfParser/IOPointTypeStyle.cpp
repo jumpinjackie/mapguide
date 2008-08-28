@@ -29,7 +29,8 @@ ELEM_MAP_ENTRY(1, PointTypeStyle);
 ELEM_MAP_ENTRY(2, DisplayAsText);
 ELEM_MAP_ENTRY(3, AllowOverpost);
 ELEM_MAP_ENTRY(4, PointRule);
-ELEM_MAP_ENTRY(5, ExtendedData1);
+ELEM_MAP_ENTRY(5, ShowInLegend);
+ELEM_MAP_ENTRY(6, ExtendedData1);
 
 
 IOPointTypeStyle::IOPointTypeStyle(Version& version) : SAX2ElementHandler(version)
@@ -93,6 +94,9 @@ void IOPointTypeStyle::ElementChars(const wchar_t* ch)
     case eAllowOverpost:
         this->m_pointTypeStyle->SetAllowOverpost(wstrToBool(ch));
         break;
+    case eShowInLegend:
+        this->m_pointTypeStyle->SetShowInLegend(wstrToBool(ch));
+        break;
     }
 }
 
@@ -122,6 +126,8 @@ void IOPointTypeStyle::Write(MdfStream& fd, PointTypeStyle* pointTypeStyle, Vers
     fd << tab() << startStr(sPointTypeStyle) << std::endl;
     inctab();
 
+    MdfStringStream fdExtData;
+
     // Property: DisplayAsText
     fd << tab() << startStr(sDisplayAsText);
     fd << BoolToStr(pointTypeStyle->IsDisplayAsText());
@@ -136,8 +142,26 @@ void IOPointTypeStyle::Write(MdfStream& fd, PointTypeStyle* pointTypeStyle, Vers
     for (int i=0; i<pointTypeStyle->GetRules()->GetCount(); ++i)
         IOPointRule::Write(fd, static_cast<PointRule*>(pointTypeStyle->GetRules()->GetAt(i)), version);
 
+    // Property: ShowInLegend
+    if(!version || (*version >= Version(1, 3, 0)))
+    {
+        // version 1.3.0 has a ShowInLegend Property
+        fd << tab() << startStr(sShowInLegend);
+        fd << BoolToStr(pointTypeStyle->IsShowInLegend());
+        fd << tab() << endStr(sShowInLegend) << std::endl;
+    }
+    else
+    {
+        inctab();
+        // Early version, we will save the Show in Legend to ExtendedData1
+        fdExtData << tab() << startStr(sShowInLegend);
+        fdExtData << BoolToStr(pointTypeStyle->IsShowInLegend());
+        fdExtData << tab() << endStr(sShowInLegend) << std::endl;
+        dectab();
+    }
+
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, pointTypeStyle->GetUnknownXml(), version);
+    IOUnknown::Write(fd, pointTypeStyle->GetUnknownXml(), fdExtData.str(), version);
 
     dectab();
     fd << tab() << endStr(sPointTypeStyle) << std::endl;

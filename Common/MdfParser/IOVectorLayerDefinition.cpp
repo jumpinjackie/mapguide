@@ -166,7 +166,7 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vector
             // LDF in MapGuide 2006
             strVersion = L"1.0.0";
         }
-        else if ((*version >= Version(1, 0, 0)) && (*version <= Version(1, 2, 0)))
+        else if ((*version >= Version(1, 0, 0)) && (*version <= Version(1, 3, 0)))
         {
             // LDF in MapGuide 2007 / 2008 / 2009
             strVersion = version->ToString();
@@ -182,7 +182,7 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vector
     else
     {
         // use the current highest version
-        strVersion = L"1.2.0";
+        strVersion = L"1.3.0";
     }
 
     fd << tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
