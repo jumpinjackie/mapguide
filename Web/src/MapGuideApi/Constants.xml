@@ -136,7 +136,17 @@
     <Header path="../../../Common/PlatformBase/Services/FeatureGeometricType.h" />
     <Header path="../../../Common/MapGuideCommon/System/ConfigProperties.h" />
     <Header path="../../../Common/MapGuideCommon/Services/ServerAdminDefs.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemCodeFormat.h"/>
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemType.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformationMethod.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionCode.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionFormatType.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionLogicalType.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionParameterType.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemType.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemUnitCode.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemUnitType.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemWktFlavor.h"/>
     <Header path="../../../Common/PlatformBase/Services/RasterTypes.h" />
     <Header path="../../../Common/MapGuideCommon/Services/MapPlotInstruction.h"/>
     <Header path="../../../Common/MapGuideCommon/Services/UnitType.h"/>

@@ -371,9 +371,28 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../../Common/MapGuideCommon/Services/ServerAdmin.h"/>
 
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystem.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemCatalog.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemCategory.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemDictionaryBase.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemCategoryDictionary.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemDatum.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemDatumDictionary.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemDictionary.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemDictionaryUtility.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemEllipsoid.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemEllipsoidDictionary.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemEnum.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemEnumInteger32.h"/>
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemFactory.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemFilter.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemFilterInteger32.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemFormatConverter.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformation.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemMathComparator.h"/>
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemMeasure.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionInformation.h"/>
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemTransform.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemUnitInformation.h"/>
 
     <Header path="../WebApp/WebCommand.h"/>
     <Header path="../WebApp/WebUiTargetCommand.h"/>
