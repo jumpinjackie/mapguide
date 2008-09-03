@@ -1127,7 +1127,6 @@ void MgMappingUtilExceptionTrap(FdoException* except, int line, wchar_t* file)
     STRING details = mgException->GetDetails(locale);
     STRING stackTrace = mgException->GetStackTrace(locale);
 
-    ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));
     MG_LOG_WARNING_ENTRY(MgServiceType::MappingService, message.c_str(), stackTrace.c_str());
 }
 

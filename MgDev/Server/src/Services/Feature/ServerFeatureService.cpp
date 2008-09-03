@@ -287,6 +287,12 @@ MgFeatureSchemaCollection* MgServerFeatureService::DescribeSchema( MgResourceIde
 
     MG_TRY()
 
+    if (NULL == resource)
+    {
+        throw new MgNullArgumentException(
+            L"MgServerFeatureService.DescribeSchema", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
     MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::Trace, L"MgServerFeatureService.DescribeSchema", mgStackParams);
     logDetail.AddResourceIdentifier(L"Resource", resource);
     logDetail.AddString(L"SchemaName", schemaName);
@@ -329,6 +335,12 @@ STRING MgServerFeatureService::DescribeSchemaAsXml( MgResourceIdentifier* resour
     STRING schema;
 
     MG_TRY()
+
+    if (NULL == resource)
+    {
+        throw new MgNullArgumentException(
+            L"MgServerFeatureService.DescribeSchemaAsXml", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::Trace, L"MgServerFeatureService.DescribeSchemaAsXml", mgStackParams);
     logDetail.AddResourceIdentifier(L"Resource", resource);
@@ -387,7 +399,7 @@ MgFeatureReader* MgServerFeatureService::SelectFeatures( MgResourceIdentifier* r
 
     MG_TRY()
 
-    if (NULL == resource || NULL == options)
+    if (NULL == resource)
     {
         throw new MgNullArgumentException(
             L"MgServerFeatureService.SelectFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
