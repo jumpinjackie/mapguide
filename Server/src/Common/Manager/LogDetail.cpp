@@ -56,7 +56,7 @@ void MgLogDetail::AppendName(CREFSTRING paramName)
 void MgLogDetail::AddResourceIdentifier(CREFSTRING paramName, MgResourceIdentifier* resId)
 {
     
-    if (ParamsActive())
+    if (NULL != resId && ParamsActive())
     {
         AppendName(paramName);
         m_params.append(resId->ToString());
@@ -105,7 +105,7 @@ void MgLogDetail::AddString(CREFSTRING paramName, CREFSTRING paramValue)
 
 void MgLogDetail::AddObject(CREFSTRING paramName, MgSerializable* object)
 {
-    if (ParamsActive())
+    if (NULL != object && ParamsActive())
     {
         AppendName(paramName);
         m_params.append(object->GetLogString());
