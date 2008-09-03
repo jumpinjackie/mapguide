@@ -137,7 +137,6 @@
     <Header path="../../../Common/MapGuideCommon/System/ConfigProperties.h" />
     <Header path="../../../Common/MapGuideCommon/Services/ServerAdminDefs.h"/>
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemCodeFormat.h"/>
-    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemType.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformationMethod.h"/>
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionCode.h"/>
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionFormatType.h"/>
