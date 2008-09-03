@@ -24,6 +24,11 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, CompositeTypeStyle);
+ELEM_MAP_ENTRY(2, CompositeRule);
+ELEM_MAP_ENTRY(3, ShowInLegend);
+ELEM_MAP_ENTRY(4, ExtendedData1);
 
 IOCompositeTypeStyle::IOCompositeTypeStyle(VectorScaleRange* vectorScaleRange, Version& version) : SAX2ElementHandler(version)
 {
@@ -40,32 +45,42 @@ IOCompositeTypeStyle::~IOCompositeTypeStyle()
 void IOCompositeTypeStyle::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     this->m_currElemName = name;
-    if (this->m_currElemName == L"CompositeTypeStyle") // NOXLATE
+    this->m_currElemId = _ElementIdFromName(name);
+
+    switch (this->m_currElemId)
     {
+    case eCompositeTypeStyle:
         this->m_startElemName = name;
         this->m_compositeTypeStyle = new CompositeTypeStyle();
-    }
-    else if (this->m_currElemName == L"CompositeRule") // NOXLATE
-    {
-        IOCompositeRule* IO = new IOCompositeRule(this->m_compositeTypeStyle, this->m_version);
-        handlerStack->push(IO);
-        IO->StartElement(name, handlerStack);
-    }
-    else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
-    {
+        break;
+
+    case eCompositeRule:
+        {
+            IOCompositeRule* IO = new IOCompositeRule(this->m_compositeTypeStyle, this->m_version);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eExtendedData1:
         this->m_procExtData = true;
-    }
-    else
-    {
+        break;
+
+    case eUnknown:
         ParseUnknownXml(name, handlerStack);
+        break;
     }
 }
 
 
 void IOCompositeTypeStyle::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == L"ShowInLegend")
+    switch (this->m_currElemId)
+    {
+    case eShowInLegend:
         this->m_compositeTypeStyle->SetShowInLegend(wstrToBool(ch));
+        break;
+    }
 }
 
 
@@ -82,7 +97,7 @@ void IOCompositeTypeStyle::EndElement(const wchar_t* name, HandlerStack* handler
         handlerStack->pop();
         delete this;
     }
-    else if (::wcscmp(name, L"ExtendedData1") == 0) // NOXLATE
+    else if (eExtendedData1 == _ElementIdFromName(name))
     {
         this->m_procExtData = false;
     }
@@ -96,7 +111,7 @@ void IOCompositeTypeStyle::Write(MdfStream& fd, CompositeTypeStyle* compositeTyp
     int numElements = ruleCollection->GetCount();
     _ASSERT(numElements > 0);
 
-    fd << tab() << "<CompositeTypeStyle>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sCompositeTypeStyle) << std::endl;
     inctab();
 
     MdfStringStream fdExtData;
@@ -109,20 +124,20 @@ void IOCompositeTypeStyle::Write(MdfStream& fd, CompositeTypeStyle* compositeTyp
     }
 
     // Property: ShowInLegend
-    if (!version || (*version >= Version(1, 3, 0)))
+    if(!version || (*version >= Version(1, 3, 0)))
     {
         // version 1.3.0 has a ShowInLegend Property
-        fd << tab() << "<ShowInLegend>";
+        fd << tab() << startStr(sShowInLegend);
         fd << BoolToStr(compositeTypeStyle->IsShowInLegend());
-        fd << tab() << "</ShowInLegend>" << std::endl;
+        fd << endStr(sShowInLegend) << std::endl;
     }
     else
     {
         inctab();
-        // earlier version - save ShowInLegend to ExtendedData1
-        fdExtData << tab() << "<ShowInLegend>";
+        // Early version, we will save the Show in Legend to ExtendedData1
+        fdExtData << tab() << startStr(sShowInLegend);
         fdExtData << BoolToStr(compositeTypeStyle->IsShowInLegend());
-        fdExtData << tab() << "</ShowInLegend>" << std::endl;
+        fdExtData << endStr(sShowInLegend) << std::endl;
         dectab();
     }
 
@@ -130,5 +145,5 @@ void IOCompositeTypeStyle::Write(MdfStream& fd, CompositeTypeStyle* compositeTyp
     IOUnknown::Write(fd, compositeTypeStyle->GetUnknownXml(), fdExtData.str(), version);
 
     dectab();
-    fd << tab() << "</CompositeTypeStyle>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sCompositeTypeStyle) << std::endl;
 }

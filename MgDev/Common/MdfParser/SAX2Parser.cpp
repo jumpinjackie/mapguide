@@ -548,11 +548,13 @@ void SAX2Parser::SetLayerDefinitionVersion(const Attributes& attributes)
             m_version = MdfModel::Version(1, 1, 0);
         else if (_wcsicmp(version.c_str(), L"1.2.0") == 0)
             m_version = MdfModel::Version(1, 2, 0);
+        else if (_wcsicmp(version.c_str(), L"1.3.0") == 0)
+            m_version = MdfModel::Version(1, 3, 0);
     }
     else
     {
         // assume the latest version if the attribute is missing
-        m_version = MdfModel::Version(1, 2, 0);
+        m_version = MdfModel::Version(1, 3, 0);
     }
 }
 

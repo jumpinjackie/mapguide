@@ -125,7 +125,7 @@ void IOLineTypeStyle::Write(MdfStream& fd, LineTypeStyle* lineTypeStyle, Version
         // version 1.3.0 has a ShowInLegend Property
         fd << tab() << startStr(sShowInLegend);
         fd << BoolToStr(lineTypeStyle->IsShowInLegend());
-        fd << tab() << endStr(sShowInLegend) << std::endl;
+        fd << endStr(sShowInLegend) << std::endl;
     }
     else
     {
@@ -133,7 +133,7 @@ void IOLineTypeStyle::Write(MdfStream& fd, LineTypeStyle* lineTypeStyle, Version
         // earlier version - save ShowInLegend to ExtendedData1
         fdExtData << tab() << startStr(sShowInLegend);
         fdExtData << BoolToStr(lineTypeStyle->IsShowInLegend());
-        fdExtData << tab() << endStr(sShowInLegend) << std::endl;
+        fdExtData << endStr(sShowInLegend) << std::endl;
         dectab();
     }
 

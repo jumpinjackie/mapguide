@@ -149,7 +149,7 @@ void IOPointTypeStyle::Write(MdfStream& fd, PointTypeStyle* pointTypeStyle, Vers
         // version 1.3.0 has a ShowInLegend Property
         fd << tab() << startStr(sShowInLegend);
         fd << BoolToStr(pointTypeStyle->IsShowInLegend());
-        fd << tab() << endStr(sShowInLegend) << std::endl;
+        fd << endStr(sShowInLegend) << std::endl;
     }
     else
     {
@@ -157,7 +157,7 @@ void IOPointTypeStyle::Write(MdfStream& fd, PointTypeStyle* pointTypeStyle, Vers
         // earlier version - save ShowInLegend to ExtendedData1
         fdExtData << tab() << startStr(sShowInLegend);
         fdExtData << BoolToStr(pointTypeStyle->IsShowInLegend());
-        fdExtData << tab() << endStr(sShowInLegend) << std::endl;
+        fdExtData << endStr(sShowInLegend) << std::endl;
         dectab();
     }
 
