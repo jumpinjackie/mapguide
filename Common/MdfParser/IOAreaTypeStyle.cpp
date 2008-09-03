@@ -125,7 +125,7 @@ void IOAreaTypeStyle::Write(MdfStream& fd, AreaTypeStyle* areaTypeStyle, Version
         // version 1.3.0 has a ShowInLegend Property
         fd << tab() << startStr(sShowInLegend);
         fd << BoolToStr(areaTypeStyle->IsShowInLegend());
-        fd << tab() << endStr(sShowInLegend) << std::endl;
+        fd << endStr(sShowInLegend) << std::endl;
     }
     else
     {
@@ -133,7 +133,7 @@ void IOAreaTypeStyle::Write(MdfStream& fd, AreaTypeStyle* areaTypeStyle, Version
         // earlier version - save ShowInLegend to ExtendedData1
         fdExtData << tab() << startStr(sShowInLegend);
         fdExtData << BoolToStr(areaTypeStyle->IsShowInLegend());
-        fdExtData << tab() << endStr(sShowInLegend) << std::endl;
+        fdExtData << endStr(sShowInLegend) << std::endl;
         dectab();
     }
 

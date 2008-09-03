@@ -256,7 +256,8 @@ void TestMdfModel::TestCase_Serialization()
         // ------------------------------------------------------
 
         // iterate over the layer definition schema versions
-        for (int minorVersion=2; minorVersion>=0; --minorVersion)
+        // Note: This needs to be updated to minorVersion=3
+        for (int minorVersion=3; minorVersion>=0; --minorVersion)
         {
             Version layerDefVersion(1, minorVersion, 0);
 
@@ -295,6 +296,7 @@ void TestMdfModel::TestCase_Serialization()
             Ptr<MgByteReader> rdr2 = src2->GetReader();
             Ptr<MgByteSink> sink2 = new MgByteSink(rdr2);
             Ptr<MgByte> bytes2 = sink2->ToBuffer();
+
             CPPUNIT_ASSERT(bytes1->GetLength() == bytes2->GetLength());
             CPPUNIT_ASSERT(memcmp(bytes1->Bytes(), bytes2->Bytes(), bytes1->GetLength()) == 0);
 
@@ -324,6 +326,7 @@ void TestMdfModel::TestCase_Versioning()
         Version layerDefVersion10(1, 0, 0); // MapGuide 2007
         Version layerDefVersion11(1, 1, 0); // MapGuide 2008
         Version layerDefVersion12(1, 2, 0); // MapGuide 2009
+        Version layerDefVersion13(1, 3, 0); // MapGuide 2010
         Version symbolDefVersion10(1, 0, 0); // MapGuide 2008
         Version symbolDefVersion11(1, 1, 0); // MapGuide 2009
         MdfParser::SAX2Parser parser;
@@ -470,6 +473,9 @@ void TestMdfModel::TestCase_Versioning()
             parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v12_Copy1.ldf", NULL, layerDef1.get(), NULL, NULL, &layerDefVersion12);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy1.ldf"));
 
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v13_Copy1.ldf", NULL, layerDef1.get(), NULL, NULL, &layerDefVersion13);
+            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy1.ldf"));
+
             // parse and resave the newly written files
             Ptr<MgByteSource> src1_09 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v09_Copy1.ldf");
             Ptr<MgByteReader> rdr1_09 = src1_09->GetReader();
@@ -515,6 +521,17 @@ void TestMdfModel::TestCase_Versioning()
             parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v12_Copy2.ldf", NULL, layerDef2_12.get(), NULL, NULL, &layerDefVersion12);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy2.ldf"));
 
+            Ptr<MgByteSource> src1_13 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy1.ldf");
+            Ptr<MgByteReader> rdr1_13 = src1_13->GetReader();
+            Ptr<MgByteSink> sink1_13 = new MgByteSink(rdr1_13);
+            Ptr<MgByte> bytes1_13 = sink1_13->ToBuffer();
+            parser.ParseString((const char*)bytes1_13->Bytes(), bytes1_13->GetLength());
+            auto_ptr<VectorLayerDefinition> layerDef2_13(parser.DetachVectorLayerDefinition());
+            CPPUNIT_ASSERT(layerDef2_13.get() != NULL);
+
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v13_Copy2.ldf", NULL, layerDef2_13.get(), NULL, NULL, &layerDefVersion13);
+            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy2.ldf"));
+
             // compare the files
             Ptr<MgByteSource> src2_09 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v09_Copy2.ldf");
             Ptr<MgByteReader> rdr2_09 = src2_09->GetReader();
@@ -544,40 +561,58 @@ void TestMdfModel::TestCase_Versioning()
             CPPUNIT_ASSERT(bytes1_12->GetLength() == bytes2_12->GetLength());
             CPPUNIT_ASSERT(memcmp(bytes1_12->Bytes(), bytes2_12->Bytes(), bytes1_12->GetLength()) == 0);
 
+            Ptr<MgByteSource> src2_13 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy2.ldf");
+            Ptr<MgByteReader> rdr2_13 = src2_13->GetReader();
+            Ptr<MgByteSink> sink2_13 = new MgByteSink(rdr2_13);
+            Ptr<MgByte> bytes2_13 = sink2_13->ToBuffer();
+            CPPUNIT_ASSERT(bytes1_13->GetLength() == bytes2_13->GetLength());
+            CPPUNIT_ASSERT(memcmp(bytes1_13->Bytes(), bytes2_13->Bytes(), bytes1_13->GetLength()) == 0);
+
             // verify extended data support is working...
             //   - layerDef2_10 was loaded from XML containing extended data
             //   - layerDef2_11 was loaded from XML containing extended data
             //   - layerDef2_12 was loaded from XML containing no extended data
+            //   - layerDef2_13 was loaded from XML containing no extended data
             // the data in these object models should be the same
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v12_Copy3a.ldf", NULL, layerDef2_10.get(), NULL, NULL, &layerDefVersion12);
-            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy3a.ldf"));
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v13_Copy3a.ldf", NULL, layerDef2_10.get(), NULL, NULL, &layerDefVersion13);
+            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy3a.ldf"));
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v12_Copy3b.ldf", NULL, layerDef2_11.get(), NULL, NULL, &layerDefVersion12);
-            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy3b.ldf"));
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v13_Copy3b.ldf", NULL, layerDef2_11.get(), NULL, NULL, &layerDefVersion13);
+            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy3b.ldf"));
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v12_Copy3c.ldf", NULL, layerDef2_12.get(), NULL, NULL, &layerDefVersion12);
-            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy3c.ldf"));
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v13_Copy3c.ldf", NULL, layerDef2_12.get(), NULL, NULL, &layerDefVersion13);
+            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy3c.ldf"));
 
-            Ptr<MgByteSource> src3a_12 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy3a.ldf");
-            Ptr<MgByteReader> rdr3a_12 = src3a_12->GetReader();
-            Ptr<MgByteSink> sink3a_12 = new MgByteSink(rdr3a_12);
-            Ptr<MgByte> bytes3a_12 = sink3a_12->ToBuffer();
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v13_Copy3d.ldf", NULL, layerDef2_13.get(), NULL, NULL, &layerDefVersion13);
+            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy3d.ldf"));
 
-            Ptr<MgByteSource> src3b_12 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy3b.ldf");
-            Ptr<MgByteReader> rdr3b_12 = src3b_12->GetReader();
-            Ptr<MgByteSink> sink3b_12 = new MgByteSink(rdr3b_12);
-            Ptr<MgByte> bytes3b_12 = sink3b_12->ToBuffer();
+            Ptr<MgByteSource> src3a_13 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy3a.ldf");
+            Ptr<MgByteReader> rdr3a_13 = src3a_13->GetReader();
+            Ptr<MgByteSink> sink3a_13 = new MgByteSink(rdr3a_13);
+            Ptr<MgByte> bytes3a_13 = sink3a_13->ToBuffer();
 
-            Ptr<MgByteSource> src3c_12 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy3c.ldf");
-            Ptr<MgByteReader> rdr3c_12 = src3c_12->GetReader();
-            Ptr<MgByteSink> sink3c_12 = new MgByteSink(rdr3c_12);
-            Ptr<MgByte> bytes3c_12 = sink3c_12->ToBuffer();
+            Ptr<MgByteSource> src3b_13 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy3b.ldf");
+            Ptr<MgByteReader> rdr3b_13 = src3b_13->GetReader();
+            Ptr<MgByteSink> sink3b_13 = new MgByteSink(rdr3b_13);
+            Ptr<MgByte> bytes3b_13 = sink3b_13->ToBuffer();
 
-            CPPUNIT_ASSERT(bytes3a_12->GetLength() == bytes3b_12->GetLength());
-            CPPUNIT_ASSERT(bytes3b_12->GetLength() == bytes3c_12->GetLength());
-            CPPUNIT_ASSERT(memcmp(bytes3a_12->Bytes(), bytes3b_12->Bytes(), bytes3a_12->GetLength()) == 0);
-            CPPUNIT_ASSERT(memcmp(bytes3b_12->Bytes(), bytes3c_12->Bytes(), bytes3b_12->GetLength()) == 0);
+            Ptr<MgByteSource> src3c_13 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy3c.ldf");
+            Ptr<MgByteReader> rdr3c_13 = src3c_13->GetReader();
+            Ptr<MgByteSink> sink3c_13 = new MgByteSink(rdr3c_13);
+            Ptr<MgByte> bytes3c_13 = sink3c_13->ToBuffer();
+
+            Ptr<MgByteSource> src3d_13 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy3d.ldf");
+            Ptr<MgByteReader> rdr3d_13 = src3d_13->GetReader();
+            Ptr<MgByteSink> sink3d_13 = new MgByteSink(rdr3d_13);
+            Ptr<MgByte> bytes3d_13 = sink3d_13->ToBuffer();
+
+            CPPUNIT_ASSERT(bytes3a_13->GetLength() == bytes3b_13->GetLength());
+            CPPUNIT_ASSERT(bytes3b_13->GetLength() == bytes3c_13->GetLength());
+            CPPUNIT_ASSERT(bytes3c_13->GetLength() == bytes3d_13->GetLength());
+            CPPUNIT_ASSERT(memcmp(bytes3a_13->Bytes(), bytes3b_13->Bytes(), bytes3a_13->GetLength()) == 0);
+            CPPUNIT_ASSERT(memcmp(bytes3b_13->Bytes(), bytes3c_13->Bytes(), bytes3b_13->GetLength()) == 0);
+            CPPUNIT_ASSERT(memcmp(bytes3c_13->Bytes(), bytes3d_13->Bytes(), bytes3c_13->GetLength()) == 0);
 
             // save the new resources to the repository to validate the XML
             m_svcResource->SetResource(ldfresV, rdr1_09, NULL);
@@ -588,7 +623,9 @@ void TestMdfModel::TestCase_Versioning()
             m_svcResource->DeleteResource(ldfresV);
             m_svcResource->SetResource(ldfresV, rdr1_12, NULL);
             m_svcResource->DeleteResource(ldfresV);
-            m_svcResource->SetResource(ldfresV, rdr3a_12, NULL);
+            m_svcResource->SetResource(ldfresV, rdr1_13, NULL);
+            m_svcResource->DeleteResource(ldfresV);
+            m_svcResource->SetResource(ldfresV, rdr3a_13, NULL);
             m_svcResource->DeleteResource(ldfresV);
         }
 
@@ -597,13 +634,18 @@ void TestMdfModel::TestCase_Versioning()
         MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v10_Copy1.ldf", true);
         MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v11_Copy1.ldf", true);
         MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy1.ldf", true);
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy1.ldf", true);
+
         MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v09_Copy2.ldf", true);
         MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v10_Copy2.ldf", true);
         MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v11_Copy2.ldf", true);
         MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy2.ldf", true);
-        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy3a.ldf", true);
-        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy3b.ldf", true);
-        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy3c.ldf", true);
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy2.ldf", true);
+
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy3a.ldf", true);
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy3b.ldf", true);
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy3c.ldf", true);
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy3d.ldf", true);
     }
     catch (MgException* e)
     {
