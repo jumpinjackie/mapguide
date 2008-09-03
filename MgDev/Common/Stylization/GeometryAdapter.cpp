@@ -199,7 +199,7 @@ bool GeometryAdapter::EvalString(const MdfModel::MdfString& exprstr, RS_String& 
     }
     catch (FdoException* e)
     {
-        ProcessStylizerException(e, __LINE__, __WFILE__);
+        e->Release();
     }
     catch (...)
     {
