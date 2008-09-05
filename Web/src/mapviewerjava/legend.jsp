@@ -425,6 +425,12 @@ void BuildLayerDefinitionData(MgResourceService resSrvc, MgResourceIdentifier re
                 int catIndex = 0;
                 for(int st = 0; st < typeStyle.getLength(); st++)
                 {
+                    // We will check if this typestyle is going to be shown in the legend
+                    NodeList showInLegend = ((Element)typeStyle.item(st)).getElementsByTagName("ShowInLegend");
+                    if(showInLegend != null && showInLegend.getLength() > 0)
+                        if(showInLegend.item(0).getChildNodes().item(0).getNodeValue().equals("false"))
+                            continue;   // This typestyle does not need to be shown in the legend
+
                     NodeList rules = ((Element)typeStyle.item(st)).getElementsByTagName(ruleNames[ts]);
                     for(int r = 0; r < rules.getLength(); r++)
                     {

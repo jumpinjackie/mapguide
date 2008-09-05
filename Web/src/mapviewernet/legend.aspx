@@ -432,6 +432,12 @@ void BuildLayerDefinitionData(MgResourceService resSrvc, MgResourceIdentifier re
                 int catIndex = 0;
                 for(int st = 0; st < typeStyle.Count; st++)
                 {
+                    // We will check if this typestyle is going to be shown in the legend
+                    XmlNodeList showInLegend = ((XmlElement)typeStyle[st]).GetElementsByTagName("ShowInLegend");
+                    if(showInLegend.Count > 0)
+                        if(!bool.Parse(showInLegend[0].ChildNodes[0].Value))
+                            continue;   // This typestyle does not need to be shown in the legend
+
                     XmlNodeList rules = ((XmlElement)typeStyle[st]).GetElementsByTagName(ruleNames[ts]);
                     for(int r = 0; r < rules.Count; r++)
                     {
