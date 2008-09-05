@@ -36,6 +36,13 @@ private:
     MgSpatialContextData* GetSpatialContextData(FdoISpatialContextReader* spatialReader,
         MgSpatialContextInfo* spatialContextInfo);
 
+    // ==========================================================================
+    // ===================== EPSG RELATED UTILITY FUNCTIONS =====================
+    // ==========================================================================
+    // Checks whether or not the coordinate system name represents an EPSG code.
+    // If this is the case the routine returns TRUE, FALSE otherwise.
+    bool IsEpsgCodeRepresentation (FdoString *coordSysName);
+
     STRING m_providerName;
     MgFeatureServiceCache* m_featureServiceCache;
 };
