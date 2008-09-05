@@ -342,6 +342,12 @@ function BuildLayerDefinitionData($resSrvc, $resId, $layerVarName, &$output)
             $catIndex = 0;
             for($st = 0; $st < $typeStyle->length; $st++)
             {
+                // We will check if this typestyle is going to be shown in the legend
+                $showInLegend = $typeStyle->item($st)->getElementsByTagName("ShowInLegend");
+                if($showInLegend->length > 0)
+                    if($showInLegend->item(0)->nodeValue == "false")
+                        continue;   // This typestyle does not need to be shown in the legend
+
                 $rules = $typeStyle->item(0)->getElementsByTagName($ruleNames[$ts]);
                 for($r = 0; $r < $rules->length; $r++)
                 {
