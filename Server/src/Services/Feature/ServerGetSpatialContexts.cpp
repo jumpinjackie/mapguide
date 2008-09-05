@@ -20,6 +20,7 @@
 #include "ServerFeatureConnection.h"
 #include "ServerFeatureUtil.h"
 #include "CacheManager.h"
+#include "GeometryCommon.h"
 
 MgServerGetSpatialContexts::MgServerGetSpatialContexts()
 {
@@ -122,8 +123,11 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(
     CHECKNULL((FdoString*)name, L"MgServerGetSpatialContexts.GetSpatialContexts");
     spatialData->SetName(STRING(name));
 
+    STRING coordSysName = L"";
     FdoString* csName = spatialReader->GetCoordinateSystem();
-    STRING coordSysName = STRING(csName);
+    if(NULL != csName)
+        coordSysName = STRING(csName);
+
     bool spatialContextDefined = !coordSysName.empty();
     bool coordSysOverridden = false;
 
@@ -164,18 +168,36 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(
     else if (spatialContextDefined && !coordSysOverridden)
     {
         csWkt = spatialReader->GetCoordinateSystemWkt();
-        srsWkt = csWkt;
+        if(NULL != csWkt)
+            srsWkt = csWkt;
 
         if (srsWkt.empty())
         {
-            // This is a work around for MG298: WKT not set for WMS and
-            // WFS spatial contexts.
-
             try
             {
                 Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
-                Ptr<MgCoordinateSystem> csPtr = csFactory->CreateFromCode(STRING(csName));
-                srsWkt = csPtr->ToString();
+
+                // Check if the spatial context coordinate system data represents an EPSG
+                // code. If this is the case the WKT data for the EPSG code has to be
+                // retrieved.
+                if (IsEpsgCodeRepresentation(csName))
+                {
+                    // This is an EPSG code
+                    FdoString* p = NULL;
+                    if ((csName[0] == L'E') || (csName[0] == L'e'))
+                        p = csName+5;
+                    else 
+                        p = csName;
+
+                    INT32 epsgCode = (INT32)wcstol(p, NULL, 10);
+
+                    // Convert the EPSG numerical code to WKT
+                    srsWkt = csFactory->ConvertEpsgCodeToWkt(epsgCode);
+                }
+                else
+                {
+                    srsWkt = csFactory->ConvertCoordinateSystemCodeToWkt(STRING(csName));
+                }
             }
             catch (MgException* e)
             {
@@ -188,7 +210,8 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(
         }
 
         FdoString* fdoDesc = spatialReader->GetDescription();
-        desc = STRING(fdoDesc);
+        if(NULL != fdoDesc)
+            desc = STRING(fdoDesc);
     }
 
     // retrieve other values from spatialReader
@@ -219,4 +242,33 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(
     spatialData->SetActiveStatus(isActive);
 
     return spatialData.Detach();
+}
+
+bool MgServerGetSpatialContexts::IsEpsgCodeRepresentation (FdoString *coordSysName)
+{
+    // If the given coordinate system name is NULL or not NULL but empty
+    // return false as those cases do not represent an EPSG code.
+    if ((coordSysName == NULL) || (coordSysName[0] == L'\0'))
+        return false;
+
+    // Check if the string contains a coded EPSG number ("EPSG:<num>"). If this
+    // is the case return true;
+    size_t coordSysNameLength  = wcslen(coordSysName);
+    if (coordSysNameLength  > 5)
+        if (((coordSysName[0] == L'E') || (coordSysName[0] == L'e')) &&
+            ((coordSysName[1] == L'P') || (coordSysName[1] == L'p')) &&
+            ((coordSysName[2] == L'S') || (coordSysName[2] == L's')) &&
+            ((coordSysName[3] == L'G') || (coordSysName[3] == L'g')) &&
+            (coordSysName[4] == L':')                                   )
+            return true;
+
+    // The string does not contain a coded EPSG number. Next, check if the
+    // string represents a numeric value. If this is the case then the value
+    // represents an EPSG code and the routine has to return true.
+    for (size_t i = 0; i < coordSysNameLength; i++)
+        if (!iswdigit(coordSysName[i]))
+            return false;
+
+    // This is an EPSG code. Indicate so.
+    return true;
 }
