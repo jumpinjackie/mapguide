@@ -45,7 +45,8 @@ wstring ToLower(const wstring& source)
 
 
 //  static initializations
-FontManager FontManager::m_manager;
+CustomThreadMutex FontManager::sm_mutex;
+FontManager FontManager::sm_manager;
 
 
 //-------------------------------------------------------------------------
@@ -55,14 +56,18 @@ FontManager FontManager::m_manager;
 
 FontManager::FontManager()
 {
+    AutoMutexLocker autoLocker(sm_mutex);
+
     FT_Init_FreeType(&m_library);  //  TODO:  check error code
 
-    m_manager.init_font_list();
+    sm_manager.init_font_list();
 }
 
 
 FontManager::~FontManager()
 {
+    AutoMutexLocker autoLocker(sm_mutex);
+
     FaceMapIterator it;
     FaceMapEntryType* pEntry = NULL;
     char* pData = NULL;
@@ -119,12 +124,14 @@ FontManager::~FontManager()
 
 FontManager* FontManager::Instance()
 {
-    return &m_manager;
+    return &sm_manager;
 }
 
 
 int FontManager::get_face(const char* filename, FT_Long index, FT_Face* face)
 {
+    AutoMutexLocker autoLocker(sm_mutex);
+
     int ret = 0;                      //  our return error code
     FaceMapIterator it;               //  an interator
     FaceMapEntryType* pEntry = NULL;  //  pointer to loaded font data
@@ -168,6 +175,8 @@ int FontManager::get_face(const char* filename, FT_Long index, FT_Face* face)
 
 FaceMapEntryType* FontManager::load_file(const char* filename)
 {
+    AutoMutexLocker autoLocker(sm_mutex);
+
     int errcode = 0;                  //  an error code
     FaceMapEntryType* pEntry = NULL;  //  pointer to return value
     char* pData = NULL;               //  pointer to loaded font file
@@ -213,6 +222,8 @@ FaceMapEntryType* FontManager::load_file(const char* filename)
 // initialize the font list
 void FontManager::init_font_list()
 {
+    AutoMutexLocker autoLocker(sm_mutex);
+
     int error = 0;
 
     // look for the windows font directory
@@ -281,6 +292,8 @@ void FontManager::init_font_list()
 // initialize the font list
 void FontManager::init_font_list()
 {
+    AutoMutexLocker autoLocker(sm_mutex);
+
     int error = 0;
 
     string dirname(".");
@@ -431,6 +444,8 @@ void FontManager::create_font(FT_Face face, FT_Long index, wchar_t const* filena
     font->m_underline_position = face->underline_position;
     font->m_underline_thickness = face->underline_thickness;
 
+    AutoMutexLocker autoLocker(sm_mutex);
+
     // add the font
     m_fontlist.push_front(font);
 }
@@ -442,7 +457,11 @@ void FontManager::create_font(FT_Face face, FT_Long index, wchar_t const* filena
 void FontManager::AddFontAlias(const wchar_t* alias, const wchar_t* asciiName)
 {
     if (alias != NULL && asciiName != NULL)
+    {
+        AutoMutexLocker autoLocker(sm_mutex);
+
         m_fontAliases.insert(FontMapPair(new wstring(alias), new wstring(asciiName)));
+    }
 }
 
 
@@ -456,6 +475,8 @@ FontList* FontManager::GetFontList()
 //
 const RS_Font* FontManager::FindFont(const wstring& sfontname, bool bold, bool italic)
 {
+    AutoMutexLocker autoLocker(sm_mutex);
+
     // first see if we cached the font match so we don't have to iterate
     NameCacheEntry entry = m_matchedCache[sfontname];
     int index = (int)bold | ((int)italic << 1);

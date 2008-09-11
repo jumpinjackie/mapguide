@@ -20,6 +20,7 @@
 
 #include "Renderers.h"
 #include "RS_Font.h"    // for FontList
+#include "CriticalSection.h"
 
 // FreeType includes
 #include "ft2build.h"
@@ -86,7 +87,8 @@ class FontManager
 
         map<wstring, NameCacheEntry> m_matchedCache;
 
-        static FontManager m_manager;
+        static CustomThreadMutex sm_mutex;
+        static FontManager sm_manager;
 };
 
 #endif

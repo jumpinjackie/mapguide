@@ -66,11 +66,25 @@ void MgFeatureServiceCacheEntry::SetActiveFlag(bool active)
 
 void MgFeatureServiceCacheEntry::SetFeatureSchemaName(CREFSTRING featureSchemaName)
 {
+    if (featureSchemaName != m_featureSchemaName)
+    {
+        SetFeatureSchemaCollection((MgFeatureSchemaCollection*) NULL);
+        SetFeatureSchemaXml(L"");
+        SetFeatureClassNames((MgStringCollection*) NULL);
+        SetFeatureClassName(L"");
+    }
+
     m_featureSchemaName = featureSchemaName;
 }
 
 void MgFeatureServiceCacheEntry::SetFeatureClassName(CREFSTRING featureClassName)
 {
+    if (featureClassName != m_featureClassName)
+    {
+        SetFeatureClassDefinition((MgClassDefinition*) NULL);
+        SetFeatureClassIdentityProperties((MgPropertyDefinitionCollection*) NULL);
+    }
+
     m_featureClassName = featureClassName;
 }
 
@@ -107,11 +121,6 @@ MgFeatureSchemaCollection* MgFeatureServiceCacheEntry::GetFeatureSchemaCollectio
 void MgFeatureServiceCacheEntry::SetFeatureSchemaXml(CREFSTRING featureSchemaXml)
 {
     m_featureSchemaXml = featureSchemaXml;
-}
-
-STRING MgFeatureServiceCacheEntry::GetFeatureSchemaXml()
-{
-    return m_featureSchemaXml;
 }
 
 void MgFeatureServiceCacheEntry::SetFeatureClassNames(MgStringCollection* featureClassNames)

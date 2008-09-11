@@ -94,6 +94,7 @@ private:
 
 private:
 
+    mutable ACE_Recursive_Thread_Mutex m_mutex;
     bool m_busy;
 
     STRING m_clientAgent;
