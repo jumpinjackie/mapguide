@@ -212,6 +212,9 @@ void MgLongTransactionManager::RemoveLongTransactionNames(MgStringCollection* ex
 {
     if (expiredSessions != NULL)
     {
+        // The mutex usage is to ensure this operation is completed for all expired sessions at once.
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+
         for (INT32 i=0; i<expiredSessions->GetCount(); ++i)
             MgLongTransactionManager::RemoveLongTransactionNames(expiredSessions->GetItem(i));
     }

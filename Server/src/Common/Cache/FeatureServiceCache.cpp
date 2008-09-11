@@ -265,17 +265,6 @@ void MgFeatureServiceCache::SetFeatureSource(MgResourceIdentifier* resource, MgF
 
     Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
 
-    if (NULL != entry.p)
-    {
-        Ptr<MgFeatureSourceCacheItem> data = entry->GetFeatureSource();
-
-        if (NULL != data.p)
-        {
-            RemoveEntry(resource);
-            entry = NULL;
-        }
-    }
-
     if (NULL == entry.p)
     {
         entry = CreateEntry(resource);
@@ -304,17 +293,6 @@ void MgFeatureServiceCache::SetSpatialContextInfo(MgResourceIdentifier* resource
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
-
-    if (NULL != entry.p)
-    {
-        Ptr<MgSpatialContextCacheItem> data = entry->GetSpatialContextInfo();
-
-        if (NULL != data.p)
-        {
-            RemoveEntry(resource);
-            entry = NULL;
-        }
-    }
 
     if (NULL == entry.p)
     {
@@ -345,17 +323,6 @@ void MgFeatureServiceCache::SetSpatialContextReader(MgResourceIdentifier* resour
 
     Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
 
-    if (NULL != entry.p)
-    {
-        Ptr<MgSpatialContextReader> data = entry->GetSpatialContextReader();
-
-        if (NULL != data.p)
-        {
-            RemoveEntry(resource);
-            entry = NULL;
-        }
-    }
-
     if (NULL == entry.p)
     {
         entry = CreateEntry(resource);
@@ -376,17 +343,19 @@ MgSpatialContextReader* MgFeatureServiceCache::GetSpatialContextReader(MgResourc
     {
         data = entry->GetSpatialContextReader();
 
+        // Make sure this cached data is only used by one thread at a time.
         if (NULL != data.p
-            && entry->GetActiveFlag() != active)
+            && (data->GetRefCount() > 2
+                || entry->GetActiveFlag() != active))
         {
             data = NULL;
         }
-    }
 
-    // Reset the reader
-    if(NULL != data.p)
-    {
-        data->Reset();
+        // Reset the reader.
+        if (NULL != data.p)
+        {
+            data->Reset();
+        }
     }
 
     return data.Detach();
@@ -397,17 +366,6 @@ void MgFeatureServiceCache::SetFeatureSchemaNames(MgResourceIdentifier* resource
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
-
-    if (NULL != entry.p)
-    {
-        Ptr<MgStringCollection> data = entry->GetFeatureSchemaNames();
-
-        if (NULL != data.p)
-        {
-            RemoveEntry(resource);
-            entry = NULL;
-        }
-    }
 
     if (NULL == entry.p)
     {
@@ -437,17 +395,6 @@ void MgFeatureServiceCache::SetFeatureSchemaCollection(MgResourceIdentifier* res
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
-
-    if (NULL != entry.p)
-    {
-        Ptr<MgFeatureSchemaCollection> data = entry->GetFeatureSchemaCollection();
-
-        if (NULL != data.p)
-        {
-            RemoveEntry(resource);
-            entry = NULL;
-        }
-    }
 
     if (NULL == entry.p)
     {
@@ -485,17 +432,6 @@ void MgFeatureServiceCache::SetFeatureSchemaXml(MgResourceIdentifier* resource, 
 
     Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
 
-    if (NULL != entry.p)
-    {
-        STRING data = entry->GetFeatureSchemaXml();
-
-        if (!data.empty())
-        {
-            RemoveEntry(resource);
-            entry = NULL;
-        }
-    }
-
     if (NULL == entry.p)
     {
         entry = CreateEntry(resource);
@@ -531,17 +467,6 @@ void MgFeatureServiceCache::SetFeatureClassNames(MgResourceIdentifier* resource,
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
-
-    if (NULL != entry.p)
-    {
-        Ptr<MgStringCollection> data = entry->GetFeatureClassNames();
-
-        if (NULL != data.p)
-        {
-            RemoveEntry(resource);
-            entry = NULL;
-        }
-    }
 
     if (NULL == entry.p)
     {
@@ -579,17 +504,6 @@ void MgFeatureServiceCache::SetFeatureClassDefinition(MgResourceIdentifier* reso
 
     Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
 
-    if (NULL != entry.p)
-    {
-        Ptr<MgClassDefinition> data = entry->GetFeatureClassDefinition();
-
-        if (NULL != data.p)
-        {
-            RemoveEntry(resource);
-            entry = NULL;
-        }
-    }
-
     if (NULL == entry.p)
     {
         entry = CreateEntry(resource);
@@ -611,8 +525,9 @@ MgClassDefinition* MgFeatureServiceCache::GetFeatureClassDefinition(MgResourceId
     {
         data = entry->GetFeatureClassDefinition();
 
-        if ( NULL != data.p &&
-             (entry->GetFeatureSchemaName() != featureSchemaName || entry->GetFeatureClassName() != featureClassName) )
+        if (NULL != data.p
+            && (entry->GetFeatureSchemaName() != featureSchemaName
+                || entry->GetFeatureClassName() != featureClassName))
         {
             data = NULL;
         }
@@ -626,17 +541,6 @@ void MgFeatureServiceCache::SetFeatureClassIdentityProperties(MgResourceIdentifi
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
-
-    if (NULL != entry.p)
-    {
-        Ptr<MgPropertyDefinitionCollection> data = entry->GetFeatureClassIdentityProperties();
-
-        if (NULL != data.p)
-        {
-            RemoveEntry(resource);
-            entry = NULL;
-        }
-    }
 
     if (NULL == entry.p)
     {
@@ -661,7 +565,7 @@ MgPropertyDefinitionCollection* MgFeatureServiceCache::GetFeatureClassIdentityPr
 
         if (NULL != data.p
             && (entry->GetFeatureSchemaName() != featureSchemaName
-            || entry->GetFeatureClassName() != featureClassName))
+                || entry->GetFeatureClassName() != featureClassName))
         {
             data = NULL;
         }

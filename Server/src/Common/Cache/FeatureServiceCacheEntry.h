@@ -50,26 +50,26 @@ public:
     void SetActiveFlag(bool active);
     bool GetActiveFlag() const;
 
-    void SetFeatureSchemaName(CREFSTRING featureSchemaName);
-    CREFSTRING GetFeatureSchemaName() const;
-
-    void SetFeatureClassName(CREFSTRING featureClassName);
-    CREFSTRING GetFeatureClassName() const;
-
     MgSpatialContextReader* GetSpatialContextReader();
     void SetSpatialContextReader(MgSpatialContextReader* spatialContextReader);
 
     MgStringCollection* GetFeatureSchemaNames();
     void SetFeatureSchemaNames(MgStringCollection* featureSchemaNames);
 
+    void SetFeatureSchemaName(CREFSTRING featureSchemaName);
+    STRING GetFeatureSchemaName() const;
+
     MgFeatureSchemaCollection* GetFeatureSchemaCollection();
     void SetFeatureSchemaCollection(MgFeatureSchemaCollection* featureSchemaCollection);
 
-    STRING GetFeatureSchemaXml();
+    STRING GetFeatureSchemaXml() const;
     void SetFeatureSchemaXml(CREFSTRING featureSchemaXml);
 
     MgStringCollection* GetFeatureClassNames();
     void SetFeatureClassNames(MgStringCollection* featureClassNames);
+
+    void SetFeatureClassName(CREFSTRING featureClassName);
+    STRING GetFeatureClassName() const;
 
     MgClassDefinition* GetFeatureClassDefinition();
     void SetFeatureClassDefinition(MgClassDefinition* featureClassDefinition);
@@ -108,12 +108,17 @@ inline bool MgFeatureServiceCacheEntry::GetActiveFlag() const
     return m_active;
 }
 
-inline CREFSTRING MgFeatureServiceCacheEntry::GetFeatureSchemaName() const
+inline STRING MgFeatureServiceCacheEntry::GetFeatureSchemaName() const
 {
     return m_featureSchemaName;
 }
 
-inline CREFSTRING MgFeatureServiceCacheEntry::GetFeatureClassName() const
+inline STRING MgFeatureServiceCacheEntry::GetFeatureSchemaXml() const
+{
+    return m_featureSchemaXml;
+}
+
+inline STRING MgFeatureServiceCacheEntry::GetFeatureClassName() const
 {
     return m_featureClassName;
 }

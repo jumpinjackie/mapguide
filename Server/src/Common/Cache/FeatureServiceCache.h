@@ -92,6 +92,8 @@ protected:
 
 private:
 
+    friend class MgCacheManager;
+
     MgFeatureServiceCacheEntries m_featureServiceCacheEntries;
 };
 

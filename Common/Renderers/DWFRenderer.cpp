@@ -2949,6 +2949,11 @@ void DWFRenderer::DrawString(const RS_String& s,
                              RS_Color&        color,
                              double           angleRad)
 {
+    if (NULL == font)
+    {
+        return;
+    }
+
     // draw to the active file if it's set
     WT_File* file = m_w2dActive? m_w2dActive : m_w2dFile;
 

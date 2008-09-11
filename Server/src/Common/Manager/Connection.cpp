@@ -119,11 +119,15 @@ void MgConnection::End()
 
 void MgConnection::SetBusy()
 {
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
     m_busy = true;
 }
 
 void MgConnection::ClearBusy()
 {
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
     m_busy = false;
 }
 
@@ -136,6 +140,8 @@ void MgConnection::ClearBusy()
 /// </summary>
 bool MgConnection::IsExpired(INT32 nIdleTimeout) const
 {
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
     bool bExpired = false;
 
     // Check to see if we are busy
@@ -198,6 +204,8 @@ void MgConnection::SetSessionId(CREFSTRING sessionId)
 /// </summary>
 void MgConnection::UpdateLastUsageTime()
 {
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
     m_lastUsageTime = ACE_High_Res_Timer::gettimeofday();
 }
 
