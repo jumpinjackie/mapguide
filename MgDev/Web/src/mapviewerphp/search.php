@@ -156,32 +156,35 @@
                     $propName = $resProps[$i];
                     $propType = $features->GetPropertyType($resProps[$i]);
                     $val = "";
-                    switch($propType)
+                    if (!$features->IsNull($propName))
                     {
-                        case MgPropertyType::Boolean:
-                            $val = $features->GetBoolean($propName)? "true": "false";
-                            break;
-                        case MgPropertyType::Single:
-                            $val = $features->GetSingle($propName);
-                            break;
-                        case MgPropertyType::Double:
-                            $val = $features->GetDouble($propName);
-                            break;
-                        case MgPropertyType::Int16:
-                            $val = $features->GetInt16($propName);
-                            break;
-                        case MgPropertyType::Int32:
-                            $val = $features->GetInt32($propName);
-                            break;
-                        case MgPropertyType::Int64:
-                            $val = $features->GetInt64($propName);
-                            break;
-                        case MgPropertyType::String:
-                            $val = $features->GetString($propName);
-                            break;
-                        case MgPropertyType::DateTime:
-                            $val = $features->GetDateTime($propName)->ToString();
-                            break;
+                        switch($propType)
+                        {
+                            case MgPropertyType::Boolean:
+                                $val = $features->GetBoolean($propName)? "true": "false";
+                                break;
+                            case MgPropertyType::Single:
+                                $val = $features->GetSingle($propName);
+                                break;
+                            case MgPropertyType::Double:
+                                $val = $features->GetDouble($propName);
+                                break;
+                            case MgPropertyType::Int16:
+                                $val = $features->GetInt16($propName);
+                                break;
+                            case MgPropertyType::Int32:
+                                $val = $features->GetInt32($propName);
+                                break;
+                            case MgPropertyType::Int64:
+                                $val = $features->GetInt64($propName);
+                                break;
+                            case MgPropertyType::String:
+                                $val = $features->GetString($propName);
+                                break;
+                            case MgPropertyType::DateTime:
+                                $val = $features->GetDateTime($propName)->ToString();
+                                break;
+                        }
                     }
 
                     // Generate XML to selection this feature

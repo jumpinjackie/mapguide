@@ -69,7 +69,7 @@ String searchError;
 
             MgUserInformation cred = new MgUserInformation(sessionId);
             cred.SetClientIp(GetClientIp(Request));
-            cred.SetClientAgent(GetClientAgent()):;
+            cred.SetClientAgent(GetClientAgent());
 
             //connect to the site and get a feature service and a resource service instances
             MgSiteConnection site = new MgSiteConnection();
@@ -162,32 +162,35 @@ String searchError;
                         String prop = (String)resProps[i];
                         int propType = features.GetPropertyType(prop);
                         String val = "";
-                        switch (propType)
+                        if (!features.IsNull(prop))
                         {
-                            case MgPropertyType.Boolean:
-                                val = features.GetBoolean(prop) ? "True" : "False";
-                                break;
-                            case MgPropertyType.Single:
-                                val = features.GetSingle(prop).ToString();
-                                break;
-                            case MgPropertyType.Double:
-                                val = features.GetDouble(prop).ToString();
-                                break;
-                            case MgPropertyType.Int16:
-                                val = features.GetInt16(prop).ToString();
-                                break;
-                            case MgPropertyType.Int32:
-                                val = features.GetInt32(prop).ToString();
-                                break;
-                            case MgPropertyType.Int64:
-                                val = features.GetInt64(prop).ToString();
-                                break;
-                            case MgPropertyType.String:
-                                val = features.GetString(prop);
-                                break;
-                            case MgPropertyType.DateTime:
-                                val = features.GetDateTime(prop).ToString();
-                                break;
+                            switch (propType)
+                            {
+                                case MgPropertyType.Boolean:
+                                    val = features.GetBoolean(prop) ? "True" : "False";
+                                    break;
+                                case MgPropertyType.Single:
+                                    val = features.GetSingle(prop).ToString();
+                                    break;
+                                case MgPropertyType.Double:
+                                    val = features.GetDouble(prop).ToString();
+                                    break;
+                                case MgPropertyType.Int16:
+                                    val = features.GetInt16(prop).ToString();
+                                    break;
+                                case MgPropertyType.Int32:
+                                    val = features.GetInt32(prop).ToString();
+                                    break;
+                                case MgPropertyType.Int64:
+                                    val = features.GetInt64(prop).ToString();
+                                    break;
+                                case MgPropertyType.String:
+                                    val = features.GetString(prop);
+                                    break;
+                                case MgPropertyType.DateTime:
+                                    val = features.GetDateTime(prop).ToString();
+                                    break;
+                            }
                         }
 
                         // Generate XML to selection this feature
