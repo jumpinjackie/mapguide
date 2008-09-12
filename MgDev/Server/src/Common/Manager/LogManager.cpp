@@ -1425,11 +1425,11 @@ void MgLogManager::LogWarning(INT16 service, CREFSTRING entry, CREFSTRING client
         // Log entries to both error log and trace log, if applicable
         if(IsErrorLogEnabled())
         {
-            LogErrorEntry(entry, client, clientIp, userName, stackTrace, MgResources::Warning);
+            LogErrorEntry(entry, client, clientIp, userName, stackTrace, MgResources::Warnings);
         }
         if(IsTraceLogEnabled())
         {
-            LogTraceEntry(entry, client, clientIp, userName, stackTrace, MgResources::Warning);
+            LogTraceEntry(entry, client, clientIp, userName, stackTrace, MgResources::Warnings);
         }
     }
 }

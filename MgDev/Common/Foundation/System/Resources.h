@@ -240,7 +240,7 @@ INTERNAL_API:
     static const STRING UnauthorizedAccess;
     static const STRING PermissionDenied;
     static const STRING Error;
-    static const STRING Warning;
+    static const STRING Warnings;   // Intentionally suffix the constant here with 's' to resolve a build conflict
     static const STRING StackTrace;
     static const STRING ErrorDescription;
     static const STRING BlankArgument;
