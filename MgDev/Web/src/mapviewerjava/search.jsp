@@ -171,32 +171,35 @@ String searchError;
                     String prop = (String)resProps.get(i);
                     int propType = features.GetPropertyType(prop);
                     String val = "";
-                    switch(propType)
+                    if (!features.IsNull(prop))
                     {
-                        case MgPropertyType.Boolean:
-                            val = features.GetBoolean(prop)? "True": "False";
-                            break;
-                        case MgPropertyType.Single:
-                            val = String.valueOf(features.GetSingle(prop));
-                            break;
-                        case MgPropertyType.Double:
-                            val = String.valueOf(features.GetDouble(prop));
-                            break;
-                        case MgPropertyType.Int16:
-                            val = String.valueOf(features.GetInt16(prop));
-                            break;
-                        case MgPropertyType.Int32:
-                            val = String.valueOf(features.GetInt32(prop));
-                            break;
-                        case MgPropertyType.Int64:
-                            val = String.valueOf(features.GetInt64(prop));
-                            break;
-                        case MgPropertyType.String:
-                            val = features.GetString(prop);
-                            break;
-                        case MgPropertyType.DateTime:
-                            val = features.GetDateTime(prop).ToString();
-                            break;
+                        switch(propType)
+                        {
+                            case MgPropertyType.Boolean:
+                                val = features.GetBoolean(prop)? "True": "False";
+                                break;
+                            case MgPropertyType.Single:
+                                val = String.valueOf(features.GetSingle(prop));
+                                break;
+                            case MgPropertyType.Double:
+                                val = String.valueOf(features.GetDouble(prop));
+                                break;
+                            case MgPropertyType.Int16:
+                                val = String.valueOf(features.GetInt16(prop));
+                                break;
+                            case MgPropertyType.Int32:
+                                val = String.valueOf(features.GetInt32(prop));
+                                break;
+                            case MgPropertyType.Int64:
+                                val = String.valueOf(features.GetInt64(prop));
+                                break;
+                            case MgPropertyType.String:
+                                val = features.GetString(prop);
+                                break;
+                            case MgPropertyType.DateTime:
+                                val = features.GetDateTime(prop).ToString();
+                                break;
+                        }
                     }
 
                     // Generate XML to select this feature
