@@ -2552,15 +2552,16 @@ function MakeWktPolygon(x1,y1,x2,y2)
 
 function QueryFeatureInfo(geom, append, maxfeatures, which)
 {
-    var url = webAgent;
-    var req = url + "?OPERATION=QUERYMAPFEATURES&VERSION=1.0.0&PERSIST=1&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&SEQ=" + Math.random();
-    req += "&LAYERNAMES=" + encodeURIComponent(GetVisSelLayers()) + "&GEOMETRY=" + geom + "&SELECTIONVARIANT=INTERSECTS" + "&CLIENTAGENT=" + encodeURIComponent(clientAgent);
+    var reqParams = "OPERATION=QUERYMAPFEATURES&VERSION=1.0.0&PERSIST=1&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&SEQ=" + Math.random();
+    reqParams += "&LAYERNAMES=" + encodeURIComponent(GetVisSelLayers()) + "&GEOMETRY=" + geom + "&SELECTIONVARIANT=INTERSECTS";
     if(maxfeatures != 0)
-        req += "&MAXFEATURES=" + maxfeatures;
+        reqParams += "&MAXFEATURES=" + maxfeatures;
+
 
     var selRequest = CreateRequestHandler();
-    selRequest.open("GET", req, false);
-    selRequest.send(null);
+    selRequest.open("POST", webAgent, false);
+    selRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    selRequest.send(reqParams);
     if(selRequest.responseXML)
         ProcessFeatureInfo(selRequest.responseXML.documentElement, append, which);
     else
