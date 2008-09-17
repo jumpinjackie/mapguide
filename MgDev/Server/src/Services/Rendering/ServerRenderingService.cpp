@@ -1246,27 +1246,54 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                         double area = queryGeom->GetArea();
                         double delta = sqrt(area) * 10.0;
 
-                        Ptr<MgCoordinateCollection> coordinates = new MgCoordinateCollection();
-                        Ptr<MgCoordinateXY> coord1 = new MgCoordinateXY(ctr->GetX() - delta, ctr->GetY() - delta);
-                        coordinates->Add(coord1);
-                        Ptr<MgCoordinateXY> coord2 = new MgCoordinateXY(ctr->GetX() - delta, ctr->GetY() + delta);
-                        coordinates->Add(coord2);
-                        Ptr<MgCoordinateXY> coord3 = new MgCoordinateXY(ctr->GetX() + delta, ctr->GetY() + delta);
-                        coordinates->Add(coord3);
-                        Ptr<MgCoordinateXY> coord4 = new MgCoordinateXY(ctr->GetX() + delta, ctr->GetY() - delta);
-                        coordinates->Add(coord4);
-                        coordinates->Add(coord1);
+                        // Only process selection if we have a valid area.  The input geometry may not have a
+                        // centroid if it is outside the bounds of the coordinate system.  GetArea() will
+                        // return zero in these cases.
+                        if (delta > 0.0)
+                        {
+                            Ptr<MgCoordinateCollection> coordinates = new MgCoordinateCollection();
+                            Ptr<MgCoordinateXY> coord1 = new MgCoordinateXY(ctr->GetX() - delta, ctr->GetY() - delta);
+                            coordinates->Add(coord1);
+                            Ptr<MgCoordinateXY> coord2 = new MgCoordinateXY(ctr->GetX() - delta, ctr->GetY() + delta);
+                            coordinates->Add(coord2);
+                            Ptr<MgCoordinateXY> coord3 = new MgCoordinateXY(ctr->GetX() + delta, ctr->GetY() + delta);
+                            coordinates->Add(coord3);
+                            Ptr<MgCoordinateXY> coord4 = new MgCoordinateXY(ctr->GetX() + delta, ctr->GetY() - delta);
+                            coordinates->Add(coord4);
+                            coordinates->Add(coord1);
+                            Ptr<MgLinearRing> outerRing = new MgLinearRing(coordinates);
+                            Ptr<MgPolygon> polygon = new MgPolygon(outerRing, NULL);
 
-                        Ptr<MgLinearRing> outerRing = new MgLinearRing(coordinates);
-                        Ptr<MgPolygon> polygon = new MgPolygon(outerRing, NULL);
-                        options->SetSpatialFilter(layer->GetFeatureGeometryName(), polygon, /*MgFeatureSpatialOperations*/selectionVariant);
-               
-                        Ptr<MgFeatureReader> rdr0 = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
-                        RSMgFeatureReader rsrdr0(rdr0, m_svcFeature, featResId, NULL, vl->GetGeometry());
-                        selRenderer->PointTest(true);
-                        ds.StylizeVectorLayer(vl, selRenderer, &rsrdr0, NULL, scale, StylizeThatMany, selRenderer);
-                        selRenderer->PointTest(false);
-                        numFeaturesProcessed = selRenderer->GetNumFeaturesProcessed();
+                            // The selection area may extent past the map extents so clip the selection area to the map extent
+                            Ptr<MgEnvelope> extent = map->GetMapExtent();
+                            Ptr<MgCoordinate> llCoord = extent->GetLowerLeftCoordinate();
+                            Ptr<MgCoordinate> urCoord = extent->GetUpperRightCoordinate();
+                            Ptr<MgCoordinateCollection> extentCoords = new MgCoordinateCollection();
+                            Ptr<MgCoordinateXY> c1 = new MgCoordinateXY(llCoord->GetX(), llCoord->GetY());
+                            extentCoords->Add(c1);
+                            Ptr<MgCoordinateXY> c2 = new MgCoordinateXY(llCoord->GetX(), urCoord->GetY());
+                            extentCoords->Add(c2);
+                            Ptr<MgCoordinateXY> c3 = new MgCoordinateXY(urCoord->GetX(), urCoord->GetY());
+                            extentCoords->Add(c3);
+                            Ptr<MgCoordinateXY> c4 = new MgCoordinateXY(urCoord->GetX(), llCoord->GetY());
+                            extentCoords->Add(c4);
+                            extentCoords->Add(c1);
+                            Ptr<MgLinearRing> extentRing = new MgLinearRing(extentCoords);
+                            Ptr<MgPolygon> extentPolygon = new MgPolygon(extentRing, NULL);                        
+                            Ptr<MgGeometry> intersectPolygon = polygon->Intersection(extentPolygon);
+
+                            if (intersectPolygon != NULL)
+                            {
+                                options->SetSpatialFilter(layer->GetFeatureGeometryName(), intersectPolygon, /*MgFeatureSpatialOperations*/selectionVariant);
+                       
+                                Ptr<MgFeatureReader> rdr0 = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
+                                RSMgFeatureReader rsrdr0(rdr0, m_svcFeature, featResId, NULL, vl->GetGeometry());
+                                selRenderer->PointTest(true);
+                                ds.StylizeVectorLayer(vl, selRenderer, &rsrdr0, NULL, scale, StylizeThatMany, selRenderer);
+                                selRenderer->PointTest(false);
+                                numFeaturesProcessed = selRenderer->GetNumFeaturesProcessed();
+                            }
+                        }
                     }
                     selRenderer->EndLayer();
 
