@@ -87,6 +87,7 @@
                     echo '<br><br>';
                 }
 
+                $propertyNameTypeList = array();
                 echo '<table class="data" cellspacing="0"><tr>';
                 for($i=0; $i<$propertyList->GetCount(); $i++)
                 {

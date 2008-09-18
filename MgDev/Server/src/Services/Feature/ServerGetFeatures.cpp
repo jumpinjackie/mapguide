@@ -205,7 +205,7 @@ MgClassDefinition* MgServerGetFeatures::GetMgClassDefinition(FdoClassDefinition*
     }
 
     // Add identity properties
-    this->GetClassProperties(identityPropDefCol, fdpdc);
+    this->GetClassProperties(identityPropDefCol, fdpdc);                
 
     // Add base properties
 //  this->GetClassProperties(propDefCol, frpdc);
@@ -1032,6 +1032,14 @@ MgByteReader* MgServerGetFeatures::SerializeToXml(FdoClassDefinition* classDef)
         // avoid XSL warnings
         tempSchema = FdoFeatureSchema::Create(L"TempSchema", L"" );
         FdoClassesP(tempSchema->GetClasses())->Add(classDef);
+
+        // Add the base class
+        FdoPtr<FdoClassDefinition> fdoBaseClass = classDef->GetBaseClass();
+        while (fdoBaseClass != NULL)
+        {
+            FdoClassesP(tempSchema->GetClasses())->Add(fdoBaseClass);
+            fdoBaseClass = fdoBaseClass->GetBaseClass();
+        }
     }
 
     FdoIoMemoryStreamP fmis = FdoIoMemoryStream::Create();
