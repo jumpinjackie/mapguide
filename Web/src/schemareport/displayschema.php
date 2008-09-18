@@ -113,6 +113,7 @@
                 $proc->setParameter('', 'stringHasMeasures', XslStrings::HasMeasures);
                 $proc->setParameter('', 'stringHasElevation', XslStrings::HasElevation);
                 $proc->setParameter('', 'stringNoGeometry', XslStrings::NoGeometry);
+                $proc->setParameter('', 'stringNoData', XslStrings::NoData);
 
                 $html = $proc->transformToXML($xml_object);
 
