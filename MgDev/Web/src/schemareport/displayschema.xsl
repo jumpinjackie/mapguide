@@ -20,6 +20,7 @@
 <xsl:param name="stringHasMeasures"/>
 <xsl:param name="stringHasElevation"/>
 <xsl:param name="stringNoGeometry"/>
+<xsl:param name="stringNoData"/>
 
 
 <xsl:template match="/">
@@ -40,7 +41,14 @@
                     <xsl:variable name="identity" select="xs:key/xs:field/@xpath"/>
                     <xsl:variable name="currclassname" select="@name"/>
                     <h2><xsl:value-of select="$stringClassTitle"/> <xsl:value-of select="$currclassname"/></h2>
-                    <span><a><xsl:attribute name="href">showclass.php?resId=<xsl:value-of select="$resName"/>&amp;schemaName=<xsl:value-of select="../@targetNamespace"/>&amp;className=<xsl:value-of select="$currclassname"/>&amp;sessionId=<xsl:value-of select="$sessionId"/>&amp;index=0</xsl:attribute><xsl:attribute name="target">viewFrame</xsl:attribute><xsl:value-of select="$stringViewData"/></a></span>
+                    <xsl:choose>
+                    	<xsl:when test="@abstract='false'">
+                    		<span><a><xsl:attribute name="href">showclass.php?resId=<xsl:value-of select="$resName"/>&amp;schemaName=<xsl:value-of select="../@targetNamespace"/>&amp;className=<xsl:value-of select="$currclassname"/>&amp;sessionId=<xsl:value-of select="$sessionId"/>&amp;index=0</xsl:attribute><xsl:attribute name="target">viewFrame</xsl:attribute><xsl:value-of select="$stringViewData"/></a></span>
+                    	</xsl:when>
+                    	<xsl:otherwise>
+                    		<span class="gray"><xsl:value-of select="$stringNoData"/></span>
+                    	</xsl:otherwise>
+                    </xsl:choose>
                     <xsl:apply-templates select="../xs:complexType">
                         <xsl:with-param name="selector" select="$selector"/>
                         <xsl:with-param name="currclassname" select="$currclassname"/>
@@ -131,8 +139,8 @@
                     </xsl:when>
                     <xsl:otherwise>
                         <span class="gray"><xsl:value-of select="$stringNoGeometry"/></span>
-                    </xsl:otherwise>
-                </xsl:choose>
+            </xsl:otherwise>
+        </xsl:choose>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:if>

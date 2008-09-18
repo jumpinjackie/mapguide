@@ -114,6 +114,7 @@ class XslStrings
     const HasMeasures = 'Has Measures';
     const HasElevation = 'Has Elevation';
     const NoGeometry = 'No Geometry';
+    const NoData = 'No Data';
 }
 
 ?>
