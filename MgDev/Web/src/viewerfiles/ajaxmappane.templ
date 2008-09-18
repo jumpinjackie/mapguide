@@ -345,6 +345,7 @@ function ZoomToView(x,y,scale,refresh)
 function Refresh()
 {
     GetLegendCtrl().Refresh();
+    BuildTilePlanes(extX1, extY1, extX2, extY2);
     GotoView(extX1 + (extX2 - extX1) / 2, extY2 + (extY1 - extY2) / 2, curScale, false, false);
 }
 
