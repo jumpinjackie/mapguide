@@ -69,8 +69,6 @@ MgMap* MgWmsMapUtil::GetMap(MgOgcWmsServer& oWms,
                             INT32 width, INT32 height,
                             MgResourceService* resourceService)
 {
-    INT32 displayDpi = 72;
-
     // Get the requested map extents
     Ptr<MgEnvelope> extents = GetExtents(bbox);
 
@@ -84,10 +82,9 @@ MgMap* MgWmsMapUtil::GetMap(MgOgcWmsServer& oWms,
     map->Create(sWKT, extents, L"WMS Map");
     map->SetDisplayWidth(width);
     map->SetDisplayHeight(height);
-    map->SetDisplayDpi(displayDpi);
 
     double realWorldWidthMeters = extents->GetWidth() * map->GetMetersPerUnit();
-    double imageWidthMeters = (double)width * 0.0254 / displayDpi;
+    double imageWidthMeters = (double)width * 0.0254 / map->GetDisplayDpi();
     double scale = realWorldWidthMeters / imageWidthMeters;
     map->SetViewScale(scale);
 
