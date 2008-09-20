@@ -463,6 +463,10 @@ bool FeatureInfoRenderer::RequiresLabelClipping()
     return false;
 }
 
+bool FeatureInfoRenderer::RequiresCompositeLineStyleSeparation()
+{
+    return false;
+}
 
 void FeatureInfoRenderer::MeasureString(const RS_String& s,
                                         double           height,

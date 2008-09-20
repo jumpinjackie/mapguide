@@ -46,6 +46,9 @@ public:
     // By default, set the renderer to process hyperlink expressions
     virtual bool SupportsHyperlinks(){return true;}
 
+    // By default, set the renderer to separate composite line styles
+    virtual bool RequiresCompositeLineStyleSeparation(){return true;}
+
 	///<summary>
     /// Initializes the Renderer with mapping context information
     /// for generating a view of a map
