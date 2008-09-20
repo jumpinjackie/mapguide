@@ -124,6 +124,8 @@ public:
 
     virtual bool RequiresLabelClipping();
 
+    virtual bool RequiresCompositeLineStyleSeparation();
+
     ///////////////////////////////////
     // SE_Renderer implementation
 

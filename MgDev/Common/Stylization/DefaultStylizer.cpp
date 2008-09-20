@@ -100,7 +100,9 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
         // We can render polylines with composite styles using this method
         // only if there is a single line style
         MdfModel::FeatureTypeStyle* fts = (ftsc->GetCount() > 0)? ftsc->GetAt(0) : NULL;
-        if (fts && FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts) == FeatureTypeStyleVisitor::ftsLine)
+        if (NULL != fts 
+            && FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts) == FeatureTypeStyleVisitor::ftsLine
+            && renderer->RequiresCompositeLineStyleSeparation())
         {
             MdfModel::RuleCollection* rules = fts->GetRules();
 
@@ -199,6 +201,7 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
         }
         else
         {
+            // composite line style separation not required
             nFeatures = StylizeVLHelper(layer, scaleRange, renderer, features, true, xformer, cancel, userData);
         }
 
