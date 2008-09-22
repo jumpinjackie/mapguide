@@ -139,6 +139,7 @@ const STRING MgHttpResourceStrings::reqFeatResourceId = L"RESOURCEID";
 const STRING MgHttpResourceStrings::reqFeatProvider = L"PROVIDER";
 const STRING MgHttpResourceStrings::reqFeatSchema = L"SCHEMA";
 const STRING MgHttpResourceStrings::reqFeatClass = L"CLASSNAME";
+const STRING MgHttpResourceStrings::reqFeatClassNames = L"CLASSNAMES";
 const STRING MgHttpResourceStrings::reqFeatFilter = L"FILTER";
 const STRING MgHttpResourceStrings::reqFeatGeomProperty = L"GEOMPROPERTY";
 const STRING MgHttpResourceStrings::reqFeatSpatialOp = L"SPATIALOP";

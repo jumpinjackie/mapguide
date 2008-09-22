@@ -902,20 +902,8 @@ MgEnvelope* MgSelectionBase::GetFeatureExtents(MgFeatureService* featureService,
     // Now convert the extent to the map coordinate system...
 
     // Parse the feature name for the schema and class
-    STRING::size_type nDelimiter = clsName.find(L":");
-    STRING schemaName;
-    STRING className;
-
-    if(STRING::npos == nDelimiter)
-    {
-        schemaName = L"";
-        className = clsName;
-    }
-    else
-    {
-        schemaName = clsName.substr(0, nDelimiter);
-        className = clsName.substr(nDelimiter + 1);
-    }
+    STRING schemaName, className;
+    MgUtil::ParseQualifiedClassName(clsName, schemaName, className);
 
     STRING spatialContextAssociation = L"";
 

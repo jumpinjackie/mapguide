@@ -27,11 +27,21 @@
 
 class MgServerDescribeSchema
 {
+/// Constructors/Destructor
+
 public:
+
     MgServerDescribeSchema();
     ~MgServerDescribeSchema();
-    MgFeatureSchemaCollection* DescribeSchema(MgResourceIdentifier* resource, CREFSTRING schemaName, bool serialize = true);
-    STRING DescribeSchemaAsXml(MgResourceIdentifier* resource, CREFSTRING schemaName);
+
+/// Methods
+
+public:
+
+    MgFeatureSchemaCollection* DescribeSchema(MgResourceIdentifier* resource,
+        CREFSTRING schemaName, MgStringCollection* classNames, bool serialize = true);
+    STRING DescribeSchemaAsXml(MgResourceIdentifier* resource,
+        CREFSTRING schemaName, MgStringCollection* classNames);
     MgStringCollection* GetSchemas(MgResourceIdentifier* resource);
     MgStringCollection* GetClasses(MgResourceIdentifier* resource, CREFSTRING schemaName);
     MgClassDefinition*  GetClassDefinition(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className, bool serialize = true);
@@ -57,9 +67,25 @@ public:
     MgPropertyDefinitionCollection* GetIdentityProperties(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className);
 
 private:
+
     bool FdoClassExist(const wchar_t* name, FdoClassCollection* clsCol);
-    FdoFeatureSchemaCollection* ExecuteDescribeSchema(MgResourceIdentifier* resource, CREFSTRING schemaName);
+    FdoFeatureSchemaCollection* DescribeFdoSchema(MgResourceIdentifier* resource,
+        CREFSTRING schemaName, MgStringCollection* classNames, bool& classNameHintUsed);
     STRING GetSerializedXml(FdoFeatureSchemaCollection* fdoSchemaCol);
+    bool GetIdentityProperties(CREFSTRING className,
+        FdoClassCollection* classCol, MgPropertyDefinitionCollection* idProps);
+
+    bool IsClassNameHintUsed(FdoIDescribeSchema* fdoCommand);
+    MgStringCollection* GetSchemaNames(MgFeatureSchemaCollection* schemas);
+    MgStringCollection* GetClassNames(MgFeatureSchemaCollection* schemas, CREFSTRING schemaName);
+    MgClassDefinition* GetClassDefinition(MgFeatureSchemaCollection* schemas,
+        CREFSTRING schemaName, CREFSTRING className);
+    MgPropertyDefinitionCollection* GetIdentityProperties(FdoFeatureSchemaCollection* schemas,
+        MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className);
+
+/// Data Members
+
+private:
 
     MgFeatureServiceCache* m_featureServiceCache;
     Ptr<MgFeatureSourceCacheItem> m_featureSourceCacheItem;

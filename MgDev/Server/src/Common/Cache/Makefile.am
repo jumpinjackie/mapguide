@@ -22,6 +22,8 @@ include_SOURCES = \
   ServerCache.cpp \
   ServerCacheEntry.cpp \
   ServerCacheItem.cpp \
+  FeatureClassCacheItem.cpp \
+  FeatureSchemaCacheItem.cpp \
   FeatureServiceCache.cpp \
   FeatureServiceCacheEntry.cpp \
   FeatureSourceCacheItem.cpp \
@@ -32,6 +34,8 @@ noinst_HEADERS = $(include_SOURCES) \
   ServerCacheDllExport.h \
   ServerCacheEntry.h \
   ServerCacheItem.h \
+  FeatureClassCacheItem.h \
+  FeatureSchemaCacheItem.h \
   FeatureServiceCache.h \
   FeatureServiceCacheEntry.h \
   FeatureSourceCacheItem.h \

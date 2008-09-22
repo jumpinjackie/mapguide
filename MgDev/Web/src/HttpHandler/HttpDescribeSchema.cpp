@@ -35,7 +35,12 @@ MgHttpDescribeSchema::MgHttpDescribeSchema(MgHttpRequest *hRequest)
     InitializeCommonParameters(hRequest);
 
     Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
-    m_resId = params->GetParameterValue(MgHttpResourceStrings::reqFeatResourceId);
+    
+    m_resource = new MgResourceIdentifier(
+        params->GetParameterValue(MgHttpResourceStrings::reqFeatResourceId));
+    m_schemaName = params->GetParameterValue(MgHttpResourceStrings::reqFeatSchema);
+    m_classNames = MgStringCollection::ParseCollection(
+        params->GetParameterValue(MgHttpResourceStrings::reqFeatClassNames), L".");
 }
 
 /// <summary>
@@ -47,31 +52,29 @@ MgHttpDescribeSchema::MgHttpDescribeSchema(MgHttpRequest *hRequest)
 /// </returns>
 void MgHttpDescribeSchema::Execute(MgHttpResponse& hResponse)
 {
-    Ptr<MgHttpResult> hResult = hResponse.GetResult();
+    Ptr<MgHttpResult> hResult;
 
     MG_HTTP_HANDLER_TRY()
+
+    hResult = hResponse.GetResult();
 
     // Check common parameters
     ValidateCommonParameters();
 
-    MgResourceIdentifier resId(m_resId);
-
-    Ptr<MgHttpRequestParam> hrParam = m_hRequest->GetRequestParam();
-    STRING schema = hrParam->GetParameterValue(MgHttpResourceStrings::reqFeatSchema);
-
     // Create Proxy Feature Service instance
     Ptr<MgFeatureService> service = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
 
-    // call the C++ APIs
-    STRING xmlSchema = service->DescribeSchemaAsXml(&resId, schema);
+    // Call the C++ API.
+    STRING xmlSchema = service->DescribeSchemaAsXml(m_resource, m_schemaName, m_classNames);
 
     // Convert to multibyte
-    string mbXmlSchema = MgUtil::WideCharToMultiByte(xmlSchema);
+    string mbXmlSchema;
+    MgUtil::WideCharToMultiByte(xmlSchema, mbXmlSchema);
 
     // Create a byte reader.
     Ptr<MgByteReader> byteReader = MgUtil::GetByteReader(mbXmlSchema, (STRING*)&MgMimeType::Xml);
 
-    //Convert to alternate response format, if necessary
+    // Convert to alternate response format, if necessary.
     ProcessFormatConversion(byteReader);
 
     hResult->SetResultObject(byteReader, byteReader->GetMimeType());

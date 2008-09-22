@@ -267,49 +267,35 @@ public:
                                             CREFSTRING className,
                                             bool serialize = true);
 
-    //////////////////////////////////////////////////////////////////
-    /// <summary>
-    /// This method returns a collection of ALL ( IF NO NAME IS SUPPLIED ) schemas
-    /// </summary>
-    /// <param name="resource">Input
-    /// A resource identifier referring to connection string
-    /// </param>
-    /// <param name="schemaName">Input
-    /// A schema name or NULL to retrieve all available schemas
-    /// </param>
-    /// <returns>
-    /// MgFeatureSchemaCollection
-    /// </returns>
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the definitions of one or more schemas contained in the
+    /// feature source for particular classes. If the specified schema name or
+    /// a class name does not exist, this method will throw an exception.
     ///
-    /// EXCEPTIONS:
-    /// MgInvalidResourceIdentifer
-    MgFeatureSchemaCollection* DescribeSchema( MgResourceIdentifier* resource,
-                                  CREFSTRING schemaName );
+    MgFeatureSchemaCollection* DescribeSchema(MgResourceIdentifier* resource,
+        CREFSTRING schemaName, MgStringCollection* classNames);
 
-    //////////////////////////////////////////////////////////////////
-    /// <summary>
-    /// This method returns list of ALL ( IF NO NAME IS SUPPLIED ) schemas
-    /// and details on each class available in the schema with Data,Geometry and
-    /// Object property definitions.
+    ///////////////////////////////////////////////////////////////////////////
+    /// This method has been deprecated. Use the above method.
     ///
-    /// Schema Definition: FdoSchemaDesc.xsd
-    /// Sample XML:        FdoSchemaDesc.xml
+    MgFeatureSchemaCollection* DescribeSchema(MgResourceIdentifier* resource,
+        CREFSTRING schemaName);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the definitions in XML format of one or more schemas contained in the
+    /// feature source for particular classes. If the specified schema name or
+    /// a class name does not exist, this method will throw an exception.
     ///
-    /// </summary>
-    /// <param name="resource">Input
-    /// A resource identifier referring to connection string
-    /// </param>
-    /// <param name="schemaName">Input
-    /// A schema name or NULL to retrieve all available schemas
-    /// </param>
-    /// <returns>
-    /// String representing XML (or NULL)
-    /// </returns>
+    STRING DescribeSchemaAsXml(MgResourceIdentifier* resource,
+        CREFSTRING schemaName, MgStringCollection* classNames);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// This method has been deprecated. Use the above method.
     ///
-    /// EXCEPTIONS:
-    /// MgInvalidResourceIdentifer
-    STRING DescribeSchemaAsXml( MgResourceIdentifier* resource,
-                                  CREFSTRING schemaName );
+    STRING DescribeSchemaAsXml(MgResourceIdentifier* resource,
+        CREFSTRING schemaName);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -771,6 +757,9 @@ public:
 private:
 
     unsigned StringHasher(FdoString* pszString);
+    void FindClassDefinition(Ptr<MgFeatureSchemaCollection>& schemas,
+        CREFSTRING schemaName, CREFSTRING className, REFSTRING schemaHash,
+        Ptr<MgFeatureSchema>& schemaFound, Ptr<MgClassDefinition>& classFound);
     void FeatureSourceToString(MgResourceIdentifier* resource, string& resourceContent);
 };
 

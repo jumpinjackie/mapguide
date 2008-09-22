@@ -436,7 +436,7 @@ void MgWfsFeatureDefinitions::Initialize()
             // And what classes we can expect to find.
             // That's done indirectly by enumerating the schemas the source reports...
             STRING sDontCare(_(""));
-            Ptr<MgFeatureSchemaCollection> pSchemas = this->m_pFeatureService->DescribeSchema(&idResource,sDontCare);
+            Ptr<MgFeatureSchemaCollection> pSchemas = this->m_pFeatureService->DescribeSchema(&idResource, sDontCare, NULL);
 
             for(INT32 iSchema=0; iSchema<pSchemas->GetCount(); iSchema++) {
                 Ptr<MgFeatureSchema> pSchema = pSchemas->GetItem(iSchema);

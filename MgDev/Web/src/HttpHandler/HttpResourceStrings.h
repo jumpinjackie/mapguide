@@ -115,6 +115,7 @@ public:
     static const STRING reqFeatProvider;
     static const STRING reqFeatSchema;
     static const STRING reqFeatClass;
+    static const STRING reqFeatClassNames;
     static const STRING reqFeatFilter;
     static const STRING reqFeatProperties;
     static const STRING reqFeatGeomProperty;

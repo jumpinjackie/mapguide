@@ -18,6 +18,8 @@
 #include "ServerCache.cpp"
 #include "ServerCacheEntry.cpp"
 #include "ServerCacheItem.cpp"
+#include "FeatureClassCacheItem.cpp"
+#include "FeatureSchemaCacheItem.cpp"
 #include "FeatureServiceCache.cpp"
 #include "FeatureServiceCacheEntry.cpp"
 #include "FeatureSourceCacheItem.cpp"

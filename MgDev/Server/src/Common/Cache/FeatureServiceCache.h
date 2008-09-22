@@ -21,9 +21,6 @@
 #include "ServerCache.h"
 #include "FeatureServiceCacheEntry.h"
 
-// We may need to change to multi-mapping in the future if required.
-typedef std::map<STRING, MgFeatureServiceCacheEntry*> MgFeatureServiceCacheEntries;
-
 class MG_SERVER_CACHE_API MgFeatureServiceCache : public MgServerCache
 {
     DECLARE_CLASSNAME(MgFeatureServiceCache)
@@ -47,8 +44,6 @@ public:
 
     virtual void Clear();
 
-    MgFeatureServiceCacheEntry* GetEntry(MgResourceIdentifier* resource);
-
     void RemoveEntry(CREFSTRING resource);
     void RemoveEntry(MgResourceIdentifier* resource);
     void RemoveExpiredEntries();
@@ -62,33 +57,33 @@ public:
     void SetSpatialContextReader(MgResourceIdentifier* resource, bool active, MgSpatialContextReader* spatialContextReader);
     MgSpatialContextReader* GetSpatialContextReader(MgResourceIdentifier* resource, bool active);
 
-    void SetFeatureSchemaNames(MgResourceIdentifier* resource, MgStringCollection* featureSchemaNames);
-    MgStringCollection* GetFeatureSchemaNames(MgResourceIdentifier* resource);
+    void SetSchemaNames(MgResourceIdentifier* resource, MgStringCollection* schemaNames);
+    MgStringCollection* GetSchemaNames(MgResourceIdentifier* resource);
 
-    void SetFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, bool serialized, MgFeatureSchemaCollection* featureSchemaCollection);
-    MgFeatureSchemaCollection* GetFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, bool serialized);
+    void SetClassNames(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames);
+    MgStringCollection* GetClassNames(MgResourceIdentifier* resource, CREFSTRING schemaName);
 
-    void SetFeatureSchemaXml(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, CREFSTRING featureSchemaXml);
-    STRING GetFeatureSchemaXml(MgResourceIdentifier* resource, CREFSTRING featureSchemaName);
+    void SetSchemaXml(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames, CREFSTRING schemaXml);
+    STRING GetSchemaXml(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames);
 
-    void SetFeatureClassNames(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, MgStringCollection* featureClassNames);
-    MgStringCollection* GetFeatureClassNames(MgResourceIdentifier* resource, CREFSTRING featureSchemaName);
+    void SetFdoSchemas(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames, bool classNameHintUsed, FdoFeatureSchemaCollection* schemas);
+    FdoFeatureSchemaCollection* GetFdoSchemas(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames, bool& classNameHintUsed);
 
-    void SetFeatureClassDefinition(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, CREFSTRING featureClassName, MgClassDefinition* featureClassDefinition);
-    MgClassDefinition* GetFeatureClassDefinition(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, CREFSTRING featureClassName);
+    void SetSchemas(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames, bool serialized, MgFeatureSchemaCollection* schemas);
+    MgFeatureSchemaCollection* GetSchemas(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames, bool serialized);
 
-    void SetFeatureClassIdentityProperties(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, CREFSTRING featureClassName, MgPropertyDefinitionCollection* featureClassIdentityProperties);
-    MgPropertyDefinitionCollection* GetFeatureClassIdentityProperties(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, CREFSTRING featureClassName);
+    void SetClassDefinition(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className, MgClassDefinition* classDef);
+    MgClassDefinition* GetClassDefinition(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className);
 
-    void SetFdoFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, FdoPtr<FdoFeatureSchemaCollection>& featureSchemaCollection);
-    FdoFeatureSchemaCollection* GetFdoFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName);
+    void SetClassIdentityProperties(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className, MgPropertyDefinitionCollection* idProperties);
+    MgPropertyDefinitionCollection* GetClassIdentityProperties(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className);
 
 protected:
 
     void Compact();
 
-    MgFeatureServiceCacheEntry* CreateEntry(MgResourceIdentifier* resource);
-
+    MgFeatureServiceCacheEntry* SetEntry(MgResourceIdentifier* resource);
+    MgFeatureServiceCacheEntry* GetEntry(MgResourceIdentifier* resource);
     void RemoveOldEntry();
 
 /// Data Members
@@ -97,6 +92,7 @@ private:
 
     friend class MgCacheManager;
 
+    typedef std::map<STRING, MgFeatureServiceCacheEntry*> MgFeatureServiceCacheEntries;
     MgFeatureServiceCacheEntries m_featureServiceCacheEntries;
 };
 

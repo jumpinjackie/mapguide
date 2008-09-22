@@ -293,36 +293,26 @@ MgByteReader* MgProxyFeatureService::GetCapabilities(CREFSTRING providerName)
     return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
 
-
-//////////////////////////////////////////////////////////////////
-/// <summary>
-/// This method returns collection of ALL ( IF NO NAME IS SUPPLIED ) schemas
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Gets the definitions of one or more schemas contained in the
+/// feature source for particular classes. If the specified schema name or
+/// a class name does not exist, this method will throw an exception.
 ///
-/// </summary>
-/// <param name="resource">Input
-/// A resource identifier referring to connection string
-/// </param>
-/// <param name="schemaName">Input
-/// A schema name or NULL to retrieve all available schemas
-/// </param>
-/// <returns>
-/// MgFeatureSchemaCollection
-/// </returns>
-///
-/// EXCEPTIONS:
-/// MgInvalidResourceIdentifer
 MgFeatureSchemaCollection* MgProxyFeatureService::DescribeSchema(MgResourceIdentifier* resource,
-                                                                 CREFSTRING schemaName)
+    CREFSTRING schemaName, MgStringCollection* classNames)
 {
     MgCommand cmd;
+
     cmd.ExecuteCommand(m_connProp,                                  // Connection
                        MgCommand::knObject,                         // Return type expected
                        MgFeatureServiceOpId::DescribeSchema_Id,     // Command Code
-                       2,                                           // No of arguments
+                       3,                                           // No of arguments
                        Feature_Service,                             // Service Id
                        BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knString, &schemaName,            // Argument#2
+                       MgCommand::knObject, classNames,             // Argument#3
                        MgCommand::knNone);                          // End of argument
 
     SetWarning(cmd.GetWarningObject());
@@ -330,41 +320,35 @@ MgFeatureSchemaCollection* MgProxyFeatureService::DescribeSchema(MgResourceIdent
     return (MgFeatureSchemaCollection*)cmd.GetReturnValue().val.m_obj;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// This method has been deprecated. Use the above method.
+///
+MgFeatureSchemaCollection* MgProxyFeatureService::DescribeSchema(MgResourceIdentifier* resource,
+    CREFSTRING schemaName)
+{
+    return DescribeSchema(resource, schemaName, NULL);
+}
 
-//////////////////////////////////////////////////////////////////
-/// <summary>
-/// This method returns list of ALL ( IF NO NAME IS SUPPLIED ) schemas
-/// and details on each class available in the schema with Data,Geometry and
-/// Object property definitions.
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Gets the definitions in XML format of one or more schemas contained in the
+/// feature source for particular classes. If the specified schema name or
+/// a class name does not exist, this method will throw an exception.
 ///
-/// Schema Definition: FdoSchemaDesc.xsd
-/// Sample XML:        FdoSchemaDesc.xml
-///
-/// </summary>
-/// <param name="resource">Input
-/// A resource identifier referring to connection string
-/// </param>
-/// <param name="schemaName">Input
-/// A schema name or NULL to retrieve all available schemas
-/// </param>
-/// <returns>
-/// String representing XML
-/// </returns>
-///
-/// EXCEPTIONS:
-/// MgInvalidResourceIdentifer
 STRING MgProxyFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource,
-                                                  CREFSTRING schemaName)
+    CREFSTRING schemaName, MgStringCollection* classNames)
 {
     MgCommand cmd;
+
     cmd.ExecuteCommand(m_connProp,                                  // Connection
                        MgCommand::knString,                         // Return type expected
                        MgFeatureServiceOpId::DescribeSchemaAsXml_Id,// Command Code
-                       2,                                           // No of arguments
+                       3,                                           // No of arguments
                        Feature_Service,                             // Service Id
                        BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knString, &schemaName,            // Argument#2
+                       MgCommand::knObject, classNames,             // Argument#3
                        MgCommand::knNone);                          // End of argument
 
     SetWarning(cmd.GetWarningObject());
@@ -375,6 +359,14 @@ STRING MgProxyFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource
     return retVal;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// This method has been deprecated. Use the above method.
+///
+STRING MgProxyFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource,
+    CREFSTRING schemaName)
+{
+    return DescribeSchemaAsXml(resource, schemaName, NULL);
+}
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

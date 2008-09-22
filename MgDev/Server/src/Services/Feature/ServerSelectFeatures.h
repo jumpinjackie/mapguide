@@ -24,8 +24,6 @@
 #include "Fdo.h"
 #include "ServerGwsFeatureReader.h"
 
-const STRING CLASSNAME_QUALIFIER = L":";  /* NOXLATE */
-
 class MgFeatureQueryOptions;
 class MgFeatureServiceCommand;
 template class Ptr<MgFeatureSourceCacheItem>;
@@ -85,7 +83,6 @@ private:
     MgServerGwsFeatureReader* JoinFeatures(MgResourceIdentifier* featureSourceId, CREFSTRING extensionName, FdoFilter* filter);
     void UpdateCommandOnCalculation(MgResourceIdentifier* featureSourceId, CREFSTRING extensionName);
     void UpdateCommandOnJoinCalculation(MgResourceIdentifier* featureSourceId, CREFSTRING extensionName);
-    void ParseQualifiedClassName(CREFSTRING qualifiedClassName, STRING& schemaName, STRING& className);
     void ParseQualifiedClassNameForCalculation(MdfModel::Extension* extension, CREFSTRING qualifiedClassName, STRING& schemaName, STRING& className);
     MgResourceIdentifier* GetSecondaryResourceIdentifier(MgResourceIdentifier* primResId, CREFSTRING extensionName, CREFSTRING relationName);
 

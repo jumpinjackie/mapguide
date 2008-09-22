@@ -524,7 +524,7 @@ void TestFeatureService::TestCase_TestConnectionResourceIdentifier()
         CPPUNIT_ASSERT_THROW_MG(pService->TestConnection(resource), MgInvalidRepositoryTypeException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Geography/World.MapDefinition");
-        CPPUNIT_ASSERT_THROW_MG(pService->TestConnection(resource), MgResourceNotFoundException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->TestConnection(resource), MgInvalidResourceTypeException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
         bool bResult = pService->TestConnection(resource);
@@ -577,7 +577,7 @@ void TestFeatureService::TestCase_GetSchemas()
         CPPUNIT_ASSERT_THROW_MG(pService->GetSchemas(resource), MgInvalidRepositoryTypeException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Geography/World.MapDefinition");
-        CPPUNIT_ASSERT_THROW_MG(pService->GetSchemas(resource), MgResourceNotFoundException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GetSchemas(resource), MgInvalidResourceTypeException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
         Ptr<MgStringCollection> schemas = pService->GetSchemas(resource);
@@ -631,7 +631,7 @@ void TestFeatureService::TestCase_GetClasses()
         CPPUNIT_ASSERT_THROW_MG(pService->GetClasses(resource, schemaName), MgInvalidRepositoryTypeException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Geography/World.MapDefinition");
-        CPPUNIT_ASSERT_THROW_MG(pService->GetClasses(resource, schemaName), MgResourceNotFoundException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GetClasses(resource, schemaName), MgInvalidResourceTypeException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
         schemaName = L"SHP_Schema";
@@ -734,15 +734,15 @@ void TestFeatureService::TestCase_DescribeSchema()
 
         Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier();
         STRING schemaName = L"";
-        CPPUNIT_ASSERT_THROW_MG(pService->DescribeSchema(resource, schemaName), MgInvalidRepositoryTypeException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->DescribeSchema(resource, schemaName, NULL), MgInvalidRepositoryTypeException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Geography/World.MapDefinition");
         schemaName = L"";
-        CPPUNIT_ASSERT_THROW_MG(pService->DescribeSchema(resource, schemaName), MgResourceNotFoundException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->DescribeSchema(resource, schemaName, NULL), MgInvalidResourceTypeException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
         schemaName = L"";
-        Ptr<MgFeatureSchemaCollection> schemaCollection = pService->DescribeSchema(resource, schemaName);
+        Ptr<MgFeatureSchemaCollection> schemaCollection = pService->DescribeSchema(resource, schemaName, NULL);
         CPPUNIT_ASSERT(schemaCollection->GetCount() > 0);
     }
     catch(MgException* e)
@@ -986,7 +986,7 @@ void TestFeatureService::TestCase_GetSpatialContexts()
         CPPUNIT_ASSERT_THROW_MG(pService->GetSpatialContexts(resource, activeOnly), MgInvalidRepositoryTypeException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Geography/World.MapDefinition");
-        CPPUNIT_ASSERT_THROW_MG(pService->GetSpatialContexts(resource, activeOnly), MgResourceNotFoundException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GetSpatialContexts(resource, activeOnly), MgInvalidResourceTypeException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
         Ptr<MgSpatialContextReader> reader = pService->GetSpatialContexts(resource, activeOnly);
@@ -1041,7 +1041,7 @@ void TestFeatureService::TestCase_GetLongTransactions()
         CPPUNIT_ASSERT_THROW_MG(pService->GetLongTransactions(resource, activeOnly), MgInvalidRepositoryTypeException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Geography/World.MapDefinition");
-        CPPUNIT_ASSERT_THROW_MG(pService->GetLongTransactions(resource, activeOnly), MgResourceNotFoundException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GetLongTransactions(resource, activeOnly), MgInvalidResourceTypeException*);
 
         //TODO test with correct input
     }

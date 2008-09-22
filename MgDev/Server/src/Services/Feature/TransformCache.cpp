@@ -88,20 +88,8 @@ TransformCache* TransformCache::GetLayerToMapTransform(TransformCacheMap& cache,
     // the 1st one that is not cached.
 
     // Parse the feature name for the schema and class
-    STRING::size_type nDelimiter = featureName.find(L":");
-    STRING schemaName;
-    STRING className;
-
-    if(STRING::npos == nDelimiter)
-    {
-        schemaName = L"";
-        className = featureName;
-    }
-    else
-    {
-        schemaName = featureName.substr(0, nDelimiter);
-        className = featureName.substr(nDelimiter + 1);
-    }
+    STRING schemaName, className;
+    MgUtil::ParseQualifiedClassName(featureName, schemaName, className);
 
     STRING spatialContextAssociation = L"";
 

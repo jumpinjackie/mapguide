@@ -888,3 +888,53 @@ FdoObjectType MgServerFeatureUtil::MgObjectPropertyTypeToFdoObjectType(INT32 typ
     }
     return objectType;
 }
+
+MgStringCollection* MgServerFeatureUtil::FdoToMgStringCollection(FdoStringCollection* fdoStrs, bool includeEmptyStrings)
+{
+    Ptr<MgStringCollection> mgStrs;
+
+    if (NULL != fdoStrs)
+    {
+        FdoInt32 count = fdoStrs->GetCount();
+        mgStrs = new MgStringCollection();
+
+        for (FdoInt32 i = 0; i < count; ++i)
+        {
+            FdoStringP currStr = fdoStrs->GetString(i);
+
+            if ((currStr == NULL || 0 == currStr.GetLength()) && includeEmptyStrings)
+            {
+                mgStrs->Add(STRING(L""));
+            }
+            else
+            {
+                mgStrs->Add(STRING(currStr));
+            }
+        } 
+    }
+
+    return mgStrs.Detach();
+}
+
+FdoStringCollection* MgServerFeatureUtil::MgToFdoStringCollection(MgStringCollection* mgStrs, bool includeEmptyStrings)
+{
+    FdoPtr<FdoStringCollection> fdoStrs;
+
+    if (NULL != mgStrs)
+    {
+        INT32 count = mgStrs->GetCount();
+        fdoStrs = FdoStringCollection::Create();
+
+        for (INT32 i = 0; i < count; ++i)
+        {
+            STRING currStr = mgStrs->GetItem(i);
+
+            if (includeEmptyStrings || !currStr.empty())
+            {
+                fdoStrs->Add(currStr.c_str());
+            }
+        }                
+    }
+
+    return fdoStrs.Detach();
+}

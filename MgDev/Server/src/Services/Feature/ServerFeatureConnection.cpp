@@ -158,6 +158,7 @@ bool MgServerFeatureConnection::SupportsCommand(INT32 commandType)
             if (fcmd[i] == (FdoInt32)commandType)
             {
                 supports = true;
+                break;
             }
         }
     }

@@ -302,6 +302,7 @@ MgResourceNameSeparatorNotFound                       = The resource name separa
 MgResourceRootPathsDifferent                          = The resource root paths cannot be different.
 MgResourceTypesDifferent                              = The resource types cannot be different.
 MgResourcesIdentical                                  = The resources cannot be the same.
+MgSchemaNameMismatch                                  = This schema name does not match the one specified in the qualified class name '%1' provided.
 MgSiteServerIpMustNotBeLocalHost                      = The site server IP address must not be a local host.
 MgSqlReaderIdNotFound                                 = The SQL reader ID was not found.
 MgStringContainsReservedCharacters                    = The string cannot contain reserved characters %1

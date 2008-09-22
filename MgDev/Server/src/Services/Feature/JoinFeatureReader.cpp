@@ -514,7 +514,7 @@ FdoClassDefinition* MgJoinFeatureReader::GetFdoClassDefinition(MgClassDefinition
     FdoPtr<FdoClassDefinition> fdoClassDef;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL(mgClassDef, L"MgServerDescribeSchema.GetFdoClassDefinition");
+    CHECKNULL(mgClassDef, L"MgJoinFeatureReader.GetFdoClassDefinition");
 
     STRING name = mgClassDef->GetName();
     assert(!name.empty());
@@ -532,13 +532,13 @@ FdoClassDefinition* MgJoinFeatureReader::GetFdoClassDefinition(MgClassDefinition
         fdoClassDef = FdoClass::Create();
     }
 
-    CHECKNULL(fdoClassDef, L"MgServerDescribeSchema.GetFdoClassDefinition");
+    CHECKNULL(fdoClassDef, L"MgJoinFeatureReader.GetFdoClassDefinition");
 
     FdoPtr<FdoPropertyDefinitionCollection> fdoPropDefCol = fdoClassDef->GetProperties();
-    CHECKNULL((FdoPropertyDefinitionCollection*) fdoPropDefCol, L"MgServerDescribeSchema.GetFdoClassDefinition");
+    CHECKNULL((FdoPropertyDefinitionCollection*) fdoPropDefCol, L"MgJoinFeatureReader.GetFdoClassDefinition");
 
     FdoPtr<FdoDataPropertyDefinitionCollection> fdoIdentityPropDefCol = (FdoDataPropertyDefinitionCollection*)fdoClassDef->GetIdentityProperties();
-    CHECKNULL((FdoDataPropertyDefinitionCollection*)fdoIdentityPropDefCol, L"MgServerDescribeSchema.GetFdoClassDefinition");
+    CHECKNULL((FdoDataPropertyDefinitionCollection*)fdoIdentityPropDefCol, L"MgJoinFeatureReader.GetFdoClassDefinition");
 
     //Set description
     STRING desc = mgClassDef->GetDescription();
@@ -566,7 +566,7 @@ FdoClassDefinition* MgJoinFeatureReader::GetFdoClassDefinition(MgClassDefinition
 
     // Retrieve Class properties
     Ptr<MgPropertyDefinitionCollection> mgPropDefCol = mgClassDef->GetProperties();
-    CHECKNULL((MgPropertyDefinitionCollection*) mgPropDefCol, L"MgServerDescribeSchema.GetFdoClassDefinition");
+    CHECKNULL((MgPropertyDefinitionCollection*) mgPropDefCol, L"MgJoinFeatureReader.GetFdoClassDefinition");
 
     //Retrieve identity properties
     Ptr<MgPropertyDefinitionCollection> awDataPropDefCol = mgClassDef->GetIdentityProperties();
@@ -597,7 +597,7 @@ FdoClassDefinition* MgJoinFeatureReader::GetFdoClassDefinition(MgClassDefinition
         ffClass->SetGeometryProperty(defaultGeom);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetFdoClassCollection")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgJoinFeatureReader.GetFdoClassCollection")
 
     return fdoClassDef.Detach();
 }
@@ -616,7 +616,7 @@ void MgJoinFeatureReader::GetClassProperties(FdoPropertyDefinitionCollection* fd
     {
         // Get Mg Property
         Ptr<MgPropertyDefinition> awpd = propDefCol->GetItem(i);
-        CHECKNULL((MgPropertyDefinition*)awpd, L"MgServerDescribeSchema.GetClassProperties");
+        CHECKNULL((MgPropertyDefinition*)awpd, L"MgJoinFeatureReader.GetClassProperties");
 
         // Create Fdo Property
         FdoPtr<FdoPropertyDefinition> fdoProp = GetFdoPropertyDefinition(awpd);
@@ -626,7 +626,7 @@ void MgJoinFeatureReader::GetClassProperties(FdoPropertyDefinitionCollection* fd
             fdoPropDefCol->Add(fdoProp);
         }
     }
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetClassProperties")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgJoinFeatureReader.GetClassProperties")
 }
 
 void MgJoinFeatureReader::GetClassProperties(FdoDataPropertyDefinitionCollection* fdoPropDefCol,
@@ -643,7 +643,7 @@ void MgJoinFeatureReader::GetClassProperties(FdoDataPropertyDefinitionCollection
     {
         //Get property
         Ptr<MgPropertyDefinition> mgPropDef = mgPropDefCol->GetItem(i);
-        CHECKNULL((MgPropertyDefinition*) mgPropDef, L"MgServerDescribeSchema.GetClassProperties");
+        CHECKNULL((MgPropertyDefinition*) mgPropDef, L"MgJoinFeatureReader.GetClassProperties");
 
         //Create Fdo property
         FdoPtr<FdoDataPropertyDefinition> fdoPropDef = (FdoDataPropertyDefinition*)GetFdoPropertyDefinition(mgPropDef);
@@ -653,12 +653,12 @@ void MgJoinFeatureReader::GetClassProperties(FdoDataPropertyDefinitionCollection
             fdoPropDefCol->Add(fdoPropDef);
         }
     }
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetClassProperties")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgJoinFeatureReader.GetClassProperties")
 }
 
 FdoPropertyDefinition* MgJoinFeatureReader::GetFdoPropertyDefinition(MgPropertyDefinition* mgPropDef)
 {
-    CHECKNULL((MgPropertyDefinition*)mgPropDef, L"MgServerDescribeSchema.GetFdoPropertyDefinition");
+    CHECKNULL((MgPropertyDefinition*)mgPropDef, L"MgJoinFeatureReader.GetFdoPropertyDefinition");
 
     FdoPtr<FdoPropertyDefinition> fdoPropDef;
     MG_FEATURE_SERVICE_TRY()
@@ -700,7 +700,7 @@ FdoPropertyDefinition* MgJoinFeatureReader::GetFdoPropertyDefinition(MgPropertyD
             break;
         }
     }
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetFdoPropertyDefinition")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgJoinFeatureReader.GetFdoPropertyDefinition")
 
     return fdoPropDef.Detach();
 }
@@ -755,7 +755,7 @@ FdoDataPropertyDefinition* MgJoinFeatureReader::GetDataPropertyDefinition(MgData
     fdoPropDef->SetScale((FdoInt32)scale);
     fdoPropDef->SetIsAutoGenerated(isAutoGenerated);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetFdoClassCollection")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgJoinFeatureReader.GetDataPropertyDefinition")
 
     return fdoPropDef.Detach();
 }
@@ -767,7 +767,7 @@ FdoObjectPropertyDefinition* MgJoinFeatureReader::GetObjectPropertyDefinition(Mg
     FdoPtr<FdoObjectPropertyDefinition> fdoPropDef;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL((MgObjectPropertyDefinition*)objPropDef, L"MgServerDescribeSchema.GetObjectPropertyDefinition");
+    CHECKNULL((MgObjectPropertyDefinition*)objPropDef, L"MgJoinFeatureReader.GetObjectPropertyDefinition");
 
     fdoPropDef = FdoObjectPropertyDefinition::Create();
     // Retrieve data from MgObjectProperty
@@ -779,7 +779,7 @@ FdoObjectPropertyDefinition* MgJoinFeatureReader::GetObjectPropertyDefinition(Mg
     Ptr<MgDataPropertyDefinition> idProp = objPropDef->GetIdentityProperty();
     // Convert MgObjectProperty data members to Fdo data members
     FdoPtr<FdoClassDefinition> fdoClsDef = GetFdoClassDefinition(clsDef);
-    CHECKNULL(fdoClsDef, L"MgServerDescribeSchema.GetObjectPropertyDefinition")
+    CHECKNULL(fdoClsDef, L"MgJoinFeatureReader.GetObjectPropertyDefinition")
 
     FdoPtr<FdoDataPropertyDefinition> fdoDataPropDef = GetDataPropertyDefinition(idProp);
     FdoObjectType fdoObjectType = MgObjectPropertyTypeToFdoObjectType(objType);
@@ -792,7 +792,7 @@ FdoObjectPropertyDefinition* MgJoinFeatureReader::GetObjectPropertyDefinition(Mg
     fdoPropDef->SetClass(fdoClsDef);
     fdoPropDef->SetIdentityProperty(fdoDataPropDef);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetObjectPropertyDefinition")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgJoinFeatureReader.GetObjectPropertyDefinition")
 
     return fdoPropDef.Detach();
 }
@@ -804,7 +804,7 @@ FdoGeometricPropertyDefinition* MgJoinFeatureReader::GetGeometricPropertyDefinit
     FdoPtr<FdoGeometricPropertyDefinition> fdoPropDef;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL((MgGeometricPropertyDefinition*)mgPropDef, L"MgServerDescribeSchema.GetGeometricPropertyDefinition");
+    CHECKNULL((MgGeometricPropertyDefinition*)mgPropDef, L"MgJoinFeatureReader.GetGeometricPropertyDefinition");
 
     STRING name = mgPropDef->GetName();
     fdoPropDef = FdoGeometricPropertyDefinition::Create();
@@ -843,7 +843,7 @@ FdoGeometricPropertyDefinition* MgJoinFeatureReader::GetGeometricPropertyDefinit
         fdoPropDef->SetSpatialContextAssociation((FdoString*)spatialContextName.c_str());
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetGeometricPropertyDefinition")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgJoinFeatureReader.GetGeometricPropertyDefinition")
 
     return fdoPropDef.Detach();
 }
@@ -855,7 +855,7 @@ FdoRasterPropertyDefinition* MgJoinFeatureReader::GetRasterPropertyDefinition(Mg
     FdoPtr<FdoRasterPropertyDefinition> fdoPropDef;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL((MgRasterPropertyDefinition*)mgPropDef, L"MgServerDescribeSchema.GetRasterPropertyDefinition");
+    CHECKNULL((MgRasterPropertyDefinition*)mgPropDef, L"MgJoinFeatureReader.GetRasterPropertyDefinition");
 
     fdoPropDef = FdoRasterPropertyDefinition::Create();
     STRING name = mgPropDef->GetName();
@@ -881,7 +881,7 @@ FdoRasterPropertyDefinition* MgJoinFeatureReader::GetRasterPropertyDefinition(Mg
 
     //Cannot set qualified name in fdo
     fdoPropDef->SetReadOnly(isReadOnly);
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetRasterPropertyDefinition")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgJoinFeatureReader.GetRasterPropertyDefinition")
 
     return fdoPropDef.Detach();
 }
@@ -984,7 +984,7 @@ FdoDataType MgJoinFeatureReader::GetFdoDataType(INT32 awPropType)
             arguments.Add(L"1");
             arguments.Add(buffer);
 
-            throw new MgInvalidArgumentException(L"MgServerDescribeSchema.GetFdoDataType",
+            throw new MgInvalidArgumentException(L"MgJoinFeatureReader.GetFdoDataType",
                 __LINE__, __WFILE__, &arguments, L"MgInvalidPropertyType", NULL);
         }
     }

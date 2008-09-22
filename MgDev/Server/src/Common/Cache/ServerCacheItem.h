@@ -40,6 +40,13 @@ private:
 protected:
 
     virtual void Dispose();
+
+/// Data Members
+
+private:
+
 };
+
+/// Inline Methods
 
 #endif
