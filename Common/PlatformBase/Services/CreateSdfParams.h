@@ -34,7 +34,7 @@
 /// <!-- Example (PHP) -->
 /// \htmlinclude PHPExampleTop.html
 /// \code
-/// $schemaCollection = $featureService->DescribeSchema($activeFeatSrcResId, $schemaName);
+/// $schemaCollection = $featureService->DescribeSchema($activeFeatSrcResId, $schemaName, NULL);
 /// $schema = $schemaCollection->GetItem(0);
 /// $activeOnly = true;
 /// $activeSpatialContextReader = $featureService->GetSpatialContexts($activeFeatSrcResId, $activeOnly);

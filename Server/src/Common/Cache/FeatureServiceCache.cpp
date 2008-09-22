@@ -59,7 +59,7 @@ void MgFeatureServiceCache::Clear()
 
         if (NULL != i->second && 1 != i->second->GetRefCount())
         {
-            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgFeatureServiceCache::Clear - Reference Count of '%W': %d\n"),
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgFeatureServiceCache::Clear() - Reference Count of '%W': %d\n"),
                 i->first.c_str(), i->second->GetRefCount()));
         }
 #endif
@@ -87,39 +87,30 @@ void MgFeatureServiceCache::Compact()
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Create a cache entry for a given resource.
+/// Return an existing entry from this cache or a newly created one
+/// if it does not exist.
 ///
-MgFeatureServiceCacheEntry* MgFeatureServiceCache::CreateEntry(MgResourceIdentifier* resource)
+MgFeatureServiceCacheEntry* MgFeatureServiceCache::SetEntry(MgResourceIdentifier* resource)
 {
-    if (NULL == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgFeatureServiceCache.CreateEntry",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    if (!resource->IsResourceTypeOf(MgResourceType::FeatureSource))
-    {
-        throw new MgInvalidResourceTypeException(
-            L"MgFeatureServiceCache.CreateEntry",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
-    Compact();
+    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
 
-    Ptr<MgFeatureServiceCacheEntry> entry = new MgFeatureServiceCacheEntry();
+    if (NULL == entry.p)
+    {
+        Compact();
 
-    m_featureServiceCacheEntries.insert(MgFeatureServiceCacheEntries::value_type(
-        resource->ToString(), SAFE_ADDREF(entry.p)));
-
+        entry = new MgFeatureServiceCacheEntry();
+        m_featureServiceCacheEntries.insert(MgFeatureServiceCacheEntries::value_type(
+            resource->ToString(), SAFE_ADDREF(entry.p)));
+    }
+    
     return entry.Detach();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Get an entry in the cache.
+/// Return an existing entry from this cache.
 ///
 MgFeatureServiceCacheEntry* MgFeatureServiceCache::GetEntry(MgResourceIdentifier* resource)
 {
@@ -131,6 +122,13 @@ MgFeatureServiceCacheEntry* MgFeatureServiceCache::GetEntry(MgResourceIdentifier
     }
 
     resource->Validate();
+
+    if (!resource->IsResourceTypeOf(MgResourceType::FeatureSource))
+    {
+        throw new MgInvalidResourceTypeException(
+            L"MgFeatureServiceCache.GetEntry",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
@@ -263,12 +261,7 @@ void MgFeatureServiceCache::SetFeatureSource(MgResourceIdentifier* resource, MgF
 {
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
-
-    if (NULL == entry.p)
-    {
-        entry = CreateEntry(resource);
-    }
+    Ptr<MgFeatureServiceCacheEntry> entry = SetEntry(resource);
 
     entry->SetFeatureSource(featureSource);
 }
@@ -292,12 +285,7 @@ void MgFeatureServiceCache::SetSpatialContextInfo(MgResourceIdentifier* resource
 {
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
-
-    if (NULL == entry.p)
-    {
-        entry = CreateEntry(resource);
-    }
+    Ptr<MgFeatureServiceCacheEntry> entry = SetEntry(resource);
 
     entry->SetSpatialContextInfo(spatialContextInfo);
 }
@@ -321,15 +309,9 @@ void MgFeatureServiceCache::SetSpatialContextReader(MgResourceIdentifier* resour
 {
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
+    Ptr<MgFeatureServiceCacheEntry> entry = SetEntry(resource);
 
-    if (NULL == entry.p)
-    {
-        entry = CreateEntry(resource);
-    }
-
-    entry->SetActiveFlag(active);
-    entry->SetSpatialContextReader(spatialContextReader);
+    entry->SetSpatialContextReader(active, spatialContextReader);
 }
 
 MgSpatialContextReader* MgFeatureServiceCache::GetSpatialContextReader(MgResourceIdentifier* resource, bool active)
@@ -341,12 +323,10 @@ MgSpatialContextReader* MgFeatureServiceCache::GetSpatialContextReader(MgResourc
 
     if (NULL != entry.p)
     {
-        data = entry->GetSpatialContextReader();
+        data = entry->GetSpatialContextReader(active);
 
         // Make sure this cached data is only used by one thread at a time.
-        if (NULL != data.p
-            && (data->GetRefCount() > 2
-                || entry->GetActiveFlag() != active))
+        if (NULL != data.p && data->GetRefCount() > 2)
         {
             data = NULL;
         }
@@ -361,21 +341,16 @@ MgSpatialContextReader* MgFeatureServiceCache::GetSpatialContextReader(MgResourc
     return data.Detach();
 }
 
-void MgFeatureServiceCache::SetFeatureSchemaNames(MgResourceIdentifier* resource, MgStringCollection* featureSchemaNames)
+void MgFeatureServiceCache::SetSchemaNames(MgResourceIdentifier* resource, MgStringCollection* schemaNames)
 {
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
+    Ptr<MgFeatureServiceCacheEntry> entry = SetEntry(resource);
 
-    if (NULL == entry.p)
-    {
-        entry = CreateEntry(resource);
-    }
-
-    entry->SetFeatureSchemaNames(featureSchemaNames);
+    entry->SetSchemaNames(schemaNames);
 }
 
-MgStringCollection* MgFeatureServiceCache::GetFeatureSchemaNames(MgResourceIdentifier* resource)
+MgStringCollection* MgFeatureServiceCache::GetSchemaNames(MgResourceIdentifier* resource)
 {
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
@@ -384,29 +359,96 @@ MgStringCollection* MgFeatureServiceCache::GetFeatureSchemaNames(MgResourceIdent
 
     if (NULL != entry.p)
     {
-        data = entry->GetFeatureSchemaNames();
+        data = entry->GetSchemaNames();
     }
 
     return data.Detach();
 }
 
-void MgFeatureServiceCache::SetFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, bool serialized, MgFeatureSchemaCollection* featureSchemaCollection)
+void MgFeatureServiceCache::SetClassNames(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames)
 {
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
+    Ptr<MgFeatureServiceCacheEntry> entry = SetEntry(resource);
 
-    if (NULL == entry.p)
-    {
-        entry = CreateEntry(resource);
-    }
-
-    entry->SetFeatureSchemaName(featureSchemaName);
-    entry->SetFeatureSchemaCollectionSerialized(serialized);
-    entry->SetFeatureSchemaCollection(featureSchemaCollection);
+    entry->SetClassNames(schemaName, classNames);
 }
 
-MgFeatureSchemaCollection* MgFeatureServiceCache::GetFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, bool serialized)
+MgStringCollection* MgFeatureServiceCache::GetClassNames(MgResourceIdentifier* resource, CREFSTRING schemaName)
+{
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    Ptr<MgStringCollection> data;
+    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
+
+    if (NULL != entry.p)
+    {
+        data = entry->GetClassNames(schemaName);
+    }
+
+    return data.Detach();
+}
+
+void MgFeatureServiceCache::SetSchemaXml(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames, CREFSTRING schemaXml)
+{
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    Ptr<MgFeatureServiceCacheEntry> entry = SetEntry(resource);
+
+    entry->SetSchemaXml(schemaName, classNames, schemaXml);
+}
+
+STRING MgFeatureServiceCache::GetSchemaXml(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames)
+{
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, L""));
+
+    STRING data;
+    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
+
+    if (NULL != entry.p)
+    {
+        data = entry->GetSchemaXml(schemaName, classNames);
+    }
+
+    return data;
+}
+
+void MgFeatureServiceCache::SetFdoSchemas(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames, bool classNameHintUsed, FdoFeatureSchemaCollection* schemas)
+{
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    Ptr<MgFeatureServiceCacheEntry> entry = SetEntry(resource);
+
+    entry->SetFdoSchemas(schemaName, classNames, classNameHintUsed, schemas);
+}
+
+FdoFeatureSchemaCollection* MgFeatureServiceCache::GetFdoSchemas(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames, bool& classNameHintUsed)
+{
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    FdoPtr<FdoFeatureSchemaCollection> data;
+    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
+
+    classNameHintUsed = true;
+    
+    if (NULL != entry.p)
+    {
+        data = entry->GetFdoSchemas(schemaName, classNames, classNameHintUsed);
+    }
+
+    return data.Detach();
+}
+
+void MgFeatureServiceCache::SetSchemas(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames, bool serialized, MgFeatureSchemaCollection* schemas)
+{
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    Ptr<MgFeatureServiceCacheEntry> entry = SetEntry(resource);
+
+    entry->SetSchemas(schemaName, classNames, serialized, schemas);
+}
+
+MgFeatureSchemaCollection* MgFeatureServiceCache::GetSchemas(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames, bool serialized)
 {
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
@@ -415,109 +457,22 @@ MgFeatureSchemaCollection* MgFeatureServiceCache::GetFeatureSchemaCollection(MgR
 
     if (NULL != entry.p)
     {
-        data = entry->GetFeatureSchemaCollection();
-
-        if (NULL != data.p
-            && (entry->GetFeatureSchemaName() != featureSchemaName
-                || entry->GetFeatureSchemaCollectionSerialized() != serialized))
-
-        {
-            data = NULL;
-        }
+        data = entry->GetSchemas(schemaName, classNames, serialized);
     }
 
     return data.Detach();
 }
 
-void MgFeatureServiceCache::SetFeatureSchemaXml(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, CREFSTRING featureSchemaXml)
+void MgFeatureServiceCache::SetClassDefinition(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className, MgClassDefinition* classDef)
 {
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
+    Ptr<MgFeatureServiceCacheEntry> entry = SetEntry(resource);
 
-    if (NULL == entry.p)
-    {
-        entry = CreateEntry(resource);
-    }
-
-    entry->SetFeatureSchemaName(featureSchemaName);
-    entry->SetFeatureSchemaXml(featureSchemaXml);
+    entry->SetClassDefinition(schemaName, className, classDef);
 }
 
-STRING MgFeatureServiceCache::GetFeatureSchemaXml(MgResourceIdentifier* resource, CREFSTRING featureSchemaName)
-{
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
-
-    STRING data;
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
-
-    if (NULL != entry.p)
-    {
-        data = entry->GetFeatureSchemaXml();
-
-        if (!data.empty()
-            && entry->GetFeatureSchemaName() != featureSchemaName)
-        {
-            data.clear();
-        }
-    }
-
-    return data;
-}
-
-void MgFeatureServiceCache::SetFeatureClassNames(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, MgStringCollection* featureClassNames)
-{
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
-
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
-
-    if (NULL == entry.p)
-    {
-        entry = CreateEntry(resource);
-    }
-
-    entry->SetFeatureSchemaName(featureSchemaName);
-    entry->SetFeatureClassNames(featureClassNames);
-}
-
-MgStringCollection* MgFeatureServiceCache::GetFeatureClassNames(MgResourceIdentifier* resource, CREFSTRING featureSchemaName)
-{
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
-
-    Ptr<MgStringCollection> data;
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
-
-    if (NULL != entry.p)
-    {
-        data = entry->GetFeatureClassNames();
-
-        if (NULL != data.p
-            && entry->GetFeatureSchemaName() != featureSchemaName)
-        {
-            data = NULL;
-        }
-    }
-
-    return data.Detach();
-}
-
-void MgFeatureServiceCache::SetFeatureClassDefinition(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, CREFSTRING featureClassName, MgClassDefinition* featureClassDefinition)
-{
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
-
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
-
-    if (NULL == entry.p)
-    {
-        entry = CreateEntry(resource);
-    }
-
-    entry->SetFeatureSchemaName(featureSchemaName);
-    entry->SetFeatureClassName(featureClassName);
-    entry->SetFeatureClassDefinition(featureClassDefinition);
-}
-
-MgClassDefinition* MgFeatureServiceCache::GetFeatureClassDefinition(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, CREFSTRING featureClassName)
+MgClassDefinition* MgFeatureServiceCache::GetClassDefinition(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className)
 {
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
@@ -526,36 +481,22 @@ MgClassDefinition* MgFeatureServiceCache::GetFeatureClassDefinition(MgResourceId
 
     if (NULL != entry.p)
     {
-        data = entry->GetFeatureClassDefinition();
-
-        if (NULL != data.p
-            && (entry->GetFeatureSchemaName() != featureSchemaName
-                || entry->GetFeatureClassName() != featureClassName))
-        {
-            data = NULL;
-        }
+        data = entry->GetClassDefinition(schemaName, className);
     }
 
     return data.Detach();
 }
 
-void MgFeatureServiceCache::SetFeatureClassIdentityProperties(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, CREFSTRING featureClassName, MgPropertyDefinitionCollection* featureClassIdentityProperties)
+void MgFeatureServiceCache::SetClassIdentityProperties(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className, MgPropertyDefinitionCollection* idProperties)
 {
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
+    Ptr<MgFeatureServiceCacheEntry> entry = SetEntry(resource);
 
-    if (NULL == entry.p)
-    {
-        entry = CreateEntry(resource);
-    }
-
-    entry->SetFeatureSchemaName(featureSchemaName);
-    entry->SetFeatureClassName(featureClassName);
-    entry->SetFeatureClassIdentityProperties(featureClassIdentityProperties);
+    entry->SetClassIdentityProperties(schemaName, className, idProperties);
 }
 
-MgPropertyDefinitionCollection* MgFeatureServiceCache::GetFeatureClassIdentityProperties(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, CREFSTRING featureClassName)
+MgPropertyDefinitionCollection* MgFeatureServiceCache::GetClassIdentityProperties(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className)
 {
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
@@ -564,71 +505,7 @@ MgPropertyDefinitionCollection* MgFeatureServiceCache::GetFeatureClassIdentityPr
 
     if (NULL != entry.p)
     {
-        data = entry->GetFeatureClassIdentityProperties();
-
-        if (NULL != data.p
-            && (entry->GetFeatureSchemaName() != featureSchemaName
-                || entry->GetFeatureClassName() != featureClassName))
-        {
-            data = NULL;
-        }
-    }
-
-    return data.Detach();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Caches an FDO Feature Schema Collection
-/// The cache takes ownership of Feature Schema collection so the caller must not release it.
-/// This prevents a race condition that would occur if the caller does a release at the
-/// same time another thread tries to retrieve the schemas from this cache.
-/// The FDO Feature Schemas are not thread-safe.
-/// featureSchemaCollection will be NULL when this function exits.
-///
-void MgFeatureServiceCache::SetFdoFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName, FdoPtr<FdoFeatureSchemaCollection>& featureSchemaCollection)
-{
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
-
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
-
-    if (NULL == entry.p)
-    {
-        entry = CreateEntry(resource);
-    }
-
-    entry->SetFeatureSchemaName(featureSchemaName);
-    entry->SetFdoFeatureSchemaCollection(featureSchemaCollection.p);
-    featureSchemaCollection = NULL;
-}
-
-FdoFeatureSchemaCollection* MgFeatureServiceCache::GetFdoFeatureSchemaCollection(MgResourceIdentifier* resource, CREFSTRING featureSchemaName)
-{
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
-
-    FdoPtr<FdoFeatureSchemaCollection> data;
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
-
-    if (NULL != entry.p)
-    {
-        data = entry->GetFdoFeatureSchemaCollection();
-
-        if (NULL != data.p
-            && entry->GetFeatureSchemaName() != featureSchemaName)
-        {
-            data = NULL;
-        }
-
-        // Make sure this cached data is only used by one thread at a time.
-        if (NULL != data.p)
-        {
-            // FDO Feature Schemas are not thread-safe so caller must take ownership.
-            // Remove the FDO schemas from the cache so that they won't be given to
-            // any other thread that calls this function.
-            // Caller is responsible for putting this schemas back in the cache when
-            // done with them.
-            entry->SetFdoFeatureSchemaCollection((FdoFeatureSchemaCollection*) NULL);
-        }
+        data = entry->GetClassIdentityProperties(schemaName, className);
     }
 
     return data.Detach();

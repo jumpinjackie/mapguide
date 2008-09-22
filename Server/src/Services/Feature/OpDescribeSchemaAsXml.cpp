@@ -62,7 +62,7 @@ void MgOpDescribeSchemaAsXml::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (2 == m_packet.m_NumArguments)
+    if (3 == m_packet.m_NumArguments)
     {
         // Get the feature source
         Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
@@ -71,18 +71,23 @@ void MgOpDescribeSchemaAsXml::Execute()
         STRING schemaName;
         m_stream->GetString(schemaName);
 
+        // Get the class names
+        Ptr<MgStringCollection> classNames = (MgStringCollection*)m_stream->GetObject();
+
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(schemaName.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == classNames) ? L"MgStringCollection" : classNames->GetLogString().c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
         // Execute the operation
-        STRING schema= m_service->DescribeSchemaAsXml(resource, schemaName);
+        STRING schema= m_service->DescribeSchemaAsXml(resource, schemaName, classNames);
 
         // Write the response
         EndExecution(schema);
@@ -95,7 +100,7 @@ void MgOpDescribeSchemaAsXml::Execute()
 
     if (!m_argsRead)
     {
-        throw new MgOperationProcessingException(L"MgOpDescribeSchema.Execute",
+        throw new MgOperationProcessingException(L"MgOpDescribeSchemaAsXml.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 

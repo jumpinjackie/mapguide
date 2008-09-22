@@ -40,6 +40,9 @@ typedef vector <INT64> VECTOR_INT64;
 #define DoubleNegativeInfinity numeric_limits<double>::infinity()
 #define DoublePositiveInfinity numeric_limits<double>::infinity()
 
+static const STRING MG_SCHEMA_NAME_HASH_PREFIX      = L"sn"; // NOXLATE
+static const STRING MG_FEATURE_SOURCE_HASH_PREFIX   = L"ns"; // NOXLATE
+
 class MgReader;
 
 class MgServerFeatureUtil
@@ -76,6 +79,9 @@ public:
     static FdoOrderType MgOrderingOptionToFdoOrderType(INT32 type);
     static INT32 FdoObjectTypeToMgObjectPropertyType(FdoObjectType type);
     static FdoObjectType MgObjectPropertyTypeToFdoObjectType(INT32 type);
+
+    static MgStringCollection* FdoToMgStringCollection(FdoStringCollection* fdoStrs, bool includeEmptyStrings);
+    static FdoStringCollection* MgToFdoStringCollection(MgStringCollection* mgStrs, bool includeEmptyStrings);
 
 private:
     static bool Initialize();

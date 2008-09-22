@@ -21,7 +21,7 @@
 #include "ServerCacheEntry.h"
 #include "FeatureSourceCacheItem.h"
 #include "SpatialContextCacheItem.h"
-#include "Fdo.h"
+#include "FeatureSchemaCacheItem.h"
 
 class MG_SERVER_CACHE_API MgFeatureServiceCacheEntry : public MgServerCacheEntry
 {
@@ -48,95 +48,65 @@ public:
     void SetSpatialContextInfo(MgSpatialContextCacheItem* spatialContextInfo);
     MgSpatialContextCacheItem* GetSpatialContextInfo();
 
-    void SetActiveFlag(bool active);
-    bool GetActiveFlag() const;
+    void SetSpatialContextReader(bool active, MgSpatialContextReader* spatialContextReader);
+    MgSpatialContextReader* GetSpatialContextReader(bool active);
 
-    MgSpatialContextReader* GetSpatialContextReader();
-    void SetSpatialContextReader(MgSpatialContextReader* spatialContextReader);
+    void SetSchemaNames(MgStringCollection* schemaNames);
+    MgStringCollection* GetSchemaNames();
 
-    MgStringCollection* GetFeatureSchemaNames();
-    void SetFeatureSchemaNames(MgStringCollection* featureSchemaNames);
+    void SetClassNames(CREFSTRING schemaName, MgStringCollection* classNames);
+    MgStringCollection* GetClassNames(CREFSTRING schemaName);
 
-    void SetFeatureSchemaName(CREFSTRING featureSchemaName);
-    STRING GetFeatureSchemaName() const;
+    void SetSchemaXml(CREFSTRING schemaName, MgStringCollection* classNames, CREFSTRING schemaXml);
+    STRING GetSchemaXml(CREFSTRING schemaName, MgStringCollection* classNames);
 
-    bool GetFeatureSchemaCollectionSerialized() const;
-    void SetFeatureSchemaCollectionSerialized(bool serialized);
+    void SetFdoSchemas(CREFSTRING schemaName, MgStringCollection* classNames, bool classNameHintUsed, FdoFeatureSchemaCollection* schemas);
+    FdoFeatureSchemaCollection* GetFdoSchemas(CREFSTRING schemaName, MgStringCollection* classNames, bool& classNameHintUsed);
 
-    MgFeatureSchemaCollection* GetFeatureSchemaCollection();
-    void SetFeatureSchemaCollection(MgFeatureSchemaCollection* featureSchemaCollection);
+    void SetSchemas(CREFSTRING schemaName, MgStringCollection* classNames, bool serialized, MgFeatureSchemaCollection* schemas);
+    MgFeatureSchemaCollection* GetSchemas(CREFSTRING schemaName, MgStringCollection* classNames, bool serialized);
 
-    FdoFeatureSchemaCollection* GetFdoFeatureSchemaCollection();
-    void SetFdoFeatureSchemaCollection(FdoFeatureSchemaCollection* featureSchemaCollection);
+    void SetClassDefinition(CREFSTRING schemaName, CREFSTRING className, MgClassDefinition* classDef);
+    MgClassDefinition* GetClassDefinition(CREFSTRING schemaName, CREFSTRING className);
 
-    STRING GetFeatureSchemaXml() const;
-    void SetFeatureSchemaXml(CREFSTRING featureSchemaXml);
+    void SetClassIdentityProperties(CREFSTRING schemaName, CREFSTRING className, MgPropertyDefinitionCollection* idProperties);
+    MgPropertyDefinitionCollection* GetClassIdentityProperties(CREFSTRING schemaName, CREFSTRING className);
 
-    MgStringCollection* GetFeatureClassNames();
-    void SetFeatureClassNames(MgStringCollection* featureClassNames);
+protected:
 
-    void SetFeatureClassName(CREFSTRING featureClassName);
-    STRING GetFeatureClassName() const;
+    void ParseQualifiedClassName(CREFSTRING schemaName, CREFSTRING className,
+        REFSTRING parsedSchemaName, REFSTRING parsedClassName);
 
-    MgClassDefinition* GetFeatureClassDefinition();
-    void SetFeatureClassDefinition(MgClassDefinition* featureClassDefinition);
+    void FormatKeys(bool classNameHintUsed,
+        CREFSTRING schemaName, CREFSTRING className,
+        REFSTRING schemaKey, REFSTRING classKey);
+    INT32 FormatKeys(bool classNameHintUsed,
+        CREFSTRING schemaName, MgStringCollection* classNames,
+        REFSTRING schemaKey, REFSTRING classKey);
 
-    MgPropertyDefinitionCollection* GetFeatureClassIdentityProperties();
-    void SetFeatureClassIdentityProperties(MgPropertyDefinitionCollection* featureClassIdentityProperties);
+    MgFeatureSchemaCollection* FindSchema(MgFeatureSchemaCollection* schemas, CREFSTRING schemaName);
+
+    MgFeatureSchemaCacheItem* SetFeatureSchemaCacheItem(CREFSTRING schemaName);
+    MgFeatureSchemaCacheItem* GetFeatureSchemaCacheItem(CREFSTRING schemaName);
 
 /// Data Members
 
 private:
 
+    bool m_classNameHintUsed;
+
     Ptr<MgFeatureSourceCacheItem> m_featureSource;
     Ptr<MgSpatialContextCacheItem> m_spatialContextInfo;
 
-    bool m_active;
+    Ptr<MgSpatialContextReader> m_activeContextReader;
     Ptr<MgSpatialContextReader> m_spatialContextReader;
 
-    Ptr<MgStringCollection> m_featureSchemaNames;
+    Ptr<MgStringCollection> m_schemaNames;
 
-    STRING m_featureSchemaName;
-
-    bool m_featureSchemaCollectionSerialized;
-    Ptr<MgFeatureSchemaCollection> m_featureSchemaCollection;
-
-    FdoPtr<FdoFeatureSchemaCollection> m_fdoFeatureSchemaCollection;
-
-    STRING m_featureSchemaXml;
-    Ptr<MgStringCollection> m_featureClassNames;
-
-    STRING m_featureClassName;
-
-    Ptr<MgClassDefinition> m_featureClassDefinition;
-    Ptr<MgPropertyDefinitionCollection> m_featureClassIdentityProperties;
+    typedef std::map<STRING, MgFeatureSchemaCacheItem*> MgFeatureSchemaCacheItems;
+    MgFeatureSchemaCacheItems m_featureSchemaCacheItems;
 };
 
 /// Inline Methods
-
-inline bool MgFeatureServiceCacheEntry::GetActiveFlag() const
-{
-    return m_active;
-}
-
-inline STRING MgFeatureServiceCacheEntry::GetFeatureSchemaName() const
-{
-    return m_featureSchemaName;
-}
-
-inline bool MgFeatureServiceCacheEntry::GetFeatureSchemaCollectionSerialized() const
-{
-    return m_featureSchemaCollectionSerialized;
-}
-
-inline STRING MgFeatureServiceCacheEntry::GetFeatureSchemaXml() const
-{
-    return m_featureSchemaXml;
-}
-
-inline STRING MgFeatureServiceCacheEntry::GetFeatureClassName() const
-{
-    return m_featureClassName;
-}
 
 #endif

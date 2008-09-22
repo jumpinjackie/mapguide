@@ -47,16 +47,31 @@ void GwsCommonFdoUtils::GetClassDefinition (
     FdoClassDefinition   * & classDef
 )
 {
-
     FdoPtr<FdoIDescribeSchema>  descSchema =
             (FdoIDescribeSchema *) pConn->CreateCommand (FdoCommandType_DescribeSchema);
+            
+    FdoString* schemaName = classname.Schema();
+    FdoString* clsName = classname.Name();
+    
+    if (NULL != schemaName && ::wcslen(schemaName) > 0)
+    {
+        descSchema->SetSchemaName(schemaName);
+    }
+
+    if (NULL != clsName && ::wcslen(clsName) > 0)
+    {
+        FdoPtr<FdoStringCollection> classNames = FdoStringCollection::Create();
+
+        classNames->Add(clsName);
+        descSchema->SetClassNames(classNames.p);
+    }
 
     FdoPtr <FdoFeatureSchemaCollection> schemas =
             (FdoFeatureSchemaCollection *) descSchema->Execute ();
 
-    schema = (FdoFeatureSchema *)schemas->GetItem (classname.Schema());
+    schema = (FdoFeatureSchema *)schemas->GetItem (schemaName);
     FdoPtr<FdoClassCollection> pClasses = schema->GetClasses();
-    classDef = pClasses->GetItem(classname.Name());
+    classDef = pClasses->GetItem(clsName);
 }
 
 bool GwsCommonFdoUtils::GetFdoClassIdentityProperties (

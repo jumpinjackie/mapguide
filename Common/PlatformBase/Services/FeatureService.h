@@ -346,10 +346,65 @@ PUBLISHED_API:
     ///
     virtual MgByteReader* GetCapabilities(CREFSTRING providerName) = 0;
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the definitions of one or more schemas contained in the
+    /// feature source for particular classes. If the specified schema name or
+    /// a class name does not exist, this method will throw an exception.
+    /// See \link Feature_Schema_Module Feature Schema \endlink.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgFeatureSchemaCollection DescribeSchema(MgResourceIdentifier resource, string schemaName, MgStringCollection classNames);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgFeatureSchemaCollection DescribeSchema(MgResourceIdentifier resource, String schemaName, MgStringCollection classNames);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgFeatureSchemaCollection DescribeSchema(MgResourceIdentifier resource, string schemaName, MgStringCollection classNames);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// A resource identifier for the feature source.
+    /// \param schemaName (String/string)
+    /// The name of the schema definition to retrieve. If this string is empty,
+    /// execution of the command will describe requested classes using the
+    /// qualified class name. If the class name is not qualified, the requested
+    /// class from all schemas will be described.
+    /// \param classNames (MgStringCollection)
+    /// A collection of strings identifying the feature classes for which to
+    /// retrieve schema information. If this collection is null or empty,
+    /// execution of the command will describe all classes.
+    /// If the class name is not qualified, and the schema name is not specified,
+    /// the requested class from all schemas will be described.
+    /// The class names specified serve only as a hint. Use of the hint
+    /// during command execution is provider dependent. Providers that 
+    /// will not use the hint will describe the schema for all classes.
+    ///
+    /// \return
+    /// Returns the schema collection representing the schema containing
+    /// the class collection for the specified classes.
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgFdoException
+    ///
+    /// \note
+    /// Please refer to Overview section of this document or Fdo
+    /// provider documents for details on connection properties,
+    /// schema and classes.
+    ///
+    virtual MgFeatureSchemaCollection* DescribeSchema(MgResourceIdentifier* resource,
+        CREFSTRING schemaName, MgStringCollection* classNames);
+
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the definitions of one or more schema contained in the
     /// feature source. See \link Feature_Schema_Module Feature Schema \endlink.
+    ///
+    /// \remarks
+    /// This method has been deprecated. Use the following method:
+    /// \link MgFeatureService::DescribeSchema(MgResourceIdentifier*,CREFSTRING,MgStringCollection) DescribeSchema(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames) \endlink.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -381,10 +436,62 @@ PUBLISHED_API:
     /// Please refer to Overview section of this document or Fdo
     /// provider documents for details on connection properties,
     /// schema and classes.
-    virtual MgFeatureSchemaCollection* DescribeSchema( MgResourceIdentifier* resource,
-                                          CREFSTRING schemaName ) = 0;
+    ///
+    virtual MgFeatureSchemaCollection* DescribeSchema(MgResourceIdentifier* resource,
+        CREFSTRING schemaName) = 0;
 
-    /////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the definitions in XML format of one or more schemas contained in the
+    /// feature source for particular classes. If the specified schema name or
+    /// a class name does not exist, this method will throw an exception.
+    /// See \link Feature_Schema_Module Feature Schema \endlink.
+    ///
+    /// \remarks
+    /// The XML representation of the schema definitions conforms to
+    /// FDO XML schema, which are based on OGC GML schema. How to
+    /// specify a schema definition in XML is discussed in the
+    /// Autodesk FDO API Developer's Guide.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual string DescribeSchemaAsXml(MgResourceIdentifier resource, string schemaName, MgStringCollection classNames);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual String DescribeSchemaAsXml(MgResourceIdentifier resource, String schemaName, MgStringCollection classNames);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual string DescribeSchemaAsXml(MgResourceIdentifier resource, string schemaName, MgStringCollection classNames);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// A resource identifier for the feature source.
+    /// \param schemaName (String/string)
+    /// The name of the schema definition to retrieve. If this string is empty,
+    /// execution of the command will describe requested classes using the
+    /// qualified class name. If the class name is not qualified, the requested
+    /// class from all schemas will be described.
+    /// \param classNames (MgStringCollection)
+    /// A collection of strings identifying the feature classes for which to
+    /// retrieve schema information. If this collection is null or empty,
+    /// execution of the command will describe all classes.
+    /// If the class name is not qualified, and the schema name is not specified,
+    /// the requested class from all schemas will be described.
+    /// The class names specified serve only as a hint. Use of the hint
+    /// during command execution is provider dependent. Providers that 
+    /// will not use the hint will describe the schema for all classes.
+    ///
+    /// \return
+    /// Returns a string containing the FDO schema in XML format.
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgFdoException
+    ///
+    virtual STRING DescribeSchemaAsXml(MgResourceIdentifier* resource,
+        CREFSTRING schemaName, MgStringCollection* classNames);
+
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the definition in XML format of a schema contained in
     /// the feature source. See \link Feature_Schema_Module Feature Schema \endlink.
@@ -394,6 +501,8 @@ PUBLISHED_API:
     /// FDO XML schema, which are based on OGC GML schema. How to
     /// specify a schema definition in XML is discussed in the
     /// Autodesk FDO API Developer's Guide.
+    /// This method has been deprecated. Use the following method:
+    /// \link MgFeatureService::DescribeSchemaAsXml(MgResourceIdentifier*,CREFSTRING,MgStringCollection) DescribeSchemaAsXml(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames) \endlink.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -421,8 +530,8 @@ PUBLISHED_API:
     /// \exception MgInvalidArgumentException
     /// \exception MgFdoException
     ///
-    virtual STRING DescribeSchemaAsXml( MgResourceIdentifier* resource,
-                                          CREFSTRING schemaName ) = 0;
+    virtual STRING DescribeSchemaAsXml(MgResourceIdentifier* resource,
+        CREFSTRING schemaName) = 0;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -851,13 +960,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual MgSpatialContextReader GetSpatialContexts(MgResourceIdentifier resource, bool bActiveOnly = false);
+    /// virtual MgSpatialContextReader GetSpatialContexts(MgResourceIdentifier resource, bool bActiveOnly);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual MgSpatialContextReader GetSpatialContexts(MgResourceIdentifier resource, boolean bActiveOnly = false);
+    /// virtual MgSpatialContextReader GetSpatialContexts(MgResourceIdentifier resource, boolean bActiveOnly);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual MgSpatialContextReader GetSpatialContexts(MgResourceIdentifier resource, bool bActiveOnly = false);
+    /// virtual MgSpatialContextReader GetSpatialContexts(MgResourceIdentifier resource, bool bActiveOnly);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param resource (MgResourceIdentifier)
@@ -890,13 +999,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual MgLongTransactionReader GetLongTransactions(MgResourceIdentifier resource, bool bActiveOnly = false);
+    /// virtual MgLongTransactionReader GetLongTransactions(MgResourceIdentifier resource, bool bActiveOnly);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual MgLongTransactionReader GetLongTransactions(MgResourceIdentifier resource, boolean bActiveOnly = false);
+    /// virtual MgLongTransactionReader GetLongTransactions(MgResourceIdentifier resource, boolean bActiveOnly);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual MgLongTransactionReader GetLongTransactions(MgResourceIdentifier resource, bool bActiveOnly = false);
+    /// virtual MgLongTransactionReader GetLongTransactions(MgResourceIdentifier resource, bool bActiveOnly);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param resource (MgResourceIdentifier)
@@ -1101,13 +1210,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual MgByteReader CreateFeatureSource(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses);
+    /// virtual MgByteReader DescribeWfsFeatureType(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual MgByteReader CreateFeatureSource(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses);
+    /// virtual MgByteReader DescribeWfsFeatureType(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual MgByteReader CreateFeatureSource(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses);
+    /// virtual MgByteReader DescribeWfsFeatureType(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param featureSourceId (MgResourceIdentifier)

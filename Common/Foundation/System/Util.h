@@ -556,11 +556,17 @@ INTERNAL_API:
     static void TrimEndingZeros(string& str);
     static void TrimEndingZeros(STRING& str);
 
+    static void FormatQualifiedClassName(CREFSTRING schemaName, CREFSTRING className, REFSTRING qualifiedClassName);
+    static void ParseQualifiedClassName(CREFSTRING qualifiedClassName, REFSTRING schemaName, REFSTRING className);
+
     static const double DefaultCompareTolerance;
     static const STRING LinuxFilesystemMeminfo;
     static const STRING LinuxFilesystemStat;
 
     static const STRING sm_xssReservedCharacters;
+
+    static const STRING sm_classNameQualifier;
+    static const STRING sm_classPropertyQualifier;
 
 private:
 

@@ -39,7 +39,10 @@ const double MgUtil::DefaultCompareTolerance = 0.01; // 1% margin of error
 const STRING MgUtil::LinuxFilesystemMeminfo              = L"/proc/meminfo";     // NOXLATE
 const STRING MgUtil::LinuxFilesystemStat                 = L"/proc/stat";        // NOXLATE
 
-const STRING MgUtil::sm_xssReservedCharacters = L"<>&";
+const STRING MgUtil::sm_xssReservedCharacters = L"<>&"; // NOXLATE
+
+const STRING MgUtil::sm_classNameQualifier     = L":"; // NOXLATE
+const STRING MgUtil::sm_classPropertyQualifier = L"."; // NOXLATE
 
 void MgUtil::InitializeUuidGenerator()
 {
@@ -1139,4 +1142,27 @@ STRING MgUtil::ToUpper(CREFSTRING source)
     STRING up = source;
     std::transform(up.begin(), up.end(), up.begin(), ::toupper);
     return up;
+}
+
+void MgUtil::FormatQualifiedClassName(CREFSTRING schemaName, CREFSTRING className, REFSTRING qualifiedClassName)
+{
+    qualifiedClassName  = schemaName;
+    qualifiedClassName += sm_classNameQualifier;
+    qualifiedClassName += className;
+}
+
+void MgUtil::ParseQualifiedClassName(CREFSTRING qualifiedClassName, REFSTRING schemaName, REFSTRING className)
+{
+    STRING::size_type index = qualifiedClassName.find(sm_classNameQualifier);
+
+    if (STRING::npos == index)
+    {
+        schemaName = L"";
+        className  = qualifiedClassName;
+    }
+    else
+    {
+        schemaName = qualifiedClassName.substr(0, index);
+        className  = qualifiedClassName.substr(index + 1);
+    }
 }

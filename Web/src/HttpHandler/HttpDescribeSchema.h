@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _FS_DESCRIBE_SCHEMA_H
-#define _FS_DESCRIBE_SCHEMA_H
+#ifndef HTTPDESCRIBESCHEMA_H_
+#define HTTPDESCRIBESCHEMA_H_
 
 class MgHttpDescribeSchema : public MgHttpRequestResponseHandler
 {
@@ -44,7 +44,9 @@ public:
     void Execute(MgHttpResponse& hResponse);
 
 private:
-    STRING  m_resId;
+    Ptr<MgResourceIdentifier> m_resource;
+    STRING m_schemaName;
+    Ptr<MgStringCollection> m_classNames;
 };
 
-#endif  // _FS_DESCRIBE_SCHEMA_H
+#endif // HTTPDESCRIBESCHEMA_H_

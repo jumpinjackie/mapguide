@@ -46,7 +46,7 @@ public:
 
 /// Data Members
 
-public:
+private:
 
     auto_ptr<MdfModel::FeatureSource> m_featureSource;
 };

@@ -261,29 +261,18 @@ MgByteReader* MgServerFeatureService::GetCapabilities( CREFSTRING providerName )
 
     MgServerGetProviderCapabilities msgpc(providerName);
     return msgpc.GetProviderCapabilities();
-    }
+}
 
-
-//////////////////////////////////////////////////////////////////
-/// <summary>
-/// This method returns a collection of ALL ( IF NO NAME IS SUPPLIED ) schemas
-/// </summary>
-/// <param name="resource">Input
-/// A resource identifier referring to connection string
-/// </param>
-/// <param name="schemaName">Input
-/// A schema name or NULL to retrieve all available schemas
-/// </param>
-/// <returns>
-/// MgFeatureSchemaCollection
-/// </returns>
+///////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Gets the definitions of one or more schemas contained in the
+/// feature source for particular classes. If the specified schema name or
+/// a class name does not exist, this method will throw an exception.
 ///
-/// EXCEPTIONS:
-/// MgInvalidResourceIdentifer
-MgFeatureSchemaCollection* MgServerFeatureService::DescribeSchema( MgResourceIdentifier* resource,
-                                                      CREFSTRING schemaName )
+MgFeatureSchemaCollection* MgServerFeatureService::DescribeSchema(MgResourceIdentifier* resource,
+    CREFSTRING schemaName, MgStringCollection* classNames)
 {
-    Ptr<MgFeatureSchemaCollection> schema;
+    Ptr<MgFeatureSchemaCollection> schemas;
 
     MG_TRY()
 
@@ -296,43 +285,36 @@ MgFeatureSchemaCollection* MgServerFeatureService::DescribeSchema( MgResourceIde
     MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::Trace, L"MgServerFeatureService.DescribeSchema", mgStackParams);
     logDetail.AddResourceIdentifier(L"Resource", resource);
     logDetail.AddString(L"SchemaName", schemaName);
+    logDetail.AddObject(L"ClassNames", classNames);
     logDetail.Create();
 
-     MgServerDescribeSchema msds;
-    schema = msds.DescribeSchema(resource, schemaName);
+    MgServerDescribeSchema msds;
+    schemas = msds.DescribeSchema(resource, schemaName, classNames);
 
     MG_CATCH_AND_THROW(L"MgServerFeatureService.DescribeSchema");
 
-    return schema.Detach();
+    return schemas.Detach();
 }
 
-
-//////////////////////////////////////////////////////////////////
-/// <summary>
-/// This method returns list of ALL ( IF NO NAME IS SUPPLIED ) schemas
-/// and details on each class available in the schema with Data,Geometry and
-/// Object property definitions.
+///////////////////////////////////////////////////////////////////////////////
+/// This method has been deprecated. Use the above method.
 ///
-/// Schema Definition: FdoSchemaDesc.xsd
-/// Sample XML:        FdoSchemaDesc.xml
-///
-/// </summary>
-/// <param name="resource">Input
-/// A resource identifier referring to connection string
-/// </param>
-/// <param name="schemaName">Input
-/// A schema name or NULL to retrieve all available schemas
-/// </param>
-/// <returns>
-/// String representing XML (or NULL)
-/// </returns>
-///
-/// EXCEPTIONS:
-/// MgInvalidResourceIdentifer
-STRING MgServerFeatureService::DescribeSchemaAsXml( MgResourceIdentifier* resource,
-                                                      CREFSTRING schemaName )
+MgFeatureSchemaCollection* MgServerFeatureService::DescribeSchema(MgResourceIdentifier* resource,
+    CREFSTRING schemaName)
 {
-    STRING schema;
+    return DescribeSchema(resource, schemaName, NULL);
+}
+
+///////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Gets the definitions in XML format of one or more schemas contained in the
+/// feature source for particular classes. If the specified schema name or
+/// a class name does not exist, this method will throw an exception.
+///
+STRING MgServerFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource,
+    CREFSTRING schemaName, MgStringCollection* classNames)
+{
+    STRING schemaXml;
 
     MG_TRY()
 
@@ -345,16 +327,25 @@ STRING MgServerFeatureService::DescribeSchemaAsXml( MgResourceIdentifier* resour
     MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::Trace, L"MgServerFeatureService.DescribeSchemaAsXml", mgStackParams);
     logDetail.AddResourceIdentifier(L"Resource", resource);
     logDetail.AddString(L"SchemaName", schemaName);
+    logDetail.AddObject(L"ClassNames", classNames);
     logDetail.Create();
 
-     MgServerDescribeSchema msds;
-    schema = msds.DescribeSchemaAsXml(resource, schemaName);
+    MgServerDescribeSchema msds;
+    schemaXml = msds.DescribeSchemaAsXml(resource, schemaName, classNames);
 
     MG_CATCH_AND_THROW(L"MgServerFeatureService.DescribeSchemaAsXml");
 
-    return schema;
+    return schemaXml;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// This method has been deprecated. Use the above method.
+///
+STRING MgServerFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource,
+    CREFSTRING schemaName)
+{
+    return DescribeSchemaAsXml(resource, schemaName, NULL);
+}
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -711,7 +702,7 @@ MgSpatialContextReader* MgServerFeatureService::GetSpatialContexts( MgResourceId
     logDetail.AddBool(L"ActiveOnly", bActiveOnly);
     logDetail.Create();
 
-     MgServerGetSpatialContexts msgsc;
+    MgServerGetSpatialContexts msgsc;
     reader = msgsc.GetSpatialContexts(resource, bActiveOnly);
 
     MG_CATCH_AND_THROW(L"MgServerFeatureService.GetSpatialContexts")
@@ -831,6 +822,73 @@ unsigned MgServerFeatureService::StringHasher(FdoString* pszString)
   return uRet;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Find a class definition from the specified schemas.
+///
+void MgServerFeatureService::FindClassDefinition(Ptr<MgFeatureSchemaCollection>& schemas,
+    CREFSTRING schemaName, CREFSTRING className, REFSTRING schemaHash,
+    Ptr<MgFeatureSchema>& schemaFound, Ptr<MgClassDefinition>& classFound)
+{
+    if (NULL == schemas.p)
+    {
+        throw new MgNullArgumentException(L"MgServerFeatureService.FindClassDefinition",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    
+    INT32 schemaCount = schemas->GetCount();
+    bool hashed = (0 == schemaName.find_first_of(
+        MG_SCHEMA_NAME_HASH_PREFIX.c_str(), 0, MG_SCHEMA_NAME_HASH_PREFIX.length()));
+
+    schemaHash = L"";
+    schemaFound = NULL;
+    classFound = NULL;
+
+    for (INT32 i = 0; i < schemaCount; ++i)
+    {
+        Ptr<MgFeatureSchema> currSchema = schemas->GetItem(i);
+        STRING currSchemaName = currSchema->GetName();
+        
+        if (!schemaName.empty())
+        {
+            if (hashed)
+            {
+                MgUtil::Int32ToString(StringHasher(currSchemaName.c_str()), schemaHash);
+                schemaHash = MG_SCHEMA_NAME_HASH_PREFIX + schemaHash;
+
+                if (schemaName != schemaHash)
+                {
+                    continue;
+                }
+            }
+            else if (schemaName != currSchemaName)
+            {
+                continue;
+            }
+        }
+
+        Ptr<MgClassDefinitionCollection> classes = currSchema->GetClasses();
+        INT32 classCount = classes->GetCount();
+
+        for (INT32 j = 0; j < classCount; ++j)
+        {
+            Ptr<MgClassDefinition> currClass = classes->GetItem(j);
+
+            if (className == currClass->GetName())
+            {
+                schemaFound = currSchema;
+                classFound = currClass;
+                break;
+            }
+        }
+
+        if (NULL != classFound.p)
+        {
+            break;
+        }
+    }
+}
+
 //////////////////////////////////////////////////////////////////
 /// \brief
 /// Retrieves schema information about a set of feature classes for a given feature source.
@@ -860,68 +918,86 @@ unsigned MgServerFeatureService::StringHasher(FdoString* pszString)
 ///
 MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId, MgStringCollection* featureClasses)
 {
-    Ptr<MgFeatureSchemaCollection> fsc = DescribeSchema(featureSourceId, L""); //NOXLATE
+    STRING schemaName;
+    Ptr<MgStringCollection> schemaNames = new MgStringCollection();
+    Ptr<MgStringCollection> classNames = new MgStringCollection();
+    
+    if (NULL != featureClasses)
+    {
+        bool singleSchemaUsed = true;
+        STRING::size_type hashPrefixLength = MG_SCHEMA_NAME_HASH_PREFIX.length();
+        INT32 count = featureClasses->GetCount();
+        
+        for (INT32 i = 0; i < count; ++i)
+        {
+            STRING currSchemaName, currClassName;
+            MgUtil::ParseQualifiedClassName(featureClasses->GetItem(i), currSchemaName, currClassName);
+            
+            if (!currClassName.empty())
+            {
+                schemaNames->Add(currSchemaName);
+                classNames->Add(currClassName);
+            }
 
-    if (featureClasses != NULL && featureClasses->GetCount() != 0)
+            if (singleSchemaUsed)
+            {            
+                if (0 == currSchemaName.find_first_of(MG_SCHEMA_NAME_HASH_PREFIX.c_str(), 0, hashPrefixLength))
+                {
+                    singleSchemaUsed = false;
+                    schemaName = L"";
+                }
+                else if (0 == i)
+                {
+                    schemaName = currSchemaName;
+                }
+                else if (currSchemaName != schemaName)
+                {
+                    singleSchemaUsed = false;
+                    schemaName = L"";
+                }
+            }
+        }        
+    }
+
+    Ptr<MgFeatureSchemaCollection> fsc = DescribeSchema(featureSourceId, schemaName, classNames);
+    INT32 count = classNames->GetCount();
+    
+    if (count > 0)
     {
         Ptr<MgFeatureSchemaCollection> dfsc = new MgFeatureSchemaCollection();
-        for(int i = 0; i < featureClasses->GetCount(); i++)
-        {
-            STRING clsName = featureClasses->GetItem(i);
-            STRING sSchemaName;
-            STRING::size_type iPos = clsName.find(L":"); //NOXLATE
-            if(iPos != STRING::npos)
-            {
-                // extract schema hashtable schema name
-                sSchemaName = clsName.substr(0, iPos);
-                clsName = clsName.substr(iPos+1);
-            }
 
-            STRING sSchemaHash;
-            Ptr<MgClassDefinition> clsFound = NULL;
-            Ptr<MgFeatureSchema> schFound = NULL;
-            for(int y = 0; y < fsc->GetCount(); y++)
+        for (INT32 i = 0; i < count; ++i)
+        {
+            Ptr<MgFeatureSchema> schemaFound;
+            Ptr<MgClassDefinition> classFound;
+            STRING schemaHash;
+            STRING currSchemaName = schemaNames->GetItem(i);
+            STRING currClassName = classNames->GetItem(i);
+            
+            FindClassDefinition(fsc, currSchemaName, currClassName, schemaHash, schemaFound, classFound);
+            
+            if (NULL == classFound.p)
             {
-                Ptr<MgFeatureSchema> sch = fsc->GetItem(y);
-                // in case we have a schema name chech the schema name
-                if (sSchemaName.size() != 0)
-                {
-                    MgUtil::Int32ToString(StringHasher(sch->GetName().c_str()), sSchemaHash);
-                    sSchemaHash = L"sn" + sSchemaHash; //NOXLATE
-                    if (sSchemaName != sSchemaHash)
-                        continue;
-                }
-                Ptr<MgClassDefinitionCollection> classes = sch->GetClasses();
-                for(int idx = 0; idx < classes->GetCount(); idx++)
-                {
-                    Ptr<MgClassDefinition> cls = classes->GetItem(idx);
-                    if (clsName == cls->GetName())
-                    {
-                        clsFound = cls;
-                        schFound = sch;
-                        break;
-                    }
-                }
-                if (clsFound != NULL)
-                    break;
+                throw new MgObjectNotFoundException(L"DescribeWfsFeatureType",
+                    __LINE__, __WFILE__, NULL, L"", NULL);
             }
-            if (clsFound == NULL)
-                throw new MgObjectNotFoundException(L"DescribeWfsFeatureType", __LINE__, __WFILE__, NULL, L"", NULL);  //NOXLATE
             else
             {
-                STRING sFeatureSourceHash;
-                MgUtil::Int32ToString(StringHasher(featureSourceId->ToString().c_str()),sFeatureSourceHash);
-                sFeatureSourceHash = L"ns" + sFeatureSourceHash + sSchemaHash; //NOXLATE
-                Ptr<MgFeatureSchema> schToAdd = new MgFeatureSchema(sFeatureSourceHash, schFound->GetDescription());
-                Ptr<MgClassDefinitionCollection> classes = schToAdd->GetClasses();
-                classes->Add(clsFound);
-                dfsc->Add(schToAdd);
+                STRING featureSourceHash;
+
+                MgUtil::Int32ToString(StringHasher(featureSourceId->ToString().c_str()),featureSourceHash);
+                featureSourceHash = MG_FEATURE_SOURCE_HASH_PREFIX + featureSourceHash + schemaHash;
+
+                Ptr<MgFeatureSchema> schemaToAdd = new MgFeatureSchema(featureSourceHash, schemaFound->GetDescription());
+                Ptr<MgClassDefinitionCollection> classes = schemaToAdd->GetClasses();
+
+                classes->Add(classFound);
+                dfsc->Add(schemaToAdd);
             }
         }
+        
         fsc = dfsc;
     }
-    else
-        fsc = DescribeSchema(featureSourceId, L""); //NOXLATE
 
     STRING sch = SchemaToXml(fsc);
 
@@ -1320,7 +1396,7 @@ MgPropertyDefinitionCollection* MgServerFeatureService::GetIdentityProperties(Mg
 /// Returns an MgByteReader containing the requested feature information.
 ///
 MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
-                                                     CREFSTRING featureName,
+                                                     CREFSTRING featureClass,
                                                      MgStringCollection* propNames,
                                                      CREFSTRING srs,
                                                      CREFSTRING wfsFilter,
@@ -1330,64 +1406,32 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     TransformCacheMap transformCache;
 
     MG_FEATURE_SERVICE_TRY()
-    //now get the schema -- we need to the feature class to get
-    Ptr<MgFeatureSchemaCollection> fsc = DescribeSchema(fs, L""); //NOXLATE
-    assert(fsc->GetCount() > 0);
-    Ptr<MgFeatureSchema> schema;
-    //find the needed class definition
-    Ptr<MgClassDefinition> fc;
 
-    STRING lfeatureName = featureName;
-    STRING::size_type posSep = lfeatureName.find(L":"); //NOXLATE
-    if (lfeatureName.find(L"sn") == 0 && posSep != STRING::npos) //NOXLATE
+    STRING lfeatureName = featureClass;
+    STRING schemaName, className;
+    MgUtil::ParseQualifiedClassName(lfeatureName, schemaName, className);
+
+    bool hashed = (0 == schemaName.find_first_of(
+        MG_SCHEMA_NAME_HASH_PREFIX.c_str(), 0, MG_SCHEMA_NAME_HASH_PREFIX.length()));
+    Ptr<MgStringCollection> classNames = new MgStringCollection();
+
+    if (!className.empty())
     {
-        STRING sSchemaName = lfeatureName.substr(0, posSep);
-        STRING clsName = lfeatureName.substr(posSep + 1);
-        STRING sSchemaHash;
-        for(int y = 0; y < fsc->GetCount(); y++)
-        {
-            Ptr<MgFeatureSchema> sch = fsc->GetItem(y);
-            // in case we have a schema name chech the schema name
-            if (sSchemaName.size() != 0)
-            {
-                MgUtil::Int32ToString(StringHasher(sch->GetName().c_str()), sSchemaHash);
-                sSchemaHash = L"sn" + sSchemaHash; //NOXLATE
-                if (sSchemaName != sSchemaHash)
-                    continue;
-            }
-            Ptr<MgClassDefinitionCollection> classes = sch->GetClasses();
-            for(int idx = 0; idx < classes->GetCount(); idx++)
-            {
-                Ptr<MgClassDefinition> cls = classes->GetItem(idx);
-                if (clsName == cls->GetName())
-                {
-                    fc = cls;
-                    schema = sch;
-                    break;
-                }
-            }
-            if (fc != NULL)
-                break;
-        }
-        if (fc != NULL)
-            lfeatureName = schema->GetName() + L":" + clsName; //NOXLATE
+        classNames->Add(className);
     }
-    else
-    {
-        //TODO:
-        //get the first schema in the collection
-        schema = fsc->GetItem(0);
-        Ptr<MgClassDefinitionCollection> classes = schema->GetClasses();
 
-        for (int i=0; i<classes->GetCount(); i++)
-        {
-            Ptr<MgClassDefinition> t = classes->GetItem(i);
-            if (t->GetName() == lfeatureName)
-            {
-                fc = t;
-                break;
-            }
-        }
+    // Find the needed class definition.
+    Ptr<MgFeatureSchemaCollection> fsc = DescribeSchema(
+        fs, hashed ? L"" : schemaName, classNames);
+    Ptr<MgFeatureSchema> schema;
+    Ptr<MgClassDefinition> fc;
+    STRING schemaHash;
+
+    FindClassDefinition(fsc, schemaName, className, schemaHash, schema, fc);
+
+    if (hashed && NULL != schema.p)
+    {
+        MgUtil::FormatQualifiedClassName(schema->GetName(), className, lfeatureName);
     }
 
     MgCoordinateSystemFactory fact;

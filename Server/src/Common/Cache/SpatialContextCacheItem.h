@@ -47,6 +47,8 @@ public:
 
 /// Data Members
 
+private:
+
     auto_ptr<MgSpatialContextInfo> m_spatialContextInfo;
 };
 

@@ -816,9 +816,8 @@ bool MgServerSelectFeatures::FindFeatureCalculation(MgResourceIdentifier* resour
         CHECKNULL(extension, L"MgServerSelectFeatures.FindFeatureCalculation");
         STRING name = (STRING)extension->GetName();
 
-        STRING parsedSchemaName = L"";
-        STRING parsedExtensionName = L"";
-        ParseQualifiedClassName(extensionName, parsedSchemaName, parsedExtensionName);
+        STRING parsedSchemaName, parsedExtensionName;
+        MgUtil::ParseQualifiedClassName(extensionName, parsedSchemaName, parsedExtensionName);
 
         if (parsedExtensionName != name)
         {
@@ -852,9 +851,8 @@ bool MgServerSelectFeatures::FindFeatureJoinProperties(MgResourceIdentifier* res
         CHECKNULL(extension, L"MgServerSelectFeatures.FindFeatureJoinProperties");
         STRING name = (STRING)extension->GetName();
 
-        STRING parsedSchemaName = L"";
-        STRING parsedExtensionName = L"";
-        ParseQualifiedClassName(extensionName, parsedSchemaName, parsedExtensionName);
+        STRING parsedSchemaName, parsedExtensionName;
+        MgUtil::ParseQualifiedClassName(extensionName, parsedSchemaName, parsedExtensionName);
 
         if (parsedExtensionName != name)
         {
@@ -886,8 +884,7 @@ void MgServerSelectFeatures::UpdateCommandOnJoinCalculation(MgResourceIdentifier
         CHECKNULL(extension, L"MgServerSelectFeatures.UpdateCommandOnJoinCalculation");
         STRING name = (STRING)extension->GetName();
 
-        STRING parsedSchemaName = L"";
-        STRING parsedExtensionName = L"";
+        STRING parsedSchemaName, parsedExtensionName;
         ParseQualifiedClassNameForCalculation(extension, extensionName, parsedSchemaName, parsedExtensionName);
 
         if (parsedExtensionName != name)
@@ -955,8 +952,7 @@ void MgServerSelectFeatures::UpdateCommandOnCalculation(MgResourceIdentifier* fe
         CHECKNULL(extension, L"MgServerSelectFeatures.UpdateCommandOnCalculation");
         STRING name = (STRING)extension->GetName();
 
-        STRING parsedSchemaName = L"";
-        STRING parsedExtensionName = L"";
+        STRING parsedSchemaName, parsedExtensionName;
         ParseQualifiedClassNameForCalculation(extension, extensionName, parsedSchemaName, parsedExtensionName);
 
         if (parsedExtensionName != name)
@@ -1022,14 +1018,29 @@ void MgServerSelectFeatures::UpdateCommandOnCalculation(MgResourceIdentifier* fe
                         // otherwise it leaves the FDO connection marked as still in use.
                         FdoPtr<FdoIConnection> conn = fcConnection.GetConnection();
                         FdoPtr<FdoIDescribeSchema>  descSchema = (FdoIDescribeSchema *) conn->CreateCommand (FdoCommandType_DescribeSchema);
+                        
+                        STRING fullClassName = extension->GetFeatureClass();
+                        STRING schemaName, className;
+                        MgUtil::ParseQualifiedClassName(fullClassName, schemaName, className);
+                        
+                        if (!parsedSchemaName.empty())
+                        {
+                            descSchema->SetSchemaName(parsedSchemaName.c_str());
+                        }
+
+                        if (!className.empty())
+                        {
+                            FdoPtr<FdoStringCollection> classNames = FdoStringCollection::Create();
+
+                            classNames->Add(className.c_str());
+                            descSchema->SetClassNames(classNames.p);
+                        }
+                        
                         FdoPtr <FdoFeatureSchemaCollection> schemas = (FdoFeatureSchemaCollection *) descSchema->Execute ();
                         FdoPtr<FdoFeatureSchema> schema = (FdoFeatureSchema *)schemas->GetItem (parsedSchemaName.c_str());
                         FdoPtr<FdoClassCollection> classes = schema->GetClasses();
-                        STRING fullClassName = extension->GetFeatureClass();
-                        int pos = (int)fullClassName.find_last_of(':');
-                        if (pos != -1)
-                            fullClassName = fullClassName.substr(pos+1);
-                        FdoPtr<FdoClassDefinition> activeClass = classes->GetItem(fullClassName.c_str());
+
+                        FdoPtr<FdoClassDefinition> activeClass = classes->GetItem(className.c_str());
                         FdoPtr<FdoPropertyDefinitionCollection> properties = activeClass->GetProperties();
                         for(int i = 0; i < properties->GetCount(); i++)
                         {
@@ -1081,9 +1092,8 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
         CHECKNULL(extension, L"MgServerSelectFeatures.JoinFeatures");
         STRING name = (STRING)extension->GetName();
 
-        STRING parsedSchemaName = L"";
-        STRING parsedExtensionName = L"";
-        ParseQualifiedClassName(extensionName, parsedSchemaName, parsedExtensionName);
+        STRING parsedSchemaName, parsedExtensionName;
+        MgUtil::ParseQualifiedClassName(extensionName, parsedSchemaName, parsedExtensionName);
 
         if (parsedExtensionName != name)
         {
@@ -1112,9 +1122,8 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
             STRING featureClass = (STRING)extension->GetFeatureClass();
 
             // Parse the qualifed classname
-            STRING primaryFsSchema = L"";
-            STRING primaryFsClassName = L"";
-            ParseQualifiedClassName(featureClass, primaryFsSchema, primaryFsClassName);
+            STRING primaryFsSchema, primaryFsClassName;
+            MgUtil::ParseQualifiedClassName(featureClass, primaryFsSchema, primaryFsClassName);
 
             // Create primary query definition
             FdoPtr<FdoIdentifierCollection> lsellist;
@@ -1145,14 +1154,29 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
                 }
                 FdoPtr<FdoIConnection> conn = msfcLeft.GetConnection();
                 FdoPtr<FdoIDescribeSchema>  descSchema = (FdoIDescribeSchema *) conn->CreateCommand (FdoCommandType_DescribeSchema);
+                
+                STRING fullClassName = extension->GetFeatureClass();
+                STRING schemaName, className;
+                MgUtil::ParseQualifiedClassName(fullClassName, schemaName, className);
+                        
+                if (!parsedSchemaName.empty())
+                {
+                    descSchema->SetSchemaName(parsedSchemaName.c_str());
+                }
+
+                if (!className.empty())
+                {
+                    FdoPtr<FdoStringCollection> classNames = FdoStringCollection::Create();
+
+                    classNames->Add(className.c_str());
+                    descSchema->SetClassNames(classNames.p);
+                }
+                        
                 FdoPtr <FdoFeatureSchemaCollection> schemas = (FdoFeatureSchemaCollection *) descSchema->Execute ();
                 FdoPtr<FdoFeatureSchema> schema = (FdoFeatureSchema *)schemas->GetItem (parsedSchemaName.c_str());
                 FdoPtr<FdoClassCollection> classes = schema->GetClasses();
-                STRING fullClassName = extension->GetFeatureClass();
-                int pos = (int)fullClassName.find_last_of(':');
-                if (pos != -1)
-                    fullClassName = fullClassName.substr(pos+1);
-                FdoPtr<FdoClassDefinition> activeClass = classes->GetItem(fullClassName.c_str());
+
+                FdoPtr<FdoClassDefinition> activeClass = classes->GetItem(className.c_str());
                 FdoPtr<FdoPropertyDefinitionCollection> properties = activeClass->GetProperties();
                 for(int i = 0; i < properties->GetCount(); i++)
                 {
@@ -1242,9 +1266,8 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
                 STRING secondaryClassName = (STRING)attributeRelate->GetAttributeClass();
 
                 // Parse the qualified classname
-                STRING secondaryFsSchema = L"";
-                STRING secondaryFsClassName = L"";
-                ParseQualifiedClassName(secondaryClassName, secondaryFsSchema, secondaryFsClassName);
+                STRING secondaryFsSchema, secondaryFsClassName;
+                MgUtil::ParseQualifiedClassName(secondaryClassName, secondaryFsSchema, secondaryFsClassName);
 
                 // Create secondary query definition
                 FdoPtr<FdoIdentifierCollection> rsellist;
@@ -1333,23 +1356,15 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
 void MgServerSelectFeatures::ParseQualifiedClassNameForCalculation(MdfModel::Extension* extension, CREFSTRING qualifiedClassName, STRING& schemaName, STRING& className)
 {
     CHECKNULL(extension, L"MgServerSelectFeatures.ParseQualifiedClassNameForCalculation");
-
-    STRING::size_type nIndex = qualifiedClassName.rfind(CLASSNAME_QUALIFIER);
-
-    schemaName = qualifiedClassName.substr(0, nIndex);
-    if (nIndex == string::npos)
+    
+    MgUtil::ParseQualifiedClassName(qualifiedClassName, schemaName, className);
+    
+    if (schemaName.empty())
     {
-        ParseQualifiedClassName(extension->GetFeatureClass(), schemaName, className);
+        STRING dummyStr;
+        
+        MgUtil::ParseQualifiedClassName(extension->GetFeatureClass(), schemaName, dummyStr);
     }
-    className = qualifiedClassName.substr(nIndex+1);
-}
-
-void MgServerSelectFeatures::ParseQualifiedClassName(CREFSTRING qualifiedClassName, STRING& schemaName, STRING& className)
-{
-    STRING::size_type nIndex = qualifiedClassName.rfind(CLASSNAME_QUALIFIER);
-
-    schemaName = qualifiedClassName.substr(0, nIndex);
-    className = qualifiedClassName.substr(nIndex+1);
 }
 
 MgResourceIdentifier* MgServerSelectFeatures::GetSecondaryResourceIdentifier(MgResourceIdentifier* primResId, CREFSTRING extensionName, CREFSTRING relationName)
@@ -1369,9 +1384,8 @@ MgResourceIdentifier* MgServerSelectFeatures::GetSecondaryResourceIdentifier(MgR
         // Get the extension name
         STRING name = (STRING)extension->GetName();
 
-        STRING parsedSchemaName = L"";
-        STRING parsedExtensionName = L"";
-        ParseQualifiedClassName(extensionName, parsedSchemaName, parsedExtensionName);
+        STRING parsedSchemaName, parsedExtensionName;
+        MgUtil::ParseQualifiedClassName(extensionName, parsedSchemaName, parsedExtensionName);
 
         if (parsedExtensionName != name)
         {
