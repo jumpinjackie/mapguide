@@ -25,9 +25,6 @@
 #  endif
 #endif
 
-#undef GetMessage
-#undef GetObject
-
 // Critical Section Class
 class CustomCriticalSection
 {
@@ -110,19 +107,31 @@ private:
 // This is used to protect library calls
 static CustomCriticalSection CriticalClass;
 
-class AutoCriticalClass
+class SmartCriticalClass
 {
 public:
-
-    AutoCriticalClass()
+    SmartCriticalClass(bool bEnter):m_bEntered(bEnter)
     {
+        if (bEnter)
+        {
+            CriticalClass.Enter();
+        }
+    }
+    void Enter()
+    {
+        m_bEntered=true;
         CriticalClass.Enter();
     }
-
-    ~AutoCriticalClass()
+    ~SmartCriticalClass()
     {
-        CriticalClass.Leave();
+        if (m_bEntered)
+        {
+            CriticalClass.Leave();
+        }
     }
+private:
+    SmartCriticalClass();
+    bool m_bEntered;
 };
 
 #endif

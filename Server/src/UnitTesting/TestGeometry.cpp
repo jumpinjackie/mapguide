@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2008 by Autodesk, Inc.
+//  Copyright (C) 2004-2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -20,9 +20,9 @@
 #include "CppUnitExtensions.h"
 
 
-const STRING ArbitraryWkt  = L"LOCAL_CS [ \"Non-Earth (Mile)\", LOCAL_DATUM [\"Local Datum\", 0], UNIT [\"Mile\", 1.609344e+03], AXIS [\"X\", EAST], AXIS[\"Y\", NORTH]]";
-const STRING GeographicWkt = L"GEOGCS[\"LL84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"Degrees\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9108\"]],AXIS[\"Lat\",NORTH],AXIS[\"Long\",EAST],AUTHORITY[\"EPSG\",\"4326\"]]";
-const STRING ProjectedWkt  = L"PROJCS[\"Georgia West\",GEOGCS[\"NAD27\",DATUM[\"North_American_Datum_1927\",SPHEROID[\"Clarke 1866\",6378206.4,294.978698213898,AUTHORITY[\"EPSG\",\"7008\"]],TOWGS84[-3,142,183,0,0,0,0],AUTHORITY[\"EPSG\",\"6267\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9108\"]],AXIS[\"Lat\",NORTH],AXIS[\"Long\",EAST],AUTHORITY[\"EPSG\",\"4267\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",30],PARAMETER[\"central_meridian\",-84.16666666666667],PARAMETER[\"scale_factor\",0.9999],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",0],UNIT[\"Foot\",0.3048006096012192]]";
+const STRING ArbitraryWkt  = L"LOCAL_CS [ \"Non-Earth (Mile)\", LOCAL_DATUM [\"Local Datum\", 0], UNIT [\"Mile_US\", 1609.344], AXIS [\"X\", EAST], AXIS[\"Y\", NORTH]]";
+const STRING GeographicWkt = L"GEOGCS[\"LL84\",DATUM[\"WGS84\",SPHEROID[\"WGS84\",6378137.000,298.25722293]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]]";
+const STRING ProjectedWkt  = L"PROJCS[\"GA-W\",GEOGCS[\"LL27\",DATUM[\"NAD27\",SPHEROID[\"CLRK66\",6378206.400,294.97869821]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"false_easting\",500000.000],PARAMETER[\"false_northing\",0.000],PARAMETER[\"scale_factor\",0.999900000000],PARAMETER[\"central_meridian\",-84.16666666666670],PARAMETER[\"latitude_of_origin\",30.00000000000000],UNIT[\"Foot_US\",0.30480060960122]]";
 
 const STRING TEST_LOCALE = L"en";
 
@@ -40,7 +40,7 @@ void TestGeometry::tearDown()
 
 void TestGeometry::TestStart()
 {
-    ACE_DEBUG((LM_INFO, ACE_TEXT("\nRunning Geometry tests. (PROJ4)\n")));
+    ACE_DEBUG((LM_INFO, ACE_TEXT("\nRunning Geometry tests. (Mentor)\n")));
 }
 
 
@@ -1034,7 +1034,7 @@ void TestGeometry::TestCase_Intersection()
         outerCoords->Add(coord4);
         outerCoords->Add(coord5);
         Ptr<MgLinearRing> outerRing = factory.CreateLinearRing(outerCoords);
-        Ptr<MgLinearRingCollection> innerRings;
+        Ptr<MgLinearRingCollection> innerRings = NULL;
         polygon = factory.CreatePolygon(outerRing, innerRings);
         geom = point->Intersection(polygon);
         CPPUNIT_ASSERT(geom == NULL);

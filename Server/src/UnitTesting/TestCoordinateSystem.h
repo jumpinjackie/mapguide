@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2008 by Autodesk, Inc.
+//  Copyright (C) 2004-2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -211,6 +211,9 @@ class TestCoordinateSystem : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_Projected_To_Projected_Transform_EnvelopeXY);
     CPPUNIT_TEST(TestCase_Projected_To_Projected_Transform_EnvelopeXYZ);
 
+    // Datum conversion
+    CPPUNIT_TEST(TestCase_Geographic_DatumConversion);
+
     // Real world locations
     CPPUNIT_TEST(TestCase_Boston_Geographic);
     CPPUNIT_TEST(TestCase_NewYork_Geographic);
@@ -219,6 +222,9 @@ class TestCoordinateSystem : public CppUnit::TestFixture
 
     // EPSG
     CPPUNIT_TEST(TestCase_EPSG);
+
+    // Performance
+    CPPUNIT_TEST(TestCase_Benchmark_Transformation);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
     CPPUNIT_TEST_SUITE_END();
@@ -417,6 +423,9 @@ public:
     void TestCase_Projected_To_Projected_Transform_EnvelopeXY();
     void TestCase_Projected_To_Projected_Transform_EnvelopeXYZ();
 
+    // Datum conversion
+    void TestCase_Geographic_DatumConversion();
+
     // Real world locations
     void TestCase_Boston_Geographic();
     void TestCase_NewYork_Geographic();
@@ -425,6 +434,9 @@ public:
 
     // EPSG
     void TestCase_EPSG();
+
+    // Performance
+    void TestCase_Benchmark_Transformation();
 
 private:
 

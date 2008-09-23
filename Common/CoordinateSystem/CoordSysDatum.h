@@ -27,6 +27,9 @@ public:
     CCoordinateSystemDatum(MgCoordinateSystemCatalog* pCatalog);
     virtual ~CCoordinateSystemDatum();
 
+    void InitFromCatalog(const cs_Dtdef_& def);
+    void GetMentorDef(cs_Dtdef_& def){def=m_DtDef;};
+
     virtual STRING GetCode();
     virtual void SetCode(CREFSTRING sCode);
     virtual bool IsLegalCode(CREFSTRING sCode);
@@ -60,7 +63,6 @@ public:
     virtual MgCoordinateSystemDatum* CreateClone();
     virtual MgDisposableCollection* GetGeodeticTransformations(MgCoordinateSystemDatum *pTarget);
     virtual MgCoordinateSystemCatalog* GetCatalog();
-
     virtual UINT8* SerializeFrom(UINT8* pStream);
     virtual UINT8* SerializeTo(UINT8* pStream);
     virtual UINT32 GetSizeSerialized();
@@ -71,16 +73,32 @@ protected:
 
 protected:
     //Data members
+    bool m_bEncrypted;
+    cs_Datum_ m_datum;
+    cs_Dtdef_ m_DtDef; //we can't store everything in cs_Datum_ so we need this for source, country, group, ...
+    cs_Eldef_ m_ElDef; //we can't store everything in cs_Datum_ so we need this for source, country, group, ...
     Ptr<MgCoordinateSystemCatalog> m_pCatalog;
 
+    enum CCoordinateSystemDatumObjectVersions {
+        kDtRelease0  = 0   // Initial Release
+    };
+
     //Private member functions
+    void SetString(CREFSTRING sSrc, char *pDest, UINT32 nMaxSize);
+    bool Protected() const;
+    bool IsInitialized() const;
+    void Uninitialize();
+    bool IsDatumValid();
     void SetCatalog(MgCoordinateSystemCatalog* pCatalog);
+
+    //Friends
+    friend class CCoordinateSystemGeodeticTransformation;
 
 private:
     //Unimplemented stuff
+    CCoordinateSystemDatum();
     CCoordinateSystemDatum(const CCoordinateSystemDatum&);
     CCoordinateSystemDatum& operator=(const CCoordinateSystemDatum&);
-    CCoordinateSystemDatum();
 };
 
 } // End of namespace

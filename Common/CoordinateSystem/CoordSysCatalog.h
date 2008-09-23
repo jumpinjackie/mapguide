@@ -20,8 +20,6 @@
 
 namespace CSLibrary
 {
-class CCoordinateSystemCategoryCollection;
-class CCoordinateSystemCategory;
 
 class CCoordinateSystemCatalog : public MgCoordinateSystemCatalog
 {
@@ -32,6 +30,7 @@ EXTERNAL_API:
     virtual void SetDefaultDictionaryDirAndFileNames();
     virtual STRING GetDefaultDictionaryDir();
     virtual void SetDictionaryDir(CREFSTRING sDirPath);
+    virtual bool AreDictionaryFilesWritable();
     virtual STRING GetDictionaryDir();
 
     virtual void SetProtectionMode(INT16 nMode);
@@ -46,7 +45,6 @@ EXTERNAL_API:
     virtual MgCoordinateSystemProjectionInformation* GetProjectionInformation();
     virtual MgCoordinateSystemUnitInformation* GetUnitInformation();
     virtual MgCoordinateSystemDictionaryUtility* GetDictionaryUtility();
-    virtual bool AreDictionaryFilesWritable();
 
 INTERNAL_API:
     ///////////////////////////////////////////////////////////////////////////
@@ -61,17 +59,6 @@ INTERNAL_API:
     ///
     virtual void PrepareForDispose();
 
-public:
-    // Helper methods
-    CCoordinateSystemCategoryCollection* GetCoordinateSystemCategories();
-    CCoordinateSystemCategory* GetCoordinateSystemCategory(CREFSTRING categoryName);
-
-private:
-    // Helper methods
-    void ReadCategoryDictionary(CREFSTRING fileName);
-    void ReadCategoryCoordinateSystems(CREFSTRING fileName, CCoordinateSystemCategory* category);
-    STRING ReadString(FILE* file, int size);
-
 protected:
     //MgDisposable
     virtual void Dispose();
@@ -79,10 +66,6 @@ protected:
 protected:
     //Data members
     STRING m_sDir;
-    STRING m_sEllipsoidDictFileName;
-    STRING m_sDatumDictFileName;
-    STRING m_sCoordinateSystemDictFileName;
-    STRING m_sCategoryDictFileName;
 
     Ptr<CCoordinateSystemDictionary> m_pCsDict;
     Ptr<CCoordinateSystemDatumDictionary> m_pDtDict;
@@ -90,13 +73,13 @@ protected:
     Ptr<CCoordinateSystemCategoryDictionary> m_pCtDict;
 
     LibraryStatus m_libraryStatus;
-    CCoordinateSystemCategoryCollection* m_categories;
 
 private:
     //Unimplemented stuff
     CCoordinateSystemCatalog(const CCoordinateSystemCatalog&);
     CCoordinateSystemCatalog& operator=(const CCoordinateSystemCatalog&);
 };
+
 } // End of namespace
 
-#endif
+#endif //_CCOORDINATESYSTEMCATALOG_H_

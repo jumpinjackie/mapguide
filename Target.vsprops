@@ -40,11 +40,6 @@
 		PerformEnvironmentSet="true"
 	/>
 	<UserMacro
-		Name="Csmap"
-		Value="Csmap\$(build)"
-		PerformEnvironmentSet="true"
-	/>
-	<UserMacro
 		Name="geos"
 		Value="geos-2.2.0\VisualStudio\$(build)"
 		PerformEnvironmentSet="true"

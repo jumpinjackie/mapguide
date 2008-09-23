@@ -21,6 +21,7 @@
 #include "CoordSysEnum.h"           //for CCoordinateSystemEnum
 #include "CoordSysEnumDatum.h"      //for CCoordinateSystemEnumDatum
 #include "CoordSysUtil.h"           //for CsDictionaryOpenMode
+#include "MentorUtil.h"             //for IsLegalMentorName()
 
 using namespace CSLibrary;
 
@@ -46,7 +47,7 @@ MgCoordinateSystemEnum* CCoordinateSystemEnumDatum::CreateClone()
     //Make an object to be the copy
     pNew = new CCoordinateSystemEnumDatum;
 
-    if (NULL == pNew.p)
+    if (NULL == pNew.p) 
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.CreateClone", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -63,7 +64,7 @@ MgCoordinateSystemEnum* CCoordinateSystemEnumDatum::CreateClone()
     }
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemEnum.CreateClone")
-
+    
     return pNew.Detach();
 }
 

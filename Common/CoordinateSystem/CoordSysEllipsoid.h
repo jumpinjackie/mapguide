@@ -16,7 +16,7 @@
 //
 
 #ifndef _CCOORDINATESYSTEMELLIPSOID_H_
-#define _CCOORDINATESYSTEMELLISPOID_H_
+#define _CCOORDINATESYSTEMELLIPSOID_H_
 
 namespace CSLibrary
 {
@@ -24,8 +24,10 @@ namespace CSLibrary
 class CCoordinateSystemEllipsoid : public MgCoordinateSystemEllipsoid
 {
 public:
-    CCoordinateSystemEllipsoid();
+    CCoordinateSystemEllipsoid(MgCoordinateSystemCatalog* pCatalog);
     virtual ~CCoordinateSystemEllipsoid();
+    void Init(const cs_Eldef_& def);
+    void GetMentorDef(cs_Eldef_& def){def=m_def;};
 
     //MgCoordinateSystemEllipsoid
     virtual STRING GetCode();  /// __get
@@ -68,7 +70,6 @@ public:
     virtual bool IsLegalFlatteningRatio(double dFlat);
     virtual double FlatteningRatioFromRadii(double dEquatorialRadius, double dPolarRadius);
     virtual MgCoordinateSystemCatalog* GetCatalog();
-
     virtual UINT8* SerializeFrom(UINT8* pStream);
     virtual UINT8* SerializeTo(UINT8* pStream);
     virtual UINT32 GetSizeSerialized();
@@ -79,8 +80,28 @@ protected:
 
 protected:
     //Data members
+    cs_Eldef_ m_def;
+    bool m_bEncrypted;
+    Ptr<MgCoordinateSystemCatalog> m_pCatalog;
+
+    enum CCoordinateSystemEllipsoidObjectVersions {
+        kElRelease0  = 0   // Initial Release
+    };
+
+    //Private member functions
+    void SetString(CREFSTRING sSrc, char* pDest, int nMaxSize);
+    bool Protected() const;
+    void GreatCircle(double dLongitude1, double dLatitude1, double dLongitude2, double dLatitude2, double *pdDistance, double *pdAzimuth);
+    void GetRadiusBounds(double *pdMinRadius, double *pdMaxRadius);
+    void GetFlatteningRatioBounds(double *pdMinFlat, double *pdMaxFlat);
+    void SetCatalog(MgCoordinateSystemCatalog* pCatalog);
+
+private:
+    CCoordinateSystemEllipsoid();
+    CCoordinateSystemEllipsoid(const CCoordinateSystemEllipsoid&);
+    CCoordinateSystemEllipsoid& operator=(const CCoordinateSystemEllipsoid&);
 };
 
 } // End of namespace
 
-#endif //_CCOORDINATESYSTEMELLISPOID_H_
+#endif //_CCOORDINATESYSTEMELLIPSOID_H_

@@ -17,68 +17,53 @@
 
 #include "GeometryCommon.h"
 #include "CoordSysCommon.h"
-#include "CoordSysUtil.h"
 #include "CriticalSection.h"
 
-#include "CoordSys.h"                       //for CCoordinateSystem
+#include "CoordSysCategory.h"               //for CCategoryName
+#include "CoordSysTransform.h"              //for CCoordinateSystemTransform
 #include "CoordSysEnum.h"                   //for CCoordinateSystemEnum
+#include "CoordSysDictionary.h"             //for CCoordinateSystemDictionary
 #include "CoordSysEnumDatum.h"              //for CCoordinateSystemEnumDatum
 #include "CoordSysEnumEllipsoid.h"          //for CCoordinateSystemEnumEllipsoid
-#include "CoordSysDictionary.h"             //for CCoordinateSystemDictionary
 #include "CoordSysDatumDictionary.h"        //for CCoordinateSystemDatumDictionary
 #include "CoordSysEllipsoidDictionary.h"    //for CCoordinateSystemEllipsoidDictionary
+#include "CoordSysUtil.h"                   //for Convert_Wide_To_Ascii, CsDictionaryOpenMode
 #include "CoordSysCategoryDictionary.h"     //for CCoordinateSystemCategoryDictionary
-#include "CoordSysCatalog.h"                //for CCoordinateSystemCatalog
+#include "CoordSysMathComparator.h"         //for CCoordinateSystemMathComparator
 #include "CoordSysFormatConverter.h"        //for CCoordinateSystemFormatConverter
+#include "CoordSysProjectionInformation.h"  //for CCoordinateSystemProjectionInformation
+#include "CoordSysUnitInformation.h"        //for CCoordinateSystemUnitInformation
+#include "CoordSysTransform.h"              //for CCoordinateSystemTransform
+#include "CoordSysDictionaryUtility.h"      //for CCoordinateSystemDictionaryUtility
 
-#include "ogr_spatialref.h"
-#include "proj_api.h"
-#include "cpl_csv.h"
-#include "cpl_conv.h"
-#include "cpl_multiproc.h"
+#include "CoordSysCatalog.h"                //for CCoordinateSystemCatalog
+#include "CoordSysGeodeticTransformation.h" //for CCoordinateSystemGeodeticTransformation
 
-#include "ArbitraryCoordsys.h"              //for CCsArbitraryCoordinateSystemUtil
-#include "CoordSysCategoryCollection.h"
-#include "CoordSysCategory.h"
-#include "CoordSysInformation.h"
+#include "csNameMapper.hpp"                 //for csReleaseNameMapper
 
-#define COORDINATE_SYSTEM_DESCRIPTION_FILENAME L"categories.txt"
-#define PROJ_NAD_PATH "PROJ_LIB"
-#define PROJ_NAD_REG_KEY L"SOFTWARE\\MapGuideOpenSource\\Coordsys\\"
-#define PROJ_NAD_REG_PATH L"PROJ_LIB"
-#define MAX_PATH_SIZE 4095
+#ifdef _WIN32
+#ifdef UNICODE
+#define GetMessage  GetMessageW
+#else
+#define GetMessage  GetMessageA
+#endif // !UNICODE
+#include <atlbase.h>
+#include <atlconv.h>
+#include <tchar.h>                          //for _tsplitpath
+#include <shlobj.h>                         //for SHGetFolderPath
+#undef GetMessage
+#endif
+
+//Global variables needed from Mentor
+extern "C"
+{
+    extern char cs_Unique;
+    extern short cs_Protect;
+}
 
 using namespace CSLibrary;
 
-// Dummy class used to automate initialization/uninitialization of CPL.
-class CInitCPL
-{
-public:
-    CInitCPL()
-    {
-        // Initialize the critical section class
-        CriticalClass.Initialize();
-    }
-    ~CInitCPL()
-    {
-        {
-            // Lock all threads
-            AutoCriticalClass acc;
-
-            // free PROJ4 resources
-            pj_deallocate_grids();
-
-            // free CPL resources
-            CSVDeaccess(NULL);
-            CPLFinderClean();
-            CPLCleanupTLS();
-        }
-    }
-};
-
-static CInitCPL s_InitCPL;
-
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemCatalog::CCoordinateSystemCatalog() :
     m_libraryStatus(lsInitializationFailed)
 {
@@ -94,505 +79,426 @@ CCoordinateSystemCatalog::CCoordinateSystemCatalog() :
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.MgCoordinateSystemCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    m_categories = new CCoordinateSystemCategoryCollection();
-    if (m_categories == NULL)
+    //Set up Mentor global variables.  See CSDATA.C for explanation.
+    cs_Unique = '\0';
+    cs_Protect = 0;
+
+    // Initialize the critical section class
+    CriticalClass.Initialize();
+
+    try
     {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.MgCoordinateSystemCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
+        SetDefaultDictionaryDirAndFileNames();
+    }
+    catch (MgException* pEPath)
+    {
+        //We do not throw this exception because:
+        //- we might just not care about the default values
+        //of the directory and file names. 
+        //They can very well be setup later on by the client
+        //- or the client might just not care about them because the dictionaries are
+        //being compiled using an interface such as MgCoordinateSystemDictionaryUtility
+        //- if we throw here, the constructor aborts and the factory constructor aborts as well
+        //for something we can resolve later on (2 reasons described above)
+        SAFE_RELEASE(pEPath);
+
+        m_sDir=L"";
+
+        //internal API value needed for the server's initialization which relies
+        //on the default values being setup automatically
+        m_libraryStatus=lsInitializationFailed;
     }
 
-    // Add arbitrary XY systems. These are not in the dictionary
-    CCoordinateSystemCategory* category = NULL;
-    category = new CCoordinateSystemCategory(this);
-    if (category == NULL)
+    MG_CATCH(L"MgCoordinateSystemCatalog.MgCoordinateSystemCatalog")
+    if (mgException != NULL)
     {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.MgCoordinateSystemCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
+        m_pCsDict = NULL;
+        m_pDtDict = NULL;
+        m_pElDict = NULL;
+        m_pCtDict = NULL;
+
+        //NOTE: the following behavior happens only in DEBUG if we do not reset the countFlag
+        //If an exception is thrown from within the constructor of this MgDisposable derived class
+        //is caught and then forwarded by MG_THROW()
+        //then MgDisposable::~MgDisposable is called right away.
+        //In the process of trying to build CCoordinateSystemCatalog the refcount has been bumped up by the constructors of the dictionary classes
+        //catching the exception in turns bumps them down when releasing the objects
+        //MgDisposable::m_refCountFlag is now equal to "true" and m_refCount is equal to 1
+        //That triggers an ASSERTS in MgDisposable::~MgDisposable if we do not rest the flag to false:
+        //ACE_ASSERT(m_refCountFlag ? (m_refCount == 0) : (m_refCount == 1));
+        ResetRefCountFlag();
     }
-    category->SetName(CCsArbitraryCoordinateSystemUtil::ArbitraryXYCategoryDescription);
-
-    for (int i = 0; i < CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystemsCount; i++)
-    {
-        CCoordinateSystemInformation* coordSysInfo = new CCoordinateSystemInformation();
-        if (coordSysInfo == NULL)
-        {
-            throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.MgCoordinateSystemCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        STRING units = CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[i].unitsCode;
-
-        // Determine description
-        coordSysInfo->m_code = CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[i].code;
-        coordSysInfo->m_description = CCsArbitraryCoordinateSystemUtil::ArbitraryXYDescription + L" (" + units + L")";
-        coordSysInfo->m_projection = CCsArbitraryCoordinateSystemUtil::ArbitraryXYProjection;
-        coordSysInfo->m_projectionDescription = CCsArbitraryCoordinateSystemUtil::ArbitraryXYProjectionDescription;
-        coordSysInfo->m_datum = CCsArbitraryCoordinateSystemUtil::ArbitraryXYDatum;
-        coordSysInfo->m_datumDescription = CCsArbitraryCoordinateSystemUtil::ArbitraryXYDatumDescription;
-        coordSysInfo->m_ellipsoid = CCsArbitraryCoordinateSystemUtil::ArbitraryXYEllipsoid;
-        coordSysInfo->m_ellipsoidDescription = CCsArbitraryCoordinateSystemUtil::ArbitraryXYEllipsoidDescription;
-        coordSysInfo->m_proj4Definition = L"";
-
-        category->Add(coordSysInfo);
-    }
-
-    m_categories->Add(category);
-
-    STRING path = COORDINATE_SYSTEM_DESCRIPTION_FILENAME;
-
-    // This dictionary is optional, without it only arbitrary XY is supported.
-    ReadCategoryDictionary(path);
-
-    // Initialize the category dictionary
-    m_pCtDict->Initialize();
-
-    m_libraryStatus = lsInitialized;
-
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemCatalog.MgCoordinateSystemCatalog")
+    MG_THROW()
 }
 
+//-----------------------------------------------------------------------------------
 CCoordinateSystemCatalog::~CCoordinateSystemCatalog()
 {
+    //frees the Mentor mapper
+    csReleaseNameMapper();
+
+    // free CSMap resources
+    CS_recvr();
 }
 
+//-----------------------------------------------------------------------------------
 void CCoordinateSystemCatalog::PrepareForDispose()
 {
-    delete m_categories;
-    m_categories = NULL;
-
     m_pCsDict = NULL;
     m_pDtDict = NULL;
     m_pElDict = NULL;
     m_pCtDict = NULL;
 }
 
-CCoordinateSystemCategoryCollection* CCoordinateSystemCatalog::GetCoordinateSystemCategories()
-{
-    return m_categories;
-}
-
-CCoordinateSystemCategory* CCoordinateSystemCatalog::GetCoordinateSystemCategory(CREFSTRING categoryName)
-{
-    CCoordinateSystemCategory* category = NULL;
-
-    if(categoryName.length() > 0)
-    {
-        CCoordinateSystemCategory* tmpCategory = NULL;
-
-        size_t numCats = m_categories->GetCount();
-        size_t i;
-        for (i = 0; i < numCats; i++)
-        {
-            tmpCategory = m_categories->GetItem(i);
-            if(_wcsicmp(categoryName.c_str(), tmpCategory->GetName().c_str()) == 0)
-            {
-                category = tmpCategory;
-                break;
-            }
-        }
-    }
-
-    return category;
-}
-
-void CCoordinateSystemCatalog::ReadCategoryDictionary(CREFSTRING fileName)
-{
-    // Open categories files from current directory or PROJ directory
-
-    // Check to see if the PROJ environment variable is set
-    char* szPath = getenv(PROJ_NAD_PATH);
-    STRING path;
-    if(szPath)
-    {
-        wchar_t* wszPath = Convert_Ascii_To_Wide(szPath);
-        if(wszPath)
-        {
-            if(::wcslen(wszPath) > 0)
-            {
-                path = wszPath;
-            }
-
-            delete [] wszPath;
-            wszPath = NULL;
-        }
-    }
-
-#ifdef _WIN32
-
-    // If we failed to read the path from an environment variable,
-    // see if it is set in the registry
-    if(path.empty())
-    {
-        wchar_t wszPath[MAX_PATH_SIZE] = L"";
-        HKEY hKey;
-        LONG lResult = ERROR_SUCCESS;
-
-        // Attempt to open the registry key
-        lResult = RegOpenKeyEx(HKEY_LOCAL_MACHINE, PROJ_NAD_REG_KEY, 0, KEY_QUERY_VALUE, &hKey);
-        if (lResult == ERROR_SUCCESS)
-        {
-            DWORD dwReqSize = MAX_PATH_SIZE;
-
-            // Attempt to read the value
-            lResult = RegQueryValueEx(hKey, PROJ_NAD_REG_PATH, NULL, NULL, (LPBYTE) wszPath, &dwReqSize);
-            if(lResult == ERROR_SUCCESS && ::wcslen(wszPath) > 0)
-            {
-                path = wszPath;
-            }
-            RegCloseKey(hKey);
-        }
-    }
-
-    // Attempt to open from current directory
-    FILE* file = _wfopen(fileName.c_str(), L"rt");
-
-    if (NULL == file && !path.empty())
-    {
-        // Attempt to open from PROJ directory
-        STRING wName = path;
-        wName.append(L"\\");
-        wName.append(fileName);
-        file = _wfopen(wName.c_str(), L"rt");
-    }
-#else
-    // Linux - attempt to open from current directory
-    char* szFileName = Convert_Wide_To_Ascii(fileName.c_str());
-
-    FILE* file = fopen(szFileName, "rt");
-    if (NULL == file && !path.empty())
-    {
-        // Attempt to open from PROJ directory
-        string fName = szPath;
-        fName.append("/");
-        fName.append(szFileName);
-        file = fopen(fName.c_str(), "rt");
-    }
-
-    delete [] szFileName;
-    szFileName = NULL;
-#endif
-
-    if(file != NULL)
-    {
-        CCoordinateSystemCategory* category = NULL;
-
-        // Set a default path if we could not set it from the environment
-        if(path.empty())
-        {
-            path = L"./nad";
-        }
-
-        AppendSlashToEndOfPath(path);
-
-        do
-        {
-            STRING buffer = ReadString(file, 1024);
-            if (!buffer.empty())
-            {
-                // Parse the categroy name
-                STRING catName = L"";
-
-                // Trim white spaces
-                buffer = TrimLeft(buffer);
-                buffer = TrimLeft(buffer, L"\t");
-                buffer = TrimRight(buffer);
-                buffer = TrimRight(buffer, L"\n");
-                if(buffer.length() > 0)
-                {
-                    if(buffer.find(L"[") == 0)
-                    {
-                        size_t pos = buffer.find(L"]");
-                        if(-1 != pos)
-                        {
-                            catName.assign(buffer, 1, pos-1);
-                            category = new CCoordinateSystemCategory(this);
-                            if (category)
-                            {
-                                category->SetName(catName);
-
-                                // Read the coordinate systems for this category
-                                buffer = ReadString(file, 1024);
-                                if (!buffer.empty())
-                                {
-                                    // Trim white spaces
-                                    buffer = TrimLeft(buffer);
-                                    buffer = TrimLeft(buffer, L"\t");
-                                    buffer = TrimRight(buffer);
-                                    buffer = TrimRight(buffer, L"\n");
-                                    if(buffer.length() > 0)
-                                    {
-                                        if(buffer.find(L"#") == 0)
-                                        {
-                                            // This is a comment line, so skip it
-                                        }
-                                        else
-                                        {
-                                            // Read the filename associated with this category
-                                            STRING filename = path;
-                                            filename += buffer;
-                                            ReadCategoryCoordinateSystems(filename, category);
-                                            m_categories->Add(category);
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                throw new MgOutOfMemoryException(L"CCoordinateSystemCatalog.ReadCategoryDictionary", __LINE__, __WFILE__, NULL, L"", NULL);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        while(feof(file) == 0);
-
-        // Close the file
-        fclose(file);
-    }
-    else
-    {
-        #ifdef _DEBUG
-        char* szFileName = Convert_Wide_To_Ascii(fileName.c_str());
-        if(szFileName)
-        {
-            printf("Failed to open coordinate system categories file: %s\n", szFileName);
-            delete [] szFileName;
-            szFileName = NULL;
-        }
-        #endif
-    }
-}
-
-void CCoordinateSystemCatalog::ReadCategoryCoordinateSystems(CREFSTRING fileName, CCoordinateSystemCategory* category)
-{
-    if (NULL == category)
-    {
-        throw new MgNullArgumentException(
-            L"MgCoordinateSystemTransform.ReadCategoryCoordinateSystems",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    // Open the file
-#ifdef _WIN32
-    FILE* file = _wfopen(fileName.c_str(), L"rt");
-#else
-    char* szFileName = Convert_Wide_To_Ascii(fileName.c_str());
-    FILE* file = fopen(szFileName, "rt");
-    delete [] szFileName;
-    szFileName = NULL;
-#endif
-    if(file != NULL)
-    {
-        STRING code = L"";
-        STRING description = category->GetName();
-        STRING proj4 = L"";
-
-        // Set EPSG prefix if this is the EPSG category
-        STRING codePrefix = L"";
-        if(_wcsicmp(category->GetName().c_str(), L"EPSG") == 0)
-        {
-            codePrefix = L"EPSG:";
-        }
-
-        do
-        {
-            // Read the coordinate systems for this category
-            STRING buffer = ReadString(file, 1024);
-            if (!buffer.empty())
-            {
-                // Trim white spaces
-                buffer = TrimLeft(buffer);
-                buffer = TrimLeft(buffer, L"\t");
-                buffer = TrimRight(buffer);
-                buffer = TrimRight(buffer, L"\n");
-                if(buffer.length() > 0)
-                {
-                    if(buffer.find(L"#") == 0)
-                    {
-                        // This is a comment line, so skip it, but use it as the description
-                        description.assign(buffer,1,buffer.length());
-                        description = TrimLeft(description);
-                        description = TrimLeft(description, L"\t");
-                    }
-                    else
-                    {
-                        // Read the coordinate system
-                        size_t pos = buffer.find(L">");
-                        if(-1 != pos)
-                        {
-                            if(pos > 0)
-                            {
-                                // Extract code
-                                code.assign(buffer,1,pos-1);
-                                code = TrimRight(code);
-
-                                // Update buffer
-                                buffer.assign(buffer,pos+1,buffer.length());
-
-                                // Trim white spaces
-                                buffer = TrimLeft(buffer);
-                                if(buffer.find(L"#") == 0)
-                                {
-                                    // There is a comment on this line so use it as the description
-                                    description.assign(buffer,1,buffer.length());
-                                    description = TrimLeft(description);
-                                    description = TrimLeft(description, L"\t");
-
-                                    buffer = L"";
-                                }
-
-                                size_t pos2 = 0;
-                                bool bDone = false;
-                                while(!bDone)
-                                {
-                                    pos2 = buffer.find(L"<");
-                                    if(-1 == pos2)
-                                    {
-                                        // Read the next line
-                                        STRING temp = ReadString(file, 1024);
-                                        temp = TrimLeft(temp);
-                                        temp = TrimLeft(temp, L"\t");
-                                        temp = TrimRight(temp);
-                                        temp = TrimRight(temp, L"\n");
-
-                                        buffer += L" " + temp;
-                                    }
-                                    else
-                                    {
-                                        bDone = true;
-                                    }
-                                }
-
-                                if(pos2 > pos+1)
-                                {
-                                    // Extract Proj4
-                                    proj4.assign(buffer, 0, pos2);
-                                    proj4 = TrimLeft(proj4);
-                                    proj4 = TrimLeft(proj4, L"\t");
-                                    proj4 = TrimRight(proj4);
-
-                                    // Create the new coordinate system
-                                    CCoordinateSystemInformation* coordSysInfo = new CCoordinateSystemInformation();
-                                    if(coordSysInfo)
-                                    {
-                                        coordSysInfo->m_code = codePrefix + code;
-                                        coordSysInfo->m_description = description;
-                                        coordSysInfo->m_proj4Definition = proj4;
-
-                                        category->Add(coordSysInfo);
-
-                                        code = L"";
-                                        description = category->GetName();
-                                        proj4 = L"";
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        while(feof(file) == 0);
-
-        // Close the file
-        fclose(file);
-    }
-}
-
-STRING CCoordinateSystemCatalog::ReadString(FILE* file, int size)
-{
-    STRING results;
-
-#ifdef _WIN32
-    wchar_t* str = new wchar_t[size];
-    memset(str, 0, sizeof(wchar_t)*size);
-    fgetws(str, size, file);
-
-    results = str;
-
-    delete [] str;
-    str = NULL;
-#else
-    char* str = new char[size];
-    memset(str, 0, sizeof(char)*size);
-    fgets(str, size, file);
-
-    wchar_t* wszValue = Convert_Ascii_To_Wide(str);
-    results = wszValue;
-    delete [] wszValue;
-    wszValue = NULL;
-
-    delete [] str;
-    str = NULL;
-#endif
-
-    return results;
-}
-
-void CCoordinateSystemCatalog::SetDefaultDictionaryDirAndFileNames()
-{
-    throw new MgNotImplementedException(L"MgCoordinateSystemCatalog.SetDefaultDictionaryDirAndFileNames", __LINE__, __WFILE__, NULL, L"", NULL);
-}
-
-STRING CCoordinateSystemCatalog::GetDefaultDictionaryDir()
-{
-    throw new MgNotImplementedException(L"MgCoordinateSystemCatalog.GetDefaultDictionaryDir", __LINE__, __WFILE__, NULL, L"", NULL);
-}
-
-void CCoordinateSystemCatalog::SetDictionaryDir(CREFSTRING sDirPath)
-{
-    throw new MgNotImplementedException(L"MgCoordinateSystemCatalog.SetDictionaryDir", __LINE__, __WFILE__, NULL, L"", NULL);
-}
-
-STRING CCoordinateSystemCatalog::GetDictionaryDir()
-{
-    return m_sDir;
-}
-
-void CCoordinateSystemCatalog::SetProtectionMode(INT16 nMode)
-{
-    throw new MgNotImplementedException(L"MgCoordinateSystemCatalog.SetProtectionMode", __LINE__, __WFILE__, NULL, L"", NULL);
-}
-
-INT16 CCoordinateSystemCatalog::GetProtectionMode()
-{
-    throw new MgNotImplementedException(L"MgCoordinateSystemCatalog.GetProtectionMode", __LINE__, __WFILE__, NULL, L"", NULL);
-}
-
-MgCoordinateSystemCategoryDictionary* CCoordinateSystemCatalog::GetCategoryDictionary()
-{
-    return SAFE_ADDREF(m_pCtDict.p);
-}
-
+//-----------------------------------------------------------------------------------
 MgCoordinateSystemDictionary* CCoordinateSystemCatalog::GetCoordinateSystemDictionary()
 {
     return SAFE_ADDREF(m_pCsDict.p);
 }
 
+//-----------------------------------------------------------------------------------
 MgCoordinateSystemDatumDictionary* CCoordinateSystemCatalog::GetDatumDictionary()
 {
     return SAFE_ADDREF(m_pDtDict.p);
 }
 
+//-----------------------------------------------------------------------------------
 MgCoordinateSystemEllipsoidDictionary* CCoordinateSystemCatalog::GetEllipsoidDictionary()
 {
     return SAFE_ADDREF(m_pElDict.p);
 }
 
+//-----------------------------------------------------------------------------------
+MgCoordinateSystemCategoryDictionary* CCoordinateSystemCatalog::GetCategoryDictionary()
+{
+    return SAFE_ADDREF(m_pCtDict.p);
+}
+
+//-----------------------------------------------------------------------------------
+STRING CCoordinateSystemCatalog::GetDefaultDictionaryDir()
+{
+    STRING sDir;
+
+    MG_TRY()
+
+    bool bResult=false;
+#ifdef _WIN32
+    //prepares the default path for dictionary failes
+    STRING sDirDefault;
+    
+    // Check to see if the environment variable is set
+    const TCHAR* szPathVar = _tgetenv(_T(MENTOR_DICTIONARY_PATH));
+
+    //if not set then try the default location
+    if(!szPathVar)
+    {
+        TCHAR szPath[MAX_PATH];
+        if(SHGetSpecialFolderPath(NULL, szPath, CSIDL_COMMON_APPDATA, FALSE))
+        {
+            sDirDefault = szPath;
+            sDirDefault += _T("\\Autodesk\\Geospatial Coordinate Systems"); //NOXLATE
+            szPathVar = sDirDefault.c_str();
+        }
+    }
+
+    if(szPathVar)
+    {
+        bResult = true;
+        sDir = szPathVar;
+    }
+#else
+    // Linux initialization
+
+    char* szPath = getenv(MENTOR_DICTIONARY_PATH);
+    if (szPath)
+    {
+        bResult = true;
+        sDir = MgUtil::MultiByteToWideChar(szPath);
+    }
+
+    if (sDir.empty())
+    {
+        bResult = true;
+        sDir = L"/opt/Autodesk/mapguideenterprise2009/share/gis/coordsys";  // NOXLATE
+    }
+
+#endif
+
+    if (!bResult)
+    {
+        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemCatalog.GetDefaultDictionaryDirAndFileNames", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    //And return success.
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemCatalog.GetDefaultDictionaryDirAndFileNames")
+
+    return sDir;
+}
+
+//Returns the complete path to the directory where the dictionaries are
+//located.
+STRING CCoordinateSystemCatalog::GetDictionaryDir()
+{
+    return m_sDir;
+}
+
+//Sets the complete path to the directory where the dictionaries are
+//located.  This method can be invoked only when not
+//currently connected to a dictionary database.  This method does not
+//perform any validation on the specified dictionary path.  Instead,
+//full validation is performed by the OpenDictionaries() method.
+//Throws an exception MgCoordinateSystemCatalogIsOpenException if already connected to a
+//dictionary database
+//
+void CCoordinateSystemCatalog::SetDictionaryDir(CREFSTRING sDirPath)
+{
+    MG_TRY()
+
+    if (sDirPath.empty())
+    {
+        throw new MgInvalidArgumentException(L"MgCoordinateSystemCatalog.SetDictionaryDir", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+#ifdef _WIN32
+    //Make sure that the dir path we've been given is
+    //properly terminated in a backslash.  If it's not,
+    //set it up correctly.
+    wchar_t szPath[_MAX_PATH] = {0};
+    wchar_t szDrive[_MAX_DRIVE] = {0};
+    wchar_t szDir[_MAX_DIR] = {0};
+    wchar_t szFname[_MAX_FNAME] = {0};
+    wchar_t szExt[_MAX_EXT] = {0};
+    _tsplitpath(sDirPath.c_str(), szDrive, szDir, szFname, szExt);
+    wchar_t* pNewDir=NULL;
+    if ((_tcslen(szFname) > 0) || (_tcslen(szExt) > 0))
+    {
+        //Nope, not properly terminated, need to fix it.
+        assert(_tcslen(szDir) + _tcslen(szFname) + _tcslen(szExt) < _MAX_DIR);
+        _tcscat(szDir, szFname);
+        _tcscat(szDir, szExt);
+        _tmakepath(szPath, szDrive, szDir, NULL, NULL);
+    }
+    else
+    {
+        _tmakepath(szPath, szDrive, szDir, NULL, NULL);
+    }
+#else
+    //Make sure that the dir path we've been given is
+    //properly terminated in a backslash.  If it's not,
+    //set it up correctly.
+    STRING sUpdatedDirPath = sDirPath;
+    if(sUpdatedDirPath.at(sUpdatedDirPath.length()-1) != L'/')
+    {
+        sUpdatedDirPath.append(L"/");
+    }
+    const wchar_t *szPath = sUpdatedDirPath.c_str();
+#endif
+    EFileValidity reason;
+    //Make sure the directory's okay
+    if (!ValidateFile(
+        szPath,    //path to directory
+        true,    //must exist
+        true,    //must be a directory
+        false,    //must be writable?
+        &reason))
+    {
+        ThrowFileError(L"MgCoordinateSystemCatalog.SetDictionaryDir", szPath, reason);
+    }
+
+    m_sDir = szPath;
+
+    //initializes Mentor
+    char* pszPath=Convert_Wide_To_Ascii(szPath);
+    CriticalClass.Enter();
+    CS_altdr(pszPath);
+    CriticalClass.Leave();
+    delete[] pszPath;
+
+    //now need to validate the dictionary files
+    //an reinitialize their internal data
+    STRING sCs=m_pCsDict->GetFileName();
+    STRING sDt=m_pDtDict->GetFileName();
+    STRING sEl=m_pElDict->GetFileName();
+    STRING sCt=m_pCtDict->GetFileName();
+
+    //Set the dictionary file names
+    //this will perform a validation of the existence of the files inside the directory
+    m_pCsDict->SetFileName(sCs);
+    m_pDtDict->SetFileName(sDt);
+    m_pElDict->SetFileName(sEl);
+    m_pCtDict->SetFileName(sCt);
+
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemCatalog.SetDictionaryDir")
+}
+
+//cgeck if the files are writable
+//The read mode was tracked down when the file names were set up
+//if the files were not valif an assertion was thorwn at that time
+//this additional method can check if the files can be open in write mode
+//if the file names and path have not yet been set up, an assertion is thrown
+bool CCoordinateSystemCatalog::AreDictionaryFilesWritable()
+{
+    MG_TRY()
+
+    if (m_sDir.empty()
+        || !m_pCsDict || m_pCsDict->GetFileName().empty()
+        || !m_pDtDict || m_pDtDict->GetFileName().empty()
+        || !m_pElDict || m_pElDict->GetFileName().empty()
+        || !m_pCtDict || m_pCtDict->GetFileName().empty())
+    {
+        //Directory hasn't been specified yet.
+        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemCatalog.AreDictionaryFilesWritable", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNotReadyException", NULL);
+    }
+
+    STRING sPath=m_pElDict->GetPath();
+    EFileValidity reason;
+    if (!ValidateFile(
+        sPath.c_str(),          //file name
+        true,                   //must exist
+        false,                  //mustn't be directory
+        true,                   //neeed write access?
+        &reason))
+    {
+        return false;
+    }
+
+    sPath=m_pDtDict->GetPath();
+    if (!ValidateFile(
+        sPath.c_str(),          //file name
+        true,                   //must exist
+        false,                  //mustn't be directory
+        true,                   //neeed write access?
+        &reason))
+    {
+        return false;
+    }
+
+    sPath=m_pCsDict->GetPath();
+    if (!ValidateFile(
+        sPath.c_str(),          //file name
+        true,                   //must exist
+        false,                  //mustn't be directory
+        true,                   //neeed write access?
+        &reason))
+    {
+        return false;
+    }
+
+    sPath=m_pCtDict->GetPath();
+    if (!ValidateFile(
+        sPath.c_str(),          //file name
+        true,                   //must exist
+        false,                  //mustn't be directory
+        true,                   //neeed write access?
+        &reason))
+    {
+        return false;
+    }
+
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemCatalog.AreDictionaryFilesWritable")
+    return true;
+}
+
+//Attempts to set the dictionary directory and dictionary file names
+//to the system default values, if present.  
+//Throws an exception if it did not complete successfully. 
+//Note that the effect of this function could be
+//duplicated by first calling GetSysDefaultDictionaryInfo(), then
+//calling SetDictionaryDir() and on each dictionary SetFileName().
+void CCoordinateSystemCatalog::SetDefaultDictionaryDirAndFileNames()
+{
+    MG_TRY()
+
+    //Get the system default path information
+    STRING sDir=GetDefaultDictionaryDir();
+    STRING sCs=m_pCsDict->GetDefaultFileName();
+    STRING sDt=m_pDtDict->GetDefaultFileName();
+    STRING sEl=m_pElDict->GetDefaultFileName();
+    STRING sCt=m_pCtDict->GetDefaultFileName();
+
+    //sets the path to the dictionaries
+    //this will perform a validation of the existence of the directory
+    SetDictionaryDir(sDir);
+
+    //Set the dictionary file names
+    //this will perform a validation of the existence of the files inside the directory
+    m_pCsDict->SetFileName(sCs);
+    m_pDtDict->SetFileName(sDt);
+    m_pElDict->SetFileName(sEl);
+    m_pCtDict->SetFileName(sCt);
+
+    m_libraryStatus=lsInitialized;
+
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemCatalog.SetDefaultDictionaryDirAndFileNames")
+}
+
+
+//Gets the list of available geodetic transformations MgCoordinateSystemGeodeticTransformation
+//that can transform from the pSource to the target datum pTarget. 
+//Currently, only one geodetic transformation is available.
+//In a near future, for a given couple suorce/target datums, there might be multiple possible ways for 
+//converting to the target datum.
+//If pSource and/or pTarget is NULL, WGS84 is assumed
+//Caller is responsible for freeing the list of geodetic transformations.  
+//
 MgDisposableCollection* CCoordinateSystemCatalog::GetGeodeticTransformations(MgCoordinateSystemDatum* pSource, MgCoordinateSystemDatum *pTarget)
 {
-    throw new MgNotImplementedException(L"MgCoordinateSystemCatalog.GetGeodeticTransformations", __LINE__, __WFILE__, NULL, L"", NULL);
+    Ptr<MgDisposableCollection> pColl;
+
+    MG_TRY()
+
+    //We can get a datum shift even if the catalog is closed, but
+    //the directory must have been set, since the converter will
+    //need to get at data files to do certain datum shifts.
+    if (m_sDir.empty())
+    {
+        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemCatalog.GetGeodeticTransformations", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNotReadyException", NULL);
+    }
+
+    Ptr<CCoordinateSystemGeodeticTransformation> pNew = new CCoordinateSystemGeodeticTransformation(this, pSource, pTarget);
+
+    if (NULL == pNew.p)
+    {
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.GetGeodeticTransformations", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    pColl = new MgDisposableCollection;
+
+    if (NULL == pColl.p)
+    {
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.GetGeodeticTransformations", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    pColl->Add(pNew);
+
+    //And we're done!  Return success.
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemCatalog.GetGeodeticTransformations")
+
+    return pColl.Detach();
 }
 
+//--------------------------------------------------------------------------------------------
 MgCoordinateSystemMathComparator* CCoordinateSystemCatalog::GetMathComparator()
 {
-    throw new MgNotImplementedException(L"MgCoordinateSystemCatalog.GetMathComparator", __LINE__, __WFILE__, NULL, L"", NULL);
+    CCoordinateSystemMathComparator *pNew=NULL;
+    MG_TRY()
+    pNew=new CCoordinateSystemMathComparator;
+    if (NULL == pNew) 
+    {
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.GetMathComparator", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemCatalog.GetMathComparator")
+    //And we're done!  Return success.
+    return pNew;
 }
 
+//--------------------------------------------------------------------------------------------
 MgCoordinateSystemFormatConverter* CCoordinateSystemCatalog::GetFormatConverter()
 {
     CCoordinateSystemFormatConverter *pNew=NULL;
     MG_TRY()
     pNew=new CCoordinateSystemFormatConverter(this);
-    if (NULL == pNew)
+    if (NULL == pNew) 
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.GetFormatConverter", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -602,33 +508,82 @@ MgCoordinateSystemFormatConverter* CCoordinateSystemCatalog::GetFormatConverter(
     return pNew;
 }
 
+//--------------------------------------------------------------------------------------------
 MgCoordinateSystemProjectionInformation* CCoordinateSystemCatalog::GetProjectionInformation()
 {
-    throw new MgNotImplementedException(L"MgCoordinateSystemCatalog.GetProjectionInformation", __LINE__, __WFILE__, NULL, L"", NULL);
+    CCoordinateSystemProjectionInformation *pNew=NULL;
+    MG_TRY()
+    pNew=new CCoordinateSystemProjectionInformation();
+    if (NULL == pNew) 
+    {
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.GetProjectionInformation", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemCatalog.GetProjectionInformation")
+
+    //And we're done!  Return success.
+    return pNew;
 }
 
+//--------------------------------------------------------------------------------------------
 MgCoordinateSystemUnitInformation* CCoordinateSystemCatalog::GetUnitInformation()
 {
-    throw new MgNotImplementedException(L"MgCoordinateSystemCatalog.GetUnitInformation", __LINE__, __WFILE__, NULL, L"", NULL);
+    CCoordinateSystemUnitInformation *pNew=NULL;
+    MG_TRY()
+    pNew=new CCoordinateSystemUnitInformation();
+    if (NULL == pNew) 
+    {
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.GetUnitInformation", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemCatalog.GetUnitInformation")
+
+    //And we're done!  Return success.
+    return pNew;
 }
 
-LibraryStatus CCoordinateSystemCatalog::GetLibraryStatus()
+//--------------------------------------------------------------------------------------------
+MgCoordinateSystemDictionaryUtility* CCoordinateSystemCatalog::GetDictionaryUtility()
 {
-    return m_libraryStatus;
+    CCoordinateSystemDictionaryUtility *pNew=NULL;
+    MG_TRY()
+    pNew=new CCoordinateSystemDictionaryUtility(this);
+    if (NULL == pNew) 
+    {
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.GetDictionaryUtility", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemCatalog.GetDictionaryUtility")
+
+    //And we're done!  Return success.
+    return pNew;
 }
 
+//--------------------------------------------------------------------------------------------
+//Sets the "protection mode" for the catalog.  If sMode is zero, then
+//items marked as read-only will be protected, but all user-defined
+//items will be unprotected.  If sMode < 0, then all protection is
+//turned off.  If sMode > 0, then in addition to items marked read-only,
+//all user-defined items older than sMode days will also be protected.
+//By default, the protection mode is initially set to zero.
+void CCoordinateSystemCatalog::SetProtectionMode(INT16 nMode)
+{
+    cs_Protect = nMode;
+}
+
+//--------------------------------------------------------------------------------------------
+//Gets the protection mode (see SetProtectionMode description for details).
+INT16 CCoordinateSystemCatalog::GetProtectionMode()
+{
+    return cs_Protect;
+}
+
+//--------------------------------------------------------------------------------------------
 //MgDisposable
 void CCoordinateSystemCatalog::Dispose()
 {
     delete this;
 }
 
-MgCoordinateSystemDictionaryUtility* CCoordinateSystemCatalog::GetDictionaryUtility()
+//--------------------------------------------------------------------------------------------
+LibraryStatus CCoordinateSystemCatalog::GetLibraryStatus()
 {
-    throw new MgNotImplementedException(L"MgCoordinateSystemCatalog.GetDictionaryUtility", __LINE__, __WFILE__, NULL, L"", NULL);
-}
-
-bool CCoordinateSystemCatalog::AreDictionaryFilesWritable()
-{
-    throw new MgNotImplementedException(L"MgCoordinateSystemCatalog.AreDictionaryFilesWritable", __LINE__, __WFILE__, NULL, L"", NULL);
+    return m_libraryStatus;
 }

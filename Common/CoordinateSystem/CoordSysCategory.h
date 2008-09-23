@@ -20,8 +20,6 @@
 
 namespace CSLibrary
 {
-class CCoordinateSystemInformation;
-typedef vector<CCoordinateSystemInformation*> CoordinateSystemInformationVector;
 
 class CCoordinateSystemCategory : public MgCoordinateSystemCategory
 {
@@ -29,7 +27,12 @@ public:
     CCoordinateSystemCategory(MgCoordinateSystemCatalog *pCatalog);
     virtual ~CCoordinateSystemCategory();
 
-    // MgCoordinateSystemCategory interface
+    char *Name();
+    void SaveToFstream(csFILE *pFile, UINT32 ulMinSize = 0);
+    void LoadFromFstream(csFILE *pFile);
+    void CopyFrom(MgCoordinateSystemCategory *pDef);
+
+    //MgCoordinateSystemCategory
     virtual STRING GetName();
     virtual void SetName(CREFSTRING sName);
     virtual bool IsLegalName(CREFSTRING sName);
@@ -39,19 +42,12 @@ public:
     virtual MgCoordinateSystemCategory* CreateClone();
     virtual UINT32 GetSize();
     virtual MgCoordinateSystemEnum* GetEnum();
+    virtual MgStringCollection* GetCoordinateSystems();
     virtual void AddCoordinateSystem(CREFSTRING sName);
     virtual void RemoveCoordinateSystem(CREFSTRING sName);
     virtual bool HasCoordinateSystem(CREFSTRING sName);
     virtual void Clear();
-    virtual MgStringCollection* GetCoordinateSystems();
     virtual MgCoordinateSystemCatalog* GetCatalog();
-
-
-    // Helper methods
-    void Add(CCoordinateSystemInformation* coordSysInfo);
-    size_t ContainsCode(CREFSTRING coordSysCode);
-    size_t ContainsProj4(CREFSTRING proj4Defn);
-    CoordinateSystemInformationVector* GetCoordinateSystemsInfo();
 
 protected:
     //MgDisposable
@@ -59,20 +55,20 @@ protected:
 
 protected:
     //Data members
-
     CCategoryName m_categoryName;
     CSystemNameList m_listCoordinateSystemNames;
     Ptr<MgCoordinateSystemCatalog> m_pCatalog;
+
+    //Private member functions
+    static bool IsLegalName(const char *kpName);
 
 private:
     //Unimplemented stuff
     CCoordinateSystemCategory();
     CCoordinateSystemCategory(const CCoordinateSystemCategory&);
     CCoordinateSystemCategory& operator=(const CCoordinateSystemCategory&);
-
-    CoordinateSystemInformationVector* m_coordinateSystems;
 };
 
 } // End of namespace
 
-#endif
+#endif //_CCOORDINATESYSTEMCATEGORY_H_
