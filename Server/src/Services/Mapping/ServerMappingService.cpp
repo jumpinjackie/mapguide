@@ -1679,6 +1679,10 @@ bool MgServerMappingService::FeatureTypeStyleSupportsGeomType(MdfModel::FeatureT
     if (fts == NULL)
         return false;
 
+    // if ShowInLegend is false, the legend doesn't need to be shown
+    if(!fts->IsShowInLegend())
+        return false;
+
     // a value of -1 matches any
     if (geomType == -1)
         return true;
