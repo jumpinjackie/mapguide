@@ -18,213 +18,21 @@
 #ifndef _CCOORDINATESYSTEMTRANSFORM_H_
 #define _CCOORDINATESYSTEMTRANSFORM_H_
 
-class OGRCoordinateTransformation;
-
 namespace CSLibrary
 {
-
-///////////////////////////////////////////////////////////////////////////////
-///<summary>
-/// The CCoordinateSystemTransform class provides operations for transforming
-/// coordinates from one coordinate system to another. The transformation
-/// includes a shift of the coordinate datum if required.
-///</summary>
 
 class CCoordinateSystemTransform : public MgCoordinateSystemTransform
 {
 public:
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
-    /// Initializes a new instance of CCoordinateSystemTransform given source
-    /// and target coordinate system objects. If the source and target
-    /// coordinate systems are not compatible (e.g. transformations cannot be
-    /// performed) an exception will be thrown.
-    ///</summary>
-    ///<param name="CCoordinateSystem source">
-    /// An CCoordinateSystem that defines the coordinate system of the source
-    /// coordiantes.
-    ///</param>
-    ///<param name="CCoordinateSystem target">
-    /// An CCoordinateSystem that defines the coordinate system for the target
-    /// coordiantes.
-    ///</param>
     CCoordinateSystemTransform(MgCoordinateSystem* source, MgCoordinateSystem* target);
-
     virtual ~CCoordinateSystemTransform();
 
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
-    /// Transforms the specified source envelope and returns a new envelope.
-    ///</summary>
-    ///<param name="MgEnvelope envelope">
-    /// The input MgEnvelope to transform.
-    ///</param>
-    ///<returns>
-    /// A new MgEnvelope transformed from the specified envelope.
-    ///</returns>
-    virtual MgEnvelope* Transform(MgEnvelope* envelope);
-
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
-    /// Transforms the X and Y ordinates.
-    ///</summary>
-    ///<param name="x">
-    /// The X ordinate to transform.
-    ///</param>
-    ///<param name="y">
-    /// The Y ordinate to transform.
-    ///</param>
-    ///<returns>
-    /// Nothing.
-    ///</returns>
-    virtual void Transform(double* x, double* y);
-
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
-    /// Transforms the array of X and Y ordinates.
-    ///</summary>
-    ///<param name="x">
-    /// The X ordinates to transform.
-    ///</param>
-    ///<param name="y">
-    /// The Y ordinates to transform.
-    ///</param>
-    ///<param name="arraySize">
-    /// The size of the arrays. All the arrays must be the same size.
-    ///</param>
-    ///<returns>
-    /// Nothing.
-    ///</returns>
-    virtual void Transform(double x[], double y[], int arraySize);
-
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
-    /// Transforms the X, Y ordinates and the measure.
-    ///</summary>
-    ///<param name="x">
-    /// The X ordinate to transform.
-    ///</param>
-    ///<param name="y">
-    /// The Y ordinate to transform.
-    ///</param>
-    ///<param name="m">
-    /// The measure to transform.
-    ///</param>
-    ///<returns>
-    /// Nothing.
-    ///</returns>
-    virtual void TransformM(double* x, double* y, double* m);
-
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
-    /// Transforms the array of X, Y ordinates and the measure.
-    ///</summary>
-    ///<param name="x">
-    /// The X ordinates to transform.
-    ///</param>
-    ///<param name="y">
-    /// The Y ordinates to transform.
-    ///</param>
-    ///<param name="m">
-    /// The measures to transform.
-    ///</param>
-    ///<param name="arraySize">
-    /// The size of the arrays. All the arrays must be the same size.
-    ///</param>
-    ///<returns>
-    /// Nothing.
-    ///</returns>
-    virtual void TransformM(double x[], double y[], double m[], int arraySize);
-
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
-    /// Transforms the X, Y, and Z ordinates.
-    ///</summary>
-    ///<param name="x">
-    /// The X ordinate to transform.
-    ///</param>
-    ///<param name="y">
-    /// The Y ordinate to transform.
-    ///</param>
-    ///<param name="z">
-    /// The Z ordinate to transform.
-    ///</param>
-    ///<returns>
-    /// Nothing.
-    ///</returns>
-    virtual void Transform(double* x, double* y, double* z);
-
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
-    /// Transforms the array of X, Y, and Z ordinates.
-    ///</summary>
-    ///<param name="x">
-    /// The X ordinates to transform.
-    ///</param>
-    ///<param name="y">
-    /// The Y ordinates to transform.
-    ///</param>
-    ///<param name="z">
-    /// The Z ordinates to transform.
-    ///</param>
-    ///<param name="arraySize">
-    /// The size of the arrays. All the arrays must be the same size.
-    ///</param>
-    ///<returns>
-    /// Nothing.
-    ///</returns>
-    virtual void Transform(double x[], double y[], double z[], int arraySize);
-
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
-    /// Transforms the X, Y, Z ordinates and the measure.
-    ///</summary>
-    ///<param name="x">
-    /// The X ordinate to transform.
-    ///</param>
-    ///<param name="y">
-    /// The Y ordinate to transform.
-    ///</param>
-    ///<param name="z">
-    /// The Z ordinate to transform.
-    ///</param>
-    ///<param name="m">
-    /// The measure to transform.
-    ///</param>
-    ///<returns>
-    /// Nothing.
-    ///</returns>
-    virtual void TransformM(double* x, double* y, double* z, double* m);
-
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
-    /// Transforms the array of X, Y, Z ordinates and the measure.
-    ///</summary>
-    ///<param name="x">
-    /// The X ordinates to transform.
-    ///</param>
-    ///<param name="y">
-    /// The Y ordinates to transform.
-    ///</param>
-    ///<param name="z">
-    /// The Z ordinates to transform.
-    ///</param>
-    ///<param name="m">
-    /// The measures to transform.
-    ///</param>
-    ///<param name="arraySize">
-    /// The size of the arrays. All the arrays must be the same size.
-    ///</param>
-    ///<returns>
-    /// Nothing.
-    ///</returns>
-    virtual void TransformM(double x[], double y[], double z[], double m[], int arraySize);
-
-    virtual MgCoordinate* Transform(MgCoordinate* coordinate);
-    virtual MgCoordinate* Transform(double x, double y, double z);
     virtual MgCoordinate* Transform(double x, double y);
-    virtual MgCoordinate* TransformM(double x, double y, double z, double m);
     virtual MgCoordinate* TransformM(double x, double y, double m);
+    virtual MgCoordinate* Transform(double x, double y, double z);
+    virtual MgCoordinate* TransformM(double x, double y, double z, double m);
+    virtual MgCoordinate* Transform(MgCoordinate* coordinate);
+    virtual MgEnvelope* Transform(MgEnvelope* envelope);
 
     virtual void TransformCoordinate(MgCoordinate* coordinate);
 
@@ -235,7 +43,6 @@ public:
 
     virtual MgCoordinateSystem* GetSource();
     virtual MgCoordinateSystem* GetTarget();
-
     virtual void SetSourceAndTarget(MgCoordinateSystem* pSource, MgCoordinateSystem* pTarget);
 
     virtual void IgnoreDatumShiftWarning(bool bIgnoreDatumShiftWarning);
@@ -245,38 +52,172 @@ public:
     virtual INT32 GetLastTransformStatus();
     virtual void ResetLastTransformStatus();
 
+
+INTERNAL_API:
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Transforms the X and Y ordinates.
+    ///
+    /// \param x
+    /// The X ordinate to transform.
+    /// \param y
+    /// The Y ordinate to transform.
+    ///
+    /// \return
+    /// Nothing.
+    ///
+    virtual void Transform(double* x, double* y);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Transforms the array of X and Y ordinates.
+    ///
+    /// \param x
+    /// The X ordinates to transform.
+    /// \param y
+    /// The Y ordinates to transform.
+    /// \param arraySize
+    /// The size of the arrays. All the arrays must be the same size.
+    ///
+    /// \return
+    /// Nothing.
+    ///
+    virtual void Transform(double x[], double y[], int arraySize);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Transforms the X, Y ordinates and the measure.
+    ///
+    /// \param x
+    /// The X ordinate to transform.
+    /// \param y
+    /// The Y ordinate to transform.
+    /// \param m
+    /// The measure to transform.
+    ///
+    /// \return
+    /// Nothing.
+    ///
+    virtual void TransformM(double* x, double* y, double* m);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Transforms the array of X, Y ordinates and the measure.
+    ///
+    /// \param x
+    /// The X ordinates to transform.
+    /// \param y
+    /// The Y ordinates to transform.
+    /// \param m
+    /// The measures to transform.
+    /// \param arraySize
+    /// The size of the arrays. All the arrays must be the same size.
+    ///
+    /// \return
+    /// Nothing.
+    ///
+    virtual void TransformM(double x[], double y[], double m[], int arraySize);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Transforms the X, Y, and Z ordinates.
+    ///
+    /// \param x
+    /// The X ordinate to transform.
+    /// \param y
+    /// The Y ordinate to transform.
+    /// \param z
+    /// The Z ordinate to transform.
+    ///
+    /// \return
+    /// Nothing.
+    ///
+    virtual void Transform(double* x, double* y, double* z);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Transforms the array of X, Y, and Z ordinates.
+    ///
+    /// \param x
+    /// The X ordinates to transform.
+    /// \param y
+    /// The Y ordinates to transform.
+    /// \param z
+    /// The Z ordinates to transform.
+    /// \param arraySize
+    /// The size of the arrays. All the arrays must be the same size.
+    ///
+    /// \return
+    /// Nothing.
+    ///
+    virtual void Transform(double x[], double y[], double z[], int arraySize);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Transforms the X, Y, Z ordinates and the measure.
+    ///
+    /// \param x
+    /// The X ordinate to transform.
+    /// \param y
+    /// The Y ordinate to transform.
+    /// \param z
+    /// The Z ordinate to transform.
+    /// \param m
+    /// The measure to transform.
+    ///
+    /// \return
+    /// Nothing.
+    ///
+    virtual void TransformM(double* x, double* y, double* z, double* m);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Transforms the array of X, Y, Z ordinates and the measure.
+    ///
+    /// \param x
+    /// The X ordinates to transform.
+    /// \param y
+    /// The Y ordinates to transform.
+    /// \param z
+    /// The Z ordinates to transform.
+    /// \param m
+    /// The measures to transform.
+    /// \param arraySize
+    /// The size of the arrays. All the arrays must be the same size.
+    ///
+    /// \return
+    /// Nothing.
+    ///
+    virtual void TransformM(double x[], double y[], double z[], double m[], int arraySize);
+
 protected:
     //MgDisposable
     virtual void Dispose();
 
-private:
-    CCoordinateSystemTransform() {};
+protected:
+    //Data members
+    Ptr<MgCoordinateSystem> m_pCsSource;
+    Ptr<MgCoordinateSystem> m_pCsTarget;
+    cs_Dtcprm_ *m_pDtcprm;
+    cs_Csprm_ m_src;
+    cs_Csprm_ m_dst;
 
-    void InternalTransform(double* x, double* y, double* z, double* m, int numPts);
-
-    MgEnvelope* XYExtentToLL(OGRCoordinateTransformation* transform, MgEnvelope* envelope);
-    MgEnvelope* LLExtentToXY(OGRCoordinateTransformation* transform, MgEnvelope* envelope);
-
-    void LLToXY(OGRCoordinateTransformation* transform, double dLon, double dLat, double& dX, double& dY);
-
-    Ptr<MgCoordinateSystem> m_coordSysSource;
-    Ptr<MgCoordinateSystem> m_coordSysTarget;
-    OGRCoordinateTransformation* m_transformForward;
-    OGRCoordinateTransformation* m_transformInverse;
-
-    enum TransformHint
-    {
-        TH_IDENTITY,
-        TH_LOCAL,
-        TH_GEOGRAPHIC_TO_PROJECTED,
-        TH_PROJECTED_TO_GEOGRAPHIC,
-        TH_PROJECTED_TO_PROJECTED
-    };
-
-    TransformHint m_transformHint;
     bool m_bIgnoreDatumShiftWarning;
     bool m_bIgnoreOutsideDomainWarning;
+    bool m_bSourceTargetSame;
     INT32 m_nTransformStatus;
+
+    //Private member functions
+    void SetCatalog(MgCoordinateSystemCatalog *pCatalog);
+    bool IsInitialized();
+    void Uninitialize();
+    void TransformPoint(double& x, double& y, double *pdZ);
+    bool IsValidPoint(cs_Csprm_& csprm, double x, double y, double z);
+
+private:
+    //Unimplemented stuff
+    CCoordinateSystemTransform(const CCoordinateSystemTransform&);
+    CCoordinateSystemTransform& operator=(const CCoordinateSystemTransform&);
 };
 
 } // End of namespace

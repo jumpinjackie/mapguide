@@ -46,7 +46,7 @@ protected:
     bool IsFilteredOut(const char *kpName);
 
     //Data members
-    Ptr<MgCoordinateSystemCategoryDictionary> m_pDict;
+    MgCoordinateSystemCategoryDictionary *m_pDict;
     CCategoryNameList *m_pCategoryNameList;
     CCategoryNameList::const_iterator m_iter;
     std::vector<MgCoordinateSystemFilter*> m_vectFilter;

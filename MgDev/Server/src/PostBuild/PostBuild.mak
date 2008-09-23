@@ -82,15 +82,6 @@
 ..\..\bin\debug\xerces-c_2_7D.pdb : ..\..\..\Oem\dbxml-2.3.10\bin\debug\xerces-c_2_7D.pdb
     xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug\xerces-c_2_7D.pdb ..\..\bin\debug\
 
-..\..\bin\debug\projd.dll : ..\..\..\Oem\proj-4.5.0\src\projd.dll
-    xcopy /r /d /y ..\..\..\Oem\proj-4.5.0\src\projd.dll ..\..\bin\debug\
-
-..\..\bin\debug\projd.pdb : ..\..\..\Oem\proj-4.5.0\src\projd.pdb
-    xcopy /r /d /y ..\..\..\Oem\proj-4.5.0\src\projd.pdb ..\..\bin\debug\
-
-..\..\bin\debug\categories.txt : ..\..\..\Common\CoordinateSystem\categories.txt
-    xcopy /r /d /y ..\..\..\Common\CoordinateSystem\categories.txt ..\..\bin\debug\
-
 ..\..\bin\debug\serverconfig.ini : ..\..\src\Core\serverconfig.ini
     xcopy /r /d /y ..\..\src\Core\serverconfig.ini ..\..\bin\debug\
 
@@ -157,9 +148,6 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\debug\xqilla10d.pdb \
         ..\..\bin\debug\xerces-c_2_7D.dll \
         ..\..\bin\debug\xerces-c_2_7D.pdb \
-        ..\..\bin\debug\projd.dll \
-        ..\..\bin\debug\projd.pdb \
-        ..\..\bin\debug\categories.txt \
         ..\..\bin\debug\serverconfig.ini \
         ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml \
         ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml \
@@ -330,15 +318,6 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
 ..\..\bin\release\xerces-c_2_7.pdb : ..\..\..\Oem\dbxml-2.3.10\bin\xerces-c_2_7.pdb
     xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\xerces-c_2_7.pdb ..\..\bin\release\
 
-..\..\bin\release\proj.dll : ..\..\..\Oem\proj-4.5.0\src\proj.dll
-    xcopy /r /d /y ..\..\..\Oem\proj-4.5.0\src\proj.dll ..\..\bin\release\
-
-..\..\bin\release\proj.pdb : ..\..\..\Oem\proj-4.5.0\src\proj.pdb
-    xcopy /r /d /y ..\..\..\Oem\proj-4.5.0\src\proj.pdb ..\..\bin\release\
-
-..\..\bin\release\categories.txt : ..\..\..\Common\CoordinateSystem\categories.txt
-    xcopy /r /d /y ..\..\..\Common\CoordinateSystem\categories.txt ..\..\bin\release\
-
 ..\..\bin\release\serverconfig.ini : ..\..\src\Core\serverconfig.ini
     xcopy /r /d /y ..\..\src\Core\serverconfig.ini ..\..\bin\release\
 
@@ -405,9 +384,6 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\release\xqilla10.pdb \
           ..\..\bin\release\xerces-c_2_7.dll \
           ..\..\bin\release\xerces-c_2_7.pdb \
-          ..\..\bin\release\proj.dll \
-          ..\..\bin\release\proj.pdb \
-          ..\..\bin\release\categories.txt \
           ..\..\bin\release\serverconfig.ini \
           ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml \
           ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml \
@@ -523,9 +499,6 @@ cleandebug:
     if EXIST ..\..\bin\debug\xqilla10d.pdb                   del /F ..\..\bin\debug\xqilla10d.pdb
     if EXIST ..\..\bin\debug\xerces-c_2_7D.dll               del /F ..\..\bin\debug\xerces-c_2_7D.dll
     if EXIST ..\..\bin\debug\xerces-c_2_7D.pdb               del /F ..\..\bin\debug\xerces-c_2_7D.pdb
-    if EXIST ..\..\bin\debug\projd.dll                       del /F ..\..\bin\debug\projd.dll
-    if EXIST ..\..\bin\debug\projd.pdb                       del /F ..\..\bin\debug\projd.pdb
-    if EXIST ..\..\bin\debug\categories.txt                  del /F ..\..\bin\debug\categories.txt
     if EXIST ..\..\bin\debug\serverconfig.ini                del /F ..\..\bin\debug\serverconfig.ini
     if EXIST ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml   del /F ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml
     if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml     del /F ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml
@@ -636,9 +609,6 @@ cleanrelease:
     if EXIST ..\..\bin\release\xqilla10.pdb                  del /F ..\..\bin\release\xqilla10.pdb
     if EXIST ..\..\bin\release\xerces-c_2_7.dll              del /F ..\..\bin\release\xerces-c_2_7.dll
     if EXIST ..\..\bin\release\xerces-c_2_7.pdb              del /F ..\..\bin\release\xerces-c_2_7.pdb
-    if EXIST ..\..\bin\release\proj.dll                      del /F ..\..\bin\release\proj.dll
-    if EXIST ..\..\bin\release\proj.pdb                      del /F ..\..\bin\release\proj.pdb
-    if EXIST ..\..\bin\release\categories.txt                del /F ..\..\bin\release\categories.txt
     if EXIST ..\..\bin\release\serverconfig.ini              del /F ..\..\bin\release\serverconfig.ini
     if EXIST ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml   del /F ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml
     if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml     del /F ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml

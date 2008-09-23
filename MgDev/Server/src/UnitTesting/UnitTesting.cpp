@@ -41,8 +41,12 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
         if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestDefaultTests)) == 0)
         {
             // Add all of the tests
-            ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running all unit tests. <<<<<\n\n")));
+#ifdef _DEBUG
+            ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running all unit tests - Excluding Performance and CoordinateSystem. <<<<<\n\n")));
+#else
+            ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running all unit tests - Excluding Performance. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestCoordinateSystem").makeTest());
+#endif
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestFeatureService").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestGeometry").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestLogManager").makeTest());
@@ -64,7 +68,11 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             ACE_OS::printf("The following unit tests are available:\n\n");
 
             // Available tests
-            ACE_OS::printf("  All\n");
+#ifdef _DEBUG
+            ACE_OS::printf("  All - Excluding Performance and CoordinateSystem\n");
+#else
+            ACE_OS::printf("  All - Excluding Performance\n");
+#endif
             ACE_OS::printf("  CoordinateSystem\n");
             ACE_OS::printf("  FeatureService\n");
             ACE_OS::printf("  Geometry\n");
@@ -72,6 +80,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             ACE_OS::printf("  LogManager\n");
             ACE_OS::printf("  MappingService\n");
             ACE_OS::printf("  MdfModel\n");
+            ACE_OS::printf("  Performance\n");
             ACE_OS::printf("  RenderingService\n");
             ACE_OS::printf("  ResourceService\n");
             ACE_OS::printf("  ServerAdminService\n");
@@ -118,6 +127,11 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
         {
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only MdfModel tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMdfModel").makeTest());
+        }
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("Performance")) == 0)
+        {
+            ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Performance tests. <<<<<\n\n")));
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestPerformance").makeTest());
         }
         else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("RenderingService")) == 0)
         {
@@ -169,8 +183,12 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
     else
     {
         // Add all of the tests
-        ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running all unit tests. <<<<<\n\n")));
+#ifdef _DEBUG
+        ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running all unit tests - Excluding Performance and CoordinateSystem. <<<<<\n\n")));
+#else
+        ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running all unit tests - Excluding Performance. <<<<<\n\n")));
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestCoordinateSystem").makeTest());
+#endif
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestFeatureService").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestGeometry").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestLogManager").makeTest());

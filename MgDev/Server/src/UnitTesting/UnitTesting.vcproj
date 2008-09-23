@@ -248,6 +248,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\TestPerformance.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\TestPerformance.h"
+			>
+		</File>
+		<File
 			RelativePath=".\TestRenderingService.cpp"
 			>
 		</File>

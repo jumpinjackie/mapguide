@@ -21,6 +21,7 @@
 #include "CoordSys.h"          //for CCoordinateSystem
 #include "CoordSysMeasure.h"   //for CCoordinateSystemMeasure
 #include "CoordSysUtil.h"      //for CsDictionaryOpenMode
+#include "MentorUtil.h"        //for ProjectionFromString
 
 using namespace CSLibrary;
 
@@ -33,19 +34,17 @@ using namespace CSLibrary;
 ///<param name="coordSys">
 /// The coordinate system to use when performing measurement.
 ///</param>
-CCoordinateSystemMeasure::CCoordinateSystemMeasure(MgCoordinateSystem* coordSys) :
-    m_coordSys(NULL)
+CCoordinateSystemMeasure::CCoordinateSystemMeasure(MgCoordinateSystem* pCoordSys)
 {
-    if (NULL == coordSys)
+    if(NULL == pCoordSys)
     {
-        throw new MgNullArgumentException(
-            L"MgCoordinateSystemMeasure.CCoordinateSystemMeasure",
-            __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgCoordinateSystemMeasure.MgCoordinateSystemMeasure", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    m_coordSys = SAFE_ADDREF(coordSys);
+    m_pCoordSys = SAFE_ADDREF(pCoordSys);
 }
 
+///////////////////////////////////////////////////////////////////////////
 CCoordinateSystemMeasure::~CCoordinateSystemMeasure()
 {
 }
@@ -80,111 +79,18 @@ double CCoordinateSystemMeasure::GetDistance(double x1, double y1, double x2, do
 {
     double distance = 0.0;
 
-    try
+    MG_TRY()
+    if(m_pCoordSys->GetType() == MgCoordinateSystemType::Arbitrary)
     {
-        if(m_coordSys->GetType() == MgCoordinateSystemType::Arbitrary)
-        {
-            distance = m_coordSys->MeasureEuclideanDistance(x1, y1, x2, y2);
-        }
-        else
-        {
-            distance = m_coordSys->MeasureGreatCircleDistance(x1, y1, x2, y2);
-        }
+        distance = m_pCoordSys->MeasureEuclideanDistance(x1, y1, x2, y2);
     }
-    catch (MgException* e)
+    else
     {
-        e->Raise();
+        distance = m_pCoordSys->MeasureGreatCircleDistance(x1, y1, x2, y2);
     }
-    catch (...)
-    {
-        throw new MgCoordinateSystemMeasureFailedException(L"MgCoordinateSystem.GetDistance", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
-    }
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemMeasure.GetDistance")
 
     return distance;
-}
-
-///////////////////////////////////////////////////////////////////////////
-///<summary>
-/// Computes the angle with respect to the north of a vector formed by two
-/// coordinates.
-///</summary>
-///<param name="x1">
-/// The x value that defines the first coordinate.
-///</param>
-///<param name="y1">
-/// The y value that defines the first coordinate.
-///</param>
-///<param name="x2">
-/// The x value that defines the second coordinate.
-///</param>
-///<param name="y2">
-/// The y value that defines the second coordinate.
-///</param>
-///<returns>
-/// The azimuth (Angle with respect to the North) of the vector formed by
-/// coord1 and coord2.
-///</returns>
-double CCoordinateSystemMeasure::GetAzimuth(double x1, double y1, double x2, double y2)
-{
-    double azimuth = 0.0;
-
-    try
-    {
-        azimuth = m_coordSys->GetAzimuth(x1, y1, x2, y2);
-    }
-    catch (MgException* e)
-    {
-        e->Raise();
-    }
-    catch (...)
-    {
-        throw new MgCoordinateSystemComputationFailedException(L"MgCoordinateSystemMeasure.GetAzimuth", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
-    }
-
-    return azimuth;
-}
-
-///////////////////////////////////////////////////////////////////////////
-///<summary>
-/// Computes a coordinate a given distance along a vector that is defined
-/// by a starting coordinate and an azimuth (Angle with respect to the
-/// North).
-///</summary>
-///<param name="xStart">
-/// The x value that represents the start of the vector.
-///</param>
-///<param name="yStart">
-/// The y value that represents the start of the vector.
-///</param>
-///<param name="azimuth">
-/// An azimuth (Angle with respect to the North) that defines the direction
-/// of the vector.
-///</param>
-///<param name="distance">
-/// The distance along the vector of the desired coordinate in coordinate system units.
-///</param>
-///<returns>
-/// An CCoordinate that lies the given distance along the vector.
-///</returns>
-void CCoordinateSystemMeasure::GetCoordinate(double xStart, double yStart, double azimuth, double distance, double& x, double& y)
-{
-    x = 0.0;
-    y = 0.0;
-
-    try
-    {
-        Ptr<MgCoordinate> coord = m_coordSys->GetCoordinate(xStart, yStart, azimuth, distance);
-        x = coord->GetX();
-        y = coord->GetY();
-    }
-    catch (MgException* e)
-    {
-        e->Raise();
-    }
-    catch(...)
-    {
-        throw new MgCoordinateSystemComputationFailedException(L"MgCoordinateSystemMeasure.GetCoordinate", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemUnexpectedError", NULL);
-    }
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -203,6 +109,38 @@ double CCoordinateSystemMeasure::GetDistance(MgCoordinate* coord1, MgCoordinate*
 }
 
 ///////////////////////////////////////////////////////////////////////////
+///<summary>
+/// Gets the angle with respect to the north of a vector formed by two
+/// coordinates.
+///</summary>
+///<param name="double x1">
+/// The x value that defines the first coordinate.
+///</param>
+///<param name="double y1">
+/// The y value that defines the first coordinate.
+///</param>
+///<param name="double x2">
+/// The x value that defines the second coordinate.
+///</param>
+///<param name="double y2">
+/// The y value that defines the second coordinate.
+///</param>
+///<returns>
+/// The azimuth (Angle with respect to the North) of the vector formed by
+/// the 2 specified coordinates.
+///</returns>
+double CCoordinateSystemMeasure::GetAzimuth(double x1, double y1, double x2, double y2)
+{
+    double azimuth = 0.0;
+
+    MG_TRY()
+    azimuth = m_pCoordSys->GetAzimuth(x1, y1, x2, y2);
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemMeasure.GetAzimuth")
+
+    return azimuth;
+}
+
+///////////////////////////////////////////////////////////////////////////
 double CCoordinateSystemMeasure::GetAzimuth(MgCoordinate* coord1, MgCoordinate* coord2)
 {
     double azimuth = 0.0;
@@ -217,12 +155,40 @@ double CCoordinateSystemMeasure::GetAzimuth(MgCoordinate* coord1, MgCoordinate* 
     return azimuth;
 }
 
+///////////////////////////////////////////////////////////////////////////
+///<summary>
+/// Computes a coordinate a given distance along a vector that is defined
+/// by a starting coordinate and an azimuth (Angle with respect to the
+/// North).
+///</summary>
+///<param name="double xStart">
+/// The x value that represents the start of the vector.
+///</param>
+///<param name="double yStart">
+/// The y value that represents the start of the vector.
+///</param>
+///<param name="double azimuth">
+/// An azimuth (Angle with respect to the North) that defines the direction
+/// of the vector.
+///</param>
+///<param name="double distance">
+/// The distance along the vector of the desired coordinate in coordinate system units.
+///</param>
+///<param name="double& x">
+/// The x value that represents the resultant coordinate.
+///</param>
+///<param name="double& y">
+/// The y value that represents the resultant coordinate.
+///</param>
+///<returns>
+/// Nothing.
+///</returns>
 MgCoordinate* CCoordinateSystemMeasure::GetCoordinate(double xStart, double yStart, double azimuth, double distance)
 {
     MgCoordinate* pCoordinate=NULL;
 
     MG_TRY()
-    pCoordinate=m_coordSys->GetCoordinate(xStart, yStart, azimuth, distance);
+    pCoordinate=m_pCoordSys->GetCoordinate(xStart, yStart, azimuth, distance);
     MG_CATCH_AND_THROW(L"MgCoordinateSystemMeasure.GetCoordinate")
     return pCoordinate;
 }
@@ -237,12 +203,20 @@ MgCoordinate* CCoordinateSystemMeasure::GetCoordinate(MgCoordinate* coord, doubl
     return GetCoordinate(coord->GetX(), coord->GetY(), azimuth, distance);
 }
 
-MgCoordinateSystem* CCoordinateSystemMeasure::GetCoordSys()
-{
-    return SAFE_ADDREF(m_coordSys.p);
-}
-
+///////////////////////////////////////////////////////////////////////////
 MgEnvelope* CCoordinateSystemMeasure::GetEnvelope()
 {
-    return new MgEnvelope(m_coordSys->GetMinX(), m_coordSys->GetMinY(), m_coordSys->GetMaxX(), m_coordSys->GetMaxY());
+    MgEnvelope* pNew=NULL;
+    pNew=new MgEnvelope(m_pCoordSys->GetMinX(), m_pCoordSys->GetMinY(), m_pCoordSys->GetMaxX(), m_pCoordSys->GetMaxY());
+    if (NULL == pNew) 
+    {
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemMeasure.GetEnvelope", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    return pNew;
+}
+
+///////////////////////////////////////////////////////////////////////////
+MgCoordinateSystem* CCoordinateSystemMeasure::GetCoordSys()
+{
+    return SAFE_ADDREF(m_pCoordSys.p);
 }

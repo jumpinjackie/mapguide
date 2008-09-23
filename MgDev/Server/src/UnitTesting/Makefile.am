@@ -38,6 +38,7 @@ libMgUnitTesting_la_SOURCES = \
   TestLogManagerThread.cpp \
   TestMappingService.cpp \
   TestMdfModel.cpp \
+  TestPerformance.cpp \
   TestRenderingService.cpp \
   TestResourceService.cpp \
   TestServerAdminService.cpp \
@@ -58,6 +59,7 @@ noinst_HEADERS = \
   TestLogManagerThread.h \
   TestMappingService.h \
   TestMdfModel.h \
+  TestPerformance.h \
   TestRenderingService.h \
   TestResourceService.h \
   TestServerAdminService.h \

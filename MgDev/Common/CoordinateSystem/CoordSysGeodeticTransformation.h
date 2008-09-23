@@ -60,14 +60,18 @@ protected:
 
 protected:
     //Private member functions
+    bool IsInitialized() const;
+    void Uninitialize();
     MgCoordinateSystemDatum* GetWGS84IfNull(MgCoordinateSystemDatum *pDatum);
     void SetCatalog(MgCoordinateSystemCatalog* pCatalog);
+    bool GetDefinitionForGeodeticTransformationParameter(cs_Dtdef_& def);
     MgCoordinateSystemDatum* GetWGS84();
 
 protected:
     //Data members
-    Ptr<MgCoordinateSystemDatum> m_pDtSource;
-    Ptr<MgCoordinateSystemDatum> m_pDtTarget;
+    MgCoordinateSystemDatum* m_pDtSource;
+    MgCoordinateSystemDatum* m_pDtTarget;
+    cs_Dtcprm_ *m_pDtcprm;
     Ptr<MgCoordinateSystemCatalog> m_pCatalog;
 
 private:

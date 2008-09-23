@@ -23,17 +23,22 @@ namespace CSLibrary
 
 class CCoordinateSystemCategory;
 
+//Magic number for category dictionary.  Caution:  Don't change this number
+//unless the format of the dictionary file itself changes, since this number
+//gets written to the dictionary file.
+const long klCategoryMagic = 0x3372ED6C;
+
+//Convenient typedefs
+
 class CCoordinateSystemCategoryDictionary : public MgCoordinateSystemCategoryDictionary
 {
 public:
     CCoordinateSystemCategoryDictionary(MgCoordinateSystemCatalog *pCatalog);
     virtual ~CCoordinateSystemCategoryDictionary();
 
-    // MgCoordinateSystemCategoryDictionary interface
     virtual MgCoordinateSystemCategory* NewCategory();
     virtual void Rename(CREFSTRING sOldName, CREFSTRING sNewName);
 
-    // MgCoordinateSystemDictionaryBase interface
     virtual MgCoordinateSystemCatalog* GetCatalog();
     virtual STRING GetDefaultFileName();
     virtual STRING GetFileName();
@@ -48,18 +53,24 @@ public:
     virtual bool Has(CREFSTRING sName);
     virtual MgCoordinateSystemEnum* GetEnum();
 
-    void Initialize();
-
 protected:
     //MgDisposable
     virtual void Dispose();
 
-protected:
+private:
     //Data members
-    STRING m_sPath;
+    STRING m_sFileName;
     CCategoryNameIndexMap m_index;
     CCategoryNameList m_list;
     Ptr<MgCoordinateSystemCatalog> m_pCatalog;
+    bool m_bIndexDirty;
+
+    //Private member functions
+    void GenerateIndex(csFILE *pFile);
+    void RewriteFile(const char *kpDefName, CCoordinateSystemCategory *pDef=NULL);
+    csFILE* Open(CsDictionaryOpenMode nOpenMode);
+    CCategoryNameIndexMap& Index();
+    CCategoryNameList& List();
 
 private:
     //Unimplemented stuff

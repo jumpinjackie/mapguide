@@ -18,16 +18,31 @@
 #ifndef _CCOORDINATESYSTEMUTIL_H_
 #define _CCOORDINATESYSTEMUTIL_H_
 
+#define __CPP__ 1
+#ifdef min
+#undef min
+#endif
+#include "rcWellKnownText.hpp"
+#include "cs_wkt.h"
+#include "CsmapVersion.h"
+
 #include <algorithm>
 
-#ifdef _WIN32
-#include "Windows.h"
+#ifdef WIN32
+#include "windows.h"
 // To undefine GetMessage macro defined in windows
 #undef GetMessage
-#endif
+#pragma warning(disable: 4996)
+#endif // WIN32 defined
+
+// Mentor specific information
+extern "C" struct cs_Prjtab_ cs_Prjtab[];   // Mentor projection table
+extern "C" struct cs_Unittab_ cs_Unittab[]; // Mentor unit table
 
 namespace CSLibrary
 {
+const STRING CategoryFilename      = L"Category.CSD";  // NOXLATE
+
 const double ZERO_SCALE = 1e-9;  //-- unit scale smaller than this is considered zero
 const double ZERO_VALUE = 1e-12; //-- value smaller than this is considered zero
 }
@@ -40,6 +55,10 @@ const double ZERO_VALUE = 1e-12; //-- value smaller than this is considered zero
 #define IsDoubleNan(x)  _isnan(x)
 #else
 #define IsDoubleNan(x)  isnan(x)
+#endif
+
+#ifndef _WIN32
+#define wmemcpy memcpy
 #endif
 
 ///----------------------------------------------------------------------------
@@ -67,19 +86,6 @@ inline void AppendSlashToEndOfPath(REFSTRING path)
         path.append(L"/");
     }
 }
-
-inline STRING TrimLeft(CREFSTRING source , CREFSTRING t = L" ")
-{
-    STRING str = source;
-    return str.erase ( 0 , source.find_first_not_of ( t ) ) ;
-}
-
-inline STRING TrimRight(CREFSTRING source, CREFSTRING t = L" ")
-{
-    STRING str = source;
-    return str.erase ( str.find_last_not_of ( t ) + 1 ) ;
-}
-
 
 inline char *
 Convert_Wide_To_Ascii (const wchar_t *wstr)
@@ -144,11 +150,84 @@ Convert_Ascii_To_Wide (const char *str)
   return wstr;
 }
 
+inline STRING ToLower( CREFSTRING source )
+{
+    STRING low = source;
+    std::transform(low.begin(), low.end(), low.begin(), ::tolower);
+    return low;
+}
+
 inline STRING ToUpper( CREFSTRING source )
 {
     STRING up = source;
     std::transform(up.begin(), up.end(), up.begin(), ::toupper);
     return up;
 }
+
+//Tests a string for legality, based on size.  Returns false
+//if the string is a null pointer, or if it is greater than
+//nMaxSize bytes (including terminating null) when converted
+//to a multibyte character string.
+bool IsLegalString(const wchar_t* kpStr, UINT32 unMaxSize);
+
+//Tests two floating-point numbers to see if they're "equal"
+//to within a very tiny value.  Returns true if so.  This
+//function is mainly used in asserts, to verify that certain
+//calculated results are what we expect them to be.
+//
+//The default value for epsilon is somewhat arbitrary.  The intent
+//is "equal to within the limits of floating-point accuracy."
+//The values this function is used with are generally no
+//bigger than 1e+4 and no smaller than 1e-4, so this seems
+//to be a reasonable value.
+bool FloatEqual(double d1, double d2, double dEpsilon=1.0E-12);
+
+enum CsDictionaryOpenMode
+{
+    Closed = 0,
+    Read = 1,
+    Write = 2
+};
+
+//Gets the mode and protection codes with which to open a file,
+//given a INT32 value.
+void GetFileModes(CsDictionaryOpenMode nOpenMode, char* szMode);
+
+enum EFileValidity
+{
+    kFileIsValid,
+    kFileInvalidEmptyString,
+    kFileInvalidPath,
+    kFileInvalidDoesNotExist,
+    kFileInvalidNotADir,
+    kFileInvalidIsADir,
+    kFileInvalidCantWrite,
+    kFileInvalidCantRead
+};
+bool ValidateFile(
+    const wchar_t *kpFile, //the file name to validate
+    bool bExists,		//if true, function fails if file doesn't exist
+    bool bIsDir,		//if true, function fails if file isn't a dir
+    bool bCanWrite,		//if true, function fails if file isn't writable
+    EFileValidity *pReason = NULL); //if not NULL store result code
+
+bool IsValidDictionaryName(CREFSTRING sName);
+void ThrowFileError(const wchar_t* wszMethodName, CREFSTRING sPathName, EFileValidity reason);
+
+bool CanWriteToDir(const wchar_t *kpDir);
+bool CanWriteToFile(const wchar_t *kpFile);
+bool CanReadFromDir(const wchar_t *kpFile);
+bool CanReadFromFile(const wchar_t *kpFile);
+
+//*****************************************************************************
+class CCsNumericDotLocale
+{
+public:
+    CCsNumericDotLocale();
+    ~CCsNumericDotLocale();
+
+private:
+    char *m_pszCurLocale;
+};
 
 #endif //_CCOORDINATESYSTEMUTIL_H_

@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = Geometry.vcproj Geometry.rc ../CoordinateSystem/categories.txt ../CoordinateSystem/CoordinateSystem.rc ../CoordinateSystem/CoordinateSystem.vcproj Parse/script Parse/script_linux Parse/yyAwkt.y
+EXTRA_DIST = Geometry.vcproj Geometry.rc Parse/script Parse/script_linux Parse/yyAwkt.y
 
 lib_LTLIBRARIES = libMgGeometry.la
 
@@ -10,7 +10,6 @@ libMgGeometry_la_SOURCES = \
   ../CoordinateSystem/CoordSys.cpp \
   ../CoordinateSystem/CoordSysCatalog.cpp \
   ../CoordinateSystem/CoordSysCategory.cpp \
-  ../CoordinateSystem/CoordSysCategoryCollection.cpp \
   ../CoordinateSystem/CoordSysCategoryDictionary.cpp \
   ../CoordinateSystem/CoordSysDatum.cpp \
   ../CoordinateSystem/CoordSysDatumDictionary.cpp \
@@ -24,10 +23,17 @@ libMgGeometry_la_SOURCES = \
   ../CoordinateSystem/CoordSysEnumEllipsoid.cpp \
   ../CoordinateSystem/CoordSysFormatConverter.cpp \
   ../CoordinateSystem/CoordSysGeodeticTransformation.cpp \
-  ../CoordinateSystem/CoordSysInformation.cpp \
   ../CoordinateSystem/CoordSysMeasure.cpp \
   ../CoordinateSystem/CoordSysTransform.cpp \
-  ../CoordinateSystem/CoordSysTransformation.cpp
+  ../CoordinateSystem/CoordSysDictionaryUtility.cpp \
+  ../CoordinateSystem/CoordSysEnumInteger32.cpp \
+  ../CoordinateSystem/CoordSysMathComparator.cpp \
+  ../CoordinateSystem/CoordSysProjectionInformation.cpp \
+  ../CoordinateSystem/CoordSysUnitInformation.cpp \
+  ../CoordinateSystem/CoordSysUtil.cpp \
+  ../CoordinateSystem/MentorDictionary.cpp \
+  ../CoordinateSystem/MentorUtil.cpp \
+  ../CoordinateSystem/CoordSysWktFailureCache.cpp
 
 include_SOURCES = \
   AgfReaderWriter.cpp \
@@ -134,7 +140,6 @@ include_SOURCES = \
   ../CoordinateSystem/CoordSys.cpp \
   ../CoordinateSystem/CoordSysCatalog.cpp \
   ../CoordinateSystem/CoordSysCategory.cpp \
-  ../CoordinateSystem/CoordSysCategoryCollection.cpp \
   ../CoordinateSystem/CoordSysCategoryDictionary.cpp \
   ../CoordinateSystem/CoordSysDatum.cpp \
   ../CoordinateSystem/CoordSysDatumDictionary.cpp \
@@ -147,15 +152,20 @@ include_SOURCES = \
   ../CoordinateSystem/CoordSysEnumDatum.cpp \
   ../CoordinateSystem/CoordSysEnumEllipsoid.cpp \
   ../CoordinateSystem/CoordSysEnvelope.cpp \
-  ../CoordinateSystem/CoordSysException.cpp \
-  ../CoordinateSystem/CoordSysFactory.cpp \
   ../CoordinateSystem/CoordSysFormatConverter.cpp \
   ../CoordinateSystem/CoordSysGeodeticTransformation.cpp \
-  ../CoordinateSystem/CoordSysInformation.cpp \
   ../CoordinateSystem/CoordSysMeasure.cpp \
   ../CoordinateSystem/CoordSysTransform.cpp \
-  ../CoordinateSystem/CoordSysTransformation.cpp
-
+  ../CoordinateSystem/CoordSysDictionaryUtility.cpp \
+  ../CoordinateSystem/CoordSysEnumInteger32.cpp \
+  ../CoordinateSystem/CoordSysMathComparator.cpp \
+  ../CoordinateSystem/CoordSysProjectionInformation.cpp \
+  ../CoordinateSystem/CoordSysUnitInformation.cpp \
+  ../CoordinateSystem/CoordSysUtil.cpp \
+  ../CoordinateSystem/MentorDictionary.cpp \
+  ../CoordinateSystem/MentorUtil.cpp \
+  ../CoordinateSystem/CoordSysWktFailureCache.cpp
+  
 noinst_HEADERS = $(include_SOURCES) \
   AgfReaderWriter.h \
   AgfStream.h \
@@ -327,13 +337,11 @@ noinst_HEADERS = $(include_SOURCES) \
   ../CoordinateSystem/CoordSys.h \
   ../CoordinateSystem/CoordSysCatalog.h \
   ../CoordinateSystem/CoordSysCategory.h \
-  ../CoordinateSystem/CoordSysCategoryCollection.h \
   ../CoordinateSystem/CoordSysCategoryDictionary.h \
   ../CoordinateSystem/CoordSysCommon.h \
   ../CoordinateSystem/CoordSysDatum.h \
   ../CoordinateSystem/CoordSysDatumDictionary.h \
   ../CoordinateSystem/CoordSysDictionary.h \
-  ../CoordinateSystem/CoordSysDimension.h \
   ../CoordinateSystem/CoordSysEllipsoid.h \
   ../CoordinateSystem/CoordSysEllipsoidDictionary.h \
   ../CoordinateSystem/CoordSysEnum.h \
@@ -341,19 +349,24 @@ noinst_HEADERS = $(include_SOURCES) \
   ../CoordinateSystem/CoordSysEnumCoordinateSystemInCategory.h \
   ../CoordinateSystem/CoordSysEnumDatum.h \
   ../CoordinateSystem/CoordSysEnumEllipsoid.h \
-  ../CoordinateSystem/CoordSysEnvelope.h \
-  ../CoordinateSystem/CoordSysException.h \
-  ../CoordinateSystem/CoordSysFactory.h \
   ../CoordinateSystem/CoordSysFormatConverter.h \
   ../CoordinateSystem/CoordSysGeodeticTransformation.h \
-  ../CoordinateSystem/CoordSysIncludes.h \
-  ../CoordinateSystem/CoordSysInformation.h \
   ../CoordinateSystem/CoordSysMeasure.h \
   ../CoordinateSystem/CoordSysTransform.h \
-  ../CoordinateSystem/CoordSysTransformation.h \
   ../CoordinateSystem/CoordSysType.h \
   ../CoordinateSystem/CoordSysUtil.h \
-  ../CoordinateSystem/CriticalSection.h
+  ../CoordinateSystem/CriticalSection.h \
+  ../CoordinateSystem/CoordSysDictionaryUtility.h \
+  ../CoordinateSystem/CoordSysEnumInteger32.h \
+  ../CoordinateSystem/CoordSysMathComparator.h \
+  ../CoordinateSystem/CoordSysProjectionInformation.h \
+  ../CoordinateSystem/CoordSysUnitInformation.h \
+  ../CoordinateSystem/CsmapVersion.h \
+  ../CoordinateSystem/MentorDictionary.h \
+  ../CoordinateSystem/MentorUtil.h \
+  ../CoordinateSystem/namestruct.h \
+  ../CoordinateSystem/CoordSysWktFailureCache.h
+
 
 INCLUDES = \
   -I../Security \
@@ -364,23 +377,17 @@ INCLUDES = \
   -I../../Oem/ACE/ACE_wrappers \
   -I../../Oem/geos-2.2.0/source/headers \
   -I../../Oem/dbxml-2.3.10/xerces-c-src/src \
-  -I../../Oem/proj-4.5.0/src \
-  -I../../Oem/gdal-1.4.4/ogr \
-  -I../../Oem/gdal-1.4.4/port \
   -I$(top_builddir)/$(map_coordsys_include_path)
 
 libMgGeometry_la_LIBADD = \
   -lACE \
   -lMgFoundation \
   -lgdal \
-  -lproj \
   ../../Oem/geos-2.2.0/source/geom/.libs/libgeos.a
   
 
 libMgGeometry_la_LDFLAGS = -version-info 7:0:0 \
   -L../../Oem/ACE/ACE_wrappers/ace \
   -L../Foundation \
-  -L../../Oem/gdal-1.4.4 \
-  -L../../Oem/proj-4.5.0/src \
   -L$(top_builddir)/$(map_coordsys_dir_path)
   

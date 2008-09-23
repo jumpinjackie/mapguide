@@ -20,7 +20,6 @@
 
 namespace CSLibrary
 {
-
 ///////////////////////////////////////////////////////////////////////////////
 ///<summary>
 /// The CCoordinateSystemMeasure class provides operations for performing
@@ -41,104 +40,18 @@ public:
     ///<param name="CCoordinateSystem coordSys">
     /// The coordinate system to use when performing measurement.
     ///</param>
-    CCoordinateSystemMeasure(MgCoordinateSystem* coordSys);
-
+    CCoordinateSystemMeasure(MgCoordinateSystem* pCoordSys);
     virtual ~CCoordinateSystemMeasure();
 
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
-    /// Computes the distance between two coordinates.
-    ///</summary>
-    ///<param name="double x1">
-    /// The x value that defines the first coordinate.
-    ///</param>
-    ///<param name="double y1">
-    /// The y value that defines the first coordinate.
-    ///</param>
-    ///<param name="double x2">
-    /// The x value that defines the second coordinate.
-    ///</param>
-    ///<param name="double y2">
-    /// The y value that defines the second coordinate.
-    ///</param>
-    ///<returns>
-    /// The distance between coord1 and coord2 as a double in coordinate system units.
-    ///</returns>
-    virtual double GetDistance(double x1, double y1, double x2, double y2);
     virtual double GetDistance(MgCoordinate* coord1, MgCoordinate* coord2);
-
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
-    /// Computes the angle with respect to the north of a vector formed by two
-    /// coordinates.
-    ///</summary>
-    ///<param name="double x1">
-    /// The x value that defines the first coordinate.
-    ///</param>
-    ///<param name="double y1">
-    /// The y value that defines the first coordinate.
-    ///</param>
-    ///<param name="double x2">
-    /// The x value that defines the second coordinate.
-    ///</param>
-    ///<param name="double y2">
-    /// The y value that defines the second coordinate.
-    ///</param>
-    ///<returns>
-    /// The azimuth (Angle with respect to the North) of the vector formed by
-    /// coord1 and coord2.
-    ///</returns>
-    virtual double GetAzimuth(double x1, double y1, double x2, double y2);
+    virtual double GetDistance(double x1, double y1, double x2, double y2);
     virtual double GetAzimuth(MgCoordinate* coord1, MgCoordinate* coord2);
-
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
-    /// Computes a coordinate a given distance along a vector that is defined
-    /// by a starting coordinate and an azimuth (Angle with respect to the
-    /// North).
-    ///</summary>
-    ///<param name="double xStart">
-    /// The x value that represents the start of the vector.
-    ///</param>
-    ///<param name="double yStart">
-    /// The y value that represents the start of the vector.
-    ///</param>
-    ///<param name="double azimuth">
-    /// An azimuth (Angle with respect to the North) that defines the direction
-    /// of the vector.
-    ///</param>
-    ///<param name="double distance">
-    /// The distance along the vector of the desired coordinate in coordinate system units.
-    ///</param>
-    ///<param name="double& x">
-    /// The x value that represents the resultant coordinate.
-    ///</param>
-    ///<param name="double& y">
-    /// The y value that represents the resultant coordinate.
-    ///</param>
-    ///<returns>
-    /// Nothing.
-    ///</returns>
-    virtual void GetCoordinate(double xStart, double yStart, double azimuth, double distance, double&x, double& y);
-    virtual MgCoordinate* GetCoordinate(MgCoordinate* coord, double azimuth, double distance);
+    virtual double GetAzimuth(double x1, double y1, double x2, double y2);
+    virtual MgCoordinate* GetCoordinate(MgCoordinate* coord, double azimuth, double distance);  
     virtual MgCoordinate* GetCoordinate(double xStart, double yStart, double azimuth, double distance);
+    virtual MgEnvelope* GetEnvelope();  /// __get
 
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
-    /// Returns the envelope for the coordinate system being used.
-    ///</summary>
-    ///<returns>
-    /// A MgEnvelope representing the coordinate system envelope.
-    ///</returns>
-    virtual MgEnvelope* GetEnvelope();
-
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
-    /// Returns the coordinate system being used.
-    ///</summary>
-    ///<returns>
-    /// The coordinate system being used.
-    ///</returns>
+INTERNAL_API:
     virtual MgCoordinateSystem* GetCoordSys();
 
 protected:
@@ -153,7 +66,7 @@ protected:
 private:
     CCoordinateSystemMeasure();
 
-    Ptr<MgCoordinateSystem> m_coordSys;
+    Ptr<MgCoordinateSystem> m_pCoordSys;
 };
 
 } // End of namespace

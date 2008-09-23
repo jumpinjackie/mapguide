@@ -49,9 +49,14 @@ protected:
 
 protected:
     //Data members
-    STRING m_sPath;
+    STRING m_sFileName;
     CSystemNameDescriptionMap *m_pmapSystemNameDescription;
+    INT32 m_lMagic;
     Ptr<MgCoordinateSystemCatalog> m_pCatalog;
+
+    //Private member functions
+    cs_Dtdef_ * dtdef(const char *kpName) const;
+    CCoordinateSystemEnumDatum* GetEnumImp();
 
 private:
     //Unimplemented stuff

@@ -20,6 +20,7 @@
 
 #include "CoordSysEnumCategory.h"           //for CCoordinateSystemEnumCategory
 #include "CoordSysUtil.h"                   //for Convert_Ascii_To_Wide
+#include "MentorUtil.h"                        //for IsLegalMentorName()
 
 using namespace CSLibrary;
 
@@ -103,7 +104,7 @@ bool CCoordinateSystemEnumCategory::IsFilteredOut(const char *kpName)
 
     //Get a def from the set for the filter to work with
     wchar_t* pStr = Convert_Ascii_To_Wide(kpName);
-    if (NULL == pStr)
+    if (NULL == pStr) 
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.IsFilteredOut", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -130,7 +131,7 @@ bool CCoordinateSystemEnumCategory::IsFilteredOut(const char *kpName)
 //object before anything else can be done with it.
 //
 void CCoordinateSystemEnumCategory::Initialize(
-    MgCoordinateSystemCategoryDictionary* pDict,
+    MgCoordinateSystemCategoryDictionary* pDict, 
     CCategoryNameList *kpCategoryNameList)
 
 {
@@ -138,7 +139,7 @@ void CCoordinateSystemEnumCategory::Initialize(
 
     m_pCategoryNameList = kpCategoryNameList;
     m_iter = m_pCategoryNameList->begin();
-    m_pDict = SAFE_ADDREF(pDict);
+    m_pDict=pDict;
 }
 
 //----------------------------------------------------------
@@ -166,9 +167,9 @@ MgDisposableCollection* CCoordinateSystemEnumCategory::Next(UINT32 ulCount)
 
     wchar_t* pStr;
 
-    for (; m_iter != m_pCategoryNameList->end(); m_iter++)
+    for (; m_iter != m_pCategoryNameList->end();     m_iter++)
     {
-        if (pOutput->GetCount() == ulCount)
+        if (pOutput->GetCount() == ulCount) 
         {
             //success
             return pOutput.Detach();
@@ -177,7 +178,7 @@ MgDisposableCollection* CCoordinateSystemEnumCategory::Next(UINT32 ulCount)
         //get the category definition for the next name in the list
         const char *kpName = (*(m_iter)).name;
         pStr = Convert_Ascii_To_Wide(kpName);
-        if (NULL == pStr)
+        if (NULL == pStr) 
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.Next", __LINE__, __WFILE__, NULL, L"", NULL);
         }
@@ -185,7 +186,7 @@ MgDisposableCollection* CCoordinateSystemEnumCategory::Next(UINT32 ulCount)
         delete[] pStr;
         Ptr<MgGuardDisposable> pDef = m_pDict->Get(str);
         assert(pDef);
-        if (!pDef)
+        if (!pDef) 
         {
             MgStringCollection arguments;
             arguments.Add(str);
@@ -222,14 +223,14 @@ MgStringCollection* CCoordinateSystemEnumCategory::NextName(UINT32 ulCount)
 
     for (; m_iter != m_pCategoryNameList->end(); m_iter++)
     {
-        if (pOutput->GetCount() == ulCount)
+        if (pOutput->GetCount() == ulCount) 
         {
             //success
             return pOutput.Detach();
         }
 
         const char *kpName = (*m_iter).name;
-        if (IsFilteredOut(kpName))
+        if (IsFilteredOut(kpName)) 
         {
             continue;
         }
@@ -254,7 +255,7 @@ MgStringCollection* CCoordinateSystemEnumCategory::NextDescription(UINT32 ulCoun
 }
 
 //----------------------------------------------------------
-//Skips the next ulSkipCount names.
+//Skips the next ulSkipCount names.  
 //Throws an exception if ulSkipCount items were not skipped
 //
 void CCoordinateSystemEnumCategory::Skip(UINT32 ulSkipCount)
@@ -264,13 +265,13 @@ void CCoordinateSystemEnumCategory::Skip(UINT32 ulSkipCount)
     UINT32 ulSkipped;
     for (ulSkipped=0; m_iter != m_pCategoryNameList->end(); m_iter++)
     {
-        if (ulSkipped == ulSkipCount)
+        if (ulSkipped == ulSkipCount) 
         {
             //success
             return;
         }
         const char *kpName = (*m_iter).name;
-        if (IsFilteredOut(kpName))
+        if (IsFilteredOut(kpName)) 
         {
             continue;
         }
@@ -307,13 +308,13 @@ MgCoordinateSystemEnum* CCoordinateSystemEnumCategory::CreateClone()
     //Make a new object
     pNew = new CCoordinateSystemEnumCategory;
 
-    if (NULL == pNew.p)
+    if (NULL == pNew.p) 
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.CreateClone", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     //Copy it from this one
-    pNew->m_pDict = SAFE_ADDREF(m_pDict.p);
+    pNew->m_pDict = m_pDict;
     pNew->m_pCategoryNameList = m_pCategoryNameList;
     pNew->m_iter = m_iter;
     for (size_t i=0; i<m_vectFilter.size(); i++)
@@ -324,7 +325,7 @@ MgCoordinateSystemEnum* CCoordinateSystemEnumCategory::CreateClone()
 
     //And we're done!  Return success.
     MG_CATCH_AND_THROW(L"MgCoordinateSystemEnum.CreateClone")
-
+    
     return pNew.Detach();
 }
 
