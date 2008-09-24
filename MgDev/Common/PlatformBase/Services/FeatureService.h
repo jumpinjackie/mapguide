@@ -395,7 +395,7 @@ PUBLISHED_API:
     /// schema and classes.
     ///
     virtual MgFeatureSchemaCollection* DescribeSchema(MgResourceIdentifier* resource,
-        CREFSTRING schemaName, MgStringCollection* classNames);
+        CREFSTRING schemaName, MgStringCollection* classNames) = 0;
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -489,7 +489,7 @@ PUBLISHED_API:
     /// \exception MgFdoException
     ///
     virtual STRING DescribeSchemaAsXml(MgResourceIdentifier* resource,
-        CREFSTRING schemaName, MgStringCollection* classNames);
+        CREFSTRING schemaName, MgStringCollection* classNames) = 0;
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
