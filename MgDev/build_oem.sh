@@ -350,60 +350,6 @@ clean_imake()
 }
 
 #**********************************************************
-# Build GDAL 1.4.4
-# Notes: none
-#**********************************************************
-
-init_gdal()
-{
-    LIB_NAME="GDAL 1.4.4"
-}
-
-build_gdal()
-{
-    pushd gdal-1.4.4
-    sh ./configure --enable-optimized --prefix="${INSTALLDIR}"
-    make
-    check_build
-    popd
-}
-
-clean_gdal()
-{
-    pushd gdal-1.4.4
-    make clean
-    check_clean
-    popd
-}
-
-#**********************************************************
-# Build PROJ 4.5.0
-# Notes: none
-#**********************************************************
-
-init_proj()
-{
-    LIB_NAME="PROJ 4.5.0"
-}
-
-build_proj()
-{
-    pushd proj-4.5.0
-    sh ./configure --enable-optimized --prefix="${INSTALLDIR}"
-    make
-    check_build
-    popd
-}
-
-clean_proj()
-{
-    pushd proj-4.5.0
-    make clean
-    check_clean
-    popd
-}
-
-#**********************************************************
 # Build ZLIB 1.2.3
 # Notes: none
 #**********************************************************
@@ -593,7 +539,7 @@ clean_json()
 #**********************************************************
 
 pushd Oem
-for lib in ace dwfcore dwftk dwfemap geos php swigex bdbxml cppunit imake gdal proj zlib libpng jpeg freetype gd agg json;
+for lib in ace dwfcore dwftk dwfemap geos php swigex bdbxml cppunit imake zlib libpng jpeg freetype gd agg json;
 do
     echo "$lib: Initialization..........................."
     init_"$lib"
