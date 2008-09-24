@@ -49,28 +49,3 @@ void MgFeatureService::Dispose()
     delete this;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Gets the definitions of one or more schemas contained in the
-/// feature source for particular classes. If the specified schema name or
-/// a class name does not exist, this method will throw an exception.
-///
-MgFeatureSchemaCollection* MgFeatureService::DescribeSchema(MgResourceIdentifier* resource,
-    CREFSTRING schemaName, MgStringCollection* classNames)
-{
-    throw new MgNotImplementedException(L"MgFeatureService.DescribeSchema",
-        __LINE__, __WFILE__, NULL, L"", NULL);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Gets the definitions in XML format of one or more schemas contained in the
-/// feature source for particular classes. If the specified schema name or
-/// a class name does not exist, this method will throw an exception.
-///
-STRING MgFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource,
-    CREFSTRING schemaName, MgStringCollection* classNames)
-{
-    throw new MgNotImplementedException(L"MgFeatureService.DescribeSchemaAsXml",
-        __LINE__, __WFILE__, NULL, L"", NULL);
-}
