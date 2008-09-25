@@ -151,7 +151,6 @@ include_SOURCES = \
   ../CoordinateSystem/CoordSysEnumCoordinateSystemInCategory.cpp \
   ../CoordinateSystem/CoordSysEnumDatum.cpp \
   ../CoordinateSystem/CoordSysEnumEllipsoid.cpp \
-  ../CoordinateSystem/CoordSysEnvelope.cpp \
   ../CoordinateSystem/CoordSysFormatConverter.cpp \
   ../CoordinateSystem/CoordSysGeodeticTransformation.cpp \
   ../CoordinateSystem/CoordSysMeasure.cpp \
@@ -389,5 +388,6 @@ libMgGeometry_la_LIBADD = \
 libMgGeometry_la_LDFLAGS = -version-info 7:0:0 \
   -L../../Oem/ACE/ACE_wrappers/ace \
   -L../Foundation \
+  -L../../Oem/CsMap \
   -L../../Common/CoordinateSystem
   
