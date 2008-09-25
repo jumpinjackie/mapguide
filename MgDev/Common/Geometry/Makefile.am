@@ -382,8 +382,8 @@ INCLUDES = \
 libMgGeometry_la_LIBADD = \
   -lACE \
   -lMgFoundation \
+  ../../Oem/CsMap/.libs/libCsmap.a \
   ../../Oem/geos-2.2.0/source/geom/.libs/libgeos.a
-  
 
 libMgGeometry_la_LDFLAGS = -version-info 7:0:0 \
   -L../../Oem/ACE/ACE_wrappers/ace \
