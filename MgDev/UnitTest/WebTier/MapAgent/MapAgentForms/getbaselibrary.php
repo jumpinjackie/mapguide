@@ -12,11 +12,8 @@
     {
         echo "<b>Coordinate System API: GetBaseLibrary</b><br><br>";
 
-        // We have to use a factory because there is no direct access to the MgCoordinateSystem constructor
-        $ll84 = "GEOGCS [ \"Longitude / Latitude (WGS 84)\", DATUM [\"WGS 84\", SPHEROID [\"WGS 84\", 6378137.000000, 298.257224]], PRIMEM [ \"Greenwich\", 0.000000 ], UNIT [\"Decimal Degree\", 0.01745329251994330]]";
         $factory = new MgCoordinateSystemFactory();
-        $mgcoordinatesystem = $factory->Create($ll84);
-        $library = $mgcoordinatesystem->GetBaseLibrary();
+        $library = $factory->GetBaseLibrary();
         $status = "Pass";
     }
     catch ( MgException $e )
