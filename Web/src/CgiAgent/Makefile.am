@@ -42,7 +42,7 @@ mapagent_LDADD = -lACE \
 mapagent_LDFLAGS = -version-info 7:0:0 \
             -L../../../Oem/ACE/ACE_wrappers/ace \
             -L../../../Oem/dbxml-2.3.10/install/lib \
-            -L$(top_builddir)/$(map_coordsys_dir_path) \
+            -L../../../Common/CoordinateSystem \
             -L../../../Common/MdfModel \
             -L../../../Common/MdfParser \
             -L../../../Common/Foundation \

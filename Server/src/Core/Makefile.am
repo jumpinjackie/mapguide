@@ -125,7 +125,7 @@ mgserver_LDFLAGS = -version-info 7:0:0 \
   -R$(map_srcdir)/Oem/DWFTK7.1/develop/global/src/dwf \
   -R$(map_srcdir)/Oem/DWFTK7.1/develop/global/src/dwfemap \
   -R$(map_srcdir)/Oem/dbxml-2.3.10/install/lib \
-  -R$(map_srcdir)/$(map_coordsys_dir_path)/.libs \
+  -R$(map_srcdir)/Common/CoordinateSystem/.libs \
   -R$(map_srcdir)/Common/MdfModel/.libs \
   -R$(map_srcdir)/Common/MdfParser/.libs \
   -R$(map_srcdir)/Common/Stylization/.libs \
@@ -154,7 +154,7 @@ mgserver_LDFLAGS = -version-info 7:0:0 \
   -L../../../Oem/DWFTK7.1/develop/global/src/dwf \
   -L../../../Oem/DWFTK7.1/develop/global/src/dwfemap \
   -L../../../Oem/dbxml-2.3.10/install/lib \
-  -L$(top_builddir)/$(map_coordsys_dir_path) \
+  -L$(top_builddir)/Common/CoordinateSystem \
   -L../../../Common/MdfModel \
   -L../../../Common/MdfParser \
   -L../../../Common/Stylization \
