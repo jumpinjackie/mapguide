@@ -16,7 +16,7 @@ INCLUDES = \
   -I$(map_fdo_include) \
   -I$(map_fdo_include)/ExpressionEngine \
   -I../../../../Oem/dbxml-2.3.10/xerces-c-src/src \
-  -I$(top_builddir)/$(map_coordsys_include_path) \
+  -I../../../../Common/CoordinateSystem \
   -I../../../../Common/Foundation \
   -I../../../../Common/Geometry \
   -I../../../../Common/PlatformBase \
