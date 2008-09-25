@@ -377,7 +377,8 @@ INCLUDES = \
   -I../../Oem/ACE/ACE_wrappers \
   -I../../Oem/geos-2.2.0/source/headers \
   -I../../Oem/dbxml-2.3.10/xerces-c-src/src \
-  -I../../Oem/CsMap/Include
+  -I../../Oem/CsMap/Include \
+  -I../../Common/CoordinateSystem
 
 libMgGeometry_la_LIBADD = \
   -lACE \
@@ -388,5 +389,5 @@ libMgGeometry_la_LIBADD = \
 libMgGeometry_la_LDFLAGS = -version-info 7:0:0 \
   -L../../Oem/ACE/ACE_wrappers/ace \
   -L../Foundation \
-  -L../../Oem/CsMap
+  -L../../Common/CoordinateSystem
   
