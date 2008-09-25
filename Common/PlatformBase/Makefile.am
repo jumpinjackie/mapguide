@@ -234,7 +234,7 @@ libMgPlatformBase_la_LDFLAGS = -version-info 7:0:0 \
   -L../../Oem/ACE/ACE_wrappers/ace \
   -L../Foundation \
   -L../Geometry \
-  -L$(top_builddir)/$(map_coordsys_dir_path) \
+  -L../../Common/CoordinateSystem \
   -L../MdfParser \
   -L../MdfModel
   
