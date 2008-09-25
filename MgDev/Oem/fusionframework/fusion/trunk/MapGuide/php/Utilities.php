@@ -688,8 +688,11 @@ function GetPropertyValueFromFeatReader($featureReader, $propertyType, $property
              $val = $featureReader->GetByte($propertyName);
              break;
            case MgPropertyType::DateTime :
-             $val = $featureReader->GetDateTime($propertyName);
-             //$valStr = printDateTime($val);
+             $dateTime = $featureReader->GetDateTime($propertyName);
+             if ($dateTime != NULL)
+             {
+                 $val = $dateTime->ToString();
+             }
              break;
            case MgPropertyType::Single :
              $val = $featureReader->GetSingle($propertyName);
