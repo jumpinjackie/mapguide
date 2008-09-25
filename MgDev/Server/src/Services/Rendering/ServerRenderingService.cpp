@@ -1287,7 +1287,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                                 options->SetSpatialFilter(layer->GetFeatureGeometryName(), intersectPolygon, /*MgFeatureSpatialOperations*/selectionVariant);
                        
                                 Ptr<MgFeatureReader> rdr0 = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
-                                RSMgFeatureReader rsrdr0(rdr0, m_svcFeature, featResId, NULL, vl->GetGeometry());
+                                RSMgFeatureReader rsrdr0(rdr0, m_svcFeature, featResId, options, vl->GetGeometry());
                                 selRenderer->PointTest(true);
                                 ds.StylizeVectorLayer(vl, selRenderer, &rsrdr0, NULL, scale, StylizeThatMany, selRenderer);
                                 selRenderer->PointTest(false);
