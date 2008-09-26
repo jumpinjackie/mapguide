@@ -25,13 +25,15 @@ AC_CHECK_FUNCS(gethostbyname socket htons connect shutdown,,AC_MSG_ERROR([requir
 dnl *******************************************************
 dnl CoordinateSystem Configuration
 dnl *******************************************************
-map_using_proj4="yes"
+map_using_proj4="no"
 map_unittesting_dir="UnitTesting"
-AC_MSG_NOTICE([Using PROJ4 CoordinateSystem])
+AC_MSG_NOTICE([Using Mentor CoordinateSystem])
 AC_SUBST(map_coordsys_dir,"CoordinateSystem")
 AC_SUBST(map_coordsys_dir_path,"Common/CoordinateSystem")
 AC_SUBST(map_coordsys_include_path,"Common/CoordinateSystem")
 AC_SUBST(map_unittesting_dir)
+map_opt_oem_subdirs="CsMap"
+map_opt_oem_distsubdirs=""
 
 dnl *******************************************************
 dnl PHP 5.2.5 Configuration
@@ -191,7 +193,8 @@ AC_SUBST(map_srcdir)
 
 AC_CONFIG_FILES(Makefile)
 # MAP_CONFIG_FILES_OEM
-AC_CONFIG_FILES([Oem/Makefile])
+AC_CONFIG_FILES([Oem/Makefile \
+        Oem/CsMap/Makefile])
 
 # MAP_CONFIG_FILES_COMMON
 AC_CONFIG_FILES([Common/Makefile \
