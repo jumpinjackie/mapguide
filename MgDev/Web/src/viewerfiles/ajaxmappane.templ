@@ -244,139 +244,142 @@ function Property(name, value)
 
 <script language="javascript">
 
-    var clientAgent = 'Ajax Viewer';
-    var NONE=0, RESIZING=1, RESIZINGLEGEND=2, DRAGGING=3, PANNING=4, DRAGGINGCTRL=5;
-    var RECT=1, CIRCLE=2, POLY=3, SLIDER=4, SCALE=6;
-    var TILECX = %s, TILECY = %s;
-    var GRIDCX = 15; GRIDCY = 15, DPI = 96;
-    var moveType = NONE, dragElt = 0, digitizer;
-    var intId;
-    var tbMenu, ctxMenu, infoMenu;
-    var minInfoWidth;
-    var webAgent = '%s';
-    var mapName = '%s';
-    var mapDefinitionName = '%s';
-    var infoWidth = %s;
-    var isLegend = %s, legendExpanded = isLegend;
-    var isProperties = %s, propExpanded = isProperties;
-    var sessionId = '%s';
-    var orgExtX1 = %s, orgExtY2 = %s, orgExtX2 = %s, orgExtY1 = %s;
-    var panX1, extX1 = orgExtX1, panY1, extY1 = orgExtY1, panX2, extX2 = orgExtX2, panY2, extY2 = orgExtY2;
-    var cxu, pancxu = 0, cyu, pancyu = 0;
-    var metersPerUnit = %s;
-    var unitsType = '%s';
-    var bgColor = '%s';
-    var hlTgt = %s, hlTgtName = '%s';
-    var legendCtrl = null;
-    var propertyCtrl = null;
-    var curScale = 0, sci = 0;
-    var metersPerPixel = 0.0254 / DPI;
-    var tool = 0;
-    var rcx1, rcy1, rcx2, rcy2;
-    var thisFrame = this;
-    var shape;
-    var mapCell, mapDevW, mapDevH, mapPosX = 200;
-    var mapDataRequest;
-    var selection = new Selection();
-    var properties = new Array();
-    var ttip = "";
-    var xmlSelection = null;
-    var appending = false;
-    var thisFrame = this;
-    var anchorX, anchorY, rlAnchor, inctrlX, inctrlY, lastposx, lastposy;
-    var views = new Array();
-    var curView = -1;
-    var polySel = new PolygonSelection();
-    var resizeTimer = 0;
-    var legendHeight = 250, initLegendHeight;
-    var resizeTimeout = 500;
-    var us = true;
-    var visSelLayers = null, visLayers = null;
-    var sliderx=-100, slidery=44, sscalex=-100, sscaley=0;
-    var initTimer;
-    var wheelZoomTimer = 0;
-    var wheelZoomCenter;
-    var wheelZoomCursor;
-    var wheelZoomDelta = null;
-    var wheelZoomScale = 0;
-    var mapLoading = false;
-    var baseGroups = null;
-    var visBaseGroups = new Hashtable();
-    var gridOffsx, gridOffsy;
-    var tilex, tiley, ltilex, ltiley, iToDevx, iToDev, tcxU, tcyU;
-    var fVisTilex, fVisTiley, lVisTilex, lVisTiley, wl, wr, wt, wb;
-    var leftmost, topmost, bottommost, rightmost;
-    var visTileCols, visTileRows;
-    var pixposx, pisposy;
-    var hasTiles = false;
-    var tileRows = null;
-    var imgId = 0, mapId = 0, lastMapRcv = 0;
-    var scales = new Array();
-    var requestTiles = false;
-    var setSelScript = '%s';
-    var hlData;
-    var moveTimer = 0, mapInit = false;
-    var ovoffsx = 0, ovoffsy = 0;
-    var finscale = true;
-    var slidercourse = 78;
-    var slidertop = 44;
-    var showSlider=%s;
-    var selTtipText = safari ? "__#ENDSELSAFARI#__" : "__#ENDSEL#__";
-    var curimg = "mapImage1";
-    var ovimgloaded = false;
-    var minScale = 0.001, maxScale = 1000000000000;
-    var digihandler = null;
-    var digitizing = false;
-    var cancelTgt;
-    var locale = '%s';
-    var openHlinkText = safari ? "__#OPENHYPERLINKSAFARI#__" : "__#OPENHYPERLINK#__";
-    %s
+var clientAgent = 'Ajax Viewer';
+var NONE=0, RESIZING=1, RESIZINGLEGEND=2, DRAGGING=3, PANNING=4, DRAGGINGCTRL=5;
+var RECT=1, CIRCLE=2, POLY=3, SLIDER=4, SCALE=6;
+var TILECX = %s, TILECY = %s;
+var GRIDCX = 15; GRIDCY = 15, DPI = 96;
+var moveType = NONE, dragElt = 0, digitizer;
+var intId;
+var tbMenu, ctxMenu, infoMenu;
+var minInfoWidth;
+var webAgent = '%s';
+var mapName = '%s';
+var mapDefinitionName = '%s';
+var infoWidth = %s;
+var isLegend = %s, legendExpanded = isLegend;
+var isProperties = %s, propExpanded = isProperties;
+var sessionId = '%s';
+var orgExtX1 = %s, orgExtY2 = %s, orgExtX2 = %s, orgExtY1 = %s;
+var panX1, extX1 = orgExtX1, panY1, extY1 = orgExtY1, panX2, extX2 = orgExtX2, panY2, extY2 = orgExtY2;
+var cxu, pancxu = 0, cyu, pancyu = 0;
+var metersPerUnit = %s;
+var unitsType = '%s';
+var bgColor = '%s';
+var hlTgt = %s, hlTgtName = '%s';
+var legendCtrl = null;
+var propertyCtrl = null;
+var curScale = 0, sci = 0;
+var metersPerPixel = 0.0254 / DPI;
+var tool = 0;
+var rcx1, rcy1, rcx2, rcy2;
+var thisFrame = this;
+var shape;
+var mapCell, mapDevW, mapDevH, mapPosX = 200;
+var mapDataRequest;
+var selection = new Selection();
+var properties = new Array();
+var ttip = "";
+var xmlSelection = null;
+var appending = false;
+var thisFrame = this;
+var anchorX, anchorY, rlAnchor, inctrlX, inctrlY, lastposx, lastposy;
+var views = new Array();
+var curView = -1;
+var polySel = new PolygonSelection();
+var resizeTimer = 0;
+var legendHeight = 250, initLegendHeight;
+var resizeTimeout = 500;
+var us = true;
+var visSelLayers = null, visLayers = null;
+var sliderx=-100, slidery=44, sscalex=-100, sscaley=0;
+var initTimer;
+var wheelZoomTimer = 0;
+var wheelZoomCenter;
+var wheelZoomCursor;
+var wheelZoomDelta = null;
+var wheelZoomScale = 0;
+var mapLoading = false;
+var baseGroups = null;
+var visBaseGroups = new Hashtable();
+var gridOffsx, gridOffsy;
+var tilex, tiley, ltilex, ltiley, iToDevx, iToDev, tcxU, tcyU;
+var fVisTilex, fVisTiley, lVisTilex, lVisTiley, wl, wr, wt, wb;
+var leftmost, topmost, bottommost, rightmost;
+var visTileCols, visTileRows;
+var pixposx, pisposy;
+var hasTiles = false;
+var tileRows = null;
+var imgId = 0, mapId = 0, selMapId = 0, lastMapRcv = 0;
+var scales = new Array();
+var requestTiles = false;
+var setSelScript = '%s';
+var hlData;
+var moveTimer = 0, mapInit = false;
+var ovoffsx = 0, ovoffsy = 0;
+var finscale = true;
+var slidercourse = 78;
+var slidertop = 44;
+var showSlider=%s;
+var selTtipText = safari ? "__#ENDSELSAFARI#__" : "__#ENDSEL#__";
+var curimg = "mapImage1";
+var curSelImg = "selImage1";
+var ovimgloaded = false;
+var minScale = 0.001, maxScale = 1000000000000;
+var digihandler = null;
+var digitizing = false;
+var cancelTgt;
+var locale = '%s';
+var openHlinkText = safari ? "__#OPENHYPERLINKSAFARI#__" : "__#OPENHYPERLINK#__";
+var selectionColor = '0x0000FFFF'; // Blue
+%s
 
 
-    // public functions -----------------------------------------------
-    //
-    function ZoomToView(x,y,scale,refresh)
-    {
+// public functions -----------------------------------------------
+//
+function ZoomToView(x,y,scale,refresh)
+{
     GotoView(x, y, scale, true, true);
-    }
+}
 
-    function Refresh()
-    {
+function Refresh()
+{
     GetLegendCtrl().Refresh();
+    BuildTilePlanes(extX1, extY1, extX2, extY2);
     GotoView(extX1 + (extX2 - extX1) / 2, extY2 + (extY1 - extY2) / 2, curScale, false, false);
-    }
+}
 
-    function GetMapWidth()
-    {
+function GetMapWidth()
+{
     return extX2 - extX1;
-    }
+}
 
-    function GetMapHeight()
-    {
+function GetMapHeight()
+{
     return extY1 - extY2;
-    }
+}
 
-    function GetSessionId()
-    {
+function GetSessionId()
+{
     return sessionId;
-    }
+}
 
-    function GetMapName()
-    {
+function GetMapName()
+{
     return mapName;
-    }
+}
 
-    function ScreenToMapUnits(x, y)
-    {
+function ScreenToMapUnits(x, y)
+{
     return ScreenToMapUnits2(x, y, false);
-    }
+}
 
-    function ScreenToMapUnits2(x, y, bAllowOutsideWindow)
-    {
+function ScreenToMapUnits2(x, y, bAllowOutsideWindow)
+{
     if(!bAllowOutsideWindow)
     {
-    if(x > mapDevW - 1) x = mapDevW - 1;
-    else if(x < 0) x = 0;
+        if(x > mapDevW - 1) x = mapDevW - 1;
+        else if(x < 0) x = 0;
 
         if(y > mapDevH - 1) y = mapDevH - 1;
         else if(y < 0) y = 0;
@@ -1292,7 +1295,7 @@ function DragSlider(y)
         h = parseInt(w * (mapDevH / mapDevW));
         xi = parseInt(mapDevW/2 - w / 2);
         yi = parseInt(mapDevH/2 - h / 2);
-        img = document.getElementById(msie? "img1div": curimg);
+        img = document.getElementById(msie6minus? "img1div": curimg);
         if(img)
         {
             imgs = img.style;
@@ -1598,6 +1601,18 @@ function OnMapRequested(reqResp, scale, centerX, centerY)
             }
 
             RequestMapImage(reqId);
+            if(selection.count > 0)
+            {
+                RequestSelectionImage(++selMapId);
+            }
+            else
+            {
+                selImg = document.getElementById(msie6minus ? "selImg1div": curSelImg);
+                if(selImg)
+                {
+                    selImg.style.visibility = "hidden";
+                }
+            }
         }
     }
     else
@@ -1668,9 +1683,20 @@ function RequestMap(scale, centerX, centerY, showGroups, hideGroups, showLayers,
 
 function RequestMapImage(reqId)
 {
-    url = webAgent + "?OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=PNG&VERSION=1.0.0&SESSION=" + sessionId + "&MAPNAME=" + encodeComponent(mapName) + "&SEQ=" + Math.random() + "&CLIENTAGENT=" + encodeComponent(clientAgent);
+    url = webAgent + "?OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=PNG&VERSION=2.0.0&SESSION=" + sessionId + "&MAPNAME=" + encodeComponent(mapName) + "&SEQ=" + Math.random() + "&CLIENTAGENT=" + encodeComponent(clientAgent) + "&BEHAVIOR=2";
     document.getElementById("overlay").innerHTML =
             '<img class="mapImage" name="' + reqId + '" id="mapImage" src="' + url + '" width=' + mapDevW + ' height=' + mapDevH + ' border=0 vspace=0 hspace=0 style="visibility: hidden; width: ' + mapDevW + 'px; height: ' + mapDevH + 'px;" onload="return OnMapOverlayImageLoaded(event)">';
+    if (opera) 
+        document.getElementById("mapImage").src = document.getElementById("mapImage").src;
+}
+
+function RequestSelectionImage(reqId)
+{
+    url = webAgent + "?OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=PNG&VERSION=2.0.0&SESSION=" + sessionId + "&MAPNAME=" + encodeComponent(mapName) + "&SEQ=" + Math.random() + "&CLIENTAGENT=" + encodeComponent(clientAgent) + "&BEHAVIOR=5&SELECTIONCOLOR=" + selectionColor;
+    document.getElementById('selOverlay').innerHTML =
+        '<img class="mapImage" name="' + reqId + '" id="selectionImage" src="' + url + '" width=' + mapDevW + ' height=' + mapDevH + ' border=0 vspace=0 hspace=0 style="visibility: hidden; width: ' + mapDevW + 'px; height: ' + mapDevH + 'px;" onload="return OnSelectionOverlayImageLoaded(event)">';
+    if (opera) 
+        document.getElementById("selectionImage").src = document.getElementById("selectionImage").src;
 }
 
 function encodeComponent(str)
@@ -1701,8 +1727,10 @@ function OnMapOverlayImageLoaded(e)
     lastMapRcv = mapId;
     overlayimg.onload = null;
     ovoffsx = 0; ovoffsy = 0;
-    if(msie)
+    if(msie6minus)
+    {
         imgdiv.innerHTML = "<div id=\"img1div\" style=\"visibility: visible; position: absolute; top: 0px; left: 0px; width: " + mapDevW + "px; height: " + mapDevH + "px; filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + encodeURI(overlayimg.src) + "', sizingMethod='scale')\"></div>";
+    }
     else
     {
         if(safari)
@@ -1721,11 +1749,60 @@ function OnMapOverlayImageLoaded(e)
             img.style.top = 0;
         }
     }
-    imgdiv.style.display = "block";
     if(safari)
         curimg = (curimg == "mapImage1"? "mapImage2": "mapImage1");
 
+    imgdiv.style.display = "block";
+    
     OnMapLoaded();
+
+    return false;
+}
+
+function OnSelectionOverlayImageLoaded(e)
+{
+    if(msie)
+        e.cancelBubble = true;
+    else
+        e.stopPropagation();
+    selectionOverlayImg = document.getElementById("selectionImage");
+    if(safari)
+        altSelImg = document.getElementById(curSelImg == "selImage1"? "selImage2": "selImage1");
+    else
+        selImg = document.getElementById(curSelImg);
+
+    selImgDiv = document.getElementById("selImg1");
+    
+    if(parseInt(selectionOverlayImg.name) != selMapId || moveType == PANNING || wheelZoomTimer != 0)
+        return;
+
+    selectionOverlayImg.onload = null;
+    if(msie6minus)
+    {
+        selImgDiv.innerHTML = "<div id=\"selImg1div\" style=\"visibility: visible; position: absolute; top: 0px; left: 0px; width: " + mapDevW + "px; height: " + mapDevH + "px; filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + encodeURI(selectionOverlayImg.src) + "', sizingMethod='scale')\"></div>";
+    }
+    else
+    {
+        if(safari)
+        {
+            altSelImg.src = selectionOverlayImg.src;
+            altSelImg.onload = OnAlternateSelectionImageLoaded;
+        }
+        else
+        {
+            selImg.src = selectionOverlayImg.src;
+            selImg.style.position = "absolute";
+            selImg.style.width = mapDevW;
+            selImg.style.height = mapDevH;
+            selImg.style.left = 0;
+            selImg.style.top = 0;
+            selImg.style.visibility = "visible";
+        }
+    }
+    if(safari)
+        curSelImg = (curSelImg == "selImage1"? "selImage2": "selImage1");
+        
+    selImgDiv.style.display = "block";
 
     return false;
 }
@@ -1744,6 +1821,23 @@ function OnAlternateImageLoaded()
     altimg.style.visibility = "hidden";
     altimg.style.left = 0;
     altimg.style.top = 0;
+    return false;
+}
+
+function OnAlternateSelectionImageLoaded()
+{
+    altSelImg = document.getElementById(curSelImg == "selImage1"? "selImage2": "selImage1");
+    selImg = document.getElementById(curSelImg);
+
+    selImg.style.position = "absolute";
+    selImg.style.visibility = "visible";
+    selImg.style.width = mapDevW;
+    selImg.style.height = mapDevH;
+    selImg.style.left = 0;
+    selImg.style.top = 0;
+    altSelImg.style.visibility = "hidden";
+    altSelImg.style.left = 0;
+    altSelImg.style.top = 0;
     return false;
 }
 
@@ -1915,7 +2009,7 @@ function EndToolFeedback(x, y)
 
 function StartPanning(e)
 {
-    img = document.getElementById(msie? "img1div": curimg)
+    img = document.getElementById(msie6minus ? "img1div": curimg)
     if(!ovimgloaded || img == null)
         return;
 
@@ -1935,11 +2029,22 @@ function StartPanning(e)
 
 function MoveOverlayImage(x, y)
 {
-    img = document.getElementById(msie? "img1div": curimg)
+    img = document.getElementById(msie6minus? "img1div": curimg)
     if(img != null)
     {
         img.style.left = x + ovoffsx + "px";
         img.style.top = y + ovoffsy + "px";
+    }
+    MoveSelectionOverlayImage(x, y);
+}
+
+function MoveSelectionOverlayImage(x, y)
+{
+    selImg = document.getElementById(msie6minus? "selImg1div": curSelImg)
+    if(selImg != null)
+    {
+        selImg.style.left = x + ovoffsx + "px";
+        selImg.style.top = y + ovoffsy + "px";
     }
 }
 
@@ -2553,17 +2658,20 @@ function MakeWktPolygon(x1,y1,x2,y2)
 function QueryFeatureInfo(geom, append, maxfeatures, which)
 {
     var reqParams = "OPERATION=QUERYMAPFEATURES&VERSION=1.0.0&PERSIST=1&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&SEQ=" + Math.random();
-    reqParams += "&LAYERNAMES=" + encodeURIComponent(GetVisSelLayers()) + "&GEOMETRY=" + geom + "&SELECTIONVARIANT=INTERSECTS";
+    reqParams += "&LAYERNAMES=" + encodeURIComponent(GetVisSelLayers()) + "&GEOMETRY=" + geom + "&SELECTIONVARIANT=INTERSECTS" + "&CLIENTAGENT=" + encodeURIComponent(clientAgent);
     if(maxfeatures != 0)
+    {
         reqParams += "&MAXFEATURES=" + maxfeatures;
-
-
+    }
     var selRequest = CreateRequestHandler();
     selRequest.open("POST", webAgent, false);
     selRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     selRequest.send(reqParams);
+
     if(selRequest.responseXML)
+    {
         ProcessFeatureInfo(selRequest.responseXML.documentElement, append, which);
+    }
     else
         RequestFailed("No response");
 }
@@ -2652,7 +2760,7 @@ function ProcessFeatureInfo(xmlIn, append, which)
                 }
             }
             parent.OnSelectionChanged();
-            RequestMapImage(++ mapId);
+            RequestSelectionImage(++ selMapId);
         }
     }
     if(which & 2)
@@ -2734,7 +2842,13 @@ function ClearSelection()
     GetPropertyCtrl().SetProperties(0);
 
     SetSelection("", false);
-    RequestMapImage(++mapId);
+
+    selImg = document.getElementById(msie6minus ? "selImg1div": curSelImg);
+    if(selImg)
+    {
+        selImg.style.visibility = "hidden";
+    }
+
 
     parent.OnSelectionChanged();
 }
@@ -3187,7 +3301,7 @@ function OnTileLoaded(imageId)
     img = document.getElementById(imageId);
     if(img)
     {
-        if(msie)
+        if(msie6minus)
             img.parentNode.innerHTML = "<div style=\"position: relative; width: " + TILECX + "px; height: " + TILECY + "px; filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + img.src + "', sizingMethod='scale')\"></div>";
         else
             img.style.visibility = "visible";
@@ -3495,7 +3609,7 @@ function HandleMouseWheelEvent(delta, event)
     var yClickOffset = screenZoomCenterY - mapDevH/2;
     xi = parseInt(mapDevW/2 - w / 2 - xClickOffset * zoomChange);
     yi = parseInt(mapDevH/2 - h / 2 - yClickOffset * zoomChange);
-    img = document.getElementById(msie ? "img1div": curimg);
+    img = document.getElementById(msie6minus ? "img1div": curimg);
     if(img)
     {
         imgs = img.style;
@@ -3504,6 +3618,16 @@ function HandleMouseWheelEvent(delta, event)
         imgs.top = yi;
         imgs.width = w;
         imgs.height = h;
+    }
+
+    selImg = document.getElementById(msie6minus ? "selImg1div": curSelImg);
+    if(selImg)
+    {
+        selImg.style.position = "absolute";
+        selImg.style.left = xi;
+        selImg.style.top = yi;
+        selImg.style.width = w;
+        selImg.style.height = h;
     }
 
     //Update scale displayed in status bar
@@ -3620,7 +3744,12 @@ function OnMouseWheel(event)
                     <img class="mapImage" id="mapImage1" style="visibility: hidden;" >
                     <img class="mapImage" id="mapImage2" style="visibility: hidden;" >
                 </div>
+                <div id="selImg1" style="overflow: hidden;">
+                    <img class="mapImage" id="selImage1" style="visibility: hidden;" >
+                    <img class="mapImage" id="selImage2" style="visibility: hidden;" >
+                </div>
             </div>
+            <div id="selOverlay" style="display:none; visibility: hidden; position: absolute; top: 0px; left: 0px;"></div>
             <div id="overlay" style="display:none; visibility: hidden; position: absolute; top: 0px; left: 0px;"></div>
           </div>
        </td>
