@@ -253,23 +253,21 @@ UnitTestFiles :
 	@cp -f ../../../UnitTest/TestData/TileService/UT_VotingDistricts.sdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/ServerAdmin/1.1.1.mgd ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/CoordinateSystems/ogcwkts.txt ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/CoordinateSystems/epsgcodes.txt ../UnitTestFiles
 	@chmod +w ../UnitTestFiles/*.sdf
 
 TESTS = unittest.sh
 
 UnitTesting :
+	test -d $(mentor_dict_install_dir) || (mkdir -p $(mentor_dict_install_dir); \
+				cp -f -r $(mentor_dict_source_dir)/* $(mentor_dict_install_dir);)
 	@echo "#!/bin/sh" > unittest.sh
-	@echo "if test -z \"\$$GDAL_DATA\"; then export GDAL_DATA=$(map_srcdir)/Oem/gdal-1.4.4/data; fi;" >> unittest.sh
-	@echo "if test -z \"\$$PROJ_LIB\"; then export PROJ_LIB=$(map_srcdir)/Oem/proj-4.5.0/nad; fi;" >> unittest.sh
-	@echo "echo GDAL_DATA=\$$GDAL_DATA" >> unittest.sh
-	@echo "echo PROJ_LIB=\$$PROJ_LIB" >> unittest.sh
+	@echo "export MENTOR_DICTIONARY_PATH=$(mentor_dict_install_dir)" >> unittest.sh
+	@echo "echo MENTOR_DICTIONARY_PATH=\$$MENTOR_DICTIONARY_PATH" >> unittest.sh
 	@echo "./mgserver test" >> unittest.sh
 	@chmod a+x unittest.sh
 
 unittest.sh : serverconfig_linux.ini UnitTestFiles $(map_unittesting_dir)
-
-categories.txt : ../../../Common/CoordinateSystem/categories.txt
-	@cp -f ../../../Common/CoordinateSystem/categories.txt .
 
 serverconfig_linux.ini :
 	@sed -e 's#^FdoPath.*=.*#FdoPath                            = $(map_fdo_lib)#' \
@@ -318,7 +316,7 @@ Schema :
 	@mkdir Schema
 	@cp -f ../../../Common/Schema/*.xsd Schema/
 
-all : Schema Resources Logs Temp Trash Packages Repositories serverconfig_linux.ini categories.txt
+all : Schema Resources Logs Temp Trash Packages Repositories serverconfig_linux.ini
 
 logfiledir = ${prefix}/Logs
 tempdir = ${prefix}/Temp
@@ -330,8 +328,6 @@ resourcesdir = ${prefix}/Resources
 schemadir = ${prefix}/Schema
 wmsdir = ${prefix}/Wms
 wfsdir = ${prefix}/Wfs
-proj4datadir = ${prefix}/bin/data
-proj4naddir = ${prefix}/bin/nad
 fdodir = $(map_fdo_lib)
 daemondir = /var/lock/mgserver
 
@@ -350,19 +346,16 @@ install-data-local:
 	test -d $(resourcesdir) || $(mkinstalldirs) $(resourcesdir)
 	test -d $(wmsdir) || $(mkinstalldirs) $(wmsdir)
 	test -d $(wfsdir) || $(mkinstalldirs) $(wfsdir)
-	test -d $(proj4datadir) || $(mkinstalldirs) $(proj4datadir)
-	test -d $(proj4naddir) || $(mkinstalldirs) $(proj4naddir)
 	test -d $(fdodir) || $(mkinstalldirs) $(fdodir)
 	test -d $(daemondir) || $(mkinstalldirs) $(daemondir)
 	@cp -fp ../../../Common/MapGuideCommon/Resources/*.res $(resourcesdir)
 	@cp -fp ../Wms/* $(wmsdir)
 	@cp -fp ../Wfs/* $(wfsdir)
 	test -d $(schemadir) || $(mkinstalldirs) $(schemadir)
+	test -d $(mentor_dict_install_dir) || ($(mkinstalldirs) $(mentor_dict_install_dir); \
+				cp -f -r $(mentor_dict_source_dir)/* $(mentor_dict_install_dir);)
 	@cp -fp ../../../Common/Schema/*.xsd $(schemadir)
-	@cp -fp ../../../Common/CoordinateSystem/categories.txt ${prefix}/bin/
 	@cp -fp ../../../Oem/DWFTK7.1/develop/global/fonts/* ${prefix}/bin/
-	@cp -fp ../../../Oem/gdal-1.4.4/data/* $(proj4datadir)
-	@cp -fp ../../../Oem/proj-4.5.0/nad/* $(proj4naddir)
 	@cp -fp ../../../Oem/dbxml-2.3.10/install/bin/db_archive ${prefix}/bin/
 	@cp -fp ../../../Oem/dbxml-2.3.10/install/bin/db_checkpoint ${prefix}/bin/
 	@cp -fp ../../../Oem/dbxml-2.3.10/install/bin/db_dump ${prefix}/bin/
@@ -402,8 +395,7 @@ install-data-hook:
            serverconfig.ini > ${prefix}/bin/serverconfig.ini
 	@echo '#!/bin/sh' > ${prefix}/bin/mgserver.sh
 	@echo '' >> ${prefix}/bin/mgserver.sh
-	@echo 'export GDAL_DATA=$(proj4datadir)' >> ${prefix}/bin/mgserver.sh
-	@echo 'export PROJ_LIB=$(proj4naddir)' >> ${prefix}/bin/mgserver.sh
+	@echo 'export MENTOR_DICTIONARY_PATH=$(mentor_dict_install_dir)' >> ${prefix}/bin/mgserver.sh
 	@echo 'export LD_LIBRARY_PATH=$(fdodir):"$$LD_LIBRARY_PATH"' >> ${prefix}/bin/mgserver.sh
 	@echo 'pushd ${prefix}/bin' >> ${prefix}/bin/mgserver.sh
 	@cp -f ${prefix}/bin/mgserver.sh ${prefix}/bin/mgserverd.sh 
