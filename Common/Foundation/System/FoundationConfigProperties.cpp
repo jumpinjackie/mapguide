@@ -18,14 +18,6 @@
 #include "Foundation.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Value ranges of numeric properties
-///
-#define MG_CONFIG_MAX_INT32                             2147483647 // 0x7FFFFFFF
-
-#define MG_CONFIG_MIN_SELECTION_FILTER_SIZE             0
-#define MG_CONFIG_MAX_SELECTION_FILTER_SIZE             MG_CONFIG_MAX_INT32
-
-///////////////////////////////////////////////////////////////////////////////
 /// Length ranges of string properties
 ///
 #define MG_CONFIG_MIN_FILE_NAME_LENGTH                  1
@@ -63,8 +55,6 @@ const STRING MgFoundationConfigProperties::GeneralPropertyTempPath              
 const STRING MgFoundationConfigProperties::DefaultGeneralPropertyTempPath                             = L"Temp/";
 const STRING MgFoundationConfigProperties::GeneralPropertyTcpIpMtu                                    = L"TcpIpMtu";
 const INT32  MgFoundationConfigProperties::DefaultGeneralPropertyTcpIpMtu                             = 1460;
-const STRING MgFoundationConfigProperties::GeneralPropertySelectionFilterSize                         = L"SelectionFilterSize";
-const INT32  MgFoundationConfigProperties::DefaultGeneralPropertySelectionFilterSize                  = 20;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Common Configuration Validation Information Maps
@@ -76,7 +66,6 @@ const MgConfigValidationInfo MgFoundationConfigProperties::sm_cviGeneralProperti
     { MgFoundationConfigProperties::GeneralPropertyResourcesPath    , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
     { MgFoundationConfigProperties::GeneralPropertyTempPath         , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
     { MgFoundationConfigProperties::GeneralPropertyTcpIpMtu         , MgPropertyType::Int32     , 1                                     , 65535                                 , L""                                       },
-    { MgFoundationConfigProperties::GeneralPropertySelectionFilterSize, MgPropertyType::Int32   , MG_CONFIG_MIN_SELECTION_FILTER_SIZE   , MG_CONFIG_MAX_SELECTION_FILTER_SIZE   , L""                                       },
     { L""                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 

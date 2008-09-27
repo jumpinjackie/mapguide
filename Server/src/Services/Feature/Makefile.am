@@ -114,7 +114,10 @@ include_SOURCES = \
   OpSetLongTransaction.cpp \
   MgCSTrans.cpp \
   TransformCache.cpp \
-  JoinFeatureReader.cpp
+  JoinFeatureReader.cpp \
+  FdoFeatureReader.cpp \
+  FdoFilterCollection.cpp \
+  FdoReaderCollection.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
   FeatureOperation.h \
@@ -218,7 +221,10 @@ noinst_HEADERS = $(include_SOURCES) \
   OpSetLongTransaction.h \
   MgCSTrans.h \
   TransformCache.h \
-  JoinFeatureReader.h
+  JoinFeatureReader.h \
+  FdoFeatureReader.h \
+  FdoFilterCollection.h \
+  FdoReaderCollection.h
   
 
 libMgServerFeatureService_la_LIBADD = -lMgGwsCommon -lMgGwsQueryEngine

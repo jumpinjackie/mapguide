@@ -719,27 +719,12 @@ MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
 ///
 STRING MgSelectionBase::GenerateFilter(MgLayerBase* layer, CREFSTRING className)
 {
-    INT32 selectionSize = MgFoundationConfigProperties::DefaultGeneralPropertySelectionFilterSize;
-    MgConfiguration* configuration = MgConfiguration::GetInstance();
-    assert(NULL != configuration);
-
-    configuration->GetIntValue(
-        MgFoundationConfigProperties::GeneralPropertiesSection,
-        MgFoundationConfigProperties::GeneralPropertySelectionFilterSize,
-        selectionSize,
-        MgFoundationConfigProperties::DefaultGeneralPropertySelectionFilterSize);
-
-    // TODO: Tempoary fix to prevent a crash when the filter exceeds what FDO can handle.
-    // Calling GenerateFilters with a selectionSize of -1 which means all of them can generate a filter too big for FDO to handle.
-    // Unfortunatly, most feature sources do not support the generated filter with more then 250 ORed items so we must restrict this
-    // by breaking it down into a collection of smaller filters.
     STRING filter;
-    Ptr<MgStringCollection> filters = GenerateFilters(layer, className, selectionSize);
+    Ptr<MgStringCollection> filters = GenerateFilters(layer, className, -1);
 
-    // TODO: This returns the 1st string in the string collection which most likely is not the complete filter.
     if (NULL != filters && filters->GetCount() > 0)
     {
-//        assert(1 == filters->GetCount());
+        assert(1 == filters->GetCount());
         filter = filters->GetItem(0);
         assert(!filter.empty());
     }
@@ -830,30 +815,16 @@ MgEnvelope* MgSelectionBase::GetExtents(MgFeatureService* featureService)
             STRING clsName = layer->GetFeatureClassName();
             STRING geomName = layer->GetFeatureGeometryName();
 
-            INT32 selectionSize = MgFoundationConfigProperties::DefaultGeneralPropertySelectionFilterSize;
-            MgConfiguration* configuration = MgConfiguration::GetInstance();
-            assert(NULL != configuration);
+            STRING filterText = this->GenerateFilter(layer, clsName);
 
-            configuration->GetIntValue(
-                MgFoundationConfigProperties::GeneralPropertiesSection,
-                MgFoundationConfigProperties::GeneralPropertySelectionFilterSize,
-                selectionSize,
-                MgFoundationConfigProperties::DefaultGeneralPropertySelectionFilterSize);
-
-            Ptr<MgStringCollection> filters = this->GenerateFilters(layer, clsName, selectionSize);
-            INT32 numFilter = (NULL == filters) ? 0 : filters->GetCount();
-
-            for (INT32 i = 0; i < numFilter; ++i)
+            Ptr<MgEnvelope> clsEnv = GetFeatureExtents(featureService, featureResId, clsName, filterText, geomName);
+            if (env != NULL)
             {
-                Ptr<MgEnvelope> clsEnv = GetFeatureExtents(featureService, featureResId, clsName, filters->GetItem(i), geomName);
-                if (env != NULL)
-                {
-                    env->ExpandToInclude(clsEnv);
-                }
-                else
-                {
-                    env = clsEnv.Detach();
-                }
+                env->ExpandToInclude(clsEnv);
+            }
+            else
+            {
+                env = clsEnv.Detach();
             }
         }
     }
