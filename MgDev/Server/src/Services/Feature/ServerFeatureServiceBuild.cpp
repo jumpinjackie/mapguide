@@ -98,3 +98,6 @@
 #include "MgCSTrans.cpp"
 #include "TransformCache.cpp"
 #include "JoinFeatureReader.cpp"
+#include "FdoReaderCollection.cpp"
+#include "FdoFilterCollection.cpp"
+#include "FdoFeatureReader.cpp"

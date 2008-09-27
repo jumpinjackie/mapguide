@@ -24,6 +24,12 @@
 #include "ServerFeatureReader.h"
 #include "ServerFeatureReaderIdentifier.h"
 #include "ServerFeatureConnection.h"
+#include "FdoFeatureReader.h"
+#include "FdoFilterCollection.h"
+#include "FdoReaderCollection.h"
+
+// The maximum size of the subfilter for a selection query.  Tune this value for optimal selection perfomance.
+#define MG_MAX_SUBFILTER_SIZE  1000
 
 MgSelectCommand::MgSelectCommand(MgResourceIdentifier* resource) : m_filter(NULL)
 {
@@ -39,7 +45,7 @@ MgSelectCommand::MgSelectCommand(MgResourceIdentifier* resource) : m_filter(NULL
     {
         throw new MgConnectionFailedException(L"MgServerSelectFeatures::SelectFeatures()", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    // Create FdoISelectAggregate command
+    // Create FdoISelect command
     FdoPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
     m_command = (FdoISelect*)fdoConn->CreateCommand(FdoCommandType_Select);
     CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.MgSelectCommand");
@@ -147,8 +153,28 @@ void MgSelectCommand::SetFilter(FdoFilter* value)
 
 MgReader* MgSelectCommand::Execute()
 {
-    // Execute the command
-    FdoPtr<FdoIFeatureReader> featureReader = m_command->Execute();
+    FdoPtr<FdoIFeatureReader> reader = NULL;
+
+    printf("MgSelectCommand::Execute()\n");
+
+    // Break up the filter into smaller chunks
+    FdoPtr<MgFdoFilterCollection> subFilters = this->GetSubFilters();
+
+    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.MgSelectCommand");
+
+    // Execute queries using the smaller filters and collect the results of the queries into a reader collection.
+    FdoPtr<MgFdoReaderCollection> frc = MgFdoReaderCollection::Create();
+    
+    for (FdoInt32 filterIndex = 0; filterIndex < subFilters->GetCount(); filterIndex++)
+    {
+        FdoFilter* filter = subFilters->GetItem(filterIndex);
+        m_command->SetFilter(filter);
+        reader = m_command->Execute();
+
+        frc->Add(reader);
+    }
+
+    FdoPtr<MgFdoFeatureReader> featureReader = CreateFdoFeatureReader(frc);
     CHECKNULL((FdoIFeatureReader*)featureReader, L"MgSelectCommand.Execute");
 
     // Create a feature reader identifier
@@ -195,3 +221,171 @@ FdoFilter* MgSelectCommand::GetFilter()
 {
     return FDO_SAFE_ADDREF(m_filter);
 }
+
+MgFdoFilterCollection* MgSelectCommand::GetSubFilters()
+{
+    // Break up a filter into a bunch of smaller filters
+
+    // For now we just reduce a simple case with datastore limitations in handling the number of OR conditions.
+    // This is the case where a filter has only OR spatial conditions that can be broken up into a collection
+    // of smaller OR filters.
+
+    class FdoCommonFilterFragmenter :  public virtual FdoIFilterProcessor
+    {
+    private:
+        FdoPtr<FdoFilter>	 m_newFilter;
+        FdoPtr<FdoIGeometry> m_geomRight;
+        FdoPtr<FdoIGeometry> m_geomLeft;
+
+        int m_OrCount;
+        std::vector<FdoFilter*> m_filters;
+        bool m_isFragmented;
+
+    protected:
+        void HandleFilter( FdoFilter *filter )
+        {
+            filter->Process( this );
+        }
+    public:
+
+        FdoCommonFilterFragmenter( ):m_isFragmented(true)
+        {
+            m_OrCount = 0;
+            m_filters.clear();
+        }
+
+        int GetOrCount() { return m_OrCount; }
+        std::vector<FdoFilter*> GetFilters() { return m_filters; }
+        bool IsFragmented() { return m_isFragmented; }
+
+        virtual void Dispose() { delete this; }
+       
+        virtual void ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& filter)
+        {
+            if( filter.GetOperation() != FdoBinaryLogicalOperations_Or )
+            {
+                m_isFragmented = false;
+                return;
+            }
+            if (m_OrCount < 2)
+            {
+                HandleFilter( FdoPtr<FdoFilter>(filter.GetLeftOperand()) );
+                HandleFilter( FdoPtr<FdoFilter>(filter.GetRightOperand()) );
+            }
+            m_OrCount++;
+        }
+        virtual void ProcessComparisonCondition(FdoComparisonCondition& filter)
+        {
+            // Add filter to collection
+            m_filters.push_back(&filter);
+            return;
+        }
+        virtual void ProcessDistanceCondition(FdoDistanceCondition& filter)
+        {  
+            m_isFragmented = false;
+            return;
+        }
+
+        virtual void ProcessInCondition(FdoInCondition& filter)
+        {
+            m_isFragmented = false;
+            return;
+        }
+        virtual void ProcessNullCondition(FdoNullCondition& filter)
+        {
+            m_isFragmented = false;
+            return;
+        }
+        virtual void ProcessSpatialCondition(FdoSpatialCondition& filter)
+        {  
+            m_isFragmented = false;
+            return;
+        }
+
+        virtual void ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& filter)
+        {
+            m_isFragmented = false;
+            return;
+        }
+    };
+
+
+    FdoCommonFilterFragmenter  fragmenter;
+    if (m_filter)
+        m_filter->Process( &fragmenter ); 
+
+#ifdef _DEBUG
+    int nCount = fragmenter.GetOrCount();
+    if ( nCount > 0)
+    {
+        char temp[1024];
+        sprintf(temp, "Or_Count = %d", nCount);  // NOXLATE
+        printf("%s\n", temp);
+    }
+#endif
+
+    FdoPtr<MgFdoFilterCollection> filters = MgFdoFilterCollection::Create();
+
+    if (fragmenter.IsFragmented() && fragmenter.GetOrCount() > 0)
+    {
+        int nSelectionCount = 0;
+
+        std::vector<FdoFilter*>::iterator filterIter;
+        bool bFirst = true;
+
+        FdoStringP filterString;
+        std::vector<FdoFilter*> fragmentedFilters = fragmenter.GetFilters();
+
+
+        bool bIsAddedToCollection = false;
+
+        for (filterIter = fragmentedFilters.begin(); filterIter != fragmentedFilters.end(); filterIter++)
+        {
+            FdoStringP tempString = (*filterIter)->ToString();
+            FdoStringP orString = L" OR ";  // NOXLATE
+            if (bFirst)
+            {
+                filterString = tempString;
+                bFirst = false;
+            }
+            else
+            {
+                filterString = filterString + orString + tempString;
+                nSelectionCount++;
+            }
+
+            if (nSelectionCount >= MG_MAX_SUBFILTER_SIZE)
+            {
+                filters->Add(FdoFilter::Parse(filterString));
+                bFirst = true;
+                filterString = L"";
+                nSelectionCount = 0;
+                bIsAddedToCollection = true;
+            }
+            else
+            {
+                bIsAddedToCollection = false;
+            }
+        }
+
+        if ( !bIsAddedToCollection )
+        {
+            filters->Add(FdoFilter::Parse(filterString));
+        }
+
+    }
+    else
+    {
+        filters->Add(m_filter);
+    }
+
+    return FDO_SAFE_ADDREF(filters.p);
+}
+
+MgFdoFeatureReader* MgSelectCommand::CreateFdoFeatureReader(MgFdoReaderCollection *readerCollection)
+{
+    FdoPtr<MgFdoFeatureReader> featureReader = new MgFdoFeatureReader(readerCollection);
+
+    return FDO_SAFE_ADDREF(featureReader.p);
+}
+

@@ -18,6 +18,10 @@
 #ifndef _MGSELECTCOMMAND_H_
 #define _MGSELECTCOMMAND_H_
 
+class MgFdoFeatureReader;
+class MgFdoReaderCollection;
+class MgFdoFilterCollection;
+
 class MgSelectCommand : public MgFeatureServiceCommand
 {
     DECLARE_CLASSNAME(MgServerSqlProcessor)
@@ -55,12 +59,16 @@ public:
 
     virtual void Dispose() { delete this; }
 
+    MgFdoFeatureReader* CreateFdoFeatureReader(MgFdoReaderCollection* readerCollection);
+
 private:
     Ptr<MgServerFeatureConnection> m_connection;
     STRING m_providerName;
     FdoISelect* m_command;
 
     FdoFilter* m_filter;
+
+    MgFdoFilterCollection* GetSubFilters();
 };
 
 #endif
