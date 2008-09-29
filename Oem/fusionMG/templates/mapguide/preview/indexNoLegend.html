@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd
+">
+<html>
+<head>
+<title>Preview</title>
+<!-- change the source of the following tag to point to your fusion installation -->
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="../../../lib/fusionSF-compressed.js"></script>
+<link rel="stylesheet" href="../../../jx/jxskin_delicious.css" type="text/css" media="screen" charset="utf-8">
+<script type="text/javascript">
+
+window.onload = function() {
+
+     // Initialize the locale setting before any strings are used
+     Fusion.initializeLocale();
+
+     // Make 'thePage' just fill the browser window and resize automagically
+     new Jx.Layout('thePage');
+
+     // Create the main pane
+     var main = new Jx.Layout('Main', {bottom: 21});
+
+     // Create the status bar
+     new Jx.Layout('Statusbar', {height: 21, top: null, bottom: 0});
+
+     // Add the toolbar, map and navigator to the main panel
+     new Jx.Panel({
+         parent: $('Main'),
+         hideTitle: true,
+         toolbars: [
+             new Jx.Toolbar({
+                 id: 'Toolbar',
+                 position: 'top'
+             })
+         ],
+         contentId: 'Map',
+         content: 'Navigator'
+     });
+
+     Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, fusionInitialized);
+     Fusion.registerForEvent(Fusion.Event.FUSION_ERROR, fusionError);
+     Fusion.initialize();
+}
+
+function fusionError(eventId, error) {
+     console.log('Fusion Error: \n' + error.toString()); }
+
+function fusionInitialized() {
+     $('thePage').resize({forceResize: true});
+     $('thePage').style.visibility = 'visible'; }
+
+</script>
+</head>
+
+<body>
+
+<div id="thePage" style="visibility: hidden">
+    <div id='Main'>
+        <div id="Navigator"></div>
+    </div>
+    <div id="Statusbar"></div>
+</div>
+<div id="Maptip"></div>
+
+</body>
+
+</html>
