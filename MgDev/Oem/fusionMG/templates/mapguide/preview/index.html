@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd
+">
+<html>
+<head>
+<title>Preview</title>
+<!-- change the source of the following tag to point to your fusion installation -->
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="../../../lib/fusionSF-compressed.js"></script>
+<link rel="stylesheet" href="../../../jx/jxskin_delicious.css" type="text/css" media="screen" charset="utf-8">
+<script type="text/javascript">
+
+window.onload = function() {
+
+     // Initialize the locale setting before any strings are used
+     Fusion.initializeLocale();
+
+     // Make 'thePage' just fill the browser window and resize automagically
+     new Jx.Layout('thePage');
+
+     // Create the main pane
+     new Jx.Layout('Main', {bottom: 21});
+
+     // Create the status bar
+     new Jx.Layout('Statusbar', {height: 21, top: null, bottom: 0});
+
+     // Split the page into two vertical panels
+     var splitter = new Jx.Splitter('Main', {
+         containerOptions: [{width: 200}, {}]
+     });
+
+     // Add the toolbar, map and navigator to the right panel
+     new Jx.Panel({
+         parent: splitter.elements[1],
+         hideTitle: true,
+         toolbars: [
+             new Jx.Toolbar({
+                 id: 'Toolbar',
+                 position: 'top'
+             })
+         ],
+         contentId: 'Map',
+         content: 'Navigator'
+     });
+
+     // Add a tabbox to the left panel, containing the legend,
+     // selection panel, and overview map
+     new Jx.TabBox({
+         parent: splitter.elements[0]
+     }).add(
+         new Jx.Button.Tab({
+             label: OpenLayers.i18n('legendTitle'),
+             contentId: 'Legend'
+         }),
+         new Jx.Button.Tab({
+             label: OpenLayers.i18n('selectionPanelTitle'),
+             contentId: 'SelectionPanel'
+         }),
+         new Jx.Button.Tab({
+             label: OpenLayers.i18n('ovmapTitleShort'),
+             contentId: 'OverviewMap'
+         })
+     );
+
+     Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, fusionInitialized);
+     Fusion.registerForEvent(Fusion.Event.FUSION_ERROR, fusionError);
+     Fusion.initialize();
+}
+
+function fusionError(eventId, error) {
+     console.log('Fusion Error: \n' + error.toString()); }
+
+function fusionInitialized() {
+     $('thePage').resize({forceResize: true});
+     $('thePage').style.visibility = 'visible'; }
+
+</script>
+</head>
+
+<body>
+
+<div id="thePage" style="visibility: hidden">
+    <div id='Main'>
+        <div id="Navigator"></div>
+    </div>
+    <div id="Statusbar"></div>
+</div>
+<div id="Maptip"></div>
+
+</body>
+
+</html>
