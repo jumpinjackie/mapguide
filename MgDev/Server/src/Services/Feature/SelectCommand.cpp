@@ -155,8 +155,6 @@ MgReader* MgSelectCommand::Execute()
 {
     FdoPtr<FdoIFeatureReader> reader = NULL;
 
-    printf("MgSelectCommand::Execute()\n");
-
     // Break up the filter into smaller chunks
     FdoPtr<MgFdoFilterCollection> subFilters = this->GetSubFilters();
 
