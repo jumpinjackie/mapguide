@@ -20,6 +20,9 @@ window.onload = function() {
      // Create the main pane
      var main = new Jx.Layout('Main', {bottom: 21});
 
+     new Jx.Layout('MapPane');
+     new Jx.Layout('Map');
+
      // Create the status bar
      new Jx.Layout('Statusbar', {height: 21, top: null, bottom: 0});
 
@@ -33,8 +36,7 @@ window.onload = function() {
                  position: 'top'
              })
          ],
-         contentId: 'Map',
-         content: 'Navigator'
+         content: 'MapPane'
      });
 
      Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, fusionInitialized);
@@ -54,13 +56,16 @@ function fusionInitialized() {
 
 <body>
 
-<div id="thePage" style="visibility: hidden">
+<div id='thePage' style='visibility: hidden'>
     <div id='Main'>
-        <div id="Navigator"></div>
+        <div id='MapPane'>
+            <div id='Map'></div>
+            <div id='Navigator'></div>
+        </div>
     </div>
-    <div id="Statusbar"></div>
+    <div id='Statusbar'></div>
 </div>
-<div id="Maptip"></div>
+<div id='Maptip'></div>
 
 </body>
 
