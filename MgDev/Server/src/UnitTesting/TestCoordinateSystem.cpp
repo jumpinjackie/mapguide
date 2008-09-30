@@ -337,73 +337,64 @@ void TestCoordinateSystem::TestCase_EnumerateCategories()
             STRING category = categories->GetItem(i);
             ACE_DEBUG((LM_INFO, ACE_TEXT("  Checking %W - "), category.c_str()));
 
-            // Skip the "Denmark" and "Obsolete Coordinate Systems" categories 
-            // as they are not supported by CsMap open source
-            if((_wcsicmp(category.c_str(), L"Denmark") != 0) && (_wcsicmp(category.c_str(), L"Obsolete Coordinate Systems") != 0))
+            coordSystems = factory.EnumerateCoordinateSystems(category);
+
+            // Get the # of coordinate systems for this category
+            int nCoordinateSystems = coordSystems->GetCount();
+
+            nTotalCoordinateSystemsTested += nCoordinateSystems;
+            ACE_DEBUG((LM_INFO, ACE_TEXT("%d (Coordinate Systems)\n"), nCoordinateSystems));
+
+            for(int j=0;j<nCoordinateSystems;j++)
             {
-                coordSystems = factory.EnumerateCoordinateSystems(category);
-
-                // Get the # of coordinate systems for this category
-                int nCoordinateSystems = coordSystems->GetCount();
-
-                nTotalCoordinateSystemsTested += nCoordinateSystems;
-                ACE_DEBUG((LM_INFO, ACE_TEXT("%d (Coordinate Systems)\n"), nCoordinateSystems));
-
-                for(int j=0;j<nCoordinateSystems;j++)
+                Ptr<MgPropertyCollection> coordSys = coordSystems->GetItem(j);
+                for(int k=0;k<coordSys->GetCount();k++)
                 {
-                    Ptr<MgPropertyCollection> coordSys = coordSystems->GetItem(j);
-                    for(int k=0;k<coordSys->GetCount();k++)
+                    Ptr<MgProperty> pBaseProperty = coordSys->GetItem(k);
+                    if (MgPropertyType::String == pBaseProperty->GetPropertyType())
                     {
-                        Ptr<MgProperty> pBaseProperty = coordSys->GetItem(k);
-                        if (MgPropertyType::String == pBaseProperty->GetPropertyType())
+                        MgStringProperty* pProperty = static_cast<MgStringProperty*>(pBaseProperty.p);
+                        if(pProperty->GetName() == L"Code")
                         {
-                            MgStringProperty* pProperty = static_cast<MgStringProperty*>(pBaseProperty.p);
-                            if(pProperty->GetName() == L"Code")
+                            try
                             {
-                                try
-                                {
-                                    // Perform round trip test
-                                    STRING wkt = factory.ConvertCoordinateSystemCodeToWkt(pProperty->GetValue());
-                                    STRING code = factory.ConvertWktToCoordinateSystemCode(wkt);
-                                    CPPUNIT_ASSERT(_wcsicmp(pProperty->GetValue().c_str(), code.c_str()) == 0);
+                                // Perform round trip test
+                                STRING wkt = factory.ConvertCoordinateSystemCodeToWkt(pProperty->GetValue());
+                                STRING code = factory.ConvertWktToCoordinateSystemCode(wkt);
+                                CPPUNIT_ASSERT(_wcsicmp(pProperty->GetValue().c_str(), code.c_str()) == 0);
 
-                                    nTotalCoordinateSystemsPassed++;
-                                }
-                                catch(MgException* e)
-                                {
-                                    #ifdef _DEBUG
-                                    STRING message = e->GetMessage(TEST_LOCALE);
-
-                                    // Extract the reason out of the message
-                                    size_t index = message.find(L"\n");
-                                    message = message.substr(index+1, 255);
-
-                                    printf("      %s - FAILED: %s\n", MG_WCHAR_TO_CHAR(pProperty->GetValue()), MG_WCHAR_TO_CHAR(message));
-                                    #endif
-                                    SAFE_RELEASE(e);
-                                }
-                                catch(...)
-                                {
-                                }
+                                nTotalCoordinateSystemsPassed++;
                             }
-                            else
+                            catch(MgException* e)
                             {
                                 #ifdef _DEBUG
-                                //printf("      %s - %s\n", MG_WCHAR_TO_CHAR(pProperty->GetName()), MG_WCHAR_TO_CHAR(pProperty->GetValue()));
+                                STRING message = e->GetMessage(TEST_LOCALE);
+
+                                // Extract the reason out of the message
+                                size_t index = message.find(L"\n");
+                                message = message.substr(index+1, 255);
+
+                                printf("      %s - FAILED: %s\n", MG_WCHAR_TO_CHAR(pProperty->GetValue()), MG_WCHAR_TO_CHAR(message));
                                 #endif
+                                SAFE_RELEASE(e);
+                            }
+                            catch(...)
+                            {
                             }
                         }
                         else
                         {
-                            throw new MgInvalidPropertyTypeException(
-                                L"TestCoordinateSystem.TestCase_EnumerateCategories", __LINE__, __WFILE__, NULL, L"", NULL);
+                            #ifdef _DEBUG
+                            //printf("      %s - %s\n", MG_WCHAR_TO_CHAR(pProperty->GetName()), MG_WCHAR_TO_CHAR(pProperty->GetValue()));
+                            #endif
                         }
                     }
+                    else
+                    {
+                        throw new MgInvalidPropertyTypeException(
+                            L"TestCoordinateSystem.TestCase_EnumerateCategories", __LINE__, __WFILE__, NULL, L"", NULL);
+                    }
                 }
-            }
-            else
-            {
-                ACE_DEBUG((LM_INFO, ACE_TEXT("Skipped\n"), category.c_str()));
             }
         }
 
