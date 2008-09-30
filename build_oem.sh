@@ -535,11 +535,43 @@ clean_json()
 }
 
 #**********************************************************
+# Build CSMAP
+# Notes: none
+#**********************************************************
+
+init_csmap()
+{
+    LIB_NAME="CSMAP"
+}
+
+build_csmap()
+{
+    pushd CsMap
+    pushd Source
+    make -fLibrary.mak
+    popd
+    pushd Dictionaries
+    make -fCompiler.mak
+    ./CS_Comp . .
+    popd
+    check_build
+    popd
+}
+
+clean_csmap()
+{
+    pushd CsMap
+    make clean
+    check_clean
+    popd
+}
+
+#**********************************************************
 # Script loop
 #**********************************************************
 
 pushd Oem
-for lib in ace dwfcore dwftk dwfemap geos php swigex bdbxml cppunit imake zlib libpng jpeg freetype gd agg json;
+for lib in ace dwfcore dwftk dwfemap geos php swigex bdbxml cppunit imake zlib libpng jpeg freetype gd agg json csmap;
 do
     echo "$lib: Initialization..........................."
     init_"$lib"
