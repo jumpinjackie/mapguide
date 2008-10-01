@@ -193,8 +193,7 @@ AC_SUBST(map_srcdir)
 
 AC_CONFIG_FILES(Makefile)
 # MAP_CONFIG_FILES_OEM
-AC_CONFIG_FILES([Oem/Makefile \
-        Oem/CsMap/Makefile])
+AC_CONFIG_FILES([Oem/Makefile])
 
 # MAP_CONFIG_FILES_COMMON
 AC_CONFIG_FILES([Common/Makefile \
