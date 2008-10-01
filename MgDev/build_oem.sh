@@ -552,7 +552,7 @@ build_csmap()
     popd
     pushd Dictionaries
     make -fCompiler.mak
-    ./CS_Comp . .
+    ./CS_Comp -b . .
     popd
     check_build
     popd
