@@ -547,8 +547,10 @@ init_csmap()
 build_csmap()
 {
     pushd CsMap
+    mkdir -p .libs
     pushd Source
     make -fLibrary.mak
+    cp CsMap.a ../.libs/libCsmap.a
     popd
     pushd Dictionaries
     make -fCompiler.mak
