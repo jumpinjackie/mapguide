@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+
+<title>Maroon</title>
+
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+
+<script type="text/javascript" src="../../../lib/fusion.js"></script>
+<link rel="stylesheet" href="../../../jx/jxskin_delicious.css" type="text/css" media="screen" charset="utf-8">
+<script type="text/javascript">
+
+var panel1;
+var panel2;
+var panel3;
+var panel4;
+var panelman;
+
+window.onload = function() {
+  Fusion.initializeLocale();  //need to call this first if String.Translate is to be used in the onload
+
+  var main = new Jx.Layout('AppContainer');
+  new Jx.Layout('FileMenu', {height: 28, bottom: null});
+  new Jx.Layout('Toolbar', {height: 28, top: 28, bottom: null});
+  new Jx.Layout('ToolbarVertical', {width: 28, height: null, right: null, top: 56, bottom: 21});
+  new Jx.Layout('SplitterArea', {left: 28, top: 56, bottom: 21});
+  new Jx.Layout('Map');
+  new Jx.Layout('StatusbarContainer', {height: 21, top: null});
+  new Jx.Layout('Statusbar', {height: 21, right: 159, top: null, bottom: 0});
+
+  var splitter = new Jx.Splitter('SplitterArea',
+                                 {splitInto:2,
+                                 elements:[$('Map'),$('Sidebar')],
+                                 layout:'horizontal',
+                                 containerOptions: [{},{minWidth:8, width: 218}],
+                                 snappers: [null,$('SidebarCollapse')]});
+
+  /* create dynamic content */
+  panel1 = new Jx.Panel({
+      label: OpenLayers.i18n('legendTitle'),
+      collapse: false,
+      maximize: true,
+      contentId: 'Legend'});
+  panel1.content.id = 'Legend';
+
+  panel2 = new Jx.Panel({
+      label: OpenLayers.i18n('selectionPanelTitle'),
+      collapse: false,
+      maximize: true,
+      contentId: 'SelectionPanel'});
+
+  panel3 = new Jx.Panel({
+      label: OpenLayers.i18n('taskPaneTitle'),
+      collapse: false,
+      maximize: true,
+      contentId: 'TaskPane'});
+
+  panel4 = new Jx.Panel({
+      label: OpenLayers.i18n('ovmapTitle'),
+      collapse: false,
+      maximize: true,
+      contentId: 'OverviewMap'});
+
+  panelman = new Jx.PanelSet({parent: splitter.elements[1], panels: [panel1, panel2, panel3, panel4]});
+
+  main.resize();
+
+  Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, fusionInitialized);
+  Fusion.registerForEvent(Fusion.Event.FUSION_ERROR, fusionError);
+  Fusion.initialize();
+}
+
+var fusionError = function(eventId, error) {
+    alert('Fusion Error: \n' + error.toString());
+    //console.log('Fusion Error: \n' + error.toString());
+}
+
+var fusionInitialized = function() {
+    $('AppContainer').resize({forceResize: true});
+}
+
+var showOverviewMap = function() {
+  panelman.maximizePanel(panel4);
+}
+
+var showTaskPane = function() {
+  panelman.maximizePanel(panel3);
+}
+
+var showLegend = function() {
+  panelman.maximizePanel(panel1);
+}
+
+var showSelectionPanel = function() {
+  panelman.maximizePanel(panel2);
+}
+
+</script>
+
+<style>
+body { overflow: hidden }
+#StatusNavigator {
+  position: absolute;
+  right: 139px;
+  padding-top: 2px;
+}
+
+#pbmg {
+  position: absolute;
+  right: 0px;
+  padding-top: 2px;
+</style>
+
+</head>
+
+<body>
+
+<div id="AppContainer">
+
+  <div id="FileMenu"></div>
+
+  <div id="SplitterArea">
+    <div id="Map">
+      <div id="Navigator"></div>
+    </div>
+    <div id="Sidebar">
+      <!-- Collapse Sidebar -->
+      <div id="SidebarCollapse">
+          <a id="SidebarCollapseButton" href="#">Close</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="Toolbar"></div>
+  <div id="ToolbarVertical"></div>
+  <div id="StatusbarContainer">
+    <div id="Statusbar"></div>
+    <div id="pbmg"><img src="images/pbmg.gif" alt=""></div>
+  </div>
+
+</div>
+
+<div id="Maptip"></div>
+
+</body>
+</html>
