@@ -1,11 +1,10 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
 <title>Slate</title>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8">
 
-<script type="text/javascript" src="../../../lib/fusion.js"></script>
-<!--script type="text/javascript" src="../../../build/lib/fusionSF-compressed.js"></script-->
+<script type="text/javascript" src="../../../lib/fusionSF-compressed.js"></script>
 <link rel="stylesheet" href="../../../jx/jxskin_delicious.css" type="text/css" media="screen" charset="utf-8">
 <script type="text/javascript">
 var panel1;
@@ -31,57 +30,57 @@ window.onload = function() {
         layout:'horizontal',
         containerOptions: [{minWidth:8, width: 218}],
         barOptions: [{
-            snap: 'before', 
-            snapElement: $('SidebarCollapse'), 
+            snap: 'before',
+            snapElement: $('SidebarCollapse'),
             snapEvents: ['click']
         }]
     });
 
     panel1 = new Jx.Panel({
-        label: OpenLayers.i18n('legendTitle'), 
+        label: OpenLayers.i18n('legendTitle'),
         collapse: false,
         maximize: true,
         contentId: 'Legend'
     });
 
     panel2 = new Jx.Panel({
-        label: OpenLayers.i18n('selectionPanelTitle'), 
+        label: OpenLayers.i18n('selectionPanelTitle'),
         collapse: false,
         maximize: true,
         contentId: 'SelectionPanel'
     });
-    
+
     panel3 = new Jx.Panel({
-        label: OpenLayers.i18n('taskPaneTitle'), 
+        label: OpenLayers.i18n('taskPaneTitle'),
         collapse: false,
         maximize: true,
         contentId: 'TaskPane'
     });
-    
+
     panelman = new Jx.PanelSet({
-        parent: splitter.elements[0], 
+        parent: splitter.elements[0],
         panels: [panel1, panel2, panel3]
     });
 
     dOverviewMap = new Jx.Dialog({
-        id: 'dialogNavigator', 
-        label: OpenLayers.i18n('ovmapTitle'), 
-        modal: false, 
+        id: 'dialogNavigator',
+        label: OpenLayers.i18n('ovmapTitle'),
+        modal: false,
         resize: false,
         horizontal: 'right -10',
         vertical: 'bottom -10',
-        width: 200, 
+        width: 200,
         height: 200,
         parent: 'Map'
     });
     dOverviewMap.content.id = 'OverviewMap';
 
     main.resize();
-    
+
     Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, fusionInitialized);
     Fusion.registerForEvent(Fusion.Event.FUSION_ERROR, fusionError);
     Fusion.initialize();
-    
+
     dOverviewMap.show();
 }
 
@@ -173,7 +172,7 @@ body { overflow: hidden }
     <div id="StatusNavigator"></div>
     <div id="pbmg"><img src="images/pbmg.gif" alt=""></div>
   </div>
-  
+
 </div>
 <div id="OverviewMap"></div>
 <div id="Maptip"></div>
