@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+
+<title>Aqua</title>
+
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+
+<script type="text/javascript" src="../../../lib/fusion.js"></script>
+<link rel="stylesheet" href="../../../jx/jxskin_delicious.css" type="text/css" media="screen" charset="utf-8">
+<script type="text/javascript">
+
+var dOverviewMap;
+var dTasks;
+var dLegend;
+
+window.onload = function() {
+    Fusion.initializeLocale();  //need to call this first if String.Translate is to be used in the onload
+
+    var main = new Jx.Layout('AppContainer');
+    new Jx.Layout('FileMenu', {height: 28, bottom: null});
+    new Jx.Layout('Toolbar', {height: 28, top: 28, bottom: null});
+    new Jx.Layout('ToolbarVertical', {width: 28, right: null, top: 56, bottom: 21});
+    new Jx.Layout('Map', {left: 28, right: 0, top: 56, bottom: 21});
+    new Jx.Layout('StatusbarContainer', {height: 21, top: null, bottom: 0});
+    new Jx.Layout('Statusbar', {height: 21, right: 159, top: null, bottom: 0});
+
+
+    main.resize();
+
+    dOverviewMap = new Jx.Dialog({
+        id: 'dialogOverviewMap',
+        label: OpenLayers.i18n('ovmapTitle'),
+        modal: false,
+        resize: false,
+        horizontal: 'right -10',
+        vertical: 'bottom -10',
+        width: 300,
+        height: 300,
+        contentId: 'OverviewMap',
+        parent: 'Map'
+        });
+    dOverviewMap.show();
+
+    dLegend = new Jx.Dialog({
+        id: 'dialogLegend',
+        label: OpenLayers.i18n('legendTitle'),
+        modal: false,
+        resize: true,
+        horizontal: 'right -10',
+        vertical: '10 top',
+        width: 300,
+        height: 400,
+        contentId: 'Legend',
+        parent: 'Map'
+        });
+
+    dTasks = new Jx.Dialog({
+        id: 'dialogTasks',
+        label: OpenLayers.i18n('taskPaneTitle'),
+        modal: false,
+        resize: true,
+        horizontal: '50 left',
+        vertical: 'bottom -10',
+        width: 400,
+        height: 400,
+        contentId: 'TaskPane',
+        parent: 'Map'
+        });
+
+    dSelection = new Jx.Dialog({
+        id: 'dialogSelection',
+        label: OpenLayers.i18n('selectionPanelTitle'),
+        modal: false,
+        resize: true,
+        horizontal: '50 left',
+        vertical: '10 top',
+        width: 400,
+        height: 400,
+        contentId: 'SelectionPanel', parent: 'Map'
+        });
+
+    Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, fusionInitialized);
+    Fusion.registerForEvent(Fusion.Event.FUSION_ERROR, fusionError);
+    Fusion.initialize();
+}
+
+var fusionError = function(eventId, error) {
+    //console.log('Fusion Error: \n' + error.toString());
+}
+
+var fusionInitialized = function() {
+
+    $('AppContainer').resize({forceResize: true});
+    $('AppContainer').style.visibility = 'visible';
+}
+
+var showOverviewMap = function() {
+    dOverviewMap.open();
+}
+
+var showTaskPane = function() {
+    dTasks.open();
+}
+
+var showLegend = function() {
+    dLegend.open();
+}
+
+var showSelectionPanel = function() {
+    dSelection.open();
+}
+
+</script>
+
+<style>
+body { overflow: hidden }
+#StatusOverviewMap {
+  position: absolute;
+  right: 139px;
+  padding-top: 2px;
+}
+
+#pbmg {
+  position: absolute;
+  right: 0px;
+  padding-top: 2px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div id="AppContainer" style="visibility: hidden;">
+
+  <div id="Map">
+    <div id="Navigator"></div>
+  </div>
+
+  <!-- File Menu -->
+  <div id="FileMenu"></div>
+  <!-- /File Menu -->
+
+  <!-- Toolbar -->
+  <div id="Toolbar"></div>
+  <!-- /Toolbar -->
+
+  <!-- Toolbar Vertical -->
+  <div id="ToolbarVertical"></div>
+  <!-- /Toolbar Vertical -->
+
+  <div id="StatusbarContainer">
+    <div id="Statusbar"></div>
+    <div id="StatusOverviewMap"></div>
+    <div id="pbmg"><img src="images/pbmg.gif" alt=""></div>
+  </div>
+
+  <div id="Maptip"></div>
+
+</div>
+
+<div id="TaskPane"></div>
+<div id="OverviewMap"></div>
+<div id="Legend"></div>
+<div id="SelectionPanel"></div>
+
+</body>
+</html>
