@@ -49,7 +49,7 @@ PUBLISHED_API:
                                             // without any further datum shift
     static const INT32 SevenParameter = 9;  // Seven Parameter Transformation
     static const INT32 AGD66 = 10;          // AGD66<->GDA94 via Grid Files
-    static const INT32 ThreeParameter = 11; // Three Parameter Transformation
+    static const INT32 ThreeParameter = 11; // Three Parameter Transformation - Obsolete technique that is kept around for backward compatibility
     static const INT32 SixParameter = 12;   // Six Parameter Transformation
     static const INT32 FourParameter = 13;  // Four Parameter Transformation
     static const INT32 AGD84 = 14;          // AGD84<->GDA94 via Grid Files
@@ -64,6 +64,7 @@ PUBLISHED_API:
     static const INT32 DHDN = 23;           // DHDN<->ETRF89 via Grid Files
     static const INT32 ETRF89 = 24;         // Is ETRF89, no shift required
     static const INT32 Lclgrf = 99;         // Local Geodetic Reference System
+    static const INT32 Geocentric = 25;     // Three Parameter Transformation
 };
 /// \}
 
