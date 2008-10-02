@@ -21,7 +21,7 @@
 #include "FeatureTypeStyleVisitor.h"
 #include "GridData.h"
 #include "GridStylizer.h"
-
+#include "TransformMesh.h"
 
 //////////////////////////////////////////////////////////////////////////////
 RasterAdapter::RasterAdapter(LineBufferPool* lbp) : GeometryAdapter(lbp)
@@ -34,6 +34,10 @@ RasterAdapter::~RasterAdapter()
 {
 }
 
+#define PRINT_RS_BOUNDS( ext ) \
+    //printf("      minx = %6.4f miny = %6.4f maxx = %6.4f maxy = %6.4f\n", ext.minx, ext.miny, ext.maxx, ext.maxy); \
+    //printf("      width = %6.4f height = %6.4f\n", ext.width(), ext.height());
+
 
 void RasterAdapter::Stylize(Renderer*                   renderer,
                             RS_FeatureReader*           features,
@@ -44,27 +48,43 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
                             MdfModel::GridSurfaceStyle* surfStyle,
                             const MdfModel::MdfString*  /*tooltip*/,
                             const MdfModel::MdfString*  /*url*/,
-                            RS_ElevationSettings*       /*elevSettings*/)
+                            RS_ElevationSettings*       /*elevSettings*/, 
+                            CSysTransformer*            layer2mapxformer)
 {
+#ifdef _DEBUG
+    //printf("\n---===+++ Enter RasterAdapter::Stylize(() +++===---\n");
+#endif
+    
     m_exec = exec;
 
-    //
-    //now compute how big we want the image to be, in pixels
-    //
-
-    //first get the map data extent
+    // get the map data extent
+    // this is in map cs
     RS_Bounds mapExt = renderer->GetBounds();
 
-    //get the map extent of the image
-    //TODO: need to transform to destination coordinate system
+    // get the extent of the image in the layer cs
     RS_Bounds imgExt = raster->GetExtent();
 
-    //intersect the image extent with the requested map extent
-    RS_Bounds intExt = RS_Bounds::Intersect(mapExt, imgExt);
+    // if the layer and map cs are the same
+    // projRasterExt is the same as rasterExt
+    // this is in the map cs
+    RS_Bounds projRasterExt = imgExt;
 
-    //if raster bounds outside map extent, don't stylize
+    // if we have a transform, we convert from layer CS to map CS
+    if (NULL != layer2mapxformer)
+    {
+        layer2mapxformer->TransformExtent(projRasterExt.minx, projRasterExt.miny,
+            projRasterExt.maxx, projRasterExt.maxy);
+    }    
+
+    // intersect the (projected) image extent with the requested map extent
+    // this is in map cs
+    RS_Bounds intExt = RS_Bounds::Intersect(mapExt, projRasterExt);
+
+    // if raster bounds outside map extent, don't stylize
     if (intExt.IsValid())
     {
+        // raster image falls within the map extents
+
         //compute the needed image size
         double factor = rs_max(intExt.width() / mapExt.width(), intExt.height() / mapExt.height());
         if (factor > 1.0)
@@ -84,17 +104,36 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
             imgH >>= 1;
         }
 
+#ifdef _DEBUG
+        //printf("   -------------------------\n");
+        //printf("   factor = %6.4f  pixelsPerMapUnit = %6.4f\n", factor, pixelsPerMapUnit);
+        //printf("   devW = %d  devH = %d\n", devW, devH);
+        //printf("   imgW = %d  imgH = %d\n", imgW, imgH);
+        //printf("   -------------------------\n");
+#endif
+
+        // get the grid size
+        int rasterGridSize = renderer->GetRasterGridSize();
+        
+        // create TransformMesh object here
+        TransformMesh* xformMesh = NULL;
+
+        if (NULL != layer2mapxformer)
+            xformMesh = new TransformMesh(rasterGridSize, 
+                imgExt, imgW, imgH, 
+                mapExt, devW, devH, 
+                layer2mapxformer);
+
         //NOTE: Switching back to the code above since RESAMPLE doesn't scale to the
         //correct image size -- it scales to the full screen size instead
-        /*
+        
         //NOTE: since we use a RESAMPLE query for rasters for both RFP and WMS,
         //we know they are already at the correct size, so we do not need to
         //compute a window size here anymore (i.e. the code above should no longer
         //be needed -- it is here for reference or if things change in the future
-        int imgW = raster->GetOriginalWidth();
-        int imgH = raster->GetOriginalHeight();
-        */
-
+        //int imgOrigW = raster->GetOriginalWidth();
+        //int imgOrigH = raster->GetOriginalHeight();
+        
         //TODO: check if we need to move Map's AdjustResolutionWithExtent method and
         //adjust the resolution imgW, imgH here.
         GridData* pGridData = new GridData(Point2D(imgExt.minx, imgExt.miny),
@@ -109,13 +148,14 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
         //band.
         swprintf(bandName, 10, /*NOXLATE*/L"%d", 1);
         //raster->SetCurrentBand(i);
-        pGridData->ReadRaster(raster, bandName, imgW, imgH,
-                                imgExt.minx, imgExt.miny, imgExt.maxx, imgExt.maxy, true);
+
+        pGridData->ReadRaster(raster, bandName, imgW, imgH, 
+            imgExt.minx, imgExt.miny, imgExt.maxx, imgExt.maxy, true);
 
         bool succeeded = pGridStylizer->ApplyStyles(pGridData, surfStyle, style);
-        if(succeeded)
+        if (succeeded)
         {
-           //use GDRenderer
+            //use GDRenderer
             Band* pColorBand = pGridData->GetColorBand();
             renderer->StartFeature(features, initialPass, NULL, NULL, NULL);
 
@@ -123,11 +163,11 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
             if (NULL != hillShadeStyle)
             {
                 //for elevation data we are not resampling we just pass in the whole image always and let the renderer figure out the pixed extents
-                renderer->ProcessRaster(pColorBand->GetRawPointer(), imgW * imgH * 4, RS_ImageFormat_ARGB, imgW, imgH, intExt);
+                renderer->ProcessRaster(pColorBand->GetRawPointer(), imgW * imgH * 4, RS_ImageFormat_ARGB, imgW, imgH, intExt, xformMesh);
             }
             else
             {
-                renderer->ProcessRaster(pColorBand->GetRawPointer(), imgW * imgH * 4, RS_ImageFormat_ARGB, imgW, imgH, imgExt);
+                renderer->ProcessRaster(pColorBand->GetRawPointer(), imgW * imgH * 4, RS_ImageFormat_ARGB, imgW, imgH, intExt, xformMesh);
             }
         }
 
@@ -142,68 +182,72 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
 
             RS_InputStream* reader = raster->GetStream(RS_ImageFormat_ABGR, imgW, imgH);
 
-            if (reader)
+            if (NULL != reader 
+                && imgW > 0 && imgH > 0) //this is only a sanity check... should not happen
             {
-                if (imgW > 0 && imgH > 0) //this is only a sanity check... should not happen
+                //allocate destination image
+                //currently we will always stylize into an RGBA32 destination image
+                size_t imgBytes = imgW * imgH * 4; //hardcoded for 32 bit output
+                unsigned char* dst = new unsigned char[imgBytes];
+
+                switch (bpp)
                 {
-                    //allocate destination image
-                    //currently we will always stylize into an RGBA32 destination image
-                    size_t imgBytes = imgW * imgH * 4; //hardcoded for 32 bit output
-                    unsigned char* dst = new unsigned char[imgBytes];
-
-                    switch (bpp)
+                case 32: 
+                    DecodeRGBA(reader, dst, imgW, imgH); 
+                    break;
+                case 24: 
+                    DecodeRGB(reader, dst, imgW, imgH); 
+                    break;
+                case 8: 
                     {
-                    case 32: DecodeRGBA(reader, dst, imgW, imgH); break;
-                    case 24: DecodeRGB(reader, dst, imgW, imgH); break;
-                    case 8: {
-                                RS_InputStream* pal = raster->GetPalette();
-                                DecodeMapped(reader, pal, dst, imgW, imgH);
-                                if (pal)
-                                    delete pal;
-                            }
-                            break;
-                    case 1: {
-                                //for bitonal, get the fore- and background colors first
-                                RS_Color fg(0,0,0,255);
-                                RS_Color bg(255, 255, 255, 0);
-
-                                //just assume two rules, one for each of the colors
-                                if (rules->GetCount() == 2)
-                                {
-                                    MdfModel::GridColorRule* gcr = (MdfModel::GridColorRule*)rules->GetAt(0);
-                                    MdfModel::GridColorExplicit* gce = dynamic_cast<MdfModel::GridColorExplicit*>(gcr->GetGridColor());
-
-                                    if (gce)
-                                        EvalColor(gce->GetExplicitColor(), fg);
-
-                                    gcr = (MdfModel::GridColorRule*)rules->GetAt(1);
-                                    gce = dynamic_cast<MdfModel::GridColorExplicit*>(gcr->GetGridColor());
-
-                                    if (gce)
-                                        EvalColor(gce->GetExplicitColor(), bg);
-                                }
-
-                                DecodeBitonal(reader, fg, bg, dst, imgW, imgH);
-                            }
-                            break;
-                    default: break;
+                        RS_InputStream* pal = raster->GetPalette();
+                        DecodeMapped(reader, pal, dst, imgW, imgH);
+                        if (pal)
+                            delete pal;
                     }
+                    break;
+                case 1: 
+                    {
+                        //for bitonal, get the fore- and background colors first
+                        RS_Color fg(0,0,0,255);
+                        RS_Color bg(255, 255, 255, 0);
 
-                    RS_String tip;
-                    RS_String eurl;
-    //              if (tooltip && !tooltip->empty())
-    //                  EvalString(tooltip, tip);
-    //              if (url && !url->empty())
-    //                  EvalString(*url, eurl);
+                        //just assume two rules, one for each of the colors
+                        if (rules->GetCount() == 2)
+                        {
+                            MdfModel::GridColorRule* gcr = (MdfModel::GridColorRule*)rules->GetAt(0);
+                            MdfModel::GridColorExplicit* gce = dynamic_cast<MdfModel::GridColorExplicit*>(gcr->GetGridColor());
 
-                    renderer->StartFeature(features, true, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, NULL);
-                    renderer->ProcessRaster(dst, imgW * imgH * 4, RS_ImageFormat_ABGR, imgW, imgH, intExt);
+                            if (gce)
+                                EvalColor(gce->GetExplicitColor(), fg);
 
-                    delete [] dst;
+                            gcr = (MdfModel::GridColorRule*)rules->GetAt(1);
+                            gce = dynamic_cast<MdfModel::GridColorExplicit*>(gcr->GetGridColor());
+
+                            if (gce)
+                                EvalColor(gce->GetExplicitColor(), bg);
+                        }
+
+                        DecodeBitonal(reader, fg, bg, dst, imgW, imgH);
+                    }
+                    break;
+                default: 
+                    break;
                 }
 
-                delete reader; //caller deletes reader
+                RS_String tip;
+                RS_String eurl;
+
+                renderer->StartFeature(features, true, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, NULL);
+
+                if (NULL != xformMesh)
+                    renderer->ProcessRaster(dst, imgW * imgH * 4, RS_ImageFormat_ABGR, imgW, imgH, mapExt, xformMesh);
+                else
+                    renderer->ProcessRaster(dst, imgW * imgH * 4, RS_ImageFormat_ABGR, imgW, imgH, intExt, xformMesh);
+
+                delete [] dst;
             }
+            delete reader; //caller deletes reader
         }
         delete pGridData;
         delete pGridStylizer;
@@ -396,5 +440,8 @@ void RasterAdapter::DecodeBitonal(RS_InputStream* is, const RS_Color& fg, const 
             *dstptr++ = (bits & mask)? fgc : bgc;
     }
 }
+
+
+
 
 

@@ -273,57 +273,33 @@ RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeatur
                                                      int devWidth,
                                                      int devHeight)
 {
-    //get feature source id
-    STRING sfeatResId = gl->GetResourceID();
-    Ptr<MgResourceIdentifier> featResId = new  MgResourceIdentifier(sfeatResId);
-
-    Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
-
-    //MdfModel::NameStringPairCollection* mappings = gl->GetPropertyMappings();
 
     //we want to transform from mapping space to layer space
-    Ptr<MgCoordinateSystemTransform> trans;
-    if (mapCs && layerCs)
-    {
-        Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
-        trans = csFactory->GetTransform(mapCs, layerCs);
-        trans->IgnoreDatumShiftWarning(true);
-        trans->IgnoreOutsideDomainWarning(true);
-    }
+    Ptr<MgCoordinateSystemTransform> map2layerTransform;
 
     //bounds in mapping space
     Ptr<MgCoordinate> ll = new MgCoordinateXY(extent.minx, extent.miny);
     Ptr<MgCoordinate> ur = new MgCoordinateXY(extent.maxx, extent.maxy);
-
-    //if we have a valid transform, get the request extent in layer's space
-    if (trans)
+    Ptr<MgEnvelope> mapExt = new MgEnvelope(ll, ur);
+    Ptr<MgEnvelope> rasterExt;
+    if (NULL != layerCs && NULL != mapCs && layerCs->GetCode() != mapCs->GetCode())
     {
-        Ptr<MgEnvelope> mapExt = new MgEnvelope(ll, ur);
+        Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
 
-        //get corresponding bounds in layer space
-        Ptr<MgEnvelope> layerExt = trans->Transform(mapExt);
-        ll = layerExt->GetLowerLeftCoordinate();
-        ur = layerExt->GetUpperRightCoordinate();
+        map2layerTransform = csFactory->GetTransform(mapCs, layerCs);
+        map2layerTransform->IgnoreDatumShiftWarning(true);
+        map2layerTransform->IgnoreOutsideDomainWarning(true);
+
+        rasterExt = map2layerTransform->Transform(mapExt);
     }
-
-    Ptr<MgCoordinateXY> c1 = new MgCoordinateXY(ll->GetX(), ll->GetY());
-    Ptr<MgCoordinateXY> c2 = new MgCoordinateXY(ur->GetX(), ll->GetY());
-    Ptr<MgCoordinateXY> c3 = new MgCoordinateXY(ur->GetX(), ur->GetY());
-    Ptr<MgCoordinateXY> c4 = new MgCoordinateXY(ll->GetX(), ur->GetY());
-    Ptr<MgCoordinateXY> c5 = new MgCoordinateXY(ll->GetX(), ll->GetY());
-
-    Ptr<MgCoordinateCollection> cc = new MgCoordinateCollection();
-    cc->Add(c1);
-    cc->Add(c2);
-    cc->Add(c3);
-    cc->Add(c4);
-    cc->Add(c5);
-
-    Ptr<MgLinearRing> outer = new MgLinearRing(cc);
-    Ptr<MgPolygon> poly = new MgPolygon(outer, NULL);
-
+    else
+    {
+        rasterExt = mapExt;
+    }
+    
     //get the name of the raster property
     MdfModel::MdfString geom = gl->GetGeometry();
+    Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
 
     //TODO:
     //BOGUS:
@@ -351,13 +327,13 @@ RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeatur
         FdoPtr<FdoExpressionCollection> funcParams = FdoExpressionCollection::Create();
         FdoPtr<FdoIdentifier> rasterProp = FdoIdentifier::Create(geom.c_str());
         funcParams->Add(rasterProp);
-        FdoPtr<FdoDataValue> minX = FdoDataValue::Create(extent.minx, FdoDataType_Double);
+        FdoPtr<FdoDataValue> minX = FdoDataValue::Create(rasterExt->GetLowerLeftCoordinate()->GetX(), FdoDataType_Double);
         funcParams->Add(minX);
-        FdoPtr<FdoDataValue> minY = FdoDataValue::Create(extent.miny, FdoDataType_Double);
+        FdoPtr<FdoDataValue> minY = FdoDataValue::Create(rasterExt->GetLowerLeftCoordinate()->GetY(), FdoDataType_Double);
         funcParams->Add(minY);
-        FdoPtr<FdoDataValue> maxX = FdoDataValue::Create(extent.maxx, FdoDataType_Double);
+        FdoPtr<FdoDataValue> maxX = FdoDataValue::Create(rasterExt->GetUpperRightCoordinate()->GetX(), FdoDataType_Double);
         funcParams->Add(maxX);
-        FdoPtr<FdoDataValue> maxY = FdoDataValue::Create(extent.maxy, FdoDataType_Double);
+        FdoPtr<FdoDataValue> maxY = FdoDataValue::Create(rasterExt->GetUpperRightCoordinate()->GetY(), FdoDataType_Double);
         funcParams->Add(maxY);
         FdoPtr<FdoDataValue> height = FdoDataValue::Create(devHeight);
         funcParams->Add(height);
@@ -365,10 +341,10 @@ RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeatur
         funcParams->Add(width);
 
         FdoPtr<FdoFunction> clipFunc = FdoFunction::Create(L"RESAMPLE", funcParams);
-
         STRING func = clipFunc->ToString();
         options->AddComputedProperty(L"clipped_raster", func);
 
+        Ptr<MgPolygon> poly = GetPolygonFromEnvelope(rasterExt);
         options->SetSpatialFilter(geom, poly, MgFeatureSpatialOperations::Intersects);
 
         if (geom == L"Raster")
@@ -384,8 +360,11 @@ RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeatur
     else if (!gl->GetFilter().empty())
         options->SetFilter(gl->GetFilter());
 
+    //get feature source id
+    STRING sfeatResId = gl->GetResourceID();
+    Ptr<MgResourceIdentifier> featResId = new  MgResourceIdentifier(sfeatResId);
+    
     Ptr<MgFeatureReader> rdr;
-
     try
     {
         // TODO: could it be an extension name and not a FeatureClassName?
@@ -629,44 +608,21 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                         item = TransformCache::GetLayerToMapTransform(transformCache, gl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
                     }
 
-                    Ptr<MgCoordinateSystem> layerCs = item? item->GetCoordSys() : NULL;
+                    Ptr<MgCoordinateSystem> layerCs = item ? item->GetCoordSys() : NULL;
                     MgCSTrans* xformer = item? item->GetTransform() : NULL;
 
-                    // Test if layer and map are using different coordinate systems
-                    if (NULL != layerCs.p && NULL != dstCs && layerCs->GetCode() != dstCs->GetCode())
+                    // Test if layer and map are using the same coordinate systems
+                    if (NULL == layerCs.p || NULL == dstCs || layerCs->GetCode() == dstCs->GetCode())
                     {
-                            // Source and destination coord sys are different,
-                            // i.e. the raster image and the map are not using the same coordinate system.
-                            STRING whyMsg = layerCs->GetCode();
-                            MgStringCollection arguments;
-                            arguments.Add(whyMsg);
-                            whyMsg = mapLayer->GetName();
-                            arguments.Add(whyMsg);
-                            whyMsg = dstCs->GetCode();
-                            arguments.Add(whyMsg);
-                            throw new MgRasterTransformationNotSupportedException(L"MgMappingUtil.StylizeLayers", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemTransformationMismatch", &arguments);
+                        // No transform required
+                        xformer = NULL;
                     }
-
-                    //grid layer does not yet have hyperlink or tooltip
-                    //extract hyperlink and tooltip info
-//                  if (!gl->GetToolTip().empty()) layerInfo.hastooltips() = true;
-//                  if (!gl->GetUrl().empty()) layerInfo.hashyperlinks() = true;
 
                     //set up the property name mapping -- it tells us what
                     //string the viewer should be displaying as the name of each
                     //feature property
                     // TODO: check to see if name is FeatureClass or Extension name
                     RS_FeatureClassInfo fcinfo(gl->GetFeatureName());
-
-                    //GridLayer does not yet have property mappings
-                    /*
-                    MdfModel::NameStringPairCollection* pmappings = gl->GetPropertyMappings();
-                    for (int j=0; j<pmappings->GetCount(); j++)
-                    {
-                        MdfModel::NameStringPair* m = pmappings->GetAt(j);
-                        fcinfo.add_mapping(m->GetName(), m->GetValue());
-                    }
-                    */
 
                     //check for overridden feature query filter and remember it.
                     //we will use this when making feature queries
@@ -694,7 +650,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 
                     if (NULL != rsReader)
                     {
-                        //stylize into a dwf
+                        //stylize grid layer
                         dr->StartLayer(&layerInfo, &fcinfo);
                         ds->StylizeGridLayer(gl, dr, rsReader, xformer, scale, NULL, NULL);
                         dr->EndLayer();
@@ -1102,6 +1058,35 @@ MgByteReader* MgMappingUtil::DrawFTS(MgResourceService* svcResource,
     return NULL;
 }
 
+
+// transforms a given extent and returns the new extent in the new cs
+MgEnvelope* MgMappingUtil::TransformExtent(MgEnvelope* extent, MgCoordinateSystemTransform* xform)
+{
+    Ptr<MgEnvelope> xformedExt = xform->Transform(extent);
+    Ptr<MgPolygon> ccPoly = GetPolygonFromEnvelope(xformedExt);
+
+    return ccPoly->Envelope();
+}
+
+// returns an MgPolygon from a given envelope
+MgPolygon* MgMappingUtil::GetPolygonFromEnvelope(MgEnvelope* env)
+{
+    Ptr<MgCoordinate> ll = env->GetLowerLeftCoordinate();
+    Ptr<MgCoordinate> ur = env->GetUpperRightCoordinate();
+
+    Ptr<MgCoordinateXY> c1 = new MgCoordinateXY(ll->GetX(), ll->GetY());
+    Ptr<MgCoordinateXY> c2 = new MgCoordinateXY(ur->GetX(), ll->GetY());
+    Ptr<MgCoordinateXY> c3 = new MgCoordinateXY(ur->GetX(), ur->GetY());
+    Ptr<MgCoordinateXY> c4 = new MgCoordinateXY(ll->GetX(), ur->GetY());
+    Ptr<MgCoordinateXY> c5 = new MgCoordinateXY(ll->GetX(), ll->GetY());
+
+    Ptr<MgCoordinateCollection> cc = new MgCoordinateCollection();
+    cc->Add(c1); cc->Add(c2); cc->Add(c3); cc->Add(c4); cc->Add(c5);
+
+    Ptr<MgLinearRing> outer = new MgLinearRing(cc);
+    return new MgPolygon(outer, NULL);
+}
+
 void MgMappingUtilExceptionTrap(FdoException* except, int line, wchar_t* file)
 {
     MG_TRY()
@@ -1135,4 +1120,5 @@ void MgMappingUtil::InitializeStylizerCallback()
 {
     SetStylizerExceptionCallback(&MgMappingUtilExceptionTrap);
 }
+
 

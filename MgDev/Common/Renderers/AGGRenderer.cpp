@@ -21,6 +21,7 @@
 #include "LineStyle.h"
 #include "SLDSymbols.h"
 #include "LineStyleDef.h"
+#include "TransformMesh.h"
 
 #include "AGGImageIO.h"
 
@@ -73,6 +74,18 @@ bool font_flip_y = !flip_y;
 #define SYMBOL_BITMAP_SIZE 128
 #define SYMBOL_BITMAP_MAX 1024
 
+#ifndef _WIN32
+
+// Linux version of GetTickCount()
+#include <sys/times.h>
+
+long GetTickCount()
+{
+    tms tm;
+    return times(&tm);
+}
+
+#endif
 
 // constructor that allows a backbuffer
 AGGRenderer::AGGRenderer(int width,
@@ -509,19 +522,38 @@ void AGGRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
     }
 }
 
+#define PRINT_RS_BOUNDS( ext ) \
+    printf("      minx = %6.4f miny = %6.4f maxx = %6.4f maxy = %6.4f\n", ext.minx, ext.miny, ext.maxx, ext.maxy); \
+    printf("      width = %6.4f height = %6.4f\n", ext.width(), ext.height());
+
 
 void AGGRenderer::ProcessRaster(unsigned char* data,
                                 int length,
                                 RS_ImageFormat format,
-                                int width, int height,
-                                RS_Bounds& extents)
+                                int width,                // width of raster in pixels
+                                int height,               // height of raster in pixels
+                                RS_Bounds& extents,       // extents of (projected) raster image intersected with map
+                                TransformMesh* xformMesh)
 {
     double cx = 0.5 * (extents.minx + extents.maxx);
     double cy = 0.5 * (extents.miny + extents.maxy);
     WorldToScreenPoint(cx, cy, cx, cy);
 
-    //pass to the screen space render function
-    DrawScreenRaster(data, length, format, width, height, cx, cy, extents.width() * m_xform.x0 + 1, -(extents.height() * m_xform.y1 + 1), 0.0);
+    // width and height of (projected) image in device space
+    double imgDevW = extents.width() * m_xform.x0 + 1;
+    double imgDevH = extents.height() * m_xform.y1 + 1;
+
+    // check to see if we need to transform the image
+    if (xformMesh != NULL)
+    {
+        // draw with transform
+        DrawScreenRasterTransform(c(), data, length, format, width, height, cx, cy, imgDevW, imgDevH, xformMesh);
+    }
+    else
+    {
+        // draw without transform
+        DrawScreenRaster(data, length, format, width, height, cx, cy, imgDevW, -imgDevH, 0.0);
+    }
 }
 
 
@@ -1946,7 +1978,6 @@ void AGGRenderer::DrawScreenRaster(unsigned char* data, int length,
     DrawScreenRaster(c(), data, length, format, native_width, native_height, x, y, w, h, angledeg);
 }
 
-
 void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int length,
                                    RS_ImageFormat format, int native_width, int native_height,
                                    double x, double y, double w, double h, double angledeg)
@@ -1967,12 +1998,10 @@ void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int le
     agg::trans_affine img_mtx;
     img_mtx.reset();
 
-    //img_mtx.flip_y();
     img_mtx *= agg::trans_affine_translation(-native_width/2, -native_height/2);
     img_mtx *= agg::trans_affine_scaling(w / native_width, h / native_height);
     img_mtx *= agg::trans_affine_rotation(angledeg * agg::pi / 180.0);
     img_mtx *= agg::trans_affine_translation(x, y);
-    //img_mtx *= trans_affine_resizing();
     img_mtx.invert();
 
     double w2 = w * 0.5;
@@ -2026,6 +2055,120 @@ void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int le
     //attach an agg buffer to the source image data
     mg_rendering_buffer src(data, native_width, native_height, 4 * native_width);
 
+    // Render the data
+    RenderWithTransform(src, cxt, img_mtx, format);
+}
+
+void AGGRenderer::DrawScreenRasterTransform(agg_context* cxt, unsigned char* data, int length,
+                                   RS_ImageFormat format, int native_width, int native_height,
+                                   double x, double y, double w, double h,
+                                   TransformMesh* xformMesh)
+{
+    //if it's PNG, decode it and come back around
+    if (format == RS_ImageFormat_PNG)
+    {
+        unsigned int* decoded = AGGImageIO::DecodePNG(data, length, native_width, native_height);
+
+        if (decoded)
+            DrawScreenRasterTransform(cxt, (unsigned char*)decoded, native_width * native_height * 4, RS_ImageFormat_ARGB, native_width, native_height, x, y, w, h, xformMesh);
+
+        delete [] decoded;
+        return;
+    }
+
+#ifdef _DEBUG
+    long dwStart = GetTickCount();
+#endif
+
+    //attach an agg buffer to the source image data
+    mg_rendering_buffer src(data, native_width, native_height, 4 * native_width);
+
+    // read the xformMesh
+    int num_pts = xformMesh->GetTotalPoints();
+    int num_verts_per_column = xformMesh->GetTotalVerticalPoints();
+    int horz_count = 1;
+
+    for (int i = 0; i < num_pts - num_verts_per_column - 1; i++)
+    {
+        // skip the top row of points
+        if (i == horz_count * num_verts_per_column - 1)
+        {
+            ++i;
+            ++horz_count;
+        }
+
+        // ul------ur
+        // |        |
+        // |        |
+        // |        |
+        // ll------lr
+
+        int lowerLeftIndex = i;
+        int lowerRightIndex = i + num_verts_per_column;
+        int upperRightIndex = lowerRightIndex + 1;
+        int upperLeftIndex = lowerLeftIndex + 1;
+
+        RenderTransformMeshRectangle(src, cxt, format, xformMesh,
+            lowerLeftIndex, lowerRightIndex, upperLeftIndex, upperRightIndex);
+    }
+
+#ifdef _DEBUG
+    printf("  AGGRenderer::DrawScreenRasterTransform() total time = %6.4f (s)\n", (GetTickCount()-dwStart)/1000.0);
+#endif
+
+}
+
+// Renders the mesh rectangle defined by the point mappings at the four supplied mesh indices
+void AGGRenderer::RenderTransformMeshRectangle(mg_rendering_buffer& src, agg_context* cxt, RS_ImageFormat format,
+          TransformMesh* transformMesh, int lowerLeftIndex, int lowerRightIndex, int upperLeftIndex, int upperRightIndex)
+{
+    MeshPoint mesh_pt_ll = transformMesh->GetMeshPoint(lowerLeftIndex);
+    MeshPoint mesh_pt_lr = transformMesh->GetMeshPoint(lowerRightIndex);
+    MeshPoint mesh_pt_ul = transformMesh->GetMeshPoint(upperLeftIndex);
+    MeshPoint mesh_pt_ur = transformMesh->GetMeshPoint(upperRightIndex);
+
+    // Render the lower triangle
+    RenderTransformedTriangle(src, cxt, format,
+        mesh_pt_ll.pt_src, mesh_pt_lr.pt_src, mesh_pt_ur.pt_src,
+        mesh_pt_ll.pt_dest, mesh_pt_lr.pt_dest, mesh_pt_ur.pt_dest);
+
+    // Render the upper triangle
+    RenderTransformedTriangle(src, cxt, format,
+        mesh_pt_ur.pt_src, mesh_pt_ul.pt_src, mesh_pt_ll.pt_src,
+        mesh_pt_ur.pt_dest, mesh_pt_ul.pt_dest, mesh_pt_ll.pt_dest);
+}
+
+// Renders the triangle in the source image defined by the three source points into
+// the triangle in the supplied context defined by the three destination points
+void AGGRenderer::RenderTransformedTriangle(mg_rendering_buffer& src, agg_context* cxt, RS_ImageFormat format,
+                                 RS_F_Point srcPt1, RS_F_Point /*srcPt2*/, RS_F_Point srcPt3,
+                                 RS_F_Point destPt1, RS_F_Point destPt2, RS_F_Point destPt3)
+{
+    // Set up the destination parallelogram
+    double parallelogram[6] = { destPt1.x, destPt1.y, destPt2.x, destPt2.y, destPt3.x, destPt3.y };
+
+    // Set up the destination triangle polygon
+    cxt->ras.reset();
+    cxt->ras.move_to_d(destPt1.x, destPt1.y);
+    cxt->ras.line_to_d(destPt2.x, destPt2.y);
+    cxt->ras.line_to_d(destPt3.x, destPt3.y);
+    cxt->ras.close_polygon();
+
+    // Set up the transformation from the source to destination
+    agg::trans_affine img_mtx;
+    img_mtx.reset();
+    img_mtx.rect_to_parl(srcPt1.x, srcPt1.y, srcPt3.x, srcPt3.y, parallelogram);
+    img_mtx.invert(); // Renderer uses inverse of matrix
+
+    // Render the triangle
+    RenderWithTransform(src, cxt, img_mtx, format);
+}
+
+// Renders the source image to the destination context, using the specified
+// affine transformation matrix
+void AGGRenderer::RenderWithTransform(mg_rendering_buffer& src, agg_context* cxt,
+                                      agg::trans_affine& img_mtx, RS_ImageFormat format)
+{
     if (format == RS_ImageFormat_ABGR)
     {
         mg_pixfmt_type_abgr pf(src);
@@ -2083,7 +2226,6 @@ void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int le
         agg::render_scanlines_aa(cxt->ras, cxt->sl, cxt->ren_pre, sa, sg);
     }
 }
-
 
 void AGGRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, RS_F_Point* path, int npts, double param_position)
 {

@@ -266,6 +266,8 @@ const STRING MgConfigProperties::DefaultMappingServicePropertyLegendFont        
 const STRING MgConfigProperties::RenderingServicePropertiesSection                          = L"RenderingServiceProperties";
 const STRING MgConfigProperties::RenderingServicePropertyTileExtentOffset                   = L"TileExtentOffset";
 const double MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset            = 0.35;
+const STRING MgConfigProperties::RenderingServicePropertyRasterGridSize                     = L"RasterGridSize";
+const INT32  MgConfigProperties::DefaultRenderingServicePropertyRasterGridSize              = 100;
 
 // ******************************************************************
 // Font Alias Mappings section
@@ -554,6 +556,7 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviMappingServiceProperties[
 const MgConfigValidationInfo MgConfigProperties::sm_cviRenderingServiceProperties[] =
 {
     { MgConfigProperties::RenderingServicePropertyTileExtentOffset                  , MgPropertyType::Double    , 0.0                                   , 1.0                                   , L""                                       },
+    { MgConfigProperties::RenderingServicePropertyRasterGridSize                    , MgPropertyType::Int32     , 10                                    , MG_CONFIG_MAX_INT32                   , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 

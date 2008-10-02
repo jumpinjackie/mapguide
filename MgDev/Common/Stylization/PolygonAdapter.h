@@ -37,7 +37,8 @@ public:
                          MdfModel::FeatureTypeStyle* style,
                          const MdfModel::MdfString*  tooltip = NULL,
                          const MdfModel::MdfString*  url = NULL,
-                         RS_ElevationSettings*       elevSettings = NULL);
+                         RS_ElevationSettings*       elevSettings = NULL, 
+                         CSysTransformer*            layer2mapxformer = NULL);
 
 private:
     void ObtainStyle(MdfModel::AreaSymbolization2D* asym, RS_FillStyle& fillStyle);

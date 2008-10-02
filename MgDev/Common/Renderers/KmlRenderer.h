@@ -30,6 +30,8 @@ typedef std::map<RS_String, KmlContent*> ThemeMap;
 typedef std::map<KmlLineStyle, int> KmlLineStyleIdMap;
 typedef std::map<KmlPolyStyle, int> KmlPolyStyleIdMap;
 
+class TransformMesh;
+
 class KmlRenderer : public SE_Renderer
 {
 public:
@@ -76,7 +78,8 @@ public:
                                RS_ImageFormat format,
                                int            width,
                                int            height,
-                               RS_Bounds&     extents);
+                               RS_Bounds&     extents, 
+                               TransformMesh* xformMesh = NULL);
 
     virtual void ProcessMarker(LineBuffer* lb, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds = NULL);
 

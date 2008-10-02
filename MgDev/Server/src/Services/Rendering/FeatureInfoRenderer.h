@@ -24,6 +24,7 @@
 class MgPropertyCollection;
 class LineBuffer;
 class KeyEncode;
+class TransformMesh;
 
 //A simple Renderer implementation for use by the QueryFeatures
 //RenderingService API. Accumulates feature IDs and also attributes
@@ -69,7 +70,8 @@ public:
                                RS_ImageFormat format,
                                int            width,
                                int            height,
-                               RS_Bounds&     extents)
+                               RS_Bounds&     extents, 
+                               TransformMesh* xformMesh = NULL)
     {}
 
     virtual void ProcessMarker(LineBuffer*   lb,

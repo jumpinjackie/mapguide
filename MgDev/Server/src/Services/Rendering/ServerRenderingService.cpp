@@ -71,6 +71,11 @@ MgServerRenderingService::MgServerRenderingService() : MgRenderingService()
                           MgConfigProperties::GeneralPropertyRenderer,
                           m_renderername,
                           MgConfigProperties::DefaultGeneralPropertyRenderer);
+
+    pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
+                          MgConfigProperties::RenderingServicePropertyRasterGridSize,
+                          m_rasterGridSize,
+                          MgConfigProperties::DefaultRenderingServicePropertyRasterGridSize);
 }
 
 
@@ -1303,8 +1308,18 @@ SE_Renderer* MgServerRenderingService::CreateRenderer(int width,
                                                       bool localOverposting,
                                                       double tileExtentOffset)
 {
+    SE_Renderer* renderer = NULL;
     if (wcscmp(m_renderername.c_str(), L"AGG") == 0)
-        return new AGGRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);
+    {
+        renderer = new AGGRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);
+    }
     else
-        return new GDRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);
+    {
+        renderer = new GDRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);
+    }
+    if(renderer != NULL)
+    {
+        renderer->SetRasterGridSize(m_rasterGridSize);
+    }
+    return renderer;
 }

@@ -89,7 +89,8 @@ libMgStylization_la_SOURCES = \
   Stylizer.cpp \
   ThemeParameters.cpp \
   Vector2D.cpp \
-  Vector3D.cpp
+  Vector3D.cpp \
+  TransformMesh.cpp
 
 noinst_HEADERS = \
   atom.h \
@@ -195,7 +196,8 @@ noinst_HEADERS = \
   SymbolVisitor.h \
   ThemeParameters.h \
   Vector2D.h \
-  Vector3D.h
+  Vector3D.h \
+  TransformMesh.h
 
 libMgStylization_la_LIBADD =
 
