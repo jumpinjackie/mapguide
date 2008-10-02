@@ -43,6 +43,7 @@ class WT_Logical_Point;
 struct RS_Font;
 
 class complex_polygon_gd;
+class TransformMesh;
 
 class GDRenderer : public SE_Renderer, public RS_FontEngine
 {
@@ -94,7 +95,8 @@ public:
                                              RS_ImageFormat format,
                                              int            width,
                                              int            height,
-                                             RS_Bounds&     extents);
+                                             RS_Bounds&     extents, 
+                                             TransformMesh*   xformMesh = NULL);
 
     RENDERERS_API virtual void ProcessMarker(LineBuffer* lb, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds = NULL);
 

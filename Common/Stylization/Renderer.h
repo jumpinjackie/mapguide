@@ -27,6 +27,7 @@
 
 class LineBuffer;
 class CSysTransformer;
+class TransformMesh;
 
 ///<summary>
 /// Base class for all Renderers. Renderers take stylization output and
@@ -39,6 +40,11 @@ public:
     virtual ~Renderer()
     {
     }
+
+    // Return the size of the transformation mesh grid size, used
+    // for raster re-projection.
+    virtual int GetRasterGridSize(){return 100;}
+    virtual void SetRasterGridSize(int){};
 
     // By default, set the renderer to process tooltip expressions
     virtual bool SupportsTooltips(){return true;}
@@ -121,7 +127,8 @@ public:
                                RS_ImageFormat   format,
                                int              width,
                                int              height,
-                               RS_Bounds&       extents) = 0;
+                               RS_Bounds&       extents, 
+                               TransformMesh*   xformMesh = NULL) = 0;
 
     ///<summary>
     /// Feature Marker Symbols -- added to feature W2D and should also

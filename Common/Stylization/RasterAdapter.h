@@ -38,7 +38,8 @@ public:
                          MdfModel::GridSurfaceStyle* surfStyle = NULL,
                          const MdfModel::MdfString*  tooltip = NULL,
                          const MdfModel::MdfString*  url = NULL,
-                         RS_ElevationSettings*       elevSettings = NULL);
+                         RS_ElevationSettings*       elevSettings = NULL, 
+                         CSysTransformer*            layer2mapxformer = NULL);
 
     void DecodeRGBA(RS_InputStream* is, unsigned char* dst, int w, int h);
     void DecodeRGB(RS_InputStream* is, unsigned char* dst, int w, int h);

@@ -329,6 +329,10 @@ EXTERNAL_API:
     static const STRING RenderingServicePropertyTileExtentOffset;       /// value("TileExtentOffset")
     static const double DefaultRenderingServicePropertyTileExtentOffset;/// value(0.35)
 
+    /// Sets desired raster re-projection grid size
+    static const STRING RenderingServicePropertyRasterGridSize;         /// value("RasterGridSize")
+    static const INT32 DefaultRenderingServicePropertyRasterGridSize;   /// value(100)
+
     /// FONT ALIASES SECTION -----------------------------------------------------------------------------
 
     /// font alias mappings

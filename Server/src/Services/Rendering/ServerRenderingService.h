@@ -212,6 +212,8 @@ private:
 
     // this will eventually be removed
     STRING m_renderername;
+
+    INT32 m_rasterGridSize;
 };
 
 #endif

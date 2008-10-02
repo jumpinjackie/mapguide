@@ -365,7 +365,7 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
 void DefaultStylizer::StylizeGridLayer(MdfModel::GridLayerDefinition* layer,
                                        Renderer*                      renderer,
                                        RS_FeatureReader*              features,
-                                       CSysTransformer*               /*xformer*/,
+                                       CSysTransformer*               layer2mapxformer,
                                        double                         mapScale,
                                        CancelStylization              cancel,
                                        void*                          userData)
@@ -400,10 +400,14 @@ void DefaultStylizer::StylizeGridLayer(MdfModel::GridLayerDefinition* layer,
     // main loop over raster data
     while (features->ReadNext())
     {
+        // for vector data -- xformer is passed intp the feature reader caller and the data is transformed to the map cs
+        // 
         RS_Raster* raster = features->GetRaster(rpName);
 
+        // at this point raster is in the raster layer's cs
+        //
         if (m_pRasterAdapter)
-            m_pRasterAdapter->Stylize(renderer, features, true, exec, raster, gcs, gss, NULL, NULL);
+            m_pRasterAdapter->Stylize(renderer, features, true, exec, raster, gcs, gss, NULL, NULL, NULL, layer2mapxformer);
 
         delete raster; // need to free returned raster
 

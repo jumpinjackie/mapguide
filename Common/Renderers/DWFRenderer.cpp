@@ -61,6 +61,11 @@
 //GD headers
 #include "gd.h"
 
+//AGG headers
+#include "agg_context.h"
+#include "AGGRenderer.h"
+#include "AGGImageIO.h"
+
 using namespace DWFToolkit;
 using namespace DWFCore;
 using namespace std;
@@ -723,13 +728,49 @@ void DWFRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
 // Raster serialization.
 //
 //-----------------------------------------------------------------------------
-void DWFRenderer::ProcessRaster(unsigned char* data,
-                                int            length,
-                                RS_ImageFormat format,
+void DWFRenderer::ProcessRaster(unsigned char* _data,
+                                int            _length,
+                                RS_ImageFormat _format,
                                 int            width,
                                 int            height,
-                                RS_Bounds&     extents)
+                                RS_Bounds&     extents, 
+                                TransformMesh* xformMesh)
 {
+    unsigned char* data = _data;
+    int length = _length;
+    RS_ImageFormat format = _format;
+    
+    agg_context* aggcxt = NULL;
+
+    if (NULL != xformMesh)
+    {
+        double cx = 0.5 * (extents.minx + extents.maxx);
+        double cy = 0.5 * (extents.miny + extents.maxy);
+        WorldToScreenPoint(cx, cy, cx, cy);
+        cx = cx / GetScreenUnitsPerPixel();
+        cy = cy / GetScreenUnitsPerPixel();
+
+        // width and height of (projected) image in device space
+        double imgDevW = extents.width() * m_scale / GetScreenUnitsPerPixel() + 1;
+        double imgDevH = extents.height() * m_scale / GetScreenUnitsPerPixel() + 1;
+
+        // create agg_context for outputting projected raster
+        // 
+        aggcxt = new agg_context(NULL, (int)imgDevW, (int)imgDevH);
+        aggcxt->ren.clear(agg::argb8_packed(0));
+        
+        AGGRenderer::DrawScreenRasterTransform(aggcxt, data, length, format, width, height, cx, cy, imgDevW, imgDevH, xformMesh);
+        //AGGRenderer::_DrawDummyRect(aggcxt, imgDevW, imgDevH, xformMesh);
+        int aggw = aggcxt->rb.width();
+        int aggh = aggcxt->rb.height();
+
+        RS_Color bgColor = 0;
+        RS_ByteData* byte_data = AGGImageIO::Save(L"PNG", aggcxt->m_rows, aggw, aggh, aggw, aggh, bgColor);
+        data = byte_data->GetBytes();
+        length = byte_data->GetNumBytes();
+        format = RS_ImageFormat_PNG;
+    }
+
     if (format != RS_ImageFormat_ABGR && format != RS_ImageFormat_PNG)
     {
         //TODO: support other formats...
@@ -782,6 +823,9 @@ void DWFRenderer::ProcessRaster(unsigned char* data,
         img.serialize(*m_w2dFile);
         IncrementDrawableCount();
     }
+
+    if (NULL != aggcxt)
+        delete aggcxt;
 }
 
 

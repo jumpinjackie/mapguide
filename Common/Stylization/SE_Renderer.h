@@ -65,6 +65,9 @@ public:
     virtual void GetWorldToScreenTransform(SE_Matrix& xform) = 0;
     virtual void WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy) = 0;
     virtual void ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy) = 0;
+        
+    STYLIZATION_API int GetRasterGridSize();
+    STYLIZATION_API void SetRasterGridSize(int size);
 
     // returns the viewport rotation angle, in radians CCW
     STYLIZATION_API virtual double GetWorldToScreenRotation();
@@ -113,6 +116,7 @@ protected:
     unsigned int m_selFillColor;
     RS_Color m_textForeColor;
     RS_Color m_textBackColor;
+    int m_rasterGridSize;
 
 private:
     RS_F_Point m_lastSymbolExtent[4];

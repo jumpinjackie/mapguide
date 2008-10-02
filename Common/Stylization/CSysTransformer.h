@@ -31,6 +31,55 @@ public:
 
     virtual void TransformPoints(int numPts, double* x, double* y) = 0;
 
+    // We provide a simple, default implementation of TransformExtent
+    virtual void TransformExtent(double& minX, double& minY, double& maxX, double& maxY)
+    {
+        double xValues[4];
+        double yValues[4];
+        
+        // Lower left
+        xValues[0] = minX;
+        yValues[0] = minY;
+
+        // Lower right
+        xValues[1] = maxX;
+        yValues[1] = minY;
+
+        // Upper left
+        xValues[2] = minX;
+        yValues[2] = maxY;
+
+        // Upper right
+        xValues[3] = maxX;
+        yValues[3] = maxY;
+
+        // Transform the four corners
+        TransformPoints(4, xValues, yValues);
+
+        // Determine the new bounding box
+        minX = maxX = xValues[0];
+        minY = maxY = yValues[0];
+        for(int i = 1; i < 4; i++)
+        {
+            if(xValues[i] < minX)
+            {
+                minX = xValues[i];
+            }
+            if(xValues[i] > maxX)
+            {
+                maxX = xValues[i];
+            }
+            if(yValues[i] < minY)
+            {
+                minY = yValues[i];
+            }
+            if(yValues[i] > maxY)
+            {
+                maxY = yValues[i];
+            }
+        }
+    }
+
     //returns the linear unit scale factor
     virtual double GetLinearScale() = 0;
 };

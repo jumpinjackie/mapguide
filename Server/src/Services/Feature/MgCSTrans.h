@@ -29,6 +29,7 @@ public:
 
     virtual void TransformPoint(double& x, double& y);
     virtual void TransformPoints(int numPts, double* x, double* y);
+    virtual void TransformExtent(double& minX, double& minY, double& maxX, double& maxY);
     virtual double GetLinearScale();
 
 private:

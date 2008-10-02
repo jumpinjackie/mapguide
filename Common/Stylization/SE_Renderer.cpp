@@ -31,6 +31,7 @@ SE_Renderer::SE_Renderer()
 , m_selFillColor(0)
 , m_textForeColor(0)
 , m_textBackColor(0)
+, m_rasterGridSize(100)
 {
 }
 
@@ -40,6 +41,15 @@ SE_Renderer::~SE_Renderer()
 {
 }
 
+int SE_Renderer::GetRasterGridSize()
+{
+    return m_rasterGridSize;
+}
+
+void SE_Renderer::SetRasterGridSize(int size)
+{
+    m_rasterGridSize = size;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 void SE_Renderer::SetRenderSelectionMode(bool mode)
