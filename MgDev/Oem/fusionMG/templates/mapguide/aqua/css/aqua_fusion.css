@@ -1,0 +1,472 @@
+/********************************************************
+  Noble Studios - 05/21/07
+  ns_adsk.css
+  Mapguide Layout
+********************************************************/
+
+html {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-image: url(../images/backgroundTile.gif);
+  background-repeat: repeat-y;
+  background-color: #1a1d2e;
+  background-position: left top;
+}
+
+body, table {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 75%;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  color: #000000;
+}
+
+img {
+  border: none;
+}
+
+
+/********************************************************
+  Main Map
+********************************************************/
+
+#Map {
+  background: url(../images/mapBackground.gif) repeat-x #efefef bottom;
+  overflow: hidden;
+  z-index: 0;
+}
+
+#Maptip {
+    display: none;
+    border: 1px solid #000;
+    background-color: #E5DAC7;
+    padding: 4px;
+}
+
+/********************************************************
+  Toolbars and Buttons
+********************************************************/
+
+#Toolbar {
+  background: url(../images/ToolbarBackground.gif) repeat-x;
+  z-index: 1;
+}
+
+#ToolbarVertical {
+  background: url(../images/ToolbarVerticalBackground.gif) repeat-y;
+  z-index: 1;
+}
+
+#Toolbar ul.jxToolbar {
+  width: 1000%;
+}
+
+#Toolbar a.jxButton {
+  padding: 2px;
+  margin: 2px 0px 0px 0px;
+}
+
+#Toolbar span.jxButtonLabel {
+  color: #fff;
+}
+
+#Toolbar ul.jxMenu span.jxButtonLabel, 
+#Toolbar ul.jxSubMenu span.jxButtonLabel {
+  color: #000;
+}
+  
+#ToolbarVertical ul.jxToolbar {
+  margin-left: 2px;
+}
+
+#ToolbarVertical a.jxButton {
+  padding: 2px 0px 2px 0px;
+  margin: 3px 0px 0px 0px;
+}
+
+a.jxButtonMenu span.jxButtonLabel, 
+a.jxButtonFlyout span.jxButtonLabel  {
+  background-position: left ;
+  background-repeat: no-repeat;
+}
+
+/********************************************************
+  Main Menu
+********************************************************/
+
+#FileMenu {
+  z-index: 2;
+}
+
+#FileMenu a.jxButton {
+  padding: 0px;
+}
+
+#FileMenu a.jxButton:hover  {
+  background-image: url(../images/filemenuHover.gif);
+  background-repeat: repeat-x;
+  background-position: bottom;
+}
+
+#FileMenu ul.jxMenu a.jxButton:hover, 
+#FileMenu ul.jxSubMenu a.jxButton:hover {
+  background-image: none;
+}
+
+#FileMenu span.jxButtonLabel {
+  padding: 7px;
+  font-size: 11px;
+  line-height: 20px;
+  background-image: none;
+}
+
+#FileMenu a.jxButtonMenu span.jxButtonSpan {
+  background-image: none;
+}
+
+ 
+/********************************************************
+  Status Bar
+********************************************************/
+
+#StatusbarContainer {
+  background-image: url(../images/statusBarBackground.gif);
+  background-repeat: repeat-x;
+  background-color: #ffffff;
+  line-height: 21px;
+  font-size: 10px;
+  vertical-align: middle;
+  color: #000000;
+}
+
+#Statusbar .jxSplitterBar {
+    width: 1px;
+    border-left: 1px solid #999;
+    border-right: 1px solid #fff;
+    cursor: 'col-resize';
+    margin-top: 1px;
+}
+
+#Statusbar .spanCursorPosition, 
+#Statusbar .spanViewSize, 
+#Statusbar .spanSelectionInfo {
+  padding: 4px 10px;
+}
+
+.inputEditableScale {
+  font: normal 10px Verdana, Arial, Helvetica, sans-serif;
+}
+
+#StatusOverviewMap {
+  position: absolute;
+  right: 139px;
+  padding-top: 2px;
+}
+
+#pbmg {
+  position: absolute;
+  right: 0px;
+  padding-top: 2px;
+}
+
+/********************************************************
+  Navigator
+********************************************************/
+
+#Navigator {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 100;
+}
+
+/* Override dialog styles for Navigator dialog */
+
+#OverviewMap {
+    width: 100%;
+    height: 100%;
+}
+
+#Legend {
+    width: 100%;
+    height: 100%;
+}
+
+#SelectionPanel {
+    width: 100%;
+    height: 100%;
+}
+
+#TaskPane {
+    width: 100%;
+    height: 100%;
+}
+
+/********************************************************
+  Side Bar Panels
+********************************************************/
+
+#Sidebar {
+  visibility: hidden;
+  display: none;
+}
+
+#SidebarContent {
+  position: absolute;
+  width: 210px;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 8px;
+}
+
+#SidebarCollapse {
+  position: absolute;
+  width: 8px;
+  top: 0px;
+  bottom: 0px;
+  left: 210px;
+  right: 0px;
+}
+
+#SidebarCollapseContent {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  left: 0px;
+  right: 0px;
+  width: 8px;
+  background: url(../images/sidebarCollapseBackground.gif) repeat-y #000;
+}
+
+#SidebarCollapseTop {
+  position: absolute;
+  height: 2px;
+  width: 8px;
+  top: 0px;
+  background: url(../images/sidebarCollapseTop.gif) no-repeat;
+}
+
+#SidebarCollapseBottom {
+  position: absolute;
+  height: 2px;
+  width: 8px;
+  bottom: 0px;
+  background: url(../images/sidebarCollapseBottom.gif) no-repeat;
+}
+
+#SidebarCollapseButton {
+  width: 8px;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  position: absolute;
+}
+
+#SidebarCollapseButton a {
+  display: block;
+  width: 8px;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  position: absolute;
+  height: 100%;
+  text-indent: -9999px;
+  font-size: 1%;
+  background: url(../images/sidebarCollapseButton.gif) center no-repeat;
+}
+
+#SidebarCollapseButton a: visited, 
+#SidebarCollapseButton a:hover, 
+#SidebarCollapseButton a: active {
+  text-decoration: none;
+  font-size: 1%;
+}
+
+.jxPanel {
+  background: url(../images/jxPanelBackround.gif) no-repeat #cccccc left top;
+  overflow: hidden;
+  position: relative;
+  width: 210px;
+  height: 100px;
+  margin: 0 0px 2px 0px;
+}
+
+.jxPanelContent {
+  background: url(../images/jxPanelBottom.gif) bottom left no-repeat;
+  position: absolute;
+  width: 210px;
+  height: 100px;
+}
+
+.jxPanelBar {
+  position: relative;
+  overflow: hidden;
+  height: 23px;
+  width: 210px;
+  background: url(../images/jxPanelBarLeft.gif) no-repeat left top;
+}
+
+.jxPanelTitle {
+  position: absolute;
+  overflow: hidden;
+  height: 23px;
+  width: 210px;
+  left: 2px;
+  background: url(../images/jxPanelBarBackground.gif) repeat-x left top;
+}
+
+.jxPanelLabel {
+  font: bold 11px Verdana, Arial, Helvetica, sans-serif;
+  color: #ffffff;
+  display: block;
+  float: left;
+  padding: 3px 0px 2px 20px;
+}
+
+.jxPanelMaximize {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 10px;
+  height: 10px;
+}
+
+
+/********************************************************
+  Dialog Boxes
+********************************************************/
+  
+#Tasks {
+  position: absolute;
+  left: 350px;
+  top: 100px;
+  width: 244px;
+  height: 302px;
+  z-index: 200;
+}
+
+.PalleteBase {
+  position: absolute;
+  left: 300px;
+  top: 200px;
+  width: 244px;
+  height: 302px;
+  z-index: 1000;
+}
+
+.PalleteTL {
+  position: absolute;
+  width: 8px;
+  height: 29px;
+  top: 0px;
+  left: 0px;
+  background: url(../images/palleteTL.png) no-repeat;
+}
+
+.PalleteT {
+  position: absolute;
+  height: 29px;
+  top: 0px;
+  right: 8px;
+  left: 8px;
+  background: url(../images/palleteT.png) repeat-x;
+}
+
+.PalleteTR {
+  position: absolute;
+  width: 8px;
+  height: 29px;
+  top: 0px;
+  right: 0px;
+  background: url(../images/palleteTR.png) no-repeat;
+}
+
+.PalleteL {
+  position: absolute;
+  width: 8px;
+  top: 29px;
+  bottom: 9px;
+  left: 9;
+  background: url(../images/palleteL.png) repeat-y;
+}
+
+.Pallete {
+  position: absolute;
+  top: 29px;
+  bottom: 9px;
+  right: 8px;
+  left: 8px;
+  background: url(../images/palleteTile.png) #ffffff repeat-y;
+}
+
+.PalleteR {
+  position: absolute;
+  width: 8px;
+  top: 29px;
+  bottom: 9px;
+  right: 0px;
+  background: url(../images/palleteR.png) repeat-y;
+}
+
+.PalleteBL {
+  position: absolute;
+  width: 8px;
+  height: 9px;
+  bottom: 0px;
+  left: 0px;
+  background: url(../images/palleteBL.png) no-repeat;
+}
+
+.PalleteB {
+  position: absolute;
+  height: 9px;
+  bottom: 0px;
+  right: 8px;
+  left: 8px;
+  background: url(../images/palleteB.png) repeat-x;
+}
+
+.PalleteBR {
+  position: absolute;
+  width: 8px;
+  height: 9px;
+  bottom: 0px;
+  right: 0px;
+  background: url(../images/palleteBR.png) no-repeat;
+}
+
+.PalleteT span {
+  display: block;
+  color: #000000;
+  font: bold 11px Verdana, Arial, Helvetica, sans-serif;
+  padding: 5px 10px;
+}
+
+.PalleteButtons {
+  position: absolute;
+  right: 0px;
+  top: 5px;
+}
+
+.PalleteButtons a {
+  padding: 0 3px;
+  border: 1px solid transparent;
+}
+
+.PalleteButtons a:hover {
+  border: 1px solid #666666;
+  background: #cfd0d1;
+}
+  
+.jxTree a, .jxTreeRoot a {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+}
