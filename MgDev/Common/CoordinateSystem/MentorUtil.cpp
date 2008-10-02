@@ -867,6 +867,7 @@ bool IsLegalGeodeticTransformationMethod(INT32 geodeticTransformationMethod)
     case MgCoordinateSystemGeodeticTransformationMethod::ED50:
     case MgCoordinateSystemGeodeticTransformationMethod::DHDN:
     case MgCoordinateSystemGeodeticTransformationMethod::ETRF89:
+    case MgCoordinateSystemGeodeticTransformationMethod::Geocentric:
         return true;
     default:
         return false;
