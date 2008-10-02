@@ -270,7 +270,7 @@ UnitTesting :
 	@echo "./mgserver test" >> unittest.sh
 	@chmod a+x unittest.sh
 
-unittest.sh : serverconfig_linux.ini UnitTestFiles $(map_unittesting_dir)
+unittest.sh : all serverconfig_linux.ini UnitTestFiles $(map_unittesting_dir)
 
 serverconfig_linux.ini :
 	@sed -e 's#^FdoPath.*=.*#FdoPath                            = $(map_fdo_lib)#' \
