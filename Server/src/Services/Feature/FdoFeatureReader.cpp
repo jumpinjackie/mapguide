@@ -44,6 +44,7 @@ MgFdoFeatureReader::~MgFdoFeatureReader()
 
 void MgFdoFeatureReader::Dispose()
 {
+    FDO_SAFE_RELEASE(m_readerCollection);
     delete this;
 }
 
