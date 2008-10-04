@@ -1716,11 +1716,23 @@ MgClassDefinition* MgServerDescribeSchema::GetClassDefinition(MgFeatureSchemaCol
                 if (className == currClassName)
                 {
                     classDef = currClass;
+                    break;
+                }
+                else
+                {
+                    STRING parsedSchemaName, parsedClassName;
+                    MgUtil::ParseQualifiedClassName(className, parsedSchemaName, parsedClassName);
+                    
+                    if (parsedClassName == currClassName)
+                    {
+                        classDef = currClass;
+                        break;
+                    }
                 }
             }
         }
 
-        if (schemaNameFound)
+        if (schemaNameFound || NULL != classDef.p)
         {
             break;
         }

@@ -55,6 +55,43 @@ MgFeatureServiceCacheEntry::~MgFeatureServiceCacheEntry()
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
+/// Return an existing MgFeatureSchemaCacheItem or a newly created one
+/// if it does not exist.
+///
+MgFeatureSchemaCacheItem* MgFeatureServiceCacheEntry::SetFeatureSchemaCacheItem(CREFSTRING schemaName)
+{
+    Ptr<MgFeatureSchemaCacheItem> item = GetFeatureSchemaCacheItem(schemaName);
+    
+    if (NULL == item.p)
+    {
+        item = new MgFeatureSchemaCacheItem();
+        m_featureSchemaCacheItems.insert(MgFeatureSchemaCacheItems::value_type(
+            schemaName, SAFE_ADDREF(item.p)));
+    }
+    
+    return item.Detach();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Return an existing MgFeatureSchemaCacheItem.
+///
+MgFeatureSchemaCacheItem* MgFeatureServiceCacheEntry::GetFeatureSchemaCacheItem(CREFSTRING schemaName)
+{
+    Ptr<MgFeatureSchemaCacheItem> item;
+    MgFeatureSchemaCacheItems::iterator i =
+        m_featureSchemaCacheItems.find(schemaName);
+
+    if (m_featureSchemaCacheItems.end() != i)
+    {
+        item = SAFE_ADDREF(i->second);
+    }
+
+    return item.Detach();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Parse the specified qualified class name.
 ///
 void MgFeatureServiceCacheEntry::ParseQualifiedClassName(
@@ -97,28 +134,38 @@ void MgFeatureServiceCacheEntry::FormatKeys(bool classNameHintUsed,
     CREFSTRING schemaName, CREFSTRING className,
     REFSTRING schemaKey, REFSTRING classKey)
 {
-    STRING parsedClassName;
-    
-    ParseQualifiedClassName(schemaName, className, schemaKey, parsedClassName);
+    ParseQualifiedClassName(schemaName, className, schemaKey, classKey);
 
-    if (schemaKey.empty())
+    if (classNameHintUsed)
     {
-        schemaKey = schemaName;
-    }
-
-    if (classNameHintUsed && !parsedClassName.empty())
-    {
+        // When the class name hint is used, the schema will be cached based
+        // on a mixture of one or more qualified and unqualified class names.
         if (schemaKey.empty())
         {
-            classKey = parsedClassName;
+            if (!schemaName.empty())
+            {
+                schemaKey = schemaName;
+
+                if (!classKey.empty())
+                {
+                    MgUtil::FormatQualifiedClassName(schemaKey, STRING(classKey), classKey);
+                }
+            }
         }
-        else
+        else if (!classKey.empty())
         {
-            MgUtil::FormatQualifiedClassName(schemaKey, parsedClassName, classKey);
+            classKey = className;
         }
     }
     else
     {
+        // When the class name hint is used, the schema will be cached based
+        // on a blank class key.
+        if (schemaKey.empty())
+        {
+            schemaKey = schemaName;
+        }
+
         classKey = L"";
     }
 }
@@ -129,42 +176,57 @@ INT32 MgFeatureServiceCacheEntry::FormatKeys(bool classNameHintUsed,
 {
     typedef std::set<STRING, less<STRING> > MgClassKeySet;
 
-    INT32 nClasses = 0;
-    
     schemaKey = schemaName;
     classKey = L"";
 
-    if (classNameHintUsed)
+    INT32 classCount = (NULL == classNames) ? 0 : classNames->GetCount();
+
+    if (1 == classCount)
     {
+        FormatKeys(classNameHintUsed, schemaName, classNames->GetItem(0), schemaKey, classKey);
+    }
+    else if (classNameHintUsed)
+    {
+        // Use a sorted key set to avoid duplicate class names and ensure uniqueness.
         MgClassKeySet classKeys;
+        bool hasOneSchema = true;
+        STRING savedSchemaKey;
 
-        if (NULL != classNames)
+        for (INT32 i = 0; i < classCount; ++i)
         {
-            INT32 count = classNames->GetCount();
-        
-            for (INT32 i = 0; i < count; ++i)
+            STRING currClassName = classNames->GetItem(i);
+            STRING currSchemaKey, currClassKey;
+
+            if (schemaName.empty())
             {
-                STRING currClassName = classNames->GetItem(i);
-                STRING currClassKey;
+                MgUtil::ParseQualifiedClassName(currClassName, currSchemaKey, currClassKey);
 
-                if (schemaName.empty())
+                if (!currClassKey.empty())
                 {
-                    currClassKey = currClassName;
-                }
-                else
-                {
-                    STRING parsedSchemaName;
+                    if (0 == classKeys.size())
+                    {
+                        savedSchemaKey = currSchemaKey;
+                    }
+                    else if (hasOneSchema && currSchemaKey != savedSchemaKey)
+                    {
+                        hasOneSchema = false;
+                    }
 
-                    FormatKeys(classNameHintUsed, schemaName, currClassName, parsedSchemaName, currClassKey);
+                    classKeys.insert(currClassName);
                 }
+            }
+            else
+            {
+                FormatKeys(classNameHintUsed, schemaName, currClassName, currSchemaKey, currClassKey);
 
                 if (!currClassKey.empty())
                 {
                     classKeys.insert(currClassKey);
                 }
-            }                
+            }
         }
 
+        // Convert a class name collection to a period (.) delimited string.
         for (MgClassKeySet::const_iterator i = classKeys.begin();
             i != classKeys.end(); ++i)
         {
@@ -176,19 +238,24 @@ INT32 MgFeatureServiceCacheEntry::FormatKeys(bool classNameHintUsed,
             classKey += *i;
         }
         
-        nClasses = INT32(classKeys.size());
+        classCount = INT32(classKeys.size());
 
-        if (1 == nClasses)
+        if (1 == classCount)
         {
             FormatKeys(classNameHintUsed, schemaName, *classKeys.begin(), schemaKey, classKey);
         }
-    }
-    else if (NULL != classNames && 1 == classNames->GetCount())
-    {
-        FormatKeys(classNameHintUsed, schemaName, classNames->GetItem(0), schemaKey, classKey);
+        else if (schemaKey.empty() && hasOneSchema)
+        {
+            schemaKey = savedSchemaKey;
+        }
     }
 
-    return nClasses;
+    if (classKey.empty())
+    {
+        classCount = 0;
+    }
+
+    return classCount;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -201,13 +268,14 @@ MgFeatureSchemaCollection* MgFeatureServiceCacheEntry::FindSchema(MgFeatureSchem
     
     if (NULL != schemas)
     {
-        INT32 count = schemas->GetCount();
+        INT32 schemaCount = schemas->GetCount();
 
-        for (INT32 i = 0; i < count; ++i)
+        for (INT32 i = 0; i < schemaCount; ++i)
         {
             Ptr<MgFeatureSchema> currSchema = schemas->GetItem(i);
             STRING currSchemaName = currSchema->GetName();
 
+            // Make a schema copy when a match is found.
             if (schemaName == currSchemaName)
             {
                 data = new MgFeatureSchemaCollection();
@@ -222,39 +290,88 @@ MgFeatureSchemaCollection* MgFeatureServiceCacheEntry::FindSchema(MgFeatureSchem
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Return an existing MgFeatureSchemaCacheItem or a newly created one
-/// if it does not exist.
+/// Find a schema in a superset data.
 ///
-MgFeatureSchemaCacheItem* MgFeatureServiceCacheEntry::SetFeatureSchemaCacheItem(CREFSTRING schemaName)
+MgFeatureSchemaCollection* MgFeatureServiceCacheEntry::FindSchema(CREFSTRING schemaKey, CREFSTRING classKey, bool serialized, INT32 classCount)
 {
-    Ptr<MgFeatureSchemaCacheItem> item = GetFeatureSchemaCacheItem(schemaName);
-    
-    if (NULL == item.p)
+    Ptr<MgFeatureSchemaCollection> data;
+
+    // If the schema key is specified, then try to find the data in the superset data from the superset item.
+    if (!schemaKey.empty())
     {
-        item = new MgFeatureSchemaCacheItem();
-        m_featureSchemaCacheItems.insert(MgFeatureSchemaCacheItems::value_type(
-            schemaName, SAFE_ADDREF(item.p)));
+        // Get the superset item.
+        Ptr<MgFeatureSchemaCacheItem> supersetItem = GetFeatureSchemaCacheItem(L"");
+
+        if (NULL != supersetItem.p)
+        {
+            // Get the superset data from the the superset item.
+            Ptr<MgFeatureSchemaCollection> supersetData = supersetItem->GetSchemas(classKey, serialized);
+            // Find the data in the superset data.
+            data = FindSchema(supersetData.p, schemaKey);
+
+            // If the data is not found and the class count is 1,
+            // then try using the unqualified class name instead of.            
+            if (NULL == data.p && 1 == classCount)
+            {
+                STRING parsedSchemaName, parsedClassName;
+
+                MgUtil::ParseQualifiedClassName(classKey, parsedSchemaName, parsedClassName);
+                
+                // Determine if the superset data from the superset item is reusable.
+                if (!parsedSchemaName.empty())
+                {
+                    supersetData = supersetItem->GetSchemas(parsedClassName, serialized);
+                
+                    if (FindClass(supersetData.p, parsedClassName))
+                    {
+                        data = supersetData;
+                    }
+                }
+            }
+        }
     }
-    
-    return item.Detach();
+
+    return data.Detach();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Return an existing MgFeatureSchemaCacheItem.
+/// Determine if the specified schemas only contain the specified class.
 ///
-MgFeatureSchemaCacheItem* MgFeatureServiceCacheEntry::GetFeatureSchemaCacheItem(CREFSTRING schemaName)
+bool MgFeatureServiceCacheEntry::FindClass(MgFeatureSchemaCollection* schemas, CREFSTRING className)
 {
-    Ptr<MgFeatureSchemaCacheItem> item;
-    MgFeatureSchemaCacheItems::iterator i =
-        m_featureSchemaCacheItems.find(schemaName);
+    bool found = false;
 
-    if (m_featureSchemaCacheItems.end() != i)
+    if (NULL != schemas && 1 == schemas->GetCount())
     {
-        item = SAFE_ADDREF(i->second);
+        Ptr<MgFeatureSchema> firstSchema = schemas->GetItem(0);
+        
+        if (NULL != firstSchema)
+        {
+            Ptr<MgClassDefinitionCollection> classes = firstSchema->GetClasses();
+
+            if (NULL != classes && 1 == classes->GetCount())
+            {
+                Ptr<MgClassDefinition> firstClass = classes->GetItem(0);
+            
+                if (NULL != firstClass)
+                {
+                    STRING parsedSchemaName1, parsedClassName1;
+                    STRING parsedSchemaName2, parsedClassName2;
+            
+                    MgUtil::ParseQualifiedClassName(className, parsedSchemaName1, parsedClassName1);
+                    MgUtil::ParseQualifiedClassName(firstClass->GetName(), parsedSchemaName2, parsedClassName2);
+            
+                    if (parsedClassName1 == parsedClassName2)
+                    {
+                        found = true;
+                    }
+                }
+            }
+        }
     }
 
-    return item.Detach();
+    return found;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -404,7 +521,7 @@ void MgFeatureServiceCacheEntry::SetSchemas(CREFSTRING schemaName, MgStringColle
 MgFeatureSchemaCollection* MgFeatureServiceCacheEntry::GetSchemas(CREFSTRING schemaName, MgStringCollection* classNames, bool serialized)
 {
     STRING schemaKey, classKey;
-    INT32 nClasses = FormatKeys(m_classNameHintUsed, schemaName, classNames, schemaKey, classKey);
+    INT32 classCount = FormatKeys(m_classNameHintUsed, schemaName, classNames, schemaKey, classKey);
 
     Ptr<MgFeatureSchemaCollection> data;
     Ptr<MgFeatureSchemaCacheItem> item = GetFeatureSchemaCacheItem(schemaKey);
@@ -418,30 +535,18 @@ MgFeatureSchemaCollection* MgFeatureServiceCacheEntry::GetSchemas(CREFSTRING sch
     // If the data is not found, then try to find it in the superset data from the current item or superset one.
     if (NULL == data.p)
     {
-        if (0 == nClasses) // no class name is given
+        if (0 == classCount)
         {
             ACE_ASSERT(classKey.empty());
-            // If the schema name is specified, then try to find the data in the superset data from the superset item.
-            if (!schemaKey.empty())
-            {
-                // Get the superset item.
-                Ptr<MgFeatureSchemaCacheItem> supersetItem = GetFeatureSchemaCacheItem(L"");
-
-                if (NULL != supersetItem.p)
-                {
-                    // Get the superset data from the the superset item.
-                    Ptr<MgFeatureSchemaCollection> supersetData = supersetItem->GetSchemas(classKey, serialized);
-                    // Find the data in the superset data.
-                    data = FindSchema(supersetData.p, schemaKey);
-                }
-            }
+            // If there is no class, then try to find the data in the superset data from the superset item.
+            data = FindSchema(schemaKey, classKey, serialized, classCount);
         }
-        else if (1 == nClasses) // one class name is given
+        else if (1 == classCount)
         {
             Ptr<MgFeatureSchemaCollection> supersetData;
 
             // Get the superset data from the current item.
-            if (NULL != item.p)
+            if (NULL != item.p && !classKey.empty())
             {
                 supersetData = item->GetSchemas(L"", serialized);
             }
@@ -449,21 +554,10 @@ MgFeatureSchemaCollection* MgFeatureServiceCacheEntry::GetSchemas(CREFSTRING sch
             // If the data is not found, then try to find it in the superset data from the superset item.
             if (NULL == supersetData.p)
             {
-                if (!schemaKey.empty())
-                {
-                    // Get the superset item.
-                    Ptr<MgFeatureSchemaCacheItem> supersetItem = GetFeatureSchemaCacheItem(L"");
-                    
-                    if (NULL != supersetItem.p)
-                    {
-                        // Get the superset data from the the superset item.
-                        supersetData = supersetItem->GetSchemas(classKey, serialized);
-                        // Find the data in the superset data.
-                        data = FindSchema(supersetData.p, schemaKey);
-                    }
-                }
+                data = FindSchema(schemaKey, classKey, serialized, classCount);
             }
-            else if (1 == supersetData->GetCount())
+            // Otherwise, determine if the superset data from the current item is reusable.
+            else if (FindClass(supersetData.p, classKey))
             {
                 data = supersetData;
             }

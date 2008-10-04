@@ -74,6 +74,9 @@ public:
 
 protected:
 
+    MgFeatureSchemaCacheItem* SetFeatureSchemaCacheItem(CREFSTRING schemaName);
+    MgFeatureSchemaCacheItem* GetFeatureSchemaCacheItem(CREFSTRING schemaName);
+
     void ParseQualifiedClassName(CREFSTRING schemaName, CREFSTRING className,
         REFSTRING parsedSchemaName, REFSTRING parsedClassName);
 
@@ -84,10 +87,11 @@ protected:
         CREFSTRING schemaName, MgStringCollection* classNames,
         REFSTRING schemaKey, REFSTRING classKey);
 
-    MgFeatureSchemaCollection* FindSchema(MgFeatureSchemaCollection* schemas, CREFSTRING schemaName);
+private:
 
-    MgFeatureSchemaCacheItem* SetFeatureSchemaCacheItem(CREFSTRING schemaName);
-    MgFeatureSchemaCacheItem* GetFeatureSchemaCacheItem(CREFSTRING schemaName);
+    MgFeatureSchemaCollection* FindSchema(MgFeatureSchemaCollection* schemas, CREFSTRING schemaName);
+    MgFeatureSchemaCollection* FindSchema(CREFSTRING schemaKey, CREFSTRING classKey, bool serialized, INT32 classCount);
+    bool FindClass(MgFeatureSchemaCollection* schemas, CREFSTRING className);
 
 /// Data Members
 

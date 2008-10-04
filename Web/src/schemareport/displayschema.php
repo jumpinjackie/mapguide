@@ -59,8 +59,10 @@
 
                 $classCollection = $featureSrvc->GetClasses($resId, $schemaName);
                 $firstClass =  substr(strrchr($classCollection->GetItem(0), ":"), 1);
+                $classNames = new MgStringCollection();
+                $classNames->Add($className);
 
-                $xml = $featureSrvc->DescribeSchemaAsXml($resId, $schemaName);
+                $xml = $featureSrvc->DescribeSchemaAsXml($resId, $schemaName, $classNames);
 
                 // Parse the xml for encoded characters, however, the 'xmlns' attribute under 'targetNamespace' element
                 // cannot contain the translated or encoded characters. This replaces '-xffXX-' with 'ffXX' for that
