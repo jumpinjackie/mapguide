@@ -204,6 +204,12 @@ void TestPerformance::TestCase_BenchmarkSelectFeatures()
         ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (Average of %d runs): = %6.4f (s)\n"), iterations, ((GetTickCount()-lStart)/1000.0)/(double)iterations ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("TestCase_BenchmarkSelectFeatures - END\n")));
     }
+    catch(MgResourceNotFoundException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\n%W\nAre the performance test resources installed?\n\n"), message.c_str()));
+    }
     catch(MgException* e)
     {
         STRING message = e->GetDetails(TEST_LOCALE);
@@ -547,6 +553,12 @@ void TestPerformance::TestCase_BenchmarkJoinFeatures()
         ACE_DEBUG((LM_INFO, ACE_TEXT("JOIN (geonames_n83:%d) - Avg of %d runs = %6.4f (s)\n\n"), nFeatures, iterations, ((GetTickCount()-lStart)/1000.0)/(double)iterations ));
 
         ACE_DEBUG((LM_INFO, ACE_TEXT("TestCase_BenchmarkJoinFeatures - END\n")));
+    }
+    catch(MgResourceNotFoundException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\n%W\nAre the performance test resources installed?\n\n"), message.c_str()));
     }
     catch(MgException* e)
     {
