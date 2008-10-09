@@ -39,9 +39,28 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
 
     MG_FEATURE_SERVICE_TRY()
 
+    //Get the Resource Service
+    Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(
+    (MgServiceManager::GetInstance())->RequestService(MgServiceType::ResourceService));
+    ACE_ASSERT(NULL != resourceService.p);
+
     mgSpatialContextReader = m_featureServiceCache->GetSpatialContextReader(resId, bActiveOnly);
 
-    if (NULL == mgSpatialContextReader.p)
+    //if the reader exists
+    if(NULL != mgSpatialContextReader.p) 
+    {
+        //check the permissions
+        if(false == resourceService->HasPermission(resId, MgResourcePermission::ReadOnly))
+        {
+            MgStringCollection arguments;
+            arguments.Add(resId->ToString());
+
+            throw new MgPermissionDeniedException(
+                L"MgServerGetSpatialContexts.GetSpatialContexts",
+                __LINE__, __WFILE__, &arguments, L"", NULL);
+        }
+    }
+    else
     {
         // Connect to provider
         MgServerFeatureConnection msfc(resId);
