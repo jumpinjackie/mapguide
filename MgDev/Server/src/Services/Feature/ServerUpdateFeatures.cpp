@@ -70,9 +70,6 @@ MgPropertyCollection* MgServerUpdateFeatures::Execute(MgResourceIdentifier* reso
             __LINE__, __WFILE__, &arguments, L"MgCollectionEmpty", NULL);
     }
 
-    // Notify the cache manager that this resource will be changed (Insert/Update/Delete).
-    MgCacheManager::GetInstance()->NotifyResourceChanged(resource);
-
     // Connect to provider
     Connect(resource);
 
