@@ -24,7 +24,7 @@
 #include "ServerDataReader.h"
 #include "ServerFeatureConnection.h"
 
-MgSelectAggregateCommand::MgSelectAggregateCommand(MgResourceIdentifier* resource) : m_filter(NULL)
+MgSelectAggregateCommand::MgSelectAggregateCommand(MgResourceIdentifier* resource)
 {
     CHECKNULL((MgResourceIdentifier*)resource, L"MgSelectAggregateCommand.MgSelectAggregateCommand");
 
@@ -36,7 +36,7 @@ MgSelectAggregateCommand::MgSelectAggregateCommand(MgResourceIdentifier* resourc
     }
     else
     {
-        throw new MgConnectionFailedException(L"MgServerSelectFeatures::SelectFeatures()", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgConnectionFailedException(L"MgSelectAggregateCommand.MgSelectAggregateCommand", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     // Create FdoISelectAggregates command
     FdoPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
@@ -46,8 +46,8 @@ MgSelectAggregateCommand::MgSelectAggregateCommand(MgResourceIdentifier* resourc
 
 MgSelectAggregateCommand::~MgSelectAggregateCommand()
 {
-    FDO_SAFE_RELEASE(m_command);
-    FDO_SAFE_RELEASE(m_filter);
+    m_command = NULL;
+    m_filter = NULL;
 }
 
 FdoIdentifierCollection* MgSelectAggregateCommand::GetPropertyNames()
@@ -58,7 +58,7 @@ FdoIdentifierCollection* MgSelectAggregateCommand::GetPropertyNames()
 
 void MgSelectAggregateCommand::SetDistinct(bool value)
 {
-    CHECKNULL((FdoISelectAggregates*)m_command, L"MgSelectAggregateCommand.GetPropertyNames");
+    CHECKNULL((FdoISelectAggregates*)m_command, L"MgSelectAggregateCommand.SetDistinct");
     m_command->SetDistinct(value);
 }
 
@@ -76,25 +76,25 @@ FdoIdentifierCollection* MgSelectAggregateCommand::GetOrdering()
 
 void MgSelectAggregateCommand::SetOrderingOption(FdoOrderingOption option)
 {
-    CHECKNULL((FdoISelectAggregates*)m_command, L"MgSelectAggregateCommand.GetOrdering");
+    CHECKNULL((FdoISelectAggregates*)m_command, L"MgSelectAggregateCommand.SetOrderingOption");
     m_command->SetOrderingOption(option);
 }
 
 FdoOrderingOption MgSelectAggregateCommand::GetOrderingOption()
 {
-    CHECKNULL((FdoISelectAggregates*)m_command, L"MgSelectAggregateCommand.GetOrdering");
+    CHECKNULL((FdoISelectAggregates*)m_command, L"MgSelectAggregateCommand.GetOrderingOption");
     return m_command->GetOrderingOption();
 }
 
 FdoIdentifierCollection* MgSelectAggregateCommand::GetGrouping()
 {
-    CHECKNULL((FdoISelectAggregates*)m_command, L"MgSelectAggregateCommand.GetDistinct");
+    CHECKNULL((FdoISelectAggregates*)m_command, L"MgSelectAggregateCommand.GetGrouping");
     return m_command->GetGrouping();
 }
 
 void MgSelectAggregateCommand::SetGroupingFilter(FdoFilter* filter)
 {
-    CHECKNULL((FdoISelectAggregates*)m_command, L"MgSelectAggregateCommand.GetDistinct");
+    CHECKNULL((FdoISelectAggregates*)m_command, L"MgSelectAggregateCommand.SetGroupingFilter");
     m_command->SetGroupingFilter(filter);
 }
 
@@ -121,13 +121,13 @@ void MgSelectAggregateCommand::SetFilter(FdoFilter* value)
     CHECKNULL((FdoISelectAggregates*)m_command, L"MgSelectAggregateCommand.SetFilter");
     m_command->SetFilter(value);
 
-    FDO_SAFE_RELEASE(m_filter);
     m_filter = FDO_SAFE_ADDREF(value);
 }
 
 MgReader* MgSelectAggregateCommand::Execute()
 {
     // Execute the command
+    CHECKNULL((FdoISelectAggregates*)m_command, L"MgSelectAggregateCommand.Execute");
     FdoPtr<FdoIDataReader> dataReader = m_command->Execute();
     CHECKNULL((FdoIDataReader*)dataReader, L"MgSelectAggregateCommand.Execute");
 
@@ -161,5 +161,5 @@ bool MgSelectAggregateCommand::SupportsSelectDistinct()
 
 FdoFilter* MgSelectAggregateCommand::GetFilter()
 {
-    return FDO_SAFE_ADDREF(m_filter);
+    return FDO_SAFE_ADDREF(m_filter.p);
 }

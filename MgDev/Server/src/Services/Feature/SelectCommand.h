@@ -59,14 +59,12 @@ public:
 
     virtual void Dispose() { delete this; }
 
-    MgFdoFeatureReader* CreateFdoFeatureReader(MgFdoReaderCollection* readerCollection);
-
 private:
     Ptr<MgServerFeatureConnection> m_connection;
     STRING m_providerName;
-    FdoISelect* m_command;
+    FdoPtr<FdoISelect> m_command;
 
-    FdoFilter* m_filter;
+    FdoPtr<FdoFilter> m_filter;
 
     MgFdoFilterCollection* GetSubFilters();
 };

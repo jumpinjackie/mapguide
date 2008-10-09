@@ -26,14 +26,21 @@
 
 MgServerSqlCommand::MgServerSqlCommand()
 {
-    m_featureConnection = NULL;
-    m_fdoConn = NULL;
 }
 
 MgServerSqlCommand::~MgServerSqlCommand()
 {
+    MG_TRY()
+    
+    CloseConnection();
+
+    MG_CATCH_AND_RELEASE()
+}
+
+void MgServerSqlCommand::CloseConnection()
+{
     // The FDO connection must be released before the parent object is released
-    FDO_SAFE_RELEASE(m_fdoConn);
+    m_fdoConn = NULL;
     m_featureConnection = NULL;
 }
 
@@ -107,6 +114,9 @@ void MgServerSqlCommand::Validate(MgResourceIdentifier* resource, CREFSTRING sql
         throw new MgInvalidArgumentException(L"MgServerSqlCommand.Validate",
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
+
+    // Close any previously opened connection.
+    CloseConnection();
 
     // Connect to provider
     m_featureConnection = new MgServerFeatureConnection(resource);

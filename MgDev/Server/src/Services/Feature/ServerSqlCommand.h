@@ -35,11 +35,12 @@ public:
 
 private:
     void Validate(MgResourceIdentifier* resource, CREFSTRING sqlStatement, INT32 commandType);
+    void CloseConnection();
 
 private:
     STRING                  m_providerName;
     STRING                  m_sqlStatement;
-    FdoIConnection*         m_fdoConn;
+    FdoPtr<FdoIConnection> m_fdoConn;
     Ptr<MgServerFeatureConnection> m_featureConnection;
 };
 

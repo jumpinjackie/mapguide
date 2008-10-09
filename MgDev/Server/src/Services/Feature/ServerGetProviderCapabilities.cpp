@@ -80,7 +80,7 @@ MgServerGetProviderCapabilities::MgServerGetProviderCapabilities(CREFSTRING prov
 
 MgServerGetProviderCapabilities::~MgServerGetProviderCapabilities()
 {
-    FDO_SAFE_RELEASE(m_fdoConn);
+    m_fdoConn = NULL;
 
     if (NULL != m_xmlUtil)
         delete m_xmlUtil;
@@ -850,6 +850,8 @@ void MgServerGetProviderCapabilities::CreateGeometryCapabilities()
 
 bool MgServerGetProviderCapabilities::IsConnectionOpen()
 {
+    CHECKNULL(m_fdoConn, L"MgServerGetProviderCapabilities.IsConnectionOpen");
+
     FdoConnectionState state = m_fdoConn->GetConnectionState();
     if (state != FdoConnectionState_Open)
         return false;
