@@ -210,9 +210,27 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
 
     MG_FEATURE_SERVICE_TRY()
 
+    //Get the Resource Service
+    Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(
+        (MgServiceManager::GetInstance())->RequestService(MgServiceType::ResourceService));
+    ACE_ASSERT(NULL != resourceService.p);
+
     fsCollection = m_featureServiceCache->GetSchemas(resource, schemaName, classNames, serialize);
 
-    if (NULL == fsCollection.p)
+    if (NULL != fsCollection.p)
+    {
+        //check the permissions
+        if(false == resourceService->HasPermission(resource, MgResourcePermission::ReadOnly))
+        {
+            MgStringCollection arguments;
+            arguments.Add(resource->ToString());
+
+            throw new MgPermissionDeniedException(
+                L"MgServerDescribeSchema.DescribeSchema",
+                __LINE__, __WFILE__, &arguments, L"", NULL);
+        }
+    }
+    else
     {
         fsCollection = new MgFeatureSchemaCollection();
 
@@ -573,9 +591,27 @@ STRING MgServerDescribeSchema::DescribeSchemaAsXml(MgResourceIdentifier* resourc
 
     MG_FEATURE_SERVICE_TRY()
 
+    //Get the Resource Service
+    Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(
+        (MgServiceManager::GetInstance())->RequestService(MgServiceType::ResourceService));
+    ACE_ASSERT(NULL != resourceService.p);
+
     schemaXml = m_featureServiceCache->GetSchemaXml(resource, schemaName, classNames);
 
-    if (schemaXml.empty())
+    if (!schemaXml.empty())
+    {
+        //check the permissions
+        if(false == resourceService->HasPermission(resource, MgResourcePermission::ReadOnly))
+        {
+            MgStringCollection arguments;
+            arguments.Add(resource->ToString());
+
+            throw new MgPermissionDeniedException(
+                L"MgServerDescribeSchema.DescribeSchemaAsXml",
+                __LINE__, __WFILE__, &arguments, L"", NULL);
+        }
+    }
+    else
     {
         Ptr<MgFeatureSchemaCollection> schemas = DescribeSchema(
             resource, schemaName, classNames, false);
@@ -1325,9 +1361,27 @@ MgStringCollection* MgServerDescribeSchema::GetSchemas(MgResourceIdentifier* res
 
     MG_FEATURE_SERVICE_TRY()
 
+    //Get the Resource Service
+    Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(
+        (MgServiceManager::GetInstance())->RequestService(MgServiceType::ResourceService));
+    ACE_ASSERT(NULL != resourceService.p);
+
     schemaNames = m_featureServiceCache->GetSchemaNames(resource);
 
-    if (NULL == schemaNames.p)
+    if (NULL != schemaNames.p)
+    {
+        //check the permissions
+        if(false == resourceService->HasPermission(resource, MgResourcePermission::ReadOnly))
+        {
+            MgStringCollection arguments;
+            arguments.Add(resource->ToString());
+
+            throw new MgPermissionDeniedException(
+                L"MgServerDescribeSchema.GetSchemas",
+                __LINE__, __WFILE__, &arguments, L"", NULL);
+        }
+    }
+    else
     {
         // Connect to provider.
         MgServerFeatureConnection connection(resource);
@@ -1387,9 +1441,27 @@ MgStringCollection* MgServerDescribeSchema::GetClasses(MgResourceIdentifier* res
 
     MG_FEATURE_SERVICE_TRY()
 
+    //Get the Resource Service
+    Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(
+        (MgServiceManager::GetInstance())->RequestService(MgServiceType::ResourceService));
+    ACE_ASSERT(NULL != resourceService.p);
+
     classNames = m_featureServiceCache->GetClassNames(resource, schemaName);
 
-    if (NULL == classNames.p)
+    if (NULL != classNames.p)
+    {
+        //check the permissions
+        if(false == resourceService->HasPermission(resource, MgResourcePermission::ReadOnly))
+        {
+            MgStringCollection arguments;
+            arguments.Add(resource->ToString());
+
+            throw new MgPermissionDeniedException(
+                L"MgServerDescribeSchema.GetClasses",
+                __LINE__, __WFILE__, &arguments, L"", NULL);
+        }
+    }
+    else
     {
         // Connect to provider.
         MgServerFeatureConnection connection(resource);
@@ -1465,9 +1537,26 @@ MgClassDefinition* MgServerDescribeSchema::GetClassDefinition(  MgResourceIdenti
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
+    //Get the Resource Service
+    Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(
+        (MgServiceManager::GetInstance())->RequestService(MgServiceType::ResourceService));
+    ACE_ASSERT(NULL != resourceService.p);
     classDefinition = m_featureServiceCache->GetClassDefinition(resource, schemaName, className);
 
-    if (NULL == classDefinition.p)
+    if (NULL != classDefinition.p)
+    {
+        //check the permissions
+        if(false == resourceService->HasPermission(resource, MgResourcePermission::ReadOnly))
+        {
+            MgStringCollection arguments;
+            arguments.Add(resource->ToString());
+
+            throw new MgPermissionDeniedException(
+                L"MgServerDescribeSchema.GetClassDefinition",
+                __LINE__, __WFILE__, &arguments, L"", NULL);
+        }
+    }
+    else
     {
         Ptr<MgStringCollection> classNames = new MgStringCollection();
         classNames->Add(className);
@@ -1522,9 +1611,27 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
+    //Get the Resource Service
+    Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(
+        (MgServiceManager::GetInstance())->RequestService(MgServiceType::ResourceService));
+    ACE_ASSERT(NULL != resourceService.p);
+
     idProps = m_featureServiceCache->GetClassIdentityProperties(resource, schemaName, className);
 
-    if (NULL == idProps.p)
+    if (NULL != idProps.p)
+    {
+        //check the permissions
+        if(false == resourceService->HasPermission(resource, MgResourcePermission::ReadOnly))
+        {
+            MgStringCollection arguments;
+            arguments.Add(resource->ToString());
+
+            throw new MgPermissionDeniedException(
+                L"MgServerDescribeSchema.GetIdentityProperties",
+                __LINE__, __WFILE__, &arguments, L"", NULL);
+        }
+    }
+    else
     {
         Ptr<MgStringCollection> classNames = new MgStringCollection();
         classNames->Add(className);
