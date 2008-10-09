@@ -67,8 +67,8 @@ public:
 protected:
 
 private:
-    MgFdoReaderCollection* m_readerCollection;
-    FdoIFeatureReader* m_currentReader;
+    FdoPtr<MgFdoReaderCollection> m_readerCollection;
+    FdoPtr<FdoIFeatureReader> m_currentReader;
     FdoInt32 m_currentReaderId;
     void Initialize();
 

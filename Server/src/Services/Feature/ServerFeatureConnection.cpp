@@ -53,16 +53,11 @@ MgServerFeatureConnection::MgServerFeatureConnection(CREFSTRING providerName, CR
 
 MgServerFeatureConnection::~MgServerFeatureConnection()
 {
-    if (NULL != m_fdoConn)
-    {
-        // Let the FDO connection manager know we are done with this connection
+    MG_TRY()
+    
+    Close();
 
-        // Get the FDO connection from the cache
-        MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
-        CHECKNULL(pFdoConnectionManager, L"MgServerFeatureConnection.~MgServerFeatureConnection()");
-
-        pFdoConnectionManager->Close(m_fdoConn);
-    }
+    MG_CATCH_AND_RELEASE()
 }
 
 void MgServerFeatureConnection::Dispose()
@@ -76,6 +71,18 @@ void MgServerFeatureConnection::Initialize()
     m_resourceId = NULL;
 }
 
+void MgServerFeatureConnection::Close()
+{
+    if (NULL != m_fdoConn)
+    {
+        // Let the FDO connection manager know we are done with this connection.
+        MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
+        CHECKNULL(pFdoConnectionManager, L"MgServerFeatureConnection.Close");
+
+        pFdoConnectionManager->Close(m_fdoConn);
+        m_fdoConn = NULL;
+    }
+}
 
 FdoIConnection* MgServerFeatureConnection::GetConnection()
 {
@@ -85,11 +92,11 @@ FdoIConnection* MgServerFeatureConnection::GetConnection()
 
 STRING MgServerFeatureConnection::GetProviderName()
 {
-    CHECKNULL(m_fdoConn, L"MgServerFeatureConnection.SetConnectionProperties()");
+    CHECKNULL(m_fdoConn, L"MgServerFeatureConnection.GetProviderName");
 
     // Get FdoIConnectionInfo
     FdoPtr<FdoIConnectionInfo> fdoConnInfo = m_fdoConn->GetConnectionInfo();
-    CHECKNULL((FdoIConnectionInfo*)fdoConnInfo, L"MgServerFeatureConnection.SetConnectionProperties()");
+    CHECKNULL((FdoIConnectionInfo*)fdoConnInfo, L"MgServerFeatureConnection.GetProviderName");
 
     return fdoConnInfo->GetProviderName();
 }
@@ -108,7 +115,7 @@ bool MgServerFeatureConnection::IsConnectionOpen()
 
 bool MgServerFeatureConnection::IsConnectionPending()
 {
-    CHECKNULL(m_fdoConn, L"MgServerFeatureConnection.IsConnectionOpen()");
+    CHECKNULL(m_fdoConn, L"MgServerFeatureConnection.IsConnectionPending()");
     FdoConnectionState state = m_fdoConn->GetConnectionState();
     if (FdoConnectionState_Pending != state)
         return false;

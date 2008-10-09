@@ -48,7 +48,7 @@ private:
 
     MgXmlUtil*              m_xmlUtil;
     STRING                  m_providerName;
-    FdoIConnection*         m_fdoConn;
+    FdoPtr<FdoIConnection>  m_fdoConn;
     MgXmlUtil*              m_xmlCap;
     static bool             m_isInitialized;
     UINT32                  m_version;

@@ -27,24 +27,27 @@ using namespace std;
 
 
 // Class MgFdoFeatureReader
-MgFdoFeatureReader::MgFdoFeatureReader() : m_currentReader(NULL), m_currentReaderId(-1)
+MgFdoFeatureReader::MgFdoFeatureReader() : m_currentReaderId(-1)
 {
     m_readerCollection = MgFdoReaderCollection::Create();
 }
 
-MgFdoFeatureReader::MgFdoFeatureReader(MgFdoReaderCollection *readerCollection) : m_currentReader(NULL), m_currentReaderId(-1)
+MgFdoFeatureReader::MgFdoFeatureReader(MgFdoReaderCollection *readerCollection) : m_currentReaderId(-1)
 {
     m_readerCollection = FDO_SAFE_ADDREF(readerCollection);
 }
 
 MgFdoFeatureReader::~MgFdoFeatureReader()
 {
+    MG_TRY()
+    
     Close();
+
+    MG_CATCH_AND_RELEASE()
 }
 
 void MgFdoFeatureReader::Dispose()
 {
-    FDO_SAFE_RELEASE(m_readerCollection);
     delete this;
 }
 
@@ -300,5 +303,3 @@ void MgFdoFeatureReader::Initialize()
         }
     }
 }
-
-

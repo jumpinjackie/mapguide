@@ -34,6 +34,9 @@ private:
 
     MgServerFeatureConnection();
 
+    void Initialize();
+    void Close();
+
 public:
 
     virtual void Dispose();
@@ -49,8 +52,6 @@ public:
     bool SupportsCommand(INT32 commandType);
 
 private:
-
-    void Initialize();
 
     FdoIConnection* m_fdoConn;
     Ptr<MgResourceIdentifier> m_resourceId;

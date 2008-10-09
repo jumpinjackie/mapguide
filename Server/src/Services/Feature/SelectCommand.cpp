@@ -31,7 +31,7 @@
 // The maximum size of the subfilter for a selection query.  Tune this value for optimal selection perfomance.
 #define MG_MAX_SUBFILTER_SIZE  1000
 
-MgSelectCommand::MgSelectCommand(MgResourceIdentifier* resource) : m_filter(NULL)
+MgSelectCommand::MgSelectCommand(MgResourceIdentifier* resource)
 {
     CHECKNULL((MgResourceIdentifier*)resource, L"MgSelectCommand.MgSelectCommand");
 
@@ -43,7 +43,7 @@ MgSelectCommand::MgSelectCommand(MgResourceIdentifier* resource) : m_filter(NULL
     }
     else
     {
-        throw new MgConnectionFailedException(L"MgServerSelectFeatures::SelectFeatures()", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgConnectionFailedException(L"MgSelectCommand.MgSelectCommand", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     // Create FdoISelect command
     FdoPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
@@ -53,8 +53,8 @@ MgSelectCommand::MgSelectCommand(MgResourceIdentifier* resource) : m_filter(NULL
 
 MgSelectCommand::~MgSelectCommand()
 {
-    FDO_SAFE_RELEASE(m_command);
-    FDO_SAFE_RELEASE(m_filter);
+    m_command = NULL;
+    m_filter = NULL;
 }
 
 FdoIdentifierCollection* MgSelectCommand::GetPropertyNames()
@@ -65,7 +65,7 @@ FdoIdentifierCollection* MgSelectCommand::GetPropertyNames()
 
 void MgSelectCommand::SetDistinct(bool value)
 {
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.GetPropertyNames");
+    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.SetDistinct");
     // This operation is not supported by FdoISelect
     // m_command->SetDistinct(value);
 
@@ -78,7 +78,7 @@ bool MgSelectCommand::GetDistinct()
     // This operation is not supported by FdoISelect
     // return m_command->GetDistinct();
 
-    // throw new MgInvalidOperationException(L"MgSelectCommand.SetDistinct", __LINE__, __WFILE__, NULL, L"", NULL);
+    // throw new MgInvalidOperationException(L"MgSelectCommand.GetDistinct", __LINE__, __WFILE__, NULL, L"", NULL);
 
     return false;
 }
@@ -91,29 +91,29 @@ FdoIdentifierCollection* MgSelectCommand::GetOrdering()
 
 void MgSelectCommand::SetOrderingOption(FdoOrderingOption option)
 {
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.GetOrdering");
+    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.SetOrderingOption");
     m_command->SetOrderingOption(option);
 }
 
 FdoOrderingOption MgSelectCommand::GetOrderingOption()
 {
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.GetOrdering");
+    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.GetOrderingOption");
     return m_command->GetOrderingOption();
 }
 
 FdoIdentifierCollection* MgSelectCommand::GetGrouping()
 {
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.GetDistinct");
+    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.GetGrouping");
     // This operation is not supported by FdoISelect
     // return m_command->GetGrouping();
 
-    // throw new MgInvalidOperationException(L"MgSelectCommand.SetDistinct", __LINE__, __WFILE__, NULL, L"", NULL);
+    // throw new MgInvalidOperationException(L"MgSelectCommand.GetGrouping", __LINE__, __WFILE__, NULL, L"", NULL);
     return NULL;
 }
 
 void MgSelectCommand::SetGroupingFilter(FdoFilter* filter)
 {
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.GetDistinct");
+    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.SetGroupingFilter");
     // This operation is not supported by FdoISelect
     // m_command->SetGroupingFilter(filter);
 
@@ -147,32 +147,31 @@ void MgSelectCommand::SetFilter(FdoFilter* value)
     CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.SetFilter");
     m_command->SetFilter(value);
 
-    FDO_SAFE_RELEASE(m_filter);
     m_filter = FDO_SAFE_ADDREF(value);
 }
 
 MgReader* MgSelectCommand::Execute()
 {
-    FdoPtr<FdoIFeatureReader> reader = NULL;
+    FdoPtr<FdoIFeatureReader> reader;
 
     // Break up the filter into smaller chunks
     FdoPtr<MgFdoFilterCollection> subFilters = this->GetSubFilters();
 
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.MgSelectCommand");
+    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.Execute");
 
     // Execute queries using the smaller filters and collect the results of the queries into a reader collection.
     FdoPtr<MgFdoReaderCollection> frc = MgFdoReaderCollection::Create();
     
     for (FdoInt32 filterIndex = 0; filterIndex < subFilters->GetCount(); filterIndex++)
     {
-        FdoFilter* filter = subFilters->GetItem(filterIndex);
+        FdoPtr<FdoFilter> filter = subFilters->GetItem(filterIndex);
         m_command->SetFilter(filter);
         reader = m_command->Execute();
 
         frc->Add(reader);
     }
 
-    FdoPtr<MgFdoFeatureReader> featureReader = CreateFdoFeatureReader(frc);
+    FdoPtr<MgFdoFeatureReader> featureReader = new MgFdoFeatureReader(frc);
     CHECKNULL((FdoIFeatureReader*)featureReader, L"MgSelectCommand.Execute");
 
     // Create a feature reader identifier
@@ -217,7 +216,7 @@ bool MgSelectCommand::SupportsSelectDistinct()
 
 FdoFilter* MgSelectCommand::GetFilter()
 {
-    return FDO_SAFE_ADDREF(m_filter);
+    return FDO_SAFE_ADDREF(m_filter.p);
 }
 
 MgFdoFilterCollection* MgSelectCommand::GetSubFilters()
@@ -231,7 +230,7 @@ MgFdoFilterCollection* MgSelectCommand::GetSubFilters()
     class FdoCommonFilterFragmenter :  public virtual FdoIFilterProcessor
     {
     private:
-        FdoPtr<FdoFilter>	 m_newFilter;
+        FdoPtr<FdoFilter>    m_newFilter;
         FdoPtr<FdoIGeometry> m_geomRight;
         FdoPtr<FdoIGeometry> m_geomLeft;
 
@@ -253,7 +252,7 @@ MgFdoFilterCollection* MgSelectCommand::GetSubFilters()
         }
 
         int GetOrCount() { return m_OrCount; }
-        std::vector<FdoFilter*> GetFilters() { return m_filters; }
+        std::vector<FdoFilter*>& GetFilters() { return m_filters; }
         bool IsFragmented() { return m_isFragmented; }
 
         virtual void Dispose() { delete this; }
@@ -332,7 +331,7 @@ MgFdoFilterCollection* MgSelectCommand::GetSubFilters()
         bool bFirst = true;
 
         FdoStringP filterString;
-        std::vector<FdoFilter*> fragmentedFilters = fragmenter.GetFilters();
+        std::vector<FdoFilter*>& fragmentedFilters = fragmenter.GetFilters();
 
 
         bool bIsAddedToCollection = false;
@@ -377,13 +376,5 @@ MgFdoFilterCollection* MgSelectCommand::GetSubFilters()
         filters->Add(m_filter);
     }
 
-    return FDO_SAFE_ADDREF(filters.p);
+    return filters.Detach();
 }
-
-MgFdoFeatureReader* MgSelectCommand::CreateFdoFeatureReader(MgFdoReaderCollection *readerCollection)
-{
-    FdoPtr<MgFdoFeatureReader> featureReader = new MgFdoFeatureReader(readerCollection);
-
-    return FDO_SAFE_ADDREF(featureReader.p);
-}
-

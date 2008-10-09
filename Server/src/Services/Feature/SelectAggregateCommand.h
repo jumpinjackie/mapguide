@@ -55,9 +55,9 @@ public:
 private:
     Ptr<MgServerFeatureConnection> m_connection;
     STRING m_providerName;
-    FdoISelectAggregates* m_command;
+    FdoPtr<FdoISelectAggregates> m_command;
 
-    FdoFilter* m_filter;
+    FdoPtr<FdoFilter> m_filter;
 };
 
 #endif
