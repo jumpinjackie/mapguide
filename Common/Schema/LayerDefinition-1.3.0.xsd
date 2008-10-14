@@ -130,7 +130,7 @@
           </xs:element>
           <xs:element name="Url" type="xs:string" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>An optional URL locating the VectorLayerDefinition.  This is a string FDO expression.</xs:documentation>
+              <xs:documentation>An optional URL associated with each feature.  This is a string FDO expression.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="ToolTip" type="xs:string" minOccurs="0">
@@ -239,8 +239,8 @@
           <xs:documentation>One or more PointRules defining the PointTypeStyle.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="ShowInLegend" type="xs:boolean" minOccurs="0" default="true" />
-      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
+      <xs:element name="ShowInLegend" type="xs:boolean" minOccurs="0" default="true"/>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="PointRuleType">
@@ -319,8 +319,8 @@
           <xs:documentation>Rules to define a theme.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="ShowInLegend" type="xs:boolean" minOccurs="0" default="true" />
-      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
+      <xs:element name="ShowInLegend" type="xs:boolean" minOccurs="0" default="true"/>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="LineRuleType">
@@ -387,7 +387,7 @@
         </xs:annotation>
       </xs:element>
       <xs:element name="ShowInLegend" type="xs:boolean" minOccurs="0" default="true"/>
-      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="AreaRuleType">

@@ -236,7 +236,7 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
     // so we retrieve it outside of the feature iterator loop.
     const MdfModel::MdfString* lrTip = NULL;
     const MdfModel::MdfString* lrUrl = NULL;
-	if(renderer->SupportsTooltips())
+	if (renderer->SupportsTooltips())
 	{
 		const MdfModel::MdfString& mdfTip = layer->GetToolTip();
 		if(!mdfTip.empty())
@@ -244,7 +244,7 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
 			lrTip = &mdfTip;
 		}
 	}
-	if(renderer->SupportsHyperlinks())
+	if (renderer->SupportsHyperlinks())
 	{
 		const MdfModel::MdfString& mdfUrl = layer->GetUrl();
 		if(!mdfUrl.empty())

@@ -256,7 +256,6 @@ void TestMdfModel::TestCase_Serialization()
         // ------------------------------------------------------
 
         // iterate over the layer definition schema versions
-        // Note: This needs to be updated to minorVersion=3
         for (int minorVersion=3; minorVersion>=0; --minorVersion)
         {
             Version layerDefVersion(1, minorVersion, 0);
