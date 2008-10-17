@@ -155,6 +155,8 @@ public:
     // Resource Permission related methods
 
     MgPermissionCache* CreatePermissionCache();
+    virtual void CheckPermission(MgResourceIdentifier* resource,
+        CREFSTRING permission);
     virtual bool HasPermission(MgResourceIdentifier* resource,
         CREFSTRING permission);
 

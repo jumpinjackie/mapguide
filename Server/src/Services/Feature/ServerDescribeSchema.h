@@ -87,6 +87,7 @@ private:
 
 private:
 
+    MgCacheManager* m_cacheManager;
     MgFeatureServiceCache* m_featureServiceCache;
     Ptr<MgFeatureSourceCacheItem> m_featureSourceCacheItem;
 };

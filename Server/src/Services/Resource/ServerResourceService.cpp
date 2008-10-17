@@ -2056,23 +2056,21 @@ MgPermissionCache* MgServerResourceService::CreatePermissionCache()
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Checks whether or not the current user has the specified permission on the
-/// specified resource.
+/// specified resource. This method may throw any exception.
 /// </summary>
 ///----------------------------------------------------------------------------
 
-bool MgServerResourceService::HasPermission(MgResourceIdentifier* resource,
+void MgServerResourceService::CheckPermission(MgResourceIdentifier* resource,
     CREFSTRING permission)
 {
-    bool permitted = false;
-
     MG_RESOURCE_SERVICE_TRY()
 
-    MG_LOG_TRACE_ENTRY(L"MgServerResourceService::HasPermission()");
+    MG_LOG_TRACE_ENTRY(L"MgServerResourceService::CheckPermission()");
 
     if (NULL == resource)
     {
         throw new MgNullArgumentException(
-            L"MgServerResourceService.HasPermission",
+            L"MgServerResourceService.CheckPermission",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -2084,15 +2082,37 @@ bool MgServerResourceService::HasPermission(MgResourceIdentifier* resource,
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
 
-    permitted = resourceContentMan->CheckPermission(*resource, permission);
+    resourceContentMan->CheckPermission(*resource, permission);
 
     MG_RESOURCE_SERVICE_END_OPERATION(sm_retryAttempts)
 
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.CheckPermission")
+}
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Checks whether or not the current user has the specified permission on the
+/// specified resource. This method may throw non-permission related exceptions.
+/// </summary>
+///----------------------------------------------------------------------------
+
+bool MgServerResourceService::HasPermission(MgResourceIdentifier* resource,
+    CREFSTRING permission)
+{
+    bool permitted = false;
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    CheckPermission(resource, permission);
+
     MG_RESOURCE_SERVICE_CATCH(L"MgServerResourceService.HasPermission")
 
-    if (mgException != NULL
-        && !mgException->IsOfClass(MapGuide_Exception_MgPermissionDeniedException)
-        && !mgException->IsOfClass(MapGuide_Exception_MgUnauthorizedAccessException))
+    if (NULL == mgException)
+    {
+        permitted = true;
+    }
+    else if (!mgException->IsOfClass(MapGuide_Exception_MgPermissionDeniedException) &&
+             !mgException->IsOfClass(MapGuide_Exception_MgUnauthorizedAccessException))
     {
         MG_RESOURCE_SERVICE_THROW()
     }

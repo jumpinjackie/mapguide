@@ -20,6 +20,7 @@
 #include "FdoConnectionManager.h"
 #include "Fdo.h"
 #include "FSDSAX2Parser.h"
+#include "ServerResourceService.h"
 
 // Process-wide MgCacheManager
 Ptr<MgCacheManager> MgCacheManager::sm_cacheManager = (MgCacheManager*)NULL;
@@ -125,6 +126,29 @@ void MgCacheManager::ClearCaches()
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
+/// Checks whether or not the current user has the specified permission on the
+/// specified resource. This method may throw any exception.
+///
+void MgCacheManager::CheckPermission(MgResourceIdentifier* resource,
+    CREFSTRING permission)
+{
+    Ptr<MgService> service = m_serviceManager->RequestService(MgServiceType::ResourceService);
+    MgServerResourceService* resourceService = dynamic_cast<MgServerResourceService*>(service.p);
+
+    if (NULL == resourceService)
+    {
+        throw new MgServiceNotAvailableException(
+            L"MgCacheManager.CheckPermission",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    else
+    {
+        resourceService->CheckPermission(resource, permission);
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Notify the applicable caches of the changed resource.
 ///
 void MgCacheManager::NotifyResourceChanged(CREFSTRING resource)
@@ -168,30 +192,15 @@ MgFeatureSourceCacheItem* MgCacheManager::GetFeatureSourceCacheItem(MgResourceId
 
     MG_TRY()
 
-    //Get the Resource Service
-    Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(
-        m_serviceManager->RequestService(MgServiceType::ResourceService));
-    ACE_ASSERT(NULL != resourceService.p);
-
-    //Get the feature source cache
     cacheItem = m_featureServiceCache.GetFeatureSource(resource);
 
-    //if the cache exists
-    if(NULL != cacheItem.p) 
+    if (NULL == cacheItem.p)
     {
-        //check the permissions
-        if(false == resourceService->HasPermission(resource, MgResourcePermission::ReadOnly))
-        {
-            MgStringCollection arguments;
-            arguments.Add(resource->ToString());
+        // Get the Resource Service.
+        Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(
+            m_serviceManager->RequestService(MgServiceType::ResourceService));
+        ACE_ASSERT(NULL != resourceService.p);
 
-            throw new MgPermissionDeniedException(
-                L"MgCacheManager.GetFeatureSourceCacheItem",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-    }
-    else
-    {
         // Retrieve the XML document from the repository.
         string xmlContent;
         Ptr<MgByteReader> byteReader = resourceService->GetResourceContent(
@@ -238,6 +247,10 @@ MgFeatureSourceCacheItem* MgCacheManager::GetFeatureSourceCacheItem(MgResourceId
         cacheItem = new MgFeatureSourceCacheItem(featureSource.release());
         m_featureServiceCache.SetFeatureSource(resource, cacheItem.p);
     }
+    else
+    {
+        CheckPermission(resource, MgResourcePermission::ReadOnly);
+    }
 
     MG_CATCH_AND_THROW(L"MgCacheManager.GetFeatureSourceCacheItem")
 
@@ -255,27 +268,9 @@ MgSpatialContextCacheItem* MgCacheManager::GetSpatialContextCacheItem(MgResource
 
     MG_TRY()
 
-    //Get the Resource Service
-    Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(
-        m_serviceManager->RequestService(MgServiceType::ResourceService));
-    ACE_ASSERT(NULL != resourceService.p);
-
-    //get the cache
     cacheItem = m_featureServiceCache.GetSpatialContextInfo(resource);
-    if(NULL != cacheItem.p) 
-    {
-    //check the permissions
-    if(false == resourceService->HasPermission(resource, MgResourcePermission::ReadOnly))
-    {
-        MgStringCollection arguments;
-        arguments.Add(resource->ToString());
 
-        throw new MgPermissionDeniedException(
-            L"MgCacheManager.GetSpatialContextCacheItem",
-            __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-    }
-    else
+    if (NULL == cacheItem.p)
     {
         Ptr<MgFeatureSourceCacheItem> featureSourceCacheItem = GetFeatureSourceCacheItem(resource);
         MdfModel::FeatureSource* featureSource = featureSourceCacheItem->Get();
@@ -308,6 +303,10 @@ MgSpatialContextCacheItem* MgCacheManager::GetSpatialContextCacheItem(MgResource
 
         cacheItem = new MgSpatialContextCacheItem(spatialContextInfo.release());
         m_featureServiceCache.SetSpatialContextInfo(resource, cacheItem.p);
+    }
+    else
+    {
+        CheckPermission(resource, MgResourcePermission::ReadOnly);
     }
 
     MG_CATCH_AND_THROW(L"MgCacheManager.GetSpatialContextCacheItem")
