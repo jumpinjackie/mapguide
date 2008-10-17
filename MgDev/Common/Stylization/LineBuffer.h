@@ -65,6 +65,13 @@ class RS_OutputStream;
 // then the m_arcs_sp array contains one pair for each tessellated
 // arc segment.  The pair contains the vertex indices (into the
 // m_pts array) of the start and end segments of the tessellated arc.
+//
+// If arcs are present in a curve polygon or curve multi-polygon, and
+// an extra line segment was added from the end-point of the last arc
+// segment of a contour to the first vertex of the contour in order to
+// close it, then the index of this segment is added to a "close"
+// segment array.  A "close" segment may occur once per contour.  These
+// "close" segment indices are added to the m_closeseg array.
 class LineBuffer
 {
 public:
@@ -152,10 +159,13 @@ public:
     inline void EnsurePoints(int n);
     inline void EnsureContours(int n);
     inline void EnsureArcsSpArray(int n);
+    inline void EnsureCloseSegArray(int n);
     inline int contour_start_point(int contour) const;
     inline int contour_end_point(int contour) const;
     inline int arcs_sp_length() const;
     inline int* arcs_sp_array() const;
+    inline int closeseg_length() const;
+    inline int* closeseg_array() const;
     inline void get_point(int n, double&x, double&y, double& z) const;
     inline void get_point(int n, double&x, double&y) const;
     inline double& x_coord(int n) const;
@@ -193,7 +203,7 @@ private:
     int m_geom_type;
     bool m_bTransform2DPoints;
     Matrix3D m_T;
-    int *m_num_geomcntrs;
+    int* m_num_geomcntrs;
     int m_num_geomcntrs_len;
     int m_cur_geom;
     bool m_bIgnoreZ;
@@ -202,12 +212,16 @@ private:
     double m_drawingScale;
     int m_arcs_sp_len;          // length of m_arcs_sp array
     int m_cur_arcs_sp;          // current index into m_arcs_sp
-    int* m_arcs_sp;             // arc start points array
+    int* m_arcs_sp;             // arc start point indices array
+    int m_closeseg_len;         // length of m_closeseg array
+    int m_cur_closeseg;         // current index into m_closeseg;
+    int* m_closeseg;            // closed segment indices array
 
     void Resize();
     void ResizeContours();
     void ResizeNumGeomContours(int size);
     void ResizeArcsSpArray();
+    void ResizeCloseSegArray();
 
     void AddToBounds(double x, double y, double z = 0.0);
 
@@ -241,6 +255,7 @@ private:
     void ResizePoints(int n);    // new size of array # of points
     void ResizeContours(int n);
     void ResizeArcsSpArray(int n);
+    void ResizeCloseSegArray(int n);
 };
 
 
@@ -355,11 +370,21 @@ void LineBuffer::EnsureContours(int n)
 
 void LineBuffer::EnsureArcsSpArray(int n)
 {
-    // need to have space for n additional arcs start points
+    // need to have space for n additional arc start point indices
     int needed = arcs_sp_length() + n;
     // existing array not large enough
     if (needed > m_arcs_sp_len)
         ResizeArcsSpArray(2 * needed);
+}
+
+
+void LineBuffer::EnsureCloseSegArray(int n)
+{
+    // need to have space for n additional close segment indices
+    int needed = closeseg_length() + n;
+    // existing array not large enough
+    if (needed > m_closeseg_len)
+        ResizeCloseSegArray(2 * needed);
 }
 
 
@@ -416,6 +441,18 @@ int LineBuffer::arcs_sp_length() const
 int* LineBuffer::arcs_sp_array() const
 {
     return m_arcs_sp;
+}
+
+
+int LineBuffer::closeseg_length() const
+{
+    return m_cur_closeseg + 1;
+}
+
+
+int* LineBuffer::closeseg_array() const
+{
+    return m_closeseg;
 }
 
 
@@ -484,18 +521,25 @@ void LineBuffer::UnsafeLineTo(double x, double y, double z)
     append_segment(stLineTo, x, y, z);
     increment_contour_pts();
 
+    // this may be unsafe, but in the debug build, you won't err unknowingly
     _ASSERT(m_cur_types <= m_types_len);
 }
 
 
 void LineBuffer::UnsafeClose()
 {
-    // find out if it is already closed
+    // find out if it's already closed
     if (contour_closed(m_cur_cntr))
         return;
 
+    // store off close segment index
+    m_closeseg[++m_cur_closeseg] = m_cur_types - 1;
+
     int cntr_start = m_csp[m_cur_cntr];
     UnsafeLineTo(x_coord(cntr_start), y_coord(cntr_start), z_coord(cntr_start));
+
+    // this may be unsafe, but in the debug build, you won't err unknowingly
+    _ASSERT(m_cur_closeseg <= m_closeseg_len);
 }
 
 #endif

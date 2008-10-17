@@ -54,6 +54,9 @@ LineBuffer::LineBuffer(int size, FdoDimensionality dimensionality, bool bIgnoreZ
     m_arcs_sp_len(0),
     m_arcs_sp(NULL),
     m_cur_arcs_sp(-1),
+    m_closeseg_len(0),
+    m_closeseg(NULL),
+    m_cur_closeseg(-1),
     m_geom_type(0),
     m_drawingScale(0.0)
 {
@@ -86,6 +89,9 @@ LineBuffer::LineBuffer() :
     m_arcs_sp_len(0),
     m_arcs_sp(NULL),
     m_cur_arcs_sp(-1),
+    m_closeseg_len(0),
+    m_closeseg(NULL),
+    m_cur_closeseg(-1),
     m_drawingScale(0.0),
     m_dimensionality(FdoDimensionality_XY),
     m_bIgnoreZ(true),
@@ -105,6 +111,7 @@ LineBuffer::~LineBuffer()
     delete[] m_csp;
     delete[] m_num_geomcntrs;
     delete[] m_arcs_sp;
+    delete[] m_closeseg;
 }
 
 
@@ -122,6 +129,7 @@ void LineBuffer::Reset(FdoDimensionality dimensionality, bool bIgnoreZ)
     m_drawingScale = 0.0;
 
     m_cur_arcs_sp = -1;
+    m_cur_closeseg = -1;
 
     m_bounds.minx = m_bounds.miny = +DBL_MAX;
     m_bounds.maxx = m_bounds.maxy = -DBL_MAX;
@@ -188,7 +196,7 @@ LineBuffer& LineBuffer::operator=(const LineBuffer& src)
     m_cur_geom = src.m_cur_geom;
     memcpy(m_num_geomcntrs, src.m_num_geomcntrs, sizeof(int)*(1+m_cur_geom));
 
-    // arc start points
+    // arc start point indices
     if (m_arcs_sp_len < src.m_arcs_sp_len)
     {
         delete[] m_arcs_sp;
@@ -197,6 +205,16 @@ LineBuffer& LineBuffer::operator=(const LineBuffer& src)
     }
     m_cur_arcs_sp = src.m_cur_arcs_sp;
     memcpy(m_arcs_sp, src.m_arcs_sp, sizeof(int)*(1+m_cur_arcs_sp));
+
+    // close segment indices
+    if (m_closeseg_len < src.m_closeseg_len)
+    {
+        delete[] m_closeseg;
+        m_closeseg_len = src.m_closeseg_len;
+        m_closeseg = new int[m_closeseg_len];
+    }
+    m_cur_closeseg = src.m_cur_closeseg;
+    memcpy(m_closeseg, src.m_closeseg, sizeof(int)*(1+m_cur_closeseg));
 
     return *this;
 }
@@ -280,6 +298,10 @@ void LineBuffer::Close()
     // find out if it's already closed
     if (contour_closed(m_cur_cntr))
         return;
+
+    // store off close segment index
+    EnsureCloseSegArray(1);
+    m_closeseg[++m_cur_closeseg] = m_cur_types - 1;
 
     int cntr_start = m_csp[m_cur_cntr];
     LineTo(x_coord(cntr_start), y_coord(cntr_start), z_coord(cntr_start));
@@ -408,6 +430,35 @@ void LineBuffer::ResizeArcsSpArray(int n)
 }
 
 
+void LineBuffer::ResizeCloseSegArray()
+{
+    // double the capacity of the close segment array
+    if (m_closeseg_len == 0)
+        ResizeCloseSegArray(4);
+    else
+        ResizeCloseSegArray(2 * m_closeseg_len);
+}
+
+
+void LineBuffer::ResizeCloseSegArray(int n)
+{
+    if (n <= m_closeseg_len) // unnecessary at the very least
+        return;
+
+    // new close segment array
+    int* tempCloseSeg = new int[n];
+
+    // copy data
+    if (m_closeseg)
+        memcpy(tempCloseSeg, m_closeseg, sizeof(int)*(1+m_cur_closeseg));
+
+    // cleanup
+    delete[] m_closeseg;
+    m_closeseg = tempCloseSeg;
+    m_closeseg_len = n;
+}
+
+
 LineBuffer& LineBuffer::operator+=(LineBuffer& other)
 {
     // only if there is something to copy
@@ -418,6 +469,7 @@ LineBuffer& LineBuffer::operator+=(LineBuffer& other)
     EnsurePoints(other.point_count());
     EnsureContours(other.cntr_count());
     EnsureArcsSpArray(other.arcs_sp_length());
+    EnsureCloseSegArray(other.closeseg_length());
 
     // copy contours
     memcpy(m_cntrs+m_cur_cntr+1, other.m_cntrs, sizeof(int)*(1+other.m_cur_cntr));
@@ -429,11 +481,17 @@ LineBuffer& LineBuffer::operator+=(LineBuffer& other)
     // copy point data
     memcpy(m_pts + m_cur_types, other.m_pts, sizeof(double)*(other.point_count() * 3));
 
-    // copy arc start points
+    // copy arc start point indices
     memcpy(m_arcs_sp+m_cur_arcs_sp+1, other.m_arcs_sp, sizeof(int)*(1+other.m_cur_arcs_sp));
     for (int i = m_cur_arcs_sp + 1; i < m_cur_arcs_sp + other.m_cur_arcs_sp + 2; ++i)
         m_arcs_sp[i] += m_cur_types;
     m_cur_arcs_sp += other.m_cur_arcs_sp + 1;
+
+    // copy close segment indices
+    memcpy(m_closeseg+m_cur_closeseg+1, other.m_closeseg, sizeof(int)*(1+other.m_cur_closeseg));
+    for (int i = m_cur_closeseg + 1; i < m_cur_closeseg + other.m_cur_closeseg + 2; ++i)
+        m_closeseg[i] += m_cur_types;
+    m_cur_closeseg += other.m_cur_closeseg + 1;
 
     // copy segment types
     memcpy(m_types + m_cur_types, other.m_types, other.m_cur_types);
@@ -442,9 +500,7 @@ LineBuffer& LineBuffer::operator+=(LineBuffer& other)
     // copy geometry
     if (m_cur_geom + other.m_cur_geom + 2 > m_num_geomcntrs_len)
         ResizeNumGeomContours(m_cur_geom + other.m_cur_geom + 2);
-    memcpy(m_num_geomcntrs + m_cur_geom + 1,
-           other.m_num_geomcntrs,
-           sizeof(int)*(1+other.m_cur_geom));
+    memcpy(m_num_geomcntrs + m_cur_geom + 1, other.m_num_geomcntrs, sizeof(int)*(1+other.m_cur_geom));
     m_cur_geom += other.m_cur_geom + 1; // follows same pattern as contour
 
     m_bounds.add_point(RS_F_Point(other.m_bounds.minx, other.m_bounds.miny));
@@ -522,8 +578,16 @@ void LineBuffer::CircularArcTo3D(double x0, double y0, double z0, double x1, dou
     // also means we can't draw full circles as there is no way to specify one.
     if (start == mid || mid == end || start == end)
     {
+        // store off arc start point index
+        EnsureArcsSpArray(2);
+        m_arcs_sp[++m_cur_arcs_sp] = m_cur_types - 1;
+
         LineTo(x1, y1, z1);
         LineTo(x2, y2, z2);
+
+        // store off arc end point index (want index of start point of last seg)
+        m_arcs_sp[++m_cur_arcs_sp] = m_cur_types - 2;
+
         return;
     }
 
