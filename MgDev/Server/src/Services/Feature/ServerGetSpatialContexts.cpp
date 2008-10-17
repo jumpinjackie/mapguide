@@ -39,28 +39,9 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
 
     MG_FEATURE_SERVICE_TRY()
 
-    //Get the Resource Service
-    Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(
-    (MgServiceManager::GetInstance())->RequestService(MgServiceType::ResourceService));
-    ACE_ASSERT(NULL != resourceService.p);
-
     mgSpatialContextReader = m_featureServiceCache->GetSpatialContextReader(resId, bActiveOnly);
 
-    //if the reader exists
-    if(NULL != mgSpatialContextReader.p) 
-    {
-        //check the permissions
-        if(false == resourceService->HasPermission(resId, MgResourcePermission::ReadOnly))
-        {
-            MgStringCollection arguments;
-            arguments.Add(resId->ToString());
-
-            throw new MgPermissionDeniedException(
-                L"MgServerGetSpatialContexts.GetSpatialContexts",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-    }
-    else
+    if (NULL == mgSpatialContextReader.p)
     {
         // Connect to provider
         MgServerFeatureConnection msfc(resId);
@@ -73,8 +54,7 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
             FdoPtr<FdoIConnection> fdoConn = msfc.GetConnection();
             m_providerName = msfc.GetProviderName();
 
-            MgCacheManager* cacheManager = MgCacheManager::GetInstance();
-            Ptr<MgSpatialContextCacheItem> cacheItem = cacheManager->GetSpatialContextCacheItem(resId);
+            Ptr<MgSpatialContextCacheItem> cacheItem = MgCacheManager::GetInstance()->GetSpatialContextCacheItem(resId);
             MgSpatialContextInfo* spatialContextInfo = cacheItem->Get();
 
             // Check whether command is supported by provider
@@ -125,6 +105,10 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
         {
             throw new MgConnectionFailedException(L"MgServerGetSpatialContexts::GetSpatialContexts()", __LINE__, __WFILE__, NULL, L"", NULL);
         }
+    }
+    else
+    {
+        MgCacheManager::GetInstance()->CheckPermission(resId, MgResourcePermission::ReadOnly);
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetSpatialContexts.GetSpatialContexts")

@@ -52,6 +52,8 @@ public:
     void Initialize();
     void ClearCaches();
 
+    void CheckPermission(MgResourceIdentifier* resource, CREFSTRING permission);
+
     void NotifyResourceChanged(CREFSTRING resource);
     void NotifyResourceChanged(MgResourceIdentifier* resource);
 
