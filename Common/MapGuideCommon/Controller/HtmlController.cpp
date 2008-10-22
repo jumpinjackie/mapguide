@@ -28,7 +28,7 @@ MgHtmlController::MgHtmlController(MgSiteConnection* siteConn)
 //////////////////////////////////////////////////////////////////
 // Processes a GetDynamicMapOverlayImage request from the Viewer and returns an image of the specified map.
 //
-MgByteReader* MgHtmlController::GetDynamicMapOverlayImage(CREFSTRING mapName, MgRenderingOptions* options)
+MgByteReader* MgHtmlController::GetDynamicMapOverlayImage(CREFSTRING mapName, MgRenderingOptions* options, MgPropertyCollection* mapViewCommands)
 {
     // Create a Resource Service instance
     Ptr<MgResourceService> resourceService = (MgResourceService*)GetService(MgServiceType::ResourceService);
@@ -48,6 +48,15 @@ MgByteReader* MgHtmlController::GetDynamicMapOverlayImage(CREFSTRING mapName, Mg
     // Get the selection
     Ptr<MgSelection> selection = new MgSelection(map);
     selection->Open(resourceService, mapName);
+
+    // Apply map view commands
+    ApplyMapViewCommands(map, mapViewCommands);
+
+    // Make sure we clear any track changes - these are not applicable for AJAX.
+    map->ClearChanges();
+
+    // Save the MgMap state
+    map->Save(resourceService);
 
     // Create Proxy Rendering Service instance
     Ptr<MgRenderingService> service = (MgRenderingService*)(GetService(MgServiceType::RenderingService));

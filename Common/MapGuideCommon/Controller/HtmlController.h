@@ -61,7 +61,8 @@ INTERNAL_API:
     ///
     MgByteReader* GetDynamicMapOverlayImage(
         CREFSTRING mapName,
-        MgRenderingOptions* options);
+        MgRenderingOptions* options,
+        MgPropertyCollection* mapViewCommands);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
