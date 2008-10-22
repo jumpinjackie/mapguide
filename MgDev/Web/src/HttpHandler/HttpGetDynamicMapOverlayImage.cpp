@@ -91,7 +91,11 @@ void MgHttpGetDynamicMapOverlayImage::Execute(MgHttpResponse& hResponse)
         Ptr<MgColor> selectionColor = new MgColor(m_selectionColor);
         options = new MgRenderingOptions(m_mapFormat, m_behavior, selectionColor);
     }
-    Ptr<MgByteReader> map = controller.GetDynamicMapOverlayImage(m_mapName, options);
+    // Get the commands
+    Ptr<MgHttpRequestParam> params = m_hRequest->GetRequestParam();
+    Ptr<MgPropertyCollection> commands = params->GetParameters()->GetPropertyCollection();
+
+    Ptr<MgByteReader> map = controller.GetDynamicMapOverlayImage(m_mapName, options, commands);
 
     // Set the result
     hResult->SetResultObject(map, map->GetMimeType());
