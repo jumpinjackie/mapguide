@@ -2199,6 +2199,12 @@ void GDRenderer::_TransferContourPoints(LineBuffer* plb, int cntr, const SE_Matr
 //copied from WritePolylines, except it doesn't do to screen transform -- we should refactor
 void GDRenderer::DrawScreenPolyline(LineBuffer* srclb, const SE_Matrix* xform, const SE_LineStroke& lineStroke)
 {
+    if ((lineStroke.color & 0xFF000000) == 0)
+        return;
+
+    if (srclb->geom_count() == 0)
+        return; //if you have no geoms, why do you call us at all?
+
     unsigned int color = lineStroke.color;
     RS_Color c((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF, (color >> 24) & 0xFF);
 
@@ -2247,54 +2253,54 @@ void GDRenderer::DrawScreenPolyline(LineBuffer* srclb, const SE_Matrix* xform, c
 
 void GDRenderer::DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int color)
 {
-    RS_Color c((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF, (color >> 24) & 0xFF);
-
-    if (polygon->point_count() == 0)
+    if ((color & 0xFF000000) == 0)
         return;
 
-    if (c.alpha() != 0)
+    if (polygon->geom_count() == 0)
+        return; //if you have no geoms, why do you call us at all?
+
+    RS_Color c((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF, (color >> 24) & 0xFF);
+
+    int gdc = ConvertColor((gdImagePtr)m_imout, c);
+
+    gdImagePtr fillpat = NULL;
+
+    //TODO: do the device space calls need fill pattern support?
+    /*
+    if (wcscmp(use_fill->pattern().c_str(), L"Solid") != 0)
     {
-        int gdc = ConvertColor((gdImagePtr)m_imout, c);
-
-        gdImagePtr fillpat = NULL;
-
-        //TODO: do the device space calls need fill pattern support?
-        /*
-        if (wcscmp(use_fill->pattern().c_str(), L"Solid") != 0)
-        {
-            fillpat = GDFillPatterns::CreatePatternBitmap(use_fill->pattern().c_str(), gdc, gdcbg);
-            gdImageSetTile((gdImagePtr)m_imout, fillpat);
-        }
-        */
-
-        _TransferPoints(polygon, xform);
-
-        int total_cntrs = 0;
-        int total_pts = 0;
-        for (int i = 0; i < polygon->geom_count(); ++i)
-        {
-            int cntrs = polygon->geom_size(i);
-            int pts = 0;
-            for (int j = total_cntrs; j < total_cntrs + cntrs; ++j)
-                pts += polygon->cntr_size(j);
-
-            //call the new rasterizer
-            m_polyrasterizer->FillPolygon((Point*)(m_wtPointBuffer + total_pts), pts,
-                                          polygon->cntrs() + total_cntrs, cntrs,
-                                          fillpat? gdTiled : gdc, (gdImagePtr)m_imout);
-
-            total_cntrs += cntrs;
-            total_pts += pts;
-        }
-
-        /*
-        if (fillpat)
-        {
-            gdImageSetTile((gdImagePtr)m_imout, NULL);
-            gdImageDestroy(fillpat);
-        }
-        */
+        fillpat = GDFillPatterns::CreatePatternBitmap(use_fill->pattern().c_str(), gdc, gdcbg);
+        gdImageSetTile((gdImagePtr)m_imout, fillpat);
     }
+    */
+
+    _TransferPoints(polygon, xform);
+
+    int total_cntrs = 0;
+    int total_pts = 0;
+    for (int i = 0; i < polygon->geom_count(); ++i)
+    {
+        int cntrs = polygon->geom_size(i);
+        int pts = 0;
+        for (int j = total_cntrs; j < total_cntrs + cntrs; ++j)
+            pts += polygon->cntr_size(j);
+
+        //call the new rasterizer
+        m_polyrasterizer->FillPolygon((Point*)(m_wtPointBuffer + total_pts), pts,
+                                      polygon->cntrs() + total_cntrs, cntrs,
+                                      fillpat? gdTiled : gdc, (gdImagePtr)m_imout);
+
+        total_cntrs += cntrs;
+        total_pts += pts;
+    }
+
+    /*
+    if (fillpat)
+    {
+        gdImageSetTile((gdImagePtr)m_imout, NULL);
+        gdImageDestroy(fillpat);
+    }
+    */
 }
 
 
