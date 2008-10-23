@@ -4,8 +4,14 @@
 <title>Slate</title>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8">
 
-<script type="text/javascript" src="../../../lib/fusionSF-compressed.js"></script>
-<link rel="stylesheet" href="../../../jx/jxskin_delicious.css" type="text/css" media="screen" charset="utf-8">
+<script type="text/javascript" src="../../../lib/fusion.js"></script>
+<link rel="stylesheet" href="jxtheme.css" type="text/css" media="screen" charset="utf-8">
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="ie6.css" type="text/css" media="screen" charset="utf-8">
+<![endif]-->
+<!--[if IE 7]>
+<link rel="stylesheet" href="ie7.css" type="text/css" media="screen" charset="utf-8">
+<![endif]-->
 <script type="text/javascript">
 var panel1;
 var panel2;
@@ -17,10 +23,10 @@ window.onload = function() {
     Fusion.initializeLocale();  //need to call this first if String.Translate is to be used in the onload
 
     var main = new Jx.Layout('AppContainer');
-    new Jx.Layout('FileMenu', {height: 28, bottom: null});
-    new Jx.Layout('SplitterArea', {bottom: 21});
-    new Jx.Layout('ToolbarContainer', {height: 56, top: 28, bottom: null});
-    new Jx.Layout('Map', {left: 0, right: 0, top: 84, bottom: 2});
+    new Jx.Layout('FileMenuContainer', {height: 24, top: 0, bottom: null});
+    new Jx.Layout('SplitterArea', {left: 2, right: 2, top: 2, bottom: 23});
+    new Jx.Layout('ToolbarContainer', {height: 56, top: 26, bottom: null});
+    new Jx.Layout('Map', {left: 0, right: 0, top: 76, bottom: 0});
     new Jx.Layout('StatusbarContainer', {height: 21, left: 0, right: 0, top: null, bottom: 0});
     new Jx.Layout('Statusbar', {height: 21, left: 0, right: 159, top: null, bottom: 0});
 
@@ -67,6 +73,7 @@ window.onload = function() {
         label: OpenLayers.i18n('ovmapTitle'),
         modal: false,
         resize: false,
+        collapse: false,
         horizontal: 'right -10',
         vertical: 'bottom -10',
         width: 200,
@@ -81,7 +88,7 @@ window.onload = function() {
     Fusion.registerForEvent(Fusion.Event.FUSION_ERROR, fusionError);
     Fusion.initialize();
 
-    dOverviewMap.show();
+    dOverviewMap.open();
 }
 
 var fusionError = function(eventId, error) {
@@ -110,7 +117,7 @@ var showSelectionPanel = function() {
 }
 
 </script>
-<style>
+<!--style type="text/css">
 body { overflow: hidden }
 #StatusNavigator {
   position: absolute;
@@ -124,7 +131,7 @@ body { overflow: hidden }
   padding-top: 2px;
 }
 
-</style>
+</style-->
 </head>
 
 <body>
@@ -144,7 +151,11 @@ body { overflow: hidden }
     </div>
     <div id="MapArea">
       <!-- File Menu -->
-      <div id="FileMenu"></div>
+      <div id="FileMenuContainer">
+        <div id="FileMenu"></div>
+        <div id="FileMenuLeft"></div>
+        <div id="FileMenuRight"></div>
+      </div>
       <!-- /File Menu -->
       <!-- Toolbar -->
       <div id="ToolbarContainer">
@@ -170,11 +181,10 @@ body { overflow: hidden }
   <div id="StatusbarContainer">
     <div id="Statusbar"></div>
     <div id="StatusNavigator"></div>
-    <div id="pbmg"><img src="images/pbmg.gif" alt=""></div>
+    <div id="pbmg"><img src="images/pbmg.png" alt=""></div>
   </div>
 
 </div>
-<div id="OverviewMap"></div>
 <div id="Maptip"></div>
 
 </body>
