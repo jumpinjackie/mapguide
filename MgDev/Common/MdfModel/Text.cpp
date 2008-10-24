@@ -20,6 +20,7 @@
 // The Text class implementation.
 //-------------------------------------------------------------------------
 
+#include "stdafx.h"
 #include "Text.h"
 
 using namespace MDFMODEL_NAMESPACE;

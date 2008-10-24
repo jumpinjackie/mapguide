@@ -20,6 +20,7 @@
 // The SimpleSymbol class implementation.
 //-------------------------------------------------------------------------
 
+#include "stdafx.h"
 #include "SimpleSymbol.h"
 
 using namespace MDFMODEL_NAMESPACE;

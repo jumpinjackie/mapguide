@@ -20,6 +20,7 @@
 // The ThemeLabel class implementation.
 //-------------------------------------------------------------------------
 
+#include "stdafx.h"
 #include "ThemeLabel.h"
 
 using namespace MDFMODEL_NAMESPACE;

@@ -20,6 +20,7 @@
 // The AreaUsage class implementation.
 //-------------------------------------------------------------------------
 
+#include "stdafx.h"
 #include "AreaUsage.h"
 
 using namespace MDFMODEL_NAMESPACE;

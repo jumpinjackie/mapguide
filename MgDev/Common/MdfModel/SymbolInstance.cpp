@@ -20,6 +20,7 @@
 // The SymbolInstance class implementation.
 //-------------------------------------------------------------------------
 
+#include "stdafx.h"
 #include "SymbolInstance.h"
 
 using namespace MDFMODEL_NAMESPACE;
