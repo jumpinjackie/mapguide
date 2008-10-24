@@ -15,6 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#include "stdafx.h"
 #include "SE_Matrix.h"
 
 const SE_Matrix SE_Matrix::Identity = SE_Matrix(1.0, 0.0, 0.0, 0.0, 1.0, 0.0);

@@ -20,6 +20,7 @@
 // The PointUsage class implementation.
 //-------------------------------------------------------------------------
 
+#include "stdafx.h"
 #include "PointUsage.h"
 
 using namespace MDFMODEL_NAMESPACE;

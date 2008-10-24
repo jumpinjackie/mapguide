@@ -20,6 +20,7 @@
 // The TextFrame class implementation.
 //-------------------------------------------------------------------------
 
+#include "stdafx.h"
 #include "TextFrame.h"
 
 using namespace MDFMODEL_NAMESPACE;

@@ -20,6 +20,7 @@
 // The ResizeBox class implementation.
 //-------------------------------------------------------------------------
 
+#include "stdafx.h"
 #include "ResizeBox.h"
 
 using namespace MDFMODEL_NAMESPACE;

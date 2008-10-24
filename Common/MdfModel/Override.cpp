@@ -20,6 +20,7 @@
 // The Override class implementation.
 //-------------------------------------------------------------------------
 
+#include "stdafx.h"
 #include "Override.h"
 
 using namespace MDFMODEL_NAMESPACE;

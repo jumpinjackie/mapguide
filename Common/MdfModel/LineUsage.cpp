@@ -20,6 +20,7 @@
 // The LineUsage class implementation.
 //-------------------------------------------------------------------------
 
+#include "stdafx.h"
 #include "LineUsage.h"
 
 using namespace MDFMODEL_NAMESPACE;

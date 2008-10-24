@@ -20,6 +20,7 @@
 // The GraphicElement class implementation.
 //-------------------------------------------------------------------------
 
+#include "stdafx.h"
 #include "GraphicElement.h"
 
 using namespace MDFMODEL_NAMESPACE;

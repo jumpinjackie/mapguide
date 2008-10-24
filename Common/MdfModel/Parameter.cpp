@@ -20,6 +20,7 @@
 // The Parameter class implementation.
 //-------------------------------------------------------------------------
 
+#include "stdafx.h"
 #include "Parameter.h"
 
 using namespace MDFMODEL_NAMESPACE;

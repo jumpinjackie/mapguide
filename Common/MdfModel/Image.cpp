@@ -20,6 +20,7 @@
 // The Image class implementation.
 //-------------------------------------------------------------------------
 
+#include "stdafx.h"
 #include "Image.h"
 
 using namespace MDFMODEL_NAMESPACE;
