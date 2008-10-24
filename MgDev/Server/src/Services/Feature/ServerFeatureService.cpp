@@ -1465,7 +1465,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
         STRING ogcFilter = wfsFilter;
         STRING GEOM_PROP_TAG = L"%MG_GEOM_PROP%"; //NOXLATE
         size_t geomPropPos = 0;
-        while((geomPropPos = ogcFilter.find(GEOM_PROP_TAG, geomPropPos)) > 0)
+        while((geomPropPos = ogcFilter.find(GEOM_PROP_TAG, geomPropPos)) != STRING::npos)
         {
             ogcFilter = ogcFilter.replace(geomPropPos, GEOM_PROP_TAG.length(), fc->GetDefaultGeometryPropertyName());
         }
