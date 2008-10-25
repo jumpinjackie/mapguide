@@ -19,6 +19,7 @@
 #define TRANSFORMMESH_H_
 
 #include "StylizationAPI.h"
+#include "RendererStyles.h"
 
 #ifndef RESTRICT
 #ifdef _WIN32

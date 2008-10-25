@@ -320,6 +320,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\TestTransformMesh.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\TestTransformMesh.h"
+			>
+		</File>
+		<File
 			RelativePath=".\UnitTesting.cpp"
 			>
 		</File>
