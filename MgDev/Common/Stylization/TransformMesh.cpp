@@ -26,6 +26,9 @@
 // Default grid size in device space pixels
 const int DEFAULT_GRID_SIZE = 100;
 
+// Minimum grid size in device space pixels
+const int MIN_GRID_SIZE = 10;
+
 // The maximum amount we will stretch a rectangle in the grid to allow it to
 // snap to the edge of the extents
 const double MAX_GRID_EXPANSION_FACTOR = 0.2; // i.e. 20%
@@ -57,7 +60,9 @@ void TransformMesh::Initialize(int gridSize,
 {
     _ASSERT(xformer != NULL);
 
-    m_gridSize = gridSize;
+    // ensure minimum grid size
+    m_gridSize = gridSize < MIN_GRID_SIZE ? MIN_GRID_SIZE : gridSize;
+
     m_yAxisInverted = invertYaxis;
     m_meshPoints.empty();
     m_numVerticalPoints = 0;

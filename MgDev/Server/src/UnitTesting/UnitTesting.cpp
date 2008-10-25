@@ -61,6 +61,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServiceManager").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteService").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteManager").makeTest());
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestTransformMesh").makeTest());
         }
         else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestListTests)) == 0)
         {
@@ -89,6 +90,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             ACE_OS::printf("  SiteManager\n");
             ACE_OS::printf("  SiteService\n");
             ACE_OS::printf("  TileService\n");
+            ACE_OS::printf("  TransformMesh\n");
             ACE_OS::printf("\n");
 
             bRunTests = false;
@@ -173,6 +175,11 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Tile Service tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestTileService").makeTest());
         }
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("TransformMesh")) == 0)
+        {
+            ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Transform Mesh tests. <<<<<\n\n")));
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestTransformMesh").makeTest());
+        }
         else
         {
             // Test suite not found
@@ -203,6 +210,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServiceManager").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteService").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteManager").makeTest());
+        runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestTransformMesh").makeTest());
     }
 
     if(bRunTests)
