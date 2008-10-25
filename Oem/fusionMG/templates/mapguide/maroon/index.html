@@ -6,8 +6,15 @@
 
 <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
 
-<script type="text/javascript" src="../../../lib/fusionSF-compressed.js"></script>
-<link rel="stylesheet" href="../../../jx/jxskin_delicious.css" type="text/css" media="screen" charset="utf-8">
+<script type="text/javascript" src="../../../lib/fusion.js"></script>
+<link rel="stylesheet" href="jxtheme.css" type="text/css" media="screen" charset="utf-8">
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="ie6.css" type="text/css" media="screen" charset="utf-8">
+<![endif]-->
+<!--[if IE 7]>
+<link rel="stylesheet" href="ie7.css" type="text/css" media="screen" charset="utf-8">
+<![endif]-->
+
 <script type="text/javascript">
 
 var panel1;
@@ -17,23 +24,59 @@ var panel4;
 var panelman;
 
 window.onload = function() {
-  Fusion.initializeLocale();  //need to call this first if String.Translate is to be used in the onload
+    Fusion.initializeLocale();  //need to call this first if String.Translate is to be used in the onload
 
-  var main = new Jx.Layout('AppContainer');
-  new Jx.Layout('FileMenu', {height: 28, bottom: null});
-  new Jx.Layout('Toolbar', {height: 28, top: 28, bottom: null});
-  new Jx.Layout('ToolbarVertical', {width: 28, height: null, right: null, top: 56, bottom: 21});
-  new Jx.Layout('SplitterArea', {left: 28, top: 56, bottom: 21});
-  new Jx.Layout('Map');
-  new Jx.Layout('StatusbarContainer', {height: 21, top: null});
-  new Jx.Layout('Statusbar', {height: 21, right: 159, top: null, bottom: 0});
+    var main = new Jx.Layout('AppContainer');
+    new Jx.Layout('FileMenu', {
+        left: 5, 
+        right: 5, 
+        top: 5, 
+        height: 25
+    });
+    new Jx.Layout('Toolbar', {
+        left: 5, 
+        right: 5, 
+        top: 30, 
+        height: 24
+    });
+    new Jx.Layout('ToolbarVertical', {
+        left: 5, 
+        width: 28, 
+        top: 54, 
+        bottom: 21
+    });
+    new Jx.Layout('SplitterArea', {
+        left: 33, 
+        top: 54, 
+        right: 5, 
+        bottom: 22
+    });
+  
+    new Jx.Layout('MapArea');
+    new Jx.Layout('Map');
+    
+    new Jx.Layout('StatusbarContainer', {
+        height: 22, 
+        bottom: 0,
+        top: null
+    });
+    new Jx.Layout('Statusbar', {
+        right: 159
+    });
 
-  var splitter = new Jx.Splitter('SplitterArea',
-                                 {splitInto:2,
-                                 elements:[$('Map'),$('Sidebar')],
-                                 layout:'horizontal',
-                                 containerOptions: [{},{minWidth:8, width: 218}],
-                                 snappers: [null,$('SidebarCollapse')]});
+    var splitter = new Jx.Splitter('SplitterArea', {
+        splitInto:2,
+        elements:[$('MapArea'),$('Sidebar')],
+        layout:'horizontal',
+        containerOptions: [{},{minWidth:8, width: 218}],
+        barOptions: [
+            {
+                snap: 'after', 
+                snapElement: $('SidebarCollapse'), 
+                snapEvents: ['click']
+            }
+        ]
+    });
 
   /* create dynamic content */
   panel1 = new Jx.Panel({
@@ -97,20 +140,6 @@ var showSelectionPanel = function() {
 
 </script>
 
-<style>
-body { overflow: hidden }
-#StatusNavigator {
-  position: absolute;
-  right: 139px;
-  padding-top: 2px;
-}
-
-#pbmg {
-  position: absolute;
-  right: 0px;
-  padding-top: 2px;
-</style>
-
 </head>
 
 <body>
@@ -120,13 +149,14 @@ body { overflow: hidden }
   <div id="FileMenu"></div>
 
   <div id="SplitterArea">
-    <div id="Map">
+    <div id="MapArea">
+      <div id="Map"></div>
       <div id="Navigator"></div>
     </div>
     <div id="Sidebar">
       <!-- Collapse Sidebar -->
       <div id="SidebarCollapse">
-          <a id="SidebarCollapseButton" href="#">Close</a>
+          <a id="SidebarCollapseButton" href="#"></a>
       </div>
     </div>
   </div>
