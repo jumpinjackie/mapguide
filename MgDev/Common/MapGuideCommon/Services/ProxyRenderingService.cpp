@@ -201,7 +201,7 @@ MgByteReader* MgProxyRenderingService::RenderDynamicOverlay(
                         MgRenderingServiceOpId::RenderDynamicOverlay,   // Command Code
                         3,                                              // No of arguments
                         Rendering_Service,                              // Service Id
-                        BUILD_VERSION(2,0,0),                           // Operation version
+                        BUILD_VERSION(2,1,0),                           // Operation version
                         MgCommand::knObject, map,                       // Argument#1
                         MgCommand::knObject, selection,                 // Argument#2
                         MgCommand::knObject, options,                   // Argument#3

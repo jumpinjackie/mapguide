@@ -77,6 +77,7 @@ IMgOperationHandler* MgRenderingOperationFactory::GetOperation(
         switch (VERSION_NO_PHASE(operationVersion))
         {
         case VERSION_SUPPORTED(2,0):
+        case VERSION_SUPPORTED(2,1):
             handler.reset(new MgOpRenderDynamicOverlay());
             break;
         default:
