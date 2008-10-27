@@ -1648,7 +1648,7 @@ function RequestMap(scale, centerX, centerY, showGroups, hideGroups, showLayers,
 
 function RequestMapImage(reqId, viewParams)
 {
-    url = webAgent + "?OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=PNG&VERSION=2.0.0&SESSION=" + sessionId + "&MAPNAME=" + encodeComponent(mapName) + "&SEQ=" + Math.random() + "&CLIENTAGENT=" + encodeComponent(clientAgent) + "&BEHAVIOR=2";
+    url = webAgent + "?OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=PNG&VERSION=2.1.0&SESSION=" + sessionId + "&MAPNAME=" + encodeComponent(mapName) + "&SEQ=" + Math.random() + "&CLIENTAGENT=" + encodeComponent(clientAgent) + "&BEHAVIOR=2";
     url += viewParams;
     document.getElementById("overlay").innerHTML =
             '<img class="mapImage" name="' + reqId + '" id="mapImage" src="' + url + '" width=' + mapDevW + ' height=' + mapDevH + ' border=0 vspace=0 hspace=0 style="visibility: hidden; width: ' + mapDevW + 'px; height: ' + mapDevH + 'px;" onload="return OnMapOverlayImageLoaded(event)">';
@@ -1658,7 +1658,7 @@ function RequestMapImage(reqId, viewParams)
 
 function RequestSelectionImage(reqId, viewParams)
 {
-    url = webAgent + "?OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=PNG&VERSION=2.0.0&SESSION=" + sessionId + "&MAPNAME=" + encodeComponent(mapName) + "&SEQ=" + Math.random() + "&CLIENTAGENT=" + encodeComponent(clientAgent) + "&BEHAVIOR=5&SELECTIONCOLOR=" + selectionColor;
+    url = webAgent + "?OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=PNG&VERSION=2.1.0&SESSION=" + sessionId + "&MAPNAME=" + encodeComponent(mapName) + "&SEQ=" + Math.random() + "&CLIENTAGENT=" + encodeComponent(clientAgent) + "&BEHAVIOR=5&SELECTIONCOLOR=" + selectionColor;
     url += viewParams;
     document.getElementById('selOverlay').innerHTML =
         '<img class="mapImage" name="' + reqId + '" id="selectionImage" src="' + url + '" width=' + mapDevW + ' height=' + mapDevH + ' border=0 vspace=0 hspace=0 style="visibility: hidden; width: ' + mapDevW + 'px; height: ' + mapDevH + 'px;" onload="return OnSelectionOverlayImageLoaded(event)">';

@@ -53,7 +53,7 @@ MgHttpGetDynamicMapOverlayImage::MgHttpGetDynamicMapOverlayImage(MgHttpRequest *
             m_bKeepSelection = (keepSelection == L"1");
         }
     }
-    else if (version == MG_API_VERSION(2,0,0))
+    else if (version == MG_API_VERSION(2,0,0) || version == MG_API_VERSION(2,1,0))
     {
         m_behavior = MgUtil::StringToInt32(params->GetParameterValue(MgHttpResourceStrings::reqRenderingBehavior));
         m_selectionColor = params->GetParameterValue(MgHttpResourceStrings::reqRenderingSelectionColor);
@@ -86,7 +86,7 @@ void MgHttpGetDynamicMapOverlayImage::Execute(MgHttpResponse& hResponse)
         options = new MgRenderingOptions(m_mapFormat, MgRenderingOptions::RenderSelection |
             MgRenderingOptions::RenderLayers | (m_bKeepSelection ? MgRenderingOptions::KeepSelection : 0), NULL);
     }
-    else if (version == MG_API_VERSION(2,0,0))
+    else if (version == MG_API_VERSION(2,0,0) || version == MG_API_VERSION(2,1,0))
     {
         Ptr<MgColor> selectionColor = new MgColor(m_selectionColor);
         options = new MgRenderingOptions(m_mapFormat, m_behavior, selectionColor);
@@ -115,7 +115,8 @@ void MgHttpGetDynamicMapOverlayImage::ValidateOperationVersion()
     // There are multiple supported versions
     INT32 version = m_userInfo->GetApiVersion();
     if (version != MG_API_VERSION(1,0,0) &&
-        version != MG_API_VERSION(2,0,0))
+        version != MG_API_VERSION(2,0,0) &&
+        version != MG_API_VERSION(2,1,0))
     {
         throw new MgInvalidOperationVersionException(
         L"MgHttpGetDynamicMapOverlayImage.ValidateOperationVersion", __LINE__, __WFILE__, NULL, L"", NULL);
