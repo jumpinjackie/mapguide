@@ -12,6 +12,9 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -101,6 +104,91 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="..\..\..\bin\debug64"
+			IntermediateDirectory="..\..\..\obj\debug64\GwsQueryEngine"
+			ConfigurationType="2"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".\inc;..\Include;..\GwsCommon\inc;..\..\..\..\Oem\FDO\inc;..\..\..\..\Oem\FDO\inc\ExpressionEngine"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL;GWSQUERYENGINE_EXPORTS"
+				MinimalRebuild="true"
+				ExceptionHandling="2"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				WarningLevel="4"
+				WarnAsError="true"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4100;4127;4189;4702"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib ExpressionEngine.lib"
+				OutputFile="$(OutDir)\MgGwsQueryEngined.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\..\..\..\Oem\FDO\lib64"
+				ModuleDefinitionFile="GwsQueryEngine.def"
+				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll; ExpressionEngine.dll"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)\MgGwsQueryEngined.pdb"
+				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="..\..\..\lib\debug64\MgGwsQueryEngined.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="..\..\..\bin\release"
 			IntermediateDirectory="..\..\..\obj\release\GwsQueryEngine"
@@ -162,6 +250,92 @@
 				DataExecutionPrevention="0"
 				ImportLibrary="..\..\..\lib\release\MgGwsQueryEngine.lib"
 				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="..\..\..\bin\release64"
+			IntermediateDirectory="..\..\..\obj\release64\GwsQueryEngine"
+			ConfigurationType="2"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories=".\inc;..\Include;..\GwsCommon\inc;..\..\..\..\Oem\FDO\inc;..\..\..\..\Oem\FDO\inc\ExpressionEngine"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GWSQUERYENGINE_EXPORTS"
+				StringPooling="true"
+				ExceptionHandling="2"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				WarningLevel="4"
+				WarnAsError="true"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4100;4127;4189;4702"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib ExpressionEngine.lib"
+				OutputFile="$(OutDir)\MgGwsQueryEngine.dll"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\..\..\..\Oem\FDO\lib64"
+				ModuleDefinitionFile="GwsQueryEngine.def"
+				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll;ExpressionEngine.dll"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)\MgGwsQueryEngine.pdb"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="..\..\..\lib\release64\MgGwsQueryEngine.lib"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"

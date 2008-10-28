@@ -312,12 +312,12 @@ MgStringCollection* MgStringCollection::ParseCollection(CREFSTRING coll, CREFSTR
         return NULL;
 
     STRING separator = delim.length() == 0? L",": delim;
-    unsigned int delimPos, currPos = 0;
+    size_t delimPos, currPos = 0;
     bool done = false;
     STRING elem;
     while(!done)
     {
-        delimPos = (int)collection.find_first_of(separator, currPos);
+        delimPos = collection.find_first_of(separator, currPos);
         if(delimPos == wstring::npos)
         {
             elem = collection.substr(currPos);
