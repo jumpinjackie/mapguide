@@ -4,12 +4,16 @@
 	Version="9.00"
 	Name="PostBuild"
 	ProjectGUID="{F486B768-640A-445D-8C09-437C896EFFAD}"
+	RootNamespace="PostBuild"
 	Keyword="MakeFileProj"
 	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
 			Name="Win32"
+		/>
+		<Platform
+			Name="x64"
 		/>
 	</Platforms>
 	<ToolFiles>
@@ -39,6 +43,46 @@
 			Name="Release|Win32"
 			OutputDirectory="..\..\bin\release"
 			IntermediateDirectory="..\..\obj\release\PostBuild"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake /F PostBuild.mak release"
+				ReBuildCommandLine="nmake /F PostBuild.mak cleanrelease release"
+				CleanCommandLine="nmake /F PostBuild.mak cleanrelease"
+				Output=""
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake /F PostBuild.mak debug"
+				ReBuildCommandLine="nmake /F PostBuild.mak cleandebug debug"
+				CleanCommandLine="nmake /F PostBuild.mak cleandebug"
+				Output=""
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="..\..\bin\release64"
+			IntermediateDirectory="..\..\obj\release64\PostBuild"
 			ConfigurationType="0"
 			>
 			<Tool

@@ -12,6 +12,9 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -100,6 +103,90 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="..\..\bin\win64\debug"
+			IntermediateDirectory="..\..\obj\win64\debug\SQLitePhpApi"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				CommandLine="copy .\php.i .\language.i&#x0D;&#x0A;..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\SQLiteApiGen.xml PHP&#x0D;&#x0A;..\..\..\SwigEx\Win32\swig -c++ -php -baseexception SqliteException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose &quot;((SqliteDisposable*)arg1)-&gt;Release()&quot; -rethrow &quot;e-&gt;Raise();&quot; -nodefault -o SQLitePhpApi_wrap.cpp SQLitePhpApi.i&#x0D;&#x0A;"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\..\ACE\ACE_wrappers;..\..\..\php;..\..\..\php\main;..\..\..\php\Zend;..\..\..\php\TSRM;..\..\..\php\ext\w32api;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\Exceptions;..\SQLite3;..\SqliteVM"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SQLITEPHPAPI_EXPORTS;PHPPROXYAPI_EXPORTS;ZEND_WIN32;PHP_WIN32;ZEND_DEBUG=0;ZTS=1"
+				MinimalRebuild="true"
+				ExceptionHandling="2"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ACEd.lib php5ts.lib"
+				OutputFile="$(OutDir)/php_SQLitePhpApid.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\..\Oem\php\dev"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/php_SQLitePhpApid.pdb"
+				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="$(OutDir)/SQLitePhpApi.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="..\..\bin\win32\release"
 			IntermediateDirectory="..\..\obj\win32\release\SQLitePhpApi"
@@ -158,6 +245,89 @@
 				DataExecutionPrevention="0"
 				ImportLibrary="$(OutDir)/SQLitePhpApi.lib"
 				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="..\..\obj\win64\release"
+			IntermediateDirectory="..\..\obj\win64\release\SQLitePhpApi"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				CommandLine="copy .\php.i .\language.i&#x0D;&#x0A;..\..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe .\SQLiteApiGen.xml PHP&#x0D;&#x0A;..\..\..\SwigEx\Win32\swig -c++ -php -baseexception SqliteException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose &quot;((SqliteDisposable*)arg1)-&gt;Release()&quot; -rethrow &quot;e-&gt;Raise();&quot; -nodefault -o SQLitePhpApi_wrap.cpp SQLitePhpApi.i&#x0D;&#x0A;"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="..\..\..\ACE\ACE_wrappers;..\..\..\php;..\..\..\php\main;..\..\..\php\Zend;..\..\..\php\TSRM;..\..\..\php\ext\w32api;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\Exceptions;..\SQLite3;..\SqliteVM"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SQLITEPHPAPI_EXPORTS;PHPPROXYAPI_EXPORTS;ZEND_WIN32;PHP_WIN32;ZEND_DEBUG=0;ZTS=1"
+				ExceptionHandling="2"
+				RuntimeLibrary="2"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ACE.lib php5ts.lib"
+				OutputFile="$(OutDir)/php_SQLitePhpApi.dll"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\..\Oem\php\dev"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/php_SQLitePhpApi.pdb"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="$(OutDir)/SQLitePhpApi.lib"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"

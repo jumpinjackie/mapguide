@@ -12,6 +12,9 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -40,6 +43,46 @@
 			Name="Release|Win32"
 			OutputDirectory="..\..\bin\release"
 			IntermediateDirectory="..\..\obj\release\DotNetApi"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f Makefile OUTDIR=&quot;$(OutDir)&quot; release"
+				ReBuildCommandLine="nmake -a -f Makefile OUTDIR=&quot;$(OutDir)&quot; release"
+				CleanCommandLine="nmake -f Makefile OUTDIR=&quot;$(OutDir)&quot; cleanrelease"
+				Output="$(OutDir)\MapGuideDotNetApi.dll"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f Makefile OUTDIR=&quot;$(OutDir)&quot; debug"
+				ReBuildCommandLine="nmake -a -f Makefile OUTDIR=&quot;$(OutDir)&quot; debug"
+				CleanCommandLine="nmake -f Makefile OUTDIR=&quot;$(OutDir)&quot; cleandebug"
+				Output="$(OutDir)\MapGuideDotNetApid.dll"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="..\..\bin\release64"
+			IntermediateDirectory="..\..\obj\release64\DotNetApi"
 			ConfigurationType="0"
 			>
 			<Tool

@@ -12,6 +12,9 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -155,6 +158,171 @@
 				DataExecutionPrevention="0"
 				ImportLibrary="..\..\lib\release\MapGuideUnmanagedApi.lib"
 				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="move /Y *.cs ..\DotNetApi"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				CommandLine="del /Q custom\*prop&#x0D;&#x0A;..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\Constants.xml C# ./Constants.cs&#x0D;&#x0A;copy .\dotnet.i .\language.i&#x0D;&#x0A;..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\MapGuideApiGen.xml C#&#x0D;&#x0A;..\..\..\Oem\SwigEx\Win32\swig -c++ -csharp -dllname MapGuideUnmanagedApid -namespace OSGeo.MapGuide -proxydir .\custom -baseexception MgException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose &quot;((MgDisposable*)arg1)-&gt;Release()&quot; -rethrow &quot;e-&gt;Raise();&quot; -nodefault -noconstants -module MapGuideApi -o MgApi_wrap.cpp -lib ..\..\..\Oem\SWIGEx\Lib MapGuideApi.i&#x0D;&#x0A;"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\HttpHandler;..\WebApp;..\WebSupport;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MgDotNetUnmanagedApi_EXPORTS"
+				MinimalRebuild="true"
+				ExceptionHandling="2"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ACEd.lib"
+				OutputFile="$(OutDir)\MapGuideUnmanagedApid.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)\MapGuideUnmanagedApid.pdb"
+				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="..\..\lib\debug\MapGuideUnmanagedApid.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="move /Y *.cs ..\DotNetApi"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="..\..\bin\release64"
+			IntermediateDirectory="..\..\obj\release64\DotNetUnmanagedApi"
+			ConfigurationType="2"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				CommandLine="del /Q custom\*prop&#x0D;&#x0A;..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\Constants.xml C# ./Constants.cs&#x0D;&#x0A;copy .\dotnet.i .\language.i&#x0D;&#x0A;..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\MapGuideApiGen.xml C#&#x0D;&#x0A;..\..\..\Oem\SwigEx\Win32\swig -c++ -csharp -namespace OSGeo.MapGuide -dllname MapGuideUnmanagedApi -proxydir .\custom -baseexception MgException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose &quot;((MgDisposable*)arg1)-&gt;Release()&quot; -rethrow &quot;e-&gt;Raise();&quot; -nodefault -noconstants -module MapGuideApi -o MgApi_wrap.cpp -lib ..\..\..\Oem\SWIGEx\Lib MapGuideApi.i&#x0D;&#x0A;"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="..\HttpHandler;..\WebApp;..\WebSupport;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL"
+				ExceptionHandling="2"
+				RuntimeLibrary="2"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ACE.lib"
+				OutputFile="$(OutDir)\MapGuideUnmanagedApi.dll"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)\MapGuideUnmanagedApi.pdb"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="..\..\lib\release64\MapGuideUnmanagedApi.lib"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"

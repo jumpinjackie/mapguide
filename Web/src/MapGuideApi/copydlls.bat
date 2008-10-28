@@ -19,6 +19,7 @@ set PHP_EXT_DIR=C:\PHP\ext
 
 if "%1"=="BUILD" goto copy_build
 if "%1"=="RELEASE" goto copy_release
+if "%1"=="RELEASE64" goto copy_release64
 if "%1"=="DEBUG" goto copy_debug
 
 REM ---- DEFAULT -----
@@ -59,6 +60,38 @@ copy %COMMON_BIN_RELEASE%\MgMdfParser.dll %WEB_BIN_RELEASE%
 
 echo Copying Xerces Release DLL to %WEB_BIN_RELEASE%
 copy "..\..\..\Oem\dbxml-2.3.10\bin\xerces-c_2_7.dll" %WEB_BIN_RELEASE%
+
+goto end_copy
+
+:copy_release64
+if not exist %WEB_BIN_RELEASE%64 mkdir %WEB_BIN_RELEASE%64
+
+echo Copying ACE Release DLL to %WEB_BIN_RELEASE%64
+copy "..\..\..\Oem\ACE\ACE_wrappers\lib64\ACE.dll" %WEB_BIN_RELEASE%64
+
+echo Copying JSON Release DLL to %WEB_BIN_RELEASE%64
+copy "..\..\..\Oem\jsoncpp\lib64\lib_json.dll" %WEB_BIN_RELEASE%64
+
+echo Copying MgFoundation Release DLL to %WEB_BIN_RELEASE%64
+copy %COMMON_BIN_RELEASE%64\MgFoundation.dll %WEB_BIN_RELEASE%64
+
+echo Copying MgGeometry Release DLL to %WEB_BIN_RELEASE%64
+copy %COMMON_BIN_RELEASE%64\MgGeometry.dll %WEB_BIN_RELEASE%64
+
+echo Copying MgPlatformBase Release DLL to %WEB_BIN_RELEASE%64
+copy %COMMON_BIN_RELEASE%64\MgPlatformBase.dll %WEB_BIN_RELEASE%64
+
+echo Copying MgMapGuideCommon Release DLL to %WEB_BIN_RELEASE%64
+copy %COMMON_BIN_RELEASE%64\MgMapGuideCommon.dll %WEB_BIN_RELEASE%64
+
+echo Copying MgMdfModel Release DLL to %WEB_BIN_RELEASE%64
+copy %COMMON_BIN_RELEASE%64\MgMdfModel.dll %WEB_BIN_RELEASE%64
+
+echo Copying MgMdfParser Release DLL to %WEB_BIN_RELEASE%64
+copy %COMMON_BIN_RELEASE%64\MgMdfParser.dll %WEB_BIN_RELEASE%64
+
+echo Copying Xerces Release DLL to %WEB_BIN_RELEASE%64
+copy "..\..\..\Oem\dbxml-2.3.10\bin64\xerces-c_2_7.dll" %WEB_BIN_RELEASE%64
 
 goto end_copy
 

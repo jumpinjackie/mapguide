@@ -101,6 +101,86 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="..\bin\debug64"
+			IntermediateDirectory="..\obj\debug64\Renderers"
+			ConfigurationType="2"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="$(USRCFLAGS)"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\MdfModel;..\Stylization;..\..\Oem\FDO\inc;..\..\Oem\FDO\inc\ExpressionEngine;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\gd\gd;..\..\Oem\gd\freetype\include;&quot;..\..\Oem\agg-2.4\include&quot;;&quot;..\..\Oem\agg-2.4\font_freetype&quot;;..\..\Oem\gd\lpng;..\..\Oem\gd\zlib"
+				PreprocessorDefinitions="WIN32;WIN64;_DEBUG;_WINDOWS;_USRDLL;RENDERERS_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
+				MinimalRebuild="true"
+				ExceptionHandling="2"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				WarningLevel="4"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="dwfcore_wt.1.1.1.lib dwftk_wt.7.1.1.lib whiptk_wt.7.7.601.lib emaptk_wt.1.0.0.lib gd.lib freetype235_D.lib libpngd.lib"
+				OutputFile="$(OutDir)\MgRenderersd.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\..\Oem\DWFTK7.1\develop\global\lib\static\debug64\vc8.0;..\..\Oem\gd\build\win32\gd\Debug64;..\..\Oem\gd\freetype\objs64;..\..\Oem\gd\lpng\projects\visualc8\Win64_LIB_Debug"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)\MgRenderersd.pdb"
+				SubSystem="2"
+				ImportLibrary="..\lib\debug64\MgRenderersd.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="..\bin\release"
 			IntermediateDirectory="..\obj\release\Renderers"
@@ -187,89 +267,6 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug|x64"
-			OutputDirectory="..\bin\debug64"
-			IntermediateDirectory="..\obj\debug64\Renderers"
-			ConfigurationType="2"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalOptions="$(USRCFLAGS)"
-				Optimization="0"
-				AdditionalIncludeDirectories="..\MdfModel;..\Stylization;..\..\Oem\FDO\inc;..\..\Oem\FDO\inc\ExpressionEngine;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\gd\gd;..\..\Oem\gd\freetype\include;&quot;..\..\Oem\agg-2.4\include&quot;;&quot;..\..\Oem\agg-2.4\font_freetype&quot;;..\..\Oem\gd\lpng;..\..\Oem\gd\zlib"
-				PreprocessorDefinitions="WIN32;WIN64;_DEBUG;_WINDOWS;_USRDLL;RENDERERS_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
-				MinimalRebuild="true"
-				ExceptionHandling="2"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				WarningLevel="4"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="dwfcore_wt.1.1.1.lib dwftk_wt.7.1.1.lib whiptk_wt.7.7.601.lib emaptk_wt.1.0.0.lib gd.lib freetype235_D.lib libpngd.lib"
-				OutputFile="$(OutDir)\MgRenderersd.dll"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Oem\DWFTK7.1\develop\global\lib\static\debug64\vc8.0;..\..\Oem\gd\build\win32\gd\Debug64;..\..\Oem\gd\freetype\objs64;..\..\Oem\gd\lpng\projects\visualc8\Win64_LIB_Debug"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)\MgRenderersd.pdb"
-				SubSystem="2"
-				ImportLibrary="..\lib\debug64\MgRenderersd.lib"
-				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
 			Name="Release|x64"
 			OutputDirectory="..\bin\release64"
 			IntermediateDirectory="..\obj\release64\Renderers"
@@ -349,9 +346,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -568,7 +562,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
+					Name="Debug|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -576,7 +570,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -604,7 +598,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
+					Name="Debug|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -612,7 +606,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
