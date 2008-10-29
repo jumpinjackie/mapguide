@@ -98,6 +98,7 @@
 #include "HttpRequestMetadata.cpp"
 #include "HttpRequestParam.cpp"
 #include "HttpRequestResponseHandler.cpp"
+#include "HttpResourceExists.cpp"
 #include "HttpResponse.cpp"
 #include "HttpResult.cpp"
 #include "HttpSelectFeatures.cpp"

@@ -51,6 +51,7 @@
 #include "OpInheritPermissionsFrom.cpp"
 #include "OpMoveResource.cpp"
 #include "OpRenameResourceData.cpp"
+#include "OpResourceExists.cpp"
 #include "OpSetResource.cpp"
 #include "OpSetResourceData.cpp"
 #include "OpUpdateRepository.cpp"

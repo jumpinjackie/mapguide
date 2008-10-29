@@ -71,6 +71,7 @@ include_SOURCES = \
   OpInheritPermissionsFrom.cpp \
   OpMoveResource.cpp \
   OpRenameResourceData.cpp \
+  OpResourceExists.cpp \
   OpSetResource.cpp \
   OpSetResourceData.cpp \
   OpUpdateRepository.cpp \
@@ -148,6 +149,7 @@ noinst_HEADERS = $(include_SOURCES) \
   OpInheritPermissionsFrom.h \
   OpMoveResource.h \
   OpRenameResourceData.h \
+  OpResourceExists.h \
   OpSetResource.h \
   OpSetResourceData.h \
   OpUpdateRepository.h \

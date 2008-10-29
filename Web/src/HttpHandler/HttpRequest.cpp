@@ -20,6 +20,7 @@
 // Http Resource Service operations
 #include "HttpUpdateRepository.h"
 #include "HttpApplyResourcePackage.h"
+#include "HttpResourceExists.h"
 #include "HttpEnumerateResources.h"
 #include "HttpEnumerateApplicationTemplates.h"
 #include "HttpEnumerateApplicationWidgets.h"
@@ -321,6 +322,7 @@ bool InitializeStaticData()
     httpClassCreators[MgHttpResourceStrings::opGetPlot] = MgHttpGetPlot::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opSetResource] = MgHttpSetResource::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opDeleteResource] = MgHttpDeleteResource::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opResourceExists] = MgHttpResourceExists::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opEnumerateResources] = MgHttpEnumerateResources::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetResourceContent] = MgHttpGetResourceContent::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetResourceHeader] = MgHttpGetResourceHeader::CreateObject;

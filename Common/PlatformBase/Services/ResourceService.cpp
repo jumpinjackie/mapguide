@@ -202,24 +202,6 @@ MgByteReader* MgResourceService::GetResourceMetadata(
 }
 
 
-//////////////////////////////////////////////////////////////////
-/// <summary>
-/// Checks to see if resource exists.
-/// </summary>
-/// <param name="resource">
-/// Resource identifier describing the resource.
-/// </param>
-/// <returns>
-/// True if resource exists, false otherwise
-/// </returns>
-/// EXCEPTIONS:
-///
-bool MgResourceService::ResourceExists(
-    MgResourceIdentifier* resource)
-{
-    throw new MgNotImplementedException(L"MgResourceService.ResourceExists", __LINE__, __WFILE__, NULL, L"", NULL);
-}
-
 bool MgResourceService::HasPermission(MgResourceIdentifier* resource, CREFSTRING permission)
 {
     throw new MgNotImplementedException(L"MgResourceService.HasPermission", __LINE__, __WFILE__, NULL, L"", NULL);

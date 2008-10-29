@@ -21,32 +21,21 @@
 // Resource Service operations
 // TODO: Share the following strings with the Web tier.
 
-const STRING MgOperationName::EnumerateRepositories=L"ENUMERATEREPOSITORIES";
-const STRING MgOperationName::CreateRepository=L"CREATEREPOSITORY";
-const STRING MgOperationName::DeleteRepository=L"DELETEREPOSITORY";
+//const STRING MgOperationName::CreateRepository=L"CREATEREPOSITORY";
+//const STRING MgOperationName::DeleteRepository=L"DELETEREPOSITORY";
 const STRING MgOperationName::UpdateRepository=L"UPDATEREPOSITORY";
-const STRING MgOperationName::GetRepositoryContent=L"GETREPOSITORYCONTENT";
-const STRING MgOperationName::GetRepositoryHeader=L"GETREPOSITORYHEADER";
-const STRING MgOperationName::ApplyResourcePackage=L"APPLYRESOURCEPACKAGE";
+//const STRING MgOperationName::ApplyResourcePackage=L"APPLYRESOURCEPACKAGE";
 
-const STRING MgOperationName::EnumerateResources=L"ENUMERATERESOURCES";
 const STRING MgOperationName::SetResource=L"SETRESOURCE";
 const STRING MgOperationName::DeleteResource=L"DELETERESOURCE";
 const STRING MgOperationName::MoveResource=L"MOVERESOURCE";
 const STRING MgOperationName::CopyResource=L"COPYRESOURCE";
-const STRING MgOperationName::GetResourceContent=L"GETRESOURCECONTENT";
-const STRING MgOperationName::GetResourceHeader=L"GETRESOURCEHEADER";
-const STRING MgOperationName::EnumerateResourceReferences=L"ENUMERATERESOURCEREFERENCES";
 const STRING MgOperationName::ChangeResourceOwner=L"CHANGERESOURCEOWNER";
 const STRING MgOperationName::InheritPermissionsFrom=L"INHERITPERMISSIONSFROM";
 
-const STRING MgOperationName::EnumerateResourceData=L"ENUMERATERESOURCEDATA";
 const STRING MgOperationName::SetResourceData=L"SETRESOURCEDATA";
 const STRING MgOperationName::DeleteResourceData=L"DELETERESOURCEDATA";
 const STRING MgOperationName::RenameResourceData=L"RENAMERESOURCEDATA";
-const STRING MgOperationName::GetResourceData=L"GETRESOURCEDATA";
-
-const STRING MgOperationName::EnumerateUnmanagedData=L"ENUMERATEUNMANAGEDDATA";
 
 const STRING MgOperationInfo::sm_currentVersion = L"1.0.0";
 const MgOperationParameter MgOperationInfo::sm_blankParameter;

@@ -1625,13 +1625,12 @@ PUBLISHED_API:
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param resource (MgResourceIdentifier)
-    /// Resource to get references
-    /// for.
+    /// Resource identifier specifying the resource to be checked for existence.
     ///
     /// \return
     /// Returns true if the resource exists, false otherwise.
     ///
-    virtual bool ResourceExists(MgResourceIdentifier* resource);
+    virtual bool ResourceExists(MgResourceIdentifier* resource) = 0;
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1884,6 +1883,7 @@ INTERNAL_API:
         opIdGetResourceModifiedDate         = 0x1111EF18,
         opIdEnumerateParentMapDefinitions   = 0x1111EF19,
         opIdEnumerateUnmanagedData          = 0x1111EF1A,
+        opIdResourceExists                  = 0x1111EF1B,
     };
 };
 

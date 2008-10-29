@@ -86,6 +86,7 @@ public:
 
     // Resource Management APIs
 
+    virtual bool ResourceExists(MgResourceIdentifier* resource);
     void AddResource(MgResourceIdentifier* resource,
         MgByteReader* content, MgByteReader* header);
     void SetResource(MgResourceIdentifier* resource,
@@ -105,8 +106,6 @@ public:
     // Helper Methods
 
     MgRepositoryManager* GetSourceRepositoryManager();
-
-    virtual bool FindResource(MgResourceIdentifier* resource);
 
     virtual MgResourceContentManager* GetResourceContentManager() = 0;
     virtual MgResourceHeaderManager* GetResourceHeaderManager() = 0;

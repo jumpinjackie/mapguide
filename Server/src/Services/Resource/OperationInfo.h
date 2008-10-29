@@ -25,32 +25,21 @@ typedef std::map<STRING, MgOperationParameter> MgOpParamMap;
 class MgOperationName
 {
 INTERNAL_API:
-    static const STRING EnumerateRepositories;
-    static const STRING CreateRepository;
-    static const STRING DeleteRepository;
+//    static const STRING CreateRepository;
+//    static const STRING DeleteRepository;
     static const STRING UpdateRepository;
-    static const STRING GetRepositoryContent;
-    static const STRING GetRepositoryHeader;
-    static const STRING ApplyResourcePackage;
+//    static const STRING ApplyResourcePackage;
 
-    static const STRING EnumerateResources;
     static const STRING SetResource;
     static const STRING DeleteResource;
     static const STRING MoveResource;
     static const STRING CopyResource;
-    static const STRING GetResourceContent;
-    static const STRING GetResourceHeader;
-    static const STRING EnumerateResourceReferences;
     static const STRING ChangeResourceOwner;
     static const STRING InheritPermissionsFrom;
 
-    static const STRING EnumerateResourceData;
     static const STRING SetResourceData;
     static const STRING DeleteResourceData;
     static const STRING RenameResourceData;
-    static const STRING GetResourceData;
-
-    static const STRING EnumerateUnmanagedData;
 };
 
 

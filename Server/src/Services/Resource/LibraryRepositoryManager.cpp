@@ -396,20 +396,14 @@ void MgLibraryRepositoryManager::InheritPermissionsFrom(
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgLibraryRepositoryManager.InheritPermissionsFrom")
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
-/// Determines if the specified resource exists.
-/// </summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Checks to see if the specified resource exists.
 ///
-/// <exceptions>
-/// MgException
-/// </exceptions>
-///----------------------------------------------------------------------------
-
-bool MgLibraryRepositoryManager::FindResource(MgResourceIdentifier* resource)
+bool MgLibraryRepositoryManager::ResourceExists(MgResourceIdentifier* resource)
 {
     ACE_ASSERT(NULL != resource);
     ACE_ASSERT(NULL != m_resourceHeaderMan);
 
-    return m_resourceHeaderMan->FindResource(resource->ToString());
+    return m_resourceHeaderMan->ResourceExists(resource->ToString());
 }

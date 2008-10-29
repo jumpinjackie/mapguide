@@ -26,6 +26,7 @@
 #include "OpGetRepositoryHeader.h"
 #include "OpApplyResourcePackage.h"
 // Resource Management APIs
+#include "OpResourceExists.h"
 #include "OpEnumerateResources.h"
 #include "OpSetResource.h"
 #include "OpDeleteResource.h"
@@ -173,6 +174,18 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         {
         case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpApplyResourcePackage());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgResourceOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgResourceService::opIdResourceExists:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(1,0):
+            handler.reset(new MgOpResourceExists());
             break;
         default:
             throw new MgInvalidOperationVersionException(

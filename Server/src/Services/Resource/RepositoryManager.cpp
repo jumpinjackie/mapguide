@@ -804,7 +804,7 @@ void MgRepositoryManager::AddResource(MgResourceIdentifier* resource,
     MgResourceContentManager* resourceContentMan = GetResourceContentManager();
 
     if (resource->IsRepositoryTypeOf(MgRepositoryType::Session)
-        && !resourceContentMan->FindResource(resource->GetRootPath()))
+        && !resourceContentMan->ResourceExists(resource->GetRootPath()))
     {
         MgStringCollection arguments;
         arguments.Add(resource->GetRootPath());
@@ -855,7 +855,7 @@ void MgRepositoryManager::SetResource(MgResourceIdentifier* resource,
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    if (FindResource(resource))
+    if (ResourceExists(resource))
     {
         UpdateResource(resource, content, header);
     }
@@ -1028,21 +1028,15 @@ void MgRepositoryManager::CopyResourceData(CREFSTRING sourceResourceTags,
         __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
-/// Determines if the specified resource exists.
-/// </summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Checks to see if the specified resource exists.
 ///
-/// <exceptions>
-/// MgException
-/// </exceptions>
-///----------------------------------------------------------------------------
-
-bool MgRepositoryManager::FindResource(MgResourceIdentifier* resource)
+bool MgRepositoryManager::ResourceExists(MgResourceIdentifier* resource)
 {
     assert(NULL != resource);
     MgResourceContentManager* resourceContentMan = GetResourceContentManager();
     assert(NULL != resourceContentMan);
 
-    return resourceContentMan->FindResource(resource->ToString());
+    return resourceContentMan->ResourceExists(resource->ToString());
 }

@@ -197,7 +197,7 @@ void MgResourceContentManager::MoveResource(
 
     // Check whether or not the destination resource already exists.
 
-    if (!overwrite && FindResource(destResource->ToString()))
+    if (!overwrite && ResourceExists(destResource->ToString()))
     {
         m_repositoryMan.ThrowDuplicateResourceException(*destResource,
             L"MgResourceContentManager.MoveResource",
@@ -324,7 +324,7 @@ void MgResourceContentManager::CopyResource(
 
     // Check whether or not the destination resource already exists.
 
-    if (!overwrite && FindResource(destResource->ToString()))
+    if (!overwrite && ResourceExists(destResource->ToString()))
     {
         m_repositoryMan.ThrowDuplicateResourceException(*destResource,
             L"MgResourceContentManager.CopyResource",
