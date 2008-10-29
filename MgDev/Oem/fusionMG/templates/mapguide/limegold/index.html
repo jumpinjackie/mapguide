@@ -4,8 +4,15 @@
 <title>LimeGold</title>
 <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
 
-<script type="text/javascript" src="../../../lib/fusionSF-compressed.js"></script>
-<link rel="stylesheet" href="../../../jx/jxskin_delicious.css" type="text/css" media="screen" charset="utf-8">
+<script type="text/javascript" src="../../../../fusion/lib/fusion.js"></script>
+<link rel="stylesheet" href="jxtheme.css" type="text/css" media="screen" charset="utf-8">
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="ie6.css" type="text/css" media="screen" charset="utf-8">
+<![endif]-->
+<!--[if IE 7]>
+<link rel="stylesheet" href="ie7.css" type="text/css" media="screen" charset="utf-8">
+<![endif]-->
+
 <script type="text/javascript">
 
 var tab1;
@@ -14,44 +21,56 @@ var tab3;
 var tabbox1;
 
 window.onload = function() {
-  Fusion.initializeLocale();  //need to call this first if String.Translate is to be used in the onload
+    Fusion.initializeLocale();  //need to call this first if String.Translate is to be used in the onload
 
-  var main = new Jx.Layout('AppContainer');
-  new Jx.Layout('FileMenu', {height: 28, bottom: null});
-  new Jx.Layout('SplitterArea', {left: 0, right: 0, top: 84, bottom: 21});
-  new Jx.Layout('Toolbar', {height: 28, top: 28, bottom: null});
-  new Jx.Layout('ToolbarSecondary', {height: 28, top: 56, bottom: null});
-  new Jx.Layout('StatusbarContainer', {height: 21, top: null, bottom: 0});
-  new Jx.Layout('Statusbar', {height: 21, right: 141, top: null});
-  new Jx.Layout('Map');
+    var main = new Jx.Layout('AppContainer');
+    new Jx.Layout('FileMenu', {height: 34, bottom: null});
+    new Jx.Layout('Toolbar', {height: 24, top: 34, bottom: null});
+    new Jx.Layout('ToolbarSecondary', {height: 24, top: 58, bottom: null});
+    new Jx.Layout('SplitterArea', {left: 0, right: 0, top: 82, bottom: 21});
+    new Jx.Layout('StatusbarContainer', {height: 21, top: null, bottom: 0});
+    new Jx.Layout('Statusbar', {height: 21, right: 141, top: null});
+    new Jx.Layout('Map');
+    
+    var splitter = new Jx.Splitter('SplitterArea', {
+        splitInto:2,
+        elements:[$('Main'),$('Sidebar')],
+        layout:'horizontal',
+        containerOptions: [{},{minWidth:50, width: 214}],
+        barOptions: [{
+            snap: 'after',
+            snapElement: $('SidebarCollapse'),
+            snapEvents: ['click']
+        }]
+    });
 
-  var splitter = new Jx.Splitter('SplitterArea',
-                                 {splitInto:2,
-                                 elements:[$('Main'),$('Sidebar')],
-                                 layout:'horizontal',
-                                 containerOptions: [{},{minWidth:50, width: 214}],
-                                 snappers: [null,$('SidebarCollapse')]});
+    var splitter2 = new Jx.Splitter('Sidebar', {
+        splitInto:2,
+        elements:[$('Info'),$('Bottom')],
+        layout:'vertical',
+        containerOptions: [
+            {},
+            {height: 214, minHeight: 214, maxHeight: 214}
+        ]
+    });
 
-  var splitter2 = new Jx.Splitter('Sidebar',
-                                 {splitInto:2,
-                                 elements:[$('Info'),$('Bottom')],
-                                 layout:'vertical',
-                                 containerOptions: [{},{height: 214}]});
+    /* create dynamic content */
+    tabbox1 = new Jx.TabBox({parent: splitter2.elements[0]});
 
-  /* create dynamic content */
-  tabbox1 = new Jx.TabBox({parent: splitter2.elements[0]});
+    tab1 = new Jx.Button.Tab({
+        label: OpenLayers.i18n('taskPaneTitle'),
+        contentId: 'TaskPane'
+    });
 
-  tab1 = new Jx.Button.Tab({
-      label: OpenLayers.i18n('taskPaneTitle'),
-      contentId: 'TaskPane'});
+    tab2 = new Jx.Button.Tab({
+        label: OpenLayers.i18n('legendTitle'),
+        contentId: 'Legend'
+    });
 
-  tab2 = new Jx.Button.Tab({
-      label: OpenLayers.i18n('legendTitle'),
-      contentId: 'Legend'});
-
-  tab3 = new Jx.Button.Tab({
-      label: OpenLayers.i18n('selectionPanelTitle'),
-      contentId: 'SelectionPanel'});
+    tab3 = new Jx.Button.Tab({
+        label: OpenLayers.i18n('selectionPanelTitle'),
+        contentId: 'SelectionPanel'
+    });
 
   tabbox1.add(tab1, tab2, tab3);
 
@@ -97,22 +116,6 @@ var showSelectionPanel = function() {
 }
 
 </script>
-
-
-<style>
-body { overflow: hidden }
-#StatusNavigator {
-  position: absolute;
-  right: 139px;
-  padding-top: 2px;
-}
-
-#pbmg {
-  position: absolute;
-  right: 0px;
-  padding-top: 2px;</style>
-</style>
-
 </head>
 
 <body>
@@ -128,6 +131,14 @@ body { overflow: hidden }
     <div id="Sidebar">
       <div id="Info"></div>
       <div id="Bottom"></div>
+      <!-- Collapse Sidebar -->
+      <div id="SidebarCollapse">
+        <div id="SidebarCollapseTop"></div>
+        <div id="SidebarCollapseContent">
+          <a id="SidebarCollapseButton" href="#"></a>
+        </div>
+        <div id="SidebarCollapseBottom"></div>
+      </div>
     </div>
 
     <div id="Main">
