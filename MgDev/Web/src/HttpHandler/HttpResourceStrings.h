@@ -236,6 +236,7 @@ public:
     static const STRING opGetRepositoryHeader;
     static const STRING opApplyResourcePackage;
 
+    static const STRING opResourceExists;
     static const STRING opEnumerateResources;
     static const STRING opSetResource;
     static const STRING opDeleteResource;

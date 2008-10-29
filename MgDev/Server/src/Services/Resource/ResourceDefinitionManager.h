@@ -61,6 +61,8 @@ public:
 
     // Resource Management APIs
 
+    bool ResourceExists(const string& mbResourcePathname);
+    bool ResourceExists(CREFSTRING wcResourcePathname);
     virtual void AddResource(MgResourceInfo& resourceInfo,
         const string& document) = 0;
     void DeleteResource(MgResourceIdentifier* resource,
@@ -76,8 +78,6 @@ public:
 
     // Helper Methods
 
-    bool FindResource(const string& mbResourcePathname);
-    bool FindResource(CREFSTRING wcResourcePathname);
     STRING FormatMethodName(CREFSTRING methodName);
 
     // Resource Permission related methods

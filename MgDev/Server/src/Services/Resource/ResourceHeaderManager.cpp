@@ -686,7 +686,7 @@ void MgResourceHeaderManager::AddParentResources(MgResourceInfo& resourceInfo,
         {
             parentPathname.erase(index + 1);
 
-            if (FindResource(parentPathname))
+            if (ResourceExists(parentPathname))
             {
                 break;
             }
@@ -731,7 +731,7 @@ void MgResourceHeaderManager::MoveResource(
 
     // Check whether or not the destination resource already exists.
 
-    if (!overwrite && FindResource(destResource->ToString()))
+    if (!overwrite && ResourceExists(destResource->ToString()))
     {
         m_repositoryMan.ThrowDuplicateResourceException(*destResource,
             L"MgResourceHeaderManager.MoveResource",
@@ -875,7 +875,7 @@ void MgResourceHeaderManager::CopyResource(
 
     if (NULL == sourceResourceHeaderMan)
     {
-        if (!FindResource(destResource->ToString()))
+        if (!ResourceExists(destResource->ToString()))
         {
             MgResourceInfo resourceInfo(*destResource,
                 m_repositoryMan.m_currUserInfo, m_repositoryMan.m_accessedTime);
@@ -890,7 +890,7 @@ void MgResourceHeaderManager::CopyResource(
 
     // Check whether or not the destination resource already exists.
 
-    if (!overwrite && FindResource(destResource->ToString()))
+    if (!overwrite && ResourceExists(destResource->ToString()))
     {
         m_repositoryMan.ThrowDuplicateResourceException(*destResource,
             L"MgResourceHeaderManager.CopyResource",
@@ -1222,7 +1222,7 @@ void MgResourceHeaderManager::ChangeResourceOwner(
 
     if (0 == count)
     {
-        if (FindResource(resource->ToString()))
+        if (ResourceExists(resource->ToString()))
         {
             MG_LOG_AUTHENTICATION_ENTRY(MgResources::PermissionDenied.c_str());
 
@@ -1352,7 +1352,7 @@ void MgResourceHeaderManager::InheritPermissionsFrom(
 
     if (0 == count)
     {
-        if (FindResource(resource->ToString()))
+        if (ResourceExists(resource->ToString()))
         {
             MG_LOG_AUTHENTICATION_ENTRY(MgResources::PermissionDenied.c_str());
 

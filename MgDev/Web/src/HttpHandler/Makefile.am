@@ -101,6 +101,7 @@ include_SOURCES = \
   HttpRequestParam.cpp \
   HttpRequestParameters.cpp \
   HttpRequestResponseHandler.cpp \
+  HttpResourceExists.cpp \
   HttpResourceStrings.cpp \
   HttpResponse.cpp \
   HttpResult.cpp \
@@ -224,6 +225,7 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpRequestParam.h \
   HttpRequestParameters.h \
   HttpRequestResponseHandler.h \
+  HttpResourceExists.h \
   HttpResourceStrings.h \
   HttpResponse.h \
   HttpResult.h \

@@ -609,6 +609,39 @@ void MgServerResourceService::MakeResourcePackage(MgResourceIdentifier* resource
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.MakeResourcePackage")
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Checks to see if the specified resource exists.
+///
+bool MgServerResourceService::ResourceExists(MgResourceIdentifier* resource)
+{
+    bool existed = false;
+    
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_TRACE_ENTRY(L"MgServerResourceService::ResourceExists()");
+
+    if (NULL == resource)
+    {
+        throw new MgNullArgumentException(
+            L"MgServerResourceService.ResourceExists",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    auto_ptr<MgApplicationRepositoryManager> repositoryMan(
+        CreateApplicationRepositoryManager(resource));
+
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
+
+    existed = repositoryMan->ResourceExists(resource);
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_retryAttempts)
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.ResourceExists")
+    
+    return existed;
+}
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Enumerates the resources in the resource repository.

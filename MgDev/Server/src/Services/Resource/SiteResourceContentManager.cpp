@@ -556,7 +556,7 @@ void MgSiteResourceContentManager::DeleteUsers(MgStringCollection* users)
             id, MgResourceType::User );
 
         //  check for userId in database
-        if (!FindResource(resUser.ToString()))
+        if (!ResourceExists(resUser.ToString()))
         {
             MgStringCollection arguments;
             arguments.Add(id);
@@ -1038,7 +1038,7 @@ void MgSiteResourceContentManager::DeleteGroups(MgStringCollection* groups)
             id, MgResourceType::Group );
 
         //  check for userId in database
-        if (!FindResource(groupRes.ToString()))
+        if (!ResourceExists(groupRes.ToString()))
         {
             MgStringCollection arguments;
             arguments.Add(id);
@@ -1163,7 +1163,7 @@ void MgSiteResourceContentManager::GrantGroupMembershipsToUsers(
         MgResourceIdentifier userRes(MgRepositoryType::Site, L"",
             MgResourceFolder::Users, users->GetItem(i), MgResourceType::User);
 
-        if (!FindResource(userRes.ToString()))
+        if (!ResourceExists(userRes.ToString()))
         {
             MgStringCollection arguments;
             arguments.Add(userRes.GetName());
@@ -1308,7 +1308,7 @@ void MgSiteResourceContentManager::RevokeGroupMembershipsFromUsers(
         MgResourceIdentifier userRes(MgRepositoryType::Site, L"",
             MgResourceFolder::Users, users->GetItem(i), MgResourceType::User);
 
-        if (!FindResource(userRes.ToString()))
+        if (!ResourceExists(userRes.ToString()))
         {
             MgStringCollection arguments;
             arguments.Add(userRes.GetName());
@@ -1338,7 +1338,7 @@ void MgSiteResourceContentManager::RevokeGroupMembershipsFromUsers(
                 __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        if (!FindResource(groupRes.ToString()))
+        if (!ResourceExists(groupRes.ToString()))
         {
             MgStringCollection arguments;
             arguments.Add(groupRes.GetName());
@@ -1553,7 +1553,7 @@ void MgSiteResourceContentManager::GrantRoleMembershipsToUsers(
         MgResourceIdentifier userRes(MgRepositoryType::Site, L"",
             MgResourceFolder::Users, users->GetItem(i), MgResourceType::User);
 
-        if (!FindResource(userRes.ToString()))
+        if (!ResourceExists(userRes.ToString()))
         {
             MgStringCollection arguments;
             arguments.Add(userRes.GetName());
@@ -1698,7 +1698,7 @@ void MgSiteResourceContentManager::RevokeRoleMembershipsFromUsers(
         MgResourceIdentifier userRes(MgRepositoryType::Site, L"",
             MgResourceFolder::Users, users->GetItem(i), MgResourceType::User);
 
-        if (!FindResource(userRes.ToString()))
+        if (!ResourceExists(userRes.ToString()))
         {
             MgStringCollection arguments;
             arguments.Add(userRes.GetName());
@@ -1728,7 +1728,7 @@ void MgSiteResourceContentManager::RevokeRoleMembershipsFromUsers(
                 __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        if (!FindResource(roleRes.ToString()))
+        if (!ResourceExists(roleRes.ToString()))
         {
             MgStringCollection arguments;
             arguments.Add(roleRes.GetName());
@@ -1785,7 +1785,7 @@ void MgSiteResourceContentManager::GrantRoleMembershipsToGroups(
             continue;
         }
 
-        if (!FindResource(groupRes.ToString()))
+        if (!ResourceExists(groupRes.ToString()))
         {
             MgStringCollection arguments;
             arguments.Add(groupRes.GetName());
@@ -1939,7 +1939,7 @@ void MgSiteResourceContentManager::RevokeRoleMembershipsFromGroups(
             continue;
         }
 
-        if (!FindResource(groupRes.ToString()))
+        if (!ResourceExists(groupRes.ToString()))
         {
             MgStringCollection arguments;
             arguments.Add(groupRes.GetName());
@@ -1969,7 +1969,7 @@ void MgSiteResourceContentManager::RevokeRoleMembershipsFromGroups(
                 __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        if (!FindResource(roleRes.ToString()))
+        if (!ResourceExists(roleRes.ToString()))
         {
             MgStringCollection arguments;
             arguments.Add(roleRes.GetName());

@@ -113,6 +113,7 @@ const STRING MgHttpResourceStrings::opGetRepositoryContent = L"GETREPOSITORYCONT
 const STRING MgHttpResourceStrings::opGetRepositoryHeader = L"GETREPOSITORYHEADER";
 const STRING MgHttpResourceStrings::opApplyResourcePackage = L"APPLYRESOURCEPACKAGE";
 
+const STRING MgHttpResourceStrings::opResourceExists = L"RESOURCEEXISTS";
 const STRING MgHttpResourceStrings::opEnumerateResources = L"ENUMERATERESOURCES";
 const STRING MgHttpResourceStrings::opSetResource = L"SETRESOURCE";
 const STRING MgHttpResourceStrings::opDeleteResource = L"DELETERESOURCE";

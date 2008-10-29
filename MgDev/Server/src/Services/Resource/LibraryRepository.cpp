@@ -124,7 +124,7 @@ void MgLibraryRepository::Initialize()
 
     repositoryMan.Initialize(true);
 
-    if (!repositoryMan.FindResource(&resource))
+    if (!repositoryMan.ResourceExists(&resource))
     {
         repositoryMan.CreateRepository(&resource, NULL, NULL);
     }

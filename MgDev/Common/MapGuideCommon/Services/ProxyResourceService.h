@@ -265,6 +265,29 @@ EXTERNAL_API:
     ///
     virtual void ApplyResourcePackage(MgByteReader* resourcePackage);
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Checks to see if the specified resource exists.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual bool ResourceExists(MgResourceIdentifier resource);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual bool ResourceExists(MgResourceIdentifier resource);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual bool ResourceExists(MgResourceIdentifier resource);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// Resource identifier specifying the resource to be checked for existence.
+    ///
+    /// \return
+    /// Returns true if the resource exists, false otherwise.
+    ///
+    virtual bool ResourceExists(MgResourceIdentifier* resource);
+
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Enumerates the resources in the specified repository.

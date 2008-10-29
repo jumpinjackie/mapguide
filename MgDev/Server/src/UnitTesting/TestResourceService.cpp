@@ -562,6 +562,58 @@ void TestResourceService::TestCase_DeleteRepository()
 ///----------------------------------------------------------------------------
 /// Test Case Description:
 ///
+/// This test case checks to see if the specified resource exists.
+///----------------------------------------------------------------------------
+void TestResourceService::TestCase_ResourceExists()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+
+        if (NULL == serviceManager)
+        {
+            throw new MgNullReferenceException(
+                L"TestResourceService.TestCase_ResourceExists",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceService> service = dynamic_cast<MgResourceService*>(
+            serviceManager->RequestService(MgServiceType::ResourceService));
+        
+        if (NULL == service)
+        {
+            throw new MgServiceNotAvailableException(
+                L"TestResourceService.TestCase_ResourceExists",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        // Set the user information for the current thread to be administrator.
+        Ptr<MgUserInformation> adminUserInfo = new MgUserInformation(adminName, adminPass);
+        MgUserInformation::SetCurrentUserInfo(adminUserInfo);
+
+        // Try to check a NULL resource.
+        bool existed = false;
+        CPPUNIT_ASSERT_THROW_MG(service->ResourceExists(NULL), MgNullArgumentException*);
+
+        // Try to check a resource that exists
+        existed = service->ResourceExists(&libraryRepositoryIdentifier);
+        CPPUNIT_ASSERT(existed);
+
+        // Try to check a resource that does not exist.
+        existed = service->ResourceExists(&resourceNotExist);
+        CPPUNIT_ASSERT(!existed);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+}
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
 /// This test case enumerates the resources in Library://
 ///----------------------------------------------------------------------------
 void TestResourceService::TestCase_EnumerateResources()

@@ -322,17 +322,11 @@ MgByteReader* MgResourceDefinitionManager::GetResource(
     return SAFE_ADDREF((MgByteReader*)byteReader);
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
-/// Determines if the specified resource exists.
-/// </summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Checks to see if the specified resource exists.
 ///
-/// <exceptions>
-/// MgDbXmlException, MgDbException
-/// </exceptions>
-///----------------------------------------------------------------------------
-
-bool MgResourceDefinitionManager::FindResource(const string& mbResourcePathname)
+bool MgResourceDefinitionManager::ResourceExists(const string& mbResourcePathname)
 {
     bool found = false;
 
@@ -356,27 +350,21 @@ bool MgResourceDefinitionManager::FindResource(const string& mbResourcePathname)
         found = true;
     }
 
-    MG_RESOURCE_CONTAINER_CATCH_AND_THROW(L"MgResourceDefinitionManager.FindResource")
+    MG_RESOURCE_CONTAINER_CATCH_AND_THROW(L"MgResourceDefinitionManager.ResourceExists")
 
     return found;
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
-/// Determines if the specified resource exists.
-/// </summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Checks to see if the specified resource exists.
 ///
-/// <exceptions>
-/// MgDbXmlException, MgDbException
-/// </exceptions>
-///----------------------------------------------------------------------------
-
-bool MgResourceDefinitionManager::FindResource(CREFSTRING wcResourcePathname)
+bool MgResourceDefinitionManager::ResourceExists(CREFSTRING wcResourcePathname)
 {
     string mbResourcePathname;
     MgUtil::WideCharToMultiByte(wcResourcePathname, mbResourcePathname);
 
-    return FindResource(mbResourcePathname);
+    return ResourceExists(mbResourcePathname);
 }
 
 

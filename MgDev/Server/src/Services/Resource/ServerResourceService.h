@@ -72,6 +72,7 @@ public:
 
     // Resource Management APIs
 
+    virtual bool ResourceExists(MgResourceIdentifier* resource);
     virtual MgByteReader* EnumerateResources(MgResourceIdentifier* resource,
         INT32 depth, CREFSTRING type, INT32 properties,
         CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren);

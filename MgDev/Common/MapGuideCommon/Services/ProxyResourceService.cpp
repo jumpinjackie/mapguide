@@ -230,6 +230,28 @@ void MgProxyResourceService::UpdateRepository(MgResourceIdentifier* resource, Mg
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
+/// Checks to see if the specified resource exists.
+///
+bool MgProxyResourceService::ResourceExists(MgResourceIdentifier* resource)
+{
+    MgCommand cmd;
+
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knInt8,                           // Return type expected
+                       MgResourceService::opIdResourceExists,       // Command code
+                       1,                                           // Number of arguments
+                       Resource_Service,                            // Service ID
+                       BUILD_VERSION(1,0,0),                        // Operation version
+                       MgCommand::knObject, resource,               // Argument #1
+                       MgCommand::knNone);                          // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (bool)cmd.GetReturnValue().val.m_i8;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// Enumerates the resources in the specified repository.
 /// Resources of all types can be enumerated all at once, or only
 /// resources of a given type.

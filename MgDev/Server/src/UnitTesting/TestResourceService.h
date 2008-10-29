@@ -33,6 +33,7 @@ class TestResourceService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_ApplyResourcePackage);
     CPPUNIT_TEST(TestCase_DeleteRepository);
 
+    CPPUNIT_TEST(TestCase_ResourceExists);
     CPPUNIT_TEST(TestCase_EnumerateResources);
     CPPUNIT_TEST(TestCase_SetResource);
     CPPUNIT_TEST(TestCase_MoveResource);
@@ -72,6 +73,7 @@ public:
     void TestCase_DeleteRepository();
 
     // Test Resource Management APIs
+    void TestCase_ResourceExists();
     void TestCase_EnumerateResources();
     void TestCase_SetResource();
     void TestCase_MoveResource();
