@@ -4,8 +4,15 @@
 <title>TurquoiseYellow</title>
 <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
 
-<script type="text/javascript" src="../../../lib/fusionSF-compressed.js"></script>
-<link rel="stylesheet" href="../../../jx/jxskin_delicious.css" type="text/css" media="screen" charset="utf-8">
+<script type="text/javascript" src="../../../lib/fusion.js"></script>
+<link rel="stylesheet" href="jxtheme.css" type="text/css" media="screen" charset="utf-8">
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="ie6.css" type="text/css" media="screen" charset="utf-8">
+<![endif]-->
+<!--[if IE 7]>
+<link rel="stylesheet" href="ie7.css" type="text/css" media="screen" charset="utf-8">
+<![endif]-->
+
 <script type="text/javascript">
 
 var tab1;
@@ -17,14 +24,15 @@ window.onload = function() {
     Fusion.initializeLocale();  //need to call this first if String.Translate is to be used in the onload
 
     var main = new Jx.Layout('AppContainer');
-    new Jx.Layout('FileMenu', {height: 28, bottom: null});
-    new Jx.Layout('SplitterArea', {bottom: 21});
-    new Jx.Layout('Toolbar', {height: 28, top: 28, bottom: null});
-    new Jx.Layout('ToolbarVertical', {width: 28, top: 56, right: null});
+    new Jx.Layout('SplitterArea', {left: 3, right: 3, bottom: 24});
+    new Jx.Layout('FileMenu', {height: 34, bottom: null});
+    new Jx.Layout('Toolbar', {height: 25, top: 34, bottom: null});
     new Jx.Layout('StatusbarContainer', {height: 21, top: null});
     new Jx.Layout('Statusbar', {height: 21, right: 159, top: null, bottom: 0});
-    new Jx.Layout('Map', {top: 56, left: 28});
-
+    new Jx.Layout('MapArea', {top: 62});
+    new Jx.Layout('ToolbarVertical', {width: 28, right: null});
+    new Jx.Layout('Map', {left: 28});
+    
     var splitter = new Jx.Splitter('SplitterArea',
                                    {splitInto:2,
                                    elements:[$('Sidebar'),$('Main')],
@@ -97,19 +105,6 @@ var showSelectionPanel = function() {
 
 </script>
 
-<style>
-body { overflow: hidden }
-#StatusNavigator {
-  position: absolute;
-  right: 139px;
-  padding-top: 2px;
-}
-
-#pbmg {
-  position: absolute;
-  right: 0px;
-  padding-top: 2px;</style>
-
 </head>
 
 <body>
@@ -130,9 +125,11 @@ body { overflow: hidden }
     <div id="Main">
       <div id="FileMenu"></div>
       <div id="Toolbar"></div>
-      <div id="ToolbarVertical"></div>
-      <div id="Map">
-        <div id="Navigator"></div>
+      <div id="MapArea">
+          <div id="ToolbarVertical"></div>
+          <div id="Map">
+            <div id="Navigator"></div>
+          </div>
       </div>
     </div>
 
@@ -140,7 +137,7 @@ body { overflow: hidden }
 
   <div id="StatusbarContainer">
     <div id="Statusbar"></div>
-    <div id="pbmg"><img src="images/pbmg.gif" alt=""></div>
+    <div id="pbmg"><img src="images/pbmg.png" alt=""></div>
   </div>
 
 </div>
