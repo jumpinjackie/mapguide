@@ -6,7 +6,7 @@
 
 <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
 
-<script type="text/javascript" src="../../../lib/fusion.js"></script>
+<script type="text/javascript" src="../../../lib/fusionSF-compressed.js"></script>
 <link rel="stylesheet" href="jxtheme.css" type="text/css" media="screen" charset="utf-8">
 <!--[if lte IE 6]>
 <link rel="stylesheet" href="ie6.css" type="text/css" media="screen" charset="utf-8">
@@ -28,35 +28,35 @@ window.onload = function() {
 
     var main = new Jx.Layout('AppContainer');
     new Jx.Layout('FileMenu', {
-        left: 5, 
-        right: 5, 
-        top: 5, 
+        left: 5,
+        right: 5,
+        top: 5,
         height: 25
     });
     new Jx.Layout('Toolbar', {
-        left: 5, 
-        right: 5, 
-        top: 30, 
+        left: 5,
+        right: 5,
+        top: 30,
         height: 24
     });
     new Jx.Layout('ToolbarVertical', {
-        left: 5, 
-        width: 28, 
-        top: 54, 
+        left: 5,
+        width: 28,
+        top: 54,
         bottom: 21
     });
     new Jx.Layout('SplitterArea', {
-        left: 33, 
-        top: 54, 
-        right: 5, 
+        left: 33,
+        top: 54,
+        right: 5,
         bottom: 22
     });
-  
+
     new Jx.Layout('MapArea');
     new Jx.Layout('Map');
-    
+
     new Jx.Layout('StatusbarContainer', {
-        height: 22, 
+        height: 22,
         bottom: 0,
         top: null
     });
@@ -71,8 +71,8 @@ window.onload = function() {
         containerOptions: [{},{minWidth:8, width: 218}],
         barOptions: [
             {
-                snap: 'after', 
-                snapElement: $('SidebarCollapse'), 
+                snap: 'after',
+                snapElement: $('SidebarCollapse'),
                 snapEvents: ['click']
             }
         ]
