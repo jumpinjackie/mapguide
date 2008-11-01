@@ -57,7 +57,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=".\copydlls DEBUG"
+				CommandLine=".\copydlls DEBUG64"
 			/>
 		</Configuration>
 		<Configuration
