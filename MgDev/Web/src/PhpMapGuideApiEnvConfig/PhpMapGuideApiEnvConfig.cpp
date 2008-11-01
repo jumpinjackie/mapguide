@@ -24,6 +24,8 @@
 
 #include <windows.h>
 
+#pragma warning(disable: 4996)
+
 
 #define GETENV GetEnvironmentVariable
 #define SETENV SetEnvironmentVariable
@@ -45,37 +47,40 @@ BOOL PrepareServerPath()
     wcscpy(srvPath, g_phpPath);
 
     wchar_t ePath[1024*4] = {0};
-    wcscpy(ePath,srvPath);
-    wcscat(ePath,L";");
-    DWORD dw = wcslen(ePath);
-    return (GETENV(L"PATH",&ePath[dw],sizeof(ePath)-dw) &&
-            SETENV(L"PATH",ePath));
+    wcscpy(ePath, srvPath);
+    wcscat(ePath, L";");
+    DWORD dw = (DWORD)wcslen(ePath);
+    return (GETENV(L"PATH", &ePath[dw], sizeof(ePath)-dw) &&
+            SETENV(L"PATH", ePath));
 }
 
-BOOL APIENTRY DllMain(HINSTANCE hinstDLL,
-                       DWORD dwReason, LPVOID)
+
+BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD dwReason, LPVOID)
 {
-   switch (dwReason) {
-     case DLL_PROCESS_ATTACH:
-       PrepareServerPath();
-       break;
-   }
-   return TRUE;
+    switch (dwReason)
+    {
+        case DLL_PROCESS_ATTACH:
+            PrepareServerPath();
+            break;
+    }
+    return TRUE;
 }
 
 
 ZEND_FUNCTION(LoadMgDlls);
 /* compiled function list so Zend knows what's in this module */
 zend_function_entry CustomExtModule_functions[] = {
-   ZEND_FE(LoadMgDlls, NULL)
+    ZEND_FE(LoadMgDlls, NULL)
     {NULL, NULL, NULL}
 };
+
 
 PHP_MINIT_FUNCTION(CustomExtModule)
 {
     zend_printf("The name of the current function is %s<br>", get_active_function_name(TSRMLS_C));
     return SUCCESS;
 }
+
 
 /* compiled module information */
 zend_module_entry CustomExtModule_module_entry = {
@@ -90,8 +95,10 @@ zend_module_entry CustomExtModule_module_entry = {
 /* implement standard "stub" routine to introduce ourselves to Zend */
 ZEND_GET_MODULE(CustomExtModule)
 
+
 /* LoadMgDlls function */
-ZEND_FUNCTION(LoadMgDlls){
+ZEND_FUNCTION(LoadMgDlls)
+{
     long theValue = 0;
 
     SetDllDirectory(g_phpPath);
@@ -130,4 +137,3 @@ ZEND_FUNCTION(LoadMgDlls){
 
     RETURN_LONG(theValue);
 }
-

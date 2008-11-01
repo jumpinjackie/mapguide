@@ -94,7 +94,7 @@ CopyFdoProvidersDebug : ..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.
 
 CopySchemaDebug : ..\..\..\Common\Schema\*.xsd
     if NOT EXIST ..\..\bin\debug\Schema\nul mkdir ..\..\bin\debug\Schema
-    xcopy /r /y /d ..\..\..\Common\Schema\*.xsd ..\..\bin\debug\Schema
+    xcopy /r /d /y ..\..\..\Common\Schema\*.xsd ..\..\bin\debug\Schema
 
 CopyResourcesDebug : ..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res
     if NOT EXIST ..\..\bin\debug\Resources\nul mkdir ..\..\bin\debug\Resources
@@ -331,7 +331,7 @@ CopyFdoProvidersDebug64 : ..\..\..\Oem\FDO\ProviderList\ServerCommunity\provider
 
 CopySchemaDebug64 : ..\..\..\Common\Schema\*.xsd
     if NOT EXIST ..\..\bin\debug64\Schema\nul mkdir ..\..\bin\debug64\Schema
-    xcopy /r /y /d ..\..\..\Common\Schema\*.xsd ..\..\bin\debug64\Schema
+    xcopy /r /d /y ..\..\..\Common\Schema\*.xsd ..\..\bin\debug64\Schema
 
 CopyResourcesDebug64 : ..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res
     if NOT EXIST ..\..\bin\debug64\Resources\nul mkdir ..\..\bin\debug64\Resources
@@ -567,13 +567,13 @@ CopyFdoProvidersRelease : ..\..\..\Oem\FDO\ProviderList\ServerCommunity\provider
 
 CopySchemaRelease : ..\..\..\Common\Schema\*.xsd
     if NOT EXIST ..\..\bin\release\Schema\nul mkdir ..\..\bin\release\Schema
-    xcopy /r /y /d ..\..\..\Common\Schema\*.xsd ..\..\bin\release\Schema
+    xcopy /r /d /y ..\..\..\Common\Schema\*.xsd ..\..\bin\release\Schema
 
 CopyResourcesRelease : ..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res
     if NOT EXIST ..\..\bin\release\Resources\nul mkdir ..\..\bin\release\Resources
     xcopy /r /d /y "..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res" ..\..\bin\release\Resources\
 
-CopyOgcFilesRelease: ..\..\src\wms\*.awd ..\..\src\wfs\*.awd
+CopyOgcFilesRelease : ..\..\src\wms\*.awd ..\..\src\wfs\*.awd
     if NOT EXIST ..\..\bin\release\wms\nul mkdir ..\..\bin\release\wms
     xcopy /r /d /y "..\..\src\wms\*.awd"         ..\..\bin\release\wms
     if NOT EXIST ..\..\bin\release\wfs\nul mkdir ..\..\bin\release\wfs
@@ -804,13 +804,13 @@ CopyFdoProvidersRelease64 : ..\..\..\Oem\FDO\ProviderList\ServerCommunity\provid
 
 CopySchemaRelease64 : ..\..\..\Common\Schema\*.xsd
     if NOT EXIST ..\..\bin\release64\Schema\nul mkdir ..\..\bin\release64\Schema
-    xcopy /r /y /d ..\..\..\Common\Schema\*.xsd ..\..\bin\release64\Schema
+    xcopy /r /d /y ..\..\..\Common\Schema\*.xsd ..\..\bin\release64\Schema
 
 CopyResourcesRelease64 : ..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res
     if NOT EXIST ..\..\bin\release64\Resources\nul mkdir ..\..\bin\release64\Resources
     xcopy /r /d /y "..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res" ..\..\bin\release64\Resources\
 
-CopyOgcFilesRelease64: ..\..\src\wms\*.awd ..\..\src\wfs\*.awd
+CopyOgcFilesRelease64 : ..\..\src\wms\*.awd ..\..\src\wfs\*.awd
     if NOT EXIST ..\..\bin\release64\wms\nul mkdir ..\..\bin\release64\wms
     xcopy /r /d /y "..\..\src\wms\*.awd"         ..\..\bin\release64\wms
     if NOT EXIST ..\..\bin\release64\wfs\nul mkdir ..\..\bin\release64\wfs
