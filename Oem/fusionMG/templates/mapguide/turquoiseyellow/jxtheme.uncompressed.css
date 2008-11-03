@@ -168,7 +168,7 @@ span.jxButtonContent span {
   float: left;
   cursor: pointer;
 
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
   font-size: 11px;
   line-height: 16px;
   height: 16px;
@@ -318,7 +318,7 @@ a.jxButtonEditCombo input {
   margin: 0px;
   border: none;
   font-size: 11px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
   background-color: transparent;
 }/**
  * @project         Jx
@@ -564,7 +564,7 @@ div.jxColorPreview div.jxColorHover {
 label.jxColorLabel,
 label.jxAlphaLabel {
     width: auto;
-    font-family: Arial, sans-serif;
+    font-family: Verdana, Arial, sans-serif;
     font-size: 11px;
     line-height: 24px;
     padding: 2px;
@@ -691,7 +691,7 @@ iframe.jxIframeShim{position:absolute;top:0px;left:0px;width:100%;height:100%;-m
 }
 
 .jxDialogLabel {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
   font-size: 11px;
   font-weight: bold;
   /* line-height vertically aligns the label in the containing div. */
@@ -877,7 +877,7 @@ iframe.jxIframeShim{position:absolute;top:0px;left:0px;width:100%;height:100%;-m
     border-style: none;
     width: 0px;
     cursor: default;
-    font-family: Arial, Verdana, sans-serif;
+    font-family: Verdana, Arial, Verdana, sans-serif;
     font-size: 11px;
     font-weight: normal;
 }
@@ -1078,7 +1078,7 @@ a.jxMenuItem {
   text-decoration: none;
 
   border: 1px solid #fff;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
   font-size: 11px;
   text-decoration: none;
   margin: 2px 2px;
@@ -1087,16 +1087,16 @@ a.jxMenuItem {
 }
 
 a.jxMenuItem:hover {
-  border: 1px solid #C5E0FF;
+  border: 1px solid #FEF7DD;
   background-image: url(images/menu_hover.png);
-  background-color: #CDE5FF;
+  background-color: #FEF7DD;
   background-repeat: repeat-x;
   background-position: 0px 0px;
 }
 
 a.jxMenuItem:hover span.jxMenuItemContent {
-  border: 1px solid #F4F9FF;  /* forces IE to render properly */
-  border-bottom: 1px solid #E4F0FF;
+  border: 1px solid #FEF7DD;  /* forces IE to render properly */
+  border-bottom: 1px solid #FEF7DD;
 }
 
 span.jxMenuItemContent {
@@ -1106,7 +1106,7 @@ span.jxMenuItemContent {
   /* Base setup */
   display: block;
   position: relative;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
   font-size: 0px;
   line-height: 0px;
   white-space: nowrap;
@@ -1171,7 +1171,7 @@ span.jxMenuItemContent span.jxMenuItemLabel {
 a.jxMenuItemActive img.jxMenuItemIcon {
   top: -2px;
   left: -2px;
-  border: 2px solid #C5E0FF;
+  border: 2px solid #FEF7DD;
 }
 
 a.jxMenuItemActive span.jxMenuItemContent {
@@ -1282,7 +1282,7 @@ ul.jxSubMenu span.jxMenuSeparator {
 .jxPanelLabel {
   /* make room for the loading spinner */
   padding-left: 25px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
   font-size: 11px;
   font-weight: bold;
   /* line-height vertically aligns the label in the containing div. */
@@ -1651,7 +1651,7 @@ span.jxTabLabel {
   margin: 0px;
   padding: 0px;
   color: #000;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
   font-size: 11px;
   line-height: 16px;
 }
@@ -2154,7 +2154,7 @@ li.jxToolItem  .separator {
   margin: 0px 0px 0px 14px;
   padding: 0px 0px 0px 20px;
   z-index: 0;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
   font-size: 11px;
   color: #000;
   text-decoration: none;
@@ -2279,7 +2279,7 @@ html {
 }
 
 body {
-  width:  100%;                 
+  width:  100%;         
   height:  100%;
   overflow:  hidden;
   background-image: url(images/background.png);
@@ -2293,10 +2293,6 @@ body, table {
   color: #000000;
 }
 
-img {
-  border: none;
-}
-
 /********************************************************
   Overall Structure
 ********************************************************/
@@ -2305,21 +2301,21 @@ img {
 }
 
 #AppContainer .jxSplitBarHorizontal {
-    width: 3px;
-    background-color: transparent;
-    background-image: url(images/a_pixel.png);
+  width: 3px;
+  background-color: transparent;
+  background-image: url(images/a_pixel.png);
 }
 
 #Sidebar {
-    margin-top: 34px;
-    border: 1px solid #fff;
+  margin-top: 34px;
+  border: 1px solid #fff;
 }
 
 #Sidebar .jxSplitArea {
 }
 
 #Sidebar .jxSplitBarVertical {
-    background-color: #ffffff;
+  background-color: #ffffff;
   height: 1px;
 }
 
@@ -2331,11 +2327,11 @@ img {
 }
 
 #Maptip {
-    display: none;
-    border: 1px solid #000;
-    background-color: #E5DAC7;
-    padding: 4px;
-    font-size: 10px;
+  display: none;
+  border: 1px solid #000;
+  background-color: #E5DAC7;
+  padding: 4px;
+  font-size: 10px;
 }
 
 #OverviewMap {
@@ -2351,50 +2347,31 @@ img {
 #Toolbar {
   z-index: 100;
   border: 1px solid #ffffff;
-  background-image: url(images/toolListBackground.png);
+  background-image: url(images/toolbarBackground.png);
   background-repeat: repeat-x;
   background-color: #ffffff;
 }
 
+#Toolbar div.jxButtonContainer {
+  padding: 0px 2px 0px 2px;
+}
+
 #Toolbar a.jxButton {
-  padding: 3px 1px; 
+  padding: 0px 0px 0px 4px; /* makes room for the left of the button bg */
+  background-image: url(images/toolbarButton.png);
 }
 
-#Toolbar a.jxButton:hover {
-  background-color: #ffe273;
+#Toolbar span.jxButtonContent {
+  padding: 4px 4px 4px 0px; /* makes room for the right of the button bg */
+  background-image: url(images/toolbarButton.png);
 }
 
-#Toolbar a.jxButtonActive {
-  background-color: #ffd533;
+#Toolbar span.jxButtonLabel {
+  color: #000;
+  padding-top: 0px;
+  padding-bottom: 0px;
 }
 
-#Toolbar .jxToolItem {
-  padding: 0px;
-  margin: 0px;
-}
-
-#Toolbar .jxButtonMenu a span.jxButtonEmptyLabel, 
-#Toolbar a.jxButtonFlyout span.jxButtonEmptyLabel  {
-  overflow:  visible;
-}
-
-#Toolbar a.jxButtonMenu span.jxButtonSpan, 
-#Toolbar a.jxButtonFlyout span.jxButtonSpan  {
-  background-image:  url(images/iconFileMenuDownArrow.png);
-}
-
-#Toolbar ul.jxMenu a.jxButton, 
-#Toolbar ul.jxSubMenu a.jxButton {
-  padding: 0px;
-}
-
-#Toolbar ul.jxMenu a.jxButton:hover, 
-#Toolbar ul.jxSubMenu a.jxButton:hover {
-  background-color: #fef7dd;
-}
-
-  
-  
 /**********************************************************
   Vertical Toolbar
 **********************************************************/
@@ -2425,16 +2402,6 @@ img {
   margin: 0px;
 }
 
-#ToolbarVertical .jxButtonMenu a span.jxButtonEmptyLabel, 
-#ToolbarVertical a.jxButtonFlyout span.jxButtonEmptyLabel  {
-  overflow:  visible;
-}
-
-#ToolbarVertical a.jxButtonMenu span.jxButtonSpan, 
-#ToolbarVertical a.jxButtonFlyout span.jxButtonSpan  {
-  background-image:  url(images/iconFileMenuDownArrow.png);
-}
-
 #ToolbarVertical ul.jxMenu a.jxButton, 
 #ToolbarVertical ul.jxSubMenu a.jxButton {
   padding: 0px;
@@ -2444,60 +2411,37 @@ img {
 #ToolbarVertical ul.jxSubMenu a.jxButton:hover {
   background-color: #FEF7DD;
 }
-  
-#linkTaskMenu {
-  position: absolute;
-  right: 15px;
-}
-  
+
 /********************************************************
   FileMenu
 ********************************************************/
 #FileMenu {
   margin: 0px;
   padding: 0px;
+  padding-top: 10px;
   z-index: 1;
-    background-image: none;
-    background-color: transparent;
+  background-image: none;
+  background-color: transparent;
 }
 
-#FileMenu ul.jxToolbar {
-  height: 18px;
+#FileMenu div.jxButtonContainer {
+  padding: 3px 2px 1px 2px;
 }
 
 #FileMenu a.jxButton {
-  padding: 1px 6px;
-  margin: 0px;
-  font-size: 11px;
-  border: none;
+  padding: 0px 0px 0px 4px; /* makes room for the left of the button bg */
+  background-image: url(images/fileMenuButton.png);
 }
 
-#FileMenu a.jxButton:hover {
-  padding: 0px 5px;
-  font-size: 11px;
-  text-decoration: none;
-  border: 1px solid #a9bde0;
-  background-color: #77a4c2;
+#FileMenu span.jxButtonContent {
+  padding: 0px 4px 2px 0px; /* makes room for the right of the button bg */
+  background-image: url(images/fileMenuButton.png);
 }
 
 #FileMenu span.jxButtonLabel {
-  color: #fff;
-}
-
-#FileMenu a.jxButtonMenu span.jxButtonContent, 
-#FileMenu a.jxButtonFlyout span.jxButtonContent {
-  padding: 0px;
-}
-
-#FileMenu ul.jxMenu a.jxButton:hover, 
-#FileMenu ul.jxSubMenu a.jxButton:hover {
-  background-color: #DDE8F0;
-  border-color: #fff;
-}
-
-#FileMenu ul.jxMenu span.jxButtonLabel, 
-#FileMenu ul.jxSubMenu span.jxButtonLabel {
-  color: #000;
+  color: #ffffff;
+  padding: 0 4px 0 4px;
+  background-image: none;
 }
 
 /********************************************************
@@ -2505,21 +2449,21 @@ img {
 ********************************************************/
 
 #StatusbarContainer {
-    background-color: #ffefb0;
-    border: 1px solid #ffffff;
-    color: #11449e;
-    line-height: 21px;
-    font-size: 11px;
-    vertical-align: middle;
+  background-color: #ffefb0;
+  border: 1px solid #ffffff;
+  color: #11449e;
+  line-height: 21px;
+  font-size: 11px;
+  vertical-align: middle;
 }
 
 #Statusbar .jxSplitBarHorizontal {
-    width: 3px;
-    height: 14px;
-    border-left: 1px solid #11449d;
-    background-color: #ffefb3;
-    cursor: 'col-resize';
-    margin-top: 3px;
+  width: 3px;
+  height: 14px;
+  border-left: 1px solid #11449d;
+  background-color: #ffefb3;
+  cursor: 'col-resize';
+  margin-top: 3px;
 }
 
 #Statusbar .spanCursorPosition, 
@@ -2529,7 +2473,11 @@ img {
 }
 
 .inputEditableScale {
-  font: normal 10px Verdana, Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  color: #11449E;
+  background-color: #fff;
+  border: 1px solid #A9BDE0;
 }
 
 #pbmg {
@@ -2584,84 +2532,28 @@ img {
   margin: 0px;
 }
 
-  #TaskNav ul.jxToolbar {
-    background: red;
-  }
-
-
-#Sidebar .jxBarTop ul.jxToolbar {
-  margin: 0px;
-  padding: 0px;
-  height: 25px;
-  background-image: url(images/tabSetBackground.png);
-  background-repeat: repeat-x;
-  background-color: #ffffff;
-  background-position: 1px 1px;
-  width: 100%;
-}
-
-#Sidebar .jxBarTop li.jxTabItem {
-  padding: 0px;
-  margin: 0px;
-  height: 25px;
-  text-align: center;
-}
-
-#Sidebar .jxBarTop a.jxTab {
-  padding: 0px;
-  margin: 0px;
-  height: 25px;
-  width: auto;
-  text-align: center;
-  text-decoration: none;
-}
-
 #Sidebar .jxBarTop a.jxTab:hover, 
 #Sidebar .jxBarTop a.jxTab:active {
   text-decoration: underline;
 }
 
-#Sidebar .jxBarTop a.jxTab {
-  padding: 0px 0px 0px 10px;
-}
-
-#Sidebar .jxBarTop a.jxTab span.jxButtonSpan {
-  padding: 5px 10px 0px 0px;
-  height: 20px;
+#Sidebar span.jxTabLabel {
   color: #11449e;
-}
-
-#Sidebar .jxBarTop a.tabActive {
-  background-image: url(images/taskTabSD_Left.png);
-  background-repeat: no-repeat;
-  background-position: left top;
-}
-
-#Sidebar .jxBarTop a.tabActive span.jxButtonSpan {
-  background-image: url(images/taskTabSD_Right.png);
-  background-repeat: no-repeat;
-  background-position: right top;
-}
-
-#Sidebar .jxBarTop a.jxTab span.jxButtonLabel {
-  padding: 3px 0 0 0px;
-  text-align: center;
-  color: #11449E;
   font-weight: bold;
 }
 
 #LegendContainer.tabContent {
-    overflow: auto;
-    padding: 0 0 2px 0;
+  overflow: auto;
+  padding: 0 0 2px 0;
 }
 
 #Legend {
-    background-color: #fff;
-    background-image: none;
-    overflow: auto;
-    /*
-    border: 0px solid #000;
-    margin: 0 0 4px 0;
+  background-color: #fff;
+  background-image: none;
+  overflow: auto;
+  /*
+  border: 0px solid #000;
+  margin: 0 0 4px 0;
   */
 }
 
@@ -2671,17 +2563,14 @@ img {
 }
 
 #OverviewMap {
-    padding: 0px 3px 3px 3px;
+  padding: 0px 3px 3px 3px;
 }
 
 .olControlOverviewMapElement {
-    border: 1px solid #fff;
-    background-color: #fff;
+  border: 1px solid #fff;
+  background-color: #fff;
 }
 
-.inputEditableScale {
-  font: normal 11px Verdana, Arial, Helvetica, sans-serif;
-}
 
 #Navigator {
   position: absolute;
@@ -2691,33 +2580,4 @@ img {
   z-index: 100;
 }
 
-/* Override StatusOverviewMap button style */
-#StatusOverviewMap a.jxButton {
-  padding: 1px;
-  margin-top: 0;
-}
-
-#StatusOverviewMap span.jxButtonIcon {
-  padding-left: 10px;
-}
-
-#StatusOverviewMap {
-  position: absolute;
-  right: 140px;
-  top: 2px;
-  padding: 0;
-}
-
-#StatusOverviewMap .jxButtonContainer {
-  padding: 0;
-}
-
-#StatusOverviewMap span.jxButtonIcon {
-  background-position: left center;
-}
-
-.jxTree a, .jxTreeRoot a {
-  font-family: Verdana, Arial, Helvetica, sans-serif;
-}
-
-  
+ 

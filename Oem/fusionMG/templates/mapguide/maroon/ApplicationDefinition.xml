@@ -10,17 +10,23 @@
 
   <MapSet xsi:type="MapSetType">
     <MapGroup id="sheboygan" xsi:type="MapType">
-      <!-- should be centered on intersection of Lower Fallss Rd and S.Taylor Dr. -->
-      <!--InitialView xsi:type="MapViewType">
-        <CenterX>-87.745061</CenterX>
-        <CenterY>43.740283</CenterY>
-        <Scale>8000</Scale>
-      </InitialView-->
       <Map xsi:type="MapGuideLayerType">
         <Type>MapGuide</Type>
         <SingleTile>true</SingleTile>
         <Extension>
           <ResourceId>Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition</ResourceId>
+          <SelectionAsOverlay>true</SelectionAsOverlay>
+          <SelectionFormat>PNG</SelectionFormat>
+          <SelectionColor>0xFF0000FF</SelectionColor>
+        </Extension>
+      </Map>
+    </MapGroup>
+    <MapGroup id="sheboygan-tiled" xsi:type="MapType">
+      <Map xsi:type="MapGuideLayerType">
+        <Type>MapGuide</Type>
+        <SingleTile>false</SingleTile>
+        <Extension>
+          <ResourceId>Library://Samples/Sheboygan/MapsTiled/Sheboygan.MapDefinition</ResourceId>
         </Extension>
       </Map>
     </MapGroup>
@@ -34,33 +40,6 @@
  ****************************************** -->
 
   <WidgetSet xsi:type="WidgetSetType">
-
- <!-- ****************************************** 
-* Statusbar
-*
-* Splitterbar used to show items in the status bar
- ****************************************** -->
-
-    <Container xsi:type="UiItemContainerType">
-      <Name>Statusbar</Name>
-      <Type>Splitterbar</Type>
-      <Item xsi:type="WidgetItemType">
-        <Function>Widget</Function>
-        <Widget>StatusCoords</Widget>
-      </Item>
-      <Item xsi:type="WidgetItemType">
-        <Function>Widget</Function>
-        <Widget>StatusSelection</Widget>
-      </Item>
-      <Item xsi:type="WidgetItemType">
-        <Function>Widget</Function>
-        <Widget>StatusScale</Widget>
-      </Item>
-      <Item xsi:type="WidgetItemType">
-        <Function>Widget</Function>
-        <Widget>StatusViewSize</Widget>
-      </Item>
-    </Container>
 
 <!-- ****************************************** 
 * ContextMenu (Tasks)
@@ -209,12 +188,6 @@
         <Widget>menuAbout</Widget>
       </Item>
     </Container>
-
-<!-- ****************************************** 
-* ContextMenu (Map)
-*
-* Menu available to the Map on right-click
- ****************************************** -->
 
     <Container xsi:type="UiItemContainerType">
       <Name>Toolbar</Name>
@@ -379,7 +352,35 @@
         </Item>
       </Item>
     </Container>
-    
+
+
+<!-- ****************************************** 
+* Statusbar (Status Bar)
+*
+* 
+ ****************************************** -->
+
+
+    <Container xsi:type="UiItemContainerType">
+      <Name>Statusbar</Name>
+      <Type>Splitterbar</Type>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>StatusCoords</Widget>
+      </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>StatusSelection</Widget>
+      </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>StatusScale</Widget>
+      </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>StatusViewSize</Widget>
+      </Item>
+    </Container>
 <!-- ****************************************** 
 * Placeholder Widget
  ****************************************** -->
@@ -398,7 +399,18 @@
       <Disabled/>
     </Widget>
 
+<!-- MAP -->
 
+    <MapWidget xsi:type="WidgetType">
+      <Name>Map</Name>
+      <Type>Map</Type>
+      <StatusItem>The map.</StatusItem>
+      <Extension xsi:type="CustomContentType">
+        <MenuContainer>MapContextMenu</MenuContainer>
+        <!--Scales>100000,50000,25000,12500,8000,4000</Scales-->
+      </Extension>
+      <MapId>sheboygan</MapId>
+    </MapWidget>
 
 <!-- ****************************************** 
 * Context Menu - Widgets
@@ -412,8 +424,8 @@
       <Name>menuPan</Name>
       <Type>Pan</Type>
       <StatusItem>Drag the map to view areas out of range.</StatusItem>
-      <ImageUrl>images/stdicons/icon_pan.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>pan</ImageClass>
       <Tooltip>Pan mode</Tooltip>
       <Label>Pan</Label>
       <Disabled/>
@@ -429,8 +441,8 @@
         <Tolerance>5</Tolerance>
         <Factor>2</Factor>
       </Extension>
-      <ImageUrl>images/stdicons/icon_zoomin.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>zoom-in</ImageClass>
       <Tooltip>Zoom In</Tooltip>
       <Label>Zoom Rectangle</Label>
       <Disabled/>
@@ -445,8 +457,8 @@
       <Extension xsi:type="CustomContentType">
         <Factor>2</Factor>
       </Extension>
-      <ImageUrl>images/stdicons/icon_zoomin.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>zoom-in-fixed</ImageClass>
       <Tooltip>Zoom In</Tooltip>
       <Label>Zoom In</Label>
       <Disabled/>
@@ -458,8 +470,8 @@
       <Name>menuRefreshMap</Name>
       <Type>RefreshMap</Type>
       <StatusItem>Refreshes the map image.</StatusItem>
-      <ImageUrl>images/stdicons/icon_refreshmap.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>view-refresh</ImageClass>
       <Tooltip>Refresh map and reload all layers, keeping the current center point and scale.</Tooltip>
       <Label>Refresh Map</Label>
       <Disabled/>
@@ -474,8 +486,8 @@
       <Extension xsi:type="CustomContentType">
         <Factor>0.5</Factor>
       </Extension>
-      <ImageUrl>images/stdicons/icon_zoomout.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>zoom-out-fixed</ImageClass>
       <Tooltip>Zoom Out</Tooltip>
       <Label>Zoom Out</Label>
       <Disabled/>
@@ -490,8 +502,8 @@
       <Extension xsi:type="CustomContentType">
         <ViewType>extent</ViewType>
       </Extension>
-      <ImageUrl>images/stdicons/icon_fitwindow.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>zoom-full</ImageClass>
       <Tooltip>Initial Map View</Tooltip>
       <Label>Initial Map View</Label>
       <Disabled/>
@@ -506,8 +518,8 @@
       <Extension xsi:type="CustomContentType">
         <Direction>previous</Direction>
       </Extension>
-      <ImageUrl>images/stdicons/icon_zoomprev.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>view-back</ImageClass>
       <Tooltip>Previous View</Tooltip>
       <Label>View Previous</Label>
       <Disabled/>
@@ -522,8 +534,8 @@
       <Extension xsi:type="CustomContentType">
         <Direction>next</Direction>
       </Extension>
-      <ImageUrl>images/stdicons/icon_zoomnext.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>view-forward</ImageClass>
       <Tooltip>Next View</Tooltip>
       <Label>View Next</Label>
       <Disabled/>
@@ -538,8 +550,8 @@
       <Extension xsi:type="CustomContentType">
         <ViewType>center</ViewType>
       </Extension>
-      <ImageUrl>images/stdicons/icon_restorecenter.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>zoom-full</ImageClass>
       <Tooltip>Initial Map Center and Scale</Tooltip>
       <Label>Initial Center and Scale</Label>
       <Disabled/>
@@ -551,8 +563,8 @@
       <Name>menuZoomSelection</Name>
       <Type>ZoomToSelection</Type>
       <StatusItem>Zoom to the extents of the current selection.</StatusItem>
-      <ImageUrl>images/stdicons/icon_zoomselect.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>select-zoom</ImageClass>
       <Tooltip>Zoom to selection.</Tooltip>
       <Label>Zoom Selection</Label>
       <Disabled/>
@@ -564,8 +576,8 @@
       <Name>menuSelect</Name>
       <Type>Select</Type>
       <StatusItem>Select features by clicking and dragging.</StatusItem>
-      <ImageUrl>images/stdicons/icon_select.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>select-features</ImageClass>
       <Tooltip>Select mode</Tooltip>
       <Label>Select mode</Label>
       <Disabled/>
@@ -577,8 +589,8 @@
       <Name>menuClearSelection</Name>
       <Type>ClearSelection</Type>
       <StatusItem>Clears the current selection.</StatusItem>
-      <ImageUrl>images/stdicons/icon_clearselect.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>select-clear</ImageClass>
       <Tooltip/>
       <Label>Clear Selection</Label>
       <Disabled/>
@@ -590,8 +602,8 @@
       <Name>menuSelectRadius</Name>
       <Type>SelectRadius</Type>
       <StatusItem>Click and drag to select all features inside a circle.</StatusItem>
-      <ImageUrl>images/stdicons/icon_selectradius.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>select-radius</ImageClass>
       <Tooltip>Select Radius</Tooltip>
       <Label>Select Radius</Label>
       <Disabled/>
@@ -603,8 +615,8 @@
       <Name>menuSelectPolygon</Name>
       <Type>SelectPolygon</Type>
       <StatusItem>Create a polygon and select all features that fall within.</StatusItem>
-      <ImageUrl>images/stdicons/icon_selectpolygon.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>select-polygon</ImageClass>
       <Tooltip>Select Polygon</Tooltip>
       <Label>Select Polygon</Label>
       <Disabled/>
@@ -616,8 +628,8 @@
       <Name>menuSelectWithin</Name>
       <Type>SelectWithin</Type>
       <StatusItem>Select all features that fall within the currently selected area.</StatusItem>
-      <ImageUrl>images/stdicons/icon_selectwithin.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>select-within</ImageClass>
       <Tooltip>Select Within</Tooltip>
       <Label>Select Within</Label>
       <Disabled/>
@@ -629,8 +641,8 @@
       <Name>menuBuffer</Name>
       <Type>BufferPanel</Type>
       <StatusItem>Create buffers around the selected features</StatusItem>
-      <ImageUrl>images/stdicons/icon_buffer.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>buffer</ImageClass>
       <Tooltip>Buffer</Tooltip>
       <Label>Buffer</Label>
       <Disabled/>
@@ -643,10 +655,10 @@
       <Type>ViewOptions</Type>
       <StatusItem>Switch between Imperial and Metric units</StatusItem>
       <Extension xsi:type="CustomContentType">
-        <DisplayUnits>meters</DisplayUnits>
+        <DisplayUnits>degrees</DisplayUnits>
       </Extension>
-      <ImageUrl>images/stdicons/icon_viewoptions.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>view-options</ImageClass>
       <Tooltip/>
       <Label>View Options</Label>
       <Disabled/>
@@ -658,8 +670,8 @@
       <Name>menuHelp</Name>
       <Type>Help</Type>
       <StatusItem/>
-      <ImageUrl>images/stdicons/icon_help.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>help</ImageClass>
       <Tooltip/>
       <Label>Help</Label>
       <Disabled/>
@@ -688,19 +700,34 @@
         <Type>both</Type>
         <MeasureTooltipContainer>MeasureResult</MeasureTooltipContainer>
         <MeasureTooltipType>dynamic</MeasureTooltipType>
-        <DistancePrecision>4</DistancePrecision>
-        <AreaPrecision>4</AreaPrecision>
+        <DistancePrecision>0</DistancePrecision>
+        <AreaPrecision>0</AreaPrecision>
         <Units>meters</Units>
+        <Target>TaskPane</Target>
       </Extension>
-      <ImageUrl>images/stdicons/icon_measure.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>measure</ImageClass>
       <Tooltip>Buffer</Tooltip>
       <Label>Measure</Label>
       <Disabled/>
     </Widget>
 
-
 <!-- FILE MENU LAUNCH NAVIGATOR -->
+    <Widget xsi:type="WidgetType">
+      <Name>showOverviewMap</Name>
+      <Type>InvokeScript</Type>
+      <StatusItem/>
+      <Extension>
+        <Script>showOverviewMap()</Script>
+      </Extension>
+      <ImageUrl>images/icons/iconNavigator.png</ImageUrl>
+      <ImageClass/>
+      <Tooltip>Launch Overview Map</Tooltip>
+      <Label>Launch Overview Map</Label>
+      <Disabled/>
+    </Widget>
+
+    <!-- FILE MENU LAUNCH NAVIGATOR -->
 
     <Widget xsi:type="WidgetType">
       <Name>menuLaunchOverviewMap</Name>
@@ -754,6 +781,19 @@
       <Label>Launch Selection</Label>
       <Disabled/>
     </Widget>
+<!-- MAP MENU -->
+
+    <Widget>
+      <Name>fileMapMenu</Name>
+      <Type>MapMenu</Type>
+      <StatusItem/>
+      <Extension/>
+      <ImageUrl/>
+      <ImageClass/>
+      <Tooltip/>
+      <Label>Maps</Label>
+      <Disabled/>
+    </Widget>
 
 <!-- ****************************************** 
 * Toolbar - Widgets
@@ -767,8 +807,8 @@
       <Name>toolbarBuffer</Name>
       <Type>BufferPanel</Type>
       <StatusItem>Create buffers around the selected features</StatusItem>
-      <ImageUrl>images/stdicons/icon_buffer.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>buffer</ImageClass>
       <Tooltip>Buffer</Tooltip>
       <Label>Buffer</Label>
       <Extension>
@@ -783,8 +823,8 @@
       <Name>toolbarRefreshMap</Name>
       <Type>RefreshMap</Type>
       <StatusItem>Refreshes the map image.</StatusItem>
-      <ImageUrl>images/stdicons/icon_refreshmap.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>view-refresh</ImageClass>
       <Tooltip>Refresh map and reload all layers, keeping the current center point and scale.</Tooltip>
       <Label>Refresh Map</Label>
       <Disabled/>
@@ -800,13 +840,13 @@
         <Type>both</Type>
         <MeasureTooltipContainer>MeasureResult</MeasureTooltipContainer>
         <MeasureTooltipType>dynamic</MeasureTooltipType>
-        <DistancePrecision>4</DistancePrecision>
-        <AreaPrecision>4</AreaPrecision>
+        <DistancePrecision>0</DistancePrecision>
+        <AreaPrecision>0</AreaPrecision>
         <Units>meters</Units>
         <Target>TaskPane</Target>
       </Extension>
-      <ImageUrl>images/stdicons/icon_measure.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>measure</ImageClass>
       <Tooltip>Measure</Tooltip>
       <Label>Measure</Label>
       <Disabled/>
@@ -821,8 +861,8 @@
       <Extension xsi:type="CustomContentType">
         <DisplayUnits>meters</DisplayUnits>
       </Extension>
-      <ImageUrl>images/stdicons/icon_viewoptions.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>view-options</ImageClass>
       <Tooltip/>
       <Label>View Options</Label>
       <Disabled/>
@@ -834,10 +874,10 @@
       <Name>toolbarHelp</Name>
       <Type>Help</Type>
       <StatusItem/>
-      <ImageUrl>images/stdicons/icon_help.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>help</ImageClass>
       <Tooltip/>
-      <Label>Help</Label>
+      <Label></Label>
       <Disabled/>
     </Widget>
 
@@ -860,10 +900,10 @@
       <Name>toolbarClearSelection</Name>
       <Type>ClearSelection</Type>
       <StatusItem>Clears the current selection.</StatusItem>
-      <ImageUrl>images/stdicons/icon_clearselect.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>select-clear</ImageClass>
       <Tooltip/>
-      <Label>Clear Selection</Label>
+      <Label></Label>
       <Disabled/>
     </Widget>
 
@@ -873,10 +913,10 @@
       <Name>toolbarSelectRadius</Name>
       <Type>SelectRadius</Type>
       <StatusItem>Click and drag to select all features inside a circle.</StatusItem>
-      <ImageUrl>images/stdicons/icon_selectradius.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>select-radius</ImageClass>
       <Tooltip>Select Radius</Tooltip>
-      <Label>Select Radius</Label>
+      <Label></Label>
       <Disabled/>
     </Widget>
 
@@ -886,10 +926,10 @@
       <Name>toolbarSelectPolygon</Name>
       <Type>SelectPolygon</Type>
       <StatusItem>Create a polygon and select all features that fall within.</StatusItem>
-      <ImageUrl>images/stdicons/icon_selectpolygon.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>select-polygon</ImageClass>
       <Tooltip>Select Polygon</Tooltip>
-      <Label>Select Polygon</Label>
+      <Label></Label>
       <Disabled/>
     </Widget>
 
@@ -910,8 +950,8 @@
       <Extension xsi:type="CustomContentType">
         <ViewType>extent</ViewType>
       </Extension>
-      <ImageUrl>images/stdicons/icon_fitwindow.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>zoom-full</ImageClass>
       <Tooltip>Initial Map View</Tooltip>
       <Label/>
       <Disabled/>
@@ -926,8 +966,8 @@
       <Extension xsi:type="CustomContentType">
         <Direction>previous</Direction>
       </Extension>
-      <ImageUrl>images/stdicons/icon_zoomprev.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>view-back</ImageClass>
       <Tooltip>Previous View</Tooltip>
       <Label/>
       <Disabled/>
@@ -942,8 +982,8 @@
       <Extension xsi:type="CustomContentType">
         <Direction>next</Direction>
       </Extension>
-      <ImageUrl>images/stdicons/icon_zoomnext.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>view-forward</ImageClass>
       <Tooltip>Next View</Tooltip>
       <Label/>
       <Disabled/>
@@ -955,8 +995,8 @@
       <Name>toolbarSecondaryZoomSelection</Name>
       <Type>ZoomToSelection</Type>
       <StatusItem>Zoom to the extents of the current selection.</StatusItem>
-      <ImageUrl>images/stdicons/icon_zoomselect.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>select-zoom</ImageClass>
       <Tooltip>Zoom to selection.</Tooltip>
       <Label/>
       <Disabled/>
@@ -968,10 +1008,13 @@
       <Name>toolbarSelectWithin</Name>
       <Type>SelectWithin</Type>
       <StatusItem>Select all features that fall within the currently selected area.</StatusItem>
-      <ImageUrl>images/stdicons/icon_selectwithin.gif</ImageUrl>
+      <ImageUrl>images/icons/select-features.png</ImageUrl>
+      <Extension>
+        <Target>TaskPane</Target>
+      </Extension>
       <ImageClass/>
       <Tooltip>Select Within</Tooltip>
-      <Label>Select Within</Label>
+      <Label></Label>
       <Disabled/>
     </Widget>
 
@@ -992,6 +1035,7 @@
       <Extension xsi:type="CustomContentType">
         <Template>X: {x} {units}, Y: {y} {units}</Template>
         <Precision>4</Precision>
+        <EmptyText>&amp;nbsp;</EmptyText>
       </Extension>
     </Widget>
 
@@ -1001,6 +1045,9 @@
       <Name>StatusSelection</Name>
       <Type>SelectionInfo</Type>
       <StatusItem/>
+      <Extension>
+          <EmptyText>No selection.</EmptyText>
+     </Extension>
     </Widget>
 
 <!-- STATUS SCALE -->
@@ -1022,24 +1069,6 @@
         <Precision>2</Precision>
       </Extension>
     </Widget>
-
-<!-- STATUS NAVIGATOR -->
-
-    <Widget xsi:type="WidgetType">
-      <Name>StatusOverviewMap</Name>
-      <Type>InvokeScript</Type>
-      <StatusItem/>
-      <Extension>
-        <Script>showOverviewMap()</Script>
-      </Extension>
-      <ImageUrl>images/iconNavigator.gif</ImageUrl>
-      <ImageClass/>
-      <Tooltip>Launch Overview Map</Tooltip>
-      <Label/>
-      <Disabled/>
-    </Widget>
-
-
 
 <!-- ****************************************** 
 * Panels - Widgets
@@ -1074,13 +1103,6 @@
       </Extension>
     </Widget>
 
-<!-- OVERVIEW MAP -->
-
-    <Widget xsi:type="WidgetType">
-      <Name>OverviewMap</Name>
-      <Type>OverviewMap</Type>
-    </Widget>
-
 
 
 <!-- ****************************************** 
@@ -1106,9 +1128,9 @@
         <Tolerance>5</Tolerance>
         <Factor>2</Factor>
       </Extension>
-      <ImageUrl>images/stdicons/icon_zoomin.gif</ImageUrl>
-      <ImageClass/>
-      <Tooltip>Zoom rectangle.</Tooltip>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>zoom-in</ImageClass>
+      <Tooltip>Zoom in to a rectangular region.</Tooltip>
       <Label/>
       <Disabled/>
     </Widget>
@@ -1120,11 +1142,11 @@
       <Type>ZoomOnClick</Type>
       <StatusItem>Zoom in by a preset increment.</StatusItem>
       <Extension xsi:type="CustomContentType">
-        <Factor>2</Factor>
+        <Factor>4</Factor>
       </Extension>
-      <ImageUrl>images/stdicons/icon_zoomin.gif</ImageUrl>
-      <ImageClass/>
-      <Tooltip>Zoom rectangle.</Tooltip>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>zoom-in-fixed</ImageClass>
+      <Tooltip>Zoom in by a fixed factor.</Tooltip>
       <Label/>
       <Disabled/>
     </Widget>
@@ -1138,9 +1160,9 @@
       <Extension xsi:type="CustomContentType">
         <Factor>0.5</Factor>
       </Extension>
-      <ImageUrl>images/stdicons/icon_zoomout.gif</ImageUrl>
-      <ImageClass/>
-      <Tooltip>Zoom In</Tooltip>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>zoom-out-fixed</ImageClass>
+      <Tooltip>Zoom Out by a fixed factor</Tooltip>
       <Label/>
       <Disabled/>
     </Widget>
@@ -1151,62 +1173,17 @@
       <Name>Select</Name>
       <Type>Select</Type>
       <StatusItem>Select features by clicking and dragging.</StatusItem>
-      <ImageUrl>images/stdicons/icon_select.gif</ImageUrl>
-      <ImageClass/>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>select-features</ImageClass>
       <Tooltip>Select mode</Tooltip>
       <Label/>
       <Disabled/>
     </Widget>
 
-<!-- MAP -->
-
-    <MapWidget xsi:type="WidgetType">
-      <Name>Map</Name>
-      <Type>Map</Type>
-      <StatusItem>The map.</StatusItem>
-      <Extension xsi:type="CustomContentType">
-        <MenuContainer>MapContextMenu</MenuContainer>
-      </Extension>
-      <MapId>sheboygan</MapId>
-    </MapWidget>
-
-<!-- PRINT -->
-
-    <Widget xsi:type="UiWidgetType">
-      <Name>GetPrintablePage</Name>
-      <Type>Print</Type>
-      <StatusItem>Get printer-friendly page.</StatusItem>
-      <Extension xsi:type="CustomContentType">
-        <ShowPrintUI>true</ShowPrintUI>
-        <PageTitle>Some Title</PageTitle>
-        <ShowLegend>false</ShowLegend>
-        <ShowNorthArrow>false</ShowNorthArrow>
-      </Extension>
-      <ImageUrl>images/stdicons/icon_print.gif</ImageUrl>
-      <ImageClass/>
-      <Tooltip>Get printable page.</Tooltip>
-      <Label>Print</Label>
-      <Disabled/>
-    </Widget>
-
-<!-- PAN -->
-    <Widget xsi:type="UiWidgetType">
-    
-      <Name>Pan</Name>
-      <Type>Pan</Type>
-      <StatusItem>Drag the map to view areas out of range.</StatusItem>
-      <ImageUrl>images/stdicons/icon_pan.gif</ImageUrl>
-      <ImageClass/>
-      <Tooltip>Pan mode</Tooltip>
-      <Label/>
-      <Disabled/>
-    </Widget>
-
-
-<!-- MAP MENU -->
+<!-- MAPMENU -->
 
     <Widget>
-      <Name>fileMapMenu</Name>
+      <Name>MapMenu</Name>
       <Type>MapMenu</Type>
       <StatusItem/>
       <Extension/>
@@ -1217,24 +1194,66 @@
       <Disabled/>
     </Widget>
 
-<!-- ACTIVITY INDICATOR -->
+<!-- OVERVIEW MAP
 
     <Widget xsi:type="WidgetType">
-      <Name>ActivityIndicator</Name>
-      <Type>ActivityIndicator</Type>
-      <StatusItem/>
-      <Extension>
-        <ElementId>BusyIndicator</ElementId>
+      <Name>OverviewMap</Name>
+      <Type>OverviewMap</Type>
+      <Description/>
+      <Extension xsi:type="CustomContentType">
       </Extension>
     </Widget>
-    
-    <Widget>
-      <Name>Maptip</Name>
-      <Type>Maptip</Type>
-      <StatusItem/>
-      <Extension/>
+ -->
+<!-- PRINT -->
+
+    <Widget xsi:type="UiWidgetType">
+      <Name>GetPrintablePage</Name>
+      <Type>Print</Type>
+      <StatusItem>Get printer-friendly page.</StatusItem>
+      <Extension xsi:type="CustomContentType">
+        <ShowPrintUI>true</ShowPrintUI>
+        <ShowTitle>true</ShowTitle>
+        <PageTitle>Some Title</PageTitle>
+        <ShowLegend>true</ShowLegend>
+        <ShowNorthArrow>true</ShowNorthArrow>
+        <ImageBaseUrl>images/</ImageBaseUrl>
+      </Extension>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>file-print</ImageClass>
+      <Tooltip>Get printable page.</Tooltip>
+      <Label></Label>
+      <Disabled/>
     </Widget>
-    </WidgetSet>
+
+<!-- PAN -->
+    <Widget xsi:type="UiWidgetType">
+    
+      <Name>Pan</Name>
+      <Type>Pan</Type>
+      <StatusItem>Drag the map to view areas out of range.</StatusItem>
+      <ImageUrl>images/icons.png</ImageUrl>
+      <ImageClass>pan</ImageClass>
+      <Tooltip>Pan mode</Tooltip>
+      <Label/>
+      <Disabled/>
+    </Widget>
+
+    <Widget xsi:type="UiWidgetType">
+      <Name>Scalebar</Name>
+      <Type>ScalebarDual</Type>
+    </Widget>
+    
+    <Widget xsi:type="WidgetType">
+      <Name>MapTip</Name>
+      <Type>Maptip</Type>
+      <Extension>
+        <Label>Map Tips</Label>
+        <Delay>350</Delay>
+        <Layer>Parcels</Layer>
+      </Extension>
+    </Widget>
+
+  </WidgetSet>
 
   <Extension/>
 

@@ -4,7 +4,7 @@
 <title>LimeGold</title>
 <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
 
-<script type="text/javascript" src="../../../../fusion/lib/fusionSF-compressed.js"></script>
+<script type="text/javascript" src="../../../../fusion/lib/fusion.js"></script>
 <link rel="stylesheet" href="jxtheme.css" type="text/css" media="screen" charset="utf-8">
 <!--[if lte IE 6]>
 <link rel="stylesheet" href="ie6.css" type="text/css" media="screen" charset="utf-8">
@@ -12,6 +12,7 @@
 <!--[if IE 7]>
 <link rel="stylesheet" href="ie7.css" type="text/css" media="screen" charset="utf-8">
 <![endif]-->
+<link rel="stylesheet" href="icons.css" type="text/css" media="screen" charset="utf-8">
 
 <script type="text/javascript">
 
@@ -31,7 +32,7 @@ window.onload = function() {
     new Jx.Layout('StatusbarContainer', {height: 21, top: null, bottom: 0});
     new Jx.Layout('Statusbar', {height: 21, right: 141, top: null});
     new Jx.Layout('Map');
-
+    
     var splitter = new Jx.Splitter('SplitterArea', {
         splitInto:2,
         elements:[$('Main'),$('Sidebar')],
