@@ -606,6 +606,11 @@ iframe.jxIframeShim{position:absolute;top:0px;left:0px;width:100%;height:100%;-m
   background-image: url(images/dialog_chrome.png);
 }
 
+.jxDialog .jxChrome img {
+  width: 500px;
+  height: 500px;
+}
+
 .jxDialog {
   /* Base setup */
   display: block;
@@ -658,11 +663,10 @@ iframe.jxIframeShim{position:absolute;top:0px;left:0px;width:100%;height:100%;-m
 
   text-align: center;
   /* note: height is hard coded into jx.js Jx.Dialog initialize function - change there as well as here */
-  height: 20px;
-  line-height: 20px;
+  height: 16px;
   z-index: 1;
 
-  margin: 6px 6px 0px 7px;
+  margin: 10px 10px 0px 10px;
 }
 
 .jxDialogMin .jxDialogTitle {
@@ -675,8 +679,8 @@ iframe.jxIframeShim{position:absolute;top:0px;left:0px;width:100%;height:100%;-m
 
 .jxDialogIcon {
   position: absolute;
-  left: 2px;
-  top: 3px;
+  left: 10px;
+  top: 0px;
   width: 16px;
   height: 16px;
   border: none;
@@ -689,7 +693,7 @@ iframe.jxIframeShim{position:absolute;top:0px;left:0px;width:100%;height:100%;-m
   font-size: 11px;
   font-weight: bold;
   /* line-height vertically aligns the label in the containing div. */
-  line-height:21px;
+  line-height:15px;
   color: #000;
   white-space: nowrap;
 }
@@ -710,7 +714,7 @@ iframe.jxIframeShim{position:absolute;top:0px;left:0px;width:100%;height:100%;-m
 
 .jxDialogControls {
   position: absolute;
-  top: 3px;
+  top: 0px;
   right: 2px;
   height: 16px;
   width: 80px;
@@ -1438,7 +1442,6 @@ html {
   overflow: hidden;
 }
 
-
 body {
   width: 100%;
   height: 100%;
@@ -1449,17 +1452,12 @@ body {
   background-position: bottom;
 }
 
-  
 body, table {
   font-style: normal;
   font-weight: normal;
   font-size: 75%;
   font-family: Verdana, Arial, Helvetica, sans-serif;
   color: #000000;
-}
-
-#Logo {
-  overflow: hidden;
 }
 
 /********************************************************
@@ -1679,12 +1677,22 @@ body, table {
   height: 8px;
 }
 
+#ToolbarContainer a.jxButtonMenu span.jxButtonContent span,
+#ToolbarContainer a.jxButtonFlyout span.jxButtonContent span,
+#ToolbarContainer a.jxButtonMulti span.jxButtonContent span,
+#ToolbarContainer a.jxButtonCombo span.jxButtonContent span,
+#ToolbarContainer a.jxButtonEditCombo span.jxButtonContent span {
+  background-image: url(images/emblems_alt.png);
+}
+
 /********************************************************
   Status Bar
 ********************************************************/
 
 #StatusbarContainer {
-  background: url(images/statusBarBackground.png) repeat-x #ffffff;
+  background-image: url(images/statusBarBackground.png);
+  background-repeat: repeat-x;
+  background-color: #ffffff;
   color: #ffffff;
   line-height: 21px;
   font-size: 10px;
