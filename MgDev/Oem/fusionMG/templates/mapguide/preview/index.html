@@ -3,9 +3,8 @@
 <html>
 <head>
 <title>Preview</title>
-<!-- change the source of the following tag to point to your fusion installation -->
 <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
-<script type="text/javascript" src="../../../lib/fusion.js"></script>
+<script type="text/javascript" src="../../../lib/fusionSF-compressed.js"></script>
 <link rel="stylesheet" href="jxtheme.css" type="text/css" media="screen" charset="utf-8">
 <!--[if lte IE 6]>
 <link rel="stylesheet" href="ie6.css" type="text/css" media="screen" charset="utf-8">
@@ -13,8 +12,25 @@
 <!--[if IE 7]>
 <link rel="stylesheet" href="ie7.css" type="text/css" media="screen" charset="utf-8">
 <![endif]-->
-<script type="text/javascript">
+<style type="text/css">
+    #Statusbar .spanCursorPosition,
+    #Statusbar .inputEditableScalePrefix,
+    #Statusbar .inputEditableScale,
+    #Statusbar .spanViewSize,
+    #Statusbar .spanSelectionInfo {
+        padding: 2px 4px;
+        line-height: 18px;
+        font-size: 11px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    #Statusbar {
+      background-image: url(images/toolbar.png);
+      background-color: #f0f0f0;
+   }
+</style>
 <link rel="stylesheet" href="icons.css" type="text/css" media="screen" charset="utf-8">
+
+<script type="text/javascript">
 window.onload = function() {
 
      // Initialize the locale setting before any strings are used
