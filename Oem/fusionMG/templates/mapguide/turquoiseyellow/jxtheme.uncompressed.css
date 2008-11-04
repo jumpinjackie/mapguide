@@ -2385,33 +2385,25 @@ body, table {
   background-color: #ffffff;
 }
 
+#ToolbarVertical div.jxButtonContainer {
+  padding: 2px 0px 2px 0px;
+}
+
 #ToolbarVertical a.jxButton {
-  padding: 3px 1px; 
+  padding: 0px 0px 0px 4px; /* makes room for the left of the button bg */
+  background-image: url(images/toolbarButton.png);
 }
 
-#ToolbarVertical a.jxButton:hover {
-  background-color: #ffe273;
+#ToolbarVertical span.jxButtonContent {
+  padding: 4px 5px 4px 1px; /* makes room for the right of the button bg */
+  background-image: url(images/toolbarButton.png);
 }
 
-#ToolbarVertical a.jxButtonActive {
-  background-color: #ffd533;
+#ToolbarVertical span.jxButtonLabel {
+  color: #000;
+  padding-top: 0px;
+  padding-bottom: 0px;
 }
-
-#ToolbarVertical .jxToolItem {
-  padding: 0px;
-  margin: 0px;
-}
-
-#ToolbarVertical ul.jxMenu a.jxButton, 
-#ToolbarVertical ul.jxSubMenu a.jxButton {
-  padding: 0px;
-}
-
-#ToolbarVertical ul.jxMenu a.jxButton:hover, 
-#ToolbarVertical ul.jxSubMenu a.jxButton:hover {
-  background-color: #FEF7DD;
-}
-
 /********************************************************
   FileMenu
 ********************************************************/
