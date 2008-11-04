@@ -41,15 +41,44 @@ SE_Renderer::~SE_Renderer()
 {
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 int SE_Renderer::GetRasterGridSize()
 {
     return m_rasterGridSize;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void SE_Renderer::SetRasterGridSize(int size)
 {
     m_rasterGridSize = size;
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+bool SE_Renderer::SupportsTooltips()
+{
+    // by default, set the renderer to process tooltip expressions
+    return true;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+bool SE_Renderer::SupportsHyperlinks()
+{
+    // by default, set the renderer to process hyperlink expressions
+    return true;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+bool SE_Renderer::RequiresCompositeLineStyleSeparation()
+{
+    // by default, set the renderer to separate composite line styles
+    return true;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void SE_Renderer::SetRenderSelectionMode(bool mode)

@@ -1042,6 +1042,20 @@ bool AGGRenderer::RequiresLabelClipping()
 }
 
 
+bool AGGRenderer::SupportsTooltips()
+{
+    // set to false to disable processing of tooltips
+    return false;
+}
+
+
+bool AGGRenderer::SupportsHyperlinks()
+{
+    // set to false to disable processing of hyperlinks
+    return false;
+}
+
+
 bool AGGRenderer::UseLocalOverposting()
 {
     return m_bLocalOverposting;

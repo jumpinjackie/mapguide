@@ -1153,6 +1153,20 @@ bool GDRenderer::RequiresLabelClipping()
 }
 
 
+bool GDRenderer::SupportsTooltips()
+{
+    // set to false to disable processing of tooltips
+    return false;
+}
+
+
+bool GDRenderer::SupportsHyperlinks()
+{
+    // set to false to disable processing of hyperlinks
+    return false;
+}
+
+
 void GDRenderer::WritePolylines(LineBuffer* srclb, RS_LineStroke& stroke, bool aa)
 {
     //apply the stroke first

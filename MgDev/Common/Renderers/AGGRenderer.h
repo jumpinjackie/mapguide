@@ -71,16 +71,9 @@ public:
                               double tileExtentOffset);
     RENDERERS_API virtual ~AGGRenderer();
 
-
-    RENDERERS_API void UpdateBackBuffer(int width,
-                                        int height,
-                                        unsigned int* backbuffer);
-
-    RENDERERS_API unsigned int* GetBackBuffer(int &width, int& height);
-
     ///////////////////////////////////
     // Renderer implementation
-
+    //
     RENDERERS_API virtual void StartMap(RS_MapUIInfo* mapInfo,
                                           RS_Bounds&    extents,
                                           double        mapScale,
@@ -109,20 +102,20 @@ public:
     RENDERERS_API virtual void ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym);
 
     RENDERERS_API virtual void ProcessRaster(unsigned char* data,
-                                               int length,
-                                               RS_ImageFormat format,
-                                               int width, int height,
-                                               RS_Bounds& extents, 
-                                               TransformMesh* xformMesh = NULL);
+                                             int length,
+                                             RS_ImageFormat format,
+                                             int width, int height,
+                                             RS_Bounds& extents, 
+                                             TransformMesh* xformMesh = NULL);
 
     RENDERERS_API virtual void ProcessMarker(LineBuffer* lb, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds = NULL);
 
-    RENDERERS_API virtual void ProcessLabelGroup( RS_LabelInfo*    labels,
-                                                    int              nlabels,
-                                                    const RS_String& text,
-                                                    RS_OverpostType  type,
-                                                    bool             exclude,
-                                                    LineBuffer*      path);
+    RENDERERS_API virtual void ProcessLabelGroup(RS_LabelInfo*    labels,
+                                                 int              nlabels,
+                                                 const RS_String& text,
+                                                 RS_OverpostType  type,
+                                                 bool             exclude,
+                                                 LineBuffer*      path);
 
     RENDERERS_API virtual void SetSymbolManager(RS_SymbolManager* manager);
 
@@ -146,7 +139,9 @@ public:
 
     RENDERERS_API virtual bool RequiresLabelClipping();
 
-    RENDERERS_API virtual bool UseLocalOverposting();
+    virtual bool SupportsTooltips();
+
+    virtual bool SupportsHyperlinks();
 
     /////////////////////////////////////////////
     // AGGRenderer specific
@@ -231,11 +226,10 @@ public:
 
     RENDERERS_API void SetPolyClip(LineBuffer* polygon, double bufferWidth);
 
-    // Set to false to disable processing of tooltips
-    virtual bool SupportsTooltips(){return false;}
+    RENDERERS_API bool UseLocalOverposting();
 
-    // Set to false to disable processing of hyperlinks
-    virtual bool SupportsHyperlinks(){return false;}
+    RENDERERS_API void UpdateBackBuffer(int width, int height, unsigned int* backbuffer);
+    RENDERERS_API unsigned int* GetBackBuffer(int &width, int& height);
 
 private:
     double _MeterToMapSize(RS_Units unit, double number);

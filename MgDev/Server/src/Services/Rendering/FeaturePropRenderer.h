@@ -34,12 +34,9 @@ public:
                         double mapScale);
     virtual ~FeaturePropRenderer();
 
-    // Set to false to disable processing of tooltips
-    virtual bool SupportsTooltips(){return false;}
-
-    // Set to false to disable processing of hyperlinks
-    virtual bool SupportsHyperlinks(){return false;}
-
+    ///////////////////////////////////
+    // Renderer implementation
+    //
     virtual void StartFeature(RS_FeatureReader* feature,
                               bool              initialPass,
                               const RS_String*  tooltip = NULL,
@@ -48,6 +45,9 @@ public:
                               double            zOffset = 0.0,
                               double            zExtrusion = 0.0,
                               RS_ElevationType  zOffsetType = RS_ElevationType_RelativeToGround);
+
+    virtual bool SupportsTooltips();
+    virtual bool SupportsHyperlinks();
 
     MgBatchPropertyCollection* GetProperties()
     {

@@ -95,3 +95,17 @@ void FeaturePropRenderer::StartFeature(RS_FeatureReader* feature,
 
     m_numFeatures++;
 }
+
+
+bool FeaturePropRenderer::SupportsTooltips()
+{
+    // set to false to disable processing of tooltips
+    return false;
+}
+
+
+bool FeaturePropRenderer::SupportsHyperlinks()
+{
+    // set to false to disable processing of hyperlinks
+    return false;
+}
