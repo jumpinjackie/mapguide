@@ -41,20 +41,6 @@ public:
     {
     }
 
-    // Return the size of the transformation mesh grid size, used
-    // for raster re-projection.
-    virtual int GetRasterGridSize(){return 100;}
-    virtual void SetRasterGridSize(int){};
-
-    // By default, set the renderer to process tooltip expressions
-    virtual bool SupportsTooltips(){return true;}
-
-    // By default, set the renderer to process hyperlink expressions
-    virtual bool SupportsHyperlinks(){return true;}
-
-    // By default, set the renderer to separate composite line styles
-    virtual bool RequiresCompositeLineStyleSeparation(){return true;}
-
 	///<summary>
     /// Initializes the Renderer with mapping context information
     /// for generating a view of a map
@@ -107,8 +93,8 @@ public:
     //virtual void EndFeature() = 0;
 
     ///<summary>
-    /// Polygon features. Transformation to W2D space is done here. Also handles
-    /// holes etc.
+    /// Polygon features. Transformation to W2D space is done here. Also
+    /// handles holes etc.
     ///</summary>
     virtual void ProcessPolygon(LineBuffer*     lb,
                                 RS_FillStyle&   fill) = 0;
@@ -184,16 +170,19 @@ public:
 
     virtual double GetMapScale() = 0;
 
+    // returns the number of mapping units per pixel
     virtual double GetDrawingScale() = 0;
 
+    // returns the number of meters per mapping unit
     virtual double GetMetersPerUnit() = 0;
 
     virtual double GetDpi() = 0;
 
+    // returns the bounds of the map in mapping units
     virtual RS_Bounds& GetBounds() = 0;
 
     //------------------------------------------------------
-    // Geometry clipping renderer option
+    // Geometry clipping renderer options
     //------------------------------------------------------
 
     ///<summary>
@@ -208,6 +197,24 @@ public:
     /// labels even though the feature geometry is not clipped to the screen.
     ///</summary>
     virtual bool RequiresLabelClipping() = 0;
+
+    //------------------------------------------------------
+    // Miscellaneous
+    //------------------------------------------------------
+    
+    // gets/sets the size of the transformation mesh grid used for raster
+    // re-projection
+    virtual int GetRasterGridSize() = 0;
+    virtual void SetRasterGridSize(int size) = 0;
+
+    // flags whether the renderer processes tooltip expressions
+    virtual bool SupportsTooltips() = 0;
+
+    // flags whether if the renderer processes hyperlink expressions
+    virtual bool SupportsHyperlinks() = 0;
+
+    // flags whether if the renderer separate composite line styles
+    virtual bool RequiresCompositeLineStyleSeparation() = 0;
 };
 
 #endif

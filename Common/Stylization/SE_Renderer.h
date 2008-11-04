@@ -34,6 +34,20 @@ public:
     STYLIZATION_API SE_Renderer();
     STYLIZATION_API virtual ~SE_Renderer();
 
+    ///////////////////////////////////
+    // Renderer implementation
+
+    STYLIZATION_API virtual int GetRasterGridSize();
+    STYLIZATION_API virtual void SetRasterGridSize(int size);
+
+    STYLIZATION_API virtual bool SupportsTooltips();
+    STYLIZATION_API virtual bool SupportsHyperlinks();
+
+    STYLIZATION_API virtual bool RequiresCompositeLineStyleSeparation();
+
+    ///////////////////////////////////
+    // SE_Renderer specific
+
     // SE_RenderStyle, under associated xform, is in screen space, and the
     // geometry (in the context) is in screen space.  For ProcessPoint, the
     // bounds are returned in screen units.
@@ -65,9 +79,6 @@ public:
     virtual void GetWorldToScreenTransform(SE_Matrix& xform) = 0;
     virtual void WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy) = 0;
     virtual void ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy) = 0;
-        
-    STYLIZATION_API int GetRasterGridSize();
-    STYLIZATION_API void SetRasterGridSize(int size);
 
     // returns the viewport rotation angle, in radians CCW
     STYLIZATION_API virtual double GetWorldToScreenRotation();

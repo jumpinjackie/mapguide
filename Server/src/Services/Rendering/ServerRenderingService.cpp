@@ -1344,9 +1344,9 @@ SE_Renderer* MgServerRenderingService::CreateRenderer(int width,
     {
         renderer = new GDRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);
     }
-    if(renderer != NULL)
-    {
+
+    if (renderer != NULL)
         renderer->SetRasterGridSize(m_rasterGridSize);
-    }
+
     return renderer;
 }
