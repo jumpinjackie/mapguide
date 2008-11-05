@@ -2741,7 +2741,7 @@ void DWFRenderer::ProcessSELabelGroup(SE_LabelInfo*   labels,
         file = m_w2dLabels;
     }
 
-    // For composite symbolization we only use mapping-space macros, meaning
+    // For composite symbolizations we only use mapping-space macros, meaning
     // the symbols will change size as you zoom dynamically.  The symbols
     // will always be redrawn at the correct size after any map update.
 
@@ -2822,7 +2822,7 @@ void DWFRenderer::AddExclusionRegion(RS_F_Point* fpts, int npts)
     // draw to the active file if it's set
     WT_File* file = m_w2dActive? m_w2dActive : m_w2dFile;
 
-    // For composite symbolization we only use mapping-space macros, meaning
+    // For composite symbolizations we only use mapping-space macros, meaning
     // the symbols will change size as you zoom dynamically.  The symbols
     // will always be redrawn at the correct size after any map update.
 

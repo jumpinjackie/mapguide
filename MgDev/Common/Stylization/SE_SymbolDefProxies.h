@@ -263,7 +263,7 @@ struct SE_AreaStyle : public SE_Style
 
 
 //////////////////////////////////////////////////////////////////////////////
-struct SE_Symbolization
+struct SE_SymbolInstance
 {
     std::vector<SE_Style*> styles;
 
@@ -277,7 +277,7 @@ struct SE_Symbolization
     SE_String positioningAlgorithm;
     SE_Integer renderPass;
 
-    ~SE_Symbolization()
+    ~SE_SymbolInstance()
     {
         for (std::vector<SE_Style*>::iterator iter = styles.begin(); iter != styles.end(); iter++)
             delete *iter;
@@ -290,7 +290,7 @@ struct SE_Symbolization
 //////////////////////////////////////////////////////////////////////////////
 struct SE_Rule
 {
-    std::vector<SE_Symbolization*> symbolizations;
+    std::vector<SE_SymbolInstance*> symbolInstances;
     RS_String legendLabel;  // no expressions on this guy?
     FdoFilter* filter;
 
@@ -302,10 +302,10 @@ struct SE_Rule
         if (filter)
             filter->Release();
 
-        for (std::vector<SE_Symbolization*>::iterator iter = symbolizations.begin(); iter != symbolizations.end(); iter++)
+        for (std::vector<SE_SymbolInstance*>::iterator iter = symbolInstances.begin(); iter != symbolInstances.end(); iter++)
             delete *iter;
 
-        symbolizations.clear();
+        symbolInstances.clear();
     }
 };
 

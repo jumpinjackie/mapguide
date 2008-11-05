@@ -40,7 +40,7 @@ SE_StyleVisitor::SE_StyleVisitor(SE_SymbolManager* resources, SE_BufferPool* bp)
     m_resources = resources;
     m_bp = bp;
     m_primitive = NULL;
-    m_symbolization = NULL;
+    m_symbolInstance = NULL;
     m_style = NULL;
     m_usageContext = SymbolInstance::ucUnspecified;
 }
@@ -753,11 +753,11 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
                              || m_style->growControl.expression);
     }
 
-    // the symbolization's scales also affect the evaluated style
-    m_style->cacheable &= !(m_symbolization->scale[0].expression
-                         || m_symbolization->scale[1].expression);
+    // the symbol instance scales also affect the evaluated style
+    m_style->cacheable &= !(m_symbolInstance->scale[0].expression
+                         || m_symbolInstance->scale[1].expression);
 
-    m_symbolization->styles.push_back(m_style);
+    m_symbolInstance->styles.push_back(m_style);
 }
 
 
@@ -801,7 +801,7 @@ void SE_StyleVisitor::VisitCompoundSymbolDefinition(MdfModel::CompoundSymbolDefi
 }
 
 
-void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::CompositeSymbolization* symbolization)
+void SE_StyleVisitor::Convert(std::vector<SE_SymbolInstance*>& result, MdfModel::CompositeSymbolization* symbolization)
 {
     if (symbolization == NULL)
         return;
@@ -837,29 +837,29 @@ void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::
             m_resIdStack.push_back(ref.c_str());
         }
 
-        m_symbolization = new SE_Symbolization();
+        m_symbolInstance = new SE_SymbolInstance();
 
-        m_symbolization->sizeContext = instance->GetSizeContext();
-        m_symbolization->geomContext = instance->GetGeometryContext();
+        m_symbolInstance->sizeContext = instance->GetSizeContext();
+        m_symbolInstance->geomContext = instance->GetGeometryContext();
 
         m_usageContext = instance->GetUsageContext();
 
-        ParseStringExpression(instance->GetPositioningAlgorithm(), m_symbolization->positioningAlgorithm, SymbolInstance::sPositioningAlgorithmDefault, SymbolInstance::sPositioningAlgorithmValues);
+        ParseStringExpression(instance->GetPositioningAlgorithm(), m_symbolInstance->positioningAlgorithm, SymbolInstance::sPositioningAlgorithmDefault, SymbolInstance::sPositioningAlgorithmValues);
 
-        ParseBooleanExpression(instance->GetDrawLast(), m_symbolization->drawLast, false);
-        ParseBooleanExpression(instance->GetAddToExclusionRegion(), m_symbolization->addToExclusionRegions, false);
-        ParseBooleanExpression(instance->GetCheckExclusionRegion(), m_symbolization->checkExclusionRegions, false);
+        ParseBooleanExpression(instance->GetDrawLast(), m_symbolInstance->drawLast, false);
+        ParseBooleanExpression(instance->GetAddToExclusionRegion(), m_symbolInstance->addToExclusionRegions, false);
+        ParseBooleanExpression(instance->GetCheckExclusionRegion(), m_symbolInstance->checkExclusionRegions, false);
 
-        ParseDoubleExpression(instance->GetScaleX(), m_symbolization->scale[0], 1.0);
-        ParseDoubleExpression(instance->GetScaleY(), m_symbolization->scale[1], 1.0);
-        ParseDoubleExpression(instance->GetInsertionOffsetX(), m_symbolization->absOffset[0], 0.0);
-        ParseDoubleExpression(instance->GetInsertionOffsetY(), m_symbolization->absOffset[1], 0.0);
+        ParseDoubleExpression(instance->GetScaleX(), m_symbolInstance->scale[0], 1.0);
+        ParseDoubleExpression(instance->GetScaleY(), m_symbolInstance->scale[1], 1.0);
+        ParseDoubleExpression(instance->GetInsertionOffsetX(), m_symbolInstance->absOffset[0], 0.0);
+        ParseDoubleExpression(instance->GetInsertionOffsetY(), m_symbolInstance->absOffset[1], 0.0);
 
-        ParseIntegerExpression(instance->GetRenderingPass(), m_symbolization->renderPass, 0);
+        ParseIntegerExpression(instance->GetRenderingPass(), m_symbolInstance->renderPass, 0);
 
         def->AcceptVisitor(*this);
 
-        result.push_back(m_symbolization);
+        result.push_back(m_symbolInstance);
 
         if (isRef)
             m_resIdStack.pop_back();

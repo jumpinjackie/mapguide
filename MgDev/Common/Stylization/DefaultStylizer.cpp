@@ -297,28 +297,26 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
         #endif
 
         LineBuffer* lb = LineBufferPool::NewLineBuffer(m_lbPool, 8, FdoDimensionality_Z, false);
+        if (!lb)
+            continue;
 
         // tell line buffer the current drawing scale (used for arc tessellation)
-        if (lb)
-            lb->SetDrawingScale(drawingScale);
+        lb->SetDrawingScale(drawingScale);
 
         try
         {
             if (!features->IsNull(gpName))
-            {
                 features->GetGeometry(gpName, lb, xformer);
-            }
         }
         catch (FdoException* e)
         {
-            // geometry could be null in which case FDO throws an exception
-            // we move on to the next feature
+            // just move on to the next feature
             e->Release();
             LineBufferPool::FreeLineBuffer(m_lbPool, lb);
             continue;
         }
 
-        if (lb && bClip)
+        if (bClip)
         {
             // clip geometry to given map request extents
             LineBuffer* lbc = lb->Clip(renderer->GetBounds(), LineBuffer::ctAGF, m_lbPool);
@@ -329,11 +327,15 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
             if (lbc != lb)
             {
                 LineBufferPool::FreeLineBuffer(m_lbPool, lb);
+
+                // if the clipped buffer is NULL just move on to the next feature
+                if (!lbc)
+                    continue;
+
+                // otherwise continue processing with the clipped buffer
                 lb = lbc;
             }
         }
-
-        if (!lb) continue;
 
         // if we know how to stylize this type of geometry, then go ahead
         GeometryAdapter* adapter = FindGeomAdapter(lb->geom_type());
@@ -349,8 +351,8 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
             }
         }
 
-        if (lb)
-            LineBufferPool::FreeLineBuffer(m_lbPool, lb); // free geometry when done stylizing
+        // free geometry when done stylizing
+        LineBufferPool::FreeLineBuffer(m_lbPool, lb);
 
         if (cancel && cancel(userData))
             break;
@@ -400,18 +402,19 @@ void DefaultStylizer::StylizeGridLayer(MdfModel::GridLayerDefinition* layer,
     // main loop over raster data
     while (features->ReadNext())
     {
-        // for vector data -- xformer is passed intp the feature reader caller and the data is transformed to the map cs
-        // 
+        // for vector data -- xformer is passed into the feature reader caller and the
+        // data is transformed to the map cs
         RS_Raster* raster = features->GetRaster(rpName);
 
         // at this point raster is in the raster layer's cs
-        //
         if (m_pRasterAdapter)
             m_pRasterAdapter->Stylize(renderer, features, true, exec, raster, gcs, gss, NULL, NULL, NULL, layer2mapxformer);
 
-        delete raster; // need to free returned raster
+        // need to free returned raster
+        delete raster;
 
-        if (cancel && cancel(userData)) break;
+        if (cancel && cancel(userData))
+            break;
     }
 
     // need to get rid of these since they cache per layer theming information
