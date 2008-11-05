@@ -27,7 +27,7 @@ using namespace MdfModel;
 class Renderer;
 class SE_Renderer;
 class SE_SymbolManager;
-struct SE_Symbolization;
+struct SE_SymbolInstance;
 
 // Provides helper methods for:
 // - parsing of values from strings
@@ -70,13 +70,13 @@ public:
     static double GetMaxMappingSpaceLineWidth(FeatureTypeStyle* fts, int themeCategory);
 
 private:
-    static void GetCompositeSymbolizationBoundsInternal(std::vector<SE_Symbolization*> styles,
+    static void GetCompositeSymbolizationBoundsInternal(std::vector<SE_SymbolInstance*> symbolInstances,
                                                         SE_Renderer* pSERenderer,
                                                         SE_SymbolManager* sman,
                                                         FdoExpressionEngine* exec,
                                                         RS_Bounds& bounds);
 
-    static void GetCompositeSymbolizationPreviewBounds(std::vector<SE_Symbolization*> styles,
+    static void GetCompositeSymbolizationPreviewBounds(std::vector<SE_SymbolInstance*> symbolInstances,
                                                        SE_Renderer* pSERenderer,
                                                        SE_SymbolManager* sman,
                                                        FdoExpressionEngine* exec,

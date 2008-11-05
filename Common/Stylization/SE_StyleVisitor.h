@@ -48,7 +48,7 @@ public:
     SE_LineStyle* ProcessLineUsage(MdfModel::LineUsage& lineUsage);
     SE_AreaStyle* ProcessAreaUsage(MdfModel::AreaUsage& areaUsage);
 
-    STYLIZATION_API void Convert(std::vector<SE_Symbolization*>& result, MdfModel::CompositeSymbolization* symbolization);
+    STYLIZATION_API void Convert(std::vector<SE_SymbolInstance*>& result, MdfModel::CompositeSymbolization* symbolization);
 
 private:
     bool ParseDouble(const wchar_t*& str, double& val);
@@ -57,7 +57,7 @@ private:
 
     SE_SymbolManager* m_resources;
     SE_BufferPool* m_bp;
-    SE_Symbolization* m_symbolization;
+    SE_SymbolInstance* m_symbolInstance;
     SE_Style* m_style;
     SE_Primitive* m_primitive;
     std::vector<const wchar_t*> m_resIdStack;

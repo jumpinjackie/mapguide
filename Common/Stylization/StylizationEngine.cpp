@@ -137,28 +137,26 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
             #endif
 
             LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pool, 8, FdoDimensionality_Z, false);
+            if (!lb)
+                continue;
 
             // tell line buffer the current drawing scale (used for arc tessellation)
-            if (lb)
-                lb->SetDrawingScale(drawingScale);
+            lb->SetDrawingScale(drawingScale);
 
             try
             {
                 if (!reader->IsNull(gpName))
-                {
                     reader->GetGeometry(gpName, lb, xformer);
-                }
             }
             catch (FdoException* e)
             {
-                // geometry could be null in which case FDO throws an exception
-                // we move on to the next feature
+                // just move on to the next feature
                 e->Release();
                 LineBufferPool::FreeLineBuffer(m_pool, lb);
                 continue;
             }
 
-            if (lb && bClip)
+            if (bClip)
             {
                 // clip geometry to given map request extents
                 LineBuffer* lbc = lb->Clip(m_serenderer->GetBounds(), LineBuffer::ctAGF, m_pool);
@@ -169,24 +167,30 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
                 if (lbc != lb)
                 {
                     LineBufferPool::FreeLineBuffer(m_pool, lb);
+
+                    // if the clipped buffer is NULL just move on to the next feature
+                    if (!lbc)
+                        continue;
+
+                    // otherwise continue processing with the clipped buffer
                     lb = lbc;
                 }
             }
-
-            if (!lb) continue;
 
             // don't bother rendering feature geometry that has been completely clipped
             if (lb->point_count())
             {
                 // stylize once for each composite type style
                 for (size_t i=0; i<numTypeStyles; ++i)
+                {
                     Stylize(reader, exec, lb, compTypeStyles[i], &seTip, &seUrl, NULL,
                             instanceRenderingPass, symbolRenderingPass,
                             nextInstanceRenderingPass, nextSymbolRenderingPass);
+                }
             }
 
-            if (lb)
-                LineBufferPool::FreeLineBuffer(m_pool, lb); // free geometry when done stylizing
+            // free geometry when done stylizing
+            LineBufferPool::FreeLineBuffer(m_pool, lb);
 
             if (cancel && cancel(userData))
                 break;
@@ -258,7 +262,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 
             rulecache[i].legendLabel= r->GetLegendLabel();
 
-            m_visitor->Convert(rulecache[i].symbolizations, r->GetSymbolization());
+            m_visitor->Convert(rulecache[i].symbolInstances, r->GetSymbolization());
         }
     }
 
@@ -289,7 +293,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     if (rule == NULL)
         return;
 
-    std::vector<SE_Symbolization*>* symbolizations = &rule->symbolizations;
+    std::vector<SE_SymbolInstance*>* symbolInstances = &rule->symbolInstances;
 
     bool initialPass = (instanceRenderingPass == 0 && symbolRenderingPass == 0);
     RS_String rs_tip, rs_url;
@@ -301,7 +305,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     m_serenderer->StartFeature(reader, initialPass, rs_tip.empty()? NULL : &rs_tip, rs_url.empty()? NULL : &rs_url, rs_thm.empty()? NULL : &rs_thm);
 
     // it's possible to end up with no symbols - we're done in that case
-    if (symbolizations->size() == 0)
+    if (symbolInstances->size() == 0)
         return;
 
     double mm2sud = m_serenderer->GetScreenUnitsPerMillimeterDevice();
@@ -390,11 +394,11 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 
     // TODO: Obey the indices - get rid of the indices altogther - single pass!
 
-    SE_Symbolization* sym = NULL;
-    size_t nSyms = symbolizations->size();
+    SE_SymbolInstance* sym = NULL;
+    size_t nSyms = symbolInstances->size();
     for (size_t symIx=0; symIx<nSyms; ++symIx)
     {
-        sym = (*symbolizations)[symIx];
+        sym = (*symbolInstances)[symIx];
 
         // process the instance rendering pass - negative rendering passes are
         // rendered with pass 0
@@ -520,7 +524,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
             // constant screen space render style
             style->evaluate(&evalCtx);
 
-            // TODO: why are these in the symbolization? fix this!
+            // TODO: why are these in the symbol instance?
             style->rstyle->addToExclusionRegions = sym->addToExclusionRegions.evaluate(exec);
             style->rstyle->checkExclusionRegions = sym->checkExclusionRegions.evaluate(exec);
             style->rstyle->drawLast = sym->drawLast.evaluate(exec);

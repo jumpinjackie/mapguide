@@ -489,8 +489,8 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     SE_BufferPool* pool = pSERenderer->GetBufferPool();
     SE_StyleVisitor visitor(sman, pool);
 
-    std::vector<SE_Symbolization*> styles;
-    visitor.Convert(styles, csym);
+    std::vector<SE_SymbolInstance*> symbolInstances;
+    visitor.Convert(symbolInstances, csym);
 
     // create an expression engine with our custom functions
     FdoPtr<FdoExpressionEngine> exec = ExpressionHelper::GetExpressionEngine(pSERenderer, NULL);
@@ -500,7 +500,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     //-------------------------------------------------------
 
     RS_Bounds symBounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
-    GetCompositeSymbolizationPreviewBounds(styles, pSERenderer, sman, exec, symBounds);
+    GetCompositeSymbolizationPreviewBounds(symbolInstances, pSERenderer, sman, exec, symBounds);
 
     //-------------------------------------------------------
     // step 2 - bounds processing
@@ -585,19 +585,19 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     double scaleF = width / (drawingScale * symBounds.width());
 
     //-------------------------------------------------------
-    // step 4 - re-evaluate and draw the symbolization
+    // step 4 - re-evaluate and draw all the symbol instances
     //-------------------------------------------------------
 
-    for (std::vector<SE_Symbolization*>::const_iterator iter = styles.begin(); iter != styles.end(); iter++)
+    for (std::vector<SE_SymbolInstance*>::const_iterator iter = symbolInstances.begin(); iter != symbolInstances.end(); iter++)
     {
         // one per symbol instance
-        SE_Symbolization* sym = *iter;
+        SE_SymbolInstance* sym = *iter;
 
         // skip labels
         if (sym->drawLast.evaluate(exec))
             continue;
 
-        // get the actual amount to scale the symbolization
+        // get the actual amount to scale the symbol instance
         double scale = scaleF;
         switch (sym->geomContext)
         {
@@ -754,24 +754,25 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     // step 5 - final clean up
     //-------------------------------------------------------
 
-    for (std::vector<SE_Symbolization*>::iterator iter = styles.begin(); iter != styles.end(); iter++)
+    for (std::vector<SE_SymbolInstance*>::iterator iter = symbolInstances.begin(); iter != symbolInstances.end(); iter++)
         delete *iter;
 
-    styles.clear();
+    symbolInstances.clear();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// Computes the bounds used with previews of the supplied composite symbolization.
-// The returned bounds do not reflect the actual graphical bounds of the symbols.
-void StylizationUtil::GetCompositeSymbolizationPreviewBounds(std::vector<SE_Symbolization*> styles,
+// Computes the bounds used with previews of the supplied collection of symbol
+// instances (child elements of a composite symbolization).  The returned
+// bounds do not reflect the actual graphical bounds of the symbols.
+void StylizationUtil::GetCompositeSymbolizationPreviewBounds(std::vector<SE_SymbolInstance*> symbolInstances,
                                                              SE_Renderer* pSERenderer,
                                                              SE_SymbolManager* sman,
                                                              FdoExpressionEngine* exec,
                                                              RS_Bounds& bounds)
 {
-    // make sure we have symbols
-    if (styles.size() == 0)
+    // make sure we have symbol instances
+    if (symbolInstances.size() == 0)
         return;
 
     SE_BufferPool* pool = pSERenderer->GetBufferPool();
@@ -781,10 +782,10 @@ void StylizationUtil::GetCompositeSymbolizationPreviewBounds(std::vector<SE_Symb
 
     RS_Bounds fullBounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
 
-    for (std::vector<SE_Symbolization*>::const_iterator iter = styles.begin(); iter != styles.end(); iter++)
+    for (std::vector<SE_SymbolInstance*>::const_iterator iter = symbolInstances.begin(); iter != symbolInstances.end(); iter++)
     {
         // one per symbol instance
-        SE_Symbolization* sym = *iter;
+        SE_SymbolInstance* sym = *iter;
 
         // skip labels
         if (sym->drawLast.evaluate(exec))
@@ -933,36 +934,37 @@ RS_Bounds StylizationUtil::GetCompositeSymbolizationBounds(CompositeSymbolizatio
     SE_BufferPool* pool = pSERenderer->GetBufferPool();
     SE_StyleVisitor visitor(sman, pool);
 
-    std::vector<SE_Symbolization*> styles;
-    visitor.Convert(styles, csym);
+    std::vector<SE_SymbolInstance*> symbolInstances;
+    visitor.Convert(symbolInstances, csym);
 
     // create an expression engine with our custom functions
     FdoPtr<FdoExpressionEngine> exec = ExpressionHelper::GetExpressionEngine(pSERenderer, NULL);
 
     // calculate bounds - symbol geometries cannot use expressions, so no expression engine is needed
     RS_Bounds symBounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
-    GetCompositeSymbolizationBoundsInternal(styles, pSERenderer, sman, exec, symBounds);
+    GetCompositeSymbolizationBoundsInternal(symbolInstances, pSERenderer, sman, exec, symBounds);
 
     // clean up
-    for (std::vector<SE_Symbolization*>::iterator iter = styles.begin(); iter != styles.end(); iter++)
+    for (std::vector<SE_SymbolInstance*>::iterator iter = symbolInstances.begin(); iter != symbolInstances.end(); iter++)
         delete *iter;
 
-    styles.clear();
+    symbolInstances.clear();
 
     return symBounds;
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// Computes the bounds of the supplied composite symbolization.
-void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Symbolization*> styles,
+// Computes the bounds of the supplied collection of symbol instances
+// (child elements of a composite symbolization).
+void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_SymbolInstance*> symbolInstances,
                                                               SE_Renderer* pSERenderer,
                                                               SE_SymbolManager* sman,
                                                               FdoExpressionEngine* exec,
                                                               RS_Bounds& bounds)
 {
-    // make sure we have symbols
-    if (styles.size() == 0)
+    // make sure we have symbol instances
+    if (symbolInstances.size() == 0)
         return;
 
     SE_BufferPool* pool = pSERenderer->GetBufferPool();
@@ -970,10 +972,10 @@ void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Sym
     double mm2sud = pSERenderer->GetScreenUnitsPerMillimeterDevice();
     double mm2suw = pSERenderer->GetScreenUnitsPerMillimeterWorld();
 
-    for (std::vector<SE_Symbolization*>::const_iterator iter = styles.begin(); iter != styles.end(); iter++)
+    for (std::vector<SE_SymbolInstance*>::const_iterator iter = symbolInstances.begin(); iter != symbolInstances.end(); iter++)
     {
         // one per symbol instance
-        SE_Symbolization* sym = *iter;
+        SE_SymbolInstance* sym = *iter;
 
         // skip labels
         if (sym->drawLast.evaluate(exec))
