@@ -6,7 +6,7 @@
 
 <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
 
-<script type="text/javascript" src="../../../lib/fusion.js"></script>
+<script type="text/javascript" src="../../../lib/fusionSF-compressed.js"></script>
 <link rel="stylesheet" href="jxtheme.css" type="text/css" media="screen" charset="utf-8">
 <!--[if lte IE 6]>
 <link rel="stylesheet" href="ie6.css" type="text/css" media="screen" charset="utf-8">
@@ -44,8 +44,7 @@ window.onload = function() {
         vertical: 'bottom -10',
         width: 300,
         height: 300,
-        contentId: 'OverviewMap',
-        parent: 'Map'
+        contentId: 'OverviewMap'
         });
     dOverviewMap.open();
 
@@ -58,8 +57,7 @@ window.onload = function() {
         vertical: '10 top',
         width: 300,
         height: 400,
-        contentId: 'Legend',
-        parent: 'Map'
+        contentId: 'Legend'
         });
 
     dTasks = new Jx.Dialog({
@@ -71,8 +69,7 @@ window.onload = function() {
         vertical: 'bottom -10',
         width: 400,
         height: 400,
-        contentId: 'TaskPane',
-        parent: 'Map'
+        contentId: 'TaskPane'
         });
 
     dSelection = new Jx.Dialog({
@@ -84,7 +81,7 @@ window.onload = function() {
         vertical: '10 top',
         width: 400,
         height: 400,
-        contentId: 'SelectionPanel', parent: 'Map'
+        contentId: 'SelectionPanel'
         });
 
     Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, fusionInitialized);
@@ -151,10 +148,11 @@ var showSelectionPanel = function() {
 
 </div>
 
+<!--
 <div id="TaskPane"></div>
 <div id="OverviewMap"></div>
 <div id="Legend"></div>
 <div id="SelectionPanel"></div>
-
+-->
 </body>
 </html>

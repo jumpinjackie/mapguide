@@ -1121,7 +1121,7 @@
       <Disabled/>
     </Widget>
 
-<!-- OVERVIEW MAP
+<!-- OVERVIEW MAP -->
 
     <Widget xsi:type="WidgetType">
       <Name>OverviewMap</Name>
@@ -1130,7 +1130,7 @@
       <Extension xsi:type="CustomContentType">
       </Extension>
     </Widget>
- -->
+
 <!-- PRINT -->
 
     <Widget xsi:type="UiWidgetType">
