@@ -2589,6 +2589,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemErrorCode.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CoordinateSystem\CoordinateSystemFactory.cpp"
 				>
 				<FileConfiguration

@@ -99,7 +99,17 @@
   <Class name="MgConfigProperties" />
   <Class name="MgLogFileType" />
   <Class name="MgServerInformationProperties" />
+  <Class name="MgCoordinateSystemCodeFormat" />
+  <Class name="MgCoordinateSystemErrorCode" />
+  <Class name="MgCoordinateSystemGeodeticTransformationMethod" />
+  <Class name="MgCoordinateSystemProjectionCode" />
+  <Class name="MgCoordinateSystemProjectionFormatType" />
+  <Class name="MgCoordinateSystemProjectionLogicalType" />
+  <Class name="MgCoordinateSystemProjectionParameterType" />
   <Class name="MgCoordinateSystemType" />
+  <Class name="MgCoordinateSystemUnitCode" />
+  <Class name="MgCoordinateSystemUnitType" />
+  <Class name="MgCoordinateSystemWktFlavor" />
   <Class name="MgMapPlotInstruction" />
   <Class name="MgUnitType" />
   <Class name="MgPackageStatus" />
@@ -137,6 +147,7 @@
     <Header path="../../../Common/MapGuideCommon/System/ConfigProperties.h" />
     <Header path="../../../Common/MapGuideCommon/Services/ServerAdminDefs.h"/>
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemCodeFormat.h"/>
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemErrorCode.h"/>
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformationMethod.h"/>
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionCode.h"/>
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionFormatType.h"/>
