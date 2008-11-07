@@ -977,14 +977,19 @@ BGD_DECLARE(void) gdImageLine (gdImagePtr im, int x1, int y1, int x2, int y2, in
     the way to skip per-pixel bounds checking in the future. */
 
 
-    /* WCW: don't use clip_1d for non-horizontal lines, as this causes dicontinuities
+    /* WCW: don't use clip_1d for non-horizontal lines, as this causes discontinuities
     along tile boundaries. However, it is important that we clip for horizontal
     lines, since this is how polygon scanlines are drawn, and these need to be
-    fast.*/
+    fast. Note that clip_1d assumes zero line thickness, and so we can't use it
+    in the case of thick lines. */
 
     offset = im->thick;
 
-    if ((dx == 0) || (dy == 0))
+    /* account for any additional buffer of the line thickness size */
+    if (color == gdBrushed && im->brush)
+        offset = MAX(offset, MAX(im->brush->sx, im->brush->sy));
+
+    if (offset <= 1 && ((dx == 0) || (dy == 0)))
     {       
         if (clip_1d (&x1, &y1, &x2, &y2, im->cx1, im->cx2) == 0)
             return;
@@ -993,11 +998,7 @@ BGD_DECLARE(void) gdImageLine (gdImagePtr im, int x1, int y1, int x2, int y2, in
     }
     else
     {
-        /* WCW: ignore lines completely outside the image extent
-        (allowing an additional buffer of the line thickness size) */
-        if (color == gdBrushed && im->brush)
-            offset = MAX(offset, MAX(im->brush->sx, im->brush->sy));
-
+        /* WCW: ignore lines completely outside the image extent */
         if (x1 < -offset && x2 < -offset)
             return;
         if (y1 < -offset && y2 < -offset)
@@ -1009,7 +1010,6 @@ BGD_DECLARE(void) gdImageLine (gdImagePtr im, int x1, int y1, int x2, int y2, in
     }
 
     thick = im->thick;
-
 
     if (dy == 0 && color >= 0 && thick <= 1)
     {
