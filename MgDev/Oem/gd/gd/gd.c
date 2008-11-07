@@ -985,7 +985,7 @@ BGD_DECLARE(void) gdImageLine (gdImagePtr im, int x1, int y1, int x2, int y2, in
 
     offset = im->thick;
 
-    /* account for any additional buffer of the line thickness size */
+    /* account for the line thickness size */
     if (color == gdBrushed && im->brush)
         offset = MAX(offset, MAX(im->brush->sx, im->brush->sy));
 
