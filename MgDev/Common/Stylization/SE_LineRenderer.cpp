@@ -1549,6 +1549,11 @@ void SE_LineRenderer::ChopLineBuffer(SE_Renderer* renderer, LineBuffer* inBuffer
                 // positioning then the resulting lines may look too nervous.
                 // TODO: ideally we would account for the level of warping
                 int num_segs = ((int)lenpx/2);
+
+                // don't exceed the limit on the number of segments
+                if (num_segs > MAX_CHOPBUFFER_SEGS)
+                    num_segs = MAX_CHOPBUFFER_SEGS;
+
                 double x_incr = dx / num_segs;
                 double y_incr = dy / num_segs;
 
