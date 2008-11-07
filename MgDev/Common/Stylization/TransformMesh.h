@@ -70,7 +70,8 @@ public:
 private:
     int m_numVerticalPoints;
     int m_numHorizontalPoints;
-    int m_gridSize;
+    int m_gridSizeHeight;
+    int m_gridSizeWidth;
     bool m_yAxisInverted;
 
     std::vector<MeshPoint> m_meshPoints;
