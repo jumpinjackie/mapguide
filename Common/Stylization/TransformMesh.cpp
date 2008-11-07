@@ -38,7 +38,7 @@ const double MAX_GRID_EXPANSION_FACTOR = 0.2; // i.e. 20%
     printf("      width = %6.4f height = %6.4f\n", ext.width(), ext.height());
 
 TransformMesh::TransformMesh()
-: m_numVerticalPoints(0), m_numHorizontalPoints(0), m_gridSize(DEFAULT_GRID_SIZE), m_yAxisInverted(true)
+: m_numVerticalPoints(0), m_numHorizontalPoints(0), m_gridSizeHeight(DEFAULT_GRID_SIZE), m_gridSizeWidth(DEFAULT_GRID_SIZE), m_yAxisInverted(true)
 {
 }
 
@@ -61,7 +61,11 @@ void TransformMesh::Initialize(int gridSize,
     _ASSERT(xformer != NULL);
 
     // ensure minimum grid size
-    m_gridSize = gridSize < MIN_GRID_SIZE ? MIN_GRID_SIZE : gridSize;
+    m_gridSizeWidth = m_gridSizeHeight = gridSize < MIN_GRID_SIZE ? MIN_GRID_SIZE : gridSize;
+
+    // ensure grid size is not too big
+    m_gridSizeHeight = rs_min(m_gridSizeHeight, srcH);
+    m_gridSizeWidth = rs_min(m_gridSizeWidth, srcW);
 
     m_yAxisInverted = invertYaxis;
     m_meshPoints.empty();
@@ -74,23 +78,23 @@ void TransformMesh::Initialize(int gridSize,
     double pixPerDestUnitY = (double)destH / destExt.height();
 
     // Create a grid in pixel space that covers the whole src extent
-    for (int gridX = 0; gridX < srcW + m_gridSize; gridX += m_gridSize)
+    for (int gridX = 0; gridX < srcW + m_gridSizeWidth; gridX += m_gridSizeWidth)
     {
         ++m_numHorizontalPoints;
 
         // this sets the x-coordinate to the end pt if it gets close
-        if (gridX + MAX_GRID_EXPANSION_FACTOR * m_gridSize > srcW || gridX > srcW)
+        if (gridX + MAX_GRID_EXPANSION_FACTOR * m_gridSizeWidth > srcW || gridX > srcW)
         {
             gridX = srcW;
         }
 
-        for (int gridY = 0; gridY < srcH + m_gridSize; gridY += m_gridSize)
+        for (int gridY = 0; gridY < srcH + m_gridSizeHeight; gridY += m_gridSizeHeight)
         {
             if (gridX == 0)
                 ++m_numVerticalPoints;
 
             // this sets the y-coordinate to the end pt if it gets close
-            if (gridY + MAX_GRID_EXPANSION_FACTOR * m_gridSize > srcH || gridY > srcH)
+            if (gridY + MAX_GRID_EXPANSION_FACTOR * m_gridSizeHeight > srcH || gridY > srcH)
                 gridY = srcH;
 
             // The point in pixel coordinates in the src image
