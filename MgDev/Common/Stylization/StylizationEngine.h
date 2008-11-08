@@ -21,6 +21,8 @@
 #include "Stylizer.h"
 #include "SE_Matrix.h"
 
+
+// forward declare
 class SE_Renderer;
 class SE_SymbolManager;
 class SE_LineBuffer;
@@ -37,6 +39,7 @@ namespace MDFMODEL_NAMESPACE
     class CompositeTypeStyle;
 }
 
+struct SE_Symbolization;
 struct SE_Style;
 struct SE_PointStyle;
 struct SE_LineStyle;
@@ -49,6 +52,11 @@ struct SE_RenderLineStyle;
 struct SE_RenderAreaStyle;
 
 using namespace MDFMODEL_NAMESPACE;
+
+
+// Clip offset is limited by this value, in mm device units.
+#define MAX_CLIPOFFSET_IN_MM 1000.0
+
 
 class StylizationEngine
 {
@@ -82,6 +90,7 @@ public:
 
 private:
     void LayoutCustomLabel(const wchar_t* positioningAlgo, SE_ApplyContext* applyCtx, SE_RenderStyle* rstyle, double mm2su);
+    double GetClipOffset(SE_Symbolization* sym, SE_Style* style, FdoExpressionEngine* exec, double mm2suX, double mm2suY);
 
 private:
     SE_Renderer* m_serenderer;

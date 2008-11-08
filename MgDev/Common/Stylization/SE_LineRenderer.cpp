@@ -190,7 +190,7 @@ const double OPTIMIZE_DISTANCE_SQ = 1.96;
 //
 // The scale factor can then be derived to be:
 //
-//   L'    1 + |s1| * (xB - x')/H 
+//   L'    1 + |s1| * (xB - x')/H
 //  --- = ------------------------, all s1, s'
 //   L           1 + s1*s'
 //
@@ -1549,6 +1549,11 @@ void SE_LineRenderer::ChopLineBuffer(SE_Renderer* renderer, LineBuffer* inBuffer
                 // positioning then the resulting lines may look too nervous.
                 // TODO: ideally we would account for the level of warping
                 int num_segs = ((int)lenpx/2);
+
+                // don't exceed the limit on the number of segments
+                if (num_segs > MAX_CHOPBUFFER_SEGS)
+                    num_segs = MAX_CHOPBUFFER_SEGS;
+
                 double x_incr = dx / num_segs;
                 double y_incr = dy / num_segs;
 
