@@ -141,6 +141,12 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
             {
                 if (!reader->IsNull(gpName))
                     reader->GetGeometry(gpName, lb, xformer);
+                else
+                {
+                    // just move on to the next feature
+                    LineBufferPool::FreeLineBuffer(m_pool, lb);
+                    continue;
+                }
             }
             catch (FdoException* e)
             {

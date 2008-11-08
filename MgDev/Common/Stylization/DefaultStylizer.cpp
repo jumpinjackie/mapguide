@@ -307,6 +307,12 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
         {
             if (!features->IsNull(gpName))
                 features->GetGeometry(gpName, lb, xformer);
+            else
+            {
+                // just move on to the next feature
+                LineBufferPool::FreeLineBuffer(m_lbPool, lb);
+                continue;
+            }
         }
         catch (FdoException* e)
         {
