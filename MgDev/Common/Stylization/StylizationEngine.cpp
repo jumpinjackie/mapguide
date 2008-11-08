@@ -491,7 +491,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
             if (bClip)
             {
                 double styleClipOffsetSU = GetClipOffset(sym, style, exec, mm2suX, mm2suY);
-                clipOffsetSU = max(styleClipOffsetSU, clipOffsetSU);
+                clipOffsetSU = rs_max(styleClipOffsetSU, clipOffsetSU);
             }
         }
     }
@@ -711,8 +711,8 @@ double StylizationEngine::GetClipOffset(SE_SymbolInstance* sym, SE_Style* style,
 
                     // for point styles the clip offset is the maximum
                     // x-/y-extent of the symbol
-                    clipOffsetSU = max(fabs(pt.x), clipOffsetSU);
-                    clipOffsetSU = max(fabs(pt.y), clipOffsetSU);
+                    clipOffsetSU = rs_max(fabs(pt.x), clipOffsetSU);
+                    clipOffsetSU = rs_max(fabs(pt.y), clipOffsetSU);
                 }
 
                 break;
@@ -735,7 +735,7 @@ double StylizationEngine::GetClipOffset(SE_SymbolInstance* sym, SE_Style* style,
 
                     // for line styles the clip offset is the maximum
                     // y-extent of the symbol
-                    clipOffsetSU = max(fabs(pt.y), clipOffsetSU);
+                    clipOffsetSU = rs_max(fabs(pt.y), clipOffsetSU);
                 }
 
                 break;
@@ -762,8 +762,8 @@ double StylizationEngine::GetClipOffset(SE_SymbolInstance* sym, SE_Style* style,
 
                         // for area styles the clip offset is the maximum
                         // x-/y-extent of the symbol
-                        clipOffsetSU = max(fabs(pt.x), clipOffsetSU);
-                        clipOffsetSU = max(fabs(pt.y), clipOffsetSU);
+                        clipOffsetSU = rs_max(fabs(pt.x), clipOffsetSU);
+                        clipOffsetSU = rs_max(fabs(pt.y), clipOffsetSU);
                     }
                 }
             }
