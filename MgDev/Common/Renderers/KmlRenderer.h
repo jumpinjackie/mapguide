@@ -78,7 +78,7 @@ public:
                                RS_ImageFormat format,
                                int            width,
                                int            height,
-                               RS_Bounds&     extents, 
+                               RS_Bounds&     extents,
                                TransformMesh* xformMesh = NULL);
 
     virtual void ProcessMarker(LineBuffer* lb, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds = NULL);

@@ -26,8 +26,8 @@ using namespace CSLibrary;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemEnumInteger32::CCoordinateSystemEnumInteger32() :
-    m_pnValues(NULL), 
-    m_ulSize(0), 
+    m_pnValues(NULL),
+    m_ulSize(0),
     m_ulPos(0)
 {
 }
@@ -59,7 +59,7 @@ void CCoordinateSystemEnumInteger32::SetList(INT32 *pnValues, UINT32 ulSize)
 
     if (m_pnValues)
     {
-        delete [] m_pnValues; 
+        delete [] m_pnValues;
         m_pnValues = NULL;
     }
     m_ulPos = 0;
@@ -67,7 +67,7 @@ void CCoordinateSystemEnumInteger32::SetList(INT32 *pnValues, UINT32 ulSize)
 
     //Allocate an array to hold the values
     m_pnValues = new INT32[ulSize];
-    if (NULL == m_pnValues) 
+    if (NULL == m_pnValues)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnumInteger32.SetList", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -115,7 +115,7 @@ MgIntCollection* CCoordinateSystemEnumInteger32::Next(UINT32 ulCount)
 
     for (; m_ulPos < m_ulSize; m_ulPos++)
     {
-        if (pOutput->GetCount() == ulCount) 
+        if (pOutput->GetCount() == ulCount)
         {
             //success
             return pOutput.Detach();
@@ -147,7 +147,7 @@ MgStringCollection* CCoordinateSystemEnumInteger32::Next(UINT32 ulCount)
 
     for (; m_ulPos < m_ulSize; m_ulPos++)
     {
-        if (pOutput->GetCount() == ulCount) 
+        if (pOutput->GetCount() == ulCount)
         {
             //success
             return pOutput.Detach();
@@ -172,7 +172,7 @@ MgStringCollection* CCoordinateSystemEnumInteger32::Next(UINT32 ulCount)
     return pOutput.Detach();
 }
 
-//Skips the next ulSkipCount names.  
+//Skips the next ulSkipCount names.
 //Throws an exception if
 //ulSkipCount items were not skipped
 //
@@ -182,7 +182,7 @@ void CCoordinateSystemEnumInteger32::Skip(UINT32 ulSkipCount)
     UINT32 ulSkipped;
     for (ulSkipped=0; m_ulPos < m_ulSize; m_ulPos++)
     {
-        if (ulSkipped == ulSkipCount) 
+        if (ulSkipped == ulSkipCount)
         {
             //success
             return;
@@ -246,8 +246,8 @@ MgCoordinateSystemEnumInteger32* CCoordinateSystemEnumInteger32::CreateClone()
 
     //Make an object to be the copy
     pNew = new CCoordinateSystemEnumInteger32;
-    
-    if (NULL == pNew.p) 
+
+    if (NULL == pNew.p)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnumInteger32.CreateClone", __LINE__, __WFILE__, NULL, L"", NULL);
     }

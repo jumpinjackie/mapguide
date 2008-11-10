@@ -104,7 +104,7 @@ MgDisposableCollection* CCoordinateSystemEnumCoordinateSystemInCategory::Next(UI
     wchar_t* pstr;
     for (; m_iter != m_kpListCoordinateSystemNames->end(); m_iter++)
     {
-        if (pOutput->GetCount() == ulCount) 
+        if (pOutput->GetCount() == ulCount)
         {
             //success
             return pOutput.Detach();
@@ -115,7 +115,7 @@ MgDisposableCollection* CCoordinateSystemEnumCoordinateSystemInCategory::Next(UI
 
         assert(IsLegalMentorName(kpName));
         pstr = Convert_Ascii_To_Wide(kpName);
-        if (NULL == pstr) 
+        if (NULL == pstr)
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.Next", __LINE__, __WFILE__, NULL, L"", NULL);
         }
@@ -158,7 +158,7 @@ MgStringCollection* CCoordinateSystemEnumCoordinateSystemInCategory::NextName(UI
     wchar_t* pstr;
     for (; m_iter != m_kpListCoordinateSystemNames->end(); m_iter++)
     {
-        if (pOutput->GetCount() == ulCount) 
+        if (pOutput->GetCount() == ulCount)
         {
             //success
             return pOutput.Detach();
@@ -172,7 +172,7 @@ MgStringCollection* CCoordinateSystemEnumCoordinateSystemInCategory::NextName(UI
 
         assert(IsLegalMentorName(kpName));
         pstr = Convert_Ascii_To_Wide(kpName);
-        if (NULL == pstr) 
+        if (NULL == pstr)
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.NextName", __LINE__, __WFILE__, NULL, L"", NULL);
         }
@@ -207,7 +207,7 @@ MgStringCollection* CCoordinateSystemEnumCoordinateSystemInCategory::NextDescrip
     wchar_t* pstr;
     for (; m_iter != m_kpListCoordinateSystemNames->end(); m_iter++)
     {
-        if (pOutput->GetCount() == ulCount) 
+        if (pOutput->GetCount() == ulCount)
         {
             //success
             return pOutput.Detach();
@@ -217,7 +217,7 @@ MgStringCollection* CCoordinateSystemEnumCoordinateSystemInCategory::NextDescrip
 
         assert(IsLegalMentorName(kpName));
         pstr = Convert_Ascii_To_Wide(kpName);
-        if (NULL == pstr) 
+        if (NULL == pstr)
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.NextDescription", __LINE__, __WFILE__, NULL, L"", NULL);
         }
@@ -248,7 +248,7 @@ MgStringCollection* CCoordinateSystemEnumCoordinateSystemInCategory::NextDescrip
     return pOutput.Detach();
 }
 
-//Skips the next ulSkipCount names.  
+//Skips the next ulSkipCount names.
 //Throws an exception if
 //ulSkipCount items were not skipped
 //
@@ -258,7 +258,7 @@ void CCoordinateSystemEnumCoordinateSystemInCategory::Skip(UINT32 ulSkipCount)
     UINT32 ulSkipped;
     for (ulSkipped=0; m_iter != m_kpListCoordinateSystemNames->end(); m_iter++)
     {
-        if (ulSkipped == ulSkipCount) 
+        if (ulSkipped == ulSkipCount)
         {
             //success
             return;
@@ -305,7 +305,7 @@ bool CCoordinateSystemEnumCoordinateSystemInCategory::IsFilteredOut(const char *
 
     //Get a def from the set for the Filter to work with
     wchar_t* pStr = Convert_Ascii_To_Wide(kpName);
-    if (NULL == pStr) 
+    if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.IsFilteredOut", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -404,8 +404,8 @@ MgCoordinateSystemEnum* CCoordinateSystemEnumCoordinateSystemInCategory::CreateC
 
     //Make a new object
     pNew = new CCoordinateSystemEnumCoordinateSystemInCategory(m_pCatalog);
-    
-    if (NULL == pNew.p) 
+
+    if (NULL == pNew.p)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.CreateClone", __LINE__, __WFILE__, NULL, L"", NULL);
     }

@@ -80,7 +80,7 @@ MgCoordinateSystemEllipsoid* CCoordinateSystemDatum::GetEllipsoidDefinition()
     MG_TRY()
 
     //Make sure we've been initialized
-    if (!IsInitialized()) 
+    if (!IsInitialized())
     {
         return NULL;
     }
@@ -103,7 +103,7 @@ MgCoordinateSystemEllipsoid* CCoordinateSystemDatum::GetEllipsoidDefinition()
 //be valid), using the internal pointer to the catalog.  The catalog will be used to
 //resolve ellipsoid references.  If successful, the datum will be
 //properly initialized, and will contain its own copy of all relevant
-//information.  
+//information.
 ////Throws an exception MgCoordinateSystemDatumNoEllipsoidInDictionaryException if there's an unresolved reference (i.e., the provided
 //datum references an ellipsoid that's not present in the provided
 //catalog).  Fails with InvalidArgument if the input dautm definition
@@ -193,7 +193,7 @@ STRING CCoordinateSystemDatum::GetCode()
 
     MG_TRY()
     wchar_t* pName = Convert_Ascii_To_Wide(m_DtDef.key_nm);
-    if (NULL == pName) 
+    if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -204,7 +204,7 @@ STRING CCoordinateSystemDatum::GetCode()
     return sCode;
 }
 
-//Sets the key name of the datum.  
+//Sets the key name of the datum.
 //Throws an exception MgInvalidArgumentException
 //if the provided string is not
 //a legal datum name.
@@ -227,7 +227,7 @@ void CCoordinateSystemDatum::SetCode(CREFSTRING sCode)
 
     //Convert to a C++ string, for Mentor's sake
     char *pStr = Convert_Wide_To_Ascii(sCode.c_str()); //need to delete[] pStr
-    if (NULL == pStr) 
+    if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.SetCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -281,14 +281,14 @@ bool CCoordinateSystemDatum::IsValid()
     MG_TRY()
 
     bIsValid=IsDatumValid();
-    if (!bIsValid) 
+    if (!bIsValid)
     {
         return bIsValid;
     }
 
     //Make sure the ellipsoid name is legal
     bIsValid = IsLegalMentorName(m_datum.ell_knm);
-    if (!bIsValid) 
+    if (!bIsValid)
     {
         return bIsValid;
     }
@@ -320,7 +320,7 @@ bool CCoordinateSystemDatum::IsUsable(MgCoordinateSystemCatalog *pCatalog)
     MG_TRY()
 
     assert(NULL != pCatalog);
-    if (NULL == pCatalog) 
+    if (NULL == pCatalog)
     {
         throw new MgNullArgumentException(L"MgCoordinateSystemDatum.IsUsable", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -370,21 +370,21 @@ bool CCoordinateSystemDatum::IsSameAs(MgGuardDisposable *pDef)
     MG_TRY()
 
     assert(NULL != pDef);
-    if (NULL == pDef) 
+    if (NULL == pDef)
     {
         throw new MgNullArgumentException(L"MgCoordinateSystemDatum.IsSameAs", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     //Make sure it's a datum definition
     MgCoordinateSystemDatum* pDtDef=dynamic_cast<MgCoordinateSystemDatum*>(pDef);
-    if (!pDtDef) 
+    if (!pDtDef)
     {
         return false;    //not a datum def!
     }
 
     //Build a dtdef Mentor struct from the other datum interface
     cs_Dtdef_ def;
-    if (!BuildDtDefFromInterface(pDtDef, def)) 
+    if (!BuildDtDefFromInterface(pDtDef, def))
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemDatum.IsSameAs", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -437,7 +437,7 @@ MgCoordinateSystemDatum* CCoordinateSystemDatum::CreateClone()
     //Make an object to be the copy
     pNew = new CCoordinateSystemDatum(m_pCatalog);
 
-    if (NULL == pNew.p) 
+    if (NULL == pNew.p)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.CreateClone", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -468,7 +468,7 @@ STRING CCoordinateSystemDatum::GetDescription()
 
     MG_TRY()
     wchar_t* pDesc = Convert_Ascii_To_Wide(m_datum.dt_name);
-    if (NULL == pDesc) 
+    if (NULL == pDesc)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetDescription", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -508,7 +508,7 @@ STRING CCoordinateSystemDatum::GetGroup()
 
     MG_TRY()
     wchar_t *pGroup = Convert_Ascii_To_Wide(m_DtDef.group);
-    if (NULL == pGroup) 
+    if (NULL == pGroup)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetGroup", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -544,7 +544,7 @@ STRING CCoordinateSystemDatum::GetSource()
 
     MG_TRY()
     wchar_t *pSource = Convert_Ascii_To_Wide(m_DtDef.source);
-    if (NULL == pSource) 
+    if (NULL == pSource)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetSource", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -588,7 +588,7 @@ INT16 CCoordinateSystemDatum::GetAge()
 }
 
 //Sets whether this item is protected or not.  When protected,
-//methods which attempt to modify the object will 
+//methods which attempt to modify the object will
 //Throws an exception.  (Except for SetProtectMode and SetEncryptMode,
 //which can be called even on protected objects.)
 //
@@ -623,7 +623,7 @@ STRING CCoordinateSystemDatum::GetLocation()
 
     MG_TRY()
     wchar_t* pLoc = Convert_Ascii_To_Wide(m_DtDef.locatn);
-    if (NULL == pLoc) 
+    if (NULL == pLoc)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetLocation", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -634,7 +634,7 @@ STRING CCoordinateSystemDatum::GetLocation()
     return sLoc;
 }
 
-//Sets the "location" field of the def.  
+//Sets the "location" field of the def.
 //Throws an exception if the specified string is not legal
 //for a location field.
 //
@@ -660,7 +660,7 @@ STRING CCoordinateSystemDatum::GetCountryOrState()
 
     MG_TRY()
     wchar_t *pCountryOrState = Convert_Ascii_To_Wide(m_DtDef.cntry_st);
-    if (NULL == pCountryOrState) 
+    if (NULL == pCountryOrState)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetCountryOrState", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -672,7 +672,7 @@ STRING CCoordinateSystemDatum::GetCountryOrState()
     return sCountryOrState;
 }
 
-//Sets the "cntry_st" field of the def.  
+//Sets the "cntry_st" field of the def.
 //Throws an exception if the specified string is not legal
 //for a cntry_st field.
 //
@@ -698,7 +698,7 @@ STRING CCoordinateSystemDatum::GetEllipsoid()
 
     MG_TRY()
     wchar_t* pEllipsoid = Convert_Ascii_To_Wide(m_DtDef.ell_knm);
-    if (NULL == pEllipsoid) 
+    if (NULL == pEllipsoid)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetEllipsoid", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -709,7 +709,7 @@ STRING CCoordinateSystemDatum::GetEllipsoid()
     return sEllipsoid;
 }
 
-//Sets the name of the ellipsoid which this datum references.  
+//Sets the name of the ellipsoid which this datum references.
 //Throws an exception if the specified string is not
 //legal for an ellipsoid name.
 //
@@ -732,7 +732,7 @@ void CCoordinateSystemDatum::SetEllipsoid(CREFSTRING sEllipsoid)
 
     //Convert wchar_t* to C++ string
     char *pStr = Convert_Wide_To_Ascii(sEllipsoid.c_str()); //need to delete [] pStr
-    if (NULL == pStr) 
+    if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.SetEllipsoid", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -818,7 +818,7 @@ void CCoordinateSystemDatum::SetEllipsoidDefinition(MgCoordinateSystemEllipsoid 
 
     //Convert wchar_t* to C++ string
     char *pStr = Convert_Wide_To_Ascii(sEllipsoid.c_str()); //need to delete [] pStr
-    if (NULL == pStr) 
+    if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.SetEllipsoidDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -837,7 +837,7 @@ void CCoordinateSystemDatum::SetEllipsoidDefinition(MgCoordinateSystemEllipsoid 
     //Grab the definitions of the datum and ellipsoid.
     cs_Eldef_ eldef;
     bool bResult = BuildElDefFromInterface(pEllipsoidDef, eldef);
-    if (!bResult) 
+    if (!bResult)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemDatum.SetEllipsoidDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -880,10 +880,10 @@ void CCoordinateSystemDatum::SetEllipsoidDefinition(MgCoordinateSystemEllipsoid 
 }
 
 //-----------------------------------------------------------------------------
-//Gets the list of available geodetic transformations MgCoordinateSystemGeodeticTransformation 
-//that can transform from the the current datum to the target datum sTargetDatum. 
+//Gets the list of available geodetic transformations MgCoordinateSystemGeodeticTransformation
+//that can transform from the the current datum to the target datum sTargetDatum.
 //Currently, only one geodetic transformation is available.
-//In a near future, for a given target datum, there might be multiple possible ways for 
+//In a near future, for a given target datum, there might be multiple possible ways for
 //converting to that datum.
 //If pTarget is NULL, WGS84 is assumed
 //Caller is responsible for freeing the list of geodetic transformations.
@@ -943,7 +943,7 @@ void CCoordinateSystemDatum::SetString(CREFSTRING sSrc, char *pDest, UINT32 nMax
 
     //Convert to a C++ string, for Mentor's sake
     char *pStr = Convert_Wide_To_Ascii(sSrc.c_str()); //need to delete[] pStr
-    if (NULL == pStr) 
+    if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.SetString", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -977,8 +977,8 @@ UINT8* CCoordinateSystemDatum::SerializeFrom(UINT8* pStream)
     UINT8* pStreamOut=pStream;
 
     MG_TRY()
-	assert(NULL != pStream);
-	if (!pStream) 
+    assert(NULL != pStream);
+    if (!pStream)
     {
         throw new MgInvalidArgumentException(L"MgCoordinateSystemDatum.SerializeFrom", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -989,27 +989,27 @@ UINT8* CCoordinateSystemDatum::SerializeFrom(UINT8* pStream)
     {
         pStreamOut++;
 
-	    //Read the def from the stream
-	    cs_Dtdef_ def;
-	    UINT8* pBuf = reinterpret_cast<UINT8 *>(&def);
-	    memcpy(pBuf, pStreamOut, sizeof(def));
+        //Read the def from the stream
+        cs_Dtdef_ def;
+        UINT8* pBuf = reinterpret_cast<UINT8 *>(&def);
+        memcpy(pBuf, pStreamOut, sizeof(def));
         pStreamOut = pStreamOut + sizeof(def);
 
-	    //Decrypt it if necessary
-	    unsigned char ucKey = def.fill[0];
-	    bool bEncrypted = ('\0' != ucKey);
-	    if (bEncrypted)
-	    {
-		    for (long i=0; i<sizeof(def); i++)
-		    {
-			    pBuf[i] ^= 0xFF;
-		    }
-		    def.fill[0] = '\0';
-	    }
-    	
-	    //Make sure it's valid
-	    bool bPrevEncrypted = m_bEncrypted;
-	    cs_Dtdef_ prevDef = m_DtDef;
+        //Decrypt it if necessary
+        unsigned char ucKey = def.fill[0];
+        bool bEncrypted = ('\0' != ucKey);
+        if (bEncrypted)
+        {
+            for (long i=0; i<sizeof(def); i++)
+            {
+                pBuf[i] ^= 0xFF;
+            }
+            def.fill[0] = '\0';
+        }
+
+        //Make sure it's valid
+        bool bPrevEncrypted = m_bEncrypted;
+        cs_Dtdef_ prevDef = m_DtDef;
         m_DtDef = def;
         CS_stncp (m_datum.key_nm,def.key_nm,sizeof (m_datum.key_nm));
         CS_stncp (m_datum.ell_knm,def.ell_knm,sizeof (m_datum.ell_knm));
@@ -1023,13 +1023,13 @@ UINT8* CCoordinateSystemDatum::SerializeFrom(UINT8* pStream)
         m_datum.bwscale = def.bwscale;
         m_datum.to84_via = def.to84_via;
 
-	    m_bEncrypted = bEncrypted;
-	    if (!IsDatumValid())
-	    {
-		    m_bEncrypted = bPrevEncrypted;
-		    m_DtDef = prevDef;
-		    throw new MgInvalidArgumentException(L"MgCoordinateSystemDatum.SerializeFrom", __LINE__, __WFILE__, NULL, L"", NULL);
-	    }
+        m_bEncrypted = bEncrypted;
+        if (!IsDatumValid())
+        {
+            m_bEncrypted = bPrevEncrypted;
+            m_DtDef = prevDef;
+            throw new MgInvalidArgumentException(L"MgCoordinateSystemDatum.SerializeFrom", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
     }
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemDatum.SerializeFrom")
@@ -1042,8 +1042,8 @@ UINT8* CCoordinateSystemDatum::SerializeTo(UINT8* pStream)
     UINT8* pStreamOut=pStream;
 
     MG_TRY()
-	assert(NULL != pStream);
-	if (!pStream) 
+    assert(NULL != pStream);
+    if (!pStream)
     {
         throw new MgInvalidArgumentException(L"MgCoordinateSystemDatum.SerializeTo", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -1052,16 +1052,16 @@ UINT8* CCoordinateSystemDatum::SerializeTo(UINT8* pStream)
     pStreamOut[0]=kDtRelease0;
     pStreamOut++;
 
-	cs_Dtdef_ def = m_DtDef;
-	char *pBuf = reinterpret_cast<char *>(&def);
-	if (m_bEncrypted)
-	{
-		for (long i=0; i<sizeof(def); i++)
-		{
-			pBuf[i] ^= 0xFF;
-		}
-		def.fill[0] = 0x01;
-	}
+    cs_Dtdef_ def = m_DtDef;
+    char *pBuf = reinterpret_cast<char *>(&def);
+    if (m_bEncrypted)
+    {
+        for (long i=0; i<sizeof(def); i++)
+        {
+            pBuf[i] ^= 0xFF;
+        }
+        def.fill[0] = 0x01;
+    }
 
     memcpy(pStreamOut, pBuf, sizeof(def));
     pStreamOut = pStreamOut + sizeof(def);

@@ -100,7 +100,7 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
         // We can render polylines with composite styles using this method
         // only if there is a single line style
         MdfModel::FeatureTypeStyle* fts = (ftsc->GetCount() > 0)? ftsc->GetAt(0) : NULL;
-        if (NULL != fts 
+        if (NULL != fts
             && FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts) == FeatureTypeStyleVisitor::ftsLine
             && renderer->RequiresCompositeLineStyleSeparation())
         {
@@ -236,24 +236,20 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
     // so we retrieve it outside of the feature iterator loop.
     const MdfModel::MdfString* lrTip = NULL;
     const MdfModel::MdfString* lrUrl = NULL;
-	if (renderer->SupportsTooltips())
-	{
-		const MdfModel::MdfString& mdfTip = layer->GetToolTip();
-		if(!mdfTip.empty())
-		{
-			lrTip = &mdfTip;
-		}
-	}
-	if (renderer->SupportsHyperlinks())
-	{
-		const MdfModel::MdfString& mdfUrl = layer->GetUrl();
-		if(!mdfUrl.empty())
-		{
-			lrUrl = &mdfUrl;
-		}
-	}
-	
-	// elevation settings - also invariant
+    if (renderer->SupportsTooltips())
+    {
+        const MdfModel::MdfString& mdfTip = layer->GetToolTip();
+        if (!mdfTip.empty())
+            lrTip = &mdfTip;
+    }
+    if (renderer->SupportsHyperlinks())
+    {
+        const MdfModel::MdfString& mdfUrl = layer->GetUrl();
+        if (!mdfUrl.empty())
+            lrUrl = &mdfUrl;
+    }
+
+    // elevation settings - also invariant
     RS_ElevationSettings* elevSettings = NULL;
     MdfModel::ElevationSettings* modelElevSettings = scaleRange->GetElevationSettings();
     if (modelElevSettings != NULL)

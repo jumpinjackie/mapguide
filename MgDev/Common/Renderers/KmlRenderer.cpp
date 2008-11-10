@@ -352,7 +352,7 @@ void KmlRenderer::ProcessRaster(unsigned char* /*data*/,
                                 RS_ImageFormat /*format*/,
                                 int /*width*/,
                                 int /*height*/,
-                                RS_Bounds& /*extents*/, 
+                                RS_Bounds& /*extents*/,
                                 TransformMesh* /*xformMesh*/)
 {
 }

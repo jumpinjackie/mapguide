@@ -209,7 +209,7 @@ MgCoordinateSystemEnumInteger32* CCoordinateSystemUnitInformation::GetEnumAngula
 }
 
 //Gets the scale factor for the specified linear unit type; this is
-//the number which one multiplies a value by to get meters.  
+//the number which one multiplies a value by to get meters.
 //Throws an exception if unit is not a valid linear unit.
 //
 double CCoordinateSystemUnitInformation::GetLinearUnitScale(INT32 unit)
@@ -234,7 +234,7 @@ double CCoordinateSystemUnitInformation::GetAngularUnitScale(INT32 unit)
 INT32 CCoordinateSystemUnitInformation::GetUnitType(INT32 unit)
 {
     INT32 unitType=MgCoordinateSystemUnitType::Unknown;
-    if (!GetUnitInfo(unit, &unitType, NULL)) 
+    if (!GetUnitInfo(unit, &unitType, NULL))
     {
         return MgCoordinateSystemUnitType::Unknown;
     }
@@ -253,7 +253,7 @@ INT32 CCoordinateSystemUnitInformation::GetUnitType(INT32 unit)
 STRING CCoordinateSystemUnitInformation::GetTagString(INT32 unit)
 {
     wchar_t* pszTag = Convert_Ascii_To_Wide(StringFromUnit(unit));
-    if (NULL == pszTag) 
+    if (NULL == pszTag)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemUnitInformation.GetTagString", __LINE__, __WFILE__, NULL, L"", NULL);
     }

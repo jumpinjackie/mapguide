@@ -41,7 +41,7 @@ private:
 public:
 
     static CCoordinateSystemWktFailureCache* GetInstance();
-    
+
     void Clear();
 
     bool Has (CREFSTRING key);

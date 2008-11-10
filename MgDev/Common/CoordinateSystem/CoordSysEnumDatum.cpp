@@ -47,7 +47,7 @@ MgCoordinateSystemEnum* CCoordinateSystemEnumDatum::CreateClone()
     //Make an object to be the copy
     pNew = new CCoordinateSystemEnumDatum;
 
-    if (NULL == pNew.p) 
+    if (NULL == pNew.p)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.CreateClone", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -64,7 +64,7 @@ MgCoordinateSystemEnum* CCoordinateSystemEnumDatum::CreateClone()
     }
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemEnum.CreateClone")
-    
+
     return pNew.Detach();
 }
 

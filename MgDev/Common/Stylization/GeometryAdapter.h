@@ -65,7 +65,7 @@ public:
                                          MdfModel::FeatureTypeStyle* style,
                                          const MdfModel::MdfString*  tooltip = NULL,
                                          const MdfModel::MdfString*  url = NULL,
-                                         RS_ElevationSettings*       elevSettings = NULL, 
+                                         RS_ElevationSettings*       elevSettings = NULL,
                                          CSysTransformer* layer2mapxformer = NULL);
 
     STYLIZATION_API virtual void AddLabel(double           x,

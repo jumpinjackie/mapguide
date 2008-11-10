@@ -86,7 +86,7 @@ void CCoordinateSystemDictionaryUtility::CreateDictionaryFile(const wchar_t* kpD
     MG_TRY()
 
     char *pDict = Convert_Wide_To_Ascii(kpDict);    //need to delete [] pDict;
-    if (NULL == pDict) 
+    if (NULL == pDict)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDictionaryUtility.CreateDictionaryFile", __LINE__, __WFILE__, NULL, L"", NULL);
     }

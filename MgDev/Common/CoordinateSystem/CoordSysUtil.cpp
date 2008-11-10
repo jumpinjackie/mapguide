@@ -119,7 +119,7 @@ bool IsLegalString(const wchar_t* kpStr, UINT32 unMaxSize)
     //How long would it be as an MBCS string?
     size_t nChars = wcstombs(NULL, kpStr, INT_MAX);
     if (nChars < 0) return false;
- 
+
     return (nChars < unMaxSize);
 }
 
@@ -222,7 +222,7 @@ bool ValidateFile(
           szFname[_MAX_FNAME],
           szExt[_MAX_EXT],
           szDirPath[_MAX_PATH];
-    
+
     UINT32 dwResult;
 
     //If kpFile includes drive or path information,
@@ -353,9 +353,9 @@ bool ValidateFile(
 #else
     UINT32 dwResult;
 
-    
-	//See if the file exists.  If bExists is true, fail if
-	//it doesn't exist.
+
+    //See if the file exists.  If bExists is true, fail if
+    //it doesn't exist.
     bool bFileExists = MgFileUtil::PathnameExists(kpFile);
     if (bExists && !bFileExists)
     {
@@ -366,8 +366,8 @@ bool ValidateFile(
     }
 
 
-	//If the file actually exists, make sure that whether it's a
-	//directory or a file matches what the user specified.
+    //If the file actually exists, make sure that whether it's a
+    //directory or a file matches what the user specified.
     if (bFileExists)
     {
         if (bIsDir)
@@ -417,9 +417,9 @@ bool ValidateFile(
         }
         else
         {
-            // File doesn't already exist, so just make sure 
+            // File doesn't already exist, so just make sure
             //we can write to the directory it's in.
-            try 
+            try
             {
                 MgFileUtil::CreateDirectory(kpFile);
                 MgFileUtil::DeleteDirectory(kpFile);
@@ -544,9 +544,9 @@ CanReadFromDir(const wchar_t *kpFile)
     assert(_tcslen(szFname) == 0);
     assert(_tcslen(szExt) == 0);
     _tmakepath(
-        szPath, 
-        szDrive, 
-        szDir, 
+        szPath,
+        szDrive,
+        szDir,
         L"*", //NOXLATE
         L"");//NOXLATE
     _wfinddata_t info;

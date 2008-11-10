@@ -147,7 +147,7 @@ void CCoordinateSystemCategoryDictionary::GenerateIndex(csFILE *pFile)
 
     //Position the stream to the start of the first record
     CS_fseek(pFile, sizeof(klCategoryMagic), SEEK_SET);
-    if (ferror(pFile)) 
+    if (ferror(pFile))
     {
         throw new MgFileIoException(L"MgCoordinateSystemCategoryDictionary.GenerateIndex", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -215,7 +215,7 @@ void CCoordinateSystemCategoryDictionary::RewriteFile(const char *kpDefName, CCo
     _tsplitpath(strPath.c_str(), szDrive, szDir, szFname, szExt);
     _tmakepath(szPath, szDrive, szDir, NULL, NULL);
 
-	if (!GetTempFileName(szPath, /*NOXLATE*/L"cat", 0, szTempPath))
+    if (!GetTempFileName(szPath, /*NOXLATE*/L"cat", 0, szTempPath))
     {
         //couldn't open file
         throw new MgFileIoException(L"MgCoordinateSystemCategoryDictionary.RewriteFile", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoCategoryDictionaryException", NULL);
@@ -471,7 +471,7 @@ UINT32 CCoordinateSystemCategoryDictionary::GetSize()
 }
 
 //-----------------------------------------------------------------------------
-//Adds the specified def to the set.  
+//Adds the specified def to the set.
 //Throws an exception MgCoordinateSystemMismatchException if the
 //def is not the right kind.  Otherwise, works like AddCategory().
 void CCoordinateSystemCategoryDictionary::Add(MgGuardDisposable *pDefinition)
@@ -493,12 +493,12 @@ void CCoordinateSystemCategoryDictionary::Add(MgGuardDisposable *pDefinition)
 
     //Look for it in our index
     STRING str = pCategoryDef->GetName();
-    if (str.empty()) 
+    if (str.empty())
     {
         throw new MgInvalidArgumentException(L"MgCoordinateSystemCategoryDictionary.Add", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     char *pName = Convert_Wide_To_Ascii(str.c_str());    //need to delete [] pName
-    if (NULL == pName) 
+    if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCategoryDictionary.Add", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -554,7 +554,7 @@ void CCoordinateSystemCategoryDictionary::Remove(CREFSTRING sName)
 
     //Look for it in our index
     pName = Convert_Wide_To_Ascii(sName.c_str());    //need to delete [] pName
-    if (NULL == pName) 
+    if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCategoryDictionary.Remove", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -579,7 +579,7 @@ void CCoordinateSystemCategoryDictionary::Remove(CREFSTRING sName)
 }
 
 //-----------------------------------------------------------------------------
-//Modifies the specified def in the set.  
+//Modifies the specified def in the set.
 ////Throws an exception MgCoordinateSystemMismatchException if the
 //def is not the right kind.
 void CCoordinateSystemCategoryDictionary::Modify(MgGuardDisposable *pDefinition)
@@ -603,12 +603,12 @@ void CCoordinateSystemCategoryDictionary::Modify(MgGuardDisposable *pDefinition)
 
     //Look for it in our index
     STRING str = pCategoryDef->GetName();
-    if (str.empty()) 
+    if (str.empty())
     {
         throw new MgInvalidArgumentException(L"MgCoordinateSystemCategoryDictionary.Modify", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     char *pName = Convert_Wide_To_Ascii(str.c_str());    //need to delete [] pName
-    if (NULL == pName) 
+    if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCategoryDictionary.Modify", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -669,7 +669,7 @@ void CCoordinateSystemCategoryDictionary::Modify(MgGuardDisposable *pDefinition)
 //Gets the def with the specified name from the set.
 MgGuardDisposable* CCoordinateSystemCategoryDictionary::Get(CREFSTRING sName)
 {
-    return GetCategory(sName); 
+    return GetCategory(sName);
 }
 
 MgCoordinateSystemCategory* CCoordinateSystemCategoryDictionary::GetCategory(CREFSTRING sName)
@@ -683,7 +683,7 @@ MgCoordinateSystemCategory* CCoordinateSystemCategoryDictionary::GetCategory(CRE
     //Look for it in our index
     pName = Convert_Wide_To_Ascii(sName.c_str());    //need to delete [] pName
 
-    if (NULL == pName) 
+    if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCategoryDictionary.GetCategory", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -702,7 +702,7 @@ MgCoordinateSystemCategory* CCoordinateSystemCategoryDictionary::GetCategory(CRE
     //Make a new object
     pNew = new CCoordinateSystemCategory(m_pCatalog);
 
-    if (NULL == pNew.p) 
+    if (NULL == pNew.p)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCategoryDictionary.GetCategory", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -737,7 +737,7 @@ bool CCoordinateSystemCategoryDictionary::Has(CREFSTRING sName)
 
     //Look in our index
     char *pName = Convert_Wide_To_Ascii(sName.c_str());    //need to delete [] pName
-    if (NULL == pName) 
+    if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCategoryDictionary.Has", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -754,7 +754,7 @@ bool CCoordinateSystemCategoryDictionary::Has(CREFSTRING sName)
 MgCoordinateSystemEnum* CCoordinateSystemCategoryDictionary::GetEnum()
 {
     MgCoordinateSystemEnum* pEnum=NULL;
-    
+
     MG_TRY()
 
     //Make an enumerator object

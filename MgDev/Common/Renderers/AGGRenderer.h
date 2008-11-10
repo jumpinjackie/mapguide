@@ -105,7 +105,7 @@ public:
                                              int length,
                                              RS_ImageFormat format,
                                              int width, int height,
-                                             RS_Bounds& extents, 
+                                             RS_Bounds& extents,
                                              TransformMesh* xformMesh = NULL);
 
     RENDERERS_API virtual void ProcessMarker(LineBuffer* lb, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds = NULL);
@@ -211,7 +211,7 @@ public:
                                                double x, double y, double w, double h, double angledeg);
     RENDERERS_API static void DrawScreenRasterTransform(agg_context* cxt, unsigned char* data, int length,
                                                RS_ImageFormat format, int native_width, int native_height,
-                                               double x, double y, double w, double h, 
+                                               double x, double y, double w, double h,
                                                TransformMesh* xformMesh = NULL);
 
     RENDERERS_API static void DrawString(agg_context*     cxt,
@@ -240,14 +240,14 @@ private:
 
     static void _TransferPoints(agg_context* c, LineBuffer* src, const SE_Matrix* xform, unsigned int* pathids);
 
-    static void RenderTransformMeshRectangle(mg_rendering_buffer& src, agg_context* cxt, RS_ImageFormat format, 
+    static void RenderTransformMeshRectangle(mg_rendering_buffer& src, agg_context* cxt, RS_ImageFormat format,
                                  TransformMesh* transformMesh, int lowerLeftIndex, int lowerRightIndex, int upperLeftIndex, int upperRightIndex);
 
-    static void RenderTransformedTriangle(mg_rendering_buffer& src, agg_context* cxt, RS_ImageFormat format, 
+    static void RenderTransformedTriangle(mg_rendering_buffer& src, agg_context* cxt, RS_ImageFormat format,
                                  RS_F_Point srcPt1, RS_F_Point srcPt2, RS_F_Point srcPt3,
                                  RS_F_Point destPt1, RS_F_Point destPt2, RS_F_Point destPt3);
 
-    static void RenderWithTransform(mg_rendering_buffer& src, agg_context* cxt, 
+    static void RenderWithTransform(mg_rendering_buffer& src, agg_context* cxt,
         agg::trans_affine& img_mtx, RS_ImageFormat format);
 
     RS_Color m_bgcolor;

@@ -66,10 +66,10 @@ void CCoordinateSystemGeodeticTransformation::SetCatalog(MgCoordinateSystemCatal
 }
 
 //Initializes the datum shift object with the specified source and
-//target datums.  
-//Either or both of the provided datum pointers may be NULL; 
+//target datums.
+//Either or both of the provided datum pointers may be NULL;
 //passing in a null pointer is equivalent to specifying that
-//that datum will be WGS84.  
+//that datum will be WGS84.
 //Throws an exception if there's a problem with either of the datums
 //(for example, if they haven't been initialized).
 //
@@ -128,7 +128,7 @@ void CCoordinateSystemGeodeticTransformation::SetSourceAndTarget(MgCoordinateSys
     cs_Dtcprm_ *pDtcprm = CSdtcsu(&pDtSourceImp->m_datum, &pDtTargetImp->m_datum, 0, cs_DTCFLG_BLK_W);
     CriticalClass.Leave();
     assert(pDtcprm);
-    if (!pDtcprm) 
+    if (!pDtcprm)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemGeodeticTransformation.SetSourceAndTarget", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemGeodeticTransformationSetupException", NULL);
     }
@@ -186,10 +186,10 @@ MgCoordinateSystemDatum* CCoordinateSystemGeodeticTransformation::GetTarget()
 }
 
 //Shifts the provided latitude/longitude coordinates from source datum
-//to destination datum.  
+//to destination datum.
 //Throws an exception if there's some problem doing the datum shift.  In case of error, the
 //source latitude/longitude point will simply be copied to the
-//destination (a "null" datum transformation).  
+//destination (a "null" datum transformation).
 //
 void CCoordinateSystemGeodeticTransformation::Shift(MgCoordinate* pLonLat)
 {
@@ -232,10 +232,10 @@ void CCoordinateSystemGeodeticTransformation::Shift(MgCoordinate* pLonLat)
 }
 
 //Shifts the provided latitude/longitude coordinates from source datum
-//to destination datum.  
+//to destination datum.
 //Throws an exception if there's some problem doing the datum shift.  In case of error, the
 //source latitude/longitude point will simply be copied to the
-//destination (a "null" datum transformation).  
+//destination (a "null" datum transformation).
 //
 MgCoordinate* CCoordinateSystemGeodeticTransformation::Shift(double dLongitude, double dLatitude)
 {
@@ -276,10 +276,10 @@ MgCoordinate* CCoordinateSystemGeodeticTransformation::Shift(double dLongitude, 
 }
 
 //Shifts the provided latitude/longitude coordinates from source datum
-//to destination datum.  
+//to destination datum.
 //Throws an exception if there's some problem doing the datum shift.  In case of error, the
 //source latitude/longitude point will simply be copied to the
-//destination (a "null" datum transformation).  
+//destination (a "null" datum transformation).
 //Throws an exception with a Warning
 //if a the shift was performed but may be incorrect (due to missing
 //data files, etc.)
@@ -474,7 +474,7 @@ double CCoordinateSystemGeodeticTransformation::GetOffsetZ()
 }
 
 //Sets the X, Y, and Z offset from the WGS-84 datum's geocenter to the
-//geocenter of this datum, in meters.  
+//geocenter of this datum, in meters.
 //Throws an exception if the caller provides illegal values.
 //
 //In this release, this method only works when the target is WGS84 because
@@ -510,8 +510,8 @@ void CCoordinateSystemGeodeticTransformation::SetOffset(double x, double y, doub
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemGeodeticTransformation.SetOffset", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemDatumProtectedException", NULL);
     }
 
-    if (!IsLegalDatumOffset(x) || 
-        !IsLegalDatumOffset(y) || 
+    if (!IsLegalDatumOffset(x) ||
+        !IsLegalDatumOffset(y) ||
         !IsLegalDatumOffset(z))
     {
         //Caller gave us an illegal value.
@@ -649,9 +649,9 @@ void CCoordinateSystemGeodeticTransformation::SetBursaWolfeTransform(double dRot
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemGeodeticTransformation.SetBursaWolfeTransform", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemDatumProtectedException", NULL);
     }
 
-    if (!IsLegalDatumRotation(dRotationX) || 
-        !IsLegalDatumRotation(dRotationY) || 
-        !IsLegalDatumRotation(dRotationZ) || 
+    if (!IsLegalDatumRotation(dRotationX) ||
+        !IsLegalDatumRotation(dRotationY) ||
+        !IsLegalDatumRotation(dRotationZ) ||
         !::IsLegalBwScale(dBwScale))
     {
         //Caller gave us an illegal value.
@@ -691,7 +691,7 @@ INT32 CCoordinateSystemGeodeticTransformation::GetGeodeticTransformationMethod()
 
 //Sets the method which this datum definition will use for transforming
 //between itself and WGS84.  The default for a freshly constructed datum
-//definition is Molodensky.  
+//definition is Molodensky.
 //Throws an exception if the supplied value is not one of the legal
 //transformation types.
 //

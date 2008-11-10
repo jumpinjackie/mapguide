@@ -61,7 +61,7 @@ static cs_Eldef_ g_el;
 
 
 //Utility functions which return pointers to Mentor struct
-//descriptions.  This is only necessary because this data 
+//descriptions.  This is only necessary because this data
 //member has different names in the different structs.
 //
 const char * ElDesc(const cs_Eldef_& def) { return def.name; }
@@ -95,7 +95,7 @@ const char * CsDesc06(const struct cs_Csdef06_& def) { return def.desc_nm; }
 //that's how the end of the table is recognized.
 //
 //I could not find any information in mentor documentation
-//The values of the flags are defined in the file cs_map.h. 
+//The values of the flags are defined in the file cs_map.h.
 //The flag combination for each projection
 //is using these flags in the file CSdataPJ.c
 //Also, Quad is valid for all coordinate systems
@@ -221,7 +221,7 @@ bool IsLegalMentorName(const char *kpStr)
 {
     //(Note:  This function makes the assumption that the length
     //limit is the same for all three.  That's true currently,
-    //but could conceivably change in the future. 
+    //but could conceivably change in the future.
     //For now, a couple of asserts try to catch that sort of thing.
     assert(sizeof(g_cs.key_nm) == sizeof(g_dt.key_nm));
     assert(sizeof(g_cs.key_nm) == sizeof(g_el.key_nm));
@@ -249,7 +249,7 @@ bool MakeLegalMentorName(char *kpStr)
     //null pointer is obviously not legal...
     if (NULL == kpStr) return false;
 
-	char szNameTmp[cs_KEYNM_DEF];
+    char szNameTmp[cs_KEYNM_DEF];
     size_t maxLength=strlen(kpStr);
     if (maxLength==0)
     {
@@ -260,130 +260,130 @@ bool MakeLegalMentorName(char *kpStr)
         maxLength=cs_KEYNM_DEF-1;
     }
 
-	//Remove leading and trailing white space while copying name to szNameTmp.
+    //Remove leading and trailing white space while copying name to szNameTmp.
     char *pName=kpStr;
     while (*pName == ' ') pName += 1;
-	char *pEnd = CS_stncp (szNameTmp, pName, sizeof (szNameTmp));
+    char *pEnd = CS_stncp (szNameTmp, pName, sizeof (szNameTmp));
 
-	/* We now know that there is at least one non-space
-	   character in the string.  Thus the following does
-	   not need a pointer comparison which we like to avoid. */
+    /* We now know that there is at least one non-space
+       character in the string.  Thus the following does
+       not need a pointer comparison which we like to avoid. */
 
-	while (*(pEnd - 1) == ' ') pEnd -= 1;
-	*pEnd = '\0';
+    while (*(pEnd - 1) == ' ') pEnd -= 1;
+    *pEnd = '\0';
 
-	/* If the name is surrounded by either set of default
-	   characters, remove them. */
+    /* If the name is surrounded by either set of default
+       characters, remove them. */
 
-	pName = szNameTmp;
-	pEnd = szNameTmp + strlen (pName) - 1;
-	if ((*pName == cs_DFLT_IDNTBEG && *pEnd == cs_DFLT_IDNTEND) ||
-		(*pName == cs_DFLT_REPLBEG && *pEnd == cs_DFLT_REPLEND)
-	   )
-	{
-		*pEnd = '\0';			/* trims trailing */
-		CS_stcpy (szNameTmp,&szNameTmp[1]);	/* trims leading */
-	}
+    pName = szNameTmp;
+    pEnd = szNameTmp + strlen (pName) - 1;
+    if ((*pName == cs_DFLT_IDNTBEG && *pEnd == cs_DFLT_IDNTEND) ||
+        (*pName == cs_DFLT_REPLBEG && *pEnd == cs_DFLT_REPLEND)
+       )
+    {
+        *pEnd = '\0';			/* trims trailing */
+        CS_stcpy (szNameTmp,&szNameTmp[1]);	/* trims leading */
+    }
 
-	/* Careful, szNameTmp could be the null string now if we were
-	   given a set of empty default wrappers. */
-	if (*pName == '\0')
-	{
+    /* Careful, szNameTmp could be the null string now if we were
+       given a set of empty default wrappers. */
+    if (*pName == '\0')
+    {
         //make it valid with dummy one character name
-	    szNameTmp[0]='A';
-	    szNameTmp[1]='\0';
+        szNameTmp[0]='A';
+        szNameTmp[1]='\0';
         CS_stncp (kpStr,szNameTmp, 2);
-		return true;
-	}
+        return true;
+    }
 
-	int alphaCount;
-	int uniqueCount;
+    int alphaCount;
+    int uniqueCount;
     char cc;
 
-	uniqueCount = alphaCount = 0;
-	while (*pName != '\0')
-	{
-		cc = *pName++;
-		if (cc == cs_Unique)
-		{
-			uniqueCount += 1;	
+    uniqueCount = alphaCount = 0;
+    while (*pName != '\0')
+    {
+        cc = *pName++;
+        if (cc == cs_Unique)
+        {
+            uniqueCount += 1;
 
-	        if (uniqueCount > 1)
-	        {
-		        /* If the cs_Unique feature is enabled, we only allow one
-		           of them. */
+            if (uniqueCount > 1)
+            {
+                /* If the cs_Unique feature is enabled, we only allow one
+                   of them. */
                 pName--;
                 CS_stcpy (pName, &pName[1]);	/* trims more than 1 unique character */
                 continue;
             }
-		}
-		if (cc >= '0' && cc <= '9') continue;
-		if ((cc >= 'A' && cc <= 'Z') || (cc >= 'a' && cc <= 'z'))
-		{
-			alphaCount += 1;
-			continue;
-		}
-		if (strchr (cs_Nmchset, cc) == NULL)
-		{
+        }
+        if (cc >= '0' && cc <= '9') continue;
+        if ((cc >= 'A' && cc <= 'Z') || (cc >= 'a' && cc <= 'z'))
+        {
+            alphaCount += 1;
+            continue;
+        }
+        if (strchr (cs_Nmchset, cc) == NULL)
+        {
             pName--;
             CS_stcpy (pName, &pName[1]);	/* trims illegal character */
             continue;
-		}
+        }
 
-		//remove also all internal spaces
+        //remove also all internal spaces
         //single spaces are tolerated inside the name
         //we make up a new name just for validity sake so who cares about the spaces
         //it makes the algoryhtm cleaner
-		if (cc == ' ')
-		{
+        if (cc == ' ')
+        {
             pName--;
-			CS_stcpy (pName, &pName[1]);	/* trims double space */
-		}
-	}
+            CS_stcpy (pName, &pName[1]);	/* trims double space */
+        }
+    }
 
-	size_t size = strlen (szNameTmp);
+    size_t size = strlen (szNameTmp);
     if (size==0)
     {
         //empty string, so make it valid with a single character
-		szNameTmp[0]='A';
-		szNameTmp[1]='\0';
+        szNameTmp[0]='A';
+        szNameTmp[1]='\0';
         CS_stncp (kpStr,szNameTmp,(int)(strlen(szNameTmp) + 1));
         return true;
     }
 
-	if (alphaCount == 0)
-	{
-		// Must have at least on alphabetic in the name.
+    if (alphaCount == 0)
+    {
+        // Must have at least on alphabetic in the name.
         //choose one letter to make it valid
-		szNameTmp[0]='A';
-	}
+        szNameTmp[0]='A';
+    }
 
-	/* If the result is longer than maxLength characters we
-	   have an illegal name. */
-	if (size > maxLength)
-	{
+    /* If the result is longer than maxLength characters we
+       have an illegal name. */
+    if (size > maxLength)
+    {
         szNameTmp[maxLength]='\0';
-	}
+    }
 
-	/* We use to require that a key name begin with an alphabetic (prior
-	   to release 9.01).  We now allow key names to begin with numerics
-	   providing that the first non-numeric character is indeed alphabetic.
-	   For the purposes of this particular test, the underscore character
-	   is considered alphabetic. */
+    /* We use to require that a key name begin with an alphabetic (prior
+       to release 9.01).  We now allow key names to begin with numerics
+       providing that the first non-numeric character is indeed alphabetic.
+       For the purposes of this particular test, the underscore character
+       is considered alphabetic. */
 
-	pName = szNameTmp;
-	if (*pName == cs_Unique) pName += 1;
-	while ((cc = *pName++) != '\0') if (cc < '0' || cc > '9') break;
-	bool ok = (cc == '_')  || (cc == cs_Unique) || (cc >= 'A' && cc <= 'Z') || (cc >= 'a' && cc <= 'z');
-	if (!ok)
-	{
+    pName = szNameTmp;
+    if (*pName == cs_Unique) pName += 1;
+    while ((cc = *pName++) != '\0') if (cc < '0' || cc > '9') break;
+    bool ok = (cc == '_')  || (cc == cs_Unique) || (cc >= 'A' && cc <= 'Z') || (cc >= 'a' && cc <= 'z');
+    if (!ok)
+    {
         pName--;
-		CS_stcpy (pName, &pName[1]);	/* trims double space */
-	}
+        CS_stcpy (pName, &pName[1]);	/* trims double space */
+    }
 
-	/* OK, the name has been processed, and is OK. */
+    /* OK, the name has been processed, and is OK. */
 
-	CS_stncp (kpStr,szNameTmp,(int)(strlen(szNameTmp) + 1));
+    CS_stncp (kpStr,szNameTmp,(int)(strlen(szNameTmp) + 1));
 
     return true;
 }
@@ -513,7 +513,7 @@ bool ProjectionUsesOffset(INT32 prj)
 //
 STRING ProjectionDescriptionFromString(const char *kpStr)
 {
-    if (NULL == kpStr) 
+    if (NULL == kpStr)
     {
         return L"";
     }
@@ -960,7 +960,7 @@ MgCoordinateSystem *BuildInterfaceFromCsDef(const cs_Csdef_& def, MgCoordinateSy
     //Construct our object
     pDef = new CCoordinateSystem(pCatalog);
 
-    if (NULL != pDef.p) 
+    if (NULL != pDef.p)
     {
         pDef->InitFromCatalog(def);
     }
@@ -981,7 +981,7 @@ MgCoordinateSystemDatum* BuildInterfaceFromDtDef(const cs_Dtdef_& def, MgCoordin
     //Construct our object
     pNew = new CCoordinateSystemDatum(pCatalog);
 
-    if (NULL != pNew.p) 
+    if (NULL != pNew.p)
     {
         pNew->InitFromCatalog(def);
     }
@@ -1003,7 +1003,7 @@ MgCoordinateSystemEllipsoid* BuildInterfaceFromElDef(const cs_Eldef_& def, MgCoo
     //Construct our object
     pNew = new CCoordinateSystemEllipsoid(pCatalog);
 
-    if (NULL != pNew.p) 
+    if (NULL != pNew.p)
     {
         pNew->Init(def);
     }
@@ -1030,14 +1030,14 @@ bool BuildDatumFromInterface(MgCoordinateSystemDatum *pSrc, cs_Datum_& datum)
     //Build a cs_Dtdef_ struct out of it
     cs_Dtdef_ dtdef;
     bResult = BuildDtDefFromInterface(pSrc, dtdef);
-    if (!bResult) 
+    if (!bResult)
     {
         return bResult;
     }
 
     //Get the ellipsoid definition out of the datum
     Ptr<MgCoordinateSystemEllipsoid> pElDef = pSrc->GetEllipsoidDefinition();
-    if (!pElDef) 
+    if (!pElDef)
     {
         return false;
     }
@@ -1045,7 +1045,7 @@ bool BuildDatumFromInterface(MgCoordinateSystemDatum *pSrc, cs_Datum_& datum)
     //Build a cs_Eldef_ struct out of it
     cs_Eldef_ eldef;
     bResult = BuildElDefFromInterface(pElDef, eldef);
-    if (!bResult) 
+    if (!bResult)
     {
         return bResult;
     }
@@ -1054,14 +1054,14 @@ bool BuildDatumFromInterface(MgCoordinateSystemDatum *pSrc, cs_Datum_& datum)
     CriticalClass.Enter();
     cs_Datum_ *pDatum = CSdtloc2(&dtdef, &eldef);
     CriticalClass.Leave();
-    if (NULL == pDatum) 
+    if (NULL == pDatum)
     {
         return false;
     }
 
     //Copy it into the struct provided
     datum = *pDatum;
-    CS_free(pDatum); 
+    CS_free(pDatum);
     pDatum = NULL;
 
     //And return success!
@@ -1078,8 +1078,8 @@ struct cs_Prjtab_* GetMentorProjectionObject(const char* prjKeyName)
         if (!CS_stricmp (prjKeyName,prjPtr->key_nm)) break;
     }
     if (prjPtr->code == cs_PRJCOD_END ||
-        *prjPtr->key_nm == '\0' || 
-        prjPtr->setup == NULL) 
+        *prjPtr->key_nm == '\0' ||
+        prjPtr->setup == NULL)
     {
         prjPtr = NULL;
     }
@@ -1121,7 +1121,7 @@ bool BuildCsprmFromInterface(MgCoordinateSystem *pSrc, cs_Csprm_& csprm)
     struct cs_Csprm_ *pCsprm = NULL;
     if (MgCoordinateSystemProjectionCode::Nerth==ProjectionFromString(csdef.prj_knm))
     {
-    	pCsprm = (struct cs_Csprm_ *)CS_malc (sizeof(struct cs_Csprm_));
+        pCsprm = (struct cs_Csprm_ *)CS_malc (sizeof(struct cs_Csprm_));
         if (NULL == pCsprm) return false; //E_OUTOFMEMORY;
         bResult=BuildCsprmFromArbitraryDef(csdef, *pCsprm);
         assert(bResult);
@@ -1180,9 +1180,9 @@ bool BuildCsprmFromInterface(MgCoordinateSystem *pSrc, cs_Csprm_& csprm)
 }
 
 bool BuildDefsFromInterface(
-    MgCoordinateSystem *pSrc, 
-    cs_Csdef_*& pCsDef, 
-    cs_Dtdef_*& pDtDef, 
+    MgCoordinateSystem *pSrc,
+    cs_Csdef_*& pCsDef,
+    cs_Dtdef_*& pDtDef,
     cs_Eldef_*& pElDef)
 {
     assert(NULL != pSrc);
@@ -1225,7 +1225,7 @@ bool BuildDefsFromInterface(
             //cartographic.  Get an ellipsoid definition instead.
             Ptr<MgCoordinateSystemEllipsoid> pIElDef = pSrc->GetEllipsoidDefinition();
             assert(NULL != pIElDef);
-            if (!pIElDef) 
+            if (!pIElDef)
             {
                 CS_free(pCsDef);
                 pCsDef=NULL;
@@ -1244,7 +1244,7 @@ bool BuildDefsFromInterface(
 
             //Build a Mentor struct out of the ellipsoid
             bResult = BuildElDefFromInterface(pIElDef, *pElDef);
-            if (!bResult) 
+            if (!bResult)
             {
                 CS_free(pCsDef);
                 pCsDef=NULL;
@@ -1267,7 +1267,7 @@ bool BuildDefsFromInterface(
 
             //Build a cs_Dtdef_ struct out of it
             bResult = BuildDtDefFromInterface(pDatum, *pDtDef);
-            if (!bResult) 
+            if (!bResult)
             {
                 CS_free(pCsDef);
                 pCsDef=NULL;
@@ -1278,7 +1278,7 @@ bool BuildDefsFromInterface(
 
             //Get the ellipsoid definition out of the datum
             Ptr<MgCoordinateSystemEllipsoid> pIElDef = pDatum->GetEllipsoidDefinition();
-            if (!pIElDef) 
+            if (!pIElDef)
             {
                 CS_free(pCsDef);
                 pCsDef=NULL;
@@ -1301,7 +1301,7 @@ bool BuildDefsFromInterface(
 
             //Build a cs_Eldef_ struct out of it
             bResult = BuildElDefFromInterface(pIElDef, *pElDef);
-            if (!bResult) 
+            if (!bResult)
             {
                 CS_free(pCsDef);
                 pCsDef=NULL;
@@ -1325,7 +1325,7 @@ bool CsdefIsGeodetic(const cs_Csdef_& def)
     return ('\0' != def.dat_knm[0]);
 }
 
-//Shifts a lat/long point from one datum to another.  
+//Shifts a lat/long point from one datum to another.
 //
 //Return values:
 //
@@ -1336,7 +1336,7 @@ bool CsdefIsGeodetic(const cs_Csdef_& def)
 //            Best-guess transformation was done, but may not be correct.
 //
 INT32 GeodeticTransformationPoint(cs_Dtcprm_ *pDtcprm, double& dLongitude, double& dLatitude, double* pdZ)
-{    
+{
     assert(NULL != pDtcprm);
 
     double dZ=0.;
@@ -1372,9 +1372,9 @@ INT32 GeodeticTransformationPoint(cs_Dtcprm_ *pDtcprm, double& dLongitude, doubl
 //for failure.
 //
 csFILE* OpenDictionaryFile(
-    const wchar_t *kpFileName, 
+    const wchar_t *kpFileName,
     char *szMode,
-    INT32& lMagic, 
+    INT32& lMagic,
     CsDictionaryOpenMode (*ValidMagic)(long))
 {
     csFILE* pFile=NULL;
@@ -1412,8 +1412,8 @@ csFILE* OpenDictionaryFile(
 //for failure.
 //
 bool GetMagicFromDictionaryFile(
-    const wchar_t *kpFileName, 
-    INT32& lMagic, 
+    const wchar_t *kpFileName,
+    INT32& lMagic,
     CsDictionaryOpenMode (*ValidMagic)(long))
 {
     assert(NULL != kpFileName);
@@ -1496,8 +1496,8 @@ bool IsReallyProtected(INT16 sProtect)
 //
 void
 DecryptBuffer(
-    char *pBuf, 
-    unsigned char ucKey, 
+    char *pBuf,
+    unsigned char ucKey,
     INT32 nBufSize)
 {
     if ('\0' == ucKey)

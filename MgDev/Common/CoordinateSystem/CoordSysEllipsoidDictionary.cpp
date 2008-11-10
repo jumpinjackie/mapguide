@@ -229,7 +229,7 @@ cs_Eldef_ * CCoordinateSystemEllipsoidDictionary::eldef(const char *kpName) cons
     int nLevel = EllipsoidVersion(m_lMagic);
 
     csElrup_ csElrup;
-    
+
     //Try to read a struct out of the file
     cs_Eldef_ *pDef = NULL;
     if (1 == CSelrupReadOld(pFile, &csElrup, nLevel))
@@ -290,11 +290,11 @@ void CCoordinateSystemEllipsoidDictionary::SetFileName(CREFSTRING sFileName)
     }
 
     MentorDictionary::SetFileName(
-        m_lMagic, 
-        EllipsoidValidMagic, 
-        m_pCatalog->GetDictionaryDir(), 
-        sFileName, 
-        m_sFileName, 
+        m_lMagic,
+        EllipsoidValidMagic,
+        m_pCatalog->GetDictionaryDir(),
+        sFileName,
+        m_sFileName,
         L"MgCoordinateSystemEllipsoidDictionary.SetFileName");
 
     //Okay, everybody opened all right, so update Mentor's global
@@ -360,12 +360,12 @@ UINT32 CCoordinateSystemEllipsoidDictionary::GetSize()
     return nSize;
 }
 
-//Adds the specified def to the set.  
+//Adds the specified def to the set.
 //Throws an exception MgCoordinateSystemMismatchException if the
 //def is not the right kind.
 //The supplied MgCoordinateSystemEllipsoid
 //object will be copied into the set, and can therefore be safely disposed
-//of once the function returns.  
+//of once the function returns.
 //Throws an exception Duplicate (if there's already a definition in the set with that name),
 //ReadOnly (if the set isn't allowing write access-- for example, if this
 //is an interface to a catalog that doesn't have the ellipsoid dictionary
@@ -375,7 +375,7 @@ void CCoordinateSystemEllipsoidDictionary::Add(MgGuardDisposable *pDefinition)
     MG_TRY()
 
     assert(NULL != pDefinition);
-    if (NULL == pDefinition) 
+    if (NULL == pDefinition)
     {
         throw new MgNullArgumentException(L"MgCoordinateSystemEllipsoidDictionary.Add", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -399,7 +399,7 @@ void CCoordinateSystemEllipsoidDictionary::Add(MgGuardDisposable *pDefinition)
 }
 
 //Removes the ellipsoid definition with the specified name from the
-//set.  
+//set.
 //Throws an exception if there is
 //no definition with that name in the catalog, ReadOnly if the set
 //isn't allowing write access.
@@ -414,19 +414,19 @@ void CCoordinateSystemEllipsoidDictionary::Remove(CREFSTRING sName)
     MG_CATCH_AND_THROW(L"MgCoordinateSystemEllipsoidDictionary.Remove")
 }
 
-//Modifies the specified def in the set.  
+//Modifies the specified def in the set.
 //Throws an exception MgCoordinateSystemMismatchException if the
 //def is not the right kind.  Otherwise, works like ModifyEllipsoid().
 //Modifies an ellipsoid definition in the set.  The existing definition
 //of the same name will be replaced with a copy of the def pointed to by
-//kpDef.  
+//kpDef.
 //Throws an exception if there is no definition with that name
 //in the catalog, ReadOnly if the set isn't allowing write access.
 void CCoordinateSystemEllipsoidDictionary::Modify(MgGuardDisposable *pDefinition)
 {
     MG_TRY()
     assert(NULL != pDefinition);
-    if (NULL == pDefinition) 
+    if (NULL == pDefinition)
     {
         throw new MgNullArgumentException(L"MgCoordinateSystemEllipsoidDictionary.Modify", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -451,7 +451,7 @@ void CCoordinateSystemEllipsoidDictionary::Modify(MgGuardDisposable *pDefinition
 //This function looks for an ellipsoid definition in the set with
 //the specified name and, if found, creates an MgCoordinateSystemEllipsoid and
 //returns it (user is responsible for freeing the def via Release()
-//function).  
+//function).
 //Throws an exception if no such definition exists in the catalog.
 MgGuardDisposable* CCoordinateSystemEllipsoidDictionary::Get(CREFSTRING sName)
 {
@@ -469,7 +469,7 @@ MgCoordinateSystemEllipsoid* CCoordinateSystemEllipsoidDictionary::GetEllipsoid(
     //Get the name to search for
     pName = Convert_Wide_To_Ascii(sName.c_str()); //need to delete [] pName
 
-    if (NULL == pName) 
+    if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEllipsoidDictionary.GetEllipsoid", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -490,7 +490,7 @@ MgCoordinateSystemEllipsoid* CCoordinateSystemEllipsoidDictionary::GetEllipsoid(
     //Try to get the def from the set
     pEllipsoidDef = BuildInterfaceFromElDef(*pDef, m_pCatalog);
 
-    if (NULL == pEllipsoidDef.p) 
+    if (NULL == pEllipsoidDef.p)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemEllipsoidDictionary.GetEllipsoid", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -515,7 +515,7 @@ bool CCoordinateSystemEllipsoidDictionary::Has(CREFSTRING sName)
 
     //Get the name to search for
     char *pName = Convert_Wide_To_Ascii(sName.c_str()); //need to delete [] pName
-    if (NULL == pName) 
+    if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEllipsoidDictionary.Has", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -546,7 +546,7 @@ bool CCoordinateSystemEllipsoidDictionary::Has(CREFSTRING sName)
 MgCoordinateSystemEnum* CCoordinateSystemEllipsoidDictionary::GetEnum()
 {
     MgCoordinateSystemEnum* pEnum=NULL;
-    
+
     MG_TRY()
     CCoordinateSystemEnumEllipsoid* pNew=GetEnumImp();
     assert(pNew);
@@ -574,12 +574,12 @@ CCoordinateSystemEnumEllipsoid* CCoordinateSystemEllipsoidDictionary::GetEnumImp
             pFile,
             ElDesc,
             CS_elrd);
-        if (NULL == m_pmapSystemNameDescription) 
+        if (NULL == m_pmapSystemNameDescription)
         {
             throw new MgInvalidArgumentException(L"MgCoordinateSystemEllipsoidDictionary.GetEnum", __LINE__, __WFILE__, NULL, L"", NULL);
         }
     }
-    
+
     //Make an enumerator object
     pNew = new CCoordinateSystemEnumEllipsoid;
 

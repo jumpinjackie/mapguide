@@ -47,7 +47,7 @@ MgCoordinateSystemEnum* CCoordinateSystemEnumEllipsoid::CreateClone()
     //Make an object to be the copy
     pNew = new CCoordinateSystemEnumEllipsoid;
 
-    if (NULL == pNew.p) 
+    if (NULL == pNew.p)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.CreateClone", __LINE__, __WFILE__, NULL, L"", NULL);
     }

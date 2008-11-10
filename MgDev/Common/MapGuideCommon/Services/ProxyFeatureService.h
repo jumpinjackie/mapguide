@@ -295,7 +295,7 @@ INTERNAL_API:
     /// If the class name is not qualified, and the schema name is not specified,
     /// the requested class from all schemas will be described.
     /// The class names specified serve only as a hint. Use of the hint
-    /// during command execution is provider dependent. Providers that 
+    /// during command execution is provider dependent. Providers that
     /// will not use the hint will describe the schema for all classes.
     ///
     /// \return
@@ -358,7 +358,7 @@ INTERNAL_API:
     /// If the class name is not qualified, and the schema name is not specified,
     /// the requested class from all schemas will be described.
     /// The class names specified serve only as a hint. Use of the hint
-    /// during command execution is provider dependent. Providers that 
+    /// during command execution is provider dependent. Providers that
     /// will not use the hint will describe the schema for all classes.
     ///
     /// \return

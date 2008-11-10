@@ -34,18 +34,18 @@ using namespace CSLibrary;
 //MENTOR_MAINTENANCE:  The following struct definition duplicates code
 //from Mentor source file CS_rlsUpdt.c.
 #define cs_Dtdef07_ cs_Dtdef_
-#define cs_Dtdef08_ cs_Dtdef_	
+#define cs_Dtdef08_ cs_Dtdef_
 struct csDtrup_
 {
-	short level;
-	short crypt;
-	union
-	{
-		struct cs_Dtdef05_ dtdef05;
-		struct cs_Dtdef06_ dtdef06;
-		struct cs_Dtdef07_ dtdef07;
-		struct cs_Dtdef08_ dtdef08;
-	} u;
+    short level;
+    short crypt;
+    union
+    {
+        struct cs_Dtdef05_ dtdef05;
+        struct cs_Dtdef06_ dtdef06;
+        struct cs_Dtdef07_ dtdef07;
+        struct cs_Dtdef08_ dtdef08;
+    } u;
 };
 #undef cs_Dtdef07_
 #undef cs_Dtdef08_
@@ -54,10 +54,10 @@ struct csDtrup_
 //Externs from Mentor
 extern "C"
 {
-	int CSdtrupReadOld (csFILE *oldStrm,struct csDtrup_ *dtrup,int old_lvl);
-	int CSdtrupRead05 (csFILE *oldStrm,struct csDtrup_ *dtrup);
-	int CSdtrupRead06 (csFILE *oldStrm,struct csDtrup_ *dtrup);
-	extern char cs_Dir[];
+    int CSdtrupReadOld (csFILE *oldStrm,struct csDtrup_ *dtrup,int old_lvl);
+    int CSdtrupRead05 (csFILE *oldStrm,struct csDtrup_ *dtrup);
+    int CSdtrupRead06 (csFILE *oldStrm,struct csDtrup_ *dtrup);
+    extern char cs_Dir[];
 }
 
 
@@ -66,19 +66,19 @@ extern "C"
 //
 static int
 CS_dtrd05(
-	csFILE *oldStrm,
-	struct cs_Dtdef05_ *dt_def,
-	int *crypt)
+    csFILE *oldStrm,
+    struct cs_Dtdef05_ *dt_def,
+    int *crypt)
 {
-	csDtrup_ dtrup;
-	int nStatus = CSdtrupRead05(oldStrm, &dtrup);
-	if (nStatus > 0)
-	{
-		//success!
-		*crypt = dtrup.crypt;
-		memcpy(dt_def, &dtrup.u.dtdef05, sizeof(cs_Dtdef05_));
-	}
-	return nStatus;
+    csDtrup_ dtrup;
+    int nStatus = CSdtrupRead05(oldStrm, &dtrup);
+    if (nStatus > 0)
+    {
+        //success!
+        *crypt = dtrup.crypt;
+        memcpy(dt_def, &dtrup.u.dtdef05, sizeof(cs_Dtdef05_));
+    }
+    return nStatus;
 }
 
 
@@ -88,19 +88,19 @@ CS_dtrd05(
 //
 static int
 CS_dtrd06(
-	csFILE *oldStrm,
-	struct cs_Dtdef06_ *dt_def,
-	int *crypt)
+    csFILE *oldStrm,
+    struct cs_Dtdef06_ *dt_def,
+    int *crypt)
 {
-	csDtrup_ dtrup;
-	int nStatus = CSdtrupRead06(oldStrm, &dtrup);
-	if (nStatus > 0)
-	{
-		//success!
-		*crypt = dtrup.crypt;
-		memcpy(dt_def, &dtrup.u.dtdef06, sizeof(cs_Dtdef06_));
-	}
-	return nStatus;
+    csDtrup_ dtrup;
+    int nStatus = CSdtrupRead06(oldStrm, &dtrup);
+    if (nStatus > 0)
+    {
+        //success!
+        *crypt = dtrup.crypt;
+        memcpy(dt_def, &dtrup.u.dtdef06, sizeof(cs_Dtdef06_));
+    }
+    return nStatus;
 }
 
 
@@ -113,17 +113,17 @@ CS_dtrd06(
 static CsDictionaryOpenMode
 DatumValidMagic(long lMagic)
 {
-	switch (lMagic)
-	{
-	case cs_DTDEF_MAGIC05:
-	case cs_DTDEF_MAGIC06:
-	case cs_DTDEF_MAGIC07:
-		return Read;
-	case cs_DTDEF_MAGIC:
-		return Write;
-	default:
-		return Closed;
-	}
+    switch (lMagic)
+    {
+    case cs_DTDEF_MAGIC05:
+    case cs_DTDEF_MAGIC06:
+    case cs_DTDEF_MAGIC07:
+        return Read;
+    case cs_DTDEF_MAGIC:
+        return Write;
+    default:
+        return Closed;
+    }
 }
 
 
@@ -132,19 +132,19 @@ DatumValidMagic(long lMagic)
 static int
 DatumVersion(long lMagic)
 {
-	switch (lMagic)
-	{
-	case cs_DTDEF_MAGIC05:
-		return 5;
-	case cs_DTDEF_MAGIC06:
-		return 6;
-	case cs_DTDEF_MAGIC07:
-		return 7;
-	case cs_DTDEF_MAGIC:
-		return 8;
-	default:
-		return 0;
-	}
+    switch (lMagic)
+    {
+    case cs_DTDEF_MAGIC05:
+        return 5;
+    case cs_DTDEF_MAGIC06:
+        return 6;
+    case cs_DTDEF_MAGIC07:
+        return 7;
+    case cs_DTDEF_MAGIC:
+        return 8;
+    default:
+        return 0;
+    }
 }
 
 
@@ -153,40 +153,40 @@ DatumVersion(long lMagic)
 //
 void
 GetDatumSizeInfo(
-    long lMagic, 
-    UINT32& nSize, 
+    long lMagic,
+    UINT32& nSize,
     UINT32& nNameSize)
 {
-	//The following locals are pointless and unused, except that I have
-	//to declare them to be able to use sizeof() as desired.
-	cs_Dtdef05_ v5;
-	cs_Dtdef06_ v6;
-	cs_Dtdef_ v8;
+    //The following locals are pointless and unused, except that I have
+    //to declare them to be able to use sizeof() as desired.
+    cs_Dtdef05_ v5;
+    cs_Dtdef06_ v6;
+    cs_Dtdef_ v8;
 
-	switch (lMagic)
-	{
-	case cs_DTDEF_MAGIC05:
-		nSize = sizeof(v5);
-		nNameSize = sizeof(v5.key_nm);
-		return;
-	case cs_DTDEF_MAGIC06:
-		nSize = sizeof(v6);
-		nNameSize = sizeof(v6.key_nm);
-		return;
-	case cs_DTDEF_MAGIC07:
-	case cs_DTDEF_MAGIC:
-		nSize = sizeof(v8);
-		nNameSize = sizeof(v8.key_nm);
-		return;
-	default:
-		assert(0);
-	}
+    switch (lMagic)
+    {
+    case cs_DTDEF_MAGIC05:
+        nSize = sizeof(v5);
+        nNameSize = sizeof(v5.key_nm);
+        return;
+    case cs_DTDEF_MAGIC06:
+        nSize = sizeof(v6);
+        nNameSize = sizeof(v6.key_nm);
+        return;
+    case cs_DTDEF_MAGIC07:
+    case cs_DTDEF_MAGIC:
+        nSize = sizeof(v8);
+        nNameSize = sizeof(v8.key_nm);
+        return;
+    default:
+        assert(0);
+    }
 
-	//The following will never actually get
-	//executed, but is needed to turn off the
-	//compiler's "unreferenced local variable"
-	//warning.
-	v5.key_nm[0] = v6.key_nm[0] = v8.key_nm[0] = '\0';
+    //The following will never actually get
+    //executed, but is needed to turn off the
+    //compiler's "unreferenced local variable"
+    //warning.
+    v5.key_nm[0] = v6.key_nm[0] = v8.key_nm[0] = '\0';
 }
 
 //Local utility functions for comparing various versions of Mentor structs.
@@ -200,24 +200,24 @@ DECLARE_MENTOR_COMPARISON_FUNCTION(DtCompareV8, cs_Dtdef_, _strnicmp)//_tcsnicmp
 static TCmpFunc
 DtComparisonFunction(long lMagic)
 {
-	switch (lMagic)
-	{
-	case cs_DTDEF_MAGIC05:
-		return DtCompareV5;
-	case cs_DTDEF_MAGIC06:
-		return DtCompareV6;
-	case cs_DTDEF_MAGIC07:
-	case cs_DTDEF_MAGIC:
-		return DtCompareV8;
-	default:
-		assert(0);
-		return NULL;
-	}
+    switch (lMagic)
+    {
+    case cs_DTDEF_MAGIC05:
+        return DtCompareV5;
+    case cs_DTDEF_MAGIC06:
+        return DtCompareV6;
+    case cs_DTDEF_MAGIC07:
+    case cs_DTDEF_MAGIC:
+        return DtCompareV8;
+    default:
+        assert(0);
+        return NULL;
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemDatumDictionary::CCoordinateSystemDatumDictionary(MgCoordinateSystemCatalog *pCatalog)
-    : m_pmapSystemNameDescription(NULL), 
+    : m_pmapSystemNameDescription(NULL),
     m_lMagic(0)
 {
     m_pCatalog = SAFE_ADDREF(pCatalog);
@@ -226,12 +226,12 @@ CCoordinateSystemDatumDictionary::CCoordinateSystemDatumDictionary(MgCoordinateS
 
 CCoordinateSystemDatumDictionary::~CCoordinateSystemDatumDictionary()
 {
-	if (NULL != m_pmapSystemNameDescription)
-	{
-		m_pmapSystemNameDescription->clear();
-		delete m_pmapSystemNameDescription; m_pmapSystemNameDescription = NULL;
-	}
-	m_lMagic = 0;
+    if (NULL != m_pmapSystemNameDescription)
+    {
+        m_pmapSystemNameDescription->clear();
+        delete m_pmapSystemNameDescription; m_pmapSystemNameDescription = NULL;
+    }
+    m_lMagic = 0;
 }
 
 //Private member function which tries to get a def with the specified
@@ -241,27 +241,27 @@ CCoordinateSystemDatumDictionary::~CCoordinateSystemDatumDictionary()
 //
 cs_Dtdef_ * CCoordinateSystemDatumDictionary::dtdef(const char *kpName) const
 {
-	//If the dictionary version is current, we can just
-	//use the regular function.
-	if (cs_DTDEF_MAGIC == m_lMagic)
-	{
+    //If the dictionary version is current, we can just
+    //use the regular function.
+    if (cs_DTDEF_MAGIC == m_lMagic)
+    {
         SmartCriticalClass critical(true);
-		return CS_dtdef(kpName);
-	}
+        return CS_dtdef(kpName);
+    }
 
-	//It's an old version.  We need to do a special search
-	//in the file, and then, if found, update it to a current struct.
-	UINT32 nStructSize, nNameSize;
-	GetDatumSizeInfo(m_lMagic, nStructSize, nNameSize);
-	if (strlen(kpName) > nNameSize-1) return NULL;
+    //It's an old version.  We need to do a special search
+    //in the file, and then, if found, update it to a current struct.
+    UINT32 nStructSize, nNameSize;
+    GetDatumSizeInfo(m_lMagic, nStructSize, nNameSize);
+    if (strlen(kpName) > nNameSize-1) return NULL;
 
-	//Make a buffer to be our "record pointer"
-	char *pBuf = new char[nStructSize];
-	if (NULL == pBuf) return NULL;
-	memset(pBuf, 0, nStructSize);
-	strcpy(pBuf, kpName);
+    //Make a buffer to be our "record pointer"
+    char *pBuf = new char[nStructSize];
+    if (NULL == pBuf) return NULL;
+    memset(pBuf, 0, nStructSize);
+    strcpy(pBuf, kpName);
 
-	//Search for the record in the file
+    //Search for the record in the file
     char szMode[10];
     GetFileModes(Read, szMode);
     SmartCriticalClass critical(true);
@@ -270,36 +270,36 @@ cs_Dtdef_ * CCoordinateSystemDatumDictionary::dtdef(const char *kpName) const
     {
         return NULL;
     }
-	int nResult = CS_bins(
-		pFile,
-		sizeof(cs_magic_t),
-		0L,
-		nStructSize,
-		pBuf,
-		DtComparisonFunction(m_lMagic));
-	delete [] pBuf;
-	if (nResult != 1)
-	{
-		//Not found in file.
-		return NULL;
-	}
+    int nResult = CS_bins(
+        pFile,
+        sizeof(cs_magic_t),
+        0L,
+        nStructSize,
+        pBuf,
+        DtComparisonFunction(m_lMagic));
+    delete [] pBuf;
+    if (nResult != 1)
+    {
+        //Not found in file.
+        return NULL;
+    }
 
-	//Okay, we're positioned properly.  Now we're ready to read it in.
-	int nLevel = DatumVersion(m_lMagic);
+    //Okay, we're positioned properly.  Now we're ready to read it in.
+    int nLevel = DatumVersion(m_lMagic);
 
-	csDtrup_ csDtrup;
+    csDtrup_ csDtrup;
 
     //Try to read a struct out of the file.
     cs_Dtdef_ *pDef = NULL;
-	if (1 == CSdtrupReadOld(pFile, &csDtrup, nLevel))
-	{
-		//Success!
-		pDef = new cs_Dtdef_;
-		if (NULL == pDef) return NULL;
-		memcpy(pDef, &csDtrup.u.dtdef08, sizeof(cs_Dtdef_));
-	}
+    if (1 == CSdtrupReadOld(pFile, &csDtrup, nLevel))
+    {
+        //Success!
+        pDef = new cs_Dtdef_;
+        if (NULL == pDef) return NULL;
+        memcpy(pDef, &csDtrup.u.dtdef08, sizeof(cs_Dtdef_));
+    }
     CS_fclose(pFile);
-	return pDef;
+    return pDef;
 }
 
 //-------------------------------------------------------------------------------
@@ -349,11 +349,11 @@ void CCoordinateSystemDatumDictionary::SetFileName(CREFSTRING sFileName)
     }
 
     MentorDictionary::SetFileName(
-        m_lMagic, 
-        DatumValidMagic, 
-        m_pCatalog->GetDictionaryDir(), 
-        sFileName, 
-        m_sFileName, 
+        m_lMagic,
+        DatumValidMagic,
+        m_pCatalog->GetDictionaryDir(),
+        sFileName,
+        m_sFileName,
         L"MgCoordinateSystemDatumDictionary.SetFileName");
 
     //Okay, everybody opened all right, so update Mentor's global
@@ -393,40 +393,40 @@ UINT32 CCoordinateSystemDatumDictionary::GetSize()
 
     MG_TRY()
 
-	//If we have a summary available, we can just return its size.
-	if (NULL != m_pmapSystemNameDescription)
-	{
-		return static_cast<UINT32>(m_pmapSystemNameDescription->size());
-	}
+    //If we have a summary available, we can just return its size.
+    if (NULL != m_pmapSystemNameDescription)
+    {
+        return static_cast<UINT32>(m_pmapSystemNameDescription->size());
+    }
 
     SmartCriticalClass critical(true);
     STRING strPath=GetPath();
     csFILE *pFile=MentorDictionary::Open(m_lMagic, DatumValidMagic, strPath.c_str(), Read);
 
-	//We're open, but no summary is available.  We need to examine
-	//the file itself to find out how big it is.
-	INT32 pos =  CS_ftell(pFile);
-	CS_fseek(pFile, 0, SEEK_END);
-	UINT32 ulFileBytes = 1 + CS_ftell(pFile);
-	CS_fseek(pFile, pos, SEEK_SET);
-	UINT32 nRecSize, nDummy;
-	GetDatumSizeInfo(m_lMagic, nRecSize, nDummy);
-	nSize=(ulFileBytes - sizeof(m_lMagic)) / nRecSize;
-	if (0!=CS_fclose(pFile))
+    //We're open, but no summary is available.  We need to examine
+    //the file itself to find out how big it is.
+    INT32 pos =  CS_ftell(pFile);
+    CS_fseek(pFile, 0, SEEK_END);
+    UINT32 ulFileBytes = 1 + CS_ftell(pFile);
+    CS_fseek(pFile, pos, SEEK_SET);
+    UINT32 nRecSize, nDummy;
+    GetDatumSizeInfo(m_lMagic, nRecSize, nDummy);
+    nSize=(ulFileBytes - sizeof(m_lMagic)) / nRecSize;
+    if (0!=CS_fclose(pFile))
     {
         throw new MgFileIoException(L"MgCoordinateSystemDatumDictionary.GetSize", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemDictionaryCloseFailedException", NULL);
     }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemDatumDictionary.GetSize")
 
-	return nSize;
+    return nSize;
 }
 
-//Adds the specified def to the set.  
+//Adds the specified def to the set.
 //Throws an exception MgCoordinateSystemMismatchException if the
 //def is not the right kind.
 //Adds a new datum definition to the set.  The supplied MgCoordinateSystemDatum
 //object will be copied into the set, and can therefore be safely disposed
-//of once the function returns.  
+//of once the function returns.
 //Throws an exception Duplicate (if there's already a definition in the set with that name),
 //a ReadOnly (if the set isn't allowing write access-- for example, if this
 //is an interface to a catalog that doesn't have the datum dictionary
@@ -434,81 +434,81 @@ UINT32 CCoordinateSystemDatumDictionary::GetSize()
 void CCoordinateSystemDatumDictionary::Add(MgGuardDisposable *pDefinition)
 {
     MG_TRY()
-	assert(NULL != pDefinition);
-	if (NULL == pDefinition) 
+    assert(NULL != pDefinition);
+    if (NULL == pDefinition)
     {
         throw new MgNullArgumentException(L"MgCoordinateSystemDatumDictionary.Add", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-	MgCoordinateSystemDatum* pDatumDef=dynamic_cast<MgCoordinateSystemDatum*>(pDefinition);
-	if (!pDatumDef)
-	{
+    MgCoordinateSystemDatum* pDatumDef=dynamic_cast<MgCoordinateSystemDatum*>(pDefinition);
+    if (!pDatumDef)
+    {
         throw new MgInvalidArgumentException(L"MgCoordinateSystemDatumDictionary.Add", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemMismatchException", NULL);
-	}
+    }
 
-	MentorDictionary::UpdateDef<cs_Dtdef_, MgCoordinateSystemDatum>(
-		m_pmapSystemNameDescription,
-		DtDesc,
-		CS_dtdef,
-		CS_dtupd,
-		BuildDtDefFromInterface,
-		pDatumDef,
-		false);
-    
+    MentorDictionary::UpdateDef<cs_Dtdef_, MgCoordinateSystemDatum>(
+        m_pmapSystemNameDescription,
+        DtDesc,
+        CS_dtdef,
+        CS_dtupd,
+        BuildDtDefFromInterface,
+        pDatumDef,
+        false);
+
     MG_CATCH_AND_THROW(L"MgCoordinateSystemDatumDictionary.Add")
 }
 
 //Removes the datum definition with the specified name from the
-//set.  
+//set.
 //Throws an exception (if there is
 //no definition with that name in the catalog), ReadOnly (if the set
 //isn't allowing write access).
 void CCoordinateSystemDatumDictionary::Remove(CREFSTRING sName)
 {
     MG_TRY()
-	MentorDictionary::RemoveDef<cs_Dtdef_>(
-		m_pmapSystemNameDescription,
-		CS_dtdef,
-		CS_dtdel,
+    MentorDictionary::RemoveDef<cs_Dtdef_>(
+        m_pmapSystemNameDescription,
+        CS_dtdef,
+        CS_dtdel,
         sName.c_str());
     MG_CATCH_AND_THROW(L"MgCoordinateSystemDatumDictionary.Remove")
 }
 
 //Modifies a datum definition in the set.  The existing definition
 //of the same name will be replaced with a copy of the def pointed to by
-//kpDef.  
+//kpDef.
 //Throws an exception (if there is no definition with that name
 //in the catalog), a ReadOnly (if the set isn't allowing write access).
 void CCoordinateSystemDatumDictionary::Modify(MgGuardDisposable *pDefinition)
 {
     MG_TRY()
-	assert(NULL != pDefinition);
-	if (NULL == pDefinition) 
+    assert(NULL != pDefinition);
+    if (NULL == pDefinition)
     {
         throw new MgNullArgumentException(L"MgCoordinateSystemDatumDictionary.Modify", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-	MgCoordinateSystemDatum* pDatumDef=dynamic_cast<MgCoordinateSystemDatum*>(pDefinition);
-	if (!pDatumDef)
-	{
+    MgCoordinateSystemDatum* pDatumDef=dynamic_cast<MgCoordinateSystemDatum*>(pDefinition);
+    if (!pDatumDef)
+    {
         throw new MgInvalidArgumentException(L"MgCoordinateSystemDatumDictionary.Modify", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemMismatchException", NULL);
-	}
+    }
 
-	MentorDictionary::UpdateDef<cs_Dtdef_, MgCoordinateSystemDatum>(
-		m_pmapSystemNameDescription,
-		DtDesc,
-		CS_dtdef,
-		CS_dtupd,
-		BuildDtDefFromInterface,
-		pDatumDef,
-		true);
+    MentorDictionary::UpdateDef<cs_Dtdef_, MgCoordinateSystemDatum>(
+        m_pmapSystemNameDescription,
+        DtDesc,
+        CS_dtdef,
+        CS_dtupd,
+        BuildDtDefFromInterface,
+        pDatumDef,
+        true);
     MG_CATCH_AND_THROW(L"MgCoordinateSystemDatumDictionary.Modify")
 }
 
 //This function looks for a datum definition in the set with
 //the specified name and, if found, creates an MgCoordinateSystemDatum and
 //returns it (user is responsible for freeing the def via Release()
-//function).  
+//function).
 //Throws an exception (if no such definition exists in the catalog).
 MgGuardDisposable* CCoordinateSystemDatumDictionary::Get(CREFSTRING sName)
 {
@@ -518,32 +518,32 @@ MgGuardDisposable* CCoordinateSystemDatumDictionary::Get(CREFSTRING sName)
 MgCoordinateSystemDatum* CCoordinateSystemDatumDictionary::GetDatum(CREFSTRING sName)
 {
     Ptr<MgCoordinateSystemDatum> pDefinition;
-	cs_Dtdef_ *pDef = NULL;
+    cs_Dtdef_ *pDef = NULL;
     char *pName = NULL;
 
     MG_TRY()
 
-	//Get the name to search for
+    //Get the name to search for
     pName = Convert_Wide_To_Ascii(sName.c_str()); //need to delete [] pName
 
-	if (NULL == pName) 
+    if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatumDictionary.GetDatum", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-	//Look in the dictionary
-	pDef = dtdef(pName);
+    //Look in the dictionary
+    pDef = dtdef(pName);
 
-	if (NULL == pDef)
-	{
-		//wasn't there!
+    if (NULL == pDef)
+    {
+        //wasn't there!
         MgStringCollection whatArguments;
         whatArguments.Add(sName);
         throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemDatumDictionary.GetDatum", __LINE__, __WFILE__, &whatArguments, L"", NULL);
-	}
+    }
 
-	//Okay, at this point we have a Mentor coordsys definition
-	//struct.  Build an object out of it.
+    //Okay, at this point we have a Mentor coordsys definition
+    //struct.  Build an object out of it.
     pDefinition=NewDatum();
 
     if (NULL == pDefinition.p)
@@ -561,12 +561,12 @@ MgCoordinateSystemDatum* CCoordinateSystemDatumDictionary::GetDatum(CREFSTRING s
     }
 
     pImp->InitFromCatalog(*pDef);
-	//And return success!
+    //And return success!
 
     MG_CATCH(L"MgCoordinateSystemDatumDictionary.GetDatum")
 
     CS_free(pDef);
-	delete [] pName;
+    delete [] pName;
 
     MG_THROW()
 
@@ -581,32 +581,32 @@ bool CCoordinateSystemDatumDictionary::Has(CREFSTRING sName)
 
     MG_TRY()
 
-	//Get the name to search for
+    //Get the name to search for
     char *pName = Convert_Wide_To_Ascii(sName.c_str()); //need to delete [] pName
-	if (NULL == pName) 
+    if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatumDictionary.Has", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-	if (NULL != m_pmapSystemNameDescription)
-	{
-		CSystemNameDescriptionMap::const_iterator it = m_pmapSystemNameDescription->find(CSystemName(pName));
-		bHas = (it != m_pmapSystemNameDescription->end());
-	}
-	else
-	{
+    if (NULL != m_pmapSystemNameDescription)
+    {
+        CSystemNameDescriptionMap::const_iterator it = m_pmapSystemNameDescription->find(CSystemName(pName));
+        bHas = (it != m_pmapSystemNameDescription->end());
+    }
+    else
+    {
 
-		//Look in the dictionary
-		cs_Dtdef_ *pDef = dtdef(pName);
-		if (NULL != pDef)
-		{
-			bHas = true;
-			CS_free(pDef);
-		}
-	}
-	delete [] pName;
+        //Look in the dictionary
+        cs_Dtdef_ *pDef = dtdef(pName);
+        if (NULL != pDef)
+        {
+            bHas = true;
+            CS_free(pDef);
+        }
+    }
+    delete [] pName;
     MG_CATCH_AND_THROW(L"MgCoordinateSystemDatumDictionary.Has")
-	return bHas;
+    return bHas;
 }
 
 //--------------------------------------------------------------
@@ -614,14 +614,14 @@ bool CCoordinateSystemDatumDictionary::Has(CREFSTRING sName)
 MgCoordinateSystemEnum* CCoordinateSystemDatumDictionary::GetEnum()
 {
     MgCoordinateSystemEnum* pEnum=NULL;
-    
+
     MG_TRY()
 
     //Make an enumerator object
-	CCoordinateSystemEnumDatum *pNew = GetEnumImp();
+    CCoordinateSystemEnumDatum *pNew = GetEnumImp();
     assert(pNew);
     pEnum=static_cast<MgCoordinateSystemEnum*>(pNew);
-	assert(pEnum);
+    assert(pEnum);
     MG_CATCH_AND_THROW(L"MgCoordinateSystemDatumDictionary.GetEnum")
     return pEnum;
 }
@@ -637,52 +637,52 @@ CCoordinateSystemEnumDatum* CCoordinateSystemDatumDictionary::GetEnumImp()
     STRING strPath=GetPath();
     pFile=MentorDictionary::Open(m_lMagic, DatumValidMagic, strPath.c_str(), Read);
 
-	//Generate a summary list, if we don't already have one
-	if (NULL == m_pmapSystemNameDescription)
-	{
-		int nVersion = DatumVersion(m_lMagic);
-		assert(nVersion > 0);
-		switch (nVersion)
-		{
-		case 5:
-			//Generate summary for version 5 datum file.
-			m_pmapSystemNameDescription = MentorDictionary::GenerateSystemNameDescriptionMap<cs_Dtdef05_>(
-				pFile,
-				DtDesc05,
-				CS_dtrd05);
-			break;
-		case 6:
-			//Generate summary for version 6 datum file.
-			m_pmapSystemNameDescription = MentorDictionary::GenerateSystemNameDescriptionMap<cs_Dtdef06_>(
-				pFile,
-				DtDesc06,
-				CS_dtrd06);
-			break;
-		case 7:
-		case 8:
-			//Generate summary for version 7 or 8 datum file.
-			m_pmapSystemNameDescription = MentorDictionary::GenerateSystemNameDescriptionMap<cs_Dtdef_>(
-				pFile,
-				DtDesc,
-				CS_dtrd);
-			break;
-		default:
-			assert(0);
-		}
-		if (NULL == m_pmapSystemNameDescription) 
+    //Generate a summary list, if we don't already have one
+    if (NULL == m_pmapSystemNameDescription)
+    {
+        int nVersion = DatumVersion(m_lMagic);
+        assert(nVersion > 0);
+        switch (nVersion)
+        {
+        case 5:
+            //Generate summary for version 5 datum file.
+            m_pmapSystemNameDescription = MentorDictionary::GenerateSystemNameDescriptionMap<cs_Dtdef05_>(
+                pFile,
+                DtDesc05,
+                CS_dtrd05);
+            break;
+        case 6:
+            //Generate summary for version 6 datum file.
+            m_pmapSystemNameDescription = MentorDictionary::GenerateSystemNameDescriptionMap<cs_Dtdef06_>(
+                pFile,
+                DtDesc06,
+                CS_dtrd06);
+            break;
+        case 7:
+        case 8:
+            //Generate summary for version 7 or 8 datum file.
+            m_pmapSystemNameDescription = MentorDictionary::GenerateSystemNameDescriptionMap<cs_Dtdef_>(
+                pFile,
+                DtDesc,
+                CS_dtrd);
+            break;
+        default:
+            assert(0);
+        }
+        if (NULL == m_pmapSystemNameDescription)
         {
             throw new MgInvalidArgumentException(L"MgCoordinateSystemDatumDictionary.GetEnum", __LINE__, __WFILE__, NULL, L"", NULL);
         }
-	}
+    }
 
-	//Make an enumerator object
-	pNew = new CCoordinateSystemEnumDatum;
+    //Make an enumerator object
+    pNew = new CCoordinateSystemEnumDatum;
 
-	if (NULL == pNew.p)
+    if (NULL == pNew.p)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatumDictionary.GetEnum", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-	if (0!=CS_fclose(pFile))
+    if (0!=CS_fclose(pFile))
     {
         throw new MgFileIoException(L"MgCoordinateSystemDatumDictionary.GetEnum", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemDictionaryCloseFailedException", NULL);
     }
@@ -697,8 +697,8 @@ CCoordinateSystemEnumDatum* CCoordinateSystemDatumDictionary::GetEnumImp()
 
     MG_THROW()
 
-	//Set it up to use our list
-	pNew->Initialize(this, m_pmapSystemNameDescription);
+    //Set it up to use our list
+    pNew->Initialize(this, m_pmapSystemNameDescription);
 
     return pNew.Detach();
 }
