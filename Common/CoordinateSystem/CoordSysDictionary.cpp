@@ -32,7 +32,7 @@ using namespace CSLibrary;
 //MENTOR_MAINTENANCE:  The following struct definition duplicates code
 //from Mentor source file CS_rlsUpdt.c.
 #define cs_Csdef07_ cs_Csdef_
-#define cs_Csdef08_ cs_Csdef_    
+#define cs_Csdef08_ cs_Csdef_
 struct csCsrup_
 {
     short level;
@@ -215,7 +215,7 @@ CsComparisonFunction(long lMagic)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemDictionary::CCoordinateSystemDictionary(MgCoordinateSystemCatalog *pCatalog)
-                            : m_pmapSystemNameDescription(NULL), 
+                            : m_pmapSystemNameDescription(NULL),
                             m_lMagic(0)
 {
     m_pCatalog = SAFE_ADDREF(pCatalog);
@@ -228,7 +228,7 @@ CCoordinateSystemDictionary::~CCoordinateSystemDictionary()
     if (NULL != m_pmapSystemNameDescription)
     {
         m_pmapSystemNameDescription->clear();
-        delete m_pmapSystemNameDescription; 
+        delete m_pmapSystemNameDescription;
         m_pmapSystemNameDescription = NULL;
     }
     m_lMagic = 0;
@@ -252,7 +252,7 @@ cs_Csdef_ * CCoordinateSystemDictionary::csdef(const char *kpName)
             INT32 unit=UnitFromString(pDef->unit);
             INT32 unitType;
             double dfUnitScale=0.;
-	        if (GetUnitInfo(unit, &unitType, &dfUnitScale))
+            if (GetUnitInfo(unit, &unitType, &dfUnitScale))
             {
                 pDef->unit_scl=dfUnitScale;
             }
@@ -299,7 +299,7 @@ cs_Csdef_ * CCoordinateSystemDictionary::csdef(const char *kpName)
     int nLevel = CoordinateSystemVersion(m_lMagic);
 
     csCsrup_ csCsrup;
-    
+
     //Try to read a struct out of the file
     cs_Csdef_ *pDef = NULL;
     if (1 == CScsrupReadOld(pFile, &csCsrup, nLevel))
@@ -315,7 +315,7 @@ cs_Csdef_ * CCoordinateSystemDictionary::csdef(const char *kpName)
         INT32 unit=UnitFromString(pDef->unit);
         INT32 unitType;
         double dfUnitScale=0.;
-	    if (GetUnitInfo(unit, &unitType, &dfUnitScale))
+        if (GetUnitInfo(unit, &unitType, &dfUnitScale))
         {
             pDef->unit_scl=dfUnitScale;
         }
@@ -371,11 +371,11 @@ void CCoordinateSystemDictionary::SetFileName(CREFSTRING sFileName)
     }
 
     MentorDictionary::SetFileName(
-        m_lMagic, 
-        CoordinateSystemValidMagic, 
-        m_pCatalog->GetDictionaryDir(), 
-        sFileName, 
-        m_sFileName, 
+        m_lMagic,
+        CoordinateSystemValidMagic,
+        m_pCatalog->GetDictionaryDir(),
+        sFileName,
+        m_sFileName,
         L"MgCoordinateSystemDictionary.SetFileName");
 
     //Okay, everybody opened all right, so update Mentor's global
@@ -443,11 +443,11 @@ UINT32 CCoordinateSystemDictionary::GetSize()
     return nSize;
 }
 
-//Adds the specified def.  
+//Adds the specified def.
 //Throws an exception MgCoordinateSystemMismatchException if the
 //def is not the right kind.
 //The supplied MgGuardDisposable object will be copied, and can therefore be safely disposed
-//of once the function returns.  
+//of once the function returns.
 //Throws an exception Duplicate (if there's already a definition in the set with that name),
 //a ReadOnly (if the set isn't allowing write access-- for example, if this
 //is an interface to a catalog that doesn't have the coordsys dictionary
@@ -481,7 +481,7 @@ void CCoordinateSystemDictionary::Add(MgGuardDisposable *pDefinition)
 }
 
 //Removes the coordsys definition with the specified name from the
-//set.  
+//set.
 //Throws an exception if there is
 //no definition with that name in the catalog, a ReadOnly if the set
 //isn't allowing write access).
@@ -497,7 +497,7 @@ void CCoordinateSystemDictionary::Remove(CREFSTRING sName)
     MG_CATCH_AND_THROW(L"MgCoordinateSystemDictionary.Remove")
 }
 
-//Modifies the specified def in the set.  
+//Modifies the specified def in the set.
 //Throws an exception MgCoordinateSystemMismatchException if the
 //def is not the right kind.
 void CCoordinateSystemDictionary::Modify(MgGuardDisposable *pDefinition)
@@ -505,7 +505,7 @@ void CCoordinateSystemDictionary::Modify(MgGuardDisposable *pDefinition)
     MG_TRY()
 
     assert(NULL != pDefinition);
-    if (NULL == pDefinition) 
+    if (NULL == pDefinition)
     {
         throw new MgNullArgumentException(L"MgCoordinateSystemDictionary.Modify", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -530,7 +530,7 @@ void CCoordinateSystemDictionary::Modify(MgGuardDisposable *pDefinition)
 //This function looks for a coordsys definition in the set with
 //the specified name and, if found, creates an MgCoordinateSystem and
 //returns it (user is responsible for freeing the def via Release()
-//function).  
+//function).
 //Throws an exception if no such definition exists in the catalog.
 MgGuardDisposable* CCoordinateSystemDictionary::Get(CREFSTRING sName)
 {
@@ -547,7 +547,7 @@ MgCoordinateSystem* CCoordinateSystemDictionary::GetCoordinateSystem(CREFSTRING 
     //Get the name to search for
     pName = Convert_Wide_To_Ascii(sName.c_str()); //need to delete [] pName
 
-    if (NULL == pName) 
+    if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDictionary.GetCoordinateSystem", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -601,7 +601,7 @@ bool CCoordinateSystemDictionary::Has(CREFSTRING sName)
     MG_TRY()
     //Get the name to search for
     char *pName = Convert_Wide_To_Ascii(sName.c_str()); //need to delete [] pName
-    if (NULL == pName) 
+    if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDictionary.Has", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -629,11 +629,11 @@ bool CCoordinateSystemDictionary::Has(CREFSTRING sName)
 }
 
 //--------------------------------------------------------------
-//Gets an enumerator for all the defs 
+//Gets an enumerator for all the defs
 MgCoordinateSystemEnum* CCoordinateSystemDictionary::GetEnum()
 {
     MgCoordinateSystemEnum* pEnum=NULL;
-    
+
     MG_TRY()
 
     CCoordinateSystemEnum* pNew=GetEnumImp();
@@ -689,12 +689,12 @@ CCoordinateSystemEnum* CCoordinateSystemDictionary::GetEnumImp()
         default:
             assert(0);
         }
-        if (NULL == m_pmapSystemNameDescription) 
+        if (NULL == m_pmapSystemNameDescription)
         {
             throw new MgInvalidArgumentException(L"MgCoordinateSystemDictionary.GetEnum", __LINE__, __WFILE__, NULL, L"", NULL);
         }
     }
-    
+
     //Make an enumerator object
     pNew = new CCoordinateSystemEnum;
 

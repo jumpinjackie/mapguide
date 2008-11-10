@@ -117,7 +117,7 @@ namespace MentorDictionary
         bool bAlreadyExists)
     {
         assert(NULL != kpDef);
-        if (NULL == kpDef) 
+        if (NULL == kpDef)
         {
             throw new MgNullArgumentException(L"MentorDictionary.UpdateDef", __LINE__, __WFILE__, NULL, L"", NULL);
         }
@@ -131,7 +131,7 @@ namespace MentorDictionary
         //Build a definition from the interface
         T def;
         bool bResult = BuildDefFromInterface(kpDef, def);
-        if (!bResult) 
+        if (!bResult)
         {
             throw new MgCoordinateSystemInitializationFailedException(L"MentorDictionary.UpdateDef", __LINE__, __WFILE__, NULL, L"", NULL);
         }
@@ -280,7 +280,7 @@ namespace MentorDictionary
     {
         //Make sure the specified definition is present
         char *pName = Convert_Wide_To_Ascii(kpName);    //need to delete [] pName;
-        if (NULL == pName) 
+        if (NULL == pName)
         {
             throw new MgOutOfMemoryException(L"MentorDictionary.RemoveDef", __LINE__, __WFILE__, NULL, L"", NULL);
         }

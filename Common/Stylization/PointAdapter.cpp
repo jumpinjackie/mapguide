@@ -52,7 +52,7 @@ void PointAdapter::Stylize(Renderer*                   renderer,
                            MdfModel::FeatureTypeStyle* style,
                            const MdfModel::MdfString*  tooltip,
                            const MdfModel::MdfString*  url,
-                           RS_ElevationSettings*       elevSettings, 
+                           RS_ElevationSettings*       elevSettings,
                            CSysTransformer*            /*layer2mapxformer*/)
 {
     m_exec = exec;

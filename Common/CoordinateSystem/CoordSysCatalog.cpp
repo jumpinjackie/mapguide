@@ -94,7 +94,7 @@ CCoordinateSystemCatalog::CCoordinateSystemCatalog() :
     {
         //We do not throw this exception because:
         //- we might just not care about the default values
-        //of the directory and file names. 
+        //of the directory and file names.
         //They can very well be setup later on by the client
         //- or the client might just not care about them because the dictionaries are
         //being compiled using an interface such as MgCoordinateSystemDictionaryUtility
@@ -185,7 +185,7 @@ STRING CCoordinateSystemCatalog::GetDefaultDictionaryDir()
 #ifdef _WIN32
     //prepares the default path for dictionary failes
     STRING sDirDefault;
-    
+
     // Check to see if the environment variable is set
     const TCHAR* szPathVar = _tgetenv(_T(MENTOR_DICTIONARY_PATH));
 
@@ -400,8 +400,8 @@ bool CCoordinateSystemCatalog::AreDictionaryFilesWritable()
 }
 
 //Attempts to set the dictionary directory and dictionary file names
-//to the system default values, if present.  
-//Throws an exception if it did not complete successfully. 
+//to the system default values, if present.
+//Throws an exception if it did not complete successfully.
 //Note that the effect of this function could be
 //duplicated by first calling GetSysDefaultDictionaryInfo(), then
 //calling SetDictionaryDir() and on each dictionary SetFileName().
@@ -434,12 +434,12 @@ void CCoordinateSystemCatalog::SetDefaultDictionaryDirAndFileNames()
 
 
 //Gets the list of available geodetic transformations MgCoordinateSystemGeodeticTransformation
-//that can transform from the pSource to the target datum pTarget. 
+//that can transform from the pSource to the target datum pTarget.
 //Currently, only one geodetic transformation is available.
-//In a near future, for a given couple suorce/target datums, there might be multiple possible ways for 
+//In a near future, for a given couple suorce/target datums, there might be multiple possible ways for
 //converting to the target datum.
 //If pSource and/or pTarget is NULL, WGS84 is assumed
-//Caller is responsible for freeing the list of geodetic transformations.  
+//Caller is responsible for freeing the list of geodetic transformations.
 //
 MgDisposableCollection* CCoordinateSystemCatalog::GetGeodeticTransformations(MgCoordinateSystemDatum* pSource, MgCoordinateSystemDatum *pTarget)
 {
@@ -483,7 +483,7 @@ MgCoordinateSystemMathComparator* CCoordinateSystemCatalog::GetMathComparator()
     CCoordinateSystemMathComparator *pNew=NULL;
     MG_TRY()
     pNew=new CCoordinateSystemMathComparator;
-    if (NULL == pNew) 
+    if (NULL == pNew)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.GetMathComparator", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -498,7 +498,7 @@ MgCoordinateSystemFormatConverter* CCoordinateSystemCatalog::GetFormatConverter(
     CCoordinateSystemFormatConverter *pNew=NULL;
     MG_TRY()
     pNew=new CCoordinateSystemFormatConverter(this);
-    if (NULL == pNew) 
+    if (NULL == pNew)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.GetFormatConverter", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -514,7 +514,7 @@ MgCoordinateSystemProjectionInformation* CCoordinateSystemCatalog::GetProjection
     CCoordinateSystemProjectionInformation *pNew=NULL;
     MG_TRY()
     pNew=new CCoordinateSystemProjectionInformation();
-    if (NULL == pNew) 
+    if (NULL == pNew)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.GetProjectionInformation", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -530,7 +530,7 @@ MgCoordinateSystemUnitInformation* CCoordinateSystemCatalog::GetUnitInformation(
     CCoordinateSystemUnitInformation *pNew=NULL;
     MG_TRY()
     pNew=new CCoordinateSystemUnitInformation();
-    if (NULL == pNew) 
+    if (NULL == pNew)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.GetUnitInformation", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -546,7 +546,7 @@ MgCoordinateSystemDictionaryUtility* CCoordinateSystemCatalog::GetDictionaryUtil
     CCoordinateSystemDictionaryUtility *pNew=NULL;
     MG_TRY()
     pNew=new CCoordinateSystemDictionaryUtility(this);
-    if (NULL == pNew) 
+    if (NULL == pNew)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.GetDictionaryUtility", __LINE__, __WFILE__, NULL, L"", NULL);
     }

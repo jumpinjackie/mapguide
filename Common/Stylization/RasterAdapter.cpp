@@ -48,13 +48,13 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
                             MdfModel::GridSurfaceStyle* surfStyle,
                             const MdfModel::MdfString*  /*tooltip*/,
                             const MdfModel::MdfString*  /*url*/,
-                            RS_ElevationSettings*       /*elevSettings*/, 
+                            RS_ElevationSettings*       /*elevSettings*/,
                             CSysTransformer*            layer2mapxformer)
 {
 #ifdef _DEBUG
     //printf("\n---===+++ Enter RasterAdapter::Stylize(() +++===---\n");
 #endif
-    
+
     m_exec = exec;
 
     // get the map data extent
@@ -74,7 +74,7 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
     {
         layer2mapxformer->TransformExtent(projRasterExt.minx, projRasterExt.miny,
             projRasterExt.maxx, projRasterExt.maxy);
-    }    
+    }
 
     // intersect the (projected) image extent with the requested map extent
     // this is in map cs
@@ -114,26 +114,26 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
 
         // get the grid size
         int rasterGridSize = renderer->GetRasterGridSize();
-        
+
         // create TransformMesh object here
         TransformMesh* xformMesh = NULL;
 
         if (NULL != layer2mapxformer)
-            xformMesh = new TransformMesh(rasterGridSize, 
-                imgExt, imgW, imgH, 
-                mapExt, devW, devH, 
+            xformMesh = new TransformMesh(rasterGridSize,
+                imgExt, imgW, imgH,
+                mapExt, devW, devH,
                 layer2mapxformer);
 
         //NOTE: Switching back to the code above since RESAMPLE doesn't scale to the
         //correct image size -- it scales to the full screen size instead
-        
+
         //NOTE: since we use a RESAMPLE query for rasters for both RFP and WMS,
         //we know they are already at the correct size, so we do not need to
         //compute a window size here anymore (i.e. the code above should no longer
         //be needed -- it is here for reference or if things change in the future
         //int imgOrigW = raster->GetOriginalWidth();
         //int imgOrigH = raster->GetOriginalHeight();
-        
+
         //TODO: check if we need to move Map's AdjustResolutionWithExtent method and
         //adjust the resolution imgW, imgH here.
         GridData* pGridData = new GridData(Point2D(imgExt.minx, imgExt.miny),
@@ -149,7 +149,7 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
         swprintf(bandName, 10, /*NOXLATE*/L"%d", 1);
         //raster->SetCurrentBand(i);
 
-        pGridData->ReadRaster(raster, bandName, imgW, imgH, 
+        pGridData->ReadRaster(raster, bandName, imgW, imgH,
             imgExt.minx, imgExt.miny, imgExt.maxx, imgExt.maxy, true);
 
         bool succeeded = pGridStylizer->ApplyStyles(pGridData, surfStyle, style);
@@ -182,7 +182,7 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
 
             RS_InputStream* reader = raster->GetStream(RS_ImageFormat_ABGR, imgW, imgH);
 
-            if (NULL != reader 
+            if (NULL != reader
                 && imgW > 0 && imgH > 0) //this is only a sanity check... should not happen
             {
                 //allocate destination image
@@ -192,13 +192,13 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
 
                 switch (bpp)
                 {
-                case 32: 
-                    DecodeRGBA(reader, dst, imgW, imgH); 
+                case 32:
+                    DecodeRGBA(reader, dst, imgW, imgH);
                     break;
-                case 24: 
-                    DecodeRGB(reader, dst, imgW, imgH); 
+                case 24:
+                    DecodeRGB(reader, dst, imgW, imgH);
                     break;
-                case 8: 
+                case 8:
                     {
                         RS_InputStream* pal = raster->GetPalette();
                         DecodeMapped(reader, pal, dst, imgW, imgH);
@@ -206,7 +206,7 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
                             delete pal;
                     }
                     break;
-                case 1: 
+                case 1:
                     {
                         //for bitonal, get the fore- and background colors first
                         RS_Color fg(0,0,0,255);
@@ -231,7 +231,7 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
                         DecodeBitonal(reader, fg, bg, dst, imgW, imgH);
                     }
                     break;
-                default: 
+                default:
                     break;
                 }
 

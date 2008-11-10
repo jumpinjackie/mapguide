@@ -310,7 +310,7 @@ STRING CCoordinateSystemCategory::GetName()
     return sName;
 }
 
-//Sets the name of the def.  
+//Sets the name of the def.
 ////Throws an exception MgInvalidArgumentException
 //if the specified name is not legal.
 void CCoordinateSystemCategory::SetName(CREFSTRING sName)
@@ -407,14 +407,14 @@ bool CCoordinateSystemCategory::IsSameAs(MgGuardDisposable *pDef)
 {
     MG_TRY()
 
-    if (NULL == pDef) 
+    if (NULL == pDef)
     {
         throw new MgNullArgumentException(L"MgCoordinateSystemCategory.IsSameAs", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     //Make sure it's a category def
     MgCoordinateSystemCategory* pCtDef=dynamic_cast<MgCoordinateSystemCategory*>(pDef);
-    if (!pCtDef) 
+    if (!pCtDef)
     {
         return false;
     }
@@ -422,7 +422,7 @@ bool CCoordinateSystemCategory::IsSameAs(MgGuardDisposable *pDef)
     //Get enumerators for doing comparison
     Ptr<MgCoordinateSystemEnum> pThis=GetEnum();
     assert(pThis);
-    if (!pThis) 
+    if (!pThis)
     {
         return false;
     }
@@ -430,7 +430,7 @@ bool CCoordinateSystemCategory::IsSameAs(MgGuardDisposable *pDef)
 
     Ptr<MgCoordinateSystemEnum> pThat=pCtDef->GetEnum();
     assert(pThat);
-    if (!pThat) 
+    if (!pThat)
     {
         return false;
     }
@@ -487,7 +487,7 @@ MgCoordinateSystemCategory* CCoordinateSystemCategory::CreateClone()
     //Create a clone object
     pNew = new CCoordinateSystemCategory(m_pCatalog);
 
-    if (NULL == pNew.p) 
+    if (NULL == pNew.p)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.CreateClone", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -518,7 +518,7 @@ UINT32 CCoordinateSystemCategory::GetSize()
 MgCoordinateSystemEnum* CCoordinateSystemCategory::GetEnum()
 {
     CCoordinateSystemEnumCoordinateSystemInCategory* pNameEnum=NULL;
-    
+
     MG_TRY()
     pNameEnum=new CCoordinateSystemEnumCoordinateSystemInCategory(m_pCatalog);
     if (!pNameEnum)
@@ -538,7 +538,7 @@ MgStringCollection* CCoordinateSystemCategory::GetCoordinateSystems()
     MG_TRY()
 
     pCsColl=new MgStringCollection;
-    if (NULL == pCsColl) 
+    if (NULL == pCsColl)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.GetCoordinateSystems", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -547,7 +547,7 @@ MgStringCollection* CCoordinateSystemCategory::GetCoordinateSystems()
     for (iter=m_listCoordinateSystemNames.begin(); iter!=m_listCoordinateSystemNames.end(); iter++)
     {
         wchar_t *pName = Convert_Ascii_To_Wide((*iter).name);    //need to delete [] pName
-        if (NULL == pName) 
+        if (NULL == pName)
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.GetCoordinateSystems", __LINE__, __WFILE__, NULL, L"", NULL);
         }
@@ -568,7 +568,7 @@ void CCoordinateSystemCategory::AddCoordinateSystem(CREFSTRING sName)
     MG_TRY()
     //Make sure it's a legal name
     char *pName = Convert_Wide_To_Ascii(sName.c_str());    //need to delete [] pName
-    if (NULL == pName) 
+    if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.AddCoordinateSystem", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -608,7 +608,7 @@ void CCoordinateSystemCategory::RemoveCoordinateSystem(CREFSTRING sName)
 
     //Make sure it's a legal name
     char *pName = Convert_Wide_To_Ascii(sName.c_str());    //need to delete [] pName
-    if (NULL == pName) 
+    if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.RemoveCoordinateSystem", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -643,7 +643,7 @@ bool CCoordinateSystemCategory::HasCoordinateSystem(CREFSTRING sName)
     MG_TRY()
     //Make sure it's a legal name
     char *pName = Convert_Wide_To_Ascii(sName.c_str());    //need to delete [] pName
-    if (NULL == pName) 
+    if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.HasCoordinateSystem", __LINE__, __WFILE__, NULL, L"", NULL);
     }

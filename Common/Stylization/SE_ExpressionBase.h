@@ -82,7 +82,11 @@ struct SE_Color
         return value.argb;
     }
 
-    SE_INLINE bool empty() { return defValue.argb == 0 && value.argb == 0 && expression == NULL; }
+    SE_INLINE bool empty()
+    {
+        return defValue.argb == 0 && value.argb == 0 && expression == NULL;
+    }
+
     SE_INLINE void operator=(SE_Color& c)
     {
         defValue.argb = c.defValue.argb;
@@ -212,9 +216,19 @@ struct SE_Boolean
 //////////////////////////////////////////////////////////////////////////////
 struct SE_String
 {
+    wchar_t* defValue;
+    wchar_t* value;
     FdoExpression* expression;
 
-    wchar_t* defValue;
+    SE_INLINE SE_String() : defValue(NULL), value(NULL), expression(NULL) { }
+    ~SE_String()
+    {
+        delete[] value;
+        delete[] defValue;
+        if (expression)
+            expression->Release();
+    }
+
     void setDefValue( wchar_t* newDefValue )
     {
         delete[] defValue;
@@ -222,10 +236,9 @@ struct SE_String
     }
     const wchar_t* getDefValue()
     {
-        return  defValue;
+        return defValue;
     }
 
-    wchar_t* value;
     void setValue( wchar_t* newValue )
     {
         delete[] value;
@@ -234,22 +247,17 @@ struct SE_String
     const wchar_t* getValue()
     {
         static const wchar_t* sEmpty = L"";
-        if ( value )
-            return  value;
-        else
-        if ( defValue )
-            return defValue;
-        else
-            return sEmpty;
-    }
 
-    SE_INLINE SE_String() : value(NULL), defValue(NULL), expression(NULL) { }
-    ~SE_String()
-    {
-        delete[] value;
-        delete[] defValue;
-        if (expression)
-            expression->Release();
+        // value has highest priority
+        if (value)
+            return value;
+
+        // followed by defValue
+        if (defValue)
+            return defValue;
+
+        // otherwise an empty string
+        return sEmpty;
     }
 
     SE_INLINE const wchar_t* evaluate(FdoExpressionEngine* exec)

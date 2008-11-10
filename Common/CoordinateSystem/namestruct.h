@@ -60,14 +60,14 @@
 template<int nSize>
 struct TNameStruct
 {
-	//data members
-	char name[nSize];
-	//member functions
-	TNameStruct(const char *kpName = NULL);
-	bool operator<(const TNameStruct& other) const;
-	bool operator>(const TNameStruct& other) const;
-	bool operator==(const TNameStruct&) const;
-	bool operator!=(const TNameStruct&) const;
+    //data members
+    char name[nSize];
+    //member functions
+    TNameStruct(const char *kpName = NULL);
+    bool operator<(const TNameStruct& other) const;
+    bool operator>(const TNameStruct& other) const;
+    bool operator==(const TNameStruct&) const;
+    bool operator!=(const TNameStruct&) const;
 };
 
 //This struct holds a summary of a definition (just name and description,
@@ -110,15 +110,15 @@ typedef std::list<CCategoryName> CCategoryNameList;
 template<int nSize>
 TNameStruct<nSize>::TNameStruct(const char *kpName)
 {
-	if (NULL == kpName)
-	{
-		memset(name, 0, sizeof(name));
-	}
-	else
-	{
-		strncpy(name, kpName, nSize);
-		name[nSize-1] = '\0';
-	}
+    if (NULL == kpName)
+    {
+        memset(name, 0, sizeof(name));
+    }
+    else
+    {
+        strncpy(name, kpName, nSize);
+        name[nSize-1] = '\0';
+    }
 }
 
 
@@ -128,7 +128,7 @@ template<int nSize>
 bool
 TNameStruct<nSize>::operator<(const TNameStruct& other) const
 {
-	return (_stricmp(name, other.name) < 0);
+    return (_stricmp(name, other.name) < 0);
 }
 
 
@@ -138,7 +138,7 @@ template<int nSize>
 bool
 TNameStruct<nSize>::operator>(const TNameStruct& other) const
 {
-	return (_stricmp(name, other.name) > 0);
+    return (_stricmp(name, other.name) > 0);
 }
 
 
@@ -148,7 +148,7 @@ template<int nSize>
 bool
 TNameStruct<nSize>::operator==(const TNameStruct& other) const
 {
-	return (_stricmp(name, other.name) == 0);
+    return (_stricmp(name, other.name) == 0);
 }
 
 
@@ -158,7 +158,7 @@ template<int nSize>
 bool
 TNameStruct<nSize>::operator!=(const TNameStruct& other) const
 {
-	return (_stricmp(name, other.name) != 0);
+    return (_stricmp(name, other.name) != 0);
 }
 
 #endif //MG_NAMESTRUCT_H

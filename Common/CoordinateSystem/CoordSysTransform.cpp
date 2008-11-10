@@ -122,7 +122,7 @@ void CCoordinateSystemTransform::TransformPoint(double& x, double& y, double *pd
     // Is the coordinate system geographic?
     if((m_bIgnoreOutsideDomainWarning) && (MgCoordinateSystemType::Geographic == m_pCsSource->GetType()))
     {
-        // If so, adjust the coordinates that are outside the legal extents because Mentor automatically 
+        // If so, adjust the coordinates that are outside the legal extents because Mentor automatically
         // adjusts them which ends up clipping data.
         if(dCoords[0] > m_pCsSource->GetLonMax())
         {
@@ -861,9 +861,9 @@ MgCoordinateSystem* CCoordinateSystemTransform::GetTarget()
 //The converter will copy any necessary information out of the provided
 //coordinate systems (rather than assuming ownership), so the caller is
 //free to dispose of them after the function returns.  Upon obtaining an
-//MgCoordinateSystem object from a catalog, this function 
+//MgCoordinateSystem object from a catalog, this function
 //must be successfully called before any conversions can be made with the
-//object.  
+//object.
 //Throws an exception if there's a
 //problem with one of the input coordinate systems (for example, if they
 //haven't been properly initialized).
@@ -944,7 +944,7 @@ void CCoordinateSystemTransform::SetSourceAndTarget(MgCoordinateSystem* pSource,
 //not mathematically valid for the source coordinate system; the
 //coordinate system has a defined useful range, the converter has
 //range checking turned on, and the specified point lies outside that
-//range.  Otherwise, returns true.  
+//range.  Otherwise, returns true.
 //Throws an exception if the source
 //coordinate system has not been successfully set.
 //

@@ -733,13 +733,13 @@ void DWFRenderer::ProcessRaster(unsigned char* _data,
                                 RS_ImageFormat _format,
                                 int            width,
                                 int            height,
-                                RS_Bounds&     extents, 
+                                RS_Bounds&     extents,
                                 TransformMesh* xformMesh)
 {
     unsigned char* data = _data;
     int length = _length;
     RS_ImageFormat format = _format;
-    
+
     agg_context* aggcxt = NULL;
 
     if (NULL != xformMesh)
@@ -755,10 +755,10 @@ void DWFRenderer::ProcessRaster(unsigned char* _data,
         double imgDevH = extents.height() * m_scale / GetScreenUnitsPerPixel() + 1;
 
         // create agg_context for outputting projected raster
-        // 
+        //
         aggcxt = new agg_context(NULL, (int)imgDevW, (int)imgDevH);
         aggcxt->ren.clear(agg::argb8_packed(0));
-        
+
         AGGRenderer::DrawScreenRasterTransform(aggcxt, data, length, format, width, height, cx, cy, imgDevW, imgDevH, xformMesh);
         //AGGRenderer::_DrawDummyRect(aggcxt, imgDevW, imgDevH, xformMesh);
         int aggw = aggcxt->rb.width();

@@ -26,7 +26,7 @@ class CCoordinateSystemEnumInteger32 : public MgCoordinateSystemEnumInteger32
 public:
     CCoordinateSystemEnumInteger32();
     virtual ~CCoordinateSystemEnumInteger32();
-	void SetList(INT32 *pInt32s, UINT32 ulSize);
+    void SetList(INT32 *pInt32s, UINT32 ulSize);
 
 //    virtual MgIntCollection* Next(UINT32 ulCount);
     virtual MgStringCollection* Next(UINT32 ulCount);
@@ -39,16 +39,16 @@ protected:
     virtual void Dispose();
 
 protected:
-	bool IsFilteredOut(INT32 nValue);
-	void ClearFilter();
+    bool IsFilteredOut(INT32 nValue);
+    void ClearFilter();
 
 protected:
-	//Data members
+    //Data members
     std::vector<MgCoordinateSystemFilterInteger32*> m_vectFilter;
-	//Data members
-	INT32 *m_pnValues;
-	UINT32 m_ulSize;
-	UINT32 m_ulPos;
+    //Data members
+    INT32 *m_pnValues;
+    UINT32 m_ulSize;
+    UINT32 m_ulPos;
 
 private:
     CCoordinateSystemEnumInteger32(const CCoordinateSystemEnumInteger32&);

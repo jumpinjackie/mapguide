@@ -58,7 +58,7 @@ const double kdMaxEllipsoidFlat = 0.0040;           //from CSelcomp(), WARNING: 
 
 
 //Utility functions which return pointers to Mentor struct
-//descriptions.  This is only necessary because this data 
+//descriptions.  This is only necessary because this data
 //member has different names in the different structs.
 //
 const char * ElDesc(const cs_Eldef_& def);
@@ -213,8 +213,8 @@ csFILE* OpenDictionaryFile(
     CsDictionaryOpenMode (*ValidMagic)(long));
 
 bool GetMagicFromDictionaryFile(
-    const wchar_t *kpFileName, 
-    INT32& lMagic, 
+    const wchar_t *kpFileName,
+    INT32& lMagic,
     CsDictionaryOpenMode (*ValidMagic)(long));
 
 //Returns the current "Mentor time" in days since January 1, 1990.
@@ -305,7 +305,7 @@ bool MathematicallySameEllipsoidDef(
 //MENTOR_MAINTENANCE
 //Projections.  Numeric values are ported from Mentor.
 //Numeric values come from in cs_map.h, those prefixed with cs_PRJCOD_
-//Text string values in comment come from CSdataPJ.c 
+//Text string values in comment come from CSdataPJ.c
 //can be used in by the UI to be displayed to the user
 //In CSdataPJ.c at the same place, in the array of structures cs_Prjtab
 //we can also find the projection name that appears in the

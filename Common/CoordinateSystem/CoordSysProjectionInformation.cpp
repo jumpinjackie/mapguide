@@ -187,7 +187,7 @@ bool CCoordinateSystemProjectionInformation::IsUsingParameter(INT32 nProjectionC
     }
 
     assert((ulIndex>=1) && (ulIndex<=knCsNumParams));
-    if ((ulIndex < 1) || (ulIndex > knCsNumParams)) 
+    if ((ulIndex < 1) || (ulIndex > knCsNumParams))
     {
         throw new MgInvalidArgumentException(L"MgCoordinateSystemProjectionInformation.GetParameterCount", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -244,7 +244,7 @@ bool CCoordinateSystemProjectionInformation::IsUsingOffset(INT32 nProjectionCode
 }
 
 //Gets the mathematical limits of the specified parameter for
-//the specified projection.  
+//the specified projection.
 //Throws an exception if nProjectionCode is not a valid projection,
 //MgCoordinateSystemMismatchException if ulIndex does not specify a parameter
 //which this projection uses.
@@ -328,7 +328,7 @@ double CCoordinateSystemProjectionInformation::GetParameterMax(INT32 nProjection
 }
 
 //Gets the "reasonable default" value of the specified
-//parameter for the specified projection.  
+//parameter for the specified projection.
 //Throws an exception if nProjectionCode
 //is not a valid projection, or with MgCoordinateSystemMismatchException if ulIndex
 //does not specify a parameter which this projection uses.
@@ -377,7 +377,7 @@ double CCoordinateSystemProjectionInformation::GetParameterDefault(INT32 nProjec
 //Gets the "logical type" of the specified parameter for
 //the specified projection; this information could be
 //used, for example, to tell a UI how to format an edit
-//box for entering values.  
+//box for entering values.
 //Throws an exception if nProjectionCode is not a valid
 //projection, or MgCoordinateSystemMismatchException if ulIndex does not
 //specify a parameter which this projection uses.
@@ -428,7 +428,7 @@ INT32 CCoordinateSystemProjectionInformation::GetParameterLogicalType(INT32 nPro
 
 //Gets the "format type" of the specified parameter for the specified
 //projection; this information could be used, for example, to tell a
-//UI how to format an edit box for entering values.  
+//UI how to format an edit box for entering values.
 //Throws an exception if nProjectionCode is not a valid
 //projection, or MgCoordinateSystemMismatchException if ulIndex does not specify a
 //parameter which this projection uses.
@@ -474,7 +474,7 @@ INT32 CCoordinateSystemProjectionInformation::GetParameterFormatType(INT32 nProj
     //Return the information.
     formatType = static_cast<INT32>(info.format);
     MG_CATCH_AND_THROW(L"MgCoordinateSystemProjectionInformation.GetParamFormatType")
-    
+
     return formatType;
 }
 
@@ -482,7 +482,7 @@ INT32 CCoordinateSystemProjectionInformation::GetParameterFormatType(INT32 nProj
 //projection (i.e., is it longitude of central meridian, latitude
 //of standard parallel, etc.); this information could be used, for
 //example, to tell a UI how to label an edit box for entering
-//values.  
+//values.
 //Throws an exception if nProjectionCode is not a valid projection, or MgCoordinateSystemMismatchException if
 //ulIndex does not specify a parameter which this projection uses.
 //
@@ -560,7 +560,7 @@ STRING CCoordinateSystemProjectionInformation::GetTagString(INT32 nProjectionCod
     }
 
     wchar_t* pszTag=Convert_Ascii_To_Wide(StringFromProjection(nProjectionCode));
-    if (NULL == pszTag) 
+    if (NULL == pszTag)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemProjectionInformation.GetTagString", __LINE__, __WFILE__, NULL, L"", NULL);
     }

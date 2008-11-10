@@ -41,7 +41,7 @@ public:
     {
     }
 
-	///<summary>
+    ///<summary>
     /// Initializes the Renderer with mapping context information
     /// for generating a view of a map
     ///</summary>
@@ -113,7 +113,7 @@ public:
                                RS_ImageFormat   format,
                                int              width,
                                int              height,
-                               RS_Bounds&       extents, 
+                               RS_Bounds&       extents,
                                TransformMesh*   xformMesh = NULL) = 0;
 
     ///<summary>
@@ -201,7 +201,7 @@ public:
     //------------------------------------------------------
     // Miscellaneous
     //------------------------------------------------------
-    
+
     // gets/sets the size of the transformation mesh grid used for raster
     // re-projection
     virtual int GetRasterGridSize() = 0;

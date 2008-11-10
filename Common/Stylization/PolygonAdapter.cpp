@@ -52,7 +52,7 @@ void PolygonAdapter::Stylize(Renderer*                   renderer,
                              MdfModel::FeatureTypeStyle* style,
                              const MdfModel::MdfString*  tooltip,
                              const MdfModel::MdfString*  url,
-                             RS_ElevationSettings*       elevSettings, 
+                             RS_ElevationSettings*       elevSettings,
                              CSysTransformer*            /*layer2mapxformer*/)
 {
     m_exec = exec;
@@ -84,7 +84,7 @@ void PolygonAdapter::Stylize(Renderer*                   renderer,
         return;
 
     MdfModel::AreaSymbolization2D* asym = rule->GetSymbolization();
-    if (asym == NULL )
+    if (asym == NULL)
         return;
 
     RS_String tip; //TODO: this should be quick since we are not assigning

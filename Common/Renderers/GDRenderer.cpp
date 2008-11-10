@@ -515,11 +515,11 @@ void GDRenderer::ProcessRaster(unsigned char* data,
                                int length,
                                RS_ImageFormat format,
                                int width, int height,
-                               RS_Bounds& extents, 
+                               RS_Bounds& extents,
                                TransformMesh* /*xformMesh*/)
 {
     // TODO: use xformMesh and call AGGRenderer::DrawScreenRasterTransformed
-    // 
+    //
 
     double cx = 0.5 * (extents.minx + extents.maxx);
     double cy = 0.5 * (extents.miny + extents.maxy);

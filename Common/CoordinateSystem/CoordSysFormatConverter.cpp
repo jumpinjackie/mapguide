@@ -69,7 +69,7 @@ STRING CCoordinateSystemFormatConverter::DefinitionToWkt(MgCoordinateSystem* pSo
     }
 
     bool bResult = BuildDefsFromInterface(pSource, pCsDef, pDtDef, pElDef);
-    if (!bResult) 
+    if (!bResult)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFormatConverter.DefinitionToWkt", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -86,7 +86,7 @@ STRING CCoordinateSystemFormatConverter::DefinitionToWkt(MgCoordinateSystem* pSo
         if (0==CScs2WktEx(csWktBufr,sizeof(csWktBufr),GetWktFlavor(nWktFlavor),pCsDef, pDtDef, pElDef,cs_WKTFLG_MAPNAMES))
         {
             wchar_t* pwszWkt=Convert_Ascii_To_Wide(csWktBufr);
-            if (!pwszWkt) 
+            if (!pwszWkt)
             {
                 throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.DefinitionToWkt", __LINE__, __WFILE__, NULL, L"", NULL);
             }
@@ -160,7 +160,7 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::WktToDefinition(INT32 nWkt
 
             //Construct our object
             Ptr<CCoordinateSystem> pNew = new CCoordinateSystem(m_pCatalog);
-            if (NULL == pNew.p) 
+            if (NULL == pNew.p)
             {
                 throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.WktToDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
             }
@@ -173,7 +173,7 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::WktToDefinition(INT32 nWkt
     }
 
     pszWkt = Convert_Wide_To_Ascii(sWkt.c_str());
-    if (NULL == pszWkt) 
+    if (NULL == pszWkt)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.WktToDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -190,7 +190,7 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::WktToDefinition(INT32 nWkt
     }
 
     //IMPORTANT
-    //bRunBinaryFallback could be false, and make the code run faster, to not run the 
+    //bRunBinaryFallback could be false, and make the code run faster, to not run the
     //binary fallback against coordsys.csd
     //because in this API we just care about having a valid CS definition
     //we don't care about having an actual defintion inside the Mentor dictionary
@@ -266,7 +266,7 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::WktToDefinition(INT32 nWkt
             if (dtDef.key_nm[0] != '\0')
             {
                 //geodetic system
-		        CS_stncp (dtDef.ell_knm, elDef.key_nm, cs_KEYNM_DEF);
+                CS_stncp (dtDef.ell_knm, elDef.key_nm, cs_KEYNM_DEF);
             }
             else //if (csDef.elp_knm[0] != '\0')
             {
@@ -297,21 +297,21 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::WktToDefinition(INT32 nWkt
         try
         {
             Ptr<MgCoordinateSystem> pCsFromDict=GetCoordinateSystem(pswCsName);
-            
+
             if (NULL != pCsFromDict.p)
             {
                 sCsNameFromDict=pCsFromDict->GetCode();
                 sDtNameFromDict=pCsFromDict->GetDatum();
                 sElNameFromDict=pCsFromDict->GetEllipsoid();
 
-                if (sCsNameFromDict==pswCsName && 
+                if (sCsNameFromDict==pswCsName &&
                     (pswDtName && sDtNameFromDict==pswDtName) &&
                     (pswElName && sElNameFromDict==pswElName))
                 {
                     //we just loaded it so it could be a protected system
                     //remove that protection to make it behave like if
                     //it was coming from the Mentor API as a custom system
-                    //In any case if we try later on to add this system to 
+                    //In any case if we try later on to add this system to
                     //the dictionary we will fail because it is protected
                     //in the dictionary file
                     pCsFromDict->SetProtectMode(false);
@@ -327,7 +327,7 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::WktToDefinition(INT32 nWkt
                     {
                         delete[] pswElName;
                     }
-                
+
                     //this is the one from the dictionary, so return it
                     return pCsFromDict.Detach();
                 }
@@ -337,7 +337,7 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::WktToDefinition(INT32 nWkt
         {
             //end up here if we could not load the cs, dt or el from our dictionaries
             //that would mean the system generated from the WKT is a custom system
-            //and in that case we cannot initialized the group, description and other 
+            //and in that case we cannot initialized the group, description and other
             //text information parameters
             pEFromDict->Release();
         }
@@ -384,7 +384,7 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::WktToDefinition(INT32 nWkt
             //Release().
         }
         //We just have an ellipsoid
-        //Looking at the code of the method 
+        //Looking at the code of the method
         //int EXP_LVL1 CS_cs2Wkt (char *bufr,size_t bufrSize,const char *csKeyName,int flavor)
         //in the file cscs2wkt.c in Mentor, all non geodetic systems fail to be converted to WKT
         //returning the error cs_WKT_NODTREF
@@ -415,7 +415,7 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::WktToDefinition(INT32 nWkt
     MG_CATCH(L"MgCoordinateSystemFormatConverter.WktToDefinition")
 
     delete[] pszWkt;
-    
+
     // Note: the MG_TRY macro at the top of this method includes the following declaration:
     //      Ptr<MgException> mgException;
     // The MG_CATCH macro immediately above catches all exceptions and manufactures a MgException
@@ -535,13 +535,13 @@ STRING CCoordinateSystemFormatConverter::CodeToWkt(INT32 nFormatSource, CREFSTRI
     {
         ConvertArbitraryToWkt(pCsCoordinateSystemDef, sWkt);
     }
-    else 
+    else
     {
         SmartCriticalClass critical(true);
         if (0==CS_cs2Wkt(csWktBufr,sizeof(csWktBufr),szMsiName,GetWktFlavor(nWktFlavor)))
         {
             wchar_t* wszWkt=Convert_Ascii_To_Wide(csWktBufr);
-            if (!wszWkt) 
+            if (!wszWkt)
             {
                 throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.CodeToWkt", __LINE__, __WFILE__, NULL, L"", NULL);
             }
@@ -586,7 +586,7 @@ STRING CCoordinateSystemFormatConverter::WktToCode(INT32 nWktFlavor, CREFSTRING 
     struct cs_Csdef_ csDef;
 
     pszWkt = Convert_Wide_To_Ascii(sWkt.c_str());
-    if (NULL == pszWkt) 
+    if (NULL == pszWkt)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.WktToCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -622,7 +622,7 @@ STRING CCoordinateSystemFormatConverter::WktToCode(INT32 nWktFlavor, CREFSTRING 
 
         struct cs_Dtdef_ dtDef;
         struct cs_Eldef_ elDef;
-        
+
         //bRunBinaryFallback is true to run the binary fallback against coordsys.csd
         //in this API we DO care about having a valid CS definition
         //inside the Mentor dictionary
@@ -676,7 +676,7 @@ STRING CCoordinateSystemFormatConverter::WktToCode(INT32 nWktFlavor, CREFSTRING 
             if (MgCoordinateSystemCodeFormat::Mentor==nFormatDestination)
             {
                 wchar_t* pwszCsDestination=Convert_Ascii_To_Wide(pszCsDestination);
-                if (pwszCsDestination) 
+                if (pwszCsDestination)
                 {
                     sCsCodeDestination=pwszCsDestination;
                     delete[] pwszCsDestination;
@@ -706,7 +706,7 @@ STRING CCoordinateSystemFormatConverter::WktToCode(INT32 nWktFlavor, CREFSTRING 
     }
     MG_CATCH(L"MgCoordinateSystemFormatConverter.WktToCode")
     delete [] pszWkt;
-    
+
     // Note: the MG_TRY macro at the top of this method includes the following declaration:
     //      Ptr<MgException> mgException;
     // The MG_CATCH macro immediately above catches all exceptions and manufactures a MgException
@@ -721,7 +721,7 @@ STRING CCoordinateSystemFormatConverter::WktToCode(INT32 nWktFlavor, CREFSTRING 
         wktFailurePtr->Set (sWkt,mgException);
     }
     // OK, the failure has been cached, we throw the exception in the normal manner
-    // (if such exception exists).    
+    // (if such exception exists).
     MG_THROW()
 
     return sCsCodeDestination;
@@ -749,7 +749,7 @@ STRING CCoordinateSystemFormatConverter::DefinitionToCode(MgCoordinateSystem* pS
     }
 
     pszCsSource = Convert_Wide_To_Ascii(sCsSource.c_str());
-    if (NULL == pszCsSource) 
+    if (NULL == pszCsSource)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.DefinitionToCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -767,7 +767,7 @@ STRING CCoordinateSystemFormatConverter::DefinitionToCode(MgCoordinateSystem* pS
     {
         //stupid case but better than returning E_INVALIDARG
         wchar_t* pwszCsDestination=Convert_Ascii_To_Wide(pszCsSource);
-        if (pwszCsDestination) 
+        if (pwszCsDestination)
         {
             sCsCodeDestination=pwszCsDestination;
             delete[] pwszCsDestination;
@@ -811,7 +811,7 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::CodeToDefinition(INT32 nFo
     MG_TRY()
 
     pszCsSource = Convert_Wide_To_Ascii(sCodeSource.c_str());
-    if (NULL == pszCsSource) 
+    if (NULL == pszCsSource)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.CodeToDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -887,7 +887,7 @@ STRING CCoordinateSystemFormatConverter::CodeToCode(INT32 nFormatSource, CREFSTR
     MG_TRY()
 
     pszCsSource = Convert_Wide_To_Ascii(sCodeSource.c_str());
-    if (NULL == pszCsSource) 
+    if (NULL == pszCsSource)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.CodeToCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -914,7 +914,7 @@ STRING CCoordinateSystemFormatConverter::CodeToCode(INT32 nFormatSource, CREFSTR
                     if (bIsCoordinateSystem)
                     {
                         wchar_t *pwszCsDestination=Convert_Ascii_To_Wide(szMsiName);
-                        if (!pwszCsDestination) 
+                        if (!pwszCsDestination)
                         {
                             throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.CodeToCode", __LINE__, __WFILE__, NULL, L"", NULL);
                         }

@@ -208,7 +208,7 @@ MgEnvelope* CCoordinateSystemMeasure::GetEnvelope()
 {
     MgEnvelope* pNew=NULL;
     pNew=new MgEnvelope(m_pCoordSys->GetMinX(), m_pCoordSys->GetMinY(), m_pCoordSys->GetMaxX(), m_pCoordSys->GetMaxY());
-    if (NULL == pNew) 
+    if (NULL == pNew)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemMeasure.GetEnvelope", __LINE__, __WFILE__, NULL, L"", NULL);
     }

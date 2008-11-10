@@ -46,7 +46,7 @@ void CCoordinateSystemEnum::Dispose()
 //object before anything else can be done with it.
 //
 void CCoordinateSystemEnum::Initialize(
-    MgCoordinateSystemDictionaryBase* pDict, 
+    MgCoordinateSystemDictionaryBase* pDict,
     CSystemNameDescriptionMap *pmapSystemNameDescription)
 {
     assert(NULL != pmapSystemNameDescription);
@@ -105,14 +105,14 @@ MgDisposableCollection* CCoordinateSystemEnum::Next(UINT32 ulCount)
     }
     for (; m_iter != m_pmapSystemNameDescription->end(); m_iter++)
     {
-        if (pOutput->GetCount() == ulCount) 
+        if (pOutput->GetCount() == ulCount)
         {
             //success
             return pOutput.Detach();
         }
         const char *kpName = (*m_iter).first.name;
         wchar_t* pStr = Convert_Ascii_To_Wide(kpName);
-        if (NULL == pStr) 
+        if (NULL == pStr)
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.Next", __LINE__, __WFILE__, NULL, L"", NULL);
         }
@@ -121,7 +121,7 @@ MgDisposableCollection* CCoordinateSystemEnum::Next(UINT32 ulCount)
         delete[] pStr;
         Ptr<MgGuardDisposable> pDef=m_pDict->Get(str);
         assert(pDef);
-        if (!pDef) 
+        if (!pDef)
         {
             MgStringCollection arguments;
             arguments.Add(str);
@@ -155,7 +155,7 @@ MgStringCollection* CCoordinateSystemEnum::NextName(UINT32 ulCount)
     }
     for (; m_iter != m_pmapSystemNameDescription->end(); m_iter++)
     {
-        if (pOutput->GetCount() == ulCount) 
+        if (pOutput->GetCount() == ulCount)
         {
             //success
             return pOutput.Detach();
@@ -190,7 +190,7 @@ MgStringCollection* CCoordinateSystemEnum::NextDescription(UINT32 ulCount)
     }
     for (; m_iter != m_pmapSystemNameDescription->end(); m_iter++)
     {
-        if (pOutput->GetCount() == ulCount) 
+        if (pOutput->GetCount() == ulCount)
         {
             //success
             return pOutput.Detach();
@@ -214,7 +214,7 @@ MgStringCollection* CCoordinateSystemEnum::NextDescription(UINT32 ulCount)
 }
 
 //----------------------------------------------------------
-//Skips the next ulSkipCount names.  
+//Skips the next ulSkipCount names.
 //Throws an exception if ulSkipCount items were not skipped
 //
 void CCoordinateSystemEnum::Skip(UINT32 ulSkipCount)
@@ -224,7 +224,7 @@ void CCoordinateSystemEnum::Skip(UINT32 ulSkipCount)
     UINT32 ulSkipped;
     for (ulSkipped=0; m_iter != m_pmapSystemNameDescription->end(); m_iter++)
     {
-        if (ulSkipped == ulSkipCount) 
+        if (ulSkipped == ulSkipCount)
         {
             //success
             return;
@@ -341,8 +341,8 @@ MgCoordinateSystemEnum* CCoordinateSystemEnum::CreateClone()
 
     //Make an object to be the copy
     pNew = new CCoordinateSystemEnum;
-    
-    if (NULL == pNew.p) 
+
+    if (NULL == pNew.p)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.CreateClone", __LINE__, __WFILE__, NULL, L"", NULL);
     }

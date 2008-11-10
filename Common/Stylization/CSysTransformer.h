@@ -36,7 +36,7 @@ public:
     {
         double xValues[4];
         double yValues[4];
-        
+
         // Lower left
         xValues[0] = minX;
         yValues[0] = minY;

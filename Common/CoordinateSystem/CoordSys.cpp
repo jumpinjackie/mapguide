@@ -681,7 +681,7 @@ MgCoordinateSystemEnumInteger32* CCoordinateSystem::GetErrors()
     MG_TRY()
 
     //Check the definition, see how many errors we get.
-    CriticalClass.Enter(); 
+    CriticalClass.Enter();
     int nNumErrs = CS_cschk(&m_csprm.csdef, 0, NULL, 0);
     CriticalClass.Leave();
     if (0 == nNumErrs)
@@ -693,18 +693,18 @@ MgCoordinateSystemEnumInteger32* CCoordinateSystem::GetErrors()
 
     //Make an array of integers to hold the error codes.
     int *pErrs = new int[nNumErrs];
-    if (NULL == pErrs) 
+    if (NULL == pErrs)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetErrors", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     pErrsInt32 = new INT32[nNumErrs];
-    if (NULL == pErrsInt32) 
+    if (NULL == pErrsInt32)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetErrors", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     //Get the errors
-    CriticalClass.Enter(); 
+    CriticalClass.Enter();
     int nNumErrsAgain = CS_cschk(&m_csprm.csdef, 0, pErrs, nNumErrs);
     CriticalClass.Leave();
     assert(nNumErrsAgain == nNumErrs);
@@ -774,7 +774,7 @@ STRING CCoordinateSystem::ToString()
 STRING CCoordinateSystem::GetUnits()
 {
     wchar_t* pUnit = Convert_Ascii_To_Wide(m_csprm.csdef.unit);
-    if (NULL == pUnit) 
+    if (NULL == pUnit)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetUnits", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -940,7 +940,7 @@ STRING CCoordinateSystem::GetCode()
 
     MG_TRY()
     wchar_t* pName = Convert_Ascii_To_Wide(m_csprm.csdef.key_nm);
-    if (NULL == pName) 
+    if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -952,14 +952,14 @@ STRING CCoordinateSystem::GetCode()
 }
 
 //-----------------------------------------------------------------------------
-//Sets the key name of the coordinate system.  
+//Sets the key name of the coordinate system.
 //Throws an exception MgInvalidArgumentException if the provided string is not
 //a legal coordinate system name.
 //
 void CCoordinateSystem::SetCode(CREFSTRING sCode)
 {
     MG_TRY()
-    
+
     if (Protected())
     {
         //Can't modify a read-only object.
@@ -974,7 +974,7 @@ void CCoordinateSystem::SetCode(CREFSTRING sCode)
 
     //Convert to a C++ string, for Mentor's sake
     char *pStr = Convert_Wide_To_Ascii(sCode.c_str()); //need to delete[] pStr
-    if (NULL == pStr) 
+    if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.SetCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -1020,7 +1020,7 @@ STRING CCoordinateSystem::GetProjection()
     MG_TRY()
 
     wchar_t* pProjection = Convert_Ascii_To_Wide(m_csprm.csdef.prj_knm);
-    if (NULL == pProjection) 
+    if (NULL == pProjection)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetProjection", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -1039,7 +1039,7 @@ INT32 CCoordinateSystem::GetProjectionCode()
     return ProjectionFromString(m_csprm.csdef.prj_knm);
 }
 
-//Sets the projection to the specified projection type.  
+//Sets the projection to the specified projection type.
 //Throws an exception MgInvalidArgumentException if the supplied projection code is unknown.
 //Note:  Calling this function resets all numeric parameters in the
 //coordinate system to zero; so when a client app sets up a coordinate
@@ -1166,7 +1166,7 @@ STRING CCoordinateSystem::GetDatum()
     }
 
     wchar_t* pDatum = Convert_Ascii_To_Wide(m_csprm.csdef.dat_knm);
-    if (NULL == pDatum) 
+    if (NULL == pDatum)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetDatum", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -1228,7 +1228,7 @@ STRING CCoordinateSystem::GetEllipsoid()
     }
 
     wchar_t* pEllipsoid = Convert_Ascii_To_Wide(m_csprm.csdef.elp_knm);
-    if (NULL == pEllipsoid) 
+    if (NULL == pEllipsoid)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetEllipsoid", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -1352,14 +1352,14 @@ bool CCoordinateSystem::IsValid()
     int nNumErrs = CS_cschk(&m_csprm.csdef, 0, NULL, 0);
     CriticalClass.Leave();
     bIsValid = (0 == nNumErrs);
-    if (!bIsValid) 
+    if (!bIsValid)
     {
         return false;
     }
 
     //Make sure the name is legal
     bIsValid = IsLegalMentorName(m_csprm.csdef.key_nm);
-    if (!bIsValid) 
+    if (!bIsValid)
     {
         return false;
     }
@@ -1401,7 +1401,7 @@ bool CCoordinateSystem::IsUsable(MgCoordinateSystemCatalog *pCatalog)
     MG_TRY()
 
     assert(NULL != pCatalog);
-    if (NULL == pCatalog) 
+    if (NULL == pCatalog)
     {
         throw new MgNullArgumentException(L"MgCoordinateSystem.IsUsable", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -1438,7 +1438,7 @@ bool CCoordinateSystem::IsUsable(MgCoordinateSystemCatalog *pCatalog)
 
         //Build a wchar_t* from the datum name
         wchar_t* pStrDt = Convert_Ascii_To_Wide(m_csprm.csdef.dat_knm);
-        if (NULL == pStrDt) 
+        if (NULL == pStrDt)
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystem.IsUsable", __LINE__, __WFILE__, NULL, L"", NULL);
         }
@@ -1455,14 +1455,14 @@ bool CCoordinateSystem::IsUsable(MgCoordinateSystemCatalog *pCatalog)
 
         //Get the appropriate interface from the catalog
         Ptr<MgCoordinateSystemEllipsoidDictionary> pElDict=pCatalog->GetEllipsoidDictionary();
-        if (!pElDict) 
+        if (!pElDict)
         {
             throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.IsUsable", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoEllipsoidDictionaryException", NULL);
         }
 
         //Build a wchar_t* from the ellipsoid name
         wchar_t* pStrEl = Convert_Ascii_To_Wide(m_csprm.csdef.elp_knm);
-        if (NULL == pStrEl) 
+        if (NULL == pStrEl)
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystem.IsUsable", __LINE__, __WFILE__, NULL, L"", NULL);
         }
@@ -1486,7 +1486,7 @@ bool CCoordinateSystem::IsSameAs(MgGuardDisposable *pDef)
     MG_TRY()
 
     assert(NULL != pDef);
-    if (NULL == pDef) 
+    if (NULL == pDef)
     {
         throw new MgNullArgumentException(L"MgCoordinateSystem.IsSameAs", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -1496,7 +1496,7 @@ bool CCoordinateSystem::IsSameAs(MgGuardDisposable *pDef)
 
     //Make sure it's a coordinate system definition
     MgCoordinateSystem* pCsDef=dynamic_cast<MgCoordinateSystem*>(pDef);
-    if (!pCsDef) 
+    if (!pCsDef)
     {
         return false;	//not a coordsys def!
     }
@@ -1504,7 +1504,7 @@ bool CCoordinateSystem::IsSameAs(MgGuardDisposable *pDef)
     //Build a Mentor struct from the other datum interface
     cs_Csdef_ def;
     bool bResult = BuildCsDefFromInterface(pCsDef, def);
-    if (!bResult) 
+    if (!bResult)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.IsSameAs", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -1657,7 +1657,7 @@ STRING CCoordinateSystem::GetDescription()
 
     MG_TRY()
     wchar_t* pDesc = Convert_Ascii_To_Wide(m_csprm.csdef.desc_nm);
-    if (NULL == pDesc) 
+    if (NULL == pDesc)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetDescription", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -1697,7 +1697,7 @@ STRING CCoordinateSystem::GetGroup()
     MG_TRY()
 
     wchar_t* pGroup = Convert_Ascii_To_Wide(m_csprm.csdef.group);
-    if (NULL == pGroup) 
+    if (NULL == pGroup)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetGroup", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -1735,7 +1735,7 @@ STRING CCoordinateSystem::GetSource()
     MG_TRY()
 
     wchar_t* pSource = Convert_Ascii_To_Wide(m_csprm.csdef.source);
-    if (NULL == pSource) 
+    if (NULL == pSource)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetSource", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -1780,7 +1780,7 @@ INT16 CCoordinateSystem::GetAge()
 }
 
 //Sets whether this item is protected or not.  When protected,
-//methods which attempt to modify the object will 
+//methods which attempt to modify the object will
 //throw an exception MgCoordinateSystemProtectedException
 //(Except for SetProtectMode and SetEncryptMode,
 //which can be called even on protected objects.)
@@ -1817,7 +1817,7 @@ STRING CCoordinateSystem::GetLocation()
     MG_TRY()
 
     wchar_t* pLoc = Convert_Ascii_To_Wide(m_csprm.csdef.locatn);
-    if (NULL == pLoc) 
+    if (NULL == pLoc)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetLocation", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -1829,7 +1829,7 @@ STRING CCoordinateSystem::GetLocation()
     return sLoc;
 }
 
-//Sets the "location" field of the def.  
+//Sets the "location" field of the def.
 //Throws an exception with InvalidArgument if the specified string is not legal
 //for a location field.
 //
@@ -1857,7 +1857,7 @@ STRING CCoordinateSystem::GetCountryOrState()
     MG_TRY()
 
     wchar_t* pCntrySt = Convert_Ascii_To_Wide(m_csprm.csdef.cntry_st);
-    if (NULL == pCntrySt) 
+    if (NULL == pCntrySt)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetCountryOrState", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -1869,7 +1869,7 @@ STRING CCoordinateSystem::GetCountryOrState()
     return sCntrySt;
 }
 
-//Sets the "cntry_st" field of the def.  
+//Sets the "cntry_st" field of the def.
 //Throws an exception with InvalidArgument if the specified string is not legal
 //for a cntry_st field.
 //
@@ -1931,7 +1931,7 @@ INT32 CCoordinateSystem::GetProjectionParameterCount()
 
 //Gets the nth parameter value.  ulIndex must be in the range 1 to
 //knCsNumParams, corresponding to the data members prj_prm1 through
-//prj_prm24 of Mentor's cs_Csdef_ struct.  
+//prj_prm24 of Mentor's cs_Csdef_ struct.
 //Throws an exception MgInvalidArgumentException if ulIndex is not
 //in the range 1 to knCsNumParams, or MgCoordinateSystemMismatchException if the parameter at
 //the specified index is not used in this projection.
@@ -1981,9 +1981,9 @@ double CCoordinateSystem::GetProjectionParameter(INT32 nIndex)
 
 //Sets the nth parameter value.  ulIndex must be in the range 1 to
 //knCsNumParams, corresponding to the data members prj_prm1 through
-//prj_prm24 of Mentor's cs_Csdef_ struct.  
+//prj_prm24 of Mentor's cs_Csdef_ struct.
 //Throws an exception MgInvalidArgumentException if ulIndex is
-//not in the range 1 to knCsNumParams; 
+//not in the range 1 to knCsNumParams;
 //Throws an exception MgCoordinateSystemMismatchException, if the specified
 //parameter is not used by this projection; if the specified
 //value is outside the valid mathematical bounds for this parameter.
@@ -2121,7 +2121,7 @@ double CCoordinateSystem::GetOffsetY()
 void CCoordinateSystem::SetOffsets(double dXOffset, double dYOffset)
 {
     MG_TRY()
-    
+
     if (Protected())
     {
         //Can't modify a read-only object.
@@ -2156,7 +2156,7 @@ double CCoordinateSystem::GetScaleReduction()
 void CCoordinateSystem::SetScaleReduction(double dSclRed)
 {
     MG_TRY()
-    
+
     if (Protected())
     {
         //Can't modify a read-only object.
@@ -2185,7 +2185,7 @@ double CCoordinateSystem::GetMapScale()
 void CCoordinateSystem::SetMapScale(double dMapScale)
 {
     MG_TRY()
-    
+
     if (Protected())
     {
         //Can't modify a read-only object.
@@ -2217,7 +2217,7 @@ double CCoordinateSystem::GetZeroY()
 void CCoordinateSystem::SetZeroes(double dXZero, double dYZero)
 {
     MG_TRY()
-    
+
     if (Protected())
     {
         //Can't modify a read-only object.
@@ -2271,7 +2271,7 @@ static void OrderMinMax(double& d1, double& d2)
 void CCoordinateSystem::SetLonLatBounds(double dLonMin, double dLatMin, double dLonMax, double dLatMax)
 {
     MG_TRY()
-    
+
     if (Protected())
     {
         //Can't modify a read-only object.
@@ -2295,7 +2295,7 @@ void CCoordinateSystem::SetLonLatBounds(double dLonMin, double dLatMin, double d
 void CCoordinateSystem::CancelLonLatBounds()
 {
     MG_TRY()
-    
+
     if (Protected())
     {
         //Can't modify a read-only object.
@@ -2410,7 +2410,7 @@ MgCoordinateSystemDatum* CCoordinateSystem::GetDatumDefinition()
 //A system might be geodetic (uses a datum) or cartographic (uses only an ellipsoid)
 //Calling this method defines the datum name only (geodetic coordinate system)
 //no check of its existence is done
-//It the system is currently non-geodetic (uses an ellipsoid only), 
+//It the system is currently non-geodetic (uses an ellipsoid only),
 //this method will remove the ellipsoid name and put the datum name inside the coordinate system
 void CCoordinateSystem::SetDatum(CREFSTRING sDatum)
 {
@@ -2430,7 +2430,7 @@ void CCoordinateSystem::SetDatum(CREFSTRING sDatum)
         throw new MgInvalidArgumentException(L"MgCoordinateSystem.SetDatum", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     char *pStr = Convert_Wide_To_Ascii(sDatum.c_str()); //need to delete[] pStr
-    if (NULL == pStr) 
+    if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.SetDatum", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -2459,7 +2459,7 @@ void CCoordinateSystem::SetEllipsoid(CREFSTRING sEllipsoid)
         throw new MgInvalidArgumentException(L"MgCoordinateSystem.SetEllipsoid", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     char *pStr = Convert_Wide_To_Ascii(sEllipsoid.c_str()); //need to delete[] pStr
-    if (NULL == pStr) 
+    if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.SetEllipsoid", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -2473,13 +2473,13 @@ void CCoordinateSystem::SetEllipsoid(CREFSTRING sEllipsoid)
 
 //A system might be geodetic (uses a datum) or cartographic (uses only an ellipsoid)
 //Calling this method sets up a geodetic coordinate system
-//It the system is currently non-geodetic (uses an ellipsoid only), 
+//It the system is currently non-geodetic (uses an ellipsoid only),
 //this method will remove the ellipsoid and put the datum inside the coordinate system
 //This method needs to be called after the coordinate system parameters have been fully specified
 //The datum also needs to be fully specified. That means all its parameters and its
 //ellipsoid need to be specified before calling this method.
-//If we start by setting the datum the method will fail because it needs the 
-//coordinate system parameters this is not just setting an internal pointer. 
+//If we start by setting the datum the method will fail because it needs the
+//coordinate system parameters this is not just setting an internal pointer.
 //Many other internal parameters are set up when this method is called
 void CCoordinateSystem::SetDatumDefinition(MgCoordinateSystemDatum *pDatum)
 {
@@ -2512,7 +2512,7 @@ void CCoordinateSystem::SetDatumDefinition(MgCoordinateSystemDatum *pDatum)
     //Get information out of the datum def
     cs_Dtdef_ dtdef;
     bool bResult = BuildDtDefFromInterface(pDatum, dtdef);
-    if (!bResult) 
+    if (!bResult)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.SetDatumDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -2548,13 +2548,13 @@ void CCoordinateSystem::SetDatumDefinition(MgCoordinateSystemDatum *pDatum)
     //Get information out of the ellipsoid def
     Ptr<MgCoordinateSystemEllipsoid> pEllipsoid=pDatum->GetEllipsoidDefinition();
     assert(pEllipsoid);
-    if (!pEllipsoid) 
+    if (!pEllipsoid)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.SetDatumDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     cs_Eldef_ eldef;
     bResult = BuildElDefFromInterface(pEllipsoid, eldef);
-    if (!bResult) 
+    if (!bResult)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.SetDatumDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -2574,7 +2574,7 @@ void CCoordinateSystem::SetDatumDefinition(MgCoordinateSystemDatum *pDatum)
     Uninitialize();
 
     Ptr<MgCoordinateSystemDatum> pDatumClone = pDatum->CreateClone();
-    if (NULL == pDatumClone.p) 
+    if (NULL == pDatumClone.p)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.SetDatumDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -2608,7 +2608,7 @@ MgCoordinateSystemEllipsoid* CCoordinateSystem::GetEllipsoidDefinition()
     if (MgCoordinateSystemType::Arbitrary==GetType()) return NULL;
 
     //If we're cartographic
-    if (IsGeodetic()) 
+    if (IsGeodetic())
     {
         if (!m_pDatum)
         {
@@ -2627,7 +2627,7 @@ MgCoordinateSystemEllipsoid* CCoordinateSystem::GetEllipsoidDefinition()
 //It it uses a datum, this method will not set the datum's ellipsoid but will rather
 //remove the datum and put the ellipsoid directly inside the coordinate system
 //If you want to set the datum's ellipsoid, get the datum first using the method
-//MgCoordinateSystem::GetDatum and then use 
+//MgCoordinateSystem::GetDatum and then use
 //MgCoordinateSystemDatum::SetEllipsoid(MgCoordinateSystemEllipsoid *pDef)
 //This method needs to be called after the coordinate system parameters have been fully specified
 //if we start by seeting the ellipsoid the method will fail because it needs the coordinate system parameters
@@ -2665,7 +2665,7 @@ void CCoordinateSystem::SetEllipsoidDefinition(MgCoordinateSystemEllipsoid *pEll
     //Get information out of the Ellipsoid def
     cs_Eldef_ eldef;
     bool bResult = BuildElDefFromInterface(pEllipsoid, eldef);
-    if (!bResult) 
+    if (!bResult)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.SetEllipsoidDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -2750,8 +2750,8 @@ void CCoordinateSystem::SetEllipsoidDefinition(MgCoordinateSystemEllipsoid *pEll
 //coordinate system; the coordinate system has a defined useful
 //XY range, the converter has range checking turned on, and the
 //specified point lies outside that range.  Otherwise, returns
-//true.  
-//Throws an exception MgCoordinateSystemNotReadyException 
+//true.
+//Throws an exception MgCoordinateSystemNotReadyException
 //if the coordinate system has not
 //been successfully initialized.
 bool CCoordinateSystem::IsValidXY(double dX, double dY)
@@ -2780,7 +2780,7 @@ bool CCoordinateSystem::IsValidLonLat(double dLongitude, double dLatitude)
 void CCoordinateSystem::ConvertCoordinateFromLonLat(MgCoordinate* lonLatToCoordinate)
 {
     MG_TRY()
-    if(lonLatToCoordinate->GetDimension() == MgCoordinateDimension::XY || 
+    if(lonLatToCoordinate->GetDimension() == MgCoordinateDimension::XY ||
        lonLatToCoordinate->GetDimension() == (MgCoordinateDimension::XY | MgCoordinateDimension::M))
     {
         double x=0.,y=0.;
@@ -2836,10 +2836,10 @@ void CCoordinateSystem::ConvertCoordinateToLonLat(MgCoordinate* coordinateToLonL
 
 //-----------------------------------------------------------------------------
 //Converts the specified X,Y point in the coordinate system to
-//latitude/longitude coordinates (in the same datum).  
+//latitude/longitude coordinates (in the same datum).
 //If the specified X,Y coords are not
-//mathematically valid for this coordinate system, 
-//Throws an exception InvalidArgument.  
+//mathematically valid for this coordinate system,
+//Throws an exception InvalidArgument.
 //
 MgCoordinate* CCoordinateSystem::ConvertToLonLat(double dX, double dY)
 {
@@ -2913,10 +2913,10 @@ MgCoordinate* CCoordinateSystem::ConvertFromLonLat(double dLongitude, double dLa
 
 //Gets the convergence angle, in degrees east of north, of the
 //coordinate system at the specified longitude/latitude point.
-//Throws an exception MgCoordinateSystemNotReadyException 
+//Throws an exception MgCoordinateSystemNotReadyException
 //if the coordinate system has not been
 //successfully initialized; InvalidArgument of the
-//specified coordinate is not mathematically valid. 
+//specified coordinate is not mathematically valid.
 //
 double CCoordinateSystem::GetConvergence(double dLongitude, double dLatitude)
 {
@@ -2924,7 +2924,7 @@ double CCoordinateSystem::GetConvergence(double dLongitude, double dLatitude)
 }
 
 //Gets the grid scale of the coordinate system at the specified
-//longitude/latitude point.  
+//longitude/latitude point.
 //Throws an exception MgCoordinateSystemNotReadyException if the
 //coordinate system has not been successfully initialized;
 //InvalidArgument of the specified coordinate is not
@@ -2935,14 +2935,14 @@ double CCoordinateSystem::GetScale(double dLongitude, double dLatitude)
 }
 
 //Gets the grid scale along meridians of the coordinate system at
-//the specified longitude/latitude point.  
+//the specified longitude/latitude point.
 double CCoordinateSystem::GetScaleH(double dLongitude, double dLatitude)
 {
     return GetDouble(CS_cssch, dLongitude, dLatitude);
 }
 
 //Gets the grid scale along parallels of the coordinate system at
-//the specified longitude/latitude point.  
+//the specified longitude/latitude point.
 double CCoordinateSystem::GetScaleK(double dLongitude, double dLatitude)
 {
     return GetDouble(CS_cssck, dLongitude, dLatitude);
@@ -2977,7 +2977,7 @@ void CCoordinateSystem::SetString(CREFSTRING sSrc, char *pDest, UINT32 nMaxSize)
 
     //Convert to a C++ string, for Mentor's sake
     char *pStr = Convert_Wide_To_Ascii(sSrc.c_str()); //need to delete[] pStr
-    if (NULL == pStr) 
+    if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.SetString", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -3291,8 +3291,8 @@ UINT8* CCoordinateSystem::SerializeFrom(UINT8* pStream)
     UINT8* pStreamOut=pStream;
 
     MG_TRY()
-	assert(NULL != pStream);
-	if (!pStream) 
+    assert(NULL != pStream);
+    if (!pStream)
     {
         throw new MgInvalidArgumentException(L"MgCoordinateSystem.SerializeFrom", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -3303,35 +3303,35 @@ UINT8* CCoordinateSystem::SerializeFrom(UINT8* pStream)
     {
         pStreamOut++;
 
-	    //Read the def from the stream
-	    cs_Csdef_ def;
-	    UINT8* pBuf = reinterpret_cast<UINT8 *>(&def);
-	    memcpy(pBuf, pStreamOut, sizeof(def));
+        //Read the def from the stream
+        cs_Csdef_ def;
+        UINT8* pBuf = reinterpret_cast<UINT8 *>(&def);
+        memcpy(pBuf, pStreamOut, sizeof(def));
         pStreamOut = pStreamOut + sizeof(def);
 
-	    //Decrypt it if necessary
-	    unsigned char ucKey = def.fill[0];
-	    bool bEncrypted = ('\0' != ucKey);
-	    if (bEncrypted)
-	    {
-		    for (long i=0; i<sizeof(def); i++)
-		    {
-			    pBuf[i] ^= 0xFF;
-		    }
-		    def.fill[0] = '\0';
-	    }
-    	
-	    //Make sure it's valid
-	    bool bPrevEncrypted = m_bEncrypted;
-	    cs_Csdef_ prevDef = m_csprm.csdef;
+        //Decrypt it if necessary
+        unsigned char ucKey = def.fill[0];
+        bool bEncrypted = ('\0' != ucKey);
+        if (bEncrypted)
+        {
+            for (long i=0; i<sizeof(def); i++)
+            {
+                pBuf[i] ^= 0xFF;
+            }
+            def.fill[0] = '\0';
+        }
+
+        //Make sure it's valid
+        bool bPrevEncrypted = m_bEncrypted;
+        cs_Csdef_ prevDef = m_csprm.csdef;
         m_csprm.csdef = def;
-	    m_bEncrypted = bEncrypted;
-	    if (!IsValid())
-	    {
-		    m_bEncrypted = bPrevEncrypted;
-		    m_csprm.csdef = prevDef;
-		    throw new MgInvalidArgumentException(L"MgCoordinateSystem.SerializeFrom", __LINE__, __WFILE__, NULL, L"", NULL);
-	    }
+        m_bEncrypted = bEncrypted;
+        if (!IsValid())
+        {
+            m_bEncrypted = bPrevEncrypted;
+            m_csprm.csdef = prevDef;
+            throw new MgInvalidArgumentException(L"MgCoordinateSystem.SerializeFrom", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
     }
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystem.SerializeFrom")
@@ -3344,8 +3344,8 @@ UINT8* CCoordinateSystem::SerializeTo(UINT8* pStream)
     UINT8* pStreamOut=pStream;
 
     MG_TRY()
-	assert(NULL != pStream);
-	if (!pStream) 
+    assert(NULL != pStream);
+    if (!pStream)
     {
         throw new MgInvalidArgumentException(L"MgCoordinateSystem.SerializeTo", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -3354,16 +3354,16 @@ UINT8* CCoordinateSystem::SerializeTo(UINT8* pStream)
     pStreamOut[0]=kCsRelease0;
     pStreamOut++;
 
-	cs_Csdef_ def = m_csprm.csdef;
-	char *pBuf = reinterpret_cast<char *>(&def);
-	if (m_bEncrypted)
-	{
-		for (long i=0; i<sizeof(def); i++)
-		{
-			pBuf[i] ^= 0xFF;
-		}
-		def.fill[0] = 0x01;
-	}
+    cs_Csdef_ def = m_csprm.csdef;
+    char *pBuf = reinterpret_cast<char *>(&def);
+    if (m_bEncrypted)
+    {
+        for (long i=0; i<sizeof(def); i++)
+        {
+            pBuf[i] ^= 0xFF;
+        }
+        def.fill[0] = 0x01;
+    }
 
     memcpy(pStreamOut, pBuf, sizeof(def));
     pStreamOut = pStreamOut + sizeof(def);
