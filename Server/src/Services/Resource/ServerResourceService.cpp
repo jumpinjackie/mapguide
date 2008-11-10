@@ -616,7 +616,7 @@ void MgServerResourceService::MakeResourcePackage(MgResourceIdentifier* resource
 bool MgServerResourceService::ResourceExists(MgResourceIdentifier* resource)
 {
     bool existed = false;
-    
+
     MG_RESOURCE_SERVICE_TRY()
 
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::ResourceExists()");
@@ -638,7 +638,7 @@ bool MgServerResourceService::ResourceExists(MgResourceIdentifier* resource)
     MG_RESOURCE_SERVICE_END_OPERATION(sm_retryAttempts)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.ResourceExists")
-    
+
     return existed;
 }
 

@@ -49,10 +49,10 @@ void GwsCommonFdoUtils::GetClassDefinition (
 {
     FdoPtr<FdoIDescribeSchema>  descSchema =
             (FdoIDescribeSchema *) pConn->CreateCommand (FdoCommandType_DescribeSchema);
-            
+
     FdoString* schemaName = classname.Schema();
     FdoString* clsName = classname.Name();
-    
+
     if (NULL != schemaName && ::wcslen(schemaName) > 0)
     {
         descSchema->SetSchemaName(schemaName);

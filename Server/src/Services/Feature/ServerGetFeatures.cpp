@@ -205,7 +205,7 @@ MgClassDefinition* MgServerGetFeatures::GetMgClassDefinition(FdoClassDefinition*
     }
 
     // Add identity properties
-    this->GetClassProperties(identityPropDefCol, fdpdc);                
+    this->GetClassProperties(identityPropDefCol, fdpdc);
 
     // Add base properties
 //  this->GetClassProperties(propDefCol, frpdc);

@@ -61,14 +61,14 @@ MgFeatureServiceCacheEntry::~MgFeatureServiceCacheEntry()
 MgFeatureSchemaCacheItem* MgFeatureServiceCacheEntry::SetFeatureSchemaCacheItem(CREFSTRING schemaName)
 {
     Ptr<MgFeatureSchemaCacheItem> item = GetFeatureSchemaCacheItem(schemaName);
-    
+
     if (NULL == item.p)
     {
         item = new MgFeatureSchemaCacheItem();
         m_featureSchemaCacheItems.insert(MgFeatureSchemaCacheItems::value_type(
             schemaName, SAFE_ADDREF(item.p)));
     }
-    
+
     return item.Detach();
 }
 
@@ -237,7 +237,7 @@ INT32 MgFeatureServiceCacheEntry::FormatKeys(bool classNameHintUsed,
 
             classKey += *i;
         }
-        
+
         classCount = INT32(classKeys.size());
 
         if (1 == classCount)
@@ -265,7 +265,7 @@ INT32 MgFeatureServiceCacheEntry::FormatKeys(bool classNameHintUsed,
 MgFeatureSchemaCollection* MgFeatureServiceCacheEntry::FindSchema(MgFeatureSchemaCollection* schemas, CREFSTRING schemaName)
 {
     Ptr<MgFeatureSchemaCollection> data;
-    
+
     if (NULL != schemas)
     {
         INT32 schemaCount = schemas->GetCount();
@@ -310,18 +310,18 @@ MgFeatureSchemaCollection* MgFeatureServiceCacheEntry::FindSchema(CREFSTRING sch
             data = FindSchema(supersetData.p, schemaKey);
 
             // If the data is not found and the class count is 1,
-            // then try using the unqualified class name instead of.            
+            // then try using the unqualified class name instead of.
             if (NULL == data.p && 1 == classCount)
             {
                 STRING parsedSchemaName, parsedClassName;
 
                 MgUtil::ParseQualifiedClassName(classKey, parsedSchemaName, parsedClassName);
-                
+
                 // Determine if the superset data from the superset item is reusable.
                 if (!parsedSchemaName.empty())
                 {
                     supersetData = supersetItem->GetSchemas(parsedClassName, serialized);
-                
+
                     if (FindClass(supersetData.p, parsedClassName))
                     {
                         data = supersetData;
@@ -345,7 +345,7 @@ bool MgFeatureServiceCacheEntry::FindClass(MgFeatureSchemaCollection* schemas, C
     if (NULL != schemas && 1 == schemas->GetCount())
     {
         Ptr<MgFeatureSchema> firstSchema = schemas->GetItem(0);
-        
+
         if (NULL != firstSchema)
         {
             Ptr<MgClassDefinitionCollection> classes = firstSchema->GetClasses();
@@ -353,15 +353,15 @@ bool MgFeatureServiceCacheEntry::FindClass(MgFeatureSchemaCollection* schemas, C
             if (NULL != classes && 1 == classes->GetCount())
             {
                 Ptr<MgClassDefinition> firstClass = classes->GetItem(0);
-            
+
                 if (NULL != firstClass)
                 {
                     STRING parsedSchemaName1, parsedClassName1;
                     STRING parsedSchemaName2, parsedClassName2;
-            
+
                     MgUtil::ParseQualifiedClassName(className, parsedSchemaName1, parsedClassName1);
                     MgUtil::ParseQualifiedClassName(firstClass->GetName(), parsedSchemaName2, parsedClassName2);
-            
+
                     if (parsedClassName1 == parsedClassName2)
                     {
                         found = true;
@@ -443,7 +443,7 @@ MgStringCollection* MgFeatureServiceCacheEntry::GetClassNames(CREFSTRING schemaN
 {
     Ptr<MgStringCollection> data;
     Ptr<MgFeatureSchemaCacheItem> item = GetFeatureSchemaCacheItem(schemaName);
-    
+
     if (NULL != item.p)
     {
         data = item->GetClassNames();

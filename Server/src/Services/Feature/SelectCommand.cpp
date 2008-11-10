@@ -161,7 +161,7 @@ MgReader* MgSelectCommand::Execute()
 
     // Execute queries using the smaller filters and collect the results of the queries into a reader collection.
     FdoPtr<MgFdoReaderCollection> frc = MgFdoReaderCollection::Create();
-    
+
     for (FdoInt32 filterIndex = 0; filterIndex < subFilters->GetCount(); filterIndex++)
     {
         FdoPtr<FdoFilter> filter = subFilters->GetItem(filterIndex);
@@ -256,7 +256,7 @@ MgFdoFilterCollection* MgSelectCommand::GetSubFilters()
         bool IsFragmented() { return m_isFragmented; }
 
         virtual void Dispose() { delete this; }
-       
+
         virtual void ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& filter)
         {
             if( filter.GetOperation() != FdoBinaryLogicalOperations_Or )
@@ -278,7 +278,7 @@ MgFdoFilterCollection* MgSelectCommand::GetSubFilters()
             return;
         }
         virtual void ProcessDistanceCondition(FdoDistanceCondition& filter)
-        {  
+        {
             m_isFragmented = false;
             return;
         }
@@ -294,7 +294,7 @@ MgFdoFilterCollection* MgSelectCommand::GetSubFilters()
             return;
         }
         virtual void ProcessSpatialCondition(FdoSpatialCondition& filter)
-        {  
+        {
             m_isFragmented = false;
             return;
         }
@@ -309,7 +309,7 @@ MgFdoFilterCollection* MgSelectCommand::GetSubFilters()
 
     FdoCommonFilterFragmenter  fragmenter;
     if (m_filter)
-        m_filter->Process( &fragmenter ); 
+        m_filter->Process( &fragmenter );
 
 #ifdef _DEBUG
     int nCount = fragmenter.GetOrCount();

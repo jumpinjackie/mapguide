@@ -910,7 +910,7 @@ MgStringCollection* MgServerFeatureUtil::FdoToMgStringCollection(FdoStringCollec
             {
                 mgStrs->Add(STRING(currStr));
             }
-        } 
+        }
     }
 
     return mgStrs.Detach();
@@ -933,7 +933,7 @@ FdoStringCollection* MgServerFeatureUtil::MgToFdoStringCollection(MgStringCollec
             {
                 fdoStrs->Add(currStr.c_str());
             }
-        }                
+        }
     }
 
     return fdoStrs.Detach();

@@ -1018,11 +1018,11 @@ void MgServerSelectFeatures::UpdateCommandOnCalculation(MgResourceIdentifier* fe
                         // otherwise it leaves the FDO connection marked as still in use.
                         FdoPtr<FdoIConnection> conn = fcConnection.GetConnection();
                         FdoPtr<FdoIDescribeSchema>  descSchema = (FdoIDescribeSchema *) conn->CreateCommand (FdoCommandType_DescribeSchema);
-                        
+
                         STRING fullClassName = extension->GetFeatureClass();
                         STRING schemaName, className;
                         MgUtil::ParseQualifiedClassName(fullClassName, schemaName, className);
-                        
+
                         if (!parsedSchemaName.empty())
                         {
                             descSchema->SetSchemaName(parsedSchemaName.c_str());
@@ -1035,7 +1035,7 @@ void MgServerSelectFeatures::UpdateCommandOnCalculation(MgResourceIdentifier* fe
                             classNames->Add(className.c_str());
                             descSchema->SetClassNames(classNames.p);
                         }
-                        
+
                         FdoPtr <FdoFeatureSchemaCollection> schemas = (FdoFeatureSchemaCollection *) descSchema->Execute ();
                         FdoPtr<FdoFeatureSchema> schema = (FdoFeatureSchema *)schemas->GetItem (parsedSchemaName.c_str());
                         FdoPtr<FdoClassCollection> classes = schema->GetClasses();
@@ -1154,11 +1154,11 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
                 }
                 FdoPtr<FdoIConnection> conn = msfcLeft.GetConnection();
                 FdoPtr<FdoIDescribeSchema>  descSchema = (FdoIDescribeSchema *) conn->CreateCommand (FdoCommandType_DescribeSchema);
-                
+
                 STRING fullClassName = extension->GetFeatureClass();
                 STRING schemaName, className;
                 MgUtil::ParseQualifiedClassName(fullClassName, schemaName, className);
-                        
+
                 if (!parsedSchemaName.empty())
                 {
                     descSchema->SetSchemaName(parsedSchemaName.c_str());
@@ -1171,7 +1171,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
                     classNames->Add(className.c_str());
                     descSchema->SetClassNames(classNames.p);
                 }
-                        
+
                 FdoPtr <FdoFeatureSchemaCollection> schemas = (FdoFeatureSchemaCollection *) descSchema->Execute ();
                 FdoPtr<FdoFeatureSchema> schema = (FdoFeatureSchema *)schemas->GetItem (parsedSchemaName.c_str());
                 FdoPtr<FdoClassCollection> classes = schema->GetClasses();
@@ -1356,13 +1356,13 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
 void MgServerSelectFeatures::ParseQualifiedClassNameForCalculation(MdfModel::Extension* extension, CREFSTRING qualifiedClassName, STRING& schemaName, STRING& className)
 {
     CHECKNULL(extension, L"MgServerSelectFeatures.ParseQualifiedClassNameForCalculation");
-    
+
     MgUtil::ParseQualifiedClassName(qualifiedClassName, schemaName, className);
-    
+
     if (schemaName.empty())
     {
         STRING dummyStr;
-        
+
         MgUtil::ParseQualifiedClassName(extension->GetFeatureClass(), schemaName, dummyStr);
     }
 }

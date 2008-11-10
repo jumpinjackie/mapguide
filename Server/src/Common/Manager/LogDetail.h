@@ -26,7 +26,7 @@
 // It also handles writing of the trace log based on information contained in serverconfig.ini
 //
 // [GeneralProperties]
-// LogsDetail = ResourceService:0,FeatureService:1 
+// LogsDetail = ResourceService:0,FeatureService:1
 //
 // LogsDetail determines the information logged for each service.  See LogDetail enum below
 // for more information.
@@ -90,7 +90,7 @@ private:
     void AppendName(CREFSTRING paramName);
     bool ParamsActive();
     bool ShouldLog();
-    
+
 
 /// Data Members
 

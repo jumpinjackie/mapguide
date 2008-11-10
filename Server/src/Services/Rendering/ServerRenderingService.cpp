@@ -1270,13 +1270,13 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                             extentCoords->Add(c4);
                             extentCoords->Add(c1);
                             Ptr<MgLinearRing> extentRing = new MgLinearRing(extentCoords);
-                            Ptr<MgPolygon> extentPolygon = new MgPolygon(extentRing, NULL);                        
+                            Ptr<MgPolygon> extentPolygon = new MgPolygon(extentRing, NULL);
                             Ptr<MgGeometry> intersectPolygon = polygon->Intersection(extentPolygon);
 
                             if (intersectPolygon != NULL)
                             {
                                 options->SetSpatialFilter(layer->GetFeatureGeometryName(), intersectPolygon, /*MgFeatureSpatialOperations*/selectionVariant);
-                       
+
                                 Ptr<MgFeatureReader> rdr0 = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
                                 RSMgFeatureReader rsrdr0(rdr0, m_svcFeature, featResId, options, vl->GetGeometry());
                                 selRenderer->PointTest(true);

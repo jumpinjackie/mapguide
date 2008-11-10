@@ -277,7 +277,7 @@ public:
     void EnableMaximumLogSize(bool useMaxSize);
     bool IsMaximumLogSizeEnabled();
 
-     
+
     // Logging mechanism for errors and warnings
     void LogError(CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName, CREFSTRING stackTrace = L"");
     void LogWarning(INT16 service, CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName, CREFSTRING stackTrace = L"");

@@ -835,7 +835,7 @@ void MgServerFeatureService::FindClassDefinition(Ptr<MgFeatureSchemaCollection>&
         throw new MgNullArgumentException(L"MgServerFeatureService.FindClassDefinition",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    
+
     INT32 schemaCount = schemas->GetCount();
     bool hashed = (0 == schemaName.find_first_of(
         MG_SCHEMA_NAME_HASH_PREFIX.c_str(), 0, MG_SCHEMA_NAME_HASH_PREFIX.length()));
@@ -848,7 +848,7 @@ void MgServerFeatureService::FindClassDefinition(Ptr<MgFeatureSchemaCollection>&
     {
         Ptr<MgFeatureSchema> currSchema = schemas->GetItem(i);
         STRING currSchemaName = currSchema->GetName();
-        
+
         if (!schemaName.empty())
         {
             if (hashed)
@@ -921,18 +921,18 @@ MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifie
     STRING schemaName;
     Ptr<MgStringCollection> schemaNames = new MgStringCollection();
     Ptr<MgStringCollection> classNames = new MgStringCollection();
-    
+
     if (NULL != featureClasses)
     {
         bool singleSchemaUsed = true;
         STRING::size_type hashPrefixLength = MG_SCHEMA_NAME_HASH_PREFIX.length();
         INT32 count = featureClasses->GetCount();
-        
+
         for (INT32 i = 0; i < count; ++i)
         {
             STRING currSchemaName, currClassName;
             MgUtil::ParseQualifiedClassName(featureClasses->GetItem(i), currSchemaName, currClassName);
-            
+
             if (!currClassName.empty())
             {
                 schemaNames->Add(currSchemaName);
@@ -940,7 +940,7 @@ MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifie
             }
 
             if (singleSchemaUsed)
-            {            
+            {
                 if (0 == currSchemaName.find_first_of(MG_SCHEMA_NAME_HASH_PREFIX.c_str(), 0, hashPrefixLength))
                 {
                     singleSchemaUsed = false;
@@ -956,12 +956,12 @@ MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifie
                     schemaName = L"";
                 }
             }
-        }        
+        }
     }
 
     Ptr<MgFeatureSchemaCollection> fsc = DescribeSchema(featureSourceId, schemaName, classNames);
     INT32 count = classNames->GetCount();
-    
+
     if (count > 0)
     {
         Ptr<MgFeatureSchemaCollection> dfsc = new MgFeatureSchemaCollection();
@@ -973,9 +973,9 @@ MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifie
             STRING schemaHash;
             STRING currSchemaName = schemaNames->GetItem(i);
             STRING currClassName = classNames->GetItem(i);
-            
+
             FindClassDefinition(fsc, currSchemaName, currClassName, schemaHash, schemaFound, classFound);
-            
+
             if (NULL == classFound.p)
             {
                 throw new MgObjectNotFoundException(L"DescribeWfsFeatureType",
@@ -995,7 +995,7 @@ MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifie
                 dfsc->Add(schemaToAdd);
             }
         }
-        
+
         fsc = dfsc;
     }
 

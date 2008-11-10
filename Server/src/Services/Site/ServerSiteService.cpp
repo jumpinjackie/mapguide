@@ -693,11 +693,11 @@ MgStringCollection* MgServerSiteService::Authenticate(
 
     MG_TRY()
 
-	if (NULL == userInformation)
-	{
-		throw new MgAuthenticationFailedException(
-			L"MgServerSiteService.Authenticate", __LINE__, __WFILE__, NULL, L"", NULL);
-	}
+    if (NULL == userInformation)
+    {
+        throw new MgAuthenticationFailedException(
+            L"MgServerSiteService.Authenticate", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     MgLogDetail logDetail(MgServiceType::SiteService, MgLogDetail::Trace, L"MgServerSiteService.Authenticate", mgStackParams);
     logDetail.AddString(L"Session",userInformation->GetMgSessionId());
