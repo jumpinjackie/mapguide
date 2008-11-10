@@ -78,8 +78,10 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
     // get tooltip and url for the layer
     SE_String seTip;
     SE_String seUrl;
-    m_visitor->ParseStringExpression(layer->GetToolTip(), seTip, L"");
-    m_visitor->ParseStringExpression(layer->GetUrl(), seUrl, L"");
+    if (se_renderer->SupportsTooltips())
+        m_visitor->ParseStringExpression(layer->GetToolTip(), seTip, L"");
+    if (se_renderer->SupportsHyperlinks())
+        m_visitor->ParseStringExpression(layer->GetUrl(), seUrl, L"");
 
     // extract all the composite styles once
     MdfModel::FeatureTypeStyleCollection* ftsc = range->GetFeatureTypeStyles();

@@ -296,7 +296,7 @@ RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeatur
     {
         rasterExt = mapExt;
     }
-    
+
     //get the name of the raster property
     MdfModel::MdfString geom = gl->GetGeometry();
     Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
@@ -363,7 +363,7 @@ RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeatur
     //get feature source id
     STRING sfeatResId = gl->GetResourceID();
     Ptr<MgResourceIdentifier> featResId = new  MgResourceIdentifier(sfeatResId);
-    
+
     Ptr<MgFeatureReader> rdr;
     try
     {
@@ -450,7 +450,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
             logDetail.AddResourceIdentifier(L"LayerId",layerid);
             logDetail.Create();
 
-			//base map layers are not editable
+            //base map layers are not editable
             bool bEditable = true;
             if (mapLayer->GetLayerType() == MgLayerType::BaseMap)
                 bEditable = false;
@@ -837,7 +837,12 @@ double MgMappingUtil::ComputeStylizationOffset(MgMap* map,
                         {
                             // constant expression - update the offset
                             width = MdfModel::LengthConverter::UnitToMeters(stroke->GetUnit(), width);
-                            maxOffsetMCS = rs_max(width * scale / metersPerUnit, maxOffsetMCS);
+                            if (stroke->GetSizeContext() == MdfModel::DeviceUnits)
+                                width *= scale / metersPerUnit;
+                            else
+                                width /= metersPerUnit;
+
+                            maxOffsetMCS = rs_max(width, maxOffsetMCS);
                         }
                         else
                         {
@@ -881,7 +886,12 @@ double MgMappingUtil::ComputeStylizationOffset(MgMap* map,
                             {
                                 // constant expression - update the offset
                                 width = MdfModel::LengthConverter::UnitToMeters(stroke->GetUnit(), width);
-                                maxOffsetMCS = rs_max(width * scale / metersPerUnit, maxOffsetMCS);
+                                if (stroke->GetSizeContext() == MdfModel::DeviceUnits)
+                                    width *= scale / metersPerUnit;
+                                else
+                                    width /= metersPerUnit;
+
+                                maxOffsetMCS = rs_max(width, maxOffsetMCS);
                             }
                             else
                             {
