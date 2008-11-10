@@ -875,7 +875,12 @@ double MgMappingUtil::ComputeStylizationOffset(MgMap* map,
                         {
                             // constant expression - update the offset
                             width = MdfModel::LengthConverter::UnitToMeters(stroke->GetUnit(), width);
-                            maxOffsetMCS = rs_max(width * scale / metersPerUnit, maxOffsetMCS);
+                            if (stroke->GetSizeContext() == MdfModel::DeviceUnits)
+                                width *= scale / metersPerUnit;
+                            else
+                                width /= metersPerUnit;
+
+                            maxOffsetMCS = rs_max(width, maxOffsetMCS);
                         }
                         else
                         {
@@ -919,7 +924,12 @@ double MgMappingUtil::ComputeStylizationOffset(MgMap* map,
                             {
                                 // constant expression - update the offset
                                 width = MdfModel::LengthConverter::UnitToMeters(stroke->GetUnit(), width);
-                                maxOffsetMCS = rs_max(width * scale / metersPerUnit, maxOffsetMCS);
+                                if (stroke->GetSizeContext() == MdfModel::DeviceUnits)
+                                    width *= scale / metersPerUnit;
+                                else
+                                    width /= metersPerUnit;
+
+                                maxOffsetMCS = rs_max(width, maxOffsetMCS);
                             }
                             else
                             {
