@@ -35,7 +35,7 @@ MgHttpDescribeSchema::MgHttpDescribeSchema(MgHttpRequest *hRequest)
     InitializeCommonParameters(hRequest);
 
     Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
-    
+
     m_resource = new MgResourceIdentifier(
         params->GetParameterValue(MgHttpResourceStrings::reqFeatResourceId));
     m_schemaName = params->GetParameterValue(MgHttpResourceStrings::reqFeatSchema);
