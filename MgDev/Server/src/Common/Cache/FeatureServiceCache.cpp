@@ -104,7 +104,7 @@ MgFeatureServiceCacheEntry* MgFeatureServiceCache::SetEntry(MgResourceIdentifier
         m_featureServiceCacheEntries.insert(MgFeatureServiceCacheEntries::value_type(
             resource->ToString(), SAFE_ADDREF(entry.p)));
     }
-    
+
     return entry.Detach();
 }
 
@@ -430,7 +430,7 @@ FdoFeatureSchemaCollection* MgFeatureServiceCache::GetFdoSchemas(MgResourceIdent
     Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
 
     classNameHintUsed = true;
-    
+
     if (NULL != entry.p)
     {
         data = entry->GetFdoSchemas(schemaName, classNames, classNameHintUsed);

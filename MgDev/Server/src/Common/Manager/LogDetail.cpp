@@ -55,7 +55,7 @@ void MgLogDetail::AppendName(CREFSTRING paramName)
 
 void MgLogDetail::AddResourceIdentifier(CREFSTRING paramName, MgResourceIdentifier* resId)
 {
-    
+
     if (NULL != resId && ParamsActive())
     {
         AppendName(paramName);
@@ -125,7 +125,7 @@ void MgLogDetail::Create()
         tempStr.append(m_methodName);
         tempStr.append(m_delimiter);
         tempStr.append(m_params);
-        MG_LOG_TRACE_ENTRY(tempStr);       
+        MG_LOG_TRACE_ENTRY(tempStr);
     }
 }
 

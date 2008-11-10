@@ -189,7 +189,7 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(
                     FdoString* p = NULL;
                     if ((csName[0] == L'E') || (csName[0] == L'e'))
                         p = csName+5;
-                    else 
+                    else
                         p = csName;
 
                     INT32 epsgCode = (INT32)wcstol(p, NULL, 10);

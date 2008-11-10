@@ -579,7 +579,7 @@ void TestResourceService::TestCase_ResourceExists()
 
         Ptr<MgResourceService> service = dynamic_cast<MgResourceService*>(
             serviceManager->RequestService(MgServiceType::ResourceService));
-        
+
         if (NULL == service)
         {
             throw new MgServiceNotAvailableException(

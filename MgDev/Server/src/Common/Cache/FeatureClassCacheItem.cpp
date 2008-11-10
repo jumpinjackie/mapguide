@@ -70,7 +70,7 @@ void MgFeatureClassCacheItem::SetFdoSchemas(FdoFeatureSchemaCollection* schemas)
 /// must take ownership via one thread at a time.
 /// Remove the FDO Feature Schema collection from the cache so that they won't
 /// be given to any other thread that calls this function.
-/// Caller is responsible for putting this schemas back in the cache when 
+/// Caller is responsible for putting this schemas back in the cache when
 /// done with them.
 /// This prevents a race condition that would occur if the caller does a release
 /// at the same time another thread tries to retrieve the schemas from this cache.

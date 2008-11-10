@@ -40,7 +40,7 @@ public:
                         SE_Renderer* impRenderer = NULL);
     virtual ~FeatureInfoRenderer();
 
-	///////////////////////////////////
+    ///////////////////////////////////
     // Renderer implementation
 
     virtual void StartMap(RS_MapUIInfo*    mapInfo,
@@ -70,7 +70,7 @@ public:
                                RS_ImageFormat format,
                                int            width,
                                int            height,
-                               RS_Bounds&     extents, 
+                               RS_Bounds&     extents,
                                TransformMesh* xformMesh = NULL)
     {}
 

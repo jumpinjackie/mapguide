@@ -31,7 +31,7 @@ MgServerSqlCommand::MgServerSqlCommand()
 MgServerSqlCommand::~MgServerSqlCommand()
 {
     MG_TRY()
-    
+
     CloseConnection();
 
     MG_CATCH_AND_RELEASE()

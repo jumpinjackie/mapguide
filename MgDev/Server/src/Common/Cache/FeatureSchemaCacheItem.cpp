@@ -46,7 +46,7 @@ MgFeatureSchemaCacheItem::~MgFeatureSchemaCacheItem()
 #endif
         SAFE_RELEASE(i->second);
     }
-    
+
     m_featureClassCacheItems.clear();
 }
 
@@ -58,14 +58,14 @@ MgFeatureSchemaCacheItem::~MgFeatureSchemaCacheItem()
 MgFeatureClassCacheItem* MgFeatureSchemaCacheItem::SetFeatureClassCacheItem(CREFSTRING classKey)
 {
     Ptr<MgFeatureClassCacheItem> item = GetFeatureClassCacheItem(classKey);
-    
+
     if (NULL == item.p)
     {
         item = new MgFeatureClassCacheItem();
         m_featureClassCacheItems.insert(MgFeatureClassCacheItems::value_type(
             classKey, SAFE_ADDREF(item.p)));
     }
-    
+
     return item.Detach();
 }
 

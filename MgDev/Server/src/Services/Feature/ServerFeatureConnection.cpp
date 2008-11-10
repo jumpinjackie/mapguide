@@ -54,7 +54,7 @@ MgServerFeatureConnection::MgServerFeatureConnection(CREFSTRING providerName, CR
 MgServerFeatureConnection::~MgServerFeatureConnection()
 {
     MG_TRY()
-    
+
     Close();
 
     MG_CATCH_AND_RELEASE()

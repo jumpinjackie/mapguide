@@ -177,7 +177,7 @@ void TestTransformMesh::TestCase_TransformMesh_LL84_to_LL84()
         int destWidth = gridSize;
         int destHeight = gridSize;
 
-        RS_Bounds srcExt(-140, -50, 140, 50); 
+        RS_Bounds srcExt(-140, -50, 140, 50);
 
         TransformMesh xformMesh(gridSize, srcExt, srcWidth, srcHeight, srcExt, destWidth, destHeight, &xformer, false);
 
@@ -222,7 +222,7 @@ void TestTransformMesh::TestCase_TransformMesh_ArbXYM_to_ArbXYM()
         int destWidth = gridSize;
         int destHeight = gridSize;
 
-        RS_Bounds srcExt(0, 0, gridSize, gridSize); 
+        RS_Bounds srcExt(0, 0, gridSize, gridSize);
 
         TransformMesh xformMesh(gridSize, srcExt, srcWidth, srcHeight, srcExt, destWidth, destHeight, &xformer, false);
 
@@ -267,7 +267,7 @@ void TestTransformMesh::TestCase_TransformMesh_ArbXYKM_to_ArbXYM()
         int destWidth = gridSize;
         int destHeight = gridSize;
 
-        RS_Bounds srcExt(0, 0, gridSize, gridSize); 
+        RS_Bounds srcExt(0, 0, gridSize, gridSize);
 
         TransformMesh xformMesh(gridSize, srcExt, srcWidth, srcHeight, srcExt, destWidth, destHeight, &xformer, false);
 

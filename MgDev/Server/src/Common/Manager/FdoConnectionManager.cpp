@@ -1004,7 +1004,7 @@ bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING resource, bool
                                     // Release any resource
                                     FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
                                 }
-                                
+
                                 delete pFdoConnectionCacheEntry;
                                 pFdoConnectionCacheEntry = NULL;
 
@@ -1198,7 +1198,7 @@ bool MgFdoConnectionManager::UpdateFdoConnectionCache(CREFSTRING provider)
                                         // Release any resource
                                         FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
                                     }
-                                    
+
                                     delete pFdoConnectionCacheEntry;
                                     pFdoConnectionCacheEntry = NULL;
 
@@ -1344,7 +1344,7 @@ void MgFdoConnectionManager::ClearCache()
                                     // Release any resource
                                     FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
                                 }
-                                
+
                                 delete pFdoConnectionCacheEntry;
                                 pFdoConnectionCacheEntry = NULL;
 
@@ -1625,7 +1625,7 @@ void MgFdoConnectionManager::RemoveUnusedFdoConnections()
                                         // Release any resource
                                         FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
                                     }
-                                    
+
                                     delete pFdoConnectionCacheEntry;
                                     pFdoConnectionCacheEntry = NULL;
 
