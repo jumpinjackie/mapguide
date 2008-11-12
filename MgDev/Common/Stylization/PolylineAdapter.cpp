@@ -40,6 +40,14 @@ PolylineAdapter::~PolylineAdapter()
     }
 
     m_hLineSymCache.clear();
+
+    //free up temporary line styles
+    for (size_t i=0; i<m_lineSyms.size(); ++i)
+    {
+        delete m_lineSyms[i];
+    }
+
+    m_lineSyms.clear();
 }
 
 
@@ -48,7 +56,7 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
                               RS_FeatureReader*           features,
                               bool                        initialPass,
                               FdoExpressionEngine*        exec,
-                              LineBuffer*                 lb,
+                              LineBuffer*                 geometry,
                               MdfModel::FeatureTypeStyle* style,
                               const MdfModel::MdfString*  tooltip,
                               const MdfModel::MdfString*  url,
@@ -61,10 +69,13 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
     if (FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(style) != FeatureTypeStyleVisitor::ftsLine)
         return;
 
+    //-------------------------------------------------------
+    // determine the rule for the feature
+    //-------------------------------------------------------
+
     MdfModel::RuleCollection* lrc = style->GetRules();
     MdfModel::LineRule* rule = NULL;
 
-    // determine the rule for the feature
     for (int i=0; i<lrc->GetCount(); ++i)
     {
         rule = static_cast<MdfModel::LineRule*>(lrc->GetAt(i));
@@ -84,8 +95,125 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
         return;
 
     MdfModel::LineSymbolizationCollection* lsymc = rule->GetSymbolizations();
-    if (!lsymc)
+    if (lsymc == NULL)
         return;
+
+    int nSyms = lsymc->GetCount();
+
+    //-------------------------------------------------------
+    // evaluate all the styles once
+    //-------------------------------------------------------
+
+    // temporary array used to store pointers to each evaluated style
+    RS_LineStroke** ppStrokes = (RS_LineStroke**)alloca(nSyms * sizeof(RS_LineStroke*));
+    if (!ppStrokes)
+        return;
+
+    size_t tempIndex = 0;
+    for (int i=0; i<nSyms; ++i)
+    {
+        MdfModel::LineSymbolization2D* lsym = lsymc->GetAt(i);
+
+        // don't render if there's no symbolization
+        if (lsym == NULL)
+        {
+            ppStrokes[i] = NULL;
+            continue;
+        }
+
+        // quick check if style is already cached
+        RS_LineStroke* cachedStyle = m_hLineSymCache[lsym];
+        if (cachedStyle)
+        {
+            ppStrokes[i] = cachedStyle;
+        }
+        else
+        {
+            // if not, then we need to either cache or evaluate it
+
+            // make sure the vector has a style in the slot we need
+            if (tempIndex >= m_lineSyms.size())
+            {
+                _ASSERT(tempIndex == m_lineSyms.size());
+
+                // allocate a new style and add it to the vector
+                m_lineSyms.push_back(new RS_LineStroke());
+            }
+
+            // use the existing style in the vector
+            ppStrokes[i] = m_lineSyms[tempIndex];
+            ObtainStyle(lsym, *ppStrokes[i]);
+
+            ++tempIndex;
+        }
+    }
+
+    //-------------------------------------------------------
+    // compute the clip offset from the styles
+    //-------------------------------------------------------
+
+    double clipOffsetWU = 0.0;  // in mapping units
+
+    bool bClip      = renderer->RequiresClipping();
+    bool bLabelClip = renderer->RequiresLabelClipping();
+
+    if (bClip || bLabelClip)
+    {
+        double mapScale = renderer->GetMapScale();
+
+        double clipOffsetMeters = 0.0;  // in device units
+        for (int i=0; i<nSyms; ++i)
+        {
+            if (ppStrokes[i])
+            {
+                double styleClipOffset = GetClipOffset(*ppStrokes[i], mapScale);
+                clipOffsetMeters = rs_max(styleClipOffset, clipOffsetMeters);
+            }
+        }
+
+        // add one pixel's worth to handle any roundoff
+        clipOffsetMeters += METERS_PER_INCH / renderer->GetDpi();
+
+        // limit the offset to something reasonable
+        if (clipOffsetMeters > MAX_CLIPOFFSET_IN_METERS)
+            clipOffsetMeters = MAX_CLIPOFFSET_IN_METERS;
+
+        // convert to mapping units
+        clipOffsetWU = clipOffsetMeters * mapScale / renderer->GetMetersPerUnit();
+    }
+
+    //-------------------------------------------------------
+    // prepare the geometry on which to apply the style
+    //-------------------------------------------------------
+
+    LineBuffer* lb = geometry;
+
+    if (bClip)
+    {
+        // the clip region is the map request extents expanded by the offset
+        RS_Bounds clip = renderer->GetBounds();
+        clip.minx -= clipOffsetWU;
+        clip.miny -= clipOffsetWU;
+        clip.maxx += clipOffsetWU;
+        clip.maxy += clipOffsetWU;
+
+        // clip geometry to given extents
+        LineBuffer* lbc = lb->Clip(clip, LineBuffer::ctAGF, m_lbPool);
+        if (lbc != lb)
+        {
+            // if the clipped buffer is NULL (completely clipped) just move on to
+            // the next feature
+            if (!lbc)
+                return;
+
+            // otherwise continue processing with the clipped buffer
+            lb = lbc;
+        }
+    }
+
+    //-------------------------------------------------------
+    // do the StartFeature notification
+    //-------------------------------------------------------
 
     RS_String tip; //TODO: this should be quick since we are not assigning
     RS_String eurl;
@@ -108,50 +236,44 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
                            theme.empty()? NULL : &theme,
                            zOffset, zExtrusion, elevType);
 
-    for (int i=0; i<lsymc->GetCount(); ++i)
+    //-------------------------------------------------------
+    // apply the style to the geometry using the renderer
+    //-------------------------------------------------------
+
+    for (int i=0; i<nSyms; ++i)
     {
-        MdfModel::LineSymbolization2D* lsym = lsymc->GetAt(i);
-
-        // don't render if there's no symbolization
-        if (lsym == NULL)
-            continue;
-
-        // quick check if style is already cached
-        RS_LineStroke* cachedStyle = m_hLineSymCache[lsym];
-        if (cachedStyle)
-        {
-            renderer->ProcessPolyline(lb, *cachedStyle);
-        }
-        else
-        {
-            // if not, then we need to either cache or evaluate it
-            RS_LineStroke lineStyle;
-            ObtainStyle(lsym, lineStyle);
-
-            renderer->ProcessPolyline(lb, lineStyle);
-        }
+        if (ppStrokes[i])
+            renderer->ProcessPolyline(lb, *ppStrokes[i]);
     }
 
+    //-------------------------------------------------------
     // do labeling if needed
+    //-------------------------------------------------------
+
     MdfModel::Label* label = rule->GetLabel();
     if (label && label->GetSymbol())
     {
         // Make sure the geometry is clipped if label clipping is specified.
-        // If RequiresClipping is true then the geometry is already clipped.
-        bool bReleaseLB = false;
-        if (!renderer->RequiresClipping() && renderer->RequiresLabelClipping())
+        // If bClip is true then the geometry is already clipped.
+        if (!bClip && bLabelClip)
         {
-            LineBuffer* lbc = lb->Clip(renderer->GetBounds(), LineBuffer::ctAGF, m_lbPool);
-            if (!lbc)
-                return; // outside screen -- will not happen
+            // the clip region is the map request extents expanded by the offset
+            RS_Bounds clip = renderer->GetBounds();
+            clip.minx -= clipOffsetWU;
+            clip.miny -= clipOffsetWU;
+            clip.maxx += clipOffsetWU;
+            clip.maxy += clipOffsetWU;
 
-            // did geom require clipping?
-            // NOTE: original geometry is still accessible to the
-            //       user from RS_FeatureReader::GetGeometry
+            LineBuffer* lbc = lb->Clip(clip, LineBuffer::ctAGF, m_lbPool);
             if (lbc != lb)
             {
+                // if the clipped buffer is NULL (completely clipped) just move on to
+                // the next feature
+                if (!lbc)
+                    return;
+
+                // otherwise continue processing with the clipped buffer
                 lb = lbc;
-                bReleaseLB = true;
             }
         }
 
@@ -164,10 +286,11 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
 
         if (!_isnan(cx) && !_isnan(cy))
             AddLabel(cx, cy, slope_rad, true, label, RS_OverpostType_FirstFit, true, renderer, label->GetSymbol()->IsAdvancedPlacement()? lb : NULL);
-
-        if (bReleaseLB)
-            LineBufferPool::FreeLineBuffer(m_lbPool, lb);
     }
+
+    // free clipped line buffer if the geometry was clipped
+    if (lb != geometry)
+        LineBufferPool::FreeLineBuffer(m_lbPool, lb);
 }
 
 

@@ -23,7 +23,7 @@
 
 #include <algorithm>
 
-#define GROWTH_FACTOR 1.5
+const double GROWTH_FACTOR = 1.5;
 
 #define ENSURE_POINT_BUFFER(points) \
     if ((m_npts + (points)) > m_max_pts) \

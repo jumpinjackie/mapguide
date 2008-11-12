@@ -31,16 +31,6 @@ struct SE_RenderPrimitive;
 struct SE_RenderStyle;
 
 
-// Line weight is limited by this value, in mm device units.  Is there any
-// use case for rendering using a line weight greater than one meter?
-#define MAX_LINEWEIGHT_IN_MM 1000.0
-
-
-// Zero-length path segments (dots) are replaced with horizontal lines of
-// this length.
-#define LINE_SEGMENT_DOT_SIZE 1.0e-5
-
-
 //////////////////////////////////////////////////////////////////////////////
 class SE_EvalContext
 {

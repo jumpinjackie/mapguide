@@ -301,7 +301,7 @@ bool GeometryAdapter::ConvertStroke(MdfModel::Stroke* stroke, RS_LineStroke& rss
     if (stroke != NULL)
     {
         bool const1 = EvalDouble(stroke->GetThickness(), val);
-        rsstroke.width()= MdfModel::LengthConverter::UnitToMeters(stroke->GetUnit(), val);
+        rsstroke.width() = MdfModel::LengthConverter::UnitToMeters(stroke->GetUnit(), val);
         rsstroke.style() = stroke->GetLineStyle();
         rsstroke.units() = (stroke->GetSizeContext() == MdfModel::MappingUnits)? RS_Units_Model : RS_Units_Device;
         bool const2 = EvalColor(stroke->GetColor(), rsstroke.color());
@@ -832,4 +832,62 @@ bool GeometryAdapter::GetElevationParams(RS_ElevationSettings* elevSettings,
     }
 
     return true;
+}
+
+
+// This method returns the amount that the clip region needs to be expanded
+// to ensure that the clipped geometry renders correctly.  For example, if
+// we clip a polygon directly to the edge of the screen then the polygon's
+// edge style will be visible along any clipped edges.  But we don't want
+// any style to display on these clipped edges since they are not part of
+// the actual feature geometry.  To fix this we expand the clip region so
+// that all clipped edges are sufficiently offscreen and any style applied
+// to them does not display in the map region.  This method computes the
+// required clip offset for the supplied line stroke.  The value returned
+// is in device units, in meters.
+double GeometryAdapter::GetClipOffset(RS_LineStroke& lineStroke, double mapScale)
+{
+    // get the width in device units, in meters
+    double width = fabs(lineStroke.width());
+    if (lineStroke.units() == RS_Units_Model)
+        width /= mapScale;
+
+    const double ptsToMeters = METERS_PER_INCH / 72.0;
+
+    // Account for any decoration in the style.  A decoration has a size
+    // (the full width) specified in points.  When rendered, this size is
+    // first increased by 1 and then increased by the line weight.  See
+    // LineStyleDef::SetStyleDef for details.
+    double decorSize = 0.0;
+    const wchar_t* lineStyleName = lineStroke.style().c_str();
+    if (_wcsnicmp(lineStyleName, L"Solid", 6) != 0)
+    {
+        if (_wcsnicmp(lineStyleName, L"Rail", 5) == 0)
+        {
+            // the decoration size is 5 points
+            decorSize += 6.0 * ptsToMeters;
+            decorSize += width;
+        }
+        else if (_wcsnicmp(lineStyleName, L"FENCELINE1", 11) == 0)
+        {
+            // the decoration size is 9 points
+            decorSize += 10.0 * ptsToMeters;
+            decorSize += width;
+        }
+        else if (_wcsnicmp(lineStyleName, L"FENCELINE2", 11) == 0)
+        {
+            // the decoration size is 9 points
+            decorSize += 10.0 * ptsToMeters;
+            decorSize += width;
+        }
+        else if (_wcsnicmp(lineStyleName, L"TRACKS", 7) == 0)
+        {
+            // the decoration size is 25 points
+            decorSize += 26.0 * ptsToMeters;
+            decorSize += width;
+        }
+    }
+
+    // return the half-width
+    return 0.5*(width + decorSize);
 }

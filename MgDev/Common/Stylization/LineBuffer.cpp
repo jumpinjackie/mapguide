@@ -24,10 +24,10 @@
 // For point reduction loop -- points will be dropped if distance
 // between them squared is more than 1.96 (i.e. 1.4 pixels).
 // Dave said 1.4 is a good number.
-#define OPTIMIZE_DISTANCE_SQ 1.96
+const double OPTIMIZE_DISTANCE_SQ = 1.96;
 
 // polygons and polylines below this # of points will not be victims of point reduction
-#define MIN_RING_SIZE_TO_OPTIMIZE 6
+const int MIN_RING_SIZE_TO_OPTIMIZE = 6;
 
 // Cohen - Sutherland outcodes
 #define LEFT   0x01

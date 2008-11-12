@@ -54,10 +54,6 @@ struct SE_RenderAreaStyle;
 using namespace MDFMODEL_NAMESPACE;
 
 
-// Clip offset is limited by this value, in mm device units.
-#define MAX_CLIPOFFSET_IN_MM 1000.0
-
-
 class StylizationEngine
 {
 public:

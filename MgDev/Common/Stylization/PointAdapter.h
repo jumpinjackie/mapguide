@@ -33,7 +33,7 @@ public:
                          RS_FeatureReader*           features,
                          bool                        initialPass,
                          FdoExpressionEngine*        exec,
-                         LineBuffer*                 lb,
+                         LineBuffer*                 geometry,
                          MdfModel::FeatureTypeStyle* style,
                          const MdfModel::MdfString*  tooltip = NULL,
                          const MdfModel::MdfString*  url = NULL,
