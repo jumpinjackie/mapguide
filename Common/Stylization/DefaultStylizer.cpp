@@ -226,7 +226,6 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
                                      CancelStylization                cancel,
                                      void*                            userData)
 {
-    bool bClip = renderer->RequiresClipping();
     double drawingScale = renderer->GetDrawingScale();
 
     MdfModel::FeatureTypeStyleCollection* ftsc = scaleRange->GetFeatureTypeStyles();
@@ -318,27 +317,6 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
             continue;
         }
 
-        if (bClip)
-        {
-            // clip geometry to given map request extents
-            LineBuffer* lbc = lb->Clip(renderer->GetBounds(), LineBuffer::ctAGF, m_lbPool);
-
-            // Free original line buffer if the geometry was actually clipped.
-            // Note that the original geometry is still accessible using
-            // RS_FeatureReader::GetGeometry.
-            if (lbc != lb)
-            {
-                LineBufferPool::FreeLineBuffer(m_lbPool, lb);
-
-                // if the clipped buffer is NULL just move on to the next feature
-                if (!lbc)
-                    continue;
-
-                // otherwise continue processing with the clipped buffer
-                lb = lbc;
-            }
-        }
-
         // if we know how to stylize this type of geometry, then go ahead
         GeometryAdapter* adapter = FindGeomAdapter(lb->geom_type());
         if (adapter)
@@ -397,7 +375,7 @@ void DefaultStylizer::StylizeGridLayer(MdfModel::GridLayerDefinition* layer,
     MdfModel::GridColorStyle* gcs = range->GetColorStyle();
     MdfModel::GridSurfaceStyle* gss = range->GetSurfaceStyle();
 
-    //init the raster adapter
+    // init the raster adapter
     if (!m_pRasterAdapter)
         m_pRasterAdapter = new RasterAdapter(m_lbPool);
 

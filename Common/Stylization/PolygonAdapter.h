@@ -33,7 +33,7 @@ public:
                          RS_FeatureReader*           features,
                          bool                        initialPass,
                          FdoExpressionEngine*        exec,
-                         LineBuffer*                 lb,
+                         LineBuffer*                 geometry,
                          MdfModel::FeatureTypeStyle* style,
                          const MdfModel::MdfString*  tooltip = NULL,
                          const MdfModel::MdfString*  url = NULL,
@@ -44,6 +44,7 @@ private:
     void ObtainStyle(MdfModel::AreaSymbolization2D* asym, RS_FillStyle& fillStyle);
 
     std::map<void*, RS_FillStyle*> m_hAreaSymCache;
+    RS_FillStyle m_fillStyle;
 };
 
 #endif

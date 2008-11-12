@@ -48,7 +48,7 @@ void PolygonAdapter::Stylize(Renderer*                   renderer,
                              RS_FeatureReader*           features,
                              bool                        initialPass,
                              FdoExpressionEngine*        exec,
-                             LineBuffer*                 lb,
+                             LineBuffer*                 geometry,
                              MdfModel::FeatureTypeStyle* style,
                              const MdfModel::MdfString*  tooltip,
                              const MdfModel::MdfString*  url,
@@ -61,10 +61,13 @@ void PolygonAdapter::Stylize(Renderer*                   renderer,
     if (FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(style) != FeatureTypeStyleVisitor::ftsArea)
         return;
 
+    //-------------------------------------------------------
+    // determine the rule for the feature
+    //-------------------------------------------------------
+
     MdfModel::RuleCollection* arc = style->GetRules();
     MdfModel::AreaRule* rule = NULL;
 
-    // determine the rule for the feature
     for (int i=0; i<arc->GetCount(); ++i)
     {
         rule = static_cast<MdfModel::AreaRule*>(arc->GetAt(i));
@@ -87,6 +90,79 @@ void PolygonAdapter::Stylize(Renderer*                   renderer,
     if (asym == NULL)
         return;
 
+    //-------------------------------------------------------
+    // evaluate the style to use
+    //-------------------------------------------------------
+
+    // quick check if style is already cached
+    RS_FillStyle* fillStyle = m_hAreaSymCache[asym];
+    if (!fillStyle)
+    {
+        // if not, then we need to either cache or evaluate it
+        fillStyle = &m_fillStyle;
+        ObtainStyle(asym, *fillStyle);
+    }
+
+    //-------------------------------------------------------
+    // compute the clip offset from the styles
+    //-------------------------------------------------------
+
+    double clipOffsetWU = 0.0;  // in mapping units
+
+    bool bClip      = renderer->RequiresClipping();
+    bool bLabelClip = renderer->RequiresLabelClipping();
+
+    if (bClip || bLabelClip)
+    {
+        double mapScale = renderer->GetMapScale();
+
+        // in meters in device units
+        double clipOffsetMeters = GetClipOffset(fillStyle->outline(), mapScale);
+
+        // add one pixel's worth to handle any roundoff
+        clipOffsetMeters += METERS_PER_INCH / renderer->GetDpi();
+
+        // limit the offset to something reasonable
+        if (clipOffsetMeters > MAX_CLIPOFFSET_IN_METERS)
+            clipOffsetMeters = MAX_CLIPOFFSET_IN_METERS;
+
+        // convert to mapping units
+        clipOffsetWU = clipOffsetMeters * mapScale / renderer->GetMetersPerUnit();
+    }
+
+    //-------------------------------------------------------
+    // prepare the geometry on which to apply the style
+    //-------------------------------------------------------
+
+    LineBuffer* lb = geometry;
+
+    if (bClip)
+    {
+        // the clip region is the map request extents expanded by the offset
+        RS_Bounds clip = renderer->GetBounds();
+        clip.minx -= clipOffsetWU;
+        clip.miny -= clipOffsetWU;
+        clip.maxx += clipOffsetWU;
+        clip.maxy += clipOffsetWU;
+
+        // clip geometry to given extents
+        LineBuffer* lbc = lb->Clip(clip, LineBuffer::ctAGF, m_lbPool);
+        if (lbc != lb)
+        {
+            // if the clipped buffer is NULL (completely clipped) just move on to
+            // the next feature
+            if (!lbc)
+                return;
+
+            // otherwise continue processing with the clipped buffer
+            lb = lbc;
+        }
+    }
+
+    //-------------------------------------------------------
+    // do the StartFeature notification
+    //-------------------------------------------------------
+
     RS_String tip; //TODO: this should be quick since we are not assigning
     RS_String eurl;
     const RS_String &theme = rule->GetLegendLabel();
@@ -108,41 +184,40 @@ void PolygonAdapter::Stylize(Renderer*                   renderer,
                            theme.empty()? NULL : &theme,
                            zOffset, zExtrusion, elevType);
 
-    // quick check if style is already cached
-    RS_FillStyle* cachedStyle = m_hAreaSymCache[asym];
-    if (cachedStyle)
-    {
-        renderer->ProcessPolygon(lb, *cachedStyle);
-    }
-    else
-    {
-        // if not, then we need to either cache or evaluate it
-        RS_FillStyle fillStyle;
-        ObtainStyle(asym, fillStyle);
+    //-------------------------------------------------------
+    // apply the style to the geometry using the renderer
+    //-------------------------------------------------------
 
-        renderer->ProcessPolygon(lb, fillStyle);
-    }
+    renderer->ProcessPolygon(lb, *fillStyle);
 
+    //-------------------------------------------------------
     // do labeling if needed
+    //-------------------------------------------------------
+
     MdfModel::Label* label = rule->GetLabel();
     if (label && label->GetSymbol())
     {
         // Make sure the geometry is clipped if label clipping is specified.
-        // If RequiresClipping is true then the geometry is already clipped.
-        bool bReleaseLB = false;
-        if (!renderer->RequiresClipping() && renderer->RequiresLabelClipping())
+        // If bClip is true then the geometry is already clipped.
+        if (!bClip && bLabelClip)
         {
-            LineBuffer* lbc = lb->Clip(renderer->GetBounds(), LineBuffer::ctAGF, m_lbPool);
-            if (!lbc)
-                return; // outside screen -- will not happen
+            // the clip region is the map request extents expanded by the offset
+            RS_Bounds clip = renderer->GetBounds();
+            clip.minx -= clipOffsetWU;
+            clip.miny -= clipOffsetWU;
+            clip.maxx += clipOffsetWU;
+            clip.maxy += clipOffsetWU;
 
-            // did geom require clipping?
-            // NOTE: original geometry is still accessible to the
-            //       user from RS_FeatureReader::GetGeometry
+            LineBuffer* lbc = lb->Clip(clip, LineBuffer::ctAGF, m_lbPool);
             if (lbc != lb)
             {
+                // if the clipped buffer is NULL (completely clipped) just move on to
+                // the next feature
+                if (!lbc)
+                    return;
+
+                // otherwise continue processing with the clipped buffer
                 lb = lbc;
-                bReleaseLB = true;
             }
         }
 
@@ -155,10 +230,11 @@ void PolygonAdapter::Stylize(Renderer*                   renderer,
 
         if (!_isnan(cx) && !_isnan(cy))
             AddLabel(cx, cy, 0.0, false, label, RS_OverpostType_FirstFit, true, renderer, lb);
-
-        if (bReleaseLB)
-            LineBufferPool::FreeLineBuffer(m_lbPool, lb);
     }
+
+    // free clipped line buffer if the geometry was clipped
+    if (lb != geometry)
+        LineBufferPool::FreeLineBuffer(m_lbPool, lb);
 }
 
 

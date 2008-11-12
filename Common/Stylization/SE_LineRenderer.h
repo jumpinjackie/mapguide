@@ -25,12 +25,6 @@
 struct HotSpot;
 
 
-// The maximum number of segments to use when chopping up a symbol
-// for warping.  An example where this limit becomes important is
-// with mapping space symbols on a map that's zoomed in very far.
-#define MAX_CHOPBUFFER_SEGS 100000
-
-
 ///////////////////////////////////////////////////////////////////////////////
 class SE_LineRenderer
 {

@@ -33,7 +33,7 @@ public:
                          RS_FeatureReader*           features,
                          bool                        initialPass,
                          FdoExpressionEngine*        exec,
-                         LineBuffer*                 lb,
+                         LineBuffer*                 geometry,
                          MdfModel::FeatureTypeStyle* style,
                          const MdfModel::MdfString*  tooltip = NULL,
                          const MdfModel::MdfString*  url = NULL,
@@ -44,6 +44,7 @@ private:
     void ObtainStyle(MdfModel::LineSymbolization2D* lsym, RS_LineStroke& lineStyle);
 
     std::map<void*, RS_LineStroke*> m_hLineSymCache;
+    std::vector<RS_LineStroke*> m_lineSyms;
 };
 
 #endif

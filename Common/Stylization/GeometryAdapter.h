@@ -86,6 +86,8 @@ protected:
                                             double& zOffset, double& zExtrusion,
                                             RS_ElevationType& elevType);
 
+    double GetClipOffset(RS_LineStroke& lineStroke, double mapScale);
+
     FdoExpressionEngine* m_exec;
     LineBufferPool* m_lbPool;
 

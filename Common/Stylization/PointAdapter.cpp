@@ -48,7 +48,7 @@ void PointAdapter::Stylize(Renderer*                   renderer,
                            RS_FeatureReader*           features,
                            bool                        initialPass,
                            FdoExpressionEngine*        exec,
-                           LineBuffer*                 lb,
+                           LineBuffer*                 geometry,
                            MdfModel::FeatureTypeStyle* style,
                            const MdfModel::MdfString*  tooltip,
                            const MdfModel::MdfString*  url,
@@ -61,10 +61,13 @@ void PointAdapter::Stylize(Renderer*                   renderer,
     if (FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(style) != FeatureTypeStyleVisitor::ftsPoint)
         return;
 
+    //-------------------------------------------------------
+    // determine the rule for the feature
+    //-------------------------------------------------------
+
     MdfModel::RuleCollection* prc = style->GetRules();
     MdfModel::PointRule* rule = NULL;
 
-    // determine the rule for the feature
     for (int i=0; i<prc->GetCount(); ++i)
     {
         rule = static_cast<MdfModel::PointRule*>(prc->GetAt(i));
@@ -87,6 +90,38 @@ void PointAdapter::Stylize(Renderer*                   renderer,
 
     MdfModel::PointTypeStyle* pfs = (MdfModel::PointTypeStyle*)style;
 
+    //-------------------------------------------------------
+    // prepare the geometry on which to apply the style
+    //-------------------------------------------------------
+
+    // NOTE: clipping of geometry for rendering (the RequiresClipping
+    //       option) does not need to be done for points.  Points
+    //       outside the map extents already get clipped away as part
+    //       of the FDO query.
+    
+    LineBuffer* lb = geometry;
+
+    if (renderer->RequiresClipping())
+    {
+        // clip geometry to given extents
+        // NOTE: point styles do not require a clip offset
+        LineBuffer* lbc = lb->Clip(renderer->GetBounds(), LineBuffer::ctAGF, m_lbPool);
+        if (lbc != lb)
+        {
+            // if the clipped buffer is NULL (completely clipped) just move on to
+            // the next feature
+            if (!lbc)
+                return;
+
+            // otherwise continue processing with the clipped buffer
+            lb = lbc;
+        }
+    }
+
+    //-------------------------------------------------------
+    // do the StartFeature notification
+    //-------------------------------------------------------
+
     RS_String tip; //TODO: this should be quick since we are not assigning
     RS_String eurl;
     const RS_String &theme = rule->GetLegendLabel();
@@ -102,7 +137,15 @@ void PointAdapter::Stylize(Renderer*                   renderer,
     double zExtrusion = 0.0;
     GetElevationParams(elevSettings, zOffset, zExtrusion, elevType);
 
-    // send the geometry to the rendering pipeline
+    renderer->StartFeature(features, initialPass,
+                           tip.empty()? NULL : &tip,
+                           eurl.empty()? NULL : &eurl,
+                           theme.empty()? NULL : &theme,
+                           zOffset, zExtrusion, elevType);
+
+    //-------------------------------------------------------
+    // apply the style to the geometry using the renderer
+    //-------------------------------------------------------
 
     // Process point symbol, if any.  If there is no point symbol, there may
     // be a label which we will use as a symbol instead.  This one does not
@@ -120,12 +163,6 @@ void PointAdapter::Stylize(Renderer*                   renderer,
 
     if (psym && psym->GetSymbol())
     {
-        renderer->StartFeature(features, initialPass,
-                               tip.empty()? NULL : &tip,
-                               eurl.empty()? NULL : &eurl,
-                               theme.empty()? NULL : &theme,
-                               zOffset, zExtrusion, elevType);
-
         // quick check if style is already cached
         RS_MarkerDef* cachedStyle = m_hPointSymCache[psym];
         if (cachedStyle)
@@ -150,12 +187,15 @@ void PointAdapter::Stylize(Renderer*                   renderer,
         }
     }
 
+    //-------------------------------------------------------
     // do labeling if needed
+    //-------------------------------------------------------
+
     MdfModel::Label* label = rule->GetLabel();
     if (label && label->GetSymbol())
     {
-        // NOTE: clipping of geometry for labeling (the RequiresLabelClipping option)
-        //       does not need to be done for points.
+        // NOTE: clipping of geometry for labeling (the RequiresLabelClipping
+        //       option) does not need to be done for points.
 
         // TODO: compute label position
         double cx = std::numeric_limits<double>::quiet_NaN();
@@ -318,6 +358,10 @@ void PointAdapter::Stylize(Renderer*                   renderer,
             }
         }
     }
+
+    // free clipped line buffer if the geometry was clipped
+    if (lb != geometry)
+        LineBufferPool::FreeLineBuffer(m_lbPool, lb);
 }
 
 

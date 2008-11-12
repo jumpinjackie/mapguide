@@ -1301,14 +1301,15 @@ LineBuffer* GDRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, do
     double csCapAng = 0.0, snCapAng = 0.0;
     if (style == LineStyle_FENCELINE1)
     {
-        // the decoration size was converted to map units - divide by the
-        // drawing scale to get the size in pixels
-        numCapSegs = (int)ceil(M_PI * sqrt(0.5*lineStyleDef.m_pixelRuns[1].m_decorSize / drawingScale));
+        // get the size in screen units of the circular decoration
+        double decorSize = lineStyleDef.m_pixelRuns[1].m_decorSize / drawingScale;
 
-        // restrict this value to be safe
-        // TODO: what's the correct upper limit
-        if (numCapSegs > 32)
-            numCapSegs = 32;
+        numCapSegs = (int)ceil(M_PI * sqrt(0.5*decorSize));
+
+        // restrict this value to be safe - 64 is enough to handle the
+        // case of the decoration filling the whole screen
+        if (numCapSegs > 64)
+            numCapSegs = 64;
 
         // angle increment
         double dAngle = 2.0*M_PI / numCapSegs;
