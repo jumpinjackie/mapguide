@@ -40,8 +40,8 @@
 
 //defines how many iterations to use when tessellating
 //qudratics, cubics and spirals. We use up to 100 iterations
-#define TESSELLATION_ITERATIONS 100
-#define INV_TESSELLATION_ITERATIONS 0.01
+const int TESSELLATION_ITERATIONS = 100;
+const double INV_TESSELLATION_ITERATIONS = 1.0 / TESSELLATION_ITERATIONS;
 
 class LineBufferPool;
 class CSysTransformer;
