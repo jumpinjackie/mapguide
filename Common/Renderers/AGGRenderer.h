@@ -139,9 +139,9 @@ public:
 
     RENDERERS_API virtual bool RequiresLabelClipping();
 
-    virtual bool SupportsTooltips();
+    RENDERERS_API virtual bool SupportsTooltips();
 
-    virtual bool SupportsHyperlinks();
+    RENDERERS_API virtual bool SupportsHyperlinks();
 
     /////////////////////////////////////////////
     // AGGRenderer specific
