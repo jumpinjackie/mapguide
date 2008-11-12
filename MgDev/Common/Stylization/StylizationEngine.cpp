@@ -22,8 +22,8 @@
 #include "SE_Renderer.h"
 #include "SE_SymbolManager.h"
 #include "SE_PositioningAlgorithms.h"
-#include "FeatureTypeStyleVisitor.h"
 #include "SE_SymbolDefProxies.h"
+#include "FeatureTypeStyleVisitor.h"
 
 #include <algorithm>
 #include <functional>
@@ -512,7 +512,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         clip.maxy += clipOffsetWU;
 
         // clip geometry to given extents
-        LineBuffer* lbc = geometry->Clip(clip, LineBuffer::ctAGF, m_pool);
+        LineBuffer* lbc = lb->Clip(clip, LineBuffer::ctAGF, m_pool);
         if (lbc != lb)
         {
             // if the clipped buffer is NULL (completely clipped) just move on to
