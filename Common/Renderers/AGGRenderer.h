@@ -248,7 +248,7 @@ private:
                                  RS_F_Point destPt1, RS_F_Point destPt2, RS_F_Point destPt3);
 
     static void RenderWithTransform(mg_rendering_buffer& src, agg_context* cxt,
-        agg::trans_affine& img_mtx, RS_ImageFormat format);
+        agg::trans_affine& img_mtx, RS_ImageFormat format, bool antiAlias = true);
 
     RS_Color m_bgcolor;
     RS_Bounds m_extents;
