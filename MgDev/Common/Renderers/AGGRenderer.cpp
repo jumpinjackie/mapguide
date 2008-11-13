@@ -2175,14 +2175,15 @@ void AGGRenderer::RenderTransformedTriangle(mg_rendering_buffer& src, agg_contex
     img_mtx.rect_to_parl(srcPt1.x, srcPt1.y, srcPt3.x, srcPt3.y, parallelogram);
     img_mtx.invert(); // Renderer uses inverse of matrix
 
-    // Render the triangle
-    RenderWithTransform(src, cxt, img_mtx, format);
+    // Render the triangle without anti-aliasing
+    // anti-aliasing results in faint grid lines
+    RenderWithTransform(src, cxt, img_mtx, format, false);
 }
 
 // Renders the source image to the destination context, using the specified
 // affine transformation matrix
 void AGGRenderer::RenderWithTransform(mg_rendering_buffer& src, agg_context* cxt,
-                                      agg::trans_affine& img_mtx, RS_ImageFormat format)
+                                      agg::trans_affine& img_mtx, RS_ImageFormat format, bool antiAlias)
 {
     if (format == RS_ImageFormat_ABGR)
     {
@@ -2200,7 +2201,10 @@ void AGGRenderer::RenderWithTransform(mg_rendering_buffer& src, agg_context* cxt
 
         agg::span_allocator<mg_pixfmt_type::color_type> sa;
 
-        agg::render_scanlines_aa(cxt->ras, cxt->sl, cxt->ren_pre, sa, sg);
+        if (antiAlias)
+            agg::render_scanlines_aa(cxt->ras, cxt->sl, cxt->ren_pre, sa, sg);
+        else
+            agg::render_scanlines_bin(cxt->ras, cxt->sl, cxt->ren_pre, sa, sg);
     }
     else if(format == RS_ImageFormat_ARGB)
     {
@@ -2219,7 +2223,10 @@ void AGGRenderer::RenderWithTransform(mg_rendering_buffer& src, agg_context* cxt
         agg::span_allocator<mg_pixfmt_type::color_type> sa;
 
         //we are using the alpha premultiplied renderer since the source image is premultiplied
-        agg::render_scanlines_aa(cxt->ras, cxt->sl, cxt->ren_pre, sa, sg);
+        if (antiAlias)
+            agg::render_scanlines_aa(cxt->ras, cxt->sl, cxt->ren_pre, sa, sg);
+        else
+            agg::render_scanlines_bin(cxt->ras, cxt->sl, cxt->ren_pre, sa, sg);
     }
     else if(format == RS_ImageFormat_NATIVE)
     {
@@ -2238,7 +2245,10 @@ void AGGRenderer::RenderWithTransform(mg_rendering_buffer& src, agg_context* cxt
 
         agg::span_allocator<mg_pixfmt_type::color_type> sa;
 
-        agg::render_scanlines_aa(cxt->ras, cxt->sl, cxt->ren_pre, sa, sg);
+        if (antiAlias)
+            agg::render_scanlines_aa(cxt->ras, cxt->sl, cxt->ren_pre, sa, sg);
+        else
+            agg::render_scanlines_bin(cxt->ras, cxt->sl, cxt->ren_pre, sa, sg);
     }
 }
 
