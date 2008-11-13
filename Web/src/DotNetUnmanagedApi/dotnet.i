@@ -52,7 +52,6 @@
 %typemap(imtype) BYTE_ARRAY_IN "Byte[]"
 %typemap(ctype)  BYTE_ARRAY_IN "unsigned char*"
 
-
 ///////////////////////////////////////////////////////////
 // Global functions
 //
