@@ -29,9 +29,27 @@ template class MG_FOUNDATION_API Ptr<MgDisposableCollection>;
 /// are owned and managed by the collection.
 class MG_FOUNDATION_API MgDisposableCollection : public MgCollection
 {
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgDisposableCollection)
 
-INTERNAL_API:
+PUBLISHED_API:
+    //////////////////////////////////////////////////////////
+    /// \brief
+    /// Constructs a DisposableCollection.  The collection is initially empty.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// MgDisposableCollection();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// MgDisposableCollection();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// MgDisposableCollection();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    MgDisposableCollection();
+
     //////////////////////////////////////////////////////////
     /// \brief
     /// Gets the number of items in the collection.
@@ -188,10 +206,18 @@ INTERNAL_API:
     ///
     virtual void Deserialize(MgStream* stream);
 
-INTERNAL_API:
+EXTERNAL_API:
 
-    MgDisposableCollection();
-    virtual ~MgDisposableCollection();
+    //////////////////////////////////////////////////////////
+    /// \brief
+    /// Deletes the collection and the properties contained in it.
+    ///
+    /// \return
+    /// Returns nothing.
+    ///
+    ~MgDisposableCollection();
+
+INTERNAL_API:
 
 protected:
 

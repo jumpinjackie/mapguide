@@ -75,6 +75,7 @@ MgApi_wrap.cpp : \
     ../../../Common/Foundation/Data/ByteSink.h \
     ../../../Common/Foundation/Data/DateTime.h \
     ../../../Common/Foundation/Data/Collection.h \
+    ../../../Common/Foundation/System/DisposableCollection.h \
     ../../../Common/PlatformBase/Data/IntCollection.h \
     ../../../Common/Foundation/Data/PropertyCollection.h \
     ../../../Common/Foundation/Data/StringCollection.h \
