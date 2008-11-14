@@ -22,10 +22,12 @@
 
 // All sizes must be in powers-of-two.
 // TODO: Determine the best sizes to improve the Server performance.
-static const u_int32_t MG_CACHE_SIZE        = 32 * 1024 * 1024;
-static const u_int32_t MG_DB_PAGE_SIZE      = 32 * 1024;
-static const u_int32_t MG_DBXML_PAGE_SIZE   = 32 * 1024;
-static const u_int32_t MG_LOG_BUF_SIZE      =  8 * 1024 * 1024;
+static const u_int32_t MG_KB                = 1024;
+static const u_int32_t MG_MB                = 1048576; // 1024^2
+static const u_int32_t MG_CACHE_SIZE        = 32 * MG_MB;
+static const u_int32_t MG_DB_PAGE_SIZE      = 32 * MG_KB;
+static const u_int32_t MG_DBXML_PAGE_SIZE   = 32 * MG_KB;
+static const u_int32_t MG_LOG_BUF_SIZE      = 12 * MG_MB;
 
 class MgDatabase;
 
