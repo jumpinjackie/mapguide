@@ -118,11 +118,11 @@ void MgByteSink::ToStream(ACE_SOCK_Stream* stream)
 {
     unsigned char bytes[4096];
 
-    int bytesReceived, bytesSent;
+    size_t bytesReceived, bytesSent;
 
-    while((bytesReceived = m_reader->Read(bytes, 4096)) > 0)
+    while((bytesReceived = (size_t)m_reader->Read(bytes, 4096)) > 0)
     {
-        if ((bytesSent = (int)stream->send_n(bytes, bytesReceived, MG_MSG_NOSIGNAL)) != bytesReceived)
+        if ((bytesSent = stream->send_n(bytes, bytesReceived, MG_MSG_NOSIGNAL)) != bytesReceived)
         {
             //should get the error from ACE and put it in the exception
             throw new MgStreamIoException(L"MgByteSink.ToStream",
@@ -223,11 +223,11 @@ void MgByteSink::ToFile(CREFSTRING filename)
 
         bytes = new unsigned char[BSINK_BUFFER_SIZE];
 
-        int bytesReceived, bytesWritten;
+        size_t bytesReceived, bytesWritten;
 
-        while ((bytesReceived = m_reader->Read(bytes, BSINK_BUFFER_SIZE)) > 0)
+        while ((bytesReceived = (size_t)m_reader->Read(bytes, BSINK_BUFFER_SIZE)) > 0)
         {
-            if((bytesWritten = (int)ACE_OS::fwrite(bytes, 1, bytesReceived, f)) != bytesReceived)
+            if((bytesWritten = ACE_OS::fwrite(bytes, 1, bytesReceived, f)) != bytesReceived)
             {
                 ACE_OS::fclose(f);
 
