@@ -470,7 +470,7 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::WriteBytes(const unsigned char
         if (bytesWritten > 0)
         {
             memmove(m_writeBuffer, &m_writeBuffer[bytesWritten], m_writeBufLength-bytesWritten);
-            m_writeBufLength -= (int) bytesWritten;
+            m_writeBufLength -= bytesWritten;
         }
 
         // and recurse to push more data in
@@ -506,7 +506,7 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::Flush()
         if (bytesWritten > 0)
         {
             memmove(m_writeBuffer, &m_writeBuffer[bytesWritten], m_writeBufLength-bytesWritten);
-            m_writeBufLength -= (int) bytesWritten;
+            m_writeBufLength -= bytesWritten;
         }
     }
     return stat;
