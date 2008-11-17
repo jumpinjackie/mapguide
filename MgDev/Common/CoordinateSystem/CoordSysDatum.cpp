@@ -834,6 +834,8 @@ void CCoordinateSystemDatum::SetEllipsoidDefinition(MgCoordinateSystemEllipsoid 
     memset(&m_ElDef.key_nm[0], 0, sizeof(m_ElDef.key_nm));
     strcpy(&m_ElDef.key_nm[0], pStr);
 
+    delete [] pStr;
+
     //Grab the definitions of the datum and ellipsoid.
     cs_Eldef_ eldef;
     bool bResult = BuildElDefFromInterface(pEllipsoidDef, eldef);
