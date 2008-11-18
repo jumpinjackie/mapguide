@@ -30,8 +30,7 @@ void UpdateStyleBounds(SE_RenderStyle* st, SE_Renderer* se_renderer)
 {
     SE_RenderText* txt = ((SE_RenderText*)st->symbol[0]);
 
-    RS_TextMetrics tm;
-    se_renderer->GetRSFontEngine()->GetTextMetrics(txt->content, txt->tdef, tm, false);
+    se_renderer->GetRSFontEngine()->GetTextMetrics(txt->content, txt->tdef, txt->tm, false);
 
     // radian CCW rotation
     double angleRad = txt->tdef.rotation() * M_PI180;
@@ -42,9 +41,9 @@ void UpdateStyleBounds(SE_RenderStyle* st, SE_Renderer* se_renderer)
 
     RS_Bounds rotatedBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
 
-    for (size_t k=0; k<tm.line_pos.size(); ++k)
+    for (size_t k=0; k<txt->tm.line_pos.size(); ++k)
     {
-        LinePos& pos = tm.line_pos[k];
+        LinePos& pos = txt->tm.line_pos[k];
         RS_F_Point tmp;
 
         // process the extent points

@@ -857,6 +857,14 @@
 				RelativePath=".\RS_FontEngine.h"
 				>
 			</File>
+			<File
+				RelativePath=".\RS_TextMetrics.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RS_TextMetrics.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="GisGrid"

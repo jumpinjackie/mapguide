@@ -670,7 +670,9 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         WorldToScreenPoint(posx, posy, posx, posy);
 
         // draw the character
-        DrawScreenText(mdef.name(), tdef, posx, posy, NULL, 0, 0.0);
+        RS_TextMetrics tm;
+        if ( GetTextMetrics( mdef.name(), tdef, tm, false ) )
+            DrawScreenText(tm, tdef, posx, posy, NULL, 0, 0.0);
     }
     else
     {
@@ -2252,21 +2254,26 @@ void AGGRenderer::RenderWithTransform(mg_rendering_buffer& src, agg_context* cxt
     }
 }
 
-void AGGRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, RS_F_Point* path, int npts, double param_position)
+void AGGRenderer::DrawScreenText(const RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy, RS_F_Point* path, int npts, double param_position )
 {
     if (path)  //path text
     {
-        RS_TextMetrics tm;
-        GetTextMetrics(txt, tdef, tm, true);
-        //TODO: need computed seglens rather than NULL to make things faster
-        LayoutPathText(tm, (RS_F_Point*)path, npts, NULL, param_position, tdef.valign(), 0);
-        DrawPathText(tm, tdef);
+        // We cannot modify the cached RS_TextMetrics so we create a local one and use it to layout the path text.
+        RS_TextMetrics tm_local;
+        if ( GetTextMetrics( tm.text, tdef, tm_local, true ) )
+        {
+            //TODO: need computed seglens rather than NULL to make things faster
+            if ( LayoutPathText(tm_local, (RS_F_Point*)path, npts, NULL, param_position, tdef.valign(), 0) )
+                DrawPathText(tm_local, tdef);
+        }
     }
     else //block text
     {
-        RS_TextMetrics tm;
-        GetTextMetrics(txt, tdef, tm, false);
-        DrawBlockText(tm, tdef, insx, insy);
+        // Check that we have a valid text metrics
+        if ( tm.font != NULL )
+        {
+            DrawBlockText(tm, tdef, insx, insy);
+        }
     }
 }
 

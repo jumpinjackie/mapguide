@@ -2614,7 +2614,7 @@ void DWFRenderer::DrawScreenRaster(unsigned char* data,
 }
 
 
-void DWFRenderer::DrawScreenText(const RS_String& txt,
+void DWFRenderer::DrawScreenText(const RS_TextMetrics&  tm,
                                  RS_TextDef&      tdef,
                                  double           insx,
                                  double           insy,
@@ -2625,20 +2625,23 @@ void DWFRenderer::DrawScreenText(const RS_String& txt,
     if (path)
     {
         // path text
-        RS_TextMetrics tm;
-        if (GetTextMetrics(txt, tdef, tm, true))
+        // We cannot modify the cached RS_TextMetrics so we create a local one and use it to layout the path text.
+        RS_TextMetrics tm_local;
+        if ( GetTextMetrics( tm.text, tdef, tm_local, true ) )
         {
-            // TODO: need computed seglens rather than NULL to make things faster
-            if (LayoutPathText(tm, path, npts, NULL, param_position, tdef.valign(), 0))
-                DrawPathText(tm, tdef);
+            //TODO: need computed seglens rather than NULL to make things faster
+            if ( LayoutPathText(tm_local, (RS_F_Point*)path, npts, NULL, param_position, tdef.valign(), 0) )
+                DrawPathText(tm_local, tdef);
         }
     }
     else
     {
         // block text
-        RS_TextMetrics tm;
-        if (GetTextMetrics(txt, tdef, tm, false))
+        // Check that we have a valid text metrics
+        if ( tm.font != NULL )
+        {
             DrawBlockText(tm, tdef, insx, insy);
+        }
     }
 }
 

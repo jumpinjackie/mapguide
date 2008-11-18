@@ -21,6 +21,7 @@
 #include "SE_RendererStyles.h"
 #include "SE_LineBuffer.h"
 #include "SE_SymbolManager.h"
+#include "RS_TextMetrics.h"
 
 
 enum SE_RenderPrimitiveType
@@ -143,6 +144,7 @@ struct SE_RenderText : public SE_RenderPrimitive
     std::wstring content;
     double position[2];
     RS_TextDef tdef;
+    RS_TextMetrics tm;
 };
 
 

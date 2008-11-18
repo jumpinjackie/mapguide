@@ -396,7 +396,11 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
 //              tdef.opaquecolor() = m_textBackColor;
             }
 
-            DrawScreenText(tp->content, tdef, x, y, NULL, 0, 0.0);
+            // Here we cannot use the cached RS_TextMetrics in the SE_RenderText object.
+            // We must recalculate the text metrics with the new tdef before we can call DrawScreenText.
+            RS_TextMetrics tm;
+            if ( this->GetRSFontEngine()->GetTextMetrics( tp->content, tdef, tm, false ))
+                DrawScreenText(tm, tdef, x, y, NULL, 0, 0.0);
         }
         else if (primitive->type == SE_RenderPrimitive_Raster)
         {
@@ -1624,4 +1628,14 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
             }
         }
     }
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+// Indicates whether rendering optimization is used by this renderer.  For example, if we are rendering text and
+// optimization is turned on, then text is rendered as a simple line when it is very small.
+// By default, optimization is turned on.  For other behavior, this method must be overridden.
+bool SE_Renderer::OptimizeGeometry()
+{
+    return true;
 }
