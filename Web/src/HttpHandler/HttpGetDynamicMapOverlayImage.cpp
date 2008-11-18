@@ -88,7 +88,15 @@ void MgHttpGetDynamicMapOverlayImage::Execute(MgHttpResponse& hResponse)
     }
     else if (version == MG_API_VERSION(2,0,0) || version == MG_API_VERSION(2,1,0))
     {
-        Ptr<MgColor> selectionColor = new MgColor(m_selectionColor);
+        Ptr<MgColor> selectionColor;
+        if(m_selectionColor.empty())
+        {
+            selectionColor = NULL;
+        }
+        else
+        {
+            selectionColor = new MgColor(m_selectionColor);
+        }
         options = new MgRenderingOptions(m_mapFormat, m_behavior, selectionColor);
     }
     // Get the commands
