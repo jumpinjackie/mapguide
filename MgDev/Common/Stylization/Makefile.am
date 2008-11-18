@@ -71,6 +71,7 @@ libMgStylization_la_SOURCES = \
   RasterAdapter.cpp \
   RichTextEngine.cpp \
   RS_FontEngine.cpp \
+  RS_TextMetrics.cpp \
   SE_AreaPositioning.cpp \
   SE_Bounds.cpp \
   SE_BufferPool.cpp \
@@ -170,6 +171,7 @@ noinst_HEADERS = \
   RS_OutputStream.h \
   RS_Raster.h \
   RS_SymbolManager.h \
+  RS_TextMetrics.h \
   SE_AreaPositioning.h \
   SE_Bounds.h \
   SE_BufferPool.h \
