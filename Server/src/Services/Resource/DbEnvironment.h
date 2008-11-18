@@ -28,6 +28,7 @@ static const u_int32_t MG_CACHE_SIZE        = 32 * MG_MB;
 static const u_int32_t MG_DB_PAGE_SIZE      = 32 * MG_KB;
 static const u_int32_t MG_DBXML_PAGE_SIZE   = 32 * MG_KB;
 static const u_int32_t MG_LOG_BUF_SIZE      = 12 * MG_MB;
+static const u_int32_t MG_MAX_TRANSACTIONS  = 1000;
 
 class MgDatabase;
 

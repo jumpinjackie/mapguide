@@ -44,6 +44,7 @@ MgDbEnvironment::MgDbEnvironment(CREFSTRING repositoryType, const string& home,
 
     m_dbEnv.set_cachesize(0, MG_CACHE_SIZE, 1);
     m_dbEnv.set_lg_bsize(MG_LOG_BUF_SIZE);
+    m_dbEnv.set_tx_max(MG_MAX_TRANSACTIONS);
 
     u_int32_t containerFlags = DB_CREATE|DB_THREAD;
     u_int32_t environmentFlags = DB_CREATE|DB_THREAD|DB_INIT_MPOOL;
