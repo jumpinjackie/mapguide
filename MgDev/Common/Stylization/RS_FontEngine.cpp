@@ -22,26 +22,6 @@
 #include "SE_Renderer.h"
 #include "Foundation.h"
 
-using namespace RichText::ATOM;
-
-//////////////////////////////////////////////////////////////////////////////
-RS_TextMetrics::~RS_TextMetrics()
-{
-    const RichText::ATOM::Particle* pParticle;
-    const RichText::ATOM::Particle* pNext;
-    size_t numLists = format_changes.size();
-    for (size_t i=0; i<numLists; ++i)
-    {
-        pParticle = format_changes[i];
-        while (pParticle)
-        {
-            pNext = pParticle->Next();
-            delete pParticle;
-            pParticle = pNext;
-        }
-    }
-}
-
 
 //////////////////////////////////////////////////////////////////////////////
 RS_FontEngine::RS_FontEngine()
@@ -566,7 +546,7 @@ bool RS_FontEngine::ScreenVectorPointsUp(double /*x*/, double y)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy)
+void RS_FontEngine::DrawBlockText(const RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy)
 {
     double angleRad = tdef.rotation() * M_PI180;
 
@@ -679,7 +659,7 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
         else
             txt = &tm.line_breaks.at(k);
 
-        LinePos& pos = tm.line_pos[k];
+        const LinePos& pos = tm.line_pos[k];
 
         if (pRichTextEngine)
         {
@@ -696,40 +676,15 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
 
         double textwidth = pos.ext[1].x - pos.ext[0].x;
 
-        // render the ghosted text, if requested
-        if ((tdef.textbg() & RS_TextBackground_Ghosted) != 0)
-        {
-            DrawString(*txt, posx-offset, posy, textwidth, fontHeight, pFont, tmpTDef.ghostcolor(), angleRad);
-            DrawString(*txt, posx+offset, posy, textwidth, fontHeight, pFont, tmpTDef.ghostcolor(), angleRad);
-            DrawString(*txt, posx, posy-offset, textwidth, fontHeight, pFont, tmpTDef.ghostcolor(), angleRad);
-            DrawString(*txt, posx, posy+offset, textwidth, fontHeight, pFont, tmpTDef.ghostcolor(), angleRad);
-        }
-
-        // render the primary text
-        DrawString(*txt, posx, posy, textwidth, fontHeight, pFont, tmpTDef.textcolor(), angleRad);
-
-        // render the underline, if requested
-        if (tmpTDef.font().style() & RS_FontStyle_Underline)
+        // if the text is very small, we simply draw a line
+        if ( this->m_pSERenderer->OptimizeGeometry() && (fontHeight <= (screenUnitsPerPixel * TEXT_DRAWING_THRESHOLD)) )
         {
             m_lineStroke.color = tmpTDef.textcolor().argb();
-
-            // estimate underline line weight as % of font height
-            m_lineStroke.weight = (double)pFont->m_underline_thickness * fontHeight / (double)pFont->m_units_per_EM;
-
-            // restrict the weight to something reasonable
-            double mm2sud = m_pSERenderer->GetScreenUnitsPerMillimeterDevice();
-            double devWeightInMM = m_lineStroke.weight / mm2sud;
-            if (devWeightInMM > MAX_LINEWEIGHT_IN_MM)
-                m_lineStroke.weight = MAX_LINEWEIGHT_IN_MM * mm2sud;
-
-            // underline position w.r.t. baseline
-            double line_pos = (double)tm.font->m_underline_position * tm.font_height / (double)tm.font->m_units_per_EM;
-            if (!m_pSERenderer->YPointsUp())
-                line_pos = -line_pos;
+            m_lineStroke.weight = 0.0;
 
             // the line's start point is the insertion point, but shifted vertically by line_pos
-            double x0 = posx - line_pos * sin_a;
-            double y0 = posy + line_pos * cos_a;
+            double x0 = posx;
+            double y0 = posy;
 
             // the end point is a horizontal shift by the text width
             double x1 = x0 + textwidth * cos_a;
@@ -742,41 +697,90 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
 
             m_pSERenderer->DrawScreenPolyline(&lb, NULL, m_lineStroke);
         }
-
-        // render the overline, if requested
-        if (tmpTDef.font().style() & RS_FontStyle_Overline)
+        else
         {
-            m_lineStroke.color = tmpTDef.textcolor().argb();
+            // render the ghosted text, if requested
+            if ((tdef.textbg() & RS_TextBackground_Ghosted) != 0)
+            {
+                DrawString(*txt, posx-offset, posy, textwidth, fontHeight, pFont, tmpTDef.ghostcolor(), angleRad);
+                DrawString(*txt, posx+offset, posy, textwidth, fontHeight, pFont, tmpTDef.ghostcolor(), angleRad);
+                DrawString(*txt, posx, posy-offset, textwidth, fontHeight, pFont, tmpTDef.ghostcolor(), angleRad);
+                DrawString(*txt, posx, posy+offset, textwidth, fontHeight, pFont, tmpTDef.ghostcolor(), angleRad);
+            }
 
-            // estimate overline line weight as % of font height
-            m_lineStroke.weight = (double)pFont->m_underline_thickness * fontHeight / (double)pFont->m_units_per_EM;
+            // render the primary text
+            DrawString(*txt, posx, posy, textwidth, fontHeight, pFont, tmpTDef.textcolor(), angleRad);
 
-            // restrict the weight to something reasonable
-            double mm2sud = m_pSERenderer->GetScreenUnitsPerMillimeterDevice();
-            double devWeightInMM = m_lineStroke.weight / mm2sud;
-            if (devWeightInMM > MAX_LINEWEIGHT_IN_MM)
-                m_lineStroke.weight = MAX_LINEWEIGHT_IN_MM * mm2sud;
+            // render the underline, if requested
+            if (tmpTDef.font().style() & RS_FontStyle_Underline)
+            {
+                m_lineStroke.color = tmpTDef.textcolor().argb();
 
-            // overline position w.r.t. capline
-            double fontCapline = pFont->m_capheight * fontHeight / pFont->m_units_per_EM;
-            double line_pos = m_pSERenderer->YPointsUp()?
-                  fontCapline - ((double)pFont->m_underline_position * fontHeight / (double)pFont->m_units_per_EM) :
-                - fontCapline - ((double)pFont->m_underline_position * fontHeight / (double)pFont->m_units_per_EM);
+                // estimate underline line weight as % of font height
+                m_lineStroke.weight = (double)pFont->m_underline_thickness * fontHeight / (double)pFont->m_units_per_EM;
 
-            // the line's start point is the insertion point, but shifted vertically by line_pos
-            double x0 = posx - line_pos * sin_a;
-            double y0 = posy + line_pos * cos_a;
+                // restrict the weight to something reasonable
+                double mm2sud = m_pSERenderer->GetScreenUnitsPerMillimeterDevice();
+                double devWeightInMM = m_lineStroke.weight / mm2sud;
+                if (devWeightInMM > MAX_LINEWEIGHT_IN_MM)
+                    m_lineStroke.weight = MAX_LINEWEIGHT_IN_MM * mm2sud;
 
-            // the end point is a horizontal shift by the text width
-            double x1 = x0 + textwidth * cos_a;
-            double y1 = y0 + textwidth * sin_a;
+                // underline position w.r.t. baseline
+                double line_pos = (double)tm.font->m_underline_position * tm.font_height / (double)tm.font->m_units_per_EM;
+                if (!m_pSERenderer->YPointsUp())
+                    line_pos = -line_pos;
 
-            // draw the thick line
-            LineBuffer lb(2);
-            lb.MoveTo(x0, y0);
-            lb.LineTo(x1, y1);
+                // the line's start point is the insertion point, but shifted vertically by line_pos
+                double x0 = posx - line_pos * sin_a;
+                double y0 = posy + line_pos * cos_a;
 
-            m_pSERenderer->DrawScreenPolyline(&lb, NULL, m_lineStroke);
+                // the end point is a horizontal shift by the text width
+                double x1 = x0 + textwidth * cos_a;
+                double y1 = y0 + textwidth * sin_a;
+
+                // draw the thick line
+                LineBuffer lb(2);
+                lb.MoveTo(x0, y0);
+                lb.LineTo(x1, y1);
+
+                m_pSERenderer->DrawScreenPolyline(&lb, NULL, m_lineStroke);
+            }
+
+            // render the overline, if requested
+            if (tmpTDef.font().style() & RS_FontStyle_Overline)
+            {
+                m_lineStroke.color = tmpTDef.textcolor().argb();
+
+                // estimate overline line weight as % of font height
+                m_lineStroke.weight = (double)pFont->m_underline_thickness * fontHeight / (double)pFont->m_units_per_EM;
+
+                // restrict the weight to something reasonable
+                double mm2sud = m_pSERenderer->GetScreenUnitsPerMillimeterDevice();
+                double devWeightInMM = m_lineStroke.weight / mm2sud;
+                if (devWeightInMM > MAX_LINEWEIGHT_IN_MM)
+                    m_lineStroke.weight = MAX_LINEWEIGHT_IN_MM * mm2sud;
+
+                // overline position w.r.t. capline
+                double fontCapline = pFont->m_capheight * fontHeight / pFont->m_units_per_EM;
+                double line_pos = m_pSERenderer->YPointsUp()?
+                      fontCapline - ((double)pFont->m_underline_position * fontHeight / (double)pFont->m_units_per_EM) :
+                    - fontCapline - ((double)pFont->m_underline_position * fontHeight / (double)pFont->m_units_per_EM);
+
+                // the line's start point is the insertion point, but shifted vertically by line_pos
+                double x0 = posx - line_pos * sin_a;
+                double y0 = posy + line_pos * cos_a;
+
+                // the end point is a horizontal shift by the text width
+                double x1 = x0 + textwidth * cos_a;
+                double y1 = y0 + textwidth * sin_a;
+
+                // draw the thick line
+                LineBuffer lb(2);
+                lb.MoveTo(x0, y0);
+                lb.LineTo(x1, y1);
+
+                m_pSERenderer->DrawScreenPolyline(&lb, NULL, m_lineStroke);
+            }
         }
     }
 

@@ -285,7 +285,7 @@ void FeatureInfoRenderer::DrawScreenRaster(unsigned char* data, int length,
 }
 
 
-void FeatureInfoRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy,
+void FeatureInfoRenderer::DrawScreenText(const RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy,
                                          RS_F_Point* path, int npts, double param_position)
 {
     if (m_pointTest && m_featurePending)
@@ -297,8 +297,8 @@ void FeatureInfoRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef,
         else
         {
             // block text
-            RS_TextMetrics tm;
-            if (GetTextMetrics(txt, tdef, tm, false))
+            // Check that we have a valid text metrics
+            if ( tm.font != NULL )
             {
                 RS_Bounds b(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
                 for (size_t i = 0; i < tm.line_pos.size(); i++)

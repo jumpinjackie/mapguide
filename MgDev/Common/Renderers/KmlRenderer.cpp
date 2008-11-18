@@ -667,7 +667,7 @@ void KmlRenderer::DrawScreenRaster(unsigned char* /*data*/,
 }
 
 
-void KmlRenderer::DrawScreenText(const RS_String& /*txt*/,
+void KmlRenderer::DrawScreenText(const RS_TextMetrics&  /*tm*/,
                                  RS_TextDef&      /*tdef*/,
                                  double           /*insx*/,
                                  double           /*insy*/,

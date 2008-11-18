@@ -72,7 +72,7 @@ public:
     virtual void DrawScreenRaster(unsigned char* data, int length,
                                   RS_ImageFormat format, int native_width, int native_height,
                                   double x, double y, double w, double h, double angleDeg) = 0;
-    virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy,
+    virtual void DrawScreenText(const RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy,
                                 RS_F_Point* path, int npts, double param_position) = 0;
 
     virtual bool YPointsUp() = 0;
@@ -109,6 +109,11 @@ public:
 
     // helper methods
     void ProcessLineLabels(LineBuffer* geometry, SE_RenderLineStyle* style);
+
+    // Indicates whether rendering optimization is used by this renderer.  For example, we are rendering text and
+    // optimization is turned on, then text is rendered as a simple line when it is very small.
+    // By default, optimization is turned on.  For other behavior, this method must be overridden.
+    STYLIZATION_API virtual bool OptimizeGeometry();
 
 private:
     void ComputeSegmentLengths(LineBuffer* geometry, double* segLens);

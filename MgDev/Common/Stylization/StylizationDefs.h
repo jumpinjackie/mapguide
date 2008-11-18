@@ -48,6 +48,10 @@ const double LINE_SEGMENT_DOT_SIZE = 1.0e-5;
 // the distance by which point labels are offset from the symbol's edge
 const double POINT_LABEL_OFFSET_MM = 1.0;
 
+// Threshold (in pixels) used by the RS_FontEngine to determine if it should optimize drawing
+// or not.  When optimized, text is drawn as a line since it is so small.
+const double TEXT_DRAWING_THRESHOLD = 3.0;
+
 // clip offset is limited by this value, in device units
 const double MAX_CLIPOFFSET_IN_METERS = 1.0;
 const double MAX_CLIPOFFSET_IN_MM     = 1000.0 * MAX_CLIPOFFSET_IN_METERS;

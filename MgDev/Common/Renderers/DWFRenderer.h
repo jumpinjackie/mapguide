@@ -177,7 +177,7 @@ public:
     virtual void DrawScreenRaster(unsigned char* data, int length,
                                   RS_ImageFormat format, int native_width, int native_height,
                                   double x, double y, double w, double h, double angleDeg);
-    virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy,
+    virtual void DrawScreenText(const RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy,
                                 RS_F_Point* path, int npts, double param_position);
 
     virtual bool YPointsUp();

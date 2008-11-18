@@ -21,10 +21,9 @@
 #include "Stylization.h"
 #include "SE_RenderProxies.h"
 #include "RS_Font.h"
+#include "RS_TextMetrics.h"
 
 class SE_Renderer;
-
-namespace RichText { namespace ATOM { class Particle; } }
 
 // the maximum number of path segments allowed when labeling a path
 const int MAX_PATH_SEGMENTS = 16384;
@@ -32,56 +31,6 @@ const int MAX_PATH_SEGMENTS = 16384;
 // the distance, in inches, between repeating path labels
 const double PATH_LABEL_SEPARATION_INCHES = 2.5;
 
-
-//////////////////////////////////////////////////////////////////////////////
-struct CharPos
-{
-    double x;
-    double y;
-    double anglerad;
-};
-
-
-//////////////////////////////////////////////////////////////////////////////
-struct LinePos
-{
-    RS_F_Point ext[4];
-    double hOffset;
-    double vOffset;
-};
-
-
-//////////////////////////////////////////////////////////////////////////////
-class RS_TextMetrics
-{
-public:
-    RS_TextMetrics()
-        : font(NULL),
-          font_height(0.0),
-          text_width(0.0),
-          text_height(0.0)
-    {
-    }
-
-    STYLIZATION_API ~RS_TextMetrics();
-
-    const RS_Font* font;
-    double font_height;
-    double text_width;
-    double text_height;
-    RS_String text;
-
-    // for path text -- character advances and positions
-    std::vector<float> char_advances;
-    std::vector<CharPos> char_pos;
-
-    // for block text -- line positions
-    std::vector<LinePos> line_pos;
-    std::vector<RS_String> line_breaks;
-
-    //for formatted text -- format changes
-    std::vector<const RichText::ATOM::Particle*> format_changes;
-};
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -120,7 +69,7 @@ public:
 
     STYLIZATION_API void DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef);
 
-    STYLIZATION_API void DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy);
+    STYLIZATION_API void DrawBlockText(const RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy);
 
     STYLIZATION_API double MetersToScreenUnits(RS_Units unit, double number);
 

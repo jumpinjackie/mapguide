@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "SE_LineRenderer.h"
 #include "SE_BufferPool.h"
+#include "RS_FontEngine.h"
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -214,6 +215,8 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
     SE_BufferPool* lbp = renderer->GetBufferPool();
 
     SE_RenderPrimitiveList& rs = style->symbol;
+
+    RS_FontEngine* fe = renderer->GetRSFontEngine();
 
     RS_Bounds styleBounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
     styleBounds.add_point(style->bounds[0]);
@@ -896,7 +899,11 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
                                     RS_TextDef tdef = tp->tdef;
                                     tdef.rotation() += last_angleRad * M_180PI;
 
-                                    renderer->DrawScreenText(tp->content, tdef, x, y, NULL, 0, 0.0);
+                                    // Here we cannot use the cached RS_TextMetrics in the SE_RenderText object.
+                                    // We must recalculate the text metrics with the new tdef before we can call DrawScreenText.
+                                    RS_TextMetrics tm;
+                                    if ( fe->GetTextMetrics( tp->content, tdef, tm, false ) )
+                                        renderer->DrawScreenText(tm, tdef, x, y, NULL, 0, 0.0);
                                 }
                             }
                             break;
