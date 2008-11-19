@@ -341,6 +341,10 @@ EXTERNAL_API:
     static const STRING RenderingServicePropertyRasterGridSizeOverrideRatio;         /// value("RasterGridSizeOverrideRatio")
     static const double DefaultRenderingServicePropertyRasterGridSizeOverrideRatio;  /// value(0.25)
 
+	/// Set the batch size for rendering a selection
+	static const STRING RenderingServicePropertyRenderSelectionBatchSize;       /// value("RenderSelectionBatchSize")
+	static const INT32 DefaultRenderingServicePropertyRenderSelectionBatchSize; /// value(10000)
+
     /// FONT ALIASES SECTION -----------------------------------------------------------------------------
 
     /// font alias mappings

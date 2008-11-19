@@ -272,6 +272,8 @@ const STRING MgConfigProperties::RenderingServicePropertyMinRasterGridSize      
 const INT32  MgConfigProperties::DefaultRenderingServicePropertyMinRasterGridSize           = 10;
 const STRING MgConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatio        = L"RasterGridSizeOverrideRatio";
 const double MgConfigProperties::DefaultRenderingServicePropertyRasterGridSizeOverrideRatio = 0.25;
+const STRING MgConfigProperties::RenderingServicePropertyRenderSelectionBatchSize           = L"RenderSelectionBatchSize";
+const INT32  MgConfigProperties::DefaultRenderingServicePropertyRenderSelectionBatchSize    = 10000;
 
 // ******************************************************************
 // Font Alias Mappings section
@@ -561,6 +563,7 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviRenderingServicePropertie
 {
     { MgConfigProperties::RenderingServicePropertyTileExtentOffset                  , MgPropertyType::Double    , 0.0                                   , 1.0                                   , L""                                       },
     { MgConfigProperties::RenderingServicePropertyRasterGridSize                    , MgPropertyType::Int32     , 10                                    , MG_CONFIG_MAX_INT32                   , L""                                       },
+    { MgConfigProperties::RenderingServicePropertyRenderSelectionBatchSize          , MgPropertyType::Int32     , 0                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 
