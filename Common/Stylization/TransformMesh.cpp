@@ -26,8 +26,14 @@
 // Default grid size in device space pixels
 const int DEFAULT_GRID_SIZE = 100;
 
-// Minimum grid size in device space pixels
-const int MIN_GRID_SIZE = 10;
+// Default minimum grid size in device space pixels
+const int DEFAULT_MIN_GRID_SIZE = 10;
+
+// Default, max, and min grid size override ratios
+// The grid size must be less than the specified ratio of the image height/width
+const double DEFAULT_GRID_SIZE_OVERRIDE_RATIO = 0.25;
+const double MAX_GRID_SIZE_OVERRIDE_RATIO = 1.0;
+const double MIN_GRID_SIZE_OVERRIDE_RATIO = 0;
 
 // The maximum amount we will stretch a rectangle in the grid to allow it to
 // snap to the edge of the extents
@@ -38,21 +44,25 @@ const double MAX_GRID_EXPANSION_FACTOR = 0.2; // i.e. 20%
     printf("      width = %6.4f height = %6.4f\n", ext.width(), ext.height());
 
 TransformMesh::TransformMesh()
-: m_numVerticalPoints(0), m_numHorizontalPoints(0), m_gridSizeHeight(DEFAULT_GRID_SIZE), m_gridSizeWidth(DEFAULT_GRID_SIZE), m_yAxisInverted(true)
+: m_numVerticalPoints(0), m_numHorizontalPoints(0), m_gridSizeHeight(DEFAULT_GRID_SIZE), m_gridSizeWidth(DEFAULT_GRID_SIZE), 
+m_minGridSize(DEFAULT_MIN_GRID_SIZE), m_gridSizeOverrideRatio(DEFAULT_GRID_SIZE_OVERRIDE_RATIO), m_yAxisInverted(true)
 {
 }
 
-TransformMesh::TransformMesh(int gridSize,
+TransformMesh::TransformMesh(int gridSize, int minGridSize, double gridSizeOverrideRatio,
                              RS_Bounds& srcExt, int srcW, int srcH,
                              RS_Bounds& destExt, int destW, int destH,
                              CSysTransformer* srcToDestTransform,
                              bool invertYaxis)
 : m_numVerticalPoints(0), m_numHorizontalPoints(0)
 {
-    Initialize(gridSize, srcExt, srcW, srcH, destExt, destW, destH, srcToDestTransform, invertYaxis);
+    Initialize(gridSize, minGridSize, gridSizeOverrideRatio, 
+        srcExt, srcW, srcH, 
+        destExt, destW, destH, 
+        srcToDestTransform, invertYaxis);
 }
 
-void TransformMesh::Initialize(int gridSize,
+void TransformMesh::Initialize(int gridSize, int minGridSize, double gridSizeOverrideRatio,
                                RS_Bounds& srcExt, int srcW, int srcH,
                                RS_Bounds& destExt, int destW, int destH,
                                CSysTransformer* xformer,
@@ -60,12 +70,24 @@ void TransformMesh::Initialize(int gridSize,
 {
     _ASSERT(xformer != NULL);
 
-    // ensure minimum grid size
-    m_gridSizeWidth = m_gridSizeHeight = gridSize < MIN_GRID_SIZE ? MIN_GRID_SIZE : gridSize;
+    m_minGridSize = minGridSize;
+    m_gridSizeOverrideRatio = gridSizeOverrideRatio;
 
-    // ensure grid size is not too big
+    // ensure the gridSize is within the gridSizeOverrideRatio of the height and width
+    if (gridSizeOverrideRatio < MAX_GRID_SIZE_OVERRIDE_RATIO 
+        && gridSizeOverrideRatio > MIN_GRID_SIZE_OVERRIDE_RATIO 
+        && gridSize > rs_min(srcH, srcW) * m_gridSizeOverrideRatio)
+    {
+        gridSize = (int)(rs_min(srcH, srcW) * m_gridSizeOverrideRatio);
+    }
+
+    // ensure minimum grid size
+    m_gridSizeWidth = m_gridSizeHeight = gridSize < m_minGridSize ? m_minGridSize : gridSize;
+
+    // ensure grid size is not bigger than the source image's height and width
     m_gridSizeHeight = rs_min(m_gridSizeHeight, srcH);
     m_gridSizeWidth = rs_min(m_gridSizeWidth, srcW);
+
 
     m_yAxisInverted = invertYaxis;
     m_meshPoints.empty();

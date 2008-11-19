@@ -76,6 +76,16 @@ MgServerRenderingService::MgServerRenderingService() : MgRenderingService()
                           MgConfigProperties::RenderingServicePropertyRasterGridSize,
                           m_rasterGridSize,
                           MgConfigProperties::DefaultRenderingServicePropertyRasterGridSize);
+
+    pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
+                          MgConfigProperties::RenderingServicePropertyMinRasterGridSize,
+                          m_minRasterGridSize,
+                          MgConfigProperties::DefaultRenderingServicePropertyMinRasterGridSize);
+
+    pConf->GetDoubleValue(MgConfigProperties::RenderingServicePropertiesSection,
+                          MgConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatio,
+                          m_rasterGridSizeOverrideRatio,
+                          MgConfigProperties::DefaultRenderingServicePropertyRasterGridSizeOverrideRatio);
 }
 
 
@@ -1346,7 +1356,11 @@ SE_Renderer* MgServerRenderingService::CreateRenderer(int width,
     }
 
     if (renderer != NULL)
+    {
         renderer->SetRasterGridSize(m_rasterGridSize);
+        renderer->SetMinRasterGridSize(m_minRasterGridSize);
+        renderer->SetRasterGridSizeOverrideRatio(m_rasterGridSizeOverrideRatio);
+    }
 
     return renderer;
 }

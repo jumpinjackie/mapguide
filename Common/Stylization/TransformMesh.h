@@ -45,19 +45,17 @@ class TransformMesh
 {
 public:
     STYLIZATION_API TransformMesh();
-    STYLIZATION_API TransformMesh(int gridSize,
+    STYLIZATION_API TransformMesh(int gridSize, int minGridSize, double gridSizeOverrideRatio,
         RS_Bounds& srcExt, int srcW, int srcH,
         RS_Bounds& destExt, int destW, int destH,
-        CSysTransformer* srcToDestTransform,
-        bool invertYAxis = true);
+        CSysTransformer* srcToDestTransform, bool invertYAxis = true);
 
     STYLIZATION_API virtual ~TransformMesh();
 
-    STYLIZATION_API void Initialize(int gridSize,
+    STYLIZATION_API void Initialize(int gridSize, int minGridSize, double gridSizeOverrideRatio,
         RS_Bounds& srcExt, int srcW, int srcH,
         RS_Bounds& destExt, int destW, int destH,
-        CSysTransformer* srcToDestTransform,
-        bool invertYAxis = true);
+        CSysTransformer* srcToDestTransform, bool invertYAxis = true);
 
     STYLIZATION_API MeshPoint GetMeshPoint(int index);
 
@@ -66,12 +64,16 @@ public:
     STYLIZATION_API int GetTotalVerticalPoints() const;    // number of vertical points (incl origin and end point)
     STYLIZATION_API int GetTotalHorizontalPoints() const;  // number of horizontal points (incl origin and end point)
     STYLIZATION_API bool IsYAxisInverted() const;          // returns true if y axis is inverted
+    STYLIZATION_API int GetGridSizeHeight() const;         // grid size height used in calculations
+    STYLIZATION_API int GetGridSizeWidth() const;          // grid size width used in calculations
 
 private:
     int m_numVerticalPoints;
     int m_numHorizontalPoints;
     int m_gridSizeHeight;
     int m_gridSizeWidth;
+    int m_minGridSize;
+    double m_gridSizeOverrideRatio;
     bool m_yAxisInverted;
 
     std::vector<MeshPoint> m_meshPoints;
@@ -100,5 +102,15 @@ inline int TransformMesh::GetTotalHorizontalPoints() const
 inline bool TransformMesh::IsYAxisInverted() const
 {
     return m_yAxisInverted;
+}
+
+inline int TransformMesh::GetGridSizeHeight() const
+{
+    return m_gridSizeHeight;
+}
+
+inline int TransformMesh::GetGridSizeWidth() const
+{
+    return m_gridSizeWidth;
 }
 #endif

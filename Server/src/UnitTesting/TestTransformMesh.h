@@ -37,6 +37,7 @@ class TestTransformMesh : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_TransformMesh_LL84_to_LL84);
     CPPUNIT_TEST(TestCase_TransformMesh_ArbXYM_to_ArbXYM);
     CPPUNIT_TEST(TestCase_TransformMesh_ArbXYKM_to_ArbXYM);
+    CPPUNIT_TEST(TestCase_TransformMesh_Small_Image_01);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
     CPPUNIT_TEST_SUITE_END();
@@ -54,13 +55,14 @@ public:
     MgCoordinateSystem* CreateCoordinateSystemProjected();
     MgCoordinateSystem* CreateCoordinateSystem(const STRING wkt);
 
-    bool CheckTransformMeshSize(int gridSize, int srcWidth, int srcHeight, TransformMesh* xform);
+    bool CheckTransformMeshSize(int srcWidth, int srcHeight, TransformMesh* xform);
 
     void TestCase_TransformMesh_DefaultConstructor();
     void TestCase_TransformMesh_LL84_to_WAG();
     void TestCase_TransformMesh_LL84_to_LL84();
     void TestCase_TransformMesh_ArbXYM_to_ArbXYM();
     void TestCase_TransformMesh_ArbXYKM_to_ArbXYM();
+    void TestCase_TransformMesh_Small_Image_01();
 
 
 };

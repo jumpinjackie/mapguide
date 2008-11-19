@@ -57,6 +57,34 @@ void SE_Renderer::SetRasterGridSize(int size)
 
 
 ///////////////////////////////////////////////////////////////////////////////
+int SE_Renderer::GetMinRasterGridSize()
+{
+    return m_minRasterGridSize;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void SE_Renderer::SetMinRasterGridSize(int size)
+{
+    m_minRasterGridSize = size;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+double SE_Renderer::GetRasterGridSizeOverrideRatio()
+{
+    return m_rasterGridSizeOverrideRatio;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void SE_Renderer::SetRasterGridSizeOverrideRatio(double ratio)
+{
+    m_rasterGridSizeOverrideRatio = ratio;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 bool SE_Renderer::SupportsTooltips()
 {
     // by default, set the renderer to process tooltip expressions

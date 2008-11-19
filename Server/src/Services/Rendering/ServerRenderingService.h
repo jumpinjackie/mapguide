@@ -214,6 +214,8 @@ private:
     STRING m_renderername;
 
     INT32 m_rasterGridSize;
+    INT32 m_minRasterGridSize;
+    double m_rasterGridSizeOverrideRatio;
 };
 
 #endif

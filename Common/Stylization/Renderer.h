@@ -207,6 +207,16 @@ public:
     virtual int GetRasterGridSize() = 0;
     virtual void SetRasterGridSize(int size) = 0;
 
+    // gets/sets the minimum size of the transformation mesh grid used for 
+    // raster re-projection
+    virtual int GetMinRasterGridSize() = 0;
+    virtual void SetMinRasterGridSize(int size) = 0;
+
+    // gets/sets the transformation mesh grid override ratio used in 
+    // raster re-projection
+    virtual double GetRasterGridSizeOverrideRatio() = 0;
+    virtual void SetRasterGridSizeOverrideRatio(double ratio) = 0;
+
     // flags whether the renderer processes tooltip expressions
     virtual bool SupportsTooltips() = 0;
 
