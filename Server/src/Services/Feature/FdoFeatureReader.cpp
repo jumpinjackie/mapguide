@@ -58,7 +58,7 @@ FdoClassDefinition *MgFdoFeatureReader::GetClassDefinition()
         Initialize();
     }
 
-    return FDO_SAFE_ADDREF(m_currentReader->GetClassDefinition());
+    return m_currentReader->GetClassDefinition();
 }
 
 
@@ -81,7 +81,7 @@ FdoIFeatureReader* MgFdoFeatureReader::GetFeatureObject( const wchar_t* property
         Initialize();
     }
 
-    return FDO_SAFE_ADDREF(m_currentReader->GetFeatureObject(propertyName));
+    return m_currentReader->GetFeatureObject(propertyName);
 }
 
 bool MgFdoFeatureReader::GetBoolean( const wchar_t *propertyName )
@@ -185,7 +185,7 @@ FdoIStreamReader* MgFdoFeatureReader::GetLOBStreamReader(const wchar_t* property
         Initialize();
     }
 
-    return FDO_SAFE_ADDREF(m_currentReader->GetLOBStreamReader(propertyName));
+    return m_currentReader->GetLOBStreamReader(propertyName);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -196,7 +196,7 @@ FdoLOBValue* MgFdoFeatureReader::GetLOB(const wchar_t* propertyName)
         Initialize();
     }
 
-    return FDO_SAFE_ADDREF(m_currentReader->GetLOB(propertyName));
+    return m_currentReader->GetLOB(propertyName);
 }
 
 bool MgFdoFeatureReader::IsNull( const wchar_t *propertyName )
@@ -216,7 +216,7 @@ FdoByteArray* MgFdoFeatureReader::GetGeometry(const wchar_t* propertyName)
         Initialize();
     }
 
-    return FDO_SAFE_ADDREF(m_currentReader->GetGeometry(propertyName));
+    return m_currentReader->GetGeometry(propertyName);
 }
 
 
@@ -242,7 +242,7 @@ FdoIRaster* MgFdoFeatureReader::GetRaster(FdoString* propertyName)
         Initialize();
     }
 
-    return FDO_SAFE_ADDREF(m_currentReader->GetRaster(propertyName));
+    return m_currentReader->GetRaster(propertyName);
 }
 
 
