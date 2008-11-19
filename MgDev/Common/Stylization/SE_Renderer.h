@@ -40,6 +40,12 @@ public:
     STYLIZATION_API virtual int GetRasterGridSize();
     STYLIZATION_API virtual void SetRasterGridSize(int size);
 
+    STYLIZATION_API virtual int GetMinRasterGridSize();
+    STYLIZATION_API virtual void SetMinRasterGridSize(int size);
+
+    STYLIZATION_API virtual double GetRasterGridSizeOverrideRatio();
+    STYLIZATION_API virtual void SetRasterGridSizeOverrideRatio(double ratio);
+
     STYLIZATION_API virtual bool SupportsTooltips();
     STYLIZATION_API virtual bool SupportsHyperlinks();
 
@@ -133,6 +139,8 @@ protected:
     RS_Color m_textForeColor;
     RS_Color m_textBackColor;
     int m_rasterGridSize;
+    int m_minRasterGridSize;
+    double m_rasterGridSizeOverrideRatio;
 
 private:
     RS_F_Point m_lastSymbolExtent[4];

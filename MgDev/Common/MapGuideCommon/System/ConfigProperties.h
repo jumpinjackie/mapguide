@@ -333,6 +333,14 @@ EXTERNAL_API:
     static const STRING RenderingServicePropertyRasterGridSize;         /// value("RasterGridSize")
     static const INT32 DefaultRenderingServicePropertyRasterGridSize;   /// value(100)
 
+    /// Sets desired minimum raster re-projection grid size
+    static const STRING RenderingServicePropertyMinRasterGridSize;         /// value("MinRasterGridSize")
+    static const INT32 DefaultRenderingServicePropertyMinRasterGridSize;   /// value(10)
+
+    /// Sets desired raster re-projection grid size override ratio
+    static const STRING RenderingServicePropertyRasterGridSizeOverrideRatio;         /// value("RasterGridSizeOverrideRatio")
+    static const double DefaultRenderingServicePropertyRasterGridSizeOverrideRatio;  /// value(0.25)
+
     /// FONT ALIASES SECTION -----------------------------------------------------------------------------
 
     /// font alias mappings

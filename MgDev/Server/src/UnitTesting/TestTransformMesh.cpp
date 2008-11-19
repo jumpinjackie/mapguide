@@ -90,13 +90,13 @@ MgCoordinateSystem* TestTransformMesh::CreateCoordinateSystem(const STRING wkt)
     return factory.Create(wkt);
 }
 
-bool TestTransformMesh::CheckTransformMeshSize(int gridSize, int srcWidth, int srcHeight, TransformMesh* xformMesh)
+bool TestTransformMesh::CheckTransformMeshSize(int srcWidth, int srcHeight, TransformMesh* xformMesh)
 {
     bool result = false;
 
-    if (xformMesh->GetTotalPoints() == ((int)(srcHeight / gridSize) + 1) * ((int)(srcWidth / gridSize) + 1)
-        && xformMesh->GetTotalVerticalPoints() == (int)(srcHeight / gridSize) + 1
-        && xformMesh->GetTotalHorizontalPoints() == (int)(srcWidth / gridSize) + 1)
+    if (xformMesh->GetTotalPoints() == ((int)(srcHeight / xformMesh->GetGridSizeHeight()) + 1) * ((int)(srcWidth / xformMesh->GetGridSizeWidth()) + 1)
+        && xformMesh->GetTotalVerticalPoints() == (int)(srcHeight / xformMesh->GetGridSizeHeight()) + 1
+        && xformMesh->GetTotalHorizontalPoints() == (int)(srcWidth / xformMesh->GetGridSizeWidth()) + 1)
     {
         result = true;
     }
@@ -136,6 +136,8 @@ void TestTransformMesh::TestCase_TransformMesh_LL84_to_WAG()
         MgCSTrans xformer(CreateCoordinateSystem(GeographicWkt_LL84), CreateCoordinateSystem(ProjectedWkt_GAW));
 
         int gridSize = 100;
+        int minGridSize = 10;
+        double gridSizeOverride = 1;
         int srcWidth = 800;
         int srcHeight = 600;
         int destWidth = 800;
@@ -144,9 +146,9 @@ void TestTransformMesh::TestCase_TransformMesh_LL84_to_WAG()
         RS_Bounds srcExt(-86, 29.25, -80.3, 34.59); // centered around georgia, usa in LL84
         RS_Bounds destExt(-44705, -267000, 1661134, 1692341); // centered around georgia, usa in GA-W
 
-        TransformMesh xformMesh(gridSize, srcExt, srcWidth, srcHeight, destExt, destWidth, destHeight, &xformer);
+        TransformMesh xformMesh(gridSize, minGridSize, gridSizeOverride, srcExt, srcWidth, srcHeight, destExt, destWidth, destHeight, &xformer);
 
-        CPPUNIT_ASSERT(CheckTransformMeshSize(gridSize, srcWidth, srcHeight, &xformMesh));
+        CPPUNIT_ASSERT(CheckTransformMeshSize(srcWidth, srcHeight, &xformMesh));
         CPPUNIT_ASSERT(xformMesh.IsYAxisInverted() == TRUE);
 
         CPPUNIT_ASSERT(true);
@@ -172,6 +174,8 @@ void TestTransformMesh::TestCase_TransformMesh_LL84_to_LL84()
         CPPUNIT_ASSERT(xformer.GetLinearScale() == 1);
 
         int gridSize = 100;
+        int minGridSize = 10;
+        double gridSizeOverride = 1;
         int srcWidth = gridSize;
         int srcHeight = gridSize;
         int destWidth = gridSize;
@@ -179,9 +183,9 @@ void TestTransformMesh::TestCase_TransformMesh_LL84_to_LL84()
 
         RS_Bounds srcExt(-140, -50, 140, 50);
 
-        TransformMesh xformMesh(gridSize, srcExt, srcWidth, srcHeight, srcExt, destWidth, destHeight, &xformer, false);
+        TransformMesh xformMesh(gridSize, minGridSize, gridSizeOverride, srcExt, srcWidth, srcHeight, srcExt, destWidth, destHeight, &xformer, false);
 
-        CPPUNIT_ASSERT(CheckTransformMeshSize(gridSize, srcWidth, srcHeight, &xformMesh));
+        CPPUNIT_ASSERT(CheckTransformMeshSize(srcWidth, srcHeight, &xformMesh));
         CPPUNIT_ASSERT(xformMesh.IsYAxisInverted() == false);
 
         // check to see that the source pt and dest pt are the same
@@ -217,6 +221,8 @@ void TestTransformMesh::TestCase_TransformMesh_ArbXYM_to_ArbXYM()
         CPPUNIT_ASSERT(xformer.GetLinearScale() == 1);
 
         int gridSize = 100;
+        int minGridSize = 10;
+        double gridSizeOverride = 1;
         int srcWidth = gridSize;
         int srcHeight = gridSize;
         int destWidth = gridSize;
@@ -224,9 +230,9 @@ void TestTransformMesh::TestCase_TransformMesh_ArbXYM_to_ArbXYM()
 
         RS_Bounds srcExt(0, 0, gridSize, gridSize);
 
-        TransformMesh xformMesh(gridSize, srcExt, srcWidth, srcHeight, srcExt, destWidth, destHeight, &xformer, false);
+        TransformMesh xformMesh(gridSize, minGridSize, gridSizeOverride, srcExt, srcWidth, srcHeight, srcExt, destWidth, destHeight, &xformer, false);
 
-        CPPUNIT_ASSERT(CheckTransformMeshSize(gridSize, srcWidth, srcHeight, &xformMesh));
+        CPPUNIT_ASSERT(CheckTransformMeshSize(srcWidth, srcHeight, &xformMesh));
         CPPUNIT_ASSERT(xformMesh.IsYAxisInverted() == false);
 
         // check to see that the source pt and dest pt are the same
@@ -262,6 +268,8 @@ void TestTransformMesh::TestCase_TransformMesh_ArbXYKM_to_ArbXYM()
         CPPUNIT_ASSERT(dLinearScale == 1000);
 
         int gridSize = 100;
+        int minGridSize = 10;
+        double gridSizeOverride = 1;
         int srcWidth = gridSize;
         int srcHeight = gridSize;
         int destWidth = gridSize;
@@ -269,9 +277,9 @@ void TestTransformMesh::TestCase_TransformMesh_ArbXYKM_to_ArbXYM()
 
         RS_Bounds srcExt(0, 0, gridSize, gridSize);
 
-        TransformMesh xformMesh(gridSize, srcExt, srcWidth, srcHeight, srcExt, destWidth, destHeight, &xformer, false);
+        TransformMesh xformMesh(gridSize, minGridSize, gridSizeOverride, srcExt, srcWidth, srcHeight, srcExt, destWidth, destHeight, &xformer, false);
 
-        CPPUNIT_ASSERT(CheckTransformMeshSize(gridSize, srcWidth, srcHeight, &xformMesh));
+        CPPUNIT_ASSERT(CheckTransformMeshSize(srcWidth, srcHeight, &xformMesh));
         CPPUNIT_ASSERT(xformMesh.IsYAxisInverted() == false);
 
         // pt1----pt2
@@ -307,3 +315,59 @@ void TestTransformMesh::TestCase_TransformMesh_ArbXYKM_to_ArbXYM()
         throw;
     }
 }
+
+void TestTransformMesh::TestCase_TransformMesh_Small_Image_01()
+{
+    try
+    {
+        MgCSTrans xformer(CreateCoordinateSystem(ArbitraryWkt_KM), CreateCoordinateSystem(ArbitraryWkt_Meter));
+        double dLinearScale = xformer.GetLinearScale();
+        CPPUNIT_ASSERT(dLinearScale == 1000);
+
+        int gridSize = 100;
+        int minGridSize = 10;
+        double gridSizeOverride = 1;
+        int srcWidth = 5;
+        int srcHeight = 5;
+        int destWidth = 5;
+        int destHeight = 5;
+
+        RS_Bounds srcExt(0, 0, srcWidth, srcHeight);
+
+        TransformMesh xformMesh(gridSize, minGridSize, gridSizeOverride, srcExt, srcWidth, srcHeight, srcExt, destWidth, destHeight, &xformer, false);
+
+        CPPUNIT_ASSERT(CheckTransformMeshSize(srcWidth, srcHeight, &xformMesh));
+        CPPUNIT_ASSERT(xformMesh.IsYAxisInverted() == false);
+
+        // pt1----pt2
+        // |        |
+        // |        |
+        // |        |
+        // pt0----pt3
+
+        // pt0 should be the same
+        CPPUNIT_ASSERT(xformMesh.GetMeshPoint(0).pt_src.x == xformMesh.GetMeshPoint(0).pt_dest.x);
+        CPPUNIT_ASSERT(xformMesh.GetMeshPoint(0).pt_src.y == xformMesh.GetMeshPoint(0).pt_dest.y);
+
+        // the pt1, pt2, pt3 should be scaled by dLinearScale (1000)
+        CPPUNIT_ASSERT(xformMesh.GetMeshPoint(1).pt_src.x == xformMesh.GetMeshPoint(1).pt_dest.x);
+        CPPUNIT_ASSERT(dLinearScale * xformMesh.GetMeshPoint(1).pt_src.y == xformMesh.GetMeshPoint(1).pt_dest.y);
+
+        CPPUNIT_ASSERT(dLinearScale * xformMesh.GetMeshPoint(2).pt_src.x == xformMesh.GetMeshPoint(2).pt_dest.x);
+        CPPUNIT_ASSERT(xformMesh.GetMeshPoint(2).pt_src.y == xformMesh.GetMeshPoint(2).pt_dest.y);
+
+        CPPUNIT_ASSERT(dLinearScale * xformMesh.GetMeshPoint(3).pt_src.x == xformMesh.GetMeshPoint(3).pt_dest.x);
+        CPPUNIT_ASSERT(dLinearScale * xformMesh.GetMeshPoint(3).pt_src.y == xformMesh.GetMeshPoint(3).pt_dest.y);
+
+        CPPUNIT_ASSERT(true);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }}

@@ -112,14 +112,16 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
         //printf("   -------------------------\n");
 #endif
 
-        // get the grid size
+        // get the grid size, min grid size and grid size override ratio
         int rasterGridSize = renderer->GetRasterGridSize();
+        int minRasterGridSize = renderer->GetMinRasterGridSize();
+        double rasterGridSizeOverrideRatio = renderer->GetRasterGridSizeOverrideRatio();
 
         // create TransformMesh object here
         TransformMesh* xformMesh = NULL;
 
         if (NULL != layer2mapxformer)
-            xformMesh = new TransformMesh(rasterGridSize,
+            xformMesh = new TransformMesh(rasterGridSize, minRasterGridSize, rasterGridSizeOverrideRatio,
                 imgExt, imgW, imgH,
                 mapExt, devW, devH,
                 layer2mapxformer);

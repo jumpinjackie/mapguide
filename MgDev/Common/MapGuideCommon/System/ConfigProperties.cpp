@@ -268,6 +268,10 @@ const STRING MgConfigProperties::RenderingServicePropertyTileExtentOffset       
 const double MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset            = 0.35;
 const STRING MgConfigProperties::RenderingServicePropertyRasterGridSize                     = L"RasterGridSize";
 const INT32  MgConfigProperties::DefaultRenderingServicePropertyRasterGridSize              = 100;
+const STRING MgConfigProperties::RenderingServicePropertyMinRasterGridSize                  = L"MinRasterGridSize";
+const INT32  MgConfigProperties::DefaultRenderingServicePropertyMinRasterGridSize           = 10;
+const STRING MgConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatio        = L"RasterGridSizeOverrideRatio";
+const double MgConfigProperties::DefaultRenderingServicePropertyRasterGridSizeOverrideRatio = 0.25;
 
 // ******************************************************************
 // Font Alias Mappings section
