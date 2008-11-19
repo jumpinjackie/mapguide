@@ -29,7 +29,7 @@
 #include "FdoReaderCollection.h"
 
 // The maximum size of the subfilter for a selection query.  Tune this value for optimal selection perfomance.
-#define MG_MAX_SUBFILTER_SIZE  1000
+#define MG_MAX_SUBFILTER_SIZE  250
 
 MgSelectCommand::MgSelectCommand(MgResourceIdentifier* resource)
 {
@@ -254,6 +254,7 @@ MgFdoFilterCollection* MgSelectCommand::GetSubFilters()
         int GetOrCount() { return m_OrCount; }
         std::vector<FdoFilter*>& GetFilters() { return m_filters; }
         bool IsFragmented() { return m_isFragmented; }
+        FdoFilter* GetNewFilter() { return m_newFilter ? FDO_SAFE_ADDREF(m_newFilter.p) : NULL; }
 
         virtual void Dispose() { delete this; }
 
@@ -264,11 +265,10 @@ MgFdoFilterCollection* MgSelectCommand::GetSubFilters()
                 m_isFragmented = false;
                 return;
             }
-            if (m_OrCount < 2)
-            {
-                HandleFilter( FdoPtr<FdoFilter>(filter.GetLeftOperand()) );
-                HandleFilter( FdoPtr<FdoFilter>(filter.GetRightOperand()) );
-            }
+
+            HandleFilter( FdoPtr<FdoFilter>(filter.GetRightOperand()) );
+            m_newFilter = filter.GetLeftOperand();
+
             m_OrCount++;
         }
         virtual void ProcessComparisonCondition(FdoComparisonCondition& filter)
@@ -310,6 +310,21 @@ MgFdoFilterCollection* MgSelectCommand::GetSubFilters()
     FdoCommonFilterFragmenter  fragmenter;
     if (m_filter)
         m_filter->Process( &fragmenter );
+
+    FdoPtr<FdoFilter> newFilter = fragmenter.GetNewFilter();
+    while (newFilter != NULL)
+    {
+        newFilter->Process( &fragmenter );
+        FdoPtr<FdoFilter> tempFilter = fragmenter.GetNewFilter();
+        if (tempFilter != newFilter)
+        {
+            newFilter = tempFilter;
+        }
+        else
+        {
+            newFilter = NULL;
+        }
+    }
 
 #ifdef _DEBUG
     int nCount = fragmenter.GetOrCount();
