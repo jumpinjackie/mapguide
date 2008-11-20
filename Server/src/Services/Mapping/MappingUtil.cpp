@@ -267,7 +267,7 @@ RSMgFeatureReader* MgMappingUtil::ExecuteFeatureQuery(MgFeatureService* svcFeatu
             }
         }
 
-        // If we are interested in only some of the properties (but not all of them), then the names of those properties 
+        // If we are interested in only some of the properties (but not all of them), then the names of those properties
         // need to be added to the options object of the SelectFeatures method.  Otherwise, nothing will be added to the
         // options object, which means that all properties will be selected.
         INT32 nSelectPropertiesCount = selectProperties->GetCount();

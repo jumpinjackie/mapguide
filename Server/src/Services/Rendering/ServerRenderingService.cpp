@@ -87,10 +87,10 @@ MgServerRenderingService::MgServerRenderingService() : MgRenderingService()
                           m_rasterGridSizeOverrideRatio,
                           MgConfigProperties::DefaultRenderingServicePropertyRasterGridSizeOverrideRatio);
 
-	pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
-						  MgConfigProperties::RenderingServicePropertyRenderSelectionBatchSize,
-						  m_renderSelectionBatchSize,
-						  MgConfigProperties::DefaultRenderingServicePropertyRenderSelectionBatchSize);
+    pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
+                          MgConfigProperties::RenderingServicePropertyRenderSelectionBatchSize,
+                          m_renderSelectionBatchSize,
+                          MgConfigProperties::DefaultRenderingServicePropertyRenderSelectionBatchSize);
 }
 
 
@@ -845,15 +845,15 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                     Ptr<MgLayerBase> selLayer = selLayers->GetItem(s);
 
                     // generate a filter for the selected features
-                    Ptr<MgStringCollection> filters = selection->GenerateFilters( 
- 	                selLayer, selLayer->GetFeatureClassName(), m_renderSelectionBatchSize); 
- 	                INT32 numFilter = (NULL == filters) ? 0 : filters->GetCount(); 
- 	
-                    for (INT32 i = 0; i < numFilter; ++i) 
- 	                { 
-                        overrideFilters->Add(filters->GetItem(i)); 
- 	                    modLayers->Add(selLayer); 
- 	                } 
+                    Ptr<MgStringCollection> filters = selection->GenerateFilters(
+                    selLayer, selLayer->GetFeatureClassName(), m_renderSelectionBatchSize);
+                    INT32 numFilter = (NULL == filters) ? 0 : filters->GetCount();
+
+                    for (INT32 i = 0; i < numFilter; ++i)
+                    {
+                        overrideFilters->Add(filters->GetItem(i));
+                        modLayers->Add(selLayer);
+                    }
                 }
 
                 MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,

@@ -44,7 +44,7 @@ const double MAX_GRID_EXPANSION_FACTOR = 0.2; // i.e. 20%
     printf("      width = %6.4f height = %6.4f\n", ext.width(), ext.height());
 
 TransformMesh::TransformMesh()
-: m_numVerticalPoints(0), m_numHorizontalPoints(0), m_gridSizeHeight(DEFAULT_GRID_SIZE), m_gridSizeWidth(DEFAULT_GRID_SIZE), 
+: m_numVerticalPoints(0), m_numHorizontalPoints(0), m_gridSizeHeight(DEFAULT_GRID_SIZE), m_gridSizeWidth(DEFAULT_GRID_SIZE),
 m_minGridSize(DEFAULT_MIN_GRID_SIZE), m_gridSizeOverrideRatio(DEFAULT_GRID_SIZE_OVERRIDE_RATIO), m_yAxisInverted(true)
 {
 }
@@ -56,9 +56,9 @@ TransformMesh::TransformMesh(int gridSize, int minGridSize, double gridSizeOverr
                              bool invertYaxis)
 : m_numVerticalPoints(0), m_numHorizontalPoints(0)
 {
-    Initialize(gridSize, minGridSize, gridSizeOverrideRatio, 
-        srcExt, srcW, srcH, 
-        destExt, destW, destH, 
+    Initialize(gridSize, minGridSize, gridSizeOverrideRatio,
+        srcExt, srcW, srcH,
+        destExt, destW, destH,
         srcToDestTransform, invertYaxis);
 }
 
@@ -74,8 +74,8 @@ void TransformMesh::Initialize(int gridSize, int minGridSize, double gridSizeOve
     m_gridSizeOverrideRatio = gridSizeOverrideRatio;
 
     // ensure the gridSize is within the gridSizeOverrideRatio of the height and width
-    if (gridSizeOverrideRatio < MAX_GRID_SIZE_OVERRIDE_RATIO 
-        && gridSizeOverrideRatio > MIN_GRID_SIZE_OVERRIDE_RATIO 
+    if (gridSizeOverrideRatio < MAX_GRID_SIZE_OVERRIDE_RATIO
+        && gridSizeOverrideRatio > MIN_GRID_SIZE_OVERRIDE_RATIO
         && gridSize > rs_min(srcH, srcW) * m_gridSizeOverrideRatio)
     {
         gridSize = (int)(rs_min(srcH, srcW) * m_gridSizeOverrideRatio);
