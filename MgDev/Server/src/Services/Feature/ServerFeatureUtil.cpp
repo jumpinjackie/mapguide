@@ -188,7 +188,7 @@ MgPropertyDefinitionCollection* MgServerFeatureUtil::GetPropertyDefinitions(MgRe
         propDefCol->Add(propDef);
     }
 
-    return SAFE_ADDREF((MgPropertyDefinitionCollection*)propDefCol);
+    return propDefCol.Detach();
 }
 
 

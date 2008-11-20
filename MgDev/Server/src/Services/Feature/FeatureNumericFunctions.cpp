@@ -78,10 +78,6 @@ void MgFeatureNumericFunctions::Initialize(MgReader* reader, FdoFunction* custom
 
 MgFeatureNumericFunctions::~MgFeatureNumericFunctions()
 {
-    if (m_customFunction != NULL)
-    {
-        m_customFunction->Release();
-    }
 }
 
 MgReader* MgFeatureNumericFunctions::Execute()
@@ -147,7 +143,7 @@ MgReader* MgFeatureNumericFunctions::Execute()
         reader = GetReader(distValues);
     }
 
-    return SAFE_ADDREF((MgReader*)reader);
+    return reader.Detach();
 }
 
 // Check whether property type is a supported type

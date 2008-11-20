@@ -22,22 +22,20 @@ ACE_Recursive_Thread_Mutex TransformCache::sm_mutex;
 
 
 TransformCache::TransformCache(MgCSTrans* transform, MgCoordinateSystem* coordinateSystem)
-: m_xform(transform)
 {
+    m_xform.reset(transform);
     m_coordSys = SAFE_ADDREF(coordinateSystem);
 }
 
 
 TransformCache::~TransformCache()
 {
-    delete m_xform;
-    m_xform = NULL;
 }
 
 
 MgCSTrans* TransformCache::GetTransform()
 {
-    return m_xform;
+    return m_xform.get();
 }
 
 

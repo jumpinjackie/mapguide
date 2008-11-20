@@ -68,7 +68,6 @@ void MgFeatureStringFunctions::Initialize(MgReader* reader, FdoFunction* customF
 
 MgFeatureStringFunctions::~MgFeatureStringFunctions()
 {
-    SAFE_RELEASE(m_customFunction);
 }
 
 // Execute the function
@@ -100,9 +99,7 @@ MgReader* MgFeatureStringFunctions::Execute()
     ExecuteOperation(mMap, v2);
 
     // Create FeatureReader from distribution values
-    Ptr<MgReader> reader = GetReader(v2);
-
-    return SAFE_ADDREF((MgReader*)reader);
+    return GetReader(v2);
 }
 
 

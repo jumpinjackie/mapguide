@@ -62,7 +62,6 @@ MgServerSelectFeatures::MgServerSelectFeatures()
 
 MgServerSelectFeatures::~MgServerSelectFeatures()
 {
-    FDO_SAFE_RELEASE(m_customFunction);
 }
 
 // Executes the select features command and serializes the reader

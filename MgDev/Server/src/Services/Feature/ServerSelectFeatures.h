@@ -75,7 +75,7 @@ private:
     // Only one custom property is supported. No nesting of custom properties allowed.
     STRING                  m_customPropertyName;
     bool                    m_customPropertyFound;
-    FdoFunction*            m_customFunction;
+    FdoPtr<FdoFunction>     m_customFunction;
 
     // Methods for Feature Join
     bool FindFeatureJoinProperties(MgResourceIdentifier* resourceId, CREFSTRING extensionName);

@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _MGFEATURE_GEOMETRIC_DISTRIBUTION_H_
-#define _MGFEATURE_GEOMETRIC_DISTRIBUTION_H_
+#ifndef MG_FEATURE_GEOMETRIC_FUNCTIONS_H_
+#define MG_FEATURE_GEOMETRIC_FUNCTIONS_H_
 
 class MgDisposable;
 class FdoFunction;
@@ -66,7 +66,7 @@ private:
     STRING m_propertyName;
     INT16 m_type;
     Ptr<MgReader> m_reader;
-    FdoFunction* m_customFunction;
+    FdoPtr<FdoFunction> m_customFunction;
     STRING m_propertyAlias;
 
     bool m_extentsInitialized;
