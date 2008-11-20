@@ -98,7 +98,7 @@ void PointAdapter::Stylize(Renderer*                   renderer,
     //       option) does not need to be done for points.  Points
     //       outside the map extents already get clipped away as part
     //       of the FDO query.
-    
+
     LineBuffer* lb = geometry;
 
     if (renderer->RequiresClipping())

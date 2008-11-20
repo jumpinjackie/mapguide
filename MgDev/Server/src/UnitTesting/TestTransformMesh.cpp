@@ -370,4 +370,5 @@ void TestTransformMesh::TestCase_TransformMesh_Small_Image_01()
     catch (...)
     {
         throw;
-    }}
+    }
+}

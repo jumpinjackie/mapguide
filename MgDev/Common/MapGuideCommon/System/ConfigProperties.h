@@ -79,8 +79,8 @@ EXTERNAL_API:
     static const STRING DefaultGeneralPropertyLogsDelimiter;            /// value("\t")
 
     /// Log detail level for services
-    static const STRING GeneralPropertyLogsDetail;                   /// value("LogsDetail")
-    static const STRING DefaultGeneralPropertyLogsDetail;            /// value("")
+    static const STRING GeneralPropertyLogsDetail;                      /// value("LogsDetail")
+    static const STRING DefaultGeneralPropertyLogsDetail;               /// value("")
 
     /// Root folder for server's log files
     static const STRING GeneralPropertyLogsPath;                        /// value("LogsPath")
@@ -314,36 +314,36 @@ EXTERNAL_API:
     /// MAPPING SERVICE PROPERTIES SECTION -------------------------------------------------------------------------------
 
     /// Mapping Service properties
-    static const STRING MappingServicePropertiesSection;                /// value("MappingServiceProperties")
+    static const STRING MappingServicePropertiesSection;                        /// value("MappingServiceProperties")
 
     /// Sets the font to use when rendering legend elements
-    static const STRING MappingServicePropertyLegendFont;               /// value("LegendFont")
-    static const STRING DefaultMappingServicePropertyLegendFont;        /// value("Arial")
+    static const STRING MappingServicePropertyLegendFont;                       /// value("LegendFont")
+    static const STRING DefaultMappingServicePropertyLegendFont;                /// value("Arial")
 
     /// RENDERING SERVICE PROPERTIES SECTION -----------------------------------------------------------------------------
 
     /// Rendering Service properties
-    static const STRING RenderingServicePropertiesSection;              /// value("RenderingServiceProperties")
+    static const STRING RenderingServicePropertiesSection;                      /// value("RenderingServiceProperties")
 
     /// Sets the maximum request extent offset to use when requesting features for a tile, specified as a factor of the tile size
-    static const STRING RenderingServicePropertyTileExtentOffset;       /// value("TileExtentOffset")
-    static const double DefaultRenderingServicePropertyTileExtentOffset;/// value(0.35)
+    static const STRING RenderingServicePropertyTileExtentOffset;               /// value("TileExtentOffset")
+    static const double DefaultRenderingServicePropertyTileExtentOffset;        /// value(0.35)
 
     /// Sets desired raster re-projection grid size
-    static const STRING RenderingServicePropertyRasterGridSize;         /// value("RasterGridSize")
-    static const INT32 DefaultRenderingServicePropertyRasterGridSize;   /// value(100)
+    static const STRING RenderingServicePropertyRasterGridSize;                 /// value("RasterGridSize")
+    static const INT32 DefaultRenderingServicePropertyRasterGridSize;           /// value(100)
 
     /// Sets desired minimum raster re-projection grid size
-    static const STRING RenderingServicePropertyMinRasterGridSize;         /// value("MinRasterGridSize")
-    static const INT32 DefaultRenderingServicePropertyMinRasterGridSize;   /// value(10)
+    static const STRING RenderingServicePropertyMinRasterGridSize;              /// value("MinRasterGridSize")
+    static const INT32 DefaultRenderingServicePropertyMinRasterGridSize;        /// value(10)
 
     /// Sets desired raster re-projection grid size override ratio
     static const STRING RenderingServicePropertyRasterGridSizeOverrideRatio;         /// value("RasterGridSizeOverrideRatio")
     static const double DefaultRenderingServicePropertyRasterGridSizeOverrideRatio;  /// value(0.25)
 
-	/// Set the batch size for rendering a selection
-	static const STRING RenderingServicePropertyRenderSelectionBatchSize;       /// value("RenderSelectionBatchSize")
-	static const INT32 DefaultRenderingServicePropertyRenderSelectionBatchSize; /// value(10000)
+    /// Sets the batch size for rendering a selection
+    static const STRING RenderingServicePropertyRenderSelectionBatchSize;       /// value("RenderSelectionBatchSize")
+    static const INT32 DefaultRenderingServicePropertyRenderSelectionBatchSize; /// value(10000)
 
     /// FONT ALIASES SECTION -----------------------------------------------------------------------------
 
