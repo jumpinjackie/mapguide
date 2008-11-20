@@ -20088,10 +20088,10 @@ else
 fi;
 
 if test $custom_inc = "DEFAULT"; then
-    map_fdo_include="/usr/local/fdo-3.3.0/include"
+    map_fdo_include="/usr/local/fdo-3.4.0/include"
     if test -d $map_fdo_include; then
-        { echo "$as_me:$LINENO: Building with default location of FDO include files at /usr/local/fdo-3.3.0/include" >&5
-echo "$as_me: Building with default location of FDO include files at /usr/local/fdo-3.3.0/include" >&6;}
+        { echo "$as_me:$LINENO: Building with default location of FDO include files at /usr/local/fdo-3.4.0/include" >&5
+echo "$as_me: Building with default location of FDO include files at /usr/local/fdo-3.4.0/include" >&6;}
     else
         { { echo "$as_me:$LINENO: error: the default FDO include path $map_fdo_include is not a valid directory. Please use the custom option" >&5
 echo "$as_me: error: the default FDO include path $map_fdo_include is not a valid directory. Please use the custom option" >&2;}
@@ -20119,10 +20119,10 @@ else
 fi;
 
 if test $custom_lib = "DEFAULT"; then
-    map_fdo_lib="/usr/local/fdo-3.3.0/lib"
+    map_fdo_lib="/usr/local/fdo-3.4.0/lib"
     if test -d $map_fdo_lib; then
-        { echo "$as_me:$LINENO: Building with default location of FDO libraries at /usr/local/fdo-3.3.0/lib" >&5
-echo "$as_me: Building with default location of FDO libraries at /usr/local/fdo-3.3.0/lib" >&6;}
+        { echo "$as_me:$LINENO: Building with default location of FDO libraries at /usr/local/fdo-3.4.0/lib" >&5
+echo "$as_me: Building with default location of FDO libraries at /usr/local/fdo-3.4.0/lib" >&6;}
     else
         { { echo "$as_me:$LINENO: error: the default FDO lib path $map_fdo_lib is not a valid directory. Please use the custom option" >&5
 echo "$as_me: error: the default FDO lib path $map_fdo_lib is not a valid directory. Please use the custom option" >&2;}

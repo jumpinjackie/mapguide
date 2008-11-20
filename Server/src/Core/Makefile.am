@@ -92,7 +92,7 @@ mgserver_LDADD = \
   -ldwftk \
   -ldwfemap \
   -lexpat \
-  -lFDO-3.3.0 \
+  -lFDO-3.4.0 \
   -lExpressionEngine \
   -lxalanMsg \
   -lxalan-c \
