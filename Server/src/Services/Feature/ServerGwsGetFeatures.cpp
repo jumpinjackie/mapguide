@@ -714,11 +714,11 @@ void MgServerGwsGetFeatures::AddFeature(MgPropertyDefinitionCollection* propDefC
 //////////////////////////////////////////////////////////////////
 MgProperty* MgServerGwsGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, INT16 type)
 {
-    Ptr<MgNullableProperty> prop;
-
     // No propertyname specified, return NULL
     if (qualifiedPropName.empty())
-        return SAFE_ADDREF((MgProperty*)prop);
+        return NULL;
+
+    Ptr<MgNullableProperty> prop;
 
     STRING propName = qualifiedPropName.substr(qualifiedPropName.rfind(L".")+1);
     // If not qualified name specified, take qualifiedPropName as property name

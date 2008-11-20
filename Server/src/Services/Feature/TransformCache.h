@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef TRANSFORMCACHE_H
-#define TRANSFORMCACHE_H
+#ifndef MG_TRANSFORM_CACHE_H_
+#define MG_TRANSFORM_CACHE_H_
 
 #include "MgCSTrans.h"
 
@@ -51,7 +51,7 @@ public:
 private:
     static ACE_Recursive_Thread_Mutex sm_mutex;
 
-    MgCSTrans* m_xform;
+    auto_ptr<MgCSTrans> m_xform;
     Ptr<MgCoordinateSystem> m_coordSys;
     Ptr<MgCoordinateSystemTransform> m_transform;
     Ptr<MgEnvelope> m_envelope;

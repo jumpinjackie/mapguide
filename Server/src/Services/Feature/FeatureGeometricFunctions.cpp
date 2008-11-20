@@ -71,10 +71,6 @@ void MgFeatureGeometricFunctions::Initialize(MgReader* reader, FdoFunction* cust
 
 MgFeatureGeometricFunctions::~MgFeatureGeometricFunctions()
 {
-    if (m_customFunction != NULL)
-    {
-        m_customFunction->Release();
-    }
 }
 
 // Execute the function
@@ -109,9 +105,7 @@ MgReader* MgFeatureGeometricFunctions::Execute()
     Ptr<MgGeometryCollection> finalResult = ExecuteOperation();
 
     // Create FeatureReader from geometric values
-    Ptr<MgReader> reader = GetReader(finalResult);
-
-    return SAFE_ADDREF((MgReader*)reader);
+    return GetReader(finalResult);
 }
 
 void MgFeatureGeometricFunctions::ComputeExtents(MgCoordinate* lowerLeft,
