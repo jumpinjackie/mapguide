@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installers", "Installers", "{27ADF4E3-77AC-4645-B1BC-9408943D19D3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{D2A5CB4A-4494-4083-9FBE-64ED543F8FBD}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "FDO", "Libraries\FDO\FDO.wixproj", "{C95B542F-B551-46B5-8B07-FC54F161A123}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Maestro", "Libraries\Maestro\Maestro.wixproj", "{B8651092-0DBD-4B82-B9D5-8E4B4C8EC7B2}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "MapGuide Server", "Libraries\MapGuide Server\MapGuide Server.wixproj", "{715E2D88-E822-4A9A-A5A2-DBB71CD9B320}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "MapGuide", "Installers\MapGuide\MapGuide.wixproj", "{12C62F60-6F52-4112-84AB-0FA8ED44EE77}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C95B542F-B551-46B5-8B07-FC54F161A123}.Debug|x86.ActiveCfg = Debug|x86
+		{C95B542F-B551-46B5-8B07-FC54F161A123}.Debug|x86.Build.0 = Debug|x86
+		{C95B542F-B551-46B5-8B07-FC54F161A123}.Release|x86.ActiveCfg = Release|x86
+		{C95B542F-B551-46B5-8B07-FC54F161A123}.Release|x86.Build.0 = Release|x86
+		{B8651092-0DBD-4B82-B9D5-8E4B4C8EC7B2}.Debug|x86.ActiveCfg = Debug|x86
+		{B8651092-0DBD-4B82-B9D5-8E4B4C8EC7B2}.Debug|x86.Build.0 = Debug|x86
+		{B8651092-0DBD-4B82-B9D5-8E4B4C8EC7B2}.Release|x86.ActiveCfg = Release|x86
+		{B8651092-0DBD-4B82-B9D5-8E4B4C8EC7B2}.Release|x86.Build.0 = Release|x86
+		{715E2D88-E822-4A9A-A5A2-DBB71CD9B320}.Debug|x86.ActiveCfg = Debug|x86
+		{715E2D88-E822-4A9A-A5A2-DBB71CD9B320}.Debug|x86.Build.0 = Debug|x86
+		{715E2D88-E822-4A9A-A5A2-DBB71CD9B320}.Release|x86.ActiveCfg = Release|x86
+		{715E2D88-E822-4A9A-A5A2-DBB71CD9B320}.Release|x86.Build.0 = Release|x86
+		{12C62F60-6F52-4112-84AB-0FA8ED44EE77}.Debug|x86.ActiveCfg = Debug|x86
+		{12C62F60-6F52-4112-84AB-0FA8ED44EE77}.Debug|x86.Build.0 = Debug|x86
+		{12C62F60-6F52-4112-84AB-0FA8ED44EE77}.Release|x86.ActiveCfg = Release|x86
+		{12C62F60-6F52-4112-84AB-0FA8ED44EE77}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{12C62F60-6F52-4112-84AB-0FA8ED44EE77} = {27ADF4E3-77AC-4645-B1BC-9408943D19D3}
+		{C95B542F-B551-46B5-8B07-FC54F161A123} = {D2A5CB4A-4494-4083-9FBE-64ED543F8FBD}
+		{B8651092-0DBD-4B82-B9D5-8E4B4C8EC7B2} = {D2A5CB4A-4494-4083-9FBE-64ED543F8FBD}
+		{715E2D88-E822-4A9A-A5A2-DBB71CD9B320} = {D2A5CB4A-4494-4083-9FBE-64ED543F8FBD}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix 
+  xmlns="http://schemas.microsoft.com/wix/2006/wi"
+  xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
+  xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension"
+  >
+
+  <Product 
+         Id="47B770BA-1591-415D-A7AE-33D4C522FCEA" 
+         UpgradeCode="5D9A7D8D-485E-43E0-A4C8-3582E4D80051"
+         Name="MapGuide Open Source" 
+         Version="2.1.0" 
+         Manufacturer="Open Source GeoSpatial Foundation"
+         Language="1033" >
+
+    <Package InstallerVersion="200" Compressed="yes" />
+
+		<Media Id="1" Cabinet="MapGuideOpenSource.cab" EmbedCab="yes" />
+
+    <PropertyRef Id="NETFRAMEWORK20"/>
+    <Condition Message="The .NET Framework 2.0 must be installed ([NETFRAMEWORK20])">
+      Installed OR NETFRAMEWORK20
+    </Condition>
+
+    <Property Id="ALLUSERS">1</Property>
+    
+    <WixVariable Id="WixUILicenseRtf" Value="Resources/LGPL21.rtf" />
+    <WixVariable Id="WixUIBannerBmp" Value="Resources/InstallerSmall.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="Resources/InstallerLarge.bmp" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id='ProgramMenuFolder' Name='Programs' />
+      <Directory Id="DesktopFolder" Name="Desktop"/>
+      <Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLLOCATION" Name="MapGuide Open Source" />
+      </Directory>
+    </Directory>
+
+    <Feature Id="ServerFeature" Title="MapGuide Server" Level="1" ConfigurableDirectory="SERVERROOTLOCATION" Description="MapGuide Server provides geographic analysis and rendering services."  AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" />
+    <Feature Id="MaestroFeature" Title="MapGuide Maestro" Level="1"  ConfigurableDirectory="MAESTROROOTLOCATION" Description="Installs the MapGuide Maestro Application" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+      <ComponentGroupRef Id="MaestroComponentGroup" />
+    </Feature>
+
+    <UIRef Id="WixUI_Mondo"/>
+    <UIRef Id="WixUI_ErrorProgressText" />
+
+    <InstallExecuteSequence>
+      <Custom
+          Action="MgServerInstallCA"
+          Before="InstallFinalize">&amp;ServerFeature=3</Custom>
+      <Custom
+          Action="MgServerUninstallCA"
+          Before="RemoveFiles">&amp;ServerFeature=2</Custom>
+    </InstallExecuteSequence>
+
+  </Product>
+</Wix>

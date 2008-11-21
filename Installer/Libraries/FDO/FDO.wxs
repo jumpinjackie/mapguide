@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+    <Feature Id="FdoFeature" Title="FDO (Feature Data Objects)" Level="1" ConfigurableDirectory="FDOLOCATION" Description="FDO Open Source is a required component for MapGuide Server." Absent="disallow">
+      <ComponentGroupRef Id="group_FDOFILES"/>
+    </Feature>
+  </Fragment>
+</Wix>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix   xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+  
+    <CustomAction 
+      Execute="deferred" 
+      Return="ignore" 
+      Id="MgServerInstallCA" 
+      FileKey="file_BINFILES_14"
+      ExeCommand="install &quot;MapGuide Server 2.1&quot;" />
+
+    <CustomAction
+      Execute="immediate"
+      Return="ignore"
+      Id="MgServerUninstallCA"
+      FileKey="file_BINFILES_14"
+      ExeCommand="uninstall" />
+
+  </Fragment>
+</Wix>
