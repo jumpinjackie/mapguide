@@ -51,6 +51,7 @@
       <Custom
           Action="MgServerUninstallCA"
           Before="RemoveFiles">&amp;ServerFeature=2</Custom>
+      <ScheduleReboot After="InstallFinalize"/>
     </InstallExecuteSequence>
 
   </Product>

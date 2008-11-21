@@ -149,12 +149,12 @@
       <Component Id="comp_BINFILES_30" DiskId="1" Guid="EEB4C8DC-C78F-4B59-A0A6-55298D799AA2">
         <File Id="file_BINFILES_30" Name="serverconfig.ini" Source="$(var.MgSourceDir)Server\bin\release\serverconfig.ini" />
         <IniFile Id="ServerIniFdoPath"
-   Action="addLine"
-   Directory="SERVERBINLOCATION"
-   Section="GeneralProperties"
-   Name="serverconfig.ini"
-   Key="FdoPath"
-   Value="[SERVERFDOLOCATION]" />
+           Action="addLine"
+           Directory="SERVERBINLOCATION"
+           Section="GeneralProperties"
+           Name="serverconfig.ini"
+           Key="FdoPath"
+           Value="[FDOLOCATION]" />
         <IniFile Id="ServerIniLogsPath"
            Action="addLine"
            Directory="SERVERBINLOCATION"
