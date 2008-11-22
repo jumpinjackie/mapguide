@@ -36,12 +36,8 @@
 #endif
 #endif
 
-#define PI2 6.283185307179586476925286766559    //2*pi
-
-//defines how many iterations to use when tessellating
-//qudratics, cubics and spirals. We use up to 100 iterations
-const int TESSELLATION_ITERATIONS = 100;
-const double INV_TESSELLATION_ITERATIONS = 1.0 / TESSELLATION_ITERATIONS;
+// defines how many segments to use when tessellating arcs
+const int ARC_TESSELLATION_SEGMENTS = 100;
 
 class LineBufferPool;
 class CSysTransformer;
@@ -247,10 +243,6 @@ private:
     double PolygonArea(int cntr);
     double PolylineLength(int cntr);
     double PolylineLengthSqr(int cntr);
-
-    double CubicApproxParameter(double halfAngle);
-    void TessellateCubicTo(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4);
-    void TessellateQuadTo(double x1, double y1, double x2, double y2, double x3, double y3);
 
     void ResizePoints(int n);    // new size of array # of points
     void ResizeContours(int n);

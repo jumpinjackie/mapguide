@@ -21,7 +21,7 @@
 #include "RS_OutputStream.h"
 
 
-// For point reduction loop -- points will be dropped if distance
+// For point reduction loop -- points will be dropped if the distance
 // between them squared is more than 1.96 (i.e. 1.4 pixels).
 // Dave said 1.4 is a good number.
 const double OPTIMIZE_DISTANCE_SQ = 1.96;
@@ -269,7 +269,7 @@ void LineBuffer::LineTo(double x, double y, double z)
     if (m_cur_types == m_types_len)
         Resize();
 
-    // Check to see if incoming points are 2D (no Z) and need to be transfomed
+    // Check to see if incoming points are 2D (no Z) and need to be transformed
     // back into 3D space.  This is used by 3D circular arc tessellation.
     if (m_bTransform2DPoints)
     {
@@ -535,7 +535,7 @@ void LineBuffer::CircularArcTo(double x1, double y1, double x2, double y2)
     _ASSERT(point_count() > 0);
 
     // NOTE: This is really an error condition.  The user has specified that
-    // LineBuffer should have Z, but is now calling the circular arc routine
+    // the LineBuffer should have Z, but is now calling the circular arc routine
     // with no Z value.  Assert and draw nothing.
     _ASSERT(!m_bProcessZ);
 
@@ -706,8 +706,8 @@ void LineBuffer::CircularArcTo2D(double x0, double y0, double x1, double y1, dou
     double startAngle = atan2(y0 - cy, x0 - cx);
     double endAngle = atan2(y2 - cy, x2 - cx);
 
-    // now fix the start and end angles so that the cubic approximation
-    // tracks the arc in the correct direction
+    // now fix the start and end angles so that they track the arc
+    // in the correct direction
     if (area < 0.0) // CW
     {
         if (startAngle < endAngle)
@@ -724,18 +724,6 @@ void LineBuffer::CircularArcTo2D(double x0, double y0, double x1, double y1, dou
 }
 
 
-// computes cubic spline parameter to be used when approximating an elliptical arc
-double LineBuffer::CubicApproxParameter(double halfAngle)
-{
-    // small angle case
-    if (fabs(halfAngle) < 5.0e-4)
-        return (2.0/3.0) * halfAngle;
-
-    // otherwise use sin/cos
-    return (4.0/3.0) * (1.0 - cos(halfAngle)) / sin(halfAngle);
-}
-
-
 void LineBuffer::ArcTo(double cx, double cy, double a, double b, double startRad, double endRad)
 {
     double extent = endRad - startRad;
@@ -746,240 +734,48 @@ void LineBuffer::ArcTo(double cx, double cy, double a, double b, double startRad
     EnsureArcsSpArray(2);
     m_arcs_sp[++m_cur_arcs_sp] = m_cur_types - 1;
 
-    double extentA = fabs(extent);
-    if (extentA > PI2)
+    int nSegs = ARC_TESSELLATION_SEGMENTS;  // default
+    if (m_drawingScale != 0.0)
     {
-        extent  = PI2;  // sign doesn't matter anymore
-        extentA = PI2;
+        // Compute the required angular separation between points which gives
+        // the desired tolerance.  Just base it off the max radius and use the
+        // formula for a circle with 0.25 pixel tolerance.  Note that we don't
+        // need to take into account any transformation in the case of 3D arcs
+        // (see CircularArcTo3D).  The case requiring the most segments is when
+        // the plane of the 3D arc is normal to the Z axis.  Since CircularArcTo3D
+        // does the tessellation in this plane, this already corresponds to the
+        // worst case.
+        double maxRadius = rs_max(a, b);
+        double dRadReq = sqrt(2.0 * m_drawingScale / maxRadius);
+
+        // using the angular separation we can compute the minimum number
+        // of segments
+        nSegs = 1 + (int)(fabs(extent) / dRadReq);
+
+        // the number of segments can get big for large arcs displayed at high
+        // zoom levels, so limit the number of segments
+        nSegs = rs_min(nSegs, 10 * ARC_TESSELLATION_SEGMENTS);
     }
 
-    // we will approximate one full ellipse by 8 cubics, so here compute
-    // what portion of a full ellipse we have so that we know how many
-    // cubics will be needed
-    int num_segs = (int)ceil(8.0 * extentA / PI2);
-    double increment = extent / num_segs;
+    // get the angular separation corresponding to the number of segments
+    double dRad = extent / nSegs;
 
-    double angle = startRad;
-    double ellx = cos(angle);
-    double elly = sin(angle);
-
-    double Ke = CubicApproxParameter(increment*0.5);
-
-    double c0x, c0y, c3x(0.0), c3y(0.0);
-    for (int i=0; i<num_segs; ++i)
+    // add the segments
+    EnsurePoints(nSegs);
+    for (int i=1; i<=nSegs; ++i)
     {
-        // move to start point
-        if (i==0)
-        {
-            c0x = cx + a * ellx;
-            c0y = cy + b * elly;
-            LineTo(c0x, c0y);
-        }
-        else
-        {
-            c0x = c3x;
-            c0y = c3y;
-        }
+        double ang = startRad + i*dRad;
+        double tx = a * cos(ang);
+        double ty = b * sin(ang);
 
-        double c1x = cx + a*(ellx - Ke * elly);
-        double c1y = cy + b*(elly + Ke * ellx);
+        double x = cx + tx;
+        double y = cy + ty;
 
-        angle += increment;
-        ellx = cos(angle);
-        elly = sin(angle);
-
-        double c2x = cx + a * (ellx + Ke * elly);
-        double c2y = cy + b * (elly - Ke * ellx);
-        c3x = cx + ellx * a;
-        c3y = cy + elly * b;
-
-        TessellateCubicTo(c0x, c0y, c1x, c1y, c2x, c2y, c3x, c3y);
+        LineTo(x, y);
     }
 
     // store off arc end point index (want index of start point of last seg)
     m_arcs_sp[++m_cur_arcs_sp] = m_cur_types - 2;
-}
-
-
-void LineBuffer::TessellateCubicTo(double px1, double py1, double px2, double py2, double px3, double py3, double px4, double py4)
-{
-    double w = m_bounds.width();
-    double h = m_bounds.height();
-    double minSegLen = 0.0;
-    double dt = INV_TESSELLATION_ITERATIONS; //= 1.0 / 100.0 Iterate 100 times through loop
-
-    if (m_drawingScale != 0.0)
-    {
-        // If we have drawing scale available, use drawing scale to make sure
-        // the minimum segment length is equal to # of screen units occupied
-        // by one pixel.  This ensures no "flat" segments are visible along
-        // the curve.
-//      minSegLen = m_drawingScale;
-
-        // Setting the minimum segment length to the drawing scale creates so
-        // many segments in dense drawings at high zoom levels that we run out
-        // of memory.  Use the larger of the drawing scale and one two hundredth
-        // of the "size" of the arc we are tessellating.  This compromise seems
-        // to work in all "reasonable" cases.
-
-        // Compute bounding box of the four control points of the curve
-        double minx = min4(px1, px2, px3, px4);
-        double miny = min4(py1, py2, py3, py4);
-        double maxx = max4(px1, px2, px3, px4);
-        double maxy = max4(py1, py2, py3, py4);
-
-        double deltax = maxx - minx;
-        double deltay = maxy - miny;
-
-        double maxlength = rs_max(deltax, deltay);
-
-        // 0.005 (1/200) is an arbitrary number, but it seems to work well
-        minSegLen = rs_max(m_drawingScale, 0.005*maxlength);
-
-        // This code will compute the # of pixels occupied by the curve segment.
-        // It can then reduce the # of iterations in the forward differencing
-        // loop to that # of pixels.  This reduces the time taken to generate
-        // each segment of the tessellation.
-
-        // Figure out how many pixels are covered by that max length.
-        double numPixels = maxlength / m_drawingScale;
-
-        // Ensure that the # of loop iterations is at most 100 or # of pixels
-        // covered (whichever is smaller).
-        dt = rs_max(INV_TESSELLATION_ITERATIONS, (1.0 / numPixels));
-    }
-    else
-    {
-        // We will base the max number of segments to use for approximation
-        // on the bounds of the full line buffer contents.
-        // TODO: as an improvement we could take the bounds of this particular
-        // curve with respect to the full bounds of the line buffer data.
-        double maxdim = rs_max(w, h);
-
-        // minimum length of tessellation segment, set to 1/100 of the bounds
-        minSegLen = maxdim * 0.01;
-    }
-
-//  double dt2 = dt*dt;
-    double dt3 = dt * dt * dt;
-
-    double pre1 = 3.0 * dt;
-    double pre2 = pre1 * dt;
-    double pre3 = pre2 + pre2;
-    double pre4 = 6.0 * dt3;
-
-    double temp1x = px1 - 2.0 * px2 + px3;
-    double temp1y = py1 - 2.0 * py2 + py3;
-    double temp2x = 3.0 * (px2 - px3) - px1 + px4;
-    double temp2y = 3.0 * (py2 - py3) - py1 + py4;
-
-    double fx    = px1;
-    double fy    = py1;
-    double dfx   = (px2 - px1) * pre1 + temp1x * pre2 + temp2x * dt3;
-    double dfy   = (py2 - py1) * pre1 + temp1y * pre2 + temp2y * dt3;
-    double ddfx  = temp1x * pre3 + temp2x * pre4;
-    double ddfy  = temp1y * pre3 + temp2y * pre4;
-    double dddfx = temp2x * pre4;
-    double dddfy = temp2y * pre4;
-
-    double error = 0.0;
-
-    // forward differencing loop
-    int tMax = (int)(1.0/dt - 0.5);
-    for (int t=0; t<tMax; ++t)
-    {
-        fx   += dfx;
-        fy   += dfy;
-        dfx  += ddfx;
-        dfy  += ddfy;
-        ddfy += dddfy;
-        ddfx += dddfx;
-
-        // slow but accurate for flattening
-//      error += sqrt(dfx*dfx + dfy*dfy);
-
-        // faster but less accurate error estimate
-        w = fabs(dfx);
-        h = fabs(dfy);
-        error += rs_max(w, h);
-        if (error >= minSegLen) // add segment only if we have reached threshold length
-        {
-            // line to current
-            LineTo(fx, fy);
-            error = 0.0;
-        }
-    }
-
-    LineTo(px4, py4);
-}
-
-
-void LineBuffer::TessellateQuadTo(double px1, double py1, double px2, double py2, double px3, double py3)
-{
-    // We will base the max number of segments to use for approximation
-    // on the bounds of the full line buffer contents.
-    // TODO: as an improvement we could take the bounds of this particular curve
-    //       with respect to the full bounds of the line buffer data.
-    double w = m_bounds.width();
-    double h = m_bounds.height();
-    double maxdim = rs_max(w, h);
-
-    // minimum length of tessellation segment set to 1/100 of the bounds
-    double minSegLen = maxdim * 0.01;
-
-    /*
-    // if we know the pixels per mapping unit ratio, we can use
-    // this code to determine how many times at most
-    // we want to loop in the forward difference loop
-    double invscale = 1.0 / pixelsperunit;
-    double dt = rs_max(1.0e-2, invscale / diff); // * m_invscale;
-    */
-
-    // but for now we will iterate 100 times
-    double dt = INV_TESSELLATION_ITERATIONS;
-
-    double dt2 = dt*dt;
-
-    double ax = px1 - 2.0*px2 + px3;    // replace 2* by addition?
-    double ay = py1 - 2.0*py2 + py3;    // replace 2* by addition?
-
-    double bx = 2.0*(px2-px1);
-    double by = 2.0*(py2-py1);
-
-    double fx   = px1;
-    double fy   = py1;
-    double dfx  = bx*dt + ax*dt2;
-    double dfy  = by*dt + ay*dt2;
-    double ddfx = 2.0*ax*dt2;
-    double ddfy = 2.0*ay*dt2;
-
-    double error = 0.0;
-
-    //forward differencing loop
-    int tMax = (int)(1.0/dt - 0.5);
-    for (int t=0; t<tMax; ++t)
-    {
-        fx   += dfx;
-        fy   += dfy;
-        dfx  += ddfx;
-        dfy  += ddfy;
-
-        // slow but accurate
-//      error += sqrt(dfx*dfx + dfy*dfy);
-
-        // faster but less accurate error estimate
-        w = fabs(dfx);
-        h = fabs(dfy);
-        error += rs_max(w, h);
-
-        if (error >= minSegLen)  // how many pixels should each line be?
-        {
-            LineTo(fx, fy);
-            error = 0.0;
-        }
-    }
-
-    LineTo(px3, py3);
 }
 
 
