@@ -281,8 +281,8 @@ bool MakeLegalMentorName(char *kpStr)
         (*pName == cs_DFLT_REPLBEG && *pEnd == cs_DFLT_REPLEND)
        )
     {
-        *pEnd = '\0';			/* trims trailing */
-        CS_stcpy (szNameTmp,&szNameTmp[1]);	/* trims leading */
+        *pEnd = '\0';            /* trims trailing */
+        CS_stcpy (szNameTmp,&szNameTmp[1]);    /* trims leading */
     }
 
     /* Careful, szNameTmp could be the null string now if we were
@@ -313,7 +313,7 @@ bool MakeLegalMentorName(char *kpStr)
                 /* If the cs_Unique feature is enabled, we only allow one
                    of them. */
                 pName--;
-                CS_stcpy (pName, &pName[1]);	/* trims more than 1 unique character */
+                CS_stcpy (pName, &pName[1]);    /* trims more than 1 unique character */
                 continue;
             }
         }
@@ -326,7 +326,7 @@ bool MakeLegalMentorName(char *kpStr)
         if (strchr (cs_Nmchset, cc) == NULL)
         {
             pName--;
-            CS_stcpy (pName, &pName[1]);	/* trims illegal character */
+            CS_stcpy (pName, &pName[1]);    /* trims illegal character */
             continue;
         }
 
@@ -337,7 +337,7 @@ bool MakeLegalMentorName(char *kpStr)
         if (cc == ' ')
         {
             pName--;
-            CS_stcpy (pName, &pName[1]);	/* trims double space */
+            CS_stcpy (pName, &pName[1]);    /* trims double space */
         }
     }
 
@@ -378,7 +378,7 @@ bool MakeLegalMentorName(char *kpStr)
     if (!ok)
     {
         pName--;
-        CS_stcpy (pName, &pName[1]);	/* trims double space */
+        CS_stcpy (pName, &pName[1]);    /* trims double space */
     }
 
     /* OK, the name has been processed, and is OK. */
@@ -508,28 +508,35 @@ bool ProjectionUsesOffset(INT32 prj)
     return false;
 }
 
-//Returns the INT32 associated with a given projection
-//key name.  Returns MgCoordinateSystemProjectionCode::Unknown if it's not a recognized string.
+//Returns the projection description associated with a given projection
+//key name.
 //
 STRING ProjectionDescriptionFromString(const char *kpStr)
 {
-    if (NULL == kpStr)
-    {
-        return L"";
-    }
+    STRING projectionDescription;
 
-    for (int i=0; cs_Prjtab[i].code != cs_PRJCOD_END; i++)
+    if (NULL != kpStr)
     {
-        if (!CS_stricmp (kpStr, cs_Prjtab[i].key_nm))
+        // Scan the entire table to find a match.
+        for (int i = 0; cs_Prjtab[i].code != cs_PRJCOD_END; i++)
         {
-            //Found a match!
-            wchar_t* csProjectionDescription = Convert_Ascii_To_Wide(cs_Prjtab[i].descr);
-            return csProjectionDescription;
+            if (!CS_stricmp (kpStr, cs_Prjtab[i].key_nm))
+            {
+                // Found a match!
+                wchar_t* pwszDesc = Convert_Ascii_To_Wide(cs_Prjtab[i].descr);
+                
+                if (NULL != pwszDesc)
+                {
+                    projectionDescription = pwszDesc;
+                    delete[] pwszDesc;
+                }
+                
+                break;
+            }
         }
     }
 
-    //Scanned entire table without finding a match.
-    return L"";
+    return projectionDescription;
 }
 
 //Returns the INT32 associated with a given projection
