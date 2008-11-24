@@ -42,7 +42,8 @@ public:
                                    const RS_String& text,
                                    RS_OverpostType  type,
                                    bool             exclude,
-                                   LineBuffer*      path) = 0;
+                                   LineBuffer*      path,
+                                   double           scaleLimit) = 0;
 
     // SE labels
     virtual void ProcessLabelGroup(SE_LabelInfo*    labels,

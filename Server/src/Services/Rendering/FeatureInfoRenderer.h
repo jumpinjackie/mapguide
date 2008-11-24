@@ -84,7 +84,8 @@ public:
                                    const RS_String& text,
                                    RS_OverpostType  type,
                                    bool             exclude,
-                                   LineBuffer*      path)
+                                   LineBuffer*      path,
+                                   double           scaleLimit)
     {}
 
     virtual void AddDWFContent(RS_InputStream*  in,

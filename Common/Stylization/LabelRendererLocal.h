@@ -90,7 +90,8 @@ struct OverpostGroupLocal
         : m_render(render),
           m_exclude(exclude),
           m_algo(laSimple),
-          m_type(type)
+          m_type(type),
+          m_scaleLimit(0.0)
     {
     }
 
@@ -98,6 +99,7 @@ struct OverpostGroupLocal
     bool m_exclude;
     LabelAlgo m_algo;
     RS_OverpostType m_type;
+    double m_scaleLimit;
     RS_Bounds m_feature_bounds;
     std::vector<LabelInfoLocal> m_labels;
 };
@@ -118,7 +120,8 @@ public:
                                    const RS_String& text,
                                    RS_OverpostType  type,
                                    bool             exclude,
-                                   LineBuffer*      path);
+                                   LineBuffer*      path,
+                                   double           scaleLimit);
 
     // SE labels
     virtual void ProcessLabelGroup(SE_LabelInfo*    labels,
@@ -136,11 +139,15 @@ private:
     void EndOverpostGroup();
 
     bool ComputeSimpleLabelBounds(LabelInfoLocal& info);
-    bool ComputePathLabelBounds(LabelInfoLocal& info, std::vector<LabelInfoLocal>& repeated_infos);
+    bool ComputePathLabelBounds(LabelInfoLocal& info, std::vector<LabelInfoLocal>& repeated_infos, double scaleLimit);
     bool ComputeSELabelBounds(LabelInfoLocal& info);
 
     void ProcessLabelGroupsInternal(SimpleOverpost* pMgr, std::vector<OverpostGroupLocal*>& groups);
-    bool ProcessLabelInternal(SimpleOverpost* pMgr, LabelInfoLocal& info, bool render, bool exclude, bool check);
+    bool ProcessLabelInternal(SimpleOverpost* pMgr,
+                              LabelInfoLocal& info,
+                              bool render,
+                              bool exclude,
+                              bool check);
 
     void AddExclusionRegion(SimpleOverpost* pMgr, RS_F_Point* pts, int npts);
 

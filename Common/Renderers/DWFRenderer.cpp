@@ -937,7 +937,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
         //pass on to label drawing code to draw the text using a macro
         RS_LabelInfo info(x, y, scaledRefX, scaledRefY, tdef.font().units(), tdef);
-        ProcessLabelGroup(&info, 1, mdef.name(), RS_OverpostType_All, false, NULL);
+        ProcessLabelGroup(&info, 1, mdef.name(), RS_OverpostType_All, false, NULL, 0.0);
     }
     else if (symbol)
     {
@@ -1187,7 +1187,8 @@ void DWFRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
                                     const RS_String& text,
                                     RS_OverpostType  type,
                                     bool             exclude,
-                                    LineBuffer*      /*path*/)
+                                    LineBuffer*      /*path*/,
+                                    double           /*scaleLimit*/)
 {
     if (nlabels == 0)
         return;
@@ -2627,10 +2628,10 @@ void DWFRenderer::DrawScreenText(const RS_TextMetrics&  tm,
         // path text
         // We cannot modify the cached RS_TextMetrics so we create a local one and use it to layout the path text.
         RS_TextMetrics tm_local;
-        if ( GetTextMetrics( tm.text, tdef, tm_local, true ) )
+        if (GetTextMetrics(tm.text, tdef, tm_local, true))
         {
-            //TODO: need computed seglens rather than NULL to make things faster
-            if ( LayoutPathText(tm_local, (RS_F_Point*)path, npts, NULL, param_position, tdef.valign(), 0) )
+            // TODO: need computed seglens rather than NULL to make things faster
+            if (LayoutPathText(tm_local, (RS_F_Point*)path, npts, NULL, param_position, tdef.valign(), 0.5))
                 DrawPathText(tm_local, tdef);
         }
     }
@@ -2638,10 +2639,8 @@ void DWFRenderer::DrawScreenText(const RS_TextMetrics&  tm,
     {
         // block text
         // Check that we have a valid text metrics
-        if ( tm.font != NULL )
-        {
+        if (tm.font != NULL)
             DrawBlockText(tm, tdef, insx, insy);
-        }
     }
 }
 

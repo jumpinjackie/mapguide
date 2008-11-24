@@ -388,7 +388,8 @@ void KmlRenderer::ProcessLabelGroup(RS_LabelInfo*    /*labels*/,
                                     const RS_String& text,
                                     RS_OverpostType  /*type*/,
                                     bool             /*exclude*/,
-                                    LineBuffer*      /*path*/)
+                                    LineBuffer*      /*path*/,
+                                    double           /*scaleLimit*/)
 {
 //    char buffer[256];
     m_kmlContent->WriteString("<name><![CDATA[", false);

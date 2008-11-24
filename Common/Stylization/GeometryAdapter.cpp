@@ -697,7 +697,7 @@ void GeometryAdapter::AddLabel(double x, double y,
     if (!txt.empty())
     {
         RS_LabelInfo info(x, y, 0.0, 0.0, RS_Units_Model, def);
-        renderer->ProcessLabelGroup(&info, 1, txt, type, exclude, lb);
+        renderer->ProcessLabelGroup(&info, 1, txt, type, exclude, lb, text->GetScaleLimit());
     }
 }
 

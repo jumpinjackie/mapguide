@@ -66,7 +66,8 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
                                            const RS_String& text,
                                            RS_OverpostType  type,
                                            bool             exclude,
-                                           LineBuffer*      path)
+                                           LineBuffer*      path,
+                                           double           scaleLimit)
 {
     BeginOverpostGroup(type, true, exclude);
 
@@ -79,6 +80,9 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
     {
         // indicate that the current group will be labeled along the path
         m_labelGroups.back().m_algo = laCurve;
+
+        // set the scale limit for the group
+        m_labelGroups.back().m_scaleLimit = scaleLimit;
 
         // Since we're in tiled mode, we cannot stitch features which span
         // more than one tile because labels will not be continuous across
@@ -410,7 +414,7 @@ void LabelRendererLocal::BlastLabels()
             {
                 // several possible positions along the path
                 // may be returned in the case of repeated labels
-                success = ComputePathLabelBounds(info, repeated_infos);
+                success = ComputePathLabelBounds(info, repeated_infos, group.m_scaleLimit);
             }
             else
             {
@@ -487,6 +491,7 @@ void LabelRendererLocal::BlastLabels()
                 // create a new group with just one label
                 OverpostGroupLocal newGroup(group.m_render, group.m_exclude, group.m_type);
                 newGroup.m_algo           = group.m_algo;
+                newGroup.m_scaleLimit     = group.m_scaleLimit;
                 newGroup.m_feature_bounds = group.m_feature_bounds;
                 newGroup.m_labels.push_back(group.m_labels[j]);
                 finalGroups.push_back(newGroup);
@@ -869,7 +874,7 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LabelInfoLocal& info)
 
 
 //////////////////////////////////////////////////////////////////////////////
-bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vector<LabelInfoLocal>& repeated_infos)
+bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vector<LabelInfoLocal>& repeated_infos, double scaleLimit)
 {
     // set a limit on the number of path segments
     _ASSERT(info.m_numpts < MAX_PATH_SEGMENTS);
@@ -922,7 +927,7 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
         double param_position = ((double)irep + 0.5) / (double)numreps;
 
         // compute position and angle along the path for each character
-        if (!fe->LayoutPathText(copy_info.m_tm, info.m_pts, info.m_numpts, segpos, param_position, info.m_tdef.valign(), 0))
+        if (!fe->LayoutPathText(copy_info.m_tm, info.m_pts, info.m_numpts, segpos, param_position, info.m_tdef.valign(), scaleLimit))
             continue;
 
         // once we have position and angle for each character
@@ -1058,8 +1063,11 @@ void LabelRendererLocal::ProcessLabelGroupsInternal(SimpleOverpost* pMgr, std::v
 
 
 //////////////////////////////////////////////////////////////////////////////
-bool LabelRendererLocal::ProcessLabelInternal(SimpleOverpost* pMgr, LabelInfoLocal& info,
-                                              bool render, bool exclude, bool check)
+bool LabelRendererLocal::ProcessLabelInternal(SimpleOverpost* pMgr,
+                                              LabelInfoLocal& info,
+                                              bool render,
+                                              bool exclude,
+                                              bool check)
 {
     _ASSERT(pMgr != NULL || !check);
 

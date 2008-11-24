@@ -1071,14 +1071,15 @@ void GDRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
                                    const RS_String& text,
                                    RS_OverpostType  type,
                                    bool             exclude,
-                                   LineBuffer*      path)
+                                   LineBuffer*      path,
+                                   double           scaleLimit)
 {
     //check if we are rendering a selection -- bail if so
     if (m_bSelectionMode)
         return;
 
     //forward it to the label renderer
-    m_labeler->ProcessLabelGroup(labels, nlabels, text, type, exclude, path);
+    m_labeler->ProcessLabelGroup(labels, nlabels, text, type, exclude, path, scaleLimit);
 }
 
 
@@ -2518,19 +2519,18 @@ void GDRenderer::DrawScreenText(const RS_TextMetrics& tm, RS_TextDef& tdef, doub
         // path text
         // We cannot modify the cached RS_TextMetrics so we create a local one and use it to layout the path text.
         RS_TextMetrics tm_local;
-        if ( GetTextMetrics( tm.text, tdef, tm_local, true ) )
+        if (GetTextMetrics(tm.text, tdef, tm_local, true))
         {
-            //TODO: need computed seglens rather than NULL to make things faster
-            if ( LayoutPathText(tm_local, (RS_F_Point*)path, npts, NULL, param_position, tdef.valign(), 0) )
+            // TODO: need computed seglens rather than NULL to make things faster
+            if (LayoutPathText(tm_local, (RS_F_Point*)path, npts, NULL, param_position, tdef.valign(), 0.5))
                 DrawPathText(tm_local, tdef);
         }
     }
     else
     {
+        // block text
         // Check that we have a valid text metrics
-        if ( tm.font != NULL )
-        {
+        if (tm.font != NULL)
             DrawBlockText(tm, tdef, insx, insy);
-        }
     }
 }

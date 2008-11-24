@@ -182,7 +182,7 @@ void MgLegendPlotUtil::BuildLegendContent(MgMap* map, double scale, MgPlotSpecif
         x = legendOffsetX + (defaultLegendMargin + indent)*convertUnits;
 
         RS_LabelInfo info(x, y + legendTextVertAdjust*convertUnits, textDef);
-        dr.ProcessLabelGroup(&info, 1, mggroup->GetLegendLabel(), RS_OverpostType_All, false, NULL);
+        dr.ProcessLabelGroup(&info, 1, mggroup->GetLegendLabel(), RS_OverpostType_All, false, NULL, 0.0);
 
         y -= legendSpacing*convertUnits;
 
@@ -292,7 +292,7 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
             // Add the layer legend label text.
             x += dIconWidth + initialMarginX;
             RS_LabelInfo info(x, y + verticalTextAdjust, textDef);
-            dr.ProcessLabelGroup(&info, 1, mapLayer->GetLegendLabel(), RS_OverpostType_All, false, NULL);
+            dr.ProcessLabelGroup(&info, 1, mapLayer->GetLegendLabel(), RS_OverpostType_All, false, NULL, 0.0);
 
             if (nRuleCount > 1)
             {
@@ -325,7 +325,7 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
                     //draw the label after the icon, but also allow
                     //some blank space for better clarity
                     RS_LabelInfo info(x + dIconWidth + initialMarginX, y + verticalTextAdjust, textDef);
-                    dr.ProcessLabelGroup(&info, 1, rule->GetLegendLabel(), RS_OverpostType_All, false, NULL);
+                    dr.ProcessLabelGroup(&info, 1, rule->GetLegendLabel(), RS_OverpostType_All, false, NULL, 0.0);
                 }
             }
         }
@@ -346,7 +346,7 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
             // Add the layer legend label.
             x += dIconWidth;
             RS_LabelInfo info(x, y + verticalTextAdjust, textDef);
-            dr.ProcessLabelGroup(&info, 1, mapLayer->GetLegendLabel(), RS_OverpostType_All, false, NULL);
+            dr.ProcessLabelGroup(&info, 1, mapLayer->GetLegendLabel(), RS_OverpostType_All, false, NULL, 0.0);
         }
         else if (dl)
         {
@@ -362,7 +362,7 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
             // Add the layer legend label.
             x += dIconWidth;
             RS_LabelInfo info(x, y + verticalTextAdjust, textDef);
-            dr.ProcessLabelGroup(&info, 1, mapLayer->GetLegendLabel(), RS_OverpostType_All, false, NULL);
+            dr.ProcessLabelGroup(&info, 1, mapLayer->GetLegendLabel(), RS_OverpostType_All, false, NULL, 0.0);
         }
 
         //move y cursor down one line
@@ -553,7 +553,7 @@ void MgLegendPlotUtil::AddTitleElement(MgPrintLayout* layout, STRING& mapName, E
         title = mapName;
 
     RS_LabelInfo info(x, y, textDef);
-    dr.ProcessLabelGroup(&info, 1, title, RS_OverpostType_All, false, NULL);
+    dr.ProcessLabelGroup(&info, 1, title, RS_OverpostType_All, false, NULL, 0.0);
 }
 
 
@@ -838,7 +838,7 @@ void MgLegendPlotUtil::AddScalebarElement(MgPrintLayout* layout, RS_Bounds& mapB
     x = scalebarStartX + (nDivisions*inchesPerDivision) * 0.5;
     y = startY + scaleHeaderOffsetY*convertUnits;
     RS_LabelInfo info(x, y, textDef);
-    dr.ProcessLabelGroup(&info, 1, scaleLabelText, RS_OverpostType_All, false, NULL);
+    dr.ProcessLabelGroup(&info, 1, scaleLabelText, RS_OverpostType_All, false, NULL, 0.0);
 
     // ...scalebar labels
     textDef.font().height() = scaleLabelFontHeight;
@@ -864,7 +864,7 @@ void MgLegendPlotUtil::AddScalebarElement(MgPrintLayout* layout, RS_Bounds& mapB
         y = startY - scaleLabelOffsetY*convertUnits;
         info.x() = x;
         info.y() = y;
-        dr.ProcessLabelGroup(&info, 1, scaleLabelText, RS_OverpostType_All, false, NULL);
+        dr.ProcessLabelGroup(&info, 1, scaleLabelText, RS_OverpostType_All, false, NULL, 0.0);
     }
 
     // ...scalebar footer
@@ -873,7 +873,7 @@ void MgLegendPlotUtil::AddScalebarElement(MgPrintLayout* layout, RS_Bounds& mapB
     y = startY - scaleFooterOffsetY*convertUnits;
     info.x() = x;
     info.y() = y;
-    dr.ProcessLabelGroup(&info, 1, scaleLabelText, RS_OverpostType_All, false, NULL);
+    dr.ProcessLabelGroup(&info, 1, scaleLabelText, RS_OverpostType_All, false, NULL, 0.0);
 }
 
 
@@ -1019,7 +1019,7 @@ void MgLegendPlotUtil::AddUrlElement(MgPrintLayout* layout, STRING& mapURL, EPlo
     double y = spec->GetMarginBottom();
 
     RS_LabelInfo info(x, y, textDef);
-    dr.ProcessLabelGroup(&info, 1, mapURL, RS_OverpostType_All, false, NULL);
+    dr.ProcessLabelGroup(&info, 1, mapURL, RS_OverpostType_All, false, NULL, 0.0);
 }
 
 
@@ -1047,7 +1047,7 @@ void MgLegendPlotUtil::AddDateTimeElement(MgPrintLayout* layout, EPlotRenderer& 
     double y = spec->GetMarginBottom();
 
     RS_LabelInfo info(x, y, textDef);
-    dr.ProcessLabelGroup(&info, 1, dateAndTimeText, RS_OverpostType_All, false, NULL);
+    dr.ProcessLabelGroup(&info, 1, dateAndTimeText, RS_OverpostType_All, false, NULL, 0.0);
 }
 
 
@@ -1364,7 +1364,7 @@ void MgLegendPlotUtil::AddCustomTextElement(MgPrintLayout* layout, EPlotRenderer
         RS_FontDef fontDef(fontName, fontHeight, RS_FontStyle_Regular, RS_Units_Device);
         textDef.font() = fontDef;
         RS_LabelInfo info(xCoord, yCoord, textDef);
-        dr.ProcessLabelGroup(&info, 1, textInfo.GetValue(), RS_OverpostType_All, false, NULL);
+        dr.ProcessLabelGroup(&info, 1, textInfo.GetValue(), RS_OverpostType_All, false, NULL, 0.0);
     }
 }
 

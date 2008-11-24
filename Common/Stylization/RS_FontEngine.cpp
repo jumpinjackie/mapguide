@@ -283,13 +283,23 @@ size_t RS_FontEngine::SplitLabel(wchar_t* label, std::vector<wchar_t*>& line_bre
 // method may also modify the TextMetrics with updated font and text sizes
 // if it chooses to scale the font to make it better fit the given path.
 bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
-                        const RS_F_Point* pts, int npts, double* segpos,
-                        double param_position, RS_VAlignment valign, int /*layout_option*/)
+                                   const RS_F_Point* pts, int npts, double* segpos,
+                                   double param_position, RS_VAlignment valign,
+                                   double scaleLimit)
 {
     // set a limit on the number of path segments
     _ASSERT(npts < MAX_PATH_SEGMENTS);
     if (npts >= MAX_PATH_SEGMENTS)
         return false;
+
+    // validate the supplied scale limit
+    _ASSERT(scaleLimit > 0.0);
+    if (scaleLimit <= 0.0)
+        return false;
+
+    // max scale limit is one
+    if (scaleLimit > 1.0)
+        scaleLimit = 1.0;
 
     int numchars = (int)tm.text.length();
     tm.char_pos.reserve(numchars);
@@ -314,8 +324,12 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
     double pathlen = segpos[npts-1];
 
     // compute a font height that better fits the geometry, but limit
-    // scaling to be in the range [0.5 - 1.0]
-    double font_scale = rs_min(1.0, rs_max(0.5, pathlen / (1.1 * tm.text_width)));
+    // scaling to be in the range [scaleLimit - 1.0]
+    double font_scale = pathlen / (1.1 * tm.text_width);
+    if (font_scale < scaleLimit)
+        font_scale = scaleLimit;
+    else if (font_scale > 1.0)
+        font_scale = 1.0;
 
     // scale all things we measured by the font scaling factor determined
     // based on the path length
