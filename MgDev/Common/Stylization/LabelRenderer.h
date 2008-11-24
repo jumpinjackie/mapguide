@@ -70,7 +70,8 @@ struct OverpostGroup
         : m_render(render),
           m_exclude(exclude),
           m_algo(laSimple),
-          m_type(type)
+          m_type(type),
+          m_scaleLimit(0.0)
     {
     }
 
@@ -78,6 +79,7 @@ struct OverpostGroup
     bool m_exclude;
     LabelAlgo m_algo;
     RS_OverpostType m_type;
+    double m_scaleLimit;
     std::vector<LabelInfo> m_labels;
 };
 
@@ -97,7 +99,8 @@ public:
                                    const RS_String& text,
                                    RS_OverpostType  type,
                                    bool             exclude,
-                                   LineBuffer*      path);
+                                   LineBuffer*      path,
+                                   double           scaleLimit);
 
     // SE labels
     virtual void ProcessLabelGroup(SE_LabelInfo*    labels,
@@ -114,10 +117,14 @@ private:
     void BeginOverpostGroup(RS_OverpostType type, bool render, bool exclude);
     void EndOverpostGroup();
 
-    bool ProcessLabelInternal(LabelInfo& info, bool render, bool exclude, bool check);
+    bool ProcessLabelInternal(LabelInfo& info,
+                              bool render,
+                              bool exclude,
+                              bool check,
+                              double scaleLimit);
 
     bool DrawSimpleLabel(LabelInfo& info, bool render, bool exclude, bool check);
-    bool DrawPathLabel(LabelInfo& info, bool render, bool exclude, bool check);
+    bool DrawPathLabel(LabelInfo& info, bool render, bool exclude, bool check, double scaleLimit);
     bool DrawSELabel(LabelInfo& info, bool render, bool exclude, bool check);
 
     bool OverlapsStuff(RS_F_Point* pts, int npts);

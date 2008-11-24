@@ -115,7 +115,8 @@ public:
                                                  const RS_String& text,
                                                  RS_OverpostType  type,
                                                  bool             exclude,
-                                                 LineBuffer*      path);
+                                                 LineBuffer*      path,
+                                                 double           scaleLimit);
 
     RENDERERS_API virtual void SetSymbolManager(RS_SymbolManager* manager);
 

@@ -353,7 +353,7 @@ void PointAdapter::Stylize(Renderer*                   renderer,
                     def.halign() = RS_HAlignment_Left;
                     candidates[7] = RS_LabelInfo(cx, cy, op_pts[14], op_pts[15], mdefU, def);
 
-                    renderer->ProcessLabelGroup(candidates, 8, txt, RS_OverpostType_FirstFit, true, lb);
+                    renderer->ProcessLabelGroup(candidates, 8, txt, RS_OverpostType_FirstFit, true, lb, text->GetScaleLimit());
                 }
             }
         }

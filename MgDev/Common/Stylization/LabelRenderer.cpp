@@ -65,7 +65,8 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
                                       const RS_String& text,
                                       RS_OverpostType  type,
                                       bool             exclude,
-                                      LineBuffer*      path)
+                                      LineBuffer*      path,
+                                      double           scaleLimit)
 {
     // get the geometry type
     int geomType = (path != NULL)? path->geom_type() : FdoGeometryType_None;
@@ -82,6 +83,9 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
 
         // indicate that the current group will be labeled along the path
         m_labelGroups.back().m_algo = laCurve;
+
+        // set the scale limit for the group
+        m_labelGroups.back().m_scaleLimit = scaleLimit;
 
         // use the label string as the stitch key
         RS_String stitch_key = text;
@@ -261,7 +265,8 @@ void LabelRenderer::BlastLabels()
             bool res = ProcessLabelInternal(info,
                                             group.m_render,
                                             group.m_exclude,
-                                            group.m_type != RS_OverpostType_All);
+                                            group.m_type != RS_OverpostType_All,
+                                            group.m_scaleLimit);
 
             // only in the case of a simple label do we check the overpost type
             if (res && (group.m_type == RS_OverpostType_FirstFit))
@@ -306,14 +311,17 @@ void LabelRenderer::BlastLabels()
 
 //////////////////////////////////////////////////////////////////////////////
 bool LabelRenderer::ProcessLabelInternal(LabelInfo& info,
-                                         bool render, bool exclude, bool check)
+                                         bool render,
+                                         bool exclude,
+                                         bool check,
+                                         double scaleLimit)
 {
     if (info.m_sestyle)
         return DrawSELabel(info, render, exclude, check);
 
     // if it is path label, call our path text routine
     if (info.m_pts)
-        return DrawPathLabel(info, render, exclude, check);
+        return DrawPathLabel(info, render, exclude, check, scaleLimit);
 
     // otherwise use the simple version
     return DrawSimpleLabel(info, render, exclude, check);
@@ -495,7 +503,7 @@ bool LabelRenderer::DrawSELabel(LabelInfo& info, bool render, bool exclude, bool
 
 
 //////////////////////////////////////////////////////////////////////////////
-bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bool check)
+bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bool check, double scaleLimit)
 {
     // set a limit on the number of path segments
     _ASSERT(info.m_numpts < MAX_PATH_SEGMENTS);
@@ -542,7 +550,7 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
         double param_position = ((double)irep + 0.5) / (double)numreps;
 
         // compute position and angle along the path for each character
-        if (!fe->LayoutPathText(tm, info.m_pts, info.m_numpts, segpos, param_position, info.m_tdef.valign(), 0))
+        if (!fe->LayoutPathText(tm, info.m_pts, info.m_numpts, segpos, param_position, info.m_tdef.valign(), scaleLimit))
             continue;
 
         // once we have position and angle for each character

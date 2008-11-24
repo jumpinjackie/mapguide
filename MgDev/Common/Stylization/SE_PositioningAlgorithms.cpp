@@ -465,14 +465,15 @@ void SE_PositioningAlgorithms::PathLabels(SE_ApplyContext* applyCtx,
     if (rstyle->type == SE_RenderStyle_Area)
         return;
 
-    // if the symbol contains just a single text element then add the
-    // text as a regular path label (non-symbol)
+    // If the symbol contains just a single text element then add the
+    // text as a regular path label (non-symbol).  Use 0.5 as the
+    // default value for the scale limit.
     if (rstyle->symbol.size() == 1 && rstyle->symbol[0]->type == SE_RenderPrimitive_Text)
     {
         SE_RenderText* rt = (SE_RenderText*)rstyle->symbol[0];
 
         RS_LabelInfo info(0.0, 0.0, 0.0, 0.0, RS_Units_Device, rt->tdef);
-        return se_renderer->ProcessLabelGroup(&info, 1, rt->content, RS_OverpostType_AllFit, rstyle->addToExclusionRegions, geometry);
+        return se_renderer->ProcessLabelGroup(&info, 1, rt->content, RS_OverpostType_AllFit, rstyle->addToExclusionRegions, geometry, 0.5);
     }
 
     se_renderer->ProcessLineLabels(geometry, (SE_RenderLineStyle*)rstyle);
