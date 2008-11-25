@@ -213,7 +213,7 @@ STRING CCoordinateSystemCatalog::GetDefaultDictionaryDir()
     if (szPath)
     {
         bResult = true;
-        sDir = MgUtil::MultiByteToWideChar(szPath);
+        MgUtil::MultiByteToWideChar(string(szPath), sDir);
     }
 
     if (sDir.empty())
