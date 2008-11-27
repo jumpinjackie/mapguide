@@ -2400,7 +2400,7 @@ bool LineBuffer::PointInPolygon(int contour, double& x, double& y)
 
 
 // point in any contour
-bool LineBuffer::PointInPolygon(double& x, double& y)
+bool LineBuffer::PointInPolygonNZ(double& x, double& y)
 {
     for (int i=0; i<=m_cur_cntr; ++i)
     {
@@ -2408,6 +2408,20 @@ bool LineBuffer::PointInPolygon(double& x, double& y)
             return true;
     }
     return false;
+}
+
+// even-odd test for point containment
+bool LineBuffer::PointInPolygonEO(double& x, double& y)
+{
+    bool ret = false;
+
+    for (int i=0; i<=m_cur_cntr; ++i)
+    {
+        if (LineBuffer::PointInPolygon(i, x, y))
+            ret = !ret;
+    }
+
+    return ret;
 }
 
 
