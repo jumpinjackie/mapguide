@@ -351,8 +351,9 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
 )
 {
     Band* pGisBand = NULL;
+    RS_InputStream* reader = NULL;
     FdoByte* pRasterData = NULL;
-    wchar_t pUniqueBandName[MG_MAX_PATH];
+    wchar_t pUniqueBandName[MG_MAX_PATH] = { 0 };
     try
     {
         //FdoPtr<FdoRasterDataModel> dataModel = pRaster->GetDataModel();
@@ -371,7 +372,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
 
         //pRaster->SetImageXSize(actualCols);
         //pRaster->SetImageYSize(actualRows);
-        RS_InputStream* reader = pRaster->GetStream(/*this value is ignored*/RS_ImageFormat_ABGR, actualCols, actualRows);
+        reader = pRaster->GetStream(/*this value is ignored*/RS_ImageFormat_ABGR, actualCols, actualRows);
 
         if (reader)
         {
@@ -392,7 +393,12 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
             unsigned char* pCurPos;
             //streamReader->ReadNext((FdoByte*)pRasterData, 0, bufferLength);
             if(reader->available() != bufferLength)
+            {
+                delete [] pRasterData;
+                delete reader;
+
                 return;
+            }
 
             reader->read(pRasterData, bufferLength);
 
@@ -697,16 +703,18 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
             {
                 //Fix DID 885517
             }
-            delete reader; // caller deletes reader
         }
     }
     catch(...)
     {
-        if (pRasterData) delete[] pRasterData;
+        delete [] pRasterData;
+        delete reader;
+
         throw;
     }
 
-    if (pRasterData) delete[] pRasterData;
+    delete [] pRasterData;
+    delete reader;
 }
 
 Band::BandDataType
