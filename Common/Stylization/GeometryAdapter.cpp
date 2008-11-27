@@ -860,27 +860,27 @@ double GeometryAdapter::GetClipOffset(RS_LineStroke& lineStroke, double mapScale
     // LineStyleDef::SetStyleDef for details.
     double decorSize = 0.0;
     const wchar_t* lineStyleName = lineStroke.style().c_str();
-    if (_wcsnicmp(lineStyleName, L"Solid", 6) != 0)
+    if (wcscmp(lineStyleName, L"Solid") != 0)
     {
-        if (_wcsnicmp(lineStyleName, L"Rail", 5) == 0)
+        if (wcscmp(lineStyleName, L"Rail") == 0)
         {
             // the decoration size is 5 points
             decorSize += 6.0 * ptsToMeters;
             decorSize += width;
         }
-        else if (_wcsnicmp(lineStyleName, L"FENCELINE1", 11) == 0)
+        else if (wcscmp(lineStyleName, L"FENCELINE1") == 0)
         {
             // the decoration size is 9 points
             decorSize += 10.0 * ptsToMeters;
             decorSize += width;
         }
-        else if (_wcsnicmp(lineStyleName, L"FENCELINE2", 11) == 0)
+        else if (wcscmp(lineStyleName, L"FENCELINE2") == 0)
         {
             // the decoration size is 9 points
             decorSize += 10.0 * ptsToMeters;
             decorSize += width;
         }
-        else if (_wcsnicmp(lineStyleName, L"TRACKS", 7) == 0)
+        else if (wcscmp(lineStyleName, L"TRACKS") == 0)
         {
             // the decoration size is 25 points
             decorSize += 26.0 * ptsToMeters;
