@@ -81,7 +81,11 @@ window.onload = function() {
         height: 200
     });
     dOverviewMap.content.id = 'OverviewMap';
-
+    main.addEvent('sizeChange', function(){
+		if (dOverviewMap.domObj.getStyle('display') != 'none'){
+			dOverviewMap.show();
+		}
+	});
     main.resize();
 
     Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, fusionInitialized);

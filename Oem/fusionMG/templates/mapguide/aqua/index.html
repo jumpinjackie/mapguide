@@ -32,9 +32,6 @@ window.onload = function() {
     new Jx.Layout('StatusbarContainer', {height: 21, top: null, bottom: 0});
     new Jx.Layout('Statusbar', {height: 21, right: 159, top: null, bottom: 0});
 
-
-    main.resize();
-
     dOverviewMap = new Jx.Dialog({
         id: 'dialogOverviewMap',
         label: OpenLayers.i18n('ovmapTitle'),
@@ -47,7 +44,7 @@ window.onload = function() {
         contentId: 'OverviewMap'
         });
     dOverviewMap.open();
-
+    
     dLegend = new Jx.Dialog({
         id: 'dialogLegend',
         label: OpenLayers.i18n('legendTitle'),
@@ -83,6 +80,23 @@ window.onload = function() {
         height: 400,
         contentId: 'SelectionPanel'
         });
+
+    main.addEvent('sizeChange', function(){
+		if (dOverviewMap.domObj.getStyle('display') != 'none'){
+			dOverviewMap.show();
+		}
+		if (dLegend.domObj.getStyle('display') != 'none'){
+			dLegend.show();
+		}
+        if (dTasks.domObj.getStyle('display') != 'none'){
+			dTasks.show();
+		}
+        if (dSelection.domObj.getStyle('display') != 'none'){
+			dSelection.show();
+		}
+
+	});
+    main.resize();
 
     Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, fusionInitialized);
     Fusion.registerForEvent(Fusion.Event.FUSION_ERROR, fusionError);
