@@ -33,7 +33,7 @@ const int DEFAULT_MIN_GRID_SIZE = 10;
 // The grid size must be less than the specified ratio of the image height/width
 const double DEFAULT_GRID_SIZE_OVERRIDE_RATIO = 0.25;
 const double MAX_GRID_SIZE_OVERRIDE_RATIO = 1.0;
-const double MIN_GRID_SIZE_OVERRIDE_RATIO = 0;
+const double MIN_GRID_SIZE_OVERRIDE_RATIO = 0.0;
 
 // The maximum amount we will stretch a rectangle in the grid to allow it to
 // snap to the edge of the extents
@@ -69,24 +69,34 @@ void TransformMesh::Initialize(int gridSize, int minGridSize, double gridSizeOve
                                bool invertYaxis)
 {
     _ASSERT(xformer != NULL);
+    _ASSERT(gridSize > 0 && minGridSize > 0 && srcW > 0 && srcH > 0 && destW > 0 && destH > 0);
+    _ASSERT(gridSizeOverrideRatio >= MIN_GRID_SIZE_OVERRIDE_RATIO && gridSizeOverrideRatio <= MAX_GRID_SIZE_OVERRIDE_RATIO);
 
+    // initialize members
     m_minGridSize = minGridSize;
     m_gridSizeOverrideRatio = gridSizeOverrideRatio;
 
-    // ensure the gridSize is within the gridSizeOverrideRatio of the height and width
+    int calculatedGridSize = gridSize;
+
+    // if the override is enabled (0 < ratio < 1), then adjust if necessary
     if (gridSizeOverrideRatio < MAX_GRID_SIZE_OVERRIDE_RATIO
-        && gridSizeOverrideRatio > MIN_GRID_SIZE_OVERRIDE_RATIO
-        && gridSize > rs_min(srcH, srcW) * m_gridSizeOverrideRatio)
+        && gridSizeOverrideRatio > MIN_GRID_SIZE_OVERRIDE_RATIO)
     {
-        gridSize = (int)(rs_min(srcH, srcW) * m_gridSizeOverrideRatio);
+        // the calculated grid size is the minimum of the passed in grid size and the overrided grid size 
+        calculatedGridSize = rs_min(gridSize, (int)(rs_min(srcH, srcW) * m_gridSizeOverrideRatio));
     }
 
-    // ensure minimum grid size
-    m_gridSizeWidth = m_gridSizeHeight = gridSize < m_minGridSize ? m_minGridSize : gridSize;
+    // we check to make sure the minGridSize is less that gridSize
+    // -- in case we are given a minGridSize that is greater than the gridSize
+    // ensure grid size is not less than the minimum
+    if (minGridSize < gridSize)
+    {
+        calculatedGridSize = rs_max(minGridSize, calculatedGridSize);
+    }
 
     // ensure grid size is not bigger than the source image's height and width
-    m_gridSizeHeight = rs_min(m_gridSizeHeight, srcH);
-    m_gridSizeWidth = rs_min(m_gridSizeWidth, srcW);
+    m_gridSizeHeight = rs_min(calculatedGridSize, srcH);
+    m_gridSizeWidth = rs_min(calculatedGridSize, srcW);
 
 
     m_yAxisInverted = invertYaxis;
