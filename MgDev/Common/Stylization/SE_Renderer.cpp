@@ -32,6 +32,8 @@ SE_Renderer::SE_Renderer()
 , m_textForeColor(0)
 , m_textBackColor(0)
 , m_rasterGridSize(100)
+, m_minRasterGridSize(10)
+, m_rasterGridSizeOverrideRatio(0.25)
 {
 }
 

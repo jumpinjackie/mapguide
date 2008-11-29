@@ -562,7 +562,9 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviMappingServiceProperties[
 const MgConfigValidationInfo MgConfigProperties::sm_cviRenderingServiceProperties[] =
 {
     { MgConfigProperties::RenderingServicePropertyTileExtentOffset                  , MgPropertyType::Double    , 0.0                                   , 1.0                                   , L""                                       },
-    { MgConfigProperties::RenderingServicePropertyRasterGridSize                    , MgPropertyType::Int32     , 10                                    , MG_CONFIG_MAX_INT32                   , L""                                       },
+    { MgConfigProperties::RenderingServicePropertyRasterGridSize                    , MgPropertyType::Int32     , 1                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
+    { MgConfigProperties::RenderingServicePropertyMinRasterGridSize                 , MgPropertyType::Int32     , 1                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
+    { MgConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatio       , MgPropertyType::Double    , 0.0                                   , 1.0                                   , L""                                       },
     { MgConfigProperties::RenderingServicePropertyRenderSelectionBatchSize          , MgPropertyType::Int32     , 0                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
