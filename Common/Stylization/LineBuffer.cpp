@@ -2400,7 +2400,7 @@ bool LineBuffer::PointInPolygon(int contour, double& x, double& y)
 
 
 // even-odd test for point containment
-bool LineBuffer::PointInPolygonEO(double& x, double& y)
+bool LineBuffer::PointInPolygon(double& x, double& y)
 {
     bool ret = false;
 

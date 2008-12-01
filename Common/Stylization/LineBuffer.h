@@ -135,8 +135,7 @@ public:
     STYLIZATION_API void NewGeometry();
 
     // checks for a point in any contour
-    STYLIZATION_API bool PointInPolygonEO(double& x, double& y);
-    STYLIZATION_API bool PointInPolygon(double& x, double& y) { return PointInPolygonEO(x, y); };
+    STYLIZATION_API bool PointInPolygon(double& x, double& y);
 
     // sets the drawing scale (used for arc tessellation)
     STYLIZATION_API void SetDrawingScale(double drawingScale);

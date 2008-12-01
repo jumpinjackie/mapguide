@@ -252,7 +252,7 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
 
                     // rejection of labels that are far outside the current tile
                     // and also make sure the point we genrated is inside the polygon
-                    if (path->PointInPolygonEO(posx, posy))
+                    if (path->PointInPolygon(posx, posy))
                     {
                         RS_LabelInfo* info = &labels[0]; // assumes one label info passed in
 
