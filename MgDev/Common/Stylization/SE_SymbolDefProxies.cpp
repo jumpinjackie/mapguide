@@ -73,6 +73,23 @@ SE_Style::~SE_Style()
 
 
 ///////////////////////////////////////////////////////////////////////////////
+static double CalcTolerance(SE_EvalContext* ctx)
+{
+    // Desired tolerance is 0.25 pixels at typical screen resolution (96 dpi).
+    // This equates to 0.066145833 mm, which can be used to calculate a screen
+    // unit tolerance for devices of varying resolutions - specifically
+    // printers - which typically have resolutions of 600 dpi and up.
+    //
+    // The rationale here is that there is little visual benefit to using a
+    // tolerance much smaller than the value used for the screen device.  E.g.
+    // tesselating symbols to a tolerance of 0.01 mm on a 600 dpi device will
+    // not offer any graphical improvements detectable by eye, yet it can slow
+    // down rendering significantly.
+    return ctx->mm2sud * 0.066145833;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* ctx)
 {
     // simple check for empty geometry
@@ -132,8 +149,8 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* ctx)
     else // default is Round
         ret->lineStroke.join = SE_LineJoin_Round;
 
-    // populate the line buffer - use a tolerance of 0.25 pixels
-    ret->geometry->Transform(*ctx->xform, 0.25*ctx->px2su);
+    // populate the line buffer
+    ret->geometry->Transform(*ctx->xform, CalcTolerance(ctx));
 
     // If the line buffer contains dots (zero-length segments) then replace them
     // with very short horizontal lines.  When the symbol gets applied to the
@@ -248,8 +265,8 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* ctx)
     else // default is Round
         ret->lineStroke.join = SE_LineJoin_Round;
 
-    // use a tolerance of 0.25 pixels
-    ret->geometry->Transform(*ctx->xform, 0.25*ctx->px2su);
+    // populate the line buffer
+    ret->geometry->Transform(*ctx->xform, CalcTolerance(ctx));
 
     // TODO: here we would implement a rotating calipers algorithm to get a tighter
     //       oriented box, but for now just get the axis-aligned bounds of the path
@@ -671,7 +688,7 @@ void SE_Style::evaluate(SE_EvalContext* ctx)
                 case SE_RenderPrimitive_Polyline:
                     {
                         SE_RenderPolyline* rp = (SE_RenderPolyline*)rsym;
-                        rp->geometry->Transform(totalxf, 0.25*ctx->px2su);  // use a tolerance of 0.25 pixels
+                        rp->geometry->Transform(totalxf, CalcTolerance(ctx));
                         SE_Bounds* seb = rp->geometry->xf_bounds();
                         double margin = GetHalfWeightMargin(rp->lineStroke);
                         rp->bounds[0].x = seb->min[0] - margin;
