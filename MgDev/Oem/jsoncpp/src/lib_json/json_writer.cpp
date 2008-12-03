@@ -66,8 +66,12 @@ std::string valueToString( bool value )
 
 std::string valueToQuotedString( const char *value )
 {
+   if (value == NULL)
+      return "";
+
    // Not sure how to handle unicode...
-   if (std::strpbrk(value, "\"\\\b\f\n\r\t") == NULL)
+   char key[] = "\"\\\b\f\n\r\t";
+   if (std::strpbrk(value, key) == NULL)
       return std::string("\"") + value + "\"";
    // We have to walk value and escape any special characters.
    // Appending to std::string is not efficient, but this should be rare.
