@@ -87,7 +87,7 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
     // composite type styles are handled by the new style engine
     if (foundComposite)
     {
-        this->m_styleEngine->StylizeVectorLayer(layer, scaleRange, (SE_Renderer*)renderer, features, xformer, cancel, userData);
+        m_styleEngine->StylizeVectorLayer(layer, scaleRange, (SE_Renderer*)renderer, features, xformer, cancel, userData);
     }
     else
     {
@@ -113,9 +113,9 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
             // and away from the layer definition.  Also obtain the maximum # of
             // styles for all the rules.
             int maxStyles = 0;
-            for (int k=0; k<rules->GetCount(); ++k)
+            for (int m=0; m<rules->GetCount(); ++m)
             {
-                MdfModel::LineRule* lr = (MdfModel::LineRule*)rules->GetAt(k);
+                MdfModel::LineRule* lr = (MdfModel::LineRule*)rules->GetAt(m);
                 MdfModel::LineSymbolizationCollection* syms = lr->GetSymbolizations();
 
                 // move composite line styles to a temporary collection away
@@ -130,14 +130,18 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
                 maxStyles = rs_max(maxStyles, syms2->GetCount());
             }
 
-            // if there are no styles, we still want to render so that
-            // labels draw even if we are not drawing the actual geometry
+            // if there are no styles, we still want to render so that labels
+            // draw even if we are not drawing the actual geometry
             if (maxStyles == 0)
             {
                 nFeatures = StylizeVLHelper(layer, scaleRange, renderer, features, true, xformer, cancel, userData);
             }
             else
             {
+                // collection to store labels temporarily so that we add labels
+                // to each feature just once
+                std::vector<MdfModel::TextSymbol*> tmpLabels;
+
                 // now for each separate line style - run a feature query
                 // and stylization loop with that single style
                 for (int i=0; i<maxStyles; ++i)
@@ -146,41 +150,37 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
                     if (i > 0)
                         features->Reset();
 
-                    // collection to store labels temporarily so that we add labels
-                    // to each feature just once
-                    std::vector<MdfModel::TextSymbol*> tmpLabels;
-
                     // for each rule, transfer a single line style from the temporary
                     // collection to the layer definition
                     for (int m=0; m<rules->GetCount(); ++m)
                     {
                         MdfModel::LineRule* lr = (MdfModel::LineRule*)rules->GetAt(m);
-
-                        // remove label if this is not the first time we stylize
-                        // the feature
-                        if (i > 0)
-                            tmpLabels.push_back(lr->GetLabel()->OrphanSymbol());
-
                         MdfModel::LineSymbolizationCollection* syms = lr->GetSymbolizations();
                         MdfModel::LineSymbolizationCollection* syms2 = tmpSyms[m];
 
-                        int index = rs_min(i, syms2->GetCount()-1);
-                        syms->Adopt(syms2->GetAt(index));
+                        // remove label if this is not the first time we stylize
+                        // the feature
+                        if (i == 1)
+                            tmpLabels.push_back(lr->GetLabel()->OrphanSymbol());
+
+                        if (i < syms2->GetCount())
+                            syms->Adopt(syms2->GetAt(i));
                     }
 
                     nFeatures += StylizeVLHelper(layer, scaleRange, renderer, features, i==0, xformer, cancel, userData);
 
-                    // transfer line styles back to layer definition
+                    // clear line style from each rule in the layer definition
                     for (int m=0; m<rules->GetCount(); ++m)
                     {
                         MdfModel::LineRule* lr = (MdfModel::LineRule*)rules->GetAt(m);
+                        MdfModel::LineSymbolizationCollection* syms = lr->GetSymbolizations();
 
                         // add back label if we removed it
-                        if (i > 0)
+                        if (i > 0 && i == maxStyles-1)
                             lr->GetLabel()->AdoptSymbol(tmpLabels[m]);
 
-                        MdfModel::LineSymbolizationCollection* syms = lr->GetSymbolizations();
-                        syms->OrphanAt(0);
+                        if (syms->GetCount() > 0)
+                            syms->OrphanAt(0);
                     }
                 }
             }
@@ -226,6 +226,11 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
                                      CancelStylization                cancel,
                                      void*                            userData)
 {
+    // get the geometry column name
+    const wchar_t* gpName = features->GetGeomPropName();
+    if (NULL == gpName)
+        return 0;
+
     double drawingScale = renderer->GetDrawingScale();
 
     MdfModel::FeatureTypeStyleCollection* ftsc = scaleRange->GetFeatureTypeStyles();
@@ -270,11 +275,6 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
             MdfModel::LengthConverter::UnitToMeters(modelElevSettings->GetUnit(), 1.0),
             elevType);
     }
-
-    // get the geometry column name
-    const wchar_t* gpName = features->GetGeomPropName();
-    if (NULL == gpName)
-        return 0;
 
     // create an expression engine with our custom functions
     // NOTE: We must create a new engine for each call to StylizeVLHelper.  The
