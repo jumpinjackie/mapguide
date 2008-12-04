@@ -328,6 +328,8 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::WktToDefinition(INT32 nWkt
                         delete[] pswElName;
                     }
 
+                    delete[] pszWkt;
+
                     //this is the one from the dictionary, so return it
                     return pCsFromDict.Detach();
                 }
