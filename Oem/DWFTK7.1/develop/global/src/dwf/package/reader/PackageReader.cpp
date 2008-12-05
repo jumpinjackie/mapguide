@@ -511,6 +511,8 @@ throw( DWFException )
         //
     if (pPackageDescriptor->locate(zFilename) == false)
     {
+        DWFCORE_FREE_OBJECT( pPackageDescriptor );
+
         _DWFCORE_THROW( DWFDoesNotExistException, L"Requested archive not found in DWF package" );
     }
 
