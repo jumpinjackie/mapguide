@@ -20,9 +20,6 @@
 
 #include "GeometryAdapter.h"
 
-class LineBuffer;
-class LineBufferPool;
-
 class PolylineAdapter : public GeometryAdapter
 {
 public:

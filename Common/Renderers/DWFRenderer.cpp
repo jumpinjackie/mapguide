@@ -563,11 +563,11 @@ void DWFRenderer::StartFeature(RS_FeatureReader* feature,
 //-----------------------------------------------------------------------------
 void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
 {
-    LineBuffer* geom = srclb->Optimize(m_drawingScale, &m_lbPool);
+    LineBuffer* geom = srclb->Optimize(m_drawingScale, m_pPool);
 
     if (geom->point_count() == 0)
     {
-        LineBufferPool::FreeLineBuffer(&m_lbPool, geom);
+        LineBufferPool::FreeLineBuffer(m_pPool, geom);
         return;
     }
 
@@ -596,7 +596,7 @@ void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
     //write out the polygon outline as a bunch of WT_Polylines
     if (fill.outline().color().alpha() == 0)
     {
-        LineBufferPool::FreeLineBuffer(&m_lbPool, geom);
+        LineBufferPool::FreeLineBuffer(m_pPool, geom);
         return;
     }
 
@@ -650,7 +650,7 @@ void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
     if (m_obsMesh)
         m_obsMesh->ProcessPoint(geom->x_coord(0), geom->y_coord(0));
 
-    LineBufferPool::FreeLineBuffer(&m_lbPool, geom);
+    LineBufferPool::FreeLineBuffer(m_pPool, geom);
 }
 
 
@@ -669,7 +669,7 @@ void DWFRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
 
     WriteStroke(lsym);
 
-    LineBuffer* workbuffer = srclb->Optimize(m_drawingScale, &m_lbPool);
+    LineBuffer* workbuffer = srclb->Optimize(m_drawingScale, m_pPool);
 
     bool oldLinePatternActive = m_linePatternActive;
 
@@ -719,7 +719,7 @@ void DWFRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
     if (m_obsMesh)
         m_obsMesh->ProcessPoint(workbuffer->x_coord(0), workbuffer->y_coord(0));
 
-    LineBufferPool::FreeLineBuffer(&m_lbPool, workbuffer);
+    LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
 }
 
 
@@ -3342,7 +3342,7 @@ const WT_Logical_Point* DWFRenderer::ProcessW2DPoints(WT_File&           file,
 
     WT_Matrix xform = file.desired_rendition().drawing_info().units().dwf_to_application_adjoint_transform();
 
-    LineBuffer* lb = LineBufferPool::NewLineBuffer(&m_lbPool, numpts);
+    LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pPool, numpts);
     lb->Reset();
 
     //
@@ -3387,13 +3387,13 @@ const WT_Logical_Point* DWFRenderer::ProcessW2DPoints(WT_File&           file,
             //we have now built a line buffer representing the DWF entity
             //but transformed into the mapping space of the destination map
             //We need to clip this to the requested map extent
-            LineBuffer* lbc = lb->Clip(GetBounds(), clipType, &m_lbPool);
+            LineBuffer* lbc = lb->Clip(GetBounds(), clipType, m_pPool);
 
             if (lbc == NULL)
             {
                 //points are fully outside bounds, return 0
 
-                LineBufferPool::FreeLineBuffer(&m_lbPool, lb);
+                LineBufferPool::FreeLineBuffer(m_pPool, lb);
                 outNumpts = 0;
                 return NULL;
             }
@@ -3401,7 +3401,7 @@ const WT_Logical_Point* DWFRenderer::ProcessW2DPoints(WT_File&           file,
             //if the polygon needed clipping, use the clipped version from now in
             if (lbc != lb)
             {
-                LineBufferPool::FreeLineBuffer(&m_lbPool, lb);
+                LineBufferPool::FreeLineBuffer(m_pPool, lb);
                 lb = lbc;
             }
         }
@@ -3453,7 +3453,7 @@ const WT_Logical_Point* DWFRenderer::ProcessW2DPoints(WT_File&           file,
     outNumpts = lb->point_count();
 
     //free clipped buffer
-    LineBufferPool::FreeLineBuffer(&m_lbPool, lb);
+    LineBufferPool::FreeLineBuffer(m_pPool, lb);
 
     return m_wtPointBuffer;
 }

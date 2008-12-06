@@ -20,7 +20,6 @@
 
 #include "SE_Bounds.h"
 #include "SE_LineBuffer.h"
-#include "LineBuffer.h"
 
 
 //---------------------------------------------

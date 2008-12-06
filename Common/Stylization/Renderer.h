@@ -28,6 +28,7 @@
 class LineBuffer;
 class CSysTransformer;
 class TransformMesh;
+class SE_BufferPool;
 
 ///<summary>
 /// Base class for all Renderers. Renderers take stylization output and
@@ -226,6 +227,10 @@ public:
 
     // flags whether if the renderer separate composite line styles
     virtual bool RequiresCompositeLineStyleSeparation() = 0;
+
+    // line buffer pool access
+    virtual SE_BufferPool* GetBufferPool() = 0;
+    virtual void SetBufferPool(SE_BufferPool* pool) = 0;
 };
 
 #endif

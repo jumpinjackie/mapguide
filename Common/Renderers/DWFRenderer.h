@@ -337,8 +337,6 @@ private:
     double m_mapScale;
     double m_metersPerUnit;
 
-    LineBufferPool m_lbPool;
-
     KeyEncode m_keyEncode;
 
     EMapHatchPatternFactory* m_hatchFac;

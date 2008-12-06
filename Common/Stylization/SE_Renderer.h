@@ -51,6 +51,9 @@ public:
 
     STYLIZATION_API virtual bool RequiresCompositeLineStyleSeparation();
 
+    STYLIZATION_API virtual SE_BufferPool* GetBufferPool();
+    STYLIZATION_API virtual void SetBufferPool(SE_BufferPool* pool);
+
     ///////////////////////////////////
     // SE_Renderer specific
 
@@ -105,8 +108,6 @@ public:
     virtual void AddExclusionRegion(RS_F_Point* fpts, int npts) = 0;
 
     // miscellaneous
-    STYLIZATION_API SE_BufferPool* GetBufferPool();
-    STYLIZATION_API void SetBufferPool(SE_BufferPool* pool);
     const RS_F_Point* GetLastSymbolExtent();
     SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol);
 
@@ -131,7 +132,7 @@ private:
     void ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineStyle* style);
 
 protected:
-    SE_BufferPool* m_bp;
+    SE_BufferPool* m_pPool;
     bool m_bSelectionMode;
 
     SE_LineStroke m_selLineStroke;

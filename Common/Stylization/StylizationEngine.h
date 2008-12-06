@@ -57,7 +57,7 @@ using namespace MDFMODEL_NAMESPACE;
 class StylizationEngine
 {
 public:
-    StylizationEngine(SE_SymbolManager* resources);
+    StylizationEngine(SE_SymbolManager* resources, SE_BufferPool* pool);
     ~StylizationEngine();
 
     // Stylizes the supplied layer using all composite type styles in the given scale.

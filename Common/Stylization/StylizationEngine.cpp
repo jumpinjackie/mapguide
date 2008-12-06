@@ -32,12 +32,12 @@ using namespace MDFMODEL_NAMESPACE;
 
 extern void ProcessStylizerException(FdoException* exception, int line, wchar_t* file);
 
-StylizationEngine::StylizationEngine(SE_SymbolManager* resources) :
+StylizationEngine::StylizationEngine(SE_SymbolManager* resources, SE_BufferPool* pool) :
     m_resources(resources),
+    m_pool(pool),
     m_serenderer(NULL),
     m_reader(NULL)
 {
-    m_pool = new SE_BufferPool;
     m_visitor = new SE_StyleVisitor(resources, m_pool);
 }
 
@@ -45,7 +45,6 @@ StylizationEngine::StylizationEngine(SE_SymbolManager* resources) :
 StylizationEngine::~StylizationEngine()
 {
     ClearCache();
-    delete m_pool;
     delete m_visitor;
 }
 
@@ -70,8 +69,6 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
     const wchar_t* gpName = reader->GetGeomPropName();
     if (NULL == gpName)
         return;
-
-    m_serenderer->SetBufferPool(m_pool);
 
     double drawingScale = m_serenderer->GetDrawingScale();
 
