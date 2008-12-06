@@ -19,8 +19,8 @@
 #define DEFAULTSTYLIZER_H_
 
 #include "Stylizer.h"
+#include "SE_BufferPool.h"
 
-class LineBufferPool;
 class RasterAdapter;
 class StylizationEngine;
 class SE_SymbolManager;
@@ -80,7 +80,7 @@ private:
     //composite stylizer
     StylizationEngine* m_styleEngine;
 
-    LineBufferPool* m_lbPool;
+    SE_BufferPool m_lbPool;
 };
 
 #endif

@@ -26,7 +26,7 @@ using namespace MDFMODEL_NAMESPACE;
 
 ///////////////////////////////////////////////////////////////////////////////
 SE_Renderer::SE_Renderer()
-: m_bp(NULL)
+: m_pPool(NULL)
 , m_bSelectionMode(false)
 , m_selFillColor(0)
 , m_textForeColor(0)
@@ -107,6 +107,20 @@ bool SE_Renderer::RequiresCompositeLineStyleSeparation()
 {
     // by default, set the renderer to separate composite line styles
     return true;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+SE_BufferPool* SE_Renderer::GetBufferPool()
+{
+    return m_pPool;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+void SE_Renderer::SetBufferPool(SE_BufferPool* pool)
+{
+    m_pPool = pool;
 }
 
 
@@ -331,7 +345,7 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
     }
 
     // transform the feature geometry to rendering space
-    LineBuffer* xfgeom = LineBufferPool::NewLineBuffer(m_bp, featGeom->point_count());
+    LineBuffer* xfgeom = LineBufferPool::NewLineBuffer(m_pPool, featGeom->point_count());
     *xfgeom = *featGeom;
 
     int size = featGeom->point_count();
@@ -359,7 +373,7 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
         DrawSymbol(style->symbol, xform, baserot, style->addToExclusionRegions);
     }
 
-    LineBufferPool::FreeLineBuffer(m_bp, xfgeom);
+    LineBufferPool::FreeLineBuffer(m_pPool, xfgeom);
 }
 
 
@@ -474,20 +488,6 @@ void SE_Renderer::AddLabel(LineBuffer* geom, SE_RenderStyle* style, const SE_Mat
 
     SE_LabelInfo info(xform.x2, xform.y2, RS_Units_Device, angleRad, clonedStyle);
     ProcessSELabelGroup(&info, 1, RS_OverpostType_AllFit, style->addToExclusionRegions, geom);
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-SE_BufferPool* SE_Renderer::GetBufferPool()
-{
-    return m_bp;
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-void SE_Renderer::SetBufferPool(SE_BufferPool* pool)
-{
-    m_bp = pool;
 }
 
 

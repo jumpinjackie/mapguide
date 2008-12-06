@@ -320,8 +320,6 @@ public:
                                                               WT_Logical_Point* srcpts,
                                                               int               numpts,
                                                               bool              checkInBounds);
-    /*Do not export from DLL*/ LineBufferPool* GetPool() { return m_pPool; }
-
     /*Do not export from DLL*/  double ScaleW2DNumber(WT_File& file, long number);
 
 private:
@@ -336,7 +334,6 @@ private:
     std::vector<int>    m_cntrs;
     RS_InputStream*     m_input;
     CSysTransformer*    m_xformer;
-    LineBufferPool*     m_pPool;
     bool                m_bIsSymbolW2D;
     bool                m_bHaveViewport;
     bool                m_bLayerPassesFilter;

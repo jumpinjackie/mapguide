@@ -292,7 +292,6 @@ private:
     std::vector<int>    m_cntrs;
     RS_InputStream*     m_input;
     CSysTransformer*    m_xformer;
-    LineBufferPool*     m_pPool;
     bool                m_bIsSymbolW2D;
     bool                m_bHaveViewport;
     bool                m_bLayerPassesFilter;

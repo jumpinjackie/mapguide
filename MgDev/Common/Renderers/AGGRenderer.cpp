@@ -106,7 +106,6 @@ m_fcInfo(NULL),
 m_bRequiresClipping(requiresClipping),
 m_bLocalOverposting(localOverposting),
 m_imsym(NULL),
-m_pPool(NULL),
 m_bownbuffer(false)
 {
     m_rows = backbuffer;
@@ -149,7 +148,6 @@ m_bHaveViewport(false),
 m_bRequiresClipping(requiresClipping),
 m_bLocalOverposting(localOverposting),
 m_imsym(NULL),
-m_pPool(NULL),
 m_bownbuffer(true)
 {
     if (m_width <= 0)
@@ -186,7 +184,6 @@ AGGRenderer::~AGGRenderer()
     delete m_context;
     delete m_labeler;
     delete m_imsym;
-    delete m_pPool;
 
     if (m_bownbuffer)
         delete[] m_rows;
@@ -398,7 +395,6 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
         //necessary because the line style engine may produce lots
         //of small moveto-lineto combinations which agg will throw out
         //instead of rendering a dot, resulting in a gap
-        if (!m_pPool) m_pPool = new LineBufferPool();
         LineBuffer* optbuffer = workbuffer->Optimize(m_drawingScale, m_pPool);
 
         if (NULL != optbuffer)
@@ -443,7 +439,7 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
         DrawScreenPolyline(workbuffer, &m_xform, m_lineStroke);
 
         if (deleteBuffer)
-            delete workbuffer; //it's not allocated on the line buffer pool
+            LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
     }
 }
 
@@ -473,7 +469,6 @@ void AGGRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
         //necessary because the line style engine may produce lots
         //of small moveto-lineto combinations which agg will throw out
         //instead of rendering a dot, resulting in a gap
-        if (!m_pPool) m_pPool = new LineBufferPool();
         LineBuffer* optbuffer = workbuffer->Optimize(m_drawingScale, m_pPool);
 
         if (NULL != optbuffer)
@@ -518,7 +513,7 @@ void AGGRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
         DrawScreenPolyline(workbuffer, &m_xform, m_lineStroke);
 
         if (deleteBuffer)
-            delete workbuffer; //it's not allocated on the line buffer pool
+            LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
     }
 }
 
@@ -1083,7 +1078,7 @@ LineBuffer* AGGRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, d
     PixelRun pixelRun = lineStyleDef.m_pixelRuns[pixelRunInd];
 
     // create the destination line buffer
-    LineBuffer* destLB = new LineBuffer(8);
+    LineBuffer* destLB = LineBufferPool::NewLineBuffer(m_pPool, 8);
 
     // special code for Fenceline1 style
     int numCapSegs = 0;
@@ -2547,9 +2542,6 @@ void AGGRenderer::AddW2DContent(RS_InputStream* in, CSysTransformer* xformer, co
     //set output image if not already set
     if (!m_bIsSymbolW2D)
         m_imw2d = c();
-
-    if (!m_pPool)
-        m_pPool = new LineBufferPool();
 
     WT_File fin;
     fin.set_file_mode(WT_File::/*WT_File_mode::*/File_Read);

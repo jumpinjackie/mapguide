@@ -122,8 +122,7 @@ m_bIsSymbolW2D(false),
 m_bHaveViewport(false),
 m_imsym(NULL),
 m_input(NULL),
-m_xformer(),
-m_pPool(NULL)
+m_xformer()
 {
     if (m_width <= 0)
         m_width = 1;
@@ -466,7 +465,7 @@ void GDRenderer::ProcessPolygon(LineBuffer* lb,
         WritePolylines(workbuffer, use_fill->outline(), true);
 
         if (deleteBuffer)
-            delete workbuffer; //it's not allocated on the line buffer pool
+            LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
     }
 }
 
@@ -1297,7 +1296,7 @@ LineBuffer* GDRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, do
     PixelRun pixelRun = lineStyleDef.m_pixelRuns[pixelRunInd];
 
     // create the destination line buffer
-    LineBuffer* destLB = new LineBuffer(8);
+    LineBuffer* destLB = LineBufferPool::NewLineBuffer(m_pPool, 8);
 
     // special code for Fenceline1 style
     int numCapSegs = 0;
@@ -1799,8 +1798,6 @@ void GDRenderer::AddW2DContent(RS_InputStream* in, CSysTransformer* xformer, con
     if (!m_bIsSymbolW2D)
         m_imw2d = m_imout;
 
-    m_pPool = new LineBufferPool();
-
     WT_File fin;
     fin.set_file_mode(WT_File::/*WT_File_mode::*/File_Read);
 
@@ -1818,9 +1815,6 @@ void GDRenderer::AddW2DContent(RS_InputStream* in, CSysTransformer* xformer, con
     while (result == WT_Result::Success);
 
     fin.close();
-
-    delete m_pPool;
-    m_pPool = NULL;
 
     m_input = NULL;
 

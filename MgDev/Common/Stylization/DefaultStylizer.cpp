@@ -33,8 +33,7 @@
 DefaultStylizer::DefaultStylizer(SE_SymbolManager* sman)
 {
     m_pRasterAdapter = NULL;
-    m_styleEngine = new StylizationEngine(sman);
-    m_lbPool = new LineBufferPool;
+    m_styleEngine = new StylizationEngine(sman, &m_lbPool);
 }
 
 
@@ -45,7 +44,6 @@ DefaultStylizer::~DefaultStylizer()
     ClearAdapters();
 
     delete m_styleEngine;
-    delete m_lbPool;
 }
 
 
@@ -69,6 +67,9 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
     // we have a valid scale range... we can now go over the
     // features and apply the feature styles in that range
     MdfModel::FeatureTypeStyleCollection* ftsc = scaleRange->GetFeatureTypeStyles();
+
+    // set the line buffer pool for the renderer to use
+    renderer->SetBufferPool(&m_lbPool);
 
     // check if we have any composite type styles - if we find at least
     // one then we'll use it and ignore any other non-composite type styles
@@ -291,7 +292,7 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
         ++nFeatures;
         #endif
 
-        LineBuffer* lb = LineBufferPool::NewLineBuffer(m_lbPool, 8, FdoDimensionality_Z, false);
+        LineBuffer* lb = LineBufferPool::NewLineBuffer(&m_lbPool, 8, FdoDimensionality_Z, false);
         if (!lb)
             continue;
 
@@ -305,7 +306,7 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
             else
             {
                 // just move on to the next feature
-                LineBufferPool::FreeLineBuffer(m_lbPool, lb);
+                LineBufferPool::FreeLineBuffer(&m_lbPool, lb);
                 continue;
             }
         }
@@ -313,7 +314,7 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
         {
             // just move on to the next feature
             e->Release();
-            LineBufferPool::FreeLineBuffer(m_lbPool, lb);
+            LineBufferPool::FreeLineBuffer(&m_lbPool, lb);
             continue;
         }
 
@@ -332,7 +333,7 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
         }
 
         // free geometry when done stylizing
-        LineBufferPool::FreeLineBuffer(m_lbPool, lb);
+        LineBufferPool::FreeLineBuffer(&m_lbPool, lb);
 
         if (cancel && cancel(userData))
             break;
@@ -358,15 +359,19 @@ void DefaultStylizer::StylizeGridLayer(MdfModel::GridLayerDefinition* layer,
     MdfModel::GridScaleRange* range = Stylizer::FindScaleRange(*ranges, mapScale);
 
     // no range -- do not stylize
-    if (NULL == range) return;
+    if (NULL == range)
+        return;
 
     // we have a valid scale range... we can now go over the features and
     // apply the feature styles in that range
 
+    // get the raster column name
     const wchar_t* rpName = features->GetRasterPropName();
+    if (NULL == rpName)
+        return;
 
-    //no geometry -- do not stylize
-    if (NULL == rpName) return;
+    // set the line buffer pool for the renderer to use
+    renderer->SetBufferPool(&m_lbPool);
 
     // create an expression engine with our custom functions
     FdoPtr<FdoExpressionEngine> exec = ExpressionHelper::GetExpressionEngine(renderer, features);
@@ -377,7 +382,7 @@ void DefaultStylizer::StylizeGridLayer(MdfModel::GridLayerDefinition* layer,
 
     // init the raster adapter
     if (!m_pRasterAdapter)
-        m_pRasterAdapter = new RasterAdapter(m_lbPool);
+        m_pRasterAdapter = new RasterAdapter(&m_lbPool);
 
     // main loop over raster data
     while (features->ReadNext())
@@ -412,9 +417,11 @@ void DefaultStylizer::StylizeDrawingLayer(MdfModel::DrawingLayerDefinition* laye
     // check if we are in scale range
     if (mapScale >= layer->GetMinScale() && mapScale < layer->GetMaxScale())
     {
-        RS_String layerFilter(layer->GetLayerFilter());
+        // set the line buffer pool for the renderer to use
+        renderer->SetBufferPool(&m_lbPool);
 
         // TODO: dwf password
+        RS_String layerFilter(layer->GetLayerFilter());
         renderer->AddDWFContent(dwfin, xformer, L"", L"", layerFilter);
     }
 }
@@ -444,34 +451,34 @@ GeometryAdapter* DefaultStylizer::FindGeomAdapter(int geomType)
     switch (geomType)
     {
     case FdoGeometryType_LineString:
-        m_hGeomStylizers[FdoGeometryType_LineString] = new PolylineAdapter(m_lbPool);
+        m_hGeomStylizers[FdoGeometryType_LineString] = new PolylineAdapter(&m_lbPool);
         break;
     case FdoGeometryType_MultiLineString:
-        m_hGeomStylizers[FdoGeometryType_MultiLineString] = new PolylineAdapter(m_lbPool);
+        m_hGeomStylizers[FdoGeometryType_MultiLineString] = new PolylineAdapter(&m_lbPool);
         break;
     case FdoGeometryType_CurveString:
-        m_hGeomStylizers[FdoGeometryType_CurveString] = new PolylineAdapter(m_lbPool);
+        m_hGeomStylizers[FdoGeometryType_CurveString] = new PolylineAdapter(&m_lbPool);
         break;
     case FdoGeometryType_MultiCurveString:
-        m_hGeomStylizers[FdoGeometryType_MultiCurveString] = new PolylineAdapter(m_lbPool);
+        m_hGeomStylizers[FdoGeometryType_MultiCurveString] = new PolylineAdapter(&m_lbPool);
         break;
     case FdoGeometryType_Polygon:
-        m_hGeomStylizers[FdoGeometryType_Polygon] = new PolygonAdapter(m_lbPool);
+        m_hGeomStylizers[FdoGeometryType_Polygon] = new PolygonAdapter(&m_lbPool);
         break;
     case FdoGeometryType_MultiPolygon:
-        m_hGeomStylizers[FdoGeometryType_MultiPolygon] = new PolygonAdapter(m_lbPool);
+        m_hGeomStylizers[FdoGeometryType_MultiPolygon] = new PolygonAdapter(&m_lbPool);
         break;
     case FdoGeometryType_CurvePolygon:
-        m_hGeomStylizers[FdoGeometryType_CurvePolygon] = new PolygonAdapter(m_lbPool);
+        m_hGeomStylizers[FdoGeometryType_CurvePolygon] = new PolygonAdapter(&m_lbPool);
         break;
     case FdoGeometryType_MultiCurvePolygon:
-        m_hGeomStylizers[FdoGeometryType_MultiCurvePolygon] = new PolygonAdapter(m_lbPool);
+        m_hGeomStylizers[FdoGeometryType_MultiCurvePolygon] = new PolygonAdapter(&m_lbPool);
         break;
     case FdoGeometryType_Point:
-        m_hGeomStylizers[FdoGeometryType_Point] = new PointAdapter(m_lbPool);
+        m_hGeomStylizers[FdoGeometryType_Point] = new PointAdapter(&m_lbPool);
         break;
     case FdoGeometryType_MultiPoint:
-        m_hGeomStylizers[FdoGeometryType_MultiPoint] = new PointAdapter(m_lbPool);
+        m_hGeomStylizers[FdoGeometryType_MultiPoint] = new PointAdapter(&m_lbPool);
         break;
     default :
         break;
