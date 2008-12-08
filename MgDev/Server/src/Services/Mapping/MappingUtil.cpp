@@ -228,58 +228,6 @@ RSMgFeatureReader* MgMappingUtil::ExecuteFeatureQuery(MgFeatureService* svcFeatu
             options->SetFilter(vl->GetFilter());
     }
 
-    // To improve performance, select only specific properties instead of all of them.
-    // Properties should include at least the geometry and identity properties.
-    MdfModel::MdfString featureName = vl->GetFeatureName();
-    STRING schemaName, className;
-    MgUtil::ParseQualifiedClassName(featureName, schemaName, className);
-    Ptr<MgClassDefinition> classDef = svcFeature->GetClassDefinition(featResId, schemaName, className);
-    Ptr<MgPropertyDefinitionCollection> classProps = classDef->GetProperties();
-    INT32 nMappingsCount = mappings->GetCount();
-    INT32 nClassPropsCount = classProps->GetCount();
-    if ( nClassPropsCount != (geom.empty() ? mappings->GetCount() : mappings->GetCount() + 1) )
-    {
-        // Create a collection to store names of the properties that we are interested in.
-        Ptr<MgStringCollection> selectProperties = new MgStringCollection();
-
-        // Add the geometry and identity properties to the collection
-        selectProperties->Add(geom);
-        Ptr<MgPropertyDefinitionCollection> identityProps = svcFeature->GetIdentityProperties(featResId, schemaName, className);
-        for (INT32 idPropIndex = 0; idPropIndex < identityProps->GetCount(); idPropIndex++)
-        {
-            Ptr<MgPropertyDefinition> identityProperty = identityProps->GetItem(idPropIndex);
-            STRING idPropName = identityProperty->GetName();
-            selectProperties->Add(idPropName);
-        }
-
-        // Add any additional requested properties to the collection
-        for (int propertyMappingsIndex = 0; propertyMappingsIndex < nMappingsCount; propertyMappingsIndex++)
-        {
-            MdfModel::NameStringPair* propertyMapping = mappings->GetAt(propertyMappingsIndex);
-            if (propertyMapping != NULL)
-            {
-                MdfModel::MdfString mappedProperty = propertyMapping->GetName();
-                Ptr<MgStringCollection> classProperties = options->GetClassProperties();
-                if (!classProperties->Contains(mappedProperty))
-                {
-                    selectProperties->Add(mappedProperty);
-                }
-            }
-        }
-
-        // If we are interested in only some of the properties (but not all of them), then the names of those properties
-        // need to be added to the options object of the SelectFeatures method.  Otherwise, nothing will be added to the
-        // options object, which means that all properties will be selected.
-        INT32 nSelectPropertiesCount = selectProperties->GetCount();
-        if (nClassPropsCount != nSelectPropertiesCount)
-        {
-            for (INT32 selectPropertiesIndex = 0; selectPropertiesIndex < nSelectPropertiesCount; selectPropertiesIndex++)
-            {
-                options->AddFeatureProperty(selectProperties->GetItem(selectPropertiesIndex));
-            }
-        }
-    }
-
     Ptr<MgFeatureReader> rdr;
 
     //poor man's substitute for checking capabilities
@@ -295,31 +243,16 @@ RSMgFeatureReader* MgMappingUtil::ExecuteFeatureQuery(MgFeatureService* svcFeatu
 
         try
         {
-            // Include all properties in the selection
-            Ptr<MgStringCollection> classProperties = options->GetClassProperties();
-            while (classProperties->GetCount() > 0)
-            {
-                options->RemoveFeatureProperty(classProperties->GetItem(0));
-            }
+            if (!geom.empty())
+                options->SetSpatialFilter(geom, poly, MgFeatureSpatialOperations::Intersects);
+
+            // TODO: could it be an extension name and not a FeatureClassName?
             rdr = svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
         }
         catch (MgException* e)
         {
-            e->Release();
-
-            try
-            {
-                if (!geom.empty())
-                    options->SetSpatialFilter(geom, poly, MgFeatureSpatialOperations::Intersects);
-
-                // TODO: could it be an extension name and not a FeatureClassName?
-                rdr = svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
-            }
-            catch (MgException* e)
-            {
-                // Feature selection failed.  Re-throw the exception so that it can be written to the logs.
-                throw e;
-            }
+            // Feature selection failed.  Re-throw the exception so that it can be written to the logs.
+            throw e;
         }
     }
 
