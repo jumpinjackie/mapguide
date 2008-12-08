@@ -219,7 +219,7 @@ STRING CCoordinateSystemCatalog::GetDefaultDictionaryDir()
     if (sDir.empty())
     {
         bResult = true;
-        sDir = L"/opt/Autodesk/mapguideenterprise2009/share/gis/coordsys";  // NOXLATE
+        sDir = L"/opt/Autodesk/mapguideenterprise2010/share/gis/coordsys";  // NOXLATE
     }
 
 #endif
