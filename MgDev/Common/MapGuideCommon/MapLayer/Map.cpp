@@ -972,3 +972,14 @@ void MgMap::SetDelayedLoadResourceService(MgResourceService* resourceService)
 
     m_resourceService = SAFE_ADDREF(resourceService);
 }
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Callback method invoked when the parent of a layer has changed.
+///
+void MgMap::OnLayerParentChanged(MgLayerBase* layer, CREFSTRING parentId)
+{
+    layer->ForceRefresh();
+
+    MgMapBase::OnLayerParentChanged(layer, parentId);
+}

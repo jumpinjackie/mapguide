@@ -820,10 +820,10 @@ protected:
     STRING                    m_srs;
     Ptr<MgLayerCollection>    m_layers;
     Ptr<MgLayerGroupCollection> m_groups;
-    MgPoint*                  m_center;
+    Ptr<MgPoint>              m_center;
     double                    m_scale;
-    MgEnvelope*               m_mapExtent;
-    MgEnvelope*               m_dataExtent;
+    Ptr<MgEnvelope>           m_mapExtent;
+    Ptr<MgEnvelope>           m_dataExtent;
     INT32                     m_displayDpi;
     INT32                     m_displayWidth;
     INT32                     m_displayHeight;
