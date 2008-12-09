@@ -570,6 +570,14 @@ INTERNAL_API:
     ///
     void SetDelayedLoadResourceService(MgResourceService* resourceService);
 
+    //////////////////////////////////////////////////////////////////
+    /// override MgMapBase methods
+    ///
+    /// \brief
+    /// Callback method invoked when the parent of a layer has changed.
+    ///
+    virtual void OnLayerParentChanged(MgLayerBase* layer, CREFSTRING parentId);
+
 protected:
 
     //////////////////////////////////////////////////////////////////

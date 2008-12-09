@@ -102,7 +102,7 @@ STRING MgMapBase::GetMapSRS()
 //
 MgEnvelope* MgMapBase::GetMapExtent()
 {
-    return SAFE_ADDREF(m_mapExtent);
+    return SAFE_ADDREF(m_mapExtent.p);
 }
 
 
@@ -211,7 +211,7 @@ void MgMapBase::Open(MgResourceService* resourceService, CREFSTRING mapName)
 //
 MgPoint* MgMapBase::GetViewCenter()
 {
-    return SAFE_ADDREF(m_center);
+    return SAFE_ADDREF(m_center.p);
 }
 
 
@@ -230,7 +230,7 @@ double MgMapBase::GetViewScale()
 //
 MgEnvelope* MgMapBase::GetDataExtent()
 {
-    return SAFE_ADDREF(m_dataExtent);
+    return SAFE_ADDREF(m_dataExtent.p);
 }
 
 
@@ -292,9 +292,6 @@ double MgMapBase::GetFiniteDisplayScaleAt(INT32 index)
 //
 MgMapBase::~MgMapBase()
 {
-    SAFE_RELEASE(m_mapExtent);
-    SAFE_RELEASE(m_dataExtent);
-    SAFE_RELEASE(m_center);
 }
 
 
@@ -310,7 +307,6 @@ void MgMapBase::Dispose()
 //
 void MgMapBase::SetViewCenter(MgPoint* center)
 {
-    SAFE_RELEASE(m_center);
     m_center = SAFE_ADDREF(center);
 }
 
@@ -330,7 +326,6 @@ void MgMapBase::SetViewScale(double scale)
 //
 void MgMapBase::SetDataExtent(MgEnvelope* extent)
 {
-    SAFE_RELEASE(m_dataExtent);
     m_dataExtent = SAFE_ADDREF(extent);
 
     SetLayerRefreshMode(refreshAll);
@@ -639,8 +634,6 @@ void MgMapBase::OnLayerLegendLabelChanged(MgLayerBase* layer, CREFSTRING legendL
 //
 void MgMapBase::OnLayerParentChanged(MgLayerBase* layer, CREFSTRING parentId)
 {
-    layer->ForceRefresh();
-
     TrackChange(layer->GetObjectId(), true, MgObjectChange::parentChanged, parentId);
 }
 
