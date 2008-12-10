@@ -50,7 +50,7 @@ MgLinearRing* MgPolygon::GetExteriorRing()
 //
 INT32 MgPolygon::GetInteriorRingCount()
 {
-    return m_innerRings != NULL? m_innerRings->GetCount(): 0;
+    return (m_innerRings != NULL)? m_innerRings->GetCount(): 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -59,12 +59,11 @@ INT32 MgPolygon::GetInteriorRingCount()
 //
 MgLinearRing* MgPolygon::GetInteriorRing(INT32 index)
 {
-    if(m_innerRings == NULL)
+    if (m_innerRings == NULL)
         throw new MgArgumentOutOfRangeException(L"MgPolygon.GetInteriorRing", __LINE__, __WFILE__, NULL, L"", NULL);
 
     return m_innerRings->GetItem(index);
 }
-
 
 ///////////////////////////////////////////////////////////////////////////
 // Gets the type of this geometry.
@@ -114,22 +113,21 @@ MgGeometricEntity* MgPolygon::Copy()
 MgGeometricEntity* MgPolygon::Transform(MgTransform* transform)
 {
     Ptr<MgLinearRing> newOuterRing = (MgLinearRing*)m_outerRing->Transform(transform);
-
-    Ptr<MgLinearRingCollection> innerRings;
+    Ptr<MgLinearRingCollection> newInnerRings;
 
     if (m_innerRings != NULL)
     {
-        innerRings = new MgLinearRingCollection();
+        newInnerRings = new MgLinearRingCollection();
         INT32 count = m_innerRings->GetCount();
-        for (int i = 0; i < count; i++)
+        for (INT32 i=0; i<count; ++i)
         {
             Ptr<MgLinearRing> innerRing = m_innerRings->GetItem(i);
             Ptr<MgLinearRing> newInnerRing = (MgLinearRing*)innerRing->Transform(transform);
-            innerRings->Add(newInnerRing);
+            newInnerRings->Add(newInnerRing);
         }
     }
 
-    return new MgPolygon(newOuterRing, innerRings);
+    return new MgPolygon(newOuterRing, newInnerRings);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -145,10 +143,9 @@ INT32 MgPolygon::GetClassId()
 //
 MgEnvelope* MgPolygon::ComputeEnvelope()
 {
-    if(m_envelope == NULL)
-    {
+    if (m_envelope == NULL)
         m_envelope = m_outerRing->Envelope();
-    }
+
     return new MgEnvelope(m_envelope);
 }
 
@@ -169,8 +166,8 @@ void MgPolygon::Serialize(MgStream* stream)
 
     //Get the coordinate dimension
     Ptr<MgCoordinateCollection> coordinates = m_outerRing->GetCoordinateCollection();
-    Ptr<MgCoordinate> coord1 = coordinates->GetItem(0);
-    INT32 coordinateDimension = coord1->GetDimension();
+    Ptr<MgCoordinate> startCoord = coordinates->GetItem(0);
+    INT32 coordinateDimension = startCoord->GetDimension();
 
     //Type
     stream->WriteInt32(MgGeometryType::Polygon);
@@ -179,26 +176,17 @@ void MgPolygon::Serialize(MgStream* stream)
     stream->WriteInt32(coordinateDimension);
 
     //Num rings
-    // INT32 numRings = 1 + m_innerRings != NULL? m_innerRings->GetCount(): 0;
+    INT32 numInnerRings = GetInteriorRingCount();
+    stream->WriteInt32(1 + numInnerRings);  //add outer ring
 
-    INT32 numRings = 1; // Outer ring must exists or we should not be here.
-    if (m_innerRings != NULL)
-    {
-        numRings += m_innerRings->GetCount();
-    }
-    stream->WriteInt32(numRings);
-
-    //Exterior ring
+    //Outer ring
     MgGeometryUtil::WriteLinearRing(stream, m_outerRing);
 
-    //Interior rings
-    if(m_innerRings != NULL)
+    //Inner rings
+    for (INT32 i=0; i<numInnerRings; ++i)
     {
-        for(INT32 i = 0; i < m_innerRings->GetCount(); i++)
-        {
-            Ptr<MgLinearRing> ring = m_innerRings->GetItem(i);
-            MgGeometryUtil::WriteLinearRing(stream, ring);
-        }
+        Ptr<MgLinearRing> ring = m_innerRings->GetItem(i);
+        MgGeometryUtil::WriteLinearRing(stream, ring);
     }
 }
 
@@ -227,10 +215,10 @@ void MgPolygon::Deserialize(MgStream* stream)
     m_outerRing = MgGeometryUtil::ReadLinearRing(stream, coordinateDimension);
 
     //Inner rings
-    if(numRings > 1)
+    if (numRings > 1)
     {
         m_innerRings = new MgLinearRingCollection();
-        for(INT32 i = 1; i < numRings; i++)
+        for (INT32 i=1; i<numRings; ++i)
         {
             Ptr<MgLinearRing> innerRing = MgGeometryUtil::ReadLinearRing(stream, coordinateDimension);
             m_innerRings->Add(innerRing);
@@ -240,10 +228,10 @@ void MgPolygon::Deserialize(MgStream* stream)
         m_innerRings = NULL;
 }
 
+//////////////////////////////////////////////////////////////////
 void MgPolygon::ToXml(std::string& str)
 {
     str += "<Polygon>";
-
 
     if (m_outerRing != NULL)
     {
@@ -256,8 +244,8 @@ void MgPolygon::ToXml(std::string& str)
     {
         str += "<InnerRings>";
 
-        INT32 cnt = m_innerRings->GetCount();
-        for (INT32 i=0; i < cnt; i++)
+        INT32 numInnerRings = m_innerRings->GetCount();
+        for (INT32 i=0; i<numInnerRings; ++i)
         {
             str += "<InnerRing>";
 
@@ -273,8 +261,6 @@ void MgPolygon::ToXml(std::string& str)
     str += "</Polygon>";
 }
 
-
-
 //////////////////////////////////////////////////////////////////
 ///<summary>
 /// Convert to AWKT representation
@@ -288,7 +274,6 @@ STRING MgPolygon::ToAwkt(bool is2dOnly)
     return L"POLYGON " + coordDim + tempAwkt;
 }
 
-
 //////////////////////////////////////////////////////////////////
 ///<summary>
 /// Convert to AWKT representation
@@ -298,11 +283,9 @@ void MgPolygon::ToAwkt(REFSTRING awktStr, REFSTRING coordDim, bool is2dOnly)
     awktStr += L"(";
 
     if (m_outerRing != NULL)
-    {
         m_outerRing->ToAwkt(awktStr, coordDim, is2dOnly);
-    }
 
-    if (m_innerRings != NULL && m_innerRings->GetCount() > 0)
+    if (GetInteriorRingCount() > 0)
     {
         awktStr += L", ";
         m_innerRings->ToAwkt(awktStr, coordDim, is2dOnly);
@@ -311,6 +294,7 @@ void MgPolygon::ToAwkt(REFSTRING awktStr, REFSTRING coordDim, bool is2dOnly)
     awktStr += L")";
 }
 
+//////////////////////////////////////////////////////////////////
 MgCoordinateIterator* MgPolygon::GetCoordinates()
 {
     Ptr<MgCoordinateCollection> coords = new MgCoordinateCollection();
@@ -324,10 +308,10 @@ MgCoordinateIterator* MgPolygon::GetCoordinates()
     if (m_innerRings != NULL)
     {
         INT32 innerCount = m_innerRings->GetCount();
-
-        for (INT32 i = 0; i < innerCount; i++)
+        for (INT32 i=0; i<innerCount; ++i)
         {
-            Ptr<MgCoordinateIterator> innerCoords = Ptr<MgLinearRing>(m_innerRings->GetItem(i))->GetCoordinates();
+            Ptr<MgLinearRing> ring = m_innerRings->GetItem(i);
+            Ptr<MgCoordinateIterator> innerCoords = ring->GetCoordinates();
 
             while (innerCoords->MoveNext())
             {

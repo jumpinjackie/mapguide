@@ -50,7 +50,7 @@ MgCurveRing* MgCurvePolygon::GetExteriorRing()
 //
 INT32 MgCurvePolygon::GetInteriorRingCount()
 {
-    return m_innerRings != NULL? m_innerRings->GetCount(): 0;
+    return (m_innerRings != NULL)? m_innerRings->GetCount(): 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -59,7 +59,7 @@ INT32 MgCurvePolygon::GetInteriorRingCount()
 //
 MgCurveRing* MgCurvePolygon::GetInteriorRing(INT32 index)
 {
-    if(m_innerRings == NULL)
+    if (m_innerRings == NULL)
         throw new MgArgumentOutOfRangeException(L"MgCurvePolygon.GetInteriorRing", __LINE__, __WFILE__, NULL, L"", NULL);
 
     return m_innerRings->GetItem(index);
@@ -112,22 +112,22 @@ MgGeometricEntity* MgCurvePolygon::Copy()
 //
 MgGeometricEntity* MgCurvePolygon::Transform(MgTransform* transform)
 {
-    Ptr<MgCurveRing> ring = (MgCurveRing*)m_outerRing->Transform(transform);
-    Ptr<MgCurveRingCollection> innerRings;
+    Ptr<MgCurveRing> newOuterRing = (MgCurveRing*)m_outerRing->Transform(transform);
+    Ptr<MgCurveRingCollection> newInnerRings;
 
     if (m_innerRings != NULL)
     {
-        innerRings = new MgCurveRingCollection();
+        newInnerRings = new MgCurveRingCollection();
         INT32 count = m_innerRings->GetCount();
-        for (int i = 0; i < count; i++)
+        for (INT32 i=0; i<count; ++i)
         {
             Ptr<MgCurveRing> innerRing = m_innerRings->GetItem(i);
             Ptr<MgCurveRing> newRing = (MgCurveRing*)innerRing->Transform(transform);
-            innerRings->Add(newRing);
+            newInnerRings->Add(newRing);
         }
     }
 
-    return new MgCurvePolygon(ring, innerRings);
+    return new MgCurvePolygon(newOuterRing, newInnerRings);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -143,10 +143,9 @@ INT32 MgCurvePolygon::GetClassId()
 //
 MgEnvelope* MgCurvePolygon::ComputeEnvelope()
 {
-    if(m_envelope == NULL)
-    {
+    if (m_envelope == NULL)
         m_envelope = m_outerRing->Envelope();
-    }
+
     return new MgEnvelope(m_envelope);
 }
 
@@ -165,7 +164,7 @@ void MgCurvePolygon::Serialize(MgStream* stream)
 {
     //Serialize to AGF format
 
-    //Get the coordinate dimension for this polygon
+    //Get the coordinate dimension
     Ptr<MgCurveSegment> segment = m_outerRing->GetSegment(0);
     Ptr<MgCoordinate> startCoord = segment->GetStartCoordinate();
     INT32 coordinateDimension = startCoord->GetDimension();
@@ -173,18 +172,18 @@ void MgCurvePolygon::Serialize(MgStream* stream)
     //Type
     stream->WriteInt32(MgGeometryType::CurvePolygon);
 
-    //Dimension
+    //Coordinate dimension
     stream->WriteInt32(coordinateDimension);
 
     //Num rings
-    INT32 numRings = m_innerRings != NULL? m_innerRings->GetCount(): 0;
-    stream->WriteInt32(numRings + 1);   //add outer ring
+    INT32 numInnerRings = GetInteriorRingCount();
+    stream->WriteInt32(1 + numInnerRings);  //add outer ring
 
     //Outer ring
     MgGeometryUtil::WriteCurveRing(stream, m_outerRing);
 
     //Inner rings
-    for(INT32 i = 1; i < numRings; i++)
+    for (INT32 i=0; i<numInnerRings; ++i)
     {
         Ptr<MgCurveRing> ring = m_innerRings->GetItem(i);
         MgGeometryUtil::WriteCurveRing(stream, ring);
@@ -196,37 +195,43 @@ void MgCurvePolygon::Serialize(MgStream* stream)
 //
 void MgCurvePolygon::Deserialize(MgStream* stream)
 {
-    //Deerialize from AGF format
+    //Deserialize from AGF format
+
     //Type
     INT32 type;
     stream->GetInt32(type);
     assert(type == MgGeometryType::CurvePolygon);
 
-    //Dimension
+    //Coordinate dimension
     INT32 coordinateDimension;
     stream->GetInt32(coordinateDimension);
 
     //Num rings
     INT32 numRings;
-    stream->GetInt32(numRings);   //include outer ring
+    stream->GetInt32(numRings);
     assert(numRings >= 1);
 
     //Outer ring
     m_outerRing = MgGeometryUtil::ReadCurveRing(stream, coordinateDimension);
 
     //Inner rings
-    if(numRings > 1)
+    if (numRings > 1)
     {
-        m_innerRings = new MgCurveRingCollection;
-        for(INT32 i = 1; i < numRings - 1; i++)
+        m_innerRings = new MgCurveRingCollection();
+        for (INT32 i=1; i<numRings; ++i)
         {
-            Ptr<MgCurveRing> ring = MgGeometryUtil::ReadCurveRing(stream, coordinateDimension);
-            m_innerRings->Add(ring);
+            Ptr<MgCurveRing> innerRing = MgGeometryUtil::ReadCurveRing(stream, coordinateDimension);
+            m_innerRings->Add(innerRing);
         }
     }
+    else
+        m_innerRings = NULL;
 }
 
-
+//////////////////////////////////////////////////////////////////
+///<summary>
+/// Convert to AWKT representation
+///</summary>
 STRING MgCurvePolygon::ToAwkt(bool is2dOnly)
 {
     STRING tempAwkt, coordDim;
@@ -236,11 +241,16 @@ STRING MgCurvePolygon::ToAwkt(bool is2dOnly)
     return L"CURVEPOLYGON " + coordDim + tempAwkt;
 }
 
+//////////////////////////////////////////////////////////////////
+///<summary>
+/// Convert to AWKT representation
+///</summary>
 void MgCurvePolygon::ToAwkt(REFSTRING awktStr, REFSTRING coordDim, bool is2dOnly)
 {
     awktStr += L"(";
 
-    m_outerRing->ToAwkt(awktStr, coordDim, is2dOnly);
+    if (m_outerRing != NULL)
+        m_outerRing->ToAwkt(awktStr, coordDim, is2dOnly);
 
     if (GetInteriorRingCount() > 0)
     {
@@ -251,27 +261,28 @@ void MgCurvePolygon::ToAwkt(REFSTRING awktStr, REFSTRING coordDim, bool is2dOnly
     awktStr += L")";
 }
 
+//////////////////////////////////////////////////////////////////
 MgCoordinateIterator* MgCurvePolygon::GetCoordinates()
 {
     Ptr<MgCoordinateCollection> coords = new MgCoordinateCollection();
-    Ptr<MgCoordinateIterator> outerIterator = m_outerRing->GetCoordinates();
+    Ptr<MgCoordinateIterator> outerCoords = m_outerRing->GetCoordinates();
 
-    while (outerIterator->MoveNext())
+    while (outerCoords->MoveNext())
     {
-        coords->Add(Ptr<MgCoordinate>(outerIterator->GetCurrent()));
+        coords->Add(Ptr<MgCoordinate>(outerCoords->GetCurrent()));
     }
 
     if (m_innerRings != NULL)
     {
         INT32 innerCount = m_innerRings->GetCount();
-        for (INT32 i = 0; i < innerCount; i++)
+        for (INT32 i=0; i<innerCount; ++i)
         {
             Ptr<MgCurveRing> ring = m_innerRings->GetItem(i);
-            Ptr<MgCoordinateIterator> ringIterator = ring->GetCoordinates();
+            Ptr<MgCoordinateIterator> innerCoords = ring->GetCoordinates();
 
-            while (ringIterator->MoveNext())
+            while (innerCoords->MoveNext())
             {
-                coords->Add(Ptr<MgCoordinate>(ringIterator->GetCurrent()));
+                coords->Add(Ptr<MgCoordinate>(innerCoords->GetCurrent()));
             }
         }
     }

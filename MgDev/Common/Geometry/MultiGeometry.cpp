@@ -172,7 +172,20 @@ void MgMultiGeometry::Deserialize(MgStream* stream)
         if(tcpipStream)
             stream->GetInt32(geomType);
         else
-            streamHelper->GetUINT32((UINT32&)geomType, true, true); //get the geometry type without removing it from the stream
+        {
+            // HACK!
+            // get the geometry type without removing it from the stream
+            // NOTE: to get to the geometry type we have to also read the
+            //       packet header and argument type
+            UINT32 buffer[3];
+//          UINT32 packetHeader = buffer[0];
+//          UINT32 argumentType = buffer[1];
+//          UINT32 data         = buffer[2];
+            streamHelper->GetData(buffer, 3*sizeof(UINT32), true, true);
+            assert(buffer[1] == (UINT32)MgPacketParser::matINT32);
+            geomType = (INT32)buffer[2];
+        }
+
         //create the adequate geometry based on its type id and deserialize
         Ptr<MgGeometry> geometry = MgGeometryFactory::CreateGeometry(geomType);
         geometry->Deserialize(stream);
