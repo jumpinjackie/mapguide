@@ -411,6 +411,7 @@ MgCoordinateSystem* TestGeometry::CreateCoordinateSystemArbitrary()
     return factory.Create(ArbitraryWkt);
 }
 
+
 MgCoordinateSystem* TestGeometry::CreateCoordinateSystemGeographic()
 {
     MgCoordinateSystemFactory factory;
@@ -423,6 +424,7 @@ MgCoordinateSystem* TestGeometry::CreateCoordinateSystemProjected()
     MgCoordinateSystemFactory factory;
     return factory.Create(ProjectedWkt);
 }
+
 
 bool TestGeometry::CheckGeometry(MgGeometry* geom, CREFSTRING wkt)
 {
@@ -447,6 +449,7 @@ bool TestGeometry::CheckGeometry(MgGeometry* geom, CREFSTRING wkt)
 
     return success;
 }
+
 
 bool TestGeometry::CheckGeometry(CREFSTRING calculated, CREFSTRING base)
 {
@@ -487,6 +490,7 @@ bool TestGeometry::CheckGeometry(CREFSTRING calculated, CREFSTRING base)
     return bResult;
 }
 
+
 void TestGeometry::TestCase_Point()
 {
     try
@@ -500,10 +504,18 @@ void TestGeometry::TestCase_Point()
         CPPUNIT_ASSERT(CheckGeometry(geom, base));
         CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
-        Ptr<MgGeometry> point = readerWriter.Read(base);
-        found = readerWriter.Write(point);
-        CPPUNIT_ASSERT(CheckGeometry(point, base));
-        CPPUNIT_ASSERT(CheckGeometry(point, found));
+        Ptr<MgGeometry> point1 = readerWriter.Read(base);
+        found = readerWriter.Write(point1);
+        CPPUNIT_ASSERT(CheckGeometry(point1, base));
+        CPPUNIT_ASSERT(CheckGeometry(point1, found));
+
+        Ptr<MgMemoryStreamHelper> helper = new MgMemoryStreamHelper();
+        Ptr<MgStream> stream = new MgStream(helper);
+        Ptr<MgGeometry> point2 = new MgPoint();
+        point1->Serialize(stream);
+        point2->Deserialize(stream);
+        CPPUNIT_ASSERT(CheckGeometry(point2, base));
+        CPPUNIT_ASSERT(CheckGeometry(point2, found));
     }
     catch (MgException* e)
     {
@@ -531,10 +543,18 @@ void TestGeometry::TestCase_LineString()
         CPPUNIT_ASSERT(CheckGeometry(geom, base));
         CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
-        Ptr<MgGeometry> lineString = readerWriter.Read(base);
-        found = readerWriter.Write(lineString);
-        CPPUNIT_ASSERT(CheckGeometry(lineString, base));
-        CPPUNIT_ASSERT(CheckGeometry(lineString, found));
+        Ptr<MgGeometry> lineString1 = readerWriter.Read(base);
+        found = readerWriter.Write(lineString1);
+        CPPUNIT_ASSERT(CheckGeometry(lineString1, base));
+        CPPUNIT_ASSERT(CheckGeometry(lineString1, found));
+
+        Ptr<MgMemoryStreamHelper> helper = new MgMemoryStreamHelper();
+        Ptr<MgStream> stream = new MgStream(helper);
+        Ptr<MgGeometry> lineString2 = new MgLineString();
+        lineString1->Serialize(stream);
+        lineString2->Deserialize(stream);
+        CPPUNIT_ASSERT(CheckGeometry(lineString2, base));
+        CPPUNIT_ASSERT(CheckGeometry(lineString2, found));
     }
     catch (MgException* e)
     {
@@ -562,10 +582,18 @@ void TestGeometry::TestCase_Polygon()
         CPPUNIT_ASSERT(CheckGeometry(geom, base));
         CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
-        Ptr<MgGeometry> geom1 = readerWriter.Read(base);
-        found = readerWriter.Write(geom1);
-        CPPUNIT_ASSERT(CheckGeometry(geom1, base));
-        CPPUNIT_ASSERT(CheckGeometry(geom1, found));
+        Ptr<MgGeometry> polygon1 = readerWriter.Read(base);
+        found = readerWriter.Write(polygon1);
+        CPPUNIT_ASSERT(CheckGeometry(polygon1, base));
+        CPPUNIT_ASSERT(CheckGeometry(polygon1, found));
+
+        Ptr<MgMemoryStreamHelper> helper = new MgMemoryStreamHelper();
+        Ptr<MgStream> stream = new MgStream(helper);
+        Ptr<MgGeometry> polygon2 = new MgPolygon();
+        polygon1->Serialize(stream);
+        polygon2->Deserialize(stream);
+        CPPUNIT_ASSERT(CheckGeometry(polygon2, base));
+        CPPUNIT_ASSERT(CheckGeometry(polygon2, found));
     }
     catch (MgException* e)
     {
@@ -593,10 +621,18 @@ void TestGeometry::TestCase_CurveString()
         CPPUNIT_ASSERT(CheckGeometry(geom, base));
         CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
-        Ptr<MgGeometry> geom1 = readerWriter.Read(base);
-        found = readerWriter.Write(geom1);
-        CPPUNIT_ASSERT(CheckGeometry(geom1, base));
-        CPPUNIT_ASSERT(CheckGeometry(geom1, found));
+        Ptr<MgGeometry> curveString1 = readerWriter.Read(base);
+        found = readerWriter.Write(curveString1);
+        CPPUNIT_ASSERT(CheckGeometry(curveString1, base));
+        CPPUNIT_ASSERT(CheckGeometry(curveString1, found));
+
+        Ptr<MgMemoryStreamHelper> helper = new MgMemoryStreamHelper();
+        Ptr<MgStream> stream = new MgStream(helper);
+        Ptr<MgGeometry> curveString2 = new MgCurveString();
+        curveString1->Serialize(stream);
+        curveString2->Deserialize(stream);
+        CPPUNIT_ASSERT(CheckGeometry(curveString2, base));
+        CPPUNIT_ASSERT(CheckGeometry(curveString2, found));
     }
     catch (MgException* e)
     {
@@ -653,10 +689,18 @@ void TestGeometry::TestCase_CurvePolygon()
         CPPUNIT_ASSERT(CheckGeometry(geom, base));
         CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
-        Ptr<MgGeometry> geom1 = readerWriter.Read(base);
-        found = readerWriter.Write(geom1);
-        CPPUNIT_ASSERT(CheckGeometry(geom1, base));
-        CPPUNIT_ASSERT(CheckGeometry(geom1, found));
+        Ptr<MgGeometry> curvePolygon1 = readerWriter.Read(base);
+        found = readerWriter.Write(curvePolygon1);
+        CPPUNIT_ASSERT(CheckGeometry(curvePolygon1, base));
+        CPPUNIT_ASSERT(CheckGeometry(curvePolygon1, found));
+
+        Ptr<MgMemoryStreamHelper> helper = new MgMemoryStreamHelper();
+        Ptr<MgStream> stream = new MgStream(helper);
+        Ptr<MgGeometry> curvePolygon2 = new MgCurvePolygon();
+        curvePolygon1->Serialize(stream);
+        curvePolygon2->Deserialize(stream);
+        CPPUNIT_ASSERT(CheckGeometry(curvePolygon2, base));
+        CPPUNIT_ASSERT(CheckGeometry(curvePolygon2, found));
     }
     catch (MgException* e)
     {
@@ -684,10 +728,18 @@ void TestGeometry::TestCase_MultiPoint()
         CPPUNIT_ASSERT(CheckGeometry(geom, base));
         CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
-        Ptr<MgGeometry> geom1 = readerWriter.Read(base);
-        found = readerWriter.Write(geom1);
-        CPPUNIT_ASSERT(CheckGeometry(geom1, base));
-        CPPUNIT_ASSERT(CheckGeometry(geom1, base));
+        Ptr<MgGeometry> multiPoint1 = readerWriter.Read(base);
+        found = readerWriter.Write(multiPoint1);
+        CPPUNIT_ASSERT(CheckGeometry(multiPoint1, base));
+        CPPUNIT_ASSERT(CheckGeometry(multiPoint1, base));
+
+        Ptr<MgMemoryStreamHelper> helper = new MgMemoryStreamHelper();
+        Ptr<MgStream> stream = new MgStream(helper);
+        Ptr<MgGeometry> multiPoint2 = new MgMultiPoint();
+        multiPoint1->Serialize(stream);
+        multiPoint2->Deserialize(stream);
+        CPPUNIT_ASSERT(CheckGeometry(multiPoint2, base));
+        CPPUNIT_ASSERT(CheckGeometry(multiPoint2, found));
     }
     catch (MgException* e)
     {
@@ -715,10 +767,18 @@ void TestGeometry::TestCase_MultiLineString()
         CPPUNIT_ASSERT(CheckGeometry(geom, base));
         CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
-        Ptr<MgGeometry> geom1 = readerWriter.Read(base);
-        found = readerWriter.Write(geom1);
-        CPPUNIT_ASSERT(CheckGeometry(geom1, base));
-        CPPUNIT_ASSERT(CheckGeometry(geom1, found));
+        Ptr<MgGeometry> multiLineString1 = readerWriter.Read(base);
+        found = readerWriter.Write(multiLineString1);
+        CPPUNIT_ASSERT(CheckGeometry(multiLineString1, base));
+        CPPUNIT_ASSERT(CheckGeometry(multiLineString1, found));
+
+        Ptr<MgMemoryStreamHelper> helper = new MgMemoryStreamHelper();
+        Ptr<MgStream> stream = new MgStream(helper);
+        Ptr<MgGeometry> multiLineString2 = new MgMultiLineString();
+        multiLineString1->Serialize(stream);
+        multiLineString2->Deserialize(stream);
+        CPPUNIT_ASSERT(CheckGeometry(multiLineString2, base));
+        CPPUNIT_ASSERT(CheckGeometry(multiLineString2, found));
     }
     catch (MgException* e)
     {
@@ -747,10 +807,18 @@ void TestGeometry::TestCase_MultiPolygon()
         CPPUNIT_ASSERT(CheckGeometry(geom, base));
         CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
-        Ptr<MgGeometry> geom1 = readerWriter.Read(base);
-        found = readerWriter.Write(geom1);
-        CPPUNIT_ASSERT(CheckGeometry(geom1, base));
-        CPPUNIT_ASSERT(CheckGeometry(geom1, found));
+        Ptr<MgGeometry> multiPolygon1 = readerWriter.Read(base);
+        found = readerWriter.Write(multiPolygon1);
+        CPPUNIT_ASSERT(CheckGeometry(multiPolygon1, base));
+        CPPUNIT_ASSERT(CheckGeometry(multiPolygon1, found));
+
+        Ptr<MgMemoryStreamHelper> helper = new MgMemoryStreamHelper();
+        Ptr<MgStream> stream = new MgStream(helper);
+        Ptr<MgGeometry> multiPolygon2 = new MgMultiPolygon();
+        multiPolygon1->Serialize(stream);
+        multiPolygon2->Deserialize(stream);
+        CPPUNIT_ASSERT(CheckGeometry(multiPolygon2, base));
+        CPPUNIT_ASSERT(CheckGeometry(multiPolygon2, found));
     }
     catch (MgException* e)
     {
@@ -780,10 +848,18 @@ void TestGeometry::TestCase_MultiCurveString()
         CPPUNIT_ASSERT(CheckGeometry(geom, base));
         CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
-        Ptr<MgGeometry> geom1 = readerWriter.Read(base);
-        found = readerWriter.Write(geom1);
-        CPPUNIT_ASSERT(CheckGeometry(geom1, base));
-        CPPUNIT_ASSERT(CheckGeometry(geom1, found));
+        Ptr<MgGeometry> multiCurveString1 = readerWriter.Read(base);
+        found = readerWriter.Write(multiCurveString1);
+        CPPUNIT_ASSERT(CheckGeometry(multiCurveString1, base));
+        CPPUNIT_ASSERT(CheckGeometry(multiCurveString1, found));
+
+        Ptr<MgMemoryStreamHelper> helper = new MgMemoryStreamHelper();
+        Ptr<MgStream> stream = new MgStream(helper);
+        Ptr<MgGeometry> multiCurveString2 = new MgMultiCurveString();
+        multiCurveString1->Serialize(stream);
+        multiCurveString2->Deserialize(stream);
+        CPPUNIT_ASSERT(CheckGeometry(multiCurveString2, base));
+        CPPUNIT_ASSERT(CheckGeometry(multiCurveString2, found));
     }
     catch (MgException* e)
     {
@@ -819,10 +895,18 @@ void TestGeometry::TestCase_MultiCurvePolygon()
         CPPUNIT_ASSERT(CheckGeometry(geom, base));
         CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
-        Ptr<MgGeometry> geom1 = readerWriter.Read(base);
-        found = readerWriter.Write(geom1);
-        CPPUNIT_ASSERT(CheckGeometry(geom1, base));
-        CPPUNIT_ASSERT(CheckGeometry(geom1, found));
+        Ptr<MgGeometry> multiCurvePolygon1 = readerWriter.Read(base);
+        found = readerWriter.Write(multiCurvePolygon1);
+        CPPUNIT_ASSERT(CheckGeometry(multiCurvePolygon1, base));
+        CPPUNIT_ASSERT(CheckGeometry(multiCurvePolygon1, found));
+
+        Ptr<MgMemoryStreamHelper> helper = new MgMemoryStreamHelper();
+        Ptr<MgStream> stream = new MgStream(helper);
+        Ptr<MgGeometry> multiCurvePolygon2 = new MgMultiCurvePolygon();
+        multiCurvePolygon1->Serialize(stream);
+        multiCurvePolygon2->Deserialize(stream);
+        CPPUNIT_ASSERT(CheckGeometry(multiCurvePolygon2, base));
+        CPPUNIT_ASSERT(CheckGeometry(multiCurvePolygon2, found));
     }
     catch (MgException* e)
     {
@@ -855,10 +939,18 @@ void TestGeometry::TestCase_MultiGeometry()
         CPPUNIT_ASSERT(CheckGeometry(geom, base));
         CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
-        Ptr<MgGeometry> geom1 = readerWriter.Read(base);
-        found = readerWriter.Write(geom1);
-        CPPUNIT_ASSERT(CheckGeometry(geom1, base));
-        CPPUNIT_ASSERT(CheckGeometry(geom1, found));
+        Ptr<MgGeometry> multiGeometry1 = readerWriter.Read(base);
+        found = readerWriter.Write(multiGeometry1);
+        CPPUNIT_ASSERT(CheckGeometry(multiGeometry1, base));
+        CPPUNIT_ASSERT(CheckGeometry(multiGeometry1, found));
+
+        Ptr<MgMemoryStreamHelper> helper = new MgMemoryStreamHelper();
+        Ptr<MgStream> stream = new MgStream(helper);
+        Ptr<MgGeometry> multiGeometry2 = new MgMultiGeometry();
+        multiGeometry1->Serialize(stream);
+        multiGeometry2->Deserialize(stream);
+        CPPUNIT_ASSERT(CheckGeometry(multiGeometry2, base));
+        CPPUNIT_ASSERT(CheckGeometry(multiGeometry2, found));
     }
     catch (MgException* e)
     {
