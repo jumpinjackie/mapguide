@@ -24,6 +24,17 @@
 
 using namespace CSLibrary;
 
+const double CCoordinateSystemMathComparator::kdEpsilonGeographic  = 1.0E-12;      // latitude & longitude
+const double CCoordinateSystemMathComparator::kdEpsilonAzimuth     = 1.0E-06;      // Azimuths
+const double CCoordinateSystemMathComparator::kdEpsilonLinear      = 8.0E-04;      // radii, false origins,
+                                                                                   // datum deltas, geoid heights,
+                                                                                   // elevations, etc.
+const double CCoordinateSystemMathComparator::kdEpsilonArcSec      = 1.0E-04;      // Geocentric rotations
+const double CCoordinateSystemMathComparator::kdEpsilonDatumScale  = 1.0E-05;      // Datum shift scale (ppm)
+const double CCoordinateSystemMathComparator::kdEpsilonScale       = 1.0E-08;      // scale reduction, units scale
+const double CCoordinateSystemMathComparator::kdEpsilonCoefficient = 1.0E-08;      // complex/affine coefficient
+const double CCoordinateSystemMathComparator::kdEpsilon            = 1.0E-13;      // anything else
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemMathComparator::CCoordinateSystemMathComparator()
 {
@@ -108,9 +119,6 @@ bool CCoordinateSystemMathComparator::SameEllipsoid(MgCoordinateSystemEllipsoid 
     assert(pDefinition2);
     if (!pDefinition1 || !pDefinition2) return false;
 
-    // tolerance for floating-point comparisons
-    const double kdEpsilon = 1.0E-13;
-
     bool bResult;
     cs_Eldef_ def1, def2;
     bResult = BuildElDefFromInterface(pDefinition1, def1);
@@ -118,8 +126,12 @@ bool CCoordinateSystemMathComparator::SameEllipsoid(MgCoordinateSystemEllipsoid 
     bResult = BuildElDefFromInterface(pDefinition2, def2);
     if (!bResult) return bResult;
 
-    if (!FloatEqual(def1.e_rad, def2.e_rad, kdEpsilon)) return false;
-    if (!FloatEqual(def1.p_rad, def2.p_rad, kdEpsilon)) return false;
+    // Radii values are always in meters.
+    if (!FloatEqual(def1.e_rad, def2.e_rad, kdEpsilonLinear)) return false;
+    if (!FloatEqual(def1.p_rad, def2.p_rad, kdEpsilonLinear)) return false;
+#ifdef _DEBUG
+	bResult = true;
+#endif
     MG_CATCH_AND_THROW(L"MgCoordinateSystemMathComparator.SameEllipsoid")
 
     return true;
@@ -136,9 +148,6 @@ bool CCoordinateSystemMathComparator::SameDatum(MgCoordinateSystemDatum *pDefini
     assert(pDefinition2);
     if (!pDefinition1 || !pDefinition2) return false;
 
-    // tolerance for floating-point comparisons
-    const double kdEpsilon = 1.0E-13;
-
     bool bResult;
     cs_Dtdef_ def1, def2;
     bResult = BuildDtDefFromInterface(pDefinition1, def1);
@@ -146,15 +155,23 @@ bool CCoordinateSystemMathComparator::SameDatum(MgCoordinateSystemDatum *pDefini
     bResult = BuildDtDefFromInterface(pDefinition2, def2);
     if (!bResult) return bResult;
 
+    //??// the following should compare the actual ellipsoid definitions.  There are several ellipsoids
+    // which have different names yet are, essentially, the same ellipsoid.
     if (0 != CS_stricmp(def1.ell_knm, def2.ell_knm)) return false;
-    if (!FloatEqual(def1.delta_X, def2.delta_X, kdEpsilon)) return false;
-    if (!FloatEqual(def1.delta_Y, def2.delta_Y, kdEpsilon)) return false;
-    if (!FloatEqual(def1.delta_Z, def2.delta_Z, kdEpsilon)) return false;
-    if (!FloatEqual(def1.rot_X, def2.rot_X, kdEpsilon)) return false;
-    if (!FloatEqual(def1.rot_Y, def2.rot_Y, kdEpsilon)) return false;
-    if (!FloatEqual(def1.rot_Z, def2.rot_Z, kdEpsilon)) return false;
-    if (!FloatEqual(def1.bwscale, def2.bwscale, kdEpsilon)) return false;
+    // Delta values are always in meters.
+    if (!FloatEqual(def1.delta_X, def2.delta_X, kdEpsilonLinear)) return false;
+    if (!FloatEqual(def1.delta_Y, def2.delta_Y, kdEpsilonLinear)) return false;
+    if (!FloatEqual(def1.delta_Z, def2.delta_Z, kdEpsilonLinear)) return false;
+    // Rotations are always in arc-seconds.
+    if (!FloatEqual(def1.rot_X, def2.rot_X, kdEpsilonArcSec)) return false;
+    if (!FloatEqual(def1.rot_Y, def2.rot_Y, kdEpsilonArcSec)) return false;
+    if (!FloatEqual(def1.rot_Z, def2.rot_Z, kdEpsilonArcSec)) return false;
+    // Datum scale values are always in parts per million difference from unity.
+    if (!FloatEqual(def1.bwscale, def2.bwscale, kdEpsilonDatumScale)) return false;
     if (def1.to84_via != def2.to84_via) return false;
+#ifdef _DEBUG
+	bResult = true;
+#endif
     MG_CATCH_AND_THROW(L"MgCoordinateSystemMathComparator.SameDatum")
 
     // They're mathematically identical.
@@ -172,17 +189,18 @@ bool CCoordinateSystemMathComparator::SameCoordinateSystem(MgCoordinateSystem *p
     assert(pDefinition2);
     if (!pDefinition1 || !pDefinition2) return false;
 
-    // tolerance for floating-point comparisons
-    const double kdEpsilon = 1.0E-13;
-
     bool bResult;
+    unsigned short prj_code;
+   	ulong32_t prj_flags;
+    double epsilon;
+    struct cs_Prjprm_ paramDescriptor;
     cs_Csdef_ def1, def2;
+    struct cs_Prjtab_ *pp;
     bResult = BuildCsDefFromInterface(pDefinition1, def1);
     if (!bResult) return bResult;
     bResult = BuildCsDefFromInterface(pDefinition2, def2);
     if (!bResult) return bResult;
 
-    // datum and ellipsoid must match
     if (0 != CS_stricmp(def1.dat_knm, def2.dat_knm)) return false;
     if (0 != CS_stricmp(def1.elp_knm, def2.elp_knm)) return false;
 
@@ -190,26 +208,99 @@ bool CCoordinateSystemMathComparator::SameCoordinateSystem(MgCoordinateSystem *p
     if (0 != CS_stricmp(def1.prj_knm, def2.prj_knm)) return false;
     if (0 != CS_stricmp(def1.unit, def2.unit)) return false;
 
-    // numbered parameters must match
-    int i;
+    // We have verified that the projections are the same.  Use def1
+    // to inofrmation aboutthe projection.
+    pp=GetMentorProjectionObject(def1.prj_knm);
+    if (pp == NULL)
+    {
+        return false;
+    }
+    prj_code = pp->code;
+    prj_flags = pp->flags;
+
+    // Need to check the parameter logical type here.  The tolerance for a
+    // latitude and longitude will be different than the tolerance, for example,
+    // for an azimuth, a coefficient, or an average elevation.
+    int st;
+    int parmNbr;
     const double *kpdParam1, *kpdParam2;
     kpdParam1 = &def1.prj_prm1;
     kpdParam2 = &def2.prj_prm1;
-    for (i=0; i<knCsNumParams; i++)
+    for (parmNbr=0,st = 1; st > 0; parmNbr++)
     {
-        if (!FloatEqual(kpdParam1[i], kpdParam2[i], kdEpsilon)) return false;
+        st = CS_prjprm (&paramDescriptor,prj_code,parmNbr);
+        if (st > 0)
+        {
+            if (paramDescriptor.log_type == cs_PRMLTYP_HSNS)
+            {
+                bResult = (kpdParam1[parmNbr] >= 0.0) ^ (kpdParam2[parmNbr] >= 0.0);
+                if (bResult) return false;
+            }
+            else
+            {
+                switch (paramDescriptor.log_type)
+                {
+                    case cs_PRMLTYP_LNG:              // Longitude
+                    case cs_PRMLTYP_LAT:              // Latitude
+                        epsilon = kdEpsilonGeographic;
+                        break;
+                    case cs_PRMLTYP_AZM:              // Azimuth
+                        epsilon = kdEpsilonAzimuth;
+                        break;
+                    case cs_PRMLTYP_ANGD:             // Angular Distance
+                        epsilon = kdEpsilonAzimuth;
+                        break;
+                    case cs_PRMLTYP_CMPLXC:           // Complex Coefficient
+                    case cs_PRMLTYP_AFCOEF:           // Affine Transformation Coefficient
+                        epsilon = kdEpsilonCoefficient;
+                        break;
+                    case cs_PRMLTYP_ZNBR:             // UTM Zone Number
+                        epsilon = 0.5;
+                        break;
+                    case cs_PRMLTYP_GHGT:             // Geoid Height in meters
+                        epsilon = kdEpsilonLinear;
+                        break;
+                    case cs_PRMLTYP_ELEV:             // Elevation, system units.
+                    case cs_PRMLTYP_XYCRD:            // X/Y Coordinate
+                        epsilon = kdEpsilonLinear * def1.unit_scl;
+                        break;
+                    case cs_PRMLTYP_SCALE:            // Scale value
+                        epsilon = kdEpsilonScale;
+                        break;
+                    case cs_PRMLTYP_NONE:             // No specification
+                    case cs_PRMLTYP_HSNS:             // to keep code analyzers happy 
+                    default:
+                        epsilon = kdEpsilon;
+                }
+                if (!FloatEqual(kpdParam1[parmNbr], kpdParam2[parmNbr], epsilon)) return false;
+            }
+        }
     }
 
-    // miscellaneous other parameters must match
-    if (!FloatEqual(def1.org_lng, def2.org_lng, kdEpsilon)) return false;
-    if (!FloatEqual(def1.org_lat, def2.org_lat, kdEpsilon)) return false;
-    if (!FloatEqual(def1.x_off, def2.x_off, kdEpsilon)) return false;
-    if (!FloatEqual(def1.y_off, def2.y_off, kdEpsilon)) return false;
-    if (!FloatEqual(def1.scl_red, def2.scl_red, kdEpsilon)) return false;
-    if (!FloatEqual(def1.map_scl, def2.map_scl, kdEpsilon)) return false;
+    // The following are standard parameters which are standard for most, BUT
+    // NOT ALL, parameters.
+    if ((prj_flags & cs_PRJFLG_ORGLNG) == 0)
+    {
+        if (!FloatEqual(def1.org_lng, def2.org_lng, kdEpsilonGeographic)) return false;
+    }
+    if ((prj_flags & cs_PRJFLG_ORGLAT) == 0)
+    {
+        if (!FloatEqual(def1.org_lat, def2.org_lat, kdEpsilonGeographic)) return false;
+    }
+    if ((prj_flags & cs_PRJFLG_ORGFLS) == 0)
+    {
+        epsilon = kdEpsilonLinear * def1.unit_scl;
+        if (!FloatEqual(def1.x_off, def2.x_off, epsilon)) return false;
+        if (!FloatEqual(def1.y_off, def2.y_off, epsilon)) return false;
+    }
+    if ((prj_flags & cs_PRJFLG_SCLRED) != 0)
+    {
+        if (!FloatEqual(def1.scl_red, def2.scl_red, kdEpsilonScale)) return false;
+    }
+    if (!FloatEqual(def1.map_scl, def2.map_scl, kdEpsilonScale)) return false;
 
     //If the units match, the unit scale matches.
-    assert(FloatEqual(def1.unit_scl, def2.unit_scl, kdEpsilon));
+    assert(FloatEqual(def1.unit_scl, def2.unit_scl, kdEpsilonScale));
 
     //Note:  We deliberately do not make any assertion
     //about def1.scale being equal to def2.scale.  They
@@ -219,17 +310,12 @@ bool CCoordinateSystemMathComparator::SameCoordinateSystem(MgCoordinateSystem *p
     //dictionary isn't always tidy, and in practice it turns
     //out that defs often have incorrect values stored here.
 
-    for (i=0; i<2; i++)
-    {
-        if (!FloatEqual(def1.zero[i], def2.zero[i], kdEpsilon)) return false;
-        if (!FloatEqual(def1.ll_min[i], def2.ll_min[i], kdEpsilon)) return false;
-        if (!FloatEqual(def1.ll_max[i], def2.ll_max[i], kdEpsilon)) return false;
-        if (!FloatEqual(def1.xy_min[i], def2.xy_min[i], kdEpsilon)) return false;
-        if (!FloatEqual(def1.xy_max[i], def2.xy_max[i], kdEpsilon)) return false;
-    }
-
     // quadrants must match
     if (def1.quad != def2.quad) return false;
+#ifdef _DEBUG
+    bResult = true;
+#endif
+
     MG_CATCH_AND_THROW(L"MgCoordinateSystemMathComparator.SameCoordinateSystem")
 
     // Okay, they're mathematically identical.

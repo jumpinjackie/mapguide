@@ -23,6 +23,17 @@ namespace CSLibrary
 
 class CCoordinateSystemMathComparator : public MgCoordinateSystemMathComparator
 {
+    // tolerances for floating-point comparisons
+    static const double kdEpsilonGeographic;      // latitude & longitude
+    static const double kdEpsilonAzimuth;         // Azimuths
+    static const double kdEpsilonLinear;          // radii, false origins,
+                                                  // datum deltas, geoid heights,
+                                                  // elevations, etc.
+    static const double kdEpsilonArcSec;          // Geocentric rotations
+    static const double kdEpsilonDatumScale;      // Datum shift scale (ppm)
+    static const double kdEpsilonScale;           // scale reduction, units scale
+    static const double kdEpsilonCoefficient;     // complex/affine coefficient
+    static const double kdEpsilon;                // everything else
 public:
     CCoordinateSystemMathComparator();
     virtual ~CCoordinateSystemMathComparator();
