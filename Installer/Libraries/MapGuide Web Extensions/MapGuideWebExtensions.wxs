@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+    <DirectoryRef Id="INSTALLLOCATION">
+      <Directory Id="WEBROOTLOCATION" Name="MapGuide Web">
+        <Component Id="WebExtensionsComponent" Guid="AE77C8EB-284D-4410-903F-92AD516DEA93">
+          <CreateFolder />
+        </Component>
+      </Directory>
+    </DirectoryRef>
+    <Feature Id="WebExtensionsFeature" Title="MapGuide Web" Level="1" ConfigurableDirectory="WEBROOTLOCATION" Description="MapGuide Web provides you with the components you need to server MapGuide resources over the internet." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+      <ComponentRef Id="WebExtensionsComponent"/>
+      <Feature Id="WebExtApacheFeature" Title="Apache Webserver" Level="1" Description="A bundled version of Apache with MapGuide enabled, running on port 8008." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+        <ComponentGroupRef Id="group_APACHEFILES"/>
+      </Feature>
+      <Feature Id="WebExtPhpFeature" Title="PHP Hypertext Processor" Level="1" Description="A bundled version of PHP with MapGuide enabled." Absent="disallow" Display="hidden" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+        <ComponentGroupRef Id="group_PHPFILES"/>
+      </Feature>
+      <Feature Id="WebExtTomcatFeature" Title="Tomcat Java Webserver" Level="1" Description="A bundled version of Tomcat with MapGuide enabled." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+        <ComponentGroupRef Id="group_TOMCATFILES"/>
+      </Feature>
+    </Feature>
+  </Fragment>
+</Wix>

@@ -3,48 +3,28 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>3.0</ProductVersion>
-    <ProjectGuid>{715e2d88-e822-4a9a-a5a2-dbb71cd9b320}</ProjectGuid>
+    <ProjectGuid>{01313db9-2aaf-4791-9b81-69bce3194531}</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>MapGuideServer</OutputName>
+    <OutputName>CS Map</OutputName>
     <OutputType>Library</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.0\Wix.targets</WixTargetsPath>
-    <Name>MapGuide Server</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug;MgSourceDir=../../../mapguide/</DefineConstants>
-    <LibBindFiles>True</LibBindFiles>
+    <DefineConstants>Debug</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>MgSourceDir=../../../mapguide/</DefineConstants>
+    <DefineConstants>CsMapSourceDir=../../../mapguide/Oem/CsMap</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="FileIncludes\incBinFiles.wxs" />
-    <Compile Include="FileIncludes\incRepositoryAdminFiles.wxs" />
-    <Compile Include="FileIncludes\incResourcesFiles.wxs" />
-    <Compile Include="FileIncludes\incSchemaFiles.wxs" />
-    <Compile Include="FileIncludes\incWfsFiles.wxs" />
-    <Compile Include="FileIncludes\incWmsFiles.wxs" />
-    <Compile Include="InstallService.wxs" />
-    <Compile Include="MapGuideServer.wxs" />
+    <Compile Include="FileIncludes\incCSMapDictionaryFiles.wxs" />
+    <Compile Include="CSMap.wxs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="FileIncludes" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CS Map\CS Map.wixproj">
-      <Name>CS Map</Name>
-      <Project>{01313db9-2aaf-4791-9b81-69bce3194531}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\FDO\FDO.wixproj">
-      <Name>FDO</Name>
-      <Project>{c95b542f-b551-46b5-8b07-fc54f161a123}</Project>
-      <Private>True</Private>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--

@@ -13,7 +13,7 @@
          Manufacturer="Open Source GeoSpatial Foundation"
          Language="1033" >
 
-    <Package InstallerVersion="200" Compressed="yes" />
+    <Package InstallerVersion="300" Compressed="yes" />
 
 		<Media Id="1" Cabinet="MapGuideOpenSource.cab" EmbedCab="yes" />
 
@@ -23,26 +23,28 @@
     </Condition>
 
     <Property Id="ALLUSERS">1</Property>
-    
+
+    <Property Id="IISVERSIONMAJOR" Value="#0">
+      <RegistrySearch Id="SearchRegIISVERSIONMAJOR" Root="HKLM" Key="Software\Microsoft\InetStp" Name="MajorVersion" Type="raw" />
+    </Property>
+
     <WixVariable Id="WixUILicenseRtf" Value="Resources/LGPL21.rtf" />
     <WixVariable Id="WixUIBannerBmp" Value="Resources/InstallerSmall.bmp" />
     <WixVariable Id="WixUIDialogBmp" Value="Resources/InstallerLarge.bmp" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id='ProgramMenuFolder' Name='Programs' />
+      <Directory Id="ProgramMenuFolder" Name="Programs"/>
       <Directory Id="DesktopFolder" Name="Desktop"/>
       <Directory Id="ProgramFilesFolder">
-				<Directory Id="INSTALLLOCATION" Name="MapGuide Open Source" />
+				<Directory Id="INSTALLLOCATION" Name="OSGeo"/>
       </Directory>
     </Directory>
 
-    <Feature Id="ServerFeature" Title="MapGuide Server" Level="1" ConfigurableDirectory="SERVERROOTLOCATION" Description="MapGuide Server provides geographic analysis and rendering services."  AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" />
-    <Feature Id="MaestroFeature" Title="MapGuide Maestro" Level="1"  ConfigurableDirectory="MAESTROROOTLOCATION" Description="Installs the MapGuide Maestro Application" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
-      <ComponentGroupRef Id="MaestroComponentGroup" />
-    </Feature>
+    <FeatureRef Id="ServerFeature"/>
+    <FeatureRef Id="WebExtensionsFeature"/>
+    <FeatureRef Id="MaestroFeature"/>
 
-    <UIRef Id="WixUI_Mondo"/>
-    <UIRef Id="WixUI_ErrorProgressText" />
+    <UIRef Id="WixUI_FeatureTree"/>
 
     <InstallExecuteSequence>
       <Custom
@@ -53,6 +55,10 @@
           Before="RemoveFiles">&amp;ServerFeature=2</Custom>
       <ScheduleReboot After="InstallFinalize"/>
     </InstallExecuteSequence>
+
+    <!-- Need the Visual C++ Runtime as an MSM when ready for release; commented out to reduce output warnings.
+    <?include MsvcRuntime.wxi ?>
+     -->
 
   </Product>
 </Wix>

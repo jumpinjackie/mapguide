@@ -6,7 +6,7 @@
   <CreatedOn>11/17/2008 11:54 PM</CreatedOn>
   <Directory>D:\OSGeo\mapguide\Oem\CsMap\Dictionaries\</Directory>
   <Custom>CSMAPDICTFILES</Custom>
-  <DirAlias>$(var.MgSourceDir)Oem\CsMap\Dictionaries\</DirAlias>
+  <DirAlias>$(var.CsMapSourceDir)\Dictionaries\</DirAlias>
   <Increment>1</Increment>
   <Guids>true</Guids>
   <Win64>false</Win64>
@@ -34,7 +34,7 @@
   <NextComponentNumber>66</NextComponentNumber>
 </CommandLineOptions>-->
   <Fragment>
-    <ComponentGroup Id="group_SRVCSMAPDICTFILES">
+    <ComponentGroup Id="group_CSMAPDICTFILES">
       <ComponentRef Id="comp_CSMAPDICTFILES_0" />
       <ComponentRef Id="comp_CSMAPDICTFILES_1" />
       <ComponentRef Id="comp_CSMAPDICTFILES_2" />
@@ -102,205 +102,205 @@
       <ComponentRef Id="comp_CSMAPDICTFILES_64" />
       <ComponentRef Id="comp_CSMAPDICTFILES_65" />
     </ComponentGroup>
-    <DirectoryRef Id="SERVERCSMAPLOCATION">
-      <Directory Id="SERVERCSMAPDICTIONARIESLOCATION" Name="Dictionaries">
+    <DirectoryRef Id="CSMAPLOCATION">
+      <Directory Id="CsMapDictionariesLocation" Name="Dictionaries">
         <Component Id="comp_CSMAPDICTFILES_0" DiskId="1" Guid="A8F9A453-21C2-4442-8BB8-DA2D7B79A5A5">
-          <File Id="file_CSMAPDICTFILES_0" Name="ADINDAN.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\ADINDAN.MRT" />
+          <File Id="file_CSMAPDICTFILES_0" Name="ADINDAN.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\ADINDAN.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_1" DiskId="1" Guid="420B6F62-6569-470C-8AAB-30C789AEA276">
-          <File Id="file_CSMAPDICTFILES_1" Name="ARC1950-01.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\ARC1950-01.MRT" />
+          <File Id="file_CSMAPDICTFILES_1" Name="ARC1950-01.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\ARC1950-01.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_2" DiskId="1" Guid="4D85F99D-2D7C-4926-9617-91EED3357207">
-          <File Id="file_CSMAPDICTFILES_2" Name="ARC1950.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\ARC1950.MRT" />
+          <File Id="file_CSMAPDICTFILES_2" Name="ARC1950.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\ARC1950.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_3" DiskId="1" Guid="C429D273-435F-442B-84E0-2E66CB59B7C7">
-          <File Id="file_CSMAPDICTFILES_3" Name="ARC1960.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\ARC1960.MRT" />
+          <File Id="file_CSMAPDICTFILES_3" Name="ARC1960.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\ARC1960.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_4" DiskId="1" Guid="43C3A37B-8C2C-452C-8FCE-7052B2DD91BD">
-          <File Id="file_CSMAPDICTFILES_4" Name="ASTRLA66.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\ASTRLA66.MRT" />
+          <File Id="file_CSMAPDICTFILES_4" Name="ASTRLA66.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\ASTRLA66.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_5" DiskId="1" Guid="48C520C8-B267-476A-9612-8338FD17082A">
-          <File Id="file_CSMAPDICTFILES_5" Name="ASTRLA84.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\ASTRLA84.MRT" />
+          <File Id="file_CSMAPDICTFILES_5" Name="ASTRLA84.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\ASTRLA84.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_6" DiskId="1" Guid="A64F02C8-A433-4EA6-A801-ED61740519F9">
-          <File Id="file_CSMAPDICTFILES_6" Name="AZORES-G.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\AZORES-G.MRT" />
+          <File Id="file_CSMAPDICTFILES_6" Name="AZORES-G.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\AZORES-G.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_7" DiskId="1" Guid="2B99CD3E-0C8D-40D1-8D29-00D3AB8E4D7F">
-          <File Id="file_CSMAPDICTFILES_7" Name="AZORES.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\AZORES.MRT" />
+          <File Id="file_CSMAPDICTFILES_7" Name="AZORES.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\AZORES.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_8" DiskId="1" Guid="CDF33024-3196-438D-A30E-400C22D2535A">
-          <File Id="file_CSMAPDICTFILES_8" Name="BELLEVUE.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\BELLEVUE.MRT" />
+          <File Id="file_CSMAPDICTFILES_8" Name="BELLEVUE.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\BELLEVUE.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_9" DiskId="1" Guid="420CB8E1-63F8-4070-A8BF-BECC179A0B1F">
-          <File Id="file_CSMAPDICTFILES_9" Name="BERMUDA.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\BERMUDA.MRT" />
+          <File Id="file_CSMAPDICTFILES_9" Name="BERMUDA.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\BERMUDA.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_10" DiskId="1" Guid="89C69E2C-014C-4BF7-8C1C-41BA3E85EF40">
-          <File Id="file_CSMAPDICTFILES_10" Name="BOGOTA.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\BOGOTA.MRT" />
+          <File Id="file_CSMAPDICTFILES_10" Name="BOGOTA.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\BOGOTA.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_11" DiskId="1" Guid="57853FD4-93BA-4CB2-B5AC-D9C9E2E1B866">
-          <File Id="file_CSMAPDICTFILES_11" Name="CAMPO.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\CAMPO.MRT" />
+          <File Id="file_CSMAPDICTFILES_11" Name="CAMPO.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\CAMPO.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_12" DiskId="1" Guid="7CD820F5-F253-4284-A248-EA0564FD95AF">
-          <File Id="file_CSMAPDICTFILES_12" Name="CANAVRL.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\CANAVRL.MRT" />
+          <File Id="file_CSMAPDICTFILES_12" Name="CANAVRL.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\CANAVRL.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_13" DiskId="1" Guid="3B1F2892-0BC4-4C5A-B2DE-283E03C7AD3B">
-          <File Id="file_CSMAPDICTFILES_13" Name="CAPE.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\CAPE.MRT" />
+          <File Id="file_CSMAPDICTFILES_13" Name="CAPE.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\CAPE.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_14" DiskId="1" Guid="46CF9CD7-3A8C-4EE5-9D2B-D01A86B2EF0E">
-          <File Id="file_CSMAPDICTFILES_14" Name="CARTHAGE-MOD.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\CARTHAGE-MOD.MRT" />
+          <File Id="file_CSMAPDICTFILES_14" Name="CARTHAGE-MOD.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\CARTHAGE-MOD.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_15" DiskId="1" Guid="A1D40234-5DF8-491F-9ABD-2306EF630BB9">
-          <File Id="file_CSMAPDICTFILES_15" Name="CARTHAGE.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\CARTHAGE.MRT" />
+          <File Id="file_CSMAPDICTFILES_15" Name="CARTHAGE.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\CARTHAGE.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_16" DiskId="1" Guid="E11B39E9-FE0F-43AD-8596-269BCE002212">
-          <File Id="file_CSMAPDICTFILES_16" Name="Category.CSD" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\Category.CSD" />
+          <File Id="file_CSMAPDICTFILES_16" Name="Category.CSD" Source="$(var.CsMapSourceDir)\Dictionaries\Category.CSD" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_17" DiskId="1" Guid="DEDBBD7D-E708-4E93-B992-C3954FC95E1F">
-          <File Id="file_CSMAPDICTFILES_17" Name="CHATHAM.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\CHATHAM.MRT" />
+          <File Id="file_CSMAPDICTFILES_17" Name="CHATHAM.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\CHATHAM.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_18" DiskId="1" Guid="F32919DB-ADCE-401A-BF57-8401F58EBA47">
-          <File Id="file_CSMAPDICTFILES_18" Name="CHUA.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\CHUA.MRT" />
+          <File Id="file_CSMAPDICTFILES_18" Name="CHUA.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\CHUA.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_19" DiskId="1" Guid="CCFF84B8-203B-4D8C-8860-16B20841DC1C">
-          <File Id="file_CSMAPDICTFILES_19" Name="Coordsys.CSD" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\Coordsys.CSD" />
+          <File Id="file_CSMAPDICTFILES_19" Name="Coordsys.CSD" Source="$(var.CsMapSourceDir)\Dictionaries\Coordsys.CSD" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_20" DiskId="1" Guid="2E5487F4-77C1-47C0-8EF3-5402E1A7C20D">
-          <File Id="file_CSMAPDICTFILES_20" Name="CORREGO.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\CORREGO.MRT" />
+          <File Id="file_CSMAPDICTFILES_20" Name="CORREGO.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\CORREGO.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_21" DiskId="1" Guid="0EF6C9B5-8BD9-42D8-95A6-6AEE7093A26C">
-          <File Id="file_CSMAPDICTFILES_21" Name="Datums.CSD" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\Datums.CSD" />
+          <File Id="file_CSMAPDICTFILES_21" Name="Datums.CSD" Source="$(var.CsMapSourceDir)\Dictionaries\Datums.CSD" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_22" DiskId="1" Guid="E12ED80D-E61D-449D-8310-4856FF712476">
-          <File Id="file_CSMAPDICTFILES_22" Name="DJAKRTA.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\DJAKRTA.MRT" />
+          <File Id="file_CSMAPDICTFILES_22" Name="DJAKRTA.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\DJAKRTA.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_23" DiskId="1" Guid="FD45E573-780D-4C0F-B224-3DD42366E7FD">
-          <File Id="file_CSMAPDICTFILES_23" Name="Elipsoid.CSD" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\Elipsoid.CSD" />
+          <File Id="file_CSMAPDICTFILES_23" Name="Elipsoid.CSD" Source="$(var.CsMapSourceDir)\Dictionaries\Elipsoid.CSD" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_24" DiskId="1" Guid="2F50D90D-58E7-466A-BBF7-A48D17EE3C5A">
-          <File Id="file_CSMAPDICTFILES_24" Name="ERP50-CY.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\ERP50-CY.MRT" />
+          <File Id="file_CSMAPDICTFILES_24" Name="ERP50-CY.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\ERP50-CY.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_25" DiskId="1" Guid="27F0E47A-5AE3-4BD3-89B0-2F9BBC6821FC">
-          <File Id="file_CSMAPDICTFILES_25" Name="ERP50-EG.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\ERP50-EG.MRT" />
+          <File Id="file_CSMAPDICTFILES_25" Name="ERP50-EG.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\ERP50-EG.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_26" DiskId="1" Guid="56CCC575-054D-4C96-A575-A6232CDA0A93">
-          <File Id="file_CSMAPDICTFILES_26" Name="ERP50-GB.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\ERP50-GB.MRT" />
+          <File Id="file_CSMAPDICTFILES_26" Name="ERP50-GB.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\ERP50-GB.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_27" DiskId="1" Guid="8C70E85D-5EB4-4417-9ECC-9608A6F059B9">
-          <File Id="file_CSMAPDICTFILES_27" Name="ERP50-IR.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\ERP50-IR.MRT" />
+          <File Id="file_CSMAPDICTFILES_27" Name="ERP50-IR.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\ERP50-IR.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_28" DiskId="1" Guid="4867F3E5-BA04-48E5-AA72-0954F8665A7B">
-          <File Id="file_CSMAPDICTFILES_28" Name="ERP50-UK.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\ERP50-UK.MRT" />
+          <File Id="file_CSMAPDICTFILES_28" Name="ERP50-UK.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\ERP50-UK.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_29" DiskId="1" Guid="3E6937B8-B73E-4DB2-9A45-4463E40B30A7">
-          <File Id="file_CSMAPDICTFILES_29" Name="ERP50-W.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\ERP50-W.MRT" />
+          <File Id="file_CSMAPDICTFILES_29" Name="ERP50-W.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\ERP50-W.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_30" DiskId="1" Guid="088F06F8-5205-427C-9E9C-942D82763E57">
-          <File Id="file_CSMAPDICTFILES_30" Name="GD1949.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\GD1949.MRT" />
+          <File Id="file_CSMAPDICTFILES_30" Name="GD1949.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\GD1949.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_31" DiskId="1" Guid="A68023F7-4D6F-44D9-9447-6363FBD6137D">
-          <File Id="file_CSMAPDICTFILES_31" Name="GUAM63.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\GUAM63.MRT" />
+          <File Id="file_CSMAPDICTFILES_31" Name="GUAM63.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\GUAM63.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_32" DiskId="1" Guid="CBA33799-C05B-43F8-BDA3-F00C3491AA79">
-          <File Id="file_CSMAPDICTFILES_32" Name="HJORSEY.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\HJORSEY.MRT" />
+          <File Id="file_CSMAPDICTFILES_32" Name="HJORSEY.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\HJORSEY.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_33" DiskId="1" Guid="0FC8EA40-8206-49A3-AB1B-753F13249A94">
-          <File Id="file_CSMAPDICTFILES_33" Name="IRAN.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\IRAN.MRT" />
+          <File Id="file_CSMAPDICTFILES_33" Name="IRAN.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\IRAN.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_34" DiskId="1" Guid="15DDF7C3-5A67-4589-AA47-5ACCCA55EDBC">
-          <File Id="file_CSMAPDICTFILES_34" Name="Ireland1965.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\Ireland1965.MRT" />
+          <File Id="file_CSMAPDICTFILES_34" Name="Ireland1965.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\Ireland1965.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_35" DiskId="1" Guid="AAA14462-6532-4E29-9525-168C9D356F7C">
-          <File Id="file_CSMAPDICTFILES_35" Name="IRELND65.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\IRELND65.MRT" />
+          <File Id="file_CSMAPDICTFILES_35" Name="IRELND65.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\IRELND65.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_36" DiskId="1" Guid="F918F9F8-28FC-43AA-9CA0-5793688D3E29">
-          <File Id="file_CSMAPDICTFILES_36" Name="IRELND75-MOD.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\IRELND75-MOD.MRT" />
+          <File Id="file_CSMAPDICTFILES_36" Name="IRELND75-MOD.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\IRELND75-MOD.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_37" DiskId="1" Guid="E3104D8E-0A10-44A6-B964-DC4CE6A2A3B2">
-          <File Id="file_CSMAPDICTFILES_37" Name="IRELND75.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\IRELND75.MRT" />
+          <File Id="file_CSMAPDICTFILES_37" Name="IRELND75.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\IRELND75.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_38" DiskId="1" Guid="B4806AB9-AA76-4F03-BC2E-6B69E88189C8">
-          <File Id="file_CSMAPDICTFILES_38" Name="KALIANP.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\KALIANP.MRT" />
+          <File Id="file_CSMAPDICTFILES_38" Name="KALIANP.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\KALIANP.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_39" DiskId="1" Guid="DBA2905E-65F7-4633-86DA-7BFD02292048">
-          <File Id="file_CSMAPDICTFILES_39" Name="KANDWALA.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\KANDWALA.MRT" />
+          <File Id="file_CSMAPDICTFILES_39" Name="KANDWALA.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\KANDWALA.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_40" DiskId="1" Guid="7237D444-8B54-4C30-A5E8-3BC4D87B2E15">
-          <File Id="file_CSMAPDICTFILES_40" Name="KERTAU48.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\KERTAU48.MRT" />
+          <File Id="file_CSMAPDICTFILES_40" Name="KERTAU48.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\KERTAU48.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_41" DiskId="1" Guid="413B679C-6C10-4C82-80FA-10EBAA2053C7">
-          <File Id="file_CSMAPDICTFILES_41" Name="LIBERIA.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\LIBERIA.MRT" />
+          <File Id="file_CSMAPDICTFILES_41" Name="LIBERIA.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\LIBERIA.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_42" DiskId="1" Guid="7BC15D8E-1320-456D-8EA7-AF13138A28DC">
-          <File Id="file_CSMAPDICTFILES_42" Name="LUZON.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\LUZON.MRT" />
+          <File Id="file_CSMAPDICTFILES_42" Name="LUZON.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\LUZON.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_43" DiskId="1" Guid="61AD07B8-B956-4524-8EED-2E758CE4CF98">
-          <File Id="file_CSMAPDICTFILES_43" Name="MERCHICH-01.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\MERCHICH-01.MRT" />
+          <File Id="file_CSMAPDICTFILES_43" Name="MERCHICH-01.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\MERCHICH-01.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_44" DiskId="1" Guid="9DE826B5-31D6-47AA-B29A-AD174AA14AF1">
-          <File Id="file_CSMAPDICTFILES_44" Name="MERCHICH.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\MERCHICH.MRT" />
+          <File Id="file_CSMAPDICTFILES_44" Name="MERCHICH.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\MERCHICH.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_45" DiskId="1" Guid="E2ACCB6F-9C9A-4500-ABF4-49466FA75585">
-          <File Id="file_CSMAPDICTFILES_45" Name="MINNA.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\MINNA.MRT" />
+          <File Id="file_CSMAPDICTFILES_45" Name="MINNA.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\MINNA.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_46" DiskId="1" Guid="34BE4C52-9EDF-4A5C-8093-DDB06844AF53">
-          <File Id="file_CSMAPDICTFILES_46" Name="NAD27-48.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\NAD27-48.MRT" />
+          <File Id="file_CSMAPDICTFILES_46" Name="NAD27-48.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\NAD27-48.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_47" DiskId="1" Guid="D5FAD7A5-BC25-46BE-9A2B-5D2A44A476B0">
-          <File Id="file_CSMAPDICTFILES_47" Name="NAD27-AK.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\NAD27-AK.MRT" />
+          <File Id="file_CSMAPDICTFILES_47" Name="NAD27-AK.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\NAD27-AK.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_48" DiskId="1" Guid="426CAB1B-EBD0-4D46-B544-3E84181461BE">
-          <File Id="file_CSMAPDICTFILES_48" Name="NAD27-CB.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\NAD27-CB.MRT" />
+          <File Id="file_CSMAPDICTFILES_48" Name="NAD27-CB.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\NAD27-CB.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_49" DiskId="1" Guid="7918B35F-AB0A-4BF8-AE8B-E6020DCAD99A">
-          <File Id="file_CSMAPDICTFILES_49" Name="NAD27-CN.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\NAD27-CN.MRT" />
+          <File Id="file_CSMAPDICTFILES_49" Name="NAD27-CN.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\NAD27-CN.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_50" DiskId="1" Guid="C066653F-71B5-4709-B611-419FAC0D6FEE">
-          <File Id="file_CSMAPDICTFILES_50" Name="NAD27-MX.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\NAD27-MX.MRT" />
+          <File Id="file_CSMAPDICTFILES_50" Name="NAD27-MX.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\NAD27-MX.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_51" DiskId="1" Guid="B96F434B-1AF2-4CFE-AABC-956C38E3D918">
-          <File Id="file_CSMAPDICTFILES_51" Name="NAD27.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\NAD27.MRT" />
+          <File Id="file_CSMAPDICTFILES_51" Name="NAD27.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\NAD27.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_52" DiskId="1" Guid="2A7660E6-E077-4197-85DA-7E88116F9130">
-          <File Id="file_CSMAPDICTFILES_52" Name="NHRWN-O.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\NHRWN-O.MRT" />
+          <File Id="file_CSMAPDICTFILES_52" Name="NHRWN-O.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\NHRWN-O.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_53" DiskId="1" Guid="85210D52-14AE-4BC9-A17A-4DD8C3750917">
-          <File Id="file_CSMAPDICTFILES_53" Name="OLDHI.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\OLDHI.MRT" />
+          <File Id="file_CSMAPDICTFILES_53" Name="OLDHI.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\OLDHI.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_54" DiskId="1" Guid="CAE6F880-EE5B-4A41-B38F-F9FCB997C6CC">
-          <File Id="file_CSMAPDICTFILES_54" Name="OLD_EGYP.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\OLD_EGYP.MRT" />
+          <File Id="file_CSMAPDICTFILES_54" Name="OLD_EGYP.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\OLD_EGYP.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_55" DiskId="1" Guid="B7FE8241-27DA-4FBA-8531-ADE7E18D3E0D">
-          <File Id="file_CSMAPDICTFILES_55" Name="OMAN.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\OMAN.MRT" />
+          <File Id="file_CSMAPDICTFILES_55" Name="OMAN.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\OMAN.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_56" DiskId="1" Guid="78AF7D37-B2AD-4839-93AF-7F7AE5119878">
-          <File Id="file_CSMAPDICTFILES_56" Name="OSGB-MOD.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\OSGB-MOD.MRT" />
+          <File Id="file_CSMAPDICTFILES_56" Name="OSGB-MOD.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\OSGB-MOD.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_57" DiskId="1" Guid="EE17DE96-0D16-4D90-BA1F-83D320EC63C6">
-          <File Id="file_CSMAPDICTFILES_57" Name="OSGB.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\OSGB.MRT" />
+          <File Id="file_CSMAPDICTFILES_57" Name="OSGB.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\OSGB.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_58" DiskId="1" Guid="8A182590-FAC7-4998-87AA-D35306649424">
-          <File Id="file_CSMAPDICTFILES_58" Name="PRVI.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\PRVI.MRT" />
+          <File Id="file_CSMAPDICTFILES_58" Name="PRVI.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\PRVI.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_59" DiskId="1" Guid="25A7A22E-5994-4EEA-9207-1C9AF0020948">
-          <File Id="file_CSMAPDICTFILES_59" Name="PSAD56.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\PSAD56.MRT" />
+          <File Id="file_CSMAPDICTFILES_59" Name="PSAD56.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\PSAD56.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_60" DiskId="1" Guid="A2D3B890-78A6-4C71-85D0-264923FC0D1B">
-          <File Id="file_CSMAPDICTFILES_60" Name="QATAR.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\QATAR.MRT" />
+          <File Id="file_CSMAPDICTFILES_60" Name="QATAR.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\QATAR.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_61" DiskId="1" Guid="17CB5139-3F16-4BE7-B2F8-27DC0CC246E4">
-          <File Id="file_CSMAPDICTFILES_61" Name="QATAR48.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\QATAR48.MRT" />
+          <File Id="file_CSMAPDICTFILES_61" Name="QATAR48.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\QATAR48.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_62" DiskId="1" Guid="32EBF0B8-C5B5-4F22-A0F5-34E650F88D38">
-          <File Id="file_CSMAPDICTFILES_62" Name="SA1969.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\SA1969.MRT" />
+          <File Id="file_CSMAPDICTFILES_62" Name="SA1969.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\SA1969.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_63" DiskId="1" Guid="91FA768B-415C-44B9-8913-6FA7B02996F0">
-          <File Id="file_CSMAPDICTFILES_63" Name="TIMBALAI.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\TIMBALAI.MRT" />
+          <File Id="file_CSMAPDICTFILES_63" Name="TIMBALAI.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\TIMBALAI.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_64" DiskId="1" Guid="A16E7041-DA2C-4FF1-AF62-E8CE2347789B">
-          <File Id="file_CSMAPDICTFILES_64" Name="TOKYO.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\TOKYO.MRT" />
+          <File Id="file_CSMAPDICTFILES_64" Name="TOKYO.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\TOKYO.MRT" />
         </Component>
         <Component Id="comp_CSMAPDICTFILES_65" DiskId="1" Guid="1F87B2F3-F743-425F-99C1-5BBBDA37393A">
-          <File Id="file_CSMAPDICTFILES_65" Name="ZANDERIJ.MRT" Source="$(var.MgSourceDir)Oem\CsMap\Dictionaries\ZANDERIJ.MRT" />
+          <File Id="file_CSMAPDICTFILES_65" Name="ZANDERIJ.MRT" Source="$(var.CsMapSourceDir)\Dictionaries\ZANDERIJ.MRT" />
         </Component>
       </Directory>
     </DirectoryRef>
