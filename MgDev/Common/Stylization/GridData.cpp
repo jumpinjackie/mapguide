@@ -385,15 +385,14 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
                 rowLength = rowBitSize/8;
             unsigned long bufferLength = rowLength * actualRows;
 
+            if(reader->available() != bufferLength)
+            {
+                delete reader;
+                return;
+            }
+
             //Create an buffer to hold data
             pRasterData = new FdoByte[bufferLength];
-            //FdoPtr<FdoBLOBStreamReader> streamReader = static_cast<FdoBLOBStreamReader*>(pRaster->GetStreamReader());
-            //int pixelsRemainingX = cols;
-            unsigned char* pCurPos;
-            //streamReader->ReadNext((FdoByte*)pRasterData, 0, bufferLength);
-            if(reader->available() != bufferLength)
-                return;
-
             reader->read(pRasterData, bufferLength);
 
             //FireOnStepQuery();
@@ -433,7 +432,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
                 pGisBand->SetAllToValue(gridDataType, (char*)(&nullValue));
             }
 
-
+            unsigned char* pCurPos;
             FdoRasterDataType rasterDataType = (FdoRasterDataType)pRaster->GetDataType();
             if ((dataModelType == FdoRasterDataModelType_RGB)
                 || (dataModelType == FdoRasterDataModelType_RGBA))

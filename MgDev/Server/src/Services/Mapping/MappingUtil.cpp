@@ -28,6 +28,7 @@
 #include "SEMgSymbolManager.h"
 #include "TransformCache.h"
 #include "StylizationUtil.h"
+#include "Fdo.h"
 
 #ifndef _WIN32
 #define _wcsnicmp wcsncasecmp
@@ -233,25 +234,20 @@ RSMgFeatureReader* MgMappingUtil::ExecuteFeatureQuery(MgFeatureService* svcFeatu
         rdr = svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
     }
     catch (MgFdoException* e)
-    {
-        e->Release();
-
-        try
+    {   
+        // Try an intersections operation if we have geometry
+        if (!geom.empty())
         {
-            if (!geom.empty())
-                options->SetSpatialFilter(geom, poly, MgFeatureSpatialOperations::Intersects);
+            e->Release();
+            options->SetSpatialFilter(geom, poly, MgFeatureSpatialOperations::Intersects);
 
             // TODO: could it be an extension name and not a FeatureClassName?
             rdr = svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
         }
-        catch (MgFdoException* e)
+        else
         {
-            e->Release();
-
-            //finally try without a filter
-            // TODO: could it be an extension name and not a FeatureClassName?
-            options = NULL;
-            rdr = svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
+            // rethrow if no geometry
+            throw e;
         }
     }
 
@@ -385,20 +381,8 @@ RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeatur
 
     Ptr<MgFeatureReader> rdr;
 
-    try
-    {
-        // TODO: could it be an extension name and not a FeatureClassName?
-        rdr = svcFeature->SelectFeatures(featResId, gl->GetFeatureName(), options);
-    }
-    catch (MgFdoException* e)
-    {
-        e->Release();
-
-        //finally try without a filter
-        // TODO: could it be an extension name and not a FeatureClassName?
-        options = NULL;
-        rdr = svcFeature->SelectFeatures(featResId, gl->GetFeatureName(), options);
-    }
+    // TODO: could it be an extension name and not a FeatureClassName?
+    rdr = svcFeature->SelectFeatures(featResId, gl->GetFeatureName(), options);
 
     return new RSMgFeatureReader(rdr.p, svcFeature, featResId.p, options, L"clipped_raster");
 }
@@ -668,17 +652,52 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     if (overrideFilters)
                         overrideFilter = overrideFilters->GetItem(i);
 
-                    int width  = map->GetDisplayWidth();
-                    int height = map->GetDisplayHeight();
 
-                    if (width == 0 || height == 0)
+                    // Clip request bounds to limits of spatial context for layer
+                    // Some WMS/WFS servers fail if request bounds are out of range.
+                    // On error, ignore the exception and use the original extent.
+                    MG_TRY()
+                    Ptr<MgSpatialContextReader> contextReader = svcFeature->GetSpatialContexts(featResId, false);
+                    STRING destWkt = dstCs->ToString();
+                    while (contextReader.p != NULL && contextReader->ReadNext())
                     {
-                        //in case we are using DWF Viewer
-                        //compute the size of the viewer screen -- since we don't know it directly
-                        double pixelsPerMapUnit = dr->GetMetersPerUnit() / METERS_PER_INCH * dr->GetDpi() / dr->GetMapScale();
-                        width = (int)(extent.width() * pixelsPerMapUnit);
-                        height = (int)(extent.height() * pixelsPerMapUnit);
+                        // Try to find wkt for feature's coordinate system
+                        STRING code = contextReader->GetCoordinateSystem();
+                        STRING wkt = contextReader->GetCoordinateSystemWkt();
+                        if (wkt.empty() && !code.empty())
+                        {
+                            MgCoordinateSystemFactory factory;
+                            wkt = factory.ConvertCoordinateSystemCodeToWkt(code);
+                        }
+
+                        // If the source data does not have a coordinate system, or it is the same
+                        // as the destination then we are probably using the right spatial context 
+                        if (wkt.empty() || wkt == destWkt)
+                        {
+                            // If the extent is known, clip the request to it.
+                            Ptr<MgByteReader> agfExtent = contextReader->GetExtent();
+                            MgAgfReaderWriter agfReader;
+                            Ptr<MgGeometry> geom = agfReader.Read(agfExtent);
+                            if (geom != NULL)
+                            {
+                                Ptr<MgEnvelope> envelope = geom->Envelope();
+                                Ptr<MgCoordinate> ll = envelope->GetLowerLeftCoordinate();
+                                Ptr<MgCoordinate> ur = envelope->GetUpperRightCoordinate();
+                                RS_Bounds coordsysExtent(ll->GetX(), ll->GetY(), ur->GetX(), ur->GetY());
+                                RS_Bounds clippedExtent = RS_Bounds::Intersect(extent,coordsysExtent);
+                                if (clippedExtent.IsValid())
+                                {
+                                    extent = clippedExtent;
+                                }
+                            }
+                            break;
+                        }
                     }
+                    MG_CATCH_AND_RELEASE()
+
+                    double pixelsPerMapUnit = dr->GetMetersPerUnit() / METERS_PER_INCH * dr->GetDpi() / dr->GetMapScale();
+                    int width = (int)(extent.width() * pixelsPerMapUnit + 0.5);
+                    int height = (int)(extent.height() * pixelsPerMapUnit + 0.5);
 
                     //perform the raster query
                     {
@@ -762,8 +781,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                 printf("  StylizeLayers() **LAYEREND** -Drawing- Name:%S  Time = %6.4f (s)\n\n", (mapLayer->GetName()).c_str(), (GetTickCount()-dwLayerStart)/1000.0);
                 #endif
             }
-
-        MG_SERVER_MAPPING_SERVICE_CATCH(L"MgMappingUtil.StylizeLayers");
+        MG_SERVER_MAPPING_SERVICE_CATCH(L"MgMappingUtil.StylizeLayers")
 
         delete rsReader;
 

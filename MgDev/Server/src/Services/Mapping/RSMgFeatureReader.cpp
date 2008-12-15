@@ -30,8 +30,9 @@
 #define RSFR_CATCH()   }                                \
                        catch (MgException* ex)          \
                        {                                \
+                           STRING details = ex->GetDetails(); \
                            ex->Release();               \
-                           throw FdoException::Create();\
+                           throw FdoException::Create(details.c_str()); \
                        }
 
 

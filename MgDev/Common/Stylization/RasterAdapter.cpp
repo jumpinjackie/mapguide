@@ -65,35 +65,17 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
     //if raster bounds outside map extent, don't stylize
     if (intExt.IsValid())
     {
-        //compute the needed image size
-        double factor = rs_max(intExt.width() / mapExt.width(), intExt.height() / mapExt.height());
-        if (factor > 1.0)
-            factor = 1.0;
-
-        //compute the size of the viewer screen -- since we don't know it directly
+        //compute the required image size from the image extent
+        //catalog images may occupy a very small portion of the screen
         double pixelsPerMapUnit = renderer->GetMetersPerUnit() / METERS_PER_INCH * renderer->GetDpi() / renderer->GetMapScale();
-        int devW = (int)(mapExt.width() * pixelsPerMapUnit);
-        int devH = (int)(mapExt.height() * pixelsPerMapUnit);
-
-        int imgW = (int)(factor * devW + 0.5);
-        int imgH = (int)(factor * devH + 0.5);
+        int imgW = (int)(imgExt.width() * pixelsPerMapUnit + 0.5);
+        int imgH = (int)(imgExt.height() * pixelsPerMapUnit + 0.5);
 
         while (imgW >= 2048 || imgH >= 2048)
         {
             imgW >>= 1;
             imgH >>= 1;
         }
-
-        //NOTE: Switching back to the code above since RESAMPLE doesn't scale to the
-        //correct image size -- it scales to the full screen size instead
-        /*
-        //NOTE: since we use a RESAMPLE query for rasters for both RFP and WMS,
-        //we know they are already at the correct size, so we do not need to
-        //compute a window size here anymore (i.e. the code above should no longer
-        //be needed -- it is here for reference or if things change in the future
-        int imgW = raster->GetOriginalWidth();
-        int imgH = raster->GetOriginalHeight();
-        */
 
         //TODO: check if we need to move Map's AdjustResolutionWithExtent method and
         //adjust the resolution imgW, imgH here.
