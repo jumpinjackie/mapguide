@@ -55,7 +55,6 @@ MgDateTime::MgDateTime(INT16 year, INT8 month, INT8 day) :
     m_second(-1),
     m_microsecond(-1)
 {
-    ValidateDate();
 }
 
 ///<summary>Construct a time value</summary>
@@ -73,7 +72,6 @@ MgDateTime::MgDateTime(INT8 hour, INT8 minute, INT8 second, INT32 microsecond) :
     m_second(second),
     m_microsecond(microsecond)
 {
-    ValidateTime();
 }
 
 ///<summary>Construct a date time value</summary>
@@ -95,7 +93,6 @@ MgDateTime::MgDateTime(INT16 year, INT8 month, INT8 day,
     m_second(second),
     m_microsecond(microsecond)
 {
-    Validate();
 }
 
 ///<summary>Construct a date time value</summary>
@@ -117,8 +114,6 @@ MgDateTime::MgDateTime(INT16 year, INT8 month, INT8 day,
     m_microsecond(-1)
 {
     SplitSeconds(seconds);
-
-    Validate();
 }
 
 ///----------------------------------------------------------------------------
@@ -180,8 +175,6 @@ MgDateTime::MgDateTime(CREFSTRING fdoDateTime)
     }
 
     SplitSeconds(seconds);
-
-    Validate();
 }
 
 ///----------------------------------------------------------------------------
@@ -241,8 +234,6 @@ MgDateTime::MgDateTime(const string& xmlDateTime)
     m_minute = (INT8)minute;
 
     SplitSeconds(seconds);
-
-    ValidateDateTime();
 
     // If the time is UTC, then convert it to the local time.
 
@@ -319,8 +310,6 @@ MgDateTime::MgDateTime(double number)
         INT64 days = (INT64)number - DATE_ZERO;
         CalendarDate((long)days, 'G');
     }
-
-    Validate();
 }
 
 MgDateTime::MgDateTime(const MgDateTime& dt)
@@ -708,10 +697,6 @@ void MgDateTime::Deserialize(MgStream* stream)
 
 STRING MgDateTime::ToString()
 {
-    // Ensure date and/or time values are valid.
-
-    Validate();
-
     // Format the FDO date time string.
 
     string fdoDateTime;
@@ -861,9 +846,6 @@ string MgDateTime::ToXmlStringUtf8(bool utc)
 
 time_t MgDateTime::ToTimeValue()
 {
-    // Ensure both date and time values are valid.
-    ValidateDateTime();
-
     // Perform the conversion.
     struct tm timeInfo;
 
@@ -891,13 +873,11 @@ double MgDateTime::ToNumber()
     double val;
     if (IsDate())
     {
-        ValidateDate();
         INT64 gdn = GregorianDay(m_day, m_month, m_year, 'G');
         val = (double)gdn + DATE_ZERO;
     }
     else if (IsTime())
     {
-        ValidateTime();
         INT64 milliSeconds = (INT64)m_hour   * 60 * 60 * 1000 +
                              (INT64)m_minute * 60 * 1000 +
                              (INT64)m_second * 1000 +
@@ -906,7 +886,6 @@ double MgDateTime::ToNumber()
     }
     else // if (IsDateTime())
     {
-        ValidateDateTime();
         val = (double)ToMilliSeconds();
     }
     return val;
@@ -916,8 +895,6 @@ double MgDateTime::ToNumber()
 // before or after the beginning of the Gregorian calendar.
 double MgDateTime::ToMilliSeconds()
 {
-    ValidateDateTime();
-
     INT64 day = GregorianDay(m_day, m_month, m_year, 'G');
     INT64 milliSeconds = (INT64)m_hour   * 60 * 60 * 1000 +
                          (INT64)m_minute * 60 * 1000 +
@@ -1117,8 +1094,6 @@ void MgDateTime::SetDateTimeInfo(const struct tm& timeInfo)
     m_minute      = timeInfo.tm_min;
     m_second      = timeInfo.tm_sec;
     m_microsecond = 0;
-
-    ValidateDateTime();
 }
 
 void MgDateTime::SplitSeconds(float seconds)
