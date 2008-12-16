@@ -226,11 +226,11 @@ STRING CCoordinateSystemCatalog::GetDefaultDictionaryDir()
 
     if (!bResult)
     {
-        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemCatalog.GetDefaultDictionaryDirAndFileNames", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemCatalog.GetDefaultDictionaryDir", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     //And return success.
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemCatalog.GetDefaultDictionaryDirAndFileNames")
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemCatalog.GetDefaultDictionaryDir")
 
     return sDir;
 }
