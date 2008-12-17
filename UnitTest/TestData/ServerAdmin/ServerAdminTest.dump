@@ -228,7 +228,7 @@ INSERT INTO "ApiTestResults" VALUES('Tries to get entires from an invalid log', 
 INSERT INTO "ApiTestResults" VALUES('This test case tries to use a null date when getting log contents by date', 1025, 'text/plain', X'6D676E756C6C617267756D656E74657863657074696F6E');
 INSERT INTO "ApiTestResults" VALUES('This test case tries to use a fromdate that comes after the todate', 1026, 'text/plain', X'6D67696E76616C6964617267756D656E74657863657074696F6E');
 INSERT INTO "ApiTestResults" VALUES('Try to use dates that are more than 24 hours apart', 1027, 'text/plain', X'6D67696E76616C6964617267756D656E74657863657074696F6E');
-INSERT INTO "ApiTestResults" VALUES('Try to use a date that has no time', 1028, 'text/plain', 'True');
+INSERT INTO "ApiTestResults" VALUES('Try to use a date that has no time', 1028, 'text/plain', '');
 INSERT INTO "ApiTestResults" VALUES('Clears the admin log', 2001, 'text/plain', 'True');
 INSERT INTO "ApiTestResults" VALUES('Clears the authentication log', 2002, 'text/plain', 'True');
 INSERT INTO "ApiTestResults" VALUES('Clears the error log', 2003, 'text/plain', X'6D67696E76616C6964617267756D656E74657863657074696F6E');
