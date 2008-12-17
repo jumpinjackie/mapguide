@@ -637,12 +637,12 @@ function StrEscape($str, $single=false)
 
 function requestAuthentication()
 {
-    global $product;
+    global $product, $locale;
 
     header('WWW-Authenticate: Basic realm="' . $product . '"');
     header('HTTP/1.1 401 Unauthorized');
     header("Status: 401 Access Denied");
-    echo "You must enter a valid login ID and password to access this site\n";
+    echo GetLocalizedString("NEEDLOGIN", $locale);
 }
 
 ?>
