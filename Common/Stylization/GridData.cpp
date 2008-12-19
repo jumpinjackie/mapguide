@@ -386,19 +386,25 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
                 rowLength = rowBitSize/8;
             unsigned long bufferLength = rowLength * actualRows;
 
-            //Create an buffer to hold data
-            pRasterData = new FdoByte[bufferLength];
-            //FdoPtr<FdoBLOBStreamReader> streamReader = static_cast<FdoBLOBStreamReader*>(pRaster->GetStreamReader());
-            //int pixelsRemainingX = cols;
-            unsigned char* pCurPos;
-            //streamReader->ReadNext((FdoByte*)pRasterData, 0, bufferLength);
-            if(reader->available() != bufferLength)
+            if (reader->available() != bufferLength)
             {
-                delete [] pRasterData;
                 delete reader;
 
                 return;
             }
+
+            //Create an buffer to hold data
+            pRasterData = new FdoByte[bufferLength];
+            
+            if (NULL == pRasterData)
+            {
+                throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(CLNT_5_OUTOFMEMORY)));
+            }
+
+            //FdoPtr<FdoBLOBStreamReader> streamReader = static_cast<FdoBLOBStreamReader*>(pRaster->GetStreamReader());
+            //int pixelsRemainingX = cols;
+            unsigned char* pCurPos;
+            //streamReader->ReadNext((FdoByte*)pRasterData, 0, bufferLength);
 
             reader->read(pRasterData, bufferLength);
 
