@@ -1334,14 +1334,29 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
 
             // Prepare and Execute Query
             query->Prepare();
+
+            // Search the filter to see if it contains the extension name
+            // If the extension name is not found it means that the filter involves attribute(s) only from the primary
+            if(NULL != filter)
+            {
+                FdoString* filterText = filter->ToString();
+                if(NULL != filterText)
+                {
+                    if(NULL == wcsstr(filterText, name.c_str()))
+                    {
+                        // Add the filter to the query because it only applies to the primary
+                        query->SetFilter(filter);
+                    }
+                }
+            }
+
+            // Execute the query
             query->Execute(&iter, true);
             query->Execute(&iterCopy, true);
 
             FdoPtr<FdoStringCollection> fsNames = qd->FeatureSourceNames();
 
-            gwsFeatureReader = new MgServerGwsFeatureReader(iter, bForceOneToOne, attributeNameDelimiters);
-            gwsFeatureReader->PrepareGwsGetFeatures(parsedExtensionName, fsNames);
-            gwsFeatureReader->SetGwsIteratorCopy(iterCopy);
+            gwsFeatureReader = new MgServerGwsFeatureReader(iter, iterCopy, parsedExtensionName, fsNames, bForceOneToOne, attributeNameDelimiters);
             gwsFeatureReader->SetFilter(filter);
             break;
         }
