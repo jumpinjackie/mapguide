@@ -522,6 +522,10 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                         extent.maxy += mcsOffset;
                     }
 
+                    #ifdef _DEBUG
+                    printf("  StylizeLayers() **Stylizing** Name:%S  Extents:%f,%f to %f,%f Expanded:%d\n", (mapLayer->GetName()).c_str(), extent.minx, extent.miny, extent.maxx, extent.maxy, expandExtents);
+                    #endif
+
                     //get a transform from layer coord sys to map coord sys
                     TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, vl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
                     Ptr<MgCoordinateSystem> layerCs = item? item->GetCoordSys() : NULL;
@@ -550,9 +554,17 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     if (overrideFilters)
                         overrideFilter = overrideFilters->GetItem(i);
 
+                    #ifdef _DEBUG
+                    printf("  StylizeLayers() **Stylizing** Name:%S  Override Filter:%S\n", (mapLayer->GetName()).c_str(), overrideFilter.empty() ? L"(Empty)" : overrideFilter.c_str());
+                    #endif
+
                     // create the reader we'll use
                     rsReader = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, layerCs, item);
                     FdoPtr<FdoIFeatureReader> fdoReader = (NULL == rsReader) ? NULL : rsReader->GetInternalReader();
+
+                    #ifdef _DEBUG
+                    printf("  StylizeLayers() **Stylizing** Name:%S  Query Done.\n", (mapLayer->GetName()).c_str());
+                    #endif
 
                     if (NULL != fdoReader.p)
                     {
