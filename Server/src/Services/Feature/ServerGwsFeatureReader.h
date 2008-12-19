@@ -284,7 +284,12 @@ INTERNAL_API:
 
     MgServerGwsFeatureReader();
 
-    MgServerGwsFeatureReader(IGWSFeatureIterator* gwsFeatureIterator, bool bForceOneToOne = true, MgStringCollection* attributeNameDelimiters = NULL);
+    MgServerGwsFeatureReader(IGWSFeatureIterator* gwsFeatureIterator,
+                             IGWSFeatureIterator* gwsFeatureIteratorCopy, 
+                             CREFSTRING extensionName, 
+                             FdoStringCollection* relationNames, 
+                             bool bForceOneToOne = true, 
+                             MgStringCollection* attributeNameDelimiters = NULL);
     ~MgServerGwsFeatureReader();
 
 
@@ -296,8 +301,6 @@ INTERNAL_API:
         STRING& relationName,
         STRING& className,
         STRING& parsedPropName);
-
-    void SetGwsIteratorCopy(IGWSFeatureIterator* iterCopy);
 
     GwsFeatureIteratorMap GetSecondaryGwsFeatureIteratorMap();
     void SetGwsFeatureIteratorMap(GwsFeatureIteratorMap featureIterMap);

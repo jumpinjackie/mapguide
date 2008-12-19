@@ -36,6 +36,7 @@ CGwsRightBatchSortedBlockJoinQueryResults::CGwsRightBatchSortedBlockJoinQueryRes
     m_bMoreData = true;
     m_bNullEntry = false;
     m_bPrimaryKeyNull = false;
+    m_bFirstReadNext = true;
 }
 
 CGwsRightBatchSortedBlockJoinQueryResults::~CGwsRightBatchSortedBlockJoinQueryResults () throw()
@@ -49,7 +50,30 @@ EGwsStatus CGwsRightBatchSortedBlockJoinQueryResults::InitializeReader  (
     bool                       bScrollable
 )
 {
-    return CGwsRightNestedLoopJoinQueryResults::InitializeReader (query, prepquery, joincols, bScrollable);
+    EGwsStatus status = eGwsOk;
+    status = CGwsRightNestedLoopJoinQueryResults::InitializeReader (query, prepquery, joincols, bScrollable);
+
+    // Initialize
+    FdoPtr<IGWSQueryDefinition> pQueryDef;
+    m_query->GetQueryDefinition(&pQueryDef);
+    m_queryType = pQueryDef->Type();
+
+    // Get property name
+    m_propName = m_joincols->GetString (0);
+
+    // Get the data type of the secondary property and if one to one join
+    m_bOneToOneJoin = false;
+    m_dtSecondary = FdoDataType_String;
+    if (m_prepquery)
+    {
+        FdoPtr<CGwsQueryResultDescriptors> extFeatDsc;
+        m_prepquery->DescribeResults((IGWSExtendedFeatureDescription**)&extFeatDsc);
+        CGwsPropertyDesc propDesc = extFeatDsc->GetPropertyDescriptor(m_propName);
+        m_dtSecondary = propDesc.m_dataprop;
+        m_bOneToOneJoin = extFeatDsc->ForceOneToOneJoin();
+    }
+
+    return status;
 }
 
 bool CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()
@@ -67,24 +91,6 @@ bool CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()
     {
         m_bNullEntry = true;
         return true;
-    }
-
-    FdoPtr<IGWSQueryDefinition> pQueryDef;
-    m_query->GetQueryDefinition(&pQueryDef);
-
-    bool bOneToOneJoin = false;
-
-    FdoStringP propname = m_joincols->GetString (0);
-
-    // Get the data type of the secondary property
-    FdoDataType dtSecondary = FdoDataType_String;
-    if (m_prepquery)
-    {
-        FdoPtr<CGwsQueryResultDescriptors> extFeatDsc;
-        m_prepquery->DescribeResults((IGWSExtendedFeatureDescription**)&extFeatDsc);
-        CGwsPropertyDesc propDesc = extFeatDsc->GetPropertyDescriptor(propname);
-        dtSecondary = propDesc.m_dataprop;
-        bOneToOneJoin = extFeatDsc->ForceOneToOneJoin();
     }
 
     // Advance the secondary
@@ -116,11 +122,11 @@ bool CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()
 
             if(bRet)
             {
-                bool bIsNullResult = m_reader->IsNull(propname);
+                bool bIsNullResult = m_reader->IsNull(m_propName);
                 if(!bIsNullResult)
                 {
                     FdoPtr<FdoDataValue> dataValuePrimary = (FdoDataValue*)m_joinkeys.GetItem(m_joinKeyIndex);
-                    FdoPtr<FdoDataValue> dataValueSecondary = GetSecondaryDataValue(dtSecondary, propname);
+                    FdoPtr<FdoDataValue> dataValueSecondary = GetSecondaryDataValue(m_dtSecondary, m_propName);
                     int compare = GWSFdoUtilities::CompareDataValues(dataValuePrimary, dataValueSecondary);
 
                     #ifdef _DEBUG_BATCHSORT_JOIN
@@ -154,12 +160,12 @@ bool CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()
                         // However, we don't want to lose this data in the secondary so we want to not advance the secondary reader
 
                         // Check the primary query type to see if this is an Outer or Inner join
-                        if (pQueryDef->Type() == eGwsQueryLeftOuterJoin)
+                        if (m_queryType == eGwsQueryLeftOuterJoin)
                         {
                             // Outer Join
                             if(eAfterJoinRow == m_pos)
                             {
-                                if(bOneToOneJoin)
+                                if(m_bOneToOneJoin)
                                 {
                                     bAddNull = true;
                                     m_pos = eOnJoinRow;
@@ -175,7 +181,7 @@ bool CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()
                             }
                             else if(eBeforeFirstRow == m_pos)
                             {
-                                if(bOneToOneJoin)
+                                if(m_bOneToOneJoin)
                                 {
                                     bAddNull = true;
                                     m_pos = eOnJoinRow;
@@ -184,10 +190,19 @@ bool CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()
                                 }
                                 else
                                 {
-                                    // Secondary was just advanced, but doesn't match so we need to advance primary
-                                    m_pos = eOnJoinRow;
-                                    bDone = true;
-                                    bRet = false;
+                                    if(m_bFirstReadNext)
+                                    {
+                                        m_pos = eAfterJoinRow;
+                                        bAddNull = true;
+                                        bDone = true;
+                                        bRet = true;
+                                    }
+                                    else
+                                    {
+                                        m_pos = eOnJoinRow;
+                                        bDone = true;
+                                        bRet = false;
+                                    }
                                 }
                             }
                             else
@@ -228,9 +243,9 @@ bool CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()
             else
             {
                 // No more records
-                if (pQueryDef->Type() == eGwsQueryLeftOuterJoin)
+                if (m_queryType == eGwsQueryLeftOuterJoin)
                 {
-                    if(bOneToOneJoin)
+                    if(m_bOneToOneJoin)
                     {
                         bAddNull = true;
                         m_pos = eAfterJoinRow;
@@ -239,9 +254,18 @@ bool CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()
                     }
                     else
                     {
-                        m_pos = eOnJoinRow;
-                        bDone = true;
-                        bRet = false;
+                        if(m_bFirstReadNext)
+                        {
+                            bAddNull = true;
+                            bDone = true;
+                            bRet = true;
+                        }
+                        else
+                        {
+                            m_pos = eOnJoinRow;
+                            bDone = true;
+                            bRet = false;
+                        }
                     }
                 }
                 else
@@ -256,9 +280,9 @@ bool CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()
     else
     {
         // If there is no more data from the secondary and it is an outer join add a NULL
-        if (pQueryDef->Type() == eGwsQueryLeftOuterJoin)
+        if (m_queryType == eGwsQueryLeftOuterJoin)
         {
-            if(bOneToOneJoin)
+            if(m_bOneToOneJoin)
             {
                 bAddNull = true;
                 bRet = true;
@@ -286,6 +310,11 @@ bool CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()
         #endif
         m_bNullEntry = true;
         bRet = true;
+    }
+
+    if(m_bFirstReadNext)
+    {
+        m_bFirstReadNext = false;
     }
 
     #ifdef _DEBUG_BATCHSORT_JOIN
@@ -318,9 +347,12 @@ EGwsStatus CGwsRightBatchSortedBlockJoinQueryResults::SetRelatedValues (
     try {
         Close ();
 
-        FdoString* propname = m_joincols->GetString (0);
         WSTR filter = L"\"";
-        filter += propname;
+
+        // Prealocate string buffer size (estimate)
+        filter.reserve(50*CGwsBatchSortedBlockJoinQueryResults::sm_nBatchSize);
+
+        filter += m_propName;
         filter += L"\"";
         filter += L" IN ("; // NOXLATE
 
@@ -337,8 +369,8 @@ EGwsStatus CGwsRightBatchSortedBlockJoinQueryResults::SetRelatedValues (
             FdoStringP valStr = val->ToString();
             filter += valStr;
         }
-
         filter += L")"; // NOXLATE
+
         pFilter = FdoFilter::Parse(filter.c_str());
         m_prepquery->SetFilter (pFilter);
 
@@ -655,4 +687,28 @@ FdoDataValue *  CGwsRightBatchSortedBlockJoinQueryResults::GetDataValue (FdoStri
 FdoByteArray * CGwsRightBatchSortedBlockJoinQueryResults::GetOriginalGeometry (FdoString* propertyName)
 {
     return GetGeometry (propertyName);
+}
+
+FdoClassDefinition* CGwsRightBatchSortedBlockJoinQueryResults::GetClassDefinition()
+{
+    FdoClassDefinition* classDef = NULL;
+
+    if(m_bNullEntry)
+    {
+        // If this is a NULL entry what FdoClassDefinition do we add?
+        // We cannot return NULL
+        if (m_prepquery)
+        {
+            FdoPtr<CGwsQueryResultDescriptors> extFeatDsc;
+            m_prepquery->DescribeResults((IGWSExtendedFeatureDescription**)&extFeatDsc);
+
+            classDef = extFeatDsc->ClassDefinition();
+        }
+    }
+    else
+    {
+        classDef = CGwsFeatureIterator::GetClassDefinition();
+    }
+
+    return classDef;
 }

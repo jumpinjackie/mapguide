@@ -38,8 +38,11 @@ public:
     MgServerGwsGetFeatures();
     MgServerGwsGetFeatures(MgServerGwsFeatureReader* gwsFeatureReader,
                            IGWSFeatureIterator* gwsFeatureIterator,
+                           IGWSFeatureIterator* gwsFeatureIteratorCopy,
                            MgStringCollection* attributeNameDelimiters,
                            IGWSExtendedFeatureDescription* primaryExtendedFeatureDescription,
+                           CREFSTRING extensionName,
+                           FdoStringCollection* relationNames,
                            bool bForceOneToOne = true);
     ~MgServerGwsGetFeatures();
 
@@ -54,14 +57,8 @@ public:
     void GetClassProperties(MgPropertyDefinitionCollection* propDefCol,
                             FdoDataPropertyDefinitionCollection* fdoPropDefCol);
 
-    void SetRelationNames(FdoStringCollection* relationNames);
-    void SetExtensionName(CREFSTRING extensionName);
-
-    FdoStringCollection* GetRelationNames();
-    STRING GetExtensionName();
     void ClearGwsFeatureIterator();
     MgServerGwsFeatureReader* GetGwsFeatureReader();
-    void SetFilter(FdoExpressionEngine* expressionEngine, FdoFilter* filter);
 
 protected:
 
@@ -95,6 +92,7 @@ private:
 
     MgServerGwsFeatureReader*            m_gwsFeatureReader;
     IGWSFeatureIterator*                 m_gwsFeatureIterator;
+    IGWSFeatureIterator*                 m_gwsFeatureIteratorCopy;
     Ptr<MgStringCollection>              m_attributeNameDelimiters;
     Ptr<MgFeatureSet>                    m_featureSet;
     Ptr<MgClassDefinition>               m_classDef;
@@ -103,15 +101,11 @@ private:
     GwsFeatureIteratorMap                m_secondaryGwsFeatureIteratorMap;
 
     FdoPtr<IGWSExtendedFeatureDescription> m_primaryExtendedFeatureDescription;
-    FdoPtr<FdoExpressionEngine> m_expressionEngine;
-    FdoPtr<FdoFilter> m_filter;
 
     bool m_bAdvancePrimaryIterator;
     bool m_bForceOneToOne;
     bool m_bNoMoreData;
     bool m_bAdvanceSecondaryIterator;
-    bool m_bReadNextDone;
-    bool m_bReadNextHasData;
 };
 
 #endif

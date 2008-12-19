@@ -29,15 +29,17 @@ MgServerGwsGetFeatures::MgServerGwsGetFeatures()
     m_relationNames = NULL;
     m_gwsFeatureReader = NULL;
     m_gwsFeatureIterator = NULL;
-    m_bReadNextDone = false;
-    m_bReadNextHasData = false;
+    m_gwsFeatureIteratorCopy = NULL;
+    m_relationNames = NULL;
 }
-
 
 MgServerGwsGetFeatures::MgServerGwsGetFeatures(MgServerGwsFeatureReader* gwsFeatureReader,
                                                IGWSFeatureIterator* gwsFeatureIterator,
+                                               IGWSFeatureIterator* gwsFeatureIteratorCopy,
                                                MgStringCollection* attributeNameDelimiters,
                                                IGWSExtendedFeatureDescription* primaryExtendedFeatureDescription,
+                                               CREFSTRING extensionName,
+                                               FdoStringCollection* relationNames,
                                                bool bForceOneToOne)
 {
     CHECKNULL(gwsFeatureReader, L"MgServerGwsGetFeatures.MgServerGwsGetFeatures");
@@ -48,6 +50,7 @@ MgServerGwsGetFeatures::MgServerGwsGetFeatures(MgServerGwsFeatureReader* gwsFeat
 
     m_gwsFeatureReader = gwsFeatureReader;
     m_gwsFeatureIterator = SAFE_ADDREF(gwsFeatureIterator);
+    m_gwsFeatureIteratorCopy = SAFE_ADDREF(gwsFeatureIteratorCopy);
 
     m_attributeNameDelimiters = SAFE_ADDREF(attributeNameDelimiters);
     m_primaryExtendedFeatureDescription = FDO_SAFE_ADDREF(primaryExtendedFeatureDescription);
@@ -55,8 +58,9 @@ MgServerGwsGetFeatures::MgServerGwsGetFeatures(MgServerGwsFeatureReader* gwsFeat
     m_bForceOneToOne = bForceOneToOne;
     m_bAdvancePrimaryIterator = true;
     m_bNoMoreData = false;
-    m_bReadNextDone = false;
-    m_bReadNextHasData = false;
+
+    m_relationNames = FDO_SAFE_ADDREF(relationNames);
+    m_extensionName = extensionName;
 }
 
 MgServerGwsGetFeatures::~MgServerGwsGetFeatures()
@@ -70,6 +74,11 @@ void MgServerGwsGetFeatures::ClearGwsFeatureIterator()
         m_gwsFeatureIterator->Close();
 
     FDO_SAFE_RELEASE(m_gwsFeatureIterator);
+
+    if (m_gwsFeatureIteratorCopy != NULL)
+        m_gwsFeatureIteratorCopy->Close();
+
+    FDO_SAFE_RELEASE(m_gwsFeatureIteratorCopy);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -127,14 +136,14 @@ MgFeatureSet* MgServerGwsGetFeatures::GetFeatures(INT32 count)
 /////
 MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(bool bSerialize)
 {
-    CHECKNULL(m_gwsFeatureIterator, L"MgServerGwsGetFeatures.GetMgClassDefinition");
+    CHECKNULL(m_gwsFeatureIteratorCopy, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
     MG_FEATURE_SERVICE_TRY()
 
     if (NULL == (MgClassDefinition*)m_classDef)
     {
         // Retrieve FdoClassDefinition
-        FdoPtr<FdoClassDefinition> fdoClassDefinition = m_gwsFeatureIterator->GetClassDefinition();
+        FdoPtr<FdoClassDefinition> fdoClassDefinition = m_gwsFeatureIteratorCopy->GetClassDefinition();
         CHECKNULL((FdoClassDefinition*)fdoClassDefinition, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
         // Convert FdoClassDefinition to MgClassDefinition
@@ -142,12 +151,11 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(bool bSerialize)
         CHECKNULL((MgClassDefinition*)mgClassDef, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
         // Advance the primary feature source iterator
-        if (m_gwsFeatureIterator->ReadNext())
+        if (m_gwsFeatureIteratorCopy->ReadNext())
         {
-            m_bReadNextHasData = true;
             // Retrieve the secondary feature source iterators, get the property definitions and add to class definition
             FdoPtr<IGWSExtendedFeatureDescription> desc;
-            m_gwsFeatureIterator->DescribeFeature(&desc);
+            m_gwsFeatureIteratorCopy->DescribeFeature(&desc);
 
             int nSecondaryFeatures = desc->GetCount();
             if (nSecondaryFeatures > 0)
@@ -163,7 +171,7 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(bool bSerialize)
             {
                 try
                 {
-                    FdoPtr<IGWSFeatureIterator> featureIter = m_gwsFeatureIterator->GetJoinedFeatures(i);
+                    FdoPtr<IGWSFeatureIterator> featureIter = m_gwsFeatureIteratorCopy->GetJoinedFeatures(i);
                     if (featureIter)
                     {
                         STRING attributeNameDelimiter = m_attributeNameDelimiters->GetItem(i);
@@ -272,7 +280,6 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(bool bSerialize)
                 mgClassDef->SetSerializedXml(str1);
             }
         }
-        m_bReadNextDone = true;
 
         // Store the it for future use
         m_classDef = SAFE_ADDREF((MgClassDefinition*)mgClassDef);
@@ -636,34 +643,26 @@ void MgServerGwsGetFeatures::AddFeatures(INT32 count)
 
         do
         {
-            if(m_bReadNextDone)
+            // Advance the reader
+            // Read next throws exception which it should not (therefore we just ignore it)
+            try
             {
-                found = m_bReadNextHasData;
-                m_bReadNextDone = false;
+                found = ReadNext();
             }
-            else
+            catch (FdoException* e)
             {
-                // Advance the reader
-                // Read next throws exception which it should not (therefore we just ignore it)
-                try
-                {
-                    found = ReadNext();
-                }
-                catch (FdoException* e)
-                {
-                    // Note: VB 05/10/06 The assert has been commented out as
-                    // Linux does not remove them from a release build. The assert
-                    // will cause the server to crash on Linux. The Oracle provider will throw
-                    // an exception if the ReadNext() method is called after it returns false.
-                    // This is a known problem and it is safe to ignore the exception.
-                    //assert(false);
-                    e->Release();
-                    found = false;
-                }
-                catch(...)
-                {
-                    found = false;
-                }
+                // Note: VB 05/10/06 The assert has been commented out as
+                // Linux does not remove them from a release build. The assert
+                // will cause the server to crash on Linux. The Oracle provider will throw
+                // an exception if the ReadNext() method is called after it returns false.
+                // This is a known problem and it is safe to ignore the exception.
+                //assert(false);
+                e->Release();
+                found = false;
+            }
+            catch(...)
+            {
+                found = false;
             }
 
             if(found)
@@ -1347,143 +1346,16 @@ MgByteReader* MgServerGwsGetFeatures::GetLOBFromFdo(CREFSTRING propName, IGWSFea
 
 bool MgServerGwsGetFeatures::DeterminePropertyFeatureSource(CREFSTRING inputPropName, IGWSFeatureIterator** gwsFeatureIter, STRING& parsedPropName)
 {
-    CHECKNULL(m_gwsFeatureIterator, L"MgServerGwsGetFeatures.DeterminePropertyFeatureSource");
+    CHECKNULL(m_gwsFeatureReader, L"MgServerGwsGetFeatures.DeterminePropertyFeatureSource");
 
-    bool bPropertyFound = false;
+    m_gwsFeatureReader->DeterminePropertyFeatureSource(inputPropName, gwsFeatureIter, parsedPropName);
 
-    FdoPtr<IGWSFeatureIterator> secondaryFeatureIter;
-
-    // Parse the input property name to determine the feature source,
-    // and the property name.  The qualified name could
-    // look something like this: Join1PropA, where
-    // Join1 = relation name
-    // PropA = property name
-
-    STRING qualifiedName;
-    STRING className;
-    STRING relationName;
-
-    if (inputPropName.empty())
-    {
-        MgStringCollection arguments;
-        arguments.Add(L"1");
-        arguments.Add(MgResources::BlankArgument);
-
-        throw new MgInvalidArgumentException(L"MgServerGwsFeatureReader.DeterminePropertyFeatureSource",
-            __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
-    }
-
-    // Check if the input propName is prefixed with the relationName
-    // by comparing with primary feature source property names
-    FdoPtr<IGWSExtendedFeatureDescription> primaryDesc;
-    m_gwsFeatureIterator->DescribeFeature(&primaryDesc);
-    FdoPtr<FdoStringCollection> primaryPropNames = primaryDesc->PropertyNames();
-    int nPrimaryDescCount = primaryDesc->GetCount();
-
-    int primaryIndex = primaryPropNames->IndexOf(inputPropName.c_str());
-    if( -1 != primaryIndex)
-    {
-        // No prefix, but the property name does exist in the primary feature source
-        parsedPropName = inputPropName;
-        *gwsFeatureIter = m_gwsFeatureIterator;
-        bPropertyFound = true;
-    }
-    else
-    {
-        // cycle thru secondary feature sources and check property names
-        if (!m_secondaryGwsFeatureIteratorMap.empty())
-        {
-            for (GwsFeatureIteratorMap::iterator iter = m_secondaryGwsFeatureIteratorMap.begin();
-                iter != m_secondaryGwsFeatureIteratorMap.end();
-                iter++)
-            {
-                secondaryFeatureIter = FDO_SAFE_ADDREF(iter->second);
-                if (secondaryFeatureIter == NULL)
-                {
-                    continue;
-                }
-
-                FdoPtr<IGWSExtendedFeatureDescription> secondaryDesc;
-                secondaryFeatureIter->DescribeFeature(&secondaryDesc);
-
-                GWSQualifiedName secQualifiedClassName = secondaryDesc->ClassName();
-
-                FdoString* featureSource = secQualifiedClassName.FeatureSource();
-
-                FdoPtr<FdoStringCollection> secondaryPropNames = secondaryDesc->PropertyNames();
-
-                STRING attributeNameDelimiter = iter->first;
-
-                // cycle thru secondaryPropNames looking for substring occurrence in inputPropName
-
-                // If the delimiter is not blank, then look for it.
-                // Else parse the extened property name by trying to match it to the known secondary property names.
-
-                STRING::size_type delimiterIndex = inputPropName.find(attributeNameDelimiter);
-                FdoInt32 secPropCnt = secondaryPropNames->GetCount();
-                relationName.clear();
-                for (FdoInt32 secPropIndex = 0; secPropIndex < secPropCnt; secPropIndex++)
-                {
-                    if (!attributeNameDelimiter.empty() && STRING::npos != delimiterIndex)
-                    {
-                        parsedPropName = inputPropName.substr(delimiterIndex +1).c_str();
-                        relationName = inputPropName.substr(0, delimiterIndex).c_str();
-                    }
-                    else
-                    {
-                        STRING secondaryProp = (STRING)secondaryPropNames->GetString(secPropIndex);
-                        STRING::size_type nPropStartIndex = inputPropName.find(secondaryProp);
-                        if (std::wstring::npos != nPropStartIndex)
-                        {
-                            parsedPropName = inputPropName.substr(nPropStartIndex).c_str();
-                            relationName = inputPropName.substr(0, nPropStartIndex).c_str();
-                        }
-                    }
-                    if ( wcscmp(featureSource, relationName.c_str()) == 0 )
-                    {
-                        *gwsFeatureIter = secondaryFeatureIter;
-                        bPropertyFound = true;
-                        iter = m_secondaryGwsFeatureIteratorMap.end();
-                        iter--;
-                        break;
-                    }
-                }  //end loop through secondary property names
-            }  // end loop through secondary iterators
-        }  // end if ( !secondaryIteratorMap.empty() )
-    }  // end check secondary feature sources
-
-    return bPropertyFound;
-}
-
-void MgServerGwsGetFeatures::SetRelationNames(FdoStringCollection* relationNames)
-{
-    m_relationNames = FDO_SAFE_ADDREF(relationNames);
-}
-
-void MgServerGwsGetFeatures::SetExtensionName(CREFSTRING extensionName)
-{
-    m_extensionName = extensionName;
-}
-
-FdoStringCollection* MgServerGwsGetFeatures::GetRelationNames()
-{
-    return FDO_SAFE_ADDREF((FdoStringCollection*)m_relationNames);
-}
-
-STRING MgServerGwsGetFeatures::GetExtensionName()
-{
-    return m_extensionName;
+    return (NULL != *gwsFeatureIter) ? true : false;
 }
 
 bool MgServerGwsGetFeatures::ReadNext()
 {
     return m_gwsFeatureReader->ReadNext();
-}
-
-void MgServerGwsGetFeatures::SetFilter(FdoExpressionEngine* expressionEngine, FdoFilter* filter)
-{
-    m_expressionEngine = FDO_SAFE_ADDREF(expressionEngine);
-    m_filter = FDO_SAFE_ADDREF(filter);
 }
 
 MgServerGwsFeatureReader* MgServerGwsGetFeatures::GetGwsFeatureReader()

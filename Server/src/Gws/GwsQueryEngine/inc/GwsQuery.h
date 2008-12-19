@@ -1164,6 +1164,7 @@ typedef std::vector< PropertyCacheEntry* > PropertyCollection;
 typedef struct {
     PropertyCollection propertyCollection;
     FdoPtr<FdoDataValue> primaryKey;
+    bool bUsed;
 } PrimaryCacheEntry;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1258,6 +1259,7 @@ public:
 protected:
     bool    SetupBatchRightSide(bool leftResult);
     void    ClearIteratorCache();
+    void    ResetCache();
     void QuickSort(std::vector<PrimaryCacheEntry*>& cache, FdoInt32 left, FdoInt32 right);
     bool QuickSortCompare(PrimaryCacheEntry* compareA, PrimaryCacheEntry* compareB);
     void ShowPrimaryCache();
@@ -1269,7 +1271,8 @@ protected:
 
     // Primary iterator cache
     std::vector<PrimaryCacheEntry*> m_pPrimaryCache;
-    std::vector<PrimaryCacheEntry*>::iterator m_pPrimaryCacheIterator;
+    size_t m_primaryCacheIndex;
+    size_t m_nEntriesUpdated;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1451,6 +1454,8 @@ public:
     virtual FdoDataValue *  GetDataValue (FdoString* propertyName);
     GWS_QUERYENGINE_API
     virtual FdoByteArray*   GetOriginalGeometry (FdoString* propertyName);
+    GWS_QUERYENGINE_API
+    virtual FdoClassDefinition* GetClassDefinition();
 
     void                        IncrementKeyIndex()     { m_joinKeyIndex++; }
     void                        ResetKeyIndex()         { m_joinKeyIndex=0; }
@@ -1463,6 +1468,11 @@ protected:
     bool                    m_bMoreData;
     bool                    m_bNullEntry;
     bool                    m_bPrimaryKeyNull;
+    EGwsQueryType           m_queryType;
+    bool                    m_bOneToOneJoin;
+    FdoDataType             m_dtSecondary;
+    FdoString*              m_propName;
+    bool                    m_bFirstReadNext;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

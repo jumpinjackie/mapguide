@@ -27,13 +27,19 @@
 ///<param name="byteSource">Byte  source object</param>
 ///
 MgServerGwsFeatureReader::MgServerGwsFeatureReader(
-    IGWSFeatureIterator* gwsFeatureIterator, bool bForceOneToOne, MgStringCollection* attributeNameDelimiters) :
+    IGWSFeatureIterator* gwsFeatureIterator, 
+    IGWSFeatureIterator* gwsFeatureIteratorCopy, 
+    CREFSTRING extensionName, 
+    FdoStringCollection* relationNames,
+    bool bForceOneToOne,
+    MgStringCollection* attributeNameDelimiters) :
         m_bAdvancePrimaryIterator(true),
         m_bForceOneToOne(bForceOneToOne)
 {
     MG_FEATURE_SERVICE_TRY()
 
     m_gwsFeatureIterator = FDO_SAFE_ADDREF(gwsFeatureIterator);
+    m_gwsFeatureIteratorCopy = FDO_SAFE_ADDREF(gwsFeatureIteratorCopy);
     m_attributeNameDelimiters = SAFE_ADDREF(attributeNameDelimiters);
 
     // Get the Extended Feature Description
@@ -41,12 +47,18 @@ MgServerGwsFeatureReader::MgServerGwsFeatureReader(
 
     m_gwsGetFeatures = new MgServerGwsGetFeatures(this,
                                                   m_gwsFeatureIterator,
+                                                  m_gwsFeatureIteratorCopy,
                                                   m_attributeNameDelimiters,
                                                   m_primaryExtendedFeatureDescription,
+                                                  extensionName,
+                                                  relationNames,
                                                   m_bForceOneToOne);
+
+    // Get the class definition
+    m_classDef = m_gwsGetFeatures->GetMgClassDefinition(false);
+
     m_removeFromPoolOnDestruction = false;
     m_bNoMoreData = false;
-    m_classDef = NULL;
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.MgServerGwsFeatureReader")
 }
@@ -137,9 +149,6 @@ void MgServerGwsFeatureReader::SetFilter(FdoFilter* filter)
         catch (...)
         {
         }
-
-        // Let the underlying MgServerGwsGetFeatures object know about the filter
-        m_gwsGetFeatures->SetFilter(m_expressionEngine, m_filter);
     }
 }
 
@@ -400,19 +409,6 @@ MgClassDefinition* MgServerGwsFeatureReader::GetClassDefinition()
     CHECKNULL(m_gwsGetFeatures, L"MgServerGwsFeatureReader.GetClassDefinition");
 
     Ptr<MgClassDefinition> classDef;
-
-    if(NULL == m_classDef.p)
-    {
-        MG_FEATURE_SERVICE_TRY()
-
-        Ptr<MgServerGwsGetFeatures> gwsGetFeatures = new MgServerGwsGetFeatures(this, m_gwsFeatureIteratorCopy, m_attributeNameDelimiters, m_primaryExtendedFeatureDescription);
-        gwsGetFeatures->SetRelationNames(FdoPtr<FdoStringCollection>(m_gwsGetFeatures->GetRelationNames()));
-        gwsGetFeatures->SetExtensionName(m_gwsGetFeatures->GetExtensionName());
-        m_classDef = gwsGetFeatures->GetMgClassDefinition(false);
-
-        MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetClassDefinition")
-    }
-
     classDef = m_classDef;
 
     return classDef.Detach();
@@ -435,19 +431,6 @@ MgClassDefinition* MgServerGwsFeatureReader::GetClassDefinitionNoXml()
     CHECKNULL(m_gwsGetFeatures, L"MgServerGwsFeatureReader.GetClassDefinitionNoXml");
 
     Ptr<MgClassDefinition> classDef;
-
-    if(NULL == m_classDef.p)
-    {
-        MG_FEATURE_SERVICE_TRY()
-
-        Ptr<MgServerGwsGetFeatures> gwsGetFeatures = new MgServerGwsGetFeatures(this, m_gwsFeatureIteratorCopy, m_attributeNameDelimiters, m_primaryExtendedFeatureDescription);
-        gwsGetFeatures->SetRelationNames(FdoPtr<FdoStringCollection>(m_gwsGetFeatures->GetRelationNames()));
-        gwsGetFeatures->SetExtensionName(m_gwsGetFeatures->GetExtensionName());
-        m_classDef = gwsGetFeatures->GetMgClassDefinition(false);
-
-        MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetClassDefinitionNoXml")
-    }
-
     classDef = m_classDef;
 
     return classDef.Detach();
@@ -1384,23 +1367,11 @@ void MgServerGwsFeatureReader::DeterminePropertyFeatureSource(CREFSTRING inputPr
     }
 }
 
-
-void MgServerGwsFeatureReader::PrepareGwsGetFeatures(CREFSTRING extensionName, FdoStringCollection* relationNames)
-{
-    m_gwsGetFeatures->SetExtensionName(extensionName);
-    m_gwsGetFeatures->SetRelationNames(relationNames);
-}
-
 void MgServerGwsFeatureReader::DeterminePropertyFeatureSource(CREFSTRING inputPropName, IGWSFeatureIterator** gwsFeatureIter, STRING& parsedPropName)
 {
     STRING relationName;
     STRING className;
     this->DeterminePropertyFeatureSource(inputPropName, gwsFeatureIter, relationName, className, parsedPropName);
-}
-
-void MgServerGwsFeatureReader::SetGwsIteratorCopy(IGWSFeatureIterator* iterCopy)
-{
-    m_gwsFeatureIteratorCopy = FDO_SAFE_ADDREF(iterCopy);
 }
 
 GwsFeatureIteratorMap MgServerGwsFeatureReader::GetSecondaryGwsFeatureIteratorMap()

@@ -38,7 +38,8 @@ CGwsBatchSortedBlockJoinQueryResults::CGwsBatchSortedBlockJoinQueryResults (
 {
     m_right = NULL;
     m_primaryFeatureIterator = NULL;
-    m_pPrimaryCacheIterator = m_pPrimaryCache.begin();
+    m_primaryCacheIndex = 0;
+    m_nEntriesUpdated = 0;
 }
 
 CGwsBatchSortedBlockJoinQueryResults::~CGwsBatchSortedBlockJoinQueryResults (
@@ -89,8 +90,8 @@ EGwsStatus CGwsBatchSortedBlockJoinQueryResults::InitializeReader (
 
     printf("  Left  Query Filter: %S\n", lqFilterStr);
     printf("  Right Query Filter: %S\n", rqFilterStr);
-    printf("  Left  Query Properties: %S\n", leftcols ? leftcols->ToString() : L"<null>");
-    printf("  Right Query Properties: %S\n", rightcols ? rightcols->ToString() : L"<null>");
+    printf("  Left  Query Properties(%d): %S\n", leftcols ? leftcols->GetCount() : 0, leftcols ? leftcols->ToString() : L"<null>");
+    printf("  Right Query Properties(%d): %S\n", rightcols ? rightcols->GetCount() : 0, rightcols ? rightcols->ToString() : L"<null>");
     #endif
 
     stat = CGwsJoinQueryResults::InitializeReader (leftcols, query, leftquery, bScrollable);
@@ -142,6 +143,32 @@ EGwsStatus CGwsBatchSortedBlockJoinQueryResults::InitializeReader (
         }
     }
 
+    // Preallocate cache
+    m_pPrimaryCache.reserve(sm_nBatchSize);
+    for(INT32 index=0;index<sm_nBatchSize;index++)
+    {
+        PrimaryCacheEntry* cacheEntry = new PrimaryCacheEntry();
+        if(cacheEntry)
+        {
+            cacheEntry->bUsed = false;
+
+            // Need to cache all primary properties as we walk the primary iterator
+            cacheEntry->propertyCollection.resize(m_propertyNames->GetCount());
+
+            for(INT32 j=0;j<m_propertyNames->GetCount();j++)
+            {
+                PropertyCacheEntry* propertyCacheEntry = new PropertyCacheEntry();
+                if(propertyCacheEntry)
+                {
+                    cacheEntry->propertyCollection[j] = propertyCacheEntry;
+                }
+            }
+        }
+
+        m_pPrimaryCache.push_back(cacheEntry);
+    }
+
+
     #ifdef _DEBUG_BATCHSORT_JOIN
     printf("CGwsBatchSortedBlockJoinQueryResults::InitializeReader() - End\n");
     #endif
@@ -155,11 +182,11 @@ bool CGwsBatchSortedBlockJoinQueryResults::ReadNext ()
     printf("CGwsBatchSortedBlockJoinQueryResults::ReadNext()\n");
     #endif
 
-    if(m_pPrimaryCache.size() > 0)
+    PrimaryCacheEntry* cacheEntry = m_pPrimaryCache[m_primaryCacheIndex];
+    if(cacheEntry->bUsed)
     {
         // Check if primary key is NULL
         // Read from the cache
-        PrimaryCacheEntry* cacheEntry = *m_pPrimaryCacheIterator;
         if(cacheEntry->primaryKey->IsNull())
         {
             // The secondary key index doesn't need to be advanced because the previous read next involved a primary with a NULL key
@@ -175,10 +202,10 @@ bool CGwsBatchSortedBlockJoinQueryResults::ReadNext ()
             }
         }
 
-        m_pPrimaryCacheIterator++;
+        m_primaryCacheIndex++;
     }
 
-    if(m_pPrimaryCacheIterator == m_pPrimaryCache.end())
+    if(m_primaryCacheIndex >= m_nEntriesUpdated)
     {
         m_bLeftJoinValuesSet = false;
 
@@ -241,7 +268,7 @@ IGWSFeatureIterator * CGwsBatchSortedBlockJoinQueryResults::GetJoinedFeatures ()
 
     // Check if primary key is NULL
     // Read from the cache
-    PrimaryCacheEntry* cacheEntry = *m_pPrimaryCacheIterator;
+    PrimaryCacheEntry* cacheEntry = m_pPrimaryCache[m_primaryCacheIndex];
     if(cacheEntry->primaryKey->IsNull())
     {
         // Let the secondary know that the primary key is NULL
@@ -274,6 +301,12 @@ bool CGwsBatchSortedBlockJoinQueryResults::SetupBatchRightSide(bool bRes) {
     return bRes;
 }
 
+// TODO - This method is executed 2 times on a join. 
+//        1) SelectFeatures() creates a MgServerGwsFeatureReader() object and inside this constructor it calls 
+//           m_gwsGetFeatures->GetMgClassDefinition() which uses the iterator copy to generate the class definition.
+//        2) ReadNext() on the actual reader. This one is expected.
+//
+//        Would be nice if we did not require the iterator copy and could therefore remove the 1st call.  
 FdoDataValueCollection * CGwsBatchSortedBlockJoinQueryResults::GetJoinValues ()
 {
     #ifdef _DEBUG_BATCHSORT_JOIN
@@ -281,23 +314,23 @@ FdoDataValueCollection * CGwsBatchSortedBlockJoinQueryResults::GetJoinValues ()
     #endif
     if (! m_bLeftJoinValuesSet)
     {
-        // Clear the cache
-        ClearIteratorCache();
+        // Reset the cache
+        ResetCache();
+
+        m_nEntriesUpdated = 0;
 
         // Populate the primary iterator cache
         for(int i=0;i<sm_nBatchSize;i++)
         {
             if(m_primaryFeatureIterator->ReadNext())
             {
-                PrimaryCacheEntry* cacheEntry = new PrimaryCacheEntry();
+                PrimaryCacheEntry* cacheEntry = m_pPrimaryCache[i];
                 if(cacheEntry)
                 {
                     // Need to cache all primary properties as we walk the primary iterator
-                    cacheEntry->propertyCollection.resize(m_propertyNames->GetCount());
-
                     for(int j=0;j<m_propertyNames->GetCount();j++)
                     {
-                        PropertyCacheEntry* propertyCacheEntry = new PropertyCacheEntry();
+                        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection[j];
                         if(propertyCacheEntry)
                         {
                             FdoString* propertyName = m_propertyNames->GetString(j);
@@ -316,10 +349,11 @@ FdoDataValueCollection * CGwsBatchSortedBlockJoinQueryResults::GetJoinValues ()
 
                                 propertyCacheEntry->geometry = geometry;
                             }
-                            else
+                            else if(FdoPropertyType_DataProperty == propertyDesc->m_ptype)
                             {
                                 // This is a data property
-                                FdoDataValue* dataValue =  m_primaryFeatureIterator->GetDataValue(propertyName);
+                                FdoDataValue* dataValue = GwsQueryUtils::GetDataPropertyValue (m_primaryFeatureIterator, propertyDesc->m_dataprop, propertyDesc->m_name.c_str ());
+
                                 #ifdef _DEBUG_BATCHSORT_JOIN
                                 FdoStringP value = dataValue->ToString();
                                 printf("%S\n", value);
@@ -334,13 +368,16 @@ FdoDataValueCollection * CGwsBatchSortedBlockJoinQueryResults::GetJoinValues ()
 
                                 propertyCacheEntry->dataValue = dataValue;
                             }
-
-                            cacheEntry->propertyCollection[j] = propertyCacheEntry;
+                            else
+                            {
+                                // Not supported?
+                            }
                         }
                     }
 
+                    cacheEntry->bUsed = true;
                     // Add the iterator cache entry
-                    m_pPrimaryCache.push_back(cacheEntry);
+                    m_nEntriesUpdated++;
                 }
             }
             else
@@ -351,35 +388,41 @@ FdoDataValueCollection * CGwsBatchSortedBlockJoinQueryResults::GetJoinValues ()
         }
 
         // Sort the cache if needed
-        if(m_pPrimaryCache.size() > 1)
+        if(m_nEntriesUpdated > 1)
         {
-            QuickSort(m_pPrimaryCache, 0, (FdoInt32)(m_pPrimaryCache.size()-1));
+            QuickSort(m_pPrimaryCache, 0, (FdoInt32)(m_nEntriesUpdated-1));
         }
 
         // Set the 1st cache entry to read
-        m_pPrimaryCacheIterator = m_pPrimaryCache.begin();
-
         FdoPtr<FdoDataValueCollection> dvcol;
 
-        for ( size_t i=0;i<m_pPrimaryCache.size();i++ )
+        // Get the datatype of the secondary
+        bool bDataTypeSecondarySet = false;
+        FdoDataType dtSecondary = FdoDataType_String;
+        if (m_right)
+        {
+            FdoPtr<FdoStringCollection> joinColumns = m_right->GetJoinColumns();
+            FdoString* propname = joinColumns->GetString (0);
+            CGwsPropertyDesc propDesc = m_right->GetPropertyDescriptor(propname);
+            dtSecondary = propDesc.m_dataprop;
+            bDataTypeSecondarySet = true;
+        }
+
+        for ( size_t i=0;i<m_nEntriesUpdated;i++ )
         {
             FdoPtr<FdoDataValue> val;
 
-            PrimaryCacheEntry* cacheEntry = m_pPrimaryCache.at(i);
+            PrimaryCacheEntry* cacheEntry = m_pPrimaryCache[i];
             if(cacheEntry)
             {
                 FdoPtr<FdoDataValue> primary = cacheEntry->primaryKey;
                 FdoDataType dtPrimary = primary->GetDataType();
                 if(!primary->IsNull())
                 {
-                    // We need to match primary data type to secondary join data type
-                    FdoDataType dtSecondary = dtPrimary;
-                    if (m_right)
+                    if(!bDataTypeSecondarySet)
                     {
-                        FdoPtr<FdoStringCollection> joinColumns = m_right->GetJoinColumns();
-                        FdoString* propname = joinColumns->GetString (0);
-                        CGwsPropertyDesc propDesc = m_right->GetPropertyDescriptor(propname);
-                        dtSecondary = propDesc.m_dataprop;
+                        // Set to the primary
+                        dtSecondary = dtPrimary;
                     }
 
                     switch (dtPrimary)
@@ -479,10 +522,10 @@ FdoString * CGwsBatchSortedBlockJoinQueryResults::GetString (FdoString* property
     FdoString* result = NULL;
 
     // Read from the cache
-    PrimaryCacheEntry* cacheEntry = *m_pPrimaryCacheIterator;
+    PrimaryCacheEntry* cacheEntry = m_pPrimaryCache[m_primaryCacheIndex];
     for(size_t i=0;i<cacheEntry->propertyCollection.size();i++)
     {
-        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection.at(i);
+        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection[i];
         if(propertyCacheEntry)
         {
             CGwsPropertyDesc* propDesc = m_propertyDescriptionCollection[i];
@@ -528,10 +571,10 @@ bool CGwsBatchSortedBlockJoinQueryResults::GetBoolean(FdoString* propertyName)
     bool result = false;
 
     // Read from the cache
-    PrimaryCacheEntry* cacheEntry = *m_pPrimaryCacheIterator;
+    PrimaryCacheEntry* cacheEntry = m_pPrimaryCache[m_primaryCacheIndex];
     for(size_t i=0;i<cacheEntry->propertyCollection.size();i++)
     {
-        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection.at(i);
+        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection[i];
         if(propertyCacheEntry)
         {
             CGwsPropertyDesc* propDesc = m_propertyDescriptionCollection[i];
@@ -577,10 +620,10 @@ FdoByte CGwsBatchSortedBlockJoinQueryResults::GetByte(FdoString* propertyName)
     FdoByte result = 0;
 
     // Read from the cache
-    PrimaryCacheEntry* cacheEntry = *m_pPrimaryCacheIterator;
+    PrimaryCacheEntry* cacheEntry = m_pPrimaryCache[m_primaryCacheIndex];
     for(size_t i=0;i<cacheEntry->propertyCollection.size();i++)
     {
-        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection.at(i);
+        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection[i];
         if(propertyCacheEntry)
         {
             CGwsPropertyDesc* propDesc = m_propertyDescriptionCollection[i];
@@ -626,10 +669,10 @@ FdoDateTime CGwsBatchSortedBlockJoinQueryResults::GetDateTime(FdoString* propert
     FdoDateTime result;
 
     // Read from the cache
-    PrimaryCacheEntry* cacheEntry = *m_pPrimaryCacheIterator;
+    PrimaryCacheEntry* cacheEntry = m_pPrimaryCache[m_primaryCacheIndex];
     for(size_t i=0;i<cacheEntry->propertyCollection.size();i++)
     {
-        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection.at(i);
+        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection[i];
         if(propertyCacheEntry)
         {
             CGwsPropertyDesc* propDesc = m_propertyDescriptionCollection[i];
@@ -675,10 +718,10 @@ double CGwsBatchSortedBlockJoinQueryResults::GetDouble(FdoString* propertyName)
     double result = 0.0;
 
     // Read from the cache
-    PrimaryCacheEntry* cacheEntry = *m_pPrimaryCacheIterator;
+    PrimaryCacheEntry* cacheEntry = m_pPrimaryCache[m_primaryCacheIndex];
     for(size_t i=0;i<cacheEntry->propertyCollection.size();i++)
     {
-        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection.at(i);
+        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection[i];
         if(propertyCacheEntry)
         {
             CGwsPropertyDesc* propDesc = m_propertyDescriptionCollection[i];
@@ -732,10 +775,10 @@ FdoInt16 CGwsBatchSortedBlockJoinQueryResults::GetInt16(FdoString* propertyName)
     FdoInt16 result = 0;
 
     // Read from the cache
-    PrimaryCacheEntry* cacheEntry = *m_pPrimaryCacheIterator;
+    PrimaryCacheEntry* cacheEntry = m_pPrimaryCache[m_primaryCacheIndex];
     for(size_t i=0;i<cacheEntry->propertyCollection.size();i++)
     {
-        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection.at(i);
+        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection[i];
         if(propertyCacheEntry)
         {
             CGwsPropertyDesc* propDesc = m_propertyDescriptionCollection[i];
@@ -781,10 +824,10 @@ FdoInt32 CGwsBatchSortedBlockJoinQueryResults::GetInt32(FdoString* propertyName)
     FdoInt32 result = 0;
 
     // Read from the cache
-    PrimaryCacheEntry* cacheEntry = *m_pPrimaryCacheIterator;
+    PrimaryCacheEntry* cacheEntry = m_pPrimaryCache[m_primaryCacheIndex];
     for(size_t i=0;i<cacheEntry->propertyCollection.size();i++)
     {
-        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection.at(i);
+        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection[i];
         if(propertyCacheEntry)
         {
             CGwsPropertyDesc* propDesc = m_propertyDescriptionCollection[i];
@@ -830,10 +873,10 @@ FdoInt64 CGwsBatchSortedBlockJoinQueryResults::GetInt64(FdoString* propertyName)
     FdoInt64 result = 0;
 
     // Read from the cache
-    PrimaryCacheEntry* cacheEntry = *m_pPrimaryCacheIterator;
+    PrimaryCacheEntry* cacheEntry = m_pPrimaryCache[m_primaryCacheIndex];
     for(size_t i=0;i<cacheEntry->propertyCollection.size();i++)
     {
-        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection.at(i);
+        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection[i];
         if(propertyCacheEntry)
         {
             CGwsPropertyDesc* propDesc = m_propertyDescriptionCollection[i];
@@ -879,10 +922,10 @@ float CGwsBatchSortedBlockJoinQueryResults::GetSingle(FdoString* propertyName)
     float result = 0.0;
 
     // Read from the cache
-    PrimaryCacheEntry* cacheEntry = *m_pPrimaryCacheIterator;
+    PrimaryCacheEntry* cacheEntry = m_pPrimaryCache[m_primaryCacheIndex];
     for(size_t i=0;i<cacheEntry->propertyCollection.size();i++)
     {
-        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection.at(i);
+        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection[i];
         if(propertyCacheEntry)
         {
             CGwsPropertyDesc* propDesc = m_propertyDescriptionCollection[i];
@@ -928,10 +971,10 @@ FdoLOBValue * CGwsBatchSortedBlockJoinQueryResults::GetLOB(FdoString* propertyNa
     FdoLOBValue* result = NULL;
 
     // Read from the cache
-    PrimaryCacheEntry* cacheEntry = *m_pPrimaryCacheIterator;
+    PrimaryCacheEntry* cacheEntry = m_pPrimaryCache[m_primaryCacheIndex];
     for(size_t i=0;i<cacheEntry->propertyCollection.size();i++)
     {
-        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection.at(i);
+        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection[i];
         if(propertyCacheEntry)
         {
             CGwsPropertyDesc* propDesc = m_propertyDescriptionCollection[i];
@@ -984,10 +1027,10 @@ bool CGwsBatchSortedBlockJoinQueryResults::IsNull(FdoString* propertyName)
     bool result = true;
 
     // Read from the cache
-    PrimaryCacheEntry* cacheEntry = *m_pPrimaryCacheIterator;
+    PrimaryCacheEntry* cacheEntry = m_pPrimaryCache[m_primaryCacheIndex];
     for(size_t i=0;i<cacheEntry->propertyCollection.size();i++)
     {
-        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection.at(i);
+        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection[i];
         if(propertyCacheEntry)
         {
             CGwsPropertyDesc* propDesc = m_propertyDescriptionCollection[i];
@@ -1042,10 +1085,10 @@ FdoDataValue * CGwsBatchSortedBlockJoinQueryResults::GetPropertyValue (
     FdoDataValue* result = NULL;
 
     // Read from the cache
-    PrimaryCacheEntry* cacheEntry = *m_pPrimaryCacheIterator;
+    PrimaryCacheEntry* cacheEntry = m_pPrimaryCache[m_primaryCacheIndex];
     for(size_t i=0;i<cacheEntry->propertyCollection.size();i++)
     {
-        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection.at(i);
+        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection[i];
         if(propertyCacheEntry)
         {
             CGwsPropertyDesc* propDesc = m_propertyDescriptionCollection[i];
@@ -1102,10 +1145,10 @@ const FdoByte * CGwsBatchSortedBlockJoinQueryResults::GetGeometry(
     FdoByte * gvalue = NULL;
 
     // Read from the cache
-    PrimaryCacheEntry* cacheEntry = *m_pPrimaryCacheIterator;
+    PrimaryCacheEntry* cacheEntry = m_pPrimaryCache[m_primaryCacheIndex];
     for(size_t i=0;i<cacheEntry->propertyCollection.size();i++)
     {
-        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection.at(i);
+        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection[i];
         if(propertyCacheEntry)
         {
             CGwsPropertyDesc* propDesc = m_propertyDescriptionCollection[i];
@@ -1155,10 +1198,10 @@ FdoByteArray* CGwsBatchSortedBlockJoinQueryResults::GetGeometry(FdoString* prope
     FdoByteArray * gvalue = NULL;
 
     // Read from the cache
-    PrimaryCacheEntry* cacheEntry = *m_pPrimaryCacheIterator;
+    PrimaryCacheEntry* cacheEntry = m_pPrimaryCache[m_primaryCacheIndex];
     for(size_t i=0;i<cacheEntry->propertyCollection.size();i++)
     {
-        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection.at(i);
+        PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection[i];
         if(propertyCacheEntry)
         {
             CGwsPropertyDesc* propDesc = m_propertyDescriptionCollection[i];
@@ -1213,12 +1256,12 @@ void CGwsBatchSortedBlockJoinQueryResults::ClearIteratorCache()
 {
     for ( size_t i=0;i<m_pPrimaryCache.size();i++ )
     {
-        PrimaryCacheEntry* primaryCacheEntry = m_pPrimaryCache.at(i);
+        PrimaryCacheEntry* primaryCacheEntry = m_pPrimaryCache[i];
         if(primaryCacheEntry)
         {
             for(size_t j=0;j<primaryCacheEntry->propertyCollection.size();j++)
             {
-                PropertyCacheEntry* propertyCacheEntry = primaryCacheEntry->propertyCollection.at(j);
+                PropertyCacheEntry* propertyCacheEntry = primaryCacheEntry->propertyCollection[j];
                 if(propertyCacheEntry)
                 {
                     propertyCacheEntry->dataValue = NULL;
@@ -1235,7 +1278,32 @@ void CGwsBatchSortedBlockJoinQueryResults::ClearIteratorCache()
     }
 
     m_pPrimaryCache.clear();
-    m_pPrimaryCacheIterator = m_pPrimaryCache.begin();
+    m_primaryCacheIndex = 0;
+}
+
+void CGwsBatchSortedBlockJoinQueryResults::ResetCache()
+{
+    for ( size_t i=0;i<m_pPrimaryCache.size();i++ )
+    {
+        PrimaryCacheEntry* primaryCacheEntry = m_pPrimaryCache[i];
+        if(primaryCacheEntry)
+        {
+            for(size_t j=0;j<primaryCacheEntry->propertyCollection.size();j++)
+            {
+                PropertyCacheEntry* propertyCacheEntry = primaryCacheEntry->propertyCollection[j];
+                if(propertyCacheEntry)
+                {
+                    propertyCacheEntry->dataValue = NULL;
+                    propertyCacheEntry->geometry = NULL;
+                }
+            }
+
+            primaryCacheEntry->bUsed = false;
+            primaryCacheEntry->primaryKey = NULL;
+        }
+    }
+
+    m_primaryCacheIndex = 0;
 }
 
 void CGwsBatchSortedBlockJoinQueryResults::QuickSort(std::vector<PrimaryCacheEntry*>& cache, FdoInt32 left, FdoInt32 right)
@@ -1279,8 +1347,8 @@ bool CGwsBatchSortedBlockJoinQueryResults::QuickSortCompare(PrimaryCacheEntry* c
 
     if((compareA != NULL) && (compareB != NULL))
     {
-        FdoPtr<FdoDataValue> compareADataValue;
-        FdoPtr<FdoDataValue> compareBDataValue;
+        FdoDataValue* compareADataValue;
+        FdoDataValue* compareBDataValue;
 
         compareADataValue = compareA->primaryKey;
         compareBDataValue = compareB->primaryKey;
@@ -1296,13 +1364,13 @@ bool CGwsBatchSortedBlockJoinQueryResults::QuickSortCompare(PrimaryCacheEntry* c
                     // Check for NULL data values
                     if(!compareADataValue->IsNull())
                     {
-                        compareAValue = ((FdoInt16Value*)(compareADataValue.p))->GetInt16();
+                        compareAValue = ((FdoInt16Value*)(compareADataValue))->GetInt16();
                     }
 
                     // Check for NULL data values
                     if(!compareBDataValue->IsNull())
                     {
-                        compareBValue = ((FdoInt16Value*)(compareBDataValue.p))->GetInt16();
+                        compareBValue = ((FdoInt16Value*)(compareBDataValue))->GetInt16();
                     }
 
                     if(compareAValue < compareBValue)
@@ -1319,13 +1387,13 @@ bool CGwsBatchSortedBlockJoinQueryResults::QuickSortCompare(PrimaryCacheEntry* c
                     // Check for NULL data values
                     if(!compareADataValue->IsNull())
                     {
-                        compareAValue = ((FdoInt32Value*)(compareADataValue.p))->GetInt32();
+                        compareAValue = ((FdoInt32Value*)(compareADataValue))->GetInt32();
                     }
 
                     // Check for NULL data values
                     if(!compareBDataValue->IsNull())
                     {
-                        compareBValue = ((FdoInt32Value*)(compareBDataValue.p))->GetInt32();
+                        compareBValue = ((FdoInt32Value*)(compareBDataValue))->GetInt32();
                     }
 
                     if(compareAValue < compareBValue)
@@ -1342,13 +1410,13 @@ bool CGwsBatchSortedBlockJoinQueryResults::QuickSortCompare(PrimaryCacheEntry* c
                     // Check for NULL data values
                     if(!compareADataValue->IsNull())
                     {
-                        compareAValue = ((FdoInt64Value*)(compareADataValue.p))->GetInt64();
+                        compareAValue = ((FdoInt64Value*)(compareADataValue))->GetInt64();
                     }
 
                     // Check for NULL data values
                     if(!compareBDataValue->IsNull())
                     {
-                        compareBValue = ((FdoInt64Value*)(compareBDataValue.p))->GetInt64();
+                        compareBValue = ((FdoInt64Value*)(compareBDataValue))->GetInt64();
                     }
 
                     if(compareAValue < compareBValue)
@@ -1365,13 +1433,13 @@ bool CGwsBatchSortedBlockJoinQueryResults::QuickSortCompare(PrimaryCacheEntry* c
                     // Check for NULL data values
                     if(!compareADataValue->IsNull())
                     {
-                        compareAValue = ((FdoSingleValue*)(compareADataValue.p))->GetSingle();
+                        compareAValue = ((FdoSingleValue*)(compareADataValue))->GetSingle();
                     }
 
                     // Check for NULL data values
                     if(!compareBDataValue->IsNull())
                     {
-                        compareBValue = ((FdoSingleValue*)(compareBDataValue.p))->GetSingle();
+                        compareBValue = ((FdoSingleValue*)(compareBDataValue))->GetSingle();
                     }
 
                     if(compareAValue < compareBValue)
@@ -1388,13 +1456,13 @@ bool CGwsBatchSortedBlockJoinQueryResults::QuickSortCompare(PrimaryCacheEntry* c
                     // Check for NULL data values
                     if(!compareADataValue->IsNull())
                     {
-                        compareAValue = ((FdoDoubleValue*)(compareADataValue.p))->GetDouble();
+                        compareAValue = ((FdoDoubleValue*)(compareADataValue))->GetDouble();
                     }
 
                     // Check for NULL data values
                     if(!compareBDataValue->IsNull())
                     {
-                        compareBValue = ((FdoDoubleValue*)(compareBDataValue.p))->GetDouble();
+                        compareBValue = ((FdoDoubleValue*)(compareBDataValue))->GetDouble();
                     }
 
                     if(compareAValue < compareBValue)
@@ -1411,13 +1479,13 @@ bool CGwsBatchSortedBlockJoinQueryResults::QuickSortCompare(PrimaryCacheEntry* c
                     // Check for NULL data values
                     if(!compareADataValue->IsNull())
                     {
-                        compareAValue = ((FdoDecimalValue*)(compareADataValue.p))->GetDecimal();
+                        compareAValue = ((FdoDecimalValue*)(compareADataValue))->GetDecimal();
                     }
 
                     // Check for NULL data values
                     if(!compareBDataValue->IsNull())
                     {
-                        compareBValue = ((FdoDecimalValue*)(compareBDataValue.p))->GetDecimal();
+                        compareBValue = ((FdoDecimalValue*)(compareBDataValue))->GetDecimal();
                     }
 
                     if(compareAValue < compareBValue)
@@ -1434,12 +1502,12 @@ bool CGwsBatchSortedBlockJoinQueryResults::QuickSortCompare(PrimaryCacheEntry* c
                     // Check for NULL data values
                     if(!compareADataValue->IsNull())
                     {
-                        compareAValue = ((FdoStringValue*)(compareADataValue.p))->GetString();
+                        compareAValue = ((FdoStringValue*)(compareADataValue))->GetString();
                     }
 
                     if(!compareBDataValue->IsNull())
                     {
-                        compareBValue = ((FdoStringValue*)(compareBDataValue.p))->GetString();
+                        compareBValue = ((FdoStringValue*)(compareBDataValue))->GetString();
                     }
 
                     if(wcscmp(compareAValue, compareBValue) < 0)
@@ -1460,7 +1528,7 @@ void CGwsBatchSortedBlockJoinQueryResults::ShowPrimaryCache()
 {
     for ( size_t i=0;i<m_pPrimaryCache.size();i++ )
     {
-        PrimaryCacheEntry* primaryCacheEntry = m_pPrimaryCache.at(i);
+        PrimaryCacheEntry* primaryCacheEntry = m_pPrimaryCache[i];
         if(primaryCacheEntry)
         {
             FdoString* val = L"";
@@ -1476,7 +1544,7 @@ void CGwsBatchSortedBlockJoinQueryResults::ShowPrimaryCache()
             printf("%d) Key=%S  Properties=%d\n", i+1, val, primaryCacheEntry->propertyCollection.size());
             for(size_t j=0;j<primaryCacheEntry->propertyCollection.size();j++)
             {
-                PropertyCacheEntry* propertyCacheEntry = primaryCacheEntry->propertyCollection.at(j);
+                PropertyCacheEntry* propertyCacheEntry = primaryCacheEntry->propertyCollection[j];
                 if(propertyCacheEntry)
                 {
                     if(propertyCacheEntry->dataValue)
