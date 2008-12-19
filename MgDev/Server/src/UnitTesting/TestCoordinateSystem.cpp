@@ -543,18 +543,18 @@ void TestCoordinateSystem::TestCase_Arbitrary_ConvertFromLonLat()
         pCoordinateSystem->ConvertToLonLat(x, y, x, y);
 
         // The values shouldn't change
-        CPPUNIT_ASSERT(MgUtil::ValuesEqual(lat, y));
         CPPUNIT_ASSERT(MgUtil::ValuesEqual(lon, x));
+        CPPUNIT_ASSERT(MgUtil::ValuesEqual(lat, y));
 
-        MgCoordinateXY coord(45.0, 90.0);
-        Ptr<MgCoordinate> pCoord = pCoordinateSystem->ConvertFromLonLat(&coord);
+        Ptr<MgCoordinate> coord = new MgCoordinateXY(45.0, 90.0);
+        coord = pCoordinateSystem->ConvertFromLonLat(coord.p);
 
         // Convert back
-        pCoordinateSystem->ConvertToLonLat(&coord);
+        coord = pCoordinateSystem->ConvertToLonLat(coord.p);
 
         // The values shouldn't change
-        CPPUNIT_ASSERT(MgUtil::ValuesEqual(coord.GetX(), 45.0));
-        CPPUNIT_ASSERT(MgUtil::ValuesEqual(coord.GetY(), 90.0));
+        CPPUNIT_ASSERT(MgUtil::ValuesEqual(coord->GetX(), 45.0));
+        CPPUNIT_ASSERT(MgUtil::ValuesEqual(coord->GetY(), 90.0));
     }
     catch(MgException* e)
     {
@@ -632,21 +632,21 @@ void TestCoordinateSystem::TestCase_Arbitrary_ConvertToLonLat()
         pCoordinateSystem->ConvertToLonLat(x, y, lon, lat);
 
         // Convert back
-        pCoordinateSystem->ConvertToLonLat(x, y, x, y);
+        pCoordinateSystem->ConvertFromLonLat(lon, lat, lon, lat);
 
         // The values shouldn't change
-        CPPUNIT_ASSERT(MgUtil::ValuesEqual(lat, y));
         CPPUNIT_ASSERT(MgUtil::ValuesEqual(lon, x));
+        CPPUNIT_ASSERT(MgUtil::ValuesEqual(lat, y));
 
-        MgCoordinateXY coord(45.0, 90.0);
-        Ptr<MgCoordinate> pCoord = pCoordinateSystem->ConvertToLonLat(&coord);
+        Ptr<MgCoordinate> coord = new MgCoordinateXY(45.0, 90.0);
+        coord = pCoordinateSystem->ConvertToLonLat(coord.p);
 
         // Convert back
-        pCoordinateSystem->ConvertFromLonLat(&coord);
+        coord = pCoordinateSystem->ConvertFromLonLat(coord.p);
 
         // The values shouldn't change
-        CPPUNIT_ASSERT(MgUtil::ValuesEqual(coord.GetX(), 45.0));
-        CPPUNIT_ASSERT(MgUtil::ValuesEqual(coord.GetY(), 90.0));
+        CPPUNIT_ASSERT(MgUtil::ValuesEqual(coord->GetX(), 45.0));
+        CPPUNIT_ASSERT(MgUtil::ValuesEqual(coord->GetY(), 90.0));
     }
     catch(MgException* e)
     {
