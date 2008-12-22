@@ -20,19 +20,22 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
 #include "GwsBinaryFeatureWriter.h"
 
+
 // This setting limits the batch size used by the join algorithm
 int CGwsBatchSortedBlockJoinQueryResults::sm_nBatchSize = 100; //Default
+
 
 /////////////////////////////////////////////////////////////////////
 //
 // class CGwsBatchSortedBlockJoinQueryResults
 //
 /////////////////////////////////////////////////////////////////////
+
 CGwsBatchSortedBlockJoinQueryResults::CGwsBatchSortedBlockJoinQueryResults (
 )
 {
@@ -41,6 +44,7 @@ CGwsBatchSortedBlockJoinQueryResults::CGwsBatchSortedBlockJoinQueryResults (
     m_primaryCacheIndex = 0;
     m_nEntriesUpdated = 0;
 }
+
 
 CGwsBatchSortedBlockJoinQueryResults::~CGwsBatchSortedBlockJoinQueryResults (
 ) throw()
@@ -65,6 +69,7 @@ CGwsBatchSortedBlockJoinQueryResults::~CGwsBatchSortedBlockJoinQueryResults (
         m_primaryFeatureIterator = NULL;
     }
 }
+
 
 EGwsStatus CGwsBatchSortedBlockJoinQueryResults::InitializeReader (
     IGWSQuery                       * query,
@@ -168,16 +173,15 @@ EGwsStatus CGwsBatchSortedBlockJoinQueryResults::InitializeReader (
         m_pPrimaryCache.push_back(cacheEntry);
     }
 
-
     #ifdef _DEBUG_BATCHSORT_JOIN
     printf("CGwsBatchSortedBlockJoinQueryResults::InitializeReader() - End\n");
     #endif
     return stat;
 }
 
+
 bool CGwsBatchSortedBlockJoinQueryResults::ReadNext ()
 {
-
     #ifdef _DEBUG_BATCHSORT_JOIN
     printf("CGwsBatchSortedBlockJoinQueryResults::ReadNext()\n");
     #endif
@@ -228,6 +232,7 @@ bool CGwsBatchSortedBlockJoinQueryResults::ReadNext ()
     return bRes;
 }
 
+
 IGWSFeatureIterator * CGwsBatchSortedBlockJoinQueryResults::GetJoinedFeatures (int iJoin)
 {
     #ifdef _DEBUG_BATCHSORT_JOIN
@@ -245,6 +250,7 @@ IGWSFeatureIterator * CGwsBatchSortedBlockJoinQueryResults::GetJoinedFeatures (i
 
     return GetJoinedFeatures ();
 }
+
 
 IGWSFeatureIterator * CGwsBatchSortedBlockJoinQueryResults::GetJoinedFeatures ()
 {
@@ -289,17 +295,18 @@ IGWSFeatureIterator * CGwsBatchSortedBlockJoinQueryResults::GetJoinedFeatures ()
 
     m_right->AddRef ();
     return m_right;
-
 }
 
-bool CGwsBatchSortedBlockJoinQueryResults::SetupBatchRightSide(bool bRes) {
 
+bool CGwsBatchSortedBlockJoinQueryResults::SetupBatchRightSide(bool bRes)
+{
     #ifdef _DEBUG_BATCHSORT_JOIN
     printf("  CGwsBatchSortedBlockJoinQueryResults::SetupBatchRightSide()\n");
     #endif
 
     return bRes;
 }
+
 
 // TODO - This method is executed 2 times on a join. 
 //        1) SelectFeatures() creates a MgServerGwsFeatureReader() object and inside this constructor it calls 
@@ -458,7 +465,6 @@ FdoDataValueCollection * CGwsBatchSortedBlockJoinQueryResults::GetJoinValues ()
                             }
                             break;
 
-
                         case FdoDataType_String:
                             switch (dtSecondary)
                             {
@@ -517,6 +523,7 @@ FdoDataValueCollection * CGwsBatchSortedBlockJoinQueryResults::GetJoinValues ()
     return NULL; // m_leftJoinVals;
 }
 
+
 FdoString * CGwsBatchSortedBlockJoinQueryResults::GetString (FdoString* propertyName)
 {
     FdoString* result = NULL;
@@ -565,6 +572,7 @@ FdoString * CGwsBatchSortedBlockJoinQueryResults::GetString (FdoString* property
 
     return result;
 }
+
 
 bool CGwsBatchSortedBlockJoinQueryResults::GetBoolean(FdoString* propertyName)
 {
@@ -615,6 +623,7 @@ bool CGwsBatchSortedBlockJoinQueryResults::GetBoolean(FdoString* propertyName)
     return result;
 }
 
+
 FdoByte CGwsBatchSortedBlockJoinQueryResults::GetByte(FdoString* propertyName)
 {
     FdoByte result = 0;
@@ -664,6 +673,7 @@ FdoByte CGwsBatchSortedBlockJoinQueryResults::GetByte(FdoString* propertyName)
     return result;
 }
 
+
 FdoDateTime CGwsBatchSortedBlockJoinQueryResults::GetDateTime(FdoString* propertyName)
 {
     FdoDateTime result;
@@ -712,6 +722,7 @@ FdoDateTime CGwsBatchSortedBlockJoinQueryResults::GetDateTime(FdoString* propert
 
     return result;
 }
+
 
 double CGwsBatchSortedBlockJoinQueryResults::GetDouble(FdoString* propertyName)
 {
@@ -770,6 +781,7 @@ double CGwsBatchSortedBlockJoinQueryResults::GetDouble(FdoString* propertyName)
     return result;
 }
 
+
 FdoInt16 CGwsBatchSortedBlockJoinQueryResults::GetInt16(FdoString* propertyName)
 {
     FdoInt16 result = 0;
@@ -818,6 +830,7 @@ FdoInt16 CGwsBatchSortedBlockJoinQueryResults::GetInt16(FdoString* propertyName)
 
     return result;
 }
+
 
 FdoInt32 CGwsBatchSortedBlockJoinQueryResults::GetInt32(FdoString* propertyName)
 {
@@ -868,6 +881,7 @@ FdoInt32 CGwsBatchSortedBlockJoinQueryResults::GetInt32(FdoString* propertyName)
     return result;
 }
 
+
 FdoInt64 CGwsBatchSortedBlockJoinQueryResults::GetInt64(FdoString* propertyName)
 {
     FdoInt64 result = 0;
@@ -916,6 +930,7 @@ FdoInt64 CGwsBatchSortedBlockJoinQueryResults::GetInt64(FdoString* propertyName)
 
     return result;
 }
+
 
 float CGwsBatchSortedBlockJoinQueryResults::GetSingle(FdoString* propertyName)
 {
@@ -966,6 +981,7 @@ float CGwsBatchSortedBlockJoinQueryResults::GetSingle(FdoString* propertyName)
     return result;
 }
 
+
 FdoLOBValue * CGwsBatchSortedBlockJoinQueryResults::GetLOB(FdoString* propertyName)
 {
     FdoLOBValue* result = NULL;
@@ -1015,12 +1031,14 @@ FdoLOBValue * CGwsBatchSortedBlockJoinQueryResults::GetLOB(FdoString* propertyNa
     return result;
 }
 
+
 FdoIStreamReader* CGwsBatchSortedBlockJoinQueryResults::GetLOBStreamReader(const wchar_t* propertyName )
 {
     // Not implemented
     assert (false);
     return NULL;
 }
+
 
 bool CGwsBatchSortedBlockJoinQueryResults::IsNull(FdoString* propertyName)
 {
@@ -1069,12 +1087,16 @@ bool CGwsBatchSortedBlockJoinQueryResults::IsNull(FdoString* propertyName)
 
     return result;
 }
+
+
 FdoIRaster*  CGwsBatchSortedBlockJoinQueryResults::GetRaster(FdoString* propertyName)
 {
     // Not implemented
     assert (false);
     return NULL;
 }
+
+
 FdoDataValue * CGwsBatchSortedBlockJoinQueryResults::GetPropertyValue (
     const CGwsPropertyDesc & desc
 )
@@ -1114,6 +1136,7 @@ FdoDataValue * CGwsBatchSortedBlockJoinQueryResults::GetPropertyValue (
     return result;
 }
 
+
 FdoDataValue * CGwsBatchSortedBlockJoinQueryResults::GetDataValue (FdoString* propertyName)
 {
     const CGwsPropertyDesc & desc = GetPropertyDescriptor (propertyName);
@@ -1121,6 +1144,7 @@ FdoDataValue * CGwsBatchSortedBlockJoinQueryResults::GetDataValue (FdoString* pr
         return NULL;
     return GetPropertyValue (desc);
 }
+
 
 FdoDataValueCollection * CGwsBatchSortedBlockJoinQueryResults::GetDataValues (
     FdoStringCollection* propertyNames
@@ -1136,6 +1160,7 @@ FdoDataValueCollection * CGwsBatchSortedBlockJoinQueryResults::GetDataValues (
     }
     return vals;
 }
+
 
 const FdoByte * CGwsBatchSortedBlockJoinQueryResults::GetGeometry(
     FdoString * propertyName,
@@ -1190,8 +1215,8 @@ const FdoByte * CGwsBatchSortedBlockJoinQueryResults::GetGeometry(
         m_bGeometryConverted = true;
     }
     return gvalue;
-
 }
+
 
 FdoByteArray* CGwsBatchSortedBlockJoinQueryResults::GetGeometry(FdoString* propertyName)
 {
@@ -1240,10 +1265,12 @@ FdoByteArray* CGwsBatchSortedBlockJoinQueryResults::GetGeometry(FdoString* prope
     return gvalue;
 }
 
+
 FdoByteArray * CGwsBatchSortedBlockJoinQueryResults::GetOriginalGeometry (FdoString* propertyName)
 {
     return GetGeometry (propertyName);
 }
+
 
 FdoIFeatureReader* CGwsBatchSortedBlockJoinQueryResults::GetFeatureObject(FdoString* propertyName)
 {
@@ -1251,6 +1278,7 @@ FdoIFeatureReader* CGwsBatchSortedBlockJoinQueryResults::GetFeatureObject(FdoStr
     assert (false);
     return NULL;
 }
+
 
 void CGwsBatchSortedBlockJoinQueryResults::ClearIteratorCache()
 {
@@ -1281,6 +1309,7 @@ void CGwsBatchSortedBlockJoinQueryResults::ClearIteratorCache()
     m_primaryCacheIndex = 0;
 }
 
+
 void CGwsBatchSortedBlockJoinQueryResults::ResetCache()
 {
     for ( size_t i=0;i<m_pPrimaryCache.size();i++ )
@@ -1305,6 +1334,7 @@ void CGwsBatchSortedBlockJoinQueryResults::ResetCache()
 
     m_primaryCacheIndex = 0;
 }
+
 
 void CGwsBatchSortedBlockJoinQueryResults::QuickSort(std::vector<PrimaryCacheEntry*>& cache, FdoInt32 left, FdoInt32 right)
 {
@@ -1340,6 +1370,7 @@ void CGwsBatchSortedBlockJoinQueryResults::QuickSort(std::vector<PrimaryCacheEnt
     if (i < right)
         QuickSort(cache, i, right);
 }
+
 
 bool CGwsBatchSortedBlockJoinQueryResults::QuickSortCompare(PrimaryCacheEntry* compareA, PrimaryCacheEntry* compareB)
 {
@@ -1523,6 +1554,7 @@ bool CGwsBatchSortedBlockJoinQueryResults::QuickSortCompare(PrimaryCacheEntry* c
 
     return bResult;
 }
+
 
 void CGwsBatchSortedBlockJoinQueryResults::ShowPrimaryCache()
 {

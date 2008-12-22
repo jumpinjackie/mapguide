@@ -21,6 +21,7 @@
 // forward declarations
 class CGwsPropertyDesc;
 
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 // class CGwsMutableFeature
@@ -184,6 +185,7 @@ protected:
     GWSCoordinateSystem                       m_srccsname; // coordinate system override
 };
 
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 // class CGwsBinaryFeature
@@ -217,8 +219,8 @@ public:
     virtual GWSFeatureId        GetFeatureId ();
     // sets pooled feature from the feature
     void                        Set (IGWSFeature * feature);
-
 };
+
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -253,6 +255,5 @@ protected:
     FdoPtr<IGWSExtendedFeatureDescription>
                                      m_pFeatDesc;
 };
-
 
 #endif

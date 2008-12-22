@@ -18,10 +18,10 @@
 #ifndef _GWSFLATFDOREADER_H
 #define _GWSFLATFDOREADER_H
 
+///////////////////////////////////////////////////////////////////////////////
 class PropertyDefItem
 {
 public:
-
     PropertyDefItem (
         int                              nItem,
         std::vector<int>&                aPath,
@@ -43,7 +43,6 @@ public:
         m_pFlatDef = GwsQueryHelpers::ClonePropertyDefinition (pubname, pdef, forceReadOnly);
         m_aPath = aPath;
         m_aKey = aKey;
-
     }
 
     PropertyDefItem (const PropertyDefItem & other)
@@ -123,9 +122,9 @@ public:
     {
         return m_nItem;
     }
+
 protected:
     PropertyDefItem () {}
-
 
 private:
     int                                     m_nItem;
@@ -134,14 +133,18 @@ private:
     FdoPtr<IGWSExtendedFeatureDescription>  m_fdsc;
     std::vector<int>                        m_aPath;
     WSTR                                    m_aKey;
-
 };
 
-struct sortKey {
+
+///////////////////////////////////////////////////////////////////////////////
+struct sortKey
+{
     FdoInt32    joinCacheId;
     FdoInt32    sortPropId;
 };
 
+
+///////////////////////////////////////////////////////////////////////////////
 class CGwsFlatFdoReader: public FdoIFeatureReader
 {
 public:
@@ -208,6 +211,7 @@ private:
     bool                        PositionPrimaryReaderAtCacheId(FdoInt32 cacheId);
     bool                        BuildCidIndexMap(); // map cache id to scrollable index (LHS)
     void                        SortResults();      // sort the results
+
 public:
     static void BuildFlatDescription(IGWSQueryDefinition* pQryDef,
                                     IGWSExtendedFeatureDescription* pJoinDesc,
@@ -233,12 +237,13 @@ protected:
     std::vector<sortKey>        m_orderedCIDs;
 };
 
+
+///////////////////////////////////////////////////////////////////////////////
 class CGwsFlatGwsIterator: public CGwsFeatureIterator
 {
 public:
                                 CGwsFlatGwsIterator (IGWSFeatureIterator * iter);
     virtual                     ~CGwsFlatGwsIterator () throw();
-
 
     // FdoIFeatureReader
     virtual FdoClassDefinition* GetClassDefinition();
@@ -262,7 +267,6 @@ public:
     virtual FdoIRaster*         GetRaster(FdoString* propertyName);
     virtual bool                ReadNext();
     virtual void                Close();
-
 
     // IGWSFeatureIterator
     virtual bool                NextFeature (IGWSFeature ** feature);
@@ -303,9 +307,11 @@ public:
     virtual FdoInt32            ResolveJoinIdVector(std::vector<FdoInt32>& idVec);
     virtual std::vector<FdoInt32>* GetJoinIdVector(FdoInt32 jCacheId);
     virtual bool                ReadAtCacheId(FdoInt32 cacheId);
+
 protected:
     FdoDataValue *              GetPropertyValue (const CGwsPropertyDesc & desc);
     const CGwsPropertyDesc &    GetPropertyDescriptor (FdoString * propname);
+
 protected:
     CGwsFlatFdoReader       *   m_pFlatFdoReader;
     FdoPtr<IGWSExtendedFeatureDescription> m_fdsc;

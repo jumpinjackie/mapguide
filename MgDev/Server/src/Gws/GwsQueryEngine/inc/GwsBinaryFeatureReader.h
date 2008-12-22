@@ -18,6 +18,7 @@
 
 #include "GwsBinaryReader.h"
 
+///////////////////////////////////////////////////////////////////////////////
 class GwsBinaryFeatureReader
 {
 public:
@@ -49,6 +50,5 @@ private:
     int m_fcNameLen;
     int m_totalProps;
 };
-
 
 #endif //GWS_BINARYFEATUREWRITER_H

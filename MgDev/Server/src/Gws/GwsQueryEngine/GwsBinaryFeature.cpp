@@ -20,16 +20,18 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
 #include "GwsBinaryFeatureReader.h"
+
 
 /////////////////////////////////////////////////////////////////////
 //
 // class CGwsBinaryFeature
 //
 /////////////////////////////////////////////////////////////////////
+
 CGwsBinaryFeature::CGwsBinaryFeature (IGWSExtendedFeatureDescription * iResdscs)
 {
     Initialize (iResdscs);
@@ -37,11 +39,13 @@ CGwsBinaryFeature::CGwsBinaryFeature (IGWSExtendedFeatureDescription * iResdscs)
     m_pBinaryReader = NULL;
 }
 
+
 CGwsBinaryFeature::~CGwsBinaryFeature () throw()
 {
     if(m_pBinaryReader)
         delete m_pBinaryReader;
 }
+
 
 //copies the binary feature data into the base class's FdoPropertyValueCollection
 void CGwsBinaryFeature::Set (unsigned char* pBuf, int len)

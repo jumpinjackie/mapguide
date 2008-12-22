@@ -18,15 +18,18 @@
 #include "stdafx.h"
 #include "GwsQueryEngineImp.h"
 
+
 CGwsMultiSelectIterator::CGwsMultiSelectIterator ()
     : CGwsFeatureIterator()
     , m_queryIdx(0)
 {
 }
 
+
 CGwsMultiSelectIterator::~CGwsMultiSelectIterator() throw()
 {
 }
+
 
 EGwsStatus CGwsMultiSelectIterator::InitializeReader (
     FdoIFeatureReader               * pReader,
@@ -38,6 +41,7 @@ EGwsStatus CGwsMultiSelectIterator::InitializeReader (
     assert(false);
     return eGwsNotSupported;
 }
+
 
 EGwsStatus CGwsMultiSelectIterator::InitializeReader (
                                     IGWSQuery                       * fquery,
@@ -58,6 +62,7 @@ EGwsStatus CGwsMultiSelectIterator::InitializeReader (
     //
     return Execute();
 }
+
 
 EGwsStatus CGwsMultiSelectIterator::Execute ()
 {
@@ -121,6 +126,7 @@ EGwsStatus CGwsMultiSelectIterator::Execute ()
     }
 }
 
+
 bool CGwsMultiSelectIterator::ReadNext()
 {
     CheckIterator ();
@@ -142,6 +148,7 @@ bool CGwsMultiSelectIterator::ReadNext()
     //
     return m_iter->ReadNext();
 }
+
 
 bool CGwsMultiSelectIterator::NextFeature (IGWSFeature ** feature)
 {
@@ -165,6 +172,7 @@ bool CGwsMultiSelectIterator::NextFeature (IGWSFeature ** feature)
     return m_iter->NextFeature(feature);
 }
 
+
 void CGwsMultiSelectIterator::SetExposeFeatureIdAsCacheId (bool bFlag)
 {
     m_bExposeFeatureIdAsCacheId = bFlag;
@@ -174,6 +182,7 @@ void CGwsMultiSelectIterator::SetExposeFeatureIdAsCacheId (bool bFlag)
     }
 }
 
+
 void CGwsMultiSelectIterator::SetLayerSource (FdoString* strLayerSource)
 {
     m_strLayerSource = strLayerSource;
@@ -182,6 +191,7 @@ void CGwsMultiSelectIterator::SetLayerSource (FdoString* strLayerSource)
         m_iter->SetLayerSource (strLayerSource);
     }
 }
+
 
 const GWSCoordinateSystem & CGwsMultiSelectIterator::GetCSName ()
 {
@@ -196,11 +206,13 @@ bool CGwsMultiSelectIterator::InitializeMutableFeature ()
     return m_iter->InitializeMutableFeature ();
 }
 
+
 void CGwsMultiSelectIterator::DescribeFeature(IGWSExtendedFeatureDescription ** ppResDesc)
 {
     CheckIterator ();
     m_iter->DescribeFeature(ppResDesc);
 }
+
 
 FdoInt32 CGwsMultiSelectIterator::GetCacheId ()
 {
@@ -208,11 +220,13 @@ FdoInt32 CGwsMultiSelectIterator::GetCacheId ()
     return m_iter->GetCacheId ();
 }
 
+
 FdoInt32 CGwsMultiSelectIterator::GetRevisionNumber ()
 {
     CheckIterator ();
     return m_iter->GetRevisionNumber ();
 }
+
 
 GWSFeatureId CGwsMultiSelectIterator::GetFeatureId ()
 {
@@ -226,22 +240,28 @@ bool CGwsMultiSelectIterator::IsNew ()
     CheckIterator ();
     return m_iter->IsNew ();
 }
+
+
 bool CGwsMultiSelectIterator::IsModified ()
 {
     CheckIterator ();
     return m_iter->IsModified ();
 }
+
+
 bool CGwsMultiSelectIterator::IsDeleted ()
 {
     CheckIterator ();
     return m_iter->IsDeleted ();
 }
 
+
 EGwsLockType CGwsMultiSelectIterator::GetCacheLockType ()
 {
     CheckIterator ();
     return m_iter->GetCacheLockType ();
 }
+
 
 IGWSFeatureIterator* CGwsMultiSelectIterator::GetJoinedFeatures (int i)
 {
@@ -266,6 +286,7 @@ const CGwsPropertyDesc &
     return m_iter->GetPropertyDescriptor (iProp);
 }
 
+
 const CGwsPropertyDesc &
     CGwsMultiSelectIterator::GetPropertyDescriptor (FdoString * propname)
 {
@@ -273,11 +294,13 @@ const CGwsPropertyDesc &
     return m_iter->GetPropertyDescriptor (propname);
 }
 
+
 FdoString * CGwsMultiSelectIterator::GetString (FdoString * propname)
 {
     CheckIterator ();
     return m_iter->GetString (propname);
 }
+
 
 bool CGwsMultiSelectIterator::GetBoolean(FdoString* propname)
 {
@@ -285,11 +308,13 @@ bool CGwsMultiSelectIterator::GetBoolean(FdoString* propname)
     return m_iter->GetBoolean(propname);
 }
 
+
 FdoByte CGwsMultiSelectIterator::GetByte(FdoString* propname)
 {
     CheckIterator ();
     return m_iter->GetByte(propname);
 }
+
 
 FdoDateTime CGwsMultiSelectIterator::GetDateTime(FdoString* propname)
 {
@@ -297,11 +322,13 @@ FdoDateTime CGwsMultiSelectIterator::GetDateTime(FdoString* propname)
     return m_iter->GetDateTime(propname);
 }
 
+
 double CGwsMultiSelectIterator::GetDouble(FdoString* propname)
 {
     CheckIterator ();
     return m_iter->GetDouble(propname);
 }
+
 
 FdoInt16 CGwsMultiSelectIterator::GetInt16(FdoString* propname)
 {
@@ -309,17 +336,20 @@ FdoInt16 CGwsMultiSelectIterator::GetInt16(FdoString* propname)
     return m_iter->GetInt16(propname);
 }
 
+
 FdoInt32 CGwsMultiSelectIterator::GetInt32(FdoString* propname)
 {
     CheckIterator ();
     return m_iter->GetInt32(propname);
 }
 
+
 FdoInt64 CGwsMultiSelectIterator::GetInt64(FdoString* propname)
 {
     CheckIterator ();
     return m_iter->GetInt64(propname);
 }
+
 
 float CGwsMultiSelectIterator::GetSingle(FdoString* propname)
 {
@@ -334,11 +364,13 @@ FdoLOBValue * CGwsMultiSelectIterator::GetLOB(FdoString* propertyName)
     return m_iter->GetLOB(propertyName);
 }
 
+
 FdoIStreamReader* CGwsMultiSelectIterator::GetLOBStreamReader(const wchar_t* propertyName )
 {
     CheckIterator ();
     return m_iter->GetLOBStreamReader(propertyName);
 }
+
 
 bool CGwsMultiSelectIterator::IsNull(FdoString* propertyName)
 {
@@ -346,17 +378,20 @@ bool CGwsMultiSelectIterator::IsNull(FdoString* propertyName)
     return m_iter->IsNull(propertyName);
 }
 
+
 FdoIRaster*  CGwsMultiSelectIterator::GetRaster(FdoString* propertyName)
 {
     CheckIterator ();
     return m_iter->GetRaster(propertyName);
 }
 
+
 FdoDataValue * CGwsMultiSelectIterator::GetDataValue (FdoString* propertyName)
 {
     CheckIterator ();
     return m_iter->GetDataValue (propertyName);
 }
+
 
 FdoDataValueCollection * CGwsMultiSelectIterator::GetDataValues (
     FdoStringCollection* propertyNames
@@ -371,8 +406,8 @@ FdoInt32 CGwsMultiSelectIterator::GetDepth()
 {
     CheckIterator ();
     return m_iter->GetDepth();
-
 }
+
 
 const FdoByte * CGwsMultiSelectIterator::GetGeometry(
     FdoString * propertyName,
@@ -383,11 +418,13 @@ const FdoByte * CGwsMultiSelectIterator::GetGeometry(
     return m_iter->GetGeometry(propertyName, count);
 }
 
+
 FdoByteArray* CGwsMultiSelectIterator::GetGeometry(FdoString* propertyName)
 {
     CheckIterator ();
     return m_iter->GetGeometry(propertyName);
 }
+
 
 FdoByteArray * CGwsMultiSelectIterator::GetOriginalGeometry (FdoString* propertyName)
 {
@@ -395,11 +432,13 @@ FdoByteArray * CGwsMultiSelectIterator::GetOriginalGeometry (FdoString* property
     return m_iter->GetOriginalGeometry (propertyName);
 }
 
+
 bool CGwsMultiSelectIterator::ConvertingGeometry ()
 {
     CheckIterator ();
     return m_iter->ConvertingGeometry ();
 }
+
 
 FdoIFeatureReader* CGwsMultiSelectIterator::GetFeatureObject(FdoString* propertyName)
 {
@@ -407,11 +446,13 @@ FdoIFeatureReader* CGwsMultiSelectIterator::GetFeatureObject(FdoString* property
     return m_iter->GetFeatureObject(propertyName);
 }
 
+
 FdoGeometryType CGwsMultiSelectIterator::GetGeometryType(FdoByteArray* pArray)
 {
     CheckIterator ();
     return m_iter->GetGeometryType(pArray);
 }
+
 
 FdoString* CGwsMultiSelectIterator::GetPrimaryGeometryName()
 {
@@ -419,11 +460,13 @@ FdoString* CGwsMultiSelectIterator::GetPrimaryGeometryName()
     return m_iter->GetPrimaryGeometryName();
 }
 
+
 FdoClassDefinition* CGwsMultiSelectIterator::GetClassDefinition()
 {
     CheckIterator ();
     return m_iter->GetClassDefinition();
 }
+
 
 void CGwsMultiSelectIterator::ToString (
     FdoString * propname,
@@ -444,17 +487,20 @@ FdoDataValue * CGwsMultiSelectIterator::GetPropertyValue (
     return m_iter->GetPropertyValue (desc);
 }
 
+
 IGWSMutableFeature * CGwsMultiSelectIterator::GetSimpleFeature ()
 {
     CheckIterator ();
     return m_iter->GetSimpleFeature ();
 }
 
+
 unsigned char* CGwsMultiSelectIterator::ToBuffer(int& bufLen)
 {
     CheckIterator ();
     return m_iter->ToBuffer(bufLen);
 }
+
 
 void CGwsMultiSelectIterator::CheckIterator ()
 {
@@ -464,6 +510,7 @@ void CGwsMultiSelectIterator::CheckIterator ()
         GWS_THROW(eGwsClosedFeatureIterator);
     }
 }
+
 
 //IGWSFeatureIterator::SdfIScrollableFeatureReader implementation.
 int
@@ -477,6 +524,7 @@ CGwsMultiSelectIterator::Count()
     return m_iter->Count ();
 }
 
+
 bool
 CGwsMultiSelectIterator::ReadFirst()
 {
@@ -487,6 +535,8 @@ CGwsMultiSelectIterator::ReadFirst()
 
     return m_iter->ReadFirst ();
 }
+
+
 bool
 CGwsMultiSelectIterator::ReadLast()
 {
@@ -497,6 +547,7 @@ CGwsMultiSelectIterator::ReadLast()
 
     return m_iter->ReadLast ();
 }
+
 
 bool
 CGwsMultiSelectIterator::ReadPrevious()
@@ -509,6 +560,7 @@ CGwsMultiSelectIterator::ReadPrevious()
     return m_iter->ReadPrevious ();
 }
 
+
 bool
 CGwsMultiSelectIterator::ReadAt(FdoPropertyValueCollection* key)
 {
@@ -519,6 +571,7 @@ CGwsMultiSelectIterator::ReadAt(FdoPropertyValueCollection* key)
 
     return m_iter->ReadAt (key);
 }
+
 
 bool
 CGwsMultiSelectIterator::ReadAtIndex( unsigned int recordindex )
@@ -543,6 +596,7 @@ CGwsMultiSelectIterator::IndexOf(FdoPropertyValueCollection* key)
     return m_iter->IndexOf (key);
 }
 
+
 bool
 CGwsMultiSelectIterator::Scrollable()
 {
@@ -550,11 +604,10 @@ CGwsMultiSelectIterator::Scrollable()
     return m_iter->Scrollable ();
 }
 
+
 IGWSFeatureIterator*
 CGwsMultiSelectIterator::GetPrimaryIterator()
 {
     CheckIterator ();
     return m_iter->GetPrimaryIterator();
 }
-
-

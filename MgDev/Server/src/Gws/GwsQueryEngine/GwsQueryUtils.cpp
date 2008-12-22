@@ -20,16 +20,18 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
 #include "FdoExpressionEngineFilterProcessor.h"
+
 
 /////////////////////////////////////////////////////////////////////
 //
 // namespace GwsQueryFdoUtils
 //
 /////////////////////////////////////////////////////////////////////
+
 FdoDataValue * GwsQueryUtils::GetDataPropertyValue (
     FdoIReader  *   reader,
     FdoDataType     dataprop,
@@ -81,8 +83,8 @@ FdoDataValue * GwsQueryUtils::GetDataPropertyValue (
         assert(false);
     }
     return NULL;
-
 }
+
 
 void GwsQueryUtils::ToString (
     IGWSFeature            * feature,
@@ -240,12 +242,11 @@ void GwsQueryUtils::ToString (
     }
     assert (false);
     return;
-
 }
 
+
 //compare two string lists
-bool
-GwsQueryUtils::CompareStringCollection(
+bool GwsQueryUtils::CompareStringCollection(
     FdoStringCollection* firstString
     , FdoStringCollection* secondString)
 {
@@ -262,9 +263,9 @@ GwsQueryUtils::CompareStringCollection(
     return true;
 }
 
+
 //compare two identifier lists
-bool
-GwsQueryUtils::CompareIdentifierCollection(
+bool GwsQueryUtils::CompareIdentifierCollection(
     FdoIdentifierCollection* firstIdentifiers
     , FdoIdentifierCollection* secondIdentifiers)
 {
@@ -287,6 +288,7 @@ GwsQueryUtils::CompareIdentifierCollection(
 
     return true;
 }
+
 
 bool GwsQueryUtils::QueryDefinitionsEqual (
     IGWSQueryDefinition * qdef1,
@@ -370,6 +372,7 @@ bool GwsQueryUtils::QueryDefinitionsEqual (
 
 }
 
+
 FdoIdentifierCollection* GwsQueryUtils::CreateIdentifiersFromStrings(
     FdoStringCollection* strings
 )
@@ -385,6 +388,7 @@ FdoIdentifierCollection* GwsQueryUtils::CreateIdentifiersFromStrings(
 
     return identifiers;
 }
+
 
 bool GwsQueryUtils::FilterHasCalculatedProperties( FdoFilter* pFilter, FdoIdentifierCollection *pSelectList )
 {
@@ -413,13 +417,13 @@ bool GwsQueryUtils::FilterHasCalculatedProperties( FdoFilter* pFilter, FdoIdenti
     return finder.HasCalculatedProperties;
 }
 
+
 FdoPropertyDefinition * GwsQueryHelpers::ClonePropertyDefinition (
     FdoString             * newName,
     FdoPropertyDefinition * pDefIn,
     bool                    forceCloneReadOnly
 )
 {
-
     std::wstring wpubname;
 
     if (pDefIn == NULL)
@@ -458,7 +462,6 @@ FdoPropertyDefinition * GwsQueryHelpers::ClonePropertyDefinition (
         pOut->SetHasElevation(pIn->GetHasElevation ());
         pOut->SetHasMeasure (pIn->GetHasMeasure ());
         pOut->SetSpatialContextAssociation (pIn->GetSpatialContextAssociation ());
-
     }
 
     if (pDefIn->GetPropertyType () == FdoPropertyType_ObjectProperty) {
@@ -501,10 +504,10 @@ FdoPropertyDefinition * GwsQueryHelpers::ClonePropertyDefinition (
         pOut->SetDefaultImageXSize (pIn->GetDefaultImageXSize ());
         pOut->SetDefaultImageYSize (pIn->GetDefaultImageYSize ());
         pOut->SetSpatialContextAssociation (pIn->GetSpatialContextAssociation ());
-
     }
     return pDefOut;
 }
+
 
 void GwsQueryHelpers::CreateFlatFdoReader (
     IGWSFeatureIterator * pFrom,
@@ -514,6 +517,7 @@ void GwsQueryHelpers::CreateFlatFdoReader (
     * pFdoReader = new CGwsFlatFdoReader (pFrom);
 }
 
+
 void  GwsQueryHelpers::CreateFlatGwsIterator (
     IGWSFeatureIterator * pFrom,
     IGWSFeatureIterator ** pGwsIterator
@@ -521,14 +525,11 @@ void  GwsQueryHelpers::CreateFlatGwsIterator (
 {
     * pGwsIterator = new CGwsFlatGwsIterator (pFrom);
     (* pGwsIterator)->AddRef ();
-
 }
+
 
 void GwsQueryHelpers::BuildFlatDescription(IGWSQueryDefinition* pQryDef,
                                            IGWSExtendedFeatureDescription* pJoinDesc,
                                            IGWSExtendedFeatureDescription** ppResDesc) {
     CGwsFlatFdoReader::BuildFlatDescription(pQryDef,pJoinDesc,ppResDesc);
 }
-
-
-

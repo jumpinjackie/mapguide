@@ -20,8 +20,8 @@
 // Includes
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
 
 
@@ -30,8 +30,8 @@
 // Defines
 //
 ///////////////////////////////////////////////////////////////////////////////
-#define LOCK_BATCH_SIZE 150     // batch size for locking
 
+#define LOCK_BATCH_SIZE 150     // batch size for locking
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -39,6 +39,7 @@
 // class CGwsFdoLockingCommand
 //
 ///////////////////////////////////////////////////////////////////////////////
+
 CGwsFdoLockingCommand::CGwsFdoLockingCommand (
     FdoIConnection           *session,
     const GWSQualifiedName   &classname
@@ -47,10 +48,12 @@ CGwsFdoLockingCommand::CGwsFdoLockingCommand (
 {
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 CGwsFdoLockingCommand::~CGwsFdoLockingCommand ()
 {
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void CGwsFdoLockingCommand::PrepareInternal ()
@@ -60,12 +63,14 @@ void CGwsFdoLockingCommand::PrepareInternal ()
     m_processed.clear ();
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoLockingCommand::Execute (CGwsMutableFeature & feature)
 {
     // this should not be exteneded feature
     return Execute (feature.GetFeatureId ());
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoLockingCommand::Execute (const GWSFeatureId & featid)
@@ -77,7 +82,6 @@ EGwsStatus CGwsFdoLockingCommand::Execute (const GWSFeatureId & featid)
         PushStatus (eGwsFdoQueryIsNotPrepared);
         return eGwsFdoQueryIsNotPrepared;
     }
-
 
     try {
         fdoes = BuildFilter (featid, filter.p);   // build filter
@@ -118,7 +122,6 @@ EGwsStatus CGwsFdoLockingCommand::Execute (
     Clear ();
     int          idx;
     EGwsStatus   fdoes = eGwsOk;
-
 
     try {
         int fcount = (int)
@@ -172,12 +175,12 @@ EGwsStatus CGwsFdoLockingCommand::Execute (
 }
 
 
-
 ///////////////////////////////////////////////////////////////////////////////
 //
 // class CGwsFdoLockCommand
 //
 ///////////////////////////////////////////////////////////////////////////////
+
 CGwsFdoLockCommand::CGwsFdoLockCommand (
 //    CGwsFeatureSourceSession *session,
     FdoIConnection           *session,
@@ -188,10 +191,12 @@ CGwsFdoLockCommand::CGwsFdoLockCommand (
     m_lockType = FdoLockType_None;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 CGwsFdoLockCommand::~CGwsFdoLockCommand ()
 {
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoLockCommand::Init (const wchar_t* pFDOCommandClass /*NULL*/)
@@ -220,8 +225,8 @@ EGwsStatus CGwsFdoLockCommand::Init (const wchar_t* pFDOCommandClass /*NULL*/)
         fdoes = eGwsFailedToPrepareCommand;
     }
     return fdoes;
-
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void CGwsFdoLockCommand::PrepareInternal()
@@ -270,10 +275,9 @@ void CGwsFdoLockCommand::PrepareInternal()
         }
     } catch (FdoException * fdoEx) {
         fdoEx->Release ();
-
     }
-
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void CGwsFdoLockCommand::SetFilterInternal (FdoFilter * filter)
@@ -282,6 +286,7 @@ void CGwsFdoLockCommand::SetFilterInternal (FdoFilter * filter)
 
     ((FdoIAcquireLock *) m_pCommand.p)->SetFilter (filter);
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoLockCommand::ExecuteFilter (FdoFilter *pFilter)
@@ -310,5 +315,3 @@ EGwsStatus CGwsFdoLockCommand::ExecuteFilter (FdoFilter *pFilter)
     }
     return fdoes;
 }
-
-

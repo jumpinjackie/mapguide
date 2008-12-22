@@ -20,8 +20,8 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
 
 
@@ -30,7 +30,6 @@
 // Static data
 //
 /////////////////////////////////////////////////////////////////////
-
 
 static bool supportOrdering (FdoIConnection * conn)
 {
@@ -48,15 +47,18 @@ static bool supportOrdering (FdoIConnection * conn)
 // class CGwsFeatureSourceQuery
 //
 /////////////////////////////////////////////////////////////////////
+
 CGwsFeatureSourceQuery::CGwsFeatureSourceQuery ()
 {
     m_pQuery = NULL;
 }
 
+
 CGwsFeatureSourceQuery::~CGwsFeatureSourceQuery () throw()
 {
     delete m_pQuery;
 }
+
 
 void CGwsFeatureSourceQuery::Initialize (
     IGWSConnectionPool        * pool,
@@ -91,6 +93,7 @@ void CGwsFeatureSourceQuery::GetQueryDefinition (IGWSQueryDefinition ** ppQdef)
     }
 }
 
+
 void CGwsFeatureSourceQuery::DescribeResults (
     IGWSExtendedFeatureDescription ** ppResDesc
 )
@@ -101,7 +104,6 @@ void CGwsFeatureSourceQuery::DescribeResults (
         GWS_THROW (eGwsFdoQueryIsNotPrepared);
     m_pQuery->DescribeResults (ppResDesc);
 }
-
 
 
 void CGwsFeatureSourceQuery::SetDestinationCS (
@@ -117,10 +119,12 @@ const GWSCoordinateSystem & CGwsFeatureSourceQuery::GetDestinationCS ()
     return m_csname;
 }
 
+
 void CGwsFeatureSourceQuery::SetSourceCS (const GWSCoordinateSystem & csname)
 {
     m_srccsname = csname;
 }
+
 
 const GWSCoordinateSystem &  CGwsFeatureSourceQuery::GetSourceCS ()
 {
@@ -170,11 +174,13 @@ void CGwsFeatureSourceQuery::Prepare ()
     }
 }
 
+
 void CGwsFeatureSourceQuery::SetClassDefinition(FdoClassDefinition* pClassDef)
 {
     FDO_SAFE_ADDREF(pClassDef);
     m_classDef = pClassDef;
 }
+
 
 CGwsPreparedQuery * CGwsFeatureSourceQuery::Prepare (
     IGWSQueryDefinition * qrydef,
@@ -268,6 +274,7 @@ CGwsPreparedFeatureQuery * CGwsFeatureSourceQuery::PrepareFeatureQuery (
     pQuery->m_resultDescriptor->SetSuffix (madesuffix);
     return pQuery;
 }
+
 
 CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
     IGWSJoinQueryDefinition     * pFQuery,
@@ -438,6 +445,7 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
     return prepQuery;
 }
 
+
 void CGwsFeatureSourceQuery::ValidateJoinAttributes (
     FdoPropertyDefinition * lpdef,
     FdoPropertyDefinition * rpdef,
@@ -507,6 +515,7 @@ CGwsPreparedFeatureQuery * CGwsFeatureSourceQuery::CreatePreparedFeatureQuery (
     return new CGwsPreparedFeatureQuery (sess, classname, this);
 }
 
+
 CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::CreatePreparedJoinQuery(
     EGwsQueryType              jtype,
     EGwsJoinMethod             joinmethod,
@@ -526,7 +535,6 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::CreatePreparedJoinQuery(
 }
 
 
-
 void CGwsFeatureSourceQuery::SetFilter (FdoFilter * filter)
 {
     if (m_pQuery == NULL) {
@@ -536,6 +544,7 @@ void CGwsFeatureSourceQuery::SetFilter (FdoFilter * filter)
     assert (m_pQuery); // successful preparation must initialize m_pQuery
     m_pQuery->SetFilter (filter);
 }
+
 
 FdoFilter * CGwsFeatureSourceQuery::GetFilter ()
 {
@@ -548,12 +557,10 @@ FdoFilter * CGwsFeatureSourceQuery::GetFilter ()
 }
 
 
-
 const WSTR & CGwsFeatureSourceQuery::GetRevisionPropertyName ()
 {
     return m_revprop;
 }
-
 
 
 void CGwsFeatureSourceQuery::Execute (IGWSFeatureIterator ** results, bool bScrollable /*false*/)
@@ -568,6 +575,7 @@ void CGwsFeatureSourceQuery::Execute (IGWSFeatureIterator ** results, bool bScro
         GWS_THROW_DIAG (eGwsFailedToExecuteQuery, dynamic_cast<CGwsObject *> (m_pQuery));
     }
 }
+
 
 void CGwsFeatureSourceQuery::Execute (
     FdoFilter            * filter,
@@ -585,6 +593,7 @@ void CGwsFeatureSourceQuery::Execute (
     }
 }
 
+
 void CGwsFeatureSourceQuery::Execute (
     const GWSFeatureId   & featid,
     IGWSFeatureIterator ** results
@@ -600,6 +609,7 @@ void CGwsFeatureSourceQuery::Execute (
         GWS_THROW_DIAG (eGwsFailedToExecuteQuery, dynamic_cast<CGwsObject *> (m_pQuery));
     }
 }
+
 
 void CGwsFeatureSourceQuery::Execute (
     const GwsFeaturesIdVector & featids,
@@ -620,6 +630,7 @@ void CGwsFeatureSourceQuery::Execute (
     }
 }
 
+
 CGwsPreparedFeatureQuery * CGwsFeatureSourceQuery::GetPrimaryPreparedQuery ()
 {
     if (m_pQuery == NULL)
@@ -627,5 +638,3 @@ CGwsPreparedFeatureQuery * CGwsFeatureSourceQuery::GetPrimaryPreparedQuery ()
     return m_pQuery->GetPrimaryQuery ();
 
 }
-
-

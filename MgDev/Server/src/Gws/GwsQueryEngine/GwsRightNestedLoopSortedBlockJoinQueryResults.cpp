@@ -20,22 +20,26 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
+
 
 /////////////////////////////////////////////////////////////////////
 //
 // class CGwsRightNestedLoopSortedBlockJoinQueryResults
 //
 /////////////////////////////////////////////////////////////////////
+
 CGwsRightNestedLoopSortedBlockJoinQueryResults::CGwsRightNestedLoopSortedBlockJoinQueryResults ()
 {
 }
 
+
 CGwsRightNestedLoopSortedBlockJoinQueryResults::~CGwsRightNestedLoopSortedBlockJoinQueryResults () throw()
 {
 }
+
 
 EGwsStatus CGwsRightNestedLoopSortedBlockJoinQueryResults::InitializeReader  (
     IGWSQuery                  * query,
@@ -45,8 +49,8 @@ EGwsStatus CGwsRightNestedLoopSortedBlockJoinQueryResults::InitializeReader  (
 )
 {
     return CGwsRightNestedLoopJoinQueryResults::InitializeReader (query, prepquery, joincols, bScrollable);
-
 }
+
 
 bool CGwsRightNestedLoopSortedBlockJoinQueryResults::ReadNext()
 {
@@ -65,31 +69,33 @@ bool CGwsRightNestedLoopSortedBlockJoinQueryResults::ReadNext()
     return bRet;
 }
 
+
 void CGwsRightNestedLoopSortedBlockJoinQueryResults::Close ()
 {
     CGwsRightNestedLoopJoinQueryResults::Close ();
 }
 
+
 EGwsStatus CGwsRightNestedLoopSortedBlockJoinQueryResults::SetRelatedValues (
     const GWSFeatureId & vals
 )
 {
-        if (m_joinkeys == vals) {
-            if (! m_neverusepooling) {
-                // this completes features pool
-                if (! m_bClosed) {
-                    while (ReadNext ())
-                        ;
-                    Close ();
-                }
+    if (m_joinkeys == vals) {
+        if (! m_neverusepooling) {
+            // this completes features pool
+            if (! m_bClosed) {
+                while (ReadNext ())
+                    ;
+                Close ();
             }
-            m_usepool = true;
-            m_poolpos = -1;
-            return eGwsOk;
         }
-        m_pool->Reset ();
-        m_usepool = false;
+        m_usepool = true;
         m_poolpos = -1;
+        return eGwsOk;
+    }
+    m_pool->Reset ();
+    m_usepool = false;
+    m_poolpos = -1;
 
-        return CGwsRightNestedLoopJoinQueryResults::SetRelatedValues (vals);
+    return CGwsRightNestedLoopJoinQueryResults::SetRelatedValues (vals);
 }

@@ -20,15 +20,17 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
+
 
 /////////////////////////////////////////////////////////////////////
 //
 // class CGwsPreparedJoinQuery
 //
 /////////////////////////////////////////////////////////////////////
+
 CGwsPreparedJoinQuery::CGwsPreparedJoinQuery (
     EGwsJoinMethod             joinmethod,
     CGwsPreparedQuery        * lpq,
@@ -57,8 +59,8 @@ CGwsPreparedJoinQuery::~CGwsPreparedJoinQuery ()
 {
     delete m_leftquery;
     delete m_rightquery;
-
 }
+
 
 EGwsStatus CGwsPreparedJoinQuery::Init ()
 {
@@ -82,10 +84,12 @@ EGwsStatus CGwsPreparedJoinQuery::Init ()
     return eGwsOk;
 }
 
+
 CGwsPreparedFeatureQuery * CGwsPreparedJoinQuery::GetPrimaryQuery ()
 {
     return m_leftquery->GetPrimaryQuery ();
 }
+
 
 FdoDataPropertyDefinitionCollection * CGwsPreparedJoinQuery::GetIdentityProperties ()
 {
@@ -98,7 +102,6 @@ EGwsStatus CGwsPreparedJoinQuery::Execute (
     bool bScrollable /*false*/
 )
 {
-
     FdoPtr<IGWSFeatureIterator> left;
     FdoPtr<IGWSFeatureIterator> right;
 
@@ -140,6 +143,7 @@ EGwsStatus CGwsPreparedJoinQuery::Execute (
     return eGwsOk;
 }
 
+
 EGwsStatus CGwsPreparedJoinQuery::Execute (
     FdoFilter            * filter,
     IGWSFeatureIterator ** results,
@@ -157,8 +161,8 @@ EGwsStatus CGwsPreparedJoinQuery::Execute (
         stat = es;
     }
     return stat;
-
 }
+
 
 EGwsStatus CGwsPreparedJoinQuery::Execute (
     const GWSFeatureId   & featid,
@@ -180,8 +184,9 @@ EGwsStatus CGwsPreparedJoinQuery::Execute (
         stat = es;
     }
     return stat;
-
 }
+
+
 EGwsStatus CGwsPreparedJoinQuery::Execute (
     const GwsFeaturesIdVector & featids,
     int lbound,
@@ -207,6 +212,7 @@ EGwsStatus CGwsPreparedJoinQuery::Execute (
     return stat;
 }
 
+
 EGwsStatus CGwsPreparedJoinQuery::SetFilter (FdoFilter * filter)
 {
     // the leftmost query is the one
@@ -214,6 +220,7 @@ EGwsStatus CGwsPreparedJoinQuery::SetFilter (FdoFilter * filter)
         return m_leftquery->SetFilter (filter);
     return eGwsFailed;
 }
+
 
 FdoFilter * CGwsPreparedJoinQuery::GetFilter ()
 {
@@ -229,6 +236,7 @@ FdoFilter * CGwsPreparedJoinQuery::GetFilter ()
 // class CGwsPreparedLeftJoinQuery
 //
 ///////////////////////////////////////////////////////////////////////////////
+
 CGwsPreparedLeftJoinQuery::CGwsPreparedLeftJoinQuery (
     EGwsJoinMethod             joinmethod,
     CGwsPreparedQuery        * lpq,
@@ -239,18 +247,20 @@ CGwsPreparedLeftJoinQuery::CGwsPreparedLeftJoinQuery (
 )
 : CGwsPreparedJoinQuery (joinmethod, lpq, rpq, lcols, rcols, query)
 {
-
 }
+
 
 CGwsPreparedLeftJoinQuery::~CGwsPreparedLeftJoinQuery ()
 {
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 //
 // class CGwsPreparedEqualJoinQuery
 //
 ///////////////////////////////////////////////////////////////////////////////
+
 CGwsPreparedEqualJoinQuery::CGwsPreparedEqualJoinQuery (
     EGwsJoinMethod             joinmethod,
     CGwsPreparedQuery        * lpq,
@@ -261,8 +271,8 @@ CGwsPreparedEqualJoinQuery::CGwsPreparedEqualJoinQuery (
 )
 : CGwsPreparedJoinQuery (joinmethod, lpq, rpq, lcols, rcols, query)
 {
-
 }
+
 
 CGwsPreparedEqualJoinQuery::~CGwsPreparedEqualJoinQuery ()
 {

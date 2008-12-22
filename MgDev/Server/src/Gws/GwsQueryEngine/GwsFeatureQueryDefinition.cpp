@@ -20,20 +20,22 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
+
 
 /////////////////////////////////////////////////////////////////////
 //
 // class GWSFeatureQueryDefinition
 //
 /////////////////////////////////////////////////////////////////////
+
 GWSFeatureQueryDefinition::GWSFeatureQueryDefinition ()
 {
-
     m_filter = NULL;
 }
+
 
 GWSFeatureQueryDefinition::GWSFeatureQueryDefinition (
     FdoIdentifierCollection    * sellist,
@@ -51,14 +53,17 @@ GWSFeatureQueryDefinition::GWSFeatureQueryDefinition (
         filter->AddRef ();
 }
 
+
 GWSFeatureQueryDefinition::~GWSFeatureQueryDefinition () throw()
 {
 }
+
 
 const GWSQualifiedName & GWSFeatureQueryDefinition::ClassName () const
 {
     return m_classname;
 }
+
 
 FdoIdentifierCollection * GWSFeatureQueryDefinition::SelectList ()
 {
@@ -75,6 +80,7 @@ IGWSQualifiedNames * GWSFeatureQueryDefinition::QualifiedNames ()
     qnames->Insert (m_classname);
     return qnames;
 }
+
 
 FdoStringCollection* GWSFeatureQueryDefinition::FeatureSourceNames ()
 {
@@ -142,7 +148,6 @@ FdoXmlSaxHandler * GWSFeatureQueryDefinition::XmlStartElement(
     FdoXmlAttributeCollection* attrs
 )
 {
-
     if (! _wcsicmp (name, GwsQueryXml::xmlGwsQualifiedClassName)) {
         WSTR    fsname;
         WSTR    schema;
@@ -159,7 +164,6 @@ FdoXmlSaxHandler * GWSFeatureQueryDefinition::XmlStartElement(
             } else if (_wcsicmp (name, GwsQueryXml::xmlGwsClassName) == 0) {
                 classname = value;
             }
-
         }
 
         if (! schema.empty () && ! classname.empty ()) {
@@ -190,8 +194,4 @@ FdoXmlSaxHandler * GWSFeatureQueryDefinition::XmlStartElement(
     }
 
     return CGwsObject::XmlStartElement (ctx, uri, name, qname, attrs);
-
 }
-
-
-

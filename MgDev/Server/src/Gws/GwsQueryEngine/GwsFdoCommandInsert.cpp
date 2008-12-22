@@ -20,15 +20,17 @@
 // Includes
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
+
 
 //////////////////////////////////////////////////////////////////////////////
 //
 // class CGwsFdoInsertCommand
 //
 ///////////////////////////////////////////////////////////////////////////////
+
 CGwsFdoInsertCommand::CGwsFdoInsertCommand (
     FdoIConnection           *session,
     const GWSQualifiedName   &classname
@@ -37,10 +39,12 @@ CGwsFdoInsertCommand::CGwsFdoInsertCommand (
 {
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 CGwsFdoInsertCommand::~CGwsFdoInsertCommand ()
 {
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus  CGwsFdoInsertCommand::Init (const wchar_t* pFDOCommandClass /*NULL*/)
@@ -49,7 +53,6 @@ EGwsStatus  CGwsFdoInsertCommand::Init (const wchar_t* pFDOCommandClass /*NULL*/
 
     try {
         eGwsOkThrow (CGwsFdoCommand::Init ());
-
 
         m_pCommand = m_connection->CreateCommand(FdoCommandType_Insert);
         assert (m_pCommand != NULL);
@@ -74,12 +77,14 @@ EGwsStatus  CGwsFdoInsertCommand::Init (const wchar_t* pFDOCommandClass /*NULL*/
     return fdoes;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 void CGwsFdoInsertCommand::PrepareInternal ()
 {
     PrepareNonKeyProperties ();
     PrepareObjectProperties ();
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 FdoPropertyValueCollection * CGwsFdoInsertCommand::GetPropertyValues ()
@@ -91,10 +96,10 @@ FdoPropertyValueCollection * CGwsFdoInsertCommand::GetPropertyValues ()
     return m_pProperties;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoInsertCommand::Execute (CGwsMutableFeature & feat)
 {
-
     Clear ();
 
     EGwsStatus fdoes = eGwsOk;
@@ -184,6 +189,8 @@ EGwsStatus CGwsFdoInsertCommand::Execute (CGwsMutableFeature & feat)
     return fdoes;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 #ifdef OBJECTPROPERTY
 EGwsStatus CGwsFdoInsertCommand::InsertObjectProperties (const wchar_t* qObjectPropName,
                                                                          AcMapFdoKeyValues& primaryKey,

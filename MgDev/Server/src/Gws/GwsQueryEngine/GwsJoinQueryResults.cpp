@@ -20,9 +20,10 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
+
 
 /////////////////////////////////////////////////////////////////////
 //
@@ -40,6 +41,7 @@ CGwsJoinQueryResults::CGwsJoinQueryResults()
     m_bScrollableReader = true;
     m_forceOneToOne = true;
 }
+
 
 EGwsStatus CGwsJoinQueryResults::InitializeReader (
     FdoStringCollection             * leftjoincols,
@@ -79,6 +81,7 @@ EGwsStatus CGwsJoinQueryResults::InitializeReader (
     return stat;
 }
 
+
 CGwsJoinQueryResults::~CGwsJoinQueryResults  () throw()
 {
     // this is FdoIDisposable not virtual AddRef
@@ -91,12 +94,14 @@ CGwsJoinQueryResults::~CGwsJoinQueryResults  () throw()
         m_right->Release ();
 }
 
+
 bool CGwsJoinQueryResults::ReadNext ()
 {
     m_bLeftJoinValuesSet = false;
     bool bRes = CGwsFeatureIterator::ReadNext ();
     return SetupRightSide(bRes);
 }
+
 
 bool CGwsJoinQueryResults::CacheReadNext ()
 {
@@ -119,6 +124,7 @@ bool CGwsJoinQueryResults::CacheReadNext ()
     m_started = CGwsFeatureIterator::ReadNext ();
     return SetupRightSide(m_started);
 }
+
 
 bool CGwsJoinQueryResults::SetupRightSide(bool bRes) {
 
@@ -151,6 +157,7 @@ FdoDataValueCollection * CGwsJoinQueryResults::GetJoinValues ()
     return NULL; // m_leftJoinVals;
 }
 
+
 FdoDataValueCollection * CGwsJoinQueryResults::GetDataValues (
     FdoStringCollection* propertyNames
 )
@@ -179,6 +186,7 @@ FdoDataValueCollection * CGwsJoinQueryResults::GetDataValues (
     return vals;
 }
 
+
 IGWSFeatureIterator * CGwsJoinQueryResults::GetJoinedFeatures (int iJoin)
 {
     // check join feature index
@@ -200,6 +208,7 @@ IGWSFeatureIterator * CGwsJoinQueryResults::GetJoinedFeatures (int iJoin)
     return GetJoinedFeatures ();
 }
 
+
 IGWSFeatureIterator * CGwsJoinQueryResults::GetJoinedFeatures ()
 {
     GetJoinValues ();
@@ -212,8 +221,8 @@ IGWSFeatureIterator * CGwsJoinQueryResults::GetJoinedFeatures ()
     }
     m_right->AddRef ();
     return m_right;
-
 }
+
 
 FdoInt32 CGwsJoinQueryResults::GetRevisionNumber ()
 {
@@ -222,11 +231,13 @@ FdoInt32 CGwsJoinQueryResults::GetRevisionNumber ()
     return fiter->GetRevisionNumber ();
 }
 
+
 GWSFeatureId CGwsJoinQueryResults::GetFeatureId ()
 {
     IGWSFeatureIterator * fiter = dynamic_cast<IGWSFeatureIterator *> (m_reader.p);
     return fiter->GetFeatureId ();
 }
+
 
 void CGwsJoinQueryResults::Close ()
 {
@@ -241,12 +252,14 @@ void CGwsJoinQueryResults::Close ()
     return ;
 }
 
+
 int
 CGwsJoinQueryResults::Count()
 {
     // call the base class for left outer one-to-one case
     return CGwsFeatureIterator::Count();
 }
+
 
 bool
 CGwsJoinQueryResults::ReadAtIndex( unsigned int recordindex )
@@ -255,6 +268,7 @@ CGwsJoinQueryResults::ReadAtIndex( unsigned int recordindex )
     m_bLeftJoinValuesSet = false;
     return SetupRightSide(bRes);
 }
+
 
 bool CGwsJoinQueryResults::Scrollable() {
     return true;

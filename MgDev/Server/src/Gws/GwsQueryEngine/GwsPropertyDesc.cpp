@@ -20,9 +20,10 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
+
 
 CGwsPropertyDesc::CGwsPropertyDesc (
     const WSTR &    name,
@@ -54,6 +55,7 @@ CGwsPropertyDesc::CGwsPropertyDesc (
     m_bIsComputedIdentifier = bIsComputedIdentifier;
     m_spatialcontext = spatialcontext;
 }
+
 
 CGwsPropertyDesc::CGwsPropertyDesc (FdoPropertyDefinition * propdef)
 {
@@ -88,10 +90,12 @@ CGwsPropertyDesc::CGwsPropertyDesc (FdoPropertyDefinition * propdef)
     m_bIsComputedIdentifier = false;
 }
 
+
 CGwsPropertyDesc::CGwsPropertyDesc (const CGwsPropertyDesc & other)
 {
     * this = other;
 }
+
 
 void CGwsPropertyDesc::operator= (const CGwsPropertyDesc & other)
 {
@@ -108,6 +112,4 @@ void CGwsPropertyDesc::operator= (const CGwsPropertyDesc & other)
     m_bReadOnly = other.m_bReadOnly;
     m_bIsComputedIdentifier = other.m_bIsComputedIdentifier;
     m_spatialcontext = other.m_spatialcontext;
-
-
 }

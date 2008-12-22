@@ -20,15 +20,17 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
+
 
 /////////////////////////////////////////////////////////////////////
 //
 // class CGwsRightJoinQueryResults
 //
 /////////////////////////////////////////////////////////////////////
+
 CGwsRightJoinQueryResults::CGwsRightJoinQueryResults   ()
 {
     m_prepquery = NULL;
@@ -87,6 +89,7 @@ EGwsStatus CGwsRightJoinQueryResults::InitializeReader (
     return eGwsOk;
 }
 
+
 EGwsStatus CGwsRightJoinQueryResults::InitializeReader (
     IGWSQuery                * query,
     CGwsPreparedQuery        * prepquery,
@@ -134,11 +137,13 @@ void CGwsRightJoinQueryResults::DescribeFeature(IGWSExtendedFeatureDescription *
         m_prepquery->DescribeResults (ppResDesc);
 }
 
+
 EGwsStatus CGwsRightJoinQueryResults::SetRelatedValues (const GWSFeatureId & vals)
 {
     m_joinkeys = vals;
     return eGwsOk;
 }
+
 
 IGWSFeatureIterator * CGwsRightJoinQueryResults::GetJoinedFeatures (int i)
 {
@@ -149,6 +154,7 @@ IGWSFeatureIterator * CGwsRightJoinQueryResults::GetJoinedFeatures (int i)
     return NULL;
 }
 
+
 IGWSFeature * CGwsRightJoinQueryResults::GetPooledFeature ()
 {
     if (m_poolpos < m_pool->GetCount ()) {
@@ -156,6 +162,7 @@ IGWSFeature * CGwsRightJoinQueryResults::GetPooledFeature ()
     }
     throw FdoException::Create (L"Feature iterator is closed");
 }
+
 
 FdoInt32 CGwsRightJoinQueryResults::GetRevisionNumber ()
 {
@@ -165,6 +172,7 @@ FdoInt32 CGwsRightJoinQueryResults::GetRevisionNumber ()
     }
     return CGwsFeatureIterator::GetRevisionNumber ();
 }
+
 
 GWSFeatureId CGwsRightJoinQueryResults::GetFeatureId ()
 {
@@ -185,6 +193,7 @@ bool CGwsRightJoinQueryResults::IsNull (FdoString* propertyName)
     return CGwsFeatureIterator::IsNull (propertyName);
 }
 
+
 FdoString * CGwsRightJoinQueryResults::GetString (FdoString * propertyName)
 {
     if (m_usepool) {
@@ -193,6 +202,7 @@ FdoString * CGwsRightJoinQueryResults::GetString (FdoString * propertyName)
     }
     return CGwsFeatureIterator::GetString (propertyName);
 }
+
 
 bool CGwsRightJoinQueryResults::GetBoolean  (FdoString* propertyName)
 {
@@ -203,6 +213,7 @@ bool CGwsRightJoinQueryResults::GetBoolean  (FdoString* propertyName)
     return CGwsFeatureIterator::GetBoolean (propertyName);
 }
 
+
 FdoByte  CGwsRightJoinQueryResults::GetByte (FdoString* propertyName)
 {
     if (m_usepool) {
@@ -211,6 +222,7 @@ FdoByte  CGwsRightJoinQueryResults::GetByte (FdoString* propertyName)
     }
     return CGwsFeatureIterator::GetByte (propertyName);
 }
+
 
 FdoDateTime CGwsRightJoinQueryResults::GetDateTime (FdoString* propertyName)
 {
@@ -221,6 +233,7 @@ FdoDateTime CGwsRightJoinQueryResults::GetDateTime (FdoString* propertyName)
     return CGwsFeatureIterator::GetDateTime (propertyName);
 }
 
+
 double CGwsRightJoinQueryResults::GetDouble   (FdoString* propertyName)
 {
     if (m_usepool) {
@@ -229,6 +242,7 @@ double CGwsRightJoinQueryResults::GetDouble   (FdoString* propertyName)
     }
     return CGwsFeatureIterator::GetDouble (propertyName);
 }
+
 
 FdoInt16 CGwsRightJoinQueryResults::GetInt16 (FdoString* propertyName)
 {
@@ -239,6 +253,7 @@ FdoInt16 CGwsRightJoinQueryResults::GetInt16 (FdoString* propertyName)
     return CGwsFeatureIterator::GetInt16 (propertyName);
 }
 
+
 FdoInt32 CGwsRightJoinQueryResults::GetInt32 (FdoString* propertyName)
 {
     if (m_usepool) {
@@ -247,6 +262,8 @@ FdoInt32 CGwsRightJoinQueryResults::GetInt32 (FdoString* propertyName)
     }
     return CGwsFeatureIterator::GetInt32 (propertyName);
 }
+
+
 FdoInt64 CGwsRightJoinQueryResults::GetInt64    (FdoString* propertyName)
 {
     if (m_usepool) {
@@ -256,6 +273,7 @@ FdoInt64 CGwsRightJoinQueryResults::GetInt64    (FdoString* propertyName)
     return CGwsFeatureIterator::GetInt64 (propertyName);
 }
 
+
 float CGwsRightJoinQueryResults::GetSingle   (FdoString* propertyName)
 {
     if (m_usepool) {
@@ -264,6 +282,7 @@ float CGwsRightJoinQueryResults::GetSingle   (FdoString* propertyName)
     }
     return CGwsFeatureIterator::GetSingle (propertyName);
 }
+
 
 FdoLOBValue* CGwsRightJoinQueryResults::GetLOB (FdoString* propertyName)
 {
@@ -276,6 +295,7 @@ FdoLOBValue* CGwsRightJoinQueryResults::GetLOB (FdoString* propertyName)
     return CGwsFeatureIterator::GetLOB (propertyName);
 }
 
+
 FdoIStreamReader* CGwsRightJoinQueryResults::GetLOBStreamReader(const wchar_t* propertyName )
 {
     if (m_usepool) {
@@ -286,6 +306,7 @@ FdoIStreamReader* CGwsRightJoinQueryResults::GetLOBStreamReader(const wchar_t* p
     }
     return CGwsFeatureIterator::GetLOBStreamReader (propertyName);
 }
+
 
 FdoIRaster* CGwsRightJoinQueryResults::GetRaster (FdoString* propertyName)
 {
@@ -298,6 +319,7 @@ FdoIRaster* CGwsRightJoinQueryResults::GetRaster (FdoString* propertyName)
     return CGwsFeatureIterator::GetRaster (propertyName);
 }
 
+
 const FdoByte * CGwsRightJoinQueryResults::GetGeometry (FdoString* propertyName, FdoInt32 * count)
 {
     if (m_usepool) {
@@ -306,6 +328,7 @@ const FdoByte * CGwsRightJoinQueryResults::GetGeometry (FdoString* propertyName,
     }
     return CGwsFeatureIterator::GetGeometry (propertyName, count);
 }
+
 
 FdoByteArray* CGwsRightJoinQueryResults::GetGeometry (FdoString* propertyName)
 {
@@ -316,6 +339,7 @@ FdoByteArray* CGwsRightJoinQueryResults::GetGeometry (FdoString* propertyName)
     return CGwsFeatureIterator::GetGeometry (propertyName);
 }
 
+
 FdoByteArray * CGwsRightJoinQueryResults::GetOriginalGeometry (FdoString* propertyName)
 {
     // TODO: check convesion.
@@ -324,10 +348,12 @@ FdoByteArray * CGwsRightJoinQueryResults::GetOriginalGeometry (FdoString* proper
     return GetGeometry (propertyName);
 }
 
+
 bool CGwsRightJoinQueryResults::ConvertingGeometry ()
 {
     return CGwsFeatureIterator::ConvertingGeometry ();
 }
+
 
 FdoIFeatureReader* CGwsRightJoinQueryResults::GetFeatureObject(FdoString* propertyName)
 {
@@ -339,6 +365,7 @@ FdoIFeatureReader* CGwsRightJoinQueryResults::GetFeatureObject(FdoString* proper
     return CGwsFeatureIterator::GetFeatureObject (propertyName);
 }
 
+
 FdoDataValue *  CGwsRightJoinQueryResults::GetDataValue (FdoString* propertyName)
 {
     if (m_usepool) {
@@ -347,6 +374,7 @@ FdoDataValue *  CGwsRightJoinQueryResults::GetDataValue (FdoString* propertyName
     }
     return CGwsFeatureIterator::GetDataValue (propertyName);
 }
+
 
 FdoDataValueCollection * CGwsRightJoinQueryResults::GetDataValues (FdoStringCollection* propertyNames)
 {
@@ -357,8 +385,8 @@ FdoDataValueCollection * CGwsRightJoinQueryResults::GetDataValues (FdoStringColl
     return CGwsFeatureIterator::GetDataValues (propertyNames);
 }
 
-/*
 
+/*
 bool CGwsRightJoinQueryResults::IsNull (FdoInt32 iProp)
 {
     if (m_usepool) {
@@ -368,6 +396,7 @@ bool CGwsRightJoinQueryResults::IsNull (FdoInt32 iProp)
     return CGwsFeatureIterator::IsNull (iProp);
 }
 
+
 FdoString * CGwsRightJoinQueryResults::GetString (FdoInt32 iProp)
 {
     if (m_usepool) {
@@ -376,6 +405,8 @@ FdoString * CGwsRightJoinQueryResults::GetString (FdoInt32 iProp)
     }
     return CGwsFeatureIterator::GetString (iProp);
 }
+
+
 bool CGwsRightJoinQueryResults::GetBoolean  (FdoInt32 iProp)
 {
     if (m_usepool) {
@@ -384,6 +415,8 @@ bool CGwsRightJoinQueryResults::GetBoolean  (FdoInt32 iProp)
     }
     return CGwsFeatureIterator::GetBoolean (iProp);
 }
+
+
 FdoByte CGwsRightJoinQueryResults::GetByte (FdoInt32 iProp)
 {
     if (m_usepool) {
@@ -392,6 +425,8 @@ FdoByte CGwsRightJoinQueryResults::GetByte (FdoInt32 iProp)
     }
     return CGwsFeatureIterator::GetByte (iProp);
 }
+
+
 FdoDateTime CGwsRightJoinQueryResults::GetDateTime (FdoInt32 iProp)
 {
     if (m_usepool) {
@@ -400,6 +435,8 @@ FdoDateTime CGwsRightJoinQueryResults::GetDateTime (FdoInt32 iProp)
     }
     return CGwsFeatureIterator::GetDateTime (iProp);
 }
+
+
 double CGwsRightJoinQueryResults::GetDouble (FdoInt32 iProp)
 {
     if (m_usepool) {
@@ -408,6 +445,8 @@ double CGwsRightJoinQueryResults::GetDouble (FdoInt32 iProp)
     }
     return CGwsFeatureIterator::GetDouble (iProp);
 }
+
+
 FdoInt16 CGwsRightJoinQueryResults::GetInt16 (FdoInt32 iProp)
 {
     if (m_usepool) {
@@ -416,6 +455,8 @@ FdoInt16 CGwsRightJoinQueryResults::GetInt16 (FdoInt32 iProp)
     }
     return CGwsFeatureIterator::GetInt16 (iProp);
 }
+
+
 FdoInt32 CGwsRightJoinQueryResults::GetInt32(FdoInt32 iProp)
 {
     if (m_usepool) {
@@ -424,6 +465,8 @@ FdoInt32 CGwsRightJoinQueryResults::GetInt32(FdoInt32 iProp)
     }
     return CGwsFeatureIterator::GetInt32 (iProp);
 }
+
+
 FdoInt64 CGwsRightJoinQueryResults::GetInt64 (FdoInt32 iProp)
 {
     if (m_usepool) {
@@ -432,6 +475,8 @@ FdoInt64 CGwsRightJoinQueryResults::GetInt64 (FdoInt32 iProp)
     }
     return CGwsFeatureIterator::GetInt64 (iProp);
 }
+
+
 float CGwsRightJoinQueryResults::GetSingle (FdoInt32 iProp)
 {
     if (m_usepool) {
@@ -440,6 +485,8 @@ float CGwsRightJoinQueryResults::GetSingle (FdoInt32 iProp)
     }
     return CGwsFeatureIterator::GetSingle (iProp);
 }
+
+
 FdoLOBValue* CGwsRightJoinQueryResults::GetLOB (FdoInt32 iProp)
 {
     if (m_usepool) {
@@ -448,6 +495,8 @@ FdoLOBValue* CGwsRightJoinQueryResults::GetLOB (FdoInt32 iProp)
     }
     return CGwsFeatureIterator::GetLOB (iProp);
 }
+
+
 FdoIStreamReader* CGwsRightJoinQueryResults::GetLOBStreamReader (FdoInt32 iProp)
 {
     if (m_usepool) {
@@ -456,6 +505,8 @@ FdoIStreamReader* CGwsRightJoinQueryResults::GetLOBStreamReader (FdoInt32 iProp)
     }
     return CGwsFeatureIterator::GetLOBStreamReader (iProp);
 }
+
+
 FdoIRaster* CGwsRightJoinQueryResults::GetRaster   (FdoInt32 iProp)
 {
     if (m_usepool) {
@@ -464,6 +515,8 @@ FdoIRaster* CGwsRightJoinQueryResults::GetRaster   (FdoInt32 iProp)
     }
     return CGwsFeatureIterator::GetRaster (iProp);
 }
+
+
 const FdoByte * CGwsRightJoinQueryResults::GetGeometry (FdoInt32 iProp, FdoInt32 * count)
 {
     if (m_usepool) {
@@ -472,6 +525,8 @@ const FdoByte * CGwsRightJoinQueryResults::GetGeometry (FdoInt32 iProp, FdoInt32
     }
     return CGwsFeatureIterator::GetGeometry (iProp, count);
 }
+
+
 FdoByteArray*   CGwsRightJoinQueryResults::GetGeometry (FdoInt32 iProp)
 {
     if (m_usepool) {
@@ -480,6 +535,8 @@ FdoByteArray*   CGwsRightJoinQueryResults::GetGeometry (FdoInt32 iProp)
     }
     return CGwsFeatureIterator::GetGeometry (iProp);
 }
+
+
 FdoIFeatureReader* CGwsRightJoinQueryResults::GetFeatureObject (FdoInt32 iProp)
 {
     if (m_usepool) {
@@ -488,6 +545,7 @@ FdoIFeatureReader* CGwsRightJoinQueryResults::GetFeatureObject (FdoInt32 iProp)
     }
     return CGwsFeatureIterator::GetFeatureObject (iProp);
 }
+
 
 void CGwsRightJoinQueryResults::ToString (
     FdoInt32    iProp,
@@ -501,8 +559,8 @@ void CGwsRightJoinQueryResults::ToString (
     }
     return CGwsFeatureIterator::ToString (iProp, buff, len);
 }
-
 */
+
 
 void CGwsRightJoinQueryResults::ToString (
     FdoString*  propertyName,
@@ -517,9 +575,9 @@ void CGwsRightJoinQueryResults::ToString (
     return CGwsFeatureIterator::ToString (propertyName, buff, len);
 }
 
+
 FdoStringCollection* CGwsRightJoinQueryResults::GetJoinColumns()
 {
     m_joincols.p->AddRef();
     return m_joincols;
 }
-

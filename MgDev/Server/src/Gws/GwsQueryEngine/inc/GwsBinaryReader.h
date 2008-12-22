@@ -15,6 +15,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
 #ifdef _WIN32
 #include <hash_map>
 #else
@@ -30,10 +31,10 @@ using namespace std;
 //create
 #define STRING_CACHE_SIZE 256
 
+///////////////////////////////////////////////////////////////////////////////
 class BinaryReader
 {
 public:
-
     BinaryReader(unsigned char* data, int len);
     virtual ~BinaryReader();
 
@@ -58,7 +59,6 @@ public:
     //add more as needed...
 
 private:
-
     unsigned char* m_data;
     unsigned m_len;
     unsigned m_pos;
@@ -67,7 +67,6 @@ private:
     wchar_t* m_wcsCache;
     unsigned m_wcsCacheCurrent;
     unsigned m_wcsCacheLen;
-
 
     //maps offset of a string in the data record to an
     //offset of the unicode representation in the m_wcsCache

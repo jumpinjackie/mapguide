@@ -20,13 +20,12 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
 
 
 /////////////////////////////////////////////////////////////////////
-
 IGWSFeatureQueryDefinition * IGWSFeatureQueryDefinition::Create (
     FdoIdentifierCollection *    sellist,
     const GWSQualifiedName & classname,
@@ -39,6 +38,7 @@ IGWSFeatureQueryDefinition * IGWSFeatureQueryDefinition::Create (
 
     return pQdef;
 }
+
 
 IGWSLeftJoinQueryDefinition * IGWSLeftJoinQueryDefinition::Create (
     const FdoString     * joinName,
@@ -60,8 +60,8 @@ IGWSLeftJoinQueryDefinition * IGWSLeftJoinQueryDefinition::Create (
                                             right_attrs);
     pQdef->AddRef ();
     return pQdef;
-
 }
+
 
 IGWSEqualJoinQueryDefinition * IGWSEqualJoinQueryDefinition::Create (
     const FdoString     * joinName,
@@ -83,8 +83,8 @@ IGWSEqualJoinQueryDefinition * IGWSEqualJoinQueryDefinition::Create (
                                              right_attrs);
     pQdef->AddRef ();
     return pQdef;
-
 }
+
 
 IGWSQuery * IGWSQuery::Create (
     IGWSConnectionPool  * pool,
@@ -92,14 +92,10 @@ IGWSQuery * IGWSQuery::Create (
     IGWSObject          * owner
 )
 {
-
     CGwsFeatureSourceQuery * query  =
          (CGwsFeatureSourceQuery *)
             CGwsFeatureSourceQuery::CreateInstance<CGwsFeatureSourceQuery>(owner);
 
     query->Initialize (pool, qdef);
     return query;
-
 }
-
-

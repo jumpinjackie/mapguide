@@ -20,16 +20,20 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
 
 
+/////////////////////////////////////////////////////////////////////
+//
+// class GwsQueryXmlSaxHandler
+//
+/////////////////////////////////////////////////////////////////////
 
 class GwsQueryXmlSaxHandler: public FdoXmlSaxHandler
 {
 public:
-
     std::vector<IGWSQueryDefinition *>    m_qdefs;
     WSTR                                  m_elemname;
 
@@ -64,12 +68,12 @@ public:
 };
 
 
-
 /////////////////////////////////////////////////////////////////////
 //
 // class GWSQueryDefinition
 //
 /////////////////////////////////////////////////////////////////////
+
 template<class T>
 GWSQueryDefinition<T>::GWSQueryDefinition ()
 {
@@ -83,6 +87,7 @@ GWSQueryDefinition<T>::~GWSQueryDefinition () throw()
 {
 }
 
+
 template<class T>
 void GWSQueryDefinition<T>::ToXmlWriter (
     FdoString    * elementName,
@@ -92,12 +97,14 @@ void GWSQueryDefinition<T>::ToXmlWriter (
     GwsQueryDefinitionXmlHelpers::WriteQueryDefinitionWithHeader (this, elementName, writer);
 }
 
+
 template<class T>
 FdoStringCollection * GWSQueryDefinition<T>::GetOrderBy ()
 {
     FDO_SAFE_ADDREF(m_orderByList.p);
     return m_orderByList;
 }
+
 
 template<class T>
 void GWSQueryDefinition<T>::SetOrderBy (FdoStringCollection* orderByList)
@@ -113,11 +120,13 @@ FdoOrderingOption GWSQueryDefinition<T>::GetOrderingOption ()
     return m_orderingOption;
 }
 
+
 template<class T>
 void GWSQueryDefinition<T>::SetOrderingOption (FdoOrderingOption orderingOption)
 {
     m_orderingOption = orderingOption;
 }
+
 
 EGwsStatus GwsQueryDefinitionXmlHelpers::WriteQueryDefinitionWithHeader (
     IGWSQueryDefinition * qdef,
@@ -162,14 +171,13 @@ EGwsStatus GwsQueryDefinitionXmlHelpers::WriteQueryDefinitionWithHeader (
         return eGwsFailed;
     }
     return eGwsOk;
-
 }
+
 
 IGWSQueryDefinition * GwsQueryDefinitionXmlHelpers::ReadQueryDefinition (
     FdoXmlAttributeCollection* attrs
 )
 {
-
     IGWSQueryDefinition * qrydef = NULL;
     for (FdoInt32 i = 0; i < attrs->GetCount (); i ++) {
 
@@ -192,8 +200,8 @@ IGWSQueryDefinition * GwsQueryDefinitionXmlHelpers::ReadQueryDefinition (
 
     }
     return qrydef;
-
 }
+
 
 FdoString * GwsQueryDefinitionXmlHelpers::QueryXmlHeader ()
 {
@@ -206,7 +214,6 @@ IGWSQueryDefinition * IGWSQueryDefinition::FromXmlReader (
     FdoXmlReader * reader
 )
 {
-
     FdoPtr<FdoXmlSaxContext> ctx = FdoXmlSaxContext::Create (reader);
     GwsQueryXmlSaxHandler handler (elementName);
     reader->Parse (& handler, ctx, true);
@@ -337,7 +344,6 @@ GwsQueryDefinitionXmlHelpers::CompareQueries(IGWSQueryDefinition* firstQuery
             break;
         }
 
-
         //compare the feature queryand right query definitions(recursive call)
         if((firstQuery->GetPrimaryQueryDefinition() != firstQuery
             &&  secondQuery->GetPrimaryQueryDefinition() != secondQuery)
@@ -364,6 +370,7 @@ GwsQueryDefinitionXmlHelpers::CompareQueries(IGWSQueryDefinition* firstQuery
     return bRet;
 }
 
+
 //compare two string lists
 bool
 GwsQueryDefinitionXmlHelpers::CompareStringCollection(
@@ -379,6 +386,7 @@ GwsQueryDefinitionXmlHelpers::CompareStringCollection(
     return true;
 }
 
+
 template<typename T> bool
 GwsQueryDefinitionXmlHelpers::CompareToStringValues(
     T* firstVal
@@ -392,6 +400,7 @@ GwsQueryDefinitionXmlHelpers::CompareToStringValues(
         ||  _wcsicmp(firstVal->ToString() , secondVal->ToString()) != 0) return false;
     return true;
 }
+
 
 bool
 GwsQueryDefinitionXmlHelpers::CompareQualifiedNames(

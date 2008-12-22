@@ -24,12 +24,12 @@
 #endif
 
 
-//----------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
 //
 // Fast and portable UTF-8 conversion
 // Taken from DWF Toolkit string class
 //
-//----------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
 
 #ifdef _WIN32
 
@@ -66,6 +66,8 @@ typedef wchar_t     UCS4_char_t;
 //SDF only works on little endian currently
 #define LITTLE_ENDIAN_SYSTEM
 
+
+///////////////////////////////////////////////////////////////////////////////
 int EncodeUTF8(     const UCS2_char_t*   zUCS2String,
                     size_t               nUCS2StringBytes,
                     ASCII_char_t*        pUTF8Buffer,
@@ -87,11 +89,9 @@ int EncodeUTF8(     const UCS2_char_t*   zUCS2String,
             break;
 
 #ifdef LITTLE_ENDIAN_SYSTEM
-
         cHi = *pIn;
         cLo = *(pIn+1);
 #else
-
         cLo = *pIn;
         cHi = *(pIn+1);
 #endif
@@ -152,6 +152,7 @@ int EncodeUTF8(     const UCS2_char_t*   zUCS2String,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 int EncodeUTF8( const UCS4_char_t*   zUCS4String,
                        size_t               nUCS4StringBytes,
                        ASCII_char_t*        pUTF8Buffer,
@@ -176,13 +177,11 @@ int EncodeUTF8( const UCS4_char_t*   zUCS4String,
             break;
 
 #ifdef  LITTLE_ENDIAN_SYSTEM
-
         d = *pIn;
         c = *(pIn+1);
         b = *(pIn+2);
         a = *(pIn+3);
 #else
-
         a = *pIn;
         b = *(pIn+1);
         c = *(pIn+2);
@@ -308,6 +307,8 @@ int EncodeUTF8( const UCS4_char_t*   zUCS4String,
     return (int)nUsed;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 int DecodeUTF8(     const ASCII_char_t*  zUTF8String,
                        size_t               nUTF8StringBytes,
                        UCS2_char_t*         pUCS2Buffer,
@@ -342,11 +343,9 @@ int DecodeUTF8(     const ASCII_char_t*  zUTF8String,
         {
 
 #ifdef  LITTLE_ENDIAN_SYSTEM
-
             *(pOut++) = c1;
             *(pOut++) = 0x00;
 #else
-
             *(pOut++) = 0x00;
             *(pOut++) = c1;
 #endif
@@ -361,11 +360,9 @@ int DecodeUTF8(     const ASCII_char_t*  zUTF8String,
             c3 = *(pIn+2);
 
 #ifdef  LITTLE_ENDIAN_SYSTEM
-
             *(pOut++) = (((c2 & 0x03) << 6) |  (c3 & 0x3f));
             *(pOut++) = (((c1 & 0x0f) << 4) | ((c2 & 0x3c) >> 2));
 #else
-
             *(pOut++) = (((c1 & 0x0f) << 4) | ((c2 & 0x3c) >> 2));
             *(pOut++) = (((c2 & 0x03) << 6) |  (c3 & 0x3f));
 #endif
@@ -381,11 +378,9 @@ int DecodeUTF8(     const ASCII_char_t*  zUTF8String,
             c2 = *(pIn+1);
 
 #ifdef  LITTLE_ENDIAN_SYSTEM
-
             *(pOut++) = (((c1 & 0x03) << 6) | (c2 & 0x3f));
             *(pOut++) = ((c1 & 0x1c) >> 2);
 #else
-
             *(pOut++) = ((c1 & 0x1c) >> 2);
             *(pOut++) = (((c1 & 0x03) << 6) | (c2 & 0x3f));
 #endif
@@ -402,6 +397,7 @@ int DecodeUTF8(     const ASCII_char_t*  zUTF8String,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 int DecodeUTF8(     const ASCII_char_t*  zUTF8String,
                        size_t               nUTF8StringBytes,
                        UCS4_char_t*         pUCS4Buffer,
@@ -446,13 +442,11 @@ int DecodeUTF8(     const ASCII_char_t*  zUTF8String,
             f = *(pIn+5);
 
 #ifdef  LITTLE_ENDIAN_SYSTEM
-
             *(pOut++) = ((e << 6) | (f & 0x3f));
             *(pOut++) = ((d << 4) | ((e & 0x3c) >> 2));
             *(pOut++) = ((c << 2) | ((d & 0x30) >> 4));
             *(pOut++) = ((a << 6) | (b & 0x3f));
 #else
-
             *(pOut++) = ((a << 6) | (b & 0x3f));
             *(pOut++) = ((c << 2) | ((d & 0x30) >> 4));
             *(pOut++) = ((d << 4) | ((e & 0x3c) >> 2));
@@ -472,13 +466,11 @@ int DecodeUTF8(     const ASCII_char_t*  zUTF8String,
             e = *(pIn+4);
 
 #ifdef  LITTLE_ENDIAN_SYSTEM
-
             *(pOut++) = ((d << 6) | (e & 0x3f));
             *(pOut++) = ((c << 4) | ((d & 0x3c) >> 2));
             *(pOut++) = ((b << 2) | ((c & 0x30) >> 4));
             *(pOut++) = (a & 0x03);
 #else
-
             *(pOut++) = (a & 0x03);
             *(pOut++) = ((b << 2) | ((c & 0x30) >> 4));
             *(pOut++) = ((c << 4) | ((d & 0x3c) >> 2));
@@ -497,13 +489,11 @@ int DecodeUTF8(     const ASCII_char_t*  zUTF8String,
             d = *(pIn+3);
 
 #ifdef  LITTLE_ENDIAN_SYSTEM
-
             *(pOut++) = ((c << 6) | (d & 0x3f));
             *(pOut++) = ((b << 4) | ((c & 0x3c) >> 2));
             *(pOut++) = (((a & 0x07) << 2) | ((b & 0x30) >> 4));
             *(pOut++) = 0x00;
 #else
-
             *(pOut++) = 0x00;
             *(pOut++) = (((a & 0x07) << 2) | ((b & 0x30) >> 4));
             *(pOut++) = ((b << 4) | ((c & 0x3c) >> 2));
@@ -520,13 +510,11 @@ int DecodeUTF8(     const ASCII_char_t*  zUTF8String,
         {
 
 #ifdef  LITTLE_ENDIAN_SYSTEM
-
             *(pOut++) = a;
             *(pOut++) = 0x00;
             *(pOut++) = 0x00;
             *(pOut++) = 0x00;
 #else
-
             *(pOut++) = 0x00;
             *(pOut++) = 0x00;
             *(pOut++) = 0x00;
@@ -543,13 +531,11 @@ int DecodeUTF8(     const ASCII_char_t*  zUTF8String,
             c = *(pIn+2);
 
 #ifdef  LITTLE_ENDIAN_SYSTEM
-
             *(pOut++) = (((b & 0x03) << 6) |  (c & 0x3f));
             *(pOut++) = (((a & 0x0f) << 4) | ((b & 0x3c) >> 2));
             *(pOut++) = 0x00;
             *(pOut++) = 0x00;
 #else
-
             *(pOut++) = 0x00;
             *(pOut++) = 0x00;
             *(pOut++) = (((a & 0x0f) << 4) | ((b & 0x3c) >> 2));
@@ -567,13 +553,11 @@ int DecodeUTF8(     const ASCII_char_t*  zUTF8String,
             b = *(pIn+1);
 
 #ifdef  LITTLE_ENDIAN_SYSTEM
-
             *(pOut++) = (((a & 0x03) << 6) | (b & 0x3f));
             *(pOut++) = ((a & 0x1c) >> 2);
             *(pOut++) = 0x00;
             *(pOut++) = 0x00;
 #else
-
             *(pOut++) = 0x00;
             *(pOut++) = 0x00;
             *(pOut++) = ((a & 0x1c) >> 2);
@@ -590,17 +574,19 @@ int DecodeUTF8(     const ASCII_char_t*  zUTF8String,
     return (int)nUsed;
 }
 
-//------------------------------------------------------------------------
+
+///////////////////////////////////////////////////////////////////////////////
 //
 // The interface used by SDF
 //
-//------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
 
 int ut_utf8_to_unicode(const char* str_in, size_t in_size, wchar_t* Wtext, size_t out_size)
 {
     int ret = DecodeUTF8(str_in, in_size, Wtext, out_size * sizeof(wchar_t));
     return ret / sizeof(wchar_t);
 }
+
 
 int ut_utf8_from_unicode(const wchar_t* Wtext, size_t in_size, char* str_out, int out_size)
 {

@@ -20,6 +20,7 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
+
 #include "stdafx.h"
 #include <algorithm>
 #include "GwsQueryEngineImp.h"
@@ -35,6 +36,13 @@ long GetTickCount()
     return times(&tm);
 }
 #endif
+
+
+/////////////////////////////////////////////////////////////////////
+//
+// class CGwsTimer
+//
+/////////////////////////////////////////////////////////////////////
 
 class CGwsTimer {
     long           m_start, m_stop;
@@ -54,7 +62,6 @@ public:
         #ifdef _DEBUG
         wprintf(L"%ls", buffer);
         #endif
-
     }
 };
 
@@ -64,12 +71,20 @@ public:
 #define GWSTIMER(label)
 #endif
 
+
 /////////////////////////////////////////////////////////////////////
 //
 // Defines
 //
 /////////////////////////////////////////////////////////////////////
 #define CHECK_GWS_ITERATOR if (m_gwsReader == NULL) GWS_THROW (eGwsFailed)
+
+
+/////////////////////////////////////////////////////////////////////
+//
+// class CGwsFlatFdoReader
+//
+/////////////////////////////////////////////////////////////////////
 
 CGwsFlatFdoReader::CGwsFlatFdoReader (IGWSFeatureIterator * pIterator)
 {
@@ -97,15 +112,18 @@ CGwsFlatFdoReader::CGwsFlatFdoReader (IGWSFeatureIterator * pIterator)
     m_bReadersLoaded = false;
 }
 
+
 CGwsFlatFdoReader::~CGwsFlatFdoReader ()
 {
     ReleaseJoinReaders ();
 }
 
+
 void CGwsFlatFdoReader::Dispose()
 {
     delete this;
 }
+
 
 IGWSFeatureIterator * CGwsFlatFdoReader::GetOriginalIterator ()
 {
@@ -147,11 +165,14 @@ FdoClassDefinition* CGwsFlatFdoReader::GetClassDefinition()
     return m_classDef;
 }
 
+
 FdoInt32 CGwsFlatFdoReader::GetDepth()
 {
     CHECK_GWS_ITERATOR;
     return 0;
 }
+
+
 const FdoByte * CGwsFlatFdoReader::GetGeometry(FdoString* propertyName, FdoInt32 * count)
 {
     CHECK_GWS_ITERATOR;
@@ -166,9 +187,9 @@ const FdoByte * CGwsFlatFdoReader::GetGeometry(FdoString* propertyName, FdoInt32
     }
 
     return freader->GetGeometry (name.c_str (), count);
-
-
 }
+
+
 FdoByteArray* CGwsFlatFdoReader::GetGeometry(FdoString* propertyName)
 {
     CHECK_GWS_ITERATOR;
@@ -180,6 +201,7 @@ FdoByteArray* CGwsFlatFdoReader::GetGeometry(FdoString* propertyName)
 
     return freader->GetGeometry (name.c_str ());
 }
+
 
 FdoIFeatureReader*  CGwsFlatFdoReader::GetFeatureObject(FdoString* propertyName)
 {
@@ -193,6 +215,7 @@ FdoIFeatureReader*  CGwsFlatFdoReader::GetFeatureObject(FdoString* propertyName)
     return freader->GetFeatureObject (name.c_str ());
 }
 
+
 bool CGwsFlatFdoReader::GetBoolean(FdoString* propertyName)
 {
     CHECK_GWS_ITERATOR;
@@ -204,9 +227,9 @@ bool CGwsFlatFdoReader::GetBoolean(FdoString* propertyName)
         GWS_THROW (eGwsFailedToGetProperty);
 
     return freader->GetBoolean (name.c_str ());
-
-
 }
+
+
 FdoByte CGwsFlatFdoReader::GetByte(FdoString* propertyName)
 {
     CHECK_GWS_ITERATOR;
@@ -218,6 +241,8 @@ FdoByte CGwsFlatFdoReader::GetByte(FdoString* propertyName)
 
     return freader->GetByte (name.c_str ());
 }
+
+
 FdoDateTime CGwsFlatFdoReader::GetDateTime(FdoString* propertyName)
 {
     CHECK_GWS_ITERATOR;
@@ -229,8 +254,9 @@ FdoDateTime CGwsFlatFdoReader::GetDateTime(FdoString* propertyName)
         GWS_THROW (eGwsFailedToGetProperty);
 
     return freader->GetDateTime (name.c_str ());
-
 }
+
+
 double CGwsFlatFdoReader::GetDouble(FdoString* propertyName)
 {
     CHECK_GWS_ITERATOR;
@@ -241,8 +267,9 @@ double CGwsFlatFdoReader::GetDouble(FdoString* propertyName)
         GWS_THROW (eGwsFailedToGetProperty);
 
     return freader->GetDouble (name.c_str ());
-
 }
+
+
 FdoInt16 CGwsFlatFdoReader::GetInt16(FdoString* propertyName)
 {
     CHECK_GWS_ITERATOR;
@@ -255,6 +282,7 @@ FdoInt16 CGwsFlatFdoReader::GetInt16(FdoString* propertyName)
     return freader->GetInt16 (name.c_str ());
 }
 
+
 FdoInt32 CGwsFlatFdoReader::GetInt32(FdoString* propertyName)
 {
     CHECK_GWS_ITERATOR;
@@ -266,6 +294,8 @@ FdoInt32 CGwsFlatFdoReader::GetInt32(FdoString* propertyName)
 
     return freader->GetInt32 (name.c_str ());
 }
+
+
 FdoInt64 CGwsFlatFdoReader::GetInt64(FdoString* propertyName)
 {
     CHECK_GWS_ITERATOR;
@@ -276,8 +306,9 @@ FdoInt64 CGwsFlatFdoReader::GetInt64(FdoString* propertyName)
         GWS_THROW (eGwsFailedToGetProperty);
 
     return freader->GetInt64 (name.c_str ());
-
 }
+
+
 float CGwsFlatFdoReader::GetSingle(FdoString* propertyName)
 {
     CHECK_GWS_ITERATOR;
@@ -291,6 +322,7 @@ float CGwsFlatFdoReader::GetSingle(FdoString* propertyName)
     return freader->GetSingle (name.c_str ());
 }
 
+
 FdoString* CGwsFlatFdoReader::GetString(FdoString* propertyName)
 {
     CHECK_GWS_ITERATOR;
@@ -301,8 +333,8 @@ FdoString* CGwsFlatFdoReader::GetString(FdoString* propertyName)
         GWS_THROW (eGwsFailedToGetProperty);
 
     return freader->GetString (name.c_str ());
-
 }
+
 
 FdoLOBValue* CGwsFlatFdoReader::GetLOB(FdoString* propertyName)
 {
@@ -316,6 +348,8 @@ FdoLOBValue* CGwsFlatFdoReader::GetLOB(FdoString* propertyName)
 
     return freader->GetLOB (name.c_str ());
 }
+
+
 FdoIStreamReader* CGwsFlatFdoReader::GetLOBStreamReader(const wchar_t* propertyName )
 {
     CHECK_GWS_ITERATOR;
@@ -328,6 +362,8 @@ FdoIStreamReader* CGwsFlatFdoReader::GetLOBStreamReader(const wchar_t* propertyN
 
     return freader->GetLOBStreamReader (name.c_str ());
 }
+
+
 bool CGwsFlatFdoReader::IsNull(FdoString* propertyName)
 {
     CHECK_GWS_ITERATOR;
@@ -338,6 +374,7 @@ bool CGwsFlatFdoReader::IsNull(FdoString* propertyName)
         return true;
     return freader->IsNull (name.c_str ());
 }
+
 
 FdoIRaster* CGwsFlatFdoReader::GetRaster(FdoString* propertyName)
 {
@@ -351,6 +388,7 @@ FdoIRaster* CGwsFlatFdoReader::GetRaster(FdoString* propertyName)
     return freader->GetRaster (name.c_str ());
 }
 
+
 bool CGwsFlatFdoReader::ReadNext()
 {
     CHECK_GWS_ITERATOR;
@@ -362,6 +400,7 @@ bool CGwsFlatFdoReader::ReadNext()
     return m_gwsReader->ReadNext();
 }
 
+
 void CGwsFlatFdoReader::Close()
 {
     CHECK_GWS_ITERATOR;
@@ -370,7 +409,9 @@ void CGwsFlatFdoReader::Close()
     m_gwsReader->Close ();
 }
 
-static void MakeUniqueName(std::wstring& str, FdoStringCollection* names) {
+
+static void MakeUniqueName(std::wstring& str, FdoStringCollection* names)
+{
     wchar_t buffer[16];
     std::wstring baseName(str);
     int i = 1;
@@ -385,6 +426,7 @@ static void MakeUniqueName(std::wstring& str, FdoStringCollection* names) {
 
     }
 }
+
 
 //*****************************************************************************
 void CGwsFlatFdoReader::CollectPropertyNames (
@@ -441,8 +483,8 @@ void CGwsFlatFdoReader::CollectPropertyNames (
         CollectPropertyNames (names, types, efdsc, keyProps, nItem, iPath, pPaths, pKeys);
         iPath.pop_back();
     }
-
 }
+
 
 PropertyDefItem * CGwsFlatFdoReader::GetPropertyDefItem (FdoString * pname)
 {
@@ -454,10 +496,11 @@ PropertyDefItem * CGwsFlatFdoReader::GetPropertyDefItem (FdoString * pname)
     return NULL;
 }
 
+
 CGwsFeatureIterator * CGwsFlatFdoReader::GetReaderForProperty (
     FdoString * propname,
     WSTR      & origname
- )
+)
 {
     if (! m_bJoin) {    // shortcut not joined features
         m_gwsReader.p->AddRef ();
@@ -484,7 +527,9 @@ CGwsFeatureIterator * CGwsFlatFdoReader::GetReaderForProperty (
     return reader;
 }
 
-void CGwsFlatFdoReader::LoadAllReaders() {
+
+void CGwsFlatFdoReader::LoadAllReaders()
+{
     if(m_bReadersLoaded)
         return;
     try {
@@ -500,7 +545,9 @@ void CGwsFlatFdoReader::LoadAllReaders() {
     }
 }
 
-FdoInt32 CGwsFlatFdoReader::GetCacheId() {
+
+FdoInt32 CGwsFlatFdoReader::GetCacheId()
+{
     LoadAllReaders();
     std::vector<FdoInt32> cidVec;
     cidVec.push_back(m_gwsReader->GetCacheId());
@@ -510,6 +557,7 @@ FdoInt32 CGwsFlatFdoReader::GetCacheId() {
     }
     return m_gwsReader->ResolveJoinIdVector(cidVec);
 }
+
 
 CGwsFeatureIterator * CGwsFlatFdoReader::FindReader (
     const WSTR              & aKey,
@@ -554,6 +602,7 @@ CGwsFeatureIterator * CGwsFlatFdoReader::FindReader (
     return reader;
 }
 
+
 void CGwsFlatFdoReader::ReleaseJoinReaders ()
 {
     std::map<WSTR, CGwsFeatureIterator *>::iterator iter;
@@ -567,6 +616,7 @@ void CGwsFlatFdoReader::ReleaseJoinReaders ()
     m_bReadersLoaded = false;
 }
 
+
 //IGWSFeatureIterator::SdfIScrollableFeatureReader implementation.
 int
 CGwsFlatFdoReader::Count()
@@ -576,17 +626,20 @@ CGwsFlatFdoReader::Count()
     return m_tableSize;
 }
 
+
 bool
 CGwsFlatFdoReader::ReadFirst()
 {
     return ReadAtIndex(1);
 }
 
+
 bool
 CGwsFlatFdoReader::ReadLast()
 {
     return ReadAtIndex(Count());
 }
+
 
 bool
 CGwsFlatFdoReader::ReadPrevious()
@@ -597,12 +650,14 @@ CGwsFlatFdoReader::ReadPrevious()
     return false;
 }
 
+
 bool
 CGwsFlatFdoReader::ReadAt(FdoPropertyValueCollection* key)
 {
     unsigned int index = IndexOf(key);
     return ReadAtIndex(index);
 }
+
 
 bool
 CGwsFlatFdoReader::ReadAtIndex( unsigned int recordindex )
@@ -668,7 +723,9 @@ CGwsFlatFdoReader::ReadAtIndex( unsigned int recordindex )
     return m_curIndexResult;
 }
 
-bool CGwsFlatFdoReader::PositionPrimaryReaderAtCacheId(FdoInt32 cacheId) {
+
+bool CGwsFlatFdoReader::PositionPrimaryReaderAtCacheId(FdoInt32 cacheId)
+{
     if(m_gwsReader->Scrollable()) {
         if(m_left_cid_map.empty()) {
             FdoInt32 max = m_gwsReader->Count();
@@ -683,6 +740,7 @@ bool CGwsFlatFdoReader::PositionPrimaryReaderAtCacheId(FdoInt32 cacheId) {
     }
     return false;
 }
+
 
 unsigned int
 CGwsFlatFdoReader::IndexOf(FdoPropertyValueCollection* key)
@@ -715,6 +773,7 @@ CGwsFlatFdoReader::IndexOf(FdoPropertyValueCollection* key)
     }
 }
 
+
 FdoByteArray*
 CGwsFlatFdoReader::GetOriginalGeometry(FdoString* propertyName)
 {
@@ -722,11 +781,15 @@ CGwsFlatFdoReader::GetOriginalGeometry(FdoString* propertyName)
     return m_gwsReader->GetOriginalGeometry(propertyName);
 }
 
-bool CGwsFlatFdoReader::Scrollable() {
+
+bool CGwsFlatFdoReader::Scrollable()
+{
     return m_gwsReader->Scrollable();
 }
 
-static void GatherLeftKeys(IGWSJoinQueryDefinition* pJqd, FdoStringCollection* keyNames) {
+
+static void GatherLeftKeys(IGWSJoinQueryDefinition* pJqd, FdoStringCollection* keyNames)
+{
     IGWSJoinQueryDefinition*    pChildJoin;
     FdoPtr<IGWSQueryDefinition> qdef;
     FdoPtr<FdoStringCollection> lCols = pJqd->LeftJoinAttributes ();
@@ -743,10 +806,11 @@ static void GatherLeftKeys(IGWSJoinQueryDefinition* pJqd, FdoStringCollection* k
         GatherLeftKeys(pChildJoin,keyNames);
 }
 
+
 void CGwsFlatFdoReader::BuildFlatDescription(IGWSQueryDefinition* pQryDef,
                                              IGWSExtendedFeatureDescription* pJoinDesc,
-                                             IGWSExtendedFeatureDescription** ppResDesc) {
-
+                                             IGWSExtendedFeatureDescription** ppResDesc)
+{
     FdoPtr<FdoStringCollection>                 names;
     FdoPtr<FdoStringCollection>                 keyNames;
     PropertyDefItem *                           pdefi;
@@ -788,11 +852,15 @@ void CGwsFlatFdoReader::BuildFlatDescription(IGWSQueryDefinition* pQryDef,
         (* ppResDesc)->AddRef ();
 }
 
-static bool siCmp(sortKey a, sortKey b) {
+
+static bool siCmp(sortKey a, sortKey b)
+{
     return a.sortPropId < b.sortPropId;
 }
 
-void buildSortIndex(CGwsFeatureIterator* pIterator, std::vector<FdoInt32>& proporder, size_t tix,std::vector<sortKey>& m_sortedIndex) {
+
+void buildSortIndex(CGwsFeatureIterator* pIterator, std::vector<FdoInt32>& proporder, size_t tix,std::vector<sortKey>& m_sortedIndex)
+{
     // build sort index
     std::vector<FdoInt32> *pVec;
     FdoInt32 jCacheId(1);
@@ -815,14 +883,19 @@ void buildSortIndex(CGwsFeatureIterator* pIterator, std::vector<FdoInt32>& propo
     }
 }
 
-class dvless {
+
+class dvless
+{
 public:
-    bool operator()(const FdoPtr<FdoDataValue>& a, const FdoPtr<FdoDataValue>& b) {
+    bool operator()(const FdoPtr<FdoDataValue>& a, const FdoPtr<FdoDataValue>& b)
+    {
         return GWSFdoUtilities::CompareDataValues(a,b) < 0;
     }
 };
 
-static void SortByDV(CGwsFeatureIterator* pIter, FdoString* propName, FdoOrderingOption order, std::vector<FdoInt32>& propertyOrder) {
+
+static void SortByDV(CGwsFeatureIterator* pIter, FdoString* propName, FdoOrderingOption order, std::vector<FdoInt32>& propertyOrder)
+{
     std::multimap<FdoPtr<FdoDataValue>,FdoInt32,dvless> propmap;
     FdoInt32 i(1);
     while(pIter->ReadAtIndex(i++)) {
@@ -844,8 +917,10 @@ static void SortByDV(CGwsFeatureIterator* pIter, FdoString* propName, FdoOrderin
     }
 }
 
+
 template <class T>
-static void bpo(std::multimap<T,FdoInt32>& propmap, FdoOrderingOption order, std::vector<FdoInt32>& propertyOrder) {
+static void bpo(std::multimap<T,FdoInt32>& propmap, FdoOrderingOption order, std::vector<FdoInt32>& propertyOrder)
+{
     if(FdoOrderingOption_Ascending==order) {
         typename std::multimap<T,FdoInt32>::iterator mmIter;
         for(mmIter = propmap.begin(); mmIter!= propmap.end(); mmIter++)
@@ -857,7 +932,9 @@ static void bpo(std::multimap<T,FdoInt32>& propmap, FdoOrderingOption order, std
     }
 }
 
-static void BuildPropOrder(CGwsFeatureIterator* pIter, FdoString* propName, FdoOrderingOption order, std::vector<FdoInt32>& propertyOrder) {
+
+static void BuildPropOrder(CGwsFeatureIterator* pIter, FdoString* propName, FdoOrderingOption order, std::vector<FdoInt32>& propertyOrder)
+{
     FdoPtr<FdoDataValue> pVal = pIter->GetDataValue(propName);
     FdoDataType dtype = pVal->GetDataType();
     FdoInt32 i(1);
@@ -944,7 +1021,9 @@ static void BuildPropOrder(CGwsFeatureIterator* pIter, FdoString* propName, FdoO
     }
 }
 
-void CGwsFlatFdoReader::SortResults() {
+
+void CGwsFlatFdoReader::SortResults()
+{
     CGwsPreparedQuery* pPQ = m_gwsReader->PrepQuery();
     if(NULL != pPQ) {
         FdoPtr<IGWSQueryDefinition> qDef;

@@ -20,20 +20,23 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
+
 
 /////////////////////////////////////////////////////////////////////
 //
 // class CGwsSortMergeJoinQueryResults
 //
 /////////////////////////////////////////////////////////////////////
+
 CGwsSortMergeJoinQueryResults::CGwsSortMergeJoinQueryResults (
 )
 {
     m_right = NULL;
 }
+
 
 EGwsStatus CGwsSortMergeJoinQueryResults::InitializeReader (
     IGWSQuery                       * query,
@@ -79,4 +82,3 @@ EGwsStatus CGwsSortMergeJoinQueryResults::InitializeReader (
 CGwsSortMergeJoinQueryResults::~CGwsSortMergeJoinQueryResults () throw()
 {
 }
-

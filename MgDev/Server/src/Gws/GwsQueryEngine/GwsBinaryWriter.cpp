@@ -33,6 +33,7 @@ BinaryWriter::BinaryWriter(int initialLen)
     m_strCache = NULL;
 }
 
+
 BinaryWriter::~BinaryWriter()
 {
     delete [] m_data;
@@ -53,15 +54,18 @@ unsigned char* BinaryWriter::GetData()
     return m_data;
 }
 
+
 int BinaryWriter::GetDataLen()
 {
     return m_pos;
 }
 
+
 int BinaryWriter::GetPosition()
 {
     return m_pos;
 }
+
 
 void BinaryWriter::WriteDouble(double d)
 {
@@ -80,6 +84,7 @@ void BinaryWriter::WriteSingle(float f)
     m_pos += sizeof(float);
 }
 
+
 void BinaryWriter::WriteInt32(int i)
 {
     CheckResize(sizeof(int));
@@ -87,6 +92,7 @@ void BinaryWriter::WriteInt32(int i)
     *(int*)(m_data+m_pos) = i;
     m_pos += sizeof(int);
 }
+
 
 void BinaryWriter::WriteUInt32(unsigned i)
 {
@@ -96,6 +102,7 @@ void BinaryWriter::WriteUInt32(unsigned i)
     m_pos += sizeof(unsigned);
 }
 
+
 void BinaryWriter::WriteInt16(short s)
 {
     CheckResize(sizeof(short));
@@ -103,6 +110,7 @@ void BinaryWriter::WriteInt16(short s)
     *(short*)(m_data+m_pos) = s;
     m_pos += sizeof(short);
 }
+
 
 void BinaryWriter::WriteUInt16(unsigned short us)
 {
@@ -112,6 +120,7 @@ void BinaryWriter::WriteUInt16(unsigned short us)
     m_pos += sizeof(unsigned short);
 }
 
+
 void BinaryWriter::WriteInt64(FdoInt64 ll)
 {
     CheckResize(sizeof(FdoInt64));
@@ -120,6 +129,7 @@ void BinaryWriter::WriteInt64(FdoInt64 ll)
     m_pos += sizeof(FdoInt64);
 }
 
+
 void BinaryWriter::WriteByte(unsigned char b)
 {
     CheckResize(sizeof(unsigned char));
@@ -127,12 +137,14 @@ void BinaryWriter::WriteByte(unsigned char b)
     m_pos += sizeof(unsigned char);
 }
 
+
 void BinaryWriter::WriteChar(char c)
 {
     CheckResize(sizeof(char));
     *(m_data+m_pos) = c;
     m_pos += sizeof(char);
 }
+
 
 void BinaryWriter::WriteString(const wchar_t* src)
 {
@@ -170,7 +182,6 @@ void BinaryWriter::WriteString(const wchar_t* src)
     //write actual string content to the output
     memcpy(m_data + m_pos, m_strCache, actualLen);
     m_pos += actualLen;
-
 }
 
 
@@ -224,7 +235,6 @@ void BinaryWriter::WriteRawString(const wchar_t* src)
 }
 
 
-
 //checks if the data write buffer has enough space and
 //resizes it if needed
 void BinaryWriter::CheckResize(unsigned len)
@@ -245,6 +255,7 @@ void BinaryWriter::CheckResize(unsigned len)
     m_data = ndata;
 }
 
+
 //writes a byte array
 void BinaryWriter::WriteBytes(unsigned char* buf, int len)
 {
@@ -253,6 +264,7 @@ void BinaryWriter::WriteBytes(unsigned char* buf, int len)
     memcpy(m_data + m_pos, buf, len);
     m_pos += len;
 }
+
 
 //serializes a FdoDateTime
 void BinaryWriter::WriteDateTime(FdoDateTime dt)
