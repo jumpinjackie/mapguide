@@ -19,11 +19,13 @@
 #include "GwsQueryEngineImp.h"
 #include "GwsBinaryFeatureWriter.h"
 
+
 unsigned char* GwsBinaryFeatureWriter::ToBuffer(int& bufLen)
 {
     bufLen = m_wrtr.GetDataLen();
     return m_wrtr.GetData();
 }
+
 
 void GwsBinaryFeatureWriter::WriteProperty(FdoPropertyDefinition* pd, FdoIFeatureReader* reader)
 {
@@ -94,7 +96,6 @@ void GwsBinaryFeatureWriter::WriteProperty(FdoPropertyDefinition* pd, FdoIFeatur
     }
     else
     {
-
         //we have a geometric property
         FdoPtr<FdoByteArray> byteArray = reader->GetGeometry(name);
 
@@ -104,6 +105,7 @@ void GwsBinaryFeatureWriter::WriteProperty(FdoPropertyDefinition* pd, FdoIFeatur
             m_wrtr.WriteBytes(byteArray->GetData(), byteArray->GetCount());
     }
 }
+
 
 void GwsBinaryFeatureWriter::WriteProperty(FdoPropertyDefinition* pd, FdoPropertyValue* pv,
                                            bool forAssociation)
@@ -127,7 +129,6 @@ void GwsBinaryFeatureWriter::WriteProperty(FdoPropertyDefinition* pd, FdoPropert
 
     if (dpd)
     {
-
         FdoDataValue* dv = (FdoDataValue*)expression.p;
         if(dv == NULL || dv->IsNull())
             return;
@@ -195,6 +196,7 @@ void GwsBinaryFeatureWriter::WriteProperty(FdoPropertyDefinition* pd, FdoPropert
     }
 }
 
+
 bool GwsBinaryFeatureWriter::WriteAssociationProperty(FdoAssociationPropertyDefinition* apd,
                                                       FdoPropertyValueCollection* pvc)
 {
@@ -245,6 +247,7 @@ bool GwsBinaryFeatureWriter::WriteAssociationProperty(FdoAssociationPropertyDefi
     return written;
 }
 
+
 void GwsBinaryFeatureWriter::WriteAssociationProperty(FdoAssociationPropertyDefinition* apd,
                                                       FdoIFeatureReader* reader)
 {
@@ -276,6 +279,7 @@ void GwsBinaryFeatureWriter::WriteAssociationProperty(FdoAssociationPropertyDefi
             WriteProperty( prop, loc_reader);
     }
 }
+
 
 void GwsBinaryFeatureWriter::WriteFeature(FdoClassDefinition* fc, FdoString* fcName,
                                           FdoPropertyValueCollection* pvc)
@@ -374,6 +378,7 @@ void GwsBinaryFeatureWriter::WriteFeature(FdoClassDefinition* fc, FdoString* fcN
     }
 }
 
+
 //serializes a collection of property values into a byte array
 //This function differs from WriteFeature() in that
 //it will merge property values specified in the given PropertyValueCollection
@@ -442,7 +447,6 @@ void GwsBinaryFeatureWriter::WriteFeature(FdoClassDefinition* fc,  FdoString* fc
             WriteProperty(pd, reader);
         }
         //}
-
     }
 
     //class properties
@@ -485,6 +489,7 @@ void GwsBinaryFeatureWriter::WriteFeature(FdoClassDefinition* fc,  FdoString* fc
         //}
     }
 }
+
 
 FdoDataPropertyDefinitionCollection* GwsBinaryFeatureWriter::FindIDProps(FdoClassDefinition* fc)
 {

@@ -20,15 +20,17 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
+
 
 /////////////////////////////////////////////////////////////////////
 //
 // class CGwsRightSortedJoinQueryResults
 //
 /////////////////////////////////////////////////////////////////////
+
 CGwsRightSortedJoinQueryResults::CGwsRightSortedJoinQueryResults (
 )
 {
@@ -40,6 +42,7 @@ CGwsRightSortedJoinQueryResults::~CGwsRightSortedJoinQueryResults () throw()
 {
 }
 
+
 EGwsStatus CGwsRightSortedJoinQueryResults::InitializeReader (
     IGWSQuery           * query,
     FdoIFeatureReader   * reader,
@@ -49,6 +52,7 @@ EGwsStatus CGwsRightSortedJoinQueryResults::InitializeReader (
 {
     return CGwsRightJoinQueryResults::InitializeReader (query, reader, joincols, bScrollable);
 }
+
 
 EGwsStatus CGwsRightSortedJoinQueryResults::SetRelatedValues (const GWSFeatureId & vals)
 {
@@ -147,7 +151,3 @@ bool CGwsRightSortedJoinQueryResults::ReadNext()
     }
     return bRes;
 }
-
-
-
-

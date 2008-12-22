@@ -18,6 +18,7 @@
 
 #include "GwsBinaryWriter.h"
 
+///////////////////////////////////////////////////////////////////////////////
 class GwsBinaryFeatureWriter
 {
 public:
@@ -44,11 +45,12 @@ public:
     void WriteFeature(FdoClassDefinition* fc, FdoString* fcName,
                       FdoPropertyValueCollection* pvc,
                       FdoIFeatureReader* reader);
+
 protected:
     FdoDataPropertyDefinitionCollection* FindIDProps(FdoClassDefinition* fc);
+
 private:
     BinaryWriter m_wrtr;
 };
-
 
 #endif //GWS_BINARYFEATUREWRITER_H

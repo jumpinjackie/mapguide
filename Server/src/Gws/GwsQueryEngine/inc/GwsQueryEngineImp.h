@@ -31,6 +31,7 @@
 #include "GwsFlatFdoReader.h"
 
 
+///////////////////////////////////////////////////////////////////////////////
 struct GwsQueryXml
 {
     static wchar_t * xmlGwsQuery;
@@ -53,15 +54,15 @@ struct GwsQueryXml
     static wchar_t * xmlGwsQuerySelectExpressionName;
 };
 
+
+///////////////////////////////////////////////////////////////////////////////
 namespace GwsQueryUtils
 {
-
     // get tjhe data property value from the reader
     GWS_QUERYENGINE_API FdoDataValue * GetDataPropertyValue (
                                 FdoIReader  *   reader,
                                 FdoDataType     dataprop,
                                 FdoString   *   name);
-
 
     // converts property specified by its descriptor into wchar string
     GWS_QUERYENGINE_API void ToString (IGWSFeature * feature, const CGwsPropertyDesc & desc, wchar_t * buff, int len);
@@ -72,8 +73,7 @@ namespace GwsQueryUtils
     bool CompareStringCollection(FdoStringCollection* firstString
                                          , FdoStringCollection* secondString);
     GWS_QUERYENGINE_API
-    bool
-                          CompareIdentifierCollection(FdoIdentifierCollection* firstIdentifiers
+    bool CompareIdentifierCollection(FdoIdentifierCollection* firstIdentifiers
                                          , FdoIdentifierCollection* secondIdentifiers);
 
     template<typename T>
@@ -86,7 +86,6 @@ namespace GwsQueryUtils
             ||  wcscmp(firstVal->ToString() , secondVal->ToString()) != 0) return false;
         return true;
     }
-
 
     GWS_QUERYENGINE_API
     FdoIdentifierCollection* CreateIdentifiersFromStrings(FdoStringCollection* strings);

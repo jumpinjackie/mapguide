@@ -20,16 +20,16 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
+
 
 /////////////////////////////////////////////////////////////////////
 //
 // class CGwsFeaturesPool
 //
 /////////////////////////////////////////////////////////////////////
-
 
 CGwsFeaturesPool::CGwsFeaturesPool (IGWSExtendedFeatureDescription * pFeatDesc)
 {
@@ -38,24 +38,27 @@ CGwsFeaturesPool::CGwsFeaturesPool (IGWSExtendedFeatureDescription * pFeatDesc)
     m_used = 0;
 }
 
+
 CGwsFeaturesPool::~CGwsFeaturesPool    ()
 {
     for (size_t i = 0; i < m_pool.size (); i ++) {
         CGwsPooledFeature * pfeature = m_pool [i];
         pfeature->Release ();
     }
-
 }
+
 
 int CGwsFeaturesPool::GetCount ()
 {
     return m_used;
-
 }
+
+
 int CGwsFeaturesPool::GetSize ()
 {
     return (int) m_pool.size ();
 }
+
 
 IGWSFeature * CGwsFeaturesPool::GetFeature (int i)
 {
@@ -67,10 +70,12 @@ IGWSFeature * CGwsFeaturesPool::GetFeature (int i)
     return pfeature;
 }
 
+
 void CGwsFeaturesPool::Reset ()
 {
     m_used = 0;
 }
+
 
 void CGwsFeaturesPool::AddFeature (IGWSFeature * feat)
 {
@@ -86,5 +91,3 @@ void CGwsFeaturesPool::AddFeature (IGWSFeature * feat)
     m_used ++;
     pfeature->Set (feat);
 }
-
-

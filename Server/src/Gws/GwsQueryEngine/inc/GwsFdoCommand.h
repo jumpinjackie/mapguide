@@ -23,8 +23,6 @@
 #define FETCH_SIZE 50   // fetch size for multi-feature commands
 
 
-
-
 //////////////////////////////////////////////////////////////////////////////////////////
 //
 // Forward declarations
@@ -32,16 +30,19 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 class CGwsMutableFeature;
 
+
 //////////////////////////////////////////////////////////////////////////////////////////
 //
 // Typedefs
 //
 /////////////////////////////////////////////////////////////////////////////////////////
+
 // failed status
 typedef std::map<GWSFeatureId,CGwsStatus>   GwsFailedStatus;
 typedef GwsFailedStatus::iterator           GwsFailedStatusIterator;
 
 
+///////////////////////////////////////////////////////////////////////////////
 class CGwsCSQueryProcessor: public FdoIFilterProcessor
 {
 public:
@@ -98,6 +99,7 @@ public:
             static_cast<FdoGeometryValue*>((FdoExpression*)pGeometry)->SetGeometry(pBa);
         }
     }
+
     void SetAlignPolygonFilter(bool bAlign) { m_bAlignPolygonFilter = bAlign; }
 
     bool ReAlignProjectedRectangle(FdoByteArray* pByte)
@@ -177,8 +179,8 @@ private:
 class CGwsFdoCommand : public CGwsObject
 {
 public:
-
-    typedef enum _CommandType {
+    typedef enum _CommandType
+    {
         eUndefined,
         eInsert,
         eUpdate,
@@ -198,6 +200,7 @@ protected:
     GWS_QUERYENGINE_API     CGwsFdoCommand (FdoIConnection          *connection,
                                             const GWSQualifiedName   &classname);
     GWS_QUERYENGINE_API     CGwsFdoCommand  ();
+
 public:
     GWS_QUERYENGINE_API
     virtual                 ~CGwsFdoCommand ();
@@ -218,8 +221,7 @@ public:
     GWS_QUERYENGINE_API
     void                    GetCSConverter (IGWSCoordinateSystemConverter ** converter);
 
-
-    // just do basic preparation (
+    // just do basic preparation
     //  - get properties and key descriptors
     //  - call PrepareInternal
     //  - Call IFdoCommand->Prepare ()
@@ -407,7 +409,6 @@ protected:
 };
 
 
-
 //////////////////////////////////////////////////////////////////////////////////////////
 //
 // insert command
@@ -436,7 +437,6 @@ protected:
     virtual FdoPropertyValueCollection * GetPropertyValues ();
     virtual void         PrepareInternal();
     virtual void         SetFilterInternal (FdoFilter * filter) {};
-
 };
 
 
@@ -468,7 +468,6 @@ protected:
     virtual FdoPropertyValueCollection *  GetPropertyValues ();
     virtual void            PrepareInternal();
     virtual void            SetFilterInternal (FdoFilter * filter);
-
 };
 
 
@@ -498,7 +497,6 @@ public:
 protected:
     virtual void           PrepareInternal();
     virtual void           SetFilterInternal (FdoFilter * filter);
-
 };
 
 
@@ -576,7 +574,6 @@ protected:
 
 protected:
     FdoLockType             m_lockType;
-
 };
 
 

@@ -20,8 +20,8 @@
 // Includes
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
 
 
@@ -30,6 +30,7 @@
 // class CGwsFdoCommand
 //
 ///////////////////////////////////////////////////////////////////////////////
+
 CGwsFdoCommand::CGwsFdoCommand(
 )
 {
@@ -40,8 +41,8 @@ CGwsFdoCommand::CGwsFdoCommand(
     m_bSupportClobs = false;
     m_bSkipUnsupportedProperties = true;
     m_bSupportLocking = false;
-
 }
+
 
 CGwsFdoCommand::CGwsFdoCommand(
     FdoIConnection           * sess,
@@ -62,6 +63,7 @@ CGwsFdoCommand::CGwsFdoCommand(
     m_bSupportLocking = false;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 CGwsFdoCommand::~CGwsFdoCommand ()
 {
@@ -72,6 +74,7 @@ CGwsFdoCommand::~CGwsFdoCommand ()
     }
     m_objPropCommands.clear();
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoCommand::Init (const wchar_t* pFDOCommandClass /*NULL*/)
@@ -90,6 +93,7 @@ EGwsStatus CGwsFdoCommand::Init (const wchar_t* pFDOCommandClass /*NULL*/)
     return eGwsOk;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 void CGwsFdoCommand::SetCSConverter (
     IGWSCoordinateSystemConverter * converter
@@ -99,6 +103,7 @@ void CGwsFdoCommand::SetCSConverter (
     if (converter)
         converter->AddRef ();
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void CGwsFdoCommand::GetCSConverter (
@@ -120,7 +125,6 @@ EGwsStatus CGwsFdoCommand::Prepare ()
         assert(m_classDef != NULL);
 
         GwsCommonFdoUtils::GetFdoClassIdentityProperties (m_classDef, m_identity.p);
-
 
         FdoPtr<FdoISchemaCapabilities> ptrCap;
         ptrCap = m_connection->GetSchemaCapabilities();
@@ -190,12 +194,14 @@ FdoPropertyDefinition * CGwsFdoCommand::GetPropertyDefinition (FdoString * propn
     return pDef;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoCommand::Execute (CGwsMutableFeature & feature)
 {
     static_cast<void>(&(feature)); // For "unreferenced formal parameter" warning
     return eGwsNotSupported;
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoCommand::Execute (IGWSMutableFeature * feature)
@@ -215,11 +221,13 @@ EGwsStatus CGwsFdoCommand::Execute (const GWSFeatureId & featid)
     return eGwsNotSupported;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoCommand::Execute (const GwsFeaturesIdVector & featids)
 {
     return Execute (featids, 0, (int)featids.size ());
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoCommand::Execute (
@@ -234,11 +242,12 @@ EGwsStatus CGwsFdoCommand::Execute (
     return eGwsNotSupported;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 void CGwsFdoCommand::PrepareInternal ()
 {
-
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void CGwsFdoCommand::PrepareNonKeyProperties ()
@@ -298,6 +307,8 @@ void CGwsFdoCommand::PrepareKeyProperties ()
     // used
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void CGwsFdoCommand::PrepareObjectProperties ()
 {
 #ifdef IMPLEMENT_THIS_METHOD // and test
@@ -343,6 +354,8 @@ void CGwsFdoCommand::PrepareObjectProperties ()
 #endif
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 void CGwsFdoCommand::PrepareFilter (FdoFilter * filter, bool bAlignPolygon /*FALSE*/)
 {
     if (filter == NULL)
@@ -370,6 +383,7 @@ void CGwsFdoCommand::PrepareFilter (FdoFilter * filter, bool bAlignPolygon /*FAL
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 void CGwsFdoCommand::SetFeatureCommandFilter (FdoFilter * filter)
 {
     if (m_pCommand == NULL)
@@ -384,6 +398,7 @@ void CGwsFdoCommand::DiscoverRevisionProperty ()
 {
     m_revisionprop = GwsCommonFdoUtils::GetRevisionProperty (m_classDef);
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void CGwsFdoCommand::DiscoverActiveLongTransaction ()
@@ -413,6 +428,7 @@ void CGwsFdoCommand::SetValue (
     }
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoCommand::SetProperties (
     CGwsMutableFeature & feature,
@@ -432,11 +448,9 @@ EGwsStatus CGwsFdoCommand::SetProperties (
         if ((*iter).second->GetPropertyType () == FdoPropertyType_DataProperty) {
             FdoDataPropertyDefinition * dataprop = static_cast<FdoDataPropertyDefinition*>((*iter).second);
 
-
             // do not set identity properties if not requested
             if (! bSetIdentityProperties && m_identity->Contains (dataprop))
                 continue;
-
 
             if (m_bSkipUnsupportedProperties) {
 
@@ -465,6 +479,8 @@ EGwsStatus CGwsFdoCommand::SetProperties (
     return stat;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 FdoPropertyValue * CGwsFdoCommand::ConvertGeometryProperty (
     const GWSCoordinateSystem & csname,
     FdoPropertyValue          * val
@@ -511,6 +527,7 @@ FdoPropertyValue * CGwsFdoCommand::ConvertGeometryProperty (
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoCommand::BuildInFilter (
     const GwsFeaturesIdVector     & featIds,
     int                             lbound,
@@ -533,6 +550,8 @@ EGwsStatus CGwsFdoCommand::BuildInFilter (
     }
     return stat;
 }
+
+
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoCommand::BuildInFilter (
     FdoDataPropertyDefinitionCollection* identity,
@@ -569,6 +588,8 @@ EGwsStatus CGwsFdoCommand::BuildInFilter (
     return stat;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoCommand::BuildFilter (
     const GWSFeatureId       & featId,
     FdoFilter               *& pOutFilter
@@ -589,6 +610,7 @@ EGwsStatus CGwsFdoCommand::BuildFilter (
     return stat;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoCommand::BuildFilter (
     FdoDataPropertyDefinitionCollection* identity,
@@ -596,7 +618,6 @@ EGwsStatus CGwsFdoCommand::BuildFilter (
     FdoFilter               *& pOutFilter
 )
 {
-
     EGwsStatus stat             = eGwsOk;
 
     FdoPtr<FdoFilter> pFilter;
@@ -631,6 +652,8 @@ EGwsStatus CGwsFdoCommand::BuildFilter (
     return stat;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoCommand::BuildFilter (
     const GwsFeaturesIdVector    & featids,
     int                            lbound,
@@ -654,6 +677,8 @@ EGwsStatus CGwsFdoCommand::BuildFilter (
     }
     return stat;
 }
+
+
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoCommand::BuildFilter (
     FdoIConnection               * conn,

@@ -20,8 +20,8 @@
 // Includes
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
 
 
@@ -30,6 +30,7 @@
 // class CGwsFdoCommand
 //
 ///////////////////////////////////////////////////////////////////////////////
+
 CGwsCSQueryProcessor::CGwsCSQueryProcessor(IGWSCoordinateSystemConverter *pConverter)
 {
     m_status = eGwsOk;
@@ -39,19 +40,23 @@ CGwsCSQueryProcessor::CGwsCSQueryProcessor(IGWSCoordinateSystemConverter *pConve
     m_bAlignPolygonFilter = false;
 }
 
+
 CGwsCSQueryProcessor::~CGwsCSQueryProcessor()
 {
 }
+
 
 void CGwsCSQueryProcessor::ProcessSpatialCondition(FdoSpatialCondition& sc)
 {
     ProcessGeometry<FdoSpatialCondition> (sc);
 }
 
+
 EGwsStatus CGwsCSQueryProcessor::Status() const
 {
     return m_status;
 }
+
 
 void CGwsCSQueryProcessor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& filter)
 {
@@ -62,23 +67,28 @@ void CGwsCSQueryProcessor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator
     rop->Process (this);
 }
 
+
 void CGwsCSQueryProcessor::ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& filter)
 {
     FdoPtr<FdoFilter> op = filter.GetOperand ();
     op->Process (this);
 }
 
+
 void CGwsCSQueryProcessor::ProcessComparisonCondition(FdoComparisonCondition& filter)
 {
 }
+
 
 void CGwsCSQueryProcessor::ProcessInCondition(FdoInCondition& filter)
 {
 }
 
+
 void CGwsCSQueryProcessor::ProcessNullCondition(FdoNullCondition& filter)
 {
 }
+
 
 void CGwsCSQueryProcessor::ProcessDistanceCondition(FdoDistanceCondition& sc)
 {

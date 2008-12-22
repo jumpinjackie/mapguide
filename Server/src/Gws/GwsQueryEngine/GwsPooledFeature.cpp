@@ -20,23 +20,28 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
+
 
 /////////////////////////////////////////////////////////////////////
 //
 // class CGwsPooledFeature
 //
 /////////////////////////////////////////////////////////////////////
+
 CGwsPooledFeature::CGwsPooledFeature (IGWSExtendedFeatureDescription * iResdscs)
 {
     Initialize (iResdscs);
     InitializePropertyValues ();
 }
+
+
 CGwsPooledFeature::~CGwsPooledFeature () throw()
 {
 }
+
 
 void CGwsPooledFeature::Set (IGWSFeature * feature)
 {

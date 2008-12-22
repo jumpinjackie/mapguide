@@ -32,6 +32,7 @@
 //uses 0 as default empty values.
 const int ADD_TO_OFFSET = 1;
 
+
 BinaryReader::BinaryReader(unsigned char* data, int len)
 {
     m_data = data;
@@ -40,8 +41,8 @@ BinaryReader::BinaryReader(unsigned char* data, int len)
     m_wcsCacheLen = 0;
     m_wcsCacheCurrent = 0;
     m_wcsCache = NULL;
-
 }
+
 
 BinaryReader::~BinaryReader()
 {
@@ -56,6 +57,7 @@ BinaryReader::~BinaryReader()
     if (m_wcsCache)
         delete [] m_wcsCache;
 }
+
 
 void BinaryReader::Reset(unsigned char* data, int len)
 {
@@ -81,25 +83,30 @@ void BinaryReader::Reset(unsigned char* data, int len)
     }
 }
 
+
 void BinaryReader::SetPosition(int offset)
 {
     m_pos = offset;
 }
+
 
 int BinaryReader::GetPosition()
 {
     return m_pos;
 }
 
+
 unsigned char* BinaryReader::GetDataAtCurrentPosition()
 {
     return m_data + m_pos;
 }
 
+
 unsigned BinaryReader::GetDataLen()
 {
     return m_len;
 }
+
 
 double BinaryReader::ReadDouble()
 {
@@ -111,6 +118,7 @@ double BinaryReader::ReadDouble()
     return ret;
 }
 
+
 float BinaryReader::ReadSingle()
 {
     _ASSERT(m_pos <= m_len - (int)sizeof(float));
@@ -120,6 +128,7 @@ float BinaryReader::ReadSingle()
     m_pos += sizeof(float);
     return ret;
 }
+
 
 int BinaryReader::ReadInt32()
 {
@@ -131,6 +140,7 @@ int BinaryReader::ReadInt32()
     return ret;
 }
 
+
 unsigned BinaryReader::ReadUInt32()
 {
     _ASSERT(m_pos <= m_len - (int)sizeof(int));
@@ -140,6 +150,7 @@ unsigned BinaryReader::ReadUInt32()
     m_pos += sizeof(unsigned);
     return ret;
 }
+
 
 short BinaryReader::ReadInt16()
 {
@@ -151,6 +162,7 @@ short BinaryReader::ReadInt16()
     return ret;
 }
 
+
 unsigned short BinaryReader::ReadUInt16()
 {
     _ASSERT(m_pos <= m_len - (int)sizeof(unsigned short));
@@ -160,6 +172,7 @@ unsigned short BinaryReader::ReadUInt16()
     m_pos += sizeof(unsigned short);
     return ret;
 }
+
 
 FdoInt64 BinaryReader::ReadInt64()
 {
@@ -182,6 +195,7 @@ unsigned char BinaryReader::ReadByte()
     return ret;
 }
 
+
 char BinaryReader::ReadChar()
 {
     _ASSERT(m_pos <= m_len - (int)sizeof(char));
@@ -192,12 +206,12 @@ char BinaryReader::ReadChar()
     return ret;
 }
 
+
 wchar_t* BinaryReader::ReadString()
 {
     //read string length (number of bytes, not characters!!!)
     //this includes null terminator character
     unsigned mbstrlen = ReadUInt32();
-
 
     return ReadRawString(mbstrlen);
 }
@@ -205,7 +219,6 @@ wchar_t* BinaryReader::ReadString()
 
 wchar_t* BinaryReader::ReadRawString(unsigned mbstrlen)
 {
-
     //check if we have read this string already (it will be cached)
     wchar_t* thestring = (m_wcsCachedStrings)[m_pos];
     if (thestring != NULL)

@@ -21,6 +21,7 @@
 class GWSFilter;
 
 
+///////////////////////////////////////////////////////////////////////////////
 namespace GwsQueryDefinitionXmlHelpers
 {
     GWS_QUERYENGINE_API
@@ -45,6 +46,8 @@ namespace GwsQueryDefinitionXmlHelpers
 
 };
 
+
+///////////////////////////////////////////////////////////////////////////////
 /// <summary>
 /// Query Definition. Base class for Feature query definition,
 /// Relational query defintion and Join Query Definition
@@ -73,6 +76,8 @@ protected:
     FdoOrderingOption           m_orderingOption;
 };
 
+
+///////////////////////////////////////////////////////////////////////////////
 /// <summary>
 /// Feature Query defintion. Represents a query against Feature Source
 /// <summary>
@@ -96,7 +101,6 @@ public:
     virtual IGWSFeatureQueryDefinition *
                                      GetPrimaryQueryDefinition ();
 
-
 protected:
     virtual void                Write    (FdoXmlWriter * writer);
     // FdoXmlSaxHandler protocol
@@ -114,8 +118,9 @@ protected:
 };
 
 
+///////////////////////////////////////////////////////////////////////////////
 /// <summary>
-/// LEft join query definition. Represents equal join of two query definitions
+/// Left join query definition. Represents equal join of two query definitions
 /// join condition is a collection of class attributes is a are defined by
 /// <summary>
 template <class T>
@@ -148,6 +153,7 @@ public:
     virtual const FdoString*      JoinName() { return m_joinName.empty() ? NULL : m_joinName.c_str(); }
     virtual const FdoString*      JoinDelimiter() { return m_joinDelimiter.empty() ? L"" : m_joinDelimiter.c_str(); }  // RKL:  if m_joinDelimiter.empty() return "", instead of NULL
     virtual bool                  ForceOneToOne() { return m_forceOneToOne; }
+
 protected:
     // FdoXmlSaxHandler protocol
     virtual void                  Write    (FdoXmlWriter * writer);
@@ -168,6 +174,8 @@ protected:
     bool                          m_forceOneToOne;
 };
 
+
+///////////////////////////////////////////////////////////////////////////////
 // Left join query definition
 class GWSLeftJoinQueryDefinition :  public GWSJoinQueryDefinition<IGWSLeftJoinQueryDefinition>
 {
@@ -190,6 +198,7 @@ public:
 };
 
 
+///////////////////////////////////////////////////////////////////////////////
 // Equal join query definition
 class GWSEqualJoinQueryDefinition :  public GWSJoinQueryDefinition<IGWSEqualJoinQueryDefinition>
 {
@@ -212,9 +221,4 @@ public:
     virtual EGwsQueryType       Type () const {return eGwsQueryEqualJoin; }
 };
 
-
-
 #endif
-
-
-

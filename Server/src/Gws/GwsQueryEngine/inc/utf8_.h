@@ -13,6 +13,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
 //converts utf8 string to unicode
 //returns length of unicode string (excluding null character)
 //returns -1 if invalid character code was encountered
@@ -24,4 +25,3 @@ int ut_utf8_to_unicode(const char* str_in, size_t in_size, wchar_t* Wtext, size_
 int ut_utf8_from_unicode(const wchar_t* Wtext, size_t in_size, char* str_out, int out_size);
 
 char* gws_mbscat(char *strDestination, const char *strSource);
-

@@ -20,8 +20,8 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
 #include <SDF/IExtendedSelect.h>
 #include <SDF/SdfCommandType.h>
@@ -29,12 +29,14 @@
 #include <SHP/ShpCommandType.h>
 #include "FdoExpressionEngineCopyFilter.h"
 #include "FdoExpressionEngineFilterProcessor.h"
+
+
 /////////////////////////////////////////////////////////////////////
 //
 // class CGwsPreparedQuery
 //
 /////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////
+
 CGwsPreparedQuery::CGwsPreparedQuery ()
 : m_bExtendedQuerySupported(false)
 {
@@ -42,6 +44,7 @@ CGwsPreparedQuery::CGwsPreparedQuery ()
     m_pQuery = NULL;
     m_pathlength = 0;
 }
+
 
 CGwsPreparedQuery::CGwsPreparedQuery (bool bExtendedQuery)
 : m_bExtendedQuerySupported(bExtendedQuery)
@@ -58,6 +61,7 @@ CGwsPreparedQuery::~CGwsPreparedQuery ()
         m_resultDescriptor->Release ();
 }
 
+
 void CGwsPreparedQuery::DescribeResults (IGWSExtendedFeatureDescription ** ppResDesc)
 {
     if (ppResDesc == NULL)
@@ -65,6 +69,7 @@ void CGwsPreparedQuery::DescribeResults (IGWSExtendedFeatureDescription ** ppRes
     m_resultDescriptor->AddRef ();
     * ppResDesc = m_resultDescriptor;
 }
+
 
 CGwsFeatureIterator * CGwsPreparedQuery::CreateFeatureIterator (EGwsFeatureIteratorType itype)
 {
@@ -89,13 +94,14 @@ CGwsFeatureIterator * CGwsPreparedQuery::CreateFeatureIterator (EGwsFeatureItera
         return new CGwsRightBatchSortedBlockJoinQueryResults ();
     }
     return NULL;
-
 }
+
 
 EGwsPreparedQueryType CGwsPreparedQuery::GetPreparedQueryType ()
 {
     return eGwsPreparedFeatureQuery;
 }
+
 
 void CGwsPreparedQuery::GetQueryDefinition (IGWSQueryDefinition ** ppQdef)
 {
@@ -109,11 +115,13 @@ void CGwsPreparedQuery::GetQueryDefinition (IGWSQueryDefinition ** ppQdef)
     }
 }
 
+
 /////////////////////////////////////////////////////////////////////
 //
 // class CGwsPreparedFeatureQuery
 //
 /////////////////////////////////////////////////////////////////////
+
 CGwsPreparedFeatureQuery::CGwsPreparedFeatureQuery (
     FdoIConnection         * sess,
     const GWSQualifiedName & classname,
@@ -127,9 +135,11 @@ CGwsPreparedFeatureQuery::CGwsPreparedFeatureQuery (
     m_selectList = FdoIdentifierCollection::Create();
 }
 
+
 CGwsPreparedFeatureQuery::~CGwsPreparedFeatureQuery ()
 {
 }
+
 
 EGwsStatus CGwsPreparedFeatureQuery::Init (
     FdoIdentifierCollection  * sellist,
@@ -247,10 +257,12 @@ EGwsStatus CGwsPreparedFeatureQuery::Init (
     return stat;
 }
 
+
 CGwsPreparedFeatureQuery * CGwsPreparedFeatureQuery::GetPrimaryQuery ()
 {
     return this;
 }
+
 
 FdoDataPropertyDefinitionCollection * CGwsPreparedFeatureQuery::GetIdentityProperties ()
 {
@@ -311,12 +323,14 @@ void CGwsPreparedFeatureQuery::PrepareInternal ()
     }
 }
 
+
 void CGwsPreparedFeatureQuery::SetFilterInternal (FdoFilter * pFilter)
 {
     assert (m_pCommand);
     ((FdoISelect *) m_pCommand.p)->SetFilter (pFilter);
 
 }
+
 
 EGwsStatus CGwsPreparedFeatureQuery::SetFilter (FdoFilter * pFilter)
 {
@@ -334,12 +348,14 @@ EGwsStatus CGwsPreparedFeatureQuery::SetFilter (FdoFilter * pFilter)
     return eGwsOk;
 }
 
+
 FdoFilter * CGwsPreparedFeatureQuery::GetFilter ()
 {
     assert (m_pCommand);
     return ((FdoISelect *) m_pCommand.p)->GetFilter ();
 
 }
+
 
 FdoStringCollection * CGwsPreparedFeatureQuery::GetOrderBy ()
 {
@@ -357,6 +373,7 @@ FdoStringCollection * CGwsPreparedFeatureQuery::GetOrderBy ()
     }
     return orderBy;
 }
+
 
 FdoOrderingOption CGwsPreparedFeatureQuery::GetOrderingOption ()
 {
@@ -414,6 +431,7 @@ EGwsStatus CGwsPreparedFeatureQuery::Execute (
     return stat;
 }
 
+
 EGwsStatus CGwsPreparedFeatureQuery::Execute (
     FdoFilter               * filter,
     IGWSFeatureIterator    ** results,
@@ -423,7 +441,6 @@ EGwsStatus CGwsPreparedFeatureQuery::Execute (
     SetFilter (filter);
     return Execute (results,bScrollable);
 }
-
 
 
 EGwsStatus CGwsPreparedFeatureQuery::Execute (
@@ -445,6 +462,7 @@ EGwsStatus CGwsPreparedFeatureQuery::Execute (
     }
     return stat;
 }
+
 
 EGwsStatus CGwsPreparedFeatureQuery::Execute (
     const GwsFeaturesIdVector    & featids,

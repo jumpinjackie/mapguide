@@ -20,15 +20,17 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
+
 
 /////////////////////////////////////////////////////////////////////
 //
 // template class GWSJoinQueryDefinition
 //
 /////////////////////////////////////////////////////////////////////
+
 template<class T>
 GWSJoinQueryDefinition<T>::GWSJoinQueryDefinition  (
     const FdoString     * joinName,
@@ -40,7 +42,6 @@ GWSJoinQueryDefinition<T>::GWSJoinQueryDefinition  (
     FdoStringCollection * rightProp
 )
 :GWSQueryDefinition<T> ()
-
 {
     assert(joinName);
     if(NULL != joinName)
@@ -64,15 +65,18 @@ GWSJoinQueryDefinition<T>::GWSJoinQueryDefinition  (
 
 }
 
+
 template<class T>
 GWSJoinQueryDefinition<T>::GWSJoinQueryDefinition ()
 {
 }
 
+
 template<class T>
 GWSJoinQueryDefinition<T>::~GWSJoinQueryDefinition () throw()
 {
 }
+
 
 template<class T>
 FdoIdentifierCollection * GWSJoinQueryDefinition<T>::SelectList ()
@@ -101,6 +105,7 @@ IGWSQueryDefinition * GWSJoinQueryDefinition<T>::LeftQueryDefinition ()
     return m_leftQd;
 }
 
+
 template<class T>
 IGWSQueryDefinition * GWSJoinQueryDefinition<T>::RightQueryDefinition ()
 {
@@ -108,6 +113,7 @@ IGWSQueryDefinition * GWSJoinQueryDefinition<T>::RightQueryDefinition ()
         m_rightQd.p->AddRef ();
     return m_rightQd;
 }
+
 
 template<class T>
 FdoStringCollection * GWSJoinQueryDefinition<T>::LeftJoinAttributes ()
@@ -117,6 +123,7 @@ FdoStringCollection * GWSJoinQueryDefinition<T>::LeftJoinAttributes ()
     return m_leftAttrs;
 }
 
+
 template<class T>
 FdoStringCollection * GWSJoinQueryDefinition<T>::RightJoinAttributes ()
 {
@@ -124,6 +131,7 @@ FdoStringCollection * GWSJoinQueryDefinition<T>::RightJoinAttributes ()
         m_rightAttrs.p->AddRef ();
     return m_rightAttrs;
 }
+
 
 template<class T>
 IGWSQualifiedNames* GWSJoinQueryDefinition<T>::QualifiedNames ()
@@ -147,10 +155,10 @@ IGWSQualifiedNames* GWSJoinQueryDefinition<T>::QualifiedNames ()
     return qnames;
 }
 
+
 template<class T>
 FdoStringCollection*  GWSJoinQueryDefinition<T>::FeatureSourceNames ()
 {
-
     FdoPtr<FdoStringCollection> lfsnames = m_leftQd->FeatureSourceNames ();
     FdoPtr<FdoStringCollection> rfsnames = m_rightQd->FeatureSourceNames ();
 
@@ -168,8 +176,8 @@ FdoStringCollection*  GWSJoinQueryDefinition<T>::FeatureSourceNames ()
         }
     }
     return fsnames;
-
 }
+
 
 template<class T>
 IGWSFeatureQueryDefinition * GWSJoinQueryDefinition<T>::GetPrimaryQueryDefinition ()
@@ -198,8 +206,9 @@ void GWSJoinQueryDefinition<T>::Write (FdoXmlWriter * writer)
     writer->WriteStartElement (GwsQueryXml::xmlGwsRightJoinAttributes);
     writer->WriteAttribute (GwsQueryXml::xmlGwsJoinAttibuteNames, rattrs);
     writer->WriteEndElement ();
-
 }
+
+
 template<class T>
 FdoXmlSaxHandler*  GWSJoinQueryDefinition<T>::XmlStartElement (
     FdoXmlSaxContext* ctx,
@@ -249,11 +258,8 @@ FdoXmlSaxHandler*  GWSJoinQueryDefinition<T>::XmlStartElement (
         }
     }
 
-
     return CGwsObject::XmlStartElement (ctx, uri, name, qname, attrs);
 }
-
-
 
 
 /////////////////////////////////////////////////////////////////////
@@ -261,6 +267,7 @@ FdoXmlSaxHandler*  GWSJoinQueryDefinition<T>::XmlStartElement (
 // class GWSLeftJoinQueryDefinition
 //
 /////////////////////////////////////////////////////////////////////
+
 GWSLeftJoinQueryDefinition::GWSLeftJoinQueryDefinition  (
     const FdoString     * joinName,
     const FdoString     * joinDelimiter,
@@ -271,13 +278,14 @@ GWSLeftJoinQueryDefinition::GWSLeftJoinQueryDefinition  (
     FdoStringCollection * rightProp
 )
 :GWSJoinQueryDefinition<IGWSLeftJoinQueryDefinition> (joinName, joinDelimiter, forceOneToOne, leftQd, rightQd, leftProp, rightProp)
-
 {
 }
+
 
 GWSLeftJoinQueryDefinition::GWSLeftJoinQueryDefinition ()
 {
 }
+
 
 GWSLeftJoinQueryDefinition::~GWSLeftJoinQueryDefinition () throw()
 {
@@ -289,6 +297,7 @@ GWSLeftJoinQueryDefinition::~GWSLeftJoinQueryDefinition () throw()
 // class GWSEqualJoinQueryDefinition
 //
 /////////////////////////////////////////////////////////////////////
+
 GWSEqualJoinQueryDefinition::GWSEqualJoinQueryDefinition  (
     const FdoString     * joinName,
     const FdoString     * joinDelimiter,
@@ -299,16 +308,15 @@ GWSEqualJoinQueryDefinition::GWSEqualJoinQueryDefinition  (
     FdoStringCollection * rightProp
 )
 :GWSJoinQueryDefinition<IGWSEqualJoinQueryDefinition> (joinName, joinDelimiter, forceOneToOne, leftQd, rightQd, leftProp, rightProp)
-
 {
 }
+
 
 GWSEqualJoinQueryDefinition::GWSEqualJoinQueryDefinition ()
 {
 }
 
+
 GWSEqualJoinQueryDefinition::~GWSEqualJoinQueryDefinition () throw()
 {
 }
-
-

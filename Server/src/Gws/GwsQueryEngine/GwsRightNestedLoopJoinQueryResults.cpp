@@ -20,9 +20,10 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
+
 
 /////////////////////////////////////////////////////////////////////
 //
@@ -52,10 +53,13 @@ EGwsStatus CGwsRightNestedLoopJoinQueryResults::InitializeReader (
     return CGwsRightJoinQueryResults::InitializeReader (query, prepquery, joincols, bScrollable);
 }
 
+
 bool CGwsRightNestedLoopJoinQueryResults::ReadNext()
 {
     return CGwsRightJoinQueryResults::ReadNext ();
 }
+
+
 void CGwsRightNestedLoopJoinQueryResults::Close ()
 {
     if (! m_bClosed)
@@ -63,11 +67,11 @@ void CGwsRightNestedLoopJoinQueryResults::Close ()
     m_bClosed = true;
 }
 
+
 EGwsStatus CGwsRightNestedLoopJoinQueryResults::SetRelatedValues (
     const GWSFeatureId & vals
- )
+)
 {
-
     EGwsStatus stat = eGwsOk;
 
     try {
@@ -123,7 +127,6 @@ EGwsStatus CGwsRightNestedLoopJoinQueryResults::SetRelatedValues (
                     }
                     break;
 
-
                 case FdoDataType_String:
                     switch (dtSecondary)
                     {
@@ -173,8 +176,6 @@ EGwsStatus CGwsRightNestedLoopJoinQueryResults::SetRelatedValues (
                 pFilter = FdoComparisonCondition::Create(pFeatureNameProperty,
                                                              comparisonOp,
                                                              val);
-
-
             } else {
                 FdoPtr<FdoFilter> pRhsFilter = FdoComparisonCondition::Create(pFeatureNameProperty,
                                                                               comparisonOp,

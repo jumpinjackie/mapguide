@@ -20,25 +20,29 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
+
 
 /////////////////////////////////////////////////////////////////////
 //
 // class CGwsNestedLoopSortedBlockJoinQueryResults
 //
 /////////////////////////////////////////////////////////////////////
+
 CGwsNestedLoopSortedBlockJoinQueryResults::CGwsNestedLoopSortedBlockJoinQueryResults (
 )
 {
     m_right = NULL;
 }
 
+
 CGwsNestedLoopSortedBlockJoinQueryResults::~CGwsNestedLoopSortedBlockJoinQueryResults (
 ) throw()
 {
 }
+
 
 EGwsStatus CGwsNestedLoopSortedBlockJoinQueryResults::InitializeReader (
     IGWSQuery                       * query,
@@ -70,5 +74,4 @@ EGwsStatus CGwsNestedLoopSortedBlockJoinQueryResults::InitializeReader (
         m_right->AddRef ();
     }
     return stat;
-
 }

@@ -20,15 +20,17 @@
 // Includes
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
+
 
 //////////////////////////////////////////////////////////////////////////////
 //
 // class CGwsFdoDeleteCommand
 //
 ///////////////////////////////////////////////////////////////////////////////
+
 CGwsFdoDeleteCommand::CGwsFdoDeleteCommand (
     FdoIConnection             *session,
     const GWSQualifiedName     &classname
@@ -37,10 +39,12 @@ CGwsFdoDeleteCommand::CGwsFdoDeleteCommand (
 {
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 CGwsFdoDeleteCommand::~CGwsFdoDeleteCommand ()
 {
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoDeleteCommand::Init (const wchar_t* pFDOCommandClass /*NULL*/)
@@ -73,11 +77,13 @@ EGwsStatus CGwsFdoDeleteCommand::Init (const wchar_t* pFDOCommandClass /*NULL*/)
     return fdoes;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 void CGwsFdoDeleteCommand::PrepareInternal ()
 {
     PrepareNonKeyProperties ();
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void CGwsFdoDeleteCommand::SetFilterInternal (FdoFilter * filter)
@@ -91,7 +97,6 @@ void CGwsFdoDeleteCommand::SetFilterInternal (FdoFilter * filter)
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoDeleteCommand::Execute (const GWSFeatureId & featid)
 {
-
     Clear ();
 
     EGwsStatus fdoes = eGwsOk;

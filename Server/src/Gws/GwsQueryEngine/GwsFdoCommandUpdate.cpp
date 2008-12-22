@@ -20,15 +20,17 @@
 // Includes
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
+
 
 //////////////////////////////////////////////////////////////////////////////
 //
 // class CGwsFdoUpdateCommand
 //
 ///////////////////////////////////////////////////////////////////////////////
+
 CGwsFdoUpdateCommand::CGwsFdoUpdateCommand (
     FdoIConnection           * session,
     const GWSQualifiedName   & classname
@@ -37,10 +39,12 @@ CGwsFdoUpdateCommand::CGwsFdoUpdateCommand (
 {
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 CGwsFdoUpdateCommand::~CGwsFdoUpdateCommand ()
 {
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoUpdateCommand::Init (const wchar_t* pFDOCommandClass /*NULL*/)
@@ -73,11 +77,13 @@ EGwsStatus CGwsFdoUpdateCommand::Init (const wchar_t* pFDOCommandClass /*NULL*/)
     return fdoes;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 void CGwsFdoUpdateCommand::PrepareInternal ()
 {
     PrepareNonKeyProperties ();
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 void CGwsFdoUpdateCommand::SetFilterInternal (FdoFilter * filter)
@@ -98,15 +104,14 @@ FdoPropertyValueCollection * CGwsFdoUpdateCommand::GetPropertyValues ()
     return m_pProperties;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 EGwsStatus CGwsFdoUpdateCommand::Execute (CGwsMutableFeature & feat)
 {
-
     Clear ();
 
     EGwsStatus fdoes = eGwsOk;
     bool       bRet  = false;
-
 
     try {
         GetPropertyValues ();   // initialize property value collection

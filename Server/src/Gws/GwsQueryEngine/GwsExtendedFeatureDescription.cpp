@@ -20,10 +20,11 @@
 // Includes
 //
 /////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
 
+#include "stdafx.h"
 #include "GwsQueryEngineImp.h"
 #include "FdoExpressionEngine.h"
+
 
 static CGwsPropertyDesc s_pdesc (L"", (FdoPropertyType) 0, (FdoDataType) 0, false, 0, 0, 0, false, false, 0, false, false, L"");
 
@@ -33,9 +34,11 @@ static CGwsPropertyDesc s_pdesc (L"", (FdoPropertyType) 0, (FdoDataType) 0, fals
 // class CGwsQueryResultDescriptors
 //
 /////////////////////////////////////////////////////////////////////
+
 CGwsQueryResultDescriptors::CGwsQueryResultDescriptors ()
 {
 }
+
 
 CGwsQueryResultDescriptors::CGwsQueryResultDescriptors (
     const CGwsQueryResultDescriptors & other
@@ -102,6 +105,7 @@ CGwsQueryResultDescriptors::CGwsQueryResultDescriptors (
     }
 }
 
+
 CGwsQueryResultDescriptors::~CGwsQueryResultDescriptors () throw()
 {
     for (size_t i = 0; i < m_descriptors.size (); i ++) {
@@ -111,6 +115,7 @@ CGwsQueryResultDescriptors::~CGwsQueryResultDescriptors () throw()
     }
 }
 
+
 void CGwsQueryResultDescriptors::appendPropertyNames (
     FdoIdentifierCollection       * propnamestoadd,
     FdoClassDefinition        * classDef,
@@ -118,7 +123,6 @@ void CGwsQueryResultDescriptors::appendPropertyNames (
     std::vector<CGwsPropertyDesc> & propdsc
 )
 {
-
     FdoPtr<FdoPropertyDefinitionCollection> properties;
 
     FdoPtr<FdoClassDefinition> baseClass = classDef->GetBaseClass ();
@@ -137,6 +141,7 @@ void CGwsQueryResultDescriptors::appendPropertyNames (
             pushPropDefinition (pFdoProperty, propnames,propdsc);
     }
 }
+
 
 void CGwsQueryResultDescriptors::pushPropDefinition (
     FdoPropertyDefinition     * propdef,
@@ -183,30 +188,38 @@ void CGwsQueryResultDescriptors::pushPropDefinition (
                                      spatialcontext));
 }
 
+
 const GWSQualifiedName  & CGwsQueryResultDescriptors::ClassName ()
 {
     return m_classname;
 }
+
+
 FdoClassDefinition  * CGwsQueryResultDescriptors::ClassDefinition ()
 {
     if (m_classDef != NULL)
         m_classDef.p->AddRef ();
     return m_classDef;
 }
+
+
 void CGwsQueryResultDescriptors::SetCSName (const GWSCoordinateSystem & csname)
 {
     m_csname = csname;
 }
+
 
 const GWSCoordinateSystem & CGwsQueryResultDescriptors::GetCoordinateSystem ()
 {
     return m_csname;
 }
 
+
 int CGwsQueryResultDescriptors::GetCount  ()
 {
     return (int )m_descriptors.size ();
 }
+
 
 IGWSExtendedFeatureDescription * CGwsQueryResultDescriptors::GetItem   (int i)
 {
@@ -218,6 +231,7 @@ IGWSExtendedFeatureDescription * CGwsQueryResultDescriptors::GetItem   (int i)
         pdesc->AddRef ();
     return pdesc;
 }
+
 
 IGWSExtendedFeatureDescription * CGwsQueryResultDescriptors::GetItem (
     const GWSQualifiedName & name
@@ -242,7 +256,6 @@ IGWSExtendedFeatureDescription * CGwsQueryResultDescriptors::GetItem (
     if (res == NULL)
         GWS_THROW (eGwsFailedToDesribeClass);
     return res;
-
 }
 
 
@@ -252,6 +265,7 @@ FdoStringCollection  * CGwsQueryResultDescriptors::PropertyNames ()
         m_propertynames.p->AddRef ();
     return m_propertynames;
 }
+
 
 void CGwsQueryResultDescriptors::Add (IGWSExtendedFeatureDescription * pIDesc)
 {
@@ -275,17 +289,18 @@ const CGwsPropertyDesc & CGwsQueryResultDescriptors::GetPropertyDescriptor (int 
 
 }
 
+
 const CGwsPropertyDesc & CGwsQueryResultDescriptors::GetPropertyDescriptor (
     FdoString * name
 )
 {
-
     for (size_t i = 0; i < m_propdsc.size (); i ++) {
         if (wcscmp (m_propdsc[i].m_name.c_str (), name) == 0)
             return m_propdsc[i];
     }
     return s_pdesc;
 }
+
 
 const CGwsPropertyDesc & CGwsQueryResultDescriptors::GetGeometryPropertyDescriptor ()
 {
@@ -297,11 +312,11 @@ const CGwsPropertyDesc & CGwsQueryResultDescriptors::GetGeometryPropertyDescript
 }
 
 
-
 const std::vector<CGwsPropertyDesc> & CGwsQueryResultDescriptors::GetPropertyDescriptors ()
 {
     return m_propdsc;
 }
+
 
 int CGwsQueryResultDescriptors::Contains (FdoString* propertyName)
 {
@@ -315,6 +330,7 @@ int CGwsQueryResultDescriptors::Contains (FdoString* propertyName)
     return -1;
 }
 
+
 FdoDataPropertyDefinitionCollection *
     CGwsQueryResultDescriptors::GetIdentityProperties ()
 {
@@ -325,7 +341,6 @@ FdoDataPropertyDefinitionCollection *
     if (m_identprops != NULL)
         m_identprops.p->AddRef ();
     return m_identprops;
-
 }
 
 
@@ -357,23 +372,14 @@ FdoPropertyDefinition * CGwsQueryResultDescriptors::FindPropertyDefinition (
     return retProp;
 }
 
+
 const WSTR & CGwsQueryResultDescriptors::GetSuffix () const
 {
     return m_suffix;
 }
 
+
 void CGwsQueryResultDescriptors::SetSuffix (const WSTR & suffix)
 {
     m_suffix = suffix;
-
 }
-
-
-
-
-
-
-
-
-
-
