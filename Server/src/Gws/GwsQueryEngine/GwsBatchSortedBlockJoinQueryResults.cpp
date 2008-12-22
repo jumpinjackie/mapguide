@@ -145,7 +145,7 @@ EGwsStatus CGwsBatchSortedBlockJoinQueryResults::InitializeReader (
 
     // Preallocate cache
     m_pPrimaryCache.reserve(sm_nBatchSize);
-    for(INT32 index=0;index<sm_nBatchSize;index++)
+    for(int index=0;index<sm_nBatchSize;index++)
     {
         PrimaryCacheEntry* cacheEntry = new PrimaryCacheEntry();
         if(cacheEntry)
@@ -155,7 +155,7 @@ EGwsStatus CGwsBatchSortedBlockJoinQueryResults::InitializeReader (
             // Need to cache all primary properties as we walk the primary iterator
             cacheEntry->propertyCollection.resize(m_propertyNames->GetCount());
 
-            for(INT32 j=0;j<m_propertyNames->GetCount();j++)
+            for(int j=0;j<m_propertyNames->GetCount();j++)
             {
                 PropertyCacheEntry* propertyCacheEntry = new PropertyCacheEntry();
                 if(propertyCacheEntry)
