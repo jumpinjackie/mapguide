@@ -79,7 +79,9 @@ WT_Result MgServerDrawingServiceUtil::MgWt_process_layer(WT_Layer &layer, WT_Fil
 
     if (layerName)
     {
-        layerList->Add(WT_String::to_wchar(layerName.length(), layerName.unicode()));
+        wchar_t* name = WT_String::to_wchar(layerName.length(), layerName.unicode());
+        layerList->Add(name);
+        delete [] name;
     }
 
     return WT_Result::Success;
