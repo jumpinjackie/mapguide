@@ -149,11 +149,18 @@ bool MapAgentCommon::AuthenticateOgcRequest(MgHttpRequestParam* params)
 // Is the thing pointed to an XML processing instruction?
 bool MapAgentCommon::IsXmlPi(char* buf)
 {
-    return buf[0] == '<' &&
-           buf[1] == '?' &&
-           buf[2] == 'x' &&
-           buf[3] == 'm' &&
-           buf[4] == 'l';
+    bool retVal = false;
+
+    if (buf != NULL)
+    {
+        retVal = (buf[0] == '<' &&
+                      buf[1] == '?' &&
+                      buf[2] == 'x' &&
+                      buf[3] == 'm' &&
+                      buf[4] == 'l');
+    }
+
+    return retVal;
 }
 
 void MapAgentCommon::ScanHeaders(char* partHdrStart, char* partHdrEnd, STRING& paramName, STRING& paramType, bool& bIsFile)
