@@ -1764,108 +1764,65 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
     //se we just pass NULL for the path offsets array
     _TransferPoints(c, srclb, xform, NULL);
 
-    //We can only use the outline renderer if line weight is thin.
-    //For thick lines, the outline rasterizer does not generate accurate joins
-    //(for round joins). For thick lines the performance difference between the
-    //outline and regular rasterizers gets smaller, so the performance hit
-    //of using the polygon rasterizer is not as big.
-    if (weightpx <= 3.0)
+    //note: removed the code which used the outline renderer for thin lines.
+    //there were problems with dense polylines not being rendered accurately.
+
+    //stroke the line as a polygon
+    agg::conv_stroke<agg::path_storage> stroke(c->ps);
+    stroke.width(weightpx);
+
+    //set up cap / join style
+    switch (lineStroke.cap)
     {
-        //find cached line profile -- those things are
-        //slow to initialize with a line width so we cache them
-        agg::line_profile_aa* lprof = c->h_lprof[weightpx];
+        case SE_LineCap_None:
+            stroke.line_cap(agg::butt_cap);
+            break;
+        case SE_LineCap_Triangle:
+            stroke.line_cap(agg::triangle_cap);
+            break;
+        case SE_LineCap_Square:
+            stroke.line_cap(agg::square_cap);
+            break;
+        case SE_LineCap_Round:
+        default:
+            stroke.line_cap(agg::round_cap);
+            break;
+    }
 
-        if (!lprof)
-        {
-            lprof = new agg::line_profile_aa();
-            lprof->width(weightpx);
-            c->h_lprof[weightpx] = lprof;
-        }
+    switch (lineStroke.join)
+    {
+        case SE_LineJoin_None:
+            stroke.line_join(agg::bevel_join);  //AGG doesn't support None
+            break;
+        case SE_LineJoin_Bevel:
+            stroke.line_join(agg::bevel_join);
+            break;
+        case SE_LineJoin_Miter:
+            {
+            stroke.line_join(agg::miter_join);
+            stroke.miter_limit(2.0*lineStroke.miterLimit);  //miter limit is relative to the half-width
+            break;
+            }
+        case SE_LineJoin_Round:
+        default:
+            stroke.line_join(agg::round_join);
+            break;
+    }
 
-        //draw
-        if(c->bPolyClip)
-        {
-            //for thin lines, always use (faster) miter joins,
-            //rather than round -- the difference will not be visible anyway
-            c->clip_ras_o.line_join(agg::outline_miter_join);
-            c->clip_ras_o.round_cap(false);
+    c->ras.add_path(stroke);
+    c->ras.filling_rule(agg::fill_non_zero);
 
-            c->clip_ren_o.profile(*lprof);
-            c->clip_ren_o.color(agg::argb8_packed(lineStroke.color));
-            c->clip_ras_o.add_path(c->ps);
-        }
-        else
-        {
-            //for thin lines, always use (faster) miter joins,
-            //rather than round -- the difference will not be visible anyway
-            c->ras_o.line_join(agg::outline_miter_join);
-            c->ras_o.round_cap(false);
-
-            c->ren_o.profile(*lprof);
-            c->ren_o.color(agg::argb8_packed(lineStroke.color));
-            c->ras_o.add_path(c->ps);
-        }
+    if (c->bPolyClip)
+    {
+        c->clip_ren.color(agg::rgb8_packed(lineStroke.color));
+        agg::render_scanlines(c->ras, c->sl, c->clip_ren);
     }
     else
     {
-        //For thick lines, stroke the line as a polygon
-        agg::conv_stroke<agg::path_storage> stroke(c->ps);
-        stroke.width(weightpx);
-
-        //set up cap / join style
-        switch (lineStroke.cap)
-        {
-            case SE_LineCap_None:
-                stroke.line_cap(agg::butt_cap);
-                break;
-            case SE_LineCap_Triangle:
-                stroke.line_cap(agg::triangle_cap);
-                break;
-            case SE_LineCap_Square:
-                stroke.line_cap(agg::square_cap);
-                break;
-            case SE_LineCap_Round:
-            default:
-                stroke.line_cap(agg::round_cap);
-                break;
-        }
-
-        switch (lineStroke.join)
-        {
-            case SE_LineJoin_None:
-                stroke.line_join(agg::bevel_join);  //AGG doesn't support None
-                break;
-            case SE_LineJoin_Bevel:
-                stroke.line_join(agg::bevel_join);
-                break;
-            case SE_LineJoin_Miter:
-                {
-                stroke.line_join(agg::miter_join);
-                stroke.miter_limit(2.0*lineStroke.miterLimit);  //miter limit is relative to the half-width
-                break;
-                }
-            case SE_LineJoin_Round:
-            default:
-                stroke.line_join(agg::round_join);
-                break;
-        }
-
-        c->ras.add_path(stroke);
-        c->ras.filling_rule(agg::fill_non_zero);
-
-        if (c->bPolyClip)
-        {
-            c->clip_ren.color(agg::rgb8_packed(lineStroke.color));
-            agg::render_scanlines(c->ras, c->sl, c->clip_ren);
-        }
-        else
-        {
-            agg::render_scanlines_aa_solid(c->ras, c->sl, c->ren, agg::argb8_packed(lineStroke.color));
-        }
-
-        c->ras.filling_rule(agg::fill_even_odd);
+        agg::render_scanlines_aa_solid(c->ras, c->sl, c->ren, agg::argb8_packed(lineStroke.color));
     }
 
+    c->ras.filling_rule(agg::fill_even_odd);
 }
 
 
