@@ -132,6 +132,14 @@ class MG_SERVER_MAPPING_API MgServerMappingService : public MgMappingService
         Ptr<MgResourceService> m_svcResource;
         Ptr<MgDrawingService> m_svcDrawing;
         Ptr<MgCoordinateSystemFactory> m_pCSFactory;
+
+        INT32 m_rasterGridSize;
+        INT32 m_minRasterGridSize;
+        double m_rasterGridSizeOverrideRatio;
+
+        INT32 m_rasterGridSizeForPlot;
+        INT32 m_minRasterGridSizeForPlot;
+        double m_rasterGridSizeOverrideRatioForPlot;
 };
 
 #endif
