@@ -341,6 +341,18 @@ EXTERNAL_API:
     static const STRING RenderingServicePropertyRasterGridSizeOverrideRatio;         /// value("RasterGridSizeOverrideRatio")
     static const double DefaultRenderingServicePropertyRasterGridSizeOverrideRatio;  /// value(0.25)
 
+    /// Sets desired raster re-projection grid size for plot
+    static const STRING RenderingServicePropertyRasterGridSizeForPlot;               /// value("RasterGridSizeForPlot")
+    static const INT32 DefaultRenderingServicePropertyRasterGridSizeForPlot;         /// value(50)
+
+    /// Sets desired minimum raster re-projection grid size for plot
+    static const STRING RenderingServicePropertyMinRasterGridSizeForPlot;            /// value("MinRasterGridSizeForPlot")
+    static const INT32 DefaultRenderingServicePropertyMinRasterGridSizeForPlot;      /// value(5)
+
+    /// Sets desired raster re-projection grid size override ratio for plot
+    static const STRING RenderingServicePropertyRasterGridSizeOverrideRatioForPlot;         /// value("RasterGridSizeOverrideRatioForPlot")
+    static const double DefaultRenderingServicePropertyRasterGridSizeOverrideRatioForPlot;  /// value(0.10)
+
     /// Sets the batch size for rendering a selection
     static const STRING RenderingServicePropertyRenderSelectionBatchSize;       /// value("RenderSelectionBatchSize")
     static const INT32 DefaultRenderingServicePropertyRenderSelectionBatchSize; /// value(10000)

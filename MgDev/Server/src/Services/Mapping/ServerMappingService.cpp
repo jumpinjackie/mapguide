@@ -66,6 +66,38 @@ MgServerMappingService::MgServerMappingService() :
     m_svcResource = NULL;
     m_svcDrawing = NULL;
     m_pCSFactory = new MgCoordinateSystemFactory();
+
+    MgConfiguration* pConf = MgConfiguration::GetInstance();
+
+    pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
+                          MgConfigProperties::RenderingServicePropertyRasterGridSize,
+                          m_rasterGridSize,
+                          MgConfigProperties::DefaultRenderingServicePropertyRasterGridSize);
+
+    pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
+                          MgConfigProperties::RenderingServicePropertyMinRasterGridSize,
+                          m_minRasterGridSize,
+                          MgConfigProperties::DefaultRenderingServicePropertyMinRasterGridSize);
+
+    pConf->GetDoubleValue(MgConfigProperties::RenderingServicePropertiesSection,
+                          MgConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatio,
+                          m_rasterGridSizeOverrideRatio,
+                          MgConfigProperties::DefaultRenderingServicePropertyRasterGridSizeOverrideRatio);
+
+    pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
+                          MgConfigProperties::RenderingServicePropertyRasterGridSizeForPlot,
+                          m_rasterGridSizeForPlot,
+                          MgConfigProperties::DefaultRenderingServicePropertyRasterGridSizeForPlot);
+
+    pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
+                          MgConfigProperties::RenderingServicePropertyMinRasterGridSizeForPlot,
+                          m_minRasterGridSizeForPlot,
+                          MgConfigProperties::DefaultRenderingServicePropertyMinRasterGridSizeForPlot);
+
+    pConf->GetDoubleValue(MgConfigProperties::RenderingServicePropertiesSection,
+                          MgConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatioForPlot,
+                          m_rasterGridSizeOverrideRatioForPlot,
+                          MgConfigProperties::DefaultRenderingServicePropertyRasterGridSizeOverrideRatioForPlot);
 }
 
 
@@ -142,6 +174,10 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
     STRING dwfName = MgFileUtil::GenerateTempFileName(false, mdf->GetName());
 
     EMapRenderer dr(dwfName, mapAgentUri);
+
+    dr.SetRasterGridSize(m_rasterGridSize);
+    dr.SetMinRasterGridSize(m_minRasterGridSize);
+    dr.SetRasterGridSizeOverrideRatio(m_rasterGridSizeOverrideRatio);
 
     //get the coordinate system unit scale
     MdfModel::MdfString srs = map->GetMapSRS();
@@ -432,6 +468,10 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
 
     // prepare the renderer
     EMapUpdateRenderer dr(dwfName, seqNo);
+
+    dr.SetRasterGridSize(m_rasterGridSize);
+    dr.SetMinRasterGridSize(m_minRasterGridSize);
+    dr.SetRasterGridSizeOverrideRatio(m_rasterGridSizeOverrideRatio);
 
     RSMgSymbolManager mgr(m_svcResource);
     dr.SetSymbolManager(&mgr);
@@ -905,6 +945,10 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
 
     EPlotRenderer dr(dwfName.c_str(), 0, 0, L"inches");  // NOXLATE
 
+    dr.SetRasterGridSize(m_rasterGridSizeForPlot);
+    dr.SetMinRasterGridSize(m_minRasterGridSizeForPlot);
+    dr.SetRasterGridSizeOverrideRatio(m_rasterGridSizeOverrideRatioForPlot);
+
     RSMgSymbolManager mgr(m_svcResource);
     dr.SetSymbolManager(&mgr);
 
@@ -1324,6 +1368,10 @@ MgByteReader* MgServerMappingService::GenerateLegendPlot(
     STRING dwfName = MgFileUtil::GenerateTempFileName(false, L"legendplot");
 
     EPlotRenderer dr(dwfName, plotSpec->GetPaperWidth(), plotSpec->GetPaperHeight(), plotSpec->GetPageSizeUnits());
+
+    dr.SetRasterGridSize(m_rasterGridSize);
+    dr.SetMinRasterGridSize(m_minRasterGridSize);
+    dr.SetRasterGridSizeOverrideRatio(m_rasterGridSizeOverrideRatio);
 
     RSMgSymbolManager mgr(m_svcResource);
     dr.SetSymbolManager(&mgr);

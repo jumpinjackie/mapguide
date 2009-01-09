@@ -272,6 +272,12 @@ const STRING MgConfigProperties::RenderingServicePropertyMinRasterGridSize      
 const INT32  MgConfigProperties::DefaultRenderingServicePropertyMinRasterGridSize           = 10;
 const STRING MgConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatio        = L"RasterGridSizeOverrideRatio";
 const double MgConfigProperties::DefaultRenderingServicePropertyRasterGridSizeOverrideRatio = 0.25;
+const STRING MgConfigProperties::RenderingServicePropertyRasterGridSizeForPlot              = L"RasterGridSizeForPlot";
+const INT32  MgConfigProperties::DefaultRenderingServicePropertyRasterGridSizeForPlot       = 50;
+const STRING MgConfigProperties::RenderingServicePropertyMinRasterGridSizeForPlot           = L"MinRasterGridSizeForPlot";
+const INT32  MgConfigProperties::DefaultRenderingServicePropertyMinRasterGridSizeForPlot    = 5;
+const STRING MgConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatioForPlot = L"RasterGridSizeOverrideRatioForPlot";
+const double MgConfigProperties::DefaultRenderingServicePropertyRasterGridSizeOverrideRatioForPlot = 0.10;
 const STRING MgConfigProperties::RenderingServicePropertyRenderSelectionBatchSize           = L"RenderSelectionBatchSize";
 const INT32  MgConfigProperties::DefaultRenderingServicePropertyRenderSelectionBatchSize    = 10000;
 
@@ -565,6 +571,9 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviRenderingServicePropertie
     { MgConfigProperties::RenderingServicePropertyRasterGridSize                    , MgPropertyType::Int32     , 1                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
     { MgConfigProperties::RenderingServicePropertyMinRasterGridSize                 , MgPropertyType::Int32     , 1                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
     { MgConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatio       , MgPropertyType::Double    , 0.0                                   , 1.0                                   , L""                                       },
+    { MgConfigProperties::RenderingServicePropertyRasterGridSizeForPlot             , MgPropertyType::Int32     , 1                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
+    { MgConfigProperties::RenderingServicePropertyMinRasterGridSizeForPlot          , MgPropertyType::Int32     , 1                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
+    { MgConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatioForPlot, MgPropertyType::Double    , 0.0                                   , 1.0                                   , L""                                       },
     { MgConfigProperties::RenderingServicePropertyRenderSelectionBatchSize          , MgPropertyType::Int32     , 0                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
