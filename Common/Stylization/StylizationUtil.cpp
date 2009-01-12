@@ -697,7 +697,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
                 case SE_RenderStyle_Line:
                 {
                     // set the preview geometry
-                    LineBuffer lb(3);
+                    LineBuffer lb(5);
                     switch (sym->geomContext)
                     {
                         case SymbolInstance::gcUnspecified:
@@ -712,11 +712,13 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
 
                         case SymbolInstance::gcPolygon:
                         {
-                            // the bottom right edge of the rectangle filling the preview image
+                            // a rectangle around the border of the preview image
                             lb.SetGeometryType(FdoGeometryType_LineString);
                             lb.MoveTo(x        , y         );
                             lb.LineTo(x + width, y         );
                             lb.LineTo(x + width, y + height);
+                            lb.LineTo(x        , y + height);
+                            lb.Close();
                             break;
                         }
                     }
