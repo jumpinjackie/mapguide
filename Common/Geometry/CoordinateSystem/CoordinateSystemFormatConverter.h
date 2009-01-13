@@ -18,7 +18,7 @@
 #ifndef _MGCOORDINATESYSTEMFORMATCONVERTER_H_
 #define _MGCOORDINATESYSTEMFORMATCONVERTER_H_
 
-class MgCoordinateSystemFormatConverter : public MgDisposable
+class MgCoordinateSystemFormatConverter : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgCoordinateSystemFormatConverter)
 

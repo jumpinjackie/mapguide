@@ -28,7 +28,7 @@
 /// a OpenGIS Well-Known Text (WKT) definition of the coordinate
 /// system.
 ///
-class MG_GEOMETRY_API MgCoordinateSystemFactory : public MgDisposable
+class MG_GEOMETRY_API MgCoordinateSystemFactory : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgCoordinateSystemFactory)
 

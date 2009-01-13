@@ -38,7 +38,7 @@ template class MG_GEOMETRY_API Ptr<MgCoordinateIterator>;
 /// GetCurrent throws an exception. Therefore, you must call MoveNext to
 /// advance the iterator to the first coordinate before calling GetCurrent.
 ///
-class MG_GEOMETRY_API MgCoordinateIterator : public MgDisposable
+class MG_GEOMETRY_API MgCoordinateIterator : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgCoordinateIterator)
 

@@ -30,7 +30,7 @@ template class MG_PLATFORMBASE_API Ptr<MgLayerGroupCollection>;
 /// \brief
 /// Manipulates collections of MgLayerGroup objects.
 ///
-class MG_PLATFORMBASE_API MgLayerGroupCollection : public MgDisposable
+class MG_PLATFORMBASE_API MgLayerGroupCollection : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgLayerGroupCollection)
 

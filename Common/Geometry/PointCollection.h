@@ -29,7 +29,7 @@ template class MG_GEOMETRY_API Ptr<MgPointCollection>;
 /// \brief
 /// MgPointCollection provides support for defining an ordered set of
 /// points.
-class MG_GEOMETRY_API MgPointCollection : public MgDisposable
+class MG_GEOMETRY_API MgPointCollection : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgPointCollection)
 

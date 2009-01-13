@@ -36,7 +36,7 @@ template class MG_PLATFORMBASE_API Ptr<MgLayerCollection>;
 /// remove the layer from the collection and insert it at the
 /// desired position.
 ///
-class MG_PLATFORMBASE_API MgLayerCollection : public MgDisposable
+class MG_PLATFORMBASE_API MgLayerCollection : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgLayerCollection)
 

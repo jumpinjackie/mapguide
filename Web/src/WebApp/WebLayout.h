@@ -26,7 +26,7 @@ typedef map<MgWebCommandWidget*, STRING>    CMD_WIDGET_MAP;
 
 class MgResourceIdentifier;
 
-class MG_WEBAPP_API MgWebLayout : public MgDisposable
+class MG_WEBAPP_API MgWebLayout : public MgGuardDisposable
 {
 PUBLISHED_API:
     ///////////////////////////////////////////////////////////////////////////

@@ -27,7 +27,7 @@
 /// Basic functionality for all kinds of dictionaries
 ///
 
-class MgCoordinateSystemDictionaryUtility : public MgDisposable
+class MgCoordinateSystemDictionaryUtility : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgCoordinateSystemDictionaryUtility)
 

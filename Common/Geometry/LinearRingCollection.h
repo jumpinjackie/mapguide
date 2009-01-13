@@ -29,7 +29,7 @@ template class MG_GEOMETRY_API Ptr<MgLinearRingCollection>;
 /// \brief
 /// MgLinearRingCollection provides support for defining an ordered set of
 /// linear rings.
-class MG_GEOMETRY_API MgLinearRingCollection : public MgDisposable
+class MG_GEOMETRY_API MgLinearRingCollection : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgLinearRingCollection)
 

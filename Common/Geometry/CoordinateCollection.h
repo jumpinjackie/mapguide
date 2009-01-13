@@ -31,7 +31,7 @@ template class MG_GEOMETRY_API Ptr<MgCoordinateCollection>;
 /// \brief
 /// MgCoordinateCollection provides support for defining an ordered set of
 /// coordinates.
-class MG_GEOMETRY_API MgCoordinateCollection : public MgDisposable
+class MG_GEOMETRY_API MgCoordinateCollection : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgCoordinateCollection)
 

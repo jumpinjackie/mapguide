@@ -43,7 +43,7 @@
 #define Geometry_Geometry                                 GEOMETRY_ID+19
 #define Geometry_GeometryCollection                       GEOMETRY_ID+20
 #define Geometry_GeometryComponent                        GEOMETRY_ID+21
-#define Geometry_GeometryComponentCollection              GEOMETRY_ID+22
+//unused                                                  GEOMETRY_ID+22
 #define Geometry_LinearRing                               GEOMETRY_ID+23
 #define Geometry_LinearSegment                            GEOMETRY_ID+24
 #define Geometry_LinearString                             GEOMETRY_ID+25

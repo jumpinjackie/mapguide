@@ -66,8 +66,7 @@
 ///       </li>
 ///   </ul>
 ///
-class MG_MAPGUIDE_API MgSite
-    : public MgDisposable
+class MG_MAPGUIDE_API MgSite : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgSite)
 

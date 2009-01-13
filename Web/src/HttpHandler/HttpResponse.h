@@ -22,7 +22,7 @@
 /// Purpose of this class is to package response header variables,
 /// response data and status code to return to clients.
 /// </summary>
-class MG_MAPAGENT_API MgHttpResponse : public MgDisposable
+class MG_MAPAGENT_API MgHttpResponse : public MgGuardDisposable
 {
     EXTERNAL_API:
         MgHttpResponse();

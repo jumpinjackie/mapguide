@@ -31,7 +31,7 @@ class MgMap;
 /// \brief
 /// Manipulates collections of MgMapBase objects.
 ///
-class MG_PLATFORMBASE_API MgMapCollection : public MgDisposable
+class MG_PLATFORMBASE_API MgMapCollection : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgMapCollection)
 

@@ -31,7 +31,7 @@
 /// This is a base class, not designed to be used directly. Use
 /// the derived class.
 ///
-class MgMeasure : public MgDisposable
+class MgMeasure : public MgGuardDisposable
 {
 EXTERNAL_API:
 

@@ -29,7 +29,7 @@ template class MG_GEOMETRY_API Ptr<MgCurveStringCollection>;
 /// \brief
 /// MgCurveStringCollection provides support for defining an ordered set of
 /// curve strings.
-class MG_GEOMETRY_API MgCurveStringCollection : public MgDisposable
+class MG_GEOMETRY_API MgCurveStringCollection : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgCurveStringCollection)
 
