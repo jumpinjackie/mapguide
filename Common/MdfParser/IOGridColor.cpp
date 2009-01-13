@@ -81,12 +81,17 @@ void IOGridColor::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOGridColor::ElementChars(const wchar_t* ch)
 {
+
+    const wchar_t* trimmed_ch = ch;
+    while (iswspace(*trimmed_ch))
+        trimmed_ch++;
+
     switch (this->m_currElemId)
     {
     case eExplicitColor:
         {
             GridColorExplicit* color = new GridColorExplicit();
-            color->SetExplicitColor(ch);
+            color->SetExplicitColor(trimmed_ch);
             this->m_colorRule->AdoptGridColor(color);
         }
         break;
@@ -94,7 +99,7 @@ void IOGridColor::ElementChars(const wchar_t* ch)
     case eBand:
         {
             GridColorBand* color = new GridColorBand();
-            color->SetBand(ch);
+            color->SetBand(trimmed_ch);
             this->m_colorRule->AdoptGridColor(color);
         }
         break;

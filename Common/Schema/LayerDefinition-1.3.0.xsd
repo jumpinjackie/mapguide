@@ -1088,8 +1088,8 @@
       <xs:documentation>The color to use for a grid rule.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:choice>
-        <xs:element name="ExplicitColor" type="xs:string" minOccurs="0">
+      <xs:choice minOccurs="0">
+        <xs:element name="ExplicitColor" type="xs:string">
           <xs:annotation>
             <xs:documentation>Explicit ARGB color.</xs:documentation>
           </xs:annotation>
