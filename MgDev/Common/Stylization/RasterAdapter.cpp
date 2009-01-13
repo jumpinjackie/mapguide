@@ -220,14 +220,27 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
                             MdfModel::GridColorRule* gcr = (MdfModel::GridColorRule*)rules->GetAt(0);
                             MdfModel::GridColorExplicit* gce = dynamic_cast<MdfModel::GridColorExplicit*>(gcr->GetGridColor());
 
-                            if (gce)
+                            // Get the map background color and make sure it is not transparent
+                            RS_Color mapBackgroundColor = RS_Color(0xFFFFFF00);
+                            if (renderer->GetMapInfo())
+                            {
+                                mapBackgroundColor = renderer->GetMapInfo()->bgcolor();
+                                mapBackgroundColor.alpha() = 255;
+                            }
+
+                            if (gce && !gce->GetExplicitColor().empty())
                                 EvalColor(gce->GetExplicitColor(), fg);
+                            else
+                                fg = mapBackgroundColor;
 
                             gcr = (MdfModel::GridColorRule*)rules->GetAt(1);
                             gce = dynamic_cast<MdfModel::GridColorExplicit*>(gcr->GetGridColor());
 
-                            if (gce)
+                            if (gce && !gce->GetExplicitColor().empty())
                                 EvalColor(gce->GetExplicitColor(), bg);
+                            else
+                                bg = mapBackgroundColor;
+
                         }
 
                         DecodeBitonal(reader, fg, bg, dst, imgW, imgH);

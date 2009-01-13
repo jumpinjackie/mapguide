@@ -286,6 +286,10 @@ void AGGRenderer::StartMap(RS_MapUIInfo* mapInfo,
     // remember the map info
     m_mapInfo = mapInfo;
 
+    // make sure that the mapInfo is in sync with the background member variable
+    if (m_mapInfo)
+        m_mapInfo->bgcolor() = this->m_bgcolor;
+
     //do it here, since we will need the renderer's map scales, which are computed above
     InitFontEngine(this);
 }
