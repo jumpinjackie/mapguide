@@ -2573,6 +2573,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemDictionaryUtility.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CoordinateSystem\CoordinateSystemEllipsoid.h"
 				>
 			</File>
@@ -3959,10 +3963,6 @@
 		</File>
 		<File
 			RelativePath=".\GeometryComponent.h"
-			>
-		</File>
-		<File
-			RelativePath=".\GeometryComponentCollection.h"
 			>
 		</File>
 		<File

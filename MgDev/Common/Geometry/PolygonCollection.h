@@ -30,7 +30,7 @@ template class MG_GEOMETRY_API Ptr<MgPolygonCollection>;
 /// MgPolygonCollection provides support for defining an ordered set of
 /// polygons.
 ///
-class MG_GEOMETRY_API MgPolygonCollection : public MgDisposable
+class MG_GEOMETRY_API MgPolygonCollection : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgPolygonCollection)
 

@@ -22,7 +22,7 @@
 /// Purpose of this class is to store request header variables, request parameters
 /// and request meta data for use in Common MapAgent API (CMA).
 /// </summary>
-class MG_MAPAGENT_API MgHttpRequest : public MgDisposable
+class MG_MAPAGENT_API MgHttpRequest : public MgGuardDisposable
 {
     EXTERNAL_API:
         MgHttpRequest(CREFSTRING agentUri);

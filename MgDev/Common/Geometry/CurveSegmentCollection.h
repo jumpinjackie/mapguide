@@ -29,7 +29,7 @@ template class MG_GEOMETRY_API Ptr<MgCurveSegmentCollection>;
 /// \brief
 /// MgCurveSegmentCollection provides support for defining an ordered set of
 /// curve segments.
-class MG_GEOMETRY_API MgCurveSegmentCollection : public MgDisposable
+class MG_GEOMETRY_API MgCurveSegmentCollection : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgCurveSegmentCollection)
 

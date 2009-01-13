@@ -32,7 +32,7 @@ template class MG_PLATFORMBASE_API Ptr<MgReadOnlyLayerCollection>;
 /// \todo
 ///   * [[TO DO: add samples for this section.]]
 ///
-class MG_PLATFORMBASE_API MgReadOnlyLayerCollection : public MgDisposable
+class MG_PLATFORMBASE_API MgReadOnlyLayerCollection : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgReadOnlyLayerCollection)
 

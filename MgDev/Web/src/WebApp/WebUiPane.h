@@ -21,7 +21,7 @@
 class MgWebUiPane;
 template class MG_WEBAPP_API Ptr<MgWebUiPane>;
 
-class MG_WEBAPP_API MgWebUiPane : public MgDisposable
+class MG_WEBAPP_API MgWebUiPane : public MgGuardDisposable
 {
 PUBLISHED_API:
     ///////////////////////////////////////////////////////////////////////////

@@ -18,7 +18,7 @@
 #ifndef _MGCOORDINATESYSTEMENUM_H_
 #define _MGCOORDINATESYSTEMENUM_H_
 
-class MgCoordinateSystemEnum : public MgDisposable
+class MgCoordinateSystemEnum : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgCoordinateSystemEnum)
 

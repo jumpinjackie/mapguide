@@ -24,7 +24,7 @@
 /// <summary>
 /// Represents a primitive value returned by a call to a Mg Service.
 /// </summary>
-class MG_MAPAGENT_API MgHttpPrimitiveValue : public MgDisposable
+class MG_MAPAGENT_API MgHttpPrimitiveValue : public MgGuardDisposable
 {
 EXTERNAL_API:
     //////////////////////////////////////////////////////////////////

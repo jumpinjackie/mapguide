@@ -25,7 +25,7 @@ template class MG_MAPAGENT_API Ptr<MgHttpHeader>;
 /// Purpose of this class is to package header variables into a collection.
 /// Users can add/remove/modify headers received from the actual request.
 /// </summary>
-class MG_MAPAGENT_API MgHttpHeader : public MgDisposable
+class MG_MAPAGENT_API MgHttpHeader : public MgGuardDisposable
 {
     EXTERNAL_API:
         MgHttpHeader();

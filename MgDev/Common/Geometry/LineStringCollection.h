@@ -29,7 +29,7 @@ template class MG_GEOMETRY_API Ptr<MgLineStringCollection>;
 /// \brief
 /// MgLineStringCollection provides support for defining an ordered set of
 /// line strings.
-class MG_GEOMETRY_API MgLineStringCollection : public MgDisposable
+class MG_GEOMETRY_API MgLineStringCollection : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgLineStringCollection)
 

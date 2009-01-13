@@ -33,7 +33,7 @@ template class MG_GEOMETRY_API Ptr<MgTransform>;
 /// provide linear or projected coordinate transformations. There
 /// are currently no concrete classes.
 ///
-class MG_GEOMETRY_API MgTransform : public MgDisposable
+class MG_GEOMETRY_API MgTransform : public MgGuardDisposable
 {
 PUBLISHED_API:
     ///////////////////////////////////////////////////////////////////////////

@@ -36,7 +36,7 @@ enum LibraryStatus
     lsLoadFailed
 };
 
-class MgCoordinateSystemCatalog : public MgDisposable
+class MgCoordinateSystemCatalog : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgCoordinateSystemCatalog)
 

@@ -49,7 +49,7 @@ class MgSite;
 /// are hosted locally.
 /// \endif
 ///
-class MG_MAPGUIDE_API MgSiteConnection  : public MgDisposable
+class MG_MAPGUIDE_API MgSiteConnection  : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgSiteConnection)
 

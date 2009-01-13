@@ -19,7 +19,7 @@
 #define _MGCOORDINATESYSTEMENUMINTEGER32_H_
 
 class MgIntCollection;
-class MgCoordinateSystemEnumInteger32 : public MgDisposable
+class MgCoordinateSystemEnumInteger32 : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgCoordinateSystemEnumInteger32)
 

@@ -33,7 +33,7 @@ template class MG_GEOMETRY_API Ptr<MgGeometryCollection>;
 /// \remarks
 /// Unlike MgMultiGeometry an MgGeometryCollection is not
 /// considered a Geometry and hence does not derive from MgGeometry.
-class MG_GEOMETRY_API MgGeometryCollection : public MgDisposable
+class MG_GEOMETRY_API MgGeometryCollection : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgGeometryCollection)
 

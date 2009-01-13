@@ -25,7 +25,7 @@ template class MG_MAPAGENT_API Ptr<MgHttpRequestMetadata>;
 /// Purpose of this class is to package request meta data into a collection.
 /// Users can add/remove/modify request meta data received from the actual request.
 /// </summary>
-class MG_MAPAGENT_API MgHttpRequestMetadata : public MgDisposable
+class MG_MAPAGENT_API MgHttpRequestMetadata : public MgGuardDisposable
 {
     EXTERNAL_API:
         MgHttpRequestMetadata();

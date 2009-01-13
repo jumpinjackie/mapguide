@@ -30,7 +30,7 @@
 /// - Online/Offline
 /// - Server Health
 ///
-class MG_MAPGUIDE_API MgServerAdmin : public MgDisposable
+class MG_MAPGUIDE_API MgServerAdmin : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgServerAdmin)
 

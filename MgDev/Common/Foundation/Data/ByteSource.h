@@ -58,7 +58,7 @@
 ///  <li>Call the method ToFile() on the MgByteSink object.</li>
 /// </ol>
 ///
-class MG_FOUNDATION_API MgByteSource : public MgDisposable
+class MG_FOUNDATION_API MgByteSource : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgByteSource)
 

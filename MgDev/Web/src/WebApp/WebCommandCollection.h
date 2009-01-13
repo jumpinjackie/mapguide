@@ -21,7 +21,7 @@
 class MgWebCommandCollection;
 template class MG_WEBAPP_API Ptr<MgWebCommandCollection>;
 
-class MG_WEBAPP_API MgWebCommandCollection : public MgDisposable
+class MG_WEBAPP_API MgWebCommandCollection : public MgGuardDisposable
 {
 PUBLISHED_API:
 

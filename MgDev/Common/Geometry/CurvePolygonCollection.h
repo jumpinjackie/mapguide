@@ -29,7 +29,7 @@ template class MG_GEOMETRY_API Ptr<MgCurvePolygonCollection>;
 /// \brief
 /// MgCurvePolygonCollection provides support for defining an ordered set of
 /// curve polygons.
-class MG_GEOMETRY_API MgCurvePolygonCollection : public MgDisposable
+class MG_GEOMETRY_API MgCurvePolygonCollection : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgCurvePolygonCollection)
 

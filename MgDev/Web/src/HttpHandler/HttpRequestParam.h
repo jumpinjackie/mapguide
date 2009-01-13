@@ -26,7 +26,7 @@ template class MG_MAPAGENT_API Ptr<MgHttpRequestParam>;
 /// Users can add/remove/modify parameters received from the actual request
 /// for execution.
 /// </summary>
-class MG_MAPAGENT_API MgHttpRequestParam : public MgDisposable
+class MG_MAPAGENT_API MgHttpRequestParam : public MgGuardDisposable
 {
     EXTERNAL_API:
         MgHttpRequestParam();

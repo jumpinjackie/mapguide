@@ -29,7 +29,7 @@ template class MG_MAPAGENT_API Ptr<MgHttpResult>;
 /// Represents a result returned by a call to a Mg Service.
 /// A MgHttpResult contains a status code plus data.
 /// </summary>
-class MG_MAPAGENT_API MgHttpResult : public MgDisposable
+class MG_MAPAGENT_API MgHttpResult : public MgGuardDisposable
 {
 EXTERNAL_API:
     //////////////////////////////////////////////////////////////////

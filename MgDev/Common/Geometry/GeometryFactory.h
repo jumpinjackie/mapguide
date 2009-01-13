@@ -118,7 +118,7 @@ template class MG_GEOMETRY_API Ptr<MgGeometryFactory>;
 /// \n
 /// \image html GeometryFactory.png
 ///
-class MG_GEOMETRY_API MgGeometryFactory : public MgDisposable
+class MG_GEOMETRY_API MgGeometryFactory : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgGeometryFactory)
 

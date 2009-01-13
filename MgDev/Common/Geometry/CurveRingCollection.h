@@ -29,7 +29,7 @@ template class MG_GEOMETRY_API Ptr<MgCurveRingCollection>;
 /// \brief
 /// MgCurveRingCollection provides support for defining an ordered set of
 /// curve rings.
-class MG_GEOMETRY_API MgCurveRingCollection : public MgDisposable
+class MG_GEOMETRY_API MgCurveRingCollection : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgCurveRingCollection)
 

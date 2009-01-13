@@ -200,7 +200,6 @@ noinst_HEADERS = $(include_SOURCES) \
   GeometryCollection.h \
   GeometryCommon.h \
   GeometryComponent.h \
-  GeometryComponentCollection.h \
   GeometryComponentType.h \
   GeometryExceptionDef.h \
   GeometryFactory.h \
