@@ -48,15 +48,20 @@ void MgCSTrans::TransformPoints(int numPts, double* x, double* y)
     m_trans->Transform(x, y, numPts);
 }
 
+
 void MgCSTrans::TransformExtent(double& minX, double& minY, double& maxX, double& maxY)
 {
     MgEnvelope extent(minX, minY, maxX, maxY);
     Ptr<MgEnvelope> transExtent = m_trans->Transform(&extent);
-    minX = transExtent->GetLowerLeftCoordinate()->GetX();
-    minY = transExtent->GetLowerLeftCoordinate()->GetY();
-    maxX = transExtent->GetUpperRightCoordinate()->GetX();
-    maxY = transExtent->GetUpperRightCoordinate()->GetY();
+    Ptr<MgCoordinate> ll = transExtent->GetLowerLeftCoordinate();
+    Ptr<MgCoordinate> ur = transExtent->GetUpperRightCoordinate();
+
+    minX = ll->GetX();
+    minY = ll->GetY();
+    maxX = ur->GetX();
+    maxY = ur->GetY();
 }
+
 
 double MgCSTrans::GetLinearScale()
 {

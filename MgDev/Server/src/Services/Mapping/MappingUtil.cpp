@@ -240,6 +240,7 @@ RSMgFeatureReader* MgMappingUtil::ExecuteFeatureQuery(MgFeatureService* svcFeatu
     }
     catch (MgException* e)
     {
+        // Try an intersections operation if we have geometry
         if (!geom.empty())
         {
             e->Release();
@@ -250,6 +251,7 @@ RSMgFeatureReader* MgMappingUtil::ExecuteFeatureQuery(MgFeatureService* svcFeatu
         }
         else
         {
+            // rethrow if no geometry
             throw e;
         }
     }
@@ -271,7 +273,6 @@ RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeatur
                                                      int devWidth,
                                                      int devHeight)
 {
-
     //we want to transform from mapping space to layer space
     Ptr<MgCoordinateSystemTransform> map2layerTransform;
 
@@ -321,17 +322,20 @@ RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeatur
             assert(4*devWidth*devHeight <= MgByte::MaxSize);
         }
 
+        Ptr<MgCoordinate> rastll = rasterExt->GetLowerLeftCoordinate();
+        Ptr<MgCoordinate> rastur = rasterExt->GetUpperRightCoordinate();
+
         //Set up RESAMPLE command
         FdoPtr<FdoExpressionCollection> funcParams = FdoExpressionCollection::Create();
         FdoPtr<FdoIdentifier> rasterProp = FdoIdentifier::Create(geom.c_str());
         funcParams->Add(rasterProp);
-        FdoPtr<FdoDataValue> minX = FdoDataValue::Create(rasterExt->GetLowerLeftCoordinate()->GetX(), FdoDataType_Double);
+        FdoPtr<FdoDataValue> minX = FdoDataValue::Create(rastll->GetX(), FdoDataType_Double);
         funcParams->Add(minX);
-        FdoPtr<FdoDataValue> minY = FdoDataValue::Create(rasterExt->GetLowerLeftCoordinate()->GetY(), FdoDataType_Double);
+        FdoPtr<FdoDataValue> minY = FdoDataValue::Create(rastll->GetY(), FdoDataType_Double);
         funcParams->Add(minY);
-        FdoPtr<FdoDataValue> maxX = FdoDataValue::Create(rasterExt->GetUpperRightCoordinate()->GetX(), FdoDataType_Double);
+        FdoPtr<FdoDataValue> maxX = FdoDataValue::Create(rastur->GetX(), FdoDataType_Double);
         funcParams->Add(maxX);
-        FdoPtr<FdoDataValue> maxY = FdoDataValue::Create(rasterExt->GetUpperRightCoordinate()->GetY(), FdoDataType_Double);
+        FdoPtr<FdoDataValue> maxY = FdoDataValue::Create(rastur->GetY(), FdoDataType_Double);
         funcParams->Add(maxY);
         FdoPtr<FdoDataValue> height = FdoDataValue::Create(devHeight);
         funcParams->Add(height);
@@ -607,7 +611,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                         item = TransformCache::GetLayerToMapTransform(transformCache, gl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
                     }
 
-                    Ptr<MgCoordinateSystem> layerCs = item ? item->GetCoordSys() : NULL;
+                    Ptr<MgCoordinateSystem> layerCs = item? item->GetCoordSys() : NULL;
                     MgCSTrans* xformer = item? item->GetTransform() : NULL;
 
                     // Test if layer and map are using the same coordinate systems
@@ -647,7 +651,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                         }
 
                         // If the source data does not have a coordinate system, or it is the same
-                        // as the layer then we are probably using the right spatial context 
+                        // as the layer then we are probably using the right spatial context
                         if (wkt.empty() || wkt == layerWkt)
                         {
                             // If the extent is known, clip the request to it.
@@ -663,9 +667,10 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                                 double lly = ll->GetY();
                                 double urx = ur->GetX();
                                 double ury = ur->GetY();
-                                if (NULL != xformer) xformer->TransformExtent(llx,lly,urx,ury);
-                                RS_Bounds layerExtent(llx,lly,urx,ury);
-                                RS_Bounds clippedExtent = RS_Bounds::Intersect(extent,layerExtent);
+                                if (NULL != xformer)
+                                    xformer->TransformExtent(llx, lly, urx, ury);
+                                RS_Bounds layerExtent(llx, lly, urx, ury);
+                                RS_Bounds clippedExtent = RS_Bounds::Intersect(extent, layerExtent);
                                 if (clippedExtent.IsValid())
                                 {
                                     extent = clippedExtent;
@@ -1116,6 +1121,7 @@ MgEnvelope* MgMappingUtil::TransformExtent(MgEnvelope* extent, MgCoordinateSyste
     return ccPoly->Envelope();
 }
 
+
 // returns an MgPolygon from a given envelope
 MgPolygon* MgMappingUtil::GetPolygonFromEnvelope(MgEnvelope* env)
 {
@@ -1134,6 +1140,7 @@ MgPolygon* MgMappingUtil::GetPolygonFromEnvelope(MgEnvelope* env)
     Ptr<MgLinearRing> outer = new MgLinearRing(cc);
     return new MgPolygon(outer, NULL);
 }
+
 
 void MgMappingUtilExceptionTrap(FdoException* except, int line, wchar_t* file)
 {
@@ -1168,5 +1175,3 @@ void MgMappingUtil::InitializeStylizerCallback()
 {
     SetStylizerExceptionCallback(&MgMappingUtilExceptionTrap);
 }
-
-
