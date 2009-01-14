@@ -28,6 +28,7 @@
 #include "SEMgSymbolManager.h"
 #include "TransformCache.h"
 #include "StylizationUtil.h"
+#include "Fdo.h"
 
 //For logging
 #include "ServerManager.h"
@@ -239,19 +240,16 @@ RSMgFeatureReader* MgMappingUtil::ExecuteFeatureQuery(MgFeatureService* svcFeatu
     }
     catch (MgException* e)
     {
-        e->Release();
-
-        try
+        if (!geom.empty())
         {
-            if (!geom.empty())
-                options->SetSpatialFilter(geom, poly, MgFeatureSpatialOperations::Intersects);
+            e->Release();
+            options->SetSpatialFilter(geom, poly, MgFeatureSpatialOperations::Intersects);
 
             // TODO: could it be an extension name and not a FeatureClassName?
             rdr = svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
         }
-        catch (MgException* e)
+        else
         {
-            // Feature selection failed.  Re-throw the exception so that it can be written to the logs.
             throw e;
         }
     }
@@ -365,20 +363,9 @@ RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeatur
     Ptr<MgResourceIdentifier> featResId = new  MgResourceIdentifier(sfeatResId);
 
     Ptr<MgFeatureReader> rdr;
-    try
-    {
-        // TODO: could it be an extension name and not a FeatureClassName?
-        rdr = svcFeature->SelectFeatures(featResId, gl->GetFeatureName(), options);
-    }
-    catch (MgException* e)
-    {
-        e->Release();
 
-        //finally try without a filter
-        // TODO: could it be an extension name and not a FeatureClassName?
-        options = NULL;
-        rdr = svcFeature->SelectFeatures(featResId, gl->GetFeatureName(), options);
-    }
+    // TODO: could it be an extension name and not a FeatureClassName?
+    rdr = svcFeature->SelectFeatures(featResId, gl->GetFeatureName(), options);
 
     return new RSMgFeatureReader(rdr.p, svcFeature, featResId.p, options, L"clipped_raster");
 }
@@ -642,17 +629,56 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     if (overrideFilters)
                         overrideFilter = overrideFilters->GetItem(i);
 
-                    int width  = map->GetDisplayWidth();
-                    int height = map->GetDisplayHeight();
-
-                    if (width == 0 || height == 0)
+                    // Clip request bounds to limits of spatial context for layer
+                    // Some WMS/WFS servers fail if request bounds are out of range.
+                    // On error, ignore the exception and use the original extent.
+                    MG_TRY()
+                    Ptr<MgSpatialContextReader> contextReader = svcFeature->GetSpatialContexts(featResId, false);
+                    STRING layerWkt = layerCs->ToString();
+                    while (contextReader.p != NULL && contextReader->ReadNext())
                     {
-                        //in case we are using DWF Viewer
-                        //compute the size of the viewer screen -- since we don't know it directly
-                        double pixelsPerMapUnit = dr->GetMetersPerUnit() / METERS_PER_INCH * dr->GetDpi() / dr->GetMapScale();
-                        width = (int)(extent.width() * pixelsPerMapUnit);
-                        height = (int)(extent.height() * pixelsPerMapUnit);
+                        // Try to find wkt for feature's coordinate system
+                        STRING code = contextReader->GetCoordinateSystem();
+                        STRING wkt = contextReader->GetCoordinateSystemWkt();
+                        if (wkt.empty() && !code.empty())
+                        {
+                            MgCoordinateSystemFactory factory;
+                            wkt = factory.ConvertCoordinateSystemCodeToWkt(code);
+                        }
+
+                        // If the source data does not have a coordinate system, or it is the same
+                        // as the layer then we are probably using the right spatial context 
+                        if (wkt.empty() || wkt == layerWkt)
+                        {
+                            // If the extent is known, clip the request to it.
+                            Ptr<MgByteReader> agfExtent = contextReader->GetExtent();
+                            MgAgfReaderWriter agfReader;
+                            Ptr<MgGeometry> geom = agfReader.Read(agfExtent);
+                            if (geom != NULL)
+                            {
+                                Ptr<MgEnvelope> envelope = geom->Envelope();
+                                Ptr<MgCoordinate> ll = envelope->GetLowerLeftCoordinate();
+                                Ptr<MgCoordinate> ur = envelope->GetUpperRightCoordinate();
+                                double llx = ll->GetX();
+                                double lly = ll->GetY();
+                                double urx = ur->GetX();
+                                double ury = ur->GetY();
+                                if (NULL != xformer) xformer->TransformExtent(llx,lly,urx,ury);
+                                RS_Bounds layerExtent(llx,lly,urx,ury);
+                                RS_Bounds clippedExtent = RS_Bounds::Intersect(extent,layerExtent);
+                                if (clippedExtent.IsValid())
+                                {
+                                    extent = clippedExtent;
+                                }
+                            }
+                            break;
+                        }
                     }
+                    MG_CATCH_AND_RELEASE()
+
+                    double pixelsPerMapUnit = dr->GetMetersPerUnit() / METERS_PER_INCH * dr->GetDpi() / dr->GetMapScale();
+                    int width = (int)(extent.width() * pixelsPerMapUnit + 0.5);
+                    int height = (int)(extent.height() * pixelsPerMapUnit + 0.5);
 
                     //perform the raster query
                     {

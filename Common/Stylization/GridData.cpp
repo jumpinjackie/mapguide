@@ -389,7 +389,6 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
             if (reader->available() != bufferLength)
             {
                 delete reader;
-
                 return;
             }
 
@@ -401,14 +400,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
                 throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(CLNT_5_OUTOFMEMORY)));
             }
 
-            //FdoPtr<FdoBLOBStreamReader> streamReader = static_cast<FdoBLOBStreamReader*>(pRaster->GetStreamReader());
-            //int pixelsRemainingX = cols;
-            unsigned char* pCurPos;
-            //streamReader->ReadNext((FdoByte*)pRasterData, 0, bufferLength);
-
             reader->read(pRasterData, bufferLength);
-
-            //FireOnStepQuery();
 
             // Get grid data type
             Band::BandDataType gridDataType = GetGridDataType(pRaster);
@@ -445,7 +437,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
                 pGisBand->SetAllToValue(gridDataType, (char*)(&nullValue));
             }
 
-
+            unsigned char* pCurPos;
             FdoRasterDataType rasterDataType = (FdoRasterDataType)pRaster->GetDataType();
             if ((dataModelType == FdoRasterDataModelType_RGB)
                 || (dataModelType == FdoRasterDataModelType_RGBA))
