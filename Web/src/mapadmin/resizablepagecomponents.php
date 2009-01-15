@@ -2104,8 +2104,22 @@
         global $site;
         global $errFatalError;
 
-        $site->Close();
+        if ( $site != NULL )
+            $site->Close();
+
         header( "Location: login.php?".ERROR_MSG_ID."=".$errFatalError );
+        exit();
+    }
+
+    function LogoutWithAuthenticationFailedException()
+    {
+        global $site;
+        global $errAuthenticationFailed;
+
+        if ( $site != NULL )
+            $site->Close();
+
+        header( "Location: login.php?".ERROR_MSG_ID."=".$errAuthenticationFailed );
         exit();
     }
 

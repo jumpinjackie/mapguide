@@ -49,6 +49,11 @@
     $limitRefresh = false;
     $numRecsToRefresh = 10;
 
+
+    class AuthenticationFailedException extends Exception
+    {
+    }
+
     function RefreshSessionVars()
     {
         global $webConfigFile;
@@ -145,7 +150,11 @@
         try
         {
             if ( !array_key_exists( 'webConfigFile', $_SESSION ) )
-                return;
+            {
+                // if the user attempts to access a php page without logging in,
+                // webConfigFile does not exist on the first load
+                throw new AuthenticationFailedException("webConfigFile does not exist");
+            }
 
             // Load the current vals of session vars.
             $webConfigFile = $_SESSION[ 'webConfigFile' ];
@@ -172,7 +181,12 @@
             $popups = $_SESSION[ 'popups' ];
 
             if ( empty( $webConfigFile ) )
-                return; // There is nothing to initialize
+            {
+                // if the user attempts to access a php page without logging in,
+                // webConfigFile is empty (on all loads after the first one)
+                throw new AuthenticationFailedException("webConfigFile is empty");
+            }
+
 
             // Initialize web tier with the site configuration file.
             MgInitializeWebTier( $webConfigFile );
@@ -187,7 +201,11 @@
             $site = new MgSite();
             $site->Open( $userInfo );
         }
-        catch( MgException $e )
+        catch( AuthenticationFailedException $e )
+        {
+            LogoutWithAuthenticationFailedException();
+        }
+        catch( Exception $e )
         {
             LogoutWithFatalException();
         }
