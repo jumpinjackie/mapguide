@@ -19,6 +19,18 @@
       <Feature Id="WebExtTomcatFeature" Title="Tomcat Java Webserver" Level="1" Description="A bundled version of Tomcat with MapGuide enabled." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
         <ComponentGroupRef Id="group_TOMCATFILES"/>
       </Feature>
+      <Feature Id="WebExtMapViewerFeature" Title="Map Viewer files" Level="1" Description="The support files for the map viewer, language independant." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+        <ComponentGroupRef Id="group_MAPVIEWERFILES"/>
+      </Feature>
+      <Feature Id="WebExtMapViewerPHPFeature" Title="PHP Map Viewer" Level="1" Description="The PHP version of the map viewer." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+        <ComponentGroupRef Id="group_MAPVIEWERPHPFILES"/>
+      </Feature>
+      <Feature Id="WebExtMapViewerJSPFeature" Title="JSP Map Viewer" Level="1" Description="The JSP version of the map viewer." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+        <ComponentGroupRef Id="group_MAPVIEWERJSPFILES"/>
+      </Feature>
+      <Feature Id="WebExtMapViewerASPXFeature" Title=".Net Map Viewer" Level="1" Description="The .Net version of the map viewer." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+        <ComponentGroupRef Id="group_MAPVIEWERASPXFILES"/>
+      </Feature>
     </Feature>
   </Fragment>
 </Wix>

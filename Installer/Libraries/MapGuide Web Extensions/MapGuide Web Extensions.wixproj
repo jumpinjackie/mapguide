@@ -12,7 +12,11 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug</DefineConstants>
+    <DefineConstants>Debug;InstallerSupportDir=D:\OSGeo\Installer\Support</DefineConstants>
+    <LibAdditionalOptions>
+    </LibAdditionalOptions>
+    <CompilerAdditionalOptions>
+    </CompilerAdditionalOptions>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
@@ -21,6 +25,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="FileIncludes\incApacheFiles.wxs" />
+    <Compile Include="FileIncludes\incMapViewerAspxFiles.wxs" />
+    <Compile Include="FileIncludes\incMapViewerDataFiles.wxs" />
+    <Compile Include="FileIncludes\incMapViewerFiles.wxs" />
+    <Compile Include="FileIncludes\incMapViewerJspFiles.wxs" />
+    <Compile Include="FileIncludes\incMapViewerLocalizedFiles.wxs" />
+    <Compile Include="FileIncludes\incMapViewerMapAdminFiles.wxs" />
+    <Compile Include="FileIncludes\incMapViewerPhpFiles.wxs" />
+    <Compile Include="FileIncludes\incMapViewerSchemareportFiles.wxs" />
+    <Compile Include="FileIncludes\incMapViewerStdiconFiles.wxs" />
     <Compile Include="FileIncludes\incPhpFiles.wxs" />
     <Compile Include="FileIncludes\incTomcatFiles.wxs" />
     <Compile Include="MapGuideWebExtensions.wxs" />
