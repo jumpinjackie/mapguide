@@ -201,7 +201,7 @@ FdoFeatureSchemaCollection* MgServerDescribeSchema::DescribeFdoSchema(MgResource
         m_cacheManager->CheckPermission(resource, MgResourcePermission::ReadOnly);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.DescribeFdoSchema")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgServerDescribeSchema.DescribeFdoSchema")
 
     return ffsc.Detach();
 }
@@ -565,7 +565,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
         m_cacheManager->CheckPermission(resource, MgResourcePermission::ReadOnly);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.DescribeSchema")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgServerDescribeSchema.DescribeSchema")
 
     return fsCollection.Detach();
 }
@@ -1399,7 +1399,7 @@ MgStringCollection* MgServerDescribeSchema::GetSchemas(MgResourceIdentifier* res
         m_cacheManager->CheckPermission(resource, MgResourcePermission::ReadOnly);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetSchemas")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgServerDescribeSchema.GetSchemas")
 
     return schemaNames.Detach();
 }
@@ -1479,7 +1479,7 @@ MgStringCollection* MgServerDescribeSchema::GetClasses(MgResourceIdentifier* res
         m_cacheManager->CheckPermission(resource, MgResourcePermission::ReadOnly);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetClasses")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgServerDescribeSchema.GetClasses")
 
     return classNames.Detach();
 }

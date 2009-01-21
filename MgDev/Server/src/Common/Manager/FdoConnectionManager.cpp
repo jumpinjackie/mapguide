@@ -435,9 +435,9 @@ void MgFdoConnectionManager::RemoveExpiredFdoConnections()
                     if(pFdoConnectionCacheEntry)
                     {
                         INT32 time = now.sec() - pFdoConnectionCacheEntry->lastUsed.sec();
-                        if(time > m_nFdoConnectionTimeout)
+                        if((time > m_nFdoConnectionTimeout) || (!pFdoConnectionCacheEntry->bValid))
                         {
-                            // Connection has expired so close it and remove it
+                            // Connection has expired or is no longer valid so close it and remove it
                             if (pFdoConnectionCacheEntry->pFdoConnection)
                             {
                                 INT32 refCount = pFdoConnectionCacheEntry->pFdoConnection->GetRefCount();
@@ -606,28 +606,32 @@ FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING prov
                     FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
                     if(pFdoConnectionCacheEntry)
                     {
-                        if(pFdoConnectionCacheEntry->ltName == ltName)
+                        if(pFdoConnectionCacheEntry->bValid == true)
                         {
-                            // We have a long transaction name match
-                            if(pFdoConnectionCacheEntry->pFdoConnection->GetRefCount() == 1)
+                            // The connection is valid
+                            if(pFdoConnectionCacheEntry->ltName == ltName)
                             {
-                                // It is not in use so claim it
-                                pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
-
-                                // Check to see if the key is blank which indicates a blank connection string was cached
-                                if(0 < key.size())
+                                // We have a long transaction name match
+                                if(pFdoConnectionCacheEntry->pFdoConnection->GetRefCount() == 1)
                                 {
-                                    // The key was not blank so check if we need to open it
-                                    if (FdoConnectionState_Closed == pFdoConnectionCacheEntry->pFdoConnection->GetConnectionState())
+                                    // It is not in use so claim it
+                                    pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
+
+                                    // Check to see if the key is blank which indicates a blank connection string was cached
+                                    if(0 < key.size())
                                     {
-                                        pFdoConnectionCacheEntry->pFdoConnection->Open();
-                                        #ifdef _DEBUG_FDOCONNECTION_MANAGER
-                                        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("SearchFdoConnectionCache() - Had to reopen connection!!\n")));
-                                        #endif
+                                        // The key was not blank so check if we need to open it
+                                        if (FdoConnectionState_Closed == pFdoConnectionCacheEntry->pFdoConnection->GetConnectionState())
+                                        {
+                                            pFdoConnectionCacheEntry->pFdoConnection->Open();
+                                            #ifdef _DEBUG_FDOCONNECTION_MANAGER
+                                            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("SearchFdoConnectionCache() - Had to reopen connection!!\n")));
+                                            #endif
+                                        }
                                     }
+                                    pFdoConnection = FDO_SAFE_ADDREF(pFdoConnectionCacheEntry->pFdoConnection);
+                                    break;
                                 }
-                                pFdoConnection = FDO_SAFE_ADDREF(pFdoConnectionCacheEntry->pFdoConnection);
-                                break;
                             }
                         }
                     }
@@ -1095,6 +1099,7 @@ void MgFdoConnectionManager::CacheFdoConnection(FdoIConnection* pFdoConnection, 
             pFdoConnectionCacheEntry->ltName = ltName;
             pFdoConnectionCacheEntry->pFdoConnection = pFdoConnection;
             pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
+            pFdoConnectionCacheEntry->bValid = true;
 
             #ifdef _DEBUG_FDOCONNECTION_MANAGER
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("CacheFdoConnection:\nConnection: %@\nProvider = %W\nKey = %W\nVersion(LT) = %W\n\n"), (void*)pFdoConnection, provider.c_str(), key.c_str(), ltName.empty() ? L"(empty)" : ltName.c_str()));
@@ -1596,7 +1601,7 @@ void MgFdoConnectionManager::RemoveUnusedFdoConnections()
                                 }
 
                                 // Are we supposed to release this provider from the cache?
-                                if (providerInfo->GetKeepCached())
+                                if ((providerInfo->GetKeepCached()) && (pFdoConnectionCacheEntry->bValid))
                                 {
                                     // Check the next cached connection
                                     iter++;
@@ -1943,6 +1948,10 @@ STRING MgFdoConnectionManager::GetFdoCacheInfo()
                             info += L"<LastUsed>";
                             info += lastUsed.ToXmlString(false);
                             info += L"</LastUsed>\n";
+
+                            info += L"<Valid>";
+                            info += (pFdoConnectionCacheEntry->bValid) ? L"True" : L"False";;
+                            info += L"</Valid>\n";
                         }
 
                         info += L"</CachedFdoConnection>\n";
@@ -2016,4 +2025,74 @@ void MgFdoConnectionManager::ScrambleConnectionTags(REFSTRING connectionStr)
             connectionStr.replace(pos1, num1, value, pos2, num2);
         }
     }
+}
+
+bool MgFdoConnectionManager::SetCachedFdoConnectionAsInvalid(MgResourceIdentifier* resource)
+{
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
+
+    bool success = false;
+
+    MG_FDOCONNECTION_MANAGER_TRY()
+
+    STRING resId;
+
+    if (NULL != resource)
+    {
+        resId = resource->ToString();
+    }
+        
+    if (resId.empty())
+    {
+        MgStringCollection arguments;
+        arguments.Add(L"1");
+        arguments.Add(MgResources::BlankArgument);
+
+        throw new MgInvalidArgumentException(
+            L"MgFdoConnectionManager.SetCachedFdoConnectionAsInvalid",
+            __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
+    }
+
+    // Loop all of the providers to get the FDO connection caches
+    ProviderInfoCollection::iterator iterProviderInfoCollection = m_ProviderInfoCollection.begin();
+    while(m_ProviderInfoCollection.end() != iterProviderInfoCollection)
+    {
+        ProviderInfo* providerInfo = iterProviderInfoCollection->second;
+        if(providerInfo)
+        {
+            FdoConnectionCache* fdoConnectionCache = providerInfo->GetFdoConnectionCache();
+            if(fdoConnectionCache)
+            {
+                FdoConnectionCache::iterator iter = fdoConnectionCache->find(resId);
+
+                // We need to search the entire cache because there could be more then 1 cached
+                // connection to the same FDO provider.
+                while(fdoConnectionCache->end() != iter && resId == iter->first)
+                {
+                    // We have a key match
+                    FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
+                    if (pFdoConnectionCacheEntry)
+                    {
+                        // Mark all the connections that use this resource as invalid because the something bad 
+                        // happened to the underlying connection. This will force new connections to be created aand cached.
+                        pFdoConnectionCacheEntry->bValid = false;
+                    }
+
+                    // Check the next cached connection
+                    iter++;
+                }
+            }
+        }
+        else
+        {
+            ACE_ASSERT(false);
+        }
+
+        // Next provider FDO connection cache
+        iterProviderInfoCollection++;
+    }
+
+    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.SetCachedFdoConnectionAsInvalid")
+
+    return success;
 }

@@ -99,7 +99,7 @@ MgLongTransactionReader* MgServerGetLongTransactions::GetLongTransactions(MgReso
         throw new MgConnectionFailedException(L"MgServerGetLongTransactions::GetLongTransactions()", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetLongTransactions.GetLongTransactions")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resId, L"MgServerGetLongTransactions.GetLongTransactions")
 
     return mgLongTransactionReader.Detach();
 }

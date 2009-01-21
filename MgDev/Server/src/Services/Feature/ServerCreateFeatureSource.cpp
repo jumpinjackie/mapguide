@@ -159,5 +159,5 @@ void MgServerCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* reso
             resourceService->SetResourceData(resource, resourceFile, MgResourceDataType::File, sdfReader);
         }
     }
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerCreateFeatureSource.CreateFeatureSource")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgServerCreateFeatureSource.CreateFeatureSource")
 }
