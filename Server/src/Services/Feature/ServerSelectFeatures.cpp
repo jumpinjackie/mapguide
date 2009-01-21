@@ -245,7 +245,7 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
         }
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSelectFeatures.SelectFeatures")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgServerSelectFeatures.SelectFeatures")
 
     return mgReader.Detach();
 }
@@ -933,7 +933,7 @@ void MgServerSelectFeatures::UpdateCommandOnJoinCalculation(MgResourceIdentifier
             break;
         }
     }
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSelectFeatures.UpdateCommandOnJoinCalculation")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(featureSourceId, L"MgServerSelectFeatures.UpdateCommandOnJoinCalculation")
 }
 
 void MgServerSelectFeatures::UpdateCommandOnCalculation(MgResourceIdentifier* featureSourceId, CREFSTRING extensionName)
@@ -1068,7 +1068,7 @@ void MgServerSelectFeatures::UpdateCommandOnCalculation(MgResourceIdentifier* fe
             break;
         }
     }
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSelectFeatures.UpdateCommandOnCalculation")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(featureSourceId, L"MgServerSelectFeatures.UpdateCommandOnCalculation")
 }
 
 MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentifier* featureSourceIdentifier, CREFSTRING extensionName, FdoFilter* filter)
@@ -1362,7 +1362,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
         }
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSelectFeatures.JoinFeatures")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(featureSourceIdentifier, L"MgServerSelectFeatures.JoinFeatures")
 
     return gwsFeatureReader.Detach();
 }

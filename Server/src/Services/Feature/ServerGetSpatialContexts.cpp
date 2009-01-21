@@ -111,7 +111,7 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
         MgCacheManager::GetInstance()->CheckPermission(resId, MgResourcePermission::ReadOnly);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetSpatialContexts.GetSpatialContexts")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resId, L"MgServerGetSpatialContexts.GetSpatialContexts")
 
     return mgSpatialContextReader.Detach();
 }

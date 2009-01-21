@@ -1523,7 +1523,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     src->SetMimeType(MgMimeType::Xml);
     byteReader = src->GetReader();
 
-    MG_FEATURE_SERVICE_CATCH(L"MgServerFeatureService.GetWfsFeature")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(fs, L"MgServerFeatureService.GetWfsFeature")
 
     TransformCache::Clear(transformCache);
 

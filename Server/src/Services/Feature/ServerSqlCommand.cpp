@@ -67,7 +67,7 @@ MgSqlDataReader* MgServerSqlCommand::ExecuteQuery(MgResourceIdentifier* resource
     mgSqlDataReader = new MgServerSqlDataReader((FdoISQLDataReader*)sqlReader, m_providerName);
     CHECKNULL((MgSqlDataReader*)mgSqlDataReader, L"MgServerSqlCommand.ExecuteQuery");
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlCommand.ExecuteQuery")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgServerSqlCommand.ExecuteQuery")
 
     return mgSqlDataReader.Detach();
 }
@@ -91,7 +91,7 @@ INT32 MgServerSqlCommand::ExecuteNonQuery(MgResourceIdentifier* resource, CREFST
     // Execute the command
     rowsAffected = fdoCommand->ExecuteNonQuery();
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlCommand.ExecuteQuery")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgServerSqlCommand.ExecuteQuery")
 
     return rowsAffected;
 }

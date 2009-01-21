@@ -39,6 +39,7 @@ typedef struct {
     STRING ltName;                              // Current long transaction name for this connection
     FdoIConnection* pFdoConnection;
     ACE_Time_Value lastUsed;
+    bool bValid;
 
 } FdoConnectionCacheEntry;
 
@@ -210,6 +211,7 @@ public:
     bool RemoveCachedFdoConnection(CREFSTRING resource, bool strict = true);
     bool RemoveCachedFdoConnection(MgResourceIdentifier* resource, bool strict = true);
     void RemoveUnusedFdoConnections();
+    bool SetCachedFdoConnectionAsInvalid(MgResourceIdentifier* resource);
 
     void ShowCache();
     void ShowProviderInfoCache();
