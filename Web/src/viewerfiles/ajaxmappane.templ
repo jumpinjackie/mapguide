@@ -42,7 +42,7 @@
         border-right-width: 1px;
         border-right-style: solid;
         border-right-color: #a0a0a0;
-        border-top-width: 1px;
+        border-top-width: 0px;
         border-top-style: solid;
         border-top-color: #a0a0a0;
     }
@@ -1426,11 +1426,11 @@ function LayoutControls()
         propCaption.style.left = "0px";
         propCaption.style.top = y + "px";
         if(infoWidth >= minInfoWidth)
-            propCaption.style.visibility = "visible";
+            propCaption.style.display = "block";
         y += 25;
     }
     else
-        propCaption.style.visibility = "hidden";
+        propCaption.style.display = "none";
 
     var propCtrlDiv = document.getElementById("PropertyCtrlDiv");
     var propCtrl = document.getElementById("PropertyCtrl");
