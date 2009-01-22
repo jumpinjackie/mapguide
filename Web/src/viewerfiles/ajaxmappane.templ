@@ -332,6 +332,7 @@ var cancelTgt;
 var locale = '%s';
 var openHlinkText = safari ? "__#OPENHYPERLINKSAFARI#__" : "__#OPENHYPERLINK#__";
 var selectionColor = '0x0000FFFF'; // Blue
+var lastLegendScaleUpdate = curScale;
 %s
 
 
@@ -1457,6 +1458,10 @@ function ToggleLegend()
 {
     legendExpanded = !legendExpanded;
     document.getElementById("legendIcon").src = legendExpanded? "../stdicons/nav_band_contract.gif": "../stdicons/nav_band_expand.gif";
+    if(legendExpanded && lastLegendScaleUpdate != curScale)
+    {
+        UpdateLegendScale();
+    }
     LayoutControls();
 }
 
@@ -1570,11 +1575,17 @@ function OnMapLoading()
     }
 }
 
+function UpdateLegendScale()
+{
+    GetLegendCtrl().SetScale(curScale);
+    lastLegendScaleUpdate = curScale;
+}
+
 function OnMapLoaded()
 {
-    if(scaleChanged)
+    if(scaleChanged && legendExpanded)
     {
-        GetLegendCtrl().SetScale(curScale);
+        UpdateLegendScale();
     }
     wheelZoomDelta = null;
     var frmParent = parent.frames["tbFrame"];
