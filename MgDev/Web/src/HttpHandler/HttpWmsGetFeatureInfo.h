@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _FS_WMS_GET_FEATURE_INFO_H
-#define _FS_WMS_GET_FEATURE_INFO_H
+#ifndef HTTPWMSGETFEATUREINFO_H_
+#define HTTPWMSGETFEATUREINFO_H_
 
 class MgHttpWmsGetFeatureInfo : public MgHttpRequestResponseHandler, public IMgOgcDataAccessor
 {
@@ -69,7 +69,7 @@ private:
     INT32 m_featureCount;
 
     // From GetMap WMS request
-    STRING m_layers;
+    Ptr<MgStringCollection> m_layerDefIds;
     STRING m_styles;
     STRING m_crs;
     STRING m_bbox;

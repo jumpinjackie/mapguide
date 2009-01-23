@@ -38,6 +38,7 @@
 #include "OpEnumerateParentMapDefinitions.cpp"
 #include "OpEnumerateRepositories.cpp"
 #include "OpEnumerateResourceData.cpp"
+#include "OpEnumerateResourceDocuments.cpp"
 #include "OpEnumerateResourceReferences.cpp"
 #include "OpEnumerateResources.cpp"
 #include "OperationInfo.cpp"

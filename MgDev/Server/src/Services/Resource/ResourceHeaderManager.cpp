@@ -185,6 +185,13 @@ MgByteReader* MgResourceHeaderManager::EnumerateResources(
                 query += "ends-with(dbxml:metadata('dbxml:name'),'.";
                 query += MgUtil::WideCharToMultiByte(type);
                 query += "')";
+                
+                if (MgResourceHeaderProperties::Metadata == properties
+                    && (MgResourceType::LayerDefinition == type
+                        || MgResourceType::FeatureSource == type))
+                {
+                    query += " and //*/Metadata=*";
+                }
             }
 
             if (!fromDate.empty() || !toDate.empty())
@@ -435,10 +442,9 @@ MgByteReader* MgResourceHeaderManager::EnumerateResources(
 
     // Populate the resource list.
 
-    // this XML follows the ResourceList-1.0.0.xsd schema
-    string list = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    string resourceList;
 
-    list += "<ResourceList xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"ResourceList-1.0.0.xsd\">\n";
+    BeginWriteResourceList(resourceList);
 
     for (size_t index = 0; index < resourceIdVector.size(); ++index)
     {
@@ -461,105 +467,16 @@ MgByteReader* MgResourceHeaderManager::EnumerateResources(
                 __LINE__, __WFILE__);
         }
 
-        if ((resourceId.length() - 1) == resourceId.rfind('/'))
-        {
-            list += "\t<ResourceFolder>\n";
-
-            list += "\t\t<ResourceId>";
-            list += resourceId;
-            list += "</ResourceId>\n";
-
-            list += "\t\t<Depth>";
-            list += resourceHeader->GetMetadata(MgResourceInfo::Depth).asString();
-            list += "</Depth>\n";
-
-            list += "\t\t<Owner>";
-            list += resourceHeader->GetMetadata(MgResourceInfo::Owner).asString();
-            list += "</Owner>\n";
-
-            list += "\t\t<CreatedDate>";
-            list += resourceHeader->GetMetadata(MgResourceInfo::CreatedDate).asString();
-            list += "</CreatedDate>\n";
-
-            list += "\t\t<ModifiedDate>";
-            list += resourceHeader->GetMetadata(MgResourceInfo::ModifiedDate).asString();
-            list += "</ModifiedDate>\n";
-
-            INT32 numFolders = resourceHeader->GetNumberOfFolders();
-            INT32 numDocuments = resourceHeader->GetNumberOfDocuments();
-
-            if (requiredDepth == maxDepth && 0 == numFolders && 0 == numDocuments)
-            {
-                INT32 currDepth = resourceHeader->GetResourceInfo().GetIdentifier().GetDepth();
-
-                if (currDepth == maxDepth)
-                {
-                    numFolders = numDocuments = -1;
-                }
-            }
-
-            list += "\t\t<NumberOfFolders>";
-            MgUtil::Int32ToString(numFolders, tmpStr);
-            list += tmpStr;
-            list += "</NumberOfFolders>\n";
-
-            list += "\t\t<NumberOfDocuments>";
-            MgUtil::Int32ToString(numDocuments, tmpStr);
-            list += tmpStr;
-            list += "</NumberOfDocuments>\n";
-
-            if (0 != properties)
-            {
-                string header;
-
-                resourceHeader->GetDocument(resourceHeaderMap, header);
-                list += header;
-            }
-
-            list += "\t</ResourceFolder>\n";
-        }
-        else
-        {
-            list += "\t<ResourceDocument>\n";
-
-            list += "\t\t<ResourceId>";
-            list += resourceId;
-            list += "</ResourceId>\n";
-
-            list += "\t\t<Depth>";
-            list += resourceHeader->GetMetadata(MgResourceInfo::Depth).asString();
-            list += "</Depth>\n";
-
-            list += "\t\t<Owner>";
-            list += resourceHeader->GetMetadata(MgResourceInfo::Owner).asString();
-            list += "</Owner>\n";
-
-            list += "\t\t<CreatedDate>";
-            list += resourceHeader->GetMetadata(MgResourceInfo::CreatedDate).asString();
-            list += "</CreatedDate>\n";
-
-            list += "\t\t<ModifiedDate>";
-            list += resourceHeader->GetMetadata(MgResourceInfo::ModifiedDate).asString();
-            list += "</ModifiedDate>\n";
-
-            if (0 != properties)
-            {
-                string header;
-
-                resourceHeader->GetDocument(resourceHeaderMap, header);
-                list += header;
-            }
-
-            list += "\t</ResourceDocument>\n";
-        }
+        WriteResourceList(resourceList, resourceId, &resourceHeaderMap,
+            *resourceHeader, properties, requiredDepth, maxDepth);
     }
 
-    list += "</ResourceList>";
+    EndWriteResourceList(resourceList);
 
     // Create a byte reader.
 
     Ptr<MgByteSource> byteSource = new MgByteSource(
-        (unsigned char*)list.c_str(), (INT32)list.length());
+        (unsigned char*)resourceList.c_str(), (INT32)resourceList.length());
 
     byteSource->SetMimeType(MgMimeType::Xml);
     byteReader = byteSource->GetReader();
@@ -1079,6 +996,113 @@ MgDateTime* MgResourceHeaderManager::GetResourceModifiedDate(
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceHeaderManager.GetResourceModifiedDate")
 
     return dateTime.Detach();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Enumerate the resource documents in the specified repository.
+///
+STRING MgResourceHeaderManager::EnumerateResourceDocuments(
+    MgStringCollection* resources, CREFSTRING type, INT32 properties)
+{
+    string resourceList;
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    INT32 resourceCount = (NULL == resources) ? 0 : resources->GetCount();
+
+    // Set up an XQuery.
+
+    string query = "collection('";
+    query += m_container.getName();
+    query += "')/*[";
+
+    if (resourceCount > 0)
+    {
+        query += "dbxml:metadata('dbxml:name')[";
+
+        for (INT32 i = 0; i < resourceCount; ++i)
+        {
+            if (0 != i)
+            {
+                query += " or ";
+            }
+
+            query += ".='";
+            query += MgUtil::WideCharToMultiByte(resources->GetItem(i));
+            query += "'";
+        }
+
+        query += "]";
+    }
+    else
+    {
+        query += "ends-with(dbxml:metadata('dbxml:name'),'";
+        query += MgUtil::WideCharToMultiByte(type);
+        query += "')";
+                
+        if (MgResourceHeaderProperties::Metadata == properties
+            && (MgResourceType::LayerDefinition == type
+                || MgResourceType::FeatureSource == type))
+        {
+            query += " and //*/Metadata=*";
+        }
+    }
+
+    query += "]";
+
+    // Execute the XQuery.
+
+    XmlManager& xmlMan = m_container.getManager();
+    XmlQueryContext queryContext = xmlMan.createQueryContext();
+    queryContext.setEvaluationType(XmlQueryContext::Lazy);
+    queryContext.setNamespace(MgResourceInfo::sm_metadataPrefix,
+        MgResourceInfo::sm_metadataUri);
+    XmlResults results = IsTransacted() ?
+        xmlMan.query(GetXmlTxn(), query, queryContext, 0) :
+        xmlMan.query(query, queryContext, 0);
+
+    // Populate the resource list.
+
+    XmlValue xmlValue;
+
+    BeginWriteResourceList(resourceList);
+
+    while (results.next(xmlValue))
+    {
+        // Get the resource.
+
+        const XmlDocument& xmlDoc = xmlValue.asDocument();
+        string mbResourceId = xmlDoc.getName();
+        STRING wcResourceId;
+        MgUtil::MultiByteToWideChar(mbResourceId, wcResourceId);
+        MgResourceIdentifier currResource(wcResourceId);
+
+        // Check the permission on the parent resource.
+
+        if (!m_repositoryMan.m_currUserIsAdmin
+            && !CheckParentPermission(
+                currResource, MgResourcePermission::ReadOnly, false))
+        {
+            continue;
+        }
+
+        // Write the resource list.
+
+        auto_ptr<MgResourceHeader> resourceHeader;
+
+        resourceHeader.reset(new MgResourceHeader());
+        resourceHeader->Initialize(currResource, xmlDoc, properties);
+
+        WriteResourceList(resourceList, mbResourceId, NULL,
+            *resourceHeader.get(), properties, -1, -1);
+    }
+
+    EndWriteResourceList(resourceList);
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceHeaderManager.EnumerateResourceDocuments")
+
+    return MgUtil::MultiByteToWideChar(resourceList);
 }
 
 ///----------------------------------------------------------------------------
@@ -3023,4 +3047,130 @@ void MgResourceHeaderManager::PackageResource(MgResourceIdentifier& resource,
     }
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceHeaderManager.PackageResource")
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Helper methods to write the resource list.
+///
+void MgResourceHeaderManager::BeginWriteResourceList(string& list)
+{
+    // This XML follows the ResourceList-1.0.0.xsd schema.
+
+    list += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    list += "<ResourceList xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"ResourceList-1.0.0.xsd\">\n";
+}
+
+void MgResourceHeaderManager::WriteResourceList(string& list, const string& resourcePathname,
+    const MgResourceHeaderMap* resourceHeaderMap, MgResourceHeader& resourceHeader,
+    INT32 properties, INT32 requiredDepth, INT32 maxDepth)
+{
+    MgResourceInfo& resourceInfo = resourceHeader.GetResourceInfo();
+    MgResourceIdentifier& resource = resourceInfo.GetIdentifier();
+
+    if (resource.IsFolder())
+    {
+        list += "\t<ResourceFolder>\n";
+
+        list += "\t\t<ResourceId>";
+        list += resourcePathname;
+        list += "</ResourceId>\n";
+
+        list += "\t\t<Depth>";
+        list += resourceHeader.GetMetadata(MgResourceInfo::Depth).asString();
+        list += "</Depth>\n";
+
+        list += "\t\t<Owner>";
+        list += resourceHeader.GetMetadata(MgResourceInfo::Owner).asString();
+        list += "</Owner>\n";
+
+        list += "\t\t<CreatedDate>";
+        list += resourceHeader.GetMetadata(MgResourceInfo::CreatedDate).asString();
+        list += "</CreatedDate>\n";
+
+        list += "\t\t<ModifiedDate>";
+        list += resourceHeader.GetMetadata(MgResourceInfo::ModifiedDate).asString();
+        list += "</ModifiedDate>\n";
+
+        INT32 numFolders = resourceHeader.GetNumberOfFolders();
+        INT32 numDocuments = resourceHeader.GetNumberOfDocuments();
+
+        if (0 == numFolders && 0 == numDocuments)
+        {
+            if (NULL == resourceHeaderMap)
+            {
+                numFolders = numDocuments = -1;
+            }
+            else if (requiredDepth == maxDepth)
+            {
+                INT32 currDepth = resource.GetDepth();
+
+                if (currDepth == maxDepth)
+                {
+                    numFolders = numDocuments = -1;
+                }
+            }
+        }
+
+        string tmpStr;
+
+        list += "\t\t<NumberOfFolders>";
+        MgUtil::Int32ToString(numFolders, tmpStr);
+        list += tmpStr;
+        list += "</NumberOfFolders>\n";
+
+        list += "\t\t<NumberOfDocuments>";
+        MgUtil::Int32ToString(numDocuments, tmpStr);
+        list += tmpStr;
+        list += "</NumberOfDocuments>\n";
+
+        if (0 != properties)
+        {
+            string header;
+
+            resourceHeader.GetDocument(resourceHeaderMap, header);
+            list += header;
+        }
+
+        list += "\t</ResourceFolder>\n";
+    }
+    else
+    {
+        list += "\t<ResourceDocument>\n";
+
+        list += "\t\t<ResourceId>";
+        list += resourcePathname;
+        list += "</ResourceId>\n";
+
+        list += "\t\t<Depth>";
+        list += resourceHeader.GetMetadata(MgResourceInfo::Depth).asString();
+        list += "</Depth>\n";
+
+        list += "\t\t<Owner>";
+        list += resourceHeader.GetMetadata(MgResourceInfo::Owner).asString();
+        list += "</Owner>\n";
+
+        list += "\t\t<CreatedDate>";
+        list += resourceHeader.GetMetadata(MgResourceInfo::CreatedDate).asString();
+        list += "</CreatedDate>\n";
+
+        list += "\t\t<ModifiedDate>";
+        list += resourceHeader.GetMetadata(MgResourceInfo::ModifiedDate).asString();
+        list += "</ModifiedDate>\n";
+
+        if (0 != properties)
+        {
+            string header;
+
+            resourceHeader.GetDocument(resourceHeaderMap, header);
+            list += header;
+        }
+
+        list += "\t</ResourceDocument>\n";
+    }
+}
+
+void MgResourceHeaderManager::EndWriteResourceList(string& list)
+{
+    list += "</ResourceList>";
 }

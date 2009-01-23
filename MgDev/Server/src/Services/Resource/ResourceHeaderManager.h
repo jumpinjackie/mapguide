@@ -67,6 +67,8 @@ public:
     void AddParentResources(MgResourceInfo& resourceInfo,
         const string& document);
     MgDateTime* GetResourceModifiedDate(MgResourceIdentifier* resource);
+    STRING EnumerateResourceDocuments(MgStringCollection* resources,
+        CREFSTRING type, INT32 properties);
     void ChangeResourceOwner(MgResourceIdentifier* resource,
         CREFSTRING owner, bool includeDescendants);
     void InheritPermissionsFrom(MgResourceIdentifier* resource);
@@ -156,6 +158,12 @@ private:
     void UpdatePermissionCache();
 
     void UpdateResourceModifiedDates(const set<STRING>& resources);
+
+    void BeginWriteResourceList(string& list);
+    void WriteResourceList(string& list, const string& resourcePathname,
+        const MgResourceHeaderMap* resourceHeaderMap, MgResourceHeader& resourceHeader,
+        INT32 properties, INT32 requiredDepth, INT32 maxDepth);
+    void EndWriteResourceList(string& list);
 
 /// Data Members
 

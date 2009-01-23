@@ -276,6 +276,51 @@ MgByteReader* MgLibraryRepositoryManager::EnumerateResources(
     return byteReader.Detach();
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Enumerate the resource documents in the specified repository.
+///
+STRING MgLibraryRepositoryManager::EnumerateResourceDocuments(
+    MgStringCollection* resources, CREFSTRING type, INT32 properties)
+{
+    STRING resourceList;
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    // Validate input parameters.
+
+    if (type.empty())
+    {
+        if (NULL == resources || resources->GetCount() <= 0)
+        {
+            throw new MgNullArgumentException(
+                L"MgLibraryRepositoryManager.EnumerateResourceDocuments",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+    }
+    else
+    {
+        MgResourceIdentifier::CheckType(MgRepositoryType::Library, type);
+
+        if (MgResourceType::Folder == type)
+        {
+            throw new MgInvalidResourceTypeException(
+                L"MgLibraryRepositoryManager.EnumerateResourceDocuments",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+    }
+
+    // Perform the operation.
+
+    resourceList = m_resourceHeaderMan->EnumerateResourceDocuments(
+        resources, type, properties);
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgLibraryRepositoryManager.EnumerateResourceDocuments")
+
+    return resourceList;
+}
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Gets the header associated with the specified resource.

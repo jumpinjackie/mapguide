@@ -113,11 +113,11 @@ void MgSessionRepository::SetupIndices()
 {
     if (0 == m_dbVersion)
     {
-        m_resourceContentContainer->AddIndex(
-            "",
-            MgResourceInfo::sm_elementResourceId,
-            "node-element-equality-string");
-
         m_dbVersion = MG_DBXML_CURRENT_VERSION;
     }
+
+    m_resourceContentContainer->AddIndex(
+        "",
+        MgResourceInfo::sm_elementResourceId,
+        "node-element-equality-string");
 }

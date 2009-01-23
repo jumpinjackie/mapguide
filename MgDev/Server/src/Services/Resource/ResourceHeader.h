@@ -60,7 +60,7 @@ class MgResourceHeader
         bool IsSecurityInfoFromParent() const;
 
         const XmlValue& GetMetadata(MgResourceInfo::Attribute attr) const;
-        void GetDocument(MgResourceHeaderMap& resourceHeaderMap,
+        void GetDocument(const MgResourceHeaderMap* resourceHeaderMap,
             string& document);
 
     private:

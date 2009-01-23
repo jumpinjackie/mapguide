@@ -96,6 +96,18 @@ MgByteReader* MgResourceService::EnumerateResources(
         __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Enumerate the resource documents in the specified repository.
+///
+STRING MgResourceService::EnumerateResourceDocuments(
+    MgStringCollection* resources, CREFSTRING type, INT32 properties)
+{
+    throw new MgNotImplementedException(
+        L"MgResourceService.EnumerateResourceDocuments",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
 //////////////////////////////////////////////////////////////////
 /// <summary>
 /// Gets the content of the specified resource.

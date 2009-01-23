@@ -289,6 +289,8 @@ PUBLISHED_API:
     /// \param resource (MgResourceIdentifier)
     /// Resource identifier specifying the resource to
     /// enumerate. This can be a document or a folder.
+    /// \n If it is a folder, you must include the trailing slash
+    /// in the identifier.
     /// \param depth (int)
     /// Recursion depth, relative to the specified resource.
     /// <ul>
@@ -312,8 +314,7 @@ PUBLISHED_API:
     /// \param type (String/string)
     /// Type of the resource to be enumerated. (Case
     /// sensitive.) See \link MgResourceType MgResourceType \endlink for valid
-    /// types. If the type is a folder, you must include the
-    /// trailing slash.
+    /// types.
     /// \n
     /// Or, this can
     /// be set to null, in which case information about all
@@ -394,6 +395,8 @@ PUBLISHED_API:
     /// \param resource (MgResourceIdentifier)
     /// Resource identifier specifying the resource to
     /// enumerate. This can be a document or a folder.
+    /// \n If it is a folder, you must include the trailing slash
+    /// in the identifier.
     /// \param depth (int)
     /// Recursion depth, relative to the specified resource.
     /// <ul>
@@ -417,8 +420,7 @@ PUBLISHED_API:
     /// \param type (String/string)
     /// Type of the resource to be enumerated. (Case
     /// sensitive.) See \link MgResourceType MgResourceType \endlink for valid
-    /// types. If the type is a folder, you must include the
-    /// trailing slash.
+    /// types.
     /// \n
     /// Or, this can
     /// be set to null, in which case information about all
@@ -1674,7 +1676,10 @@ INTERNAL_API:
     /// resources of a given type.
     ///
     /// \param resource
-    /// Resource identifier describing the resources to enumerate.
+    /// Resource identifier specifying the resource to
+    /// enumerate. This can be a document or a folder.
+    /// \n If it is a folder, you must include the trailing slash
+    /// in the identifier.
     /// \param depth
     /// Recursion depth.
     /// If the depth is greater than 0, the specified resource's descendants
@@ -1721,6 +1726,35 @@ INTERNAL_API:
     virtual MgByteReader* EnumerateResources(MgResourceIdentifier* resource,
         INT32 depth, CREFSTRING type, INT32 properties,
         CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Enumerate the resource documents in the specified repository.
+    ///
+    /// \remarks
+    /// This method only works on "Library".
+    ///
+    /// \param resources
+    /// Resource identifiers specifying the resources to enumerate.
+    /// \n If it is null or contains no resource, then the type must be specified.
+    /// \n If it is not null and contains some resource, then the type will be ignored.
+    /// \param type
+    /// Type of the resource to be enumerated. See MgResourceType for valid types.
+    /// No folder type is allowed.
+    /// \param properties
+    /// Flag to specify which properties of the resource header should be filtered.
+    /// It may be set to 0 or by bitwise inclusively OR'ing together one or
+    /// more of the MgResourceHeaderProperties values.
+    ///
+    /// \return
+    /// Returns a string containing a description of the WMS layer definitions
+    /// in XML format using the \link ResourceList_schema ResourceList \endlink
+    /// schema.
+    ///
+    /// \exception MgInvalidResourceTypeException
+    ///
+    virtual STRING EnumerateResourceDocuments(MgStringCollection* resources,
+        CREFSTRING type, INT32 properties);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1884,6 +1918,7 @@ INTERNAL_API:
         opIdEnumerateParentMapDefinitions   = 0x1111EF19,
         opIdEnumerateUnmanagedData          = 0x1111EF1A,
         opIdResourceExists                  = 0x1111EF1B,
+        opIdEnumerateResourceDocuments      = 0x1111EF1C,
     };
 };
 

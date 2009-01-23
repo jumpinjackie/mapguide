@@ -93,6 +93,8 @@ public:
         MgResourceIdentifier* resource);
     virtual MgSerializableCollection* EnumerateParentMapDefinitions(
         MgSerializableCollection* resources);
+    virtual STRING EnumerateResourceDocuments(MgStringCollection* resources,
+        CREFSTRING type, INT32 properties);
     virtual void ChangeResourceOwner(MgResourceIdentifier* resource,
         CREFSTRING owner, bool includeDescendants);
     virtual void InheritPermissionsFrom(MgResourceIdentifier* resource);

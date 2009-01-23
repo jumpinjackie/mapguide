@@ -28,6 +28,7 @@
 // Resource Management APIs
 #include "OpResourceExists.h"
 #include "OpEnumerateResources.h"
+#include "OpEnumerateResourceDocuments.h"
 #include "OpSetResource.h"
 #include "OpDeleteResource.h"
 #include "OpMoveResource.h"
@@ -198,6 +199,18 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         {
         case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpEnumerateResources());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgResourceOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgResourceService::opIdEnumerateResourceDocuments:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(1,0):
+            handler.reset(new MgOpEnumerateResourceDocuments());
             break;
         default:
             throw new MgInvalidOperationVersionException(

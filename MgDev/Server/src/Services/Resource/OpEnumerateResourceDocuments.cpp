@@ -15,9 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "MapGuideCommon.h"
-#include "ServerDrawingServiceDefs.h"
-#include "OpEnumerateSectionResources.h"
+#include "ResourceServiceDefs.h"
+#include "OpEnumerateResourceDocuments.h"
+#include "ServerResourceService.h"
 #include "LogManager.h"
 
 
@@ -26,7 +26,7 @@
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-MgOpEnumerateSectionResources::MgOpEnumerateSectionResources()
+MgOpEnumerateResourceDocuments::MgOpEnumerateResourceDocuments()
 {
 }
 
@@ -36,7 +36,7 @@ MgOpEnumerateSectionResources::MgOpEnumerateSectionResources()
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-MgOpEnumerateSectionResources::~MgOpEnumerateSectionResources()
+MgOpEnumerateResourceDocuments::~MgOpEnumerateResourceDocuments()
 {
 }
 
@@ -50,38 +50,43 @@ MgOpEnumerateSectionResources::~MgOpEnumerateSectionResources()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-void MgOpEnumerateSectionResources::Execute()
+void MgOpEnumerateResourceDocuments::Execute()
 {
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateSectionResources::Execute()\n")));
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateResourceDocuments::Execute()\n")));
 
-    MG_LOG_OPERATION_MESSAGE(L"EnumerateSectionResources");
+    MG_LOG_OPERATION_MESSAGE(L"EnumerateResourceDocuments");
 
-    MG_SERVER_DRAWING_SERVICE_TRY()
+    MG_RESOURCE_SERVICE_TRY()
 
     MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (2 == m_packet.m_NumArguments)
+    if (3 == m_packet.m_NumArguments)
     {
-        Ptr<MgResourceIdentifier> identifier = (MgResourceIdentifier*)m_stream->GetObject();
-
-        STRING sectionName;
-        m_stream->GetString(sectionName);
+        STRING type;
+        INT32 properties;
+        Ptr<MgStringCollection> resources = (MgStringCollection*)m_stream->GetObject();
+        
+        m_stream->GetString(type);
+        m_stream->GetInt32(properties);
 
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == identifier) ? L"MgResourceIdentifier" : identifier->ToString().c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resources) ? L"MgStringCollection" : resources->GetLogString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(sectionName.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(type.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(properties);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
-        Ptr<MgByteReader> byteReader = m_service->EnumerateSectionResources(identifier, sectionName);
+        STRING resourceList = m_service->EnumerateResourceDocuments(
+            resources, type, properties);
 
-        EndExecution(byteReader);
+        EndExecution(resourceList);
     }
     else
     {
@@ -91,14 +96,14 @@ void MgOpEnumerateSectionResources::Execute()
 
     if (!m_argsRead)
     {
-        throw new MgOperationProcessingException(L"MgOpEnumerateSectionResources.Execute",
+        throw new MgOperationProcessingException(L"MgOpEnumerateResourceDocuments.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgOpEnumerateSectionResources.Execute")
+    MG_RESOURCE_SERVICE_CATCH(L"MgOpEnumerateResourceDocuments.Execute")
 
     if (mgException != NULL)
     {
@@ -109,5 +114,5 @@ void MgOpEnumerateSectionResources::Execute()
     // Add access log entry for operation
     MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
 
-    MG_SERVER_DRAWING_SERVICE_THROW()
+    MG_RESOURCE_SERVICE_THROW()
 }

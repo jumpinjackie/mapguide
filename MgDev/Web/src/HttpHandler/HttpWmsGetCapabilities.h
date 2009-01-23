@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _FS_WMS_GET_CAPABILITIES_H
-#define _FS_WMS_GET_CAPABILITIES_H
+#ifndef HTTPWMSGETCAPABILITIES_H_
+#define HTTPWMSGETCAPABILITIES_H_
 
 class MgWmsLayerDefinitions;
 class MgOgcWmsServer;
@@ -60,7 +60,8 @@ public:
     /// <returns>
     /// MgWmsLayerDefinitions
     /// </returns>
-    static MgWmsLayerDefinitions* GetLayerDefinitions(MgResourceService& resourceService);
+    static MgWmsLayerDefinitions* GetLayerDefinitions(
+        MgResourceService& resourceService, MgStringCollection* resoures);
 
     // IMgOgcDataAccessor method
     virtual void AcquireResponseData(MgOgcServer* ogcServer);

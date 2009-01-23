@@ -19,6 +19,7 @@
 #include "ResourceInfo.h"
 
 const string MgResourceInfo::sm_elementName         = "Name";
+const string MgResourceInfo::sm_elementMetadata     = "Metadata";
 const string MgResourceInfo::sm_elementResourceId   = "ResourceId";
 
 const string MgResourceInfo::sm_metadataUri     = "http://www.autodesk.com/MapGuide/Resource/Metadata";

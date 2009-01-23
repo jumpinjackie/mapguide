@@ -68,6 +68,7 @@ private:
     public:
 
         static const string sm_elementName;
+        static const string sm_elementMetadata;
         static const string sm_elementResourceId;
         static const string sm_metadataUri;
         static const string sm_metadataPrefix;

@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _FS_WMS_MAP_UTIL_H
-#define _FS_WMS_MAP_UTIL_H
+#ifndef WMSMAPUTILH_
+#define WMSMAPUTILH_
 
 // TODO: Rename this class, or restructure things, since it seems like
 // Wfs also accesses this for the SrsToWkt mapping.
@@ -24,9 +24,11 @@ class MgWmsMapUtil
 {
 public:
 
+    static MgStringCollection* GetLayerDefinitionIds(CREFSTRING layerList);
+
     static MgMap* GetMap(MgOgcWmsServer& wms,
-                         CREFSTRING layerList, CREFSTRING bbox, CREFSTRING crs,
-                         INT32 width, INT32 height, MgResourceService* resourceService);
+        MgStringCollection* layerDefIds, CREFSTRING bbox, CREFSTRING sSRS,
+        INT32 width, INT32 height, MgResourceService* resourceService);
 
     static MgEnvelope* GetExtents(CREFSTRING bbox);
 

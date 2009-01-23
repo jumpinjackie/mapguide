@@ -62,7 +62,8 @@ void MgHttpWmsGetFeatureInfo::InitializeRequestParameters(MgOgcWmsServer& oServe
         m_jCoord = GetRequestParameterInt32(oServer,MgHttpResourceStrings::reqWmsYCoord);
 
     // Get the requested layers
-    m_layers = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsLayers);
+    m_layerDefIds = MgWmsMapUtil::GetLayerDefinitionIds(
+        GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsLayers));
 
     // Get the requested styles
     m_styles = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsStyles);
@@ -166,8 +167,9 @@ void MgHttpWmsGetFeatureInfo::AcquireValidationData(MgOgcServer* ogcServer)
         // Get an instance of the resource service
         Ptr<MgResourceService> resourceService = (MgResourceService*)CreateService(MgServiceType::ResourceService);
 
-        // Retrieve layer definitions
-        Ptr<MgWmsLayerDefinitions> layerDefs = MgHttpWmsGetCapabilities::GetLayerDefinitions(*resourceService);
+        // Retrieve the layer definitions of the requested layers.
+        Ptr<MgWmsLayerDefinitions> layerDefs = MgHttpWmsGetCapabilities::GetLayerDefinitions(
+            *resourceService, m_layerDefIds);
 
         // WMS Server takes ownership of layer definitions
         wmsServer->SetLayerDefs(layerDefs);
@@ -183,7 +185,7 @@ void MgHttpWmsGetFeatureInfo::AcquireResponseData(MgOgcServer* ogcServer)
         Ptr<MgResourceService> resourceService = (MgResourceService*)CreateService(MgServiceType::ResourceService);
 
         // Get an MgMap object corresponding to the request params
-        Ptr<MgMap> map = MgWmsMapUtil::GetMap(*wmsServer, m_layers, m_bbox, m_crs, m_width, m_height, resourceService);
+        Ptr<MgMap> map = MgWmsMapUtil::GetMap(*wmsServer, m_layerDefIds, m_bbox, m_crs, m_width, m_height, resourceService);
 
         // Create Rendering Service instance
         Ptr<MgRenderingService> service = (MgRenderingService*)(CreateService(MgServiceType::RenderingService));

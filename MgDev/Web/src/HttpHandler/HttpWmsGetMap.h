@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _FS_WMS_GET_MAP_H
-#define _FS_WMS_GET_MAP_H
+#ifndef HTTPWMSGETMAP_H_
+#define HTTPWMSGETMAP_H_
 
 class MgHttpWmsGetMap : public MgHttpRequestResponseHandler, public IMgOgcDataAccessor
 {
@@ -63,7 +63,7 @@ private:
 
     void InitializeRequestParameters(MgOgcWmsServer& oServer);
     STRING m_version;
-    STRING m_layers;
+    Ptr<MgStringCollection> m_layerDefIds;
     STRING m_styles;
     STRING m_crs;
     STRING m_bbox;
