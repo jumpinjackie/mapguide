@@ -57,6 +57,7 @@ include_SOURCES = \
   OpEnumerateParentMapDefinitions.cpp \
   OpEnumerateRepositories.cpp \
   OpEnumerateResourceData.cpp \
+  OpEnumerateResourceDocuments.cpp \
   OpEnumerateResourceReferences.cpp \
   OpEnumerateResources.cpp \
   OpEnumerateUnmanagedData.cpp \
@@ -135,6 +136,7 @@ noinst_HEADERS = $(include_SOURCES) \
   OpEnumerateParentMapDefinitions.h \
   OpEnumerateRepositories.h \
   OpEnumerateResourceData.h \
+  OpEnumerateResourceDocuments.h \
   OpEnumerateResourceReferences.h \
   OpEnumerateResources.h \
   OpEnumerateUnmanagedData.h \

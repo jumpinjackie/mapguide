@@ -57,6 +57,43 @@ bool MgWmsMapUtil::GetDocument(CPSZ pszDoc,REFSTRING sRet)
     return sRet.length() > 0;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Get the layer definition resource IDs of the specified layers.
+///
+MgStringCollection* MgWmsMapUtil::GetLayerDefinitionIds(CREFSTRING layerList)
+{
+    Ptr<MgStringCollection> layerDefIds = new MgStringCollection();
+    Ptr<MgStringCollection> layerNames = MgStringCollection::ParseCollection(layerList, L",");
+
+    if (NULL != layerNames)
+    {
+        STRING resourcePrefix = L"Library://";
+        STRING resourceSuffix = L".LayerDefinition";
+
+        for (INT32 i = 0; i < layerNames->GetCount(); ++i)
+        {
+            STRING resourceId = layerNames->GetItem(i);
+
+            // Add the resource prefix, if necessary.
+            if (0 != _wcsnicmp(resourceId.c_str(), resourcePrefix.c_str(), resourcePrefix.length()))
+            {
+                resourceId = resourcePrefix + resourceId;
+            }
+
+            // Add the resource suffix, if necessary.
+            if (NULL == ::wcsstr(resourceId.c_str(), resourceSuffix.c_str()))
+            {
+                resourceId += resourceSuffix;
+            }
+        
+            layerDefIds->Add(resourceId);
+        }
+    }
+
+    return layerDefIds.Detach();
+}
+
 /// <summary>
 /// Gets a map corresponding to the request params
 /// </summary>
@@ -65,9 +102,8 @@ bool MgWmsMapUtil::GetDocument(CPSZ pszDoc,REFSTRING sRet)
 /// This is the requested map
 /// </returns>
 MgMap* MgWmsMapUtil::GetMap(MgOgcWmsServer& oWms,
-                            CREFSTRING layerList, CREFSTRING bbox, CREFSTRING sSRS,
-                            INT32 width, INT32 height,
-                            MgResourceService* resourceService)
+    MgStringCollection* layerDefIds, CREFSTRING bbox, CREFSTRING sSRS,
+    INT32 width, INT32 height, MgResourceService* resourceService)
 {
     // Get the requested map extents
     Ptr<MgEnvelope> extents = GetExtents(bbox);
@@ -89,32 +125,16 @@ MgMap* MgWmsMapUtil::GetMap(MgOgcWmsServer& oWms,
     map->SetViewScale(scale);
 
     // Add the requested layers
-    Ptr<MgStringCollection> layers = MgStringCollection::ParseCollection(layerList, L",");
-    if(layers != NULL && layers->GetCount() > 0)
+    if (NULL != layerDefIds && layerDefIds->GetCount() > 0)
     {
         Ptr<MgLayerCollection> mapLayers = map->GetLayers();
 
-        STRING libPrefix = L"Library://";
-        STRING layerDefSuffix = L".LayerDefinition";
-
-        for(INT32 i = layers->GetCount() - 1; i >= 0; i--)
+        for (INT32 i = layerDefIds->GetCount() - 1; i >= 0; --i)
         {
-            STRING layerId = layers->GetItem(i);
-
-            // Add the "Library://" prefix, if necessary
-            if(_wcsnicmp(layerId.c_str(), libPrefix.c_str(), libPrefix.length()) != 0)
-            {
-                layerId = libPrefix + layerId;
-            }
-            // Add the ".LayerDefinition" extension, if necessary
-            if(wcsstr(layerId.c_str(), layerDefSuffix.c_str()) == NULL)
-            {
-                layerId += layerDefSuffix;
-            }
-
-            Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(layerId);
+            Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(layerDefIds->GetItem(i));
             Ptr<MgLayer> mgLayer = new MgLayer(resId, resourceService);
-            mgLayer->SetName(layers->GetItem(i));
+
+            mgLayer->SetName(resId->GetPathname(false));
             mapLayers->Add(mgLayer);
             mgLayer->SetSelectable(true);
             mgLayer->ForceRefresh();

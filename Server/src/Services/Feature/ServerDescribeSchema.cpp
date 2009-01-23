@@ -343,7 +343,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                         {
                             // get the class definition
                             MgServerGetFeatures msgf;
-                            extClassDefinition = msgf.GetMgClassDefinition(originalClassDef, true);
+                            extClassDefinition = msgf.GetMgClassDefinition(originalClassDef, serialize);
                             break;
                         }
                     }
@@ -505,7 +505,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
 
                                     // get the secondary class definition
                                     MgServerGetFeatures msgf;
-                                    Ptr<MgClassDefinition> classDefinition = msgf.GetMgClassDefinition(fc, true);
+                                    Ptr<MgClassDefinition> classDefinition = msgf.GetMgClassDefinition(fc, serialize);
 
                                     // retrieve the secondary properties and prefix them with the relation name
                                     Ptr<MgPropertyDefinitionCollection> mpdc2 = classDefinition->GetProperties();
@@ -584,8 +584,21 @@ STRING MgServerDescribeSchema::DescribeSchemaAsXml(MgResourceIdentifier* resourc
 
     if (schemaXml.empty())
     {
-        Ptr<MgFeatureSchemaCollection> schemas = DescribeSchema(
-            resource, schemaName, classNames, false);
+        // The schema XML can be retrieved from either the serialized
+        // schemas or the unserialized ones. So, try to get the serialized
+        // schemas from the cache first then the unserialized ones later.
+        Ptr<MgFeatureSchemaCollection> schemas = m_featureServiceCache->GetSchemas(
+            resource, schemaName, classNames, true);
+
+        if (NULL == schemas.p)
+        {
+            schemas = DescribeSchema(resource, schemaName, classNames, false);
+        }
+        else
+        {
+            m_cacheManager->CheckPermission(resource, MgResourcePermission::ReadOnly);
+        }
+
         schemaXml = SchemaToXml(schemas);
 
         m_featureServiceCache->SetSchemaXml(resource, schemaName, classNames, schemaXml);
@@ -1577,8 +1590,17 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(
 
         if (NULL == fdoSchemas.p)
         {
+            // The class identity properties can be retrieved from either the serialized
+            // schemas or the unserialized ones. So, try to get the serialized
+            // schemas from the cache first then the unserialized ones later.
             Ptr<MgFeatureSchemaCollection> mgSchemas = m_featureServiceCache->GetSchemas(
-                resource, schemaName, classNames, false);
+                resource, schemaName, classNames, true);
+
+            if (NULL == mgSchemas.p)
+            {
+                mgSchemas = m_featureServiceCache->GetSchemas(
+                    resource, schemaName, classNames, false);
+            }
 
             if (NULL == mgSchemas.p)
             {

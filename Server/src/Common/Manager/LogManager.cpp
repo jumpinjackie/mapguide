@@ -3601,7 +3601,7 @@ STRING MgLogManager::ReadParametersFromLogFile(enum MgLogType logType)
     Ptr<MgByteReader> bytes;
     bytes = GetLogHeader(logType);
 
-    if (bytes->GetLength() > 0)
+    if (NULL != bytes.p && bytes->GetLength() > 0)
     {
         char buffer[4096] = {0};
         bytes->Read((BYTE_ARRAY_OUT)&buffer, 4095);

@@ -339,6 +339,41 @@ STRING MgResourceIdentifier::GetFullPath(bool appendSlash) const
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Returns the pathname of the resource with or without type.
+///
+STRING MgResourceIdentifier::GetPathname(bool includeType) const
+{
+    STRING pathName;
+
+    if (!m_path.empty())
+    {
+        pathName += m_path;
+        pathName += L"/";
+    }
+
+    if (!m_name.empty())
+    {
+        pathName += m_name;
+
+        if (includeType)
+        {
+            if (MgResourceType::Folder == m_type)
+            {
+                pathName += L"/";
+            }
+            else if (!m_type.empty())
+            {
+                pathName += L".";
+                pathName += m_type;
+            }
+        }
+    }
+
+    return pathName;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 ///<summary>
 /// Returns the resource depth.
 ///</summary>

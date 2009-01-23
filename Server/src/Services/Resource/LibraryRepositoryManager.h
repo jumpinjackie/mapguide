@@ -62,6 +62,8 @@ public:
     virtual MgByteReader* EnumerateResources(MgResourceIdentifier* resource,
         INT32 depth, CREFSTRING type, INT32 properties,
         CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren);
+    STRING EnumerateResourceDocuments(MgStringCollection* resources,
+        CREFSTRING type, INT32 properties);
     virtual MgByteReader* GetResourceHeader(
         MgResourceIdentifier* resource);
     MgDateTime* GetResourceModifiedDate(MgResourceIdentifier* resource);

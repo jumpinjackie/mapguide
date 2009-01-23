@@ -1055,6 +1055,40 @@ MgSerializableCollection* MgProxyResourceService::EnumerateParentMapDefinitions(
     return (MgSerializableCollection*)cmd.GetReturnValue().val.m_obj;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Enumerate the resource documents in the specified repository.
+///
+STRING MgProxyResourceService::EnumerateResourceDocuments(
+    MgStringCollection* resources, CREFSTRING type, INT32 properties)
+{
+    STRING resourceList;
+    MgCommand cmd;
+
+    MG_TRY()
+
+    cmd.ExecuteCommand(
+        m_connProp,                                         // Connection
+        MgCommand::knString,                                // Return type
+        MgResourceService::opIdEnumerateResourceDocuments,  // Command code
+        3,                                                  // Number of arguments
+        Resource_Service,                                   // Service ID
+        BUILD_VERSION(1,0,0),                               // Operation version
+        MgCommand::knObject, resources,                     // Argument #1
+        MgCommand::knString, &type,                         // Argument #2
+        MgCommand::knInt32, properties,                     // Argument #3
+        MgCommand::knNone);
+
+    SetWarning(cmd.GetWarningObject());
+
+    resourceList = *(cmd.GetReturnValue().val.m_str);
+    delete cmd.GetReturnValue().val.m_str;
+
+    MG_CATCH_AND_THROW(L"MgProxyResourceService.EnumerateResourceDocuments")
+
+    return resourceList;
+}
+
 //////////////////////////////////////////////////////////////////
 /// \brief
 /// Sets the connection properties for the Proxy Service.  This

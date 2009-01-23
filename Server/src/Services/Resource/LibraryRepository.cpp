@@ -140,24 +140,28 @@ void MgLibraryRepository::SetupIndices()
 {
     if (0 == m_dbVersion)
     {
-        m_resourceContentContainer->AddIndex(
-            "",
-            MgResourceInfo::sm_elementResourceId,
-            "node-element-equality-string");
-
-        m_resourceHeaderContainer->AddIndex(
-            DbXml::metaDataNamespace_uri,
-            DbXml::metaDataName_name,
-            "node-metadata-substring-string");
-        m_resourceHeaderContainer->AddIndex(
-            MgResourceInfo::sm_metadataUri,
-            MgResourceInfo::sm_metadataNames[MgResourceInfo::Depth],
-            "node-metadata-equality-double");
-        m_resourceHeaderContainer->AddIndex(
-            MgResourceInfo::sm_metadataUri,
-            MgResourceInfo::sm_metadataNames[MgResourceInfo::Owner],
-            "node-metadata-equality-string");
-
         m_dbVersion = MG_DBXML_CURRENT_VERSION;
     }
+
+    m_resourceContentContainer->AddIndex(
+        "",
+        MgResourceInfo::sm_elementResourceId,
+        "node-element-equality-string");
+
+    m_resourceHeaderContainer->AddIndex(
+        DbXml::metaDataNamespace_uri,
+        DbXml::metaDataName_name,
+        "node-metadata-substring-string");
+    m_resourceHeaderContainer->AddIndex(
+        MgResourceInfo::sm_metadataUri,
+        MgResourceInfo::sm_metadataNames[MgResourceInfo::Depth],
+        "node-metadata-equality-double");
+    m_resourceHeaderContainer->AddIndex(
+        MgResourceInfo::sm_metadataUri,
+        MgResourceInfo::sm_metadataNames[MgResourceInfo::Owner],
+        "node-metadata-equality-string");
+    m_resourceHeaderContainer->AddIndex(
+        "",
+        MgResourceInfo::sm_elementMetadata,
+        "node-element-presence-none");
 }

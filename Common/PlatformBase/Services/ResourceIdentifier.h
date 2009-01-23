@@ -684,6 +684,19 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
+    /// Returns the pathname of the resource with or without type.
+    ///
+    /// \param includeType
+    /// Flag specifying whether or not if the pathname should be appended with
+    /// a resource type.
+    ///
+    /// \return
+    /// Pathname of the resource.
+    ///
+    STRING GetPathname(bool includeType) const;
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
     /// Returns the resource depth.
     ///
     /// \return

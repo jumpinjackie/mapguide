@@ -274,23 +274,10 @@ void MgWfsFeatureDefinitions::Initialize()
     // one round-trip between webtier and server for this entire aggregated bit of info.
     */
 
-    // Create MgResourceIdentifier
-    MgResourceIdentifier mgrIdentifier(_("Library://"));
-
-    // Run API command
-    STRING sType = _("FeatureSource");
-    INT32 keProperties = MgResourceHeaderProperties::Metadata;
-    STRING sDontCare(_(""));
-    Ptr<MgByteReader> Result =
-          m_pResourceService->EnumerateResources(&mgrIdentifier, // "Library://"
-                                                -1,             // Infinite depth
-                                                sType,          // "LayerDefinition"
-                                                keProperties,   // want metadata, not security
-                                                sDontCare,      // start date; don't care
-                                                sDontCare,      // end date; don't care
-                                                false);         // Not to compute children
-
-    STRING sLayers = Result->ToString();
+    // Run API command to retrieve all the available WFS feature sources.
+    STRING sLayers = m_pResourceService->EnumerateResourceDocuments(NULL,
+        MgResourceType::FeatureSource, MgResourceHeaderProperties::Metadata);
+    
     MgXmlParser Input(sLayers.c_str());
     Input.SetOptions(keSkipWhitespace|keSkipComments|keSkipProcessingInstructions);
 

@@ -235,7 +235,7 @@ const XmlValue& MgResourceHeader::GetMetadata(
 /// </exceptions>
 ///----------------------------------------------------------------------------
 
-void MgResourceHeader::GetDocument(MgResourceHeaderMap& resourceHeaderMap,
+void MgResourceHeader::GetDocument(const MgResourceHeaderMap* resourceHeaderMap,
     string& document)
 {
     MG_RESOURCE_SERVICE_TRY()
@@ -244,7 +244,8 @@ void MgResourceHeader::GetDocument(MgResourceHeaderMap& resourceHeaderMap,
 
     // Update the document if its security information is inherited.
 
-    if (IsFilteredOn(MgResourceHeaderProperties::Security))
+    if (NULL != resourceHeaderMap
+        && IsFilteredOn(MgResourceHeaderProperties::Security))
     {
         MgResourceIdentifier resourceIdentifier(m_resourceInfo->GetIdentifier());
         MgResourceHeader* resourceHeader = this;
@@ -264,10 +265,10 @@ void MgResourceHeader::GetDocument(MgResourceHeaderMap& resourceHeaderMap,
             MgUtil::WideCharToMultiByte(wcParentId, mbParentId);
             resourceIdentifier.SetResource(wcParentId);
 
-            MgResourceHeaderMap::const_iterator i = resourceHeaderMap.find(
+            MgResourceHeaderMap::const_iterator i = resourceHeaderMap->find(
                 mbParentId);
 
-            if (resourceHeaderMap.end() != i)
+            if (resourceHeaderMap->end() != i)
             {
                 resourceHeader = (*i).second;
             }

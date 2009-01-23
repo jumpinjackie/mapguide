@@ -107,8 +107,9 @@ void MgHttpWmsGetCapabilities::AcquireResponseData(MgOgcServer* ogcServer)
         // Create an instance of the Resource Service
         Ptr<MgResourceService> resourceService = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
 
-        // Retrieve the layer definitions
-        Ptr<MgWmsLayerDefinitions> layerDefs = MgHttpWmsGetCapabilities::GetLayerDefinitions(*resourceService);
+        // Retrieve all the available WMS layer definitions.
+        Ptr<MgWmsLayerDefinitions> layerDefs = MgHttpWmsGetCapabilities::GetLayerDefinitions(
+            *resourceService, NULL);
 
         // WMS Server takes ownership of layer defs
         wmsServer->SetLayerDefs(layerDefs);
@@ -116,26 +117,11 @@ void MgHttpWmsGetCapabilities::AcquireResponseData(MgOgcServer* ogcServer)
 }
 
 // Static method to retrieve layer definitions
-MgWmsLayerDefinitions* MgHttpWmsGetCapabilities::GetLayerDefinitions(MgResourceService& resourceService)
+MgWmsLayerDefinitions* MgHttpWmsGetCapabilities::GetLayerDefinitions(
+    MgResourceService& resourceService, MgStringCollection* resources)
 {
-    MgWmsLayerDefinitions* layerDefs = NULL;
+    STRING resourceList = resourceService.EnumerateResourceDocuments(resources,
+        MgResourceType::LayerDefinition, MgResourceHeaderProperties::Metadata);
 
-    // Create MgResourceIdentifier
-    MgResourceIdentifier mgrIdentifier(_("Library://"));
-
-      // Run API command
-    STRING sType = _("LayerDefinition");
-    INT32 keProperties = MgResourceHeaderProperties::Metadata;
-    STRING sDontCare(_(""));
-    Ptr<MgByteReader> Result =
-          resourceService.EnumerateResources(&mgrIdentifier, // "Library://"
-                                          -1,             // Infinite depth
-                                          sType,          // "LayerDefinition"
-                                          keProperties,   // want metadata, not security
-                                          sDontCare,      // start date; don't care
-                                          sDontCare,      // end date; don't care
-                                          false);         // Not to compute children
-
-    STRING sLayers = Result->ToString();
-    return new MgWmsLayerDefinitions(sLayers.c_str());
+    return new MgWmsLayerDefinitions(resourceList.c_str());
 }

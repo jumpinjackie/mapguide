@@ -1153,6 +1153,34 @@ MgSerializableCollection* MgServerResourceService::EnumerateParentMapDefinitions
     return mapDefinitions.Detach();
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Enumerate the resource documents in the specified repository.
+///
+STRING MgServerResourceService::EnumerateResourceDocuments(
+    MgStringCollection* resources, CREFSTRING type, INT32 properties)
+{
+    STRING resourceList;
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_TRACE_ENTRY(L"MgServerResourceService::EnumerateResourceDocuments()");
+
+    auto_ptr<MgLibraryRepositoryManager> repositoryMan(
+        new MgLibraryRepositoryManager(*sm_libraryRepository));
+
+    MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
+
+    resourceList = repositoryMan->EnumerateResourceDocuments(
+        resources, type, properties);
+
+    MG_RESOURCE_SERVICE_END_OPERATION(sm_retryAttempts)
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.EnumerateResourceDocuments")
+
+    return resourceList;
+}
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Changes the owner of an existing resource.
