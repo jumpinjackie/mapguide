@@ -39,7 +39,7 @@ class AtomBaseComponent
 {
 public:
     AtomBaseComponent( RS_F_Point position, AtomBaseComponent* pParent );
-    ~AtomBaseComponent();
+    virtual ~AtomBaseComponent();
 
     // Virtuals which must be implemented by parent class
     // Note that parent class must calculate the extent
@@ -71,7 +71,7 @@ class AtomBaseComponentCollection : public AtomBaseComponent
 public:
     // Construction
     AtomBaseComponentCollection( RS_F_Point position, AtomBaseComponent* pParent );
-    ~AtomBaseComponentCollection();
+    virtual ~AtomBaseComponentCollection();
 
     void AddComponent( AtomBaseComponent* pComponent );
     void CalculateExtent( bool yUp );
@@ -94,7 +94,7 @@ class AtomRun : public AtomBaseComponent
 public:
     // Construction
     AtomRun( RS_F_Point position, AtomLine* pParentLine, RichTextFormatState &formatState );
-    ~AtomRun();
+    virtual ~AtomRun();
 
     void SetTextRun( StRange runContent, unsigned int runInd, Particle* pFormatChanges );
     void Close( RS_FontEngine* pFontEngine, const RS_Font* pFont );
@@ -130,7 +130,7 @@ class AtomLine : public AtomBaseComponentCollection
 public:
     // Construction
     AtomLine( RS_F_Point position, AtomBlock *pParentBlock, RichTextFormatState &formatState, bool fixedLine );
-    ~AtomLine();
+    virtual ~AtomLine();
 
     double      Close( bool yUp );
     AtomBlock*  GetParentBlock();
@@ -149,7 +149,7 @@ class AtomBlock : public AtomBaseComponentCollection
 public:
     // Construction
     AtomBlock( RS_F_Point position, AtomLine* pParentLine, RichTextFormatState& formatState );
-    ~AtomBlock();
+    virtual ~AtomBlock();
 
     void        Close( bool yUp );
     AtomLine*   GetParentLine();
