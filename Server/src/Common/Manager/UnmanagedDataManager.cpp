@@ -58,14 +58,12 @@ void MgUnmanagedDataManager::Dispose()
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Initialize the mappings
+/// Initialize the unmanaged data manager.
 ///
 void MgUnmanagedDataManager::Initialize()
 {
-    MgConfiguration* config = MgConfiguration::GetInstance();
-    m_unmanagedDataMappings = config->GetProperties(MgConfigProperties::UnmanagedDataMappingsSection);
+    RefreshUnmanagedDataMappings();
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -379,14 +377,30 @@ MgUnmanagedDataManager* MgUnmanagedDataManager::GetInstance()
     return MgUnmanagedDataManager::sm_unmanagedDataManager;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Refresh unmanaged data mappings.
+///
+void MgUnmanagedDataManager::RefreshUnmanagedDataMappings()
+{
+    MgConfiguration* configuration = MgConfiguration::GetInstance();
+    ACE_ASSERT(NULL != configuration);
+
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    m_unmanagedDataMappings = configuration->GetProperties(
+        MgConfigProperties::UnmanagedDataMappingsSection);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Returns unmanaged data mappings
+/// Return unmanaged data mappings.
 ///
 MgPropertyCollection* MgUnmanagedDataManager::GetUnmanagedDataMappings()
 {
-    return m_unmanagedDataMappings;
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    return SAFE_ADDREF(m_unmanagedDataMappings.p);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -426,10 +440,11 @@ int MgUnmanagedDataManager::SubstituteDataPathAliases(string& doc)
             size_t nameLen = mappingName.length();
 
             // find the mapping name in the map, and then replace it
-            MgPropertyCollection* mappings = MgUnmanagedDataManager::GetInstance()->GetUnmanagedDataMappings();
-            if (mappings != NULL)
+            Ptr<MgPropertyCollection> unmanagedDataMappings = MgUnmanagedDataManager::GetInstance()->GetUnmanagedDataMappings();
+            
+            if (NULL != unmanagedDataMappings.p)
             {
-                Ptr<MgStringProperty> stringProp = dynamic_cast<MgStringProperty*>(mappings->FindItem(MgUtil::MultiByteToWideChar(mappingName)));
+                Ptr<MgStringProperty> stringProp = dynamic_cast<MgStringProperty*>(unmanagedDataMappings->FindItem(MgUtil::MultiByteToWideChar(mappingName)));
                 if (stringProp != NULL)
                 {
                     STRING mappingDir = stringProp->GetValue();
@@ -468,7 +483,9 @@ MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bo
 
     ACE_TRACE("MgUnmanagedDataManager::EnumerateUnmanagedData");
 
-    if (m_unmanagedDataMappings != NULL)
+    Ptr<MgPropertyCollection> unmanagedDataMappings = GetUnmanagedDataMappings();
+
+    if (NULL != unmanagedDataMappings.p)
     {
         // this XML follows the ResourceList-1.0.0.xsd schema
         string list = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -491,7 +508,7 @@ MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bo
             arguments.Add(L"1");
             arguments.Add(path);
 
-            throw new MgInvalidArgumentException(L"MgUnmanagedDataManager::EnumerateUnmanagedData",
+            throw new MgInvalidArgumentException(L"MgUnmanagedDataManager.EnumerateUnmanagedData",
                 __LINE__, __WFILE__, &arguments, L"", NULL);
         }
 
@@ -523,7 +540,7 @@ MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bo
         // are we looking in a specific path?
         if (!mappingName.empty())
         {
-            Ptr<MgStringProperty> stringProp = dynamic_cast<MgStringProperty*>(m_unmanagedDataMappings->FindItem(mappingName));
+            Ptr<MgStringProperty> stringProp = dynamic_cast<MgStringProperty*>(unmanagedDataMappings->FindItem(mappingName));
             if (stringProp != NULL)
             {
                 // we have a match!
@@ -538,7 +555,7 @@ MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bo
                 arguments.Add(L"1");
                 arguments.Add(path);
 
-                throw new MgInvalidArgumentException(L"MgUnmanagedDataManager::EnumerateUnmanagedData",
+                throw new MgInvalidArgumentException(L"MgUnmanagedDataManager.EnumerateUnmanagedData",
                     __LINE__, __WFILE__, &arguments, L"", NULL);
             }
         }
@@ -546,9 +563,9 @@ MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bo
         {
             // getting files starting from virtual root (all mappings)
             // iterate thru mappings
-            for (int i = 0; i < m_unmanagedDataMappings->GetCount(); i++)
+            for (int i = 0; i < unmanagedDataMappings->GetCount(); i++)
             {
-                Ptr<MgStringProperty> stringProp = dynamic_cast<MgStringProperty*>(m_unmanagedDataMappings->GetItem(i));
+                Ptr<MgStringProperty> stringProp = dynamic_cast<MgStringProperty*>(unmanagedDataMappings->GetItem(i));
 
                 STRING mapName = stringProp->GetName();
                 STRING mapDir = stringProp->GetValue();
