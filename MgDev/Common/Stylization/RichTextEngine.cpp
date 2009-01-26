@@ -45,6 +45,9 @@ RichTextEngine::~RichTextEngine()
 
     if ( this->m_pHeadBlock )
         delete this->m_pHeadBlock;
+
+    if ( this->m_pCurrLine )
+        delete this->m_pCurrLine;
 }
 
 
@@ -210,12 +213,12 @@ bool RichTextEngine::Parse( const RS_String& s, RS_TextMetrics* pTextMetrics )
         parserSucceeded = pMText->Parse(s.c_str(),&env).Succeeded();
         pGenerator->Destroy(pMText);
 
+        // Close any open blocks
+        while ( this->m_pCurrBlock )
+            this->CloseCurrentBlock();
+
         if ( parserSucceeded && this->m_numRuns > 0 && this->m_pHeadBlock )
         {
-            // Close any open blocks
-            while ( this->m_pCurrBlock )
-                this->CloseCurrentBlock();
-
             // Get adjustments for horizontal and vertical alignments
             // Note that we pick up alignment values from the tmpTextDef which was updated with calls to ApplyFormatChanges.
             // This way we use the final alignment settings which will reflect any local changes in the
@@ -575,14 +578,11 @@ Status RichTextEngine::TextRun(ITextRun* pTextRun,IEnvironment*)
         double trackingVal = this->m_formatState.m_tmpTDef.trackSpacing();
         StRange entireContents = pTextRun->Contents();
         StRange charContent;
+        wchar_t charCopy[2];
+        charCopy[1] = L'\0';
+        charContent.Set( &charCopy[0], 1 );
         for ( int i=0; i<entireContents.Length(); ++i )
         {
-            // First create the text run
-            wchar_t* charCopy = (wchar_t*)malloc(2 * sizeof(wchar_t));
-            charCopy[0] = entireContents[i];
-            charCopy[1] = L'\0';
-            charContent.Set( charCopy, 1 );
-
             // The first char already has its list of style particles and transform particles. However, since
             // Transform particles do not persist from one run to the next, we need to repeat the transform
             // particles for each char.  Note that each char needs its own copy so that, when RS_TextMetrics
@@ -610,6 +610,7 @@ Status RichTextEngine::TextRun(ITextRun* pTextRun,IEnvironment*)
             }
 
             // Create the run
+            charCopy[0] = entireContents[i];
             AtomRun* pRun = new AtomRun( this->m_curPos, this->m_pCurrLine, this->m_formatState );
             pRun->SetTextRun( charContent, this->m_numRuns, pFormatChanges );
             pRun->Close( this->m_pFontEngine, pFont );
@@ -1283,8 +1284,7 @@ AtomRun::AtomRun( RS_F_Point position, AtomLine* pParentLine, RichTextFormatStat
 AtomRun::~AtomRun()
 {
     // We only need to clean up here if OutputData was not called.
-    if ( this->m_textRun )
-        delete this->m_textRun;
+    free(this->m_textRun);
     if ( this->m_pFormatChanges )
     {
         Particle* pParticle = this->m_pFormatChanges;
@@ -1366,7 +1366,9 @@ void AtomRun::OutputData( RS_F_Point parentPosition, RS_TextMetrics* pTextMetric
     pTextMetrics->line_breaks[ this->m_textRunInd ] = this->m_textRun;
     pTextMetrics->format_changes[ this->m_textRunInd ] = this->m_pFormatChanges;
 
-    // Nothing to release
+    // Need to free the text run string
+    free(this->m_textRun);
+
     this->m_textRun = NULL;
     this->m_textRunLen = 0;
     this->m_pFormatChanges = NULL;
