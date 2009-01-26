@@ -30,9 +30,10 @@ public:
 
 private:
 
+    MgUnmanagedDataManager();
+
     // Unimplemented copy constructor and assignment operator.
 
-    MgUnmanagedDataManager();
     MgUnmanagedDataManager(const MgUnmanagedDataManager&);
     MgUnmanagedDataManager& operator=(const MgUnmanagedDataManager&);
 
@@ -55,12 +56,16 @@ private:
 public:
 
     static MgUnmanagedDataManager* GetInstance();
-    MgPropertyCollection* GetUnmanagedDataMappings();
+
     static int SubstituteDataPathAliases(REFSTRING data);
     static int SubstituteDataPathAliases(string& data);
-    void Initialize();
 
     virtual void Dispose();
+
+    void Initialize();
+
+    void RefreshUnmanagedDataMappings();
+    MgPropertyCollection* GetUnmanagedDataMappings();
 
     MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING type, CREFSTRING filter);
 
@@ -69,12 +74,14 @@ public:
 private:
 
     static Ptr<MgUnmanagedDataManager> sm_unmanagedDataManager;
-    Ptr<MgPropertyCollection> m_unmanagedDataMappings;
 
     static const STRING SquareBracketBegin;
     static const wchar_t SquareBracketCharBegin;
     static const STRING SquareBracketEnd;
     static const wchar_t SquareBracketCharEnd;
+
+    ACE_Recursive_Thread_Mutex m_mutex;
+    Ptr<MgPropertyCollection> m_unmanagedDataMappings;
 };
 
 #endif

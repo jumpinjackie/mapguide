@@ -18,6 +18,7 @@
 #include "ServerManager.h"
 #include "ProductVersion.h"
 #include "ServiceManager.h"
+#include "UnmanagedDataManager.h"
 #include "ServerFeatureService.h"
 #include "WorkerThread.h"
 #include "WorkerThreadData.h"
@@ -299,7 +300,7 @@ void MgServerManager::SetConfigurationProperties(CREFSTRING propertySection,
     if (NULL == properties)
     {
         throw new MgNullArgumentException(
-            L"MgServerManager::SetConfigurationProperties",
+            L"MgServerManager.SetConfigurationProperties",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -308,7 +309,7 @@ void MgServerManager::SetConfigurationProperties(CREFSTRING propertySection,
     if (NULL == pConfiguration)
     {
         throw new MgNullReferenceException(
-            L"MgServerManager::SetConfigurationProperties",
+            L"MgServerManager.SetConfigurationProperties",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -322,6 +323,11 @@ void MgServerManager::SetConfigurationProperties(CREFSTRING propertySection,
         assert(NULL != serviceManager);
 
         serviceManager->EnableServices(properties);
+    }
+    // Refresh unmanaged data mappings.
+    else if (MgConfigProperties::UnmanagedDataMappingsSection == propertySection)
+    {
+        MgUnmanagedDataManager::GetInstance()->RefreshUnmanagedDataMappings();
     }
 
     // Certain properties can be updated without requiring a server restart
@@ -344,12 +350,12 @@ void MgServerManager::RemoveConfigurationProperties(CREFSTRING propertySection,
 {
     MG_TRY()
 
-    MG_LOG_TRACE_ENTRY(L"MgServerManager::SetConfigurationProperties()");
+    MG_LOG_TRACE_ENTRY(L"MgServerManager::RemoveConfigurationProperties()");
 
     if (NULL == properties)
     {
         throw new MgNullArgumentException(
-            L"MgServerManager::SetConfigurationProperties",
+            L"MgServerManager.RemoveConfigurationProperties",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -358,11 +364,11 @@ void MgServerManager::RemoveConfigurationProperties(CREFSTRING propertySection,
     if (NULL == pConfiguration)
     {
         throw new MgNullReferenceException(
-            L"MgServerManager::SetConfigurationProperties",
+            L"MgServerManager.RemoveConfigurationProperties",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    // Set the properties
+    // Remove the properties.
     pConfiguration->RemoveProperties(propertySection, properties);
 
     // Enable/disable specified services for this local server if applicable.
@@ -373,6 +379,11 @@ void MgServerManager::RemoveConfigurationProperties(CREFSTRING propertySection,
 
         serviceManager->EnableServices(properties);
     }
+    // Refresh unmanaged data mappings.
+    else if (MgConfigProperties::UnmanagedDataMappingsSection == propertySection)
+    {
+        MgUnmanagedDataManager::GetInstance()->RefreshUnmanagedDataMappings();
+    }
 
     // Certain properties can be updated without requiring a server restart
     LoadConfigurationProperties();
@@ -381,7 +392,7 @@ void MgServerManager::RemoveConfigurationProperties(CREFSTRING propertySection,
     assert(NULL != logManager);
     logManager->LoadConfigurationProperties();
 
-    MG_CATCH_AND_THROW(L"MgServerManager.SetConfigurationProperties")
+    MG_CATCH_AND_THROW(L"MgServerManager.RemoveConfigurationProperties")
 }
 
 
