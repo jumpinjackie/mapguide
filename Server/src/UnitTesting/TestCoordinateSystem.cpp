@@ -5927,8 +5927,8 @@ void TestCoordinateSystem::TestCase_Geographic_DatumConversion()
         STRING ogcWktTarget;
 
         MgCoordinateSystemFactory factory;
-        ogcWktSource = factory.ConvertCoordinateSystemCodeToWkt(L"Abidjan87.LL");
-        ogcWktTarget = factory.ConvertCoordinateSystemCodeToWkt(L"Accra.LL");
+        ogcWktSource = factory.ConvertCoordinateSystemCodeToWkt(L"Abidjan1987.LL");
+        ogcWktTarget = factory.ConvertCoordinateSystemCodeToWkt(L"Accra1929.LL");
 
         Ptr<MgCoordinateSystem> coordinateSystemSource = factory.Create(ogcWktSource);
         CPPUNIT_ASSERT(coordinateSystemSource);
