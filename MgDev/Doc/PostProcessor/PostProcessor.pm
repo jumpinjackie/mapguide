@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 #############################################################
-#  Copyright (C) 2008 by Autodesk, Inc.
+#  Copyright (C) 2008-2009 by Autodesk, Inc.
 #
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of version 2.1 of the GNU Lesser
