@@ -1,6 +1,6 @@
 //  $Header: //GBU/Metropolis/Main/Server/Common/Stylization/GridStylizerReactor.cpp#1 $
 //
-//  Copyright (C) 2005-2008 by Autodesk, Inc. All Rights Reserved.
+//  Copyright (C) 2005-2009 by Autodesk, Inc. All Rights Reserved.
 //
 //  By using this code, you are agreeing to the terms and conditions of
 //  the License Agreement included in the documentation for this code.
