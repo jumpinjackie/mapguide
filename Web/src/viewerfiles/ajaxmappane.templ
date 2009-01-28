@@ -3416,6 +3416,16 @@ function HideHyperlinkTip()
 
 function ExecuteHyperlink(url)
 {
+    var linkURL; 
+    if (url.indexOf(' href=') > 0) { 
+        //MGOS allows full anchor tag as the hyperlink, extract the href 
+        var tempDiv = document.createElement('div'); 
+        tempDiv.innerHTML = url;
+        linkURL = tempDiv.firstChild.href; 
+        tempDiv = null; 
+    } else { 
+        linkURL = url;
+    }
     targetFrame = "";
     if(hlTgt == 1) targetFrame = "taskPaneFrame";
     else if(hlTgt == 3) targetFrame = hlTgtName;
@@ -3424,14 +3434,14 @@ function ExecuteHyperlink(url)
         winRef = parent.GetFrame(targetFrame);
     if(winRef != null)
     {
-        winRef.location.href = url;
+        winRef.location.href = linkURL;
         return winRef;
     }
     else
     {
         //the code can be modified here, if necessary, to control the size and appearance of the
         //new window. e.g. window.open(url, targetFrame, "toolbar=no,width=500,height=500,resizable,scrollbars");
-        window.open(url, targetFrame);
+        window.open(linkURL, targetFrame);
     }
 }
 

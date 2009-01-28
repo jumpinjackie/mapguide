@@ -1,12 +1,13 @@
 var agent = navigator.userAgent.toLowerCase();
 var firefox = agent.indexOf("firefox") != -1;
 var opera = agent.indexOf("opera") != -1;
+var chrome = agent.indexOf("chrome") != -1;
 
 var safariIndex = agent.indexOf("safari");
 var safari1or2 = false;
 var safari3plus = false;
 var safari = false;
-if(safariIndex != -1)
+if(!chrome && safariIndex != -1)
 {
     safari = true;
     var safariVersion = agent.substr(safariIndex + 7, 3);
