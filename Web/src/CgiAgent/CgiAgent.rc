@@ -67,7 +67,7 @@ BEGIN
             VALUE "FileDescription", "MapAgent Web Application"
             VALUE "FileVersion", "1, 0, 0, 1"
             VALUE "InternalName", "MapAgent"
-            VALUE "LegalCopyright", "Copyright (C) 2006-2008 by Autodesk, Inc."
+            VALUE "LegalCopyright", "Copyright (C) 2006-2009 by Autodesk, Inc."
             VALUE "OriginalFilename", "MapAgent.exe"
             VALUE "ProductName", "MapGuide Open Source"
             VALUE "ProductVersion", "1, 0, 0, 1"
