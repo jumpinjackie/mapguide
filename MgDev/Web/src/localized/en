@@ -138,7 +138,7 @@ HTMLABOUTSERVERTITLE    = MapGuide Server
 HTMLABOUTVIEWERTITLE    = MapGuide Viewer
 HTMLABOUTSERVERVERSION  = %s (Version %s)
 HTMLABOUTVIEWERVERSION  = %s (Version %s)
-HTMLABOUTTEXT           = <br>This product is made available subject to the terms of GNU Lesser General Public License Version 2.1 ("LGPL").  A copy of the LGPL, as well as additional copyright notices and license terms applicable to portions of this product are set forth in the <a href="../localized/license_en.htm" target="blank">license</a> file.<br><br>All trademarks and registered trademarks mentioned herein are the property of their respective owners.<br><br>Copyright &copy; 2008 by Autodesk, Inc.<br><br>
+HTMLABOUTTEXT           = <br>This product is made available subject to the terms of GNU Lesser General Public License Version 2.1 ("LGPL").  A copy of the LGPL, as well as additional copyright notices and license terms applicable to portions of this product are set forth in the <a href="../localized/license_en.htm" target="blank">license</a> file.<br><br>All trademarks and registered trademarks mentioned herein are the property of their respective owners.<br><br>Copyright &copy; 2008-2009 by Autodesk, Inc.<br><br>
 HTMLABOUTLICENSE        = license file
 HTMLABOUTLICENSEFILE    = license_en.htm
 
