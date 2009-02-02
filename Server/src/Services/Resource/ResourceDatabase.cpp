@@ -42,7 +42,14 @@ MgResourceDatabase::MgResourceDatabase(MgDbEnvironment& environment,
     m_db.set_error_stream(&std::cerr);
 #endif
 
-    m_db.set_pagesize(MG_DB_PAGE_SIZE);
+    if (fileName.find(MG_WCHAR_TO_CHAR(MgRepositoryType::Session)) == fileName.npos)
+    {
+        m_db.set_pagesize(MG_DB_PAGE_SIZE);
+    }
+    else
+    {
+        m_db.set_pagesize(MG_SESS_DB_PAGE_SIZE);
+    }
 
     if (m_environment.IsTransacted())
     {
