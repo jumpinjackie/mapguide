@@ -26,6 +26,11 @@ static const u_int32_t MG_CACHE_SIZE        = 32 * 1024 * 1024;
 static const u_int32_t MG_DB_PAGE_SIZE      = 32 * 1024;
 static const u_int32_t MG_DBXML_PAGE_SIZE   = 32 * 1024;
 static const u_int32_t MG_LOG_BUF_SIZE      =  8 * 1024 * 1024;
+static const u_int32_t MG_SESS_DB_PAGE_SIZE = 2 * 1024;
+static const u_int32_t MG_SESS_DBXML_PAGE_SIZE = 512;
+
+// Set lock and transaction timeout to 0.2 seconds
+static const u_int32_t MG_DB_ENV_TIMEOUT = 200000;
 
 class MgDatabase;
 

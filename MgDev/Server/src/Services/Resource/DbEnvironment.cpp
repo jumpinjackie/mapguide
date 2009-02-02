@@ -44,6 +44,8 @@ MgDbEnvironment::MgDbEnvironment(CREFSTRING repositoryType, const string& home,
 
     m_dbEnv.set_cachesize(0, MG_CACHE_SIZE, 1);
     m_dbEnv.set_lg_bsize(MG_LOG_BUF_SIZE);
+    m_dbEnv.set_timeout(MG_DB_ENV_TIMEOUT, DB_SET_LOCK_TIMEOUT);
+    m_dbEnv.set_timeout(MG_DB_ENV_TIMEOUT, DB_SET_TXN_TIMEOUT);
 
     u_int32_t containerFlags = DB_CREATE|DB_THREAD;
     u_int32_t environmentFlags = DB_CREATE|DB_THREAD|DB_INIT_MPOOL;
@@ -87,8 +89,14 @@ MgDbEnvironment::MgDbEnvironment(CREFSTRING repositoryType, const string& home,
 
     // Initialize the XML manager.
 
+    int pageSize = MG_DBXML_PAGE_SIZE;
+    if (repositoryType.compare(MgRepositoryType::Session) == 0)
+    {
+        pageSize = MG_SESS_DBXML_PAGE_SIZE;
+    }
+
     m_xmlMan = XmlManager(&m_dbEnv, DBXML_ALLOW_EXTERNAL_ACCESS);
-    m_xmlMan.setDefaultPageSize(MG_DBXML_PAGE_SIZE);
+    m_xmlMan.setDefaultPageSize(pageSize);
     m_xmlMan.setDefaultContainerType(XmlContainer::WholedocContainer);
 
     if (m_schemaResolver.IsValidationEnabled())

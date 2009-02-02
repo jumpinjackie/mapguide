@@ -361,15 +361,7 @@ void MgRepositoryManager::CleanRepository(CREFSTRING repositoryType)
 
     // Remove all the log files.
 
-    if (logFiles == NULL)
-    {
-        MG_RESOURCE_SERVICE_TRY()
-
-        MgFileUtil::CleanDirectory(repositoryPath, false);
-
-        MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgRepositoryManager.CleanRepository")
-    }
-    else
+    if (logFiles != NULL)
     {
         for (INT32 i = 0; i < logFiles->GetCount(); ++i)
         {

@@ -92,9 +92,12 @@ void MgResource::SerializeToRepository(MgResourceService* resourceService, bool 
 
     if(create)
     {
-        //create fake content for this resource, needed for adding the resource
+        //Create fake content for this resource, needed for adding the resource
+        //Fill to a length greater than 256 bytes to reduce dbmxl repository contention.
+        //We will set dbxml to the minimum page size of 512 bytes
         const char* resTypeName = GetResourceTypeName();
-        string xmlContent = string("<?xml version=\"1.0\" encoding=\"UTF-8\"?><") + resTypeName + "></" + resTypeName + ">";
+        string filler(256,' ');
+        string xmlContent = string("<?xml version=\"1.0\" encoding=\"UTF-8\"?><") + resTypeName + ">" + filler.c_str() + "</" + resTypeName + ">";
         Ptr<MgByteSource> bsource1 = new MgByteSource((BYTE_ARRAY_IN)xmlContent.c_str(), (INT32)xmlContent.length());
         Ptr<MgByteReader> content = bsource1->GetReader();
 
