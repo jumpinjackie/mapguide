@@ -37,7 +37,7 @@ void MgLogDetail::AppendName(CREFSTRING paramName)
 {
     if (m_params.length() > 0)
     {
-        m_params.append(L",");
+        m_params.append(m_delimiter);
     }
     m_params.append(paramName);
     m_params.append(L"=");

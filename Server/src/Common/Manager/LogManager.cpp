@@ -1407,7 +1407,16 @@ void MgLogManager::LogError(CREFSTRING entry, CREFSTRING client, CREFSTRING clie
     // Errors are always logged to both the error and trace logs if enabled.
     if(IsErrorLogEnabled())
     {
-        LogErrorEntry(entry, client, clientIp, userName, stackTrace, MgResources::Error);
+        // Check if this is a startup/shutdown entry
+        if((MgResources::ServerStarted == entry) ||
+           (MgResources::ServerStopped == entry))
+        {
+            LogErrorEntry(entry, client, clientIp, userName, stackTrace, MgResources::Success);
+        }
+        else
+        {
+            LogErrorEntry(entry, client, clientIp, userName, stackTrace, MgResources::Error);
+        }
     }
     if(IsTraceLogEnabled())
     {
@@ -1659,7 +1668,6 @@ void MgLogManager::LogErrorEntry(CREFSTRING entry, CREFSTRING client, CREFSTRING
 
     // Add the given info.
     AddDelimiter(logEntry);
-    logEntry += entry;
 
     MG_LOGMANAGER_CATCH(L"MgLogManager.LogErrorEntry")
 
