@@ -2,6 +2,14 @@
 #ifndef GEOS_PLATFORM_H
 #define GEOS_PLATFORM_H
 
+#ifdef WIN32
+#ifdef GEOS_EXPORTS
+#    define GEOS_API __declspec(dllexport)
+#else
+#    define GEOS_API __declspec(dllimport)
+#endif
+#endif
+
 /* Set to 1 if `long int' is 64 bits */
 /* #undef HAVE_LONG_INT_64 */
 

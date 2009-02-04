@@ -37,7 +37,7 @@ typedef unsigned char byte;
  * \class ParseException io.h geos.h
  * \brief Notifies a parsing error
  */
-class ParseException: public GEOSException {
+class GEOS_API ParseException: public GEOSException {
 public:
 	ParseException();
 	ParseException(string msg);
@@ -46,7 +46,7 @@ public:
 	~ParseException();
 };
 
-class StringTokenizer {
+class GEOS_API StringTokenizer {
 public:
 	enum {
 		TT_EOF,
@@ -71,7 +71,7 @@ private:
  * \class WKTReader io.h geos.h
  * \brief WKT parser class; see also WKTWriter.
  */
-class WKTReader {
+class GEOS_API WKTReader {
 public:
 	//WKTReader();
 
@@ -115,7 +115,7 @@ private:
 	bool isNumberNext(StringTokenizer *tokenizer);
 };
 
-class Writer {
+class GEOS_API Writer {
 public:
 	Writer();
 	~Writer();
@@ -146,7 +146,7 @@ private:
  * See WKTReader for parsing.
  *
  */
-class WKTWriter {
+class GEOS_API WKTWriter {
 public:
 	WKTWriter();
 	~WKTWriter();
@@ -204,7 +204,7 @@ private:
  * 
  * Similar to the standard Java <code>ByteBuffer</code> class.
  */
-class ByteOrderValues {
+class GEOS_API ByteOrderValues {
 
 public:
 	/*final*/ static int ENDIAN_BIG;
@@ -228,7 +228,7 @@ public:
  * istream, with the representation being in either common byte ordering.
  *
  */
-class ByteOrderDataInStream {
+class GEOS_API ByteOrderDataInStream {
 
 public:
 
@@ -317,7 +317,7 @@ namespace WKBConstants {
  * representing 3-dimensional coordinates.
  *
  */
-class WKBReader {
+class GEOS_API WKBReader {
 
 public:
 
@@ -411,7 +411,7 @@ private:
  *
  * @see WKBReader
  */
-class WKBWriter {
+class GEOS_API WKBWriter {
 
 public:
 

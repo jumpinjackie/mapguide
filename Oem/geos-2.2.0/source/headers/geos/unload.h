@@ -26,10 +26,13 @@
 
 #ifndef GEOS_UNLOAD_H
 #define GEOS_UNLOAD_H
+
+#include <geos/platform.h>
+
 //xie add for realse static memory 2003,10,06
 namespace geos {
 
-class Unload
+class GEOS_API Unload
 {
 public:
 	Unload(void);

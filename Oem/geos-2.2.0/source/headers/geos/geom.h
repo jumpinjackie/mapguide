@@ -106,7 +106,7 @@ class Coordinate;
  *
  * JTS methods currently do not handle inputs with different precision models.
  */
-class PrecisionModel {
+class GEOS_API PrecisionModel {
 friend class Unload;
 public:
 	/// The types of Precision Model which GEOS supports.
@@ -341,7 +341,7 @@ private:
 // Define the following to make assignments and copy constructions
 // NON-inline (will let profilers report usages)
 //#define PROFILE_COORDINATE_COPIES 1
-class Coordinate {
+class GEOS_API Coordinate {
 public:
 	//void setNull(void);
 	//static Coordinate& getNull(void);
@@ -563,7 +563,7 @@ private:
  * will use your CoordinateSequence implementation.
  * 
  */
-class CoordinateSequence {
+class GEOS_API CoordinateSequence {
 public:
 	virtual ~CoordinateSequence(){};
 
@@ -718,7 +718,7 @@ public:
  *
  * \brief The default implementation of CoordinateSequence
  */
-class DefaultCoordinateSequence : public CoordinateSequence {
+class GEOS_API DefaultCoordinateSequence : public CoordinateSequence {
 public:
 
 	DefaultCoordinateSequence(const DefaultCoordinateSequence &cl);
@@ -764,7 +764,7 @@ struct point_3d {
 	double z;
 };
 
-class PointCoordinateSequence : public CoordinateSequence {
+class GEOS_API PointCoordinateSequence : public CoordinateSequence {
 public:
 	PointCoordinateSequence();
 	PointCoordinateSequence(int n);
@@ -803,7 +803,7 @@ public:
  * An object that knows how to build a particular implementation of
  * CoordinateSequence from an array of Coordinates.
  */
-class CoordinateSequenceFactory {
+class GEOS_API CoordinateSequenceFactory {
 public:
 	// create an empty CoordinateSequence
 	//virtual CoordinateSequence* createCoordinateSequence()=0;
@@ -836,7 +836,7 @@ public:
  * Creates CoordinateSequences internally represented as an array of
  * Coordinates.
  */
-class DefaultCoordinateSequenceFactory: public CoordinateSequenceFactory {
+class GEOS_API DefaultCoordinateSequenceFactory: public CoordinateSequenceFactory {
 
 public:
 	// create an empty DefaultCoordinateSequence
@@ -869,7 +869,7 @@ public:
  * \brief
  * Factory for PointCoordinateSequence objects.
  */
-class PointCoordinateSequenceFactory: public CoordinateSequenceFactory {
+class GEOS_API PointCoordinateSequenceFactory: public CoordinateSequenceFactory {
 public:
 
 	CoordinateSequence *create(vector<Coordinate> *coords) const;
@@ -887,7 +887,7 @@ public:
  * envelope computation, and many other functions.
  *
  */
-class CoordinateFilter {
+class GEOS_API CoordinateFilter {
 public:
    virtual ~CoordinateFilter() {}
    /**
@@ -914,7 +914,7 @@ class Geometry;
  *  is an example of the Gang-of-Four Visitor pattern.
  *
  */
-class GeometryComponentFilter {
+class GEOS_API GeometryComponentFilter {
 public:
 	/**
 	*  Performs an operation with or on <code>geom</code>.
@@ -933,7 +933,7 @@ public:
  * non-empty geometries, and a wildcard dimension meaning "any dimension".
  * 
  */
-class Dimension {
+class GEOS_API Dimension {
 public:
 	enum {
 		DONTCARE=-3,	/// Dimension value for any dimension (= {FALSE, TRUE}).
@@ -970,7 +970,7 @@ public:
  * the supplies extent values are automatically sorted into the correct order.
  *
  */
-class Envelope {
+class GEOS_API Envelope {
 public:
 	Envelope(void);
 	Envelope(double x1, double x2, double y1, double y2);
@@ -1115,7 +1115,7 @@ class GeometryFactory;
  *  remain distinct. This behaviour is desired in many cases.
  *
  */
-class Geometry{
+class GEOS_API Geometry{
 friend class Unload;
 public:
 
@@ -1485,7 +1485,7 @@ private:
  * Geometry filters implement the interface GeometryFilter.
  * (GeometryFilter is an example of the Gang-of-Four Visitor pattern).
  */
-class GeometryFilter {
+class GEOS_API GeometryFilter {
 public:
 	/*
 	 * Performs an operation with or on <code>geom</code>.
@@ -1509,7 +1509,7 @@ public:
  * segments defined by arrays or lists of {@link Coordinate}s.
  *
  */
-class LineSegment {
+class GEOS_API LineSegment {
 public:
 	Coordinate p0; /// Segment start
 	Coordinate p1; /// Segemnt end
@@ -1603,7 +1603,7 @@ private:
 
 };
 
-class IntersectionMatrix {
+class GEOS_API IntersectionMatrix {
 public:
 	IntersectionMatrix();
 	IntersectionMatrix(string elements);
@@ -1641,7 +1641,7 @@ private:
  *  HREF="http://www.opengis.org/techno/specs.htm">OpenGIS Simple Features
  *  Specification for SQL</A> .
  */
-class Location {
+class GEOS_API Location {
 public:
 	enum {
 		/**
@@ -1694,7 +1694,7 @@ bool greaterThen(Geometry *first, Geometry *second);
  * represented by GeometryCollection subclasses MultiPoint,
  * MultiLineString, MultiPolygon.
  */
-class GeometryCollection : public Geometry{
+class GEOS_API GeometryCollection : public Geometry{
 public:
 	GeometryCollection(const GeometryCollection &gc);
 
@@ -1795,7 +1795,7 @@ private:
 #endif        
 };
 
-class GeometryCollectionIterator {
+class GEOS_API GeometryCollectionIterator {
 public:
 	GeometryCollectionIterator();
 	GeometryCollectionIterator(const GeometryCollectionIterator &gci);
@@ -1816,7 +1816,7 @@ private:
  * \class Point geom.h geos.h
  * \brief Basic implementation of Point.
  */
-class Point : public Geometry{
+class GEOS_API Point : public Geometry{
 public:
 
 	/**
@@ -1885,7 +1885,7 @@ public:
  * \class LineString geom.h geos.h
  * \brief Basic implementation of LineString.
  */
-class LineString: public Geometry {
+class GEOS_API LineString: public Geometry {
 public:
 	LineString(const LineString &ls);
 
@@ -1966,7 +1966,7 @@ private:
  * A valid ring must not self-intersect.
  *
  */
-class LinearRing : public LineString{
+class GEOS_API LinearRing : public LineString{
 
 public:
 
@@ -2015,7 +2015,7 @@ private:
  *  Specification for SQL</A> .
  *
  */
-class Polygon: public Geometry{
+class GEOS_API Polygon: public Geometry{
 public:
 	Polygon(const Polygon &p);
 	virtual ~Polygon();
@@ -2107,7 +2107,7 @@ private:
  * \class MultiPoint geom.h geos.h
  * \brief  Models a collection of Point objects.
  */
-class MultiPoint: public GeometryCollection{
+class GEOS_API MultiPoint: public GeometryCollection{
 public:
 
 	/**
@@ -2160,7 +2160,7 @@ private:
  * \class MultiLineString geom.h geos.h
  * \brief Basic implementation of MultiLineString objects.
  */
-class MultiLineString: public GeometryCollection{
+class GEOS_API MultiLineString: public GeometryCollection{
 public:
 
 	/**
@@ -2216,7 +2216,7 @@ private:
  * \class MultiPolygon  geom.h geos.h
  * \brief Basic implementation of <code>MultiPolygon</code>.
  */
-class MultiPolygon: public GeometryCollection {
+class GEOS_API MultiPolygon: public GeometryCollection {
 
 public:
 
@@ -2275,7 +2275,7 @@ private:
  * \brief Supplies a set of utility methods for building Geometry objects
  * from CoordinateSequence or other Geometry objects.
  */
-class GeometryFactory {
+class GEOS_API GeometryFactory {
 public:
 	/**
 	* \brief 
@@ -2450,7 +2450,7 @@ private:
  * Represents a planar triangle, and provides methods for calculating various
  * properties of triangles.
  */
-class Triangle {
+class GEOS_API Triangle {
 public:
 	Coordinate p0,p1,p2;
 	Triangle(const Coordinate& nP0,const Coordinate& nP1,const Coordinate& nP2);
