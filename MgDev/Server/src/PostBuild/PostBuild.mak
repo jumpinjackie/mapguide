@@ -58,6 +58,12 @@
 ..\..\bin\debug\gd.pdb : ..\..\..\Oem\gd\build\win32\gd\Debug\gd.pdb
     xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\Debug\gd.pdb ..\..\bin\debug\
 
+..\..\bin\debug\geos.dll : ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug\geos.dll
+    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug\geos.dll ..\..\bin\debug\
+
+..\..\bin\debug\geos.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug\geos.pdb
+    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug\geos.pdb ..\..\bin\debug\
+    
 ..\..\bin\debug\libdb45d.dll : ..\..\..\Oem\dbxml-2.3.10\bin\debug\libdb45d.dll
     xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug\libdb45d.dll ..\..\bin\debug\
 
@@ -140,6 +146,8 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\debug\ACEd.pdb \
         ..\..\bin\debug\gd.dll \
         ..\..\bin\debug\gd.pdb \
+        ..\..\bin\debug\geos.dll \
+        ..\..\bin\debug\geos.pdb \
         ..\..\bin\debug\libdb45d.dll \
         ..\..\bin\debug\libdb45d.pdb \
         ..\..\bin\debug\libdbxml23d.dll \
@@ -295,6 +303,12 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
 ..\..\bin\debug64\gd.pdb : ..\..\..\Oem\gd\build\win32\gd\debug64\gd.pdb
     xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\debug64\gd.pdb ..\..\bin\debug64\
 
+..\..\bin\debug64\geos.dll : ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug64\geos.dll
+    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug64\geos.dll ..\..\bin\debug64\
+
+..\..\bin\debug64\geos.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug64\geos.pdb
+    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug64\geos.pdb ..\..\bin\debug64\
+
 ..\..\bin\debug64\libdb45d.dll : ..\..\..\Oem\dbxml-2.3.10\bin\debug64\libdb45d.dll
     xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug64\libdb45d.dll ..\..\bin\debug64\
 
@@ -377,6 +391,8 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
         ..\..\bin\debug64\ACEd.pdb \
         ..\..\bin\debug64\gd.dll \
         ..\..\bin\debug64\gd.pdb \
+        ..\..\bin\debug64\geos.dll \
+        ..\..\bin\debug64\geos.pdb \
         ..\..\bin\debug64\libdb45d.dll \
         ..\..\bin\debug64\libdb45d.pdb \
         ..\..\bin\debug64\libdbxml23d.dll \
@@ -531,6 +547,12 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
 ..\..\bin\release\gd.pdb : ..\..\..\Oem\gd\build\win32\gd\Release\gd.pdb
     xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\Release\gd.pdb ..\..\bin\release\
 
+..\..\bin\release\geos.dll : ..\..\..\Oem\geos-2.2.0\VisualStudio\Release\geos.dll
+    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Release\geos.dll ..\..\bin\release\
+
+..\..\bin\release\geos.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\Release\geos.pdb
+    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Release\geos.pdb ..\..\bin\release\
+
 ..\..\bin\release\libdb45.dll : ..\..\..\Oem\dbxml-2.3.10\bin\libdb45.dll
     xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\libdb45.dll ..\..\bin\release\
 
@@ -613,6 +635,8 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\release\ACE.pdb \
           ..\..\bin\release\gd.dll \
           ..\..\bin\release\gd.pdb \
+          ..\..\bin\release\geos.dll \
+          ..\..\bin\release\geos.pdb \
           ..\..\bin\release\libdb45.dll \
           ..\..\bin\release\libdb45.pdb \
           ..\..\bin\release\libdbxml23.dll \
@@ -768,6 +792,12 @@ release : ..\..\bin\release\MgFoundation.dll \
 ..\..\bin\release64\gd.pdb : ..\..\..\Oem\gd\build\win32\gd\release64\gd.pdb
     xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\release64\gd.pdb ..\..\bin\release64\
 
+..\..\bin\release64\geos.dll : ..\..\..\Oem\geos-2.2.0\VisualStudio\Release64\geos.dll
+    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Release64\geos.dll ..\..\bin\release64\
+
+..\..\bin\release64\geos.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\Release64\geos.pdb
+    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Release64\geos.pdb ..\..\bin\release64\
+
 ..\..\bin\release64\libdb45.dll : ..\..\..\Oem\dbxml-2.3.10\bin64\libdb45.dll
     xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\libdb45.dll ..\..\bin\release64\
 
@@ -850,6 +880,8 @@ release64 : ..\..\bin\release64\MgFoundation.dll \
           ..\..\bin\release64\ACE.pdb \
           ..\..\bin\release64\gd.dll \
           ..\..\bin\release64\gd.pdb \
+          ..\..\bin\release64\geos.dll \
+          ..\..\bin\release64\geos.pdb \
           ..\..\bin\release64\libdb45.dll \
           ..\..\bin\release64\libdb45.pdb \
           ..\..\bin\release64\libdbxml23.dll \
@@ -966,6 +998,8 @@ cleandebug:
     if EXIST ..\..\bin\debug\ACEd.pdb                        del /F ..\..\bin\debug\ACEd.pdb
     if EXIST ..\..\bin\debug\gd.dll                          del /F ..\..\bin\debug\gd.dll
     if EXIST ..\..\bin\debug\gd.pdb                          del /F ..\..\bin\debug\gd.pdb
+    if EXIST ..\..\bin\debug\geos.dll                        del /F ..\..\bin\debug\geos.dll
+    if EXIST ..\..\bin\debug\geos.pdb                        del /F ..\..\bin\debug\geos.pdb
     if EXIST ..\..\bin\debug\libdb45d.dll                    del /F ..\..\bin\debug\libdb45d.dll
     if EXIST ..\..\bin\debug\libdb45d.pdb                    del /F ..\..\bin\debug\libdb45d.pdb
     if EXIST ..\..\bin\debug\libdbxml23d.dll                 del /F ..\..\bin\debug\libdbxml23d.dll
@@ -1077,6 +1111,8 @@ cleandebug64:
     if EXIST ..\..\bin\debug64\ACEd.pdb                        del /F ..\..\bin\debug64\ACEd.pdb
     if EXIST ..\..\bin\debug64\gd.dll                          del /F ..\..\bin\debug64\gd.dll
     if EXIST ..\..\bin\debug64\gd.pdb                          del /F ..\..\bin\debug64\gd.pdb
+    if EXIST ..\..\bin\debug64\geos.dll                        del /F ..\..\bin\debug64\geos.dll
+    if EXIST ..\..\bin\debug64\geos.pdb                        del /F ..\..\bin\debug64\geos.pdb
     if EXIST ..\..\bin\debug64\libdb45d.dll                    del /F ..\..\bin\debug64\libdb45d.dll
     if EXIST ..\..\bin\debug64\libdb45d.pdb                    del /F ..\..\bin\debug64\libdb45d.pdb
     if EXIST ..\..\bin\debug64\libdbxml23d.dll                 del /F ..\..\bin\debug64\libdbxml23d.dll
@@ -1188,6 +1224,8 @@ cleanrelease:
     if EXIST ..\..\bin\release\ACE.pdb                       del /F ..\..\bin\release\ACE.pdb
     if EXIST ..\..\bin\release\gd.dll                        del /F ..\..\bin\release\gd.dll
     if EXIST ..\..\bin\release\gd.pdb                        del /F ..\..\bin\release\gd.pdb
+    if EXIST ..\..\bin\release\geos.dll                      del /F ..\..\bin\release\geos.dll
+    if EXIST ..\..\bin\release\geos.pdb                      del /F ..\..\bin\release\geos.pdb
     if EXIST ..\..\bin\release\libdb45.dll                   del /F ..\..\bin\release\libdb45.dll
     if EXIST ..\..\bin\release\libdb45.pdb                   del /F ..\..\bin\release\libdb45.pdb
     if EXIST ..\..\bin\release\libdbxml23.dll                del /F ..\..\bin\release\libdbxml23.dll
@@ -1298,6 +1336,8 @@ cleanrelease64:
     if EXIST ..\..\bin\release64\ACE.pdb                       del /F ..\..\bin\release64\ACE.pdb
     if EXIST ..\..\bin\release64\gd.dll                        del /F ..\..\bin\release64\gd.dll
     if EXIST ..\..\bin\release64\gd.pdb                        del /F ..\..\bin\release64\gd.pdb
+    if EXIST ..\..\bin\release64\geos.dll                      del /F ..\..\bin\release64\geos.dll
+    if EXIST ..\..\bin\release64\geos.pdb                      del /F ..\..\bin\release64\geos.pdb
     if EXIST ..\..\bin\release64\libdb45.dll                   del /F ..\..\bin\release64\libdb45.dll
     if EXIST ..\..\bin\release64\libdb45.pdb                   del /F ..\..\bin\release64\libdb45.pdb
     if EXIST ..\..\bin\release64\libdbxml23.dll                del /F ..\..\bin\release64\libdbxml23.dll
