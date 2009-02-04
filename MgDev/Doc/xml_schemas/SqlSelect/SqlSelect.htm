@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<style type="text/css"> .textElement { font-family: Courier New; font-size: 10pt; color: #800000; }</style>
+		<style type="text/css"> .textAttr { font-family: Courier New; font-size: 10pt; color: #FF0000; }</style>
+		<style type="text/css"> .textContents { font-family: Courier New; font-size: 10pt; color: #000000; }</style>
+		<style type="text/css"> .textOperator { font-family: Courier New; font-size: 10pt; color: #0000FF; }</style>
+		<style type="text/css"> .schemaHeader { font-family: Arial; font-size: 11pt; color: #000000; }</style>
+		<style type="text/css"> .schemaHeader2 { font-family: Arial; font-size: 11pt; font-weight: bold; color: #000000; }</style>
+		<style type="text/css"> .elementHeader { font-family: Arial; font-size: 10pt; color: #000000; }</style>
+		<style type="text/css"> .elementHeader2 { font-family: Arial; font-size: 10pt; font-weight: bold; color: #000000; }</style>
+		<style type="text/css"> .schemaName { font-family: Arial; font-size: 8pt; font-weight: bold; color: #000000; }</style>
+		<style type="text/css"> .schemaSubTitle { font-family: Arial; font-size: 8pt; color: #808080; }</style>
+		<style type="text/css"> .schemaSubData { font-family: Arial; font-size: 8pt; color: #000000; }</style>
+		<style type="text/css"> pre { margin-bottom: 0 }</style>
+	</head>
+	<body>
+		<span class="schemaHeader">Schema </span>
+		<span class="schemaHeader2">SqlSelect-1.0.0.xsd</span>
+		<br />
+		<br />
+		<br />
+		<table cellspacing="0" cellpadding="0">
+			<tr valign="top">
+				<td align="left" bgcolor="#FFFFFF"><span class="schemaSubTitle">attribute form default:&nbsp;</span></td>
+				<td align="left" bgcolor="#FFFFFF"><span class="schemaName">unqualified</span></td>
+			</tr>
+			<tr valign="top">
+				<td align="left" bgcolor="#FFFFFF"><span class="schemaSubTitle">element form default:&nbsp;</span></td>
+				<td align="left" bgcolor="#FFFFFF"><span class="schemaName">qualified</span></td>
+			</tr>
+			<tr valign="top">
+				<td align="left" bgcolor="#FFFFFF"><span class="schemaSubTitle">&nbsp;</span></td>
+				<td align="left" bgcolor="#FFFFFF" />
+			</tr>
+		</table>
+		<table cellspacing="0" cellpadding="0">
+			<tr valign="top">
+				<td align="left" bgcolor="#FFFFFF"><span class="schemaSubTitle">Elements&nbsp;</span></td>
+				<td align="left" bgcolor="#FFFFFF"><span class="schemaSubTitle">Complex types&nbsp;</span></td>
+			</tr>
+			<tr valign="top">
+				<td align="left" bgcolor="#FFFFFF"><a href="#element_RowSet_Link05D80EC0"><span class="schemaName">RowSet</span></a><span class="schemaName">&nbsp;</span></td>
+				<td align="left" bgcolor="#FFFFFF"><a href="#complexType_RowCollectionType_Link05CCA090"><span class="schemaName">RowCollectionType</span></a><span class="schemaName">&nbsp;</span></td>
+			</tr>
+			<tr valign="top">
+				<td align="left" bgcolor="#FFFFFF" />
+				<td align="left" bgcolor="#FFFFFF"><a href="#complexType_RowType_Link05CE87F0"><span class="schemaName">RowType</span></a><span class="schemaName">&nbsp;</span></td>
+			</tr>
+		</table>
+		<br />
+		<br />
+		<a name="element_RowSet_Link05D80EC0" />
+		<span class="elementHeader">element </span>
+		<span class="elementHeader2">RowSet</span>
+		<table width="100%" cellspacing="0" cellpadding="5" border="1">
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">diagram</span></td>
+				<td width="90%" align="left" bgcolor="#FFFFFF"><map name="Map05D80EC0"><area coords="142,7,142,7" href="#complexType_RowCollectionType_Link05CCA090" /><area coords="211,28,337,112" href="#element_ColumnDefinitions_Link05BDA808" /><area coords="211,124,263,144" href="#element_Rows_Link05BC7F10" /></map><img src="SqlSelect_p1.png" width="376" height="170" border="0" usemap="#Map05D80EC0" /></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">type</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><a href="#complexType_RowCollectionType_Link05CCA090"><span class="schemaName">RowCollectionType</span></a></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">children</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><a href="#element_ColumnDefinitions_Link05BDA808"><span class="schemaName">ColumnDefinitions</span></a><span class="schemaName"> </span><a href="#element_Rows_Link05BC7F10"><span class="schemaName">Rows</span></a></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">source</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><pre><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"RowSet</span><span class="textOperator">"</span><span class="textAttr"> type</span><span class="textOperator">=</span><span class="textContents">"RowCollectionType</span><span class="textOperator">"&gt;</span><span class="textContents">
+  </span><span class="textOperator">&lt;</span><span class="textElement">xs:annotation</span><span class="textOperator">&gt;</span><span class="textContents">
+    </span><span class="textOperator">&lt;</span><span class="textElement">xs:documentation</span><span class="textOperator">&gt;</span><span class="textContents">This schema defines the return structure of Fdo Select operation</span><span class="textOperator">&lt;/</span><span class="textElement">xs:documentation</span><span class="textOperator">&gt;</span><span class="textContents">
+  </span><span class="textOperator">&lt;/</span><span class="textElement">xs:annotation</span><span class="textOperator">&gt;</span><span class="textContents">
+</span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span></pre></td>
+			</tr>
+		</table>
+		<br />
+		<a name="complexType_RowCollectionType_Link05CCA090" />
+		<span class="elementHeader">complexType </span>
+		<span class="elementHeader2">RowCollectionType</span>
+		<table width="100%" cellspacing="0" cellpadding="5" border="1">
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">diagram</span></td>
+				<td width="90%" align="left" bgcolor="#FFFFFF"><map name="Map05CCA090"><area coords="208,0,334,84" href="#element_ColumnDefinitions_Link05BDA808" /><area coords="208,96,260,116" href="#element_Rows_Link05BC7F10" /></map><img src="SqlSelect_p2.png" width="358" height="130" border="0" usemap="#Map05CCA090" /></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">children</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><a href="#element_ColumnDefinitions_Link05BDA808"><span class="schemaName">ColumnDefinitions</span></a><span class="schemaName"> </span><a href="#element_Rows_Link05BC7F10"><span class="schemaName">Rows</span></a></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">used by</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><table cellspacing="0" cellpadding="0"><tr valign="top"><td align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">element&nbsp;</span></td><td align="left" bgcolor="#F0F0F0"><a href="#element_RowSet_Link05D80EC0"><span class="schemaName">RowSet</span></a></td></tr></table></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">source</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><pre><span class="textOperator">&lt;</span><span class="textElement">xs:complexType</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"RowCollectionType</span><span class="textOperator">"&gt;</span><span class="textContents">
+  </span><span class="textOperator">&lt;</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+    </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"ColumnDefinitions</span><span class="textOperator">"</span><span class="textAttr"> maxOccurs</span><span class="textOperator">=</span><span class="textContents">"unbounded</span><span class="textOperator">"&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:annotation</span><span class="textOperator">&gt;</span><span class="textContents">
+        </span><span class="textOperator">&lt;</span><span class="textElement">xs:documentation</span><span class="textOperator">&gt;</span><span class="textContents">There can be more than one table definition in case we do join operation etc. like road.id = highway.id etc.</span><span class="textOperator">&lt;/</span><span class="textElement">xs:documentation</span><span class="textOperator">&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;/</span><span class="textElement">xs:annotation</span><span class="textOperator">&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+        </span><span class="textOperator">&lt;</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+          </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Column</span><span class="textOperator">"</span><span class="textAttr"> maxOccurs</span><span class="textOperator">=</span><span class="textContents">"unbounded</span><span class="textOperator">"&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+              </span><span class="textOperator">&lt;</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+                </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Name</span><span class="textOperator">"</span><span class="textAttr"> type</span><span class="textOperator">=</span><span class="textContents">"xs:string</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Type</span><span class="textOperator">"&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;</span><span class="textElement">xs:annotation</span><span class="textOperator">&gt;</span><span class="textContents">
+                    </span><span class="textOperator">&lt;</span><span class="textElement">xs:documentation</span><span class="textOperator">&gt;</span><span class="textContents">Enum of data types  Boolean, Byte, DateTime, Decimal, Double, Int16, Int32, Int64, Single, String, BLOB, CLOB, UniqueID  </span><span class="textOperator">&lt;/</span><span class="textElement">xs:documentation</span><span class="textOperator">&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;/</span><span class="textElement">xs:annotation</span><span class="textOperator">&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;</span><span class="textElement">xs:simpleType</span><span class="textOperator">&gt;</span><span class="textContents">
+                    </span><span class="textOperator">&lt;</span><span class="textElement">xs:restriction</span><span class="textAttr"> base</span><span class="textOperator">=</span><span class="textContents">"xs:string</span><span class="textOperator">"&gt;</span><span class="textContents">
+                      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"boolean</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"byte</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"datetime</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"decimal</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"double</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"int16</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"int32</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"int64</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"single</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"string</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"blob</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"clob</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"uniqueId</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                    </span><span class="textOperator">&lt;/</span><span class="textElement">xs:restriction</span><span class="textOperator">&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;/</span><span class="textElement">xs:simpleType</span><span class="textOperator">&gt;</span><span class="textContents">
+                </span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span><span class="textContents">
+              </span><span class="textOperator">&lt;/</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+          </span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span><span class="textContents">
+        </span><span class="textOperator">&lt;/</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+    </span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span><span class="textContents">
+    </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Rows</span><span class="textOperator">"&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+        </span><span class="textOperator">&lt;</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+          </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Row</span><span class="textOperator">"</span><span class="textAttr"> minOccurs</span><span class="textOperator">=</span><span class="textContents">"0</span><span class="textOperator">"</span><span class="textAttr"> maxOccurs</span><span class="textOperator">=</span><span class="textContents">"unbounded</span><span class="textOperator">"&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+              </span><span class="textOperator">&lt;</span><span class="textElement">xs:complexContent</span><span class="textOperator">&gt;</span><span class="textContents">
+                </span><span class="textOperator">&lt;</span><span class="textElement">xs:extension</span><span class="textAttr"> base</span><span class="textOperator">=</span><span class="textContents">"RowType</span><span class="textOperator">"&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+                    </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Column</span><span class="textOperator">"</span><span class="textAttr"> maxOccurs</span><span class="textOperator">=</span><span class="textContents">"unbounded</span><span class="textOperator">"&gt;</span><span class="textContents">
+                      </span><span class="textOperator">&lt;</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+                        </span><span class="textOperator">&lt;</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+                          </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Name</span><span class="textOperator">"&gt;</span><span class="textContents">
+                            </span><span class="textOperator">&lt;</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+                              </span><span class="textOperator">&lt;</span><span class="textElement">xs:simpleContent</span><span class="textOperator">&gt;</span><span class="textContents">
+                                </span><span class="textOperator">&lt;</span><span class="textElement">xs:extension</span><span class="textAttr"> base</span><span class="textOperator">=</span><span class="textContents">"xs:string</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                              </span><span class="textOperator">&lt;/</span><span class="textElement">xs:simpleContent</span><span class="textOperator">&gt;</span><span class="textContents">
+                            </span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+                          </span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span><span class="textContents">
+                          </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Value</span><span class="textOperator">"</span><span class="textAttr"> type</span><span class="textOperator">=</span><span class="textContents">"xs:string</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                        </span><span class="textOperator">&lt;/</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+                      </span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+                    </span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;/</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+                </span><span class="textOperator">&lt;/</span><span class="textElement">xs:extension</span><span class="textOperator">&gt;</span><span class="textContents">
+              </span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexContent</span><span class="textOperator">&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+          </span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span><span class="textContents">
+        </span><span class="textOperator">&lt;/</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+    </span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span><span class="textContents">
+  </span><span class="textOperator">&lt;/</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+</span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span></pre></td>
+			</tr>
+		</table>
+		<br />
+		<a name="element_ColumnDefinitions_Link05BDA808" />
+		<span class="elementHeader">element </span>
+		<span class="elementHeader2">RowCollectionType/ColumnDefinitions</span>
+		<table width="100%" cellspacing="0" cellpadding="5" border="1">
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">diagram</span></td>
+				<td width="90%" align="left" bgcolor="#FFFFFF"><map name="Map05BDA808"><area coords="196,0,260,37" href="#element_Column_Link06D921F0" /></map><img src="SqlSelect_p3.png" width="287" height="80" border="0" usemap="#Map05BDA808" /></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">children</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><a href="#element_Column_Link06D921F0"><span class="schemaName">Column</span></a></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">source</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><pre><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"ColumnDefinitions</span><span class="textOperator">"</span><span class="textAttr"> maxOccurs</span><span class="textOperator">=</span><span class="textContents">"unbounded</span><span class="textOperator">"&gt;</span><span class="textContents">
+  </span><span class="textOperator">&lt;</span><span class="textElement">xs:annotation</span><span class="textOperator">&gt;</span><span class="textContents">
+    </span><span class="textOperator">&lt;</span><span class="textElement">xs:documentation</span><span class="textOperator">&gt;</span><span class="textContents">There can be more than one table definition in case we do join operation etc. like road.id = highway.id etc.</span><span class="textOperator">&lt;/</span><span class="textElement">xs:documentation</span><span class="textOperator">&gt;</span><span class="textContents">
+  </span><span class="textOperator">&lt;/</span><span class="textElement">xs:annotation</span><span class="textOperator">&gt;</span><span class="textContents">
+  </span><span class="textOperator">&lt;</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+    </span><span class="textOperator">&lt;</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Column</span><span class="textOperator">"</span><span class="textAttr"> maxOccurs</span><span class="textOperator">=</span><span class="textContents">"unbounded</span><span class="textOperator">"&gt;</span><span class="textContents">
+        </span><span class="textOperator">&lt;</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+          </span><span class="textOperator">&lt;</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Name</span><span class="textOperator">"</span><span class="textAttr"> type</span><span class="textOperator">=</span><span class="textContents">"xs:string</span><span class="textOperator">"/&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Type</span><span class="textOperator">"&gt;</span><span class="textContents">
+              </span><span class="textOperator">&lt;</span><span class="textElement">xs:annotation</span><span class="textOperator">&gt;</span><span class="textContents">
+                </span><span class="textOperator">&lt;</span><span class="textElement">xs:documentation</span><span class="textOperator">&gt;</span><span class="textContents">Enum of data types  Boolean, Byte, DateTime, Decimal, Double, Int16, Int32, Int64, Single, String, BLOB, CLOB, UniqueID  </span><span class="textOperator">&lt;/</span><span class="textElement">xs:documentation</span><span class="textOperator">&gt;</span><span class="textContents">
+              </span><span class="textOperator">&lt;/</span><span class="textElement">xs:annotation</span><span class="textOperator">&gt;</span><span class="textContents">
+              </span><span class="textOperator">&lt;</span><span class="textElement">xs:simpleType</span><span class="textOperator">&gt;</span><span class="textContents">
+                </span><span class="textOperator">&lt;</span><span class="textElement">xs:restriction</span><span class="textAttr"> base</span><span class="textOperator">=</span><span class="textContents">"xs:string</span><span class="textOperator">"&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"boolean</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"byte</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"datetime</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"decimal</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"double</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"int16</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"int32</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"int64</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"single</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"string</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"blob</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"clob</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"uniqueId</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                </span><span class="textOperator">&lt;/</span><span class="textElement">xs:restriction</span><span class="textOperator">&gt;</span><span class="textContents">
+              </span><span class="textOperator">&lt;/</span><span class="textElement">xs:simpleType</span><span class="textOperator">&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span><span class="textContents">
+          </span><span class="textOperator">&lt;/</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+        </span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span><span class="textContents">
+    </span><span class="textOperator">&lt;/</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+  </span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+</span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span></pre></td>
+			</tr>
+		</table>
+		<br />
+		<a name="element_Column_Link06D921F0" />
+		<span class="elementHeader">element </span>
+		<span class="elementHeader2">RowCollectionType/ColumnDefinitions/Column</span>
+		<table width="100%" cellspacing="0" cellpadding="5" border="1">
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">diagram</span></td>
+				<td width="90%" align="left" bgcolor="#FFFFFF"><map name="Map06D921F0"><area coords="149,0,201,20" href="#element_Name_Link078271B0" /><area coords="149,32,272,113" href="#element_Type_Link06C637C0" /></map><img src="SqlSelect_p4.png" width="292" height="123" border="0" usemap="#Map06D921F0" /></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">children</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><a href="#element_Name_Link078271B0"><span class="schemaName">Name</span></a><span class="schemaName"> </span><a href="#element_Type_Link06C637C0"><span class="schemaName">Type</span></a></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">source</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><pre><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Column</span><span class="textOperator">"</span><span class="textAttr"> maxOccurs</span><span class="textOperator">=</span><span class="textContents">"unbounded</span><span class="textOperator">"&gt;</span><span class="textContents">
+  </span><span class="textOperator">&lt;</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+    </span><span class="textOperator">&lt;</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Name</span><span class="textOperator">"</span><span class="textAttr"> type</span><span class="textOperator">=</span><span class="textContents">"xs:string</span><span class="textOperator">"/&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Type</span><span class="textOperator">"&gt;</span><span class="textContents">
+        </span><span class="textOperator">&lt;</span><span class="textElement">xs:annotation</span><span class="textOperator">&gt;</span><span class="textContents">
+          </span><span class="textOperator">&lt;</span><span class="textElement">xs:documentation</span><span class="textOperator">&gt;</span><span class="textContents">Enum of data types  Boolean, Byte, DateTime, Decimal, Double, Int16, Int32, Int64, Single, String, BLOB, CLOB, UniqueID  </span><span class="textOperator">&lt;/</span><span class="textElement">xs:documentation</span><span class="textOperator">&gt;</span><span class="textContents">
+        </span><span class="textOperator">&lt;/</span><span class="textElement">xs:annotation</span><span class="textOperator">&gt;</span><span class="textContents">
+        </span><span class="textOperator">&lt;</span><span class="textElement">xs:simpleType</span><span class="textOperator">&gt;</span><span class="textContents">
+          </span><span class="textOperator">&lt;</span><span class="textElement">xs:restriction</span><span class="textAttr"> base</span><span class="textOperator">=</span><span class="textContents">"xs:string</span><span class="textOperator">"&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"boolean</span><span class="textOperator">"/&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"byte</span><span class="textOperator">"/&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"datetime</span><span class="textOperator">"/&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"decimal</span><span class="textOperator">"/&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"double</span><span class="textOperator">"/&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"int16</span><span class="textOperator">"/&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"int32</span><span class="textOperator">"/&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"int64</span><span class="textOperator">"/&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"single</span><span class="textOperator">"/&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"string</span><span class="textOperator">"/&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"blob</span><span class="textOperator">"/&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"clob</span><span class="textOperator">"/&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"uniqueId</span><span class="textOperator">"/&gt;</span><span class="textContents">
+          </span><span class="textOperator">&lt;/</span><span class="textElement">xs:restriction</span><span class="textOperator">&gt;</span><span class="textContents">
+        </span><span class="textOperator">&lt;/</span><span class="textElement">xs:simpleType</span><span class="textOperator">&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span><span class="textContents">
+    </span><span class="textOperator">&lt;/</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+  </span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+</span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span></pre></td>
+			</tr>
+		</table>
+		<br />
+		<a name="element_Name_Link078271B0" />
+		<span class="elementHeader">element </span>
+		<span class="elementHeader2">RowCollectionType/ColumnDefinitions/Column/Name</span>
+		<table width="100%" cellspacing="0" cellpadding="5" border="1">
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">diagram</span></td>
+				<td width="90%" align="left" bgcolor="#FFFFFF"><img src="SqlSelect_p5.png" width="76" height="34" border="0" /></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">type</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><span class="schemaName">xs:string</span></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">source</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><pre><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Name</span><span class="textOperator">"</span><span class="textAttr"> type</span><span class="textOperator">=</span><span class="textContents">"xs:string</span><span class="textOperator">"/&gt;</span></pre></td>
+			</tr>
+		</table>
+		<br />
+		<a name="element_Type_Link06C637C0" />
+		<span class="elementHeader">element </span>
+		<span class="elementHeader2">RowCollectionType/ColumnDefinitions/Column/Type</span>
+		<table width="100%" cellspacing="0" cellpadding="5" border="1">
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">diagram</span></td>
+				<td width="90%" align="left" bgcolor="#FFFFFF"><img src="SqlSelect_p6.png" width="143" height="91" border="0" /></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">type</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><span class="schemaSubData">restriction of </span><span class="schemaName">xs:string</span></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">facets</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><table cellspacing="0" cellpadding="0"><tr valign="top"><td align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">enumeration&nbsp;</span></td><td align="left" bgcolor="#F0F0F0"><span class="schemaSubData">boolean</span></td></tr><tr valign="top"><td align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">enumeration&nbsp;</span></td><td align="left" bgcolor="#F0F0F0"><span class="schemaSubData">byte</span></td></tr><tr valign="top"><td align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">enumeration&nbsp;</span></td><td align="left" bgcolor="#F0F0F0"><span class="schemaSubData">datetime</span></td></tr><tr valign="top"><td align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">enumeration&nbsp;</span></td><td align="left" bgcolor="#F0F0F0"><span class="schemaSubData">decimal</span></td></tr><tr valign="top"><td align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">enumeration&nbsp;</span></td><td align="left" bgcolor="#F0F0F0"><span class="schemaSubData">double</span></td></tr><tr valign="top"><td align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">enumeration&nbsp;</span></td><td align="left" bgcolor="#F0F0F0"><span class="schemaSubData">int16</span></td></tr><tr valign="top"><td align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">enumeration&nbsp;</span></td><td align="left" bgcolor="#F0F0F0"><span class="schemaSubData">int32</span></td></tr><tr valign="top"><td align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">enumeration&nbsp;</span></td><td align="left" bgcolor="#F0F0F0"><span class="schemaSubData">int64</span></td></tr><tr valign="top"><td align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">enumeration&nbsp;</span></td><td align="left" bgcolor="#F0F0F0"><span class="schemaSubData">single</span></td></tr><tr valign="top"><td align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">enumeration&nbsp;</span></td><td align="left" bgcolor="#F0F0F0"><span class="schemaSubData">string</span></td></tr><tr valign="top"><td align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">enumeration&nbsp;</span></td><td align="left" bgcolor="#F0F0F0"><span class="schemaSubData">blob</span></td></tr><tr valign="top"><td align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">enumeration&nbsp;</span></td><td align="left" bgcolor="#F0F0F0"><span class="schemaSubData">clob</span></td></tr><tr valign="top"><td align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">enumeration&nbsp;</span></td><td align="left" bgcolor="#F0F0F0"><span class="schemaSubData">uniqueId</span></td></tr></table></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">source</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><pre><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Type</span><span class="textOperator">"&gt;</span><span class="textContents">
+  </span><span class="textOperator">&lt;</span><span class="textElement">xs:annotation</span><span class="textOperator">&gt;</span><span class="textContents">
+    </span><span class="textOperator">&lt;</span><span class="textElement">xs:documentation</span><span class="textOperator">&gt;</span><span class="textContents">Enum of data types  Boolean, Byte, DateTime, Decimal, Double, Int16, Int32, Int64, Single, String, BLOB, CLOB, UniqueID  </span><span class="textOperator">&lt;/</span><span class="textElement">xs:documentation</span><span class="textOperator">&gt;</span><span class="textContents">
+  </span><span class="textOperator">&lt;/</span><span class="textElement">xs:annotation</span><span class="textOperator">&gt;</span><span class="textContents">
+  </span><span class="textOperator">&lt;</span><span class="textElement">xs:simpleType</span><span class="textOperator">&gt;</span><span class="textContents">
+    </span><span class="textOperator">&lt;</span><span class="textElement">xs:restriction</span><span class="textAttr"> base</span><span class="textOperator">=</span><span class="textContents">"xs:string</span><span class="textOperator">"&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"boolean</span><span class="textOperator">"/&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"byte</span><span class="textOperator">"/&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"datetime</span><span class="textOperator">"/&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"decimal</span><span class="textOperator">"/&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"double</span><span class="textOperator">"/&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"int16</span><span class="textOperator">"/&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"int32</span><span class="textOperator">"/&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"int64</span><span class="textOperator">"/&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"single</span><span class="textOperator">"/&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"string</span><span class="textOperator">"/&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"blob</span><span class="textOperator">"/&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"clob</span><span class="textOperator">"/&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:enumeration</span><span class="textAttr"> value</span><span class="textOperator">=</span><span class="textContents">"uniqueId</span><span class="textOperator">"/&gt;</span><span class="textContents">
+    </span><span class="textOperator">&lt;/</span><span class="textElement">xs:restriction</span><span class="textOperator">&gt;</span><span class="textContents">
+  </span><span class="textOperator">&lt;/</span><span class="textElement">xs:simpleType</span><span class="textOperator">&gt;</span><span class="textContents">
+</span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span></pre></td>
+			</tr>
+		</table>
+		<br />
+		<a name="element_Rows_Link05BC7F10" />
+		<span class="elementHeader">element </span>
+		<span class="elementHeader2">RowCollectionType/Rows</span>
+		<table width="100%" cellspacing="0" cellpadding="5" border="1">
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">diagram</span></td>
+				<td width="90%" align="left" bgcolor="#FFFFFF"><map name="Map05BC7F10"><area coords="122,0,174,37" href="#element_Row_Link05CF01E8" /></map><img src="SqlSelect_p7.png" width="201" height="47" border="0" usemap="#Map05BC7F10" /></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">children</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><a href="#element_Row_Link05CF01E8"><span class="schemaName">Row</span></a></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">source</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><pre><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Rows</span><span class="textOperator">"&gt;</span><span class="textContents">
+  </span><span class="textOperator">&lt;</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+    </span><span class="textOperator">&lt;</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Row</span><span class="textOperator">"</span><span class="textAttr"> minOccurs</span><span class="textOperator">=</span><span class="textContents">"0</span><span class="textOperator">"</span><span class="textAttr"> maxOccurs</span><span class="textOperator">=</span><span class="textContents">"unbounded</span><span class="textOperator">"&gt;</span><span class="textContents">
+        </span><span class="textOperator">&lt;</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+          </span><span class="textOperator">&lt;</span><span class="textElement">xs:complexContent</span><span class="textOperator">&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;</span><span class="textElement">xs:extension</span><span class="textAttr"> base</span><span class="textOperator">=</span><span class="textContents">"RowType</span><span class="textOperator">"&gt;</span><span class="textContents">
+              </span><span class="textOperator">&lt;</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+                </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Column</span><span class="textOperator">"</span><span class="textAttr"> maxOccurs</span><span class="textOperator">=</span><span class="textContents">"unbounded</span><span class="textOperator">"&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+                    </span><span class="textOperator">&lt;</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+                      </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Name</span><span class="textOperator">"&gt;</span><span class="textContents">
+                        </span><span class="textOperator">&lt;</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+                          </span><span class="textOperator">&lt;</span><span class="textElement">xs:simpleContent</span><span class="textOperator">&gt;</span><span class="textContents">
+                            </span><span class="textOperator">&lt;</span><span class="textElement">xs:extension</span><span class="textAttr"> base</span><span class="textOperator">=</span><span class="textContents">"xs:string</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                          </span><span class="textOperator">&lt;/</span><span class="textElement">xs:simpleContent</span><span class="textOperator">&gt;</span><span class="textContents">
+                        </span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+                      </span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span><span class="textContents">
+                      </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Value</span><span class="textOperator">"</span><span class="textAttr"> type</span><span class="textOperator">=</span><span class="textContents">"xs:string</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                    </span><span class="textOperator">&lt;/</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+                </span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span><span class="textContents">
+              </span><span class="textOperator">&lt;/</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;/</span><span class="textElement">xs:extension</span><span class="textOperator">&gt;</span><span class="textContents">
+          </span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexContent</span><span class="textOperator">&gt;</span><span class="textContents">
+        </span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span><span class="textContents">
+    </span><span class="textOperator">&lt;/</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+  </span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+</span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span></pre></td>
+			</tr>
+		</table>
+		<br />
+		<a name="element_Row_Link05CF01E8" />
+		<span class="elementHeader">element </span>
+		<span class="elementHeader2">RowCollectionType/Rows/Row</span>
+		<table width="100%" cellspacing="0" cellpadding="5" border="1">
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">diagram</span></td>
+				<td width="90%" align="left" bgcolor="#FFFFFF"><map name="Map05CF01E8"><area coords="122,0,186,37" href="#element_Column_Link07741008" /></map><img src="SqlSelect_p8.png" width="213" height="47" border="0" usemap="#Map05CF01E8" /></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">type</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><span class="schemaSubData">extension of </span><a href="#complexType_RowType_Link05CE87F0"><span class="schemaName">RowType</span></a></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">children</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><a href="#element_Column_Link07741008"><span class="schemaName">Column</span></a></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">source</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><pre><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Row</span><span class="textOperator">"</span><span class="textAttr"> minOccurs</span><span class="textOperator">=</span><span class="textContents">"0</span><span class="textOperator">"</span><span class="textAttr"> maxOccurs</span><span class="textOperator">=</span><span class="textContents">"unbounded</span><span class="textOperator">"&gt;</span><span class="textContents">
+  </span><span class="textOperator">&lt;</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+    </span><span class="textOperator">&lt;</span><span class="textElement">xs:complexContent</span><span class="textOperator">&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:extension</span><span class="textAttr"> base</span><span class="textOperator">=</span><span class="textContents">"RowType</span><span class="textOperator">"&gt;</span><span class="textContents">
+        </span><span class="textOperator">&lt;</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+          </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Column</span><span class="textOperator">"</span><span class="textAttr"> maxOccurs</span><span class="textOperator">=</span><span class="textContents">"unbounded</span><span class="textOperator">"&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+              </span><span class="textOperator">&lt;</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+                </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Name</span><span class="textOperator">"&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+                    </span><span class="textOperator">&lt;</span><span class="textElement">xs:simpleContent</span><span class="textOperator">&gt;</span><span class="textContents">
+                      </span><span class="textOperator">&lt;</span><span class="textElement">xs:extension</span><span class="textAttr"> base</span><span class="textOperator">=</span><span class="textContents">"xs:string</span><span class="textOperator">"/&gt;</span><span class="textContents">
+                    </span><span class="textOperator">&lt;/</span><span class="textElement">xs:simpleContent</span><span class="textOperator">&gt;</span><span class="textContents">
+                  </span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+                </span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span><span class="textContents">
+                </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Value</span><span class="textOperator">"</span><span class="textAttr"> type</span><span class="textOperator">=</span><span class="textContents">"xs:string</span><span class="textOperator">"/&gt;</span><span class="textContents">
+              </span><span class="textOperator">&lt;/</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+          </span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span><span class="textContents">
+        </span><span class="textOperator">&lt;/</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;/</span><span class="textElement">xs:extension</span><span class="textOperator">&gt;</span><span class="textContents">
+    </span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexContent</span><span class="textOperator">&gt;</span><span class="textContents">
+  </span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+</span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span></pre></td>
+			</tr>
+		</table>
+		<br />
+		<a name="element_Column_Link07741008" />
+		<span class="elementHeader">element </span>
+		<span class="elementHeader2">RowCollectionType/Rows/Row/Column</span>
+		<table width="100%" cellspacing="0" cellpadding="5" border="1">
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">diagram</span></td>
+				<td width="90%" align="left" bgcolor="#FFFFFF"><map name="Map07741008"><area coords="149,0,201,20" href="#element_Name_Link05E0A3C0" /><area coords="149,32,201,52" href="#element_Value_Link079042D0" /></map><img src="SqlSelect_p9.png" width="225" height="66" border="0" usemap="#Map07741008" /></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">children</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><a href="#element_Name_Link05E0A3C0"><span class="schemaName">Name</span></a><span class="schemaName"> </span><a href="#element_Value_Link079042D0"><span class="schemaName">Value</span></a></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">source</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><pre><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Column</span><span class="textOperator">"</span><span class="textAttr"> maxOccurs</span><span class="textOperator">=</span><span class="textContents">"unbounded</span><span class="textOperator">"&gt;</span><span class="textContents">
+  </span><span class="textOperator">&lt;</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+    </span><span class="textOperator">&lt;</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Name</span><span class="textOperator">"&gt;</span><span class="textContents">
+        </span><span class="textOperator">&lt;</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+          </span><span class="textOperator">&lt;</span><span class="textElement">xs:simpleContent</span><span class="textOperator">&gt;</span><span class="textContents">
+            </span><span class="textOperator">&lt;</span><span class="textElement">xs:extension</span><span class="textAttr"> base</span><span class="textOperator">=</span><span class="textContents">"xs:string</span><span class="textOperator">"/&gt;</span><span class="textContents">
+          </span><span class="textOperator">&lt;/</span><span class="textElement">xs:simpleContent</span><span class="textOperator">&gt;</span><span class="textContents">
+        </span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Value</span><span class="textOperator">"</span><span class="textAttr"> type</span><span class="textOperator">=</span><span class="textContents">"xs:string</span><span class="textOperator">"/&gt;</span><span class="textContents">
+    </span><span class="textOperator">&lt;/</span><span class="textElement">xs:sequence</span><span class="textOperator">&gt;</span><span class="textContents">
+  </span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+</span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span></pre></td>
+			</tr>
+		</table>
+		<br />
+		<a name="element_Name_Link05E0A3C0" />
+		<span class="elementHeader">element </span>
+		<span class="elementHeader2">RowCollectionType/Rows/Row/Column/Name</span>
+		<table width="100%" cellspacing="0" cellpadding="5" border="1">
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">diagram</span></td>
+				<td width="90%" align="left" bgcolor="#FFFFFF"><img src="SqlSelect_p10.png" width="76" height="34" border="0" /></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">type</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><span class="schemaSubData">extension of </span><span class="schemaName">xs:string</span></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">source</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><pre><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Name</span><span class="textOperator">"&gt;</span><span class="textContents">
+  </span><span class="textOperator">&lt;</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+    </span><span class="textOperator">&lt;</span><span class="textElement">xs:simpleContent</span><span class="textOperator">&gt;</span><span class="textContents">
+      </span><span class="textOperator">&lt;</span><span class="textElement">xs:extension</span><span class="textAttr"> base</span><span class="textOperator">=</span><span class="textContents">"xs:string</span><span class="textOperator">"/&gt;</span><span class="textContents">
+    </span><span class="textOperator">&lt;/</span><span class="textElement">xs:simpleContent</span><span class="textOperator">&gt;</span><span class="textContents">
+  </span><span class="textOperator">&lt;/</span><span class="textElement">xs:complexType</span><span class="textOperator">&gt;</span><span class="textContents">
+</span><span class="textOperator">&lt;/</span><span class="textElement">xs:element</span><span class="textOperator">&gt;</span></pre></td>
+			</tr>
+		</table>
+		<br />
+		<a name="element_Value_Link079042D0" />
+		<span class="elementHeader">element </span>
+		<span class="elementHeader2">RowCollectionType/Rows/Row/Column/Value</span>
+		<table width="100%" cellspacing="0" cellpadding="5" border="1">
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">diagram</span></td>
+				<td width="90%" align="left" bgcolor="#FFFFFF"><img src="SqlSelect_p11.png" width="76" height="34" border="0" /></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">type</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><span class="schemaName">xs:string</span></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">source</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><pre><span class="textOperator">&lt;</span><span class="textElement">xs:element</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"Value</span><span class="textOperator">"</span><span class="textAttr"> type</span><span class="textOperator">=</span><span class="textContents">"xs:string</span><span class="textOperator">"/&gt;</span></pre></td>
+			</tr>
+		</table>
+		<br />
+		<a name="complexType_RowType_Link05CE87F0" />
+		<span class="elementHeader">complexType </span>
+		<span class="elementHeader2">RowType</span>
+		<table width="100%" cellspacing="0" cellpadding="5" border="1">
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">diagram</span></td>
+				<td width="90%" align="left" bgcolor="#FFFFFF"><img src="SqlSelect_p12.png" width="87" height="34" border="0" /></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">used by</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><table cellspacing="0" cellpadding="0"><tr valign="top"><td align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">element&nbsp;</span></td><td align="left" bgcolor="#F0F0F0"><a href="#element_Row_Link05CF01E8"><span class="schemaName">RowCollectionType/Rows/Row</span></a></td></tr></table></td>
+			</tr>
+			<tr valign="top">
+				<td width="10%" align="right" bgcolor="#F0F0F0"><span class="schemaSubTitle">source</span></td>
+				<td width="90%" align="left" bgcolor="#F0F0F0"><pre><span class="textOperator">&lt;</span><span class="textElement">xs:complexType</span><span class="textAttr"> name</span><span class="textOperator">=</span><span class="textContents">"RowType</span><span class="textOperator">"/&gt;</span></pre></td>
+			</tr>
+		</table>
+		<br />
+		<br />
+
+	</body>
+</html>
