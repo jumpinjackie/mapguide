@@ -31,9 +31,9 @@
 	\defgroup DrawingSource_schema DrawingSource
 	\ingroup XML_Schemas_Module
 	
-	<!-- ------------ FdoProviderCapabilities ---------------------- -->
-	\defgroup FdoProviderCapabilities_schema FdoProviderCapabilities
-	\ingroup XML_Schemas_Module
+	<!-- ------------ Envelope ---------------------- -->
+	\defgroup Envelope_schema Envelope
+	\ingroup XML_Schemas_Module	
 	
 	<!-- ------------ FdoLongTransactionList ---------------------- -->
 	\defgroup FdoLongTransactionList_schema FdoLongTransactionList
@@ -60,6 +60,10 @@
 	\defgroup FeatureSource_schema FeatureSource	
 	\ingroup XML_Schemas_Module	
 	
+	<!-- ------------ Group ---------------------- -->
+	\defgroup Group_schema Group
+	\ingroup XML_Schemas_Module	
+		
 	<!-- ------------ GroupList ---------------------- -->
 	\defgroup GroupList_schema GroupList	
 	\ingroup XML_Schemas_Module
@@ -88,6 +92,10 @@
 	\defgroup RepositoryContent_schema RepositoryContent	
 	\ingroup XML_Schemas_Module
 	
+	<!-- ------------ RepositoryList ---------------------- -->
+	\defgroup RepositoryList_schema RepositoryList
+	\ingroup XML_Schemas_Module	
+		
 	<!-- ------------ ResourceDataList ---------------------- -->
 	\defgroup ResourceDataList_schema ResourceDataList	
 	\ingroup XML_Schemas_Module
@@ -104,6 +112,10 @@
 	\defgroup ResourceList_schema ResourceList	
 	\ingroup XML_Schemas_Module					
 
+	<!-- ------------ ResourcePackageManifest ---------------------- -->
+	\defgroup ResourcePackageManifest_schema ResourcePackageManifest
+	\ingroup XML_Schemas_Module	
+	
 	<!-- ------------ ResourceReferenceList ---------------------- -->
 	\defgroup ResourceReferenceList_schema ResourceReferenceList
 	\ingroup XML_Schemas_Module
@@ -112,6 +124,34 @@
 	\defgroup ResourceSecurity_schema ResourceSecurity
 	\ingroup XML_Schemas_Module
 
+	<!-- ------------ Role ---------------------- -->
+	\defgroup Role_schema Role
+	\ingroup XML_Schemas_Module	
+	
+	<!-- ------------ SelectAggregate ---------------------- -->
+	\defgroup SelectAggregate_schema SelectAggregate
+	\ingroup XML_Schemas_Module	
+		
+	<!-- ------------ Server ---------------------- -->
+	\defgroup Server_schema Server
+	\ingroup XML_Schemas_Module	
+			
+	<!-- ------------ ServerList ---------------------- -->
+	\defgroup ServerList_schema ServerList
+	\ingroup XML_Schemas_Module	
+			
+	<!-- ------------ SiteInformation ---------------------- -->
+	\defgroup SiteInformation_schema SiteInformation
+	\ingroup XML_Schemas_Module	
+				
+	<!-- ------------ SiteVersion ---------------------- -->
+	\defgroup SiteVersion_schema SiteVersion
+	\ingroup XML_Schemas_Module	
+	
+	<!-- ------------ SqlSelect ---------------------- -->
+	\defgroup SqlSelect_schema SqlSelect
+	\ingroup XML_Schemas_Module	
+					
 	<!-- ------------ StringCollection ---------------------- -->
 	\defgroup StringCollection_schema StringCollection
 	\ingroup XML_Schemas_Module
@@ -124,10 +164,18 @@
 	\defgroup SymbolLibrary_schema SymbolLibrary
 	\ingroup XML_Schemas_Module
 
+	<!-- ------------ Types ---------------------- -->
+	\defgroup Types_schema Types
+	\ingroup XML_Schemas_Module	
+	
 	<!-- ------------ UnmanagedDataList ---------------------- -->
 	\defgroup UnmanagedDataList_schema UnmanagedDataList
 	\ingroup XML_Schemas_Module	
 		
+	<!-- ------------ User ---------------------- -->
+	\defgroup User_schema User
+	\ingroup XML_Schemas_Module	
+			
 	<!-- ------------ UserList ---------------------- -->
 	\defgroup UserList_schema UserList
 	\ingroup XML_Schemas_Module	
@@ -135,6 +183,8 @@
 	<!-- ------------ WebLayout ---------------------- -->
 	\defgroup WebLayout_schema WebLayout
 	\ingroup XML_Schemas_Module		
+	
+	
  **/
 
 
