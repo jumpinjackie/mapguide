@@ -34,7 +34,7 @@ namespace geos {
  * Exceptions are thrown as pointers to this type.
  * Use toString() to get a readable message.
  */
-class GEOSException {
+class GEOS_API GEOSException {
 public:
 	GEOSException();
 
@@ -58,7 +58,7 @@ protected:
 /** \class AssertionFailedException util.h geos.h
  * \brief Indicates a bug in GEOS code.
  */
-class AssertionFailedException: public GEOSException {
+class GEOS_API AssertionFailedException: public GEOSException {
 public:
 	AssertionFailedException();
 	AssertionFailedException(string msg);
@@ -72,7 +72,7 @@ public:
  * trying to apply set-theoretic methods to a
  * GeometryCollection object.
  */
-class IllegalArgumentException: public GEOSException {
+class GEOS_API IllegalArgumentException: public GEOSException {
 public:
 	IllegalArgumentException();
 	IllegalArgumentException(string msg);
@@ -86,7 +86,7 @@ public:
  * Indicates an invalid or inconsistent topological situation encountered
  * during processing
  */
-class TopologyException: public GEOSException {
+class GEOS_API TopologyException: public GEOSException {
 public:
 	TopologyException(string msg);
 	TopologyException(string msg,const Coordinate *newPt);
@@ -104,7 +104,7 @@ private:
  * This exception is thrown - for example - when requesting the
  * X or Y member of an empty Point
  */
-class UnsupportedOperationException: public GEOSException {
+class GEOS_API UnsupportedOperationException: public GEOSException {
 public:
 	UnsupportedOperationException();
 	UnsupportedOperationException(string msg);
@@ -112,7 +112,7 @@ public:
 };
 
 class Coordinate;
-class Assert {
+class GEOS_API Assert {
 public:
 	static void isTrue(bool assertion);
 	static void isTrue(bool assertion, string message);
@@ -124,7 +124,7 @@ public:
 	static void shouldNeverReachHere(string message);
 };
 
-class CoordinateArrayFilter:public CoordinateFilter {
+class GEOS_API CoordinateArrayFilter:public CoordinateFilter {
 public:
 	CoordinateSequence* pts;
 	int n;
@@ -135,7 +135,7 @@ public:
 	virtual void filter_rw(Coordinate &coord); // Unsopported
 };
 
-class UniqueCoordinateArrayFilter:public CoordinateFilter {
+class GEOS_API UniqueCoordinateArrayFilter:public CoordinateFilter {
 public:
 	CoordinateSequence *list;
 	UniqueCoordinateArrayFilter();
@@ -155,9 +155,9 @@ public:
  * as well as number of line segments used to form them.
  *
  */
-class GeometricShapeFactory {
+class GEOS_API GeometricShapeFactory {
 private:
-	class Dimensions {
+	class GEOS_API Dimensions {
 	public:
 		Dimensions();
 		Coordinate base;
