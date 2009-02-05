@@ -111,7 +111,25 @@
                 }
                 $spatialcontextReader->Close();
 
+                // Get the extent geometry from the spatial context
                 $extentGeometry = $agfReaderWriter->Read($extentByteReader);
+
+                // Try to get the extents using the selectaggregate as sometimes the spatial context
+                // information is not set
+                $aggregateOptions = new MgFeatureAggregateOptions();
+                $featureProp = 'SPATIALEXTENTS("' . $geomName . '")';
+                $aggregateOptions->AddComputedProperty('extents', $featureProp);
+
+                $dataReader = $featureSrvc->SelectAggregate($featuresId, $className, $aggregateOptions);
+                if($dataReader->ReadNext())
+                {
+                    // Get the extents information
+                    $byteReader = $dataReader->GetGeometry('extents');
+                    $extentGeometry = $agfReaderWriter->Read($byteReader);
+                }
+                $dataReader->Close();
+
+                // Get the coordinates
                 $iterator = $extentGeometry->GetCoordinates();
                 while($iterator->MoveNext())
                 {
