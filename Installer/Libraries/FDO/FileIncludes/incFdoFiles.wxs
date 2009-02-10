@@ -120,7 +120,7 @@
           <File Id="file_FDOFILES_11" Name="FDOSpatial.dll" Source="$(var.FdoSourceDir)FDOSpatial.dll" />
         </Component>
         <Component Id="comp_FDOFILES_12" DiskId="1" Guid="E61DAD99-AF36-4D34-A8A1-B134D2948296">
-          <File Id="file_FDOFILES_12" Name="gdal14.dll" Source="$(var.FdoSourceDir)gdal14.dll" />
+          <File Id="file_FDOFILES_12" Name="gdal16.dll" Source="$(var.FdoSourceDir)gdal16.dll" />
         </Component>
         <Component Id="comp_FDOFILES_13" DiskId="1" Guid="EF1C2A3A-FA0D-4332-8C60-F31126A0EF1D">
           <File Id="file_FDOFILES_13" Name="GRFPMessage.dll" Source="$(var.FdoSourceDir)GRFPMessage.dll" />

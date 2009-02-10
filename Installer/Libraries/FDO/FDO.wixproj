@@ -13,7 +13,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug;FdoSourceDir=..\..\..\mapguide\Server\bin\debug\FDO\</DefineConstants>
+    <DefineConstants>Debug;FdoSourceDir=..\..\..\mapguide\Server\bin\Release\FDO\</DefineConstants>
     <LibBindFiles>True</LibBindFiles>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
