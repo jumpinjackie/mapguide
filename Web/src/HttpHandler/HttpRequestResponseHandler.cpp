@@ -89,7 +89,8 @@ void MgHttpRequestResponseHandler::InitializeCommonParameters(MgHttpRequest *hRe
 
     m_version = hrParam->GetParameterValue(MgHttpResourceStrings::reqVersion);
 
-    STRING sversion(m_version);
+    // Linux doesn't make a copy of the string like Windows if you don't use c_str()
+    STRING sversion(m_version.c_str());
     wchar_t* pstr = (wchar_t*)sversion.c_str();
     wchar_t* state;
     wchar_t* token = _wcstok(pstr, L".", &state);
