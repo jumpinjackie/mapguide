@@ -91,6 +91,9 @@ MgByteReader* MgSpatialContextReader::GetExtent()
     Ptr<MgSpatialContextData> sData = (MgSpatialContextData*)m_spatialContextCol.GetItem(m_currPos);
     Ptr<MgByte> extents = sData->GetExtent();
 
+    if(extents == NULL)
+        return NULL;
+
     Ptr<MgByteSource> byteSource = new MgByteSource(extents);
     Ptr<MgByteReader> byteReader = byteSource->GetReader();
     return SAFE_ADDREF((MgByteReader*)byteReader);

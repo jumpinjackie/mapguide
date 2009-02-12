@@ -67,6 +67,8 @@ ByteSourceMemoryImpl::~ByteSourceMemoryImpl()
 ///
 INT32 ByteSourceMemoryImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
 {
+    if (m_data == NULL)
+        return 0;
     INT32 remaining = m_data->GetLength() - m_pos;
     if(remaining == 0)
         return 0;
@@ -80,7 +82,7 @@ INT32 ByteSourceMemoryImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
 
 INT64 ByteSourceMemoryImpl::GetLength()
 {
-    return m_data->GetLength() - m_pos;
+    return (m_data == NULL)? 0 : m_data->GetLength() - m_pos;
 }
 
 bool ByteSourceMemoryImpl::IsRewindable()
