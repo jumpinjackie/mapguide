@@ -660,106 +660,190 @@ FdoLiteralValue* MgServerFeatureUtil::MgPropertyToFdoDataValue(MgProperty* srcPr
     {
         case MgPropertyType::Blob:
         {
-            Ptr<MgByteReader> value = ((MgBlobProperty*)srcProp)->GetValue();
+            if (((MgNullableProperty*)srcProp)->IsNull())
+            {
+                fdoVal = FdoBLOBValue::Create();
+            }
+            else
+            {
+                Ptr<MgByteReader> value = ((MgBlobProperty*)srcProp)->GetValue();
 
-            MgByteSink sink(value);
-            Ptr<MgByte> byte = sink.ToBuffer();
-            INT32 length = byte->GetLength();
-            BYTE_ARRAY_OUT bytes = byte->Bytes();
-            FdoPtr<FdoByteArray> array = FdoByteArray::Create((FdoByte*)bytes, length);
+                MgByteSink sink(value);
+                Ptr<MgByte> byte = sink.ToBuffer();
+                INT32 length = byte->GetLength();
+                BYTE_ARRAY_OUT bytes = byte->Bytes();
+                FdoPtr<FdoByteArray> array = FdoByteArray::Create((FdoByte*)bytes, length);
 
-            fdoVal = FdoBLOBValue::Create(array);
+                fdoVal = FdoBLOBValue::Create(array);
+            }
             break;
         }
         case MgPropertyType::Boolean:
         {
-            bool value = ((MgBooleanProperty*)srcProp)->GetValue();
+            if (((MgNullableProperty*)srcProp)->IsNull())
+            {
+                fdoVal = FdoBooleanValue::Create();
+            }
+            else
+            {
+                bool value = ((MgBooleanProperty*)srcProp)->GetValue();
 
-            fdoVal = FdoBooleanValue::Create(value);
+                fdoVal = FdoBooleanValue::Create(value);
+            }
             break;
         }
         case MgPropertyType::Byte:
         {
-            BYTE value = ((MgByteProperty*)srcProp)->GetValue();
+            if (((MgNullableProperty*)srcProp)->IsNull())
+            {
+                fdoVal = FdoByteValue::Create();
+            }
+            else
+            {
+                BYTE value = ((MgByteProperty*)srcProp)->GetValue();
 
-            fdoVal = FdoByteValue::Create((FdoByte)value);
+                fdoVal = FdoByteValue::Create((FdoByte)value);
+            }
             break;
         }
         case MgPropertyType::Clob:
         {
-            Ptr<MgByteReader> value = ((MgClobProperty*)srcProp)->GetValue();
+            if (((MgNullableProperty*)srcProp)->IsNull())
+            {
+                fdoVal = FdoCLOBValue::Create();
+            }
+            else
+            {
+                Ptr<MgByteReader> value = ((MgClobProperty*)srcProp)->GetValue();
 
-            MgByteSink sink(value);
-            Ptr<MgByte> byte = sink.ToBuffer();
-            INT32 length = byte->GetLength();
-            BYTE_ARRAY_OUT bytes = byte->Bytes();
-            FdoPtr<FdoByteArray> array = FdoByteArray::Create((FdoByte*)bytes, length);
+                MgByteSink sink(value);
+                Ptr<MgByte> byte = sink.ToBuffer();
+                INT32 length = byte->GetLength();
+                BYTE_ARRAY_OUT bytes = byte->Bytes();
+                FdoPtr<FdoByteArray> array = FdoByteArray::Create((FdoByte*)bytes, length);
 
-            fdoVal = FdoCLOBValue::Create(array);
+                fdoVal = FdoCLOBValue::Create(array);
+            }
             break;
         }
         case MgPropertyType::DateTime:
         {
-            Ptr<MgDateTime> value = ((MgDateTimeProperty*)srcProp)->GetValue();
+            if (((MgNullableProperty*)srcProp)->IsNull())
+            {
+                fdoVal = FdoDateTimeValue::Create();
+            }
+            else
+            {
+                Ptr<MgDateTime> value = ((MgDateTimeProperty*)srcProp)->GetValue();
 
-            FdoDateTime time;
-            time.day = (FdoInt8)value->GetDay();
-            time.hour = (FdoInt8)value->GetHour();
-            time.minute = (FdoInt8)value->GetMinute();
-            time.month = (FdoInt8)value->GetMonth();
-            time.seconds = (float)(value->GetSecond() + (value->GetMicrosecond() / 1000000.0));
-            time.year = (FdoInt16)value->GetYear();
+                FdoDateTime time;
+                time.day = (FdoInt8)value->GetDay();
+                time.hour = (FdoInt8)value->GetHour();
+                time.minute = (FdoInt8)value->GetMinute();
+                time.month = (FdoInt8)value->GetMonth();
+                time.seconds = (float)(value->GetSecond() + (value->GetMicrosecond() / 1000000.0));
+                time.year = (FdoInt16)value->GetYear();
 
-            fdoVal = FdoDateTimeValue::Create(time);
+                fdoVal = FdoDateTimeValue::Create(time);
+            }
             break;
         }
         case MgPropertyType::Double:
         {
-            double value = ((MgDoubleProperty*)srcProp)->GetValue();
-            fdoVal = FdoDoubleValue::Create(value);
+            if (((MgNullableProperty*)srcProp)->IsNull())
+            {
+                fdoVal = FdoDoubleValue::Create();
+            }
+            else
+            {
+                double value = ((MgDoubleProperty*)srcProp)->GetValue();
+                fdoVal = FdoDoubleValue::Create(value);
+            }
             break;
         }
         case MgPropertyType::Geometry:
         {
-            Ptr<MgByteReader> value = ((MgGeometryProperty*)srcProp)->GetValue();
+            if (((MgNullableProperty*)srcProp)->IsNull())
+            {
+                fdoVal = FdoGeometryValue::Create();
+            }
+            else
+            {
+                Ptr<MgByteReader> value = ((MgGeometryProperty*)srcProp)->GetValue();
 
-            MgByteSink sink(value);
-            Ptr<MgByte> byte = sink.ToBuffer();
-            INT32 length = byte->GetLength();
-            BYTE_ARRAY_OUT bytes = byte->Bytes();
+                MgByteSink sink(value);
+                Ptr<MgByte> byte = sink.ToBuffer();
+                INT32 length = byte->GetLength();
+                BYTE_ARRAY_OUT bytes = byte->Bytes();
 
-            FdoPtr<FdoByteArray> array = FdoByteArray::Create((FdoByte*)bytes, length);
-            fdoVal = FdoGeometryValue::Create(array);
+                FdoPtr<FdoByteArray> array = FdoByteArray::Create((FdoByte*)bytes, length);
+                fdoVal = FdoGeometryValue::Create(array);
+            }
             break;
         }
         case MgPropertyType::Int16:
         {
-            INT16 value = ((MgInt16Property*)srcProp)->GetValue();
-            fdoVal = FdoInt16Value::Create((FdoInt16)value);
+            if (((MgNullableProperty*)srcProp)->IsNull())
+            {
+                fdoVal = FdoInt16Value::Create();
+            }
+            else
+            {
+                INT16 value = ((MgInt16Property*)srcProp)->GetValue();
+                fdoVal = FdoInt16Value::Create((FdoInt16)value);
+            }
             break;
         }
         case MgPropertyType::Int32:
         {
-            INT32 value = ((MgInt32Property*)srcProp)->GetValue();
-            fdoVal = FdoInt32Value::Create((FdoInt32)value);
+            if (((MgNullableProperty*)srcProp)->IsNull())
+            {
+                fdoVal = FdoInt32Value::Create();
+            }
+            else
+            {
+                INT32 value = ((MgInt32Property*)srcProp)->GetValue();
+                fdoVal = FdoInt32Value::Create((FdoInt32)value);
+            }
             break;
         }
         case MgPropertyType::Int64:
         {
-            INT64 value = ((MgInt64Property*)srcProp)->GetValue();
-            fdoVal = FdoInt64Value::Create((FdoInt64)value);
+            if (((MgNullableProperty*)srcProp)->IsNull())
+            {
+                fdoVal = FdoInt64Value::Create();
+            }
+            else
+            {
+                INT64 value = ((MgInt64Property*)srcProp)->GetValue();
+                fdoVal = FdoInt64Value::Create((FdoInt64)value);
+            }
             break;
         }
         case MgPropertyType::Single:
         {
-            float value = ((MgSingleProperty*)srcProp)->GetValue();
-            fdoVal = FdoSingleValue::Create(value);
+            if (((MgNullableProperty*)srcProp)->IsNull())
+            {
+                fdoVal = FdoSingleValue::Create();
+            }
+            else
+            {
+                float value = ((MgSingleProperty*)srcProp)->GetValue();
+                fdoVal = FdoSingleValue::Create(value);
+            }
             break;
         }
         case MgPropertyType::String:
         {
-            STRING value = ((MgStringProperty*)srcProp)->GetValue();
-            fdoVal = FdoStringValue::Create(value.c_str());
+            if (((MgNullableProperty*)srcProp)->IsNull())
+            {
+                fdoVal = FdoStringValue::Create();
+            }
+            else
+            {
+                STRING value = ((MgStringProperty*)srcProp)->GetValue();
+                fdoVal = FdoStringValue::Create(value.c_str());
+            }
             break;
         }
         case MgPropertyType::Feature:
