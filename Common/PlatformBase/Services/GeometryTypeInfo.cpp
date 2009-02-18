@@ -62,9 +62,10 @@ INT32 MgGeometryTypeInfo::GetCount()
 /// Sets the geometry type value list.  Elements must be integers
 /// as defined by MgGeometryType.
 /// <param name="types">The list of types; there must be no more than MG_MAX_GEOMETRY_TYPE_SIZE elements</param>
-/// <param name="count">The number of types in the list; the maximum allowed value is MG_MAX_GEOMETRY_TYPE_SIZE</param>
-void MgGeometryTypeInfo::SetTypes(INT32 * types, INT32 count)
+void MgGeometryTypeInfo::SetTypes(MgIntCollection* types)
 {
+    INT32 count = types->GetCount();
+
     // Check if count is too big or too small
     if(MG_MAX_GEOMETRY_TYPE_SIZE < count)
     {
@@ -91,9 +92,9 @@ void MgGeometryTypeInfo::SetTypes(INT32 * types, INT32 count)
         __LINE__, __WFILE__, &arguments, L"MgInvalidValueTooSmall", NULL);
     }
 
-    for (INT32 i = 0;  i < count && i < MG_MAX_GEOMETRY_TYPE_SIZE;  i++)
+    for (INT32 i=0; i<count && i<MG_MAX_GEOMETRY_TYPE_SIZE; ++i)
     {
-        m_types[i] = types[i];
+        m_types[i] = types->GetItem(i);
     }
 
     m_count = count;
@@ -102,7 +103,7 @@ void MgGeometryTypeInfo::SetTypes(INT32 * types, INT32 count)
 void MgGeometryTypeInfo::Serialize(MgStream* stream)
 {
     stream->WriteInt32(m_count);
-    for (INT32 i = 0;  i < m_count && i < MG_MAX_GEOMETRY_TYPE_SIZE;  i++)
+    for (INT32 i=0; i<m_count && i<MG_MAX_GEOMETRY_TYPE_SIZE; ++i)
     {
         INT32 type = m_types[i];
         stream->WriteInt32(type);
@@ -113,7 +114,7 @@ void MgGeometryTypeInfo::Deserialize(MgStream* stream)
 {
     INT32 type = 0;
     stream->GetInt32(m_count);
-    for (INT32 i = 0;  i < m_count && i < MG_MAX_GEOMETRY_TYPE_SIZE;  i++)
+    for (INT32 i=0; i<m_count && i<MG_MAX_GEOMETRY_TYPE_SIZE; ++i)
     {
         stream->GetInt32(type);
         m_types[i] = type;

@@ -590,14 +590,14 @@ MgGeometricPropertyDefinition* MgServerGwsGetFeatures::GetGeometricPropertyDefin
         propDef->SetDescription(STRING(desc));
     }
 
-    INT32 geomTypeList[MG_MAX_GEOMETRY_TYPE_SIZE];
+    MgIntCollection geomTypeColl;
     INT32 geomTypeCount = (INT32)specificGeomCount;
-    for (INT32 i = 0;  i < geomTypeCount && i < MG_MAX_GEOMETRY_TYPE_SIZE;  i++)
+    for (INT32 i=0; i<geomTypeCount && i<MG_MAX_GEOMETRY_TYPE_SIZE; ++i)
     {
-        geomTypeList[i] = (INT32)specificGeomTypes[i];
+        geomTypeColl.Add((INT32)specificGeomTypes[i]);
     }
     Ptr<MgGeometryTypeInfo> geomTypeInfo = new MgGeometryTypeInfo;
-    geomTypeInfo->SetTypes(geomTypeList, geomTypeCount);
+    geomTypeInfo->SetTypes(&geomTypeColl);
     propDef->SetGeometryTypes((INT32)geomTypes);
     propDef->SetSpecificGeometryTypes(geomTypeInfo);
     propDef->SetHasElevation(hasElev);

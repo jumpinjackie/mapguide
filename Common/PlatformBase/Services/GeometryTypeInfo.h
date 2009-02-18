@@ -97,23 +97,19 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// SetTypes(INT32 * types, int count);
+    /// SetTypes(MgIntCollection* types);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// SetTypes(INT32 * types, int count);
+    /// SetTypes(MgIntCollection* types);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// SetTypes(INT32 * types, int count);
+    /// SetTypes(MgIntCollection* types);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param types (INT32 *)
-    /// The list of types.  There must be no more than MG_MAX_GEOMETRY_TYPE_SIZE elements.
+    /// \param types (MgIntCollection*)
+    /// The collection of types.  There must be no more than MG_MAX_GEOMETRY_TYPE_SIZE elements.
     ///
-    /// \param count (int)
-    /// The number of types in the list.  The maximum allowed value
-    /// is MG_MAX_GEOMETRY_TYPE_SIZE.
-    ///
-    void SetTypes(INT32 * types, INT32 count);  /// __get, __set
+    void SetTypes(MgIntCollection* types);
 
 INTERNAL_API:
 

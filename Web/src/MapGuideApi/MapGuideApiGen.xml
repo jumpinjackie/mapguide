@@ -393,6 +393,7 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../../Common/MapGuideCommon/Services/MapPlotCollection.h" />
     <Header path="../../../Common/MapGuideCommon/Services/PackageStatusInformation.h" />
     <Header path="../../../Common/MapGuideCommon/Services/PlotSpecification.h" />
+    <Header path="../../../Common/MapGuideCommon/Services/RenderingOptions.h" />
     <Header path="../../../Common/MapGuideCommon/Services/RenderingService.h" />
     <Header path="../../../Common/MapGuideCommon/Services/ServerAdmin.h" />
     <Header path="../../../Common/MapGuideCommon/Services/Site.h" />

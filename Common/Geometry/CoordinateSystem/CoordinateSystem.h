@@ -139,11 +139,11 @@ PUBLISHED_API:
     virtual double GetScaleK(double dLongitude, double dLatitude)=0;
     virtual MgCoordinateSystem* CreateClone()=0;
 
+INTERNAL_API:
     virtual UINT8* SerializeFrom(UINT8* pStream)=0;
     virtual UINT8* SerializeTo(UINT8* pStream)=0;
     virtual UINT32 GetSizeSerialized()=0;
 
-INTERNAL_API:
     ///////////////////////////////////////////////////////////////////////////
     /// \internal
     /// \brief

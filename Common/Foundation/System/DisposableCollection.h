@@ -188,6 +188,8 @@ PUBLISHED_API:
     ///
     virtual MgByteReader* ToXml();
 
+INTERNAL_API:
+
     //////////////////////////////////////////////////////////
     /// \brief
     /// Serializes data to a TCP/IP stream.
