@@ -39,7 +39,7 @@ mapagent_LDADD = -lACE \
                  -lMgMdfParser \
                  -lMgHttpHandler 
 
-mapagent_LDFLAGS = -version-info 7:0:0 \
+mapagent_LDFLAGS = \
             -L../../../Oem/ACE/ACE_wrappers/ace \
             -L../../../Oem/dbxml-2.3.10/install/lib \
             -L../../../Common/CoordinateSystem \

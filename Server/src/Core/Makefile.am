@@ -121,7 +121,7 @@ mgserver_LDADD = \
   -lMgRenderers \
   ../../../Common/Security/libMgSecurity.a
 
-mgserver_LDFLAGS = -version-info 7:0:0 \
+mgserver_LDFLAGS = \
   -R$(map_fdo_lib) \
   -R$(map_srcdir)/Oem/ACE/ACE_wrappers/ace \
   -R$(map_srcdir)/Oem/DWFTK7.1/develop/global/src/dwfcore \

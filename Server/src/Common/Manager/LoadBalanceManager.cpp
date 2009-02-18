@@ -1008,7 +1008,7 @@ void MgLoadBalanceManager::DispatchResourceChangeNotifications(
 
 STRING MgLoadBalanceManager::RequestServer(INT32 serviceType)
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, STRING(L"")));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, L""));
 
     STRING serverAddress;
 
