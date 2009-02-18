@@ -128,7 +128,7 @@ bool CCoordinateSystemWktFailureCache::Has(CREFSTRING key)
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     CWktExceptionMap::iterator mapItr = m_wktExceptionMap.find (key);
     hasKey = (mapItr != m_wktExceptionMap.end ());

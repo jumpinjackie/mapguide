@@ -73,7 +73,7 @@ LongTransactionNameCacheEntry* MgLongTransactionManager::FindEntry(CREFSTRING se
 ///
 bool MgLongTransactionManager::GetLongTransactionName(MgResourceIdentifier* featureSourceId, REFSTRING longTransactionName)
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, L""));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
 
     STRING sessionId;
     MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
@@ -111,7 +111,7 @@ bool MgLongTransactionManager::GetLongTransactionName(CREFSTRING sessionId,
 
     STRING resource = featureSourceId->ToString();
 
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, L""));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
 
     LongTransactionNameCacheEntry* pLongTransactionNameCacheEntry = MgLongTransactionManager::FindEntry(sessionId, resource);
     if (pLongTransactionNameCacheEntry)

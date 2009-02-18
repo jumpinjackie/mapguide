@@ -1088,7 +1088,7 @@ void MgFdoConnectionManager::CacheFdoConnection(FdoIConnection* pFdoConnection, 
     MG_FDOCONNECTION_MANAGER_TRY()
 
     // Protect the cache
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, ));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
     if(!UpdateFdoConnectionCache(provider))
     {
