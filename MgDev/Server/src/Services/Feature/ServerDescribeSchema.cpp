@@ -1084,7 +1084,7 @@ FdoGeometricPropertyDefinition* MgServerDescribeSchema::GetGeometricPropertyDefi
 
     FdoGeometryType geomTypeList[MG_MAX_GEOMETRY_TYPE_SIZE];
     FdoInt32 geomTypeCount = (FdoInt32) geomTypeInfo->GetCount();
-    for (FdoInt32 i = 0;  i < geomTypeCount && i < MG_MAX_GEOMETRY_TYPE_SIZE;  i++)
+    for (FdoInt32 i=0; i<geomTypeCount && i<MG_MAX_GEOMETRY_TYPE_SIZE; ++i)
     {
         geomTypeList[i] = (FdoGeometryType)geomTypeInfo->GetType((INT32)i);
     }

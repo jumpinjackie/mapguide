@@ -120,48 +120,49 @@ void MgGeometricPropertyDefinition::SetGeometryTypes(INT32 types)
     m_geometricTypes = types;
 
     // Set the specific types in case SetSpecificGeometryTypes() is never called.
-    INT32 geomTypeList[MG_MAX_GEOMETRY_TYPE_SIZE];
-    INT32 geomTypeCount = 0;
+    MgIntCollection geomTypeColl;
+
     // The MgFeatureGeometricType definition has no "All" symbol, so we'll make the equivalent based on FdoGeometricType_All.
     INT32 allTypes = MgFeatureGeometricType::Point|MgFeatureGeometricType::Curve|MgFeatureGeometricType::Surface|MgFeatureGeometricType::Solid;
     if (types == allTypes)
     {
-        geomTypeList[geomTypeCount++] = MgGeometryType::Point;
-        geomTypeList[geomTypeCount++] = MgGeometryType::MultiPoint;
-        geomTypeList[geomTypeCount++] = MgGeometryType::LineString;
-        geomTypeList[geomTypeCount++] = MgGeometryType::MultiLineString;
-        geomTypeList[geomTypeCount++] = MgGeometryType::CurveString;
-        geomTypeList[geomTypeCount++] = MgGeometryType::MultiCurveString;
-        geomTypeList[geomTypeCount++] = MgGeometryType::Polygon;
-        geomTypeList[geomTypeCount++] = MgGeometryType::MultiPolygon;
-        geomTypeList[geomTypeCount++] = MgGeometryType::CurvePolygon;
-        geomTypeList[geomTypeCount++] = MgGeometryType::MultiCurvePolygon;
-        geomTypeList[geomTypeCount++] = MgGeometryType::MultiGeometry;
+        geomTypeColl.Add(MgGeometryType::Point);
+        geomTypeColl.Add(MgGeometryType::MultiPoint);
+        geomTypeColl.Add(MgGeometryType::LineString);
+        geomTypeColl.Add(MgGeometryType::MultiLineString);
+        geomTypeColl.Add(MgGeometryType::CurveString);
+        geomTypeColl.Add(MgGeometryType::MultiCurveString);
+        geomTypeColl.Add(MgGeometryType::Polygon);
+        geomTypeColl.Add(MgGeometryType::MultiPolygon);
+        geomTypeColl.Add(MgGeometryType::CurvePolygon);
+        geomTypeColl.Add(MgGeometryType::MultiCurvePolygon);
+        geomTypeColl.Add(MgGeometryType::MultiGeometry);
     }
     else // Deal with types by bit-mask value.
     {
         if ((types & MgFeatureGeometricType::Point) != 0)
         {
-            geomTypeList[geomTypeCount++] = MgGeometryType::Point;
-            geomTypeList[geomTypeCount++] = MgGeometryType::MultiPoint;
+            geomTypeColl.Add(MgGeometryType::Point);
+            geomTypeColl.Add(MgGeometryType::MultiPoint);
         }
         if ((types & MgFeatureGeometricType::Curve) != 0)
         {
-            geomTypeList[geomTypeCount++] = MgGeometryType::LineString;
-            geomTypeList[geomTypeCount++] = MgGeometryType::MultiLineString;
-            geomTypeList[geomTypeCount++] = MgGeometryType::CurveString;
-            geomTypeList[geomTypeCount++] = MgGeometryType::MultiCurveString;
+            geomTypeColl.Add(MgGeometryType::LineString);
+            geomTypeColl.Add(MgGeometryType::MultiLineString);
+            geomTypeColl.Add(MgGeometryType::CurveString);
+            geomTypeColl.Add(MgGeometryType::MultiCurveString);
         }
         if ((types & MgFeatureGeometricType::Surface) != 0)
         {
-            geomTypeList[geomTypeCount++] = MgGeometryType::Polygon;
-            geomTypeList[geomTypeCount++] = MgGeometryType::MultiPolygon;
-            geomTypeList[geomTypeCount++] = MgGeometryType::CurvePolygon;
-            geomTypeList[geomTypeCount++] = MgGeometryType::MultiCurvePolygon;
+            geomTypeColl.Add(MgGeometryType::Polygon);
+            geomTypeColl.Add(MgGeometryType::MultiPolygon);
+            geomTypeColl.Add(MgGeometryType::CurvePolygon);
+            geomTypeColl.Add(MgGeometryType::MultiCurvePolygon);
         }
     }
+
     Ptr<MgGeometryTypeInfo> geomTypeInfo = new MgGeometryTypeInfo;
-    geomTypeInfo->SetTypes(geomTypeList, geomTypeCount);
+    geomTypeInfo->SetTypes(&geomTypeColl);
     this->SetSpecificGeometryTypes(geomTypeInfo);
 }
 
@@ -196,7 +197,7 @@ void MgGeometricPropertyDefinition::SetSpecificGeometryTypes(MgGeometryTypeInfo 
         ( 1 << MgGeometryType::MultiGeometry );
     INT32 specificTypesMask = 0;
 
-    for (INT32 i = 0;  i < geomTypeCount && i < MG_MAX_GEOMETRY_TYPE_SIZE;  i++)
+    for (INT32 i=0; i<geomTypeCount && i<MG_MAX_GEOMETRY_TYPE_SIZE; ++i)
     {
         INT32 type = m_geometryTypeInfo->GetType(i);
         specificTypesMask |= 1 << type;
