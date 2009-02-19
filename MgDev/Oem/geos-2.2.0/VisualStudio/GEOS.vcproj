@@ -51,13 +51,11 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough=""
-				ProgramDataBaseFileName="$(IntDir)/GEOS.pdb"
+				ProgramDataBaseFileName="$(IntDir)\GEOS.pdb"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 				CallingConvention="0"
 				DisableSpecificWarnings="4290"
 			/>
@@ -73,6 +71,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				GenerateDebugInformation="true"
 				ImportLibrary="$(TargetDir)$(TargetName).lib"
 			/>
 			<Tool
@@ -130,10 +129,8 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough=""
-				ProgramDataBaseFileName="$(IntDir)\vc80.pdb"
+				ProgramDataBaseFileName="$(IntDir)\GEOS.pdb"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -151,6 +148,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				GenerateDebugInformation="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -207,9 +205,7 @@
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(IntDir)/GEOS.pdb"
+				ProgramDataBaseFileName="$(IntDir)\GEOS.pdb"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -225,6 +221,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				GenerateDebugInformation="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -282,9 +279,7 @@
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
-				ProgramDataBaseFileName="$(IntDir)\vc80.pdb"
+				ProgramDataBaseFileName="$(IntDir)\GEOS.pdb"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -300,6 +295,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				GenerateDebugInformation="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
