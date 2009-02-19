@@ -615,7 +615,12 @@ sub change_root_in_text	# ($text)
 	my $text = shift;
 	
 	# Change it
-	my $changes_were_made = ( $text =~ s/<h3>Root<\/h3>/<h3>$ROOT<\/h3>/ );
+	my $changes_were_made1 = ( $text =~ s/<h3>Root<\/h3>/<h3>$ROOT<\/h3>/ );
+	
+	# Doxygen 1.5.8 creates the HTML a little differently from earlier versions
+	my $changes_were_made2 = ( $text =~ s/<h3 class="swap"><span>Root<\/span><\/h3>/<h3>$ROOT<\/h3>/ );
+	
+	my $changes_were_made = $changes_were_made1 or $changes_were_made2;
 	
 	return ($changes_were_made, $text);
 }
@@ -653,7 +658,8 @@ sub remove_namespace
 	}		
 	else
 	{
-		print "*** ERROR in remove_namespace: We could not remove the Namespace node in '$toc_file'. ***\n"; 
+		print "WARNING in remove_namespace: We could not remove the Namespace node in '$toc_file'. (This is okay if Doxygen did not put it in.)\n"; 
+		# This may not be an error? Doxygen 1.5.8 does not put in the namespaces node?
 	}	
 }
 
