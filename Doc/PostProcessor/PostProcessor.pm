@@ -609,7 +609,7 @@ sub change_root
 # (Splitting this off into a separate subroutine makes it easier to write 
 # unit tests for it.)
 #
-# Returns (FILE_HAS_BEEN_CHANGED, $text)
+# Returns ($changes_were_made, $text)
 sub change_root_in_text	# ($text)
 {
 	my $text = shift;
@@ -618,9 +618,9 @@ sub change_root_in_text	# ($text)
 	my $changes_were_made1 = ( $text =~ s/<h3>Root<\/h3>/<h3>$ROOT<\/h3>/ );
 	
 	# Doxygen 1.5.8 creates the HTML a little differently from earlier versions
-	my $changes_were_made2 = ( $text =~ s/<h3 class="swap"><span>Root<\/span><\/h3>/<h3>$ROOT<\/h3>/ );
+	my $changes_were_made2 = ( $text =~ s/<h3 class="swap"><span>Root<\/span><\/h3>/<h3 class="swap"><span>$ROOT<\/span><\/h3>/ );
 	
-	my $changes_were_made = $changes_were_made1 or $changes_were_made2;
+	my $changes_were_made = $changes_were_made1 || $changes_were_made2;
 	
 	return ($changes_were_made, $text);
 }
