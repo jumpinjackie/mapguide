@@ -859,7 +859,7 @@
 		<Configuration
 			Name="LIB Release|x64"
 			OutputDirectory=".\Win64_LIB_Release"
-			IntermediateDirectory=".\Win32_LIB_Release"
+			IntermediateDirectory=".\Win64_LIB_Release"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			>
