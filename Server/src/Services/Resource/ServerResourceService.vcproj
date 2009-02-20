@@ -204,6 +204,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\..\Common;..\..\Common\Base;..\..\Common\Cache;..\..\Common\Manager;..\Feature;..\Site;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src;..\..\..\..\Oem\dbxml-2.3.10\db-4.5.20\\build_windows;..\..\..\..\Oem\dbxml-2.3.10\dbxml\include;..\..\..\..\Oem\dbxml-2.3.10\dbxml\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_RESOURCE_EXPORTS;DWFCORE_STATIC;DWFTK_USE_DWFCORE_ZLIB"
 				ExceptionHandling="2"
@@ -284,6 +285,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\..\Common;..\..\Common\Base;..\..\Common\Cache;..\..\Common\Manager;..\Feature;..\Site;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src;..\..\..\..\Oem\dbxml-2.3.10\db-4.5.20\\build_windows;..\..\..\..\Oem\dbxml-2.3.10\dbxml\include;..\..\..\..\Oem\dbxml-2.3.10\dbxml\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_RESOURCE_EXPORTS;DWFCORE_STATIC;DWFTK_USE_DWFCORE_ZLIB"
 				ExceptionHandling="2"
@@ -758,7 +760,23 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					ExcludedFromBuild="true"
 					>
 					<Tool

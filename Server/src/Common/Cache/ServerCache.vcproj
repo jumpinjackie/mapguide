@@ -202,6 +202,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories=".;..\..\..\..\Common\Foundation;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\Geometry;..\..\..\..\Common\MdfModel;..\..\..\..\Oem\FDO\inc;..\..\..\..\Oem\ACE\ACE_wrappers"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_CACHE_EXPORTS"
 				RuntimeLibrary="2"
@@ -281,6 +282,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories=".;..\..\..\..\Common\Foundation;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\Geometry;..\..\..\..\Common\MdfModel;..\..\..\..\Oem\FDO\inc;..\..\..\..\Oem\ACE\ACE_wrappers"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_CACHE_EXPORTS"
 				RuntimeLibrary="2"
