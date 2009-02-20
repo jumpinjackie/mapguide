@@ -18,7 +18,12 @@
 #pragma once
 /* PHP Extension headers */
 /* include zend win32 config first */
+#ifdef _WIN64
+//#include "zend_config.w64.h" // x64 configuration doesn't exist yet
+#else
 #include "zend_config.w32.h"
+#endif
+
 /* include standard header */
 #include "php.h"
 
