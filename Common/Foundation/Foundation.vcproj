@@ -202,6 +202,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FOUNDATION_EXPORTS"
 				ExceptionHandling="2"
@@ -283,6 +284,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FOUNDATION_EXPORTS;__LITTLE_ENDIAN__"
 				ExceptionHandling="2"

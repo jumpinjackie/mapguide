@@ -205,6 +205,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MDFPARSER_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				ExceptionHandling="2"
@@ -285,6 +286,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MDFPARSER_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				ExceptionHandling="2"
