@@ -204,6 +204,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Mapping;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_TILE_EXPORTS"
 				ExceptionHandling="2"
@@ -284,6 +285,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Mapping;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_TILE_EXPORTS"
 				ExceptionHandling="2"

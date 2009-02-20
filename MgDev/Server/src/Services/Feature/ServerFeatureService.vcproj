@@ -206,6 +206,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\..\Common;..\..\Common\Base;..\..\Common\Cache;..\..\Common\Manager;..\..\Gws\Include;..\..\Gws\GwsCommon\inc;..\..\Gws\GwsQueryEngine\inc;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\..\..\Common\Stylization;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src;..\..\..\..\Oem\FDO\inc;..\..\..\..\Oem\FDO\inc\ExpressionEngine"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_FEATURE_EXPORTS"
 				ExceptionHandling="2"
@@ -287,6 +288,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\..\Common;..\..\Common\Base;..\..\Common\Cache;..\..\Common\Manager;..\..\Gws\Include;..\..\Gws\GwsCommon\inc;..\..\Gws\GwsQueryEngine\inc;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\..\..\Common\Stylization;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src;..\..\..\..\Oem\FDO\inc;..\..\..\..\Oem\FDO\inc\ExpressionEngine"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_FEATURE_EXPORTS"
 				ExceptionHandling="2"

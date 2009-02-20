@@ -204,6 +204,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfParser;..\..\..\..\Common\MdfModel;..\..\..\..\Common\Renderers;..\..\..\..\Common\Stylization;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Feature;..\Mapping;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\FDO\inc;..\..\..\..\Oem\FDO\inc\ExpressionEngine"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_KML_EXPORTS;DWFCORE_STATIC;DWFTK_USE_DWFCORE_ZLIB"
 				ExceptionHandling="2"
@@ -284,6 +285,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfParser;..\..\..\..\Common\MdfModel;..\..\..\..\Common\Renderers;..\..\..\..\Common\Stylization;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Feature;..\Mapping;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\FDO\inc;..\..\..\..\Oem\FDO\inc\ExpressionEngine"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_KML_EXPORTS;DWFCORE_STATIC;DWFTK_USE_DWFCORE_ZLIB"
 				ExceptionHandling="2"

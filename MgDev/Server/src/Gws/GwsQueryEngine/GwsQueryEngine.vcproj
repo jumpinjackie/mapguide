@@ -212,6 +212,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories=".\inc;..\Include;..\GwsCommon\inc;..\..\..\..\Oem\FDO\inc;..\..\..\..\Oem\FDO\inc\ExpressionEngine"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GWSQUERYENGINE_EXPORTS"
 				StringPooling="true"
@@ -298,6 +299,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories=".\inc;..\Include;..\GwsCommon\inc;..\..\..\..\Oem\FDO\inc;..\..\..\..\Oem\FDO\inc\ExpressionEngine"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GWSQUERYENGINE_EXPORTS"
 				StringPooling="true"

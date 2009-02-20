@@ -208,6 +208,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="..;..\..\..\..\Common;..\..\..\..\Common\Foundation;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\Geometry;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\Common\Cache;..\..\Common\Thread;..\..\Services\Drawing;..\..\Services\Feature;..\..\Services\Kml;..\..\Services\Mapping;..\..\Services\Rendering;..\..\Services\Resource;..\..\Services\ServerAdmin;..\..\Services\Site;..\..\Services\Tile;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src;..\..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_MANAGER_EXPORTS"
 				ExceptionHandling="2"
@@ -289,6 +290,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="..;..\..\..\..\Common;..\..\..\..\Common\Foundation;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\Geometry;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\Common\Cache;..\..\Common\Thread;..\..\Services\Drawing;..\..\Services\Feature;..\..\Services\Kml;..\..\Services\Mapping;..\..\Services\Rendering;..\..\Services\Resource;..\..\Services\ServerAdmin;..\..\Services\Site;..\..\Services\Tile;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src;..\..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_MANAGER_EXPORTS"
 				ExceptionHandling="2"
