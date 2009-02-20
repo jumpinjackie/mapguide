@@ -184,7 +184,6 @@
 			IntermediateDirectory="..\..\obj\release\PhpMapGuideApiEnvConfig"
 			ConfigurationType="2"
 			CharacterSet="1"
-			WholeProgramOptimization="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -265,7 +264,6 @@
 			IntermediateDirectory="..\..\obj\release64\PhpMapGuideApiEnvConfig"
 			ConfigurationType="2"
 			CharacterSet="1"
-			WholeProgramOptimization="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"

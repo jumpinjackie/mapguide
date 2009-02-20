@@ -188,7 +188,6 @@
 			IntermediateDirectory="..\..\obj\release\ApacheAgent"
 			ConfigurationType="2"
 			CharacterSet="1"
-			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -270,7 +269,6 @@
 			IntermediateDirectory="..\..\obj\release64\ApacheAgent"
 			ConfigurationType="2"
 			CharacterSet="1"
-			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
