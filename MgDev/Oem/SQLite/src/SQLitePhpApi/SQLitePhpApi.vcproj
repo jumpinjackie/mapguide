@@ -212,6 +212,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\..\..\ACE\ACE_wrappers;..\..\..\php;..\..\..\php\main;..\..\..\php\Zend;..\..\..\php\TSRM;..\..\..\php\ext\w32api;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\Exceptions;..\SQLite3;..\SqliteVM"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SQLITEPHPAPI_EXPORTS;PHPPROXYAPI_EXPORTS;ZEND_WIN32;PHP_WIN32;ZEND_DEBUG=0;ZTS=1"
 				ExceptionHandling="2"
@@ -295,6 +296,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\..\..\ACE\ACE_wrappers;..\..\..\php;..\..\..\php\main;..\..\..\php\Zend;..\..\..\php\TSRM;..\..\..\php\ext\w32api;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\Exceptions;..\SQLite3;..\SqliteVM"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SQLITEPHPAPI_EXPORTS;PHPPROXYAPI_EXPORTS;ZEND_WIN32;PHP_WIN32;ZEND_DEBUG=0;ZTS=1"
 				ExceptionHandling="2"

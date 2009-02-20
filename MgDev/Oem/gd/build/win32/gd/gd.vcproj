@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="gd"
 	ProjectGUID="{F2B9F79A-57CC-4864-B537-EFC98E1C5E95}"
+	RootNamespace="gd"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -197,6 +198,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
@@ -276,6 +278,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
