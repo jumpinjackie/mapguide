@@ -1312,7 +1312,6 @@ void MgServerGwsFeatureReader::DeterminePropertyFeatureSource(CREFSTRING inputPr
 
             FdoString* featureSource = secQualifiedClassName.FeatureSource();
             FdoString* fclassName = secQualifiedClassName.Name();
-            className = (wchar_t*)fclassName;
 
             FdoPtr<FdoStringCollection> secondaryPropNames = secondaryDesc->PropertyNames();
 
@@ -1329,6 +1328,7 @@ void MgServerGwsFeatureReader::DeterminePropertyFeatureSource(CREFSTRING inputPr
                 if ( wcscmp(featureSource, relationName.c_str()) == 0 )
                 {
                     *gwsFeatureIter = secondaryFeatureIter;
+                    className = (wchar_t*)fclassName;
                     iter = m_secondaryGwsFeatureIteratorMap.end();
                     iter--;
                     break;
@@ -1364,6 +1364,14 @@ void MgServerGwsFeatureReader::DeterminePropertyFeatureSource(CREFSTRING inputPr
                     relationName, parsedPropName);
             }
         }
+    }
+
+    if(className.empty())
+    {
+        // No match was found so this is a computed property (eg: extents)
+        GWSQualifiedName primQualifiedClassName = m_primaryExtendedFeatureDescription->ClassName();
+        FdoString* fclassName = primQualifiedClassName.Name();
+        className = (wchar_t*)fclassName;
     }
 }
 
