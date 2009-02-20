@@ -109,6 +109,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;ZEND_DEBUG=0;COMPILE_DL_TEST_API;ZTS=1;ZEND_WIN32;PHP_WIN32"
 				ExceptionHandling="2"
@@ -240,6 +241,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;ZEND_DEBUG=0;COMPILE_DL_TEST_API;ZTS=1;ZEND_WIN32;PHP_WIN32"
 				ExceptionHandling="2"
