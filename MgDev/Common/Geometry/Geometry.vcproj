@@ -183,7 +183,6 @@
 			IntermediateDirectory="..\obj\release\Geometry"
 			ConfigurationType="2"
 			CharacterSet="1"
-			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -203,7 +202,6 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="..\CoordinateSystem;..\Foundation;..\Geometry;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\geos-2.2.0\source\headers&quot;;..\..\Oem\CsMap\Include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GEOMETRY_EXPORTS"
 				RuntimeLibrary="2"
@@ -264,7 +262,6 @@
 			ConfigurationType="2"
 			InheritedPropertySheets="..\..\TargetX64.vsprops"
 			CharacterSet="1"
-			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -285,7 +282,6 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="..\CoordinateSystem;..\Foundation;..\Geometry;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\geos-2.2.0\source\headers&quot;;..\..\Oem\CsMap\Include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GEOMETRY_EXPORTS"
 				RuntimeLibrary="2"
