@@ -309,29 +309,29 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
 ..\..\bin\debug64\geos.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug64\geos.pdb
     xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug64\geos.pdb ..\..\bin\debug64\
 
-..\..\bin\debug64\libdb45d.dll : ..\..\..\Oem\dbxml-2.3.10\bin\debug64\libdb45d.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug64\libdb45d.dll ..\..\bin\debug64\
+..\..\bin\debug64\libdb45d.dll : ..\..\..\Oem\dbxml-2.3.10\bin64\debug\libdb45d.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\debug\libdb45d.dll ..\..\bin\debug64\
 
-..\..\bin\debug64\libdb45d.pdb : ..\..\..\Oem\dbxml-2.3.10\bin\debug64\libdb45d.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug64\libdb45d.pdb ..\..\bin\debug64\
+..\..\bin\debug64\libdb45d.pdb : ..\..\..\Oem\dbxml-2.3.10\bin64\debug\libdb45d.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\debug\libdb45d.pdb ..\..\bin\debug64\
 
-..\..\bin\debug64\libdbxml23d.dll : ..\..\..\Oem\dbxml-2.3.10\bin\debug64\libdbxml23d.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug64\libdbxml23d.dll ..\..\bin\debug64\
+..\..\bin\debug64\libdbxml23d.dll : ..\..\..\Oem\dbxml-2.3.10\bin64\debug\libdbxml23d.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\debug\libdbxml23d.dll ..\..\bin\debug64\
 
-..\..\bin\debug64\libdbxml23d.pdb : ..\..\..\Oem\dbxml-2.3.10\bin\debug64\libdbxml23d.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug64\libdbxml23d.pdb ..\..\bin\debug64\
+..\..\bin\debug64\libdbxml23d.pdb : ..\..\..\Oem\dbxml-2.3.10\bin64\debug\libdbxml23d.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\debug\libdbxml23d.pdb ..\..\bin\debug64\
 
-..\..\bin\debug64\xqilla10d.dll : ..\..\..\Oem\dbxml-2.3.10\bin\debug64\xqilla10d.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug64\xqilla10d.dll ..\..\bin\debug64\
+..\..\bin\debug64\xqilla10d.dll : ..\..\..\Oem\dbxml-2.3.10\bin64\debug\xqilla10d.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\debug\xqilla10d.dll ..\..\bin\debug64\
 
-..\..\bin\debug64\xqilla10d.pdb : ..\..\..\Oem\dbxml-2.3.10\bin\debug64\xqilla10d.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug64\xqilla10d.pdb ..\..\bin\debug64\
+..\..\bin\debug64\xqilla10d.pdb : ..\..\..\Oem\dbxml-2.3.10\bin64\debug\xqilla10d.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\debug\xqilla10d.pdb ..\..\bin\debug64\
 
-..\..\bin\debug64\xerces-c_2_7D.dll : ..\..\..\Oem\dbxml-2.3.10\bin\debug64\xerces-c_2_7D.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug64\xerces-c_2_7D.dll ..\..\bin\debug64\
+..\..\bin\debug64\xerces-c_2_7D.dll : ..\..\..\Oem\dbxml-2.3.10\bin64\debug\xerces-c_2_7D.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\debug\xerces-c_2_7D.dll ..\..\bin\debug64\
 
-..\..\bin\debug64\xerces-c_2_7D.pdb : ..\..\..\Oem\dbxml-2.3.10\bin\debug64\xerces-c_2_7D.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug64\xerces-c_2_7D.pdb ..\..\bin\debug64\
+..\..\bin\debug64\xerces-c_2_7D.pdb : ..\..\..\Oem\dbxml-2.3.10\bin64\debug\xerces-c_2_7D.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\debug\xerces-c_2_7D.pdb ..\..\bin\debug64\
 
 ..\..\bin\debug64\serverconfig.ini : ..\..\src\Core\serverconfig.ini
     xcopy /r /d /y ..\..\src\Core\serverconfig.ini ..\..\bin\debug64\

@@ -164,7 +164,7 @@ echo Copying JSON Debug DLL to %WEB_BIN_DEBUG%64
 xcopy /r /d /y "..\..\..\Oem\jsoncpp\lib64\lib_jsond.dll" %WEB_BIN_DEBUG%64
 
 echo Copying Xerces Debug DLL to %WEB_BIN_DEBUG%64
-xcopy /r /d /y "..\..\..\Oem\dbxml-2.3.10\bin\debug64\xerces-c_2_7D.dll" %WEB_BIN_DEBUG%64
+xcopy /r /d /y "..\..\..\Oem\dbxml-2.3.10\bin64\debug\xerces-c_2_7D.dll" %WEB_BIN_DEBUG%64
 
 echo Copying MgFoundation Debug DLL to %WEB_BIN_DEBUG%64
 xcopy /r /d /y %COMMON_BIN_DEBUG%64\MgFoundationd.dll %WEB_BIN_DEBUG%64
