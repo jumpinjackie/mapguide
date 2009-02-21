@@ -17,8 +17,8 @@ SET JAR_DEST=..\..\jar64
 SET BIN_DEST=..\..\bin64
 SET DLL_DEST=..\..\bin64
 
-IF %4 == debug SET BIN_DEST=%BIN_DEST%\debug64
-IF %4 == debug SET DLL_DEST=%DLL_DEST%\debug64
+IF %4 == debug SET BIN_DEST=%BIN_DEST%\debug
+IF %4 == debug SET DLL_DEST=%DLL_DEST%\debug
 
 mkdir %LIB_DEST%
 mkdir %BIN_DEST%

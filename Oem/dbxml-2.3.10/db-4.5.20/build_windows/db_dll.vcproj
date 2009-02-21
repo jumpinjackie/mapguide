@@ -56,9 +56,6 @@
 				PreprocessorDefinitions="UNICODE;DB_CREATE_DLL;DIAGNOSTIC;CONFIG_TEST;WIN32;_DEBUG;_WINDOWS"
 				RuntimeLibrary="3"
 				PrecompiledHeaderFile=".\Debug/db_dll/db_dll.pch"
-				AssemblerListingLocation=".\Debug/db_dll/"
-				ObjectFile=".\Debug/db_dll/"
-				ProgramDataBaseFileName=".\Debug/db_dll/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="1"
@@ -640,9 +637,6 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				PrecompiledHeaderFile=".\Release/db_dll/db_dll.pch"
-				AssemblerListingLocation=".\Release/db_dll/"
-				ObjectFile=".\Release/db_dll/"
-				ProgramDataBaseFileName=".\Release/db_dll/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -834,9 +828,6 @@
 				PreprocessorDefinitions="UNICODE;DB_CREATE_DLL;DIAGNOSTIC;CONFIG_TEST;WIN32;_DEBUG;_WINDOWS"
 				RuntimeLibrary="3"
 				PrecompiledHeaderFile=".\$(OutDir)/db_dll.pch"
-				AssemblerListingLocation=".\$(OutDir)/"
-				ObjectFile="$(IntDir)\"
-				ProgramDataBaseFileName="$(IntDir)\vc80.pdb"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="true"
@@ -886,9 +877,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -985,9 +973,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1087,9 +1072,6 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -1184,9 +1166,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1284,9 +1263,6 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -1381,9 +1357,6 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -1428,9 +1401,6 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				PrecompiledHeaderFile=".\$(OutDir)/db_dll.pch"
-				AssemblerListingLocation="$(OutDir)"
-				ObjectFile="$(IntDir)\"
-				ProgramDataBaseFileName="$(IntDir)\vc80.pdb"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="true"
@@ -1480,9 +1450,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -1580,9 +1547,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
