@@ -21,7 +21,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\bin\debug"
+			OutputDirectory="..\lib\debug"
 			IntermediateDirectory="..\obj\debug\Security"
 			ConfigurationType="4"
 			CharacterSet="2"
@@ -84,7 +84,7 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="..\bin\debug64"
+			OutputDirectory="..\lib\debug64"
 			IntermediateDirectory="..\obj\debug64\Security"
 			ConfigurationType="4"
 			CharacterSet="2"
@@ -148,7 +148,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="..\bin\release"
+			OutputDirectory="..\lib\release"
 			IntermediateDirectory="..\obj\release\Security"
 			ConfigurationType="4"
 			CharacterSet="2"
@@ -209,7 +209,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="..\bin\release64"
+			OutputDirectory="..\lib\release64"
 			IntermediateDirectory="..\obj\release64\Security"
 			ConfigurationType="4"
 			CharacterSet="2"

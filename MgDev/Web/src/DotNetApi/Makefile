@@ -1,11 +1,13 @@
 
 cleandebug:
   del /Q Mg*.cs
-  del $(OUTDIR)\MapGuideDotNetApid.dll
+  if exist $(OUTDIR)\MapGuideDotNetApid.dll del $(OUTDIR)\MapGuideDotNetApid.dll
+  if exist $(OUTDIR)\MapGuideDotNetApid.pdb del $(OUTDIR)\MapGuideDotNetApid.pdb
 
 cleanrelease:
   del /Q Mg*.cs
-  del $(OUTDIR)\MapGuideDotNetApi.dll
+  if exist $(OUTDIR)\MapGuideDotNetApi.dll del $(OUTDIR)\MapGuideDotNetApi.dll
+  if exist $(OUTDIR)\MapGuideDotNetApi.pdb del $(OUTDIR)\MapGuideDotNetApi.pdb
 
 debug: $(OUTDIR)\MapGuideDotNetApid.dll
 

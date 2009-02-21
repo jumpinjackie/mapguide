@@ -102,8 +102,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\..\bin\debug64"
+			IntermediateDirectory="..\..\obj\debug64\PhpApi"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -151,13 +151,13 @@
 				AdditionalDependencies="ACEd.lib xerces-c_2D.lib php5ts.lib"
 				OutputFile="$(OutDir)\php_MapGuideApid.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml-2.3.10\lib;..\..\..\Oem\php\dev"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64;&quot;..\..\..\Oem\dbxml-2.3.10\lib64&quot;;&quot;..\..\..\Oem\php-5.2.5 (x64)\dev&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\php_MapGuideApid.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="..\..\lib\debug\php_MapGuideApid.lib"
+				ImportLibrary="..\..\lib\debug64\php_MapGuideApid.lib"
 				TargetMachine="17"
 			/>
 			<Tool
