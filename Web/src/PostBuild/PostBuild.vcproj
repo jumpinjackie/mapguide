@@ -61,8 +61,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\..\bin\debug64"
+			IntermediateDirectory="..\..\obj\debug64\PostBuild"
 			ConfigurationType="0"
 			>
 			<Tool
