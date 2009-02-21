@@ -102,8 +102,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\mapagent64"
+			IntermediateDirectory="..\..\obj\debug64\ApacheAgent"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -127,7 +127,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.4\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.4\srclib\apr\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.4\srclib\apr-util\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.4\os\win32&quot;;..\..\..\Common\MapGuideCommon;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\Foundation;..\..\..\Common\MdfModel;..\WebSupport;..\HttpHandler;..\MapAgentCommon"
+				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\LinuxApt\httpd-2.2-x64\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2-x64\srclib\apr\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2-x64\srclib\apr-util\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2-x64\os\win32&quot;;..\..\..\Common\MapGuideCommon;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\Foundation;..\..\..\Common\MdfModel;..\WebSupport;..\HttpHandler;..\MapAgentCommon"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;APACHEAGENT_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -151,7 +151,7 @@
 				AdditionalDependencies="libhttpd.lib libapr-1.lib libaprutil-1.lib"
 				OutputFile="$(OutDir)/mod_mgmapagent.so"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;..\..\..\Oem\LinuxApt\httpd-2.2.4\dev&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\..\Oem\LinuxApt\httpd-2.2-x64\lib&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/mod_mgmapagent.pdb"
 				SubSystem="2"
@@ -291,7 +291,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\LinuxApt\httpd-2.2-x64-\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2-x64-\srclib\apr\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2-x64-\srclib\apr-util\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2-x64-\os\win32&quot;;..\..\..\Common\MapGuideCommon;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\Foundation;..\..\..\Common\MdfModel;..\WebSupport;..\HttpHandler;..\MapAgentCommon"
+				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\LinuxApt\httpd-2.2-x64\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2-x64\srclib\apr\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2-x64\srclib\apr-util\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2-x64\os\win32&quot;;..\..\..\Common\MapGuideCommon;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\Foundation;..\..\..\Common\MdfModel;..\WebSupport;..\HttpHandler;..\MapAgentCommon"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;APACHEAGENT_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -314,7 +314,7 @@
 				AdditionalDependencies="libhttpd.lib libapr-1.lib libaprutil-1.lib"
 				OutputFile="$(OutDir)/mod_mgmapagent.so"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;..\..\..\Oem\LinuxApt\httpd-2.2-x64-\lib&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\..\Oem\LinuxApt\httpd-2.2-x64\lib&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/mod_mgmapagent.pdb"
 				SubSystem="2"

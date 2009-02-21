@@ -86,73 +86,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="..\..\lib\release"
-			IntermediateDirectory="..\..\obj\release\WebSupport"
-			ConfigurationType="4"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;ZEND_DEBUG=0;COMPILE_DL_TEST_API;ZTS=1;ZEND_WIN32;PHP_WIN32"
-				ExceptionHandling="2"
-				RuntimeLibrary="2"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				AdditionalDependencies="ACE.lib"
-				OutputFile="$(OutDir)\WebSupport.lib"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\..\lib\debug64"
+			IntermediateDirectory="..\..\obj\debug64\WebSupport"
 			ConfigurationType="4"
 			CharacterSet="1"
 			>
@@ -198,6 +134,70 @@
 				Name="VCLibrarianTool"
 				AdditionalDependencies="ACEd.lib"
 				OutputFile="$(OutDir)\WebSupportd.lib"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="..\..\lib\release"
+			IntermediateDirectory="..\..\obj\release\WebSupport"
+			ConfigurationType="4"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;ZEND_DEBUG=0;COMPILE_DL_TEST_API;ZTS=1;ZEND_WIN32;PHP_WIN32"
+				ExceptionHandling="2"
+				RuntimeLibrary="2"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				AdditionalDependencies="ACE.lib"
+				OutputFile="$(OutDir)\WebSupport.lib"
 				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
 			/>
 			<Tool

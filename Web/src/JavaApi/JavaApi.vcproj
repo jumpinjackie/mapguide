@@ -102,8 +102,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\..\bin\debug64"
+			IntermediateDirectory="..\..\obj\debug64\JavaApi"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -151,13 +151,13 @@
 				AdditionalDependencies="ACEd.lib"
 				OutputFile="$(OutDir)\MapGuideJavaApid.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MapGuideJavaApid.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="..\..\lib\debug\MapGuideJavaApid.lib"
+				ImportLibrary="..\..\lib\debug64\MapGuideJavaApid.lib"
 				TargetMachine="17"
 			/>
 			<Tool
