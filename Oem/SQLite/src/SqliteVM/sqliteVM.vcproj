@@ -214,7 +214,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="..\..\obj\win64\release"
+			OutputDirectory="..\..\lib\win64\release"
 			IntermediateDirectory="..\..\obj\win64\release\SqliteVM"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"

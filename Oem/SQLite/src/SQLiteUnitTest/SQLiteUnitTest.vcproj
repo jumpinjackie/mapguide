@@ -261,7 +261,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="..\..\obj\win64\release"
+			OutputDirectory="..\..\bin\win64\release"
 			IntermediateDirectory="..\..\obj\win64\release\SQLiteUnitTest"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"

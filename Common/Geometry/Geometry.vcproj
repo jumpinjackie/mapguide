@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib geos.lib csmapd.lib"
+				AdditionalDependencies="ACEd.lib GEOSd.lib csmapd.lib"
 				OutputFile="$(OutDir)\MgGeometryd.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\Oem\geos-2.2.0\VisualStudio\Debug&quot;;..\..\Oem\CsMap\lib80\Debug"
@@ -146,7 +146,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib geos.lib csmapd.lib"
+				AdditionalDependencies="ACEd.lib GEOSd.lib csmapd.lib"
 				OutputFile="$(OutDir)\MgGeometryd.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_Wrappers\lib64;&quot;..\..\Oem\geos-2.2.0\VisualStudio\Debug64&quot;;..\..\Oem\CsMap\lib80\Debug64"
@@ -220,7 +220,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib geos.lib csmap.lib"
+				AdditionalDependencies="ACE.lib GEOS.lib csmap.lib"
 				OutputFile="$(OutDir)\MgGeometry.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\Oem\geos-2.2.0\VisualStudio\Release&quot;;..\..\Oem\CsMap\lib80\Release"
@@ -302,7 +302,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib geos.lib csmap.lib"
+				AdditionalDependencies="ACE.lib GEOS.lib csmap.lib"
 				OutputFile="$(OutDir)\MgGeometry.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_Wrappers\lib64;&quot;..\..\Oem\geos-2.2.0\VisualStudio\Release64&quot;;..\..\Oem\CsMap\lib80\Release64"
