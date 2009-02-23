@@ -118,7 +118,7 @@ echo Copying ACE Debug DLL to %WEB_BIN_DEBUG%
 xcopy /r /d /y "..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll" %WEB_BIN_DEBUG%
 
 echo Copying GEOS Debug DLL to %WEB_BIN_DEBUG%
-xcopy /r /d /y "..\..\..\Oem\geos-2.2.0\VisualStudio\Debug\GEOS.dll" %WEB_BIN_DEBUG%
+xcopy /r /d /y "..\..\..\Oem\geos-2.2.0\VisualStudio\Debug\GEOSd.dll" %WEB_BIN_DEBUG%
 
 echo Copying JSON Debug DLL to %WEB_BIN_DEBUG%
 xcopy /r /d /y "..\..\..\Oem\jsoncpp\lib\lib_jsond.dll" %WEB_BIN_DEBUG%
@@ -158,7 +158,7 @@ echo Copying ACE Debug DLL to %WEB_BIN_DEBUG%64
 xcopy /r /d /y "..\..\..\Oem\ACE\ACE_wrappers\lib64\ACEd.dll" %WEB_BIN_DEBUG%64
 
 echo Copying GEOS Debug DLL to %WEB_BIN_DEBUG%64
-xcopy /r /d /y "..\..\..\Oem\geos-2.2.0\VisualStudio\Debug64\GEOS.dll" %WEB_BIN_DEBUG%64
+xcopy /r /d /y "..\..\..\Oem\geos-2.2.0\VisualStudio\Debug64\GEOSd.dll" %WEB_BIN_DEBUG%64
 
 echo Copying JSON Debug DLL to %WEB_BIN_DEBUG%64
 xcopy /r /d /y "..\..\..\Oem\jsoncpp\lib64\lib_jsond.dll" %WEB_BIN_DEBUG%64

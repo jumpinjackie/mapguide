@@ -271,7 +271,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="..\..\obj\win64\release"
+			OutputDirectory="..\..\bin\win64\release"
 			IntermediateDirectory="..\..\obj\win64\release\SQLitePhpApi"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"

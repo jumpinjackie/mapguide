@@ -52,7 +52,6 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				PrecompiledHeaderThrough=""
-				ProgramDataBaseFileName="$(IntDir)\GEOS.pdb"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -71,8 +70,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				OutputFile="$(OutDir)\GEOSd.dll"
 				GenerateDebugInformation="true"
-				ImportLibrary="$(TargetDir)$(TargetName).lib"
+				ProgramDatabaseFile="$(OutDir)\GEOSd.pdb"
+				ImportLibrary="$(OutDir)/GEOSd.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -130,7 +131,6 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				PrecompiledHeaderThrough=""
-				ProgramDataBaseFileName="$(IntDir)\GEOS.pdb"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -148,7 +148,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				OutputFile="$(OutDir)\GEOSd.dll"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)\GEOSd.pdb"
+				ImportLibrary="$(OutDir)/GEOSd.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -205,7 +208,6 @@
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				ProgramDataBaseFileName="$(IntDir)\GEOS.pdb"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -221,7 +223,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				OutputFile="$(OutDir)\GEOS.dll"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)\GEOS.pdb"
+				ImportLibrary="$(OutDir)/GEOS.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -279,7 +284,6 @@
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				ProgramDataBaseFileName="$(IntDir)\GEOS.pdb"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -295,7 +299,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				OutputFile="$(OutDir)\GEOS.dll"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)\GEOS.pdb"
+				ImportLibrary="$(OutDir)/GEOS.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
