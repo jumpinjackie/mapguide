@@ -1,0 +1,1 @@
+paraffin -dir D:\OSGeo\mapguide\UnitTest\WebTier\MapAgent\MapAgentForms -custom MAPAGENTFILES -alias ..\..\..\MapGuide\UnitTest\WebTier\MapAgent\MapAgentForms -dirref MAPAGENTLOCATION -guids -multiple -direXclude .svn incMapAgentFiles.wxs 
