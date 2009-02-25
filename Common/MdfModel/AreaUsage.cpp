@@ -26,11 +26,11 @@
 using namespace MDFMODEL_NAMESPACE;
 
 // initialize values for string properties
-const wchar_t* AreaUsage::sAngleControlDefault    = L"\'FromAngle\'";          // NOXLATE
+const wchar_t* AreaUsage::sAngleControlDefault    = L"'FromAngle'";            // NOXLATE
 const wchar_t* AreaUsage::sAngleControlValues     = L"FromAngle|FromGeometry"; // NOXLATE
-const wchar_t* AreaUsage::sOriginControlDefault   = L"\'Global\'";             // NOXLATE
+const wchar_t* AreaUsage::sOriginControlDefault   = L"'Global'";               // NOXLATE
 const wchar_t* AreaUsage::sOriginControlValues    = L"Global|Local|Centroid";  // NOXLATE
-const wchar_t* AreaUsage::sClippingControlDefault = L"\'Clip\'";               // NOXLATE
+const wchar_t* AreaUsage::sClippingControlDefault = L"'Clip'";                 // NOXLATE
 const wchar_t* AreaUsage::sClippingControlValues  = L"Clip|Inside|Overlap";    // NOXLATE
 
 

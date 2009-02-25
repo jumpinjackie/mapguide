@@ -26,9 +26,9 @@
 using namespace MDFMODEL_NAMESPACE;
 
 // initialize values for string properties
-const wchar_t* Path::sLineCapDefault  = L"\'Round\'";                  // NOXLATE
+const wchar_t* Path::sLineCapDefault  = L"'Round'";                    // NOXLATE
 const wchar_t* Path::sLineCapValues   = L"None|Round|Triangle|Square"; // NOXLATE
-const wchar_t* Path::sLineJoinDefault = L"\'Round\'";                  // NOXLATE
+const wchar_t* Path::sLineJoinDefault = L"'Round'";                    // NOXLATE
 const wchar_t* Path::sLineJoinValues  = L"None|Bevel|Round|Miter";     // NOXLATE
 
 

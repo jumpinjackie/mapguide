@@ -283,7 +283,7 @@ void IOLabel::Write(MdfStream& fd, Label* label, Version* version)
         fd << endStr(sBackgroundStyle) << std::endl;
 
         // Property: HorizontalAlignment
-        if (symbol->GetHorizontalAlignment() != L"\'Center\'") // NOXLATE
+        if (symbol->GetHorizontalAlignment() != L"'Center'") // NOXLATE
         {
             fd << tab() << startStr(sHorizontalAlignment);
             fd << EncodeString(symbol->GetHorizontalAlignment());
@@ -291,7 +291,7 @@ void IOLabel::Write(MdfStream& fd, Label* label, Version* version)
         }
 
         // Property: VerticalAlignment
-        if (symbol->GetVerticalAlignment() != L"\'Baseline\'") // NOXLATE
+        if (symbol->GetVerticalAlignment() != L"'Baseline'") // NOXLATE
         {
             fd << tab() << startStr(sVerticalAlignment);
             fd << EncodeString(symbol->GetVerticalAlignment());

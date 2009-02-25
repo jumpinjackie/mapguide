@@ -26,14 +26,14 @@
 using namespace MDFMODEL_NAMESPACE;
 
 // initialize values for string properties
-const wchar_t* LineUsage::sAngleControlDefault    = L"\'FromGeometry\'";       // NOXLATE
+const wchar_t* LineUsage::sAngleControlDefault    = L"'FromGeometry'";         // NOXLATE
 const wchar_t* LineUsage::sAngleControlValues     = L"FromAngle|FromGeometry"; // NOXLATE
-const wchar_t* LineUsage::sUnitsControlDefault    = L"\'Absolute\'";           // NOXLATE
+const wchar_t* LineUsage::sUnitsControlDefault    = L"'Absolute'";             // NOXLATE
 const wchar_t* LineUsage::sUnitsControlValues     = L"Absolute|Parametric";    // NOXLATE
-const wchar_t* LineUsage::sVertexControlDefault10 = L"\'OverlapNone\'";        // NOXLATE - default for version 1.0.0
-const wchar_t* LineUsage::sVertexControlDefault   = L"\'OverlapWrap\'";        // NOXLATE - default for version 1.1.0 and higher
+const wchar_t* LineUsage::sVertexControlDefault10 = L"'OverlapNone'";          // NOXLATE - default for version 1.0.0
+const wchar_t* LineUsage::sVertexControlDefault   = L"'OverlapWrap'";          // NOXLATE - default for version 1.1.0 and higher
 const wchar_t* LineUsage::sVertexControlValues    = L"OverlapNone|OverlapDirect|OverlapNoWrap|OverlapWrap"; // NOXLATE
-const wchar_t* LineUsage::sVertexJoinDefault      = L"\'Round\'";              // NOXLATE
+const wchar_t* LineUsage::sVertexJoinDefault      = L"'Round'";                // NOXLATE
 const wchar_t* LineUsage::sVertexJoinValues       = L"None|Bevel|Round|Miter"; // NOXLATE
 
 

@@ -26,7 +26,7 @@
 using namespace MDFMODEL_NAMESPACE;
 
 // initialize values for string properties
-const wchar_t* ResizeBox::sGrowControlDefault = L"\'GrowInXYMaintainAspect\'";                      // NOXLATE
+const wchar_t* ResizeBox::sGrowControlDefault = L"'GrowInXYMaintainAspect'";                        // NOXLATE
 const wchar_t* ResizeBox::sGrowControlValues  = L"GrowInX|GrowInY|GrowInXY|GrowInXYMaintainAspect"; // NOXLATE
 
 
