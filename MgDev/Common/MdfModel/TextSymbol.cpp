@@ -39,8 +39,8 @@ TextSymbol::TextSymbol()
     this->m_strForeColor = L"ff000000"; // NOXLATE
     this->m_strBackColor = L"ffffffff"; // NOXLATE
     this->m_eBackgroundStyle = TextSymbol::Ghosted;
-    this->m_strHrzAlignment = L"\'Center\'"; // NOXLATE
-    this->m_strVrtAlignment = L"\'Baseline\'"; // NOXLATE
+    this->m_strHrzAlignment = L"'Center'"; // NOXLATE
+    this->m_strVrtAlignment = L"'Baseline'"; // NOXLATE
     this->m_strBold = L"false"; // NOXLATE
     this->m_strItalic = L"false"; // NOXLATE
     this->m_strUnderlined = L"false"; // NOXLATE

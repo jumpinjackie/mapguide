@@ -46,7 +46,7 @@ void IOLineUsage::StartElement(const wchar_t* name, HandlerStack* handlerStack)
         // 'OverlapNone'.  If we're deserializing a version 1.0.0 stream then
         // we need to change the initial value to old default value.
         if (this->m_version == Version(1, 0, 0))
-            this->m_lineUsage->SetVertexControl(L"\'OverlapNone\'"); // NOXLATE
+            this->m_lineUsage->SetVertexControl(L"'OverlapNone'"); // NOXLATE
     }
     else if (this->m_currElemName == L"DefaultPath") // NOXLATE
     {
@@ -115,8 +115,8 @@ void IOLineUsage::Write(MdfStream& fd, LineUsage* lineUsage, Version* version)
     // In SymbolDefinition version 1.1.0 and higher the 'OverlapNoWrap' setting has
     // been removed.  For all versions we now replace it with 'OverlapNone'.
     MdfString strVertexControl = lineUsage->GetVertexControl();
-    if (strVertexControl.size() > 0 && _wcsicmp(strVertexControl.c_str(), L"\'OverlapNoWrap\'") == 0)   // NOXLATE
-        strVertexControl = L"\'OverlapNone\'";  // NOXLATE
+    if (strVertexControl.size() > 0 && _wcsicmp(strVertexControl.c_str(), L"'OverlapNoWrap'") == 0) // NOXLATE
+        strVertexControl = L"'OverlapNone'"; // NOXLATE
 
     bool emitVertexControl = true;
     if (!version || (*version >= Version(1, 1, 0)))

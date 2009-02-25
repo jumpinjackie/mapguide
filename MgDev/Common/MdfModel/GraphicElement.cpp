@@ -26,7 +26,7 @@
 using namespace MDFMODEL_NAMESPACE;
 
 // initialize values for string properties
-const wchar_t* GraphicElement::sResizeControlDefault = L"\'ResizeNone\'";                              // NOXLATE
+const wchar_t* GraphicElement::sResizeControlDefault = L"'ResizeNone'";                                // NOXLATE
 const wchar_t* GraphicElement::sResizeControlValues  = L"ResizeNone|AddToResizeBox|AdjustToResizeBox"; // NOXLATE
 
 

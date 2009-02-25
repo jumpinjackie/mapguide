@@ -26,17 +26,17 @@
 using namespace MDFMODEL_NAMESPACE;
 
 // initialize values for string properties
-const wchar_t* Text::sHAlignmentDefault    = L"\'Center\'";                                // NOXLATE
+const wchar_t* Text::sHAlignmentDefault    = L"'Center'";                                  // NOXLATE
 const wchar_t* Text::sHAlignmentValues     = L"Left|Center|Right";                         // NOXLATE
-const wchar_t* Text::sVAlignmentDefault    = L"\'Halfline\'";                              // NOXLATE
+const wchar_t* Text::sVAlignmentDefault    = L"'Halfline'";                                // NOXLATE
 const wchar_t* Text::sVAlignmentValues     = L"Bottom|Baseline|Halfline|Capline|Top";      // NOXLATE
-const wchar_t* Text::sJustificationDefault = L"\'FromAlignment\'";                         // NOXLATE
+const wchar_t* Text::sJustificationDefault = L"'FromAlignment'";                           // NOXLATE
 const wchar_t* Text::sJustificationValues  = L"Left|Center|Right|Justified|FromAlignment"; // NOXLATE
 
 // FontName and Markup are open-ended string properties - they only have default values,
 // and not a fixed set of allowed values
-const wchar_t* Text::sFontNameDefault      = L"\'Arial\'";                                 // NOXLATE
-const wchar_t* Text::sMarkupDefault        = L"\'Plain\'";                                 // NOXLATE
+const wchar_t* Text::sFontNameDefault      = L"'Arial'";                                   // NOXLATE
+const wchar_t* Text::sMarkupDefault        = L"'Plain'";                                   // NOXLATE
 
 
 //-------------------------------------------------------------------------

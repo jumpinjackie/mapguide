@@ -26,7 +26,7 @@
 using namespace MDFMODEL_NAMESPACE;
 
 // initialize values for string properties
-const wchar_t* PointUsage::sAngleControlDefault = L"\'FromAngle\'";          // NOXLATE
+const wchar_t* PointUsage::sAngleControlDefault = L"'FromAngle'";            // NOXLATE
 const wchar_t* PointUsage::sAngleControlValues  = L"FromAngle|FromGeometry"; // NOXLATE
 
 
