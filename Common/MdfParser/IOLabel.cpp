@@ -128,11 +128,43 @@ void IOLabel::ElementChars(const wchar_t* ch)
         break;
 
     case eHorizontalAlignment:
-        symbol->SetHorizontalAlignment(ch);
+        if (this->m_version < Version(1, 3, 0))
+        {
+            // legacy layer definitions may have unquoted alignments
+            // - add quotes if necessary
+            if (::wcscmp(ch, L"Left") == 0) // NOXLATE
+                symbol->SetHorizontalAlignment(L"'Left'");
+            else if (::wcscmp(ch, L"Center") == 0) // NOXLATE
+                symbol->SetHorizontalAlignment(L"'Center'");
+            else if (::wcscmp(ch, L"Right") == 0) // NOXLATE
+                symbol->SetHorizontalAlignment(L"'Right'");
+            else
+                symbol->SetHorizontalAlignment(ch);
+        }
+        else
+            symbol->SetHorizontalAlignment(ch);
         break;
 
     case eVerticalAlignment:
-        symbol->SetVerticalAlignment(ch);
+        if (this->m_version < Version(1, 3, 0))
+        {
+            // legacy layer definitions may have unquoted alignments
+            // - add quotes if necessary
+            if (::wcscmp(ch, L"Bottom") == 0) // NOXLATE
+                symbol->SetVerticalAlignment(L"'Bottom'");
+            else if (::wcscmp(ch, L"Baseline") == 0) // NOXLATE
+                symbol->SetVerticalAlignment(L"'Baseline'");
+            else if (::wcscmp(ch, L"Halfline") == 0) // NOXLATE
+                symbol->SetVerticalAlignment(L"'Halfline'");
+            else if (::wcscmp(ch, L"Capline") == 0) // NOXLATE
+                symbol->SetVerticalAlignment(L"'Capline'");
+            else if (::wcscmp(ch, L"Top") == 0) // NOXLATE
+                symbol->SetVerticalAlignment(L"'Top'");
+            else
+                symbol->SetVerticalAlignment(ch);
+        }
+        else
+            symbol->SetVerticalAlignment(ch);
         break;
 
     case eBold:
