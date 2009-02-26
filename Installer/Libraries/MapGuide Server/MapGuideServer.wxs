@@ -1,76 +1,197 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Fragment>
+    <Fragment>
 
-    <DirectoryRef Id="INSTALLLOCATION">
-      <Directory Id="SERVERROOTLOCATION" Name="MapGuide Server">
-        <Directory Id="SERVERBINLOCATION" Name="Bin" />
-        <Directory Id="SERVERLOGSLOCATION" Name="Logs">
-          <Component Id="ServerLogsComponent" Guid="B8107569-201D-4FAC-B1B1-BB3AC7207782" Feature="ServerLogsFeature">
-            <CreateFolder />
-          </Component>
-        </Directory>
-        <Directory Id="SERVERPACKAGESLOCATION" Name="Packages">
-          <Component Id="ServerPackagesComponent" Guid="58B60D26-35CB-4343-9854-EBC766C775B2" Feature="ServerPackagesFeature">
-            <CreateFolder />
-          </Component>
-        </Directory>
-        <Directory Id="SERVERREPOSITORIESLOCATION" Name="Repositories">
-          <Component Id="ServerRepositoriesComponent" Guid="2D89F4D5-4D13-434D-86DE-F34768DE46FA" Feature="ServerRepositoriesFeature">
-            <CreateFolder />
-          </Component>
-          <Directory Id="SERVERREPOSITORIESLIBRARYLOCATION" Name="Library">
-            <Directory Id="SERVERREPOSITORIESLIBRARYDATAFILESLOCATION" Name="DataFiles">
-              <Component Id="ServerRepositoriesLibraryDataFilesComponent" Guid="12998202-7FEE-448B-9371-42193B12EC7E" Feature="ServerRepositoriesLibraryFeature">
-                <CreateFolder />
-              </Component>
+        <DirectoryRef Id="INSTALLLOCATION">
+            <Directory Id="SERVERROOTLOCATION" Name="MapGuide Server">
+                <Directory Id="SERVERBINLOCATION" Name="Bin" />
+                <Directory Id="SERVERLOGSLOCATION" Name="Logs">
+                    <Component Id="ServerLogsComponent" Guid="B8107569-201D-4FAC-B1B1-BB3AC7207782" Feature="ServerLogsFeature">
+                        <CreateFolder />
+                        <IniFile Id="INISETLOGPATH"
+                                 Action="addLine"
+                                 Directory="SERVERBINLOCATION"
+                                 Key="LogsPath"
+                                 Name="serverconfig.ini"
+                                 Section="GeneralProperties"
+                                 Value="[SERVERLOGSLOCATION]" />
+                    </Component>
+                </Directory>
+                <Directory Id="SERVERPACKAGESLOCATION" Name="Packages">
+                    <Component Id="ServerPackagesComponent" Guid="58B60D26-35CB-4343-9854-EBC766C775B2" Feature="ServerPackagesFeature">
+                        <CreateFolder />
+                        <IniFile Id="INISETPACKAGESPATH"
+                                 Action="addLine"
+                                 Directory="SERVERBINLOCATION"
+                                 Key="PackagesPath"
+                                 Name="serverconfig.ini"
+                                 Section="ResourceServiceProperties"
+                                 Value="[SERVERPACKAGESLOCATION]" />
+                    </Component>
+                </Directory>
+                <Directory Id="SERVERREPOSITORIESLOCATION" Name="Repositories">
+                    <Component Id="ServerRepositoriesComponent" Guid="2D89F4D5-4D13-434D-86DE-F34768DE46FA" Feature="ServerRepositoriesFeature">
+                        <CreateFolder />
+                    </Component>
+                    <Directory Id="SERVERREPOSITORIESLIBRARYLOCATION" Name="Library">
+                        <Component Id="ServerRepositoriesLibraryComponent" Guid="1ABDE417-D567-42cd-AC0F-78A7C444DB4A" Feature="ServerRepositoriesLibraryFeature">
+                            <CreateFolder />
+                            <IniFile Id="INISETREPOSITORIESLIBRARYPATH"
+                                     Action="addLine"
+                                     Directory="SERVERBINLOCATION"
+                                     Key="LibraryRepositoryPath"
+                                     Name="serverconfig.ini"
+                                     Section="ResourceServiceProperties"
+                                     Value="[SERVERREPOSITORIESLIBRARYLOCATION]" />
+                        </Component>
+                        <Directory Id="SERVERREPOSITORIESLIBRARYDATAFILESLOCATION" Name="DataFiles">
+                            <Component Id="ServerRepositoriesLibraryDataFilesComponent" Guid="12998202-7FEE-448B-9371-42193B12EC7E" Feature="ServerRepositoriesLibraryFeature">
+                                <CreateFolder />
+                                <IniFile Id="INISETREPOSITORIESLIBRARYDATAFILESPATH"
+                                     Action="addLine"
+                                     Directory="SERVERBINLOCATION"
+                                     Key="LibraryResourceDataFilePath"
+                                     Name="serverconfig.ini"
+                                     Section="ResourceServiceProperties"
+                                     Value="[SERVERREPOSITORIESLIBRARYDATAFILESLOCATION]" />
+                            </Component>
+                        </Directory>
+                    </Directory>
+                    <Directory Id="SERVERREPOSITORIESSESSIONLOCATION" Name="Session">
+                        <Component Id="ServerRepositoriesSessionComponent" Guid="BB476765-5FA5-4CB0-AA63-1CCDE8867F7E" Feature="ServerRepositoriesSessionFeature">
+                            <CreateFolder/>
+                            <IniFile Id="INISETREPOSITORIESSESSIONPATH"
+                                   Action="addLine"
+                                   Directory="SERVERBINLOCATION"
+                                   Key="SessionRepositoryPath"
+                                   Name="serverconfig.ini"
+                                   Section="ResourceServiceProperties"
+                                   Value="[SERVERREPOSITORIESSESSIONLOCATION]" />
+                        </Component>
+                        <Directory Id="SERVERREPOSITORIESSESSIONDATAFILESLOCATION" Name="DataFiles">
+                            <Component Id="ServerRepositoriesSessionDataFilesComponent" Guid="28C0B4C0-7516-43C5-94D4-8AAF4C0DB6EE"  Feature="ServerRepositoriesSessionFeature">
+                                <CreateFolder />
+                                <IniFile Id="INISETREPOSITORIESSESSIONDATAFILESPATH"
+                                     Action="addLine"
+                                     Directory="SERVERBINLOCATION"
+                                     Key="SessionResourceDataFilePath"
+                                     Name="serverconfig.ini"
+                                     Section="ResourceServiceProperties"
+                                     Value="[SERVERREPOSITORIESSESSIONDATAFILESLOCATION]" />
+                            </Component>
+                        </Directory>
+                    </Directory>
+                    <Directory Id="SERVERREPOSITORIESSITELOCATION" Name="Site">
+                        <Component Id="ServerRepositoriesSiteComponent" Guid="FAD5C161-00B2-4A26-A0B1-9F82DE049E0B" Feature="ServerRepositoriesSiteFeature">
+                            <CreateFolder />
+                            <IniFile Id="INISETREPOSITORIESSITEPATH"
+                                   Action="addLine"
+                                   Directory="SERVERBINLOCATION"
+                                   Key="SiteRepositoryPath"
+                                   Name="serverconfig.ini"
+                                   Section="ResourceServiceProperties"
+                                   Value="[SERVERREPOSITORIESSITELOCATION]" />
+                        </Component>
+                    </Directory>
+                    <Directory Id="SERVERREPOSITORIESTILECACHELOCATION" Name="TileCache">
+                        <Component Id="ServerRepositoriesTileCacheComponent" Guid="902988DA-F9F8-4827-9CC0-63756A4BEE2E" Feature="ServerRepositoriesTileCacheFeature">
+                            <CreateFolder />
+                            <IniFile Id="INISETREPOSITORIESTILECACHEPATH"
+                                   Action="addLine"
+                                   Directory="SERVERBINLOCATION"
+                                   Key="TileCachePath"
+                                   Name="serverconfig.ini"
+                                   Section="TileServiceProperties"
+                                   Value="[SERVERREPOSITORIESTILECACHELOCATION]" />
+                        </Component>
+                    </Directory>
+                </Directory>
+                <Directory Id="SERVERRESOURCESLOCATION" Name="Resources">
+                    <Component Id="ServerResourcesComponent" Guid="73D633D6-F358-4DED-A9A7-0A55B133F8EA">
+                        <CreateFolder />
+                        <IniFile Id="INISETRESOURCESPATH"
+                                 Action="addLine"
+                               Directory="SERVERBINLOCATION"
+                               Key="ResourcesPath"
+                               Name="serverconfig.ini"
+                               Section="GeneralProperties"
+                               Value="[SERVERRESOURCESLOCATION]" />
+                    </Component>
+                </Directory>
+                <Directory Id="SERVERSCHEMALOCATION" Name="Schema">
+                    <Component Id="ServerSchemaComponent" Guid="4839A32B-CB9F-4FCC-8F40-0139C8E1FB3A">
+                        <CreateFolder />
+                        <IniFile Id="INISETSCHEMAPATH"
+                               Action="addLine"
+                               Directory="SERVERBINLOCATION"
+                               Key="ResourceSchemaFilePath"
+                               Name="serverconfig.ini"
+                               Section="ResourceServiceProperties"
+                               Value="[SERVERSCHEMALOCATION]" />
+                    </Component>
+                </Directory>
+                <Directory Id="SERVERTEMPLOCATION" Name="Temp">
+                    <Component Id="ServerTempComponent" Guid="8FEBC0F2-A1CA-43D5-B7EF-C11907B9A67D" Feature="ServerTempFeature">
+                        <CreateFolder />
+                        <IniFile Id="INISETTEMPPATH"
+                                 Action="addLine"
+                                 Directory="SERVERBINLOCATION"
+                                 Key="TempPath"
+                                 Name="serverconfig.ini"
+                                 Section="GeneralProperties"
+                                 Value="[SERVERTEMPLOCATION]" />
+                    </Component>
+                </Directory>
+                <Directory Id="SERVERWFSLOCATION" Name="Wfs">
+                    <Component Id="ServerWfsComponent" Guid="A27AF9DB-C72E-477C-83BD-ECD40601C5FC">
+                        <CreateFolder />
+                        <IniFile Id="INISETWFSPATH"
+                             Action="addLine"
+                             Directory="SERVERBINLOCATION"
+                             Key="WfsDocumentPath"
+                             Name="serverconfig.ini"
+                             Section="GeneralProperties"
+                             Value="[SERVERWFSLOCATION]" />
+                    </Component>
+                </Directory>
+                <Directory Id="SERVERWMSLOCATION" Name="Wms">
+                    <Component Id="ServerWmsComponent" Guid="AB35AD62-B06B-4D1D-90DB-FC8A6B49078F">
+                        <CreateFolder />
+                        <IniFile Id="INISETWMSPATH"
+                             Action="addLine"
+                             Directory="SERVERBINLOCATION"
+                             Key="WmsDocumentPath"
+                             Name="serverconfig.ini"
+                             Section="GeneralProperties"
+                             Value="[SERVERWMSLOCATION]" />
+                    </Component>
+                </Directory>
             </Directory>
-          </Directory>
-          <Directory Id="SERVERREPOSITORIESSESSIONLOCATION" Name="Session">
-            <Directory Id="SERVERREPOSITORIESSESSIONDATAFILESLOCATION" Name="DataFiles">
-              <Component Id="ServerRepositoriesSessionDataFilesComponent" Guid="28C0B4C0-7516-43C5-94D4-8AAF4C0DB6EE"  Feature="ServerRepositoriesSessionFeature">
-                <CreateFolder />
-              </Component>
-            </Directory>
-          </Directory>
-          <Directory Id="SERVERREPOSITORIESSITELOCATION" Name="Site">
-            <Component Id="ServerRepositoriesSiteComponent" Guid="FAD5C161-00B2-4A26-A0B1-9F82DE049E0B" Feature="ServerRepositoriesSiteFeature">
-              <CreateFolder />
-            </Component>
-          </Directory>
-          <Directory Id="SERVERREPOSITORIESTILECACHELOCATION" Name="TileCache">
-            <Component Id="ServerRepositoriesTileCacheComponent" Guid="902988DA-F9F8-4827-9CC0-63756A4BEE2E" Feature="ServerRepositoriesTileCacheFeature">
-              <CreateFolder />
-            </Component>
-          </Directory>
-        </Directory>
-        <Directory Id="SERVERTEMPLOCATION" Name="Temp">
-          <Component Id="ServerTempComponent" Guid="8FEBC0F2-A1CA-43D5-B7EF-C11907B9A67D" Feature="ServerTempFeature">
-            <CreateFolder />
-          </Component>
-        </Directory>
-      </Directory>
-    </DirectoryRef>
+        </DirectoryRef>
 
-    <Feature Id="ServerFeature" Title="MapGuide Server" Level="1" ConfigurableDirectory="SERVERROOTLOCATION" Description="MapGuide Server provides geographic analysis and rendering services."  AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
-      <FeatureRef Id="CSMapFeature"/>
-      <FeatureRef Id="FdoFeature"/>
-      <Feature Id="ServerLogsFeature" Title="Logfiles" Level="1" ConfigurableDirectory="SERVERLOGSLOCATION" Description="You may choose a location to place the server logfiles." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" />
-      <Feature Id="ServerPackagesFeature" Title="Packages" Level="1" ConfigurableDirectory="SERVERPACKAGESLOCATION" Description="You may choose a location where the server will access Packages (*.mgp)." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" />
-      <Feature Id="ServerRepositoriesFeature" Title="Repositories" Level="1" ConfigurableDirectory="SERVERREPOSITORIESLOCATION" Description="You may choose a parent location for the server repositories." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
-        <Feature Id="ServerRepositoriesLibraryFeature" Title="Library Repository" Level="1" ConfigurableDirectory="SERVERREPOSITORIESLIBRARYLOCATION" Description="You may choose a location for the Library repository." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" />
-        <Feature Id="ServerRepositoriesSessionFeature" Title="Session Repository" Level="1" ConfigurableDirectory="SERVERREPOSITORIESSESSIONLOCATION" Description="You may choose a location for the Session repository." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" />
-        <Feature Id="ServerRepositoriesSiteFeature" Title="Site Repository" Level="1" ConfigurableDirectory="SERVERREPOSITORIESSITELOCATION" Description="You may choose a location for the Site repository." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" />
-        <Feature Id="ServerRepositoriesTileCacheFeature" Title="TileCache Repository" Level="1" ConfigurableDirectory="SERVERREPOSITORIESTILECACHELOCATION" Description="You may choose a location for the Tile Cache repository." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" />
-      </Feature>
-      <Feature Id="ServerTempFeature" Title="Temp" Level="1" ConfigurableDirectory="SERVERTEMPLOCATION" Description="You may choose a location for the Temp Directory." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" />
-      <ComponentGroupRef Id="group_SRVBINFILES"/>
-      <ComponentGroupRef Id="group_SRVREPADMINFILES"/>
-      <ComponentGroupRef Id="group_SRVRESOURCESFILES"/>
-      <ComponentGroupRef Id="group_SRVSCHEMAFILES"/>
-      <ComponentGroupRef Id="group_SRVWFSFILES"/>
-      <ComponentGroupRef Id="group_SRVWMSFILES"/>
-    </Feature>
+        <Feature Id="ServerFeature" Title="MapGuide Server" Level="1" ConfigurableDirectory="SERVERROOTLOCATION" Description="MapGuide Server provides geographic analysis and rendering services."  AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <FeatureRef Id="CSMapFeature"/>
+            <FeatureRef Id="FdoFeature"/>
+            <Feature Id="ServerLogsFeature" Title="Logfiles" Level="1" ConfigurableDirectory="SERVERLOGSLOCATION" Description="You may choose a location to place the server logfiles." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" />
+            <Feature Id="ServerPackagesFeature" Title="Packages" Level="1" ConfigurableDirectory="SERVERPACKAGESLOCATION" Description="You may choose a location where the server will access Packages (*.mgp)." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" />
+            <Feature Id="ServerRepositoriesFeature" Title="Repositories" Level="1" ConfigurableDirectory="SERVERREPOSITORIESLOCATION" Description="You may choose a parent location for the server repositories." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+                <Feature Id="ServerRepositoriesLibraryFeature" Title="Library Repository" Level="1" ConfigurableDirectory="SERVERREPOSITORIESLIBRARYLOCATION" Description="You may choose a location for the Library repository." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" />
+                <Feature Id="ServerRepositoriesSessionFeature" Title="Session Repository" Level="1" ConfigurableDirectory="SERVERREPOSITORIESSESSIONLOCATION" Description="You may choose a location for the Session repository." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" />
+                <Feature Id="ServerRepositoriesSiteFeature" Title="Site Repository" Level="1" ConfigurableDirectory="SERVERREPOSITORIESSITELOCATION" Description="You may choose a location for the Site repository." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" />
+                <Feature Id="ServerRepositoriesTileCacheFeature" Title="TileCache Repository" Level="1" ConfigurableDirectory="SERVERREPOSITORIESTILECACHELOCATION" Description="You may choose a location for the Tile Cache repository." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" />
+            </Feature>
+            <Feature Id="ServerTempFeature" Title="Temp" Level="1" ConfigurableDirectory="SERVERTEMPLOCATION" Description="You may choose a location for the Temp Directory." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" />
+            <ComponentRef Id="ServerResourcesComponent"/>
+            <ComponentRef Id="ServerSchemaComponent"/>
+            <ComponentRef Id="ServerWfsComponent"/>
+            <ComponentRef Id="ServerWmsComponent"/>
+            <ComponentGroupRef Id="group_SRVBINFILES"/>
+            <ComponentGroupRef Id="group_SRVREPADMINFILES"/>
+            <ComponentGroupRef Id="group_SRVRESOURCESFILES"/>
+            <ComponentGroupRef Id="group_SRVSCHEMAFILES"/>
+            <ComponentGroupRef Id="group_SRVWFSFILES"/>
+            <ComponentGroupRef Id="group_SRVWMSFILES"/>
+        </Feature>
 
-  </Fragment>
+    </Fragment>
 </Wix>
