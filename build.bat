@@ -289,6 +289,11 @@ echo [install]: Server - Binaries
 %XCOPY% "%MG_SERVER%\bin\%TYPEBUILD%" "%MG_OUTPUT_SERVER%\bin" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Server - RepositoryAdmin
 %XCOPY% "%MG_SERVER%\RepositoryAdmin" "%MG_OUTPUT_SERVER%\RepositoryAdmin" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+echo [install]: CsMap Dictionaries
+SET CSMAP_DICT=%MG_OUTPUT_SERVER%\CsMap\Dictionaries
+if not exist "%CSMAP_DICT%" mkdir "%CSMAP_DICT%"
+copy /Y "%MG_OEM%\CsMap\Dictionaries\*.MRT" "%CSMAP_DICT%"
+copy /Y "%MG_OEM%\CsMap\Dictionaries\*.CSD" "%CSMAP_DICT%"
 if not "%TYPECOMPONENT%"=="all" goto quit
 
 :install_doc
