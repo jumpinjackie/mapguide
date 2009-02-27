@@ -142,6 +142,12 @@ goto next_param
 
 :get_conf
 SET TYPEBUILD=%2
+SET MSBUILD=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% %MSBUILD_VERBOSITY% %MSBUILD_LOG%
+SET MSBUILD_CLEAN=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% /t:Clean %MSBUILD_VERBOSITY%
+SET MG_OUTPUT=%MG_DEV%\%TYPEBUILD%
+SET MG_OUTPUT_SERVER=%MG_OUTPUT%\Server
+SET MG_OUTPUT_WEB=%MG_OUTPUT%\WebServerExtensions
+
 if "%2"=="Release" goto next_param
 if "%2"=="Debug" goto next_param
 SET ERRORMSG=Unrecognised configuration: %2
