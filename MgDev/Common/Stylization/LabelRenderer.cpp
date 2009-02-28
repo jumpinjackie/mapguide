@@ -23,6 +23,7 @@
 
 extern void ProcessStylizerException(FdoException* exception, int line, wchar_t* file);
 
+
 //////////////////////////////////////////////////////////////////////////////
 LabelRenderer::LabelRenderer(SE_Renderer* se_renderer)
 : LabelRendererBase(se_renderer)
@@ -35,14 +36,7 @@ LabelRenderer::~LabelRenderer()
 {
     try
     {
-        if (m_labelGroups.size() > 0 || m_hStitchTable.size() > 0)
-        {
-            BlastLabels();
-        }
-    }
-    catch (FdoException* e)
-    {
-        ProcessStylizerException(e, __LINE__, __WFILE__);
+        Cleanup();
     }
     catch (...)
     {
@@ -51,10 +45,42 @@ LabelRenderer::~LabelRenderer()
 
 
 //////////////////////////////////////////////////////////////////////////////
+void LabelRenderer::Cleanup()
+{
+    for (size_t i=0; i<m_labelGroups.size(); ++i)
+    {
+        OverpostGroup& group = m_labelGroups[i];
+
+        for (size_t j=0; j<group.m_labels.size(); ++j)
+        {
+            LabelInfo& info = group.m_labels[j];
+
+            if (info.m_pts)
+            {
+                delete [] info.m_pts;
+                info.m_pts = NULL;
+                info.m_numpts = 0;
+            }
+
+            // the style was cloned when it was passed to the LabelRenderer
+            if (info.m_sestyle)
+            {
+                delete info.m_sestyle;
+                info.m_sestyle = NULL;
+            }
+        }
+    }
+
+    m_labelGroups.clear();
+    m_hStitchTable.clear();
+    m_overpost.Clear();
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
 void LabelRenderer::StartLabels()
 {
     m_overpost.Clear();
-    m_pathCount = 0;
 }
 
 
@@ -75,10 +101,6 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
     // for that (transform to screen space, group into stitch groups)
     if (geomType == FdoGeometryType_LineString || geomType == FdoGeometryType_MultiLineString)
     {
-        // bail if there are too many path labels
-        if (m_pathCount > 1000)
-            return;
-
         BeginOverpostGroup(type, true, exclude);
 
         // indicate that the current group will be labeled along the path
@@ -132,7 +154,6 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
             }
 
             offset += lblpathpts;
-            m_pathCount++;
         }
 
         EndOverpostGroup();
@@ -212,100 +233,83 @@ void LabelRenderer::EndOverpostGroup()
 //////////////////////////////////////////////////////////////////////////////
 void LabelRenderer::BlastLabels()
 {
-    //-------------------------------------------------------
-    // step 1 - perform stitching
-    //-------------------------------------------------------
-
-    for (size_t i=0; i<m_labelGroups.size(); ++i)
+    try
     {
-        OverpostGroup& group = m_labelGroups[i];
+        //-------------------------------------------------------
+        // step 1 - perform stitching
+        //-------------------------------------------------------
 
-        if (group.m_algo == laCurve && group.m_labels.size() > 1)
+        for (size_t i=0; i<m_labelGroups.size(); ++i)
         {
-            std::vector<LabelInfo> stitched = StitchPolylines(group.m_labels);
-            if (stitched.size() > 0)
+            OverpostGroup& group = m_labelGroups[i];
+
+            if (group.m_algo == laCurve && group.m_labels.size() > 1)
             {
-                // replace the existing vector of labels with the stitched one
-                for (size_t j=0; j<group.m_labels.size(); ++j)
+                std::vector<LabelInfo> stitched = StitchPolylines(group.m_labels);
+                if (stitched.size() > 0)
                 {
-                    LabelInfo& info = group.m_labels[j];
-
-                    if (info.m_pts)
+                    // replace the existing vector of labels with the stitched one
+                    for (size_t j=0; j<group.m_labels.size(); ++j)
                     {
-                        delete [] info.m_pts;
-                        info.m_pts = NULL;
-                        info.m_numpts = 0;
+                        LabelInfo& info = group.m_labels[j];
+
+                        if (info.m_pts)
+                        {
+                            delete [] info.m_pts;
+                            info.m_pts = NULL;
+                            info.m_numpts = 0;
+                        }
+
+                        // the style was cloned when it was passed to the LabelRenderer
+                        if (info.m_sestyle)
+                        {
+                            delete info.m_sestyle;
+                            info.m_sestyle = NULL;
+                        }
                     }
 
-                    // the style was cloned when it was passed to the LabelRenderer
-                    if (info.m_sestyle)
-                    {
-                        delete info.m_sestyle;
-                        info.m_sestyle = NULL;
-                    }
+                    group.m_labels.clear();
+                    group.m_labels.insert(group.m_labels.end(), stitched.begin(), stitched.end());
                 }
-
-                group.m_labels.clear();
-                group.m_labels.insert(group.m_labels.end(), stitched.begin(), stitched.end());
             }
         }
-    }
 
-    //-------------------------------------------------------
-    // step 2 - apply overpost algorithm to all accumulated labels
-    //-------------------------------------------------------
+        //-------------------------------------------------------
+        // step 2 - apply overpost algorithm to all accumulated labels
+        //-------------------------------------------------------
 
-    for (int i=(int)m_labelGroups.size()-1; i>=0; --i)  // must use int since we're iterating backwards
-    {
-        OverpostGroup& group = m_labelGroups[i];
-
-        for (size_t j=0; j<group.m_labels.size(); ++j)
+        for (int i=(int)m_labelGroups.size()-1; i>=0; --i)  // must use int since we're iterating backwards
         {
-            LabelInfo& info = group.m_labels[j];
-            bool res = ProcessLabelInternal(info,
-                                            group.m_render,
-                                            group.m_exclude,
-                                            group.m_type != RS_OverpostType_All,
-                                            group.m_scaleLimit);
+            OverpostGroup& group = m_labelGroups[i];
 
-            // only in the case of a simple label do we check the overpost type
-            if (res && (group.m_type == RS_OverpostType_FirstFit))
-                break;
+            for (size_t j=0; j<group.m_labels.size(); ++j)
+            {
+                LabelInfo& info = group.m_labels[j];
+                bool res = ProcessLabelInternal(info,
+                                                group.m_render,
+                                                group.m_exclude,
+                                                group.m_type != RS_OverpostType_All,
+                                                group.m_scaleLimit);
+
+                // only in the case of a simple label do we check the overpost type
+                if (res && (group.m_type == RS_OverpostType_FirstFit))
+                    break;
+            }
         }
+
+        //-------------------------------------------------------
+        // step 3 - clean up labeling paths and styles
+        //-------------------------------------------------------
+
+        Cleanup();
     }
-
-    //-------------------------------------------------------
-    // step 3 - clean up labeling paths and styles
-    //-------------------------------------------------------
-
-    for (size_t i=0; i<m_labelGroups.size(); ++i)
+    catch (FdoException* e)
     {
-        OverpostGroup& group = m_labelGroups[i];
-
-        for (size_t j=0; j<group.m_labels.size(); ++j)
-        {
-            LabelInfo& info = group.m_labels[j];
-
-            if (info.m_pts)
-            {
-                delete [] info.m_pts;
-                info.m_pts = NULL;
-                info.m_numpts = 0;
-            }
-
-            // the style was cloned when it was passed to the LabelRenderer
-            if (info.m_sestyle)
-            {
-                delete info.m_sestyle;
-                info.m_sestyle = NULL;
-            }
-        }
+        ProcessStylizerException(e, __LINE__, __WFILE__);
     }
-
-    m_labelGroups.clear();
-    m_hStitchTable.clear();
-    m_overpost.Clear();
-    m_pathCount = 0;
+    catch (...)
+    {
+    }
 }
 
 
@@ -620,6 +624,39 @@ cont_loop:
 
 //////////////////////////////////////////////////////////////////////////////
 std::vector<LabelInfo> LabelRenderer::StitchPolylines(std::vector<LabelInfo>& labels)
+{
+    size_t numLabels = labels.size();
+
+    // no batching required if we're below the batch size
+    if (numLabels <= STITCH_BATCH_SIZE)
+        return StitchPolylinesHelper(labels);
+
+    // store overall results here
+    std::vector<LabelInfo> ret;
+    std::vector<LabelInfo> input;
+
+    size_t numProcessed = 0;
+    while (numProcessed < numLabels)
+    {
+        // create the input vector for the batch
+        input.clear();
+        for (size_t i=0; i<STITCH_BATCH_SIZE && numProcessed<numLabels; ++i)
+            input.push_back(labels[numProcessed++]);
+
+        // process the batch
+        std::vector<LabelInfo> output = StitchPolylinesHelper(input);
+
+        // add to the overall result
+        for (size_t i=0; i<output.size(); ++i)
+            ret.push_back(output[i]);
+    }
+
+    return ret;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+std::vector<LabelInfo> LabelRenderer::StitchPolylinesHelper(std::vector<LabelInfo>& labels)
 {
     std::vector<LabelInfo> src = labels; // make a copy
     std::vector<LabelInfo> ret; // store results here

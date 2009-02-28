@@ -365,12 +365,13 @@ void GDRenderer::StartMap(RS_MapUIInfo* mapInfo,
     InitFontEngine(this);
 }
 
+
 void GDRenderer::EndMap()
 {
     // turn off selection mode so the labels draw normal
     SetRenderSelectionMode(false);
 
-    //finally draw all the labels
+    // finally draw all the labels
     m_labeler->BlastLabels();
 
     // clear the map info

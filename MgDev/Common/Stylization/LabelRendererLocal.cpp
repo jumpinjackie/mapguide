@@ -37,18 +37,50 @@ LabelRendererLocal::~LabelRendererLocal()
 {
     try
     {
-        if (m_labelGroups.size() > 0 || m_hStitchTable.size() > 0)
-        {
-            BlastLabels();
-        }
-    }
-    catch (FdoException* e)
-    {
-        ProcessStylizerException(e, __LINE__, __WFILE__);
+        Cleanup();
     }
     catch (...)
     {
     }
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+void LabelRendererLocal::Cleanup()
+{
+    for (size_t i=0; i<m_labelGroups.size(); ++i)
+    {
+        OverpostGroupLocal& group = m_labelGroups[i];
+
+        for (size_t j=0; j<group.m_labels.size(); ++j)
+        {
+            LabelInfoLocal& info = group.m_labels[j];
+
+            if (info.m_rotated_points)
+            {
+                delete [] info.m_rotated_points;
+                info.m_rotated_points = NULL;
+            }
+
+            if (info.m_pts)
+            {
+                delete [] info.m_pts;
+                info.m_pts = NULL;
+                info.m_numpts = 0;
+            }
+
+            // the style was cloned when it was passed to the LabelRenderer
+            if (info.m_sestyle)
+            {
+                delete info.m_sestyle;
+                info.m_sestyle = NULL;
+            }
+        }
+    }
+
+    m_labelGroups.clear();
+    m_hStitchTable.clear();
+    m_overpost.Clear();
 }
 
 
@@ -158,9 +190,6 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
     {
         // we only expect one label info per polygon to be passed in from stylization
         _ASSERT(nlabels == 1);
-
-        // we want to draw all polygon labels we generate that will fit on the map
-        m_labelGroups.back().m_type = RS_OverpostType_AllFit;
 
         // set the algorithm type correctly so that BlastLabels knows
         // how to flatten this overpost group
@@ -355,446 +384,460 @@ void LabelRendererLocal::EndOverpostGroup()
 //////////////////////////////////////////////////////////////////////////////
 void LabelRendererLocal::BlastLabels()
 {
-    //-------------------------------------------------------
-    // step 1 - perform stitching
-    //-------------------------------------------------------
-
-    for (size_t i=0; i<m_labelGroups.size(); ++i)
+    try
     {
-        OverpostGroupLocal& group = m_labelGroups[i];
+        //-------------------------------------------------------
+        // step 1 - perform stitching
+        //-------------------------------------------------------
 
-        if (group.m_algo == laCurve && group.m_labels.size() > 1)
+        for (size_t i=0; i<m_labelGroups.size(); ++i)
         {
-            std::vector<LabelInfoLocal> stitched = StitchPolylines(group.m_labels);
-            if (stitched.size() > 0)
+            OverpostGroupLocal& group = m_labelGroups[i];
+
+            if (group.m_algo == laCurve && group.m_labels.size() > 1)
             {
-                // replace the existing vector of labels with the stitched one
-                for (size_t j=0; j<group.m_labels.size(); ++j)
+                std::vector<LabelInfoLocal> stitched = StitchPolylines(group.m_labels);
+                if (stitched.size() > 0)
                 {
-                    LabelInfoLocal& info = group.m_labels[j];
-
-                    if (info.m_pts)
+                    // replace the existing vector of labels with the stitched one
+                    for (size_t j=0; j<group.m_labels.size(); ++j)
                     {
-                        delete [] info.m_pts;
-                        info.m_pts = NULL;
-                        info.m_numpts = 0;
+                        LabelInfoLocal& info = group.m_labels[j];
+
+                        _ASSERT(info.m_rotated_points == NULL);
+
+                        if (info.m_pts)
+                        {
+                            delete [] info.m_pts;
+                            info.m_pts = NULL;
+                            info.m_numpts = 0;
+                        }
+
+                        // the style was cloned when it was passed to the LabelRenderer
+                        if (info.m_sestyle)
+                        {
+                            delete info.m_sestyle;
+                            info.m_sestyle = NULL;
+                        }
                     }
 
-                    // the style was cloned when it was passed to the LabelRenderer
-                    if (info.m_sestyle)
-                    {
-                        delete info.m_sestyle;
-                        info.m_sestyle = NULL;
-                    }
+                    group.m_labels.clear();
+                    group.m_labels.insert(group.m_labels.end(), stitched.begin(), stitched.end());
                 }
-
-                group.m_labels.clear();
-                group.m_labels.insert(group.m_labels.end(), stitched.begin(), stitched.end());
             }
         }
-    }
 
-    //-------------------------------------------------------
-    // step 2 - compute bounds for all the labels
-    //-------------------------------------------------------
+        //-------------------------------------------------------
+        // step 2 - compute bounds for all the labels
+        //-------------------------------------------------------
 
-    for (size_t i=0; i<m_labelGroups.size(); ++i)
-    {
-        OverpostGroupLocal& group = m_labelGroups[i];
-
-        std::vector<LabelInfoLocal> repeated_infos;
-
-        for (size_t j=0; j<group.m_labels.size(); ++j)
+        for (size_t i=0; i<m_labelGroups.size(); ++i)
         {
-            LabelInfoLocal& info = group.m_labels[j];
+            OverpostGroupLocal& group = m_labelGroups[i];
 
-            bool success = false;
+            std::vector<LabelInfoLocal> repeated_infos;
 
-            if (info.m_pts)
+            for (size_t j=0; j<group.m_labels.size(); ++j)
             {
-                // several possible positions along the path
-                // may be returned in the case of repeated labels
-                success = ComputePathLabelBounds(info, repeated_infos, group.m_scaleLimit);
+                LabelInfoLocal& info = group.m_labels[j];
+
+                bool success = false;
+
+                if (info.m_pts)
+                {
+                    // several possible positions along the path
+                    // may be returned in the case of repeated labels
+                    success = ComputePathLabelBounds(info, repeated_infos, group.m_scaleLimit);
+                }
+                else
+                {
+                    if (info.m_sestyle)
+                        success = ComputeSELabelBounds(info);
+                    else
+                        success = ComputeSimpleLabelBounds(info);
+
+                    // simple label or SE label --> simply add one instance of
+                    // it to the repeated infos collection. When we add repeated
+                    // labels for polygons, this code will change.
+                    LabelInfoLocal copy = info;
+                    copy.m_pts = NULL;
+                    copy.m_numpts = 0;
+                    repeated_infos.push_back(copy);
+
+                    // NOTE: the code above copies any SE style pointer.  Rather than
+                    //       clone the style and have the original deleted below, just
+                    //       clear the pointer on the original label info.  The new
+                    //       label info therefore now owns the SE style.
+                    info.m_sestyle = NULL;
+                }
+
+                if (!success)
+                {
+                    // we ran into a problem, so ignore this group
+                    group.m_render = false;
+                    group.m_exclude = false;
+                    break;
+                }
+            }
+
+            // now replace the group's label infos by the new repeated
+            // infos collection -- also free the polyline data stored
+            // in the m_pts members of the original infos, since we will
+            // no longer need the geometry data
+            for (size_t j=0; j<group.m_labels.size(); ++j)
+            {
+                LabelInfoLocal& info = group.m_labels[j];
+
+                // do not clear rotated points - these store the bounds computed above
+
+                if (info.m_pts)
+                {
+                    delete [] info.m_pts;
+                    info.m_pts = NULL;
+                    info.m_numpts = 0;
+                }
+
+                // the style was cloned when it was passed to the LabelRenderer
+                if (info.m_sestyle)
+                {
+                    delete info.m_sestyle;
+                    info.m_sestyle = NULL;
+                }
+            }
+
+            group.m_labels = repeated_infos;
+        }
+
+        //-------------------------------------------------------
+        // step 3 - flatten group list
+        //-------------------------------------------------------
+
+        std::vector<OverpostGroupLocal> finalGroups;
+        for (size_t i=0; i<m_labelGroups.size(); ++i)
+        {
+            OverpostGroupLocal& group = m_labelGroups[i];
+
+            // for path labels, put each label into a separate group so
+            // the sorting code below treats each label independently
+            if (group.m_algo == laCurve || group.m_algo == laPeriodicPolygon)
+            {
+                for (size_t j=0; j<group.m_labels.size(); ++j)
+                {
+                    // create a new group with just one label
+                    OverpostGroupLocal newGroup(group.m_render, group.m_exclude, group.m_type);
+                    newGroup.m_algo           = group.m_algo;
+                    newGroup.m_scaleLimit     = group.m_scaleLimit;
+                    newGroup.m_feature_bounds = group.m_feature_bounds;
+                    newGroup.m_labels.push_back(group.m_labels[j]);
+                    finalGroups.push_back(newGroup);
+                }
             }
             else
             {
-                if (info.m_sestyle)
-                    success = ComputeSELabelBounds(info);
-                else
-                    success = ComputeSimpleLabelBounds(info);
-
-                // simple label or SE label --> simply add one instance of
-                // it to the repeated infos collection. When we add repeated
-                // labels for polygons, this code will change.
-                LabelInfoLocal copy = info;
-                copy.m_pts = NULL;
-                copy.m_numpts = 0;
-                repeated_infos.push_back(copy);
-
-                // NOTE: the code above copies any SE style pointer.  Rather than
-                //       clone the style and have the original deleted below, just
-                //       clear the pointer on the original label info.  The new
-                //       label info therefore now owns the SE style.
-                info.m_sestyle = NULL;
-            }
-
-            if (!success)
-            {
-                // we ran into a problem, so ignore this group
-                group.m_render = false;
-                group.m_exclude = false;
-                break;
+                finalGroups.push_back(group);
             }
         }
 
-        // now replace the group's label infos by the new repeated
-        // infos collection -- also free the polyline data stored
-        // in the m_pts members of the original infos, since we will
-        // no longer need the geometry data
-        for (size_t j=0; j<group.m_labels.size(); ++j)
+        // done with these
+        m_labelGroups.clear();
+
+        //-------------------------------------------------------
+        // step 4 - sort all the label groups into buckets
+        //-------------------------------------------------------
+
+        RS_Bounds& tileBounds = m_serenderer->GetBounds();
+        double tileMinX = tileBounds.minx;
+        double tileMaxX = tileBounds.maxx;
+        double tileMinY = tileBounds.miny;
+        double tileMaxY = tileBounds.maxy;
+        double tileWid  = tileBounds.width();
+        double tileHgt  = tileBounds.height();
+
+        std::vector<OverpostGroupLocal*> groupsC00;  // bottom left shared corner
+        std::vector<OverpostGroupLocal*> groupsC10;  // bottom right shared corner
+        std::vector<OverpostGroupLocal*> groupsC01;  // top left shared corner
+        std::vector<OverpostGroupLocal*> groupsC11;  // top right shared corner
+
+        std::vector<OverpostGroupLocal*> groupsEx0;  // left shared edge
+        std::vector<OverpostGroupLocal*> groupsEx1;  // right shared edge
+        std::vector<OverpostGroupLocal*> groupsEy0;  // bottom shared edge
+        std::vector<OverpostGroupLocal*> groupsEy1;  // top shared edge
+
+        std::vector<OverpostGroupLocal*> groupsCtr;  // completely inside
+
+        for (size_t i=0; i<finalGroups.size(); ++i)
         {
-            LabelInfoLocal& info = group.m_labels[j];
+            OverpostGroupLocal& group = finalGroups[i];
+            if (!group.m_render && !group.m_exclude)
+                continue;
 
-            if (info.m_pts)
-            {
-                delete [] info.m_pts;
-                info.m_pts = NULL;
-                info.m_numpts = 0;
-            }
+            //-------------------------------------------------------
+            // get the bounds for the group as a whole
+            //-------------------------------------------------------
 
-            // the style was cloned when it was passed to the LabelRenderer
-            if (info.m_sestyle)
-            {
-                delete info.m_sestyle;
-                info.m_sestyle = NULL;
-            }
-        }
-
-        group.m_labels = repeated_infos;
-    }
-
-    //-------------------------------------------------------
-    // step 3 - flatten group list
-    //-------------------------------------------------------
-
-    std::vector<OverpostGroupLocal> finalGroups;
-    for (size_t i=0; i<m_labelGroups.size(); ++i)
-    {
-        OverpostGroupLocal& group = m_labelGroups[i];
-
-        // for path labels, put each label into a separate group so
-        // the sorting code below treats each label independently
-        if (group.m_algo == laCurve || group.m_algo == laPeriodicPolygon)
-        {
+            double minX = +DBL_MAX;
+            double maxX = -DBL_MAX;
+            double minY = +DBL_MAX;
+            double maxY = -DBL_MAX;
             for (size_t j=0; j<group.m_labels.size(); ++j)
             {
-                // create a new group with just one label
-                OverpostGroupLocal newGroup(group.m_render, group.m_exclude, group.m_type);
-                newGroup.m_algo           = group.m_algo;
-                newGroup.m_scaleLimit     = group.m_scaleLimit;
-                newGroup.m_feature_bounds = group.m_feature_bounds;
-                newGroup.m_labels.push_back(group.m_labels[j]);
-                finalGroups.push_back(newGroup);
+                LabelInfoLocal& info = group.m_labels[j];
+
+                // just iterate over the rotated points for each element
+                for (size_t k=0; k<info.m_numelems*4; ++k)
+                {
+                    // don't need to worry about y-orientation in this case
+                    double x, y;
+                    m_serenderer->ScreenToWorldPoint(info.m_rotated_points[k].x, info.m_rotated_points[k].y, x, y);
+
+                    minX = rs_min(minX, x);
+                    maxX = rs_max(maxX, x);
+                    minY = rs_min(minY, y);
+                    maxY = rs_max(maxY, y);
+                }
+            }
+
+            //-------------------------------------------------------
+            // check common cases for which we can skip the label
+            //-------------------------------------------------------
+
+            if (maxX < tileMinX)                        // completely past the left edge
+                continue;
+            if (minX > tileMaxX)                        // completely past the right edge
+                continue;
+            if (minX <= tileMinX && maxX >= tileMaxX)   // intersecting both the left and right edges
+                continue;                               // TODO: find a way to remove this limitation
+
+            if (maxY < tileMinY)                        // completely past the bottom edge
+                continue;
+            if (minY > tileMaxY)                        // completely past the top edge
+                continue;
+            if (minY <= tileMinY && maxY >= tileMaxY)   // intersecting both the bottom and top edges
+                continue;                               // TODO: find a way to remove this limitation
+
+            //-------------------------------------------------------
+            // apply label rejection logic
+            //-------------------------------------------------------
+
+            // We have the bounds for the label group, and therefore we know
+            // the range of tiles it spans.  To ensure the group is properly
+            // handled, we need to make sure that each tile can actually "see"
+            // the group.  A tile will "see" a label group if the bounds of
+            // the group's feature intersects the request extent for the tile.
+
+            // tiles with labels always use the same request extent offset
+            double offset = m_tileExtentOffset * tileWid;
+
+            // the min/max tile indices for the label group
+            int tMinX = (int)floor((minX - tileMinX) / tileWid);
+            int tMaxX = (int)floor((maxX - tileMinX) / tileWid);
+            int tMinY = (int)floor((minY - tileMinY) / tileHgt);
+            int tMaxY = (int)floor((maxY - tileMinY) / tileHgt);
+
+            // check if the leftmost tile can "see" the group
+            double reqMaxX = tileMinX + (double)(tMinX + 1) * tileWid + offset; // right edge of the tile's request extent
+            if (group.m_feature_bounds.minx > reqMaxX)                          // feature lies to the right of this edge
+                continue;
+
+            // check if the rightmost tile can "see" the group
+            double reqMinX = tileMinX + (double)(tMaxX    ) * tileWid - offset; // left edge of the tile's request extent
+            if (group.m_feature_bounds.maxx < reqMinX)                          // feature lies to the left of this edge
+                continue;
+
+            // check if the bottommost tile can "see" the group
+            double reqMaxY = tileMinY + (double)(tMinY + 1) * tileHgt + offset; // top edge of tile's request extent
+            if (group.m_feature_bounds.miny > reqMaxY)                          // feature lies above this edge
+                continue;
+
+            // check if the topmost tile can "see" the group
+            double reqMinY = tileMinY + (double)(tMaxY    ) * tileHgt - offset; // bottom edge of tile's request extent
+            if (group.m_feature_bounds.maxy < reqMinY)                          // feature lies below this edge
+                continue;
+
+            //-------------------------------------------------------
+            // check more involved cases
+            //-------------------------------------------------------
+
+            if (minX <= tileMinX && maxX < tileMaxX)    // intersecting the left edge
+            {
+                if (minY <= tileMinY && maxY < tileMaxY)    // intersecting the bottom edge
+                {
+                    // bottom left shared corner
+                    groupsC00.push_back(&group);
+                    continue;
+                }
+
+                if (maxY >= tileMaxY && minY > tileMinY)    // intersecting the top edge
+                {
+                    // top left shared corner
+                    groupsC01.push_back(&group);
+                    continue;
+                }
+
+                if (minY > tileMinY && maxY < tileMaxY)     // inside both the bottom and top edges
+                {
+                    // left shared edge
+                    groupsEx0.push_back(&group);
+                    continue;
+                }
+            }
+
+            if (maxX >= tileMaxX && minX > tileMinX)    // intersecting the right edge
+            {
+                if (minY <= tileMinY && maxY < tileMaxY)    // intersecting the bottom edge
+                {
+                    // bottom right shared corner
+                    groupsC10.push_back(&group);
+                    continue;
+                }
+
+                if (maxY >= tileMaxY && minY > tileMinY)    // intersecting the top edge
+                {
+                    // top right shared corner
+                    groupsC11.push_back(&group);
+                    continue;
+                }
+
+                if (minY > tileMinY && maxY < tileMaxY)     // inside both the bottom and top edges
+                {
+                    // right shared edge
+                    groupsEx1.push_back(&group);
+                    continue;
+                }
+            }
+
+            if (minX > tileMinX && maxX < tileMaxX)     // inside both the left and right edges
+            {
+                if (minY <= tileMinY && maxY < tileMaxY)    // intersecting the bottom edge
+                {
+                    // bottom shared edge
+                    groupsEy0.push_back(&group);
+                    continue;
+                }
+
+                if (maxY >= tileMaxY && minY > tileMinY)    // intersecting the top edge
+                {
+                    // top shared edge
+                    groupsEy1.push_back(&group);
+                    continue;
+                }
+
+                if (minY > tileMinY && maxY < tileMaxY)     // inside both the bottom and top edges
+                {
+                    // completely inside
+                    groupsCtr.push_back(&group);
+                    continue;
+                }
+            }
+
+            // we missed a case if we hit this assert goes off
+            _ASSERT(false);
+        }
+
+        //-------------------------------------------------------
+        // step 5 - apply overpost algorithm to each shared corner
+        //-------------------------------------------------------
+
+        // bottom left shared corner
+        SimpleOverpost mgrC00;
+        mgrC00.AddRegions(m_overpost);
+        ProcessLabelGroupsInternal(&mgrC00, groupsC00);
+
+        // bottom right shared corner
+        SimpleOverpost mgrC10;
+        mgrC10.AddRegions(m_overpost);
+        ProcessLabelGroupsInternal(&mgrC10, groupsC10);
+
+        // top left shared corner
+        SimpleOverpost mgrC01;
+        mgrC01.AddRegions(m_overpost);
+        ProcessLabelGroupsInternal(&mgrC01, groupsC01);
+
+        // top right shared corner
+        SimpleOverpost mgrC11;
+        mgrC11.AddRegions(m_overpost);
+        ProcessLabelGroupsInternal(&mgrC11, groupsC11);
+
+        //-------------------------------------------------------
+        // step 6 - apply overpost algorithm to each shared edge
+        //-------------------------------------------------------
+
+        // left shared edge
+        SimpleOverpost mgrEx0;
+        mgrEx0.AddRegions(mgrC00);
+        mgrEx0.AddRegions(mgrC01);
+        ProcessLabelGroupsInternal(&mgrEx0, groupsEx0);
+
+        // right shared edge
+        SimpleOverpost mgrEx1;
+        mgrEx1.AddRegions(mgrC10);
+        mgrEx1.AddRegions(mgrC11);
+        ProcessLabelGroupsInternal(&mgrEx1, groupsEx1);
+
+        // bottom shared edge
+        SimpleOverpost mgrEy0;
+        mgrEy0.AddRegions(mgrC00);
+        mgrEy0.AddRegions(mgrC10);
+        ProcessLabelGroupsInternal(&mgrEy0, groupsEy0);
+
+        // top shared edge
+        SimpleOverpost mgrEy1;
+        mgrEy1.AddRegions(mgrC01);
+        mgrEy1.AddRegions(mgrC11);
+        ProcessLabelGroupsInternal(&mgrEy1, groupsEy1);
+
+        //-------------------------------------------------------
+        // step 7 - apply overpost algorithm to center
+        //-------------------------------------------------------
+
+        // center
+        SimpleOverpost mgrCtr;
+        mgrCtr.AddRegions(mgrEx0);
+        mgrCtr.AddRegions(mgrEx1);
+        mgrCtr.AddRegions(mgrEy0);
+        mgrCtr.AddRegions(mgrEy1);
+        ProcessLabelGroupsInternal(&mgrCtr, groupsCtr);
+
+        //-------------------------------------------------------
+        // step 8 - clean up label info
+        //-------------------------------------------------------
+
+        for (size_t i=0; i<finalGroups.size(); ++i)
+        {
+            OverpostGroupLocal& group = finalGroups[i];
+            for (size_t j=0; j<group.m_labels.size(); ++j)
+            {
+                LabelInfoLocal& info = group.m_labels[j];
+
+                delete [] info.m_rotated_points;
+                info.m_rotated_points = NULL;
+
+                info.m_numpts = 0;
+                info.m_numelems = 0;
+
+                // label infos in finalGroups should no longer have polyline data
+                _ASSERT(info.m_pts == NULL);
+
+                // the style was cloned when it was passed to the LabelRenderer
+                if (info.m_sestyle)
+                {
+                    delete info.m_sestyle;
+                    info.m_sestyle = NULL;
+                }
             }
         }
-        else
-        {
-            finalGroups.push_back(group);
-        }
+
+        finalGroups.clear();
+        m_hStitchTable.clear();
+        m_overpost.Clear();
     }
-
-    // done with these
-    m_labelGroups.clear();
-
-    //-------------------------------------------------------
-    // step 4 - sort all the label groups into buckets
-    //-------------------------------------------------------
-
-    RS_Bounds& tileBounds = m_serenderer->GetBounds();
-    double tileMinX = tileBounds.minx;
-    double tileMaxX = tileBounds.maxx;
-    double tileMinY = tileBounds.miny;
-    double tileMaxY = tileBounds.maxy;
-    double tileWid  = tileBounds.width();
-    double tileHgt  = tileBounds.height();
-
-    std::vector<OverpostGroupLocal*> groupsC00;  // bottom left shared corner
-    std::vector<OverpostGroupLocal*> groupsC10;  // bottom right shared corner
-    std::vector<OverpostGroupLocal*> groupsC01;  // top left shared corner
-    std::vector<OverpostGroupLocal*> groupsC11;  // top right shared corner
-
-    std::vector<OverpostGroupLocal*> groupsEx0;  // left shared edge
-    std::vector<OverpostGroupLocal*> groupsEx1;  // right shared edge
-    std::vector<OverpostGroupLocal*> groupsEy0;  // bottom shared edge
-    std::vector<OverpostGroupLocal*> groupsEy1;  // top shared edge
-
-    std::vector<OverpostGroupLocal*> groupsCtr;  // completely inside
-
-    for (size_t i=0; i<finalGroups.size(); ++i)
+    catch (FdoException* e)
     {
-        OverpostGroupLocal& group = finalGroups[i];
-        if (!group.m_render && !group.m_exclude)
-            continue;
-
-        //-------------------------------------------------------
-        // get the bounds for the group as a whole
-        //-------------------------------------------------------
-
-        double minX = +DBL_MAX;
-        double maxX = -DBL_MAX;
-        double minY = +DBL_MAX;
-        double maxY = -DBL_MAX;
-        for (size_t j=0; j<group.m_labels.size(); ++j)
-        {
-            LabelInfoLocal& info = group.m_labels[j];
-
-            // just iterate over the rotated points for each element
-            for (size_t k=0; k<info.m_numelems*4; ++k)
-            {
-                // don't need to worry about y-orientation in this case
-                double x, y;
-                m_serenderer->ScreenToWorldPoint(info.m_rotated_points[k].x, info.m_rotated_points[k].y, x, y);
-
-                minX = rs_min(minX, x);
-                maxX = rs_max(maxX, x);
-                minY = rs_min(minY, y);
-                maxY = rs_max(maxY, y);
-            }
-        }
-
-        //-------------------------------------------------------
-        // check common cases for which we can skip the label
-        //-------------------------------------------------------
-
-        if (maxX < tileMinX)                        // completely past the left edge
-            continue;
-        if (minX > tileMaxX)                        // completely past the right edge
-            continue;
-        if (minX <= tileMinX && maxX >= tileMaxX)   // intersecting both the left and right edges
-            continue;                               // TODO: find a way to remove this limitation
-
-        if (maxY < tileMinY)                        // completely past the bottom edge
-            continue;
-        if (minY > tileMaxY)                        // completely past the top edge
-            continue;
-        if (minY <= tileMinY && maxY >= tileMaxY)   // intersecting both the bottom and top edges
-            continue;                               // TODO: find a way to remove this limitation
-
-        //-------------------------------------------------------
-        // apply label rejection logic
-        //-------------------------------------------------------
-
-        // We have the bounds for the label group, and therefore we know
-        // the range of tiles it spans.  To ensure the group is properly
-        // handled, we need to make sure that each tile can actually "see"
-        // the group.  A tile will "see" a label group if the bounds of
-        // the group's feature intersects the request extent for the tile.
-
-        // tiles with labels always use the same request extent offset
-        double offset = m_tileExtentOffset * tileWid;
-
-        // the min/max tile indices for the label group
-        int tMinX = (int)floor((minX - tileMinX) / tileWid);
-        int tMaxX = (int)floor((maxX - tileMinX) / tileWid);
-        int tMinY = (int)floor((minY - tileMinY) / tileHgt);
-        int tMaxY = (int)floor((maxY - tileMinY) / tileHgt);
-
-        // check if the leftmost tile can "see" the group
-        double reqMaxX = tileMinX + (double)(tMinX + 1) * tileWid + offset; // right edge of the tile's request extent
-        if (group.m_feature_bounds.minx > reqMaxX)                          // feature lies to the right of this edge
-            continue;
-
-        // check if the rightmost tile can "see" the group
-        double reqMinX = tileMinX + (double)(tMaxX    ) * tileWid - offset; // left edge of the tile's request extent
-        if (group.m_feature_bounds.maxx < reqMinX)                          // feature lies to the left of this edge
-            continue;
-
-        // check if the bottommost tile can "see" the group
-        double reqMaxY = tileMinY + (double)(tMinY + 1) * tileHgt + offset; // top edge of tile's request extent
-        if (group.m_feature_bounds.miny > reqMaxY)                          // feature lies above this edge
-            continue;
-
-        // check if the topmost tile can "see" the group
-        double reqMinY = tileMinY + (double)(tMaxY    ) * tileHgt - offset; // bottom edge of tile's request extent
-        if (group.m_feature_bounds.maxy < reqMinY)                          // feature lies below this edge
-            continue;
-
-        //-------------------------------------------------------
-        // check more involved cases
-        //-------------------------------------------------------
-
-        if (minX <= tileMinX && maxX < tileMaxX)    // intersecting the left edge
-        {
-            if (minY <= tileMinY && maxY < tileMaxY)    // intersecting the bottom edge
-            {
-                // bottom left shared corner
-                groupsC00.push_back(&group);
-                continue;
-            }
-
-            if (maxY >= tileMaxY && minY > tileMinY)    // intersecting the top edge
-            {
-                // top left shared corner
-                groupsC01.push_back(&group);
-                continue;
-            }
-
-            if (minY > tileMinY && maxY < tileMaxY)     // inside both the bottom and top edges
-            {
-                // left shared edge
-                groupsEx0.push_back(&group);
-                continue;
-            }
-        }
-
-        if (maxX >= tileMaxX && minX > tileMinX)    // intersecting the right edge
-        {
-            if (minY <= tileMinY && maxY < tileMaxY)    // intersecting the bottom edge
-            {
-                // bottom right shared corner
-                groupsC10.push_back(&group);
-                continue;
-            }
-
-            if (maxY >= tileMaxY && minY > tileMinY)    // intersecting the top edge
-            {
-                // top right shared corner
-                groupsC11.push_back(&group);
-                continue;
-            }
-
-            if (minY > tileMinY && maxY < tileMaxY)     // inside both the bottom and top edges
-            {
-                // right shared edge
-                groupsEx1.push_back(&group);
-                continue;
-            }
-        }
-
-        if (minX > tileMinX && maxX < tileMaxX)     // inside both the left and right edges
-        {
-            if (minY <= tileMinY && maxY < tileMaxY)    // intersecting the bottom edge
-            {
-                // bottom shared edge
-                groupsEy0.push_back(&group);
-                continue;
-            }
-
-            if (maxY >= tileMaxY && minY > tileMinY)    // intersecting the top edge
-            {
-                // top shared edge
-                groupsEy1.push_back(&group);
-                continue;
-            }
-
-            if (minY > tileMinY && maxY < tileMaxY)     // inside both the bottom and top edges
-            {
-                // completely inside
-                groupsCtr.push_back(&group);
-                continue;
-            }
-        }
-
-        // we missed a case if we hit this assert goes off
-        _ASSERT(false);
+        ProcessStylizerException(e, __LINE__, __WFILE__);
     }
-
-    //-------------------------------------------------------
-    // step 5 - apply overpost algorithm to each shared corner
-    //-------------------------------------------------------
-
-    // bottom left shared corner
-    SimpleOverpost mgrC00;
-    mgrC00.AddRegions(m_overpost);
-    ProcessLabelGroupsInternal(&mgrC00, groupsC00);
-
-    // bottom right shared corner
-    SimpleOverpost mgrC10;
-    mgrC10.AddRegions(m_overpost);
-    ProcessLabelGroupsInternal(&mgrC10, groupsC10);
-
-    // top left shared corner
-    SimpleOverpost mgrC01;
-    mgrC01.AddRegions(m_overpost);
-    ProcessLabelGroupsInternal(&mgrC01, groupsC01);
-
-    // top right shared corner
-    SimpleOverpost mgrC11;
-    mgrC11.AddRegions(m_overpost);
-    ProcessLabelGroupsInternal(&mgrC11, groupsC11);
-
-    //-------------------------------------------------------
-    // step 6 - apply overpost algorithm to each shared edge
-    //-------------------------------------------------------
-
-    // left shared edge
-    SimpleOverpost mgrEx0;
-    mgrEx0.AddRegions(mgrC00);
-    mgrEx0.AddRegions(mgrC01);
-    ProcessLabelGroupsInternal(&mgrEx0, groupsEx0);
-
-    // right shared edge
-    SimpleOverpost mgrEx1;
-    mgrEx1.AddRegions(mgrC10);
-    mgrEx1.AddRegions(mgrC11);
-    ProcessLabelGroupsInternal(&mgrEx1, groupsEx1);
-
-    // bottom shared edge
-    SimpleOverpost mgrEy0;
-    mgrEy0.AddRegions(mgrC00);
-    mgrEy0.AddRegions(mgrC10);
-    ProcessLabelGroupsInternal(&mgrEy0, groupsEy0);
-
-    // top shared edge
-    SimpleOverpost mgrEy1;
-    mgrEy1.AddRegions(mgrC01);
-    mgrEy1.AddRegions(mgrC11);
-    ProcessLabelGroupsInternal(&mgrEy1, groupsEy1);
-
-    //-------------------------------------------------------
-    // step 7 - apply overpost algorithm to center
-    //-------------------------------------------------------
-
-    // center
-    SimpleOverpost mgrCtr;
-    mgrCtr.AddRegions(mgrEx0);
-    mgrCtr.AddRegions(mgrEx1);
-    mgrCtr.AddRegions(mgrEy0);
-    mgrCtr.AddRegions(mgrEy1);
-    ProcessLabelGroupsInternal(&mgrCtr, groupsCtr);
-
-    //-------------------------------------------------------
-    // step 8 - clean up label info
-    //-------------------------------------------------------
-
-    for (size_t i=0; i<finalGroups.size(); ++i)
+    catch (...)
     {
-        OverpostGroupLocal& group = finalGroups[i];
-        for (size_t j=0; j<group.m_labels.size(); ++j)
-        {
-            LabelInfoLocal& info = group.m_labels[j];
-
-            delete [] info.m_rotated_points;
-            info.m_rotated_points = NULL;
-
-            info.m_numpts = 0;
-            info.m_numelems = 0;
-
-            // label infos in finalGroups should no longer have polyline data
-            _ASSERT(info.m_pts == NULL);
-
-            // the style was cloned when it was passed to the LabelRenderer
-            if (info.m_sestyle)
-            {
-                delete info.m_sestyle;
-                info.m_sestyle = NULL;
-            }
-        }
     }
-
-    finalGroups.clear();
-    m_hStitchTable.clear();
-    m_overpost.Clear();
 }
 
 
@@ -1173,6 +1216,39 @@ bool LabelRendererLocal::OverlapsStuff(SimpleOverpost* pMgr, RS_F_Point* pts, in
 
 //////////////////////////////////////////////////////////////////////////////
 std::vector<LabelInfoLocal> LabelRendererLocal::StitchPolylines(std::vector<LabelInfoLocal>& labels)
+{
+    size_t numLabels = labels.size();
+
+    // no batching required if we're below the batch size
+    if (numLabels <= STITCH_BATCH_SIZE)
+        return StitchPolylinesHelper(labels);
+
+    // store overall results here
+    std::vector<LabelInfoLocal> ret;
+    std::vector<LabelInfoLocal> input;
+
+    size_t numProcessed = 0;
+    while (numProcessed < numLabels)
+    {
+        // create the input vector for the batch
+        input.clear();
+        for (size_t i=0; i<STITCH_BATCH_SIZE && numProcessed<numLabels; ++i)
+            input.push_back(labels[numProcessed++]);
+
+        // process the batch
+        std::vector<LabelInfoLocal> output = StitchPolylinesHelper(input);
+
+        // add to the overall result
+        for (size_t i=0; i<output.size(); ++i)
+            ret.push_back(output[i]);
+    }
+
+    return ret;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+std::vector<LabelInfoLocal> LabelRendererLocal::StitchPolylinesHelper(std::vector<LabelInfoLocal>& labels)
 {
     std::vector<LabelInfoLocal> src = labels; // make a copy
     std::vector<LabelInfoLocal> ret; // store results here
