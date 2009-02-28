@@ -1,2 +1,2 @@
-paraffin -dir D:\OSGeo\mapguide\Server\bin\release\FDO -custom FDOFILES -alias ..\Server\bin\release\FDO -dirref SERVERROOTLOCATION -guids incFdoFiles.wxs
+paraffin -dir D:\OSGeo\mapguide\Server\bin\release\FDO -custom FDOFILES -alias $(var.FdoSourceDir) -dirref SERVERROOTLOCATION -guids incFdoFiles.wxs
           
