@@ -323,7 +323,7 @@ echo [install]: Web Tier - webstudio
 echo [install]: Web Tier - schemareport
 %XCOPY% "%MG_WEB_SRC%\schemareport" "%MG_OUTPUT_WEB%\www\schemareport" /EXCLUDE:svn_excludes.txt
 echo [install]: Web Tier - webconfig.ini
-%XCOPY% "%MG_WEB_SRC%\webconfig.ini" "%MG_OUTPUT_WEB%\www"
+copy /Y "%MG_WEB_SRC%\webconfig.ini" "%MG_OUTPUT_WEB%\www"
 echo [install]: Web Tier - mapviewerphp
 %XCOPY% "%MG_WEB_SRC%\mapviewerphp" "%MG_OUTPUT_WEB%\www\mapviewerphp" /EXCLUDE:svn_excludes.txt
 echo [install]: Web Tier - php - MapGuide API unmanaged binaries
