@@ -83,6 +83,9 @@ private:
     MgPropertyDefinitionCollection* GetIdentityProperties(FdoFeatureSchemaCollection* schemas,
         MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className);
 
+    bool CheckExtendedFeatureClass(MgResourceIdentifier* resource, CREFSTRING className);
+    bool CheckExtendedFeatureClasses(MgResourceIdentifier* resource, MgStringCollection* classNames);
+
 /// Data Members
 
 private:

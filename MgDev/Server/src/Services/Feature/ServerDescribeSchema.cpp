@@ -584,15 +584,24 @@ STRING MgServerDescribeSchema::DescribeSchemaAsXml(MgResourceIdentifier* resourc
 
     if (schemaXml.empty())
     {
+        MgStringCollection* classNameCol = NULL;
+
+        // Since FDO does not know about joined feature sources,
+        // Get full schema if the class is extended.
+        if (!CheckExtendedFeatureClasses(resource, classNames))
+        {
+            classNameCol = classNames;
+        }
+
         // The schema XML can be retrieved from either the serialized
         // schemas or the unserialized ones. So, try to get the serialized
         // schemas from the cache first then the unserialized ones later.
         Ptr<MgFeatureSchemaCollection> schemas = m_featureServiceCache->GetSchemas(
-            resource, schemaName, classNames, true);
+            resource, schemaName, classNameCol, true);
 
         if (NULL == schemas.p)
         {
-            schemas = DescribeSchema(resource, schemaName, classNames, false);
+            schemas = DescribeSchema(resource, schemaName, classNameCol, false);
         }
         else
         {
@@ -1433,29 +1442,30 @@ MgStringCollection* MgServerDescribeSchema::GetClasses(MgResourceIdentifier* res
 
         if (connection->IsConnectionOpen())
         {
+            // Fall back on using the DescribeSchema API to retrieve class names
+            // if the connection does not support the GetClassNames command
+            // or the feature source has joins.
+            bool useSchema = true;
+
             if (connection->SupportsCommand((INT32)FdoCommandType_GetClassNames))
             {
-                m_cacheManager->CheckPermission(resource, MgResourcePermission::ReadOnly);
-
-                // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up
-                // before the parent object, otherwise it leaves the FDO connection marked as still in use.
-                FdoPtr<FdoIConnection> fdoConn = connection->GetConnection();
-                FdoPtr<FdoIGetClassNames> fdoCommand = (FdoIGetClassNames*)fdoConn->CreateCommand(FdoCommandType_GetClassNames);
-                CHECKNULL(fdoCommand.p, L"MgServerDescribeSchema.GetClasses");
-
-                if (!schemaName.empty())
+                if (NULL == m_featureSourceCacheItem.p)
                 {
-                    fdoCommand->SetSchemaName(schemaName.c_str());
+                    m_featureSourceCacheItem = m_cacheManager->GetFeatureSourceCacheItem(resource);
                 }
 
-                // Execute the command.
-                FdoPtr<FdoStringCollection> classes = fdoCommand->Execute();
-                CHECKNULL(classes.p, L"MgServerDescribeSchema.GetClasses");
-
-                // Get the class names.
-                classNames = MgServerFeatureUtil::FdoToMgStringCollection(classes.p, false);
+                MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
+                CHECKNULL(featureSource, L"MgServerDescribeSchema.GetClasses");
+                MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
+                CHECKNULL(extensions, L"MgServerDescribeSchema.GetClasses");
+                
+                useSchema = (extensions->GetCount() > 0);
             }
-            else // Fall back on using the DescribeSchema API.
+
+            // TODO: The performance could be improved by getting the
+            //       class names from the primary and secondary feature
+            //       sources separately, then combining the results together.
+            if (useSchema)
             {
                 // Release the connection so that it can be reused via the DescribeSchema API.
                 connection = NULL;
@@ -1477,6 +1487,28 @@ MgStringCollection* MgServerDescribeSchema::GetClasses(MgResourceIdentifier* res
 
                 // Get the class names.
                 classNames = GetClassNames(schemas.p, schemaName);
+            }
+            else
+            {
+                m_cacheManager->CheckPermission(resource, MgResourcePermission::ReadOnly);
+
+                // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up
+                // before the parent object, otherwise it leaves the FDO connection marked as still in use.
+                FdoPtr<FdoIConnection> fdoConn = connection->GetConnection();
+                FdoPtr<FdoIGetClassNames> fdoCommand = (FdoIGetClassNames*)fdoConn->CreateCommand(FdoCommandType_GetClassNames);
+                CHECKNULL(fdoCommand.p, L"MgServerDescribeSchema.GetClasses");
+
+                if (!schemaName.empty())
+                {
+                    fdoCommand->SetSchemaName(schemaName.c_str());
+                }
+
+                // Execute the command.
+                FdoPtr<FdoStringCollection> classes = fdoCommand->Execute();
+                CHECKNULL(classes.p, L"MgServerDescribeSchema.GetClasses");
+
+                // Get the class names.
+                classNames = MgServerFeatureUtil::FdoToMgStringCollection(classes.p, false);
             }
         }
         else
@@ -1518,8 +1550,16 @@ MgClassDefinition* MgServerDescribeSchema::GetClassDefinition(  MgResourceIdenti
 
     if (NULL == classDefinition.p)
     {
-        Ptr<MgStringCollection> classNames = new MgStringCollection();
-        classNames->Add(className);
+        Ptr<MgStringCollection> classNames;
+
+        // Since FDO does not know about joined feature sources,
+        // use full schema to get the class definition
+        // if the class is extended.
+        if (!CheckExtendedFeatureClass(resource, className))
+        {
+            classNames = new MgStringCollection();
+            classNames->Add(className);
+        }
 
         Ptr<MgFeatureSchemaCollection> schemas = DescribeSchema(
             resource, schemaName, classNames, serialize);
@@ -1579,8 +1619,16 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(
 
     if (NULL == idProps.p)
     {
-        Ptr<MgStringCollection> classNames = new MgStringCollection();
-        classNames->Add(className);
+        Ptr<MgStringCollection> classNames;
+
+        // Since FDO does not know about joined feature sources,
+        // use full schema to get the class identity properties
+        // if the class is extended.
+        if (!CheckExtendedFeatureClass(resource, className))
+        {
+            classNames = new MgStringCollection();
+            classNames->Add(className);
+        }
 
         // Get the FDO Feature Schema collection from the cache.
         // If it does not exist, then create it.
@@ -1881,4 +1929,69 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(
     }
 
     return idProps.Detach();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+bool MgServerDescribeSchema::CheckExtendedFeatureClass(MgResourceIdentifier* resource,
+    CREFSTRING className)
+{
+    if (className.empty())
+    {
+        return false;
+    }
+
+    bool extended = false;
+    
+    STRING parsedSchemaName, parsedClassName;
+    MgUtil::ParseQualifiedClassName(className, parsedSchemaName, parsedClassName);
+
+    if (NULL == m_featureSourceCacheItem.p)
+    {
+        m_featureSourceCacheItem = m_cacheManager->GetFeatureSourceCacheItem(resource);
+    }
+
+    MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
+    CHECKNULL(featureSource, L"MgServerDescribeSchema.CheckExtendedFeatureClass");
+    MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
+    CHECKNULL(extensions, L"MgServerDescribeSchema.CheckExtendedFeatureClass");
+    int extensionCount = extensions->GetCount();
+
+    for (int i = 0; i < extensionCount; ++i)
+    {
+        MdfModel::Extension* extension = extensions->GetAt(i);
+        CHECKNULL(extension, L"MgServerDescribeSchema.CheckExtendedFeatureClass");
+        STRING extensionName = (STRING)extension->GetName();
+
+        STRING currSchemaName, currClassName;
+        MgUtil::ParseQualifiedClassName(extensionName, currSchemaName, currClassName);
+
+        if (currClassName == parsedClassName)
+        {
+            extended = true;
+            break;
+        }
+    }
+
+    return extended;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+bool MgServerDescribeSchema::CheckExtendedFeatureClasses(MgResourceIdentifier* resource,
+    MgStringCollection* classNames)
+{
+    bool extended = false;
+    INT32 classCount = (NULL == classNames) ? 0 : classNames->GetCount();
+
+    for (INT32 i = 0; i < classCount; ++i)
+    {
+        STRING currClassName = classNames->GetItem(i);
+        
+        if (CheckExtendedFeatureClass(resource, currClassName))
+        {
+            extended = true;
+            break;
+        } 
+    }
+
+    return extended;
 }
