@@ -5,6 +5,13 @@
       <Directory Id="FDOLOCATION" Name="Fdo">
       <Component Id="FdoComponent" Guid="EC356C4B-8AD8-472C-8D3B-90AC4E77BDB0">
         <CreateFolder />
+        <IniFile Id="INISETFDOPATH"
+                 Action="addLine"
+                 Directory="SERVERBINLOCATION"
+                 Key="FdoPath"
+                 Name="serverconfig.ini"
+                 Section="GeneralProperties"
+                 Value="[FDOLOCATION]" />
       </Component>
       </Directory>
     </DirectoryRef>
