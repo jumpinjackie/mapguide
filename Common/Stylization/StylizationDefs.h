@@ -59,7 +59,11 @@ const double MAX_CLIPOFFSET_IN_MM     = 1000.0 * MAX_CLIPOFFSET_IN_METERS;
 // The maximum number of segments to use when chopping up a symbol
 // for warping.  An example where this limit becomes important is
 // with mapping space symbols on a map that's zoomed in very far.
-const int MAX_CHOPBUFFER_SEGS  = 100000;
+const int MAX_CHOPBUFFER_SEGS = 100000;
+
+// The number of polylines to stitch together in each batch.  This limit
+// is needed since the current stitching algorithm scales as O(n^3).
+const int STITCH_BATCH_SIZE = 100;
 
 
 #define SE_INLINE inline

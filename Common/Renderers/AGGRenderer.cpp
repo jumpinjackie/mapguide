@@ -290,7 +290,7 @@ void AGGRenderer::StartMap(RS_MapUIInfo* mapInfo,
     if (m_mapInfo)
         m_mapInfo->bgcolor() = this->m_bgcolor;
 
-    //do it here, since we will need the renderer's map scales, which are computed above
+    // do it here, since we will need the renderer's map scales, which are computed above
     InitFontEngine(this);
 }
 
@@ -300,7 +300,7 @@ void AGGRenderer::EndMap()
     // turn off selection mode so the labels draw normal
     SetRenderSelectionMode(false);
 
-    //finally draw all the labels
+    // finally draw all the labels
     m_labeler->BlastLabels();
 
     // clear the map info

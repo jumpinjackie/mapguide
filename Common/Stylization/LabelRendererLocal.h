@@ -135,6 +135,7 @@ public:
     virtual void AddExclusionRegion(RS_F_Point* pts, int npts);
 
 private:
+    void Cleanup();
     void BeginOverpostGroup(RS_OverpostType type, bool render, bool exclude);
     void EndOverpostGroup();
 
@@ -154,6 +155,7 @@ private:
     bool OverlapsStuff(SimpleOverpost* pMgr, RS_F_Point* pts, int npts);
 
     std::vector<LabelInfoLocal> StitchPolylines(std::vector<LabelInfoLocal>& labels);
+    std::vector<LabelInfoLocal> StitchPolylinesHelper(std::vector<LabelInfoLocal>& labels);
 
     // member data
     std::vector<OverpostGroupLocal>  m_labelGroups;

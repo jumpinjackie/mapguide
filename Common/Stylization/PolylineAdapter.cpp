@@ -285,7 +285,7 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
         lb->Centroid(LineBuffer::ctLine, &cx, &cy, &slope_rad);
 
         if (!_isnan(cx) && !_isnan(cy))
-            AddLabel(cx, cy, slope_rad, true, label, RS_OverpostType_FirstFit, true, renderer, label->GetSymbol()->IsAdvancedPlacement()? lb : NULL);
+            AddLabel(cx, cy, slope_rad, true, label, RS_OverpostType_AllFit, true, renderer, label->GetSymbol()->IsAdvancedPlacement()? lb : NULL);
     }
 
     // free clipped line buffer if the geometry was clipped

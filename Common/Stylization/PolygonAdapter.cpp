@@ -229,7 +229,7 @@ void PolygonAdapter::Stylize(Renderer*                   renderer,
         lb->Centroid(LineBuffer::ctArea, &cx, &cy, &dummy);
 
         if (!_isnan(cx) && !_isnan(cy))
-            AddLabel(cx, cy, 0.0, false, label, RS_OverpostType_FirstFit, true, renderer, lb);
+            AddLabel(cx, cy, 0.0, false, label, RS_OverpostType_AllFit, true, renderer, lb);
     }
 
     // free clipped line buffer if the geometry was clipped
