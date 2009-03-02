@@ -6,14 +6,14 @@
       Execute="deferred" 
       Return="ignore" 
       Id="MgServerInstallCA" 
-      FileKey="file_BINFILES_14"
+      FileKey="file_SRVBINFILES_15"
       ExeCommand="install &quot;MapGuide Server 2.1&quot;" />
 
     <CustomAction
       Execute="immediate"
       Return="ignore"
       Id="MgServerUninstallCA"
-      FileKey="file_BINFILES_14"
+      FileKey="file_SRVBINFILES_15"
       ExeCommand="uninstall" />
 
   </Fragment>
