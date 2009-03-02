@@ -327,7 +327,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
     // scaling to be in the range [scaleLimit - 1.0]
     double font_scale = pathlen / (1.1 * tm.text_width);
     if (font_scale < scaleLimit)
-        font_scale = scaleLimit;
+        return false;   // don't render labels scaled below the limit
     else if (font_scale > 1.0)
         font_scale = 1.0;
 
