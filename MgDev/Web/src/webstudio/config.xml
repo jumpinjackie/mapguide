@@ -1,5 +1,0 @@
-<StudioLiteConfig>
-  <DefaultSite>http://127.0.0.1:8008/mapguide</DefaultSite>
-  <DefaultUserName>Administrator</DefaultUserName>
-  <DefaultTechnology>php</DefaultTechnology>
-</StudioLiteConfig>
