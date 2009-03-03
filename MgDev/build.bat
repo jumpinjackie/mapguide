@@ -18,8 +18,9 @@ rem
 rem 2) Download and install the following:
 rem     - Java SDK (http://java.sun.com)
 rem     - ant (http://ant.apache.org)
+rem     - doxygen (http://www.doxygen.org)
 rem
-rem 3) Change the values of JAVA_HOME and ANT_HOME to match the paths of your Java and Apache Ant installations.
+rem 3) Change the values of JAVA_HOME, ANT_HOME and DOXYGEN to match the paths of your Java SDK, Apache Ant and Doxygen installations respectively
 rem     
 rem For a "cleaner" build experience, run this script from an exported copy of the
 rem MapGuide source code (ie. without subversion folders). 
@@ -35,7 +36,7 @@ rem           [-o=OutputDirectory]
 rem
 rem BuildType: Release(default), Debug
 rem Component: all(default), oem, server, web, doc
-rem Action: build(defualt), install, clean
+rem Action: build(default), install, clean
 rem OutputDirectory: The directory where files will be copied to if -a=install
 rem
 rem Please note that -a=install does nothing if -w=oem
