@@ -22,8 +22,7 @@ rem			  [-web=WebExtensionsDirectory]
 rem           [-maestro=MaestroDirectory]
 rem
 rem BuildType: Release(default), Debug
-rem Action: build(default), clean, regen
-rem OutputDirectory: The directory where the installer will be copied to
+rem Action: build(default), clean, regen, prepare
 rem ServerDirectory: The MapGuide Server directory where paraffin will generate the files from
 rem WebExtensionsDirectory: The MapGuide Web Extensions directory where paraffin will generate the files from
 rem MaestroDirectory: The Maestro directory where paraffin will generate the files from
@@ -230,10 +229,16 @@ echo [regen]: Server - CS-Map dictionaries
 %PARAFFIN% -dir %MG_SERVER%\CsMap\Dictionaries -custom CSMAPDICTFILES -dirref CSMAPLOCATION -norecurse -ext _02 -ext _NT -ext ASC -ext C -ext CNT -ext GDC -ext GID -ext GRD -ext HLP -ext MAK -ext CSV -ext NMK -ext TXT -ext VCPROJ -ext USER  %WIX_INC_CSMAP%\incCSMapDictionaryFiles.wxs
 
 echo [regen]: Web - Apache
-%PARAFFIN% -dir %INSTALLER_DEV%\Support\Web\Apache2 -custom APACHEFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\%incApacheFiles.wxs
+%PARAFFIN% -dir %INSTALLER_DEV%\Support\Web\Apache2 -custom APACHEFILES -dirref WEBEXTENSIONSLOCATION -multiple %WIX_INC_WEB%\%incApacheFiles.wxs
 
 echo [regen]: Web - Php
-%PARAFFIN% -dir %INSTALLER_DEV%\Support\Web\Php -custom PHPFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incPhpFiles.wxs
+%PARAFFIN% -dir %INSTALLER_DEV%\Support\Web\Php -custom PHPFILES -dirref WEBEXTENSIONSLOCATION -multiple %WIX_INC_WEB%\incPhpFiles.wxs
+
+echo [regen]: Web - Tomcat
+%PARAFFIN% -dir %INSTALLER_DEV%\Support\Web\Tomcat -custom TOMCATFILES -dirref WEBEXTENSIONSLOCATION -multiple %WIX_INC_WEB%\incTomcatFiles.wxs
+
+echo [regen]: Web - mapagent
+%PARAFFIN% -dir %MG_WEB%\www\mapagent -custom MAPAGENTFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapAgentFiles.wxs
 
 echo [regen]: Web - mapviewernet
 %PARAFFIN% -dir %MG_WEB%\www\mapviewernet -custom MAPVIEWERASPXFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerAspxFiles.wxs
@@ -244,6 +249,9 @@ echo [regen]: Web - mapviewerphp
 echo [regen]: Web - mapviewerjava
 %PARAFFIN% -dir %MG_WEB%\www\mapviewerjava -custom MAPVIEWERJSPFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerJspFiles.wxs
          
+echo [regen]: Web - fusion
+%PARAFFIN% -dir %MG_WEB%\www\fusion -custom FUSIONFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incFusionFiles.wxs
+
 echo [regen]: Web - misc web root
 %PARAFFIN% -dir %INSTALLER_DEV%\Support\Web\mapviewer -custom MAPVIEWERDATAFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerDataFiles.wxs 
 %PARAFFIN% -dir %MG_WEB%\www\viewerfiles -custom MAPVIEWERFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerFiles.wxs 
@@ -252,11 +260,8 @@ echo [regen]: Web - misc web root
 %PARAFFIN% -dir %MG_WEB%\www\mapadmin -custom MAPVIEWERMAPADMINFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerMapAdminFiles.wxs 
 %PARAFFIN% -dir %MG_WEB%\www\localized -custom MAPVIEWERLOCALIZEDFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerLocalizedFiles.wxs 
 
-echo [regen]: Web - tomcat
-%PARAFFIN% -dir %INSTALLER_DEV%\Support\Web\Tomcat -custom TOMCATFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incTomcatFiles.wxs
-
 echo [regen]: Maestro
-%PARAFFIN% -dir %MG_MAESTRO% -custom MAESTROBIN -dirref INSTALLLOCATION %WIX_INC_MAESTRO%\incMaestroBinFiles.wxs
+%PARAFFIN% -dir %MG_MAESTRO% -custom MAESTROBIN -dirref INSTALLLOCATION -multiple %WIX_INC_MAESTRO%\incMaestroBinFiles.wxs
 
 if not "%TYPEACTION%"=="buildinstall" goto quit
 
@@ -294,15 +299,16 @@ echo build.bat [-h]
 echo           [-v]
 echo           [-c=BuildType]
 echo           [-a=Action]
-echo           [-o=OutputDirectory]
-echo Help:                  -h[elp]
-echo Verbose:               -v
-echo BuildType:             -c[onfig]=Release(default), Debug
-echo Action:                -a[ction]=build(default),
-echo                                  install,
-echo                                  buildinstall,
-echo                                  clean,
-echo                                  update
+echo           [-srv=ServerDirectory]
+echo           [-web=WebExtensionsDirectory]
+echo           [-maestro=MaestroDirectory]
+echo Help:	-h
+echo Verbose: -v
+echo BuildType: Release(default), Debug
+echo Action: build(default), clean, regen, prepare
+echo ServerDirectory: The MapGuide Server directory where paraffin will generate the files from
+echo WebExtensionsDirectory: The MapGuide Web Extensions directory where paraffin will generate the files from
+echo MaestroDirectory: The Maestro directory where paraffin will generate the files from
 echo ************************************************************************
 :quit
 SET TYPEACTION=
