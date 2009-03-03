@@ -576,7 +576,8 @@ MgFeatureSchemaCollection* MgFeatureServiceCacheEntry::GetSchemas(CREFSTRING sch
 void MgFeatureServiceCacheEntry::SetClassDefinition(CREFSTRING schemaName, CREFSTRING className, MgClassDefinition* classDef)
 {
     STRING schemaKey, classKey;
-    FormatKeys(m_classNameHintUsed, schemaName, className, schemaKey, classKey);
+    // Since this method requires a specific class name, the hint must be explicitly used.
+    FormatKeys(true, schemaName, className, schemaKey, classKey);
 
     Ptr<MgFeatureSchemaCacheItem> item = SetFeatureSchemaCacheItem(schemaKey);
 
@@ -586,7 +587,8 @@ void MgFeatureServiceCacheEntry::SetClassDefinition(CREFSTRING schemaName, CREFS
 MgClassDefinition* MgFeatureServiceCacheEntry::GetClassDefinition(CREFSTRING schemaName, CREFSTRING className)
 {
     STRING schemaKey, classKey;
-    FormatKeys(m_classNameHintUsed, schemaName, className, schemaKey, classKey);
+    // Since this method requires a specific class name, the hint must be explicitly used.
+    FormatKeys(true, schemaName, className, schemaKey, classKey);
 
     Ptr<MgClassDefinition> data;
     Ptr<MgFeatureSchemaCacheItem> item = GetFeatureSchemaCacheItem(schemaKey);
@@ -602,7 +604,8 @@ MgClassDefinition* MgFeatureServiceCacheEntry::GetClassDefinition(CREFSTRING sch
 void MgFeatureServiceCacheEntry::SetClassIdentityProperties(CREFSTRING schemaName, CREFSTRING className, MgPropertyDefinitionCollection* idProperties)
 {
     STRING schemaKey, classKey;
-    FormatKeys(m_classNameHintUsed, schemaName, className, schemaKey, classKey);
+    // Since this method requires a specific class name, the hint must be explicitly used.
+    FormatKeys(true, schemaName, className, schemaKey, classKey);
 
     Ptr<MgFeatureSchemaCacheItem> item = SetFeatureSchemaCacheItem(schemaKey);
 
@@ -612,7 +615,8 @@ void MgFeatureServiceCacheEntry::SetClassIdentityProperties(CREFSTRING schemaNam
 MgPropertyDefinitionCollection* MgFeatureServiceCacheEntry::GetClassIdentityProperties(CREFSTRING schemaName, CREFSTRING className)
 {
     STRING schemaKey, classKey;
-    FormatKeys(m_classNameHintUsed, schemaName, className, schemaKey, classKey);
+    // Since this method requires a specific class name, the hint must be explicitly used.
+    FormatKeys(true, schemaName, className, schemaKey, classKey);
 
     Ptr<MgPropertyDefinitionCollection> data;
     Ptr<MgFeatureSchemaCacheItem> item = GetFeatureSchemaCacheItem(schemaKey);
