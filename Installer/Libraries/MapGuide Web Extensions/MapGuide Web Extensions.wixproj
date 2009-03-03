@@ -25,6 +25,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="FileIncludes\incApacheFiles.wxs" />
+    <Compile Include="FileIncludes\incFusionFiles.wxs" />
+    <Compile Include="FileIncludes\incMapAgentFiles.wxs" />
     <Compile Include="FileIncludes\incMapViewerAspxFiles.wxs" />
     <Compile Include="FileIncludes\incMapViewerDataFiles.wxs" />
     <Compile Include="FileIncludes\incMapViewerFiles.wxs" />
@@ -40,6 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="FileIncludes" />
+  </ItemGroup>
+  <ItemGroup>
+    <WixExtension Include="WixUtilExtension">
+      <HintPath>$(WixExtDir)\WixUtilExtension.dll</HintPath>
+    </WixExtension>
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--

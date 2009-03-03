@@ -2,13 +2,22 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 	<Fragment>
     <DirectoryRef Id="INSTALLLOCATION">
-      <Directory Id="WEBROOTLOCATION" Name="MapGuide Web">
+      <Directory Id="WEBEXTENSIONSLOCATION" Name="MapGuide Web">
         <Component Id="WebExtensionsComponent" Guid="AE77C8EB-284D-4410-903F-92AD516DEA93">
           <CreateFolder />
         </Component>
+          <Directory Id="APACHELOCATION" Name="Apache2">
+              
+          </Directory>
+          <Directory Id="PHPLOCATION" Name="Php">
+              
+          </Directory>
+          <Directory Id="WEBROOTLOCATION" Name="www">
+              
+          </Directory>
       </Directory>
     </DirectoryRef>
-    <Feature Id="WebExtensionsFeature" Title="MapGuide Web" Level="1" ConfigurableDirectory="WEBROOTLOCATION" Description="MapGuide Web provides you with the components you need to server MapGuide resources over the internet." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+    <Feature Id="WebExtensionsFeature" Title="MapGuide Web" Level="1" ConfigurableDirectory="WEBEXTENSIONSLOCATION" Description="MapGuide Web provides you with the components you need to server MapGuide resources over the internet." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
       <ComponentRef Id="WebExtensionsComponent"/>
       <Feature Id="WebExtApacheFeature" Title="Apache Webserver" Level="1" Description="A bundled version of Apache with MapGuide enabled, running on port 8008." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
         <ComponentGroupRef Id="group_APACHEFILES"/>
@@ -31,6 +40,24 @@
       <Feature Id="WebExtMapViewerASPXFeature" Title=".Net Map Viewer" Level="1" Description="The .Net version of the map viewer." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
         <ComponentGroupRef Id="group_MAPVIEWERASPXFILES"/>
       </Feature>
+        <Feature Id="WebLocalizedFeature" Title="Localization Files" Level="1" Description="Localization files for the web tier" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <ComponentGroupRef Id="group_MAPVIEWERLOCALIZEDFILES" />
+        </Feature>
+        <Feature Id="WebFusionFeature" Title="Fusion" Level="1" Description="Fusion is a web-mapping application framework, allowing non-spatial web developers to build rich mapping applications quickly and easily" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <ComponentGroupRef Id="group_FUSIONFILES"/>
+        </Feature>
+        <Feature Id="WebMapAgentFeature" Title="Map Agent" Level="1" Description="The map agent allows client applications to communicate with MapGuide over HTTP" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <ComponentGroupRef Id="group_MAPAGENTFILES" />
+        </Feature>
+        <Feature Id="WebSchemaReportFeature" Title="Schema Report" Level="1" Description="The schema report allows the user to describe and preview MapGuide feature sources" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <ComponentGroupRef Id="group_MAPVIEWERSCHEMAREPORTFILES" />
+        </Feature>
+        <Feature Id="WebStdIconsFeature" Title="Standard Icons" Level="1" Description="Icons for the AJAX viewer" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <ComponentGroupRef Id="group_MAPVIEWERSTDICONFILES" />
+        </Feature>
+        <Feature Id="WebDataFeature" Title="Data Files" Level="1" Description="Data files for the web tier" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <ComponentGroupRef Id="group_MAPVIEWERDATAFILES" />
+        </Feature>
     </Feature>
   </Fragment>
 </Wix>
