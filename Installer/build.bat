@@ -54,7 +54,7 @@ SET MG_WEB=..\MgDev\%TYPEBUILD%\WebServerExtensions\
 SET MG_MAESTRO=..\Tools\Maestro\Maestro\
 
 SET PARAFFIN=%CD%
-SET PATH=%PATH%;%CD%
+SET PATH=%PATH%;%PARAFFIN%
 
 rem ==================================================
 rem MSBuild Settings
