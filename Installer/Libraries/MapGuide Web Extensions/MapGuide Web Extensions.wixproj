@@ -28,7 +28,6 @@
     <Compile Include="FileIncludes\incFusionFiles.wxs" />
     <Compile Include="FileIncludes\incMapAgentFiles.wxs" />
     <Compile Include="FileIncludes\incMapViewerAspxFiles.wxs" />
-    <Compile Include="FileIncludes\incMapViewerDataFiles.wxs" />
     <Compile Include="FileIncludes\incMapViewerFiles.wxs" />
     <Compile Include="FileIncludes\incMapViewerJspFiles.wxs" />
     <Compile Include="FileIncludes\incMapViewerLocalizedFiles.wxs" />

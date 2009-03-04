@@ -15,6 +15,9 @@
           <Directory Id="WEBROOTLOCATION" Name="www">
               
           </Directory>
+          <Directory Id="TOMCATLOCATION" Name="Tomcat">
+              
+          </Directory>
       </Directory>
     </DirectoryRef>
     <Feature Id="WebExtensionsFeature" Title="MapGuide Web" Level="1" ConfigurableDirectory="WEBEXTENSIONSLOCATION" Description="MapGuide Web provides you with the components you need to server MapGuide resources over the internet." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
