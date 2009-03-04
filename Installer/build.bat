@@ -232,7 +232,7 @@ echo [regen]: Web - Apache
 %PARAFFIN% -dir %INSTALLER_DEV%\Support\Web\Apache2 -custom APACHEFILES -dirref WEBEXTENSIONSLOCATION -multiple %WIX_INC_WEB%\%incApacheFiles.wxs
 
 echo [regen]: Web - Php
-%PARAFFIN% -dir %INSTALLER_DEV%\Support\Web\Php -custom PHPFILES -dirref WEBEXTENSIONSLOCATION -multiple %WIX_INC_WEB%\incPhpFiles.wxs
+%PARAFFIN% -dir %MG_WEB%\Php -custom PHPFILES -dirref WEBEXTENSIONSLOCATION -multiple %WIX_INC_WEB%\incPhpFiles.wxs
 
 echo [regen]: Web - Tomcat
 %PARAFFIN% -dir %INSTALLER_DEV%\Support\Web\Tomcat -custom TOMCATFILES -dirref WEBEXTENSIONSLOCATION -multiple %WIX_INC_WEB%\incTomcatFiles.wxs
