@@ -37,6 +37,7 @@
     <Compile Include="FileIncludes\incMapViewerStdiconFiles.wxs" />
     <Compile Include="FileIncludes\incPhpFiles.wxs" />
     <Compile Include="FileIncludes\incTomcatFiles.wxs" />
+    <Compile Include="FileIncludes\incWebRootFiles.wxs" />
     <Compile Include="MapGuideWebExtensions.wxs" />
   </ItemGroup>
   <ItemGroup>
