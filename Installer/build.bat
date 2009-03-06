@@ -229,13 +229,13 @@ echo [regen]: Server - CS-Map dictionaries
 %PARAFFIN% -dir %MG_SERVER%\CsMap\Dictionaries -custom CSMAPDICTFILES -dirref CSMAPLOCATION -norecurse -ext _02 -ext _NT -ext ASC -ext C -ext CNT -ext GDC -ext GID -ext GRD -ext HLP -ext MAK -ext CSV -ext NMK -ext TXT -ext VCPROJ -ext USER  %WIX_INC_CSMAP%\incCSMapDictionaryFiles.wxs
 
 echo [regen]: Web - Apache
-%PARAFFIN% -dir %INSTALLER_DEV%\Support\Web\Apache2 -custom APACHEFILES -dirref WEBEXTENSIONSLOCATION -multiple %WIX_INC_WEB%\%incApacheFiles.wxs
+%PARAFFIN% -dir %MG_WEB%\Apache2 -custom APACHEFILES -dirref WEBEXTENSIONSLOCATION -multiple %WIX_INC_WEB%\%incApacheFiles.wxs
 
 echo [regen]: Web - Php
 %PARAFFIN% -dir %MG_WEB%\Php -custom PHPFILES -dirref WEBEXTENSIONSLOCATION -multiple %WIX_INC_WEB%\incPhpFiles.wxs
 
 echo [regen]: Web - Tomcat
-%PARAFFIN% -dir %INSTALLER_DEV%\Support\Web\Tomcat -custom TOMCATFILES -dirref WEBEXTENSIONSLOCATION -multiple %WIX_INC_WEB%\incTomcatFiles.wxs
+%PARAFFIN% -dir %MG_WEB%\Tomcat -custom TOMCATFILES -dirref WEBEXTENSIONSLOCATION -multiple %WIX_INC_WEB%\incTomcatFiles.wxs
 
 echo [regen]: Web - mapagent
 %PARAFFIN% -dir %MG_WEB%\www\mapagent -custom MAPAGENTFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapAgentFiles.wxs
