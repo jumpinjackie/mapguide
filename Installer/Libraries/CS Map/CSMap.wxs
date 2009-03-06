@@ -11,7 +11,7 @@
              Name="MENTOR_DICTIONARY_PATH"
              Permanent="no"
              System="yes"
-             Value="[CsMapDictionariesLocation]" />
+             Value="[dir_Dictionaries_0]" />
         </Component>
       </Directory>
     </DirectoryRef>
