@@ -77,6 +77,7 @@ public:
                  SE_String* seTip,
                  SE_String* seUrl,
                  RS_ElevationSettings* elevSettings,
+                 bool initialPass,
                  int instanceRenderingPass,
                  int symbolRenderingPass,
                  int& nextInstanceRenderingPass,

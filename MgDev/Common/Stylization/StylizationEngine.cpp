@@ -158,8 +158,9 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
             // stylize once for each composite type style
             for (size_t i=0; i<numTypeStyles; ++i)
             {
+                bool initialPass = (i == 0 && instanceRenderingPass == 0 && symbolRenderingPass == 0);
                 Stylize(reader, exec, lb, compTypeStyles[i], &seTip, &seUrl, NULL,
-                        instanceRenderingPass, symbolRenderingPass,
+                        initialPass, instanceRenderingPass, symbolRenderingPass,
                         nextInstanceRenderingPass, nextSymbolRenderingPass);
             }
 
@@ -201,6 +202,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
                                 SE_String* seTip,
                                 SE_String* seUrl,
                                 RS_ElevationSettings* /*elevSettings*/,
+                                bool initialPass,
                                 int instanceRenderingPass,
                                 int symbolRenderingPass,
                                 int& nextInstanceRenderingPass,
@@ -270,7 +272,6 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         return;
 
     // we found a valid rule - send a StartFeature notification
-    bool initialPass = (instanceRenderingPass == 0 && symbolRenderingPass == 0);
     RS_String rs_tip, rs_url;
     if (seTip->expression || wcslen(seTip->getValue()) > 0)
         rs_tip = seTip->evaluate(exec);

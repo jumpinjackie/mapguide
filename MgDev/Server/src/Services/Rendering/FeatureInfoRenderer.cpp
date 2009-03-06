@@ -62,7 +62,7 @@ FeatureInfoRenderer::~FeatureInfoRenderer()
 
 
 void FeatureInfoRenderer::StartFeature(RS_FeatureReader* feature,
-                                       bool /*initialPass*/,
+                                       bool initialPass,
                                        const RS_String* tooltip,
                                        const RS_String* url,
                                        const RS_String* /*theme*/,
@@ -70,6 +70,9 @@ void FeatureInfoRenderer::StartFeature(RS_FeatureReader* feature,
                                        double /*zExtrusion*/,
                                        RS_ElevationType /*zOffsetType*/)
 {
+    if (!initialPass)
+        return;
+
     m_featurePending = false;
 
     //add feature ID to the selection set
