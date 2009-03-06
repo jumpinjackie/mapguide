@@ -55,10 +55,10 @@
     <InstallExecuteSequence>
         <Custom
             Action="UpdateApacheConfig"
-            After="UpdateApacheConfig.SetValues">MGWEB_CONFIG = "APACHE"</Custom>
+            After="UpdateApacheConfig.SetValues">&amp;WebExtApacheFeature > 2 AND MGWEB_CONFIG = "APACHE"</Custom>
         <Custom 
             Action="UpdateApacheConfig.SetValues"
-            After="InstallFiles">MGWEB_CONFIG = "APACHE"</Custom>
+            After="InstallFiles">&amp;WebExtApacheFeature > 2 AND MGWEB_CONFIG = "APACHE"</Custom>
         <Custom
             Action="UpdatePhpIni"
             After="UpdatePhpIni.SetValues" />
@@ -75,7 +75,7 @@
         -->
         <Custom
             Action="InstallApacheServiceCA"
-            Before="InstallFinalize">MGWEB_CONFIG = "APACHE"</Custom>
+            Before="InstallFinalize">&amp;WebExtApacheFeature > 2 AND MGWEB_CONFIG = "APACHE"</Custom>
         <!--
         <Custom
             Action="ConfigureIIS"
@@ -89,7 +89,7 @@
             Before="RemoveFiles">&amp;ServerFeature=2</Custom>
         <Custom
              Action="RemoveApacheServiceCA"
-             Before="RemoveFiles">WebExtApacheFeature=2</Custom>
+             Before="RemoveFiles">&amp;WebExtApacheFeature=2</Custom>
       <ScheduleReboot After="InstallFinalize"/>
     </InstallExecuteSequence>
 
