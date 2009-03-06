@@ -1,71 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix 
+<Wix
   xmlns="http://schemas.microsoft.com/wix/2006/wi"
   xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
   xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension"
   >
+    <Product
+           Id="47B770BA-1591-415D-A7AE-33D4C522FCEA"
+           UpgradeCode="5D9A7D8D-485E-43E0-A4C8-3582E4D80051"
+           Name="MapGuide Open Source 2.1"
+           Version="2.1.0"
+           Manufacturer="Open Source Geospatial Foundation"
+           Language="1033" >
 
-  <Product 
-         Id="47B770BA-1591-415D-A7AE-33D4C522FCEA" 
-         UpgradeCode="5D9A7D8D-485E-43E0-A4C8-3582E4D80051"
-         Name="MapGuide Open Source" 
-         Version="2.1.0" 
-         Manufacturer="Open Source Geospatial Foundation"
-         Language="1033" >
+        <Package InstallerVersion="300" Compressed="yes" />
 
-    <Package InstallerVersion="300" Compressed="yes" />
+        <Media Id="1" Cabinet="MapGuideOpenSource.cab" EmbedCab="yes" />
 
-	<Media Id="1" Cabinet="MapGuideOpenSource.cab" EmbedCab="yes" />
+        <PropertyRef Id="NETFRAMEWORK20"/>
+        <Condition Message="The .NET Framework 2.0 must be installed ([NETFRAMEWORK20])">
+            Installed OR NETFRAMEWORK20
+        </Condition>
 
-    <PropertyRef Id="NETFRAMEWORK20"/>
-    <Condition Message="The .NET Framework 2.0 must be installed ([NETFRAMEWORK20])">
-      Installed OR NETFRAMEWORK20
-    </Condition>
+        <!-- Initial MapGuide Web Configuration: APACHE | IIS | MANUAL -->
+        <Property Id="MGWEB_CONFIG" Secure="yes" Value="APACHE" />
+        <Property Id="APACHE_PORT" Secure="yes" Value="8008" />
+        <Property Id="APACHE_VERSION" Secure="yes" Value="2.2.4" />
+        <Property Id="API_TYPE" Secure="yes" Value="PHP" />
 
-      <!-- Initial MapGuide Web Configuration: APACHE | IIS | MANUAL -->
-      <Property Id="MGWEB_CONFIG" Secure="yes" Value="APACHE" />
-      <Property Id="APACHE_PORT" Secure="yes" Value="8008" />
-      <Property Id="APACHE_VERSION" Secure="yes" Value="2.2.4" />
-      <Property Id="API_TYPE" Secure="yes" Value="PHP" />
-  
-    <Property Id="ALLUSERS">1</Property>
+        <!-- Add Remove Programs stuff -->
+        <Property Id="ARPHELPLINK" Value="http://mapguide.osgeo.org" />
+        <Property Id="ARPURLINFOABOUT" Value="http://mapguide.osgeo.org" />
+        
+        <Property Id="ALLUSERS">1</Property>
 
-    <Property Id="IISVERSIONMAJOR" Value="#0">
-      <RegistrySearch Id="SearchRegIISVERSIONMAJOR" Root="HKLM" Key="Software\Microsoft\InetStp" Name="MajorVersion" Type="raw" />
-    </Property>
+        <Property Id="IISVERSIONMAJOR" Value="#0">
+            <RegistrySearch Id="SearchRegIISVERSIONMAJOR" Root="HKLM" Key="Software\Microsoft\InetStp" Name="MajorVersion" Type="raw" />
+        </Property>
 
-    <WixVariable Id="WixUILicenseRtf" Value="Resources/LGPL21.rtf" />
-    <WixVariable Id="WixUIBannerBmp" Value="Resources/InstallerSmall.bmp" />
-    <WixVariable Id="WixUIDialogBmp" Value="Resources/InstallerLarge.bmp" />
+        <WixVariable Id="WixUILicenseRtf" Value="Resources/LGPL21.rtf" />
+        <WixVariable Id="WixUIBannerBmp" Value="Resources/InstallerSmall.bmp" />
+        <WixVariable Id="WixUIDialogBmp" Value="Resources/InstallerLarge.bmp" />
 
-    <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="ProgramMenuFolder" Name="Programs"/>
-      <Directory Id="DesktopFolder" Name="Desktop"/>
-      <Directory Id="ProgramFilesFolder">
-				<Directory Id="INSTALLLOCATION" Name="OSGeo"/>
-      </Directory>
-    </Directory>
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramMenuFolder" Name="Programs"/>
+            <Directory Id="DesktopFolder" Name="Desktop"/>
+            <Directory Id="ProgramFilesFolder">
+                <Directory Id="INSTALLLOCATION" Name="OSGeo"/>
+            </Directory>
+        </Directory>
 
-    <FeatureRef Id="ServerFeature"/>
-    <FeatureRef Id="WebExtensionsFeature"/>
-    <FeatureRef Id="MaestroFeature"/>
+        <FeatureRef Id="ServerFeature"/>
+        <FeatureRef Id="WebExtensionsFeature"/>
+        <FeatureRef Id="MaestroFeature"/>
 
-    <UIRef Id="WixUI_FeatureTree"/>
+        <UIRef Id="WixUI_FeatureTree"/>
 
-    <InstallExecuteSequence>
-        <Custom
-            Action="UpdateApacheConfig"
-            After="UpdateApacheConfig.SetValues">&amp;WebExtApacheFeature > 2 AND MGWEB_CONFIG = "APACHE"</Custom>
-        <Custom 
-            Action="UpdateApacheConfig.SetValues"
-            After="InstallFiles">&amp;WebExtApacheFeature > 2 AND MGWEB_CONFIG = "APACHE"</Custom>
-        <Custom
-            Action="UpdatePhpIni"
-            After="UpdatePhpIni.SetValues" />
-        <Custom
-            Action="UpdatePhpIni.SetValues"
-            After="UpdateApacheConfig" />
-        <!--
+        <InstallExecuteSequence>
+            <Custom
+                Action="UpdateApacheConfig"
+                After="UpdateApacheConfig.SetValues">&amp;WebExtApacheFeature > 2</Custom>
+            <Custom
+                Action="UpdateApacheConfig.SetValues"
+                After="InstallFiles">&amp;WebExtApacheFeature > 2</Custom>
+            <Custom
+                Action="UpdatePhpIni"
+                After="UpdatePhpIni.SetValues">&amp;WebExtPhpFeature > 2</Custom>
+            <Custom
+                Action="UpdatePhpIni.SetValues"
+                After="UpdateApacheConfig">&amp;WebExtPhpFeature > 2</Custom>
+            <!--
         <Custom
             Action="GetApacheDir"
             After="UpdatePhpIni.SetValues">MGWEB_CONFIG = "APACHE"</Custom>
@@ -73,27 +76,27 @@
             Action="GetApacheDir.SetValues"
             After="UpdatePhpIni" />
         -->
-        <Custom
-            Action="InstallApacheServiceCA"
-            Before="InstallFinalize">&amp;WebExtApacheFeature > 2 AND MGWEB_CONFIG = "APACHE"</Custom>
-        <!--
+            <Custom
+                Action="InstallApacheServiceCA"
+                Before="InstallFinalize">&amp;WebExtApacheFeature > 2</Custom>
+            <!--
         <Custom
             Action="ConfigureIIS"
             Before="InstallFinalize">MGWEB_CONFIG = "IIS"</Custom>
          -->
-        <Custom
-            Action="MgServerInstallCA"
-            Before="InstallFinalize">&amp;ServerFeature>2</Custom>
-        <Custom
-            Action="MgServerUninstallCA"
-            Before="RemoveFiles">&amp;ServerFeature=2</Custom>
-        <Custom
-             Action="RemoveApacheServiceCA"
-             Before="RemoveFiles">&amp;WebExtApacheFeature=2</Custom>
-      <ScheduleReboot After="InstallFinalize"/>
-    </InstallExecuteSequence>
+            <Custom
+                Action="MgServerInstallCA"
+                Before="InstallFinalize">&amp;ServerFeature>2</Custom>
+            <Custom
+                Action="MgServerUninstallCA"
+                Before="RemoveFiles">&amp;ServerFeature=2</Custom>
+            <Custom
+                 Action="RemoveApacheServiceCA"
+                 Before="RemoveFiles">&amp;WebExtApacheFeature=2</Custom>
+            <ScheduleReboot After="InstallFinalize"/>
+        </InstallExecuteSequence>
 
-    <!-- Need the Visual C++ Runtime as an MSM when ready for release; commented out to reduce output warnings. -->
-    <?include MsvcRuntime.wxi ?>
-  </Product>
+        <!-- Need the Visual C++ Runtime as an MSM when ready for release; commented out to reduce output warnings. -->
+        <?include MsvcRuntime.wxi ?>
+    </Product>
 </Wix>
