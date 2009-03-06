@@ -10,18 +10,24 @@
          UpgradeCode="5D9A7D8D-485E-43E0-A4C8-3582E4D80051"
          Name="MapGuide Open Source" 
          Version="2.1.0" 
-         Manufacturer="Open Source GeoSpatial Foundation"
+         Manufacturer="Open Source Geospatial Foundation"
          Language="1033" >
 
     <Package InstallerVersion="300" Compressed="yes" />
 
-		<Media Id="1" Cabinet="MapGuideOpenSource.cab" EmbedCab="yes" />
+	<Media Id="1" Cabinet="MapGuideOpenSource.cab" EmbedCab="yes" />
 
     <PropertyRef Id="NETFRAMEWORK20"/>
     <Condition Message="The .NET Framework 2.0 must be installed ([NETFRAMEWORK20])">
       Installed OR NETFRAMEWORK20
     </Condition>
 
+      <!-- Initial MapGuide Web Configuration: APACHE | IIS | MANUAL -->
+      <Property Id="MGWEB_CONFIG" Secure="yes" Value="APACHE" />
+      <Property Id="APACHE_PORT" Secure="yes" Value="8008" />
+      <Property Id="APACHE_VERSION" Secure="yes" Value="2.2.4" />
+      <Property Id="API_TYPE" Secure="yes" Value="PHP" />
+  
     <Property Id="ALLUSERS">1</Property>
 
     <Property Id="IISVERSIONMAJOR" Value="#0">
@@ -47,18 +53,51 @@
     <UIRef Id="WixUI_FeatureTree"/>
 
     <InstallExecuteSequence>
+        <Custom
+            Action="UpdateApacheConfig"
+            After="UpdateApacheConfig.SetValues">MGWEB_CONFIG = "APACHE"</Custom>
+        <Custom 
+            Action="UpdateApacheConfig.SetValues"
+            After="InstallFiles">MGWEB_CONFIG = "APACHE"</Custom>
+        <Custom
+            Action="UpdatePhpIni"
+            After="UpdatePhpIni.SetValues" />
+        <Custom
+            Action="UpdatePhpIni.SetValues"
+            After="UpdateApacheConfig" />
+        <!--
+        <Custom
+            Action="GetApacheDir"
+            After="UpdatePhpIni.SetValues">MGWEB_CONFIG = "APACHE"</Custom>
+        <Custom
+            Action="GetApacheDir.SetValues"
+            After="UpdatePhpIni" />
+        -->
+        <Custom
+            Action="InstallApacheServiceCA"
+            Before="InstallFinalize">MGWEB_CONFIG = "APACHE"</Custom>
+        <!--
+        <Custom
+            Action="ConfigureIIS"
+            Before="InstallFinalize">MGWEB_CONFIG = "IIS"</Custom>
+         -->
       <Custom
           Action="MgServerInstallCA"
-          Before="InstallFinalize">&amp;ServerFeature=3</Custom>
+          Before="InstallFinalize">&amp;ServerFeature>2</Custom>
       <Custom
           Action="MgServerUninstallCA"
           Before="RemoveFiles">&amp;ServerFeature=2</Custom>
+        <Custom
+             Action="RemoveApacheServiceCA"
+             Before="RemoveFiles">WebExtApacheFeature=2</Custom>
+        <!--
       <ScheduleReboot After="InstallFinalize"/>
+      -->
     </InstallExecuteSequence>
 
-    <!-- Need the Visual C++ Runtime as an MSM when ready for release; commented out to reduce output warnings.
+    <!-- Need the Visual C++ Runtime as an MSM when ready for release; commented out to reduce output warnings. -->
+    <!--
     <?include MsvcRuntime.wxi ?>
-     -->
-
+    -->
   </Product>
 </Wix>

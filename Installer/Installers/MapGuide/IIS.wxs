@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+        <Property Id="ConfigIISScript">
+            <![CDATA[
+            Function Main()
+                MsgBox("Hello World from IIS")
+            End Function
+            
+            Function GetWebRoot()
+            End Function
+            
+            Function GetPhpDir()
+            End Function
+            
+            Function GetTomcatDir()
+            End Function
+            
+            Function IsJava()
+            End Function
+            ]]>
+        </Property>
+        <CustomAction Id="ConfigureIIS" Property="ConfigIISScript" VBScriptCall="Main" Execute="deferred" Return="check" />
+	</Fragment>
+</Wix>
