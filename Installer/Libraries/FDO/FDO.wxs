@@ -15,7 +15,7 @@
       </Component>
       </Directory>
     </DirectoryRef>
-    <Feature Id="FdoFeature" Title="FDO" Level="1" ConfigurableDirectory="FDOLOCATION" Description="FDO (Feature Data Objects) allows abstract access to many different data sources." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+    <Feature Id="FdoFeature" Title="FDO" Level="1" Display="hidden" ConfigurableDirectory="FDOLOCATION" Description="FDO (Feature Data Objects) allows abstract access to many different data sources." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
       <ComponentRef Id="FdoComponent"/>
       <ComponentGroupRef Id="group_FDOFILES"/>
     </Feature>

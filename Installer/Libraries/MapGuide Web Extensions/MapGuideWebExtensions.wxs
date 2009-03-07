@@ -10,7 +10,16 @@
               
           </Directory>
           <Directory Id="PHPLOCATION" Name="Php">
-              
+              <Component Id="WebExtPhpComponent" Guid="88814E96-07DC-4fb7-A993-F31FC1E000CB" Feature="WebExtPhpFeature">
+                  <CreateFolder />
+                  <Environment Id="PhpEnvVar"
+                               Action="set"
+                               Name="PATH"
+                               Part="last"
+                               Permanent="no"
+                               System="yes"
+                               Value="[PHPLOCATION]" />
+              </Component>
           </Directory>
           <Directory Id="WEBROOTLOCATION" Name="www">
               
