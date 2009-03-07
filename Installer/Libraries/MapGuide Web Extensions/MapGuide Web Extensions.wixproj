@@ -24,6 +24,7 @@
     <DefineConstants>InstallerSupportDir=../../Support</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Apache.wxs" />
     <Compile Include="FileIncludes\incApacheFiles.wxs" />
     <Compile Include="FileIncludes\incFusionFiles.wxs" />
     <Compile Include="FileIncludes\incMapAgentFiles.wxs" />
@@ -38,6 +39,7 @@
     <Compile Include="FileIncludes\incPhpFiles.wxs" />
     <Compile Include="FileIncludes\incTomcatFiles.wxs" />
     <Compile Include="FileIncludes\incWebRootFiles.wxs" />
+    <Compile Include="IIS.wxs" />
     <Compile Include="MapGuideWebExtensions.wxs" />
   </ItemGroup>
   <ItemGroup>

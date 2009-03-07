@@ -25,8 +25,6 @@
     <SuppressPdbOutput>True</SuppressPdbOutput>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Apache.wxs" />
-    <Compile Include="IIS.wxs" />
     <Compile Include="MapGuide.wxs" />
   </ItemGroup>
   <ItemGroup>

@@ -77,7 +77,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="msi.lib"
-				OutputFile="..\..\Installers\MapGuide\Resources\apache_actions.dll"
+				OutputFile="..\..\Libraries\MapGuide Web Extensions\Resources\apache_actions.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				ModuleDefinitionFile=".\apache_actions.def"
