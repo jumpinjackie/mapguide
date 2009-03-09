@@ -239,6 +239,7 @@ void MapAgentCommon::PopulateData(char* partHdrEnd, char** curBuf, char* endBuf,
 
                 params->AddParameter(paramName, fileName);
                 params->SetParameterType(paramName, paramType);
+                params->AddParameter(fileName, L"tempfile");    // indicate this is a temporary file
             }
             else
             {

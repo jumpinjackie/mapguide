@@ -83,7 +83,8 @@ void MgHttpSetResource::Execute(MgHttpResponse& hResponse)
     if (hrParam->GetParameterValue(MgHttpResourceStrings::reqResourceContent) != L"")
     {
         STRING resourceFileName = hrParam->GetParameterValue(MgHttpResourceStrings::reqResourceContent);
-        resourceByteSource = new MgByteSource(resourceFileName);
+        STRING isTemp = hrParam->GetParameterValue(resourceFileName);
+        resourceByteSource = new MgByteSource(resourceFileName, isTemp.length() > 0);
         resourceByteSource->SetMimeType(L"text/xml");
         resourceByteReader = resourceByteSource->GetReader();
     }
@@ -92,7 +93,8 @@ void MgHttpSetResource::Execute(MgHttpResponse& hResponse)
     if (hrParam->GetParameterValue(MgHttpResourceStrings::reqResourceHeader) != L"")
     {
         STRING headerFileName = hrParam->GetParameterValue(MgHttpResourceStrings::reqResourceHeader);
-        headerByteSource = new MgByteSource(headerFileName);
+        STRING isTemp = hrParam->GetParameterValue(headerFileName);
+        headerByteSource = new MgByteSource(headerFileName,  isTemp.length() > 0);
         headerByteSource->SetMimeType(L"text/xml");
         headerByteReader = headerByteSource->GetReader();
     }

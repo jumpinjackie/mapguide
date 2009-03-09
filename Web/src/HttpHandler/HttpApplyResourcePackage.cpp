@@ -37,7 +37,9 @@ MgHttpApplyResourcePackage::MgHttpApplyResourcePackage(MgHttpRequest *hRequest)
     Ptr<MgHttpRequestParam> hrParam = m_hRequest->GetRequestParam();
 
     // Get package.
-    m_package = new MgByteSource(hrParam->GetParameterValue(MgHttpResourceStrings::reqPackage));
+    STRING packageFileName = hrParam->GetParameterValue(MgHttpResourceStrings::reqPackage);
+    STRING isTemp = hrParam->GetParameterValue(packageFileName);
+    m_package = new MgByteSource(packageFileName, isTemp.length() > 0);
     m_package->SetMimeType(hrParam->GetParameterType(MgHttpResourceStrings::reqPackage));
 }
 
