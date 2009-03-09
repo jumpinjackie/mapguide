@@ -214,25 +214,16 @@ int main ()
             {
                 // Invalid authentication information is not fatal, we should continue.
                 CgiResponseHandler::RequestAuth();
+
+                // clean up any temporary files we created
+                MapAgentCommon::DeleteTempFiles(params);
+
                 return 0;
             }
 
             Ptr<MgHttpResponse> response = request->Execute();
 
-            //Clean up temporary files.  Assume anything with a type is file.
-            Ptr<MgStringCollection> paramNames = params->GetParameterNames();
-            if (paramNames != NULL)
-            {
-                for (int n = 0; n < paramNames->GetCount(); n++)
-                {
-                    STRING name = paramNames->GetItem(n);
-                    if (params->GetParameterType(name).length() > 0)
-                    {
-                        STRING fileName = params->GetParameterValue(name);
-                        MgFileUtil::DeleteFile(fileName);
-                    }
-                }
-            }
+            // NOTE: temporary files are deleted when we execute the request
 
             CgiResponseHandler::SendResponse(response);
         }

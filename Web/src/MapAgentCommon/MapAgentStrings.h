@@ -70,5 +70,6 @@ public:
     const static wchar_t* FailedAuth1;
     const static wchar_t* FailedAuth2;
     const static wchar_t* ProductName;
+    const static wchar_t* TempfileKey;
 };
 #endif
