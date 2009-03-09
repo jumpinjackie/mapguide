@@ -146,6 +146,7 @@ bool MapAgentCommon::AuthenticateOgcRequest(MgHttpRequestParam* params)
     return true;
 }
 
+
 // Is the thing pointed to an XML processing instruction?
 bool MapAgentCommon::IsXmlPi(char* buf)
 {
@@ -162,6 +163,7 @@ bool MapAgentCommon::IsXmlPi(char* buf)
 
     return retVal;
 }
+
 
 void MapAgentCommon::ScanHeaders(char* partHdrStart, char* partHdrEnd, STRING& paramName, STRING& paramType, bool& bIsFile)
 {
@@ -194,8 +196,9 @@ void MapAgentCommon::ScanHeaders(char* partHdrStart, char* partHdrEnd, STRING& p
 
 }
 
+
 void MapAgentCommon::PopulateData(char* partHdrEnd, char** curBuf, char* endBuf, string& dataEndTag,
-                                   STRING& paramName, STRING& paramType, MgHttpRequestParam* params, bool& bIsFile )
+                                  STRING& paramName, STRING& paramType, MgHttpRequestParam* params, bool& bIsFile )
 {
     if (paramName.length() > 0)
     {
@@ -239,7 +242,10 @@ void MapAgentCommon::PopulateData(char* partHdrEnd, char** curBuf, char* endBuf,
 
                 params->AddParameter(paramName, fileName);
                 params->SetParameterType(paramName, paramType);
-                params->AddParameter(fileName, L"tempfile");    // indicate this is a temporary file
+
+                // indicate this is a temporary file
+                params->AddParameter(fileName, MapAgentStrings::TempfileKey);
+                params->SetParameterType(fileName, MapAgentStrings::TempfileKey);
             }
             else
             {
@@ -262,3 +268,22 @@ void MapAgentCommon::PopulateData(char* partHdrEnd, char** curBuf, char* endBuf,
     }
 }
 
+
+// Cleans up any temporary files created as part of the request.
+// These are identified by the parameter type.
+void MapAgentCommon::DeleteTempFiles(MgHttpRequestParam* params)
+{
+    Ptr<MgStringCollection> paramNames = params->GetParameterNames();
+    if (paramNames != NULL)
+    {
+        for (int i=0; i<paramNames->GetCount(); ++i)
+        {
+            STRING name = paramNames->GetItem(i);
+            STRING type = params->GetParameterType(name);
+            if (type == MapAgentStrings::TempfileKey)
+            {
+                MgFileUtil::DeleteFile(name);
+            }
+        }
+    }
+}

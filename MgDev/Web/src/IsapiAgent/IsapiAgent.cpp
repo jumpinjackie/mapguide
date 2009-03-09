@@ -47,6 +47,7 @@ BOOL WINAPI GetExtensionVersion(HSE_VERSION_INFO *pVer)
     return TRUE;
 }
 
+
 DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
 {
     Initialize(pECB);
@@ -104,11 +105,10 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
     char* query = pECB->lpszQueryString;
     char* requestMethod = pECB->lpszMethod;
 
-    IsapiPostParser postParser(pECB);
-
     if (NULL != requestMethod && NULL != strstr(requestMethod, "POST"))  // NOXLATE
     {
         // Must be a POST request
+        IsapiPostParser postParser(pECB);
         postParser.Parse(params);
     }
     else if (NULL != query && strlen(query) > 0)
@@ -173,10 +173,16 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
         {
             // Invalid authentication information is not fatal, we should continue.
             responseHandler.RequestAuth();
+
+            // clean up any temporary files we created
+            MapAgentCommon::DeleteTempFiles(params);
+
             return HSE_STATUS_SUCCESS;
         }
 
         Ptr<MgHttpResponse> response = request->Execute();
+
+        // NOTE: temporary files are deleted when we execute the request
 
         responseHandler.SendResponse(response);
     }
@@ -184,12 +190,14 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
     return HSE_STATUS_SUCCESS;
 }
 
+
 BOOL WINAPI TerminateExtension(DWORD dwFlags)
 {
     MgUninitializeWebTier();
 
     return TRUE;
 }
+
 
 void Initialize(EXTENSION_CONTROL_BLOCK *pECB)
 {
@@ -215,6 +223,3 @@ void Initialize(EXTENSION_CONTROL_BLOCK *pECB)
         MG_CATCH_AND_THROW(L"IsapiAgent.Initialize");
     }
 }
-
-
-

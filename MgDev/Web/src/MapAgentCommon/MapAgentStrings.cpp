@@ -69,3 +69,6 @@ const wchar_t* MapAgentStrings::WebConfig = L"../webconfig.ini";
 const wchar_t* MapAgentStrings::FailedAuth1 = L"MgAuthenticationFailedException";
 const wchar_t* MapAgentStrings::FailedAuth2 = L"MgUnauthorizedAccessException";
 const wchar_t* MapAgentStrings::ProductName = L"MapGuide";
+
+// used to indicate the creation of temporary files as part of a request
+const wchar_t* MapAgentStrings::TempfileKey = L"tempfile";
