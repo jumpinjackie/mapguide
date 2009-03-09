@@ -245,6 +245,7 @@ void CgiPostParser::Parse(MgHttpRequestParam* params)
 
                                 params->AddParameter(paramName, fileName);
                                 params->SetParameterType(paramName, paramType);
+                                params->AddParameter(fileName, L"tempfile");    // indicate this is a temporary file
                             }
                             else
                             {

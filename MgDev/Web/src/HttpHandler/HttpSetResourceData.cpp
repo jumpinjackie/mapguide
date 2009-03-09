@@ -45,12 +45,15 @@ MgHttpSetResourceData::MgHttpSetResourceData(MgHttpRequest* hRequest)
     m_dataType = param->GetParameterValue(MgHttpResourceStrings::reqDataType);
 
     // Get data length.
-    m_dataLength = MgUtil::StringToInt32(param->GetParameterValue(
-        MgHttpResourceStrings::reqDataLength));
+    STRING dataLength = param->GetParameterValue(MgHttpResourceStrings::reqDataLength);
+    m_dataLength = MgUtil::StringToInt32(dataLength);
 
     // Get data.
-    m_data = new MgByteSource(param->GetParameterValue(MgHttpResourceStrings::reqData));
+    STRING dataFileName = param->GetParameterValue(MgHttpResourceStrings::reqData);
+    STRING isTemp = param->GetParameterValue(dataFileName);
+    m_data = new MgByteSource(dataFileName, isTemp.length() > 0);
 
+    // Get mime type.
     m_data->SetMimeType(param->GetParameterType(MgHttpResourceStrings::reqData));
 }
 
