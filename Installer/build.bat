@@ -187,11 +187,11 @@ if not exist "%MG_SERVER%" goto error_mg_server_not_found
 if not exist "%MG_WEB%" goto error_mg_web_not_found
 rem copy support files into server and web directories
 echo [prepare] Tomcat
-%XCOPY% "%INSTALLER_DEV%\Support\Web\Tomcat" "%MG_WEB%\Tomcat"
+%XCOPY% "%INSTALLER_DEV%\Support\Web\Tomcat" "%MG_WEB%\Tomcat" /EXCLUDE:svn_excludes.txt
 echo [prepare] Php
-%XCOPY% "%INSTALLER_DEV%\Support\Web\Php" "%MG_WEB%\Php"
+%XCOPY% "%INSTALLER_DEV%\Support\Web\Php" "%MG_WEB%\Php" /EXCLUDE:svn_excludes.txt
 echo [prepare] Apache2
-%XCOPY% "%INSTALLER_DEV%\Support\Web\Apache2" "%MG_WEB%\Apache2"
+%XCOPY% "%INSTALLER_DEV%\Support\Web\Apache2" "%MG_WEB%\Apache2" /EXCLUDE:svn_excludes.txt
 
 if not "%TYPEACTION%"=="buildinstall" goto quit
 
