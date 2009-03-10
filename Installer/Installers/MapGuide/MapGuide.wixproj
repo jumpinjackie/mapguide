@@ -28,6 +28,9 @@
     <Compile Include="MapGuide.wxs" />
   </ItemGroup>
   <ItemGroup>
+    <WixExtension Include="WixIIsExtension">
+      <HintPath>$(WixExtDir)\WixIIsExtension.dll</HintPath>
+    </WixExtension>
     <WixExtension Include="WixNetFxExtension">
       <HintPath>$(WixExtDir)\WixNetFxExtension.dll</HintPath>
     </WixExtension>

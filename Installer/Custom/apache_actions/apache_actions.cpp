@@ -208,7 +208,7 @@ UpdatePhpIni(MSIHANDLE hMSI)
     // us to add the desired configuration.
     //
     CString csBuff(szBuff);
-	strcpy(szFind,"MG_WEB_PHP");
+	strcpy(szFind,"%MG_WEB_PHP%");
 	csBuff.Replace(szFind,szPhpDir);
 
 	if ( strcmp(szWebServerType,"2") == 0 )

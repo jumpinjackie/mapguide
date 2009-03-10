@@ -1,25 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:iis="http://schemas.microsoft.com/wix/IIsExtension"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
 	<Fragment>
-        <Property Id="ConfigIISScript">
-            <![CDATA[
-            Function Main()
-                MsgBox("Hello World from IIS")
-            End Function
-            
-            Function GetWebRoot()
-            End Function
-            
-            Function GetPhpDir()
-            End Function
-            
-            Function GetTomcatDir()
-            End Function
-            
-            Function IsJava()
-            End Function
-            ]]>
-        </Property>
-        <CustomAction Id="ConfigureIIS" Property="ConfigIISScript" VBScriptCall="Main" Execute="deferred" Return="check" />
+        <!--
+        <util:User Id="iisAccount" Name="IUSR_[ComputerName]" Domain="[ComputerName]" />
+        <iis:WebSite Id="DefaultWebSite" Description="Default Web Site">
+            <iis:WebAddress Id="AllUnassigned" Port="80" />
+        </iis:WebSite>
+        <Component Id="IIsComponent" Guid="44AE131F-DFBF-4EFA-B3A9-424350ABD17E" Directory="WEBEXTENSIONSLOCATION">
+            <Condition>MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR &lt; 7</Condition>
+            <iis:WebVirtualDir Id="MapGuideVirtualDir" Directory="WEBROOTLOCATION" Alias="mapguide" WebSite="DefaultWebSite">
+                <iis:WebDirProperties Id="MapGuideVirtualDirProperties" Execute="yes" Script="yes" Read="yes" AnonymousAccess="yes" AnonymousUser="iisAccount" />
+                <iis:WebApplication Id="MapGuideApplication" Name="mapguide" WebAppPool="MapGuideAppPool" />
+            </iis:WebVirtualDir>
+            <iis:WebAppPool Id="MapGuideAppPool" Name="MapGuideAppPool" Identity="other" User="iisAccount" />
+        </Component>
+        -->
+        <Binary Id="IIsActions" SourceFile="..\..\Custom\bin\iis_actions.dll" />
+        <Binary Id="IIs7Actions" SourceFile="..\..\Custom\bin\iis7_action.dll" />
+        <CustomAction Id="AddWebServiceExtension" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="AddWebServiceExtension" />
+        <CustomAction Id="DeleteWebServiceExtension" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="DeleteWebServiceExtension" />
+        <CustomAction Id="RegisterScriptMaps" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="RegisterScriptMaps" />
+        <CustomAction Id="SetCustomErrors" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="SetCustomErrors" />
+        <CustomAction Id="CreateVDirMapAgent" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="CreateVDirMapAgent" />
+        <CustomAction Id="CreateVDirMapGuide" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="CreateVDirMapGuide" />
+        <CustomAction Id="CreateVDirPhpAgent" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="CreateVDirPhpAgent" />
+        <CustomAction Id="CreateVDirNetAgent" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="CreateVDirNetAgent" />
+        <CustomAction Id="CreateVDirJavaAgent" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="CreateVDirJavaAgent" />
+        <CustomAction Id="DeleteVDirMapGuide" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="DeleteVDirMapGuide" />
 	</Fragment>
 </Wix>

@@ -25,6 +25,7 @@
         <Property Id="MGWEB_CONFIG" Secure="yes" Value="APACHE" />
         <Property Id="APACHE_PORT" Secure="yes" Value="8008" />
         <Property Id="APACHE_VERSION" Secure="yes" Value="2.2.4" />
+        <Property Id="PHP_VERSION" Secure="yes" Value="5.2.5" />
         <Property Id="API_TYPE" Secure="yes" Value="PHP" />
 
         <!-- Add Remove Programs stuff -->
@@ -58,41 +59,59 @@
         <InstallExecuteSequence>
             <Custom
                 Action="UpdateApacheConfig"
-                After="UpdateApacheConfig.SetValues">&amp;WebExtApacheFeature > 2</Custom>
+                After="UpdateApacheConfig.SetValues">MGWEB_CONFIG = "APACHE" AND &amp;WebExtApacheFeature > 2</Custom>
             <Custom
                 Action="UpdateApacheConfig.SetValues"
-                After="InstallFiles">&amp;WebExtApacheFeature > 2</Custom>
+                After="InstallFiles">MGWEB_CONFIG = "APACHE" AND &amp;WebExtApacheFeature > 2</Custom>
             <Custom
                 Action="UpdatePhpIni"
                 After="UpdatePhpIni.SetValues">&amp;WebExtPhpFeature > 2</Custom>
             <Custom
                 Action="UpdatePhpIni.SetValues"
                 After="UpdateApacheConfig">&amp;WebExtPhpFeature > 2</Custom>
-            <!--
-        <Custom
-            Action="GetApacheDir"
-            After="UpdatePhpIni.SetValues">MGWEB_CONFIG = "APACHE"</Custom>
-        <Custom
-            Action="GetApacheDir.SetValues"
-            After="UpdatePhpIni" />
-        -->
             <Custom
                 Action="InstallApacheServiceCA"
-                Before="InstallFinalize">&amp;WebExtApacheFeature > 2</Custom>
-            <!--
-        <Custom
-            Action="ConfigureIIS"
-            Before="InstallFinalize">MGWEB_CONFIG = "IIS"</Custom>
-         -->
+                Before="InstallFinalize">MGWEB_CONFIG = "APACHE" AND &amp;WebExtApacheFeature > 2</Custom>
             <Custom
                 Action="MgServerInstallCA"
                 Before="InstallFinalize">&amp;ServerFeature>2</Custom>
             <Custom
                 Action="MgServerUninstallCA"
                 Before="RemoveFiles">&amp;ServerFeature=2</Custom>
+            <!-- IIS-related custom actions -->
             <Custom
-                 Action="RemoveApacheServiceCA"
-                 Before="RemoveFiles">&amp;WebExtApacheFeature=2</Custom>
+                Action="RemoveApacheServiceCA"
+                Before="RemoveFiles">MGWEB_CONFIG = "APACHE" AND &amp;WebExtApacheFeature=2</Custom>
+            <Custom
+                Action="AddWebServiceExtension"
+                Before="InstallFinalize">MGWEB_CONFIG = "IIS" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom
+                Action="CreateVDirMapGuide"
+                After="AddWebServiceExtension">MGWEB_CONFIG = "IIS" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom
+                Action="RegisterScriptMaps"
+                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom
+                Action="SetCustomErrors"
+                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom
+                Action="CreateVDirMapAgent"
+                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom
+                Action="CreateVDirPhpAgent"
+                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND &amp;WebExtMapViewerPHPFeature > 2</Custom>
+            <Custom
+                Action="CreateVDirNetAgent"
+                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND &amp;WebExtMapViewerASPXFeature > 2</Custom>
+            <Custom
+                Action="CreateVDirJavaAgent"
+                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND &amp;WebExtMapViewerJSPFeature > 2</Custom>
+            <Custom
+                Action="DeleteWebServiceExtension"
+                Before="DeleteVDirMapGuide">MGWEB_CONFIG = "IIS" AND &amp;WebExtensionsFeature = 2</Custom>
+            <Custom
+                Action="DeleteVDirMapGuide"
+                Before="InstallFinalize">MGWEB_CONFIG = "IIS" AND &amp;WebExtensionsFeature = 2</Custom>
             <ScheduleReboot After="InstallFinalize"/>
         </InstallExecuteSequence>
 

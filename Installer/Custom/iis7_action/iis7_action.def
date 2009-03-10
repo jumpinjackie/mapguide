@@ -1,0 +1,7 @@
+LIBRARY	"iis7_action"
+
+EXPORTS
+CreateAPPMapGuideWithIIS7	@2
+CreateVDirPhpAgentWithIIS7	@3
+CreateAPPNetAgentWithIIS7	@4
+DeleteAPPMapGuideWithIIS7	@5
