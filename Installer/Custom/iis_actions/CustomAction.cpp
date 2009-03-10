@@ -68,7 +68,7 @@ UINT __stdcall AddWebServiceExtension(MSIHANDLE hMSI)
 		szInstallDir[nLen++] = '\\';
 	szInstallDir[nLen] = '\0';
 
-	::MessageBoxA(NULL, szInstallDir, "AddWebServiceExtension: Install Directory", MB_OK);
+	//::MessageBoxA(NULL, szInstallDir, "AddWebServiceExtension: Install Directory", MB_OK);
 
 	// retrieve API_TYPE MSI property
 	DWORD dwDataLen = MAX_BUFFER;
