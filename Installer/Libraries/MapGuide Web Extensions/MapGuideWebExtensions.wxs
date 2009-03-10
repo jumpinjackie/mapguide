@@ -30,7 +30,51 @@
               </Component>
           </Directory>
           <Directory Id="WEBROOTLOCATION" Name="www">
-              
+              <Component Id="WebRootComponent" Guid="A84579E6-285D-4869-9F04-AA47FB1ACFD5" Feature="WebExtensionsFeature">
+                  <CreateFolder />
+                  <IniFile Id="INISETMAPAGENTRESOURCESPATH"
+                           Action="addLine"
+                           Directory="WEBROOTLOCATION"
+                           Key="ResourcesPath"
+                           Name="webconfig.ini"
+                           Section="GeneralProperties"
+                           Value="[WEBROOTLOCATION]mapagent\Resources" />
+                  <IniFile Id="INISETWEBTEMPPATH"
+                           Action="addLine"
+                           Directory="WEBROOTLOCATION"
+                           Key="TempPath"
+                           Name="webconfig.ini"
+                           Section="GeneralProperties"
+                           Value="[TempFolder]" />
+                  <IniFile Id="INISETSERVERIP"
+                           Action="addLine"
+                           Directory="WEBROOTLOCATION"
+                           Key="IpAddress"
+                           Name="webconfig.ini"
+                           Section="SiteConnectionProperties"
+                           Value="[MGSERVER_IP]" />
+                  <IniFile Id="INISETTEMPLATEROOTPATH"
+                           Action="addLine"
+                           Directory="WEBROOTLOCATION"
+                           Key="TemplateRootFolder"
+                           Name="webconfig.ini"
+                           Section="WebApplicationProperties"
+                           Value="[dir_fusion_0]templates\mapguide" />
+                  <IniFile Id="INISETWIDGETINFOPATH"
+                           Action="addLine"
+                           Directory="WEBROOTLOCATION"
+                           Key="WidgetInfoFolder"
+                           Name="webconfig.ini"
+                           Section="WebApplicationProperties"
+                           Value="[dir_fusion_0]widgets\widgetinfo" />
+                  <IniFile Id="INISETCONTAINERINFOPATH"
+                           Action="addLine"
+                           Directory="WEBROOTLOCATION"
+                           Key="ContainerInfoFolder"
+                           Name="webconfig.ini"
+                           Section="WebApplicationProperties"
+                           Value="[dir_fusion_0]containerinfo" />
+              </Component>
           </Directory>
           <Directory Id="TOMCATLOCATION" Name="Tomcat">
               

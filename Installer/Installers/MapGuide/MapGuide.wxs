@@ -23,6 +23,7 @@
 
         <!-- Initial MapGuide Web Configuration: APACHE | IIS | MANUAL -->
         <Property Id="MGWEB_CONFIG" Secure="yes" Value="APACHE" />
+        <Property Id="MGSERVER_IP" Secure="yes" Value="127.0.0.1" />
         <Property Id="APACHE_PORT" Secure="yes" Value="8008" />
         <Property Id="APACHE_VERSION" Secure="yes" Value="2.2.4" />
         <Property Id="PHP_VERSION" Secure="yes" Value="5.2.5" />
