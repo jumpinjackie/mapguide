@@ -586,31 +586,43 @@ STRING MgServerDescribeSchema::DescribeSchemaAsXml(MgResourceIdentifier* resourc
     {
         MgStringCollection* classNameCol = NULL;
 
-        // Since FDO does not know about joined feature sources,
-        // Get full schema if the class is extended.
-        if (!CheckExtendedFeatureClasses(resource, classNames))
+        // Since the FDO provider does not know about the join information,
+        // get the full schema if the feature source has joins.
+        if (CheckExtendedFeatureClasses(resource, classNames))
+        {
+            schemaXml = m_featureServiceCache->GetSchemaXml(resource, schemaName, NULL);
+        }
+        else
         {
             classNameCol = classNames;
         }
 
-        // The schema XML can be retrieved from either the serialized
-        // schemas or the unserialized ones. So, try to get the serialized
-        // schemas from the cache first then the unserialized ones later.
-        Ptr<MgFeatureSchemaCollection> schemas = m_featureServiceCache->GetSchemas(
-            resource, schemaName, classNameCol, true);
-
-        if (NULL == schemas.p)
+        if (schemaXml.empty())
         {
-            schemas = DescribeSchema(resource, schemaName, classNameCol, false);
+            // The schema XML can be retrieved from either the serialized
+            // schemas or the unserialized ones. So, try to get the serialized
+            // schemas from the cache first then the unserialized ones later.
+            Ptr<MgFeatureSchemaCollection> schemas = m_featureServiceCache->GetSchemas(
+                resource, schemaName, classNameCol, true);
+
+            if (NULL == schemas.p)
+            {
+                schemas = DescribeSchema(resource, schemaName, classNameCol, false);
+            }
+            else
+            {
+                m_cacheManager->CheckPermission(resource, MgResourcePermission::ReadOnly);
+            }
+
+            // Get the schema XML.
+            schemaXml = SchemaToXml(schemas);
+
+            m_featureServiceCache->SetSchemaXml(resource, schemaName, classNameCol, schemaXml);
         }
         else
         {
             m_cacheManager->CheckPermission(resource, MgResourcePermission::ReadOnly);
         }
-
-        schemaXml = SchemaToXml(schemas);
-
-        m_featureServiceCache->SetSchemaXml(resource, schemaName, classNames, schemaXml);
     }
     else
     {
@@ -1442,8 +1454,8 @@ MgStringCollection* MgServerDescribeSchema::GetClasses(MgResourceIdentifier* res
 
         if (connection->IsConnectionOpen())
         {
-            // Fall back on using the DescribeSchema API to retrieve class names
-            // if the connection does not support the GetClassNames command
+            // Fall back on using the DescribeSchema API to retrieve the class names
+            // if the FDO provider does not support the GetClassNames command
             // or the feature source has joins.
             bool useSchema = true;
 
@@ -1552,9 +1564,8 @@ MgClassDefinition* MgServerDescribeSchema::GetClassDefinition(  MgResourceIdenti
     {
         Ptr<MgStringCollection> classNames;
 
-        // Since FDO does not know about joined feature sources,
-        // use full schema to get the class definition
-        // if the class is extended.
+        // Since the FDO provider does not know about the join information,
+        // use the full schema to retrieve the class definition if the feature source has joins.
         if (!CheckExtendedFeatureClass(resource, className))
         {
             classNames = new MgStringCollection();
@@ -1621,9 +1632,8 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(
     {
         Ptr<MgStringCollection> classNames;
 
-        // Since FDO does not know about joined feature sources,
-        // use full schema to get the class identity properties
-        // if the class is extended.
+        // Since the FDO provider does not know about the join information,
+        // use the full schema to retrieve the class identity properties if the feature source has joins.
         if (!CheckExtendedFeatureClass(resource, className))
         {
             classNames = new MgStringCollection();
@@ -1935,40 +1945,38 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(
 bool MgServerDescribeSchema::CheckExtendedFeatureClass(MgResourceIdentifier* resource,
     CREFSTRING className)
 {
-    if (className.empty())
-    {
-        return false;
-    }
-
     bool extended = false;
-    
-    STRING parsedSchemaName, parsedClassName;
-    MgUtil::ParseQualifiedClassName(className, parsedSchemaName, parsedClassName);
 
-    if (NULL == m_featureSourceCacheItem.p)
+    if (!className.empty())
     {
-        m_featureSourceCacheItem = m_cacheManager->GetFeatureSourceCacheItem(resource);
-    }
+        STRING parsedSchemaName, parsedClassName;
+        MgUtil::ParseQualifiedClassName(className, parsedSchemaName, parsedClassName);
 
-    MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
-    CHECKNULL(featureSource, L"MgServerDescribeSchema.CheckExtendedFeatureClass");
-    MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
-    CHECKNULL(extensions, L"MgServerDescribeSchema.CheckExtendedFeatureClass");
-    int extensionCount = extensions->GetCount();
-
-    for (int i = 0; i < extensionCount; ++i)
-    {
-        MdfModel::Extension* extension = extensions->GetAt(i);
-        CHECKNULL(extension, L"MgServerDescribeSchema.CheckExtendedFeatureClass");
-        STRING extensionName = (STRING)extension->GetName();
-
-        STRING currSchemaName, currClassName;
-        MgUtil::ParseQualifiedClassName(extensionName, currSchemaName, currClassName);
-
-        if (currClassName == parsedClassName)
+        if (NULL == m_featureSourceCacheItem.p)
         {
-            extended = true;
-            break;
+            m_featureSourceCacheItem = m_cacheManager->GetFeatureSourceCacheItem(resource);
+        }
+
+        MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
+        CHECKNULL(featureSource, L"MgServerDescribeSchema.CheckExtendedFeatureClass");
+        MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
+        CHECKNULL(extensions, L"MgServerDescribeSchema.CheckExtendedFeatureClass");
+        int extensionCount = extensions->GetCount();
+
+        for (int i = 0; i < extensionCount; ++i)
+        {
+            MdfModel::Extension* extension = extensions->GetAt(i);
+            CHECKNULL(extension, L"MgServerDescribeSchema.CheckExtendedFeatureClass");
+            STRING extensionName = (STRING)extension->GetName();
+
+            STRING currSchemaName, currClassName;
+            MgUtil::ParseQualifiedClassName(extensionName, currSchemaName, currClassName);
+
+            if (currClassName == parsedClassName)
+            {
+                extended = true;
+                break;
+            }
         }
     }
 
@@ -1980,17 +1988,21 @@ bool MgServerDescribeSchema::CheckExtendedFeatureClasses(MgResourceIdentifier* r
     MgStringCollection* classNames)
 {
     bool extended = false;
-    INT32 classCount = (NULL == classNames) ? 0 : classNames->GetCount();
 
-    for (INT32 i = 0; i < classCount; ++i)
+    if (NULL != classNames)
     {
-        STRING currClassName = classNames->GetItem(i);
+        INT32 classCount = classNames->GetCount();
         
-        if (CheckExtendedFeatureClass(resource, currClassName))
+        for (INT32 i = 0; i < classCount; ++i)
         {
-            extended = true;
-            break;
-        } 
+            STRING currClassName = classNames->GetItem(i);
+        
+            if (CheckExtendedFeatureClass(resource, currClassName))
+            {
+                extended = true;
+                break;
+            } 
+        }
     }
 
     return extended;
