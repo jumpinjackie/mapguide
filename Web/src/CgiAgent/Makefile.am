@@ -16,17 +16,19 @@ INCLUDES    = -I../../../Common/Foundation \
 
 bin_PROGRAMS = mapagent
 
-mapagent_SOURCES = ../MapAgentCommon/MapAgentGetParser.cpp \
+mapagent_SOURCES = CgiAgent.cpp \
                    CgiPostParser.cpp \
                    CgiResponseHandler.cpp \
-                   ../MapAgentCommon/MapAgentStrings.cpp \
                    EchoTest.cpp \
-                   CgiAgent.cpp \
+                   ../MapAgentCommon/MapAgentCommon.cpp \
+                   ../MapAgentCommon/MapAgentStrings.cpp \
+                   ../MapAgentCommon/MapAgentGetParser.cpp \
                    ../WebSupport/InitializeWebTier.cpp
 
-noinst_HEADERS = ../MapAgentCommon/MapAgentGetParser.h \
-                 CgiPostParser.h \
+noinst_HEADERS = CgiPostParser.h \
                  CgiResponseHandler.h \
+                 ../MapAgentCommon/MapAgentCommon.h \
+                 ../MapAgentCommon/MapAgentGetParser.h \
                  ../MapAgentCommon/MapAgentStrings.h \
                  ../WebSupport/WebSupport.h
 
