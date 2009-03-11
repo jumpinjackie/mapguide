@@ -27,7 +27,8 @@
         <Property Id="APACHE_PORT" Secure="yes" Value="8008" />
         <Property Id="APACHE_VERSION" Secure="yes" Value="2.2.4" />
         <Property Id="PHP_VERSION" Secure="yes" Value="5.2.5" />
-        <Property Id="API_TYPE" Secure="yes" Value="PHP" />
+        <Property Id="APACHE_API_TYPE" Secure="yes" Value="PHP" />
+        <Property Id="IIS_API_TYPE" Secure="yes" Value="PHP" />
 
         <!-- Add Remove Programs stuff -->
         <Property Id="ARPHELPLINK" Value="http://mapguide.osgeo.org" />
@@ -55,7 +56,237 @@
         <FeatureRef Id="WebExtensionsFeature"/>
         <FeatureRef Id="MaestroFeature"/>
 
-        <UIRef Id="WixUI_FeatureTree"/>
+        <UIRef Id="WixUI_Common"/>
+
+        <UI>
+            <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
+            <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
+            <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="8" Bold="yes" />
+
+            <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
+            <Property Id="WixUI_Mode" Value="FeatureTree" />
+
+            <DialogRef Id="ErrorDlg" />
+            <DialogRef Id="FatalError" />
+            <DialogRef Id="FilesInUse" />
+            <DialogRef Id="MsiRMFilesInUse" />
+            <DialogRef Id="PrepareDlg" />
+            <DialogRef Id="ProgressDlg" />
+            <DialogRef Id="ResumeDlg" />
+            <DialogRef Id="UserExit" />
+
+            <!-- Dialog to choose web server configuration: IIS / Apache / Manual -->
+            <Dialog Id="WebServerConfigDlg" Width="370" Height="270" Title="Select Configuration Type">
+                <!-- 
+                    Select the type of web server configuration you want
+                
+                    ( ) Bundled Configuration
+                
+                    Install and configure Apache, PHP, and Tomcat. Choose either a PHP or Java 
+                    development environment for use with MapGuide
+                
+                    ( ) IIS Configuration
+                
+                    Install PHP and auto-configure IIS. Choose either a PHP or .NET development
+                    environment for use with MapGuide
+                
+                    ( ) Manual Configuration
+                    
+                    Install all required components for PHP, .NET and Java development, but don't configure
+                    a web server.
+                -->
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Select Configuration Type" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Select the type of web server configuration you want" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                
+                <Control Id="RdWebConfig" Property="MGWEB_CONFIG" Type="RadioButtonGroup" X="20" Y="50" Height="200" Width="290">
+                    <RadioButtonGroup Property="MGWEB_CONFIG">
+                        <RadioButton Text="{\WixUI_Font_Title}Bundled Configuration" ToolTip="Install and configure Apache, PHP, and Tomcat." Value="APACHE" X="25" Y="10" Width="200" Height="45" />
+                        <RadioButton Text="{\WixUI_Font_Title}IIS Configuration" ToolTip="Install PHP and auto-configure IIS." Value="IIS" X="25" Y="60" Width="200" Height="45" />
+                        <RadioButton Text="{\WixUI_Font_Title}Manual Configuration" ToolTip="Install all required components for PHP, .NET and Java development." Value="MANUAL" X="25" Y="110" Width="200" Height="45" />
+                    </RadioButtonGroup>
+                </Control>
+
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+            </Dialog>
+
+            <!-- Dialog to configure Apache settings: Port, PHP/Java -->
+            <Dialog Id="ApacheConfigDlg" Width="370" Height="270" Title="Bundled Configuration Settings">
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Bundled Configuration Settings" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Set up the development environment" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <!-- 
+                    Set up the development environment
+                
+                    Web Server Port Number:
+                    _______________________
+                
+                    Development Environment:
+                    
+                    ( ) PHP
+                    ( ) Java
+                -->
+                <Control Id="LblServerPort" Type="Text" Text="{\WixUI_Font_Title}Web Server Port Number:" X="20" Y="60" Width="120" Height="15" />
+                <Control Id="TxtServerPort" Type="Edit" Property="APACHE_PORT" X="30" Y="80" Width="120" Height="15" />
+                <Control Id="LblDevEnv" Type="Text" Text="{\WixUI_Font_Title}Development Environment:" X="20" Y="110" Width="120" Height="15" />
+                <Control Id="RdApacheApiType" Property="APACHE_API_TYPE" Type="RadioButtonGroup" X="20" Y="130" Height="100" Width="290">
+                    <RadioButtonGroup Property="APACHE_API_TYPE">
+                        <RadioButton Text="PHP" Value="PHP" X="25" Y="10" Width="200" Height="45" />
+                        <RadioButton Text="Java" Value="JAVA" X="25" Y="40" Width="200" Height="45" />
+                    </RadioButtonGroup>
+                </Control>
+
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+            </Dialog>
+
+            <!-- Dialog to configure IIS settings: PHP/.net -->
+            <Dialog Id="IISLangConfigDlg" Width="370" Height="270" Title="IIS General Configuration">
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}IIS Configuration Settings" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Set up the development environment" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <!-- 
+                Set up the development environment
+                
+                ( ) PHP
+                ( ) .NET
+                -->
+                <Control Id="LblDevEnv" Type="Text" Text="{\WixUI_Font_Title}Development Environment:" X="20" Y="60" Width="120" Height="15" />
+                <Control Id="RdIIsApiType" Property="IIS_API_TYPE" Type="RadioButtonGroup" Text="{\WixUI_Font_Title}Development Environment:" X="30" Y="70" Height="100" Width="290">
+                    <RadioButtonGroup Property="IIS_API_TYPE">
+                        <RadioButton Text="PHP" Value="PHP" X="25" Y="10" Width="200" Height="45" />
+                        <RadioButton Text=".NET" Value="DOTNET" X="25" Y="40" Width="200" Height="45" />
+                    </RadioButtonGroup>
+                </Control>
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+            </Dialog>
+
+            <!-- Dialog to configure IIS6 specific things: web-site installation and application pool -->
+            <Dialog Id="IIS6ConfigDlg" Width="370" Height="270" Title="IIS 6.0 Configuration">
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}IIS 6.0 Configuration" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Configure IIS 6.0 Settings" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <!-- 
+                
+                Install to this web site:  |V|_________________________
+                
+                Create an application pool: ___________________________
+                
+                It is recommended to create an application pool if you are running mixed 
+                ASP.net application environments on your web server.
+                
+                -->
+                <Control Id="LblNote" Type="Text" Text="If you can read this, I've detected your version of IIS correctly" X="20" Y="80" Width="240" Height="15" />
+
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+            </Dialog>
+
+            <!-- Dialog to configure IIS7 specific things -->
+            <Dialog Id="IIS7ConfigDlg" Width="370" Height="270" Title="IIS 7.0 Configuration">
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}IIS 7.0 Configuration" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Configure IIS 7.0 Settings" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <!-- -->
+                <Control Id="LblNote" Type="Text" Text="If you can read this, I've detected your version of IIS correctly" X="20" Y="80" Width="240" Height="15" />
+
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+            </Dialog>
+
+            <!-- Dialog to configure MG Server IP address -->
+            <Dialog Id="IPConfigDlg" Width="370" Height="270" Title="Server IP address">
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Server IP address" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Enter the MapGuide Server site server IP address." />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <!-- 
+                Enter the MapGuide Server site server IP address:
+                
+                ______________________________________________
+                
+                The site server IP address defaults to localhost (127.0.0.1)
+                
+                -->
+                <Control Id="LblServerIP" Type="Text" Text="Enter the MapGuide Server site server IP address:" X="20" Y="80" Width="240" Height="15" />
+                <Control Id="TxtServerPort" Type="Edit" Property="MGSERVER_IP" X="30" Y="100" Width="120" Height="15" />
+                <Control Id="LblNote" Type="Text" Text="The site server IP address defaults to localhost (127.0.0.1)" X="20" Y="120" Width="240" Height="15" />
+                
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+            </Dialog>
+
+            <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
+
+            <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
+
+            <Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
+            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="WebServerConfigDlg">LicenseAccepted = "1"</Publish>
+
+            <Publish Dialog="WebServerConfigDlg" Control="Next" Event="NewDialog" Value="ApacheConfigDlg" Order="1">MGWEB_CONFIG = "APACHE"</Publish>
+            <Publish Dialog="WebServerConfigDlg" Control="Next" Event="NewDialog" Value="IISLangConfigDlg" Order="2">MGWEB_CONFIG = "IIS"</Publish>
+            <Publish Dialog="WebServerConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="3">MGWEB_CONFIG = "MANUAL"</Publish>
+            <Publish Dialog="WebServerConfigDlg" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
+            <Publish Dialog="WebServerConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg">1</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlg">1</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+
+            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="1">IISVERSIONMAJOR = "#5"</Publish>
+            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="NewDialog" Value="IIS6ConfigDlg" Order="2">IISVERSIONMAJOR = "#6"</Publish>
+            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="NewDialog" Value="IIS7ConfigDlg" Order="3">IISVERSIONMAJOR = "#7"</Publish>
+            <Publish Dialog="IISLangConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlg">1</Publish>
+            <Publish Dialog="IISLangConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+
+            <Publish Dialog="IIS6ConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg">1</Publish>
+            <Publish Dialog="IIS6ConfigDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg">1</Publish>
+            <Publish Dialog="IIS6ConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+
+            <Publish Dialog="IIS7ConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg">1</Publish>
+            <Publish Dialog="IIS7ConfigDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg">1</Publish>
+            <Publish Dialog="IIS7ConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+
+            <Publish Dialog="IPConfigDlg" Control="Next" Event="NewDialog" Value="CustomizeDlg">1</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg" Order="1">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#5"</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="IIS6ConfigDlg" Order="2">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#6"</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="IIS7ConfigDlg" Order="3">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7"</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="ApacheConfigDlg" Order="4">MGWEB_CONFIG = "APACHE"</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlg" Order="5">MGWEB_CONFIG = "MANUAL"</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+
+            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="1">Installed</Publish>
+            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg" Order="2">NOT Installed</Publish>
+            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg" Order="3">NOT Installed AND MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#5"</Publish>
+            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="IIS6ConfigDlg" Order="4">NOT Installed AND MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#6"</Publish>
+            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="IIS7ConfigDlg" Order="5">NOT Installed AND MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7"</Publish>
+            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="ApacheConfigDlg" Order="6">NOT Installed AND MGWEB_CONFIG = "APACHE"</Publish>
+            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="IPConfigDlg" Order="7">NOT Installed AND MGWEB_CONFIG = "MANUAL"</Publish>
+            <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+            
+            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="1">NOT Installed OR WixUI_InstallMode = "Change"</Publish>
+            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="2">Installed</Publish>
+
+            <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
+
+            <Publish Dialog="MaintenanceTypeDlg" Control="ChangeButton" Event="NewDialog" Value="CustomizeDlg">1</Publish>
+            <Publish Dialog="MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+            <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+            <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
+        </UI>
 
         <InstallExecuteSequence>
             <Custom
@@ -117,6 +348,8 @@
         </InstallExecuteSequence>
 
         <!-- Need the Visual C++ Runtime as an MSM when ready for release; commented out to reduce output warnings. -->
+        <!--
         <?include MsvcRuntime.wxi ?>
+        -->
     </Product>
 </Wix>

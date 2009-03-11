@@ -83,7 +83,7 @@
     </DirectoryRef>
     <Feature Id="WebExtensionsFeature" Title="MapGuide Web" Level="1" ConfigurableDirectory="WEBEXTENSIONSLOCATION" Description="MapGuide Web provides you with the components you need to server MapGuide resources over the internet." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
       <ComponentRef Id="WebExtensionsComponent"/>
-      <Feature Id="WebExtApacheFeature" Title="Apache Web Server" Level="1" Description="A bundled version of Apache with MapGuide enabled, running on port 8008." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+      <Feature Id="WebExtApacheFeature" Title="Apache Web Server" Level="1" Description="A bundled version of Apache with MapGuide enabled, running on port [APACHE_PORT]." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
           <Condition Level="0">MGWEB_CONFIG = "IIS"</Condition>
         <ComponentGroupRef Id="group_APACHEFILES"/>
       </Feature>

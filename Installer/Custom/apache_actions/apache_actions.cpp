@@ -276,14 +276,14 @@ UpdateApacheConfig(MSIHANDLE hMSI)
   szApiType[0] = NULL_CHAR;
   szServerPort[0] = NULL_CHAR;
 
-  //[WEBEXTENSIONSLOCATION];[API_TYPE];[APACHE_PORT];[APACHELOCATION];[PHPLOCATION];[WEBROOTLOCATION]
+  //[WEBEXTENSIONSLOCATION];[APACHE_API_TYPE];[APACHE_PORT];[APACHELOCATION];[PHPLOCATION];[WEBROOTLOCATION]
   char * tok = strtok(szCustomActionData, ";");
   //[WEBEXTENSIONSLOCATION]
   if(tok)
   {
 	  strcpy(szInstallDir, tok);
 	  tok = strtok(NULL, ";");
-	  //[API_TYPE]
+	  //[APACHE_API_TYPE]
 	  if(tok)
 	  {
 		  strcpy(szApiType, tok);
