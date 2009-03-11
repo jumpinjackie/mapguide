@@ -126,7 +126,7 @@ a.jxButtonActive:active span.jxButtonContent {
 
 ul.jxToolbar .jxDisabled a.jxButton,
 .jxDisabled a.jxButton {
- cursor: default; 
+ cursor: default;
 }
 
 /* hover and active disabled button */
@@ -144,7 +144,7 @@ ul.jxToolbar .jxDisabled a.jxButton:hover span.jxButtonContent,
 ul.jxToolbar .jxDisabled a.jxButton:active span.jxButtonContent {
   background-position: right top;
 }
-  
+
 .jxDisabled a.jxButton:hover span.jxButtonContent,
 .jxDisabled a.jxButton:active span.jxButtonContent {
   background-position: right -24px;
@@ -325,7 +325,7 @@ a.jxButtonEditCombo input {
 /* ============= */
 /* CHROME STYLES */
 /* ============= */
-/* Chrome uses four absolutely positioned DIVs containing an image for each of 
+/* Chrome uses four absolutely positioned DIVs containing an image for each of
    four quadrants.  The chrome image is used as a sprite map. */
 
 .jxChrome {
@@ -346,71 +346,71 @@ a.jxButtonEditCombo input {
   -ms-filter: "Alpha(opacity=50)";
 }
 
-.jxChromeTL { 
-  position: absolute; 
-  overflow: hidden; 
-  left: 0%; 
-  top: 0%; 
-  width: 50%; 
-  height: 50%; 
+.jxChromeTL {
+  position: absolute;
+  overflow: hidden;
+  left: 0%;
+  top: 0%;
+  width: 50%;
+  height: 50%;
 }
 
-.jxChromeTR { 
-  position: absolute; 
-  overflow: hidden; 
-  left: 50%; 
-  top: 0%; 
-  width: 50%; 
-  height: 50%; 
+.jxChromeTR {
+  position: absolute;
+  overflow: hidden;
+  left: 50%;
+  top: 0%;
+  width: 50%;
+  height: 50%;
 }
 
-.jxChromeBL { 
-  position: absolute; 
-  overflow: hidden; 
-  left: 0%; 
-  top: 50%; 
-  width: 50%; 
-  height: 50%; 
+.jxChromeBL {
+  position: absolute;
+  overflow: hidden;
+  left: 0%;
+  top: 50%;
+  width: 50%;
+  height: 50%;
 }
 
-.jxChromeBR { 
-  position: absolute; 
-  overflow: hidden; 
-  left: 50%; 
-  top: 50%;  
-  width: 50%; 
-  height: 50%; 
+.jxChromeBR {
+  position: absolute;
+  overflow: hidden;
+  left: 50%;
+  top: 50%;
+  width: 50%;
+  height: 50%;
 }
 
 
-.jxChromeTL img { 
-  position: absolute; 
-  top: 0px; 
-  left: 0px; 
+.jxChromeTL img {
+  position: absolute;
+  top: 0px;
+  left: 0px;
   width: 500px;
   height:500px;
 }
 
-.jxChromeTR img { 
-  position: absolute; 
-  top: 0px; 
-  right: 0px; 
+.jxChromeTR img {
+  position: absolute;
+  top: 0px;
+  right: 0px;
   width: 500px;
   height:500px;
 }
 
-.jxChromeBL img { 
-  position: absolute; 
-  bottom: 0px; 
-  left: 0px; 
+.jxChromeBL img {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
   width: 500px;
   height:500px;
 }
 
-.jxChromeBR img { 
-  position: absolute; 
-  bottom: 0px; 
-  right: 0px; 
+.jxChromeBR img {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
   width: 500px;
   height:500px;
 }
@@ -614,7 +614,7 @@ iframe.jxIframeShim{position:absolute;top:0px;left:0px;width:100%;height:100%;-m
 .jxDialog {
   /* Base setup */
   display: block;
-  /* starting default z-index for dialogs. Multiple dialogs will get 
+  /* starting default z-index for dialogs. Multiple dialogs will get
    * incremental values starting from this value
    */
   z-index: 1000;
@@ -1421,7 +1421,7 @@ ul.jxSubMenu span.jxMenuSeparator {
 }
 
 .jxPanelControls ul.jxToolbar {
-  float: right; 
+  float: right;
 }
 
 .jxPanelControls ul.jxToolbar,
@@ -1707,8 +1707,8 @@ body, table {
   height: 13px;
 }
 
-#Statusbar .spanCursorPosition, 
-#Statusbar .spanViewSize, 
+#Statusbar .spanCursorPosition,
+#Statusbar .spanViewSize,
 #Statusbar .spanSelectionInfo {
   padding: 4px 10px;
 }
@@ -2021,7 +2021,7 @@ a.jxTabClose {
 a.jxTabClose img {
   width: 16px;
   height: 16px;
-  background-image: url(images/tab_close.png);  
+  background-image: url(images/tab_close.png);
 }
 
 a.jxTab {
@@ -2039,7 +2039,7 @@ a.jxTab {
 }
 
 .jxDisabled a.jxButton {
- cursor: default; 
+ cursor: default;
 }
 
 a.jxTab:hover,
@@ -2133,7 +2133,7 @@ span.jxTabLabel {
   float: left;
 
   padding-left: 4px; /* makes room for the left of the tab bg */
-  background-position: left -24px; 
+  background-position: left -24px;
 }
 
 .jxBarTop span.jxTabContent,
@@ -2142,7 +2142,7 @@ span.jxTabLabel {
   float: left;
 
   padding: 4px 4px 4px 0px; /* makes space around the label */
-  background-position: right -24px; 
+  background-position: right -24px;
 }
 
 
@@ -2150,24 +2150,24 @@ span.jxTabLabel {
 
 .jxBarTop a.jxTab:hover,
 .jxBarBottom a.jxTab:hover {
-  background-position: left -96px; 
+  background-position: left -96px;
 }
 
 .jxBarTop a.jxTab:hover span.jxTabContent,
 .jxBarBottom a.jxTab:hover span.jxTabContent {
-  background-position: right -96px; 
+  background-position: right -96px;
 }
 
 /* Click Tab */
 
 .jxBarTop a.jxTab:active,
 .jxBarBottom a.jxTab:active {
-  background-position: left -48px; 
+  background-position: left -48px;
 }
 
 .jxBarTop a.jxTab:active span.jxTabContent,
 .jxBarBottom a.jxTab:active span.jxTabContent {
-  background-position: right -48px; 
+  background-position: right -48px;
 }
 
 /* Active Tab */
@@ -2191,7 +2191,7 @@ span.jxTabLabel {
   background-position: left -24px; /* do not switch the left BG */
 }
 
-  
+
 .jxBarTop .jxDisabled a.jxTab:hover span.jxTabContent,
 .jxBarTop .jxDisabled a.jxTab:active span.jxTabContent,
 .jxBarBottom .jxDisabled a.jxTab:hover span.jxTabContent,
@@ -2253,13 +2253,13 @@ span.jxTabLabel {
 .jxBarLeft a.jxTab,
 .jxBarRight a.jxTab {
   padding-top: 4px; /* makes room for the top of the tab bg */
-  background-position: -24px top; 
+  background-position: -24px top;
 }
 
 .jxBarLeft span.jxTabContent,
 .jxBarRight span.jxTabContent {
   padding: 0px 4px 4px 4px; /* makes space around the label */
-  background-position: -24px bottom; 
+  background-position: -24px bottom;
 }
 
 /* Hover tab */
@@ -2271,19 +2271,19 @@ span.jxTabLabel {
 
 .jxBarLeft a.jxTab:hover span.jxTabContent,
 .jxBarRight a.jxTab:hover span.jxTabContent {
-  background-position: -96px bottom; 
+  background-position: -96px bottom;
 }
 
 /* Click Tab */
 
 .jxBarLeft a.jxTab:active,
 .jxBarRight a.jxTab:active {
-  background-position: -48px top; 
+  background-position: -48px top;
 }
 
 .jxBarLeft a.jxTab:active span.jxTabContent,
 .jxBarRight a.jxTab:active span.jxTabContent {
-  background-position: -48px bottom; 
+  background-position: -48px bottom;
 }
 
 /* Active Tab */
@@ -2307,7 +2307,7 @@ span.jxTabLabel {
   background-position: -24px top; /* do not switch the top BG */
 }
 
-  
+
 .jxBarLeft .jxDisabled a.jxTab:hover span.jxTabContent,
 .jxBarLeft .jxDisabled a.jxTab:active span.jxTabContent,
 .jxBarRight .jxDisabled a.jxTab:hover span.jxTabContent,
@@ -2542,7 +2542,7 @@ li.jxToolItem .separator {
 */
 
 
-.jxTree, 
+.jxTree,
 .jxTreeRoot {
   /* relative positioning is required for IE to fix the peek-a-boo bug */
   position:relative;
@@ -2562,7 +2562,7 @@ li.jxToolItem .separator {
 
 /* Node Classes */
 
-.jxTree li, 
+.jxTree li,
 .jxTreeRoot li {
   /* relative positioning is required for IE to fix the peek-a-boo bug */
   position:relative;
@@ -2575,13 +2575,14 @@ li.jxToolItem .separator {
   white-space: nowrap;
   font-size: 0px;
   line-height: 0px;
+  overflow: hidden;
 }
 
 .jxTree li {
   margin-left: 16px;
 }
 
-.jxTree a, 
+.jxTree a,
 .jxTreeRoot a {
   position: relative;
   display: block;
@@ -2597,7 +2598,7 @@ li.jxToolItem .separator {
   height: 20px;
 }
 
-.jxTree a:hover, 
+.jxTree a:hover,
 .jxTreeRoot a:hover {
   background-image: url(images/tree_hover.png);
   background-color: #CDE5FF;
@@ -2605,7 +2606,7 @@ li.jxToolItem .separator {
   background-position: 0px 0px;
 }
 
-.jxDisabled .jxTree a:hover, 
+.jxDisabled .jxTree a:hover,
 .jxDisabled .jxTreeRoot a:hover {
   background: none;
   cursor: default;
@@ -2634,7 +2635,7 @@ li.jxToolItem .separator {
   margin: 0px;
 }
 
-.jxTreeIcon { 
+.jxTreeIcon {
   height: 16px;
   left: 2px;
   top: 2px;
