@@ -46,6 +46,9 @@
     <Folder Include="FileIncludes" />
   </ItemGroup>
   <ItemGroup>
+    <WixExtension Include="WixNetFxExtension">
+      <HintPath>$(WixExtDir)\WixNetFxExtension.dll</HintPath>
+    </WixExtension>
     <WixExtension Include="WixIIsExtension">
       <HintPath>$(WixExtDir)\WixIIsExtension.dll</HintPath>
     </WixExtension>

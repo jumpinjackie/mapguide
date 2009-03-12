@@ -16,10 +16,12 @@
 
         <Media Id="1" Cabinet="MapGuideOpenSource.cab" EmbedCab="yes" />
 
+        <!--
         <PropertyRef Id="NETFRAMEWORK20"/>
         <Condition Message="The .NET Framework 2.0 must be installed ([NETFRAMEWORK20])">
             Installed OR NETFRAMEWORK20
         </Condition>
+        -->
 
         <!-- Initial MapGuide Web Configuration: APACHE | IIS | MANUAL -->
         <Property Id="MGWEB_CONFIG" Secure="yes" Value="APACHE" />
@@ -75,8 +77,37 @@
             <DialogRef Id="ResumeDlg" />
             <DialogRef Id="UserExit" />
 
+            <!-- Dialog to warn about .NET Framework not found on system -->
+            <Dialog Id="NoDotNetDialog" Width="370" Height="270" Title="[ProductName] Setup">
+                <!-- 
+                    .NET Framework not found
+                
+                    The .NET Framework was not found on your system. As a result, the following features 
+                    will not be available for installation:
+                    
+                    - MapGuide Maestro
+                    - .NET Web Extensions for IIS
+                    
+                    To make these features available for installation, please install the .NET Framework (2.0 or higher) before
+                    proceeding with installation
+                -->
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}.NET Framework" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text=".NET Framework not found" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+
+                <Control Id="TxtMessage" Type="Text" X="20" Y="70" Width="300" Height="40" Text="The .NET Framework was not found on your system. As a result, the following features will not be available for installation:" />
+                <Control Id="TxtMaestro" Type="Text" X="30" Y="110" Width="200" Height="15" Text="MapGuide Maestro" />
+                <Control Id="TxtAspNet" Type="Text" X="30" Y="130" Width="200" Height="15" Text=".NET Web Extensions for IIS" />
+                <Control Id="TxtMessage2" Type="Text" X="20" Y="160" Width="300" Height="40" Text="To make these features available for installation, please install the .NET Framework (2.0 or higher) before proceeding with installation" />
+                
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+            </Dialog>
+
             <!-- Dialog to choose web server configuration: IIS / Apache / Manual -->
-            <Dialog Id="WebServerConfigDlg" Width="370" Height="270" Title="Select Configuration Type">
+            <Dialog Id="WebServerConfigDlg" Width="370" Height="270" Title="[ProductName] Setup">
                 <!-- 
                     Select the type of web server configuration you want
                 
@@ -114,7 +145,7 @@
             </Dialog>
 
             <!-- Dialog to configure Apache settings: Port, PHP/Java -->
-            <Dialog Id="ApacheConfigDlg" Width="370" Height="270" Title="Bundled Configuration Settings">
+            <Dialog Id="ApacheConfigDlg" Width="370" Height="270" Title="[ProductName] Setup">
                 <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Bundled Configuration Settings" />
                 <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Set up the development environment" />
                 <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
@@ -146,7 +177,7 @@
             </Dialog>
 
             <!-- Dialog to configure IIS settings: PHP/.net -->
-            <Dialog Id="IISLangConfigDlg" Width="370" Height="270" Title="IIS General Configuration">
+            <Dialog Id="IISLangConfigDlg" Width="370" Height="270" Title="[ProductName] Setup">
                 <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}IIS Configuration Settings" />
                 <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Set up the development environment" />
                 <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
@@ -170,7 +201,7 @@
             </Dialog>
 
             <!-- Dialog to configure IIS6 specific things: web-site installation and application pool -->
-            <Dialog Id="IIS6ConfigDlg" Width="370" Height="270" Title="IIS 6.0 Configuration">
+            <Dialog Id="IIS6ConfigDlg" Width="370" Height="270" Title="[ProductName] Setup">
                 <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}IIS 6.0 Configuration" />
                 <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Configure IIS 6.0 Settings" />
                 <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
@@ -193,7 +224,7 @@
             </Dialog>
 
             <!-- Dialog to configure IIS7 specific things -->
-            <Dialog Id="IIS7ConfigDlg" Width="370" Height="270" Title="IIS 7.0 Configuration">
+            <Dialog Id="IIS7ConfigDlg" Width="370" Height="270" Title="[ProductName] Setup">
                 <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}IIS 7.0 Configuration" />
                 <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Configure IIS 7.0 Settings" />
                 <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
@@ -207,7 +238,7 @@
             </Dialog>
 
             <!-- Dialog to configure MG Server IP address -->
-            <Dialog Id="IPConfigDlg" Width="370" Height="270" Title="Server IP address">
+            <Dialog Id="IPConfigDlg" Width="370" Height="270" Title="[ProductName] Setup">
                 <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Server IP address" />
                 <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Enter the MapGuide Server site server IP address." />
                 <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
@@ -234,8 +265,13 @@
             <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
 
             <Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
-            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="WebServerConfigDlg">LicenseAccepted = "1"</Publish>
+            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="WebServerConfigDlg" Order="1">LicenseAccepted = "1"</Publish>
+            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="NoDotNetDialog" Order="2">NOT NETFRAMEWORK20</Publish>
 
+            <Publish Dialog="NoDotNetDialog" Control="Next" Event="NewDialog" Value="WebServerConfigDlg">1</Publish>
+            <Publish Dialog="NoDotNetDialog" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
+            <Publish Dialog="NoDotNetDialog" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+            
             <Publish Dialog="WebServerConfigDlg" Control="Next" Event="NewDialog" Value="ApacheConfigDlg" Order="1">MGWEB_CONFIG = "APACHE"</Publish>
             <Publish Dialog="WebServerConfigDlg" Control="Next" Event="NewDialog" Value="IISLangConfigDlg" Order="2">MGWEB_CONFIG = "IIS"</Publish>
             <Publish Dialog="WebServerConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="3">MGWEB_CONFIG = "MANUAL"</Publish>
