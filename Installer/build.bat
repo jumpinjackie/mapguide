@@ -50,7 +50,7 @@ SET INSTALLER_DEV_INSTALLER=%INSTALL_DEV%\Installers\MapGuide
 
 SET MG_SERVER=..\MgDev\%TYPEBUILD%\Server\
 SET MG_WEB=..\MgDev\%TYPEBUILD%\WebServerExtensions\
-SET MG_MAESTRO=..\Tools\Maestro\Maestro\
+SET MG_MAESTRO=..\Tools\Maestro\Maestro\bin\%TYPEBUILD%\
 
 SET PARAFFIN=%CD%
 SET PATH=%PATH%;%PARAFFIN%
