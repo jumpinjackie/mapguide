@@ -84,11 +84,11 @@ UINT __stdcall AddWebServiceExtension(MSIHANDLE hMSI)
 	strcat(fcgiCgiExe, "www\\mapagent\\isapi_MapAgent.dll");
 
 	memset(wcsPhpIsApiWebServiceExtension, 0, sizeof(wcsPhpIsApiWebServiceExtension));
-	swprintf(wcsPhpIsApiWebServiceExtension, L"1,%S,1,,MapGuide Open Source v2.0 PHP ISAPI",phpIsApiExe);
+	swprintf(wcsPhpIsApiWebServiceExtension, L"1,%S,1,,%S PHP ISAPI",phpIsApiExe, MG_PRODUCT);
 	wcsPhpIsApiLen = (wcslen(wcsPhpIsApiWebServiceExtension) + 1) * sizeof(WCHAR);
 
 	memset(wcsFastCGIWebServiceExtension, 0, sizeof(wcsFastCGIWebServiceExtension));
-	swprintf(wcsFastCGIWebServiceExtension, L"1,%S,1,,MapGuide Open Source v2.0 ISAPI",fcgiCgiExe);
+	swprintf(wcsFastCGIWebServiceExtension, L"1,%S,1,,%S ISAPI",fcgiCgiExe, MG_PRODUCT);
 	wcsFastCGILen = (wcslen(wcsFastCGIWebServiceExtension) + 1) * sizeof(WCHAR);
 
 	// Get the IMSAdminBase object
