@@ -601,7 +601,7 @@ function delayedInit()
     ResizeTo(infoWidth);
 
     mapDevW = mapCell.offsetWidth;
-    mapDevH = safari? document.body.offsetHeight: mapCell.offsetHeight;  //height of inner elements not set on safari
+    mapDevH = document.body.clientHeight;
 
     RestoreState();
 
@@ -1486,7 +1486,7 @@ function ResizeMapSpace()
 {
     vw = document.body.clientWidth;
     mapDevW = vw - mapPosX - 1;
-    mapDevH = safari? document.body.offsetHeight: mapCell.offsetHeight;
+    mapDevH = document.body.clientHeight;
 
     if(mapDevW < 0) mapDevW = 0;
     if(mapDevH < 0) mapDevH = 0;
@@ -3416,14 +3416,14 @@ function HideHyperlinkTip()
 
 function ExecuteHyperlink(url)
 {
-    var linkURL; 
-    if (url.indexOf(' href=') > 0) { 
-        //MGOS allows full anchor tag as the hyperlink, extract the href 
-        var tempDiv = document.createElement('div'); 
+    var linkURL;
+    if (url.indexOf(' href=') > 0) {
+        //MGOS allows full anchor tag as the hyperlink, extract the href
+        var tempDiv = document.createElement('div');
         tempDiv.innerHTML = url;
-        linkURL = tempDiv.firstChild.href; 
-        tempDiv = null; 
-    } else { 
+        linkURL = tempDiv.firstChild.href;
+        tempDiv = null;
+    } else {
         linkURL = url;
     }
     targetFrame = "";
@@ -3723,7 +3723,7 @@ function OnMouseWheel(event)
        </div>
        </td>
        <td class="tbSplitter" id="tbSplitter" style="width: 5px;" width="5" bgcolor="#f0f0f0" onmousedown="return StartResizing(event)"></td>
-       <td id="map" onmouseout="return ExitMap(event)" >
+       <td id="map" onmouseout="return ExitMap(event)" style="vertical-align: top;">
           <div>
             <div id="mapSpace">
                 <div id="tilePlanes">
