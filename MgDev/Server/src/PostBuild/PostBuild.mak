@@ -486,6 +486,7 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
         CopyResourcesDebug64 \
         CreatePathsDebug64 \
         CopyOgcFilesDebug64
+
         
 ..\..\bin\release\MgFoundation.dll : ..\..\..\Common\bin\release\MgFoundation.dll
     xcopy /r /d /y ..\..\..\Common\bin\release\MgFoundation.dll ..\..\bin\release\
@@ -1087,7 +1088,7 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation2.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation2.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.ldf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.mdf
-    del /f   ..\..\bin\debug\*.ilk
+    del /F   ..\..\bin\debug\*.ilk
 
 
 cleandebug64:
@@ -1200,7 +1201,7 @@ cleandebug64:
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation2.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation2.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.ldf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.mdf
-    del /f   ..\..\bin\debug64\*.ilk
+    del /F   ..\..\bin\debug64\*.ilk
 
 
 cleanrelease:

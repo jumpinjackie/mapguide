@@ -518,8 +518,8 @@ MdfModel::LayerDefinition* MgLayerBase::GetLayerDefinition(MgResourceService* sv
     // detach the feature layer definition from the parser - it's
     // now the caller's responsibility to delete it
     MdfModel::LayerDefinition* ldef = parser.DetachLayerDefinition();
-
     assert(ldef != NULL);
+
     return ldef;
 }
 
