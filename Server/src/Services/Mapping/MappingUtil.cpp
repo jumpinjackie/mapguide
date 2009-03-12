@@ -77,34 +77,6 @@ MdfModel::MapDefinition* MgMappingUtil::GetMapDefinition(MgResourceService* svcR
 }
 
 
-MdfModel::LayerDefinition* MgMappingUtil::GetLayerDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId)
-{
-    //get and parse the mapdef
-    Ptr<MgByteReader> ldfReader = svcResource->GetResourceContent(resId, L"");
-
-    Ptr<MgByteSink> sink = new MgByteSink(ldfReader);
-    Ptr<MgByte> bytes = sink->ToBuffer();
-    assert(bytes->GetLength() > 0);
-
-    MdfParser::SAX2Parser parser;
-    parser.ParseString((const char*)bytes->Bytes(), bytes->GetLength());
-    if (!parser.GetSucceeded())
-    {
-        STRING errorMsg = parser.GetErrorMessage();
-        MgStringCollection arguments;
-        arguments.Add(errorMsg);
-        throw new MgInvalidLayerDefinitionException(L"MgMappingUtil::GetLayerDefinition", __LINE__, __WFILE__, &arguments, L"", NULL);
-    }
-
-    // detach the feature layer definition from the parser - it's
-    // now the caller's responsibility to delete it
-    MdfModel::LayerDefinition* ldef = parser.DetachLayerDefinition();
-    assert(ldef != NULL);
-
-    return ldef;
-}
-
-
 RSMgFeatureReader* MgMappingUtil::ExecuteFeatureQuery(MgFeatureService* svcFeature,
                                                       RS_Bounds& extent,
                                                       MdfModel::VectorLayerDefinition* vl,
@@ -364,7 +336,7 @@ RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeatur
 
     //get feature source id
     STRING sfeatResId = gl->GetResourceID();
-    Ptr<MgResourceIdentifier> featResId = new  MgResourceIdentifier(sfeatResId);
+    Ptr<MgResourceIdentifier> featResId = new MgResourceIdentifier(sfeatResId);
 
     Ptr<MgFeatureReader> rdr;
 
@@ -432,7 +404,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 
             //get layer definition
             Ptr<MgResourceIdentifier> layerid = mapLayer->GetLayerDefinition();
-            ldf.reset(GetLayerDefinition(svcResource, layerid));
+            ldf.reset(MgLayerBase::GetLayerDefinition(svcResource, layerid));
 
             Ptr<MgLayerGroup> group = mapLayer->GetGroup();
 

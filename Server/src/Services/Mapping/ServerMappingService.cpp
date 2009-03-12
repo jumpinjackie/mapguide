@@ -257,7 +257,7 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
 
         //get layer definition
         Ptr<MgResourceIdentifier> resId = mglayer->GetLayerDefinition();
-        auto_ptr<MdfModel::LayerDefinition> ldf(MgMappingUtil::GetLayerDefinition(m_svcResource, resId));
+        auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(m_svcResource, resId));
 
         //base map layers are not editable
         bool bEditable = true;
@@ -605,7 +605,7 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
                             {
                                 //get layer definition
                                 Ptr<MgResourceIdentifier> resId = layerToAdd->GetLayerDefinition();
-                                auto_ptr<MdfModel::LayerDefinition> ldf(MgMappingUtil::GetLayerDefinition(m_svcResource, resId));
+                                auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(m_svcResource, resId));
                                 MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
                                 MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
                                 MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(ldf.get());
@@ -1591,7 +1591,7 @@ MgByteReader* MgServerMappingService::GenerateLegendImage(MgResourceIdentifier* 
     if (m_svcResource == NULL)
         InitializeResourceService();
 
-    auto_ptr<MdfModel::LayerDefinition> ldf(MgMappingUtil::GetLayerDefinition(m_svcResource, resource));
+    auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(m_svcResource, resource));
     MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
     MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
     MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(ldf.get());

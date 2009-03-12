@@ -153,7 +153,7 @@ MgByteReader* MgServerKmlService::GetLayerKml(MgLayer* layer, MgEnvelope* extent
 
     //get layer definition
     Ptr<MgResourceIdentifier> resId = layer->GetLayerDefinition();
-    auto_ptr<MdfModel::LayerDefinition> ldf(MgMappingUtil::GetLayerDefinition(m_svcResource, resId));
+    auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(m_svcResource, resId));
 
     KmlContent kmlContent;
     kmlContent.StartDocument();
@@ -248,7 +248,7 @@ MgByteReader* MgServerKmlService::GetFeaturesKml(MgLayer* layer, MgEnvelope* ext
         InitializeResourceService();
     }
     Ptr<MgResourceIdentifier> resId = layer->GetLayerDefinition();
-    auto_ptr<MdfModel::LayerDefinition> ldf(MgMappingUtil::GetLayerDefinition(m_svcResource, resId));
+    auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(m_svcResource, resId));
     MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(ldf.get());
     if(gl != NULL)
     {

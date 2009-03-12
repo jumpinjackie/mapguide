@@ -1123,7 +1123,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
 
         //get the MDF layer definition
         Ptr<MgResourceIdentifier> layerResId = layer->GetLayerDefinition();
-        auto_ptr<MdfModel::LayerDefinition> ldf(MgMappingUtil::GetLayerDefinition(m_svcResource, layerResId));
+        auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(m_svcResource, layerResId));
         MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
 
         //we can only do geometric query selection for vector layers

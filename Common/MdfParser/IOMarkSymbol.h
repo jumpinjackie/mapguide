@@ -19,8 +19,6 @@
 #define _IOMARKSYMBOL_H
 
 #include "IOSymbol.h"
-#include "IOStroke.h"
-#include "IOFill.h"
 #include "MarkSymbol.h"
 #include "Version.h"
 
