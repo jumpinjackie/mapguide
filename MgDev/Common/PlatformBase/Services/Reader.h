@@ -625,20 +625,6 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Gets the Geometry for the specified property. No conversion is
-    /// performed, thus the property must be a of type Geometry or the result
-    /// is NULL
-    ///
-    /// \param propertyName
-    /// Property name.
-    ///
-    /// \return
-    /// Returns a ByteReader object
-    ///
-    virtual BYTE_ARRAY_OUT GetGeometry(CREFSTRING propertyName, INT32& length) = 0;
-
-    //////////////////////////////////////////////////////////////////
-    /// \brief
     /// Gets the string value of the specified property. No conversion is
     /// performed, thus the property must be a of type string or the result
     /// is NULL

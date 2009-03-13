@@ -588,8 +588,9 @@ MgByteReader* MgServerSqlDataReader::GetGeometry(CREFSTRING propertyName)
     }
     else
     {
-        INT32 len;
-        BYTE_ARRAY_OUT data = this->GetGeometry(propertyName.c_str(), len);
+        FdoPtr<FdoByteArray> byteArray = m_sqlReader->GetGeometry(propertyName.c_str());
+        INT32 len = (INT32)byteArray->GetCount();
+        const FdoByte* data = byteArray->GetData();
 
         if (data != NULL)
         {
@@ -757,39 +758,6 @@ MgRaster* MgServerSqlDataReader::GetRaster(CREFSTRING propertyName)
 {
     throw new MgInvalidPropertyTypeException(L"MgServerSqlDataReader.GetRaster",
         __LINE__, __WFILE__, NULL, L"", NULL);
-}
-
-//////////////////////////////////////////////////////////////////
-/// <summary>
-/// Gets the Geometry for the specified property. No conversion is
-/// performed, thus the property must be a of type Geometry or the result
-/// is NULL</summary>
-/// <param name="propertyName">Property name.</param>
-/// <returns>Returns a ByteReader object</returns>
-BYTE_ARRAY_OUT MgServerSqlDataReader::GetGeometry(CREFSTRING propertyName, INT32& length)
-{
-    CHECKNULL(m_sqlReader, L"MgServerSqlDataReader.GetGeometry");
-
-    // TODO: Can we have an equivalent method as we have in FeatureReader to get
-    // TODO: direct pointer on geometry
-    FdoByte* data = NULL;
-
-    if(m_sqlReader->IsNull(propertyName.c_str()))
-    {
-        MgStringCollection arguments;
-        arguments.Add(propertyName);
-
-        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetGeometry",
-            __LINE__, __WFILE__, &arguments, L"", NULL);
-    }
-    else
-    {
-        FdoPtr<FdoByteArray> byteArray = m_sqlReader->GetGeometry(propertyName.c_str());
-        length = (INT32)byteArray->GetCount();
-        data = byteArray->GetData();
-    }
-
-    return (BYTE_ARRAY_OUT)data;
 }
 
 //////////////////////////////////////////////////////////////////

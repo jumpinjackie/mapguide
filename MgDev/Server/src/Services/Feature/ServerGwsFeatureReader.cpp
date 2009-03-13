@@ -778,7 +778,13 @@ STRING MgServerGwsFeatureReader::GetString(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    if(this->IsNull(propertyName.c_str()))
+    // Determine which feature source to retrieve the property from
+    IGWSFeatureIterator* gwsFeatureIter = NULL;
+    STRING parsedPropertyName;
+    DeterminePropertyFeatureSource(propertyName, &gwsFeatureIter, parsedPropertyName);
+    CHECKNULL(gwsFeatureIter, L"MgServerGwsFeatureReader.GetString");
+
+    if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
     {
         MgStringCollection arguments;
         arguments.Add(propertyName);
@@ -788,8 +794,7 @@ STRING MgServerGwsFeatureReader::GetString(CREFSTRING propertyName)
     }
     else
     {
-        INT32 length = 0;
-        const wchar_t* str = this->GetString(propertyName.c_str(), length);
+        FdoString* str = gwsFeatureIter->GetString(parsedPropertyName.c_str());
         if (str != NULL)
         {
             retVal = str;
@@ -935,7 +940,13 @@ MgByteReader* MgServerGwsFeatureReader::GetGeometry(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    if(this->IsNull(propertyName.c_str()))
+    // Determine which feature source to retrieve the property from
+    IGWSFeatureIterator* gwsFeatureIter = NULL;
+    STRING parsedPropertyName;
+    DeterminePropertyFeatureSource(propertyName, &gwsFeatureIter, parsedPropertyName);
+    CHECKNULL(gwsFeatureIter, L"MgServerGwsFeatureReader.GetGeometry");
+
+    if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
     {
         MgStringCollection arguments;
         arguments.Add(propertyName);
@@ -945,13 +956,14 @@ MgByteReader* MgServerGwsFeatureReader::GetGeometry(CREFSTRING propertyName)
     }
     else
     {
-        INT32 len;
-        BYTE_ARRAY_OUT data = this->GetGeometry(propertyName.c_str(), len);
+        FdoInt32 len = 0;
+        const FdoByte* data = gwsFeatureIter->GetGeometry(parsedPropertyName.c_str(), &len);
 
         if (data != NULL)
         {
             Ptr<MgByte> mgBytes = new MgByte((BYTE_ARRAY_IN)data, len);
             Ptr<MgByteSource> bSource = new MgByteSource(mgBytes);
+            bSource->SetMimeType(MgMimeType::Agf);
             retVal = bSource->GetReader();
         }
     }

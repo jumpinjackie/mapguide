@@ -601,16 +601,15 @@ MgByteReader* MgServerDataReader::GetGeometry(CREFSTRING propertyName)
     }
     else
     {
-        INT32 len = 0;
-        BYTE_ARRAY_OUT data = this->GetGeometry(propertyName, len);
+        FdoPtr<FdoByteArray> byteArray = m_dataReader->GetGeometry(propertyName.c_str());
+        INT32 len = (INT32)byteArray->GetCount();
+        const FdoByte* data = byteArray->GetData();
 
         if (data != NULL)
         {
             Ptr<MgByte> mgBytes = new MgByte((BYTE_ARRAY_IN)data, len);
-
             Ptr<MgByteSource> bSource = new MgByteSource(mgBytes);
             bSource->SetMimeType(MgMimeType::Agf);
-
             retVal = bSource->GetReader();
         }
     }
@@ -681,7 +680,6 @@ MgRaster* MgServerDataReader::GetRaster(CREFSTRING propertyName)
 
     return retVal.Detach();
 }
-
 
 MgByteReader* MgServerDataReader::GetLOB(CREFSTRING propertyName)
 {
@@ -881,40 +879,6 @@ STRING MgServerDataReader::GetRasterPropertyName()
     }
 
     return name;
-}
-
-
-//////////////////////////////////////////////////////////////////
-/// <summary>
-/// Gets the Geometry for the specified property. No conversion is
-/// performed, thus the property must be a of type Geometry or the result
-/// is NULL</summary>
-/// <param name="propertyName">Property name.</param>
-/// <returns>Returns a ByteReader object</returns>
-BYTE_ARRAY_OUT MgServerDataReader::GetGeometry(CREFSTRING propertyName, INT32& length)
-{
-    CHECKNULL(m_dataReader, L"MgServerDataReader.GetGeometry");
-
-    // TODO: Can we have an equivalent method as we have in FeatureReader to get
-    // TODO: direct pointer on geometry
-    FdoByte* data = NULL;
-
-    if(m_dataReader->IsNull(propertyName.c_str()))
-    {
-        MgStringCollection arguments;
-        arguments.Add(propertyName);
-
-        throw new MgNullPropertyValueException(L"MgServerDataReader.GetGeometry",
-            __LINE__, __WFILE__, &arguments, L"", NULL);
-    }
-    else
-    {
-        FdoPtr<FdoByteArray> byteArray = m_dataReader->GetGeometry(propertyName.c_str());
-        length = (INT32)byteArray->GetCount();
-        data = byteArray->GetData();
-    }
-
-    return (BYTE_ARRAY_OUT)data;
 }
 
 //////////////////////////////////////////////////////////////////

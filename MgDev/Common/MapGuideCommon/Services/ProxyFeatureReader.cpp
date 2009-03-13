@@ -624,15 +624,8 @@ MgRaster* MgProxyFeatureReader::GetRaster(CREFSTRING propertyName)
 /// <returns>Returns a ByteReader object</returns>
 BYTE_ARRAY_OUT MgProxyFeatureReader::GetGeometry(CREFSTRING propertyName, INT32& length)
 {
-    Ptr<MgByteReader> byteReader = this->GetGeometry(propertyName);
-
-    MgByteSink sink(byteReader);
-    Ptr<MgByte> byte = sink.ToBuffer();
-
-    BYTE_ARRAY_OUT bytes = byte->Bytes();
-    length = byte->GetLength();
-
-    return bytes;
+    throw new MgNotImplementedException(L"MgProxyFeatureReader.GetGeometry",
+        __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 //////////////////////////////////////////////////////////////////
