@@ -441,6 +441,7 @@ function EndMeasure()
     try
     {
         measureWinRef.MeasureEnded();
+        GetMapFrame().SetCurrentToolCursor();
     }
     catch(e) {}
 }
@@ -450,6 +451,7 @@ function ResumeMeasure()
     inMeasure = true;
     try
     {
+        GetMapFrame().SetMapCursor("measure");
         measureWinRef.MeasureResumed();
     }
     catch(e) {}
@@ -463,6 +465,7 @@ function InMeasure()
 function StopMeasure()
 {
     inMeasure = false;
+    GetMapFrame().SetCurrentToolCursor();
 }
 
 function ClearMeasure()
@@ -644,6 +647,7 @@ function ExecuteMeasureCommand(index)
     }
     inMeasure = true;
     pointBegin = null;
+    GetMapFrame().SetMapCursor("measure");
     measureWinRef = OpenUrl("%s?PARTIAL=0&TOTAL=0", index);
 }
 
