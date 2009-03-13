@@ -461,6 +461,7 @@ function DigitizePoint(handler)
 {
     if(handler == null)
         return;
+    SetDigitizeCursor("Point");
     StartDigitizing(new PointDigitizer(OnShapeDigitized, ScreenToMapUnits), handler);
 }
 
@@ -468,6 +469,7 @@ function DigitizeLine(handler)
 {
     if(handler == null)
         return;
+    SetDigitizeCursor("Line");
     StartDigitizing(new LineDigitizer(OnShapeDigitized, ScreenToMapUnits, cancelTgt, shape, "shapeFeedback", "#000000", mapPosX, mapDevW, mapDevH), handler);
 }
 
@@ -475,6 +477,7 @@ function DigitizeCircle(handler)
 {
     if(handler == null)
         return;
+    SetDigitizeCursor("Circle");
     StartDigitizing(new CircleDigitizer(OnShapeDigitized, ScreenToMapUnits, cancelTgt, shape, "shapeFeedback", "#000000", mapPosX, mapDevW, mapDevH), handler);
 }
 
@@ -482,6 +485,7 @@ function DigitizeRectangle(handler)
 {
     if(handler == null)
         return;
+    SetDigitizeCursor("Rectangle");
     StartDigitizing(new RectangleDigitizer(OnShapeDigitized, ScreenToMapUnits, cancelTgt, shape, "shapeFeedback", "#000000", mapPosX, mapDevW, mapDevH), handler);
 }
 
@@ -489,6 +493,7 @@ function DigitizeLineString(handler)
 {
     if(handler == null)
         return;
+    SetDigitizeCursor("LineString");
     StartDigitizing(new LineStringDigitizer(OnShapeDigitized, ScreenToMapUnits, cancelTgt, shape, "shapeFeedback", "#000000", mapPosX, mapDevW, mapDevH, ShowSelectionTip, selTtipText, false), handler);
 }
 
@@ -496,6 +501,7 @@ function DigitizePolygon(handler)
 {
     if(handler == null)
         return;
+    SetDigitizeCursor("Polygon");
     StartDigitizing(new LineStringDigitizer(OnShapeDigitized, ScreenToMapUnits, cancelTgt, shape, "shapeFeedback", "#000000", mapPosX, mapDevW, mapDevH, ShowSelectionTip, selTtipText, true), handler);
 }
 
@@ -659,6 +665,67 @@ function GotoView(x,y,scale,tohistory,moveovimg)
         UpdateTilesAfterPan(prevtilex, prevtiley, panX1, panY1, panX2, panY2);
 }
 
+//Update the map cursor based on a map action
+function UpdateMapActionCursor(action)
+{
+    var strCursor = "";
+    switch(action)
+    {
+        case 1: /*pan*/             strCursor = "pan";          break;
+        case 7: /*Zoom plus*/       strCursor = "zoomin";       break;
+        case 8: /*Zoom minus*/      strCursor = "zoomout";      break;
+        case 9: /*Zoom window*/     strCursor = "zoomrect";     break;
+        case 16: /*Select Radius*/  strCursor = "selectRadius"; break;
+        case 17: /*Select Polygon*/ strCursor = "selectPolygon";break;
+    }
+    SetMapCursor(strCursor)
+}
+
+//Update the map cursor to reflect the current tool
+function SetCurrentToolCursor()
+{
+    var strCursor = "";
+    switch(tool)
+    {
+        case 1: /*Zoom plus*/      strCursor = "zoomin";       break;
+        case 2: /*Zoom minus*/     strCursor = "zoomout";      break;
+        case 3: /*Zoom window*/    strCursor = "zoomrect";     break;
+        case 4: /*pan*/            strCursor = "pan";          break;
+        case 5: /*Select Radius*/  strCursor = "selectRadius"; break;
+        case 6: /*Select Polygon*/ strCursor = "selectPolygon";break;
+    }
+    SetMapCursor(strCursor)
+}
+
+//Update the map cursor for digitization
+function SetDigitizeCursor(digitizeTool)
+{
+    var strCursor = "";
+    switch(digitizeTool)
+    {
+        case "Point":      strCursor = "digitizePoint"; break;
+        case "Line":       strCursor = "digitizeLine"; break;
+        case "Circle":     strCursor = "digitizeCircle"; break;
+        case "Rectangle":  strCursor = "digitizeRectangle"; break;
+        case "LineString": strCursor = "digitizeLineString"; break;
+        case "Polygon":    strCursor = "digitizePolygon"; break;
+    }
+    SetMapCursor(strCursor)
+}
+
+function SetMapCursor(strCursor)
+{
+    if(strCursor == "")
+    {
+        strCursor = "auto";
+    }
+    else
+    {
+        strCursor = "url('../stdicons/" + strCursor + ".cur'), pointer";
+    }
+    document.getElementById("tbMap").style.cursor = strCursor;
+}
+
 function ExecuteMapAction(action)
 {
     if(!mapInit)
@@ -667,6 +734,7 @@ function ExecuteMapAction(action)
     switch(action)
     {
         case 1:
+            UpdateMapActionCursor(action);
             tool = 4;
             break;
         case 2:
@@ -682,12 +750,15 @@ function ExecuteMapAction(action)
             PanLeft();
             break;
         case 7:
+            UpdateMapActionCursor(action);
             tool = 1;
             break;
         case 8:
+            UpdateMapActionCursor(action);
             tool = 2;
             break;
         case 9:
+            UpdateMapActionCursor(action);
             tool = 3;
             break;
         case 10:
@@ -706,12 +777,15 @@ function ExecuteMapAction(action)
             InitialMapView();
             break;
         case 15:
+            UpdateMapActionCursor(action);
             tool = 0;
             break;
         case 16:
+            UpdateMapActionCursor(action);
             tool = 5;
             break;
         case 17:
+            UpdateMapActionCursor(action);
             tool = 6;
             break;
         case 19:
@@ -3523,6 +3597,7 @@ function CancelDigitization()
 {
     if(digitizing)
     {
+        SetCurrentToolCursor();
         digitizer.Cancel();
         digitizing = false;
         digihandler = null;
@@ -3533,6 +3608,7 @@ function OnShapeDigitized(shape)
 {
     if(digitizing)
     {
+        SetCurrentToolCursor();
         digitizing = false;
         if(digihandler != null)
         {
