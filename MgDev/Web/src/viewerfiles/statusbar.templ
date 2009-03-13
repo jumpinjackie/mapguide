@@ -41,8 +41,8 @@
 <script language=javascript>
 
 var intId;
-var fieldSizes = new Array(200, 120, 175);
-var fieldsW = 200+120+175;
+var fieldSizes = new Array(300, 120, 175);
+var fieldsW = 300+120+175;
 var origScaleValue;
 var origScaleFieldBackground;
 
@@ -118,6 +118,10 @@ function OnStatusResized()
 function SetFieldText(msg, index)
 {
     document.getElementById(index).value = msg;
+    if(index == 1 || index == 2)
+    {
+        document.getElementById(index).title = msg;
+    }
 }
 
 function CalcKeyCode(aChar) 
@@ -191,8 +195,8 @@ function GetScaleField()
 <body class="StatusBar" onload="InitDocument()" onResize="return OnStatusResized();" leftmargin=0 topmargin=0 rightmargin=0 bottommargin=0 marginwidth=0 marginheight=0 >
     <table width=100% height=100% cellspacing=0 cellpadding=0 border=0>
       <tr><td valign=center>
-        <input class="StatusField" id="1" type="text" readonly >
-        <input class="StatusField" id="2" type="text" readonly >
+        <input class="StatusField" id="1" type="text" title="" readonly >
+        <input class="StatusField" id="2" type="text" title="" readonly >
         <input class="StatusField" id="3" name="3" type="text" onKeyUp="KeyboardController(this)" onKeyDown="OnScaleFieldKeyDown(event)" onfocus="OnScaleFieldFocus()" onblur="OnBlurScaleField()" onclick="this.focus()">
         <input class="StatusField" id="4" type="text" readonly >
         <img src="../localized/__#POWEREDBYICON#__" width="137" height="18" class="StatusLogo" id="5">

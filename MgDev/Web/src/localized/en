@@ -228,6 +228,7 @@ LATLONCURPOS            = Lat: {0}, Lon: {1}
 MAPUNITSCURPOS          = X: {0}, Y: {1}
 FEATURESSELECTED        = {0} features selected
 FEATURESELECTED         = {0} feature selected
+LAYERSELECTED           = {0} {1} selected
 MI                      = mi
 FT                      = ft
 IN                      = in

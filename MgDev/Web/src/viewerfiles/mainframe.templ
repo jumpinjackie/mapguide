@@ -494,7 +494,18 @@ function OnSelectionChanged()
 {
     var selCount = GetMapFrame().GetSelectedCount();
     if(hasStatusbar == 1)
-        sbFrame.SetFeatureSelectedMsg(FormatMessage((selCount > 1? "__#FEATURESSELECTED#__": "__#FEATURESELECTED#__"), new Array(selCount, "unused")));
+    {
+        var selLayers = GetMapFrame().GetSelectedLayers();
+        if(selLayers != null && selLayers.length == 1)
+        {
+            sbFrame.SetFeatureSelectedMsg(FormatMessage("__#LAYERSELECTED#__", new Array(selCount, selLayers[0].legend)));
+        }
+        else
+        {
+            sbFrame.SetFeatureSelectedMsg(FormatMessage((selCount == 1? "__#FEATURESELECTED#__": "__#FEATURESSELECTED#__"), new Array(selCount, "unused")));
+        }
+    }
+
     var stateChanged = false;
 
     for(var i = 0; i < selectionAwareCmds.length; i++)
