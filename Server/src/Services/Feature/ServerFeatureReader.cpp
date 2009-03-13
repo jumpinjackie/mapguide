@@ -652,13 +652,14 @@ MgByteReader* MgServerFeatureReader::GetGeometry(CREFSTRING propertyName)
     }
     else
     {
-        INT32 len;
-        BYTE_ARRAY_OUT data = this->GetGeometry(propertyName.c_str(), len);
+        FdoInt32 len = 0;
+        const FdoByte* data = m_fdoReader->GetGeometry(propertyName.c_str(), &len);
 
         if (data != NULL)
         {
-            Ptr<MgByte> mgBytes = new MgByte((BYTE_ARRAY_IN)data, len, MgByte::None);
+            Ptr<MgByte> mgBytes = new MgByte((BYTE_ARRAY_IN)data, len);
             Ptr<MgByteSource> bSource = new MgByteSource(mgBytes);
+            bSource->SetMimeType(MgMimeType::Agf);
             retVal = bSource->GetReader();
         }
     }

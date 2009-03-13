@@ -554,26 +554,6 @@ MgRaster* MgProxySqlDataReader::GetRaster(CREFSTRING propertyName)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
-/// Gets the Geometry for the specified property. No conversion is
-/// performed, thus the property must be a of type Geometry or the result
-/// is NULL</summary>
-/// <param name="propertyName">Property name.</param>
-/// <returns>Returns a ByteReader object</returns>
-BYTE_ARRAY_OUT MgProxySqlDataReader::GetGeometry(CREFSTRING propertyName, INT32& length)
-{
-    Ptr<MgByteReader> byteReader = this->GetGeometry(propertyName);
-
-    MgByteSink sink(byteReader);
-    Ptr<MgByte> byte = sink.ToBuffer();
-
-    BYTE_ARRAY_OUT bytes = byte->Bytes();
-    length = byte->GetLength();
-
-    return bytes;
-}
-
-//////////////////////////////////////////////////////////////////
-/// <summary>
 /// Gets the string value of the specified property. No conversion is
 /// performed, thus the property must be a of type string or the result
 /// is NULL</summary>
