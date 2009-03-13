@@ -38,8 +38,10 @@ rem ==================================================
 rem MapGuide Installer vars
 rem ==================================================
 SET INSTALLER_DEV=%CD%
-SET INSTALLER_OUTPUT=%INSTALLER_DEV%\Installers\MapGuide\bin\%TYPEBUILD%
+SET INSTALLER_OUTPUT=%INSTALLER_DEV%\Output
 SET INSTALLER_DEV_SUPPORT=%INSTALLER_DEV%\Support
+SET INSTALLER_DEV_BOOTSTRAPPER=%INSTALLER_DEV%\Bootstrapper
+SET INSTALLER_NAME=MapGuideOpenSource-2.1.0-Unofficial
 
 SET INSTALLER_DEV_CSMAP=%INSTALLER_DEV%\Libraries\CS Map
 SET INSTALLER_DEV_FDO=%INSTALLER_DEV%\Libraries\FDO
@@ -48,12 +50,13 @@ SET INSTALLER_DEV_MGWEB=%INSTALLER_DEV%\Libraries\MapGuide Web Extensions
 SET INSTALLER_DEV_MAESTRO=%INSTALLER_DEV%\Libraries\Maestro
 SET INSTALLER_DEV_INSTALLER=%INSTALL_DEV%\Installers\MapGuide
 
-SET MG_SERVER=..\MgDev\%TYPEBUILD%\Server\
-SET MG_WEB=..\MgDev\%TYPEBUILD%\WebServerExtensions\
-SET MG_MAESTRO=..\Tools\Maestro\Maestro\bin\%TYPEBUILD%\
+SET MG_SERVER=%CD%\..\MgDev\%TYPEBUILD%\Server\
+SET MG_WEB=%CD%\..\MgDev\%TYPEBUILD%\WebServerExtensions\
+SET MG_MAESTRO=%CD%\..\Tools\Maestro\Maestro\bin\%TYPEBUILD%\
 
+SET SEVEN_ZIP=%CD%\..\MgDev\BuildTools\WebTools\7-Zip
 SET PARAFFIN=%CD%
-SET PATH=%PATH%;%PARAFFIN%
+SET PATH=%PATH%;%PARAFFIN%;%SEVEN_ZIP%
 
 rem ==================================================
 rem MSBuild Settings
@@ -269,7 +272,19 @@ if not "%TYPEACTION%"=="buildinstall" goto quit
 echo [build]: Installer
 %MSBUILD% Installer.sln
 if "%errorlevel%"=="1" goto error
-echo [build]: Installer created in %INSTALLER_OUTPUT%
+echo [build]: Create bootstrapper
+pushd %INSTALLER_DEV_BOOTSTRAPPER%
+%MSBUILD% /p:InstallerName=%INSTALLER_NAME%.msi
+popd
+echo [build]: Create 7z archive
+pushd %INSTALLER_OUTPUT%
+if exist "%INSTALLER_NAME%.exe" del "%INSTALLER_NAME%.exe
+if exist setup.7z del setup.7z
+7z.exe a -y setup.7z *
+echo [build]: Create self-extracting executable
+copy /b %INSTALLER_DEV_SUPPORT%\7zExtra\7zS.sfx + %INSTALLER_DEV_BOOTSTRAPPER%\Setup.conf + setup.7z %INSTALLER_NAME%.exe
+popd
+echo [build]: Installer created at %INSTALLER_OUTPUT%\%INSTALLER_NAME%.exe
 goto quit
 
 :error_mg_server_not_found

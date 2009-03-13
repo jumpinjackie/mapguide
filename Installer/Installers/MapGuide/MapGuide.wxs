@@ -16,13 +16,6 @@
 
         <Media Id="1" Cabinet="MapGuideOpenSource.cab" EmbedCab="yes" />
 
-        <!--
-        <PropertyRef Id="NETFRAMEWORK20"/>
-        <Condition Message="The .NET Framework 2.0 must be installed ([NETFRAMEWORK20])">
-            Installed OR NETFRAMEWORK20
-        </Condition>
-        -->
-
         <!-- Initial MapGuide Web Configuration: APACHE | IIS | MANUAL -->
         <Property Id="MGWEB_CONFIG" Secure="yes" Value="APACHE" />
         <Property Id="MGSERVER_IP" Secure="yes" Value="127.0.0.1" />
@@ -382,10 +375,5 @@
                 Before="InstallFinalize">MGWEB_CONFIG = "IIS" AND &amp;WebExtensionsFeature = 2</Custom>
             <ScheduleReboot After="InstallFinalize"/>
         </InstallExecuteSequence>
-
-        <!-- Need the Visual C++ Runtime as an MSM when ready for release; commented out to reduce output warnings. -->
-        <!--
-        <?include MsvcRuntime.wxi ?>
-        -->
     </Product>
 </Wix>

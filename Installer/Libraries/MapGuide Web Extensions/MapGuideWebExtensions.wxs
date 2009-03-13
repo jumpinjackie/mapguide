@@ -84,11 +84,11 @@
     </DirectoryRef>
     <Feature Id="WebExtensionsFeature" Title="MapGuide Web" Level="1" ConfigurableDirectory="WEBEXTENSIONSLOCATION" Description="MapGuide Web provides you with the components you need to server MapGuide resources over the internet." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
       <ComponentRef Id="WebExtensionsComponent"/>
-      <Feature Id="WebExtApacheFeature" Title="Apache Web Server" Level="1" Description="A bundled version of Apache with MapGuide enabled, running on port [APACHE_PORT]." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+      <Feature Id="WebExtApacheFeature" Title="Apache Web Server" Display="hidden" Level="1" Description="A bundled version of Apache with MapGuide enabled, running on port [APACHE_PORT]." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
           <Condition Level="0">MGWEB_CONFIG = "IIS"</Condition>
         <ComponentGroupRef Id="group_APACHEFILES"/>
       </Feature>
-      <Feature Id="WebExtPhpFeature" Title="PHP Hypertext Processor" Level="1" Description="A bundled version of PHP with MapGuide enabled." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+      <Feature Id="WebExtPhpFeature" Title="PHP Hypertext Processor" Display="hidden" Level="1" Description="A bundled version of PHP with MapGuide enabled." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
         <ComponentGroupRef Id="group_PHPFILES"/>
       </Feature>
       <Feature Id="WebExtTomcatFeature" Title="Tomcat Java Webserver" Level="1" Description="A bundled version of Tomcat with MapGuide enabled." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
@@ -104,7 +104,7 @@
         <ComponentGroupRef Id="group_MAPVIEWERJSPFILES"/>
       </Feature>
       <Feature Id="WebExtMapViewerASPXFeature" Title=".Net Map Viewer" Level="1" Description="The .Net version of the map viewer." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
-          <Condition Level="0">MGWEB_CONFIG = "APACHE" OR NOT NETFRAMEWORK20</Condition>
+          <Condition Level="0">NOT NETFRAMEWORK20</Condition>
         <ComponentGroupRef Id="group_MAPVIEWERASPXFILES"/>
       </Feature>
         <Feature Id="WebLocalizedFeature" Title="Localization Files" Display="hidden"  Level="1" Description="Localization files for the web tier" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">

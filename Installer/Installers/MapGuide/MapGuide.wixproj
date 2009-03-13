@@ -16,7 +16,7 @@
     <DefineConstants>Debug</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <OutputPath>..\..\Output\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <Cultures>en-US</Cultures>
     <WixVariables>
@@ -42,7 +42,6 @@
     </WixExtension>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="MsvcRuntime.wxi" />
     <Content Include="Resources\InstallerLarge.bmp" />
     <Content Include="Resources\InstallerSmall.bmp" />
     <Content Include="Resources\LGPL21.rtf" />

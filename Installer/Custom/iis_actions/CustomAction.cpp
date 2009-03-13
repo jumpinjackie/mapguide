@@ -751,8 +751,6 @@ UINT __stdcall CreateVDirMapAgent(MSIHANDLE hMSI)
 
 	pIMeta->CloseKey(MyHandle);
 
-	return ERROR_SUCCESS;
-
 LExit:
 	er = SUCCEEDED(hRes) ? ERROR_SUCCESS : ERROR_INSTALL_FAILURE;
 	return WcaFinalize(er);
