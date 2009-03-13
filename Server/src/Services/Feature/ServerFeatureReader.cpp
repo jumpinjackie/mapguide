@@ -647,7 +647,7 @@ MgByteReader* MgServerFeatureReader::GetGeometry(CREFSTRING propertyName)
         MgStringCollection arguments;
         arguments.Add(propertyName);
 
-        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetGeometry",
+        throw new MgNullPropertyValueException(L"MgServerFeatureReader.GetGeometry",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     else
@@ -694,7 +694,7 @@ MgRaster* MgServerFeatureReader::GetRaster(CREFSTRING propertyName)
         MgStringCollection arguments;
         arguments.Add(propertyName);
 
-        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetRaster",
+        throw new MgNullPropertyValueException(L"MgServerFeatureReader.GetRaster",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     else
@@ -799,7 +799,8 @@ void MgServerFeatureReader::Serialize(MgStream* stream)
 
 void MgServerFeatureReader::Deserialize(MgStream* stream)
 {
-    throw new MgInvalidOperationException(L"MgServerFeatureReader.Deserialize",__LINE__, __WFILE__, NULL, L"", NULL);
+    throw new MgInvalidOperationException(L"MgServerFeatureReader.Deserialize",
+        __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -810,7 +811,8 @@ void MgServerFeatureReader::Deserialize(MgStream* stream)
 /// <returns>MgByteReader holding XML.</returns>
 MgByteReader* MgServerFeatureReader::ToXml()
 {
-    throw new MgInvalidOperationException(L"MgServerFeatureReader.ToXml",__LINE__, __WFILE__, NULL, L"", NULL);
+    throw new MgInvalidOperationException(L"MgServerFeatureReader.ToXml",
+        __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 
@@ -870,7 +872,7 @@ BYTE_ARRAY_OUT MgServerFeatureReader::GetGeometry(CREFSTRING propertyName, INT32
         MgStringCollection arguments;
         arguments.Add(propertyName);
 
-        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetGeometry",
+        throw new MgNullPropertyValueException(L"MgServerFeatureReader.GetGeometry",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     else
@@ -905,7 +907,7 @@ const wchar_t* MgServerFeatureReader::GetString(CREFSTRING propertyName, INT32& 
         MgStringCollection arguments;
         arguments.Add(propertyName);
 
-        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetString",
+        throw new MgNullPropertyValueException(L"MgServerFeatureReader.GetString",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     else

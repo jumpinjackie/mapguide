@@ -635,4 +635,3 @@ void MgProxyGwsFeatureReader::SetServiceForFeatureProperties(MgFeatureService* s
         }
     }
 }
-
