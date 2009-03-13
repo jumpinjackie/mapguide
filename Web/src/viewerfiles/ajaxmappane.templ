@@ -2721,6 +2721,9 @@ function ProcessFeatureInfo(xmlIn, append, which)
                         selection.count ++;
                     }
                 }
+
+                if(layer.featIds.length == 0)
+                    selection.layers.removeItem(layerId);
             }
         }
         catch(e) {}
