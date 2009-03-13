@@ -210,7 +210,8 @@ bool MgServerGwsFeatureReader::ReadNext()
                 if (m_attributeNameDelimiters->GetCount() != (INT32)m_primaryExtendedFeatureDescription->GetCount())
                 {
                     // Should never get here
-                    throw new MgInvalidArgumentException(L"MgServerGwsFeatureReader.ReadNext", __LINE__, __WFILE__, NULL, L"MgInvalidCollectionSize", NULL);
+                    throw new MgInvalidArgumentException(L"MgServerGwsFeatureReader.ReadNext",
+                        __LINE__, __WFILE__, NULL, L"MgInvalidCollectionSize", NULL);
                 }
 
                 for (int i = 0; i < m_primaryExtendedFeatureDescription->GetCount(); i++)
@@ -316,7 +317,8 @@ bool MgServerGwsFeatureReader::ReadNext()
                         if (m_attributeNameDelimiters->GetCount() != (INT32)m_primaryExtendedFeatureDescription->GetCount())
                         {
                             // Should never get here
-                            throw new MgInvalidArgumentException(L"MgServerGwsFeatureReader.ReadNext", __LINE__, __WFILE__, NULL, L"MgInvalidCollectionSize", NULL);
+                            throw new MgInvalidArgumentException(L"MgServerGwsFeatureReader.ReadNext",
+                                __LINE__, __WFILE__, NULL, L"MgInvalidCollectionSize", NULL);
                         }
 
                         for (int i = 0; i < m_primaryExtendedFeatureDescription->GetCount(); i++)
@@ -487,7 +489,7 @@ bool MgServerGwsFeatureReader::GetBoolean(CREFSTRING propertyName)
         MgStringCollection arguments;
         arguments.Add(propertyName);
 
-        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetBoolean",
+        throw new MgNullPropertyValueException(L"MgServerGwsFeatureReader.GetBoolean",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     else
@@ -524,7 +526,7 @@ BYTE MgServerGwsFeatureReader::GetByte(CREFSTRING propertyName)
         MgStringCollection arguments;
         arguments.Add(propertyName);
 
-        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetByte",
+        throw new MgNullPropertyValueException(L"MgServerGwsFeatureReader.GetByte",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     else
@@ -561,7 +563,7 @@ MgDateTime* MgServerGwsFeatureReader::GetDateTime(CREFSTRING propertyName)
         MgStringCollection arguments;
         arguments.Add(propertyName);
 
-        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetDateTime",
+        throw new MgNullPropertyValueException(L"MgServerGwsFeatureReader.GetDateTime",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     else
@@ -600,7 +602,7 @@ float MgServerGwsFeatureReader::GetSingle(CREFSTRING propertyName)
         MgStringCollection arguments;
         arguments.Add(propertyName);
 
-        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetSingle",
+        throw new MgNullPropertyValueException(L"MgServerGwsFeatureReader.GetSingle",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     else
@@ -637,7 +639,7 @@ double MgServerGwsFeatureReader::GetDouble(CREFSTRING propertyName)
         MgStringCollection arguments;
         arguments.Add(propertyName);
 
-        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetDouble",
+        throw new MgNullPropertyValueException(L"MgServerGwsFeatureReader.GetDouble",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     else
@@ -674,7 +676,7 @@ INT16 MgServerGwsFeatureReader::GetInt16(CREFSTRING propertyName)
         MgStringCollection arguments;
         arguments.Add(propertyName);
 
-        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetInt16",
+        throw new MgNullPropertyValueException(L"MgServerGwsFeatureReader.GetInt16",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     else
@@ -711,7 +713,7 @@ INT32 MgServerGwsFeatureReader::GetInt32(CREFSTRING propertyName)
         MgStringCollection arguments;
         arguments.Add(propertyName);
 
-        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetInt32",
+        throw new MgNullPropertyValueException(L"MgServerGwsFeatureReader.GetInt32",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     else
@@ -750,7 +752,7 @@ INT64 MgServerGwsFeatureReader::GetInt64(CREFSTRING propertyName)
         MgStringCollection arguments;
         arguments.Add(propertyName);
 
-        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetInt64",
+        throw new MgNullPropertyValueException(L"MgServerGwsFeatureReader.GetInt64",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     else
@@ -781,7 +783,7 @@ STRING MgServerGwsFeatureReader::GetString(CREFSTRING propertyName)
         MgStringCollection arguments;
         arguments.Add(propertyName);
 
-        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetString",
+        throw new MgNullPropertyValueException(L"MgServerGwsFeatureReader.GetString",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     else
@@ -823,7 +825,7 @@ MgByteReader* MgServerGwsFeatureReader::GetBLOB(CREFSTRING propertyName)
         MgStringCollection arguments;
         arguments.Add(propertyName);
 
-        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetBLOB",
+        throw new MgNullPropertyValueException(L"MgServerGwsFeatureReader.GetBLOB",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     else
@@ -860,7 +862,7 @@ MgByteReader* MgServerGwsFeatureReader::GetCLOB(CREFSTRING propertyName)
         MgStringCollection arguments;
         arguments.Add(propertyName);
 
-        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetCLOB",
+        throw new MgNullPropertyValueException(L"MgServerGwsFeatureReader.GetCLOB",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     else
@@ -900,7 +902,7 @@ MgFeatureReader* MgServerGwsFeatureReader::GetFeatureObject(CREFSTRING propertyN
         MgStringCollection arguments;
         arguments.Add(propertyName);
 
-        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetFeatureObject",
+        throw new MgNullPropertyValueException(L"MgServerGwsFeatureReader.GetFeatureObject",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     else
@@ -938,7 +940,7 @@ MgByteReader* MgServerGwsFeatureReader::GetGeometry(CREFSTRING propertyName)
         MgStringCollection arguments;
         arguments.Add(propertyName);
 
-        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetGeometry",
+        throw new MgNullPropertyValueException(L"MgServerGwsFeatureReader.GetGeometry",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     else
@@ -989,7 +991,7 @@ MgRaster* MgServerGwsFeatureReader::GetRaster(CREFSTRING propertyName)
         MgStringCollection arguments;
         arguments.Add(propertyName);
 
-        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetRaster",
+        throw new MgNullPropertyValueException(L"MgServerGwsFeatureReader.GetRaster",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     else
@@ -1046,7 +1048,7 @@ void MgServerGwsFeatureReader::Serialize(MgStream* stream)
 
     // Collect the feature reader into a pool for ReadNext operation
     MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
-    CHECKNULL(featPool, L"MgServerFeatureReader.Serialize");
+    CHECKNULL(featPool, L"MgServerGwsFeatureReader.Serialize");
 
     if (!featPool->Contains(m_gwsGetFeatures))
         featPool->Add(m_gwsGetFeatures); // Add the reference
@@ -1193,7 +1195,7 @@ BYTE_ARRAY_OUT MgServerGwsFeatureReader::GetGeometry(CREFSTRING propertyName, IN
         MgStringCollection arguments;
         arguments.Add(propertyName);
 
-        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetGeometry",
+        throw new MgNullPropertyValueException(L"MgServerGwsFeatureReader.GetGeometry",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     else
@@ -1232,7 +1234,7 @@ const wchar_t* MgServerGwsFeatureReader::GetString(CREFSTRING propertyName, INT3
         MgStringCollection arguments;
         arguments.Add(propertyName);
 
-        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetString",
+        throw new MgNullPropertyValueException(L"MgServerGwsFeatureReader.GetString",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     else
@@ -1244,7 +1246,7 @@ const wchar_t* MgServerGwsFeatureReader::GetString(CREFSTRING propertyName, INT3
         }
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetString");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetString");
 
     return ((const wchar_t*)retVal);
 }

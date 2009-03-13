@@ -159,7 +159,8 @@ INT32 MgServerDataReader::GetPropertyType(CREFSTRING propertyName)
             FdoDataType dataType = m_dataReader->GetDataType(propertyName.c_str());
             if (FdoDataType(-1) == dataType)
             {
-                throw new MgInvalidPropertyTypeException(L"MgServerDataReader.GetPropertyType", __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgInvalidPropertyTypeException(L"MgServerDataReader.GetPropertyType",
+                    __LINE__, __WFILE__, NULL, L"", NULL);
             }
 
             type = MgServerFeatureUtil::GetMgPropertyType(dataType);
@@ -172,7 +173,8 @@ INT32 MgServerDataReader::GetPropertyType(CREFSTRING propertyName)
         }
         default:
         {
-            throw new MgInvalidPropertyTypeException(L"MgServerDataReader.GetPropertyType", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgInvalidPropertyTypeException(L"MgServerDataReader.GetPropertyType",
+                __LINE__, __WFILE__, NULL, L"", NULL);
         }
     }
 
@@ -819,7 +821,8 @@ void MgServerDataReader::Serialize(MgStream* stream)
 
 void MgServerDataReader::Deserialize(MgStream* stream)
 {
-    throw new MgInvalidOperationException(L"MgServerDataReader.Deserialize",__LINE__, __WFILE__, NULL, L"", NULL);
+    throw new MgInvalidOperationException(L"MgServerDataReader.Deserialize",
+        __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -830,7 +833,8 @@ void MgServerDataReader::Deserialize(MgStream* stream)
 /// <returns>MgByteReader holding XML.</returns>
 MgByteReader* MgServerDataReader::ToXml()
 {
-    throw new MgInvalidOperationException(L"MgServerDataReader.ToXml",__LINE__, __WFILE__, NULL, L"", NULL);
+    throw new MgInvalidOperationException(L"MgServerDataReader.ToXml",
+        __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 MgByteReader* MgServerDataReader::GetRaster(INT32 xSize, INT32 ySize, STRING rasterPropName)
@@ -849,7 +853,8 @@ MgByteReader* MgServerDataReader::GetRaster(INT32 xSize, INT32 ySize, STRING ras
     {
         // TODO: specify which argument and message, once we have the mechanism
         STRING message = MgServerFeatureUtil::GetMessage(L"MgMissingRasterProperty");
-        throw new MgInvalidOperationException(L"MgServerDataReader.GetRaster", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgInvalidOperationException(L"MgServerDataReader.GetRaster",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
     byteReader = MgServerFeatureUtil::GetRaster(m_dataReader, rasterPropName, xSize, ySize);
 
