@@ -54,9 +54,8 @@ SET MG_SERVER=%CD%\..\MgDev\%TYPEBUILD%\Server\
 SET MG_WEB=%CD%\..\MgDev\%TYPEBUILD%\WebServerExtensions\
 SET MG_MAESTRO=%CD%\..\Tools\Maestro\Maestro\bin\%TYPEBUILD%\
 
-SET SEVEN_ZIP=%CD%\..\MgDev\BuildTools\WebTools\7-Zip
 SET PARAFFIN=%CD%
-SET PATH=%PATH%;%PARAFFIN%;%SEVEN_ZIP%
+SET PATH=%PATH%;%PARAFFIN%
 
 rem ==================================================
 rem MSBuild Settings
@@ -182,6 +181,7 @@ pushd "%INSTALLER_DEV_MAESTRO%"
 popd
 echo [clean]: Installer
 %MSBUILD_CLEAN% Installer.sln
+popd
 goto quit
 
 :prepare
@@ -240,6 +240,9 @@ echo [regen]: Web - Php
 echo [regen]: Web - Tomcat
 %PARAFFIN% -dir %MG_WEB%\Tomcat -custom TOMCATFILES -dirref WEBEXTENSIONSLOCATION -multiple %WIX_INC_WEB%\incTomcatFiles.wxs
 
+echo [regen]: Web - Help
+%PARAFFIN% -dir %MG_WEB%\Help -custom HELPFILES -dirref WEBEXTENSIONSLOCATION -multiple %WIX_INC_WEB%\incHelpFiles.wxs
+
 echo [regen]: Web - mapagent
 %PARAFFIN% -dir %MG_WEB%\www\mapagent -custom MAPAGENTFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapAgentFiles.wxs
 
@@ -272,19 +275,7 @@ if not "%TYPEACTION%"=="buildinstall" goto quit
 echo [build]: Installer
 %MSBUILD% Installer.sln
 if "%errorlevel%"=="1" goto error
-echo [build]: Create bootstrapper
-pushd %INSTALLER_DEV_BOOTSTRAPPER%
-%MSBUILD% /p:InstallerName=%INSTALLER_NAME%.msi
-popd
-echo [build]: Create 7z archive
-pushd %INSTALLER_OUTPUT%
-if exist "%INSTALLER_NAME%.exe" del "%INSTALLER_NAME%.exe
-if exist setup.7z del setup.7z
-7z.exe a -y setup.7z *
-echo [build]: Create self-extracting executable
-copy /b %INSTALLER_DEV_SUPPORT%\7zExtra\7zS.sfx + %INSTALLER_DEV_BOOTSTRAPPER%\Setup.conf + setup.7z %INSTALLER_NAME%.exe
-popd
-echo [build]: Installer created at %INSTALLER_OUTPUT%\%INSTALLER_NAME%.exe
+echo [build]: Installer created at %INSTALLER_OUTPUT%\%INSTALLER_NAME%.msi
 goto quit
 
 :error_mg_server_not_found

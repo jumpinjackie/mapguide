@@ -80,10 +80,14 @@
           <Directory Id="TOMCATLOCATION" Name="Tomcat">
               
           </Directory>
+          <Directory Id="HELPLOCATION" Name="Help">
+              
+          </Directory>
       </Directory>
     </DirectoryRef>
     <Feature Id="WebExtensionsFeature" Title="MapGuide Web" Level="1" ConfigurableDirectory="WEBEXTENSIONSLOCATION" Description="MapGuide Web provides you with the components you need to server MapGuide resources over the internet." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
       <ComponentRef Id="WebExtensionsComponent"/>
+      <ComponentRef Id="WebShortcutsComponent"/>
       <Feature Id="WebExtApacheFeature" Title="Apache Web Server" Display="hidden" Level="1" Description="A bundled version of Apache with MapGuide enabled, running on port [APACHE_PORT]." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
           <Condition Level="0">MGWEB_CONFIG = "IIS"</Condition>
         <ComponentGroupRef Id="group_APACHEFILES"/>
@@ -94,6 +98,10 @@
       <Feature Id="WebExtTomcatFeature" Title="Tomcat Java Webserver" Level="1" Description="A bundled version of Tomcat with MapGuide enabled." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
         <ComponentGroupRef Id="group_TOMCATFILES"/>
       </Feature>
+        <Feature Id="WebExtHelpFeature" Title="API Documentation" Level="1" ConfigurableDirectory="HELPLOCATION" Description="Web Extension API documentation" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+          <ComponentGroupRef Id="group_HELPFILES" />
+          <ComponentRef Id="WebApiShortcutComponent"/>
+        </Feature>
       <Feature Id="WebExtMapViewerFeature" Title="Map Viewer files" Display="hidden" Level="1" Description="The support files for the map viewer, language independant." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
         <ComponentGroupRef Id="group_MAPVIEWERFILES"/>
       </Feature>

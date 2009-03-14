@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+	<Fragment>
+        <DirectoryRef Id="ProgramMenuFolder">
+            <Directory Id="MapGuideOpenSourceMenuLocation" Name="MapGuide Open Source">
+                <Component Id="WebApiShortcutComponent" Guid="5FC3FEA9-4DCD-404A-8835-43C8C2F96E29">
+                    <CreateFolder />
+                    <util:InternetShortcut Id="WebApi"
+                                           Directory="MapGuideOpenSourceMenuLocation"
+                                           Name="Web API Documentation"
+                                           Target="file://[HELPLOCATION]index.htm" />
+                    <RegistryKey Root="HKCU" Key="Software\MapGuide Open Source\WebExtensions\ProgramMenuShortcut">
+                        <RegistryValue
+                                Value="Installed"
+                                Type="string"
+                                KeyPath="yes" />
+                    </RegistryKey>
+                </Component>
+                <Component Id="WebShortcutsComponent" Guid="7D2E24E9-533B-4119-A6D1-E48A33BF34C3">
+                    <CreateFolder />
+                    <util:InternetShortcut Id="MapGuideHome"
+                                           Directory="MapGuideOpenSourceMenuLocation"
+                                           Name="MapGuide Project Home"
+                                           Target="http://mapguide.osgeo.org" />
+                    <util:InternetShortcut Id="MapGuideTrac"
+                                           Directory="MapGuideOpenSourceMenuLocation"
+                                           Name="MapGuide Trac"
+                                           Target="http://trac.osgeo.org" />
+                    <util:InternetShortcut Id="MapGuideBestPractices"
+                                           Directory="MapGuideOpenSourceMenuLocation"
+                                           Name="MapGuide Best Practices"
+                                           Target="http://sandbox.mapguide.com" />
+                    <util:InternetShortcut Id="MapGuideCentral"
+                                           Directory="MapGuideOpenSourceMenuLocation"
+                                           Name="MapGuide Central"
+                                           Target="http://ennoble.dreamhosters.com/mapguide-central" />
+                    <RegistryKey Root="HKCU" Key="Software\MapGuide Open Source\WebResources\ProgramMenuShortcut">
+                        <RegistryValue
+                                Value="Installed"
+                                Type="string"
+                                KeyPath="yes" />
+                    </RegistryKey>
+                    <RemoveFolder Id="MapGuideOpenSourceMenuLocation" On="uninstall" />
+                </Component>
+            </Directory>
+        </DirectoryRef>
+	</Fragment>
+</Wix>
