@@ -42,6 +42,7 @@
     </WixExtension>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="MsvcRuntime.wxi" />
     <Content Include="Resources\InstallerLarge.bmp" />
     <Content Include="Resources\InstallerSmall.bmp" />
     <Content Include="Resources\LGPL21.rtf" />
