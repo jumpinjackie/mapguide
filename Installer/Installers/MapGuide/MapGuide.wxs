@@ -339,40 +339,53 @@
             <Custom
                 Action="MgServerUninstallCA"
                 Before="RemoveFiles">&amp;ServerFeature=2</Custom>
-            <!-- IIS-related custom actions -->
             <Custom
                 Action="RemoveApacheServiceCA"
                 Before="RemoveFiles">MGWEB_CONFIG = "APACHE" AND &amp;WebExtApacheFeature=2</Custom>
+            <!-- IIS 5/6 related custom actions -->
             <Custom
                 Action="AddWebServiceExtension"
-                Before="InstallFinalize">MGWEB_CONFIG = "IIS" AND &amp;WebExtensionsFeature > 2</Custom>
+                Before="InstallFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature > 2</Custom>
             <Custom
                 Action="CreateVDirMapGuide"
-                After="AddWebServiceExtension">MGWEB_CONFIG = "IIS" AND &amp;WebExtensionsFeature > 2</Custom>
+                After="AddWebServiceExtension">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature > 2</Custom>
             <Custom
                 Action="RegisterScriptMaps"
-                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND &amp;WebExtensionsFeature > 2</Custom>
+                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature > 2</Custom>
             <Custom
                 Action="SetCustomErrors"
-                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND &amp;WebExtensionsFeature > 2</Custom>
+                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature > 2</Custom>
             <Custom
                 Action="CreateVDirMapAgent"
-                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND &amp;WebExtensionsFeature > 2</Custom>
+                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature > 2</Custom>
             <Custom
                 Action="CreateVDirPhpAgent"
-                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND &amp;WebExtMapViewerPHPFeature > 2</Custom>
+                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND IIS_API_TYPE = "PHP" AND &amp;WebExtMapViewerPHPFeature > 2</Custom>
             <Custom
                 Action="CreateVDirNetAgent"
-                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND &amp;WebExtMapViewerASPXFeature > 2</Custom>
+                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND IIS_API_TYPE = "DOTNET" AND  &amp;WebExtMapViewerASPXFeature > 2</Custom>
             <Custom
                 Action="CreateVDirJavaAgent"
-                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND &amp;WebExtMapViewerJSPFeature > 2</Custom>
+                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND IIS_API_TYPE = "JAVA" AND &amp;WebExtMapViewerJSPFeature > 2</Custom>
             <Custom
                 Action="DeleteWebServiceExtension"
-                Before="DeleteVDirMapGuide">MGWEB_CONFIG = "IIS" AND &amp;WebExtensionsFeature = 2</Custom>
+                Before="DeleteVDirMapGuide">(IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature = 2</Custom>
             <Custom
                 Action="DeleteVDirMapGuide"
-                Before="InstallFinalize">MGWEB_CONFIG = "IIS" AND &amp;WebExtensionsFeature = 2</Custom>
+                Before="InstallFinalize">(IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature = 2</Custom>
+            <!-- IIS7 custom actions -->
+            <Custom
+                Action="CreateAPPMapGuideWithIIS7"
+                Before="InstallFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom
+                Action="CreateVDirPhpAgentWithIIS7"
+                After="CreateAPPMapGuideWithIIS7">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2 AND IIS_API_TYPE = "PHP" AND &amp;WebExtMapViewerPHPFeature > 2</Custom>
+            <Custom
+                Action="CreateAPPNetAgentWithIIS7"
+                After="CreateAPPMapGuideWithIIS7">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2 AND IIS_API_TYPE = "DOTNET" AND &amp;WebExtMapViewerASPXFeature > 2</Custom>
+            <Custom
+                Action="DeleteAPPMapGuideWithIIS7"
+                Before="InstallFinalize">(IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature = 2</Custom>
             <ScheduleReboot After="InstallFinalize"/>
         </InstallExecuteSequence>
 

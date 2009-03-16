@@ -3,20 +3,6 @@
      xmlns:iis="http://schemas.microsoft.com/wix/IIsExtension"
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
 	<Fragment>
-        <!--
-        <util:User Id="iisAccount" Name="IUSR_[ComputerName]" Domain="[ComputerName]" />
-        <iis:WebSite Id="DefaultWebSite" Description="Default Web Site">
-            <iis:WebAddress Id="AllUnassigned" Port="80" />
-        </iis:WebSite>
-        <Component Id="IIsComponent" Guid="44AE131F-DFBF-4EFA-B3A9-424350ABD17E" Directory="WEBEXTENSIONSLOCATION">
-            <Condition>MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR &lt; 7</Condition>
-            <iis:WebVirtualDir Id="MapGuideVirtualDir" Directory="WEBROOTLOCATION" Alias="mapguide" WebSite="DefaultWebSite">
-                <iis:WebDirProperties Id="MapGuideVirtualDirProperties" Execute="yes" Script="yes" Read="yes" AnonymousAccess="yes" AnonymousUser="iisAccount" />
-                <iis:WebApplication Id="MapGuideApplication" Name="mapguide" WebAppPool="MapGuideAppPool" />
-            </iis:WebVirtualDir>
-            <iis:WebAppPool Id="MapGuideAppPool" Name="MapGuideAppPool" Identity="other" User="iisAccount" />
-        </Component>
-        -->
         <Binary Id="IIsActions" SourceFile="..\..\Custom\bin\iis_actions.dll" />
         <Binary Id="IIs7Actions" SourceFile="..\..\Custom\bin\iis7_action.dll" />
         <CustomAction Id="AddWebServiceExtension" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="AddWebServiceExtension" />
@@ -29,5 +15,9 @@
         <CustomAction Id="CreateVDirNetAgent" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="CreateVDirNetAgent" />
         <CustomAction Id="CreateVDirJavaAgent" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="CreateVDirJavaAgent" />
         <CustomAction Id="DeleteVDirMapGuide" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="DeleteVDirMapGuide" />
+        <CustomAction Id="CreateAPPMapGuideWithIIS7" Return="check" BinaryKey="IIs7Actions" Execute="immediate" DllEntry="CreateAPPMapGuideWithIIS7" />
+        <CustomAction Id="CreateVDirPhpAgentWithIIS7" Return="check" BinaryKey="IIs7Actions" Execute="immediate" DllEntry="CreateVDirPhpAgentWithIIS7" />
+        <CustomAction Id="CreateAPPNetAgentWithIIS7" Return="check" BinaryKey="IIs7Actions" Execute="immediate" DllEntry="CreateAPPNetAgentWithIIS7" />
+        <CustomAction Id="DeleteAPPMapGuideWithIIS7" Return="check" BinaryKey="IIs7Actions" Execute="immediate" DllEntry="DeleteAPPMapGuideWithIIS7" />
 	</Fragment>
 </Wix>

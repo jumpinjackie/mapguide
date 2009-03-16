@@ -35,3 +35,10 @@ UINT __stdcall CreateAPPNetAgentWithIIS7(MSIHANDLE hMSI);
 UINT __stdcall DeleteAPPMapGuideWithIIS7(MSIHANDLE hMSI);
 
 #endif
+
+#define MG_APP_POOL L"MapGuideAppPool"
+#define MG_VDIR L"mapguide"
+#define MG_WEBSITE L"Default Web Site"
+
+#define MSI_PROP_INSTALLDIR L"WEBEXTENSIONSLOCATION"
+#define MG_DEFAULT_WEB_PATH L"C:\\Program Files\\OSGeo\\MapGuide Web\\"

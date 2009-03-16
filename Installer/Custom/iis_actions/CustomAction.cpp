@@ -259,8 +259,7 @@ UINT __stdcall DeleteWebServiceExtension(MSIHANDLE hMSI)
 
 	if (FAILED(hResult))  
 	{
-		CoUninitialize();
-		return FALSE;  
+		goto LExit;
 	}
 
 	// Open key with "/LM" path
@@ -275,8 +274,7 @@ UINT __stdcall DeleteWebServiceExtension(MSIHANDLE hMSI)
 	if (FAILED(hResult))
 	{	
 		pIAdminBase->Release();
-		CoUninitialize();
-		return FALSE;
+		goto LExit;
 	}
 
 	// First set the data size of this multi-string Web Service Extension List to 0.
@@ -307,9 +305,9 @@ UINT __stdcall DeleteWebServiceExtension(MSIHANDLE hMSI)
 	{
 		pIAdminBase->CloseKey(hMetaData); 
 		pIAdminBase->Release();
-		CoUninitialize();
+		//CoUninitialize();
 		WcaLog(LOGMSG_STANDARD, "DeleteWebServiceExtension: GetData failed: 0x%x", hResult);
-		return FALSE;
+		goto LExit;
 	}
 
 	dwBuffer_new = metaDataRecord.dwMDDataLen;
@@ -345,9 +343,10 @@ UINT __stdcall DeleteWebServiceExtension(MSIHANDLE hMSI)
 
 	pIAdminBase->CloseKey(hMetaData); 
 	pIAdminBase->Release ();
-	CoUninitialize ();
+	
 
 LExit:
+	CoUninitialize ();
 	er = SUCCEEDED(hResult) ? ERROR_SUCCESS : ERROR_INSTALL_FAILURE;
 	return WcaFinalize(er);
 }

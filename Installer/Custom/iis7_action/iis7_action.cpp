@@ -34,6 +34,8 @@
 #define _ofstream std::ofstream
 #endif
 
+inline void Replace(_string & str, const TCHAR * find, const TCHAR * replace);
+
 bool ExecuteAppCmd(const TCHAR * szCmdLine);
 _string getInstallDir(MSIHANDLE hMSI);
 
@@ -45,6 +47,14 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 					 )
 {
 	return TRUE;
+}
+
+void Replace(_string & str, const TCHAR * find, const TCHAR * replace)
+{
+	size_t nPos;
+	_string strFind = find;
+	nPos = str.find(strFind);
+	str.replace(nPos, strFind.length(), replace);
 }
 
 bool ExecuteAppCmd(const TCHAR * szCmdLine)
@@ -158,49 +168,56 @@ UINT __stdcall CreateAPPMapGuideWithIIS7(MSIHANDLE hMSI)
 {
 	//::MessageBox(NULL,_T("CreateAPPMapGuideWithIIS7()"),NULL, MB_OK);
 	
-	//appcmd add apppool /name:MapGuide2010AppPool
-	//appcmd set config /section:applicationPools /[name='MapGuide2010AppPool'].processModel.idleTimeout:00:00:00
+	//appcmd add apppool /name:MG_VDIRAppPool
+	//appcmd set config /section:applicationPools /[name='MG_VDIRAppPool'].processModel.idleTimeout:00:00:00
 	//appcmd unlock config /section:handlers
-	//appcmd unlock config "Default Web Site" /section:handlers
-	//appcmd add app /site.name:"Default Web Site" /path:/mapguide2010 /physicalPath:"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www"
-	//appcmd set config "Default Web Site/mapguide2010" /section:handlers /+[name='PHP',path='*.php',verb='*',scriptProcessor='"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\Php\php5isapi.dll"',modules='IsapiModule',resourceType='Unspecified']
+	//appcmd unlock config "MG_WEBSITE" /section:handlers
+	//appcmd add app /site.name:"MG_WEBSITE" /path:/MG_VDIR /physicalPath:"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www"
+	//appcmd set config "MG_WEBSITE/MG_VDIR" /section:handlers /+[name='PHP',path='*.php',verb='*',scriptProcessor='"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\Php\php5isapi.dll"',modules='IsapiModule',resourceType='Unspecified']
 	//appcmd set config /section:isapiCgiRestriction /+[path='"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\Php\php5isapi.dll"',allowed='True']
-	//appcmd add app /site.name:"Default Web Site" /path:/mapguide2010/mapagent /physicalPath:"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www\mapagent"
-	//appcmd set config "Default Web Site/mapguide2010/mapagent" /section:handlers /accessPolicy:Read,Script,Execute
-	//appcmd set config "Default Web Site/mapguide2010/mapagent" /section:handlers /+[name='"MapGuide ISAPI agent"',path='mapagent.fcgi',verb='*',scriptProcessor='"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www\mapagent\isapi_MapAgent.dll"',modules='IsapiModule']
+	//appcmd add app /site.name:"MG_WEBSITE" /path:/MG_VDIR/mapagent /physicalPath:"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www\mapagent"
+	//appcmd set config "MG_WEBSITE/MG_VDIR/mapagent" /section:handlers /accessPolicy:Read,Script,Execute
+	//appcmd set config "MG_WEBSITE/MG_VDIR/mapagent" /section:handlers /+[name='"MapGuide ISAPI agent"',path='mapagent.fcgi',verb='*',scriptProcessor='"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www\mapagent\isapi_MapAgent.dll"',modules='IsapiModule']
 	//appcmd set config /section:isapiCgiRestriction /+[path='"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www\mapagent\isapi_MapAgent.dll"',allowed='True']
-	//appcmd set app "Default Web Site/mapguide2010" /applicationPool:MapGuide2010AppPool
-	//appcmd set app "Default Web Site/mapguide2010/mapagent" /applicationPool:MapGuide2010AppPool
+	//appcmd set app "MG_WEBSITE/MG_VDIR" /applicationPool:MG_VDIRAppPool
+	//appcmd set app "MG_WEBSITE/MG_VDIR/mapagent" /applicationPool:MG_VDIRAppPool
 	//appcmd unlock config /section:httpErrors
-	//appcmd unlock config "Default Web Site" /section:httpErrors
-	//appcmd unlock config "Default Web Site/mapguide2010" /section:httpErrors
-	//appcmd set config "Default Web Site/mapguide2010" /section:httpErrors /-"[statusCode='401']"
+	//appcmd unlock config "MG_WEBSITE" /section:httpErrors
+	//appcmd unlock config "MG_WEBSITE/MG_VDIR" /section:httpErrors
+	//appcmd set config "MG_WEBSITE/MG_VDIR" /section:httpErrors /-"[statusCode='401']"
 
 	_string installDir(getInstallDir(hMSI));
 	_string cmd;
 
-	//appcmd add apppool /name:MapGuide2010AppPool
-	//appcmd set config /section:applicationPools /[name='MapGuide2010AppPool'].processModel.idleTimeout:00:00:00
-	cmd = _T("add apppool /name:MapGuide2010AppPool");
+	//appcmd add apppool /name:MG_APP_POOL
+	//appcmd set config /section:applicationPools /[name='MG_APP_POOL'].processModel.idleTimeout:00:00:00
+	cmd = _T("add apppool /name:MG_APP_POOL");
+	Replace(cmd, _T("MG_APP_POOL"), MG_APP_POOL);
 	ExecuteAppCmd(cmd.c_str());
-	cmd = _T("set config /section:applicationPools /[name='MapGuide2010AppPool'].processModel.idleTimeout:00:00:00");
+	cmd = _T("set config /section:applicationPools /[name='MG_APP_POOL'].processModel.idleTimeout:00:00:00");
+	Replace(cmd, _T("MG_APP_POOL"), MG_APP_POOL);
 	ExecuteAppCmd(cmd.c_str());
 
 	//appcmd unlock config /section:handlers
-	//appcmd unlock config "Default Web Site" /section:handlers
+	//appcmd unlock config "MG_WEBSITE" /section:handlers
 	cmd = _T("unlock config /section:handlers");
 	ExecuteAppCmd(cmd.c_str());
-	cmd = _T("unlock config \"Default Web Site\" /section:handlers");
+	cmd = _T("unlock config \"MG_WEBSITE\" /section:handlers");
+	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
 	ExecuteAppCmd(cmd.c_str());
 
-	//appcmd add app /site.name:"Default Web Site" /path:/mapguide2010 /physicalPath:"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www"
-	cmd = _T("add app /site.name:\"Default Web Site\" /path:/mapguide2010 /physicalPath:\"");
+	//appcmd add app /site.name:"MG_WEBSITE" /path:/MG_VDIR /physicalPath:"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www"
+	cmd = _T("add app /site.name:\"MG_WEBSITE\" /path:/MG_VDIR /physicalPath:\"");
+	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
+	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	cmd += installDir;
 	cmd += _T("www");
 	ExecuteAppCmd(cmd.c_str());
 
-	//appcmd set config "Default Web Site/mapguide2010" /section:handlers /+[name='PHP',path='*.php',verb='*',scriptProcessor='"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\Php\php5isapi.dll"',modules='IsapiModule',resourceType='Unspecified']
-	cmd = _T("set config \"Default Web Site/mapguide2010\" /section:handlers /+[name=\'PHP\',path=\'*.php\',verb=\'*\',scriptProcessor=\'\"");
+	//appcmd set config "MG_WEBSITE/MG_VDIR" /section:handlers /+[name='PHP',path='*.php',verb='*',scriptProcessor='"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\Php\php5isapi.dll"',modules='IsapiModule',resourceType='Unspecified']
+	cmd = _T("set config \"MG_WEBSITE/MG_VDIR\" /section:handlers /+[name=\'PHP\',path=\'*.php\',verb=\'*\',scriptProcessor=\'\"");
+	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
+	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	cmd += installDir;
 	cmd += _T("Php\\php5isapi.dll\"\',modules=\'IsapiModule\',resourceType=\'Unspecified\']");
 	ExecuteAppCmd(cmd.c_str());
@@ -211,18 +228,24 @@ UINT __stdcall CreateAPPMapGuideWithIIS7(MSIHANDLE hMSI)
 	cmd += _T("Php\\php5isapi.dll\"\',allowed=\'True\']");
 	ExecuteAppCmd(cmd.c_str());
 
-	//appcmd add app /site.name:"Default Web Site" /path:/mapguide2010/mapagent /physicalPath:"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www\mapagent"
-	cmd = _T("add app /site.name:\"Default Web Site\" /path:/mapguide2010/mapagent /physicalPath:\"");
+	//appcmd add app /site.name:"MG_WEBSITE" /path:/MG_VDIR/mapagent /physicalPath:"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www\mapagent"
+	cmd = _T("add app /site.name:\"MG_WEBSITE\" /path:/MG_VDIR/mapagent /physicalPath:\"");
+	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
+	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	cmd += installDir;
 	cmd += _T("www\\mapagent");
 	ExecuteAppCmd(cmd.c_str());
 
-	//appcmd set config "Default Web Site/mapguide2010/mapagent" /section:handlers /accessPolicy:Read,Script,Execute
-	cmd = _T("set config \"Default Web Site/mapguide2010/mapagent\" /section:handlers /accessPolicy:Read,Script,Execute");
+	//appcmd set config "MG_WEBSITE/MG_VDIR/mapagent" /section:handlers /accessPolicy:Read,Script,Execute
+	cmd = _T("set config \"MG_WEBSITE/MG_VDIR/mapagent\" /section:handlers /accessPolicy:Read,Script,Execute");
+	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
+	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	ExecuteAppCmd(cmd.c_str());
 
-	//appcmd set config "Default Web Site/mapguide2010/mapagent" /section:handlers /+[name='"MapGuide ISAPI agent"',path='mapagent.fcgi',verb='*',scriptProcessor='"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www\mapagent\isapi_MapAgent.dll"',modules='IsapiModule']
-	cmd = _T("set config \"Default Web Site/mapguide2010/mapagent\" /section:handlers /+[name=\'\"MapGuide ISAPI agent\"\',path=\'mapagent.fcgi\',verb=\'*\',scriptProcessor=\'\"");
+	//appcmd set config "MG_WEBSITE/MG_VDIR/mapagent" /section:handlers /+[name='"MapGuide ISAPI agent"',path='mapagent.fcgi',verb='*',scriptProcessor='"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www\mapagent\isapi_MapAgent.dll"',modules='IsapiModule']
+	cmd = _T("set config \"MG_WEBSITE/MG_VDIR/mapagent\" /section:handlers /+[name=\'\"MapGuide ISAPI agent\"\',path=\'mapagent.fcgi\',verb=\'*\',scriptProcessor=\'\"");
+	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
+	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	cmd += installDir;
 	cmd += _T("www\\mapagent\\isapi_MapAgent.dll\"\',modules=\'IsapiModule\']");
 	ExecuteAppCmd(cmd.c_str());
@@ -233,66 +256,85 @@ UINT __stdcall CreateAPPMapGuideWithIIS7(MSIHANDLE hMSI)
 	cmd += _T("www\\mapagent\\isapi_MapAgent.dll\"\',allowed=\'True\']");
 	ExecuteAppCmd(cmd.c_str());
 
-	//appcmd set app "Default Web Site/mapguide2010" /applicationPool:MapGuide2010AppPool
-	//appcmd set app "Default Web Site/mapguide2010/mapagent" /applicationPool:MapGuide2010AppPool
-	cmd = _T("set app \"Default Web Site/mapguide2010\" /applicationPool:MapGuide2010AppPool");
+	//appcmd set app "MG_WEBSITE/MG_VDIR" /applicationPool:MG_VDIRAppPool
+	//appcmd set app "MG_WEBSITE/MG_VDIR/mapagent" /applicationPool:MG_VDIRAppPool
+	cmd = _T("set app \"MG_WEBSITE/MG_VDIR\" /applicationPool:MG_VDIRAppPool");
+	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
+	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	ExecuteAppCmd(cmd.c_str());
-	cmd = _T("set app \"Default Web Site/mapguide2010/mapagent\" /applicationPool:MapGuide2010AppPool");
+	cmd = _T("set app \"MG_WEBSITE/MG_VDIR/mapagent\" /applicationPool:MG_VDIRAppPool");
+	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
+	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	ExecuteAppCmd(cmd.c_str());
 
 	//appcmd unlock config /section:httpErrors
-	//appcmd unlock config "Default Web Site" /section:httpErrors
-	//appcmd unlock config "Default Web Site/mapguide2010" /section:httpErrors
-	//appcmd set config "Default Web Site/mapguide2010" /section:httpErrors /-"[statusCode='401']"
+	//appcmd unlock config "MG_WEBSITE" /section:httpErrors
+	//appcmd unlock config "MG_WEBSITE/MG_VDIR" /section:httpErrors
+	//appcmd set config "MG_WEBSITE/MG_VDIR" /section:httpErrors /-"[statusCode='401']"
 	cmd = _T("unlock config /section:httpErrors");
 	ExecuteAppCmd(cmd.c_str());
-	cmd = _T("unlock config \"Default Web Site\" /section:httpErrors");
+	cmd = _T("unlock config \"MG_WEBSITE\" /section:httpErrors");
+	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
 	ExecuteAppCmd(cmd.c_str());
-	cmd = _T("unlock config \"Default Web Site/mapguide2010\" /section:httpErrors");
+	cmd = _T("unlock config \"MG_WEBSITE/MG_VDIR\" /section:httpErrors");
+	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
+	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	ExecuteAppCmd(cmd.c_str());
-	cmd = _T("set config \"Default Web Site/mapguide2010\" /section:httpErrors /-\"[statusCode=\'401\']\"");
+	cmd = _T("set config \"MG_WEBSITE/MG_VDIR\" /section:httpErrors /-\"[statusCode=\'401\']\"");
+	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
+	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	ExecuteAppCmd(cmd.c_str());
 	return 0;
 }
 UINT __stdcall CreateVDirPhpAgentWithIIS7(MSIHANDLE hMSI)
 {
-	//appcmd add  vdir /app.name:"Default Web Site/" /path:/mapguide2010/mapviewerajax /physicalPath:"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www\mapviewerphp"
-	//appcmd set config "Default Web Site/mapguide2010/mapviewerajax" /section:defaultDocument /+files.[value='ajaxviewer.php']
+	//appcmd add  vdir /app.name:"MG_WEBSITE/" /path:/MG_VDIR/mapviewerajax /physicalPath:"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www\mapviewerphp"
+	//appcmd set config "MG_WEBSITE/MG_VDIR/mapviewerajax" /section:defaultDocument /+files.[value='ajaxviewer.php']
 	_string cmd;
 	_string installDir(getInstallDir(hMSI));
 
-	//appcmd add  vdir /app.name:"Default Web Site/" /path:/mapguide2010/mapviewerajax /physicalPath:"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www\mapviewerphp"
-	cmd = _T("add vdir /app.name:\"Default Web Site/\" /path:/mapguide2010/mapviewerajax /physicalPath:\"");
+	//appcmd add  vdir /app.name:"MG_WEBSITE/" /path:/MG_VDIR/mapviewerajax /physicalPath:"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www\mapviewerphp"
+	cmd = _T("add vdir /app.name:\"MG_WEBSITE/\" /path:/MG_VDIR/mapviewerajax /physicalPath:\"");
+	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
+	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	cmd += installDir;
 	cmd += _T("www\\mapviewerphp\"");
 	ExecuteAppCmd(cmd.c_str());
 
-	//appcmd set config "Default Web Site/mapguide2010/mapviewerajax" /section:defaultDocument /+files.[value='ajaxviewer.php']
-	cmd = _T("set config \"Default Web Site/mapguide2010/mapviewerajax\" /section:defaultDocument /+files.[value=\'ajaxviewer.php\']");
+	//appcmd set config "MG_WEBSITE/MG_VDIR/mapviewerajax" /section:defaultDocument /+files.[value='ajaxviewer.php']
+	cmd = _T("set config \"MG_WEBSITE/MG_VDIR/mapviewerajax\" /section:defaultDocument /+files.[value=\'ajaxviewer.php\']");
+	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
+	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	ExecuteAppCmd(cmd.c_str());	
 
 	return 0;
 }
 UINT __stdcall CreateAPPNetAgentWithIIS7(MSIHANDLE hMSI)
 {
-	//appcmd add app /site.name:"Default Web Site" /path:/mapguide2010/mapviewerajax /physicalPath:"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www\mapviewernet"
-	//appcmd set config "Default Web Site/mapguide2010/mapviewerajax" /section:defaultDocument /+files.[value='ajaxviewer.aspx']
-	//appcmd set app "Default Web Site/mapguide2010/mapviewerajax" /applicationPool:MapGuide2010AppPool
+	//appcmd add app /site.name:"MG_WEBSITE" /path:/MG_VDIR/mapviewerajax /physicalPath:"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www\mapviewernet"
+	//appcmd set config "MG_WEBSITE/MG_VDIR/mapviewerajax" /section:defaultDocument /+files.[value='ajaxviewer.aspx']
+	//appcmd set app "MG_WEBSITE/MG_VDIR/mapviewerajax" /applicationPool:MG_VDIRAppPool
 	_string cmd;
 	_string installDir(getInstallDir(hMSI));
 
-	//appcmd add app /site.name:"Default Web Site" /path:/mapguide2010/mapviewerajax /physicalPath:"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www\mapviewerphp"
-	cmd = _T("add app /site.name:\"Default Web Site\" /path:/mapguide2010/mapviewerajax /physicalPath:\"");
+	//appcmd add app /site.name:"MG_WEBSITE" /path:/MG_VDIR/mapviewerajax /physicalPath:"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www\mapviewerphp"
+	cmd = _T("add app /site.name:\"MG_WEBSITE\" /path:/MG_VDIR/mapviewerajax /physicalPath:\"");
+	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
+	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	cmd += installDir;
 	cmd += _T("www\\mapviewernet\"");
 	ExecuteAppCmd(cmd.c_str());
 	
-	//appcmd set config "Default Web Site/mapguide2010/mapviewerajax" /section:defaultDocument /+files.[value='ajaxviewer.aspx']
-	cmd = _T("set config \"Default Web Site/mapguide2010/mapviewerajax\" /section:defaultDocument /+files.[value=\'ajaxviewer.aspx\']");
+	//appcmd set config "MG_WEBSITE/MG_VDIR/mapviewerajax" /section:defaultDocument /+files.[value='ajaxviewer.aspx']
+	cmd = _T("set config \"MG_WEBSITE/MG_VDIR/mapviewerajax\" /section:defaultDocument /+files.[value=\'ajaxviewer.aspx\']");
+	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
+	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	ExecuteAppCmd(cmd.c_str());
 
-	//appcmd set app "Default Web Site/mapguide2010/mapviewerajax" /applicationPool:MapGuide2010AppPool
-	cmd = _T("set app \"Default Web Site/mapguide2010/mapviewerajax\" /applicationPool:MapGuide2010AppPool");
+	//appcmd set app "MG_WEBSITE/MG_VDIR/mapviewerajax" /applicationPool:MG_VDIRAppPool
+	cmd = _T("set app \"MG_WEBSITE/MG_VDIR/mapviewerajax\" /applicationPool:MG_VDIRAppPool");
+	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
+	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	ExecuteAppCmd(cmd.c_str());
 
 	return 0;
@@ -300,22 +342,26 @@ UINT __stdcall CreateAPPNetAgentWithIIS7(MSIHANDLE hMSI)
 
 UINT __stdcall DeleteAPPMapGuideWithIIS7(MSIHANDLE hMSI)
 {
-	//1. appcmd delete app "Default Web Site/mapguide2010/mapviewerajax"
-	//2. appcmd delete vdir "Default Web Site/mapguide2010/mapviewerajax"
+	//1. appcmd delete app "MG_WEBSITE/MG_VDIR/mapviewerajax"
+	//2. appcmd delete vdir "MG_WEBSITE/MG_VDIR/mapviewerajax"
 	//3. appcmd set config /section:isapiCgiRestriction /-[path='"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www\mapagent\isapi_MapAgent.dll"',allowed='True']
-	//4. appcmd set config "Default Web Site/mapguide2010/mapagent" /section:handlers /-[name='"MapGuide ISAPI agent"']
-	//5. appcmd delete app "Default Web Site/mapguide2010/mapagent"
+	//4. appcmd set config "MG_WEBSITE/MG_VDIR/mapagent" /section:handlers /-[name='"MapGuide ISAPI agent"']
+	//5. appcmd delete app "MG_WEBSITE/MG_VDIR/mapagent"
 	//6. appcmd set config /section:isapiCgiRestriction /-[path='"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\Php\php5isapi.dll"',allowed='True']
-	//7. appcmd set config "Default Web Site/mapguide2010" /section:handlers /-[name='PHP']
-	//8. appcmd delete app "Default Web Site/mapguide2010" 
+	//7. appcmd set config "MG_WEBSITE/MG_VDIR" /section:handlers /-[name='PHP']
+	//8. appcmd delete app "MG_WEBSITE/MG_VDIR" 
 
 	_string installDir(getInstallDir(hMSI));
 	_string cmd;
-	//1. appcmd delete app "Default Web Site/mapguide2010/mapviewerajax"
-	//2. appcmd delete vdir "Default Web Site/mapguide2010/mapviewerajax"
-	cmd = _T("delete app \"Default Web Site/mapguide2010/mapviewerajax\"");
+	//1. appcmd delete app "MG_WEBSITE/MG_VDIR/mapviewerajax"
+	//2. appcmd delete vdir "MG_WEBSITE/MG_VDIR/mapviewerajax"
+	cmd = _T("delete app \"MG_WEBSITE/MG_VDIR/mapviewerajax\"");
+	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
+	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	ExecuteAppCmd(cmd.c_str());
-	cmd = _T("delete vdir \"Default Web Site/mapguide2010/mapviewerajax\"");
+	cmd = _T("delete vdir \"MG_WEBSITE/MG_VDIR/mapviewerajax\"");
+	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
+	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	ExecuteAppCmd(cmd.c_str());
 
 	//3. appcmd set config /section:isapiCgiRestriction /-[path='"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www\mapagent\isapi_MapAgent.dll"',allowed='True']
@@ -324,12 +370,16 @@ UINT __stdcall DeleteAPPMapGuideWithIIS7(MSIHANDLE hMSI)
 	cmd += _T("www\\mapagent\\isapi_MapAgent.dll\"\',allowed=\'True\']");
 	ExecuteAppCmd(cmd.c_str());
 
-	//4. appcmd set config "Default Web Site/mapguide2010/mapagent" /section:handlers /-[name='"MapGuide ISAPI agent"']
-	cmd = _T("set config \"Default Web Site/mapguide2010/mapagent\" /section:handlers /-[name=\'\"MapGuide ISAPI agent\"\']");
+	//4. appcmd set config "MG_WEBSITE/MG_VDIR/mapagent" /section:handlers /-[name='"MapGuide ISAPI agent"']
+	cmd = _T("set config \"MG_WEBSITE/MG_VDIR/mapagent\" /section:handlers /-[name=\'\"MapGuide ISAPI agent\"\']");
+	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
+	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	ExecuteAppCmd(cmd.c_str());
 	
-	//5. appcmd delete app "Default Web Site/mapguide2010/mapagent"
-	cmd = _T("delete app \"Default Web Site/mapguide2010/mapagent\"");
+	//5. appcmd delete app "MG_WEBSITE/MG_VDIR/mapagent"
+	cmd = _T("delete app \"MG_WEBSITE/MG_VDIR/mapagent\"");
+	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
+	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	ExecuteAppCmd(cmd.c_str());
 
 	//6. appcmd set config /section:isapiCgiRestriction /-[path='"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\Php\php5isapi.dll"',allowed='True']
@@ -338,12 +388,16 @@ UINT __stdcall DeleteAPPMapGuideWithIIS7(MSIHANDLE hMSI)
 	cmd += _T("Php\\php5isapi.dll\"\',allowed=\'True\']");
 	ExecuteAppCmd(cmd.c_str());
 
-	//7. appcmd set config "Default Web Site/mapguide2010" /section:handlers /-[name='PHP']
-	cmd = _T("set config \"Default Web Site/mapguide2010\" /section:handlers /-[name=\'PHP\']");
+	//7. appcmd set config "MG_WEBSITE/MG_VDIR" /section:handlers /-[name='PHP']
+	cmd = _T("set config \"MG_WEBSITE/MG_VDIR\" /section:handlers /-[name=\'PHP\']");
+	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
+	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	ExecuteAppCmd(cmd.c_str());
 
-	//8. appcmd delete app "Default Web Site/mapguide2010"
-	cmd = _T("delete app \"Default Web Site/mapguide2010\"");
+	//8. appcmd delete app "MG_WEBSITE/MG_VDIR"
+	cmd = _T("delete app \"MG_WEBSITE/MG_VDIR\"");
+	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
+	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	ExecuteAppCmd(cmd.c_str());
 
 	return 0;
@@ -351,10 +405,10 @@ UINT __stdcall DeleteAPPMapGuideWithIIS7(MSIHANDLE hMSI)
 
 _string getInstallDir(MSIHANDLE hMSI)
 {
-	if( hMSI == NULL ) return _string(_T("C:\\Program Files\\Autodesk\\MapGuideEnterprise2010\\WebServerExtensions\\"));
+	if( hMSI == NULL ) return _string(MG_DEFAULT_WEB_PATH);
 	TCHAR installDir[MAX_BUFFER];
 	DWORD installDirLen = MAX_BUFFER;
-	MsiGetProperty(hMSI, _T("INSTALLDIR"), installDir, &installDirLen);
+	MsiGetProperty(hMSI, MSI_PROP_INSTALLDIR, installDir, &installDirLen);
 	int len = _tcslen(installDir);
 	if( len > 0 && installDir[len-1] != _T('\\') )
 	{
