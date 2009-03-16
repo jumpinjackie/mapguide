@@ -10,32 +10,7 @@
                                            Directory="MapGuideOpenSourceMenuLocation"
                                            Name="Web API Documentation"
                                            Target="file://[HELPLOCATION]index.htm" />
-                    <RegistryKey Root="HKCU" Key="Software\MapGuide Open Source\WebExtensions\ProgramMenuShortcut">
-                        <RegistryValue
-                                Value="Installed"
-                                Type="string"
-                                KeyPath="yes" />
-                    </RegistryKey>
-                </Component>
-                <Component Id="WebShortcutsComponent" Guid="7D2E24E9-533B-4119-A6D1-E48A33BF34C3">
-                    <CreateFolder />
-                    <util:InternetShortcut Id="MapGuideHome"
-                                           Directory="MapGuideOpenSourceMenuLocation"
-                                           Name="MapGuide Project Home"
-                                           Target="http://mapguide.osgeo.org" />
-                    <util:InternetShortcut Id="MapGuideTrac"
-                                           Directory="MapGuideOpenSourceMenuLocation"
-                                           Name="MapGuide Trac"
-                                           Target="http://trac.osgeo.org" />
-                    <util:InternetShortcut Id="MapGuideBestPractices"
-                                           Directory="MapGuideOpenSourceMenuLocation"
-                                           Name="MapGuide Best Practices"
-                                           Target="http://sandbox.mapguide.com" />
-                    <util:InternetShortcut Id="MapGuideCentral"
-                                           Directory="MapGuideOpenSourceMenuLocation"
-                                           Name="MapGuide Central"
-                                           Target="http://ennoble.dreamhosters.com/mapguide-central" />
-                    <RegistryKey Root="HKCU" Key="Software\MapGuide Open Source\WebResources\ProgramMenuShortcut">
+                    <RegistryKey Root="HKCU" Key="Software\MapGuide Open Source\WebExtensions\WebApiShortcut">
                         <RegistryValue
                                 Value="Installed"
                                 Type="string"
@@ -43,6 +18,68 @@
                     </RegistryKey>
                     <RemoveFolder Id="MapGuideOpenSourceMenuLocation" On="uninstall" />
                 </Component>
+                <Component Id="WebApacheShortcutComponent" Guid="2EBC8176-07C5-40A9-97F9-C3E83836637E">
+                    <Condition>MGWEB_CONFIG = "APACHE"</Condition>
+                    <util:InternetShortcut Id="ApacheSiteAdmin"
+                                           Directory="MapGuideOpenSourceMenuLocation"
+                                           Name="MapGuide Site Administrator" 
+                                           Target="http://localhost:[APACHE_PORT]/mapguide/mapadmin/login.php" />
+                    <util:InternetShortcut Id="ApacheMapAgent"
+                                           Directory="MapGuideOpenSourceMenuLocation"
+                                           Name="MapAgent Test Pages"
+                                           Target="http://localhost:[APACHE_PORT]/mapguide/mapagent/index.html" />
+                    <RegistryKey Root="HKCU" Key="Software\MapGuide Open Source\WebExtensions\ApacheShortcut">
+                        <RegistryValue
+                                Value="Installed"
+                                Type="string"
+                                KeyPath="yes" />
+                    </RegistryKey>
+                </Component>
+                <Component Id="WebIISShortcutComponent" Guid="F59A450A-84DE-4E2E-B942-BD416CDEBBF3">
+                    <Condition>MGWEB_CONFIG = "IIS"</Condition>
+                    <util:InternetShortcut Id="IISSiteAdmin"
+                                           Directory="MapGuideOpenSourceMenuLocation"
+                                           Name="MapGuide Site Administrator"
+                                           Target="http://localhost/mapguide/mapadmin/login.php" />
+                    <util:InternetShortcut Id="IISMapAgent"
+                                           Directory="MapGuideOpenSourceMenuLocation"
+                                           Name="MapAgent Test Pages"
+                                           Target="http://localhost/mapguide/mapagent/index.html" />
+                    <RegistryKey Root="HKCU" Key="Software\MapGuide Open Source\WebExtensions\IISShortcut">
+                        <RegistryValue
+                                Value="Installed"
+                                Type="string"
+                                KeyPath="yes" />
+                    </RegistryKey>
+                </Component>
+                <Directory Id="WebResourcesLocation" Name="Web Resources">
+                    <Component Id="WebShortcutsComponent" Guid="7D2E24E9-533B-4119-A6D1-E48A33BF34C3">
+                        <CreateFolder />
+                        <util:InternetShortcut Id="MapGuideHome"
+                                               Directory="WebResourcesLocation"
+                                               Name="MapGuide Project Home"
+                                               Target="http://mapguide.osgeo.org" />
+                        <util:InternetShortcut Id="MapGuideTrac"
+                                               Directory="WebResourcesLocation"
+                                               Name="MapGuide Trac"
+                                               Target="http://trac.osgeo.org" />
+                        <util:InternetShortcut Id="MapGuideBestPractices"
+                                               Directory="WebResourcesLocation"
+                                               Name="MapGuide Best Practices"
+                                               Target="http://sandbox.mapguide.com" />
+                        <util:InternetShortcut Id="MapGuideCentral"
+                                               Directory="WebResourcesLocation"
+                                               Name="MapGuide Central"
+                                               Target="http://ennoble.dreamhosters.com/mapguide-central" />
+                        <RegistryKey Root="HKCU" Key="Software\MapGuide Open Source\WebResources\ProgramMenuShortcut">
+                            <RegistryValue
+                                    Value="Installed"
+                                    Type="string"
+                                    KeyPath="yes" />
+                        </RegistryKey>
+                        <RemoveFolder Id="WebShortcutsComponent" On="uninstall" />
+                    </Component>
+                </Directory>
             </Directory>
         </DirectoryRef>
 	</Fragment>

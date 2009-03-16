@@ -347,6 +347,8 @@ UINT __stdcall DeleteWebServiceExtension(MSIHANDLE hMSI)
 
 LExit:
 	CoUninitialize ();
+	//HACK: We're uninstalling here. If we failed to delete, we failed to delete.
+	hResult = S_OK;
 	er = SUCCEEDED(hResult) ? ERROR_SUCCESS : ERROR_INSTALL_FAILURE;
 	return WcaFinalize(er);
 }
@@ -1189,6 +1191,8 @@ UINT __stdcall DeleteVDirMapGuide(MSIHANDLE hInstall)
 	DeleteVirtualRoot("mapguide", 1, FALSE, szStatus);
 
 LExit:
+	//HACK: We're uninstalling here. If we failed to delete, we failed to delete.
+	hr = S_OK;
 	er = SUCCEEDED(hr) ? ERROR_SUCCESS : ERROR_INSTALL_FAILURE;
 	return WcaFinalize(er);
 }
