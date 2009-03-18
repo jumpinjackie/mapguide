@@ -258,13 +258,15 @@ UINT __stdcall CreateAPPMapGuideWithIIS7(MSIHANDLE hMSI)
 
 	//appcmd set app "MG_WEBSITE/MG_VDIR" /applicationPool:MG_VDIRAppPool
 	//appcmd set app "MG_WEBSITE/MG_VDIR/mapagent" /applicationPool:MG_VDIRAppPool
-	cmd = _T("set app \"MG_WEBSITE/MG_VDIR\" /applicationPool:MG_VDIRAppPool");
+	cmd = _T("set app \"MG_WEBSITE/MG_VDIR\" /applicationPool:MG_APP_POOL");
 	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
 	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
+	Replace(cmd, _T("MG_APP_POOL"), MG_APP_POOL);
 	ExecuteAppCmd(cmd.c_str());
-	cmd = _T("set app \"MG_WEBSITE/MG_VDIR/mapagent\" /applicationPool:MG_VDIRAppPool");
+	cmd = _T("set app \"MG_WEBSITE/MG_VDIR/mapagent\" /applicationPool:MG_APP_POOL");
 	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
 	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
+	Replace(cmd, _T("MG_APP_POOL"), MG_APP_POOL);
 	ExecuteAppCmd(cmd.c_str());
 
 	//appcmd unlock config /section:httpErrors
@@ -332,9 +334,10 @@ UINT __stdcall CreateAPPNetAgentWithIIS7(MSIHANDLE hMSI)
 	ExecuteAppCmd(cmd.c_str());
 
 	//appcmd set app "MG_WEBSITE/MG_VDIR/mapviewerajax" /applicationPool:MG_VDIRAppPool
-	cmd = _T("set app \"MG_WEBSITE/MG_VDIR/mapviewerajax\" /applicationPool:MG_VDIRAppPool");
+	cmd = _T("set app \"MG_WEBSITE/MG_VDIR/mapviewerajax\" /applicationPool:MG_APP_POOL");
 	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
 	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
+	Replace(cmd, _T("MG_APP_POOL"), MG_APP_POOL);
 	ExecuteAppCmd(cmd.c_str());
 
 	return 0;
@@ -399,6 +402,11 @@ UINT __stdcall DeleteAPPMapGuideWithIIS7(MSIHANDLE hMSI)
 	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
 	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	ExecuteAppCmd(cmd.c_str());
+
+	//TODO: 9. appcmd delete apppool /apppool.name:MG_VDIRAppPool
+	// cmd = _T("delete apppool /name:MG_APP_POOL");
+	// Replace(cmd, _T("MG_APP_POOL"), MG_APP_POOL);
+	// ExecuteAppCmd(cmd.c_str());
 
 	return 0;
 }
