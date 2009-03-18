@@ -7,7 +7,7 @@
 -->
 
 
-<Context docBase="C:/Program Files/MapGuideOpenSource/WebServerExtensions/www"
+<Context docBase="%MG_WEB_ROOT%"
          privileged="true" antiResourceLocking="false" antiJARLocking="false">
 
   <!-- Link to the user database we will get roles from -->

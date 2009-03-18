@@ -424,47 +424,87 @@ UpdateApacheConfig(MSIHANDLE hMSI)
     cfOutFile.SetLength(dwNewLength);
     cfOutFile.Close();
   }
-  /*
-  if ( strcmp(szApiType,"JAVA") == 0 )
+
+  if (strcmp(szApiType, "JAVA") == 0)
   {
-    // create the file path to mapguide.xml
-    strcpy(szFile, szInstallDir);
-    strcat(szFile, "Tomcat\\conf\\Catalina\\localhost\\mapguide.xml");
+     strcpy(szFile, szApacheDir);
+     strcat(szFile, "conf\\tomcat.conf");
 
-    if( FileExists(szFile) )
-	{
-      // Opening the file to read and write.
-      //
-      CFile cfInFile(szFile, CFile::modeRead);
-      DWORD dwFileLen = cfInFile.GetLength();
+	 if(FileExists(szFile))
+	 {
+		CFile cfInFile(szFile, CFile::modeRead);
+		DWORD dwFileLen = cfInFile.GetLength();
 
-      // Read the entire contents of the file.
-      //
-      char *szBuff = new char[dwFileLen + 1];
-      cfInFile.Read(szBuff, dwFileLen);
-      szBuff[dwFileLen] = '\0';                   // Add ending null to buffer.
+		// Read the entire contents of the file.
+		//
+		char *szBuff = new char[dwFileLen + 1];
+		cfInFile.Read(szBuff, dwFileLen);
+		szBuff[dwFileLen] = '\0';                   // Add ending null to buffer.
 
-      cfInFile.Close();
+		cfInFile.Close();
 
-      // Creating a CString object to store the contents and help
-      // us to add the desired configuration.
-      //
-      CString csBuff(szBuff);
-	  strcpy(szFind,"C:/Program Files/MapGuideOpenSource/WebServerExtensions/");
-	  csBuff.Replace(szFind,szInstallDir);
+		// Creating a CString object to store the contents and help
+		// us to add the desired configuration.
+		//
+		CString csBuff(szBuff);
+		// Replace %MG_WEB_APACHE%
+		strcpy(szFind,"%MG_WEB_APACHE%");
+		//CString csWebDir(szWebDir);
+		//csWebDir.Replace("\\", "/");
+		strcpy(szReplace, szApacheDir);
+		csBuff.Replace(szFind,szReplace);
 
-      CFile cfOutFile(szFile, CFile::modeWrite);
+		CFile cfOutFile(szFile, CFile::modeWrite);
 
-      // Write and modify the contents.
-      //
-      DWORD dwNewLength = csBuff.GetLength();
-      cfOutFile.SeekToBegin();
-      cfOutFile.Write(csBuff, dwNewLength);
-      cfOutFile.SetLength(dwNewLength);
-      cfOutFile.Close();
-	}
+		// Write and modify the contents.
+		//
+		DWORD dwNewLength = csBuff.GetLength();
+		cfOutFile.SeekToBegin();
+		cfOutFile.Write(csBuff, dwNewLength);
+		cfOutFile.SetLength(dwNewLength);
+		cfOutFile.Close();
+	 }
+
+	 strcpy(szFile, szInstallDir);
+     strcat(szFile, "Tomcat\\conf\\Catalina\\localhost\\mapguide.xml");
+
+	 if( FileExists(szFile) )
+	 {
+		// Opening the file to read and write.
+		//
+		CFile cfInFile(szFile, CFile::modeRead);
+		DWORD dwFileLen = cfInFile.GetLength();
+
+		// Read the entire contents of the file.
+		//
+		char *szBuff = new char[dwFileLen + 1];
+		cfInFile.Read(szBuff, dwFileLen);
+		szBuff[dwFileLen] = '\0';                   // Add ending null to buffer.
+
+		cfInFile.Close();
+
+		// Creating a CString object to store the contents and help
+		// us to add the desired configuration.
+		//
+		CString csBuff(szBuff);
+		// Replace %MG_WEB_ROOT%
+		strcpy(szFind,"%MG_WEB_ROOT%");
+		//CString csWebDir(szWebDir);
+		//csWebDir.Replace("\\", "/");
+		strcpy(szReplace, szWebDir);
+		csBuff.Replace(szFind,szReplace);
+
+		CFile cfOutFile(szFile, CFile::modeWrite);
+
+		// Write and modify the contents.
+		//
+		DWORD dwNewLength = csBuff.GetLength();
+		cfOutFile.SeekToBegin();
+		cfOutFile.Write(csBuff, dwNewLength);
+		cfOutFile.SetLength(dwNewLength);
+		cfOutFile.Close();
+	 }
   }
-  */
   return ERROR_SUCCESS;
 }
 
