@@ -327,6 +327,8 @@ echo [install]: Web Tier - webconfig.ini
 copy /Y "%MG_WEB_SRC%\webconfig.ini" "%MG_OUTPUT_WEB%\www"
 echo [install]: Web Tier - mapviewerphp
 %XCOPY% "%MG_WEB_SRC%\mapviewerphp" "%MG_OUTPUT_WEB%\www\mapviewerphp" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+echo [install]: Web Tier - Tomcat - MapGuide API unmanaged binaries
+%XCOPY% "%MG_WEB_BIN%\%TYPEBUILD%" "%MG_OUTPUT_WEB%\Tomcat\bin"/EXCLUDE:java_excludes.txt+svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - php - MapGuide API unmanaged binaries
 %XCOPY% "%MG_WEB_BIN%\%TYPEBUILD%" "%MG_OUTPUT_WEB%\Php"/EXCLUDE:php_excludes.txt+svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - php ext - MapGuide API unmanaged binaries
@@ -338,7 +340,7 @@ echo [install]: Web Tier - mapviewernet - MapGuide API unmanaged binaries
 echo [install]: Web Tier - mapviewerjava
 %XCOPY% "%MG_WEB_SRC%\mapviewerjava" "%MG_OUTPUT_WEB%\www\mapviewerjava" /EXCLUDE:svn_excludes.txt
 echo [install]: Web Tier - mapviewerjava - WEB-INF
-%XCOPY% "%MG_WEB_SRC%\WEB-INF" "%MG_OUTPUT_WEB%\www\mapviewerjava\WEB-INF" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%MG_WEB_SRC%\WEB-INF" "%MG_OUTPUT_WEB%\www" /EXCLUDE:svn_excludes.txt
 echo [install]: Web Tier - fusion templates
 %XCOPY% "%MG_OEM%\fusionMG" "%MG_OUTPUT_WEB%\www\fusion" /EXCLUDE:svn_excludes.txt
 echo [install]: Web Tier - Apache module
