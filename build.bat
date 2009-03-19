@@ -340,7 +340,7 @@ echo [install]: Web Tier - mapviewernet - MapGuide API unmanaged binaries
 echo [install]: Web Tier - mapviewerjava
 %XCOPY% "%MG_WEB_SRC%\mapviewerjava" "%MG_OUTPUT_WEB%\www\mapviewerjava" /EXCLUDE:svn_excludes.txt
 echo [install]: Web Tier - mapviewerjava - WEB-INF
-%XCOPY% "%MG_WEB_SRC%\WEB-INF" "%MG_OUTPUT_WEB%\www" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%MG_WEB_SRC%\WEB-INF" "%MG_OUTPUT_WEB%\www\WEB-INF" /EXCLUDE:svn_excludes.txt
 echo [install]: Web Tier - fusion templates
 %XCOPY% "%MG_OEM%\fusionMG" "%MG_OUTPUT_WEB%\www\fusion" /EXCLUDE:svn_excludes.txt
 echo [install]: Web Tier - Apache module
