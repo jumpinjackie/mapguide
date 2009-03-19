@@ -112,6 +112,7 @@
       </Feature>
       <Feature Id="WebExtMapViewerJSPFeature" Title="JSP Map Viewer" Level="1" Description="The JSP version of the map viewer." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
         <ComponentGroupRef Id="group_MAPVIEWERJSPFILES"/>
+        <ComponentGroupRef Id="group_WEBINFFILES"/>
       </Feature>
       <Feature Id="WebExtMapViewerASPXFeature" Title=".Net Map Viewer" Level="1" Description="The .Net version of the map viewer." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
           <Condition Level="0">NOT NETFRAMEWORK20</Condition>

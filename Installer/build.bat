@@ -265,6 +265,7 @@ echo [regen]: Web - misc web root
 %PARAFFIN% -dir %MG_WEB%\www\schemareport -custom MAPVIEWERSCHEMAREPORTFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerSchemareportFiles.wxs 
 %PARAFFIN% -dir %MG_WEB%\www\mapadmin -custom MAPVIEWERMAPADMINFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerMapAdminFiles.wxs 
 %PARAFFIN% -dir %MG_WEB%\www\localized -custom MAPVIEWERLOCALIZEDFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerLocalizedFiles.wxs 
+%PARAFFIN% -dir %MG_WEB%\www\WEB-INF -custom WEBINFFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incWebInfFiles.wxs
 
 echo [regen]: Maestro
 %PARAFFIN% -dir %MG_MAESTRO% -custom MAESTROBIN -dirref INSTALLLOCATION -multiple %WIX_INC_MAESTRO%\incMaestroBinFiles.wxs
