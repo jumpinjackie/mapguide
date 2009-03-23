@@ -40,7 +40,8 @@ rem ==================================================
 SET INSTALLER_DEV=%CD%
 SET INSTALLER_OUTPUT=%INSTALLER_DEV%\Output
 SET INSTALLER_DEV_SUPPORT=%INSTALLER_DEV%\Support
-SET INSTALLER_DEV_BOOTSTRAPPER=%INSTALLER_DEV%\Bootstrapper
+SET INSTALLER_DEV_BOOTSTRAP=%INSTALLER_DEV%\Bootstrapper
+rem Make sure this matches the output file name in MapGuide.wixproj
 SET INSTALLER_NAME=MapGuideOpenSource-2.1.0-Unofficial
 
 SET INSTALLER_DEV_CSMAP=%INSTALLER_DEV%\Libraries\CS Map
@@ -54,8 +55,9 @@ SET MG_SERVER=%CD%\..\MgDev\%TYPEBUILD%\Server\
 SET MG_WEB=%CD%\..\MgDev\%TYPEBUILD%\WebServerExtensions\
 SET MG_MAESTRO=%CD%\..\Tools\Maestro\Maestro\bin\%TYPEBUILD%\
 
+SET NSIS=%CD%\Support\NSIS
 SET PARAFFIN=%CD%
-SET PATH=%PATH%;%PARAFFIN%
+SET PATH=%PATH%;%PARAFFIN%;%NSIS%
 
 rem ==================================================
 rem MSBuild Settings
@@ -276,7 +278,15 @@ if not "%TYPEACTION%"=="buildinstall" goto quit
 echo [build]: Installer
 %MSBUILD% Installer.sln
 if "%errorlevel%"=="1" goto error
-echo [build]: Installer created at %INSTALLER_OUTPUT%\%INSTALLER_NAME%.msi
+pushd "%INSTALLER_DEV_BOOTSTRAP%"
+echo [bootstrap]: Creating
+%MSBUILD% /p:TargetFile=%INSTALLER_NAME%.msi Bootstrap.proj
+if "%errorlevel%"=="1" goto error
+echo [bootstrap]: Create self-extracting package
+makensis /DINSTALLER_OUTPUT=%INSTALLER_OUTPUT% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% Setup.nsi
+if "%errorlevel%"=="1" goto error
+popd
+echo [build]: Installer created at %INSTALLER_OUTPUT%\%INSTALLER_NAME%.exe
 goto quit
 
 :error_mg_server_not_found

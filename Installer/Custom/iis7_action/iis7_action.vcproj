@@ -21,7 +21,6 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
-			UseOfMFC="1"
 			CharacterSet="1"
 			>
 			<Tool
@@ -95,7 +94,6 @@
 			OutputDirectory="..\bin"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
-			UseOfMFC="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>

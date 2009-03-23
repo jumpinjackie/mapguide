@@ -394,8 +394,5 @@
                 Before="InstallFinalize">(IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature = 2</Custom>
             <ScheduleReboot After="InstallFinalize"/>
         </InstallExecuteSequence>
-
-        <!-- Need the Visual C++ Runtime as an MSM when ready for release; commented out to reduce output warnings. -->
-        <?include MsvcRuntime.wxi ?> 
     </Product>
 </Wix>
