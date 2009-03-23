@@ -367,21 +367,22 @@ bool MgFileUtil::IsDriveLetter(wchar_t letter)
 
 ///----------------------------------------------------------------------------
 /// <summary>
-/// Creates a directory.
+/// Creates a directory and it can create the new directory recursively.
+/// Both the backslash(\)  and the forward slash(/) are valid path delimiters in character strings.
+/// Restriction: not support UNC pathnames.
 /// </summary>
 ///
 /// <exceptions>
 /// MgNullArgumentException
 /// MgInvalidArgumentException
 /// MgFileIoException
+/// MgDuplicateDirectoryException
 /// </exceptions>
 ///----------------------------------------------------------------------------
 
-void MgFileUtil::CreateDirectory(CREFSTRING path, bool strict)
+void MgFileUtil::CreateDirectory(CREFSTRING path, bool strict, bool recursive)
 {
     MG_TRY()
-
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
     if (PathnameExists(path))
     {
@@ -397,6 +398,50 @@ void MgFileUtil::CreateDirectory(CREFSTRING path, bool strict)
         return;
     }
 
+    if (recursive)
+    {
+        STRING fullPath = path;
+        AppendSlashToEndOfPath(fullPath);
+
+        size_t len = fullPath.length();
+        size_t count = len;             // the length of substring of the fullPath
+        size_t pos = 0;                 // current slash position in the fullPath
+        size_t subpos = 0;              // current slash position in the substring of the fullPath
+
+        // Not support UNC pathnames
+        while (STRING::npos != (subpos = fullPath.substr(pos, count).find_first_of(sm_slash)))
+        {
+            pos += subpos + 1;  // move forward the subpos in order to skip the found slash.
+
+            if (pos > 1)        // skip the slash as the beginning of the path string, in order to support the path like this "/abc/def/gh/"
+            {
+                CREFSTRING subPath = fullPath.substr(0, pos);
+
+                if (!PathnameExists(subPath))
+                {
+                    MkDir(subPath);
+                }
+            }
+
+            count = len - pos;
+        }
+    }
+    else
+    {
+        MkDir(path);
+    }
+
+    MG_CATCH_AND_THROW(L"MgFileUtil.CreateDirectory")
+}
+
+/// private helper
+
+void MgFileUtil::MkDir(CREFSTRING path)
+{
+    MG_TRY()
+
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+
     int errCode = ACE_OS::mkdir(MG_WCHAR_TO_TCHAR(path));
 
     if (0 != errCode)
@@ -411,13 +456,13 @@ void MgFileUtil::CreateDirectory(CREFSTRING path, bool strict)
             case ENOENT:
             case EACCES:
             default:
-                throw new MgFileIoException(L"MgFileUtil.CreateDirectory",
+                throw new MgFileIoException(L"MgFileUtil.MkDir",
                     __LINE__, __WFILE__, &arguments, L"", NULL);
                 break;
         }
     }
 
-    MG_CATCH_AND_THROW(L"MgFileUtil.CreateDirectory")
+    MG_CATCH_AND_THROW(L"MgFileUtil.MkDir")
 }
 
 ///----------------------------------------------------------------------------

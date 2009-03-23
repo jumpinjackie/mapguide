@@ -40,7 +40,7 @@ class MgLibraryRepository : public MgApplicationRepository
 
     public:
 
-        static int VerifyAccess(CREFSTRING repositoryPath);
+        static int VerifyAccess(CREFSTRING repositoryPath, CREFSTRING resourceDataFilePath);
         virtual void Initialize();
 
         MgResourceContainer* GetResourceHeaderContainer() const;
