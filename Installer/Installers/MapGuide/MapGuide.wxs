@@ -24,6 +24,7 @@
         <Property Id="PHP_VERSION" Secure="yes" Value="5.2.5" />
         <Property Id="APACHE_API_TYPE" Secure="yes" Value="PHP" />
         <Property Id="IIS_API_TYPE" Secure="yes" Value="PHP" />
+        <Property Id="APP_POOL_NAME" Secure="yes" Value="MapGuideAppPool" />
 
         <!-- Add Remove Programs stuff -->
         <Property Id="ARPHELPLINK" Value="http://mapguide.osgeo.org" />
@@ -124,7 +125,7 @@
                 <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
                 <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
                 
-                <Control Id="RdWebConfig" Property="MGWEB_CONFIG" Type="RadioButtonGroup" X="20" Y="50" Height="200" Width="290">
+                <Control Id="RdWebConfig" Property="MGWEB_CONFIG" Type="RadioButtonGroup" X="20" Y="50" Height="190" Width="290">
                     <RadioButtonGroup Property="MGWEB_CONFIG">
                         <RadioButton Text="{\WixUI_Font_Title}Bundled Configuration" ToolTip="Install and configure Apache, PHP, and Tomcat." Value="APACHE" X="25" Y="10" Width="200" Height="45" />
                         <RadioButton Text="{\WixUI_Font_Title}IIS Configuration" ToolTip="Install PHP and auto-configure IIS." Value="IIS" X="25" Y="60" Width="200" Height="45" />
@@ -209,7 +210,12 @@
                 ASP.net application environments on your web server.
                 
                 -->
+                <!--
                 <Control Id="LblNote" Type="Text" Text="If you can read this, I've detected your version of IIS correctly" X="20" Y="80" Width="240" Height="15" />
+                -->
+                <Control Id="LblAppPool" Type="Text" Text="Create an application pool" X="20" Y="80" Width="240" Height="15" />
+                <Control Id="TxtAppPool" Type="Edit" Property="APP_POOL_NAME" X="20" Y="100" Width="240" Height="15" />
+                <Control Id="LblAppPoolDescription" Type="Text" Text="An application pool allows MapGuide applications to be isolated from other applications running on the web server" X="20" Y="120" Width="240" Height="45" />
 
                 <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
                 <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />

@@ -29,6 +29,8 @@ CComPtr <IWamAdmin> g_spWamAdmin;
 
 UINT __stdcall AddWebServiceExtension(MSIHANDLE hMSI)
 {
+	bool comInit = false;
+
 	HRESULT hResult = S_OK;
 	UINT er = ERROR_SUCCESS;
 
@@ -94,6 +96,7 @@ UINT __stdcall AddWebServiceExtension(MSIHANDLE hMSI)
 	// Get the IMSAdminBase object
 
 	CoInitialize(NULL);
+	comInit = true;
 	hResult = CoCreateInstance(CLSID_MSAdminBase, 
 		NULL, 
 		CLSCTX_ALL, 
@@ -102,8 +105,7 @@ UINT __stdcall AddWebServiceExtension(MSIHANDLE hMSI)
 
 	if (FAILED(hResult))  
 	{
-		CoUninitialize();
-		return FALSE;  
+		goto LExit;
 	}
 
 	// Open key with "/LM" path
@@ -118,8 +120,7 @@ UINT __stdcall AddWebServiceExtension(MSIHANDLE hMSI)
 	if (FAILED(hResult))
 	{	
 		pIAdminBase->Release();
-		CoUninitialize();
-		return FALSE;
+		goto LExit;
 	}
 
 	// First set the data size of this multi-string Web Service Extension List to 0.
@@ -188,15 +189,17 @@ UINT __stdcall AddWebServiceExtension(MSIHANDLE hMSI)
 
 	pIAdminBase->CloseKey(hMetaData); 
 	pIAdminBase->Release ();
-	CoUninitialize ();
 
 LExit:
+	if(comInit)
+		CoUninitialize();
 	er = SUCCEEDED(hResult) ? ERROR_SUCCESS : ERROR_INSTALL_FAILURE;
 	return WcaFinalize(er);
 }
 
 UINT __stdcall DeleteWebServiceExtension(MSIHANDLE hMSI)
 {
+	bool comInit = false;
 	HRESULT hResult = S_OK;
 	UINT er = ERROR_SUCCESS;
 
@@ -251,6 +254,7 @@ UINT __stdcall DeleteWebServiceExtension(MSIHANDLE hMSI)
 	// Get the IMSAdminBase object
 
 	CoInitialize(NULL);
+	comInit = true;
 	hResult = CoCreateInstance(CLSID_MSAdminBase, 
 		NULL, 
 		CLSCTX_ALL, 
@@ -346,7 +350,8 @@ UINT __stdcall DeleteWebServiceExtension(MSIHANDLE hMSI)
 	
 
 LExit:
-	CoUninitialize ();
+	if(comInit)
+		CoUninitialize();
 	//HACK: We're uninstalling here. If we failed to delete, we failed to delete.
 	hResult = S_OK;
 	er = SUCCEEDED(hResult) ? ERROR_SUCCESS : ERROR_INSTALL_FAILURE;
@@ -355,6 +360,7 @@ LExit:
 
 UINT __stdcall RegisterScriptMaps(MSIHANDLE hMSI)
 {
+	bool comInit = false;
 	CComPtr <IMSAdminBase> pIMeta;
 
 	HRESULT hRes = S_OK;
@@ -455,6 +461,7 @@ UINT __stdcall RegisterScriptMaps(MSIHANDLE hMSI)
 	WcaLog(LOGMSG_STANDARD, "RegisterScriptMaps: PhpMapping=%s", wcsBuffer);
 
 	CoInitialize(NULL);
+	comInit = true;
 	hRes = CoCreateInstance( CLSID_MSAdminBase, 
 		NULL,
 		CLSCTX_ALL,
@@ -463,7 +470,7 @@ UINT __stdcall RegisterScriptMaps(MSIHANDLE hMSI)
 
 	if (FAILED(hRes))
 	{
-		return 0;
+		goto LExit;
 	}
 
 	hRes = pIMeta->OpenKey( METADATA_MASTER_ROOT_HANDLE,
@@ -550,12 +557,15 @@ UINT __stdcall RegisterScriptMaps(MSIHANDLE hMSI)
 	pIMeta->CloseKey(MyHandle);
 
 LExit:
+	if(comInit)
+		CoUninitialize();
 	er = SUCCEEDED(hRes) ? ERROR_SUCCESS : ERROR_INSTALL_FAILURE;
 	return WcaFinalize(er);
 }
 
 UINT __stdcall SetCustomErrors(MSIHANDLE hInstall)
 {
+	bool comInit = false;
 	CComPtr <IMSAdminBase> pIMeta;
 	HRESULT hr = S_OK;
 	UINT er = ERROR_SUCCESS;
@@ -584,6 +594,7 @@ UINT __stdcall SetCustomErrors(MSIHANDLE hInstall)
 	DWORD dwMemIndex = 0;
 
 	CoInitialize(NULL);
+	comInit = true;
 	hRes = CoCreateInstance( CLSID_MSAdminBase, 
 		NULL,
 		CLSCTX_ALL,
@@ -592,7 +603,7 @@ UINT __stdcall SetCustomErrors(MSIHANDLE hInstall)
 
 	if (FAILED(hRes))
 	{
-		return 0;
+		goto LExit;
 	}
 
 	hRes = pIMeta->OpenKey( METADATA_MASTER_ROOT_HANDLE,
@@ -659,12 +670,15 @@ UINT __stdcall SetCustomErrors(MSIHANDLE hInstall)
 	pIMeta->CloseKey(MyHandle);
 
 LExit:
+	if(comInit)
+		CoUninitialize();
 	er = SUCCEEDED(hr) ? ERROR_SUCCESS : ERROR_INSTALL_FAILURE;
 	return WcaFinalize(er);
 }
 
 UINT __stdcall CreateVDirMapAgent(MSIHANDLE hMSI)
 {
+	bool comInit = false;
 	CComPtr <IMSAdminBase> pIMeta;
 	HRESULT hRes = S_OK;
 	UINT er = ERROR_SUCCESS;
@@ -718,13 +732,13 @@ UINT __stdcall CreateVDirMapAgent(MSIHANDLE hMSI)
 	CreateVirtualRoot("mapguide/mapagent", mapAgentDir, 517, 1, TRUE, szStatus);
 
 	CoInitialize(NULL);
+	comInit = true;
 	hRes = CoCreateInstance( CLSID_MSAdminBase, NULL, CLSCTX_ALL,
 		IID_IMSAdminBase, (void **) &pIMeta );
 
 	if (FAILED(hRes))
 	{
-		CoUninitialize();
-		return 0;
+		goto LExit;
 	}
 
 	hRes = pIMeta->OpenKey( METADATA_MASTER_ROOT_HANDLE,
@@ -753,13 +767,17 @@ UINT __stdcall CreateVDirMapAgent(MSIHANDLE hMSI)
 	pIMeta->CloseKey(MyHandle);
 
 LExit:
+	if(comInit)
+		CoUninitialize();
 	er = SUCCEEDED(hRes) ? ERROR_SUCCESS : ERROR_INSTALL_FAILURE;
 	return WcaFinalize(er);
 }
 
 UINT __stdcall CreateVDirMapGuide(MSIHANDLE hMSI)
 {
+	bool comInit = false;
 	CComPtr <IMSAdminBase> pIMeta;
+	CComPtr <IIISApplicationAdmin> pAdmin;
 	HRESULT hRes = S_OK;
 	UINT er = ERROR_SUCCESS;
 
@@ -771,20 +789,23 @@ UINT __stdcall CreateVDirMapGuide(MSIHANDLE hMSI)
 	// TODO: Add your custom action code here.
 	CHAR szStatus[STATUS_STRING_SIZE];
 	_TCHAR installDir[MAX_BUFFER] = _T("");
+	_TCHAR appPoolName[MAX_BUFFER] = _T("");
 	DWORD  installDirLen = MAX_BUFFER;
+	DWORD  appPoolNameLen = MAX_BUFFER;
 	CHAR   szInstallDir[MAX_BUFFER];
 	CHAR   mapAgentDir[MAX_BUFFER];
 	METADATA_HANDLE MyHandle; 
 	METADATA_RECORD MyRecord; 
 	WCHAR SubKeyName[METADATA_MAX_NAME_LEN];
 	WCHAR TestKey[METADATA_MAX_NAME_LEN];
-
+	DWORD dwProcMode;
 	DWORD  ServerInstance = 1;
 	char  *VirtualPath = "/mapguide";
 	char  *AppName = "mapguide";
 	int nLen;
 
 	MsiGetProperty(hMSI, MSI_PROP_INSTALLDIR, installDir, &installDirLen);
+	MsiGetProperty(hMSI, MSI_PROP_APP_POOL, appPoolName, &appPoolNameLen);
 
 	nLen = WideCharToMultiByte(CP_ACP, 0, installDir, installDirLen, szInstallDir, MAX_BUFFER, NULL, NULL);
 	if ((nLen>0) && (szInstallDir[nLen-1] != '\\'))
@@ -799,13 +820,25 @@ UINT __stdcall CreateVDirMapGuide(MSIHANDLE hMSI)
 	CreateVirtualRoot("mapguide", mapAgentDir, 517, 1, TRUE, szStatus);
 
 	CoInitialize(NULL);
+	comInit = true;
 	hRes = CoCreateInstance( CLSID_MSAdminBase, NULL, CLSCTX_ALL,
 		IID_IMSAdminBase, (void **) &pIMeta );
 
 	if (FAILED(hRes))
 	{
-		CoUninitialize();
-		return 0;
+		goto LExit;
+	}
+
+
+	hRes = CoCreateInstance( CLSID_WamAdmin, NULL, CLSCTX_ALL, IID_IIISApplicationAdmin, (void**)&pAdmin);
+
+	if (NULL != pAdmin && appPoolNameLen > 0)
+	{
+		pAdmin->GetProcessMode(&dwProcMode);
+		if (dwProcMode == 1) // 1 = worker process isolation mode
+		{
+			pAdmin->CreateApplicationPool(appPoolName);
+		}
 	}
 
 	hRes = pIMeta->OpenKey( METADATA_MASTER_ROOT_HANDLE,
@@ -825,21 +858,47 @@ UINT __stdcall CreateVDirMapGuide(MSIHANDLE hMSI)
 		MyRecord.dwMDAttributes = METADATA_INHERIT;
 		MyRecord.dwMDUserType = IIS_MD_UT_WAM;
 		MyRecord.dwMDDataType = STRING_METADATA;
-		MyRecord.pbMDData = (PBYTE)&TestKey;
+		MyRecord.pbMDData = (PBYTE)TestKey;
 		MyRecord.dwMDDataLen = (wcslen(TestKey) + 1) * sizeof(WCHAR);
 
 		hRes = pIMeta->SetData(MyHandle, SubKeyName, &MyRecord);
+
+		//Create the MD_APP_POOL_ID record if we can obtain an IIISApplicationAdmin 
+		//pointer and it is in worker process isolation mode. This will tie the 
+		//mapguide virtual dir to our custom application pool.
+		if (NULL != pAdmin && appPoolNameLen > 0)
+		{
+			pAdmin->GetProcessMode(&dwProcMode);
+
+			if (dwProcMode == 1) // 1 = worker process isolation mode
+			{
+				//memset(TestKey , 0, sizeof(TestKey));
+				//swprintf(TestKey, L"%S", appPoolName);
+
+				MyRecord.dwMDIdentifier = MD_APP_APPPOOL_ID;
+				MyRecord.dwMDAttributes = METADATA_INHERIT;
+				MyRecord.dwMDUserType = IIS_MD_UT_SERVER;
+				MyRecord.dwMDDataType = STRING_METADATA;
+				MyRecord.pbMDData = (unsigned char*)appPoolName;
+				MyRecord.dwMDDataLen = (wcslen(appPoolName) + 1) * sizeof(_TCHAR);
+
+				hRes = pIMeta->SetData(MyHandle, SubKeyName, &MyRecord);
+			}
+		}
 	}
 
 	pIMeta->CloseKey(MyHandle);
 
 LExit:
+	if(comInit)
+		CoUninitialize();
 	er = SUCCEEDED(hRes) ? ERROR_SUCCESS : ERROR_INSTALL_FAILURE;
 	return WcaFinalize(er);
 }
 
 UINT __stdcall CreateVDirPhpAgent(MSIHANDLE hMSI)
 {
+	bool comInit = false;
 	CComPtr <IMSAdminBase> pIMeta;
 	HRESULT hRes = S_OK;
 	UINT er = ERROR_SUCCESS;
@@ -884,6 +943,7 @@ UINT __stdcall CreateVDirPhpAgent(MSIHANDLE hMSI)
 	CreateVirtualRoot("mapguide/mapviewerdwf", phpMapAgentDir, 513, 1, FALSE, szStatus);
 
 	CoInitialize(NULL);
+	comInit = true;
 	hRes = CoCreateInstance( CLSID_MSAdminBase, 
 		NULL,
 		CLSCTX_ALL,
@@ -892,7 +952,7 @@ UINT __stdcall CreateVDirPhpAgent(MSIHANDLE hMSI)
 
 	if (FAILED(hRes))
 	{
-		return 0;
+		goto LExit;
 	}
 
 	hRes = pIMeta->OpenKey( METADATA_MASTER_ROOT_HANDLE,
@@ -944,12 +1004,15 @@ UINT __stdcall CreateVDirPhpAgent(MSIHANDLE hMSI)
 	}
 
 LExit:
+	if(comInit)
+		CoUninitialize();
 	er = SUCCEEDED(hRes) ? ERROR_SUCCESS : ERROR_INSTALL_FAILURE;
 	return WcaFinalize(er);
 }
 
 UINT __stdcall CreateVDirNetAgent(MSIHANDLE hMSI)
 {
+	bool comInit = false;
 	CComPtr <IMSAdminBase> pIMeta;
 	HRESULT hRes = S_OK;
 	UINT er = ERROR_SUCCESS;
@@ -996,6 +1059,7 @@ UINT __stdcall CreateVDirNetAgent(MSIHANDLE hMSI)
 	CreateVirtualRoot("mapguide/mapviewernet", netMapAgentDir, 513, 1, TRUE, szStatus);
 
 	CoInitialize(NULL);
+	comInit = true;
 	hRes = CoCreateInstance( CLSID_MSAdminBase, 
 		NULL,
 		CLSCTX_ALL,
@@ -1004,7 +1068,7 @@ UINT __stdcall CreateVDirNetAgent(MSIHANDLE hMSI)
 
 	if (FAILED(hRes))
 	{
-		return 0;
+		goto LExit;
 	}
 
 	hRes = pIMeta->OpenKey( METADATA_MASTER_ROOT_HANDLE,
@@ -1057,12 +1121,15 @@ UINT __stdcall CreateVDirNetAgent(MSIHANDLE hMSI)
 
 
 LExit:
+	if(comInit)
+		CoUninitialize();
 	er = SUCCEEDED(hRes) ? ERROR_SUCCESS : ERROR_INSTALL_FAILURE;
 	return WcaFinalize(er);
 }
 
 UINT __stdcall CreateVDirJavaAgent(MSIHANDLE hMSI)
 {
+	bool comInit = false;
 	CComPtr <IMSAdminBase> pIMeta;
 	HRESULT hRes = S_OK;
 	UINT er = ERROR_SUCCESS;
@@ -1107,6 +1174,7 @@ UINT __stdcall CreateVDirJavaAgent(MSIHANDLE hMSI)
 	CreateVirtualRoot("mapguide/mapviewerdwf", javaMapAgentDir, 513, 1, FALSE, szStatus);
 
 	CoInitialize(NULL);
+	comInit = true;
 	hRes = CoCreateInstance( CLSID_MSAdminBase, 
 		NULL,
 		CLSCTX_ALL,
@@ -1115,7 +1183,7 @@ UINT __stdcall CreateVDirJavaAgent(MSIHANDLE hMSI)
 
 	if (FAILED(hRes))
 	{
-		return 0;
+		goto LExit;
 	}
 
 	hRes = pIMeta->OpenKey( METADATA_MASTER_ROOT_HANDLE,
@@ -1168,6 +1236,8 @@ UINT __stdcall CreateVDirJavaAgent(MSIHANDLE hMSI)
 
 
 LExit:
+	if(comInit)
+		CoUninitialize();
 	er = SUCCEEDED(hRes) ? ERROR_SUCCESS : ERROR_INSTALL_FAILURE;
 	return WcaFinalize(er);
 }
