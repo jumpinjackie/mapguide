@@ -75,6 +75,7 @@ MgSiteRepository::~MgSiteRepository()
 
 int MgSiteRepository::VerifyAccess(CREFSTRING repositoryPath)
 {
+    MgFileUtil::CreateDirectory(repositoryPath, false, true);
     return MgRepository::VerifyAccess(
         repositoryPath,
         MgUtil::MultiByteToWideChar(MgRepository::SiteResourceContentContainerName),

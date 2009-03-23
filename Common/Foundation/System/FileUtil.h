@@ -77,7 +77,8 @@ class MG_FOUNDATION_API MgFileUtil
     static bool IsRootUncName(CREFSTRING pathname);
     static bool IsRootDrive(CREFSTRING pathname);
     static bool IsDriveLetter(wchar_t letter);
-    static void CreateDirectory(CREFSTRING path, bool strict = false);
+    static void CreateDirectory(CREFSTRING path, bool strict = false,
+        bool recursive = false);
     static void DeleteDirectory(CREFSTRING path, bool recursive = true,
         bool strict = false);
     static bool CleanDirectory(CREFSTRING path, bool recursive = true,
@@ -106,6 +107,12 @@ class MG_FOUNDATION_API MgFileUtil
     static bool LockFile(CREFSTRING pathname);
     static bool VerifySafeFileAccess(CREFSTRING pathname);
 
+/// helper methods
+
+    private:
+
+    static void MkDir(CREFSTRING path);
+
 /// Data Members
 
     private:
@@ -120,4 +127,5 @@ class MG_FOUNDATION_API MgFileUtil
 /// Inline Methods
 
 #endif
+
 

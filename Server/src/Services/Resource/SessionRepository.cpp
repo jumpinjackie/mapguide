@@ -51,7 +51,7 @@ MgSessionRepository::MgSessionRepository()
 
     // Check to see whether or not it is safe to open the database.
 
-    m_dbVersion = VerifyAccess(repositoryPath);
+    m_dbVersion = VerifyAccess(repositoryPath, m_resourceDataFilePath);
 
     // Open the repository.
 
@@ -81,8 +81,11 @@ MgSessionRepository::~MgSessionRepository()
 /// </summary>
 ///----------------------------------------------------------------------------
 
-int MgSessionRepository::VerifyAccess(CREFSTRING repositoryPath)
+int MgSessionRepository::VerifyAccess(CREFSTRING repositoryPath, CREFSTRING resourceDataFilePath)
 {
+    MgFileUtil::CreateDirectory(repositoryPath, false, true);
+    MgFileUtil::CreateDirectory(resourceDataFilePath, false, true);
+
     int dbVersion = MgRepository::VerifyAccess(
         repositoryPath,
         MgUtil::MultiByteToWideChar(MgRepository::SessionResourceContentContainerName),

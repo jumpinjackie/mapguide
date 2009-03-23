@@ -52,10 +52,7 @@ void MgTileCache::Initialize()
         MgFileUtil::AppendSlashToEndOfPath(sm_path);
 
         // create directory if it is not already there
-        if (!MgFileUtil::PathnameExists(sm_path))
-        {
-            MgFileUtil::CreateDirectory(sm_path, false);
-        }
+        MgFileUtil::CreateDirectory(sm_path, false, true);
 
         configuration->GetIntValue(MgConfigProperties::TileServicePropertiesSection,
             MgConfigProperties::TileServicePropertyTileColumnsPerFolder,
@@ -414,4 +411,5 @@ STRING MgTileCache::GetTileIndexString(int tileIndex, int tilesPerFolder)
     }
     return name;
 }
+
 
