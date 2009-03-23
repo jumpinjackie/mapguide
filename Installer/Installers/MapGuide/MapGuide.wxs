@@ -14,7 +14,7 @@
 
         <Package InstallerVersion="300" Compressed="yes" />
 
-        <Media Id="1" Cabinet="MapGuideOpenSource.cab" EmbedCab="yes" />
+        <Media Id="1" Cabinet="MapGuideOpenSource.cab" EmbedCab="yes" CompressionLevel="none" />
 
         <!-- Initial MapGuide Web Configuration: APACHE | IIS | MANUAL -->
         <Property Id="MGWEB_CONFIG" Secure="yes" Value="APACHE" />

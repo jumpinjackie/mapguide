@@ -4,12 +4,15 @@ VIProductVersion "${MG_VERSION}.0"
 VIAddVersionKey "FileVersion" "1.0.0.0"
 VIAddVersionKey "CompanyName" "Open Source Geospatial Foundation"
 VIAddVersionKey "FileDescription" "Installer Bootstrapper package for MapGuide Open Source"
+VIAddVersionKey "LegalCopyright" "2009 Open Source Geospatial Foundation"
 
 OutFile "${INSTALLER_OUTPUT}\${OUTNAME}.exe"
 
 SilentInstall silent
 
 Icon "${NSISDIR}\contrib\graphics\icons\orange-install.ico"
+
+SetCompressor /SOLID lzma
 
 Section Main
 	SetOutPath $TEMP
