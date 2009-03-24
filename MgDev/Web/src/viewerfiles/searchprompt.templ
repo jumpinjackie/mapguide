@@ -45,7 +45,7 @@ function InitDocument()
 {
     var cmd = GetParent().commands[cmdIndex];
     document.getElementById("title").innerHTML = cmd.label;
-    document.getElementById("prompt").innerHTML = cmd.prompt;
+    document.getElementById("prompt").innerHTML = cmd.prompt.replace(/\n/, "<br>");
     if(!msie)
         document.getElementById("lf").innerHTML = "<br>";
 
