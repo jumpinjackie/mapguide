@@ -326,10 +326,10 @@
         <InstallExecuteSequence>
             <Custom
                 Action="UpdateApacheConfig"
-                After="UpdateApacheConfig.SetValues">MGWEB_CONFIG = "APACHE" AND &amp;WebExtApacheFeature > 2</Custom>
+                After="UpdateApacheConfig.SetValues">&amp;WebExtPhpFeature > 2 AND &amp;WebExtApacheFeature > 2</Custom>
             <Custom
                 Action="UpdateApacheConfig.SetValues"
-                After="InstallFiles">MGWEB_CONFIG = "APACHE" AND &amp;WebExtApacheFeature > 2</Custom>
+                After="InstallFiles">&amp;WebExtPhpFeature > 2 AND &amp;WebExtApacheFeature > 2</Custom>
             <Custom
                 Action="UpdatePhpIni"
                 After="UpdatePhpIni.SetValues">&amp;WebExtPhpFeature > 2</Custom>
