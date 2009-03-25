@@ -113,7 +113,9 @@ try
     taskPaneWidth = showTaskPane? taskPaneWidth: 0;
     toolbarHeight = showToolbar? toolbarHeight: 0;
     statusbarHeight = showStatusbar? statusbarHeight: 0;
-    String taskPaneUrl = taskPane.GetInitialTaskUrl();
+	
+	//Encode the initial url so that it does not trip any sub-frames (especially if this url has parameters)
+    String taskPaneUrl = URLEncoder.encode(taskPane.GetInitialTaskUrl(), "UTF-8");
     String vpath = GetSurroundVirtualPath(request);
     boolean defHome = false;
     if(taskPaneUrl == null || taskPaneUrl.length() == 0) {
