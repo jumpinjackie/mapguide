@@ -283,7 +283,7 @@ echo [bootstrap]: Creating
 %MSBUILD% /p:TargetFile=%INSTALLER_NAME%.msi Bootstrap.proj
 if "%errorlevel%"=="1" goto error
 echo [bootstrap]: Create self-extracting package
-makensis /DINSTALLER_OUTPUT=%INSTALLER_OUTPUT% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% Setup.nsi
+makensis /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% Setup.nsi
 if "%errorlevel%"=="1" goto error
 popd
 echo [build]: Installer created at %INSTALLER_OUTPUT%\%INSTALLER_NAME%.exe

@@ -6,11 +6,13 @@ VIAddVersionKey "CompanyName" "Open Source Geospatial Foundation"
 VIAddVersionKey "FileDescription" "Installer Bootstrapper package for MapGuide Open Source"
 VIAddVersionKey "LegalCopyright" "2009 Open Source Geospatial Foundation"
 
+!define INSTALLER_OUTPUT "${INSTALLER_ROOT}\Output"
+
 OutFile "${INSTALLER_OUTPUT}\${OUTNAME}.exe"
 
 SilentInstall silent
 
-Icon "${NSISDIR}\contrib\graphics\icons\orange-install.ico"
+Icon "${INSTALLER_ROOT}\Support\Graphics\OSGeo.ico"
 
 SetCompressor /SOLID lzma
 
