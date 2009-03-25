@@ -36,15 +36,29 @@ String locale = "";
 
     GetRequestParameters();
 
+    String url = HttpUtility.UrlDecode(taskPane);
+	int index = url.IndexOf("?");
+	
+	if(index > 0)
+	{	
+		String path = url.Substring(0, index);
+		String query = url.Substring(index+1);
+		
+		if(query.Length > 0)
+			url = String.Format("{0}?SESSION={1}&WEBLAYOUT={2}&DWF={3}&LOCALE={4}&{5}", path, session, HttpUtility.UrlEncode(webLayout), dwf, locale, query);
+		else
+			url = String.Format("{0}?SESSION={1}&WEBLAYOUT={2}&DWF={3}&LOCALE={4}", path, session, HttpUtility.UrlEncode(webLayout), dwf, locale);
+
+	}
+	else
+	{
+		url = String.Format("{0}?SESSION={1}&WEBLAYOUT={2}&DWF={3}&LOCALE={4}", taskPane, session, HttpUtility.UrlEncode(webLayout), dwf, locale);
+	}
     String templ = LoadTemplate(Request, "../viewerfiles/taskframe.templ");
     String[] vals = {
                     GetSurroundVirtualPath(Request) + "tasklist.aspx",
                     locale,
-                    taskPane,
-                    session,
-                    HttpUtility.UrlEncode(webLayout),
-                    dwf,
-                    locale
+                    url
                     };
 
     Response.Write(Substitute(templ, vals));

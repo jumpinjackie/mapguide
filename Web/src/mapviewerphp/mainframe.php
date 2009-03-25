@@ -133,7 +133,9 @@ function BuildViewer($forDwf = true)
         $taskWidth = $showTaskPane? $taskPaneWidth: 0;
         $toolbarHeight = $showToolbar? $toolbarHeight: 0;
         $statusbarHeight = $showStatusbar? $statusbarHeight: 0;
-        $taskPaneUrl = $taskPane->GetInitialTaskUrl();
+		
+		//Encode the initial url so that it does not trip any sub-frames (especially if this url has parameters)
+        $taskPaneUrl = urlencode($taskPane->GetInitialTaskUrl());
         $vpath = GetSurroundVirtualPath();
         $defHome = false;
         if($taskPaneUrl == "") {

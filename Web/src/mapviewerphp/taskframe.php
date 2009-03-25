@@ -27,8 +27,17 @@ $locale = "";
 
 GetRequestParameters();
 
+//If there is an initial url, it will be encoded, so parse the decoded url.
+$comp = parse_url(urldecode($taskPane));
+
+//If there is a query component to the initial url, append it to the end of the full url string
+if(!isset($comp["query"]) || strlen($comp["query"]) == 0)
+	$url = sprintf("%s?SESSION=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s", $comp["path"], $session, urlencode($webLayout), $dwf, $locale);
+else
+	$url = sprintf("%s?SESSION=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s&%s", $comp["path"], $session, urlencode($webLayout), $dwf, $locale, $comp["query"]);
+
 $templ = file_get_contents("../viewerfiles/taskframe.templ");
-print sprintf($templ, GetSurroundVirtualPath() . "tasklist.php", $locale, $taskPane, $session, urlencode($webLayout), $dwf, $locale);
+print sprintf($templ, GetSurroundVirtualPath()."tasklist.php", $locale, $url);
 
 function GetParameters($params)
 {
