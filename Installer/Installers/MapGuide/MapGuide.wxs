@@ -50,7 +50,6 @@
 
         <FeatureRef Id="ServerFeature"/>
         <FeatureRef Id="WebExtensionsFeature"/>
-        <FeatureRef Id="MaestroFeature"/>
 
         <UIRef Id="WixUI_Common"/>
 

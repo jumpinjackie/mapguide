@@ -48,8 +48,8 @@ SET INSTALLER_DEV_CSMAP=%INSTALLER_DEV%\Libraries\CS Map
 SET INSTALLER_DEV_FDO=%INSTALLER_DEV%\Libraries\FDO
 SET INSTALLER_DEV_MGSERVER=%INSTALLER_DEV%\Libraries\MapGuide Server
 SET INSTALLER_DEV_MGWEB=%INSTALLER_DEV%\Libraries\MapGuide Web Extensions
-SET INSTALLER_DEV_MAESTRO=%INSTALLER_DEV%\Libraries\Maestro
-SET INSTALLER_DEV_INSTALLER=%INSTALL_DEV%\Installers\MapGuide
+SET INSTALLER_DEV_MAESTRO=%INSTALLER_DEV%\Installers\Maestro
+SET INSTALLER_DEV_INSTALLER=%INSTALLER_DEV%\Installers\MapGuide
 
 SET MG_SERVER=%CD%\..\MgDev\%TYPEBUILD%\Server\
 SET MG_WEB=%CD%\..\MgDev\%TYPEBUILD%\WebServerExtensions\
@@ -207,7 +207,7 @@ SET WIX_INC_SERVER="%INSTALLER_DEV%\Libraries\MapGuide Server\FileIncludes"
 SET WIX_INC_WEB="%INSTALLER_DEV%\Libraries\MapGuide Web Extensions\FileIncludes"
 SET WIX_INC_FDO="%INSTALLER_DEV%\Libraries\FDO\FileIncludes"
 SET WIX_INC_CSMAP="%INSTALLER_DEV%\Libraries\CS Map\FileIncludes"
-SET WIX_INC_MAESTRO="%INSTALLER_DEV%\Libraries\Maestro\FileIncludes"
+SET WIX_INC_MAESTRO="%INSTALLER_DEV_MAESTRO%\FileIncludes"
 
 echo [regen]: Server - binaries
 %PARAFFIN% -dir %MG_SERVER%\bin -custom SRVBINFILES -ext pdb -dirref SERVERROOTLOCATION -norecurse %WIX_INC_SERVER%\incBinFiles.wxs

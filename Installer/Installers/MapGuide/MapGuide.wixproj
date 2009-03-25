@@ -52,11 +52,6 @@
     <Folder Include="Resources" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\Maestro\Maestro.wixproj">
-      <Name>Maestro</Name>
-      <Project>{b8651092-0dbd-4b82-b9d5-8e4b4c8ec7b2}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\Libraries\MapGuide Server\MapGuide Server.wixproj">
       <Name>MapGuide Server</Name>
       <Project>{715e2d88-e822-4a9a-a5a2-dbb71cd9b320}</Project>
