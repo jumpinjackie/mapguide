@@ -29,6 +29,7 @@
         <!-- Add Remove Programs stuff -->
         <Property Id="ARPHELPLINK" Value="http://mapguide.osgeo.org" />
         <Property Id="ARPURLINFOABOUT" Value="http://mapguide.osgeo.org" />
+        <Property Id="ARPPRODUCTICON" Value="OSGeo.ico" />
         
         <Property Id="ALLUSERS">1</Property>
 
@@ -36,6 +37,8 @@
             <RegistrySearch Id="SearchRegIISVERSIONMAJOR" Root="HKLM" Key="Software\Microsoft\InetStp" Name="MajorVersion" Type="raw" />
         </Property>
 
+        <Icon Id="OSGeo.ico" SourceFile="..\..\Support\Graphics\OSGeo.ico" />
+        
         <WixVariable Id="WixUILicenseRtf" Value="Resources/LGPL21.rtf" />
         <WixVariable Id="WixUIBannerBmp" Value="Resources/InstallerSmall.bmp" />
         <WixVariable Id="WixUIDialogBmp" Value="Resources/InstallerLarge.bmp" />
@@ -75,13 +78,12 @@
                 <!-- 
                     .NET Framework not found
                 
-                    The .NET Framework was not found on your system. As a result, the following features 
+                    The .NET Framework was not found on your system. As a result, the following feature 
                     will not be available for installation:
                     
-                    - MapGuide Maestro
                     - .NET Web Extensions for IIS
                     
-                    To make these features available for installation, please install the .NET Framework (2.0 or higher) before
+                    To make this feature available for installation, please install the .NET Framework (2.0 or higher) before
                     proceeding with installation
                 -->
                 <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}.NET Framework" />
@@ -89,10 +91,9 @@
                 <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
                 <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
 
-                <Control Id="TxtMessage" Type="Text" X="20" Y="70" Width="300" Height="40" Text="The .NET Framework was not found on your system. As a result, the following features will not be available for installation:" />
-                <Control Id="TxtMaestro" Type="Text" X="30" Y="110" Width="200" Height="15" Text="MapGuide Maestro" />
+                <Control Id="TxtMessage" Type="Text" X="20" Y="70" Width="300" Height="40" Text="The .NET Framework was not found on your system. As a result, the following feature will not be available for installation:" />
                 <Control Id="TxtAspNet" Type="Text" X="30" Y="130" Width="200" Height="15" Text=".NET Web Extensions for IIS" />
-                <Control Id="TxtMessage2" Type="Text" X="20" Y="160" Width="300" Height="40" Text="To make these features available for installation, please install the .NET Framework (2.0 or higher) before proceeding with installation" />
+                <Control Id="TxtMessage2" Type="Text" X="20" Y="160" Width="300" Height="40" Text="To make this feature available for installation, please install the .NET Framework (2.0 or higher) before proceeding with installation" />
                 
                 <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
                 <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
