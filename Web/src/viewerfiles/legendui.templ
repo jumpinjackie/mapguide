@@ -64,6 +64,8 @@ var iconCollapse = "../stdicons/lc_collapse.gif";
 var iconNoExpand = "../stdicons/lc_noexpand.gif";
 var iconChecked = "../stdicons/lc_checked.gif";
 var iconUnchecked = "../stdicons/lc_unchecked.gif";
+var iconSelectable = "../stdicons/lc_select.gif";
+var iconUnselectable = "../stdicons/lc_unselect.gif";
 var ctxMenu;
 var cmdState;
 var layerMap = null;
@@ -122,6 +124,21 @@ function BuildTreeUi(tree)
     document.getElementById("Tree").innerHTML = code;
 }
 
+function SetSelectability(node,selectable)
+{
+    for(var i=0; i < node.length; i++)
+    {
+      if(node[i].code == "L")
+      {
+        ChangeSelectability(node[i].objectId,(selectable)? 1: 2)
+      }
+      else
+      {
+        SetSelectability(node[i].children,selectable)
+      }
+    }
+}
+
 function BuildLayersAndGroups(node)
 {
     var isGroup = node.type == 0;
@@ -132,6 +149,10 @@ function BuildLayersAndGroups(node)
     {
         //checkbox
         item += '<td width=16 id="Chk_' + node.objectId + '">' + MakeCheckCode(node) + '</td>';
+        if(node.code == "L" && node.selectable)
+        {
+          item += '<td width=16 id="Sel_' + node.objectId + '">' + MakeSelectableCode(node) + '</td>';
+        }
     }
     //icon
     item += '<td width=23 id="' + GetIconId(node) + '">';
@@ -307,6 +328,11 @@ function MakeCheckCode(node)
     return '<img width=13 height=13 src="' + (node.visible? iconChecked: iconUnchecked) + '" onClick="ChangeVisibility(\'' + node.objectId +'\')">';
 }
 
+function MakeSelectableCode(node)
+{
+    return '<img width=13 height=13 src="' + (node.selectable? iconSelectable: iconUnselectable) + '" onClick="ChangeSelectability(\'' + node.objectId +'\',0)">';
+}
+
 function UpdateGroupLayerCheck(node)
 {
     var elt = document.getElementById('Chk_' + node.objectId);
@@ -372,6 +398,24 @@ function ChangeVisibility(objectId)
                                       node.type == 0? (show? "": node.objectId): "",
                                       node.type == 1? (show? node.objectId: ""): "",
                                       node.type == 1? (show? "": node.objectId): "");
+}
+
+//selectabilityFlag : 0=toggle,1=selectable,2=unselectable
+function ChangeSelectability(objectId,selectabilityFlag)
+{
+    var node = FindNode(tree, objectId);
+    if(node == null)
+        return;
+    switch(selectabilityFlag)
+    {
+      case 0: node.selectable = !node.selectable;break;
+      case 1: node.selectable = true;break;
+      case 2: node.selectable = false;break;
+    }
+    var chkElt = document.getElementById('Sel_' + objectId);
+    if(chkElt != null)
+        chkElt.innerHTML = MakeSelectableCode(node);
+    GetMapFrame().ResetVisLayers();
 }
 
 function ShowHideNodes(nodes)
@@ -522,6 +566,9 @@ function ContextMenu(x, y, node)
     addMenuOption(ctxMenu, "__#REFRESH#__", 3, 1, "", "", cmdState[3] = true);
     addMenuOption(ctxMenu, "__#EXPANDALL#__", 4, 1, "", "", cmdState[4] = true);
     addMenuOption(ctxMenu, "__#COLLAPSEALL#__", 5, 1, "", "", cmdState[5] = true);
+    addMenuOption(ctxMenu, "", 0, 2, "", "", false);
+    addMenuOption(ctxMenu, "__#ALLSELECTABLE#__", 7, 1, "", "", cmdState[7] = true);
+    addMenuOption(ctxMenu, "__#ALLUNSELECTABLE#__", 8, 1, "", "", cmdState[8] = true);
 
     endBuildMenuContent(ctxMenu);
     showPopup(ctxMenu, true, x, y);
@@ -554,6 +601,12 @@ function ExecuteCommand(option)
             layer = FindNode(tree, objectId);
             layer.children[layer.curScale].showlongtheme = true;
             SetLayerStyles(layer);
+            break;
+        case 7:
+            SetSelectability(tree,true)
+            break;
+        case 8:
+            SetSelectability(tree,false)
             break;
     }
 }
