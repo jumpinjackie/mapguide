@@ -340,7 +340,7 @@ String dataSource = "";
 
         if (excludedLayers > 0)
         {
-            String warningFmt = excludedLayers > 1 ? MgLocalizer.GetString("BUFFERREPORTWARNINGSINGULAR", locale) : MgLocalizer.GetString("BUFFERREPORTWARNINGPLURAL", locale);
+            String warningFmt = excludedLayers > 1 ? MgLocalizer.GetString("BUFFERREPORTWARNINGPLURAL", locale) : MgLocalizer.GetString("BUFFERREPORTWARNINGSINGULAR", locale);
             String warningStr = Substitute(warningFmt, new String[] { excludedLayers.ToString() });
             msg = msg + "<p><p>" + warningStr;
         }
