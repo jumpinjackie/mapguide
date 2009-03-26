@@ -7,6 +7,11 @@
         <Component Id="WebExtensionsComponent" Guid="AE77C8EB-284D-4410-903F-92AD516DEA93">
           <CreateFolder />
         </Component>
+          <Directory Id="WEBTEMPLOCATION" Name="Temp">
+              <Component Id="WebTempComponent" Guid="38C3E0A5-88F8-4A98-896D-CCB5DADCC566">
+                  <CreateFolder />
+              </Component>
+          </Directory>
           <Directory Id="APACHELOCATION" Name="Apache2">
               
           </Directory>
@@ -46,7 +51,7 @@
                            Key="TempPath"
                            Name="webconfig.ini"
                            Section="GeneralProperties"
-                           Value="[TempFolder]" />
+                           Value="[WEBTEMPLOCATION]" />
                   <IniFile Id="INISETSERVERIP"
                            Action="addLine"
                            Directory="WEBROOTLOCATION"
@@ -90,6 +95,7 @@
       <ComponentRef Id="WebShortcutsComponent"/>
       <ComponentRef Id="WebApacheShortcutComponent"/>
       <ComponentRef Id="WebIISShortcutComponent"/>
+      <ComponentRef Id="WebTempComponent"/>
       <Feature Id="WebExtApacheFeature" Title="Apache Web Server" Display="hidden" Level="1" Description="A bundled version of Apache with MapGuide enabled, running on port [APACHE_PORT]." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
           <Condition Level="0">MGWEB_CONFIG = "IIS"</Condition>
         <ComponentGroupRef Id="group_APACHEFILES"/>

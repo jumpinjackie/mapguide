@@ -132,6 +132,7 @@ UpdatePhpIni(MSIHANDLE hMSI)
 	CHAR    szCustomActionData[MAX_BUFFER];
 	CHAR    szPhpDir[MAX_BUFFER];
 
+	CHAR	szWebTempDir[MAX_BUFFER];
 	CHAR    szWebServerType[MAX_BUFFER];
 	CHAR    szFile[MAX_BUFFER];
 	CHAR    szFind[MAX_BUFFER];
@@ -150,24 +151,7 @@ UpdatePhpIni(MSIHANDLE hMSI)
 
 	//::MessageBoxW(NULL, wszCustomActionData, L"CustomActionData", MB_OK);
 
-	/*
-	char *sc = strchr(szCustomActionData,';');
-	if ( sc != NULL_CHAR )
-	{
-	// parse CustomActionData for INSTALLDIR. it precedes the ';' in CustomActionData
-	strncpy(szInstallDir,szCustomActionData,sc-szCustomActionData);
-	szInstallDir[sc-szCustomActionData+1] = '\0';
-
-	strcpy(szModInstallDir,szInstallDir);
-	for (unsigned int i=0; i<strlen(szModInstallDir); i++)
-	if (szModInstallDir[i] == '\\')
-	szModInstallDir[i] = '/';
-
-	// parse CustomActionData for WEBCONFIG. it follows the ';' in CustomActionData
-	strcpy(szWebServerType,(char *)sc+1);
-	}*/
-
-	//[PHPLOCATION];[WEBSERVERTYPE]
+	//[PHPLOCATION];[WEBSERVERTYPE];[WEBTEMPLOCATION]
 	char * tok = strtok(szCustomActionData, ";");
 	//[PHPLOCATION]
 	if(tok)
@@ -178,6 +162,12 @@ UpdatePhpIni(MSIHANDLE hMSI)
 		if(tok)
 		{
 			strcpy(szWebServerType, tok);
+			tok = strtok(NULL, ";");
+		}
+		//[WEBTEMPLOCATION]
+		if(tok)
+		{
+			strcpy(szWebTempDir, tok);
 			tok = strtok(NULL, ";");
 		}
 	}
@@ -210,6 +200,9 @@ UpdatePhpIni(MSIHANDLE hMSI)
 		CString csBuff(szBuff);
 		strcpy(szFind,"%MG_WEB_PHP%");
 		csBuff.Replace(szFind,szPhpDir);
+
+		strcpy(szFind,"%MG_WEB_TEMP%");
+		csBuff.Replace(szFind,szWebTempDir);
 
 		if ( strcmp(szWebServerType,"2") == 0 )
 		{

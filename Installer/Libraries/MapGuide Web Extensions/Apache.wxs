@@ -4,7 +4,7 @@
         <Binary Id="ApacheActions" SourceFile="..\..\Custom\bin\apache_actions.dll" />
         <CustomAction Id="UpdateApacheConfig.SetValues" Property="UpdateApacheConfig" Value="[WEBEXTENSIONSLOCATION];[APACHE_API_TYPE];[APACHE_PORT];[APACHELOCATION];[PHPLOCATION];[WEBROOTLOCATION]" />
         <CustomAction Id="UpdateApacheConfig" Return="check" BinaryKey="ApacheActions" Execute="deferred"  DllEntry="UpdateApacheConfig" />
-        <CustomAction Id="UpdatePhpIni.SetValues" Property="UpdatePhpIni" Value='[PHPLOCATION];2' />
+        <CustomAction Id="UpdatePhpIni.SetValues" Property="UpdatePhpIni" Value='[PHPLOCATION];2;[WEBTEMPLOCATION]' />
         <CustomAction Id="UpdatePhpIni" Return="check" BinaryKey="ApacheActions" Execute="deferred" DllEntry="UpdatePhpIni" />
         <!--
         <CustomAction Id="GetApacheDir.SetValues" Property="GetApacheDir" Value="[APACHE_VERSION]" />
