@@ -188,6 +188,8 @@ COLLAPSEALL             = Collapse All
 DISPLAYALLINGROUP       = Display All in Group
 HIDEALLINGROUP          = Hide All in Group
 SHOWLONGTHEME           = Show Long Theme
+ALLSELECTABLE           = All Selectable
+ALLUNSELECTABLE         = All Unselectable
 
 # Task Bar
 TASKS                   = Tasks
