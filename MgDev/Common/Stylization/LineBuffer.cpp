@@ -287,6 +287,30 @@ void LineBuffer::LineTo(double x, double y, double z)
 }
 
 
+void LineBuffer::AdjustArcEndPoint(double x, double y, double z)
+{
+    _ASSERT(m_types[m_cur_types-1] == stLineTo);
+
+    // Check to see if incoming points are 2D (no Z) and need to be transformed
+    // back into 3D space.  This is used by 3D circular arc tessellation.
+    if (m_bTransform2DPoints)
+    {
+        Point3D pt(x, y, z);
+        Point3D result = m_T.Transform(pt);
+
+        x = result.x;
+        y = result.y;
+        z = result.z;
+    }
+
+    m_pts[m_cur_types-1][0] = x;
+    m_pts[m_cur_types-1][1] = y;
+    m_pts[m_cur_types-1][2] = z;
+
+    AddToBounds(x, y, z);
+}
+
+
 void LineBuffer::Close()
 {
     if (m_cur_types == 0)
@@ -644,6 +668,9 @@ void LineBuffer::CircularArcTo3D(double x0, double y0, double z0, double x1, dou
     CircularArcTo2D(startPrime.x, startPrime.y, midPrime.x, midPrime.y, endPrime.x, endPrime.y);
 
     m_bTransform2DPoints = false;
+
+    // ensure the final generated point exactly matches the input
+    AdjustArcEndPoint(x2, y2, z2);
 }
 
 
@@ -721,6 +748,9 @@ void LineBuffer::CircularArcTo2D(double x0, double y0, double x1, double y1, dou
     }
 
     ArcTo(cx, cy, r, r, startAngle, endAngle);
+
+    // ensure the final generated point exactly matches the input
+    AdjustArcEndPoint(x2, y2);
 }
 
 

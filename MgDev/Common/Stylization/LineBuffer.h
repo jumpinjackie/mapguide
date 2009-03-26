@@ -223,6 +223,7 @@ private:
 
     void CircularArcTo2D(double startx, double starty, double midx, double midy, double endx, double endy);
     void CircularArcTo3D(double startx, double starty, double startz, double midx, double midy, double midz, double endx, double endy, double endz);
+    void AdjustArcEndPoint(double x, double y, double z = 0.0);
     LineBuffer* ClipPolygon(RS_Bounds& b, LineBuffer* dst);
     LineBuffer* ClipPolyline(RS_Bounds& b, LineBuffer* dst);
     LineBuffer* ClipPoints(RS_Bounds& b, LineBuffer* dst);
