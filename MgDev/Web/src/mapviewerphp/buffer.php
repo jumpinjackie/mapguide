@@ -327,7 +327,7 @@
         //add warning message, if necessary
         if($excludedLayers > 0)
         {
-            $warningFmt = $excludedLayers > 1 ? GetLocalizedString( "BUFFERREPORTWARNINGSINGULAR", $locale ) : GetLocalizedString( "BUFFERREPORTWARNINGPLURAL", $locale );
+            $warningFmt = $excludedLayers > 1 ? GetLocalizedString( "BUFFERREPORTWARNINGPLURAL", $locale ) : GetLocalizedString( "BUFFERREPORTWARNINGSINGULAR", $locale );
             $warningStr = sprintf( $warningFmt, $excludedLayers );
             $msg = $msg."<p><p>".$warningStr;
         }
