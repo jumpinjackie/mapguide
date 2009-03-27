@@ -353,6 +353,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
     Band* pGisBand = NULL;
     RS_InputStream* reader = NULL;
     FdoByte* pRasterData = NULL;
+    FdoByte* pPaletteBuf = NULL;
     wchar_t pUniqueBandName[MG_MAX_PATH] = { 0 };
     try
     {
@@ -394,7 +395,6 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
 
             //Create an buffer to hold data
             pRasterData = new FdoByte[bufferLength];
-            
             if (NULL == pRasterData)
             {
                 throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(CLNT_5_OUTOFMEMORY)));
@@ -518,9 +518,14 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
                 if (bitPerPixel >= 8)
                 {
                     RS_InputStream* pStream = pRaster->GetPalette();
-                    void* pPalBuf = new FdoByte[pStream->available()];
-                    pStream->read(pPalBuf, pStream->available());
-                    RgbColor* palette = reinterpret_cast<RgbColor*>(pPalBuf);
+                    pPaletteBuf = new FdoByte[pStream->available()];
+                    if (NULL == pPaletteBuf)
+                    {
+                        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(CLNT_5_OUTOFMEMORY)));
+                    }
+
+                    pStream->read(pPaletteBuf, pStream->available());
+                    RgbColor* palette = reinterpret_cast<RgbColor*>(pPaletteBuf);
 
                     for (unsigned long y = 0; y < actualRows; ++y)
                     {
@@ -547,8 +552,6 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
                             pGisBand->SetValue(colStartPos + x, rowStartPos + y, Band::UnsignedInt32, &color );
                         }
                     }
-
-                    delete [] pPalBuf;
                 }
                 else
                 {
@@ -706,12 +709,14 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
     catch(...)
     {
         delete [] pRasterData;
+        delete [] pPaletteBuf;
         delete reader;
 
         throw;
     }
 
     delete [] pRasterData;
+    delete [] pPaletteBuf;
     delete reader;
 }
 
