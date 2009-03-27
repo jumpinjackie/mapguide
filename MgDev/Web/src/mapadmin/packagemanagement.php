@@ -298,7 +298,7 @@ catch ( Exception $e )
 				$button->label = "Refresh";
 				$button->icon = "images/refresh.gif";
 				$button->id = "RefreshButton";
-				$button->action = "location.href='".__FILE__."'";
+				$button->action = "";
 				$buttons[3] = $button;
                 DisplayToolbar( $buttons, $formName );
                 ?>
@@ -308,6 +308,7 @@ catch ( Exception $e )
                     <tr>
                         <td class="dataHeader">&nbsp;</td>
                         <td class="dataHeader">Package Name</td>
+						<td class="dataHeader">Size (bytes)</td>
                         <td class="dataHeader">Status</td>
                     </tr>
                     <?php
@@ -318,6 +319,7 @@ catch ( Exception $e )
                                 <td class="dataCell">&nbsp;</td>
                                 <td class="dataCell">&nbsp;</td>
                                 <td class="dataCell">&nbsp;</td>
+								<td class="dataCell">&nbsp;</td>
                             </tr>
                     <?php
                     }
@@ -333,6 +335,7 @@ catch ( Exception $e )
                             <tr>
                                 <td class="dataCell"><input name="<?php echo $selectedPackageID ?>" onClick="SetElementValue('<?php echo $viewLogID?>', '<?php echo $escapedKey?>');" type="radio" value="<?php echo $key ?>" <?php echo $checkedStr ?> ></td>
                                 <td class="dataCell"><?php echo $key ?></td>
+								<td class="dataCell"><?php echo number_format($val->size) ?></td>
                                 <td class="dataCell"><?php echo $val->status ?></td>
                             </tr>
                     <?php
