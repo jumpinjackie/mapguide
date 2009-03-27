@@ -1864,11 +1864,13 @@
             global $errCannotGetPackageStatus;
 
             $this->status = "";
-
+			$this->size = 0;
+			
             try
             {
                 $statusInfo = $serverAdmin->GetPackageStatus( $packageName );
                 $this->status = ( $statusInfo != NULL ) ? $statusInfo->GetStatusMessage() : "";
+				$this->size = ( $statusInfo != NULL ) ? $statusInfo->GetPackageSize() : 0;
             }
             catch ( MgException $e )
             {
