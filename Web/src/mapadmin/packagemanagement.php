@@ -294,6 +294,12 @@ catch ( Exception $e )
                 $button->action = "if ( window.confirm('Are you sure you want to delete the selected Package?') ) {SetElementValue('".DELETE_SELECTION_ID."', 'true');}";
                 $button->disabled = $disabled;
                 $buttons[2] = $button;
+				$button = new ToolbarButtonRecord();
+				$button->label = "Refresh";
+				$button->icon = "images/refresh.gif";
+				$button->id = "RefreshButton";
+				$button->action = "location.href='".__FILE__."'";
+				$buttons[3] = $button;
                 DisplayToolbar( $buttons, $formName );
                 ?>
 
