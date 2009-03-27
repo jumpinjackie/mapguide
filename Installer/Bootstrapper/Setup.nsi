@@ -1,3 +1,8 @@
+SetCompressor /FINAL /SOLID lzma
+SetCompressorDictSize 64
+
+FileBufSize 256
+
 !define MG_VERSION "2.1.0"
 
 VIProductVersion "${MG_VERSION}.0"
@@ -13,8 +18,6 @@ OutFile "${INSTALLER_OUTPUT}\${OUTNAME}.exe"
 SilentInstall silent
 
 Icon "${INSTALLER_ROOT}\Support\Graphics\OSGeo.ico"
-
-SetCompressor /SOLID lzma
 
 Function .onInit
 	System::Call 'kernel32::CreateMutexA(i 0, i 0, t "myMutex") i .r1 ?e'

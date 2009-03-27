@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 	<Fragment>
-    <DirectoryRef Id="SERVERROOTLOCATION">
+    <DirectoryRef Id="INSTALLLOCATION">
       <Directory Id="CSMAPLOCATION" Name="CSMap">
         <Component Id="CsMapComponent" Guid="552EAF5E-2420-4C2A-A52C-62B456EE1F64">
           <CreateFolder />
@@ -15,7 +15,7 @@
         </Component>
       </Directory>
     </DirectoryRef>
-    <Feature Id="CSMapFeature" Title="CS Map" Display="hidden" Level="1" ConfigurableDirectory="CSMAPLOCATION" Description="CSMap Open Source is a required component for MapGuide Server." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+    <Feature Id="CSMapFeature" Title="CS Map" Display="hidden" Level="1" ConfigurableDirectory="CSMAPLOCATION" Description="CSMap Open Source is a required component for MapGuide Server and Web Extensions." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
       <ComponentRef Id="CsMapComponent"/>
       <ComponentGroupRef Id="group_CSMAPDICTFILES"/>
     </Feature>

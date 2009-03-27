@@ -52,6 +52,11 @@
     <Folder Include="Resources" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\CS Map\CS Map.wixproj">
+      <Name>CS Map</Name>
+      <Project>{01313db9-2aaf-4791-9b81-69bce3194531}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Libraries\MapGuide Server\MapGuide Server.wixproj">
       <Name>MapGuide Server</Name>
       <Project>{715e2d88-e822-4a9a-a5a2-dbb71cd9b320}</Project>
