@@ -513,17 +513,15 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
                     };
                 };
 
-                //FdoPtr<FdoByteArray> palArray = palLOB->GetData();
-                RS_InputStream* pStream = pRaster->GetPalette();
-                void* pPalBuf = NULL;
-                pStream->read(pPalBuf, pStream->available());
-                //RgbColor* palette = reinterpret_cast<RgbColor*>(palArray->GetData());
-                RgbColor* palette = reinterpret_cast<RgbColor*>(pPalBuf);
-
                 unsigned int color;
                 unsigned int pos;
                 if (bitPerPixel >= 8)
                 {
+                    RS_InputStream* pStream = pRaster->GetPalette();
+                    void* pPalBuf = new FdoByte[pStream->available()];
+                    pStream->read(pPalBuf, pStream->available());
+                    RgbColor* palette = reinterpret_cast<RgbColor*>(pPalBuf);
+
                     for (unsigned long y = 0; y < actualRows; ++y)
                     {
                         //FireOnStepQuery();
@@ -549,6 +547,8 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
                             pGisBand->SetValue(colStartPos + x, rowStartPos + y, Band::UnsignedInt32, &color );
                         }
                     }
+
+                    delete [] pPalBuf;
                 }
                 else
                 {
