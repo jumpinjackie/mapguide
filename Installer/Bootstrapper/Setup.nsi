@@ -1,7 +1,11 @@
+!ifdef MAXCOMPRESSION
+
 SetCompressor /FINAL /SOLID lzma
 SetCompressorDictSize 64
 
 FileBufSize 256
+
+!endif
 
 !define MG_VERSION "2.1.0"
 
@@ -29,10 +33,15 @@ Function .onInit
 FunctionEnd
 
 Section Main
+	Banner::show /NOUNLOAD "Extracting installation files to a temp directory. Please Wait"
+	Banner::getWindow /NOUNLOAD
+	
 	SetOutPath $TEMP
 	SetOverwrite On
 	File "${INSTALLER_OUTPUT}\${OUTNAME}.msi"
 	File "${INSTALLER_OUTPUT}\setup.exe"
 	File /r "${INSTALLER_OUTPUT}\vcredist_x86"
+	
+	Banner::destroy
 	ExecWait '"$OUTDIR\setup.exe"'
 SectionEnd
