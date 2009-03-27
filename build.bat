@@ -293,12 +293,7 @@ copy /Y "%MG_OEM%\dbxml-2.3.10\bin\*.exe" "%MG_OUTPUT_SERVER%\bin"
 echo [install]: Server - RepositoryAdmin
 %XCOPY% "%MG_SERVER%\RepositoryAdmin" "%MG_OUTPUT_SERVER%\RepositoryAdmin" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: CsMap Dictionaries
-SET CSMAP_DICT=%MG_OUTPUT_SERVER%\CsMap\Dictionaries
-if not exist "%CSMAP_DICT%" mkdir "%CSMAP_DICT%"
-copy /Y "%MG_OEM%\CsMap\Dictionaries\*.MRT" "%CSMAP_DICT%"
-copy /Y "%MG_OEM%\CsMap\Dictionaries\*.CSD" "%CSMAP_DICT%"
-copy /Y "%MG_OEM%\CsMap\Dictionaries\*.CSV" "%CSMAP_DICT%"
-copy /Y "%MG_OEM%\CsMap\Dictionaries\license.txt" "%CSMAP_DICT%"
+%XCOPY% "%MG_OEM%\CsMap\Dictionaries" "%MG_OUTPUT_SERVER%\CsMap\Dictionaries" /EXCLUDE:svn_excludes.txt+csmap_excludes.txt
 if not "%TYPECOMPONENT%"=="all" goto quit
 
 :install_doc
@@ -314,7 +309,7 @@ echo [install]: Web Tier - localized
 echo [install]: Web Tier - mapadmin
 %XCOPY% "%MG_WEB_SRC%\mapadmin" "%MG_OUTPUT_WEB%\www\mapadmin" /EXCLUDE:svn_excludes.txt
 echo [install]: Web Tier - mapagent
-%XCOPY% "%MG_WEB_SRC%\mapagent" "%MG_OUTPUT_WEB%\www\mapagent" /EXCLUDE:svn_excludes.txt+mapagent_excludes.txt
+%XCOPY% "%MG_WEB_SRC%\mapagent" "%MG_OUTPUT_WEB%\www\mapagent" /EXCLUDE:svn_excludes.txt+mapagent_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - MapGuide API unmanaged binaries
 %XCOPY% "%MG_WEB_BIN%\%TYPEBUILD%" "%MG_OUTPUT_WEB%\www\mapagent" /EXCLUDE:php_excludes.txt+java_excludes.txt+svn_excludes.txt
 echo [install]: Web Tier - mapagent test forms
@@ -323,8 +318,6 @@ echo [install]: Web Tier - stdicons
 %XCOPY% "%MG_WEB_SRC%\stdicons" "%MG_OUTPUT_WEB%\www\stdicons" /EXCLUDE:svn_excludes.txt
 echo [install]: Web Tier - viewerfiles
 %XCOPY% "%MG_WEB_SRC%\viewerfiles" "%MG_OUTPUT_WEB%\www\viewerfiles" /EXCLUDE:svn_excludes.txt
-echo [install]: Web Tier - webstudio
-%XCOPY% "%MG_WEB_SRC%\webstudio" "%MG_OUTPUT_WEB%\www\webstudio" /EXCLUDE:svn_excludes.txt
 echo [install]: Web Tier - schemareport
 %XCOPY% "%MG_WEB_SRC%\schemareport" "%MG_OUTPUT_WEB%\www\schemareport" /EXCLUDE:svn_excludes.txt
 echo [install]: Web Tier - webconfig.ini
