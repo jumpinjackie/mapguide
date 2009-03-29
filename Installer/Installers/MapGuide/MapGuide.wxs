@@ -321,6 +321,28 @@
             <Publish Dialog="MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
             <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
             <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
+            
+            <!-- Progress messages (so the user knows what's happening under the hood) -->
+            <ProgressText Action="UpdateApacheConfig">Setting values for httpd.conf</ProgressText>
+            <ProgressText Action="UpdatePhpIni">Setting values for php.ini</ProgressText>
+            <ProgressText Action="InstallApacheServiceCA">Installing Apache Service</ProgressText>
+            <ProgressText Action="MgServerInstallCA">Installing MapGuide Service</ProgressText>
+            <ProgressText Action="MgServerUninstallCA">Removing MapGuide Service</ProgressText>
+            <ProgressText Action="RemoveApacheServiceCA">Removing Apache Service</ProgressText>
+            <ProgressText Action="AddWebServiceExtension">Add Web Service Extension to IIS</ProgressText>
+            <ProgressText Action="CreateVDirMapGuide">Creating mapguide IIS virtual directory</ProgressText>
+            <ProgressText Action="RegisterScriptMaps">Registering IIS script maps</ProgressText>
+            <ProgressText Action="SetCustomErrors">Setting IIS custom errors</ProgressText>
+            <ProgressText Action="CreateVDirMapAgent">Creating mapagent IIS virtual directory</ProgressText>
+            <ProgressText Action="CreateVDirPhpAgent">Creating mapviewerphp IIS virutal directory</ProgressText>
+            <ProgressText Action="CreateVDirNetAgent">Creating mapviewernet IIS virtual directory</ProgressText>
+            <ProgressText Action="CreateVDirJavaAgent">Creating mapviewerjava IIS virtual directory</ProgressText>
+            <ProgressText Action="DeleteWebServiceExtension">Remove Web Service Extension from IIS</ProgressText>
+            <ProgressText Action="DeleteVDirMapGuide">Removing mapguide IIS virtual directory</ProgressText>
+            <ProgressText Action="CreateAPPMapGuideWithIIS7">Creating IIS7 mapguide application</ProgressText>
+            <ProgressText Action="CreateVDirPhpAgentWithIIS7">Creating IIS7 virtual directory: mapviewerphp</ProgressText>
+            <ProgressText Action="CreateAPPNetAgentWithIIS7">Creating IIS7 virtual directory: mapviewernet</ProgressText>
+            <ProgressText Action="DeleteAPPMapGuideWithIIS7">Remove IIS7 mapguide application</ProgressText>
         </UI>
 
         <InstallExecuteSequence>

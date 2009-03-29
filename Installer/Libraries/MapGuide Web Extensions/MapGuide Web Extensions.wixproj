@@ -26,6 +26,7 @@
   <ItemGroup>
     <Compile Include="Apache.wxs" />
     <Compile Include="FileIncludes\incApacheFiles.wxs" />
+    <Compile Include="FileIncludes\incDevGuideFiles.wxs" />
     <Compile Include="FileIncludes\incFusionFiles.wxs" />
     <Compile Include="FileIncludes\incHelpFiles.wxs" />
     <Compile Include="FileIncludes\incMapAgentFiles.wxs" />

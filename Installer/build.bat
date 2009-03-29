@@ -244,6 +244,10 @@ echo [regen]: Web - Help
 %PARAFFIN% %WIX_INC_WEB%\incHelpFiles.wxs
 move /Y %WIX_INC_WEB%\incHelpFiles.PARAFFIN %WIX_INC_WEB%\incHelpFiles.wxs
 
+echo [regen]: Web - devguide
+%PARAFFIN% %WIX_INC_WEB%\incDevGuideFiles.wxs
+move /Y %WIX_INC_WEB%\incDevGuideFiles.PARAFFIN %WIX_INC_WEB%\incDevGuideFiles.wxs
+
 echo [regen]: Web - mapagent
 %PARAFFIN% %WIX_INC_WEB%\incMapAgentFiles.wxs
 move /Y %WIX_INC_WEB%\incMapAgentFiles.PARAFFIN %WIX_INC_WEB%\incMapAgentFiles.wxs
@@ -327,6 +331,9 @@ echo [generate]: Web - Tomcat
 
 echo [generate]: Web - Help
 %PARAFFIN% -dir %MG_WEB%\Help -alias $(env.MG_WEB)\Help -custom HELPFILES -dirref WEBEXTENSIONSLOCATION -multiple %WIX_INC_WEB%\incHelpFiles.wxs
+
+echo [generate]: Web - Developer's Guide Samples
+%PARAFFIN% -dir %MG_WEB%\www\devguide -alias $(env.MG_WEB)\www\devguide -custom DEVGUIDEFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incDevGuideFiles.wxs
 
 echo [generate]: Web - mapagent
 %PARAFFIN% -dir %MG_WEB%\www\mapagent -alias $(env.MG_WEB)\www\mapagent -ext pdb -custom MAPAGENTFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapAgentFiles.wxs

@@ -124,6 +124,11 @@
           <Condition Level="0">NOT NETFRAMEWORK20</Condition>
         <ComponentGroupRef Id="group_MAPVIEWERASPXFILES"/>
       </Feature>
+        <Feature Id="WebExtSamplesFeature" Title="Samples" Level="1" Description="Sample code and data" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <Feature Id="WebExtDevGuideSamplesFeature" Title="Developer's Guide Sample Code" Level="1" Description="PHP sample code from the MapGuide Developer's Guide. This requires the Sheboygan sample data." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+                <ComponentGroupRef Id="group_DEVGUIDEFILES" />
+            </Feature>
+        </Feature>
         <Feature Id="WebLocalizedFeature" Title="Localization Files" Display="hidden"  Level="1" Description="Localization files for the web tier" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
             <ComponentGroupRef Id="group_MAPVIEWERLOCALIZEDFILES" />
         </Feature>
