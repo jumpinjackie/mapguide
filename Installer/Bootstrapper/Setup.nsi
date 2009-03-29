@@ -33,7 +33,7 @@ Function .onInit
 FunctionEnd
 
 Section Main
-	Banner::show /NOUNLOAD "Extracting installation files to a temp directory. Please Wait"
+	Banner::show /NOUNLOAD "Extracting files. Please Wait"
 	Banner::getWindow /NOUNLOAD
 	
 	SetOutPath $TEMP
