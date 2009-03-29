@@ -62,6 +62,7 @@ SET MG_UNIT_TEST=%MG_DEV%\UnitTest
 SET MG_FUSION=%MG_OEM%\Fusion
 SET MG_DOC=%MG_DEV%\Doc
 SET MG_DOC_OUTPUT=%MG_DOC%\MgOpensource_WebAPIReference
+SET MG_DOC_DEVGUIDE_SAMPLES=%MG_DOC%\samples\phpsamples
 SET MG_BUILD_TEMP=%MG_DEV%\BuildTemp
 
 SET MG_OUTPUT=%MG_DEV%\%TYPEBUILD%
@@ -299,6 +300,8 @@ if not "%TYPECOMPONENT%"=="all" goto quit
 :install_doc
 echo [install]: Documentation
 %XCOPY% "%MG_DOC_OUTPUT%" "%MG_OUTPUT_WEB%\Help" /EXCLUDE:svn_excludes.txt
+echo [install]: Developer's Guide Sample Code
+%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%" "%MG_OUTPUT_WEB%\www\devguide" /EXCLUDE:svn_excludes.txt
 if not "%TYPECOMPONENT%"=="all" goto quit
 
 :install_web
