@@ -360,7 +360,7 @@ private:
 
     STRING m_providerName;
     INT32 m_currRecord;
-    INT32 m_serverDataReaderPtr;
+    STRING m_serverDataReader;
     MgFeatureService* m_service; // Do not want to implement a default constructor
 
 CLASS_ID:

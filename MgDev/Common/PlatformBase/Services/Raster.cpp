@@ -29,7 +29,7 @@ MgRaster::MgRaster()
     m_extent = NULL;
     m_isNull = false;
     m_featureService = NULL;
-    m_handle = 0;
+    m_handle = L"";
     m_rasterPropName = L"";
     m_bpp = 32;
     m_dataModel = MgRasterDataModelType::RGBA;
@@ -197,7 +197,7 @@ MgByteReader* MgRaster::GetStream()
 
     // If no feature service is assigned it means some one directly created this pointer
     // and accessing it.
-    if (0 == m_handle || m_featureService == NULL)
+    if (L"" == m_handle || m_featureService == NULL)
     {
         throw new MgInvalidOperationException(L"MgRaster.GetStream", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -211,7 +211,7 @@ MgByteReader* MgRaster::GetStream()
     return byteReader.Detach();
 }
 
-void MgRaster::SetHandle(INT32 handle)
+void MgRaster::SetHandle(STRING handle)
 {
     m_handle = handle;
 }

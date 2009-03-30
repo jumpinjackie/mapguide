@@ -20,6 +20,9 @@
 
 class MgServerFeatureProcessor;
 
+typedef std::map<STRING, MgServerFeatureProcessor*> FeatureProcessorCollection;
+typedef std::pair<STRING, MgServerFeatureProcessor*> FeatureProcessorCacheEntry_Pair;
+
 class MgServerFeatureReaderIdentifierPool : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgServerFeatureReaderIdentifierPool)
@@ -31,11 +34,12 @@ public:
 
     static MgServerFeatureReaderIdentifierPool* GetInstance();
 
-    void Add(MgServerFeatureProcessor* featId);
+    STRING Add(MgServerFeatureProcessor* processor);
 
-    void Remove(MgServerFeatureProcessor* featId);
+    bool Remove(STRING featureReader);
 
-    bool Contains(MgServerFeatureProcessor* featId);
+    MgServerFeatureProcessor* GetProcessor(STRING featureReader);
+    STRING GetReaderId(MgServerFeatureProcessor* processor);
 
 protected:
 
@@ -58,7 +62,7 @@ private:
     /// Pointer to a process-wide singleton.
     static Ptr<MgServerFeatureReaderIdentifierPool> m_fridPool;
 
-    Ptr<MgDisposableCollection> m_fridCollection;
+    FeatureProcessorCollection m_fridCollection;
 
     ACE_Recursive_Thread_Mutex m_mutex;
 };

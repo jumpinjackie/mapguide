@@ -425,7 +425,7 @@ private:
 
     Ptr<MgFeatureSet> m_set;
     INT32 m_currRecord;
-    INT32 m_serverfeatReaderPtr;
+    STRING m_serverfeatReader;
     MgFeatureService* m_service; // Do not want to implement a default constructor
 
 CLASS_ID:

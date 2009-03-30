@@ -64,13 +64,13 @@ void MgOpGetFeatures::Execute()
 
     if (1 == m_packet.m_NumArguments)
     {
-        INT32 featId;
-        m_stream->GetInt32(featId);
+        STRING featId;
+        m_stream->GetString(featId);
 
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_INT32(featId);
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(featId);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();

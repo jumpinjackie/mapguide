@@ -1311,14 +1311,20 @@ INTERNAL_API:
     ///
     MgFeatureService();
 
-    virtual MgBatchPropertyCollection* GetFeatures(INT32 featureReaderId) = 0;
-    virtual bool CloseFeatureReader(INT32 featureReaderId) = 0;
-    virtual MgBatchPropertyCollection* GetSqlRows(INT32 sqlReader) = 0;
-    virtual bool CloseSqlReader(INT32 sqlReader) = 0;
-    virtual MgByteReader* GetRaster(INT32 featureReaderId, INT32 xSize, INT32 ySize, STRING propName) = 0;
-    virtual MgBatchPropertyCollection* GetDataRows(INT32 dataReader) = 0;
-    virtual bool CloseDataReader(INT32 dataReader) = 0;
-    virtual bool CloseGwsFeatureReader(INT32 gwsFeatureReader) = 0;
+    // Feature
+    virtual MgBatchPropertyCollection* GetFeatures(CREFSTRING featureReader) = 0;
+    virtual bool CloseFeatureReader(CREFSTRING featureReader) = 0;
+
+    // SQL
+    virtual MgBatchPropertyCollection* GetSqlRows(CREFSTRING sqlReader) = 0;
+    virtual bool CloseSqlReader(CREFSTRING sqlReader) = 0;
+
+    // Data
+    virtual MgBatchPropertyCollection* GetDataRows(CREFSTRING dataReader) = 0;
+    virtual bool CloseDataReader(CREFSTRING dataReader) = 0;
+
+    // Raster
+    virtual MgByteReader* GetRaster(CREFSTRING reader, INT32 xSize, INT32 ySize, STRING propName) = 0;
 
     //////////////////////////////////////////////////////////////////
     /// \brief

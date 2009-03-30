@@ -721,13 +721,21 @@ public:
     /// Returns the schema mapping.
     MgByteReader* GetSchemaMapping(CREFSTRING providerName, CREFSTRING partialConnString);
 
-    MgBatchPropertyCollection* GetFeatures(INT32 featureReaderId);
-    bool CloseFeatureReader(INT32 featureReaderId);
-    MgBatchPropertyCollection* GetSqlRows(INT32 sqlReader);
-    bool CloseSqlReader(INT32 sqlReader);
-    MgByteReader* GetRaster(INT32 featureReaderId, INT32 xSize, INT32 ySize, STRING propName);
-    MgBatchPropertyCollection* GetDataRows(INT32 dataReader);
-    bool CloseDataReader(INT32 dataReader);
+    // Feature
+    MgBatchPropertyCollection* GetFeatures(CREFSTRING featureReader);
+    bool CloseFeatureReader(CREFSTRING featureReader);
+
+    // SQL
+    MgBatchPropertyCollection* GetSqlRows(CREFSTRING sqlReader);
+    bool CloseSqlReader(CREFSTRING sqlReader);
+
+    // Data
+    MgBatchPropertyCollection* GetDataRows(CREFSTRING dataReader);
+    bool CloseDataReader(CREFSTRING dataReader);
+
+    // Raster
+    MgByteReader* GetRaster(CREFSTRING reader, INT32 xSize, INT32 ySize, STRING propName);
+
 
     STRING SchemaToXml(MgFeatureSchemaCollection* schema);
     MgFeatureSchemaCollection* XmlToSchema(CREFSTRING xml);
@@ -740,8 +748,6 @@ public:
     MgPropertyDefinitionCollection* GetIdentityProperties(MgResourceIdentifier* resource,
                                                           CREFSTRING schemaName,
                                                           CREFSTRING className);
-
-    bool CloseGwsFeatureReader(INT32 gwsFeatureReader);
 
     virtual bool NotifyResourcesChanged(const set<STRING>& resources,
         bool strict = true);

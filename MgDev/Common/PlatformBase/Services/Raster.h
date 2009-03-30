@@ -435,7 +435,7 @@ INTERNAL_API:
     MgRaster();
     ~MgRaster();
     void SetMgService(MgFeatureService* service);
-    void SetHandle(INT32 handle);
+    void SetHandle(STRING handle);
     void SetPropertyName(STRING propName) { m_rasterPropName = propName; }
 
     void SetNumberOfBands (INT32 value);
@@ -459,7 +459,7 @@ private:
 
     INT32 m_xSize;
     INT32 m_ySize;
-    INT32 m_handle;
+    STRING m_handle;
     MgEnvelope* m_extent;
     MgFeatureService* m_featureService;
     bool m_isNull;

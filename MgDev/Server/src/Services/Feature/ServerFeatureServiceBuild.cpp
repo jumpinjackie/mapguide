@@ -86,7 +86,6 @@
 #include "OpDescribeWfsFeatureType.cpp"
 #include "OpGetWfsFeature.cpp"
 #include "FilterUtil.cpp"
-#include "OpCloseGwsFeatureReader.cpp"
 #include "ServerGwsFeatureReader.cpp"
 #include "ServerGwsGetFeatures.cpp"
 #include "GwsConnectionPool.cpp"

@@ -64,8 +64,8 @@ void MgOpGetRaster::Execute()
 
     if (4 == m_packet.m_NumArguments)
     {
-        INT32 featId;
-        m_stream->GetInt32(featId);
+        STRING featId;
+        m_stream->GetString(featId);
 
         INT32 xSize;
         m_stream->GetInt32(xSize);
@@ -79,7 +79,7 @@ void MgOpGetRaster::Execute()
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_INT32(featId);
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(featId);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(xSize);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();

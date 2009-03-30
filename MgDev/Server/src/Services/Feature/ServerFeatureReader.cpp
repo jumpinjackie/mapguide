@@ -716,17 +716,20 @@ MgRaster* MgServerFeatureReader::GetRaster(CREFSTRING propertyName)
         assert(featureService != NULL);
 
         retVal->SetMgService(featureService);
-        retVal->SetHandle((INT32)m_getFeatures);
 
         // Collect the feature reader into a pool for GetRaster operation
         MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
         CHECKNULL(featPool, L"MgServerFeatureReader.GetRaster");
 
-        if (!featPool->Contains(m_getFeatures))
+        STRING featureReader = featPool->GetReaderId(m_getFeatures);
+        if (L"" == featureReader)
         {
-            featPool->Add(m_getFeatures); // Add the reference
+            featureReader = featPool->Add(m_getFeatures); // Add the reference
             m_removeFromPoolOnDestruction = true;
         }
+
+        // Set the handle
+        retVal->SetHandle(featureReader);
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetRaster");
@@ -747,6 +750,7 @@ void MgServerFeatureReader::Serialize(MgStream* stream)
     INT32 count = 1; // Get value from MgConfiguration
     bool operationCompleted = false;
     Ptr<MgFeatureSet> featureSet;
+    STRING featureReader = L"";
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -758,15 +762,16 @@ void MgServerFeatureReader::Serialize(MgStream* stream)
                         count,
                         MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize);
 
-    // TODO: Think whether we should add "MgServerGetFeature" object so that
-    // we do not have to get MgClassDefinition on every fetch.
-
     // Collect the feature reader into a pool for ReadNext operation
     MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
     CHECKNULL(featPool, L"MgServerFeatureReader.Serialize");
 
-    if (!featPool->Contains(m_getFeatures))
-        featPool->Add(m_getFeatures); // Add the reference
+    featureReader = featPool->GetReaderId(m_getFeatures);
+    if (L"" == featureReader)
+    {
+        // The feature reader is not in the pool
+        featureReader = featPool->Add(m_getFeatures); // Add the reference
+    }
 
     featureSet = m_getFeatures->GetFeatures(count);
 
@@ -779,7 +784,7 @@ void MgServerFeatureReader::Serialize(MgStream* stream)
 
     if (operationCompleted && (mgException == 0))
     {
-        stream->WriteInt32((INT32)m_getFeatures);       // Write the pointer value so we can retrieve it for later use
+        stream->WriteString(featureReader); // Write the reader ID so we can retrieve it for later use
         stream->WriteObject((MgFeatureSet*)featureSet); // Write the feature set
     }
     else
@@ -834,8 +839,12 @@ void MgServerFeatureReader::Close()
     if (m_removeFromPoolOnDestruction)
     {
         MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
-        if ((featPool != NULL) && (featPool->Contains(m_getFeatures)))
-            featPool->Remove(m_getFeatures);
+        if(NULL != featPool)
+        {
+            STRING featureReader = featPool->GetReaderId(m_getFeatures);
+            if (L"" != featureReader)
+                featPool->Remove(featureReader);
+        }
     }
 
     m_fdoReader->Close();

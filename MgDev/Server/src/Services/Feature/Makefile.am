@@ -36,7 +36,6 @@ include_SOURCES = \
   FeatureOperationFactory.cpp \
   FeatureServiceHandler.cpp \
   GwsConnectionPool.cpp \
-  OpCloseGwsFeatureReader.cpp \
   OpCreateFeatureSource.cpp \
   OpDescribeSchema.cpp \
   OpDescribeSchemaAsXml.cpp \
@@ -125,7 +124,6 @@ noinst_HEADERS = $(include_SOURCES) \
   FeatureServiceHandler.h \
   ServerFeatureService.h \
   GwsConnectionPool.h \
-  OpCloseGwsFeatureReader.h \
   OpCreateFeatureSource.h \
   OpDescribeSchema.h \
   OpDescribeSchemaAsXml.h \

@@ -65,12 +65,12 @@ void MgOpCloseDataReader::Execute()
 
     if (1 == m_packet.m_NumArguments)
     {
-        INT32 dataReader;
-        m_stream->GetInt32(dataReader);
+        STRING dataReader;
+        m_stream->GetString(dataReader);
 
         BeginExecution();
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_INT32(dataReader);
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(dataReader);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         // Validate() is not be called here because the operation

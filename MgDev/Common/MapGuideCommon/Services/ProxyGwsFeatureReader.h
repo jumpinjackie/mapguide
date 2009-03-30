@@ -407,7 +407,7 @@ private:
     //STRING m_providerName;
     Ptr<MgFeatureSet> m_set;
     INT32 m_currRecord;
-    INT32 m_serverGwsFeatureReaderPtr;
+    STRING m_serverGwsFeatureReader;
     MgFeatureService* m_service; // Do not want to implement a default constructor
 
 CLASS_ID:

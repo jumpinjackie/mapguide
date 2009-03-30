@@ -30,7 +30,6 @@ Ptr<MgServerFeatureReaderIdentifierPool> MgServerFeatureReaderIdentifierPool::m_
 /// </summary>
 MgServerFeatureReaderIdentifierPool::MgServerFeatureReaderIdentifierPool()
 {
-    m_fridCollection = new MgDisposableCollection();
 }
 
 /// <summary>
@@ -38,6 +37,16 @@ MgServerFeatureReaderIdentifierPool::MgServerFeatureReaderIdentifierPool()
 /// </summary>
 MgServerFeatureReaderIdentifierPool::~MgServerFeatureReaderIdentifierPool()
 {
+    for (FeatureProcessorCollection::iterator iterator = m_fridCollection.begin();iterator != m_fridCollection.end(); iterator++)
+    {
+        MgServerFeatureProcessor* processor = iterator->second;
+        if(processor)
+        {
+            processor->Release();
+        }
+    }
+
+    m_fridCollection.clear();
 }
 
 /// <summary>
@@ -74,23 +83,88 @@ MgServerFeatureReaderIdentifierPool* MgServerFeatureReaderIdentifierPool::GetIns
     return MgServerFeatureReaderIdentifierPool::m_fridPool;
 }
 
-void MgServerFeatureReaderIdentifierPool::Add(MgServerFeatureProcessor* featId)
+STRING MgServerFeatureReaderIdentifierPool::Add(MgServerFeatureProcessor* processor)
 {
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, L""));
 
-    m_fridCollection->Add(featId);
+    // Get a unique ID
+    STRING uid = L"";
+    MgUtil::GenerateUuid(uid);
+
+    if(NULL == processor)
+    {
+        throw new MgNullArgumentException(L"MgServerFeatureReaderIdentifierPool.Add",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    // Increment the reference count
+    processor->AddRef();
+
+    // Add it to the collection
+    m_fridCollection.insert(FeatureProcessorCacheEntry_Pair(uid, processor));
+
+    return uid;
 }
 
-void MgServerFeatureReaderIdentifierPool::Remove(MgServerFeatureProcessor* featId)
-{
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
-
-    m_fridCollection->Remove(featId);
-}
-
-bool MgServerFeatureReaderIdentifierPool::Contains(MgServerFeatureProcessor* featId)
+bool MgServerFeatureReaderIdentifierPool::Remove(STRING featureReader)
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
-    return m_fridCollection->Contains(featId);
+    bool bResult = false;
+    INT32 ref = 0;
+
+    FeatureProcessorCollection::iterator iterator = m_fridCollection.find(featureReader);
+    if(m_fridCollection.end() != iterator)
+    {
+        // Release resources
+        MgServerFeatureProcessor* processor = iterator->second;
+        if(processor)
+        {
+            ref = processor->Release();
+        }
+
+        // Remove the processor
+        m_fridCollection.erase(iterator);
+        bResult = true;
+    }
+
+    return bResult;
+}
+
+MgServerFeatureProcessor* MgServerFeatureReaderIdentifierPool::GetProcessor(STRING featureReader)
+{
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    MgServerFeatureProcessor* processor = NULL;
+
+    FeatureProcessorCollection::iterator iterator = m_fridCollection.find(featureReader);
+    if(m_fridCollection.end() != iterator)
+    {
+        // Found it
+        processor = iterator->second;
+        
+        // Add a reference to it
+        processor->AddRef();
+    }
+
+    return processor;
+}
+
+STRING MgServerFeatureReaderIdentifierPool::GetReaderId(MgServerFeatureProcessor* processor)
+{
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, L""));
+
+    STRING readerId = L"";
+
+    for (FeatureProcessorCollection::iterator iterator = m_fridCollection.begin();iterator != m_fridCollection.end(); iterator++)
+    {
+        if(iterator->second == processor)
+        {
+            // Found it
+            readerId = iterator->first;
+            break;
+        }
+    }
+
+    return readerId;
 }

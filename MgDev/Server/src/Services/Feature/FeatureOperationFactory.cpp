@@ -50,7 +50,6 @@
 #include "OpGetIdentityProperties.h"
 #include "OpDescribeWfsFeatureType.h"
 #include "OpGetWfsFeature.h"
-#include "OpCloseGwsFeatureReader.h"
 #include "OpEnumerateDataStores.h"
 #include "OpGetSchemaMapping.h"
 #include "OpGetFdoCacheInfo.h"
@@ -467,19 +466,6 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         default:
             throw new MgInvalidOperationVersionException(
                 L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-        break;
-
-    case MgFeatureServiceOpId::CloseGwsFeatureReader_Id:
-        switch (VERSION_NO_PHASE(operationVersion))
-        {
-        case VERSION_SUPPORTED(1,0):
-            handler.reset(new MgOpCloseGwsFeatureReader());
-            break;
-        default:
-            throw new MgInvalidOperationVersionException(
-                L"MgFeatureOperationFactory.GetOperation",
-                __LINE__, __WFILE__, NULL, L"", NULL);
         }
         break;
 

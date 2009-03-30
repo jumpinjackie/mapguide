@@ -985,6 +985,7 @@ MgByteReader* MgServerGwsFeatureReader::GetGeometry(CREFSTRING propertyName)
 MgRaster* MgServerGwsFeatureReader::GetRaster(CREFSTRING propertyName)
 {
     Ptr<MgRaster> retVal;
+    STRING gwsFeatureReader = L"";
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -1024,17 +1025,19 @@ MgRaster* MgServerGwsFeatureReader::GetRaster(CREFSTRING propertyName)
         assert(featureService != NULL);
 
         retVal->SetMgService(featureService);
-        retVal->SetHandle((INT32)m_gwsGetFeatures);
 
         // Collect the feature reader into a pool for GetRaster operation
         MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
         CHECKNULL(featPool, L"MgServerGwsFeatureReader.GetRaster");
 
-        if (!featPool->Contains(m_gwsGetFeatures))
+        gwsFeatureReader = featPool->GetReaderId(m_gwsGetFeatures);
+        if (L"" == gwsFeatureReader)
         {
-            featPool->Add(m_gwsGetFeatures); // Add the reference
+            gwsFeatureReader = featPool->Add(m_gwsGetFeatures); // Add the reference
             m_removeFromPoolOnDestruction = true;
         }
+
+        retVal->SetHandle(gwsFeatureReader);
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetRaster");
@@ -1047,6 +1050,7 @@ void MgServerGwsFeatureReader::Serialize(MgStream* stream)
     INT32 count = 1; // Get value from MgConfiguration
     bool operationCompleted = false;
     Ptr<MgFeatureSet> featureSet;
+    STRING gwsFeatureReader = L"";
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -1062,8 +1066,11 @@ void MgServerGwsFeatureReader::Serialize(MgStream* stream)
     MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
     CHECKNULL(featPool, L"MgServerGwsFeatureReader.Serialize");
 
-    if (!featPool->Contains(m_gwsGetFeatures))
-        featPool->Add(m_gwsGetFeatures); // Add the reference
+    gwsFeatureReader = featPool->GetReaderId(m_gwsGetFeatures);
+    if (L"" == gwsFeatureReader)
+    {
+        gwsFeatureReader = featPool->Add(m_gwsGetFeatures); // Add the reference
+    }
 
     featureSet = m_gwsGetFeatures->GetFeatures(count);
 
@@ -1076,7 +1083,7 @@ void MgServerGwsFeatureReader::Serialize(MgStream* stream)
 
     if (operationCompleted && (mgException == 0))
     {
-        stream->WriteInt32((INT32)m_gwsGetFeatures);  // Write the pointer value so we can retrieve it for later use
+        stream->WriteString(gwsFeatureReader);  // Write the reader ID so we can retrieve it for later use
         stream->WriteObject((MgFeatureSet*)featureSet); // Write the feature set
     }
     else
@@ -1130,8 +1137,12 @@ void MgServerGwsFeatureReader::Close()
     if (m_removeFromPoolOnDestruction)
     {
         MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
-        if ((featPool != NULL) && (featPool->Contains(m_gwsGetFeatures)))
-            featPool->Remove(m_gwsGetFeatures);
+        if(NULL != featPool)
+        {
+            STRING featureReader = featPool->GetReaderId(m_gwsGetFeatures);
+            if (L"" != featureReader)
+                featPool->Remove(featureReader);
+        }
     }
 
     if (!m_secondaryGwsFeatureIteratorMap.empty())
