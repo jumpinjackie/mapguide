@@ -625,6 +625,7 @@ MgRaster* MgServerDataReader::GetRaster(CREFSTRING propertyName)
     CHECKNULL(m_dataReader, L"MgServerDataReader.GetRaster");
 
     Ptr<MgRaster> retVal;
+    STRING dataReader = L"";
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -665,15 +666,15 @@ MgRaster* MgServerDataReader::GetRaster(CREFSTRING propertyName)
         if (NULL == m_dataProcessor)
             m_dataProcessor = new MgServerDataProcessor(this);
 
-        // Add data processor to pool
-        if (!dataReaderPool->Contains(m_dataProcessor))
+        dataReader = dataReaderPool->GetReaderId(m_dataProcessor);
+        if(L"" == dataReader)
         {
-            dataReaderPool->Add(m_dataProcessor); // Add the reference
+            dataReader = dataReaderPool->Add(m_dataProcessor); // Add the reference
             m_removeFromPoolOnDestruction = true;
         }
 
         retVal->SetMgService(featureService);
-        retVal->SetHandle((INT32)m_dataProcessor.p);
+        retVal->SetHandle(dataReader);
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetRaster");
@@ -736,8 +737,12 @@ void MgServerDataReader::Close()
     if (m_removeFromPoolOnDestruction)
     {
         MgServerDataReaderPool* drPool = MgServerDataReaderPool::GetInstance();
-        if ((drPool != NULL) && (drPool->Contains(m_dataProcessor)))
-            drPool->Remove(m_dataProcessor);
+        if(NULL != drPool)
+        {
+            STRING dataReader = drPool->GetReaderId(m_dataProcessor);
+            if (L"" != dataReader)
+                drPool->Remove(dataReader);
+        }
     }
 
     m_dataReader->Close();
@@ -761,6 +766,7 @@ void MgServerDataReader::Serialize(MgStream* stream)
     Ptr<MgPropertyDefinitionCollection> propDefCol;
     Ptr<MgBatchPropertyCollection> bpCol;
     bool operationCompleted = false;
+    STRING dataReader = L"";
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -780,9 +786,12 @@ void MgServerDataReader::Serialize(MgStream* stream)
     if (NULL == m_dataProcessor)
         m_dataProcessor = new MgServerDataProcessor(this);
 
+    dataReader = dataReaderPool->GetReaderId(m_dataProcessor);
     // Add data processor to pool
-    if (!dataReaderPool->Contains(m_dataProcessor))
-        dataReaderPool->Add(m_dataProcessor); // Add the reference
+    if (L"" == dataReader)
+    {
+        dataReader = dataReaderPool->Add(m_dataProcessor); // Add the reference
+    }
 
     propDefCol = m_dataProcessor->GetColumnDefinitions();  // Get column definitions
     bpCol = m_dataProcessor->GetRows(count);               // Get rows
@@ -796,7 +805,7 @@ void MgServerDataReader::Serialize(MgStream* stream)
 
     if (operationCompleted && (mgException == 0))
     {
-        stream->WriteInt32((INT32)m_dataProcessor.p);                               // Write the pointer value so we can retrieve it for later use
+        stream->WriteString(dataReader);                                            // Write the reader ID so we can retrieve it for later use
         stream->WriteString(m_providerName);                                        // Provider Name for XML
         stream->WriteObject((MgPropertyDefinitionCollection*)propDefCol);           // Write the Property definition
         stream->WriteObject((MgBatchPropertyCollection*)bpCol);                     // Write the Property data

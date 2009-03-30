@@ -64,13 +64,13 @@ void MgOpCloseSqlReader::Execute()
 
     if (1 == m_packet.m_NumArguments)
     {
-        INT32 sqlReader;
-        m_stream->GetInt32(sqlReader);
+        STRING sqlReader;
+        m_stream->GetString(sqlReader);
 
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_INT32(sqlReader);
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(sqlReader);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         // Validate() is not be called here because the operation

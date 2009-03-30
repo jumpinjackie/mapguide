@@ -1033,24 +1033,22 @@ void MgServerFeatureService::FeatureSourceToString(MgResourceIdentifier* resourc
 
 
 //////////////////////////////////////////////////////////////////
-MgBatchPropertyCollection* MgServerFeatureService::GetFeatures(INT32 featureReaderId)
+MgBatchPropertyCollection* MgServerFeatureService::GetFeatures(CREFSTRING featureReader)
 {
     MgServerGetFeatures* serverGetFeatures = NULL;
     MgServerGwsGetFeatures* serverGwsGetFeatures = NULL;
 
-    MgServerFeatureProcessor* processor = (MgServerFeatureProcessor*)featureReaderId;
-
     MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
     CHECKNULL(featPool, L"MgServerFeatureService.GetFeatures");
 
-    if (!featPool->Contains(processor))
+    Ptr<MgServerFeatureProcessor> processor = featPool->GetProcessor(featureReader);
+    if (NULL == processor.p)
     {
         STRING buffer;
-        MgUtil::Int32ToString(featureReaderId, buffer);
 
         MgStringCollection arguments;
         arguments.Add(L"1");
-        arguments.Add(buffer);
+        arguments.Add(featureReader);
 
         throw new MgInvalidArgumentException(L"MgServerFeatureService.GetFeatures",
             __LINE__, __WFILE__, &arguments, L"MgFeatureReaderIdNotFound", NULL);
@@ -1070,12 +1068,12 @@ MgBatchPropertyCollection* MgServerFeatureService::GetFeatures(INT32 featureRead
     // Determine what type of GetFeatures we have
     if(processor->GetProcessorType() == msfptFeatureProcessor)
     {
-        serverGetFeatures = (MgServerGetFeatures*)processor;
+        serverGetFeatures = (MgServerGetFeatures*)processor.p;
         featSet = serverGetFeatures->GetFeatures(count);
     }
     else
     {
-        serverGwsGetFeatures = (MgServerGwsGetFeatures*)processor;
+        serverGwsGetFeatures = (MgServerGwsGetFeatures*)processor.p;
         featSet = serverGwsGetFeatures->GetFeatures(count);
     }
 
@@ -1089,19 +1087,33 @@ MgBatchPropertyCollection* MgServerFeatureService::GetFeatures(INT32 featureRead
 
 
 //////////////////////////////////////////////////////////////////
-bool MgServerFeatureService::CloseFeatureReader(INT32 featureReaderId)
+bool MgServerFeatureService::CloseFeatureReader(CREFSTRING featureReader)
 {
     bool retVal = false;
-    MgServerGetFeatures* featId = (MgServerGetFeatures*)featureReaderId;
 
     MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
     CHECKNULL(featPool, L"MgServerFeatureService.CloseFeatureReader");
 
-    if (featPool->Contains(featId))
+    // Check if this is a GWS feature reader as there is some extra cleanup
+    Ptr<MgServerFeatureProcessor> processor = featPool->GetProcessor(featureReader);
+    if (NULL != processor.p)
     {
-        featPool->Remove(featId);
-        retVal = true;
+        MgServerGwsGetFeatures* serverGwsGetFeatures = dynamic_cast<MgServerGwsGetFeatures*>(processor.p);
+        if(NULL != serverGwsGetFeatures)
+        {
+            // At this point we have the following:
+            //   - the MgServerGwsGetFeatures is in the pool
+            //   - the MgServerGwsGetFeatures references the reader
+            //   - the reader references the MgServerGwsGetFeatures
+            // The last two result in a circular reference which we have to break.
+
+            serverGwsGetFeatures->ClearGwsFeatureIterator();
+            Ptr<MgServerGwsFeatureReader> gwsReader = serverGwsGetFeatures->GetGwsFeatureReader();
+            gwsReader->Close();
+        }
     }
+
+    retVal = featPool->Remove(featureReader);
 
     // Let the FDO Connection Manager know that a reader has been closed
     MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
@@ -1168,30 +1180,30 @@ MgFeatureSchemaCollection* MgServerFeatureService::XmlToSchema(CREFSTRING xml)
 
 
 //////////////////////////////////////////////////////////////////
-MgByteReader* MgServerFeatureService::GetRaster(INT32 readerId, INT32 xSize, INT32 ySize, STRING propName)
+MgByteReader* MgServerFeatureService::GetRaster(CREFSTRING reader, INT32 xSize, INT32 ySize, STRING propName)
 {
-    MgServerFeatureProcessor* featureProcessor = (MgServerFeatureProcessor*)readerId;
-
     Ptr<MgByteReader> byteReader;
 
-    if (featureProcessor != NULL)
+    MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
+    CHECKNULL(featPool, L"MgServerFeatureService.GetRaster");
+
+    Ptr<MgServerFeatureProcessor> processor = featPool->GetProcessor(reader);
+    if (NULL != processor.p)
     {
-        bool isValid = MgServerFeatureUtil::ValidatePoolEntry(readerId);
-        if (!isValid)
-        {
-            // No entry in pool is found.
-            STRING buffer;
-            MgUtil::Int32ToString(readerId, buffer);
-
-            MgStringCollection arguments;
-            arguments.Add(L"1");
-            arguments.Add(buffer);
-
-            throw new MgInvalidArgumentException(L"MgServerFeatureService.GetRaster",
-                __LINE__, __WFILE__, &arguments, L"MgReaderIdNotFound", NULL);
-        }
         // Entry found and therefore get the raster
-        byteReader = featureProcessor->GetRaster(xSize, ySize, propName);
+        byteReader = processor->GetRaster(xSize, ySize, propName);
+    }
+    else
+    {
+        // No entry in pool is found.
+        STRING buffer;
+
+        MgStringCollection arguments;
+        arguments.Add(L"1");
+        arguments.Add(reader);
+
+        throw new MgInvalidArgumentException(L"MgServerFeatureService.GetRaster",
+            __LINE__, __WFILE__, &arguments, L"MgReaderIdNotFound", NULL);
     }
 
     return byteReader.Detach();
@@ -1199,21 +1211,19 @@ MgByteReader* MgServerFeatureService::GetRaster(INT32 readerId, INT32 xSize, INT
 
 
 //////////////////////////////////////////////////////////////////
-MgBatchPropertyCollection* MgServerFeatureService::GetSqlRows(INT32 lsqlReader)
+MgBatchPropertyCollection* MgServerFeatureService::GetSqlRows(CREFSTRING sqlReader)
 {
-    MgServerSqlProcessor* sqlReader = (MgServerSqlProcessor*)lsqlReader;
-
     MgServerSqlDataReaderPool* sqlDataReaderPool = MgServerSqlDataReaderPool::GetInstance();
     CHECKNULL(sqlDataReaderPool, L"MgServerFeatureService.GetSqlRows");
 
-    if (!sqlDataReaderPool->Contains(sqlReader))
+    Ptr<MgServerSqlProcessor> processor = sqlDataReaderPool->GetProcessor(sqlReader);
+    if (NULL == processor.p)
     {
         STRING buffer;
-        MgUtil::Int32ToString(lsqlReader, buffer);
 
         MgStringCollection arguments;
         arguments.Add(L"1");
-        arguments.Add(buffer);
+        arguments.Add(sqlReader);
 
         throw new MgInvalidArgumentException(L"MgServerFeatureService.GetSqlRows",
             __LINE__, __WFILE__, &arguments, L"MgSqlReaderIdNotFound", NULL);
@@ -1228,7 +1238,7 @@ MgBatchPropertyCollection* MgServerFeatureService::GetSqlRows(INT32 lsqlReader)
                         count,
                         MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize);
 
-    Ptr<MgBatchPropertyCollection> bpCol = sqlReader->GetRows(count);
+    Ptr<MgBatchPropertyCollection> bpCol = processor->GetRows(count);
     CHECKNULL((MgBatchPropertyCollection*)bpCol, L"MgServerFeatureService.GetSqlRows");
 
     return (bpCol->GetCount() > 0)? bpCol.Detach() : NULL;
@@ -1236,19 +1246,14 @@ MgBatchPropertyCollection* MgServerFeatureService::GetSqlRows(INT32 lsqlReader)
 
 
 //////////////////////////////////////////////////////////////////
-bool MgServerFeatureService::CloseSqlReader(INT32 lsqlReader)
+bool MgServerFeatureService::CloseSqlReader(CREFSTRING sqlReader)
 {
     bool retVal = false;
-    MgServerSqlProcessor* sqlReader = (MgServerSqlProcessor*)lsqlReader;
 
     MgServerSqlDataReaderPool* sqlDataReaderPool = MgServerSqlDataReaderPool::GetInstance();
     CHECKNULL(sqlDataReaderPool, L"MgServerFeatureService.CloseSqlReader");
 
-    if (sqlDataReaderPool->Contains(sqlReader))
-    {
-        sqlDataReaderPool->Remove(sqlReader);
-        retVal = true;
-    }
+    retVal = sqlDataReaderPool->Remove(sqlReader);
 
     // Let the FDO Connection Manager know that a reader has been closed
     MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
@@ -1263,21 +1268,19 @@ bool MgServerFeatureService::CloseSqlReader(INT32 lsqlReader)
 
 
 //////////////////////////////////////////////////////////////////
-MgBatchPropertyCollection* MgServerFeatureService::GetDataRows(INT32 ldataReader)
+MgBatchPropertyCollection* MgServerFeatureService::GetDataRows(CREFSTRING dataReader)
 {
-    MgServerDataProcessor* dataReader = (MgServerDataProcessor*)ldataReader;
-
     MgServerDataReaderPool* dataReaderPool = MgServerDataReaderPool::GetInstance();
     CHECKNULL(dataReaderPool, L"MgServerFeatureService.GetDataRows");
 
-    if (!dataReaderPool->Contains(dataReader))
+    Ptr<MgServerDataProcessor> processor = dataReaderPool->GetProcessor(dataReader);
+    if (NULL == processor.p)
     {
         STRING buffer;
-        MgUtil::Int32ToString(ldataReader, buffer);
 
         MgStringCollection arguments;
         arguments.Add(L"1");
-        arguments.Add(buffer);
+        arguments.Add(dataReader);
 
         throw new MgInvalidArgumentException(L"MgServerFeatureService.GetDataRows",
              __LINE__, __WFILE__, &arguments, L"MgDataReaderIdNotFound", NULL);
@@ -1292,7 +1295,7 @@ MgBatchPropertyCollection* MgServerFeatureService::GetDataRows(INT32 ldataReader
                         count,
                         MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize);
 
-    Ptr<MgBatchPropertyCollection> bpCol = dataReader->GetRows(count);
+    Ptr<MgBatchPropertyCollection> bpCol = processor->GetRows(count);
     CHECKNULL((MgBatchPropertyCollection*)bpCol, L"MgServerFeatureService.GetDataRows");
 
     return (bpCol->GetCount() > 0)? bpCol.Detach() : NULL;
@@ -1300,11 +1303,9 @@ MgBatchPropertyCollection* MgServerFeatureService::GetDataRows(INT32 ldataReader
 
 
 //////////////////////////////////////////////////////////////////
-bool MgServerFeatureService::CloseDataReader(INT32 ldataReader)
+bool MgServerFeatureService::CloseDataReader(CREFSTRING dataReader)
 {
     bool retVal = false;
-
-    MgServerDataProcessor* dataReader = (MgServerDataProcessor*)ldataReader;
 
     // At this point we have the following:
     //   - the data processor is in the pool
@@ -1312,21 +1313,21 @@ bool MgServerFeatureService::CloseDataReader(INT32 ldataReader)
     //   - the data reader references the data processor
     // The last two result in a circular reference which we have to break.
 
-    // release the processor's reference to the reader - this causes the
-    // reader to be destroyed and release its reference to the processor
-    if (dataReader != NULL)
-        dataReader->ClearDataReader();
 
     // now remove the processor from the pool - this should be the final
     // reference to the processor and will cause it to be destroyed
     MgServerDataReaderPool* dataReaderPool = MgServerDataReaderPool::GetInstance();
     CHECKNULL(dataReaderPool, L"MgServerFeatureService.CloseDataReader");
 
-    if (dataReaderPool->Contains(dataReader))
+    // release the processor's reference to the reader - this causes the
+    // reader to be destroyed and release its reference to the processor
+    Ptr<MgServerDataProcessor> processor = dataReaderPool->GetProcessor(dataReader);
+    if(NULL != processor.p)
     {
-        dataReaderPool->Remove(dataReader);
-        retVal = true;
+        processor->ClearDataReader();
     }
+
+    retVal = dataReaderPool->Remove(dataReader);
 
     // Let the FDO Connection Manager know that a reader has been closed
     MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
@@ -1531,49 +1532,6 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
 
     return byteReader.Detach();
 }
-
-
-//////////////////////////////////////////////////////////////////
-bool MgServerFeatureService::CloseGwsFeatureReader(INT32 gwsFeatureReader)
-{
-    bool retVal = false;
-    MgServerGwsGetFeatures* featId = (MgServerGwsGetFeatures*)gwsFeatureReader;
-
-    // At this point we have the following:
-    //   - the MgServerGwsGetFeatures is in the pool
-    //   - the MgServerGwsGetFeatures references the reader
-    //   - the reader references the MgServerGwsGetFeatures
-    // The last two result in a circular reference which we have to break.
-
-    // release the MgServerGwsGetFeatures's reference to the reader - this causes the
-    // reader to be destroyed and release its reference to the MgServerGwsGetFeatures
-    if (featId != NULL)
-    {
-        featId->ClearGwsFeatureIterator();
-        Ptr<MgServerGwsFeatureReader> gwsReader = featId->GetGwsFeatureReader();
-        gwsReader->Close();
-    }
-
-    MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
-    CHECKNULL(featPool, L"MgServerFeatureService.CloseGwsFeatureReader");
-
-    if (featPool->Contains(featId))
-    {
-        featPool->Remove(featId);
-        retVal = true;
-    }
-
-    // Let the FDO Connection Manager know that a reader has been closed
-    MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
-    ACE_ASSERT(NULL != fdoConnectionManager);
-    if (NULL != fdoConnectionManager)
-    {
-        fdoConnectionManager->RemoveUnusedFdoConnections();
-    }
-
-    return retVal;
-}
-
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief

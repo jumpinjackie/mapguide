@@ -1155,7 +1155,7 @@ void TestFeatureService::TestCase_GetFeatures()
             throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_GetFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        INT32 readerId = 0;
+        STRING readerId = L"0";
         CPPUNIT_ASSERT_THROW_MG(pService->GetFeatures(readerId), MgInvalidArgumentException*);
 
         //TODO test with correct input
@@ -1199,7 +1199,7 @@ void TestFeatureService::TestCase_CloseFeatureReader()
             throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_CloseFeatureReader", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        INT32 readerId = 0;
+        STRING readerId = L"0";
         bool closed = pService->CloseFeatureReader(readerId);
         CPPUNIT_ASSERT(!closed);
 
@@ -1244,7 +1244,7 @@ void TestFeatureService::TestCase_GetSqlRows()
             throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_GetSqlRows", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        INT32 sqlReader = 0;
+        STRING sqlReader = L"0";
         CPPUNIT_ASSERT_THROW_MG(pService->GetSqlRows(sqlReader), MgInvalidArgumentException*);
 
         //TODO test with correct input
@@ -1288,7 +1288,7 @@ void TestFeatureService::TestCase_CloseSqlReader()
             throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_CloseSqlReader", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        INT32 sqlReader = 0;
+        STRING sqlReader = L"0";
         bool closed = pService->CloseSqlReader(sqlReader);
         CPPUNIT_ASSERT(!closed);
 
@@ -1333,10 +1333,10 @@ void TestFeatureService::TestCase_GetRaster()
             throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_GetRaster", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        INT32 featureReader = 0;
+        STRING featureReader = L"0";
         INT32 xSize = 0;
         INT32 ySize = 0;
-        CPPUNIT_ASSERT( NULL == (pService->GetRaster(featureReader, xSize, ySize, L"")) );
+        CPPUNIT_ASSERT_THROW_MG(pService->GetRaster(featureReader, xSize, ySize, L""), MgInvalidArgumentException*);
 
         //TODO test with correct input
     }
@@ -1379,7 +1379,7 @@ void TestFeatureService::TestCase_GetDataRows()
             throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_GetDataRows", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        INT32 dataReader = 0;
+        STRING dataReader = L"0";
         CPPUNIT_ASSERT_THROW_MG(pService->GetDataRows(dataReader), MgInvalidArgumentException*);
 
         //TODO test with correct input
@@ -1423,7 +1423,7 @@ void TestFeatureService::TestCase_CloseDataReader()
             throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_CloseDataReader", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        INT32 dataReader = 0;
+        STRING dataReader = L"0";
         bool closed = pService->CloseDataReader(dataReader);
         CPPUNIT_ASSERT(!closed);
 

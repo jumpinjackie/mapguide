@@ -676,6 +676,7 @@ void MgServerSqlDataReader::Serialize(MgStream* stream)
     Ptr<MgBatchPropertyCollection> bpCol;
     Ptr<MgServerSqlProcessor> sqlProcessor;
     bool operationCompleted = false;
+    STRING sqlReader = L"";
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -692,7 +693,7 @@ void MgServerSqlDataReader::Serialize(MgStream* stream)
     CHECKNULL((MgServerSqlDataReaderPool*)dataReaderPool, L"MgServerSqlDataReader.Serialize");
 
     sqlProcessor = new MgServerSqlProcessor(this);
-    dataReaderPool->Add(sqlProcessor);                  // Add the reference to pool
+    sqlReader = dataReaderPool->Add(sqlProcessor);                  // Add the reference to pool
 
     propDefCol = sqlProcessor->GetColumnDefinitions();  // Get column definitions
     bpCol = sqlProcessor->GetRows(count);               // Get rows
@@ -706,7 +707,7 @@ void MgServerSqlDataReader::Serialize(MgStream* stream)
 
     if (operationCompleted && (mgException == 0))
     {
-        stream->WriteInt32((INT32)sqlProcessor.p);                              // Write the pointer value so we can retrieve it for later use
+        stream->WriteString(sqlReader);                                         // Write the reader ID so we can retrieve it for later use
         stream->WriteString(m_providerName);                                    // Provider Name for XML
         stream->WriteObject((MgPropertyDefinitionCollection*)propDefCol);       // Write the property definition
         stream->WriteObject((MgBatchPropertyCollection*)bpCol);                 // Write the property data

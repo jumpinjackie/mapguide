@@ -41,7 +41,7 @@ MG_IMPL_DYNCREATE(MgProxySqlDataReader);
 MgProxySqlDataReader::MgProxySqlDataReader()
 {
     m_currRecord = 0;
-    m_serverSqlDataReaderPtr = 0;
+    m_serverSqlDataReader = L"";
     m_set = NULL;
     m_service = NULL;
     m_propDefCol = NULL;
@@ -87,9 +87,9 @@ bool MgProxySqlDataReader::ReadNext()
         try
         {
             m_currRecord = 0;
-            if (m_serverSqlDataReaderPtr != 0)
+            if (m_serverSqlDataReader != L"")
             {
-                Ptr<MgBatchPropertyCollection> bpCol = m_service->GetSqlRows(m_serverSqlDataReaderPtr);
+                Ptr<MgBatchPropertyCollection> bpCol = m_service->GetSqlRows(m_serverSqlDataReader);
 
                 if ((((MgBatchPropertyCollection*)bpCol) != NULL) && (bpCol->GetCount() > 0))
                 {
@@ -401,7 +401,7 @@ void MgProxySqlDataReader::Deserialize(MgStream* stream)
 
     if (operationCompleted)
     {
-        stream->GetInt32(m_serverSqlDataReaderPtr);                      // Get the pointer value so we can retrieve it for later use
+        stream->GetString(m_serverSqlDataReader);                               // Get the reader ID so we can retrieve it for later use
         stream->GetString(m_providerName);
         m_propDefCol = (MgPropertyDefinitionCollection*)stream->GetObject();    // Get the property definition
         m_set = (MgBatchPropertyCollection*)stream->GetObject();                // Get the property data
@@ -471,12 +471,12 @@ void MgProxySqlDataReader::SetService(MgFeatureService* service)
 /// <returns>Nothing</returns>
 void MgProxySqlDataReader::Close()
 {
-    if (m_serverSqlDataReaderPtr != 0)
+    if (m_serverSqlDataReader != L"")
     {
         MG_TRY()
 
-        m_service->CloseSqlReader(m_serverSqlDataReaderPtr);
-        m_serverSqlDataReaderPtr = 0;
+        m_service->CloseSqlReader(m_serverSqlDataReader);
+        m_serverSqlDataReader = L"";
 
         MG_CATCH(L"MgProxySqlDataReader.Close")
 

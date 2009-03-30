@@ -42,7 +42,7 @@ MG_IMPL_DYNCREATE(MgProxyFeatureReader);
 MgProxyFeatureReader::MgProxyFeatureReader(MgFeatureSet* featureSet)
 {
     m_currRecord = 0;
-    m_serverfeatReaderPtr = 0;
+    m_serverfeatReader = L"";
     m_set = SAFE_ADDREF((MgFeatureSet*)featureSet);
     m_service = NULL;
 }
@@ -55,7 +55,7 @@ MgProxyFeatureReader::MgProxyFeatureReader(MgFeatureSet* featureSet)
 MgProxyFeatureReader::MgProxyFeatureReader()
 {
     m_currRecord = 0;
-    m_serverfeatReaderPtr = 0;
+    m_serverfeatReader = L"";
     m_set = NULL;
     m_service = NULL;
 }
@@ -131,9 +131,9 @@ bool MgProxyFeatureReader::ReadNext()
         try
         {
             m_currRecord = 0;
-            if (m_serverfeatReaderPtr != 0)
+            if (m_serverfeatReader != L"")
             {
-                Ptr<MgBatchPropertyCollection> bpCol = m_service->GetFeatures(m_serverfeatReaderPtr);
+                Ptr<MgBatchPropertyCollection> bpCol = m_service->GetFeatures(m_serverfeatReader);
                 m_set->ClearFeatures();
                 m_set->AddFeatures(bpCol);
                 if (m_set->GetCount() > 0)
@@ -485,7 +485,7 @@ void MgProxyFeatureReader::Serialize(MgStream* stream)
     // STDEV_CATEGORY or EQUAL_CATEGORY.
     // This method will never be called in any other case.
     // In this case, there is NO FdoFeatureReader cached on server
-    // and therefore m_serverfeatReaderPtr is will be zero.
+    // and therefore m_serverfeatReader will be empty.
 
     bool operationCompleted = true;
 
@@ -493,7 +493,7 @@ void MgProxyFeatureReader::Serialize(MgStream* stream)
 
     if (operationCompleted)
     {
-        stream->WriteInt32(m_serverfeatReaderPtr);
+        stream->WriteString(m_serverfeatReader);
         stream->WriteObject((MgFeatureSet*)m_set); // Write the feature set
     }
 }
@@ -514,7 +514,7 @@ void MgProxyFeatureReader::Deserialize(MgStream* stream)
 
     if (operationCompleted)
     {
-        stream->GetInt32(m_serverfeatReaderPtr);
+        stream->GetString(m_serverfeatReader);
         m_set = (MgFeatureSet*)stream->GetObject();
     }
     else
@@ -586,12 +586,12 @@ void MgProxyFeatureReader::SetService(MgFeatureService* service)
 /// <returns>Nothing</returns>
 void MgProxyFeatureReader::Close()
 {
-    if (m_serverfeatReaderPtr != 0)
+    if (m_serverfeatReader != L"")
     {
         MG_TRY()
 
-        bool bClosed = m_service->CloseFeatureReader(m_serverfeatReaderPtr);
-        m_serverfeatReaderPtr = 0;
+        bool bClosed = m_service->CloseFeatureReader(m_serverfeatReader);
+        m_serverfeatReader = L"";
 
         MG_CATCH(L"MgProxyFeatureReader.~MgProxyFeatureReader")
 
@@ -610,7 +610,7 @@ MgRaster* MgProxyFeatureReader::GetRaster(CREFSTRING propertyName)
     Ptr<MgRasterProperty> ptrProp = (MgRasterProperty*)GetProperty(propertyName, MgPropertyType::Raster);
     Ptr<MgRaster> retVal = ptrProp->GetValue();
     retVal->SetMgService(m_service);
-    retVal->SetHandle(m_serverfeatReaderPtr);
+    retVal->SetHandle(m_serverfeatReader);
 
     return SAFE_ADDREF((MgRaster*)retVal);
 }

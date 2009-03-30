@@ -581,44 +581,6 @@ MgByteReader* MgServerFeatureUtil::GetRaster(FdoIReader* reader, CREFSTRING rast
     return byteReader.Detach();
 }
 
-
-bool MgServerFeatureUtil::ValidatePoolEntry(INT32 readerId)
-{
-    bool isValid = false;
-
-    MgServerFeatureProcessor* featureProcessor = (MgServerFeatureProcessor*)readerId;
-    if (featureProcessor != NULL)
-    {
-        MgServerFeatureProcessorType fpType = featureProcessor->GetProcessorType();
-        switch(fpType)
-        {
-            case msfptDataProcessor:
-            {
-                MgServerDataProcessor* dataProcessor = dynamic_cast<MgServerDataProcessor*>((MgServerFeatureProcessor*)featureProcessor);
-                MgServerDataReaderPool* drPool = MgServerDataReaderPool::GetInstance();
-                CHECKNULL(drPool, L"MgServerFeatureService.ValidatePoolEntry");
-                if (drPool->Contains(dataProcessor))
-                {
-                    isValid = true;
-                }
-                break;
-            }
-            case msfptFeatureProcessor:
-            {
-                MgServerGetFeatures* getFeatureProcessor = dynamic_cast<MgServerGetFeatures*>((MgServerFeatureProcessor*)featureProcessor);
-                MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
-                CHECKNULL(featPool, L"MgServerFeatureService.ValidatePoolEntry");
-                if (featPool->Contains(getFeatureProcessor))
-                {
-                    isValid = true;
-                }
-                break;
-            }
-        }
-    }
-    return isValid;
-}
-
 void MgServerFeatureUtil::FillFdoPropertyCollection(MgPropertyCollection* srcCol, FdoPropertyValueCollection* paramCol)
 {
     CHECKNULL(srcCol, L"MgServerFeatureUtil.FillFdoPropertyCollection")

@@ -29,7 +29,6 @@ Ptr<MgServerSqlDataReaderPool> MgServerSqlDataReaderPool::m_drPool = MgServerSql
 /// </summary>
 MgServerSqlDataReaderPool::MgServerSqlDataReaderPool()
 {
-    m_drCollection = new MgDisposableCollection();
 }
 
 /// <summary>
@@ -37,10 +36,16 @@ MgServerSqlDataReaderPool::MgServerSqlDataReaderPool()
 /// </summary>
 MgServerSqlDataReaderPool::~MgServerSqlDataReaderPool()
 {
-    if (m_drCollection != NULL)
+    for (SqlProcessorCollection::iterator iterator = m_drCollection.begin();iterator != m_drCollection.end(); iterator++)
     {
-        m_drCollection->Clear();
+        MgServerSqlProcessor* processor = iterator->second;
+        if(processor)
+        {
+            processor->Release();
+        }
     }
+
+    m_drCollection.clear();
 }
 
 /// <summary>
@@ -77,23 +82,87 @@ MgServerSqlDataReaderPool* MgServerSqlDataReaderPool::GetInstance()
     return MgServerSqlDataReaderPool::m_drPool;
 }
 
-void MgServerSqlDataReaderPool::Add(MgServerSqlProcessor* sqlReader)
+STRING MgServerSqlDataReaderPool::Add(MgServerSqlProcessor* processor)
 {
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, L""));
 
-    m_drCollection->Add(sqlReader);
+    // Get a unique ID
+    STRING uid = L"";
+    MgUtil::GenerateUuid(uid);
+
+    if(NULL == processor)
+    {
+        throw new MgNullArgumentException(L"MgServerSqlDataReaderPool.Add",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    // Increment the reference count
+    processor->AddRef();
+
+    // Add it to the collection
+    m_drCollection.insert(SqlProcessorCacheEntry_Pair(uid, processor));
+
+    return uid;
 }
 
-void MgServerSqlDataReaderPool::Remove(MgServerSqlProcessor* sqlReader)
-{
-    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
-
-    m_drCollection->Remove(sqlReader);
-}
-
-bool MgServerSqlDataReaderPool::Contains(MgServerSqlProcessor* sqlReader)
+bool MgServerSqlDataReaderPool::Remove(STRING sqlReader)
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
-    return m_drCollection->Contains(sqlReader);
+    bool bResult = false;
+
+    SqlProcessorCollection::iterator iterator = m_drCollection.find(sqlReader);
+    if(m_drCollection.end() != iterator)
+    {
+        // Release resources
+        MgServerSqlProcessor* processor = iterator->second;
+        if(processor)
+        {
+            processor->Release();
+        }
+
+        // Remove the processor
+        m_drCollection.erase(iterator);
+        bResult = true;
+    }
+
+    return bResult;
+}
+
+MgServerSqlProcessor* MgServerSqlDataReaderPool::GetProcessor(STRING sqlReader)
+{
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    MgServerSqlProcessor* processor = NULL;
+
+    SqlProcessorCollection::iterator iterator = m_drCollection.find(sqlReader);
+    if(m_drCollection.end() != iterator)
+    {
+        // Found it
+        processor = iterator->second;
+
+        // Add a reference to it
+        processor->AddRef();
+    }
+
+    return processor;
+}
+
+STRING MgServerSqlDataReaderPool::GetReaderId(MgServerSqlProcessor* processor)
+{
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, L""));
+
+    STRING readerId = L"";
+
+    for (SqlProcessorCollection::iterator iterator = m_drCollection.begin();iterator != m_drCollection.end(); iterator++)
+    {
+        if(iterator->second == processor)
+        {
+            // Found it
+            readerId = iterator->first;
+            break;
+        }
+    }
+
+    return readerId;
 }

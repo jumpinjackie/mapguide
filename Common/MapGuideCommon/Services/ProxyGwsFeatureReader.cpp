@@ -28,7 +28,7 @@ MG_IMPL_DYNCREATE(MgProxyGwsFeatureReader);
 MgProxyGwsFeatureReader::MgProxyGwsFeatureReader(MgFeatureSet* featureSet)
 {
     m_currRecord = 0;
-    m_serverGwsFeatureReaderPtr = 0;
+    m_serverGwsFeatureReader = L"";
     m_set = SAFE_ADDREF((MgFeatureSet*)featureSet);
     m_service = NULL;
 }
@@ -41,7 +41,7 @@ MgProxyGwsFeatureReader::MgProxyGwsFeatureReader(MgFeatureSet* featureSet)
 MgProxyGwsFeatureReader::MgProxyGwsFeatureReader()
 {
     m_currRecord = 0;
-    m_serverGwsFeatureReaderPtr = 0;
+    m_serverGwsFeatureReader = L"";
     m_set = NULL;
     m_service = NULL;
 }
@@ -98,9 +98,9 @@ bool MgProxyGwsFeatureReader::ReadNext()
         try
         {
             m_currRecord = 0;
-            if (m_serverGwsFeatureReaderPtr != 0)
+            if (m_serverGwsFeatureReader != L"")
             {
-                Ptr<MgBatchPropertyCollection> bpCol = m_service->GetFeatures(m_serverGwsFeatureReaderPtr);
+                Ptr<MgBatchPropertyCollection> bpCol = m_service->GetFeatures(m_serverGwsFeatureReader);
                 m_set->ClearFeatures();
                 m_set->AddFeatures(bpCol);
                 if (m_set->GetCount() > 0)
@@ -434,7 +434,7 @@ void MgProxyGwsFeatureReader::Serialize(MgStream* stream)
     // STDEV_CATEGORY or EQUAL_CATEGORY.
     // This method will never be called in any other case.
     // In this case, there is NO FdoFeatureReader cached on server
-    // and therefore m_serverGwsFeatureReaderPtr is will be zero.
+    // and therefore m_serverGwsFeatureReader will be empty.
 
     bool operationCompleted = true;
 
@@ -442,7 +442,7 @@ void MgProxyGwsFeatureReader::Serialize(MgStream* stream)
 
     if (operationCompleted)
     {
-        stream->WriteInt32(m_serverGwsFeatureReaderPtr);
+        stream->WriteString(m_serverGwsFeatureReader);
         stream->WriteObject((MgFeatureSet*)m_set); // Write the feature set
     }
 }
@@ -463,7 +463,7 @@ void MgProxyGwsFeatureReader::Deserialize(MgStream* stream)
 
     if (operationCompleted)
     {
-        stream->GetInt32(m_serverGwsFeatureReaderPtr);                      // Get the pointer value so we can retrieve it for later use
+        stream->GetString(m_serverGwsFeatureReader);                      // Get the reader ID so we can retrieve it for later use
         m_set = (MgFeatureSet*)stream->GetObject();
     }
     else
@@ -536,12 +536,12 @@ void MgProxyGwsFeatureReader::SetService(MgFeatureService* service)
 /// <returns>Nothing</returns>
 void MgProxyGwsFeatureReader::Close()
 {
-    if (m_serverGwsFeatureReaderPtr != 0)
+    if (m_serverGwsFeatureReader != L"")
     {
         MG_TRY()
 
-        m_service->CloseGwsFeatureReader(m_serverGwsFeatureReaderPtr);
-        m_serverGwsFeatureReaderPtr = 0;
+        m_service->CloseFeatureReader(m_serverGwsFeatureReader);
+        m_serverGwsFeatureReader = L"";
 
         MG_CATCH(L"MgProxyGwsFeatureReader.Close")
 
@@ -565,7 +565,7 @@ MgRaster* MgProxyGwsFeatureReader::GetRaster(CREFSTRING propertyName)
     Ptr<MgRasterProperty> ptrProp = (MgRasterProperty*)GetProperty(propertyName, MgPropertyType::Raster);
     Ptr<MgRaster> retVal = ptrProp->GetValue();
     retVal->SetMgService(m_service);
-    retVal->SetHandle(m_serverGwsFeatureReaderPtr);
+    retVal->SetHandle(m_serverGwsFeatureReader);
 
     return SAFE_ADDREF((MgRaster*)retVal);
 }

@@ -69,7 +69,6 @@ public:
     static INT32 GetMgFeaturePropertyType(FdoPropertyType fdoPropType);
     static MgRaster* GetMgRaster(FdoIRaster* raster, STRING propName);
     static MgByteReader* GetRaster(FdoIReader* reader, CREFSTRING rasterPropName,INT32 xSize, INT32 ySize);
-    static bool ValidatePoolEntry(INT32 readerId);
     static FdoPropertyValue* MgPropertyToFdoProperty(MgProperty* srcProp);
     static FdoParameterValue* MgPropertyToFdoParameter(MgProperty* srcProp);
     static FdoLiteralValue* MgPropertyToFdoDataValue(MgProperty* srcProp);

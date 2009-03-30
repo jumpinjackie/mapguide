@@ -69,6 +69,12 @@ MG_NT_SERVICE_DEFINE(MgServerService, MgServer, MG_WCHAR_TO_TCHAR(MgResources::S
 MgServer::MgServer()
 {
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::MgServer()\n")));
+#ifdef ACE_WIN64
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("ACE_WIN64 DEFINED\n")));
+#else
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("ACE_WIN64 NOT DEFINED\n")));
+#endif
+
     reactor(ACE_Reactor::instance());
 
     m_bTestMode = false;

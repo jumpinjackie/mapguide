@@ -27,7 +27,7 @@ MG_IMPL_DYNCREATE(MgProxyDataReader);
 MgProxyDataReader::MgProxyDataReader()
 {
     m_currRecord = 0;
-    m_serverDataReaderPtr = 0;
+    m_serverDataReader = L"";
     m_service = NULL;
     m_set = NULL;
     m_propDefCol = NULL;
@@ -36,7 +36,7 @@ MgProxyDataReader::MgProxyDataReader()
 MgProxyDataReader::MgProxyDataReader(MgBatchPropertyCollection* batchCol, MgPropertyDefinitionCollection* propDefCol)
 {
     m_currRecord = 0;
-    m_serverDataReaderPtr = 0;
+    m_serverDataReader = L"";
     m_service = NULL;
     m_set = SAFE_ADDREF(batchCol);
     m_propDefCol = SAFE_ADDREF(propDefCol);
@@ -82,9 +82,9 @@ bool MgProxyDataReader::ReadNext()
         try
         {
             m_currRecord = 0;
-            if (m_serverDataReaderPtr != 0)
+            if (m_serverDataReader != L"")
             {
-                Ptr<MgBatchPropertyCollection> bpCol = m_service->GetDataRows(m_serverDataReaderPtr);
+                Ptr<MgBatchPropertyCollection> bpCol = m_service->GetDataRows(m_serverDataReader);
 
                 if ((((MgBatchPropertyCollection*)bpCol) != NULL) && (bpCol->GetCount() > 0))
                 {
@@ -382,7 +382,7 @@ void MgProxyDataReader::Serialize(MgStream* stream)
 
     if (operationCompleted)
     {
-        stream->WriteInt32(m_serverDataReaderPtr);                      // Write the pointer value so we can retrieve it for later use
+        stream->WriteString(m_serverDataReader);                        // Write the reader ID so we can retrieve it for later use
         stream->WriteString(m_providerName);
         stream->WriteObject(m_propDefCol);                              // Write the property definition
         stream->WriteObject(m_set);                                     // Write the property data
@@ -405,7 +405,7 @@ void MgProxyDataReader::Deserialize(MgStream* stream)
 
     if (operationCompleted)
     {
-        stream->GetInt32(m_serverDataReaderPtr);                      // Get the pointer value so we can retrieve it for later use
+        stream->GetString(m_serverDataReader);                                  // Get the reader ID so we can retrieve it for later use
         stream->GetString(m_providerName);
         m_propDefCol = (MgPropertyDefinitionCollection*)stream->GetObject();    // Get the property definition
         m_set = (MgBatchPropertyCollection*)stream->GetObject();                // Get the property data
@@ -477,12 +477,12 @@ void MgProxyDataReader::SetService(MgFeatureService* service)
 /// <returns>Nothing</returns>
 void MgProxyDataReader::Close()
 {
-    if (m_serverDataReaderPtr != 0)
+    if (m_serverDataReader != L"")
     {
         MG_TRY()
 
-        m_service->CloseDataReader(m_serverDataReaderPtr);
-        m_serverDataReaderPtr = 0;
+        m_service->CloseDataReader(m_serverDataReader);
+        m_serverDataReader = L"";
 
         MG_CATCH(L"MgProxyDataReader.Close")
 
@@ -554,7 +554,7 @@ MgRaster* MgProxyDataReader::GetRaster(CREFSTRING propertyName)
     Ptr<MgRasterProperty> ptrProp = (MgRasterProperty*)GetProperty(propertyName, MgPropertyType::Raster);
     Ptr<MgRaster> retVal = ptrProp->GetValue();
     retVal->SetMgService(m_service);
-    retVal->SetHandle(m_serverDataReaderPtr);
+    retVal->SetHandle(m_serverDataReader);
 
     return SAFE_ADDREF((MgRaster*)retVal);
 }

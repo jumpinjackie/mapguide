@@ -20,7 +20,6 @@
 #include "ProxyFeatureReader.h"
 #include "ProxySqlDataReader.h"
 #include "ProxyDataReader.h"
-#include "ProxyGwsFeatureReader.h"
 #include "Command.h"
 
 static const int Feature_Service = (int)MgPacketParser::msiFeature;
@@ -1006,7 +1005,7 @@ MgByteReader* MgProxyFeatureService::GetWfsFeature(MgResourceIdentifier* feature
 
 
 //////////////////////////////////////////////////////////////////
-MgBatchPropertyCollection* MgProxyFeatureService::GetFeatures(INT32 featureReaderId)
+MgBatchPropertyCollection* MgProxyFeatureService::GetFeatures(CREFSTRING featureReader)
 {
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                  // Connection
@@ -1015,7 +1014,7 @@ MgBatchPropertyCollection* MgProxyFeatureService::GetFeatures(INT32 featureReade
                        1,                                           // No of arguments
                        Feature_Service,                             // Service Id
                        BUILD_VERSION(1,0,0),                        // Operation version
-                       MgCommand::knInt32, featureReaderId,         // Argument#1
+                       MgCommand::knString, &featureReader,         // Argument#1
                        MgCommand::knNone);                          // End of argument
 
     SetWarning(cmd.GetWarningObject());
@@ -1025,7 +1024,7 @@ MgBatchPropertyCollection* MgProxyFeatureService::GetFeatures(INT32 featureReade
 
 
 //////////////////////////////////////////////////////////////////
-bool MgProxyFeatureService::CloseFeatureReader(INT32 featureReaderId)
+bool MgProxyFeatureService::CloseFeatureReader(CREFSTRING featureReader)
 {
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                  // Connection
@@ -1034,7 +1033,7 @@ bool MgProxyFeatureService::CloseFeatureReader(INT32 featureReaderId)
                        1,                                           // No of arguments
                        Feature_Service,                             // Service Id
                        BUILD_VERSION(1,0,0),                        // Operation version
-                       MgCommand::knInt32, featureReaderId,         // Argument#1
+                       MgCommand::knString, &featureReader,         // Argument#1
                        MgCommand::knNone);                          // End of argument
 
     SetWarning(cmd.GetWarningObject());
@@ -1044,7 +1043,7 @@ bool MgProxyFeatureService::CloseFeatureReader(INT32 featureReaderId)
 
 
 //////////////////////////////////////////////////////////////////
-MgBatchPropertyCollection* MgProxyFeatureService::GetSqlRows(INT32 sqlReaderId)
+MgBatchPropertyCollection* MgProxyFeatureService::GetSqlRows(CREFSTRING sqlReader)
 {
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                  // Connection
@@ -1053,7 +1052,7 @@ MgBatchPropertyCollection* MgProxyFeatureService::GetSqlRows(INT32 sqlReaderId)
                        1,                                           // No of arguments
                        Feature_Service,                             // Service Id
                        BUILD_VERSION(1,0,0),                        // Operation version
-                       MgCommand::knInt32, sqlReaderId,             // Argument#1
+                       MgCommand::knString, &sqlReader,             // Argument#1
                        MgCommand::knNone);                          // End of argument
 
     SetWarning(cmd.GetWarningObject());
@@ -1063,7 +1062,7 @@ MgBatchPropertyCollection* MgProxyFeatureService::GetSqlRows(INT32 sqlReaderId)
 
 
 //////////////////////////////////////////////////////////////////
-bool MgProxyFeatureService::CloseSqlReader(INT32 sqlReaderId)
+bool MgProxyFeatureService::CloseSqlReader(CREFSTRING sqlReader)
 {
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                  // Connection
@@ -1072,7 +1071,7 @@ bool MgProxyFeatureService::CloseSqlReader(INT32 sqlReaderId)
                        1,                                           // No of arguments
                        Feature_Service,                             // Service Id
                        BUILD_VERSION(1,0,0),                        // Operation version
-                       MgCommand::knInt32, sqlReaderId,             // Argument#1
+                       MgCommand::knString, &sqlReader,             // Argument#1
                        MgCommand::knNone);                          // End of argument
 
     SetWarning(cmd.GetWarningObject());
@@ -1144,7 +1143,7 @@ MgClassDefinition* MgProxyFeatureService::GetClassDefinition(MgResourceIdentifie
 
 
 //////////////////////////////////////////////////////////////////
-MgByteReader* MgProxyFeatureService::GetRaster(INT32 featureReaderId, INT32 xSize, INT32 ySize, STRING propName)
+MgByteReader* MgProxyFeatureService::GetRaster(CREFSTRING reader, INT32 xSize, INT32 ySize, STRING propName)
 {
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                  // Connection
@@ -1153,7 +1152,7 @@ MgByteReader* MgProxyFeatureService::GetRaster(INT32 featureReaderId, INT32 xSiz
                        4,                                           // No of arguments
                        Feature_Service,                             // Service Id
                        BUILD_VERSION(1,0,0),                        // Operation version
-                       MgCommand::knInt32, featureReaderId,         // Argument#1
+                       MgCommand::knString, &reader,                // Argument#1
                        MgCommand::knInt32, xSize,                   // Argument#2
                        MgCommand::knInt32, ySize,                   // Argument#3
                        MgCommand::knString, &propName,              // Argument#4
@@ -1166,7 +1165,7 @@ MgByteReader* MgProxyFeatureService::GetRaster(INT32 featureReaderId, INT32 xSiz
 
 
 //////////////////////////////////////////////////////////////////
-MgBatchPropertyCollection* MgProxyFeatureService::GetDataRows(INT32 dataReaderId)
+MgBatchPropertyCollection* MgProxyFeatureService::GetDataRows(CREFSTRING dataReader)
 {
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                  // Connection
@@ -1175,7 +1174,7 @@ MgBatchPropertyCollection* MgProxyFeatureService::GetDataRows(INT32 dataReaderId
                        1,                                           // No of arguments
                        Feature_Service,                             // Service Id
                        BUILD_VERSION(1,0,0),                        // Operation version
-                       MgCommand::knInt32, dataReaderId,            // Argument#1
+                       MgCommand::knString, &dataReader,            // Argument#1
                        MgCommand::knNone);                          // End of argument
 
     SetWarning(cmd.GetWarningObject());
@@ -1185,7 +1184,7 @@ MgBatchPropertyCollection* MgProxyFeatureService::GetDataRows(INT32 dataReaderId
 
 
 //////////////////////////////////////////////////////////////////
-bool MgProxyFeatureService::CloseDataReader(INT32 dataReaderId)
+bool MgProxyFeatureService::CloseDataReader(CREFSTRING dataReader)
 {
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                  // Connection
@@ -1194,7 +1193,7 @@ bool MgProxyFeatureService::CloseDataReader(INT32 dataReaderId)
                        1,                                           // No of arguments
                        Feature_Service,                             // Service Id
                        BUILD_VERSION(1,0,0),                        // Operation version
-                       MgCommand::knInt32, dataReaderId,            // Argument#1
+                       MgCommand::knString, &dataReader,            // Argument#1
                        MgCommand::knNone);                          // End of argument
 
     SetWarning(cmd.GetWarningObject());
@@ -1243,27 +1242,6 @@ MgPropertyDefinitionCollection* MgProxyFeatureService::GetIdentityProperties(MgR
     SetWarning(cmd.GetWarningObject());
 
     return (MgPropertyDefinitionCollection*)cmd.GetReturnValue().val.m_obj;
-}
-
-
-
-
-bool MgProxyFeatureService::CloseGwsFeatureReader(INT32 gwsFeatureReaderId)
-{
-    MgCommand cmd;
-
-    cmd.ExecuteCommand(m_connProp,                                   // Connection
-                        MgCommand::knInt8,                                    // Return type expected
-                        MgFeatureServiceOpId::CloseGwsFeatureReader_Id,       // Command Code
-                        1,                                                    // No of arguments
-                        Feature_Service,                                      // Service Id
-                        BUILD_VERSION(1,0,0),                                 // Operation version
-                        MgCommand::knInt32, (INT32)gwsFeatureReaderId,        // Argument#1
-                        MgCommand::knNone);                                   // End of argument
-
-    SetWarning(cmd.GetWarningObject());
-
-    return (bool)cmd.GetReturnValue().val.m_i8;
 }
 
 MgByteReader* MgProxyFeatureService::EnumerateDataStores(CREFSTRING providerName,

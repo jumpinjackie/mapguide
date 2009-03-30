@@ -23,6 +23,9 @@ class MgServerSqlProcessor;
 class MgServerSqlDataReaderPool;
 template class Ptr<MgServerSqlDataReaderPool>;
 
+typedef std::map<STRING, MgServerSqlProcessor*> SqlProcessorCollection;
+typedef std::pair<STRING, MgServerSqlProcessor*> SqlProcessorCacheEntry_Pair;
+
 class MgServerSqlDataReaderPool : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgServerSqlDataReaderPool)
@@ -33,11 +36,12 @@ public:
     /// </summary>
     static MgServerSqlDataReaderPool* GetInstance();
 
-    void Add(MgServerSqlProcessor* sqlReader);
+    STRING Add(MgServerSqlProcessor* processor);
 
-    void Remove(MgServerSqlProcessor* sqlReader);
+    bool Remove(STRING sqlReader);
 
-    bool Contains(MgServerSqlProcessor* sqlReader);
+    MgServerSqlProcessor* GetProcessor(STRING sqlReader);
+    STRING GetReaderId(MgServerSqlProcessor* processor);
 
 protected:
 
@@ -60,7 +64,7 @@ private:
     /// Pointer to a process-wide singleton.
     static Ptr<MgServerSqlDataReaderPool> m_drPool;
 
-    Ptr<MgDisposableCollection> m_drCollection;
+    SqlProcessorCollection m_drCollection;
 
     ACE_Recursive_Thread_Mutex m_mutex;
 };
