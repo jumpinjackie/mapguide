@@ -30,7 +30,7 @@ class MgServerGetSpatialContexts
 public:
     MgServerGetSpatialContexts();
     ~MgServerGetSpatialContexts();
-    MgSpatialContextReader* GetSpatialContexts(MgResourceIdentifier* resId, bool bActiveOnly);
+    MgSpatialContextReader* GetSpatialContexts(MgResourceIdentifier* resId);
 
 private:
     MgSpatialContextData* GetSpatialContextData(FdoISpatialContextReader* spatialReader,

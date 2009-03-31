@@ -396,6 +396,9 @@ PUBLISHED_API:
     /// Determines whether the spatial context currently being read
     /// is the active spatial context.
     ///
+    /// \remarks
+    /// This method is obsolete and will be deprecated.
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// bool IsActive();

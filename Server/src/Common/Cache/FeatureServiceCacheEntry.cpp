@@ -398,28 +398,14 @@ MgSpatialContextCacheItem* MgFeatureServiceCacheEntry::GetSpatialContextInfo()
     return SAFE_ADDREF(m_spatialContextInfo.p);
 }
 
-void MgFeatureServiceCacheEntry::SetSpatialContextReader(bool active, MgSpatialContextReader* spatialContextReader)
+void MgFeatureServiceCacheEntry::SetSpatialContextReader(MgSpatialContextReader* spatialContextReader)
 {
-    if (active)
-    {
-        m_activeContextReader = SAFE_ADDREF(spatialContextReader);
-    }
-    else
-    {
-        m_spatialContextReader = SAFE_ADDREF(spatialContextReader);
-    }
+    m_spatialContextReader = SAFE_ADDREF(spatialContextReader);
 }
 
-MgSpatialContextReader* MgFeatureServiceCacheEntry::GetSpatialContextReader(bool active)
+MgSpatialContextReader* MgFeatureServiceCacheEntry::GetSpatialContextReader()
 {
-    if (active)
-    {
-        return SAFE_ADDREF(m_activeContextReader.p);
-    }
-    else
-    {
-        return SAFE_ADDREF(m_spatialContextReader.p);
-    }
+    return SAFE_ADDREF(m_spatialContextReader.p);
 }
 
 void MgFeatureServiceCacheEntry::SetSchemaNames(MgStringCollection* schemaNames)

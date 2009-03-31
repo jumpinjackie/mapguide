@@ -814,9 +814,7 @@ INT32 MgProxyFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
 /// A resource identifier referring to connection string
 /// </param>
 /// <param name="bActiveOnly">Input
-/// This flag would decide whether it should return all or active spatial context.
-/// True - Only active spatial context
-/// False - All spatial contexts
+/// This flag is obsolete and no longer used.
 /// </param>
 /// <returns>
 /// SpatialContextReader pointer, a pointer to the actual instance reader returned from the

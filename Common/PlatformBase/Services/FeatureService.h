@@ -975,10 +975,7 @@ PUBLISHED_API:
     /// A resource identifier identifying a feature
     /// source in the repository.
     /// \param bActiveOnly (boolean/bool)
-    /// If true, the return value contains only the
-    /// active spatial context. If false, the return
-    /// value contains all of the available spatial
-    /// contexts.
+    /// This flag is obsolete and no longer used.
     ///
     /// \return
     /// Returns an MgSpatialContextReader object.

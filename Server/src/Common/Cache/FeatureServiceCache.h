@@ -54,8 +54,8 @@ public:
     void SetSpatialContextInfo(MgResourceIdentifier* resource, MgSpatialContextCacheItem* spatialContextInfo);
     MgSpatialContextCacheItem* GetSpatialContextInfo(MgResourceIdentifier* resource);
 
-    void SetSpatialContextReader(MgResourceIdentifier* resource, bool active, MgSpatialContextReader* spatialContextReader);
-    MgSpatialContextReader* GetSpatialContextReader(MgResourceIdentifier* resource, bool active);
+    void SetSpatialContextReader(MgResourceIdentifier* resource, MgSpatialContextReader* spatialContextReader);
+    MgSpatialContextReader* GetSpatialContextReader(MgResourceIdentifier* resource);
 
     void SetSchemaNames(MgResourceIdentifier* resource, MgStringCollection* schemaNames);
     MgStringCollection* GetSchemaNames(MgResourceIdentifier* resource);
