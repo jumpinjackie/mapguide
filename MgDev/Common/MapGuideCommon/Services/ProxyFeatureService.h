@@ -680,9 +680,7 @@ INTERNAL_API:
     /// A resource identifier referring to connection string
     /// \param bActiveOnly
     /// Input
-    /// This flag would decide whether it should return all or active spatial context.
-    /// True - Only active spatial context
-    /// False - All spatial contexts
+    /// This flag is obsolete and no longer used.
     ///
     /// \return
     /// SpatialContextReader pointer, a pointer to the actual instance reader returned from the
@@ -705,7 +703,7 @@ INTERNAL_API:
     /// Subject to change in FDO R2
     ///
     MgSpatialContextReader* GetSpatialContexts( MgResourceIdentifier* resource,
-                                                bool bActiveOnly = false);
+                                                bool bActiveOnly);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -744,7 +742,7 @@ INTERNAL_API:
     /// Subject to change in FDO R2
     ///
     MgLongTransactionReader* GetLongTransactions( MgResourceIdentifier* resource,
-                                                  bool bActiveOnly = false);
+                                                  bool bActiveOnly);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief

@@ -48,8 +48,8 @@ public:
     void SetSpatialContextInfo(MgSpatialContextCacheItem* spatialContextInfo);
     MgSpatialContextCacheItem* GetSpatialContextInfo();
 
-    void SetSpatialContextReader(bool active, MgSpatialContextReader* spatialContextReader);
-    MgSpatialContextReader* GetSpatialContextReader(bool active);
+    void SetSpatialContextReader(MgSpatialContextReader* spatialContextReader);
+    MgSpatialContextReader* GetSpatialContextReader();
 
     void SetSchemaNames(MgStringCollection* schemaNames);
     MgStringCollection* GetSchemaNames();
@@ -102,7 +102,6 @@ private:
     Ptr<MgFeatureSourceCacheItem> m_featureSource;
     Ptr<MgSpatialContextCacheItem> m_spatialContextInfo;
 
-    Ptr<MgSpatialContextReader> m_activeContextReader;
     Ptr<MgSpatialContextReader> m_spatialContextReader;
 
     Ptr<MgStringCollection> m_schemaNames;

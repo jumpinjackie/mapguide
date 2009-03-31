@@ -33,20 +33,20 @@ MgServerGetSpatialContexts::~MgServerGetSpatialContexts()
 
 // Executes the describe schema command and serializes the schema to XML
 
-MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourceIdentifier* resId, bool bActiveOnly)
+MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourceIdentifier* resId)
 {
     Ptr<MgSpatialContextReader> mgSpatialContextReader;
 
     MG_FEATURE_SERVICE_TRY()
 
-    mgSpatialContextReader = m_featureServiceCache->GetSpatialContextReader(resId, bActiveOnly);
+    mgSpatialContextReader = m_featureServiceCache->GetSpatialContextReader(resId);
 
     if (NULL == mgSpatialContextReader.p)
     {
         // Connect to provider
         MgServerFeatureConnection msfc(resId);
 
-        // connection must be open to retrieve list of active contexts
+        // Connection must be open to retrieve a list of available contexts.
         if ( msfc.IsConnectionOpen() )
         {
             // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up before the parent object
@@ -75,13 +75,6 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
             mgSpatialContextReader = new MgSpatialContextReader();
             while (spatialReader->ReadNext())
             {
-                // If only active spatial context is required skip all others
-                if (bActiveOnly)
-                {
-                    if (!spatialReader->IsActive())
-                        continue;
-                }
-
                 // Set providername for which spatial reader is executed
                 mgSpatialContextReader->SetProviderName(m_providerName);
 
@@ -90,20 +83,13 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
 
                 // Add spatial data to the spatialcontext reader
                 mgSpatialContextReader->AddSpatialData(spatialData);
-
-                // If only active spatial context is required skip all others
-                if (bActiveOnly)
-                {
-                    if (spatialReader->IsActive())
-                        break;
-                }
             }
 
-            m_featureServiceCache->SetSpatialContextReader(resId, bActiveOnly, mgSpatialContextReader.p);
+            m_featureServiceCache->SetSpatialContextReader(resId, mgSpatialContextReader.p);
         }
         else
         {
-            throw new MgConnectionFailedException(L"MgServerGetSpatialContexts::GetSpatialContexts()", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgConnectionFailedException(L"MgServerGetSpatialContexts.GetSpatialContexts()", __LINE__, __WFILE__, NULL, L"", NULL);
         }
     }
     else
@@ -159,9 +145,6 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(
 
     // Desc for spatial context
     STRING desc = L"";
-
-    // Whether it is active or not
-    bool isActive = spatialReader->IsActive();
 
     if (coordSysOverridden)
     {
@@ -240,9 +223,6 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(
 
     // Z Tolerance
     spatialData->SetZTolerance(zTol);
-
-    // Whether it is active or not
-    spatialData->SetActiveStatus(isActive);
 
     return spatialData.Detach();
 }

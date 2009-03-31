@@ -305,16 +305,16 @@ MgSpatialContextCacheItem* MgFeatureServiceCache::GetSpatialContextInfo(MgResour
     return data.Detach();
 }
 
-void MgFeatureServiceCache::SetSpatialContextReader(MgResourceIdentifier* resource, bool active, MgSpatialContextReader* spatialContextReader)
+void MgFeatureServiceCache::SetSpatialContextReader(MgResourceIdentifier* resource, MgSpatialContextReader* spatialContextReader)
 {
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     Ptr<MgFeatureServiceCacheEntry> entry = SetEntry(resource);
 
-    entry->SetSpatialContextReader(active, spatialContextReader);
+    entry->SetSpatialContextReader(spatialContextReader);
 }
 
-MgSpatialContextReader* MgFeatureServiceCache::GetSpatialContextReader(MgResourceIdentifier* resource, bool active)
+MgSpatialContextReader* MgFeatureServiceCache::GetSpatialContextReader(MgResourceIdentifier* resource)
 {
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
@@ -323,7 +323,7 @@ MgSpatialContextReader* MgFeatureServiceCache::GetSpatialContextReader(MgResourc
 
     if (NULL != entry.p)
     {
-        data = entry->GetSpatialContextReader(active);
+        data = entry->GetSpatialContextReader();
 
         // Make sure this cached data is only used by one thread at a time.
         if (NULL != data.p && data->GetRefCount() > 2)
