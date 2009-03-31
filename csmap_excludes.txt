@@ -1,4 +1,4 @@
-c oordsys.asc
+coordsys.asc
 datums.asc
 ellipsoid.asc
 mreg.asc
