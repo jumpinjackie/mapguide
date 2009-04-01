@@ -146,6 +146,9 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(
     // Desc for spatial context
     STRING desc = L"";
 
+    // This flag is obsolete and will be deprecated.
+    bool isActive = spatialReader->IsActive();
+
     if (coordSysOverridden)
     {
         srsWkt = csName;
@@ -223,6 +226,9 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(
 
     // Z Tolerance
     spatialData->SetZTolerance(zTol);
+
+    // This flag is obsolete and will be deprecated.
+    spatialData->SetActiveStatus(isActive);
 
     return spatialData.Detach();
 }
