@@ -40,40 +40,46 @@ const RS_String s_Empty(L"");
 // to the engine in order to evaluate correctly.
 FdoExpressionEngineFunctionCollection* ExpressionHelper::GetExpressionEngineFunctions(Renderer* renderer, RS_FeatureReader* reader)
 {
-    RS_MapUIInfo* mapInfo = renderer? renderer->GetMapInfo() : NULL;
-    RS_LayerUIInfo* layerInfo = renderer? renderer->GetLayerInfo() : NULL;
-    RS_FeatureClassInfo* featInfo = renderer? renderer->GetFeatureClassInfo() : NULL;
+    FdoExpressionEngineFunctionCollection* userDefinedFunctions = FdoExpressionEngineFunctionCollection::Create();
 
-    const RS_String& session = (  mapInfo != NULL)?   mapInfo->session() : s_Empty;
-    const RS_String& mapName = (  mapInfo != NULL)?   mapInfo->name()    : s_Empty;
-    const RS_String& layerId = (layerInfo != NULL)? layerInfo->guid()    : s_Empty;
-    const RS_String& featCls = ( featInfo != NULL)?  featInfo->name()    : s_Empty;
+    // common functions
+    RS_FeatureClassInfo* featInfo = renderer? renderer->GetFeatureClassInfo() : NULL;
+    const RS_String& featCls = (featInfo != NULL)?  featInfo->name() : s_Empty;
 
     FdoPtr<ExpressionFunctionArgb> funcArgb = ExpressionFunctionArgb::Create();
     FdoPtr<ExpressionFunctionDecap> funcDecap = ExpressionFunctionDecap::Create();
-    FdoPtr<ExpressionFunctionFeatureId> funcFeatureId = ExpressionFunctionFeatureId::Create(reader);
     FdoPtr<ExpressionFunctionFeatureClass> funcFeatureClass = ExpressionFunctionFeatureClass::Create(featCls.c_str());
-    FdoPtr<ExpressionFunctionLayerId> funcLayerId = ExpressionFunctionLayerId::Create(layerId.c_str());
-    FdoPtr<ExpressionFunctionMapName> funcMapName = ExpressionFunctionMapName::Create(mapName.c_str());
-    FdoPtr<ExpressionFunctionSession> funcSession = ExpressionFunctionSession::Create(session.c_str());
     FdoPtr<ExpressionFunctionUrlEncode> funcUrlEncode = ExpressionFunctionUrlEncode::Create();
     FdoPtr<ExpressionFunctionIf> funcIf = ExpressionFunctionIf::Create();
     FdoPtr<ExpressionFunctionLookup> funcLookup = ExpressionFunctionLookup::Create();
     FdoPtr<ExpressionFunctionRange> funcRange = ExpressionFunctionRange::Create();
 
-    FdoExpressionEngineFunctionCollection* userDefinedFunctions = FdoExpressionEngineFunctionCollection::Create();
-
     userDefinedFunctions->Add(funcIf);      // make IF the first one to optimize search in GetExpressionEngine
     userDefinedFunctions->Add(funcArgb);
     userDefinedFunctions->Add(funcDecap);
-    userDefinedFunctions->Add(funcFeatureId);
     userDefinedFunctions->Add(funcFeatureClass);
-    userDefinedFunctions->Add(funcLayerId);
-    userDefinedFunctions->Add(funcMapName);
-    userDefinedFunctions->Add(funcSession);
     userDefinedFunctions->Add(funcUrlEncode);
     userDefinedFunctions->Add(funcLookup);
     userDefinedFunctions->Add(funcRange);
+
+    // MapGuide-specific functions
+#ifndef MG_EXCLUDE_EXPRESSION_FUNCTIONS
+    RS_MapUIInfo* mapInfo = renderer? renderer->GetMapInfo() : NULL;
+    RS_LayerUIInfo* layerInfo = renderer? renderer->GetLayerInfo() : NULL;
+    const RS_String& session = (  mapInfo != NULL)?   mapInfo->session() : s_Empty;
+    const RS_String& mapName = (  mapInfo != NULL)?   mapInfo->name()    : s_Empty;
+    const RS_String& layerId = (layerInfo != NULL)? layerInfo->guid()    : s_Empty;
+
+    FdoPtr<ExpressionFunctionFeatureId> funcFeatureId = ExpressionFunctionFeatureId::Create(reader);
+    FdoPtr<ExpressionFunctionLayerId> funcLayerId = ExpressionFunctionLayerId::Create(layerId.c_str());
+    FdoPtr<ExpressionFunctionMapName> funcMapName = ExpressionFunctionMapName::Create(mapName.c_str());
+    FdoPtr<ExpressionFunctionSession> funcSession = ExpressionFunctionSession::Create(session.c_str());
+
+    userDefinedFunctions->Add(funcFeatureId);
+    userDefinedFunctions->Add(funcLayerId);
+    userDefinedFunctions->Add(funcMapName);
+    userDefinedFunctions->Add(funcSession);
+#endif
 
     return userDefinedFunctions;
 }
