@@ -86,7 +86,7 @@ FdoLiteralValue* ExpressionFunctionFeatureId::Evaluate(FdoLiteralValueCollection
         size_t len = base64? strlen(base64) : 0;
 
         // convert to a wide string
-        wchar_t* res = new wchar_t[len+1];
+        wchar_t* res = (wchar_t*)alloca((len + 1) * sizeof(wchar_t));
         for (size_t k=0; k<len; ++k)
             res[k] = (wchar_t)base64[k];
         res[len] = 0;

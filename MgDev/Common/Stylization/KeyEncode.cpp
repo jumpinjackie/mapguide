@@ -54,7 +54,7 @@ const char* KeyEncode::EncodeKey(RS_FeatureReader* reader)
     m_stream.reset();
 
     int count = 0;
-    const wchar_t*const* idprops = reader->GetIdentPropNames(count);
+    const wchar_t* const* idprops = reader->GetIdentPropNames(count);
 
     for (int i=0; i<count; ++i)
     {
