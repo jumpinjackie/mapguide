@@ -92,7 +92,9 @@ PUBLISHED_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Writes the content of the byte reader to a file
+    /// Writes the content of the byte reader to a file.  If the
+    /// full contents of the reader cannot be written to the file
+    /// then the file is deleted and an MgException is raised.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
