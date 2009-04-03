@@ -187,7 +187,9 @@ MgByte* MgByteSink::ToBuffer()
 ///
 void MgByteSink::ToFile(CREFSTRING filename)
 {
-    unsigned char* bytes = 0;
+    // assigned inside try-catch block
+    unsigned char* bytes = NULL;
+    FILE* f = NULL;
 
     MG_TRY()
 
@@ -200,9 +202,10 @@ void MgByteSink::ToFile(CREFSTRING filename)
         fileImpl->Rename(filename);
     }
     else
-    {   // Do it the hard way.  Create a new file and write it a block at a time
-        ///Use ACE_OS::fopen() for Linux compatibility
-        FILE* f = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(filename), ACE_TEXT("wb"));
+    {
+        // Do it the hard way.  Create a new file and write it a block at a time.
+        // Use ACE_OS::fopen() for Linux compatibility
+        f = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(filename), ACE_TEXT("wb"));
 
         if (f == NULL)
         {
@@ -221,11 +224,28 @@ void MgByteSink::ToFile(CREFSTRING filename)
             }
         }
 
-        bytes = new unsigned char[BSINK_BUFFER_SIZE];
+        // allocate a huge buffer (usually 1MB) at first
+        int bSinkBufferSize = BSINK_BUFFER_SIZE;
+        do
+        {
+            // retry allocation with half the size until we give up at 16kB
+            try
+            {
+                bytes = new unsigned char[bSinkBufferSize];
+            }
+            catch (exception& e)
+            {
+                if (typeid(e) == typeid(bad_alloc) && bSinkBufferSize > 1024*16)
+                    bSinkBufferSize >>= 1;
+                else
+                    throw e;
+            }
+        }
+        while (bytes == NULL);
 
         size_t bytesReceived, bytesWritten;
 
-        while ((bytesReceived = (size_t)m_reader->Read(bytes, BSINK_BUFFER_SIZE)) > 0)
+        while ((bytesReceived = (size_t)m_reader->Read(bytes, bSinkBufferSize)) > 0)
         {
             if((bytesWritten = ACE_OS::fwrite(bytes, 1, bytesReceived, f)) != bytesReceived)
             {
@@ -238,13 +258,23 @@ void MgByteSink::ToFile(CREFSTRING filename)
                     __LINE__, __WFILE__, &arguments, L"", NULL);
             }
         }
-
-        ACE_OS::fclose(f);
     }
 
-    MG_CATCH(L"MgByteSink::ToFile")
+    MG_CATCH(L"MgByteSink.ToFile")
 
     delete [] bytes;
+
+    if (NULL != f)
+    {
+        // close the file if one was created
+        ACE_OS::fclose(f);
+
+        // also delete the file if there was an exception - this is safe
+        // because we know the new file was created (i.e. we're not deleting
+        // a pre-existing file)
+        if (NULL != mgException)
+            MgFileUtil::DeleteFile(MG_WCHAR_TO_TCHAR(filename));
+    }
 
     MG_THROW()
 }
