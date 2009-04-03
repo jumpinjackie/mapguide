@@ -646,48 +646,6 @@ PUBLISHED_API:
     ///
     virtual void SetResource(MgResourceIdentifier* resource, MgByteReader* content, MgByteReader* header) = 0;
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Sets the Metadata content for an existing resource.
-    ///
-    /// <!-- Syntax in .Net, Java, and PHP -->
-    /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual void SetResourceMetadata(MgResourceIdentifier resource, MgByteReader content);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude JavaSyntaxTop.html
-    /// virtual void SetResourceMetadata(MgResourceIdentifier resource, MgByteReader content);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude PHPSyntaxTop.html
-    /// virtual void SetResourceMetadata(MgResourceIdentifier resource, MgByteReader content);
-    /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \param resource (MgResourceIdentifier)
-    /// The resource in the repository that gets metadata attached to. Note the resource has to exist else this method fails
-    /// \n
-    /// The extension of
-    /// the location must match one of the types defined in \link MgResourceType MgResourceType \endlink.
-    /// It is case sensitive.
-    ///
-    /// \param content (MgByteReader)
-    /// The metadata content in XML format. This can be set to
-    /// null, in which case the content is cleared.
-    ///
-    /// The schema of the Content is user driven and not given. Most people will use it for FGDC or ISO Metadata.
-    ///
-    ///
-    /// \return
-    /// Returns nothing.
-    ///
-    /// \exception MgInvalidResourceTypeException
-    ///
-    /// \todo
-    /// [[replace example, xref to Dev Guide]]
-    ///
-    /// \see
-    /// GetMetadata
-    ///
-    virtual void SetResourceMetadata(MgResourceIdentifier* resource, MgByteReader* content);
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Deletes an existing resource and its associated data from the
@@ -945,38 +903,6 @@ PUBLISHED_API:
     /// SetResource
     ///
     MgByteReader* GetResourceContent(MgResourceIdentifier* resource);
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Gets the Metadata content of a resource.
-    ///
-    /// <!-- Syntax in .Net, Java, and PHP -->
-    /// \htmlinclude DotNetSyntaxTop.html
-    /// MgByteReader GetResourceMetadata(MgResourceIdentifier resource);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude JavaSyntaxTop.html
-    /// MgByteReader GetResourceMetadata(MgResourceIdentifier resource);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude PHPSyntaxTop.html
-    /// MgByteReader GetResourceMetadata(MgResourceIdentifier resource);
-    /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \param resource (MgResourceIdentifier)
-    /// The resource in the repository which has metadata attached to it. Note the resource has to exist else this method fails.
-    ///
-    /// \return
-    /// The metadata content in XML format. This can null in which case the resource has no metadata attached.
-    /// The schema of the Content is user driven and not given. Most people will use it for FGDC or ISO Metadata.
-    ///
-    /// \exception MgInvalidResourceTypeException
-    ///
-    /// \todo
-    /// [[replace example, xref to Dev Guide]]
-    ///
-    /// \see
-    /// SetResourceMetadata
-    ///
-    virtual MgByteReader* GetResourceMetadata(MgResourceIdentifier* resource);
 
     //////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1849,6 +1775,94 @@ INTERNAL_API:
     virtual MgSerializableCollection* EnumerateParentMapDefinitions(
         MgSerializableCollection* resources) = 0;
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the Metadata content for an existing resource.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual void SetResourceMetadata(MgResourceIdentifier resource, MgByteReader content);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual void SetResourceMetadata(MgResourceIdentifier resource, MgByteReader content);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual void SetResourceMetadata(MgResourceIdentifier resource, MgByteReader content);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// The resource in the repository that gets metadata attached to. Note the resource has to exist else this method fails
+    /// \n
+    /// The extension of
+    /// the location must match one of the types defined in \link MgResourceType MgResourceType \endlink.
+    /// It is case sensitive.
+    ///
+    /// \param content (MgByteReader)
+    /// The metadata content in XML format. This can be set to
+    /// null, in which case the content is cleared.
+    ///
+    /// The schema of the Content is user driven and not given. Most people will use it for FGDC or ISO Metadata.
+    ///
+    ///
+    /// \return
+    /// Returns nothing.
+    ///
+    /// \exception MgInvalidResourceTypeException
+    ///
+    /// \todo
+    /// [[replace example, xref to Dev Guide]]
+    ///
+    /// \see
+    /// GetMetadata
+    ///
+    virtual void SetResourceMetadata(MgResourceIdentifier* resource, MgByteReader* content);
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the Metadata content of a resource.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// MgByteReader GetResourceMetadata(MgResourceIdentifier resource);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// MgByteReader GetResourceMetadata(MgResourceIdentifier resource);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// MgByteReader GetResourceMetadata(MgResourceIdentifier resource);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// The resource in the repository which has metadata attached to it. Note the resource has to exist else this method fails.
+    ///
+    /// \return
+    /// The metadata content in XML format. This can null in which case the resource has no metadata attached.
+    /// The schema of the Content is user driven and not given. Most people will use it for FGDC or ISO Metadata.
+    ///
+    /// \exception MgInvalidResourceTypeException
+    ///
+    /// \todo
+    /// [[replace example, xref to Dev Guide]]
+    ///
+    /// \see
+    /// SetResourceMetadata
+    ///
+    virtual MgByteReader* GetResourceMetadata(MgResourceIdentifier* resource);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns if permission has been granted for a resource
+    /// permission named data for the specified resource.
+    ///
+    /// \param resource
+    /// Resource identifier describing the resource.
+    /// \param permission
+    /// Requested permission for the resource.  See MgResourcePermission.
+    ///
+    /// \return
+    /// True if user has requested permission.
+    virtual bool HasPermission(MgResourceIdentifier* resource, CREFSTRING permission);
+
 protected:
 
     /////////////////////////////////////////////////////////////////
@@ -1873,20 +1887,6 @@ CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_ResourceService_ResourceService;
 
 INTERNAL_API:
-
-    //////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Returns if permission has been granted for a resource
-    /// permission named data for the specified resource.
-    ///
-    /// \param resource
-    /// Resource identifier describing the resource.
-    /// \param permission
-    /// Requested permission for the resource.  See MgResourcePermission.
-    ///
-    /// \return
-    /// True if user has requested permission.
-    virtual bool HasPermission(MgResourceIdentifier* resource, CREFSTRING permission);
 
     //////////////////////////////////////////////////////////////////
     /// Enumerations
