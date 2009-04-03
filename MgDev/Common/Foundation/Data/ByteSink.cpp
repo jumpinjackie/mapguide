@@ -16,6 +16,7 @@
 //
 
 #include "Foundation.h"
+#include <typeinfo>
 
 //////////////////////////////////////////////////////////////////
 ///<summary>
@@ -273,7 +274,7 @@ void MgByteSink::ToFile(CREFSTRING filename)
         // because we know the new file was created (i.e. we're not deleting
         // a pre-existing file)
         if (NULL != mgException)
-            MgFileUtil::DeleteFile(MG_WCHAR_TO_TCHAR(filename));
+            MgFileUtil::DeleteFile(filename);
     }
 
     MG_THROW()
