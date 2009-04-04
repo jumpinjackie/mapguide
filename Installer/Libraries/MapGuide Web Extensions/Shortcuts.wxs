@@ -28,6 +28,10 @@
                                            Directory="MapGuideOpenSourceMenuLocation"
                                            Name="MapAgent Test Pages"
                                            Target="http://localhost:[APACHE_PORT]/mapguide/mapagent/index.html" />
+                    <util:InternetShortcut Id="ApacheGetMaestro"
+                                           Directory="MapGuideOpenSourceMenuLocation"
+                                           Name="Get MapGuide Maestro"
+                                           Target="http://trac.osgeo.org/mapguide/wiki/maestro" />
                     <RegistryKey Root="HKCU" Key="Software\MapGuide Open Source\WebExtensions\ApacheShortcut">
                         <RegistryValue
                                 Value="Installed"
@@ -45,6 +49,10 @@
                                            Directory="MapGuideOpenSourceMenuLocation"
                                            Name="MapAgent Test Pages"
                                            Target="http://localhost/mapguide/mapagent/index.html" />
+                    <util:InternetShortcut Id="IISGetMaestro"
+                                           Directory="MapGuideOpenSourceMenuLocation"
+                                           Name="Get MapGuide Maestro"
+                                           Target="http://trac.osgeo.org/mapguide/wiki/maestro" />
                     <RegistryKey Root="HKCU" Key="Software\MapGuide Open Source\WebExtensions\IISShortcut">
                         <RegistryValue
                                 Value="Installed"
