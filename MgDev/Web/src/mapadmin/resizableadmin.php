@@ -17,7 +17,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-    define( 'SITE_ADMINISTRATOR_VERSION', "1.2.0.0" );
+    define( 'SITE_ADMINISTRATOR_VERSION', "2.1.0.0" );
 
     define( 'APP_TITLE',        "MapGuide Site Administrator" );
     define( 'APP_LOGO',         "" );
