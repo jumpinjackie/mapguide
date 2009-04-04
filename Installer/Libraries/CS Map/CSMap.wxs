@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 	<Fragment>
     <DirectoryRef Id="INSTALLLOCATION">
-      <Directory Id="CSMAPLOCATION" Name="CSMap">
+      <Directory Id="CSMAPLOCATION" Name="CS-Map">
         <Component Id="CsMapComponent" Guid="552EAF5E-2420-4C2A-A52C-62B456EE1F64">
           <CreateFolder />
           <Environment Id="CsMapEnvVar"

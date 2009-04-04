@@ -3,8 +3,8 @@
      xmlns:iis="http://schemas.microsoft.com/wix/IIsExtension"
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
 	<Fragment>
+
         <Binary Id="IIsActions" SourceFile="..\..\Custom\bin\iis_actions.dll" />
-        <Binary Id="IIs7Actions" SourceFile="..\..\Custom\bin\iis7_action.dll" />
         <CustomAction Id="AddWebServiceExtension" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="AddWebServiceExtension" />
         <CustomAction Id="DeleteWebServiceExtension" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="DeleteWebServiceExtension" />
         <CustomAction Id="RegisterScriptMaps" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="RegisterScriptMaps" />
@@ -15,9 +15,26 @@
         <CustomAction Id="CreateVDirNetAgent" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="CreateVDirNetAgent" />
         <CustomAction Id="CreateVDirJavaAgent" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="CreateVDirJavaAgent" />
         <CustomAction Id="DeleteVDirMapGuide" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="DeleteVDirMapGuide" />
+
+        <Binary Id="IIs7Actions" SourceFile="..\..\Custom\bin\iis7_action.dll" />
         <CustomAction Id="CreateAPPMapGuideWithIIS7" Return="check" BinaryKey="IIs7Actions" Execute="immediate" DllEntry="CreateAPPMapGuideWithIIS7" />
         <CustomAction Id="CreateVDirPhpAgentWithIIS7" Return="check" BinaryKey="IIs7Actions" Execute="immediate" DllEntry="CreateVDirPhpAgentWithIIS7" />
         <CustomAction Id="CreateAPPNetAgentWithIIS7" Return="check" BinaryKey="IIs7Actions" Execute="immediate" DllEntry="CreateAPPNetAgentWithIIS7" />
         <CustomAction Id="DeleteAPPMapGuideWithIIS7" Return="check" BinaryKey="IIs7Actions" Execute="immediate" DllEntry="DeleteAPPMapGuideWithIIS7" />
-	</Fragment>
+
+<!-- In case we ever want to use standard Type 51 Custom Actions for IIS install, here's a start at it:
+
+    <CustomAction Id="MapGuideIIS7_CreateAppPoolCA" Property="MapGuideIIS7_CreateAppPool"
+        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; add apppool /name:[MG_APP_POOL]">
+    <CustomAction Id="MapGuideIIS7_SetAppPoolPropCA" Property="MapGuideIIS7_SetAppPoolProp"
+        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; set config /section:applicationPools /[\[]name='[MG_APP_POOL]'[\[].processModel.idleTimeout:00:00:00">
+    <CustomAction Id="MapGuideIIS7_UnlockSrvHandlersCA" Property="MapGuideIIS7_UnlockSrvHandlers"
+        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; unlock config /section:handlers">
+    <CustomAction Id="MapGuideIIS7_UnlockSiteHandlersCA" Property="MapGuideIIS7_UnlockSiteHandlers"
+        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; unlock config &quot;[MG_WEBSITE]&quot; /section:handlers">
+    <CustomAction Id="MapGuideIIS7_CreateMapGuideSiteCA" Property="MapGuideIIS7_CreateMapGuideSite"
+        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; add app /site.name:&quot;[MG_WEBSITE]&quot; /path:/[MG_VDIR] /physicalPath:&quot;[WEBEXTENSIONSLOCATION]\www&quot;">
+-->
+
+  </Fragment>
 </Wix>

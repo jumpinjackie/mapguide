@@ -47,9 +47,11 @@
             <Directory Id="ProgramMenuFolder" Name="Programs"/>
             <Directory Id="DesktopFolder" Name="Desktop"/>
             <Directory Id="ProgramFilesFolder">
-                <Directory Id="INSTALLLOCATION" Name="OSGeo"/>
+                <Directory Id="OSGeoFolder" Name="OSGeo">
+                  <Directory Id="INSTALLLOCATION" Name="MapGuide" />
+                </Directory>
+              </Directory>
             </Directory>
-        </Directory>
 
         <FeatureRef Id="ServerFeature"/>
         <FeatureRef Id="WebExtensionsFeature"/>

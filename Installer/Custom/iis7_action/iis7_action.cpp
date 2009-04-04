@@ -211,7 +211,7 @@ UINT __stdcall CreateAPPMapGuideWithIIS7(MSIHANDLE hMSI)
 	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
 	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	cmd += installDir;
-	cmd += _T("www");
+	cmd += _T("www\"");
 	ExecuteAppCmd(cmd.c_str());
 
 	//appcmd set config "MG_WEBSITE/MG_VDIR" /section:handlers /+[name='PHP',path='*.php',verb='*',scriptProcessor='"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\Php\php5isapi.dll"',modules='IsapiModule',resourceType='Unspecified']
@@ -233,7 +233,7 @@ UINT __stdcall CreateAPPMapGuideWithIIS7(MSIHANDLE hMSI)
 	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
 	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	cmd += installDir;
-	cmd += _T("www\\mapagent");
+	cmd += _T("www\\mapagent\"");
 	ExecuteAppCmd(cmd.c_str());
 
 	//appcmd set config "MG_WEBSITE/MG_VDIR/mapagent" /section:handlers /accessPolicy:Read,Script,Execute
@@ -296,7 +296,7 @@ UINT __stdcall CreateVDirPhpAgentWithIIS7(MSIHANDLE hMSI)
 	_string installDir(getInstallDir(hMSI));
 
 	//appcmd add  vdir /app.name:"MG_WEBSITE/" /path:/MG_VDIR/mapviewerajax /physicalPath:"C:\Program Files\Autodesk\MapGuideEnterprise2010\WebServerExtensions\www\mapviewerphp"
-	cmd = _T("add vdir /app.name:\"MG_WEBSITE/\" /path:/MG_VDIR/mapviewerajax /physicalPath:\"");
+	cmd = _T("add vdir /app.name:\"MG_WEBSITE\" /path:/MG_VDIR/mapviewerajax /physicalPath:\"");
 	Replace(cmd, _T("MG_WEBSITE"), MG_WEBSITE);
 	Replace(cmd, _T("MG_VDIR"), MG_VDIR);
 	cmd += installDir;

@@ -370,6 +370,8 @@ echo [bootstrap]: Creating
 %MSBUILD% /p:TargetFile=%INSTALLER_NAME%.msi Bootstrap.proj
 if "%errorlevel%"=="1" goto error
 echo [bootstrap]: Create self-extracting package
+rem Uncomment this for maximum compression of .exe
+rem makensis /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DMAXCOMPRESSION Setup.nsi
 makensis /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% Setup.nsi
 if "%errorlevel%"=="1" goto error
 popd
