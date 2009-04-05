@@ -15,7 +15,11 @@ VIAddVersionKey "CompanyName" "Open Source Geospatial Foundation"
 VIAddVersionKey "FileDescription" "Installer Bootstrapper package for MapGuide Open Source"
 VIAddVersionKey "LegalCopyright" "2009 Open Source Geospatial Foundation"
 
-!define INSTALLER_OUTPUT "${INSTALLER_ROOT}\Output"
+!ifndef CULTURE
+!define CULTURE "en-us"
+!endif
+
+!define INSTALLER_OUTPUT "${INSTALLER_ROOT}\Output\${CULTURE}"
 
 OutFile "${INSTALLER_OUTPUT}\${OUTNAME}.exe"
 

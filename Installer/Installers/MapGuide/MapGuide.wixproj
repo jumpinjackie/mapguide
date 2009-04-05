@@ -49,6 +49,7 @@
     <Content Include="Resources\LGPL21.rtf" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Lang" />
     <Folder Include="Resources" />
   </ItemGroup>
   <ItemGroup>
@@ -67,6 +68,10 @@
       <Project>{d41d53c4-433e-47b5-b663-e79b5569ee22}</Project>
       <Private>True</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Lang\MapGuide_en-US.wxl" />
+    <EmbeddedResource Include="Lang\MapGuide_es-ES.wxl" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--

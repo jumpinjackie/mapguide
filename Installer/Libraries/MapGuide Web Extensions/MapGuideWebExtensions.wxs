@@ -90,61 +90,61 @@
           </Directory>
       </Directory>
     </DirectoryRef>
-    <Feature Id="WebExtensionsFeature" Title="MapGuide Web" Level="1" ConfigurableDirectory="WEBEXTENSIONSLOCATION" Description="MapGuide Web provides you with the components you need to server MapGuide resources over the internet." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+    <Feature Id="WebExtensionsFeature" Title="!(loc.WebExtensionsFeature)" Level="1" ConfigurableDirectory="WEBEXTENSIONSLOCATION" Description="!(loc.WebExtensionsFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
       <ComponentRef Id="WebExtensionsComponent"/>
       <ComponentRef Id="WebShortcutsComponent"/>
       <ComponentRef Id="WebApacheShortcutComponent"/>
       <ComponentRef Id="WebIISShortcutComponent"/>
       <ComponentRef Id="WebTempComponent"/>
-      <Feature Id="WebExtApacheFeature" Title="Apache Web Server" Display="hidden" Level="1" Description="A bundled version of Apache with MapGuide enabled, running on port [APACHE_PORT]." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+      <Feature Id="WebExtApacheFeature" Title="!(loc.WebExtApacheFeature)" Display="hidden" Level="1" Description="!(loc.WebExtApacheFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
           <Condition Level="0">MGWEB_CONFIG = "IIS"</Condition>
         <ComponentGroupRef Id="group_APACHEFILES"/>
       </Feature>
-      <Feature Id="WebExtPhpFeature" Title="PHP Hypertext Processor" Display="hidden" Level="1" Description="A bundled version of PHP with MapGuide enabled." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+      <Feature Id="WebExtPhpFeature" Title="!(loc.WebExtPhpFeature)" Display="hidden" Level="1" Description="!(loc.WebExtPhpFeature_Description)" Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
         <ComponentGroupRef Id="group_PHPFILES"/>
       </Feature>
-      <Feature Id="WebExtTomcatFeature" Title="Tomcat Java Webserver" Level="1" Description="A bundled version of Tomcat with MapGuide enabled." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+      <Feature Id="WebExtTomcatFeature" Title="!(loc.WebExtTomcatFeature)" Level="1" Description="!(loc.WebExtTomcatFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
         <ComponentGroupRef Id="group_TOMCATFILES"/>
       </Feature>
-        <Feature Id="WebExtHelpFeature" Title="API Documentation" Level="1" ConfigurableDirectory="HELPLOCATION" Description="Web Extension API documentation" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+        <Feature Id="WebExtHelpFeature" Title="!(loc.WebExtHelpFeature)" Level="1" ConfigurableDirectory="HELPLOCATION" Description="!(loc.WebExtHelpFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
           <ComponentGroupRef Id="group_HELPFILES" />
           <ComponentRef Id="WebApiShortcutComponent"/>
         </Feature>
-      <Feature Id="WebExtMapViewerFeature" Title="Map Viewer files" Display="hidden" Level="1" Description="The support files for the map viewer, language independant." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+      <Feature Id="WebExtMapViewerFeature" Title="!(loc.WebExtMapViewerFeature)" Display="hidden" Level="1" Description="!(loc.WebExtMapViewerFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
         <ComponentGroupRef Id="group_MAPVIEWERFILES"/>
       </Feature>
-      <Feature Id="WebExtMapViewerPHPFeature" Title="PHP Map Viewer" Level="1" Description="The PHP version of the map viewer." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+      <Feature Id="WebExtMapViewerPHPFeature" Title="!(loc.WebExtMapViewerPHPFeature)" Level="1" Description="!(loc.WebExtMapViewerPHPFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
         <ComponentGroupRef Id="group_MAPVIEWERPHPFILES"/>
       </Feature>
-      <Feature Id="WebExtMapViewerJSPFeature" Title="JSP Map Viewer" Level="1" Description="The JSP version of the map viewer." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+      <Feature Id="WebExtMapViewerJSPFeature" Title="!(loc.WebExtMapViewerJSPFeature)" Level="1" Description="!(loc.WebExtMapViewerJSPFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
         <ComponentGroupRef Id="group_MAPVIEWERJSPFILES"/>
         <ComponentGroupRef Id="group_WEBINFFILES"/>
       </Feature>
-      <Feature Id="WebExtMapViewerASPXFeature" Title=".Net Map Viewer" Level="1" Description="The .Net version of the map viewer." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+      <Feature Id="WebExtMapViewerASPXFeature" Title="!(loc.WebExtMapViewerASPXFeature)" Level="1" Description="!(loc.WebExtMapViewerASPXFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
           <Condition Level="0">NOT NETFRAMEWORK20</Condition>
         <ComponentGroupRef Id="group_MAPVIEWERASPXFILES"/>
       </Feature>
-        <Feature Id="WebExtSamplesFeature" Title="Samples" Level="1" Description="Sample code and data" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
-            <Feature Id="WebExtDevGuideSamplesFeature" Title="Developer's Guide Sample Code" Level="1" Description="PHP sample code from the MapGuide Developer's Guide. This requires the Sheboygan sample data." AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+        <Feature Id="WebExtSamplesFeature" Title="!(loc.WebExtSamplesFeature)" Level="1" Description="!(loc.WebExtSamplesFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <Feature Id="WebExtDevGuideSamplesFeature" Title="!(loc.WebExtDevGuideSamplesFeature)" Level="1" Description="!(loc.WebExtDevGuideSamplesFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
                 <ComponentGroupRef Id="group_DEVGUIDEFILES" />
             </Feature>
         </Feature>
-        <Feature Id="WebLocalizedFeature" Title="Localization Files" Display="hidden"  Level="1" Description="Localization files for the web tier" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+        <Feature Id="WebLocalizedFeature" Title="!(loc.WebLocalizedFeature)" Display="hidden"  Level="1" Description="!(loc.WebLocalizedFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
             <ComponentGroupRef Id="group_MAPVIEWERLOCALIZEDFILES" />
         </Feature>
-        <Feature Id="WebFusionFeature" Title="Fusion" Display="hidden"  Level="1" Description="Fusion is a web-mapping application framework, allowing non-spatial web developers to build rich mapping applications quickly and easily" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+        <Feature Id="WebFusionFeature" Title="!(loc.WebFusionFeature)" Display="hidden"  Level="1" Description="!(loc.WebFusionFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
             <ComponentGroupRef Id="group_FUSIONFILES"/>
         </Feature>
-        <Feature Id="WebMapAdminFeature" Title="MapGuide Site Administrator" Display="hidden" Level="1" Description="The MapGuide Site Administrator is a web-based administrative front-end for the MapGuide Server" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+        <Feature Id="WebMapAdminFeature" Title="!(loc.WebMapAdminFeature)" Display="hidden" Level="1" Description="!(loc.WebMapAdminFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
             <ComponentGroupRef Id="group_MAPVIEWERMAPADMINFILES" />
         </Feature>
-        <Feature Id="WebMapAgentFeature" Title="Map Agent" Display="hidden"  Level="1" Description="The map agent allows client applications to communicate with MapGuide over HTTP" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+        <Feature Id="WebMapAgentFeature" Title="!(loc.WebMapAgentFeature)" Display="hidden"  Level="1" Description="!(loc.WebMapAgentFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
             <ComponentGroupRef Id="group_MAPAGENTFILES" />
         </Feature>
-        <Feature Id="WebSchemaReportFeature" Title="Schema Report" Display="hidden"  Level="1" Description="The schema report allows the user to describe and preview MapGuide feature sources" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+        <Feature Id="WebSchemaReportFeature" Title="!(loc.WebSchemaReportFeature)" Display="hidden"  Level="1" Description="!(loc.WebSchemaReportFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
             <ComponentGroupRef Id="group_MAPVIEWERSCHEMAREPORTFILES" />
         </Feature>
-        <Feature Id="WebStdIconsFeature" Title="Standard Icons" Display="hidden"  Level="1" Description="Icons for the AJAX viewer" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+        <Feature Id="WebStdIconsFeature" Title="!(loc.WebStdIconsFeature)" Display="hidden"  Level="1" Description="!(loc.WebStdIconsFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
             <ComponentGroupRef Id="group_MAPVIEWERSTDICONFILES" />
         </Feature>
         <ComponentGroupRef Id="group_WEBROOTFILES"/>

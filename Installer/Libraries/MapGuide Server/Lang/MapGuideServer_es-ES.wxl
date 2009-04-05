@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="es-ES" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+    <String Id="ServerFeature">MapGuide Servidor</String>
+    <String Id="ServerFeature_Description">MapGuide Server proporciona análisis geográfico y la prestación de servicios.</String>
+    <String Id="ServerLogsFeature">Archivos de registro</String>
+    <String Id="ServerLogsFeature_Description">Usted puede elegir una ubicación para colocar los archivos de registro del servidor.</String>
+    <String Id="ServerPackagesFeature">Paquetes</String>
+    <String Id="ServerPackagesFeature_Description">Usted puede elegir un lugar donde el servidor de acceso Paquetes (*. mgp).</String>
+    <String Id="ServerRepositoriesFeature">Repositorios</String>
+    <String Id="ServerRepositoriesFeature_Description">Usted puede elegir uno de los padres para la ubicación del servidor repositorios.</String>
+    <String Id="ServerRepositoriesLibraryFeature">Biblioteca Repositorio</String>
+    <String Id="ServerRepositoriesLibraryFeature_Description">Usted puede elegir una ubicación para la Biblioteca de repositorios.</String>
+    <String Id="ServerRepositoriesSessionFeature">Período de sesiones de repositorios</String>
+    <String Id="ServerRepositoriesSessionFeature_Description">Usted puede elegir una ubicación para la reunión de repositorios.</String>
+    <String Id="ServerRepositoriesSiteFeature">Sitio Repositorio</String>
+    <String Id="ServerRepositoriesSiteFeature_Description">Usted puede elegir una ubicación para el sitio de repositorios.</String>
+    <String Id="ServerRepositoriesTileCacheFeature">Azulejos caché Repositorio</String>
+    <String Id="ServerRepositoriesTileCacheFeature_Description">You may choose a location for the Tile Cache repository.</String>
+    <String Id="ServerTempFeature">Archivos temporales</String>
+    <String Id="ServerTempFeature_Description">Usted puede elegir un lugar donde MapGuide almacenará los archivos temporales</String>
+</WixLocalization>

@@ -33,6 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="FileIncludes" />
+    <Folder Include="Lang" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FDO\FDO.wixproj">
@@ -40,6 +41,10 @@
       <Project>{c95b542f-b551-46b5-8b07-fc54f161a123}</Project>
       <Private>True</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Lang\MapGuideServer_en-US.wxl" />
+    <EmbeddedResource Include="Lang\MapGuideServer_es-ES.wxl" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--

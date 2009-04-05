@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="FileIncludes" />
+    <Folder Include="Lang" />
   </ItemGroup>
   <ItemGroup>
     <WixExtension Include="WixNetFxExtension">
@@ -59,6 +60,10 @@
     <WixExtension Include="WixUtilExtension">
       <HintPath>$(WixExtDir)\WixUtilExtension.dll</HintPath>
     </WixExtension>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Lang\MapGuideWebExtensions_en-US.wxl" />
+    <EmbeddedResource Include="Lang\MapGuideWebExtensions_es-ES.wxl" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--

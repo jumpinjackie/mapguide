@@ -15,7 +15,7 @@
         </Component>
       </Directory>
     </DirectoryRef>
-    <Feature Id="CSMapFeature" Title="CS Map" Display="hidden" Level="1" ConfigurableDirectory="CSMAPLOCATION" Description="CSMap Open Source is a required component for MapGuide Server and Web Extensions." Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+    <Feature Id="CSMapFeature" Title="!(loc.CSMapFeature)" Display="hidden" Level="1" ConfigurableDirectory="CSMAPLOCATION" Description="!(loc.CSMapFeature_Description)" Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
       <ComponentRef Id="CsMapComponent"/>
       <ComponentGroupRef Id="group_CSMAPDICTFILES"/>
     </Feature>

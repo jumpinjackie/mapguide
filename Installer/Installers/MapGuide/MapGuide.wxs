@@ -7,10 +7,10 @@
     <Product
            Id="47B770BA-1591-415D-A7AE-33D4C522FCEA"
            UpgradeCode="5D9A7D8D-485E-43E0-A4C8-3582E4D80051"
-           Name="MapGuide Open Source 2.1"
+           Name="!(loc.ProductName)"
            Version="2.1.0"
-           Manufacturer="Open Source Geospatial Foundation"
-           Language="1033" >
+           Manufacturer="!(loc.ProductManufacturer)"
+           Language="!(loc.LANG)" >
 
         <Package InstallerVersion="300" Compressed="yes" />
 
@@ -76,7 +76,7 @@
             <DialogRef Id="UserExit" />
 
             <!-- Dialog to warn about .NET Framework not found on system -->
-            <Dialog Id="NoDotNetDialog" Width="370" Height="270" Title="[ProductName] Setup">
+            <Dialog Id="NoDotNetDialog" Width="370" Height="270" Title="!(loc.InstallerTitle)">
                 <!-- 
                     .NET Framework not found
                 
@@ -88,22 +88,22 @@
                     To make this feature available for installation, please install the .NET Framework (2.0 or higher) before
                     proceeding with installation
                 -->
-                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}.NET Framework" />
-                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text=".NET Framework not found" />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}!(loc.NoDotNetDialog_Title)" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.NoDotNetDialog_Description)" />
                 <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
                 <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
 
-                <Control Id="TxtMessage" Type="Text" X="20" Y="70" Width="300" Height="40" Text="The .NET Framework was not found on your system. As a result, the following feature will not be available for installation:" />
-                <Control Id="TxtAspNet" Type="Text" X="30" Y="130" Width="200" Height="15" Text=".NET Web Extensions for IIS" />
-                <Control Id="TxtMessage2" Type="Text" X="20" Y="160" Width="300" Height="40" Text="To make this feature available for installation, please install the .NET Framework (2.0 or higher) before proceeding with installation" />
+                <Control Id="TxtMessage" Type="Text" X="20" Y="70" Width="300" Height="40" Text="!(loc.NoDotNetDialog_Message)" />
+                <Control Id="TxtAspNet" Type="Text" X="30" Y="130" Width="200" Height="15" Text="!(loc.NoDotNetDialog_AspNet)" />
+                <Control Id="TxtMessage2" Type="Text" X="20" Y="160" Width="300" Height="40" Text="!(loc.NoDotNetDialog_Message2)" />
                 
-                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
-                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
-                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.CancelButtonText)" />
             </Dialog>
 
             <!-- Dialog to choose web server configuration: IIS / Apache / Manual -->
-            <Dialog Id="WebServerConfigDlg" Width="370" Height="270" Title="[ProductName] Setup">
+            <Dialog Id="WebServerConfigDlg" Width="370" Height="270" Title="!(loc.InstallerTitle)">
                 <!-- 
                     Select the type of web server configuration you want
                 
@@ -122,28 +122,28 @@
                     Install all required components for PHP, .NET and Java development, but don't configure
                     a web server.
                 -->
-                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Select Configuration Type" />
-                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Select the type of web server configuration you want" />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}!(loc.WebServerConfigDlg_Title)" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.WebServerConfigDlg_Description)" />
                 <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
                 <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
                 
                 <Control Id="RdWebConfig" Property="MGWEB_CONFIG" Type="RadioButtonGroup" X="20" Y="50" Height="190" Width="290">
                     <RadioButtonGroup Property="MGWEB_CONFIG">
-                        <RadioButton Text="{\WixUI_Font_Title}Bundled Configuration" ToolTip="Install and configure Apache, PHP, and Tomcat." Value="APACHE" X="25" Y="10" Width="200" Height="45" />
-                        <RadioButton Text="{\WixUI_Font_Title}IIS Configuration" ToolTip="Install PHP and auto-configure IIS." Value="IIS" X="25" Y="60" Width="200" Height="45" />
-                        <RadioButton Text="{\WixUI_Font_Title}Manual Configuration" ToolTip="Install all required components for PHP, .NET and Java development." Value="MANUAL" X="25" Y="110" Width="200" Height="45" />
+                        <RadioButton Text="{\WixUI_Font_Title}!(loc.WebServerConfigDlg_Apache)" ToolTip="!(loc.WebServerConfigDlg_Apache_Tooltip)" Value="APACHE" X="25" Y="10" Width="200" Height="45" />
+                        <RadioButton Text="{\WixUI_Font_Title}!(loc.WebServerConfigDlg_IIS)" ToolTip="!(loc.WebServerConfigDlg_IIS_Tooltip)" Value="IIS" X="25" Y="60" Width="200" Height="45" />
+                        <RadioButton Text="{\WixUI_Font_Title}!(loc.WebServerConfigDlg_Manual)" ToolTip="!(loc.WebServerConfigDlg_Manual_Tooltip)" Value="MANUAL" X="25" Y="110" Width="200" Height="45" />
                     </RadioButtonGroup>
                 </Control>
 
-                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
-                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
-                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.CancelButtonText)" />
             </Dialog>
 
             <!-- Dialog to configure Apache settings: Port, PHP/Java -->
-            <Dialog Id="ApacheConfigDlg" Width="370" Height="270" Title="[ProductName] Setup">
-                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Bundled Configuration Settings" />
-                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Set up the development environment" />
+            <Dialog Id="ApacheConfigDlg" Width="370" Height="270" Title="!(loc.InstallerTitle)">
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}!(loc.ApacheConfigDlg_Title)" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.ApacheConfigDlg_Description)" />
                 <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
                 <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
                 <!-- 
@@ -157,9 +157,9 @@
                     ( ) PHP
                     ( ) Java
                 -->
-                <Control Id="LblServerPort" Type="Text" Text="{\WixUI_Font_Title}Web Server Port Number:" X="20" Y="60" Width="120" Height="15" />
+                <Control Id="LblServerPort" Type="Text" Text="{\WixUI_Font_Title}!(loc.ApacheConfigDlg_PortNo)" X="20" Y="60" Width="120" Height="15" />
                 <Control Id="TxtServerPort" Type="Edit" Property="APACHE_PORT" X="30" Y="80" Width="120" Height="15" />
-                <Control Id="LblDevEnv" Type="Text" Text="{\WixUI_Font_Title}Development Environment:" X="20" Y="110" Width="120" Height="15" />
+                <Control Id="LblDevEnv" Type="Text" Text="{\WixUI_Font_Title}!(loc.ApacheConfigDlg_DevEnv)" X="20" Y="110" Width="120" Height="15" />
                 <Control Id="RdApacheApiType" Property="APACHE_API_TYPE" Type="RadioButtonGroup" X="20" Y="130" Height="100" Width="290">
                     <RadioButtonGroup Property="APACHE_API_TYPE">
                         <RadioButton Text="PHP" Value="PHP" X="25" Y="10" Width="200" Height="45" />
@@ -167,15 +167,15 @@
                     </RadioButtonGroup>
                 </Control>
 
-                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
-                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
-                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.CancelButtonText)" />
             </Dialog>
 
             <!-- Dialog to configure IIS settings: PHP/.net -->
-            <Dialog Id="IISLangConfigDlg" Width="370" Height="270" Title="[ProductName] Setup">
-                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}IIS Configuration Settings" />
-                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Set up the development environment" />
+            <Dialog Id="IISLangConfigDlg" Width="370" Height="270" Title="!(loc.InstallerTitle)">
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}!(loc.IISLangConfigDlg_Title)" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.IISLangConfigDlg_Description)" />
                 <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
                 <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
                 <!-- 
@@ -184,22 +184,22 @@
                 ( ) PHP
                 ( ) .NET
                 -->
-                <Control Id="LblDevEnv" Type="Text" Text="{\WixUI_Font_Title}Development Environment:" X="20" Y="60" Width="120" Height="15" />
-                <Control Id="RdIIsApiType" Property="IIS_API_TYPE" Type="RadioButtonGroup" Text="{\WixUI_Font_Title}Development Environment:" X="30" Y="70" Height="100" Width="290">
+                <Control Id="LblDevEnv" Type="Text" Text="{\WixUI_Font_Title}!(loc.IISLangConfigDlg_DevEnv)" X="20" Y="60" Width="120" Height="15" />
+                <Control Id="RdIIsApiType" Property="IIS_API_TYPE" Type="RadioButtonGroup" Text="{\WixUI_Font_Title}!(loc.IISLangConfigDlg_DevEnv)" X="30" Y="70" Height="100" Width="290">
                     <RadioButtonGroup Property="IIS_API_TYPE">
                         <RadioButton Text="PHP" Value="PHP" X="25" Y="10" Width="200" Height="45" />
                         <RadioButton Text=".NET" Value="DOTNET" X="25" Y="40" Width="200" Height="45" />
                     </RadioButtonGroup>
                 </Control>
-                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
-                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
-                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.CancelButtonText)" />
             </Dialog>
 
             <!-- Dialog to configure IIS6 specific things: web-site installation and application pool -->
-            <Dialog Id="IIS6ConfigDlg" Width="370" Height="270" Title="[ProductName] Setup">
-                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}IIS 6.0 Configuration" />
-                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Configure IIS 6.0 Settings" />
+            <Dialog Id="IIS6ConfigDlg" Width="370" Height="270" Title="!(loc.InstallerTitle)">
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}!(loc.IIS6ConfigDlg_Title)" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.IIS6ConfigDlg_Description)" />
                 <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
                 <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
                 <!-- 
@@ -212,20 +212,17 @@
                 ASP.net application environments on your web server.
                 
                 -->
-                <!--
-                <Control Id="LblNote" Type="Text" Text="If you can read this, I've detected your version of IIS correctly" X="20" Y="80" Width="240" Height="15" />
-                -->
-                <Control Id="LblAppPool" Type="Text" Text="Create an application pool" X="20" Y="80" Width="240" Height="15" />
+                <Control Id="LblAppPool" Type="Text" Text="!(loc.IIS6ConfigDlg_AppPool)" X="20" Y="80" Width="240" Height="15" />
                 <Control Id="TxtAppPool" Type="Edit" Property="APP_POOL_NAME" X="20" Y="100" Width="240" Height="15" />
-                <Control Id="LblAppPoolDescription" Type="Text" Text="An application pool allows MapGuide applications to be isolated from other applications running on the web server" X="20" Y="120" Width="240" Height="45" />
+                <Control Id="LblAppPoolDescription" Type="Text" Text="!(loc.IIS6ConfigDlg_AppPoolDescription)" X="20" Y="120" Width="240" Height="45" />
 
-                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
-                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
-                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.CancelButtonText)" />
             </Dialog>
 
             <!-- Dialog to configure IIS7 specific things -->
-            <Dialog Id="IIS7ConfigDlg" Width="370" Height="270" Title="[ProductName] Setup">
+            <Dialog Id="IIS7ConfigDlg" Width="370" Height="270" Title="!(loc.InstallerTitle)">
                 <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}IIS 7.0 Configuration" />
                 <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Configure IIS 7.0 Settings" />
                 <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
@@ -233,15 +230,15 @@
                 <!-- -->
                 <Control Id="LblNote" Type="Text" Text="If you can read this, I've detected your version of IIS correctly" X="20" Y="80" Width="240" Height="15" />
 
-                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
-                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
-                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.CancelButtonText)" />
             </Dialog>
 
             <!-- Dialog to configure MG Server IP address -->
-            <Dialog Id="IPConfigDlg" Width="370" Height="270" Title="[ProductName] Setup">
-                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Server IP address" />
-                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Enter the MapGuide Server site server IP address." />
+            <Dialog Id="IPConfigDlg" Width="370" Height="270" Title="!(loc.InstallerTitle)">
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}!(loc.IPConfigDlg_Title)" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.IPConfigDlg_Description)" />
                 <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
                 <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
                 <!-- 
@@ -252,13 +249,13 @@
                 The site server IP address defaults to localhost (127.0.0.1)
                 
                 -->
-                <Control Id="LblServerIP" Type="Text" Text="Enter the MapGuide Server site server IP address:" X="20" Y="80" Width="240" Height="15" />
+                <Control Id="LblServerIP" Type="Text" Text="!(loc.IPConfigDlg_IPAddress)" X="20" Y="80" Width="240" Height="15" />
                 <Control Id="TxtServerPort" Type="Edit" Property="MGSERVER_IP" X="30" Y="100" Width="120" Height="15" />
-                <Control Id="LblNote" Type="Text" Text="The site server IP address defaults to localhost (127.0.0.1)" X="20" Y="120" Width="240" Height="15" />
+                <Control Id="LblNote" Type="Text" Text="!(loc.IPConfigDlg_Note)" X="20" Y="120" Width="320" Height="15" />
                 
-                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
-                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
-                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.CancelButtonText)" />
             </Dialog>
 
             <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
@@ -325,26 +322,26 @@
             <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
             
             <!-- Progress messages (so the user knows what's happening under the hood) -->
-            <ProgressText Action="UpdateApacheConfig">Setting values for httpd.conf</ProgressText>
-            <ProgressText Action="UpdatePhpIni">Setting values for php.ini</ProgressText>
-            <ProgressText Action="InstallApacheServiceCA">Installing Apache Service</ProgressText>
-            <ProgressText Action="MgServerInstallCA">Installing MapGuide Service</ProgressText>
-            <ProgressText Action="MgServerUninstallCA">Removing MapGuide Service</ProgressText>
-            <ProgressText Action="RemoveApacheServiceCA">Removing Apache Service</ProgressText>
-            <ProgressText Action="AddWebServiceExtension">Add Web Service Extension to IIS</ProgressText>
-            <ProgressText Action="CreateVDirMapGuide">Creating mapguide IIS virtual directory</ProgressText>
-            <ProgressText Action="RegisterScriptMaps">Registering IIS script maps</ProgressText>
-            <ProgressText Action="SetCustomErrors">Setting IIS custom errors</ProgressText>
-            <ProgressText Action="CreateVDirMapAgent">Creating mapagent IIS virtual directory</ProgressText>
-            <ProgressText Action="CreateVDirPhpAgent">Creating mapviewerphp IIS virutal directory</ProgressText>
-            <ProgressText Action="CreateVDirNetAgent">Creating mapviewernet IIS virtual directory</ProgressText>
-            <ProgressText Action="CreateVDirJavaAgent">Creating mapviewerjava IIS virtual directory</ProgressText>
-            <ProgressText Action="DeleteWebServiceExtension">Remove Web Service Extension from IIS</ProgressText>
-            <ProgressText Action="DeleteVDirMapGuide">Removing mapguide IIS virtual directory</ProgressText>
-            <ProgressText Action="CreateAPPMapGuideWithIIS7">Creating IIS7 mapguide application</ProgressText>
-            <ProgressText Action="CreateVDirPhpAgentWithIIS7">Creating IIS7 virtual directory: mapviewerphp</ProgressText>
-            <ProgressText Action="CreateAPPNetAgentWithIIS7">Creating IIS7 virtual directory: mapviewernet</ProgressText>
-            <ProgressText Action="DeleteAPPMapGuideWithIIS7">Remove IIS7 mapguide application</ProgressText>
+            <ProgressText Action="UpdateApacheConfig">!(loc.UpdateApacheConfig)</ProgressText>
+            <ProgressText Action="UpdatePhpIni">!(loc.UpdatePhpIni)</ProgressText>
+            <ProgressText Action="InstallApacheServiceCA">!(loc.InstallApacheServiceCA)</ProgressText>
+            <ProgressText Action="MgServerInstallCA">!(loc.MgServerInstallCA)</ProgressText>
+            <ProgressText Action="MgServerUninstallCA">!(loc.MgServerUninstallCA)</ProgressText>
+            <ProgressText Action="RemoveApacheServiceCA">!(loc.RemoveApacheServiceCA)</ProgressText>
+            <ProgressText Action="AddWebServiceExtension">!(loc.AddWebServiceExtension)</ProgressText>
+            <ProgressText Action="CreateVDirMapGuide">!(loc.CreateVDirMapGuide)</ProgressText>
+            <ProgressText Action="RegisterScriptMaps">!(loc.RegisterScriptMaps)</ProgressText>
+            <ProgressText Action="SetCustomErrors">!(loc.SetCustomErrors)</ProgressText>
+            <ProgressText Action="CreateVDirMapAgent">!(loc.CreateVDirMapAgent)</ProgressText>
+            <ProgressText Action="CreateVDirPhpAgent">!(loc.CreateVDirPhpAgent)</ProgressText>
+            <ProgressText Action="CreateVDirNetAgent">!(loc.CreateVDirNetAgent)</ProgressText>
+            <ProgressText Action="CreateVDirJavaAgent">!(loc.CreateVDirJavaAgent)</ProgressText>
+            <ProgressText Action="DeleteWebServiceExtension">!(loc.DeleteWebServiceExtension)</ProgressText>
+            <ProgressText Action="DeleteVDirMapGuide">!(loc.DeleteVDirMapGuide)</ProgressText>
+            <ProgressText Action="CreateAPPMapGuideWithIIS7">!(loc.CreateAPPMapGuideWithIIS7)</ProgressText>
+            <ProgressText Action="CreateVDirPhpAgentWithIIS7">!(loc.CreateVDirPhpAgentWithIIS7)</ProgressText>
+            <ProgressText Action="CreateAPPNetAgentWithIIS7">!(loc.CreateAPPNetAgentWithIIS7)</ProgressText>
+            <ProgressText Action="DeleteAPPMapGuideWithIIS7">!(loc.DeleteAPPMapGuideWithIIS7)</ProgressText>
         </UI>
 
         <InstallExecuteSequence>

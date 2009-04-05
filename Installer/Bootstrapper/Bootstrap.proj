@@ -9,7 +9,7 @@
             BootstrapperItems="@(BootstrapperFile)"
 			CopyComponents="true"
 			ComponentsLocation="Relative"
-			Culture="en"
-            OutputPath="..\Output\" />
+			Culture="$(Culture)"
+            OutputPath="..\Output\$(Culture)" />
     </Target>
 </Project>

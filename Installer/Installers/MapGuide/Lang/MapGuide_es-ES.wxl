@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="es-ES" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+    <!-- 
+    Use this link to get the culture id
+    http://msdn.microsoft.com/en-us/library/system.globalization.cultureinfo(vs.80).aspx
+    -->
+    <String Id="LANG">3082</String>
+    <String Id="ProductName">MapGuide Open Source 2.1</String>
+    <String Id="ProductManufacturer">Open Source Geospatial Foundation</String>
+
+    <String Id="InstallerTitle">Instalación de [ProductName]</String>
+
+    <String Id="NextButtonText">Siguiente</String>
+    <String Id="BackButtonText">Anterior</String>
+    <String Id="CancelButtonText">Cancelar</String>
+
+    <String Id="NoDotNetDialog_Title">.NET Framework</String>
+    <String Id="NoDotNetDialog_Description">.NET Framework no se encuentra</String>
+    <String Id="NoDotNetDialog_Message">.NET Framework no se ha encontrado en su sistema. Como resultado de ello, la siguiente función no estará disponible para la instalación:</String>
+    <String Id="NoDotNetDialog_AspNet">.NET Web Extensiones para IIS</String>
+    <String Id="NoDotNetDialog_Message2">Para que esta función esté disponible para la instalación, por favor, instalar. NET Framework (2.0 o superior) antes de proceder con la instalación</String>
+
+    <String Id="WebServerConfigDlg_Title">Seleccione el tipo de configuración</String>
+    <String Id="WebServerConfigDlg_Description">Seleccione el tipo de configuración del servidor Web que desea</String>
+    <String Id="WebServerConfigDlg_Apache">Paquete de configuración</String>
+    <String Id="WebServerConfigDlg_IIS">Configuración de IIS</String>
+    <String Id="WebServerConfigDlg_Manual">Configuración manual</String>
+    <String Id="WebServerConfigDlg_Apache_Tooltip">Instalar y configurar Apache, PHP y Tomcat</String>
+    <String Id="WebServerConfigDlg_IIS_Tooltip">Instalar PHP y de auto-configuración de IIS</String>
+    <String Id="WebServerConfigDlg_Manual_Tooltip">Instalar todos los componentes necesarios para PHP,. NET y Java desarrollo.</String>
+
+    <String Id="ApacheConfigDlg_Title">Paquete de ajustes de configuración</String>
+    <String Id="ApacheConfigDlg_Description">Configure el entorno de desarrollo</String>
+    <String Id="ApacheConfigDlg_PortNo">número de puerto del servidor web:</String>
+    <String Id="ApacheConfigDlg_DevEnv">Entorno de desarrollo:</String>
+
+    <String Id="IISLangConfigDlg_Title">Ajustes de configuración de IIS</String>
+    <String Id="IISLangConfigDlg_Description">Configure el entorno de desarrollo</String>
+    <String Id="IISLangConfigDlg_DevEnv">Entorno de desarrollo:</String>
+
+    <String Id="IIS6ConfigDlg_Title">Configuración de IIS 6.0</String>
+    <String Id="IIS6ConfigDlg_Description">Configurar IIS 6.0 Configuración</String>
+    <String Id="IIS6ConfigDlg_AppPool">Crear un grupo de aplicaciones</String>
+    <String Id="IIS6ConfigDlg_AppPoolDescription">Un grupo de aplicaciones MapGuide permite a las aplicaciones ser aislado de otras aplicaciones que se ejecutan en el servidor web</String>
+
+    <String Id="IPConfigDlg_Title">Dirección IP del servidor</String>
+    <String Id="IPConfigDlg_Description">Introduzca el servidor de sitio MapGuide dirección IP del servidor</String>
+    <String Id="IPConfigDlg_IPAddress">Introduzca el servidor de sitio MapGuide dirección IP del servidor:</String>
+    <String Id="IPConfigDlg_Note">La dirección IP del servidor web por defecto es localhost (127.0.0.1)</String>
+
+    <String Id="UpdateApacheConfig">Ajuste los valores de httpd.conf</String>
+    <String Id="UpdatePhpIni">Ajuste los valores de php.ini</String>
+    <String Id="InstallApacheServiceCA">Servicio de Instalación de Apache</String>
+    <String Id="MgServerInstallCA">Servicio de Instalación de MapGuide</String>
+    <String Id="MgServerUninstallCA">Extracción de MapGuide Servicio</String>
+    <String Id="RemoveApacheServiceCA">Servicio de eliminación de Apache</String>
+    <String Id="AddWebServiceExtension">Añadir a la extensión de servicio Web de IIS</String>
+    <String Id="CreateVDirMapGuide">Creación de directorio virtual de IIS MapGuide</String>
+    <String Id="RegisterScriptMaps">Mapas de secuencia de comandos de registro de IIS</String>
+    <String Id="SetCustomErrors">Configuración personalizada de IIS errores</String>
+    <String Id="CreateVDirMapAgent">Creación de directorio virtual de IIS mapagent</String>
+    <String Id="CreateVDirPhpAgent">Creación de mapviewerphp virutal directorio IIS</String>
+    <String Id="CreateVDirNetAgent">Creación de directorio virtual de IIS mapviewernet</String>
+    <String Id="CreateVDirJavaAgent">Creación de directorio virtual de IIS mapviewerjava</String>
+    <String Id="DeleteWebServiceExtension">Quitar de extensión de servicio Web de IIS</String>
+    <String Id="DeleteVDirMapGuide">Extracción de MapGuide directorio virtual de IIS</String>
+    <String Id="CreateAPPMapGuideWithIIS7">Creación de aplicación MapGuide IIS7</String>
+    <String Id="CreateVDirPhpAgentWithIIS7">Creación de directorio virtual IIS7: mapviewerphp</String>
+    <String Id="CreateAPPNetAgentWithIIS7">Creación de directorio virtual IIS7: mapviewernet</String>
+    <String Id="DeleteAPPMapGuideWithIIS7">Eliminar IIS7 aplicación MapGuide</String>
+</WixLocalization>

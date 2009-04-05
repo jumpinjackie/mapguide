@@ -8,7 +8,7 @@
                     <CreateFolder />
                     <util:InternetShortcut Id="WebApi"
                                            Directory="MapGuideOpenSourceMenuLocation"
-                                           Name="Web API Documentation"
+                                           Name="!(loc.Shortcut_WebAPI)"
                                            Target="file://[HELPLOCATION]index.htm" />
                     <RegistryKey Root="HKCU" Key="Software\MapGuide Open Source\WebExtensions\WebApiShortcut">
                         <RegistryValue
@@ -22,15 +22,15 @@
                     <Condition>MGWEB_CONFIG = "APACHE"</Condition>
                     <util:InternetShortcut Id="ApacheSiteAdmin"
                                            Directory="MapGuideOpenSourceMenuLocation"
-                                           Name="MapGuide Site Administrator" 
+                                           Name="!(loc.Shortcut_SiteAdmin)" 
                                            Target="http://localhost:[APACHE_PORT]/mapguide/mapadmin/login.php" />
                     <util:InternetShortcut Id="ApacheMapAgent"
                                            Directory="MapGuideOpenSourceMenuLocation"
-                                           Name="MapAgent Test Pages"
+                                           Name="!(loc.Shortcut_MapAgent)"
                                            Target="http://localhost:[APACHE_PORT]/mapguide/mapagent/index.html" />
                     <util:InternetShortcut Id="ApacheGetMaestro"
                                            Directory="MapGuideOpenSourceMenuLocation"
-                                           Name="Get MapGuide Maestro"
+                                           Name="!(loc.Shortcut_GetMaestro)"
                                            Target="http://trac.osgeo.org/mapguide/wiki/maestro" />
                     <RegistryKey Root="HKCU" Key="Software\MapGuide Open Source\WebExtensions\ApacheShortcut">
                         <RegistryValue
@@ -43,15 +43,15 @@
                     <Condition>MGWEB_CONFIG = "IIS"</Condition>
                     <util:InternetShortcut Id="IISSiteAdmin"
                                            Directory="MapGuideOpenSourceMenuLocation"
-                                           Name="MapGuide Site Administrator"
+                                           Name="!(loc.Shortcut_SiteAdmin)"
                                            Target="http://localhost/mapguide/mapadmin/login.php" />
                     <util:InternetShortcut Id="IISMapAgent"
                                            Directory="MapGuideOpenSourceMenuLocation"
-                                           Name="MapAgent Test Pages"
+                                           Name="!(loc.Shortcut_MapAgent)"
                                            Target="http://localhost/mapguide/mapagent/index.html" />
                     <util:InternetShortcut Id="IISGetMaestro"
                                            Directory="MapGuideOpenSourceMenuLocation"
-                                           Name="Get MapGuide Maestro"
+                                           Name="!(loc.Shortcut_GetMaestro)"
                                            Target="http://trac.osgeo.org/mapguide/wiki/maestro" />
                     <RegistryKey Root="HKCU" Key="Software\MapGuide Open Source\WebExtensions\IISShortcut">
                         <RegistryValue
@@ -65,19 +65,19 @@
                         <CreateFolder />
                         <util:InternetShortcut Id="MapGuideHome"
                                                Directory="WebResourcesLocation"
-                                               Name="MapGuide Project Home"
+                                               Name="!(loc.Shortcut_MapGuide)"
                                                Target="http://mapguide.osgeo.org" />
                         <util:InternetShortcut Id="MapGuideTrac"
                                                Directory="WebResourcesLocation"
-                                               Name="MapGuide Trac"
+                                               Name="!(loc.Shortcut_Trac)"
                                                Target="http://trac.osgeo.org" />
                         <util:InternetShortcut Id="MapGuideBestPractices"
                                                Directory="WebResourcesLocation"
-                                               Name="MapGuide Best Practices"
+                                               Name="!(loc.Shortcut_BestPractices)"
                                                Target="http://sandbox.mapguide.com" />
                         <util:InternetShortcut Id="MapGuideCentral"
                                                Directory="WebResourcesLocation"
-                                               Name="MapGuide Central"
+                                               Name="!(loc.Shortcut_MapGuideCentral)"
                                                Target="http://ennoble.dreamhosters.com/mapguide-central" />
                         <RegistryKey Root="HKCU" Key="Software\MapGuide Open Source\WebResources\ProgramMenuShortcut">
                             <RegistryValue

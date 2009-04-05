@@ -17,6 +17,7 @@ rem build.bat [-h]
 rem           [-v]
 rem           [-c=BuildType]
 rem           [-a=Action]
+rem           [-lang=Culture]
 rem           [-srv=ServerDirectory]
 rem	      	  [-web=WebExtensionsDirectory]
 rem
@@ -31,12 +32,13 @@ rem ==================================================
 SET OLDPATH=%PATH%
 SET TYPEACTION=build
 SET TYPEBUILD=Release
+SET CULTURE=en-US
 
 rem ==================================================
 rem MapGuide Installer vars
 rem ==================================================
 SET INSTALLER_DEV=%CD%
-SET INSTALLER_OUTPUT=%INSTALLER_DEV%\Output
+SET INSTALLER_OUTPUT=%INSTALLER_DEV%\Output\%CULTURE%
 SET INSTALLER_DEV_SUPPORT=%INSTALLER_DEV%\Support
 SET INSTALLER_DEV_BOOTSTRAP=%INSTALLER_DEV%\Bootstrapper
 rem Make sure this matches the output file name in MapGuide.wixproj
@@ -86,6 +88,8 @@ if "%1"=="-config"  goto get_conf
 if "%1"=="-a"       goto get_action
 if "%1"=="-action"  goto get_action
 
+if "%1"=="-lang"	goto get_language
+
 if "%1"=="-v"       goto get_verbose
 if "%1"=="-srv"		 goto get_server
 if "%1"=="-web"		 goto get_webextensions
@@ -96,6 +100,11 @@ goto custom_error
 shift
 shift
 goto study_params
+
+:get_language
+SET CULTURE=%2
+SET INSTALLER_OUTPUT=%INSTALLER_DEV%\Output\%CULTURE%
+goto next_param
 
 :get_verbose
 SET MSBUILD_VERBOSITY=/v:d
@@ -142,6 +151,7 @@ echo CPU cores: %CPU_CORES%
 echo Installer Output Directory: %INSTALLER_OUTPUT%
 echo MG Server Source Directory: %MG_SERVER%
 echo MG Web Source Directory: %MG_WEB%
+echo Locale: %CULTURE%
 echo ===================================================
 
 if "%TYPEACTION%"=="build" goto build
@@ -371,8 +381,8 @@ echo [bootstrap]: Creating
 if "%errorlevel%"=="1" goto error
 echo [bootstrap]: Create self-extracting package
 rem Uncomment this for maximum compression of .exe
-rem makensis /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DMAXCOMPRESSION Setup.nsi
-makensis /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% Setup.nsi
+rem makensis /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DCULTURE=%CULTURE% /DMAXCOMPRESSION Setup.nsi
+makensis /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DCULTURE=%CULTURE% Setup.nsi
 if "%errorlevel%"=="1" goto error
 popd
 echo [build]: Installer created at %INSTALLER_OUTPUT%\%INSTALLER_NAME%.exe

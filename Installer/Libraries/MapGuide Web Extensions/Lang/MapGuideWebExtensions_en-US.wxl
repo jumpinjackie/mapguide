@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="en-US" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+	<String Id="WebExtensionsFeature">MapGuide Web Extensions</String>
+    <String Id="WebExtensionsFeature_Description">MapGuide Web Extensions provides the components needed to serve MapGuide resources over the internet.</String>
+    <String Id="WebExtApacheFeature">Apache Web Server</String>
+    <String Id="WebExtApacheFeature_Description">A bundled version of Apache with MapGuide enabled, running on port [APACHE_PORT].</String>
+    <String Id="WebExtPhpFeature">PHP Hypertext Processor</String>
+    <String Id="WebExtPhpFeature_Description">A bundled version of PHP with MapGuide enabled.</String>
+    <String Id="WebExtTomcatFeature">Tomcat Java Webserver</String>
+    <String Id="WebExtTomcatFeature_Description">A bundled version of Tomcat with MapGuide enabled.</String>
+    <String Id="WebExtHelpFeature">API Documentation</String>
+    <String Id="WebExtHelpFeature_Description">Web Extension API documentation</String>
+    <String Id="WebExtMapViewerFeature">Map Viewer files</String>
+    <String Id="WebExtMapViewerFeature_Description">The support files for the map viewer, language independent.</String>
+    <String Id="WebExtMapViewerPHPFeature">PHP Map Viewer</String>
+    <String Id="WebExtMapViewerPHPFeature_Description">The PHP version of the map viewer.</String>
+    <String Id="WebExtMapViewerJSPFeature">JSP Map Viewer</String>
+    <String Id="WebExtMapViewerJSPFeature_Description">The JSP version of the map viewer.</String>
+    <String Id="WebExtMapViewerASPXFeature">.NET Map Viewer</String>
+    <String Id="WebExtMapViewerASPXFeature_Description">The .NET version of the map viewer.</String>
+    <String Id="WebExtSamplesFeature">Samples</String>
+    <String Id="WebExtSamplesFeature_Description">Sample code and data</String>
+    <String Id="WebExtDevGuideSamplesFeature">Developer's Guide Sample Code</String>
+    <String Id="WebExtDevGuideSamplesFeature_Description">PHP sample code from the MapGuide Developer's Guide. This requires the Sheboygan sample data.</String>
+    <String Id="WebLocalizedFeature">Localization Files</String>
+    <String Id="WebLocalizedFeature_Description">Localization files for the web tier</String>
+    <String Id="WebFusionFeature">Fusion</String>
+    <String Id="WebFusionFeature_Description">Fusion is a web-mapping application framework, allowing non-spatial web developers to build rich mapping applications quickly and easily</String>
+    <String Id="WebMapAdminFeature">MapGuide Site Administrator</String>
+    <String Id="WebMapAdminFeature_Description">The MapGuide Site Administrator is a web-based administrative front-end for the MapGuide Server</String>
+    <String Id="WebMapAgentFeature">Map Agent</String>
+    <String Id="WebMapAgentFeature_Description">The map agent allows client applications to communicate with MapGuide over HTTP</String>
+    <String Id="WebSchemaReportFeature">Schema Report</String>
+    <String Id="WebSchemaReportFeature_Description">The schema report allows the user to describe and preview MapGuide feature sources</String>
+    <String Id="WebStdIconsFeature">Standard Icons</String>
+    <String Id="WebStdIconsFeature_Description">Icons for the AJAX viewer</String>
+
+    <String Id="Shortcut_WebAPI">Web API Documentation</String>
+    <String Id="Shortcut_SiteAdmin">MapGuide Site Administrator</String>
+    <String Id="Shortcut_MapAgent">MapAgent Test Pages</String>
+    <String Id="Shortcut_GetMaestro">Get MapGuide Maestro</String>
+    <String Id="Shortcut_MapGuide">MapGuide Project Home</String>
+    <String Id="Shortcut_Trac">MapGuide Trac</String>
+    <String Id="Shortcut_BestPractices">MapGuide Best Practices</String>
+    <String Id="Shortcut_MapGuideCentral">MapGuide Central</String>
+</WixLocalization>
