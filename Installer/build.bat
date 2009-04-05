@@ -416,6 +416,7 @@ echo build.bat [-h]
 echo           [-v]
 echo           [-c=BuildType]
 echo           [-a=Action]
+echo           [-lang=Culture]
 echo           [-srv=ServerDirectory]
 echo           [-web=WebExtensionsDirectory]
 echo Help:	-h
