@@ -52,8 +52,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,1
- PRODUCTVERSION 1,0,0,1
+ FILEVERSION 2,1,0,0
+ PRODUCTVERSION 2,1,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -70,12 +70,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "MapGuide mapagent module for Apache"
-            VALUE "FileVersion", "1, 0, 0, 1"
+            VALUE "FileVersion", "2, 1, 0, 0"
             VALUE "InternalName", "mod_mgmapagent.so"
             VALUE "LegalCopyright", "Copyright (C) 2006-2009 by Autodesk, Inc."
             VALUE "OriginalFilename", "mod_mgmapagent.so"
             VALUE "ProductName", "MapGuide Open Source"
-            VALUE "ProductVersion", "1, 0, 0, 1"
+            VALUE "ProductVersion", "2, 1, 0, 0"
         END
     END
     BLOCK "VarFileInfo"
