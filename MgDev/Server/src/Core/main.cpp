@@ -375,7 +375,7 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
 
 void ShowCommandlineHelp()
 {
-    // This shows the supported commnad line options for the various platforms
+    // This shows the supported command line options for the various platforms
     ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdHelpInfo1), MG_WCHAR_TO_CHAR(MgResources::ServerServiceDisplayName), MG_WCHAR_TO_CHAR(ProductVersion));
 
     // The commands are shown in alphabetical order
