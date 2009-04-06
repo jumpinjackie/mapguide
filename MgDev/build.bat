@@ -37,7 +37,8 @@ rem
 rem BuildType: Release(default), Debug
 rem Component: all(default), oem, server, web, doc
 rem Action: build(default), install, clean
-rem OutputDirectory: The directory where files will be copied to if -a=install
+rem OutputDirectory: The directory where files will be copied to if -a=install, if -o=default or -o=def then 
+rem files will be copied to %MG_DEFAULT_INSTALLDIR%
 rem
 rem Please note that -a=install does nothing if -w=oem
 
