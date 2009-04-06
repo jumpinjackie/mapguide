@@ -257,8 +257,8 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
         }
         else
         {
-            // don't expect to ever get here, but just in case
-            _ASSERT(false);
+            // get here if the outline lies fully outside the extent (might
+            // happen due to roundoff)
 
             // set the values so that this column is skipped
             m_v_min[i] = -1;
