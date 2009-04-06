@@ -70,6 +70,7 @@ SET MG_OUTPUT_SERVER=%MG_OUTPUT%\Server
 SET MG_OUTPUT_WEB=%MG_OUTPUT%\WebServerExtensions
 SET MG_BUILD_COMPONENT=
 
+SET MG_DEFAULT_INSTALLDIR=C:\Program Files\MapGuideOpenSource2.0
 SET MG_ERROR=0
 
 rem ==================================================
@@ -77,11 +78,11 @@ rem Extra tool paths
 rem 
 rem Your paths may be different, adjust accordingly
 rem ==================================================
-SET JAVA_HOME=C:\Program Files\Java\jdk1.6.0
+IF "%JAVA_HOME%" == "" SET JAVA_HOME=C:\Program Files\Java\jdk1.6.0
 SET DOXYGEN=%MG_DEV%\BuildTools\doxygen
 SET GNUWIN32=C:\Program Files\GnuWin32\bin
 SET SEVENZ=%MG_DEV%\BuildTools\WebTools\7-Zip
-SET ANT_HOME=%MG_DEV%\BuildTools\apache-ant-1.7.1
+IF "%ANT_HOME%" == "" SET ANT_HOME=%MG_DEV%\BuildTools\apache-ant-1.7.1
 
 SET PATH=%PATH%;%DOXYGEN%;%GNUWIN32%;%SEVENZ%;%ANT_HOME%\bin
 
@@ -105,6 +106,10 @@ SET MSBUILD=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% %MSB
 SET MSBUILD_CLEAN=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% /t:Clean %MSBUILD_VERBOSITY%
 SET ANT=ant
 
+rem ==================================================
+rem Parameter Handling
+rem ==================================================
+
 :study_params
 if (%1)==() goto pre_build_check
 
@@ -117,7 +122,7 @@ if "%1"=="-config"  goto get_conf
 if "%1"=="-a"       goto get_action
 if "%1"=="-action"  goto get_action
 
-if "%1"=="-w"      goto get_component
+if "%1"=="-w"       goto get_component
 if "%1"=="-with"    goto get_component
 
 if "%1"=="-v"       goto get_verbose
@@ -137,7 +142,10 @@ SET MSBUILD_CLEAN=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD
 goto next_param
 
 :get_output
-SET MG_OUTPUT=%2
+if "%2" == "default" SET MG_OUTPUT=%MG_DEFAULT_INSTALLDIR%
+ELSE SET MG_OUTPUT=%2
+if "%2" == "def" SET MG_OUTPUT=%MG_DEFAULT_INSTALLDIR%
+ELSE SET MG_OUTPUT=%2
 SET MG_OUTPUT_SERVER=%MG_OUTPUT%\Server
 SET MG_OUTPUT_WEB=%MG_OUTPUT%\WebServerExtensions
 goto next_param
@@ -170,8 +178,13 @@ if "%2"=="server" goto next_param
 if "%2"=="web" goto next_param
 if "%2"=="doc" goto next_param
 if "%2"=="all" goto next_param
+if "%2"=="allnodoc" goto next_param
 SET ERRORMSG=Unrecognised component: %2
 goto custom_error
+
+rem ==================================================
+rem Check Environment Vars
+rem ==================================================
 
 :pre_build_check
 :check_java
@@ -239,14 +252,22 @@ echo [clean]: Clean Doc
 if exist %MG_DOC_OUTPUT% rd /S /Q %MG_DOC_OUTPUT%
 goto quit
 
+
+rem =======================================================
+rem Build Targets.... the all targets just carry on
+rem =======================================================
+
 :build
 if "%TYPECOMPONENT%"=="oem" goto build_oem
 if "%TYPECOMPONENT%"=="server" goto build_server
 if "%TYPECOMPONENT%"=="web" goto build_web
 if "%TYPECOMPONENT%"=="doc" goto build_doc
 if "%TYPECOMPONENT%"=="all" goto build_oem
+if "%TYPECOMPONENT%"=="allnodoc" goto build_oem
 SET ERRORMSG=Unrecognised component: %TYPECOMPONENT%
 goto custom_error
+
+
 
 :build_oem
 echo [build]: Building Oem
@@ -256,19 +277,31 @@ rem CsMap is not in Oem.sln, so we need to build that separately
 echo [build]: Building Oem - CSMap
 %MSBUILD% %MG_OEM%\CsMap\OpenSource.sln
 if "%errorlevel%"=="1" goto error
-if not "%TYPECOMPONENT%"=="all" goto quit
+if "%TYPECOMPONENT%"=="oem" 	goto quit
+if "%TYPECOMPONENT%"=="server" 	goto quit
+if "%TYPECOMPONENT%"=="web" 	goto quit
+if "%TYPECOMPONENT%"=="doc" 	goto quit
 
 :build_server
 echo [build]: Building Server
 %MSBUILD% %MG_SERVER%\Server.sln
 if "%errorlevel%"=="1" goto error
-if not "%TYPECOMPONENT%"=="all" goto quit
+if "%TYPECOMPONENT%"=="oem" 	goto quit
+if "%TYPECOMPONENT%"=="server" 	goto quit
+if "%TYPECOMPONENT%"=="web" 	goto quit
+if "%TYPECOMPONENT%"=="doc" 	goto quit
 
 :build_web
 echo [build]: Building Web Tier
 %MSBUILD% %MG_WEB_SRC%\WebTier.sln
 if "%errorlevel%"=="1" goto error
-if not "%TYPECOMPONENT%"=="all" goto quit
+if "%TYPECOMPONENT%"=="oem" 	 goto quit
+if "%TYPECOMPONENT%"=="server" 	 goto quit
+if "%TYPECOMPONENT%"=="web" 	 goto quit
+if "%TYPECOMPONENT%"=="doc" 	 goto quit
+if "%TYPECOMPONENT%"=="allnodoc" goto quit
+
+rem this is left out with component allnodoc
 
 :build_doc
 echo [build]: Building Doc
@@ -277,11 +310,17 @@ call MgOpenSource_run_doxygen.bat
 popd
 goto quit
 
+rem =======================================================
+rem INSTALL Targets.... the all targets just carry on
+rem =======================================================
+
+
 :install
+if "%TYPECOMPONENT%"=="all" goto install_server
+if "%TYPECOMPONENT%"=="allnodoc" goto install_server
 if "%TYPECOMPONENT%"=="server" goto install_server
 if "%TYPECOMPONENT%"=="web" goto install_web
 if "%TYPECOMPONENT%"=="doc" goto install_doc
-if "%TYPECOMPONENT%"=="all" goto install_server
 SET ERRORMSG=Unrecognised component: %TYPECOMPONENT%
 goto custom_error
 
@@ -295,14 +334,8 @@ echo [install]: Server - RepositoryAdmin
 %XCOPY% "%MG_SERVER%\RepositoryAdmin" "%MG_OUTPUT_SERVER%\RepositoryAdmin" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: CsMap Dictionaries
 %XCOPY% "%MG_OEM%\CsMap\Dictionaries" "%MG_OUTPUT_SERVER%\CsMap\Dictionaries" /EXCLUDE:svn_excludes.txt+csmap_excludes.txt
-if not "%TYPECOMPONENT%"=="all" goto quit
-
-:install_doc
-echo [install]: Documentation
-%XCOPY% "%MG_DOC_OUTPUT%" "%MG_OUTPUT_WEB%\Help" /EXCLUDE:svn_excludes.txt
-echo [install]: Developer's Guide Sample Code
-%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%" "%MG_OUTPUT_WEB%\www\devguide" /EXCLUDE:svn_excludes.txt
-if not "%TYPECOMPONENT%"=="all" goto quit
+if "%TYPECOMPONENT%"=="server" goto quit
+if "%TYPECOMPONENT%"=="web" goto quit
 
 :install_web
 echo [install]: web Tier
@@ -347,7 +380,16 @@ echo [install]: Web Tier - Apache module
 if not exist "%MG_OUTPUT_WEB%\Apache2\modules" mkdir "%MG_OUTPUT_WEB%\Apache2\modules"
 %XCOPY% /F "%MG_WEB_SRC%\mapagent\mod_mgmapagent.so" "%MG_OUTPUT_WEB%\Apache2\modules"
 echo [install]: Web Tier - fusion
-%ANT% deploy -Ddeploy.home=%MG_OUTPUT_WEB%\www\fusion -f %MG_OEM%\fusion\build.xml
+%ANT% deploy -Ddeploy.home="%MG_OUTPUT_WEB%\www\fusion" -f "%MG_OEM%\fusion\build.xml"
+if "%TYPECOMPONENT%"=="server" goto quit
+if "%TYPECOMPONENT%"=="web" goto quit
+
+:install_doc
+echo [install]: Documentation
+%XCOPY% "%MG_DOC_OUTPUT%" "%MG_OUTPUT_WEB%\Help" /EXCLUDE:svn_excludes.txt
+echo [install]: Developer's Guide Sample Code
+%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%" "%MG_OUTPUT_WEB%\www\devguide" /EXCLUDE:svn_excludes.txt
+
 
 goto quit
 
