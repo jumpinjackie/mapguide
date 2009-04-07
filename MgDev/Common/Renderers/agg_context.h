@@ -59,42 +59,43 @@
 #pragma warning(pop)
 
 //MG specific AGG template instatiations
-enum flip_y_e { flip_y = true };
+enum flip_y_e
+{
+    flip_y = true
+};
 
 typedef agg::row_ptr_cache<agg::int8u> mg_rendering_buffer;
 
-typedef pixfmt_alpha_blend_rgba_mg<agg::blender_bgra32, mg_rendering_buffer, agg::pixel32_type> mg_pixfmt_type_argb;
-typedef pixfmt_alpha_blend_rgba_mg<agg::blender_bgra32_pre, mg_rendering_buffer, agg::pixel32_type> mg_pixfmt_type_argb_pre;
-typedef pixfmt_alpha_blend_rgba_mg<agg::blender_rgba32, mg_rendering_buffer, agg::pixel32_type> mg_pixfmt_type_abgr;
-typedef pixfmt_alpha_blend_rgba_mg<agg::blender_rgba32_pre, mg_rendering_buffer, agg::pixel32_type> mg_pixfmt_type_abgr_pre;
+typedef pixfmt_alpha_blend_rgba_mg<agg::blender_bgra32    , mg_rendering_buffer, agg::pixel32_type>     mg_pixfmt_type_argb;
+typedef pixfmt_alpha_blend_rgba_mg<agg::blender_bgra32_pre, mg_rendering_buffer, agg::pixel32_type>     mg_pixfmt_type_argb_pre;
+typedef pixfmt_alpha_blend_rgba_mg<agg::blender_rgba32    , mg_rendering_buffer, agg::pixel32_type>     mg_pixfmt_type_abgr;
+typedef pixfmt_alpha_blend_rgba_mg<agg::blender_rgba32_pre, mg_rendering_buffer, agg::pixel32_type>     mg_pixfmt_type_abgr_pre;
 
 #ifdef MG_ORDER_ARGB
-typedef  mg_pixfmt_type_argb     mg_pixfmt_type;
-typedef  mg_pixfmt_type_argb_pre mg_pixfmt_type_pre;
+typedef mg_pixfmt_type_argb         mg_pixfmt_type;
+typedef mg_pixfmt_type_argb_pre     mg_pixfmt_type_pre;
 #else
-typedef  mg_pixfmt_type_abgr     mg_pixfmt_type;
-typedef  mg_pixfmt_type_abgr_pre mg_pixfmt_type_pre;
+typedef mg_pixfmt_type_abgr         mg_pixfmt_type;
+typedef mg_pixfmt_type_abgr_pre     mg_pixfmt_type_pre;
 #endif
 
-//regular renderers
-typedef agg::renderer_base<mg_pixfmt_type> mg_ren_base;
-typedef agg::renderer_base<mg_pixfmt_type_pre> mg_ren_base_pre;
-typedef agg::renderer_outline_aa<mg_ren_base> mg_ren_base_o;
-typedef agg::renderer_scanline_aa_solid<mg_ren_base> mg_ren_solid;
+// regular renderers
+typedef agg::renderer_base<mg_pixfmt_type>                              mg_ren_base;
+typedef agg::renderer_base<mg_pixfmt_type_pre>                          mg_ren_base_pre;
+typedef agg::renderer_scanline_aa_solid<mg_ren_base>                    mg_ren_solid;
 
-typedef agg::font_engine_freetype_int32 font_engine_type;
-typedef agg::font_cache_manager<font_engine_type> font_manager_type;
+typedef agg::font_engine_freetype_int32                                 font_engine_type;
+typedef agg::font_cache_manager<font_engine_type>                       font_manager_type;
 
 // alpha mask pixel format
 typedef agg::renderer_base<agg::pixfmt_gray8>                           mg_alpha_mask_rb_type;
 typedef agg::renderer_scanline_aa_solid<mg_alpha_mask_rb_type>          mg_alpha_mask_ren_type;
 
-//renderers that make use of an alpha clip mask
+// renderers that make use of an alpha clip mask
 typedef agg::amask_no_clip_gray8                                        mg_alpha_mask_type;
 typedef agg::pixfmt_amask_adaptor<mg_pixfmt_type, mg_alpha_mask_type>   mg_pixfmt_clip_mask_type;
 typedef agg::renderer_base<mg_pixfmt_clip_mask_type>                    mg_clip_mask_ren_base;
 typedef agg::renderer_scanline_aa_solid<mg_clip_mask_ren_base>          mg_clip_mask_ren_solid;
-typedef agg::renderer_outline_aa<mg_clip_mask_ren_base>                 mg_clip_mask_ren_base_o;
 
 
 struct RS_Font;
@@ -107,13 +108,7 @@ class agg_context
 {
 public:
     agg_context(unsigned int* rows, int width, int height)
-        :
-    lprof(1.0, agg::gamma_power(1.0)),
-    ren_o(ren, lprof),
-    clip_ren_o(clip_rb, lprof),
-    ras_o(ren_o),
-    clip_ras_o(clip_ren_o),
-    fman(feng)
+        : fman(feng)
     {
         if (!rows)
         {
@@ -127,25 +122,25 @@ public:
         }
 
         int stride = width * sizeof(unsigned int);
-        rb.attach((agg::int8u*)m_rows, width, height, (flip_y) ? -stride : stride);
+        rb.attach((agg::int8u*)m_rows, width, height, flip_y? -stride : stride);
         pf.attach(rb);
         pf_pre.attach(rb);
         ren.attach(pf);
         ren_pre.attach(pf_pre);
         ras.gamma(agg::gamma_power(1.0));
         ras.filling_rule(agg::fill_even_odd);
-        ras.clip_box(0,0,width,height);
+        ras.clip_box(0, 0, width, height);
 
         feng.flip_y(!flip_y);
         feng.hinting(true);
         feng.transform(agg::trans_affine());
-        last_font_height = 0;
+        last_font_height = 0.0;
         last_font = NULL;
 
         // polygon clip buffer
         bPolyClip = false;
         mask_buf = new unsigned char[width * height];
-        mask_rbuf.attach((agg::int8u*)mask_buf,width,height,width);
+        mask_rbuf.attach((agg::int8u*)mask_buf, width, height, width);
         mask_mask.attach(mask_rbuf);
         mask_pixf = new agg::pixfmt_gray8(mask_rbuf);
         mask_rb.attach(*mask_pixf);
@@ -159,10 +154,6 @@ public:
 
     ~agg_context()
     {
-        for (std::map<double, agg::line_profile_aa*>::iterator iter = h_lprof.begin();
-            iter != h_lprof.end(); iter++)
-            delete iter->second;
-
         if (ownrows)
             delete [] m_rows;
 
@@ -171,19 +162,17 @@ public:
         delete [] mask_buf;
     }
 
-    //rendering buffer
-    unsigned int* m_rows;
-    bool ownrows;
-    mg_rendering_buffer rb;
-    mg_pixfmt_type pf;
-    mg_pixfmt_type_pre pf_pre;
-    agg::path_storage ps;
-    mg_ren_base ren;
-    mg_ren_base_pre ren_pre;
-    mg_ren_base_o ren_o;
+    // rendering buffer
+    unsigned int*               m_rows;
+    bool                        ownrows;
+    mg_rendering_buffer         rb;
+    mg_pixfmt_type              pf;
+    mg_pixfmt_type_pre          pf_pre;
+    agg::path_storage           ps;
+    mg_ren_base                 ren;
+    mg_ren_base_pre             ren_pre;
     agg::rasterizer_scanline_aa<> ras;
-    agg::rasterizer_outline_aa<mg_ren_base_o> ras_o;
-    agg::scanline_u8 sl;
+    agg::scanline_u8            sl;
 
     // polyclip mask rendering buffer
     bool                        bPolyClip;
@@ -197,14 +186,8 @@ public:
     //renderers that do alpha masking
     mg_clip_mask_ren_base       clip_rb;
     mg_clip_mask_ren_solid      clip_ren;
-    mg_clip_mask_ren_base_o     clip_ren_o;
     mg_pixfmt_type              clip_pixf;
     mg_pixfmt_clip_mask_type*   clip_mask;
-    agg::rasterizer_outline_aa<mg_clip_mask_ren_base_o> clip_ras_o;
-
-    //outline line profile cache (those are slow to initialize)
-    agg::line_profile_aa lprof;
-    std::map<double, agg::line_profile_aa*> h_lprof;
 
     //font engine state caching
     font_engine_type feng;
@@ -213,7 +196,6 @@ public:
     double last_font_height;
     const RS_Font* last_font;
     agg::trans_affine last_font_transform;
-
 };
 
 #endif
