@@ -1775,6 +1775,22 @@ INTERNAL_API:
     virtual MgSerializableCollection* EnumerateParentMapDefinitions(
         MgSerializableCollection* resources) = 0;
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns if permission has been granted for a resource
+    /// permission named data for the specified resource.
+    ///
+    /// \param resource
+    /// Resource identifier describing the resource.
+    /// \param permission
+    /// Requested permission for the resource.  See MgResourcePermission.
+    ///
+    /// \return
+    /// True if user has requested permission.
+    virtual bool HasPermission(MgResourceIdentifier* resource, CREFSTRING permission);
+
+EXTERNAL_API:
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Sets the Metadata content for an existing resource.
@@ -1848,20 +1864,6 @@ INTERNAL_API:
     /// SetResourceMetadata
     ///
     virtual MgByteReader* GetResourceMetadata(MgResourceIdentifier* resource);
-
-    //////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Returns if permission has been granted for a resource
-    /// permission named data for the specified resource.
-    ///
-    /// \param resource
-    /// Resource identifier describing the resource.
-    /// \param permission
-    /// Requested permission for the resource.  See MgResourcePermission.
-    ///
-    /// \return
-    /// True if user has requested permission.
-    virtual bool HasPermission(MgResourceIdentifier* resource, CREFSTRING permission);
 
 protected:
 
