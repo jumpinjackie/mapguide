@@ -110,15 +110,15 @@ m_bownbuffer(false)
 {
     m_rows = backbuffer;
 
-    //get the agg context going
+    // get the agg context going
     m_context = new agg_context(m_rows, m_width, m_height);
 
-    //clear the buffer
-    //NOTE: we are using the agg blender that assumes the rendering
-    //buffer stores premultiplied alpha values -- so we clear with the
-    //premultiplied background color
-    //c()->ren.clear(agg::argb8_packed(bgColor.argb()).premultiply());
-    //c()->ren.clear(agg::argb8_packed(0x000000ff).premultiply());
+    // clear the buffer
+    // NOTE: we are using the agg blender that assumes the rendering
+    // buffer stores premultiplied alpha values - so we clear with the
+    // premultiplied background color
+//  c()->ren.clear(agg::argb8_packed(bgColor.argb()).premultiply());
+//  c()->ren.clear(agg::argb8_packed(0x000000ff).premultiply());
 
     if (!m_bLocalOverposting)
         m_labeler = new LabelRenderer(this);
@@ -159,17 +159,17 @@ m_bownbuffer(true)
     if (m_height > 16384)
         m_height = 16384;
 
-    //allocate back buffer
+    // allocate back buffer
     int len = m_width*m_height;
     m_rows = new unsigned int[len];
 
-    //get the agg context going
+    // get the agg context going
     m_context = new agg_context(m_rows, m_width, m_height);
 
-    //clear the buffer
-    //NOTE: we are using the agg blender that assumes the rendering
-    //buffer stores premultiplied alpha values -- so we clear with the
-    //premultiplied background color
+    // clear the buffer
+    // NOTE: we are using the agg blender that assumes the rendering
+    // buffer stores premultiplied alpha values - so we clear with the
+    // premultiplied background color
     c()->ren.clear(agg::argb8_packed(bgColor.argb()).premultiply());
 
     if (!m_bLocalOverposting)
@@ -200,7 +200,7 @@ void AGGRenderer::UpdateBackBuffer(int width, int height, unsigned int* backbuff
     m_height = height;
     m_bownbuffer = false;
 
-    //get the agg context going
+    // get the agg context going
     delete m_context;
     m_context = new agg_context(m_rows, m_width, m_height);
 }
@@ -250,8 +250,8 @@ void AGGRenderer::StartMap(RS_MapUIInfo* mapInfo,
     m_metersPerUnit = metersPerUnit;
     m_extents = extents;
 
-    //find scale used to convert to pixel coordinates
-    //need to take aspect ratios into account
+    // find scale used to convert to pixel coordinates
+    // need to take aspect ratios into account
     double arDisplay = (double)m_width / (double)m_height;
     double arMap = m_extents.width() / m_extents.height();
 
@@ -277,8 +277,8 @@ void AGGRenderer::StartMap(RS_MapUIInfo* mapInfo,
 
     double metersPerPixel = METERS_PER_INCH / m_dpi;
 
-    //compute drawing scale
-    //drawing scale is map scale converted to [mapping units] / [pixels]
+    // compute drawing scale
+    // drawing scale is map scale converted to [mapping units] / [pixels]
     m_drawingScale = m_mapScale * metersPerPixel / m_metersPerUnit;
 
     m_labeler->StartLabels();
@@ -342,7 +342,7 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
     _ASSERT(NULL != lb);
     RS_FillStyle* use_fill = &fill;
 
-    //should we use selection style?
+    // should we use selection style?
     if (m_bSelectionMode)
         use_fill = &m_selFill;
 
@@ -372,7 +372,7 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
             unsigned * pathids = (unsigned*) alloca(workbuffer->geom_count() * sizeof(unsigned));
             _TransferPoints(c(), workbuffer, &m_xform, pathids);
 
-            for (int i=0; i<workbuffer->geom_count(); i++)
+            for (int i=0; i<workbuffer->geom_count(); ++i)
             {
                 c()->ras.reset();
                 c()->ras.add_path(c()->ps, pathids[i]);
@@ -387,30 +387,30 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
         }
     }
 
-    //write out the polygon outline as a bunch of WT_Polylines
+    // write out the polygon outline as a bunch of WT_Polylines
     if (use_fill->outline().color().alpha() == 0)
         return;
 
     bool deleteBuffer = false;
 
-    //apply line style if needed
+    // apply line style if needed
     if ((wcscmp(use_fill->outline().style().c_str(), L"Solid") != 0))
     {
-        //necessary because the line style engine may produce lots
-        //of small moveto-lineto combinations which agg will throw out
-        //instead of rendering a dot, resulting in a gap
+        // necessary because the line style engine may produce lots
+        // of small moveto-lineto combinations which agg will throw out
+        // instead of rendering a dot, resulting in a gap
         LineBuffer* optbuffer = workbuffer->Optimize(m_drawingScale, m_pPool);
 
         if (NULL != optbuffer)
         {
             if (!m_bRequiresClipping)
             {
-                //clip the buffer, since if we are zoomed in a lot, it can
-                //have huge out-of-screen sections which will incur enormous
-                //overhead for stuff that is not really visible
+                // clip the buffer, since if we are zoomed in a lot, it can
+                // have huge out-of-screen sections which will incur enormous
+                // overhead for stuff that is not really visible
                 LineBuffer* clipbuffer = optbuffer->Clip(m_extents, LineBuffer::ctLine, m_pPool);
 
-                //check if it needed clipping
+                // check if it needed clipping
                 if (optbuffer != clipbuffer)
                 {
                     LineBufferPool::FreeLineBuffer(m_pPool, optbuffer);
@@ -420,7 +420,7 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
 
             if (NULL != optbuffer)
             {
-                //TODO: we should simplify the math that does all that pixel-based stuff
+                // TODO: we should simplify the math that does all that pixel-based stuff
                 workbuffer = ApplyLineStyle(optbuffer, (wchar_t*)use_fill->outline().style().c_str(),
                     use_fill->outline().width() * m_dpi / METERS_PER_INCH /*LineStyle works in pixels*/,
                     m_drawingScale, /* pixels per map unit */
@@ -436,7 +436,7 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
     {
         m_lineStroke.color = use_fill->outline().color().argb();
 
-        //convert thickness to equivalent mapping space width
+        // convert thickness to equivalent mapping space width
         double thickness = use_fill->outline().width();
         m_lineStroke.weight = max(1.0, _MeterToMapSize(use_fill->outline().units(), fabs(thickness)) * m_xform.x0);
 
@@ -453,7 +453,7 @@ void AGGRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
     _ASSERT(NULL != srclb);
     RS_LineStroke* use_lsym = &lsym;
 
-    //are we drawing a selection?
+    // are we drawing a selection?
     if (m_bSelectionMode)
         use_lsym = &(m_selFill.outline());
 
@@ -465,26 +465,26 @@ void AGGRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
 
     bool deleteBuffer = false;
 
-    //apply line style if needed
+    // apply line style if needed
     LineBuffer* workbuffer = srclb;
 
     if ((wcscmp(use_lsym->style().c_str(), L"Solid") != 0))
     {
-        //necessary because the line style engine may produce lots
-        //of small moveto-lineto combinations which agg will throw out
-        //instead of rendering a dot, resulting in a gap
+        // necessary because the line style engine may produce lots
+        // of small moveto-lineto combinations which agg will throw out
+        // instead of rendering a dot, resulting in a gap
         LineBuffer* optbuffer = workbuffer->Optimize(m_drawingScale, m_pPool);
 
         if (NULL != optbuffer)
         {
             if (!m_bRequiresClipping)
             {
-                //Always clip the buffer in this case, since if we are zoomed in a lot, it can
-                //have huge out-of-screen sections which will incur enormous
-                //overhead for stuff that is not really visible
+                // Always clip the buffer in this case, since if we are zoomed in a lot, it can
+                // have huge out-of-screen sections which will incur enormous
+                // overhead for stuff that is not really visible
                 LineBuffer* clipbuffer = optbuffer->Clip(m_extents, LineBuffer::ctLine, m_pPool);
 
-                //check if it needed clipping
+                // check if it needed clipping
                 if (optbuffer != clipbuffer)
                 {
                     LineBufferPool::FreeLineBuffer(m_pPool, optbuffer);
@@ -494,7 +494,7 @@ void AGGRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
 
             if (NULL != optbuffer)
             {
-                //TODO: we should simplify the math that does all that pixel-based stuff
+                // TODO: we should simplify the math that does all that pixel-based stuff
                 workbuffer = ApplyLineStyle(optbuffer, (wchar_t*)use_lsym->style().c_str(),
                     use_lsym->width() * m_dpi / METERS_PER_INCH /*LineStyle works in pixels*/,
                     m_drawingScale, /* pixels per map unit */
@@ -510,7 +510,7 @@ void AGGRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
     {
         m_lineStroke.color = use_lsym->color().argb();
 
-        //convert thickness to equivalent mapping space width
+        // convert thickness to equivalent mapping space width
         double thickness = use_lsym->width();
         m_lineStroke.weight = max(1.0, _MeterToMapSize(use_lsym->units(), fabs(thickness)) * m_xform.x0);
 
@@ -539,8 +539,8 @@ void AGGRenderer::ProcessRaster(unsigned char* data,
     WorldToScreenPoint(cx, cy, cx, cy);
 
     // width and height of (projected) image in device space
-    double imgDevW = extents.width() * m_xform.x0 + 1;
-    double imgDevH = extents.height() * m_xform.y1 + 1;
+    double imgDevW = extents.width()  * m_xform.x0 + 1.0;
+    double imgDevH = extents.height() * m_xform.y1 + 1.0;
 
     // check to see if we need to transform the image
     if (xformMesh != NULL)
@@ -560,7 +560,7 @@ void AGGRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allo
 {
     RS_MarkerDef use_mdef = mdef;
 
-    //use the selection style to draw
+    // use the selection style to draw
     if (m_bSelectionMode)
         use_mdef = RS_MarkerDef(RS_MarkerType_Marker,
                                 mdef.width(),
@@ -572,10 +572,10 @@ void AGGRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allo
                                 L"", L"",
                                 m_selFill);
 
-    for (int i=0; i<srclb->point_count(); i++)
+    for (int i=0; i<srclb->point_count(); ++i)
     {
-        //if marker is processed from here it should be added to the
-        //feature W2D, not the labeling W2D -- need the API to reflect that.
+        // if marker is processed from here it should be added to the
+        // feature W2D, not the labeling W2D - need the API to reflect that.
         ProcessOneMarker(srclb->x_coord(i), srclb->y_coord(i), use_mdef, allowOverpost, (i==0) ? bounds : NULL);
     }
 }
@@ -585,7 +585,7 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 {
     RS_InputStream* symbol = NULL;
 
-    //attempt to retrieve the symbol
+    // attempt to retrieve the symbol
     if (m_symbolManager && (mdef.type() == RS_MarkerType_W2D))
     {
         // BOGUS:
@@ -595,21 +595,21 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         symbol = (RS_InputStream*)m_symbolManager->GetSymbolData(mdef.library().c_str(), L"symbols.dwf");
     }
 
-    //symbol in mapping space units
+    // symbol in mapping space units
     double iw = _MeterToMapSize(mdef.units(), mdef.width());
     double ih = _MeterToMapSize(mdef.units(), mdef.height());
 
-    //unrotated symbol bounding box (mapping space)
+    // unrotated symbol bounding box (mapping space)
     RS_Bounds dst(x, y, x+iw, y+ih);
 
-    //convert to pixel size
+    // convert to pixel size
     iw *= m_xform.x0;
     ih *= m_xform.y1;
 
-    //if it's too big, make it smaller
-    //it cannot be too big since we allocate iw * ih * 4 bytes of
-    //memory to cache the symbol image -- this code simply truncates
-    //the size, ignoring changes in aspect ratio
+    // if it's too big, make it smaller
+    // it cannot be too big since we allocate 4*iw*ih bytes of
+    // memory to cache the symbol image - this code simply truncates
+    // the size, ignoring changes in aspect ratio
     const double MAX_SIZE = 4096.0;
     if (iw > MAX_SIZE)
     {
@@ -622,16 +622,16 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         dst.maxy = dst.miny + ih * m_ixform.y1;
     }
 
-    //get insertion point
+    // get insertion point
     double refX = mdef.insx();
     double refY = mdef.insy();
 
-    //rotation angle
+    // rotation angle
     double angleRad = mdef.rotation() * M_PI180;
 
     if (mdef.type() == RS_MarkerType_Font)
     {
-        //case where we are using a font symbol
+        // case where we are using a font symbol
 
         // TODO: cannot easily check for font symbol repetition
         //       since we forward to the labeling logic...
@@ -649,7 +649,7 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 //      {
             m_lastSymbol = mdef;
 
-        //convert font symbol to a simple label
+        // convert font symbol to a simple label
         RS_TextDef tdef(RS_HAlignment_Center, RS_VAlignment_Half);
         RS_FontDef fdef(mdef.library(), mdef.height(), mdef.fontstyle(), mdef.units());
 
@@ -657,11 +657,11 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         tdef.textcolor() = mdef.style().color();
         tdef.rotation() = mdef.rotation();
 
-        //compute placement position for character centerpoint, taking into
-        //account the insertion point.
-        //TODO: is this way of computing insertion point offset correct, when
-        //compared to what SymbolTrans does? Is rotation applied before the symbol
-        //is moved to its insertion point or after? Need to check that.
+        // compute placement position for character centerpoint, taking into
+        // account the insertion point.
+        // TODO: is this way of computing insertion point offset correct, when
+        // compared to what SymbolTrans does? Is rotation applied before the symbol
+        // is moved to its insertion point or after? Need to check that.
         double posx = dst.minx + (0.5 - refX) * dst.width();
         double posy = dst.miny + (0.5 - refY) * dst.height();
 
@@ -675,12 +675,12 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     }
     else
     {
-        //for non-font symbols we will draw into a temporary image
-        //which we can reuse if the symbol is not changing from one
-        //feature to the next
+        // for non-font symbols we will draw into a temporary image
+        // which we can reuse if the symbol is not changing from one
+        // feature to the next
 
-        //check to see if the last symbol we got was different or if it
-        //is not cached yet
+        // check to see if the last symbol we got was different or if it
+        // is not cached yet
         if (   mdef.type() != m_lastSymbol.type()
             || mdef.width() != m_lastSymbol.width()
             || mdef.height() != m_lastSymbol.height()
@@ -702,18 +702,18 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
             if (!symbol || imsymw > SYMBOL_BITMAP_MAX || imsymh > SYMBOL_BITMAP_MAX)
             {
-                //symbol will be too big so we will draw it as
-                //geometry directly into the map image instead.
-                //So we need to destroy the cached symbol image if any
+                // Symbol will be too big so we will draw it as
+                // geometry directly into the map image instead.
+                // So we need to destroy the cached symbol image if any.
                 delete m_imsym;
                 m_imsym = NULL;
             }
             else
             {
-                //otherwise allocate a second bitmap where
-                //we will cache the symbol image for reuse
+                // otherwise allocate a second bitmap where
+                // we will cache the symbol image for reuse
 
-                //did we cache an image previously, but it was different size?
+                // did we cache an image previously, but it was different size?
                 if (m_imsym
                     && (   (int)m_imsym->rb.width() != imsymw
                         || (int)m_imsym->rb.height() != imsymh))
@@ -722,7 +722,7 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                     m_imsym = NULL;
                 }
 
-                //allocate the symbol image
+                // allocate the symbol image
                 if (!m_imsym)
                 {
                     m_imsym = new agg_context(NULL, imsymw, imsymh);
@@ -731,23 +731,23 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
             if (symbol)
             {
-                //case where we are using a W2D symbol from the library
+                // case where we are using a W2D symbol from the library
                 _ASSERT(mdef.type() == RS_MarkerType_W2D);
 
-                //default bounds of symbol data in W2D
-                //for symbols created by MapGuide Studio
+                // default bounds of symbol data in W2D
+                // for symbols created by MapGuide Studio
                 RS_Bounds src(0, 0, SYMBOL_MAX, SYMBOL_MAX);
                 SymbolTrans st = SymbolTrans(src, dst, refX, refY, angleRad);
 
                 if (m_imsym)
                 {
-                    //case where we will cache the symbol image
+                    // case where we will cache the symbol image
 
-                    //we will use unrotated symbol bounding box
-                    //since rotation will be done by the image copy
-                    //also we will use a slight boundary offset
-                    //hardcoded to 1 pixel so that geometry exactly on the edge
-                    //draws just inside the image
+                    // we will use unrotated symbol bounding box
+                    // since rotation will be done by the image copy
+                    // also we will use a slight boundary offset
+                    // hardcoded to 1 pixel so that geometry exactly on the edge
+                    // draws just inside the image
                     RS_Bounds dst1(1, 1, (double)(imsymw-1), (double)(imsymh-1));
                     st = SymbolTrans(src, dst1, 0.0, 0.0, 0.0);
 
@@ -758,29 +758,29 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                 }
                 else
                 {
-                    //case where we will draw the W2D directly into
-                    //the destination image because the symbol is too big
+                    // case where we will draw the W2D directly into
+                    // the destination image because the symbol is too big
                     m_imw2d = c();
                 }
 
-                //also set flags controlling how W2D are rewritten
-                //into the destination DWF
+                // also set flags controlling how W2D are rewritten
+                // into the destination DWF
                 m_bIsSymbolW2D = true;
                 m_mdOverrideColors = mdef;
 
-                //copy symbol W2D into destination
+                // copy symbol W2D into destination
                 AddDWFContent(symbol, &st, mdef.name(), RS_String(L""), RS_String(L""));
 
-                //make sure we zero out the W2D symbol flags
+                // make sure we zero out the W2D symbol flags
                 m_bIsSymbolW2D = false;
                 m_imw2d = NULL;
             }
             else
             {
-                //case where we are using an SLD symbol, and fall-through for other cases
+                // case where we are using an SLD symbol, and fall-through for other cases
 
-                //determine which SLD symbol we need to draw
-                //and pick up its polygon point definition
+                // determine which SLD symbol we need to draw
+                // and pick up its polygon point definition
                 RS_F_Point* poly = NULL;
                 int npts = 0;
                 bool found = true;
@@ -817,33 +817,33 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                 }
                 else
                 {
-                    //default or error
+                    // default or error
                     poly = (RS_F_Point*)SLD_ERROR;
                     npts = sizeof(SLD_ERROR) / (2 * sizeof(double));
                     found = false;
                 }
 
-                //fill color
+                // fill color
                 int fill = mdef.style().color().argb();
 
-                //outline color
+                // outline color
                 int outline = mdef.style().outline().color().argb();
 
-                //construct transformer
+                // construct transformer
                 RS_Bounds src(0.0, 0.0, 1.0, 1.0);
                 SymbolTrans trans(src, dst, refX, refY, angleRad);
 
-                //transform to coordinates of temporary image where we
-                //draw symbol before transfering to the map
+                // transform to coordinates of temporary image where we
+                // draw symbol before transfering to the map
                 LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pPool, 8);
 
                 double tempx, tempy;
-                for (int i=0; i<npts; i++)
+                for (int i=0; i<npts; ++i)
                 {
                     tempx = poly[i].x;
                     tempy = poly[i].y;
 
-                    //unit square to world
+                    // unit square to world
                     trans.TransformPoint(tempx, tempy);
 
                     WorldToScreenPoint(tempx, tempy, tempx, tempy);
@@ -856,7 +856,7 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
                 if (!found)
                 {
-                    //unknown symbol
+                    // unknown symbol
                     m_lineStroke.color = 0xffff0000;
                     m_lineStroke.weight = 1.0;
                     DrawScreenPolyline(c(), lb, NULL, m_lineStroke);
@@ -875,14 +875,14 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
         if (m_imsym)
         {
-            //in case we cached a symbol image, draw it to the main
-            //map image
+            // in case we cached a symbol image, draw it to the main
+            // map image
 
-            //get the source image size
+            // get the source image size
             int imsymw = m_imsym->rb.width();
             int imsymh = m_imsym->rb.height();
 
-            double cx = dst.width() * (0.5 - refX);
+            double cx = dst.width()  * (0.5 - refX);
             double cy = dst.height() * (0.5 - refY);
 
             SE_Matrix mtx;
@@ -892,7 +892,7 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
             WorldToScreenPoint(cx, cy, cx, cy);
 
-            //that ought to do it...
+            // that ought to do it...
             DrawScreenRaster((unsigned char*)m_imsym->m_rows,
                              imsymw * imsymh * 4,
                              RS_ImageFormat_NATIVE,
@@ -908,33 +908,33 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
     if (!allowOverpost)
     {
-        //now add an exclusion region to the file so that
-        //labels do not overlap the symbol
+        // now add an exclusion region to the file so that
+        // labels do not overlap the symbol
 
-        //default bounds of symbol data in W2D
-        //for symbols created by MapGuide Studio
-        RS_Bounds src(0, 0, SYMBOL_MAX, SYMBOL_MAX);
+        // default bounds of symbol data in W2D
+        // for symbols created by MapGuide Studio
+        RS_Bounds src(0.0, 0.0, SYMBOL_MAX, SYMBOL_MAX);
 
-        //a square that we will transform into the dst bounds
+        // a square that we will transform into the dst bounds
         RS_F_Point box[5];
-        box[0].x = 0;
-        box[0].y = 0;
+        box[0].x = 0.0;
+        box[0].y = 0.0;
         box[1].x = SYMBOL_MAX;
-        box[1].y = 0;
+        box[1].y = 0.0;
         box[2].x = SYMBOL_MAX;
         box[2].y = SYMBOL_MAX;
-        box[3].x = 0;
+        box[3].x = 0.0;
         box[3].y = SYMBOL_MAX;
 
-        //construct transformer -- same as the
-        //one used for the actual symbol drawables
+        // construct transformer - same as the
+        // one used for the actual symbol drawables
         SymbolTrans boxtrans(src, dst, refX, refY, angleRad);
 
         RS_F_Point pts[4];
 
         double tempx, tempy;
 
-        for (int i=0; i<4; i++)
+        for (int i=0; i<4; ++i)
         {
             tempx = box[i].x;
             tempy = box[i].y;
@@ -949,7 +949,7 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         AddExclusionRegion(pts, 4);
     }
 
-    //set actual (unrotated) bounds with new insertion point if a pointer was passed in
+    // set actual (unrotated) bounds with new insertion point if a pointer was passed in
     if (bounds)
     {
         bounds->minx =       -refX  * mdef.width();
@@ -968,11 +968,11 @@ void AGGRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
                                     LineBuffer*      path,
                                     double           scaleLimit)
 {
-    //check if we are rendering a selection -- bail if so
+    // check if we are rendering a selection - bail if so
     if (m_bSelectionMode)
         return;
 
-    //forward it to the label renderer
+    // forward it to the label renderer
     m_labeler->ProcessLabelGroup(labels, nlabels, text, type, exclude, path, scaleLimit);
 }
 
@@ -1064,7 +1064,7 @@ bool AGGRenderer::UseLocalOverposting()
 }
 
 
-//WARNING: caller responsible for deleting resulting line buffer
+// WARNING: caller responsible for deleting resulting line buffer
 LineBuffer* AGGRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, double lineWidthPixels, double drawingScale, double dpi)
 {
     // if there are less than two indices then we can't style
@@ -1108,7 +1108,7 @@ LineBuffer* AGGRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, d
     // loop over the source buffer's segments
     double walkLen = 0.0;
     double sumdLen = 0.0;
-    for (int j=1; j<lenInds; j++)
+    for (int j=1; j<lenInds; ++j)
     {
         // get the vertex and index arrays from the line
         // buffer - these are inside the loop because they
@@ -1216,7 +1216,7 @@ LineBuffer* AGGRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, d
                         // set the intermediate points
                         double xc = dxw;
                         double yc = dyw;
-                        for (int i=1; i<numCapSegs; i++)
+                        for (int i=1; i<numCapSegs; ++i)
                         {
                             double xt = xc;
                             xc = csCapAng*xc - snCapAng*yc;
@@ -1236,7 +1236,7 @@ LineBuffer* AGGRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, d
                 walkLen += pixelRun.m_nPixels;
 
                 // move to the next pixel run
-                pixelRunInd++;
+                ++pixelRunInd;
                 if (pixelRunInd == lineStyleDef.m_nRuns)
                     pixelRunInd = 0;
                 pixelRun = lineStyleDef.m_pixelRuns[pixelRunInd];
@@ -1253,8 +1253,8 @@ LineBuffer* AGGRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, d
 
 
 //-----------------------------------------------------------------------------
-//scale an input number in meters to a mapping
-//space number given a device or mapping space unit.
+// scale an input number in meters to a mapping
+// space number given a device or mapping space unit.
 //-----------------------------------------------------------------------------
 double AGGRenderer::_MeterToMapSize(RS_Units unit, double number)
 {
@@ -1279,7 +1279,7 @@ void AGGRenderer::SetRenderSelectionMode(bool mode, int rgba)
 {
     SE_Renderer::SetRenderSelectionMode(mode, rgba);
 
-    //initialize the selection styles if needed
+    // initialize the selection styles if needed
     if (mode)
     {
         RS_Color selLineColor = RS_Color((rgba & 0xFFFFFF00) | 200);
@@ -1295,7 +1295,7 @@ void AGGRenderer::SetRenderSelectionMode(bool mode, int rgba)
 // Text drawing
 //////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////////
+
 void AGGRenderer::DrawString(const RS_String& s,
                              double           x,
                              double           y,
@@ -1320,9 +1320,7 @@ void AGGRenderer::DrawString(agg_context*     cxt,
                              double           angleRad)
 {
     if (NULL == font)
-    {
         return;
-    }
 
     // Don't draw the text if height > 16384 pixels, since memory usage when
     // evaluating the glyphs will get too large.  16394 pixels should be
@@ -1333,17 +1331,18 @@ void AGGRenderer::DrawString(agg_context*     cxt,
     bool font_changed = false;
     if (cxt->last_font != font)
     {
-        //convert font path to utf8
+        // convert font path to utf8
         size_t lenf = font->m_filename.length();
         size_t lenbytesf = lenf * 4 + 1;
         char* futf8 = (char*)alloca(lenbytesf);
         DWFCore::DWFString::EncodeUTF8(font->m_filename.c_str(), lenf * sizeof(wchar_t), futf8, lenbytesf);
 
-        //load the font
+        // load the font
         bool res = cxt->feng.load_font(futf8, 0, agg::glyph_ren_agg_gray8);
         cxt->feng.char_map(FT_ENCODING_UNICODE);
 
-        if (!res) return;
+        if (!res)
+            return;
 
         cxt->last_font = font;
         font_changed = true;
@@ -1355,12 +1354,12 @@ void AGGRenderer::DrawString(agg_context*     cxt,
         cxt->last_font_height = height;
     }
 
-    //cxt->feng.width();
+//  cxt->feng.width();
 
     agg::trans_affine mtx;
     mtx *= agg::trans_affine_rotation(angleRad);
-    //mtx *= agg::trans_affine_skewing(-0.4, 0);
-    //mtx *= agg::trans_affine_translation(1, 0);
+//  mtx *= agg::trans_affine_skewing(-0.4, 0);
+//  mtx *= agg::trans_affine_translation(1, 0);
 
     if (font_changed || cxt->last_font_transform != mtx)
     {
@@ -1373,8 +1372,8 @@ void AGGRenderer::DrawString(agg_context*     cxt,
 
     unsigned int * text;
 #ifdef _WIN32
-    //TODO: check if we really need to convert UCS-2 to UCS-4 on Windows or we can just use the
-    //characters directly from the wchar_t array
+    // TODO: check if we really need to convert UCS-2 to UCS-4 on Windows or
+    // we can just use the characters directly from the wchar_t array
     lstring ltext = UnicodeString::UTF16toUTF32(s.c_str());
     text = (unsigned int*)ltext.c_str();
 #else
@@ -1403,19 +1402,19 @@ void AGGRenderer::MeasureString(const RS_String& s,
                                 double           height,
                                 const RS_Font*   font,
                                 double           /*angle*/,
-                                RS_F_Point*      res, //assumes 4 points in this array
-                                float*           offsets) //assumes length equals 2 * length of string
+                                RS_F_Point*      res,       //assumes 4 points in this array
+                                float*           offsets)   //assumes length equals 2 * length of string
 {
     // If the supplied font height is too large AGG will run out of memory.  We'll
     // use a reasonable font height for measuring, and then scale the result.
     double measureHeight = rs_min(5000.0, height);
     double measureScale = height / measureHeight;
 
-    //load the font
+    // load the font
     bool font_changed = false;
     if (c()->last_font != font)
     {
-        //convert font path to utf8
+        // convert font path to utf8
         size_t lenf = font->m_filename.length();
         size_t lenbytesf = lenf * 4 + 1;
         char* futf8 = (char*)alloca(lenbytesf);
@@ -1424,12 +1423,14 @@ void AGGRenderer::MeasureString(const RS_String& s,
         bool res1 = c()->feng.load_font(futf8, 0, agg::glyph_ren_agg_gray8);
         c()->feng.char_map(FT_ENCODING_UNICODE);
 
-        if (!res1) return;
+        if (!res1)
+            return;
+
         c()->last_font = font;
         font_changed = true;
     }
 
-    //reset the font transform to identity, to negate any rotation
+    // reset the font transform to identity, to negate any rotation
     if (font_changed || !c()->last_font_transform.is_identity())
     {
         agg::trans_affine trans;
@@ -1443,12 +1444,12 @@ void AGGRenderer::MeasureString(const RS_String& s,
         c()->last_font_height = measureHeight;
     }
 
-    //c()->feng.width(width);
+//  c()->feng.width(width);
 
     unsigned int * text;
 #ifdef _WIN32
-    //TODO: check if we really need to convert UCS-2 to UCS-4 on Windows or we can just use the
-    //characters directly from the wchar_t array
+    // TODO: check if we really need to convert UCS-2 to UCS-4 on Windows or
+    // we can just use the characters directly from the wchar_t array
     lstring ltext = UnicodeString::UTF16toUTF32(s.c_str());
     text = (unsigned int*)ltext.c_str();
 #else
@@ -1548,12 +1549,12 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth)
         }
         c()->bPolyClip = true;
 
-        //compute the screen region affected by the polygon mask
+        // compute the screen region affected by the polygon mask
         double minx, miny, maxx, maxy;
         m_xform.transform(polygon->bounds().minx, polygon->bounds().miny, minx, miny);
         m_xform.transform(polygon->bounds().maxx, polygon->bounds().maxy, maxx, maxy);
 
-        //take into account buffer width
+        // take into account buffer width
         if (bufferWidth > 0)
         {
             minx -= bufferWidth;
@@ -1567,24 +1568,24 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth)
         int imaxx = (int)rs_min(m_width-1, maxx+1);
         int imaxy = (int)rs_min(m_height-1, maxy+1);
 
-        //set a clip box on the renderer so that it only even looks at this area
-        //this is important because we will only clear that section of the alpha mask
-        //buffer and the rest may be dirty
+        // set a clip box on the renderer so that it only even looks at this area
+        // this is important because we will only clear that section of the alpha mask
+        // buffer and the rest may be dirty
         c()->clip_rb.clip_box(iminx, iminy, imaxx, imaxy);
 
         unsigned * pathids = (unsigned*) alloca(polygon->geom_count() * sizeof(unsigned));
         _TransferPoints(c(), polygon, &m_xform, pathids);
 
-        //clear the affected region of the alpha mask
+        // clear the affected region of the alpha mask
         agg::gray8 cc(0);
 
         unsigned width = (int)imaxx - (int)iminx + 1;
-        for(int y = iminy; y <= imaxy; y++)
+        for (int y=iminy; y<=imaxy; ++y)
             c()->mask_pixf->copy_hline(iminx, y, width, cc);
 
         // render the alpha mask polygon
         c()->mask_ren.color(agg::gray8(255));
-        for (int i=0; i<polygon->geom_count(); i++)
+        for (int i=0; i<polygon->geom_count(); ++i)
         {
             c()->ras.reset();
             c()->ras.add_path(c()->ps, pathids[i]);
@@ -1592,12 +1593,12 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth)
         }
         c()->ras.reset();
 
-        //render a thick line to represent the buffer
+        // render a thick line to represent the buffer
         if (bufferWidth != 0)
         {
-            //we will render the thick outline of the polygon with black
-            //this will give us both an inset into the polygon and an offset out of it
-            //We will zero out the offset during the third draw right below this
+            // We will render the thick outline of the polygon with black.  This
+            // will give us both an inset into the polygon and an offset out of it.
+            // We will zero out the offset during the third draw right below this
             c()->mask_ren.color(agg::gray8(0));
 
             agg::conv_stroke<agg::path_storage> stroke(c()->ps);
@@ -1611,9 +1612,9 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth)
             c()->ras.filling_rule(agg::fill_even_odd);
             c()->ras.reset();
 
-            //now we need to render the polygon a third time, using an inverting blender
-            //so that the region inside the polygon that was made dark by the rendering
-            //of the thick outline becomes "light again" for use by the mask rasterizer
+            // Now we need to render the polygon a third time, using an inverting blender
+            // so that the region inside the polygon that was made dark by the rendering
+            // of the thick outline becomes "light again" for use by the mask rasterizer.
 
             typedef agg::pixfmt_alpha_blend_gray<blender_gray_invert<agg::gray8> , agg::rendering_buffer> pixfmt_gray8_invert;
             typedef agg::renderer_base<pixfmt_gray8_invert>                       mg_invert_rb_type;
@@ -1625,7 +1626,7 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth)
 
             // render the alpha mask polygon, again, this time with the inverting blender
             _TransferPoints(c(), polygon, &m_xform, pathids);
-            for (int i=0; i<polygon->geom_count(); i++)
+            for (int i=0; i<polygon->geom_count(); ++i)
             {
                 c()->ras.reset();
                 c()->ras.add_path(c()->ps, pathids[i]);
@@ -1659,21 +1660,24 @@ void AGGRenderer::_TransferPoints(agg_context* c, LineBuffer* srcLB, const SE_Ma
     int offset = 0;
     int* cntrs = srcLB->cntrs();
 
-    if (pathids) *pathids = 0;
+    if (pathids)
+        *pathids = 0;
 
-    for (int h=0; h<srcLB->geom_count(); h++)
+    for (int h=0; h<srcLB->geom_count(); ++h)
     {
         if (h && pathids)
             pathids[h] = c->ps.start_new_path();
 
         int cur_cntr_count = srcLB->geom_size(h);
 
-        for (int i=0; i<cur_cntr_count; i++)
+        for (int i=0; i<cur_cntr_count; ++i)
         {
             int ci = offset;
+
+            // add the initial point
             double sx = srcLB->x_coord(ci);
             double sy = srcLB->y_coord(ci);
-            ci++;
+            ++ci;
 
             if (xform)
                 xform->transform(sx, sy, sx, sy);
@@ -1684,12 +1688,13 @@ void AGGRenderer::_TransferPoints(agg_context* c, LineBuffer* srcLB, const SE_Ma
             if (!ptlast)
                 continue;
 
+            // add the interior points
             double tx, ty;
-            for (int j = 1; j < ptlast; j++)
+            for (int j=1; j<ptlast; ++j)
             {
                 tx = srcLB->x_coord(ci);
                 ty = srcLB->y_coord(ci);
-                ci++;
+                ++ci;
 
                 if (xform)
                     xform->transform(tx, ty, tx, ty);
@@ -1697,15 +1702,16 @@ void AGGRenderer::_TransferPoints(agg_context* c, LineBuffer* srcLB, const SE_Ma
                 c->ps.line_to(tx, ty);
             }
 
+            // add the final point
             tx = srcLB->x_coord(ci);
             ty = srcLB->y_coord(ci);
-            ci++;
+            ++ci;
 
             if (xform)
                 xform->transform(tx, ty, tx, ty);
 
-            //detect a close segment (in a Linebuffer this is caused by first and
-            //last point of the contour being equal
+            // detect a close segment (in a Linebuffer this is caused by first and
+            // last point of the contour being equal
             if (tx == sx && ty == sy)
                 c->ps.close_polygon();
             else if (ptlast == 1)
@@ -1752,30 +1758,31 @@ void AGGRenderer::DrawScreenPolyline(LineBuffer* srclb, const SE_Matrix* xform, 
 }
 
 
-//copied from WritePolylines, except it doesn't do to screen transform -- we should refactor.
+// copied from WritePolylines, except it doesn't do to screen transform - we should refactor
 void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE_Matrix* xform, const SE_LineStroke& lineStroke)
 {
     if ((lineStroke.color & 0xFF000000) == 0)
         return;
 
+    // if you have no geoms, why do you call us at all?
     if (srclb->geom_count() == 0)
-        return; //if you have no geoms, why do you call us at all?
+        return;
 
     double weightpx = max(1.0, lineStroke.weight);
 
-    //add to the agg path storage -- here it doesn't matter
-    //how many geometries there are in the line buffer,
-    //se we just pass NULL for the path offsets array
+    // add to the agg path storage - here it doesn't matter
+    // how many geometries there are in the line buffer,
+    // so we just pass NULL for the path offsets array
     _TransferPoints(c, srclb, xform, NULL);
 
-    //note: removed the code which used the outline renderer for thin lines.
-    //there were problems with dense polylines not being rendered accurately.
+    // note: removed the code which used the outline renderer for thin lines.
+    // there were problems with dense polylines not being rendered accurately.
 
-    //stroke the line as a polygon
+    // stroke the line as a polygon
     agg::conv_stroke<agg::path_storage> stroke(c->ps);
     stroke.width(weightpx);
 
-    //set up cap / join style
+    // set up cap / join style
     switch (lineStroke.cap)
     {
         case SE_LineCap_None:
@@ -1796,17 +1803,15 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
     switch (lineStroke.join)
     {
         case SE_LineJoin_None:
-            stroke.line_join(agg::bevel_join);  //AGG doesn't support None
+            stroke.line_join(agg::bevel_join);  // AGG doesn't support None
             break;
         case SE_LineJoin_Bevel:
             stroke.line_join(agg::bevel_join);
             break;
         case SE_LineJoin_Miter:
-            {
             stroke.line_join(agg::miter_join);
-            stroke.miter_limit(2.0*lineStroke.miterLimit);  //miter limit is relative to the half-width
+            stroke.miter_limit(2.0*lineStroke.miterLimit);  // miter limit is relative to the half-width
             break;
-            }
         case SE_LineJoin_Round:
         default:
             stroke.line_join(agg::round_join);
@@ -1841,15 +1846,16 @@ void AGGRenderer::DrawScreenPolygon(agg_context* c, LineBuffer* polygon, const S
     if ((color & 0xFF000000) == 0)
         return;
 
+    // if you have no geoms, why do you call us at all?
     if (polygon->geom_count() == 0)
-        return; //if you have no geoms, why do you call us at all?
+        return;
 
     unsigned * pathids = (unsigned*) alloca(polygon->geom_count() * sizeof(unsigned));
 
-    //transform to screen coords and transfer to ag storage
+    // transform to screen coords and transfer to AGG storage
     _TransferPoints(c, polygon, xform, pathids);
 
-    for (int i=0; i<polygon->geom_count(); i++)
+    for (int i=0; i<polygon->geom_count(); ++i)
     {
         c->ras.reset();
         c->ras.add_path(c->ps, pathids[i]);
@@ -1928,19 +1934,19 @@ void AGGRenderer::AddExclusionRegion(RS_F_Point* fpts, int npts)
 }
 
 
-//labeling -- this is the entry API for adding SE labels
-//to the label mananger
+// labeling - this is the entry API for adding SE labels
+// to the label mananger
 void AGGRenderer::ProcessSELabelGroup(SE_LabelInfo*   labels,
                                       int             nlabels,
                                       RS_OverpostType type,
                                       bool            exclude,
                                       LineBuffer*     path)
 {
-    //check if we are rendering a selection -- bail if so
+    // check if we are rendering a selection - bail if so
     if (m_bSelectionMode)
         return;
 
-    //forward it to the label renderer
+    // forward it to the label renderer
     m_labeler->ProcessLabelGroup(labels, nlabels, type, exclude, path);
 }
 
@@ -1952,15 +1958,15 @@ void AGGRenderer::DrawScreenRaster(unsigned char* data, int length,
     DrawScreenRaster(c(), data, length, format, native_width, native_height, x, y, w, h, angledeg);
 }
 
+
 void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int length,
                                    RS_ImageFormat format, int native_width, int native_height,
                                    double x, double y, double w, double h, double angledeg)
 {
-    //if it's PNG, decode it and come back around
+    // if it's PNG, decode it and come back around
     if (format == RS_ImageFormat_PNG)
     {
         unsigned int* decoded = AGGImageIO::DecodePNG(data, length, native_width, native_height);
-
         if (decoded)
             DrawScreenRaster(cxt, (unsigned char*)decoded, native_width * native_height * 4, RS_ImageFormat_ARGB, native_width, native_height, x, y, w, h, angledeg);
 
@@ -1968,13 +1974,13 @@ void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int le
         return;
     }
 
-    //Set up the image insertion transformation
+    // set up the image insertion transformation
     agg::trans_affine img_mtx;
     img_mtx.reset();
 
     img_mtx *= agg::trans_affine_translation(-native_width/2, -native_height/2);
     img_mtx *= agg::trans_affine_scaling(w / native_width, h / native_height);
-    img_mtx *= agg::trans_affine_rotation(angledeg * agg::pi / 180.0);
+    img_mtx *= agg::trans_affine_rotation(angledeg * M_PI180);
     img_mtx *= agg::trans_affine_translation(x, y);
     img_mtx.invert();
 
@@ -1985,8 +1991,8 @@ void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int le
     double maxx = x + w2;
     double maxy = y + h2;
 
-    //create a rectangular path that will be filled using the image
-    if (angledeg == 0)
+    // create a rectangular path that will be filled using the image
+    if (angledeg == 0.0)
     {
         cxt->ras.reset();
         cxt->ras.move_to_d(minx, miny);
@@ -1997,52 +2003,56 @@ void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int le
     }
     else
     {
-        //create a rotated rectangular path in case there is rotation
-        //we give it a 1 pixel safety buffer (not sure if it is really needed)
+        // create a rotated rectangular path in case there is rotation
+        // we give it a 1 pixel safety buffer (not sure if it is really needed)
         SE_Matrix mtx;
         double angleRad = angledeg * M_PI180;
         mtx.translate(-x, -y);
         mtx.rotate(angleRad);
         mtx.translate(x, y);
 
-        double px = minx - 1; double py = miny - 1;
+        double px = minx - 1.0;
+        double py = miny - 1.0;
         mtx.transform(px, py, px, py);
 
         cxt->ras.reset();
         cxt->ras.move_to_d(px, py);
 
-        px = maxx + 1; py = miny - 1;
+        px = maxx + 1.0;
+        py = miny - 1.0;
         mtx.transform(px, py, px, py);
         cxt->ras.line_to_d(px, py);
 
-        px = maxx + 1; py = maxy + 1;
+        px = maxx + 1.0;
+        py = maxy + 1.0;
         mtx.transform(px, py, px, py);
         cxt->ras.line_to_d(px, py);
 
-        px = minx - 1; py = maxy + 1;
+        px = minx - 1.0;
+        py = maxy + 1.0;
         mtx.transform(px, py, px, py);
         cxt->ras.line_to_d(px, py);
 
         cxt->ras.close_polygon();
     }
 
-    //attach an agg buffer to the source image data
+    // attach an agg buffer to the source image data
     mg_rendering_buffer src(data, native_width, native_height, 4 * native_width);
 
-    // Render the data
+    // render the data
     RenderWithTransform(src, cxt, img_mtx, format);
 }
 
+
 void AGGRenderer::DrawScreenRasterTransform(agg_context* cxt, unsigned char* data, int length,
-                                   RS_ImageFormat format, int native_width, int native_height,
-                                   double x, double y, double w, double h,
-                                   TransformMesh* xformMesh)
+                                            RS_ImageFormat format, int native_width, int native_height,
+                                            double x, double y, double w, double h,
+                                            TransformMesh* xformMesh)
 {
-    //if it's PNG, decode it and come back around
+    // if it's PNG, decode it and come back around
     if (format == RS_ImageFormat_PNG)
     {
         unsigned int* decoded = AGGImageIO::DecodePNG(data, length, native_width, native_height);
-
         if (decoded)
             DrawScreenRasterTransform(cxt, (unsigned char*)decoded, native_width * native_height * 4, RS_ImageFormat_ARGB, native_width, native_height, x, y, w, h, xformMesh);
 
@@ -2054,15 +2064,15 @@ void AGGRenderer::DrawScreenRasterTransform(agg_context* cxt, unsigned char* dat
     long dwStart = GetTickCount();
 #endif
 
-    //attach an agg buffer to the source image data
-    mg_rendering_buffer src(data, native_width, native_height, 4 * native_width);
+    // attach an agg buffer to the source image data
+    mg_rendering_buffer src(data, native_width, native_height, 4*native_width);
 
     // read the xformMesh
     int num_pts = xformMesh->GetTotalPoints();
     int num_verts_per_column = xformMesh->GetTotalVerticalPoints();
     int horz_count = 1;
 
-    for (int i = 0; i < num_pts - num_verts_per_column - 1; i++)
+    for (int i=0; i<num_pts-num_verts_per_column-1; ++i)
     {
         // skip the top row of points
         if (i == horz_count * num_verts_per_column - 1)
@@ -2077,10 +2087,10 @@ void AGGRenderer::DrawScreenRasterTransform(agg_context* cxt, unsigned char* dat
         // |        |
         // ll------lr
 
-        int lowerLeftIndex = i;
+        int lowerLeftIndex  = i;
         int lowerRightIndex = i + num_verts_per_column;
         int upperRightIndex = lowerRightIndex + 1;
-        int upperLeftIndex = lowerLeftIndex + 1;
+        int upperLeftIndex  = lowerLeftIndex  + 1;
 
         RenderTransformMeshRectangle(src, cxt, format, xformMesh,
             lowerLeftIndex, lowerRightIndex, upperLeftIndex, upperRightIndex);
@@ -2089,58 +2099,62 @@ void AGGRenderer::DrawScreenRasterTransform(agg_context* cxt, unsigned char* dat
 #ifdef _DEBUG
     printf("  AGGRenderer::DrawScreenRasterTransform() total time = %6.4f (s)\n", (GetTickCount()-dwStart)/1000.0);
 #endif
-
 }
 
+
 // Renders the mesh rectangle defined by the point mappings at the four supplied mesh indices
-void AGGRenderer::RenderTransformMeshRectangle(mg_rendering_buffer& src, agg_context* cxt, RS_ImageFormat format,
-          TransformMesh* transformMesh, int lowerLeftIndex, int lowerRightIndex, int upperLeftIndex, int upperRightIndex)
+void AGGRenderer::RenderTransformMeshRectangle(mg_rendering_buffer& src, agg_context* cxt,
+                                               RS_ImageFormat format, TransformMesh* transformMesh,
+                                               int lowerLeftIndex, int lowerRightIndex,
+                                               int upperLeftIndex, int upperRightIndex)
 {
     MeshPoint mesh_pt_ll = transformMesh->GetMeshPoint(lowerLeftIndex);
     MeshPoint mesh_pt_lr = transformMesh->GetMeshPoint(lowerRightIndex);
     MeshPoint mesh_pt_ul = transformMesh->GetMeshPoint(upperLeftIndex);
     MeshPoint mesh_pt_ur = transformMesh->GetMeshPoint(upperRightIndex);
 
-    // Render the lower triangle
+    // render the lower triangle
     RenderTransformedTriangle(src, cxt, format,
         mesh_pt_ll.pt_src, mesh_pt_lr.pt_src, mesh_pt_ur.pt_src,
         mesh_pt_ll.pt_dest, mesh_pt_lr.pt_dest, mesh_pt_ur.pt_dest);
 
-    // Render the upper triangle
+    // render the upper triangle
     RenderTransformedTriangle(src, cxt, format,
         mesh_pt_ur.pt_src, mesh_pt_ul.pt_src, mesh_pt_ll.pt_src,
         mesh_pt_ur.pt_dest, mesh_pt_ul.pt_dest, mesh_pt_ll.pt_dest);
 }
 
+
 // Renders the triangle in the source image defined by the three source points into
-// the triangle in the supplied context defined by the three destination points
+// the triangle in the supplied context defined by the three destination points.
 void AGGRenderer::RenderTransformedTriangle(mg_rendering_buffer& src, agg_context* cxt, RS_ImageFormat format,
-                                 RS_F_Point srcPt1, RS_F_Point /*srcPt2*/, RS_F_Point srcPt3,
-                                 RS_F_Point destPt1, RS_F_Point destPt2, RS_F_Point destPt3)
+                                            RS_F_Point srcPt1, RS_F_Point /*srcPt2*/, RS_F_Point srcPt3,
+                                            RS_F_Point destPt1, RS_F_Point destPt2, RS_F_Point destPt3)
 {
-    // Set up the destination parallelogram
+    // set up the destination parallelogram
     double parallelogram[6] = { destPt1.x, destPt1.y, destPt2.x, destPt2.y, destPt3.x, destPt3.y };
 
-    // Set up the destination triangle polygon
+    // set up the destination triangle polygon
     cxt->ras.reset();
     cxt->ras.move_to_d(destPt1.x, destPt1.y);
     cxt->ras.line_to_d(destPt2.x, destPt2.y);
     cxt->ras.line_to_d(destPt3.x, destPt3.y);
     cxt->ras.close_polygon();
 
-    // Set up the transformation from the source to destination
+    // set up the transformation from the source to destination
     agg::trans_affine img_mtx;
     img_mtx.reset();
     img_mtx.rect_to_parl(srcPt1.x, srcPt1.y, srcPt3.x, srcPt3.y, parallelogram);
-    img_mtx.invert(); // Renderer uses inverse of matrix
+    img_mtx.invert(); // renderer uses inverse of matrix
 
-    // Render the triangle without anti-aliasing
+    // render the triangle without anti-aliasing
     // anti-aliasing results in faint grid lines
     RenderWithTransform(src, cxt, img_mtx, format, false);
 }
 
+
 // Renders the source image to the destination context, using the specified
-// affine transformation matrix
+// affine transformation matrix.
 void AGGRenderer::RenderWithTransform(mg_rendering_buffer& src, agg_context* cxt,
                                       agg::trans_affine& img_mtx, RS_ImageFormat format, bool antiAlias)
 {
@@ -2168,7 +2182,7 @@ void AGGRenderer::RenderWithTransform(mg_rendering_buffer& src, agg_context* cxt
     else if(format == RS_ImageFormat_ARGB)
     {
         mg_pixfmt_type_argb pf(src);
-        pf.premultiply(); //we need to premultiply the alpha -- the agg sampler will not work correctly around image edges otherwise
+        pf.premultiply(); // we need to premultiply the alpha - the agg sampler will not work correctly around image edges otherwise
 
         typedef agg::span_interpolator_linear<> interpolator_type;
         interpolator_type interpolator(img_mtx);
@@ -2181,7 +2195,7 @@ void AGGRenderer::RenderWithTransform(mg_rendering_buffer& src, agg_context* cxt
 
         agg::span_allocator<mg_pixfmt_type::color_type> sa;
 
-        //we are using the alpha premultiplied renderer since the source image is premultiplied
+        // we are using the alpha premultiplied renderer since the source image is premultiplied
         if (antiAlias)
             agg::render_scanlines_aa(cxt->ras, cxt->sl, cxt->ren_pre, sa, sg);
         else
@@ -2189,8 +2203,8 @@ void AGGRenderer::RenderWithTransform(mg_rendering_buffer& src, agg_context* cxt
     }
     else if(format == RS_ImageFormat_NATIVE)
     {
-        //source image is already premultiplied, declare a pixel format that uses
-        //the correct blender
+        // source image is already premultiplied, declare a pixel format that uses
+        // the correct blender
         mg_pixfmt_type_pre pf(src);
 
         typedef agg::span_interpolator_linear<> interpolator_type;
@@ -2211,12 +2225,13 @@ void AGGRenderer::RenderWithTransform(mg_rendering_buffer& src, agg_context* cxt
     }
 }
 
+
 void AGGRenderer::DrawScreenText(const RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy, RS_F_Point* path, int npts, double param_position )
 {
     if (path)
     {
-        // path text
-        // We cannot modify the cached RS_TextMetrics so we create a local one and use it to layout the path text.
+        // path text - we cannot modify the cached RS_TextMetrics so we create a
+        // local one and use it to layout the path text.
         RS_TextMetrics tm_local;
         if (GetTextMetrics(tm.text, tdef, tm_local, true))
         {
@@ -2227,8 +2242,7 @@ void AGGRenderer::DrawScreenText(const RS_TextMetrics& tm, RS_TextDef& tdef, dou
     }
     else
     {
-        // block text
-        // Check that we have a valid text metrics
+        // block text - check that we have a valid text metrics
         if (tm.font != NULL)
             DrawBlockText(tm, tdef, insx, insy);
     }
@@ -2244,20 +2258,15 @@ void AGGRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
         return;
     }
 
-    //we will render symbol in this bitmap (TODO need exact symbol bounds)
+    // we will render symbol in this bitmap (TODO need exact symbol bounds)
 
     RS_F_Point bounds[4];
     memcpy(bounds, style->bounds, sizeof(bounds));
 
     //////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////
 
-    double scale = 1;
-    double rep_x = 16;
+    double scale = 1.0;
+    double rep_x = 16.0;
     int w = (int)(rep_x*style->repeat*scale+0.5);
     double dh = rs_max(fabs(bounds[0].y), fabs(bounds[2].y)) * 2.0 *scale;
     int h = (int)dh;
@@ -2266,20 +2275,20 @@ void AGGRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
     cxt_bitmap.ren.clear(agg::argb8_packed(0x0));
     cxt_bitmap.lprof.gamma(agg::gamma_power(1.0));
 
-    //temporarily replace the agg context so that we render into the bitmap buffer
+    // temporarily replace the agg context so that we render into the bitmap buffer
     agg_context* mem = m_context;
     m_context = &cxt_bitmap;
 
-    //this centers the symbol onto the bitmap (TODO once we know the symbol bounds)
+    // this centers the symbol onto the bitmap (TODO once we know the symbol bounds)
     SE_Matrix posxform;
     posxform.setIdentity();
     posxform.scale(scale,scale);
-    //posxform.translateX(-native_bounds.minx*scale);
+//  posxform.translateX(-native_bounds.minx*scale);
     posxform.translateY(-bounds[0].y);
 
-    for (int j=0; j<rep_x+1; j++)
+    for (int j=0; j<rep_x+1; ++j)
     {
-        for (unsigned i = 0; i < style->symbol.size(); i++)
+        for (unsigned i=0; i<style->symbol.size(); ++i)
         {
             SE_RenderPrimitive* primitive = style->symbol[i];
 
@@ -2298,8 +2307,8 @@ void AGGRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
             {
                 SE_RenderText* tp = (SE_RenderText*)primitive;
 
-                //TODO take into account rotation if drawing along a line and
-                //the angle control is "FromGeometry"
+                // TODO take into account rotation if drawing along a line and
+                // the angle control is "FromGeometry"
                 double x, y;
                 posxform.transform(tp->position[0], tp->position[1], x, y);
 
@@ -2309,8 +2318,8 @@ void AGGRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
             {
                 SE_RenderRaster* rp = (SE_RenderRaster*)primitive;
 
-                //TODO take into account rotation if drawing along a line and
-                //the angle control is "FromGeometry"
+                // TODO take into account rotation if drawing along a line and
+                // the angle control is "FromGeometry"
                 double x, y;
                 posxform.transform(rp->position[0], rp->position[1], x, y);
 
@@ -2351,6 +2360,7 @@ void AGGRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 }
 */
 
+
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 ////
@@ -2360,10 +2370,9 @@ void AGGRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 //////////////////////////////////////////////////////////////
 
 
-//Inserts the contents of a given DWF input stream
-//into the current output W2D. The given coord sys
-//transformation is applied and geometry will be clipped
-//to the RS_Bounds context of the DWFRenderer
+// Inserts the contents of a given DWF input stream into the current
+// output W2D.  The given coord sys transformation is applied and geometry
+// will be clipped to the RS_Bounds context of the DWFRenderer.
 void AGGRenderer::AddDWFContent(RS_InputStream*  in,
                                 CSysTransformer* xformer,
                                 const RS_String& section,
@@ -2375,7 +2384,7 @@ void AGGRenderer::AddDWFContent(RS_InputStream*  in,
         if (in->available() == 0)
             return;
 
-        //go to beginning of stream
+        // go to beginning of stream
         in->seek(SEEK_SET, 0);
 
         DWFRSInputStream rsin(in);
@@ -2386,16 +2395,14 @@ void AGGRenderer::AddDWFContent(RS_InputStream*  in,
         oReader.getPackageInfo( tInfo );
 
         if (tInfo.eType != DWFPackageReader::eDWFPackage)
-        {
-            return; //throw exception?
-        }
+            return; // throw exception?
 
         bool checkSection = (wcslen(section.c_str()) > 0);
 
-        //read the manifest
+        // read the manifest
         DWFManifest& rManifest = oReader.getManifest();
 
-        //now read the sections
+        // now read the sections
         DWFSection* pSection = NULL;
         DWFManifest::SectionIterator* iSection = (&rManifest)->getSections();
 
@@ -2405,30 +2412,29 @@ void AGGRenderer::AddDWFContent(RS_InputStream*  in,
             {
                 pSection = iSection->get();
 
-                //call this so that the resource data (like transforms and roles) is read in
+                // call this so that the resource data (like transforms and roles) is read in
                 pSection->readDescriptor();
 
-                //DWFGlobalSection* pGlobal = dynamic_cast<DWFGlobalSection*>(pSection);
+//              DWFGlobalSection* pGlobal = dynamic_cast<DWFGlobalSection*>(pSection);
                 DWFEPlotSection* pEPlot = dynamic_cast<DWFEPlotSection*>(pSection);
 
                 if (pEPlot)
                 {
                     if (checkSection)
                     {
-                        //compare name stored in section to user requested
-                        //section
-                        //Used for point symbols
+                        // compare name stored in section to user requested section
+                        // Used for point symbols
                         DWFString name = pEPlot->title();
 
-                        //skip current section if its name does
-                        //not match the name of the one we need
+                        // skip current section if its name does not match the name
+                        // of the one we need
                         if (name != section.c_str())
                             continue;
                     }
 
-                    // Get the resources for the section
+                    // get the resources for the section
 
-                    //first do primary W2D resources
+                    // first do primary W2D resources
                     DWFIterator<DWFResource*>* piResources = pEPlot->findResourcesByRole(DWFXML::kzRole_Graphics2d);
 
                     if (piResources)
@@ -2453,7 +2459,7 @@ void AGGRenderer::AddDWFContent(RS_InputStream*  in,
                         piResources = NULL;
                     }
 
-                    //then do overlays
+                    // then do overlays
                     piResources = pEPlot->findResourcesByRole(DWFXML::kzRole_Graphics2dOverlay);
 
                     if (piResources)
@@ -2493,14 +2499,14 @@ void AGGRenderer::AddW2DContent(RS_InputStream* in, CSysTransformer* xformer, co
 {
     WT_Result result;
 
-    //initialize state variables, which are needed by W2D rewriter callbacks
+    // initialize state variables, which are needed by W2D rewriter callbacks
     m_input = in;
     m_xformer = xformer;
     m_bHaveViewport = false;
     m_bLayerPassesFilter = true;
     m_layerFilter = w2dfilter;
 
-    //set output image if not already set
+    // set output image if not already set
     if (!m_bIsSymbolW2D)
         m_imw2d = c();
 
@@ -2513,7 +2519,7 @@ void AGGRenderer::AddW2DContent(RS_InputStream* in, CSysTransformer* xformer, co
 
     fin.open();
 
-    // Do the actual reading.
+    // do the actual reading
     do
     {
         result = fin.process_next_object();
@@ -2524,7 +2530,7 @@ void AGGRenderer::AddW2DContent(RS_InputStream* in, CSysTransformer* xformer, co
 
     m_input = NULL;
 
-    //clear the output image if we set it in this function
+    // clear the output image if we set it in this function
     if (!m_bIsSymbolW2D)
         m_imw2d = NULL;
 }
@@ -2537,19 +2543,19 @@ void AGGRenderer::SetActions(WT_File& file)
     file.set_stream_read_action (agr_read);
     file.set_stream_seek_action (agr_seek);
 
-    //file.set_dwf_header_action(agr_process_dwf_header);
-    //file.set_author_action(agr_process_author);
-    //file.set_creator_action(agr_process_creator);
-    //file.set_creation_time_action(agr_process_created);
-    //file.set_modification_time_action(agr_process_modified);
-    //file.set_source_filename_action(agr_process_sourceFilename);
-    //file.set_source_creation_time_action(agr_process_sourceCreationTime);
-    //file.set_source_modification_time_action(agr_process_sourceModificationTime);
+//  file.set_dwf_header_action(agr_process_dwf_header);
+//  file.set_author_action(agr_process_author);
+//  file.set_creator_action(agr_process_creator);
+//  file.set_creation_time_action(agr_process_created);
+//  file.set_modification_time_action(agr_process_modified);
+//  file.set_source_filename_action(agr_process_sourceFilename);
+//  file.set_source_creation_time_action(agr_process_sourceCreationTime);
+//  file.set_source_modification_time_action(agr_process_sourceModificationTime);
     file.set_units_action(agr_process_units);
-    //file.set_embed_action(agr_process_embed);
-    //file.set_named_view_action(agr_process_namedView);
-    //file.set_view_action(agr_process_view);
-    //file.set_plot_info_action(agr_process_plotInfo);
+//  file.set_embed_action(agr_process_embed);
+//  file.set_named_view_action(agr_process_namedView);
+//  file.set_view_action(agr_process_view);
+//  file.set_plot_info_action(agr_process_plotInfo);
     file.set_background_action(agr_process_background);
     file.set_color_action(agr_process_color);
     file.set_line_weight_action(agr_process_lineWeight);
@@ -2559,67 +2565,67 @@ void AGGRenderer::SetActions(WT_File& file)
     file.set_visibility_action(agr_process_visibility);
     file.set_code_page_action(agr_process_codePage);
     file.set_color_map_action(agr_process_colorMap);
-    //file.set_comments_action(agr_process_comments);
+//  file.set_comments_action(agr_process_comments);
     file.set_contour_set_action(agr_process_contourSet);
-    //file.set_copyright_action(agr_process_copyright);
+//  file.set_copyright_action(agr_process_copyright);
     file.set_dash_pattern_action(agr_process_dashPattern);
-    //file.set_description_action(agr_process_description);
+//  file.set_description_action(agr_process_description);
     file.set_fill_action(agr_process_fill);
     file.set_filled_ellipse_action(agr_process_filledEllipse);
     file.set_font_action(agr_process_font);
     file.set_image_action(agr_process_image);
-    //file.set_keywords_action(agr_process_keywords);
+//  file.set_keywords_action(agr_process_keywords);
     file.set_marker_size_action(agr_process_markerSize);
     file.set_marker_symbol_action(agr_process_markerSymbol);
     file.set_merge_control_action(agr_process_mergeControl);
-    //file.set_named_view_list_action(agr_process_namedViewList);
+//  file.set_named_view_list_action(agr_process_namedViewList);
     file.set_origin_action(agr_process_origin);
     file.set_outline_ellipse_action(agr_process_outlineEllipse);
     file.set_polygon_action(agr_process_polygon);
     file.set_polytriangle_action(agr_process_polytriangle);
     file.set_polymarker_action(agr_process_polymarker);
     file.set_projection_action(agr_process_projection);
-    //file.set_subject_action(agr_process_subject);
-    //file.set_title_action(agr_process_title);
-    //file.set_unknown_action(agr_process_unknown);
-    //file.set_url_action(agr_process_url);
+//  file.set_subject_action(agr_process_subject);
+//  file.set_title_action(agr_process_title);
+//  file.set_unknown_action(agr_process_unknown);
+//  file.set_url_action(agr_process_url);
     file.set_png_group4_image_action(agr_process_pngGroup4Image);
     file.set_polyline_action(agr_process_polyline);
     file.set_text_action(agr_process_text);
     file.set_inked_area_action(agr_process_inkedArea);
-    //file.set_plot_optimized_action(agr_process_plotOptimized);
-    //file.set_group_begin_action(agr_process_groupBegin);
-    //file.set_group_end_action(agr_process_groupEnd);
-    //file.set_embedded_font_action(agr_process_embeddedFont);
-    //file.set_trusted_font_list_action(agr_process_trustedFontList);
-    //file.set_blockref_action(agr_process_blockref);
-    //file.set_block_meaning_action(agr_process_blockMeaning);
-    //file.set_encryption_action(agr_process_encryption);
-    //file.set_orientation_action(agr_process_orientation);
+//  file.set_plot_optimized_action(agr_process_plotOptimized);
+//  file.set_group_begin_action(agr_process_groupBegin);
+//  file.set_group_end_action(agr_process_groupEnd);
+//  file.set_embedded_font_action(agr_process_embeddedFont);
+//  file.set_trusted_font_list_action(agr_process_trustedFontList);
+//  file.set_blockref_action(agr_process_blockref);
+//  file.set_block_meaning_action(agr_process_blockMeaning);
+//  file.set_encryption_action(agr_process_encryption);
+//  file.set_orientation_action(agr_process_orientation);
     file.set_alignment_action(agr_process_alignment);
-    //file.set_password_action(agr_process_password);
-    //file.set_guid_action(agr_process_guid);
-    //file.set_filetime_action(agr_process_fileTime);
-    //file.set_userdata_action(agr_process_userData);
+//  file.set_password_action(agr_process_password);
+//  file.set_guid_action(agr_process_guid);
+//  file.set_filetime_action(agr_process_fileTime);
+//  file.set_userdata_action(agr_process_userData);
     file.set_pen_pattern_action(agr_process_penPattern);
     file.set_line_pattern_action(agr_process_linePattern);
     file.set_fill_pattern_action(agr_process_fillPattern);
-    //file.set_signdata_action(agr_process_DigitalSign);
+//  file.set_signdata_action(agr_process_DigitalSign);
 
     file.set_gouraud_polytriangle_action(agr_process_gouraudPolytriangle);
     file.set_gouraud_polyline_action(agr_process_gouraudPolyline);
 }
 
 
-//Given an array of points in W2D logical coordinates, this function:
-// 1. Transform W2D logical coords into their model space using the
+// Given an array of points in W2D logical coordinates, this function:
+// 1. Transforms W2D logical coords into their model space using the
 //    W2D file's units structure
-// 2. Apply coordinate system transformation into the destination
+// 2. Applies coordinate system transformation into the destination
 //    map's space
-// 3. Optionally clip the resulting point to the user-requested
+// 3. Optionally clips the resulting points to the user-requested
 //    data extent of the destination map
-// 4. Transform clipped points to destination W2D space
-// 5. Return a pointer to an array of W2D points with the
+// 4. Transforms clipped points to destination W2D space
+// 5. Returns a pointer to an array of W2D points with the
 //    total number of output points returned in outNumpts.
 //    If the clipping process of a polyline or polygon resulted
 //    in a multipolygon or multipolyline, a pointer to a vector
@@ -2630,40 +2636,40 @@ LineBuffer* AGGRenderer::ProcessW2DPoints(WT_File&          file,
                                           int               numpts,
                                           bool              checkInBounds)
 {
-    //This transformer may have been modified if a Viewport
-    //opcode was encountered in the source W2D. This is needed for
-    //support for symbols from ACAD, which do not use the
-    //standard W2D extent used by Studio.
-    //The function UpdateSymbolTrans does the actual modification and is
-    //called by the process_viewport callback.
+    // This transformer may have been modified if a Viewport
+    // opcode was encountered in the source W2D. This is needed for
+    // support for symbols from ACAD, which do not use the
+    // standard W2D extent used by Studio.
+    // The function UpdateSymbolTrans does the actual modification and is
+    // called by the process_viewport callback.
     SymbolTrans* trans = (SymbolTrans*)m_xformer;
 
-    //Our W2DRewrite component stores the source file Units transform
-    //in the source file's desired rendition -- a bit of a hack
-    //but we cannot store it in the destination file -- it messes up some scales
-    //plus it has a totally different units of its own.
+    // Our W2DRewrite component stores the source file Units transform
+    // in the source file's desired rendition - a bit of a hack
+    // but we cannot store it in the destination file - it messes up some scales
+    // plus it has a totally different units of its own.
     WT_Matrix xform = file.desired_rendition().drawing_info().units().dwf_to_application_adjoint_transform();
 
     LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pPool, numpts);
     lb->Reset();
 
     //
-    // Process the points into mapping space
+    // process the points into mapping space
     //
 
     WT_Point3D psrc(0.0, 0.0, 0.0);
     WT_Point3D pdst(0.0, 0.0, 0.0);
 
-    for (int i=0; i<numpts; i++)
+    for (int i=0; i<numpts; ++i)
     {
         psrc.m_x = srcpts[i].m_x;
         psrc.m_y = srcpts[i].m_y;
 
-        //this puts it into model space of the source data
+        // this puts it into model space of the source data
         xform.transform(psrc, pdst);
 
-        //now transform to mapping space of map
-        //using the symbol transformer object (if any)
+        // now transform to mapping space of map
+        // using the symbol transformer object (if any)
         if (trans)
             trans->TransformPoint(pdst.m_x, pdst.m_y);
 
@@ -2675,7 +2681,7 @@ LineBuffer* AGGRenderer::ProcessW2DPoints(WT_File&          file,
 
     // IMPORTANT: Only do this if the data is a DWF layer
     // or a DWF symbol that is too large to draw using a
-    // cached bitmap. Regular DWF Symbols will be transformed
+    // cached bitmap.  Regular DWF Symbols will be transformed
     // to the correct mapping space location by the symbol code
     if (!IsSymbolW2D())
     {
@@ -2685,7 +2691,7 @@ LineBuffer* AGGRenderer::ProcessW2DPoints(WT_File&          file,
         //
         if (checkInBounds)
         {
-            //check if line buffer is completely outside box
+            // check if line buffer is completely outside box
             if (   lb->bounds().minx > m_extents.maxx
                 || lb->bounds().miny > m_extents.maxy
                 || lb->bounds().maxx < m_extents.minx
@@ -2699,71 +2705,66 @@ LineBuffer* AGGRenderer::ProcessW2DPoints(WT_File&          file,
 
     // IMPORTANT: Only do this if the data is a DWF layer
     // or a DWF symbol that is too large to draw using a
-    // cached bitmap. Regular DWF Symbols will be transformed
+    // cached bitmap.  Regular DWF Symbols will be transformed
     // to the correct mapping space location by the symbol code
     if (!IsSymbolW2D() || m_imw2d != m_imsym)
     {
         int count = lb->point_count();
 
-        for (int i=0; i<count; i++)
+        for (int i=0; i<count; ++i)
         {
             WorldToScreenPoint(lb->x_coord(i), lb->y_coord(i), lb->x_coord(i), lb->y_coord(i));
         }
     }
     else
     {
-        /*
-        //for symbols just copy the points to the output array
-        //and only invert the y coordinate -- we need to flip y since
-        //in gd y goes down and in DWF it goes up
+/*
+        // for symbols just copy the points to the output array
+        // and only invert the y coordinate - we need to flip y since
+        // in gd y goes down and in DWF it goes up
         int count = lb->point_count();
 
         EnsureBufferSize(count);
         RS_D_Point* wpts = m_wtPointBuffer;
 
-        for (int i=0; i<count; i++)
+        for (int i=0; i<count; ++i)
         {
             wpts[i].x = (int)lb->x_coord(i);
             wpts[i].y = gdImageSY((gdImagePtr)GetW2DTargetImage()) - (int)lb->y_coord(i);
         }
-        */
+*/
     }
 
     return lb;
 }
 
 
-//This function scales a W2D space related value from
-//source W2D space to destination.
-//Since the source W2D file can fit into a small piece of the
-//destination DWF or be much larger, we need to take that
-//scaling into account when carrying over things like line weight,
-//font height, etc. this helper funtion determines and applies
-//that scale
+// This function scales a W2D space related value from source W2D space
+// to destination.  Since the source W2D file can fit into a small piece
+// of the destination DWF or be much larger, we need to take that scaling
+// into account when carrying over things like line weight, font height,
+// etc.  This helper function determines and applies that scale.
 double AGGRenderer::ScaleW2DNumber(WT_File& file, WT_Integer32 number)
 {
     WT_Matrix xform = file.desired_rendition().drawing_info().units().dwf_to_application_adjoint_transform();
 
-    double scale1 = 1.0 / xform(0,0); //div because we need inverse
+    double scale1 = 1.0 / xform(0, 0); // div because we need inverse
 
-    //number is now in source W2D model units
+    // number is now in source W2D model units
     double dModelSpace = (double)number * scale1;
 
     double dMapSpace = dModelSpace;
     if (m_xformer)
     {
-        //now we need to convert that to a length in destination
-        //map units.
+        // now we need to convert that to a length in destination map units
         dMapSpace *= m_xformer->GetLinearScale();
     }
 
     double dDstSpace = dMapSpace;
 
-    //only scale by map scale if we are not a symbol inside a cached image
+    // only scale by map scale if we are not a symbol inside a cached image
     if (!m_bIsSymbolW2D)
-    {
         dDstSpace *= m_xform.x0;
-    }
 
     return dDstSpace;
 }
@@ -2773,17 +2774,17 @@ void AGGRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
 {
     _ASSERT(m_xformer);
 
-    RS_Bounds alternate_extent(0,0,-1,-1);
+    RS_Bounds alternate_extent(0.0, 0.0, -1.0, -1.0);
 
-    //If a viewport was defined, the symbol W2D likely came from AutoCAD.
-    //In that case, the extent of the data inside the W2D is not the same
-    //as what Studio saves (0, 0, SYMBOL_MAX, SYMBOL_MAX), so we need to use
-    //a different transformation for that data.
-    //IMPORTANT: This will destructively modify the transformer that was passed in.
-    //It is ugly, but avoids parsing the W2D twice.
-    //The assumption here is that Viewport opcodes define the bounds of the data.
-    //This is not necessarily true for all W2D files, but is true for ones coming
-    //from ACAD through the Dwg Extract and Transform engine.
+    // If a viewport was defined, the symbol W2D likely came from AutoCAD.
+    // In that case, the extent of the data inside the W2D is not the same
+    // as what Studio saves (0, 0, SYMBOL_MAX, SYMBOL_MAX), so we need to use
+    // a different transformation for that data.
+    // IMPORTANT: This will destructively modify the transformer that was passed in.
+    // It is ugly, but avoids parsing the W2D twice.
+    // The assumption here is that Viewport opcodes define the bounds of the data.
+    // This is not necessarily true for all W2D files, but is true for ones coming
+    // from ACAD through the Dwg Extract and Transform engine.
     if (viewport.contour() && m_bIsSymbolW2D)
     {
         const WT_Contour_Set* cset = viewport.contour();
@@ -2799,15 +2800,15 @@ void AGGRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
             alternate_extent.miny = rs_min(pts[0].m_y, pts[2].m_y);
             alternate_extent.maxy = rs_max(pts[0].m_y, pts[2].m_y);
 
-            //TODO: we don't do that yet, since DWF layers can have
-            //multiple viewports, which mess up this logic -- no single
-            //viewport contains the overall extent of the data
-            /*
-            //if it is a DWF layer, also correct for aspect ratio
-            //of the destination bounds of the transformer so that
-            //we avoid stretching of the layer data.
-            //we now assume we know the exact bounds of the data
-            //in the w2d
+            // TODO: we don't do that yet, since DWF layers can have
+            // multiple viewports, which mess up this logic - no single
+            // viewport contains the overall extent of the data
+/*
+            // if it is a DWF layer, also correct for aspect ratio
+            // of the destination bounds of the transformer so that
+            // we avoid stretching of the layer data.
+            // we now assume we know the exact bounds of the data
+            // in the w2d
             if (!m_bIsSymbolW2D)
             {
                 double arsrc = alternate_extent.width() / alternate_extent.height();
@@ -2830,10 +2831,9 @@ void AGGRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
                     trans.SetDstBounds(newdst);
                 }
             }
-            */
+*/
 
-            //and finally set the source bounds we got from the viewport
-            //opcode
+            // and finally set the source bounds we got from the viewport opcode
             ((SymbolTrans*)m_xformer)->SetSrcBounds(alternate_extent);
             m_bHaveViewport = true;
         }
