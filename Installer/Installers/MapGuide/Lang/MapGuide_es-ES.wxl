@@ -43,6 +43,10 @@
     <String Id="IIS6ConfigDlg_AppPool">Crear un grupo de aplicaciones</String>
     <String Id="IIS6ConfigDlg_AppPoolDescription">Un grupo de aplicaciones MapGuide permite a las aplicaciones ser aislado de otras aplicaciones que se ejecutan en el servidor web</String>
 
+    <String Id="NoIISDlg_Title">IIS no se encuentra</String>
+    <String Id="NoIISDlg_Description">IIS no se encuentra</String>
+    <String Id="NoIISDlg_Text">IIS no se pudo encontrar en su sistema. Por favor, volver atrás y elegir una configuración diferente web o instalar IIS.</String>
+    
     <String Id="IPConfigDlg_Title">Dirección IP del servidor</String>
     <String Id="IPConfigDlg_Description">Introduzca el servidor de sitio MapGuide dirección IP del servidor</String>
     <String Id="IPConfigDlg_IPAddress">Introduzca el servidor de sitio MapGuide dirección IP del servidor:</String>

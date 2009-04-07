@@ -43,6 +43,10 @@
     <String Id="IIS6ConfigDlg_AppPool">Create an application pool</String>
     <String Id="IIS6ConfigDlg_AppPoolDescription">An application pool allows MapGuide applications to be isolated from other applications running on the web server</String>
 
+    <String Id="NoIISDlg_Title">IIS not found</String>
+    <String Id="NoIISDlg_Description">IIS not found</String>
+    <String Id="NoIISDlg_Text">IIS could not be found on your system. Please go back and choose a different web configuration or install IIS.</String>
+
     <String Id="IPConfigDlg_Title">Server IP address</String>
     <String Id="IPConfigDlg_Description">Enter the MapGuide Server site server IP address.</String>
     <String Id="IPConfigDlg_IPAddress">Enter the MapGuide Server site server IP address:</String>
