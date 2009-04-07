@@ -25,6 +25,14 @@
         <Property Id="APACHE_API_TYPE" Secure="yes" Value="PHP" />
         <Property Id="IIS_API_TYPE" Secure="yes" Value="PHP" />
         <Property Id="APP_POOL_NAME" Secure="yes" Value="MapGuideAppPool" />
+        
+        <!-- 
+        This is currently used for the aspnet_regiis.exe custom action, though there
+        is opportunity in the future for these properties to be exposed in the dialog
+        UI.
+        -->
+        <Property Id="SITE_ID" Secure="yes" Value="1" />
+        <Property Id="VIRTUALDIR" Secure="yes" Value="mapguide" />
 
         <!-- Add Remove Programs stuff -->
         <Property Id="ARPHELPLINK" Value="http://mapguide.osgeo.org" />
@@ -377,23 +385,26 @@
                 Action="CreateVDirMapGuide"
                 After="AddWebServiceExtension">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature > 2</Custom>
             <Custom
-                Action="RegisterScriptMaps"
+                Action="AspNetRegIIS"
                 After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom
+                Action="RegisterScriptMaps"
+                After="AspNetRegIIS">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature > 2</Custom>
             <Custom
                 Action="SetCustomErrors"
-                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature > 2</Custom>
+                After="AspNetRegIIS">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature > 2</Custom>
             <Custom
                 Action="CreateVDirMapAgent"
-                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature > 2</Custom>
+                After="AspNetRegIIS">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature > 2</Custom>
             <Custom
                 Action="CreateVDirPhpAgent"
-                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND IIS_API_TYPE = "PHP" AND &amp;WebExtMapViewerPHPFeature > 2</Custom>
+                After="AspNetRegIIS">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND IIS_API_TYPE = "PHP" AND &amp;WebExtMapViewerPHPFeature > 2</Custom>
             <Custom
                 Action="CreateVDirNetAgent"
-                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND IIS_API_TYPE = "DOTNET" AND  &amp;WebExtMapViewerASPXFeature > 2</Custom>
+                After="AspNetRegIIS">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND IIS_API_TYPE = "DOTNET" AND  &amp;WebExtMapViewerASPXFeature > 2</Custom>
             <Custom
                 Action="CreateVDirJavaAgent"
-                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND IIS_API_TYPE = "JAVA" AND &amp;WebExtMapViewerJSPFeature > 2</Custom>
+                After="AspNetRegIIS">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND IIS_API_TYPE = "JAVA" AND &amp;WebExtMapViewerJSPFeature > 2</Custom>
             <Custom
                 Action="DeleteWebServiceExtension"
                 Before="DeleteVDirMapGuide">(IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature = 2</Custom>

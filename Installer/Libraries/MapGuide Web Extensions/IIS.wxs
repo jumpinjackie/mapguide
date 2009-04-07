@@ -3,7 +3,10 @@
      xmlns:iis="http://schemas.microsoft.com/wix/IIsExtension"
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
 	<Fragment>
-
+        <Property Id="FRAMEWORKDIR">
+            <RegistrySearch Id="DotNetSearch" Root="HKLM" Key="Software\Microsoft\.NETFramework" Name="InstallRoot" Type="directory" />
+        </Property>
+        
         <Binary Id="IIsActions" SourceFile="..\..\Custom\bin\iis_actions.dll" />
         <CustomAction Id="AddWebServiceExtension" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="AddWebServiceExtension" />
         <CustomAction Id="DeleteWebServiceExtension" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="DeleteWebServiceExtension" />
@@ -15,7 +18,7 @@
         <CustomAction Id="CreateVDirNetAgent" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="CreateVDirNetAgent" />
         <CustomAction Id="CreateVDirJavaAgent" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="CreateVDirJavaAgent" />
         <CustomAction Id="DeleteVDirMapGuide" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="DeleteVDirMapGuide" />
-
+        <CustomAction Id="AspNetRegIIS" Return="check" Execute="immediate" Directory="TARGETDIR" ExeCommand="[FRAMEWORKDIR]v2.0.50727\aspnet_regiis.exe -s W3SVC/[SITE_ID]/ROOT/[VIRTUALDIR]" />
         <Binary Id="IIs7Actions" SourceFile="..\..\Custom\bin\iis7_action.dll" />
         <CustomAction Id="CreateAPPMapGuideWithIIS7" Return="check" BinaryKey="IIs7Actions" Execute="immediate" DllEntry="CreateAPPMapGuideWithIIS7" />
         <CustomAction Id="CreateVDirPhpAgentWithIIS7" Return="check" BinaryKey="IIs7Actions" Execute="immediate" DllEntry="CreateVDirPhpAgentWithIIS7" />
