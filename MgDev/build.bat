@@ -77,12 +77,15 @@ SET MG_ERROR=0
 rem ==================================================
 rem Extra tool paths
 rem 
-rem Your paths may be different, adjust accordingly
+rem Your paths may be different, adjust accordingly or
+rem set the appropriate environment variables before
+rem running
 rem ==================================================
-IF "%JAVA_HOME%" == "" SET JAVA_HOME=C:\Program Files\Java\jdk1.6.0
-SET DOXYGEN=%MG_DEV%\BuildTools\doxygen
-SET GNUWIN32=C:\Program Files\GnuWin32\bin
-SET SEVENZ=%MG_DEV%\BuildTools\WebTools\7-Zip
+
+IF "%JAVA_HOME%" == "" SET JAVA_HOME=C:\Program Files\Java\jdk1.5.0_18
+IF "%DOXYGEN%" == "" SET DOXYGEN=%MG_DEV%\BuildTools\doxygen
+IF "%GNUWIN32%" == "" SET GNUWIN32=C:\Program Files\GnuWin32\bin
+IF "%SEVENZ%" == "" SET SEVENZ=%MG_DEV%\BuildTools\WebTools\7-Zip
 IF "%ANT_HOME%" == "" SET ANT_HOME=%MG_DEV%\BuildTools\apache-ant-1.7.1
 
 SET PATH=%PATH%;%DOXYGEN%;%GNUWIN32%;%SEVENZ%;%ANT_HOME%\bin
