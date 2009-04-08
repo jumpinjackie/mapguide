@@ -10,6 +10,9 @@
 
     <String Id="InstallerTitle">Instalación de [ProductName]</String>
 
+    <String Id="MapGuideFeature">MapGuide</String>
+    <String Id="MapGuideFeature_Description">Ubicación de instalación MapGuide</String>
+
     <String Id="NextButtonText">Siguiente</String>
     <String Id="BackButtonText">Anterior</String>
     <String Id="CancelButtonText">Cancelar</String>
@@ -17,7 +20,7 @@
     <String Id="DisabledFeaturesDialog_Title">Características de los discapacitados</String>
     <String Id="DisabledFeaturesDialog_Description">Algunas funciones no estarán disponibles</String>
     <String Id="DisabledFeaturesDialog_IIS">IIS no está instalado, por lo que no estará disponible como una opción de instalación</String>
-    <String Id="DisabledFeaturesDialog_DotNet">DotNET Framework no se ha encontrado, por lo que el DotNET Web Extensiones no estará disponible</String>
+    <String Id="DisabledFeaturesDialog_DotNet">Dot Net Framework 2.0 no se ha encontrado, por lo que el Asp.Net Web Extensiones no estará disponible</String>
     <String Id="DisabledFeaturesDialog_Instructions">Si desea utilizar estas funciones, haga clic en cancelar y corregir el problema antes de proceder con la instalación</String>
 
     <String Id="WebServerConfigDlg_Title">Seleccione el tipo de configuración</String>

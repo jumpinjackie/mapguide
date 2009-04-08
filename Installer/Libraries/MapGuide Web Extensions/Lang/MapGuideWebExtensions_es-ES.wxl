@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WixLocalization Culture="es-ES" xmlns="http://schemas.microsoft.com/wix/2006/localization">
-    <String Id="WebExtensionsFeature">MapGuide Web Extensiones</String>
+    <String Id="WebExtensionsFeature">Web</String>
     <String Id="WebExtensionsFeature_Description">MapGuide Web Extensions proporciona los componentes necesarios para servir MapGuide recursos a través de Internet</String>
     <String Id="WebExtApacheFeature">Servidor web Apache</String>
     <String Id="WebExtApacheFeature_Description">Un paquete de la versión de Apache con MapGuide habilitado, corriendo en el puerto [APACHE_PORT].</String>

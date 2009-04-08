@@ -19,25 +19,84 @@
         <CustomAction Id="CreateVDirJavaAgent" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="CreateVDirJavaAgent" />
         <CustomAction Id="DeleteVDirMapGuide" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="DeleteVDirMapGuide" />
         <CustomAction Id="AspNetRegIIS" Return="check" Execute="immediate" Directory="TARGETDIR" ExeCommand="[FRAMEWORKDIR]v2.0.50727\aspnet_regiis.exe -s W3SVC/[SITE_ID]/ROOT/[VIRTUALDIR]" />
+
+<!--  Let's see if standard Type 51 CAs work better...
         <Binary Id="IIs7Actions" SourceFile="..\..\Custom\bin\iis7_action.dll" />
         <CustomAction Id="CreateAPPMapGuideWithIIS7" Return="check" BinaryKey="IIs7Actions" Execute="immediate" DllEntry="CreateAPPMapGuideWithIIS7" />
         <CustomAction Id="CreateVDirPhpAgentWithIIS7" Return="check" BinaryKey="IIs7Actions" Execute="immediate" DllEntry="CreateVDirPhpAgentWithIIS7" />
         <CustomAction Id="CreateAPPNetAgentWithIIS7" Return="check" BinaryKey="IIs7Actions" Execute="immediate" DllEntry="CreateAPPNetAgentWithIIS7" />
         <CustomAction Id="DeleteAPPMapGuideWithIIS7" Return="check" BinaryKey="IIs7Actions" Execute="immediate" DllEntry="DeleteAPPMapGuideWithIIS7" />
+-->        
 
-<!-- In case we ever want to use standard Type 51 Custom Actions for IIS install, here's a start at it:
+    <!--  Basic setup of MapGuide application, PHP handler, and MapAgent -->
 
-    <CustomAction Id="MapGuideIIS7_CreateAppPoolCA" Property="MapGuideIIS7_CreateAppPool"
-        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; add apppool /name:[MG_APP_POOL]">
-    <CustomAction Id="MapGuideIIS7_SetAppPoolPropCA" Property="MapGuideIIS7_SetAppPoolProp"
-        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; set config /section:applicationPools /[\[]name='[MG_APP_POOL]'[\[].processModel.idleTimeout:00:00:00">
-    <CustomAction Id="MapGuideIIS7_UnlockSrvHandlersCA" Property="MapGuideIIS7_UnlockSrvHandlers"
-        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; unlock config /section:handlers">
-    <CustomAction Id="MapGuideIIS7_UnlockSiteHandlersCA" Property="MapGuideIIS7_UnlockSiteHandlers"
-        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; unlock config &quot;[MG_WEBSITE]&quot; /section:handlers">
-    <CustomAction Id="MapGuideIIS7_CreateMapGuideSiteCA" Property="MapGuideIIS7_CreateMapGuideSite"
-        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; add app /site.name:&quot;[MG_WEBSITE]&quot; /path:/[MG_VDIR] /physicalPath:&quot;[WEBEXTENSIONSLOCATION]\www&quot;">
--->
+    <CustomAction Id="MapGuideIIS7_CreateAppPool_Cmd" Property="MapGuideIIS7_CreateAppPool"
+        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; add apppool /name:'[MG_APP_POOL]'" />
+    <CustomAction Id="MapGuideIIS7_CreateAppPool" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+        
+    <CustomAction Id="MapGuideIIS7_SetAppPoolProp_Cmd" Property="MapGuideIIS7_SetAppPoolProp"
+        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; set config /section:applicationPools /[\[]name='[MG_APP_POOL]'[\]].processModel.idleTimeout:00:00:00" />
+    <CustomAction Id="MapGuideIIS7_SetAppPoolProp" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
 
+    <CustomAction Id="MapGuideIIS7_UnlockSrvHandlers_Cmd" Property="MapGuideIIS7_UnlockSrvHandlers"
+        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; unlock config /section:handlers" />
+    <CustomAction Id="MapGuideIIS7_UnlockSrvHandlers" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+
+    <CustomAction Id="MapGuideIIS7_UnlockSiteHandlers_Cmd" Property="MapGuideIIS7_UnlockSiteHandlers"
+        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; unlock config '[MG_WEBSITE]' /section:handlers" />
+    <CustomAction Id="MapGuideIIS7_UnlockSiteHandlers" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+
+    <CustomAction Id="MapGuideIIS7_CreateMapGuideApp_Cmd" Property="MapGuideIIS7_CreateMapGuideApp"
+        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; add app /site.name:'[MG_WEBSITE]' /path:/[MG_VDIR] /physicalPath:&quot;[WEBROOTLOCATION]&quot;" />
+    <CustomAction Id="MapGuideIIS7_CreateMapGuideApp" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+
+    <CustomAction Id="MapGuideIIS7_CreatePhpScriptMapping_Cmd" Property="MapGuideIIS7_CreatePhpScriptMapping"
+        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; set config '[MG_WEBSITE]/[MG_VDIR]' /section:handlers /+[\[]name='PHP',path='*.php',verb='*',scriptProcessor='&quot;[PHPLOCATION]\php5isapi.dll&quot;',modules='IsapiModule',resourceType='Unspecified'[\]]" />
+    <CustomAction Id="MapGuideIIS7_CreatePhpScriptMapping" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+
+    <CustomAction Id="MapGuideIIS7_EnablePhpExtension_Cmd" Property="MapGuideIIS7_EnablePhpExtension"
+        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; set config /section:isapiCgiRestriction /+[\[]path='&quot;[PHPLOCATION]\php5isapi.dll&quot;',allowed='True'[\]]" />
+    <CustomAction Id="MapGuideIIS7_EnablePhpExtension" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+
+    <CustomAction Id="MapGuideIIS7_CreateMapAgentApp_Cmd" Property="MapGuideIIS7_CreateMapAgentApp"
+        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; add app /site.name:'[MG_WEBSITE]' /path:/'[MG_VDIR]/mapagent' /physicalPath:'[WEBROOTLOCATION]\mapagent'" />
+    <CustomAction Id="MapGuideIIS7_CreateMapAgentApp" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+
+    <CustomAction Id="MapGuideIIS7_SetMapAgentHandlerAccess_Cmd" Property="MapGuideIIS7_SetMapAgentHandlerAccess"
+        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; set config '[MG_WEBSITE]/[MG_VDIR]/mapagent' /section:handlers /accessPolicy:Read,Script,Execute" />
+    <CustomAction Id="MapGuideIIS7_SetMapAgentHandlerAccess" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+
+    <CustomAction Id="MapGuideIIS7_CreateMapAgentScriptHandling_Cmd" Property="MapGuideIIS7_CreateMapAgentScriptHandling"
+        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; set config '[MG_WEBSITE]/[MG_VDIR]/mapagent' /section:handlers /+[\[]name='&quot;MapGuide ISAPI agent&quot;',path='mapagent.fcgi',verb='*',scriptProcessor='&quot;[WEBROOTLOCATION]\mapagent\isapi_MapAgent.dll&quot;',modules='IsapiModule'[\]]" />
+    <CustomAction Id="MapGuideIIS7_CreateMapAgentScriptHandling" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+        
+    <CustomAction Id="MapGuideIIS7_EnableMapAgentExtension_Cmd" Property="MapGuideIIS7_EnableMapAgentExtension"
+        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; set config /section:isapiCgiRestriction /+[\[]path='&quot;[WEBROOTLOCATION]\mapagent\isapi_MapAgent.dll&quot;',allowed='True'[\]]" />
+    <CustomAction Id="MapGuideIIS7_EnableMapAgentExtension" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+        
+    <CustomAction Id="MapGuideIIS7_AssignMapGuideAppPool_Cmd" Property="MapGuideIIS7_AssignMapGuideAppPool"
+        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; set app '[MG_WEBSITE]/[MG_VDIR]' /applicationPool:[MG_APP_POOL]" />
+    <CustomAction Id="MapGuideIIS7_AssignMapGuideAppPool" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+        
+    <CustomAction Id="MapGuideIIS7_AssignMapAgentAppPool_Cmd" Property="MapGuideIIS7_AssignMapAgentAppPool"
+        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; set app '[MG_WEBSITE]/[MG_VDIR]/mapagent' /applicationPool:[MG_APP_POOL]" />
+    <CustomAction Id="MapGuideIIS7_AssignMapAgentAppPool" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+        
+    <CustomAction Id="MapGuideIIS7_UnlockHttpErrorsMain_Cmd" Property="MapGuideIIS7_UnlockHttpErrorsMain"
+        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; unlock config /section:httpErrors" />
+    <CustomAction Id="MapGuideIIS7_UnlockHttpErrorsMain" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+        
+    <CustomAction Id="MapGuideIIS7_UnlockHttpErrorsWebSite_Cmd" Property="MapGuideIIS7_UnlockHttpErrorsWebSite"
+        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; unlock config '[MG_WEBSITE]' /section:httpErrors" />
+    <CustomAction Id="MapGuideIIS7_UnlockHttpErrorsWebSite" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+        
+    <CustomAction Id="MapGuideIIS7_UnlockHttpErrorsMapGuide_Cmd" Property="MapGuideIIS7_UnlockHttpErrorsMapGuide"
+        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; unlock config '[MG_WEBSITE]/[MG_VDIR]' /section:httpErrors" />
+    <CustomAction Id="MapGuideIIS7_UnlockHttpErrorsMapGuide" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+        
+    <CustomAction Id="MapGuideIIS7_Reset401Handler_Cmd" Property="MapGuideIIS7_Reset401Handler"
+        Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot; set config '[MG_WEBSITE]/[MG_VDIR]' /section:httpErrors /-&quot;[\[]statusCode='401'[\]]&quot;" />
+    <CustomAction Id="MapGuideIIS7_Reset401Handler" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
+        
   </Fragment>
 </Wix>

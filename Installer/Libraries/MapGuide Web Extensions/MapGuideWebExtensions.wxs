@@ -3,7 +3,7 @@
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
     <Fragment>
         <PropertyRef Id="NETFRAMEWORK20"/>
-        <DirectoryRef Id="INSTALLLOCATION">
+        <DirectoryRef Id="WebParentFolder">
             <Directory Id="WEBEXTENSIONSLOCATION" Name="Web">
                 <Component Id="WebExtensionsComponent" Guid="AE77C8EB-284D-4410-903F-92AD516DEA93">
                     <CreateFolder />
@@ -93,7 +93,7 @@
                 </Directory>
             </Directory>
         </DirectoryRef>
-        <Feature Id="WebExtensionsFeature" Title="!(loc.WebExtensionsFeature)" Level="1" ConfigurableDirectory="WEBEXTENSIONSLOCATION" Description="!(loc.WebExtensionsFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+        <Feature Id="WebExtensionsFeature" Title="!(loc.WebExtensionsFeature)" Level="1" ConfigurableDirectory="WEBEXTENSIONSLOCATION" Description="!(loc.WebExtensionsFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
             <ComponentRef Id="WebExtensionsComponent"/>
             <ComponentRef Id="WebShortcutsComponent"/>
             <ComponentRef Id="WebApacheShortcutComponent"/>

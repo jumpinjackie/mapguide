@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WixLocalization Culture="en-US" xmlns="http://schemas.microsoft.com/wix/2006/localization">
-	<String Id="WebExtensionsFeature">MapGuide Web Extensions</String>
+	<String Id="WebExtensionsFeature">Web</String>
     <String Id="WebExtensionsFeature_Description">MapGuide Web Extensions provides the components needed to serve MapGuide resources over the internet.</String>
     <String Id="WebExtApacheFeature">Apache Web Server</String>
     <String Id="WebExtApacheFeature_Description">A bundled version of Apache with MapGuide enabled, running on port [APACHE_PORT].</String>

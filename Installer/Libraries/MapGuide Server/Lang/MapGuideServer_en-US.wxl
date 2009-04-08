@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WixLocalization Culture="en-US" xmlns="http://schemas.microsoft.com/wix/2006/localization">
-	<String Id="ServerFeature">MapGuide Server</String>
+	<String Id="ServerFeature">Server</String>
     <String Id="ServerFeature_Description">MapGuide Server provides geographic analysis and rendering services.</String>
     <String Id="ServerLogsFeature">Log Files</String>
     <String Id="ServerLogsFeature_Description">You may choose a location to place the server logfiles.</String>

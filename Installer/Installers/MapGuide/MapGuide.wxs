@@ -55,14 +55,24 @@
             <Directory Id="ProgramMenuFolder" Name="Programs"/>
             <Directory Id="DesktopFolder" Name="Desktop"/>
             <Directory Id="ProgramFilesFolder">
-                <Directory Id="OSGeoFolder" Name="OSGeo">
-                  <Directory Id="INSTALLLOCATION" Name="MapGuide" />
+                <Directory Id="INSTALLLOCATION" Name="OSGeo">
+                    <Directory Id="MAPGUIDEROOTLOCATION" Name="MapGuide">
+                        <Directory Id="WebParentFolder" />
+                        <Directory Id="ServerParentFolder" />
+                        <Directory Id="CsMapParentFolder" />
+                        <Component Id="MapGuideFolderComponent" Guid="5DEC79C5-677F-4B9D-9DD2-67FA760A4916" Feature="MapGuideFeature">
+                            <CreateFolder />
+                        </Component>
+                    </Directory>
                 </Directory>
-              </Directory>
             </Directory>
+        </Directory>
 
-        <FeatureRef Id="ServerFeature"/>
-        <FeatureRef Id="WebExtensionsFeature"/>
+        <Feature Id="MapGuideFeature" Title="!(loc.MapGuideFeature)" Level="1" ConfigurableDirectory="MAPGUIDEROOTLOCATION" Description="!(loc.MapGuideFeature_Description)"  AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" Display="expand" Absent="disallow" >
+            <FeatureRef Id="CSMapFeature"/>
+            <FeatureRef Id="ServerFeature"/>
+            <FeatureRef Id="WebExtensionsFeature"/>
+        </Feature>
 
         <UIRef Id="WixUI_Common"/>
 
@@ -95,24 +105,28 @@
             <!-- Dialog to warn about .NET Framework not found on system -->
             <Dialog Id="DisabledFeaturesDialog" Width="370" Height="270" Title="!(loc.InstallerTitle)">
                 <!-- 
-                    .NET Framework not found
-                
-                    The .NET Framework was not found on your system. As a result, the following feature 
-                    will not be available for installation:
+                    Some features will not be available
                     
-                    - .NET Web Extensions for IIS
+                    If you want to use these features, click on cancel and 
+                    correct the problem before proceeding with installation
+
+                       IIS is not installed, so it will not be available as an installation choice.
+                       
+                       The .NET Framework 2.0 was not found, so the .NET Web Extensions for IIS will not be available
                     
-                    To make this feature available for installation, please install the .NET Framework (2.0 or higher) before
-                    proceeding with installation
                 -->
                 <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}!(loc.DisabledFeaturesDialog_Title)" />
                 <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.DisabledFeaturesDialog_Description)" />
                 <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
                 <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
 
-                <Control Id="TxtMessageIIS" Type="Text" X="30" Y="120" Width="200" Height="15" Text="!(loc.DisabledFeaturesDialog_IIS)" />
-                <Control Id="TxtMessageDotNet" Type="Text" X="30" Y="140" Width="200" Height="15" Text="!(loc.DisabledFeaturesDialog_DotNet)" />
-                <Control Id="TxtMessageInstructions" Type="Text" X="20" Y="160" Width="300" Height="40" Text="!(loc.DisabledFeaturesDialog_Instructions)" />
+                <Control Id="TxtMessageIIS" Type="Text" X="30" Y="110" Width="316" Height="26" Text="!(loc.DisabledFeaturesDialog_IIS)">
+                    <Condition Action="hide">NOT IISVERSIONMAJOR = "#0"</Condition>
+                </Control>
+                <Control Id="TxtMessageDotNet" Type="Text" X="30" Y="150" Width="302" Height="30" Text="!(loc.DisabledFeaturesDialog_DotNet)">
+                    <Condition Action="hide">NETFRAMEWORK20</Condition>
+                </Control>
+                <Control Id="TxtMessageInstructions" Type="Text" X="22" Y="64" Width="318" Height="27" Text="!(loc.DisabledFeaturesDialog_Instructions)" />
                 
                 <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
                 <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
@@ -144,13 +158,13 @@
                 <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
                 <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
                 
-                <Control Property="MgWeb_Config_IIS" Id="RdWebConfigIIS" Type="RadioButtonGroup" X="20" Y="50" Height="190" Width="290">
-                  <RadioButtonGroup Property="MgWeb_Config_IIS">
-                    <RadioButton Text="{\WixUI_Font_Title}!(loc.WebServerConfigDlg_Apache)" ToolTip="!(loc.WebServerConfigDlg_Apache_Tooltip)" Value="APACHE" X="25" Y="10" Width="200" Height="45" />
-                    <RadioButton Text="{\WixUI_Font_Title}!(loc.WebServerConfigDlg_IIS)" ToolTip="!(loc.WebServerConfigDlg_IIS_Tooltip)" Value="IIS" X="25" Y="60" Width="200" Height="45" />
-                    <RadioButton Text="{\WixUI_Font_Title}!(loc.WebServerConfigDlg_Manual)" ToolTip="!(loc.WebServerConfigDlg_Manual_Tooltip)" Value="MANUAL" X="25" Y="110" Width="200" Height="45" />
-                  </RadioButtonGroup>
-                </Control>
+                <Control Property="MgWeb_Config_IIS" Id="RdWebConfigIIS" Type="RadioButtonGroup" X="30" Y="60" Height="138" Width="290">
+                    <RadioButtonGroup Property="MgWeb_Config_IIS">
+                        <RadioButton Text="{\WixUI_Font_Title}!(loc.WebServerConfigDlg_Apache)" ToolTip="!(loc.WebServerConfigDlg_Apache_Tooltip)" Value="APACHE" X="25" Y="10" Width="200" Height="45" />
+                        <RadioButton Text="{\WixUI_Font_Title}!(loc.WebServerConfigDlg_IIS)" ToolTip="!(loc.WebServerConfigDlg_IIS_Tooltip)" Value="IIS" X="25" Y="40" Width="200" Height="45" />
+                        <RadioButton Text="{\WixUI_Font_Title}!(loc.WebServerConfigDlg_Manual)" ToolTip="!(loc.WebServerConfigDlg_Manual_Tooltip)" Value="MANUAL" X="25" Y="70" Width="200" Height="45" />
+                    </RadioButtonGroup>
+                 </Control>
 
                 <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
                 <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
@@ -177,11 +191,11 @@
                 <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
                 <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
                 
-                <Control Property="MgWeb_Config_NoIIS" Id="RdWebConfigIIS" Type="RadioButtonGroup" X="20" Y="50" Height="190" Width="290">
-                  <RadioButtonGroup Property="MgWeb_Config_NoIIS">
-                    <RadioButton Text="{\WixUI_Font_Title}!(loc.WebServerConfigDlg_Apache)" ToolTip="!(loc.WebServerConfigDlg_Apache_Tooltip)" Value="APACHE" X="25" Y="10" Width="200" Height="45" />
-                    <RadioButton Text="{\WixUI_Font_Title}!(loc.WebServerConfigDlg_Manual)" ToolTip="!(loc.WebServerConfigDlg_Manual_Tooltip)" Value="MANUAL" X="25" Y="60" Width="200" Height="45" />
-                  </RadioButtonGroup>
+                <Control Property="MgWeb_Config_NoIIS" Id="RdWebConfigIIS" Type="RadioButtonGroup" X="30" Y="60" Height="190" Width="290">
+                    <RadioButtonGroup Property="MgWeb_Config_NoIIS">
+                        <RadioButton Text="{\WixUI_Font_Title}!(loc.WebServerConfigDlg_Apache)" ToolTip="!(loc.WebServerConfigDlg_Apache_Tooltip)" Value="APACHE" X="25" Y="10" Width="200" Height="45" />
+                        <RadioButton Text="{\WixUI_Font_Title}!(loc.WebServerConfigDlg_Manual)" ToolTip="!(loc.WebServerConfigDlg_Manual_Tooltip)" Value="MANUAL" X="25" Y="40" Width="200" Height="45" />
+                    </RadioButtonGroup>
                 </Control>
 
                 <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
@@ -412,6 +426,45 @@
         </UI>
 
         <InstallExecuteSequence>
+            <!-- Set up properties for IIS7 deferred actions -->
+            <Custom Action="MapGuideIIS7_CreateAppPool_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_SetAppPoolProp_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_UnlockSrvHandlers_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_UnlockSiteHandlers_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_CreateMapGuideApp_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_CreatePhpScriptMapping_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_EnablePhpExtension_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_CreateMapAgentApp_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_SetMapAgentHandlerAccess_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_CreateMapAgentScriptHandling_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_EnableMapAgentExtension_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_AssignMapGuideAppPool_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_AssignMapAgentAppPool_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_UnlockHttpErrorsMain_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_UnlockHttpErrorsWebSite_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_UnlockHttpErrorsMapGuide_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_Reset401Handler_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+
+            <!-- Run IIS7 deferred actions -->
+            <Custom Action="MapGuideIIS7_CreateAppPool" After="InstallFiles">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_SetAppPoolProp" After="MapGuideIIS7_CreateAppPool">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_UnlockSrvHandlers" After="MapGuideIIS7_SetAppPoolProp">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_UnlockSiteHandlers" After="MapGuideIIS7_UnlockSrvHandlers">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_CreateMapGuideApp" After="MapGuideIIS7_UnlockSiteHandlers">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_CreatePhpScriptMapping" After="MapGuideIIS7_CreateMapGuideApp">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_EnablePhpExtension" After="MapGuideIIS7_CreatePhpScriptMapping">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_CreateMapAgentApp" After="MapGuideIIS7_EnablePhpExtension">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_SetMapAgentHandlerAccess" After="MapGuideIIS7_CreateMapAgentApp">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_CreateMapAgentScriptHandling" After="MapGuideIIS7_SetMapAgentHandlerAccess">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_EnableMapAgentExtension" After="MapGuideIIS7_CreateMapAgentScriptHandling">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_AssignMapGuideAppPool" After="MapGuideIIS7_EnableMapAgentExtension">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_AssignMapAgentAppPool" After="MapGuideIIS7_AssignMapGuideAppPool">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_UnlockHttpErrorsMain" After="MapGuideIIS7_AssignMapAgentAppPool">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_UnlockHttpErrorsWebSite" After="MapGuideIIS7_UnlockHttpErrorsMain">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_UnlockHttpErrorsMapGuide" After="MapGuideIIS7_UnlockHttpErrorsWebSite">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_Reset401Handler" After="MapGuideIIS7_UnlockHttpErrorsMapGuide">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+
+            
             <Custom
                 Action="UpdateApacheConfig"
                 After="UpdateApacheConfig.SetValues">&amp;WebExtPhpFeature > 2 AND &amp;WebExtApacheFeature > 2</Custom>
@@ -471,6 +524,7 @@
                 Action="DeleteVDirMapGuide"
                 Before="InstallFinalize">(IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature = 2</Custom>
             <!-- IIS7 custom actions -->
+<!--  Trying out deferred custom actions
             <Custom
                 Action="CreateAPPMapGuideWithIIS7"
                 Before="InstallFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
@@ -483,6 +537,7 @@
             <Custom
                 Action="DeleteAPPMapGuideWithIIS7"
                 Before="InstallFinalize">(IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature = 2</Custom>
+-->                
             <ScheduleReboot After="InstallFinalize"/>
         </InstallExecuteSequence>
     </Product>
