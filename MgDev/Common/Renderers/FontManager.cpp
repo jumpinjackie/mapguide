@@ -496,7 +496,7 @@ const RS_Font* FontManager::FindFont(const wstring& sfontname, bool bold, bool i
         }
     }
 
-    wstring lowername = ToLower(sfontname);
+    wstring lowername = ToLower(fontname);
     const wchar_t* buf = lowername.c_str();
 
     int score = 0;
