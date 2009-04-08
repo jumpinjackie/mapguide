@@ -14,11 +14,11 @@
     <String Id="BackButtonText">Back</String>
     <String Id="CancelButtonText">Cancel</String>
 
-    <String Id="NoDotNetDialog_Title">.NET Framework</String>
-    <String Id="NoDotNetDialog_Description">.NET Framework not found</String>
-    <String Id="NoDotNetDialog_Message">The .NET Framework was not found on your system. As a result, the following feature will not be available for installation:</String>
-    <String Id="NoDotNetDialog_AspNet">.NET Web Extensions for IIS</String>
-    <String Id="NoDotNetDialog_Message2">To make this feature available for installation, please install the .NET Framework (2.0 or higher) before proceeding with installation</String>
+    <String Id="DisabledFeaturesDialog_Title">Disabled Features</String>
+    <String Id="DisabledFeaturesDialog_Description">Some features will not be available</String>
+    <String Id="DisabledFeaturesDialog_IIS">IIS is not installed, so it will not be available as an installation choice.</String>
+    <String Id="DisabledFeaturesDialog_DotNet">The .NET Framework was not found, so the .NET Web Extensions for IIS will not be available</String>
+    <String Id="DisabledFeaturesDialog_Instructions">If you want to use these features, click on cancel and correct the problem before proceeding with installation</String>
 
     <String Id="WebServerConfigDlg_Title">Select configuration type</String>
     <String Id="WebServerConfigDlg_Description">Select the type of web server configuration you want</String>

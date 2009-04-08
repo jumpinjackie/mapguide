@@ -14,11 +14,11 @@
     <String Id="BackButtonText">Anterior</String>
     <String Id="CancelButtonText">Cancelar</String>
 
-    <String Id="NoDotNetDialog_Title">.NET Framework</String>
-    <String Id="NoDotNetDialog_Description">.NET Framework no se encuentra</String>
-    <String Id="NoDotNetDialog_Message">.NET Framework no se ha encontrado en su sistema. Como resultado de ello, la siguiente función no estará disponible para la instalación:</String>
-    <String Id="NoDotNetDialog_AspNet">.NET Web Extensiones para IIS</String>
-    <String Id="NoDotNetDialog_Message2">Para que esta función esté disponible para la instalación, por favor, instalar. NET Framework (2.0 o superior) antes de proceder con la instalación</String>
+    <String Id="DisabledFeaturesDialog_Title">Características de los discapacitados</String>
+    <String Id="DisabledFeaturesDialog_Description">Algunas funciones no estarán disponibles</String>
+    <String Id="DisabledFeaturesDialog_IIS">IIS no está instalado, por lo que no estará disponible como una opción de instalación</String>
+    <String Id="DisabledFeaturesDialog_DotNet">DotNET Framework no se ha encontrado, por lo que el DotNET Web Extensiones no estará disponible</String>
+    <String Id="DisabledFeaturesDialog_Instructions">Si desea utilizar estas funciones, haga clic en cancelar y corregir el problema antes de proceder con la instalación</String>
 
     <String Id="WebServerConfigDlg_Title">Seleccione el tipo de configuración</String>
     <String Id="WebServerConfigDlg_Description">Seleccione el tipo de configuración del servidor Web que desea</String>
