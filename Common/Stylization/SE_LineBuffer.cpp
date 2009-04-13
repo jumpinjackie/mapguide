@@ -254,9 +254,23 @@ void SE_LineBuffer::PopulateXFBuffer()
                 double dAng = sqrt(8.0 * m_xf_tol / maxRadius / m_xf.x0);
 
                 // using the angular separation we can compute the minimum number
-                // of segments, and then we recompute the actual angular separation
-                // corresponding to that number of segments
+                // of segments
                 int nSegs = 1 + (int)(fabs(eAng - sAng) / dAng);
+
+                if (nSegs < 0)
+                {
+                    // can happen due to overflow
+                    nSegs = 10 * ARC_TESSELLATION_SEGMENTS;
+                }
+                else
+                {
+                    // the number of segments can get big for large arcs, so limit
+                    // the number of segments
+                    nSegs = rs_min(nSegs, 10 * ARC_TESSELLATION_SEGMENTS);
+                }
+
+                // recompute the actual angular separation corresponding to the number
+                // of segments
                 dAng = (eAng - sAng) / nSegs;
 
                 // add the segments
