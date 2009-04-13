@@ -369,7 +369,8 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
 
             agg::span_allocator<mg_pixfmt_type::color_type> sa;
 
-            unsigned * pathids = (unsigned*) alloca(workbuffer->geom_count() * sizeof(unsigned));
+            // transform to screen coords and transfer to AGG storage
+            unsigned int* pathids = (unsigned int*) alloca(workbuffer->geom_count() * sizeof(unsigned int));
             _TransferPoints(c(), workbuffer, &m_xform, pathids);
 
             for (int i=0; i<workbuffer->geom_count(); ++i)
@@ -1370,7 +1371,7 @@ void AGGRenderer::DrawString(agg_context*     cxt,
     mg_ren_aa_solid ren_aa_solid(cxt->ren);
     ren_aa_solid.color(agg::argb8_packed(color.argb()));
 
-    unsigned int * text;
+    unsigned int* text;
 #ifdef _WIN32
     // TODO: check if we really need to convert UCS-2 to UCS-4 on Windows or
     // we can just use the characters directly from the wchar_t array
@@ -1446,7 +1447,7 @@ void AGGRenderer::MeasureString(const RS_String& s,
 
 //  c()->feng.width(width);
 
-    unsigned int * text;
+    unsigned int* text;
 #ifdef _WIN32
     // TODO: check if we really need to convert UCS-2 to UCS-4 on Windows or
     // we can just use the characters directly from the wchar_t array
@@ -1573,7 +1574,8 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth)
         // buffer and the rest may be dirty
         c()->clip_rb.clip_box(iminx, iminy, imaxx, imaxy);
 
-        unsigned * pathids = (unsigned*) alloca(polygon->geom_count() * sizeof(unsigned));
+        // transform to screen coords and transfer to AGG storage
+        unsigned int* pathids = (unsigned int*) alloca(polygon->geom_count() * sizeof(unsigned int));
         _TransferPoints(c(), polygon, &m_xform, pathids);
 
         // clear the affected region of the alpha mask
@@ -1642,14 +1644,28 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth)
 // can only be applied to polygon feature geometry types.
 void AGGRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 {
+    LineBuffer* featGeom = ctx->geometry;
+
+    // can't apply an area style to point and linestring geometry types
+    switch (featGeom->geom_type())
+    {
+        case FdoGeometryType_Point:
+        case FdoGeometryType_MultiPoint:
+        case FdoGeometryType_LineString:
+        case FdoGeometryType_MultiLineString:
+        case FdoGeometryType_CurveString:
+        case FdoGeometryType_MultiCurveString:
+            return;
+    }
+
     bool clip = (!style->solidFill && style->clippingControl == SE_ClippingControl_Clip);
     if (clip)
-        SetPolyClip(ctx->geometry, style->bufferWidth);
+        SetPolyClip(featGeom, style->bufferWidth);
 
     SE_Renderer::ProcessArea(ctx, style);
 
     if (clip)
-        SetPolyClip(NULL,0);
+        SetPolyClip(NULL, 0.0);
 }
 
 
@@ -1850,9 +1866,8 @@ void AGGRenderer::DrawScreenPolygon(agg_context* c, LineBuffer* polygon, const S
     if (polygon->geom_count() == 0)
         return;
 
-    unsigned * pathids = (unsigned*) alloca(polygon->geom_count() * sizeof(unsigned));
-
     // transform to screen coords and transfer to AGG storage
+    unsigned int* pathids = (unsigned int*) alloca(polygon->geom_count() * sizeof(unsigned int));
     _TransferPoints(c, polygon, xform, pathids);
 
     for (int i=0; i<polygon->geom_count(); ++i)
@@ -2247,118 +2262,6 @@ void AGGRenderer::DrawScreenText(const RS_TextMetrics& tm, RS_TextDef& tdef, dou
             DrawBlockText(tm, tdef, insx, insy);
     }
 }
-
-
-/*
-void AGGRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
-{
-    if (style->vertexControl != SE_VertexControl_OverlapWrap)
-    {
-        SE_Renderer::ProcessLine(ctx, style);
-        return;
-    }
-
-    // we will render symbol in this bitmap (TODO need exact symbol bounds)
-
-    RS_F_Point bounds[4];
-    memcpy(bounds, style->bounds, sizeof(bounds));
-
-    //////////////////////////////////////////////////////////////////////////////////
-
-    double scale = 1.0;
-    double rep_x = 16.0;
-    int w = (int)(rep_x*style->repeat*scale+0.5);
-    double dh = rs_max(fabs(bounds[0].y), fabs(bounds[2].y)) * 2.0 *scale;
-    int h = (int)dh;
-    unsigned int* bitmap = new unsigned int[w*h];
-    agg_context cxt_bitmap(bitmap, w,h);
-    cxt_bitmap.ren.clear(agg::argb8_packed(0x0));
-    cxt_bitmap.lprof.gamma(agg::gamma_power(1.0));
-
-    // temporarily replace the agg context so that we render into the bitmap buffer
-    agg_context* mem = m_context;
-    m_context = &cxt_bitmap;
-
-    // this centers the symbol onto the bitmap (TODO once we know the symbol bounds)
-    SE_Matrix posxform;
-    posxform.setIdentity();
-    posxform.scale(scale,scale);
-//  posxform.translateX(-native_bounds.minx*scale);
-    posxform.translateY(-bounds[0].y);
-
-    for (int j=0; j<rep_x+1; ++j)
-    {
-        for (unsigned i=0; i<style->symbol.size(); ++i)
-        {
-            SE_RenderPrimitive* primitive = style->symbol[i];
-
-            if (primitive->type == SE_RenderPolygonPrimitive || primitive->type == SE_RenderPolylinePrimitive)
-            {
-                SE_RenderPolyline* pl = (SE_RenderPolyline*)primitive;
-
-                LineBuffer* lb = pl->geometry->xf_buffer();
-
-                if (primitive->type == SE_RenderPolygonPrimitive)
-                    DrawScreenPolygon(lb, &posxform, ((SE_RenderPolygon*)primitive)->fill);
-
-                DrawScreenPolyline(lb, &posxform, pl->lineStroke);
-            }
-            else if (primitive->type == SE_RenderTextPrimitive)
-            {
-                SE_RenderText* tp = (SE_RenderText*)primitive;
-
-                // TODO take into account rotation if drawing along a line and
-                // the angle control is "FromGeometry"
-                double x, y;
-                posxform.transform(tp->position[0], tp->position[1], x, y);
-
-                DrawScreenText(tp->content, tp->tdef, x, y, NULL, 0, 0.0);
-            }
-            else if (primitive->type == SE_RenderRasterPrimitive)
-            {
-                SE_RenderRaster* rp = (SE_RenderRaster*)primitive;
-
-                // TODO take into account rotation if drawing along a line and
-                // the angle control is "FromGeometry"
-                double x, y;
-                posxform.transform(rp->position[0], rp->position[1], x, y);
-
-                double w = rp->extent[0];
-                double h = rp->extent[1];
-
-                DrawScreenRaster((unsigned char*)rp->imageData.data, rp->imageData.size, RS_ImageFormat_PNG, rp->extent[0], rp->extent[1], x, y, w, h, 0);
-            }
-         }
-
-        posxform.translateX(style->repeat*scale);
-    }
-
-    m_context = mem;
-
-    agg::pattern_filter_bilinear_rgba8 fltr;
-
-    typedef agg::line_image_pattern<agg::pattern_filter_bilinear_rgba8> pattern_type;
-    typedef agg::renderer_outline_image<mg_ren_base, pattern_type> renderer_type;
-    typedef agg::rasterizer_outline_aa<renderer_type> rasterizer_type;
-
-    pattern_type patt(fltr);
-    renderer_type ren_img(c()->ren, patt);
-    rasterizer_type ras_img(ren_img);
-
-    patt.create(cxt_bitmap.ren);
-
-    ren_img.scale_x(1.0);
-    ren_img.start_x(0.0);
-
-    ras_img.round_cap(true);
-    ras_img.line_join(agg::outline_miter_accurate_join);
-
-    _TransferPoints(c(), ctx->geometry, &m_xform, NULL);
-    ras_img.add_path(c()->ps);
-
-    delete [] bitmap;
-}
-*/
 
 
 //////////////////////////////////////////////////////////////
