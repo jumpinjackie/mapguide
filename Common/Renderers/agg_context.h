@@ -48,7 +48,6 @@
 #include "agg_span_image_filter_rgb.h"
 #include "agg_span_allocator.h"
 #include "agg_pattern_filters_rgba.h"
-//#include "platform/agg_platform_support.h"
 #include "agg_font_freetype.h"
 #include "agg_pixfmt_gray.h"
 #include "agg_pixfmt_amask_adaptor.h"
@@ -58,7 +57,8 @@
 
 #pragma warning(pop)
 
-//MG specific AGG template instatiations
+
+// MG specific AGG template instatiations
 enum flip_y_e
 {
     flip_y = true
@@ -82,8 +82,12 @@ typedef mg_pixfmt_type_abgr_pre     mg_pixfmt_type_pre;
 // regular renderers
 typedef agg::renderer_base<mg_pixfmt_type>                              mg_ren_base;
 typedef agg::renderer_base<mg_pixfmt_type_pre>                          mg_ren_base_pre;
-typedef agg::renderer_scanline_aa_solid<mg_ren_base>                    mg_ren_solid;
+typedef agg::renderer_scanline_aa_solid<mg_ren_base>                    mg_ren_aa_solid;
 
+// rasterizer
+typedef agg::rasterizer_scanline_aa<>                                   mg_ras_aa;
+
+// font types
 typedef agg::font_engine_freetype_int32                                 font_engine_type;
 typedef agg::font_cache_manager<font_engine_type>                       font_manager_type;
 
@@ -95,15 +99,12 @@ typedef agg::renderer_scanline_aa_solid<mg_alpha_mask_rb_type>          mg_alpha
 typedef agg::amask_no_clip_gray8                                        mg_alpha_mask_type;
 typedef agg::pixfmt_amask_adaptor<mg_pixfmt_type, mg_alpha_mask_type>   mg_pixfmt_clip_mask_type;
 typedef agg::renderer_base<mg_pixfmt_clip_mask_type>                    mg_clip_mask_ren_base;
-typedef agg::renderer_scanline_aa_solid<mg_clip_mask_ren_base>          mg_clip_mask_ren_solid;
+typedef agg::renderer_scanline_aa_solid<mg_clip_mask_ren_base>          mg_clip_mask_ren_aa_solid;
 
 
 struct RS_Font;
 
-//using this in contructor
-#pragma warning(disable:4355)
-
-//encapsulates our rendering context
+// encapsulates our rendering context
 class agg_context
 {
 public:
@@ -171,7 +172,7 @@ public:
     agg::path_storage           ps;
     mg_ren_base                 ren;
     mg_ren_base_pre             ren_pre;
-    agg::rasterizer_scanline_aa<> ras;
+    mg_ras_aa                   ras;
     agg::scanline_u8            sl;
 
     // polyclip mask rendering buffer
@@ -183,13 +184,13 @@ public:
     mg_alpha_mask_ren_type      mask_ren;
     agg::pixfmt_gray8*          mask_pixf;
 
-    //renderers that do alpha masking
+    // renderers that do alpha masking
     mg_clip_mask_ren_base       clip_rb;
-    mg_clip_mask_ren_solid      clip_ren;
+    mg_clip_mask_ren_aa_solid   clip_ren;
     mg_pixfmt_type              clip_pixf;
     mg_pixfmt_clip_mask_type*   clip_mask;
 
-    //font engine state caching
+    // font engine state caching
     font_engine_type feng;
     font_manager_type fman;
 

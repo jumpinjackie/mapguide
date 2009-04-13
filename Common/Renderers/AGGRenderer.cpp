@@ -1367,8 +1367,8 @@ void AGGRenderer::DrawString(agg_context*     cxt,
         cxt->last_font_transform = mtx;
     }
 
-    mg_ren_solid ren_solid(cxt->ren);
-    ren_solid.color(agg::argb8_packed(color.argb()));
+    mg_ren_aa_solid ren_aa_solid(cxt->ren);
+    ren_aa_solid.color(agg::argb8_packed(color.argb()));
 
     unsigned int * text;
 #ifdef _WIN32
@@ -1389,7 +1389,7 @@ void AGGRenderer::DrawString(agg_context*     cxt,
 
         cxt->fman.init_embedded_adaptors(glyph, x, y);
 
-        agg::render_scanlines(cxt->fman.gray8_adaptor(), cxt->fman.gray8_scanline(), ren_solid);
+        agg::render_scanlines(cxt->fman.gray8_adaptor(), cxt->fman.gray8_scanline(), ren_aa_solid);
 
         x += glyph->advance_x;
         y += glyph->advance_y;
