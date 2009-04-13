@@ -193,11 +193,11 @@ public:
 
     RENDERERS_API virtual RS_FontEngine* GetRSFontEngine();
 
-    RENDERERS_API void ProcessSELabelGroup(SE_LabelInfo*    labels,
-                                           int              nlabels,
-                                           RS_OverpostType  type,
-                                           bool             exclude,
-                                           LineBuffer*      path);
+    RENDERERS_API virtual void ProcessSELabelGroup(SE_LabelInfo*    labels,
+                                                   int              nlabels,
+                                                   RS_OverpostType  type,
+                                                   bool             exclude,
+                                                   LineBuffer*      path = NULL);
 
     RENDERERS_API virtual void ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style);
 
