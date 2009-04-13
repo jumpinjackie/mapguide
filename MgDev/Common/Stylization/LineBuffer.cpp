@@ -756,13 +756,12 @@ void LineBuffer::CircularArcTo2D(double x0, double y0, double x1, double y1, dou
 
 void LineBuffer::ArcTo(double cx, double cy, double a, double b, double startRad, double endRad)
 {
-    double extent = endRad - startRad;
-    if (extent == 0.0)
-        return;
-
     // store off arc start point index
     EnsureArcsSpArray(2);
     m_arcs_sp[++m_cur_arcs_sp] = m_cur_types - 1;
+
+    // arcs with no angular extent will result in one LineTo segment
+    double extent = endRad - startRad;
 
     int nSegs = ARC_TESSELLATION_SEGMENTS;  // default
     if (m_drawingScale != 0.0)
@@ -782,9 +781,17 @@ void LineBuffer::ArcTo(double cx, double cy, double a, double b, double startRad
         // of segments
         nSegs = 1 + (int)(fabs(extent) / dRadReq);
 
-        // the number of segments can get big for large arcs displayed at high
-        // zoom levels, so limit the number of segments
-        nSegs = rs_min(nSegs, 10 * ARC_TESSELLATION_SEGMENTS);
+        if (nSegs < 0)
+        {
+            // can happen due to overflow
+            nSegs = 10 * ARC_TESSELLATION_SEGMENTS;
+        }
+        else
+        {
+            // the number of segments can get big for large arcs displayed at
+            // high zoom levels, so limit the number of segments
+            nSegs = rs_min(nSegs, 10 * ARC_TESSELLATION_SEGMENTS);
+        }
     }
 
     // get the angular separation corresponding to the number of segments
