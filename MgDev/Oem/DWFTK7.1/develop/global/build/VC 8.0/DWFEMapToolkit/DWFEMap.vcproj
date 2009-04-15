@@ -24,7 +24,6 @@
 			OutputDirectory="../../../lib/static/debug/vc8.0"
 			IntermediateDirectory="./obj/static/debug/read-write"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -96,7 +95,6 @@
 			OutputDirectory="../../../lib/static/debug64/vc8.0"
 			IntermediateDirectory="./obj/static/debug64/read-write"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -169,7 +167,6 @@
 			OutputDirectory="../../../lib/static/Release/vc8.0"
 			IntermediateDirectory="./obj/static/release/read-write"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -237,7 +234,6 @@
 			OutputDirectory="../../../lib/static/Release64/vc8.0"
 			IntermediateDirectory="./obj/static/release64/read-write"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -306,7 +302,6 @@
 			OutputDirectory="../../../lib/static/debug/vc8.0"
 			IntermediateDirectory="./obj/static/debug/read-write-wt"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -379,7 +374,6 @@
 			OutputDirectory="../../../lib/static/debug64/vc8.0"
 			IntermediateDirectory="./obj/static/debug64/read-write-wt"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -453,7 +447,6 @@
 			OutputDirectory="../../../lib/static/release/vc8.0"
 			IntermediateDirectory="./obj/static/release/read-write-wt"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -523,7 +516,6 @@
 			OutputDirectory="../../../lib/static/release64/vc8.0"
 			IntermediateDirectory="./obj/static/release64/read-write-wt"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
