@@ -24,7 +24,6 @@
 			OutputDirectory="..\..\bin\win32\debug"
 			IntermediateDirectory="..\..\obj\win32\debug\SQLitePhpApi"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -107,7 +106,6 @@
 			OutputDirectory="..\..\bin\win64\debug"
 			IntermediateDirectory="..\..\obj\win64\debug\SQLitePhpApi"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -191,7 +189,6 @@
 			OutputDirectory="..\..\bin\win32\release"
 			IntermediateDirectory="..\..\obj\win32\release\SQLitePhpApi"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -274,7 +271,6 @@
 			OutputDirectory="..\..\bin\win64\release"
 			IntermediateDirectory="..\..\obj\win64\release\SQLitePhpApi"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool

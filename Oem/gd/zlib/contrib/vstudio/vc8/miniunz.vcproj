@@ -25,7 +25,6 @@
 			OutputDirectory="x86\MiniUnzip$(ConfigurationName)"
 			IntermediateDirectory="x86\MiniUnzip$(ConfigurationName)\Tmp"
 			ConfigurationType="1"
-			InheritedPropertySheets="UpgradeFromVC70.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -108,7 +107,6 @@
 			OutputDirectory="x64\MiniUnzip$(ConfigurationName)"
 			IntermediateDirectory="x64\MiniUnzip$(ConfigurationName)\Tmp"
 			ConfigurationType="1"
-			InheritedPropertySheets="UpgradeFromVC70.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -192,7 +190,6 @@
 			OutputDirectory="ia64\MiniUnzip$(ConfigurationName)"
 			IntermediateDirectory="ia64\MiniUnzip$(ConfigurationName)\Tmp"
 			ConfigurationType="1"
-			InheritedPropertySheets="UpgradeFromVC70.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -276,7 +273,6 @@
 			OutputDirectory="x86\MiniUnzip$(ConfigurationName)"
 			IntermediateDirectory="x86\MiniUnzip$(ConfigurationName)\Tmp"
 			ConfigurationType="1"
-			InheritedPropertySheets="UpgradeFromVC70.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -364,7 +360,6 @@
 			OutputDirectory="x64\MiniUnzip$(ConfigurationName)"
 			IntermediateDirectory="x64\MiniUnzip$(ConfigurationName)\Tmp"
 			ConfigurationType="1"
-			InheritedPropertySheets="UpgradeFromVC70.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -453,7 +448,6 @@
 			OutputDirectory="ia64\MiniUnzip$(ConfigurationName)"
 			IntermediateDirectory="ia64\MiniUnzip$(ConfigurationName)\Tmp"
 			ConfigurationType="1"
-			InheritedPropertySheets="UpgradeFromVC70.vsprops"
 			CharacterSet="2"
 			>
 			<Tool

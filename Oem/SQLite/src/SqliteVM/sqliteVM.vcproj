@@ -24,7 +24,6 @@
 			OutputDirectory="..\..\lib\win32\debug"
 			IntermediateDirectory="..\..\obj\win32\debug\SqliteVM"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -89,7 +88,6 @@
 			OutputDirectory="..\..\lib\win64\debug"
 			IntermediateDirectory="..\..\obj\win64\debug\SqliteVM"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -155,7 +153,6 @@
 			OutputDirectory="..\..\lib\win32\release"
 			IntermediateDirectory="..\..\obj\win32\release\SqliteVM"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -217,7 +214,6 @@
 			OutputDirectory="..\..\lib\win64\release"
 			IntermediateDirectory="..\..\obj\win64\release\SqliteVM"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool

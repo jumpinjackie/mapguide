@@ -24,7 +24,6 @@
 			OutputDirectory="..\..\bin\win32\debug"
 			IntermediateDirectory="..\..\obj\win32\debug\SqliteDotNet"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			ManagedExtensions="4"
 			>
@@ -104,7 +103,6 @@
 			OutputDirectory="..\..\bin\win64\debug"
 			IntermediateDirectory="..\..\obj\win64\debug\SqliteDotNet"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			ManagedExtensions="4"
 			>
@@ -185,7 +183,6 @@
 			OutputDirectory="..\..\bin\win32\release"
 			IntermediateDirectory="..\..\obj\win32\release\SqliteDotNet"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			ManagedExtensions="4"
 			>
@@ -260,7 +257,6 @@
 			OutputDirectory="..\..\bin\win64\release"
 			IntermediateDirectory="..\..\obj\win64\release\SqliteDotNet"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			ManagedExtensions="4"
 			>

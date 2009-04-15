@@ -24,7 +24,6 @@
 			OutputDirectory="x86\ZlibStat$(ConfigurationName)"
 			IntermediateDirectory="x86\ZlibStat$(ConfigurationName)\Tmp"
 			ConfigurationType="4"
-			InheritedPropertySheets="UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			>
@@ -97,7 +96,6 @@
 			OutputDirectory="x64\ZlibStat$(ConfigurationName)"
 			IntermediateDirectory="x64\ZlibStat$(ConfigurationName)\Tmp"
 			ConfigurationType="4"
-			InheritedPropertySheets="UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			>
@@ -171,7 +169,6 @@
 			OutputDirectory="ia64\ZlibStat$(ConfigurationName)"
 			IntermediateDirectory="ia64\ZlibStat$(ConfigurationName)\Tmp"
 			ConfigurationType="4"
-			InheritedPropertySheets="UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			>
@@ -245,7 +242,6 @@
 			OutputDirectory="x86\ZlibStat$(ConfigurationName)"
 			IntermediateDirectory="x86\ZlibStat$(ConfigurationName)\Tmp"
 			ConfigurationType="4"
-			InheritedPropertySheets="UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			>
@@ -319,7 +315,6 @@
 			OutputDirectory="x64\ZlibStat$(ConfigurationName)"
 			IntermediateDirectory="x64\ZlibStat$(ConfigurationName)\Tmp"
 			ConfigurationType="4"
-			InheritedPropertySheets="UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			>
@@ -394,7 +389,6 @@
 			OutputDirectory="ia64\ZlibStat$(ConfigurationName)"
 			IntermediateDirectory="ia64\ZlibStat$(ConfigurationName)\Tmp"
 			ConfigurationType="4"
-			InheritedPropertySheets="UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			>
@@ -468,7 +462,6 @@
 			OutputDirectory="x86\ZlibStat$(ConfigurationName)"
 			IntermediateDirectory="x86\ZlibStat$(ConfigurationName)\Tmp"
 			ConfigurationType="4"
-			InheritedPropertySheets="UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			>
@@ -541,7 +534,6 @@
 			OutputDirectory="x64\ZlibStat$(ConfigurationName)"
 			IntermediateDirectory="x64\ZlibStat$(ConfigurationName)\Tmp"
 			ConfigurationType="4"
-			InheritedPropertySheets="UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			>
@@ -615,7 +607,6 @@
 			OutputDirectory="ia64\ZlibStat$(ConfigurationName)"
 			IntermediateDirectory="ia64\ZlibStat$(ConfigurationName)\Tmp"
 			ConfigurationType="4"
-			InheritedPropertySheets="UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			>

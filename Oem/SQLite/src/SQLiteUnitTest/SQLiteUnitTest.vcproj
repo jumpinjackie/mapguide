@@ -24,7 +24,6 @@
 			OutputDirectory="..\..\bin\win32\debug"
 			IntermediateDirectory="..\..\obj\win32\debug\SQLiteUnitTest"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -104,7 +103,6 @@
 			OutputDirectory="..\..\bin\win64\debug"
 			IntermediateDirectory="..\..\obj\win64\debug\SQLiteUnitTest"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -185,7 +183,6 @@
 			OutputDirectory="..\..\bin\win32\release"
 			IntermediateDirectory="..\..\obj\win32\release\SQLiteUnitTests"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -264,7 +261,6 @@
 			OutputDirectory="..\..\bin\win64\release"
 			IntermediateDirectory="..\..\obj\win64\release\SQLiteUnitTest"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
