@@ -96,8 +96,8 @@ const STRING MgResources::ServerCmdTestDescription      = L"  test <Test> <Filen
                                                           L"      an optional \"Filename\". The output to the \"Filename\" will be in XML.\n\n";
 
 const STRING MgResources::ServerCmdTestDefaultFileName  = L"results.xml";
-const STRING MgResources::ServerCmdTestDefaultTests     = L"All";
-const STRING MgResources::ServerCmdTestListTests        = L"List";
+const STRING MgResources::ServerCmdTestDefaultTests     = L"all"; // Do not translate
+const STRING MgResources::ServerCmdTestListTests        = L"list"; // Do not translate
 
 
 const STRING MgResources::ServerCmdInteractive          = L"interactive"; // Do not translate
@@ -125,32 +125,32 @@ const STRING MgResources::ServerServiceError            = L"Error: %s.\n";
 const STRING MgResources::ServerServiceStartFailure     = L"Service failed to start: %d\nError: %s\nYou cannot run the server from the command line unless you specify the\n\"%s\" command line option.\n\n";
 
 
-const STRING MgResources::Resource_Exception_Section    = L"Exceptions";
+const STRING MgResources::Resource_Exception_Section    = L"Exceptions"; // Do not translate
 
 const STRING MgResources::Unknown                       = L"Unknown";
 const STRING MgResources::Success                       = L"Success";
 const STRING MgResources::Failure                       = L"Failure";
 const STRING MgResources::UnauthorizedAccess            = L"Unauthorized Access";
 const STRING MgResources::PermissionDenied              = L"Permission Denied";
-const STRING MgResources::Error                         = L"Error";
-const STRING MgResources::Warnings                      = L"Warning";
-const STRING MgResources::StackTrace                    = L"StackTrace";
-const STRING MgResources::ErrorDescription              = L"ErrorDescription";
+const STRING MgResources::Error                         = L"Error"; // Do not translate
+const STRING MgResources::Warnings                      = L"Warning"; // Do not translate
+const STRING MgResources::StackTrace                    = L"StackTrace"; // Do not translate
+const STRING MgResources::ErrorDescription              = L"ErrorDescription"; // Do not translate
 const STRING MgResources::BlankArgument                 = L" ";
 
 // Services
-const STRING MgResources::DrawingService                = L"DrawingService";
-const STRING MgResources::FeatureService                = L"FeatureService";
-const STRING MgResources::MappingService                = L"MappingService";
-const STRING MgResources::RenderingService              = L"RenderingService";
-const STRING MgResources::ResourceService               = L"ResourceService";
-const STRING MgResources::ServerAdminService            = L"ServerAdminService";
-const STRING MgResources::SiteService                   = L"SiteService";
-const STRING MgResources::TileService                   = L"TileService";
-const STRING MgResources::KmlService                    = L"KmlService";
+const STRING MgResources::DrawingService                = L"DrawingService"; // Do not translate
+const STRING MgResources::FeatureService                = L"FeatureService"; // Do not translate
+const STRING MgResources::MappingService                = L"MappingService"; // Do not translate
+const STRING MgResources::RenderingService              = L"RenderingService"; // Do not translate
+const STRING MgResources::ResourceService               = L"ResourceService"; // Do not translate
+const STRING MgResources::ServerAdminService            = L"ServerAdminService"; // Do not translate
+const STRING MgResources::SiteService                   = L"SiteService"; // Do not translate
+const STRING MgResources::TileService                   = L"TileService"; // Do not translate
+const STRING MgResources::KmlService                    = L"KmlService"; // Do not translate
 
 // Other
-const STRING MgResources::Stylization                   = L"Stylization";
+const STRING MgResources::Stylization                   = L"Stylization"; // Do not translate
 const STRING MgResources::WhiteSpace                    = L"\n\r\t ";
 
 // for locale
