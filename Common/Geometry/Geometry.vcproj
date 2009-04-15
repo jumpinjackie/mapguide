@@ -102,7 +102,6 @@
 			OutputDirectory="..\bin\debug64"
 			IntermediateDirectory="..\obj\debug64\Geometry"
 			ConfigurationType="2"
-			InheritedPropertySheets="..\..\TargetX64.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -260,7 +259,6 @@
 			OutputDirectory="..\bin\release64"
 			IntermediateDirectory="..\obj\release64\Geometry"
 			ConfigurationType="2"
-			InheritedPropertySheets="..\..\TargetX64.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
