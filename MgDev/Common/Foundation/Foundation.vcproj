@@ -263,7 +263,6 @@
 			OutputDirectory="..\bin\release64"
 			IntermediateDirectory="..\obj\release64\Foundation"
 			ConfigurationType="2"
-			InheritedPropertySheets="..\..\TargetX64.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
