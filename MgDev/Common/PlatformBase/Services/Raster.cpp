@@ -318,7 +318,7 @@ void MgRaster::SetNumberOfBands (INT32 value)
     m_numBands = value;
 }
 
-INT32 MgRaster::GetCurrentBand ()
+INT32 MgRaster::GetCurrentBand()
 {
     return m_curBand;
 }
@@ -352,8 +352,3 @@ INT64 MgRaster::GetNullValue()
 {
     return m_NoDataValue;
 }
-
-
-
-
-
