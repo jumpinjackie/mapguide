@@ -52,13 +52,18 @@ MgRasterProperty::MgRasterProperty()
 /// <summary>
 /// Destructor.
 /// </summary>
-MgRasterProperty::~MgRasterProperty() {}
+MgRasterProperty::~MgRasterProperty()
+{
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Returns the classId.
 /// </summary>
- INT32 MgRasterProperty::GetClassId() { return m_cls_id; }
+INT32 MgRasterProperty::GetClassId()
+{
+    return m_cls_id;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -67,7 +72,10 @@ MgRasterProperty::~MgRasterProperty() {}
 /// <returns>
 /// The property type
 /// </returns>
- INT16 MgRasterProperty::GetPropertyType() { return MgPropertyType::Raster; }
+INT16 MgRasterProperty::GetPropertyType()
+{
+    return MgPropertyType::Raster;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -76,7 +84,10 @@ MgRasterProperty::~MgRasterProperty() {}
 /// <returns>
 /// The property value
 /// </returns>
-MgRaster* MgRasterProperty::GetValue() { return SAFE_ADDREF((MgRaster*)m_value); }
+MgRaster* MgRasterProperty::GetValue()
+{
+    return SAFE_ADDREF((MgRaster*)m_value);
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -85,14 +96,20 @@ MgRaster* MgRasterProperty::GetValue() { return SAFE_ADDREF((MgRaster*)m_value);
 /// Value of property
 /// </param>
 /// </summary>
- void MgRasterProperty::SetValue(MgRaster* value) { m_value = value; }
+void MgRasterProperty::SetValue(MgRaster* value)
+{
+    m_value = SAFE_ADDREF(value);
+}
 
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Self destructing method
 /// </summary>
- void MgRasterProperty::Dispose() { delete this; }
+void MgRasterProperty::Dispose()
+{
+    delete this;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -121,7 +138,6 @@ void MgRasterProperty::ToXml(string &str, bool includeType, string rootElmName)
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgRasterProperty::Serialize(MgStream* stream)
 {
     MgNullableProperty::Serialize(stream);
@@ -136,7 +152,6 @@ void MgRasterProperty::Serialize(MgStream* stream)
 ///<param name="stream">
 /// Stream
 ///</param>
-
 void MgRasterProperty::Deserialize(MgStream* stream)
 {
     MgNullableProperty::Deserialize(stream);
