@@ -518,7 +518,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                         overrideFilter = overrideFilters->GetItem(i);
 
                     #ifdef _DEBUG
-                    printf("  StylizeLayers() **Stylizing** Name:%S  Override Filter:%S\n", (mapLayer->GetName()).c_str(), overrideFilter.empty() ? L"(Empty)" : overrideFilter.c_str());
+                    printf("  StylizeLayers() **Stylizing** Name:%S  Override Filter(size=%d):\n%S\n", (mapLayer->GetName()).c_str(), overrideFilter.length(), overrideFilter.empty() ? L"(Empty)" : overrideFilter.c_str());
                     #endif
 
                     // create the reader we'll use
@@ -568,6 +568,10 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 
                     // get the feature extent to use with the query
                     RS_Bounds extent = dr->GetBounds();
+
+                    #ifdef _DEBUG
+                    printf("  StylizeLayers() **Stylizing** Name:%S  Extents:%f,%f to %f,%f\n", (mapLayer->GetName()).c_str(), extent.minx, extent.miny, extent.maxx, extent.maxy);
+                    #endif
 
                     //now get the coordinate system of the layer data
                     // Feature Service caches these so we only take the performance hit on
@@ -639,6 +643,11 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                                 double lly = ll->GetY();
                                 double urx = ur->GetX();
                                 double ury = ur->GetY();
+
+                                #ifdef _DEBUG
+                                printf("  StylizeLayers() **Stylizing** Name:%S  Extents(SpatialContext):%f,%f to %f,%f\n", (mapLayer->GetName()).c_str(), llx, lly, urx, ury);
+                                #endif
+
                                 if (NULL != xformer)
                                     xformer->TransformExtent(llx, lly, urx, ury);
                                 RS_Bounds layerExtent(llx, lly, urx, ury);
@@ -652,6 +661,10 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                         }
                     }
                     MG_CATCH_AND_RELEASE()
+
+                    #ifdef _DEBUG
+                    printf("  StylizeLayers() **Stylizing** Name:%S  Extents(Using):%f,%f to %f,%f\n", (mapLayer->GetName()).c_str(), extent.minx, extent.miny, extent.maxx, extent.maxy);
+                    #endif
 
                     double pixelsPerMapUnit = dr->GetMetersPerUnit() / METERS_PER_INCH * dr->GetDpi() / dr->GetMapScale();
                     int width = (int)(extent.width() * pixelsPerMapUnit + 0.5);
