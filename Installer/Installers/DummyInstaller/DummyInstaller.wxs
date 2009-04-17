@@ -9,13 +9,15 @@
        Language="1033" 
        Manufacturer="Dummy" >
 
-    <Package Id="*" InstallerVersion="300" Compressed="yes" />
+    <Package Id="*" InstallerVersion="300" Compressed="yes" InstallScope="perMachine" InstallPrivileges="elevated" />
 
     <Upgrade Id="5D9A7DE3-485E-43E0-A4C8-3582E4D80051">
-      <UpgradeVersion Property="PREVIOUSVERSIONSINSTALLED" Minimum="0.0.0.0" IncludeMinimum="yes" Maximum="$(var.MgVersion)" IncludeMaximum="no"/>
+      <UpgradeVersion Property="PREVIOUSVERSIONSINSTALLED" Minimum="0.0.0" IncludeMinimum="yes" Maximum="$(var.MgVersion)" IncludeMaximum="no"/>
       <UpgradeVersion Property="NEWPRODUCTFOUND" Minimum="$(var.MgVersion)" IncludeMinimum="no" OnlyDetect="yes" />
     </Upgrade>
 
+    <Condition Message="A later version of [ProductName] is already installed.">NOT NEWPRODUCTFOUND</Condition>    
+    
     <Media Id="1" Cabinet="Test.cab" EmbedCab="yes" CompressionLevel="none" />
 
     <Property Id="MG_APP_POOL" Secure="yes" Value="MapGuideAppPool" />
@@ -48,11 +50,15 @@
       <Directory Id="ProgramFilesFolder">
         <Directory Id="INSTALLLOCATION" Name="Dummy">
           <Directory Id="WEBROOTLOCATION" Name="Web">
-            <Component Id="RegistryWrites" Guid="64F4589F-9E16-47F9-AA05-D914CBA3736D" Feature="WebExtensionsFeature">
+            <Component Id="WebStuff" Guid="64F4589F-9E16-47F9-AA05-D914CBA3736D" Feature="WebExtensionsFeature">
               <RegistryKey Id="MapGuideKey" Action="create" Root="HKLM" Key="$(var.MgRegKey)">
                 <RegistryValue Id="IisApiType" Action="write" Type="string" Name="IIS_API_TYPE" Value="[IIS_API_TYPE]" />
                 <RegistryValue Id="MgWebConfig" Action="write" Type="string" Name="MGWEB_CONFIG" Value="[MGWEB_CONFIG]" />
               </RegistryKey>
+              <RemoveFile Id="MapGuideWebConfig" On="uninstall" Name="web.config" Property="WwwLocation" />
+              <RemoveFile Id="MapAgentWebConfig" On="uninstall" Name="web.config" Property="MapagentLocation" />
+              <RemoveFile Id="MapviewerNetWebConfig" On="uninstall" Name="web.config" Property="MapviewerNetLocation" />
+              <RemoveFile Id="MapviewerPhpWebConfig" On="uninstall" Name="web.config" Property="MapviewerPhpLocation" />
               <CreateFolder />
             </Component>
             <Directory Id="PhpLocation" Name="Php">
@@ -91,15 +97,8 @@
 
     <UIRef Id="WixUI_Minimal"/>
 
-    <CustomAction Id="PreventDowngrading" Error="A newer version is already installed." />
-
-    <InstallUISequence>
-      <Custom Action="PreventDowngrading" After="FindRelatedProducts">NEWPRODUCTFOUND</Custom>
-    </InstallUISequence>
-
     <InstallExecuteSequence>
 
-      <Custom Action="PreventDowngrading" After="FindRelatedProducts">NEWPRODUCTFOUND</Custom>
       <RemoveExistingProducts After="InstallValidate">PREVIOUSVERSIONSINSTALLED</RemoveExistingProducts>
 
       <!-- IIS7 Base properties for deferred actions -->
@@ -121,9 +120,10 @@
       <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsWebSite_Cmd" After="MapGuideIIS7_I_UnlockHttpErrorsMain_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
       <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsMapGuide_Cmd" After="MapGuideIIS7_I_UnlockHttpErrorsWebSite_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
       <Custom Action="MapGuideIIS7_I_Reset401Handler_Cmd" After="MapGuideIIS7_I_UnlockHttpErrorsMapGuide_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+      <Custom Action="MapGuideIIS7_I_AddJsonMime_Cmd" After="MapGuideIIS7_I_Reset401Handler_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
 
       <!-- IIS7 PHP Viewer properties for deferred actions -->
-      <Custom Action="MapGuideIIS7_I_CreateViewerPhp_Cmd" After="MapGuideIIS7_I_Reset401Handler_Cmd">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "PHP" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+      <Custom Action="MapGuideIIS7_I_CreateViewerPhp_Cmd" After="MapGuideIIS7_I_AddJsonMime_Cmd">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "PHP" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
       <Custom Action="MapGuideIIS7_I_SetViewerDocPhp_Cmd" After="MapGuideIIS7_I_CreateViewerPhp_Cmd">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "PHP" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
       <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolPhp_Cmd" After="MapGuideIIS7_I_SetViewerDocPhp_Cmd">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "PHP" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
 
@@ -150,9 +150,10 @@
       <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsWebSite" After="MapGuideIIS7_I_UnlockHttpErrorsMain">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
       <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsMapGuide" After="MapGuideIIS7_I_UnlockHttpErrorsWebSite">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
       <Custom Action="MapGuideIIS7_I_Reset401Handler" After="MapGuideIIS7_I_UnlockHttpErrorsMapGuide">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+      <Custom Action="MapGuideIIS7_I_AddJsonMime" After="MapGuideIIS7_I_Reset401Handler">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
 
       <!-- IIS7 PHP Viewer deferred CAs -->
-      <Custom Action="MapGuideIIS7_I_CreateViewerPhp" After="MapGuideIIS7_I_Reset401Handler">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "PHP" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+      <Custom Action="MapGuideIIS7_I_CreateViewerPhp" After="MapGuideIIS7_I_AddJsonMime">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "PHP" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
       <Custom Action="MapGuideIIS7_I_SetViewerDocPhp" After="MapGuideIIS7_I_CreateViewerPhp">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "PHP" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
       <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolPhp" After="MapGuideIIS7_I_SetViewerDocPhp">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "PHP" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
 
@@ -161,29 +162,22 @@
       <Custom Action="MapGuideIIS7_I_SetViewerDocNet" After="MapGuideIIS7_I_CreateViewerNet">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "DOTNET" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
       <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolNet" After="MapGuideIIS7_I_SetViewerDocNet">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "DOTNET" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
 
-      <!-- IIS7 Base UNINSTALL actions - these needs to be interspersed because of the way that WiX handles immediate CAs -->
+      <!-- IIS7 UNINSTALL deferred action properties -->
       <Custom Action="MapGuideIIS7_U_AppCmd_Cmd" After="InstallInitialize">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-
       <Custom Action="MapGuideIIS7_U_ClearMapAgentRestriction_Cmd" After="MapGuideIIS7_U_AppCmd_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-      <Custom Action="MapGuideIIS7_U_ClearMapAgentRestriction" After="MapGuideIIS7_U_ClearMapAgentRestriction_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+      <Custom Action="MapGuideIIS7_U_ClearPhpRestriction_Cmd" After="MapGuideIIS7_U_ClearMapAgentRestriction_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+      <Custom Action="MapGuideIIS7_U_RemoveViewer_Cmd" After="MapGuideIIS7_U_ClearPhpRestriction_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+      <Custom Action="MapGuideIIS7_U_RemoveMapAgent_Cmd" After="MapGuideIIS7_U_RemoveViewer_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+      <Custom Action="MapGuideIIS7_U_RemoveMapGuide_Cmd" After="MapGuideIIS7_U_RemoveMapAgent_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+      <Custom Action="MapGuideIIS7_U_DeleteAppPool_Cmd" After="MapGuideIIS7_U_RemoveMapGuide_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
 
-      <Custom Action="MapGuideIIS7_U_ClearPhpRestriction_Cmd" After="MapGuideIIS7_U_ClearMapAgentRestriction">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-      <Custom Action="MapGuideIIS7_U_ClearPhpRestriction" After="MapGuideIIS7_U_ClearPhpRestriction_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-
-      <Custom Action="MapGuideIIS7_U_RemoveMapAgentHandler_Cmd" After="MapGuideIIS7_U_ClearPhpRestriction">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-      <Custom Action="MapGuideIIS7_U_RemoveMapAgentHandler" After="MapGuideIIS7_U_RemoveMapAgentHandler_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-
-      <Custom Action="MapGuideIIS7_U_RemovePhpHandler_Cmd" After="MapGuideIIS7_U_RemoveMapAgentHandler">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-      <Custom Action="MapGuideIIS7_U_RemovePhpHandler" After="MapGuideIIS7_U_RemovePhpHandler_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-
-      <Custom Action="MapGuideIIS7_U_RemoveViewer_Cmd" After="MapGuideIIS7_U_RemovePhpHandler">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-      <Custom Action="MapGuideIIS7_U_RemoveViewer" After="MapGuideIIS7_U_RemoveViewer_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-
-      <Custom Action="MapGuideIIS7_U_RemoveMapAgent_Cmd" After="MapGuideIIS7_U_RemoveViewer">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-      <Custom Action="MapGuideIIS7_U_RemoveMapAgent" After="MapGuideIIS7_U_RemoveMapAgent_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-
-      <Custom Action="MapGuideIIS7_U_RemoveMapGuide_Cmd" After="MapGuideIIS7_U_RemoveMapAgent">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-      <Custom Action="MapGuideIIS7_U_RemoveMapGuide" After="MapGuideIIS7_U_RemoveMapGuide_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+      <!-- IIS7 UNINSTALL deferred CAs -->
+      <Custom Action="MapGuideIIS7_U_ClearMapAgentRestriction" After="MapGuideIIS7_U_DeleteAppPool_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+      <Custom Action="MapGuideIIS7_U_ClearPhpRestriction" After="MapGuideIIS7_U_ClearMapAgentRestriction">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+      <Custom Action="MapGuideIIS7_U_RemoveViewer" After="MapGuideIIS7_U_ClearPhpRestriction">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+      <Custom Action="MapGuideIIS7_U_RemoveMapAgent" After="MapGuideIIS7_U_RemoveViewer">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+      <Custom Action="MapGuideIIS7_U_RemoveMapGuide" After="MapGuideIIS7_U_RemoveMapAgent">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+      <Custom Action="MapGuideIIS7_U_DeleteAppPool" After="MapGuideIIS7_U_RemoveMapGuide">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
 
     </InstallExecuteSequence>
 
@@ -278,6 +272,11 @@
         Value="[AppCmd] set config &quot;[MG_WEBSITE]/[MG_VDIR]&quot; /section:httpErrors /-[\[]statusCode='401'[\]]" />
     <CustomAction Id="MapGuideIIS7_I_Reset401Handler" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
+    <!-- Add a MIME type for JSON -->
+    <CustomAction Id="MapGuideIIS7_I_AddJsonMime_Cmd" Property="MapGuideIIS7_I_AddJsonMime" Execute="immediate"
+        Value="[AppCmd] set config /section:staticContent /+&quot;[\[]fileExtension='.json',mimeType='application/json'[\]]&quot;" />
+    <CustomAction Id="MapGuideIIS7_I_AddJsonMime" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
     <!-- ************************* IIS7 PHP Viewer INSTALL ***************************************** -->
 
     <!-- Create the application / virtual directory pointing mapviewerajax to mapviewerphp  -->
@@ -317,39 +316,34 @@
     <CustomAction Id="MapGuideIIS7_U_AppCmd_Cmd" Property="AppCmd" Execute="immediate" Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot;" />
 
     <!-- Remove entry in ISAPI/CGI Restrictions for the MapAgent -->
-    <CustomAction Id="MapGuideIIS7_U_ClearMapAgentRestriction_Cmd" Property="QtExecCmdLine" Execute="immediate"
+    <CustomAction Id="MapGuideIIS7_U_ClearMapAgentRestriction_Cmd" Property="MapGuideIIS7_U_ClearMapAgentRestriction" Execute="immediate"
         Value="[AppCmd] set config /section:isapiCgiRestriction /-[\[]path='&quot;[WEBROOTLOCATION]www\mapagent\isapi_MapAgent.dll&quot;'[\]]" />
-    <CustomAction Id="MapGuideIIS7_U_ClearMapAgentRestriction" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="immediate" Return="ignore" />
+    <CustomAction Id="MapGuideIIS7_U_ClearMapAgentRestriction" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
     <!-- Remove entry in ISAPI/CGI Restrictions for PHP -->
-    <CustomAction Id="MapGuideIIS7_U_ClearPhpRestriction_Cmd" Property="QtExecCmdLine" Execute="immediate"
-        Value="[AppCmd] set config /section:isapiCgiRestriction /-[\[]path='&quot;[WEBROOTLOCATION]www\Php\php5isapi.dll&quot;'[\]]" />
-    <CustomAction Id="MapGuideIIS7_U_ClearPhpRestriction" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="immediate" Return="ignore"/>
-
-    <!-- Remove MapAgent handler -->
-    <CustomAction Id="MapGuideIIS7_U_RemoveMapAgentHandler_Cmd" Property="QtExecCmdLine" Execute="immediate"
-        Value="[AppCmd] clear config &quot;[MG_WEBSITE]/[MG_VDIR]/mapagent&quot; /section:handlers" />
-    <CustomAction Id="MapGuideIIS7_U_RemoveMapAgentHandler" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="immediate" Return="ignore"/>
-
-    <!-- Remove PHP handler -->
-    <CustomAction Id="MapGuideIIS7_U_RemovePhpHandler_Cmd" Property="QtExecCmdLine" Execute="immediate"
-        Value="[AppCmd] clear config &quot;[MG_WEBSITE]/[MG_VDIR]&quot; /section:handlers" />
-    <CustomAction Id="MapGuideIIS7_U_RemovePhpHandler" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="immediate" Return="ignore"/>
+    <CustomAction Id="MapGuideIIS7_U_ClearPhpRestriction_Cmd" Property="MapGuideIIS7_U_ClearPhpRestriction" Execute="immediate"
+        Value="[AppCmd] set config /section:isapiCgiRestriction /-[\[]path='&quot;[WEBROOTLOCATION]Php\php5isapi.dll&quot;'[\]]" />
+    <CustomAction Id="MapGuideIIS7_U_ClearPhpRestriction" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
     <!-- Remove MapViewerAjax application -->
-    <CustomAction Id="MapGuideIIS7_U_RemoveViewer_Cmd" Property="QtExecCmdLine" Execute="immediate"
+    <CustomAction Id="MapGuideIIS7_U_RemoveViewer_Cmd" Property="MapGuideIIS7_U_RemoveViewer" Execute="immediate"
         Value="[AppCmd] delete app &quot;[MG_WEBSITE]/[MG_VDIR]/mapviewerajax&quot;" />
-    <CustomAction Id="MapGuideIIS7_U_RemoveViewer" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="immediate" Return="ignore"/>
+    <CustomAction Id="MapGuideIIS7_U_RemoveViewer" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
     <!-- Remove MapAgent application -->
-    <CustomAction Id="MapGuideIIS7_U_RemoveMapAgent_Cmd" Property="QtExecCmdLine" Execute="immediate"
-        Value="[AppCmd] delete app &quot;[MG_WEBSITE]/[MG_VDIR]/map&quot;" />
-    <CustomAction Id="MapGuideIIS7_U_RemoveMapAgent" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="immediate" Return="ignore"/>
+    <CustomAction Id="MapGuideIIS7_U_RemoveMapAgent_Cmd" Property="MapGuideIIS7_U_RemoveMapAgent" Execute="immediate"
+        Value="[AppCmd] delete app &quot;[MG_WEBSITE]/[MG_VDIR]/mapagent&quot;" />
+    <CustomAction Id="MapGuideIIS7_U_RemoveMapAgent" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
     <!-- Remove MapGuide application -->
-    <CustomAction Id="MapGuideIIS7_U_RemoveMapGuide_Cmd" Property="QtExecCmdLine" Execute="immediate"
+    <CustomAction Id="MapGuideIIS7_U_RemoveMapGuide_Cmd" Property="MapGuideIIS7_U_RemoveMapGuide" Execute="immediate"
         Value="[AppCmd] delete app &quot;[MG_WEBSITE]/[MG_VDIR]&quot;" />
-    <CustomAction Id="MapGuideIIS7_U_RemoveMapGuide" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="immediate" Return="ignore"/>
+    <CustomAction Id="MapGuideIIS7_U_RemoveMapGuide" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Remove MapGuide App Pool -->
+    <CustomAction Id="MapGuideIIS7_U_DeleteAppPool_Cmd" Property="MapGuideIIS7_U_DeleteAppPool" Execute="immediate"
+        Value="[AppCmd] delete apppool &quot;[MG_APP_POOL]&quot;" />
+    <CustomAction Id="MapGuideIIS7_U_DeleteAppPool" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
   </Product>
 </Wix>
