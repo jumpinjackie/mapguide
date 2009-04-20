@@ -322,6 +322,7 @@ INTERNAL_API:
     void MakeClassAbstract(bool isAbstract);
     MgPropertyDefinitionCollection* GetPropertiesIncludingBase();
     MgStringCollection* GetClassesIncludingBase();
+    bool HasSerializedXml();
 
 private:
 

@@ -21,10 +21,11 @@
 #include "GwsQueryEngine.h"
 #include "GwsCommonImp.h"
 
+class MgServerFeatureConnection;
 
 typedef GwsIgnoreCase MgGwsIgnoreCase;
 
-typedef std::map<std::wstring,FdoIConnection*,MgGwsIgnoreCase> MgGwsConnectionMap;
+typedef std::map<std::wstring,MgServerFeatureConnection*,MgGwsIgnoreCase> MgGwsConnectionMap;
 typedef MgGwsConnectionMap::iterator  MgGwsConnectionIter;
 typedef MgGwsConnectionMap::value_type MgGwsConnectionMapValue;
 
@@ -52,10 +53,12 @@ public:
     // Native methods
 
     // add connection to the pool
-    void AddConnection(FdoString* name, FdoIConnection* conn);
+    void AddConnection(FdoString* name, MgServerFeatureConnection* conn);
 
     // remove connection from the pool
     void RemoveConnection(FdoString* name);
+
+    MgGwsConnectionMap* GetConnections()    { return &m_connections; }
 
 protected:
     // Construction/destruction

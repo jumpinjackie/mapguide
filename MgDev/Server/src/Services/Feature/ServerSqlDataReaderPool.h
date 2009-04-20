@@ -18,13 +18,10 @@
 #ifndef _MG_SERVER_SQL_DATA_READER_POOL_H_
 #define _MG_SERVER_SQL_DATA_READER_POOL_H_
 
-class MgServerSqlProcessor;
+class MgServerSqlDataReader;
 
-class MgServerSqlDataReaderPool;
-template class Ptr<MgServerSqlDataReaderPool>;
-
-typedef std::map<STRING, MgServerSqlProcessor*> SqlProcessorCollection;
-typedef std::pair<STRING, MgServerSqlProcessor*> SqlProcessorCacheEntry_Pair;
+typedef std::map<STRING, MgServerSqlDataReader*> SqlDataReaderCollection;
+typedef std::pair<STRING, MgServerSqlDataReader*> SqlDataReaderCacheEntry_Pair;
 
 class MgServerSqlDataReaderPool : public MgGuardDisposable
 {
@@ -36,12 +33,12 @@ public:
     /// </summary>
     static MgServerSqlDataReaderPool* GetInstance();
 
-    STRING Add(MgServerSqlProcessor* processor);
+    STRING Add(MgServerSqlDataReader* sqlReader);
 
     bool Remove(STRING sqlReader);
 
-    MgServerSqlProcessor* GetProcessor(STRING sqlReader);
-    STRING GetReaderId(MgServerSqlProcessor* processor);
+    MgServerSqlDataReader* GetReader(STRING sqlReader);
+    STRING GetReaderId(MgServerSqlDataReader* sqlReader);
 
 protected:
 
@@ -64,7 +61,7 @@ private:
     /// Pointer to a process-wide singleton.
     static Ptr<MgServerSqlDataReaderPool> m_drPool;
 
-    SqlProcessorCollection m_drCollection;
+    SqlDataReaderCollection m_drCollection;
 
     ACE_Recursive_Thread_Mutex m_mutex;
 };

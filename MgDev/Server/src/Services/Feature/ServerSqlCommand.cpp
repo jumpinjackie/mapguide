@@ -19,8 +19,6 @@
 #include "Services/FeatureService.h"
 #include "ServerSqlCommand.h"
 #include "ServerFeatureConnection.h"
-#include "ServerFeatureReaderIdentifier.h"
-#include "ServerSqlProcessor.h"
 #include "ServerSqlDataReader.h"
 #include "ServerFeatureUtil.h"
 
@@ -64,7 +62,7 @@ MgSqlDataReader* MgServerSqlCommand::ExecuteQuery(MgResourceIdentifier* resource
     FdoPtr<FdoISQLDataReader> sqlReader = fdoCommand->ExecuteReader();
     CHECKNULL((FdoISQLDataReader*)sqlReader, L"MgServerSqlCommand.ExecuteQuery");
 
-    mgSqlDataReader = new MgServerSqlDataReader((FdoISQLDataReader*)sqlReader, m_providerName);
+    mgSqlDataReader = new MgServerSqlDataReader(m_featureConnection, sqlReader, m_providerName);
     CHECKNULL((MgSqlDataReader*)mgSqlDataReader, L"MgServerSqlCommand.ExecuteQuery");
 
     MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgServerSqlCommand.ExecuteQuery")

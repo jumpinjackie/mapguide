@@ -18,13 +18,10 @@
 #ifndef _MG_SERVER_DATA_READER_POOL_H_
 #define _MG_SERVER_DATA_READER_POOL_H_
 
-class MgServerDataProcessor;
+class MgServerDataReader;
 
-class MgServerDataReaderPool;
-template class Ptr<MgServerDataReaderPool>;
-
-typedef std::map<STRING, MgServerDataProcessor*> DataProcessorCollection;
-typedef std::pair<STRING, MgServerDataProcessor*> DataProcessorCacheEntry_Pair;
+typedef std::map<STRING, MgServerDataReader*> DataReaderCollection;
+typedef std::pair<STRING, MgServerDataReader*> DataReaderCacheEntry_Pair;
 
 class MgServerDataReaderPool : public MgGuardDisposable
 {
@@ -36,12 +33,12 @@ public:
     /// </summary>
     static MgServerDataReaderPool* GetInstance();
 
-    STRING Add(MgServerDataProcessor* processor);
+    STRING Add(MgServerDataReader* dataReader);
 
     bool Remove(STRING dataReader);
 
-    MgServerDataProcessor* GetProcessor(STRING dataReader);
-    STRING GetReaderId(MgServerDataProcessor* processor);
+    MgServerDataReader* GetReader(STRING dataReader);
+    STRING GetReaderId(MgServerDataReader* dataReader);
 
 protected:
 
@@ -64,7 +61,7 @@ private:
     /// Pointer to a process-wide singleton.
     static Ptr<MgServerDataReaderPool> m_drPool;
 
-    DataProcessorCollection m_drCollection;
+    DataReaderCollection m_drCollection;
 
     ACE_Recursive_Thread_Mutex m_mutex;
 };

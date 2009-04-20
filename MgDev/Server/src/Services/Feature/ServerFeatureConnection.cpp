@@ -55,7 +55,10 @@ MgServerFeatureConnection::~MgServerFeatureConnection()
 {
     MG_TRY()
 
-    Close();
+    if(m_bCloseConnection)
+    {
+        Close();
+    }
 
     MG_CATCH_AND_RELEASE()
 }
@@ -69,6 +72,7 @@ void MgServerFeatureConnection::Initialize()
 {
     m_fdoConn = NULL;
     m_resourceId = NULL;
+    m_bCloseConnection = true;
 }
 
 void MgServerFeatureConnection::Close()
@@ -171,4 +175,9 @@ bool MgServerFeatureConnection::SupportsCommand(INT32 commandType)
     }
 
     return supports;
+}
+
+void MgServerFeatureConnection::HasReader()
+{
+    m_bCloseConnection = false;
 }

@@ -18,7 +18,7 @@
 #include "ServerFeatureServiceDefs.h"
 #include "ServerDescribeSchema.h"
 #include "ServerFeatureConnection.h"
-#include "ServerGetFeatures.h"
+#include "ServerFeatureReader.h"
 #include "ServerFeatureUtil.h"
 #include "FdoExpressionEngine.h"
 #include "FdoExpressionEngineCopyFilter.h"
@@ -51,7 +51,7 @@ FdoFeatureSchemaCollection* MgServerDescribeSchema::DescribeFdoSchema(MgResource
         // Connect to provider
         Ptr<MgServerFeatureConnection> connection = new MgServerFeatureConnection(resource);
 
-        if ((connection->IsConnectionOpen()))
+        if ((NULL != connection.p) && (connection->IsConnectionOpen()))
         {
             // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up before the parent object
             // otherwise it leaves the FDO connection marked as still in use.
@@ -127,7 +127,7 @@ FdoFeatureSchemaCollection* MgServerDescribeSchema::DescribeFdoSchema(MgResource
                         FdoPtr<FdoFeatureSchemaCollection> ffsc2;
                         Ptr<MgServerFeatureConnection> connection2 = new MgServerFeatureConnection(secondaryFeatureSource);
 
-                        if ( connection2->IsConnectionOpen() )
+                        if ((NULL != connection2.p) && ( connection2->IsConnectionOpen() ))
                         {
                             // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up before the parent object
                             // otherwise it leaves the FDO connection marked as still in use.
@@ -273,8 +273,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
 
                 if (name != NULL && qname != NULL)
                 {
-                    MgServerGetFeatures msgf;
-                    Ptr<MgClassDefinition> classDefinition = msgf.GetMgClassDefinition(fc, serialize);
+                    Ptr<MgClassDefinition> classDefinition = MgServerFeatureUtil::GetMgClassDefinition(fc, serialize);
                     classCol->Add(classDefinition);
                 }
             }
@@ -342,8 +341,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                         if (className == primClassName)
                         {
                             // get the class definition
-                            MgServerGetFeatures msgf;
-                            extClassDefinition = msgf.GetMgClassDefinition(originalClassDef, serialize);
+                            extClassDefinition = MgServerFeatureUtil::GetMgClassDefinition(originalClassDef, serialize);
                             break;
                         }
                     }
@@ -387,8 +385,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                                 {
                                     STRING namePropStr = STRING(nameExpr.c_str());
                                     Ptr<MgDataPropertyDefinition> propDefExpr = new MgDataPropertyDefinition(namePropStr);
-                                    MgServerGetFeatures tmpgf;
-                                    propDefExpr->SetDataType(tmpgf.GetMgPropertyType(retDataType));
+                                    propDefExpr->SetDataType(MgServerFeatureUtil::GetMgPropertyType(retDataType));
                                     propDefExpr->SetNullable(true);
                                     propDefExpr->SetReadOnly(true);
                                     propDefExpr->SetAutoGeneration(false);
@@ -437,7 +434,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                         FdoPtr<FdoFeatureSchemaCollection> ffsc2;
                         Ptr<MgServerFeatureConnection> connection2 = new MgServerFeatureConnection(secondaryFeatureSource);
 
-                        if ( connection2->IsConnectionOpen() )
+                        if ((NULL != connection2.p) && ( connection2->IsConnectionOpen() ))
                         {
                             // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up before the parent object
                             // otherwise it leaves the FDO connection marked as still in use.
@@ -504,8 +501,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                                     }
 
                                     // get the secondary class definition
-                                    MgServerGetFeatures msgf;
-                                    Ptr<MgClassDefinition> classDefinition = msgf.GetMgClassDefinition(fc, serialize);
+                                    Ptr<MgClassDefinition> classDefinition = MgServerFeatureUtil::GetMgClassDefinition(fc, serialize);
 
                                     // retrieve the secondary properties and prefix them with the relation name
                                     Ptr<MgPropertyDefinitionCollection> mpdc2 = classDefinition->GetProperties();
@@ -1312,9 +1308,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::XmlToSchema(CREFSTRING xml)
 
             if (name != NULL && qname != NULL)
             {
-                // TODO: Separate the utility methods from MgServerGetFeatures
-                MgServerGetFeatures msgf;
-                Ptr<MgClassDefinition> classDefinition = msgf.GetMgClassDefinition(fdoClassDef, true);
+                Ptr<MgClassDefinition> classDefinition = MgServerFeatureUtil::GetMgClassDefinition(fdoClassDef, true);
                 classCol->Add(classDefinition);
             }
         }
@@ -1377,7 +1371,7 @@ MgStringCollection* MgServerDescribeSchema::GetSchemas(MgResourceIdentifier* res
         // Connect to provider.
         Ptr<MgServerFeatureConnection> connection = new MgServerFeatureConnection(resource);
 
-        if (connection->IsConnectionOpen())
+        if ((NULL != connection.p) && (connection->IsConnectionOpen()))
         {
             if (connection->SupportsCommand((INT32)FdoCommandType_GetSchemaNames))
             {
@@ -1452,7 +1446,7 @@ MgStringCollection* MgServerDescribeSchema::GetClasses(MgResourceIdentifier* res
         // Connect to provider.
         Ptr<MgServerFeatureConnection> connection = new MgServerFeatureConnection(resource);
 
-        if (connection->IsConnectionOpen())
+        if ((NULL != connection.p) && (connection->IsConnectionOpen()))
         {
             // Fall back on using the DescribeSchema API to retrieve the class names
             // if the FDO provider does not support the GetClassNames command
@@ -1728,9 +1722,8 @@ bool MgServerDescribeSchema::GetIdentityProperties(CREFSTRING className,
                 // Retrieve identity properties from FDO.
                 FdoPtr<FdoDataPropertyDefinitionCollection> propDefCol =
                     classDef->GetIdentityProperties();
-                MgServerGetFeatures featureProcessor;
 
-                featureProcessor.GetClassProperties(idProps, propDefCol);
+                MgServerFeatureUtil::GetClassProperties(idProps, propDefCol);
                 hasIdProps = true;
                 break;
             }

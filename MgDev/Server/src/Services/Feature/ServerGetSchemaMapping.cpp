@@ -41,13 +41,13 @@ MgByteReader* MgServerGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName
     MgUnmanagedDataManager::SubstituteDataPathAliases(data);
 
     // Connect to the provider
-    MgServerFeatureConnection msfc(providerName, data);
-    if (( msfc.IsConnectionOpen() ) || ( msfc.IsConnectionPending() ))
+    Ptr<MgServerFeatureConnection> msfc = new MgServerFeatureConnection(providerName, data);
+    if ((NULL != msfc.p) && (( msfc->IsConnectionOpen() ) || ( msfc->IsConnectionPending() )))
     {
         // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up before the parent object
         // otherwise it leaves the FDO connection marked as still in use.
         FdoPtr<FdoIConnection> fdoConnection;
-        fdoConnection = msfc.GetConnection();
+        fdoConnection = msfc->GetConnection();
 
         // Create the memory stream
         FdoIoMemoryStreamP fmis = FdoIoMemoryStream::Create();

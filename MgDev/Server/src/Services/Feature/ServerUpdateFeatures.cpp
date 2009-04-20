@@ -35,7 +35,7 @@ MgServerUpdateFeatures::~MgServerUpdateFeatures()
 void MgServerUpdateFeatures::Connect(MgResourceIdentifier* resource)
 {
     m_SrvrFeatConn = new MgServerFeatureConnection(resource);
-    if ( !m_SrvrFeatConn->IsConnectionOpen() )
+    if ((NULL != m_SrvrFeatConn.p) && ( !m_SrvrFeatConn->IsConnectionOpen() ))
     {
 
         throw new MgConnectionFailedException(L"MgServerUpdateFeatures::MgServerUpdateFeatures()",

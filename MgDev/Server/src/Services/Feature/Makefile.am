@@ -57,16 +57,13 @@ include_SOURCES = \
   ServerFeatureService.cpp \
   ServerGetFeatureProviders.cpp \
   ServerGetProviderCapabilities.cpp \
-  ServerFeatureReaderIdentifier.cpp \
-  ServerGetFeatures.cpp \
   ServerGwsFeatureReader.cpp \
-  ServerGwsGetFeatures.cpp \
   ServerSelectFeatures.cpp \
   OpCloseFeatureReader.cpp \
   OpGetFeatures.cpp \
   ServerFeatureReader.cpp \
   ServerFdoFeatureReader.cpp \
-  ServerFeatureReaderIdentifierPool.cpp \
+  ServerFeatureReaderPool.cpp \
   OpGetLongTransactions.cpp \
   ServerGetConnectionPropertyValues.cpp \
   ServerGetLongTransactions.cpp \
@@ -81,7 +78,6 @@ include_SOURCES = \
   ServerFeatureUtil.cpp \
   ServerSqlCommand.cpp \
   ServerSqlDataReader.cpp \
-  ServerSqlProcessor.cpp \
   FeatureServiceCommand.cpp \
   FeatureDistribution.cpp \
   OpCloseDataReader.cpp \
@@ -89,7 +85,6 @@ include_SOURCES = \
   SelectAggregateCommand.cpp \
   SelectCommand.cpp \
   ServerCreateFeatureSource.cpp \
-  ServerDataProcessor.cpp \
   ServerDataReader.cpp \
   ServerSqlDataReaderPool.cpp \
   FeatureNumericFunctions.cpp \
@@ -148,16 +143,13 @@ noinst_HEADERS = $(include_SOURCES) \
   ServerGetFeatureProviders.h \
   ServerGetProviderCapabilities.h \
   ../../Common/stdafx.h \
-  ServerGetFeatures.h \
   ServerGwsFeatureReader.h \
-  ServerGwsGetFeatures.h \
-  ServerFeatureReaderIdentifier.h \
   ServerSelectFeatures.h \
   OpCloseFeatureReader.h \
   OpGetFeatures.h \
   ServerFeatureReader.h \
   ServerFdoFeatureReader.h \
-  ServerFeatureReaderIdentifierPool.h \
+  ServerFeatureReaderPool.h \
   OpGetLongTransactions.h \
   ServerGetConnectionPropertyValues.h \
   ServerGetLongTransactions.h \
@@ -172,7 +164,6 @@ noinst_HEADERS = $(include_SOURCES) \
   ServerFeatureUtil.h \
   ServerSqlCommand.h \
   ServerSqlDataReader.h \
-  ServerSqlProcessor.h \
   FeatureServiceCommand.h \
   FeatureDistribution.h \
   OpCloseDataReader.h \
@@ -180,7 +171,6 @@ noinst_HEADERS = $(include_SOURCES) \
   SelectAggregateCommand.h \
   SelectCommand.h \
   ServerCreateFeatureSource.h \
-  ServerDataProcessor.h \
   ServerDataReader.h \
   ServerSqlDataReaderPool.h \
   Matrix.h \
@@ -197,7 +187,6 @@ noinst_HEADERS = $(include_SOURCES) \
   UniqueFunction.h \
   FeatureGeometricFunctions.h \
   GeometryDataReaderCreator.h \
-  ServerFeatureProcessor.h \
   ServerFeatureServiceExceptionDef.h \
   FeatureManipulationCommand.h \
   ServerDeleteCommand.h \

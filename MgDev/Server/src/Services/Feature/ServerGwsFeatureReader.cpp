@@ -27,6 +27,7 @@
 ///<param name="byteSource">Byte  source object</param>
 ///
 MgServerGwsFeatureReader::MgServerGwsFeatureReader(
+    MgGwsConnectionPool* pool,
     IGWSFeatureIterator* gwsFeatureIterator, 
     IGWSFeatureIterator* gwsFeatureIteratorCopy, 
     CREFSTRING extensionName, 
@@ -42,23 +43,20 @@ MgServerGwsFeatureReader::MgServerGwsFeatureReader(
     m_gwsFeatureIteratorCopy = FDO_SAFE_ADDREF(gwsFeatureIteratorCopy);
     m_attributeNameDelimiters = SAFE_ADDREF(attributeNameDelimiters);
 
+    m_featureSet = NULL;
+    m_relationNames = FDO_SAFE_ADDREF(relationNames);
+    m_extensionName = extensionName;
+
     // Get the Extended Feature Description
     m_gwsFeatureIterator->DescribeFeature(&m_primaryExtendedFeatureDescription);
 
-    m_gwsGetFeatures = new MgServerGwsGetFeatures(this,
-                                                  m_gwsFeatureIterator,
-                                                  m_gwsFeatureIteratorCopy,
-                                                  m_attributeNameDelimiters,
-                                                  m_primaryExtendedFeatureDescription,
-                                                  extensionName,
-                                                  relationNames,
-                                                  m_bForceOneToOne);
-
     // Get the class definition
-    m_classDef = m_gwsGetFeatures->GetMgClassDefinition(false);
+    m_classDef = GetMgClassDefinition(false);
 
     m_removeFromPoolOnDestruction = false;
     m_bNoMoreData = false;
+
+    m_pool = SAFE_ADDREF(pool);
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.MgServerGwsFeatureReader")
 }
@@ -72,7 +70,6 @@ MgServerGwsFeatureReader::MgServerGwsFeatureReader()
 {
     m_gwsFeatureIterator = NULL;
     m_gwsFeatureIteratorCopy = NULL;
-    m_gwsGetFeatures = NULL;
     m_bForceOneToOne = true;
     m_attributeNameDelimiters = NULL;
     m_joinReader = NULL;
@@ -81,6 +78,9 @@ MgServerGwsFeatureReader::MgServerGwsFeatureReader()
     m_removeFromPoolOnDestruction = false;
     m_bNoMoreData = false;
     m_classDef = NULL;
+    m_relationNames = NULL;
+    m_featureSet = NULL;
+    m_pool = NULL;
 }
 
 //////////////////////////////////////////////////////////////////
@@ -90,13 +90,10 @@ MgServerGwsFeatureReader::MgServerGwsFeatureReader()
 ///
 MgServerGwsFeatureReader::~MgServerGwsFeatureReader()
 {
-    //DO NOT Close() the FDO reader from here -- we may be reading
-    //incrementally from the web tier and the ServerFeatureInstance
-    //will live much shorter than the ProxyFeatureReader on the
-    //web tier which needs to keep reading from the underlying
-    //FDO feature reader
-
-    SAFE_RELEASE(m_gwsGetFeatures);
+    // DO NOT Close() the FDO reader from here or free the reader resources because
+    // we may be reading incrementally from the web tier and the ServerFeatureInstance
+    // will live much shorter than the Proxy reader on the web tier which needs to 
+    // keep reading from the underlying FDO reader.
 
     // Force the expression engine to clean up
     m_filter = NULL;
@@ -107,15 +104,7 @@ MgServerGwsFeatureReader::~MgServerGwsFeatureReader()
     m_gwsFeatureIteratorCopy = NULL;
     m_attributeNameDelimiters = NULL;
     m_primaryExtendedFeatureDescription = NULL;
-
-    // Let the FDO Connection Manager know that we are no longer using a FDO provider connection.
-    MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
-    ACE_ASSERT(NULL != fdoConnectionManager);
-
-    if (NULL != fdoConnectionManager)
-    {
-        fdoConnectionManager->RemoveUnusedFdoConnections();
-    }
+    m_pool = NULL;
 }
 
 void MgServerGwsFeatureReader::SetFilter(FdoFilter* filter)
@@ -408,12 +397,24 @@ bool MgServerGwsFeatureReader::ReadNext()
 ///</returns>
 MgClassDefinition* MgServerGwsFeatureReader::GetClassDefinition()
 {
-    CHECKNULL(m_gwsGetFeatures, L"MgServerGwsFeatureReader.GetClassDefinition");
+    // Check to see if the class definition cached contains the XML information
+    bool bGetClassDefinition = true;
+    if (NULL != (MgClassDefinition*)m_classDef)
+    {
+        if(m_classDef->HasSerializedXml())
+        {
+            // We have the full object so don't update it
+            bGetClassDefinition = false;
+        }
+    }
 
-    Ptr<MgClassDefinition> classDef;
-    classDef = m_classDef;
+    if (bGetClassDefinition)
+    {
+        m_classDef = GetMgClassDefinition(true);
+    }
 
-    return classDef.Detach();
+
+    return SAFE_ADDREF((MgClassDefinition*)m_classDef);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -430,12 +431,7 @@ MgClassDefinition* MgServerGwsFeatureReader::GetClassDefinition()
 /// serializing the class definition to XML
 MgClassDefinition* MgServerGwsFeatureReader::GetClassDefinitionNoXml()
 {
-    CHECKNULL(m_gwsGetFeatures, L"MgServerGwsFeatureReader.GetClassDefinitionNoXml");
-
-    Ptr<MgClassDefinition> classDef;
-    classDef = m_classDef;
-
-    return classDef.Detach();
+    return SAFE_ADDREF((MgClassDefinition*)m_classDef);
 }
 
 
@@ -835,7 +831,18 @@ MgByteReader* MgServerGwsFeatureReader::GetBLOB(CREFSTRING propertyName)
     }
     else
     {
-        byteReader = m_gwsGetFeatures->GetLOBFromFdo(parsedPropertyName, gwsFeatureIter);
+        FdoPtr<FdoLOBValue> fdoVal = gwsFeatureIter->GetLOB(parsedPropertyName.c_str());
+        if (fdoVal != NULL)
+        {
+            FdoPtr<FdoByteArray> byteArray = fdoVal->GetData();
+            if (byteArray != NULL)
+            {
+                FdoByte* bytes = byteArray->GetData();
+                FdoInt32 len = byteArray->GetCount();
+                Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)bytes,(INT32)len);
+                byteReader = byteSource->GetReader();
+            }
+        }
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetBLOB");
@@ -872,7 +879,18 @@ MgByteReader* MgServerGwsFeatureReader::GetCLOB(CREFSTRING propertyName)
     }
     else
     {
-        byteReader = m_gwsGetFeatures->GetLOBFromFdo(parsedPropertyName, gwsFeatureIter);
+        FdoPtr<FdoLOBValue> fdoVal = gwsFeatureIter->GetLOB(parsedPropertyName.c_str());
+        if (fdoVal != NULL)
+        {
+            FdoPtr<FdoByteArray> byteArray = fdoVal->GetData();
+            if (byteArray != NULL)
+            {
+                FdoByte* bytes = byteArray->GetData();
+                FdoInt32 len = byteArray->GetCount();
+                Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)bytes,(INT32)len);
+                byteReader = byteSource->GetReader();
+            }
+        }
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetCLOB");
@@ -892,39 +910,7 @@ MgByteReader* MgServerGwsFeatureReader::GetCLOB(CREFSTRING propertyName)
 MgFeatureReader* MgServerGwsFeatureReader::GetFeatureObject(CREFSTRING propertyName)
 {
     // TODO: Figure out how to support object properties.
-    Ptr<MgServerFeatureReader> featureReader;
-
-    MG_FEATURE_SERVICE_TRY()
-
-    // Determine which feature source to retrieve the property from
-    IGWSFeatureIterator* gwsFeatureIter = NULL;
-    STRING parsedPropertyName;
-    DeterminePropertyFeatureSource(propertyName, &gwsFeatureIter, parsedPropertyName);
-    CHECKNULL(gwsFeatureIter, L"MgServerGwsFeatureReader.GetFeatureObject");
-
-    if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
-    {
-        MgStringCollection arguments;
-        arguments.Add(propertyName);
-
-        throw new MgNullPropertyValueException(L"MgServerGwsFeatureReader.GetFeatureObject",
-            __LINE__, __WFILE__, &arguments, L"", NULL);
-    }
-    else
-    {
-        FdoPtr<FdoIFeatureReader> featureObjectReader = gwsFeatureIter->GetFeatureObject(parsedPropertyName.c_str());
-
-        if (featureObjectReader != NULL)
-        {
-            // Create a feature reader identifier
-            Ptr<MgServerFeatureReaderIdentifier> featReaderId = new MgServerFeatureReaderIdentifier(featureObjectReader);
-            featureReader = new MgServerFeatureReader(featReaderId);
-        }
-    }
-
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetFeatureObject");
-
-    return featureReader.Detach();
+    throw new MgNotImplementedException(L"MgServerGwsFeatureReader.GetFeatureObject", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -1027,13 +1013,13 @@ MgRaster* MgServerGwsFeatureReader::GetRaster(CREFSTRING propertyName)
         retVal->SetMgService(featureService);
 
         // Collect the feature reader into a pool for GetRaster operation
-        MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
+        MgServerFeatureReaderPool* featPool = MgServerFeatureReaderPool::GetInstance();
         CHECKNULL(featPool, L"MgServerGwsFeatureReader.GetRaster");
 
-        gwsFeatureReader = featPool->GetReaderId(m_gwsGetFeatures);
+        gwsFeatureReader = featPool->GetReaderId(this);
         if (L"" == gwsFeatureReader)
         {
-            gwsFeatureReader = featPool->Add(m_gwsGetFeatures); // Add the reference
+            gwsFeatureReader = featPool->Add(this); // Add the reference
             m_removeFromPoolOnDestruction = true;
         }
 
@@ -1063,16 +1049,16 @@ void MgServerGwsFeatureReader::Serialize(MgStream* stream)
                         MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize);
 
     // Collect the feature reader into a pool for ReadNext operation
-    MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
+    MgServerFeatureReaderPool* featPool = MgServerFeatureReaderPool::GetInstance();
     CHECKNULL(featPool, L"MgServerGwsFeatureReader.Serialize");
 
-    gwsFeatureReader = featPool->GetReaderId(m_gwsGetFeatures);
+    gwsFeatureReader = featPool->GetReaderId(this);
     if (L"" == gwsFeatureReader)
     {
-        gwsFeatureReader = featPool->Add(m_gwsGetFeatures); // Add the reference
+        gwsFeatureReader = featPool->Add(this); // Add the reference
     }
 
-    featureSet = m_gwsGetFeatures->GetFeatures(count);
+    featureSet = GetFeatures(count);
 
     operationCompleted = true;
 
@@ -1131,15 +1117,12 @@ void MgServerGwsFeatureReader::Close()
 {
     MG_FEATURE_SERVICE_TRY()
 
-    // If m_gwsGetFeatures was added to pool by the local service
-    // this flag will be set to true. In this case we need to
-    // remove this from pool on ServerGwsFeatureReader close operation
     if (m_removeFromPoolOnDestruction)
     {
-        MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
+        MgServerFeatureReaderPool* featPool = MgServerFeatureReaderPool::GetInstance();
         if(NULL != featPool)
         {
-            STRING featureReader = featPool->GetReaderId(m_gwsGetFeatures);
+            STRING featureReader = featPool->GetReaderId(this);
             if (L"" != featureReader)
                 featPool->Remove(featureReader);
         }
@@ -1173,7 +1156,6 @@ void MgServerGwsFeatureReader::Close()
 
     // Force resource cleanup
     m_attributeNameDelimiters = NULL;
-    SAFE_RELEASE(m_gwsGetFeatures);
     m_primaryExtendedFeatureDescription = NULL;
 
     // Force the expression engine to clean up
@@ -1187,8 +1169,19 @@ void MgServerGwsFeatureReader::Close()
 
     if (NULL != fdoConnectionManager)
     {
-        fdoConnectionManager->RemoveUnusedFdoConnections();
+        // Loop through all of the FDO connections
+        MgGwsConnectionMap* connections = m_pool->GetConnections();
+        for (MgGwsConnectionIter iter = connections->begin();
+             iter != connections->end();
+             iter++)
+        {
+            MgServerFeatureConnection* conn = (*iter).second;
+            FdoPtr<FdoIConnection> fdoConn = conn->GetConnection();
+            fdoConnectionManager->Close(fdoConn);
+        }
     }
+
+    m_pool = NULL;
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.Close");
 }
@@ -1469,4 +1462,374 @@ void MgServerGwsFeatureReader::ParseSecondaryPropertyName(CREFSTRING inputPropNa
 FdoIFeatureReader* MgServerGwsFeatureReader::GetJoinFeatureReader()
 {
     return FDO_SAFE_ADDREF(m_joinReader.p);
+}
+
+MgFeatureSet* MgServerGwsFeatureReader::GetFeatures(INT32 count)
+{
+    CHECKNULL(m_gwsFeatureIterator, L"MgServerGwsFeatureReader.GetFeatures");
+
+    MG_FEATURE_SERVICE_TRY()
+
+    INT32 featCount = count;
+
+    if (NULL == (MgClassDefinition*)m_classDef)
+    {
+        // Get MgClassDefinition
+        m_classDef = GetMgClassDefinition(true);
+        CHECKNULL(m_classDef.p, L"MgServerGwsFeatureReader.GetFeatures");
+    }
+
+    if (NULL == (MgFeatureSet*)m_featureSet)
+    {
+        // Create a feature set for a pool of features
+        m_featureSet = new MgFeatureSet();
+        CHECKNULL((MgFeatureSet*)m_featureSet, L"MgServerGwsFeatureReader.GetFeatures");
+
+        // Assign feature class definition to Feature Set
+        m_featureSet->SetClassDefinition(m_classDef);
+    }
+    else
+    {
+        m_featureSet->ClearFeatures();
+    }
+
+    // If class definition contains raster property
+    // we can only retrieve one feature at a time
+    // because, user would need to supply x,y and extents before
+    // they could fetch the raster data. Therefore we can not
+    // advance FdoIReader.
+    if (m_classDef->HasRasterProperty())
+    {
+        featCount = 1;
+    }
+
+    // Add all features to feature set
+    AddFeatures(featCount);
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetFeatures")
+
+    return SAFE_ADDREF((MgFeatureSet*)m_featureSet);
+}
+
+void MgServerGwsFeatureReader::AddFeatures(INT32 count)
+{
+    CHECKNULL(m_featureSet, L"MgServerGwsFeatureReader.AddFeatures");
+
+    INT32 desiredFeatures = 0;
+
+    // Access the class definition
+    Ptr<MgClassDefinition> classDef = m_featureSet->GetClassDefinition();
+    CHECKNULL((MgClassDefinition*)classDef, L"MgServerGwsFeatureReader.AddFeatures");
+
+    // Access the property definition collection
+    Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetPropertiesIncludingBase();
+    CHECKNULL((MgPropertyDefinitionCollection*)propDefCol, L"MgServerGwsFeatureReader.AddFeatures");
+
+    // How many properties are we fetching, it should be atleast one
+    INT32 cnt = propDefCol->GetCount();
+
+    // We only read if there is atleast one property requested
+    if (cnt > 0)
+    {
+        bool found = false;
+
+        do
+        {
+            // Advance the reader
+            // Read next throws exception which it should not (therefore we just ignore it)
+            try
+            {
+                found = ReadNext();
+            }
+            catch (FdoException* e)
+            {
+                // Note: VB 05/10/06 The assert has been commented out as
+                // Linux does not remove them from a release build. The assert
+                // will cause the server to crash on Linux. The Oracle provider will throw
+                // an exception if the ReadNext() method is called after it returns false.
+                // This is a known problem and it is safe to ignore the exception.
+                //assert(false);
+                e->Release();
+                found = false;
+            }
+            catch(...)
+            {
+                found = false;
+            }
+
+            if(found)
+            {
+                AddFeature((MgPropertyDefinitionCollection*)propDefCol);
+                if (count > 0)
+                {
+                    desiredFeatures++;
+                    // Collected required features therefore do not process more
+                    if (desiredFeatures == count)
+                    {
+                        break;
+                    }
+                }
+            }
+        } while (found);
+    }
+}
+
+//////////////////////////////////////////////////////////////////
+void MgServerGwsFeatureReader::AddFeature(MgPropertyDefinitionCollection* propDefCol)
+{
+    CHECKNULL(propDefCol, L"MgServerGwsFeatureReader.AddFeature");
+
+    Ptr<MgPropertyCollection> propCol = new MgPropertyCollection();
+    INT32 cnt = propDefCol->GetCount();
+
+    for (INT32 i=0; i < cnt; i++)
+    {
+        // Access the property definition
+        Ptr<MgPropertyDefinition> propDef = propDefCol->GetItem(i);
+
+        // Get the name of property
+        STRING propName = propDef->GetName();
+
+        INT16 type = MgServerFeatureUtil::GetMgPropertyType(propDef);
+        Ptr<MgProperty> prop = MgServerFeatureUtil::GetMgProperty(this, propName, type);
+        if (prop != NULL)
+        {
+            propCol->Add(prop);
+        }
+    }
+
+    m_featureSet->AddFeature(propCol);
+}
+
+MgClassDefinition* MgServerGwsFeatureReader::GetMgClassDefinition(bool bSerialize)
+{
+    CHECKNULL(m_gwsFeatureIteratorCopy, L"MgServerGwsFeatureReader.GetMgClassDefinition");
+
+    MG_FEATURE_SERVICE_TRY()
+
+    if (NULL == (MgClassDefinition*)m_classDef)
+    {
+        // Retrieve FdoClassDefinition
+        FdoPtr<FdoClassDefinition> fdoClassDefinition = m_gwsFeatureIteratorCopy->GetClassDefinition();
+        CHECKNULL((FdoClassDefinition*)fdoClassDefinition, L"MgServerGwsFeatureReader.GetMgClassDefinition");
+
+        // Convert FdoClassDefinition to MgClassDefinition
+        Ptr<MgClassDefinition> mgClassDef = MgServerFeatureUtil::GetMgClassDefinition(fdoClassDefinition, bSerialize);
+        CHECKNULL((MgClassDefinition*)mgClassDef, L"MgServerGwsFeatureReader.GetMgClassDefinition");
+
+        // Advance the primary feature source iterator
+        if (m_gwsFeatureIteratorCopy->ReadNext())
+        {
+            // Retrieve the secondary feature source iterators, get the property definitions and add to class definition
+            FdoPtr<IGWSExtendedFeatureDescription> desc;
+            m_gwsFeatureIteratorCopy->DescribeFeature(&desc);
+
+            int nSecondaryFeatures = desc->GetCount();
+            if (nSecondaryFeatures > 0)
+            {
+                if (m_attributeNameDelimiters->GetCount() != nSecondaryFeatures)
+                {
+                    // Should never get here
+                    throw new MgInvalidArgumentException(L"MgServerGwsFeatureReader.GetMgClassDefinition", __LINE__, __WFILE__, NULL, L"MgInvalidCollectionSize", NULL);
+                }
+            }
+
+            for (int i = 0; i < nSecondaryFeatures; i++)
+            {
+                try
+                {
+                    FdoPtr<IGWSFeatureIterator> featureIter = m_gwsFeatureIteratorCopy->GetJoinedFeatures(i);
+                    if (featureIter)
+                    {
+                        STRING attributeNameDelimiter = m_attributeNameDelimiters->GetItem(i);
+
+                        // Retrieve the secondary class definitions
+                        FdoPtr<FdoClassDefinition> secFdoClassDefinition;
+
+                        if (featureIter->ReadNext())
+                        {
+                            m_secondaryGwsFeatureIteratorMap.insert(GwsFeatureIteratorPair(attributeNameDelimiter, featureIter));
+                            secFdoClassDefinition = featureIter->GetClassDefinition();
+                        }
+                        else
+                        {
+                            CGwsQueryResultDescriptors * primaryDescriptors = dynamic_cast<CGwsQueryResultDescriptors *> (desc.p);
+                            int descriptorCount = primaryDescriptors->GetCount();
+                            for (int dcIndex = 0; dcIndex < descriptorCount; dcIndex++)
+                            {
+                                CGwsQueryResultDescriptors* secondaryDescriptors = dynamic_cast<CGwsQueryResultDescriptors *> ( primaryDescriptors->GetItem(dcIndex) );
+                                secFdoClassDefinition = secondaryDescriptors->ClassDefinition();
+                            }
+                        }
+                        CHECKNULL((FdoClassDefinition*)secFdoClassDefinition, L"MgServerGwsFeatureReader.GetMgClassDefinition");
+
+                        FdoStringP qname = secFdoClassDefinition->GetQualifiedName();
+
+                        // Convert FdoClassDefinition to MgClassDefinition
+                        Ptr<MgClassDefinition> secMgClassDef = MgServerFeatureUtil::GetMgClassDefinition(secFdoClassDefinition, bSerialize);
+                        CHECKNULL((MgClassDefinition*)secMgClassDef, L"MgServerGwsFeatureReader.GetMgClassDefinition");
+
+                        // retrieve the secondary properites and prefix them with the relation name
+                        Ptr<MgPropertyDefinitionCollection> mpdc2 = secMgClassDef->GetProperties();
+                        INT32 mpdc2Count = mpdc2->GetCount();
+
+                        // Add the secondary properties to the classDefinition
+                        Ptr<MgPropertyDefinitionCollection> mpdc = mgClassDef->GetProperties();
+                        for (INT32 secPropIndex = 0; secPropIndex < mpdc2Count; secPropIndex++)
+                        {
+                            Ptr<MgPropertyDefinition> propDef = mpdc2->GetItem(secPropIndex);
+                            STRING secPropName = propDef->GetName();
+                            STRING relationName = (wchar_t*)m_relationNames->GetString(i + 1);
+                            secPropName = relationName + attributeNameDelimiter + secPropName;
+                            propDef->SetName(secPropName);
+                            mpdc->Add(propDef);
+                        }
+                    }
+
+                    mgClassDef->SetName(m_extensionName);
+                }
+                catch (FdoException* e)
+                {
+                    STRING messageId;
+                    MgStringCollection arguments;
+                    wchar_t* buf = (wchar_t*)e->GetExceptionMessage();
+
+                    if (NULL != buf)
+                    {
+                        messageId = L"MgFormatInnerExceptionMessage";
+                        arguments.Add(buf);
+                    }
+
+                    FDO_SAFE_RELEASE(e);
+
+                    throw new MgFdoException(L"MgServerGwsFeatureReader.GetMgClassDefinition",
+                        __LINE__, __WFILE__, NULL, messageId, &arguments);
+                }
+            }
+
+            // Convert MgClassDefinition to FdoClassDefinition.
+            MgServerDescribeSchema msds;
+            Ptr<MgClassDefinitionCollection> mcdc = new MgClassDefinitionCollection();
+            mcdc->Add(mgClassDef);
+            FdoPtr<FdoClassCollection> fcc;
+            fcc = FdoClassCollection::Create(NULL);
+            msds.GetFdoClassCollection(fcc, mcdc);
+            int nFccCount = fcc->GetCount();
+
+            // Get the FdoClassDefinition
+            FdoPtr<FdoClassDefinition> fdc = msds.GetFdoClassDefinition(mgClassDef, fcc);
+
+            // Pass the FdoClassDefinition to SerializeToXml
+            if (bSerialize)
+            {
+                STRING str;
+                Ptr<MgByteReader> byteReader = SerializeToXml(fdc);
+                str = byteReader->ToString();
+
+                STRING str1 = L"";
+
+                size_t idx = str.find(L"?>");
+
+                if (idx >= 0)
+                {
+                    str1 = str.substr(idx+2);
+                }
+                else if (idx < 0)
+                {
+                    idx = str.find(L"<Class");
+                    if (idx >= 0)
+                    {
+                        str1 = str.substr(idx);
+                    }
+                }
+
+                // Set the serialized feature join result xml for the MgClassDefinition.
+                mgClassDef->SetSerializedXml(str1);
+            }
+        }
+
+        // Store the it for future use
+        m_classDef = SAFE_ADDREF((MgClassDefinition*)mgClassDef);
+    }
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetMgClassDefinition")
+
+    return SAFE_ADDREF((MgClassDefinition*)m_classDef);
+}
+
+MgByteReader* MgServerGwsFeatureReader::SerializeToXml(FdoClassDefinition* classDef)
+{
+    CHECKNULL(classDef, L"MgServerGwsFeatureReader.SerializeToXml");
+
+    FdoString* className = classDef->GetName();
+    FdoFeatureSchemaP pSchema = classDef->GetFeatureSchema();
+    FdoFeatureSchemaP tempSchema;
+    FdoClassDefinitionP featClass;
+    FdoInt32 index = 0;
+
+    if (pSchema != NULL)
+    {
+        //Get the position of the class in the collecion
+        FdoPtr<FdoClassCollection> fcc = pSchema->GetClasses();
+        index = fcc->IndexOf( className );
+
+        // Move class of interest to its own schema
+        tempSchema = FdoFeatureSchema::Create( pSchema->GetName(), L"" );
+        featClass = FdoClassesP(pSchema->GetClasses())->GetItem( className );
+        FdoClassesP(pSchema->GetClasses())->Remove(featClass);
+        FdoClassesP(tempSchema->GetClasses())->Add(featClass);
+    }
+    else
+    {
+        tempSchema = FdoFeatureSchema::Create(L"TempSchema", L"" );
+        FdoClassesP(tempSchema->GetClasses())->Add(classDef);
+    }
+
+    FdoIoMemoryStreamP fmis = FdoIoMemoryStream::Create();
+    tempSchema->WriteXml(fmis);
+    fmis->Reset();
+
+    FdoInt64 len = fmis->GetLength();
+    FdoByte *bytes = new FdoByte[(size_t)len];
+    CHECKNULL(bytes, L"MgServerGwsFeatureReader::SerializeToXml");
+
+    fmis->Read(bytes, (FdoSize)len);
+
+    // Get byte reader from memory stream
+    Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)bytes, (INT32)len);
+    byteSource->SetMimeType(MgMimeType::Xml);
+    Ptr<MgByteReader> byteReader = byteSource->GetReader();
+
+    // Cleanup the above addition/deletion of class definition
+    if (pSchema != NULL)
+    {
+        if (featClass != NULL)
+        {
+            FdoClassesP(tempSchema->GetClasses())->Remove(featClass);
+            FdoClassesP(pSchema->GetClasses())->Insert(index, featClass);
+        }
+    }
+    else
+    {
+        FdoClassesP(tempSchema->GetClasses())->Remove(classDef);
+    }
+
+    delete[] bytes;
+
+    return byteReader.Detach();
+}
+
+void MgServerGwsFeatureReader::OwnsConnections()
+{
+    MgGwsConnectionMap* connections = m_pool->GetConnections();
+    for (MgGwsConnectionIter iter = connections->begin();
+         iter != connections->end();
+         iter++)
+    {
+        MgServerFeatureConnection* conn = (*iter).second;
+        if(conn)
+        {
+            conn->HasReader();
+        }
+    }
 }

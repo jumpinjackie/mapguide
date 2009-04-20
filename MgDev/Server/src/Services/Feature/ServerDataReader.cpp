@@ -18,46 +18,44 @@
 #include "ServerFeatureServiceDefs.h"
 #include "MapGuideCommon.h"
 #include "Services/FeatureService.h"
-#include "ServerDataProcessor.h"
 #include "ServerDataReader.h"
 #include "ServerDataReaderPool.h"
 #include "ServerFeatureUtil.h"
 #include "ServiceManager.h"
 
-MgServerDataReader::MgServerDataReader(FdoIDataReader* dataReader, CREFSTRING providerName)
+MgServerDataReader::MgServerDataReader(MgServerFeatureConnection* connection, FdoIDataReader* dataReader, CREFSTRING providerName)
 {
     MG_FEATURE_SERVICE_TRY()
 
+    m_bpCol = NULL;
+    m_propDefCol = NULL;
+    m_connection = SAFE_ADDREF(connection);
     m_dataReader = FDO_SAFE_ADDREF(dataReader);
     m_providerName = providerName;
-    m_dataProcessor = NULL;
     m_removeFromPoolOnDestruction = false;
+
+    // The reader takes ownership of the FDO connection
+    m_connection->HasReader();
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.MgServerDataReader")
 }
 
 MgServerDataReader::MgServerDataReader()
 {
+    m_bpCol = NULL;
+    m_propDefCol = NULL;
+    m_connection = NULL;
     m_dataReader = NULL;
     m_providerName = L"";
-    m_dataProcessor = NULL;
     m_removeFromPoolOnDestruction = false;
 }
 
 MgServerDataReader::~MgServerDataReader()
 {
-    // Force resource cleanup
-    m_dataReader = NULL;
-    m_dataProcessor = NULL;
-
-    // Let the FDO Connection Manager know that we are no longer using a FDO provider connection.
-    MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
-    ACE_ASSERT(NULL != fdoConnectionManager);
-
-    if (NULL != fdoConnectionManager)
-    {
-        fdoConnectionManager->RemoveUnusedFdoConnections();
-    }
+    // DO NOT Close() the FDO reader from here or free the reader resources because
+    // we may be reading incrementally from the web tier and the ServerFeatureInstance
+    // will live much shorter than the Proxy reader on the web tier which needs to 
+    // keep reading from the underlying FDO reader.
 }
 
 //////////////////////////////////////////////////////////////////
@@ -662,14 +660,10 @@ MgRaster* MgServerDataReader::GetRaster(CREFSTRING propertyName)
         MgServerDataReaderPool* dataReaderPool = MgServerDataReaderPool::GetInstance();
         CHECKNULL((MgServerDataReaderPool*)dataReaderPool, L"MgServerDataReader.GetRaster");
 
-        // No data processor is created yet, therefore create it.
-        if (NULL == m_dataProcessor)
-            m_dataProcessor = new MgServerDataProcessor(this);
-
-        dataReader = dataReaderPool->GetReaderId(m_dataProcessor);
+        dataReader = dataReaderPool->GetReaderId(this);
         if(L"" == dataReader)
         {
-            dataReader = dataReaderPool->Add(m_dataProcessor); // Add the reference
+            dataReader = dataReaderPool->Add(this); // Add the reference
             m_removeFromPoolOnDestruction = true;
         }
 
@@ -739,7 +733,7 @@ void MgServerDataReader::Close()
         MgServerDataReaderPool* drPool = MgServerDataReaderPool::GetInstance();
         if(NULL != drPool)
         {
-            STRING dataReader = drPool->GetReaderId(m_dataProcessor);
+            STRING dataReader = drPool->GetReaderId(this);
             if (L"" != dataReader)
                 drPool->Remove(dataReader);
         }
@@ -747,13 +741,21 @@ void MgServerDataReader::Close()
 
     m_dataReader->Close();
 
+    FDO_SAFE_RELEASE(m_dataReader);
+
+    // Get the FDO connection
+    FdoPtr<FdoIConnection> fdoConnection = m_connection->GetConnection();
+
+    // Release the connection.
+    m_connection = NULL;
+
     // Let the FDO Connection Manager know that we are no longer using a FDO provider connection.
     MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
     ACE_ASSERT(NULL != fdoConnectionManager);
 
     if (NULL != fdoConnectionManager)
     {
-        fdoConnectionManager->RemoveUnusedFdoConnections();
+        fdoConnectionManager->Close(fdoConnection);
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.Close");
@@ -782,19 +784,15 @@ void MgServerDataReader::Serialize(MgStream* stream)
     MgServerDataReaderPool* dataReaderPool = MgServerDataReaderPool::GetInstance();
     CHECKNULL((MgServerDataReaderPool*)dataReaderPool, L"MgServerDataReader.Serialize");
 
-    // No data processor is created yet, therefore create it.
-    if (NULL == m_dataProcessor)
-        m_dataProcessor = new MgServerDataProcessor(this);
-
-    dataReader = dataReaderPool->GetReaderId(m_dataProcessor);
-    // Add data processor to pool
+    dataReader = dataReaderPool->GetReaderId(this);
+    // Add data reader to pool
     if (L"" == dataReader)
     {
-        dataReader = dataReaderPool->Add(m_dataProcessor); // Add the reference
+        dataReader = dataReaderPool->Add(this); // Add the reference
     }
 
-    propDefCol = m_dataProcessor->GetColumnDefinitions();  // Get column definitions
-    bpCol = m_dataProcessor->GetRows(count);               // Get rows
+    propDefCol = GetColumnDefinitions();  // Get column definitions
+    bpCol = GetRows(count);               // Get rows
 
     operationCompleted = true;
 
@@ -925,4 +923,146 @@ const wchar_t* MgServerDataReader::GetString(CREFSTRING propertyName, INT32& len
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetString");
 
     return ((const wchar_t*)retVal);
+}
+
+MgBatchPropertyCollection* MgServerDataReader::GetRows(INT32 count)
+{
+    MG_FEATURE_SERVICE_TRY()
+
+    INT32 featCnt = count;
+
+    // All Column properties
+    if (NULL == (MgPropertyDefinitionCollection*)m_propDefCol)
+    {
+        // Get MgPropertyDefinitionCollection
+        Ptr<MgPropertyDefinitionCollection> mgPropDef = GetColumnDefinitions();
+        CHECKNULL((MgPropertyDefinitionCollection*)mgPropDef, L"MgServerDataReader.GetRows");
+
+        m_propDefCol = SAFE_ADDREF((MgPropertyDefinitionCollection*)mgPropDef);
+    }
+
+    if (NULL == (MgBatchPropertyCollection*)m_bpCol)
+    {
+        // Create a feature set for a pool of features
+        m_bpCol = new MgBatchPropertyCollection();
+        CHECKNULL((MgBatchPropertyCollection*)m_bpCol, L"MgServerDataReader.GetRows");
+    }
+    else
+    {
+        m_bpCol->Clear();
+    }
+
+    // If we have raster property, we only send one feature
+    // override the configuration property setting
+    STRING rasterProp = GetRasterPropertyName();
+    if (!rasterProp.empty())
+    {
+        featCnt = 1;
+    }
+
+    // Add all features to feature set
+    AddRows(featCnt);
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetRows")
+
+    return SAFE_ADDREF((MgBatchPropertyCollection*)m_bpCol);
+}
+
+MgPropertyDefinitionCollection* MgServerDataReader::GetColumnDefinitions()
+{
+    MG_FEATURE_SERVICE_TRY()
+
+    if (NULL == (MgPropertyDefinitionCollection*)m_propDefCol)
+    {
+        // Create a new collection
+        m_propDefCol = MgServerFeatureUtil::GetPropertyDefinitions(this);
+    }
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetColumnDefinitions")
+
+    return SAFE_ADDREF((MgPropertyDefinitionCollection*)m_propDefCol);
+}
+
+
+void MgServerDataReader::AddRows(INT32 count)
+{
+    CHECKNULL((MgBatchPropertyCollection*)m_bpCol, L"MgServerDataReader.AddRows");
+
+    INT32 desiredFeatures = 0;
+
+    // Access the property definition collection
+    Ptr<MgPropertyDefinitionCollection> propDefCol = GetColumnDefinitions();
+    CHECKNULL((MgPropertyDefinitionCollection*)propDefCol, L"MgServerDataReader.AddRows");
+
+    bool found = false;
+
+    // FDO throws exception on ReadNext() which is not correct.
+    // We catch the exception and make it false as it could not fetch the rows any more
+    try
+    {
+        found = m_dataReader->ReadNext();
+    }
+    catch(FdoException* e)
+    {
+        FDO_SAFE_RELEASE(e);
+        found = false;
+    }
+    catch(...)
+    {
+        found = false;
+    }
+
+    while (found)
+    {
+        AddRow((MgPropertyDefinitionCollection*)propDefCol);
+        if (count > 0)
+        {
+            desiredFeatures++;
+            if (desiredFeatures == count) // Collected required features therefore do not process more
+            {
+                break;
+            }
+        }
+        // FDO throws exception on ReadNext() which is not correct.
+        // We catch the exception and make it false as it could not fetch the rows any more
+        try
+        {
+            found = m_dataReader->ReadNext();
+        }
+        catch(FdoException* e)
+        {
+            FDO_SAFE_RELEASE(e);
+            found = false;
+        }
+        catch(...)
+        {
+            found = false;
+        }
+    }
+}
+
+
+void MgServerDataReader::AddRow(MgPropertyDefinitionCollection* propDefCol)
+{
+    CHECKNULL((MgPropertyDefinitionCollection*)propDefCol, L"MgServerDataReader.AddRow");
+
+    Ptr<MgPropertyCollection> propCol = new MgPropertyCollection();
+    INT32 cnt = propDefCol->GetCount();
+
+    for (INT32 i=0; i < cnt; i++)
+    {
+        // Access the property definition
+        Ptr<MgPropertyDefinition> propDef = propDefCol->GetItem(i);
+        // Get the name of property
+        STRING propName = propDef->GetName();
+        INT16 type = propDef->GetPropertyType();
+
+        Ptr<MgProperty> prop = MgServerFeatureUtil::GetMgProperty(this, propName, type);
+        if (prop != NULL)
+        {
+            propCol->Add(prop);
+        }
+    }
+
+    m_bpCol->Add(propCol);
 }

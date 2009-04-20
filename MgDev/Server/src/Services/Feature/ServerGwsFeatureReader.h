@@ -20,12 +20,15 @@
 
 #include "ServerFeatureDllExport.h"
 #include "ServerFeatureServiceDefs.h"
-#include "ServerGwsGetFeatures.h"
 #include "GwsQueryEngine.h"
+
+typedef std::multimap<STRING, IGWSFeatureIterator*> GwsFeatureIteratorMap;
+typedef std::pair<STRING, IGWSFeatureIterator*> GwsFeatureIteratorPair;
 
 class MgJoinFeatureReader;
 class FdoExpressionEngine;
 class FdoFilter;
+class MgGwsConnectionPool;
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -282,9 +285,12 @@ INTERNAL_API:
 
     virtual void Deserialize(MgStream* stream);
 
+    virtual MgFeatureSet* GetFeatures(INT32 count);
+
     MgServerGwsFeatureReader();
 
-    MgServerGwsFeatureReader(IGWSFeatureIterator* gwsFeatureIterator,
+    MgServerGwsFeatureReader(MgGwsConnectionPool* pool,
+                             IGWSFeatureIterator* gwsFeatureIterator,
                              IGWSFeatureIterator* gwsFeatureIteratorCopy, 
                              CREFSTRING extensionName, 
                              FdoStringCollection* relationNames, 
@@ -314,11 +320,16 @@ INTERNAL_API:
     void DeterminePropertyFeatureSource(CREFSTRING inputPropName, IGWSFeatureIterator** gwsFeatureIter, STRING& parsedPropName);
     void SetFilter(FdoFilter* filter);
     FdoIFeatureReader* GetJoinFeatureReader();
+    void AddFeatures(INT32 count);
+    void AddFeature(MgPropertyDefinitionCollection* propDefCol);
+    MgClassDefinition* GetMgClassDefinition(bool bSerialize);
+    MgByteReader* SerializeToXml(FdoClassDefinition* classDef);
+
+    void OwnsConnections();
 
 private:
 
     FdoPtr<IGWSFeatureIterator> m_gwsFeatureIterator;
-    MgServerGwsGetFeatures* m_gwsGetFeatures;
     GwsFeatureIteratorMap m_secondaryGwsFeatureIteratorMap;
     FdoPtr<IGWSFeatureIterator> m_gwsFeatureIteratorCopy;
     FdoPtr<IGWSExtendedFeatureDescription> m_primaryExtendedFeatureDescription;
@@ -334,6 +345,10 @@ private:
     FdoPtr<FdoFilter> m_filter;
 
     Ptr<MgClassDefinition> m_classDef;
+    Ptr<MgFeatureSet> m_featureSet;
+    FdoPtr<FdoStringCollection> m_relationNames;
+    STRING m_extensionName;
+    FdoPtr<MgGwsConnectionPool> m_pool;
 
     void ParseSecondaryPropertyName(CREFSTRING inputPropName, CREFSTRING delimiter, CREFSTRING secondaryProp, STRING& relationName, STRING& parsedPropName);
 

@@ -672,3 +672,10 @@ void MgProxyFeatureReader::SetServiceForFeatureProperties(MgFeatureService* serv
         }
     }
 }
+
+MgFeatureSet* MgProxyFeatureReader::GetFeatures(INT32 count)
+{
+    throw new MgNotImplementedException(L"MgProxyFeatureReader.GetFeatures",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+

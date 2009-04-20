@@ -21,36 +21,38 @@
 #include "ServerSqlDataReader.h"
 #include "ServerSqlDataReaderPool.h"
 #include "ServerFeatureUtil.h"
-#include "ServerSqlProcessor.h"
 
-MgServerSqlDataReader::MgServerSqlDataReader(FdoISQLDataReader* sqlReader, CREFSTRING providerName)
+MgServerSqlDataReader::MgServerSqlDataReader(MgServerFeatureConnection* connection, FdoISQLDataReader* sqlReader, CREFSTRING providerName)
 {
     MG_FEATURE_SERVICE_TRY()
 
+    m_bpCol = NULL;
+    m_propDefCol = NULL;
+    m_connection = SAFE_ADDREF(connection);
     m_sqlReader = FDO_SAFE_ADDREF(sqlReader);
     m_providerName = providerName;
+
+    // The reader takes ownership of the FDO connection
+    m_connection->HasReader();
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.MgServerSqlDataReader")
 }
 
 MgServerSqlDataReader::MgServerSqlDataReader()
 {
+    m_bpCol = NULL;
+    m_propDefCol = NULL;
+    m_connection = NULL;
     m_sqlReader = NULL;
     m_providerName = L"";
 }
 
 MgServerSqlDataReader::~MgServerSqlDataReader()
 {
-    FDO_SAFE_RELEASE(m_sqlReader);
-
-    // Let the FDO Connection Manager know that we are no longer using a FDO provider connection.
-    MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
-    ACE_ASSERT(NULL != fdoConnectionManager);
-
-    if (NULL != fdoConnectionManager)
-    {
-        fdoConnectionManager->RemoveUnusedFdoConnections();
-    }
+    // DO NOT Close() the FDO reader from here or free the reader resources because
+    // we may be reading incrementally from the web tier and the ServerFeatureInstance
+    // will live much shorter than the Proxy reader on the web tier which needs to 
+    // keep reading from the underlying FDO reader.
 }
 
 //////////////////////////////////////////////////////////////////
@@ -655,6 +657,13 @@ void MgServerSqlDataReader::Close()
     MG_FEATURE_SERVICE_TRY()
 
     m_sqlReader->Close();
+    FDO_SAFE_RELEASE(m_sqlReader);
+
+    // Get the FDO connection
+    FdoPtr<FdoIConnection> fdoConnection = m_connection->GetConnection();
+
+    // Release the connection.
+    m_connection = NULL;
 
     // Let the FDO Connection Manager know that we are no longer using a FDO provider connection.
     MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
@@ -662,7 +671,7 @@ void MgServerSqlDataReader::Close()
 
     if (NULL != fdoConnectionManager)
     {
-        fdoConnectionManager->RemoveUnusedFdoConnections();
+        fdoConnectionManager->Close(fdoConnection);
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.Close");
@@ -674,7 +683,6 @@ void MgServerSqlDataReader::Serialize(MgStream* stream)
 
     Ptr<MgPropertyDefinitionCollection> propDefCol;
     Ptr<MgBatchPropertyCollection> bpCol;
-    Ptr<MgServerSqlProcessor> sqlProcessor;
     bool operationCompleted = false;
     STRING sqlReader = L"";
 
@@ -692,11 +700,10 @@ void MgServerSqlDataReader::Serialize(MgStream* stream)
     MgServerSqlDataReaderPool* dataReaderPool = MgServerSqlDataReaderPool::GetInstance();
     CHECKNULL((MgServerSqlDataReaderPool*)dataReaderPool, L"MgServerSqlDataReader.Serialize");
 
-    sqlProcessor = new MgServerSqlProcessor(this);
-    sqlReader = dataReaderPool->Add(sqlProcessor);                  // Add the reference to pool
+    sqlReader = dataReaderPool->Add(this);// Add the reference to pool
 
-    propDefCol = sqlProcessor->GetColumnDefinitions();  // Get column definitions
-    bpCol = sqlProcessor->GetRows(count);               // Get rows
+    propDefCol = GetColumnDefinitions();  // Get column definitions
+    bpCol = GetRows(count);               // Get rows
 
     operationCompleted = true;
 
@@ -796,4 +803,121 @@ const wchar_t* MgServerSqlDataReader::GetString(CREFSTRING propertyName, INT32& 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetString");
 
     return ((const wchar_t*)retVal);
+}
+
+MgBatchPropertyCollection* MgServerSqlDataReader::GetRows(INT32 count)
+{
+    CHECKNULL((MgServerSqlDataReader*)m_sqlReader, L"MgServerSqlDataReader.GetRows");
+
+    MG_FEATURE_SERVICE_TRY()
+
+    // All column properties
+    if (NULL == (MgPropertyDefinitionCollection*)m_propDefCol)
+    {
+        // Get MgPropertyDefinitionCollection
+        Ptr<MgPropertyDefinitionCollection> mgPropDef = GetColumnDefinitions();
+        CHECKNULL((MgPropertyDefinitionCollection*)mgPropDef, L"MgServerSqlDataReader.GetRows");
+
+        m_propDefCol = SAFE_ADDREF((MgPropertyDefinitionCollection*)mgPropDef);
+    }
+
+    if (NULL == (MgBatchPropertyCollection*)m_bpCol)
+    {
+        // Create a feature set for a pool of features
+        m_bpCol = new MgBatchPropertyCollection();
+        CHECKNULL((MgBatchPropertyCollection*)m_bpCol, L"MgServerSqlDataReader.GetRows");
+    }
+    else
+    {
+        m_bpCol->Clear();
+    }
+
+    // Add all features to feature set
+    AddRows(count);
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetRows")
+
+    return SAFE_ADDREF((MgBatchPropertyCollection*)m_bpCol);
+}
+
+void MgServerSqlDataReader::AddRows(INT32 count)
+{
+    CHECKNULL((MgServerSqlDataReader*)m_sqlReader, L"MgServerSqlDataReader.AddRows");
+    CHECKNULL((MgBatchPropertyCollection*)m_bpCol, L"MgServerSqlDataReader.AddRows");
+
+    INT32 desiredFeatures = 0;
+
+    // Access the property definition collection
+    Ptr<MgPropertyDefinitionCollection> propDefCol = GetColumnDefinitions();
+    CHECKNULL((MgPropertyDefinitionCollection*)propDefCol, L"MgServerSqlDataReader.AddRows");
+
+    while (m_sqlReader->ReadNext())
+    {
+        AddRow((MgPropertyDefinitionCollection*)propDefCol);
+        if (count > 0)
+        {
+            desiredFeatures++;
+            if (desiredFeatures == count) // Collected required features therefore do not process more
+            {
+                break;
+            }
+        }
+        else // 0 or -ve value means fetch all features
+        {
+            continue;
+        }
+    }
+}
+
+void MgServerSqlDataReader::AddRow(MgPropertyDefinitionCollection* propDefCol)
+{
+    CHECKNULL(m_sqlReader, L"MgServerSqlDataReader.AddRow");
+    CHECKNULL(propDefCol, L"MgServerSqlDataReader.AddRow");
+
+    Ptr<MgPropertyCollection> propCol = new MgPropertyCollection();
+    INT32 cnt = propDefCol->GetCount();
+
+    for (INT32 i=0; i < cnt; i++)
+    {
+        // Access the property definition
+        Ptr<MgPropertyDefinition> propDef = propDefCol->GetItem(i);
+        // Get the name of property
+        STRING propName = propDef->GetName();
+        INT16 type = propDef->GetPropertyType();
+
+        Ptr<MgProperty> prop = MgServerFeatureUtil::GetMgProperty(this, propName, type);
+        if (prop != NULL)
+        {
+            propCol->Add(prop);
+        }
+    }
+
+    m_bpCol->Add(propCol);
+}
+
+MgPropertyDefinitionCollection* MgServerSqlDataReader::GetColumnDefinitions()
+{
+    CHECKNULL(m_sqlReader, L"MgServerSqlDataReader.GetColumnDefinitions");
+
+    MG_FEATURE_SERVICE_TRY()
+
+    if (NULL == (MgPropertyDefinitionCollection*)m_propDefCol)
+    {
+        // Create a new collection
+        m_propDefCol = new MgPropertyDefinitionCollection();
+
+        // Collect all property names and types
+        INT32 cnt = GetPropertyCount();
+        for (INT32 i = 0; i < cnt; i++)
+        {
+            STRING colName = GetPropertyName(i);
+            INT32 colType = GetPropertyType(colName);
+            Ptr<MgPropertyDefinition> propDef = new MgPropertyDefinition(colName, colType);
+            m_propDefCol->Add(propDef);
+        }
+    }
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetColumnDefinitions")
+
+    return SAFE_ADDREF((MgPropertyDefinitionCollection*)m_propDefCol);
 }

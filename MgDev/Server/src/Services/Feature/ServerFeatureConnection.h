@@ -51,10 +51,13 @@ public:
 
     bool SupportsCommand(INT32 commandType);
 
+    void HasReader();
+
 private:
 
     FdoIConnection* m_fdoConn;
     Ptr<MgResourceIdentifier> m_resourceId;
+    bool m_bCloseConnection;
 };
 
 #endif

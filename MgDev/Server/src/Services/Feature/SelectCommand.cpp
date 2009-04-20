@@ -22,7 +22,6 @@
 #include "SelectCommand.h"
 #include "SelectAggregateCommand.h"
 #include "ServerFeatureReader.h"
-#include "ServerFeatureReaderIdentifier.h"
 #include "ServerFeatureConnection.h"
 #include "FdoFeatureReader.h"
 #include "FdoFilterCollection.h"
@@ -37,7 +36,7 @@ MgSelectCommand::MgSelectCommand(MgResourceIdentifier* resource)
 
     // Connect to provider
     m_connection = new MgServerFeatureConnection(resource);
-    if ( m_connection->IsConnectionOpen() )
+    if ((NULL != m_connection.p) && ( m_connection->IsConnectionOpen() ))
     {
         m_providerName = m_connection->GetProviderName();
     }
@@ -174,20 +173,7 @@ MgReader* MgSelectCommand::Execute()
     FdoPtr<MgFdoFeatureReader> featureReader = new MgFdoFeatureReader(frc);
     CHECKNULL((FdoIFeatureReader*)featureReader, L"MgSelectCommand.Execute");
 
-    // Create a feature reader identifier
-    Ptr<MgServerFeatureReaderIdentifier> featReaderId = new MgServerFeatureReaderIdentifier(featureReader);
-
-    // TODO: This needs to be tied back to the original FDO connection that is cached so that if the original
-    //       FDO connection is ever removed from the cache then the associated MgServerFeatureReaderIdentifier
-    //       is also removed from it's cache.
-
-
-    // TODO: Add this identifier to FdoConnectionPool along with connection for next fetch, if required.
-    // TODO: MgServerGetFeatures will tell us that whether we need to cache this or not based on if there
-    // TODO: can be possible more record available. Need to look into FdoConnectionPoolManager to find out
-    // TODO: how can we pool the connections and MgServerFeatureReaderIdentifier
-
-    return new MgServerFeatureReader(featReaderId);
+    return new MgServerFeatureReader(m_connection, featureReader);
 }
 
 bool MgSelectCommand::IsSupportedFunction(FdoFunction* fdoFunc)

@@ -31,7 +31,7 @@ MgServerGetSpatialContexts::~MgServerGetSpatialContexts()
 {
 }
 
-// Executes the describe schema command and serializes the schema to XML
+// Executes the GetSpatialContext command and creates a reader
 
 MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourceIdentifier* resId)
 {
@@ -44,21 +44,21 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
     if (NULL == mgSpatialContextReader.p)
     {
         // Connect to provider
-        MgServerFeatureConnection msfc(resId);
+        Ptr<MgServerFeatureConnection> msfc = new MgServerFeatureConnection(resId);
 
         // Connection must be open to retrieve a list of available contexts.
-        if ( msfc.IsConnectionOpen() )
+        if ((NULL != msfc.p) && ( msfc->IsConnectionOpen() ))
         {
             // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up before the parent object
             // otherwise it leaves the FDO connection marked as still in use.
-            FdoPtr<FdoIConnection> fdoConn = msfc.GetConnection();
-            m_providerName = msfc.GetProviderName();
+            FdoPtr<FdoIConnection> fdoConn = msfc->GetConnection();
+            m_providerName = msfc->GetProviderName();
 
             Ptr<MgSpatialContextCacheItem> cacheItem = MgCacheManager::GetInstance()->GetSpatialContextCacheItem(resId);
             MgSpatialContextInfo* spatialContextInfo = cacheItem->Get();
 
             // Check whether command is supported by provider
-            if (!msfc.SupportsCommand((INT32)FdoCommandType_GetSpatialContexts))
+            if (!msfc->SupportsCommand((INT32)FdoCommandType_GetSpatialContexts))
             {
                 // TODO: specify which argument and message, once we have the mechanism
                 STRING message = MgServerFeatureUtil::GetMessage(L"MgCommandNotSupported");

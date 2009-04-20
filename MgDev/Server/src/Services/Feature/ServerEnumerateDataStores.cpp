@@ -41,13 +41,13 @@ MgByteReader* MgServerEnumerateDataStores::EnumerateDataStores(CREFSTRING provid
     // Connect to the provider
     FdoPtr<FdoIDataStoreReader> fdoDataStoreReader;
 
-    MgServerFeatureConnection msfc(providerName, partialConnString);
-    if (( msfc.IsConnectionOpen() ) || ( msfc.IsConnectionPending() ))
+    Ptr<MgServerFeatureConnection> msfc = new MgServerFeatureConnection(providerName, partialConnString);
+    if ((NULL != msfc.p) && (( msfc->IsConnectionOpen() ) || ( msfc->IsConnectionPending() )))
     {
         // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up before the parent object
         // otherwise it leaves the FDO connection marked as still in use.
         FdoPtr<FdoIConnection> fdoConnection;
-        fdoConnection = msfc.GetConnection();
+        fdoConnection = msfc->GetConnection();
 
         FdoPtr<FdoIListDataStores> fdoCommand = (FdoIListDataStores*)fdoConnection->CreateCommand(FdoCommandType_ListDataStores);
         CHECKNULL((FdoIListDataStores*)fdoCommand, L"MgServerEnumerateDataStores.EnumerateDataStores");

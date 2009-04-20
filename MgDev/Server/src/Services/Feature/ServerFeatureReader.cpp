@@ -17,7 +17,7 @@
 
 #include "ServerFeatureServiceDefs.h"
 #include "ServerFeatureReader.h"
-#include "ServerFeatureReaderIdentifierPool.h"
+#include "ServerFeatureReaderPool.h"
 #include "Envelope.h"
 #include "ServiceManager.h"
 #include "ServerFeatureUtil.h"
@@ -27,14 +27,18 @@
 ///</summary>
 ///<param name="byteSource">Byte  source object</param>
 ///
-MgServerFeatureReader::MgServerFeatureReader(MgServerFeatureReaderIdentifier* featReaderId)
+MgServerFeatureReader::MgServerFeatureReader(MgServerFeatureConnection* connection, FdoIFeatureReader* fdoReader)
 {
     MG_FEATURE_SERVICE_TRY()
 
-    m_featReaderId = SAFE_ADDREF(featReaderId);
-    m_fdoReader = m_featReaderId->GetFeatureReader();
-    m_getFeatures = new MgServerGetFeatures(featReaderId);
+    m_classDef = NULL;
+    m_featureSet = NULL;
+    m_connection = SAFE_ADDREF(connection);
+    m_fdoReader = FDO_SAFE_ADDREF(fdoReader);
     m_removeFromPoolOnDestruction = false;
+
+    // The reader takes ownership of the FDO connection
+    m_connection->HasReader();
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.MgServerFeatureReader")
 }
@@ -46,9 +50,10 @@ MgServerFeatureReader::MgServerFeatureReader(MgServerFeatureReaderIdentifier* fe
 ///
 MgServerFeatureReader::MgServerFeatureReader()
 {
-    m_featReaderId = NULL;
+    m_classDef = NULL;
+    m_featureSet = NULL;
+    m_connection = NULL;
     m_fdoReader = NULL;
-    m_getFeatures = NULL;
     m_removeFromPoolOnDestruction = false;
 }
 
@@ -59,24 +64,10 @@ MgServerFeatureReader::MgServerFeatureReader()
 ///
 MgServerFeatureReader::~MgServerFeatureReader()
 {
-    //DO NOT Close() the FDO reader from here -- we may be reading
-    //incrementally from the web tier and the ServerFeatureInstance
-    //will live much shorter than the ProxyFeatureReader on the
-    //web tier which needs to keep reading from the underlying
-    //FDO feature reader
-
-    SAFE_RELEASE(m_getFeatures);
-    SAFE_RELEASE(m_featReaderId);
-    FDO_SAFE_RELEASE(m_fdoReader);
-
-    // Let the FDO Connection Manager know that we are no longer using a FDO provider connection.
-    MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
-    ACE_ASSERT(NULL != fdoConnectionManager);
-
-    if (NULL != fdoConnectionManager)
-    {
-        fdoConnectionManager->RemoveUnusedFdoConnections();
-    }
+    // DO NOT Close() the FDO reader from here or free the reader resources because
+    // we may be reading incrementally from the web tier and the ServerFeatureInstance
+    // will live much shorter than the Proxy reader on the web tier which needs to 
+    // keep reading from the underlying FDO reader.
 }
 
 //////////////////////////////////////////////
@@ -125,17 +116,34 @@ bool MgServerFeatureReader::ReadNext()
 ///</returns>
 MgClassDefinition* MgServerFeatureReader::GetClassDefinition()
 {
-    CHECKNULL(m_getFeatures, L"MgServerFeatureReader.GetClassDefinition");
-
-    Ptr<MgClassDefinition> classDef;
+    CHECKNULL(m_fdoReader, L"MgServerFeatureReader.GetClassDefinition");
 
     MG_FEATURE_SERVICE_TRY()
 
-    classDef = m_getFeatures->GetMgClassDefinition(true);
+    // Check to see if the class definition cached contains the XML information
+    bool bGetClassDefinition = true;
+    if (NULL != (MgClassDefinition*)m_classDef)
+    {
+        if(m_classDef->HasSerializedXml())
+        {
+            // We have the full object so don't update it
+            bGetClassDefinition = false;
+        }
+    }
+
+    if (bGetClassDefinition)
+    {
+        // Retrieve FdoClassDefinition
+        FdoPtr<FdoClassDefinition> fdoClassDefinition = m_fdoReader->GetClassDefinition();
+
+        // Convert FdoClassDefinition to MgClassDefinition
+        m_classDef = MgServerFeatureUtil::GetMgClassDefinition(fdoClassDefinition, true);
+        CHECKNULL(m_classDef.p, L"MgServerGetFeatures.GetFeatures");
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetClassDefinition")
 
-    return classDef.Detach();
+    return SAFE_ADDREF((MgClassDefinition*)m_classDef);
 }
 
 
@@ -153,17 +161,25 @@ MgClassDefinition* MgServerFeatureReader::GetClassDefinition()
 /// serializing the class definition to XML
 MgClassDefinition* MgServerFeatureReader::GetClassDefinitionNoXml()
 {
-    CHECKNULL(m_getFeatures, L"MgServerFeatureReader.GetClassDefinitionNoXml");
+    CHECKNULL(m_fdoReader, L"MgServerFeatureReader.GetClassDefinitionNoXml");
 
     Ptr<MgClassDefinition> classDef;
 
     MG_FEATURE_SERVICE_TRY()
 
-    classDef = m_getFeatures->GetMgClassDefinition(false);
+    if (NULL == (MgClassDefinition*)m_classDef)
+    {
+        // Retrieve FdoClassDefinition
+        FdoPtr<FdoClassDefinition> fdoClassDefinition = m_fdoReader->GetClassDefinition();
+
+        // Convert FdoClassDefinition to MgClassDefinition
+        m_classDef = MgServerFeatureUtil::GetMgClassDefinition(fdoClassDefinition, false);
+        CHECKNULL(m_classDef.p, L"MgServerGetFeatures.GetFeatures");
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetClassDefinitionNoXml")
 
-    return classDef.Detach();
+    return SAFE_ADDREF((MgClassDefinition*)m_classDef);
 }
 
 
@@ -539,7 +555,18 @@ MgByteReader* MgServerFeatureReader::GetBLOB(CREFSTRING propertyName)
     }
     else
     {
-        byteReader = m_getFeatures->GetLOBFromFdo(propertyName, m_fdoReader);
+        FdoPtr<FdoLOBValue> fdoVal = m_fdoReader->GetLOB(propertyName.c_str());
+        if (fdoVal != NULL)
+        {
+            FdoPtr<FdoByteArray> byteArray = fdoVal->GetData();
+            if (byteArray != NULL)
+            {
+                FdoByte* bytes = byteArray->GetData();
+                FdoInt32 len = byteArray->GetCount();
+                Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)bytes,(INT32)len);
+                byteReader = byteSource->GetReader();
+            }
+        }
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetBLOB");
@@ -574,7 +601,18 @@ MgByteReader* MgServerFeatureReader::GetCLOB(CREFSTRING propertyName)
     }
     else
     {
-        byteReader = m_getFeatures->GetLOBFromFdo(propertyName, m_fdoReader);
+        FdoPtr<FdoLOBValue> fdoVal = m_fdoReader->GetLOB(propertyName.c_str());
+        if (fdoVal != NULL)
+        {
+            FdoPtr<FdoByteArray> byteArray = fdoVal->GetData();
+            if (byteArray != NULL)
+            {
+                FdoByte* bytes = byteArray->GetData();
+                FdoInt32 len = byteArray->GetCount();
+                Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)bytes,(INT32)len);
+                byteReader = byteSource->GetReader();
+            }
+        }
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetCLOB");
@@ -615,8 +653,7 @@ MgFeatureReader* MgServerFeatureReader::GetFeatureObject(CREFSTRING propertyName
         if (featureObjectReader != NULL)
         {
             // Create a feature reader identifier
-            Ptr<MgServerFeatureReaderIdentifier> featReaderId = new MgServerFeatureReaderIdentifier(featureObjectReader);
-            featureReader = new MgServerFeatureReader(featReaderId);
+            featureReader = new MgServerFeatureReader(m_connection, featureObjectReader);
         }
     }
 
@@ -718,13 +755,13 @@ MgRaster* MgServerFeatureReader::GetRaster(CREFSTRING propertyName)
         retVal->SetMgService(featureService);
 
         // Collect the feature reader into a pool for GetRaster operation
-        MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
+        MgServerFeatureReaderPool* featPool = MgServerFeatureReaderPool::GetInstance();
         CHECKNULL(featPool, L"MgServerFeatureReader.GetRaster");
 
-        STRING featureReader = featPool->GetReaderId(m_getFeatures);
+        STRING featureReader = featPool->GetReaderId(this);
         if (L"" == featureReader)
         {
-            featureReader = featPool->Add(m_getFeatures); // Add the reference
+            featureReader = featPool->Add(this); // Add the reference
             m_removeFromPoolOnDestruction = true;
         }
 
@@ -763,17 +800,17 @@ void MgServerFeatureReader::Serialize(MgStream* stream)
                         MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize);
 
     // Collect the feature reader into a pool for ReadNext operation
-    MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
+    MgServerFeatureReaderPool* featPool = MgServerFeatureReaderPool::GetInstance();
     CHECKNULL(featPool, L"MgServerFeatureReader.Serialize");
 
-    featureReader = featPool->GetReaderId(m_getFeatures);
+    featureReader = featPool->GetReaderId(this);
     if (L"" == featureReader)
     {
         // The feature reader is not in the pool
-        featureReader = featPool->Add(m_getFeatures); // Add the reference
+        featureReader = featPool->Add(this); // Add the reference
     }
 
-    featureSet = m_getFeatures->GetFeatures(count);
+    featureSet = GetFeatures(count);
 
     operationCompleted = true;
 
@@ -838,10 +875,10 @@ void MgServerFeatureReader::Close()
     // remove this from pool on ServerFeatureReader close operation
     if (m_removeFromPoolOnDestruction)
     {
-        MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
+        MgServerFeatureReaderPool* featPool = MgServerFeatureReaderPool::GetInstance();
         if(NULL != featPool)
         {
-            STRING featureReader = featPool->GetReaderId(m_getFeatures);
+            STRING featureReader = featPool->GetReaderId(this);
             if (L"" != featureReader)
                 featPool->Remove(featureReader);
         }
@@ -849,13 +886,21 @@ void MgServerFeatureReader::Close()
 
     m_fdoReader->Close();
 
+    FDO_SAFE_RELEASE(m_fdoReader);
+
+    // Get the FDO connection
+    FdoPtr<FdoIConnection> fdoConnection = m_connection->GetConnection();
+
+    // Release the connection.
+    m_connection = NULL;
+
     // Let the FDO Connection Manager know that we are no longer using a FDO provider connection.
     MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
     ACE_ASSERT(NULL != fdoConnectionManager);
 
     if (NULL != fdoConnectionManager)
     {
-        fdoConnectionManager->RemoveUnusedFdoConnections();
+        fdoConnectionManager->Close(fdoConnection);
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.Close");
@@ -932,4 +977,160 @@ const wchar_t* MgServerFeatureReader::GetString(CREFSTRING propertyName, INT32& 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetString");
 
     return ((const wchar_t*)retVal);
+}
+
+MgFeatureSet* MgServerFeatureReader::GetFeatures(INT32 count)
+{
+    CHECKNULL((FdoIFeatureReader*)m_fdoReader, L"MgServerFeatureReader.GetFeatures");
+
+    MG_FEATURE_SERVICE_TRY()
+
+    INT32 featCount = count;
+
+    if (NULL == (MgClassDefinition*)m_classDef)
+    {
+        // Get MgClassDefinition
+        m_classDef = GetClassDefinition();
+        CHECKNULL(m_classDef.p, L"MgServerFeatureReader.GetFeatures");
+    }
+
+    if (NULL == (MgFeatureSet*)m_featureSet)
+    {
+        // Create a feature set for a pool of features
+        m_featureSet = new MgFeatureSet();
+        CHECKNULL((MgFeatureSet*)m_featureSet, L"MgServerFeatureReader.GetFeatures");
+
+        // Assign feature class definition to Feature Set
+        m_featureSet->SetClassDefinition(m_classDef);
+    }
+    else
+    {
+        m_featureSet->ClearFeatures();
+    }
+
+    // If class definition contains raster property
+    // we can only retrieve one feature at a time
+    // because, user would need to supply x,y and extents before
+    // they could fetch the raster data. Therefore we can not
+    // advance FdoIReader.
+    if (m_classDef->HasRasterProperty())
+    {
+        featCount = 1;
+    }
+
+    // Add all features to feature set
+    AddFeatures(featCount);
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetFeatures")
+
+    return SAFE_ADDREF((MgFeatureSet*)m_featureSet);
+}
+
+void MgServerFeatureReader::AddFeatures(INT32 count)
+{
+    CHECKNULL((FdoIFeatureReader*)m_fdoReader, L"MgServerFeatureReader.AddFeatures");
+    CHECKNULL((MgFeatureSet*)m_featureSet, L"MgServerFeatureReader.AddFeatures");
+
+    INT32 desiredFeatures = 0;
+
+    // Access the class definition
+    Ptr<MgClassDefinition> classDef = m_featureSet->GetClassDefinition();
+    CHECKNULL((MgClassDefinition*)classDef, L"MgServerFeatureReader.AddFeatures");
+
+    // Access the property definition collection
+    // Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetProperties();
+    Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetPropertiesIncludingBase();
+    CHECKNULL((MgPropertyDefinitionCollection*)propDefCol, L"MgServerFeatureReader.AddFeatures");
+
+    // How many properties are we fetching, it should be atleast one
+    INT32 cnt = propDefCol->GetCount();
+
+    // We only read if there is atleast one property requested
+    if (cnt > 0 && count > 0)
+    {
+        try
+        {
+            while (m_fdoReader->ReadNext())
+            {
+                AddFeature((MgPropertyDefinitionCollection*)propDefCol);
+
+                // Collected required features therefore do not process more
+                if (++desiredFeatures == count)
+                    break;
+            }
+        }
+        //some providers will throw if ReadNext is called more than once
+        catch (FdoException* e)
+        {
+            // Note: VB 05/10/06 The assert has been commented out as
+            // Linux does not remove them from a release build. The assert
+            // will cause the server to crash on Linux. The Oracle provider will throw
+            // an exception if the ReadNext() method is called after it returns false.
+            // This is a known problem and it is safe to ignore the exception.
+            //assert(false);
+            e->Release();
+        }
+        catch(...)
+        {
+        }
+    }
+}
+
+void MgServerFeatureReader::AddFeature(MgPropertyDefinitionCollection* propDefCol)
+{
+    CHECKNULL((FdoIFeatureReader*)m_fdoReader, L"MgServerFeatureReader.AddFeature");
+    CHECKNULL((MgPropertyDefinitionCollection*)propDefCol, L"MgServerFeatureReader.AddFeature");
+
+    //intentionally turn off duplicate checking for better performance
+    Ptr<MgPropertyCollection> propCol = new MgPropertyCollection(true, false);
+    INT32 cnt = propDefCol->GetCount();
+
+    for (INT32 i=0; i < cnt; i++)
+    {
+        // Access the property definition
+        Ptr<MgPropertyDefinition> propDef = propDefCol->GetItem(i);
+
+        // Get the name of property
+        STRING propName = propDef->GetName();
+
+        INT16 type = MgServerFeatureUtil::GetMgPropertyType(propDef);
+        Ptr<MgProperty> prop = MgServerFeatureUtil::GetMgProperty(this, propName, type);
+        if (prop != NULL)
+        {
+            propCol->Add(prop);
+        }
+    }
+
+    m_featureSet->AddFeature(propCol);
+}
+
+MgByteReader* MgServerFeatureReader::GetRaster(STRING rasterPropName, INT32 xSize, INT32 ySize)
+{
+    CHECKNULL(m_fdoReader, L"MgServerFeatureReader.GetRaster");
+    CHECKNULL(m_classDef, L"MgServerFeatureReader.GetRaster");
+
+    Ptr<MgByteReader> byteReader;
+
+    MG_FEATURE_SERVICE_TRY()
+
+    // If there is no raster property, GetRaster should not be called
+    if (!m_classDef->HasRasterProperty())
+    {
+        // TODO: specify which argument and message, once we have the mechanism
+        STRING message = MgServerFeatureUtil::GetMessage(L"MgMissingRasterProperty");
+        throw new MgInvalidOperationException(L"MgServerFeatureReader.GetRaster", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    // There can be more than one Raster property
+    if (rasterPropName.empty())
+    {
+        rasterPropName = m_classDef->GetRasterPropertyName();
+    }
+
+    // If this property is requested then we fetch the raster data
+    byteReader = MgServerFeatureUtil::GetRaster(m_fdoReader, rasterPropName, xSize, ySize);
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetRaster")
+
+    return byteReader.Detach();
 }
