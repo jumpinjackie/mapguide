@@ -15,31 +15,31 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _MG_SERVER_FEATURE_READER_IDENTIFIER_POOL_H_
-#define _MG_SERVER_FEATURE_READER_IDENTIFIER_POOL_H_
+#ifndef _MG_SERVER_FEATURE_READER_POOL_H_
+#define _MG_SERVER_FEATURE_READER_POOL_H_
 
-class MgServerFeatureProcessor;
+class MgFeatureReader;
 
-typedef std::map<STRING, MgServerFeatureProcessor*> FeatureProcessorCollection;
-typedef std::pair<STRING, MgServerFeatureProcessor*> FeatureProcessorCacheEntry_Pair;
+typedef std::map<STRING, MgFeatureReader*> FeatureReaderCollection;
+typedef std::pair<STRING, MgFeatureReader*> FeatureReaderCacheEntry_Pair;
 
-class MgServerFeatureReaderIdentifierPool : public MgGuardDisposable
+class MgServerFeatureReaderPool : public MgGuardDisposable
 {
-    DECLARE_CLASSNAME(MgServerFeatureReaderIdentifierPool)
+    DECLARE_CLASSNAME(MgServerFeatureReaderPool)
 
 public:
     /// <summary>
-    /// Get pointer to a process-wide MgServerFeatureReaderIdentifierPool.
+    /// Get pointer to a process-wide MgServerFeatureReaderPool.
     /// </summary>
 
-    static MgServerFeatureReaderIdentifierPool* GetInstance();
+    static MgServerFeatureReaderPool* GetInstance();
 
-    STRING Add(MgServerFeatureProcessor* processor);
+    STRING Add(MgFeatureReader* featureReader);
 
     bool Remove(STRING featureReader);
 
-    MgServerFeatureProcessor* GetProcessor(STRING featureReader);
-    STRING GetReaderId(MgServerFeatureProcessor* processor);
+    MgFeatureReader* GetReader(STRING featureReader);
+    STRING GetReaderId(MgFeatureReader* featureReader);
 
 protected:
 
@@ -53,18 +53,18 @@ protected:
     /// Destructor
     /// </summary>
 
-    virtual ~MgServerFeatureReaderIdentifierPool();
+    virtual ~MgServerFeatureReaderPool();
 
-    MgServerFeatureReaderIdentifierPool();
+    MgServerFeatureReaderPool();
 
 private:
 
     /// Pointer to a process-wide singleton.
-    static Ptr<MgServerFeatureReaderIdentifierPool> m_fridPool;
+    static Ptr<MgServerFeatureReaderPool> m_frPool;
 
-    FeatureProcessorCollection m_fridCollection;
+    FeatureReaderCollection m_frCollection;
 
     ACE_Recursive_Thread_Mutex m_mutex;
 };
 
-#endif //_MG_SERVER_FEATURE_READER_IDENTIFIER_POOL_H_
+#endif //_MG_SERVER_FEATURE_READER_POOL_H_

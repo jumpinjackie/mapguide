@@ -20,8 +20,6 @@
 #include "Services/FeatureService.h"
 #include "ServerSelectFeatures.h"
 #include "ServerFeatureConnection.h"
-#include "ServerFeatureReaderIdentifier.h"
-#include "ServerGetFeatures.h"
 #include "ServerFeatureReader.h"
 #include "ServerFeatureUtil.h"
 #include "FeatureServiceCommand.h"
@@ -1010,12 +1008,12 @@ void MgServerSelectFeatures::UpdateCommandOnCalculation(MgResourceIdentifier* fe
                 }
                 if (addAllProps)
                 {
-                    MgServerFeatureConnection fcConnection(featureSourceId);
-                    if ( fcConnection.IsConnectionOpen() )
+                    Ptr<MgServerFeatureConnection> fcConnection = new MgServerFeatureConnection(featureSourceId);
+                    if ((NULL != fcConnection.p) && ( fcConnection->IsConnectionOpen() ))
                     {
                         // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up before the parent object
                         // otherwise it leaves the FDO connection marked as still in use.
-                        FdoPtr<FdoIConnection> conn = fcConnection.GetConnection();
+                        FdoPtr<FdoIConnection> conn = fcConnection->GetConnection();
                         FdoPtr<FdoIDescribeSchema>  descSchema = (FdoIDescribeSchema *) conn->CreateCommand (FdoCommandType_DescribeSchema);
 
                         STRING fullClassName = extension->GetFeatureClass();
@@ -1103,13 +1101,10 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
             // Establish connection to provider for primary feature source
             STRING primaryConnectionName;
             MgUtil::GenerateUuid(primaryConnectionName);
-            MgServerFeatureConnection msfcLeft(featureSourceIdentifier);
-            if ( msfcLeft.IsConnectionOpen() )
+            Ptr<MgServerFeatureConnection> msfcLeft = new MgServerFeatureConnection(featureSourceIdentifier);
+            if ((NULL != msfcLeft.p) && ( msfcLeft->IsConnectionOpen() ))
             {
-                // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up before the parent object
-                // otherwise it leaves the FDO connection marked as still in use.
-                FdoPtr<FdoIConnection> connLeft = msfcLeft.GetConnection();
-                pool->AddConnection(primaryConnectionName.c_str(), connLeft);
+                pool->AddConnection(primaryConnectionName.c_str(), msfcLeft);
             }
             else
             {
@@ -1151,7 +1146,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
                     FdoPtr<FdoComputedIdentifier> newIdf = FdoComputedIdentifier::Create(calcProp->GetName().c_str(), expandedExpression);
                     lsellist->Add(newIdf);
                 }
-                FdoPtr<FdoIConnection> conn = msfcLeft.GetConnection();
+                FdoPtr<FdoIConnection> conn = msfcLeft->GetConnection();
                 FdoPtr<FdoIDescribeSchema>  descSchema = (FdoIDescribeSchema *) conn->CreateCommand (FdoCommandType_DescribeSchema);
 
                 STRING fullClassName = extension->GetFeatureClass();
@@ -1246,13 +1241,10 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
 
                 if (NULL != secondaryFeatureSource)
                 {
-                    MgServerFeatureConnection msfcRight(secondaryFeatureSource);
-                    if ( msfcRight.IsConnectionOpen() )
+                    Ptr<MgServerFeatureConnection> msfcRight = new MgServerFeatureConnection(secondaryFeatureSource);
+                    if ((NULL != msfcRight.p) && ( msfcRight->IsConnectionOpen() ))
                     {
-                        // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up before the parent object
-                        // otherwise it leaves the FDO connection marked as still in use.
-                        FdoPtr<FdoIConnection> connRight = msfcRight.GetConnection();
-                        pool->AddConnection(secondaryConnectionName.c_str(), connRight);
+                        pool->AddConnection(secondaryConnectionName.c_str(), msfcRight);
                     }
                     else
                     {
@@ -1356,13 +1348,18 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
 
             FdoPtr<FdoStringCollection> fsNames = qd->FeatureSourceNames();
 
-            gwsFeatureReader = new MgServerGwsFeatureReader(iter, iterCopy, parsedExtensionName, fsNames, bForceOneToOne, attributeNameDelimiters);
+            gwsFeatureReader = new MgServerGwsFeatureReader(pool, iter, iterCopy, parsedExtensionName, fsNames, bForceOneToOne, attributeNameDelimiters);
             gwsFeatureReader->SetFilter(filter);
             break;
         }
     }
 
     MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(featureSourceIdentifier, L"MgServerSelectFeatures.JoinFeatures")
+
+    // Now that the reader has been created we will need to mark all of the connections it uses as HasReader() because the GWS reader will be
+    // taking ownership of the connections. We have to do it this late in the code in case an exception is thrown somewhere before this.
+    // We want to avoid a deadlock of the connection :)
+    gwsFeatureReader->OwnsConnections();
 
     return gwsFeatureReader.Detach();
 }

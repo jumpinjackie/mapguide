@@ -40,7 +40,7 @@ typedef struct {
     FdoIConnection* pFdoConnection;
     ACE_Time_Value lastUsed;
     bool bValid;
-
+    bool bInUse;
 } FdoConnectionCacheEntry;
 
 // FDO Connection Cache
@@ -210,7 +210,7 @@ public:
     void RemoveExpiredFdoConnections();
     bool RemoveCachedFdoConnection(CREFSTRING resource, bool strict = true);
     bool RemoveCachedFdoConnection(MgResourceIdentifier* resource, bool strict = true);
-    void RemoveUnusedFdoConnections();
+    void MakeFdoConnectionAvailable(FdoIConnection* connection);
     bool SetCachedFdoConnectionAsInvalid(MgResourceIdentifier* resource);
 
     void ShowCache();

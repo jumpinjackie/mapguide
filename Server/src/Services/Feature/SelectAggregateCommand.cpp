@@ -30,7 +30,7 @@ MgSelectAggregateCommand::MgSelectAggregateCommand(MgResourceIdentifier* resourc
 
     // Connect to provider
     m_connection = new MgServerFeatureConnection(resource);
-    if ( m_connection->IsConnectionOpen() )
+    if ((NULL != m_connection.p) && ( m_connection->IsConnectionOpen() ))
     {
         m_providerName = m_connection->GetProviderName();
     }
@@ -132,7 +132,7 @@ MgReader* MgSelectAggregateCommand::Execute()
     CHECKNULL((FdoIDataReader*)dataReader, L"MgSelectAggregateCommand.Execute");
 
     // Create a feature reader identifier
-    return new MgServerDataReader(dataReader, m_providerName);
+    return new MgServerDataReader(m_connection, dataReader, m_providerName);
 }
 
 bool MgSelectAggregateCommand::IsSupportedFunction(FdoFunction* fdoFunc)

@@ -17,76 +17,77 @@
 
 #include "MapGuideCommon.h"
 #include "ServerFeatureServiceDefs.h"
-#include "ServerDataReaderPool.h"
+#include "ServerFeatureReaderPool.h"
 
-// Process-wide MgServerDataReaderPool
-Ptr<MgServerDataReaderPool> MgServerDataReaderPool::m_drPool = MgServerDataReaderPool::GetInstance();
+// Process-wide MgServerFeatureReaderPool
+Ptr<MgServerFeatureReaderPool> MgServerFeatureReaderPool::m_frPool =
+    (MgServerFeatureReaderPool*)NULL;
 
 /// <summary>
 /// Constructor
 /// </summary>
-MgServerDataReaderPool::MgServerDataReaderPool()
+MgServerFeatureReaderPool::MgServerFeatureReaderPool()
 {
 }
 
 /// <summary>
 /// Destructor
 /// </summary>
-MgServerDataReaderPool::~MgServerDataReaderPool()
+MgServerFeatureReaderPool::~MgServerFeatureReaderPool()
 {
-    for (DataReaderCollection::iterator iterator = m_drCollection.begin();iterator != m_drCollection.end(); iterator++)
+    for (FeatureReaderCollection::iterator iterator = m_frCollection.begin();iterator != m_frCollection.end(); iterator++)
     {
-        MgServerDataReader* reader = iterator->second;
+        MgFeatureReader* reader = iterator->second;
         if(reader)
         {
             reader->Release();
         }
     }
 
-    m_drCollection.clear();
+    m_frCollection.clear();
 }
 
 /// <summary>
 /// Self Destructor
 /// </summary>
-void MgServerDataReaderPool::Dispose()
+void MgServerFeatureReaderPool::Dispose()
 {
     delete this;
 }
 
 /// <summary>
-/// Get pointer to a process-wide MgServerDataReaderPool.
+/// Get pointer to a process-wide MgServerFeatureReaderPool.
 /// </summary>
-MgServerDataReaderPool* MgServerDataReaderPool::GetInstance()
+MgServerFeatureReaderPool* MgServerFeatureReaderPool::GetInstance()
 {
     MG_CONFIGURATION_TRY()
 
-    ACE_TRACE ("MgServerDataReaderPool::GetInstance");
+    ACE_TRACE ("MgServerFeatureReaderPool::GetInstance");
 
-    if (MgServerDataReaderPool::m_drPool == NULL)
+    if (MgServerFeatureReaderPool::m_frPool == NULL)
     {
         // Perform Double-Checked Locking Optimization.
         ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance (), 0));
-        if (MgServerDataReaderPool::m_drPool == NULL)
+        if (MgServerFeatureReaderPool::m_frPool == NULL)
         {
-            MgServerDataReaderPool::m_drPool = new MgServerDataReaderPool;
+            MgServerFeatureReaderPool::m_frPool = new MgServerFeatureReaderPool;
         }
     }
 
-    MG_CONFIGURATION_CATCH_AND_THROW(L"MgServerDataReaderPool.GetInstance")
+    MG_CONFIGURATION_CATCH_AND_THROW(L"MgServerFeatureReaderPool.GetInstance")
 
-    // To avoid overheads and maintain thread safety.
+    // To avoid overheads and maintain thread safety,
     // do not assign this returned static singleton to a Ptr object.
-    return MgServerDataReaderPool::m_drPool;
+    return MgServerFeatureReaderPool::m_frPool;
 }
 
-STRING MgServerDataReaderPool::Add(MgServerDataReader* dataReader)
+STRING MgServerFeatureReaderPool::Add(MgFeatureReader* featureReader)
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, L""));
 
-    if(NULL == dataReader)
+    if(NULL == featureReader)
     {
-        throw new MgNullArgumentException(L"MgServerDataReaderPool.Add",
+        throw new MgNullArgumentException(L"MgServerFeatureReaderPool.Add",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -95,50 +96,51 @@ STRING MgServerDataReaderPool::Add(MgServerDataReader* dataReader)
     MgUtil::GenerateUuid(uid);
 
     // Increment the reference count
-    dataReader->AddRef();
+    featureReader->AddRef();
 
     // Add it to the collection
-    m_drCollection.insert(DataReaderCacheEntry_Pair(uid, dataReader));
+    m_frCollection.insert(FeatureReaderCacheEntry_Pair(uid, featureReader));
 
     return uid;
 }
 
-bool MgServerDataReaderPool::Remove(STRING dataReader)
+bool MgServerFeatureReaderPool::Remove(STRING featureReader)
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
     bool bResult = false;
+    INT32 ref = 0;
 
-    DataReaderCollection::iterator iterator = m_drCollection.find(dataReader);
-    if(m_drCollection.end() != iterator)
+    FeatureReaderCollection::iterator iterator = m_frCollection.find(featureReader);
+    if(m_frCollection.end() != iterator)
     {
         // Release resources
-        MgServerDataReader* reader = iterator->second;
+        MgFeatureReader* reader = iterator->second;
         if(reader)
         {
-            reader->Release();
+            ref = reader->Release();
         }
 
         // Remove the reader
-        m_drCollection.erase(iterator);
+        m_frCollection.erase(iterator);
         bResult = true;
     }
 
     return bResult;
 }
 
-MgServerDataReader* MgServerDataReaderPool::GetReader(STRING dataReader)
+MgFeatureReader* MgServerFeatureReaderPool::GetReader(STRING featureReader)
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
-    MgServerDataReader* reader = NULL;
+    MgFeatureReader* reader = NULL;
 
-    DataReaderCollection::iterator iterator = m_drCollection.find(dataReader);
-    if(m_drCollection.end() != iterator)
+    FeatureReaderCollection::iterator iterator = m_frCollection.find(featureReader);
+    if(m_frCollection.end() != iterator)
     {
         // Found it
         reader = iterator->second;
-
+        
         // Add a reference to it
         reader->AddRef();
     }
@@ -146,15 +148,15 @@ MgServerDataReader* MgServerDataReaderPool::GetReader(STRING dataReader)
     return reader;
 }
 
-STRING MgServerDataReaderPool::GetReaderId(MgServerDataReader* dataReader)
+STRING MgServerFeatureReaderPool::GetReaderId(MgFeatureReader* featureReader)
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, L""));
 
     STRING readerId = L"";
 
-    for (DataReaderCollection::iterator iterator = m_drCollection.begin();iterator != m_drCollection.end(); iterator++)
+    for (FeatureReaderCollection::iterator iterator = m_frCollection.begin();iterator != m_frCollection.end(); iterator++)
     {
-        if(iterator->second == dataReader)
+        if(iterator->second == featureReader)
         {
             // Found it
             readerId = iterator->first;

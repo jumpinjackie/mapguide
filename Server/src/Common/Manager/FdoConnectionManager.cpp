@@ -400,15 +400,12 @@ void MgFdoConnectionManager::Close(FdoIConnection* pFdoConnection)
 
     ACE_TRACE ("MgFdoConnectionManager::Close");
 
-    FDO_SAFE_RELEASE(pFdoConnection);
-
-    RemoveUnusedFdoConnections();
+    // Make this connection available
+    MakeFdoConnectionAvailable(pFdoConnection);
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.Close")
 }
 
-
-// TODO: Need to tie in MgServerFeatureReaderIdentifierPool and any other pools when we remove cached connection and close it
 void MgFdoConnectionManager::RemoveExpiredFdoConnections()
 {
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
@@ -440,10 +437,8 @@ void MgFdoConnectionManager::RemoveExpiredFdoConnections()
                             // Connection has expired or is no longer valid so close it and remove it
                             if (pFdoConnectionCacheEntry->pFdoConnection)
                             {
-                                INT32 refCount = pFdoConnectionCacheEntry->pFdoConnection->GetRefCount();
-
                                 // Is it in use?
-                                if (refCount > 1)
+                                if (pFdoConnectionCacheEntry->bInUse)
                                 {
                                     // Shouldn't be here!
                                     ACE_ASSERT(false);
@@ -451,24 +446,21 @@ void MgFdoConnectionManager::RemoveExpiredFdoConnections()
                                 }
                                 else
                                 {
-                                    if (1 == refCount)
+                                    // Close the connection
+                                    try
                                     {
-                                        // Close the connection
-                                        try
-                                        {
-                                            pFdoConnectionCacheEntry->pFdoConnection->Close();
-                                        }
-                                        catch(FdoException* e)
-                                        {
-                                            FDO_SAFE_RELEASE(e);
-                                        }
-                                        catch (...)
-                                        {
-                                        }
-
-                                        // Release any resource
-                                        FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
+                                        pFdoConnectionCacheEntry->pFdoConnection->Close();
                                     }
+                                    catch(FdoException* e)
+                                    {
+                                        FDO_SAFE_RELEASE(e);
+                                    }
+                                    catch (...)
+                                    {
+                                    }
+
+                                    // Release any resource
+                                    FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
 
                                     delete pFdoConnectionCacheEntry;
                                     pFdoConnectionCacheEntry = NULL;
@@ -612,10 +604,11 @@ FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING prov
                             if(pFdoConnectionCacheEntry->ltName == ltName)
                             {
                                 // We have a long transaction name match
-                                if(pFdoConnectionCacheEntry->pFdoConnection->GetRefCount() == 1)
+                                if(!pFdoConnectionCacheEntry->bInUse)
                                 {
                                     // It is not in use so claim it
                                     pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
+                                    pFdoConnectionCacheEntry->bInUse = true;
 
                                     // Check to see if the key is blank which indicates a blank connection string was cached
                                     if(0 < key.size())
@@ -975,10 +968,8 @@ bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING resource, bool
                         {
                             connections++;
 
-                            INT32 refCount = pFdoConnectionCacheEntry->pFdoConnection->GetRefCount();
-
                             // We have a match, is it in use?
-                            if (refCount > 1)
+                            if (pFdoConnectionCacheEntry->bInUse)
                             {
                                 // The resource is still in use and so it cannot be removed
                                 #ifdef _DEBUG_FDOCONNECTION_MANAGER
@@ -990,24 +981,21 @@ bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING resource, bool
                             }
                             else
                             {
-                                if (1 == refCount)
+                                // Close the connection
+                                try
                                 {
-                                    // Close the connection
-                                    try
-                                    {
-                                        pFdoConnectionCacheEntry->pFdoConnection->Close();
-                                    }
-                                    catch(FdoException* e)
-                                    {
-                                        FDO_SAFE_RELEASE(e);
-                                    }
-                                    catch (...)
-                                    {
-                                    }
-
-                                    // Release any resource
-                                    FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
+                                    pFdoConnectionCacheEntry->pFdoConnection->Close();
                                 }
+                                catch(FdoException* e)
+                                {
+                                    FDO_SAFE_RELEASE(e);
+                                }
+                                catch (...)
+                                {
+                                }
+
+                                // Release any resource
+                                FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
 
                                 delete pFdoConnectionCacheEntry;
                                 pFdoConnectionCacheEntry = NULL;
@@ -1100,6 +1088,7 @@ void MgFdoConnectionManager::CacheFdoConnection(FdoIConnection* pFdoConnection, 
             pFdoConnectionCacheEntry->pFdoConnection = pFdoConnection;
             pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
             pFdoConnectionCacheEntry->bValid = true;
+            pFdoConnectionCacheEntry->bInUse = true;
 
             #ifdef _DEBUG_FDOCONNECTION_MANAGER
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("CacheFdoConnection:\nConnection: %@\nProvider = %W\nKey = %W\nVersion(LT) = %W\n\n"), (void*)pFdoConnection, provider.c_str(), key.c_str(), ltName.empty() ? L"(empty)" : ltName.c_str()));
@@ -1175,34 +1164,29 @@ bool MgFdoConnectionManager::UpdateFdoConnectionCache(CREFSTRING provider)
                             // Is it in use?
                             if(pFdoConnectionCacheEntry->pFdoConnection)
                             {
-                                INT32 refCount = pFdoConnectionCacheEntry->pFdoConnection->GetRefCount();
-
                                 // Is it in use?
-                                if (refCount > 1)
+                                if (pFdoConnectionCacheEntry->bInUse)
                                 {
                                     // Next cached connection
                                     iter++;
                                 }
                                 else
                                 {
-                                    if (1 == refCount)
+                                    // Close the connection
+                                    try
                                     {
-                                        // Close the connection
-                                        try
-                                        {
-                                            pFdoConnectionCacheEntry->pFdoConnection->Close();
-                                        }
-                                        catch(FdoException* e)
-                                        {
-                                            FDO_SAFE_RELEASE(e);
-                                        }
-                                        catch (...)
-                                        {
-                                        }
-
-                                        // Release any resource
-                                        FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
+                                        pFdoConnectionCacheEntry->pFdoConnection->Close();
                                     }
+                                    catch(FdoException* e)
+                                    {
+                                        FDO_SAFE_RELEASE(e);
+                                    }
+                                    catch (...)
+                                    {
+                                    }
+
+                                    // Release any resource
+                                    FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
 
                                     delete pFdoConnectionCacheEntry;
                                     pFdoConnectionCacheEntry = NULL;
@@ -1318,9 +1302,7 @@ void MgFdoConnectionManager::ClearCache()
 
                         if(pFdoConnectionCacheEntry->pFdoConnection)
                         {
-                            INT32 refCount = pFdoConnectionCacheEntry->pFdoConnection->GetRefCount();
-
-                            if (refCount > 1)
+                            if (pFdoConnectionCacheEntry->bInUse)
                             {
                                 ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Still in use!!\n")));
                                 // Next cached connection
@@ -1330,25 +1312,22 @@ void MgFdoConnectionManager::ClearCache()
                             {
                                 ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Removed\n")));
 
-                                if (1 == refCount)
+                                // The FDO cache is the only one with a reference
+                                // Close the connection
+                                try
                                 {
-                                    // The FDO cache is the only one with a reference
-                                    // Close the connection
-                                    try
-                                    {
-                                        pFdoConnectionCacheEntry->pFdoConnection->Close();
-                                    }
-                                    catch(FdoException* e)
-                                    {
-                                        FDO_SAFE_RELEASE(e);
-                                    }
-                                    catch (...)
-                                    {
-                                    }
-
-                                    // Release any resource
-                                    FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
+                                    pFdoConnectionCacheEntry->pFdoConnection->Close();
                                 }
+                                catch(FdoException* e)
+                                {
+                                    FDO_SAFE_RELEASE(e);
+                                }
+                                catch (...)
+                                {
+                                }
+
+                                // Release any resource
+                                FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
 
                                 delete pFdoConnectionCacheEntry;
                                 pFdoConnectionCacheEntry = NULL;
@@ -1544,14 +1523,14 @@ void MgFdoConnectionManager::ShowProviderInfoCache()
     MG_FDOCONNECTION_MANAGER_CATCH(L"MgFdoConnectionManager.ShowProviderInfoCache")
 }
 
-void MgFdoConnectionManager::RemoveUnusedFdoConnections()
+void MgFdoConnectionManager::MakeFdoConnectionAvailable(FdoIConnection* connection)
 {
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
     MG_FDOCONNECTION_MANAGER_TRY()
 
 #ifdef _DEBUG_FDOCONNECTION_MANAGER
-    ACE_DEBUG((LM_INFO, ACE_TEXT("MgFdoConnectionManager::RemoveUnusedFdoConnections - Provider Info Cache Before\n")));
+    ACE_DEBUG((LM_INFO, ACE_TEXT("MgFdoConnectionManager::MakeFdoConnectionAvailable - Provider Info Cache Before\n")));
     ShowProviderInfoCache();
 #endif
 
@@ -1560,7 +1539,7 @@ void MgFdoConnectionManager::RemoveUnusedFdoConnections()
     while(m_ProviderInfoCollection.end() != iterProviderInfoCollection)
     {
         #ifdef _DEBUG_FDOCONNECTION_MANAGER
-        ACE_DEBUG((LM_INFO, ACE_TEXT("MgFdoConnectionManager::RemoveUnusedFdoConnections - Checking...\n")));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("MgFdoConnectionManager::MakeFdoConnectionAvailable - Checking...\n")));
         #endif
         ProviderInfo* providerInfo = iterProviderInfoCollection->second;
         if(providerInfo)
@@ -1575,79 +1554,61 @@ void MgFdoConnectionManager::RemoveUnusedFdoConnections()
                     FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
                     if(pFdoConnectionCacheEntry)
                     {
-                        if(pFdoConnectionCacheEntry->pFdoConnection)
+                        if(pFdoConnectionCacheEntry->pFdoConnection == connection)
                         {
-                            INT32 refCount = pFdoConnectionCacheEntry->pFdoConnection->GetRefCount();
+                            // Remove a reference (This is the client reference)
+                            FDO_SAFE_RELEASE(connection);
 
-                            if (refCount > 1)
+                            #ifdef _DEBUG_FDOCONNECTION_MANAGER
+                            ACE_DEBUG((LM_INFO, ACE_TEXT("MgFdoConnectionManager::MakeFdoConnectionAvailable - Decrementing Connection!\n")));
+                            #endif
+
+                            if(0 < providerInfo->GetCurrentConnections())
                             {
-                                #ifdef _DEBUG_FDOCONNECTION_MANAGER
-                                ACE_DEBUG((LM_INFO, ACE_TEXT("MgFdoConnectionManager::RemoveUnusedFdoConnections - Cannot decrement. RefCount=%d\n"), refCount));
-                                #endif
-                                // Check the next cached connection
-                                iter++;
+                                providerInfo->DecrementCurrentConnections();
+                            }
+
+                            // Are we supposed to release this provider from the cache?
+                            if ((providerInfo->GetKeepCached()) && (pFdoConnectionCacheEntry->bValid))
+                            {
+                                // Make the connection available
+                                pFdoConnectionCacheEntry->bInUse = false;
                             }
                             else
                             {
                                 #ifdef _DEBUG_FDOCONNECTION_MANAGER
-                                ACE_DEBUG((LM_INFO, ACE_TEXT("MgFdoConnectionManager::RemoveUnusedFdoConnections - Decrementing Connection!\n")));
+                                ACE_DEBUG((LM_INFO, ACE_TEXT("MgFdoConnectionManager::MakeFdoConnectionAvailable - Closing Connection!\n")));
                                 #endif
 
-                                // There are no more references to this provider connection so check if we need to decrement a current connection
-                                // as we might be here because the cache is just being checked and we don't want negative values for our current connection count.
-                                if(0 < providerInfo->GetCurrentConnections())
+                                // Close the connection
+                                try
                                 {
-                                    providerInfo->DecrementCurrentConnections();
+                                    pFdoConnectionCacheEntry->pFdoConnection->Close();
+                                }
+                                catch(FdoException* e)
+                                {
+                                    FDO_SAFE_RELEASE(e);
+                                }
+                                catch (...)
+                                {
                                 }
 
-                                // Are we supposed to release this provider from the cache?
-                                if ((providerInfo->GetKeepCached()) && (pFdoConnectionCacheEntry->bValid))
-                                {
-                                    // Check the next cached connection
-                                    iter++;
-                                }
-                                else
-                                {
-                                    #ifdef _DEBUG_FDOCONNECTION_MANAGER
-                                    ACE_DEBUG((LM_INFO, ACE_TEXT("MgFdoConnectionManager::RemoveUnusedFdoConnections - Closing Connection!\n")));
-                                    #endif
+                                // Release any resource
+                                FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
 
-                                    if (1 == refCount)
-                                    {
-                                        // Close the connection
-                                        try
-                                        {
-                                            pFdoConnectionCacheEntry->pFdoConnection->Close();
-                                        }
-                                        catch(FdoException* e)
-                                        {
-                                            FDO_SAFE_RELEASE(e);
-                                        }
-                                        catch (...)
-                                        {
-                                        }
+                                delete pFdoConnectionCacheEntry;
+                                pFdoConnectionCacheEntry = NULL;
 
-                                        // Release any resource
-                                        FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
-                                    }
-
-                                    delete pFdoConnectionCacheEntry;
-                                    pFdoConnectionCacheEntry = NULL;
-
-                                    fdoConnectionCache->erase(iter++);
-                                }
+                                fdoConnectionCache->erase(iter);
                             }
+
+                            // We are done
+                            iter = fdoConnectionCache->end();
                         }
                         else
                         {
-                            #ifdef _DEBUG_FDOCONNECTION_MANAGER
-                            ACE_DEBUG((LM_INFO, ACE_TEXT("MgFdoConnectionManager::RemoveUnusedFdoConnections - Removed NULL connection\n")));
-                            #endif
-
-                            delete pFdoConnectionCacheEntry;
-                            pFdoConnectionCacheEntry = NULL;
-
-                            fdoConnectionCache->erase(iter++);
+                            // Next FDO connection
+                            iter++;
                         }
                     }
                     else
@@ -1668,11 +1629,11 @@ void MgFdoConnectionManager::RemoveUnusedFdoConnections()
     }
 
 #ifdef _DEBUG_FDOCONNECTION_MANAGER
-    ACE_DEBUG((LM_INFO, ACE_TEXT("MgFdoConnectionManager::RemoveUnusedFdoConnections - Provider Info Cache After\n")));
+    ACE_DEBUG((LM_INFO, ACE_TEXT("MgFdoConnectionManager::MakeFdoConnectionAvailable - Provider Info Cache After\n")));
     ShowProviderInfoCache();
 #endif
 
-    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.RemoveUnusedFdoConnections")
+    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.MakeFdoConnectionAvailable")
 }
 
 ProviderInfo* MgFdoConnectionManager::TryAcquireFdoConnection(CREFSTRING provider)
@@ -1937,7 +1898,7 @@ STRING MgFdoConnectionManager::GetFdoCacheInfo()
 
                             // Set in use
                             info += L"<InUse>";
-                            info += (pFdoConnectionCacheEntry->pFdoConnection->GetRefCount() > 1) ? L"True" : L"False";
+                            info += (pFdoConnectionCacheEntry->bInUse) ? L"True" : L"False";
                             info += L"</InUse>\n";
 
                             info += L"<LongTransaction>";

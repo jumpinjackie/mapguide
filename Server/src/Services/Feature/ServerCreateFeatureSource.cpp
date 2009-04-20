@@ -18,7 +18,6 @@
 #include "ServerFeatureServiceDefs.h"
 #include "ServerCreateFeatureSource.h"
 #include "ServerFeatureConnection.h"
-#include "ServerGetFeatures.h"
 #include "ServerDescribeSchema.h"
 
 #include "Fdo/Commands/DataStore/ICreateDataStore.h"
@@ -66,11 +65,16 @@ void MgServerCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* reso
     // Connect to provider
     STRING sdfProvider = L"OSGeo.SDF"; // NOXLATE
     STRING sdfConnString = L""; // NOXLATE
-    MgServerFeatureConnection msfc(sdfProvider, sdfConnString);
+    Ptr<MgServerFeatureConnection> msfc = new MgServerFeatureConnection(sdfProvider, sdfConnString);
     {
+        if(NULL == msfc.p)
+        {
+            throw new MgConnectionFailedException(L"MgServerCreateFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
         // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up before the parent object
         // otherwise it leaves the FDO connection marked as still in use.
-        FdoPtr<FdoIConnection> conn =  msfc.GetConnection();
+        FdoPtr<FdoIConnection> conn =  msfc->GetConnection();
 
         if (conn == NULL)
         {

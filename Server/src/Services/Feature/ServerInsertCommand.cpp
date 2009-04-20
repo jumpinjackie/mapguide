@@ -101,7 +101,19 @@ MgFeatureProperty* MgServerInsertCommand::BatchInsert( MgBatchPropertyCollection
 
     // TODO: This is FDO defect, they should not require ReadNext() for class definition
     bool available = false;
-    try { available = reader->ReadNext(); } catch (...) {}
+    try
+    {
+        available = reader->ReadNext();
+    }
+    catch(FdoException* e)
+    {
+        FDO_SAFE_RELEASE(e);
+        available = false;
+    }
+    catch (...)
+    {
+        available = false;
+    }
 
     if (!available)
     {
@@ -112,15 +124,11 @@ MgFeatureProperty* MgServerInsertCommand::BatchInsert( MgBatchPropertyCollection
         throw new MgFeatureServiceException(L"MgServerGwsGetFeatures.BatchInsert", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-    // Create a feature reader identifier
-    Ptr<MgServerFeatureReaderIdentifier> featReaderId =
-            new MgServerFeatureReaderIdentifier(reader);
-
     char buff[32];
     sprintf(buff, "%d", m_cmdId);
     STRING str = MgUtil::MultiByteToWideChar(string(buff));
 
-    Ptr<MgFeatureReader> mgFeatureReader = new MgServerFeatureReader(featReaderId);
+    Ptr<MgFeatureReader> mgFeatureReader = new MgServerFeatureReader(m_srvrFeatConn, reader);
     return new MgFeatureProperty(str, mgFeatureReader);
 }
 
@@ -151,8 +159,7 @@ MgFeatureProperty* MgServerInsertCommand::SingleInsert( MgBatchPropertyCollectio
             if (idProps->GetCount() > 0)
             {
                 keyProps = new MgPropertyDefinitionCollection();
-                MgServerGetFeatures getFeatures;
-                getFeatures.GetClassProperties(keyProps, idProps);
+                MgServerFeatureUtil::GetClassProperties(keyProps, idProps);
             }
         }
 
@@ -166,7 +173,19 @@ MgFeatureProperty* MgServerInsertCommand::SingleInsert( MgBatchPropertyCollectio
         }
 
         bool available = false;
-        try { available = reader->ReadNext(); } catch (...) {}
+        try
+        {
+            available = reader->ReadNext();
+        }
+        catch(FdoException* e)
+        {
+            FDO_SAFE_RELEASE(e);
+            available = false;
+        }
+        catch (...)
+        {
+            available = false;
+        }
 
         if (!available)
         {

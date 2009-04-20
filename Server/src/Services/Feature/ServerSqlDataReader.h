@@ -25,6 +25,7 @@ class MgDateTime;
 class MgSqlDataReader;
 
 #include "ServerFeatureDllExport.h"
+#include "ServerFeatureConnection.h"
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -239,17 +240,24 @@ INTERNAL_API:
         return m_cls_id;
     }
 
-    MgServerSqlDataReader(FdoISQLDataReader* sqlReader, CREFSTRING providerName);
+    MgServerSqlDataReader(MgServerFeatureConnection* connection, FdoISQLDataReader* sqlReader, CREFSTRING providerName);
     MgServerSqlDataReader();
     ~MgServerSqlDataReader();
     void Deserialize(MgStream* stream);
     void Serialize(MgStream* stream);
     MgByteReader* GetLOB(CREFSTRING propertyName);
+    MgBatchPropertyCollection* GetRows(INT32 count = 0); // If zero means feature all records
+    void AddRows(INT32 count);
+    void AddRow(MgPropertyDefinitionCollection* propDefCol);
+    MgPropertyDefinitionCollection* GetColumnDefinitions();
 
 private:
 
+    Ptr<MgServerFeatureConnection> m_connection;
     FdoISQLDataReader* m_sqlReader;
     STRING m_providerName;
+    Ptr<MgBatchPropertyCollection>       m_bpCol;
+    Ptr<MgPropertyDefinitionCollection>  m_propDefCol;
 
 CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_FeatureService_SqlDataReader;

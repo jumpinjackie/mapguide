@@ -82,6 +82,17 @@ public:
     static MgStringCollection* FdoToMgStringCollection(FdoStringCollection* fdoStrs, bool includeEmptyStrings);
     static FdoStringCollection* MgToFdoStringCollection(MgStringCollection* mgStrs, bool includeEmptyStrings);
 
+    static MgClassDefinition* GetMgClassDefinition(FdoClassDefinition* fdoClassDefinition, bool bSerialize);
+    static MgByteReader* SerializeToXml(FdoClassDefinition* classDef);
+    static void GetClassProperties(MgPropertyDefinitionCollection* propDefCol, FdoPropertyDefinitionCollection* fdoPropDefCol);
+    static void GetClassProperties(MgPropertyDefinitionCollection* propDefCol, FdoDataPropertyDefinitionCollection* fdoPropDefCol);
+    static MgPropertyDefinition* GetMgPropertyDefinition(FdoPropertyDefinition* fdoPropDef);
+    static MgDataPropertyDefinition* GetDataPropertyDefinition(FdoDataPropertyDefinition* fdoPropDef);
+    static MgObjectPropertyDefinition* GetObjectPropertyDefinition(FdoObjectPropertyDefinition* fdoPropDef);
+    static MgGeometricPropertyDefinition* GetGeometricPropertyDefinition(FdoGeometricPropertyDefinition* fdoPropDef);
+    static MgRasterPropertyDefinition* GetRasterPropertyDefinition(FdoRasterPropertyDefinition* fdoPropDef);
+    static MgProperty* GetMgProperty(MgReader* reader, CREFSTRING qualifiedPropName, INT16 type);
+
 private:
     static bool Initialize();
 

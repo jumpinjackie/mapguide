@@ -17,11 +17,8 @@
 
 #include "ServerFeatureServiceDefs.h"
 #include "ServerFeatureUtil.h"
-#include "ServerDataProcessor.h"
-#include "ServerGetFeatures.h"
-#include "ServerFeatureProcessor.h"
 #include "ServerDataReaderPool.h"
-#include "ServerFeatureReaderIdentifierPool.h"
+#include "ServerFeatureReaderPool.h"
 #include "ByteSourceRasterStreamImpl.h"
 
 static std::map<FdoPropertyType, INT32>                 s_FdoPropertyType;
@@ -983,4 +980,725 @@ FdoStringCollection* MgServerFeatureUtil::MgToFdoStringCollection(MgStringCollec
     }
 
     return fdoStrs.Detach();
+}
+
+MgClassDefinition* MgServerFeatureUtil::GetMgClassDefinition(FdoClassDefinition* fdoClassDefinition, bool bSerialize)
+{
+    CHECKNULL(fdoClassDefinition, L"MgServerFeatureUtil.GetMgClassDefinition");
+
+    // Create MgClassDefinition
+    Ptr<MgClassDefinition> mgClassDef = new MgClassDefinition();
+    CHECKNULL((MgClassDefinition*)mgClassDef, L"MgServerFeatureUtil.GetMgClassDefinition");
+
+    // Get PropertyDefinitionCollection to store property definitions
+    Ptr<MgPropertyDefinitionCollection> propDefCol = mgClassDef->GetProperties();
+    CHECKNULL((MgPropertyDefinitionCollection*)propDefCol, L"MgServerFeatureUtil.GetMgClassDefinition");
+
+    // Get PropertyDefinitionCollection to store key property definitions i.e. which makes key for this feature class
+    Ptr<MgPropertyDefinitionCollection> identityPropDefCol = mgClassDef->GetIdentityProperties();
+    CHECKNULL((MgPropertyDefinitionCollection*)identityPropDefCol, L"MgServerFeatureUtil.GetMgClassDefinition");
+
+    // description
+    FdoString* desc = fdoClassDefinition->GetDescription();
+    if (desc != NULL)
+    {
+        mgClassDef->SetDescription(STRING(desc));
+    }
+
+    // Class name
+    FdoString* className = fdoClassDefinition->GetName();
+    if (className != NULL)
+    {
+        mgClassDef->SetName(STRING(className));
+    }
+
+    bool isComputed = fdoClassDefinition->GetIsComputed();
+    if (isComputed)
+    {
+        mgClassDef->MakeClassComputed(isComputed);
+    }
+
+    bool isAbstract = fdoClassDefinition->GetIsAbstract();
+    if (isAbstract)
+    {
+        mgClassDef->MakeClassAbstract(isAbstract);
+    }
+
+    // Retrieve Class properties from FDO
+    FdoPtr<FdoPropertyDefinitionCollection> fpdc = fdoClassDefinition->GetProperties();
+    CHECKNULL((FdoPropertyDefinitionCollection*)fpdc, L"MgServerFeatureUtil.GetMgClassDefinition");
+
+    // Retrieve Base class properties from FDO
+    // TODO: Should we add Base class properties into the list of properties?
+    // TODO: Can this be null?
+    FdoPtr<FdoReadOnlyPropertyDefinitionCollection> frpdc = fdoClassDefinition->GetBaseProperties();
+
+    // Retrieve identity properties from FDO
+    // TODO: Can this be null?
+    FdoPtr<FdoDataPropertyDefinitionCollection> fdpdc = fdoClassDefinition->GetIdentityProperties();
+
+    // Add properties
+    MgServerFeatureUtil::GetClassProperties(propDefCol, fpdc);
+
+    FdoClassType classType = fdoClassDefinition->GetClassType();
+    if (classType == FdoClassType_FeatureClass)
+    {
+        FdoPtr<FdoGeometricPropertyDefinition> geomPropDef = ((FdoFeatureClass*)fdoClassDefinition)->GetGeometryProperty();
+        if (geomPropDef != NULL)
+        {
+            FdoString* defaultGeomName = geomPropDef->GetName();
+            if (defaultGeomName != NULL)
+            {
+                mgClassDef->SetDefaultGeometryPropertyName(STRING(defaultGeomName));
+            }
+        }
+    }
+
+    // Add identity properties
+    MgServerFeatureUtil::GetClassProperties(identityPropDefCol, fdpdc);
+
+    // Add base properties
+//  this->GetClassProperties(propDefCol, frpdc);
+
+    if (bSerialize)
+    {
+        STRING str;
+        Ptr<MgByteReader> byteReader = SerializeToXml(fdoClassDefinition);
+        str = byteReader->ToString();
+
+        STRING str1 = L"";
+
+        size_t idx = str.find(L"?>");
+
+        if (idx >= 0)
+        {
+            str1 = str.substr(idx+2);
+        }
+        else if (idx < 0)
+        {
+            idx = str.find(L"<Class");
+            if (idx >= 0)
+            {
+                str1 = str.substr(idx);
+            }
+        }
+
+        mgClassDef->SetSerializedXml(str1);
+    }
+
+    FdoPtr<FdoClassDefinition> baseDefinition = fdoClassDefinition->GetBaseClass();
+    if (baseDefinition != NULL)
+    {
+        Ptr<MgClassDefinition> mgBaseClsDef = GetMgClassDefinition(baseDefinition, bSerialize);
+        mgClassDef->SetBaseClassDefinition(mgBaseClsDef);
+    }
+
+    return mgClassDef.Detach();
+}
+
+MgByteReader* MgServerFeatureUtil::SerializeToXml(FdoClassDefinition* classDef)
+{
+    CHECKNULL(classDef, L"MgServerFeatureUtil.SerializeToXml");
+
+    FdoString* className = classDef->GetName();
+    FdoFeatureSchemaP pSchema = classDef->GetFeatureSchema();
+    FdoFeatureSchemaP tempSchema;
+    FdoClassDefinitionP featClass;
+    FdoInt32 index = 0;
+
+    if (pSchema != NULL)
+    {
+        //Get the position of the class in the collecion
+        FdoPtr<FdoClassCollection> fcc = pSchema->GetClasses();
+        index = fcc->IndexOf( className );
+
+        // Move class of interest to its own schema
+        tempSchema = FdoFeatureSchema::Create( pSchema->GetName(), L"" );
+        featClass = FdoClassesP(pSchema->GetClasses())->GetItem( className );
+        FdoClassesP(pSchema->GetClasses())->Remove(featClass);
+        FdoClassesP(tempSchema->GetClasses())->Add(featClass);
+    }
+    else
+    {
+        // NOTE: schema name needs to be something non-empty in order to
+        // avoid XSL warnings
+        tempSchema = FdoFeatureSchema::Create(L"TempSchema", L"" );
+        FdoClassesP(tempSchema->GetClasses())->Add(classDef);
+
+        // Add the base class
+        FdoPtr<FdoClassDefinition> fdoBaseClass = classDef->GetBaseClass();
+        while (fdoBaseClass != NULL)
+        {
+            FdoClassesP(tempSchema->GetClasses())->Add(fdoBaseClass);
+            fdoBaseClass = fdoBaseClass->GetBaseClass();
+        }
+    }
+
+    FdoIoMemoryStreamP fmis = FdoIoMemoryStream::Create();
+    tempSchema->WriteXml(fmis);
+    fmis->Reset();
+
+    FdoInt64 len = fmis->GetLength();
+    FdoByte *bytes = new FdoByte[(size_t)len];
+    CHECKNULL(bytes, L"MgServerFeatureUtil::SerializeToXml");
+
+    fmis->Read(bytes, (FdoSize)len);
+
+    // Get byte reader from memory stream
+    Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)bytes, (INT32)len);
+    byteSource->SetMimeType(MgMimeType::Xml);
+    Ptr<MgByteReader> byteReader = byteSource->GetReader();
+
+    // Cleanup the above addition/deletion of class definition
+    if (pSchema != NULL)
+    {
+        if (featClass != NULL)
+        {
+            FdoClassesP(tempSchema->GetClasses())->Remove(featClass);
+            FdoClassesP(pSchema->GetClasses())->Insert(index, featClass);
+        }
+    }
+    else
+    {
+        FdoClassesP(tempSchema->GetClasses())->Remove(classDef);
+    }
+
+    delete[] bytes;
+
+    return byteReader.Detach();
+}
+
+void MgServerFeatureUtil::GetClassProperties(MgPropertyDefinitionCollection* propDefCol,
+                                             FdoPropertyDefinitionCollection* fdoPropDefCol)
+{
+    if (NULL == fdoPropDefCol)
+        return;
+
+    FdoInt32 cnt = fdoPropDefCol->GetCount();
+    for (FdoInt32 i =0; i < cnt; i++)
+    {
+        // Get Fdo Property
+        FdoPtr<FdoPropertyDefinition> fpd = fdoPropDefCol->GetItem(i);
+        CHECKNULL((FdoPropertyDefinition*)fpd, L"MgServerFeatureUtil.GetClassProperties");
+
+        // Create MgProperty
+        Ptr<MgPropertyDefinition> prop = MgServerFeatureUtil::GetMgPropertyDefinition(fpd);
+
+        // Add it to class definition
+        if (prop != NULL)
+        {
+            propDefCol->Add(prop);
+        }
+    }
+}
+
+
+void MgServerFeatureUtil::GetClassProperties(MgPropertyDefinitionCollection* propDefCol,
+                                             FdoDataPropertyDefinitionCollection* fdoPropDefCol)
+{
+    if (NULL == fdoPropDefCol)
+        return;
+
+    FdoInt32 cnt  = fdoPropDefCol->GetCount();
+    for (FdoInt32 i =0; i < cnt; i++)
+    {
+        // Get Fdo Property
+        FdoPtr<FdoPropertyDefinition> fpd = fdoPropDefCol->GetItem(i);
+        CHECKNULL((FdoPropertyDefinition*)fpd, L"MgServerFeatureUtil.GetClassProperties");
+
+        // Create MgProperty
+        Ptr<MgPropertyDefinition> prop = MgServerFeatureUtil::GetMgPropertyDefinition(fpd);
+
+        // Add it to class definition
+        if (prop != NULL)
+        {
+            propDefCol->Add(prop);
+        }
+    }
+}
+
+MgPropertyDefinition* MgServerFeatureUtil::GetMgPropertyDefinition(FdoPropertyDefinition* fdoPropDef)
+{
+    CHECKNULL((FdoPropertyDefinition*)fdoPropDef, L"MgServerFeatureUtil.GetMgPropertyDefinition");
+
+    Ptr<MgPropertyDefinition> propDef;
+
+    FdoPropertyType fpt = fdoPropDef->GetPropertyType();
+    switch (fpt)
+    {
+        // Represents a Data Property type.
+        case FdoPropertyType_DataProperty:
+        {
+            propDef = MgServerFeatureUtil::GetDataPropertyDefinition((FdoDataPropertyDefinition*)fdoPropDef);
+            break;
+        }
+        // Represents an Object Property type.
+        case FdoPropertyType_ObjectProperty:
+        {
+            propDef = MgServerFeatureUtil::GetObjectPropertyDefinition((FdoObjectPropertyDefinition*)fdoPropDef);
+            break;
+        }
+
+        // Represents a Geometric Property type.
+        case FdoPropertyType_GeometricProperty:
+        {
+            propDef = MgServerFeatureUtil::GetGeometricPropertyDefinition((FdoGeometricPropertyDefinition*)fdoPropDef);
+            break;
+        }
+        // Represents an Association Property type.
+        case FdoPropertyType_AssociationProperty:
+        {
+            // TODO:
+            break;
+        }
+
+        // Represents a Raster (image) Property type.
+        case FdoPropertyType_RasterProperty:
+        {
+            propDef = MgServerFeatureUtil::GetRasterPropertyDefinition((FdoRasterPropertyDefinition*)fdoPropDef);
+            break;
+        }
+    }
+
+    return propDef.Detach();
+}
+
+MgDataPropertyDefinition* MgServerFeatureUtil::GetDataPropertyDefinition(FdoDataPropertyDefinition* fdoPropDef)
+{
+    if (fdoPropDef == NULL)
+    {
+        return NULL;
+    }
+
+    STRING name = STRING(fdoPropDef->GetName());
+    Ptr<MgDataPropertyDefinition> propDef = new MgDataPropertyDefinition(name);
+
+    // Get data members from FDO
+    FdoString* defaultVal = fdoPropDef->GetDefaultValue();
+    FdoInt32 length = fdoPropDef->GetLength();
+    bool isReadOnly = fdoPropDef->GetReadOnly();
+    FdoString* desc = fdoPropDef->GetDescription();
+    FdoInt32 precision = fdoPropDef->GetPrecision();
+    bool isNullable = fdoPropDef->GetNullable();
+    FdoStringP qname = fdoPropDef->GetQualifiedName();
+    FdoInt32 scale = fdoPropDef->GetScale();
+    bool isAutoGenerated = fdoPropDef->GetIsAutoGenerated();
+
+    // Set it for MapGuide
+    FdoDataType dataType = fdoPropDef->GetDataType();
+    propDef->SetDataType(GetMgPropertyType(dataType));
+
+    if (defaultVal != NULL)
+    {
+        propDef->SetDefaultValue(STRING(defaultVal));
+    }
+
+    propDef->SetLength((INT32)length);
+    propDef->SetReadOnly(isReadOnly);
+
+    if (desc != NULL)
+    {
+        propDef->SetDescription(STRING(desc));
+    }
+
+    propDef->SetPrecision((INT32)precision);
+    propDef->SetNullable(isNullable);
+
+    FdoString* qualifiedName = (FdoString*)qname;
+    if (qualifiedName != NULL)
+    {
+        propDef->SetQualifiedName(STRING(qualifiedName));
+    }
+
+    propDef->SetAutoGeneration(isAutoGenerated);
+
+    propDef->SetScale((INT32)scale);
+
+    return propDef.Detach();
+}
+
+MgObjectPropertyDefinition* MgServerFeatureUtil::GetObjectPropertyDefinition(FdoObjectPropertyDefinition* fdoPropDef)
+{
+    CHECKNULL((FdoObjectPropertyDefinition*)fdoPropDef, L"MgServerFeatureUtil.GetObjectPropertyDefinition");
+
+    STRING name = STRING(fdoPropDef->GetName());
+    Ptr<MgObjectPropertyDefinition> propDef = new MgObjectPropertyDefinition(name);
+
+    FdoString* desc = fdoPropDef->GetDescription();
+    FdoStringP qname = fdoPropDef->GetQualifiedName();
+    FdoString* qualifiedName = (FdoString*)qname;
+
+    if (qualifiedName != NULL)
+    {
+        propDef->SetQualifiedName(STRING(qualifiedName));
+    }
+
+    // Set it for MapGuide
+    if (desc != NULL)
+    {
+        propDef->SetDescription(STRING(desc));
+    }
+
+    FdoPtr<FdoClassDefinition> fdoClsDef = fdoPropDef->GetClass();
+    CHECKNULL((FdoClassDefinition*)fdoClsDef, L"MgServerFeatureUtil.GetObjectPropertyDefinition")
+
+    FdoPtr<FdoDataPropertyDefinition> idenProp = fdoPropDef->GetIdentityProperty(); // Can return NULL
+
+    FdoObjectType objType = fdoPropDef->GetObjectType();
+    FdoOrderType orderType = fdoPropDef->GetOrderType();
+
+    Ptr<MgClassDefinition> objPropClsDef = MgServerFeatureUtil::GetMgClassDefinition(fdoClsDef, true);
+    Ptr<MgDataPropertyDefinition> objIdenProp = MgServerFeatureUtil::GetDataPropertyDefinition(idenProp);
+    INT32 orderOption = MgServerFeatureUtil::FdoOrderTypeToMgOrderingOption(orderType);
+    INT32 mgObjType = MgServerFeatureUtil::FdoObjectTypeToMgObjectPropertyType(objType);
+
+    propDef->SetClassDefinition(objPropClsDef);
+    propDef->SetIdentityProperty(objIdenProp);
+    propDef->SetOrderType(orderOption);
+    propDef->SetObjectType(mgObjType);
+
+    return propDef.Detach();
+}
+
+MgGeometricPropertyDefinition* MgServerFeatureUtil::GetGeometricPropertyDefinition(FdoGeometricPropertyDefinition* fdoPropDef)
+{
+    CHECKNULL((FdoGeometricPropertyDefinition*)fdoPropDef, L"MgServerFeatureUtil.GetGeometricPropertyDefinition");
+
+    STRING name = STRING(fdoPropDef->GetName());
+    Ptr<MgGeometricPropertyDefinition> propDef = new MgGeometricPropertyDefinition(name);
+
+    // Get data members from FDO
+    FdoString* desc = fdoPropDef->GetDescription();
+    FdoInt32 geomTypes = fdoPropDef->GetGeometryTypes();
+    FdoInt32 specificGeomCount = 0;
+    FdoGeometryType * specificGeomTypes = fdoPropDef->GetSpecificGeometryTypes(specificGeomCount);
+    bool hasElev = fdoPropDef->GetHasElevation();
+    bool hasMeasure = fdoPropDef->GetHasMeasure();
+    FdoStringP qname = fdoPropDef->GetQualifiedName();
+    bool isReadOnly = fdoPropDef->GetReadOnly();
+    FdoString* spatialContextName = fdoPropDef->GetSpatialContextAssociation();
+
+    // Set it for MapGuide
+    if (desc != NULL)
+    {
+        propDef->SetDescription(STRING(desc));
+    }
+
+    MgIntCollection geomTypeColl;
+    INT32 geomTypeCount = (INT32)specificGeomCount;
+    for (INT32 i=0; i<geomTypeCount && i<MG_MAX_GEOMETRY_TYPE_SIZE; ++i)
+    {
+        geomTypeColl.Add((INT32)specificGeomTypes[i]);
+    }
+    Ptr<MgGeometryTypeInfo> geomTypeInfo = new MgGeometryTypeInfo;
+    geomTypeInfo->SetTypes(&geomTypeColl);
+    propDef->SetGeometryTypes((INT32)geomTypes);
+    propDef->SetSpecificGeometryTypes(geomTypeInfo);
+    propDef->SetHasElevation(hasElev);
+    propDef->SetHasMeasure(hasMeasure);
+    FdoString* qualifiedName = (FdoString*)qname;
+    if (qualifiedName != NULL)
+    {
+        propDef->SetQualifiedName(STRING(qualifiedName));
+    }
+    propDef->SetReadOnly(isReadOnly);
+
+    if (spatialContextName != NULL)
+    {
+        propDef->SetSpatialContextAssociation(STRING(spatialContextName));
+    }
+
+    return propDef.Detach();
+}
+
+MgRasterPropertyDefinition* MgServerFeatureUtil::GetRasterPropertyDefinition(FdoRasterPropertyDefinition* fdoPropDef)
+{
+    CHECKNULL((FdoRasterPropertyDefinition*)fdoPropDef, L"MgServerFeatureUtil.GetRasterPropertyDefinition");
+
+    STRING name = STRING(fdoPropDef->GetName());
+    Ptr<MgRasterPropertyDefinition> propDef = new MgRasterPropertyDefinition(name);
+
+    // Get data members from FDO
+    FdoString* desc = fdoPropDef->GetDescription();
+    FdoInt32 xsize = fdoPropDef->GetDefaultImageXSize();
+    FdoInt32 ysize = fdoPropDef->GetDefaultImageYSize();
+    bool isNullable = fdoPropDef->GetNullable();
+    FdoStringP qname = fdoPropDef->GetQualifiedName();
+    bool isReadOnly = fdoPropDef->GetReadOnly();
+
+    // Set it for MapGuide
+    if (desc != NULL)
+    {
+        propDef->SetDescription(STRING(desc));
+    }
+
+    propDef->SetDefaultImageXSize((INT32)xsize);
+    propDef->SetDefaultImageYSize((INT32)ysize);
+    propDef->SetNullable(isNullable);
+
+    FdoString* qualifiedName = (FdoString*)qname;
+    if (qualifiedName != NULL)
+    {
+        propDef->SetQualifiedName(STRING(qualifiedName));
+    }
+    propDef->SetReadOnly(isReadOnly);
+
+    return propDef.Detach();
+}
+
+MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qualifiedPropName, INT16 type)
+{
+    // Null Reader is invalid
+    CHECKNULL(reader, L"MgServerFeatureUtil.GetMgProperty");
+
+    // No propertyname specified, return NULL
+    if (qualifiedPropName.empty())
+        return NULL;
+
+    Ptr<MgNullableProperty> prop;
+
+    STRING propName = qualifiedPropName.substr(qualifiedPropName.rfind(L".")+1);
+    // If not qualified name specified, take qualifiedPropName as property name
+    if (propName.empty())
+    {
+        propName = qualifiedPropName;
+    }
+
+    switch(type)
+    {
+        case MgPropertyType::Boolean: /// Boolean true/false value
+        {
+            bool val = false;
+            bool isNull = true;
+
+            if (!reader->IsNull(propName.c_str()))
+            {
+                val = reader->GetBoolean(propName.c_str());
+                isNull = false;
+            }
+
+            prop = new MgBooleanProperty(propName, val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::Byte: /// Unsigned 8 bit value
+        {
+            FdoByte val = 0;
+            bool isNull = true;
+
+            if (!reader->IsNull(propName.c_str()))
+            {
+                val = reader->GetByte(propName.c_str());
+                isNull = false;
+            }
+
+            prop = new MgByteProperty(propName, (BYTE)val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::DateTime: /// DateTime object
+        {
+            Ptr<MgDateTime> dateTime;
+            bool isNull = true;
+
+            if (!reader->IsNull(propName.c_str()))
+            {
+                dateTime = reader->GetDateTime(propName.c_str());
+                isNull = false;
+            }
+
+            prop = new MgDateTimeProperty(propName, dateTime);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::Single: /// Single precision floating point value
+        {
+            float val = 0.0f;
+            bool isNull = true;
+
+            if (!reader->IsNull(propName.c_str()))
+            {
+                val = reader->GetSingle(propName.c_str());
+                isNull = false;
+            }
+
+            prop = new MgSingleProperty(propName, (float)val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::Double: /// Double precision floating point value
+        {
+            double val = 0.0;
+            bool isNull = true;
+
+            if (!reader->IsNull(propName.c_str()))
+            {
+                val = reader->GetDouble(propName.c_str());
+                isNull = false;
+            }
+
+            prop = new MgDoubleProperty(propName, (double)val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::Int16: /// 16 bit signed integer value
+        {
+            FdoInt16 val = 0;
+            bool isNull = true;
+
+            if (!reader->IsNull(propName.c_str()))
+            {
+                val = reader->GetInt16(propName.c_str());
+                isNull = false;
+            }
+
+            prop = new MgInt16Property(propName, (INT16)val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::Int32: // 32 bit signed integer value
+        {
+            FdoInt32 val = 0;
+            bool isNull = true;
+
+            if (!reader->IsNull(propName.c_str()))
+            {
+                val = reader->GetInt32(propName.c_str());
+                isNull = false;
+            }
+
+            prop = new MgInt32Property(propName, (INT32)val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::Int64: // 64 bit signed integer value
+        {
+            FdoInt64 val = 0;
+            bool isNull = true;
+
+            if (!reader->IsNull(propName.c_str()))
+            {
+                val = reader->GetInt64(propName.c_str());
+                isNull = false;
+            }
+
+            prop = new MgInt64Property(propName, (INT64)val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::String: // String MgProperty
+        {
+            STRING val = L"";
+            bool isNull = true;
+
+            if (!reader->IsNull(propName.c_str()))
+            {
+                // A try/catch block is used here for case where the FDO computed
+                // property field is used.  When the property value is null, the computed
+                // property isNull flag is not set  which causes the IsNull() test to fail, and
+                // leading to GetString() to result in an exception.
+                // Instead, it will be handled by catching the exception and setting the isNull flag.
+                try
+                {
+                    val = reader->GetString(propName.c_str());
+                    isNull = false;
+                }
+                catch (FdoException* e)
+                {
+                    isNull = true;
+                    FDO_SAFE_RELEASE(e);
+                }
+                catch (MgException* e)
+                {
+                    isNull = true;
+                    SAFE_RELEASE(e);
+                }
+                catch (...)
+                {
+                    isNull = true;
+                }
+            }
+
+            prop = new MgStringProperty(propName, val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::Blob: // BLOB
+        {
+            Ptr<MgByteReader> val;
+            bool isNull = true;
+
+            if (!reader->IsNull(propName.c_str()))
+            {
+                isNull = false;
+                val = reader->GetBLOB(propName.c_str());
+            }
+
+            prop = new MgBlobProperty(propName, val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::Clob: // CLOB
+        {
+            Ptr<MgByteReader> val;
+            bool isNull = true;
+
+            if (!reader->IsNull(propName.c_str()))
+            {
+                isNull = false;
+                val = reader->GetCLOB(propName.c_str());
+            }
+
+            prop = new MgClobProperty(propName, val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::Feature: // Feature object
+        {
+            Ptr<MgFeatureReader> val;
+            bool isNull = true;
+
+            if (!reader->IsNull(propName.c_str()))
+            {
+                isNull = false;
+                val = ((MgFeatureReader*)(reader))->GetFeatureObject(propName.c_str());
+            }
+
+            prop = new MgFeatureProperty(propName, val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::Geometry: // Geometry object
+        {
+            Ptr<MgByteReader> val;
+            bool isNull = true;
+
+            if (!reader->IsNull(propName.c_str()))
+            {
+                val = reader->GetGeometry(propName.c_str());
+                isNull = false;
+            }
+
+            prop = new MgGeometryProperty(propName, val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::Raster: // Raster object
+        {
+            Ptr<MgRaster> val;
+            bool isNull = true;
+
+            if (!reader->IsNull(propName.c_str()))
+            {
+                val = reader->GetRaster(propName.c_str());
+                isNull = false;
+            }
+
+            prop = new MgRasterProperty(propName, val);
+            prop->SetNull(isNull);
+            break;
+        }
+    }
+
+    return prop.Detach();
 }

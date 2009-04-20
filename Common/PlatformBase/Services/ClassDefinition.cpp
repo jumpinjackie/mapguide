@@ -385,3 +385,8 @@ MgStringCollection* MgClassDefinition::GetClassesIncludingBase()
 
     return SAFE_ADDREF((MgStringCollection*)m_classList);
 }
+
+bool MgClassDefinition::HasSerializedXml()
+{
+    return !(m_serializedXml.empty());
+}

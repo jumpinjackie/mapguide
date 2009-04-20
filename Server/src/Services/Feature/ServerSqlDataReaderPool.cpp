@@ -17,9 +17,7 @@
 
 #include "MapGuideCommon.h"
 #include "ServerFeatureServiceDefs.h"
-#include "ServerFeatureReaderIdentifier.h"
 #include "ServerSqlDataReaderPool.h"
-#include "ServerSqlProcessor.h"
 
 // Process-wide MgServerSqlDataReaderPool
 Ptr<MgServerSqlDataReaderPool> MgServerSqlDataReaderPool::m_drPool = MgServerSqlDataReaderPool::GetInstance();
@@ -36,12 +34,12 @@ MgServerSqlDataReaderPool::MgServerSqlDataReaderPool()
 /// </summary>
 MgServerSqlDataReaderPool::~MgServerSqlDataReaderPool()
 {
-    for (SqlProcessorCollection::iterator iterator = m_drCollection.begin();iterator != m_drCollection.end(); iterator++)
+    for (SqlDataReaderCollection::iterator iterator = m_drCollection.begin();iterator != m_drCollection.end(); iterator++)
     {
-        MgServerSqlProcessor* processor = iterator->second;
-        if(processor)
+        MgServerSqlDataReader* reader = iterator->second;
+        if(reader)
         {
-            processor->Release();
+            reader->Release();
         }
     }
 
@@ -82,25 +80,25 @@ MgServerSqlDataReaderPool* MgServerSqlDataReaderPool::GetInstance()
     return MgServerSqlDataReaderPool::m_drPool;
 }
 
-STRING MgServerSqlDataReaderPool::Add(MgServerSqlProcessor* processor)
+STRING MgServerSqlDataReaderPool::Add(MgServerSqlDataReader* sqlReader)
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, L""));
 
-    // Get a unique ID
-    STRING uid = L"";
-    MgUtil::GenerateUuid(uid);
-
-    if(NULL == processor)
+    if(NULL == sqlReader)
     {
         throw new MgNullArgumentException(L"MgServerSqlDataReaderPool.Add",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
+    // Get a unique ID
+    STRING uid = L"";
+    MgUtil::GenerateUuid(uid);
+
     // Increment the reference count
-    processor->AddRef();
+    sqlReader->AddRef();
 
     // Add it to the collection
-    m_drCollection.insert(SqlProcessorCacheEntry_Pair(uid, processor));
+    m_drCollection.insert(SqlDataReaderCacheEntry_Pair(uid, sqlReader));
 
     return uid;
 }
@@ -111,17 +109,17 @@ bool MgServerSqlDataReaderPool::Remove(STRING sqlReader)
 
     bool bResult = false;
 
-    SqlProcessorCollection::iterator iterator = m_drCollection.find(sqlReader);
+    SqlDataReaderCollection::iterator iterator = m_drCollection.find(sqlReader);
     if(m_drCollection.end() != iterator)
     {
         // Release resources
-        MgServerSqlProcessor* processor = iterator->second;
-        if(processor)
+        MgServerSqlDataReader* reader = iterator->second;
+        if(reader)
         {
-            processor->Release();
+            reader->Release();
         }
 
-        // Remove the processor
+        // Remove the reader
         m_drCollection.erase(iterator);
         bResult = true;
     }
@@ -129,34 +127,34 @@ bool MgServerSqlDataReaderPool::Remove(STRING sqlReader)
     return bResult;
 }
 
-MgServerSqlProcessor* MgServerSqlDataReaderPool::GetProcessor(STRING sqlReader)
+MgServerSqlDataReader* MgServerSqlDataReaderPool::GetReader(STRING sqlReader)
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
-    MgServerSqlProcessor* processor = NULL;
+    MgServerSqlDataReader* reader = NULL;
 
-    SqlProcessorCollection::iterator iterator = m_drCollection.find(sqlReader);
+    SqlDataReaderCollection::iterator iterator = m_drCollection.find(sqlReader);
     if(m_drCollection.end() != iterator)
     {
         // Found it
-        processor = iterator->second;
+        reader = iterator->second;
 
         // Add a reference to it
-        processor->AddRef();
+        reader->AddRef();
     }
 
-    return processor;
+    return reader;
 }
 
-STRING MgServerSqlDataReaderPool::GetReaderId(MgServerSqlProcessor* processor)
+STRING MgServerSqlDataReaderPool::GetReaderId(MgServerSqlDataReader* sqlReader)
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, L""));
 
     STRING readerId = L"";
 
-    for (SqlProcessorCollection::iterator iterator = m_drCollection.begin();iterator != m_drCollection.end(); iterator++)
+    for (SqlDataReaderCollection::iterator iterator = m_drCollection.begin();iterator != m_drCollection.end(); iterator++)
     {
-        if(iterator->second == processor)
+        if(iterator->second == sqlReader)
         {
             // Found it
             readerId = iterator->first;

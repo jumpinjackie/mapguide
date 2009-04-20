@@ -20,8 +20,7 @@
 
 #include "ServerFeatureDllExport.h"
 #include "ServerFeatureServiceDefs.h"
-#include "ServerFeatureReaderIdentifier.h"
-#include "ServerGetFeatures.h"
+#include "ServerFeatureConnection.h"
 
 /////////////////////////////////////////////////////////////////
 ///<summary>
@@ -291,9 +290,11 @@ INTERNAL_API:
 
     virtual void Deserialize(MgStream* stream);
 
+    virtual MgFeatureSet* GetFeatures(INT32 count);
+
     MgServerFeatureReader();
 
-    MgServerFeatureReader(MgServerFeatureReaderIdentifier* featReaderId);
+    MgServerFeatureReader(MgServerFeatureConnection* connection, FdoIFeatureReader* fdoReader);
     ~MgServerFeatureReader();
 
     virtual void Dispose();
@@ -301,12 +302,16 @@ INTERNAL_API:
     virtual INT32 GetClassId() { return m_cls_id; }
 
     FdoIFeatureReader* GetInternalReader() { return FDO_SAFE_ADDREF(m_fdoReader); }
+    void AddFeatures(INT32 count);
+    void AddFeature(MgPropertyDefinitionCollection* propDefCol);
+    MgByteReader* GetRaster(STRING rasterPropName, INT32 xSize, INT32 ySize);
 
 private:
 
-    MgServerFeatureReaderIdentifier* m_featReaderId;
+    Ptr<MgClassDefinition>  m_classDef;
+    Ptr<MgFeatureSet>       m_featureSet;
+    Ptr<MgServerFeatureConnection> m_connection;
     FdoIFeatureReader* m_fdoReader;
-    MgServerGetFeatures* m_getFeatures;
     bool m_removeFromPoolOnDestruction;
 
 CLASS_ID:

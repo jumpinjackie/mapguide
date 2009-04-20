@@ -37,17 +37,11 @@ MgGwsConnectionPool::~MgGwsConnectionPool ()
              iter != m_connections.end();
              iter++)
         {
-            FdoIConnection * conn = (*iter).second;
-            assert (conn);
-
-            //conn->Close();
-            //
-            // The FdoConnection should not be closed here because the connection
-            // was obtained from MgFdoConnectionManager.  The connection manager
-            // maintains the connection pool, so calling close will actually close the
-            // connection, and comprise the integrity of the pool.
-
-            conn->Release ();
+            MgServerFeatureConnection * conn = (*iter).second;
+            if(conn)
+            {
+                conn->Release ();
+            }
         }
         m_connections.clear();
     }
@@ -83,6 +77,8 @@ void MgGwsConnectionPool::SetOwner (IGWSObject * pObj)
 // in case when connection is not found in the pool
 FdoIConnection * MgGwsConnectionPool::GetConnection (FdoString * name)
 {
+    FdoIConnection* fdoConn = NULL;
+
     if (name == NULL || * name == 0)
     {
         throw IGWSException::Create (eGwsDataSourceNotFound);
@@ -99,15 +95,17 @@ FdoIConnection * MgGwsConnectionPool::GetConnection (FdoString * name)
 
     }
 
-    FdoIConnection * conn = (*iter).second;
-    assert (conn);
-    conn->AddRef ();
-    return conn;
+    MgServerFeatureConnection * conn = (*iter).second;
+    if(conn)
+    {
+        fdoConn = conn->GetConnection();
+    }
+    return fdoConn;
 }
 
 void MgGwsConnectionPool::AddConnection (
     FdoString       * name,
-    FdoIConnection  * conn
+    MgServerFeatureConnection* conn
 )
 {
     if (name == NULL || * name == 0 || conn == NULL)
@@ -116,7 +114,7 @@ void MgGwsConnectionPool::AddConnection (
     MgGwsConnectionIter iter = m_connections.find (name);
     if (iter == m_connections.end ())
     {
-        conn->AddRef ();
+        conn->AddRef();
         m_connections.insert (MgGwsConnectionMapValue (name, conn));
     }
     else
@@ -136,9 +134,11 @@ void MgGwsConnectionPool::RemoveConnection (FdoString * name)
         throw IGWSException::Create (eGwsSessionNotFound);
     }
 
-    FdoIConnection * conn = (*iter).second;
-    assert (conn);
-    conn->Release ();
+    MgServerFeatureConnection * conn = (*iter).second;
+    if(conn)
+    {
+        conn->Release ();
+    }
     m_connections.erase (iter);
 }
 

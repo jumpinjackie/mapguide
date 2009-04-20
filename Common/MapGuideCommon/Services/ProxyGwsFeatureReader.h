@@ -365,6 +365,8 @@ INTERNAL_API:
     ///
     virtual void Deserialize(MgStream* stream);
 
+    virtual MgFeatureSet* GetFeatures(INT32 count);
+
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// ASSIGNs feature set

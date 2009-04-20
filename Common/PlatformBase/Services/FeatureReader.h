@@ -410,6 +410,8 @@ INTERNAL_API:
     //reader and its caller are local
     virtual MgClassDefinition* GetClassDefinitionNoXml() = 0;
 
+    virtual MgFeatureSet* GetFeatures(INT32 count) = 0;
+
 private:
     INT16 GetMgPropertyType(MgPropertyDefinition* propDef);
 

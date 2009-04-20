@@ -86,11 +86,16 @@ MgStringCollection* MgServerGetConnectionPropertyValues::GetConnectionPropertyVa
     // Therefore validity of connection state does not apply.
 
     // Connect to provider
-    MgServerFeatureConnection msfc(providerName, decryptedPartialConnString);
+    Ptr<MgServerFeatureConnection> msfc = new MgServerFeatureConnection(providerName, decryptedPartialConnString);
     {
+        if(NULL == msfc.p)
+        {
+            throw new MgConnectionFailedException(L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
         // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up before the parent object
         // otherwise it leaves the FDO connection marked as still in use.
-        FdoPtr<FdoIConnection> fdoConn = msfc.GetConnection();
+        FdoPtr<FdoIConnection> fdoConn = msfc->GetConnection();
         CHECKNULL((FdoIConnection*)fdoConn, L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues");
 
         // Get Connection Info

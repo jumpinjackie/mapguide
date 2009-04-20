@@ -43,18 +43,18 @@ MgLongTransactionReader* MgServerGetLongTransactions::GetLongTransactions(MgReso
     }
 
     // Connect to provider
-    MgServerFeatureConnection msfc(resId);
+    Ptr<MgServerFeatureConnection> msfc = new MgServerFeatureConnection(resId);
 
     // connection must be open to retrieve list of active contexts
-    if ( msfc.IsConnectionOpen() )
+    if ((NULL != msfc.p) && ( msfc->IsConnectionOpen() ))
     {
         // The reference to the FDO connection from the MgServerFeatureConnection object must be cleaned up before the parent object
         // otherwise it leaves the FDO connection marked as still in use.
-        FdoPtr<FdoIConnection> fdoConn = msfc.GetConnection();
-        m_providerName = msfc.GetProviderName();
+        FdoPtr<FdoIConnection> fdoConn = msfc->GetConnection();
+        m_providerName = msfc->GetProviderName();
 
         // Check whether command is supported by provider
-        if (!msfc.SupportsCommand((INT32)FdoCommandType_GetLongTransactions))
+        if (!msfc->SupportsCommand((INT32)FdoCommandType_GetLongTransactions))
         {
             // TODO: specify which argument and message, once we have the mechanism
             STRING message = MgServerFeatureUtil::GetMessage(L"MgCommandNotSupported");

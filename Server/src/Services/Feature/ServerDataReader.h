@@ -23,7 +23,6 @@ class MgByteReader;
 class FdoIDataReader;
 class MgDateTime;
 class MgDataReader;
-class MgServerDataProcessor;
 
 #include "ServerFeatureDllExport.h"
 
@@ -238,7 +237,7 @@ INTERNAL_API:
         return m_cls_id;
     }
 
-    MgServerDataReader(FdoIDataReader* dataReader, CREFSTRING providerName);
+    MgServerDataReader(MgServerFeatureConnection* connection, FdoIDataReader* dataReader, CREFSTRING providerName);
     MgServerDataReader();
     ~MgServerDataReader();
     void Deserialize(MgStream* stream);
@@ -246,13 +245,19 @@ INTERNAL_API:
     MgByteReader* GetLOB(CREFSTRING propertyName);
     STRING GetRasterPropertyName();
     MgByteReader* GetRaster(INT32 xSize, INT32 ySize, STRING rasterPropName);
+    MgBatchPropertyCollection* GetRows(INT32 count = 0); // If zero means feature all records
+    MgPropertyDefinitionCollection* GetColumnDefinitions();
+    void AddRows(INT32 count);
+    void AddRow(MgPropertyDefinitionCollection* propDefCol);
 
 private:
 
-    FdoPtr<FdoIDataReader> m_dataReader;
+    Ptr<MgServerFeatureConnection> m_connection;
+    FdoIDataReader* m_dataReader;
     STRING m_providerName;
-    Ptr<MgServerDataProcessor> m_dataProcessor;
     bool m_removeFromPoolOnDestruction;
+    Ptr<MgBatchPropertyCollection>       m_bpCol;
+    Ptr<MgPropertyDefinitionCollection>  m_propDefCol;
 
 CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_FeatureService_DataReader;
