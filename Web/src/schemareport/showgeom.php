@@ -120,14 +120,20 @@
                 $featureProp = 'SPATIALEXTENTS("' . $geomName . '")';
                 $aggregateOptions->AddComputedProperty('extents', $featureProp);
 
-                $dataReader = $featureSrvc->SelectAggregate($featuresId, $className, $aggregateOptions);
-                if($dataReader->ReadNext())
+                try
                 {
-                    // Get the extents information
-                    $byteReader = $dataReader->GetGeometry('extents');
-                    $extentGeometry = $agfReaderWriter->Read($byteReader);
+                    $dataReader = $featureSrvc->SelectAggregate($featuresId, $className, $aggregateOptions);
+                    if($dataReader->ReadNext())
+                    {
+                        // Get the extents information
+                        $byteReader = $dataReader->GetGeometry('extents');
+                        $extentGeometry = $agfReaderWriter->Read($byteReader);
+                    }
+                    $dataReader->Close();
                 }
-                $dataReader->Close();
+                catch (MgException $e)
+                {
+                }
 
                 // Get the coordinates
                 $iterator = $extentGeometry->GetCoordinates();
