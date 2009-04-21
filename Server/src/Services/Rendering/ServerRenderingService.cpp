@@ -69,7 +69,7 @@ MgServerRenderingService::MgServerRenderingService() : MgRenderingService()
     MgConfiguration* pConf = MgConfiguration::GetInstance();
     pConf->GetStringValue(MgConfigProperties::GeneralPropertiesSection,
                           MgConfigProperties::GeneralPropertyRenderer,
-                          m_renderername,
+                          m_rendererName,
                           MgConfigProperties::DefaultGeneralPropertyRenderer);
 
     pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
@@ -91,6 +91,23 @@ MgServerRenderingService::MgServerRenderingService() : MgRenderingService()
                           MgConfigProperties::RenderingServicePropertyRenderSelectionBatchSize,
                           m_renderSelectionBatchSize,
                           MgConfigProperties::DefaultRenderingServicePropertyRenderSelectionBatchSize);
+
+    // there should only be one instance of this class, so it's safe to
+    // directly set these static variables
+    bool bClampPoints;
+    pConf->GetBoolValue(MgConfigProperties::RenderingServicePropertiesSection,
+                          MgConfigProperties::RenderingServicePropertyClampPoints,
+                          bClampPoints,
+                          MgConfigProperties::DefaultRenderingServicePropertyClampPoints);
+    AGGRenderer::s_bClampPoints = bClampPoints;
+
+    bool bGeneralizeData;
+    pConf->GetBoolValue(MgConfigProperties::RenderingServicePropertiesSection,
+                          MgConfigProperties::RenderingServicePropertyGeneralizeData,
+                          bGeneralizeData,
+                          MgConfigProperties::DefaultRenderingServicePropertyGeneralizeData);
+    AGGRenderer::s_bGeneralizeData = bGeneralizeData;
+    GDRenderer::s_bGeneralizeData = bGeneralizeData;
 }
 
 
@@ -892,7 +909,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
     // Both AGG and GD expect the format to be an uppercase string
     STRING format = MgUtil::ToUpper(imageFormat);
 
-    if (wcscmp(m_renderername.c_str(), L"AGG") == 0)
+    if (wcscmp(m_rendererName.c_str(), L"AGG") == 0)
         data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight));
     else
         data.reset(((GDRenderer*)dr)->Save(format, saveWidth, saveHeight));
@@ -972,7 +989,7 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
     // get a byte representation of the image
     auto_ptr<RS_ByteData> data;
 
-    if (wcscmp(m_renderername.c_str(), L"AGG") == 0)
+    if (wcscmp(m_rendererName.c_str(), L"AGG") == 0)
         data.reset(((AGGRenderer*)dr)->Save(format, width, height));
     else
         data.reset(((GDRenderer*)dr)->Save(format, width, height));
@@ -1358,14 +1375,10 @@ SE_Renderer* MgServerRenderingService::CreateRenderer(int width,
                                                       double tileExtentOffset)
 {
     SE_Renderer* renderer = NULL;
-    if (wcscmp(m_renderername.c_str(), L"AGG") == 0)
-    {
+    if (wcscmp(m_rendererName.c_str(), L"AGG") == 0)
         renderer = new AGGRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);
-    }
     else
-    {
         renderer = new GDRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);
-    }
 
     if (renderer != NULL)
     {
