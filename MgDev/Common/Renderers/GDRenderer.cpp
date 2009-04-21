@@ -99,6 +99,9 @@ public:
 static CInitGD sg_InitGD;
 
 
+bool GDRenderer::s_bGeneralizeData = false;
+
+
 //default constructor
 GDRenderer::GDRenderer(int width,
                        int height,
@@ -408,23 +411,22 @@ void GDRenderer::StartFeature(RS_FeatureReader* /*feature*/,
 }
 
 
-void GDRenderer::ProcessPolygon(LineBuffer* lb,
-                                RS_FillStyle& fill)
+void GDRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
 {
+    _ASSERT(NULL != lb);
     RS_FillStyle* use_fill = &fill;
 
     //should we use selection style?
     if (m_bSelectionMode)
         use_fill = &m_selFill;
 
-    LineBuffer* workbuffer = lb;
-
-    if (workbuffer->point_count() == 0)
+    if (lb->point_count() == 0)
         return;
 
+    //render any polygon fill
     if (use_fill->color().alpha() != 0)
     {
-        _TransformPointsNoClamp(workbuffer);
+        _TransformPointsNoClamp(lb);
 
         int gdc = ConvertColor((gdImagePtr)m_imout, use_fill->color());
         int gdcbg = ConvertColor((gdImagePtr)m_imout, use_fill->background());
@@ -438,7 +440,7 @@ void GDRenderer::ProcessPolygon(LineBuffer* lb,
         }
 
         //call the new rasterizer
-        m_polyrasterizer->FillPolygon((Point*)m_wtPointBuffer, workbuffer->point_count(), workbuffer->cntrs(), workbuffer->cntr_count(),
+        m_polyrasterizer->FillPolygon((Point*)m_wtPointBuffer, lb->point_count(), lb->cntrs(), lb->cntr_count(),
             fillpat? gdTiled : gdc, (gdImagePtr)m_imout);
 
         if (fillpat)
@@ -448,26 +450,49 @@ void GDRenderer::ProcessPolygon(LineBuffer* lb,
         }
     }
 
-    //write out the polygon outline as a bunch of WT_Polylines
-    if (use_fill->outline().color().alpha() == 0)
+    //render any polygon outline
+    RS_LineStroke& use_lsym = use_fill->outline();
+    if (use_lsym.color().alpha() == 0)
         return;
 
+    LineBuffer* workbuffer = lb;
     bool deleteBuffer = false;
 
+    if (s_bGeneralizeData)
+    {
+        if (workbuffer->point_count() > 6)
+        {
+            LineBuffer* optbuffer = workbuffer->Optimize(m_drawingScale, m_pPool);
+            if (optbuffer)
+            {
+                deleteBuffer = true;
+                workbuffer = optbuffer;
+            }
+        }
+    }
+
     //apply line style if needed
-    if ((wcscmp(use_fill->outline().style().c_str(), L"Solid") != 0))
+    if ((wcscmp(use_lsym.style().c_str(), L"Solid") != 0))
     {
         //TODO: we should simplify the math that does all that pixel-based stuff
-        workbuffer = ApplyLineStyle(workbuffer, (wchar_t*)use_fill->outline().style().c_str(),
-            use_fill->outline().width() * m_dpi / METERS_PER_INCH /*LineStyle works in pixels*/,
-            m_drawingScale, /* pixels per map unit */
-            m_dpi /* dpi */ );
-        deleteBuffer = true;
+        LineBuffer* newbuffer = ApplyLineStyle(workbuffer, (wchar_t*)use_lsym.style().c_str(),
+            use_lsym.width() * m_dpi / METERS_PER_INCH,     // LineStyle works in pixels
+            m_drawingScale,                                 // pixels per map unit
+            m_dpi);                                         // dpi
+
+        if (newbuffer)
+        {
+            if (deleteBuffer)
+                LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
+
+            deleteBuffer = true;
+            workbuffer = newbuffer;
+        }
     }
 
     if (workbuffer)
     {
-        WritePolylines(workbuffer, use_fill->outline(), true);
+        WritePolylines(workbuffer, use_lsym, true);
 
         if (deleteBuffer)
             LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
@@ -475,34 +500,55 @@ void GDRenderer::ProcessPolygon(LineBuffer* lb,
 }
 
 
-void GDRenderer::ProcessPolyline(LineBuffer* srclb,
-                                 RS_LineStroke& lsym)
+void GDRenderer::ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym)
 {
+    _ASSERT(NULL != lb);
     RS_LineStroke* use_lsym = &lsym;
 
     //are we drawing a selection?
     if (m_bSelectionMode)
         use_lsym = &(m_selFill.outline());
 
-    if (srclb->point_count() == 0)
+    if (lb->point_count() == 0)
         return;
 
+    //render any polyline outline
     if (use_lsym->color().alpha() == 0)
         return;
 
+    LineBuffer* workbuffer = lb;
     bool deleteBuffer = false;
 
-    //apply line style if needed
-    LineBuffer* workbuffer = srclb;
+    if (s_bGeneralizeData)
+    {
+        if (workbuffer->point_count() > 6)
+        {
+            LineBuffer* optbuffer = workbuffer->Optimize(m_drawingScale, m_pPool);
+            if (optbuffer)
+            {
+                deleteBuffer = true;
+                workbuffer = optbuffer;
+            }
+        }
+    }
 
+    //apply line style if needed
     if ((wcscmp(use_lsym->style().c_str(), L"Solid") != 0))
     {
         //TODO: we should simplify the math that does all that pixel-based stuff
-        workbuffer = ApplyLineStyle(workbuffer, (wchar_t*)use_lsym->style().c_str(),
-            use_lsym->width() * m_dpi / METERS_PER_INCH /*LineStyle works in pixels*/,
-            m_drawingScale, /* pixels per map unit */
-            m_dpi /* dpi */ );
-        deleteBuffer = true;
+        LineBuffer* newbuffer = ApplyLineStyle(workbuffer, (wchar_t*)use_lsym->style().c_str(),
+            use_lsym->width() * m_dpi / METERS_PER_INCH,    // LineStyle works in pixels
+            m_drawingScale,                                 // pixels per map unit
+            m_dpi);                                         // dpi
+
+        if (newbuffer)
+        {
+            if (deleteBuffer)
+                LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
+
+            deleteBuffer = true;
+            workbuffer = newbuffer;
+        }
     }
 
     if (workbuffer)
@@ -510,7 +556,7 @@ void GDRenderer::ProcessPolyline(LineBuffer* srclb,
         WritePolylines(workbuffer, *use_lsym, true);
 
         if (deleteBuffer)
-            delete workbuffer;
+            LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
     }
 }
 
@@ -1647,6 +1693,72 @@ const RS_Font* GDRenderer::FindFont(RS_FontDef& def)
                           (def.style() & RS_FontStyle_Italic) != 0);
 
     return pFont;
+}
+
+
+// Called when applying a line style on a feature geometry.  Line styles can
+// only be applied to linestring and polygon feature geometry types.
+void GDRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
+{
+    LineBuffer* featGeom = ctx->geometry;
+
+    if (s_bGeneralizeData)
+    {
+        // if the geometry bounds is less than one sixteenth pixel it is too small to try drawing
+//      RS_Bounds bds = featGeom->bounds();
+//      if ((bds.width() < 0.25*m_drawingScale) && (bds.height() < 0.25*m_drawingScale))
+//          return;
+
+        if (featGeom->point_count() > 6)
+            featGeom = featGeom->Optimize(0.5*m_drawingScale, m_pPool);
+    }
+
+    SE_ApplyContext local_ctx = *ctx;
+    local_ctx.geometry = featGeom;
+    SE_Renderer::ProcessLine(&local_ctx, style);
+
+    // cleanup
+    if (featGeom != ctx->geometry)
+        LineBufferPool::FreeLineBuffer(m_pPool, featGeom);
+}
+
+
+// Called when applying an area style on a feature geometry.  Area styles can
+// can only be applied to polygon feature geometry types.
+void GDRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
+{
+    LineBuffer* featGeom = ctx->geometry;
+
+    // can't apply an area style to point and linestring geometry types
+    switch (featGeom->geom_type())
+    {
+        case FdoGeometryType_Point:
+        case FdoGeometryType_MultiPoint:
+        case FdoGeometryType_LineString:
+        case FdoGeometryType_MultiLineString:
+        case FdoGeometryType_CurveString:
+        case FdoGeometryType_MultiCurveString:
+            return;
+    }
+
+    if (s_bGeneralizeData)
+    {
+        // if the geometry bounds is less than one quarter pixel, then it is too small to try drawing
+//      RS_Bounds bds = featGeom->bounds();
+//      if ((bds.width() < 0.5*m_drawingScale) && (bds.height() < 0.5*m_drawingScale))
+//          return;
+
+        if (featGeom->point_count() > 6)
+            featGeom = featGeom->Optimize(0.5*m_drawingScale, m_pPool);
+    }
+
+    SE_ApplyContext local_ctx = *ctx;
+    local_ctx.geometry = featGeom;
+    SE_Renderer::ProcessArea(&local_ctx, style);
+
+    // cleanup
+    if (featGeom != ctx->geometry)
+        LineBufferPool::FreeLineBuffer(m_pPool, featGeom);
 }
 
 

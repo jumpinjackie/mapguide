@@ -730,7 +730,7 @@ void LabelRendererLocal::BlastLabels()
                 }
             }
 
-            // we missed a case if we hit this assert goes off
+            // we missed a case if we hit this assert
             _ASSERT(false);
         }
 

@@ -357,6 +357,14 @@ EXTERNAL_API:
     static const STRING RenderingServicePropertyRenderSelectionBatchSize;       /// value("RenderSelectionBatchSize")
     static const INT32 DefaultRenderingServicePropertyRenderSelectionBatchSize; /// value(10000)
 
+    /// Sets the clamp points renderer option for AGG
+    static const STRING RenderingServicePropertyClampPoints;                    /// value("ClampPoints")
+    static const bool DefaultRenderingServicePropertyClampPoints;               /// value(false)
+
+    /// Sets the generalize data renderer option
+    static const STRING RenderingServicePropertyGeneralizeData;                 /// value("GeneralizeData")
+    static const bool DefaultRenderingServicePropertyGeneralizeData;            /// value(false)
+
     /// FONT ALIASES SECTION -----------------------------------------------------------------------------
 
     /// font alias mappings

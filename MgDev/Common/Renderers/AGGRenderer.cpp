@@ -66,9 +66,6 @@ using namespace DWFToolkit;
 using namespace DWFCore;
 
 
-bool font_flip_y = !flip_y;
-
-
 #define ROUND(x) (int)((x) + 0.5)
 
 #define SYMBOL_BITMAP_SIZE 128
@@ -86,6 +83,11 @@ long GetTickCount()
 }
 
 #endif
+
+
+bool AGGRenderer::s_bClampPoints    = false;
+bool AGGRenderer::s_bGeneralizeData = false;
+
 
 // constructor that allows a backbuffer
 AGGRenderer::AGGRenderer(int width,
@@ -346,11 +348,10 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
     if (m_bSelectionMode)
         use_fill = &m_selFill;
 
-    LineBuffer* workbuffer = lb;
-
-    if (workbuffer->point_count() == 0)
+    if (lb->point_count() == 0)
         return;
 
+    // render any polygon fill
     if (use_fill->color().alpha() != 0)
     {
         if (wcscmp(use_fill->pattern().c_str(), L"Solid") != 0)
@@ -370,10 +371,10 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
             agg::span_allocator<mg_pixfmt_type::color_type> sa;
 
             // transform to screen coords and transfer to AGG storage
-            unsigned int* pathids = (unsigned int*) alloca(workbuffer->geom_count() * sizeof(unsigned int));
-            _TransferPoints(c(), workbuffer, &m_xform, pathids);
+            unsigned int* pathids = (unsigned int*)alloca(lb->geom_count() * sizeof(unsigned int));
+            _TransferPoints(c(), lb, &m_xform, pathids, true);
 
-            for (int i=0; i<workbuffer->geom_count(); ++i)
+            for (int i=0; i<lb->geom_count(); ++i)
             {
                 c()->ras.reset();
                 c()->ras.add_path(c()->ps, pathids[i]);
@@ -384,62 +385,95 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
         }
         else
         {
-            DrawScreenPolygon(workbuffer, &m_xform, use_fill->color().argb());
+            DrawScreenPolygon(lb, &m_xform, use_fill->color().argb());
         }
     }
 
-    // write out the polygon outline as a bunch of WT_Polylines
-    if (use_fill->outline().color().alpha() == 0)
+    // render any polygon outline
+    RS_LineStroke& use_lsym = use_fill->outline();
+    if (use_lsym.color().alpha() == 0)
         return;
 
+    LineBuffer* workbuffer = lb;
     bool deleteBuffer = false;
 
-    // apply line style if needed
-    if ((wcscmp(use_fill->outline().style().c_str(), L"Solid") != 0))
+    if (s_bGeneralizeData)
     {
-        // necessary because the line style engine may produce lots
-        // of small moveto-lineto combinations which agg will throw out
-        // instead of rendering a dot, resulting in a gap
-        LineBuffer* optbuffer = workbuffer->Optimize(m_drawingScale, m_pPool);
-
-        if (NULL != optbuffer)
+        if (workbuffer->point_count() > 6)
         {
-            if (!m_bRequiresClipping)
+            LineBuffer* optbuffer = workbuffer->Optimize(m_drawingScale, m_pPool);
+            if (optbuffer)
             {
-                // clip the buffer, since if we are zoomed in a lot, it can
-                // have huge out-of-screen sections which will incur enormous
-                // overhead for stuff that is not really visible
-                LineBuffer* clipbuffer = optbuffer->Clip(m_extents, LineBuffer::ctLine, m_pPool);
-
-                // check if it needed clipping
-                if (optbuffer != clipbuffer)
-                {
-                    LineBufferPool::FreeLineBuffer(m_pPool, optbuffer);
-                    optbuffer = clipbuffer;
-                }
-            }
-
-            if (NULL != optbuffer)
-            {
-                // TODO: we should simplify the math that does all that pixel-based stuff
-                workbuffer = ApplyLineStyle(optbuffer, (wchar_t*)use_fill->outline().style().c_str(),
-                    use_fill->outline().width() * m_dpi / METERS_PER_INCH /*LineStyle works in pixels*/,
-                    m_drawingScale, /* pixels per map unit */
-                    m_dpi /* dpi */ );
                 deleteBuffer = true;
+                workbuffer = optbuffer;
+            }
+        }
+    }
 
-                LineBufferPool::FreeLineBuffer(m_pPool, optbuffer);
+    // apply line style if needed
+    if ((wcscmp(use_lsym.style().c_str(), L"Solid") != 0))
+    {
+        // If we didn't generalize earlier, we have to do it now.  It's
+        // necessary because the line style engine may produce lots of
+        // small moveto-lineto combinations which agg will throw out
+        // instead of rendering a dot, resulting in a gap.
+        if (!s_bGeneralizeData)
+        {
+            LineBuffer* optbuffer = workbuffer->Optimize(m_drawingScale, m_pPool);
+            if (optbuffer)
+            {
+                if (deleteBuffer)
+                    LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
+
+                deleteBuffer = true;
+                workbuffer = optbuffer;
+            }
+        }
+
+        // If we didn't clip earlier, do it now.  If we're zoomed in a
+        // lot there can be huge out-of-screen sections which will incur
+        // enormous overhead for stuff that's not visible.
+        if (!m_bRequiresClipping)
+        {
+            LineBuffer* clipbuffer = workbuffer->Clip(m_extents, LineBuffer::ctLine, m_pPool);
+
+            // check if it needed clipping
+            if (workbuffer != clipbuffer)
+            {
+                if (deleteBuffer)
+                    LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
+
+                deleteBuffer = true;
+                workbuffer = clipbuffer;
+            }
+        }
+
+        if (workbuffer)
+        {
+            // TODO: we should simplify the math that does all that pixel-based stuff
+            LineBuffer* newbuffer = ApplyLineStyle(workbuffer, (wchar_t*)use_lsym.style().c_str(),
+                use_lsym.width() * m_dpi / METERS_PER_INCH,     // LineStyle works in pixels
+                m_drawingScale,                                 // pixels per map unit
+                m_dpi);                                         // dpi
+
+            if (newbuffer)
+            {
+                if (deleteBuffer)
+                    LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
+
+                deleteBuffer = true;
+                workbuffer = newbuffer;
             }
         }
     }
 
     if (workbuffer)
     {
-        m_lineStroke.color = use_fill->outline().color().argb();
+        m_lineStroke.color = use_lsym.color().argb();
 
         // convert thickness to equivalent mapping space width
-        double thickness = use_fill->outline().width();
-        m_lineStroke.weight = max(1.0, _MeterToMapSize(use_fill->outline().units(), fabs(thickness)) * m_xform.x0);
+        double thickness = use_lsym.width();
+        m_lineStroke.weight = max(1.0, _MeterToMapSize(use_lsym.units(), fabs(thickness)) * m_xform.x0);
 
         DrawScreenPolyline(workbuffer, &m_xform, m_lineStroke);
 
@@ -449,60 +483,91 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
 }
 
 
-void AGGRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
+void AGGRenderer::ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym)
 {
-    _ASSERT(NULL != srclb);
+    _ASSERT(NULL != lb);
     RS_LineStroke* use_lsym = &lsym;
 
     // are we drawing a selection?
     if (m_bSelectionMode)
         use_lsym = &(m_selFill.outline());
 
-    if (srclb->point_count() == 0)
+    if (lb->point_count() == 0)
         return;
 
+    // render any polyline outline
     if (use_lsym->color().alpha() == 0)
         return;
 
+    LineBuffer* workbuffer = lb;
     bool deleteBuffer = false;
 
-    // apply line style if needed
-    LineBuffer* workbuffer = srclb;
+    if (s_bGeneralizeData)
+    {
+        if (workbuffer->point_count() > 6)
+        {
+            LineBuffer* optbuffer = workbuffer->Optimize(m_drawingScale, m_pPool);
+            if (optbuffer)
+            {
+                deleteBuffer = true;
+                workbuffer = optbuffer;
+            }
+        }
+    }
 
+    // apply line style if needed
     if ((wcscmp(use_lsym->style().c_str(), L"Solid") != 0))
     {
-        // necessary because the line style engine may produce lots
-        // of small moveto-lineto combinations which agg will throw out
-        // instead of rendering a dot, resulting in a gap
-        LineBuffer* optbuffer = workbuffer->Optimize(m_drawingScale, m_pPool);
-
-        if (NULL != optbuffer)
+        // If we didn't generalize earlier, we have to do it now.  It's
+        // necessary because the line style engine may produce lots of
+        // small moveto-lineto combinations which agg will throw out
+        // instead of rendering a dot, resulting in a gap.
+        if (!s_bGeneralizeData)
         {
-            if (!m_bRequiresClipping)
+            LineBuffer* optbuffer = workbuffer->Optimize(m_drawingScale, m_pPool);
+            if (optbuffer)
             {
-                // Always clip the buffer in this case, since if we are zoomed in a lot, it can
-                // have huge out-of-screen sections which will incur enormous
-                // overhead for stuff that is not really visible
-                LineBuffer* clipbuffer = optbuffer->Clip(m_extents, LineBuffer::ctLine, m_pPool);
+                if (deleteBuffer)
+                    LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
 
-                // check if it needed clipping
-                if (optbuffer != clipbuffer)
-                {
-                    LineBufferPool::FreeLineBuffer(m_pPool, optbuffer);
-                    optbuffer = clipbuffer;
-                }
-            }
-
-            if (NULL != optbuffer)
-            {
-                // TODO: we should simplify the math that does all that pixel-based stuff
-                workbuffer = ApplyLineStyle(optbuffer, (wchar_t*)use_lsym->style().c_str(),
-                    use_lsym->width() * m_dpi / METERS_PER_INCH /*LineStyle works in pixels*/,
-                    m_drawingScale, /* pixels per map unit */
-                    m_dpi /* dpi */ );
                 deleteBuffer = true;
+                workbuffer = optbuffer;
+            }
+        }
 
-                LineBufferPool::FreeLineBuffer(m_pPool, optbuffer);
+        // If we didn't clip earlier, do it now.  If we're zoomed in a
+        // lot there can be huge out-of-screen sections which will incur
+        // enormous overhead for stuff that's not visible.
+        if (!m_bRequiresClipping)
+        {
+            LineBuffer* clipbuffer = workbuffer->Clip(m_extents, LineBuffer::ctLine, m_pPool);
+
+            // check if it needed clipping
+            if (workbuffer != clipbuffer)
+            {
+                if (deleteBuffer)
+                    LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
+
+                deleteBuffer = true;
+                workbuffer = clipbuffer;
+            }
+        }
+
+        if (workbuffer)
+        {
+            // TODO: we should simplify the math that does all that pixel-based stuff
+            LineBuffer* newbuffer = ApplyLineStyle(workbuffer, (wchar_t*)use_lsym->style().c_str(),
+                use_lsym->width() * m_dpi / METERS_PER_INCH,    // LineStyle works in pixels
+                m_drawingScale,                                 // pixels per map unit
+                m_dpi);                                         // dpi
+
+            if (newbuffer)
+            {
+                if (deleteBuffer)
+                    LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
+
+                deleteBuffer = true;
+                workbuffer = newbuffer;
             }
         }
     }
@@ -1575,8 +1640,8 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth)
         c()->clip_rb.clip_box(iminx, iminy, imaxx, imaxy);
 
         // transform to screen coords and transfer to AGG storage
-        unsigned int* pathids = (unsigned int*) alloca(polygon->geom_count() * sizeof(unsigned int));
-        _TransferPoints(c(), polygon, &m_xform, pathids);
+        unsigned int* pathids = (unsigned int*)alloca(polygon->geom_count() * sizeof(unsigned int));
+        _TransferPoints(c(), polygon, &m_xform, pathids, true);
 
         // clear the affected region of the alpha mask
         agg::gray8 cc(0);
@@ -1627,7 +1692,7 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth)
             mg_invert_ren_type renaai(reni);
 
             // render the alpha mask polygon, again, this time with the inverting blender
-            _TransferPoints(c(), polygon, &m_xform, pathids);
+            _TransferPoints(c(), polygon, &m_xform, pathids, true);
             for (int i=0; i<polygon->geom_count(); ++i)
             {
                 c()->ras.reset();
@@ -1637,6 +1702,33 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth)
             c()->ras.reset();
         }
     }
+}
+
+
+// Called when applying a line style on a feature geometry.  Line styles can
+// only be applied to linestring and polygon feature geometry types.
+void AGGRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
+{
+    LineBuffer* featGeom = ctx->geometry;
+
+    if (s_bGeneralizeData)
+    {
+        // if the geometry bounds is less than one sixteenth pixel it is too small to try drawing
+//      RS_Bounds bds = featGeom->bounds();
+//      if ((bds.width() < 0.25*m_drawingScale) && (bds.height() < 0.25*m_drawingScale))
+//          return;
+
+        if (featGeom->point_count() > 6)
+            featGeom = featGeom->Optimize(0.5*m_drawingScale, m_pPool);
+    }
+
+    SE_ApplyContext local_ctx = *ctx;
+    local_ctx.geometry = featGeom;
+    SE_Renderer::ProcessLine(&local_ctx, style);
+
+    // cleanup
+    if (featGeom != ctx->geometry)
+        LineBufferPool::FreeLineBuffer(m_pPool, featGeom);
 }
 
 
@@ -1658,19 +1750,42 @@ void AGGRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
             return;
     }
 
+    if (s_bGeneralizeData)
+    {
+        // if the geometry bounds is less than one quarter pixel, then it is too small to try drawing
+//      RS_Bounds bds = featGeom->bounds();
+//      if ((bds.width() < 0.5*m_drawingScale) && (bds.height() < 0.5*m_drawingScale))
+//          return;
+
+        if (featGeom->point_count() > 6)
+            featGeom = featGeom->Optimize(0.5*m_drawingScale, m_pPool);
+    }
+
     bool clip = (!style->solidFill && style->clippingControl == SE_ClippingControl_Clip);
     if (clip)
         SetPolyClip(featGeom, style->bufferWidth);
 
-    SE_Renderer::ProcessArea(ctx, style);
+    SE_ApplyContext local_ctx = *ctx;
+    local_ctx.geometry = featGeom;
+    SE_Renderer::ProcessArea(&local_ctx, style);
 
     if (clip)
         SetPolyClip(NULL, 0.0);
+
+    // cleanup
+    if (featGeom != ctx->geometry)
+        LineBufferPool::FreeLineBuffer(m_pPool, featGeom);
 }
 
 
-void AGGRenderer::_TransferPoints(agg_context* c, LineBuffer* srcLB, const SE_Matrix* xform, unsigned int* pathids)
+void AGGRenderer::_TransferPoints(agg_context* c, LineBuffer* srcLB, const SE_Matrix* xform, unsigned int* pathids, bool isPolygon)
 {
+    if (s_bClampPoints)
+    {
+        _TransferPointsClamped(c, srcLB, xform, pathids, isPolygon);
+        return;
+    }
+
     c->ps.remove_all();
 
     int offset = 0;
@@ -1768,6 +1883,150 @@ void AGGRenderer::_TransferPoints(agg_context* c, LineBuffer* srcLB, const SE_Ma
 }
 
 
+void AGGRenderer::_TransferPointsClamped(agg_context* c, LineBuffer* srcLB, const SE_Matrix* xform, unsigned int* pathids, bool isPolygon)
+{
+    c->ps.remove_all();
+
+    int offset = 0;
+    int* cntrs = srcLB->cntrs();
+
+    if (pathids)
+        *pathids = 0;
+
+    for (int h=0; h<srcLB->geom_count(); ++h)
+    {
+        if (h && pathids)
+            pathids[h] = c->ps.start_new_path();
+
+        int cur_cntr_count = srcLB->geom_size(h);
+
+        for (int i=0; i<cur_cntr_count; ++i)
+        {
+            int ci = offset;
+
+            // add the initial point
+            double sx = srcLB->x_coord(ci);
+            double sy = srcLB->y_coord(ci);
+            ++ci;
+
+            if (xform)
+                xform->transform(sx, sy, sx, sy);
+            double sxi = ROUND(sx);
+            double syi = ROUND(sy);
+            if (!isPolygon)
+            {
+                sxi += 0.5;
+                syi += 0.5;
+            }
+
+            c->ps.move_to(sxi, syi);
+            double lastxi = sxi;
+            double lastyi = syi;
+            int numAdded = 1;
+
+            int ptlast = cntrs[i] - 1;
+            if (!ptlast)
+                continue;
+
+            // add the interior points
+            double tx, ty, txi, tyi;
+            for (int j=1; j<ptlast; ++j)
+            {
+                tx = srcLB->x_coord(ci);
+                ty = srcLB->y_coord(ci);
+                ++ci;
+
+                if (xform)
+                    xform->transform(tx, ty, tx, ty);
+                txi = ROUND(tx);
+                tyi = ROUND(ty);
+                if (!isPolygon)
+                {
+                    txi += 0.5;
+                    tyi += 0.5;
+                }
+
+                // don't add the same point repeatedly
+                if (txi != lastxi || tyi != lastyi)
+                {
+                    c->ps.line_to(txi, tyi);
+                    lastxi = txi;
+                    lastyi = tyi;
+                    ++numAdded;
+                }
+            }
+
+            // add the final point
+            tx = srcLB->x_coord(ci);
+            ty = srcLB->y_coord(ci);
+            ++ci;
+
+            if (xform)
+                xform->transform(tx, ty, tx, ty);
+            txi = ROUND(tx);
+            tyi = ROUND(ty);
+            if (!isPolygon)
+            {
+                txi += 0.5;
+                tyi += 0.5;
+            }
+
+            // detect a close segment (in a Linebuffer this is caused by first and
+            // last point of the contour being equal
+            if (tx == sx && ty == sy)
+            {
+                if (numAdded > 1)
+                    c->ps.close_polygon();
+                else
+                {
+                    // polygon size is less than 1 pixel - draw it as a dot
+                    // HACK - figure out how to draw a dot in AGG with a path storage
+//                  int ii = (int)txi;
+//                  int jj = (int)tyi;
+//                  jj = c->rb.height() - 1 - jj;
+//                  c->m_rows[ii + jj * c->rb.width()] = 0xff000000;
+                    c->ps.move_to(txi-0.24, tyi);
+                    c->ps.line_to(txi+0.24, tyi);
+                }
+            }
+            else if (ptlast == 1 || numAdded == 1)
+            {
+                // only two points in the buffer - check if this corresponds to a dot
+                double dx = tx - sx;
+                double dy = ty - sy;
+                double len2 = dx*dx + dy*dy;
+
+                // Although dots are replaced by lines with length LINE_SEGMENT_DOT_SIZE,
+                // it's possible that the lines end up somewhat larger in the wrapping
+                // case due to warping.  We therefore perform the check against a 10 times
+                // larger length.  In the future it might be worth relaxing this to simply
+                // check for any segment less than one pixel in length.
+                if (len2 < 100.0*LINE_SEGMENT_DOT_SIZE*LINE_SEGMENT_DOT_SIZE)
+                {
+                    // found a dot - draw it as a 1-pixel long line
+                    double len = sqrt(len2);
+                    dx /= len;
+                    dy /= len;
+                    c->ps.move_to(tx-0.5*dx, ty-0.5*dy);
+                    c->ps.line_to(tx+0.5*dx, ty+0.5*dy);
+                }
+                else
+                {
+                    // a normal line segment
+                    c->ps.line_to(txi, tyi);
+                }
+            }
+            else
+                c->ps.line_to(txi, tyi);
+
+            offset += cntrs[i];
+        }
+
+        cntrs += cur_cntr_count;
+    }
+}
+
+
 void AGGRenderer::DrawScreenPolyline(LineBuffer* srclb, const SE_Matrix* xform, const SE_LineStroke& lineStroke)
 {
     DrawScreenPolyline(c(), srclb, xform, lineStroke);
@@ -1789,10 +2048,7 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
     // add to the agg path storage - here it doesn't matter
     // how many geometries there are in the line buffer,
     // so we just pass NULL for the path offsets array
-    _TransferPoints(c, srclb, xform, NULL);
-
-    // note: removed the code which used the outline renderer for thin lines.
-    // there were problems with dense polylines not being rendered accurately.
+    _TransferPoints(c, srclb, xform, NULL, false);
 
     // stroke the line as a polygon
     agg::conv_stroke<agg::path_storage> stroke(c->ps);
@@ -1867,8 +2123,8 @@ void AGGRenderer::DrawScreenPolygon(agg_context* c, LineBuffer* polygon, const S
         return;
 
     // transform to screen coords and transfer to AGG storage
-    unsigned int* pathids = (unsigned int*) alloca(polygon->geom_count() * sizeof(unsigned int));
-    _TransferPoints(c, polygon, xform, pathids);
+    unsigned int* pathids = (unsigned int*)alloca(polygon->geom_count() * sizeof(unsigned int));
+    _TransferPoints(c, polygon, xform, pathids, true);
 
     for (int i=0; i<polygon->geom_count(); ++i)
     {

@@ -280,6 +280,10 @@ const STRING MgConfigProperties::RenderingServicePropertyRasterGridSizeOverrideR
 const double MgConfigProperties::DefaultRenderingServicePropertyRasterGridSizeOverrideRatioForPlot = 0.10;
 const STRING MgConfigProperties::RenderingServicePropertyRenderSelectionBatchSize           = L"RenderSelectionBatchSize";
 const INT32  MgConfigProperties::DefaultRenderingServicePropertyRenderSelectionBatchSize    = 10000;
+const STRING MgConfigProperties::RenderingServicePropertyClampPoints                        = L"ClampPoints";
+const bool   MgConfigProperties::DefaultRenderingServicePropertyClampPoints                 = false;
+const STRING MgConfigProperties::RenderingServicePropertyGeneralizeData                     = L"GeneralizeData";
+const bool   MgConfigProperties::DefaultRenderingServicePropertyGeneralizeData              = false;
 
 // ******************************************************************
 // Font Alias Mappings section

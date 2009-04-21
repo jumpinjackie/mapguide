@@ -211,7 +211,7 @@ private:
     Ptr<MgCoordinateSystemFactory> m_pCSFactory;
 
     // this will eventually be removed
-    STRING m_renderername;
+    STRING m_rendererName;
 
     INT32 m_rasterGridSize;
     INT32 m_minRasterGridSize;

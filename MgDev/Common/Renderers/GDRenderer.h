@@ -180,6 +180,9 @@ public:
                                      bool            exclude,
                                      LineBuffer*     path = NULL);
 
+    virtual void ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style);
+    virtual void ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style);
+
     virtual void AddExclusionRegion(RS_F_Point* fpts, int npts);
 
     ////////////////////////////////////////////////
@@ -251,6 +254,9 @@ private:
     RS_FillStyle m_selFill;
 
     LabelRendererBase* m_labeler;
+
+public:
+    RENDERERS_API static bool s_bGeneralizeData;
 
     /////////////////////////////////////////////////////////
     //

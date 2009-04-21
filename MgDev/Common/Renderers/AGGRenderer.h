@@ -69,6 +69,7 @@ public:
                               bool requiresClipping,
                               bool localOverposting,
                               double tileExtentOffset);
+
     RENDERERS_API virtual ~AGGRenderer();
 
     ///////////////////////////////////
@@ -199,6 +200,7 @@ public:
                                                    bool             exclude,
                                                    LineBuffer*      path = NULL);
 
+    RENDERERS_API virtual void ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style);
     RENDERERS_API virtual void ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style);
 
     RENDERERS_API virtual void AddExclusionRegion(RS_F_Point* fpts, int npts);
@@ -239,7 +241,8 @@ private:
 
     void ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds = NULL);
 
-    static void _TransferPoints(agg_context* c, LineBuffer* src, const SE_Matrix* xform, unsigned int* pathids);
+    static void _TransferPoints(agg_context* c, LineBuffer* src, const SE_Matrix* xform, unsigned int* pathids, bool isPolygon);
+    static void _TransferPointsClamped(agg_context* c, LineBuffer* src, const SE_Matrix* xform, unsigned int* pathids, bool isPolygon);
 
     static void RenderTransformMeshRectangle(mg_rendering_buffer& src, agg_context* cxt, RS_ImageFormat format,
                                  TransformMesh* transformMesh, int lowerLeftIndex, int lowerRightIndex, int upperLeftIndex, int upperRightIndex);
@@ -296,6 +299,10 @@ private:
     RS_LayerUIInfo* m_layerInfo;
     RS_FeatureClassInfo* m_fcInfo;
 
+public:
+    RENDERERS_API static bool s_bClampPoints;
+    RENDERERS_API static bool s_bGeneralizeData;
+
     /////////////////////////////////////////////////////////
     //
     // Functions and structures used during insertion of W2Ds
@@ -320,7 +327,7 @@ public:
                                                               WT_Logical_Point* srcpts,
                                                               int               numpts,
                                                               bool              checkInBounds);
-    /*Do not export from DLL*/  double ScaleW2DNumber(WT_File& file, long number);
+    /*Do not export from DLL*/ double ScaleW2DNumber(WT_File& file, long number);
 
 private:
     void AddW2DContent(RS_InputStream* in, CSysTransformer* xformer, const RS_String& w2dfilter);
