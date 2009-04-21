@@ -105,6 +105,8 @@ void MgHttpQueryMapFeatures::Execute(MgHttpResponse& hResponse)
             selectionVariant = MgFeatureSpatialOperations::Intersects;
         else if (m_selectionVariant == L"WITHIN")
             selectionVariant = MgFeatureSpatialOperations::Within;
+        else if (m_selectionVariant == L"ENVELOPEINTERSECTS")
+            selectionVariant = MgFeatureSpatialOperations::EnvelopeIntersects;
         else    // add more values if necessary
         {
             MgStringCollection arguments;
