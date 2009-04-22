@@ -20,7 +20,7 @@
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>Debug;MgTitle=$(MgTitle);MgVersion=$(MgVersion);MgRegKey=$(MgRegKey);MgServerSource=$(MgServerSource);MgWebSource=$(MgWebSource)</DefineConstants>
-    <Cultures>en-US</Cultures>
+    <Cultures>$(MgCulture)</Cultures>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>..\..\Output\</OutputPath>
