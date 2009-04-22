@@ -71,8 +71,4 @@
     <String Id="CreateVDirJavaAgent">Creating mapviewerjava IIS virtual directory</String>
     <String Id="DeleteWebServiceExtension">Remove Web Service Extension from IIS</String>
     <String Id="DeleteVDirMapGuide">Removing mapguide IIS virtual directory</String>
-    <String Id="CreateAPPMapGuideWithIIS7">Creating IIS7 mapguide application</String>
-    <String Id="CreateVDirPhpAgentWithIIS7">Creating IIS7 virtual directory: mapviewerphp</String>
-    <String Id="CreateAPPNetAgentWithIIS7">Creating IIS7 virtual directory: mapviewernet</String>
-    <String Id="DeleteAPPMapGuideWithIIS7">Remove IIS7 mapguide application</String>
 </WixLocalization>

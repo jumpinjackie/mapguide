@@ -6,7 +6,11 @@
         <DirectoryRef Id="WebParentFolder">
             <Directory Id="WEBEXTENSIONSLOCATION" Name="Web">
                 <Component Id="WebExtensionsComponent" Guid="AE77C8EB-284D-4410-903F-92AD516DEA93">
-                    <CreateFolder />
+                  <RegistryKey Id="MapGuideKey" Action="create" Root="HKLM" Key="$(var.MgRegKey)">
+                    <RegistryValue Id="IisApiType" Action="write" Type="string" Name="IIS_API_TYPE" Value="[IIS_API_TYPE]" />
+                    <RegistryValue Id="MgWebConfig" Action="write" Type="string" Name="MGWEB_CONFIG" Value="[MGWEB_CONFIG]" />
+                  </RegistryKey>
+                  <CreateFolder />
                 </Component>
                 <Directory Id="WEBTEMPLOCATION" Name="Temp">
                     <Component Id="WebTempComponent" Guid="38C3E0A5-88F8-4A98-896D-CCB5DADCC566">
@@ -40,7 +44,11 @@
                 </Directory>
                 <Directory Id="WEBROOTLOCATION" Name="www">
                     <Component Id="WebRootComponent" Guid="A84579E6-285D-4869-9F04-AA47FB1ACFD5" Feature="WebExtensionsFeature">
-                        <CreateFolder />
+                      <RemoveFile Id="MapGuideWebConfig" On="uninstall" Name="web.config" Property="WEBROOTLOCATION" />
+                      <RemoveFile Id="MapAgentWebConfig" On="uninstall" Name="web.config" Property="dir_mapagent_0" />
+                      <RemoveFile Id="MapviewerNetWebConfig" On="uninstall" Name="web.config" Property="dir_mapviewernet_0" />
+                      <RemoveFile Id="MapviewerPhpWebConfig" On="uninstall" Name="web.config" Property="dir_mapviewerphp_0" />
+                      <CreateFolder />
                         <IniFile Id="INISETMAPAGENTRESOURCESPATH"
                                  Action="addLine"
                                  Directory="WEBROOTLOCATION"

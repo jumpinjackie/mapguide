@@ -9,19 +9,20 @@
     <OutputType>Library</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.0\Wix.targets</WixTargetsPath>
     <Name>FDO</Name>
+    <MgRegKey Condition=" '$(MgRegKey)' == '' ">SOFTWARE\OSGeo\MapGuide</MgRegKey>
+    <MgServerSource Condition=" '$(MgServerSource)' == '' ">C:\Staging\Server</MgServerSource>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug;</DefineConstants>
+    <DefineConstants>Debug;MgRegKey=$(MgRegKey);MgServerSource=$(MgServerSource)</DefineConstants>
     <LibBindFiles>True</LibBindFiles>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <LibBindFiles>True</LibBindFiles>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>MgRegKey=$(MgRegKey);MgServerSource=$(MgServerSource)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="FDO.wxs" />

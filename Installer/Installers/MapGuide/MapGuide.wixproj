@@ -5,26 +5,30 @@
     <ProductVersion>3.0</ProductVersion>
     <ProjectGuid>{12c62f60-6f52-4112-84ab-0fa8ed44ee77}</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>MapGuideOpenSource-2.1.0-Unofficial</OutputName>
+    <OutputName Condition=" '$(OutputName)' == '' ">MapGuideOpenSource-2.1.0-Unofficial</OutputName>
     <OutputType>Package</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.0\Wix.targets</WixTargetsPath>
     <Name>MapGuide</Name>
+    <MgCulture Condition=" '$(MgCulture)' == '' ">en-US</MgCulture>
+    <MgTitle Condition=" '$(MgTitle)' == '' ">MapGuide Open Source 2.1.0 Ux</MgTitle>
+    <MgVersion Condition=" '$(MgVersion)' == '' ">2.1.0.0</MgVersion>
+    <MgRegKey Condition=" '$(MgRegKey)' == '' ">SOFTWARE\OSGeo\MapGuide</MgRegKey>
+    <MgServerSource Condition=" '$(MgServerSource)' == '' ">C:\Staging\Server</MgServerSource>
+    <MgWebSource Condition=" '$(MgWebSource)' == '' ">C:\Staging\WebServerExtensions\</MgWebSource>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug</DefineConstants>
+    <DefineConstants>Debug;MgTitle=$(MgTitle);MgVersion=$(MgVersion);MgRegKey=$(MgRegKey);MgServerSource=$(MgServerSource);MgWebSource=$(MgWebSource)</DefineConstants>
+    <Cultures>en-US</Cultures>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>..\..\Output\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <Cultures>en-US</Cultures>
-    <WixVariables>
-    </WixVariables>
     <SuppressValidation>False</SuppressValidation>
     <SuppressPdbOutput>True</SuppressPdbOutput>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>MgTitle=$(MgTitle);MgVersion=$(MgVersion);MgRegKey=$(MgRegKey);MgServerSource=$(MgServerSource);MgWebSource=$(MgWebSource)</DefineConstants>
+    <Cultures>$(MgCulture)</Cultures>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="MapGuide.wxs" />

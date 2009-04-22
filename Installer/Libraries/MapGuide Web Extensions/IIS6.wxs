@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:iis="http://schemas.microsoft.com/wix/IIsExtension"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+	<Fragment>
+        <Property Id="FRAMEWORKDIR">
+            <RegistrySearch Id="DotNetSearch" Root="HKLM" Key="Software\Microsoft\.NETFramework" Name="InstallRoot" Type="directory" />
+        </Property>
+        <Binary Id="IIsActions" SourceFile="..\..\Custom\bin\iis_actions.dll" />
+        <CustomAction Id="AddWebServiceExtension" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="AddWebServiceExtension" />
+        <CustomAction Id="DeleteWebServiceExtension" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="DeleteWebServiceExtension" />
+        <CustomAction Id="RegisterScriptMaps" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="RegisterScriptMaps" />
+        <CustomAction Id="SetCustomErrors" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="SetCustomErrors" />
+        <CustomAction Id="CreateVDirMapAgent" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="CreateVDirMapAgent" />
+        <CustomAction Id="CreateVDirMapGuide" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="CreateVDirMapGuide" />
+        <CustomAction Id="CreateVDirPhpAgent" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="CreateVDirPhpAgent" />
+        <CustomAction Id="CreateVDirNetAgent" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="CreateVDirNetAgent" />
+        <CustomAction Id="CreateVDirJavaAgent" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="CreateVDirJavaAgent" />
+        <CustomAction Id="DeleteVDirMapGuide" Return="check" BinaryKey="IIsActions" Execute="immediate" DllEntry="DeleteVDirMapGuide" />
+        <CustomAction Id="AspNetRegIIS" Return="check" Execute="immediate" Directory="TARGETDIR" ExeCommand="[FRAMEWORKDIR]v2.0.50727\aspnet_regiis.exe -s W3SVC/[SITE_ID]/ROOT/[VIRTUALDIR]" />
+  </Fragment>
+</Wix>

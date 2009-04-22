@@ -7,8 +7,8 @@
     <Product
            Id="47B770BA-1591-415D-A7AE-33D4C522FCEA"
            UpgradeCode="5D9A7D8D-485E-43E0-A4C8-3582E4D80051"
-           Name="!(loc.ProductName)"
-           Version="2.1.0"
+           Name="$(var.MgTitle)"
+           Version="$(var.MgVersion)"
            Manufacturer="!(loc.ProductManufacturer)"
            Language="!(loc.LANG)" >
 
@@ -16,25 +16,42 @@
 
         <Media Id="1" Cabinet="MapGuideOpenSource.cab" EmbedCab="yes" CompressionLevel="none" />
 
-        <!-- Initial MapGuide Web Configuration: APACHE | IIS | MANUAL -->
-        <Property Id="MGWEB_CONFIG" Secure="yes" Value="APACHE" />
+        <!-- Initial MapGuide Web Configuration: APACHE | IIS | MANUAL (RegSearches are for uninstall) -->
+        <Property Id="MGWEB_CONFIG" Secure="yes" Value="APACHE">
+          <RegistrySearch
+            Id="MgWebConfigRs"
+            Type="raw"
+            Root="HKLM"
+            Key="$(var.MgRegKey)"
+            Name="MGWEB_CONFIG" />
+        </Property>
         <Property Id="MGSERVER_IP" Secure="yes" Value="127.0.0.1" />
         <Property Id="APACHE_PORT" Secure="yes" Value="8008" />
         <Property Id="APACHE_VERSION" Secure="yes" Value="2.2.4" />
         <Property Id="PHP_VERSION" Secure="yes" Value="5.2.5" />
         <Property Id="APACHE_API_TYPE" Secure="yes" Value="PHP" />
-        <Property Id="IIS_API_TYPE" Secure="yes" Value="PHP" />
+        <Property Id="IIS_API_TYPE" Secure="yes" Value="PHP">
+          <RegistrySearch
+            Id="IisApiTypeRs"
+            Type="raw"
+            Root="HKLM"
+            Key="$(var.MgRegKey)"
+            Name="IIS_API_TYPE"  />
+        </Property>
         <Property Id="APP_POOL_NAME" Secure="yes" Value="MapGuideAppPool" />
-        
-        <!-- 
+
+
+      <!-- 
         This is currently used for the aspnet_regiis.exe custom action, though there
         is opportunity in the future for these properties to be exposed in the dialog
         UI.
         -->
         <Property Id="SITE_ID" Secure="yes" Value="1" />
         <Property Id="VIRTUALDIR" Secure="yes" Value="mapguide" />
+        <Property Id="MG_WEBSITE" Secure="yes" Value="Default Web Site" />
+      
 
-        <!-- Add Remove Programs stuff -->
+      <!-- Add Remove Programs stuff -->
         <Property Id="ARPHELPLINK" Value="http://mapguide.osgeo.org" />
         <Property Id="ARPURLINFOABOUT" Value="http://mapguide.osgeo.org" />
         <Property Id="ARPPRODUCTICON" Value="OSGeo.ico" />
@@ -419,52 +436,91 @@
             <ProgressText Action="CreateVDirJavaAgent">!(loc.CreateVDirJavaAgent)</ProgressText>
             <ProgressText Action="DeleteWebServiceExtension">!(loc.DeleteWebServiceExtension)</ProgressText>
             <ProgressText Action="DeleteVDirMapGuide">!(loc.DeleteVDirMapGuide)</ProgressText>
-            <ProgressText Action="CreateAPPMapGuideWithIIS7">!(loc.CreateAPPMapGuideWithIIS7)</ProgressText>
-            <ProgressText Action="CreateVDirPhpAgentWithIIS7">!(loc.CreateVDirPhpAgentWithIIS7)</ProgressText>
-            <ProgressText Action="CreateAPPNetAgentWithIIS7">!(loc.CreateAPPNetAgentWithIIS7)</ProgressText>
-            <ProgressText Action="DeleteAPPMapGuideWithIIS7">!(loc.DeleteAPPMapGuideWithIIS7)</ProgressText>
+
         </UI>
 
         <InstallExecuteSequence>
-            <!-- Set up properties for IIS7 deferred actions -->
-            <Custom Action="MapGuideIIS7_CreateAppPool_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_SetAppPoolProp_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_UnlockSrvHandlers_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_UnlockSiteHandlers_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_CreateMapGuideApp_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_CreatePhpScriptMapping_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_EnablePhpExtension_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_CreateMapAgentApp_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_SetMapAgentHandlerAccess_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_CreateMapAgentScriptHandling_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_EnableMapAgentExtension_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_AssignMapGuideAppPool_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_AssignMapAgentAppPool_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_UnlockHttpErrorsMain_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_UnlockHttpErrorsWebSite_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_UnlockHttpErrorsMapGuide_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_Reset401Handler_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
 
-            <!-- Run IIS7 deferred actions -->
-            <Custom Action="MapGuideIIS7_CreateAppPool" After="InstallFiles">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_SetAppPoolProp" After="MapGuideIIS7_CreateAppPool">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_UnlockSrvHandlers" After="MapGuideIIS7_SetAppPoolProp">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_UnlockSiteHandlers" After="MapGuideIIS7_UnlockSrvHandlers">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_CreateMapGuideApp" After="MapGuideIIS7_UnlockSiteHandlers">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_CreatePhpScriptMapping" After="MapGuideIIS7_CreateMapGuideApp">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_EnablePhpExtension" After="MapGuideIIS7_CreatePhpScriptMapping">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_CreateMapAgentApp" After="MapGuideIIS7_EnablePhpExtension">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_SetMapAgentHandlerAccess" After="MapGuideIIS7_CreateMapAgentApp">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_CreateMapAgentScriptHandling" After="MapGuideIIS7_SetMapAgentHandlerAccess">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_EnableMapAgentExtension" After="MapGuideIIS7_CreateMapAgentScriptHandling">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_AssignMapGuideAppPool" After="MapGuideIIS7_EnableMapAgentExtension">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_AssignMapAgentAppPool" After="MapGuideIIS7_AssignMapGuideAppPool">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_UnlockHttpErrorsMain" After="MapGuideIIS7_AssignMapAgentAppPool">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_UnlockHttpErrorsWebSite" After="MapGuideIIS7_UnlockHttpErrorsMain">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_UnlockHttpErrorsMapGuide" After="MapGuideIIS7_UnlockHttpErrorsWebSite">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_Reset401Handler" After="MapGuideIIS7_UnlockHttpErrorsMapGuide">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
+          <!-- IIS7 Base properties for deferred actions -->
+            <Custom Action="MapGuideIIS7_I_AppCmd_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateAppPool_Cmd" After="MapGuideIIS7_I_AppCmd_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetAppPoolProp_Cmd" After="MapGuideIIS7_I_CreateAppPool_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockSrvHandlers_Cmd" After="MapGuideIIS7_I_SetAppPoolProp_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockSiteHandlers_Cmd" After="MapGuideIIS7_I_UnlockSrvHandlers_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateMapGuideApp_Cmd" After="MapGuideIIS7_I_UnlockSiteHandlers_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreatePhpScriptMapping_Cmd" After="MapGuideIIS7_I_CreateMapGuideApp_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_EnablePhpExtension_Cmd" After="MapGuideIIS7_I_CreatePhpScriptMapping_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateMapAgentApp_Cmd" After="MapGuideIIS7_I_EnablePhpExtension_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetMapAgentHandlerAccess_Cmd" After="MapGuideIIS7_I_CreateMapAgentApp_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateMapAgentScriptHandling_Cmd" After="MapGuideIIS7_I_SetMapAgentHandlerAccess_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_EnableMapAgentExtension_Cmd" After="MapGuideIIS7_I_CreateMapAgentScriptHandling_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignMapGuideAppPool_Cmd" After="MapGuideIIS7_I_EnableMapAgentExtension_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignMapAgentAppPool_Cmd" After="MapGuideIIS7_I_AssignMapGuideAppPool_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsMain_Cmd" After="MapGuideIIS7_I_AssignMapAgentAppPool_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsWebSite_Cmd" After="MapGuideIIS7_I_UnlockHttpErrorsMain_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsMapGuide_Cmd" After="MapGuideIIS7_I_UnlockHttpErrorsWebSite_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_Reset401Handler_Cmd" After="MapGuideIIS7_I_UnlockHttpErrorsMapGuide_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_AddJsonMime_Cmd" After="MapGuideIIS7_I_Reset401Handler_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
 
-            
+          <!-- IIS7 PHP Viewer properties for deferred actions -->
+            <Custom Action="MapGuideIIS7_I_CreateViewerPhp_Cmd" After="MapGuideIIS7_I_AddJsonMime_Cmd">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "PHP" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetViewerDocPhp_Cmd" After="MapGuideIIS7_I_CreateViewerPhp_Cmd">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "PHP" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolPhp_Cmd" After="MapGuideIIS7_I_SetViewerDocPhp_Cmd">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "PHP" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+
+          <!-- IIS7 ASP.Net Viewer properties for deferred actions -->
+            <Custom Action="MapGuideIIS7_I_CreateViewerNet_Cmd" After="MapGuideIIS7_I_Reset401Handler_Cmd">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "DOTNET" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetViewerDocNet_Cmd" After="MapGuideIIS7_I_CreateViewerNet_Cmd">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "DOTNET" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolNet_Cmd" After="MapGuideIIS7_I_SetViewerDocNet_Cmd">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "DOTNET" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+
+          <!-- IIS7 Base deferred CAs -->
+            <Custom Action="MapGuideIIS7_I_CreateAppPool" After="InstallFiles">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetAppPoolProp" After="MapGuideIIS7_I_CreateAppPool">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockSrvHandlers" After="MapGuideIIS7_I_SetAppPoolProp">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockSiteHandlers" After="MapGuideIIS7_I_UnlockSrvHandlers">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateMapGuideApp" After="MapGuideIIS7_I_UnlockSiteHandlers">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreatePhpScriptMapping" After="MapGuideIIS7_I_CreateMapGuideApp">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_EnablePhpExtension" After="MapGuideIIS7_I_CreatePhpScriptMapping">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateMapAgentApp" After="MapGuideIIS7_I_EnablePhpExtension">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetMapAgentHandlerAccess" After="MapGuideIIS7_I_CreateMapAgentApp">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateMapAgentScriptHandling" After="MapGuideIIS7_I_SetMapAgentHandlerAccess">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_EnableMapAgentExtension" After="MapGuideIIS7_I_CreateMapAgentScriptHandling">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignMapGuideAppPool" After="MapGuideIIS7_I_EnableMapAgentExtension">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignMapAgentAppPool" After="MapGuideIIS7_I_AssignMapGuideAppPool">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsMain" After="MapGuideIIS7_I_AssignMapAgentAppPool">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsWebSite" After="MapGuideIIS7_I_UnlockHttpErrorsMain">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsMapGuide" After="MapGuideIIS7_I_UnlockHttpErrorsWebSite">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_Reset401Handler" After="MapGuideIIS7_I_UnlockHttpErrorsMapGuide">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_AddJsonMime" After="MapGuideIIS7_I_Reset401Handler">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+
+          <!-- IIS7 PHP Viewer deferred CAs -->
+            <Custom Action="MapGuideIIS7_I_CreateViewerPhp" After="MapGuideIIS7_I_AddJsonMime">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "PHP" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetViewerDocPhp" After="MapGuideIIS7_I_CreateViewerPhp">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "PHP" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolPhp" After="MapGuideIIS7_I_SetViewerDocPhp">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "PHP" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+
+          <!-- IIS7 DOTNET Viewer deferred CAs -->
+            <Custom Action="MapGuideIIS7_I_CreateViewerNet" After="MapGuideIIS7_I_Reset401Handler">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "DOTNET" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetViewerDocNet" After="MapGuideIIS7_I_CreateViewerNet">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "DOTNET" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolNet" After="MapGuideIIS7_I_SetViewerDocNet">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "DOTNET" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+
+          <!-- IIS7 UNINSTALL deferred action properties -->
+            <Custom Action="MapGuideIIS7_U_AppCmd_Cmd" After="InstallInitialize">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+            <Custom Action="MapGuideIIS7_U_ClearMapAgentRestriction_Cmd" After="MapGuideIIS7_U_AppCmd_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+            <Custom Action="MapGuideIIS7_U_ClearPhpRestriction_Cmd" After="MapGuideIIS7_U_ClearMapAgentRestriction_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveViewer_Cmd" After="MapGuideIIS7_U_ClearPhpRestriction_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveMapAgent_Cmd" After="MapGuideIIS7_U_RemoveViewer_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveMapGuide_Cmd" After="MapGuideIIS7_U_RemoveMapAgent_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+            <Custom Action="MapGuideIIS7_U_DeleteAppPool_Cmd" After="MapGuideIIS7_U_RemoveMapGuide_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+
+          <!-- IIS7 UNINSTALL deferred CAs -->
+            <Custom Action="MapGuideIIS7_U_ClearMapAgentRestriction" After="MapGuideIIS7_U_DeleteAppPool_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+            <Custom Action="MapGuideIIS7_U_ClearPhpRestriction" After="MapGuideIIS7_U_ClearMapAgentRestriction">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveViewer" After="MapGuideIIS7_U_ClearPhpRestriction">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveMapAgent" After="MapGuideIIS7_U_RemoveViewer">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveMapGuide" After="MapGuideIIS7_U_RemoveMapAgent">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+            <Custom Action="MapGuideIIS7_U_DeleteAppPool" After="MapGuideIIS7_U_RemoveMapGuide">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+
+
+          <!-- Apache / PHP / MG Server Custom Actions-->
             <Custom
                 Action="UpdateApacheConfig"
                 After="UpdateApacheConfig.SetValues">&amp;WebExtPhpFeature > 2 AND &amp;WebExtApacheFeature > 2</Custom>
@@ -489,6 +545,7 @@
             <Custom
                 Action="RemoveApacheServiceCA"
                 Before="RemoveFiles">MGWEB_CONFIG = "APACHE" AND &amp;WebExtApacheFeature=2</Custom>
+
             <!-- IIS 5/6 related custom actions -->
             <Custom
                 Action="AddWebServiceExtension"
@@ -523,21 +580,6 @@
             <Custom
                 Action="DeleteVDirMapGuide"
                 Before="InstallFinalize">(IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature = 2</Custom>
-            <!-- IIS7 custom actions -->
-<!--  Trying out deferred custom actions
-            <Custom
-                Action="CreateAPPMapGuideWithIIS7"
-                Before="InstallFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom
-                Action="CreateVDirPhpAgentWithIIS7"
-                After="CreateAPPMapGuideWithIIS7">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2 AND IIS_API_TYPE = "PHP" AND &amp;WebExtMapViewerPHPFeature > 2</Custom>
-            <Custom
-                Action="CreateAPPNetAgentWithIIS7"
-                After="CreateAPPMapGuideWithIIS7">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature > 2 AND IIS_API_TYPE = "DOTNET" AND &amp;WebExtMapViewerASPXFeature > 2</Custom>
-            <Custom
-                Action="DeleteAPPMapGuideWithIIS7"
-                Before="InstallFinalize">(IISVERSIONMAJOR = "#7") AND &amp;WebExtensionsFeature = 2</Custom>
--->                
             <ScheduleReboot After="InstallFinalize"/>
         </InstallExecuteSequence>
     </Product>
