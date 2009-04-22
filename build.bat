@@ -146,10 +146,9 @@ SET MSBUILD_CLEAN=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD
 goto next_param
 
 :get_output
+SET MG_OUTPUT=%2
 if "%2" == "default" SET MG_OUTPUT=%MG_DEFAULT_INSTALLDIR%
-ELSE SET MG_OUTPUT=%2
 if "%2" == "def" SET MG_OUTPUT=%MG_DEFAULT_INSTALLDIR%
-ELSE SET MG_OUTPUT=%2
 SET MG_OUTPUT_SERVER=%MG_OUTPUT%\Server
 SET MG_OUTPUT_WEB=%MG_OUTPUT%\WebServerExtensions
 goto next_param
