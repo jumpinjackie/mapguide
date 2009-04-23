@@ -549,13 +549,13 @@
             <!-- IIS 5/6 related custom actions -->
             <Custom
                 Action="AddWebServiceExtension"
-                Before="InstallFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature > 2</Custom>
+                Before="InstallFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature > 2</Custom>
             <Custom
                 Action="CreateVDirMapGuide"
                 After="AddWebServiceExtension">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature > 2</Custom>
             <Custom
                 Action="AspNetRegIIS"
-                After="CreateVDirMapGuide">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature > 2</Custom>
+                After="CreateVDirMapGuide">(MGWEB_CONFIG = "IIS") AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND NETFRAMEWORK20 AND &amp;WebExtensionsFeature > 2</Custom>
             <Custom
                 Action="RegisterScriptMaps"
                 After="AspNetRegIIS">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature > 2</Custom>
