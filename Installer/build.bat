@@ -44,17 +44,19 @@ rem ==================================================
 SET TYPEACTION=build
 SET TYPEBUILD=Release
 SET CULTURE=en-US
-SET INSTALLER_NAME=MapGuideOpenSource-2.1.0-Unofficial
+SET INSTALLER_NAME=MapGuideOpenSource-2.1.0-Unofficial-%CULTURE%-%TYPEBUILD%
 SET INSTALLER_VERSION=2.1.0.0
-SET INSTALLER_TITLE=MapGuide OS 2.1 Unofficial
-SET MG_SERVER=..\MgDev\%TYPEBUILD%\Server\
-SET MG_WEB=..\MgDev\%TYPEBUILD%\WebServerExtensions\
+SET INSTALLER_TITLE="MapGuide OS 2.1 Unofficial (%TYPEBUILD%)"
+SET MG_SERVER=..\MgDev\%TYPEBUILD%\Server
+SET MG_WEB=..\MgDev\%TYPEBUILD%\WebServerExtensions
+SET MG_SERVER_INC=
+SET MG_WEB_INC=
 
 rem ==================================================
 rem MapGuide Installer vars
 rem ==================================================
 SET INSTALLER_DEV=%CD%
-SET INSTALLER_OUTPUT=%INSTALLER_DEV%\Output\%CULTURE%
+SET INSTALLER_OUTPUT=%INSTALLER_DEV%\Output\%CULTURE%\%TYPEBUILD%
 SET INSTALLER_DEV_SUPPORT=%INSTALLER_DEV%\Support
 SET INSTALLER_DEV_BOOTSTRAP=%INSTALLER_DEV%\Bootstrapper
 
@@ -129,10 +131,12 @@ goto next_param
 
 :get_server
 SET MG_SERVER=%2
+SET MG_SERVER_INC=%MG_SERVER%
 goto next_param
 
 :get_webextensions
 SET MG_WEB=%2
+SET MG_WEB_INC=%MG_WEB%
 goto next_param
 
 :get_version
@@ -152,8 +156,10 @@ SET TYPEBUILD=%2
 SET INSTALLER_OUTPUT=%CD%\Installers\MapGuide\bin\%TYPEBUILD%
 SET MSBUILD=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% %MSBUILD_VERBOSITY% %MSBUILD_LOG%
 SET MSBUILD_CLEAN=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% /t:Clean %MSBUILD_VERBOSITY%
-SET MG_SERVER=..\MgDev\%TYPEBUILD%\Server\
-SET MG_WEB=..\MgDev\%TYPEBUILD%\WebServerExtensions\
+SET MG_SERVER=..\MgDev\%TYPEBUILD%\Server
+SET MG_WEB=..\MgDev\%TYPEBUILD%\WebServerExtensions
+IF NOT ""=="%MG_SERVER_INC%" SET MG_SERVER_INC=%MG_SERVER%
+IF NOT ""=="%MG_WEB_INC%" SET MG_WEB_INC=%MG_WEB%
 
 if "%2"=="Release" goto next_param
 if "%2"=="Debug" goto next_param
@@ -398,14 +404,13 @@ echo [generate]: Web - misc web root
 
 goto quit
 
-SET CULTURE=en-US
-SET INSTALLER_NAME=MapGuideOpenSource-2.1.0-Unofficial
-SET INSTALLER_VERSION=2.1.0.0
-SET INSTALLER_TITLE="MapGuide OS 2.1 Unofficial"
-
 :build
 echo [build]: Installer
-%MSBUILD% /p:OutputName=%INSTALLER_NAME%;MgCulture=%CULTURE%;MgTitle=%INSTALLER_TITLE%;MgVersion=%INSTALLER_VERSION%;MgServerSource=%MG_SERVER%;MgWebSource=%MG_WEB% Installer.sln
+SET RUN_BUILD=%MSBUILD% /p:OutputName=%INSTALLER_NAME%;MgCulture=%CULTURE%;MgTitle=%INSTALLER_TITLE%;MgVersion=%INSTALLER_VERSION%
+if not ""=="%MG_SERVER_INC%" set RUN_BUILD=%RUN_BUILD%;MgServerSource=%MG_SERVER_INC%
+if not ""=="%MG_WEB_INC%" set RUN_BUILD=%RUN_BUILD%;MgWebSource=%MG_WEB_INC%
+set RUN_BUILD=%RUN_BUILD% Installer.sln
+%RUN_BUILD% 
 if "%errorlevel%"=="1" goto error
 pushd "%INSTALLER_DEV_BOOTSTRAP%"
 echo [bootstrap]: Creating
@@ -458,7 +463,7 @@ echo
 echo Help:	-h
 echo Verbose: -v
 echo BuildType: Release(default), Debug
-echo Action: build(default), clean, regen, prepare, generate (only use generate for creating new GIDs, or if not installing from c:\Staging\)
+echo Action: build(default), clean, regen, prepare, generate (only use generate for creating new GIDs, or if not installing from ..\MgDev\Release)
 echo ServerDirectory: The MapGuide Server directory where paraffin will generate the files from
 echo WebExtensionsDirectory: The MapGuide Web Extensions directory where paraffin will generate the files from
 echo MapGuideVersion: The version associated with the installer in the format 2.1.0.0

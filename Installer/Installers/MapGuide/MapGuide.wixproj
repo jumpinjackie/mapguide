@@ -9,12 +9,12 @@
     <OutputType>Package</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.0\Wix.targets</WixTargetsPath>
     <Name>MapGuide</Name>
-    <MgCulture Condition=" '$(MgCulture)' == '' ">en-US</MgCulture>
-    <MgTitle Condition=" '$(MgTitle)' == '' ">MapGuide Open Source 2.1.0 Ux</MgTitle>
-    <MgVersion Condition=" '$(MgVersion)' == '' ">2.1.0.0</MgVersion>
-    <MgRegKey Condition=" '$(MgRegKey)' == '' ">SOFTWARE\OSGeo\MapGuide</MgRegKey>
-    <MgServerSource Condition=" '$(MgServerSource)' == '' ">C:\Staging\Server</MgServerSource>
-    <MgWebSource Condition=" '$(MgWebSource)' == '' ">C:\Staging\WebServerExtensions\</MgWebSource>
+    <MgCulture Condition=" '$(MgCulture)'=='' ">en-US</MgCulture>
+    <MgTitle Condition=" '$(MgTitle)'=='' ">MapGuide Open Source 2.1.0 Ux</MgTitle>
+    <MgVersion Condition=" '$(MgVersion)'=='' ">2.1.0.0</MgVersion>
+    <MgRegKey Condition=" '$(MgRegKey)'=='' ">SOFTWARE\OSGeo\MapGuide</MgRegKey>
+    <MgServerSource Condition="('$(MgServerSource)'=='')">$(MSBuildProjectDirectory)\..\..\..\MgDev\$(Configuration)\Server</MgServerSource>
+    <MgWebSource Condition="('$(MgWebSource)'=='')">$(MSBuildProjectDirectory)\..\..\..\MgDev\$(Configuration)\WebServerExtensions</MgWebSource>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>

@@ -9,8 +9,8 @@
     <OutputType>Library</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.0\Wix.targets</WixTargetsPath>
     <MgRegKey Condition=" '$(MgRegKey)' == '' ">SOFTWARE\OSGeo\MapGuide</MgRegKey>
-    <MgServerSource Condition=" '$(MgServerSource)' == '' ">C:\Staging\Server</MgServerSource>
-    <MgWebSource Condition=" '$(MgWebSource)' == '' ">C:\Staging\WebServerExtensions\</MgWebSource>
+    <MgServerSource Condition="('$(MgServerSource)'=='')">$(MSBuildProjectDirectory)\..\..\..\MgDev\$(Configuration)\Server</MgServerSource>
+    <MgWebSource Condition="('$(MgWebSource)'=='')">$(MSBuildProjectDirectory)\..\..\..\MgDev\$(Configuration)\WebServerExtensions</MgWebSource>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
@@ -64,6 +64,18 @@
   <ItemGroup>
     <EmbeddedResource Include="Lang\MapGuideWebExtensions_en-US.wxl" />
     <EmbeddedResource Include="Lang\MapGuideWebExtensions_es-ES.wxl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Custom\apache_actions\apache_actions.vcproj">
+      <Name>apache_actions</Name>
+      <Project>{03fd713e-15eb-453e-afdf-21f8db45c11e}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Custom\iis_actions\iis_actions.vcproj">
+      <Name>iis_actions</Name>
+      <Project>{9f02b1d9-ad32-40b2-b7fb-393519b39cac}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--

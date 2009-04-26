@@ -10,7 +10,7 @@
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.0\Wix.targets</WixTargetsPath>
     <Name>MapGuide Server</Name>
     <MgRegKey Condition=" '$(MgRegKey)' == '' ">SOFTWARE\OSGeo\MapGuide</MgRegKey>
-    <MgServerSource Condition=" '$(MgServerSource)' == '' ">C:\Staging\Server</MgServerSource>
+    <MgServerSource Condition="('$(MgServerSource)'=='')">$(MSBuildProjectDirectory)\..\..\..\MgDev\$(Configuration)\Server</MgServerSource>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
