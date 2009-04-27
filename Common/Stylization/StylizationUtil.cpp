@@ -419,8 +419,8 @@ void StylizationUtil::RenderAreaSymbolization(AreaSymbolization2D* asym,
     }
     else
     {
-        fs.background() = RS_Color(0,0,0,0);
-        fs.color() = RS_Color(0,0,0,0);
+        fs.background() = RS_Color(0, 0, 0, 0);
+        fs.color() = RS_Color(0, 0, 0, 0);
     }
 
     Stroke* edge = asym->GetEdge();
@@ -453,7 +453,7 @@ void StylizationUtil::RenderAreaSymbolization(AreaSymbolization2D* asym,
         fs.outline().units() = (edge->GetSizeContext() == DeviceUnits)? RS_Units_Device : RS_Units_Model;
     }
     else
-        fs.outline().color() = RS_Color(0,0,0,0);
+        fs.outline().color() = RS_Color(0, 0, 0, 0);
 
     // lines with zero width are rendered one pixel wide
     if (linePixelWidth == 0)

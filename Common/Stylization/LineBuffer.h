@@ -224,9 +224,9 @@ private:
     void CircularArcTo2D(double startx, double starty, double midx, double midy, double endx, double endy);
     void CircularArcTo3D(double startx, double starty, double startz, double midx, double midy, double midz, double endx, double endy, double endz);
     void AdjustArcEndPoint(double x, double y, double z = 0.0);
-    LineBuffer* ClipPolygon(RS_Bounds& b, LineBuffer* dst);
-    LineBuffer* ClipPolyline(RS_Bounds& b, LineBuffer* dst);
-    LineBuffer* ClipPoints(RS_Bounds& b, LineBuffer* dst);
+    void ClipPolygon(RS_Bounds& b, LineBuffer* dst);
+    void ClipPolyline(RS_Bounds& b, LineBuffer* dst);
+    void ClipPoints(RS_Bounds& b, LineBuffer* dst);
     int ClipLine(RS_Bounds& clipRect, double* line, double* RESTRICT ret);
     static int ClipCode(RS_Bounds& b, double x, double y);
     static void AppendLBClipVertex(RS_Bounds& clipRect, double x, double y, LineBuffer* lb, bool move);

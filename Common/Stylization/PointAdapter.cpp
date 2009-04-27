@@ -100,6 +100,7 @@ void PointAdapter::Stylize(Renderer*                   renderer,
     //       of the FDO query.
 
     LineBuffer* lb = geometry;
+    std::auto_ptr<LineBuffer> spClipLB;
 
     if (renderer->RequiresClipping())
     {
@@ -115,6 +116,8 @@ void PointAdapter::Stylize(Renderer*                   renderer,
 
             // otherwise continue processing with the clipped buffer
             lb = lbc;
+            if (lb != geometry)
+                spClipLB.reset(lb);
         }
     }
 
@@ -360,8 +363,8 @@ void PointAdapter::Stylize(Renderer*                   renderer,
     }
 
     // free clipped line buffer if the geometry was clipped
-    if (lb != geometry)
-        LineBufferPool::FreeLineBuffer(m_lbPool, lb);
+    if (spClipLB.get())
+        LineBufferPool::FreeLineBuffer(m_lbPool, spClipLB.release());
 }
 
 

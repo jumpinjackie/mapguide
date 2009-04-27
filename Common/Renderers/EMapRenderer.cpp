@@ -172,7 +172,7 @@ void EMapRenderer::AddScaleRange(double min,
 
             if ((*iter).length() > 0 && (*iter).data())
             {
-                DWFImageResource* imgRes = CreateImageResource((*iter).data(),(*iter).length());
+                DWFImageResource* imgRes = CreateImageResource((*iter).data(), (*iter).length());
                 if (imgRes)
                 {
                     imgRes->setParentObjectID(pGraphic->objectID());

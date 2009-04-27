@@ -1262,6 +1262,7 @@ LineBuffer* LineBuffer::Optimize(double drawingScale, LineBufferPool* lbp)
     // don't set any offset for new linebuffer, because it is already applied,
     // and MoveTo and LineTo would apply it again. Instead, set at end
     LineBuffer* ret = LineBufferPool::NewLineBuffer(lbp, m_cur_types, m_dimensionality, m_bIgnoreZ);
+    std::auto_ptr<LineBuffer> spLB(ret);
     ret->SetGeometryType(geom_type());
 
     // optimization
@@ -1352,7 +1353,7 @@ LineBuffer* LineBuffer::Optimize(double drawingScale, LineBufferPool* lbp)
         }
     }
 
-    return ret;
+    return spLB.release();
 }
 
 
@@ -1381,43 +1382,61 @@ LineBuffer* LineBuffer::Clip(RS_Bounds& b, GeomOperationType clipType, LineBuffe
         || m_bounds.maxy < b.miny)
         return NULL;
 
-    LineBuffer* dest = LineBufferPool::NewLineBuffer(lbp, m_cur_types, m_dimensionality, m_bIgnoreZ);
+    std::auto_ptr<LineBuffer> spLB(LineBufferPool::NewLineBuffer(lbp, m_cur_types, m_dimensionality, m_bIgnoreZ));
 
     if (clipType == ctArea)
-        return ClipPolygon(b, dest);
+    {
+        ClipPolygon(b, spLB.get());
+        return spLB.release();
+    }
     else if (clipType == ctLine)
-        return ClipPolyline(b, dest);
+    {
+        ClipPolyline(b, spLB.get());
+        return spLB.release();
+    }
     else if (clipType == ctPoint)
-        return ClipPoints(b, dest);
+    {
+        ClipPoints(b, spLB.get());
+        return spLB.release();
+    }
     else if (clipType == ctAGF)
     {
         switch (m_geom_type)
         {
             case FdoGeometryType_MultiPolygon:
             case FdoGeometryType_Polygon:
-                return ClipPolygon(b, dest);
+            {
+                ClipPolygon(b, spLB.get());
+                return spLB.release();
+            }
             case FdoGeometryType_MultiLineString:
             case FdoGeometryType_LineString:
-                return ClipPolyline(b, dest);
+            {
+                ClipPolyline(b, spLB.get());
+                return spLB.release();
+            }
             case FdoGeometryType_Point:
             case FdoGeometryType_MultiPoint:
-                return ClipPoints(b, dest);
+            {
+                ClipPoints(b, spLB.get());
+                return spLB.release();
+            }
             default:
             {
-                LineBufferPool::FreeLineBuffer(lbp, dest);
+                LineBufferPool::FreeLineBuffer(lbp, spLB.release());
                 return NULL;
             }
         }
     }
     else
     {
-        LineBufferPool::FreeLineBuffer(lbp, dest);
+        LineBufferPool::FreeLineBuffer(lbp, spLB.release());
         return NULL;
     }
 }
 
 
-LineBuffer* LineBuffer::ClipPoints(RS_Bounds& b, LineBuffer* dst)
+void LineBuffer::ClipPoints(RS_Bounds& b, LineBuffer* dst)
 {
     dst->m_geom_type = m_geom_type;
 
@@ -1432,25 +1451,21 @@ LineBuffer* LineBuffer::ClipPoints(RS_Bounds& b, LineBuffer* dst)
             dst->MoveTo(x, y);
         }
     }
-
-    return dst;
 }
 
 
-LineBuffer* LineBuffer::ClipPolygon(RS_Bounds& b, LineBuffer* dest)
+void LineBuffer::ClipPolygon(RS_Bounds& b, LineBuffer* dst)
 {
-    _ASSERT(dest);
+    _ASSERT(dst);
 
     // TODO: NOT Z AWARE
     // TODO: handle polygons that become multipolygons when clipped
-    dest->m_geom_type = m_geom_type;
+    dst->m_geom_type = m_geom_type;
 
     // unlike polylines, here we don't need to expand the clip region
     // because we will still get a polygon point on the edge if we throw
     // away one which is just outside the edge (due to floating point precision)
-    RS_Bounds clipRect( b.minx, b.miny, b.maxx, b.maxy);
-
-    LineBuffer* ret = dest;
+    RS_Bounds clipRect(b.minx, b.miny, b.maxx, b.maxy);
 
     double xIn, xOut, yIn, yOut, tInX, tInY, tOutX, tOutY, tIn2, tOut1, tOut2;
     double aline[4];
@@ -1466,7 +1481,7 @@ LineBuffer* LineBuffer::ClipPolygon(RS_Bounds& b, LineBuffer* dest)
             // if last segment added to ret was a move, roll it back
             // otherwise close the last contour
             if (i)
-                ret->FinalizeContour();
+                dst->FinalizeContour();
             move = true;
         }
         else if (m_types[i] == (unsigned char)stLineTo)
@@ -1569,7 +1584,7 @@ LineBuffer* LineBuffer::ClipPolygon(RS_Bounds& b, LineBuffer* dest)
                             yClip = yOut;
                         }
 
-                        AppendLBClipVertex(clipRect, xClip, yClip, ret, move);
+                        AppendLBClipVertex(clipRect, xClip, yClip, dst, move);
                         move = false;
                     }
                 }
@@ -1596,7 +1611,7 @@ LineBuffer* LineBuffer::ClipPolygon(RS_Bounds& b, LineBuffer* dest)
                             yClip = yIn;
                         }
 
-                        AppendLBClipVertex(clipRect, xClip, yClip, ret, move);
+                        AppendLBClipVertex(clipRect, xClip, yClip, dst, move);
                         move = false;
                     }
 
@@ -1618,7 +1633,7 @@ LineBuffer* LineBuffer::ClipPolygon(RS_Bounds& b, LineBuffer* dest)
                             yClip = yOut;
                         }
 
-                        AppendLBClipVertex(clipRect, xClip, yClip, ret, move);
+                        AppendLBClipVertex(clipRect, xClip, yClip, dst, move);
                         move = false;
                     }
 
@@ -1627,7 +1642,7 @@ LineBuffer* LineBuffer::ClipPolygon(RS_Bounds& b, LineBuffer* dest)
                     {
                         double xClip = aline[2];
                         double yClip = aline[3];
-                        AppendLBClipVertex(clipRect, xClip, yClip, ret, move);
+                        AppendLBClipVertex(clipRect, xClip, yClip, dst, move);
                         move = false;
                     }
                 }
@@ -1638,7 +1653,7 @@ LineBuffer* LineBuffer::ClipPolygon(RS_Bounds& b, LineBuffer* dest)
                 {
                     double xClip = xOut;
                     double yClip = yOut;
-                    AppendLBClipVertex(clipRect, xClip, yClip, ret, move);
+                    AppendLBClipVertex(clipRect, xClip, yClip, dst, move);
                     move = false;
                 }
             }
@@ -1646,9 +1661,7 @@ LineBuffer* LineBuffer::ClipPolygon(RS_Bounds& b, LineBuffer* dest)
     }
 
     // roll back or close the last contour
-    ret->FinalizeContour();
-
-    return ret;
+    dst->FinalizeContour();
 }
 
 
@@ -1766,13 +1779,13 @@ void LineBuffer::AppendLBClipVertex(RS_Bounds& clipRect, double x, double y, Lin
 }
 
 
-LineBuffer* LineBuffer::ClipPolyline(RS_Bounds& b, LineBuffer* dest)
+void LineBuffer::ClipPolyline(RS_Bounds& b, LineBuffer* dst)
 {
-    _ASSERT(dest);
+    _ASSERT(dst);
 
     // TODO: NOT Z AWARE
     // TODO: handle polylines that become multipolylines when clipped
-    dest->m_geom_type = m_geom_type;
+    dst->m_geom_type = m_geom_type;
 
     // expand clip region a little so that we don't throw
     // out points which lie on the edge of the clip region
@@ -1782,12 +1795,10 @@ LineBuffer* LineBuffer::ClipPolyline(RS_Bounds& b, LineBuffer* dest)
     double aline[4];
     double bline[4];
 
-    RS_Bounds clipRect( b.minx- sizex,
-                        b.miny- sizey,
-                        b.maxx+ sizex,
-                        b.maxy+ sizey);
-
-    LineBuffer* ret = dest;
+    RS_Bounds clipRect(b.minx - sizex,
+                       b.miny - sizey,
+                       b.maxx + sizex,
+                       b.maxy + sizey);
 
     bool move = false;
 
@@ -1807,9 +1818,9 @@ LineBuffer* LineBuffer::ClipPolyline(RS_Bounds& b, LineBuffer* dest)
             if (res == 1) // second point was not clipped
             {
                 if (move)
-                    ret->MoveTo(bline[0], bline[1]);
+                    dst->MoveTo(bline[0], bline[1]);
 
-                ret->LineTo(bline[2], bline[3]);
+                dst->LineTo(bline[2], bline[3]);
 
                 move = false;
             }
@@ -1817,16 +1828,14 @@ LineBuffer* LineBuffer::ClipPolyline(RS_Bounds& b, LineBuffer* dest)
             if (res == 2) // second point was clipped
             {
                 if (move)
-                    ret->MoveTo(bline[0], bline[1]);
+                    dst->MoveTo(bline[0], bline[1]);
 
-                ret->LineTo(bline[2], bline[3]);
+                dst->LineTo(bline[2], bline[3]);
 
                 move = true;
             }
         }
     }
-
-    return ret;
 }
 
 

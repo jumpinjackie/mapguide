@@ -133,6 +133,8 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
             if (!lb)
                 continue;
 
+            std::auto_ptr<LineBuffer> spLB(lb);
+
             // tell line buffer the current drawing scale (used for arc tessellation)
             lb->SetDrawingScale(drawingScale);
 
@@ -143,7 +145,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
                 else
                 {
                     // just move on to the next feature
-                    LineBufferPool::FreeLineBuffer(m_pool, lb);
+                    LineBufferPool::FreeLineBuffer(m_pool, spLB.release());
                     continue;
                 }
             }
@@ -151,7 +153,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
             {
                 // just move on to the next feature
                 e->Release();
-                LineBufferPool::FreeLineBuffer(m_pool, lb);
+                LineBufferPool::FreeLineBuffer(m_pool, spLB.release());
                 continue;
             }
 
@@ -165,7 +167,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
             }
 
             // free geometry when done stylizing
-            LineBufferPool::FreeLineBuffer(m_pool, lb);
+            LineBufferPool::FreeLineBuffer(m_pool, spLB.release());
 
             if (cancel && cancel(userData))
                 break;
@@ -498,6 +500,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 
     // prepare the geometry on which we will apply the styles
     LineBuffer* lb = geometry;
+    std::auto_ptr<LineBuffer> spClipLB;
 
     if (bClip)
     {
@@ -529,6 +532,8 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 
             // otherwise continue processing with the clipped buffer
             lb = lbc;
+            if (lb != geometry)
+                spClipLB.reset(lb);
         }
     }
 
@@ -660,8 +665,8 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     }
 
     // free clipped line buffer if the geometry was clipped
-    if (lb != geometry)
-        LineBufferPool::FreeLineBuffer(m_pool, lb);
+    if (spClipLB.get())
+        LineBufferPool::FreeLineBuffer(m_pool, spClipLB.release());
 }
 
 

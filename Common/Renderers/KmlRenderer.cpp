@@ -762,7 +762,7 @@ void KmlRenderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style,
 
 void KmlRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 {
-    RS_Color black(0,0,0,255);
+    RS_Color black(0, 0, 0, 255);
     RS_LineStroke ls(black, 0.0, L"Solid", RS_Units_Device);
 
     // try to get some line style information from the SE symbol
@@ -790,7 +790,7 @@ void KmlRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
     //not implemented upstream yet, but let's do something anyway
 
     RS_FillStyle fs;
-    fs.color() = RS_Color(0,0,0,255);
+    fs.color() = RS_Color(0, 0, 0, 255);
 
     //try to get some fill style information from the SE symbol
     if (style->symbol.size())

@@ -135,6 +135,7 @@ void PolygonAdapter::Stylize(Renderer*                   renderer,
     //-------------------------------------------------------
 
     LineBuffer* lb = geometry;
+    std::auto_ptr<LineBuffer> spClipLB;
 
     if (bClip)
     {
@@ -156,6 +157,8 @@ void PolygonAdapter::Stylize(Renderer*                   renderer,
 
             // otherwise continue processing with the clipped buffer
             lb = lbc;
+            if (lb != geometry)
+                spClipLB.reset(lb);
         }
     }
 
@@ -218,6 +221,8 @@ void PolygonAdapter::Stylize(Renderer*                   renderer,
 
                 // otherwise continue processing with the clipped buffer
                 lb = lbc;
+                if (lb != geometry)
+                    spClipLB.reset(lb);
             }
         }
 
@@ -233,8 +238,8 @@ void PolygonAdapter::Stylize(Renderer*                   renderer,
     }
 
     // free clipped line buffer if the geometry was clipped
-    if (lb != geometry)
-        LineBufferPool::FreeLineBuffer(m_lbPool, lb);
+    if (spClipLB.get())
+        LineBufferPool::FreeLineBuffer(m_lbPool, spClipLB.release());
 }
 
 

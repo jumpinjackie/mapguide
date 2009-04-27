@@ -673,10 +673,10 @@ void RotateRGBAImage(const WT_Unsigned_Integer16 rows,
                 int ywhole = (int)floor(pixely);
 
                 //4 nearest pixels
-                WT_RGBA32 c00(0,0,0,0);
-                WT_RGBA32 c10(0,0,0,0);
-                WT_RGBA32 c11(0,0,0,0);
-                WT_RGBA32 c01(0,0,0,0);
+                WT_RGBA32 c00(0, 0, 0, 0);
+                WT_RGBA32 c10(0, 0, 0, 0);
+                WT_RGBA32 c11(0, 0, 0, 0);
+                WT_RGBA32 c01(0, 0, 0, 0);
 
                 //get values for the 4 nearest pixels, taking care
                 //not to go overboard (outside the image)

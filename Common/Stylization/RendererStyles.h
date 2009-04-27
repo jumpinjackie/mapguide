@@ -276,8 +276,8 @@ class RS_FillStyle
 public:
     RS_FillStyle() :
         m_outline(),
-        m_color(255,255,255,255),
-        m_background(0,0,0,0),
+        m_color(255, 255, 255, 255),
+        m_background(0, 0, 0, 0),
         m_pattern(L"Solid")
     {
     }
@@ -661,7 +661,7 @@ public:
         m_guid(L""),
         m_coordsys(L""),
         m_units(L""),
-        m_bgcolor(255,255,255,255)
+        m_bgcolor(255, 255, 255, 255)
     {
     }
 

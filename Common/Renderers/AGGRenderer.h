@@ -205,7 +205,11 @@ public:
 
     RENDERERS_API virtual void AddExclusionRegion(RS_F_Point* fpts, int npts);
 
-    RENDERERS_API void AddDWFContent(RS_InputStream *,CSysTransformer *,const RS_String &,const RS_String &,const RS_String &);
+    RENDERERS_API void AddDWFContent(RS_InputStream*  in,
+                                     CSysTransformer* xformer,
+                                     const RS_String& section,
+                                     const RS_String& passwd,
+                                     const RS_String& w2dfilter);
 
     RENDERERS_API static void DrawScreenPolyline(agg_context* cxt, LineBuffer* polyline, const SE_Matrix* xform, const SE_LineStroke& lineStroke);
     RENDERERS_API static void DrawScreenPolygon(agg_context* cxt, LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill);

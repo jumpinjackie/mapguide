@@ -164,12 +164,14 @@ WT_Result agr_process_contourSet (WT_Contour_Set & contourSet, WT_File & file)
     int totalPts = contourSet.total_points();
 
     LineBuffer* dst_cntr = rewriter->ProcessW2DPoints(file, (WT_Logical_Point*)contourSet.points(), totalPts, true);
+    std::auto_ptr<LineBuffer> spDstLB(dst_cntr);
 
     if (dst_cntr)
     {
         //construct a line buffer with the transformed points and the original
         //contour information
         LineBuffer* lb = LineBufferPool::NewLineBuffer(rewriter->GetBufferPool(), totalPts);
+        std::auto_ptr<LineBuffer> spLB(lb);
         int index = 0;
         for (int i=0; i<numcntrs; i++)
         {
@@ -190,11 +192,11 @@ WT_Result agr_process_contourSet (WT_Contour_Set & contourSet, WT_File & file)
 
         if (color.alpha() != 0)
         {
-            AGGRenderer::DrawScreenPolygon((agg_context*)rewriter->GetW2DTargetImage() ,lb, NULL, color.argb());
+            AGGRenderer::DrawScreenPolygon((agg_context*)rewriter->GetW2DTargetImage(), lb, NULL, color.argb());
         }
 
-        LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), lb);
-        LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), dst_cntr);
+        LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), spLB.release());
+        LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), spDstLB.release());
     }
 
     return WT_Result::Success;
@@ -259,6 +261,7 @@ WT_Result agr_process_image (WT_Image & image, WT_File & file)
     endpts[3].m_y = bounds.m_max.m_y;
 
     LineBuffer* dstpts = rewriter->ProcessW2DPoints(file, endpts, 4, false);
+    std::auto_ptr<LineBuffer> spDstLB(dstpts);
 
     unsigned int* src = NULL;
 
@@ -322,7 +325,7 @@ WT_Result agr_process_image (WT_Image & image, WT_File & file)
         delete[] src;
     }
 
-    LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), dstpts);
+    LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), spDstLB.release());
 
     return WT_Result::Success;
 }
@@ -368,6 +371,7 @@ WT_Result agr_process_filledEllipse (WT_Filled_Ellipse & filledEllipse, WT_File 
     WT_Logical_Point oldpos = filledEllipse.position();
 
     LineBuffer* dstpts = rewriter->ProcessW2DPoints(file, (WT_Logical_Point*)&oldpos, 1, false);
+    std::auto_ptr<LineBuffer> spDstLB(dstpts);
 
     if (!dstpts)
         return WT_Result::Success;
@@ -379,15 +383,16 @@ WT_Result agr_process_filledEllipse (WT_Filled_Ellipse & filledEllipse, WT_File 
     double end = filledEllipse.end_degree() * (M_PI / 180.0);
 
     LineBuffer* ell = LineBufferPool::NewLineBuffer(rewriter->GetBufferPool(), 20);
+    std::auto_ptr<LineBuffer> spEllLB(ell);
 
     ell->SetDrawingScale(1.0);
     ell->MoveTo(dstpts->x_coord(0) + major * cos(start), dstpts->y_coord(0) + minor * sin(start));
-    ell->ArcTo(dstpts->x_coord(0), dstpts->y_coord(0), major, minor, start , end);
+    ell->ArcTo(dstpts->x_coord(0), dstpts->y_coord(0), major, minor, start, end);
 
-    AGGRenderer::DrawScreenPolygon((agg_context*)rewriter->GetW2DTargetImage() ,ell, NULL, color.argb());
+    AGGRenderer::DrawScreenPolygon((agg_context*)rewriter->GetW2DTargetImage(), ell, NULL, color.argb());
 
-    LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), dstpts);
-    LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), ell);
+    LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), spDstLB.release());
+    LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), spEllLB.release());
 
     return WT_Result::Success;
 }
@@ -418,6 +423,7 @@ WT_Result agr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
     WT_Logical_Point oldpos = outlineEllipse.position();
 
     LineBuffer* dstpts = rewriter->ProcessW2DPoints(file, (WT_Logical_Point*)&oldpos, 1, false);
+    std::auto_ptr<LineBuffer> spDstLB(dstpts);
 
     if (!dstpts)
         return WT_Result::Success;
@@ -432,16 +438,17 @@ WT_Result agr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
     double thick = rs_max(1.0, rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value()));
 
     LineBuffer* ell = LineBufferPool::NewLineBuffer(rewriter->GetBufferPool(), 20);
+    std::auto_ptr<LineBuffer> spEllLB(ell);
 
     ell->SetDrawingScale(1.0);
     ell->MoveTo(dstpts->x_coord(0) + major * cos(start), dstpts->y_coord(0) + minor * sin(start));
     ell->ArcTo(dstpts->x_coord(0), dstpts->y_coord(0), major, minor, start, end);
 
     SE_LineStroke lineStroke(color.argb(), thick);
-    AGGRenderer::DrawScreenPolyline((agg_context*)rewriter->GetW2DTargetImage(),ell, NULL, lineStroke);
+    AGGRenderer::DrawScreenPolyline((agg_context*)rewriter->GetW2DTargetImage(), ell, NULL, lineStroke);
 
-    LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), dstpts);
-    LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), ell);
+    LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), spDstLB.release());
+    LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), spEllLB.release());
 
     return WT_Result::Success;
 }
@@ -471,11 +478,12 @@ WT_Result agr_process_polygon (WT_Polygon & polygon, WT_File & file)
 
     //do all necessary transformations
     LineBuffer* dstpts = rewriter->ProcessW2DPoints(file, polygon.points(), polygon.count(), true);
+    std::auto_ptr<LineBuffer> spDstLB(dstpts);
 
     if (dstpts)
     {
-        AGGRenderer::DrawScreenPolygon((agg_context*)rewriter->GetW2DTargetImage(),dstpts, NULL, color.argb());
-        LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), dstpts);
+        AGGRenderer::DrawScreenPolygon((agg_context*)rewriter->GetW2DTargetImage(), dstpts, NULL, color.argb());
+        LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), spDstLB.release());
     }
 
     return WT_Result::Success;
@@ -507,6 +515,7 @@ WT_Result agr_process_polytriangle (WT_Polytriangle & polytriangle, WT_File & fi
     WT_Logical_Point* srcpts = polytriangle.points();
 
     LineBuffer* dstpts = rewriter->ProcessW2DPoints(file, srcpts, polytriangle.count(), true);
+    std::auto_ptr<LineBuffer> spDstLB(dstpts);
 
     if (dstpts)
     {
@@ -524,7 +533,7 @@ WT_Result agr_process_polytriangle (WT_Polytriangle & polytriangle, WT_File & fi
             lb.Reset();
         }
 
-        LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), dstpts);
+        LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), spDstLB.release());
     }
 
     return WT_Result::Success;
@@ -555,6 +564,7 @@ WT_Result agr_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_F
     endpts[3].m_y = bounds.m_max.m_y;
 
     LineBuffer* dstpts = rewriter->ProcessW2DPoints(file, endpts, 4, false);
+    std::auto_ptr<LineBuffer> spDstLB(dstpts);
 
     int width;
     int height;
@@ -582,7 +592,7 @@ WT_Result agr_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_F
         delete[] src;
     }
 
-    LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), dstpts);
+    LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), spDstLB.release());
     return WT_Result::Success;
 }
 
@@ -622,13 +632,14 @@ WT_Result agr_process_polyline (WT_Polyline & polyline, WT_File & file)
 
     //do all necessary transformations and clipping
     LineBuffer* dstpts = rewriter->ProcessW2DPoints(file, polyline.points(), polyline.count(), true);
+    std::auto_ptr<LineBuffer> spDstLB(dstpts);
 
     if (dstpts)
     {
         double thick = rs_max(1.0, rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value()));
         SE_LineStroke lineStroke(color.argb(), thick);
         AGGRenderer::DrawScreenPolyline((agg_context*)rewriter->GetW2DTargetImage(), dstpts, NULL, lineStroke);
-        LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), dstpts);
+        LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), spDstLB.release());
     }
 
     return WT_Result::Success;
@@ -662,6 +673,7 @@ WT_Result agr_process_text (WT_Text & text, WT_File & file)
     WT_Logical_Point pt = text.position();
 
     LineBuffer* dstpts = rewriter->ProcessW2DPoints(file, &pt, 1, true);
+    std::auto_ptr<LineBuffer> spDstLB(dstpts);
 
     if (dstpts)
     {
@@ -697,7 +709,7 @@ WT_Result agr_process_text (WT_Text & text, WT_File & file)
 
         delete [] uni_text;
 
-        LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), dstpts);
+        LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), spDstLB.release());
     }
 
     //TODO: optionally text position can be specified using

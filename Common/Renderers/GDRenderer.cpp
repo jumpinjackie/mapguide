@@ -113,7 +113,7 @@ GDRenderer::GDRenderer(int width,
 m_width(width),
 m_height(height),
 m_bgcolor(bgColor),
-m_extents(0,0,0,0),
+m_extents(0.0, 0.0, 0.0, 0.0),
 m_wtPointBuffer(NULL),
 m_wtPointLen(0),
 m_symbolManager(NULL),
@@ -456,7 +456,7 @@ void GDRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
         return;
 
     LineBuffer* workbuffer = lb;
-    bool deleteBuffer = false;
+    std::auto_ptr<LineBuffer> spLB;
 
     if (s_bGeneralizeData)
     {
@@ -465,8 +465,8 @@ void GDRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
             LineBuffer* optbuffer = workbuffer->Optimize(m_drawingScale, m_pPool);
             if (optbuffer)
             {
-                deleteBuffer = true;
                 workbuffer = optbuffer;
+                spLB.reset(workbuffer);
             }
         }
     }
@@ -482,11 +482,11 @@ void GDRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
 
         if (newbuffer)
         {
-            if (deleteBuffer)
-                LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
+            if (spLB.get())
+                LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
 
-            deleteBuffer = true;
             workbuffer = newbuffer;
+            spLB.reset(workbuffer);
         }
     }
 
@@ -494,8 +494,8 @@ void GDRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
     {
         WritePolylines(workbuffer, use_lsym, true);
 
-        if (deleteBuffer)
-            LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
+        if (spLB.get())
+            LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
     }
 }
 
@@ -517,7 +517,7 @@ void GDRenderer::ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym)
         return;
 
     LineBuffer* workbuffer = lb;
-    bool deleteBuffer = false;
+    std::auto_ptr<LineBuffer> spLB;
 
     if (s_bGeneralizeData)
     {
@@ -526,8 +526,8 @@ void GDRenderer::ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym)
             LineBuffer* optbuffer = workbuffer->Optimize(m_drawingScale, m_pPool);
             if (optbuffer)
             {
-                deleteBuffer = true;
                 workbuffer = optbuffer;
+                spLB.reset(workbuffer);
             }
         }
     }
@@ -543,11 +543,11 @@ void GDRenderer::ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym)
 
         if (newbuffer)
         {
-            if (deleteBuffer)
-                LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
+            if (spLB.get())
+                LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
 
-            deleteBuffer = true;
             workbuffer = newbuffer;
+            spLB.reset(workbuffer);
         }
     }
 
@@ -555,8 +555,8 @@ void GDRenderer::ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym)
     {
         WritePolylines(workbuffer, *use_lsym, true);
 
-        if (deleteBuffer)
-            LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
+        if (spLB.get())
+            LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
     }
 }
 
@@ -1348,6 +1348,7 @@ LineBuffer* GDRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, do
 
     // create the destination line buffer
     LineBuffer* destLB = LineBufferPool::NewLineBuffer(m_pPool, 8);
+    std::auto_ptr<LineBuffer> spDestLB(destLB);
 
     // special code for Fenceline1 style
     int numCapSegs = 0;
@@ -1373,7 +1374,7 @@ LineBuffer* GDRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, do
     // loop over the source buffer's segments
     double walkLen = 0.0;
     double sumdLen = 0.0;
-    for (int j=1; j<lenInds; j++)
+    for (int j=1; j<lenInds; ++j)
     {
         // get the vertex and index arrays from the line
         // buffer - these are inside the loop because they
@@ -1501,7 +1502,7 @@ LineBuffer* GDRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, do
                 walkLen += pixelRun.m_nPixels;
 
                 // move to the next pixel run
-                pixelRunInd++;
+                ++pixelRunInd;
                 if (pixelRunInd == lineStyleDef.m_nRuns)
                     pixelRunInd = 0;
                 pixelRun = lineStyleDef.m_pixelRuns[pixelRunInd];
@@ -1513,7 +1514,7 @@ LineBuffer* GDRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, do
         sumdLen += lineLen;
     }
 
-    return destLB;
+    return spDestLB.release();
 }
 
 
@@ -1701,6 +1702,7 @@ const RS_Font* GDRenderer::FindFont(RS_FontDef& def)
 void GDRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 {
     LineBuffer* featGeom = ctx->geometry;
+    std::auto_ptr<LineBuffer> spLB;
 
     if (s_bGeneralizeData)
     {
@@ -1710,7 +1712,11 @@ void GDRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 //          return;
 
         if (featGeom->point_count() > 6)
+        {
             featGeom = featGeom->Optimize(0.5*m_drawingScale, m_pPool);
+            if (featGeom != ctx->geometry)
+                spLB.reset(featGeom);
+        }
     }
 
     SE_ApplyContext local_ctx = *ctx;
@@ -1718,8 +1724,8 @@ void GDRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
     SE_Renderer::ProcessLine(&local_ctx, style);
 
     // cleanup
-    if (featGeom != ctx->geometry)
-        LineBufferPool::FreeLineBuffer(m_pPool, featGeom);
+    if (spLB.get())
+        LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
 }
 
 
@@ -1728,6 +1734,7 @@ void GDRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 void GDRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 {
     LineBuffer* featGeom = ctx->geometry;
+    std::auto_ptr<LineBuffer> spLB;
 
     // can't apply an area style to point and linestring geometry types
     switch (featGeom->geom_type())
@@ -1749,7 +1756,11 @@ void GDRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 //          return;
 
         if (featGeom->point_count() > 6)
+        {
             featGeom = featGeom->Optimize(0.5*m_drawingScale, m_pPool);
+            if (featGeom != ctx->geometry)
+                spLB.reset(featGeom);
+        }
     }
 
     SE_ApplyContext local_ctx = *ctx;
@@ -1757,8 +1768,8 @@ void GDRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
     SE_Renderer::ProcessArea(&local_ctx, style);
 
     // cleanup
-    if (featGeom != ctx->geometry)
-        LineBufferPool::FreeLineBuffer(m_pPool, featGeom);
+    if (spLB.get())
+        LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
 }
 
 
@@ -2056,6 +2067,7 @@ const RS_D_Point* GDRenderer::ProcessW2DPoints(WT_File&          file,
     WT_Matrix xform = file.desired_rendition().drawing_info().units().dwf_to_application_adjoint_transform();
 
     LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pPool, numpts);
+    std::auto_ptr<LineBuffer> spLB(lb);
     lb->Reset();
 
     //
@@ -2102,7 +2114,7 @@ const RS_D_Point* GDRenderer::ProcessW2DPoints(WT_File&          file,
                 || lb->bounds().maxx < m_extents.minx
                 || lb->bounds().maxy < m_extents.miny)
             {
-                LineBufferPool::FreeLineBuffer(m_pPool, lb);
+                LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
                 return NULL;
             }
         }
@@ -2137,7 +2149,7 @@ const RS_D_Point* GDRenderer::ProcessW2DPoints(WT_File&          file,
     }
 
     //free temporary linebuffer
-    LineBufferPool::FreeLineBuffer(m_pPool, lb);
+    LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
 
     return m_wtPointBuffer;
 }
@@ -2154,7 +2166,7 @@ double GDRenderer::ScaleW2DNumber(WT_File& file, WT_Integer32 number)
 {
     WT_Matrix xform = file.desired_rendition().drawing_info().units().dwf_to_application_adjoint_transform();
 
-    double scale1 = 1.0 / xform(0,0); //div because we need inverse
+    double scale1 = 1.0 / xform(0, 0); //div because we need inverse
 
     //number is now in source W2D model units
     double dModelSpace = (double)number * scale1;
@@ -2183,7 +2195,7 @@ void GDRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
 {
     _ASSERT(m_xformer);
 
-    RS_Bounds alternate_extent(0,0,-1,-1);
+    RS_Bounds alternate_extent(0.0, 0.0, -1.0, -1.0);
 
     //If a viewport was defined, the symbol W2D likely came from AutoCAD.
     //In that case, the extent of the data inside the W2D is not the same
