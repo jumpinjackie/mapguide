@@ -94,10 +94,7 @@ function BuildViewer($forDwf = true)
         }
         catch(MgUnauthorizedAccessException $e)
         {
-            header('WWW-Authenticate: Basic realm="' . $product . '"');
-            header('HTTP/1.1 401 Unauthorized');
-            header("Status: 401 " . GetLocalizedString("ACCESSDENIED", $locale));
-            echo GetLocalizedString("NEEDLOGIN", $locale);
+            requestAuthentication();
             return;
         }
         catch(MgException $e)
@@ -105,6 +102,7 @@ function BuildViewer($forDwf = true)
             $shortError = $e->GetMessage();
             $longError = $e->GetDetails();
             header("HTTP/1.1 559 ");
+            header('Content-Type: text/html; charset=utf-8');
             header("Status: 559 {$shortError}");
             echo "<html>\n<body>\n";
             echo "<h2>{$shortError}</h2>\n{$longError}";
@@ -133,8 +131,8 @@ function BuildViewer($forDwf = true)
         $taskWidth = $showTaskPane? $taskPaneWidth: 0;
         $toolbarHeight = $showToolbar? $toolbarHeight: 0;
         $statusbarHeight = $showStatusbar? $statusbarHeight: 0;
-		
-		//Encode the initial url so that it does not trip any sub-frames (especially if this url has parameters)
+
+        //Encode the initial url so that it does not trip any sub-frames (especially if this url has parameters)
         $taskPaneUrl = urlencode($taskPane->GetInitialTaskUrl());
         $vpath = GetSurroundVirtualPath();
         $defHome = false;
@@ -510,9 +508,27 @@ function BuildViewer($forDwf = true)
                     $vpath . "viewoptions.php",
                     $frameset);
     }
+    catch(MgUserNotFoundException $e)
+    {
+        requestAuthentication();
+    }
+    catch(MgAuthenticationFailedException $e)
+    {
+        requestAuthentication();
+    }
     catch(MgException $e)
     {
-        echo $e->GetDetails();
+        // This should be a 500 error of some sort, but
+        // in order to give a nice custom error message, it looks as
+        // if we shortcut things by using a 200 status.
+        $shortError = $e->GetMessage();
+        $longError = $e->GetDetails();
+        header("HTTP/1.1 200 ");
+        header('Content-Type: text/html; charset=utf-8');
+        header("Status: 200 {$shortError}");
+        echo "<html>\n<body>\n";
+        echo "<h2>{$shortError}</h2>\n{$longError}";
+        echo "</body>\n</html>\n";
     }
     catch(Exception $ne)
     {
@@ -643,7 +659,8 @@ function requestAuthentication()
 
     header('WWW-Authenticate: Basic realm="' . $product . '"');
     header('HTTP/1.1 401 Unauthorized');
-    header("Status: 401 Access Denied");
+    header('Content-Type: text/html; charset=utf-8');
+    header("Status: 401 " . GetLocalizedString("ACCESSDENIED", $locale));
     echo GetLocalizedString("NEEDLOGIN", $locale);
 }
 
