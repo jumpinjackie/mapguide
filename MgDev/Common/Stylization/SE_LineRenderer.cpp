@@ -835,20 +835,24 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
                                     // use symbol bounds to quickly check whether we need to clip
                                     // TODO: use the primitive's bounds and not the symbol bounds
                                     LineBuffer* geomToDraw = &geom;
+                                    std::auto_ptr<LineBuffer> spLB;
                                     if (sym_minx < startpos || sym_maxx > endpos)
                                     {
                                         // check if symbol is completely outside clip region
                                         if (sym_maxx < startpos || sym_minx > endpos)
                                             geomToDraw = NULL;
                                         else
+                                        {
                                             geomToDraw = SE_LineRenderer::ClipPolygon(lbp, geom, startpos, endpos);
+                                            spLB.reset(geomToDraw);
+                                        }
                                     }
 
                                     if (geomToDraw)
                                     {
                                         renderer->DrawScreenPolygon(geomToDraw, NULL, pl->fill);
-                                        if (geomToDraw != &geom)
-                                            LineBufferPool::FreeLineBuffer(lbp, geomToDraw);
+                                        if (spLB.get())
+                                            LineBufferPool::FreeLineBuffer(lbp, spLB.release());
                                     }
                                 }
 
@@ -865,20 +869,24 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
                                     // use symbol bounds to quickly check whether we need to clip
                                     // TODO: use the primitive's bounds and not the symbol bounds
                                     LineBuffer* geomToDraw = &geom;
+                                    std::auto_ptr<LineBuffer> spLB;
                                     if (sym_minx < startpos || sym_maxx > endpos)
                                     {
                                         // check if symbol is completely outside clip region
                                         if (sym_minx > endpos || sym_maxx < startpos)
                                             geomToDraw = NULL;
                                         else
+                                        {
                                             geomToDraw = SE_LineRenderer::ClipPolyline(lbp, geom, startpos, endpos);
+                                            spLB.reset(geomToDraw);
+                                        }
                                     }
 
                                     if (geomToDraw)
                                     {
                                         renderer->DrawScreenPolyline(geomToDraw, NULL, pl->lineStroke);
-                                        if (geomToDraw != &geom)
-                                            LineBufferPool::FreeLineBuffer(lbp, geomToDraw);
+                                        if (spLB.get())
+                                            LineBufferPool::FreeLineBuffer(lbp, spLB.release());
                                     }
                                 }
                             }
@@ -1597,6 +1605,7 @@ LineBuffer* SE_LineRenderer::ClipPolyline(LineBufferPool* lbp, LineBuffer& geome
         return NULL;
 
     LineBuffer* ret = LineBufferPool::NewLineBuffer(lbp, geometry.point_count(), FdoDimensionality_XY, true);
+    std::auto_ptr<LineBuffer> spRetLB(ret);
     ret->SetGeometryType(geometry.geom_type());
 
     // expand clip region a little so that we don't throw
@@ -1648,7 +1657,7 @@ LineBuffer* SE_LineRenderer::ClipPolyline(LineBufferPool* lbp, LineBuffer& geome
         }
     }
 
-    return ret;
+    return spRetLB.release();
 }
 
 
@@ -1666,6 +1675,7 @@ LineBuffer* SE_LineRenderer::ClipPolygon(LineBufferPool* lbp, LineBuffer& geomet
         return NULL;
 
     LineBuffer* ret = LineBufferPool::NewLineBuffer(lbp, geometry.point_count(), FdoDimensionality_XY, true);
+    std::auto_ptr<LineBuffer> spRetLB(ret);
     ret->SetGeometryType(geometry.geom_type());
 
     // expand clip region a little so that we don't throw
@@ -1733,7 +1743,7 @@ LineBuffer* SE_LineRenderer::ClipPolygon(LineBufferPool* lbp, LineBuffer& geomet
     // close any final segment
     ret->Close();
 
-    return ret;
+    return spRetLB.release();
 }
 
 

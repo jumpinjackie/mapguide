@@ -49,8 +49,8 @@ ObservationMesh::ObservationMesh(RS_Bounds& mapExtent, CSysTransformer* xformer)
     AddPoint(mapExtent.minx, mapExtent.maxy + mapExtent.height() * 1e-3);
 
     //make two faces
-    AddFace(0,1,2, -1, -1, 1); //only one neighbor for this face, the other two are -1 (undefined)
-    AddFace(2,3,0, -1, -1, 0); //one neighbor -> the face we added first
+    AddFace(0, 1, 2, -1, -1, 1); //only one neighbor for this face, the other two are -1 (undefined)
+    AddFace(2, 3, 0, -1, -1, 0); //one neighbor -> the face we added first
 }
 
 ObservationMesh::~ObservationMesh()

@@ -100,7 +100,7 @@ AGGRenderer::AGGRenderer(int width,
 m_width(width),
 m_height(height),
 m_bgcolor(RS_Color(0xFFFFFF)),
-m_extents(0,0,0,0),
+m_extents(0.0, 0.0, 0.0, 0.0),
 m_symbolManager(NULL),
 m_mapInfo(NULL),
 m_layerInfo(NULL),
@@ -140,7 +140,7 @@ AGGRenderer::AGGRenderer(int width,
 m_width(width),
 m_height(height),
 m_bgcolor(bgColor),
-m_extents(0,0,0,0),
+m_extents(0.0, 0.0, 0.0, 0.0),
 m_symbolManager(NULL),
 m_mapInfo(NULL),
 m_layerInfo(NULL),
@@ -395,7 +395,7 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
         return;
 
     LineBuffer* workbuffer = lb;
-    bool deleteBuffer = false;
+    std::auto_ptr<LineBuffer> spLB;
 
     if (s_bGeneralizeData)
     {
@@ -404,8 +404,8 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
             LineBuffer* optbuffer = workbuffer->Optimize(m_drawingScale, m_pPool);
             if (optbuffer)
             {
-                deleteBuffer = true;
                 workbuffer = optbuffer;
+                spLB.reset(workbuffer);
             }
         }
     }
@@ -422,11 +422,11 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
             LineBuffer* optbuffer = workbuffer->Optimize(m_drawingScale, m_pPool);
             if (optbuffer)
             {
-                if (deleteBuffer)
-                    LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
+                if (spLB.get())
+                    LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
 
-                deleteBuffer = true;
                 workbuffer = optbuffer;
+                spLB.reset(workbuffer);
             }
         }
 
@@ -440,11 +440,11 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
             // check if it needed clipping
             if (workbuffer != clipbuffer)
             {
-                if (deleteBuffer)
-                    LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
+                if (spLB.get())
+                    LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
 
-                deleteBuffer = true;
                 workbuffer = clipbuffer;
+                spLB.reset(workbuffer);
             }
         }
 
@@ -458,11 +458,11 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
 
             if (newbuffer)
             {
-                if (deleteBuffer)
-                    LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
+                if (spLB.get())
+                    LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
 
-                deleteBuffer = true;
                 workbuffer = newbuffer;
+                spLB.reset(workbuffer);
             }
         }
     }
@@ -477,8 +477,8 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
 
         DrawScreenPolyline(workbuffer, &m_xform, m_lineStroke);
 
-        if (deleteBuffer)
-            LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
+        if (spLB.get())
+            LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
     }
 }
 
@@ -500,7 +500,7 @@ void AGGRenderer::ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym)
         return;
 
     LineBuffer* workbuffer = lb;
-    bool deleteBuffer = false;
+    std::auto_ptr<LineBuffer> spLB;
 
     if (s_bGeneralizeData)
     {
@@ -509,8 +509,8 @@ void AGGRenderer::ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym)
             LineBuffer* optbuffer = workbuffer->Optimize(m_drawingScale, m_pPool);
             if (optbuffer)
             {
-                deleteBuffer = true;
                 workbuffer = optbuffer;
+                spLB.reset(workbuffer);
             }
         }
     }
@@ -527,11 +527,11 @@ void AGGRenderer::ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym)
             LineBuffer* optbuffer = workbuffer->Optimize(m_drawingScale, m_pPool);
             if (optbuffer)
             {
-                if (deleteBuffer)
-                    LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
+                if (spLB.get())
+                    LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
 
-                deleteBuffer = true;
                 workbuffer = optbuffer;
+                spLB.reset(workbuffer);
             }
         }
 
@@ -545,11 +545,11 @@ void AGGRenderer::ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym)
             // check if it needed clipping
             if (workbuffer != clipbuffer)
             {
-                if (deleteBuffer)
-                    LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
+                if (spLB.get())
+                    LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
 
-                deleteBuffer = true;
                 workbuffer = clipbuffer;
+                spLB.reset(workbuffer);
             }
         }
 
@@ -563,11 +563,11 @@ void AGGRenderer::ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym)
 
             if (newbuffer)
             {
-                if (deleteBuffer)
-                    LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
+                if (spLB.get())
+                    LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
 
-                deleteBuffer = true;
                 workbuffer = newbuffer;
+                spLB.reset(workbuffer);
             }
         }
     }
@@ -582,8 +582,8 @@ void AGGRenderer::ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym)
 
         DrawScreenPolyline(workbuffer, &m_xform, m_lineStroke);
 
-        if (deleteBuffer)
-            LineBufferPool::FreeLineBuffer(m_pPool, workbuffer);
+        if (spLB.get())
+            LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
     }
 }
 
@@ -902,6 +902,7 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                 // transform to coordinates of temporary image where we
                 // draw symbol before transfering to the map
                 LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pPool, 8);
+                std::auto_ptr<LineBuffer> spLB(lb);
 
                 double tempx, tempy;
                 for (int i=0; i<npts; ++i)
@@ -935,7 +936,7 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                     DrawScreenPolyline(c(), lb, NULL, m_lineStroke);
                 }
 
-                LineBufferPool::FreeLineBuffer(m_pPool, lb);
+                LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
             }
         }
 
@@ -1149,6 +1150,7 @@ LineBuffer* AGGRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, d
 
     // create the destination line buffer
     LineBuffer* destLB = LineBufferPool::NewLineBuffer(m_pPool, 8);
+    std::auto_ptr<LineBuffer> spDestLB(destLB);
 
     // special code for Fenceline1 style
     int numCapSegs = 0;
@@ -1314,7 +1316,7 @@ LineBuffer* AGGRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, d
         sumdLen += lineLen;
     }
 
-    return destLB;
+    return spDestLB.release();
 }
 
 
@@ -1710,6 +1712,7 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth)
 void AGGRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 {
     LineBuffer* featGeom = ctx->geometry;
+    std::auto_ptr<LineBuffer> spLB;
 
     if (s_bGeneralizeData)
     {
@@ -1719,7 +1722,11 @@ void AGGRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 //          return;
 
         if (featGeom->point_count() > 6)
+        {
             featGeom = featGeom->Optimize(0.5*m_drawingScale, m_pPool);
+            if (featGeom != ctx->geometry)
+                spLB.reset(featGeom);
+        }
     }
 
     SE_ApplyContext local_ctx = *ctx;
@@ -1727,8 +1734,8 @@ void AGGRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
     SE_Renderer::ProcessLine(&local_ctx, style);
 
     // cleanup
-    if (featGeom != ctx->geometry)
-        LineBufferPool::FreeLineBuffer(m_pPool, featGeom);
+    if (spLB.get())
+        LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
 }
 
 
@@ -1737,6 +1744,7 @@ void AGGRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 void AGGRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 {
     LineBuffer* featGeom = ctx->geometry;
+    std::auto_ptr<LineBuffer> spLB;
 
     // can't apply an area style to point and linestring geometry types
     switch (featGeom->geom_type())
@@ -1758,7 +1766,11 @@ void AGGRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 //          return;
 
         if (featGeom->point_count() > 6)
+        {
             featGeom = featGeom->Optimize(0.5*m_drawingScale, m_pPool);
+            if (featGeom != ctx->geometry)
+                spLB.reset(featGeom);
+        }
     }
 
     bool clip = (!style->solidFill && style->clippingControl == SE_ClippingControl_Clip);
@@ -1773,8 +1785,8 @@ void AGGRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
         SetPolyClip(NULL, 0.0);
 
     // cleanup
-    if (featGeom != ctx->geometry)
-        LineBufferPool::FreeLineBuffer(m_pPool, featGeom);
+    if (spLB.get())
+        LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
 }
 
 
@@ -2810,6 +2822,7 @@ LineBuffer* AGGRenderer::ProcessW2DPoints(WT_File&          file,
     WT_Matrix xform = file.desired_rendition().drawing_info().units().dwf_to_application_adjoint_transform();
 
     LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pPool, numpts);
+    std::auto_ptr<LineBuffer> spLB(lb);
     lb->Reset();
 
     //
@@ -2856,7 +2869,7 @@ LineBuffer* AGGRenderer::ProcessW2DPoints(WT_File&          file,
                 || lb->bounds().maxx < m_extents.minx
                 || lb->bounds().maxy < m_extents.miny)
             {
-                LineBufferPool::FreeLineBuffer(m_pPool, lb);
+                LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
                 return NULL;
             }
         }
@@ -2894,7 +2907,7 @@ LineBuffer* AGGRenderer::ProcessW2DPoints(WT_File&          file,
 */
     }
 
-    return lb;
+    return spLB.release();
 }
 
 

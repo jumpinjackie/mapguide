@@ -255,7 +255,7 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
     }
 
     // elevation settings - also invariant
-    RS_ElevationSettings* elevSettings = NULL;
+    std::auto_ptr<RS_ElevationSettings> spElevSettings;
     MdfModel::ElevationSettings* modelElevSettings = scaleRange->GetElevationSettings();
     if (modelElevSettings != NULL)
     {
@@ -271,11 +271,11 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
                 elevType = RS_ElevationType_RelativeToGround;
                 break;
         }
-        elevSettings = new RS_ElevationSettings(modelElevSettings->GetZOffsetExpression(),
-            modelElevSettings->GetZExtrusionExpression(),
-            MdfModel::LengthConverter::UnitToMeters(modelElevSettings->GetUnit(), 1.0),
-            elevType);
+        double unitsToMeters = MdfModel::LengthConverter::UnitToMeters(modelElevSettings->GetUnit(), 1.0);
+        spElevSettings.reset(new RS_ElevationSettings(modelElevSettings->GetZOffsetExpression(),
+            modelElevSettings->GetZExtrusionExpression(), unitsToMeters, elevType));
     }
+    RS_ElevationSettings* elevSettings = spElevSettings.get();
 
     // create an expression engine with our custom functions
     // NOTE: We must create a new engine for each call to StylizeVLHelper.  The
@@ -296,6 +296,8 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
         if (!lb)
             continue;
 
+        std::auto_ptr<LineBuffer> spLB(lb);
+
         // tell line buffer the current drawing scale (used for arc tessellation)
         lb->SetDrawingScale(drawingScale);
 
@@ -306,7 +308,7 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
             else
             {
                 // just move on to the next feature
-                LineBufferPool::FreeLineBuffer(&m_lbPool, lb);
+                LineBufferPool::FreeLineBuffer(&m_lbPool, spLB.release());
                 continue;
             }
         }
@@ -314,7 +316,7 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
         {
             // just move on to the next feature
             e->Release();
-            LineBufferPool::FreeLineBuffer(&m_lbPool, lb);
+            LineBufferPool::FreeLineBuffer(&m_lbPool, spLB.release());
             continue;
         }
 
@@ -333,13 +335,11 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
         }
 
         // free geometry when done stylizing
-        LineBufferPool::FreeLineBuffer(&m_lbPool, lb);
+        LineBufferPool::FreeLineBuffer(&m_lbPool, spLB.release());
 
         if (cancel && cancel(userData))
             break;
     }
-
-    delete elevSettings;
 
     return nFeatures;
 }
@@ -433,7 +433,8 @@ void DefaultStylizer::SetGeometryAdapter(FdoGeometryType type, GeometryAdapter* 
 {
     GeometryAdapter* old = (GeometryAdapter*)m_hGeomStylizers[type];
 
-    if (old) delete old;
+    if (old)
+        delete old;
 
     m_hGeomStylizers[type] = stylizer;
 }

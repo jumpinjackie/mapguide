@@ -39,7 +39,7 @@
 
 RSMgFeatureReader::RSMgFeatureReader(MgFeatureReader* reader, MgFeatureService* svcFeature, MgResourceIdentifier* featResId, MgFeatureQueryOptions* options, const STRING& geomPropName)
 {
-    assert(NULL != reader);
+    _ASSERT(NULL != reader);
     m_reader = SAFE_ADDREF(reader);
 
     //stuff needed for resetting the reader
@@ -305,11 +305,7 @@ LineBuffer* RSMgFeatureReader::GetGeometry(const wchar_t*   propertyName,
     if (!agf)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_60_NULL_POINTER)));
 
-    //TODO: should we really automatically allocate a LineBuffer
-    //if user did not give us one?
-    if (!lb)
-        lb = new LineBuffer(8);
-
+    _ASSERT(lb);
     lb->LoadFromAgf(agf, sz, xformer);
 
     return lb;

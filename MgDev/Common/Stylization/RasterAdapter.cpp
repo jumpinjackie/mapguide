@@ -202,7 +202,7 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
                 case 1:
                     {
                         //for bitonal, get the fore- and background colors first
-                        RS_Color fg(0,0,0,255);
+                        RS_Color fg(0, 0, 0, 255);
                         RS_Color bg(255, 255, 255, 0);
 
                         //just assume two rules, one for each of the colors

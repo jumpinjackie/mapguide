@@ -346,6 +346,7 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 
     // transform the feature geometry to rendering space
     LineBuffer* xfgeom = LineBufferPool::NewLineBuffer(m_pPool, featGeom->point_count());
+    std::auto_ptr<LineBuffer> spLB(xfgeom);
     *xfgeom = *featGeom;
 
     int size = featGeom->point_count();
@@ -373,7 +374,7 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
         DrawSymbol(style->symbol, xform, baserot, style->addToExclusionRegions);
     }
 
-    LineBufferPool::FreeLineBuffer(m_pPool, xfgeom);
+    LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
 }
 
 

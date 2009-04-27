@@ -355,7 +355,7 @@ void EMapUpdateRenderer::CmdAddLayer(const RS_String& guid)
     //Construct a Layer to be added to the Map
     DWFEMapLayer* pLayer = DWFCORE_ALLOC_OBJECT( DWFEMapLayer(
                                         layerInfo.name().c_str(),
-                                        layerInfo.guid().c_str(),//m_uuid->next(false)
+                                        layerInfo.guid().c_str(), //m_uuid->next(false)
                                         layerInfo.groupguid().c_str(),
                                         layerInfo.visible(),
                                         layerInfo.selectable(),
@@ -559,7 +559,7 @@ void EMapUpdateRenderer::AddScaleRange(RS_String& layerGuid,
 
             if ((*iter).length() > 0 && (*iter).data())
             {
-                DWFImageResource* imgRes = CreateImageResource((*iter).data(),(*iter).length());
+                DWFImageResource* imgRes = CreateImageResource((*iter).data(), (*iter).length());
                 if (imgRes)
                 {
                     imgRes->setParentObjectID(pGraphic->objectID());
