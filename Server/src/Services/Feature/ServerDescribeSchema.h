@@ -25,6 +25,8 @@
 #include "FSDSAX2Parser.h"
 #include "FeatureServiceCache.h"
 
+class MgCacheManager;
+
 class MgServerDescribeSchema
 {
 /// Constructors/Destructor
