@@ -21,10 +21,55 @@
 /// <summary>
 /// Constructor for connection stack
 /// </summary>
-MgServerConnectionStack::MgServerConnectionStack()
+MgServerConnectionStack::MgServerConnectionStack(INT32 port)
 {
     m_queue = new ConnectionQueue;
     m_inUse = new ConnectionList;
+    
+    // Query configuration document to determine which port type we are
+    INT32 adminPort = 0;
+    INT32 clientPort = 0;
+    INT32 sitePort = 0;
+    INT32 maxConnections = 1;
+    MgConfiguration* config = MgConfiguration::GetInstance();
+    config->GetIntValue(MgConfigProperties::AdministrativeConnectionPropertiesSection,
+        MgConfigProperties::AdministrativeConnectionPropertyPort, adminPort,
+        MgConfigProperties::DefaultAdministrativeConnectionPropertyPort);
+   config->GetIntValue(MgConfigProperties::ClientConnectionPropertiesSection,
+        MgConfigProperties::ClientConnectionPropertyPort, clientPort,
+        MgConfigProperties::DefaultClientConnectionPropertyPort);
+    config->GetIntValue(MgConfigProperties::SiteConnectionPropertiesSection,
+        MgConfigProperties::SiteConnectionPropertyPort, sitePort,
+        MgConfigProperties::DefaultSiteConnectionPropertyPort);
+
+    // Assign an appropriate number of connections for each connection type.  On Windows
+    // we are limited to 62 connections and will typically have one mapagent and one 
+    // API process running.  Limiting the number of connections to 20 per process should give
+    // adequate headroom to handle CLOSE_WAIT states.  Twelve actively processing client connections
+    // should easily saturate an eight core machine.
+    if (port == adminPort)
+    {
+        // Pull max connections from admin section.  Default to 2 admin connections if not present.
+        config->GetIntValue(MgConfigProperties::AdministrativeConnectionPropertiesSection,
+            MgConfigProperties::AdministrativeConnectionPropertyMaxConnections, maxConnections, 2);
+    }
+    else if (port == clientPort)
+    {
+        // Pull max connections from client section.  Default to 12 client connections if not present.
+        config->GetIntValue(MgConfigProperties::ClientConnectionPropertiesSection,
+            MgConfigProperties::ClientConnectionPropertyMaxConnections, maxConnections, 12);
+    }
+    else if (port == sitePort)
+    {
+        // Pull max connections from site section.  Default to 6 site connections if not present.
+        config->GetIntValue(MgConfigProperties::SiteConnectionPropertiesSection,
+            MgConfigProperties::SiteConnectionPropertyMaxConnections, maxConnections, 6);
+    }
+
+    if (maxConnections > 1)
+    {
+        m_activeConnections.release(maxConnections-1);
+    }
 }
 
 MgServerConnectionStack::~MgServerConnectionStack()
@@ -66,6 +111,7 @@ void MgServerConnectionStack::Push(MgServerConnection* connection)
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
     m_inUse->remove(connection);
     m_queue->push_front(connection);
+    m_activeConnections.release();
 }
 
 /// <summary>
@@ -78,6 +124,16 @@ void MgServerConnectionStack::Push(MgServerConnection* connection)
 /// <param>
 MgServerConnection* MgServerConnectionStack::Pop()
 {
+    // Wait up to 30 seconds for a connection to free up
+    ACE_Time_Value delay(30);
+    ACE_Time_Value future = ACE_OS::gettimeofday() + delay;
+    int acquired = m_activeConnections.acquire(future);
+    if (acquired == -1)
+    {
+        throw new MgConnectionFailedException(L"MgServerConnectionStack.Pop",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
     MgServerConnection* conn = NULL;

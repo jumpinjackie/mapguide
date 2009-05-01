@@ -174,6 +174,8 @@ INT32 ByteSourceSocketStreamImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
     // not do its job fast enough.
     if (m_pos == m_len)
     {
+        helper = NULL;
+        stream = NULL;
         Close();
     }
 
