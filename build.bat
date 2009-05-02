@@ -68,7 +68,8 @@ SET MG_BUILD_TEMP=%MG_DEV%\BuildTemp
 
 SET MG_OUTPUT=%MG_DEV%\%TYPEBUILD%
 SET MG_OUTPUT_SERVER=%MG_OUTPUT%\Server
-SET MG_OUTPUT_WEB=%MG_OUTPUT%\WebServerExtensions
+SET MG_OUTPUT_WEB=%MG_OUTPUT%\Web
+SET MG_OUTPUT_CSMAP=%MG_OUTPUT%\CS-Map
 SET MG_BUILD_COMPONENT=
 
 SET MG_DEFAULT_INSTALLDIR=C:\Program Files\MapGuideOpenSource2.0
@@ -106,6 +107,7 @@ rem Command aliases
 rem ==================================================
 rem SET XCOPY=xcopy /E /Y /I /F
 SET XCOPY=xcopy /E /Y /I /Q
+SET XCOPY_SINGLE=xcopy /Y /I /Q
 SET MSBUILD=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% %MSBUILD_VERBOSITY% %MSBUILD_LOG%
 SET MSBUILD_CLEAN=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% /t:Clean %MSBUILD_VERBOSITY%
 SET ANT=ant
@@ -150,7 +152,7 @@ SET MG_OUTPUT=%2
 if "%2" == "default" SET MG_OUTPUT=%MG_DEFAULT_INSTALLDIR%
 if "%2" == "def" SET MG_OUTPUT=%MG_DEFAULT_INSTALLDIR%
 SET MG_OUTPUT_SERVER=%MG_OUTPUT%\Server
-SET MG_OUTPUT_WEB=%MG_OUTPUT%\WebServerExtensions
+SET MG_OUTPUT_WEB=%MG_OUTPUT%\Web
 goto next_param
 
 :get_conf
@@ -159,7 +161,7 @@ SET MSBUILD=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% %MSB
 SET MSBUILD_CLEAN=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% /t:Clean %MSBUILD_VERBOSITY%
 SET MG_OUTPUT=%MG_DEV%\%TYPEBUILD%
 SET MG_OUTPUT_SERVER=%MG_OUTPUT%\Server
-SET MG_OUTPUT_WEB=%MG_OUTPUT%\WebServerExtensions
+SET MG_OUTPUT_WEB=%MG_OUTPUT%\Web
 
 if "%2"=="Release" goto next_param
 if "%2"=="Debug" goto next_param
@@ -234,7 +236,7 @@ if "%TYPECOMPONENT%"=="doc" goto clean_doc
 :clean_oem
 echo [clean]: Clean Oem
 %MSBUILD_CLEAN% %MG_OEM%\Oem.sln
-echo [clean]: Clean Oem - CSMap
+echo [clean]: Clean Oem - CS-Map
 %MSBUILD_CLEAN% %MG_OEM%\CSMap\OpenSource.sln
 if not "%TYPECOMPONENT%"=="all" goto quit
 
@@ -330,13 +332,32 @@ goto custom_error
 :install_server
 echo [install]: Server
 echo [install]: Server - Binaries
-%XCOPY% "%MG_SERVER%\bin\%TYPEBUILD%" "%MG_OUTPUT_SERVER%\bin" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+%XCOPY_SINGLE% "%MG_SERVER%\bin\%TYPEBUILD%" "%MG_OUTPUT_SERVER%\bin" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+echo [install]: Server - FDO
+%XCOPY% "%MG_SERVER%\bin\%TYPEBUILD%\FDO" "%MG_OUTPUT_SERVER%\FDO" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+echo [install]: Server - Logs
+%XCOPY% "%MG_SERVER%\bin\%TYPEBUILD%\Logs" "%MG_OUTPUT_SERVER%\Logs" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+echo [install]: Server - Packages
+%XCOPY% "%MG_SERVER%\bin\%TYPEBUILD%\Packages" "%MG_OUTPUT_SERVER%\Packages" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+echo [install]: Server - Repositories
+%XCOPY% "%MG_SERVER%\bin\%TYPEBUILD%\Repositories" "%MG_OUTPUT_SERVER%\Repositories" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+echo [install]: Server - Resources
+%XCOPY% "%MG_SERVER%\bin\%TYPEBUILD%\Resources" "%MG_OUTPUT_SERVER%\Resources" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+echo [install]: Server - Schema
+%XCOPY% "%MG_SERVER%\bin\%TYPEBUILD%\Schema" "%MG_OUTPUT_SERVER%\Schema" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+echo [install]: Server - Temp
+%XCOPY% "%MG_SERVER%\bin\%TYPEBUILD%\Temp" "%MG_OUTPUT_SERVER%\Temp" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+echo [install]: Server - WFS
+%XCOPY% "%MG_SERVER%\bin\%TYPEBUILD%\wfs" "%MG_OUTPUT_SERVER%\wfs" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+echo [install]: Server - WMS
+%XCOPY% "%MG_SERVER%\bin\%TYPEBUILD%\wms" "%MG_OUTPUT_SERVER%\wms" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Server - DBXML
+copy /Y "%MG_OEM%\dbxml-2.3.10\db-4.5.20\build_windows\Release\*.exe" "%MG_OUTPUT_SERVER%\bin"
 copy /Y "%MG_OEM%\dbxml-2.3.10\bin\*.exe" "%MG_OUTPUT_SERVER%\bin"
 echo [install]: Server - RepositoryAdmin
 %XCOPY% "%MG_SERVER%\RepositoryAdmin" "%MG_OUTPUT_SERVER%\RepositoryAdmin" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: CsMap Dictionaries
-%XCOPY% "%MG_OEM%\CsMap\Dictionaries" "%MG_OUTPUT_SERVER%\CsMap\Dictionaries" /EXCLUDE:svn_excludes.txt+csmap_excludes.txt
+%XCOPY% "%MG_OEM%\CsMap\Dictionaries" "%MG_OUTPUT_CSMAP%\Dictionaries" /EXCLUDE:svn_excludes.txt+csmap_excludes.txt+%TYPEBUILD%_excludes.txt
 if "%TYPECOMPONENT%"=="server" goto quit
 if "%TYPECOMPONENT%"=="web" goto quit
 
@@ -344,21 +365,21 @@ if "%TYPECOMPONENT%"=="web" goto quit
 echo [install]: web Tier
 
 echo [install]: Web Tier - localized
-%XCOPY% "%MG_WEB_SRC%\localized" "%MG_OUTPUT_WEB%\www\localized" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%MG_WEB_SRC%\localized" "%MG_OUTPUT_WEB%\www\localized" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - mapadmin
-%XCOPY% "%MG_WEB_SRC%\mapadmin" "%MG_OUTPUT_WEB%\www\mapadmin" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%MG_WEB_SRC%\mapadmin" "%MG_OUTPUT_WEB%\www\mapadmin" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - mapagent
-%XCOPY% "%MG_WEB_SRC%\mapagent" "%MG_OUTPUT_WEB%\www\mapagent" /EXCLUDE:svn_excludes.txt+mapagent_excludes.txt+%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_WEB_SRC%\mapagent" "%MG_OUTPUT_WEB%\www\mapagent" /EXCLUDE:svn_excludes.txt+mapagent_excludes.txt+%TYPEBUILD%_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - MapGuide API unmanaged binaries
-%XCOPY% "%MG_WEB_BIN%\%TYPEBUILD%" "%MG_OUTPUT_WEB%\www\mapagent" /EXCLUDE:php_excludes.txt+java_excludes.txt+svn_excludes.txt
+%XCOPY% "%MG_WEB_BIN%\%TYPEBUILD%" "%MG_OUTPUT_WEB%\www\mapagent" /EXCLUDE:php_excludes.txt+java_excludes.txt+svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - mapagent test forms
-%XCOPY% "%MG_UNIT_TEST%\WebTier\MapAgent\MapAgentForms" "%MG_OUTPUT_WEB%\www\mapagent" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%MG_UNIT_TEST%\WebTier\MapAgent\MapAgentForms" "%MG_OUTPUT_WEB%\www\mapagent" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - stdicons
-%XCOPY% "%MG_WEB_SRC%\stdicons" "%MG_OUTPUT_WEB%\www\stdicons" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%MG_WEB_SRC%\stdicons" "%MG_OUTPUT_WEB%\www\stdicons" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - viewerfiles
-%XCOPY% "%MG_WEB_SRC%\viewerfiles" "%MG_OUTPUT_WEB%\www\viewerfiles" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%MG_WEB_SRC%\viewerfiles" "%MG_OUTPUT_WEB%\www\viewerfiles" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - schemareport
-%XCOPY% "%MG_WEB_SRC%\schemareport" "%MG_OUTPUT_WEB%\www\schemareport" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%MG_WEB_SRC%\schemareport" "%MG_OUTPUT_WEB%\www\schemareport" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - webconfig.ini
 copy /Y "%MG_WEB_SRC%\webconfig.ini" "%MG_OUTPUT_WEB%\www"
 echo [install]: Web Tier - mapviewerphp
@@ -370,28 +391,28 @@ echo [install]: Web Tier - php - MapGuide API unmanaged binaries
 echo [install]: Web Tier - php ext - MapGuide API unmanaged binaries
 %XCOPY% "%MG_WEB_BIN%\%TYPEBUILD%" "%MG_OUTPUT_WEB%\Php\ext" /EXCLUDE:php_excludes.txt+svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - mapviewernet
-%XCOPY% "%MG_WEB_SRC%\mapviewernet" "%MG_OUTPUT_WEB%\www\mapviewernet" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%MG_WEB_SRC%\mapviewernet" "%MG_OUTPUT_WEB%\www\mapviewernet" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - mapviewernet - MapGuide API unmanaged binaries
-%XCOPY% "%MG_WEB_BIN%\%TYPEBUILD%" "%MG_OUTPUT_WEB%\www\mapviewernet\bin" /EXCLUDE:dotnet_excludes.txt+%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_WEB_BIN%\%TYPEBUILD%" "%MG_OUTPUT_WEB%\www\mapviewernet\bin" /EXCLUDE:dotnet_excludes.txt+%TYPEBUILD%_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - mapviewerjava
-%XCOPY% "%MG_WEB_SRC%\mapviewerjava" "%MG_OUTPUT_WEB%\www\mapviewerjava" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%MG_WEB_SRC%\mapviewerjava" "%MG_OUTPUT_WEB%\www\mapviewerjava" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - mapviewerjava - WEB-INF
-%XCOPY% "%MG_WEB_SRC%\WEB-INF" "%MG_OUTPUT_WEB%\www\WEB-INF" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%MG_WEB_SRC%\WEB-INF" "%MG_OUTPUT_WEB%\www\WEB-INF" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - fusion templates
-%XCOPY% "%MG_OEM%\fusionMG" "%MG_OUTPUT_WEB%\www\fusion" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%MG_OEM%\fusionMG" "%MG_OUTPUT_WEB%\www\fusion" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - Apache module
 if not exist "%MG_OUTPUT_WEB%\Apache2\modules" mkdir "%MG_OUTPUT_WEB%\Apache2\modules"
 %XCOPY% /F "%MG_WEB_SRC%\mapagent\mod_mgmapagent.so" "%MG_OUTPUT_WEB%\Apache2\modules"
 echo [install]: Web Tier - fusion
-%ANT% deploy -Ddeploy.home="%MG_OUTPUT_WEB%\www\fusion" -f "%MG_OEM%\fusion\build.xml"
+call %ANT% deploy -Ddeploy.home="%MG_OUTPUT_WEB%\www\fusion" -f "%MG_OEM%\fusion\build.xml"
 if "%TYPECOMPONENT%"=="server" goto quit
 if "%TYPECOMPONENT%"=="web" goto quit
 
 :install_doc
 echo [install]: Documentation
-%XCOPY% "%MG_DOC_OUTPUT%" "%MG_OUTPUT_WEB%\Help" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%MG_DOC_OUTPUT%" "%MG_OUTPUT_WEB%\www\help" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Developer's Guide Sample Code
-%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%" "%MG_OUTPUT_WEB%\www\devguide" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%" "%MG_OUTPUT_WEB%\www\devguide" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 
 
 goto quit
@@ -446,9 +467,6 @@ SET MG_FUSION=
 SET MG_DOC=
 SET MG_DOC_OUTPUT=
 SET MG_ERROR=
-SET JAVA_HOME=
-SET DOXYGEN=
-SET GNUWIN32=
 
 SET MSBUILD_LOG=
 SET MSBUILD_VERBOSITY=
