@@ -19,7 +19,7 @@
                     <RemoveFolder Id="MapGuideOpenSourceMenuLocation" On="uninstall" />
                 </Component>
                 <Component Id="WebApacheShortcutComponent" Guid="2EBC8176-07C5-40A9-97F9-C3E83836637E">
-                    <Condition>MGWEB_CONFIG = "APACHE"</Condition>
+                    <Condition>MGWEB_CONFIG=&quot;APACHE&quot;</Condition>
                     <util:InternetShortcut Id="ApacheSiteAdmin"
                                            Directory="MapGuideOpenSourceMenuLocation"
                                            Name="!(loc.Shortcut_SiteAdmin)" 
@@ -40,7 +40,7 @@
                     </RegistryKey>
                 </Component>
                 <Component Id="WebIISShortcutComponent" Guid="F59A450A-84DE-4E2E-B942-BD416CDEBBF3">
-                    <Condition>MGWEB_CONFIG = "IIS"</Condition>
+                    <Condition>MGWEB_CONFIG=&quot;IIS&quot;</Condition>
                     <util:InternetShortcut Id="IISSiteAdmin"
                                            Directory="MapGuideOpenSourceMenuLocation"
                                            Name="!(loc.Shortcut_SiteAdmin)"

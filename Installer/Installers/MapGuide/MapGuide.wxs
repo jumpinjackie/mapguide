@@ -58,7 +58,7 @@
         
         <Property Id="ALLUSERS">1</Property>
 
-        <Property Id="IISVERSIONMAJOR" Value="#0">
+        <Property Id="IISVERSIONMAJOR" Value="#0" Secure="yes">
             <RegistrySearch Id="SearchRegIISVERSIONMAJOR" Root="HKLM" Key="Software\Microsoft\InetStp" Name="MajorVersion" Type="raw" />
         </Property>
 
@@ -72,28 +72,26 @@
             <Directory Id="ProgramMenuFolder" Name="Programs"/>
             <Directory Id="DesktopFolder" Name="Desktop"/>
             <Directory Id="ProgramFilesFolder">
-                <Directory Id="INSTALLLOCATION" Name="OSGeo">
-                    <Directory Id="MAPGUIDEROOTLOCATION" Name="MapGuide">
+                <Directory Id="OSGeoFolder" Name="OSGeo">
+                    <Directory Id="INSTALLLOCATION" Name="MapGuide">
                         <Directory Id="WebParentFolder" />
                         <Directory Id="ServerParentFolder" />
                         <Directory Id="CsMapParentFolder" />
-                        <Component Id="MapGuideFolderComponent" Guid="5DEC79C5-677F-4B9D-9DD2-67FA760A4916" Feature="MapGuideFeature">
-                            <CreateFolder />
-                        </Component>
                     </Directory>
                 </Directory>
             </Directory>
         </Directory>
 
-        <Feature Id="MapGuideFeature" Title="!(loc.MapGuideFeature)" Level="1" ConfigurableDirectory="MAPGUIDEROOTLOCATION" Description="!(loc.MapGuideFeature_Description)"  AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" Display="expand" Absent="disallow" >
-            <FeatureRef Id="CSMapFeature"/>
-            <FeatureRef Id="ServerFeature"/>
-            <FeatureRef Id="WebExtensionsFeature"/>
-        </Feature>
-
+        <FeatureRef Id="CSMapFeature"/>
+        <FeatureRef Id="ServerFeature"/>
+        <FeatureRef Id="WebExtensionsFeature"/>
+        
         <UIRef Id="WixUI_Common"/>
 
-        <!-- This stuff allows us to set MGWEB_CONFIG from two possible dialog boxes -->
+      <!-- Required to allow browsing for install directory -->
+        <Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" />
+
+      <!-- This stuff allows us to set MGWEB_CONFIG from two possible dialog boxes -->
         <Property Id="MgWeb_Config_IIS" Value="APACHE" />
         <Property Id="MgWeb_Config_NoIIS" Value="APACHE" />
         <CustomAction Id="MgWeb_Config_To_IIS_CA" Property="MgWeb_Config_IIS" Value="[MGWEB_CONFIG]" />
@@ -101,15 +99,15 @@
         <CustomAction Id="MgWeb_Config_From_IIS_CA" Property="MGWEB_CONFIG" Value="[MgWeb_Config_IIS]" />
         <CustomAction Id="MgWeb_Config_From_NoIIS_CA" Property="MGWEB_CONFIG" Value="[MgWeb_Config_NoIIS]" />
         
-        
         <UI>
             <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
             <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
             <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="8" Bold="yes" />
 
             <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
-            <Property Id="WixUI_Mode" Value="FeatureTree" />
 
+            <DialogRef Id="BrowseDlg" />
+            <DialogRef Id="DiskCostDlg" />
             <DialogRef Id="ErrorDlg" />
             <DialogRef Id="FatalError" />
             <DialogRef Id="FilesInUse" />
@@ -138,7 +136,7 @@
                 <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
 
                 <Control Id="TxtMessageIIS" Type="Text" X="30" Y="110" Width="316" Height="26" Text="!(loc.DisabledFeaturesDialog_IIS)">
-                    <Condition Action="hide">NOT IISVERSIONMAJOR = "#0"</Condition>
+                    <Condition Action="hide">NOT IISVERSIONMAJOR=&quot;#0&quot;</Condition>
                 </Control>
                 <Control Id="TxtMessageDotNet" Type="Text" X="30" Y="150" Width="302" Height="30" Text="!(loc.DisabledFeaturesDialog_DotNet)">
                     <Condition Action="hide">NETFRAMEWORK20</Condition>
@@ -284,8 +282,6 @@
                 <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
                 <!-- 
                 
-                Install to this web site:  |V|_________________________
-                
                 Create an application pool: ___________________________
                 
                 It is recommended to create an application pool if you are running mixed 
@@ -307,8 +303,18 @@
                 <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Configure IIS 7.0 Settings" />
                 <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
                 <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
-                <!-- -->
-                <Control Id="LblNote" Type="Text" Text="If you can read this, I've detected your version of IIS correctly" X="20" Y="80" Width="240" Height="15" />
+
+                <!-- 
+                  
+                  Create an application pool: ___________________________
+                  
+                  It is recommended to create an application pool if you are running mixed 
+                  ASP.net application environments on your web server.
+                  
+                -->
+                <Control Id="LblAppPool" Type="Text" Text="!(loc.IIS6ConfigDlg_AppPool)" X="20" Y="80" Width="240" Height="15" />
+                <Control Id="TxtAppPool" Type="Edit" Property="APP_POOL_NAME" X="20" Y="100" Width="240" Height="15" />
+                <Control Id="LblAppPoolDescription" Type="Text" Text="!(loc.IIS6ConfigDlg_AppPoolDescription)" X="20" Y="120" Width="240" Height="45" />
 
                 <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
                 <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
@@ -340,76 +346,85 @@
 
             <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
 
+            <!-- Browse dialog to locate installation directory -->
+            <Publish Dialog="BrowseDlg" Control="OK" Event="DoAction" Value="WixUIValidatePath" Order="3">1</Publish>
+            <Publish Dialog="BrowseDlg" Control="OK" Event="SpawnDialog" Value="InvalidDirDlg" Order="4"><![CDATA[WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
+
             <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
 
             <Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
-            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="1">LicenseAccepted = "1" AND (NOT IISVERSIONMAJOR = "#0")</Publish>
-            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="DisabledFeaturesDialog" Order="2">LicenseAccepted = "1" AND (IISVERSIONMAJOR = "#0" OR (NOT NETFRAMEWORK20))</Publish>
+            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="1">LicenseAccepted=&quot;1&quot; AND (NOT IISVERSIONMAJOR=&quot;#0&quot;)</Publish>
+            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="DisabledFeaturesDialog" Order="2">LicenseAccepted=&quot;1&quot; AND (IISVERSIONMAJOR=&quot;#0&quot; OR (NOT NETFRAMEWORK20))</Publish>
 
-            <Publish Dialog="DisabledFeaturesDialog" Control="Next" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="1">NOT IISVERSIONMAJOR = "#0"</Publish>
-            <Publish Dialog="DisabledFeaturesDialog" Control="Next" Event="NewDialog" Value="WebServerConfigDlgNoIIS" Order="2">IISVERSIONMAJOR = "#0"</Publish>
+            <Publish Dialog="DisabledFeaturesDialog" Control="Next" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="1">NOT IISVERSIONMAJOR=&quot;#0&quot;</Publish>
+            <Publish Dialog="DisabledFeaturesDialog" Control="Next" Event="NewDialog" Value="WebServerConfigDlgNoIIS" Order="2">IISVERSIONMAJOR=&quot;#0&quot;</Publish>
             <Publish Dialog="DisabledFeaturesDialog" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
             <Publish Dialog="DisabledFeaturesDialog" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="DoAction" Value="MgWeb_Config_From_IIS_CA" Order="1">1</Publish> 
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="ApacheConfigDlg" Order="2">MGWEB_CONFIG = "APACHE"</Publish>
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IISLangConfigDlg" Order="3">MGWEB_CONFIG = "IIS"</Publish>
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="4">MGWEB_CONFIG = "MANUAL"</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="DoAction" Value="MgWeb_Config_From_IIS_CA" Order="1">1</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="ApacheConfigDlg" Order="2">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IISLangConfigDlg" Order="3">MGWEB_CONFIG=&quot;IIS&quot; AND NETFRAMEWORK20</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="4">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK20)</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IIS6ConfigDlg" Order="5">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#6&quot; AND (NOT NETFRAMEWORK20)</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IIS7ConfigDlg" Order="6">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND (NOT NETFRAMEWORK20)</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="7">MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
             <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="DoAction" Value="MgWeb_Config_From_NoIIS_CA" Order="1">1</Publish> 
-            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="NewDialog" Value="ApacheConfigDlg" Order="2">MGWEB_CONFIG = "APACHE"</Publish>
-            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="NewDialog" Value="IISLangConfigDlg" Order="3">MGWEB_CONFIG = "IIS"</Publish>
-            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="4">MGWEB_CONFIG = "MANUAL"</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="NewDialog" Value="ApacheConfigDlg" Order="2">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="4">MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
             <Publish Dialog="WebServerConfigDlgNoIIS" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
             <Publish Dialog="WebServerConfigDlgNoIIS" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
             <Publish Dialog="ApacheConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg">1</Publish>
-            <Publish Dialog="ApacheConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="1">NOT IISVERSIONMAJOR = "#0"</Publish> 
-            <Publish Dialog="ApacheConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_NoIIS_CA" Order="2">IISVERSIONMAJOR = "#0"</Publish> 
-            <Publish Dialog="ApacheConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="3">NOT IISVERSIONMAJOR = "#0"</Publish>
-            <Publish Dialog="ApacheConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgNoIIS" Order="4">IISVERSIONMAJOR = "#0"</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_NoIIS_CA" Order="1">1</Publish> 
+            <Publish Dialog="ApacheConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgNoIIS" Order="2">1</Publish>
             <Publish Dialog="ApacheConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
-            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="2">IISVERSIONMAJOR = "#5"</Publish>
-            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="NewDialog" Value="IIS6ConfigDlg" Order="3">IISVERSIONMAJOR = "#6"</Publish>
-            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="NewDialog" Value="IIS7ConfigDlg" Order="4">IISVERSIONMAJOR = "#7"</Publish>
-            <Publish Dialog="IISLangConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="1">NOT IISVERSIONMAJOR = "#0"</Publish> 
-            <Publish Dialog="IISLangConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_NoIIS_CA" Order="2">IISVERSIONMAJOR = "#0"</Publish> 
-            <Publish Dialog="IISLangConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="3">NOT IISVERSIONMAJOR = "#0"</Publish>
-            <Publish Dialog="IISLangConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgNoIIS" Order="4">IISVERSIONMAJOR = "#0"</Publish>
+            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="2">IISVERSIONMAJOR=&quot;#5&quot;</Publish>
+            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="NewDialog" Value="IIS6ConfigDlg" Order="3">IISVERSIONMAJOR=&quot;#6&quot;</Publish>
+            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="NewDialog" Value="IIS7ConfigDlg" Order="4">IISVERSIONMAJOR=&quot;#7&quot;</Publish>
+            <Publish Dialog="IISLangConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="1">1</Publish> 
+            <Publish Dialog="IISLangConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="2">1</Publish>
             <Publish Dialog="IISLangConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
             
             <Publish Dialog="IIS6ConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg">1</Publish>
-            <Publish Dialog="IIS6ConfigDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg">1</Publish>
+            <Publish Dialog="IIS6ConfigDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg" Order="1">NETFRAMEWORK20</Publish>
+            <Publish Dialog="IIS6ConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="2">NOT NETFRAMEWORK20</Publish>
+            <Publish Dialog="IIS6ConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="3">NOT NETFRAMEWORK20</Publish>
             <Publish Dialog="IIS6ConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
             <Publish Dialog="IIS7ConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg">1</Publish>
-            <Publish Dialog="IIS7ConfigDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg">1</Publish>
+            <Publish Dialog="IIS7ConfigDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg" Order="1">NETFRAMEWORK20</Publish>
+            <Publish Dialog="IIS7ConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="2">NOT NETFRAMEWORK20</Publish>
+            <Publish Dialog="IIS7ConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="3">NOT NETFRAMEWORK20</Publish>
             <Publish Dialog="IIS7ConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
-            <Publish Dialog="IPConfigDlg" Control="Next" Event="NewDialog" Value="CustomizeDlg">1</Publish>
-            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg" Order="1">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#5"</Publish>
-            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="IIS6ConfigDlg" Order="2">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#6"</Publish>
-            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="IIS7ConfigDlg" Order="3">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7"</Publish>
-            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="ApacheConfigDlg" Order="4">MGWEB_CONFIG = "APACHE"</Publish>
-            <Publish Dialog="IPConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="5">NOT IISVERSIONMAJOR = "#0"</Publish> 
-            <Publish Dialog="IPConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_NoIIS_CA" Order="6">IISVERSIONMAJOR = "#0"</Publish> 
-            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="7">MGWEB_CONFIG = "MANUAL" AND NOT IISVERSIONMAJOR = "#0"</Publish>
-            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgNoIIS" Order="8">MGWEB_CONFIG = "MANUAL" AND IISVERSIONMAJOR = "#0"</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg">1</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg" Order="1">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#5&quot; AND NETFRAMEWORK20</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="IIS6ConfigDlg" Order="2">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="IIS7ConfigDlg" Order="3">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot;</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="ApacheConfigDlg" Order="4">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="5">(NOT IISVERSIONMAJOR=&quot;#0&quot;) AND ( (IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK20)) OR (MGWEB_CONFIG=&quot;MANUAL&quot; ))</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="6">(NOT IISVERSIONMAJOR=&quot;#0&quot;) AND ( (IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK20)) OR (MGWEB_CONFIG=&quot;MANUAL&quot; ))</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_NoIIS_CA" Order="7">IISVERSIONMAJOR=&quot;#0&quot;</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgNoIIS" Order="8">IISVERSIONMAJOR=&quot;#0&quot; AND MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
             <Publish Dialog="IPConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
+            <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="IPConfigDlg">1</Publish>
+            <Publish Dialog="InstallDirDlg" Control="Next" Event="SetTargetPath" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
+            <Publish Dialog="InstallDirDlg" Control="Next" Event="DoAction" Value="WixUIValidatePath" Order="2">1</Publish>
+            <Publish Dialog="InstallDirDlg" Control="Next" Event="SpawnDialog" Value="InvalidDirDlg" Order="3"><![CDATA[WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
+            <Publish Dialog="InstallDirDlg" Control="Next" Event="NewDialog" Value="CustomizeDlg" Order="4"><![CDATA[WIXUI_INSTALLDIR_VALID="1"]]></Publish>
+            <Publish Dialog="InstallDirDlg" Control="ChangeFolder" Property="_BrowseProperty" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
+            <Publish Dialog="InstallDirDlg" Control="ChangeFolder" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>
+
             <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="1">Installed</Publish>
-            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg" Order="2">NOT Installed</Publish>
-            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg" Order="3">NOT Installed AND MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#5"</Publish>
-            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="IIS6ConfigDlg" Order="4">NOT Installed AND MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#6"</Publish>
-            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="IIS7ConfigDlg" Order="5">NOT Installed AND MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7"</Publish>
-            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="ApacheConfigDlg" Order="6">NOT Installed AND MGWEB_CONFIG = "APACHE"</Publish>
-            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="IPConfigDlg" Order="7">NOT Installed AND MGWEB_CONFIG = "MANUAL"</Publish>
+            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="InstallDirDlg" Order="7">NOT Installed</Publish>
             <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
-            
-            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="1">NOT Installed OR WixUI_InstallMode = "Change"</Publish>
+
+            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="1">NOT Installed OR WixUI_InstallMode = &quot;Change&quot;</Publish>
             <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="2">Installed</Publish>
 
             <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
@@ -426,116 +441,112 @@
             <ProgressText Action="MgServerInstallCA">!(loc.MgServerInstallCA)</ProgressText>
             <ProgressText Action="MgServerUninstallCA">!(loc.MgServerUninstallCA)</ProgressText>
             <ProgressText Action="RemoveApacheServiceCA">!(loc.RemoveApacheServiceCA)</ProgressText>
-            <ProgressText Action="AddWebServiceExtension">!(loc.AddWebServiceExtension)</ProgressText>
-            <ProgressText Action="CreateVDirMapGuide">!(loc.CreateVDirMapGuide)</ProgressText>
-            <ProgressText Action="RegisterScriptMaps">!(loc.RegisterScriptMaps)</ProgressText>
-            <ProgressText Action="SetCustomErrors">!(loc.SetCustomErrors)</ProgressText>
-            <ProgressText Action="CreateVDirMapAgent">!(loc.CreateVDirMapAgent)</ProgressText>
-            <ProgressText Action="CreateVDirPhpAgent">!(loc.CreateVDirPhpAgent)</ProgressText>
-            <ProgressText Action="CreateVDirNetAgent">!(loc.CreateVDirNetAgent)</ProgressText>
-            <ProgressText Action="CreateVDirJavaAgent">!(loc.CreateVDirJavaAgent)</ProgressText>
-            <ProgressText Action="DeleteWebServiceExtension">!(loc.DeleteWebServiceExtension)</ProgressText>
-            <ProgressText Action="DeleteVDirMapGuide">!(loc.DeleteVDirMapGuide)</ProgressText>
 
         </UI>
 
         <InstallExecuteSequence>
 
           <!-- IIS7 Base properties for deferred actions -->
-            <Custom Action="MapGuideIIS7_I_AppCmd_Cmd" After="CostFinalize">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_CreateAppPool_Cmd" After="MapGuideIIS7_I_AppCmd_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_SetAppPoolProp_Cmd" After="MapGuideIIS7_I_CreateAppPool_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_UnlockSrvHandlers_Cmd" After="MapGuideIIS7_I_SetAppPoolProp_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_UnlockSiteHandlers_Cmd" After="MapGuideIIS7_I_UnlockSrvHandlers_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_CreateMapGuideApp_Cmd" After="MapGuideIIS7_I_UnlockSiteHandlers_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_CreatePhpScriptMapping_Cmd" After="MapGuideIIS7_I_CreateMapGuideApp_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_EnablePhpExtension_Cmd" After="MapGuideIIS7_I_CreatePhpScriptMapping_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_CreateMapAgentApp_Cmd" After="MapGuideIIS7_I_EnablePhpExtension_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_SetMapAgentHandlerAccess_Cmd" After="MapGuideIIS7_I_CreateMapAgentApp_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_CreateMapAgentScriptHandling_Cmd" After="MapGuideIIS7_I_SetMapAgentHandlerAccess_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_EnableMapAgentExtension_Cmd" After="MapGuideIIS7_I_CreateMapAgentScriptHandling_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_AssignMapGuideAppPool_Cmd" After="MapGuideIIS7_I_EnableMapAgentExtension_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_AssignMapAgentAppPool_Cmd" After="MapGuideIIS7_I_AssignMapGuideAppPool_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsMain_Cmd" After="MapGuideIIS7_I_AssignMapAgentAppPool_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsWebSite_Cmd" After="MapGuideIIS7_I_UnlockHttpErrorsMain_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsMapGuide_Cmd" After="MapGuideIIS7_I_UnlockHttpErrorsWebSite_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_Reset401Handler_Cmd" After="MapGuideIIS7_I_UnlockHttpErrorsMapGuide_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_AddJsonMime_Cmd" After="MapGuideIIS7_I_Reset401Handler_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_AppCmd_Cmd" After="CostFinalize">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateAppPool_Cmd" After="MapGuideIIS7_I_AppCmd_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetAppPoolProp_Cmd" After="MapGuideIIS7_I_CreateAppPool_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockSrvHandlers_Cmd" After="MapGuideIIS7_I_SetAppPoolProp_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockSiteHandlers_Cmd" After="MapGuideIIS7_I_UnlockSrvHandlers_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateMapGuideApp_Cmd" After="MapGuideIIS7_I_UnlockSiteHandlers_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreatePhpScriptMapping_Cmd" After="MapGuideIIS7_I_CreateMapGuideApp_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_EnablePhpExtension_Cmd" After="MapGuideIIS7_I_CreatePhpScriptMapping_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateMapAgentApp_Cmd" After="MapGuideIIS7_I_EnablePhpExtension_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetMapAgentHandlerAccess_Cmd" After="MapGuideIIS7_I_CreateMapAgentApp_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateMapAgentScriptHandling_Cmd" After="MapGuideIIS7_I_SetMapAgentHandlerAccess_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_EnableMapAgentExtension_Cmd" After="MapGuideIIS7_I_CreateMapAgentScriptHandling_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignMapGuideAppPool_Cmd" After="MapGuideIIS7_I_EnableMapAgentExtension_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignMapAgentAppPool_Cmd" After="MapGuideIIS7_I_AssignMapGuideAppPool_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsMain_Cmd" After="MapGuideIIS7_I_AssignMapAgentAppPool_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsWebSite_Cmd" After="MapGuideIIS7_I_UnlockHttpErrorsMain_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsMapGuide_Cmd" After="MapGuideIIS7_I_UnlockHttpErrorsWebSite_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_Reset401Handler_Cmd" After="MapGuideIIS7_I_UnlockHttpErrorsMapGuide_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AddJsonMime_Cmd" After="MapGuideIIS7_I_Reset401Handler_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
 
           <!-- IIS7 PHP Viewer properties for deferred actions -->
-            <Custom Action="MapGuideIIS7_I_CreateViewerPhp_Cmd" After="MapGuideIIS7_I_AddJsonMime_Cmd">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "PHP" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_SetViewerDocPhp_Cmd" After="MapGuideIIS7_I_CreateViewerPhp_Cmd">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "PHP" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolPhp_Cmd" After="MapGuideIIS7_I_SetViewerDocPhp_Cmd">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "PHP" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateViewerPhp_Cmd" After="MapGuideIIS7_I_AddJsonMime_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetViewerDocPhp_Cmd" After="MapGuideIIS7_I_CreateViewerPhp_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolPhp_Cmd" After="MapGuideIIS7_I_SetViewerDocPhp_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
 
           <!-- IIS7 ASP.Net Viewer properties for deferred actions -->
-            <Custom Action="MapGuideIIS7_I_CreateViewerNet_Cmd" After="MapGuideIIS7_I_Reset401Handler_Cmd">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "DOTNET" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_SetViewerDocNet_Cmd" After="MapGuideIIS7_I_CreateViewerNet_Cmd">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "DOTNET" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolNet_Cmd" After="MapGuideIIS7_I_SetViewerDocNet_Cmd">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "DOTNET" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateViewerNet_Cmd" After="MapGuideIIS7_I_Reset401Handler_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetViewerDocNet_Cmd" After="MapGuideIIS7_I_CreateViewerNet_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolNet_Cmd" After="MapGuideIIS7_I_SetViewerDocNet_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
 
           <!-- IIS7 Base deferred CAs -->
-            <Custom Action="MapGuideIIS7_I_CreateAppPool" After="InstallFiles">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_SetAppPoolProp" After="MapGuideIIS7_I_CreateAppPool">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_UnlockSrvHandlers" After="MapGuideIIS7_I_SetAppPoolProp">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_UnlockSiteHandlers" After="MapGuideIIS7_I_UnlockSrvHandlers">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_CreateMapGuideApp" After="MapGuideIIS7_I_UnlockSiteHandlers">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_CreatePhpScriptMapping" After="MapGuideIIS7_I_CreateMapGuideApp">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_EnablePhpExtension" After="MapGuideIIS7_I_CreatePhpScriptMapping">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_CreateMapAgentApp" After="MapGuideIIS7_I_EnablePhpExtension">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_SetMapAgentHandlerAccess" After="MapGuideIIS7_I_CreateMapAgentApp">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_CreateMapAgentScriptHandling" After="MapGuideIIS7_I_SetMapAgentHandlerAccess">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_EnableMapAgentExtension" After="MapGuideIIS7_I_CreateMapAgentScriptHandling">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_AssignMapGuideAppPool" After="MapGuideIIS7_I_EnableMapAgentExtension">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_AssignMapAgentAppPool" After="MapGuideIIS7_I_AssignMapGuideAppPool">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsMain" After="MapGuideIIS7_I_AssignMapAgentAppPool">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsWebSite" After="MapGuideIIS7_I_UnlockHttpErrorsMain">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsMapGuide" After="MapGuideIIS7_I_UnlockHttpErrorsWebSite">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_Reset401Handler" After="MapGuideIIS7_I_UnlockHttpErrorsMapGuide">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_AddJsonMime" After="MapGuideIIS7_I_Reset401Handler">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateAppPool" After="InstallFiles">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetAppPoolProp" After="MapGuideIIS7_I_CreateAppPool">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockSrvHandlers" After="MapGuideIIS7_I_SetAppPoolProp">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockSiteHandlers" After="MapGuideIIS7_I_UnlockSrvHandlers">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateMapGuideApp" After="MapGuideIIS7_I_UnlockSiteHandlers">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreatePhpScriptMapping" After="MapGuideIIS7_I_CreateMapGuideApp">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_EnablePhpExtension" After="MapGuideIIS7_I_CreatePhpScriptMapping">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateMapAgentApp" After="MapGuideIIS7_I_EnablePhpExtension">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetMapAgentHandlerAccess" After="MapGuideIIS7_I_CreateMapAgentApp">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateMapAgentScriptHandling" After="MapGuideIIS7_I_SetMapAgentHandlerAccess">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_EnableMapAgentExtension" After="MapGuideIIS7_I_CreateMapAgentScriptHandling">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignMapGuideAppPool" After="MapGuideIIS7_I_EnableMapAgentExtension">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignMapAgentAppPool" After="MapGuideIIS7_I_AssignMapGuideAppPool">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsMain" After="MapGuideIIS7_I_AssignMapAgentAppPool">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsWebSite" After="MapGuideIIS7_I_UnlockHttpErrorsMain">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsMapGuide" After="MapGuideIIS7_I_UnlockHttpErrorsWebSite">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_Reset401Handler" After="MapGuideIIS7_I_UnlockHttpErrorsMapGuide">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AddJsonMime" After="MapGuideIIS7_I_Reset401Handler">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
 
           <!-- IIS7 PHP Viewer deferred CAs -->
-            <Custom Action="MapGuideIIS7_I_CreateViewerPhp" After="MapGuideIIS7_I_AddJsonMime">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "PHP" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_SetViewerDocPhp" After="MapGuideIIS7_I_CreateViewerPhp">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "PHP" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolPhp" After="MapGuideIIS7_I_SetViewerDocPhp">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "PHP" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateViewerPhp" After="MapGuideIIS7_I_AddJsonMime">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetViewerDocPhp" After="MapGuideIIS7_I_CreateViewerPhp">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolPhp" After="MapGuideIIS7_I_SetViewerDocPhp">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
 
           <!-- IIS7 DOTNET Viewer deferred CAs -->
-            <Custom Action="MapGuideIIS7_I_CreateViewerNet" After="MapGuideIIS7_I_Reset401Handler">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "DOTNET" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_SetViewerDocNet" After="MapGuideIIS7_I_CreateViewerNet">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "DOTNET" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolNet" After="MapGuideIIS7_I_SetViewerDocNet">MGWEB_CONFIG = "IIS" AND IIS_API_TYPE = "DOTNET" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature > 2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateViewerNet" After="MapGuideIIS7_I_Reset401Handler">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetViewerDocNet" After="MapGuideIIS7_I_CreateViewerNet">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolNet" After="MapGuideIIS7_I_SetViewerDocNet">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
 
           <!-- IIS7 UNINSTALL deferred action properties -->
-            <Custom Action="MapGuideIIS7_U_AppCmd_Cmd" After="InstallInitialize">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-            <Custom Action="MapGuideIIS7_U_ClearMapAgentRestriction_Cmd" After="MapGuideIIS7_U_AppCmd_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-            <Custom Action="MapGuideIIS7_U_ClearPhpRestriction_Cmd" After="MapGuideIIS7_U_ClearMapAgentRestriction_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-            <Custom Action="MapGuideIIS7_U_RemoveViewer_Cmd" After="MapGuideIIS7_U_ClearPhpRestriction_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-            <Custom Action="MapGuideIIS7_U_RemoveMapAgent_Cmd" After="MapGuideIIS7_U_RemoveViewer_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-            <Custom Action="MapGuideIIS7_U_RemoveMapGuide_Cmd" After="MapGuideIIS7_U_RemoveMapAgent_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-            <Custom Action="MapGuideIIS7_U_DeleteAppPool_Cmd" After="MapGuideIIS7_U_RemoveMapGuide_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+            <Custom Action="MapGuideIIS7_U_AppCmd_Cmd" After="InstallInitialize">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_ClearMapAgentRestriction_Cmd" After="MapGuideIIS7_U_AppCmd_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_ClearPhpRestriction_Cmd" After="MapGuideIIS7_U_ClearMapAgentRestriction_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveViewer_Cmd" After="MapGuideIIS7_U_ClearPhpRestriction_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveMapAgent_Cmd" After="MapGuideIIS7_U_RemoveViewer_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveMapGuide_Cmd" After="MapGuideIIS7_U_RemoveMapAgent_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_DeleteAppPool_Cmd" After="MapGuideIIS7_U_RemoveMapGuide_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
 
           <!-- IIS7 UNINSTALL deferred CAs -->
-            <Custom Action="MapGuideIIS7_U_ClearMapAgentRestriction" After="MapGuideIIS7_U_DeleteAppPool_Cmd">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-            <Custom Action="MapGuideIIS7_U_ClearPhpRestriction" After="MapGuideIIS7_U_ClearMapAgentRestriction">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-            <Custom Action="MapGuideIIS7_U_RemoveViewer" After="MapGuideIIS7_U_ClearPhpRestriction">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-            <Custom Action="MapGuideIIS7_U_RemoveMapAgent" After="MapGuideIIS7_U_RemoveViewer">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-            <Custom Action="MapGuideIIS7_U_RemoveMapGuide" After="MapGuideIIS7_U_RemoveMapAgent">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
-            <Custom Action="MapGuideIIS7_U_DeleteAppPool" After="MapGuideIIS7_U_RemoveMapGuide">MGWEB_CONFIG = "IIS" AND IISVERSIONMAJOR = "#7" AND &amp;WebExtensionsFeature = 2</Custom>
+            <Custom Action="MapGuideIIS7_U_ClearMapAgentRestriction" After="MapGuideIIS7_U_DeleteAppPool_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_ClearPhpRestriction" After="MapGuideIIS7_U_ClearMapAgentRestriction">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveViewer" After="MapGuideIIS7_U_ClearPhpRestriction">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveMapAgent" After="MapGuideIIS7_U_RemoveViewer">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveMapGuide" After="MapGuideIIS7_U_RemoveMapAgent">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_DeleteAppPool" After="MapGuideIIS7_U_RemoveMapGuide">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
 
+          <!-- IIS6 properties for deferred actions -->
+            <Custom Action="AspNetRegIIS_Cmd" After="CostFinalize">NETFRAMEWORK20 AND MGWEB_CONFIG=&quot;IIS&quot; AND (IISVERSIONMAJOR=&quot;#5&quot; OR IISVERSIONMAJOR=&quot;#6&quot;) AND &amp;WebExtensionsFeature&gt;2</Custom>
+
+          <!-- IIS6 deferred actions  ConfigureIIS is a WiX built-in action; I'm overriding and making the action conditional -->
+            <Custom Action="ConfigureIIs" After="InstallFiles">MGWEB_CONFIG=&quot;IIS&quot; AND (IISVERSIONMAJOR=&quot;#5&quot; OR IISVERSIONMAJOR=&quot;#6&quot;) AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="AspNetRegIIS" After="ConfigureIIs">NETFRAMEWORK20 AND MGWEB_CONFIG=&quot;IIS&quot; AND (IISVERSIONMAJOR=&quot;#5&quot; OR IISVERSIONMAJOR=&quot;#6&quot;) AND &amp;WebExtensionsFeature&gt;2</Custom>
 
           <!-- Apache / PHP / MG Server Custom Actions-->
             <Custom
                 Action="UpdateApacheConfig"
-                After="UpdateApacheConfig.SetValues">&amp;WebExtPhpFeature > 2 AND &amp;WebExtApacheFeature > 2</Custom>
+                After="UpdateApacheConfig.SetValues">&amp;WebExtPhpFeature&gt;2 AND &amp;WebExtApacheFeature&gt;2</Custom>
             <Custom
                 Action="UpdateApacheConfig.SetValues"
-                After="InstallFiles">&amp;WebExtPhpFeature > 2 AND &amp;WebExtApacheFeature > 2</Custom>
+                After="InstallFiles">&amp;WebExtPhpFeature&gt;2 AND &amp;WebExtApacheFeature&gt;2</Custom>
             <Custom
                 Action="UpdatePhpIni"
-                After="UpdatePhpIni.SetValues">&amp;WebExtPhpFeature > 2</Custom>
+                After="UpdatePhpIni.SetValues">&amp;WebExtPhpFeature&gt;2</Custom>
             <Custom
                 Action="UpdatePhpIni.SetValues"
-                After="UpdateApacheConfig">&amp;WebExtPhpFeature > 2</Custom>
+                After="UpdateApacheConfig">&amp;WebExtPhpFeature&gt;2</Custom>
             <Custom
                 Action="InstallApacheServiceCA"
-                Before="InstallFinalize">MGWEB_CONFIG = "APACHE" AND &amp;WebExtApacheFeature > 2</Custom>
+                Before="InstallFinalize">MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtApacheFeature&gt;2</Custom>
             <Custom
                 Action="MgServerInstallCA"
                 Before="InstallFinalize">&amp;ServerFeature>2</Custom>
@@ -544,43 +555,9 @@
                 Before="RemoveFiles">&amp;ServerFeature=2</Custom>
             <Custom
                 Action="RemoveApacheServiceCA"
-                Before="RemoveFiles">MGWEB_CONFIG = "APACHE" AND &amp;WebExtApacheFeature=2</Custom>
+                Before="RemoveFiles">MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtApacheFeature=2</Custom>
 
-            <!-- IIS 5/6 related custom actions -->
-            <Custom
-                Action="AddWebServiceExtension"
-                Before="InstallFinalize">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom
-                Action="CreateVDirMapGuide"
-                After="AddWebServiceExtension">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom
-                Action="AspNetRegIIS"
-                After="CreateVDirMapGuide">(MGWEB_CONFIG = "IIS") AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND NETFRAMEWORK20 AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom
-                Action="RegisterScriptMaps"
-                After="AspNetRegIIS">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom
-                Action="SetCustomErrors"
-                After="AspNetRegIIS">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom
-                Action="CreateVDirMapAgent"
-                After="AspNetRegIIS">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature > 2</Custom>
-            <Custom
-                Action="CreateVDirPhpAgent"
-                After="AspNetRegIIS">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND IIS_API_TYPE = "PHP" AND &amp;WebExtMapViewerPHPFeature > 2</Custom>
-            <Custom
-                Action="CreateVDirNetAgent"
-                After="AspNetRegIIS">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND IIS_API_TYPE = "DOTNET" AND  &amp;WebExtMapViewerASPXFeature > 2</Custom>
-            <Custom
-                Action="CreateVDirJavaAgent"
-                After="AspNetRegIIS">MGWEB_CONFIG = "IIS" AND (IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND IIS_API_TYPE = "JAVA" AND &amp;WebExtMapViewerJSPFeature > 2</Custom>
-            <Custom
-                Action="DeleteWebServiceExtension"
-                Before="DeleteVDirMapGuide">(IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature = 2</Custom>
-            <Custom
-                Action="DeleteVDirMapGuide"
-                Before="InstallFinalize">(IISVERSIONMAJOR = "#5" OR IISVERSIONMAJOR = "#6") AND &amp;WebExtensionsFeature = 2</Custom>
-            <ScheduleReboot After="InstallFinalize"/>
+            <ScheduleReboot After="InstallFinalize">NOT Installed AND &amp;CSMapFeature&gt;2</ScheduleReboot> 
         </InstallExecuteSequence>
     </Product>
 </Wix>

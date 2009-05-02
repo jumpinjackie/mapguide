@@ -19,15 +19,14 @@ rem           [-c=BuildType]
 rem           [-a=Action]
 rem           [-lang=Culture]
 rem           [-srv=ServerDirectory]
-rem	      	  [-web=WebExtensionsDirectory]
+rem	      	  [-source=SourceDirectory]
 rem	      	  [-version=MapGuideVersion]
 rem	      	  [-name=MapGuideInstallerFilename]
 rem	      	  [-title=MapGuideInstallerTitle]
 rem
 rem BuildType: Release(default), Debug
 rem Action: build(default), clean, regen, prepare, generate (only use generate when creating new GIDs)
-rem ServerDirectory: The MapGuide Server directory where paraffin will generate the files from
-rem WebExtensionsDirectory: The MapGuide Web Extensions directory where paraffin will generate the files from
+rem SourceDirectory: The directory that was used for MapGuide build ouput 
 rem	MapGuideVersion: The version associated with the installer in the format 2.1.0.0
 rem	MapGuideInstallerFilename: File name of output .exe in the format MapGuideOpenSource-2.1.0-Something
 rem	MapGuideInstallerTitle: Title to appear in the installer.
@@ -47,10 +46,8 @@ SET CULTURE=en-US
 SET INSTALLER_NAME=MapGuideOpenSource-2.1.0-Unofficial-%CULTURE%-%TYPEBUILD%
 SET INSTALLER_VERSION=2.1.0.0
 SET INSTALLER_TITLE="MapGuide OS 2.1 Unofficial (%TYPEBUILD%)"
-SET MG_SERVER=..\MgDev\%TYPEBUILD%\Server
-SET MG_WEB=..\MgDev\%TYPEBUILD%\WebServerExtensions
-SET MG_SERVER_INC=
-SET MG_WEB_INC=
+SET MG_SOURCE=..\MgDev\%TYPEBUILD%
+SET MG_SOURCE_INC=
 
 rem ==================================================
 rem MapGuide Installer vars
@@ -104,8 +101,7 @@ if "%1"=="-action"  goto get_action
 if "%1"=="-lang"	goto get_language
 
 if "%1"=="-v"       goto get_verbose
-if "%1"=="-srv"		 goto get_server
-if "%1"=="-web"		 goto get_webextensions
+if "%1"=="-source"		 goto get_source
 
 if "%1"=="-version"       goto get_version
 if "%1"=="-name"		 goto get_name
@@ -129,14 +125,9 @@ SET MSBUILD=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% %MSB
 SET MSBUILD_CLEAN=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% /t:Clean %MSBUILD_VERBOSITY%
 goto next_param
 
-:get_server
-SET MG_SERVER=%2
-SET MG_SERVER_INC=%MG_SERVER%
-goto next_param
-
-:get_webextensions
-SET MG_WEB=%2
-SET MG_WEB_INC=%MG_WEB%
+:get_source
+SET MG_SOURCE=%2
+SET MG_SOURCE_INC=%MG_SOURCE%
 goto next_param
 
 :get_version
@@ -156,10 +147,8 @@ SET TYPEBUILD=%2
 SET INSTALLER_OUTPUT=%CD%\Installers\MapGuide\bin\%TYPEBUILD%
 SET MSBUILD=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% %MSBUILD_VERBOSITY% %MSBUILD_LOG%
 SET MSBUILD_CLEAN=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% /t:Clean %MSBUILD_VERBOSITY%
-SET MG_SERVER=..\MgDev\%TYPEBUILD%\Server
-SET MG_WEB=..\MgDev\%TYPEBUILD%\WebServerExtensions
-IF NOT ""=="%MG_SERVER_INC%" SET MG_SERVER_INC=%MG_SERVER%
-IF NOT ""=="%MG_WEB_INC%" SET MG_WEB_INC=%MG_WEB%
+SET MG_SOURCE=..\MgDev\%TYPEBUILD%
+IF NOT ""=="%MG_SOURCE_INC%" SET MG_SOURCE_INC=%MG_SOURCE%
 
 if "%2"=="Release" goto next_param
 if "%2"=="Debug" goto next_param
@@ -182,8 +171,7 @@ echo Configuration is [%TYPEBUILD%]
 echo Action is [%TYPEACTION%]
 echo CPU cores: %CPU_CORES%
 echo Installer Output Directory: %INSTALLER_OUTPUT%
-echo MG Server Source Directory: %MG_SERVER%
-echo MG Web Source Directory: %MG_WEB%
+echo MG Source Directory: %MG_SOURCE%
 echo Locale: %CULTURE%
 echo ===================================================
 
@@ -217,15 +205,16 @@ goto quit
 
 :prepare
 echo [prepare] MapGuide Installer
-if not exist "%MG_SERVER%" goto error_mg_server_not_found
-if not exist "%MG_WEB%" goto error_mg_web_not_found
+if not exist "%MG_SOURCE%\Server" goto error_mg_server_not_found
+if not exist "%MG_SOURCE%\Web" goto error_mg_web_not_found
+if not exist "%MG_SOURCE%\CS-Map" goto error_mg_csmap_not_found
 rem copy support files into server and web directories
 echo [prepare] Tomcat
-%XCOPY% "%INSTALLER_DEV%\Support\Web\Tomcat" "%MG_WEB%\Tomcat" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%INSTALLER_DEV%\Support\Web\Tomcat" "%MG_SOURCE%\Web\Tomcat" /EXCLUDE:svn_excludes.txt
 echo [prepare] Php
-%XCOPY% "%INSTALLER_DEV%\Support\Web\Php" "%MG_WEB%\Php" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%INSTALLER_DEV%\Support\Web\Php" "%MG_SOURCE%\Web\Php" /EXCLUDE:svn_excludes.txt
 echo [prepare] Apache2
-%XCOPY% "%INSTALLER_DEV%\Support\Web\Apache2" "%MG_WEB%\Apache2" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%INSTALLER_DEV%\Support\Web\Apache2" "%MG_SOURCE%\Web\Apache2" /EXCLUDE:svn_excludes.txt
 
 goto quit
 
@@ -267,7 +256,7 @@ echo [regen]: Server - WFS
 %PARAFFIN% %WIX_INC_SERVER%\incWfsFiles.wxs
 move /Y %WIX_INC_SERVER%\incWfsFiles.PARAFFIN %WIX_INC_SERVER%\incWfsFiles.wxs
 
-echo [regen]: Server - CS-Map dictionaries
+echo [regen]: CS-Map - dictionaries
 %PARAFFIN% %WIX_INC_CSMAP%\incCSMapDictionaryFiles.wxs
 move /Y %WIX_INC_CSMAP%\incCSMapDictionaryFiles.PARAFFIN %WIX_INC_CSMAP%\incCSMapDictionaryFiles.wxs
 
@@ -340,75 +329,74 @@ SET WIX_INC_FDO="%INSTALLER_DEV%\Libraries\FDO\FileIncludes"
 SET WIX_INC_CSMAP="%INSTALLER_DEV%\Libraries\CS Map\FileIncludes"
 
 echo [generate]: Server - binaries
-%PARAFFIN% -dir %MG_SERVER%\bin -alias $(var.MgServerSource)\bin -custom SRVBINFILES -ext pdb -dirref SERVERROOTLOCATION -norecurse %WIX_INC_SERVER%\incBinFiles.wxs
+%PARAFFIN% -dir %MG_SOURCE%\Server\bin -alias $(var.MgSource)\Server\bin -custom SRVBINFILES -dirref SERVERROOTLOCATION -norecurse %WIX_INC_SERVER%\incBinFiles.wxs
 
 echo [generate]: Server - FDO
-%PARAFFIN% -dir %MG_SERVER%\bin\FDO -alias $(var.MgServerSource)\bin\FDO -custom FDOFILES -dirref SERVERROOTLOCATION %WIX_INC_FDO%\incFdoFiles.wxs
+%PARAFFIN% -dir %MG_SOURCE%\Server\FDO -alias $(var.MgSource)\Server\FDO -custom FDOFILES -dirref SERVERROOTLOCATION %WIX_INC_FDO%\incFdoFiles.wxs
 
 echo [generate]: Server - RepositoryAdmin
-%PARAFFIN% -dir %MG_SERVER%\RepositoryAdmin -alias $(var.MgServerSource)\RepositoryAdmin -custom SRVREPADMINFILES -dirref SERVERROOTLOCATION %WIX_INC_SERVER%\incRepositoryAdminFiles.wxs
+%PARAFFIN% -dir %MG_SOURCE%\Server\RepositoryAdmin -alias $(var.MgSource)\Server\RepositoryAdmin -custom SRVREPADMINFILES -dirref SERVERROOTLOCATION %WIX_INC_SERVER%\incRepositoryAdminFiles.wxs
 
 echo [generate]: Server - resources          
-%PARAFFIN% -dir %MG_SERVER%\bin\Resources -alias $(var.MgServerSource)\bin\Resources -custom SRVRESOURCESFILES -dirref SERVERROOTLOCATION %WIX_INC_SERVER%\incResourcesFiles.wxs
+%PARAFFIN% -dir %MG_SOURCE%\Server\Resources -alias $(var.MgSource)\Server\Resources -custom SRVRESOURCESFILES -dirref SERVERROOTLOCATION %WIX_INC_SERVER%\incResourcesFiles.wxs
 	  
 echo [generate]: Server - schema
-%PARAFFIN% -dir %MG_SERVER%\bin\Schema -alias $(var.MgServerSource)\bin\Schema -custom SRVSCHEMAFILES -dirref SERVERROOTLOCATION %WIX_INC_SERVER%\incSchemaFiles.wxs
+%PARAFFIN% -dir %MG_SOURCE%\Server\Schema -alias $(var.MgSource)\Server\Schema -custom SRVSCHEMAFILES -dirref SERVERROOTLOCATION %WIX_INC_SERVER%\incSchemaFiles.wxs
 
 echo [generate]: Server - WMS
-%PARAFFIN% -dir %MG_SERVER%\bin\wms -alias $(var.MgServerSource)\bin\wms -custom SRVWMSFILES -dirref SERVERROOTLOCATION -norecurse %WIX_INC_SERVER%\incWmsFiles.wxs
+%PARAFFIN% -dir %MG_SOURCE%\Server\wms -alias $(var.MgSource)\Server\wms -custom SRVWMSFILES -dirref SERVERROOTLOCATION -norecurse %WIX_INC_SERVER%\incWmsFiles.wxs
 
 echo [generate]: Server - WFS
-%PARAFFIN% -dir %MG_SERVER%\bin\wfs -alias $(var.MgServerSource)\bin\wfs -custom SRVWFSFILES -dirref SERVERROOTLOCATION -norecurse %WIX_INC_SERVER%\incWfsFiles.wxs
+%PARAFFIN% -dir %MG_SOURCE%\Server\wfs -alias $(var.MgSource)\Server\wfs -custom SRVWFSFILES -dirref SERVERROOTLOCATION -norecurse %WIX_INC_SERVER%\incWfsFiles.wxs
 
-echo [generate]: Server - CS-Map dictionaries
-%PARAFFIN% -dir %MG_SERVER%\CsMap\Dictionaries -alias $(var.MgServerSource)\CsMap\Dictionaries -custom CSMAPDICTFILES -dirref CSMAPLOCATION -ext ASC -ext C -ext CNT -ext GID -ext HLP -ext MAK -ext NMK -ext VCPROJ -ext USER %WIX_INC_CSMAP%\incCSMapDictionaryFiles.wxs
+echo [generate]: CS-Map - dictionaries
+%PARAFFIN% -dir %MG_SOURCE%\CS-Map\Dictionaries -alias $(var.MgSource)\CS-Map\Dictionaries -custom CSMAPDICTFILES -dirref CSMAPLOCATION -ext ASC -ext C -ext CNT -ext GID -ext HLP -ext MAK -ext NMK -ext VCPROJ -ext USER %WIX_INC_CSMAP%\incCSMapDictionaryFiles.wxs
 
 echo [generate]: Web - Apache
-%PARAFFIN% -dir %MG_WEB%\Apache2 -alias $(var.MgWebSource)\Apache2 -custom APACHEFILES -dirref WEBEXTENSIONSLOCATION -multiple %WIX_INC_WEB%\incApacheFiles.wxs
+%PARAFFIN% -dir %MG_SOURCE%\Web\Apache2 -alias $(var.MgSource)\Web\Apache2 -custom APACHEFILES -dirref WEBEXTENSIONSLOCATION -multiple %WIX_INC_WEB%\incApacheFiles.wxs
 
 echo [generate]: Web - Php
-%PARAFFIN% -dir %MG_WEB%\Php -alias $(var.MgWebSource)\Php -custom PHPFILES -dirref WEBEXTENSIONSLOCATION -multiple %WIX_INC_WEB%\incPhpFiles.wxs
+%PARAFFIN% -dir %MG_SOURCE%\Web\Php -alias $(var.MgSource)\Web\Php -custom PHPFILES -dirref WEBEXTENSIONSLOCATION -multiple %WIX_INC_WEB%\incPhpFiles.wxs
 
 echo [generate]: Web - Tomcat
-%PARAFFIN% -dir %MG_WEB%\Tomcat -alias $(var.MgWebSource)\Tomcat -custom TOMCATFILES -dirref WEBEXTENSIONSLOCATION -multiple %WIX_INC_WEB%\incTomcatFiles.wxs
+%PARAFFIN% -dir %MG_SOURCE%\Web\Tomcat -alias $(var.MgSource)\Web\Tomcat -custom TOMCATFILES -dirref WEBEXTENSIONSLOCATION -multiple %WIX_INC_WEB%\incTomcatFiles.wxs
 
 echo [generate]: Web - Help
-%PARAFFIN% -dir %MG_WEB%\Help -alias $(var.MgWebSource)\Help -custom HELPFILES -dirref WEBEXTENSIONSLOCATION -multiple %WIX_INC_WEB%\incHelpFiles.wxs
+%PARAFFIN% -dir %MG_SOURCE%\Web\www\help -alias $(var.MgSource)\Web\www\help -custom HELPFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incHelpFiles.wxs
 
 echo [generate]: Web - Developer's Guide Samples
-%PARAFFIN% -dir %MG_WEB%\www\devguide -alias $(var.MgWebSource)\www\devguide -custom DEVGUIDEFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incDevGuideFiles.wxs
+%PARAFFIN% -dir %MG_SOURCE%\Web\www\devguide -alias $(var.MgSource)\Web\www\devguide -custom DEVGUIDEFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incDevGuideFiles.wxs
 
 echo [generate]: Web - mapagent
-%PARAFFIN% -dir %MG_WEB%\www\mapagent -alias $(var.MgWebSource)\www\mapagent -ext pdb -custom MAPAGENTFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapAgentFiles.wxs
+%PARAFFIN% -dir %MG_SOURCE%\Web\www\mapagent -alias $(var.MgSource)\Web\www\mapagent -custom MAPAGENTFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapAgentFiles.wxs
 
 echo [generate]: Web - mapviewernet
-%PARAFFIN% -dir %MG_WEB%\www\mapviewernet -alias $(var.MgWebSource)\www\mapviewernet -custom MAPVIEWERASPXFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerAspxFiles.wxs
+%PARAFFIN% -dir %MG_SOURCE%\Web\www\mapviewernet -alias $(var.MgSource)\Web\www\mapviewernet -custom MAPVIEWERASPXFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerAspxFiles.wxs
 
 echo [generate]: Web - mapviewerphp
-%PARAFFIN% -dir %MG_WEB%\www\mapviewerphp -alias $(var.MgWebSource)\www\mapviewerphp -custom MAPVIEWERPHPFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerPhpFiles.wxs
+%PARAFFIN% -dir %MG_SOURCE%\Web\www\mapviewerphp -alias $(var.MgSource)\Web\www\mapviewerphp -custom MAPVIEWERPHPFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerPhpFiles.wxs
 
 echo [generate]: Web - mapviewerjava
-%PARAFFIN% -dir %MG_WEB%\www\mapviewerjava -alias $(var.MgWebSource)\www\mapviewerjava -custom MAPVIEWERJSPFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerJspFiles.wxs
+%PARAFFIN% -dir %MG_SOURCE%\Web\www\mapviewerjava -alias $(var.MgSource)\Web\www\mapviewerjava -custom MAPVIEWERJSPFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerJspFiles.wxs
          
 echo [generate]: Web - fusion
-%PARAFFIN% -dir %MG_WEB%\www\fusion -alias $(var.MgWebSource)\www\fusion -custom FUSIONFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incFusionFiles.wxs
+%PARAFFIN% -dir %MG_SOURCE%\Web\www\fusion -alias $(var.MgSource)\Web\www\fusion -custom FUSIONFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incFusionFiles.wxs
 
 echo [generate]: Web - misc web root
-%PARAFFIN% -dir %MG_WEB%\www -alias $(var.MgWebSource)\www -custom WEBROOTFILES -dirref WEBEXTENSIONSLOCATION -multiple -norecurse %WIX_INC_WEB%\incWebRootFiles.wxs
-%PARAFFIN% -dir %MG_WEB%\www\viewerfiles -alias $(var.MgWebSource)\www\viewerfiles -custom MAPVIEWERFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerFiles.wxs 
-%PARAFFIN% -dir %MG_WEB%\www\stdicons -alias $(var.MgWebSource)\www\stdicons -custom MAPVIEWERSTDICONFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerStdiconFiles.wxs 
-%PARAFFIN% -dir %MG_WEB%\www\schemareport -alias $(var.MgWebSource)\www\schemareport -custom MAPVIEWERSCHEMAREPORTFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerSchemareportFiles.wxs 
-%PARAFFIN% -dir %MG_WEB%\www\mapadmin -alias $(var.MgWebSource)\www\mapadmin -custom MAPVIEWERMAPADMINFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerMapAdminFiles.wxs 
-%PARAFFIN% -dir %MG_WEB%\www\localized -alias $(var.MgWebSource)\www\localized -custom MAPVIEWERLOCALIZEDFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerLocalizedFiles.wxs 
-%PARAFFIN% -dir %MG_WEB%\www\WEB-INF -alias $(var.MgWebSource)\www\WEB-INF -custom WEBINFFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incWebInfFiles.wxs
+%PARAFFIN% -dir %MG_SOURCE%\Web\www -alias $(var.MgSource)\Web\www -custom WEBROOTFILES -dirref WEBEXTENSIONSLOCATION -multiple -norecurse %WIX_INC_WEB%\incWebRootFiles.wxs
+%PARAFFIN% -dir %MG_SOURCE%\Web\www\viewerfiles -alias $(var.MgSource)\Web\www\viewerfiles -custom MAPVIEWERFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerFiles.wxs 
+%PARAFFIN% -dir %MG_SOURCE%\Web\www\stdicons -alias $(var.MgSource)\Web\www\stdicons -custom MAPVIEWERSTDICONFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerStdiconFiles.wxs 
+%PARAFFIN% -dir %MG_SOURCE%\Web\www\schemareport -alias $(var.MgSource)\Web\www\schemareport -custom MAPVIEWERSCHEMAREPORTFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerSchemareportFiles.wxs 
+%PARAFFIN% -dir %MG_SOURCE%\Web\www\mapadmin -alias $(var.MgSource)\Web\www\mapadmin -custom MAPVIEWERMAPADMINFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerMapAdminFiles.wxs 
+%PARAFFIN% -dir %MG_SOURCE%\Web\www\localized -alias $(var.MgSource)\Web\www\localized -custom MAPVIEWERLOCALIZEDFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incMapViewerLocalizedFiles.wxs 
+%PARAFFIN% -dir %MG_SOURCE%\Web\www\WEB-INF -alias $(var.MgSource)\Web\www\WEB-INF -custom WEBINFFILES -dirref WEBROOTLOCATION -multiple %WIX_INC_WEB%\incWebInfFiles.wxs
 
 goto quit
 
 :build
 echo [build]: Installer
 SET RUN_BUILD=%MSBUILD% /p:OutputName=%INSTALLER_NAME%;MgCulture=%CULTURE%;MgTitle=%INSTALLER_TITLE%;MgVersion=%INSTALLER_VERSION%
-if not ""=="%MG_SERVER_INC%" set RUN_BUILD=%RUN_BUILD%;MgServerSource=%MG_SERVER_INC%
-if not ""=="%MG_WEB_INC%" set RUN_BUILD=%RUN_BUILD%;MgWebSource=%MG_WEB_INC%
+if not ""=="%MG_SOURCE_INC%" set RUN_BUILD=%RUN_BUILD%;MgSource=%MG_SOURCE_INC%
 set RUN_BUILD=%RUN_BUILD% Installer.sln
 %RUN_BUILD% 
 if "%errorlevel%"=="1" goto error
@@ -417,9 +405,9 @@ echo [bootstrap]: Creating
 %MSBUILD% /p:TargetFile=%INSTALLER_NAME%.msi Bootstrap.proj
 if "%errorlevel%"=="1" goto error
 echo [bootstrap]: Create self-extracting package
-rem Uncomment this for maximum compression of .exe
-rem makensis /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DCULTURE=%CULTURE% /DMAXCOMPRESSION Setup.nsi
-makensis /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DCULTURE=%CULTURE% Setup.nsi
+makensis /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DCULTURE=%CULTURE% /DMAXCOMPRESSION Setup.nsi
+rem Use this line instead if you value build speed over compression
+rem makensis /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DCULTURE=%CULTURE% Setup.nsi
 if "%errorlevel%"=="1" goto error
 popd
 echo [build]: Installer created at %INSTALLER_OUTPUT%\%INSTALLER_NAME%.exe
@@ -427,11 +415,15 @@ echo [build]: Installer created at %INSTALLER_OUTPUT%\%INSTALLER_NAME%.exe
 goto quit
 
 :error_mg_server_not_found
-echo [ERROR]: Could not find MapGuide Server directory at %MG_SERVER%
+echo [ERROR]: Could not find MapGuide Server directory at %MG_SOURCE%\Server
 exit /B 1
 
 :error_mg_web_not_found
-echo [ERROR]: Could not find MapGuide Web Extensions directory at %MG_WEB%
+echo [ERROR]: Could not find MapGuide Web Extensions directory at %MG_SOURCE%\Web
+exit /B 1
+
+:error_mg_csmap_not_found
+echo [ERROR]: Could not find CS-Map directory at %MG_SOURCE%\CS-Map
 exit /B 1
 
 :error
@@ -454,8 +446,7 @@ echo           [-v]
 echo           [-c=BuildType]
 echo           [-a=Action]
 echo           [-lang=Culture]
-echo           [-srv=ServerDirectory]
-echo	         [-web=WebExtensionsDirectory]
+echo           [-source=SourceDirectory]
 echo	         [-version=MapGuideVersion]
 echo	         [-name=MapGuideInstallerFilename]
 echo	         [-title=MapGuideInstallerTitle]
@@ -464,8 +455,7 @@ echo Help:	-h
 echo Verbose: -v
 echo BuildType: Release(default), Debug
 echo Action: build(default), clean, regen, prepare, generate (only use generate for creating new GIDs, or if not installing from ..\MgDev\Release)
-echo ServerDirectory: The MapGuide Server directory where paraffin will generate the files from
-echo WebExtensionsDirectory: The MapGuide Web Extensions directory where paraffin will generate the files from
+echo SourceDirectory: The directory that the MapGuide build process installed the source files into
 echo MapGuideVersion: The version associated with the installer in the format 2.1.0.0
 echo MapGuideInstallerFilename: File name of output .exe in the format MapGuideOpenSource-2.1.0-Something (such as Beta, RC1, Final, etc)
 echo MapGuideInstallerTitle: Title to appear in the installer.  Typically this will be set in the language file, but unofficial releases should override this

@@ -169,7 +169,7 @@
             </Directory>
         </DirectoryRef>
 
-        <Feature Id="ServerFeature" Title="!(loc.ServerFeature)" Level="1" ConfigurableDirectory="SERVERROOTLOCATION" Description="!(loc.ServerFeature_Description)"  AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+        <Feature Id="ServerFeature" Title="!(loc.ServerFeature)" Level="1" Description="!(loc.ServerFeature_Description)"  AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
             <FeatureRef Id="FdoFeature"/>
             <Feature Id="ServerLogsFeature" Title="!(loc.ServerLogsFeature)" Level="1" ConfigurableDirectory="SERVERLOGSLOCATION" Description="!(loc.ServerLogsFeature_Description)" Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" />
             <Feature Id="ServerPackagesFeature" Title="!(loc.ServerPackagesFeature)" Level="1" ConfigurableDirectory="SERVERPACKAGESLOCATION" Description="!(loc.ServerPackagesFeature_Description)" Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" />

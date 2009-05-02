@@ -30,7 +30,7 @@
     <String Id="WebServerConfigDlg_Manual">Configuración manual</String>
     <String Id="WebServerConfigDlg_Apache_Tooltip">Instalar y configurar Apache, PHP y Tomcat</String>
     <String Id="WebServerConfigDlg_IIS_Tooltip">Instalar PHP y de auto-configuración de IIS</String>
-    <String Id="WebServerConfigDlg_Manual_Tooltip">Instalar todos los componentes necesarios para PHP,. NET y Java desarrollo.</String>
+    <String Id="WebServerConfigDlg_Manual_Tooltip">Instalar manual los componentes.</String>
 
     <String Id="ApacheConfigDlg_Title">Paquete de ajustes de configuración</String>
     <String Id="ApacheConfigDlg_Description">Configure el entorno de desarrollo</String>
@@ -61,14 +61,5 @@
     <String Id="MgServerInstallCA">Servicio de Instalación de MapGuide</String>
     <String Id="MgServerUninstallCA">Extracción de MapGuide Servicio</String>
     <String Id="RemoveApacheServiceCA">Servicio de eliminación de Apache</String>
-    <String Id="AddWebServiceExtension">Añadir a la extensión de servicio Web de IIS</String>
-    <String Id="CreateVDirMapGuide">Creación de directorio virtual de IIS MapGuide</String>
-    <String Id="RegisterScriptMaps">Mapas de secuencia de comandos de registro de IIS</String>
-    <String Id="SetCustomErrors">Configuración personalizada de IIS errores</String>
-    <String Id="CreateVDirMapAgent">Creación de directorio virtual de IIS mapagent</String>
-    <String Id="CreateVDirPhpAgent">Creación de mapviewerphp virutal directorio IIS</String>
-    <String Id="CreateVDirNetAgent">Creación de directorio virtual de IIS mapviewernet</String>
-    <String Id="CreateVDirJavaAgent">Creación de directorio virtual de IIS mapviewerjava</String>
-    <String Id="DeleteWebServiceExtension">Quitar de extensión de servicio Web de IIS</String>
-    <String Id="DeleteVDirMapGuide">Extracción de MapGuide directorio virtual de IIS</String>
+
 </WixLocalization>

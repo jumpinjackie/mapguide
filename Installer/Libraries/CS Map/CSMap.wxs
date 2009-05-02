@@ -15,7 +15,7 @@
         </Component>
       </Directory>
     </DirectoryRef>
-    <Feature Id="CSMapFeature" Title="!(loc.CSMapFeature)" Display="hidden" Level="1" ConfigurableDirectory="CSMAPLOCATION" Description="!(loc.CSMapFeature_Description)" Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+    <Feature Id="CSMapFeature" Display="hidden" Title="!(loc.CSMapFeature)" Level="1" Description="!(loc.CSMapFeature_Description)" Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
       <ComponentRef Id="CsMapComponent"/>
       <ComponentGroupRef Id="group_CSMAPDICTFILES"/>
     </Feature>

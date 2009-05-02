@@ -10,18 +10,18 @@
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.0\Wix.targets</WixTargetsPath>
     <Name>MapGuide Server</Name>
     <MgRegKey Condition=" '$(MgRegKey)' == '' ">SOFTWARE\OSGeo\MapGuide</MgRegKey>
-    <MgServerSource Condition="('$(MgServerSource)'=='')">$(MSBuildProjectDirectory)\..\..\..\MgDev\$(Configuration)\Server</MgServerSource>
+    <MgSource Condition="('$(MgSource)'=='')">$(MSBuildProjectDirectory)\..\..\..\MgDev\$(Configuration)</MgSource>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug;MgRegKey=$(MgRegKey);MgServerSource=$(MgServerSource)</DefineConstants>
+    <DefineConstants>Debug;MgRegKey=$(MgRegKey);MgSource=$(MgSource)</DefineConstants>
     <LibBindFiles>True</LibBindFiles>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>MgCulture=$(MgCulture);MgRegKey=$(MgRegKey);MgServerSource=$(MgServerSource)</DefineConstants>
+    <DefineConstants>MgCulture=$(MgCulture);MgRegKey=$(MgRegKey);MgSource=$(MgSource)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="FileIncludes\incBinFiles.wxs" />

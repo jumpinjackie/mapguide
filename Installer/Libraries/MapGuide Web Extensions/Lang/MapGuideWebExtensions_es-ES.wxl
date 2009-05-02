@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WixLocalization Culture="es-ES" xmlns="http://schemas.microsoft.com/wix/2006/localization">
     <String Id="WebExtensionsFeature">Web</String>
-    <String Id="WebExtensionsFeature_Description">MapGuide Web Extensions proporciona los componentes necesarios para servir MapGuide recursos a través de Internet</String>
+    <String Id="WebExtensionsFeature_Description">MapGuide Web proporciona los componentes necesarios para servir MapGuide recursos a través de Internet</String>
     <String Id="WebExtApacheFeature">Servidor web Apache</String>
     <String Id="WebExtApacheFeature_Description">Un paquete de la versión de Apache con MapGuide habilitado, corriendo en el puerto [APACHE_PORT].</String>
-    <String Id="WebExtPhpFeature">Procesador de hipertexto PHP</String>
+    <String Id="WebExtPhpFeature">PHP</String>
     <String Id="WebExtPhpFeature_Description">Un paquete de la versión de PHP con MapGuide habilitado.</String>
-    <String Id="WebExtTomcatFeature">Java Tomcat web</String>
+    <String Id="WebExtTomcatFeature">Tomcat</String>
     <String Id="WebExtTomcatFeature_Description">Un paquete de la versión de Tomcat con MapGuide habilitado.</String>
     <String Id="WebExtHelpFeature">Documentación de la API</String>
     <String Id="WebExtHelpFeature_Description">Extensión web documentación de la API</String>
-    <String Id="WebExtMapViewerFeature">Visor de archivos de mapa</String>
+    <String Id="WebExtMapViewerFeature">Visor de mapa</String>
     <String Id="WebExtMapViewerFeature_Description">Los archivos de soporte para el visualizador de mapas, idioma independiente.</String>
-    <String Id="WebExtMapViewerPHPFeature">Visor de mapas de PHP</String>
+    <String Id="WebExtMapViewerPHPFeature">Visor de mapas PHP</String>
     <String Id="WebExtMapViewerPHPFeature_Description">La versión de PHP del visualizador de mapas.</String>
-    <String Id="WebExtMapViewerJSPFeature">JSP Visor de mapas</String>
+    <String Id="WebExtMapViewerJSPFeature">Visor de mapas JSP</String>
     <String Id="WebExtMapViewerJSPFeature_Description">La versión de la JSP visualizador de mapas.</String>
-    <String Id="WebExtMapViewerASPXFeature">.NET Visor de mapas</String>
+    <String Id="WebExtMapViewerASPXFeature">Visor de mapas .NET</String>
     <String Id="WebExtMapViewerASPXFeature_Description">.NET versión del visualizador de mapas.</String>
     <String Id="WebExtSamplesFeature">Muestras</String>
     <String Id="WebExtSamplesFeature_Description">Muestra el código y los datos</String>
@@ -34,6 +34,8 @@
     <String Id="WebSchemaReportFeature_Description">El esquema permite que el usuario informe para describir MapGuide característica de vista previa y Fuentes</String>
     <String Id="WebStdIconsFeature">Norma iconos</String>
     <String Id="WebStdIconsFeature_Description">Iconos para el visor de AJAX</String>
+    <String Id="WebTempFeature">Archivos temporales</String>
+    <String Id="WebTempFeature_Description">Usted puede elegir un lugar donde MapGuide almacenará los archivos temporales</String>
 
     <String Id="Shortcut_WebAPI">Web de documentación de la API</String>
     <String Id="Shortcut_SiteAdmin">MapGuide administrador del sitio</String>

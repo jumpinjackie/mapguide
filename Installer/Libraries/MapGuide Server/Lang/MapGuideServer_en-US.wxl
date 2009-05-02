@@ -8,14 +8,14 @@
     <String Id="ServerPackagesFeature_Description">You may choose a location where the server will access Packages (*.mgp).</String>
     <String Id="ServerRepositoriesFeature">Repositories</String>
     <String Id="ServerRepositoriesFeature_Description">You may choose a parent location for the server repositories.</String>
-    <String Id="ServerRepositoriesLibraryFeature">Library Repository</String>
+    <String Id="ServerRepositoriesLibraryFeature">Library</String>
     <String Id="ServerRepositoriesLibraryFeature_Description">You may choose a location for the Library repository.</String>
-    <String Id="ServerRepositoriesSessionFeature">Session Repository</String>
+    <String Id="ServerRepositoriesSessionFeature">Session</String>
     <String Id="ServerRepositoriesSessionFeature_Description">You may choose a location for the Session repository.</String>
-    <String Id="ServerRepositoriesSiteFeature">Site Repository</String>
+    <String Id="ServerRepositoriesSiteFeature">Site</String>
     <String Id="ServerRepositoriesSiteFeature_Description">You may choose a location for the Site repository.</String>
-    <String Id="ServerRepositoriesTileCacheFeature">TileCache Repository</String>
+    <String Id="ServerRepositoriesTileCacheFeature">TileCache</String>
     <String Id="ServerRepositoriesTileCacheFeature_Description">You may choose a location for the Tile Cache repository.</String>
-    <String Id="ServerTempFeature">Temporary files</String>
+    <String Id="ServerTempFeature">Temp Directory</String>
     <String Id="ServerTempFeature_Description">You may choose a location where MapGuide will store temporary files.</String>
 </WixLocalization>
