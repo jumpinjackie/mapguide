@@ -8,7 +8,7 @@
     </Property>
     <PropertyRef Id="MGWEB_CONFIG"/>
     <PropertyRef Id="IISVERSIONMAJOR"/>
-    <PropertyRef Id="IISVERSIONMAJOR"/>
+    <PropertyRef Id="IIS_API_TYPE"/>
 
     <CustomAction Id="AspNetRegIIS_Cmd" Property="AspNetRegIIS" Execute="immediate"
         Value="&quot;[FRAMEWORKDIR]v2.0.50727\aspnet_regiis.exe&quot; -s W3SVC/[SITE_ID]/ROOT/[VIRTUALDIR]" />
@@ -26,11 +26,17 @@
         <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#5&quot;</Condition>
         <CreateFolder />
         <iis:WebVirtualDir Id="IIS5MapGuideVDir" Alias="[VIRTUALDIR]" Directory="WEBROOTLOCATION" WebSite="IISDefaultWebSite">
+          <iis:WebDirProperties Id="IIS5MapGuideDocuments" DefaultDocuments="index.php,index.html,index.htm,default.aspx,index.aspx,default.htm,default.html"/>
           <iis:WebApplication Id="IIS5MapGuideWebApp" Name="[VIRTUALDIR]">
             <iis:WebApplicationExtension Extension="php" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="[!file_PHPFILES_40]" />
           </iis:WebApplication>
           <iis:WebVirtualDir Id="IIS5MapAgentVDir" Alias="mapagent" Directory="dir_mapagent_0" >
-            <iis:WebError ErrorCode="401" SubCode="0"/>
+            <iis:WebError ErrorCode="401" SubCode="0" />
+            <iis:WebError ErrorCode="401" SubCode="1" />
+            <iis:WebError ErrorCode="401" SubCode="2" />
+            <iis:WebError ErrorCode="401" SubCode="3" />
+            <iis:WebError ErrorCode="401" SubCode="4" />
+            <iis:WebError ErrorCode="401" SubCode="5" />
             <iis:WebApplication Id="IIS5MapAgentWebApp" Name="mapagent" >
               <iis:WebApplicationExtension Extension="fcgi" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="[!file_MAPAGENTFILES_96]" />
               <iis:WebApplicationExtension Extension="php" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="[!file_PHPFILES_40]" />
@@ -44,7 +50,7 @@
 
       <!-- IIS5 PHP MapViewer component -->
       <Component Id="IIS5PhpViewerComponent" Guid="1E56B410-1305-4406-BDFB-1252E159B746" Directory="WEBEXTENSIONSLOCATION">
-        <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#5&quot; AND &amp;WebExtensionsFeature&gt;2 AND &amp;WebExtMapViewerPHPFeature&gt;2</Condition>
+        <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#5&quot;</Condition>
         <CreateFolder />
         <iis:WebVirtualDir Id="IIS5PhpViewerVDir" Alias="mapguide/mapviewerajax" Directory="dir_mapviewerphp_0" WebSite="IISDefaultWebSite">
           <iis:WebDirProperties Id="IIS5PhpViewerDocument" DefaultDocuments="ajaxviewer.php"/>
@@ -53,7 +59,7 @@
 
       <!-- IIS5 DotNet MapViewer component -->
       <Component Id="IIS5DotNetViewerComponent" Guid="EC460125-D5D4-4596-BD03-B8D920F02E7F" Directory="WEBEXTENSIONSLOCATION">
-        <Condition>NETFRAMEWORK20 AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#5&quot; AND &amp;WebExtensionsFeature&gt;2 AND &amp;WebExtMapViewerASPXFeature&gt;2</Condition>
+        <Condition>NETFRAMEWORK20 AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#5&quot;</Condition>
         <CreateFolder />
         <iis:WebVirtualDir Id="IIS5DotNetViewerVDir" Alias="mapguide/mapviewerajax" Directory="dir_mapviewernet_0" WebSite="IISDefaultWebSite">
           <iis:WebDirProperties Id="IIS5DotNetViewerDocument" DefaultDocuments="ajaxviewer.aspx"/>
@@ -69,12 +75,18 @@
         <iis:WebServiceExtension Id="IIS6PhpWebServiceExt" Allow="yes" Description="MapGuide PHP ISAPI Extension" File="[!file_PHPFILES_40]" />
         <iis:WebServiceExtension Id="IIS6MapGuideWebServiceExt" Allow="yes" Description="MapGuide MapAgent ISAPI Extension" File="[!file_MAPAGENTFILES_96]" />
         <iis:WebVirtualDir Id="IIS6MapGuideVDir" Alias="[VIRTUALDIR]" Directory="WEBROOTLOCATION" WebSite="IISDefaultWebSite" >
+          <iis:WebDirProperties Id="IIS6MapGuideDocuments" DefaultDocuments="index.php,index.html,index.htm,default.aspx,index.aspx,default.htm,default.html"/>
           <iis:MimeMap Id="IIS6JsonMimeType" Type="application/json" Extension =".json" />
           <iis:WebApplication Id="IIS6MapGuideWebApp" Name="[VIRTUALDIR]" WebAppPool="IIS6MapGuideAppPool" >
             <iis:WebApplicationExtension Extension="php" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="[!file_PHPFILES_40]" />
           </iis:WebApplication>
           <iis:WebVirtualDir Id="IIS6MapAgentVDir" Alias="mapagent" Directory="dir_mapagent_0" >
             <iis:WebError ErrorCode="401" SubCode="0"/>
+            <iis:WebError ErrorCode="401" SubCode="1" />
+            <iis:WebError ErrorCode="401" SubCode="2" />
+            <iis:WebError ErrorCode="401" SubCode="3" />
+            <iis:WebError ErrorCode="401" SubCode="4" />
+            <iis:WebError ErrorCode="401" SubCode="5" />
             <iis:WebApplication Id="IIS6MapAgentWebApp" Name="mapagent" WebAppPool="IIS6MapGuideAppPool">
               <iis:WebApplicationExtension Extension="fcgi" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="[!file_MAPAGENTFILES_96]" />
               <iis:WebApplicationExtension Extension="php" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="[!file_PHPFILES_40]" />
@@ -88,7 +100,7 @@
 
       <!-- IIS6 PHP MapViewer component -->
       <Component Id="IIS6PhpViewerComponent" Guid="6CDC8E73-B6B1-4A2E-98E3-953C399D1D0D" Directory="WEBEXTENSIONSLOCATION">
-        <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#6&quot; AND &amp;WebExtensionsFeature&gt;2 AND &amp;WebExtMapViewerPHPFeature&gt;2</Condition>
+        <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Condition>
         <CreateFolder />
         <iis:WebVirtualDir Id="IIS6PhpViewerVDir" Alias="mapguide/mapviewerajax" Directory="dir_mapviewerphp_0" WebSite="IISDefaultWebSite">
           <iis:WebDirProperties Id="IIS6PhpViewerDocument" DefaultDocuments="ajaxviewer.php"/>
@@ -97,7 +109,7 @@
 
       <!-- IIS6 DotNet MapViewer component -->
       <Component Id="IIS6DotNetViewerComponent" Guid="357E1C68-9E29-474F-A783-6F8FD8BCEAB4" Directory="WEBEXTENSIONSLOCATION">
-        <Condition>NETFRAMEWORK20 AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#6&quot; AND &amp;WebExtensionsFeature&gt;2 AND &amp;WebExtMapViewerASPXFeature&gt;2</Condition>
+        <Condition>NETFRAMEWORK20 AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Condition>
         <CreateFolder />
         <iis:WebVirtualDir Id="IIS6DotNetViewerVDir" Alias="mapguide/mapviewerajax" Directory="dir_mapviewernet_0" WebSite="IISDefaultWebSite">
           <iis:WebDirProperties Id="IIS6DotNetViewerDocument" DefaultDocuments="ajaxviewer.aspx"/>

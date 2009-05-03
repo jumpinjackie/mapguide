@@ -105,7 +105,9 @@
             <ComponentRef Id="WebShortcutsComponent"/>
             <ComponentRef Id="WebApacheShortcutComponent"/>
             <ComponentRef Id="WebIISShortcutComponent"/>
+            <ComponentRef Id="GenericShortcutComponent"/>
             <ComponentRef Id="WebTempComponent"/>
+
             <Feature Id="WebExtApacheFeature" Title="!(loc.WebExtApacheFeature)" Display="hidden" Level="1" Description="!(loc.WebExtApacheFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
                 <ComponentGroupRef Id="group_APACHEFILES"/>
             </Feature>
@@ -118,7 +120,8 @@
             </Feature>
             <Feature Id="WebExtHelpFeature" Title="!(loc.WebExtHelpFeature)" Level="1" Description="!(loc.WebExtHelpFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
                 <ComponentGroupRef Id="group_HELPFILES" />
-                <ComponentRef Id="WebApiShortcutComponent"/>
+                <ComponentRef Id="ApacheWebApiShortcutComponent"/>
+                <ComponentRef Id="IISWebApiShortcutComponent"/>
             </Feature>
             <Feature Id="WebExtMapViewerFeature" Title="!(loc.WebExtMapViewerFeature)" Display="hidden" Level="1" Description="!(loc.WebExtMapViewerFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
                 <ComponentGroupRef Id="group_MAPVIEWERFILES"/>
@@ -136,7 +139,11 @@
             </Feature>
             <Feature Id="WebTempFeature" Title="!(loc.WebTempFeature)" Level="1" ConfigurableDirectory="WEBTEMPLOCATION" Description="!(loc.WebTempFeature_Description)" Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" />
             <Feature Id="WebExtSamplesFeature" Title="!(loc.WebExtSamplesFeature)" Level="1" Description="!(loc.WebExtSamplesFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
-                <Feature Id="WebExtDevGuideSamplesFeature" Title="!(loc.WebExtDevGuideSamplesFeature)" Level="1" Description="!(loc.WebExtDevGuideSamplesFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+              <Component Id="WebExtSamplesComponent" Guid="525BAE2A-F8E4-415F-A095-91DDD17FD5E6" Directory="WEBEXTENSIONSLOCATION" >
+                <!-- This is required because a UI bug displays the feature as network-installable if there are no folders or files. -->
+                <CreateFolder />
+              </Component>
+              <Feature Id="WebExtDevGuideSamplesFeature" Title="!(loc.WebExtDevGuideSamplesFeature)" Level="1" Description="!(loc.WebExtDevGuideSamplesFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
                     <ComponentGroupRef Id="group_DEVGUIDEFILES" />
                 </Feature>
             </Feature>

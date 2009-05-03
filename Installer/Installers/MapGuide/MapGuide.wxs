@@ -528,7 +528,7 @@
             <Custom Action="AspNetRegIIS_Cmd" After="CostFinalize">NETFRAMEWORK20 AND MGWEB_CONFIG=&quot;IIS&quot; AND (IISVERSIONMAJOR=&quot;#5&quot; OR IISVERSIONMAJOR=&quot;#6&quot;) AND &amp;WebExtensionsFeature&gt;2</Custom>
 
           <!-- IIS6 deferred actions  ConfigureIIS is a WiX built-in action; I'm overriding and making the action conditional -->
-            <Custom Action="ConfigureIIs" After="InstallFiles">MGWEB_CONFIG=&quot;IIS&quot; AND (IISVERSIONMAJOR=&quot;#5&quot; OR IISVERSIONMAJOR=&quot;#6&quot;) AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="ConfigureIIs" After="InstallFiles">MGWEB_CONFIG=&quot;IIS&quot; AND (IISVERSIONMAJOR=&quot;#5&quot; OR IISVERSIONMAJOR=&quot;#6&quot;) AND (&amp;WebExtensionsFeature&gt;2 OR &amp;WebExtensionsFeature=2)</Custom>
             <Custom Action="AspNetRegIIS" After="ConfigureIIs">NETFRAMEWORK20 AND MGWEB_CONFIG=&quot;IIS&quot; AND (IISVERSIONMAJOR=&quot;#5&quot; OR IISVERSIONMAJOR=&quot;#6&quot;) AND &amp;WebExtensionsFeature&gt;2</Custom>
 
           <!-- Apache / PHP / MG Server Custom Actions-->
