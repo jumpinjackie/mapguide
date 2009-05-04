@@ -315,9 +315,12 @@ UpdateApacheConfig(MSIHANDLE hMSI)
 	ConvertToApachePath(szWebDir);
 	ConvertToApachePath(szApacheDir);
 
+	// The directory will have a fwd slash, so the 2nd last char should be null-terminated
+	szApacheDir[strlen(szApacheDir)-2] = NULL_CHAR;
+
 	// create the file path to http.conf
 	strcpy(szFile, szApacheDir);
-	strcat(szFile, "conf\\httpd.conf");
+	strcat(szFile, "\\conf\\httpd.conf");
 
 	if( FileExists(szFile) )
 	{
@@ -386,7 +389,7 @@ UpdateApacheConfig(MSIHANDLE hMSI)
 	}
 
 	strcpy(szFile, szApacheDir);
-	strcat(szFile, "conf\\tomcat.conf");
+	strcat(szFile, "\\conf\\tomcat.conf");
 
 	if(FileExists(szFile))
 	{
