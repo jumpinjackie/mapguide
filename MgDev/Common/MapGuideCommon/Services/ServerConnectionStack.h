@@ -29,6 +29,9 @@ class MG_MAPGUIDE_API MgConnectionProperties;
 #include <stack>
 #include <list>
 
+#include "ace/Semaphore.h"
+
+
 /// \cond INTERNAL
 ///////////////////////////////////////////////////////////////////////
 /// \brief
@@ -43,8 +46,10 @@ INTERNAL_API:
 
     /// \brief
     /// Constructor for connection stack
+    /// \param port
+    /// TCP/IP port for connection
     ///
-    MgServerConnectionStack();
+    MgServerConnectionStack(INT32 port);
 
     /// \brief
     /// Destructor for connection stack
@@ -83,6 +88,7 @@ private:
     typedef std::list<MgServerConnection*> ConnectionList;
 
     ACE_Recursive_Thread_Mutex m_mutex;
+    ACE_Semaphore m_activeConnections;
     ConnectionQueue* m_queue;
     ConnectionList* m_inUse;
 };

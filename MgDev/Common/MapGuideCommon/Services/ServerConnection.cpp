@@ -309,7 +309,7 @@ MgServerConnection* MgServerConnection::Acquire(MgUserInformation* userInformati
 
         if (stack == NULL)
         {
-            stack = new MgServerConnectionStack();
+            stack = new MgServerConnectionStack(connProp->GetPort());
             (g_connectionPool->pool)[hash] = stack;
         }
     }
