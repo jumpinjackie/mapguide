@@ -100,6 +100,8 @@ CCoordinateSystemCatalog::CCoordinateSystemCatalog() :
         //being compiled using an interface such as MgCoordinateSystemDictionaryUtility
         //- if we throw here, the constructor aborts and the factory constructor aborts as well
         //for something we can resolve later on (2 reasons described above)
+        ACE_DEBUG((LM_DEBUG, L"(%t) %W caught in CCoordinateSystemCatalog constructor - %W\n", pEPath->GetClassName().c_str(), pEPath->GetDetails().c_str()));
+        /// now we have shared the info.... now we can get rid of the exception
         SAFE_RELEASE(pEPath);
 
         m_sDir=L"";
@@ -183,8 +185,6 @@ STRING CCoordinateSystemCatalog::GetDefaultDictionaryDir()
 
     bool bResult=false;
 #ifdef _WIN32
-    //prepares the default path for dictionary failes
-    STRING sDirDefault;
 
     // Check to see if the environment variable is set
     const TCHAR* szPathVar = _tgetenv(_T(MENTOR_DICTIONARY_PATH));
@@ -192,10 +192,13 @@ STRING CCoordinateSystemCatalog::GetDefaultDictionaryDir()
     //if not set then try the default location
     if(!szPathVar)
     {
+        ACE_DEBUG((LM_DEBUG, ACE_TEXT("\n(%t) CCoordinateSystemCatalog::GetDefaultDictionaryDir() - environment variable MENTOR_DICTIONARY_PATH not set.\n")));
+
         TCHAR szPath[MAX_PATH];
         if(SHGetSpecialFolderPath(NULL, szPath, CSIDL_COMMON_APPDATA, FALSE))
         {
-            sDirDefault = szPath;
+            // Failed to get the default path for the coordinate system dictionaries
+            STRING sDirDefault = szPath;
             sDirDefault += _T("\\Autodesk\\Geospatial Coordinate Systems"); //NOXLATE
             szPathVar = sDirDefault.c_str();
         }
@@ -223,6 +226,17 @@ STRING CCoordinateSystemCatalog::GetDefaultDictionaryDir()
     }
 
 #endif
+    if (sDir.empty())
+    {
+        ACE_DEBUG((LM_DEBUG, "(%t) DefaultDir for the Coordinate System library has been set but is empty.\n"));
+        throw new MgInvalidArgumentException(L"MgCoordinateSystemCatalog.GetDefaultDictionaryDir", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    if (!MgFileUtil::IsDirectory(sDir.c_str()))
+    {
+        bResult = false;
+        ACE_DEBUG((LM_DEBUG, "(%t) DefaultDir: \"%W\" is not a directory! Install the Coordinate System library into this directory or set MENTOR_DICTIONARY_PATH to where they are currently installed.\n", sDir.c_str()));
+    }
 
     if (!bResult)
     {
