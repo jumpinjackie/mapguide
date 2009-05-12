@@ -354,7 +354,8 @@ MgFdoFilterCollection* MgSelectCommand::GetSubFilters()
 
             if (nSelectionCount >= MG_MAX_SUBFILTER_SIZE)
             {
-                filters->Add(FdoFilter::Parse(filterString));
+                FdoPtr<FdoFilter> filter = FdoFilter::Parse(filterString);
+                filters->Add(filter);
                 bFirst = true;
                 filterString = L"";
                 nSelectionCount = 0;
@@ -368,7 +369,8 @@ MgFdoFilterCollection* MgSelectCommand::GetSubFilters()
 
         if ( !bIsAddedToCollection )
         {
-            filters->Add(FdoFilter::Parse(filterString));
+            FdoPtr<FdoFilter> filter = FdoFilter::Parse(filterString);
+            filters->Add(filter);
         }
 
     }
