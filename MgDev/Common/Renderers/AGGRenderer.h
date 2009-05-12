@@ -355,6 +355,10 @@ private:
 
     //remember id of last symbol
     RS_MarkerDef m_lastSymbol;
+
+    // remember last font used
+    RS_FontDef* m_lastFontDef;
+    const RS_Font* m_lastFont;
 };
 
 #endif

@@ -218,6 +218,9 @@ private:
     //Unimplemented stuff
     CCoordinateSystemTransform(const CCoordinateSystemTransform&);
     CCoordinateSystemTransform& operator=(const CCoordinateSystemTransform&);
+
+    inline void TransformPointInternal(double& x, double& y, double *pdZ, bool isGeographic,
+        double lonMin, double lonMax, double latMin, double latMax);
 };
 
 } // End of namespace

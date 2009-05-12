@@ -108,7 +108,9 @@ m_fcInfo(NULL),
 m_bRequiresClipping(requiresClipping),
 m_bLocalOverposting(localOverposting),
 m_imsym(NULL),
-m_bownbuffer(false)
+m_bownbuffer(false),
+m_lastFontDef(NULL),
+m_lastFont(NULL)
 {
     m_rows = backbuffer;
 
@@ -150,7 +152,9 @@ m_bHaveViewport(false),
 m_bRequiresClipping(requiresClipping),
 m_bLocalOverposting(localOverposting),
 m_imsym(NULL),
-m_bownbuffer(true)
+m_bownbuffer(true),
+m_lastFontDef(NULL),
+m_lastFont(NULL)
 {
     if (m_width <= 0)
         m_width = 1;
@@ -186,6 +190,7 @@ AGGRenderer::~AGGRenderer()
     delete m_context;
     delete m_labeler;
     delete m_imsym;
+    delete m_lastFontDef;
 
     if (m_bownbuffer)
         delete[] m_rows;
@@ -1588,9 +1593,17 @@ void AGGRenderer::MeasureString(const RS_String& s,
 //////////////////////////////////////////////////////////////////////////////
 const RS_Font* AGGRenderer::FindFont(RS_FontDef& def)
 {
-    return FontManager::Instance()->FindFont(def.name().c_str(),
+    if (NULL == m_lastFontDef || m_lastFontDef->name().compare(def.name()) != 0 ||
+        m_lastFontDef->style() != def.style())
+    {
+        delete m_lastFontDef;
+        m_lastFontDef = new RS_FontDef(def.name(), def.height(), def.style(), def.units());
+        m_lastFont = FontManager::Instance()->FindFont(def.name().c_str(),
                           (def.style() & RS_FontStyle_Bold) != 0,
                           (def.style() & RS_FontStyle_Italic) != 0);
+    }
+
+    return m_lastFont;
 }
 
 
