@@ -1346,30 +1346,37 @@ INT32 GeodeticTransformationPoint(cs_Dtcprm_ *pDtcprm, double& dLongitude, doubl
 {
     assert(NULL != pDtcprm);
 
-    double dZ=0.;
-    if (pdZ)
-    {
-        dZ=*pdZ;
-    }
+    INT32 nResult = 0;
 
-    CriticalClass.Enter();
-    double dLonLat[3] = { dLongitude, dLatitude, dZ };
-    INT32 nResult;
-    if (!pdZ)
+    // Skip datum transformation if we have a null transformation
+    // We have a null transform if the first transform type is dtcTypNone 
+    if (dtcTypNone != pDtcprm->xforms[0].xfrmType)
     {
-        nResult = CS_dtcvt(pDtcprm, dLonLat, dLonLat);
-    }
-    else
-    {
-        nResult = CS_dtcvt3D(pDtcprm, dLonLat, dLonLat);
-    }
-    CriticalClass.Leave();
+        double dZ=0.;
+        if (pdZ)
+        {
+            dZ=*pdZ;
+        }
 
-    dLongitude = dLonLat[0];
-    dLatitude = dLonLat[1];
-    if (pdZ)
-    {
-        *pdZ=dLonLat[2];
+        CriticalClass.Enter();
+        double dLonLat[3] = { dLongitude, dLatitude, dZ };
+        INT32 nResult;
+        if (!pdZ)
+        {
+            nResult = CS_dtcvt(pDtcprm, dLonLat, dLonLat);
+        }
+        else
+        {
+            nResult = CS_dtcvt3D(pDtcprm, dLonLat, dLonLat);
+        }
+        CriticalClass.Leave();
+
+        dLongitude = dLonLat[0];
+        dLatitude = dLonLat[1];
+        if (pdZ)
+        {
+            *pdZ=dLonLat[2];
+        }
     }
     return nResult;
 }

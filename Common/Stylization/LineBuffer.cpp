@@ -39,6 +39,7 @@ const int MIN_RING_SIZE_TO_OPTIMIZE = 6;
 #define min4(x1,x2,x3,x4) rs_min(x1, rs_min(x2, rs_min(x3, x4)))
 #define max4(x1,x2,x3,x4) rs_max(x1, rs_max(x2, rs_max(x3, x4)))
 
+#define MAX_POINT_BLOCK 128
 
 LineBuffer::LineBuffer(int size, FdoDimensionality dimensionality, bool bIgnoreZ) :
     m_bounds(DBL_MAX, DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX, -DBL_MAX),
@@ -930,11 +931,34 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                     {
                         while (num_pts_read  < point_count)
                         {
-                            READ_POINT(x, y, z);
+                            int block_size = point_count - num_pts_read;
+                            if (block_size > MAX_POINT_BLOCK) block_size =  MAX_POINT_BLOCK;
+                            double xarray[MAX_POINT_BLOCK];
+                            double yarray[MAX_POINT_BLOCK];
+                            double zarray[MAX_POINT_BLOCK];
 
-                            LineTo(x, y, z);
+                            for (int n_pt = 0; n_pt < block_size; n_pt++)
+                            {
+                                xarray[n_pt] = *dreader++;
+                                yarray[n_pt] = *dreader++;
+                                if (m_bProcessZ)
+                                    zarray[n_pt] = *dreader++;
+                                else
+                                    zarray[n_pt] = 0.0;
+                                dreader += skip;
+                            }
 
-                            num_pts_read++;
+                            if (xformer)
+                            {
+                                xformer->TransformPoints(block_size, xarray, yarray);
+                            }
+
+                            for (int n_pt = 0; n_pt < block_size; n_pt++)
+                            {
+                                LineTo(xarray[n_pt], yarray[n_pt], zarray[n_pt]);
+                            }
+
+                            num_pts_read += block_size;
                         }
                     }
 
