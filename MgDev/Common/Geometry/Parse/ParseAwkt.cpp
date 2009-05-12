@@ -61,6 +61,18 @@ MgParseAwkt::~MgParseAwkt()
     SAFE_RELEASE(m_dims);
     SAFE_RELEASE(m_types);
     SAFE_RELEASE(m_values);
+#ifndef _WIN32
+    if (gis_awkt_yyss != NULL)
+    {
+        free(gis_awkt_yyss);
+        gis_awkt_yyss = NULL;
+    }
+    if (gis_awkt_yyvs != NULL)
+    {
+        free(gis_awkt_yyvs);
+        gis_awkt_yyvs = NULL;
+    }
+#endif
 }
 
 MgGeometry* MgParseAwkt::ParseAwkt(wchar_t* pwzAwkt)
