@@ -186,6 +186,8 @@ STRING CCoordinateSystemCatalog::GetDefaultDictionaryDir()
     bool bResult=false;
 #ifdef _WIN32
 
+    STRING sDirDefault;
+
     // Check to see if the environment variable is set
     const TCHAR* szPathVar = _tgetenv(_T(MENTOR_DICTIONARY_PATH));
 
@@ -198,7 +200,7 @@ STRING CCoordinateSystemCatalog::GetDefaultDictionaryDir()
         if(SHGetSpecialFolderPath(NULL, szPath, CSIDL_COMMON_APPDATA, FALSE))
         {
             // Failed to get the default path for the coordinate system dictionaries
-            STRING sDirDefault = szPath;
+            sDirDefault = szPath;
             sDirDefault += _T("\\Autodesk\\Geospatial Coordinate Systems"); //NOXLATE
             szPathVar = sDirDefault.c_str();
         }
