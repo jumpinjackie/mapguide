@@ -16,7 +16,8 @@
 
         <Media Id="1" Cabinet="MapGuideOpenSource.cab" EmbedCab="yes" CompressionLevel="none" />
 
-        <!-- Initial MapGuide Web Configuration: APACHE | IIS | MANUAL (RegSearches are for uninstall) -->
+        <!-- Initial MapGuide Web Configuration: APACHE | IIS | MANUAL 
+             RegSearches are for uninstall -->
         <Property Id="MGWEB_CONFIG" Secure="yes" Value="APACHE">
           <RegistrySearch
             Id="MgWebConfigRs"
@@ -25,10 +26,6 @@
             Key="$(var.MgRegKey)"
             Name="MGWEB_CONFIG" />
         </Property>
-        <Property Id="MGSERVER_IP" Secure="yes" Value="127.0.0.1" />
-        <Property Id="APACHE_PORT" Secure="yes" Value="8008" />
-        <Property Id="APACHE_VERSION" Secure="yes" Value="2.2.4" />
-        <Property Id="PHP_VERSION" Secure="yes" Value="5.2.5" />
         <Property Id="APACHE_API_TYPE" Secure="yes" Value="PHP" />
         <Property Id="IIS_API_TYPE" Secure="yes" Value="PHP">
           <RegistrySearch
@@ -39,41 +36,41 @@
             Name="IIS_API_TYPE"  />
         </Property>
         <Property Id="APP_POOL_NAME" Secure="yes" Value="MapGuideAppPool" />
+        <Property Id="MGSERVER_IP" Secure="yes" Value="127.0.0.1" />
+        <Property Id="APACHE_PORT" Secure="yes" Value="8008" />
+        <Property Id="APACHE_VERSION" Secure="yes" Value="2.2.4" />
+        <Property Id="PHP_VERSION" Secure="yes" Value="5.2.5" />
 
-
-      <!-- 
-        This is currently used for the aspnet_regiis.exe custom action, though there
-        is opportunity in the future for these properties to be exposed in the dialog
-        UI.
+        <!-- 
+        These are currently static, though there is opportunity in the future for these
+        properties to be exposed in the dialog UI.
         -->
         <Property Id="SITE_ID" Secure="yes" Value="1" />
         <Property Id="VIRTUALDIR" Secure="yes" Value="mapguide" />
         <Property Id="MG_WEBSITE" Secure="yes" Value="Default Web Site" />
-      
 
-      <!-- Add Remove Programs stuff -->
+        <!-- Add Remove Programs metadata -->
         <Property Id="ARPHELPLINK" Value="http://mapguide.osgeo.org" />
         <Property Id="ARPURLINFOABOUT" Value="http://mapguide.osgeo.org" />
         <Property Id="ARPPRODUCTICON" Value="OSGeo.ico" />
         
         <Property Id="ALLUSERS">1</Property>
 
+        <!-- we need to know what version of IIS is installed (if any) to see what options to offer during install UI, and
+             which custom actions to run during installation -->
         <Property Id="IISVERSIONMAJOR" Value="#0" Secure="yes">
             <RegistrySearch Id="SearchRegIISVERSIONMAJOR" Root="HKLM" Key="Software\Microsoft\InetStp" Name="MajorVersion" Type="raw" />
         </Property>
 
         <Icon Id="OSGeo.ico" SourceFile="..\..\Support\Graphics\OSGeo.ico" />
         
-        <WixVariable Id="WixUILicenseRtf" Value="Resources/LGPL21.rtf" />
-        <WixVariable Id="WixUIBannerBmp" Value="Resources/InstallerSmall.bmp" />
-        <WixVariable Id="WixUIDialogBmp" Value="Resources/InstallerLarge.bmp" />
-
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramMenuFolder" Name="Programs"/>
             <Directory Id="DesktopFolder" Name="Desktop"/>
             <Directory Id="ProgramFilesFolder">
                 <Directory Id="OSGeoFolder" Name="OSGeo">
                     <Directory Id="INSTALLLOCATION" Name="MapGuide">
+                        <!-- These are "aliases", set in the individual feature libraries.-->
                         <Directory Id="WebParentFolder" />
                         <Directory Id="ServerParentFolder" />
                         <Directory Id="CsMapParentFolder" />
@@ -82,16 +79,22 @@
             </Directory>
         </Directory>
 
+        <!-- The actual features are defined in the individual WiX libraries, e.g. MapGuideServer.wxs -->
         <FeatureRef Id="CSMapFeature"/>
         <FeatureRef Id="ServerFeature"/>
         <FeatureRef Id="WebExtensionsFeature"/>
-        
+
         <UIRef Id="WixUI_Common"/>
 
-      <!-- Required to allow browsing for install directory -->
+        <!-- These control UI elements -->
+        <WixVariable Id="WixUILicenseRtf" Value="Resources/LGPL21.rtf" />
+        <WixVariable Id="WixUIBannerBmp" Value="Resources/InstallerSmall.bmp" />
+        <WixVariable Id="WixUIDialogBmp" Value="Resources/InstallerLarge.bmp" />
+
+        <!-- Required to allow browsing for install directory -->
         <Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" />
 
-      <!-- This stuff allows us to set MGWEB_CONFIG from two possible dialog boxes -->
+        <!-- This is required, it allows us to set MGWEB_CONFIG from two different dialog boxes -->
         <Property Id="MgWeb_Config_IIS" Value="APACHE" />
         <Property Id="MgWeb_Config_NoIIS" Value="APACHE" />
         <CustomAction Id="MgWeb_Config_To_IIS_CA" Property="MgWeb_Config_IIS" Value="[MGWEB_CONFIG]" />
@@ -344,12 +347,13 @@
                 <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.CancelButtonText)" />
             </Dialog>
 
-            <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
-
-            <!-- Browse dialog to locate installation directory -->
+            <!-- Utility browse dialog to locate installation directory -->
             <Publish Dialog="BrowseDlg" Control="OK" Event="DoAction" Value="WixUIValidatePath" Order="3">1</Publish>
             <Publish Dialog="BrowseDlg" Control="OK" Event="SpawnDialog" Value="InvalidDirDlg" Order="4"><![CDATA[WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
 
+          
+            <!-- This section controls the order and custom UI events performed as user navigates the UI  -->
+          
             <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
 
             <Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
@@ -362,29 +366,59 @@
             <Publish Dialog="DisabledFeaturesDialog" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="DoAction" Value="MgWeb_Config_From_IIS_CA" Order="1">1</Publish>
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="ApacheConfigDlg" Order="2">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IISLangConfigDlg" Order="3">MGWEB_CONFIG=&quot;IIS&quot; AND NETFRAMEWORK20</Publish>
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="4">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK20)</Publish>
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IIS6ConfigDlg" Order="5">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#6&quot; AND (NOT NETFRAMEWORK20)</Publish>
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IIS7ConfigDlg" Order="6">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND (NOT NETFRAMEWORK20)</Publish>
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="7">MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
+            <!-- This "resets" the feature tree in case someone starts down a path then changes their mind -->
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="AddLocal" Value="ALL" Order="2">1</Publish>
+            <!-- If Apache, or IIS and the .Net Framework is not installed, set feature default for the ASPX viewer to not install -->
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtMapViewerASPXFeature" Order="3">(MGWEB_CONFIG=&quot;APACHE&quot;) OR (MGWEB_CONFIG=&quot;IIS&quot; AND NOT NETFRAMEWORK20)</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="ApacheConfigDlg" Order="4">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IISLangConfigDlg" Order="5">MGWEB_CONFIG=&quot;IIS&quot; AND NETFRAMEWORK20</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="6">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK20)</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IIS6ConfigDlg" Order="7">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#6&quot; AND (NOT NETFRAMEWORK20)</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IIS7ConfigDlg" Order="8">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND (NOT NETFRAMEWORK20)</Publish>
+            <!-- If IIS, set feature defaults for Apache, Tomcat, and JSP viewer to not install -->
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtApacheFeature" Order="9">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtTomcatFeature" Order="10">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtMapViewerJSPFeature" Order="11">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="12">MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
-            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="DoAction" Value="MgWeb_Config_From_NoIIS_CA" Order="1">1</Publish> 
-            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="NewDialog" Value="ApacheConfigDlg" Order="2">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
-            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="4">MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="DoAction" Value="MgWeb_Config_From_NoIIS_CA" Order="1">1</Publish>
+            <!-- This "resets" the feature tree in case someone starts down a path then changes their mind -->
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="AddLocal" Value="ALL" Order="2">1</Publish>
+            <!-- If Apache, set feature default for the ASPX viewer to not install -->
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="Remove" Value="WebExtMapViewerASPXFeature" Order="3">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="NewDialog" Value="ApacheConfigDlg" Order="4">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="5">MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
             <Publish Dialog="WebServerConfigDlgNoIIS" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
             <Publish Dialog="WebServerConfigDlgNoIIS" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
             <Publish Dialog="ApacheConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg">1</Publish>
-            <Publish Dialog="ApacheConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_NoIIS_CA" Order="1">1</Publish> 
-            <Publish Dialog="ApacheConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgNoIIS" Order="2">1</Publish>
+            <!-- Set default features based on Java API choice - AddLocal required in case user changes mind and comes back -->
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="Remove" Value="WebExtMapViewerPHPFeature">APACHE_API_TYPE=&quot;JAVA&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="AddLocal" Value="WebExtTomcatFeature">APACHE_API_TYPE=&quot;JAVA&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="AddLocal" Value="WebExtMapViewerJSPFeature">APACHE_API_TYPE=&quot;JAVA&quot;</Publish>
+            <!-- Set default features based on PHP API choice - AddLocal required in case user changes mind and comes back -->
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="Remove" Value="WebExtTomcatFeature">APACHE_API_TYPE=&quot;PHP&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="Remove" Value="WebExtMapViewerJSPFeature">APACHE_API_TYPE=&quot;PHP&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="AddLocal" Value="WebExtMapViewerPHPFeature">APACHE_API_TYPE=&quot;PHP&quot;</Publish>
+            <!-- Handle special "Back" actions to set UI properties -->
+            <Publish Dialog="ApacheConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_NoIIS_CA" Order="1">IISVERSIONMAJOR=&quot;#0&quot;</Publish> 
+            <Publish Dialog="ApacheConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgNoIIS" Order="2">IISVERSIONMAJOR=&quot;#0&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="1">NOT IISVERSIONMAJOR=&quot;#0&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="2">NOT IISVERSIONMAJOR=&quot;#0&quot;</Publish>
             <Publish Dialog="ApacheConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
             <Publish Dialog="IISLangConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="2">IISVERSIONMAJOR=&quot;#5&quot;</Publish>
             <Publish Dialog="IISLangConfigDlg" Control="Next" Event="NewDialog" Value="IIS6ConfigDlg" Order="3">IISVERSIONMAJOR=&quot;#6&quot;</Publish>
             <Publish Dialog="IISLangConfigDlg" Control="Next" Event="NewDialog" Value="IIS7ConfigDlg" Order="4">IISVERSIONMAJOR=&quot;#7&quot;</Publish>
+            <!-- Default feature settings for PHP API - AddLocal required in case user changes mind and comes back -->
+            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="Remove" Value="WebExtMapViewerASPXFeature">IIS_API_TYPE=&quot;PHP&quot;</Publish>
+            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="AddLocal" Value="WebExtMapViewerPHPFeature">IIS_API_TYPE=&quot;PHP&quot;</Publish>
+            <!-- Default feature settings for ASP.Net API - AddLocal required in case user changes mind and comes back -->
+            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="Remove" Value="WebExtMapViewerPHPFeature">IIS_API_TYPE=&quot;DOTNET&quot;</Publish>
+            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="AddLocal" Value="WebExtMapViewerASPXFeature">IIS_API_TYPE=&quot;DOTNET&quot;</Publish>
+            <!-- Handle special "Back" actions to set UI properties -->
             <Publish Dialog="IISLangConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="1">1</Publish> 
             <Publish Dialog="IISLangConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="2">1</Publish>
             <Publish Dialog="IISLangConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
@@ -407,7 +441,7 @@
             <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="IIS7ConfigDlg" Order="3">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot;</Publish>
             <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="ApacheConfigDlg" Order="4">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
             <Publish Dialog="IPConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="5">(NOT IISVERSIONMAJOR=&quot;#0&quot;) AND ( (IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK20)) OR (MGWEB_CONFIG=&quot;MANUAL&quot; ))</Publish>
-            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="6">(NOT IISVERSIONMAJOR=&quot;#0&quot;) AND ( (IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK20)) OR (MGWEB_CONFIG=&quot;MANUAL&quot; ))</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="6">(NOT IISVERSIONMAJOR=&quot;#0&quot;) AND ( (IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK20) AND MGWEB_CONFIG=&quot;IIS&quot; ) OR (MGWEB_CONFIG=&quot;MANUAL&quot; ))</Publish>
             <Publish Dialog="IPConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_NoIIS_CA" Order="7">IISVERSIONMAJOR=&quot;#0&quot;</Publish>
             <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgNoIIS" Order="8">IISVERSIONMAJOR=&quot;#0&quot; AND MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
             <Publish Dialog="IPConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
@@ -433,8 +467,12 @@
             <Publish Dialog="MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
             <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
             <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
-            
-            <!-- Progress messages (so the user knows what's happening under the hood) -->
+
+            <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
+
+
+
+            <!-- Progress messages (so the user knows what's happening under the hood) - could use more of these... -->
             <ProgressText Action="UpdateApacheConfig">!(loc.UpdateApacheConfig)</ProgressText>
             <ProgressText Action="UpdatePhpIni">!(loc.UpdatePhpIni)</ProgressText>
             <ProgressText Action="InstallApacheServiceCA">!(loc.InstallApacheServiceCA)</ProgressText>

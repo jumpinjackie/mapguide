@@ -19,7 +19,7 @@
                 <Directory Id="WEBTEMPLOCATION" Name="Temp">
                     <Component Id="WebTempComponent" Guid="38C3E0A5-88F8-4A98-896D-CCB5DADCC566" Feature="WebTempFeature">
                         <CreateFolder>
-                            <util:PermissionEx User="Everyone" GenericRead="yes" GenericWrite="yes" />
+                            <util:PermissionEx User="Everyone" GenericAll="yes" />
                         </CreateFolder>
                     </Component>
                 </Directory>
@@ -108,14 +108,13 @@
             <ComponentRef Id="GenericShortcutComponent"/>
             <ComponentRef Id="WebTempComponent"/>
 
-            <Feature Id="WebExtApacheFeature" Title="!(loc.WebExtApacheFeature)" Display="hidden" Level="1" Description="!(loc.WebExtApacheFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+            <Feature Id="WebExtApacheFeature" Title="!(loc.WebExtApacheFeature)" Level="1" Description="!(loc.WebExtApacheFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
                 <ComponentGroupRef Id="group_APACHEFILES"/>
             </Feature>
             <Feature Id="WebExtPhpFeature" Title="!(loc.WebExtPhpFeature)" Display="hidden" Level="1" Description="!(loc.WebExtPhpFeature_Description)" Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
                 <ComponentGroupRef Id="group_PHPFILES"/>
             </Feature>
             <Feature Id="WebExtTomcatFeature" Title="!(loc.WebExtTomcatFeature)" Level="1" Description="!(loc.WebExtTomcatFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
-              <Condition Level="0">MGWEB_CONFIG=&quot;IIS&quot;</Condition>
               <ComponentGroupRef Id="group_TOMCATFILES"/>
             </Feature>
             <Feature Id="WebExtHelpFeature" Title="!(loc.WebExtHelpFeature)" Level="1" Description="!(loc.WebExtHelpFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
@@ -134,7 +133,6 @@
               <ComponentGroupRef Id="group_WEBINFFILES"/>
             </Feature>
             <Feature Id="WebExtMapViewerASPXFeature" Title="!(loc.WebExtMapViewerASPXFeature)" Level="1" Description="!(loc.WebExtMapViewerASPXFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
-                <Condition Level="0">NOT NETFRAMEWORK20</Condition>
                 <ComponentGroupRef Id="group_MAPVIEWERASPXFILES"/>
             </Feature>
             <Feature Id="WebTempFeature" Title="!(loc.WebTempFeature)" Level="1" ConfigurableDirectory="WEBTEMPLOCATION" Description="!(loc.WebTempFeature_Description)" Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" />

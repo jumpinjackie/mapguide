@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix 
+  xmlns="http://schemas.microsoft.com/wix/2006/wi"
+  xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" >
     <Fragment>
 
         <DirectoryRef Id="ServerParentFolder">
@@ -132,7 +134,9 @@
                 </Directory>
                 <Directory Id="SERVERTEMPLOCATION" Name="Temp">
                     <Component Id="ServerTempComponent" Guid="8FEBC0F2-A1CA-43D5-B7EF-C11907B9A67D" Feature="ServerTempFeature">
-                        <CreateFolder />
+                        <CreateFolder>
+                          <util:PermissionEx User="Everyone" GenericAll="yes" />
+                        </CreateFolder>
                         <IniFile Id="INISETTEMPPATH"
                                  Action="addLine"
                                  Directory="SERVERBINLOCATION"

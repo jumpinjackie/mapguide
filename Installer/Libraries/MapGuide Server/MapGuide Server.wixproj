@@ -48,6 +48,11 @@
     <EmbeddedResource Include="Lang\MapGuideServer_en-US.wxl" />
     <EmbeddedResource Include="Lang\MapGuideServer_es-ES.wxl" />
   </ItemGroup>
+  <ItemGroup>
+    <WixExtension Include="WixUtilExtension">
+      <HintPath>$(WixExtDir)\WixUtilExtension.dll</HintPath>
+    </WixExtension>
+  </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--
 	To modify your build process, add your task inside one of the targets below and uncomment it.
