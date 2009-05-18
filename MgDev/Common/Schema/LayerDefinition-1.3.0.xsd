@@ -49,7 +49,7 @@
           <xs:documentation>Link to the drawing data source.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="Opacity" minOccurs="0">
+      <xs:element name="Opacity" default="1.0" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Opacity at which to display the rendered data.</xs:documentation>
         </xs:annotation>
@@ -82,7 +82,7 @@
               <xs:documentation>The layers to show from the specified sheet.  Show all layers if this is not specified.</xs:documentation>
             </xs:annotation>
           </xs:element>
-          <xs:element name="MinScale" type="xs:double" minOccurs="0">
+          <xs:element name="MinScale" type="xs:double" default="0.0" minOccurs="0">
             <xs:annotation>
               <xs:documentation>The zoomed in part of the scale range.  Defaults to 0 if not specified.  Inclusive.</xs:documentation>
             </xs:annotation>
@@ -162,7 +162,7 @@
       <xs:documentation>The stylization to be applied to the vector features for a given scale range.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="MinScale" type="xs:double" minOccurs="0">
+      <xs:element name="MinScale" type="xs:double" default="0.0" minOccurs="0">
         <xs:annotation>
           <xs:documentation>The zoomed in part of the scale range.  Defaults to 0 if not specified.  Inclusive.</xs:documentation>
         </xs:annotation>
@@ -205,8 +205,8 @@
     <xs:sequence>
       <xs:element name="ZOffset" type="xs:string" minOccurs="0"/>
       <xs:element name="ZExtrusion" type="xs:string" minOccurs="0"/>
-      <xs:element name="ZOffsetType" type="ElevationTypeType" minOccurs="0"/>
-      <xs:element name="Unit" type="LengthUnitType" minOccurs="0"/>
+      <xs:element name="ZOffsetType" type="ElevationTypeType" default="RelativeToGround" minOccurs="0"/>
+      <xs:element name="Unit" type="LengthUnitType" default="Centimeters" minOccurs="0"/>
       <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
@@ -239,7 +239,7 @@
           <xs:documentation>One or more PointRules defining the PointTypeStyle.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="ShowInLegend" type="xs:boolean" minOccurs="0" default="true"/>
+      <xs:element name="ShowInLegend" type="xs:boolean" default="true" minOccurs="0"/>
       <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
@@ -319,7 +319,7 @@
           <xs:documentation>Rules to define a theme.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="ShowInLegend" type="xs:boolean" minOccurs="0" default="true"/>
+      <xs:element name="ShowInLegend" type="xs:boolean" default="true" minOccurs="0"/>
       <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
@@ -386,7 +386,7 @@
           <xs:documentation>Rules to define a theme.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="ShowInLegend" type="xs:boolean" minOccurs="0" default="true"/>
+      <xs:element name="ShowInLegend" type="xs:boolean" default="true" minOccurs="0"/>
       <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
@@ -524,27 +524,27 @@
               <xs:documentation>The background style</xs:documentation>
             </xs:annotation>
           </xs:element>
-          <xs:element name="HorizontalAlignment" type="xs:string" minOccurs="0">
+          <xs:element name="HorizontalAlignment" type="xs:string" default="'Center'" minOccurs="0">
             <xs:annotation>
               <xs:documentation>A string FDO expression for the horizontal alignment.  Must evaluate to one of the HorizontalAlignmentType enums.  Only applicable to text styles.</xs:documentation>
             </xs:annotation>
           </xs:element>
-          <xs:element name="VerticalAlignment" type="xs:string" minOccurs="0">
+          <xs:element name="VerticalAlignment" type="xs:string" default="'Baseline'" minOccurs="0">
             <xs:annotation>
               <xs:documentation>A string FDO expression for the vertical alignment.  Must evaluate to one of the VerticalAlignmentType enums.  Only applicable to text and line styles.</xs:documentation>
             </xs:annotation>
           </xs:element>
-          <xs:element name="Bold" type="xs:string" minOccurs="0">
+          <xs:element name="Bold" type="xs:string" default="false" minOccurs="0">
             <xs:annotation>
               <xs:documentation>Specifies if the label should be in a bold font.</xs:documentation>
             </xs:annotation>
           </xs:element>
-          <xs:element name="Italic" type="xs:string" minOccurs="0">
+          <xs:element name="Italic" type="xs:string" default="false" minOccurs="0">
             <xs:annotation>
               <xs:documentation>Specifies if the font should be italicized.</xs:documentation>
             </xs:annotation>
           </xs:element>
-          <xs:element name="Underlined" type="xs:string" minOccurs="0">
+          <xs:element name="Underlined" type="xs:string" default="false" minOccurs="0">
             <xs:annotation>
               <xs:documentation>Specifies if the text should be underlined.</xs:documentation>
             </xs:annotation>
@@ -593,22 +593,22 @@
           <xs:documentation>Height of the symbol.  This is a double FDO expression.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="Rotation" type="xs:string" minOccurs="0">
+      <xs:element name="Rotation" type="xs:string" default="0.0" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Amount to rotate the symbol in degrees.  This is a double FDO expression.  Does not apply to line labels.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="MaintainAspect" type="xs:boolean" minOccurs="0">
+      <xs:element name="MaintainAspect" type="xs:boolean" default="true" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Hint for the UI only.  When the user enters a constant size for the width or height, the other dimension should be adjusted accordingly.  Does not apply to font symbols or labels.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="InsertionPointX" type="xs:string" minOccurs="0">
+      <xs:element name="InsertionPointX" type="xs:string" default="0.5" minOccurs="0">
         <xs:annotation>
           <xs:documentation>X offset for the symbol specified in symbol space.  Does not apply to labels.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="InsertionPointY" type="xs:double" minOccurs="0">
+      <xs:element name="InsertionPointY" type="xs:double" default="0.5" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Y offset for the symbol specified in symbol space.  Does not apply to labels.</xs:documentation>
         </xs:annotation>
@@ -630,7 +630,7 @@
           </xs:element>
           <xs:element name="Edge" type="StrokeType" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>No edge is drawin if not specified.</xs:documentation>
+              <xs:documentation>No edge is drawn if not specified.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
@@ -806,7 +806,7 @@
           <xs:documentation>One or more CompositeRules defining the CompositeTypeStyle.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="ShowInLegend" type="xs:boolean" minOccurs="0" default="true"/>
+      <xs:element name="ShowInLegend" type="xs:boolean" default="true" minOccurs="0"/>
       <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
@@ -1060,12 +1060,12 @@
           <xs:documentation>Default is high value found in band.  Band values greater than this are snapped to this number.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="LowChannel" type="xs:unsignedByte" minOccurs="0">
+      <xs:element name="LowChannel" type="xs:unsignedByte" default="0" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Default is 0.  Range is 0:255.  LowBand is mapped to this number.  LowChannel can be greater than HighChannel.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="HighChannel" type="xs:unsignedByte" minOccurs="0">
+      <xs:element name="HighChannel" type="xs:unsignedByte" default="255" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Default is 255.  Range is 0:255.</xs:documentation>
         </xs:annotation>
@@ -1144,7 +1144,7 @@
           <xs:documentation>Altitude of the sun in degrees.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="ScaleFactor" type="xs:double" minOccurs="0">
+      <xs:element name="ScaleFactor" type="xs:double" default="1.0" minOccurs="0">
         <xs:annotation>
           <xs:documentation>The scale factor applied to the band prior to computing hillshade.  Defaults to 1 if not specified.</xs:documentation>
         </xs:annotation>
@@ -1163,12 +1163,12 @@
           <xs:documentation>If a pixel color prior to factoring in HillShade is this value then the pixel is transparent.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="BrightnessFactor" type="xs:double" minOccurs="0">
+      <xs:element name="BrightnessFactor" type="xs:double" default="0.0" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Default is 0.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="ContrastFactor" type="xs:double" minOccurs="0">
+      <xs:element name="ContrastFactor" type="xs:double" default="0.0" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Default is 0.</xs:documentation>
         </xs:annotation>
@@ -1187,12 +1187,12 @@
           <xs:documentation>Band to use for 3D data.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="ZeroValue" type="xs:double" minOccurs="0">
+      <xs:element name="ZeroValue" type="xs:double" default="0.0" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Determines which input value is mapped to zero elevation.  Defaults to 0 if not specified.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="ScaleFactor" type="xs:double" minOccurs="0">
+      <xs:element name="ScaleFactor" type="xs:double" default="1.0" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Determines how to scale the inputs into a consistent elevation.  Defaults to 1 if not specified.</xs:documentation>
         </xs:annotation>
@@ -1210,7 +1210,7 @@
       <xs:documentation>The stylization for a specified scale range.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="MinScale" type="xs:double" minOccurs="0">
+      <xs:element name="MinScale" type="xs:double" default="0.0" minOccurs="0">
         <xs:annotation>
           <xs:documentation>The zoomed in part of the scale range.  Defaults to 0 if not specified.  Inclusive.</xs:documentation>
         </xs:annotation>
