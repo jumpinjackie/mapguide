@@ -31,6 +31,7 @@ using namespace MDFMODEL_NAMESPACE;
 ElevationSettings::ElevationSettings()
 {
     // default values
+    this->m_eUnit = MdfModel::Centimeters;
     this->m_elevationType = RelativeToGround;
 }
 
