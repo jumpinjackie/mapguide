@@ -419,8 +419,7 @@
   </xs:complexType>
   <xs:complexType name="StrokeType">
     <xs:annotation>
-      <xs:documentation>Encapsulates the stylization of a line.
-            </xs:documentation>
+      <xs:documentation>Encapsulates the stylization of a line.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
       <xs:element name="LineStyle" type="xs:string"/>
