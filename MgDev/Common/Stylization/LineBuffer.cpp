@@ -834,7 +834,7 @@ void LineBuffer::ArcTo(double cx, double cy, double a, double b, double startRad
     if (m_bProcessZ)                \
     {                               \
         z = *dreader++;             \
-        if (abs(z) < 1.0e100)       \
+        if (fabs(z) < 1.0e100)      \
         {                           \
             last_z = z;             \
             if (!have_bad_z)        \
@@ -967,7 +967,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                                 {
                                     zarray[n_pt] = *dreader++;
 
-                                    if (abs(zarray[n_pt]) < 1.0e100)
+                                    if (fabs(zarray[n_pt]) < 1.0e100)
                                     {
                                         // z is good
                                         last_z = zarray[n_pt];
