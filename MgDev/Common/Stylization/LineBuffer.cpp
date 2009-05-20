@@ -828,15 +828,33 @@ void LineBuffer::ArcTo(double cx, double cy, double a, double b, double startRad
 
 // simple helper macro that reads x and y and (possibly) z and skips m and
 // does coord sys transform
-#define READ_POINT(x, y, z) \
-    x = *dreader++;         \
-    y = *dreader++;         \
-    if (m_bProcessZ)        \
-        z = *dreader++;     \
-    else                    \
-        z = 0.0;            \
-    dreader += skip;        \
-    if (xformer)            \
+#define READ_POINT(x, y, z)         \
+    x = *dreader++;                 \
+    y = *dreader++;                 \
+    if (m_bProcessZ)                \
+    {                               \
+        z = *dreader++;             \
+        if (abs(z) < 1.0e100)       \
+        {                           \
+            last_z = z;             \
+            if (!have_bad_z)        \
+                use_last_z = true;  \
+            else if (!use_last_z)   \
+                z = 0.0;            \
+        }                           \
+        else                        \
+        {                           \
+            have_bad_z = true;      \
+            if (use_last_z)         \
+                z = last_z;         \
+            else                    \
+                z = 0.0;            \
+        }                           \
+    }                               \
+    else                            \
+        z = 0.0;                    \
+    dreader += skip;                \
+    if (xformer)                    \
         xformer->TransformPoint(x, y);
 
 
@@ -846,6 +864,10 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
 
     // the geometry type
     m_geom_type = (FdoGeometryType)*ireader++;
+
+    double last_z = 0.0;
+    bool use_last_z = false;
+    bool have_bad_z = false;
 
     switch (m_geom_type)
     {
@@ -937,12 +959,34 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                             double yarray[MAX_POINT_BLOCK];
                             double zarray[MAX_POINT_BLOCK];
 
-                            for (int n_pt = 0; n_pt < block_size; n_pt++)
+                            for (int n_pt=0; n_pt<block_size; ++n_pt)
                             {
                                 xarray[n_pt] = *dreader++;
                                 yarray[n_pt] = *dreader++;
                                 if (m_bProcessZ)
+                                {
                                     zarray[n_pt] = *dreader++;
+
+                                    if (abs(zarray[n_pt]) < 1.0e100)
+                                    {
+                                        // z is good
+                                        last_z = zarray[n_pt];
+                                        if (!have_bad_z)
+                                            use_last_z = true;
+                                        else if (!use_last_z)
+                                            zarray[n_pt] = 0.0;
+                                    }
+                                    else
+                                    {
+                                        // z is bad
+                                        have_bad_z = true;
+
+                                        if (use_last_z)
+                                            zarray[n_pt] = last_z;
+                                        else
+                                            zarray[n_pt] = 0.0;
+                                    }
+                                }
                                 else
                                     zarray[n_pt] = 0.0;
                                 dreader += skip;
@@ -953,7 +997,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                                 xformer->TransformPoints(block_size, xarray, yarray);
                             }
 
-                            for (int n_pt = 0; n_pt < block_size; n_pt++)
+                            for (int n_pt=0; n_pt<block_size; ++n_pt)
                             {
                                 LineTo(xarray[n_pt], yarray[n_pt], zarray[n_pt]);
                             }
@@ -1050,7 +1094,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                     ireader = (int*)dreader;
                     int seg_count = *ireader++; // # curve segments
 
-                    for (int j = 0; j < seg_count; ++j)
+                    for (int j=0; j<seg_count; ++j)
                     {
                         int seg_type = *ireader++;
 
