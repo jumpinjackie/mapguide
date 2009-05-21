@@ -30,9 +30,11 @@ public:
 
     static void Combine(const RS_String& src1, const RS_String& src2, const RS_String& dst);
 
+    // NOTE: the returned buffer contains the *inverted* image
     static unsigned int* DecodePNG(const unsigned char* src, size_t len, int& width, int& height);
+
+    // NOTE: the returned buffer contains the *non-inverted* image
     static unsigned int* DecodeJPEG(const unsigned char* src, size_t len, int& width, int& height);
-    static unsigned int* DecodeImage(const RS_String& filename, int& width, int& height);
 
 private:
     static unsigned char* ReadFile(const RS_String& fname, size_t& len);
