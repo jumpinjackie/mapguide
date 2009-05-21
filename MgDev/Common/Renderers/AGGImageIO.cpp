@@ -351,6 +351,8 @@ int write_png(png_write_context* cxt, unsigned int* pix, int width, int height, 
  * here - one where we are given the filename, and we need to open the
  * file, and the other where we are given an open file (possibly with
  * some or all of the magic bytes read - see comments above).
+ *
+ * NOTE: the returned buffer contains the *inverted* image
  */
 int read_png(png_write_context* cxt, int& retwidth, int& retheight, unsigned char*& data)  /* file is already open */
 {
@@ -599,6 +601,7 @@ int read_png(png_write_context* cxt, int& retwidth, int& retheight, unsigned cha
 
    for (unsigned row = 0; row < height; row++)
    {
+      // configure the row pointers so that the returned buffer contains the inverted image
       row_pointers[row] = (png_bytep)&data[(height - row - 1) * png_get_rowbytes(png_ptr, info_ptr)];
    }
 
@@ -863,6 +866,7 @@ void AGGImageIO::Combine(const RS_String& src1, const RS_String& src2, const RS_
 }
 
 
+// NOTE: the returned buffer contains the *inverted* image
 unsigned int* AGGImageIO::DecodePNG(const unsigned char* src, size_t len, int& width, int& height)
 {
     png_write_context cxt;
