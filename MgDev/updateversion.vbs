@@ -231,7 +231,7 @@ Sub FixVersionFiles (oVersion)
   aVersionFiles = Array ( _
     Array ( _ 
           "/Common/ProductVersion.h", _
-          "^(.* const STRING ProductVersion = L"").+$", _
+          "^(const STRING ProductVersion = L"").+$", _
           "$1" & oVersion.GetVersion("decimal") & """" & vbCr _
     ), _
     Array ( _ 
