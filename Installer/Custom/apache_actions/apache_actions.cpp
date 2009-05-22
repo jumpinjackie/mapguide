@@ -315,8 +315,8 @@ UpdateApacheConfig(MSIHANDLE hMSI)
 	ConvertToApachePath(szWebDir);
 	ConvertToApachePath(szApacheDir);
 
-	// The directory will have a fwd slash, so the 2nd last char should be null-terminated
-	szApacheDir[strlen(szApacheDir)-2] = NULL_CHAR;
+	// The directory will have a fwd slash, so the last char should be null-terminated
+	szApacheDir[strlen(szApacheDir)-1] = NULL_CHAR;
 
 	// create the file path to http.conf
 	strcpy(szFile, szApacheDir);
