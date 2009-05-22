@@ -75,6 +75,7 @@
                 if($featCount++ == 1)
                     break;
             }
+            $features->Close();
             if($featCount != 1) {
                 echo "Error: There must be exactly one feature in the set."; ///NOXLATE dbg report only
                 return;
