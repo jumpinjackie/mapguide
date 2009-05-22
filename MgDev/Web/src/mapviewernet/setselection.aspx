@@ -86,6 +86,7 @@ bool queryInfo = false;
                 if (featCount++ == 1)
                     break;
             }
+            features.Close();
             if (featCount != 1)
             {
                 Response.Write("Error: There must be exactly one feature in the set."); ///NOXLATE dbg report only

@@ -89,6 +89,7 @@ try
             if(featCount++ == 1)
                 break;
         }
+        features.Close();
         if(featCount != 1) {
             response.getWriter().write("Error: There must be exactly one feature in the set."); ///NOXLATE dbg report only
             return;
