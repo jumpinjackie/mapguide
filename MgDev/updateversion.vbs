@@ -232,7 +232,7 @@ Sub FixVersionFiles (oVersion)
     Array ( _ 
           "/Common/ProductVersion.h", _
           "^(const STRING ProductVersion = L"").+$", _
-          "$1" & oVersion.GetVersion("decimal") & """" & vbCr _
+          "$1" & oVersion.GetVersion("decimal") & """;" & vbCr _
     ), _
     Array ( _ 
           "/Web/src/mapviewerjava/ajaxviewerabout.jsp", _
