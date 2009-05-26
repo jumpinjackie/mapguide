@@ -906,11 +906,12 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Returns the collection of identity properties for the specified class.
-    /// If schemaName is empty, then className needs to be fully qualified.
-    MgPropertyDefinitionCollection* GetIdentityProperties(MgResourceIdentifier* resource,
-                                                          CREFSTRING schemaName,
-                                                          CREFSTRING className);
+    /// Returns a class definition collection containing identity properties for the specified classes.
+    /// The class definition only contains the identity properties.
+    /// If schemaName is empty, then class names must be fully qualified.
+    MgClassDefinitionCollection* GetIdentityProperties(MgResourceIdentifier* resource,
+                                                       CREFSTRING schemaName,
+                                                       MgStringCollection* classNames);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>

@@ -1295,12 +1295,12 @@ void MgServerFeatureService::CreateFeatureSource(MgResourceIdentifier* resource,
 //////////////////////////////////////////////////////////////////
 // Returns the collection of identity properties for the specified class.
 // If schemaName is empty, then className needs to be fully qualified.
-MgPropertyDefinitionCollection* MgServerFeatureService::GetIdentityProperties(MgResourceIdentifier* resource,
+MgClassDefinitionCollection* MgServerFeatureService::GetIdentityProperties(MgResourceIdentifier* resource,
                                                                               CREFSTRING schemaName,
-                                                                              CREFSTRING className)
+                                                                              MgStringCollection* classNames)
 {
     MgServerDescribeSchema msds;
-    return msds.GetIdentityProperties(resource, schemaName, className);
+    return msds.GetIdentityProperties(resource, schemaName, classNames);
 }
 
 

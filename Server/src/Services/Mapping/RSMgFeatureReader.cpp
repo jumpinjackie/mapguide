@@ -175,7 +175,7 @@ void RSMgFeatureReader::Reset()
     m_reader->Close();
     SAFE_RELEASE(m_reader);
 
-    m_reader = m_svcFeature->SelectFeatures(m_resId, m_class->GetName(), m_options);
+    m_reader = m_svcFeature->SelectFeatures(m_resId, m_class->GetQualifiedName(), m_options);
 
     RSFR_CATCH()
 }

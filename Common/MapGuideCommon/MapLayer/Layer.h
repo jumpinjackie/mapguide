@@ -229,9 +229,23 @@ INTERNAL_API:
     MgLayer();
 
     //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Creates an MgLayer object and pulls identity properties if required
+    ///
+    MgLayer(MgResourceIdentifier* layerDefinition, MgResourceService* resourceService, bool initIdProps);
+
+    //////////////////////////////////////////////////////////////////
     /// Parse the layer definition XML and extracts scale ranges,
     /// feature source and feature class from it
     void GetLayerInfoFromDefinition(MgResourceService* resourceService);
+
+    //////////////////////////////////////////////////////////////////
+    /// Populate identity properties using a class definition collection
+    void PopulateIdentityProperties(MgClassDefinition* classDef);
+
+    ////////////////////////////////////////////////////////////////////
+    /// Parse feature name to populate schema name and return class name
+    void ParseFeatureName(MgFeatureService* featureService, REFSTRING className, REFSTRING schemaName);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
