@@ -1329,7 +1329,16 @@ INTERNAL_API:
     /// If schemaName is empty, then className needs to be fully qualified.
     virtual MgPropertyDefinitionCollection* GetIdentityProperties(MgResourceIdentifier* resource,
                                                                   CREFSTRING schemaName,
-                                                                  CREFSTRING className) = 0;
+                                                                  CREFSTRING className);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns a class definition collection containing identity properties for the specified classes.
+    /// The class definition only contains the identity properties.
+    /// If schemaName is empty, then class names must be fully qualified.
+    virtual MgClassDefinitionCollection* GetIdentityProperties(MgResourceIdentifier* resource,
+                                                               CREFSTRING schemaName,
+                                                               MgStringCollection* classNames);
 
     virtual STRING GetFdoCacheInfo() = 0;
 

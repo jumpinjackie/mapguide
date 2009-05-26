@@ -1606,39 +1606,70 @@ bool MgServerDescribeSchema::FdoClassExist(const wchar_t* name, FdoClassCollecti
 /// Returns the collection of identity properties for the specified class.
 /// If the schemaName is empty, then the className needs to be fully qualified.
 ///
-MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(
-    MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className)
+MgClassDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(
+    MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames)
 {
-    Ptr<MgPropertyDefinitionCollection> idProps;
+    Ptr<MgClassDefinitionCollection> classDefs = new MgClassDefinitionCollection();
 
     MG_FEATURE_SERVICE_TRY()
 
-    if (className.empty())
+    if (NULL == classNames || classNames->GetCount() == 0)
     {
         throw new MgClassNotFoundException(
             L"MgServerDescribeSchema.GetIdentityProperties",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    idProps = m_featureServiceCache->GetClassIdentityProperties(resource, schemaName, className);
+    Ptr<MgStringCollection> uncachedClasses = new MgStringCollection();
 
-    if (NULL == idProps.p)
+    // Try pulling identity properties directly from the MapGuide cache first
+    for (int i = 0; i < classNames->GetCount(); i++) 
     {
-        Ptr<MgStringCollection> classNames;
-
-        // Since the FDO provider does not know about the join information,
-        // use the full schema to retrieve the class identity properties if the feature source has joins.
-        if (!CheckExtendedFeatureClass(resource, className))
+        STRING className = classNames->GetItem(i);
+        Ptr<MgPropertyDefinitionCollection> idProps = m_featureServiceCache->GetClassIdentityProperties(resource, schemaName, className);
+        if (NULL != idProps.p)
         {
-            classNames = new MgStringCollection();
-            classNames->Add(className);
+            // Identity properties found.  Add class to collection
+            Ptr<MgClassDefinition> classDef = new MgClassDefinition();
+            classDef->SetName(className);
+            Ptr<MgPropertyDefinitionCollection> propDefs = classDef->GetIdentityProperties();
+            for (int j = 0; j < idProps->GetCount(); j++)
+            {
+                Ptr<MgPropertyDefinition> idProp = idProps->GetItem(j);
+                propDefs->Add(idProp);
+            }
+            classDefs->Add(classDef);
+        }
+        else
+        {
+            uncachedClasses->Add(className);
+        }
+    }
+
+    if (uncachedClasses->GetCount() > 0)
+    {
+        // We did not find all the classes in our cache.  Query Fdo for them.
+
+        // Since FDO does not know about joined feature sources,
+        // use full schema to get the class identity properties
+        // if any class is extended.
+        bool classNameHintUsed = true;
+        Ptr<MgStringCollection> emptyNames = new MgStringCollection();
+        MgStringCollection* getNames = uncachedClasses;
+        for (int i = 0; i < uncachedClasses->GetCount(); i++) 
+        {
+            if (CheckExtendedFeatureClass(resource, uncachedClasses->GetItem(i)))
+            {
+                getNames = emptyNames;
+                classNameHintUsed = false;
+                break;
+            }
         }
 
         // Get the FDO Feature Schema collection from the cache.
         // If it does not exist, then create it.
-        bool classNameHintUsed = true;
         FdoPtr<FdoFeatureSchemaCollection> fdoSchemas = m_featureServiceCache->GetFdoSchemas(
-            resource, schemaName, classNames, classNameHintUsed);
+            resource, schemaName, getNames, classNameHintUsed);
 
         if (NULL == fdoSchemas.p)
         {
@@ -1646,43 +1677,59 @@ MgPropertyDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(
             // schemas or the unserialized ones. So, try to get the serialized
             // schemas from the cache first then the unserialized ones later.
             Ptr<MgFeatureSchemaCollection> mgSchemas = m_featureServiceCache->GetSchemas(
-                resource, schemaName, classNames, true);
+                resource, schemaName, getNames, true);
 
             if (NULL == mgSchemas.p)
             {
                 mgSchemas = m_featureServiceCache->GetSchemas(
-                    resource, schemaName, classNames, false);
+                    resource, schemaName, getNames, false);
             }
 
             if (NULL == mgSchemas.p)
             {
-                fdoSchemas = DescribeFdoSchema(resource, schemaName, classNames, classNameHintUsed);
+                fdoSchemas = DescribeFdoSchema(resource, schemaName, getNames, classNameHintUsed);
             }
             else
             {
                 m_cacheManager->CheckPermission(resource, MgResourcePermission::ReadOnly);
                 fdoSchemas = GetFdoFeatureSchemaCollection(mgSchemas.p);
             }
+            m_featureServiceCache->SetFdoSchemas(resource, schemaName, getNames, classNameHintUsed, fdoSchemas.p);
         }
         else
         {
             m_cacheManager->CheckPermission(resource, MgResourcePermission::ReadOnly);
         }
 
-        // Get the class identity properties.
-        idProps = GetIdentityProperties(fdoSchemas.p, resource, schemaName, className);
 
-        m_featureServiceCache->SetFdoSchemas(resource, schemaName, classNames, classNameHintUsed, fdoSchemas.p);
-        m_featureServiceCache->SetClassIdentityProperties(resource, schemaName, className, idProps.p);
+        for (int j = 0; j < uncachedClasses->GetCount(); j++)
+        {
+            STRING className = uncachedClasses->GetItem(j);
+
+            // Get the class identity properties.
+            Ptr<MgPropertyDefinitionCollection> idProps = GetIdentityProperties(fdoSchemas.p, resource, schemaName, className);
+            if (NULL != idProps.p && idProps->GetCount() > 0)
+            {          
+                m_featureServiceCache->SetClassIdentityProperties(resource, schemaName, className, idProps.p);
+
+                // Add class to collection
+                Ptr<MgClassDefinition> classDef = new MgClassDefinition();
+                classDef->SetName(className);
+                Ptr<MgPropertyDefinitionCollection> propDefs = classDef->GetIdentityProperties();
+                for (int k = 0; k < idProps->GetCount(); k++)
+                {
+                    Ptr<MgPropertyDefinition> idProp = idProps->GetItem(k);
+                    propDefs->Add(idProp);
+                }
+                classDefs->Add(classDef);
+            }
+        }
     }
-    else
-    {
-        m_cacheManager->CheckPermission(resource, MgResourcePermission::ReadOnly);
-    }
+
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetIdentityProperties")
 
-    return idProps.Detach();
+    return classDefs.Detach();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

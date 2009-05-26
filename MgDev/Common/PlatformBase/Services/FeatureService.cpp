@@ -49,3 +49,31 @@ void MgFeatureService::Dispose()
     delete this;
 }
 
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Retrieve identity properties for specified classe
+/// </summary>
+/// <returns>
+/// Property definitions for identity properties
+/// </returns>
+MgPropertyDefinitionCollection* MgFeatureService::GetIdentityProperties(MgResourceIdentifier* resource,
+                                                                              CREFSTRING schemaName,
+                                                                              CREFSTRING className)
+{
+    throw new MgNotImplementedException(L"MgFeatureService.GetIdentityProperties", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Retrieve identity properties for specified classes
+/// </summary>
+/// <returns>
+/// Class definitions with identity properties
+/// </returns>
+MgClassDefinitionCollection* MgFeatureService::GetIdentityProperties(MgResourceIdentifier* resource,
+                                                                     CREFSTRING schemaName,
+                                                                     MgStringCollection* classNames)
+{
+    throw new MgNotImplementedException(L"MgFeatureService.GetIdentityProperties", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
