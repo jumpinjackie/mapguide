@@ -1194,6 +1194,9 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                 options->SetSpatialFilter(layer->GetFeatureGeometryName(), (MgGeometry*)(queryGeom.p), /*MgFeatureSpatialOperations*/selectionVariant);
             }
 
+            // Initialize the reader
+            auto_ptr<RSMgFeatureReader> rsrdr;
+
             try
             {
                 if (!featureFilter.empty())
@@ -1219,14 +1222,17 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                 }
 
                 // TODO: can FeatureName be an extension name rather than a FeatureClass?
+                // The reader below needs to be closed and released before the intersectPolygon SelectFeatures below happens
+                // or we end up with a reference count issue that causes a new FDO connection to be cached instead of
+                // reusing the already existing one.
                 Ptr<MgFeatureReader> rdr = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
-                RSMgFeatureReader rsrdr(rdr, m_svcFeature, featResId, options, vl->GetGeometry());
+                rsrdr.reset(new RSMgFeatureReader(rdr, m_svcFeature, featResId, options, vl->GetGeometry()));
 
                 // Note that the FdoIFeatureReader smart pointer below is created
                 // inside the following IF statement to ensure it gets destroyed
                 // BEFORE the RSMgFeatureReader object above goes out of scope,
                 // even when an exception gets thrown.
-                if (FdoPtr<FdoIFeatureReader>(rsrdr.GetInternalReader()))
+                if (FdoPtr<FdoIFeatureReader>(rsrdr->GetInternalReader()))
                 {
                     //run a stylization loop with the FeatureInfoRenderer.
                     //This will build up the selection set and also
@@ -1264,7 +1270,12 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                     }
 
                     selRenderer->StartLayer(&layerinfo, &fcinfo);
-                    ds.StylizeVectorLayer(vl, selRenderer, &rsrdr, NULL, scale, StylizeThatMany, selRenderer);
+                    ds.StylizeVectorLayer(vl, selRenderer, rsrdr.get(), NULL, scale, StylizeThatMany, selRenderer);
+
+                    // Clear the readers in case they are reused below
+                    rdr = NULL;
+                    rsrdr.reset();
+
                     int numFeaturesProcessed = selRenderer->GetNumFeaturesProcessed();
                     if (!numFeaturesProcessed && selRenderer->NeedPointTest())
                     {
@@ -1316,10 +1327,15 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                             {
                                 options->SetSpatialFilter(layer->GetFeatureGeometryName(), intersectPolygon, /*MgFeatureSpatialOperations*/selectionVariant);
 
-                                Ptr<MgFeatureReader> rdr0 = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
-                                RSMgFeatureReader rsrdr0(rdr0, m_svcFeature, featResId, options, vl->GetGeometry());
+                                rdr = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
+                                rsrdr.reset(new RSMgFeatureReader(rdr, m_svcFeature, featResId, options, vl->GetGeometry()));
                                 selRenderer->PointTest(true);
-                                ds.StylizeVectorLayer(vl, selRenderer, &rsrdr0, NULL, scale, StylizeThatMany, selRenderer);
+                                ds.StylizeVectorLayer(vl, selRenderer, rsrdr.get(), NULL, scale, StylizeThatMany, selRenderer);
+
+                                // Clear the readers
+                                rdr = NULL;
+                                rsrdr.reset();
+
                                 selRenderer->PointTest(false);
                                 numFeaturesProcessed = selRenderer->GetNumFeaturesProcessed();
                             }
