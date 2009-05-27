@@ -363,7 +363,7 @@ local int compareLocator(const void* locator1, const void* locator2)
 {
     const char *fname1 = (*((struct locatorEntry**)locator1))->filename;
     const char *fname2 = (*((struct locatorEntry**)locator2))->filename;
-    return DWFCORE_COMPARE_ASCII_STRINGS_NO_CASE(fname1, fname2);
+    return DWFCORE_COMPARE_ASCII_STRINGS(fname1, fname2);
 }
 
 local unzFile unzLocal_OpenFile(const DWFString& zPath, unzIndex* locator)
@@ -1004,7 +1004,7 @@ local int isLocator(const void* key, const void* locator)
 {
     const char *fname1 = (const char*)key;
     const char *fname2 = (*((struct locatorEntry**)locator))->filename;
-    return DWFCORE_COMPARE_ASCII_STRINGS_NO_CASE(fname1, fname2);
+    return DWFCORE_COMPARE_ASCII_STRINGS(fname1, fname2);
 }
 
 /*
