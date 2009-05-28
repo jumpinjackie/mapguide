@@ -1035,17 +1035,25 @@ void MgMap::BulkLoadIdentityProperties(MgFeatureService* featureService)
             classNames->Add(cIter->first);
         }
 
-        Ptr<MgClassDefinitionCollection> partialDefs = featureService->GetIdentityProperties(resId, schemaName, classNames);
-        for (int i = 0; i < partialDefs->GetCount(); i++)
+        try
         {
-            Ptr<MgClassDefinition> def = partialDefs->GetItem(i);
-            STRING className = def->GetName();
-
-            LayerList& layers = fsMap[featureSource][className];
-            for (LayerList::iterator lIter = layers.begin(); lIter != layers.end(); lIter++)
+            // Ignore failures when pulling identity properties
+            Ptr<MgClassDefinitionCollection> partialDefs = featureService->GetIdentityProperties(resId, schemaName, classNames);
+            for (int i = 0; i < partialDefs->GetCount(); i++)
             {
-                (*lIter)->PopulateIdentityProperties(def);
+                Ptr<MgClassDefinition> def = partialDefs->GetItem(i);
+                STRING className = def->GetName();
+
+                LayerList& layers = fsMap[featureSource][className];
+                for (LayerList::iterator lIter = layers.begin(); lIter != layers.end(); lIter++)
+                {
+                    (*lIter)->PopulateIdentityProperties(def);
+                }
             }
-        } 
+        }
+        catch (MgException* e)
+        {
+            e->Release();
+        }
     }
 }

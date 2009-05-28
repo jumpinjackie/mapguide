@@ -32,8 +32,9 @@ MgLayer::MgLayer()
 // Creates a MgLayerBase object given a reference to a LayerDefinition
 //
 MgLayer::MgLayer(MgResourceIdentifier* layerDefinition, MgResourceService* resourceService)
+    : MgLayerBase(layerDefinition, resourceService)
 {
-    MgLayer(layerDefinition, resourceService, true);
+    GetLayerInfoFromDefinition(resourceService);
 }
 
 //////////////////////////////////////////////////////////////
