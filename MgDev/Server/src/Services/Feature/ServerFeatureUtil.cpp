@@ -1012,6 +1012,17 @@ MgClassDefinition* MgServerFeatureUtil::GetMgClassDefinition(FdoClassDefinition*
         mgClassDef->SetName(STRING(className));
     }
 
+    // Schema Name
+    FdoPtr<FdoFeatureSchema> schema = fdoClassDefinition->GetFeatureSchema();
+    if (schema.p != NULL)
+    {
+        FdoString* schemaName = schema->GetName();
+        if (schemaName != NULL)
+        {
+            mgClassDef->SetSchemaName(STRING(schemaName));
+        }
+    }
+
     bool isComputed = fdoClassDefinition->GetIsComputed();
     if (isComputed)
     {

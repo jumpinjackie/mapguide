@@ -71,9 +71,8 @@ void MgOpGetIdentityProperties::Execute()
         STRING schemaName;
         m_stream->GetString(schemaName);
 
-        // Get the schema name
-        STRING className;
-        m_stream->GetString(className);
+        // Get the class names
+        Ptr<MgStringCollection> classNames = (MgStringCollection*) m_stream->GetObject();
 
         BeginExecution();
 
@@ -82,15 +81,15 @@ void MgOpGetIdentityProperties::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(schemaName.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(className.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(classNames->GetLogString().c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
         // Execute the operation
-        Ptr<MgPropertyDefinitionCollection> props = m_service->GetIdentityProperties(resource,
-                                                                                     schemaName,
-                                                                                     className);
+        Ptr<MgClassDefinitionCollection> props = m_service->GetIdentityProperties(resource,
+                                                                                  schemaName,
+                                                                                  classNames);
 
         // Write the response
         EndExecution(props);

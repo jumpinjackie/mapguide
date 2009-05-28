@@ -66,7 +66,7 @@ public:
     FdoDataType GetFdoDataType(INT32 awPropType);
     MgFeatureSchemaCollection* XmlToSchema(CREFSTRING xml);
     FdoObjectPropertyDefinition* GetObjectPropertyDefinition(MgObjectPropertyDefinition* objPropDef, FdoClassCollection* fdoClassCol);
-    MgPropertyDefinitionCollection* GetIdentityProperties(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className);
+    MgClassDefinitionCollection* GetIdentityProperties(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames);
 
 private:
 

@@ -322,6 +322,9 @@ INTERNAL_API:
     void MakeClassAbstract(bool isAbstract);
     MgPropertyDefinitionCollection* GetPropertiesIncludingBase();
     MgStringCollection* GetClassesIncludingBase();
+    STRING GetSchemaName();
+    void SetSchemaName(CREFSTRING schemaName);
+    STRING GetQualifiedName();
     bool HasSerializedXml();
 
 private:
@@ -331,6 +334,7 @@ private:
     Ptr<MgPropertyDefinitionCollection> m_totalProperties;
 
     STRING m_className;
+    STRING m_schemaName;
     STRING m_description;
     STRING m_defaultGeometryPropertyName;
     STRING m_serializedXml;

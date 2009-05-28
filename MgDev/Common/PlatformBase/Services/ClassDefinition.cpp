@@ -190,6 +190,7 @@ void MgClassDefinition::Serialize(MgStream* stream)
 {
     stream->WriteObject((MgPropertyDefinitionCollection*)m_classProperties);
     stream->WriteObject((MgPropertyDefinitionCollection*)m_identityProperties);
+    stream->WriteString(m_schemaName);
     stream->WriteString(m_className);
     stream->WriteString(m_description);
     stream->WriteString(m_defaultGeometryPropertyName);
@@ -204,6 +205,7 @@ void MgClassDefinition::Deserialize(MgStream* stream)
 {
     m_classProperties = (MgPropertyDefinitionCollection*)stream->GetObject();
     m_identityProperties  = (MgPropertyDefinitionCollection*)stream->GetObject();
+    stream->GetString(m_schemaName);
     stream->GetString(m_className);
     stream->GetString(m_description);
     stream->GetString(m_defaultGeometryPropertyName);
@@ -384,6 +386,30 @@ MgStringCollection* MgClassDefinition::GetClassesIncludingBase()
     }
 
     return SAFE_ADDREF((MgStringCollection*)m_classList);
+}
+
+STRING MgClassDefinition::GetSchemaName()
+{
+    return m_schemaName;
+}
+
+
+void MgClassDefinition::SetSchemaName(CREFSTRING schemaName)
+{
+    m_schemaName = schemaName;
+}
+
+STRING MgClassDefinition::GetQualifiedName()
+{
+    STRING qualifiedName;
+    if (!m_schemaName.empty())
+    {
+        qualifiedName = m_schemaName;
+        qualifiedName.append(L":");
+    }
+    qualifiedName.append(m_className);
+
+    return qualifiedName;
 }
 
 bool MgClassDefinition::HasSerializedXml()

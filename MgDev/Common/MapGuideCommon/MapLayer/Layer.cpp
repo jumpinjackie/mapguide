@@ -37,6 +37,17 @@ MgLayer::MgLayer(MgResourceIdentifier* layerDefinition, MgResourceService* resou
     GetLayerInfoFromDefinition(resourceService);
 }
 
+//////////////////////////////////////////////////////////////
+// Creates a MgLayerBase object given a reference to a LayerDefinition
+//
+MgLayer::MgLayer(MgResourceIdentifier* layerDefinition, MgResourceService* resourceService, bool initIdProps)
+    : MgLayerBase(layerDefinition, resourceService)
+{
+    if (initIdProps)
+    {
+        GetLayerInfoFromDefinition(resourceService);
+    }
+}
 
 //////////////////////////////////////////////////////////////
 // Destruct a MgLayerBase object
@@ -93,40 +104,17 @@ void MgLayer::GetLayerInfoFromDefinition(MgResourceService* resourceService)
             // If the class name is fully qualified (prefixed with a schema name),
             // then use it to determine the schema name.
             STRING className;
-            size_t pfxSep = m_featureName.find_first_of(L':');
-            if (pfxSep != STRING::npos)
-            {
-                // fully qualified
-                m_schemaName = m_featureName.substr(0, pfxSep);
-                className = m_featureName.substr(pfxSep + 1, m_featureName.length() - pfxSep - 1);
-            }
-            else
-            {
-                // non-qualified
-                className = m_featureName;
-
-                //TODO:  How do we deal with different schemas?  Just use first one for now...
-                Ptr<MgStringCollection> schemaNames = featureService->GetSchemas(resId);
-                m_schemaName = schemaNames->GetItem(0);
-            }
-
+            STRING schemaName;
+            ParseFeatureName(featureService, className, schemaName);
+            
             // Get the identity properties
-            Ptr<MgPropertyDefinitionCollection> idProps = featureService->GetIdentityProperties(resId,
-                                                                                                m_schemaName,
-                                                                                                className);
-            assert(idProps != NULL);
-            for (int nIds=0; nIds<idProps->GetCount(); nIds++)
+            Ptr<MgStringCollection> classNames = new MgStringCollection();
+            classNames->Add(className);
+            Ptr<MgClassDefinitionCollection> classDefs = featureService->GetIdentityProperties(resId, schemaName, classNames);
+            if (NULL != classDefs.p && classDefs->GetCount() == 1)
             {
-                Ptr<MgDataPropertyDefinition> prop = dynamic_cast<MgDataPropertyDefinition*>(idProps->GetItem(nIds));
-                if (0 == (MgDataPropertyDefinition*)prop)
-                {
-                    throw new MgInvalidCastException(L"MgLayer.GetLayerInfoFromDefinition",
-                        __LINE__, __WFILE__, NULL, L"", NULL);
-                }
-                MgLayer::IdProperty idProp;
-                idProp.type = prop->GetDataType();
-                idProp.name = prop->GetName();
-                m_idProps.push_back(idProp);
+                Ptr<MgClassDefinition> classDef = classDefs->GetItem(0);
+                PopulateIdentityProperties(classDef);
             }
         }
         catch (MgException* e)
@@ -359,4 +347,47 @@ MgPropertyCollection* MgLayer::UpdateFeatures(MgFeatureCommandCollection* comman
     MG_CATCH_AND_THROW(L"MgLayer.UpdateFeatures")
 
     return propCol.Detach();
+}
+
+void MgLayer::ParseFeatureName(MgFeatureService* featureService, REFSTRING className, REFSTRING schemaName)
+{
+    // If the class name is fully qualified (prefixed with a schema name),
+    // then use it to determine the schema name.
+    MgUtil::ParseQualifiedClassName(m_featureName, schemaName, className);
+    if (!schemaName.empty())
+    {
+        m_schemaName = schemaName;
+    }
+    else
+    {
+        // non-qualified, pull schema from Fdo
+        if (m_schemaName.empty())
+        {
+            //TODO:  How do we deal with different schemas?  Just use first one for now...
+            Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(m_featureSourceId);
+            Ptr<MgStringCollection> schemaNames = featureService->GetSchemas(resId);
+            m_schemaName = schemaNames->GetItem(0);
+        }
+    }
+    schemaName = m_schemaName;
+}
+
+void MgLayer::PopulateIdentityProperties(MgClassDefinition* classDef)
+{
+    Ptr<MgPropertyDefinitionCollection> idProps = classDef->GetIdentityProperties();
+
+    assert(idProps != NULL);
+    for (int nIds=0; nIds<idProps->GetCount(); nIds++)
+    {
+        Ptr<MgDataPropertyDefinition> prop = dynamic_cast<MgDataPropertyDefinition*>(idProps->GetItem(nIds));
+        if (0 == (MgDataPropertyDefinition*)prop)
+        {
+            throw new MgInvalidCastException(L"MgLayer.PopulateIdentityProperties",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        MgLayer::IdProperty idProp;
+        idProp.type = prop->GetDataType();
+        idProp.name = prop->GetName();
+        m_idProps.push_back(idProp);
+    }
 }

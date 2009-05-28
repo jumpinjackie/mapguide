@@ -258,8 +258,9 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
         {
             MapLayer* layer = (MapLayer*)layers->GetAt(i);
             //create a runtime layer from this layer and add it to the layer collection
+            //pull identity properties as a batch process after the layers are created
             Ptr<MgResourceIdentifier> layerDefId = new MgResourceIdentifier(layer->GetLayerResourceID());
-            Ptr<MgLayerBase> rtLayer = new MgLayer(layerDefId, m_resourceService);
+            Ptr<MgLayerBase> rtLayer = new MgLayer(layerDefId, m_resourceService, false);
             rtLayer->SetName(layer->GetName());
             rtLayer->SetVisible(layer->IsVisible());
             rtLayer->SetLayerType(MgLayerType::Dynamic);
@@ -285,6 +286,21 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
                 rtLayer->SetGroup(itKg->second);
             }
         }
+
+        Ptr<MgSiteConnection> siteConn;
+        if (m_siteConnection.p != NULL)
+        {
+            siteConn = SAFE_ADDREF((MgSiteConnection*)m_siteConnection);
+        }
+        else
+        {
+            Ptr<MgUserInformation> userInfo = m_resourceService->GetUserInfo();
+            siteConn = new MgSiteConnection();
+            siteConn->Open(userInfo);
+        }
+        Ptr<MgFeatureService> featureService = dynamic_cast<MgFeatureService*>(siteConn->CreateService(MgServiceType::FeatureService));
+
+        BulkLoadIdentityProperties(featureService);
     }
 
     //done with this list
@@ -982,4 +998,62 @@ void MgMap::OnLayerParentChanged(MgLayerBase* layer, CREFSTRING parentId)
     layer->ForceRefresh();
 
     MgMapBase::OnLayerParentChanged(layer, parentId);
+}
+
+void MgMap::BulkLoadIdentityProperties(MgFeatureService* featureService)
+{
+    /// Typedefs for populating identity properties into the map
+    typedef std::list<MgLayer*> LayerList;
+    typedef std::map<STRING,LayerList> LayerClassMap;
+    typedef std::map<STRING,LayerClassMap> LayerFeatureSourceMap;
+
+    LayerFeatureSourceMap fsMap;
+    std::map<STRING,STRING> fsSchema;
+
+    // Group layers by their feature source / class name
+    for(int i = 0; i < m_layers->GetCount(); i++)
+    {
+        STRING className;
+        STRING schemaName;
+        Ptr<MgLayer> layer = dynamic_cast<MgLayer*>(m_layers->GetItem(i));
+        STRING featureSource = layer->GetFeatureSourceId();
+        layer->ParseFeatureName(featureService, className, schemaName);
+        fsMap[featureSource][className].push_back(layer.p);
+        fsSchema[featureSource] = schemaName;
+    }
+  
+    for (LayerFeatureSourceMap::iterator fsIter = fsMap.begin(); fsIter != fsMap.end(); fsIter++)
+    {
+        // Assumption:  feature source is only referencing one schema
+        STRING featureSource = fsIter->first;
+        STRING schemaName = fsSchema[featureSource];
+        Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(featureSource);
+        LayerClassMap& classList = fsIter->second;
+        Ptr<MgStringCollection> classNames = new MgStringCollection();
+        for (LayerClassMap::iterator cIter = classList.begin(); cIter != classList.end(); cIter++)
+        {
+            classNames->Add(cIter->first);
+        }
+
+        try
+        {
+            // Ignore failures when pulling identity properties
+            Ptr<MgClassDefinitionCollection> partialDefs = featureService->GetIdentityProperties(resId, schemaName, classNames);
+            for (int i = 0; i < partialDefs->GetCount(); i++)
+            {
+                Ptr<MgClassDefinition> def = partialDefs->GetItem(i);
+                STRING className = def->GetName();
+
+                LayerList& layers = fsMap[featureSource][className];
+                for (LayerList::iterator lIter = layers.begin(); lIter != layers.end(); lIter++)
+                {
+                    (*lIter)->PopulateIdentityProperties(def);
+                }
+            }
+        }
+        catch (MgException* e)
+        {
+            e->Release();
+        }
+    }
 }

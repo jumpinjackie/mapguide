@@ -578,6 +578,12 @@ INTERNAL_API:
     ///
     virtual void OnLayerParentChanged(MgLayerBase* layer, CREFSTRING parentId);
 
+    //////////////////////////////////////////////////////////////////
+    /// Bulk load identity properties
+    ///
+    ///
+    void BulkLoadIdentityProperties(MgFeatureService* featureService);
+
 protected:
 
     //////////////////////////////////////////////////////////////////

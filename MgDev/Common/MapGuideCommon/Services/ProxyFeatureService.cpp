@@ -1221,9 +1221,9 @@ void MgProxyFeatureService::CreateFeatureSource(MgResourceIdentifier* resource, 
 //////////////////////////////////////////////////////////////////
 // Returns the collection of identity properties for the specified class.
 // If schemaName is empty, then className needs to be fully qualified.
-MgPropertyDefinitionCollection* MgProxyFeatureService::GetIdentityProperties(MgResourceIdentifier* resource,
+MgClassDefinitionCollection* MgProxyFeatureService::GetIdentityProperties(MgResourceIdentifier* resource,
                                                                              CREFSTRING schemaName,
-                                                                             CREFSTRING className)
+                                                                             MgStringCollection* classNames)
 {
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                  // Connection
@@ -1231,15 +1231,15 @@ MgPropertyDefinitionCollection* MgProxyFeatureService::GetIdentityProperties(MgR
                        MgFeatureServiceOpId::GetIdentityProperties_Id,  // Command Code
                        3,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       BUILD_VERSION(1,0,0),                        // Operation version
+                       BUILD_VERSION(2,1,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knString, &schemaName,            // Argument#2
-                       MgCommand::knString, &className,             // Argument#3
+                       MgCommand::knObject, classNames,             // Argument#3
                        MgCommand::knNone);                          // End of argument
 
     SetWarning(cmd.GetWarningObject());
 
-    return (MgPropertyDefinitionCollection*)cmd.GetReturnValue().val.m_obj;
+    return (MgClassDefinitionCollection*)cmd.GetReturnValue().val.m_obj;
 }
 
 MgByteReader* MgProxyFeatureService::EnumerateDataStores(CREFSTRING providerName,
