@@ -231,7 +231,7 @@ void MgCurveString::Deserialize(MgStream* stream)
 
     for(INT32 i = 0; i < numElements; i++)
     {
-        MgCurveSegment* segment = MgGeometryUtil::ReadCurveSegment(stream, startCoord, coordinateDimension);
+        Ptr<MgCurveSegment> segment = MgGeometryUtil::ReadCurveSegment(stream, startCoord, coordinateDimension);
         m_segments->Add(segment);
         startCoord = segment->GetEndCoordinate();
     }
