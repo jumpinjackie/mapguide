@@ -1,0 +1,633 @@
+Index: Common/PlatformBase/MapLayer/SelectionBase.cpp
+===================================================================
+--- Common/PlatformBase/MapLayer/SelectionBase.cpp	(revision 1947)
++++ Common/PlatformBase/MapLayer/SelectionBase.cpp	(working copy)
+@@ -81,7 +81,22 @@
+     delete this;
+ }
+ 
++INT32 MgSelectionBase::GetSelectedFeaturesCount(MgLayerBase* layer, CREFSTRING featureClass)
++{
++    SelectionList* selection = GetSelections(layer, featureClass);
++    return (int)selection->size();
++}
+ 
++MgFeatureReader* MgSelectionBase::GetSelectedFeatures(MgLayerBase* layer, CREFSTRING className, bool mappedOnly)
++{
++    throw new MgNotImplementedException(L"MgSelectionBase.GetSelectedFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
++}
++
++MgFeatureReader* MgSelectionBase::GetSelectedFeatures(MgLayerBase* layer, CREFSTRING className, MgStringCollection* propertyNames)
++{
++    throw new MgNotImplementedException(L"MgSelectionBase.GetSelectedFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
++}
++
+ // Read selection from XML document.  Previous selection is cleared.
+ void MgSelectionBase::FromXml(CREFSTRING xmlSelectionString)
+ {
+Index: Common/PlatformBase/MapLayer/SelectionBase.h
+===================================================================
+--- Common/PlatformBase/MapLayer/SelectionBase.h	(revision 1947)
++++ Common/PlatformBase/MapLayer/SelectionBase.h	(working copy)
+@@ -66,6 +66,83 @@
+     ///
+     MgSelectionBase(MgMapBase* map, CREFSTRING xmlSelectionString);
+ 
++    /// \brief 
++    /// Returns the number of selected features. 
++    ///
++    /// <!-- Syntax in .Net, Java, and PHP -->
++    /// \htmlinclude DotNetSyntaxTop.html
++    /// int GetSelectedFeaturesCount(MgLayerBase layer, string className);
++    /// \htmlinclude SyntaxBottom.html
++    /// \htmlinclude JavaSyntaxTop.html
++    /// int GetSelectedFeaturesCount(MgLayerBase layer, String className);
++    /// \htmlinclude SyntaxBottom.html
++    /// \htmlinclude PHPSyntaxTop.html
++    /// int GetSelectedFeaturesCount(MgLayerBase layer, string className);
++    /// \htmlinclude SyntaxBottom.html
++    ///
++    /// \param layer (MgLayerBase)
++    /// Input layer. 
++    /// \param className (String/string) 
++    /// Input feature class name. 
++    ///
++    /// \return
++    /// Returns Count of all selected features.
++    ///
++    INT32 GetSelectedFeaturesCount(MgLayerBase* layer, CREFSTRING className); 
++
++    /// \brief 
++    /// Returns the selected feature data for the specified feature class.
++    ///
++    /// <!-- Syntax in .Net, Java, and PHP -->
++    /// \htmlinclude DotNetSyntaxTop.html
++    /// MgFeatureReader GetSelectedFeatures(MgLayerBase layer, string className, bool mappedOnly);
++    /// \htmlinclude SyntaxBottom.html
++    /// \htmlinclude JavaSyntaxTop.html
++    /// MgFeatureReader GetSelectedFeatures(MgLayerBase layer, String className, boolean mappedOnly);
++    /// \htmlinclude SyntaxBottom.html
++    /// \htmlinclude PHPSyntaxTop.html
++    /// MgFeatureReader GetSelectedFeatures(MgLayerBase layer, string className, bool mappedOnly);
++    /// \htmlinclude SyntaxBottom.html
++    ///
++    /// \param layer (MgLayerBase)
++    /// Input layer. 
++    /// \param className (String/string) 
++    /// Input feature class name. 
++    /// \param mappedOnly (boolean/bool)
++    /// Return mapped (true) or all (false) properties for selected features
++    ///
++    /// \return
++    /// Returns a feature reader containing all the features for the given 
++    /// feature class in this selection.
++    ///
++    virtual MgFeatureReader* GetSelectedFeatures(MgLayerBase* layer, CREFSTRING className, bool mappedOnly);
++
++    /// Returns the selected feature data for the specified feature class.
++    ///
++    /// <!-- Syntax in .Net, Java, and PHP -->
++    /// \htmlinclude DotNetSyntaxTop.html
++    /// MgFeatureReader GetSelectedFeatures(MgLayerBase layer, string className, MgStringCollection propertyNames);
++    /// \htmlinclude SyntaxBottom.html
++    /// \htmlinclude JavaSyntaxTop.html
++    /// MgFeatureReader GetSelectedFeatures(MgLayerBase layer, String className, MgStringCollection propertyNames);
++    /// \htmlinclude SyntaxBottom.html
++    /// \htmlinclude PHPSyntaxTop.html
++    /// MgFeatureReader GetSelectedFeatures(MgLayerBase layer, string className, MgStringCollection propertyNames);
++    /// \htmlinclude SyntaxBottom.html
++    ///
++    /// \param layer (MgLayerBase)
++    /// Input layer. 
++    /// \param className (String/string) 
++    /// Input feature class name. 
++    /// \param propertyNames (MgStringCollection)
++    /// Properties to return for selected features.
++    ///
++    /// \return
++    /// Returns a feature reader containing all the features for the given 
++    /// feature class in this selection.
++    ///
++    virtual MgFeatureReader* GetSelectedFeatures(MgLayerBase* layer, CREFSTRING className, MgStringCollection* propertyNames);
++
+     /////////////////////////////////////////////////////////////////
+     /// \brief
+     /// Read selection from XML document.  Previous selection is cleared.
+Index: Server/src/UnitTesting/Makefile.am
+===================================================================
+--- Server/src/UnitTesting/Makefile.am	(revision 1947)
++++ Server/src/UnitTesting/Makefile.am	(working copy)
+@@ -11,6 +11,7 @@
+   -I../../../Common/Foundation \
+   -I../../../Common/Geometry \
+   -I../../../Common/PlatformBase \
++  -I../../../Common/PlatformUtil \
+   -I../../../Common/MapGuideCommon \
+   -I../../../Common/MdfModel \
+   -I../../../Common/MdfParser \
+@@ -30,6 +31,7 @@
+ 
+ libMgUnitTesting_la_SOURCES = \
+   TestCoordinateSystem.cpp \
++  TestConfigDocument.cpp \
+   TestFeatureService.cpp \
+   TestGeometry.cpp\
+   TestKmlService.cpp \
+@@ -45,11 +47,13 @@
+   TestSiteManager.cpp \
+   TestSiteService.cpp \
+   TestTileService.cpp \
++  TestSelection.cpp \
+   UnitTesting.cpp
+ 
+ noinst_HEADERS = \
+   CppUnitExtensions.h \
+   TestCoordinateSystem.h \
++  TestConfigDocument.h \
+   TestFeatureService.h \
+   TestGeometry.h \
+   TestKmlService.h \
+@@ -65,6 +69,7 @@
+   TestSiteManager.h \
+   TestSiteService.h \
+   TestTileService.h \
++  TestSelection.h \
+   UnitTesting.h
+ 
+ libMgUnitTesting_la_LIBADD = -lcppunit
+Index: Server/src/UnitTesting/TestSelection.cpp
+===================================================================
+--- Server/src/UnitTesting/TestSelection.cpp	(revision 0)
++++ Server/src/UnitTesting/TestSelection.cpp	(revision 0)
+@@ -0,0 +1,332 @@
++//
++//  Copyright (C) 2004-2007 by Autodesk, Inc.
++//
++//  This library is free software; you can redistribute it and/or
++//  modify it under the terms of version 2.1 of the GNU Lesser
++//  General Public License as published by the Free Software Foundation.
++//
++//  This library is distributed in the hope that it will be useful,
++//  but WITHOUT ANY WARRANTY; without even the implied warranty of
++//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++//  Lesser General Public License for more details.
++//
++//  You should have received a copy of the GNU Lesser General Public
++//  License along with this library; if not, write to the Free Software
++//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++//
++
++#include "MapGuideCommon.h"
++#include "TestSelection.h"
++#include "ServiceManager.h"
++#include "ServerResourceService.h"
++#include "ServerMappingService.h"
++#include "ServerSiteService.h"
++#include "../Common/Manager/FdoConnectionManager.h"
++#include "CppUnitExtensions.h"
++
++
++const STRING TEST_LOCALE = L"en";
++
++CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestSelection, "TestSelection");
++
++
++TestSelection::TestSelection()
++{
++    // Initialize service objects.
++    MgServiceManager* serviceManager = MgServiceManager::GetInstance();
++
++    m_svcResource = dynamic_cast<MgResourceService*>(
++        serviceManager->RequestService(MgServiceType::ResourceService));
++    assert(m_svcResource != NULL);
++
++    m_svcMapping = dynamic_cast<MgMappingService*>(
++        serviceManager->RequestService(MgServiceType::MappingService));
++    assert(m_svcMapping != NULL);
++
++    // Initialize a site connection.
++    Ptr<MgServerSiteService> svcSite = dynamic_cast<MgServerSiteService*>(
++        serviceManager->RequestService(MgServiceType::SiteService));
++    assert(svcSite != NULL);
++
++    Ptr<MgUserInformation> userInfo = new MgUserInformation(
++        L"Administrator", L"admin");
++    userInfo->SetLocale(TEST_LOCALE);
++    MgUserInformation::SetCurrentUserInfo(userInfo);
++
++    STRING session = svcSite->CreateSession();
++    assert(!session.empty());
++    userInfo->SetMgSessionId(session);
++
++    m_siteConnection = new MgSiteConnection();
++    m_siteConnection->Open(userInfo);
++}
++
++
++TestSelection::~TestSelection()
++{
++}
++
++
++void TestSelection::setUp()
++{
++}
++
++
++void TestSelection::tearDown()
++{
++}
++
++
++void TestSelection::TestStart()
++{
++    ACE_DEBUG((LM_INFO, ACE_TEXT("\nRunning Selection tests.\n")));
++
++    try
++    {
++        #ifdef _DEBUG
++        MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
++        if(pFdoConnectionManager)
++        {
++            pFdoConnectionManager->ShowCache();
++        }
++        #endif
++
++        //set user info
++        Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
++        userInfo->SetLocale(TEST_LOCALE);
++        MgUserInformation::SetCurrentUserInfo(userInfo);
++
++        //publish the map definition
++        Ptr<MgResourceIdentifier> mapres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
++        Ptr<MgByteSource> mdfsrc = new MgByteSource(L"../UnitTestFiles/UT_Sheboygan.mdf", false);
++        Ptr<MgByteReader> mdfrdr = mdfsrc->GetReader();
++        m_svcResource->SetResource(mapres, mdfrdr, NULL);
++
++        //publish the layer definitions
++        Ptr<MgResourceIdentifier> ldfres1 = new MgResourceIdentifier(L"Library://UnitTests/Layers/HydrographicPolygons.LayerDefinition");
++        Ptr<MgByteSource> ldfsrc1 = new MgByteSource(L"../UnitTestFiles/UT_HydrographicPolygons.ldf", false);
++        Ptr<MgByteReader> ldfrdr1 = ldfsrc1->GetReader();
++        m_svcResource->SetResource(ldfres1, ldfrdr1, NULL);
++
++        Ptr<MgResourceIdentifier> ldfres2 = new MgResourceIdentifier(L"Library://UnitTests/Layers/Parcels.LayerDefinition");
++        Ptr<MgByteSource> ldfsrc2 = new MgByteSource(L"../UnitTestFiles/UT_Parcels.ldf", false);
++        Ptr<MgByteReader> ldfrdr2 = ldfsrc2->GetReader();
++        m_svcResource->SetResource(ldfres2, ldfrdr2, NULL);
++
++        Ptr<MgResourceIdentifier> ldfres3 = new MgResourceIdentifier(L"Library://UnitTests/Layers/Rail.LayerDefinition");
++        Ptr<MgByteSource> ldfsrc3 = new MgByteSource(L"../UnitTestFiles/UT_Rail.ldf", false);
++        Ptr<MgByteReader> ldfrdr3 = ldfsrc3->GetReader();
++        m_svcResource->SetResource(ldfres3, ldfrdr3, NULL);
++
++        //publish the feature sources
++        Ptr<MgResourceIdentifier> fsres1 = new MgResourceIdentifier(L"Library://UnitTests/Data/HydrographicPolygons.FeatureSource");
++        Ptr<MgByteSource> fssrc1 = new MgByteSource(L"../UnitTestFiles/UT_HydrographicPolygons.fs", false);
++        Ptr<MgByteReader> fsrdr1 = fssrc1->GetReader();
++        m_svcResource->SetResource(fsres1, fsrdr1, NULL);
++
++        Ptr<MgResourceIdentifier> fsres2 = new MgResourceIdentifier(L"Library://UnitTests/Data/Parcels.FeatureSource");
++        Ptr<MgByteSource> fssrc2 = new MgByteSource(L"../UnitTestFiles/UT_Parcels.fs", false);
++        Ptr<MgByteReader> fsrdr2 = fssrc2->GetReader();
++        m_svcResource->SetResource(fsres2, fsrdr2, NULL);
++
++        Ptr<MgResourceIdentifier> fsres3 = new MgResourceIdentifier(L"Library://UnitTests/Data/Rail.FeatureSource");
++        Ptr<MgByteSource> fssrc3 = new MgByteSource(L"../UnitTestFiles/UT_Rail.fs", false);
++        Ptr<MgByteReader> fsrdr3 = fssrc3->GetReader();
++        m_svcResource->SetResource(fsres3, fsrdr3, NULL);
++
++        // publish the resource data
++        Ptr<MgByteSource> dataSource1 = new MgByteSource(L"../UnitTestFiles/UT_HydrographicPolygons.sdf", false);
++        Ptr<MgByteReader> dataReader1 = dataSource1->GetReader();
++        m_svcResource->SetResourceData(fsres1, L"UT_HydrographicPolygons.sdf", L"File", dataReader1);
++
++        Ptr<MgByteSource> dataSource2 = new MgByteSource(L"../UnitTestFiles/UT_Parcels.sdf", false);
++        Ptr<MgByteReader> dataReader2 = dataSource2->GetReader();
++        m_svcResource->SetResourceData(fsres2, L"UT_Parcels.sdf", L"File", dataReader2);
++
++        Ptr<MgByteSource> dataSource3 = new MgByteSource(L"../UnitTestFiles/UT_Rail.sdf", false);
++        Ptr<MgByteReader> dataReader3 = dataSource3->GetReader();
++        m_svcResource->SetResourceData(fsres3, L"UT_Rail.sdf", L"File", dataReader3);
++
++        // publish the print layouts
++        Ptr<MgResourceIdentifier> plres1 = new MgResourceIdentifier(L"Library://UnitTests/PrintLayouts/AllElements.PrintLayout");
++        Ptr<MgByteSource> plsrc1 = new MgByteSource(L"../UnitTestFiles/UT_AllElements.pl", false);
++        Ptr<MgByteReader> plrdr1 = plsrc1->GetReader();
++        m_svcResource->SetResource(plres1, plrdr1, NULL);
++
++        Ptr<MgResourceIdentifier> plres2 = new MgResourceIdentifier(L"Library://UnitTests/PrintLayouts/NoLegend.PrintLayout");
++        Ptr<MgByteSource> plsrc2 = new MgByteSource(L"../UnitTestFiles/UT_NoLegend.pl", false);
++        Ptr<MgByteReader> plrdr2 = plsrc2->GetReader();
++        m_svcResource->SetResource(plres2, plrdr2, NULL);
++
++        // publish the symbol library
++        Ptr<MgResourceIdentifier> slres1 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/SymbolMart.SymbolLibrary");
++        Ptr<MgByteSource> slsrc1 = new MgByteSource(L"../UnitTestFiles/UT_SymbolMart.sl", false);
++        Ptr<MgByteReader> slrdr1 = slsrc1->GetReader();
++        m_svcResource->SetResource(slres1, slrdr1, NULL);
++        Ptr<MgByteSource> datasrc = new MgByteSource(L"../UnitTestFiles/UT_Symbols.dwf", false);
++        Ptr<MgByteReader> datardr = datasrc->GetReader();
++        m_svcResource->SetResourceData(slres1, L"symbols.dwf", L"File", datardr);
++    }
++    catch(MgException* e)
++    {
++        STRING message = e->GetDetails(TEST_LOCALE);
++        SAFE_RELEASE(e);
++        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
++    }
++}
++
++
++void TestSelection::TestEnd()
++{
++    try
++    {
++        //set user info
++        Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
++        userInfo->SetLocale(TEST_LOCALE);
++        MgUserInformation::SetCurrentUserInfo(userInfo);
++
++        //delete the map definition
++        Ptr<MgResourceIdentifier> mapres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
++        m_svcResource->DeleteResource(mapres);
++
++        //delete the layer definitions
++        Ptr<MgResourceIdentifier> ldfres1 = new MgResourceIdentifier(L"Library://UnitTests/Layers/HydrographicPolygons.LayerDefinition");
++        m_svcResource->DeleteResource(ldfres1);
++
++        Ptr<MgResourceIdentifier> ldfres2 = new MgResourceIdentifier(L"Library://UnitTests/Layers/Parcels.LayerDefinition");
++        m_svcResource->DeleteResource(ldfres2);
++
++        Ptr<MgResourceIdentifier> ldfres3 = new MgResourceIdentifier(L"Library://UnitTests/Layers/Rail.LayerDefinition");
++        m_svcResource->DeleteResource(ldfres3);
++
++        //delete the feature sources
++        Ptr<MgResourceIdentifier> fsres1 = new MgResourceIdentifier(L"Library://UnitTests/Data/HydrographicPolygons.FeatureSource");
++        m_svcResource->DeleteResource(fsres1);
++
++        Ptr<MgResourceIdentifier> fsres2 = new MgResourceIdentifier(L"Library://UnitTests/Data/Parcels.FeatureSource");
++        m_svcResource->DeleteResource(fsres2);
++
++        Ptr<MgResourceIdentifier> fsres3 = new MgResourceIdentifier(L"Library://UnitTests/Data/Rail.FeatureSource");
++        m_svcResource->DeleteResource(fsres3);
++
++        // delete the print layouts
++        Ptr<MgResourceIdentifier> plres1 = new MgResourceIdentifier(L"Library://UnitTests/PrintLayouts/AllElements.PrintLayout");
++        m_svcResource->DeleteResource(plres1);
++
++        Ptr<MgResourceIdentifier> plres2 = new MgResourceIdentifier(L"Library://UnitTests/PrintLayouts/NoLegend.PrintLayout");
++        m_svcResource->DeleteResource(plres2);
++
++        // delete the symbol library
++        Ptr<MgResourceIdentifier> slres1 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/SymbolMart.SymbolLibrary");
++        m_svcResource->DeleteResource(slres1);
++
++        #ifdef _DEBUG
++        MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
++        if(pFdoConnectionManager)
++        {
++            pFdoConnectionManager->ShowCache();
++        }
++        #endif
++    }
++    catch (MgException* e)
++    {
++        STRING message = e->GetDetails(TEST_LOCALE);
++        SAFE_RELEASE(e);
++        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
++    }
++    catch (...)
++    {
++        throw;
++    }
++
++    ACE_DEBUG((LM_INFO, ACE_TEXT("\nFeature Service tests completed.\n\n")));
++}
++
++
++///----------------------------------------------------------------------------
++/// Test Case Description:
++///
++/// This test case gets the selected features.
++///----------------------------------------------------------------------------
++void TestSelection::TestCase_GetSelectedFeatures()
++{
++    try
++    {
++        //make a runtime map
++        Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
++        Ptr<MgMap> map = new MgMap(m_siteConnection);
++        map->Create(mdfres, L"UnitTestSheboygan");
++        Ptr<MgDwfVersion> version = new MgDwfVersion();
++        Ptr<MgByteReader> emapupdate = m_svcMapping->GenerateMapUpdate(map, 42, version);
++
++        Ptr<MgSelectionBase> selection = new MgSelection(map);
++
++        CREFSTRING layerName = L"Parcels";
++        CREFSTRING className = L"SHP_Schema:Parcels";
++        CREFSTRING idProp = L"Autogenerated_SDF_ID";
++        //ID,URL,NAME
++        MgLayerBase* layer = NULL;
++
++        Ptr<MgLayerCollection> layers = map->GetLayers();
++        assert(layers->GetCount() > 0);
++        for (INT32 i = 0; i < layers->GetCount(); i ++)
++        {
++            layer = layers->GetItem(i);
++            if (layer->GetName() == layerName)
++                break;
++        }
++
++        assert(layer != NULL);
++        
++        // Test GetSelectedFeaturesCount(MgLayerBase* layer, CREFSTRING featureClass)
++        selection->Add(layerName, className, idProp);
++        CPPUNIT_ASSERT(selection->GetSelectedFeaturesCount(layer, className) == 1);
++
++        // GetSelectedFeatures(MgLayerBase* layer, CREFSTRING className, bool mappedOnly)
++        // with true mappedOnly value
++        Ptr<MgFeatureReader> mappedReader = selection->GetSelectedFeatures(layer, className, true);
++        assert(mappedReader);
++        bool bResult = mappedReader->ReadNext();
++        CPPUNIT_ASSERT(bResult);
++
++        Ptr<MgClassDefinition> mappedClassDef = mappedReader->GetClassDefinition();
++        CPPUNIT_ASSERT(10 == mappedClassDef->GetProperties()->GetCount());
++
++        // GetSelectedFeatures(MgLayerBase* layer, CREFSTRING className, bool mappedOnly)
++        // with false mappedOnly value
++        Ptr<MgFeatureReader> nonMappedReader = selection->GetSelectedFeatures(layer, className, false);
++        assert(nonMappedReader);
++        bResult = nonMappedReader->ReadNext();
++        CPPUNIT_ASSERT(bResult);
++
++        Ptr<MgClassDefinition> nonMappedClassDef = nonMappedReader->GetClassDefinition();
++        CPPUNIT_ASSERT(38 == nonMappedClassDef->GetProperties()->GetCount());
++
++        // Test GetSelectedFeatures(MgLayerBase* layer, CREFSTRING className, MgStringCollection* propertyNames)
++        Ptr<MgStringCollection> propertyNames = new MgStringCollection();
++        propertyNames->Add(L"RTYPE");
++        propertyNames->Add(L"RLDESCR1");
++        Ptr<MgFeatureReader> propertyReader = selection->GetSelectedFeatures(layer, className, propertyNames);
++        assert(propertyReader);
++        bResult = propertyReader->ReadNext();
++        CPPUNIT_ASSERT(bResult);
++
++        Ptr<MgClassDefinition> propertyClassDef = propertyReader->GetClassDefinition();
++        CPPUNIT_ASSERT(2 == propertyClassDef->GetProperties()->GetCount());
++    }
++    catch(MgException* e)
++    {
++        STRING message = e->GetDetails(TEST_LOCALE);
++        SAFE_RELEASE(e);
++        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
++    }
++    catch(FdoException* e)
++    {
++        FDO_SAFE_RELEASE(e);
++        CPPUNIT_FAIL("FdoException occured");
++    }
++    catch(...)
++    {
++        throw;
++    }
++}
+Index: Server/src/UnitTesting/TestSelection.h
+===================================================================
+--- Server/src/UnitTesting/TestSelection.h	(revision 0)
++++ Server/src/UnitTesting/TestSelection.h	(revision 0)
+@@ -0,0 +1,50 @@
++//
++//  Copyright (C) 2004-2007 by Autodesk, Inc.
++//
++//  This library is free software; you can redistribute it and/or
++//  modify it under the terms of version 2.1 of the GNU Lesser
++//  General Public License as published by the Free Software Foundation.
++//
++//  This library is distributed in the hope that it will be useful,
++//  but WITHOUT ANY WARRANTY; without even the implied warranty of
++//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++//  Lesser General Public License for more details.
++//
++//  You should have received a copy of the GNU Lesser General Public
++//  License along with this library; if not, write to the Free Software
++//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++//
++
++#ifndef _TESTSELECTION_H
++#define _TESTSELECTION_H
++
++#include <cppunit/extensions/HelperMacros.h>
++
++class TestSelection : public CppUnit::TestFixture
++{
++    CPPUNIT_TEST_SUITE(TestSelection);
++    CPPUNIT_TEST(TestStart); // This must be the very first unit test
++
++    CPPUNIT_TEST(TestCase_GetSelectedFeatures);
++
++    CPPUNIT_TEST(TestEnd); // This must be the very last unit test
++    CPPUNIT_TEST_SUITE_END();
++
++public:
++    TestSelection();
++    ~TestSelection();
++
++    void setUp();
++    void tearDown();
++    void TestStart();
++    void TestEnd();
++
++    void TestCase_GetSelectedFeatures();
++
++private:
++    Ptr<MgSiteConnection> m_siteConnection;
++    Ptr<MgResourceService> m_svcResource;
++    Ptr<MgMappingService> m_svcMapping;
++};
++
++#endif // _TESTSELECTION_H
+Index: Server/src/UnitTesting/UnitTesting.cpp
+===================================================================
+--- Server/src/UnitTesting/UnitTesting.cpp	(revision 1947)
++++ Server/src/UnitTesting/UnitTesting.cpp	(working copy)
+@@ -51,12 +51,13 @@
+             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMappingService").makeTest());
+             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestRenderingService").makeTest());
+             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestResourceService").makeTest());
++            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSelection").makeTest());
+             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestTileService").makeTest());
+             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServerAdminService").makeTest());
+             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServerManager").makeTest());
+             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServiceManager").makeTest());
+             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteService").makeTest());
+-            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteManager").makeTest());
++            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteManager").makeTest());            
+         }
+         else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestListTests)) == 0)
+         {
+@@ -65,6 +66,7 @@
+ 
+             // Available tests
+             ACE_OS::printf("  All\n");
++            ACE_OS::printf("  ConfigWriter\n");
+             ACE_OS::printf("  CoordinateSystem\n");
+             ACE_OS::printf("  FeatureService\n");
+             ACE_OS::printf("  Geometry\n");
+@@ -129,6 +131,11 @@
+             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Resource Service tests. <<<<<\n\n")));
+             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestResourceService").makeTest());
+         }
++        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("Selection")) == 0)
++        {
++            ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Selection tests. <<<<<\n\n")));
++            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSelection").makeTest());
++        }
+         else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("ServerAdminService")) == 0)
+         {
+             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only ServerAdmin Service tests. <<<<<\n\n")));
+@@ -170,6 +177,7 @@
+     {
+         // Add all of the tests
+         ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running all unit tests. <<<<<\n\n")));
++        runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestConfigWriter").makeTest());
+         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestCoordinateSystem").makeTest());
+         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestFeatureService").makeTest());
+         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestGeometry").makeTest());
+Index: Server/src/UnitTesting/UnitTesting.vcproj
+===================================================================
+--- Server/src/UnitTesting/UnitTesting.vcproj	(revision 1947)
++++ Server/src/UnitTesting/UnitTesting.vcproj	(working copy)
+@@ -40,7 +40,7 @@
+ 			<Tool
+ 				Name="VCCLCompilerTool"
+ 				Optimization="0"
+-				AdditionalIncludeDirectories="..\Common;..\Common\Manager;..\Services\Feature;..\Services\Kml;..\Services\Mapping;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\CppUnit-1.9.14\include;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src;..\..\..\Oem\FDO\inc"
++				AdditionalIncludeDirectories="..\Common;..\Common\Manager;..\Services\Feature;..\Services\Kml;..\Services\Mapping;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\PlatformUtil;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\CppUnit-1.9.14\include&quot;;&quot;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\..\Oem\FDO\inc"
+ 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL"
+ 				MinimalRebuild="true"
+ 				ExceptionHandling="2"
+@@ -120,7 +120,7 @@
+ 			/>
+ 			<Tool
+ 				Name="VCCLCompilerTool"
+-				AdditionalIncludeDirectories="..\Common;..\Common\Manager;..\Services\Feature;..\Services\Kml;..\Services\Mapping;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\CppUnit-1.9.14\include;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src;..\..\..\Oem\FDO\inc"
++				AdditionalIncludeDirectories="..\Common;..\Common\Manager;..\Services\Feature;..\Services\Kml;..\Services\Mapping;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\PlatformUtil;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\CppUnit-1.9.14\include&quot;;&quot;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\..\Oem\FDO\inc"
+ 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL"
+ 				ExceptionHandling="2"
+ 				RuntimeLibrary="2"
+@@ -265,6 +265,14 @@
+ 			>
+ 		</File>
+ 		<File
++			RelativePath=".\TestSelection.cpp"
++			>
++		</File>
++		<File
++			RelativePath=".\TestSelection.h"
++			>
++		</File>
++		<File
+ 			RelativePath=".\TestServerAdminService.cpp"
+ 			>
+ 		</File>
