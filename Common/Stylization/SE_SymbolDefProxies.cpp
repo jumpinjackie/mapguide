@@ -410,8 +410,7 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* ctx)
         textDef.justify() = RS_Justify_Justify;
 
     RS_TextMetrics& tm = ret->tm;
-    if ( !ctx->fonte->GetTextMetrics(ret->content, textDef, tm, false) )
-        // Mark this RS_TextMetrics as invalid.
+    if (!ctx->fonte->GetTextMetrics(ret->content, textDef, tm, false))  // mark this RS_TextMetrics as invalid
         tm.font = NULL;
 
     SE_Matrix txf;

@@ -23,8 +23,10 @@
 #include "ExpressionHelper.h"
 #include "Foundation.h"
 
+
 extern void ProcessStylizerException(FdoException* exception, int line, wchar_t* file);
 
+//////////////////////////////////////////////////////////////////////////////
 GeometryAdapter::GeometryAdapter(LineBufferPool* lbp)
 {
     m_exec = NULL;
@@ -32,9 +34,10 @@ GeometryAdapter::GeometryAdapter(LineBufferPool* lbp)
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 GeometryAdapter::~GeometryAdapter()
 {
-    //free up cached fdo filters
+    // free up cached fdo filters
     for (std::map<const void*, FdoFilter*>::iterator iter = m_hFilterCache.begin();
         iter != m_hFilterCache.end(); iter++)
     {
@@ -44,7 +47,7 @@ GeometryAdapter::~GeometryAdapter()
 
     m_hFilterCache.clear();
 
-    //free up cached fdo expressions
+    // free up cached fdo expressions
     for (std::map<const void*, FdoExpression*>::iterator iter = m_hExpressionCache.begin();
         iter != m_hExpressionCache.end(); iter++)
     {
@@ -56,41 +59,44 @@ GeometryAdapter::~GeometryAdapter()
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 bool GeometryAdapter::EvalBoolean(const MdfModel::MdfString& exprstr, bool& res)
 {
-    //check for boolean constants first...
+    // check for boolean constants first...
     const wchar_t* sb = exprstr.c_str();
 
     if (_wcsnicmp(sb, L"true", 5) == 0)
     {
+        // value was constant, return true
         res = true;
-        return true; //value was constant, return true
+        return true;
     }
 
     if (_wcsnicmp(sb, L"false", 6) == 0)
     {
+        // value was constant, return true
         res = false;
-        return true; //value was constant, return true
+        return true;
     }
 
-    //darn, it must be an expression, so evaluate it
+    // darn, it must be an expression, so evaluate it
     if (!m_exec)
     {
-        //hmm... we can't eval as expression, what to do?
+        // hmmm... we can't eval as expression, what to do?
         _ASSERT(false);
         return false;
     }
 
     FdoExpression* expr = ObtainFdoExpression(&exprstr);
 
-    //make sure we have a parsed expression
+    // make sure we have a parsed expression
     if (!expr)
     {
         _ASSERT(false);
         return false;
     }
 
-    //and then hope evaluation succeeds
+    // and then hope evaluation succeeds
     try
     {
         FdoPtr<FdoLiteralValue> lval = m_exec->Evaluate(expr);
@@ -105,50 +111,53 @@ bool GeometryAdapter::EvalBoolean(const MdfModel::MdfString& exprstr, bool& res)
     {
     }
 
-    return false; //value was expression, so not cacheable
+    // value was expression, so not cacheable
+    return false;
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 bool GeometryAdapter::EvalDouble(const MdfModel::MdfString& exprstr, double& res)
 {
-    //TODO: needs an expression processor argument to eval expressions
+    // TODO: needs an expression processor argument to eval expressions
 
     const wchar_t* sd = exprstr.c_str();
 
     double d = 0.0;
 
-    //we will look if there is any other stuff behind any numeric data
-    //in order to detect if we are dealing with just a number or an expression
-    //for example "100 + stuff" would successfully parse a number, yet it is not
-    //just a number.
+    // We will look if there is any other stuff behind any numeric data in
+    // order to detect if we are dealing with just a number or an expression.
+    // For example "100 + stuff" would successfully parse a number, yet it
+    // is not just a number.
     wchar_t* tmp = (wchar_t*)alloca((wcslen(sd)+1)*sizeof(wchar_t));
     *tmp = L'\0';
     int status = swscanf(sd, L"%lf%s", &d, tmp);
 
     if (status == 1 || (status && !wcslen(tmp)))
     {
+        // value is constant
         res = d;
-        return true; //value is constant
+        return true;
     }
 
-    //try to evaluate as expression if it was not constant
+    // try to evaluate as expression if it was not constant
     if (!m_exec)
     {
-        //hmm... we can't eval as expression, what to do?
+        // hmmm... we can't eval as expression, what to do?
         _ASSERT(false);
         return false;
     }
 
     FdoExpression* expr = ObtainFdoExpression(&exprstr);
 
-    //make sure we have a parsed expression
+    // make sure we have a parsed expression
     if (!expr)
     {
         _ASSERT(false);
         return false;
     }
 
-    //and then hope evaluation succeeds
+    // and then hope evaluation succeeds
     try
     {
         FdoPtr<FdoLiteralValue> lval = m_exec->Evaluate(expr);
@@ -163,34 +172,35 @@ bool GeometryAdapter::EvalDouble(const MdfModel::MdfString& exprstr, double& res
     {
     }
 
-    //if we are here, the value was not constant so it is not cacheable
+    // if we are here, the value was not constant so it is not cacheable
     return false;
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 bool GeometryAdapter::EvalString(const MdfModel::MdfString& exprstr, RS_String& res)
 {
     if (!m_exec)
     {
-        //no execution engine... spit the string back out
+        // no execution engine... spit the string back out
         _ASSERT(false);
         res = exprstr;
         return false;
     }
 
-    //TODO: need a scheme to check if a string is a constant expression
-    //so that we can cache it instead of evaluating every time
+    // TODO: need a scheme to check if a string is a constant expression
+    //       so that we can cache it instead of evaluating every time
     FdoExpression* expr = ObtainFdoExpression(&exprstr);
 
     if (!expr)
     {
-        //this should not happen...
+        // this should not happen...
         res = exprstr;
         return false;
     }
 
-    //try-catch the expression evaluation -- I think we want
-    //a silent failure here...
+    // try-catch the expression evaluation - I think we want
+    // a silent failure here...
     try
     {
         FdoPtr<FdoLiteralValue> lval = m_exec->Evaluate(expr);
@@ -205,29 +215,29 @@ bool GeometryAdapter::EvalString(const MdfModel::MdfString& exprstr, RS_String& 
     {
     }
 
-    return false; //not cacheable
+    // not cacheable
+    return false;
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 bool GeometryAdapter::EvalColor(const MdfModel::MdfString& exprstr, RS_Color& rscolor)
 {
-    //TODO: needs an expression processor argument to eval expressions
+    // TODO: needs an expression processor argument to eval expressions
 
+    // string is in the form "AARRGGBB"
     const wchar_t* scolor = exprstr.c_str();
 
     size_t len = wcslen(scolor);
-    //string is in the form "AARRGGBB"
-
     unsigned int color = 0;
-
     bool isConst = false;
 
-    //try to check if the expression is constant
+    // try to check if the expression is constant
     int status = 0;
     if (len == 0)
     {
-        //error or a color was not set
-        //use transparent black which indicates "not set"
+        // error or a color was not set
+        // use transparent black which indicates "not set"
         rscolor = RS_Color(RS_Color::EMPTY_COLOR_RGBA);
         return true;
     }
@@ -239,13 +249,13 @@ bool GeometryAdapter::EvalColor(const MdfModel::MdfString& exprstr, RS_Color& rs
     {
         status = swscanf(scolor, L"%6X", &color);
 
-        //there was no alpha specified in the constant string, add it
+        // there was no alpha specified in the constant string, add it
         color |= 0xFF000000;
     }
 
     if (status != 1)
     {
-        //if not constant try to evaluate as expression
+        // if not constant try to evaluate as expression
         if (!m_exec)
         {
             _ASSERT(false);
@@ -255,7 +265,7 @@ bool GeometryAdapter::EvalColor(const MdfModel::MdfString& exprstr, RS_Color& rs
 
         FdoExpression* expr = ObtainFdoExpression(&exprstr);
 
-        //make sure we have a parsed expression
+        // make sure we have a parsed expression
         if (!expr)
         {
             _ASSERT(false);
@@ -294,6 +304,7 @@ bool GeometryAdapter::EvalColor(const MdfModel::MdfString& exprstr, RS_Color& rs
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 bool GeometryAdapter::ConvertStroke(MdfModel::Stroke* stroke, RS_LineStroke& rsstroke)
 {
     double val;
@@ -306,26 +317,29 @@ bool GeometryAdapter::ConvertStroke(MdfModel::Stroke* stroke, RS_LineStroke& rss
         rsstroke.units() = (stroke->GetSizeContext() == MdfModel::MappingUnits)? RS_Units_Model : RS_Units_Device;
         bool const2 = EvalColor(stroke->GetColor(), rsstroke.color());
 
-        return const1 && const2; //if all members are constant, the stroke is constant
+        // if all members are constant, the stroke is constant
+        return const1 && const2;
     }
     else
     {
-        //no stroke -> set transparent outline
+        // no stroke => set transparent outline
         rsstroke.color() = RS_Color(RS_Color::EMPTY_COLOR_RGBA);
         return true;
     }
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 bool GeometryAdapter::ConvertStroke(MdfModel::LineSymbolization2D* lsym, RS_LineStroke& rsstroke)
 {
     if (lsym == NULL)
-        return false; //can also return true -- this really is an error condition
+        return false; // can also return true - this really is an error condition
 
     return ConvertStroke(lsym->GetStroke(), rsstroke);
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 bool GeometryAdapter::ConvertFill(MdfModel::Fill* mdffill, RS_FillStyle& rsfill)
 {
     bool const1 = true, const2 = true;
@@ -338,7 +352,7 @@ bool GeometryAdapter::ConvertFill(MdfModel::Fill* mdffill, RS_FillStyle& rsfill)
     }
     else
     {
-        //no fill -> set transparent fill color
+        // no fill => set transparent fill color
         rsfill.color() = RS_Color(RS_Color::EMPTY_COLOR_RGBA);
         rsfill.background() = RS_Color(RS_Color::EMPTY_COLOR_RGBA);
     }
@@ -347,10 +361,11 @@ bool GeometryAdapter::ConvertFill(MdfModel::Fill* mdffill, RS_FillStyle& rsfill)
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 bool GeometryAdapter::ConvertFill(MdfModel::AreaSymbolization2D* fill, RS_FillStyle& rsfill)
 {
     if (fill == NULL)
-        return false;//can also return true -- this really is an error condition
+        return false; // can also return true - this really is an error condition
 
     MdfModel::Fill* mdffill = fill->GetFill();
 
@@ -361,10 +376,10 @@ bool GeometryAdapter::ConvertFill(MdfModel::AreaSymbolization2D* fill, RS_FillSt
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 bool GeometryAdapter::ConvertTextHAlign(const MdfModel::MdfString& halign, RS_HAlignment& rshalign)
 {
-    //first check if the expression is a constant.
-    //In that case it can be cached
+    // first check if the expression is a constant - in that case it can be cached
     if (halign == L"'Center'")
     {
         rshalign = RS_HAlignment_Center;
@@ -386,8 +401,8 @@ bool GeometryAdapter::ConvertTextHAlign(const MdfModel::MdfString& halign, RS_HA
         return true;
     }
 
-    //otherwise we need to evaluate as expression
-    //if it expression, the value will come back without quotes
+    // Otherwise we need to evaluate as expression.  If it is an expression,
+    // the value will come back without quotes.
     RS_String str;
     /*bool dummy =*/ EvalString(halign, str);
 
@@ -413,10 +428,10 @@ bool GeometryAdapter::ConvertTextHAlign(const MdfModel::MdfString& halign, RS_HA
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 bool GeometryAdapter::ConvertTextVAlign(const MdfModel::MdfString& valign, RS_VAlignment& rsvalign)
 {
-    //first check if the expression is a constant.
-    //In that case it can be cached
+    // first check if the expression is a constant - in that case it can be cached
     if (valign == L"'Bottom'")
     {
         rsvalign = RS_VAlignment_Descent;
@@ -443,8 +458,8 @@ bool GeometryAdapter::ConvertTextVAlign(const MdfModel::MdfString& valign, RS_VA
         return true;
     }
 
-    //otherwise we need to evaluate as expression
-    //if it expression, the value will come back without quotes
+    // Otherwise we need to evaluate as expression.  If it is an expression,
+    // the value will come back without quotes.
     RS_String str;
     /*bool dummy =*/ EvalString(valign, str);
 
@@ -474,6 +489,7 @@ bool GeometryAdapter::ConvertTextVAlign(const MdfModel::MdfString& valign, RS_VA
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 bool GeometryAdapter::ConvertSymbol(MdfModel::Symbol* symbol, RS_MarkerDef& mdef)
 {
     SymbolVisitor::eSymbolType type = SymbolVisitor::DetermineSymbolType(symbol);
@@ -600,6 +616,7 @@ bool GeometryAdapter::ConvertSymbol(MdfModel::Symbol* symbol, RS_MarkerDef& mdef
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 bool GeometryAdapter::ConvertTextDef(MdfModel::TextSymbol* text, RS_TextDef& tdef)
 {
     // foreground color
@@ -662,6 +679,7 @@ bool GeometryAdapter::ConvertTextDef(MdfModel::TextSymbol* text, RS_TextDef& tde
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void GeometryAdapter::Stylize(Renderer*                   /*renderer*/,
                               RS_FeatureReader*           /*features*/,
                               bool                        /*initialPass*/,
@@ -676,6 +694,7 @@ void GeometryAdapter::Stylize(Renderer*                   /*renderer*/,
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void GeometryAdapter::AddLabel(double x, double y,
                                double slope_rad, bool useSlope,
                                MdfModel::Label* label,
@@ -685,51 +704,49 @@ void GeometryAdapter::AddLabel(double x, double y,
 {
     MdfModel::TextSymbol* text = label->GetSymbol();
 
-    RS_TextDef def;
-    ConvertTextDef(text, def);
-
-    if (useSlope)
-        def.rotation() = slope_rad * M_180PI;
-
     RS_String txt;
     EvalString(text->GetText(), txt);
 
     if (!txt.empty())
     {
+        RS_TextDef def;
+        ConvertTextDef(text, def);
+
+        if (useSlope)
+            def.rotation() = slope_rad * M_180PI;
+
         RS_LabelInfo info(x, y, 0.0, 0.0, RS_Units_Model, def);
         renderer->ProcessLabelGroup(&info, 1, txt, type, exclude, lb, text->GetScaleLimit());
     }
 }
 
 
-//---------------------------------------------------------------
-//parses and caches an FDO filter from a pointer to an MDF string.
-//Once cached, the filter will be reused next time the same expression
-//is asked for
-//Also executes the filter and returns failure or success
+//////////////////////////////////////////////////////////////////////////////
+// Parses and caches an FDO filter from a pointer to an MDF string.
+// Once cached, the filter will be reused next time the same expression
+// is asked for.  Also executes the filter and returns failure or success.
 bool GeometryAdapter::ExecFdoFilter(const MdfModel::MdfString* pExprstr)
 {
-    //BOGUS:
-    //TODO: we use pointer to the MDF strings for caching --
-    //this may be risky but all caching in the stylizer is
-    //based on the MDF pointer staying the same throughout the
-    //stylization process
+    // TODO: we use pointers to the MDF strings for caching -
+    //       this may be risky but all caching in the stylizer is
+    //       based on the MDF pointer staying the same throughout the
+    //       stylization process
 
-    //empty expression -- no filter
-    //pass trivially
+    // empty expression - no filter
+    // pass trivially
     if (pExprstr->empty())
         return true;
 
-    //get from cache
+    // get from cache
     FdoFilter* filter = m_hFilterCache[pExprstr];
 
-    //if in cache, return existing
-    //NOTE: do not addref, it is not needed
+    // if in cache, return existing
+    // NOTE: do not addref, it is not needed
     if (!filter)
     {
         try
         {
-            //otherwise parse and cache it
+            // otherwise parse and cache it
             filter = FdoFilter::Parse(pExprstr->c_str());
             m_hFilterCache[pExprstr] = filter;
         }
@@ -740,12 +757,12 @@ bool GeometryAdapter::ExecFdoFilter(const MdfModel::MdfString* pExprstr)
         }
     }
 
-    //no filter means pass in this case
+    // no filter means pass in this case
     if (!filter)
         return true;
 
-    //m_exec should be set in the Stylize call
-    //of the inheriting geometry adapter
+    // m_exec should be set in the Stylize call
+    // of the inheriting geometry adapter
     _ASSERT(m_exec);
 
     bool res = false;
@@ -762,33 +779,32 @@ bool GeometryAdapter::ExecFdoFilter(const MdfModel::MdfString* pExprstr)
 }
 
 
-//---------------------------------------------------------------
-//parses and caches an FDO filter from a pointer to an MDF string.
-//Once cached, the filter will be reused next time the same expression
-//is asked for
+//////////////////////////////////////////////////////////////////////////////
+// parses and caches an FDO filter from a pointer to an MDF string.
+// Once cached, the filter will be reused next time the same expression
+// is asked for.
 FdoExpression* GeometryAdapter::ObtainFdoExpression(const MdfModel::MdfString* pExprstr)
 {
-    //BOGUS:
-    //TODO: we use pointer to the MDF strings for caching --
-    //this may be risky but all caching in the stylizer is
-    //based on the MDF pointer staying the same throughout the
-    //stylization process
+    // TODO: we use pointers to the MDF strings for caching -
+    //       this may be risky but all caching in the stylizer is
+    //       based on the MDF pointer staying the same throughout the
+    //       stylization process
 
-    //empty expression -- no filter
+    // empty expression - no filter
     if (pExprstr->empty())
         return NULL;
 
-    //get from cache
+    // get from cache
     FdoExpression* expr = m_hExpressionCache[pExprstr];
 
-    //if in cache, return existing
-    //NOTE: do not addref, it is not needed
+    // if in cache, return existing
+    // NOTE: do not addref, it is not needed
     if (expr)
         return expr;
 
     try
     {
-        //otherwise parse and cache it
+        // otherwise parse and cache it
         expr = FdoExpression::Parse(pExprstr->c_str());
         m_hExpressionCache[pExprstr] = expr;
     }
@@ -802,11 +818,12 @@ FdoExpression* GeometryAdapter::ObtainFdoExpression(const MdfModel::MdfString* p
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 bool GeometryAdapter::GetElevationParams(RS_ElevationSettings* elevSettings,
                                          double& zOffset, double& zExtrusion,
                                          RS_ElevationType& elevType)
 {
-    // Elevation Settings
+    // elevation settings
     elevType = RS_ElevationType_RelativeToGround;
     zOffset = 0.0;
     zExtrusion = 0.0;
@@ -835,6 +852,7 @@ bool GeometryAdapter::GetElevationParams(RS_ElevationSettings* elevSettings,
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 // This method returns the amount that the clip region needs to be expanded
 // to ensure that the clipped geometry renders correctly.  For example, if
 // we clip a polygon directly to the edge of the screen then the polygon's

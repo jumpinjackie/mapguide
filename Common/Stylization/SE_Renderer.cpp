@@ -444,7 +444,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
             // Here we cannot use the cached RS_TextMetrics in the SE_RenderText object.
             // We must recalculate the text metrics with the new tdef before we can call DrawScreenText.
             RS_TextMetrics tm;
-            if ( this->GetRSFontEngine()->GetTextMetrics( tp->content, tdef, tm, false ))
+            if (this->GetRSFontEngine()->GetTextMetrics(tp->content, tdef, tm, false))
                 DrawScreenText(tm, tdef, x, y, NULL, 0, 0.0);
         }
         else if (primitive->type == SE_RenderPrimitive_Raster)

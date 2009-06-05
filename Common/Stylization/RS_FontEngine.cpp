@@ -109,7 +109,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
         bDone = richTextEngine.Parse(s, &ret);
     }
 
-    if ( !bDone )
+    if (!bDone)
     {
         //-------------------------------------------------------
         // break up the string into individual lines
@@ -1127,7 +1127,7 @@ double RS_FontEngine::MetersToScreenUnits(RS_Units unit, double number)
 // This method exists to insure that all fonts perform some special handling
 // for font attributes which may not be consistently supported across our
 // renderers.
-const RS_Font* RS_FontEngine::GetRenderingFont( RS_TextDef& tdef )
+const RS_Font* RS_FontEngine::GetRenderingFont(RS_TextDef& tdef)
 {
     const RS_Font* pFont;
 
