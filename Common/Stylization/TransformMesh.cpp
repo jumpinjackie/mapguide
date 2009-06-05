@@ -39,7 +39,7 @@ const double MIN_GRID_SIZE_OVERRIDE_RATIO = 0.0;
 // snap to the edge of the extents
 const double MAX_GRID_EXPANSION_FACTOR = 0.2; // i.e. 20%
 
-#define PRINT_RS_BOUNDS( ext ) \
+#define PRINT_RS_BOUNDS(ext) \
     printf("      minx = %6.4f miny = %6.4f maxx = %6.4f maxy = %6.4f\n", ext.minx, ext.miny, ext.maxx, ext.maxy); \
     printf("      width = %6.4f height = %6.4f\n", ext.width(), ext.height());
 

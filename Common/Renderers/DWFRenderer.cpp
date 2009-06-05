@@ -94,8 +94,8 @@ WT_Color Util_ConvertColor(RS_Color& color)
 WT_Color Util_ConvertColor(unsigned int argb)
 {
     return WT_Color((argb >> 16) & 0xFF,
-                    (argb >> 8)  & 0xFF,
-                    (argb     )  & 0xFF,
+                    (argb >>  8) & 0xFF,
+                    (argb      ) & 0xFF,
                     (argb >> 24) & 0xFF);
 }
 
@@ -157,7 +157,7 @@ WT_String Util_ConvertString(const wchar_t* wstr)
 
     size_t len = wcslen(wstr) * 2 + 1; //upper bound for converted string length
 
-    _ASSERT( len < 65536); //sanity check since we alloc on the stack
+    _ASSERT(len < 65536); //sanity check since we alloc on the stack
 
     unsigned short* utf16Bytes = (unsigned short*)alloca(len * sizeof(unsigned short));
     DwfRendererConvertUTF32toUTF16((const unsigned long*)wstr, utf16Bytes, len);
@@ -284,12 +284,12 @@ DWFRenderer::~DWFRenderer()
 // Initializes map generation with required map properties.
 //
 //-----------------------------------------------------------------------------
-void DWFRenderer::StartMap( RS_MapUIInfo* mapInfo,
-                            RS_Bounds&    extents,
-                            double        mapScale,
-                            double        dpi,
-                            double        metersPerUnit,
-                            CSysTransformer* xformToLL)
+void DWFRenderer::StartMap(RS_MapUIInfo* mapInfo,
+                           RS_Bounds&    extents,
+                           double        mapScale,
+                           double        dpi,
+                           double        metersPerUnit,
+                           CSysTransformer* xformToLL)
 {
     if (dpi == 0.0)
         m_dpi = STANDARD_DISPLAY_DPI; // default -- 96 is usually true for Windows
@@ -811,7 +811,7 @@ void DWFRenderer::ProcessRaster(unsigned char* _data,
     }
     else if (format == RS_ImageFormat_PNG)
     {
-        WT_PNG_Group4_Image img( (WT_Unsigned_Integer16)height,
+        WT_PNG_Group4_Image img((WT_Unsigned_Integer16)height,
                     (WT_Unsigned_Integer16)width,
                     WT_PNG_Group4_Image::PNG,
                     m_imgID++,
@@ -1806,21 +1806,21 @@ void DWFRenderer::WriteFill(RS_FillStyle& fill)
             m_fillFac = new EMapFillPatternFactory;
 
         EMapHatchPatternFactory::Enum hvalenum;
-        hvalenum = m_hatchFac->find_index( fill.pattern().c_str() );
-        if ( hvalenum != EMapHatchPatternFactory::nonexistent )
+        hvalenum = m_hatchFac->find_index(fill.pattern().c_str());
+        if (hvalenum != EMapHatchPatternFactory::nonexistent)
         {
             WT_User_Hatch_Pattern hatchpattern(0);
-            m_hatchFac->request_pattern( hvalenum, hatchpattern );
+            m_hatchFac->request_pattern(hvalenum, hatchpattern);
             m_w2dFile->desired_rendition().user_hatch_pattern() = hatchpattern;
         }
         else
         {
             EMapFillPatternFactory::Enum fvalenum;
-            fvalenum = m_fillFac->find_index( fill.pattern().c_str() );
-            if ( fvalenum != EMapFillPatternFactory::nonexistent )
+            fvalenum = m_fillFac->find_index(fill.pattern().c_str());
+            if (fvalenum != EMapFillPatternFactory::nonexistent)
             {
                 WT_User_Fill_Pattern fillpattern(0);
-                m_fillFac->request_pattern( fvalenum, fillpattern );
+                m_fillFac->request_pattern(fvalenum, fillpattern);
                 m_w2dFile->desired_rendition().user_fill_pattern() = fillpattern;
             }
             else
@@ -2627,8 +2627,8 @@ void DWFRenderer::DrawScreenText(const RS_TextMetrics&  tm,
 {
     if (path)
     {
-        // path text
-        // We cannot modify the cached RS_TextMetrics so we create a local one and use it to layout the path text.
+        // we cannot modify the cached RS_TextMetrics so we create a local one
+        // and use it to layout the path text
         RS_TextMetrics tm_local;
         if (GetTextMetrics(tm.text, tdef, tm_local, true))
         {
@@ -2639,8 +2639,7 @@ void DWFRenderer::DrawScreenText(const RS_TextMetrics&  tm,
     }
     else
     {
-        // block text
-        // Check that we have a valid text metrics
+        // block text - check that we have a valid text metrics
         if (tm.font != NULL)
             DrawBlockText(tm, tdef, insx, insy);
     }
@@ -2925,8 +2924,8 @@ void DWFRenderer::MeasureString(const RS_String& s,
                                 double           height,
                                 const RS_Font*   font,
                                 double           angleRad,
-                                RS_F_Point*      res,       //assumes length equals 4 points
-                                float*           offsets)   //assumes length equals length of string
+                                RS_F_Point*      res,       // assumes length equals 4 points
+                                float*           offsets)   // assumes length equals length of string
 {
     //gd likes height in points rather than pixels
     height *= 72.0 / m_dpi;
@@ -3061,7 +3060,7 @@ void DWFRenderer::AddDWFContent(RS_InputStream*  in,
         DWFPackageReader oReader(rsin, passwd.c_str());
 
         DWFPackageReader::tPackageInfo tInfo;
-        oReader.getPackageInfo( tInfo );
+        oReader.getPackageInfo(tInfo);
 
         if (tInfo.eType != DWFPackageReader::eDWFPackage)
         {
@@ -3183,7 +3182,7 @@ void DWFRenderer::AddDWFContent(RS_InputStream*  in,
                 if (pRoot)
                 {
                 wcout << L"\tDumping bookmarks..." << endl;
-                dump_bookmarks( pRoot );
+                dump_bookmarks(pRoot);
                 }
                 }
                 */
@@ -3193,7 +3192,7 @@ void DWFRenderer::AddDWFContent(RS_InputStream*  in,
         }
 
     }
-    catch (DWFException& )
+    catch (DWFException&)
     {
     }
 }
@@ -3577,8 +3576,8 @@ void DWFRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
 
         if (cset->total_points() == 4)
         {
-            alternate_extent.minx = rs_min( pts[0].m_x, pts[2].m_x);
-            alternate_extent.maxx = rs_max( pts[0].m_x, pts[2].m_x);
+            alternate_extent.minx = rs_min(pts[0].m_x, pts[2].m_x);
+            alternate_extent.maxx = rs_max(pts[0].m_x, pts[2].m_x);
 
             alternate_extent.miny = rs_min(pts[0].m_y, pts[2].m_y);
             alternate_extent.maxy = rs_max(pts[0].m_y, pts[2].m_y);
@@ -3609,7 +3608,7 @@ void DWFRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
                 else
                 {
                     double newwid2 = 0.5 * dstext.height() * arsrc;
-                    double oldcx = 0.5 * ( dstext.minx + dstext.maxx);
+                    double oldcx = 0.5 * (dstext.minx + dstext.maxx);
                     RS_Bounds newdst(oldcx - newwid2, dstext.miny, oldcx + newwid2, dstext.maxy);
                     trans.SetDstBounds(newdst);
                 }
