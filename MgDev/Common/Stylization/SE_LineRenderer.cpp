@@ -421,7 +421,7 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
                 {
                     // we are approaching a join - slam on the brakes and think about turning
 
-                    // needed for text/raster primtives
+                    // needed for text/raster primitives
                     double last_angleRad = 0.0;
 
                     // loop over the symbol's primitive elements - we will handle them one by one
@@ -910,7 +910,7 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
                                     // Here we cannot use the cached RS_TextMetrics in the SE_RenderText object.
                                     // We must recalculate the text metrics with the new tdef before we can call DrawScreenText.
                                     RS_TextMetrics tm;
-                                    if ( fe->GetTextMetrics( tp->content, tdef, tm, false ) )
+                                    if (fe->GetTextMetrics(tp->content, tdef, tm, false))
                                         renderer->DrawScreenText(tm, tdef, x, y, NULL, 0, 0.0);
                                 }
                             }
@@ -1411,6 +1411,19 @@ int SE_LineRenderer::ConfigureHotSpots(SE_Renderer* renderer, LineBuffer* geomet
         hotspots[        0].shear_start_lower = hotspots[ptCount-1].shear_start_lower;
         hotspots[ptCount-1].shear_end_upper   = hotspots[        0].shear_end_upper;
         hotspots[ptCount-1].shear_end_lower   = hotspots[        0].shear_end_lower;
+    }
+
+    // Flip the angles for renderers with Y pointing down, since they were computed
+    // from screen points.  The sin/cos values for the angles must stay in screen
+    // space, however.
+    if (!renderer->YPointsUp())
+    {
+        for (int i=0; i<ptCount; ++i)
+        {
+            HotSpot& hs = hotspots[i];
+            hs.angle_start = -hs.angle_start;
+            hs.angle_end   = -hs.angle_end;
+        }
     }
 
     return ptCount;
