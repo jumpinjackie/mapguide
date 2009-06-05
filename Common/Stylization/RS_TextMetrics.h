@@ -49,24 +49,24 @@ public:
     STYLIZATION_API RS_TextMetrics();
     STYLIZATION_API ~RS_TextMetrics();
 
-    const RS_Font* font;    // Note that, if RS_TextMetrics is unitialized or invalid,
-                            // this value will be NULL.
+    // note that this value is NULL if RS_TextMetrics is uninitialized or invalid
+    const RS_Font* font;
+
     double font_height;
     double text_width;
     double text_height;
     RS_String text;
 
-    // for path text -- character advances and positions
+    // for path text - character advances and positions
     std::vector<float> char_advances;
     std::vector<CharPos> char_pos;
 
-    // for block text -- line positions
+    // for block text - line positions
     std::vector<LinePos> line_pos;
     std::vector<RS_String> line_breaks;
 
-    //for formatted text -- format changes
+    // for formatted text - format changes
     std::vector<const RichText::ATOM::Particle*> format_changes;
 };
-
 
 #endif

@@ -614,6 +614,8 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
                 dt->position[0] = st->position[0];
                 dt->position[1] = st->position[1];
                 dt->tdef        = st->tdef;
+
+                // don't copy the text metrics - they are recalculated
             }
             break;
 
