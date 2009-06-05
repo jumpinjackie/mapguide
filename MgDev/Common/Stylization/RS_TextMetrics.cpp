@@ -22,6 +22,7 @@
 
 using namespace RichText::ATOM;
 
+
 //////////////////////////////////////////////////////////////////////////////
 RS_TextMetrics::RS_TextMetrics()
     : font(NULL),
@@ -31,6 +32,8 @@ RS_TextMetrics::RS_TextMetrics()
 {
 }
 
+
+//////////////////////////////////////////////////////////////////////////////
 RS_TextMetrics::~RS_TextMetrics()
 {
     const RichText::ATOM::Particle* pParticle;

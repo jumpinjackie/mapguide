@@ -165,7 +165,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
         }
 
         // base vertical and horizontal alignment offsets is the same for each line of text
-        double hAlignBaseOffset = GetHorizontalAlignmentOffset(tdef.halign(), textWidth );
+        double hAlignBaseOffset = GetHorizontalAlignmentOffset(tdef.halign(), textWidth);
         double vAlignBaseOffset = GetVerticalAlignmentOffset(tdef.valign(), font, hgt, line_height, num_lines);
 
         // account for Y direction now that we have the base offset
