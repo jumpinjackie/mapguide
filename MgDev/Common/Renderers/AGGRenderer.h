@@ -167,7 +167,7 @@ public:
     RENDERERS_API void MeasureString(const RS_String& s,
                        double           height,
                        const RS_Font*   font,
-                       double           angle,
+                       double           angleRad,
                        RS_F_Point*      res,
                        float*           offsets);
 

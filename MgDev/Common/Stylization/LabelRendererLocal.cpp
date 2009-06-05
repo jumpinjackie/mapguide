@@ -951,7 +951,8 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
     // TODO: fine tune this formula
     double repeat = PATH_LABEL_SEPARATION_INCHES * MILLIMETERS_PER_INCH * m_serenderer->GetScreenUnitsPerMillimeterDevice();
     int numreps = (int)(segpos[info.m_numpts-1] / (repeat + info.m_tm.text_width));
-    if (!numreps) numreps = 1;
+    if (!numreps)
+        numreps = 1;
 
     for (int irep=0; irep<numreps; ++irep)
     {

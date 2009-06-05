@@ -175,7 +175,7 @@ bool SE_StyleVisitor::ParseGeometry(const MdfString& geometry, SE_LineBuffer& bu
 
     wchar_t tag, ptag = 0;
 
-    for (;data < end; )
+    for (;data < end;)
     {
         if (iswspace(*data))
         {

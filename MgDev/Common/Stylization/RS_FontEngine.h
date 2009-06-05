@@ -73,7 +73,7 @@ public:
 
     STYLIZATION_API double MetersToScreenUnits(RS_Units unit, double number);
 
-    STYLIZATION_API virtual const RS_Font* GetRenderingFont( RS_TextDef& tdef );
+    STYLIZATION_API virtual const RS_Font* GetRenderingFont(RS_TextDef& tdef);
 
 public:
     size_t SplitLabel(wchar_t* label, std::vector<wchar_t*>& line_breaks);
@@ -83,7 +83,7 @@ private:
                                       double actual_height, double line_height,
                                       size_t numLines);
 
-    double GetJustificationOffset(RS_Justify justify, double textWidth, RS_F_Point* ext );
+    double GetJustificationOffset(RS_Justify justify, double textWidth, RS_F_Point* ext);
 
     double GetHorizontalAlignmentOffset(RS_HAlignment hAlign, double lineWidth);
 

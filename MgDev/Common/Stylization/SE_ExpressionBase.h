@@ -229,7 +229,7 @@ struct SE_String
             expression->Release();
     }
 
-    void setDefValue( wchar_t* newDefValue )
+    void setDefValue(wchar_t* newDefValue)
     {
         delete[] defValue;
         defValue = newDefValue;
@@ -239,7 +239,7 @@ struct SE_String
         return defValue;
     }
 
-    void setValue( wchar_t* newValue )
+    void setValue(wchar_t* newValue)
     {
         delete[] value;
         value = newValue;
