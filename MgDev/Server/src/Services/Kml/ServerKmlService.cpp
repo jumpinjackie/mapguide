@@ -253,7 +253,9 @@ MgByteReader* MgServerKmlService::GetFeaturesKml(MgLayer* layer, MgEnvelope* ext
     if(gl != NULL)
     {
         // Create a new, empty map
-        Ptr<MgMap> map = new MgMap();
+        Ptr<MgSiteConnection> siteConn = new MgSiteConnection();
+        siteConn->Open(MgUserInformation::GetCurrentUserInfo());
+        Ptr<MgMap> map = new MgMap(siteConn);
         map->Create(GOOGLE_EARTH_WKT, extents, L"Google Earth Map");
         map->SetDisplayWidth(width);
         map->SetDisplayHeight(height);
