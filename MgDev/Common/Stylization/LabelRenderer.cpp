@@ -539,7 +539,8 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
     // TODO: fine tune this formula
     double repeat = PATH_LABEL_SEPARATION_INCHES * MILLIMETERS_PER_INCH * m_serenderer->GetScreenUnitsPerMillimeterDevice();
     int numreps = (int)(segpos[info.m_numpts-1] / (repeat + tm.text_width));
-    if (!numreps) numreps = 1;
+    if (!numreps)
+        numreps = 1;
 
     int numchars = (int)info.m_text.length();
     int labels_drawn = 0; // counter for how many of the repeated labels were accepted
@@ -773,8 +774,11 @@ std::vector<LabelInfo> LabelRenderer::StitchPolylinesHelper(std::vector<LabelInf
         // in the return list, move a polyline to the return list and go again
         if (i == ret.size())
         {
-            LabelInfo srcinfo = src.back();
+            LabelInfo& srcinfo = src.back();
             LabelInfo retinfo = srcinfo;
+
+            // we don't yet support symbol-based path labels
+            _ASSERT(retinfo.m_sestyle == NULL);
 
             // need to allocate a copy of the polyline since it will be
             // deleted and reallocated by the stitching loop

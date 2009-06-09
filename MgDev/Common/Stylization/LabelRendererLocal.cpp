@@ -404,6 +404,7 @@ void LabelRendererLocal::BlastLabels()
                     {
                         LabelInfoLocal& info = group.m_labels[j];
 
+                        // at this point there shouldn't yet be any rotated points
                         _ASSERT(info.m_rotated_points == NULL);
 
                         if (info.m_pts)
@@ -445,30 +446,40 @@ void LabelRendererLocal::BlastLabels()
 
                 if (info.m_pts)
                 {
-                    // several possible positions along the path
-                    // may be returned in the case of repeated labels
+                    // several possible positions along the path may be
+                    // returned in the case of repeated labels
                     success = ComputePathLabelBounds(info, repeated_infos, group.m_scaleLimit);
                 }
                 else
                 {
+                    // compute the label bounds - this allocates the rotated
+                    // points on the supplied label info
                     if (info.m_sestyle)
                         success = ComputeSELabelBounds(info);
                     else
                         success = ComputeSimpleLabelBounds(info);
 
-                    // simple label or SE label --> simply add one instance of
-                    // it to the repeated infos collection. When we add repeated
-                    // labels for polygons, this code will change.
+                    // in this case we will simply add a copy of the label info to
+                    // the repeated infos collection
                     LabelInfoLocal copy = info;
-                    copy.m_pts = NULL;
-                    copy.m_numpts = 0;
-                    repeated_infos.push_back(copy);
 
-                    // NOTE: the code above copies any SE style pointer.  Rather than
-                    //       clone the style and have the original deleted below, just
-                    //       clear the pointer on the original label info.  The new
-                    //       label info therefore now owns the SE style.
+                    // The code above copies any SE style pointer.  Rather than
+                    // clone the style and have the original deleted below, just
+                    // clear the pointer on the original label info and make the new
+                    // one own the SE style.
                     info.m_sestyle = NULL;
+
+                    // also clear the rotated points pointer on the original - the
+                    // new label info owns this object
+                    info.m_rotated_points = NULL;
+
+                    // this is the non-path-label case, so there shouldn't be any
+                    // path data
+                    _ASSERT(copy.m_pts == NULL);
+
+                    // add the label info copy to the collection now that pointers
+                    // are cleaned up
+                    repeated_infos.push_back(copy);
                 }
 
                 if (!success)
@@ -488,7 +499,8 @@ void LabelRendererLocal::BlastLabels()
             {
                 LabelInfoLocal& info = group.m_labels[j];
 
-                // do not clear rotated points - these store the bounds computed above
+                // the original label infos should still not have any rotated points
+                _ASSERT(info.m_rotated_points == NULL);
 
                 if (info.m_pts)
                 {
@@ -930,9 +942,6 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
     if (!fe->GetTextMetrics(info.m_text, info.m_tdef, info.m_tm, true))
         return false;
 
-    // allocate the data we need
-    info.m_numelems = info.m_text.length();
-
     // Find starting position of each segment in the screen space path.  We
     // will use it to position characters along the path.  This is precomputed
     // here rather than in ComputeCharacterPositions in order to reuse the data
@@ -951,18 +960,21 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
     // TODO: fine tune this formula
     double repeat = PATH_LABEL_SEPARATION_INCHES * MILLIMETERS_PER_INCH * m_serenderer->GetScreenUnitsPerMillimeterDevice();
     int numreps = (int)(segpos[info.m_numpts-1] / (repeat + info.m_tm.text_width));
-    if (!numreps) numreps = 1;
+    if (!numreps)
+        numreps = 1;
+
+    // allocate the data we need
+    info.m_numelems = info.m_text.length();
 
     for (int irep=0; irep<numreps; ++irep)
     {
-        // Make a copy of the modified label data for the current label period.
-        // The copy takes ownership of the CharPos array and rotated points array,
-        // but does not take ownership of the actual path data, which belongs to the
-        // original label info structure.
+        // make a copy of the modified label data for the current label period
         LabelInfoLocal copy_info = info;
+
+        // clear the path data on the copy - the original label info retains
+        // ownership of this
         copy_info.m_pts = NULL;
         copy_info.m_numpts = 0;
-        copy_info.m_rotated_points = new RS_F_Point[4*copy_info.m_numelems];
 
         // parametric position for current repeated label
         // positions are spaced in such a way that each label has
@@ -975,6 +987,8 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
 
         // once we have position and angle for each character
         // compute rotated corner points for each character
+        copy_info.m_rotated_points = new RS_F_Point[4*copy_info.m_numelems];
+
         for (size_t i=0; i<copy_info.m_numelems; ++i)
         {
             // get the character width - not exact since it takes kerning
@@ -1365,8 +1379,11 @@ std::vector<LabelInfoLocal> LabelRendererLocal::StitchPolylinesHelper(std::vecto
         // in the return list, move a polyline to the return list and go again
         if (i == ret.size())
         {
-            LabelInfoLocal srcinfo = src.back();
+            LabelInfoLocal& srcinfo = src.back();
             LabelInfoLocal retinfo = srcinfo;
+
+            // we don't yet support symbol-based path labels
+            _ASSERT(retinfo.m_sestyle == NULL);
 
             // need to allocate a copy of the polyline since it will be
             // deleted and reallocated by the stitching loop
