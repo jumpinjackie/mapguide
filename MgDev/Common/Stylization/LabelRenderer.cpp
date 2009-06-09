@@ -774,8 +774,11 @@ std::vector<LabelInfo> LabelRenderer::StitchPolylinesHelper(std::vector<LabelInf
         // in the return list, move a polyline to the return list and go again
         if (i == ret.size())
         {
-            LabelInfo srcinfo = src.back();
+            LabelInfo& srcinfo = src.back();
             LabelInfo retinfo = srcinfo;
+
+            // we don't yet support symbol-based path labels
+            _ASSERT(retinfo.m_sestyle == NULL);
 
             // need to allocate a copy of the polyline since it will be
             // deleted and reallocated by the stitching loop
