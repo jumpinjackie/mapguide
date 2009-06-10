@@ -1017,9 +1017,15 @@ void MgMap::BulkLoadIdentityProperties(MgFeatureService* featureService)
         STRING schemaName;
         Ptr<MgLayer> layer = dynamic_cast<MgLayer*>(m_layers->GetItem(i));
         STRING featureSource = layer->GetFeatureSourceId();
-        layer->ParseFeatureName(featureService, className, schemaName);
-        fsMap[featureSource][className].push_back(layer.p);
-        fsSchema[featureSource] = schemaName;
+        if (!featureSource.empty())
+        {
+            layer->ParseFeatureName(featureService, className, schemaName);
+            if (!schemaName.empty())
+            {
+                fsMap[featureSource][className].push_back(layer.p);
+                fsSchema[featureSource] = schemaName;
+            }
+        }
     }
   
     for (LayerFeatureSourceMap::iterator fsIter = fsMap.begin(); fsIter != fsMap.end(); fsIter++)

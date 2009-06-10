@@ -138,7 +138,12 @@ RSMgFeatureReader::RSMgFeatureReader(MgFeatureReader* reader, MgFeatureService* 
 
 RSMgFeatureReader::~RSMgFeatureReader()
 {
-    m_reader->Close();
+    // Reader may be null if an Fdo exception is thrown
+    // during a call to Reset()
+    if (NULL != m_reader)
+    {
+        m_reader->Close();
+    }
 
     SAFE_RELEASE(m_reader);
     SAFE_RELEASE(m_class);
