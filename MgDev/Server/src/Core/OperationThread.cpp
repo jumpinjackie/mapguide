@@ -48,9 +48,6 @@ int MgOperationThread::svc()
     {
         while (m_bActive)
         {
-            // Clear the user information for this operation thread.
-            MgUserInformation::SetCurrentUserInfo(NULL);
-
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgOperationThread::svc() Ready\n")));
 
             ACE_Message_Block* messageBlock = NULL;
