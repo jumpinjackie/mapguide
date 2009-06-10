@@ -365,8 +365,18 @@ void MgLayer::ParseFeatureName(MgFeatureService* featureService, REFSTRING class
         {
             //TODO:  How do we deal with different schemas?  Just use first one for now...
             Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(m_featureSourceId);
-            Ptr<MgStringCollection> schemaNames = featureService->GetSchemas(resId);
-            m_schemaName = schemaNames->GetItem(0);
+            if (resId->GetResourceType().compare(MgResourceType::FeatureSource) == 0)
+            {
+                try
+                {
+                    Ptr<MgStringCollection> schemaNames = featureService->GetSchemas(resId);
+                    m_schemaName = schemaNames->GetItem(0);
+                }
+                catch (MgException* e)
+                {
+                    e->Release();
+                }
+            }
         }
     }
     schemaName = m_schemaName;
