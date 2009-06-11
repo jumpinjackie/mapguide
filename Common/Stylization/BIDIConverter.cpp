@@ -369,7 +369,7 @@ bool BIDIConverter::ClassifyCharacters()
 
 
 // classify character in input str
-ECharacterType BIDIConverter::ClassifyCharacter(wchar_t cChar)
+BIDIConverter::ECharacterType BIDIConverter::ClassifyCharacter(wchar_t cChar)
 {
     return ClassifyCharacter(static_cast<unsigned int>(cChar));
 }
@@ -377,7 +377,7 @@ ECharacterType BIDIConverter::ClassifyCharacter(wchar_t cChar)
 
 // This code is constructed from the DerivedBidiClass.txt.  At a
 // certain point it might be reasonable to make it a little less cheesy.
-ECharacterType BIDIConverter::ClassifyCharacter(unsigned int cChar)
+BIDIConverter::ECharacterType BIDIConverter::ClassifyCharacter(unsigned int cChar)
 {
     // default for the vast majority of cases.
     ECharacterType eRetVal = ECharacterType::L;
@@ -1412,7 +1412,7 @@ int BIDIConverter::ResolveWeak(int nBaseLevel)
 
 // implements rule W1: per run, NSM gets the type of preceding characters
 // or SoR (L or R depending on even or odd level)
-ECharacterType BIDIConverter::ResolveWeakNSM(int nIndex, int nLevel, int nLevelIndex)
+BIDIConverter::ECharacterType BIDIConverter::ResolveWeakNSM(int nIndex, int nLevel, int nLevelIndex)
 {
     _ASSERT(ECharacterType::NSM == m_ClassificationArray[nIndex]);
 
@@ -1425,7 +1425,7 @@ ECharacterType BIDIConverter::ResolveWeakNSM(int nIndex, int nLevel, int nLevelI
 
 
 // implements rule W2: replace EN with either EN or AN depending on preceding characters
-ECharacterType BIDIConverter::ResolveWeakEN(int nIndex, int nLevelIndex)
+BIDIConverter::ECharacterType BIDIConverter::ResolveWeakEN(int nIndex, int nLevelIndex)
 {
     _ASSERT(ECharacterType::EN == m_ClassificationArray[nIndex]);
 
@@ -1456,7 +1456,7 @@ ECharacterType BIDIConverter::ResolveWeakEN(int nIndex, int nLevelIndex)
 
 // implements rule W4: resolve European and common seperators between two
 // European numbers
-ECharacterType BIDIConverter::ResolveWeakSeperator(int nIndex, int nLevel, int nLevelIndex, ECharacterType inputType)
+BIDIConverter::ECharacterType BIDIConverter::ResolveWeakSeperator(int nIndex, int nLevel, int nLevelIndex, ECharacterType inputType)
 {
     ECharacterType eRetType = inputType;
 
@@ -1485,7 +1485,7 @@ ECharacterType BIDIConverter::ResolveWeakSeperator(int nIndex, int nLevel, int n
 
 // implements rule W5: a sequence of European terminators adjacent to European
 // numbers changes to all European numbers
-ECharacterType BIDIConverter::ResolveWeakET(int nIndex, int nLevel)
+BIDIConverter::ECharacterType BIDIConverter::ResolveWeakET(int nIndex, int nLevel)
 {
     _ASSERT(ECharacterType::ET == m_ClassificationArray[nIndex]);
     int nWalker = nIndex + 1;
@@ -1522,7 +1522,7 @@ ECharacterType BIDIConverter::ResolveWeakET(int nIndex, int nLevel)
 
 
 // implements rule W7: replace EN with either L if found
-ECharacterType BIDIConverter::ResolveWeakENFinal(int nIndex, int nLevel, int nLevelIndex)
+BIDIConverter::ECharacterType BIDIConverter::ResolveWeakENFinal(int nIndex, int nLevel, int nLevelIndex)
 {
     _ASSERT(ECharacterType::EN == m_ClassificationArray[nIndex]);
 
@@ -1593,7 +1593,7 @@ int BIDIConverter::ResolveNeutral(int nBaseLevel)
 
 
 // resolve neutral chars in accordance with N1 and N2
-ECharacterType BIDIConverter::ResolveNeutralChar(int nIndex, int nLevel)
+BIDIConverter::ECharacterType BIDIConverter::ResolveNeutralChar(int nIndex, int nLevel)
 {
     _ASSERT(ECharacterType::N == m_ClassificationArray[nIndex] ||
             ECharacterType::WS == m_ClassificationArray[nIndex]);

@@ -15,25 +15,31 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#pragma once
+#ifndef BIDICONVERTER_H_
+#define BIDICONVERTER_H_
+
 #include "stdafx.h"
 #include "StylizationAPI.h"
-#include <string>
+#include "StylizationDefs.h"
 #include <vector>
 #include <map>
 
 // NOTE: this class should not be used outside of a UNICODE environment
-// outside of a UNICODE environment
 #ifndef UNICODE
-#pragma message("!!WARNING!! Attempting to use BIDIDisplayString.h in a non-UNICODE environment")
+#pragma message("!!WARNING!! Attempting to use BIDIConverter.h in a non-UNICODE environment")
 #endif
 
+//===========================================================================
+// various typedefs needed for the algorithm
 typedef std::wstring DisplayStr;
+typedef std::map<unsigned int, std::vector<unsigned int> > ShapeGlyphs;
+typedef std::map<unsigned int, unsigned int> MirrorGlyphs;
 
 
 //===========================================================================
-// various enums, typedefs, and functions needed for the algorithm
-namespace BIDIUnicode
+// The BIDIConverter class is used to create a LTR ordering of bi-directional
+// unicode strings for the purpose of display.
+class BIDIConverter
 {
     // enum of the different directional traits unicode characters can have
     enum ECharacterType
@@ -67,21 +73,7 @@ namespace BIDIUnicode
     };
 
     typedef std::vector<ECharacterType> BIDIClassificationArray;
-}
 
-using BIDIUnicode::BIDIClassificationArray;
-using BIDIUnicode::ECharacterType;
-
-
-typedef std::map<unsigned int, std::vector<unsigned int> > ShapeGlyphs;
-typedef std::map<unsigned int, unsigned int> MirrorGlyphs;
-
-
-//===========================================================================
-// The BIDIConverter class is used to create a LTR ordering of bi-directional
-// unicode strings for the purpose of display.
-class BIDIConverter
-{
 public:
     // default constructor
     STYLIZATION_API BIDIConverter();
@@ -195,3 +187,5 @@ private:
 
     std::vector<int> m_Levels;
 };
+
+#endif
