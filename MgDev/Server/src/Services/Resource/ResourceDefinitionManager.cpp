@@ -411,6 +411,9 @@ void MgResourceDefinitionManager::ValidateDocument(XmlDocument& xmlDoc)
             schemaName = X2W(attr);
         }
 
+        // Free resources
+        domDoc->release();
+
         ValidateDocument(resource, rootName, schemaName);
     }
 
