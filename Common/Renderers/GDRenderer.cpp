@@ -1590,11 +1590,10 @@ void GDRenderer::MeasureString(const RS_String& s,
     }
     else
     {
-        m_bidiConverter.SetOriginalString(s);
-        const RS_String& sConv = m_bidiConverter.ConvertedString();
+        const RS_String& sConv = m_bidiConverter.ConvertString(s);
 
-        // the converter owns the string, so we can temporarily hold on to the
-        // pointer
+        // ConvertString returns either the converter-owned string or the input
+        // string - in either case we can temporarily hold on to the pointer
         pStrToUse = &sConv;
     }
 
@@ -1671,8 +1670,7 @@ void GDRenderer::DrawString(const RS_String& s,
     height = floor(height * 65536.0 + 0.5) / 65536.0;
 
     // do BIDI conversion
-    m_bidiConverter.SetOriginalString(s);
-    const RS_String& sConv = m_bidiConverter.ConvertedString();
+    const RS_String& sConv = m_bidiConverter.ConvertString(s);
 
     //convert input to UTF8, which is what GD uses
     size_t len = sConv.length();
@@ -2655,8 +2653,7 @@ void GDRenderer::DrawScreenText(const RS_TextMetrics& tm, RS_TextDef& tdef, doub
     if (path)
     {
         // path text - we need to do BIDI conversion before we process the text
-        m_bidiConverter.SetOriginalString(tm.text);
-        const RS_String& sConv = m_bidiConverter.ConvertedString();
+        const RS_String& sConv = m_bidiConverter.ConvertString(tm.text);
 
         // we cannot modify the cached RS_TextMetrics so we create a local one
         // and use it to layout the path text
