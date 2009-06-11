@@ -81,15 +81,15 @@ using namespace ECharacterTypes;
 class BIDIConverter
 {
 public:
-    // default constructor
     STYLIZATION_API BIDIConverter();
-
-    // public constructor that takes a unicode string and runs the
-    // bidi-algorithm to construct a LTR display string
-    STYLIZATION_API BIDIConverter(const DisplayStr& str);
-
-    // destructor
     STYLIZATION_API virtual ~BIDIConverter();
+
+    // Optimized method to convert an input string.  If the string has no
+    // right-to-left characters then:
+    // * the method will directly return the supplied string
+    // * the m_OriginalString and m_ConvertedString member variables are
+    //   not updated (for performance reasons)
+    STYLIZATION_API const DisplayStr& ConvertString(const DisplayStr& str);
 
     // methods to set/retrieve the original string
     STYLIZATION_API const DisplayStr& OriginalString();
@@ -110,6 +110,9 @@ public:
     STYLIZATION_API static bool GenerateMappings();
 
 private:
+    // returns true if the supplied string needs to be run through the conversion algorithm
+    bool NeedsBIDIConversion(const DisplayStr& str);
+
     // runs the algorithm and sets the converted string data member
     void SetConvertedString();
 

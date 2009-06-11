@@ -518,8 +518,7 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
 
     // since this is path text we need to do any BIDI conversion before
     // we process the label
-    m_bidiConverter.SetOriginalString(info.m_text);
-    const RS_String& sConv = m_bidiConverter.ConvertedString();
+    const RS_String& sConv = m_bidiConverter.ConvertString(info.m_text);
 
     // match the font and measure the sizes of the characters
     RS_TextMetrics tm;

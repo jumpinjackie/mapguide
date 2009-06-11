@@ -2628,8 +2628,7 @@ void DWFRenderer::DrawScreenText(const RS_TextMetrics&  tm,
     if (path)
     {
         // path text - we need to do BIDI conversion before we process the text
-        m_bidiConverter.SetOriginalString(tm.text);
-        const RS_String& sConv = m_bidiConverter.ConvertedString();
+        const RS_String& sConv = m_bidiConverter.ConvertString(tm.text);
 
         // we cannot modify the cached RS_TextMetrics so we create a local one
         // and use it to layout the path text
@@ -2953,11 +2952,10 @@ void DWFRenderer::MeasureString(const RS_String& s,
     }
     else
     {
-        m_bidiConverter.SetOriginalString(s);
-        const RS_String& sConv = m_bidiConverter.ConvertedString();
+        const RS_String& sConv = m_bidiConverter.ConvertString(s);
 
-        // the converter owns the string, so we can temporarily hold on to the
-        // pointer
+        // ConvertString returns either the converter-owned string or the input
+        // string - in either case we can temporarily hold on to the pointer
         pStrToUse = &sConv;
     }
 
