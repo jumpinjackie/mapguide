@@ -393,7 +393,7 @@ void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr
 
     // process any parameters in the expression
     const wchar_t* defValue = ReplaceParameters(exprstr);
-    val.setDefValue( UnquoteLiteral(defValue? defValue : defaultValue) );
+    val.setDefValue(UnquoteLiteral(defValue? defValue : defaultValue));
 
     if (m_buffer.empty())
         return;  // Nothing more to parse.
@@ -409,7 +409,7 @@ void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr
         copy[len] = L'\0';
 
         // modify val.value directly to avoid doing another copy
-        val.setValue( copy );
+        val.setValue(copy);
 
         return;
     }
@@ -418,7 +418,7 @@ void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr
     if (allowedValues && wcsstr(allowedValues, str))
     {
         // found it - set the value to a copy
-        val.setValue( DuplicateString(str) );
+        val.setValue(DuplicateString(str));
 
         return;
     }

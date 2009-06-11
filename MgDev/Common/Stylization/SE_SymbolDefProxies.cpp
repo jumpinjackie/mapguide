@@ -388,7 +388,8 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* ctx)
     const wchar_t* justification = this->justification.evaluate(ctx->exec);
     if (wcscmp(justification, L"FromAlignment") == 0)   // check this first since it's the most common
     {
-        switch ( textDef.halign() ) {
+        switch (textDef.halign())
+        {
             case RS_HAlignment_Center:
                 textDef.justify() = RS_Justify_Center;
                 break;
@@ -398,7 +399,7 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* ctx)
             case RS_HAlignment_Right:
                 textDef.justify() = RS_Justify_Right;
                 break;
-            }
+        }
     }
     else if (wcscmp(justification, L"Left") == 0)
         textDef.justify() = RS_Justify_Left;
@@ -410,8 +411,7 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* ctx)
         textDef.justify() = RS_Justify_Justify;
 
     RS_TextMetrics& tm = ret->tm;
-    if ( !ctx->fonte->GetTextMetrics(ret->content, textDef, tm, false) )
-        // Mark this RS_TextMetrics as invalid.
+    if (!ctx->fonte->GetTextMetrics(ret->content, textDef, tm, false))  // mark this RS_TextMetrics as invalid
         tm.font = NULL;
 
     SE_Matrix txf;

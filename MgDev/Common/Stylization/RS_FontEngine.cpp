@@ -109,7 +109,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
         bDone = richTextEngine.Parse(s, &ret);
     }
 
-    if ( !bDone )
+    if (!bDone)
     {
         //-------------------------------------------------------
         // break up the string into individual lines
@@ -146,7 +146,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
         if (!m_pSERenderer->YPointsUp())
             line_height = -line_height;
 
-        // Measure each line and track overall width of text
+        // measure each line and track overall width of text
         double textWidth = 0.0;
         for (size_t k=0; k<num_lines; ++k)
         {
@@ -155,7 +155,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
             // get the unrotated extent of this sub-string
             MeasureString(txt, hgt, font, 0.0, ret.line_pos[k].ext, NULL);
             double lineWidth = ret.line_pos[k].ext[1].x - ret.line_pos[k].ext[0].x;
-            if ( lineWidth > textWidth )
+            if (lineWidth > textWidth)
                 textWidth = lineWidth;
 
             // horizontal offset depends on the sub-string width, while
@@ -165,7 +165,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
         }
 
         // base vertical and horizontal alignment offsets is the same for each line of text
-        double hAlignBaseOffset = GetHorizontalAlignmentOffset(tdef.halign(), textWidth );
+        double hAlignBaseOffset = GetHorizontalAlignmentOffset(tdef.halign(), textWidth);
         double vAlignBaseOffset = GetVerticalAlignmentOffset(tdef.valign(), font, hgt, line_height, num_lines);
 
         // account for Y direction now that we have the base offset
@@ -559,6 +559,7 @@ bool RS_FontEngine::ScreenVectorPointsUp(double /*x*/, double y)
     return (y > 0.0);
 }
 
+
 //////////////////////////////////////////////////////////////////////////////
 void RS_FontEngine::DrawBlockText(const RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy)
 {
@@ -691,7 +692,7 @@ void RS_FontEngine::DrawBlockText(const RS_TextMetrics& tm, RS_TextDef& tdef, do
         double textwidth = pos.ext[1].x - pos.ext[0].x;
 
         // if the text is very small, we simply draw a line
-        if ( this->m_pSERenderer->OptimizeGeometry() && (fontHeight <= (screenUnitsPerPixel * TEXT_DRAWING_THRESHOLD)) )
+        if (this->m_pSERenderer->OptimizeGeometry() && (fontHeight <= screenUnitsPerPixel*TEXT_DRAWING_THRESHOLD))
         {
             m_lineStroke.color = tmpTDef.textcolor().argb();
             m_lineStroke.weight = 0.0;
@@ -1127,7 +1128,7 @@ double RS_FontEngine::MetersToScreenUnits(RS_Units unit, double number)
 // This method exists to insure that all fonts perform some special handling
 // for font attributes which may not be consistently supported across our
 // renderers.
-const RS_Font* RS_FontEngine::GetRenderingFont( RS_TextDef& tdef )
+const RS_Font* RS_FontEngine::GetRenderingFont(RS_TextDef& tdef)
 {
     const RS_Font* pFont;
 
