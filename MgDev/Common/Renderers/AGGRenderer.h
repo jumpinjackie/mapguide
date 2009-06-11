@@ -32,6 +32,7 @@
 #include "RS_ByteData.h"
 #include "SE_Renderer.h"
 #include "RS_FontEngine.h"
+#include "BIDIConverter.h"
 
 class WT_File;
 class WT_Viewport;
@@ -167,7 +168,7 @@ public:
     RENDERERS_API void MeasureString(const RS_String& s,
                        double           height,
                        const RS_Font*   font,
-                       double           angle,
+                       double           angleRad,
                        RS_F_Point*      res,
                        float*           offsets);
 
@@ -291,6 +292,8 @@ private:
     SE_LineStroke m_lineStroke;
 
     LabelRendererBase* m_labeler;
+
+    BIDIConverter m_bidiConverter;
 
 private:
     //target image for W2D rewriter -- equal to either the target map

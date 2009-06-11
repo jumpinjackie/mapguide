@@ -21,6 +21,7 @@
 #include "LabelRendererBase.h"
 #include "SimpleOverpost.h"
 #include "RS_FontEngine.h"
+#include "BIDIConverter.h"
 
 struct SE_RenderStyle;
 
@@ -162,6 +163,7 @@ private:
     std::map<RS_String, size_t>      m_hStitchTable;
     SimpleOverpost                   m_overpost;
     double                           m_tileExtentOffset;
+    BIDIConverter                    m_bidiConverter;
 };
 
 #endif

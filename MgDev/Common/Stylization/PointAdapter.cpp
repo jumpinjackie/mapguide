@@ -222,6 +222,7 @@ void PointAdapter::Stylize(Renderer*                   renderer,
 
                 RS_String txt;
                 EvalString(text->GetText(), txt);
+
                 if (!txt.empty())
                 {
                     RS_TextDef def;

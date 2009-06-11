@@ -838,6 +838,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\BIDIConverter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\BIDIConverter.h"
+				>
+			</File>
+			<File
 				RelativePath=".\mtext_parser.cpp"
 				>
 			</File>

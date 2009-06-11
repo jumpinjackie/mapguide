@@ -591,7 +591,7 @@ void AGGRenderer::ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym)
     }
 }
 
-#define PRINT_RS_BOUNDS( ext ) \
+#define PRINT_RS_BOUNDS(ext) \
     printf("      minx = %6.4f miny = %6.4f maxx = %6.4f maxy = %6.4f\n", ext.minx, ext.miny, ext.maxx, ext.maxy); \
     printf("      width = %6.4f height = %6.4f\n", ext.width(), ext.height());
 
@@ -740,7 +740,7 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
         // draw the character
         RS_TextMetrics tm;
-        if ( GetTextMetrics( mdef.name(), tdef, tm, false ) )
+        if (GetTextMetrics(mdef.name(), tdef, tm, false))
             DrawScreenText(tm, tdef, posx, posy, NULL, 0, 0.0);
     }
     else
@@ -1377,7 +1377,11 @@ void AGGRenderer::DrawString(const RS_String& s,
                              RS_Color&        color,
                              double           angleRad)
 {
-    DrawString(c(), s, x, y, width, height, font, color, angleRad);
+    // do BIDI conversion
+    m_bidiConverter.SetOriginalString(s);
+    const RS_String& sConv = m_bidiConverter.ConvertedString();
+
+    DrawString(c(), sConv, x, y, width, height, font, color, angleRad);
 }
 
 
@@ -1426,7 +1430,7 @@ void AGGRenderer::DrawString(agg_context*     cxt,
         cxt->last_font_height = height;
     }
 
-//  cxt->feng.width();
+//  double width = cxt->feng.width();
 
     agg::trans_affine mtx;
     mtx *= agg::trans_affine_rotation(angleRad);
@@ -1445,7 +1449,7 @@ void AGGRenderer::DrawString(agg_context*     cxt,
     unsigned int* text;
 #ifdef _WIN32
     // TODO: check if we really need to convert UCS-2 to UCS-4 on Windows or
-    // we can just use the characters directly from the wchar_t array
+    //       if we can just use the characters directly from the wchar_t array
     lstring ltext = UnicodeString::UTF16toUTF32(s.c_str());
     text = (unsigned int*)ltext.c_str();
 #else
@@ -1473,9 +1477,9 @@ void AGGRenderer::DrawString(agg_context*     cxt,
 void AGGRenderer::MeasureString(const RS_String& s,
                                 double           height,
                                 const RS_Font*   font,
-                                double           /*angle*/,
-                                RS_F_Point*      res,       //assumes 4 points in this array
-                                float*           offsets)   //assumes length equals 2 * length of string
+                                double           /*angleRad*/,
+                                RS_F_Point*      res,       // assumes length equals 4 points
+                                float*           offsets)   // assumes length equals length of string
 {
     // If the supplied font height is too large AGG will run out of memory.  We'll
     // use a reasonable font height for measuring, and then scale the result.
@@ -1516,16 +1520,33 @@ void AGGRenderer::MeasureString(const RS_String& s,
         c()->last_font_height = measureHeight;
     }
 
-//  c()->feng.width(width);
+//  double width = c()->feng.width();
+
+    // Do any BIDI conversion.  If the offset array is supplied (i.e. for path
+    // text) then assume the conversion was already performed on the input string.
+    const RS_String* pStrToUse;
+    if (offsets)
+    {
+        pStrToUse = &s;
+    }
+    else
+    {
+        m_bidiConverter.SetOriginalString(s);
+        const RS_String& sConv = m_bidiConverter.ConvertedString();
+
+        // the converter owns the string, so we can temporarily hold on to the
+        // pointer
+        pStrToUse = &sConv;
+    }
 
     unsigned int* text;
 #ifdef _WIN32
     // TODO: check if we really need to convert UCS-2 to UCS-4 on Windows or
-    // we can just use the characters directly from the wchar_t array
-    lstring ltext = UnicodeString::UTF16toUTF32(s.c_str());
+    //       if we can just use the characters directly from the wchar_t array
+    lstring ltext = UnicodeString::UTF16toUTF32(pStrToUse->c_str());
     text = (unsigned int*)ltext.c_str();
 #else
-    text = (unsigned int*)s.c_str();
+    text = (unsigned int*)pStrToUse->c_str();
 #endif
 
     double left = 0;
@@ -2162,7 +2183,7 @@ void AGGRenderer::DrawScreenPolygon(agg_context* c, LineBuffer* polygon, const S
         if(c->bPolyClip)
         {
             c->clip_ren.color(agg::argb8_packed(color));
-            agg::render_scanlines(c->ras, c->sl, c->clip_ren );
+            agg::render_scanlines(c->ras, c->sl, c->clip_ren);
         }
         else
             agg::render_scanlines_aa_solid(c->ras, c->sl, c->ren, agg::argb8_packed(color));
@@ -2526,14 +2547,19 @@ void AGGRenderer::RenderWithTransform(mg_rendering_buffer& src, agg_context* cxt
 }
 
 
-void AGGRenderer::DrawScreenText(const RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy, RS_F_Point* path, int npts, double param_position )
+void AGGRenderer::DrawScreenText(const RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy,
+                                 RS_F_Point* path, int npts, double param_position)
 {
     if (path)
     {
-        // path text - we cannot modify the cached RS_TextMetrics so we create a
-        // local one and use it to layout the path text.
+        // path text - we need to do BIDI conversion before we process the text
+        m_bidiConverter.SetOriginalString(tm.text);
+        const RS_String& sConv = m_bidiConverter.ConvertedString();
+
+        // we cannot modify the cached RS_TextMetrics so we create a local one
+        // and use it to layout the path text
         RS_TextMetrics tm_local;
-        if (GetTextMetrics(tm.text, tdef, tm_local, true))
+        if (GetTextMetrics(sConv, tdef, tm_local, true))
         {
             // TODO: need computed seglens rather than NULL to make things faster
             if (LayoutPathText(tm_local, (RS_F_Point*)path, npts, NULL, param_position, tdef.valign(), 0.5))
@@ -2580,7 +2606,7 @@ void AGGRenderer::AddDWFContent(RS_InputStream*  in,
         DWFPackageReader oReader(rsin, passwd.c_str());
 
         DWFPackageReader::tPackageInfo tInfo;
-        oReader.getPackageInfo( tInfo );
+        oReader.getPackageInfo(tInfo);
 
         if (tInfo.eType != DWFPackageReader::eDWFPackage)
             return; // throw exception?
@@ -2677,7 +2703,7 @@ void AGGRenderer::AddDWFContent(RS_InputStream*  in,
             DWFCORE_FREE_OBJECT(iSection);
         }
     }
-    catch (DWFException& )
+    catch (DWFException&)
     {
     }
 }
@@ -2983,8 +3009,8 @@ void AGGRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
 
         if (cset->total_points() == 4)
         {
-            alternate_extent.minx = rs_min( pts[0].m_x, pts[2].m_x);
-            alternate_extent.maxx = rs_max( pts[0].m_x, pts[2].m_x);
+            alternate_extent.minx = rs_min(pts[0].m_x, pts[2].m_x);
+            alternate_extent.maxx = rs_max(pts[0].m_x, pts[2].m_x);
 
             alternate_extent.miny = rs_min(pts[0].m_y, pts[2].m_y);
             alternate_extent.maxy = rs_max(pts[0].m_y, pts[2].m_y);
@@ -3015,7 +3041,7 @@ void AGGRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
                 else
                 {
                     double newwid2 = 0.5 * dstext.height() * arsrc;
-                    double oldcx = 0.5 * ( dstext.minx + dstext.maxx);
+                    double oldcx = 0.5 * (dstext.minx + dstext.maxx);
                     RS_Bounds newdst(oldcx - newwid2, dstext.miny, oldcx + newwid2, dstext.maxy);
                     trans.SetDstBounds(newdst);
                 }
