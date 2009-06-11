@@ -19,7 +19,7 @@
 // Implementation of the BIDIConverter class which creates a string
 // used for LTR display purposes from a bidi-unicode string.
 
-
+#include "stdafx.h"
 #include "BIDIConverter.h"
 #include <stack>
 
@@ -324,14 +324,14 @@ int BIDIConverter::GetStartingBaseLevel()
     for (unsigned int i=0; i<m_ClassificationArray.size(); ++i)
     {
         int nCharacter = m_ClassificationArray[i];
-        if (ECharacterType::L == nCharacter || ECharacterType::LRO == nCharacter)
+        if (ECharacterTypes::L == nCharacter || ECharacterTypes::LRO == nCharacter)
         {
             return 0;
         }
 
-        if (ECharacterType::R   == nCharacter ||
-            ECharacterType::RLO == nCharacter ||
-            ECharacterType::AL  == nCharacter)
+        if (ECharacterTypes::R   == nCharacter ||
+            ECharacterTypes::RLO == nCharacter ||
+            ECharacterTypes::AL  == nCharacter)
         {
             return 1;
         }
@@ -369,7 +369,7 @@ bool BIDIConverter::ClassifyCharacters()
 
 
 // classify character in input str
-BIDIConverter::ECharacterType BIDIConverter::ClassifyCharacter(wchar_t cChar)
+ECharacterType BIDIConverter::ClassifyCharacter(wchar_t cChar)
 {
     return ClassifyCharacter(static_cast<unsigned int>(cChar));
 }
@@ -377,19 +377,19 @@ BIDIConverter::ECharacterType BIDIConverter::ClassifyCharacter(wchar_t cChar)
 
 // This code is constructed from the DerivedBidiClass.txt.  At a
 // certain point it might be reasonable to make it a little less cheesy.
-BIDIConverter::ECharacterType BIDIConverter::ClassifyCharacter(unsigned int cChar)
+ECharacterType BIDIConverter::ClassifyCharacter(unsigned int cChar)
 {
     // default for the vast majority of cases.
-    ECharacterType eRetVal = ECharacterType::L;
+    ECharacterType eRetVal = ECharacterTypes::L;
 
     // check special embedding marks
     if (cChar >= 8234 && cChar <= 8238)
     {
-             if (0x202A == cChar) eRetVal = ECharacterType::LRE;
-        else if (0x202B == cChar) eRetVal = ECharacterType::RLE;
-        else if (0x202C == cChar) eRetVal = ECharacterType::PDF;
-        else if (0x202D == cChar) eRetVal = ECharacterType::LRO;
-        else if (0x202E == cChar) eRetVal = ECharacterType::RLO;
+             if (0x202A == cChar) eRetVal = ECharacterTypes::LRE;
+        else if (0x202B == cChar) eRetVal = ECharacterTypes::RLE;
+        else if (0x202C == cChar) eRetVal = ECharacterTypes::PDF;
+        else if (0x202D == cChar) eRetVal = ECharacterTypes::LRO;
+        else if (0x202E == cChar) eRetVal = ECharacterTypes::RLO;
     }
     else // check for European separator
     if (   (cChar == 43)
@@ -403,7 +403,7 @@ BIDIConverter::ECharacterType BIDIConverter::ClassifyCharacter(unsigned int cCha
         || (cChar == 65291)
         || (cChar == 65293))
     {
-        eRetVal = ECharacterType::ES;
+        eRetVal = ECharacterTypes::ES;
     }
     else // check for European number
     if (   (cChar >= 48 && cChar <= 57)
@@ -417,7 +417,7 @@ BIDIConverter::ECharacterType BIDIConverter::ClassifyCharacter(unsigned int cCha
         || (cChar >= 65296 && cChar <= 65305)
         || (cChar >= 120782 && cChar <= 120831)) // switched to hex at this point; probably should resolve above
     {
-        eRetVal = ECharacterType::EN;
+        eRetVal = ECharacterTypes::EN;
     }
     else // check for European terminator
     if (   (cChar >= 0x23 && cChar <= 0x25)
@@ -440,7 +440,7 @@ BIDIConverter::ECharacterType BIDIConverter::ClassifyCharacter(unsigned int cCha
         || (cChar >= 0xFFE0 && cChar <= 0xFFE1)
         || (cChar >= 0xFFE5 && cChar <= 0xFFE6))
     {
-        eRetVal = ECharacterType::ET;
+        eRetVal = ECharacterTypes::ET;
     }
     else // check for Arabic number
     if (   (cChar >= 0x600 && cChar <= 0x0603)
@@ -448,7 +448,7 @@ BIDIConverter::ECharacterType BIDIConverter::ClassifyCharacter(unsigned int cCha
         || (cChar >= 0x66B && cChar <= 0x066C)
         || (cChar == 0x6DD))
     {
-        eRetVal = ECharacterType::AN;
+        eRetVal = ECharacterTypes::AN;
     }
     else // check for Common separator
     if (   (cChar == 0x2C)
@@ -465,7 +465,7 @@ BIDIConverter::ECharacterType BIDIConverter::ClassifyCharacter(unsigned int cCha
         || (cChar >= 0xFF0E && cChar <= 0xFF0F)
         || (cChar == 0xFF1A))
     {
-        eRetVal = ECharacterType::CS;
+        eRetVal = ECharacterTypes::CS;
     }
     else // check for paragraph separator
     if (   (cChar == 0xA)
@@ -474,14 +474,14 @@ BIDIConverter::ECharacterType BIDIConverter::ClassifyCharacter(unsigned int cCha
         || (cChar == 0x85)
         || (cChar == 0x2029))
     {
-        eRetVal = ECharacterType::B;
+        eRetVal = ECharacterTypes::B;
     }
     else // check for segment separator
     if (   (cChar == 0x9)
         || (cChar == 0xB)
         || (cChar == 0x1F))
     {
-        eRetVal = ECharacterType::S;
+        eRetVal = ECharacterTypes::S;
     }
     else // check for white space
     if (   (cChar == 0xC)
@@ -493,7 +493,7 @@ BIDIConverter::ECharacterType BIDIConverter::ClassifyCharacter(unsigned int cCha
         || (cChar == 0x205F)
         || (cChar == 0x3000))
     {
-        eRetVal = ECharacterType::WS;
+        eRetVal = ECharacterTypes::WS;
     }
     else // check for Boundary Neutral
     if (   (cChar >= 0x0 && cChar <= 0x8)
@@ -526,7 +526,7 @@ BIDIConverter::ECharacterType BIDIConverter::ClassifyCharacter(unsigned int cCha
         || (cChar >= 0xFFFFE && cChar <= 0xFFFFF)
         || (cChar >= 0x10FFFE && cChar <= 0x10FFFF))
     {
-        eRetVal = ECharacterType::BN;
+        eRetVal = ECharacterTypes::BN;
     }
     else // check for non-spacing mark
     if (   (cChar >= 0x300 && cChar <= 0x036F)
@@ -692,7 +692,7 @@ BIDIConverter::ECharacterType BIDIConverter::ClassifyCharacter(unsigned int cCha
         || (cChar >= 0x1D242 && cChar <= 0x1D244)
         || (cChar >= 0xE0100 && cChar <= 0xE01EF))
     {
-        eRetVal = ECharacterType::NSM;
+        eRetVal = ECharacterTypes::NSM;
     }
     else // check for Other Neutral (note: these values were programmatically extracted from derivedbidi.txt)
     if (   (cChar >= 0x0021 && cChar <= 0x0022)
@@ -1136,7 +1136,7 @@ BIDIConverter::ECharacterType BIDIConverter::ClassifyCharacter(unsigned int cCha
         || (cChar >= 0x1F000 && cChar <= 0x1F02B)
         || (cChar >= 0x1F030 && cChar <= 0x1F093))
     {
-        eRetVal = ECharacterType::ON;
+        eRetVal = ECharacterTypes::ON;
     }
     else
     // check if in default AL range
@@ -1144,7 +1144,7 @@ BIDIConverter::ECharacterType BIDIConverter::ClassifyCharacter(unsigned int cCha
         || (cChar >= 0xFB50 && cChar <= 0xFDFF)
         || (cChar >= 0xFE70 && cChar <= 0xFEFF))
     {
-        eRetVal = ECharacterType::AL;
+        eRetVal = ECharacterTypes::AL;
     }
     else
     // check if in default R range
@@ -1154,7 +1154,7 @@ BIDIConverter::ECharacterType BIDIConverter::ClassifyCharacter(unsigned int cCha
         || (cChar >= 0x10800 && cChar <= 0x10FFF)
         || (cChar == 0x200F))
     {
-        eRetVal = ECharacterType::R;
+        eRetVal = ECharacterTypes::R;
     }
 
     return eRetVal;
@@ -1175,7 +1175,7 @@ int BIDIConverter::ResolveExplicit(int nBaseLevel)
     // pushes beyond the maximum are ignored; this keeps track of them
     int nIgnorePop = 0;
 
-    std::pair<int, ECharacterType> prCurrentLevel = std::pair<int, ECharacterType>(nBaseLevel, ECharacterType::N);
+    std::pair<int, ECharacterType> prCurrentLevel = std::pair<int, ECharacterType>(nBaseLevel, ECharacterTypes::N);
     stkLevel.push(prCurrentLevel);
 
     // iterate input string and set levels based on explicit direction markers
@@ -1185,8 +1185,8 @@ int BIDIConverter::ResolveExplicit(int nBaseLevel)
         switch (m_ClassificationArray[i])
         {
             // handle cases of LTR embedding and override
-            case ECharacterType::LRO:
-            case ECharacterType::LRE:
+            case ECharacterTypes::LRO:
+            case ECharacterTypes::LRE:
             {
                 if (BIDIConverter::_MaxNestedLevel > prCurrentLevel.first)
                 {
@@ -1194,13 +1194,13 @@ int BIDIConverter::ResolveExplicit(int nBaseLevel)
                     {
                         (/*odd*/prCurrentLevel.first & 1)? prCurrentLevel.first += 1 : prCurrentLevel.first += 2;
                     }
-                    if (ECharacterType::LRO == m_ClassificationArray[i])
+                    if (ECharacterTypes::LRO == m_ClassificationArray[i])
                     {
-                        prCurrentLevel.second = ECharacterType::L;
+                        prCurrentLevel.second = ECharacterTypes::L;
                     }
                     else
                     {
-                        prCurrentLevel.second = ECharacterType::N;
+                        prCurrentLevel.second = ECharacterTypes::N;
                     }
                     stkLevel.push(prCurrentLevel);
                 }
@@ -1210,15 +1210,15 @@ int BIDIConverter::ResolveExplicit(int nBaseLevel)
                 }
 
                 // set this as a neutral boundary
-                m_ClassificationArray[i] = ECharacterType::BN;
+                m_ClassificationArray[i] = ECharacterTypes::BN;
                 m_Levels[i] = prCurrentLevel.first;
 
                 break;
             }
 
             // handle cases of RTL embedding and override
-            case ECharacterType::RLO:
-            case ECharacterType::RLE:
+            case ECharacterTypes::RLO:
+            case ECharacterTypes::RLE:
             {
                 if (BIDIConverter::_MaxNestedLevel > prCurrentLevel.first)
                 {
@@ -1226,13 +1226,13 @@ int BIDIConverter::ResolveExplicit(int nBaseLevel)
                     {
                         (/*odd*/prCurrentLevel.first & 1)? prCurrentLevel.first += 2: prCurrentLevel.first += 1;
                     }
-                    if (ECharacterType::RLO == m_ClassificationArray[i])
+                    if (ECharacterTypes::RLO == m_ClassificationArray[i])
                     {
-                        prCurrentLevel.second = ECharacterType::R;
+                        prCurrentLevel.second = ECharacterTypes::R;
                     }
                     else
                     {
-                        prCurrentLevel.second = ECharacterType::N;
+                        prCurrentLevel.second = ECharacterTypes::N;
                     }
                     stkLevel.push(prCurrentLevel);
                 }
@@ -1242,13 +1242,13 @@ int BIDIConverter::ResolveExplicit(int nBaseLevel)
                 }
 
                 // set this as a neutral boundary
-                m_ClassificationArray[i] = ECharacterType::BN;
+                m_ClassificationArray[i] = ECharacterTypes::BN;
 
                 break;
             }
 
             // end of previous embedding/override
-            case ECharacterType::PDF:
+            case ECharacterTypes::PDF:
             {
                 if (0 < nIgnorePop)
                 {
@@ -1265,7 +1265,7 @@ int BIDIConverter::ResolveExplicit(int nBaseLevel)
                 }
 
                 // set this as a neutral boundary
-                m_ClassificationArray[i] = ECharacterType::BN;
+                m_ClassificationArray[i] = ECharacterTypes::BN;
 
                 break;
             }
@@ -1275,7 +1275,7 @@ int BIDIConverter::ResolveExplicit(int nBaseLevel)
                 // These are all the other characters.  For now if there was an
                 // override then set the character direction for that override,
                 // otherwise leave for further processing.
-                if (ECharacterType::N != prCurrentLevel.second)
+                if (ECharacterTypes::N != prCurrentLevel.second)
                 {
                     m_ClassificationArray[i] = prCurrentLevel.second;
                 }
@@ -1320,7 +1320,7 @@ int BIDIConverter::ResolveWeak(int nBaseLevel)
         //          (L or R depending on even or odd level
         while (i < m_ClassificationArray.size() && indexLevel.first == m_Levels[i])
         {
-            if (ECharacterType::NSM == m_ClassificationArray[i])
+            if (ECharacterTypes::NSM == m_ClassificationArray[i])
             {
                 m_ClassificationArray[i] = ResolveWeakNSM(i, indexLevel.first, indexLevel.second);
             }
@@ -1336,7 +1336,7 @@ int BIDIConverter::ResolveWeak(int nBaseLevel)
         // rule W2: replace EN with either EN or AN depending on preceding characters
         for (; indexLevel.second < nHardIndexCount; indexLevel.second++, i++)
         {
-            if (ECharacterType::EN == m_ClassificationArray[i])
+            if (ECharacterTypes::EN == m_ClassificationArray[i])
             {
                 m_ClassificationArray[i] = ResolveWeakEN(i, indexLevel.second);
             }
@@ -1347,9 +1347,9 @@ int BIDIConverter::ResolveWeak(int nBaseLevel)
         // rule W3: replace all AL to R
         for (; indexLevel.second < nHardIndexCount; indexLevel.second++, i++)
         {
-            if (ECharacterType::AL == m_ClassificationArray[i])
+            if (ECharacterTypes::AL == m_ClassificationArray[i])
             {
-                m_ClassificationArray[i] = ECharacterType::R;
+                m_ClassificationArray[i] = ECharacterTypes::R;
             }
         }
         i -= indexLevel.second;
@@ -1358,8 +1358,8 @@ int BIDIConverter::ResolveWeak(int nBaseLevel)
         // rule W4: resolve European and common separators between two European numbers
         for (; indexLevel.second < nHardIndexCount; indexLevel.second++, i++)
         {
-            if (ECharacterType::ES == m_ClassificationArray[i] ||
-                ECharacterType::CS == m_ClassificationArray[i])
+            if (ECharacterTypes::ES == m_ClassificationArray[i] ||
+                ECharacterTypes::CS == m_ClassificationArray[i])
             {
                 m_ClassificationArray[i] = ResolveWeakSeperator(i, indexLevel.first, indexLevel.second, m_ClassificationArray[i]);
             }
@@ -1371,7 +1371,7 @@ int BIDIConverter::ResolveWeak(int nBaseLevel)
         //          changes to all European numbers
         for (; indexLevel.second < nHardIndexCount; indexLevel.second++, i++)
         {
-            if (ECharacterType::ET == m_ClassificationArray[i])
+            if (ECharacterTypes::ET == m_ClassificationArray[i])
             {
                 m_ClassificationArray[i] = ResolveWeakET(i, indexLevel.first);
             }
@@ -1383,11 +1383,11 @@ int BIDIConverter::ResolveWeak(int nBaseLevel)
         for (; indexLevel.second < nHardIndexCount; indexLevel.second++, i++)
         {
             ECharacterType eCharType = m_ClassificationArray[i];
-            if (ECharacterType::ET == eCharType ||
-                ECharacterType::ES == eCharType ||
-                ECharacterType::CS == eCharType)
+            if (ECharacterTypes::ET == eCharType ||
+                ECharacterTypes::ES == eCharType ||
+                ECharacterTypes::CS == eCharType)
             {
-                m_ClassificationArray[i] = ECharacterType::ON;
+                m_ClassificationArray[i] = ECharacterTypes::ON;
             }
         }
         i -= indexLevel.second;
@@ -1399,7 +1399,7 @@ int BIDIConverter::ResolveWeak(int nBaseLevel)
         //          to L.
         for (; indexLevel.second < nHardIndexCount; indexLevel.second++, i++)
         {
-            if (ECharacterType::EN == m_ClassificationArray[i])
+            if (ECharacterTypes::EN == m_ClassificationArray[i])
             {
                 m_ClassificationArray[i] = ResolveWeakENFinal(i, indexLevel.first, indexLevel.second);
             }
@@ -1412,12 +1412,12 @@ int BIDIConverter::ResolveWeak(int nBaseLevel)
 
 // implements rule W1: per run, NSM gets the type of preceding characters
 // or SoR (L or R depending on even or odd level)
-BIDIConverter::ECharacterType BIDIConverter::ResolveWeakNSM(int nIndex, int nLevel, int nLevelIndex)
+ECharacterType BIDIConverter::ResolveWeakNSM(int nIndex, int nLevel, int nLevelIndex)
 {
-    _ASSERT(ECharacterType::NSM == m_ClassificationArray[nIndex]);
+    _ASSERT(ECharacterTypes::NSM == m_ClassificationArray[nIndex]);
 
     if (0 == nLevelIndex)
-        return (nLevel & 1)? ECharacterType::R : ECharacterType::L;
+        return (nLevel & 1)? ECharacterTypes::R : ECharacterTypes::L;
 
     return m_ClassificationArray[nIndex-1];
 
@@ -1425,38 +1425,38 @@ BIDIConverter::ECharacterType BIDIConverter::ResolveWeakNSM(int nIndex, int nLev
 
 
 // implements rule W2: replace EN with either EN or AN depending on preceding characters
-BIDIConverter::ECharacterType BIDIConverter::ResolveWeakEN(int nIndex, int nLevelIndex)
+ECharacterType BIDIConverter::ResolveWeakEN(int nIndex, int nLevelIndex)
 {
-    _ASSERT(ECharacterType::EN == m_ClassificationArray[nIndex]);
+    _ASSERT(ECharacterTypes::EN == m_ClassificationArray[nIndex]);
 
     int nWorkingLevelIndex = nLevelIndex;
     int nWorkingIndex = nIndex;
     while (nWorkingLevelIndex >= 0)
     {
         if (0 == nWorkingLevelIndex)
-            return ECharacterType::EN;
+            return ECharacterTypes::EN;
 
         switch (m_ClassificationArray[nWorkingIndex])
         {
-        case ECharacterType::R:
-        case ECharacterType::L:
-            return ECharacterType::EN;
+        case ECharacterTypes::R:
+        case ECharacterTypes::L:
+            return ECharacterTypes::EN;
             break;
-        case ECharacterType::AL:
-            return ECharacterType::AN;
+        case ECharacterTypes::AL:
+            return ECharacterTypes::AN;
             break;
         }
         nWorkingLevelIndex--;
         nWorkingIndex--;
     }
 
-    return ECharacterType::EN;
+    return ECharacterTypes::EN;
 }
 
 
 // implements rule W4: resolve European and common seperators between two
 // European numbers
-BIDIConverter::ECharacterType BIDIConverter::ResolveWeakSeperator(int nIndex, int nLevel, int nLevelIndex, ECharacterType inputType)
+ECharacterType BIDIConverter::ResolveWeakSeperator(int nIndex, int nLevel, int nLevelIndex, ECharacterType inputType)
 {
     ECharacterType eRetType = inputType;
 
@@ -1470,13 +1470,13 @@ BIDIConverter::ECharacterType BIDIConverter::ResolveWeakSeperator(int nIndex, in
 
     int nType = (m_ClassificationArray[nIndex-1] & m_ClassificationArray[nIndex + 1]);
 
-    if (ECharacterType::AN == nType)
+    if (ECharacterTypes::AN == nType)
     {
-        eRetType = ECharacterType::AN;
+        eRetType = ECharacterTypes::AN;
     }
-    else if (ECharacterType::EN == nType)
+    else if (ECharacterTypes::EN == nType)
     {
-        eRetType = ECharacterType::EN;
+        eRetType = ECharacterTypes::EN;
     }
 
     return eRetType;
@@ -1485,19 +1485,19 @@ BIDIConverter::ECharacterType BIDIConverter::ResolveWeakSeperator(int nIndex, in
 
 // implements rule W5: a sequence of European terminators adjacent to European
 // numbers changes to all European numbers
-BIDIConverter::ECharacterType BIDIConverter::ResolveWeakET(int nIndex, int nLevel)
+ECharacterType BIDIConverter::ResolveWeakET(int nIndex, int nLevel)
 {
-    _ASSERT(ECharacterType::ET == m_ClassificationArray[nIndex]);
+    _ASSERT(ECharacterTypes::ET == m_ClassificationArray[nIndex]);
     int nWalker = nIndex + 1;
 
     // search forward for first occurance of character after ET
     while ((nWalker < (int)m_ClassificationArray.size()) && nLevel == m_Levels[nWalker])
     {
-        if (ECharacterType::EN == m_ClassificationArray[nWalker])
-            return ECharacterType::EN;
+        if (ECharacterTypes::EN == m_ClassificationArray[nWalker])
+            return ECharacterTypes::EN;
 
         // if something other than a terminator then it doesn't count
-        if (ECharacterType::ET != m_ClassificationArray[nWalker])
+        if (ECharacterTypes::ET != m_ClassificationArray[nWalker])
             break;
 
         nWalker++;
@@ -1507,24 +1507,24 @@ BIDIConverter::ECharacterType BIDIConverter::ResolveWeakET(int nIndex, int nLeve
     nWalker = nIndex - 1;
     while (nWalker >= 0 && nLevel != m_Levels[nWalker])
     {
-        if (ECharacterType::EN == m_ClassificationArray[nWalker])
-            return ECharacterType::EN;
+        if (ECharacterTypes::EN == m_ClassificationArray[nWalker])
+            return ECharacterTypes::EN;
 
         // if something other than a terminator then it doesn't count
-        if (ECharacterType::ET != m_ClassificationArray[nWalker])
+        if (ECharacterTypes::ET != m_ClassificationArray[nWalker])
             break;
 
         nWalker--;
     }
 
-    return ECharacterType::ET;
+    return ECharacterTypes::ET;
 }
 
 
 // implements rule W7: replace EN with either L if found
-BIDIConverter::ECharacterType BIDIConverter::ResolveWeakENFinal(int nIndex, int nLevel, int nLevelIndex)
+ECharacterType BIDIConverter::ResolveWeakENFinal(int nIndex, int nLevel, int nLevelIndex)
 {
-    _ASSERT(ECharacterType::EN == m_ClassificationArray[nIndex]);
+    _ASSERT(ECharacterTypes::EN == m_ClassificationArray[nIndex]);
 
     int nWorkingLevelIndex = nLevelIndex;
     int nWorkingIndex = nIndex;
@@ -1532,23 +1532,23 @@ BIDIConverter::ECharacterType BIDIConverter::ResolveWeakENFinal(int nIndex, int 
     {
         // if at SOR then use embedded level
         if (0 == nWorkingLevelIndex)
-            return (nLevel & 1)? ECharacterType::EN : ECharacterType::L;
+            return (nLevel & 1)? ECharacterTypes::EN : ECharacterTypes::L;
 
         // look for strong direction in previous characters
         switch (m_ClassificationArray[nWorkingIndex])
         {
-        case ECharacterType::R:
-            return ECharacterType::EN;
+        case ECharacterTypes::R:
+            return ECharacterTypes::EN;
             break;
-        case ECharacterType::L:
-            return ECharacterType::L;
+        case ECharacterTypes::L:
+            return ECharacterTypes::L;
             break;
         }
         nWorkingLevelIndex--;
         nWorkingIndex--;
     }
 
-    return ECharacterType::EN;
+    return ECharacterTypes::EN;
 }
 
 
@@ -1578,8 +1578,8 @@ int BIDIConverter::ResolveNeutral(int nBaseLevel)
         //          strong text
         while (i < m_ClassificationArray.size() && indexLevel.first == m_Levels[i])
         {
-            if (ECharacterType::ON == m_ClassificationArray[i] ||
-                ECharacterType::WS == m_ClassificationArray[i])
+            if (ECharacterTypes::ON == m_ClassificationArray[i] ||
+                ECharacterTypes::WS == m_ClassificationArray[i])
             {
                 m_ClassificationArray[i] = ResolveNeutralChar(i, indexLevel.first);
             }
@@ -1593,12 +1593,12 @@ int BIDIConverter::ResolveNeutral(int nBaseLevel)
 
 
 // resolve neutral chars in accordance with N1 and N2
-BIDIConverter::ECharacterType BIDIConverter::ResolveNeutralChar(int nIndex, int nLevel)
+ECharacterType BIDIConverter::ResolveNeutralChar(int nIndex, int nLevel)
 {
-    _ASSERT(ECharacterType::N == m_ClassificationArray[nIndex] ||
-            ECharacterType::WS == m_ClassificationArray[nIndex]);
+    _ASSERT(ECharacterTypes::N == m_ClassificationArray[nIndex] ||
+            ECharacterTypes::WS == m_ClassificationArray[nIndex]);
 
-    ECharacterType eRetVal = (nLevel & 1)? ECharacterType::R : ECharacterType::L;
+    ECharacterType eRetVal = (nLevel & 1)? ECharacterTypes::R : ECharacterTypes::L;
     ECharacterType eRightSide = eRetVal;
     ECharacterType eLeftSide = eRetVal;
     int nWalker = nIndex + 1;
@@ -1607,8 +1607,8 @@ BIDIConverter::ECharacterType BIDIConverter::ResolveNeutralChar(int nIndex, int 
     // search forward for first occurance of character after ET
     while (nWalker < nArraySize && nLevel == m_Levels[nWalker])
     {
-        if (ECharacterType::N  != m_ClassificationArray[nWalker] &&
-            ECharacterType::WS != m_ClassificationArray[nWalker])
+        if (ECharacterTypes::N  != m_ClassificationArray[nWalker] &&
+            ECharacterTypes::WS != m_ClassificationArray[nWalker])
         {
             eRightSide = m_ClassificationArray[nWalker];
             break;
@@ -1620,8 +1620,8 @@ BIDIConverter::ECharacterType BIDIConverter::ResolveNeutralChar(int nIndex, int 
     nWalker = nIndex -1;
     while (nWalker > 0 && nLevel == m_Levels[nWalker])
     {
-        if (ECharacterType::N  != m_ClassificationArray[nWalker] &&
-            ECharacterType::WS != m_ClassificationArray[nWalker])
+        if (ECharacterTypes::N  != m_ClassificationArray[nWalker] &&
+            ECharacterTypes::WS != m_ClassificationArray[nWalker])
         {
             eLeftSide = m_ClassificationArray[nWalker];
             break;
@@ -1630,10 +1630,10 @@ BIDIConverter::ECharacterType BIDIConverter::ResolveNeutralChar(int nIndex, int 
     }
 
     // remaining numbers are considered Right
-    if (ECharacterType::EN == eRightSide || ECharacterType::AN == eRightSide)
-        eRightSide = ECharacterType::R;
-    if (ECharacterType::EN == eLeftSide || ECharacterType::AN == eLeftSide)
-        eLeftSide = ECharacterType::R;
+    if (ECharacterTypes::EN == eRightSide || ECharacterTypes::AN == eRightSide)
+        eRightSide = ECharacterTypes::R;
+    if (ECharacterTypes::EN == eLeftSide || ECharacterTypes::AN == eLeftSide)
+        eLeftSide = ECharacterTypes::R;
 
     // if surrounding text has the same direction
     if (eRightSide == eLeftSide)
@@ -1654,9 +1654,9 @@ int BIDIConverter::ResolveImplied()
         if (m_Levels[i] & 1)
         {
             // if LTR characters are on an odd level, move them up
-            if (ECharacterType::EN == eChar ||
-                ECharacterType::AN == eChar ||
-                ECharacterType::L  == eChar)
+            if (ECharacterTypes::EN == eChar ||
+                ECharacterTypes::AN == eChar ||
+                ECharacterTypes::L  == eChar)
             {
                 m_Levels[i] = m_Levels[i] + 1;
             }
@@ -1664,13 +1664,13 @@ int BIDIConverter::ResolveImplied()
         else
         {
             // if LTR characters are on an even level, move them up
-            if (ECharacterType::R  == eChar)
+            if (ECharacterTypes::R  == eChar)
             {
                 m_Levels[i] = m_Levels[i] + 1;
             }
             else // if they are numbers, move them up 2
-            if (ECharacterType::EN  == eChar ||
-                ECharacterType::AN  == eChar)
+            if (ECharacterTypes::EN  == eChar ||
+                ECharacterTypes::AN  == eChar)
             {
                 m_Levels[i] = m_Levels[i] + 2;
             }
@@ -1748,7 +1748,7 @@ int BIDIConverter::ParseLevels(std::vector<std::pair<int, DisplayStr> >& stringL
 {
     // parse string and levels into a usable array
     unsigned int nPos = 0;
-    while (ECharacterType::BN == m_ClassificationArray[nPos] && nPos < m_ClassificationArray.size())
+    while (ECharacterTypes::BN == m_ClassificationArray[nPos] && nPos < m_ClassificationArray.size())
         nPos++;
 
     unsigned int nIndex = nPos;
@@ -1778,7 +1778,7 @@ int BIDIConverter::ParseLevels(std::vector<std::pair<int, DisplayStr> >& stringL
             nIndex = nPos + 1;
 
             // skip boundary neutral characters
-            if (ECharacterType::BN == m_ClassificationArray[nPos + 1])
+            if (ECharacterTypes::BN == m_ClassificationArray[nPos + 1])
             {
                 nIndex++;
                 nPos++;

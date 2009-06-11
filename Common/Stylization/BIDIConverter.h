@@ -18,7 +18,6 @@
 #ifndef BIDICONVERTER_H_
 #define BIDICONVERTER_H_
 
-#include "stdafx.h"
 #include "StylizationAPI.h"
 #include "StylizationDefs.h"
 #include <vector>
@@ -29,17 +28,11 @@
 #pragma message("!!WARNING!! Attempting to use BIDIConverter.h in a non-UNICODE environment")
 #endif
 
-//===========================================================================
-// various typedefs needed for the algorithm
-typedef std::wstring DisplayStr;
-typedef std::map<unsigned int, std::vector<unsigned int> > ShapeGlyphs;
-typedef std::map<unsigned int, unsigned int> MirrorGlyphs;
-
 
 //===========================================================================
-// The BIDIConverter class is used to create a LTR ordering of bi-directional
-// unicode strings for the purpose of display.
-class BIDIConverter
+// various enums and typedefs needed for the algorithm
+
+namespace ECharacterTypes
 {
     // enum of the different directional traits unicode characters can have
     enum ECharacterType
@@ -73,7 +66,20 @@ class BIDIConverter
     };
 
     typedef std::vector<ECharacterType> BIDIClassificationArray;
+}
 
+typedef std::wstring DisplayStr;
+typedef std::map<unsigned int, std::vector<unsigned int> > ShapeGlyphs;
+typedef std::map<unsigned int, unsigned int> MirrorGlyphs;
+
+using namespace ECharacterTypes;
+
+
+//===========================================================================
+// The BIDIConverter class is used to create a LTR ordering of bi-directional
+// unicode strings for the purpose of display.
+class BIDIConverter
+{
 public:
     // default constructor
     STYLIZATION_API BIDIConverter();
