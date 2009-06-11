@@ -23,6 +23,7 @@ libMgStylization_la_SOURCES = \
   atom_impl.cpp \
   Band.cpp \
   BandData.cpp \
+  BIDIConverter.cpp \
   Color.cpp \
   DefaultStylizer.cpp \
   ExpressionFunctionArgb.cpp \
@@ -106,6 +107,7 @@ noinst_HEADERS = \
   atom_element_universe.h \
   Band.h \
   BandData.h \
+  BIDIConverter.h \
   Bounds.h \
   Color.h \
   CSysTransformer.h \

@@ -2627,10 +2627,14 @@ void DWFRenderer::DrawScreenText(const RS_TextMetrics&  tm,
 {
     if (path)
     {
+        // path text - we need to do BIDI conversion before we process the text
+        m_bidiConverter.SetOriginalString(tm.text);
+        const RS_String& sConv = m_bidiConverter.ConvertedString();
+
         // we cannot modify the cached RS_TextMetrics so we create a local one
         // and use it to layout the path text
         RS_TextMetrics tm_local;
-        if (GetTextMetrics(tm.text, tdef, tm_local, true))
+        if (GetTextMetrics(sConv, tdef, tm_local, true))
         {
             // TODO: need computed seglens rather than NULL to make things faster
             if (LayoutPathText(tm_local, (RS_F_Point*)path, npts, NULL, param_position, tdef.valign(), 0.5))
@@ -2940,11 +2944,28 @@ void DWFRenderer::MeasureString(const RS_String& s,
     double measureHeight = rs_min(5000.0, height);
     double measureScale = height / measureHeight;
 
+    // Do any BIDI conversion.  If the offset array is supplied (i.e. for path
+    // text) then assume the conversion was already performed on the input string.
+    const RS_String* pStrToUse;
+    if (offsets)
+    {
+        pStrToUse = &s;
+    }
+    else
+    {
+        m_bidiConverter.SetOriginalString(s);
+        const RS_String& sConv = m_bidiConverter.ConvertedString();
+
+        // the converter owns the string, so we can temporarily hold on to the
+        // pointer
+        pStrToUse = &sConv;
+    }
+
     //convert input to UTF8, which is what GD uses
-    size_t len = s.length();
+    size_t len = pStrToUse->length();
     size_t lenbytes = len*4+1;
     char* sutf8 = (char*)alloca(lenbytes);
-    DWFString::EncodeUTF8(s.c_str(), len * sizeof(wchar_t), sutf8, lenbytes);
+    DWFString::EncodeUTF8(pStrToUse->c_str(), len * sizeof(wchar_t), sutf8, lenbytes);
 
     //convert font path to utf8 also
     size_t lenf = font->m_filename.length();
@@ -3012,6 +3033,8 @@ void DWFRenderer::DrawString(const RS_String& s,
     file->desired_rendition().font().rotation() = (WT_Unsigned_Integer16)(angleRad / (2.0*M_PI) * 65536.0);
 
     file->desired_rendition().color() = Util_ConvertColor(color);
+
+    // don't do any BIDI conversion - the client viewer will handle this
 
     WT_String wtstr(Util_ConvertString(s.c_str()));
     WT_Logical_Point pt((WT_Integer32)x, (WT_Integer32)y);

@@ -938,8 +938,13 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
 
     RS_FontEngine* fe = m_serenderer->GetRSFontEngine();
 
+    // since this is path text we need to do any BIDI conversion before
+    // we process the label
+    m_bidiConverter.SetOriginalString(info.m_text);
+    const RS_String& sConv = m_bidiConverter.ConvertedString();
+
     // match the font and measure the sizes of the characters
-    if (!fe->GetTextMetrics(info.m_text, info.m_tdef, info.m_tm, true))
+    if (!fe->GetTextMetrics(sConv, info.m_tdef, info.m_tm, true))
         return false;
 
     // Find starting position of each segment in the screen space path.  We
@@ -964,7 +969,7 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
         numreps = 1;
 
     // allocate the data we need
-    info.m_numelems = info.m_text.length();
+    info.m_numelems = sConv.length();
 
     for (int irep=0; irep<numreps; ++irep)
     {

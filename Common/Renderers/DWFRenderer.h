@@ -31,6 +31,7 @@
 
 #include "SE_Renderer.h"
 #include "RS_FontEngine.h"
+#include "BIDIConverter.h"
 
 #include <vector>
 
@@ -338,6 +339,8 @@ private:
     double m_metersPerUnit;
 
     KeyEncode m_keyEncode;
+
+    BIDIConverter m_bidiConverter;
 
     EMapHatchPatternFactory* m_hatchFac;
     EMapFillPatternFactory* m_fillFac;

@@ -33,6 +33,7 @@
 #include "SE_Renderer.h"
 #include "SE_SymbolManager.h"
 #include "RS_FontEngine.h"
+#include "BIDIConverter.h"
 
 #include <vector>
 
@@ -254,6 +255,8 @@ private:
     RS_FillStyle m_selFill;
 
     LabelRendererBase* m_labeler;
+
+    BIDIConverter m_bidiConverter;
 
 public:
     RENDERERS_API static bool s_bGeneralizeData;

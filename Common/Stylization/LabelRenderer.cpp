@@ -516,9 +516,14 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
 
     RS_FontEngine* fe = m_serenderer->GetRSFontEngine();
 
+    // since this is path text we need to do any BIDI conversion before
+    // we process the label
+    m_bidiConverter.SetOriginalString(info.m_text);
+    const RS_String& sConv = m_bidiConverter.ConvertedString();
+
     // match the font and measure the sizes of the characters
     RS_TextMetrics tm;
-    if (!fe->GetTextMetrics(info.m_text, info.m_tdef, tm, true))
+    if (!fe->GetTextMetrics(sConv, info.m_tdef, tm, true))
         return false;
 
     // Find starting position of each segment in the screen space path.  We
@@ -542,7 +547,7 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
     if (!numreps)
         numreps = 1;
 
-    int numchars = (int)info.m_text.length();
+    int numchars = (int)sConv.length();
     int labels_drawn = 0; // counter for how many of the repeated labels were accepted
 
     RS_F_Point* rotatedPts = (RS_F_Point*)alloca(4 * numchars * sizeof(RS_F_Point));
