@@ -73,7 +73,7 @@ using BIDIUnicode::BIDIClassificationArray;
 using BIDIUnicode::ECharacterType;
 
 
-typedef std::map<unsigned int, std::vector<unsigned int>> ShapeGlyphs;
+typedef std::map<unsigned int, std::vector<unsigned int> > ShapeGlyphs;
 typedef std::map<unsigned int, unsigned int> MirrorGlyphs;
 
 
@@ -169,10 +169,10 @@ private:
 
     // reorders the parsed text and creates a single master string that
     // represents the converted text; implements rule L2
-    int ReorderLevel(std::vector<std::pair<int, DisplayStr>>& stringLevelVector, unsigned int nLevel);
+    int ReorderLevel(std::vector<std::pair<int, DisplayStr> >& stringLevelVector, unsigned int nLevel);
 
     // parses the string and level vector to a meaningful array of level/string pairs
-    int ParseLevels(std::vector<std::pair<int, DisplayStr>>& stringLevelVector);
+    int ParseLevels(std::vector<std::pair<int, DisplayStr> >& stringLevelVector);
 
     // quick reverse function to mirror strings
     void reverse(DisplayStr& str);

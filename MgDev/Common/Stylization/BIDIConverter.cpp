@@ -1170,7 +1170,7 @@ int BIDIConverter::ResolveExplicit(int nBaseLevel)
 
     // check input values
     _ASSERT(0 <= nBaseLevel && BIDIConverter::_MaxNestedLevel >= nBaseLevel);
-    std::stack<std::pair<int, ECharacterType>> stkLevel;
+    std::stack<std::pair<int, ECharacterType> > stkLevel;
 
     // pushes beyond the maximum are ignored; this keeps track of them
     int nIgnorePop = 0;
@@ -1693,7 +1693,7 @@ int BIDIConverter::Reorder()
     //   * any sequence of white space characters at the end of the line
 
     // parse string and levels into a usable array
-    std::vector<std::pair<int, DisplayStr>> stringLevelVector;
+    std::vector<std::pair<int, DisplayStr> > stringLevelVector;
 
     // parse the string and level vectors into something meaningful
     int nLevels = ParseLevels(stringLevelVector);
@@ -1713,7 +1713,7 @@ int BIDIConverter::Reorder()
 
 // reorders the parsed text and creates a single master string that
 // represents the converted text; implements rule L2
-int BIDIConverter::ReorderLevel(std::vector<std::pair<int, DisplayStr>>& stringLevelVector, unsigned int nLevel)
+int BIDIConverter::ReorderLevel(std::vector<std::pair<int, DisplayStr> >& stringLevelVector, unsigned int nLevel)
 {
     // flatten level passed in
     for (unsigned int i=0; i<stringLevelVector.size(); ++i)
@@ -1744,7 +1744,7 @@ int BIDIConverter::ReorderLevel(std::vector<std::pair<int, DisplayStr>>& stringL
 
 
 // parses the string and level vector to a meaningful array of level/string pairs
-int BIDIConverter::ParseLevels(std::vector<std::pair<int, DisplayStr>>& stringLevelVector)
+int BIDIConverter::ParseLevels(std::vector<std::pair<int, DisplayStr> >& stringLevelVector)
 {
     // parse string and levels into a usable array
     unsigned int nPos = 0;
