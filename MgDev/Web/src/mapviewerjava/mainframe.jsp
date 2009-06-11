@@ -602,6 +602,9 @@ String DeclareUiItems(MgWebWidgetCollection coll, String varname) throws MgExcep
 void GetRequestParameters(HttpServletRequest request)
 {
     webLayoutDefinition = request.getParameter("WEBLAYOUT");
+    if (webLayoutDefinition == null)
+        webLayoutDefinition = "";
+
     String localeParam = request.getParameter("LOCALE");
     if (localeParam != null && localeParam.length() > 0)
     {

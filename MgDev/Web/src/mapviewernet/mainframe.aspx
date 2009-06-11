@@ -596,6 +596,9 @@ String DeclareUiItems(MgWebWidgetCollection coll, String varname)
 void GetParameters(NameValueCollection parameters)
 {
     webLayoutDefinition = parameters["WEBLAYOUT"];
+    if (webLayoutDefinition == null)
+        webLayoutDefinition = "";
+    
     String localeParam = parameters["LOCALE"];
     if (localeParam != null && localeParam.Length > 0)
     {
