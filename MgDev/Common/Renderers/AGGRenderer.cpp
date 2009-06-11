@@ -1377,7 +1377,11 @@ void AGGRenderer::DrawString(const RS_String& s,
                              RS_Color&        color,
                              double           angleRad)
 {
-    DrawString(c(), s, x, y, width, height, font, color, angleRad);
+    // do BIDI conversion
+    m_bidiConverter.SetOriginalString(s);
+    const RS_String& sConv = m_bidiConverter.ConvertedString();
+
+    DrawString(c(), sConv, x, y, width, height, font, color, angleRad);
 }
 
 
@@ -1518,14 +1522,31 @@ void AGGRenderer::MeasureString(const RS_String& s,
 
 //  double width = c()->feng.width();
 
+    // Do any BIDI conversion.  If the offset array is supplied (i.e. for path
+    // text) then assume the conversion was already performed on the input string.
+    const RS_String* pStrToUse;
+    if (offsets)
+    {
+        pStrToUse = &s;
+    }
+    else
+    {
+        m_bidiConverter.SetOriginalString(s);
+        const RS_String& sConv = m_bidiConverter.ConvertedString();
+
+        // the converter owns the string, so we can temporarily hold on to the
+        // pointer
+        pStrToUse = &sConv;
+    }
+
     unsigned int* text;
 #ifdef _WIN32
     // TODO: check if we really need to convert UCS-2 to UCS-4 on Windows or
     //       if we can just use the characters directly from the wchar_t array
-    lstring ltext = UnicodeString::UTF16toUTF32(s.c_str());
+    lstring ltext = UnicodeString::UTF16toUTF32(pStrToUse->c_str());
     text = (unsigned int*)ltext.c_str();
 #else
-    text = (unsigned int*)s.c_str();
+    text = (unsigned int*)pStrToUse->c_str();
 #endif
 
     double left = 0;
@@ -2531,10 +2552,14 @@ void AGGRenderer::DrawScreenText(const RS_TextMetrics& tm, RS_TextDef& tdef, dou
 {
     if (path)
     {
+        // path text - we need to do BIDI conversion before we process the text
+        m_bidiConverter.SetOriginalString(tm.text);
+        const RS_String& sConv = m_bidiConverter.ConvertedString();
+
         // we cannot modify the cached RS_TextMetrics so we create a local one
         // and use it to layout the path text
         RS_TextMetrics tm_local;
-        if (GetTextMetrics(tm.text, tdef, tm_local, true))
+        if (GetTextMetrics(sConv, tdef, tm_local, true))
         {
             // TODO: need computed seglens rather than NULL to make things faster
             if (LayoutPathText(tm_local, (RS_F_Point*)path, npts, NULL, param_position, tdef.valign(), 0.5))
