@@ -145,42 +145,38 @@ BIDIConverter::BIDIConverter()
 }
 
 
-// public constructor that takes a unicode string and runs the
-// bidi-algorithm to construct a LTR display string
-BIDIConverter::BIDIConverter(const DisplayStr& str)
-    : m_OriginalString(str)
-    , m_ConvertedString(L"")
-    , m_Converted(false)
-    , m_Mirrored(false)
-{
-    // if it's empty then don't worry about it
-    if (m_OriginalString.length() <= 0)
-    {
-        m_Converted = true;
-    }
-    else
-    {
-        SetConvertedString();
-    }
-
-    _ASSERT(true == m_Converted);
-}
-
-
 // destructor
 BIDIConverter::~BIDIConverter()
 {
 }
 
 
-// return the original string
+// Optimized method to convert an input string.  If the string has no
+// right-to-left characters then:
+// * the method will directly return the supplied string
+// * the m_OriginalString and m_ConvertedString member variables are
+//   not updated (for performance reasons)
+const DisplayStr& BIDIConverter::ConvertString(const DisplayStr& str)
+{
+    // return the input string if no conversion is needed
+    if (!NeedsBIDIConversion(str))
+        return str;
+
+    // otherwise process the string
+    SetOriginalString(str);
+
+    return m_ConvertedString;
+}
+
+
+// returns the original string
 const DisplayStr& BIDIConverter::OriginalString()
 {
     return m_OriginalString;
 }
 
 
-// set the original string
+// sets the original string
 void BIDIConverter::SetOriginalString(const DisplayStr& str)
 {
     m_OriginalString = str;
@@ -190,7 +186,7 @@ void BIDIConverter::SetOriginalString(const DisplayStr& str)
     m_Mirrored = false;;
 
     // if it's empty then don't worry about it
-    if (m_OriginalString.length() <= 0)
+    if (m_OriginalString.empty())
     {
         m_Converted = true;
     }
@@ -280,6 +276,58 @@ void BIDIConverter::ShapeString()
 }
 
 
+// returns true if the supplied string needs to be run through the conversion algorithm
+bool BIDIConverter::NeedsBIDIConversion(const DisplayStr& str)
+{
+    const wchar_t* pStr = str.c_str();
+
+    while (*pStr)
+    {
+        unsigned int cChar = static_cast<unsigned int>(*pStr++);
+
+        // For now, do a very simple check.  If the string contains any
+        // character outside the range [0..255] then we'll BIDI convert it.
+        // The vast majority of strings have all their characters in this
+        // range, so this minimizes the performance impact for most use
+        // cases.
+        if (cChar > 0xFF)
+            return true;
+/*
+        // If we ever need this method to be more accurate then we can
+        // use the code below.
+
+        // check if in default right-to-left Arabic range
+        if (   (cChar >= 0x600 && cChar <= 0x7BF)
+            || (cChar >= 0xFB50 && cChar <= 0xFDFF)
+            || (cChar >= 0xFE70 && cChar <= 0xFEFF))
+        {
+            return true;
+        }
+    
+        // check if in default right-to-left range
+        if (   (cChar >= 0x590 && cChar <= 0x5FF)
+            || (cChar >= 0x7C0 && cChar <= 0x8FF)
+            || (cChar >= 0xFB1D && cChar <= 0xFB4F)
+            || (cChar >= 0x10800 && cChar <= 0x10FFF)
+            || (cChar == 0x200F))
+        {
+            return true;
+        }
+
+        // check for right-to-left embedding
+        if (0x202B == cChar)
+            return true;
+
+        // check for right-to-left override
+        if (0x202E == cChar)
+            return true;
+*/
+    }
+
+    return false;
+}
+
+
 // runs the algorithm and sets the converted string data member
 void BIDIConverter::SetConvertedString()
 {
@@ -292,7 +340,7 @@ void BIDIConverter::SetConvertedString()
     // single paragraph.
 
     // Get the starting base level (either 0 or 1) based on initial
-    // character.  This implementes P2 and P3 of the unicode spec.
+    // character.  This implements P2 and P3 of the unicode spec.
     int nBaseLevel = GetStartingBaseLevel();
     _ASSERT(0 == nBaseLevel || 1 == nBaseLevel);
 
