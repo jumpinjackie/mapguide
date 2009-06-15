@@ -133,7 +133,10 @@ void TestTransformMesh::TestCase_TransformMesh_LL84_to_WAG()
 {
     try
     {
-        MgCSTrans xformer(CreateCoordinateSystem(GeographicWkt_LL84), CreateCoordinateSystem(ProjectedWkt_GAW));
+        Ptr<MgCoordinateSystem> src = CreateCoordinateSystem(GeographicWkt_LL84);
+        Ptr<MgCoordinateSystem> dst = CreateCoordinateSystem(ProjectedWkt_GAW);
+
+        MgCSTrans xformer(src, dst);
 
         int gridSize = 100;
         int minGridSize = 10;
@@ -170,7 +173,10 @@ void TestTransformMesh::TestCase_TransformMesh_LL84_to_LL84()
     try
     {
         // source and dest CS are the same
-        MgCSTrans xformer(CreateCoordinateSystem(GeographicWkt_LL84), CreateCoordinateSystem(GeographicWkt_LL84));
+        Ptr<MgCoordinateSystem> src = CreateCoordinateSystem(GeographicWkt_LL84);
+        Ptr<MgCoordinateSystem> dst = CreateCoordinateSystem(GeographicWkt_LL84);
+
+        MgCSTrans xformer(src, dst);
         CPPUNIT_ASSERT(xformer.GetLinearScale() == 1);
 
         int gridSize = 100;
@@ -217,7 +223,10 @@ void TestTransformMesh::TestCase_TransformMesh_ArbXYM_to_ArbXYM()
     try
     {
         // source and dest CS are the same
-        MgCSTrans xformer(CreateCoordinateSystem(ArbitraryWkt_Meter), CreateCoordinateSystem(ArbitraryWkt_Meter));
+        Ptr<MgCoordinateSystem> src = CreateCoordinateSystem(ArbitraryWkt_Meter);
+        Ptr<MgCoordinateSystem> dst = CreateCoordinateSystem(ArbitraryWkt_Meter);
+
+        MgCSTrans xformer(src, dst);
         CPPUNIT_ASSERT(xformer.GetLinearScale() == 1);
 
         int gridSize = 100;
@@ -263,7 +272,10 @@ void TestTransformMesh::TestCase_TransformMesh_ArbXYKM_to_ArbXYM()
 {
     try
     {
-        MgCSTrans xformer(CreateCoordinateSystem(ArbitraryWkt_KM), CreateCoordinateSystem(ArbitraryWkt_Meter));
+        Ptr<MgCoordinateSystem> src = CreateCoordinateSystem(ArbitraryWkt_KM);
+        Ptr<MgCoordinateSystem> dst = CreateCoordinateSystem(ArbitraryWkt_Meter);
+
+        MgCSTrans xformer(src, dst);
         double dLinearScale = xformer.GetLinearScale();
         CPPUNIT_ASSERT(dLinearScale == 1000);
 
@@ -320,7 +332,10 @@ void TestTransformMesh::TestCase_TransformMesh_Small_Image_01()
 {
     try
     {
-        MgCSTrans xformer(CreateCoordinateSystem(ArbitraryWkt_KM), CreateCoordinateSystem(ArbitraryWkt_Meter));
+        Ptr<MgCoordinateSystem> src = CreateCoordinateSystem(ArbitraryWkt_KM);
+        Ptr<MgCoordinateSystem> dst = CreateCoordinateSystem(ArbitraryWkt_Meter);
+
+        MgCSTrans xformer(src, dst);
         double dLinearScale = xformer.GetLinearScale();
         CPPUNIT_ASSERT(dLinearScale == 1000);
 
