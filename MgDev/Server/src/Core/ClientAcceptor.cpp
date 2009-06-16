@@ -122,6 +122,11 @@ int MgClientAcceptor::handle_input(ACE_HANDLE handle)
             nResult = -1;
         }
     }
+    else
+    {
+        // Failed to accept socket connection
+        MG_LOG_ERROR_ENTRY(L"Failed to accept socket connection.");
+    }
 
     return nResult;
 }

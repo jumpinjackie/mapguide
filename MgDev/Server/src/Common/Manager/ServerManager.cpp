@@ -813,6 +813,22 @@ void MgServerManager::IncrementActiveConnections()
 
     // Increment the total connections
     m_totalConnections++;
+
+    // The limit for the current ACE reactor is 62. 
+    // The only reason the value 55 is chosen is because it is slightly under this value and 
+    // so we can log an error as the # of active connections approaches the current ACE reactor limit.
+    // TODO: This error logging will need to be revisited if a different ACE reactor is used.
+    if(m_totalActiveConnections.value() > 55)
+    {
+        STRING strActiveConnections = L"";
+        MgUtil::Int32ToString(m_totalActiveConnections.value(), strActiveConnections);
+
+        STRING message = L"The active connection limit is about to be exceeded. Current active connections is ";
+        message += strActiveConnections;
+
+        // We are dangerously close to exceeding the safe # of active connections for the current ACE reactor
+        MG_LOG_ERROR_ENTRY(message.c_str());
+    }
 }
 
 void MgServerManager::DecrementActiveConnections()
