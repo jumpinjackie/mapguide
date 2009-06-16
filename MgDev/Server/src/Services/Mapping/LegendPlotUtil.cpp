@@ -83,6 +83,24 @@ const double legendFontHeightMeters = 0.002;
 const double legendTextVertAdjust = 0.07;  // inch
 
 
+// Static helper method to draw a PNG icon.  Calling Renderer::ProcessRaster
+// renders the PNG upside down.
+static void DrawPNG(Renderer* dr, unsigned char* data, int length, int width, int height, RS_Bounds& extents)
+{
+    SE_Renderer* drSE = dynamic_cast<SE_Renderer*>(dr);
+    if (!drSE)
+        return;
+
+    double cx = 0.5 * (extents.minx + extents.maxx);
+    double cy = 0.5 * (extents.miny + extents.maxy);
+    drSE->WorldToScreenPoint(cx, cy, cx, cy);
+
+    double imgDevW = extents.width();
+    double imgDevH = extents.height();
+    drSE->DrawScreenRaster(data, length, RS_ImageFormat_PNG, width, height, cx, cy, imgDevW, imgDevH, 0.0);
+}
+
+
 MgLegendPlotUtil::MgLegendPlotUtil(MgResourceService* svcResource)
 {
     m_svcResource = SAFE_ADDREF(svcResource);
@@ -271,7 +289,7 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
             if (nRuleCount > 1)
             {
                 //in case of themed layer, use standard theme icon
-                dr.ProcessRaster((unsigned char*)THEMED_LAYER_ICON, sizeof(THEMED_LAYER_ICON), RS_ImageFormat_PNG, bitmapPixelWidth, bitmapPixelHeight, b2);
+                DrawPNG(&dr, (unsigned char*)THEMED_LAYER_ICON, sizeof(THEMED_LAYER_ICON), bitmapPixelWidth, bitmapPixelHeight, b2);
             }
             else
             {
@@ -285,7 +303,7 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
                     Ptr<MgByte> bytes = sink.ToBuffer();
 
                     //in case of themed layer, use standard theme icon
-                    dr.ProcessRaster(bytes->Bytes(), bytes->GetLength(), RS_ImageFormat_PNG, bitmapPixelWidth, bitmapPixelHeight, b2);
+                    DrawPNG(&dr, bytes->Bytes(), bytes->GetLength(), bitmapPixelWidth, bitmapPixelHeight, b2);
                 }
             }
 
@@ -319,7 +337,7 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
                         Ptr<MgByte> bytes = sink.ToBuffer();
 
                         RS_Bounds b2(x, y, x + dIconWidth, y + dIconHeight);
-                        dr.ProcessRaster(bytes->Bytes(), bytes->GetLength(), RS_ImageFormat_PNG, bitmapPixelWidth, bitmapPixelHeight, b2);
+                        DrawPNG(&dr, bytes->Bytes(), bytes->GetLength(), bitmapPixelWidth, bitmapPixelHeight, b2);
                     }
 
                     //draw the label after the icon, but also allow
@@ -341,7 +359,7 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
             //use standard icon
             x = startX;
             RS_Bounds b2(x, y, x + dIconWidth, y + dIconHeight);
-            dr.ProcessRaster((unsigned char*)RASTER_LAYER_ICON, sizeof(RASTER_LAYER_ICON), RS_ImageFormat_PNG, bitmapPixelWidth, bitmapPixelHeight, b2);
+            DrawPNG(&dr, (unsigned char*)RASTER_LAYER_ICON, sizeof(RASTER_LAYER_ICON), bitmapPixelWidth, bitmapPixelHeight, b2);
 
             // Add the layer legend label.
             x += dIconWidth;
@@ -357,7 +375,7 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
             //use standard icon
             x = startX;
             RS_Bounds b2(x, y, x + dIconWidth, y + dIconHeight);
-            dr.ProcessRaster((unsigned char*)DWF_LAYER_ICON, sizeof(DWF_LAYER_ICON), RS_ImageFormat_PNG, bitmapPixelWidth, bitmapPixelHeight, b2);
+            DrawPNG(&dr, (unsigned char*)DWF_LAYER_ICON, sizeof(DWF_LAYER_ICON), bitmapPixelWidth, bitmapPixelHeight, b2);
 
             // Add the layer legend label.
             x += dIconWidth;
