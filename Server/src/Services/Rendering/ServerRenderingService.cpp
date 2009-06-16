@@ -974,11 +974,14 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
     dr->StartMap(&info, b, 1.0, pixelsPerInch, metersPerPixel, NULL);
     dr->StartLayer(NULL, NULL);
 
-    //we need to specify margins and offsets in an MgPlotSpec,
+    //We need to specify margins and offsets in an MgPlotSpecification,
     //even though in the image based (non-DWF) case they are 0.
     //Units are given as pixels, needed in order to scale legend
-    //layout constants which are in inches
+    //layout constants which are in inches.
+    //NOTE: we need a left margin of one pixel so that legend icons
+    //      do not overlap the legend border
     Ptr<MgPlotSpecification> spec = new MgPlotSpecification(width - 1.0f, height - 1.0f, L"pixels");
+    spec->SetMargins(1.0f, 0.0f, 0.0f, 0.0f);
     MgLegendPlotUtil lu(m_svcResource);
     lu.AddLegendElement(map->GetViewScale(), *dr, map, spec, 0.0, 0.0);
 
