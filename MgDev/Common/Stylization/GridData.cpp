@@ -478,7 +478,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
                     {
                         //FireOnStepQuery();
 
-                        //convert from RGBA to ARGB
+                        //convert from RGBA to BGRA
                         pCurPos = pRasterData + y*rowLength; //source pixel pointer
                         unsigned char* pix = row; //destination pixel pointer
 
