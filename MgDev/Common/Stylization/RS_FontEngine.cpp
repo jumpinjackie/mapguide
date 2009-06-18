@@ -776,10 +776,9 @@ void RS_FontEngine::DrawBlockText(const RS_TextMetrics& tm, RS_TextDef& tdef, do
                     m_lineStroke.weight = MAX_LINEWEIGHT_IN_MM * mm2sud;
 
                 // overline position w.r.t. capline
-                double fontCapline = pFont->m_capheight * fontHeight / pFont->m_units_per_EM;
-                double line_pos = m_pSERenderer->YPointsUp()?
-                      fontCapline - ((double)pFont->m_underline_position * fontHeight / (double)pFont->m_units_per_EM) :
-                    - fontCapline - ((double)pFont->m_underline_position * fontHeight / (double)pFont->m_units_per_EM);
+                double line_pos = (double)(tm.font->m_capheight - tm.font->m_underline_position) * tm.font_height / (double)tm.font->m_units_per_EM;
+                if (!m_pSERenderer->YPointsUp())
+                    line_pos = -line_pos;
 
                 // the line's start point is the insertion point, but shifted vertically by line_pos
                 double x0 = posx - line_pos * sin_a;
@@ -914,6 +913,31 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
 
     // draw the characters, each in its computed position
     RS_String c;
+
+    // first draw the ghosted characters, if requested
+    if ((tdef.textbg() & RS_TextBackground_Ghosted) != 0)
+    {
+        for (int i=0; i<numchars; ++i)
+        {
+            c = tm.text[i];
+
+            // get the approximate character width
+            double char_width = tm.char_advances[i];
+
+            // get the character position / angle
+            CharPos& char_pos = tm.char_pos[i];
+            double posx = char_pos.x;
+            double posy = char_pos.y;
+            double angleRad = char_pos.anglerad;
+
+            DrawString(c, posx-offset, posy, char_width, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
+            DrawString(c, posx+offset, posy, char_width, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
+            DrawString(c, posx, posy-offset, char_width, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
+            DrawString(c, posx, posy+offset, char_width, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
+        }
+    }
+
+    // now draw the primary characters
     for (int i=0; i<numchars; ++i)
     {
         c = tm.text[i];
@@ -921,20 +945,10 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
         // get the approximate character width
         double char_width = tm.char_advances[i];
 
-        // compute screen position and round
-        double posx = tm.char_pos[i].x;
-        double posy = tm.char_pos[i].y;
-        double angleRad = tm.char_pos[i].anglerad;
+        // get the character position / angle
+        CharPos& char_pos = tm.char_pos[i];
 
-        if ((tdef.textbg() & RS_TextBackground_Ghosted) != 0)
-        {
-            DrawString(c, posx-offset, posy, char_width, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
-            DrawString(c, posx+offset, posy, char_width, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
-            DrawString(c, posx, posy-offset, char_width, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
-            DrawString(c, posx, posy+offset, char_width, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
-        }
-
-        DrawString(c, posx, posy, char_width, tm.font_height, tm.font, tdef.textcolor(), angleRad);
+        DrawString(c, char_pos.x, char_pos.y, char_width, tm.font_height, tm.font, tdef.textcolor(), char_pos.anglerad);
     }
 
     // render underline
@@ -984,6 +998,56 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
         lb.LineTo(cx, cy);
 
         // draw the underline
+        m_pSERenderer->DrawScreenPolyline(&lb, NULL, m_lineStroke);
+    }
+
+    // render overline
+    if (tdef.font().style() & RS_FontStyle_Overline)
+    {
+        m_lineStroke.color = tdef.textcolor().argb();
+
+        // estimate overline line width as % of font height
+        m_lineStroke.weight = (double)tm.font->m_underline_thickness * tm.font_height / (double)tm.font->m_units_per_EM;
+
+        // restrict the weight to something reasonable
+        double mm2sud = m_pSERenderer->GetScreenUnitsPerMillimeterDevice();
+        double devWeightInMM = m_lineStroke.weight / mm2sud;
+        if (devWeightInMM > MAX_LINEWEIGHT_IN_MM)
+            m_lineStroke.weight = MAX_LINEWEIGHT_IN_MM * mm2sud;
+
+        // overline position w.r.t. capline
+        double line_pos = (double)(tm.font->m_capheight - tm.font->m_underline_position) * tm.font_height / (double)tm.font->m_units_per_EM;
+        if (!m_pSERenderer->YPointsUp())
+            line_pos = -line_pos;
+
+        // used to keep track of last position of the overline, which is
+        // drawn piecewise for each character
+        double aa = m_pSERenderer->YPointsUp()? tm.char_pos[0].anglerad : -tm.char_pos[0].anglerad;
+        double cx = tm.char_pos[0].x - line_pos * sin(aa);
+        double cy = tm.char_pos[0].y + line_pos * cos(aa);
+
+        LineBuffer lb(numchars+1);
+        lb.MoveTo(cx, cy);
+
+        // add the overline vertices
+        for (int i=1; i<numchars; ++i)
+        {
+            // move position by overline offset
+            aa = m_pSERenderer->YPointsUp()? tm.char_pos[i].anglerad : -tm.char_pos[i].anglerad;
+            cx = tm.char_pos[i].x - line_pos * sin(aa);
+            cy = tm.char_pos[i].y + line_pos * cos(aa);
+            lb.LineTo(cx, cy);
+        }
+
+        // get the approximate width of the last character
+        double char_width = tm.char_advances[numchars-1];
+
+        // estimate bottom right corner of last character
+        cx += char_width * cos(aa);
+        cy += char_width * sin(aa);
+        lb.LineTo(cx, cy);
+
+        // draw the overline
         m_pSERenderer->DrawScreenPolyline(&lb, NULL, m_lineStroke);
     }
 }
