@@ -106,6 +106,8 @@ bool InitializeStaticPlatformData()
     fact->Register(PlatformBase_Collection_SerializableCollection, MgSerializableCollection::CreateObject);
     fact->Register(PlatformBase_Collection_StringPropertyCollection, MgStringPropertyCollection::CreateObject);
     fact->Register(PlatformBase_Data_Color, MgColor::CreateObject);
+    fact->Register(PlatformBase_Data_Point3D, MgPoint3D::CreateObject);
+    fact->Register(PlatformBase_Data_Vector3D, MgVector3D::CreateObject);
     fact->Register(PlatformBase_Property_PropertyDefinition, MgPropertyDefinition::CreateObject);
     fact->Register(PlatformBase_Property_BlobProperty, MgBlobProperty::CreateObject);
     fact->Register(PlatformBase_Property_BooleanProperty, MgBooleanProperty::CreateObject);
@@ -150,6 +152,14 @@ bool InitializeStaticPlatformData()
     fact->Register(PlatformBase_MapLayer_LayerGroup, MgLayerGroup::CreateObject);
     fact->Register(PlatformBase_MapLayer_LayerBase, MgLayerBase::CreateObject);
     fact->Register(PlatformBase_MapLayer_SelectionBase, MgSelectionBase::CreateObject);
+
+    fact->Register(PlatformBase_PrintLayoutService_PrintLayoutBase, MgPrintLayoutBase::CreateObject);
+    fact->Register(PlatformBase_PrintLayoutService_PrintLayoutElementBase, MgPrintLayoutElementBase::CreateObject);
+    fact->Register(PlatformBase_PrintLayoutService_PrintLayoutElementDefinitionBase, MgPrintLayoutElementDefinitionBase::CreateObject);
+    fact->Register(PlatformBase_PrintLayoutService_MapViewportBase, MgMapViewportBase::CreateObject);
+    fact->Register(PlatformBase_PrintLayoutService_View, MgView::CreateObject);
+    fact->Register(PlatformBase_PrintLayoutService_PropertyMapping, MgPropertyMapping::CreateObject);
+    fact->Register(PlatformBase_PrintLayoutService_PropertyMappingCollection, MgPropertyMappingCollection::CreateObject);
 
     EXCEPTION_CLASS_CREATOR(MgArrayTypeMismatchException)
     EXCEPTION_CLASS_CREATOR(MgDuplicateResourceDataException)

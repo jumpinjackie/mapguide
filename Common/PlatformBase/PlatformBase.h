@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2009 by Autodesk, Inc.
+//  Copyright (C) 2004-2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MG_PLATFORMBASE_H
-#define MG_PLATFORMBASE_H
+#ifndef MGPLATFORMBASE_H_
+#define MGPLATFORMBASE_H_
 
 #include "GeometryCommon.h"
 
@@ -44,10 +44,12 @@
 #include "Data/Int32Property.h"
 #include "Data/Int64Property.h"
 #include "Data/IntCollection.h"
+#include "Data/Point3D.h"
 #include "Data/PropertyDefinitionCollection.h"
 #include "Data/SerializableCollection.h"
 #include "Data/SingleProperty.h"
 #include "Data/StringPropertyCollection.h"
+#include "Data/Vector3D.h"
 
 // Exceptions
 #include "Exception/ArrayTypeMismatchException.h"
@@ -131,6 +133,16 @@
 #include "Services/UpdateFeatures.h"
 #include "Services/LockFeatures.h"
 #include "Services/UnlockFeatures.h"
+
+#include "Services/PrintLayoutService/MapViewportBase.h"
+#include "Services/PrintLayoutService/PrintLayoutBase.h"
+#include "Services/PrintLayoutService/PrintLayoutDefs.h"
+#include "Services/PrintLayoutService/PrintLayoutElementBase.h"
+#include "Services/PrintLayoutService/PrintLayoutElementDefinitionBase.h"
+#include "Services/PrintLayoutService/PrintLayoutServiceBase.h"
+#include "Services/PrintLayoutService/View.h"
+#include "Services/PrintLayoutService/PropertyMapping.h"
+#include "Services/PrintLayoutService/PropertyMappingCollection.h"
 
 #include "MapLayer/LayerType.h"
 #include "MapLayer/LayerGroupType.h"

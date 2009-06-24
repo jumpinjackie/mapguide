@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2009 by Autodesk, Inc.
+//  Copyright (C) 2004-2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -17,6 +17,7 @@
 
 // Predefined object identifiers ranges for each class of object.  By convention,
 // each library has a range of 10 thousand ids.  Ids are broken into groups.
+
 #define PLATFORMBASE_COLLECTION_ID          10000
 #define PLATFORMBASE_DATA_ID                10250
 #define PLATFORMBASE_EXCEPTION_ID           10500
@@ -26,26 +27,29 @@
 #define PLATFORMBASE_RESOURCESERVICE_ID     11500
 #define PLATFORMBASE_FEATURESERVICE_ID      11750
 #define PLATFORMBASE_MAPLAYER_ID            12000
+#define PLATFORMBASE_PRINTLAYOUTSERVICE_ID  12250
 
 // Platform Collection
-#define PlatformBase_Collection_IntCollection                   PLATFORMBASE_COLLECTION_ID+0
-#define PlatformBase_Collection_PropertyDefinitionCollection    PLATFORMBASE_COLLECTION_ID+1
-#define PlatformBase_Collection_SerializableCollection          PLATFORMBASE_COLLECTION_ID+2
-#define PlatformBase_Collection_StringPropertyCollection        PLATFORMBASE_COLLECTION_ID+3
+#define PlatformBase_Collection_IntCollection                       PLATFORMBASE_COLLECTION_ID+0
+#define PlatformBase_Collection_PropertyDefinitionCollection        PLATFORMBASE_COLLECTION_ID+1
+#define PlatformBase_Collection_SerializableCollection              PLATFORMBASE_COLLECTION_ID+2
+#define PlatformBase_Collection_StringPropertyCollection            PLATFORMBASE_COLLECTION_ID+3
 
 // Platform Data
-#define PlatformBase_Data_Color                                 PLATFORMBASE_DATA_ID+0
-#define PlatformBase_Property_PropertyDefinition                PLATFORMBASE_DATA_ID+1
-#define PlatformBase_Property_BlobProperty                      PLATFORMBASE_DATA_ID+2
-#define PlatformBase_Property_BooleanProperty                   PLATFORMBASE_DATA_ID+3
-#define PlatformBase_Property_ByteProperty                      PLATFORMBASE_DATA_ID+4
-#define PlatformBase_Property_ClobProperty                      PLATFORMBASE_DATA_ID+5
-#define PlatformBase_Property_DateTimeProperty                  PLATFORMBASE_DATA_ID+6
-#define PlatformBase_Property_DoubleProperty                    PLATFORMBASE_DATA_ID+7
-#define PlatformBase_Property_Int16Property                     PLATFORMBASE_DATA_ID+8
-#define PlatformBase_Property_Int32Property                     PLATFORMBASE_DATA_ID+9
-#define PlatformBase_Property_Int64Property                     PLATFORMBASE_DATA_ID+10
-#define PlatformBase_Property_SingleProperty                    PLATFORMBASE_DATA_ID+11
+#define PlatformBase_Data_Color                                     PLATFORMBASE_DATA_ID+0
+#define PlatformBase_Property_PropertyDefinition                    PLATFORMBASE_DATA_ID+1
+#define PlatformBase_Property_BlobProperty                          PLATFORMBASE_DATA_ID+2
+#define PlatformBase_Property_BooleanProperty                       PLATFORMBASE_DATA_ID+3
+#define PlatformBase_Property_ByteProperty                          PLATFORMBASE_DATA_ID+4
+#define PlatformBase_Property_ClobProperty                          PLATFORMBASE_DATA_ID+5
+#define PlatformBase_Property_DateTimeProperty                      PLATFORMBASE_DATA_ID+6
+#define PlatformBase_Property_DoubleProperty                        PLATFORMBASE_DATA_ID+7
+#define PlatformBase_Property_Int16Property                         PLATFORMBASE_DATA_ID+8
+#define PlatformBase_Property_Int32Property                         PLATFORMBASE_DATA_ID+9
+#define PlatformBase_Property_Int64Property                         PLATFORMBASE_DATA_ID+10
+#define PlatformBase_Property_SingleProperty                        PLATFORMBASE_DATA_ID+11
+#define PlatformBase_Data_Point3D                                   PLATFORMBASE_DATA_ID+12
+#define PlatformBase_Data_Vector3D                                  PLATFORMBASE_DATA_ID+13
 
 // Platform Exceptions
 #define PlatformBase_Exception_MgArrayTypeMismatchException                 PLATFORMBASE_EXCEPTION_ID+0
@@ -74,24 +78,24 @@
 #define PlatformBase_Exception_MgUserNotFoundException                      PLATFORMBASE_EXCEPTION_ID+23
 
 // MapLayer API
-#define PlatformBase_MapLayer_MapBase                                  PLATFORMBASE_MAPLAYER_ID+0
-#define PlatformBase_MapLayer_LayerGroup                               PLATFORMBASE_MAPLAYER_ID+1
-#define PlatformBase_MapLayer_LayerCollection                          PLATFORMBASE_MAPLAYER_ID+2
-#define PlatformBase_MapLayer_LayerBase                                PLATFORMBASE_MAPLAYER_ID+3
-#define PlatformBase_MapLayer_LayerGroupCollection                     PLATFORMBASE_MAPLAYER_ID+4
-#define PlatformBase_MapLayer_MapCollection                            PLATFORMBASE_MAPLAYER_ID+5
-#define PlatformBase_MapLayer_ReadOnlyLayerCollection                  PLATFORMBASE_MAPLAYER_ID+6
-#define PlatformBase_MapLayer_SelectionBase                            PLATFORMBASE_MAPLAYER_ID+7
+#define PlatformBase_MapLayer_MapBase                               PLATFORMBASE_MAPLAYER_ID+0
+#define PlatformBase_MapLayer_LayerGroup                            PLATFORMBASE_MAPLAYER_ID+1
+#define PlatformBase_MapLayer_LayerCollection                       PLATFORMBASE_MAPLAYER_ID+2
+#define PlatformBase_MapLayer_LayerBase                             PLATFORMBASE_MAPLAYER_ID+3
+#define PlatformBase_MapLayer_LayerGroupCollection                  PLATFORMBASE_MAPLAYER_ID+4
+#define PlatformBase_MapLayer_MapCollection                         PLATFORMBASE_MAPLAYER_ID+5
+#define PlatformBase_MapLayer_ReadOnlyLayerCollection               PLATFORMBASE_MAPLAYER_ID+6
+#define PlatformBase_MapLayer_SelectionBase                         PLATFORMBASE_MAPLAYER_ID+7
 
 // Core Service
-#define PlatformBase_Service_ServerConnection                   PLATFORMBASE_CORESERVICE_ID+0
-#define PlatformBase_Service_Service                            PLATFORMBASE_CORESERVICE_ID+1
-#define PlatformBase_Service_Stream                             PLATFORMBASE_CORESERVICE_ID+2
-#define PlatformBase_Service_MgSiteConnection                   PLATFORMBASE_CORESERVICE_ID+3
-#define PlatformBase_Service_MgConnectionProperties             PLATFORMBASE_CORESERVICE_ID+4
-#define PlatformBase_Service_MgServerInformation                PLATFORMBASE_CORESERVICE_ID+5
-#define PlatformBase_Service_MgPackageStatusInformation         PLATFORMBASE_CORESERVICE_ID+6
-#define PlatformBase_Service_Warning                            PLATFORMBASE_CORESERVICE_ID+7
+#define PlatformBase_Service_ServerConnection                       PLATFORMBASE_CORESERVICE_ID+0
+#define PlatformBase_Service_Service                                PLATFORMBASE_CORESERVICE_ID+1
+#define PlatformBase_Service_Stream                                 PLATFORMBASE_CORESERVICE_ID+2
+#define PlatformBase_Service_MgSiteConnection                       PLATFORMBASE_CORESERVICE_ID+3
+#define PlatformBase_Service_MgConnectionProperties                 PLATFORMBASE_CORESERVICE_ID+4
+#define PlatformBase_Service_MgServerInformation                    PLATFORMBASE_CORESERVICE_ID+5
+#define PlatformBase_Service_MgPackageStatusInformation             PLATFORMBASE_CORESERVICE_ID+6
+#define PlatformBase_Service_Warning                                PLATFORMBASE_CORESERVICE_ID+7
 
 // Feature Service
 #define PlatformBase_FeatureService_ClassDefinition                 PLATFORMBASE_FEATURESERVICE_ID+0
@@ -132,6 +136,16 @@
 #define PlatformBase_FeatureService_GeometryTypeInfo                PLATFORMBASE_FEATURESERVICE_ID+35
 
 // Resource Service
-#define PlatformBase_ResourceService_ResourceIdentifier                PLATFORMBASE_RESOURCESERVICE_ID+0
-#define PlatformBase_ResourceService_ResourceService                   PLATFORMBASE_RESOURCESERVICE_ID+1
-#define PlatformBase_ResourceService_Resource                          PLATFORMBASE_RESOURCESERVICE_ID+26
+#define PlatformBase_ResourceService_ResourceIdentifier             PLATFORMBASE_RESOURCESERVICE_ID+0
+#define PlatformBase_ResourceService_ResourceService                PLATFORMBASE_RESOURCESERVICE_ID+1
+#define PlatformBase_ResourceService_Resource                       PLATFORMBASE_RESOURCESERVICE_ID+26
+
+// Print Layout Service
+#define PlatformBase_PrintLayoutService_PrintLayoutServiceBase      PLATFORMBASE_PRINTLAYOUTSERVICE_ID+0
+#define PlatformBase_PrintLayoutService_PrintLayoutBase             PLATFORMBASE_PRINTLAYOUTSERVICE_ID+1
+#define PlatformBase_PrintLayoutService_PrintLayoutElementBase      PLATFORMBASE_PRINTLAYOUTSERVICE_ID+2
+#define PlatformBase_PrintLayoutService_PrintLayoutElementDefinitionBase    PLATFORMBASE_PRINTLAYOUTSERVICE_ID+3
+#define PlatformBase_PrintLayoutService_MapViewportBase             PLATFORMBASE_PRINTLAYOUTSERVICE_ID+4
+#define PlatformBase_PrintLayoutService_View                        PLATFORMBASE_PRINTLAYOUTSERVICE_ID+5
+#define PlatformBase_PrintLayoutService_PropertyMapping             PLATFORMBASE_PRINTLAYOUTSERVICE_ID+6
+#define PlatformBase_PrintLayoutService_PropertyMappingCollection   PLATFORMBASE_PRINTLAYOUTSERVICE_ID+7

@@ -19,10 +19,12 @@ include_SOURCES = \
   Data/Int32Property.cpp \
   Data/Int64Property.cpp \
   Data/IntCollection.cpp \
+  Data/Point3D.cpp \
   Data/PropertyDefinitionCollection.cpp \
   Data/SerializableCollection.cpp \
   Data/SingleProperty.cpp \
   Data/StringPropertyCollection.cpp \
+  Data/Vector3D.cpp \
   Exception/ArrayTypeMismatchException.cpp \
   Exception/DuplicateResourceDataException.cpp \
   Exception/DuplicateResourceException.cpp \
@@ -98,7 +100,16 @@ include_SOURCES = \
   Services/SqlDataReader.cpp \
   Services/UnlockFeatures.cpp \
   Services/UpdateFeatures.cpp \
-  Services/Warnings.cpp  
+  Services/Warnings.cpp \
+  Services/PrintLayoutService/MapViewportBase.cpp \
+  Services/PrintLayoutService/PrintLayoutBase.cpp \
+  Services/PrintLayoutService/PrintLayoutDefs.cpp \
+  Services/PrintLayoutService/PrintLayoutElementBase.cpp \
+  Services/PrintLayoutService/PrintLayoutElementDefinitionBase.cpp \
+  Services/PrintLayoutService/PrintLayoutServiceBase.cpp \
+  Services/PrintLayoutService/View.cpp \
+  Services/PrintLayoutService/PropertyMapping.cpp \
+  Services/PrintLayoutService/PropertyMappingCollection.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
   PlatformBase.h \
@@ -113,10 +124,12 @@ noinst_HEADERS = $(include_SOURCES) \
   Data/Int32Property.h \
   Data/Int64Property.h \
   Data/IntCollection.h \
+  Data/Point3D.h \
   Data/PropertyDefinitionCollection.h \
   Data/SerializableCollection.h \
   Data/SingleProperty.h \
   Data/StringPropertyCollection.h \
+  Data/Vector3D.h \
   Exception/ArrayTypeMismatchException.h \
   Exception/DuplicateResourceDataException.h \
   Exception/DuplicateResourceException.h \
@@ -207,7 +220,16 @@ noinst_HEADERS = $(include_SOURCES) \
   Services/SqlDataReader.h \
   Services/UnlockFeatures.h \
   Services/UpdateFeatures.h \
-  Services/Warnings.h
+  Services/Warnings.h \
+  Services/PrintLayoutService/MapViewportBase.h \
+  Services/PrintLayoutService/PrintLayoutBase.h \
+  Services/PrintLayoutService/PrintLayoutDefs.h \
+  Services/PrintLayoutService/PrintLayoutElementBase.h \
+  Services/PrintLayoutService/PrintLayoutElementDefinitionBase.h \
+  Services/PrintLayoutService/PrintLayoutServiceBase.h \
+  Services/PrintLayoutService/View.h \
+  Services/PrintLayoutService/PropertyMapping.h \
+  Services/PrintLayoutService/PropertyMappingCollection.h
 
 INCLUDES = \
   -I../CoordinateSystem \
