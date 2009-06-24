@@ -51,6 +51,9 @@ const STRING MgResourceType::SymbolDefinition       = L"SymbolDefinition";
 const STRING MgResourceType::SymbolLibrary          = L"SymbolLibrary";
 const STRING MgResourceType::WebLayout              = L"WebLayout";
 const STRING MgResourceType::ApplicationDefinition  = L"ApplicationDefinition";
+const STRING MgResourceType::PrintLayoutElement     = L"PrintLayoutElement";
+const STRING MgResourceType::PrintLayoutElementDefinition   = L"PrintLayoutElementDefinition";
+
 
 const STRING MgResourceType::User                   = L"User";
 const STRING MgResourceType::Group                  = L"Group";

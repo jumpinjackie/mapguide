@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2009 by Autodesk, Inc.
+//  Copyright (C) 2004-2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -67,6 +67,8 @@ INTERNAL_API:
     ///        sequential containers for fast indexed-based lookups.
     static const INT16 ServerAdminService   = 7;    /// Server Administration Service
     static const INT16 SiteService          = 8;    /// Site Service
+
+    static const INT16 PrintLayoutService   = 9;    /// Print Layout Service
 };
 /// \}
 
