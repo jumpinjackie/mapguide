@@ -31,10 +31,10 @@
 void ConvertToApachePath(char * str);
 
 /*****************************************************************************
-* Name			: ConverToApachePath
-* Description	: Converts a path to a apache-friendly format
-* Parameters	: str
-* Return		: none
+* Name	        : ConverToApachePath
+* Description   : Converts a path to a apache-friendly format
+* Parameters    : str
+* Return        : none
 *****************************************************************************/
 void ConvertToApachePath(char * str) 
 {
