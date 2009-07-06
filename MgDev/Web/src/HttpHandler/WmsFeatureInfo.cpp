@@ -49,10 +49,10 @@ void MgWmsFeatureInfo::GenerateDefinitions(MgUtilDictionary& dictionary)
 {
     if(m_propertyCollection != NULL && m_index >= 0 && m_index < m_propertyCollection->GetCount())
     {
-        MgPropertyCollection* props = m_propertyCollection->GetItem(m_index);
+        Ptr<MgPropertyCollection> props = m_propertyCollection->GetItem(m_index);
         if(props->Contains(kpszLayerNameProperty))
         {
-            MgStringProperty* layerNameProp = (MgStringProperty*)props->GetItem(kpszLayerNameProperty);
+            Ptr<MgStringProperty> layerNameProp = (MgStringProperty*)props->GetItem(kpszLayerNameProperty);
             STRING value = MgUtil::ReplaceEscapeCharInXml(layerNameProp->GetValue());
             if(!value.empty())
             {
@@ -67,7 +67,7 @@ MgWmsFeatureProperties* MgWmsFeatureInfo::GetCurrentProperties()
     MgWmsFeatureProperties* wmsProps = NULL;
     if(m_propertyCollection != NULL && m_index >= 0 && m_index < m_propertyCollection->GetCount())
     {
-        MgPropertyCollection* props = m_propertyCollection->GetItem(m_index);
+        Ptr<MgPropertyCollection> props = m_propertyCollection->GetItem(m_index);
         if(props != NULL)
         {
             wmsProps = new MgWmsFeatureProperties(props);

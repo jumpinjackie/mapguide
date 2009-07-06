@@ -261,7 +261,8 @@ MgByteReader* MgServerKmlService::GetFeaturesKml(MgLayer* layer, MgEnvelope* ext
         map->SetDisplayHeight(height);
         map->SetDisplayDpi((int)dpi);
         map->SetViewScale(scale);
-        map->GetLayers()->Add(layer);
+        Ptr<MgLayerCollection> layers = map->GetLayers();
+        layers->Add(layer);
         layer->ForceRefresh();
 
         if(m_svcRendering == NULL)

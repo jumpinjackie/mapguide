@@ -1326,7 +1326,8 @@ void MgWebLayout::ParseToolBar(DOMElement* elt)
             }
             else if(strName == L"Button") //NOXLATE
             {
-                widgets->Add(ParseWidget(elt));
+                Ptr<MgWebWidget> widget = ParseWidget(elt);
+                widgets->Add(widget);
             }
             else
             {
@@ -1647,7 +1648,8 @@ void MgWebLayout::ParseTaskBar(DOMElement* elt)
             }
             else if(strName == L"MenuButton") //NOXLATE
             {
-                taskList->Add(ParseWidget(elt));
+                Ptr<MgWebWidget> widget = ParseWidget(elt);
+                taskList->Add(widget);
             }
             else
             {
