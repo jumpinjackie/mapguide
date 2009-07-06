@@ -40,6 +40,26 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="..\..\bin\debug64"
+			IntermediateDirectory="..\..\obj\debug64\PostBuild"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake /F PostBuild.mak debug64"
+				ReBuildCommandLine="nmake /F PostBuild.mak cleandebug64 debug64"
+				CleanCommandLine="nmake /F PostBuild.mak cleandebug64"
+				Output=""
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="..\..\bin\release"
 			IntermediateDirectory="..\..\obj\release\PostBuild"
@@ -60,26 +80,6 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug|x64"
-			OutputDirectory="..\..\bin\debug64"
-			IntermediateDirectory="..\..\obj\debug64\PostBuild"
-			ConfigurationType="0"
-			>
-			<Tool
-				Name="VCNMakeTool"
-				BuildCommandLine="nmake /F PostBuild.mak debug"
-				ReBuildCommandLine="nmake /F PostBuild.mak cleandebug debug"
-				CleanCommandLine="nmake /F PostBuild.mak cleandebug"
-				Output=""
-				PreprocessorDefinitions=""
-				IncludeSearchPath=""
-				ForcedIncludes=""
-				AssemblySearchPath=""
-				ForcedUsingAssemblies=""
-				CompileAsManaged=""
-			/>
-		</Configuration>
-		<Configuration
 			Name="Release|x64"
 			OutputDirectory="..\..\bin\release64"
 			IntermediateDirectory="..\..\obj\release64\PostBuild"
@@ -87,9 +87,9 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake /F PostBuild.mak release"
-				ReBuildCommandLine="nmake /F PostBuild.mak cleanrelease release"
-				CleanCommandLine="nmake /F PostBuild.mak cleanrelease"
+				BuildCommandLine="nmake /F PostBuild.mak release64"
+				ReBuildCommandLine="nmake /F PostBuild.mak cleanrelease64 release64"
+				CleanCommandLine="nmake /F PostBuild.mak cleanrelease64"
 				Output=""
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
