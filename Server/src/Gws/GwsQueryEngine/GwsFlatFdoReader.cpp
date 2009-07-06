@@ -748,10 +748,10 @@ CGwsFlatFdoReader::IndexOf(FdoPropertyValueCollection* key)
     // TODO: more efficient integer extraction
     if((NULL == key) || (key->GetCount() != 1))
         return false;
-    FdoPropertyValue* pVal = key->GetItem(0);
+    FdoPtr<FdoPropertyValue> pVal = key->GetItem(0);
     if(NULL == pVal)
         return false;
-    FdoValueExpression* pExp = pVal->GetValue();
+    FdoPtr<FdoValueExpression> pExp = pVal->GetValue();
     if(NULL == pExp)
         return false;
     FdoString* pStr = pExp->ToString();

@@ -42,9 +42,7 @@ MgReadOnlyLayerCollection::~MgReadOnlyLayerCollection()
 {
     for (int i=0; i<m_layers->GetCount(); i++)
     {
-        MgDisposable* layer = m_layers->GetItem(i);
-        SAFE_RELEASE(layer);
-        m_layers->SetItem(i,NULL);
+        m_layers->SetItem(i, NULL);
     }
 }
 
