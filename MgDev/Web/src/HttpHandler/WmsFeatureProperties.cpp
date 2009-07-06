@@ -36,7 +36,8 @@ bool MgWmsFeatureProperties::Next()
         m_index++;
 
         // Skip the special layer name property
-        if(szcmp(m_propertyCollection->GetItem(m_index)->GetName().c_str(), _("_MgLayerName")) == 0)
+        Ptr<MgProperty> prop = m_propertyCollection->GetItem(m_index);
+        if(szcmp(prop->GetName().c_str(), _("_MgLayerName")) == 0)
         {
             return Next();
         }
@@ -52,7 +53,7 @@ void MgWmsFeatureProperties::GenerateDefinitions(MgUtilDictionary& dictionary)
 {
     if(m_propertyCollection != NULL && m_index >= 0 && m_index < m_propertyCollection->GetCount())
     {
-        MgStringProperty* stringProp = (MgStringProperty*)m_propertyCollection->GetItem(m_index);
+        Ptr<MgStringProperty> stringProp = (MgStringProperty*)m_propertyCollection->GetItem(m_index);
         if(stringProp != NULL)
         {
             STRING name = MgUtil::ReplaceEscapeCharInXml(stringProp->GetName());
