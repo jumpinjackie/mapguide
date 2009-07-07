@@ -40,7 +40,6 @@ MgWebInformationPane::MgWebInformationPane()
 : m_legendVisible(true),
   m_propertiesVisible(true)
 {
-
 }
 
 ///////////////////////////////////////////////////////////////////////////

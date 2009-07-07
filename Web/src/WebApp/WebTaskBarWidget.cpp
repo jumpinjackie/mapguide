@@ -18,6 +18,13 @@
 #include "WebApp.h"
 
 ///////////////////////////////////////////////////////////////////////////
+// ctor
+//
+MgWebTaskBarWidget::MgWebTaskBarWidget() : MgWebWidget(MgWebWidgetType::TaskButton)
+{
+}
+
+///////////////////////////////////////////////////////////////////////////
 // Gets the name of the button.
 //
 STRING MgWebTaskBarWidget::GetName()
@@ -55,13 +62,6 @@ STRING MgWebTaskBarWidget::GetTooltip()
 STRING MgWebTaskBarWidget::GetDescription()
 {
     return m_description;
-}
-
-///////////////////////////////////////////////////////////////////////////
-// ctor
-//
-MgWebTaskBarWidget::MgWebTaskBarWidget() : MgWebWidget(MgWebWidgetType::TaskButton)
-{
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -103,7 +103,6 @@ void MgWebTaskBarWidget::SetDescription(CREFSTRING description)
 {
     m_description = description;
 }
-
 
 ///////////////////////////////////////////////////////////////////////////
 // Get the unique identifier for the class

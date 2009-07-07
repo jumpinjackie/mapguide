@@ -18,6 +18,14 @@
 #include "WebApp.h"
 
 ///////////////////////////////////////////////////////////////////////////
+// Constructs an empty MgWebWidgetCollection object.
+//
+MgWebWidgetCollection::MgWebWidgetCollection()
+{
+    m_widgets = new MgDisposableCollection();
+}
+
+///////////////////////////////////////////////////////////////////////////
 // Returns the number of items in the collection
 //
 INT32 MgWebWidgetCollection::GetCount()
@@ -49,14 +57,6 @@ bool MgWebWidgetCollection::Contains(MgWebWidget* value)
 INT32 MgWebWidgetCollection::IndexOf(MgWebWidget* value)
 {
     return m_widgets->IndexOf(value);
-}
-
-///////////////////////////////////////////////////////////////////////////
-// Constructs an empty MgWebWidgetCollection object.
-//
-MgWebWidgetCollection::MgWebWidgetCollection()
-{
-    m_widgets = new MgDisposableCollection();
 }
 
 ///////////////////////////////////////////////////////////////////////////
