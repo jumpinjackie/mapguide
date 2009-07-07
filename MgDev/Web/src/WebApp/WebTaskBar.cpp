@@ -18,6 +18,23 @@
 #include "WebApp.h"
 
 ///////////////////////////////////////////////////////////////////////////
+// ctor
+//
+MgWebTaskBar::MgWebTaskBar()
+{
+    if (!(m_taskList = new MgWebWidgetCollection()) || !(m_taskButtons = new MgWebWidgetCollection()))
+        throw new MgOutOfMemoryException(L"MgWebTaskBar.MgWebTaskBar", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    for (int i=0; i<4; ++i)
+    {
+        MgWebTaskBarWidget* btn = new MgWebTaskBarWidget();
+        if (btn == NULL)
+            throw new MgOutOfMemoryException(L"MgWebTaskBar.MgWebTaskBar", __LINE__, __WFILE__, NULL, L"", NULL);
+        m_taskButtons->Add(btn);
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////
 // Gets the task list
 //
 MgWebWidgetCollection* MgWebTaskBar::GetTaskList()
@@ -31,23 +48,6 @@ MgWebWidgetCollection* MgWebTaskBar::GetTaskList()
 MgWebWidgetCollection* MgWebTaskBar::GetTaskButtons()
 {
     return SAFE_ADDREF((MgWebWidgetCollection*)m_taskButtons);
-}
-
-///////////////////////////////////////////////////////////////////////////
-// ctor
-//
-MgWebTaskBar::MgWebTaskBar()
-{
-    if(!(m_taskList = new MgWebWidgetCollection()) || !(m_taskButtons = new MgWebWidgetCollection()))
-        throw new MgOutOfMemoryException(L"MgWebTaskBar.MgWebTaskBar", __LINE__, __WFILE__, NULL, L"", NULL);
-
-    for(int i = 0; i < 4; i++)
-    {
-        MgWebTaskBarWidget* btn = new MgWebTaskBarWidget();
-        if(btn == NULL)
-            throw new MgOutOfMemoryException(L"MgWebTaskBar.MgWebTaskBar", __LINE__, __WFILE__, NULL, L"", NULL);
-        m_taskButtons->Add(btn);
-    }
 }
 
 ///////////////////////////////////////////////////////////////////////////

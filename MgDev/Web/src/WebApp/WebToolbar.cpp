@@ -18,20 +18,20 @@
 #include "WebApp.h"
 
 ///////////////////////////////////////////////////////////////////////////
+// Constructor
+//
+MgWebToolBar::MgWebToolBar()
+{
+    if (!(m_widgets = new MgWebWidgetCollection()))
+        throw new MgOutOfMemoryException(L"MgWebToolBar.MgWebToolBar", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+///////////////////////////////////////////////////////////////////////////
 // Returns the collection of widgets in this toolbar
 //
 MgWebWidgetCollection* MgWebToolBar::GetWidgets()
 {
     return SAFE_ADDREF((MgWebWidgetCollection*)m_widgets);
-}
-
-///////////////////////////////////////////////////////////////////////////
-// Constructor
-//
-MgWebToolBar::MgWebToolBar()
-{
-    if(!(m_widgets = new MgWebWidgetCollection()))
-        throw new MgOutOfMemoryException(L"MgWebToolBar.MgWebToolBar", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 ///////////////////////////////////////////////////////////////////////////

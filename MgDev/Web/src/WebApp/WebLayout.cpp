@@ -21,7 +21,7 @@
 /// Constructs an MgWebLayout object.
 //
 MgWebLayout::MgWebLayout(MgResourceService* resourceService, MgResourceIdentifier* webLayoutId)
-:  m_scale(-1.),
+:  m_scale(-1.0),
    m_hyperlinkTarget(MgWebTargetType::TaskPane),
    m_zoomControlVisible(true)
 {
@@ -33,10 +33,10 @@ MgWebLayout::MgWebLayout(MgResourceService* resourceService, MgResourceIdentifie
     m_taskPane = new MgWebTaskPane();
     m_informationPane = new MgWebInformationPane();
     m_contextMenu = new MgWebContextMenu();
-    if(!m_commands || !m_toolBar || !m_statusBar || !m_taskPane || !m_informationPane || !m_contextMenu)
+    if (!m_commands || !m_toolBar || !m_statusBar || !m_taskPane || !m_informationPane || !m_contextMenu)
         throw new MgOutOfMemoryException(L"MgWebLayout.MgWebLayout", __LINE__, __WFILE__, NULL, L"", NULL);
 
-    //get the resource service to query the web layout definition
+    // get the resource service to query the web layout definition
     Ptr<MgByteReader> xmlWebLayout = resourceService->GetResourceContent(webLayoutId);
 
     ParseWebLayoutDefinition(xmlWebLayout);
@@ -134,6 +134,7 @@ STRING MgWebLayout::GetAjaxPreviewUrl()
     return m_ajaxPreviewUrl;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////
 // Returns the commands defined in this web layout
 //
@@ -187,6 +188,7 @@ STRING MgWebLayout::GetHyperlinkTargetFrame()
     return m_hyperlinkTargetFrame;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////
 /// Tells if the zoom control is visible in the AJAX viewer
 //
@@ -194,6 +196,7 @@ bool MgWebLayout::IsZoomControlVisible()
 {
     return m_zoomControlVisible;
 }
+
 
 ///////////////////////////////////////////////////////////////////////////
 // Get the unique identifier for the class
@@ -227,60 +230,59 @@ void MgWebLayout::ParseWebLayoutDefinition(MgByteReader* xmlWebLayout)
 
     DOMElement* root = xmlUtil.GetRootNode();
     DOMNode* child = MgXmlUtil::GetFirstChild(root);
-    while(0 != child)
+    while (NULL != child)
     {
-        if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
+        if (MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
         {
             DOMElement* elt = (DOMElement*)child;
             wstring strName = MgXmlUtil::GetTagName(elt);
 
-            if(strName == L"Title")
+            if (strName == L"Title") // NOXLATE
             {
                 m_title = GetStringFromElement(elt);
             }
-            else if(strName == L"Map")
+            else if (strName == L"Map") // NOXLATE
             {
                 ParseMapProperties(elt);
             }
-            else if(strName == L"InformationPane")
+            else if (strName == L"InformationPane") // NOXLATE
             {
                 ParseInformationPane(elt);
             }
-            else if(strName == L"StatusBar")
+            else if (strName == L"StatusBar") // NOXLATE
             {
                 ParseStatusBar(elt);
             }
-            else if(strName == L"ToolBar")
+            else if (strName == L"ToolBar") // NOXLATE
             {
                 ParseToolBar(elt);
             }
-            else if(strName == L"TaskPane")
+            else if (strName == L"TaskPane") // NOXLATE
             {
                 ParseTaskPane(elt);
             }
-            else if(strName == L"ContextMenu")
+            else if (strName == L"ContextMenu") // NOXLATE
             {
                 ParseContextMenu(elt);
             }
-            else if(strName == L"CommandSet")
+            else if (strName == L"CommandSet") // NOXLATE
             {
                 ParseCommandSet(elt);
             }
-            else if(strName == L"ZoomControl")
+            else if (strName == L"ZoomControl") // NOXLATE
             {
                 ParseZoomControl(elt);
             }
             else
             {
-                throw new MgXmlParserException(L"MgWebLayout.ParseWebLayoutDefinition",
-                    __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgXmlParserException(L"MgWebLayout.ParseWebLayoutDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
         child = MgXmlUtil::GetNextSibling(child);
     }
 
-    //link ui items with commands
-    for(CMD_WIDGET_MAP::const_iterator it = m_cmdWidgets.begin(); it != m_cmdWidgets.end(); it++)
+    // link ui items with commands
+    for (CMD_WIDGET_MAP::const_iterator it = m_cmdWidgets.begin(); it != m_cmdWidgets.end(); it++)
     {
         MgWebCommandWidget* widget = it->first;  //no ref counting for objects in this map
         STRING cmdName = it->second;
@@ -302,23 +304,22 @@ bool MgWebLayout::GetBooleanFromElement(DOMElement* elt)
     MG_TRY()
 
     DOMNode* child = MgXmlUtil::GetFirstChild(elt);
-    while(0 != child)
+    while (NULL != child)
     {
-        if(MgXmlUtil::GetNodeType(child) == DOMNode::TEXT_NODE)
+        if (MgXmlUtil::GetNodeType(child) == DOMNode::TEXT_NODE)
         {
             bool val, valid = true;
             STRING strval = GetStringFromElement(elt);
-            if(strval == L"true")
+            if (strval == L"true") // NOXLATE
                 val = true;
-            else if(strval == L"false")
+            else if (strval == L"false") // NOXLATE
                 val = false;
             else
                 valid = false;
 
-            if(!valid)
+            if (!valid)
             {
-                throw new MgXmlParserException(L"MgWebLayout.GetBooleanFromElement",
-                    __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgXmlParserException(L"MgWebLayout.GetBooleanFromElement", __LINE__, __WFILE__, NULL, L"", NULL);
             }
 
             return val;
@@ -340,9 +341,9 @@ INT32 MgWebLayout::GetIntegerFromElement(DOMElement* elt)
     MG_TRY()
 
     DOMNode* child = MgXmlUtil::GetFirstChild(elt);
-    while(0 != child)
+    while (NULL != child)
     {
-        if(MgXmlUtil::GetNodeType(child) == DOMNode::TEXT_NODE)
+        if (MgXmlUtil::GetNodeType(child) == DOMNode::TEXT_NODE)
         {
             return atoi(MgUtil::WideCharToMultiByte(GetStringFromElement(elt)).c_str());
         }
@@ -363,9 +364,9 @@ double MgWebLayout::GetDoubleFromElement(DOMElement* elt)
     MG_TRY()
 
     DOMNode* child = MgXmlUtil::GetFirstChild(elt);
-    while(0 != child)
+    while (NULL != child)
     {
-        if(MgXmlUtil::GetNodeType(child) == DOMNode::TEXT_NODE)
+        if (MgXmlUtil::GetNodeType(child) == DOMNode::TEXT_NODE)
         {
             return atof(MgUtil::WideCharToMultiByte(GetStringFromElement(elt)).c_str());
         }
@@ -374,7 +375,7 @@ double MgWebLayout::GetDoubleFromElement(DOMElement* elt)
 
     MG_CATCH_AND_THROW(L"MgWebLayout.GetIntegerFromElement")
 
-    return 0;
+    return 0.0;
 }
 
 
@@ -386,9 +387,9 @@ STRING MgWebLayout::GetStringFromElement(DOMElement* elt)
     MG_TRY()
 
     DOMNode* child = MgXmlUtil::GetFirstChild(elt);
-    while(0 != child)
+    while (NULL != child)
     {
-        if(MgXmlUtil::GetNodeType(child) == DOMNode::TEXT_NODE)
+        if (MgXmlUtil::GetNodeType(child) == DOMNode::TEXT_NODE)
         {
             wstring strval = MgXmlUtil::GetNodeValue(child);
             return MgUtil::Trim(strval);
@@ -409,117 +410,116 @@ MgWebCommand* MgWebLayout::ParseCommand(DOMElement* elt)
 {
     MG_TRY()
 
-    //get the type of command
-    wstring wType = MgXmlUtil::GetAttribute(elt, "xsi:type"); //NOXLATE
+    // get the type of command
+    wstring wType = MgXmlUtil::GetAttribute(elt, "xsi:type"); // NOXLATE
     string type;
     UnicodeString::WideCharToMultiByte(wType.c_str(), type);
 
-    //skip the namespace
+    // skip the namespace
     const char* ptype = type.c_str();
     const char* psep = strchr(ptype, ':');
-    if(psep != NULL)
+    if (psep != NULL)
         ptype = psep + 1;
 
     INT32 cmdType = -1;
     Ptr<MgWebCommand> cmd;
 
-    if(!strcmp(ptype, "BasicCommandType"))
+    if (!strcmp(ptype, "BasicCommandType")) // NOXLATE
     {
         cmdType = 0;
         cmd = new MgWebCommand();
     }
-    else if(!strcmp(ptype, "InvokeURLCommandType"))
+    else if (!strcmp(ptype, "InvokeURLCommandType")) // NOXLATE
     {
         cmdType = MgWebActions::InvokeUrl;
         cmd = new MgWebInvokeUrlCommand();
     }
-    else if(!strcmp(ptype, "SearchCommandType"))
+    else if (!strcmp(ptype, "SearchCommandType")) // NOXLATE
     {
         cmdType = MgWebActions::Search;
         cmd = new MgWebSearchCommand();
     }
-    else if(!strcmp(ptype, "BufferCommandType"))
+    else if (!strcmp(ptype, "BufferCommandType")) // NOXLATE
     {
         cmdType = MgWebActions::Buffer;
         cmd = new MgWebBufferCommand();
     }
-    else if(!strcmp(ptype, "PrintCommandType"))
+    else if (!strcmp(ptype, "PrintCommandType")) // NOXLATE
     {
         cmdType = MgWebActions::PrintMap;
         cmd = new MgWebPrintCommand();  //TODO rename this class
     }
-    else if(!strcmp(ptype, "SelectWithinCommandType"))
+    else if (!strcmp(ptype, "SelectWithinCommandType")) // NOXLATE
     {
         cmdType = MgWebActions::SelectWithin;
         cmd = new MgWebSelectWithinCommand();
     }
-    else if(!strcmp(ptype, "MeasureCommandType"))
+    else if (!strcmp(ptype, "MeasureCommandType")) // NOXLATE
     {
         cmdType = MgWebActions::Measure;
         cmd = new MgWebMeasureCommand();
     }
-    else if(!strcmp(ptype, "ViewOptionsCommandType"))
+    else if (!strcmp(ptype, "ViewOptionsCommandType")) // NOXLATE
     {
         cmdType = MgWebActions::ViewOptions;
         cmd = new MgWebViewOptionsCommand();
     }
-    else if(!strcmp(ptype, "GetPrintablePageCommandType"))
+    else if (!strcmp(ptype, "GetPrintablePageCommandType")) // NOXLATE
     {
         cmdType = MgWebActions::GetPrintablePage;
         cmd = new MgWebGetPrintablePageCommand();
     }
-    else if(!strcmp(ptype, "InvokeScriptCommandType"))
+    else if (!strcmp(ptype, "InvokeScriptCommandType")) // NOXLATE
     {
         cmdType = MgWebActions::InvokeScript;
         cmd = new MgWebInvokeScriptCommand();
     }
-    else if(!strcmp(ptype, "HelpCommandType"))
+    else if (!strcmp(ptype, "HelpCommandType")) // NOXLATE
     {
         cmdType = MgWebActions::Help;
         cmd = new MgWebHelpCommand();
     }
     else
     {
-        throw new MgXmlParserException(L"MgWebLayout.ParseCommand",
-            __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgXmlParserException(L"MgWebLayout.ParseCommand", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    if(cmd == NULL)
+    if (cmd == NULL)
         throw new MgOutOfMemoryException(L"MgWebLayout.ParseCommand", __LINE__, __WFILE__, NULL, L"", NULL);
 
     DOMNode* child = MgXmlUtil::GetFirstChild(elt);
-    while(0 != child)
+    while (NULL != child)
     {
-        if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
+        if (MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
         {
             DOMElement* eltInner = (DOMElement*)child;
             wstring strName = MgXmlUtil::GetTagName(eltInner);
 
-            if(strName == L"Name")
+            if (strName == L"Name") // NOXLATE
             {
                 cmd->SetName(GetStringFromElement(eltInner));
             }
-            else if(strName == L"Label")
+            else if (strName == L"Label") // NOXLATE
             {
                 cmd->SetLabel(GetStringFromElement(eltInner));
             }
-            else if(strName == L"Tooltip")
+            else if (strName == L"Tooltip") // NOXLATE
             {
                 cmd->SetTooltip(GetStringFromElement(eltInner));
             }
-            else if(strName == L"Description")
+            else if (strName == L"Description") // NOXLATE
             {
                 cmd->SetDescription(GetStringFromElement(eltInner));
             }
-            else if(strName == L"ImageURL")
+            else if (strName == L"ImageURL") // NOXLATE
             {
                 cmd->SetIconUrl(GetStringFromElement(eltInner));
             }
-            else if(strName == L"DisabledImageURL")
+            else if (strName == L"DisabledImageURL") // NOXLATE
             {
                 cmd->SetDisabledIconUrl(GetStringFromElement(eltInner));
             }
-            else if(strName == L"TargetViewer")
+            else if (strName == L"TargetViewer") // NOXLATE
             {
                 cmd->SetTargetViewerType(ValidateTargetViewerType(GetStringFromElement(eltInner)));
                 break;
@@ -528,17 +528,16 @@ MgWebCommand* MgWebLayout::ParseCommand(DOMElement* elt)
         child = MgXmlUtil::GetNextSibling(child);
     }
 
-    if(child == 0)
+    if (child == NULL)
     {
-        throw new MgXmlParserException(L"MgWebLayout.ParseCommand",
-            __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgXmlParserException(L"MgWebLayout.ParseCommand", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    //continue parsing for element specifics to the various type of commands
-    //TODO: very low priority: change parsing of search, invoke url, invoke script and print
-    //      so that they call ParseUiTargetCommand. Indeed this 4 commands all parse target/targetframe,
-    //      which is also done by rseUiTargetCommand. Not a big deal, would make the code look slightly better
-    switch(cmdType)
+    // continue parsing for element specifics to the various type of commands
+    // TODO: very low priority: change parsing of search, invoke url, invoke script and print
+    //       so that they call ParseUiTargetCommand. Indeed this 4 commands all parse target/targetframe,
+    //       which is also done by rseUiTargetCommand. Not a big deal, would make the code look slightly better
+    switch (cmdType)
     {
         case 0:
             ParseBuiltInCommand(MgXmlUtil::GetNextSibling(child), cmd);
@@ -567,7 +566,7 @@ MgWebCommand* MgWebLayout::ParseCommand(DOMElement* elt)
             break;
     }
 
-    return SAFE_ADDREF((MgWebCommand*)cmd);
+    return cmd.Detach();
 
     MG_CATCH_AND_THROW(L"MgWebLayout.ParseCommand")
 
@@ -582,29 +581,28 @@ void MgWebLayout::ParseBuiltInCommand(DOMNode* node, MgWebCommand* cmd)
 {
     MG_TRY()
 
-    if(node == 0)
+    if (node == NULL)
         throw new MgNullArgumentException(L"MgWebLayout.ParseBuiltInCommand", __LINE__, __WFILE__, NULL, L"", NULL);
 
     do
     {
-        if(MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)
+        if (MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)
         {
             DOMElement* elt = (DOMElement*)node;
             wstring strName = MgXmlUtil::GetTagName(elt);
 
-            if(strName == L"Action")
+            if (strName == L"Action") // NOXLATE
             {
                 cmd->SetAction(ValidateAction(GetStringFromElement(elt)));
             }
             else
             {
-                throw new MgXmlParserException(L"MgWebLayout.ParseBuiltInCommand",
-                    __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgXmlParserException(L"MgWebLayout.ParseBuiltInCommand", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
         node = MgXmlUtil::GetNextSibling(node);
-
-    } while(node != 0);
+    }
+    while (node != NULL);
 
     MG_CATCH_AND_THROW(L"MgWebLayout.ParseBuiltInCommand")
 }
@@ -620,95 +618,92 @@ void MgWebLayout::ParseInvokeUrlCommand(DOMNode* node, MgWebInvokeUrlCommand* cm
 
     MG_TRY()
 
-    if(node == 0)
+    if (node == NULL)
         throw new MgNullArgumentException(L"MgWebLayout.ParseInvokeUrlCommand", __LINE__, __WFILE__, NULL, L"", NULL);
 
     do
     {
-        if(MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)
+        if (MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)
         {
             DOMElement* elt = (DOMElement*)node;
             wstring strName = MgXmlUtil::GetTagName(elt);
 
-            if(strName == L"URL")    //NOXLATE
+            if (strName == L"URL") // NOXLATE
             {
                 cmd->SetUrl(GetStringFromElement(elt));
             }
-            else if(strName == L"AdditionalParameter") //NOXLATE
+            else if (strName == L"AdditionalParameter") // NOXLATE
             {
                 DOMNode* lchild = MgXmlUtil::GetFirstChild(elt);
                 STRING key, value;
-                while(0 != lchild)
+                while (NULL != lchild)
                 {
-                    if(MgXmlUtil::GetNodeType(lchild) == DOMNode::ELEMENT_NODE)
+                    if (MgXmlUtil::GetNodeType(lchild) == DOMNode::ELEMENT_NODE)
                     {
                         strName = MgXmlUtil::GetTagName((DOMElement*)lchild);
-                        if(strName == L"Key")     //NOXLATE
+                        if (strName == L"Key") // NOXLATE
                         {
                             key = GetStringFromElement((DOMElement*)lchild);
                         }
-                        else if(strName == L"Value")  //NOXLATE
+                        else if (strName == L"Value") // NOXLATE
                         {
                             value = GetStringFromElement((DOMElement*)lchild);
                         }
                         else
                         {
-                            throw new MgXmlParserException(L"MgWebLayout.ParseInvokeUrlCommand",
-                                __LINE__, __WFILE__, NULL, L"", NULL);
+                            throw new MgXmlParserException(L"MgWebLayout.ParseInvokeUrlCommand", __LINE__, __WFILE__, NULL, L"", NULL);
                         }
                     }
                     lchild = MgXmlUtil::GetNextSibling(lchild);
                 }
-                if(key != L"")
+                if (key != L"")
                 {
                     Ptr<MgStringProperty> prop = new MgStringProperty(key, value);
-                    if(prop == NULL)
+                    if (prop == NULL)
                         throw new MgOutOfMemoryException(L"MgWebLayout.ParseInvokeUrlCommand", __LINE__, __WFILE__, NULL, L"", NULL);
                     params->Add(prop);
                 }
             }
-            else if(strName == L"DisableIfSelectionEmpty")   //NOXLATE
+            else if (strName == L"DisableIfSelectionEmpty") // NOXLATE
             {
                 cmd->SetDisabledWhenSelectionEmpty(GetBooleanFromElement(elt));
             }
-            else if(strName == L"LayerSet")   //NOXLATE
+            else if (strName == L"LayerSet") // NOXLATE
             {
                 DOMNode* lchild = MgXmlUtil::GetFirstChild(elt);
-                while(0 != lchild)
+                while (NULL != lchild)
                 {
-                    if(MgXmlUtil::GetNodeType(lchild) == DOMNode::ELEMENT_NODE)
+                    if (MgXmlUtil::GetNodeType(lchild) == DOMNode::ELEMENT_NODE)
                     {
                         strName = MgXmlUtil::GetTagName((DOMElement*)lchild);
-                        if(strName == L"Layer")   //NOXLATE
+                        if (strName == L"Layer") // NOXLATE
                         {
                             layers->Add(GetStringFromElement((DOMElement*)lchild));
                         }
                         else
                         {
-                            throw new MgXmlParserException(L"MgWebLayout.ParseInvokeUrlCommand",
-                                __LINE__, __WFILE__, NULL, L"", NULL);
+                            throw new MgXmlParserException(L"MgWebLayout.ParseInvokeUrlCommand", __LINE__, __WFILE__, NULL, L"", NULL);
                         }
                     }
                     lchild = MgXmlUtil::GetNextSibling(lchild);
                 }
             }
-            else if(strName == L"Target")   //NOXLATE
+            else if (strName == L"Target") // NOXLATE
             {
                 cmd->SetTarget(ValidateTargetType(GetStringFromElement(elt)));
             }
-            else if(strName == L"TargetFrame")   //NOXLATE
+            else if (strName == L"TargetFrame") // NOXLATE
             {
                 cmd->SetTargetName(GetStringFromElement(elt));
             }
             else
             {
-               throw new MgXmlParserException(L"MgWebLayout.ParseInvokeUrlCommand",
-                __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgXmlParserException(L"MgWebLayout.ParseInvokeUrlCommand", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
         node = MgXmlUtil::GetNextSibling(node);
     }
-    while(node != 0);
+    while (node != NULL);
 
     MG_CATCH_AND_THROW(L"MgWebLayout.ParseInvokeUrlCommand")
 }
@@ -721,92 +716,89 @@ void MgWebLayout::ParseSearchCommand(DOMNode* node, MgWebSearchCommand* cmd)
 {
     MG_TRY()
 
-    if(node == 0)
+    if (node == NULL)
         throw new MgNullArgumentException(L"MgWebLayout.ParseSearchCommand", __LINE__, __WFILE__, NULL, L"", NULL);
 
     Ptr<MgPropertyCollection> resultColumns = cmd->GetResultColumns();
 
     do
     {
-        if(MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)
+        if (MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)
         {
             DOMElement* elt = (DOMElement*)node;
             wstring strName = MgXmlUtil::GetTagName(elt);
 
-            if(strName == L"Layer")   //NOXLATE
+            if (strName == L"Layer") // NOXLATE
             {
                 cmd->SetLayer(GetStringFromElement(elt));
             }
-            else if(strName == L"Prompt")   //NOXLATE
+            else if (strName == L"Prompt") // NOXLATE
             {
                 cmd->SetPrompt(GetStringFromElement(elt));
             }
-            else if(strName == L"Filter")   //NOXLATE
+            else if (strName == L"Filter") // NOXLATE
             {
                 cmd->SetFilter(GetStringFromElement(elt));
             }
-            else if(strName == L"MatchLimit")   //NOXLATE
+            else if (strName == L"MatchLimit") // NOXLATE
             {
                 cmd->SetMatchLimit(GetIntegerFromElement(elt));
             }
-            else if(strName == L"Target")   //NOXLATE
+            else if (strName == L"Target") // NOXLATE
             {
                 cmd->SetTarget(ValidateTargetType(GetStringFromElement(elt)));
             }
-            else if(strName == L"TargetFrame")   //NOXLATE
+            else if (strName == L"TargetFrame") // NOXLATE
             {
                 cmd->SetTargetName(GetStringFromElement(elt));
             }
-            else if(strName == L"ResultColumns")   //NOXLATE
+            else if (strName == L"ResultColumns") // NOXLATE
             {
                 DOMNode* lchild = MgXmlUtil::GetFirstChild(elt);
-                while(0 != lchild)
+                while (NULL != lchild)
                 {
-                    if(MgXmlUtil::GetNodeType(lchild) == DOMNode::ELEMENT_NODE)
+                    if (MgXmlUtil::GetNodeType(lchild) == DOMNode::ELEMENT_NODE)
                     {
                         strName = MgXmlUtil::GetTagName((DOMElement*)lchild);
-                        if(strName == L"Column")     //NOXLATE
+                        if (strName == L"Column") // NOXLATE
                         {
                             DOMNode* lchild1 = MgXmlUtil::GetFirstChild(lchild);
                             STRING displayName, property;
-                            while(0 != lchild1)
+                            while (NULL != lchild1)
                             {
-                                if(MgXmlUtil::GetNodeType(lchild1) == DOMNode::ELEMENT_NODE)
+                                if (MgXmlUtil::GetNodeType(lchild1) == DOMNode::ELEMENT_NODE)
                                 {
                                     strName = MgXmlUtil::GetTagName((DOMElement*)lchild1);
-                                    if(strName == L"Name")     //NOXLATE
+                                    if (strName == L"Name") // NOXLATE
                                     {
                                         displayName = GetStringFromElement((DOMElement*)lchild1);
                                     }
-                                    else if(strName == L"Property")     //NOXLATE
+                                    else if (strName == L"Property") // NOXLATE
                                     {
                                         property = GetStringFromElement((DOMElement*)lchild1);
                                     }
                                     else
                                     {
-                                        throw new MgXmlParserException(L"MgWebLayout.ParseSearchCommand",
-                                            __LINE__, __WFILE__, NULL, L"", NULL);
+                                        throw new MgXmlParserException(L"MgWebLayout.ParseSearchCommand", __LINE__, __WFILE__, NULL, L"", NULL);
                                     }
                                 }
                                 lchild1 = MgXmlUtil::GetNextSibling(lchild1);
                             }
-                            if(property != L"")
+                            if (property != L"")
                             {
                                 Ptr<MgStringProperty> prop = new MgStringProperty(property, displayName);
-                                if(prop == NULL)
+                                if (prop == NULL)
                                     throw new MgOutOfMemoryException(L"MgWebLayout.ParseSearchCommand", __LINE__, __WFILE__, NULL, L"", NULL);
                                 resultColumns->Add(prop);
                             }
                             else
                             {
-                                throw new MgXmlParserException(L"MgWebLayout.ParseSearchCommand",
-                                    __LINE__, __WFILE__, NULL, L"", NULL);
+                                throw new MgXmlParserException(L"MgWebLayout.ParseSearchCommand", __LINE__, __WFILE__, NULL, L"", NULL);
                             }
                         }
                         else
                         {
-                            throw new MgXmlParserException(L"MgWebLayout.ParseSearchCommand",
-                                __LINE__, __WFILE__, NULL, L"", NULL);
+                            throw new MgXmlParserException(L"MgWebLayout.ParseSearchCommand", __LINE__, __WFILE__, NULL, L"", NULL);
                         }
                     }
                     lchild = MgXmlUtil::GetNextSibling(lchild);
@@ -814,13 +806,12 @@ void MgWebLayout::ParseSearchCommand(DOMNode* node, MgWebSearchCommand* cmd)
             }
             else
             {
-               throw new MgXmlParserException(L"MgWebLayout.ParseSearchCommand",
-                __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgXmlParserException(L"MgWebLayout.ParseSearchCommand", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
         node = MgXmlUtil::GetNextSibling(node);
     }
-    while(node != 0);
+    while (node != NULL);
 
     MG_CATCH_AND_THROW(L"MgWebLayout.ParseSearchCommand")
 }
@@ -833,37 +824,36 @@ void MgWebLayout::ParseInvokeScriptCommand(DOMNode* node, MgWebInvokeScriptComma
 {
     MG_TRY()
 
-    if(node == 0)
+    if (node == NULL)
         throw new MgNullArgumentException(L"MgWebLayout.ParseInvokeScriptCommand", __LINE__, __WFILE__, NULL, L"", NULL);
 
     do
     {
-        if(MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)
+        if (MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)
         {
             DOMElement* elt = (DOMElement*)node;
             wstring strName = MgXmlUtil::GetTagName(elt);
 
-            if(strName == L"Target")   //NOXLATE
+            if (strName == L"Target") // NOXLATE
             {
                 cmd->SetTarget(ValidateTargetType(GetStringFromElement(elt)));
             }
-            else if(strName == L"TargetFrame")   //NOXLATE
+            else if (strName == L"TargetFrame") // NOXLATE
             {
                 cmd->SetTargetName(GetStringFromElement(elt));
             }
-            else if(strName == L"Script")   //NOXLATE
+            else if (strName == L"Script") // NOXLATE
             {
                 cmd->SetCode(GetStringFromElement(elt));
             }
             else
             {
-               throw new MgXmlParserException(L"MgWebLayout.ParseInvokeScriptCommand",
-                __LINE__, __WFILE__, NULL, L"", NULL);
+               throw new MgXmlParserException(L"MgWebLayout.ParseInvokeScriptCommand", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
         node = MgXmlUtil::GetNextSibling(node);
     }
-    while(node != 0);
+    while (node != NULL);
 
     MG_CATCH_AND_THROW(L"MgWebLayout.ParseInvokeScriptCommand")
 }
@@ -876,34 +866,33 @@ void MgWebLayout::ParsePrintCommand(DOMNode* node, MgWebPrintCommand* cmd)
 {
     MG_TRY()
 
-    if(node == 0)
+    if (node == NULL)
         throw new MgNullArgumentException(L"MgWebLayout.ParsePrintCommand", __LINE__, __WFILE__, NULL, L"", NULL);
 
     Ptr<MgStringCollection> printLayouts = cmd->GetPrintLayouts();
 
     do
     {
-        if(MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)
+        if (MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)
         {
             DOMElement* elt = (DOMElement*)node;
             wstring strName = MgXmlUtil::GetTagName(elt);
 
-            if(strName == L"PrintLayout")   //NOXLATE
+            if (strName == L"PrintLayout") // NOXLATE
             {
                 DOMNode* lchild = MgXmlUtil::GetFirstChild(elt);
-                while(0 != lchild)
+                while (NULL != lchild)
                 {
-                    if(MgXmlUtil::GetNodeType(lchild) == DOMNode::ELEMENT_NODE)
+                    if (MgXmlUtil::GetNodeType(lchild) == DOMNode::ELEMENT_NODE)
                     {
                         strName = MgXmlUtil::GetTagName((DOMElement*)lchild);
-                        if(strName == L"ResourceId")   //NOXLATE
+                        if (strName == L"ResourceId") // NOXLATE
                         {
                             printLayouts->Add(GetStringFromElement((DOMElement*)lchild));
                         }
                         else
                         {
-                            throw new MgXmlParserException(L"MgWebLayout.ParsePrintCommand",
-                                __LINE__, __WFILE__, NULL, L"", NULL);
+                            throw new MgXmlParserException(L"MgWebLayout.ParsePrintCommand", __LINE__, __WFILE__, NULL, L"", NULL);
                         }
                     }
                     lchild = MgXmlUtil::GetNextSibling(lchild);
@@ -911,13 +900,12 @@ void MgWebLayout::ParsePrintCommand(DOMNode* node, MgWebPrintCommand* cmd)
             }
             else
             {
-               throw new MgXmlParserException(L"MgWebLayout.ParsePrintCommand",
-                __LINE__, __WFILE__, NULL, L"", NULL);
+               throw new MgXmlParserException(L"MgWebLayout.ParsePrintCommand", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
         node = MgXmlUtil::GetNextSibling(node);
     }
-    while(node != 0);
+    while (node != NULL);
 
     MG_CATCH_AND_THROW(L"MgWebLayout.ParsePrintCommand")
 }
@@ -930,37 +918,36 @@ void MgWebLayout::ParseHelpCommand(DOMNode* node, MgWebHelpCommand* cmd)
 {
     MG_TRY()
 
-    if(node == 0)
+    if (node == NULL)
         throw new MgNullArgumentException(L"MgWebLayout.ParseHelpCommand", __LINE__, __WFILE__, NULL, L"", NULL);
 
     do
     {
-        if(MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)
+        if (MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)
         {
             DOMElement* elt = (DOMElement*)node;
             wstring strName = MgXmlUtil::GetTagName(elt);
 
-            if(strName == L"Target")   //NOXLATE
+            if (strName == L"Target") // NOXLATE
             {
                 cmd->SetTarget(ValidateTargetType(GetStringFromElement(elt)));
             }
-            else if(strName == L"TargetFrame")   //NOXLATE
+            else if (strName == L"TargetFrame") // NOXLATE
             {
                 cmd->SetTargetName(GetStringFromElement(elt));
             }
-            else if(strName == L"URL")   //NOXLATE
+            else if (strName == L"URL") // NOXLATE
             {
                 cmd->SetUrl(GetStringFromElement(elt));
             }
             else
             {
-               throw new MgXmlParserException(L"MgWebLayout.ParseHelpCommand",
-                __LINE__, __WFILE__, NULL, L"", NULL);
+               throw new MgXmlParserException(L"MgWebLayout.ParseHelpCommand", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
         node = MgXmlUtil::GetNextSibling(node);
     }
-    while(node != 0);
+    while (node != NULL);
 
     MG_CATCH_AND_THROW(L"MgWebLayout.ParseHelpCommand")
 }
@@ -973,33 +960,32 @@ void MgWebLayout::ParseUiTargetCommand(DOMNode* node, MgWebUiTargetCommand* cmd)
 {
     MG_TRY()
 
-    if(node == 0)
+    if (node == NULL)
         throw new MgNullArgumentException(L"MgWebLayout.ParseUiTargetCommand", __LINE__, __WFILE__, NULL, L"", NULL);
 
     do
     {
-        if(MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)
+        if (MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)
         {
             DOMElement* elt = (DOMElement*)node;
             wstring strName = MgXmlUtil::GetTagName(elt);
 
-            if(strName == L"Target")   //NOXLATE
+            if (strName == L"Target") // NOXLATE
             {
                 cmd->SetTarget(ValidateTargetType(GetStringFromElement(elt)));
             }
-            else if(strName == L"TargetFrame")   //NOXLATE
+            else if (strName == L"TargetFrame") // NOXLATE
             {
                 cmd->SetTargetName(GetStringFromElement(elt));
             }
             else
             {
-               throw new MgXmlParserException(L"MgWebLayout.ParseUiTargetCommand",
-                __LINE__, __WFILE__, NULL, L"", NULL);
+               throw new MgXmlParserException(L"MgWebLayout.ParseUiTargetCommand", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
         node = MgXmlUtil::GetNextSibling(node);
     }
-    while(node != 0);
+    while (node != NULL);
 
     MG_CATCH_AND_THROW(L"MgWebLayout.ParseUiTargetCommand")
 }
@@ -1041,59 +1027,59 @@ INT32 MgWebLayout::ValidateAction(CREFSTRING action)
 {
     MG_TRY()
 
-    if(action == L"Pan")
+    if (action == L"Pan") // NOXLATE
         return MgWebActions::Pan;
-    else if(action == L"PanUp")
+    else if (action == L"PanUp") // NOXLATE
         return MgWebActions::PanUp;
-    else if(action == L"PanDown")
+    else if (action == L"PanDown") // NOXLATE
         return MgWebActions::PanDown;
-    else if(action == L"PanLeft")
+    else if (action == L"PanLeft") // NOXLATE
         return MgWebActions::PanLeft;
-    else if(action == L"PanRight")
+    else if (action == L"PanRight") // NOXLATE
         return MgWebActions::PanRight;
-    else if(action == L"Zoom")
+    else if (action == L"Zoom") // NOXLATE
         return MgWebActions::Zoom;
-    else if(action == L"ZoomIn")
+    else if (action == L"ZoomIn") // NOXLATE
         return MgWebActions::ZoomIn;
-    else if(action == L"ZoomOut")
+    else if (action == L"ZoomOut") // NOXLATE
         return MgWebActions::ZoomOut;
-    else if(action == L"ZoomRectangle")
+    else if (action == L"ZoomRectangle") // NOXLATE
         return MgWebActions::ZoomRectangle;
-    else if(action == L"ZoomToSelection")
+    else if (action == L"ZoomToSelection") // NOXLATE
         return MgWebActions::ZoomSelection;
-    else if(action == L"FitToWindow")
+    else if (action == L"FitToWindow") // NOXLATE
         return MgWebActions::FitWindow;
-    else if(action == L"PreviousView")
+    else if (action == L"PreviousView") // NOXLATE
         return MgWebActions::ViewPrevious;
-    else if(action == L"NextView")
+    else if (action == L"NextView") // NOXLATE
         return MgWebActions::ViewNext;
-    else if(action == L"RestoreView")
+    else if (action == L"RestoreView") // NOXLATE
         return MgWebActions::ViewRestore;
-    else if(action == L"Select")
+    else if (action == L"Select") // NOXLATE
         return MgWebActions::Select;
-    else if(action == L"SelectRadius")
+    else if (action == L"SelectRadius") // NOXLATE
         return MgWebActions::SelectRadius;
-    else if(action == L"SelectPolygon")
+    else if (action == L"SelectPolygon") // NOXLATE
         return MgWebActions::SelectPolygon;
-    else if(action == L"SelectWithin")
+    else if (action == L"SelectWithin") // NOXLATE
         return MgWebActions::SelectWithin;
-    else if(action == L"ClearSelection")
+    else if (action == L"ClearSelection") // NOXLATE
         return MgWebActions::SelectClear;
-    else if(action == L"Refresh")
+    else if (action == L"Refresh") // NOXLATE
         return MgWebActions::Refresh;
-    else if(action == L"CopyMap")
+    else if (action == L"CopyMap") // NOXLATE
         return MgWebActions::Copy;
-    else if(action == L"GetPrintablePage")
+    else if (action == L"GetPrintablePage") // NOXLATE
         return MgWebActions::GetPrintablePage;
-    else if(action == L"Buffer")
+    else if (action == L"Buffer") // NOXLATE
         return MgWebActions::Buffer;
-    else if(action == L"Measure")
+    else if (action == L"Measure") // NOXLATE
         return MgWebActions::Measure;
-    else if(action == L"ViewOptions")
+    else if (action == L"ViewOptions") // NOXLATE
         return MgWebActions::ViewOptions;
-    else if(action == L"InvokeScript")
+    else if (action == L"InvokeScript") // NOXLATE
         return MgWebActions::InvokeScript;
-    else if(action == L"About")
+    else if (action == L"About") // NOXLATE
         return MgWebActions::About;
     else
     {
@@ -1118,11 +1104,11 @@ INT32 MgWebLayout::ValidateTargetType(CREFSTRING tt)
 {
     MG_TRY()
 
-    if (tt == L"TaskPane")
+    if (tt == L"TaskPane") // NOXLATE
         return MgWebTargetType::TaskPane;
-    else if (tt == L"NewWindow")
+    else if (tt == L"NewWindow") // NOXLATE
         return MgWebTargetType::NewWindow;
-    else if (tt == L"SpecifiedFrame")
+    else if (tt == L"SpecifiedFrame") // NOXLATE
         return MgWebTargetType::SpecifiedFrame;
     else
     {
@@ -1149,73 +1135,70 @@ void MgWebLayout::ParseMapProperties(DOMElement* elt)
 
     DOMNode* child = MgXmlUtil::GetFirstChild(elt);
 
-    while(0 != child)
+    while (NULL != child)
     {
-        if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
+        if (MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
         {
             elt = (DOMElement*)child;
             wstring strName = MgXmlUtil::GetTagName(elt);
 
-            if(strName == L"ResourceId") //NOXLATE
+            if (strName == L"ResourceId") // NOXLATE
             {
                 m_mapDefinition = GetStringFromElement(elt);
             }
-            else if(strName == L"InitialView") //NOXLATE
+            else if (strName == L"InitialView") // NOXLATE
             {
                 bool centerXDefined = false, centerYDefined = false;
-                double centerX = 0., centerY = 0.;
+                double centerX = 0.0, centerY = 0.0;
 
                 DOMNode* ichild = MgXmlUtil::GetFirstChild(elt);
-                while(0 != ichild)
+                while (NULL != ichild)
                 {
-                    if(MgXmlUtil::GetNodeType(ichild) == DOMNode::ELEMENT_NODE)
+                    if (MgXmlUtil::GetNodeType(ichild) == DOMNode::ELEMENT_NODE)
                     {
                         DOMElement* eltInner = (DOMElement*)ichild;
                         strName = MgXmlUtil::GetTagName(eltInner);
 
-                        if(strName == L"CenterX") //NOXLATE
+                        if (strName == L"CenterX") // NOXLATE
                         {
                             centerX = GetDoubleFromElement(eltInner);
                             centerXDefined = true;
                         }
-                        else if(strName == L"CenterY") //NOXLATE
+                        else if (strName == L"CenterY") // NOXLATE
                         {
                             centerY = GetDoubleFromElement(eltInner);
                             centerYDefined = true;
                         }
-                        else if(strName == L"Scale") //NOXLATE
+                        else if (strName == L"Scale") // NOXLATE
                             m_scale = GetDoubleFromElement(eltInner);
                         else
                         {
-                            throw new MgXmlParserException(L"MgWebLayout.ParseMapProperties",
-                                __LINE__, __WFILE__, NULL, L"", NULL);
+                            throw new MgXmlParserException(L"MgWebLayout.ParseMapProperties", __LINE__, __WFILE__, NULL, L"", NULL);
                         }
                     }
                     ichild = MgXmlUtil::GetNextSibling(ichild);
                 }
-                if(centerXDefined && centerYDefined)
+                if (centerXDefined && centerYDefined)
                 {
                     Ptr<MgCoordinateXY> coord = new MgCoordinateXY(centerX, centerY);
                     m_center = new MgPoint(coord);
                 }
-                else if(centerXDefined != centerYDefined)
+                else if (centerXDefined != centerYDefined)
                 {
-                    throw new MgXmlParserException(L"MgWebLayout.ParseMapProperties",
-                        __LINE__, __WFILE__, NULL, L"", NULL);
+                    throw new MgXmlParserException(L"MgWebLayout.ParseMapProperties", __LINE__, __WFILE__, NULL, L"", NULL);
                 }
             }
-            else if(strName == L"HyperlinkTarget") //NOXLATE
+            else if (strName == L"HyperlinkTarget") // NOXLATE
             {
                 m_hyperlinkTarget = ValidateTargetType(GetStringFromElement(elt));
             }
-            else if(strName == L"HyperlinkTargetFrame") //NOXLATE
+            else if (strName == L"HyperlinkTargetFrame") // NOXLATE
             {
                 m_hyperlinkTargetFrame = GetStringFromElement(elt);
             }
             else
             {
-               throw new MgXmlParserException(L"MgWebLayout.ParseMapProperties",
-                __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgXmlParserException(L"MgWebLayout.ParseMapProperties", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
         child = MgXmlUtil::GetNextSibling(child);
@@ -1234,33 +1217,32 @@ void MgWebLayout::ParseInformationPane(DOMElement* elt)
 
     DOMNode* child = MgXmlUtil::GetFirstChild(elt);
 
-    while(0 != child)
+    while (NULL != child)
     {
-        if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
+        if (MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
         {
             elt = (DOMElement*)child;
             wstring strName = MgXmlUtil::GetTagName(elt);
 
-            if(strName == L"Visible") //NOXLATE
+            if (strName == L"Visible") // NOXLATE
             {
                 m_informationPane->SetVisible(GetBooleanFromElement(elt));
             }
-            else if(strName == L"Width") //NOXLATE
+            else if (strName == L"Width") // NOXLATE
             {
                 m_informationPane->SetWidth(GetIntegerFromElement(elt));
             }
-            else if(strName == L"LegendVisible") //NOXLATE
+            else if (strName == L"LegendVisible") // NOXLATE
             {
                 m_informationPane->SetLegendBandVisible(GetBooleanFromElement(elt));
             }
-            else if(strName == L"PropertiesVisible") //NOXLATE
+            else if (strName == L"PropertiesVisible") // NOXLATE
             {
                 m_informationPane->SetPropertiesBandVisible(GetBooleanFromElement(elt));
             }
             else
             {
-               throw new MgXmlParserException(L"MgWebLayout.ParseInformationPane",
-                __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgXmlParserException(L"MgWebLayout.ParseInformationPane", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
         child = MgXmlUtil::GetNextSibling(child);
@@ -1279,21 +1261,20 @@ void MgWebLayout::ParseStatusBar(DOMElement* elt)
 
     DOMNode* child = MgXmlUtil::GetFirstChild(elt);
 
-    while(0 != child)
+    while (NULL != child)
     {
-        if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
+        if (MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
         {
             elt = (DOMElement*)child;
             wstring strName = MgXmlUtil::GetTagName(elt);
 
-            if(strName == L"Visible") //NOXLATE
+            if (strName == L"Visible") // NOXLATE
             {
                 m_statusBar->SetVisible(GetBooleanFromElement(elt));
             }
             else
             {
-               throw new MgXmlParserException(L"MgWebLayout.ParseStatusBar",
-                __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgXmlParserException(L"MgWebLayout.ParseStatusBar", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
         child = MgXmlUtil::GetNextSibling(child);
@@ -1313,26 +1294,25 @@ void MgWebLayout::ParseToolBar(DOMElement* elt)
     DOMNode* child = MgXmlUtil::GetFirstChild(elt);
     Ptr<MgWebWidgetCollection> widgets = m_toolBar->GetWidgets();
 
-    while(0 != child)
+    while (NULL != child)
     {
-        if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
+        if (MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
         {
             elt = (DOMElement*)child;
             wstring strName = MgXmlUtil::GetTagName(elt);
 
-            if(strName == L"Visible") //NOXLATE
+            if (strName == L"Visible") // NOXLATE
             {
                 m_toolBar->SetVisible(GetBooleanFromElement(elt));
             }
-            else if(strName == L"Button") //NOXLATE
+            else if (strName == L"Button") // NOXLATE
             {
                 Ptr<MgWebWidget> widget = ParseWidget(elt);
                 widgets->Add(widget);
             }
             else
             {
-               throw new MgXmlParserException(L"MgWebLayout.ParseToolBar",
-                __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgXmlParserException(L"MgWebLayout.ParseToolBar", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
         child = MgXmlUtil::GetNextSibling(child);
@@ -1353,50 +1333,51 @@ MgWebWidget* MgWebLayout::ParseWidget(DOMElement* elt)
 
     DOMNode* child = MgXmlUtil::GetFirstChild(elt);
 
-    while(0 != child)
+    while (NULL != child)
     {
-        if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
+        if (MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
         {
             elt = (DOMElement*)child;
             wstring strName = MgXmlUtil::GetTagName(elt);
 
-            if(strName == L"Function") //NOXLATE
+            if (strName == L"Function") // NOXLATE
             {
                 STRING function = GetStringFromElement(elt);
-                switch(ValidateUiItemFunction(function))
+                switch (ValidateUiItemFunction(function))
                 {
                     case MgWebWidgetType::Separator:
-                        if((widget = new MgWebSeparatorWidget()) == NULL)
+                        if ((widget = new MgWebSeparatorWidget()) == NULL)
                             throw new MgOutOfMemoryException(L"MgWebLayout.ParseWidget", __LINE__, __WFILE__, NULL, L"", NULL);
                         break;
+
                     case MgWebWidgetType::Command:
-                        if((widget = new MgWebCommandWidget()) == NULL)
+                        if ((widget = new MgWebCommandWidget()) == NULL)
                             throw new MgOutOfMemoryException(L"MgWebLayout.ParseWidget", __LINE__, __WFILE__, NULL, L"", NULL);
                         ParseCommandWidget(MgXmlUtil::GetNextSibling(child), (MgWebCommandWidget*)widget.p);
                         break;
+
                     case MgWebWidgetType::Flyout:
-                        if((widget = new MgWebFlyoutWidget()) == NULL)
+                        if ((widget = new MgWebFlyoutWidget()) == NULL)
                             throw new MgOutOfMemoryException(L"MgWebLayout.ParseWidget", __LINE__, __WFILE__, NULL, L"", NULL);
                         ParseFlyoutWidget(MgXmlUtil::GetNextSibling(child), (MgWebFlyoutWidget*)widget.p);
                         break;
+
                     default:
                     {
-                        throw new MgXmlParserException(L"MgWebLayout.ParseWidget",
-                            __LINE__, __WFILE__, NULL, L"", NULL);
+                        throw new MgXmlParserException(L"MgWebLayout.ParseWidget", __LINE__, __WFILE__, NULL, L"", NULL);
                     }
                 }
                 break;
             }
             else
             {
-               throw new MgXmlParserException(L"MgWebLayout.ParseWidget",
-                __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgXmlParserException(L"MgWebLayout.ParseWidget", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
         child = MgXmlUtil::GetNextSibling(child);
     }
 
-    return SAFE_ADDREF((MgWebWidget*)widget);
+    return widget.Detach();
 
     MG_CATCH_AND_THROW(L"MgWebLayout.ParseWidget")
 
@@ -1407,27 +1388,26 @@ MgWebWidget* MgWebLayout::ParseWidget(DOMElement* elt)
 ///////////////////////////////////////////////////////////////////////////
 // Parse a command widget
 // Note: containing element has been already partially parsed. This method
-//  parses the remainder of the elements, specific to a command widget
+//       parses the remainder of the elements, specific to a command widget
 //
 void MgWebLayout::ParseCommandWidget(DOMNode* node, MgWebCommandWidget* widget)
 {
     MG_TRY()
 
-    while(0 != node)
+    while (NULL != node)
     {
-        if(MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)
+        if (MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)
         {
             DOMElement* elt = (DOMElement*)node;
             wstring strName = MgXmlUtil::GetTagName(elt);
 
-            if(strName == L"Command") //NOXLATE
+            if (strName == L"Command") // NOXLATE
             {
                 m_cmdWidgets[widget] = GetStringFromElement(elt);
             }
             else
             {
-               throw new MgXmlParserException(L"MgWebLayout.ParseCommandWidget",
-                __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgXmlParserException(L"MgWebLayout.ParseCommandWidget", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
         node = MgXmlUtil::GetNextSibling(node);
@@ -1440,47 +1420,46 @@ void MgWebLayout::ParseCommandWidget(DOMNode* node, MgWebCommandWidget* widget)
 ///////////////////////////////////////////////////////////////////////////
 // Parse a flyout widget
 // Note: containing element has been already partially parsed. This method
-//  parses the remainder of the elements, specific to a flyout widget
+//       parses the remainder of the elements, specific to a flyout widget
 //
 void MgWebLayout::ParseFlyoutWidget(DOMNode* node, MgWebFlyoutWidget* widget)
 {
     MG_TRY()
 
-    while(0 != node)
+    while (NULL != node)
     {
-        if(MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)
+        if (MgXmlUtil::GetNodeType(node) == DOMNode::ELEMENT_NODE)
         {
             DOMElement* elt = (DOMElement*)node;
             wstring strName = MgXmlUtil::GetTagName(elt);
 
-            if(strName == L"Label") //NOXLATE
+            if (strName == L"Label") // NOXLATE
             {
                 widget->SetLabel(GetStringFromElement(elt));
             }
-            else if(strName == L"ImageURL") //NOXLATE
+            else if (strName == L"ImageURL") // NOXLATE
             {
                 widget->SetIconUrl(GetStringFromElement(elt));
             }
-            else if(strName == L"DisabledImageURL") //NOXLATE
+            else if (strName == L"DisabledImageURL") // NOXLATE
             {
                 widget->SetDisabledIconUrl(GetStringFromElement(elt));
             }
-            else if(strName == L"SubItem") //NOXLATE
+            else if (strName == L"SubItem") // NOXLATE
             {
                 widget->AddSubItem(ParseWidget(elt));
             }
-            else if (strName == L"Tooltip") //NOXLATE
+            else if (strName == L"Tooltip") // NOXLATE
             {
                 widget->SetTooltip(GetStringFromElement(elt));
             }
-            else if (strName == L"Description") //NOXLATE
+            else if (strName == L"Description") // NOXLATE
             {
                 widget->SetDescription(GetStringFromElement(elt));
             }
             else
             {
-               throw new MgXmlParserException(L"MgWebLayout.ParseFlyoutWidget",
-                __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgXmlParserException(L"MgWebLayout.ParseFlyoutWidget", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
         node = MgXmlUtil::GetNextSibling(node);
@@ -1497,11 +1476,11 @@ INT32 MgWebLayout::ValidateUiItemFunction(CREFSTRING function)
 {
     MG_TRY()
 
-    if (function == L"Separator")
+    if (function == L"Separator") // NOXLATE
         return MgWebWidgetType::Separator;
-    else if (function == L"Command")
+    else if (function == L"Command") // NOXLATE
         return MgWebWidgetType::Command;
-    else if (function == L"Flyout")
+    else if (function == L"Flyout") // NOXLATE
         return MgWebWidgetType::Flyout;
     else
     {
@@ -1528,26 +1507,25 @@ void MgWebLayout::ParseContextMenu(DOMElement* elt)
 
     DOMNode* child = MgXmlUtil::GetFirstChild(elt);
 
-    while(0 != child)
+    while (NULL != child)
     {
-        if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
+        if (MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
         {
             elt = (DOMElement*)child;
             wstring strName = MgXmlUtil::GetTagName(elt);
 
-            if(strName == L"Visible") //NOXLATE
+            if (strName == L"Visible") // NOXLATE
             {
                 m_contextMenu->SetVisible(GetBooleanFromElement(elt));
             }
-            else if(strName == L"MenuItem") //NOXLATE
+            else if (strName == L"MenuItem") // NOXLATE
             {
                 Ptr<MgWebWidget> widget = ParseWidget(elt);
                 m_contextMenu->Add(widget);
             }
             else
             {
-               throw new MgXmlParserException(L"MgWebLayout.ParseContextMenu",
-                __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgXmlParserException(L"MgWebLayout.ParseContextMenu", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
         child = MgXmlUtil::GetNextSibling(child);
@@ -1566,33 +1544,32 @@ void MgWebLayout::ParseTaskPane(DOMElement* elt)
 
     DOMNode* child = MgXmlUtil::GetFirstChild(elt);
 
-    while(0 != child)
+    while (NULL != child)
     {
-        if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
+        if (MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
         {
             elt = (DOMElement*)child;
             wstring strName = MgXmlUtil::GetTagName(elt);
 
-            if(strName == L"Visible") //NOXLATE
+            if (strName == L"Visible") // NOXLATE
             {
                 m_taskPane->SetVisible(GetBooleanFromElement(elt));
             }
-            else if(strName == L"Width") //NOXLATE
+            else if (strName == L"Width") // NOXLATE
             {
                 m_taskPane->SetWidth(GetIntegerFromElement(elt));
             }
-            else if(strName == L"InitialTask") //NOXLATE
+            else if (strName == L"InitialTask") // NOXLATE
             {
                 m_taskPane->SetInitialTaskUrl(GetStringFromElement(elt));
             }
-            else if(strName == L"TaskBar") //NOXLATE
+            else if (strName == L"TaskBar") // NOXLATE
             {
                 ParseTaskBar(elt);
             }
             else
             {
-               throw new MgXmlParserException(L"MgWebLayout.ParseTaskPane",
-                __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgXmlParserException(L"MgWebLayout.ParseTaskPane", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
         child = MgXmlUtil::GetNextSibling(child);
@@ -1615,46 +1592,45 @@ void MgWebLayout::ParseTaskBar(DOMElement* elt)
 
     DOMNode* child = MgXmlUtil::GetFirstChild(elt);
 
-    while(0 != child)
+    while (NULL != child)
     {
-        if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
+        if (MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
         {
             elt = (DOMElement*)child;
             wstring strName = MgXmlUtil::GetTagName(elt);
 
-            if(strName == L"Visible") //NOXLATE
+            if (strName == L"Visible") // NOXLATE
             {
                 taskBar->SetVisible(GetBooleanFromElement(elt));
             }
-            else if(strName == L"Home") //NOXLATE
+            else if (strName == L"Home") // NOXLATE
             {
                 Ptr<MgWebTaskBarWidget> home = (MgWebTaskBarWidget*)taskButtons->GetWidget(MgWebTaskButtonType::Home);
                 ParseTaskBarButton(elt, home);
             }
-            else if(strName == L"Back") //NOXLATE
+            else if (strName == L"Back") // NOXLATE
             {
                 Ptr<MgWebTaskBarWidget> back = (MgWebTaskBarWidget*)taskButtons->GetWidget(MgWebTaskButtonType::Back);
                 ParseTaskBarButton(elt, back);
             }
-            else if(strName == L"Forward") //NOXLATE
+            else if (strName == L"Forward") // NOXLATE
             {
                 Ptr<MgWebTaskBarWidget> forward = (MgWebTaskBarWidget*)taskButtons->GetWidget(MgWebTaskButtonType::Forward);
                 ParseTaskBarButton(elt, forward);
             }
-            else if(strName == L"Tasks") //NOXLATE
+            else if (strName == L"Tasks") // NOXLATE
             {
                 Ptr<MgWebTaskBarWidget> tasks = (MgWebTaskBarWidget*)taskButtons->GetWidget(MgWebTaskButtonType::Tasks);
                 ParseTaskBarButton(elt, tasks);
             }
-            else if(strName == L"MenuButton") //NOXLATE
+            else if (strName == L"MenuButton") // NOXLATE
             {
                 Ptr<MgWebWidget> widget = ParseWidget(elt);
                 taskList->Add(widget);
             }
             else
             {
-               throw new MgXmlParserException(L"MgWebLayout.ParseTaskBar",
-                __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgXmlParserException(L"MgWebLayout.ParseTaskBar", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
         child = MgXmlUtil::GetNextSibling(child);
@@ -1671,37 +1647,36 @@ void MgWebLayout::ParseTaskBarButton(DOMElement* elt, MgWebTaskBarWidget* btn)
 {
     DOMNode* ichild = MgXmlUtil::GetFirstChild(elt);
     STRING strName;
-    while(0 != ichild)
+    while (NULL != ichild)
     {
-        if(MgXmlUtil::GetNodeType(ichild) == DOMNode::ELEMENT_NODE)
+        if (MgXmlUtil::GetNodeType(ichild) == DOMNode::ELEMENT_NODE)
         {
             DOMElement* eltInner = (DOMElement*)ichild;
             strName = MgXmlUtil::GetTagName(eltInner);
 
-            if(strName == L"Tooltip") //NOXLATE
+            if (strName == L"Tooltip") // NOXLATE
             {
                 btn->SetTooltip(GetStringFromElement(eltInner));
             }
-            else if(strName == L"Description") //NOXLATE
+            else if (strName == L"Description") // NOXLATE
             {
                 btn->SetDescription(GetStringFromElement(eltInner));
             }
-            else if (strName == L"Name") //NOXLATE
+            else if (strName == L"Name") // NOXLATE
             {
                 btn->SetName(GetStringFromElement(eltInner));
             }
-            else if (strName == L"ImageURL") //NOXLATE
+            else if (strName == L"ImageURL") // NOXLATE
             {
                 btn->SetIconUrl(GetStringFromElement(eltInner));
             }
-            else if (strName == L"DisabledImageURL") //NOXLATE
+            else if (strName == L"DisabledImageURL") // NOXLATE
             {
                 btn->SetDisabledIconUrl(GetStringFromElement(eltInner));
             }
             else
             {
-                throw new MgXmlParserException(L"MgWebLayout.ParseTaskBarButton",
-                    __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgXmlParserException(L"MgWebLayout.ParseTaskBarButton", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
         ichild = MgXmlUtil::GetNextSibling(ichild);
@@ -1718,22 +1693,21 @@ void MgWebLayout::ParseCommandSet(DOMElement* elt)
 
     DOMNode* child = MgXmlUtil::GetFirstChild(elt);
 
-    while(0 != child)
+    while (NULL != child)
     {
-        if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
+        if (MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
         {
             elt = (DOMElement*)child;
             wstring strName = MgXmlUtil::GetTagName(elt);
 
-            if(strName == L"Command") //NOXLATE
+            if (strName == L"Command") // NOXLATE
             {
                 Ptr<MgWebCommand> cmd = ParseCommand(elt);
                 m_commands->Add(cmd);
             }
             else
             {
-               throw new MgXmlParserException(L"MgWebLayout.ParseCommandSet",
-                __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgXmlParserException(L"MgWebLayout.ParseCommandSet", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
         child = MgXmlUtil::GetNextSibling(child);
@@ -1741,6 +1715,7 @@ void MgWebLayout::ParseCommandSet(DOMElement* elt)
 
     MG_CATCH_AND_THROW(L"MgWebLayout.ParseCommandSet")
 }
+
 
 ///////////////////////////////////////////////////////////////////////////
 // parse the ZoomControl element
@@ -1751,21 +1726,20 @@ void MgWebLayout::ParseZoomControl(DOMElement* elt)
 
     DOMNode* child = MgXmlUtil::GetFirstChild(elt);
 
-    while(0 != child)
+    while (NULL != child)
     {
-        if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
+        if (MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
         {
             elt = (DOMElement*)child;
             wstring strName = MgXmlUtil::GetTagName(elt);
 
-            if(strName == L"Visible") //NOXLATE
+            if (strName == L"Visible") // NOXLATE
             {
                 m_zoomControlVisible = GetBooleanFromElement(elt);
             }
             else
             {
-               throw new MgXmlParserException(L"MgWebLayout.ParseZoomControl",
-                __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgXmlParserException(L"MgWebLayout.ParseZoomControl", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
         child = MgXmlUtil::GetNextSibling(child);

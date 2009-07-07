@@ -18,6 +18,15 @@
 #include "WebApp.h"
 
 ///////////////////////////////////////////////////////////////////////////
+// ctor
+//
+MgWebTaskPane::MgWebTaskPane()
+{
+    if (!(m_taskBar = new MgWebTaskBar()))
+        throw new MgOutOfMemoryException(L"MgWebTaskPane.MgWebTaskPane", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+///////////////////////////////////////////////////////////////////////////
 // Gets the task bar
 //
 MgWebTaskBar* MgWebTaskPane::GetTaskBar()
@@ -31,15 +40,6 @@ MgWebTaskBar* MgWebTaskPane::GetTaskBar()
 STRING MgWebTaskPane::GetInitialTaskUrl()
 {
     return m_initialTaskUrl;
-}
-
-///////////////////////////////////////////////////////////////////////////
-// ctor
-//
-MgWebTaskPane::MgWebTaskPane()
-{
-    if(!(m_taskBar = new MgWebTaskBar()))
-        throw new MgOutOfMemoryException(L"MgWebTaskPane.MgWebTaskPane", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 ///////////////////////////////////////////////////////////////////////////

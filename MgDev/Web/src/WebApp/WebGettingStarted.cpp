@@ -37,43 +37,49 @@ MgByteReader* MgWebLayout::ProcessGettingStartedPage(MgByteReader* htmlGettingSt
     string htmlOut;
     INT32 tgt = MgWebTargetViewerType::Ajax;
     if (forDwf)
-    {
         tgt = MgWebTargetViewerType::Dwf;
-    }
 
     bool first = true;
     size_t dtBegin, ddEnd, endOfCommands = string::npos;
-    for(size_t cur = 0; cur != string::npos; ) {
-        //look for next <dt> tag
+    for (size_t cur=0; cur != string::npos;)
+    {
+        // look for next <dt> tag
         dtBegin = htmlIn.find("<dt>", cur);
-        if(dtBegin != string::npos) {
-            if(first) {
+        if (dtBegin != string::npos)
+        {
+            if (first)
+            {
                 first = false;
-                //copy the beginning of the document to the output
+                // copy the beginning of the document to the output
                 htmlOut = htmlIn.substr(0, dtBegin);
             }
+
             // look for end of adjacent <dd> section
             ddEnd = htmlIn.find("</dd>", dtBegin);
-            if(ddEnd == string::npos)
+            if (ddEnd == string::npos)
                 return NULL;
             endOfCommands = ddEnd + 5;
-            //get the command code
+
+            // get the command code
             size_t codeBegin = htmlIn.find("<a name=\"", dtBegin);
-            if(codeBegin == string::npos || codeBegin > ddEnd)
+            if (codeBegin == string::npos || codeBegin > ddEnd)
                 return NULL;
+
             // commands are encoded with this form: WS1a9193826455f5ff9110c71085341391d-5ca2
             // we retain only the last 4 digits
             size_t codeEnd = htmlIn.find('"', codeBegin += 45);
-            if(codeEnd == string::npos)
+            if (codeEnd == string::npos)
                 return NULL;
+
             Ptr<MgWebCommand> cmd = GetCommandFromCode(htmlIn.substr(codeBegin, codeEnd - codeBegin));
-            if(cmd == NULL)
+            if (cmd == NULL)
                 return NULL;
-            if(IsActionInUse(cmd, tgt)) {
-                //this action is defined and in use in this web layout. Carry it over in the HTML output
+            if (IsActionInUse(cmd, tgt))
+            {
+                // this action is defined and in use in this web layout. Carry it over in the HTML output
                 htmlOut += "<dt>";
                 string iconUrl;
-                if(cmd->GetAction() != MgWebActions::Search)
+                if (cmd->GetAction() != MgWebActions::Search)
                     iconUrl = MgUtil::WideCharToMultiByte(cmd->GetIconUrl());
                 else
                     iconUrl = "../stdicons/icon_search.gif";    //there may be several search commands all using different icons, so use the default one
@@ -81,17 +87,19 @@ MgByteReader* MgWebLayout::ProcessGettingStartedPage(MgByteReader* htmlGettingSt
                 htmlOut += htmlIn.substr(dtBegin + 4, ddEnd - dtBegin - 1 + 6 - 4);
             }
         }
-        else {
-            if(first)
+        else
+        {
+            if (first)
                 return NULL;
             break;
         }
         cur = ddEnd + 1;
     }
+
     //copy the end of the document to the ouput
     htmlOut += htmlIn.substr(endOfCommands);
 
-    //make a byte reader out of this string
+    // make a byte reader out of this string
     Ptr<MgByteSource> src = new MgByteSource((BYTE_ARRAY_IN)htmlOut.c_str(), (INT32)htmlOut.length());
     src->SetMimeType(MgMimeType::Html);
 
@@ -103,17 +111,18 @@ MgByteReader* MgWebLayout::ProcessGettingStartedPage(MgByteReader* htmlGettingSt
 //
 MgWebCommand* MgWebLayout::GetCommandFromCode(string code)
 {
-    map<string, INT32>::const_iterator it;
-    it = cmdCodes.find(code);
-    if(it == cmdCodes.end())
+    map<string, INT32>::const_iterator it = cmdCodes.find(code);
+    if (it == cmdCodes.end())
         return NULL;
+
     INT32 cmdId = it->second;
-    for(INT32 ci = 0; ci < m_commands->GetCount(); ci++) {
+    for (INT32 ci=0; ci<m_commands->GetCount(); ++ci)
+    {
         Ptr<MgWebCommand> cmd = m_commands->GetItem(ci);
-        if(cmd->GetAction() == cmdId) {
-            return SAFE_ADDREF((MgWebCommand*)cmd);
-        }
+        if (cmd->GetAction() == cmdId)
+            return cmd.Detach();
     }
+
     return NULL;
 }
 
@@ -123,9 +132,9 @@ MgWebCommand* MgWebLayout::GetCommandFromCode(string code)
 //
 bool MgWebLayout::IsActionInUse(MgWebCommand* cmd, INT32 targetViewer)
 {
-    if((cmd->GetTargetViewerType() & targetViewer) != targetViewer)
+    if ((cmd->GetTargetViewerType() & targetViewer) != targetViewer)
         return false;
-    if(cmd->IsUsed())
+    if (cmd->IsUsed())
         return true;
     return false;
 }
@@ -166,4 +175,3 @@ static bool InitCmdCodes()
 }
 
 static bool initCmdCodes = InitCmdCodes();
-
