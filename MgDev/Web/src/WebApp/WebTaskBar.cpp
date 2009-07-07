@@ -43,7 +43,7 @@ MgWebTaskBar::MgWebTaskBar()
 
     for(int i = 0; i < 4; i++)
     {
-        MgWebTaskBarWidget* btn = new MgWebTaskBarWidget();
+        Ptr<MgWebTaskBarWidget> btn = new MgWebTaskBarWidget();
         if(btn == NULL)
             throw new MgOutOfMemoryException(L"MgWebTaskBar.MgWebTaskBar", __LINE__, __WFILE__, NULL, L"", NULL);
         m_taskButtons->Add(btn);
