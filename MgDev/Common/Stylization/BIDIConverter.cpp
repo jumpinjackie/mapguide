@@ -34,44 +34,55 @@ static bool bInit = BIDIConverter::GenerateMappings();
 
 // source glyph, right join, left join, mid join, join type {0 = right join, 1 = dual joining}
 unsigned int glyphShapeMapping[][5] = {
-        {0x621, 0xfe80, 0xfe80, 0xfe80, 1},
-        {0x622, 0xfe82, 0xfe81, 0xfe82, 0},
-        {0x623, 0xfe84, 0xfe83, 0xfe84, 0},
-        {0x624, 0xfe86, 0xfe85, 0xfe86, 0},
-        {0x625, 0xfe88, 0xfe87, 0xfe88, 0},
-        {0x626, 0xfe8a, 0xfe8b, 0xfe8c, 1},
-        {0x627, 0xfe8e, 0xfe8d, 0xfe8e, 0},
-        {0x628, 0xfe90, 0xfe91, 0xfe92, 1},
-        {0x629, 0xfe94, 0xfe93, 0xfe93, 0},
-        {0x62a, 0xfe96, 0xfe97, 0xfe98, 1},
-        {0x62b, 0xfe9a, 0xfe9b, 0xfe9c, 1},
-        {0x62c, 0xfe9e, 0xfe9f, 0xfea0, 1},
-        {0x62d, 0xfea2, 0xfea3, 0xfea4, 1},
-        {0x62e, 0xfea6, 0xfea7, 0xfea8, 1},
-        {0x62f, 0xfeaa, 0xfea9, 0xfeaa, 0},
+        {0x621, 0xFE80, 0xFE80, 0xFE80, 1},     // Hamza
+        {0x622, 0xFE82, 0xFE81, 0xFE82, 0},     // Alef With Madda Above
+        {0x623, 0xFE84, 0xFE83, 0xFE84, 0},     // Alef With Hamza Above
+        {0x624, 0xFE86, 0xFE85, 0xFE86, 0},     // Waw  With Hamza Above
+        {0x625, 0xFE88, 0xFE87, 0xFE88, 0},     // Alef With Hamza Below
+        {0x626, 0xFE8A, 0xFE8B, 0xFE8C, 1},     // Yeh  With Hamza Above
+        {0x627, 0xFE8E, 0xFE8D, 0xFE8E, 0},     // Alef
+        {0x628, 0xFE90, 0xFE91, 0xFE92, 1},     // Beh
+        {0x629, 0xFE94, 0xFE93, 0xFE93, 0},     // Teh Marburta
+        {0x62A, 0xFE96, 0xFE97, 0xFE98, 1},     // Teh
+        {0x62B, 0xFE9A, 0xFE9B, 0xFE9C, 1},     // Theh
+        {0x62C, 0xFE9E, 0xFE9F, 0xFEA0, 1},     // Jeem
+        {0x62D, 0xFEA2, 0xFEA3, 0xFEA4, 1},     // Hah
+        {0x62E, 0xFEA6, 0xFEA7, 0xFEA8, 1},     // Khah
+        {0x62F, 0xFEAA, 0xFEA9, 0xFEAA, 0},     // Dal
 
-        {0x630, 0xfeac, 0xfeab, 0xfeac, 0},
-        {0x631, 0xfeae, 0xfead, 0xfeae, 0},
-        {0x632, 0xfeb0, 0xfeaf, 0xfeb0, 0},
-        {0x633, 0xfeb2, 0xfeb3, 0xfeb4, 1},
-        {0x634, 0xfeb6, 0xfeb7, 0xfeb8, 1},
-        {0x635, 0xfeba, 0xfebb, 0xfebc, 1},
-        {0x636, 0xfebe, 0xfebf, 0xfec0, 1},
-        {0x637, 0xfec2, 0xfec3, 0xfec4, 1},
-        {0x638, 0xfec6, 0xfec7, 0xfec8, 1},
-        {0x639, 0xfeca, 0xfecb, 0xfecc, 1},
-        {0x63a, 0xfece, 0xfecf, 0xfed0, 1},
+        {0x630, 0xFEAC, 0xFEAB, 0xFEAC, 0},     // Thal
+        {0x631, 0xFEAE, 0xFEAD, 0xFEAE, 0},     // Reh
+        {0x632, 0xFEB0, 0xFEAF, 0xFEB0, 0},     // Zain
+        {0x633, 0xFEB2, 0xFEB3, 0xFEB4, 1},     // Seen
+        {0x634, 0xFEB6, 0xFEB7, 0xFEB8, 1},     // Sheen
+        {0x635, 0xFEBA, 0xFEBB, 0xFEBC, 1},     // Sad
+        {0x636, 0xFEBE, 0xFEBF, 0xFEC0, 1},     // Dad
+        {0x637, 0xFEC2, 0xFEC3, 0xFEC4, 1},     // Tah
+        {0x638, 0xFEC6, 0xFEC7, 0xFEC8, 1},     // Zah
+        {0x639, 0xFECA, 0xFECB, 0xFECC, 1},     // Ain
+        {0x63A, 0xFECE, 0xFECF, 0xFED0, 1},     // Ghain
 
-        {0x641, 0xfed2, 0xfed3, 0xfed4, 1},
-        {0x642, 0xfed6, 0xfed7, 0xfed8, 1},
-        {0x643, 0xfeda, 0xfedb, 0xfedc, 1},
-        {0x644, 0xfede, 0xfedf, 0xfee0, 1},
-        {0x645, 0xfee2, 0xfee3, 0xfee4, 1},
-        {0x646, 0xfee6, 0xfee7, 0xfee8, 1},
-        {0x647, 0xfeea, 0xfeeb, 0xfeec, 1},
-        {0x648, 0xfeee, 0xfeed, 0xfeee, 0},
-        {0x649, 0xfef0, 0xfeef, 0xfef0, 0},
-        {0x64a, 0xfef2, 0xfef3, 0xfef4, 1}};
+        {0x641, 0xFED2, 0xFED3, 0xFED4, 1},     // Feh
+        {0x642, 0xFED6, 0xFED7, 0xFED8, 1},     // Qaf
+        {0x643, 0xFEDA, 0xFEDB, 0xFEDC, 1},     // Kaf
+        {0x644, 0xFEDE, 0xFEDF, 0xFEE0, 1},     // Lam
+        {0x645, 0xFEE2, 0xFEE3, 0xFEE4, 1},     // Meem
+        {0x646, 0xFEE6, 0xFEE7, 0xFEE8, 1},     // Noon
+        {0x647, 0xFEEA, 0xFEEB, 0xFEEC, 1},     // Heh
+        {0x648, 0xFEEE, 0xFEED, 0xFEEE, 0},     // Waw
+        {0x649, 0xFEF0, 0xFEEF, 0xFEF0, 0},     // Alef Maksura
+        {0x64A, 0xFEF2, 0xFEF3, 0xFEF4, 1}};    // Yeh
+
+// input glyph 1, input glyph 2, replacement glyph
+unsigned int glyphLigatureMapping[][3] = {
+        {0xFEDF, 0xFE82, 0xFEF5},   // Lam (initial) + Alef With Madda above (final) => Lam-Alef With Madda above (isolated)
+        {0xFEE0, 0xFE82, 0xFEF6},   // Lam ( medial) + Alef With Madda above (final) => Lam-Alef With Madda above (   final)
+        {0xFEDF, 0xFE84, 0xFEF7},   // Lam (initial) + Alef With Hamza above (final) => Lam-Alef With Hamza above (isolated)
+        {0xFEE0, 0xFE84, 0xFEF8},   // Lam ( medial) + Alef With Hamza above (final) => Lam-Alef With Hamza above (   final)
+        {0xFEDF, 0xFE88, 0xFEF9},   // Lam (initial) + Alef With Hamza below (final) => Lam-Alef With Hamza below (isolated)
+        {0xFEE0, 0xFE88, 0xFEFA},   // Lam ( medial) + Alef With Hamza below (final) => Lam-Alef With Hamza below (   final)
+        {0xFEDF, 0xFE8E, 0xFEFB},   // Lam (initial) + Alef                  (final) => Lam-Alef                  (isolated)
+        {0xFEE0, 0xFE8E, 0xFEFC}};  // Lam ( medial) + Alef                  (final) => Lam-Alef                  (   final)
 
 
 enum ELinkageType
@@ -229,26 +240,25 @@ void BIDIConverter::ShapeString()
     ShapeGlyphs& shapeGlyphs = GetShapeMapping();
 
     DisplayStr tempString = m_ConvertedString;
-    int nLinkage = eNoLinkage;
     std::vector<unsigned int> glyphMappings;
     std::vector<unsigned int> currentGlyphMappings;
 
     glyphMappings.resize(4);
-    for (unsigned int i=0; i<tempString.size(); ++i)
+    for (size_t i=0; i<tempString.size(); ++i)
     {
         // check if this is a shaped glyph
         if (shapeGlyphs.find(tempString[i]) != shapeGlyphs.end())
         {
             currentGlyphMappings = shapeGlyphs[tempString[i]];
-            nLinkage = 0;
+            int nLinkage = eNoLinkage;
 
-            // if it's not at the beginning of the string and the following character has linkage
+            // if it's not at the end of the string and the following character has linkage
             if (i > 0 && (shapeGlyphs.find(tempString[i-1]) != shapeGlyphs.end()))
             {
                 nLinkage |= eLinkAfter;
             }
 
-            // if not at the beginning of a string and the preceding character has linkage
+            // if it's not at the beginning of the string and the preceding character has linkage
             if (i < (tempString.size() - 1) && (shapeGlyphs.find(tempString[i+1]) != shapeGlyphs.end()))
             {
                 glyphMappings = shapeGlyphs[tempString[i+1]];
@@ -271,6 +281,23 @@ void BIDIConverter::ShapeString()
                 m_ConvertedString[i] = static_cast<wchar_t>(currentGlyphMappings[2]);
                 break;
             }
+        }
+    }
+
+    // enforce ligature
+    std::vector<DisplayStr>& ligaturePairs = GetLigaturePairs();
+    size_t numVals = ligaturePairs.size();
+    for (size_t i=0; i<numVals;)
+    {
+        DisplayStr& key = ligaturePairs[i++];
+        DisplayStr& val = ligaturePairs[i++];
+
+        size_t pos = 0;
+        size_t findPos;
+        while ((findPos = m_ConvertedString.find(key, pos)) != std::wstring::npos)
+        {
+            m_ConvertedString.replace(findPos, key.size(), val);
+            pos = findPos + val.size();
         }
     }
 }
@@ -369,7 +396,7 @@ int BIDIConverter::GetStartingBaseLevel()
     int nRetLevel = 0;
 
     // find the first strong direction and base the level off of that
-    for (unsigned int i=0; i<m_ClassificationArray.size(); ++i)
+    for (size_t i=0; i<m_ClassificationArray.size(); ++i)
     {
         int nCharacter = m_ClassificationArray[i];
         if (ECharacterTypes::L == nCharacter || ECharacterTypes::LRO == nCharacter)
@@ -402,7 +429,7 @@ bool BIDIConverter::ClassifyCharacters()
         // character.  Keep a running tab on which direction the character is
         // so we can determine if it's all left or right and short circuit the
         // algorithm.
-        for (unsigned int i=0; i<m_OriginalString.length(); ++i)
+        for (size_t i=0; i<m_OriginalString.length(); ++i)
         {
             m_ClassificationArray[i] = ClassifyCharacter(m_OriginalString[i]);
         }
@@ -1696,7 +1723,7 @@ int BIDIConverter::ResolveImplied()
 {
     // iterate through the resolved text (all neutrals should be gone except
     // boundary neutrals)
-    for (unsigned int i=0; i<m_ClassificationArray.size(); ++i)
+    for (size_t i=0; i<m_ClassificationArray.size(); ++i)
     {
         ECharacterType eChar = m_ClassificationArray[i];
         if (m_Levels[i] & 1)
@@ -1764,7 +1791,7 @@ int BIDIConverter::Reorder()
 int BIDIConverter::ReorderLevel(std::vector<std::pair<int, DisplayStr> >& stringLevelVector, unsigned int nLevel)
 {
     // flatten level passed in
-    for (unsigned int i=0; i<stringLevelVector.size(); ++i)
+    for (size_t i=0; i<stringLevelVector.size(); ++i)
     {
         // iff this is the level to flatten
         if (stringLevelVector[i].first == (int)nLevel)
@@ -1795,11 +1822,11 @@ int BIDIConverter::ReorderLevel(std::vector<std::pair<int, DisplayStr> >& string
 int BIDIConverter::ParseLevels(std::vector<std::pair<int, DisplayStr> >& stringLevelVector)
 {
     // parse string and levels into a usable array
-    unsigned int nPos = 0;
+    size_t nPos = 0;
     while (ECharacterTypes::BN == m_ClassificationArray[nPos] && nPos < m_ClassificationArray.size())
         nPos++;
 
-    unsigned int nIndex = nPos;
+    size_t nIndex = nPos;
     int nLevel = m_Levels[0];
     DisplayStr workingString;
     int nHighestLevel = nLevel;
@@ -1847,9 +1874,9 @@ void BIDIConverter::reverse(DisplayStr& str)
 {
     MirrorGlyphs& mirrorGlyphs = GetMirrorMapping();
 
-    unsigned int nLength = (unsigned int)str.size();
+    size_t nLength = str.size();
     wchar_t chTemp;
-    for (unsigned int i=0; i< --nLength; ++i)
+    for (size_t i=0; i< --nLength; ++i)
     {
         if (mirrorGlyphs.find(str[i]) != mirrorGlyphs.end())
         {
@@ -1891,8 +1918,8 @@ ShapeGlyphs& BIDIConverter::GetShapeMapping()
         std::vector<unsigned int> glyphMappings;
         glyphMappings.resize(4);
 
-        unsigned int nMax = sizeof(glyphShapeMapping) / (sizeof(int)*5);
-        for (unsigned int i=0; i<nMax; ++i)
+        size_t nMax = sizeof(glyphShapeMapping) / (sizeof(unsigned int)*5);
+        for (size_t i=0; i<nMax; ++i)
         {
             glyphMappings[0] = glyphShapeMapping[i][1];
             glyphMappings[1] = glyphShapeMapping[i][2];
@@ -1906,6 +1933,34 @@ ShapeGlyphs& BIDIConverter::GetShapeMapping()
 }
 
 
+// returns the static vector of strings (stored in pairs) used to enforce ligature - built once
+std::vector<DisplayStr>& BIDIConverter::GetLigaturePairs()
+{
+    static std::vector<DisplayStr> s_LigaturePairs;
+
+    // initialize on first use
+    if (0 == s_LigaturePairs.size())
+    {
+        DisplayStr str0(L"xx"); // allocate 2 characters
+        DisplayStr str1(L"x");  // allocate 1 character
+
+        size_t nMax = sizeof(glyphLigatureMapping) / (sizeof(unsigned int)*3);
+        for (size_t i=0; i<nMax; ++i)
+        {
+            // reverse character order for the input string
+            str0[0] = (wchar_t)glyphLigatureMapping[i][1];
+            str0[1] = (wchar_t)glyphLigatureMapping[i][0];
+            s_LigaturePairs.push_back(str0);
+
+            str1[0] = (wchar_t)glyphLigatureMapping[i][2];
+            s_LigaturePairs.push_back(str1);
+        }
+    }
+
+    return s_LigaturePairs;
+}
+
+
 // returns the static mapping of glyphs with mirror code points - built once
 MirrorGlyphs& BIDIConverter::GetMirrorMapping()
 {
@@ -1914,8 +1969,8 @@ MirrorGlyphs& BIDIConverter::GetMirrorMapping()
     // initialize on first use
     if (0 == s_MirrorGlyphMap.size())
     {
-        unsigned int nMax = sizeof(glyphMirrorMapping) / (sizeof(int)*2);
-        for (unsigned int i=0; i<nMax; ++i)
+        size_t nMax = sizeof(glyphMirrorMapping) / (sizeof(unsigned int)*2);
+        for (size_t i=0; i<nMax; ++i)
         {
             // map the ints to each other
             s_MirrorGlyphMap[glyphMirrorMapping[i][0]] = glyphMirrorMapping[i][1];
@@ -1931,6 +1986,7 @@ MirrorGlyphs& BIDIConverter::GetMirrorMapping()
 bool BIDIConverter::GenerateMappings()
 {
     BIDIConverter::GetShapeMapping();
+    BIDIConverter::GetLigaturePairs();
     BIDIConverter::GetMirrorMapping();
     return true;
 }
