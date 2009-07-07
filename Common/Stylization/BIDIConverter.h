@@ -181,6 +181,9 @@ private:
     // returns the static mapping of glyphs to possible shaping code points
     static ShapeGlyphs& GetShapeMapping();
 
+    // returns the static vector of strings (stored in pairs) used to enforce ligature
+    static std::vector<DisplayStr>& GetLigaturePairs();
+
     // returns the static mapping of glyphs with mirror code points
     static MirrorGlyphs& GetMirrorMapping();
 
