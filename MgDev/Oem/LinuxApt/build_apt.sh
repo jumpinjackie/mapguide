@@ -120,7 +120,8 @@ check_tomcat_install ()
 # Notes: none
 #**********************************************************
 echo Apache Httpd build started
-pushd httpd-2.2.4
+tar -zxf httpd-2.2.11.tar.gz
+pushd httpd-2.2.11
 ./configure --prefix=$INSTALLWEB/apache2 --enable-mods-shared=all \
 --with-included-apr --with-port=$PORT
 check_apache_build
@@ -149,7 +150,8 @@ echo Completed uninstall of Apache and Php
 # Notes: none
 #**********************************************************
 echo Apache install started
-pushd httpd-2.2.4
+tar -zxf httpd-2.2.11.tar.gz
+pushd httpd-2.2.11
 make install
 check_apache_install
 popd
