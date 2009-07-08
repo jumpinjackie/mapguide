@@ -1467,7 +1467,8 @@ void MgWebLayout::ParseFlyoutWidget(DOMNode* node, MgWebFlyoutWidget* widget)
             }
             else if(strName == L"SubItem") //NOXLATE
             {
-                widget->AddSubItem(ParseWidget(elt));
+                Ptr<MgWebWidget> subWidget = ParseWidget(elt);
+                widget->AddSubItem(subWidget);
             }
             else if (strName == L"Tooltip") //NOXLATE
             {
