@@ -76,7 +76,7 @@
 
         if($layer == null)
         {
-            trigger_error(FormatMessage("SEARCHLAYERNOTFOUND", $locale, $locale, array($layerName)));
+            trigger_error(FormatMessage("SEARCHLAYERNOTFOUND", $locale, array($layerName)));
         }
 
         //unescape strings

@@ -47,7 +47,7 @@ function GetLocalizationPath()
 
 function FormatMessage($id, $locale, $params)
 {
-    $text = GetString($id, $locale);
+    $text = GetLocalizedString($id, $locale);
     for($i = 0; $i < count($params); $i++)
     {
         $tag = "{" . $i . "}";
