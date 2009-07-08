@@ -87,6 +87,7 @@ public:
     virtual MgStringCollection* Authenticate(MgUserInformation* userInformation,
         MgStringCollection* requiredRoles, bool returnAssignedRoles);
     virtual STRING CreateSession();
+    virtual INT32 GetSessionTimeout();
     virtual void DestroySession(CREFSTRING session);
     virtual STRING GetUserForSession();
 

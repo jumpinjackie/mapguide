@@ -309,6 +309,38 @@ PUBLISHED_API:
     ///
     STRING GetCurrentSession();
 
+    /////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the session time out value.
+    ///
+    /// \remarks
+    /// Resources placed into the session repository will exist until
+    /// the session expires or the session is destroyed by using
+    /// DestroySession. The session timeout value is the lifttime of session
+    /// repository.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// string GetSessionTimeout();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// String GetSessionTimeout();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// string GetSessionTimeout();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// The timeout value of session measured in second, for example
+    /// "300".
+    ///
+    /// \exception [[To be documented]]
+    ///
+    /// \todo
+    ///   [[What are the exceptions?]]
+    ///
+    INT32 GetSessionTimeout();
+
     ////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the user for the current session identifier.  An exception will

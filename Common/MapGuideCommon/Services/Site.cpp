@@ -276,6 +276,36 @@ STRING MgSite::GetCurrentSession()
     return sessionId;
 }
 
+///////////////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// Gets the session time out value.
+/// Resources placed into the session repository will exist until
+/// the session expires or the session is destroyed by using
+/// DestroySession. The session timeout value is the lifttime of session
+/// repository.
+/// <returns>
+/// The timeout value of session measured in second.
+/// </returns>
+/// EXCEPTIONS:
+/// To be documented
+INT32 MgSite::GetSessionTimeout()
+{
+    INT32 sessionTimeout;
+
+    MG_SITE_TRY()
+
+        MgConfiguration *m_config = MgConfiguration::GetInstance();
+        m_config->GetIntValue(
+        MgConfigProperties::SiteServicePropertiesSection,
+        MgConfigProperties::SiteServicePropertySessionTimeout,
+        sessionTimeout,
+        MgConfigProperties::DefaultSiteServicePropertySessionTimeout);
+
+    MG_SITE_CATCH_AND_THROW( L"MgSiteConnection.GetSessionTimeout" );
+
+    return sessionTimeout;
+}
+
 STRING MgSite::GetUserForSession()
 {
     STRING userId;

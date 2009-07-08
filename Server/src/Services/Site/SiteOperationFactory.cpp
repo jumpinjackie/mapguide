@@ -32,6 +32,7 @@
 #include "OpRevokeGroupMembershipsFromUsers.h"
 #include "OpCreateSession.h"
 #include "OpDestroySession.h"
+#include "OpGetSessionTimeout.h"
 
 //  Group Operations
 #include "OpEnumerateGroups.h"
@@ -374,6 +375,18 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         {
         case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpDestroySession() );
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgDrawingOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgSiteOpId::GetSessionTimeout:
+        switch(VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(2,2):
+            handler.reset( new MgOpGetSessionTimeout() );
             break;
         default:
             throw new MgInvalidOperationVersionException(

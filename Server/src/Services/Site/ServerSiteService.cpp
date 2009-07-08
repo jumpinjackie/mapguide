@@ -766,6 +766,40 @@ STRING MgServerSiteService::CreateSession()
 
 ///----------------------------------------------------------------------------
 /// <summary>
+/// Creates a session for the user and return the unique session identifier. For the
+/// lifetime of the session the session identifier can be used to reauthenticate
+/// with the Mg Site. The session also defines a Resource Repository with the
+/// same name as the session identifier. Resources placed into this repository will
+/// exist until the session expires or the session is destroyed.
+/// </summary>
+///
+/// <exceptions>
+/// MgDuplicateSessionException
+/// </exceptions>
+///----------------------------------------------------------------------------
+
+INT32 MgServerSiteService::GetSessionTimeout()
+{
+    INT32 sessionTimeout;    
+
+    MG_SITE_SERVICE_TRY()
+
+        MG_LOG_TRACE_ENTRY(L"MgServerSiteService::GetSessionTimeout");
+
+        MgConfiguration *m_config = MgConfiguration::GetInstance();
+        m_config->GetIntValue(
+            MgConfigProperties::SiteServicePropertiesSection,
+            MgConfigProperties::SiteServicePropertySessionTimeout,
+            sessionTimeout,
+            MgConfigProperties::DefaultSiteServicePropertySessionTimeout);
+
+    MG_SITE_SERVICE_CATCH_AND_THROW(L"MgServerSiteService.GetSessionTimeout")
+
+    return sessionTimeout;
+}
+
+///----------------------------------------------------------------------------
+/// <summary>
 /// Destroys the specified session and discards any resources stored in the
 /// session's resource repository.
 /// </summary>
