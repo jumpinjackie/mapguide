@@ -82,6 +82,7 @@ include_SOURCES = \
   HttpGetResourceHeader.cpp \
   HttpGetSchemaMapping.cpp \
   HttpGetSchemas.cpp \
+  HttpGetSessionTimeout.cpp \
   HttpGetSiteInfo.cpp \
   HttpGetSiteVersion.cpp \
   HttpGetSpatialContexts.cpp \
@@ -202,6 +203,7 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpGetResourceHeader.h \
   HttpGetSchemaMapping.h \
   HttpGetSchemas.h \
+  HttpGetSessionTimeout.h \
   HttpGetSiteInfo.h \
   HttpGetSiteVersion.h \
   HttpGetSpatialContexts.h \
