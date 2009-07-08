@@ -110,6 +110,7 @@
 
 // Other operations
 #include "HttpCreateSession.h"
+#include "HttpGetSessionTimeout.h"
 #include "HttpGetDwfViewerPage.h"
 #include "HttpGetHtmlViewerPage.h"
 
@@ -354,6 +355,7 @@ bool InitializeStaticData()
     httpClassCreators[MgHttpResourceStrings::opGetSiteInfo] = MgHttpGetSiteInfo::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetDrawingCoordinateSpace] = MgHttpGetDrawingCoordinateSpace::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opCreateSession] = MgHttpCreateSession::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGetSessionTimeout] = MgHttpGetSessionTimeout::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetDwfViewerPage] = MgHttpGetDwfViewerPage::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetHtmlViewerPage] = MgHttpGetHtmlViewerPage::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetLegendImage] = MgHttpGetLegendImage::CreateObject;

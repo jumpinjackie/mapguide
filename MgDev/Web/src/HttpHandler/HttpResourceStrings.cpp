@@ -324,6 +324,7 @@ const STRING MgHttpResourceStrings::opGetSiteInfo = L"GETSITEINFO";
 
 // Other requests
 const STRING MgHttpResourceStrings::opCreateSession = L"CREATESESSION";
+const STRING MgHttpResourceStrings::opGetSessionTimeout = L"GETSESSIONTIMEOUT";
 const STRING MgHttpResourceStrings::opGetDwfViewerPage = L"GETDWFVIEWERPAGE";
 const STRING MgHttpResourceStrings::opGetHtmlViewerPage = L"GETHTMLVIEWERPAGE";
 

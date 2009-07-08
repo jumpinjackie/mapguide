@@ -329,6 +329,7 @@ public:
 
     // Other requests
     static const STRING opCreateSession;
+    static const STRING opGetSessionTimeout;
     static const STRING opGetDwfViewerPage;
     static const STRING opGetHtmlViewerPage;
 

@@ -108,6 +108,7 @@ INTERNAL_API:
     static const int CreateSession                      = 0x1111EB16;
     static const int DestroySession                     = 0x1111EB17;
     static const int GetUserForSession                  = 0x1111EB18;
+    static const int GetSessionTimeout                  = 0x1111EB19;
 };
 /// \endcond
 

@@ -230,7 +230,8 @@ void MgHttpRequestResponseHandler::ValidateOperationVersion()
     INT32 version = m_userInfo->GetApiVersion();
     if (version != MG_API_VERSION(1,0,0) &&
         version != MG_API_VERSION(1,2,0) &&
-        version != MG_API_VERSION(2,0,0))
+        version != MG_API_VERSION(2,0,0) &&
+        version != MG_API_VERSION(2,2,0))
     {
         throw new MgInvalidOperationVersionException(
         L"MgHttpRequestResponseHandler.ValidateOperationVersion", __LINE__, __WFILE__, NULL, L"", NULL);

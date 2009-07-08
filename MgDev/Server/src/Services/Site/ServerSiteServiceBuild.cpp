@@ -26,6 +26,7 @@
 #include "OpDeleteGroups.cpp"
 #include "OpDeleteUsers.cpp"
 #include "OpDestroySession.cpp"
+#include "OpGetSessionTimeout.cpp"
 #include "OpEnumerateGroups.cpp"
 #include "OpEnumerateRoles.cpp"
 #include "OpEnumerateServers.cpp"
