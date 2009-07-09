@@ -165,20 +165,34 @@ bool buildExceptionGraph(Node* n)
 		tmpNode = nextSibling(tmpNode);
 	}
 
-	//second pass, find the root exception, link the classes together to form the graph
+
+    //find the root exception, 
+    bool bFoundRootException = false;
+    map<string, ExceptionClass*>::const_iterator iterRootException = exmap.find(Char(baseException));
+    if (iterRootException != exmap.end())
+    {
+        rootException = iterRootException->second;
+        bFoundRootException = true;
+    }
+    else
+    {
+        rootException = new ExceptionClass();
+        rootException->name = Char(baseException);
+    }
+    
+	//second pass, link the classes together to form the graph
 	map<string, ExceptionClass*>::const_iterator iter = exmap.begin();
 	while(iter != exmap.end())
 	{
 		ExceptionClass* exClass = iter->second;
-		if(!Strcmp(baseException, exClass->name.c_str()))
-		{
-			rootException = exClass;
-		}
-		else
+		if(Strcmp(baseException, exClass->name.c_str()))
 		{
 			map<string, ExceptionClass*>::const_iterator iterBase = exmap.find(exClass->parentName);
 			if(iterBase != exmap.end())
     			iterBase->second->addChild(exClass);
+
+            if(!bFoundRootException && !Strcmp(baseException, exClass->parentName.c_str()))
+                rootException->addChild(exClass);
 		}
 		iter ++;
 	}

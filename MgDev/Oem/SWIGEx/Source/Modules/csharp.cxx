@@ -481,6 +481,14 @@ class CSHARP : public Language {
       Printv(f_im, 
           "\n  [DllImport(\"",(unmanagedDllName? unmanagedDllName: module_class_name),"\", EntryPoint=\"getClassId\")]\n  public static extern int getClassId(IntPtr objectRef);\n", NIL);
 
+      // adds import of getClassName method
+      Printv(f_im, 
+          "\n  [DllImport(\"",(unmanagedDllName? unmanagedDllName: module_class_name),"\", EntryPoint=\"getClassName\")]\n  public static extern string getClassName(IntPtr objectRef);\n", NIL);
+
+      // adds import of getNameSpace method
+      Printv(f_im, 
+          "\n  [DllImport(\"",(unmanagedDllName? unmanagedDllName: module_class_name),"\", EntryPoint=\"getNameSpace\")]\n  public static extern string getNameSpace(IntPtr objectRef);\n", NIL);
+
       // Finish off the class
       Printf(f_im, "}\n");
 
@@ -623,6 +631,47 @@ class CSHARP : public Language {
 	  Printf(f, "\t}\n");
   }
 
+  void emitBaseExceptionCatchSequence(File* f)
+  {
+	  if(baseException == NULL)
+		  return;
+
+      if(rethrowCode)
+      {
+    	  Printf(f, "\tcatch(%s* e)\n", baseException);
+      }
+      else
+      {
+	    if(this->emitExCount++ == 0)
+		    Printf(f, "\tif(typeid(*e) == typeid(%s))\n", baseException);
+	    else
+		    Printf(f, "\telse if(typeid(*e) == typeid(%s))\n", baseException);
+      }
+
+	  Printf(f, "\t{\n");
+      Printf(f, "\t\tchar* multibyteExName = e->GetMultiByteClassName();\n");
+      Printf(f, "\t\tchar* multibyteNameSpaceName = e->GetNameSpace();\n");
+
+      Printf(f, "\t\tsize_t len = strlen(multibyteExName) + strlen(multibyteNameSpaceName) + 2;\n");
+      Printf(f, "\t\texName = new char[len];\n");
+      Printf(f, "\t\tstrcpy(exName, multibyteNameSpaceName);\n");
+      Printf(f, "\t\tstrcat(exName, \".\");\n");
+      Printf(f, "\t\tstrcat(exName, multibyteExName);\n");
+
+      Printf(f, "\t\tbool bFound = false;\n");
+      Printf(f, "\t\tfor(list<char*>::const_iterator iter = exNames.begin(); iter != exNames.end(); iter++) {\n");
+      Printf(f, "\t\t\tif (strcmp(*iter, exName) == 0) {\n");
+      Printf(f, "\t\t\t\tdelete[] exName;\n");
+      Printf(f, "\t\t\t\texName = *iter;\n");
+      Printf(f, "\t\t\t\tbFound = true;\n");
+      Printf(f, "\t\t\t\tbreak;\n");
+      Printf(f, "\t\t\t}\n");
+      Printf(f, "\t\t}\n");
+
+      Printf(f, "\t\tif (!bFound) exNames.push_back(exName);\n");
+	  Printf(f, "\t}\n");
+  }
+
 	void emitThrowFunction(File* f)
 	{
 		if(baseException == NULL)
@@ -635,6 +684,7 @@ class CSHARP : public Language {
 		Printf(f, "#endif\n\n");
 
 		Printf(f, "void ThrowDotNetExceptionWrapper(%s* e)\n{\n", baseException);
+		Printf(f, "\tstatic list<char*> exNames;\n");
 		Printf(f, "\tchar* exName = NULL;\n");
         if(rethrowCode)
         {
@@ -646,7 +696,7 @@ class CSHARP : public Language {
         {
     		this->emitExCount = 0;
         }
-    	emitCatchSequence(f, rootException);
+        emitBaseExceptionCatchSequence(f);
 
 		Printf(f, "\tcustom_exceptions_callback(exName, e);\n");
 
@@ -1769,8 +1819,12 @@ class CSHARP : public Language {
       addThrows(n, "tmap:csout", n);
 	  if(returnObject)
 	  {
-		  Replaceall(tm, "new $csclassname(cPtr, $owner)", "($csclassname)$module.createObject($module.getClassId(cPtr), cPtr, true)");
+          String* createObject = NewString("");
+          Printf(createObject, "($csclassname)$module.createObject($module.getClassId(cPtr), $module.getNameSpace(cPtr), $module.getClassName(cPtr), cPtr, true)");
+		  Replaceall(tm, "new $csclassname(cPtr, $owner)", createObject);
 		  Replaceall(tm, "$module", imclass_name);
+
+          Delete(createObject);
 	  }
       if (Getattr(n,"feature:new"))
         Replaceall(tm,"$owner","true");

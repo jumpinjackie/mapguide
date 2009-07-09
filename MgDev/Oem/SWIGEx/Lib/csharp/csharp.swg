@@ -474,7 +474,7 @@ $1 = &temp; %}
   }
 
 %typemap(csgetcptr) SWIGTYPE, SWIGTYPE *, SWIGTYPE &, SWIGTYPE [], SWIGTYPE (CLASS::*) %{
-  internal static IntPtr getCPtr($csclassname obj) {
+  public static IntPtr getCPtr($csclassname obj) {
     return (obj == null) ? IntPtr.Zero : obj.swigCPtr;
   }
 %}

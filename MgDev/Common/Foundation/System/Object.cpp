@@ -52,6 +52,32 @@ STRING MgObject::GetClassName()
     return L"Not Defined";   // NOXLATE
 }
 
+
+///////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Get the name of the class.
+///
+/// \return
+/// Returns the name of the class.
+///
+char* MgObject::GetMultiByteClassName()
+{
+    return "MgObject";   // NOXLATE
+}
+
+///////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Get the namespace of the class. This is an interanl method used by
+/// SWIG to create .NET API.
+///
+/// \return
+/// Returns the namespace of the class.
+///
+char* MgObject::GetNameSpace()
+{
+    return "OSGeo.MapGuide";   // NOXLATE
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Determine if this object is of the specified class.

@@ -89,6 +89,7 @@ public: \
 #define DECLARE_CLASSNAME(className) \
 public: \
     virtual STRING GetClassName() { return WIDEN(#className) ; } \
+    virtual char* GetMultiByteClassName() { return #className ; } \
 
 #ifndef _WIN32
 //////////////////////////////////////////////////////////////////////////////

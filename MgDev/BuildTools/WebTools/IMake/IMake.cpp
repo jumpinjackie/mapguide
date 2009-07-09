@@ -15,6 +15,7 @@ enum Language
 static char version[] = "1.1";
 
 static string module;
+static string customPath;
 static string target;
 static string cppInline;
 static string swigInline;
@@ -52,6 +53,15 @@ string parseModule(XNode* elt)
     LPXAttr attr = elt->GetAttr("name");
     if(attr == NULL)
         error("Module element does not have a 'name' attribute");
+
+    return attr->value;
+}
+
+string parseCustom(XNode* elt)
+{
+    LPXAttr attr = elt->GetAttr("path");
+    if(attr == NULL)
+        error("Custom element does not have a 'path' attribute");
 
     return attr->value;
 }
@@ -180,6 +190,13 @@ void parseParameterFile(char* xmlDef)
             if(translateMode)
                 error("Module is not a valid section in translation mode");
             module = parseModule(node);
+        }
+        else if(node->name == "CustomFile")
+        {
+            if(translateMode)
+                error("Module is not a valid section in translation mode");
+
+            customPath = parseCustom(node);
         }
         else if(node->name == "Target")
         {
@@ -615,6 +632,12 @@ void processExternalApiSection(string& className, vector<string>& tokens, int be
                     if (NULL == propertyFile)
                     {
                         string fname = ".\\custom\\";
+                        if (!customPath.empty())
+                        {
+                            fname = customPath;
+                            if (fname[fname.size() - 1] != '\\')
+                                fname.append("\\");
+                        }
                         fname.append(className);
                         fname.append("Prop");
                         propertyFile = fopen(fname.c_str(),"w");

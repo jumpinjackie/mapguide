@@ -605,20 +605,6 @@ namespace OSGeo.MapGuide
             Assert.AreEqual("WGS_1984", coordSys.DatumDescription);
             Assert.AreEqual("WGS 84", coordSys.Ellipsoid);
             Assert.AreEqual("WGS 84", coordSys.EllipsoidDescription);
-            Assert.AreEqual("", coordSys.Category);
-
-        }
-
-        [Test]
-        public void CoordinateSystemMeasure()
-        {
-            MgCoordinateSystemFactory factory = new MgCoordinateSystemFactory();
-            String wkt = "GEOGCS[\"LL84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.25722293287],TOWGS84[0,0,0,0,0,0,0]],PRIMEM[\"Greenwich\",0],UNIT[\"Degrees\",0.0174532925199433]]";
-            MgCoordinateSystem coordSys = factory.Create(wkt);
-            MgCoordinateSystemMeasure csm = new MgCoordinateSystemMeasure(coordSys);
-
-            Assert.AreEqual(180, csm.Envelope.Height);
-            Assert.AreEqual(360, csm.Envelope.Width);
         }
 
         [Test]

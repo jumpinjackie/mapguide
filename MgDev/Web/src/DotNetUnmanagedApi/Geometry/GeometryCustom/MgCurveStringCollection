@@ -1,0 +1,86 @@
+INTERFACE System.Collections.Generic.IList<MgCurveString>
+
+public class MgCurveStringCollectionEnumerator : IDisposable, System.Collections.Generic.IEnumerator<MgCurveString>
+{
+  public MgCurveStringCollectionEnumerator(MgCurveStringCollection coll)
+  {
+    m_coll = coll;
+    m_pos = -1;
+  }
+
+  public MgCurveString Current
+  {
+    get
+    {
+      return m_coll.GetItem(m_pos);
+    }
+  }
+
+  Object System.Collections.IEnumerator.Current
+  {
+    get
+    {
+      return m_coll.GetItem(m_pos);
+    }
+  }
+
+  public bool MoveNext()
+  {
+    bool bOk = false;
+    if (m_pos < m_coll.GetCount()-1)
+    {
+      m_pos++;
+      bOk = true;
+    }
+  return bOk;
+  }
+
+  public void Reset()
+  {
+    m_pos = -1;
+  }
+
+  public void Dispose()
+  {
+    m_coll = null;
+  }
+
+  private MgCurveStringCollection m_coll;
+  private int m_pos;
+
+}
+
+public System.Collections.Generic.IEnumerator<MgCurveString> GetEnumerator()
+{
+  return new MgCurveStringCollectionEnumerator(this);
+}
+
+System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+{
+  return new MgCurveStringCollectionEnumerator(this);
+}
+
+public int Count
+{  
+  get { return GetCount(); }
+}
+
+public bool IsReadOnly
+{
+  get { return false; }
+}
+
+public void CopyTo(MgCurveString[] array, int arrayIndex)
+{
+  for (int i=0; i<GetCount(); i++)
+  {
+    array[arrayIndex+i] = GetItem(i);
+  }
+}
+
+public MgCurveString this[int index]
+{
+   get { return GetItem(index); }
+   set { SetItem(index, value); }
+}
+
