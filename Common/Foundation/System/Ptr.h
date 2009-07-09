@@ -15,18 +15,17 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-
 #ifndef PTR_H_
 #define PTR_H_
 
 #ifdef _WIN32
-#pragma once
+#include <crtdbg.h>
+#else
+#define _ASSERT(x)
 #endif
 
-#include <stdexcept>
-
 #define SAFE_RELEASE(x) {if (x) (x)->Release(); (x) = NULL;}
-#define SAFE_ADDREF(x)  ((x != NULL) ? ((x)->AddRef(), (x)) : NULL)
+#define SAFE_ADDREF(x)  ((x != NULL)? ((x)->AddRef(), (x)) : NULL)
 
 /// \cond INTERNAL
 //This class ensures T implements AddRef() and Release() and also ensures
@@ -47,7 +46,7 @@ inline __declspec(nothrow) T* __stdcall PtrAssign(T** pp, T* lp)
 inline T* PtrAssign(T** pp, T* lp)
 #endif
 {
-    if (lp != NULL)
+    if (lp)
         lp->AddRef();
     if (*pp)
         (*pp)->Release();
@@ -63,53 +62,37 @@ class Ptr
 public:
     typedef T _PtrClass;
 
-    Ptr()  throw()
+    Ptr() throw()
     {
         p = NULL;
     }
-
-    //We don't seem to need that constructor in our code
-    /*
-#ifdef _WIN32
-    Ptr(INT32 nNull) throw(...)     //TODO inquire: what is the benefit of explicitely indicating that the method
-                                    //can throw an exception? I believe none and if it's the case, have
-                                    //a common declaration for Windows and Linux, without throw statement
-#else
-    Ptr(INT32 nNull)
-#endif
-    {
-        if (nNull != 0)
-            throw std::logic_error("NULL pointer.");
-
-        p = NULL;
-    }
-    */
 
     Ptr(T* lp) throw()
     {
         p = lp;
-
-        if(p)
-        {
+        if (p)
             p->SetRefCountFlag();
-        }
     }
 
     Ptr(const Ptr<T>& lp) throw()
     {
         p = lp.p;
-        if (p != NULL)
-        {
+        if (p)
             p->AddRef();
-        }
+    }
+
+    template <class U>
+    Ptr(const Ptr<U>& lp) throw()
+    {
+        p = lp.p;
+        if (p)
+            p->AddRef();
     }
 
     ~Ptr() throw()
     {
         if (p)
-        {
             p->Release();
-        }
     }
 
     operator T*() const throw()
@@ -117,39 +100,19 @@ public:
         return p;
     }
 
-#ifdef _WIN32
-    T& operator*() const throw(...)
-#else
-    T& operator*() const
-#endif
+    T& operator*() const throw()
     {
-        if (p==NULL)
-            throw std::logic_error("NULL pointer.");
-
         return *p;
     }
 
-#ifdef _WIN32
-    T** operator&() throw(...)
-#else
-    T** operator&()
-#endif
+    T** operator&() throw()
     {
-        if (p!=NULL)
-            throw std::logic_error("NULL pointer.");
-
+        _ASSERT(p == NULL);
         return &p;
     }
 
-#ifdef _WIN32
-    _NoAddRefReleaseOnPtr<T>* operator->() const throw(...)
-#else
-    _NoAddRefReleaseOnPtr<T>* operator->() const
-#endif
+    _NoAddRefReleaseOnPtr<T>* operator->() const throw()
     {
-        if (p==NULL)
-            throw std::logic_error("NULL pointer.");
-
         return (_NoAddRefReleaseOnPtr<T>*)p;
     }
 
@@ -173,11 +136,8 @@ public:
         SAFE_RELEASE(p);
 
         p = lp;
-
-        if(p)
-        {
+        if (p)
             p->SetRefCountFlag();
-        }
 
         return p;
     }
@@ -197,9 +157,7 @@ public:
     void Attach(T* p2) throw()
     {
         if (p)
-        {
             p->Release();
-        }
         p = p2;
     }
 
@@ -217,9 +175,7 @@ public:
             return false;
         *ppT = p;
         if (p)
-        {
             p->AddRef();
-        }
         return true;
     }
 
@@ -228,4 +184,3 @@ public:
 /// \endcond
 
 #endif
-
