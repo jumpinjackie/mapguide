@@ -55,6 +55,15 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// <summary>
+    /// Returns the time interval which Ajax viewer pings server
+    /// </summary>
+    /// <returns>
+    /// The time interval measured in seconds
+    /// </returns>
+    bool GetEnablePingServer();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// <summary>
     /// Returns the initial scale of the view. Return -1. if scale is not set
     /// </summary>
     /// <returns>
@@ -372,6 +381,7 @@ CLASS_ID:
 protected:
     STRING       m_title;
     STRING       m_mapDefinition;
+    bool         m_enablePingServer;
     INT32        m_hyperlinkTarget;
     STRING       m_hyperlinkTargetFrame;
     double       m_scale;

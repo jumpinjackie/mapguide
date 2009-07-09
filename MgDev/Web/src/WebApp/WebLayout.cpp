@@ -39,6 +39,9 @@ MgWebLayout::MgWebLayout(MgResourceService* resourceService, MgResourceIdentifie
     // get the resource service to query the web layout definition
     Ptr<MgByteReader> xmlWebLayout = resourceService->GetResourceContent(webLayoutId);
 
+    // The default value of enable ping server is true.
+    m_enablePingServer = true;
+
     ParseWebLayoutDefinition(xmlWebLayout);
 
     MG_CATCH_AND_THROW(L"MgWebLayout.MgWebLayout")
@@ -70,6 +73,13 @@ STRING MgWebLayout::GetMapDefinition()
     return m_mapDefinition;
 }
 
+///////////////////////////////////////////////////////////////////////////
+// Returns the time interval which Ajax viewer pings server
+//
+bool MgWebLayout::GetEnablePingServer()
+{
+    return m_enablePingServer;
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // Returns the initial scale of the view. Return -1. if scale is not set
@@ -245,7 +255,11 @@ void MgWebLayout::ParseWebLayoutDefinition(MgByteReader* xmlWebLayout)
             {
                 ParseMapProperties(elt);
             }
-            else if (strName == L"InformationPane") // NOXLATE
+            else if(strName == L"EnablePingServer")
+            {
+                m_enablePingServer = GetBooleanFromElement(elt);
+            }
+            else if(strName == L"InformationPane")
             {
                 ParseInformationPane(elt);
             }
