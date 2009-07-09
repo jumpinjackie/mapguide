@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="DotNetApi"
-	ProjectGUID="{5FE54BF6-2939-46BB-A811-277D46C901C4}"
+	ProjectGUID="{557C1767-B4F4-4E96-8699-156BAD696802}"
 	RootNamespace="DotNetApi"
 	Keyword="MakeFileProj"
 	TargetFrameworkVersion="131072"

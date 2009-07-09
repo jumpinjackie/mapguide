@@ -1,0 +1,30 @@
+
+cleandebug:
+  del /Q .\Mg*.cs
+  del /Q .\*Constants.cs  
+  del /Q .\*PINVOKE.cs    
+  del /Q .\*Api.cs      
+  if exist $(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule del $(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule    
+  if exist $(OUTDIR)\OSGeo.MapGuide.Geometry.dll del $(OUTDIR)\OSGeo.MapGuide.Geometry.dll
+  if exist $(OUTDIR)\OSGeo.MapGuide.Geometry.pdb del $(OUTDIR)\OSGeo.MapGuide.Geometry.pdb
+
+cleanrelease:
+  del /Q .\Mg*.cs
+  del /Q .\*Constants.cs  
+  del /Q .\*PINVOKE.cs     
+  del /Q .\*Api.cs    
+  if exist $(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule del $(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule  
+  if exist $(OUTDIR)\OSGeo.MapGuide.Geometry.dll del $(OUTDIR)\OSGeo.MapGuide.Geometry.dll
+  if exist $(OUTDIR)\OSGeo.MapGuide.Geometry.pdb del $(OUTDIR)\OSGeo.MapGuide.Geometry.pdb
+
+debug: $(OUTDIR)\OSGeo.MapGuide.Geometryd.dll
+
+release: $(OUTDIR)\OSGeo.MapGuide.Geometry.dll
+
+$(OUTDIR)\OSGeo.MapGuide.Geometryd.dll: 
+  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule /target:module /reference:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll /debug+ /debug:full .\*.cs
+  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Geometry.dll /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule
+
+$(OUTDIR)\OSGeo.MapGuide.Geometry.dll: 
+  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule /target:module /reference:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll .\*.cs
+  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Geometry.dll /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule

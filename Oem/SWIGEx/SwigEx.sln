@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SwigEx", "SwigEx.vcproj", "{18F8AE78-14F3-4C6A-9768-CF5A1A5194D7}"
 EndProject
 Global

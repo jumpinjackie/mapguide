@@ -1,0 +1,30 @@
+
+cleandebug:
+  del /Q .\Mg*.cs
+  del /Q .\*Constants.cs  
+  del /Q .\*PINVOKE.cs   
+  del /Q .\*Api.cs  
+  if exist $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.netmodule del $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.netmodule
+  if exist $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.dll del $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.dll
+  if exist $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.pdb del $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.pdb
+
+cleanrelease:
+  del /Q .\Mg*.cs
+  del /Q .\*Constants.cs  
+  del /Q .\*PINVOKE.cs   
+  del /Q .\*Api.cs    
+  if exist $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.netmodule del $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.netmodule
+  if exist $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.dll del $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.dll
+  if exist $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.pdb del $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.pdb
+
+debug: $(OUTDIR)\OSGeo.MapGuide.MapGuideCommond.dll
+
+release: $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.dll
+
+$(OUTDIR)\OSGeo.MapGuide.MapGuideCommond.dll: 
+  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.netmodule /target:module /reference:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll;$(OUTDIR)\OSGeo.MapGuide.Geometry.dll;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll /debug+ /debug:full .\*.cs
+  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.dll /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.netmodule
+
+$(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.dll: 
+  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.netmodule /target:module /reference:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll;$(OUTDIR)\OSGeo.MapGuide.Geometry.dll;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll .\*.cs
+  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.dll /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.netmodule
