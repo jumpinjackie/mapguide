@@ -109,7 +109,7 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="..\lib"
+			OutputDirectory="..\lib64"
 			IntermediateDirectory="Debug\ACE_vc9\AMD64"
 			ConfigurationType="2"
 			CharacterSet="0"
@@ -171,7 +171,7 @@
 				AdditionalLibraryDirectories=".;..\lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
-				ImportLibrary="..\lib\ACEd.lib"
+				ImportLibrary="..\lib64\ACEd.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -285,7 +285,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="..\lib"
+			OutputDirectory="..\lib64"
 			IntermediateDirectory="Release\ACE_vc9\AMD64"
 			ConfigurationType="2"
 			CharacterSet="0"
@@ -346,7 +346,7 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="..\lib\ACE.lib"
+				ImportLibrary="..\lib64\ACE.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -2837,11 +2837,11 @@
 				>
 			</File>
 			<File
-				RelativePath="os_include\os_dirent.h"
+				RelativePath="OS_Dirent.h"
 				>
 			</File>
 			<File
-				RelativePath="OS_Dirent.h"
+				RelativePath="os_include\os_dirent.h"
 				>
 			</File>
 			<File
@@ -2849,11 +2849,11 @@
 				>
 			</File>
 			<File
-				RelativePath="os_include\os_errno.h"
+				RelativePath="OS_Errno.h"
 				>
 			</File>
 			<File
-				RelativePath="OS_Errno.h"
+				RelativePath="os_include\os_errno.h"
 				>
 			</File>
 			<File
@@ -3285,11 +3285,11 @@
 				>
 			</File>
 			<File
-				RelativePath="os_include\sys\os_time.h"
+				RelativePath="os_include\os_time.h"
 				>
 			</File>
 			<File
-				RelativePath="os_include\os_time.h"
+				RelativePath="os_include\sys\os_time.h"
 				>
 			</File>
 			<File
