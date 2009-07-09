@@ -749,7 +749,7 @@ void MgUtil::GenerateUuid(string& uuid)
 
     ACE_Utils::UUID uuidObject;
 
-    uuidGenerator.generateUUID(uuidObject);
+    uuidGenerator.generate_UUID(uuidObject);
 
     const ACE_CString* str = uuidObject.to_string();
 
