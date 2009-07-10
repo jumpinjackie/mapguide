@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				AdditionalIncludeDirectories=".\;.\Common;.\PrintLayout;..\MdfModel;..\MdfModel\Common;..\MdfModel\PrintLayout;&quot;..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MDFPARSER_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -125,7 +125,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				AdditionalIncludeDirectories=".\;.\Common;.\PrintLayout;..\MdfModel;..\MdfModel\Common;..\MdfModel\PrintLayout;&quot;..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MDFPARSER_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -204,7 +204,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				AdditionalIncludeDirectories=".\;.\Common;.\PrintLayout;..\MdfModel;..\MdfModel\Common;..\MdfModel\PrintLayout;&quot;..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MDFPARSER_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -284,7 +284,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				AdditionalIncludeDirectories=".\;.\Common;.\PrintLayout;..\MdfModel;..\MdfModel\Common;..\MdfModel\PrintLayout;&quot;..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MDFPARSER_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -340,6 +340,102 @@
 	<References>
 	</References>
 	<Files>
+		<Filter
+			Name="Common"
+			>
+			<File
+				RelativePath=".\Common\IOExtent3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\IOExtent3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\IOPoint3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\IOPoint3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\IOStringObjectCollection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\IOStringObjectCollection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\IOVector3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\IOVector3D.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="PrintLayout"
+			>
+			<File
+				RelativePath=".\PrintLayout\IODataConfiguration.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\IODataConfiguration.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\IOMapView.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\IOMapView.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\IOMapViewport.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\IOMapViewport.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\IOPrintLayoutElement.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\IOPrintLayoutElement.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\IOPrintLayoutElementDefinition.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\IOPrintLayoutElementDefinition.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\IOPropertyMappingCollection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\IOPropertyMappingCollection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\IOStylizationConfiguration.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\IOStylizationConfiguration.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\FSDSAX2Parser.cpp"
 			>

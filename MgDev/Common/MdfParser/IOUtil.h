@@ -36,7 +36,7 @@ BEGIN_NAMESPACE_MDFPARSER
 
     void UP(char** str);
 
-    std::wstring toMdfString(char* str);
+    std::wstring toMdfString(const char* str);
     std::string EncodeString(const std::wstring& str);
     MDFPARSER_API std::string toCString(const std::wstring& str);
 

@@ -110,16 +110,16 @@ MgStringCollection* MgMapViewportBase::GetVisibleLayerNames()
 /// \brief
 /// Gets the flag that specifies if the map viewport is locked.
 ///
-bool MgMapViewportBase::GetLocked()
+bool MgMapViewportBase::GetIsLocked()
 {
     return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Determines if the map viewport is on.
+/// Gets the flag that specifies if the map viewport is on.
 ///
-bool MgMapViewportBase::IsOn()
+bool MgMapViewportBase::GetIsOn()
 {
     return false;
 }

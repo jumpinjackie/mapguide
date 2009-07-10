@@ -45,7 +45,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="$(USRCFLAGS)"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				AdditionalIncludeDirectories=".\;.\Common;.\PrintLayout;&quot;..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MDFMODEL_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -125,7 +125,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="$(USRCFLAGS)"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				AdditionalIncludeDirectories=".\;.\Common;.\PrintLayout;&quot;..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MDFMODEL_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -204,7 +204,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				AdditionalIncludeDirectories=".\;.\Common;.\PrintLayout;&quot;..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MDFMODEL_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				ExceptionHandling="2"
@@ -287,7 +287,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				AdditionalIncludeDirectories=".\;.\Common;.\PrintLayout;&quot;..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MDFMODEL_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				ExceptionHandling="2"
@@ -966,6 +966,102 @@
 			</File>
 			<File
 				RelativePath=".\MapLayerGroupCommon.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="PrintLayout"
+			>
+			<File
+				RelativePath=".\PrintLayout\DataConfiguration.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\DataConfiguration.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\MapView.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\MapView.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\MapViewport.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\MapViewport.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\PrintLayoutElement.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\PrintLayoutElement.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\PrintLayoutElementDefinition.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\PrintLayoutElementDefinition.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\PropertyMapping.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\PropertyMapping.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\StylizationConfiguration.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\StylizationConfiguration.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Common"
+			>
+			<File
+				RelativePath=".\Common\Extent3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\Extent3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\Point3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\Point3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\StringObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\StringObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\Vector3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\Vector3D.h"
 				>
 			</File>
 		</Filter>

@@ -79,7 +79,7 @@ void UP(char** str)
 }
 
 
-std::wstring toMdfString(char* str)
+std::wstring toMdfString(const char* str)
 {
     std::wstring s;
     try

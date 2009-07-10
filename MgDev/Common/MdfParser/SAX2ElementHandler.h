@@ -27,6 +27,7 @@
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
+using namespace MDFPARSER_NAMESPACE;
 
 BEGIN_NAMESPACE_MDFPARSER
 

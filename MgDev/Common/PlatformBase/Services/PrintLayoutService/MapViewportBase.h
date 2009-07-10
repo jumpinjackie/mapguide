@@ -88,16 +88,16 @@ INTERNAL_API:
     /// \return
     /// Returns the flag indicating if the map viewport is locked.
     ///
-    virtual bool GetLocked();
+    virtual bool GetIsLocked();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Determines if the map viewport is on.
+    /// Gets the flag that specifies if the map viewport is on.
     ///
     /// \return
     /// Returns true if the map viewport is on; false otherwise.
     ///
-    virtual bool IsOn();
+    virtual bool GetIsOn();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
