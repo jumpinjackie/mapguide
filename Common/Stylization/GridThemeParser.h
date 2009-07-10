@@ -21,9 +21,6 @@
 #include "MdfModel.h"
 #include "GridColorRule.h"
 
-// Disable the warning for the excpetion specification.
-#pragma warning (disable : 4290)
-
 // Forward declaration
 class GridTheme;
 
@@ -93,7 +90,7 @@ private:
     size_t FindType(
         MdfModel::MdfString       &type,
         const MdfModel::MdfString &filter,
-        size_t                     nStart) throw (std::exception);
+        size_t                     nStart) throw(...);
 
     ///<summary>
     /// Function to search the band name token from the nStart position in
@@ -115,7 +112,7 @@ private:
     size_t FindBandName(
         MdfModel::MdfString       &bandname,
         const MdfModel::MdfString &filter,
-        size_t                     nStart) throw (std::exception);
+        size_t                     nStart) throw(...);
 
     ///<summary>
     /// Function to search the operator token from the nStart position in
@@ -137,7 +134,7 @@ private:
     size_t FindOperator(
         MdfModel::MdfString       &soperator,
         const MdfModel::MdfString &filter,
-        size_t                     nStart) throw (std::exception);
+        size_t                     nStart) throw(...);
 
     ///<summary>
     /// Function to search the double value token from the nStart position in
@@ -159,7 +156,7 @@ private:
     size_t FindValue(
         double                    &value,
         const MdfModel::MdfString &filter,
-        size_t                     nStart) throw (std::exception);
+        size_t                     nStart) throw(...);
 
     ///<summary>
     /// Function to search the first argument string from the nStart position in
@@ -181,7 +178,7 @@ private:
     size_t Find(
         const MdfModel::MdfString &findstring,
         const MdfModel::MdfString &filter,
-        size_t                     nStart) throw (std::exception);
+        size_t                     nStart) throw(...);
 
 private:
     // Stack to record the brackets around type token.

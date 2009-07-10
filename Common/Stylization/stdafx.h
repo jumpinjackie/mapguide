@@ -24,8 +24,8 @@
 // Windows Header Files:
 #include <windows.h>
 
-//Workaround needed to avoid errors arising from included ACE headers
-//when aggressive inlining is turned on in the project file
+// Workaround needed to avoid errors arising from included ACE headers
+// when aggressive inlining is turned on in the project file.
 #define __ACE_INLINE__ 0
 
 #endif

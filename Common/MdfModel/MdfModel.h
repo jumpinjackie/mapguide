@@ -41,11 +41,12 @@
 #   define EXPIMP_TEMPLATE
 #endif
 
-#ifdef _WIN32
-//exporting of template classes for collections
-//suppresses MS specific (non-ANSI) code warning
-#pragma warning(disable : 4231)
-#endif
+// exporting of template classes for collections
+// suppresses MS specific (non-ANSI) code warning
+#pragma warning(disable: 4231)
+
+// ignore warnings about using deprecated methods
+#pragma warning(disable: 4996)
 
 #define MDFMODEL_NAMESPACE          MdfModel
 #define BEGIN_NAMESPACE_MDFMODEL    namespace MdfModel {

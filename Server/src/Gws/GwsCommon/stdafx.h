@@ -20,16 +20,14 @@
 #endif
 
 #if defined (_MSC_VER)
-// Disable deprecation and non-conforming warning introduced by VC8
-# define _CRT_SECURE_NO_DEPRECATE 1
-# define _CRT_NON_CONFORMING_SWPRINTFS 1
-# pragma warning (disable:4996)
+// disable deprecation and non-conforming warning introduced by VC8
+#define _CRT_SECURE_NO_DEPRECATE 1
+#define _CRT_NON_CONFORMING_SWPRINTFS 1
+#pragma warning(disable: 4996)
 #endif
 
-// #define WIN32_LEAN_AND_MEAN      // Exclude rarely-used stuff from Windows headers
-// Windows Header Files:
-//#define WIN32_LEAN_AND_MEAN       // Exclude rarely-used stuff from Windows headers
 #ifdef _WIN32
+// Windows Header Files:
 #include <windows.h>
 #include <limits.h>
 #else

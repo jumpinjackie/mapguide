@@ -28,10 +28,6 @@
 
 #include <Fdo.h>
 
-#ifdef _WIN32
-#pragma warning( disable : 4290 ) //ignore C++ specific exception specification
-#endif
-
 #ifdef GWS_MULTHREADED_CLIENT
 #define GWSThreadModel GWSMultiThreadModel
 #else
