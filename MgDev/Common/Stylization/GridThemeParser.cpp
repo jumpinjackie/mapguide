@@ -252,10 +252,9 @@ GridTheme* GridThemeParser::ParseThemeColorRule(const MdfModel::GridColorRule *p
     return pTheme;
 }
 
-size_t GridThemeParser::FindType(
-                                 MdfModel::MdfString       &type,
+size_t GridThemeParser::FindType(MdfModel::MdfString       &type,
                                  const MdfModel::MdfString &filter,
-                                 size_t                    nStart) throw(...)
+                                 size_t                    nStart)
 {
     bool bFound = false;
     size_t nLength = filter.length();
@@ -356,10 +355,9 @@ size_t GridThemeParser::FindType(
     return i;
 }
 
-size_t GridThemeParser::FindBandName(
-                                     MdfModel::MdfString       &bandname,
+size_t GridThemeParser::FindBandName(MdfModel::MdfString       &bandname,
                                      const MdfModel::MdfString &filter,
-                                     size_t                     nStart) throw(...)
+                                     size_t                     nStart)
 {
     bool bFound = false;
     size_t nLength = filter.length();
@@ -452,10 +450,9 @@ size_t GridThemeParser::FindBandName(
     return i;
 }
 
-size_t GridThemeParser::FindOperator(
-                                     MdfModel::MdfString       &soperator,
+size_t GridThemeParser::FindOperator(MdfModel::MdfString       &soperator,
                                      const MdfModel::MdfString &filter,
-                                     size_t                     nStart) throw(...)
+                                     size_t                     nStart)
 {
     bool bFound = false;
     size_t nLength = filter.length();
@@ -521,10 +518,9 @@ size_t GridThemeParser::FindOperator(
     return i;
 }
 
-size_t GridThemeParser::FindValue(
-                                  double                    &value,
+size_t GridThemeParser::FindValue(double                    &value,
                                   const MdfModel::MdfString &filter,
-                                  size_t                     nStart) throw(...)
+                                  size_t                     nStart)
 {
     bool bFound = false;
     size_t nLength = filter.length();
@@ -651,10 +647,9 @@ size_t GridThemeParser::FindValue(
     return i;
 }
 
-size_t GridThemeParser::Find(
-                             const MdfModel::MdfString &findstring,
+size_t GridThemeParser::Find(const MdfModel::MdfString &findstring,
                              const MdfModel::MdfString &filter,
-                             size_t                     nStart) throw(...)
+                             size_t                     nStart)
 {
     bool bFound = false;
     assert(findstring[0] != L' ');
