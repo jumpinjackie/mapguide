@@ -6,6 +6,7 @@ cleandebug:
   del /Q .\*Api.cs       
   if exist $(OUTDIR)\OSGeo.MapGuide.Web.netmodule del $(OUTDIR)\OSGeo.MapGuide.Web.netmodule  
   if exist $(OUTDIR)\OSGeo.MapGuide.Web.dll del $(OUTDIR)\OSGeo.MapGuide.Web.dll
+  if exist $(OUTDIR)\OSGeo.MapGuide.Web.Temp.dll del $(OUTDIR)\OSGeo.MapGuide.Web.Temp.dll  
   if exist $(OUTDIR)\OSGeo.MapGuide.Web.pdb del $(OUTDIR)\OSGeo.MapGuide.Web.pdb
 
 cleanrelease:
@@ -17,14 +18,15 @@ cleanrelease:
   if exist $(OUTDIR)\OSGeo.MapGuide.Web.dll del $(OUTDIR)\OSGeo.MapGuide.Web.dll
   if exist $(OUTDIR)\OSGeo.MapGuide.Web.pdb del $(OUTDIR)\OSGeo.MapGuide.Web.pdb
 
-debug: $(OUTDIR)\OSGeo.MapGuide.Webd.dll
+debug: $(OUTDIR)\OSGeo.MapGuide.Web.Temp.dll
 
 release: $(OUTDIR)\OSGeo.MapGuide.Web.dll
 
-$(OUTDIR)\OSGeo.MapGuide.Webd.dll: 
-  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Web.netmodule /target:module /reference:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll;$(OUTDIR)\OSGeo.MapGuide.Geometry.dll;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll /debug+ /debug:full .\*.cs
+$(OUTDIR)\OSGeo.MapGuide.Web.Temp.dll: 
+  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Web.netmodule /target:module /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule;$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule /debug+ /debug:full .\*.cs
   csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Web.dll /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.Web.netmodule
+  copy /y $(OUTDIR)\OSGeo.MapGuide.Web.dll $(OUTDIR)\OSGeo.MapGuide.Web.Temp.dll
 
 $(OUTDIR)\OSGeo.MapGuide.Web.dll: 
-  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Web.netmodule /target:module /reference:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll;$(OUTDIR)\OSGeo.MapGuide.Geometry.dll;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll .\*.cs
+  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Web.netmodule /target:module /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule;$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule .\*.cs
   csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Web.dll /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.Web.netmodule

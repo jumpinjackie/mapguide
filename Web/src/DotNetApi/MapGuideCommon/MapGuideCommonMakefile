@@ -6,6 +6,7 @@ cleandebug:
   del /Q .\*Api.cs  
   if exist $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.netmodule del $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.netmodule
   if exist $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.dll del $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.dll
+  if exist $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.Temp.dll del $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.Temp.dll  
   if exist $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.pdb del $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.pdb
 
 cleanrelease:
@@ -17,14 +18,15 @@ cleanrelease:
   if exist $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.dll del $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.dll
   if exist $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.pdb del $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.pdb
 
-debug: $(OUTDIR)\OSGeo.MapGuide.MapGuideCommond.dll
+debug: $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.Temp.dll
 
 release: $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.dll
 
-$(OUTDIR)\OSGeo.MapGuide.MapGuideCommond.dll: 
-  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.netmodule /target:module /reference:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll;$(OUTDIR)\OSGeo.MapGuide.Geometry.dll;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll /debug+ /debug:full .\*.cs
+$(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.Temp.dll: 
+  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.netmodule /target:module /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule;$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule /debug+ /debug:full .\*.cs
   csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.dll /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.netmodule
+  copy /y $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.dll $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.Temp.dll
 
 $(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.dll: 
-  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.netmodule /target:module /reference:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll;$(OUTDIR)\OSGeo.MapGuide.Geometry.dll;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll .\*.cs
+  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.netmodule /target:module /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule;$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule .\*.cs
   csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.dll /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.netmodule

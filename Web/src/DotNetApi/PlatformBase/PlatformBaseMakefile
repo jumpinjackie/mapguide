@@ -6,6 +6,7 @@ cleandebug:
   del /Q .\*Api.cs         
   if exist $(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule  
   if exist $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll
+  if exist $(OUTDIR)\OSGeo.MapGuide.PlatformBase.Temp.dll del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.Temp.dll  
   if exist $(OUTDIR)\OSGeo.MapGuide.PlatformBase.pdb del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.pdb
 
 cleanrelease:
@@ -17,14 +18,15 @@ cleanrelease:
   if exist $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll
   if exist $(OUTDIR)\OSGeo.MapGuide.PlatformBase.pdb del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.pdb
 
-debug: $(OUTDIR)\OSGeo.MapGuide.PlatformBased.dll
+debug: $(OUTDIR)\OSGeo.MapGuide.PlatformBase.Temp.dll
 
 release: $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll
 
-$(OUTDIR)\OSGeo.MapGuide.PlatformBased.dll: 
-  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule /target:module /reference:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll;$(OUTDIR)\OSGeo.MapGuide.Geometry.dll /debug+ /debug:full .\*.cs
+$(OUTDIR)\OSGeo.MapGuide.PlatformBase.Temp.dll: 
+  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule /target:module /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule;$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule /debug+ /debug:full .\*.cs
   csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule
+  copy /y $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll $(OUTDIR)\OSGeo.MapGuide.PlatformBase.Temp.dll  
 
 $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll: 
-  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule /target:module /reference:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll;$(OUTDIR)\OSGeo.MapGuide.Geometry.dll .\*.cs
+  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule /target:module /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule;$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule .\*.cs
   csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule
