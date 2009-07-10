@@ -64,9 +64,9 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "CompanyName", "Open Source Geospatial Foundation"
-            VALUE "FileDescription", "MapGuideUnmanagedApi Dynamic Link Library"
+            VALUE "FileDescription", "FoundationUnmanagedApi Dynamic Link Library"
             VALUE "FileVersion", "2, 1, 0, 0"
-            VALUE "InternalName", "MapGuideUnmanagedApi"
+            VALUE "InternalName", "FoundationUnmanagedApi"
             VALUE "LegalCopyright", "Copyright (C) 2006-2009 by Autodesk, Inc."
             VALUE "OriginalFilename", "FoundationUnmanagedApi.dll"
             VALUE "ProductName", "MapGuide Open Source"
@@ -93,4 +93,3 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-
