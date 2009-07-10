@@ -150,7 +150,6 @@ echo Completed uninstall of Apache and Php
 # Notes: none
 #**********************************************************
 echo Apache install started
-tar -zxf httpd-2.2.11.tar.gz
 pushd httpd-2.2.11
 make install
 check_apache_install
