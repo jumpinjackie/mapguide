@@ -1005,6 +1005,8 @@ MgClassDefinition* MgServerFeatureUtil::GetMgClassDefinition(FdoClassDefinition*
         mgClassDef->SetDescription(STRING(desc));
     }
 
+    FdoStringP qualName = fdoClassDefinition->GetQualifiedName();
+
     // Class name
     FdoString* className = fdoClassDefinition->GetName();
     if (className != NULL)
