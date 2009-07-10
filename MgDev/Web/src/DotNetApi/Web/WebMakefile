@@ -1,20 +1,19 @@
-
 cleandebug:
   del /Q .\Mg*.cs
-  del /Q .\*Constants.cs  
-  del /Q .\*PINVOKE.cs    
-  del /Q .\*Api.cs       
-  if exist $(OUTDIR)\OSGeo.MapGuide.Web.netmodule del $(OUTDIR)\OSGeo.MapGuide.Web.netmodule  
+  del /Q .\*Constants.cs
+  del /Q .\*PINVOKE.cs
+  del /Q .\*Api.cs
+  if exist $(OUTDIR)\OSGeo.MapGuide.Web.netmodule del $(OUTDIR)\OSGeo.MapGuide.Web.netmodule
   if exist $(OUTDIR)\OSGeo.MapGuide.Web.dll del $(OUTDIR)\OSGeo.MapGuide.Web.dll
-  if exist $(OUTDIR)\OSGeo.MapGuide.Web.Temp.dll del $(OUTDIR)\OSGeo.MapGuide.Web.Temp.dll  
+  if exist $(OUTDIR)\OSGeo.MapGuide.Web.Temp.dll del $(OUTDIR)\OSGeo.MapGuide.Web.Temp.dll
   if exist $(OUTDIR)\OSGeo.MapGuide.Web.pdb del $(OUTDIR)\OSGeo.MapGuide.Web.pdb
 
 cleanrelease:
   del /Q .\Mg*.cs
-  del /Q .\*Constants.cs  
-  del /Q .\*PINVOKE.cs   
-  del /Q .\*Api.cs      
-  if exist $(OUTDIR)\OSGeo.MapGuide.Web.netmodule del $(OUTDIR)\OSGeo.MapGuide.Web.netmodule    
+  del /Q .\*Constants.cs
+  del /Q .\*PINVOKE.cs
+  del /Q .\*Api.cs
+  if exist $(OUTDIR)\OSGeo.MapGuide.Web.netmodule del $(OUTDIR)\OSGeo.MapGuide.Web.netmodule
   if exist $(OUTDIR)\OSGeo.MapGuide.Web.dll del $(OUTDIR)\OSGeo.MapGuide.Web.dll
   if exist $(OUTDIR)\OSGeo.MapGuide.Web.pdb del $(OUTDIR)\OSGeo.MapGuide.Web.pdb
 
@@ -22,11 +21,11 @@ debug: $(OUTDIR)\OSGeo.MapGuide.Web.Temp.dll
 
 release: $(OUTDIR)\OSGeo.MapGuide.Web.dll
 
-$(OUTDIR)\OSGeo.MapGuide.Web.Temp.dll: 
-  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Web.netmodule /target:module /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule;$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule /debug+ /debug:full .\*.cs
+$(OUTDIR)\OSGeo.MapGuide.Web.Temp.dll:
+  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Web.netmodule /target:module /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule;$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule /debug+ /debug:full /optimize- .\*.cs
   csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Web.dll /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.Web.netmodule
   copy /y $(OUTDIR)\OSGeo.MapGuide.Web.dll $(OUTDIR)\OSGeo.MapGuide.Web.Temp.dll
 
-$(OUTDIR)\OSGeo.MapGuide.Web.dll: 
-  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Web.netmodule /target:module /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule;$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule .\*.cs
+$(OUTDIR)\OSGeo.MapGuide.Web.dll:
+  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Web.netmodule /target:module /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule;$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule /debug+ /debug:full /optimize+ .\*.cs
   csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Web.dll /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.Web.netmodule

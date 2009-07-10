@@ -1,20 +1,19 @@
-
 cleandebug:
   del /Q .\Mg*.cs
   del /Q .\*Constants.cs
   del /Q .\*PINVOKE.cs
-  del /Q .\*Api.cs      
-  if exist $(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule del $(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule  
+  del /Q .\*Api.cs
+  if exist $(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule del $(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule
   if exist $(OUTDIR)\OSGeo.MapGuide.Foundation.dll del $(OUTDIR)\OSGeo.MapGuide.Foundation.dll
-  if exist $(OUTDIR)\OSGeo.MapGuide.Foundation.Temp.dll del $(OUTDIR)\OSGeo.MapGuide.Foundation.Temp.dll  
+  if exist $(OUTDIR)\OSGeo.MapGuide.Foundation.Temp.dll del $(OUTDIR)\OSGeo.MapGuide.Foundation.Temp.dll
   if exist $(OUTDIR)\OSGeo.MapGuide.Foundation.pdb del $(OUTDIR)\OSGeo.MapGuide.Foundation.pdb
 
 cleanrelease:
   del /Q .\Mg*.cs
-  del /Q .\*Constants.cs  
-  del /Q .\*PINVOKE.cs  
-  del /Q .\*Api.cs    
-  if exist $(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule del $(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule  
+  del /Q .\*Constants.cs
+  del /Q .\*PINVOKE.cs
+  del /Q .\*Api.cs
+  if exist $(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule del $(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule
   if exist $(OUTDIR)\OSGeo.MapGuide.Foundation.dll del $(OUTDIR)\OSGeo.MapGuide.Foundation.dll
   if exist $(OUTDIR)\OSGeo.MapGuide.Foundation.pdb del $(OUTDIR)\OSGeo.MapGuide.Foundation.pdb
 
@@ -22,11 +21,11 @@ debug: $(OUTDIR)\OSGeo.MapGuide.Foundation.Temp.dll
 
 release: $(OUTDIR)\OSGeo.MapGuide.Foundation.dll
 
-$(OUTDIR)\OSGeo.MapGuide.Foundation.Temp.dll: 
-  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule /target:module /debug+ /debug:full .\*.cs
+$(OUTDIR)\OSGeo.MapGuide.Foundation.Temp.dll:
+  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule /target:module /debug+ /debug:full /optimize- .\*.cs
   csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule
-  copy /y $(OUTDIR)\OSGeo.MapGuide.Foundation.dll $(OUTDIR)\OSGeo.MapGuide.Foundation.Temp.dll    
+  copy /y $(OUTDIR)\OSGeo.MapGuide.Foundation.dll $(OUTDIR)\OSGeo.MapGuide.Foundation.Temp.dll
 
-$(OUTDIR)\OSGeo.MapGuide.Foundation.dll: 
-  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule /target:module .\*.cs
-  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule  
+$(OUTDIR)\OSGeo.MapGuide.Foundation.dll:
+  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule /target:module /debug+ /debug:full /optimize+ .\*.cs
+  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule
