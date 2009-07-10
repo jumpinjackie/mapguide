@@ -4,11 +4,26 @@ EXTRA_DIST = MdfParser.vcproj MdfParser.rc
 
 INCLUDES = \
   -I../../Oem/dbxml-2.3.10/xerces-c-src/src/ \
-  -I../../Common/MdfModel/
+  -I../MdfModel/ \
+  -I../MdfModel/Common/ \
+  -I../MdfModel/PrintLayout/ \
+  -I./Common/ \
+  -I./PrintLayout/
 
 lib_LTLIBRARIES = libMgMdfParser.la
 
 libMgMdfParser_la_SOURCES = \
+  Common/IOExtent3D.cpp \
+  Common/IOPoint3D.cpp \
+  Common/IOStringObjectCollection.cpp \
+  Common/IOVector3D.cpp \
+  PrintLayout/IODataConfiguration.cpp \
+  PrintLayout/IOMapView.cpp \
+  PrintLayout/IOMapViewport.cpp \
+  PrintLayout/IOPrintLayoutElement.cpp \
+  PrintLayout/IOPrintLayoutElementDefinition.cpp \
+  PrintLayout/IOPropertyMappingCollection.cpp \
+  PrintLayout/IOStylizationConfiguration.cpp \
   FSDSAX2Parser.cpp \
   IOAreaRule.cpp \
   IOAreaSymbolization2D.cpp \
@@ -87,6 +102,17 @@ libMgMdfParser_la_SOURCES = \
   SAX2Parser.cpp
 
 noinst_HEADERS = \
+  Common/IOExtent3D.h \
+  Common/IOPoint3D.h \
+  Common/IOStringObjectCollection.h \
+  Common/IOVector3D.h \
+  PrintLayout/IODataConfiguration.h \
+  PrintLayout/IOMapView.h \
+  PrintLayout/IOMapViewport.h \
+  PrintLayout/IOPrintLayoutElement.h \
+  PrintLayout/IOPrintLayoutElementDefinition.h \
+  PrintLayout/IOPropertyMappingCollection.h \
+  PrintLayout/IOStylizationConfiguration.h \
   FSDSAX2Parser.h \
   IOAreaRule.h \
   IOAreaSymbolization2D.h \
