@@ -52,7 +52,6 @@
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="true"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -137,7 +136,6 @@
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="true"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -218,7 +216,6 @@
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="true"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -302,7 +299,6 @@
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="true"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool

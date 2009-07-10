@@ -52,7 +52,6 @@
 				RuntimeLibrary="3"
 				WarningLevel="4"
 				WarnAsError="true"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 				DisableSpecificWarnings="4100;4127;4189;4702"
 			/>
@@ -137,7 +136,6 @@
 				RuntimeLibrary="3"
 				WarningLevel="4"
 				WarnAsError="true"
-				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 				DisableSpecificWarnings="4100;4127;4189;4702"
 			/>
@@ -221,7 +219,6 @@
 				EnableFunctionLevelLinking="true"
 				WarningLevel="4"
 				WarnAsError="true"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 				DisableSpecificWarnings="4100;4127;4189;4702"
 			/>
@@ -308,7 +305,6 @@
 				EnableFunctionLevelLinking="true"
 				WarningLevel="4"
 				WarnAsError="true"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 				DisableSpecificWarnings="4100;4127;4189;4702"
 			/>
