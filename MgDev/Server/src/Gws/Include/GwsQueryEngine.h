@@ -30,9 +30,7 @@
 #include <GwsCommon.h>
 
 #ifdef _WIN32
-#pragma warning( disable : 4505 ) // ignore 'function' : unreferenced local function has been removed
-#pragma warning( disable : 4290 ) // ignore C++ specific exception specification
-#else
+#pragma warning(disable: 4505) // ignore 'function' : unreferenced local function has been removed
 #endif
 
 // forward definitions

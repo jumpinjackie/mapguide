@@ -18,11 +18,9 @@
 #ifndef AGGRenderer_H
 #define AGGRenderer_H
 
-//warnings about exception definitions in this version of DWF Toolkit
-//remove when we update to new version and see what happens
-//TODO: well, we still need this even with new version
-//but according to Garrick Evans it is safe to ignore
-#pragma warning(disable : 4290 4996)
+// ignore warnings about exception definitions and deprecated methods
+#pragma warning(disable: 4290)
+#pragma warning(disable: 4996)
 
 #include <vector>
 

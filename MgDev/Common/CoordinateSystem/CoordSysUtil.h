@@ -32,7 +32,6 @@
 #include "windows.h"
 // To undefine GetMessage macro defined in windows
 #undef GetMessage
-#pragma warning(disable: 4996)
 #endif // WIN32 defined
 
 // Mentor specific information

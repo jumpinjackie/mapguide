@@ -40,8 +40,8 @@
 #endif
 #endif
 
-// Do not deprecate standard C runtimes
-#define _CRT_SECURE_NO_DEPRECATE 1
+// ignore warnings about using deprecated methods
+#pragma warning(disable: 4996)
 
 #include "ace/INET_Addr.h"
 #include "ace/SOCK_Stream.h"

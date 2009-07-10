@@ -18,11 +18,8 @@
 #ifndef GDRENDERER_H
 #define GDRENDERER_H
 
-// Hide warnings about exception definitions in the DWF Toolkit.
-// This is safe to ignore.
-#ifdef _WIN32
-#pragma warning(disable : 4290)
-#endif
+// ignore warnings about exception definitions
+#pragma warning(disable: 4290)
 
 #include "Renderers.h"
 #include "Renderer.h"

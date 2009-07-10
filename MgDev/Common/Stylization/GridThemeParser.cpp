@@ -255,7 +255,7 @@ GridTheme* GridThemeParser::ParseThemeColorRule(const MdfModel::GridColorRule *p
 size_t GridThemeParser::FindType(
                                  MdfModel::MdfString       &type,
                                  const MdfModel::MdfString &filter,
-                                 size_t                    nStart) throw (std::exception)
+                                 size_t                    nStart) throw(...)
 {
     bool bFound = false;
     size_t nLength = filter.length();
@@ -359,7 +359,7 @@ size_t GridThemeParser::FindType(
 size_t GridThemeParser::FindBandName(
                                      MdfModel::MdfString       &bandname,
                                      const MdfModel::MdfString &filter,
-                                     size_t                     nStart) throw (std::exception)
+                                     size_t                     nStart) throw(...)
 {
     bool bFound = false;
     size_t nLength = filter.length();
@@ -455,7 +455,7 @@ size_t GridThemeParser::FindBandName(
 size_t GridThemeParser::FindOperator(
                                      MdfModel::MdfString       &soperator,
                                      const MdfModel::MdfString &filter,
-                                     size_t                     nStart) throw (std::exception)
+                                     size_t                     nStart) throw(...)
 {
     bool bFound = false;
     size_t nLength = filter.length();
@@ -524,7 +524,7 @@ size_t GridThemeParser::FindOperator(
 size_t GridThemeParser::FindValue(
                                   double                    &value,
                                   const MdfModel::MdfString &filter,
-                                  size_t                     nStart) throw (std::exception)
+                                  size_t                     nStart) throw(...)
 {
     bool bFound = false;
     size_t nLength = filter.length();
@@ -654,7 +654,7 @@ size_t GridThemeParser::FindValue(
 size_t GridThemeParser::Find(
                              const MdfModel::MdfString &findstring,
                              const MdfModel::MdfString &filter,
-                             size_t                     nStart) throw (std::exception)
+                             size_t                     nStart) throw(...)
 {
     bool bFound = false;
     assert(findstring[0] != L' ');

@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+// ignore warnings about exception definitions
+#pragma warning(disable: 4290)
+
 #ifdef _WIN32
 #include "Dll.cpp"
 #endif
