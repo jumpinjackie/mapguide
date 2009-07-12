@@ -35,7 +35,7 @@ Point3D::Point3D() :
 //-------------------------------------------------------------------------
 // PURPOSE: Construct and initialize an instance of the Point3D class.
 //-------------------------------------------------------------------------
-Point3D::Point3D(const double& dX, const double& dY, const double& dZ) :
+Point3D::Point3D(double dX, double dY, double dZ) :
     m_dX(dX),
     m_dY(dY),
     m_dZ(dZ)

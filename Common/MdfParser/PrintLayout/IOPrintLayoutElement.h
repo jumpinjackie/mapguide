@@ -34,7 +34,7 @@ public:
     virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
 protected:
-    static void Write(MdfStream& fd, PrintLayoutElement* printLayoutElement, Version& version);
+    static void Write(MdfStream& fd, PrintLayoutElement* printLayoutElement, Version* version);
 
 private:
     // Hidden default/copy constructors and assignment operator.

@@ -110,11 +110,11 @@ void IODataConfiguration::EndElement(const wchar_t* name, HandlerStack* handlerS
     }
 }
 
-void IODataConfiguration::Write(MdfStream& fd, DataConfiguration* dataConf, Version& version, const std::string& name)
+void IODataConfiguration::Write(MdfStream& fd, DataConfiguration* dataConf, Version* version)
 {
     _ASSERT(NULL != dataConf);
 
-    fd << tab() << startStr(name) << std::endl;
+    fd << tab() << startStr(sData) << std::endl;
     inctab();
 
     // Property: ResourceId
@@ -141,8 +141,8 @@ void IODataConfiguration::Write(MdfStream& fd, DataConfiguration* dataConf, Vers
     IOPropertyMappingCollection::Write(fd, &dataConf->GetPropertyMappings(), version, sPropertyMappings);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, dataConf->GetUnknownXml(), &version);
+    IOUnknown::Write(fd, dataConf->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << endStr(name) << std::endl;
+    fd << tab() << endStr(sData) << std::endl;
 }

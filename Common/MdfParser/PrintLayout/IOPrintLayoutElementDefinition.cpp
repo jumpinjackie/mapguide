@@ -89,7 +89,7 @@ void IOPrintLayoutElementDefinition::EndElement(const wchar_t* name, HandlerStac
     }
 }
 
-void IOPrintLayoutElementDefinition::Write(MdfStream& fd, PrintLayoutElementDefinition* layoutElemDef, Version& version, const std::string& name)
+void IOPrintLayoutElementDefinition::Write(MdfStream& fd, PrintLayoutElementDefinition* layoutElemDef, Version* version, const std::string& name)
 {
     _ASSERT(NULL != layoutElemDef);
 
@@ -102,7 +102,7 @@ void IOPrintLayoutElementDefinition::Write(MdfStream& fd, PrintLayoutElementDefi
     fd << endStr(sName) << std::endl;
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, layoutElemDef->GetUnknownXml(), &version);
+    IOUnknown::Write(fd, layoutElemDef->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << endStr(name) << std::endl;

@@ -30,7 +30,7 @@ class MDFMODEL_API Vector3D
 public:
     // Constructor(s)/Destructor
     Vector3D();
-    Vector3D(const double& dX, const double& dY, const double& dZ);
+    Vector3D(double dX, double dY, double dZ);
     virtual ~Vector3D();
 
     // Operations

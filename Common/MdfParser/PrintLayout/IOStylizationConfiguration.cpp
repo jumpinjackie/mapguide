@@ -85,11 +85,11 @@ void IOStylizationConfiguration::EndElement(const wchar_t* name, HandlerStack* h
     }
 }
 
-void IOStylizationConfiguration::Write(MdfStream& fd, StylizationConfiguration* stylizationConf, Version& version, const std::string& name)
+void IOStylizationConfiguration::Write(MdfStream& fd, StylizationConfiguration* stylizationConf, Version* version)
 {
     _ASSERT(NULL != stylizationConf);
 
-    fd << tab() << startStr(name) << std::endl;
+    fd << tab() << startStr(sStylization) << std::endl;
     inctab();
 
     // Property: ResourceId
@@ -98,8 +98,8 @@ void IOStylizationConfiguration::Write(MdfStream& fd, StylizationConfiguration* 
     fd << endStr(sResourceId) << std::endl;
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, stylizationConf->GetUnknownXml(), &version);
+    IOUnknown::Write(fd, stylizationConf->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << endStr(name) << std::endl;
+    fd << tab() << endStr(sStylization) << std::endl;
 }

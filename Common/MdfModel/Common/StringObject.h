@@ -43,7 +43,7 @@ private:
     StringObject(const StringObject&);
     StringObject& operator=(const StringObject&);
 
-protected:
+private:
     // Data Members
     MdfString m_str;
 };

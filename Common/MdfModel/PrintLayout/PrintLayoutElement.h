@@ -37,6 +37,9 @@ public:
     virtual ~PrintLayoutElement();
 
     // Operations
+    const MdfString& GetName() const;
+    void SetName(const MdfString& name);
+
     StringObjectCollection& GetReferences();
 
     const MdfString& GetDescription() const;
@@ -60,6 +63,7 @@ private:
     PrintLayoutElement& operator=(const PrintLayoutElement&);
 
     // Data Members
+    MdfString m_name;
     StringObjectCollection m_references;
     MdfString m_description;
     MdfString m_units;  
@@ -70,6 +74,11 @@ private:
 };
 
 // Inline Methods
+inline const MdfString& PrintLayoutElement::GetName() const
+{
+    return m_name;
+}
+
 inline StringObjectCollection& PrintLayoutElement::GetReferences()
 {
     return m_references;

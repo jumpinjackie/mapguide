@@ -35,7 +35,7 @@ Vector3D::Vector3D() :
 //-------------------------------------------------------------------------
 // PURPOSE: Construct and initialize an instance of the Vector3D class.
 //-------------------------------------------------------------------------
-Vector3D::Vector3D(const double& dX, const double& dY, const double& dZ) :
+Vector3D::Vector3D(double dX, double dY, double dZ) :
     m_dX(dX),
     m_dY(dY),
     m_dZ(dZ)

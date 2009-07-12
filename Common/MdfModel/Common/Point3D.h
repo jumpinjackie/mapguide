@@ -30,7 +30,7 @@ class MDFMODEL_API Point3D
 public:
     // Constructor(s)/Destructor
     Point3D();
-    Point3D(const double& dX, const double& dY, const double& dZ);
+    Point3D(double dX, double dY, double dZ);
     virtual ~Point3D();
 
     // Operations

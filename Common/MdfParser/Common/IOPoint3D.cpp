@@ -85,7 +85,7 @@ void IOPoint3D::EndElement(const wchar_t* name, HandlerStack* handlerStack)
     }
 }
 
-void IOPoint3D::Write(MdfStream& fd, Point3D* point3D, Version& version, const std::string& name)
+void IOPoint3D::Write(MdfStream& fd, Point3D* point3D, Version* version, const std::string& name)
 {
     _ASSERT(NULL != point3D);
 

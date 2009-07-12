@@ -61,7 +61,7 @@ void IOStringObjectCollection::EndElement(const wchar_t* name, HandlerStack* han
     }
 }
 
-void IOStringObjectCollection::Write(MdfStream& fd, StringObjectCollection* strCol, Version& version, const std::string& colName, const std::string& strName)
+void IOStringObjectCollection::Write(MdfStream& fd, StringObjectCollection* strCol, Version* version, const std::string& colName, const std::string& strName)
 {
     _ASSERT(NULL != strCol);
 

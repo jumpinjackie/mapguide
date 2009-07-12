@@ -41,7 +41,7 @@ private:
     PrintLayoutElementDefinition(const PrintLayoutElementDefinition&);
     PrintLayoutElementDefinition& operator=(const PrintLayoutElementDefinition&);
 
-protected:
+private:
     // Data Members
     MdfString m_name;
 };

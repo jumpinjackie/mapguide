@@ -96,7 +96,7 @@ void IOPropertyMappingCollection::EndElement(const wchar_t* name, HandlerStack* 
     }
 }
 
-void IOPropertyMappingCollection::Write(MdfStream& fd, PropertyMappingCollection* propMappings, Version& version, const std::string& name)
+void IOPropertyMappingCollection::Write(MdfStream& fd, PropertyMappingCollection* propMappings, Version* version, const std::string& name)
 {
     _ASSERT(NULL != propMappings);
 
@@ -127,7 +127,7 @@ void IOPropertyMappingCollection::Write(MdfStream& fd, PropertyMappingCollection
         fd << endStr(sSourceUnits) << std::endl;
 
         // Write any unknown XML / extended data
-        IOUnknown::Write(fd, propMapping->GetUnknownXml(), &version);
+        IOUnknown::Write(fd, propMapping->GetUnknownXml(), version);
 
         dectab();
         fd << tab() << endStr(sPropertyMapping) << std::endl;
