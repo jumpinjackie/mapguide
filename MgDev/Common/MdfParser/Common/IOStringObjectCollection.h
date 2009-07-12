@@ -33,7 +33,7 @@ public:
     virtual void ElementChars(const wchar_t* ch);
     virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-    static void Write(MdfStream& fd, StringObjectCollection* strCol, Version& version, const std::string& colName, const std::string& strName);
+    static void Write(MdfStream& fd, StringObjectCollection* strCol, Version* version, const std::string& colName, const std::string& strName);
 
 private:
     // Hidden default/copy constructors and assignment operator.
@@ -41,7 +41,7 @@ private:
     IOStringObjectCollection(const IOStringObjectCollection&);
     IOStringObjectCollection& operator=(const IOStringObjectCollection&);
 
-protected:
+private:
     StringObjectCollection* m_strCol;
     std::wstring m_colName;
     std::wstring m_strName;

@@ -79,11 +79,11 @@ void IOVector3D::EndElement(const wchar_t* name, HandlerStack* handlerStack)
     }
 }
 
-void IOVector3D::Write(MdfStream& fd, Vector3D* vector3D, Version& version, const std::string& name)
+void IOVector3D::Write(MdfStream& fd, Vector3D* vector3D, Version* version)
 {
     _ASSERT(NULL != vector3D);
 
-    fd << tab() << startStr(name) << std::endl;
+    fd << tab() << startStr(sViewDirection) << std::endl;
     inctab();
 
     // Property: X
@@ -102,5 +102,5 @@ void IOVector3D::Write(MdfStream& fd, Vector3D* vector3D, Version& version, cons
     fd << endStr(sZ) << std::endl;
 
     dectab();
-    fd << tab() << endStr(name) << std::endl;
+    fd << tab() << endStr(sViewDirection) << std::endl;
 }

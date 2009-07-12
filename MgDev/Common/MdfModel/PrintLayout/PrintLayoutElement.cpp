@@ -39,6 +39,11 @@ PrintLayoutElement::~PrintLayoutElement()
 //-------------------------------------------------------------------------
 // PURPOSE: Manage properties of this PrintLayoutElement object.
 //-------------------------------------------------------------------------
+void PrintLayoutElement::SetName(const MdfString& name)
+{
+    m_name = name;
+}
+
 void PrintLayoutElement::SetDescription(const MdfString& description)
 {
     m_description = description;

@@ -115,11 +115,11 @@ void IOMapView::EndElement(const wchar_t* name, HandlerStack* handlerStack)
     }
 }
 
-void IOMapView::Write(MdfStream& fd, MapView* mapView, Version& version, const std::string& name)
+void IOMapView::Write(MdfStream& fd, MapView* mapView, Version* version)
 {
     _ASSERT(NULL != mapView);
 
-    fd << tab() << startStr(name) << std::endl;
+    fd << tab() << startStr(sMapView) << std::endl;
     inctab();
 
     // Property: Center
@@ -136,7 +136,7 @@ void IOMapView::Write(MdfStream& fd, MapView* mapView, Version& version, const s
     fd << endStr(sTwistAngle) << std::endl;
 
     // Property: ViewDirection
-    IOVector3D::Write(fd, &mapView->GetViewDirection(), version, sViewDirection);
+    IOVector3D::Write(fd, &mapView->GetViewDirection(), version);
 
     // Property: ModelUnits
     fd << tab() << startStr(sModelUnits);
@@ -144,8 +144,8 @@ void IOMapView::Write(MdfStream& fd, MapView* mapView, Version& version, const s
     fd << endStr(sModelUnits) << std::endl;
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, mapView->GetUnknownXml(), &version);
+    IOUnknown::Write(fd, mapView->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << endStr(name) << std::endl;
+    fd << tab() << endStr(sMapView) << std::endl;
 }

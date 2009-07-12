@@ -81,11 +81,11 @@ void IOExtent3D::EndElement(const wchar_t* name, HandlerStack* handlerStack)
     }
 }
 
-void IOExtent3D::Write(MdfStream& fd, Extent3D* extent3D, Version& version, const std::string& name)
+void IOExtent3D::Write(MdfStream& fd, Extent3D* extent3D, Version* version)
 {
     _ASSERT(NULL != extent3D);
 
-    fd << tab() << startStr(name) << std::endl;
+    fd << tab() << startStr(sExtents) << std::endl;
     inctab();
 
     // Property: Min
@@ -95,5 +95,5 @@ void IOExtent3D::Write(MdfStream& fd, Extent3D* extent3D, Version& version, cons
     IOPoint3D::Write(fd, &extent3D->GetMaximumPoint(), version, sMax);
 
     dectab();
-    fd << tab() << endStr(name) << std::endl;
+    fd << tab() << endStr(sExtents) << std::endl;
 }

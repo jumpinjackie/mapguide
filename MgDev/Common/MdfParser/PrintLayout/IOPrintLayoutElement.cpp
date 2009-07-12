@@ -25,6 +25,7 @@
 
 CREATE_ELEMENT_MAP;
 // Inherited Elements
+ELEM_MAP_ENTRY(1, Name);
 ELEM_MAP_ENTRY(2, References);
 ELEM_MAP_ENTRY(3, Description);
 ELEM_MAP_ENTRY(4, Units);
@@ -101,6 +102,10 @@ void IOPrintLayoutElement::ElementChars(const wchar_t* ch)
 {
     switch (m_currElemId)
     {
+    case eName:
+        m_printLayoutElement->SetName(ch);
+        break;
+
     case eDescription:
         m_printLayoutElement->SetDescription(ch);
         break;
@@ -131,9 +136,14 @@ void IOPrintLayoutElement::EndElement(const wchar_t* name, HandlerStack* handler
     }
 }
 
-void IOPrintLayoutElement::Write(MdfStream& fd, PrintLayoutElement* printLayoutElement, Version& version)
+void IOPrintLayoutElement::Write(MdfStream& fd, PrintLayoutElement* printLayoutElement, Version* version)
 {
     _ASSERT(NULL != printLayoutElement);
+
+    // Property: Name
+    fd << tab() << startStr(sName);
+    fd << EncodeString(printLayoutElement->GetName());
+    fd << endStr(sName) << std::endl;
 
     // Property: References
     IOStringObjectCollection::Write(fd, &printLayoutElement->GetReferences(), version, sReferences, sResourceId);
@@ -154,14 +164,14 @@ void IOPrintLayoutElement::Write(MdfStream& fd, PrintLayoutElement* printLayoutE
     fd << endStr(sDefinition) << std::endl;
 
     // Property: Extents
-    IOExtent3D::Write(fd, &printLayoutElement->GetExtents(), version, sExtents);
+    IOExtent3D::Write(fd, &printLayoutElement->GetExtents(), version);
 
     // Property: Stylization
-    IOStylizationConfiguration::Write(fd, &printLayoutElement->GetStylizationConfiguration(), version, sStylization);
+    IOStylizationConfiguration::Write(fd, &printLayoutElement->GetStylizationConfiguration(), version);
 
     // Property: Data
-    IODataConfiguration::Write(fd, &printLayoutElement->GetDataConfiguration(), version, sData);
+    IODataConfiguration::Write(fd, &printLayoutElement->GetDataConfiguration(), version);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, printLayoutElement->GetUnknownXml(), &version);
+    IOUnknown::Write(fd, printLayoutElement->GetUnknownXml(), version);
 }

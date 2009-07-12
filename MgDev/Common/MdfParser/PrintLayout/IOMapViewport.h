@@ -34,7 +34,7 @@ public:
     virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
     virtual void ElementChars(const wchar_t* ch);
 
-    static void Write(MdfStream& fd, MapViewport* mapViewport, Version& version, const std::string& name);
+    static void Write(MdfStream& fd, MapViewport* mapViewport, Version* version);
 
 private:
     // Hidden default/copy constructors and assignment operator.

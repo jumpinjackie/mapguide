@@ -111,11 +111,11 @@ void IOMapViewport::ElementChars(const wchar_t* ch)
     }
 }
 
-void IOMapViewport::Write(MdfStream& fd, MapViewport* mapViewport, Version& version, const std::string& name)
+void IOMapViewport::Write(MdfStream& fd, MapViewport* mapViewport, Version* version)
 {
     _ASSERT(NULL != mapViewport);
 
-    fd << tab() << startStr(name) << std::endl;
+    fd << tab() << startStr(sMapViewport) << std::endl;
     inctab();
 
     IOPrintLayoutElement::Write(fd, mapViewport, version);
@@ -147,8 +147,8 @@ void IOMapViewport::Write(MdfStream& fd, MapViewport* mapViewport, Version& vers
     fd << endStr(sOn) << std::endl;
 
     // Property: MapView
-    IOMapView::Write(fd, &mapViewport->GetMapView(), version, sMapView);
+    IOMapView::Write(fd, &mapViewport->GetMapView(), version);
 
     dectab();
-    fd << tab() << endStr(name) << std::endl;
+    fd << tab() << endStr(sMapViewport) << std::endl;
 }
