@@ -41,10 +41,6 @@ MgSiteManager::~MgSiteManager()
 {
     MG_TRY()
 
-#ifdef _DEBUG   // TODO: Implement/use MG_DEBUG macro
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgSiteManager::~MgSiteManager()\n")));
-#endif
-
     ClearSiteInfo();
 
     MG_CATCH(L"MgSiteManager.~MgSiteManager")
@@ -121,10 +117,6 @@ void MgSiteManager::Initialize()
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     MG_TRY()
-
-#ifdef _DEBUG   // TODO: Implement/use MG_DEBUG macro
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT( "(%t) MgSiteManager::Initialize()\n")));
-#endif
 
     ClearSiteInfo();
 
