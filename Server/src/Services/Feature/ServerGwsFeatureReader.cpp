@@ -1077,7 +1077,8 @@ void MgServerGwsFeatureReader::Serialize(MgStream* stream)
         stream->WriteObject((MgException*)mgException);
     }
 
-    MG_FEATURE_SERVICE_THROW();
+    // Serialize method must not THROW the exception because it has already been written to the stream 
+    // and in doing so would only end up writing the same exception to the stream twice.
 }
 
 //////////////////////////////////////////////////////////////////
