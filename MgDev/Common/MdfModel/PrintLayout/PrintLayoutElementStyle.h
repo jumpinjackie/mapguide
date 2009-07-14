@@ -15,63 +15,42 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef PRINTLAYOUTELEMENT_H_
-#define PRINTLAYOUTELEMENT_H_
+#ifndef PRINTLAYOUTELEMENTSTYLE_H_
+#define PRINTLAYOUTELEMENTSTYLE_H_
 
 #include "MdfRootObject.h"
-#include "MdfOwnerCollection.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
 //-------------------------------------------------------------------------
-// DESCRIPTION: The PrintLayoutElement class declaration.
+// DESCRIPTION: The PrintLayoutElementStyle class declaration.
 //-------------------------------------------------------------------------
-class MDFMODEL_API PrintLayoutElement : public MdfRootObject
+class MDFMODEL_API PrintLayoutElementStyle : public MdfRootObject
 {
 public:
     // Constructor(s)/Destructor
-    PrintLayoutElement();
-    virtual ~PrintLayoutElement();
+    PrintLayoutElementStyle();
+    virtual ~PrintLayoutElementStyle();
 
     // Operations
-    const MdfString& GetResourceId() const;
-    void SetResourceId(const MdfString& resourceId);
-
-    bool GetVisibility() const;
-    void SetVisibility(bool visible);
-
-    double GetOpacity() const;
-    void SetOpacity(double opacity);
+    const MdfString& GetName() const;
+    void SetName(const MdfString& name);
 
 private:
     // Hidden copy constructor and assignment operator.
-    PrintLayoutElement(const PrintLayoutElement&);
-    PrintLayoutElement& operator=(const PrintLayoutElement&);
+    PrintLayoutElementStyle(const PrintLayoutElementStyle&);
+    PrintLayoutElementStyle& operator=(const PrintLayoutElementStyle&);
 
+private:
     // Data Members
-    MdfString m_resourceId;
-    bool m_visible;
-    double m_opacity;
+    MdfString m_name;
 };
 
-typedef MdfOwnerCollection<PrintLayoutElement> PrintLayoutElementCollection;
-EXPIMP_TEMPLATE template class MDFMODEL_API MdfOwnerCollection<PrintLayoutElement>;
-
 // Inline Methods
-inline const MdfString& PrintLayoutElement::GetResourceId() const
+inline const MdfString& PrintLayoutElementStyle::GetName() const
 {
-    return m_resourceId;
-}
-
-inline bool PrintLayoutElement::GetVisibility() const
-{
-    return m_visible;
-}
-
-inline double PrintLayoutElement::GetOpacity() const
-{
-    return m_opacity;
+    return m_name;
 }
 
 END_NAMESPACE_MDFMODEL
-#endif // PRINTLAYOUTELEMENT_H_
+#endif // PRINTLAYOUTELEMENTSTYLE_H_

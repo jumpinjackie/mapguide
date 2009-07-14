@@ -15,36 +15,35 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef IOPRINTLAYOUTELEMENT_H_
-#define IOPRINTLAYOUTELEMENT_H_
+#ifndef IOPRINTLAYOUTELEMENTSTYLE_H_
+#define IOPRINTLAYOUTELEMENTSTYLE_H_
 
 #include "SAX2ElementHandler.h"
-#include "PrintLayoutElement.h"
+#include "PrintLayoutElementStyle.h"
 
 BEGIN_NAMESPACE_MDFPARSER
 
-class IOPrintLayoutElement : public SAX2ElementHandler
+class IOPrintLayoutElementStyle : public SAX2ElementHandler
 {
 public:
-    IOPrintLayoutElement(PrintLayoutElement* printLayoutElement, Version& version);
-    virtual ~IOPrintLayoutElement();
+    IOPrintLayoutElementStyle(PrintLayoutElementStyle* layoutElemStyle, Version& version);
+    virtual ~IOPrintLayoutElementStyle();
 
     virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
     virtual void ElementChars(const wchar_t* ch);
     virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-protected:
-    static void Write(MdfStream& fd, PrintLayoutElement* printLayoutElement, Version* version);
+    static void Write(MdfStream& fd, PrintLayoutElementStyle* layoutElemStyle, Version* version, const std::string& name);
 
 private:
     // Hidden default/copy constructors and assignment operator.
-    IOPrintLayoutElement();
-    IOPrintLayoutElement(const IOPrintLayoutElement&);
-    IOPrintLayoutElement& operator=(const IOPrintLayoutElement&);
+    IOPrintLayoutElementStyle();
+    IOPrintLayoutElementStyle(const IOPrintLayoutElementStyle&);
+    IOPrintLayoutElementStyle& operator=(const IOPrintLayoutElementStyle&);
 
 protected:
-    PrintLayoutElement* m_printLayoutElement;
+    PrintLayoutElementStyle* m_layoutElemStyle;
 };
 
 END_NAMESPACE_MDFPARSER
-#endif // IOPRINTLAYOUTELEMENT_H_
+#endif // IOPRINTLAYOUTELEMENTSTYLE_H_

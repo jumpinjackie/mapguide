@@ -16,45 +16,60 @@
 //
 
 //-------------------------------------------------------------------------
-// DESCRIPTION: The PrintLayoutElementDefinition class implementation.
+// DESCRIPTION: The Thickness class implementation.
 //-------------------------------------------------------------------------
 
 #include "stdafx.h"
-#include "PrintLayoutElementDefinition.h"
+#include "Thickness.h"
 
 //-------------------------------------------------------------------------
-// PURPOSE: Default constructor of the PrintLayoutElementDefinition class.
+// PURPOSE: Default constructor of the Thickness class.
 //-------------------------------------------------------------------------
-PrintLayoutElementDefinition::PrintLayoutElementDefinition()
+Thickness::Thickness() :
+    m_left(0.0),
+    m_top(0.0),
+    m_right(0.0),
+    m_bottom(0.0)
+{
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE: Construct and initialize an instance of the Thickness class.
+//-------------------------------------------------------------------------
+Thickness::Thickness(double left, double top, double right, double bottom) :
+    m_left(left),
+    m_top(top),
+    m_right(right),
+    m_bottom(bottom)
 {
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE: Destructor. Delete all adopted objects.
 //-------------------------------------------------------------------------
-PrintLayoutElementDefinition::~PrintLayoutElementDefinition()
+Thickness::~Thickness()
 {
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Manage properties of this PrintLayoutElementDefinition object.
+// PURPOSE: Manage properties of this Thickness object.
 //-------------------------------------------------------------------------
-void PrintLayoutElementDefinition::SetName(const MdfString& name)
+void Thickness::SetLeft(double left)
 {
-    m_name = name;
+    m_left = left;
 }
 
-void PrintLayoutElementDefinition::SetDescription(const MdfString& description)
+void Thickness::SetTop(double top)
 {
-    m_description = description;
+    m_top = top;
 }
 
-void PrintLayoutElementDefinition::SetUnits(const MdfString& units)
+void Thickness::SetRight(double right)
 {
-    m_units = units;
+    m_right = right;
 }
 
-void PrintLayoutElementDefinition::SetResourceId(const MdfString& resourceId)
+void Thickness::SetBottom(double bottom)
 {
-    m_resourceId = resourceId;
+    m_bottom = bottom;
 }

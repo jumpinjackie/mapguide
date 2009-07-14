@@ -24,7 +24,8 @@ MG_IMPL_DYNCREATE(MgPrintLayoutElementBase)
 /// \brief
 /// Constructs an MgPrintLayoutElementBase object.
 ///
-MgPrintLayoutElementBase::MgPrintLayoutElementBase()
+MgPrintLayoutElementBase::MgPrintLayoutElementBase() :
+    m_visible(true)
 {
     //TODO Default initializations
 }
@@ -175,11 +176,11 @@ MgResourceIdentifier* MgPrintLayoutElementBase::GetDefinition()
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Gets the extents.
+/// Gets the extent.
 ///
-MgEnvelope* MgPrintLayoutElementBase::GetExtents()
+MgEnvelope* MgPrintLayoutElementBase::GetExtent()
 {
-    return SAFE_ADDREF((MgEnvelope*)m_extents);
+    return SAFE_ADDREF((MgEnvelope*)m_extent);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

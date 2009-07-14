@@ -360,11 +360,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Common\IOSize2D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\IOSize2D.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Common\IOStringObjectCollection.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\Common\IOStringObjectCollection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\IOThickness.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\IOThickness.h"
 				>
 			</File>
 			<File
@@ -396,19 +412,27 @@
 				>
 			</File>
 			<File
-				RelativePath=".\PrintLayout\IOMapViewport.cpp"
+				RelativePath=".\PrintLayout\IOMapViewportDefinition.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\PrintLayout\IOMapViewport.h"
+				RelativePath=".\PrintLayout\IOMapViewportDefinition.h"
 				>
 			</File>
 			<File
-				RelativePath=".\PrintLayout\IOPrintLayoutElement.cpp"
+				RelativePath=".\PrintLayout\IOPrintLayoutDefinition.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\PrintLayout\IOPrintLayoutElement.h"
+				RelativePath=".\PrintLayout\IOPrintLayoutDefinition.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\IOPrintLayoutElementCollection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\IOPrintLayoutElementCollection.h"
 				>
 			</File>
 			<File
@@ -417,6 +441,14 @@
 			</File>
 			<File
 				RelativePath=".\PrintLayout\IOPrintLayoutElementDefinition.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\IOPrintLayoutElementStyle.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\IOPrintLayoutElementStyle.h"
 				>
 			</File>
 			<File

@@ -21,17 +21,17 @@
 
 CREATE_ELEMENT_MAP;
 // Start Elements
-ELEM_MAP_ENTRY(1, Extents);
+ELEM_MAP_ENTRY(1, Extent);
 // Local Elements
 ELEM_MAP_ENTRY(2, Min);
 ELEM_MAP_ENTRY(3, Max);
 
-IOExtent3D::IOExtent3D(Extent3D* extent3D, Version& version) :
+IOExtent3D::IOExtent3D(Extent3D* extent, Version& version) :
     SAX2ElementHandler(version),
-    m_extent3D(extent3D)
+    m_extent(extent)
 {
     // The parser will update all the data of the object pointed by the following assigned pointer.
-    _ASSERT(NULL != m_extent3D);
+    _ASSERT(NULL != m_extent);
 }
 
 IOExtent3D::~IOExtent3D()
@@ -45,13 +45,13 @@ void IOExtent3D::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
     switch (m_currElemId)
     {
-    case eExtents:
+    case eExtent:
         m_startElemName = name;
         break;
     
     case eMin:
         {
-            IOPoint3D* IO = new IOPoint3D(&m_extent3D->GetMinimumPoint(), m_version);
+            IOPoint3D* IO = new IOPoint3D(m_extent->GetMinimumPoint(), m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -59,7 +59,7 @@ void IOExtent3D::StartElement(const wchar_t* name, HandlerStack* handlerStack)
     
     case eMax:
         {
-            IOPoint3D* IO = new IOPoint3D(&m_extent3D->GetMaximumPoint(), m_version);
+            IOPoint3D* IO = new IOPoint3D(m_extent->GetMaximumPoint(), m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -81,19 +81,19 @@ void IOExtent3D::EndElement(const wchar_t* name, HandlerStack* handlerStack)
     }
 }
 
-void IOExtent3D::Write(MdfStream& fd, Extent3D* extent3D, Version* version)
+void IOExtent3D::Write(MdfStream& fd, Extent3D* extent, Version* version)
 {
-    _ASSERT(NULL != extent3D);
+    _ASSERT(NULL != extent);
 
-    fd << tab() << startStr(sExtents) << std::endl;
+    fd << tab() << startStr(sExtent) << std::endl;
     inctab();
 
     // Property: Min
-    IOPoint3D::Write(fd, &extent3D->GetMinimumPoint(), version, sMin);
+    IOPoint3D::Write(fd, extent->GetMinimumPoint(), version, sMin);
 
     // Property: Max
-    IOPoint3D::Write(fd, &extent3D->GetMaximumPoint(), version, sMax);
+    IOPoint3D::Write(fd, extent->GetMaximumPoint(), version, sMax);
 
     dectab();
-    fd << tab() << endStr(sExtents) << std::endl;
+    fd << tab() << endStr(sExtent) << std::endl;
 }

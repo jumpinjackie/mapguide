@@ -15,34 +15,41 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef IOPOINT3D_H_
-#define IOPOINT3D_H_
+#ifndef IOMAPVIEWPORTDEFINITION_H_
+#define IOMAPVIEWPORTDEFINITION_H_
 
-#include "SAX2ElementHandler.h"
-#include "Point3D.h"
+#include "IOPrintLayoutElementDefinition.h"
+#include "MapViewportDefinition.h"
 
 BEGIN_NAMESPACE_MDFPARSER
 
-class IOPoint3D : public SAX2ElementHandler
+class IOMapViewportDefinition : public IOPrintLayoutElementDefinition
 {
 public:
-    IOPoint3D(Point3D* point, Version& version);
-    virtual ~IOPoint3D();
+    IOMapViewportDefinition(MapViewportDefinition* mapViewportDef, Version& version);
+    virtual ~IOMapViewportDefinition();
+
+    MapViewportDefinition* GetMapViewportDefinition();
 
     virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
     virtual void ElementChars(const wchar_t* ch);
-    virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-    static void Write(MdfStream& fd, Point3D* point, Version* version, const std::string& name);
+    static void Write(MdfStream& fd, MapViewportDefinition* mapViewportDef, Version* version);
 
 private:
     // Hidden default/copy constructors and assignment operator.
-    IOPoint3D();
-    IOPoint3D(const IOPoint3D&);
-    IOPoint3D& operator=(const IOPoint3D&);
-
-    Point3D* m_point;
+    IOMapViewportDefinition();
+    IOMapViewportDefinition(const IOMapViewportDefinition&);
+    IOMapViewportDefinition& operator=(const IOMapViewportDefinition&);
 };
 
+// Inline Methods
+inline MapViewportDefinition* IOMapViewportDefinition::GetMapViewportDefinition()
+{
+    MapViewportDefinition* mapViewportDef = dynamic_cast<MapViewportDefinition*>(m_layoutElemDef);
+    _ASSERT(NULL != mapViewportDef);
+    return mapViewportDef;
+}
+
 END_NAMESPACE_MDFPARSER
-#endif // IOPOINT3D_H_
+#endif // IOMAPVIEWPORTDEFINITION_H_

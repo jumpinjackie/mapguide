@@ -15,77 +15,47 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MAPVIEW_H_
-#define MAPVIEW_H_
+#ifndef SIZE2D_H_
+#define SIZE2D_H_
 
-#include "MdfRootObject.h"
-#include "Point3D.h"
-#include "Vector3D.h"
+#include "MdfModel.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
 //-------------------------------------------------------------------------
-// DESCRIPTION: The MapView class declaration.
+// DESCRIPTION: The Size2D class declaration.
 //-------------------------------------------------------------------------
-class MDFMODEL_API MapView : public MdfRootObject
+class MDFMODEL_API Size2D
 {
 public:
     // Constructor(s)/Destructor
-    MapView();
-    virtual ~MapView();
+    Size2D();
+    Size2D(double width, double height);
+    virtual ~Size2D();
 
     // Operations
-    Point3D* GetCenter();
+    double GetWidth() const;
+    void SetWidth(double width);
 
     double GetHeight() const;
     void SetHeight(double height);
 
-    double GetTwistAngle() const;
-    void SetTwistAngle(double twistAngle);
-
-    Vector3D* GetViewDirection();
-
-    const MdfString& GetModelUnits() const;
-    void SetModelUnits(const MdfString& modelUnits);
-
 private:
-    // Hidden copy constructor and assignment operator.
-    MapView(const MapView&);
-    MapView& operator=(const MapView&);
-
     // Data Members
-    Point3D m_center;
+    double m_width;
     double m_height;
-    double m_twistAngle;
-    Vector3D m_viewDirection;
-    MdfString m_modelUnits;
 };
 
 // Inline Methods
-inline Point3D* MapView::GetCenter()
+inline double Size2D::GetWidth() const
 {
-    return &m_center;
+    return m_width;
 }
 
-inline double MapView::GetHeight() const
+inline double Size2D::GetHeight() const
 {
     return m_height;
 }
 
-inline double MapView::GetTwistAngle() const
-{
-    return m_twistAngle;
-}
-
-inline Vector3D* MapView::GetViewDirection()
-{
-    return &m_viewDirection;
-}
-
-inline const MdfString& MapView::GetModelUnits() const
-{
-    return m_modelUnits;
-}
-
 END_NAMESPACE_MDFMODEL
-#endif // MAPVIEW_H_
+#endif // SIZE2D_H_

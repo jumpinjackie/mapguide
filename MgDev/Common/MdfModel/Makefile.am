@@ -11,13 +11,17 @@ lib_LTLIBRARIES = libMgMdfModel.la
 libMgMdfModel_la_SOURCES = \
   Common/Extent3D.cpp \
   Common/Point3D.cpp \
+  Common/Size2D.cpp \
   Common/StringObject.cpp \
+  Common/Thickness.cpp \
   Common/Vector3D.cpp \
   PrintLayout/DataConfiguration.cpp \
   PrintLayout/MapView.cpp \
-  PrintLayout/MapViewport.cpp \
+  PrintLayout/MapViewportDefinition.cpp \
+  PrintLayout/PrintLayoutDefinition.cpp \
   PrintLayout/PrintLayoutElement.cpp \
   PrintLayout/PrintLayoutElementDefinition.cpp \
+  PrintLayout/PrintLayoutElementStyle.cpp \
   PrintLayout/PropertyMapping.cpp \
   PrintLayout/StylizationConfiguration.cpp \
   AreaRule.cpp \
@@ -100,13 +104,17 @@ libMgMdfModel_la_SOURCES = \
 noinst_HEADERS = \
   Common/Extent3D.h \
   Common/Point3D.h \
+  Common/Size2D.h \
   Common/StringObject.h \
+  Common/Thickness.h \
   Common/Vector3D.h \
   PrintLayout/DataConfiguration.h \
   PrintLayout/MapView.h \
-  PrintLayout/MapViewport.h \
+  PrintLayout/MapViewportDefinition.h \
+  PrintLayout/PrintLayoutDefinition.h \
   PrintLayout/PrintLayoutElement.h \
   PrintLayout/PrintLayoutElementDefinition.h \
+  PrintLayout/PrintLayoutElementStyle.h \
   PrintLayout/PropertyMapping.h \
   PrintLayout/StylizationConfiguration.h \
   AreaRule.h \

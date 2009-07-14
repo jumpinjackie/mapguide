@@ -26,12 +26,12 @@ ELEM_MAP_ENTRY(2, X);
 ELEM_MAP_ENTRY(3, Y);
 ELEM_MAP_ENTRY(4, Z);
 
-IOVector3D::IOVector3D(Vector3D* vector3D, Version& version) :
+IOVector3D::IOVector3D(Vector3D* vector, Version& version) :
     SAX2ElementHandler(version),
-    m_vector3D(vector3D)
+    m_vector(vector)
 {
     // The parser will update all the data of the object pointed by the following assigned pointer.
-    _ASSERT(NULL != m_vector3D);
+    _ASSERT(NULL != m_vector);
 }
 
 IOVector3D::~IOVector3D()
@@ -56,15 +56,15 @@ void IOVector3D::ElementChars(const wchar_t* ch)
     switch (m_currElemId)
     {
     case eX:
-        m_vector3D->SetX(wstrToDouble(ch));
+        m_vector->SetX(wstrToDouble(ch));
         break;
 
     case eY:
-        m_vector3D->SetY(wstrToDouble(ch));
+        m_vector->SetY(wstrToDouble(ch));
         break;
 
     case eZ:
-        m_vector3D->SetZ(wstrToDouble(ch));
+        m_vector->SetZ(wstrToDouble(ch));
         break;
     }
 }
@@ -79,26 +79,26 @@ void IOVector3D::EndElement(const wchar_t* name, HandlerStack* handlerStack)
     }
 }
 
-void IOVector3D::Write(MdfStream& fd, Vector3D* vector3D, Version* version)
+void IOVector3D::Write(MdfStream& fd, Vector3D* vector, Version* version)
 {
-    _ASSERT(NULL != vector3D);
+    _ASSERT(NULL != vector);
 
     fd << tab() << startStr(sViewDirection) << std::endl;
     inctab();
 
     // Property: X
     fd << tab() << startStr(sX);
-    fd << DoubleToStr(vector3D->GetX());
+    fd << DoubleToStr(vector->GetX());
     fd << endStr(sX) << std::endl;
 
     // Property: Y
     fd << tab() << startStr(sY);
-    fd << DoubleToStr(vector3D->GetY());
+    fd << DoubleToStr(vector->GetY());
     fd << endStr(sY) << std::endl;
 
     // Property: Z
     fd << tab() << startStr(sZ);
-    fd << DoubleToStr(vector3D->GetZ());
+    fd << DoubleToStr(vector->GetZ());
     fd << endStr(sZ) << std::endl;
 
     dectab();

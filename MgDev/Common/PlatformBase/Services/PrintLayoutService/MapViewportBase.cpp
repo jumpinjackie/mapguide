@@ -126,9 +126,9 @@ bool MgMapViewportBase::GetIsOn()
 
 ///////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Gets the view of the map viewport.
+/// Gets the map view of the map viewport.
 ///
-MgView* MgMapViewportBase::GetView()
+MgMapView* MgMapViewportBase::GetMapView()
 {
     return NULL;
 }

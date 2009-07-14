@@ -25,7 +25,7 @@
 class MG_PLATFORMBASE_API MgPrintLayoutElementDefinitionBase : public MgResource
 {
     MG_DECL_DYNCREATE()
-    DECLARE_CLASSNAME(MgPrintLayoutBase)
+    DECLARE_CLASSNAME(MgPrintLayoutElementDefinitionBase)
 
 INTERNAL_API:
     

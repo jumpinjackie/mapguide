@@ -26,14 +26,14 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOVector3D : public SAX2ElementHandler
 {
 public:
-    IOVector3D(Vector3D* vector3D, Version& version);
+    IOVector3D(Vector3D* vector, Version& version);
     virtual ~IOVector3D();
 
     virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
     virtual void ElementChars(const wchar_t* ch);
     virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-    static void Write(MdfStream& fd, Vector3D* vector3D, Version* version);
+    static void Write(MdfStream& fd, Vector3D* vector, Version* version);
 
 private:
     // Hidden default/copy constructors and assignment operator.
@@ -41,7 +41,7 @@ private:
     IOVector3D(const IOVector3D&);
     IOVector3D& operator=(const IOVector3D&);
 
-    Vector3D* m_vector3D;
+    Vector3D* m_vector;
 };
 
 END_NAMESPACE_MDFPARSER

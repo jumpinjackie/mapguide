@@ -15,10 +15,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MAPVIEWPORT_H_
-#define MAPVIEWPORT_H_
+#ifndef MAPVIEWPORTDEFINITION_H_
+#define MAPVIEWPORTDEFINITION_H_
 
-#include "PrintLayoutElement.h"
+#include "PrintLayoutElementDefinition.h"
 #include "Point3D.h"
 #include "StringObject.h"
 #include "MapView.h"
@@ -30,17 +30,17 @@
 BEGIN_NAMESPACE_MDFMODEL
 
 //-------------------------------------------------------------------------
-// DESCRIPTION: The MapViewport class declaration.
+// DESCRIPTION: The MapViewportDefinition class declaration.
 //-------------------------------------------------------------------------
-class MDFMODEL_API MapViewport : public PrintLayoutElement
+class MDFMODEL_API MapViewportDefinition : public PrintLayoutElementDefinition
 {
 public:
     // Constructor(s)/Destructor
-    MapViewport();
-    virtual ~MapViewport();
+    MapViewportDefinition();
+    virtual ~MapViewportDefinition();
 
     // Operations
-    Point3D& GetCenterPoint();
+    Point3D* GetCenterPoint();
 
     double GetOrientation() const;
     void SetOrientation(double orientation);
@@ -48,7 +48,7 @@ public:
     const MdfString& GetMapName() const;
     void SetMapName(const MdfString& mapName);
 
-    StringObjectCollection& GetVisibleLayerNames();
+    StringObjectCollection* GetVisibleLayerNames();
 
     bool GetIsLocked() const;
     void SetIsLocked(bool isLocked);
@@ -56,12 +56,12 @@ public:
     bool GetIsOn() const;
     void SetIsOn(bool isOn);
 
-    MapView& GetMapView();
+    MapView* GetMapView();
 
 private:
     // Hidden copy constructor and assignment operator.
-    MapViewport(const MapViewport&);
-    MapViewport& operator=(const MapViewport&);
+    MapViewportDefinition(const MapViewportDefinition&);
+    MapViewportDefinition& operator=(const MapViewportDefinition&);
 
     // Data Members
     Point3D m_centerPt;
@@ -74,40 +74,40 @@ private:
 };
 
 // Inline Methods
-inline Point3D& MapViewport::GetCenterPoint()
+inline Point3D* MapViewportDefinition::GetCenterPoint()
 {
-    return m_centerPt;
+    return &m_centerPt;
 }
 
-inline double MapViewport::GetOrientation() const
+inline double MapViewportDefinition::GetOrientation() const
 {
     return m_orientation;
 }
 
-inline const MdfString& MapViewport::GetMapName() const
+inline const MdfString& MapViewportDefinition::GetMapName() const
 {
     return m_mapName;
 }
 
-inline StringObjectCollection& MapViewport::GetVisibleLayerNames()
+inline StringObjectCollection* MapViewportDefinition::GetVisibleLayerNames()
 {
-    return m_visibleLayerNames;
+    return &m_visibleLayerNames;
 }
 
-inline bool MapViewport::GetIsLocked() const
+inline bool MapViewportDefinition::GetIsLocked() const
 {
     return m_isLocked;
 }
 
-inline bool MapViewport::GetIsOn() const
+inline bool MapViewportDefinition::GetIsOn() const
 {
     return m_isOn;
 }
 
-inline MapView& MapViewport::GetMapView()
+inline MapView* MapViewportDefinition::GetMapView()
 {
-    return m_mapView;
+    return &m_mapView;
 }
 
 END_NAMESPACE_MDFMODEL
-#endif // MAPVIEWPORT_H_
+#endif // MAPVIEWPORTDEFINITION_H_

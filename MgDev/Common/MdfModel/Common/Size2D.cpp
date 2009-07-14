@@ -16,48 +16,46 @@
 //
 
 //-------------------------------------------------------------------------
-// DESCRIPTION: The MapViewport class implementation.
+// DESCRIPTION: The Size2D class implementation.
 //-------------------------------------------------------------------------
 
 #include "stdafx.h"
-#include "MapViewport.h"
+#include "Size2D.h"
 
 //-------------------------------------------------------------------------
-// PURPOSE: Default constructor of the MapViewport class.
+// PURPOSE: Default constructor of the Size2D class.
 //-------------------------------------------------------------------------
-MapViewport::MapViewport() :
-    m_orientation(0.0),
-    m_isLocked(false),
-    m_isOn(false)
+Size2D::Size2D() :
+    m_width(0.0),
+    m_height(0.0)
+{
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE: Construct and initialize an instance of the Size2D class.
+//-------------------------------------------------------------------------
+Size2D::Size2D(double width, double height) :
+    m_width(width),
+    m_height(height)
 {
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE: Destructor. Delete all adopted objects.
 //-------------------------------------------------------------------------
-MapViewport::~MapViewport()
+Size2D::~Size2D()
 {
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Manage properties of this MapViewport object.
+// PURPOSE: Manage properties of this Size2D object.
 //-------------------------------------------------------------------------
-void MapViewport::SetOrientation(double orientation)
+void Size2D::SetWidth(double width)
 {
-    m_orientation = orientation;
+    m_width = width;
 }
 
-void MapViewport::SetMapName(const MdfString& mapName)
+void Size2D::SetHeight(double height)
 {
-    m_mapName = mapName;
-}
-
-void MapViewport::SetIsLocked(bool isLocked)
-{
-    m_isLocked = isLocked;
-}
-
-void MapViewport::SetIsOn(bool isOn)
-{
-    m_isOn = isOn;
+    m_height = height;
 }

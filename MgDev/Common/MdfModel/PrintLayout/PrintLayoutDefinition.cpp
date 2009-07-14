@@ -16,45 +16,50 @@
 //
 
 //-------------------------------------------------------------------------
-// DESCRIPTION: The PrintLayoutElementDefinition class implementation.
+// DESCRIPTION: The PrintLayoutDefinition class implementation.
 //-------------------------------------------------------------------------
 
 #include "stdafx.h"
-#include "PrintLayoutElementDefinition.h"
+#include "PrintLayoutDefinition.h"
 
 //-------------------------------------------------------------------------
-// PURPOSE: Default constructor of the PrintLayoutElementDefinition class.
+// PURPOSE: Default constructor of the PrintLayoutDefinition class.
 //-------------------------------------------------------------------------
-PrintLayoutElementDefinition::PrintLayoutElementDefinition()
+PrintLayoutDefinition::PrintLayoutDefinition()
 {
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE: Destructor. Delete all adopted objects.
 //-------------------------------------------------------------------------
-PrintLayoutElementDefinition::~PrintLayoutElementDefinition()
+PrintLayoutDefinition::~PrintLayoutDefinition()
 {
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Manage properties of this PrintLayoutElementDefinition object.
+// PURPOSE: Manage properties of this PrintLayoutDefinition object.
 //-------------------------------------------------------------------------
-void PrintLayoutElementDefinition::SetName(const MdfString& name)
+void PrintLayoutDefinition::SetName(const MdfString& name)
 {
     m_name = name;
 }
 
-void PrintLayoutElementDefinition::SetDescription(const MdfString& description)
+void PrintLayoutDefinition::SetDeviceName(const MdfString& deviceName)
 {
-    m_description = description;
+    m_deviceName = deviceName;
 }
 
-void PrintLayoutElementDefinition::SetUnits(const MdfString& units)
+void PrintLayoutDefinition::SetMediaName(const MdfString& mediaName)
+{
+    m_mediaName = mediaName;
+}
+
+void PrintLayoutDefinition::SetOrientation(const MdfString& orientation)
+{
+    m_orientation = orientation;
+}
+
+void PrintLayoutDefinition::SetUnits(const MdfString& units)
 {
     m_units = units;
-}
-
-void PrintLayoutElementDefinition::SetResourceId(const MdfString& resourceId)
-{
-    m_resourceId = resourceId;
 }

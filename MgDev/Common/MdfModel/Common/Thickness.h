@@ -15,46 +15,65 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef EXTENT3D_H_
-#define EXTENT3D_H_
+#ifndef THICKNESS_H_
+#define THICKNESS_H_
 
 #include "MdfModel.h"
-#include "Point3D.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
 //-------------------------------------------------------------------------
-// DESCRIPTION: The Extent3D class declaration.
+// DESCRIPTION: The Thickness class declaration.
 //-------------------------------------------------------------------------
-class MDFMODEL_API Extent3D
+class MDFMODEL_API Thickness
 {
 public:
     // Constructor(s)/Destructor
-    Extent3D();
-    Extent3D(const Point3D& minPt, const Point3D& maxPt);
-    virtual ~Extent3D();
+    Thickness();
+    Thickness(double left, double top, double right, double bottom);
+    virtual ~Thickness();
 
     // Operations
-    Point3D* GetMinimumPoint();
+    double GetLeft() const;
+    void SetLeft(double left);
 
-    Point3D* GetMaximumPoint();
+    double GetTop() const;
+    void SetTop(double top);
+
+    double GetRight() const;
+    void SetRight(double right);
+
+    double GetBottom() const;
+    void SetBottom(double bottom);
 
 private:
     // Data Members
-    Point3D m_minPt;
-    Point3D m_maxPt;
+    double m_left;
+    double m_top;
+    double m_right;
+    double m_bottom;
 };
 
 // Inline Methods
-inline Point3D* Extent3D::GetMinimumPoint()
+inline double Thickness::GetLeft() const
 {
-    return &m_minPt;
+    return m_left;
 }
 
-inline Point3D* Extent3D::GetMaximumPoint()
+inline double Thickness::GetTop() const
 {
-    return &m_maxPt;
+    return m_top;
+}
+
+inline double Thickness::GetRight() const
+{
+    return m_right;
+}
+
+inline double Thickness::GetBottom() const
+{
+    return m_bottom;
 }
 
 END_NAMESPACE_MDFMODEL
-#endif // EXTENT3D_H_
+#endif // THICKNESS_H_

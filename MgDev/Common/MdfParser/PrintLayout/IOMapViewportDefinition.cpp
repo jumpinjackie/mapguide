@@ -16,14 +16,14 @@
 //
 
 #include "stdafx.h"
-#include "IOMapViewport.h"
+#include "IOMapViewportDefinition.h"
 #include "IOPoint3D.h"
 #include "IOStringObjectCollection.h"
 #include "IOMapView.h"
 
 CREATE_ELEMENT_MAP;
 // Start Elements
-ELEM_MAP_ENTRY(1, MapViewport);
+ELEM_MAP_ENTRY(1, MapViewportDefinition);
 // Local Elements
 ELEM_MAP_ENTRY(2, CenterPoint);
 ELEM_MAP_ENTRY(3, Orientation);
@@ -35,29 +35,29 @@ ELEM_MAP_ENTRY(8, MapView);
 // Sub Elements
 ELEM_MAP_ENTRY(9, Name);
 
-IOMapViewport::IOMapViewport(MapViewport* mapViewport, Version& version) :
-    IOPrintLayoutElement(mapViewport, version)
+IOMapViewportDefinition::IOMapViewportDefinition(MapViewportDefinition* mapViewportDef, Version& version) :
+    IOPrintLayoutElementDefinition(mapViewportDef, version)
 {
 }
 
-IOMapViewport::~IOMapViewport()
+IOMapViewportDefinition::~IOMapViewportDefinition()
 {
 }
 
-void IOMapViewport::StartElement(const wchar_t* name, HandlerStack* handlerStack)
+void IOMapViewportDefinition::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
 
     switch (m_currElemId)
     {
-    case eMapViewport:
+    case eMapViewportDefinition:
         m_startElemName = name;
         break;
 
     case eCenterPoint:
         {
-            IOPoint3D* IO = new IOPoint3D(&GetMapViewport()->GetCenterPoint(), m_version);
+            IOPoint3D* IO = new IOPoint3D(GetMapViewportDefinition()->GetCenterPoint(), m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -65,7 +65,7 @@ void IOMapViewport::StartElement(const wchar_t* name, HandlerStack* handlerStack
     
     case eVisibleLayerNames:
         {
-            IOStringObjectCollection* IO = new IOStringObjectCollection(&GetMapViewport()->GetVisibleLayerNames(), m_version, sVisibleLayerNames, sName);
+            IOStringObjectCollection* IO = new IOStringObjectCollection(GetMapViewportDefinition()->GetVisibleLayerNames(), m_version, sVisibleLayerNames, sName);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -73,82 +73,82 @@ void IOMapViewport::StartElement(const wchar_t* name, HandlerStack* handlerStack
     
     case eMapView:
         {
-            IOMapView* IO = new IOMapView(&GetMapViewport()->GetMapView(), m_version);
+            IOMapView* IO = new IOMapView(GetMapViewportDefinition()->GetMapView(), m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
         break;
     
     default:
-        IOPrintLayoutElement::StartElement(name, handlerStack);
+        IOPrintLayoutElementDefinition::StartElement(name, handlerStack);
         break;
     }
 }
 
-void IOMapViewport::ElementChars(const wchar_t* ch)
+void IOMapViewportDefinition::ElementChars(const wchar_t* ch)
 {
     switch (m_currElemId)
     {
     case eOrientation:
-        GetMapViewport()->SetOrientation(wstrToDouble(ch));
+        GetMapViewportDefinition()->SetOrientation(wstrToDouble(ch));
         break;
 
     case eMapName:
-        GetMapViewport()->SetMapName(ch);
+        GetMapViewportDefinition()->SetMapName(ch);
         break;
 
     case eLocked:
-        GetMapViewport()->SetIsLocked(wstrToBool(ch));
+        GetMapViewportDefinition()->SetIsLocked(wstrToBool(ch));
         break;
 
     case eOn:
-        GetMapViewport()->SetIsOn(wstrToBool(ch));
+        GetMapViewportDefinition()->SetIsOn(wstrToBool(ch));
         break;
 
     default:
-        IOPrintLayoutElement::ElementChars(ch);
+        IOPrintLayoutElementDefinition::ElementChars(ch);
         break;
     }
 }
 
-void IOMapViewport::Write(MdfStream& fd, MapViewport* mapViewport, Version* version)
+void IOMapViewportDefinition::Write(MdfStream& fd, MapViewportDefinition* mapViewportDef, Version* version)
 {
-    _ASSERT(NULL != mapViewport);
+    _ASSERT(NULL != mapViewportDef);
 
-    fd << tab() << startStr(sMapViewport) << std::endl;
+    fd << tab() << startStr(sMapViewportDefinition) << std::endl;
     inctab();
 
-    IOPrintLayoutElement::Write(fd, mapViewport, version);
+    IOPrintLayoutElementDefinition::Write(fd, mapViewportDef, version);
 
     // Property: CenterPoint
-    IOPoint3D::Write(fd, &mapViewport->GetCenterPoint(), version, sCenterPoint);
+    IOPoint3D::Write(fd, mapViewportDef->GetCenterPoint(), version, sCenterPoint);
 
     // Property: Orientation
     fd << tab() << startStr(sOrientation);
-    fd << DoubleToStr(mapViewport->GetOrientation());
+    fd << DoubleToStr(mapViewportDef->GetOrientation());
     fd << endStr(sOrientation) << std::endl;
 
     // Property: MapName
     fd << tab() << startStr(sMapName);
-    fd << EncodeString(mapViewport->GetMapName());
+    fd << EncodeString(mapViewportDef->GetMapName());
     fd << endStr(sMapName) << std::endl;
 
     // Property: VisibleLayerNames
-    IOStringObjectCollection::Write(fd, &mapViewport->GetVisibleLayerNames(), version, sVisibleLayerNames, sName);
+    IOStringObjectCollection::Write(fd, mapViewportDef->GetVisibleLayerNames(), version, sVisibleLayerNames, sName);
 
     // Property: Locked
     fd << tab() << startStr(sLocked);
-    fd << BoolToStr(mapViewport->GetIsLocked());
+    fd << BoolToStr(mapViewportDef->GetIsLocked());
     fd << endStr(sLocked) << std::endl;
 
     // Property: On
     fd << tab() << startStr(sOn);
-    fd << BoolToStr(mapViewport->GetIsOn());
+    fd << BoolToStr(mapViewportDef->GetIsOn());
     fd << endStr(sOn) << std::endl;
 
     // Property: MapView
-    IOMapView::Write(fd, &mapViewport->GetMapView(), version);
+    IOMapView::Write(fd, mapViewportDef->GetMapView(), version);
 
     dectab();
-    fd << tab() << endStr(sMapViewport) << std::endl;
+    fd << tab() << endStr(sMapViewportDefinition) << std::endl;
 }

@@ -989,11 +989,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\PrintLayout\MapViewport.cpp"
+				RelativePath=".\PrintLayout\MapViewportDefinition.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\PrintLayout\MapViewport.h"
+				RelativePath=".\PrintLayout\MapViewportDefinition.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\PrintLayoutDefinition.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\PrintLayoutDefinition.h"
 				>
 			</File>
 			<File
@@ -1010,6 +1018,14 @@
 			</File>
 			<File
 				RelativePath=".\PrintLayout\PrintLayoutElementDefinition.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\PrintLayoutElementStyle.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PrintLayout\PrintLayoutElementStyle.h"
 				>
 			</File>
 			<File
@@ -1049,11 +1065,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Common\Size2D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\Size2D.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Common\StringObject.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\Common\StringObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\Thickness.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\Thickness.h"
 				>
 			</File>
 			<File

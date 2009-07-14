@@ -4036,7 +4036,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\Services\PrintLayoutService\View.cpp"
+					RelativePath=".\Services\PrintLayoutService\MapView.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -4072,7 +4072,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\Services\PrintLayoutService\View.h"
+					RelativePath=".\Services\PrintLayoutService\MapView.h"
 					>
 				</File>
 			</Filter>
