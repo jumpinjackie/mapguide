@@ -53,6 +53,7 @@ String searchError;
     resNames = new ArrayList();
     resProps = new ArrayList();
     matchLimit = 0;
+    MgFeatureReader features = null;
 
     Response.Charset = "utf-8";
 
@@ -108,7 +109,7 @@ String searchError;
             opts.SetFilter(filter);
             String featureClassName = layer.GetFeatureClassName();
             MgResourceIdentifier srcId = new MgResourceIdentifier(layer.GetFeatureSourceId());
-            MgFeatureReader features = featureSrvc.SelectFeatures(srcId, featureClassName, opts);
+            features = featureSrvc.SelectFeatures(srcId, featureClassName, opts);
             bool hasResult = features.ReadNext();
 
             if (hasResult)
@@ -241,10 +242,20 @@ String searchError;
         }
         catch (MgException ae)
         {
+            if (features != null)
+            {
+                // Close the feature reader
+                features.Close();
+            }
             OnError(searchError, ae.GetMessage() + "<br>" + ae.GetStackTrace());
         }
         catch (SearchError exc)
         {
+            if (features != null)
+            {
+                // Close the feature reader
+                features.Close();
+            }
             OnError(exc.title, exc.Message);
         }
 

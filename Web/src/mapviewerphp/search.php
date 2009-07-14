@@ -235,10 +235,20 @@
     }
     catch(MgException $ae)
     {
+        if($features)
+        {
+            // Close the feature reader
+            $features->Close();
+        }
         OnError($searchError, $ae->GetDetails());
     }
     catch(SearchError $e)
     {
+        if($features)
+        {
+            // Close the feature reader
+            $features->Close();
+        }
         OnError($e->title, $e->getMessage());
     }
 
