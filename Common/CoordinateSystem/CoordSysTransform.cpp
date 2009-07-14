@@ -434,9 +434,9 @@ MgEnvelope* CCoordinateSystemTransform::Transform(MgEnvelope* envelope)
     Ptr<MgCoordinate> lowerLeftTarget;
     Ptr<MgCoordinate> upperRightTarget;
 
-#ifdef _DEBUG
-    printf("\nTransform(envelope) -- Source: %S  Dest: %S\n", m_pCsSource->GetCode().c_str(), m_pCsTarget->GetCode().c_str());
-#endif
+    // Leave commented except for temporary debugging.  The printf output gets
+    // sent to stdout and ends up being included in the web-tier HTTP response.
+//  printf("\nTransform(envelope) -- Source: %S  Dest: %S\n", m_pCsSource->GetCode().c_str(), m_pCsTarget->GetCode().c_str());
 
     if((m_pCsSource->GetType() == MgCoordinateSystemType::Projected) && (m_pCsTarget->GetType() == MgCoordinateSystemType::Geographic))
     {
@@ -696,7 +696,9 @@ MgEnvelope* CCoordinateSystemTransform::Transform(MgEnvelope* envelope)
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.Transform")
 
-#ifdef _DEBUG
+    // Leave commented except for temporary debugging.  The printf output gets
+    // sent to stdout and ends up being included in the web-tier HTTP response.
+/*
     Ptr<MgCoordinate> ll = envelope->GetLowerLeftCoordinate();
     Ptr<MgCoordinate> ur = envelope->GetUpperRightCoordinate();
     printf("Transform(envelope) -- Source: %f,%f to %f,%f\n", ll->GetX(), ll->GetY(), ur->GetX(), ur->GetY());
@@ -704,7 +706,7 @@ MgEnvelope* CCoordinateSystemTransform::Transform(MgEnvelope* envelope)
     ll = pEnvelope->GetLowerLeftCoordinate();
     ur = pEnvelope->GetUpperRightCoordinate();
     printf("Transform(envelope) -- Dest  : %f,%f to %f,%f\n", ll->GetX(), ll->GetY(), ur->GetX(), ur->GetY());
-#endif
+*/
 
     return pEnvelope;
 }
