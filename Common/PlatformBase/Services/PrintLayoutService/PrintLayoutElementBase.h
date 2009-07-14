@@ -81,9 +81,9 @@ INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Gets the extents of this element
+    /// Gets the extent of this element
     ///
-    virtual MgEnvelope* GetExtents();
+    virtual MgEnvelope* GetExtent();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -223,7 +223,7 @@ protected:
     STRING m_featureClass;
     STRING m_geometryName;
     STRING m_filter;
-    Ptr<MgEnvelope> m_extents;
+    Ptr<MgEnvelope> m_extent;
     Ptr<MgResourceIdentifier> m_datasource;
     Ptr<MgResourceIdentifier> m_stylization;
     Ptr<MgResourceIdentifier> m_elementDefinition;

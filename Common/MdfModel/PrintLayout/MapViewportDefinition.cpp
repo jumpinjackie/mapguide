@@ -16,45 +16,48 @@
 //
 
 //-------------------------------------------------------------------------
-// DESCRIPTION: The PrintLayoutElementDefinition class implementation.
+// DESCRIPTION: The MapViewportDefinition class implementation.
 //-------------------------------------------------------------------------
 
 #include "stdafx.h"
-#include "PrintLayoutElementDefinition.h"
+#include "MapViewportDefinition.h"
 
 //-------------------------------------------------------------------------
-// PURPOSE: Default constructor of the PrintLayoutElementDefinition class.
+// PURPOSE: Default constructor of the MapViewportDefinition class.
 //-------------------------------------------------------------------------
-PrintLayoutElementDefinition::PrintLayoutElementDefinition()
+MapViewportDefinition::MapViewportDefinition() :
+    m_orientation(0.0),
+    m_isLocked(false),
+    m_isOn(true)
 {
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE: Destructor. Delete all adopted objects.
 //-------------------------------------------------------------------------
-PrintLayoutElementDefinition::~PrintLayoutElementDefinition()
+MapViewportDefinition::~MapViewportDefinition()
 {
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Manage properties of this PrintLayoutElementDefinition object.
+// PURPOSE: Manage properties of this MapViewportDefinition object.
 //-------------------------------------------------------------------------
-void PrintLayoutElementDefinition::SetName(const MdfString& name)
+void MapViewportDefinition::SetOrientation(double orientation)
 {
-    m_name = name;
+    m_orientation = orientation;
 }
 
-void PrintLayoutElementDefinition::SetDescription(const MdfString& description)
+void MapViewportDefinition::SetMapName(const MdfString& mapName)
 {
-    m_description = description;
+    m_mapName = mapName;
 }
 
-void PrintLayoutElementDefinition::SetUnits(const MdfString& units)
+void MapViewportDefinition::SetIsLocked(bool isLocked)
 {
-    m_units = units;
+    m_isLocked = isLocked;
 }
 
-void PrintLayoutElementDefinition::SetResourceId(const MdfString& resourceId)
+void MapViewportDefinition::SetIsOn(bool isOn)
 {
-    m_resourceId = resourceId;
+    m_isOn = isOn;
 }

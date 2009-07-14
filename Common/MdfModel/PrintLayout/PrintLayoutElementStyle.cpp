@@ -16,45 +16,30 @@
 //
 
 //-------------------------------------------------------------------------
-// DESCRIPTION: The PrintLayoutElementDefinition class implementation.
+// DESCRIPTION: The PrintLayoutElementStyle class implementation.
 //-------------------------------------------------------------------------
 
 #include "stdafx.h"
-#include "PrintLayoutElementDefinition.h"
+#include "PrintLayoutElementStyle.h"
 
 //-------------------------------------------------------------------------
-// PURPOSE: Default constructor of the PrintLayoutElementDefinition class.
+// PURPOSE: Default constructor of the PrintLayoutElementStyle class.
 //-------------------------------------------------------------------------
-PrintLayoutElementDefinition::PrintLayoutElementDefinition()
+PrintLayoutElementStyle::PrintLayoutElementStyle()
 {
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE: Destructor. Delete all adopted objects.
 //-------------------------------------------------------------------------
-PrintLayoutElementDefinition::~PrintLayoutElementDefinition()
+PrintLayoutElementStyle::~PrintLayoutElementStyle()
 {
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Manage properties of this PrintLayoutElementDefinition object.
+// PURPOSE: Manage properties of this PrintLayoutElementStyle object.
 //-------------------------------------------------------------------------
-void PrintLayoutElementDefinition::SetName(const MdfString& name)
+void PrintLayoutElementStyle::SetName(const MdfString& name)
 {
     m_name = name;
-}
-
-void PrintLayoutElementDefinition::SetDescription(const MdfString& description)
-{
-    m_description = description;
-}
-
-void PrintLayoutElementDefinition::SetUnits(const MdfString& units)
-{
-    m_units = units;
-}
-
-void PrintLayoutElementDefinition::SetResourceId(const MdfString& resourceId)
-{
-    m_resourceId = resourceId;
 }

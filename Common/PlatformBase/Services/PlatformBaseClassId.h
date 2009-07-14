@@ -146,6 +146,6 @@
 #define PlatformBase_PrintLayoutService_PrintLayoutElementBase      PLATFORMBASE_PRINTLAYOUTSERVICE_ID+2
 #define PlatformBase_PrintLayoutService_PrintLayoutElementDefinitionBase    PLATFORMBASE_PRINTLAYOUTSERVICE_ID+3
 #define PlatformBase_PrintLayoutService_MapViewportBase             PLATFORMBASE_PRINTLAYOUTSERVICE_ID+4
-#define PlatformBase_PrintLayoutService_View                        PLATFORMBASE_PRINTLAYOUTSERVICE_ID+5
+#define PlatformBase_PrintLayoutService_MapView                     PLATFORMBASE_PRINTLAYOUTSERVICE_ID+5
 #define PlatformBase_PrintLayoutService_PropertyMapping             PLATFORMBASE_PRINTLAYOUTSERVICE_ID+6
 #define PlatformBase_PrintLayoutService_PropertyMappingCollection   PLATFORMBASE_PRINTLAYOUTSERVICE_ID+7

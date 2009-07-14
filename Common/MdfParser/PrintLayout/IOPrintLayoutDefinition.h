@@ -15,41 +15,34 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef IOMAPVIEWPORT_H_
-#define IOMAPVIEWPORT_H_
+#ifndef IOPRINTLAYOUTDEFINITION_H_
+#define IOPRINTLAYOUTDEFINITION_H_
 
-#include "IOPrintLayoutElement.h"
-#include "MapViewport.h"
+#include "SAX2ElementHandler.h"
+#include "PrintLayoutDefinition.h"
 
 BEGIN_NAMESPACE_MDFPARSER
 
-class IOMapViewport : public IOPrintLayoutElement
+class IOPrintLayoutDefinition : public SAX2ElementHandler
 {
 public:
-    IOMapViewport(MapViewport* mapViewport, Version& version);
-    virtual ~IOMapViewport();
-
-    MapViewport* GetMapViewport();
+    IOPrintLayoutDefinition(PrintLayoutDefinition* layoutDef, Version& version);
+    virtual ~IOPrintLayoutDefinition();
 
     virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
     virtual void ElementChars(const wchar_t* ch);
+    virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-    static void Write(MdfStream& fd, MapViewport* mapViewport, Version* version);
+    static void Write(MdfStream& fd, PrintLayoutDefinition* layoutDef, Version* version);
 
 private:
     // Hidden default/copy constructors and assignment operator.
-    IOMapViewport();
-    IOMapViewport(const IOMapViewport&);
-    IOMapViewport& operator=(const IOMapViewport&);
+    IOPrintLayoutDefinition();
+    IOPrintLayoutDefinition(const IOPrintLayoutDefinition&);
+    IOPrintLayoutDefinition& operator=(const IOPrintLayoutDefinition&);
+
+    PrintLayoutDefinition* m_layoutDef;
 };
 
-// Inline Methods
-inline MapViewport* IOMapViewport::GetMapViewport()
-{
-    MapViewport* mapViewport = dynamic_cast<MapViewport*>(m_printLayoutElement);
-    _ASSERT(NULL != mapViewport);
-    return mapViewport;
-}
-
 END_NAMESPACE_MDFPARSER
-#endif // IOMAPVIEWPORT_H_
+#endif // IOPRINTLAYOUTDEFINITION_H_

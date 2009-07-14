@@ -57,7 +57,7 @@ void IOMapView::StartElement(const wchar_t* name, HandlerStack* handlerStack)
     
     case eCenter:
         {
-            IOPoint3D* IO = new IOPoint3D(&m_mapView->GetCenter(), m_version);
+            IOPoint3D* IO = new IOPoint3D(m_mapView->GetCenter(), m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -65,7 +65,7 @@ void IOMapView::StartElement(const wchar_t* name, HandlerStack* handlerStack)
     
     case eViewDirection:
         {
-            IOVector3D* IO = new IOVector3D(&m_mapView->GetViewDirection(), m_version);
+            IOVector3D* IO = new IOVector3D(m_mapView->GetViewDirection(), m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -123,7 +123,7 @@ void IOMapView::Write(MdfStream& fd, MapView* mapView, Version* version)
     inctab();
 
     // Property: Center
-    IOPoint3D::Write(fd, &mapView->GetCenter(), version, sCenter);
+    IOPoint3D::Write(fd, mapView->GetCenter(), version, sCenter);
 
     // Property: Height
     fd << tab() << startStr(sHeight);
@@ -136,7 +136,7 @@ void IOMapView::Write(MdfStream& fd, MapView* mapView, Version* version)
     fd << endStr(sTwistAngle) << std::endl;
 
     // Property: ViewDirection
-    IOVector3D::Write(fd, &mapView->GetViewDirection(), version);
+    IOVector3D::Write(fd, mapView->GetViewDirection(), version);
 
     // Property: ModelUnits
     fd << tab() << startStr(sModelUnits);

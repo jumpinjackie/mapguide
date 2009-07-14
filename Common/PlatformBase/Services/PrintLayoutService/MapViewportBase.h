@@ -20,7 +20,7 @@
 
 #include "PrintLayoutElementBase.h"
 
-class MgView;
+class MgMapView;
 
 ////////////////////////////////////////////////////////////
 /// \brief
@@ -101,12 +101,12 @@ INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Gets the view of the map viewport.
+    /// Gets the map view of the map viewport.
     ///
     /// \return
-    /// Returns the view of the map viewport.
+    /// Returns the map view of the map viewport.
     ///
-    virtual MgView* GetView();
+    virtual MgMapView* GetMapView();
 
 INTERNAL_API:
 

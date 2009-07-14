@@ -46,7 +46,7 @@ public:
     const MdfString& GetFilter() const;
     void SetFilter(const MdfString& filter);
 
-    PropertyMappingCollection& GetPropertyMappings();
+    PropertyMappingCollection* GetPropertyMappings();
 
 private:
     // Hidden copy constructor and assignment operator.
@@ -82,9 +82,9 @@ inline const MdfString& DataConfiguration::GetFilter() const
     return m_filter;
 }
 
-inline PropertyMappingCollection& DataConfiguration::GetPropertyMappings()
+inline PropertyMappingCollection* DataConfiguration::GetPropertyMappings()
 {
-    return m_propertyMappings;
+    return &m_propertyMappings;
 }
 
 END_NAMESPACE_MDFMODEL

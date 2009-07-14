@@ -157,7 +157,7 @@ bool InitializeStaticPlatformData()
     fact->Register(PlatformBase_PrintLayoutService_PrintLayoutElementBase, MgPrintLayoutElementBase::CreateObject);
     fact->Register(PlatformBase_PrintLayoutService_PrintLayoutElementDefinitionBase, MgPrintLayoutElementDefinitionBase::CreateObject);
     fact->Register(PlatformBase_PrintLayoutService_MapViewportBase, MgMapViewportBase::CreateObject);
-    fact->Register(PlatformBase_PrintLayoutService_View, MgView::CreateObject);
+    fact->Register(PlatformBase_PrintLayoutService_MapView, MgMapView::CreateObject);
     fact->Register(PlatformBase_PrintLayoutService_PropertyMapping, MgPropertyMapping::CreateObject);
     fact->Register(PlatformBase_PrintLayoutService_PropertyMappingCollection, MgPropertyMappingCollection::CreateObject);
 

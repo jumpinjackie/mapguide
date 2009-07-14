@@ -16,23 +16,23 @@
 //
 
 #include "PlatformBase.h"
-#include "View.h"
+#include "MapView.h"
 
-MG_IMPL_DYNCREATE(MgView)
+MG_IMPL_DYNCREATE(MgMapView)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Constructs an MgView object.
+/// Constructs an MgMapView object.
 ///
-MgView::MgView()
+MgMapView::MgMapView()
 {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Destroys an MgView object.
+/// Destroys an MgMapView object.
 ///
-MgView::~MgView()
+MgMapView::~MgMapView()
 {
 }
 
@@ -40,7 +40,7 @@ MgView::~MgView()
 /// \brief
 /// Gets the class ID.
 ///
-INT32 MgView::GetClassId()
+INT32 MgMapView::GetClassId()
 {
     return m_cls_id;
 }
@@ -49,7 +49,7 @@ INT32 MgView::GetClassId()
 /// \brief
 /// Disposes this object.
 ///
-void MgView::Dispose()
+void MgMapView::Dispose()
 {
     delete this;
 }
@@ -58,7 +58,7 @@ void MgView::Dispose()
 /// \brief
 /// Serializes data to TCP/IP stream.
 ///
-void MgView::Serialize(MgStream* stream)
+void MgMapView::Serialize(MgStream* stream)
 {
 }
 
@@ -66,42 +66,42 @@ void MgView::Serialize(MgStream* stream)
 /// \brief
 /// Deserializes data from TCP/IP stream.
 ///
-void MgView::Deserialize(MgStream* stream)
+void MgMapView::Deserialize(MgStream* stream)
 {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Gets the center of the view.
+/// Gets the center of the map view.
 ///
-MgPoint3D* MgView::GetCenter()
+MgPoint3D* MgMapView::GetCenter()
 {
     return NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Gets the height of the view.
+/// Gets the height of the map view.
 ///
-double MgView::GetHeight()
+double MgMapView::GetHeight()
 {
     return 0.0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Gets the twist angle of the view.
+/// Gets the twist angle of the map view.
 ///
-double MgView::GetTwistAngle()
+double MgMapView::GetTwistAngle()
 {
     return 0.0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Gets the view direction.
+/// Gets the map view direction.
 ///
-MgVector3D* MgView::GetViewDirection()
+MgVector3D* MgMapView::GetViewDirection()
 {
     return NULL;
 }
@@ -110,7 +110,7 @@ MgVector3D* MgView::GetViewDirection()
 /// \brief
 /// Gets the model units.
 ///
-STRING MgView::GetModelUnits()
+STRING MgMapView::GetModelUnits()
 {
     return L"";
 }

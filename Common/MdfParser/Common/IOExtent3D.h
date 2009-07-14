@@ -26,14 +26,14 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOExtent3D : public SAX2ElementHandler
 {
 public:
-    IOExtent3D(Extent3D* extent3D, Version& version);
+    IOExtent3D(Extent3D* extent, Version& version);
     virtual ~IOExtent3D();
 
     virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
     virtual void ElementChars(const wchar_t* ch);
     virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-    static void Write(MdfStream& fd, Extent3D* extent3D, Version* version);
+    static void Write(MdfStream& fd, Extent3D* extent, Version* version);
 
 private:
     // Hidden default/copy constructors and assignment operator.
@@ -41,7 +41,7 @@ private:
     IOExtent3D(const IOExtent3D&);
     IOExtent3D& operator=(const IOExtent3D&);
 
-    Extent3D* m_extent3D;
+    Extent3D* m_extent;
 };
 
 END_NAMESPACE_MDFPARSER

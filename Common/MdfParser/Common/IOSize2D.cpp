@@ -16,66 +16,55 @@
 //
 
 #include "stdafx.h"
-#include "IOPoint3D.h"
+#include "IOSize2D.h"
 
 CREATE_ELEMENT_MAP;
 // Start Elements
-ELEM_MAP_ENTRY(1, Center);
-ELEM_MAP_ENTRY(2, CenterPoint);
-ELEM_MAP_ENTRY(3, Max);
-ELEM_MAP_ENTRY(4, Min);
+ELEM_MAP_ENTRY(1, PaperSize);
 // Local Elements
-ELEM_MAP_ENTRY(5, X);
-ELEM_MAP_ENTRY(6, Y);
-ELEM_MAP_ENTRY(7, Z);
+ELEM_MAP_ENTRY(2, Width);
+ELEM_MAP_ENTRY(3, Height);
 
-IOPoint3D::IOPoint3D(Point3D* point, Version& version) :
+IOSize2D::IOSize2D(Size2D* size, Version& version) :
     SAX2ElementHandler(version),
-    m_point(point)
+    m_size(size)
 {
     // The parser will update all the data of the object pointed by the following assigned pointer.
-    _ASSERT(NULL != m_point);
+    _ASSERT(NULL != m_size);
 }
 
-IOPoint3D::~IOPoint3D()
+IOSize2D::~IOSize2D()
 {
 }
 
-void IOPoint3D::StartElement(const wchar_t* name, HandlerStack* handlerStack)
+void IOSize2D::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
 
     switch (m_currElemId)
     {
-    case eCenter:
-    case eCenterPoint:
-    case eMax:
-    case eMin:
+    case ePaperSize:
         m_startElemName = name;
         break;
     }
 }
 
-void IOPoint3D::ElementChars(const wchar_t* ch)
+void IOSize2D::ElementChars(const wchar_t* ch)
 {
     switch (m_currElemId)
     {
-    case eX:
-        m_point->SetX(wstrToDouble(ch));
+    case eWidth:
+        m_size->SetWidth(wstrToDouble(ch));
         break;
 
-    case eY:
-        m_point->SetY(wstrToDouble(ch));
-        break;
-
-    case eZ:
-        m_point->SetZ(wstrToDouble(ch));
+    case eHeight:
+        m_size->SetHeight(wstrToDouble(ch));
         break;
     }
 }
 
-void IOPoint3D::EndElement(const wchar_t* name, HandlerStack* handlerStack)
+void IOSize2D::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -85,27 +74,22 @@ void IOPoint3D::EndElement(const wchar_t* name, HandlerStack* handlerStack)
     }
 }
 
-void IOPoint3D::Write(MdfStream& fd, Point3D* point, Version* version, const std::string& name)
+void IOSize2D::Write(MdfStream& fd, Size2D* size, Version* version, const std::string& name)
 {
-    _ASSERT(NULL != point);
+    _ASSERT(NULL != size);
 
     fd << tab() << startStr(name) << std::endl;
     inctab();
 
-    // Property: X
-    fd << tab() << startStr(sX);
-    fd << DoubleToStr(point->GetX());
-    fd << endStr(sX) << std::endl;
+    // Property: Width
+    fd << tab() << startStr(sWidth);
+    fd << DoubleToStr(size->GetWidth());
+    fd << endStr(sWidth) << std::endl;
 
-    // Property: Y
-    fd << tab() << startStr(sY);
-    fd << DoubleToStr(point->GetY());
-    fd << endStr(sY) << std::endl;
-
-    // Property: Z
-    fd << tab() << startStr(sZ);
-    fd << DoubleToStr(point->GetZ());
-    fd << endStr(sZ) << std::endl;
+    // Property: Height
+    fd << tab() << startStr(sHeight);
+    fd << DoubleToStr(size->GetHeight());
+    fd << endStr(sHeight) << std::endl;
 
     dectab();
     fd << tab() << endStr(name) << std::endl;

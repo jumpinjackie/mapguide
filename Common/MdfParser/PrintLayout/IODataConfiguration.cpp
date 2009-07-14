@@ -56,7 +56,7 @@ void IODataConfiguration::StartElement(const wchar_t* name, HandlerStack* handle
 
     case ePropertyMappings:
         {
-            IOPropertyMappingCollection* IO = new IOPropertyMappingCollection(&m_dataConf->GetPropertyMappings(), m_version);
+            IOPropertyMappingCollection* IO = new IOPropertyMappingCollection(m_dataConf->GetPropertyMappings(), m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -138,7 +138,7 @@ void IODataConfiguration::Write(MdfStream& fd, DataConfiguration* dataConf, Vers
     fd << endStr(sFilter) << std::endl;
 
     // Property: PropertyMappings
-    IOPropertyMappingCollection::Write(fd, &dataConf->GetPropertyMappings(), version, sPropertyMappings);
+    IOPropertyMappingCollection::Write(fd, dataConf->GetPropertyMappings(), version, sPropertyMappings);
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, dataConf->GetUnknownXml(), version);
