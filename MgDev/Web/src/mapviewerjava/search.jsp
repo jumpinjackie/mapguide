@@ -52,6 +52,7 @@ String searchError;
 <%
     // Initialize variables for this request
     //
+    locale = "";
     userInput = "";
     target = 0;
     popup = 0;
@@ -62,7 +63,7 @@ String searchError;
     resNames = new ArrayList();
     resProps = new ArrayList();
     matchLimit = 0;
-    locale = "";
+    MgFeatureReader features = null;
 
     response.setContentType("text/html; charset=UTF-8");
     request.setCharacterEncoding("UTF-8");
@@ -118,7 +119,7 @@ String searchError;
         opts.SetFilter(filter);
         String featureClassName = layer.GetFeatureClassName();
         MgResourceIdentifier srcId = new MgResourceIdentifier(layer.GetFeatureSourceId());
-        MgFeatureReader features = featureSrvc.SelectFeatures(srcId, featureClassName, opts);
+        features = featureSrvc.SelectFeatures(srcId, featureClassName, opts);
         boolean hasResult = features.ReadNext();
 
         if(hasResult)
@@ -251,10 +252,20 @@ String searchError;
     }
     catch(MgException ae)
     {
+        if(features != null)
+        {
+            // Close the feature reader
+            features.Close();
+        }
         OnError(searchError, ae.GetMessage() + "<br>" + ae.GetStackTrace(), outStream, request);
     }
     catch(SearchError exc)
     {
+        if(features != null)
+        {
+            // Close the feature reader
+            features.Close();
+        }
         OnError(exc.title, exc.getMessage(), outStream, request);
     }
 
