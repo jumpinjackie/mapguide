@@ -125,10 +125,10 @@ class MDFPARSER_API SAX2Parser : public DefaultHandler
         // Occurs when characters in between XML tags are encountered.
         void characters(const XMLCh* const chars, const unsigned int length);
 
-        // Fet error info
+        // Get error info
         const MdfString& GetErrorMessage();
 
-        // Fet version info - this only returns meaningful information after parsing
+        // Get version info - this only returns meaningful information after parsing
         // a file or string
         const MdfModel::Version& GetVersion();
 
