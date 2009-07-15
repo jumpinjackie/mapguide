@@ -24,7 +24,7 @@ MG_IMPL_DYNCREATE(MgMapView)
 /// \brief
 /// Constructs an MgMapView object.
 ///
-MgMapView::MgMapView()
+MgMapView::MgMapView() : m_height(0.0), m_twistAngle(0.0)
 {
 }
 
@@ -60,6 +60,14 @@ void MgMapView::Dispose()
 ///
 void MgMapView::Serialize(MgStream* stream)
 {
+    // Write raw data members
+    stream->WriteDouble(m_height);
+    stream->WriteDouble(m_twistAngle);
+    stream->WriteString(m_modelUnits);
+
+    // Write associated objects
+    stream->WriteObject(m_center);
+    stream->WriteObject(m_viewDirection);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -68,6 +76,14 @@ void MgMapView::Serialize(MgStream* stream)
 ///
 void MgMapView::Deserialize(MgStream* stream)
 {
+    // Read raw data members
+    stream->GetDouble(m_height);
+    stream->GetDouble(m_twistAngle);
+    stream->GetString(m_modelUnits);
+
+    // Read associated objects
+    m_center = static_cast<MgPoint3D*>(stream->GetObject());
+    m_viewDirection = static_cast<MgVector3D*>(stream->GetObject());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -76,7 +92,7 @@ void MgMapView::Deserialize(MgStream* stream)
 ///
 MgPoint3D* MgMapView::GetCenter()
 {
-    return NULL;
+    return SAFE_ADDREF(m_center.p);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -85,7 +101,7 @@ MgPoint3D* MgMapView::GetCenter()
 ///
 double MgMapView::GetHeight()
 {
-    return 0.0;
+    return m_height;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -94,7 +110,7 @@ double MgMapView::GetHeight()
 ///
 double MgMapView::GetTwistAngle()
 {
-    return 0.0;
+    return m_twistAngle;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -103,7 +119,7 @@ double MgMapView::GetTwistAngle()
 ///
 MgVector3D* MgMapView::GetViewDirection()
 {
-    return NULL;
+    return SAFE_ADDREF(m_viewDirection.p);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -112,5 +128,33 @@ MgVector3D* MgMapView::GetViewDirection()
 ///
 STRING MgMapView::GetModelUnits()
 {
-    return L"";
+    return  m_modelUnits;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Initializes this object from the information in the resource XML string
+///
+void MgMapView::PopulateFromResource(MdfModel::MapView *view)
+{
+    m_height = m_twistAngle = 0.0;
+    m_center = NULL;
+    m_viewDirection = NULL;
+    m_modelUnits.clear();
+
+    assert(view != NULL);
+    if (view)
+    {
+        m_height = view->GetHeight();
+        m_twistAngle = view->GetTwistAngle();
+        m_modelUnits = view->GetModelUnits();
+
+        MdfModel::Point3D* center = view->GetCenter();
+        if (center)
+            m_center = new MgPoint3D(center->GetX(), center->GetY(), center->GetZ());
+
+        MdfModel::Vector3D* viewDirection = view->GetViewDirection();
+        if (viewDirection)
+            m_viewDirection = new MgVector3D(viewDirection->GetX(), viewDirection->GetY(), viewDirection->GetZ());
+    }
 }

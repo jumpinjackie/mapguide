@@ -115,6 +115,12 @@ void IOMapViewportDefinition::Write(MdfStream& fd, MapViewportDefinition* mapVie
 {
     _ASSERT(NULL != mapViewportDef);
 
+    // Set the expected version
+    MdfString strVersion = L"1.1.0";
+
+    fd << tab() << "<PrintLayoutElementDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"PrintLayout-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
+    inctab();
+
     fd << tab() << startStr(sMapViewportDefinition) << std::endl;
     inctab();
 
@@ -151,4 +157,7 @@ void IOMapViewportDefinition::Write(MdfStream& fd, MapViewportDefinition* mapVie
 
     dectab();
     fd << tab() << endStr(sMapViewportDefinition) << std::endl;
+
+    dectab();
+    fd << tab() << "</PrintLayoutElementDefinition>" << std::endl; // NOXLATE
 }

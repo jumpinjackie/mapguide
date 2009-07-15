@@ -15,8 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+// Includes
 #include "PlatformBase.h"
-#include "PrintLayoutElementBase.h"
+#include "PrintLayout/PrintLayoutElementDefinition.h"
 
 MG_IMPL_DYNCREATE(MgPrintLayoutElementBase)
 
@@ -27,7 +28,8 @@ MG_IMPL_DYNCREATE(MgPrintLayoutElementBase)
 MgPrintLayoutElementBase::MgPrintLayoutElementBase() :
     m_visible(true)
 {
-    //TODO Default initializations
+    m_propertyMappings = static_cast<MgPropertyMappingCollection*>(MgPropertyMappingCollection::CreateObject());
+    m_references = static_cast<MgStringCollection*>(MgStringCollection::CreateObject());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -62,7 +64,7 @@ void MgPrintLayoutElementBase::Dispose()
 ///
 const char* MgPrintLayoutElementBase::GetResourceTypeName()
 {
-    return "PrintLayoutElement";
+    return "PrintLayoutElementDefinition";
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -71,10 +73,8 @@ const char* MgPrintLayoutElementBase::GetResourceTypeName()
 ///
 bool MgPrintLayoutElementBase::CanSetName()
 {
-    // via Create
-    return true;
+    return true; // via Create
 }
-
 
 //////////////////////////////////////////////////////////////////
 ///<summary>
@@ -86,7 +86,22 @@ bool MgPrintLayoutElementBase::CanSetName()
 
 void MgPrintLayoutElementBase::Serialize(MgStream* stream)
 {
-    //TODO
+    // Write raw data members
+    stream->WriteBoolean(m_visible);
+    stream->WriteString(m_name);
+    stream->WriteString(m_type);
+    stream->WriteString(m_description);
+    stream->WriteString(m_units);
+    stream->WriteString(m_featureClass);
+    stream->WriteString(m_geometryName);
+    stream->WriteString(m_filter);
+
+    // Write associated objects
+    stream->WriteObject(m_extent);
+    stream->WriteObject(m_datasource);
+    stream->WriteObject(m_stylization);
+    stream->WriteObject(m_propertyMappings);
+    stream->WriteObject(m_references);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -99,7 +114,22 @@ void MgPrintLayoutElementBase::Serialize(MgStream* stream)
 
 void MgPrintLayoutElementBase::Deserialize(MgStream* stream)
 {
-    //TODO
+    // Read raw data members
+    stream->GetBoolean(m_visible);
+    stream->GetString(m_name);
+    stream->GetString(m_type);
+    stream->GetString(m_description);
+    stream->GetString(m_units);
+    stream->GetString(m_featureClass);
+    stream->GetString(m_geometryName);
+    stream->GetString(m_filter);
+
+    // Read associated objects
+    m_extent = static_cast<MgEnvelope*>(stream->GetObject());
+    m_datasource = static_cast<MgResourceIdentifier*>(stream->GetObject());
+    m_stylization = static_cast<MgResourceIdentifier*>(stream->GetObject());
+    m_propertyMappings = static_cast<MgPropertyMappingCollection*>(stream->GetObject());
+    m_references = static_cast<MgStringCollection*>(stream->GetObject());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -242,9 +272,12 @@ MgPropertyMappingCollection* MgPrintLayoutElementBase::GetPropertyMappings()
 /// \brief
 /// Forces this object to refresh itself from the associated resource
 ///
-void MgPrintLayoutElementBase::ForceRefresh()
+void MgPrintLayoutElementBase::ForceRefresh(MgResourceService* resourceService)
 {
-    //TODO
+    if (m_elementDefinition) 
+    {
+        this->Open(resourceService, m_elementDefinition);
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -253,8 +286,7 @@ void MgPrintLayoutElementBase::ForceRefresh()
 ///
 STRING MgPrintLayoutElementBase::GetType()
 {
-    //TODO
-    return L"";
+    return m_type;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -263,5 +295,33 @@ STRING MgPrintLayoutElementBase::GetType()
 ///
 void MgPrintLayoutElementBase::PopulateFromResource(CREFSTRING resourceXml)
 {
-    //TODO
+    Ptr<MgByteReader> reader = new MgByteReader(resourceXml, MgMimeType::Xml);
+    Ptr<MgByteSink> sink = new MgByteSink(reader);
+    Ptr<MgByte> bytes = sink->ToBuffer();
+    assert(bytes->GetLength() > 0);
+
+    MdfParser::SAX2Parser parser;
+    parser.ParseString((const char*)bytes->Bytes(), bytes->GetLength());
+    if (!parser.GetSucceeded()) 
+    {
+        STRING errorMsg = parser.GetErrorMessage();
+        MgStringCollection arguments;
+        arguments.Add(errorMsg);
+        throw new MgInvalidResourceTypeException(
+            L"MgPrintLayoutElementBase.PopulateFromResource", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    std::auto_ptr<MdfModel::PrintLayoutElementDefinition> spledef(parser.DetachPrintLayoutElementDefinition());
+    this->PopulateFromResource(spledef.get());
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Initializes this object from the information in the resource XML string
+///
+void MgPrintLayoutElementBase::PopulateFromResource(MdfModel::PrintLayoutElementDefinition *element)
+{
+    assert(element != NULL);
+    if (element)
+        m_name = element->GetName();
 }

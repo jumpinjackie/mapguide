@@ -21,10 +21,18 @@
 #include "stdafx.h"
 #include "TestResourceService.h"
 #include "SiteConnection.h"
+#include "SAX2Parser.h"
+#include "PrintLayout/MapViewportDefinition.h"
 
-
+//////////////////////////////////////////////////////////////////
+// !!! TODO: Refactor into CPPUnit tests !!!
+//////////////////////////////////////////////////////////////////
 int _tmain(int argc, _TCHAR* argv[])
 {
+    //////////////////////////////////////////////////////////////////
+    // Test MgConfiguration Exception
+    //////////////////////////////////////////////////////////////////
+
     MgSiteConnection conn;
 
     Ptr<MgResourceService> svc = (MgResourceService*) conn.CreateService(MgServiceType::ResourceService);
@@ -50,7 +58,70 @@ int _tmain(int argc, _TCHAR* argv[])
     propCol->Add(prop);
 
     // If you get an MgConfigurationException here then MgConfiguration is working properly.
-    config->SetProperties(L"GeneralProperties", propCol);
+    bool failed = false;
+    try
+    {
+        config->SetProperties(L"GeneralProperties", propCol);
+    }
+    catch (MgConfigurationException* e)
+    {
+        failed = true;
+        e->Release();
+    }
+
+    if (!failed)
+        return 1; 
+
+    //////////////////////////////////////////////////////////////////
+    // Test MapViewportDefinition Parsing. Just want to prove it runs
+    // right now. Data comparison will happen in a subsequent submission 
+    //////////////////////////////////////////////////////////////////
+    
+    // Test Parsing MapViewport Definition
+    Ptr<MgByteSource> contentSource = new MgByteSource(L"MapViewportSample1.xml");
+    Ptr<MgByteReader> reader = contentSource->GetReader();
+    Ptr<MgByteSink> sink = new MgByteSink(reader);
+    Ptr<MgByte> bytes = sink->ToBuffer();
+
+    assert(bytes->GetLength() > 0);
+
+    MdfParser::SAX2Parser parser;
+    parser.ParseString((const char*)bytes->Bytes(), bytes->GetLength());
+
+    if (!parser.GetSucceeded())
+    {
+        STRING errorMsg = parser.GetErrorMessage();
+        return 1; 
+    }
+
+    auto_ptr<MdfModel::MapViewportDefinition> viewportDefinition(parser.DetachMapViewportDefinition());
+    assert(viewportDefinition.get() != NULL);
+
+    //////////////////////////////////////////////////////////////////
+    // Test MapViewportDefinition WriteToFile
+    //////////////////////////////////////////////////////////////////
+    parser.WriteToFile("MapViewportSample1_OUT.xml", NULL, NULL, NULL, NULL, viewportDefinition.get(), &MdfModel::Version(1, 1, 0));
+
+    //////////////////////////////////////////////////////////////////
+    // Test Populate the MgMapViewportBase from the definition
+    //////////////////////////////////////////////////////////////////
+    Ptr<MgMapViewportBase> vpBase = new MgMapViewportBase();
+    vpBase->PopulateFromResource(viewportDefinition.get());
+
+    //////////////////////////////////////////////////////////////////
+    // Test Serializing the MgMapViewportBase
+    //////////////////////////////////////////////////////////////////
+    Ptr<MgMemoryStreamHelper> streamHelper = new MgMemoryStreamHelper();
+    Ptr<MgStream> vpStream = new MgStream(streamHelper);
+    vpBase->Serialize(vpStream);
+    Ptr<MgByteSource> bsource = new MgByteSource((BYTE_ARRAY_IN)streamHelper->GetBuffer(), streamHelper->GetLength());
+    Ptr<MgByteReader> resourceData = bsource->GetReader();
+
+    //////////////////////////////////////////////////////////////////
+    // Test Deserializing the MgMapViewportBase
+    //////////////////////////////////////////////////////////////////
+    Ptr<MgMapViewportBase> vpBase2 = new MgMapViewportBase();
+    vpBase2->Deserialize(vpStream);
 
     return 0;
 }
@@ -59,7 +130,6 @@ int _tmain(int argc, _TCHAR* argv[])
 bool InitializeStatic();
 
 bool bStatic = InitializeStatic();
-
 
 bool InitializeStatic()
 {

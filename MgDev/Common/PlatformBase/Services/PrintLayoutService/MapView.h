@@ -18,6 +18,10 @@
 #ifndef MGMAPVIEW_H_
 #define MGMAPVIEW_H_
 
+// Includes
+#include "PrintLayout/MapView.h"
+
+// Forward Declarations
 class MgPoint3D;
 class MgVector3D;
 
@@ -109,6 +113,15 @@ INTERNAL_API:
     ///
     virtual void Deserialize(MgStream* stream);
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Populates the view from the MDF parser contents.
+    ///
+    /// \param stream
+    /// Stream
+    ///
+    void PopulateFromResource(MdfModel::MapView *view);
+
 protected:
 
     ///////////////////////////////////////////////////////////////////////////
@@ -128,6 +141,15 @@ protected:
     /// Nothing.
     ///
     virtual void Dispose();
+
+protected:
+
+    // Data Members
+    double m_height;
+    double m_twistAngle;
+    STRING m_modelUnits;
+    Ptr<MgPoint3D>  m_center;
+    Ptr<MgVector3D> m_viewDirection;
 
 CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_PrintLayoutService_MapView;

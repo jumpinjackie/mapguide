@@ -128,6 +128,16 @@ INTERNAL_API:
     ///
     virtual void Deserialize(MgStream* stream);
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Populate the Viewport from the MDF representation of the object.
+    ///
+    /// \param element
+    /// The MDF PrintLayoutElementDefinition that contained the deserialized
+    /// representation of the Viewport
+    ///
+    virtual void PopulateFromResource(MdfModel::PrintLayoutElementDefinition *element);
+
 protected:
 
     ///////////////////////////////////////////////////////////////////////////
@@ -147,6 +157,17 @@ protected:
     /// Nothing.
     ///
     virtual void Dispose();
+
+protected:
+
+    // Data Members
+    bool m_isOn;
+    bool m_isLocked;
+    double m_orientation;
+    STRING m_mapName;
+    Ptr<MgMapView> m_view;
+    Ptr<MgPoint3D> m_centerPoint;
+    Ptr<MgStringCollection> m_visibleLayerNames;
 
 CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_PrintLayoutService_MapViewportBase;

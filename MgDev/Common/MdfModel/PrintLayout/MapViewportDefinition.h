@@ -19,9 +19,9 @@
 #define MAPVIEWPORTDEFINITION_H_
 
 #include "PrintLayoutElementDefinition.h"
-#include "Point3D.h"
-#include "StringObject.h"
-#include "MapView.h"
+#include "Common/StringObject.h"
+#include "Common/Point3D.h"
+#include "PrintLayout/MapView.h"
 
 #ifdef _WIN32
 #pragma warning(disable:4251)

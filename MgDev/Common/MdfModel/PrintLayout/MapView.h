@@ -19,8 +19,8 @@
 #define MAPVIEW_H_
 
 #include "MdfRootObject.h"
-#include "Point3D.h"
-#include "Vector3D.h"
+#include "Common/Point3D.h"
+#include "Common/Vector3D.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 

@@ -35,7 +35,7 @@ rem           [-a=Action]
 rem           [-o=OutputDirectory]
 rem
 rem BuildType: Release(default), Debug
-rem Component: all(default), oem, server, web, doc
+rem Component: all(default), oem, server, web, doc, common
 rem Action: build(default), install, clean
 rem OutputDirectory: The directory where files will be copied to if -a=install, if -o=default or -o=def then 
 rem files will be copied to %MG_DEFAULT_INSTALLDIR%
@@ -55,6 +55,7 @@ rem MapGuide vars
 rem ==================================================
 SET MG_DEV=%CD%
 SET MG_OEM=%MG_DEV%\Oem
+SET MG_COMMON=%MG_DEV%\Common
 SET MG_SERVER=%MG_DEV%\Server
 SET MG_WEB=%MG_DEV%\Web
 SET MG_WEB_SRC=%MG_WEB%\src
@@ -179,6 +180,7 @@ goto custom_error
 :get_component
 SET TYPECOMPONENT=%2
 if "%2"=="oem" goto next_param
+if "%2"=="common" goto next_param
 if "%2"=="server" goto next_param
 if "%2"=="web" goto next_param
 if "%2"=="doc" goto next_param
@@ -229,6 +231,7 @@ if "%TYPEACTION%"=="install" goto install
 
 :clean
 if "%TYPECOMPONENT%"=="oem" goto clean_oem
+if "%TYPECOMPONENT%"=="common" goto clean_common
 if "%TYPECOMPONENT%"=="server" goto clean_server
 if "%TYPECOMPONENT%"=="web" goto clean_web
 if "%TYPECOMPONENT%"=="doc" goto clean_doc
@@ -238,6 +241,11 @@ echo [clean]: Clean Oem
 %MSBUILD_CLEAN% %MG_OEM%\Oem.sln
 echo [clean]: Clean Oem - CS-Map
 %MSBUILD_CLEAN% %MG_OEM%\CSMap\OpenSource.sln
+if not "%TYPECOMPONENT%"=="all" goto quit
+
+:clean_common
+echo [clean]: Clean Common
+%MSBUILD_CLEAN% %MG_COMMON%\Common.sln
 if not "%TYPECOMPONENT%"=="all" goto quit
 
 :clean_server
@@ -264,6 +272,7 @@ rem =======================================================
 
 :build
 if "%TYPECOMPONENT%"=="oem" goto build_oem
+if "%TYPECOMPONENT%"=="common" goto build_common
 if "%TYPECOMPONENT%"=="server" goto build_server
 if "%TYPECOMPONENT%"=="web" goto build_web
 if "%TYPECOMPONENT%"=="doc" goto build_doc
@@ -283,6 +292,17 @@ echo [build]: Building Oem - CSMap
 %MSBUILD% %MG_OEM%\CsMap\OpenSource.sln
 if "%errorlevel%"=="1" goto error
 if "%TYPECOMPONENT%"=="oem" 	goto quit
+if "%TYPECOMPONENT%"=="common" 	goto quit
+if "%TYPECOMPONENT%"=="server" 	goto quit
+if "%TYPECOMPONENT%"=="web" 	goto quit
+if "%TYPECOMPONENT%"=="doc" 	goto quit
+
+:build_common
+echo [build]: Building Common
+%MSBUILD% %MG_COMMON%\Common.sln
+if "%errorlevel%"=="1" goto error
+if "%TYPECOMPONENT%"=="oem" 	goto quit
+if "%TYPECOMPONENT%"=="common" 	goto quit
 if "%TYPECOMPONENT%"=="server" 	goto quit
 if "%TYPECOMPONENT%"=="web" 	goto quit
 if "%TYPECOMPONENT%"=="doc" 	goto quit
@@ -292,6 +312,7 @@ echo [build]: Building Server
 %MSBUILD% %MG_SERVER%\Server.sln
 if "%errorlevel%"=="1" goto error
 if "%TYPECOMPONENT%"=="oem" 	goto quit
+if "%TYPECOMPONENT%"=="common" 	goto quit
 if "%TYPECOMPONENT%"=="server" 	goto quit
 if "%TYPECOMPONENT%"=="web" 	goto quit
 if "%TYPECOMPONENT%"=="doc" 	goto quit
@@ -301,6 +322,7 @@ echo [build]: Building Web Tier
 %MSBUILD% %MG_WEB_SRC%\WebTier.sln
 if "%errorlevel%"=="1" goto error
 if "%TYPECOMPONENT%"=="oem" 	 goto quit
+if "%TYPECOMPONENT%"=="common" 	 goto quit
 if "%TYPECOMPONENT%"=="server" 	 goto quit
 if "%TYPECOMPONENT%"=="web" 	 goto quit
 if "%TYPECOMPONENT%"=="doc" 	 goto quit
@@ -446,6 +468,7 @@ echo                                  install,
 echo                                  clean,
 echo Component:             -w[ith]=all(default),
 echo                                oem,
+echo                                common,
 echo                                server,
 echo                                web,
 echo                                doc

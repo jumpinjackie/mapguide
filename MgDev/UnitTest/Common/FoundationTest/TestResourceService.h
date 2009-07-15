@@ -22,6 +22,7 @@ class MgTestResourceService :
 {
 public:
     MgTestResourceService();
+
 public:
     virtual ~MgTestResourceService();
     MgByteReader* EnumerateRepositories(CREFSTRING repositoryType);
@@ -51,10 +52,11 @@ public:
     virtual MgByteReader* GetResourceData(MgResourceIdentifier* resource, CREFSTRING dataName, CREFSTRING preProcessTags);
     virtual MgDateTime* GetResourceModifiedDate(MgResourceIdentifier* resource);
     virtual MgSerializableCollection* EnumerateParentMapDefinitions(MgSerializableCollection* resources);
+    bool ResourceExists(MgResourceIdentifier* resource);
 
     DECLARE_CREATE_SERVICE()
 
 protected:
-        virtual void Dispose();
+    virtual void Dispose();
 };
 

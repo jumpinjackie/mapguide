@@ -23,6 +23,8 @@
 #include "IOGridLayerDefinition.h"
 #include "IOSimpleSymbolDefinition.h"
 #include "IOCompoundSymbolDefinition.h"
+#include "IOPrintLayoutElementDefinition.h"
+#include "IOMapViewportDefinition.h"
 #include "UnicodeString.h"
 
 using namespace XERCES_CPP_NAMESPACE;
@@ -76,6 +78,8 @@ SAX2Parser::~SAX2Parser()
         delete m_sSymbol;
     if (m_cSymbol != NULL)
         delete m_cSymbol;
+    if (m_mapViewport != NULL)
+        delete m_mapViewport;
 }
 
 
@@ -88,6 +92,7 @@ void SAX2Parser::Flush()
     m_gLayer = NULL;
     m_sSymbol = NULL;
     m_cSymbol = NULL;
+    m_mapViewport = NULL;
     m_succeeded = false;
 }
 
@@ -103,6 +108,7 @@ void SAX2Parser::Initialize()
     m_parser->setFeature(XMLUni::fgSAX2CoreValidation, false); // true for validation
     m_parser->setContentHandler(this);
     m_parser->setErrorHandler(this);
+
     m_strbuffer = L"";
 }
 
@@ -126,6 +132,26 @@ MapDefinition* SAX2Parser::DetachMapDefinition()
     MapDefinition* ret = m_map;
     m_map = NULL;
     return ret;
+}
+
+
+// Returns a reference to the parser's map viewport element definition
+// After this call the parser no longer owns the object.
+MapViewportDefinition* SAX2Parser::DetachMapViewportDefinition()
+{
+    MapViewportDefinition* ret = m_mapViewport;
+    m_mapViewport = NULL;
+    return ret;
+}
+
+
+// Returns a reference to the parser's print layout element definition
+// After this call the parser no longer owns the object.
+PrintLayoutElementDefinition* SAX2Parser::DetachPrintLayoutElementDefinition()
+{
+    if (m_mapViewport)
+        return DetachMapViewportDefinition();
+    return NULL;
 }
 
 
@@ -311,6 +337,7 @@ void SAX2Parser::WriteToFile(std::string name,
                              VectorLayerDefinition* vLayer,
                              DrawingLayerDefinition* dLayer,
                              GridLayerDefinition* gLayer,
+                             MapViewportDefinition* mapViewport,
                              Version* version)
 {
     std::ofstream fd;
@@ -328,6 +355,8 @@ void SAX2Parser::WriteToFile(std::string name,
             IODrawingLayerDefinition::Write(fd, dLayer, version);
         else if (NULL != gLayer)
             IOGridLayerDefinition::Write(fd, gLayer, version);
+        else if (NULL != mapViewport)
+            IOMapViewportDefinition::Write(fd, mapViewport, version);
     }
     fd.close();
 }
@@ -360,6 +389,19 @@ std::string SAX2Parser::SerializeToXML(MapDefinition* map, Version* version)
 
     if (NULL != map)
         IOMapDefinition::Write(fd, map, version);
+
+    return fd.str();
+}
+
+
+std::string SAX2Parser::SerializeToXML(PrintLayoutElementDefinition* pleElement, Version* version)
+{
+    MdfStringStream fd;
+
+    MapViewportDefinition* mapViewport = dynamic_cast<MapViewportDefinition*>(pleElement);
+
+    if (NULL != mapViewport)
+        IOMapViewportDefinition::Write(fd, mapViewport, version);
 
     return fd.str();
 }
@@ -479,6 +521,19 @@ void SAX2Parser::startElement(const XMLCh* const uri,
             m_handlerStack->push(IO);
             IO->StartElement(str.c_str(), m_handlerStack);
         }
+        else if (str == L"PrintLayoutElementDefinition") // NOXLATE
+        {
+            // just set the version
+            SetPrintLayoutElementDefinitionVersion(attributes);
+        }
+        else if (str == L"MapViewportDefinition") // NOXLATE
+        {
+            _ASSERT(m_mapViewport == NULL); // otherwise we leak
+            m_mapViewport = new MapViewportDefinition();
+            IOMapViewportDefinition* IO = new IOMapViewportDefinition(m_mapViewport, m_version);
+            m_handlerStack->push(IO);
+            IO->StartElement(str.c_str(), m_handlerStack);
+        }
     }
     // Otherwise, if the stack has items on it, just pass the event through.
     else
@@ -537,7 +592,6 @@ void SAX2Parser::SetLayerDefinitionVersion(const Attributes& attributes)
 
     // according to the schema layer definition elements require a version
     // attribute, but users may generate XML which is missing this attribute
-//  _ASSERT(verValue != NULL);
     if (verValue)
     {
         std::wstring version = X2W(verValue);
@@ -567,7 +621,6 @@ void SAX2Parser::SetSymbolDefinitionVersion(const Attributes& attributes)
 
     // according to the schema symbol definition root elements require a version
     // attribute, but users may generate XML which is missing this attribute
-//  _ASSERT(verValue != NULL);
     if (verValue)
     {
         std::wstring version = X2W(verValue);
@@ -584,6 +637,24 @@ void SAX2Parser::SetSymbolDefinitionVersion(const Attributes& attributes)
     }
 }
 
+void SAX2Parser::SetPrintLayoutElementDefinitionVersion(const Attributes& attributes)
+{
+    // check for a version attribute
+    int index = attributes.getIndex(W2X(L"version"));
+    const XMLCh* verValue = (index >= 0)? attributes.getValue(index) : NULL;
+
+    if (verValue)
+    {
+        std::wstring version = X2W(verValue);
+        if (_wcsicmp(version.c_str(), L"1.1.0") == 0)
+            m_version = MdfModel::Version(1, 1, 0);
+    }
+    else
+    {
+        // assume the latest version if the attribute is missing
+        m_version = MdfModel::Version(1, 1, 0);
+    }
+}
 
 MapDefinition* SAX2Parser::CreateClone(MapDefinition* map)
 {
@@ -597,6 +668,21 @@ MapDefinition* SAX2Parser::CreateClone(MapDefinition* map)
     parser.ParseString(xmlOfMD.c_str(), xmlOfMD.size());
 
     return parser.DetachMapDefinition();
+}
+
+
+PrintLayoutElementDefinition* SAX2Parser::CreateClone(PrintLayoutElementDefinition* pleDefinition)
+{
+    _ASSERT(NULL != pleDefinition);
+    if (NULL == pleDefinition)
+        return NULL;
+
+    SAX2Parser parser;
+    std::string xmlOfMD("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");   // NOXLATE
+    xmlOfMD.append(parser.SerializeToXML(pleDefinition, NULL));
+    parser.ParseString(xmlOfMD.c_str(), xmlOfMD.size());
+
+    return parser.DetachPrintLayoutElementDefinition();
 }
 
 

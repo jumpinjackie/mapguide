@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="FoundationTest"
 	ProjectGUID="{96CA495A-2450-4F27-B318-E95D24268AAE}"
 	RootNamespace="FoundationTest"
 	Keyword="Win32Proj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -43,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Oem\Ace\ACE_wrappers;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase"
+				AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Oem\Ace\ACE_wrappers;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;&quot;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;ACE_HAS_SVC_DLL=1"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -63,12 +64,14 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib"
+				AdditionalDependencies="ACEd.lib MgFoundationd.lib MgPlatformBased.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Common\lib\debug"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\FoundationTest.pdb"
 				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -88,85 +91,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="..\..\..\Common\bin\release"
-			IntermediateDirectory="..\..\..\Common\obj\release\FoundationTest"
-			ConfigurationType="1"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Oem\Ace\ACE_wrappers;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
-				RuntimeLibrary="2"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib"
-				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
-				GenerateDebugInformation="true"
-				SubSystem="1"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				TargetMachine="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -224,6 +148,8 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\FoundationTest.pdb"
 				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -245,7 +171,79 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="..\..\..\Common\bin\release"
+			IntermediateDirectory="..\..\..\Common\obj\release\FoundationTest"
+			ConfigurationType="1"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Oem\Ace\ACE_wrappers;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
+				RuntimeLibrary="2"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ACE.lib"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -301,6 +299,8 @@
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -322,9 +322,6 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -332,6 +329,154 @@
 	<References>
 	</References>
 	<Files>
+		<Filter
+			Name="Symbolic Targets"
+			>
+			<File
+				RelativePath="CopyFdo"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying FDO files"
+						CommandLine="copy ..\..\..\Oem\FDO\bin\Debug\FDO.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug\FDO.pdb $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug\FDOMessage.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug\FDOMessage.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="..\..\..\Oem\FDO\bin\Debug\FDO.dll;..\..\..\Oem\FDO\bin\Debug\FDOMessage.dll;..\..\..\Oem\FDO\bin\Debug\FDOCommon.dll;..\..\..\Oem\FDO\bin\Debug\FDOGeometry.dll;..\..\..\Oem\FDO\bin\Debug\FDOSpatial.dll"
+						Outputs="$(OutDir)\CopyFdo.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying FDO files"
+						CommandLine="copy ..\..\..\Oem\FDO\bin\Debug64\FDO.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug64\FDO.pdb $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug64\FDOMessage.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug64\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug64\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug64\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug64\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug64\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug64\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug64\FDOMessage.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="..\..\..\Oem\FDO\bin\Debug64\FDO.dll;..\..\..\Oem\FDO\bin\Debug64\FDOMessage.dll;..\..\..\Oem\FDO\bin\Debug64\FDOCommon.dll;..\..\..\Oem\FDO\bin\Debug64\FDOGeometry.dll;..\..\..\Oem\FDO\bin\Debug64\FDOSpatial.dll"
+						Outputs="$(OutDir)\CopyFdo.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying FDO files"
+						CommandLine="copy ..\..\..\Oem\FDO\bin\Release\FDO.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Release\FDOMessage.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Release\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Release\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Release\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Release\FDOMessage.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="..\..\..\Oem\FDO\bin\Release\FDO.dll;..\..\..\Oem\FDO\bin\Release\FDOMessage.dll;..\..\..\Oem\FDO\bin\Release\FDOCommon.dll;..\..\..\Oem\FDO\bin\Release\FDOGeometry.dll;..\..\..\Oem\FDO\bin\Release\FDOSpatial.dll"
+						Outputs="$(OutDir)\CopyFdo.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying FDO files"
+						CommandLine="copy ..\..\..\Oem\FDO\bin\Release64\FDO.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Release64\FDOMessage.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Release64\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Release64\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Release64\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Release64\FDOMessage.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="..\..\..\Oem\FDO\bin\Release64\FDO.dll;..\..\..\Oem\FDO\bin\Release64\FDOMessage.dll;..\..\..\Oem\FDO\bin\Release64\FDOCommon.dll;..\..\..\Oem\FDO\bin\Release64\FDOGeometry.dll;..\..\..\Oem\FDO\bin\Release64\FDOSpatial.dll"
+						Outputs="$(OutDir)\CopyFdo.ilk"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="CopyThirdparty"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying thirdparty dlls"
+						CommandLine="copy ..\..\..\Oem\FDO\bin\Debug\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\dbxml-2.3.10\xerces-c-src\Build\Win32\VC7.1\Debug\xerces-c_2_7D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug\GEOSd.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;&#x0D;&#x0A;"
+						AdditionalDependencies="..\..\..\Oem\FDO\bin\Debug\Xalan-C_1_7_0D.dll;..\..\..\Oem\FDO\bin\Debug\XalanMessages_1_7_0D.dll;..\..\..\Oem\FDO\bin\Debug\xerces-c_2_5_0D.dll;..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\Build\Win32\VC7.1\Debug\xerces-c_2_7D.dll;..\..\..\Oem\geos-2.2.0\VisualStudio\Debug\GEOSd.dll"
+						Outputs="$(OutDir)\CopyThirdparty.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying thirdparty dlls"
+						CommandLine="copy ..\..\..\Oem\FDO\bin\Debug64\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug64\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug64\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\dbxml-2.3.10\xerces-c-src\Build\Win64\VC7.1\Debug\xerces-c_2_7D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug64\GEOSd.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="..\..\..\Oem\FDO\bin\Debug64\Xalan-C_1_7_0D.dll;..\..\..\Oem\FDO\bin\Debug64\XalanMessages_1_7_0D.dll;..\..\..\Oem\FDO\bin\Debug64\xerces-c_2_5_0D.dll;..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\Build\Win64\VC7.1\Debug\xerces-c_2_7D.dll;..\..\..\Oem\geos-2.2.0\VisualStudio\Debug64\GEOSd.dll"
+						Outputs="$(OutDir)\CopyThirdparty.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying thirdparty dlls"
+						CommandLine="copy ..\..\..\Oem\FDO\bin\Release\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Release\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Release\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\dbxml-2.3.10\xerces-c-src\Build\Win32\VC7.1\Release\xerces-c_2_7D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\geos-2.2.0\VisualStudio\Release\GEOS.dll&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="..\..\..\Oem\FDO\bin\Release\Xalan-C_1_7_0D.dll;..\..\..\Oem\FDO\bin\Release\XalanMessages_1_7_0D.dll;..\..\..\Oem\FDO\bin\Release\xerces-c_2_5_0D.dll;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\Build\Win32\VC7.1\Release\xerces-c_2_7D.dll;..\..\..\Oem\geos-2.2.0\VisualStudio\Release\GEOS.dll"
+						Outputs="$(OutDir)\CopyThirdparty.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying thirdparty dlls"
+						CommandLine="copy ..\..\..\Oem\FDO\bin\Release64\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Release64\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Release64\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\dbxml-2.3.10\xerces-c-src\Build\Win64\VC7.1\Release\xerces-c_2_7D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\geos-2.2.0\VisualStudio\Release64\GEOS.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="..\..\..\Oem\FDO\bin\Release64\Xalan-C_1_7_0D.dll;..\..\..\Oem\FDO\bin\Release64\XalanMessages_1_7_0D.dll;..\..\..\Oem\FDO\bin\Release64\xerces-c_2_5_0D.dll;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\Build\Win64\VC7.1\Release\xerces-c_2_7D.dll;..\..\..\Oem\geos-2.2.0\VisualStudio\Release64\GEOS.dll"
+						Outputs="$(OutDir)\CopyThirdparty.ilk"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="FakeInstall"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing fake install"
+						CommandLine="copy ..\..\..\Web\src\webconfig.ini $(OutDir)&#x0D;&#x0A;copy ..\..\..\UnitTest\TestData\PrintLayout\MapViewportSample1.xml $(OutDir)"
+						AdditionalDependencies="..\..\..\Web\src\webconfig.ini;..\..\..\UnitTest\TestData\PrintLayout\MapViewportSample1.xml"
+						Outputs="$(OutDir)\FakeInstall.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing fake install"
+						CommandLine="copy ..\..\..\Web\src\webconfig.ini $(OutDir)&#x0D;&#x0A;copy ..\..\..\UnitTest\TestData\PrintLayout\MapViewportSample1.xml $(OutDir)"
+						AdditionalDependencies="..\..\..\Web\src\webconfig.ini;..\..\..\UnitTest\TestData\PrintLayout\MapViewportSample1.xml"
+						Outputs="$(OutDir)\FakeInstall.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing fake install"
+						CommandLine="copy ..\..\..\Web\src\webconfig.ini $(OutDir)&#x0D;&#x0A;copy ..\..\..\UnitTest\TestData\PrintLayout\MapViewportSample1.xml $(OutDir)"
+						AdditionalDependencies="..\..\..\Web\src\webconfig.ini;..\..\..\UnitTest\TestData\PrintLayout\MapViewportSample1.xml"
+						Outputs="$(OutDir)\FakeInstall.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing fake install"
+						CommandLine="copy ..\..\Web\src\webconfig.ini $(OutDir)&#x0D;&#x0A;copy ..\..\..\UnitTest\TestData\PrintLayout\MapViewportSample1.xml $(OutDir)"
+						AdditionalDependencies="..\..\..\Web\src\webconfig.ini;..\..\..\UnitTest\TestData\PrintLayout\MapViewportSample1.xml"
+						Outputs="$(OutDir)\FakeInstall.ilk"
+					/>
+				</FileConfiguration>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\FoundationTest.cpp"
 			>
