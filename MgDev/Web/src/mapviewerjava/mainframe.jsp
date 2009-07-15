@@ -482,6 +482,8 @@ try
     String int1 = "1";
     String[] vals = {
                       webLayout.GetTitle(),
+                      GetRootVirtualFolder(request) + "/mapagent/mapagent.fcgi",
+                      webLayout.GetEnablePingServer()? int1 : int0,
                       locale,
                       showToolbar ? int1 : int0,
                       showStatusbar ? int1 : int0,

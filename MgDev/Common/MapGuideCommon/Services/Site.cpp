@@ -294,12 +294,20 @@ INT32 MgSite::GetSessionTimeout()
 
     MG_SITE_TRY()
 
-        MgConfiguration *m_config = MgConfiguration::GetInstance();
-        m_config->GetIntValue(
-        MgConfigProperties::SiteServicePropertiesSection,
-        MgConfigProperties::SiteServicePropertySessionTimeout,
-        sessionTimeout,
-        MgConfigProperties::DefaultSiteServicePropertySessionTimeout);
+        MgCommand cmd;
+        
+        cmd.ExecuteCommand(m_connProp,                  // Connection
+            MgCommand::knInt32,                // Return type expected
+            MgSiteOpId::GetSessionTimeout,          // Command Code
+            0,                                  // No of arguments
+            Site_Admin,                         // Service Id
+            BUILD_VERSION(2,2,0),               // Operation version
+            MgCommand::knNone );
+
+        SetWarning( cmd.GetWarningObject() );
+
+        sessionTimeout = cmd.GetReturnValue().val.m_i32;
+        
 
     MG_SITE_CATCH_AND_THROW( L"MgSiteConnection.GetSessionTimeout" );
 

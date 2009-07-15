@@ -142,6 +142,7 @@ function BuildViewer($forDwf = true)
         }
         $mapDefinitionUrl = urlencode($mapDef);
         $title = $webLayout->GetTitle();
+        $enablePingServer = $webLayout->GetEnablePingServer();
 
         $showLegend = $infoPane->IsLegendBandVisible();
         $showProperties = $infoPane->IsPropertiesBandVisible();
@@ -478,6 +479,8 @@ function BuildViewer($forDwf = true)
         $templ = Localize(file_get_contents("../viewerfiles/mainframe.templ"), $locale, GetClientOS());
         print sprintf($templ,
                     $title,
+                    GetRootVirtualFolder() . "/mapagent/mapagent.fcgi",
+                    $enablePingServer? 1: 0,
                     $locale,
                     $showToolbar? 1: 0,
                     $showStatusbar? 1: 0,
