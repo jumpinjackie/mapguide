@@ -54,12 +54,6 @@ INTERNAL_API:
     ///
     ~MgPrintLayoutElementDefinitionBase();
 
-    ///////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Initializes this object from the resource XML string
-    ///
-    virtual void PopulateFromResource(CREFSTRING resourceXml);
-
 INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
@@ -89,6 +83,12 @@ INTERNAL_API:
     /// Stream
     ///
     virtual void Deserialize(MgStream* stream);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Initializes this object from the resource XML string
+    ///
+    virtual void PopulateFromResource(CREFSTRING resourceXml);
 
 protected:
     

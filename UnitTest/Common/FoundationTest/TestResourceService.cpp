@@ -130,6 +130,11 @@ MgByteReader* MgTestResourceService::EnumerateResources(MgResourceIdentifier* re
     return NULL;
 }
 
+bool MgTestResourceService::ResourceExists(MgResourceIdentifier* resource)
+{
+    return false;
+}
+
 MgByteReader* MgTestResourceService::GetResourceContent(MgResourceIdentifier* resource, CREFSTRING preProcessTags)
 {
     return NULL;

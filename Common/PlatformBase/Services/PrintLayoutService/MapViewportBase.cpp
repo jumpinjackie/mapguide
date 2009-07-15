@@ -24,8 +24,9 @@ MG_IMPL_DYNCREATE(MgMapViewportBase)
 /// \brief
 /// Constructs an MgMapViewportBase object.
 ///
-MgMapViewportBase::MgMapViewportBase()
+MgMapViewportBase::MgMapViewportBase() : m_isOn(false), m_isLocked(false), m_orientation(0.0)
 {
+    m_visibleLayerNames = static_cast<MgStringCollection*>(MgStringCollection::CreateObject());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -60,6 +61,16 @@ void MgMapViewportBase::Dispose()
 ///
 void MgMapViewportBase::Serialize(MgStream* stream)
 {
+    // Write raw data members
+    stream->WriteBoolean(m_isOn);
+    stream->WriteBoolean(m_isLocked);
+    stream->WriteDouble(m_orientation);
+    stream->WriteString(m_mapName);
+
+    // Write associated objects
+    stream->WriteObject(m_view);
+    stream->WriteObject(m_centerPoint);
+    stream->WriteObject(m_visibleLayerNames);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -68,6 +79,16 @@ void MgMapViewportBase::Serialize(MgStream* stream)
 ///
 void MgMapViewportBase::Deserialize(MgStream* stream)
 {
+    // Read raw data members
+    stream->GetBoolean(m_isOn);
+    stream->GetBoolean(m_isLocked);
+    stream->GetDouble(m_orientation);
+    stream->GetString(m_mapName);
+
+    // Read associated objects
+    m_view = static_cast<MgMapView*>(stream->GetObject());
+    m_centerPoint = static_cast<MgPoint3D*>(stream->GetObject());
+    m_visibleLayerNames = static_cast<MgStringCollection*>(stream->GetObject());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -76,7 +97,7 @@ void MgMapViewportBase::Deserialize(MgStream* stream)
 ///
 MgPoint3D* MgMapViewportBase::GetCenterPoint()
 {
-    return NULL;
+    return SAFE_ADDREF(m_centerPoint.p);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -85,7 +106,7 @@ MgPoint3D* MgMapViewportBase::GetCenterPoint()
 ///
 double MgMapViewportBase::GetOrientation()
 {
-    return 0.0;
+    return m_orientation;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -94,7 +115,7 @@ double MgMapViewportBase::GetOrientation()
 ///
 STRING MgMapViewportBase::GetMapName()
 {
-    return L"";
+    return m_mapName;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -103,7 +124,7 @@ STRING MgMapViewportBase::GetMapName()
 ///
 MgStringCollection* MgMapViewportBase::GetVisibleLayerNames()
 {
-    return NULL;
+    return SAFE_ADDREF(m_visibleLayerNames.p);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -112,7 +133,7 @@ MgStringCollection* MgMapViewportBase::GetVisibleLayerNames()
 ///
 bool MgMapViewportBase::GetIsLocked()
 {
-    return false;
+    return m_isLocked;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -121,7 +142,7 @@ bool MgMapViewportBase::GetIsLocked()
 ///
 bool MgMapViewportBase::GetIsOn()
 {
-    return false;
+    return m_isOn;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -130,5 +151,42 @@ bool MgMapViewportBase::GetIsOn()
 ///
 MgMapView* MgMapViewportBase::GetMapView()
 {
-    return NULL;
+    return SAFE_ADDREF(m_view.p);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Initializes this object from the information in the resource XML string
+///
+void MgMapViewportBase::PopulateFromResource(MdfModel::PrintLayoutElementDefinition *element)
+{
+    m_view = NULL;
+    m_isOn = m_isLocked = false;
+    m_orientation = 0.0;
+    m_mapName.clear();
+    m_visibleLayerNames->Clear();
+
+    MdfModel::MapViewportDefinition* mapViewport = dynamic_cast<MdfModel::MapViewportDefinition*>(element);
+    assert(mapViewport != NULL);
+    if (mapViewport)
+    {
+        m_isOn = mapViewport->GetIsOn();
+        m_isLocked = mapViewport->GetIsLocked();
+        m_orientation = mapViewport->GetOrientation();
+        m_mapName = mapViewport->GetMapName();
+
+        MdfModel::MapView* view = mapViewport->GetMapView();
+        if (view)
+        {
+            m_view = new MgMapView();
+            m_view->PopulateFromResource(view);
+        }
+
+        MdfModel::StringObjectCollection* visibleLayerNames = mapViewport->GetVisibleLayerNames();
+        if (visibleLayerNames)
+        {
+            for (int i=0; i< visibleLayerNames->GetCount(); i++)
+                m_visibleLayerNames->Add(visibleLayerNames->GetAt(i)->GetString());
+        }
+    }
 }

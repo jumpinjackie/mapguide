@@ -19,8 +19,8 @@
 #define PRINTLAYOUTELEMENTDEFINITION_H_
 
 #include "MdfRootObject.h"
-#include "StringObject.h"
-#include "Extent3D.h"
+#include "Common/StringObject.h"
+#include "Common/Extent3D.h"
 #include "StylizationConfiguration.h"
 #include "DataConfiguration.h"
 

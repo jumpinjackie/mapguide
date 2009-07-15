@@ -18,6 +18,10 @@
 #ifndef MGPRINTLAYOUTELEMENTBASE_H_
 #define MGPRINTLAYOUTELEMENTBASE_H_
 
+// Includes
+#include "PrintLayout/PrintLayoutElementDefinition.h"
+
+// Forward Declarations
 class MgPropertyMappingCollection;
 
 ////////////////////////////////////////////////////////////
@@ -131,14 +135,13 @@ INTERNAL_API:
     /// \brief
     /// Forces this element object to refresh itself from its resource
     ///
-    virtual void ForceRefresh();
+    virtual void ForceRefresh(MgResourceService* resourceService);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the type of this element
     ///
     virtual STRING GetType();
-
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -186,6 +189,12 @@ INTERNAL_API:
     ///
     virtual void PopulateFromResource(CREFSTRING resourceXml);
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Initializes this object from the resource XML string
+    ///
+    virtual void PopulateFromResource(MdfModel::PrintLayoutElementDefinition *pElement);
+
 protected:
 
     ///////////////////////////////////////////////////////////////////////////
@@ -212,12 +221,12 @@ protected:
     ///
     virtual const char* GetResourceTypeName();
 
-CLASS_ID:
-    static const INT32 m_cls_id = PlatformBase_PrintLayoutService_PrintLayoutElementBase;
-
 protected:
+
+    // Data Members
     bool m_visible;
     STRING m_name;
+    STRING m_type;
     STRING m_description;
     STRING m_units;
     STRING m_featureClass;
@@ -230,6 +239,8 @@ protected:
     Ptr<MgPropertyMappingCollection> m_propertyMappings;
     Ptr<MgStringCollection> m_references;
 
+CLASS_ID:
+    static const INT32 m_cls_id = PlatformBase_PrintLayoutService_PrintLayoutElementBase;
 };
 
 #endif

@@ -78,7 +78,8 @@ INTERNAL_API:
     /// \return
     /// Returns the realized print layout.
     ///
-    virtual MgPrintLayoutBase* CreatePrintLayout(MgResourceService* resourceService,
+    virtual MgPrintLayoutBase* CreatePrintLayout(
+        MgResourceService* resourceService,
         MgResourceIdentifier* resId) = 0;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -106,8 +107,10 @@ INTERNAL_API:
     /// \return
     /// Returns the realized print layout element.
     ///
-    virtual MgPrintLayoutElementBase* CreatePrintLayoutElement(MgResourceService* resourceService,
-        MgResourceIdentifier* elementId, MgResourceIdentifier* layoutId) = 0;
+    virtual MgPrintLayoutElementBase* CreatePrintLayoutElement(
+        MgResourceService* resourceService,
+        MgResourceIdentifier* elementId, 
+        MgResourceIdentifier* layoutId) = 0;
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -132,7 +135,8 @@ INTERNAL_API:
     /// \return
     /// Returns the realized print layout element definition.
     ///
-    virtual MgPrintLayoutElementDefinitionBase* CreatePrintLayoutElementDefinition(MgResourceService* resourceService,
+    virtual MgPrintLayoutElementDefinitionBase* CreatePrintLayoutElementDefinition(
+        MgResourceService* resourceService,
         MgResourceIdentifier* resId) = 0;
 
     ///////////////////////////////////////////////////////////////////////////
