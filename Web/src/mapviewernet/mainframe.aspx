@@ -483,6 +483,8 @@ NameValueCollection cmds = null;
         String template = MgLocalizer.Localize(LoadTemplate(Request, "../viewerfiles/mainframe.templ"), locale, GetClientOS(Request));
         String[] args = {
                     webLayout.GetTitle(),
+                    GetRootVirtualFolder(Request) + "/mapagent/mapagent.fcgi",
+                    webLayout.GetEnablePingServer()? "1" : "0",
                     locale,
                     showToolbar? "1" : "0",
                     showStatusbar? "1" : "0",
