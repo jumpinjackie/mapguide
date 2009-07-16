@@ -275,7 +275,7 @@ void TestMdfModel::TestCase_Serialization()
             auto_ptr<VectorLayerDefinition> layerDef1(parser.DetachVectorLayerDefinition());
             CPPUNIT_ASSERT(layerDef1.get() != NULL);
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_Copy1.ldf", NULL, layerDef1.get(), NULL, NULL, &layerDefVersion);
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_Copy1.ldf", NULL, layerDef1.get(), NULL, NULL, NULL, &layerDefVersion);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_Copy1.ldf"));
 
             // parse and resave the newly written file
@@ -287,7 +287,7 @@ void TestMdfModel::TestCase_Serialization()
             auto_ptr<VectorLayerDefinition> layerDef2(parser.DetachVectorLayerDefinition());
             CPPUNIT_ASSERT(layerDef2.get() != NULL);
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_Copy2.ldf", NULL, layerDef2.get(), NULL, NULL, &layerDefVersion);
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_Copy2.ldf", NULL, layerDef2.get(), NULL, NULL, NULL, &layerDefVersion);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_Copy2.ldf"));
 
             // compare the two files
@@ -460,19 +460,19 @@ void TestMdfModel::TestCase_Versioning()
             auto_ptr<VectorLayerDefinition> layerDef1(parser.DetachVectorLayerDefinition());
             CPPUNIT_ASSERT(layerDef1.get() != NULL);
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v09_Copy1.ldf", NULL, layerDef1.get(), NULL, NULL, &layerDefVersion09);
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v09_Copy1.ldf", NULL, layerDef1.get(), NULL, NULL, NULL, &layerDefVersion09);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v09_Copy1.ldf"));
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v10_Copy1.ldf", NULL, layerDef1.get(), NULL, NULL, &layerDefVersion10);
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v10_Copy1.ldf", NULL, layerDef1.get(), NULL, NULL, NULL, &layerDefVersion10);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v10_Copy1.ldf"));
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v11_Copy1.ldf", NULL, layerDef1.get(), NULL, NULL, &layerDefVersion11);
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v11_Copy1.ldf", NULL, layerDef1.get(), NULL, NULL, NULL, &layerDefVersion11);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v11_Copy1.ldf"));
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v12_Copy1.ldf", NULL, layerDef1.get(), NULL, NULL, &layerDefVersion12);
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v12_Copy1.ldf", NULL, layerDef1.get(), NULL, NULL, NULL, &layerDefVersion12);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy1.ldf"));
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v13_Copy1.ldf", NULL, layerDef1.get(), NULL, NULL, &layerDefVersion13);
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v13_Copy1.ldf", NULL, layerDef1.get(), NULL, NULL, NULL, &layerDefVersion13);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy1.ldf"));
 
             // parse and resave the newly written files
@@ -484,7 +484,7 @@ void TestMdfModel::TestCase_Versioning()
             auto_ptr<VectorLayerDefinition> layerDef2_09(parser.DetachVectorLayerDefinition());
             CPPUNIT_ASSERT(layerDef2_09.get() != NULL);
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v09_Copy2.ldf", NULL, layerDef2_09.get(), NULL, NULL, &layerDefVersion09);
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v09_Copy2.ldf", NULL, layerDef2_09.get(), NULL, NULL, NULL, &layerDefVersion09);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v09_Copy2.ldf"));
 
             Ptr<MgByteSource> src1_10 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v10_Copy1.ldf");
@@ -495,7 +495,7 @@ void TestMdfModel::TestCase_Versioning()
             auto_ptr<VectorLayerDefinition> layerDef2_10(parser.DetachVectorLayerDefinition());
             CPPUNIT_ASSERT(layerDef2_10.get() != NULL);
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v10_Copy2.ldf", NULL, layerDef2_10.get(), NULL, NULL, &layerDefVersion10);
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v10_Copy2.ldf", NULL, layerDef2_10.get(), NULL, NULL, NULL, &layerDefVersion10);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v10_Copy2.ldf"));
 
             Ptr<MgByteSource> src1_11 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v11_Copy1.ldf");
@@ -506,7 +506,7 @@ void TestMdfModel::TestCase_Versioning()
             auto_ptr<VectorLayerDefinition> layerDef2_11(parser.DetachVectorLayerDefinition());
             CPPUNIT_ASSERT(layerDef2_11.get() != NULL);
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v11_Copy2.ldf", NULL, layerDef2_11.get(), NULL, NULL, &layerDefVersion11);
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v11_Copy2.ldf", NULL, layerDef2_11.get(), NULL, NULL, NULL, &layerDefVersion11);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v11_Copy2.ldf"));
 
             Ptr<MgByteSource> src1_12 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy1.ldf");
@@ -517,7 +517,7 @@ void TestMdfModel::TestCase_Versioning()
             auto_ptr<VectorLayerDefinition> layerDef2_12(parser.DetachVectorLayerDefinition());
             CPPUNIT_ASSERT(layerDef2_12.get() != NULL);
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v12_Copy2.ldf", NULL, layerDef2_12.get(), NULL, NULL, &layerDefVersion12);
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v12_Copy2.ldf", NULL, layerDef2_12.get(), NULL, NULL, NULL, &layerDefVersion12);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy2.ldf"));
 
             Ptr<MgByteSource> src1_13 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy1.ldf");
@@ -528,7 +528,7 @@ void TestMdfModel::TestCase_Versioning()
             auto_ptr<VectorLayerDefinition> layerDef2_13(parser.DetachVectorLayerDefinition());
             CPPUNIT_ASSERT(layerDef2_13.get() != NULL);
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v13_Copy2.ldf", NULL, layerDef2_13.get(), NULL, NULL, &layerDefVersion13);
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v13_Copy2.ldf", NULL, layerDef2_13.get(), NULL, NULL, NULL, &layerDefVersion13);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy2.ldf"));
 
             // compare the files
@@ -574,16 +574,16 @@ void TestMdfModel::TestCase_Versioning()
             //   - layerDef2_13 was loaded from XML containing no extended data
             // the data in these object models should be the same
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v13_Copy3a.ldf", NULL, layerDef2_10.get(), NULL, NULL, &layerDefVersion13);
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v13_Copy3a.ldf", NULL, layerDef2_10.get(), NULL, NULL, NULL, &layerDefVersion13);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy3a.ldf"));
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v13_Copy3b.ldf", NULL, layerDef2_11.get(), NULL, NULL, &layerDefVersion13);
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v13_Copy3b.ldf", NULL, layerDef2_11.get(), NULL, NULL, NULL, &layerDefVersion13);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy3b.ldf"));
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v13_Copy3c.ldf", NULL, layerDef2_12.get(), NULL, NULL, &layerDefVersion13);
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v13_Copy3c.ldf", NULL, layerDef2_12.get(), NULL, NULL, NULL, &layerDefVersion13);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy3c.ldf"));
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v13_Copy3d.ldf", NULL, layerDef2_13.get(), NULL, NULL, &layerDefVersion13);
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v13_Copy3d.ldf", NULL, layerDef2_13.get(), NULL, NULL, NULL, &layerDefVersion13);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy3d.ldf"));
 
             Ptr<MgByteSource> src3a_13 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v13_Copy3a.ldf");
