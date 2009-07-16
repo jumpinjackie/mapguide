@@ -13,21 +13,6 @@ INCLUDES = \
 lib_LTLIBRARIES = libMgMdfParser.la
 
 libMgMdfParser_la_SOURCES = \
-  Common/IOExtent3D.cpp \
-  Common/IOPoint3D.cpp \
-  Common/IOSize2D.cpp \
-  Common/IOStringObjectCollection.cpp \
-  Common/IOThickness.cpp \
-  Common/IOVector3D.cpp \
-  PrintLayout/IODataConfiguration.cpp \
-  PrintLayout/IOMapView.cpp \
-  PrintLayout/IOMapViewportDefinition.cpp \
-  PrintLayout/IOPrintLayoutDefinition.cpp \
-  PrintLayout/IOPrintLayoutElementCollection.cpp \
-  PrintLayout/IOPrintLayoutElementDefinition.cpp \
-  PrintLayout/IOPrintLayoutElementStyle.cpp \
-  PrintLayout/IOPropertyMappingCollection.cpp \
-  PrintLayout/IOStylizationConfiguration.cpp \
   FSDSAX2Parser.cpp \
   IOAreaRule.cpp \
   IOAreaSymbolization2D.cpp \
@@ -106,21 +91,6 @@ libMgMdfParser_la_SOURCES = \
   SAX2Parser.cpp
 
 noinst_HEADERS = \
-  Common/IOExtent3D.h \
-  Common/IOPoint3D.h \
-  Common/IOSize2D.h \
-  Common/IOStringObjectCollection.h \
-  Common/IOThickness.h \
-  Common/IOVector3D.h \
-  PrintLayout/IODataConfiguration.h \
-  PrintLayout/IOMapView.h \
-  PrintLayout/IOMapViewportDefinition.h \
-  PrintLayout/IOPrintLayoutDefinition.h \
-  PrintLayout/IOPrintLayoutElementCollection.h \
-  PrintLayout/IOPrintLayoutElementDefinition.h \
-  PrintLayout/IOPrintLayoutElementStyle.h \
-  PrintLayout/IOPropertyMappingCollection.h \
-  PrintLayout/IOStylizationConfiguration.h \
   FSDSAX2Parser.h \
   IOAreaRule.h \
   IOAreaSymbolization2D.h \

@@ -265,25 +265,6 @@ PUBLISHED_API:
     static const STRING ApplicationDefinition;          ///\if INTERNAL value("ApplicationDefinition") \endif
 
 INTERNAL_API:
-
-    ///////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// This resource is a print layout element.
-    ///
-    /// \see \ref PrintLayoutElement_schema "PrintLayoutElement schema"
-    ///
-    static const STRING PrintLayoutElement;        ///\if INTERNAL value("PrintLayoutElement") \endif
-
-    ///////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// This resource is a print layout element definition.
-    ///
-    /// \see \ref PrintLayoutElementDefinition_schema "PrintLayoutElementDefinition schema"
-    ///
-    static const STRING PrintLayoutElementDefinition;        ///\if INTERNAL value("PrintLayoutElementDefinition") \endif
-
-
-INTERNAL_API:
     static const STRING User;           /// User definition
     static const STRING Group;          /// Group definition
     static const STRING Role;           /// Role definition
