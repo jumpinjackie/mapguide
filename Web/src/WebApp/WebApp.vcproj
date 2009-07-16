@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				AdditionalIncludeDirectories="..\..\..\Common\MdfModel;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_WEBAPP_EXPORTS"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -126,7 +126,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				AdditionalIncludeDirectories="..\..\..\Common\MdfModel;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_WEBAPP_EXPORTS"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -206,7 +206,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				AdditionalIncludeDirectories="..\..\..\Common\MdfModel;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_WEBAPP_EXPORTS"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -287,7 +287,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				AdditionalIncludeDirectories="..\..\..\Common\MdfModel;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_WEBAPP_EXPORTS"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
