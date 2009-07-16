@@ -6,6 +6,7 @@ prefix=@prefix@/server
 
 INCLUDES = \
   -I../../../../Oem/ACE/ACE_wrappers \
+  -I../../../../Common\MdfModel \  
   -I../../../../Common/Foundation \
   -I../../../../Common/Geometry \
   -I../../../../Common/MapGuideCommon \
