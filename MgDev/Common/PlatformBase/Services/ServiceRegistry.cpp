@@ -153,14 +153,6 @@ bool InitializeStaticPlatformData()
     fact->Register(PlatformBase_MapLayer_LayerBase, MgLayerBase::CreateObject);
     fact->Register(PlatformBase_MapLayer_SelectionBase, MgSelectionBase::CreateObject);
 
-    fact->Register(PlatformBase_PrintLayoutService_PrintLayoutBase, MgPrintLayoutBase::CreateObject);
-    fact->Register(PlatformBase_PrintLayoutService_PrintLayoutElementBase, MgPrintLayoutElementBase::CreateObject);
-    fact->Register(PlatformBase_PrintLayoutService_PrintLayoutElementDefinitionBase, MgPrintLayoutElementDefinitionBase::CreateObject);
-    fact->Register(PlatformBase_PrintLayoutService_MapViewportBase, MgMapViewportBase::CreateObject);
-    fact->Register(PlatformBase_PrintLayoutService_MapView, MgMapView::CreateObject);
-    fact->Register(PlatformBase_PrintLayoutService_PropertyMapping, MgPropertyMapping::CreateObject);
-    fact->Register(PlatformBase_PrintLayoutService_PropertyMappingCollection, MgPropertyMappingCollection::CreateObject);
-
     EXCEPTION_CLASS_CREATOR(MgArrayTypeMismatchException)
     EXCEPTION_CLASS_CREATOR(MgDuplicateResourceDataException)
     EXCEPTION_CLASS_CREATOR(MgDuplicateResourceException)
