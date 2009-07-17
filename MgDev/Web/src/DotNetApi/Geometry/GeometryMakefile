@@ -4,9 +4,10 @@ cleandebug:
   del /Q .\*PINVOKE.cs
   del /Q .\*Api.cs
   if exist $(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule del $(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule
+  if exist $(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule.pdb del $(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule.pdb
   if exist $(OUTDIR)\OSGeo.MapGuide.Geometry.dll del $(OUTDIR)\OSGeo.MapGuide.Geometry.dll
-  if exist $(OUTDIR)\OSGeo.MapGuide.Geometry.Temp.dll del $(OUTDIR)\OSGeo.MapGuide.Geometry.Temp.dll
   if exist $(OUTDIR)\OSGeo.MapGuide.Geometry.pdb del $(OUTDIR)\OSGeo.MapGuide.Geometry.pdb
+  if exist $(OUTDIR)\OSGeo.MapGuide.Geometry.Temp.dll del $(OUTDIR)\OSGeo.MapGuide.Geometry.Temp.dll
 
 cleanrelease:
   del /Q .\Mg*.cs
@@ -14,6 +15,7 @@ cleanrelease:
   del /Q .\*PINVOKE.cs
   del /Q .\*Api.cs
   if exist $(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule del $(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule
+  if exist $(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule.pdb del $(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule.pdb
   if exist $(OUTDIR)\OSGeo.MapGuide.Geometry.dll del $(OUTDIR)\OSGeo.MapGuide.Geometry.dll
   if exist $(OUTDIR)\OSGeo.MapGuide.Geometry.pdb del $(OUTDIR)\OSGeo.MapGuide.Geometry.pdb
 
@@ -22,10 +24,10 @@ debug: $(OUTDIR)\OSGeo.MapGuide.Geometry.Temp.dll
 release: $(OUTDIR)\OSGeo.MapGuide.Geometry.dll
 
 $(OUTDIR)\OSGeo.MapGuide.Geometry.Temp.dll:
-  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule /target:module /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule /debug+ /debug:full /optimize- .\*.cs
-  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Geometry.dll /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule
+  csc.exe /debug+ /debug:full /optimize- /out:$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule /pdb:$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule.pdb /target:module /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule .\*.cs
+  csc.exe /debug+ /debug:full /optimize- /out:$(OUTDIR)\OSGeo.MapGuide.Geometry.dll /pdb:$(OUTDIR)\OSGeo.MapGuide.Geometry.pdb /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule
   copy /y $(OUTDIR)\OSGeo.MapGuide.Geometry.dll $(OUTDIR)\OSGeo.MapGuide.Geometry.Temp.dll
 
 $(OUTDIR)\OSGeo.MapGuide.Geometry.dll:
-  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule /target:module /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule /debug+ /debug:full /optimize+ .\*.cs
-  csc.exe /out:$(OUTDIR)\OSGeo.MapGuide.Geometry.dll /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule
+  csc.exe /debug+ /debug:pdbonly /optimize+ /out:$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule /pdb:$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule.pdb /target:module /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule .\*.cs
+  csc.exe /debug+ /debug:pdbonly /optimize+ /out:$(OUTDIR)\OSGeo.MapGuide.Geometry.dll /pdb:$(OUTDIR)\OSGeo.MapGuide.Geometry.pdb /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule
