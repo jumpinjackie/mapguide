@@ -63,8 +63,8 @@ fi
 
 check_apache_build ()
 {
-  if [ $? -ne 0 ]; then
-    error=$?
+  error=$?
+  if [ $error -ne 0 ]; then
     echo "Apache build failed ($error)."
     exit $error
   fi
@@ -72,8 +72,8 @@ check_apache_build ()
 
 check_php_build ()
 {
-  if [ $? -ne 0 ]; then
-    error=$?
+  error=$?
+  if [ $error -ne 0 ]; then
     echo "Php build failed ($error)."
     exit $error
   fi
@@ -81,8 +81,8 @@ check_php_build ()
 
 check_apache_install ()
 {
-  if [ $? -ne 0 ]; then
-    error=$?
+  error=$?
+  if [ $error -ne 0 ]; then
     echo "Apache install failed ($error)."
     exit $error
   fi
@@ -90,8 +90,8 @@ check_apache_install ()
 
 check_php_install ()
 {
-  if [ $? -ne 0 ]; then
-    error=$?
+  error=$?
+  if [ $error -ne 0 ]; then
     echo "Php install failed ($error)."
     exit $error
   fi
@@ -99,8 +99,8 @@ check_php_install ()
 
 check_tomcat_build ()
 {
-  if [ $? -ne 0 ]; then
-    error=$?
+  error=$?
+  if [ $error -ne 0 ]; then
     echo "Tomcat build failed ($error)."
     exit $error
   fi
@@ -108,8 +108,8 @@ check_tomcat_build ()
 
 check_tomcat_install ()
 {
-  if [ $? -ne 0 ]; then
-    error=$?
+  error=$?
+  if [ $error -ne 0 ]; then
     echo "Tomcat install failed ($error)."
     exit $error
   fi

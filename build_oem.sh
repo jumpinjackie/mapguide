@@ -46,8 +46,8 @@ LIB_NAME=""
 
 check_build()
 {
-    if [ $? -ne 0 ]; then
-        error=$?
+    error=$?
+    if [ $error -ne 0 ]; then
         echo "$LIB_NAME: Error build failed ($error)................."
         exit $error
     fi
@@ -55,8 +55,8 @@ check_build()
 
 check_clean()
 {
-    if [ $? -ne 0 ]; then
-        error=$?
+    error=$?
+    if [ $error -ne 0 ]; then
         echo "$LIB_NAME: Error clean failed ($error)................."
         exit $error
     fi
