@@ -4,7 +4,8 @@ EXTRA_DIST = HttpHandler.rc HttpHandler.vcproj
 
 prefix=@prefix@/webserverextensions
 
-INCLUDES    = -I../../../Common/Foundation \
+INCLUDES    = -I../../../Common/MdfModel \
+              -I../../../Common/Foundation \
               -I../../../Common/Geometry \
               -I../../../Common/PlatformBase \
               -I../../../Common/MapGuideCommon \

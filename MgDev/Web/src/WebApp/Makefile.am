@@ -74,7 +74,8 @@ noinst_HEADERS = $(include_SOURCES) \
 
 libMgWebApp_la_SOURCES = WebAppBuild.cpp
 
-INCLUDES = -I../../../Common/Foundation \
+INCLUDES = -I../../../Common/MdfModel \
+           -I../../../Common/Foundation \
            -I../../../Common/Geometry \
            -I../../../Common/PlatformBase \
            -I../../../Common/MapGuideCommon \
