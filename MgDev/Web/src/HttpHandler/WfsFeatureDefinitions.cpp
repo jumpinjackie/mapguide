@@ -277,7 +277,7 @@ void MgWfsFeatureDefinitions::Initialize()
     // Run API command to retrieve all the available WFS feature sources.
     STRING sLayers = m_pResourceService->EnumerateResourceDocuments(NULL,
         MgResourceType::FeatureSource, MgResourceHeaderProperties::Metadata);
-    
+
     MgXmlParser Input(sLayers.c_str());
     Input.SetOptions(keSkipWhitespace|keSkipComments|keSkipProcessingInstructions);
 

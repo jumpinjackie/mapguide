@@ -70,7 +70,7 @@
 //   2) ORA-03114
 //
 // SQL Server
-//   1) ConnectionRead 
+//   1) ConnectionRead
 //   2) Communication link failure
 
 #define MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH(resource, methodName)       \

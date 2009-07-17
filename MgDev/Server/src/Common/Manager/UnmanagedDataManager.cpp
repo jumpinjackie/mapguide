@@ -441,7 +441,7 @@ int MgUnmanagedDataManager::SubstituteDataPathAliases(string& doc)
 
             // find the mapping name in the map, and then replace it
             Ptr<MgPropertyCollection> unmanagedDataMappings = MgUnmanagedDataManager::GetInstance()->GetUnmanagedDataMappings();
-            
+
             if (NULL != unmanagedDataMappings.p)
             {
                 Ptr<MgStringProperty> stringProp = dynamic_cast<MgStringProperty*>(unmanagedDataMappings->FindItem(MgUtil::MultiByteToWideChar(mappingName)));

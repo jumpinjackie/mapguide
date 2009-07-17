@@ -77,7 +77,7 @@ public:
     static INT32 FdoOrderTypeToMgOrderingOption(FdoOrderType type);
     static FdoOrderType MgOrderingOptionToFdoOrderType(INT32 type);
     static INT32 FdoObjectTypeToMgObjectPropertyType(FdoObjectType type);
-    static FdoObjectType MgObjectPropertyTypeToFdoObjectType(INT32 type);    
+    static FdoObjectType MgObjectPropertyTypeToFdoObjectType(INT32 type);
     static bool FdoClassExist(const wchar_t* name, FdoClassCollection* clsCol);
 
     static MgStringCollection* FdoToMgStringCollection(FdoStringCollection* fdoStrs, bool includeEmptyStrings);

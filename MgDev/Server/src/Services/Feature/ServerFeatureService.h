@@ -269,7 +269,7 @@ public:
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Creates or updates a feature schema within specified feature source. 
+    /// Creates or updates a feature schema within specified feature source.
     ///
     void ApplySchema(MgResourceIdentifier* resource, MgFeatureSchema* schema);
 

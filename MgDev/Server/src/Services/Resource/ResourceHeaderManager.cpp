@@ -185,7 +185,7 @@ MgByteReader* MgResourceHeaderManager::EnumerateResources(
                 query += "ends-with(dbxml:metadata('dbxml:name'),'.";
                 query += MgUtil::WideCharToMultiByte(type);
                 query += "')";
-                
+
                 if (MgResourceHeaderProperties::Metadata == properties
                     && (MgResourceType::LayerDefinition == type
                         || MgResourceType::FeatureSource == type))
@@ -1040,7 +1040,7 @@ STRING MgResourceHeaderManager::EnumerateResourceDocuments(
         query += "ends-with(dbxml:metadata('dbxml:name'),'";
         query += MgUtil::WideCharToMultiByte(type);
         query += "')";
-                
+
         if (MgResourceHeaderProperties::Metadata == properties
             && (MgResourceType::LayerDefinition == type
                 || MgResourceType::FeatureSource == type))

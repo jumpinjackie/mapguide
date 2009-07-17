@@ -308,12 +308,12 @@ bool CGwsBatchSortedBlockJoinQueryResults::SetupBatchRightSide(bool bRes)
 }
 
 
-// TODO - This method is executed 2 times on a join. 
-//        1) SelectFeatures() creates a MgServerGwsFeatureReader() object and inside this constructor it calls 
+// TODO - This method is executed 2 times on a join.
+//        1) SelectFeatures() creates a MgServerGwsFeatureReader() object and inside this constructor it calls
 //           m_gwsGetFeatures->GetMgClassDefinition() which uses the iterator copy to generate the class definition.
 //        2) ReadNext() on the actual reader. This one is expected.
 //
-//        Would be nice if we did not require the iterator copy and could therefore remove the 1st call.  
+//        Would be nice if we did not require the iterator copy and could therefore remove the 1st call.
 FdoDataValueCollection * CGwsBatchSortedBlockJoinQueryResults::GetJoinValues ()
 {
     #ifdef _DEBUG_BATCHSORT_JOIN

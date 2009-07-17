@@ -28,9 +28,9 @@
 ///
 MgServerGwsFeatureReader::MgServerGwsFeatureReader(
     MgGwsConnectionPool* pool,
-    IGWSFeatureIterator* gwsFeatureIterator, 
-    IGWSFeatureIterator* gwsFeatureIteratorCopy, 
-    CREFSTRING extensionName, 
+    IGWSFeatureIterator* gwsFeatureIterator,
+    IGWSFeatureIterator* gwsFeatureIteratorCopy,
+    CREFSTRING extensionName,
     FdoStringCollection* relationNames,
     bool bForceOneToOne,
     MgStringCollection* attributeNameDelimiters) :
@@ -92,7 +92,7 @@ MgServerGwsFeatureReader::~MgServerGwsFeatureReader()
 {
     // DO NOT Close() the FDO reader from here or free the reader resources because
     // we may be reading incrementally from the web tier and the ServerFeatureInstance
-    // will live much shorter than the Proxy reader on the web tier which needs to 
+    // will live much shorter than the Proxy reader on the web tier which needs to
     // keep reading from the underlying FDO reader.
 
     // Force the expression engine to clean up
@@ -1077,7 +1077,7 @@ void MgServerGwsFeatureReader::Serialize(MgStream* stream)
         stream->WriteObject((MgException*)mgException);
     }
 
-    // Serialize method must not THROW the exception because it has already been written to the stream 
+    // Serialize method must not THROW the exception because it has already been written to the stream
     // and in doing so would only end up writing the same exception to the stream twice.
 }
 

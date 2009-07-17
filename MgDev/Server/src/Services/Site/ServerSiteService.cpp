@@ -780,7 +780,7 @@ STRING MgServerSiteService::CreateSession()
 
 INT32 MgServerSiteService::GetSessionTimeout()
 {
-    INT32 sessionTimeout;    
+    INT32 sessionTimeout;
 
     MG_SITE_SERVICE_TRY()
 

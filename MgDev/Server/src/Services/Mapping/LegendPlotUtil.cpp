@@ -1216,7 +1216,7 @@ void MgLegendPlotUtil::AddCustomLogoElement(MgPrintLayout* layout, EPlotRenderer
         }
 
         RS_MarkerDef markerDef;
-        markerDef.type() = RS_MarkerType_W2D; 
+        markerDef.type() = RS_MarkerType_W2D;
         markerDef.units() = RS_Units_Device;
         markerDef.width() = logoWidth;
         markerDef.height() = logoHeight;

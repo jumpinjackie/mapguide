@@ -263,7 +263,7 @@ MgByteReader* MgServerFeatureService::GetCapabilities( CREFSTRING providerName )
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Creates or updates a feature schema within the specified feature source. 
+/// Creates or updates a feature schema within the specified feature source.
 ///
 void MgServerFeatureService::ApplySchema(MgResourceIdentifier* resource, MgFeatureSchema* schema)
 {
@@ -1092,7 +1092,7 @@ bool MgServerFeatureService::CloseFeatureReader(CREFSTRING featureReader)
     if (NULL != reader.p)
     {
         reader->Close();
-    }    
+    }
 
     retVal = featPool->Remove(featureReader);
 
@@ -1234,7 +1234,7 @@ bool MgServerFeatureService::CloseSqlReader(CREFSTRING sqlReader)
     if (NULL != reader.p)
     {
         reader->Close();
-    }    
+    }
 
     retVal = sqlDataReaderPool->Remove(sqlReader);
 

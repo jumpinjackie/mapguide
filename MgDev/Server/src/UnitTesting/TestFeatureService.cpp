@@ -829,7 +829,7 @@ void TestFeatureService::TestCase_ApplySchema()
         Ptr<MgFeatureSchema> oldSchema = oldSchemas->GetItem(0);
         Ptr<MgClassDefinitionCollection> oldSchemaClasses = oldSchema->GetClasses();
         Ptr<MgClassDefinition> oldClassDef = FindClassByName(oldSchemaClasses, L"Parcel");
-        Ptr<MgPropertyDefinitionCollection> oldProperties = oldClassDef->GetProperties();   
+        Ptr<MgPropertyDefinitionCollection> oldProperties = oldClassDef->GetProperties();
         Ptr<MgPropertyDefinition> oldPropDef = oldProperties->FindItem(L"Name");
         oldPropDef->Delete();
         pService->ApplySchema(resource, oldSchema);
@@ -839,7 +839,7 @@ void TestFeatureService::TestCase_ApplySchema()
         Ptr<MgFeatureSchema> newSchema = newSchemas->GetItem(0);
         Ptr<MgClassDefinitionCollection> newSchemaClasses = newSchema->GetClasses();
         Ptr<MgClassDefinition> newClassDef = FindClassByName(newSchemaClasses, L"Parcel");
-        Ptr<MgPropertyDefinitionCollection> newProperties = newClassDef->GetProperties();   
+        Ptr<MgPropertyDefinitionCollection> newProperties = newClassDef->GetProperties();
         CPPUNIT_ASSERT(newProperties->Contains(L"Name") == false);
 
         //////////////////////////////////////////////////////////////////////
@@ -933,7 +933,7 @@ void TestFeatureService::TestCase_ApplySchema()
 
         properties1 = classDef1->GetProperties();
         CPPUNIT_ASSERT(properties1->GetCount() == 3);
-        
+
         prop = static_cast<MgDataPropertyDefinition*>(properties1->GetItem(L"KEY1"));
         CPPUNIT_ASSERT(prop != NULL);
         CPPUNIT_ASSERT(prop->GetDataType() == MgPropertyType::Int32);
@@ -962,7 +962,7 @@ void TestFeatureService::TestCase_ApplySchema()
 
         properties2 = classDef2->GetProperties();
         CPPUNIT_ASSERT(properties2->GetCount() == 3);
-        
+
         prop = static_cast<MgDataPropertyDefinition*>(properties2->GetItem(L"KEY2"));
         CPPUNIT_ASSERT(prop != NULL);
         CPPUNIT_ASSERT(prop->GetDataType() == MgPropertyType::Int32);
@@ -978,9 +978,9 @@ void TestFeatureService::TestCase_ApplySchema()
         CPPUNIT_ASSERT(propGeom->GetGeometryTypes() == MgFeatureGeometricType::Curve);
 
         //////////////////////////////////////////////////////////////////////
-        /// The third test case:                                           /// 
+        /// The third test case:                                           ///
         /// Delete one feature class and modify one feature class          ///
-        //////////////////////////////////////////////////////////////////////        
+        //////////////////////////////////////////////////////////////////////
         // Delete the first feature class
         classDef1 = FindClassByName(schemaClasses, L"FeatureClass1");
         classDef1->Delete();
@@ -1027,7 +1027,7 @@ void TestFeatureService::TestCase_ApplySchema()
         CPPUNIT_ASSERT(identityProperties2->GetCount() == 1);
         prop = static_cast<MgDataPropertyDefinition*>(identityProperties2->GetItem(L"KEY2"));
         CPPUNIT_ASSERT(prop != NULL);
-        
+
         prop = static_cast<MgDataPropertyDefinition*>(properties2->GetItem(L"ID"));
         CPPUNIT_ASSERT(prop != NULL);
         CPPUNIT_ASSERT(prop->GetDataType() == MgPropertyType::Int32);
@@ -1040,7 +1040,7 @@ void TestFeatureService::TestCase_ApplySchema()
 
         propGeom = static_cast<MgGeometricPropertyDefinition*>(properties2->GetItem(L"GEOM"));
         CPPUNIT_ASSERT(prop != NULL);
-        CPPUNIT_ASSERT(propGeom->GetGeometryTypes() == MgFeatureGeometricType::Curve); 
+        CPPUNIT_ASSERT(propGeom->GetGeometryTypes() == MgFeatureGeometricType::Curve);
     }
     catch(MgException* e)
     {

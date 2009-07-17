@@ -68,8 +68,8 @@ MgServerMappingService::MgServerMappingService() :
     m_pCSFactory = new MgCoordinateSystemFactory();
 
     // TODO: This code to read the RasterGridSize settings is replicated from MgServerRenderingService.
-    // Ideally, we would have both places share this chunk of code. 
-    // One possibility is to move it to MappingUtil. This may require changes to MappingUtil 
+    // Ideally, we would have both places share this chunk of code.
+    // One possibility is to move it to MappingUtil. This may require changes to MappingUtil
     // (like making it a static instance so we can read the settings once and store them).
     // Hopefully we can re-visit this in the future.
     //

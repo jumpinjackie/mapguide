@@ -291,10 +291,10 @@ INTERNAL_API:
 
     MgServerGwsFeatureReader(MgGwsConnectionPool* pool,
                              IGWSFeatureIterator* gwsFeatureIterator,
-                             IGWSFeatureIterator* gwsFeatureIteratorCopy, 
-                             CREFSTRING extensionName, 
-                             FdoStringCollection* relationNames, 
-                             bool bForceOneToOne = true, 
+                             IGWSFeatureIterator* gwsFeatureIteratorCopy,
+                             CREFSTRING extensionName,
+                             FdoStringCollection* relationNames,
+                             bool bForceOneToOne = true,
                              MgStringCollection* attributeNameDelimiters = NULL);
     ~MgServerGwsFeatureReader();
 
