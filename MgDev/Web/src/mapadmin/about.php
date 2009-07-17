@@ -45,7 +45,7 @@
             throw new Exception( sprintf( $errServerIsDown, $selectedServer ) );
 
         $serverVersion = $serverRec->version;
-            
+
     }
     catch ( MgException $e )
     {

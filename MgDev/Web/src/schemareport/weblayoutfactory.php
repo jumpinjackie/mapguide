@@ -27,11 +27,11 @@ class WebLayoutFactory
     {
         if($useBasicViewer)
         {
-        	$mapDef = file_get_contents("templatefiles/weblayout.templ");
+            $mapDef = file_get_contents("templatefiles/weblayout.templ");
         }
         else
         {
-        	$mapDef = file_get_contents("templatefiles/flexweblayout.templ");
+            $mapDef = file_get_contents("templatefiles/flexweblayout.templ");
         }
         $mapDef = sprintf($mapDef, $name, $resId);
         return $mapDef;

@@ -100,7 +100,7 @@ double GetLocalizedDoubleParameter(NameValueCollection parameters, String name, 
     String strval = GetParameter(parameters, name);
     if ("" == strval)
         return 0;
-        
+
     if(locale != null && locale.Length > 0)
     {
         //Remove thousand separators
@@ -109,7 +109,7 @@ double GetLocalizedDoubleParameter(NameValueCollection parameters, String name, 
         {
             strval = strval.Replace(thousandSeparator, "");
         }
-        
+
         //Replace localized decimal separator with "."
         String decimalSeparator = MgLocalizer.GetString("DECIMALSEPARATOR", locale);
         if(decimalSeparator != null && decimalSeparator.Length > 0 && decimalSeparator != ".")
@@ -170,7 +170,7 @@ String GetClientIp(HttpRequest request)
     String httpClientIp = request.ServerVariables["HTTP_CLIENT_IP"];
     String httpXFF = request.ServerVariables["HTTP_X_FORWARDED_FOR"];
     String remoteAddr = request.ServerVariables["REMOTE_ADDR"];
-    
+
     if (httpClientIp != null && "" != httpClientIp && String.Compare(httpClientIp, "unknown", true) != 0)
         result = httpClientIp;
     else if (httpXFF != null && "" != httpXFF && String.Compare(httpXFF, "unknown", true) != 0)

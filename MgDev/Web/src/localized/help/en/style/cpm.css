@@ -28,12 +28,12 @@
               match whether they are links or not. */
 
 /* 10/31/2008 François Masselot - Added td.task-title-top  and td.task-title-bottom
-              to support adjustable cells in height. Changed td.task-title 
+              to support adjustable cells in height. Changed td.task-title
               (height and background image)
 
 /* 12/12/2008 Bill Crawford - Cleaned up some formatting. */
 
-/* 12/19/2008 Bill Crawford - Added #3d3d3d to background of div.collapseexpand. Added 'px' 
+/* 12/19/2008 Bill Crawford - Added #3d3d3d to background of div.collapseexpand. Added 'px'
                               to unitless dimension values. */
 
 body {
@@ -59,7 +59,7 @@ margin-bottom: 0px;
 }
 
 /* ----------------------------------------------------------------------------
-										Link styles
+                                        Link styles
  ---------------------------------------------------------------------------- */
 a {
 color: #03b;
@@ -77,7 +77,7 @@ color: #03b;
 }
 
 /* ----------------------------------------------------------------------------
-										Table styles
+                                        Table styles
  ---------------------------------------------------------------------------- */
 p.table-title {
 font-weight: bold;
@@ -148,7 +148,7 @@ p.table-heading {} /* Paragraph within table body */
 p.table-footing {} /* Paragraph within table body */
 
 /* ----------------------------------------------------------------------------
-										List styles
+                                        List styles
  ---------------------------------------------------------------------------- */
 
 ul {
@@ -295,25 +295,25 @@ margin-bottom: 8pt;
 }
 
 /* ----------------------------------------------------------------------------
-										Note styles
+                                        Note styles
  ---------------------------------------------------------------------------- */
 
-div.note-note, 
-div.note-warning, 
-div.note-tip, 
-div.note-related, 
-div.note-important, 
+div.note-note,
+div.note-warning,
+div.note-tip,
+div.note-related,
+div.note-important,
 div.note-bestpractice {
 margin-top: 10pt;
 margin-bottom: 0px;
 }
 
 /* Notes within table */
-table.table div.note-note, 
-table.table div.note-warning, 
-table.table div.note-tip, 
-table.table div.note-related, 
-table.table div.note-important, 
+table.table div.note-note,
+table.table div.note-warning,
+table.table div.note-tip,
+table.table div.note-related,
+table.table div.note-important,
 table.table div.note-bestpractice {
 padding-top: 5px;
 padding-bottom: 5px;
@@ -321,11 +321,11 @@ font-size: 9pt;
 }
 /* Notes within lists */
 
-li div.note-note, 
-li div.note-warning, 
-li div.note-tip, 
-li div.note-related, 
-li div.note-important, 
+li div.note-note,
+li div.note-warning,
+li div.note-tip,
+li div.note-related,
+li div.note-important,
 li div.note-bestpractice {
 margin-left: 0pt;
 margin-top: 2pt;
@@ -385,10 +385,10 @@ padding-right: 5px;
 /* ---------------------------------------------------------------------------------------------
                                         Code elements
  --------------------------------------------------------------------------------------------- */
-span.code, 
-div.codeBlock, 
-p.codeLine, 
-p.codeComment, 
+span.code,
+div.codeBlock,
+p.codeLine,
+p.codeComment,
 span.codeLiteral {
 font-family: "Courier New", Courier, monospace;
 font-size: 10pt;
@@ -402,7 +402,7 @@ div.codeBlock div.codeBlock {
 margin-left: 30pt;
 } /* Only descendant code blocks should have indents */
 
-p.codeLine, 
+p.codeLine,
 p.codeComment {
 padding: 1px;
 margin: 1px;
@@ -434,7 +434,7 @@ margin-bottom: 0pt;
 
 
 /* ---------------------------------------------------------------------------------------------
-							Charspan
+                            Charspan
 --------------------------------------------------------------------------------------------- */
 span.charspan-keyboardEntry {}
 
@@ -450,7 +450,7 @@ are being formatted as <em>, <sub> and <sub> html elements so please change elem
 */
 
 /* ---------------------------------------------------------------------------------------------
-							Emphasis
+                            Emphasis
 --------------------------------------------------------------------------------------------- */
 em, em.mild {
 font-style: italic;
@@ -467,7 +467,7 @@ font-weight: bold;
 }
 
 /* ---------------------------------------------------------------------------------------------
-							UIString
+                            UIString
 --------------------------------------------------------------------------------------------- */
 span.uis-promptMessage {
 font-style: normal;
@@ -491,7 +491,7 @@ span.uis-stringTable {}
 span.uis-unspecified {}
 
 /* -------------------------------------------------------------------------------------------
-							Comments
+                            Comments
 ------------------------------------------------------------------------------------------- */
 div.comments-editor {
 font-weight: bold;
@@ -515,9 +515,9 @@ margin-right: 48pt;
 }
 
 /* ------------------------------------------------------------------------------------------
-							Misc
+                            Misc
 ------------------------------------------------------------------------------------------ */
-.title, 
+.title,
 .list-intro {
 font-weight: bold;
 color: #990000;
@@ -635,7 +635,7 @@ div.section {}
 p.summary {}
 
 /* -----------------------------------------------------------------------------------------------
-								expand all features
+                                expand all features
  ----------------------------------------------------------------------------------------------- */
 
 img.expandcollapse_img {
@@ -676,7 +676,7 @@ text-align:right;
 }
 
 /* -----------------------------------------------------------------------------------------------
-								Topic heading elements
+                                Topic heading elements
  ----------------------------------------------------------------------------------------------- */
 
 /* head region */
@@ -856,7 +856,7 @@ padding-top: 5px;
 } /* @media print */
 
 /* -----------------------------------------------------------------------------------------------
-								Topic footing (comments section) elements
+                                Topic footing (comments section) elements
  ----------------------------------------------------------------------------------------------- */
 
 div.footer-block {
@@ -884,7 +884,7 @@ font-size: 8pt;
 }  /* @media print */
 
 /* -----------------------------------------------------------------------------------------------
-								Art related elements
+                                Art related elements
  ----------------------------------------------------------------------------------------------- */
 
 p.figure-title {
