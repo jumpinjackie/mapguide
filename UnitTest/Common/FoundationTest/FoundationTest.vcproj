@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Oem\Ace\ACE_wrappers;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;&quot;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;"
+				AdditionalIncludeDirectories="..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Oem\Ace\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;ACE_HAS_SVC_DLL=1"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -122,7 +122,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Oem\Ace\ACE_wrappers;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase"
+				AdditionalIncludeDirectories="..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Oem\Ace\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;ACE_HAS_SVC_DLL=1"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -198,7 +198,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Oem\Ace\ACE_wrappers;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase"
+				AdditionalIncludeDirectories="..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Oem\Ace\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				WarningLevel="3"
@@ -274,7 +274,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Oem\Ace\ACE_wrappers;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase"
+				AdditionalIncludeDirectories="..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Oem\Ace\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				WarningLevel="3"
@@ -437,7 +437,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="copy ..\..\..\Web\src\webconfig.ini $(OutDir)&#x0D;&#x0A;copy ..\..\..\UnitTest\TestData\PrintLayout\MapViewportSample1.xml $(OutDir)"
+						CommandLine="copy ..\..\..\Web\src\webconfig.ini $(OutDir)&#x0D;&#x0A;copy ..\..\..\UnitTest\TestData\PrintLayout\MapViewportSample1.xml $(OutDir)&#x0D;&#x0A;"
 						AdditionalDependencies="..\..\..\Web\src\webconfig.ini;..\..\..\UnitTest\TestData\PrintLayout\MapViewportSample1.xml"
 						Outputs="$(OutDir)\FakeInstall.ilk"
 					/>
@@ -448,7 +448,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="copy ..\..\..\Web\src\webconfig.ini $(OutDir)&#x0D;&#x0A;copy ..\..\..\UnitTest\TestData\PrintLayout\MapViewportSample1.xml $(OutDir)"
+						CommandLine="copy ..\..\..\Web\src\webconfig.ini $(OutDir)&#x0D;&#x0A;copy ..\..\..\UnitTest\TestData\PrintLayout\MapViewportSample1.xml $(OutDir)&#x0D;&#x0A;"
 						AdditionalDependencies="..\..\..\Web\src\webconfig.ini;..\..\..\UnitTest\TestData\PrintLayout\MapViewportSample1.xml"
 						Outputs="$(OutDir)\FakeInstall.ilk"
 					/>
@@ -459,7 +459,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="copy ..\..\..\Web\src\webconfig.ini $(OutDir)&#x0D;&#x0A;copy ..\..\..\UnitTest\TestData\PrintLayout\MapViewportSample1.xml $(OutDir)"
+						CommandLine="copy ..\..\..\Web\src\webconfig.ini $(OutDir)&#x0D;&#x0A;copy ..\..\..\UnitTest\TestData\PrintLayout\MapViewportSample1.xml $(OutDir)&#x0D;&#x0A;"
 						AdditionalDependencies="..\..\..\Web\src\webconfig.ini;..\..\..\UnitTest\TestData\PrintLayout\MapViewportSample1.xml"
 						Outputs="$(OutDir)\FakeInstall.ilk"
 					/>
@@ -470,7 +470,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="copy ..\..\Web\src\webconfig.ini $(OutDir)&#x0D;&#x0A;copy ..\..\..\UnitTest\TestData\PrintLayout\MapViewportSample1.xml $(OutDir)"
+						CommandLine="copy ..\..\Web\src\webconfig.ini $(OutDir)&#x0D;&#x0A;copy ..\..\..\UnitTest\TestData\PrintLayout\MapViewportSample1.xml $(OutDir)&#x0D;&#x0A;"
 						AdditionalDependencies="..\..\..\Web\src\webconfig.ini;..\..\..\UnitTest\TestData\PrintLayout\MapViewportSample1.xml"
 						Outputs="$(OutDir)\FakeInstall.ilk"
 					/>
