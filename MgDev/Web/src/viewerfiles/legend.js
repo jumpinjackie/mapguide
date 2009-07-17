@@ -41,6 +41,7 @@ function LayerItem(legend, name, expanded, parent, visible, displayInLegend, sel
     this.lyrtype = 0;
     this.curScale = -1;
     this.isDisplayed = false;
+    this.iconWasRequested = false;
 }
 
 function ScaleRangeItem(min, max, parent)
@@ -52,6 +53,7 @@ function ScaleRangeItem(min, max, parent)
     this.parent = parent;
     this.showlongtheme = false;
     this.children = new Array();
+    this.iconWasRequested = false;
 }
 
 function StyleItem(legend, filter, geomtype, catindex)
