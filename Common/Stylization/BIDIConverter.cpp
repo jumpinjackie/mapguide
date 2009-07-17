@@ -145,7 +145,7 @@ unsigned int glyphMirrorMapping[][2] = {
 
 ///////////////// end Glyph Mapping support data (shaping and mirroring) /////////////////
 
-    
+
 // default constructor
 BIDIConverter::BIDIConverter()
     : m_OriginalString(L"")
@@ -330,7 +330,7 @@ bool BIDIConverter::NeedsBIDIConversion(const DisplayStr& str)
         {
             return true;
         }
-    
+
         // check if in default right-to-left range
         if (   (cChar >= 0x590 && cChar <= 0x5FF)
             || (cChar >= 0x7C0 && cChar <= 0x8FF)

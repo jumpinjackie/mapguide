@@ -70,13 +70,13 @@ int _tmain(int argc, _TCHAR* argv[])
     }
 
     if (!failed)
-        return 1; 
+        return 1;
 
     //////////////////////////////////////////////////////////////////
     // Test MapViewportDefinition Parsing. Just want to prove it runs
-    // right now. Data comparison will happen in a subsequent submission 
+    // right now. Data comparison will happen in a subsequent submission
     //////////////////////////////////////////////////////////////////
-    
+
     // Test Parsing MapViewport Definition
     Ptr<MgByteSource> contentSource = new MgByteSource(L"MapViewportSample1.xml");
     Ptr<MgByteReader> reader = contentSource->GetReader();
@@ -91,7 +91,7 @@ int _tmain(int argc, _TCHAR* argv[])
     if (!parser.GetSucceeded())
     {
         STRING errorMsg = parser.GetErrorMessage();
-        return 1; 
+        return 1;
     }
 
     auto_ptr<MdfModel::MapViewportDefinition> viewportDefinition(parser.DetachMapViewportDefinition());

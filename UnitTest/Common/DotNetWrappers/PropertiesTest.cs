@@ -466,7 +466,7 @@ namespace OSGeo.MapGuide
         [Test]
         public void LockFeatures()
         {
-            
+
             Assert.Ignore("MgLockFeatures not visible");
         }
 

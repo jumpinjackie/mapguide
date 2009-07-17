@@ -295,7 +295,7 @@ INT32 MgSite::GetSessionTimeout()
     MG_SITE_TRY()
 
         MgCommand cmd;
-        
+
         cmd.ExecuteCommand(m_connProp,                  // Connection
             MgCommand::knInt32,                // Return type expected
             MgSiteOpId::GetSessionTimeout,          // Command Code
@@ -307,7 +307,7 @@ INT32 MgSite::GetSessionTimeout()
         SetWarning( cmd.GetWarningObject() );
 
         sessionTimeout = cmd.GetReturnValue().val.m_i32;
-        
+
 
     MG_SITE_CATCH_AND_THROW( L"MgSiteConnection.GetSessionTimeout" );
 

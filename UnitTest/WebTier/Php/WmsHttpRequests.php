@@ -143,7 +143,7 @@ class WmsHttpRequests
 
             $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"format\"");
             $arrayParam["format"]=$this->unitTestParamVm->GetString("ParamValue");
-            
+
             return $this->httpRequest->SendRequest($this->URL, $arrayParam);
 
         }

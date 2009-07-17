@@ -130,7 +130,7 @@ bool CCoordinateSystemMathComparator::SameEllipsoid(MgCoordinateSystemEllipsoid 
     if (!FloatEqual(def1.e_rad, def2.e_rad, kdEpsilonLinear)) return false;
     if (!FloatEqual(def1.p_rad, def2.p_rad, kdEpsilonLinear)) return false;
 #ifdef _DEBUG
-	bResult = true;
+    bResult = true;
 #endif
     MG_CATCH_AND_THROW(L"MgCoordinateSystemMathComparator.SameEllipsoid")
 
@@ -170,7 +170,7 @@ bool CCoordinateSystemMathComparator::SameDatum(MgCoordinateSystemDatum *pDefini
     if (!FloatEqual(def1.bwscale, def2.bwscale, kdEpsilonDatumScale)) return false;
     if (def1.to84_via != def2.to84_via) return false;
 #ifdef _DEBUG
-	bResult = true;
+    bResult = true;
 #endif
     MG_CATCH_AND_THROW(L"MgCoordinateSystemMathComparator.SameDatum")
 
@@ -191,7 +191,7 @@ bool CCoordinateSystemMathComparator::SameCoordinateSystem(MgCoordinateSystem *p
 
     bool bResult;
     unsigned short prj_code;
-   	ulong32_t prj_flags;
+    ulong32_t prj_flags;
     double epsilon;
     struct cs_Prjprm_ paramDescriptor;
     cs_Csdef_ def1, def2;
@@ -268,7 +268,7 @@ bool CCoordinateSystemMathComparator::SameCoordinateSystem(MgCoordinateSystem *p
                         epsilon = kdEpsilonScale;
                         break;
                     case cs_PRMLTYP_NONE:             // No specification
-                    case cs_PRMLTYP_HSNS:             // to keep code analyzers happy 
+                    case cs_PRMLTYP_HSNS:             // to keep code analyzers happy
                     default:
                         epsilon = kdEpsilon;
                 }

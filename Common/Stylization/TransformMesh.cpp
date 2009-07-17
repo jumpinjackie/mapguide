@@ -82,7 +82,7 @@ void TransformMesh::Initialize(int gridSize, int minGridSize, double gridSizeOve
     if (gridSizeOverrideRatio < MAX_GRID_SIZE_OVERRIDE_RATIO
         && gridSizeOverrideRatio > MIN_GRID_SIZE_OVERRIDE_RATIO)
     {
-        // the calculated grid size is the minimum of the passed in grid size and the overrided grid size 
+        // the calculated grid size is the minimum of the passed in grid size and the overrided grid size
         calculatedGridSize = rs_min(gridSize, (int)(rs_min(srcH, srcW) * m_gridSizeOverrideRatio));
     }
 

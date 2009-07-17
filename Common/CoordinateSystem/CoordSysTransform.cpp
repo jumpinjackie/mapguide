@@ -108,10 +108,10 @@ void CCoordinateSystemTransform::TransformPoint(double& x, double& y, double *pd
 
     bool isGeographic = MgCoordinateSystemType::Geographic == m_pCsSource->GetType();
 
-    double lonMin = m_pCsSource->GetLonMin(); 
-    double lonMax = m_pCsSource->GetLonMax(); 
-    double latMin = m_pCsSource->GetLatMin(); 
-    double latMax = m_pCsSource->GetLatMax(); 
+    double lonMin = m_pCsSource->GetLonMin();
+    double lonMax = m_pCsSource->GetLonMax();
+    double latMin = m_pCsSource->GetLatMin();
+    double latMax = m_pCsSource->GetLatMax();
 
     TransformPointInternal(x, y, pdZ, isGeographic, lonMin, lonMax, latMin, latMax);
 
@@ -908,10 +908,10 @@ void CCoordinateSystemTransform::Transform(double x[], double y[], int arraySize
 
     bool isGeographic = MgCoordinateSystemType::Geographic == m_pCsSource->GetType();
 
-    double lonMin = m_pCsSource->GetLonMin(); 
-    double lonMax = m_pCsSource->GetLonMax(); 
-    double latMin = m_pCsSource->GetLatMin(); 
-    double latMax = m_pCsSource->GetLatMax(); 
+    double lonMin = m_pCsSource->GetLonMin();
+    double lonMax = m_pCsSource->GetLonMax();
+    double latMin = m_pCsSource->GetLatMin();
+    double latMax = m_pCsSource->GetLatMax();
 
     for(int i=0;i<arraySize;i++)
     {

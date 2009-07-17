@@ -352,7 +352,7 @@ INTERNAL_API:
     /// Checks whether the class definition is marked as deleted.
     ///
     /// \return
-    /// Returns true if it the class definition is marked as deleted, 
+    /// Returns true if it the class definition is marked as deleted,
     /// false otherwise.
     ///
     bool IsDeleted();
