@@ -248,33 +248,39 @@ function SetLayerStyles(layer)
     var layerIconImg = "";
     if(hasThemes)
     {
-        for(var j=0; j < styles.length; j++)
+        if(layer.expanded && !sc.iconWasRequested)
         {
-            var node = styles[j];
-            var iconId = GetIconId(layer) + '_Scl_' + layer.curScale + '_Th_' + j;
-            var iconImg = RequestThemeStyleIconImg(layer, scale, node.catindex, node.geomtype, iconId);
-
-            code += '<table border=0 cellspacing="0" cellpadding="0"><tr height=17>';
-            //icon
-            code += '<td width=23 id="' + iconId + '">' + iconImg + '</td>';
-            //legend text
-            code += '<td>' + node.legend + '</td>';
-            code += '</tr></table>';
-
-            if(!sc.showlongtheme && styles.length > 10)
+            for(var j=0; j < styles.length; j++)
             {
-                if(j == styles.length - 1)
-                    break;
+                var node = styles[j];
+                var iconId = GetIconId(layer) + '_Scl_' + layer.curScale + '_Th_' + j;
+                var iconImg = RequestThemeStyleIconImg(layer, scale, node.catindex, node.geomtype, iconId);
+
                 code += '<table border=0 cellspacing="0" cellpadding="0"><tr height=17>';
-                code += '<td width=23><img width=16 height=16 src="../stdicons/transparentpixel.gif"></td>';
-                code += '<td>...</td>';
+                //icon
+                code += '<td width=23 id="' + iconId + '">' + iconImg + '</td>';
+                //legend text
+                code += '<td>' + node.legend + '</td>';
                 code += '</tr></table>';
-                j = styles.length - 2;
+
+                if(!sc.showlongtheme && styles.length > 10)
+                {
+                    if(j == styles.length - 1)
+                        break;
+                    code += '<table border=0 cellspacing="0" cellpadding="0"><tr height=17>';
+                    code += '<td width=23><img width=16 height=16 src="../stdicons/transparentpixel.gif"></td>';
+                    code += '<td>...</td>';
+                    code += '</tr></table>';
+                    j = styles.length - 2;
+                }
             }
+            if(styles.length <= 10)
+                sc.showlongtheme = true;
+            layerChildren.innerHTML = code;
+            
+            sc.iconWasRequested = true;
         }
-        if(styles.length <= 10)
-            sc.showlongtheme = true;
-        layerChildren.innerHTML = code;
+        
         layerIconImg = iconThemeLayer;
     }
     else
@@ -351,6 +357,7 @@ function Toggle(objectId)
         Expand(node);
 }
 
+// Expanding a node, the legend for the sub-items of this node will be generated dynamically 
 function Expand(node)
 {
     var elt = document.getElementById('ChildrenOf_' + node.objectId);
@@ -358,6 +365,10 @@ function Expand(node)
     {
         node.expanded = true;
         elt.style.display = "block";
+        RefreshNodesState(node.children);
+        iconsToLoad.reverse();
+        LoadNextIcon();
+        
         if(node.type == 0 || HasLayerThemes(node))
             ShowExpandedState(node);
     }
@@ -741,9 +752,18 @@ function HasLayerThemes(layer)
     return layer.children[layer.curScale].children.length > 1;
 }
 
-// set the active scale ranges in layers, according to current scale, and set the display state for layers and groups
-// update the layer styles if necessary
+// set the display state for themes, layers and groups and update the layer styles if necessary
 function UpdateScaleRanges(nodes)
+{
+    RefreshNodesState(nodes);
+}
+
+
+// there are three possible reasons to refresh the nodes' state: 
+// the first one is updating scale ranges to refresh the legend images
+// the second one is expanding a group to build the legend images of layers in that group.
+// the third one is expanding a layer node to build the legend images of themes in that layer.
+function RefreshNodesState(nodes)
 {
     for(var i=0; i < nodes.length; i++)
     {
@@ -753,7 +773,7 @@ function UpdateScaleRanges(nodes)
             var count = node.children != null? node.children.length: 0;
             node.hasVisibleLayers = false;
             if(count > 0) {
-                UpdateScaleRanges(node.children);
+                RefreshNodesState(node.children);
                 for(var j=0; j < node.children.length; j++)
                 {
                     child = node.children[j];
@@ -790,10 +810,66 @@ function UpdateScaleRanges(nodes)
                     break;
                 }
             }
-            if(node.displayInLegend && rangeIndex != node.curScale && node.curScale != -1)
-                SetLayerStyles(node);
+            
+            if(node.displayInLegend && node.curScale != -1)
+            {
+                // scale changed
+                if(rangeIndex != node.curScale)
+                {
+                    // the layer's theme will be changed on demand
+                    node.children[node.curScale].iconWasRequested = false;
+                    
+                    // the layer's legend image will be changed immediately 
+                    if(!HasCollapsedParent(node))
+                    {
+                        SetLayerStyles(node);
+                        node.iconWasRequested = true;
+                    }
+                    // the layer's legend image will be changed on demand
+                    else
+                    {
+                        
+                        node.iconWasRequested = false;
+                    }
+                }
+                // parent group expanded
+                else if(!node.iconWasRequested  && !HasCollapsedParent(node))
+                {
+                    SetLayerStyles(node);
+                    node.iconWasRequested = true;
+                }
+            }
+            
             node.isDisplayed = node.displayInLegend && node.curScale != -1;
         }
+        else if(node.type == 2)
+        {
+            // parent layer expanded
+            if(node.parent.children[node.parent.curScale]=== node && !node.iconWasRequested)
+            {
+                SetLayerStyles(node.parent);
+            }
+        }
+    }
+}
+
+// To check if any parent node of current node is collapsed.
+function HasCollapsedParent(node)
+{
+    if(node.parent != null)
+    {
+        if(node.parent.expanded == true)
+        {
+            return HasCollapsedParent(node.parent)
+        }
+        else
+        {
+            return true;
+        }
+    }
+    else
+    {
+        return false;
     }
 }
 
