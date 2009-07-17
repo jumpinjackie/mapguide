@@ -429,6 +429,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\OpApplySchema.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\OpApplySchema.h"
+				>
+			</File>
+			<File
 				RelativePath=".\OpCloseDataReader.cpp"
 				>
 				<FileConfiguration
@@ -2579,6 +2595,22 @@
 		</File>
 		<File
 			RelativePath=".\SelectCommand.h"
+			>
+		</File>
+		<File
+			RelativePath=".\ServerApplySchema.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\ServerApplySchema.h"
 			>
 		</File>
 		<File

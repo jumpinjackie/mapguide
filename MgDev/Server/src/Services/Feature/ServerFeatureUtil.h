@@ -77,7 +77,8 @@ public:
     static INT32 FdoOrderTypeToMgOrderingOption(FdoOrderType type);
     static FdoOrderType MgOrderingOptionToFdoOrderType(INT32 type);
     static INT32 FdoObjectTypeToMgObjectPropertyType(FdoObjectType type);
-    static FdoObjectType MgObjectPropertyTypeToFdoObjectType(INT32 type);
+    static FdoObjectType MgObjectPropertyTypeToFdoObjectType(INT32 type);    
+    static bool FdoClassExist(const wchar_t* name, FdoClassCollection* clsCol);
 
     static MgStringCollection* FdoToMgStringCollection(FdoStringCollection* fdoStrs, bool includeEmptyStrings);
     static FdoStringCollection* MgToFdoStringCollection(MgStringCollection* mgStrs, bool includeEmptyStrings);
@@ -93,6 +94,32 @@ public:
     static MgRasterPropertyDefinition* GetRasterPropertyDefinition(FdoRasterPropertyDefinition* fdoPropDef);
     static MgProperty* GetMgProperty(MgReader* reader, CREFSTRING qualifiedPropName, INT16 type);
 
+    static FdoFeatureSchemaCollection* GetFdoFeatureSchemaCollection(MgFeatureSchemaCollection* mgSchemaCol);
+    static FdoFeatureSchema* GetFdoFeatureSchema(MgFeatureSchema* mgSchema);
+    static void GetFdoClassCollection(FdoClassCollection* fdoClassCol, MgClassDefinitionCollection* mgClassDefCol);
+    static FdoClassDefinition* GetFdoClassDefinition(MgClassDefinition* mgClassDef, FdoClassCollection* fdoClassCol);
+    static void GetClassProperties(FdoPropertyDefinitionCollection* fdoPropDefCol,
+                            MgPropertyDefinitionCollection* propDefCol,
+                            FdoClassCollection* fdoClassCol);
+    static void GetClassProperties(FdoDataPropertyDefinitionCollection* fdoPropDefCol,
+                            MgPropertyDefinitionCollection* mgPropDefCol);
+    static FdoPropertyDefinition* GetFdoPropertyDefinition(MgPropertyDefinition* mgPropDef, FdoClassCollection* fdoClassCol);
+    static FdoDataPropertyDefinition* GetDataPropertyDefinition(MgDataPropertyDefinition* mgPropDef);
+    static FdoGeometricPropertyDefinition* GetGeometricPropertyDefinition(MgGeometricPropertyDefinition* mgPropDef);
+    static FdoRasterPropertyDefinition* GetRasterPropertyDefinition(MgRasterPropertyDefinition* mgPropDef);
+    static FdoDataType GetFdoDataType(INT32 awPropType);
+    static FdoObjectPropertyDefinition* GetObjectPropertyDefinition(MgObjectPropertyDefinition* objPropDef, FdoClassCollection* fdoClassCol);
+
+    static void UpdateFdoFeatureSchema(MgFeatureSchema* mgSchema, FdoFeatureSchema* fdoSchema);
+    static void UpdateFdoClassCollection(MgClassDefinitionCollection* mgClassDefCol, FdoClassCollection* fdoClassCol);
+    static void UpdateFdoClassDefinition(MgClassDefinition* mgClassDef, FdoClassDefinition* fdoClassDef, FdoClassCollection* fdoClassCol);
+    static void UpdateClassProperties(MgPropertyDefinitionCollection* propDefCol, FdoPropertyDefinitionCollection* fdoPropDefCol, FdoClassCollection* fdoClassCol = NULL);
+    static void UpdateClassProperties(FdoDataPropertyDefinitionCollection* fdoPropDefCol, MgPropertyDefinitionCollection* mgPropDefCol);
+    static void UpdateFdoPropertyDefinition(MgPropertyDefinition* mgPropDef, FdoPropertyDefinition* fdoPropDef, FdoClassCollection* fdoClassCol);
+    static void UpdateDataPropertyDefinition(MgDataPropertyDefinition* mgPropDef, FdoDataPropertyDefinition* fdoPropDef);
+    static void UpdateObjectPropertyDefinition(MgObjectPropertyDefinition* objPropDef, FdoObjectPropertyDefinition* fdoPropDef, FdoClassCollection* fdoClassCol);
+    static void UpdateGeometricPropertyDefinition(MgGeometricPropertyDefinition* mgPropDef, FdoGeometricPropertyDefinition* fdoPropDef);
+    static void UpdateRasterPropertyDefinition(MgRasterPropertyDefinition* mgPropDef, FdoRasterPropertyDefinition* fdoPropDef);
 private:
     static bool Initialize();
 

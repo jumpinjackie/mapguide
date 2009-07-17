@@ -1709,16 +1709,15 @@ MgClassDefinition* MgServerGwsFeatureReader::GetMgClassDefinition(bool bSerializ
             }
 
             // Convert MgClassDefinition to FdoClassDefinition.
-            MgServerDescribeSchema msds;
             Ptr<MgClassDefinitionCollection> mcdc = new MgClassDefinitionCollection();
             mcdc->Add(mgClassDef);
             FdoPtr<FdoClassCollection> fcc;
             fcc = FdoClassCollection::Create(NULL);
-            msds.GetFdoClassCollection(fcc, mcdc);
+            MgServerFeatureUtil::GetFdoClassCollection(fcc, mcdc);
             int nFccCount = fcc->GetCount();
 
             // Get the FdoClassDefinition
-            FdoPtr<FdoClassDefinition> fdc = msds.GetFdoClassDefinition(mgClassDef, fcc);
+            FdoPtr<FdoClassDefinition> fdc = MgServerFeatureUtil::GetFdoClassDefinition(mgClassDef, fcc);
 
             // Pass the FdoClassDefinition to SerializeToXml
             if (bSerialize)

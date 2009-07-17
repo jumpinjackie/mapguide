@@ -300,6 +300,26 @@ PUBLISHED_API:
     ///
     bool IsAbstract();
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Marks the class definition for deletion.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// void Delete();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// void Delete();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// void Delete();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Returns nothing.
+    ///
+    void Delete();
+
 EXTERNAL_API:
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -327,6 +347,16 @@ INTERNAL_API:
     STRING GetQualifiedName();
     bool HasSerializedXml();
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Checks whether the class definition is marked as deleted.
+    ///
+    /// \return
+    /// Returns ture if it the class definition is marked as deleted, 
+    /// false otherwise.
+    ///
+    bool IsDeleted();
+
 private:
 
     Ptr<MgPropertyDefinitionCollection> m_classProperties;
@@ -342,6 +372,7 @@ private:
     STRING m_rasterPropName;
     bool m_isComputed;
     bool m_isAbstract;
+    bool m_isDeleted;
     Ptr<MgClassDefinition> m_baseClassDefinition;
     Ptr<MgStringCollection> m_classList;
 

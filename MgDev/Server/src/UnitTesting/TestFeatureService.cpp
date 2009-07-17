@@ -80,30 +80,35 @@ void TestFeatureService::TestStart()
             MgResourceIdentifier resourceIdentifier3(L"Library://UnitTests/Data/Sheboygan_BuildingOutlines.FeatureSource");
             MgResourceIdentifier resourceIdentifier4(L"Library://UnitTests/Data/Sheboygan_VotingDistricts.FeatureSource");
             MgResourceIdentifier resourceIdentifier5(L"Library://UnitTests/Data/TestChainedInner1ToManyJoin.FeatureSource");
+            MgResourceIdentifier resourceIdentifier6(L"Library://UnitTests/Data/Empty.FeatureSource");
 #ifdef _WIN32
             STRING resourceContentFileName1 = L"..\\UnitTestFiles\\Sheboygan_Parcels.FeatureSource";
             STRING resourceContentFileName2 = L"..\\UnitTestFiles\\Redding_Parcels.FeatureSource";
             STRING resourceContentFileName3 = L"..\\UnitTestFiles\\Sheboygan_BuildingOutlines.FeatureSource";
             STRING resourceContentFileName4 = L"..\\UnitTestFiles\\Sheboygan_VotingDistricts.FeatureSource";
             STRING resourceContentFileName5=  L"..\\UnitTestFiles\\TESTChainedInner1ToManyJoin.FeatureSource";
+            STRING resourceContentFileName6=  L"..\\UnitTestFiles\\Empty.FeatureSource";
             STRING dataFileName1 = L"..\\UnitTestFiles\\Sheboygan_Parcels.sdf";
             STRING dataFileName2 = L"..\\UnitTestFiles\\Redding_Parcels.shp";
             STRING dataFileName3 = L"..\\UnitTestFiles\\Redding_Parcels.dbf";
             STRING dataFileName4 = L"..\\UnitTestFiles\\Redding_Parcels.shx";
             STRING dataFileName5 = L"..\\UnitTestFiles\\Sheboygan_BuildingOutlines.sdf";
             STRING dataFileName6 = L"..\\UnitTestFiles\\Sheboygan_VotingDistricts.sdf";
+            STRING dataFileName7 = L"..\\UnitTestFiles\\Empty.sdf";
 #else
             STRING resourceContentFileName1 = L"../UnitTestFiles/Sheboygan_Parcels.FeatureSource";
             STRING resourceContentFileName2 = L"../UnitTestFiles/Redding_Parcels.FeatureSource";
             STRING resourceContentFileName3 = L"../UnitTestFiles/Sheboygan_BuildingOutlines.FeatureSource";
             STRING resourceContentFileName4 = L"../UnitTestFiles/Sheboygan_VotingDistricts.FeatureSource";
             STRING resourceContentFileName5 = L"../UnitTestFiles/TESTChainedInner1ToManyJoin.FeatureSource";
+            STRING resourceContentFileName6 = L"../UnitTestFiles/Empty.FeatureSource";
             STRING dataFileName1 = L"../UnitTestFiles/Sheboygan_Parcels.sdf";
             STRING dataFileName2 = L"../UnitTestFiles/Redding_Parcels.shp";
             STRING dataFileName3 = L"../UnitTestFiles/Redding_Parcels.dbf";
             STRING dataFileName4 = L"../UnitTestFiles/Redding_Parcels.shx";
             STRING dataFileName5 = L"../UnitTestFiles/Sheboygan_BuildingOutlines.sdf";
             STRING dataFileName6 = L"../UnitTestFiles/Sheboygan_VotingDistricts.sdf";
+            STRING dataFileName7 = L"../UnitTestFiles/Empty.sdf";
 #endif
 
             //Add a new resource
@@ -126,6 +131,10 @@ void TestFeatureService::TestStart()
             Ptr<MgByteSource> contentSource5 = new MgByteSource(resourceContentFileName5);
             Ptr<MgByteReader> contentReader5 = contentSource5->GetReader();
             pService->SetResource(&resourceIdentifier5, contentReader5, NULL);
+
+            Ptr<MgByteSource> contentSource6 = new MgByteSource(resourceContentFileName6);
+            Ptr<MgByteReader> contentReader6 = contentSource6->GetReader();
+            pService->SetResource(&resourceIdentifier6, contentReader6, NULL);
 
             //Set the resource data
             Ptr<MgByteSource> dataSource1 = new MgByteSource(dataFileName1);
@@ -155,6 +164,10 @@ void TestFeatureService::TestStart()
             Ptr<MgByteSource> dataSource7 = new MgByteSource(dataFileName1);
             Ptr<MgByteReader> dataReader7 = dataSource7->GetReader();
             pService->SetResourceData(&resourceIdentifier5, L"Sheboygan_Parcels.sdf", L"File", dataReader7);
+
+            Ptr<MgByteSource> dataSource8 = new MgByteSource(dataFileName7);
+            Ptr<MgByteReader> dataReader8 = dataSource8->GetReader();
+            pService->SetResourceData(&resourceIdentifier6, L"Empty.sdf", L"File", dataReader8);
         }
     }
     catch(MgException* e)
@@ -204,6 +217,9 @@ void TestFeatureService::TestEnd()
 
         Ptr<MgResourceIdentifier> fsres5 = new MgResourceIdentifier(L"Library://UnitTests/Data/TestChainedInner1ToManyJoin.FeatureSource");
         pService->DeleteResource(fsres5);
+
+        Ptr<MgResourceIdentifier> fsres6 = new MgResourceIdentifier(L"Library://UnitTests/Data/Empty.FeatureSource");
+        pService->DeleteResource(fsres6);
 
         #ifdef _DEBUG
         ACE_DEBUG((LM_INFO, ACE_TEXT("TestFeatureService::TestEnd()\n")));
@@ -744,6 +760,287 @@ void TestFeatureService::TestCase_DescribeSchema()
         schemaName = L"";
         Ptr<MgFeatureSchemaCollection> schemaCollection = pService->DescribeSchema(resource, schemaName, NULL);
         CPPUNIT_ASSERT(schemaCollection->GetCount() > 0);
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occurred");
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+///----------------------------------------------------------------------------
+/// Description:
+///
+/// Find the class definition by name from a class definition collection.
+///----------------------------------------------------------------------------
+MgClassDefinition* FindClassByName(MgClassDefinitionCollection* classDefCol, STRING name)
+{
+    for (int i =0; i < classDefCol->GetCount(); i++)
+    {
+        Ptr<MgClassDefinition> classDef = classDefCol->GetItem(i);
+        STRING temp = classDef->GetName();
+        if (temp == name)
+            return classDef.Detach();
+    }
+    return NULL;
+}
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises applying schemas.
+///----------------------------------------------------------------------------
+void TestFeatureService::TestCase_ApplySchema()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if(serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_ApplySchema", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_ApplySchema", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        // Set the user information for the current thread to be administrator.
+        Ptr<MgUserInformation> adminUserInfo = new MgUserInformation(MgUser::Administrator, L"");
+        MgUserInformation::SetCurrentUserInfo(adminUserInfo);
+        Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(L"Library://UnitTests/Data/Empty.FeatureSource");
+
+        //////////////////////////////////////////////////////////////////////
+        /// The first test case:                                           ///
+        /// Delete one property in an existing feature class               ///
+        //////////////////////////////////////////////////////////////////////
+        Ptr<MgFeatureSchemaCollection> oldSchemas = pService->DescribeSchema(resource, L"Schema", NULL);
+        Ptr<MgFeatureSchema> oldSchema = oldSchemas->GetItem(0);
+        Ptr<MgClassDefinitionCollection> oldSchemaClasses = oldSchema->GetClasses();
+        Ptr<MgClassDefinition> oldClassDef = FindClassByName(oldSchemaClasses, L"Parcel");
+        Ptr<MgPropertyDefinitionCollection> oldProperties = oldClassDef->GetProperties();   
+        Ptr<MgPropertyDefinition> oldPropDef = oldProperties->FindItem(L"Name");
+        oldPropDef->Delete();
+        pService->ApplySchema(resource, oldSchema);
+
+        // Verify results
+        Ptr<MgFeatureSchemaCollection> newSchemas = pService->DescribeSchema(resource, L"Schema", NULL);
+        Ptr<MgFeatureSchema> newSchema = newSchemas->GetItem(0);
+        Ptr<MgClassDefinitionCollection> newSchemaClasses = newSchema->GetClasses();
+        Ptr<MgClassDefinition> newClassDef = FindClassByName(newSchemaClasses, L"Parcel");
+        Ptr<MgPropertyDefinitionCollection> newProperties = newClassDef->GetProperties();   
+        CPPUNIT_ASSERT(newProperties->Contains(L"Name") == false);
+
+        //////////////////////////////////////////////////////////////////////
+        /// The second test case:                                          ///
+        /// Add two feature classes                                        ///
+        //////////////////////////////////////////////////////////////////////
+
+        // Create the first class definition
+        Ptr<MgClassDefinition> classDef1 = new MgClassDefinition();
+        classDef1->SetName(L"FeatureClass1");
+        classDef1->SetDescription(L"Feature class 1");
+        classDef1->SetDefaultGeometryPropertyName(L"GEOM");
+
+        Ptr<MgPropertyDefinitionCollection> identityProperties1 = classDef1->GetIdentityProperties();
+        Ptr<MgPropertyDefinitionCollection> properties1 = classDef1->GetProperties();
+
+        // Set key property
+        Ptr<MgDataPropertyDefinition> prop = new MgDataPropertyDefinition(L"KEY1");
+        prop->SetDataType(MgPropertyType::Int32);
+        prop->SetAutoGeneration(true);
+        prop->SetReadOnly(true);
+        identityProperties1->Add(prop);
+        properties1->Add(prop);
+
+        // Set name property
+        prop = new MgDataPropertyDefinition(L"NAME1");
+        prop->SetDataType(MgPropertyType::String);
+        properties1->Add(prop);
+
+        // Set geometry property
+        Ptr<MgGeometricPropertyDefinition> propGeom = new MgGeometricPropertyDefinition(L"GEOM");
+        propGeom->SetGeometryTypes(MgFeatureGeometricType::Surface);
+        properties1->Add(propGeom);
+
+        // Create the second class definition
+        Ptr<MgClassDefinition> classDef2 = new MgClassDefinition();
+        classDef2->SetName(L"FeatureClass2");
+        classDef2->SetDescription(L"Feature class 2");
+        classDef2->SetDefaultGeometryPropertyName(L"GEOM");
+
+        Ptr<MgPropertyDefinitionCollection> identityProperties2 = classDef2->GetIdentityProperties();
+        Ptr<MgPropertyDefinitionCollection> properties2 = classDef2->GetProperties();
+
+        // Set key property
+        prop = new MgDataPropertyDefinition(L"KEY2");
+        prop->SetDataType(MgPropertyType::Int32);
+        prop->SetAutoGeneration(true);
+        prop->SetReadOnly(true);
+        identityProperties2->Add(prop);
+        properties2->Add(prop);
+
+        // Set name property
+        prop = new MgDataPropertyDefinition(L"NAME2");
+        prop->SetDataType(MgPropertyType::String);
+        properties2->Add(prop);
+
+        // Set geometry property
+        propGeom = new MgGeometricPropertyDefinition(L"GEOM");
+        propGeom->SetGeometryTypes(MgFeatureGeometricType::Curve);
+        properties2->Add(propGeom);
+
+        Ptr<MgFeatureSchema> schema = new MgFeatureSchema(L"Schema", L"Schema");
+        Ptr<MgClassDefinitionCollection> schemaClasses = schema->GetClasses();
+        schemaClasses->Add(classDef1);
+        schemaClasses->Add(classDef2);
+
+        pService->ApplySchema(resource, schema);
+        newSchemas = pService->DescribeSchema(resource, L"Schema", NULL);
+
+        // Verify schema
+        STRING temp;
+        newSchema = newSchemas->GetItem(0);
+        temp = newSchema->GetName();
+        CPPUNIT_ASSERT(temp == L"Schema");
+
+        schemaClasses = newSchema->GetClasses();
+
+        // Verify the first feature class
+        classDef1 = FindClassByName(schemaClasses, L"FeatureClass1");
+        temp = classDef1->GetName();
+        CPPUNIT_ASSERT(temp == L"FeatureClass1");
+        temp = classDef1->GetDescription();
+        CPPUNIT_ASSERT(temp == L"Feature class 1");
+        temp = classDef1->GetDefaultGeometryPropertyName();
+        CPPUNIT_ASSERT(temp == L"GEOM");
+
+        identityProperties1 = classDef1->GetIdentityProperties();
+        CPPUNIT_ASSERT(identityProperties1->GetCount() == 1);
+        prop = static_cast<MgDataPropertyDefinition*>(identityProperties1->GetItem(L"KEY1"));
+        CPPUNIT_ASSERT(prop != NULL);
+
+        properties1 = classDef1->GetProperties();
+        CPPUNIT_ASSERT(properties1->GetCount() == 3);
+        
+        prop = static_cast<MgDataPropertyDefinition*>(properties1->GetItem(L"KEY1"));
+        CPPUNIT_ASSERT(prop != NULL);
+        CPPUNIT_ASSERT(prop->GetDataType() == MgPropertyType::Int32);
+        CPPUNIT_ASSERT(prop->IsAutoGenerated() == true);
+        CPPUNIT_ASSERT(prop->GetReadOnly() == true);
+
+        prop = static_cast<MgDataPropertyDefinition*>(properties1->GetItem(L"NAME1"));
+        CPPUNIT_ASSERT(prop != NULL);
+        CPPUNIT_ASSERT(prop->GetDataType() == MgPropertyType::String);
+
+        propGeom = static_cast<MgGeometricPropertyDefinition*>(properties1->GetItem(L"GEOM"));
+        CPPUNIT_ASSERT(prop != NULL);
+        CPPUNIT_ASSERT(propGeom->GetGeometryTypes() == MgFeatureGeometricType::Surface);
+
+        // Verify the second feature class
+        classDef2 = FindClassByName(schemaClasses, L"FeatureClass2");
+        temp = classDef2->GetDescription();
+        CPPUNIT_ASSERT(temp == L"Feature class 2");
+        temp = classDef2->GetDefaultGeometryPropertyName();
+        CPPUNIT_ASSERT(temp == L"GEOM");
+
+        identityProperties2 = classDef2->GetIdentityProperties();
+        CPPUNIT_ASSERT(identityProperties2->GetCount() == 1);
+        prop = static_cast<MgDataPropertyDefinition*>(identityProperties2->GetItem(L"KEY2"));
+        CPPUNIT_ASSERT(prop != NULL);
+
+        properties2 = classDef2->GetProperties();
+        CPPUNIT_ASSERT(properties2->GetCount() == 3);
+        
+        prop = static_cast<MgDataPropertyDefinition*>(properties2->GetItem(L"KEY2"));
+        CPPUNIT_ASSERT(prop != NULL);
+        CPPUNIT_ASSERT(prop->GetDataType() == MgPropertyType::Int32);
+        CPPUNIT_ASSERT(prop->IsAutoGenerated() == true);
+        CPPUNIT_ASSERT(prop->GetReadOnly() == true);
+
+        prop = static_cast<MgDataPropertyDefinition*>(properties2->GetItem(L"NAME2"));
+        CPPUNIT_ASSERT(prop != NULL);
+        CPPUNIT_ASSERT(prop->GetDataType() == MgPropertyType::String);
+
+        propGeom = static_cast<MgGeometricPropertyDefinition*>(properties2->GetItem(L"GEOM"));
+        CPPUNIT_ASSERT(prop != NULL);
+        CPPUNIT_ASSERT(propGeom->GetGeometryTypes() == MgFeatureGeometricType::Curve);
+
+        //////////////////////////////////////////////////////////////////////
+        /// The third test case:                                           /// 
+        /// Delete one feature class and modify one feature class          ///
+        //////////////////////////////////////////////////////////////////////        
+        // Delete the first feature class
+        classDef1 = FindClassByName(schemaClasses, L"FeatureClass1");
+        classDef1->Delete();
+
+        // Modify the second feature class
+        classDef2 = FindClassByName(schemaClasses, L"FeatureClass2");
+        classDef2->SetDescription(L"Modified Feature Class");
+        properties2 = classDef2->GetProperties();
+
+        prop = new MgDataPropertyDefinition(L"LENGTH");
+        prop->SetDataType(MgPropertyType::Single);
+        properties2->Add(prop);
+
+        prop = new MgDataPropertyDefinition(L"ID");
+        prop->SetDataType(MgPropertyType::Int32);
+        prop->SetAutoGeneration(true);
+        prop->SetReadOnly(true);
+        properties2->Add(prop);
+
+        pService->ApplySchema(resource, newSchema);
+
+        newSchemas = pService->DescribeSchema(resource, L"Schema", NULL);
+        newSchema = newSchemas->GetItem(0);
+        temp = newSchema->GetName();
+        CPPUNIT_ASSERT(temp == L"Schema");
+
+        schemaClasses = newSchema->GetClasses();
+
+        // Verify the first feature class
+        classDef1 = FindClassByName(schemaClasses, L"FeatureClass1");
+        CPPUNIT_ASSERT(classDef1 == NULL);
+
+        classDef2 = FindClassByName(schemaClasses, L"FeatureClass2");
+        temp = classDef2->GetDescription();
+        CPPUNIT_ASSERT(temp == L"Modified Feature Class");
+
+        properties2 = classDef2->GetProperties();
+        CPPUNIT_ASSERT(properties2->GetCount() == 5);
+
+        temp = classDef2->GetDefaultGeometryPropertyName();
+        CPPUNIT_ASSERT(temp == L"GEOM");
+
+        identityProperties2 = classDef2->GetIdentityProperties();
+        CPPUNIT_ASSERT(identityProperties2->GetCount() == 1);
+        prop = static_cast<MgDataPropertyDefinition*>(identityProperties2->GetItem(L"KEY2"));
+        CPPUNIT_ASSERT(prop != NULL);
+        
+        prop = static_cast<MgDataPropertyDefinition*>(properties2->GetItem(L"ID"));
+        CPPUNIT_ASSERT(prop != NULL);
+        CPPUNIT_ASSERT(prop->GetDataType() == MgPropertyType::Int32);
+        CPPUNIT_ASSERT(prop->IsAutoGenerated() == true);
+        CPPUNIT_ASSERT(prop->GetReadOnly() == true);
+
+        prop = static_cast<MgDataPropertyDefinition*>(properties2->GetItem(L"LENGTH"));
+        CPPUNIT_ASSERT(prop != NULL);
+        CPPUNIT_ASSERT(prop->GetDataType() == MgPropertyType::Single);
+
+        propGeom = static_cast<MgGeometricPropertyDefinition*>(properties2->GetItem(L"GEOM"));
+        CPPUNIT_ASSERT(prop != NULL);
+        CPPUNIT_ASSERT(propGeom->GetGeometryTypes() == MgFeatureGeometricType::Curve); 
     }
     catch(MgException* e)
     {

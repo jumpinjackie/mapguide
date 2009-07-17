@@ -36,6 +36,7 @@ include_SOURCES = \
   FeatureOperationFactory.cpp \
   FeatureServiceHandler.cpp \
   GwsConnectionPool.cpp \
+  OpApplySchema.cpp \
   OpCreateFeatureSource.cpp \
   OpDescribeSchema.cpp \
   OpDescribeSchemaAsXml.cpp \
@@ -52,6 +53,7 @@ include_SOURCES = \
   OpTestConnection.cpp \
   OpTestFeatureSourceConnection.cpp \
   OpUpdateFeatures.cpp \
+  ServerApplySchema.cpp \
   ServerDescribeSchema.cpp \
   ServerFeatureConnection.cpp \
   ServerFeatureService.cpp \
@@ -119,6 +121,7 @@ noinst_HEADERS = $(include_SOURCES) \
   FeatureServiceHandler.h \
   ServerFeatureService.h \
   GwsConnectionPool.h \
+  OpApplySchema.h \
   OpCreateFeatureSource.h \
   OpDescribeSchema.h \
   OpDescribeSchemaAsXml.h \
@@ -135,6 +138,7 @@ noinst_HEADERS = $(include_SOURCES) \
   OpTestConnection.h \
   OpTestFeatureSourceConnection.h \
   OpUpdateFeatures.h \
+  ServerApplySchema.h \
   ServerDescribeSchema.h \
   ServerFeatureConnection.h \
   ServerFeatureDllExport.h \

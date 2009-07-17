@@ -23,6 +23,7 @@ MG_IMPL_DYNCREATE(MgFeatureSchema);
 //////////////////////////////////////////////////////////////
 MgFeatureSchema::MgFeatureSchema()
 {
+    m_isDeleted = false;
     m_collection = new MgClassDefinitionCollection();
 }
 
@@ -31,6 +32,7 @@ MgFeatureSchema::MgFeatureSchema(CREFSTRING name, CREFSTRING description)
 {
     SetName(name);
 
+    m_isDeleted = false;
     m_description = description;
     m_collection = new MgClassDefinitionCollection();
 }
@@ -106,4 +108,15 @@ void MgFeatureSchema::Deserialize(MgStream* stream)
 bool MgFeatureSchema::CanSetName()
 {
     return true;
+}
+
+//////////////////////////////////////////////////////////////
+void MgFeatureSchema::Delete()
+{
+    m_isDeleted = true;
+}
+
+bool MgFeatureSchema::IsDeleted()
+{
+    return m_isDeleted;
 }

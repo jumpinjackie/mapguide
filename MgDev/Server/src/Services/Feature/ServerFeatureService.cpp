@@ -20,6 +20,7 @@
 #include "ServerGetFeatureProviders.h"
 #include "ServerGetProviderCapabilities.h"
 #include "ServerFeatureConnection.h"
+#include "ServerApplySchema.h"
 #include "ServerDescribeSchema.h"
 #include "ServerSelectFeatures.h"
 #include "ServerFeatureReaderPool.h"
@@ -258,6 +259,18 @@ MgByteReader* MgServerFeatureService::GetCapabilities( CREFSTRING providerName )
 
     MgServerGetProviderCapabilities msgpc(providerName);
     return msgpc.GetProviderCapabilities();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Creates or updates a feature schema within the specified feature source. 
+///
+void MgServerFeatureService::ApplySchema(MgResourceIdentifier* resource, MgFeatureSchema* schema)
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::ApplySchema()");
+
+    MgServerApplySchema msas;
+    msas.ApplySchema(resource, schema);
 }
 
 ///////////////////////////////////////////////////////////////////////////

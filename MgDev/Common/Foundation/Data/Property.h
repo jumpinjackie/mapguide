@@ -102,6 +102,26 @@ PUBLISHED_API:
     ///
     void SetName(CREFSTRING name);
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Marks the property for deletion.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// void Delete();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// void Delete();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// void Delete();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Returns nothing.
+    ///
+    void Delete();
+
 INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
@@ -113,6 +133,16 @@ INTERNAL_API:
     /// false - can not set the name
     ///
     virtual bool CanSetName();
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Checks whether the property is marked as deleted.
+    ///
+    /// \return
+    /// Returns ture if the property is marked as deleted, 
+    /// false otherwise.
+    ///
+    bool IsDeleted();
 
 protected:
 
@@ -142,6 +172,7 @@ private:
     friend class MgPropertyCollection;
 
     STRING m_propertyName;
+    bool   m_isDeleted;
 
 CLASS_ID:
     static const INT32 m_cls_id = Foundation_Property_Property;

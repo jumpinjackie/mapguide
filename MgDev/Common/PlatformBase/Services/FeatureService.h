@@ -346,6 +346,31 @@ PUBLISHED_API:
     ///
     virtual MgByteReader* GetCapabilities(CREFSTRING providerName) = 0;
 
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Creates or updates a feature schema within the specified feature source. 
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual void ApplySchema(MgResourceIdentifier resource, MgFeatureSchema schema);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual void ApplySchema(MgResourceIdentifier resource, MgFeatureSchema schema);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual void ApplySchema(MgResourceIdentifier resource, MgFeatureSchema schema);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// A resource identifier referring to a feature source.
+    /// \param schema
+    /// Input schema to be created or updated.
+    ///
+    /// \return
+    /// Returns nothing.
+    ///
+    virtual void ApplySchema(MgResourceIdentifier* resource, MgFeatureSchema* schema) = 0;
+
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the definitions of one or more schemas contained in the

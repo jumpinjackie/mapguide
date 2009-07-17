@@ -263,6 +263,31 @@ INTERNAL_API:
                                             CREFSTRING schemaName,
                                             CREFSTRING className);
 
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Creates or updates a feature schema within the specified feature source. 
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual void ApplySchema(MgResourceIdentifier resource, MgFeatureSchema schema);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual void ApplySchema(MgResourceIdentifier resource, MgFeatureSchema schema);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual void ApplySchema(MgResourceIdentifier resource, MgFeatureSchema schema);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// A resource identifier referring to a feature source.
+    /// \param schema
+    /// Input schema to be created or updated.
+    ///
+    /// \return
+    /// Returns nothing.
+    ///
+    void ApplySchema(MgResourceIdentifier* resource, MgFeatureSchema* schema);
+
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the definitions of one or more schemas contained in the
