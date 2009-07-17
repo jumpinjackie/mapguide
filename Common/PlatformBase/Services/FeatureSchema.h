@@ -209,10 +209,10 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Check whether the property is marked as deleted.
+    /// Checks whether the feature schema is marked as deleted.
     ///
     /// \return
-    /// Returns ture if it the property is marked as deleted, 
+    /// Returns true if the feature schema is marked as deleted, 
     /// false otherwise.
     ///
     bool IsDeleted();

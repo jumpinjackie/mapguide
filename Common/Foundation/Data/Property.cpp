@@ -94,7 +94,7 @@ void MgProperty::Delete()
 /// Checks whether the property is marked as deleted.
 /// </summary>
 /// <returns>
-/// Returns ture if the property is marked as deleted, 
+/// Returns true if the property is marked as deleted, 
 /// false otherwise.
 /// </returns>
 bool MgProperty::IsDeleted()
