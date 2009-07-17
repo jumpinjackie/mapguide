@@ -2002,7 +2002,7 @@ bool MgFdoConnectionManager::SetCachedFdoConnectionAsInvalid(MgResourceIdentifie
     {
         resId = resource->ToString();
     }
-        
+
     if (resId.empty())
     {
         MgStringCollection arguments;
@@ -2034,7 +2034,7 @@ bool MgFdoConnectionManager::SetCachedFdoConnectionAsInvalid(MgResourceIdentifie
                     FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
                     if (pFdoConnectionCacheEntry)
                     {
-                        // Mark all the connections that use this resource as invalid because the something bad 
+                        // Mark all the connections that use this resource as invalid because the something bad
                         // happened to the underlying connection. This will force new connections to be created aand cached.
                         pFdoConnectionCacheEntry->bValid = false;
                     }

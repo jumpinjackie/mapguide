@@ -86,7 +86,7 @@ MgStringCollection* MgWmsMapUtil::GetLayerDefinitionIds(CREFSTRING layerList)
             {
                 resourceId += resourceSuffix;
             }
-        
+
             layerDefIds->Add(resourceId);
         }
     }

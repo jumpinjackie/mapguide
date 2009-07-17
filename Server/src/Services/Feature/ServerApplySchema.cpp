@@ -52,7 +52,7 @@ void MgServerApplySchema::ApplySchema(MgResourceIdentifier* resource,
         FdoPtr<FdoIConnection> fdoConn = msfc->GetConnection();
 
         // Check whether command is supported by provider
-        if (!msfc->SupportsCommand((INT32)FdoCommandType_ApplySchema) || 
+        if (!msfc->SupportsCommand((INT32)FdoCommandType_ApplySchema) ||
             !msfc->SupportsCommand((INT32)FdoCommandType_DescribeSchema))
         {
             // TODO: specify which argument and message, once we have the mechanism
@@ -94,7 +94,7 @@ void MgServerApplySchema::ApplySchema(MgResourceIdentifier* resource,
         }
     }
 
-    // Clear the cached schema so that MgFeatureService::DescribeSchema 
+    // Clear the cached schema so that MgFeatureService::DescribeSchema
     // can return the correct schema
     if (bRefresh)
     {

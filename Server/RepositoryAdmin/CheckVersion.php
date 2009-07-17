@@ -21,7 +21,7 @@ function phpVersion_Check ($version)
         only introduced in PHP version 4.1.0
         which is what we normally recommend as
         the lower limit for our scripts.
-    
+
         So if the function does not exist then
         we must be using a copy of PHP < 4.1.0 */
         return FALSE;

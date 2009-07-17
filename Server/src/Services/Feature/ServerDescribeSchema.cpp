@@ -861,7 +861,7 @@ MgStringCollection* MgServerDescribeSchema::GetClasses(MgResourceIdentifier* res
                 CHECKNULL(featureSource, L"MgServerDescribeSchema.GetClasses");
                 MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
                 CHECKNULL(extensions, L"MgServerDescribeSchema.GetClasses");
-                
+
                 useSchema = (extensions->GetCount() > 0);
             }
 
@@ -1011,7 +1011,7 @@ MgClassDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(
     Ptr<MgStringCollection> uncachedClasses = new MgStringCollection();
 
     // Try pulling identity properties directly from the MapGuide cache first
-    for (int i = 0; i < classNames->GetCount(); i++) 
+    for (int i = 0; i < classNames->GetCount(); i++)
     {
         STRING className = classNames->GetItem(i);
         Ptr<MgPropertyDefinitionCollection> idProps = m_featureServiceCache->GetClassIdentityProperties(resource, schemaName, className);
@@ -1044,7 +1044,7 @@ MgClassDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(
         bool classNameHintUsed = true;
         Ptr<MgStringCollection> emptyNames = new MgStringCollection();
         MgStringCollection* getNames = uncachedClasses;
-        for (int i = 0; i < uncachedClasses->GetCount(); i++) 
+        for (int i = 0; i < uncachedClasses->GetCount(); i++)
         {
             if (CheckExtendedFeatureClass(resource, uncachedClasses->GetItem(i)))
             {
@@ -1097,7 +1097,7 @@ MgClassDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(
             // Get the class identity properties.
             Ptr<MgPropertyDefinitionCollection> idProps = GetIdentityProperties(fdoSchemas.p, resource, schemaName, className);
             if (NULL != idProps.p && idProps->GetCount() > 0)
-            {          
+            {
                 m_featureServiceCache->SetClassIdentityProperties(resource, schemaName, className, idProps.p);
 
                 // Add class to collection
@@ -1420,16 +1420,16 @@ bool MgServerDescribeSchema::CheckExtendedFeatureClasses(MgResourceIdentifier* r
     if (NULL != classNames)
     {
         INT32 classCount = classNames->GetCount();
-        
+
         for (INT32 i = 0; i < classCount; ++i)
         {
             STRING currClassName = classNames->GetItem(i);
-        
+
             if (CheckExtendedFeatureClass(resource, currClassName))
             {
                 extended = true;
                 break;
-            } 
+            }
         }
     }
 

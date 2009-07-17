@@ -67,7 +67,7 @@ void MgOpEnumerateResourceDocuments::Execute()
         STRING type;
         INT32 properties;
         Ptr<MgStringCollection> resources = (MgStringCollection*)m_stream->GetObject();
-        
+
         m_stream->GetString(type);
         m_stream->GetInt32(properties);
 

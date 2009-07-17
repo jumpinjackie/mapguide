@@ -140,7 +140,7 @@ MgFeatureReader* MgServerFeatureReaderPool::GetReader(STRING featureReader)
     {
         // Found it
         reader = iterator->second;
-        
+
         // Add a reference to it
         reader->AddRef();
     }

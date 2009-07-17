@@ -1794,7 +1794,7 @@ FdoFeatureSchema* MgServerFeatureUtil::GetFdoFeatureSchema(
 
 //////////////////////////////////////////////////////////////////
 void MgServerFeatureUtil::GetFdoClassCollection(
-    FdoClassCollection* fdoClassCol, 
+    FdoClassCollection* fdoClassCol,
     MgClassDefinitionCollection* mgClassDefCol)
 {
     MG_FEATURE_SERVICE_TRY()
@@ -1820,7 +1820,7 @@ void MgServerFeatureUtil::GetFdoClassCollection(
 
 //////////////////////////////////////////////////////////////////
 FdoClassDefinition* MgServerFeatureUtil::GetFdoClassDefinition(
-    MgClassDefinition* mgClassDef, 
+    MgClassDefinition* mgClassDef,
     FdoClassCollection* fdoClassCol)
 {
     FdoPtr<FdoClassDefinition> fdoClassDef;
@@ -1933,7 +1933,7 @@ FdoClassDefinition* MgServerFeatureUtil::GetFdoClassDefinition(
 
 //////////////////////////////////////////////////////////////////
 void MgServerFeatureUtil::GetClassProperties(
-    FdoPropertyDefinitionCollection* fdoPropDefCol,                                          
+    FdoPropertyDefinitionCollection* fdoPropDefCol,
     MgPropertyDefinitionCollection* propDefCol,
     FdoClassCollection* fdoClassCol)
 {
@@ -1965,7 +1965,7 @@ void MgServerFeatureUtil::GetClassProperties(
 //////////////////////////////////////////////////////////////////
 // TODO: Not sure why FdoDataPropertyDefinitionCollection derives from SchemaCollection??
 void MgServerFeatureUtil::GetClassProperties(
-    FdoDataPropertyDefinitionCollection* fdoPropDefCol,                                                
+    FdoDataPropertyDefinitionCollection* fdoPropDefCol,
     MgPropertyDefinitionCollection* mgPropDefCol)
 {
     MG_FEATURE_SERVICE_TRY()
@@ -1995,7 +1995,7 @@ void MgServerFeatureUtil::GetClassProperties(
 
 //////////////////////////////////////////////////////////////////
 FdoPropertyDefinition* MgServerFeatureUtil::GetFdoPropertyDefinition(
-    MgPropertyDefinition* mgPropDef, 
+    MgPropertyDefinition* mgPropDef,
     FdoClassCollection* fdoClassCol)
 {
     CHECKNULL((MgPropertyDefinition*)mgPropDef, L"MgServerFeatureUtil.GetFdoPropertyDefinition");
@@ -2106,7 +2106,7 @@ FdoDataPropertyDefinition* MgServerFeatureUtil::GetDataPropertyDefinition(
 
 //////////////////////////////////////////////////////////////////
 FdoObjectPropertyDefinition* MgServerFeatureUtil::GetObjectPropertyDefinition(
-    MgObjectPropertyDefinition* objPropDef, 
+    MgObjectPropertyDefinition* objPropDef,
     FdoClassCollection* fdoClassCol)
 {
     FdoPtr<FdoObjectPropertyDefinition> fdoPropDef;
@@ -2411,7 +2411,7 @@ void MgServerFeatureUtil::UpdateFdoClassCollection(
 
 //////////////////////////////////////////////////////////////////
 void MgServerFeatureUtil::UpdateFdoClassDefinition(
-    MgClassDefinition* mgClassDef, 
+    MgClassDefinition* mgClassDef,
     FdoClassDefinition* fdoClassDef,
     FdoClassCollection* fdoClassCol)
 {
@@ -2511,7 +2511,7 @@ void MgServerFeatureUtil::UpdateFdoClassDefinition(
 //////////////////////////////////////////////////////////////////
 void MgServerFeatureUtil::UpdateClassProperties(
     MgPropertyDefinitionCollection* propDefCol,
-    FdoPropertyDefinitionCollection* fdoPropDefCol,                                          
+    FdoPropertyDefinitionCollection* fdoPropDefCol,
     FdoClassCollection* fdoClassCol)
 {
     MG_FEATURE_SERVICE_TRY()
@@ -2559,7 +2559,7 @@ void MgServerFeatureUtil::UpdateClassProperties(
 
 //////////////////////////////////////////////////////////////////
 void MgServerFeatureUtil::UpdateClassProperties(
-    FdoDataPropertyDefinitionCollection* fdoPropDefCol,                                                
+    FdoDataPropertyDefinitionCollection* fdoPropDefCol,
     MgPropertyDefinitionCollection* mgPropDefCol)
 {
     MG_FEATURE_SERVICE_TRY()
@@ -2607,7 +2607,7 @@ void MgServerFeatureUtil::UpdateClassProperties(
 
 //////////////////////////////////////////////////////////////////
 void MgServerFeatureUtil::UpdateFdoPropertyDefinition(
-    MgPropertyDefinition* mgPropDef, 
+    MgPropertyDefinition* mgPropDef,
     FdoPropertyDefinition* fdoPropDef,
     FdoClassCollection* fdoClassCol)
 {
