@@ -67,6 +67,7 @@ INTERNAL_API:
     static const int SetLongTransaction_Id          = 0x1111ED24;
     static const int GetFdoCacheInfo_Id             = 0x1111ED25;
     static const int GetClassDefinition2_Id         = 0x1111ED26;
+    static const int ApplySchema_Id                 = 0x1111ED27;
 };
 /// \endcond
 

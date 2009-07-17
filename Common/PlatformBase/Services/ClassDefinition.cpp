@@ -36,6 +36,7 @@ MgClassDefinition::MgClassDefinition()
     m_rasterPropName = L"";
     m_isComputed = false;
     m_isAbstract = false;
+    m_isDeleted = false;
     m_baseClassDefinition = (MgClassDefinition*)NULL;
     m_totalProperties = (MgPropertyDefinitionCollection*)NULL;
     m_classList = (MgStringCollection*)NULL;
@@ -386,6 +387,23 @@ MgStringCollection* MgClassDefinition::GetClassesIncludingBase()
     }
 
     return SAFE_ADDREF((MgStringCollection*)m_classList);
+}
+
+/////////////////////////////////////////////////////////////////
+/// <summary>
+/// Marks the class definition for deletion.
+/// </summary>
+/// <returns>
+/// Returns nothing.
+/// </returns>
+void MgClassDefinition::Delete()
+{
+    m_isDeleted = true;
+}
+
+bool MgClassDefinition::IsDeleted()
+{
+    return m_isDeleted;
 }
 
 STRING MgClassDefinition::GetSchemaName()

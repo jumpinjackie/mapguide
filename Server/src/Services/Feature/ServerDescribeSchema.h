@@ -48,29 +48,10 @@ public:
     MgStringCollection* GetClasses(MgResourceIdentifier* resource, CREFSTRING schemaName);
     MgClassDefinition*  GetClassDefinition(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className, bool serialize = true);
     STRING SchemaToXml(MgFeatureSchemaCollection* schema);
-    FdoFeatureSchemaCollection* GetFdoFeatureSchemaCollection(MgFeatureSchemaCollection* mgSchemaCol);
-    FdoFeatureSchema* GetFdoFeatureSchema(MgFeatureSchema* mgSchema);
-    void GetFdoClassCollection(FdoClassCollection* fdoClassCol, MgClassDefinitionCollection* mgClassDefCol);
-
-    FdoClassDefinition* GetFdoClassDefinition(MgClassDefinition* mgClassDef, FdoClassCollection* fdoClassCol);
-    void GetClassProperties(FdoPropertyDefinitionCollection* fdoPropDefCol,
-                            MgPropertyDefinitionCollection* propDefCol,
-                            FdoClassCollection* fdoClassCol);
-
-    void GetClassProperties(FdoDataPropertyDefinitionCollection* fdoPropDefCol,
-                            MgPropertyDefinitionCollection* mgPropDefCol);
-    FdoPropertyDefinition* GetFdoPropertyDefinition(MgPropertyDefinition* mgPropDef, FdoClassCollection* fdoClassCol);
-    FdoDataPropertyDefinition* GetDataPropertyDefinition(MgDataPropertyDefinition* mgPropDef);
-    FdoGeometricPropertyDefinition* GetGeometricPropertyDefinition(MgGeometricPropertyDefinition* mgPropDef);
-    FdoRasterPropertyDefinition* GetRasterPropertyDefinition(MgRasterPropertyDefinition* mgPropDef);
-    FdoDataType GetFdoDataType(INT32 awPropType);
     MgFeatureSchemaCollection* XmlToSchema(CREFSTRING xml);
-    FdoObjectPropertyDefinition* GetObjectPropertyDefinition(MgObjectPropertyDefinition* objPropDef, FdoClassCollection* fdoClassCol);
     MgClassDefinitionCollection* GetIdentityProperties(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames);
 
 private:
-
-    bool FdoClassExist(const wchar_t* name, FdoClassCollection* clsCol);
     FdoFeatureSchemaCollection* DescribeFdoSchema(MgResourceIdentifier* resource,
         CREFSTRING schemaName, MgStringCollection* classNames, bool& classNameHintUsed);
     STRING GetSerializedXml(FdoFeatureSchemaCollection* fdoSchemaCol);

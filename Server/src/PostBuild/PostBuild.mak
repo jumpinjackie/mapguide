@@ -189,6 +189,8 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf \
         ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource \
         ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf \
+        ..\..\bin\UnitTestFiles\Empty.FeatureSource \
+        ..\..\bin\UnitTestFiles\Empty.sdf \
         ..\..\bin\UnitTestFiles\World.mgp \
         ..\..\bin\UnitTestFiles\World_Countries.sdf \
         ..\..\bin\UnitTestFiles\Shuttle.zip \
@@ -434,6 +436,8 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf \
         ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource \
         ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf \
+        ..\..\bin\UnitTestFiles\Empty.FeatureSource \
+        ..\..\bin\UnitTestFiles\Empty.sdf \
         ..\..\bin\UnitTestFiles\World.mgp \
         ..\..\bin\UnitTestFiles\World_Countries.sdf \
         ..\..\bin\UnitTestFiles\Shuttle.zip \
@@ -679,6 +683,8 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf \
           ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource \
           ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf \
+          ..\..\bin\UnitTestFiles\Empty.FeatureSource \
+          ..\..\bin\UnitTestFiles\Empty.sdf \          
           ..\..\bin\UnitTestFiles\World.mgp \
           ..\..\bin\UnitTestFiles\World_Countries.sdf \
           ..\..\bin\UnitTestFiles\Shuttle.zip \
@@ -924,6 +930,8 @@ release64 : ..\..\bin\release64\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf \
           ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource \
           ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf \
+          ..\..\bin\UnitTestFiles\Empty.FeatureSource \
+          ..\..\bin\UnitTestFiles\Empty.sdf \          
           ..\..\bin\UnitTestFiles\World.mgp \
           ..\..\bin\UnitTestFiles\World_Countries.sdf \
           ..\..\bin\UnitTestFiles\Shuttle.zip \
@@ -1042,6 +1050,8 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf  del /F ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf
+    if EXIST ..\..\bin\UnitTestFiles\Empty.FeatureSource            del /F ..\..\bin\UnitTestFiles\Empty.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Empty.sdf                      del /F ..\..\bin\UnitTestFiles\Empty.sdf
     if EXIST ..\..\bin\UnitTestFiles\World.mgp                      del /F ..\..\bin\UnitTestFiles\World.mgp
     if EXIST ..\..\bin\UnitTestFiles\World_Countries.sdf            del /F ..\..\bin\UnitTestFiles\World_Countries.sdf
     if EXIST ..\..\bin\UnitTestFiles\Shuttle.zip                    del /F ..\..\bin\UnitTestFiles\Shuttle.zip
@@ -1155,6 +1165,8 @@ cleandebug64:
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf  del /F ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf
+    if EXIST ..\..\bin\UnitTestFiles\Empty.FeatureSource            del /F ..\..\bin\UnitTestFiles\Empty.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Empty.sdf                      del /F ..\..\bin\UnitTestFiles\Empty.sdf        
     if EXIST ..\..\bin\UnitTestFiles\World.mgp                      del /F ..\..\bin\UnitTestFiles\World.mgp
     if EXIST ..\..\bin\UnitTestFiles\World_Countries.sdf            del /F ..\..\bin\UnitTestFiles\World_Countries.sdf
     if EXIST ..\..\bin\UnitTestFiles\Shuttle.zip                    del /F ..\..\bin\UnitTestFiles\Shuttle.zip
@@ -1268,6 +1280,8 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf  del /F ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf
+    if EXIST ..\..\bin\UnitTestFiles\Empty.FeatureSource            del /F ..\..\bin\UnitTestFiles\Empty.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Empty.sdf                      del /F ..\..\bin\UnitTestFiles\Empty.sdf
     if EXIST ..\..\bin\UnitTestFiles\World.mgp                      del /F ..\..\bin\UnitTestFiles\World.mgp
     if EXIST ..\..\bin\UnitTestFiles\World_Countries.sdf            del /F ..\..\bin\UnitTestFiles\World_Countries.sdf
     if EXIST ..\..\bin\UnitTestFiles\Shuttle.zip                    del /F ..\..\bin\UnitTestFiles\Shuttle.zip
@@ -1380,6 +1394,8 @@ cleanrelease64:
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf  del /F ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf
+    if EXIST ..\..\bin\UnitTestFiles\Empty.FeatureSource            del /F ..\..\bin\UnitTestFiles\Empty.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Empty.sdf                      del /F ..\..\bin\UnitTestFiles\Empty.sdf    
     if EXIST ..\..\bin\UnitTestFiles\World.mgp                      del /F ..\..\bin\UnitTestFiles\World.mgp
     if EXIST ..\..\bin\UnitTestFiles\World_Countries.sdf            del /F ..\..\bin\UnitTestFiles\World_Countries.sdf
     if EXIST ..\..\bin\UnitTestFiles\Shuttle.zip                    del /F ..\..\bin\UnitTestFiles\Shuttle.zip
@@ -1441,6 +1457,8 @@ cleanrelease64:
 "..\..\..\UnitTest\TestData\FeatureService\SDF\Sheboygan_BuildingOutlines.sdf" :
 "..\..\..\UnitTest\TestData\FeatureService\SDF\Sheboygan_VotingDistricts.FeatureSource" :
 "..\..\..\UnitTest\TestData\FeatureService\SDF\Sheboygan_VotingDistricts.sdf" :
+"..\..\..\UnitTest\TestData\FeatureService\SDF\Empty.FeatureSource" :
+"..\..\..\UnitTest\TestData\FeatureService\SDF\Empty.sdf" :
 "..\..\..\UnitTest\TestData\FeatureService\SDF\TESTChainedInner1ToManyJoin.FeatureSource" :
 "..\..\..\UnitTest\TestData\FeatureService\SHP\Redding_Parcels.FeatureSource" :
 "..\..\..\UnitTest\TestData\FeatureService\SHP\Redding_Parcels.shp" :
@@ -1565,7 +1583,15 @@ cleanrelease64:
 ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource : "..\..\..\UnitTest\TestData\FeatureService\SDF\TESTChainedInner1ToManyJoin.FeatureSource"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\FeatureService\SDF\TESTChainedInner1ToManyJoin.FeatureSource" xcopy /r /d /y "..\..\..\UnitTest\TestData\FeatureService\SDF\TESTChainedInner1ToManyJoin.FeatureSource" ..\..\bin\UnitTestFiles\
+    
+..\..\bin\UnitTestFiles\Empty.FeatureSource : "..\..\..\UnitTest\TestData\FeatureService\SDF\Empty.FeatureSource"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\FeatureService\SDF\Empty.FeatureSource" xcopy /r /d /y "..\..\..\UnitTest\TestData\FeatureService\SDF\Empty.FeatureSource" ..\..\bin\UnitTestFiles\
 
+..\..\bin\UnitTestFiles\Empty.sdf : "..\..\..\UnitTest\TestData\FeatureService\SDF\Empty.sdf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\FeatureService\SDF\Empty.sdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\FeatureService\SDF\Empty.sdf" ..\..\bin\UnitTestFiles\
+    
 ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource : "..\..\..\UnitTest\TestData\FeatureService\SHP\Redding_Parcels.FeatureSource"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\FeatureService\SHP\Redding_Parcels.FeatureSource" xcopy /r /d /y "..\..\..\UnitTest\TestData\FeatureService\SHP\Redding_Parcels.FeatureSource" ..\..\bin\UnitTestFiles\

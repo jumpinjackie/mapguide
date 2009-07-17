@@ -19,6 +19,7 @@
 #include "FeatureOperationFactory.h"
 #include "FeatureOperation.h"
 
+#include "OpApplySchema.h"
 #include "OpDescribeSchema.h"
 #include "OpDescribeSchemaAsXml.h"
 #include "OpExecuteSqlNonQuery.h"
@@ -512,6 +513,18 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         {
         case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetClassDefinition());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgFeatureServiceOpId::ApplySchema_Id:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(1,0):
+            handler.reset(new MgOpApplySchema());
             break;
         default:
             throw new MgInvalidOperationVersionException(

@@ -35,6 +35,7 @@ class TestFeatureService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_GetClasses);
     CPPUNIT_TEST(TestCase_GetClassDefinition);
     CPPUNIT_TEST(TestCase_DescribeSchema);
+    CPPUNIT_TEST(TestCase_ApplySchema);
     CPPUNIT_TEST(TestCase_SelectFeatures);
     CPPUNIT_TEST(TestCase_SelectAggregate);
 //    CPPUNIT_TEST(TestCase_UpdateFeatures);
@@ -77,6 +78,7 @@ public:
     void TestCase_GetClasses();
     void TestCase_GetClassDefinition();
     void TestCase_DescribeSchema();
+    void TestCase_ApplySchema();
     void TestCase_SelectFeatures();
     void TestCase_SelectAggregate();
 //    void TestCase_UpdateFeatures();

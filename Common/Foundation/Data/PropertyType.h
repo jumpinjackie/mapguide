@@ -118,6 +118,11 @@ PUBLISHED_API:
     /// \brief
     /// Type name for a raster property (MgRasterProperty).
     static const int Raster   = 14;
+
+    ///////////////////////////////////////////////////////
+    /// \brief
+    /// Type name for a decimal property.
+    static const int Decimal  = 15;
 };
 /// \}
 

@@ -267,6 +267,12 @@ public:
                                             CREFSTRING className,
                                             bool serialize);
 
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Creates or updates a feature schema within specified feature source. 
+    ///
+    void ApplySchema(MgResourceIdentifier* resource, MgFeatureSchema* schema);
+
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the definitions of one or more schemas contained in the

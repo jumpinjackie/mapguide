@@ -181,11 +181,41 @@ PUBLISHED_API:
     ///
     MgClassDefinitionCollection* GetClasses();
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Marks the feature schema for deletion.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// void Delete();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// void Delete();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// void Delete();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Returns nothing.
+    ///
+    void Delete();
+
 INTERNAL_API:
     void Dispose();
     void Serialize(MgStream* stream);
     void Deserialize(MgStream* stream);
     bool CanSetName();
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Check whether the property is marked as deleted.
+    ///
+    /// \return
+    /// Returns ture if it the property is marked as deleted, 
+    /// false otherwise.
+    ///
+    bool IsDeleted();
 
 protected:
     INT32 GetClassId();
@@ -196,6 +226,7 @@ CLASS_ID:
 private:
     STRING m_name;
     STRING m_description;
+    bool   m_isDeleted;
     Ptr<MgClassDefinitionCollection> m_collection;
 };
 /// \}

@@ -292,6 +292,36 @@ MgByteReader* MgProxyFeatureService::GetCapabilities(CREFSTRING providerName)
     return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
 
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Creates or updates a feature schema within the specified feature source.
+/// </summary>
+/// <param name="resource">Input
+/// A resource identifier referring to a feature source.
+/// </param>
+/// <param name="schema">Input
+/// Input schema to be created or updated.
+/// </param>
+/// <returns>
+/// Returns nothing.
+/// </returns>
+void MgProxyFeatureService::ApplySchema(MgResourceIdentifier* resource, MgFeatureSchema* schema)
+{
+    MgCommand cmd;
+
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knVoid,                           // Return type expected
+                       MgFeatureServiceOpId::ApplySchema_Id,        // Command Code
+                       2,                                           // No of arguments
+                       Feature_Service,                             // Service Id
+                       BUILD_VERSION(1,0,0),                        // Operation version
+                       MgCommand::knObject, resource,               // Argument#1
+                       MgCommand::knObject, schema,                 // Argument#2
+                       MgCommand::knNone);                          // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Gets the definitions of one or more schemas contained in the

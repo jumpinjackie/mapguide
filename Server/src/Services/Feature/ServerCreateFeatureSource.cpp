@@ -19,6 +19,7 @@
 #include "ServerCreateFeatureSource.h"
 #include "ServerFeatureConnection.h"
 #include "ServerDescribeSchema.h"
+#include "ServerFeatureUtil.h"
 
 #include "Fdo/Commands/DataStore/ICreateDataStore.h"
 
@@ -106,9 +107,8 @@ void MgServerCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* reso
         spatialContext->Execute();
 
         // Create and set the schema
-        MgServerDescribeSchema descSchema;
         Ptr<MgFeatureSchema> featureSchema = params->GetFeatureSchema();
-        FdoPtr<FdoFeatureSchema> fdoSchema = descSchema.GetFdoFeatureSchema(featureSchema);
+        FdoPtr<FdoFeatureSchema> fdoSchema = MgServerFeatureUtil::GetFdoFeatureSchema(featureSchema);
         FdoPtr<FdoIApplySchema> applyschema = (FdoIApplySchema*)conn->CreateCommand(FdoCommandType_ApplySchema);
         applyschema->SetFeatureSchema(fdoSchema);
         applyschema->Execute();
