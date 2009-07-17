@@ -15,7 +15,7 @@ cleanrelease:
   del /Q .\*PINVOKE.cs
   del /Q .\*Api.cs
   if exist $(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule del $(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule
-  if exist $(OUTDIR)\OSGeo.MapGuide.FoundationNM.pdb del $(OUTDIR)\OSGeo.MapGuide.FoundationNM.pdb
+  if exist $(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule.pdb del $(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule.pdb
   if exist $(OUTDIR)\OSGeo.MapGuide.Foundation.dll del $(OUTDIR)\OSGeo.MapGuide.Foundation.dll
   if exist $(OUTDIR)\OSGeo.MapGuide.Foundation.pdb del $(OUTDIR)\OSGeo.MapGuide.Foundation.pdb
 
