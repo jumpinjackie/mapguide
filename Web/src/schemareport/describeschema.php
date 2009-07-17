@@ -30,7 +30,7 @@
 
         if(!$viewer)
         {
-        	$viewer = 'flexible';
+            $viewer = 'flexible';
         }
 
         echo '<frameset cols="45%,*" bordercolor=#a0a0a0 frameborder=1 framespacing=2>';

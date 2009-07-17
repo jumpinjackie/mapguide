@@ -73,7 +73,7 @@ NameValueCollection cmds = null;
 
         cred.SetClientIp(GetClientIp(Request));
         cred.SetClientAgent(GetClientAgent());
-        
+
         site.Open(cred);
 
         if (createSession)
@@ -600,7 +600,7 @@ void GetParameters(NameValueCollection parameters)
     webLayoutDefinition = parameters["WEBLAYOUT"];
     if (webLayoutDefinition == null)
         webLayoutDefinition = "";
-    
+
     String localeParam = parameters["LOCALE"];
     if (localeParam != null && localeParam.Length > 0)
     {

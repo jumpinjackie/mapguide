@@ -5,8 +5,8 @@ div.PopupMetricsDiv
 {
     position: absolute;
     top: 5000px;
-    visibility: hidden; 
-    top: 0px; 
+    visibility: hidden;
+    top: 0px;
     left: 0px;
 }
 table.PopupTableContent

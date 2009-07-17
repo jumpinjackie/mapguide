@@ -36,23 +36,23 @@ String locale = "";
     request.setCharacterEncoding("UTF-8");
     GetRequestParameters(request);
 
-	String url = URLDecoder.decode(taskPane, "UTF-8");
-	int index = url.indexOf("?");
-	
-	if(index > 0)
-	{
-		String path = url.substring(0, index);
-		String query = url.substring(index+1);
-		
-		if(query.length() > 0)
-			url = String.format("%s?SESSION=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s&%s", path, sessionId, URLEncoder.encode(webLayout, "UTF-8"), dwf, locale, query);
-		else
-			url = String.format("%s?SESSION=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s", path, sessionId, URLEncoder.encode(webLayout, "UTF-8"), dwf, locale);
-	}
-	else
-	{
-		url = String.format("%s?SESSION=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s", taskPane, sessionId, URLEncoder.encode(webLayout), dwf, locale);
-	}
+    String url = URLDecoder.decode(taskPane, "UTF-8");
+    int index = url.indexOf("?");
+
+    if(index > 0)
+    {
+        String path = url.substring(0, index);
+        String query = url.substring(index+1);
+
+        if(query.length() > 0)
+            url = String.format("%s?SESSION=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s&%s", path, sessionId, URLEncoder.encode(webLayout, "UTF-8"), dwf, locale, query);
+        else
+            url = String.format("%s?SESSION=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s", path, sessionId, URLEncoder.encode(webLayout, "UTF-8"), dwf, locale);
+    }
+    else
+    {
+        url = String.format("%s?SESSION=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s", taskPane, sessionId, URLEncoder.encode(webLayout), dwf, locale);
+    }
     String templ = LoadTemplate("/viewerfiles/taskframe.templ");
     String[] vals = { GetSurroundVirtualPath(request) + "tasklist.jsp",
                     locale,

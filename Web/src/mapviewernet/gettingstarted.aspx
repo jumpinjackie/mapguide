@@ -62,7 +62,7 @@ bool dwf = false;
             MgUserInformation cred = new MgUserInformation(sessionId);
             cred.SetClientIp(GetClientIp(Request));
             cred.SetClientAgent(GetClientAgent());
-            
+
             MgSiteConnection site = new MgSiteConnection();
             site.Open(cred);
             MgResourceService resourceSrvc = site.CreateService(MgServiceType.ResourceService) as MgResourceService;
