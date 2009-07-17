@@ -53,7 +53,7 @@ namespace OSGeo.MapGuide
 
         public MgPolygon CreatePolygon(double offset)
         {
-            
+
 
             // OuterRing
             MgCoordinate oCoord1 = factory.CreateCoordinateXY(offset + 0.0, 0.0);
@@ -107,7 +107,7 @@ namespace OSGeo.MapGuide
 
         public MgCurveString CreateCurveString(double offset)
         {
-            
+
 
             // Create and return a curvestring consisting of
             // one circulararc segment and one linearstring segment
@@ -149,7 +149,7 @@ namespace OSGeo.MapGuide
             // arcseg  = (0,0), (0,1), (1,2)
             // lineseg = (1,2), (0,0)
 
-            
+
 
             // ArcSegment
             MgCoordinate startPos = factory.CreateCoordinateXY(offset+0.0, offset+0.0);
@@ -176,7 +176,7 @@ namespace OSGeo.MapGuide
 
         public MgCurvePolygon CreateCurvePolygon(double offset, int increment)
         {
-            
+
 
             MgCurveRing extRing = CreateCurveRing(offset + increment);
 
@@ -194,7 +194,7 @@ namespace OSGeo.MapGuide
 
         public MgMultiPoint CreateMultiPoint()
         {
-            
+
 
             MgCoordinate coord1 = factory.CreateCoordinateXYZ(1.0, 2.0, 3.0);
             MgPoint point1 = factory.CreatePoint(coord1);
@@ -216,7 +216,7 @@ namespace OSGeo.MapGuide
 
         public MgMultiLineString CreateMultiLineString()
         {
-            
+
 
             MgCoordinate coord1 = factory.CreateCoordinateXYZ(0.0, 1.0, 2.0);
             MgCoordinate coord2 = factory.CreateCoordinateXYZ(3.0, 4.0, 5.0);
@@ -249,7 +249,7 @@ namespace OSGeo.MapGuide
 
         public MgMultiPolygon CreateMultiPolygon()
         {
-            
+
 
             MgPolygon polygon1 = CreatePolygon(0.0);
             MgPolygon polygon2 = CreatePolygon(0.0);
@@ -264,7 +264,7 @@ namespace OSGeo.MapGuide
 
         MgMultiCurveString CreateMultiCurveString()
         {
-            
+
 
             MgCurveString curveString1 = CreateCurveString(100);
             MgCurveString curveString2 = CreateCurveString(200);
@@ -281,7 +281,7 @@ namespace OSGeo.MapGuide
 
         public MgMultiCurvePolygon CreateMultiCurvePolygon(int numCurvePolys, double offset)
         {
-            
+
 
             MgCurvePolygonCollection curvePolys = new MgCurvePolygonCollection();
             for (int i=0; i < numCurvePolys; i++)
@@ -296,7 +296,7 @@ namespace OSGeo.MapGuide
 
         public MgMultiGeometry CreateMultiGeometry()
         {
-            
+
 
             MgGeometryCollection geometries = new MgGeometryCollection();
             MgGeometry geometry = null;

@@ -1027,7 +1027,7 @@ void MgMap::BulkLoadIdentityProperties(MgFeatureService* featureService)
             }
         }
     }
-  
+
     for (LayerFeatureSourceMap::iterator fsIter = fsMap.begin(); fsIter != fsMap.end(); fsIter++)
     {
         // Assumption:  feature source is only referencing one schema

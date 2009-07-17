@@ -139,7 +139,7 @@ INTERNAL_API:
     /// Checks whether the property is marked as deleted.
     ///
     /// \return
-    /// Returns true if the property is marked as deleted, 
+    /// Returns true if the property is marked as deleted,
     /// false otherwise.
     ///
     bool IsDeleted();

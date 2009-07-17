@@ -25,7 +25,7 @@ MgServerConnectionStack::MgServerConnectionStack(INT32 port)
 {
     m_queue = new ConnectionQueue;
     m_inUse = new ConnectionList;
-    
+
     // Query configuration document to determine which port type we are
     INT32 adminPort = 0;
     INT32 clientPort = 0;
@@ -43,7 +43,7 @@ MgServerConnectionStack::MgServerConnectionStack(INT32 port)
         MgConfigProperties::DefaultSiteConnectionPropertyPort);
 
     // Assign an appropriate number of connections for each connection type.  On Windows
-    // we are limited to 62 connections and will typically have one mapagent and one 
+    // we are limited to 62 connections and will typically have one mapagent and one
     // API process running.  Limiting the number of connections to 20 per process should give
     // adequate headroom to handle CLOSE_WAIT states.  Twelve actively processing client connections
     // should easily saturate an eight core machine.

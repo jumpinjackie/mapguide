@@ -626,12 +626,12 @@ class ExecuteOperation
         }
         elseif($operationName == "WmsGetMap")
         {
-            
+
             $actualResult = $this->wmsOperation->GetMap($paramSet);
         }
         elseif($operationName == "WmsGetFeatureInfo")
         {
-            
+
             $actualResult = $this->wmsOperation->GetFeatureInfo($paramSet);
         }
         //End Wms
@@ -639,7 +639,7 @@ class ExecuteOperation
         {
             $actualResult = new Result ("Unknown operation", "text/plain");
         }
-    
+
         return $actualResult;
     }
 }

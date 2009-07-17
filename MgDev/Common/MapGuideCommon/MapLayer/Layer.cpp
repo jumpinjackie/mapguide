@@ -106,7 +106,7 @@ void MgLayer::GetLayerInfoFromDefinition(MgResourceService* resourceService)
             STRING className;
             STRING schemaName;
             ParseFeatureName(featureService, className, schemaName);
-            
+
             // Get the identity properties
             Ptr<MgStringCollection> classNames = new MgStringCollection();
             classNames->Add(className);

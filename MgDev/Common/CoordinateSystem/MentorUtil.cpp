@@ -524,13 +524,13 @@ STRING ProjectionDescriptionFromString(const char *kpStr)
             {
                 // Found a match!
                 wchar_t* pwszDesc = Convert_Ascii_To_Wide(cs_Prjtab[i].descr);
-                
+
                 if (NULL != pwszDesc)
                 {
                     projectionDescription = pwszDesc;
                     delete[] pwszDesc;
                 }
-                
+
                 break;
             }
         }
@@ -1349,7 +1349,7 @@ INT32 GeodeticTransformationPoint(cs_Dtcprm_ *pDtcprm, double& dLongitude, doubl
     INT32 nResult = 0;
 
     // Skip datum transformation if we have a null transformation
-    // We have a null transform if the first transform type is dtcTypNone 
+    // We have a null transform if the first transform type is dtcTypNone
     if (dtcTypNone != pDtcprm->xforms[0].xfrmType)
     {
         double dZ=0.;

@@ -152,9 +152,9 @@ class ValidateUtils
         if (strstr($contentType,"text/xml") != FALSE)
         {
             $doc = new DOMDocument();
-            $doc->preserveWhiteSpace = true;            
+            $doc->preserveWhiteSpace = true;
             if ($doc->loadXML($resultData))
-            {                
+            {
                 $resultData = self::SortElement($doc, '');
             }
         }

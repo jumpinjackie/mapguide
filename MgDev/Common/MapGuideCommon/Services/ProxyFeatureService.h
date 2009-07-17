@@ -265,7 +265,7 @@ INTERNAL_API:
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Creates or updates a feature schema within the specified feature source. 
+    /// Creates or updates a feature schema within the specified feature source.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

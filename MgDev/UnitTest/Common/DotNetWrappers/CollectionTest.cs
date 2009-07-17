@@ -6,7 +6,7 @@ using NUnit.Framework;
 using OSGeo.MapGuide;
 
 namespace OSGeo.MapGuide
-{  
+{
     [TestFixture]
     public class CollectionTest
     {
@@ -638,7 +638,7 @@ namespace OSGeo.MapGuide
                 Assert.AreEqual(strColl[i], coll2.GetItem(i));
                 Assert.AreEqual(strColl[i], coll3[i]);
             }
-            
+
         }
 
         [Test]
@@ -667,7 +667,7 @@ namespace OSGeo.MapGuide
                 txt += "[" + prop.GetName() + "]";
             }
             Assert.AreEqual("[prop1][prop2][prop3][prop4]", txt);
-        }     
+        }
     }
 }
 

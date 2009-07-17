@@ -348,7 +348,7 @@ PUBLISHED_API:
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Creates or updates a feature schema within the specified feature source. 
+    /// Creates or updates a feature schema within the specified feature source.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -429,7 +429,7 @@ PUBLISHED_API:
     ///
     /// \remarks
     /// This method has been deprecated. Use the following method:
-    /// \link MgFeatureService::DescribeSchema(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames) 
+    /// \link MgFeatureService::DescribeSchema(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames)
     ///                         DescribeSchema(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames) \endlink.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
@@ -528,7 +528,7 @@ PUBLISHED_API:
     /// specify a schema definition in XML is discussed in the
     /// Autodesk FDO API Developer's Guide.
     /// This method has been deprecated. Use the following method:
-    /// \link MgFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames) 
+    /// \link MgFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames)
     ///                        DescribeSchemaAsXml(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames) \endlink.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->

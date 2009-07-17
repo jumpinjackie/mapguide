@@ -212,7 +212,7 @@ INTERNAL_API:
     /// Checks whether the feature schema is marked as deleted.
     ///
     /// \return
-    /// Returns true if the feature schema is marked as deleted, 
+    /// Returns true if the feature schema is marked as deleted,
     /// false otherwise.
     ///
     bool IsDeleted();
