@@ -64,11 +64,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib xerces-c_2D.lib Fdo.lib FdoCommon.lib FdoGeometry.lib ExpressionEngine.lib"
+				AdditionalDependencies="ACEd.lib xerces-c_2D.lib FDO.lib FDOCommon.lib FDOGeometry.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\MgServerFeatureServiced.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\dbxml-2.3.10\lib;..\..\..\..\Oem\FDO\lib"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll;ExpressionEngine.dll"
+				DelayLoadDLLs="FDO.dll;FDOCommon.dll;FDOGeometry.dll;ExpressionEngine.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgServerFeatureServiced.pdb"
 				SubSystem="2"
@@ -145,11 +145,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib xerces-c_2D.lib Fdo.lib FdoCommon.lib FdoGeometry.lib ExpressionEngine.lib"
+				AdditionalDependencies="ACEd.lib xerces-c_2D.lib FDO.lib FDOCommon.lib FDOGeometry.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\MgServerFeatureServiced.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\..\Oem\dbxml-2.3.10\lib64;..\..\..\..\Oem\FDO\lib64"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll;ExpressionEngine.dll"
+				DelayLoadDLLs="FDO.dll;FDOCommon.dll;FDOGeometry.dll;ExpressionEngine.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgServerFeatureServiced.pdb"
 				SubSystem="2"
@@ -223,11 +223,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib xerces-c_2.lib Fdo.lib FdoCommon.lib FdoGeometry.lib ExpressionEngine.lib"
+				AdditionalDependencies="ACE.lib xerces-c_2.lib FDO.lib FDOCommon.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\MgServerFeatureService.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\dbxml-2.3.10\lib;..\..\..\..\Oem\FDO\lib"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll;ExpressionEngine.dll"
+				DelayLoadDLLs="FDO.dll;FDOCommon.dll;ExpressionEngine.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgServerFeatureService.pdb"
 				SubSystem="2"
@@ -304,11 +304,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib xerces-c_2.lib Fdo.lib FdoCommon.lib FdoGeometry.lib ExpressionEngine.lib"
+				AdditionalDependencies="ACE.lib xerces-c_2.lib FDO.lib FDOCommon.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\MgServerFeatureService.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\..\Oem\dbxml-2.3.10\lib64;..\..\..\..\Oem\FDO\lib64"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll;ExpressionEngine.dll"
+				DelayLoadDLLs="FDO.dll;FDOCommon.dll;ExpressionEngine.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgServerFeatureService.pdb"
 				SubSystem="2"

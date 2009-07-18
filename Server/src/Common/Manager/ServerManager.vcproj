@@ -65,11 +65,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib Fdo.lib FdoCommon.lib pdh.lib"
+				AdditionalDependencies="ACEd.lib FDO.lib FDOCommon.lib pdh.lib"
 				OutputFile="$(OutDir)\MgServerManagerd.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\FDO\lib"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll"
+				DelayLoadDLLs="FDO.dll;FDOCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgServerManagerd.pdb"
 				SubSystem="2"
@@ -147,11 +147,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib Fdo.lib FdoCommon.lib pdh.lib"
+				AdditionalDependencies="ACEd.lib FDO.lib FDOCommon.lib pdh.lib"
 				OutputFile="$(OutDir)\MgServerManagerd.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\..\Oem\FDO\lib64"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll"
+				DelayLoadDLLs="FDO.dll;FDOCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgServerManagerd.pdb"
 				SubSystem="2"
@@ -225,11 +225,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib Fdo.lib FdoCommon.lib pdh.lib"
+				AdditionalDependencies="ACE.lib FDO.lib FDOCommon.lib pdh.lib"
 				OutputFile="$(OutDir)\MgServerManager.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\FDO\lib"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll"
+				DelayLoadDLLs="FDO.dll;FDOCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgServerManager.pdb"
 				SubSystem="2"
@@ -306,11 +306,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib Fdo.lib FdoCommon.lib pdh.lib"
+				AdditionalDependencies="ACE.lib FDO.lib FDOCommon.lib pdh.lib"
 				OutputFile="$(OutDir)\MgServerManager.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\..\Oem\FDO\lib64"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll"
+				DelayLoadDLLs="FDO.dll;FDOCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgServerManager.pdb"
 				SubSystem="2"
