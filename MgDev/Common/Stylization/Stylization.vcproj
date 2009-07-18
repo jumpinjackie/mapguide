@@ -65,11 +65,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib FdoCommon.lib ExpressionEngine.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\MgStylizationd.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Oem\FDO\lib"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;ExpressionEngine.dll"
+				DelayLoadDLLs="FDO.dll;FDOCommon.dll;ExpressionEngine.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgStylizationd.pdb"
 				SubSystem="2"
@@ -148,11 +148,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib FdoCommon.lib ExpressionEngine.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\MgStylizationd.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Oem\FDO\lib64"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;ExpressionEngine.dll"
+				DelayLoadDLLs="FDO.dll;FDOCommon.dll;ExpressionEngine.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgStylizationd.pdb"
 				SubSystem="2"
@@ -229,11 +229,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib FdoCommon.lib ExpressionEngine.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\MgStylization.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Oem\FDO\lib"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;ExpressionEngine.dll"
+				DelayLoadDLLs="FDO.dll;FDOCommon.dll;ExpressionEngine.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgStylization.pdb"
 				SubSystem="2"
@@ -315,11 +315,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib FdoCommon.lib ExpressionEngine.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\MgStylization.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Oem\FDO\lib64"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;ExpressionEngine.dll"
+				DelayLoadDLLs="FDO.dll;FDOCommon.dll;ExpressionEngine.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgStylization.pdb"
 				SubSystem="2"

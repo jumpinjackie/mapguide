@@ -64,11 +64,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib xerces-c_2D.lib Fdo.lib FdoCommon.lib"
+				AdditionalDependencies="ACEd.lib xerces-c_2D.lib FDO.lib FDOCommon.lib"
 				OutputFile="$(OutDir)\MgServerMappingServiced.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\dbxml-2.3.10\lib;..\..\..\..\Oem\FDO\lib"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll"
+				DelayLoadDLLs="FDO.dll;FDOCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgServerMappingServiced.pdb"
 				SubSystem="2"
@@ -145,11 +145,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib xerces-c_2D.lib Fdo.lib FdoCommon.lib"
+				AdditionalDependencies="ACEd.lib xerces-c_2D.lib FDO.lib FDOCommon.lib"
 				OutputFile="$(OutDir)\MgServerMappingServiced.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\..\Oem\dbxml-2.3.10\lib64;..\..\..\..\Oem\FDO\lib64"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll"
+				DelayLoadDLLs="FDO.dll;FDOCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgServerMappingServiced.pdb"
 				SubSystem="2"
@@ -223,11 +223,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib xerces-c_2.lib Fdo.lib FdoCommon.lib"
+				AdditionalDependencies="ACE.lib xerces-c_2.lib FDO.lib FDOCommon.lib"
 				OutputFile="$(OutDir)\MgServerMappingService.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\dbxml-2.3.10\lib;..\..\..\..\Oem\FDO\lib"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll"
+				DelayLoadDLLs="FDO.dll;FDOCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgServerMappingService.pdb"
 				SubSystem="2"
@@ -304,11 +304,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib xerces-c_2.lib Fdo.lib FdoCommon.lib"
+				AdditionalDependencies="ACE.lib xerces-c_2.lib FDO.lib FDOCommon.lib"
 				OutputFile="$(OutDir)\MgServerMappingService.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\..\Oem\dbxml-2.3.10\lib64;..\..\..\..\Oem\FDO\lib64"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll"
+				DelayLoadDLLs="FDO.dll;FDOCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgServerMappingService.pdb"
 				SubSystem="2"

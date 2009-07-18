@@ -64,11 +64,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib"
 				OutputFile="$(OutDir)\MgGwsCommond.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\FDO\lib"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll"
+				DelayLoadDLLs="FDO.dll;FDOCommon.dll;FDOGeometry.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgGwsCommond.pdb"
 				SubSystem="2"
@@ -145,11 +145,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib"
 				OutputFile="$(OutDir)\MgGwsCommond.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\FDO\lib64"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll"
+				DelayLoadDLLs="FDO.dll;FDOCommon.dll;FDOGeometry.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgGwsCommond.pdb"
 				SubSystem="2"
@@ -223,10 +223,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib"
 				OutputFile="$(OutDir)\MgGwsCommon.dll"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\FDO\lib"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll"
+				DelayLoadDLLs="FDO.dll;FDOCommon.dll;FDOGeometry.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgGwsCommon.pdb"
 				SubSystem="2"
@@ -303,10 +303,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib"
 				OutputFile="$(OutDir)\MgGwsCommon.dll"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\FDO\lib64"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll"
+				DelayLoadDLLs="FDO.dll;FDOCommon.dll;FDOGeometry.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgGwsCommon.pdb"
 				SubSystem="2"
