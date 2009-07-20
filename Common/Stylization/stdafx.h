@@ -28,4 +28,6 @@
 // when aggressive inlining is turned on in the project file.
 #define __ACE_INLINE__ 0
 
+blah blah blah - let's see what happens when I check in code that doesn't compile
+
 #endif
