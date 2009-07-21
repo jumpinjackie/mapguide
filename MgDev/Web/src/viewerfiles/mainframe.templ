@@ -8,8 +8,8 @@
 <script language="javascript" src="../viewerfiles/contextmenu.js"></script>
 <script language=javascript>
 
-var clientAgent = 'Ajax Viewer';
-var webAgent = '%s';
+var clientAgentName = 'Ajax Viewer';
+var webAgentAddress = '%s';
 var enablePingServer = %s;
 var locale = '%s';
 var hasToolbar = %s;
@@ -399,17 +399,17 @@ function OnMapLoaded()
     isStartPingServer = false;
     if(enablePingServer)
     {    
-        GetSeverSessionTimeout();
+        GetServerSessionTimeout();
     }
 }
 
-function encodeComponent(str)
+function encodeComponentName(str)
 {
     op = /\(/g; cp = /\)/g;
     return encodeURIComponent(str).replace(op, "%%28").replace(cp, "%%29");
 }
 
-function ParseLocalizedFloat(floatString)
+function ParseLocalizedFloatNum(floatString)
 {
     if(thousandSeparator.length > 0)
     {
@@ -423,16 +423,16 @@ function ParseLocalizedFloat(floatString)
 }
 
 function handler() 
-{    
+{
     if(this.readyState == 4 && this.status == 200) 
-    {  
+    {    
         if(!isStartPingServer)
         {
-            var num = ParseLocalizedFloat(this.responseText);
+            var num = ParseLocalizedFloatNum(this.responseText);
             if(!isNaN(num) && num != 0)
             {
                 var pingServerInterval = num / 5 * 1000;
-                intervalID = window.setInterval(GetSeverSessionTimeout, pingServerInterval);
+                intervalID = window.setInterval(GetServerSessionTimeout, pingServerInterval);
                 isStartPingServer = true;
             }
         }
@@ -452,20 +452,10 @@ function handler()
     }
 }
 
-function GetSeverSessionTimeout()
+function GetServerSessionTimeout()
 {
-    var url = webAgent + "?OPERATION=GETSESSIONTIMEOUT&VERSION=2.2.0&SESSION=" + GetMapFrame().GetSessionId() + "&LOCALE=" + locale + "&CLIENTAGENT=" + encodeComponent(clientAgent); 
-    var request;
-    var agent = navigator.userAgent.toLowerCase();
-    var msie = agent.indexOf("msie") != -1;
-    if(msie)
-    {
-       request=new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    else
-    {
-       request= new XMLHttpRequest();
-    }
+    var url = webAgentAddress + "?OPERATION=GETSESSIONTIMEOUT&VERSION=2.2.0&SESSION=" + GetMapFrame().GetSessionId() + "&LOCALE=" + locale + "&CLIENTAGENT=" + encodeComponentName(clientAgentName) + "&REQUESTTIME=" + (new Date()).getTime();
+    var request = new XMLHttpRequest();
     
     request.onreadystatechange = handler;
     
