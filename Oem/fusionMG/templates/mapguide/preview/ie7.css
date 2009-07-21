@@ -13,5 +13,5 @@
    Please note that IE8 changed how filters are written. */
 .jxChromeDrag {filter: Alpha(opacity=50);}
 .jxDialogModal {filter: Alpha(opacity=20);}
-.jxDisabled {filter:Alpha(opacity=40);}
+.jxDisabled, .jxDisabled * {filter:Alpha(opacity=40);}
 iframe.jxIframeShim {filter:Alpha(opacity:0);}
