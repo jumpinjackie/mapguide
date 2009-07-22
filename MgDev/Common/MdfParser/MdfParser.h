@@ -28,14 +28,11 @@
 #ifdef _WIN32
 #   ifdef MDFPARSER_EXPORTS
 #       define MDFPARSER_API __declspec(dllexport)
-#       define PARSEREXPIMP_TEMPLATE
 #   else
 #       define MDFPARSER_API __declspec(dllimport)
-#       define PARSEREXPIMP_TEMPLATE extern
 #   endif
 #else
 #   define MDFPARSER_API
-#   define PARSEREXPIMP_TEMPLATE
 #endif
 
 #ifndef MDFPARSER_NAMESPACE

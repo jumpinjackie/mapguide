@@ -27,7 +27,7 @@ using namespace MDFMODEL_NAMESPACE;
 
 BEGIN_NAMESPACE_MDFPARSER
 
-class MDFPARSER_API IOGridLayerDefinition : public SAX2ElementHandler
+class IOGridLayerDefinition : public SAX2ElementHandler
 {
     public:
         IOGridLayerDefinition(Version& version);

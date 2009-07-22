@@ -67,18 +67,6 @@ void disableTabs()
 }
 
 
-void UP(char** str)
-{
-    int x = 0;
-    while ((*str)[x] != 0)
-    {
-        if ((*str)[x] >= 97 && (*str)[x] <= 122)
-            (*str)[x] -= 32;
-        x++;
-    }
-}
-
-
 std::wstring toMdfString(const char* str)
 {
     std::wstring s;

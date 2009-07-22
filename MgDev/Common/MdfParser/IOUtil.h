@@ -34,34 +34,32 @@ BEGIN_NAMESPACE_MDFPARSER
     typedef std::ostream MdfStream;
     typedef std::ostringstream MdfStringStream;
 
-    void UP(char** str);
-
-    std::wstring toMdfString(const char* str);
-    std::string EncodeString(const std::wstring& str);
+    MDFPARSER_API std::wstring toMdfString(const char* str);
+    MDFPARSER_API std::string EncodeString(const std::wstring& str);
     MDFPARSER_API std::string toCString(const std::wstring& str);
 
-    bool wstrToBool(const wchar_t* ch);
-    double wstrToDouble(const wchar_t* ch);
-    int wstrToInt(const wchar_t* ch);
+    MDFPARSER_API bool wstrToBool(const wchar_t* ch);
+    MDFPARSER_API double wstrToDouble(const wchar_t* ch);
+    MDFPARSER_API int wstrToInt(const wchar_t* ch);
 
-    bool wstrToBool(const MdfString& str, bool& result);
-    bool wstrToDouble(const MdfString& str, double& result);
-    bool wstrToInt(const MdfString& str, int& result);
+    MDFPARSER_API bool wstrToBool(const MdfString& str, bool& result);
+    MDFPARSER_API bool wstrToDouble(const MdfString& str, double& result);
+    MDFPARSER_API bool wstrToInt(const MdfString& str, int& result);
 
-    std::string IntToStr(int i);
-    std::string DoubleToStr(double d);
-    std::string BoolToStr(bool b);
+    MDFPARSER_API std::string IntToStr(int i);
+    MDFPARSER_API std::string DoubleToStr(double d);
+    MDFPARSER_API std::string BoolToStr(bool b);
 
-    std::string tab();
+    MDFPARSER_API std::string tab();
 
-    int gettabcount();
-    void inctab();
-    void dectab();
-    void zerotab();
-    void disableTabs();
+    MDFPARSER_API int gettabcount();
+    MDFPARSER_API void inctab();
+    MDFPARSER_API void dectab();
+    MDFPARSER_API void zerotab();
+    MDFPARSER_API void disableTabs();
 
-    std::string startStr(const std::string& elementName);
-    std::string endStr(const std::string& elementName);
+    MDFPARSER_API std::string startStr(const std::string& elementName);
+    MDFPARSER_API std::string endStr(const std::string& elementName);
 
 END_NAMESPACE_MDFPARSER
 #endif // _IOUTIL_H
