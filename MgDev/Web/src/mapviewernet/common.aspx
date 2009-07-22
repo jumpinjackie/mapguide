@@ -126,7 +126,7 @@ String LoadTemplate(HttpRequest request, String filePath)
 {
     StreamReader sr = File.OpenText(request.ServerVariables["APPL_PHYSICAL_PATH"]+filePath);
     String template = sr.ReadToEnd();
-    sr.Dispose();
+    sr.Close();
     return template;
 
 }
