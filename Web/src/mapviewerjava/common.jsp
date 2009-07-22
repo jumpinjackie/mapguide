@@ -104,6 +104,7 @@ String LoadTemplate(String filename) throws FileNotFoundException, IOException
     FileInputStream is = new FileInputStream(theFile);
     byte[] buffer = new byte[size];
     is.read(buffer);
+    is.close();
     return new String(buffer, "UTF-8");
 }
 
