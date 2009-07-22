@@ -28,7 +28,7 @@ using namespace MDFMODEL_NAMESPACE;
 
 BEGIN_NAMESPACE_MDFPARSER
 
-class MDFPARSER_API IORelateProperty : public SAX2ElementHandler
+class IORelateProperty : public SAX2ElementHandler
 {
     public:
         IORelateProperty(Version& version);

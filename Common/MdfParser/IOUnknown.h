@@ -26,7 +26,7 @@ using namespace MDFMODEL_NAMESPACE;
 
 BEGIN_NAMESPACE_MDFPARSER
 
-class IOUnknown : public SAX2ElementHandler
+class MDFPARSER_API IOUnknown : public SAX2ElementHandler
 {
     public:
         IOUnknown(std::wstring* xml, Version& version);

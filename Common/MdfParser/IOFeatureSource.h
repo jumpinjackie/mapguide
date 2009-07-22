@@ -27,7 +27,7 @@ using namespace MDFMODEL_NAMESPACE;
 
 BEGIN_NAMESPACE_MDFPARSER
 
-class MDFPARSER_API IOFeatureSource : public SAX2ElementHandler
+class IOFeatureSource : public SAX2ElementHandler
 {
     public:
         IOFeatureSource(Version& version);
