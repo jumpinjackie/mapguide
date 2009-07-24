@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+      <CustomAction Id="FdoRegCmd" Property="FdoReg" Execute="immediate" Value="&quot;[FDOLOCATION]FdoRegUtil.exe&quot;" />
+      
+      <CustomAction Execute="immediate" Id="FdoRegArcSdeCmd" Property="FdoRegArcSde" Value="[FdoReg] -r &quot;OSGeo.ArcSDE.[FDO_VERSION_SMALL]&quot; &quot;!(loc.ArcSdeProvider)&quot; &quot;!(loc.ArcSdeProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\ArcSDEProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegSdfCmd" Property="FdoRegSdf" Value="[FdoReg] -r &quot;OSGeo.SDF.[FDO_VERSION_SMALL]&quot; &quot;!(loc.SdfProvider)&quot; &quot;!(loc.SdfProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\SDFProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegShpCmd" Property="FdoRegShp" Value="[FdoReg] -r &quot;OSGeo.SHP.[FDO_VERSION_SMALL]&quot; &quot;!(loc.ShpProvider)&quot; &quot;!(loc.ShpProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\SHPProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegWfsCmd" Property="FdoRegWfs" Value="[FdoReg] -r &quot;OSGeo.WFS.[FDO_VERSION_SMALL]&quot; &quot;!(loc.WfsProvider)&quot; &quot;!(loc.WfsProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\WFSProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegWmsCmd" Property="FdoRegWms" Value="[FdoReg] -r &quot;OSGeo.WMS.[FDO_VERSION_SMALL]&quot; &quot;!(loc.WmsProvider)&quot; &quot;!(loc.WmsProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\WMSProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegOdbcCmd" Property="FdoRegOdbc" Value="[FdoReg] -r &quot;OSGeo.ODBC.[FDO_VERSION_SMALL]&quot; &quot;!(loc.OdbcProvider)&quot; &quot;!(loc.OdbcProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\ODBCProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegMySqlCmd" Property="FdoRegMySql" Value="[FdoReg] -r &quot;OSGeo.MySQL.[FDO_VERSION_SMALL]&quot; &quot;!(loc.MySqlProvider)&quot; &quot;!(loc.MySqlProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\MySQLProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegGdalCmd" Property="FdoRegGdal" Value="[FdoReg] -r &quot;OSGeo.Gdal.[FDO_VERSION_SMALL]&quot; &quot;!(loc.GdalProvider)&quot; &quot;!(loc.GdalProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\GRFPProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegOgrCmd" Property="FdoRegOgr" Value="[FdoReg] -r &quot;OSGeo.OGR.[FDO_VERSION_SMALL]&quot; &quot;!(loc.OgrProvider)&quot; &quot;!(loc.OgrProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\OGRProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegPostGisCmd" Property="FdoRegPostGis" Value="[FdoReg] -r &quot;OSGeo.PostGIS.[FDO_VERSION_SMALL]&quot; &quot;!(loc.PostGisProvider)&quot; &quot;!(loc.PostGisProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\PostGISProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegOracleCmd" Property="FdoRegOracle" Value="[FdoReg] -r &quot;OSGeo.KingOracle.[FDO_VERSION_SMALL]&quot; &quot;!(loc.KingOracleProvider)&quot; &quot;!(loc.KingOracleProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\KingOracleProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegSqlServerCmd" Property="FdoRegSqlServer" Value="[FdoReg] -r &quot;OSGeo.SQLServerSpatial.[FDO_VERSION_SMALL]&quot; &quot;!(loc.SqlServerProvider)&quot; &quot;!(loc.SqlServerProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\SQLServerSpatialProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegSltCmd" Property="FdoRegSlt" Value="[FdoReg] -r &quot;OSGeo.SQLite.[FDO_VERSION_SMALL]&quot; &quot;!(loc.SltProvider)&quot; &quot;!(loc.SltProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\SQLiteProvider.dll&quot;" />
+
+      <CustomAction Id="FdoRegArcSde" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoRegSdf" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoRegShp" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoRegWfs" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoRegWms" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoRegOdbc" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoRegMySql" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoRegGdal" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoRegOgr" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoRegPostGis" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoRegOracle" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoRegSqlServer" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoRegSlt" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+      <CustomAction Execute="immediate" Id="FdoUnRegArcSdeCmd" Property="FdoUnRegArcSde" Value="[FdoReg] -u &quot;OSGeo.ArcSDE.[FDO_VERSION_SMALL]&quot;" />
+      <CustomAction Execute="immediate" Id="FdoUnRegSdfCmd" Property="FdoUnRegSdf" Value="[FdoReg] -u &quot;OSGeo.SDF.[FDO_VERSION_SMALL]&quot;" />
+      <CustomAction Execute="immediate" Id="FdoUnRegShpCmd" Property="FdoUnRegShp" Value="[FdoReg] -u &quot;OSGeo.SHP.[FDO_VERSION_SMALL]&quot;" />
+      <CustomAction Execute="immediate" Id="FdoUnRegWfsCmd" Property="FdoUnRegWfs" Value="[FdoReg] -u &quot;OSGeo.WFS.[FDO_VERSION_SMALL]&quot;" />
+      <CustomAction Execute="immediate" Id="FdoUnRegWmsCmd" Property="FdoUnRegWms" Value="[FdoReg] -u &quot;OSGeo.WMS.[FDO_VERSION_SMALL]&quot;" />
+      <CustomAction Execute="immediate" Id="FdoUnRegOdbcCmd" Property="FdoUnRegOdbc" Value="[FdoReg] -u &quot;OSGeo.ODBC.[FDO_VERSION_SMALL]&quot;" />
+      <CustomAction Execute="immediate" Id="FdoUnRegMySqlCmd" Property="FdoUnRegMySql" Value="[FdoReg] -u &quot;OSGeo.MySQL.[FDO_VERSION_SMALL]&quot;" />
+      <CustomAction Execute="immediate" Id="FdoUnRegGdalCmd" Property="FdoUnRegGdal" Value="[FdoReg] -u &quot;OSGeo.Gdal.[FDO_VERSION_SMALL]&quot;" />
+      <CustomAction Execute="immediate" Id="FdoUnRegOgrCmd" Property="FdoUnRegOgr" Value="[FdoReg] -u &quot;OSGeo.OGR.[FDO_VERSION_SMALL]&quot;" />
+      <CustomAction Execute="immediate" Id="FdoUnRegPostGisCmd" Property="FdoUnRegPostGis" Value="[FdoReg] -u &quot;OSGeo.PostGIS.[FDO_VERSION_SMALL]&quot;" />
+      <CustomAction Execute="immediate" Id="FdoUnRegOracleCmd" Property="FdoUnRegOracle" Value="[FdoReg] -u &quot;OSGeo.KingOracle.[FDO_VERSION_SMALL]&quot;" />
+      <CustomAction Execute="immediate" Id="FdoUnRegSqlServerCmd" Property="FdoUnRegSqlServer" Value="[FdoReg] -u &quot;OSGeo.SQLServerSpatial.[FDO_VERSION_SMALL]&quot;" />
+      <CustomAction Execute="immediate" Id="FdoUnRegSltCmd" Property="FdoUnRegSlt" Value="[FdoReg] -u &quot;OSGeo.SQLite.[FDO_VERSION_SMALL]&quot;" />
+
+      <CustomAction Id="FdoUnRegArcSde" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoUnRegSdf" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoUnRegShp" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoUnRegWfs" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoUnRegWms" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoUnRegOdbc" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoUnRegMySql" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoUnRegGdal" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoUnRegOgr" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoUnRegPostGis" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoUnRegOracle" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoUnRegSqlServer" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+      <CustomAction Id="FdoUnRegSlt" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+      <DirectoryRef Id="SERVERROOTLOCATION">
+      <Directory Id="FDOLOCATION" Name="Fdo">
+          <Directory Id="FDOCOMLOCATION" Name="com">
+              <Component Id="FdoComComponent" Guid="2318F3DF-88E4-46EB-B2A7-86A17202D9CB">
+                  <File Id="FdoSysSql" Checksum="yes" Source="$(var.MgSource)\Server\FDO\com\fdo_sys.sql" />
+                  <File Id="FdoSysIdxSql" Checksum="yes" Source="$(var.MgSource)\Server\FDO\com\fdo_sys_idx.sql" />
+                  <File Id="FdoSysSysSql" Checksum="yes" Source="$(var.MgSource)\Server\FDO\com\fdosys_sys.sql" />
+              </Component>
+          </Directory>
+          <Component Id="FdoComponent" Guid="EC356C4B-8AD8-472C-8D3B-90AC4E77BDB0">
+            <CreateFolder />
+            <IniFile Id="INISETFDOPATH"
+                     Action="addLine"
+                     Directory="SERVERBINLOCATION"
+                     Key="FdoPath"
+                     Name="serverconfig.ini"
+                     Section="GeneralProperties"
+                     Value="[FDOLOCATION]" />
+          </Component>
+          <!-- FDO Core -->
+          <Component Id="FdoCoreCompnent" Guid="90F4CB26-524F-499B-AA22-BD17036B167D">
+              <File Id="FdoRegUtil" Checksum="yes" Source="$(var.MgSource)\Server\FDO\FdoRegUtil.exe" />
+              <File Id="FdoBoostDateTime" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_date_time-vc90-mt-1_34_1.dll" />
+              <File Id="FdoBoostThread" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_thread-vc90-mt-1_34_1.dll" />
+              <File Id="FdoExpressionEngine" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ExpressionEngine.dll" />
+              <File Id="FdoCore" Checksum="yes" Source="$(var.MgSource)\Server\FDO\FDO.dll" />
+              <File Id="FdoCommon" Checksum="yes" Source="$(var.MgSource)\Server\FDO\FDOCommon.dll" />
+              <File Id="FdoGeometry" Checksum="yes" Source="$(var.MgSource)\Server\FDO\FDOGeometry.dll" />
+              <File Id="FdoMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\FDOMessage.dll" />
+              <File Id="FdoSpatial" Checksum="yes" Source="$(var.MgSource)\Server\FDO\FDOSpatial.dll" />
+              <File Id="FdoOWS" Checksum="yes" Source="$(var.MgSource)\Server\FDO\OWS.dll" />
+              <File Id="GdalLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\gdal16.dll" />
+              <File Id="XalanLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\Xalan-C_1_7_0.dll" />
+              <File Id="XalanMessagesLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\XalanMessages_1_7_0.dll" />
+              <File Id="XercesLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\xerces-c_2_5_0.dll" />
+              <!-- Generic RDBMS -->
+              <File Id="RdbmsMsg" Checksum="yes" Source="$(var.MgSource)\Server\FDO\RdbmsMsg.dll" />
+              <File Id="RdbmsOverrides" Checksum="yes" Source="$(var.MgSource)\Server\FDO\RdbmsOverrides.dll" />
+              <File Id="SmMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\SmMessage.dll" />
+          </Component>
+          <!-- ArcSDE Provider -->
+          <Component Id="FdoArcSdeComponent" Guid="73E0719B-243F-49E9-BF74-F1B7CF7EA35F">
+              <File Id="ArcSdeMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ArcSDEMessage.dll" />
+              <File Id="ArcSdeProvider91" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ArcSdeProvider91.dll" />
+              <File Id="ArcSdeProvider92" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ArcSdeProvider92.dll" />
+              <File Id="ArcSdeProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ArcSdeProvider.dll" />
+          </Component>
+          <!-- GDAL Provider -->
+          <Component Id="FdoGdalProviderComponent" Guid="B1D7539F-865E-4A32-B82A-96E76012780B">
+              <File Id="GrfpMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\GRFPMessage.dll" />
+              <File Id="GrfpOverrides" Checksum="yes" Source="$(var.MgSource)\Server\FDO\GRFPOverrides.dll" />
+              <File Id="GrfpProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\GRFPProvider.dll" />
+          </Component>
+          <!-- King Oracle Provider -->
+          <Component Id="FdoKingOracleProviderComponent" Guid="A383085F-5531-4E31-9F74-0CDDF154FCAA">
+              <File Id="KingOracleMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\KingOracleMessage.dll" />
+              <File Id="KingOracleOverrides" Checksum="yes" Source="$(var.MgSource)\Server\FDO\KingOracleOverrides.dll" />
+              <File Id="KingOracleProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\KingOracleProvider.dll" />
+          </Component>
+          <!-- MySQL Provider -->
+          <Component Id="FdoMySqlProviderComponent" Guid="26D8BA03-9BFE-4E89-BFBB-026284A38A6C">
+              <File Id="MySqlOverrides" Checksum="yes" Source="$(var.MgSource)\Server\FDO\MySQLOverrides.dll" />
+              <File Id="MySqlProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\MySQLProvider.dll" />
+          </Component>
+          <!-- ODBC Provider -->
+          <Component Id="FdoOdbcProviderComponent" Guid="DB266999-621F-4503-B27C-F5F2B5AE2187">
+              <File Id="OdbcOverrides" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ODBCOverrides.dll" />
+              <File Id="OdbcProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ODBCProvider.dll" />
+          </Component>
+          <!-- OGR Provider -->
+          <Component Id="FdoOgrProviderComponent" Guid="7FB890D4-8824-478E-83F6-E14DF2A3F949">
+              <File Id="OgrProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\OGRProvider.dll" />
+          </Component>
+          <!-- PostGIS Provider -->
+          <Component Id="FdoPostGisProviderComponent" Guid="1D51342F-3ECC-4053-8475-F70333B4B22D">
+              <File Id="PostGisMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\PostGISMessage.dll" />
+              <File Id="PostGisOverrides" Checksum="yes" Source="$(var.MgSource)\Server\FDO\PostGISOverrides.dll" />
+              <File Id="PostGisProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\PostGISProvider.dll" />
+          </Component>
+          <!-- SDF Provider -->
+          <Component Id="FdoSdfProviderComponent" Guid="F0976038-9F62-42E7-AA6E-B37C33744C6F">
+              <File Id="SdfMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\SDFMessage.dll" />
+              <File Id="SdfProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\SDFProvider.dll" />
+          </Component>
+          <!-- SHP Provider -->
+          <Component Id="FdoShpProviderComponent" Guid="AE77DBB1-1453-4528-A6F3-D8B58DEC90B1">
+              <File Id="ShpMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\SHPMessage.dll" />
+              <File Id="ShpOverrides" Checksum="yes" Source="$(var.MgSource)\Server\FDO\SHPOverrides.dll" />
+              <File Id="ShpProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\SHPProvider.dll" />
+          </Component>
+          <!-- SQLite Provider -->
+          <Component Id="FdoSltProviderComponent" Guid="B08D37EF-BE05-486B-ACE5-E1C4CF15112E">
+              <File Id="SltProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\SQLiteProvider.dll" />
+          </Component>
+          <!-- SQL Server Spatial Provider -->
+          <Component Id="FdoSqlServerSpatialProviderComponent" Guid="C7BBA455-5885-4207-953E-C5C6455FF7FB">
+              <File Id="SqlServerSpatialOverrides" Checksum="yes" Source="$(var.MgSource)\Server\FDO\SQLServerSpatialOverrides.dll" />
+              <File Id="SqlServerSpatialProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\SQLServerSpatialProvider.dll" />
+          </Component>
+          <!-- WFS Provider -->
+          <Component Id="FdoWfsProviderComponent" Guid="FE44D851-BBE6-4D72-811F-0BAA1B81A29B">
+              <File Id="WfsMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\WFSMessage.dll" />
+              <File Id="WfsProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\WFSProvider.dll" />
+          </Component>
+          <!-- WMS Provider -->
+          <Component Id="FdoWmsProviderComponent" Guid="97C77CE8-4F97-49E3-B6D8-E4A40DB02190">
+              <File Id="WmsMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\WMSMessage.dll" />
+              <File Id="WmsOverrides" Checksum="yes" Source="$(var.MgSource)\Server\FDO\WMSOverrides.dll" />
+              <File Id="WmsProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\WMSProvider.dll" />
+          </Component>
+      </Directory>
+    </DirectoryRef>
+    <Feature Id="FdoFeature" Title="FDO" Level="1" ConfigurableDirectory="FDOLOCATION" Description="!(loc.FdoDescription)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+        <ComponentRef Id="FdoComponent"/>
+        <ComponentRef Id="FdoComComponent" />
+        <ComponentRef Id="FdoCoreCompnent" />
+        <Feature Id="FdoArcSdeProviderFeature" Title="!(loc.ArcSdeProvider)" Level="1" Description="!(loc.ArcSdeProviderDesc)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <ComponentRef Id="FdoArcSdeComponent" />
+        </Feature>
+        <Feature Id="FdoGdalProviderFeature" Title="!(loc.GdalProvider)" Level="1" Description="!(loc.GdalProviderDesc)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <ComponentRef Id="FdoGdalProviderComponent" />
+        </Feature>
+        <Feature Id="FdoKingOracleProviderFeature" Title="!(loc.KingOracleProvider)" Level="1" Description="!(loc.KingOracleProviderDesc)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <ComponentRef Id="FdoKingOracleProviderComponent" />
+        </Feature>
+        <Feature Id="FdoMySqlProviderFeature" Title="!(loc.MySqlProvider)" Level="1" Description="!(loc.MySqlProviderDesc)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <ComponentRef Id="FdoMySqlProviderComponent" />
+        </Feature>
+        <Feature Id="FdoOdbcProviderFeature" Title="!(loc.OdbcProvider)" Level="1" Description="!(loc.OdbcProviderDesc)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <ComponentRef Id="FdoOdbcProviderComponent" />
+        </Feature>
+        <Feature Id="FdoOgrProviderFeature" Title="!(loc.OgrProvider)" Level="1" Description="!(loc.OgrProviderDesc)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <ComponentRef Id="FdoOgrProviderComponent" />
+        </Feature>
+        <Feature Id="FdoPostGisProviderFeature" Title="!(loc.PostGisProvider)" Level="1" Description="!(loc.PostGisProviderDesc)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <ComponentRef Id="FdoPostGisProviderComponent" />
+        </Feature>
+        <Feature Id="FdoSdfProviderFeature" Title="!(loc.SdfProvider)" Level="1" Description="!(loc.SdfProviderDesc)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <ComponentRef Id="FdoSdfProviderComponent" />
+        </Feature>
+        <Feature Id="FdoShpProviderFeature" Title="!(loc.ShpProvider)" Level="1" Description="!(loc.ShpProviderDesc)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <ComponentRef Id="FdoShpProviderComponent" />
+        </Feature>
+        <Feature Id="FdoSltProviderFeature" Title="!(loc.SltProvider)" Level="1" Description="!(loc.SltProviderDesc)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <ComponentRef Id="FdoSltProviderComponent" />
+        </Feature>
+        <Feature Id="FdoSqlServerSpatialProviderFeature" Title="!(loc.SqlServerProvider)" Level="1" Description="!(loc.SqlServerProviderDesc)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <ComponentRef Id="FdoSqlServerSpatialProviderComponent" />
+        </Feature>
+        <Feature Id="FdoWfsProviderFeature" Title="!(loc.WfsProvider)" Level="1" Description="!(loc.WfsProviderDesc)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <ComponentRef Id="FdoWfsProviderComponent" />
+        </Feature>
+        <Feature Id="FdoWmsProviderFeature" Title="!(loc.WmsProvider)" Level="1" Description="!(loc.WmsProviderDesc)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <ComponentRef Id="FdoWmsProviderComponent" />
+        </Feature>
+    </Feature>
+  </Fragment>
+</Wix>
