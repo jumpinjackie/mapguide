@@ -173,6 +173,7 @@
 <script type="text/javascript" src="../viewerfiles/hashtable.js"></script>
 <script type="text/javascript" src="../viewerfiles/sarissa.js"></script>
 <script type="text/javascript" src="../viewerfiles/digitize.js"></script>
+<script language="javascript" src="../viewerfiles/util.js"></script>
 <script language=javascript>
 
 function SelLayer(className)
@@ -1749,12 +1750,6 @@ function RequestSelectionImage(reqId, viewParams)
         '<img class="mapImage" name="' + reqId + '" id="selectionImage" src="' + url + '" width=' + mapDevW + ' height=' + mapDevH + ' border=0 vspace=0 hspace=0 style="visibility: hidden; width: ' + mapDevW + 'px; height: ' + mapDevH + 'px;" onload="return OnSelectionOverlayImageLoaded(event)">';
     if (opera)
         document.getElementById("selectionImage").src = document.getElementById("selectionImage").src;
-}
-
-function encodeComponent(str)
-{
-    op = /\(/g; cp = /\)/g;
-    return encodeURIComponent(str).replace(op, "%%28").replace(cp, "%%29");
 }
 
 function OnMapOverlayImageLoaded(e)
