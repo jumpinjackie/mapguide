@@ -81,14 +81,6 @@ EGwsStatus CGwsRightNestedLoopSortedBlockJoinQueryResults::SetRelatedValues (
 )
 {
     if (m_joinkeys == vals) {
-        if (! m_neverusepooling) {
-            // this completes features pool
-            if (! m_bClosed) {
-                while (ReadNext ())
-                    ;
-                Close ();
-            }
-        }
         m_usepool = true;
         m_poolpos = -1;
         return eGwsOk;
