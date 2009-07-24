@@ -46,6 +46,7 @@
 </style>
 
 <script language="javascript" src="../viewerfiles/browserdetect.js"></script>
+<script language="javascript" src="../viewerfiles/util.js"></script>
 <script language=javascript>
 
 var popup = %s;
@@ -106,20 +107,6 @@ function UpdateColors()
     elt.backgroundColor = transparent? "#ffffff": "#" + fbcolor;
     elt.color = transparent? "black": "#" + fbcolor;
 }
-
-function ParseLocalizedFloat(floatString)
-{
-    if(thousandSeparator.length > 0)
-    {
-        floatString = floatString.replace(thousandSeparator, "");
-    }
-    if(decimalSeparator != "." && decimalSeparator.length > 0)
-    {
-        floatString = floatString.replace(decimalSeparator, ".");
-    }
-    return parseFloat(floatString);
-}
-            
             
 function Validate()
 {
