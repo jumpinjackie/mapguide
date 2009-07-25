@@ -24,6 +24,7 @@
     <DefineConstants>MgCulture=$(MgCulture);MgRegKey=$(MgRegKey);MgSource=$(MgSource)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="FDO.wxs" />
     <Compile Include="FileIncludes\incBinFiles.wxs" />
     <Compile Include="FileIncludes\incRepositoryAdminFiles.wxs" />
     <Compile Include="FileIncludes\incResourcesFiles.wxs" />
@@ -36,13 +37,6 @@
   <ItemGroup>
     <Folder Include="FileIncludes" />
     <Folder Include="Lang" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FDO\FDO.wixproj">
-      <Name>FDO</Name>
-      <Project>{c95b542f-b551-46b5-8b07-fc54f161a123}</Project>
-      <Private>True</Private>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Lang\MapGuideServer_en-US.wxl" />

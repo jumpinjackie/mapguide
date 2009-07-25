@@ -18,4 +18,32 @@
     <String Id="ServerRepositoriesTileCacheFeature_Description">You may choose a location for the Tile Cache repository.</String>
     <String Id="ServerTempFeature">Temp Directory</String>
     <String Id="ServerTempFeature_Description">You may choose a location where MapGuide will store temporary files.</String>
+    <!-- FDO -->
+    <String Id="FdoDescription">FDO (Feature Data Objects) allows abstract access to many different data sources.</String>
+    <String Id="ArcSdeProvider">OSGeo FDO Provider for ArcSDE</String>
+    <String Id="ArcSdeProviderDesc">Read/write access to an ESRI ArcSDE-based data store, using Oracle and SQL Server. (Requires external ArcSDE dlls)</String>
+    <String Id="GdalProvider">OSGeo FDO Provider for GDAL</String>
+    <String Id="GdalProviderDesc">FDO Raster Provider for GDAL</String>
+    <String Id="KingOracleProvider">OSGeo FDO Provider for Oracle</String>
+    <String Id="KingOracleProviderDesc">Read/write access to spatial and attribute data in an Oracle Spatial. (requires Oracle Instant Client libraries)</String>
+    <String Id="MySqlProvider">OSGeo FDO Provider for MySQL</String>
+    <String Id="MySqlProviderDesc">FDO Provider for MySQL (requires libmysql.dll)</String>
+    <String Id="OdbcProvider">OSGeo FDO Provider for ODBC</String>
+    <String Id="OdbcProviderDesc">FDO Provider for ODBC</String>
+    <String Id="OgrProvider">OSGeo FDO Provider for OGR</String>
+    <String Id="OgrProviderDesc">FDO Access to OGR Data Sources</String>
+    <String Id="PostGisProvider">OSGeo FDO Provider for PostGIS</String>
+    <String Id="PostGisProviderDesc">Read/write access to spatial and attribute data in a PostGIS database. (requires libpq.dll)</String>
+    <String Id="SdfProvider">OSGeo FDO Provider for SDF</String>
+    <String Id="SdfProviderDesc">Read/write access to Autodesk's spatial database format, a file-based personal geodatabase that supports multiple features/attributes, spatial indexing, and file-locking.</String>
+    <String Id="ShpProvider">OSGeo FDO Provider for SHP</String>
+    <String Id="ShpProviderDesc">Read/write access to spatial and attribute data in an ESRI SHP file.</String>
+    <String Id="SltProvider">SQLite Provider</String>
+    <String Id="SltProviderDesc">The SQLite Provider</String>
+    <String Id="SqlServerProvider">OSGeo FDO Provider for SQL Server Spatial</String>
+    <String Id="SqlServerProviderDesc">Read/Write access to feature data in a MS SQL Server spatially enabled data store. Supports geospatial and non-geospatial data and schema.</String>
+    <String Id="WfsProvider">OSGeo FDO Provider for WFS</String>
+    <String Id="WfsProviderDesc">Read access to OGC WFS-based data store.</String>
+    <String Id="WmsProvider">OSGeo FDO Provider for WMS</String>
+    <String Id="WmsProviderDesc">Read access to OGC WMS-based data store.</String>
 </WixLocalization>

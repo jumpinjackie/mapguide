@@ -40,6 +40,9 @@
         <Property Id="APACHE_PORT" Secure="yes" Value="8008" />
         <Property Id="APACHE_VERSION" Secure="yes" Value="2.2.4" />
         <Property Id="PHP_VERSION" Secure="yes" Value="5.2.5" />
+        <!-- Used by FdoRegUtil.exe -->
+        <Property Id="FDO_VERSION" Secure="yes" Value="3.4.0.0" />
+        <Property Id="FDO_VERSION_SMALL" Secure="yes" Value="3.4" />
 
         <!-- 
         These are currently static, though there is opportunity in the future for these
@@ -355,10 +358,20 @@
             <!-- This section controls the order and custom UI events performed as user navigates the UI  -->
           
             <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
-
+            
             <Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
             <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="1">LicenseAccepted=&quot;1&quot; AND (NOT IISVERSIONMAJOR=&quot;#0&quot;)</Publish>
             <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="DisabledFeaturesDialog" Order="2">LicenseAccepted=&quot;1&quot; AND (IISVERSIONMAJOR=&quot;#0&quot; OR (NOT NETFRAMEWORK20))</Publish>
+
+            <!-- 
+            Turn off these FDO providers by default since they require external libraries not bundled in this installer.
+            This gives us an OOTB configuration with 100% working FDO providers. Users who enable any of these features are
+            assumed to know that they need to provide the required external libraries.
+            -->
+            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="Remove" Value="FdoArcSdeProviderFeature" Order="3">1</Publish>
+            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="Remove" Value="FdoKingOracleProviderFeature" Order="4">1</Publish>
+            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="Remove" Value="FdoMySqlProviderFeature" Order="5">1</Publish>
+            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="Remove" Value="FdoPostGisProviderFeature" Order="6">1</Publish>
 
             <Publish Dialog="DisabledFeaturesDialog" Control="Next" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="1">NOT IISVERSIONMAJOR=&quot;#0&quot;</Publish>
             <Publish Dialog="DisabledFeaturesDialog" Control="Next" Event="NewDialog" Value="WebServerConfigDlgNoIIS" Order="2">IISVERSIONMAJOR=&quot;#0&quot;</Publish>
@@ -569,7 +582,69 @@
             <Custom Action="ConfigureIIs" After="InstallFiles">MGWEB_CONFIG=&quot;IIS&quot; AND (IISVERSIONMAJOR=&quot;#5&quot; OR IISVERSIONMAJOR=&quot;#6&quot;) AND (&amp;WebExtensionsFeature&gt;2 OR &amp;WebExtensionsFeature=2)</Custom>
             <Custom Action="AspNetRegIIS" After="ConfigureIIs">NETFRAMEWORK20 AND MGWEB_CONFIG=&quot;IIS&quot; AND (IISVERSIONMAJOR=&quot;#5&quot; OR IISVERSIONMAJOR=&quot;#6&quot;) AND &amp;WebExtensionsFeature&gt;2</Custom>
 
-          <!-- Apache / PHP / MG Server Custom Actions-->
+            
+            <Custom Action="FdoRegCmd" After="InstallInitialize"></Custom>
+            <!-- FDO Provider Registration Immediate Actions -->
+            <Custom Action="FdoRegArcSdeCmd" After="InstallFiles">&amp;FdoArcSdeProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegSdfCmd" After="FdoRegArcSdeCmd">&amp;FdoSdfProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegShpCmd" After="FdoRegSdfCmd">&amp;FdoShpProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegWfsCmd" After="FdoRegShpCmd">&amp;FdoWfsProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegWmsCmd" After="FdoRegWfsCmd">&amp;FdoWmsProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegOdbcCmd" After="FdoRegWmsCmd">&amp;FdoOdbcProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegMySqlCmd" After="FdoRegOdbcCmd">&amp;FdoMySqlProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegGdalCmd" After="FdoRegMySqlCmd">&amp;FdoGdalProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegOgrCmd" After="FdoRegGdalCmd">&amp;FdoOgrProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegPostGisCmd" After="FdoRegOgrCmd">&amp;FdoPostGisProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegOracleCmd" After="FdoRegPostGisCmd">&amp;FdoKingOracleProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegSqlServerCmd" After="FdoRegOracleCmd">&amp;FdoSqlServerSpatialProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegSltCmd" After="FdoRegSqlServerCmd">&amp;FdoSltProviderFeature&gt;2</Custom>
+
+            <!-- FDO Provider Registration deferred Actions -->
+            <Custom Action="FdoRegArcSde" After="FdoRegSltCmd">&amp;FdoArcSdeProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegSdf" After="FdoRegArcSde">&amp;FdoSdfProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegShp" After="FdoRegSdf">&amp;FdoShpProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegWfs" After="FdoRegShp">&amp;FdoWfsProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegWms" After="FdoRegWfs">&amp;FdoWmsProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegOdbc" After="FdoRegWms">&amp;FdoOdbcProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegMySql" After="FdoRegOdbc">&amp;FdoMySqlProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegGdal" After="FdoRegMySql">&amp;FdoGdalProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegOgr" After="FdoRegGdal">&amp;FdoOgrProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegPostGis" After="FdoRegOgr">&amp;FdoPostGisProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegOracle" After="FdoRegPostGis">&amp;FdoKingOracleProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegSqlServer" After="FdoRegOracle">&amp;FdoSqlServerSpatialProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegSlt" After="FdoRegSqlServer">&amp;FdoSltProviderFeature&gt;2</Custom>
+
+            <!-- FDO Provider Unregistration Immediate Actions -->
+            <Custom Action="FdoUnRegArcSdeCmd" After="InstallInitialize">&amp;FdoArcSdeProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegSdfCmd" After="FdoUnRegArcSdeCmd">&amp;FdoSdfProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegShpCmd" After="FdoUnRegSdfCmd">&amp;FdoShpProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegWfsCmd" After="FdoUnRegShpCmd">&amp;FdoWfsProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegWmsCmd" After="FdoUnRegWfsCmd">&amp;FdoWmsProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegOdbcCmd" After="FdoUnRegWmsCmd">&amp;FdoOdbcProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegMySqlCmd" After="FdoUnRegOdbcCmd">&amp;FdoMySqlProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegGdalCmd" After="FdoUnRegMySqlCmd">&amp;FdoGdalProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegOgrCmd" After="FdoUnRegGdalCmd">&amp;FdoOgrProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegPostGisCmd" After="FdoUnRegOgrCmd">&amp;FdoPostGisProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegOracleCmd" After="FdoUnRegPostGisCmd">&amp;FdoKingOracleProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegSqlServerCmd" After="FdoUnRegOracleCmd">&amp;FdoSqlServerSpatialProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegSltCmd" After="FdoUnRegSqlServerCmd">&amp;FdoSltProviderFeature=2</Custom>
+
+            <!-- FDO Provider Unregistration Deferred Actions -->
+            <Custom Action="FdoUnRegArcSde" After="FdoUnRegSltCmd">&amp;FdoArcSdeProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegSdf" After="FdoUnRegArcSde">&amp;FdoSdfProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegShp" After="FdoUnRegSdf">&amp;FdoShpProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegWfs" After="FdoUnRegShp">&amp;FdoWfsProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegWms" After="FdoUnRegWfs">&amp;FdoWmsProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegOdbc" After="FdoUnRegWms">&amp;FdoOdbcProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegMySql" After="FdoUnRegOdbc">&amp;FdoMySqlProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegGdal" After="FdoUnRegMySql">&amp;FdoGdalProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegOgr" After="FdoUnRegGdal">&amp;FdoOgrProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegPostGis" After="FdoUnRegOgr">&amp;FdoPostGisProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegOracle" After="FdoUnRegPostGis">&amp;FdoKingOracleProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegSqlServer" After="FdoUnRegOracle">&amp;FdoSqlServerSpatialProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegSlt" After="FdoUnRegSqlServer">&amp;FdoSltProviderFeature=2</Custom>
+
+            <!-- Apache / PHP / MG Server Custom Actions-->
             <Custom
                 Action="UpdateApacheConfig"
                 After="UpdateApacheConfig.SetValues">&amp;WebExtPhpFeature&gt;2 AND &amp;WebExtApacheFeature&gt;2</Custom>
@@ -587,7 +662,7 @@
                 Before="InstallFinalize">MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtApacheFeature&gt;2</Custom>
             <Custom
                 Action="MgServerInstallCA"
-                Before="InstallFinalize">&amp;ServerFeature>2</Custom>
+                Before="InstallFinalize">&amp;ServerFeature&gt;2</Custom>
             <Custom
                 Action="MgServerUninstallCA"
                 Before="RemoveFiles">&amp;ServerFeature=2</Custom>

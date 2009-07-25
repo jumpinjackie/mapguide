@@ -46,7 +46,7 @@ SET CULTURE=en-US
 SET INSTALLER_NAME=MapGuideOpenSource-2.1.0-Unofficial-%CULTURE%-%TYPEBUILD%
 SET INSTALLER_VERSION=2.1.0.0
 SET INSTALLER_TITLE="MapGuide OS 2.1 Unofficial (%TYPEBUILD%)"
-SET MG_SOURCE=..\MgDev\%TYPEBUILD%
+SET MG_SOURCE=%CD%\..\MgDev\%TYPEBUILD%
 SET MG_SOURCE_INC=
 
 rem ==================================================
@@ -57,6 +57,7 @@ SET INSTALLER_OUTPUT=%INSTALLER_DEV%\Output\%CULTURE%\%TYPEBUILD%
 SET INSTALLER_DEV_SUPPORT=%INSTALLER_DEV%\Support
 SET INSTALLER_DEV_BOOTSTRAP=%INSTALLER_DEV%\Bootstrapper
 
+SET INSTALLER_FDO_REG_UTIL=%INSTALLER_DEV%\FdoRegUtil
 SET INSTALLER_DEV_CSMAP=%INSTALLER_DEV%\Libraries\CS Map
 SET INSTALLER_DEV_FDO=%INSTALLER_DEV%\Libraries\FDO
 SET INSTALLER_DEV_MGSERVER=%INSTALLER_DEV%\Libraries\MapGuide Server
@@ -147,7 +148,7 @@ SET TYPEBUILD=%2
 SET INSTALLER_OUTPUT=%CD%\Installers\MapGuide\bin\%TYPEBUILD%
 SET MSBUILD=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% %MSBUILD_VERBOSITY% %MSBUILD_LOG%
 SET MSBUILD_CLEAN=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% /t:Clean %MSBUILD_VERBOSITY%
-SET MG_SOURCE=..\MgDev\%TYPEBUILD%
+SET MG_SOURCE=%CD%\..\MgDev\%TYPEBUILD%
 IF NOT ""=="%MG_SOURCE_INC%" SET MG_SOURCE_INC=%MG_SOURCE%
 
 if "%2"=="Release" goto next_param
@@ -182,13 +183,13 @@ if "%TYPEACTION%"=="generate" goto generate
 if "%TYPEACTION%"=="regen" goto regen
 
 :clean
+echo [clean]: FdoRegUtil
+pushd %INSTALLER_FDO_REG_UTIL%
+%MSBUILD_CLEAN% FdoRegUtil.vcproj
+popd
 echo [clean]: CS-Map
 pushd "%INSTALLER_DEV_CSMAP%"
 %MSBUILD_CLEAN% "CS Map.wixproj"
-popd
-echo [clean]: FDO
-pushd "%INSTALLER_DEV_FDO%"
-%MSBUILD_CLEAN% "FDO.wixproj"
 popd
 echo [clean]: MapGuide Server
 pushd "%INSTALLER_DEV_MGSERVER%"
@@ -208,6 +209,11 @@ echo [prepare] MapGuide Installer
 if not exist "%MG_SOURCE%\Server" goto error_mg_server_not_found
 if not exist "%MG_SOURCE%\Web" goto error_mg_web_not_found
 if not exist "%MG_SOURCE%\CS-Map" goto error_mg_csmap_not_found
+echo [prepare] FdoRegUtil.exe
+pushd %INSTALLER_FDO_REG_UTIL%
+%MSBUILD% FdoRegUtil.vcproj
+copy %INSTALLER_FDO_REG_UTIL%\%TYPEBUILD%\FdoRegUtil.exe %MG_SOURCE%\Server\FDO
+popd
 rem copy support files into server and web directories
 echo [prepare] Tomcat
 %XCOPY% "%INSTALLER_DEV%\Support\Web\Tomcat" "%MG_SOURCE%\Web\Tomcat" /EXCLUDE:svn_excludes.txt
@@ -231,10 +237,6 @@ SET WIX_INC_CSMAP="%INSTALLER_DEV%\Libraries\CS Map\FileIncludes"
 echo [regen]: Server - binaries
 %PARAFFIN% %WIX_INC_SERVER%\incBinFiles.wxs
 move /Y %WIX_INC_SERVER%\incBinFiles.PARAFFIN %WIX_INC_SERVER%\incBinFiles.wxs
-
-echo [regen]: Server - FDO
-%PARAFFIN% %WIX_INC_FDO%\incFdoFiles.wxs
-move /Y %WIX_INC_FDO%\incFdoFiles.PARAFFIN %WIX_INC_FDO%\incFdoFiles.wxs
 
 echo [regen]: Server - RepositoryAdmin
 %PARAFFIN% %WIX_INC_SERVER%\incRepositoryAdminFiles.wxs
@@ -330,9 +332,6 @@ SET WIX_INC_CSMAP="%INSTALLER_DEV%\Libraries\CS Map\FileIncludes"
 
 echo [generate]: Server - binaries
 %PARAFFIN% -dir %MG_SOURCE%\Server\bin -alias $(var.MgSource)\Server\bin -custom SRVBINFILES -dirref SERVERROOTLOCATION -norecurse %WIX_INC_SERVER%\incBinFiles.wxs
-
-echo [generate]: Server - FDO
-%PARAFFIN% -dir %MG_SOURCE%\Server\FDO -alias $(var.MgSource)\Server\FDO -custom FDOFILES -dirref SERVERROOTLOCATION %WIX_INC_FDO%\incFdoFiles.wxs
 
 echo [generate]: Server - RepositoryAdmin
 %PARAFFIN% -dir %MG_SOURCE%\Server\RepositoryAdmin -alias $(var.MgSource)\Server\RepositoryAdmin -custom SRVREPADMINFILES -dirref SERVERROOTLOCATION %WIX_INC_SERVER%\incRepositoryAdminFiles.wxs
