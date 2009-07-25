@@ -307,15 +307,7 @@ MgLayer FindLayer(MgLayerCollection layers, String layerDef)
 
 bool DataSourceExists(MgResourceService resourceSrvc, MgResourceIdentifier dataSourceId)
 {
-    try
-    {
-        MgByteReader cnt = resourceSrvc.GetResourceContent(dataSourceId);
-        return true;
-    }
-    catch(MgResourceNotFoundException)
-    {
-        return false;
-    }
+    return resourceSrvc.ResourceExists(dataSourceId);
 }
 
 MgByteReader BuildLayerDefinitionContent(String dataSource, String featureName, String tip)

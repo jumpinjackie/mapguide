@@ -319,15 +319,7 @@ MgLayer FindLayer(MgLayerCollection layers, String layerDef) throws MgException
 
 boolean DataSourceExists(MgResourceService resourceSrvc, MgResourceIdentifier resId) throws MgException
 {
-    try
-    {
-        MgByteReader cnt = resourceSrvc.GetResourceContent(resId);
-        return true;
-    }
-    catch(MgResourceNotFoundException e)
-    {
-        return false;
-    }
+    return resourceSrvc.ResourceExists(resId);
 }
 
 MgByteReader BuildLayerDefinitionContent(String dataSource, String featureName, String tip) throws MgException, Exception
