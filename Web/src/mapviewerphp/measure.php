@@ -238,15 +238,7 @@ function OnError($title, $msg)
 
 function DataSourceExists($resourceSrvc, $dataSourceId)
 {
-    try
-    {
-        $cnt = $resourceSrvc->GetResourceContent($dataSourceId);
-        return true;
-    }
-    catch(MgResourceNotFoundException $rnfe)
-    {
-        return false;
-    }
+   return $resourceSrvc->ResourceExists($dataSourceId);
 }
 
 function BuildLayerDefinitionContent($dataSource, $featureName, $tip)
