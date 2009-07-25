@@ -238,16 +238,7 @@
   function DoesResourceExist($resourceIdentifier, $resourceService)
   // Returns true if the resource already exists, or false otherwise
   {
-    try 
-    {
-      $resourceService->GetResourceContent($resourceIdentifier);
-    }
-    catch (MgResourceNotFoundException $e)
-    {
-      return false;
-    }   
-    
-    return true;
+    return $resourceService->ResourceExists($resourceIdentifier);
   }
   
   ///////////////////////////////////////////////////////////////////////////////////
