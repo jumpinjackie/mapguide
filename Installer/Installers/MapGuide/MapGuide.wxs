@@ -363,16 +363,6 @@
             <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="1">LicenseAccepted=&quot;1&quot; AND (NOT IISVERSIONMAJOR=&quot;#0&quot;)</Publish>
             <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="DisabledFeaturesDialog" Order="2">LicenseAccepted=&quot;1&quot; AND (IISVERSIONMAJOR=&quot;#0&quot; OR (NOT NETFRAMEWORK20))</Publish>
 
-            <!-- 
-            Turn off these FDO providers by default since they require external libraries not bundled in this installer.
-            This gives us an OOTB configuration with 100% working FDO providers. Users who enable any of these features are
-            assumed to know that they need to provide the required external libraries.
-            -->
-            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="Remove" Value="FdoArcSdeProviderFeature" Order="3">1</Publish>
-            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="Remove" Value="FdoKingOracleProviderFeature" Order="4">1</Publish>
-            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="Remove" Value="FdoMySqlProviderFeature" Order="5">1</Publish>
-            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="Remove" Value="FdoPostGisProviderFeature" Order="6">1</Publish>
-
             <Publish Dialog="DisabledFeaturesDialog" Control="Next" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="1">NOT IISVERSIONMAJOR=&quot;#0&quot;</Publish>
             <Publish Dialog="DisabledFeaturesDialog" Control="Next" Event="NewDialog" Value="WebServerConfigDlgNoIIS" Order="2">IISVERSIONMAJOR=&quot;#0&quot;</Publish>
             <Publish Dialog="DisabledFeaturesDialog" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
@@ -381,28 +371,38 @@
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="DoAction" Value="MgWeb_Config_From_IIS_CA" Order="1">1</Publish>
             <!-- This "resets" the feature tree in case someone starts down a path then changes their mind -->
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="AddLocal" Value="ALL" Order="2">1</Publish>
+            <!-- Turn off these FDO providers by default since they require external libraries not bundled in this installer. -->
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoArcSdeProviderFeature" Order="3">1</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoKingOracleProviderFeature" Order="4">1</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoMySqlProviderFeature" Order="5">1</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoPostGisProviderFeature" Order="6">1</Publish>
             <!-- If Apache, or IIS and the .Net Framework is not installed, set feature default for the ASPX viewer to not install -->
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtMapViewerASPXFeature" Order="3">(MGWEB_CONFIG=&quot;APACHE&quot;) OR (MGWEB_CONFIG=&quot;IIS&quot; AND NOT NETFRAMEWORK20)</Publish>
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="ApacheConfigDlg" Order="4">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IISLangConfigDlg" Order="5">MGWEB_CONFIG=&quot;IIS&quot; AND NETFRAMEWORK20</Publish>
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="6">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK20)</Publish>
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IIS6ConfigDlg" Order="7">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#6&quot; AND (NOT NETFRAMEWORK20)</Publish>
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IIS7ConfigDlg" Order="8">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND (NOT NETFRAMEWORK20)</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtMapViewerASPXFeature" Order="7">(MGWEB_CONFIG=&quot;APACHE&quot;) OR (MGWEB_CONFIG=&quot;IIS&quot; AND NOT NETFRAMEWORK20)</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="ApacheConfigDlg" Order="8">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IISLangConfigDlg" Order="9">MGWEB_CONFIG=&quot;IIS&quot; AND NETFRAMEWORK20</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="10">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK20)</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IIS6ConfigDlg" Order="11">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#6&quot; AND (NOT NETFRAMEWORK20)</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IIS7ConfigDlg" Order="12">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND (NOT NETFRAMEWORK20)</Publish>
             <!-- If IIS, set feature defaults for Apache, Tomcat, and JSP viewer to not install -->
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtApacheFeature" Order="9">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtTomcatFeature" Order="10">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtMapViewerJSPFeature" Order="11">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="12">MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtApacheFeature" Order="13">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtTomcatFeature" Order="14">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtMapViewerJSPFeature" Order="15">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="16">MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
             <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="DoAction" Value="MgWeb_Config_From_NoIIS_CA" Order="1">1</Publish>
             <!-- This "resets" the feature tree in case someone starts down a path then changes their mind -->
             <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="AddLocal" Value="ALL" Order="2">1</Publish>
+            <!-- Turn off these FDO providers by default since they require external libraries not bundled in this installer. -->
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="Remove" Value="FdoArcSdeProviderFeature" Order="3">1</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="Remove" Value="FdoKingOracleProviderFeature" Order="4">1</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="Remove" Value="FdoMySqlProviderFeature" Order="5">1</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="Remove" Value="FdoPostGisProviderFeature" Order="6">1</Publish>
             <!-- If Apache, set feature default for the ASPX viewer to not install -->
-            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="Remove" Value="WebExtMapViewerASPXFeature" Order="3">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
-            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="NewDialog" Value="ApacheConfigDlg" Order="4">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
-            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="5">MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="Remove" Value="WebExtMapViewerASPXFeature" Order="7">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="NewDialog" Value="ApacheConfigDlg" Order="8">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="9">MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
             <Publish Dialog="WebServerConfigDlgNoIIS" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
             <Publish Dialog="WebServerConfigDlgNoIIS" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
