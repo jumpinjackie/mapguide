@@ -483,11 +483,11 @@ class CSHARP : public Language {
 
       // adds import of getClassName method
       Printv(f_im, 
-          "\n  [DllImport(\"",(unmanagedDllName? unmanagedDllName: module_class_name),"\", EntryPoint=\"getClassName\")]\n  public static extern string getClassName(IntPtr objectRef);\n", NIL);
+          "\n  [DllImport(\"",(unmanagedDllName? unmanagedDllName: module_class_name),"\", EntryPoint=\"getClassName\")]\n  public static extern IntPtr getClassName(IntPtr objectRef);\n", NIL);
 
       // adds import of getNameSpace method
       Printv(f_im, 
-          "\n  [DllImport(\"",(unmanagedDllName? unmanagedDllName: module_class_name),"\", EntryPoint=\"getNameSpace\")]\n  public static extern string getNameSpace(IntPtr objectRef);\n", NIL);
+          "\n  [DllImport(\"",(unmanagedDllName? unmanagedDllName: module_class_name),"\", EntryPoint=\"getNameSpace\")]\n  public static extern IntPtr getNameSpace(IntPtr objectRef);\n", NIL);
 
       // Finish off the class
       Printf(f_im, "}\n");
