@@ -115,8 +115,26 @@ window.onload = function() {
 }
 
 var fusionError = function(eventId, error) {
-    alert('Fusion Error: \n' + error.toString());
-    //console.log('Fusion Error: \n' + error.toString());
+    var errorMessage = error.toString();
+    var readableMessage = '';
+    var xmlInvalid = 'xml2json: invalid XML document: ';
+    var indexXMLInvalid = errorMessage.indexOf(xmlInvalid);
+    if (indexXMLInvalid != -1) {
+        var indexStart = indexXMLInvalid + xmlInvalid.length;
+        if (indexStart < errorMessage.length) {
+            var indexEnd = errorMessage.indexOf(' :', indexStart);
+            if (indexEnd != -1) {
+                readableMessage = errorMessage.substring(indexStart, indexEnd);
+            }
+        }
+    }
+    if (readableMessage != '') {
+        alert('Fusion Error: \n' + readableMessage);
+    }
+    else {
+        alert('Fusion Error: \n' + errorMessage);
+    }
+    console.log('Fusion Error: \n' + errorMessage);
 }
 
 var fusionInitialized = function() {

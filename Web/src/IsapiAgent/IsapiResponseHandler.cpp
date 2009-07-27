@@ -54,7 +54,7 @@ void IsapiResponseHandler::SendResponse(MgHttpResponse* response)
             //TODO: Use a resource for the HTML error message
             STRING shortError = result->GetErrorMessage();
             STRING longError = result->GetDetailedErrorMessage();
-            sprintf(tempHeader, MapAgentStrings::StatusHeader, status, MG_WCHAR_TO_CHAR(statusMessage));
+            sprintf(tempHeader, MapAgentStrings::StatusHeader, status, MG_WCHAR_TO_CHAR(shortError));
             sResponseHeader.append(tempHeader);
             sprintf(tempHeader, MapAgentStrings::ContentTypeHeader, MapAgentStrings::TextHtml, "");
             sResponseHeader.append(" ");
@@ -62,7 +62,7 @@ void IsapiResponseHandler::SendResponse(MgHttpResponse* response)
             sResponseHeader.append(MapAgentStrings::CrLf);
             m_pECB->dwHttpStatusCode = (DWORD)status;
             char tempStatus[4096];
-            sprintf(tempStatus, "%d %s", status, MG_WCHAR_TO_CHAR(statusMessage));
+            sprintf(tempStatus, "%d %s", status, MG_WCHAR_TO_CHAR(shortError));
             WriteHeader(sResponseHeader.c_str(), tempStatus);
             WriteContext("\r\n"
                 "<html>\n<head>\n"
@@ -193,14 +193,14 @@ void IsapiResponseHandler::SendError(MgException* e)
     string sResponseHeader;
     char tempHeader[4096];
 
-    sprintf(tempHeader, MapAgentStrings::StatusHeader, 559, MG_WCHAR_TO_CHAR(statusMessage));
+    sprintf(tempHeader, MapAgentStrings::StatusHeader, 559, MG_WCHAR_TO_CHAR(shortError));
     sResponseHeader.append(tempHeader);
     sprintf(tempHeader, MapAgentStrings::ContentTypeHeader, MapAgentStrings::TextHtml, MapAgentStrings::Utf8Text);
     sResponseHeader.append(tempHeader);
     sResponseHeader.append(MapAgentStrings::CrLf);
     m_pECB->dwHttpStatusCode = (DWORD)status;
     char tempStatus[4096];
-    sprintf(tempStatus, "%d %s", status, MG_WCHAR_TO_CHAR(statusMessage));
+    sprintf(tempStatus, "%d %s", status, MG_WCHAR_TO_CHAR(shortError));
     WriteHeader(sResponseHeader.c_str(), tempStatus);
     WriteContext("\r\n"
         "<html>\n<head>\n"
