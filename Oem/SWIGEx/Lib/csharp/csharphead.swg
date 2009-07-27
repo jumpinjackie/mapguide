@@ -135,24 +135,28 @@ DllExport void SWIGSTDCALL SWIGRegisterStringCallback_$module(SWIG_CSharpStringH
       classMap = new Hashtable();
 $initMap
   }
-  static public object createObject(int id, string nameSpaceName, string className, IntPtr cPtr, bool ownMemory)
+  static public object createObject(int id, IntPtr nameSpaceNamePtr, IntPtr classNamePtr, IntPtr cPtr, bool ownMemory)
   {
+      // Marshall strings in nameSpaceNamePtr and classNamePtr from unmanaged char * to managed strings  
+      String nameSpaceName = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(nameSpaceNamePtr);  
+      String className     = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(classNamePtr);  
+
       Type type = classMap[id] as Type;
       if(type == null)
       {
           foreach (System.Reflection.Assembly assem in System.AppDomain.CurrentDomain.GetAssemblies())
           {
-	          type = assem.GetType(nameSpaceName + "." + className, false);
-	          if (type != null)
-	          {
-				  classMap[id] = type;
-	              break;
-	          }
+              type = assem.GetType(nameSpaceName + "." + className, false);
+              if (type != null)
+              {
+                  classMap[id] = type;
+                  break;
+              }
           }
       }
       
       if (type == null)
-		return null;
+        return null;
       
       object[] args = new object[2] { cPtr, ownMemory };
       return Activator.CreateInstance(type, args);
