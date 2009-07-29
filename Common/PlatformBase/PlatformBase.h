@@ -134,6 +134,17 @@
 #include "Services/LockFeatures.h"
 #include "Services/UnlockFeatures.h"
 
+#include "Services/PrintLayoutService/MapView.h"
+#include "Services/PrintLayoutService/MapViewportBase.h"
+#include "Services/PrintLayoutService/PrintLayoutBase.h"
+#include "Services/PrintLayoutService/PrintLayoutDefs.h"
+#include "Services/PrintLayoutService/PrintLayoutElementBase.h"
+#include "Services/PrintLayoutService/PrintLayoutElementCollection.h"
+#include "Services/PrintLayoutService/PrintLayoutElementFactoryBase.h"
+#include "Services/PrintLayoutService/PrintLayoutServiceBase.h"
+#include "Services/PrintLayoutService/PropertyMapping.h"
+#include "Services/PrintLayoutService/PropertyMappingCollection.h"
+
 #include "MapLayer/LayerType.h"
 #include "MapLayer/LayerGroupType.h"
 #include "MapLayer/LayerBase.h"

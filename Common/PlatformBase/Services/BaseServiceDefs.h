@@ -67,6 +67,8 @@ INTERNAL_API:
     ///        sequential containers for fast indexed-based lookups.
     static const INT16 ServerAdminService   = 7;    /// Server Administration Service
     static const INT16 SiteService          = 8;    /// Site Service
+
+    static const INT16 PrintLayoutService   = 9;    /// Print Layout Service
 };
 /// \}
 

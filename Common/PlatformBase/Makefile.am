@@ -100,7 +100,17 @@ include_SOURCES = \
   Services/SqlDataReader.cpp \
   Services/UnlockFeatures.cpp \
   Services/UpdateFeatures.cpp \
-  Services/Warnings.cpp
+  Services/Warnings.cpp \
+  Services/PrintLayoutService/MapView.cpp \
+  Services/PrintLayoutService/MapViewportBase.cpp \
+  Services/PrintLayoutService/PrintLayoutBase.cpp \
+  Services/PrintLayoutService/PrintLayoutDefs.cpp \
+  Services/PrintLayoutService/PrintLayoutElementBase.cpp \
+  Services/PrintLayoutService/PrintLayoutElementCollection.cpp \
+  Services/PrintLayoutService/PrintLayoutElementFactoryBase.cpp \
+  Services/PrintLayoutService/PrintLayoutServiceBase.cpp \
+  Services/PrintLayoutService/PropertyMapping.cpp \
+  Services/PrintLayoutService/PropertyMappingCollection.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
   PlatformBase.h \
@@ -211,7 +221,17 @@ noinst_HEADERS = $(include_SOURCES) \
   Services/SqlDataReader.h \
   Services/UnlockFeatures.h \
   Services/UpdateFeatures.h \
-  Services/Warnings.h
+  Services/Warnings.h \
+  Services/PrintLayoutService/MapView.h \
+  Services/PrintLayoutService/MapViewportBase.h \
+  Services/PrintLayoutService/PrintLayoutBase.h \
+  Services/PrintLayoutService/PrintLayoutDefs.h \
+  Services/PrintLayoutService/PrintLayoutElementBase.h \
+  Services/PrintLayoutService/PrintLayoutElementCollection.h \
+  Services/PrintLayoutService/PrintLayoutElementFactoryBase.h \
+  Services/PrintLayoutService/PrintLayoutServiceBase.h \
+  Services/PrintLayoutService/PropertyMapping.h \
+  Services/PrintLayoutService/PropertyMappingCollection.h
 
 INCLUDES = \
   -I../CoordinateSystem \

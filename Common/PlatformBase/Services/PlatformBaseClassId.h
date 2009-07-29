@@ -27,6 +27,7 @@
 #define PLATFORMBASE_RESOURCESERVICE_ID     11500
 #define PLATFORMBASE_FEATURESERVICE_ID      11750
 #define PLATFORMBASE_MAPLAYER_ID            12000
+#define PLATFORMBASE_PRINTLAYOUTSERVICE_ID  12250
 
 // Platform Collection
 #define PlatformBase_Collection_IntCollection                       PLATFORMBASE_COLLECTION_ID+0
@@ -138,3 +139,13 @@
 #define PlatformBase_ResourceService_ResourceIdentifier             PLATFORMBASE_RESOURCESERVICE_ID+0
 #define PlatformBase_ResourceService_ResourceService                PLATFORMBASE_RESOURCESERVICE_ID+1
 #define PlatformBase_ResourceService_Resource                       PLATFORMBASE_RESOURCESERVICE_ID+26
+
+// Print Layout Service
+#define PlatformBase_PrintLayoutService_PrintLayoutServiceBase      PLATFORMBASE_PRINTLAYOUTSERVICE_ID+0
+#define PlatformBase_PrintLayoutService_PrintLayoutBase             PLATFORMBASE_PRINTLAYOUTSERVICE_ID+1
+#define PlatformBase_PrintLayoutService_PrintLayoutElementBase      PLATFORMBASE_PRINTLAYOUTSERVICE_ID+2
+#define PlatformBase_PrintLayoutService_PrintLayoutElementCollection PLATFORMBASE_PRINTLAYOUTSERVICE_ID+3
+#define PlatformBase_PrintLayoutService_MapViewportBase             PLATFORMBASE_PRINTLAYOUTSERVICE_ID+4
+#define PlatformBase_PrintLayoutService_MapView                     PLATFORMBASE_PRINTLAYOUTSERVICE_ID+5
+#define PlatformBase_PrintLayoutService_PropertyMapping             PLATFORMBASE_PRINTLAYOUTSERVICE_ID+6
+#define PlatformBase_PrintLayoutService_PropertyMappingCollection   PLATFORMBASE_PRINTLAYOUTSERVICE_ID+7

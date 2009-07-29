@@ -1,0 +1,116 @@
+//
+//  Copyright (C) 2004-2009 by Autodesk, Inc.
+//
+//  This library is free software; you can redistribute it and/or
+//  modify it under the terms of version 2.1 of the GNU Lesser
+//  General Public License as published by the Free Software Foundation.
+//
+//  This library is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//  Lesser General Public License for more details.
+//
+//  You should have received a copy of the GNU Lesser General Public
+//  License along with this library; if not, write to the Free Software
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
+
+#include "../stdafx.h"
+#include "IOColor.h"
+
+CREATE_ELEMENT_MAP;
+// Start Elements
+ELEM_MAP_ENTRY(1, BackgroundColor);
+// Local Elements
+ELEM_MAP_ENTRY(2, Red);
+ELEM_MAP_ENTRY(3, Green);
+ELEM_MAP_ENTRY(4, Blue);
+ELEM_MAP_ENTRY(5, Alpha);
+
+IOColor::IOColor(Color* color, Version& version) :
+    SAX2ElementHandler(version),
+    m_color(color)
+{
+    // The parser will update all the data of the object pointed by the following assigned pointer.
+    _ASSERT(NULL != m_color);
+}
+
+IOColor::~IOColor()
+{
+}
+
+void IOColor::StartElement(const wchar_t* name, HandlerStack* handlerStack)
+{
+    m_currElemName = name;
+    m_currElemId = _ElementIdFromName(name);
+
+    switch (m_currElemId)
+    {
+    case eBackgroundColor:
+        m_startElemName = name;
+        break;
+    }
+}
+
+void IOColor::ElementChars(const wchar_t* ch)
+{
+    switch (m_currElemId)
+    {
+    case eRed:
+        m_color->SetRed(wstrToDouble(ch));
+        break;
+
+    case eGreen:
+        m_color->SetGreen(wstrToDouble(ch));
+        break;
+
+    case eBlue:
+        m_color->SetBlue(wstrToDouble(ch));
+        break;
+
+    case eAlpha:
+        m_color->SetAlpha(wstrToDouble(ch));
+        break;
+    }
+}
+
+void IOColor::EndElement(const wchar_t* name, HandlerStack* handlerStack)
+{
+    if (m_startElemName == name)
+    {
+        m_startElemName = L"";
+        handlerStack->pop();
+        delete this;
+    }
+}
+
+void IOColor::Write(MdfStream& fd, Color* color, Version* version, const std::string& name)
+{
+    _ASSERT(NULL != color);
+
+    fd << tab() << startStr(name) << std::endl;
+    inctab();
+
+    // Property: Red
+    fd << tab() << startStr(sRed);
+    fd << DoubleToStr(color->GetRed());
+    fd << endStr(sRed) << std::endl;
+
+    // Property: Green
+    fd << tab() << startStr(sGreen);
+    fd << DoubleToStr(color->GetGreen());
+    fd << endStr(sGreen) << std::endl;
+
+    // Property: Blue
+    fd << tab() << startStr(sBlue);
+    fd << DoubleToStr(color->GetBlue());
+    fd << endStr(sBlue) << std::endl;
+
+    // Property: Alpha
+    fd << tab() << startStr(sAlpha);
+    fd << DoubleToStr(color->GetAlpha());
+    fd << endStr(sAlpha) << std::endl;
+
+    dectab();
+    fd << tab() << endStr(name) << std::endl;
+}

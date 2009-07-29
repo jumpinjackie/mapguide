@@ -100,7 +100,7 @@ int _tmain(int argc, _TCHAR* argv[])
     //////////////////////////////////////////////////////////////////
     // Test MapViewportDefinition WriteToFile
     //////////////////////////////////////////////////////////////////
-    parser.WriteToFile("MapViewportSample1_OUT.xml", NULL, NULL, NULL, NULL, viewportDefinition.get(), &MdfModel::Version(1, 1, 0));
+    parser.WriteToFile("MapViewportSample1_OUT.xml", NULL, NULL, NULL, NULL, NULL, viewportDefinition.get(), &MdfModel::Version(2, 0, 0));
 
     //////////////////////////////////////////////////////////////////
     // Test Populate the MgMapViewportBase from the definition

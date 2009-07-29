@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib MgFoundationd.lib MgPlatformBased.lib"
+				AdditionalDependencies="ACEd.lib MgMdfModeld.lib MgMdfParserd.lib MgFoundationd.lib MgPlatformBased.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Common\lib\debug"
 				GenerateDebugInformation="true"
@@ -142,9 +142,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib"
+				AdditionalDependencies="ACEd.lib MgMdfModeld.lib MgMdfParserd.lib MgFoundationd.lib MgPlatformBased.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Common\lib\debug"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\FoundationTest.pdb"
 				SubSystem="1"
@@ -216,9 +216,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib"
+				AdditionalDependencies="ACE.lib MgMdfModel.lib MgMdfParser.lib MgFoundation.lib MgPlatformBase.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Common\lib\release"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -292,9 +292,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib"
+				AdditionalDependencies="ACE.lib MgMdfModel.lib MgMdfParser.lib MgFoundation.lib MgPlatformBase.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Common\lib\release"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
