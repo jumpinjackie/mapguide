@@ -18,10 +18,11 @@
 #ifndef MGMAPVIEW_H_
 #define MGMAPVIEW_H_
 
-// Includes
-#include "PrintLayout/MapView.h"
-
 // Forward Declarations
+BEGIN_NAMESPACE_MDFMODEL
+class MapView;
+END_NAMESPACE_MDFMODEL
+
 class MgPoint3D;
 class MgVector3D;
 

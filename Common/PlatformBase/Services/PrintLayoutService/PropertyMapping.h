@@ -21,7 +21,10 @@
 /// \defgroup MgPropertyMapping MgPropertyMapping
 /// \{
 
-#include "PrintLayout/PropertyMapping.h"
+// Forward Declarations
+BEGIN_NAMESPACE_MDFMODEL
+class PropertyMapping;
+END_NAMESPACE_MDFMODEL
 
 class MgPropertyMapping;
 template class MG_PLATFORMBASE_API Ptr<MgPropertyMapping>;

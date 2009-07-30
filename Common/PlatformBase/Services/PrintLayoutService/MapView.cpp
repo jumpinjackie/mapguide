@@ -16,7 +16,6 @@
 //
 
 #include "PlatformBase.h"
-#include "MapView.h"
 
 MG_IMPL_DYNCREATE(MgMapView)
 
