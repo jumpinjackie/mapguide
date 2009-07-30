@@ -83,7 +83,7 @@ INTERNAL_API:
     ///
     virtual MgPrintLayoutBase* CreatePrintLayout(
         MgResourceService* resourceService,
-        MgResourceIdentifier* resId) = 0;
+        MgResourceIdentifier* resId);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
