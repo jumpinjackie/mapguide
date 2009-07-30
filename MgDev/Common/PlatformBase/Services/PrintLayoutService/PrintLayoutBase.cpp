@@ -16,7 +16,6 @@
 //
 
 #include "PlatformBase.h"
-#include "PrintLayoutBase.h"
 
 MG_IMPL_DYNCREATE(MgPrintLayoutBase)
 

@@ -18,10 +18,11 @@
 #ifndef MGPRINTLAYOUTBASE_H_
 #define MGPRINTLAYOUTBASE_H_
 
-// Includes
-#include "PrintLayout/PrintLayoutDefinition.h"
-
 // Forward Declarations
+BEGIN_NAMESPACE_MDFMODEL
+class PrintLayoutDefinition;
+END_NAMESPACE_MDFMODEL
+
 class MgPrintLayoutServiceBase;
 class MgPrintLayoutElementCollection;
 

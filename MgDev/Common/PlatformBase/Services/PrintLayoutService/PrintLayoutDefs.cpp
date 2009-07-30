@@ -16,7 +16,6 @@
 //
 
 #include "PlatformBase.h"
-#include "PrintLayoutDefs.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Print Layout Element Definition types

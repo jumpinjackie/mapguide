@@ -16,7 +16,6 @@
 //
 
 #include "PlatformBase.h"
-#include "PrintLayoutElementCollection.h"
 
 // Constructs an empty MgPrintLayoutElementCollection object.
 //
