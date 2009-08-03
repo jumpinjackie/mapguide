@@ -221,7 +221,7 @@ void MgServerCreateFileFeatureSource::SetResourceData(
 {
     STRING target = GetFileName();
     SetResourceDataInternal(resourceService, m_tempFileName, target);
-    MgFileUtil::DeleteFileW(m_tempFileName);
+    MgFileUtil::DeleteFile(m_tempFileName);
 }
 
 MgResourceService* MgServerCreateFileFeatureSource::GetResourceService()
