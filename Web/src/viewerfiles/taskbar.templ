@@ -85,6 +85,10 @@ function InitDocument()
     btn.title = parent.taskItemTexts[16];
     btn.src = parent.taskItemTexts[18];
 
+    btn = document.getElementById("imgClose");
+    btn.title = "__#TASKBARCLOSEBUTTONTEXT#__";
+    btn.src = "__#TASKBARCLOSEBUTTONICON#__";
+
     document.getElementById("imgOpenClose").src = imgOpenArrow.src;
 }
 
@@ -110,6 +114,8 @@ function HoverButton(eltId, description)
         parent.SetStatusMsg(parent.taskItemTexts[12]);
     else if(eltId == 'btnTask')
         parent.SetStatusMsg(parent.taskItemTexts[17]);
+    else if(eltId == 'btnClose')
+        parent.SetStatusMsg("__#TASKBARCLOSEBUTTONDESC#__");
 }
 
 function LeaveButton(eltId)
@@ -176,17 +182,22 @@ function GetTextLen(text)
     <table height=30 border=0 cellpadding=0 cellspacing=0>
         <tr height=30>
           <td align=center valign=center>
-            <span class="btn" id="btnHome" style="position: absolute; left: 5px;" onmouseover="HoverButton('btnHome', '')" onmouseout="LeaveButton('btnHome', '')" onclick="GotoHomePage()">
+            <span class="btn" id="btnClose" style="position: absolute; left: 5px;" onmouseover="HoverButton('btnClose', '')" onmouseout="LeaveButton('btnClose', '')" onclick="parent.CloseTaskBar()">
+              <img class="btnImg" id="imgClose" title="" src="../stdicons/transparentpixel.gif" width=16 height=16>
+            </span>
+          </td>
+          <td align=center valign=center>
+            <span class="btn" id="btnHome" style="position: absolute; left: 36px;" onmouseover="HoverButton('btnHome', '')" onmouseout="LeaveButton('btnHome', '')" onclick="GotoHomePage()">
               <img class="btnImg" id="imgHome" title="" src="../stdicons/transparentpixel.gif" width=16 height=16>
             </span>
           </td>
           <td align=center valign=center>
-            <span class="btn" id="btnBack" style="position: absolute; left: 39px;" onmouseover="HoverButton('btnBack', '')" onmouseout="LeaveButton('btnBack', '')" onclick="history.back()">
+            <span class="btn" id="btnBack" style="position: absolute; left: 64px;" onmouseover="HoverButton('btnBack', '')" onmouseout="LeaveButton('btnBack', '')" onclick="history.back()">
               <img class="btnImg" id="imgBack" title="" src="../stdicons/transparentpixel.gif" width=16 height=16>
             </span>
           </td>
           <td align=center valign=center>
-            <span class="btn" id="btnForward" style="position: absolute; left: 67px;" onmouseover="HoverButton('btnForward', '')" onmouseout="LeaveButton('btnForward', '')" onclick="history.forward()">
+            <span class="btn" id="btnForward" style="position: absolute; left: 92px;" onmouseover="HoverButton('btnForward', '')" onmouseout="LeaveButton('btnForward', '')" onclick="history.forward()">
               <img class="btnImg" id="imgForward" title="" src="../stdicons/transparentpixel.gif" width=16 height=16>
             </span>
           </td>
