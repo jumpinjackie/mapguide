@@ -142,12 +142,12 @@ void MgPrintLayoutBase::OnPrintLayoutElementRemoved(MgPrintLayoutElementBase* el
 void MgPrintLayoutBase::PopulateFromResource(
     MgPrintLayoutServiceBase* printLayoutService,
     MgResourceService* resourceService,
-    CREFSTRING resourceXml)
+    CREFSTRING layoutXml)
 {
-    assert(!resourceXml.empty());
+    assert(!layoutXml.empty());
 
     // Parse the resource XML.
-    string strXml = MgUtil::WideCharToMultiByte(resourceXml);
+    string strXml = MgUtil::WideCharToMultiByte(layoutXml);
     MdfParser::SAX2Parser parser;
     parser.ParseString(strXml.c_str(), strXml.length());
 
@@ -162,8 +162,8 @@ void MgPrintLayoutBase::PopulateFromResource(
     }
 
     // Populate the data.
-    std::auto_ptr<MdfModel::PrintLayoutDefinition> resourceDef(parser.DetachPrintLayoutDefinition());
-    this->PopulateFromResource(printLayoutService, resourceService, resourceDef.get());
+    std::auto_ptr<MdfModel::PrintLayoutDefinition> layoutDef(parser.DetachPrintLayoutDefinition());
+    PopulateFromResource(printLayoutService, resourceService, layoutDef.get());
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -173,17 +173,17 @@ void MgPrintLayoutBase::PopulateFromResource(
 void MgPrintLayoutBase::PopulateFromResource(
     MgPrintLayoutServiceBase* printLayoutService,
     MgResourceService* resourceService,
-    MdfModel::PrintLayoutDefinition *resourceDef)
+    MdfModel::PrintLayoutDefinition *layoutDef)
 {
     // Reset the data.
     m_elements->Clear();
     m_extent = NULL;
 
     // Populate the data.
-    assert(NULL != printLayoutService && NULL != resourceService && NULL != resourceDef);
-    if (NULL != printLayoutService && NULL != resourceService && NULL != resourceDef)
+    assert(NULL != printLayoutService && NULL != resourceService && NULL != layoutDef);
+    if (NULL != printLayoutService && NULL != resourceService && NULL != layoutDef)
     {
-        MdfModel::PrintLayoutElementCollection* elements = resourceDef->GetElements();
+        MdfModel::PrintLayoutElementCollection* elements = layoutDef->GetElements();
         if (NULL != elements)
         {
             for (int i = 0; i < elements->GetCount(); ++i)
@@ -200,7 +200,7 @@ void MgPrintLayoutBase::PopulateFromResource(
             }
         }
 
-        Extent3D* extent = resourceDef->GetExtent();
+        Extent3D* extent = layoutDef->GetExtent();
         if (NULL != extent)
         {
             Point3D* minPt = extent->GetMinimumPoint();

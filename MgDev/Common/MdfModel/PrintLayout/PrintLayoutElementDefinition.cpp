@@ -44,19 +44,9 @@ PrintLayoutElementDefinition::~PrintLayoutElementDefinition()
 //-------------------------------------------------------------------------
 // PURPOSE: Manage properties of this PrintLayoutElementDefinition object.
 //-------------------------------------------------------------------------
-void PrintLayoutElementDefinition::SetName(const MdfString& name)
-{
-    m_name = name;
-}
-
 void PrintLayoutElementDefinition::SetDescription(const MdfString& description)
 {
     m_description = description;
-}
-
-void PrintLayoutElementDefinition::SetUnits(const MdfString& units)
-{
-    m_units = units;
 }
 
 void PrintLayoutElementDefinition::SetResourceId(const MdfString& resourceId)

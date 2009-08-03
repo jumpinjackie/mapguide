@@ -132,7 +132,7 @@ INTERNAL_API:
     virtual void PopulateFromResource(
         MgPrintLayoutServiceBase* printLayoutService,
         MgResourceService* resourceService,
-        CREFSTRING resourceXml);
+        CREFSTRING layoutXml);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -141,7 +141,7 @@ INTERNAL_API:
     virtual void PopulateFromResource(
         MgPrintLayoutServiceBase* printLayoutService,
         MgResourceService* resourceService,
-        MdfModel::PrintLayoutDefinition *resourceDef);
+        MdfModel::PrintLayoutDefinition *layoutDef);
 
 protected:
 

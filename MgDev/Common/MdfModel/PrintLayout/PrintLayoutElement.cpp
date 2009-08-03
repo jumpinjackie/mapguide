@@ -26,7 +26,10 @@
 // PURPOSE: Default constructor of the PrintLayoutElement class.
 //-------------------------------------------------------------------------
 PrintLayoutElement::PrintLayoutElement() :
-    m_visible(true),
+    m_width(0.0),
+    m_height(0.0),
+    m_rotation(0.0),
+    m_isVisible(true),
     m_opacity(1.0)
 {
 }
@@ -41,14 +44,39 @@ PrintLayoutElement::~PrintLayoutElement()
 //-------------------------------------------------------------------------
 // PURPOSE: Manage properties of this PrintLayoutElement object.
 //-------------------------------------------------------------------------
+void PrintLayoutElement::SetName(const MdfString& name)
+{
+    m_name = name;
+}
+
 void PrintLayoutElement::SetResourceId(const MdfString& resourceId)
 {
     m_resourceId = resourceId;
 }
 
-void PrintLayoutElement::SetVisibility(bool visible)
+void PrintLayoutElement::SetWidth(double width)
 {
-    m_visible = visible;
+    m_width = width;
+}
+
+void PrintLayoutElement::SetHeight(double height)
+{
+    m_height = height;
+}
+
+void PrintLayoutElement::SetRotation(double rotation)
+{
+    m_rotation = rotation;
+}
+
+void PrintLayoutElement::SetUnits(const MdfString& units)
+{
+    m_units = units;
+}
+
+void PrintLayoutElement::SetIsVisible(bool isVisible)
+{
+    m_isVisible = isVisible;
 }
 
 void PrintLayoutElement::SetOpacity(double opacity)
