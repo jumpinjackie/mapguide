@@ -193,6 +193,9 @@ ALLUNSELECTABLE         = All Unselectable
 
 # Task Bar
 TASKS                   = Tasks
+TASKBARCLOSEBUTTONTEXT  = Close the task bar
+TASKBARCLOSEBUTTONDESC  = Close the task bar
+TASKBARCLOSEBUTTONICON  = ../stdicons/closeButton.gif
 
 # Viewer Options
 OPTIONSTITLE            = Viewer Options
