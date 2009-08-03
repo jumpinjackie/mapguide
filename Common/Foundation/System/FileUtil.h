@@ -84,6 +84,7 @@ class MG_FOUNDATION_API MgFileUtil
     static bool CleanDirectory(CREFSTRING path, bool recursive = true,
         bool strict = false);
     static STRING ChangeDirectory(CREFSTRING path);
+    static bool GetFilesInDirectory(MgStringCollection* files, CREFSTRING path, bool recursive = true, bool fileNameOnly = false);
 
     /// File related methods
 
@@ -96,6 +97,8 @@ class MG_FOUNDATION_API MgFileUtil
     static void RenameFile(CREFSTRING oldPathName, CREFSTRING newPathName,
         bool overwrite = false);
 
+    static STRING GetTempPath();
+    static STRING GenerateTempPath();
     static STRING GenerateTempFileName(bool useMgTempPath = true,
         CREFSTRING prefix = L"", CREFSTRING extension = L"");
 

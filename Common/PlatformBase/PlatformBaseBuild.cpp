@@ -84,6 +84,7 @@
 #include "Services/FeatureService.cpp"
 #include "Services/FeatureSet.cpp"
 #include "Services/FeatureSourceParams.cpp"
+#include "Services/FileFeatureSourceParams.cpp"
 #include "Services/GeometricPropertyDefinition.cpp"
 #include "Services/GeometryProperty.cpp"
 #include "Services/GeometryTypeInfo.cpp"

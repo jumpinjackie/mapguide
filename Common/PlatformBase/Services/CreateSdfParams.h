@@ -25,6 +25,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Contains the parameters used to create an SDF feature source.
+/// This is a deprecated class. Please use MgFileFeatureSourceParams
+/// to create the parameters used to an SDF feature source.
 ///
 /// \remarks
 /// Use MgFeatureService::DescribeSchema and
@@ -48,7 +50,7 @@
 /// \endcode
 /// \htmlinclude ExampleBottom.html
 ///
-class MG_PLATFORMBASE_API MgCreateSdfParams : public MgFeatureSourceParams
+class MG_PLATFORMBASE_API MgCreateSdfParams : public MgFileFeatureSourceParams
 {
     MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgCreateSdfParams)
@@ -105,285 +107,27 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////
     /// \brief
-    /// Gets the user-defined spatial context name.
+    /// Always throws an MgInvalidOperationException instance because we
+    /// can't change FDO provider for MgCreateSdfParams.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    ///  string GetSpatialContextName();
+    ///  string SetProviderName(string name);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    ///  String GetSpatialContextName();
+    ///  String SetProviderName(String name);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    ///  string GetSpatialContextName();
-    /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \return
-    /// Returns the name of the spatial context.
-    ///
-    STRING GetSpatialContextName();  /// __get, __set
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Sets the user-defined spatial context name.
-    ///
-    /// <!-- Syntax in .Net, Java, and PHP -->
-    /// \htmlinclude DotNetSyntaxTop.html
-    ///  void SetSpatialContextName(string name);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude JavaSyntaxTop.html
-    ///  void SetSpatialContextName(String name);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude PHPSyntaxTop.html
-    ///  void SetSpatialContextName(string name);
+    ///  string SetProviderName(string name);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param name (String/string)
-    /// The name of the spatial context
+    /// The FDO provider name of the feature source.
     ///
     /// \return
     /// Returns nothing.
     ///
-    void SetSpatialContextName(CREFSTRING name);
-
-    /////////////////////////////////////////////
-    /// \brief
-    /// Gets the spatial context description.
-    ///
-    /// <!-- Syntax in .Net, Java, and PHP -->
-    /// \htmlinclude DotNetSyntaxTop.html
-    ///  string GetSpatialContextDescription();
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude JavaSyntaxTop.html
-    ///  String GetSpatialContextDescription();
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude PHPSyntaxTop.html
-    ///  string GetSpatialContextDescription();
-    /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \return
-    /// Returns the spatial context description.
-    ///
-    STRING GetSpatialContextDescription();  /// __get, __set
-
-    //////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Sets the spatial context description.
-    ///
-    /// <!-- Syntax in .Net, Java, and PHP -->
-    /// \htmlinclude DotNetSyntaxTop.html
-    ///  void SetSpatialContextDescription(string description);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude JavaSyntaxTop.html
-    ///  void SetSpatialContextDescription(String description);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude PHPSyntaxTop.html
-    ///  void SetSpatialContextDescription(string description);
-    /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \param description (String/string)
-    /// The description of the spatial
-    /// context.
-    ///
-    /// \return
-    /// Returns nothing.
-    ///
-    void SetSpatialContextDescription(CREFSTRING description);
-
-    ///////////////////////////////////////////////////////////////
-    /// \brief
-    /// Gets the well-known text description of the coordinate system.
-    ///
-    /// <!-- Syntax in .Net, Java, and PHP -->
-    /// \htmlinclude DotNetSyntaxTop.html
-    ///  string GetCoordinateSystemWkt();
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude JavaSyntaxTop.html
-    ///  String GetCoordinateSystemWkt();
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude PHPSyntaxTop.html
-    ///  string GetCoordinateSystemWkt();
-    /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \return
-    /// Returns the OGC WKT description of the coordinate system.
-    ///
-    STRING GetCoordinateSystemWkt();  /// __get, __set
-
-    //////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Sets the well-know text string representing the coordinate system.
-    ///
-    /// <!-- Syntax in .Net, Java, and PHP -->
-    /// \htmlinclude DotNetSyntaxTop.html
-    ///  void SetCoordinateSystemWkt(string srsWkt);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude JavaSyntaxTop.html
-    ///  void SetCoordinateSystemWkt(String srsWkt);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude PHPSyntaxTop.html
-    ///  void SetCoordinateSystemWkt(string srsWkt);
-    /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \param srsWkt (String/string)
-    /// The OGC WKT string representing the coordinate system.
-    ///
-    /// \return
-    /// Returns nothing.
-    ///
-    void SetCoordinateSystemWkt(CREFSTRING srsWkt);
-
-    //////////////////////////////////////////////////////////
-    /// \brief
-    /// Gets the \link tolerance tolerance \endlink used for the X and Y
-    /// ordinates.
-    ///
-    /// <!-- Syntax in .Net, Java, and PHP -->
-    /// \htmlinclude DotNetSyntaxTop.html
-    ///  double GetXYTolerance();
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude JavaSyntaxTop.html
-    ///  double GetXYTolerance();
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude PHPSyntaxTop.html
-    ///  double GetXYTolerance();
-    /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \return
-    /// Returns the tolerance used for the X and Y ordinates.
-    ///
-    double GetXYTolerance();  /// __get, __set
-
-    ////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Sets the \link tolerance tolerance \endlink for the X and Y ordinates.
-    ///
-    /// <!-- Syntax in .Net, Java, and PHP -->
-    /// \htmlinclude DotNetSyntaxTop.html
-    ///  void SetXYTolerance(double tolerance);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude JavaSyntaxTop.html
-    ///  void SetXYTolerance(double tolerance);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude PHPSyntaxTop.html
-    ///  void SetXYTolerance(double tolerance);
-    /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \param tolerance (double)
-    /// The tolerance for the X and Y
-    /// ordinates.
-    ///
-    /// \return
-    /// Returns nothing.
-    ///
-    void SetXYTolerance(double tolerance);
-
-    ////////////////////////////////////////////////////////
-    /// \brief
-    /// Gets the \link tolerance tolerance \endlink for the Z ordinate.
-    ///
-    /// <!-- Syntax in .Net, Java, and PHP -->
-    /// \htmlinclude DotNetSyntaxTop.html
-    ///  double GetZTolerance();
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude JavaSyntaxTop.html
-    ///  double GetZTolerance();
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude PHPSyntaxTop.html
-    ///  double GetZTolerance();
-    /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \return
-    /// Returns the tolerance for the Z ordinate.
-    ///
-    double GetZTolerance();  /// __get, __set
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Sets the tolerance for the Z ordinate.
-    ///
-    /// <!-- Syntax in .Net, Java, and PHP -->
-    /// \htmlinclude DotNetSyntaxTop.html
-    ///  void SetZTolerance(double tolerance);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude JavaSyntaxTop.html
-    ///  void SetZTolerance(double tolerance);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude PHPSyntaxTop.html
-    ///  void SetZTolerance(double tolerance);
-    /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \param tolerance (double)
-    /// The tolerance for the Z ordinate.
-    ///
-    /// \return
-    /// Returns nothing.
-    ///
-    void SetZTolerance(double tolerance);
-
-    ////////////////////////////////////////////////
-    /// \brief
-    /// Gets the feature schema definition.
-    ///
-    /// <!-- Syntax in .Net, Java, and PHP -->
-    /// \htmlinclude DotNetSyntaxTop.html
-    ///  MgFeatureSchema GetFeatureSchema();
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude JavaSyntaxTop.html
-    ///  MgFeatureSchema GetFeatureSchema();
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude PHPSyntaxTop.html
-    ///  MgFeatureSchema GetFeatureSchema();
-    /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \return
-    /// Returns a feature schema definition object.
-    ///
-    MgFeatureSchema* GetFeatureSchema();  /// __get, __set
-
-    ///////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Sets the feature schema definition.
-    ///
-    /// <!-- Syntax in .Net, Java, and PHP -->
-    /// \htmlinclude DotNetSyntaxTop.html
-    ///  void SetFeatureSchema(MgFeatureSchema featureSchema);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude JavaSyntaxTop.html
-    ///  void SetFeatureSchema(MgFeatureSchema featureSchema);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude PHPSyntaxTop.html
-    ///  void SetFeatureSchema(MgFeatureSchema featureSchema);
-    /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \param featureSchema (MgFeatureSchema)
-    /// The feature schema
-    /// definition.
-    ///
-    /// \return
-    /// Returns nothing.
-    ///
-    void SetFeatureSchema(MgFeatureSchema* featureSchema);
-
-INTERNAL_API:
-
-    //////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Serializes data to a TCP/IP stream.
-    ///
-    /// \param stream
-    /// Stream
-    ///
-    virtual void Serialize(MgStream* stream);
-
-    //////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Deserializes data from a TCP/IP stream.
-    ///
-    /// \param stream
-    /// Stream
-    ///
-    virtual void Deserialize(MgStream* stream);
+    virtual void SetProviderName(CREFSTRING name);
 
 protected:
 
@@ -403,15 +147,6 @@ protected:
     virtual void Dispose();
 
     virtual ~MgCreateSdfParams();
-
-private:
-
-    STRING m_spatialContextName;
-    STRING m_spatialContextDescription;
-    STRING m_srsWkt;
-    double m_xyTolerance;
-    double m_zTolerance;
-    Ptr<MgFeatureSchema> m_featureSchema;
 
 CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_FeatureService_CreateSdfParams;

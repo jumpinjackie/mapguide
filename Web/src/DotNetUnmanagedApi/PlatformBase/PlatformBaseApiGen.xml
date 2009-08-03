@@ -132,6 +132,7 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../../../Common/PlatformBase/Services/BaseService.h" />
     <Header path="../../../../Common/PlatformBase/Services/ClassDefinition.h" />
     <Header path="../../../../Common/PlatformBase/Services/ClassDefinitionCollection.h" />
+    <Header path="../../../../Common/PlatformBase/Services/FileFeatureSourceParams.h" />
     <Header path="../../../../Common/PlatformBase/Services/CreateSdfParams.h" />
     <Header path="../../../../Common/PlatformBase/Services/DataPropertyDefinition.h" />
     <Header path="../../../../Common/PlatformBase/Services/DataReader.h" />

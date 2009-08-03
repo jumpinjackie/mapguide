@@ -1954,14 +1954,41 @@ void TestFeatureService::TestCase_CreateFeatureSource()
         schemaClasses->Add(classDef);
 
         STRING wkt = L"LOCAL_CS[\"Non-Earth (Meter)\",LOCAL_DATUM[\"Local Datum\",0],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
-        Ptr<MgCreateSdfParams> params = new MgCreateSdfParams(L"ArbitraryXY", wkt, schema);
 
-        Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(L"Library://UnitTests/Data/CreateFeatureSourceTest.FeatureSource");
-
-        pService->CreateFeatureSource(resource, params);
-
+        // Create SDF feature source using class MgCreateSdfParams
+        Ptr<MgCreateSdfParams> params1 = new MgCreateSdfParams(L"ArbitraryXY", wkt, schema);
+        Ptr<MgResourceIdentifier> resource1 = new MgResourceIdentifier(L"Library://UnitTests/Data/CreateFeatureSourceTest1.FeatureSource");
+        pService->CreateFeatureSource(resource1, params1);
         // Delete the resource
-        pResourceService->DeleteResource(resource);
+        pResourceService->DeleteResource(resource1);
+
+        // Create SDF feature source using class MgFeatureSourceParams
+        Ptr<MgFileFeatureSourceParams> params2 = new MgFileFeatureSourceParams(L"OSGeo.SDF", L"ArbitraryXY", wkt, schema);
+        Ptr<MgResourceIdentifier> resource2 = new MgResourceIdentifier(L"Library://UnitTests/Data/CreateFeatureSourceTest2.FeatureSource");
+        pService->CreateFeatureSource(resource2, params2);
+        // Delete SDF feature source
+        pResourceService->DeleteResource(resource2);
+
+        // Create SHP feature source
+        Ptr<MgFileFeatureSourceParams> params3 = new MgFileFeatureSourceParams(L"OSGeo.SHP", L"ArbitraryXY", wkt, schema);
+        Ptr<MgResourceIdentifier> resource3 = new MgResourceIdentifier(L"Library://UnitTests/Data/CreateFeatureSourceTest3.FeatureSource");
+        pService->CreateFeatureSource(resource3, params3);
+        // We use schema name "Default" because SHP FDO provider always returns a schema named "Default"
+        Ptr<MgFeatureSchemaCollection> tempSchema3 = pService->DescribeSchema(resource3, L"Default");
+        // Delete SHP feature source
+        pResourceService->DeleteResource(resource3);
+
+        // Disable the following test case for Sqlite because it seems that
+        // currently unit test environment doesn't include Sqlite FDO provider.
+        // Create SQLite feature source
+        // Ptr<MgFileFeatureSourceParams> params4 = new MgFileFeatureSourceParams(L"OSGeo.SQLite", L"ArbitraryXY", wkt, schema);
+        // params4->SetFileName(L"sqlite.sqlite");
+        // Ptr<MgResourceIdentifier> resource4 = new MgResourceIdentifier(L"Library://UnitTests/Data/CreateFeatureSourceTest4.FeatureSource");
+        // pService->CreateFeatureSource(resource4, params4);
+        // We use schema name "Default" because Sqlite FDO provider always returns a schema named "Default"
+        // Ptr<MgFeatureSchemaCollection> tempSchema4 = pService->DescribeSchema(resource4, L"Default");
+        // Delete SQLite feature source
+        // pResourceService->DeleteResource(resource4);
     }
     catch(MgException* e)
     {

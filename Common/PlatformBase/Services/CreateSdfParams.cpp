@@ -17,112 +17,32 @@
 
 #include "PlatformBase.h"
 
+#define SDF_PROVIDER_NAME L"OSGeo.SDF"
+
 MG_IMPL_DYNCREATE(MgCreateSdfParams);
 
 
 MgCreateSdfParams::MgCreateSdfParams()
 :
-m_xyTolerance(0.0),
-m_zTolerance(0.0)
+MgFileFeatureSourceParams(SDF_PROVIDER_NAME)
 {
 }
 
 MgCreateSdfParams::MgCreateSdfParams(CREFSTRING spatialContextName, CREFSTRING srsWkt, MgFeatureSchema* featureSchema)
 :
-m_xyTolerance(0.0),
-m_zTolerance(0.0)
+MgFileFeatureSourceParams(SDF_PROVIDER_NAME, spatialContextName, srsWkt, featureSchema)
 {
-    m_spatialContextName = spatialContextName;
-    m_srsWkt = srsWkt;
-    m_featureSchema = SAFE_ADDREF(featureSchema);
-}
-
-STRING MgCreateSdfParams::GetSpatialContextName()
-{
-    return m_spatialContextName;
-}
-
-void MgCreateSdfParams::SetSpatialContextName(CREFSTRING name)
-{
-    m_spatialContextName = name;
-}
-
-STRING MgCreateSdfParams::GetSpatialContextDescription()
-{
-    return m_spatialContextDescription;
-}
-
-void MgCreateSdfParams::SetSpatialContextDescription(CREFSTRING description)
-{
-    m_spatialContextDescription = description;
-}
-
-STRING MgCreateSdfParams::GetCoordinateSystemWkt()
-{
-    return m_srsWkt;
-}
-
-void MgCreateSdfParams::SetCoordinateSystemWkt(CREFSTRING srsWkt)
-{
-    m_srsWkt = srsWkt;
-}
-
-double MgCreateSdfParams::GetXYTolerance()
-{
-    return m_xyTolerance;
-}
-
-void MgCreateSdfParams::SetXYTolerance(double tolerance)
-{
-    m_xyTolerance = tolerance;
-}
-
-double MgCreateSdfParams::GetZTolerance()
-{
-    return m_zTolerance;
-}
-
-void MgCreateSdfParams::SetZTolerance(double tolerance)
-{
-    m_zTolerance = tolerance;
-}
-
-MgFeatureSchema* MgCreateSdfParams::GetFeatureSchema()
-{
-    return SAFE_ADDREF((MgFeatureSchema*)m_featureSchema);
-}
-
-void MgCreateSdfParams::SetFeatureSchema(MgFeatureSchema* featureSchema)
-{
-    m_featureSchema = SAFE_ADDREF(featureSchema);
 }
 
 MgCreateSdfParams::~MgCreateSdfParams()
 {
 }
 
-
-void MgCreateSdfParams::Serialize(MgStream* stream)
+void MgCreateSdfParams::SetProviderName(CREFSTRING name)
 {
-    stream->WriteString(m_spatialContextName);
-    stream->WriteString(m_spatialContextDescription);
-    stream->WriteString(m_srsWkt);
-    stream->WriteDouble(m_xyTolerance);
-    stream->WriteDouble(m_zTolerance);
-    stream->WriteObject(m_featureSchema);
+    throw new MgInvalidOperationException(L"MgCreateSdfParams.SetProviderName",
+        __LINE__, __WFILE__, NULL, L"", NULL);
 }
-
-
-void MgCreateSdfParams::Deserialize(MgStream* stream)
-{
-    stream->GetString(m_spatialContextName);
-    stream->GetString(m_spatialContextDescription);
-    stream->GetString(m_srsWkt);
-    stream->GetDouble(m_xyTolerance);
-    stream->GetDouble(m_zTolerance);
-    m_featureSchema = dynamic_cast<MgFeatureSchema*>(stream->GetObject());
-}
-
 
 INT32 MgCreateSdfParams::GetClassId()
 {

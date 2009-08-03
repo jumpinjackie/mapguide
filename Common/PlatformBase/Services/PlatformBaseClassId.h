@@ -134,6 +134,7 @@
 #define PlatformBase_FeatureService_LockFeatures                    PLATFORMBASE_FEATURESERVICE_ID+33
 #define PlatformBase_FeatureService_UnlockFeatures                  PLATFORMBASE_FEATURESERVICE_ID+34
 #define PlatformBase_FeatureService_GeometryTypeInfo                PLATFORMBASE_FEATURESERVICE_ID+35
+#define PlatformBase_FeatureService_FileFeatureSourceParams         PLATFORMBASE_FEATURESERVICE_ID+36
 
 // Resource Service
 #define PlatformBase_ResourceService_ResourceIdentifier             PLATFORMBASE_RESOURCESERVICE_ID+0
