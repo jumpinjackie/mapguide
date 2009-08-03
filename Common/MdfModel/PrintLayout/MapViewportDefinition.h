@@ -20,7 +20,6 @@
 
 #include "PrintLayoutElementDefinition.h"
 #include "../Common/StringObject.h"
-#include "../Common/Point3D.h"
 #include "../PrintLayout/MapView.h"
 
 #ifdef _WIN32

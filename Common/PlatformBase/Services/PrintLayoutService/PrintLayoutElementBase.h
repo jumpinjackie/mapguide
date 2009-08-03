@@ -56,19 +56,7 @@ INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Gets the visibility of this element
-    ///
-    virtual bool GetVisibility();
-
-    ///////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Sets the visibility of this element
-    ///
-    virtual void SetVisibility(bool visible);
-
-    ///////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Gets the type of this element
+    /// Gets the type of this element.
     ///
     virtual STRING GetType();
 
@@ -86,9 +74,111 @@ INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Gets the references of this element
+    /// Gets the resource ID.
+    ///
+    virtual MgResourceIdentifier* GetResourceId();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the resource ID.
+    ///
+    virtual void SetResourceId(MgResourceIdentifier* resourceId);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the center.
+    ///
+    virtual MgPoint3D* GetCenter();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the center.
+    ///
+    virtual void SetCenter(MgPoint3D* center);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the width.
+    ///
+    virtual double GetWidth();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the width.
+    ///
+    virtual void SetWidth(double width);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the height.
+    ///
+    virtual double GetHeight();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the height.
+    ///
+    virtual void SetHeight(double height);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the rotation.
+    ///
+    virtual double GetRotation();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the rotation.
+    ///
+    virtual void SetRotation(double rotation);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the units.
+    ///
+    virtual STRING GetUnits();
+    
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the units.
+    ///
+    virtual void SetUnits(CREFSTRING units);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the visibility.
+    ///
+    virtual bool GetVisibility();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the visibility.
+    ///
+    virtual void SetVisibility(bool visible);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the opacity.
+    ///
+    virtual double GetOpacity();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the opacity.
+    ///
+    virtual void SetOpacity(double opacity);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the references.
     ///
     virtual MgStringCollection* GetReferences();
+    
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the references.
+    ///
+    virtual void SetReferences(MgStringCollection* references);
     
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -98,15 +188,9 @@ INTERNAL_API:
     
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Gets the units of this element
+    /// Gets the resource ID of this element's element style resource
     ///
-    virtual STRING GetUnits();
-    
-    ///////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Gets the resource ID of this element's element definition resource
-    ///
-    virtual MgResourceIdentifier* GetDefinition();
+    virtual MgResourceIdentifier* GetStyle();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -196,13 +280,13 @@ INTERNAL_API:
     /// \brief
     /// Populates the print layout element from the resource XML string.
     ///
-    virtual void PopulateFromResource(CREFSTRING resourceXml);
+    virtual void PopulateFromResource(CREFSTRING elementXml);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Populates the print layout element from the MDF representation.
     ///
-    virtual void PopulateFromResource(MdfModel::PrintLayoutElementDefinition *element);
+    virtual void PopulateFromResource(MdfModel::PrintLayoutElementDefinition *elementDef);
 
 protected:
 
@@ -233,20 +317,26 @@ protected:
 protected:
 
     // Data Members
-    bool m_visible;
     STRING m_type;
     STRING m_name;
-    STRING m_description;
+    Ptr<MgResourceIdentifier> m_resourceId;
+    Ptr<MgPoint3D> m_center;
+    double m_width;
+    double m_height;
+    double m_rotation;
     STRING m_units;
+    bool m_visible;
+    double m_opacity;
+    Ptr<MgStringCollection> m_references;
+    STRING m_description;
     STRING m_featureClass;
     STRING m_geometryName;
     STRING m_filter;
     Ptr<MgEnvelope> m_extent;
     Ptr<MgResourceIdentifier> m_datasource;
     Ptr<MgResourceIdentifier> m_stylization;
-    Ptr<MgResourceIdentifier> m_elementDefinition;
+    Ptr<MgResourceIdentifier> m_style;
     Ptr<MgPropertyMappingCollection> m_propertyMappings;
-    Ptr<MgStringCollection> m_references;
 
 CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_PrintLayoutService_PrintLayoutElementBase;

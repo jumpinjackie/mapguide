@@ -19,8 +19,6 @@
 #define PRINTLAYOUTELEMENTDEFINITION_H_
 
 #include "../MdfRootObject.h"
-#include "../Common/StringObject.h"
-#include "../Common/Extent3D.h"
 #include "StylizationConfiguration.h"
 #include "DataConfiguration.h"
 
@@ -48,21 +46,11 @@ public:
     // Operations
     virtual const MdfString& GetType() = 0;
 
-    const MdfString& GetName() const;
-    void SetName(const MdfString& name);
-
-    StringObjectCollection* GetReferences();
-
     const MdfString& GetDescription() const;
     void SetDescription(const MdfString& description);
 
-    const MdfString& GetUnits() const;
-    void SetUnits(const MdfString& units);
-
     const MdfString& GetResourceId() const;
     void SetResourceId(const MdfString& resourceId);
-
-    Extent3D* GetExtent();
 
     StylizationConfiguration* GetStylizationConfiguration();
 
@@ -74,45 +62,21 @@ private:
     PrintLayoutElementDefinition& operator=(const PrintLayoutElementDefinition&);
 
     // Data Members
-    MdfString m_name;
-    StringObjectCollection m_references;
     MdfString m_description;
-    MdfString m_units;  
     MdfString m_resourceId;
-    Extent3D m_extent;
     StylizationConfiguration m_stylizationConfiguration;
     DataConfiguration m_dataConfiguration;
 };
 
 // Inline Methods
-inline const MdfString& PrintLayoutElementDefinition::GetName() const
-{
-    return m_name;
-}
-
-inline StringObjectCollection* PrintLayoutElementDefinition::GetReferences()
-{
-    return &m_references;
-}
-
 inline const MdfString& PrintLayoutElementDefinition::GetDescription() const
 {
     return m_description;
 }
 
-inline const MdfString& PrintLayoutElementDefinition::GetUnits() const
-{
-    return m_units;
-}
-
 inline const MdfString& PrintLayoutElementDefinition::GetResourceId() const
 {
     return m_resourceId;
-}
-
-inline Extent3D* PrintLayoutElementDefinition::GetExtent()
-{
-    return &m_extent;
 }
 
 inline StylizationConfiguration* PrintLayoutElementDefinition::GetStylizationConfiguration()

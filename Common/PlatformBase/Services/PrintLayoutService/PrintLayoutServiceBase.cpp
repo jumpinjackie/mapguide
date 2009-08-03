@@ -31,13 +31,6 @@ MgPrintLayoutServiceBase::MgPrintLayoutServiceBase() : MgService()
 ///
 MgPrintLayoutServiceBase::~MgPrintLayoutServiceBase()
 {
-    for (MgPrintLayoutElementMap::iterator i = m_printLayoutElements.begin();
-        i != m_printLayoutElements.end(); ++i)
-    {
-        SAFE_RELEASE((*i).second);
-    }
-    m_printLayoutElements.clear();
-
     for (MgPrintLayoutElementFactoryMap::iterator i = m_printLayoutElementFactories.begin();
         i != m_printLayoutElementFactories.end(); ++i)
     {

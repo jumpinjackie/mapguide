@@ -23,7 +23,6 @@ class MgPrintLayoutBase;
 class MgPrintLayoutElementBase;
 class MgPrintLayoutElementFactoryBase;
 
-typedef std::map<STRING, MgPrintLayoutElementBase*> MgPrintLayoutElementMap;
 typedef std::map<STRING, MgPrintLayoutElementFactoryBase*> MgPrintLayoutElementFactoryMap;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -111,30 +110,6 @@ INTERNAL_API:
         MgResourceService* resourceService,
         MgResourceIdentifier* resId);
 
-    ///////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Gets an MgPrintLayoutElementBase object.
-    ///
-    /// <!-- Syntax in .Net, Java, and PHP -->
-    /// \htmlinclude DotNetSyntaxTop.html
-    /// MgPrintLayoutElementBase GetPrintLayoutElement(MgResourceIdentifier resId);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude JavaSyntaxTop.html
-    /// MgPrintLayoutElementBase GetPrintLayoutElement(MgResourceIdentifier resId);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude PHPSyntaxTop.html
-    /// MgPrintLayoutElementBase GetPrintLayoutElement(MgResourceIdentifier resId);
-    /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \param resId (MgResourceIdentifier)
-    /// Resource identifier of an already existing print layout element.
-    ///
-    /// \return
-    /// Returns the realized print layout element.
-    ///
-    virtual MgPrintLayoutElementBase* GetPrintLayoutElement(
-        MgResourceIdentifier* resId) = 0;
-
 protected:
 
     ///////////////////////////////////////////////////////////////////////////
@@ -166,7 +141,6 @@ CLASS_ID:
 
 protected:
 
-    MgPrintLayoutElementMap m_printLayoutElements;
     MgPrintLayoutElementFactoryMap m_printLayoutElementFactories;
 };
 
