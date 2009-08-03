@@ -648,6 +648,95 @@ STRING MgFileUtil::ChangeDirectory(CREFSTRING path)
 
 ///----------------------------------------------------------------------------
 /// <summary>
+/// Gets all files in the specified directory.
+/// </summary>
+///----------------------------------------------------------------------------
+
+bool MgFileUtil::GetFilesInDirectory(
+    MgStringCollection* files,
+    CREFSTRING path,
+    bool recursive,
+    bool fileNameOnly)
+{
+    if (files == NULL)
+    {
+        throw new MgNullArgumentException(L"MgFileUtil.GetFilesInDirectory", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    struct dirent **dirEntries = NULL;
+    int numEntries = 0;
+
+    MG_TRY()
+
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
+
+    if (!PathnameExists(path))
+    {
+        MgStringCollection arguments;
+        arguments.Add(path);
+
+        throw new MgDirectoryNotFoundException(L"MgFileUtil.GetFilesInDirectory",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+
+        return false;
+    }
+
+    numEntries = ACE_OS::scandir(MG_WCHAR_TO_TCHAR(path), &dirEntries,
+        MgDirEntrySelector, MgDirEntryComparator);
+
+    if (NULL != dirEntries)
+    {
+        STRING root = path;
+
+        AppendSlashToEndOfPath(root);
+
+        for (int i = 0; i < numEntries; ++i)
+        {
+            STRING pathname = root;
+            STRING fileName = MG_TCHAR_TO_WCHAR(dirEntries[i]->d_name);
+
+            pathname += fileName;
+            if (IsFile(pathname))
+            {
+                if (fileNameOnly)
+                    files->Add(fileName);
+                else
+                    files->Add(pathname);
+            }
+            else if (recursive)
+            {
+                GetFilesInDirectory(files, pathname, recursive);
+            }
+        }
+    }
+
+    MG_CATCH(L"MgFileUtil.GetFilesInDirectory")
+
+    if (NULL != dirEntries)
+    {
+        for (int i = 0; i < numEntries; ++i)
+        {
+#if defined (ACE_LACKS_STRUCT_DIR)
+            // By default, ACE_LACKS_STRUCT_DIR is defined for Windows but not for Linux.
+            // When ACE_LACKS_STRUCT_DIR is NOT defined, d_name is initialized via ACE_OS::memcpy,
+            // When ACE_LACKS_STRUCT_DIR is defined, d_name is created via ACE_OS::malloc,
+            // and therefore it must be freed.
+
+            ACE_OS::free(dirEntries[i]->d_name);
+#endif
+            ACE_OS::free(dirEntries[i]);
+        }
+
+        ACE_OS::free(dirEntries);
+    }
+
+    MG_THROW()
+
+    return true;
+}
+
+///----------------------------------------------------------------------------
+/// <summary>
 /// Checks if the specified pathname is a file.
 /// </summary>
 ///----------------------------------------------------------------------------
@@ -910,6 +999,71 @@ void MgFileUtil::RenameFile(CREFSTRING oldPathname, CREFSTRING newPathname,
 
 ///----------------------------------------------------------------------------
 /// <summary>
+/// Gets the TempPath defined in the configuration file. If the TempPath doesn't
+/// exist, then create it.
+/// </summary>
+///
+/// <returns>
+/// Returns the TempPath defined in the configuration file.
+/// </returns>
+///----------------------------------------------------------------------------
+
+STRING MgFileUtil::GetTempPath()
+{
+    STRING tempPathname;
+
+    MG_TRY()
+
+    // TODO: Server Drawing Service GETDRAWINGLAYER API does not work well
+    // if using Mg temporary directory.
+    MgConfiguration* config = MgConfiguration::GetInstance();
+
+    config->GetStringValue(
+        MgFoundationConfigProperties::GeneralPropertiesSection,
+        MgFoundationConfigProperties::GeneralPropertyTempPath,
+        tempPathname,
+        MgFoundationConfigProperties::DefaultGeneralPropertyTempPath);
+
+    CreateDirectory(tempPathname);
+    AppendSlashToEndOfPath(tempPathname);
+
+    MG_CATCH_AND_THROW(L"MgFileUtil.GetTempPath")
+
+    return tempPathname;
+}
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Generates a temporary file folder using a UUID in the TempPath defined in
+/// the configuration file.
+/// </summary>
+///
+/// <returns>
+/// Returns full path name of the temporary path.
+/// </returns>
+///----------------------------------------------------------------------------
+
+STRING MgFileUtil::GenerateTempPath()
+{
+    STRING tempPathname;
+
+    MG_TRY()
+    
+    tempPathname = GetTempPath();
+
+    STRING uuid;
+    MgUtil::GenerateUuid(uuid);
+    tempPathname.append(uuid);
+
+    CreateDirectory(tempPathname);
+
+    MG_CATCH_AND_THROW(L"MgFileUtil.GenerateTempPath")
+
+    return tempPathname;
+}
+
+///----------------------------------------------------------------------------
+/// <summary>
 /// Generates a temporary file name. File will reside in the TempPath defined
 /// in the configuration file. File name will be a UUID so it should be unique.
 /// </summary>
@@ -932,20 +1086,7 @@ STRING MgFileUtil::GenerateTempFileName(bool useMgTempPath,
 
     if (useMgTempPath)
     {
-        // TODO: Server Drawing Service GETDRAWINGLAYER API does not work well
-        // if using Mg temporary directory.
-
-        MgConfiguration* config = MgConfiguration::GetInstance();
-
-        config->GetStringValue(
-            MgFoundationConfigProperties::GeneralPropertiesSection,
-            MgFoundationConfigProperties::GeneralPropertyTempPath,
-            tempPathname,
-            MgFoundationConfigProperties::DefaultGeneralPropertyTempPath);
-
-        CreateDirectory(tempPathname);
-        AppendSlashToEndOfPath(tempPathname);
-
+        tempPathname = GetTempPath();
         if (!prefix.empty())
         {
             tempPathname.append(prefix);

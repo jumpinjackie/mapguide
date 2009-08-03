@@ -77,6 +77,7 @@ include_SOURCES = \
   Services/FeatureService.cpp \
   Services/FeatureSet.cpp \
   Services/FeatureSourceParams.cpp \
+  Services/FileFeatureSourceParams.cpp \
   Services/GeometricPropertyDefinition.cpp \
   Services/GeometryProperty.cpp \
   Services/GeometryTypeInfo.cpp \
@@ -191,6 +192,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Services/FeatureSet.h \
   Services/FeatureSourceParams.h \
   Services/FeatureSpatialOperations.h \
+  Services/FileFeatureSourceParams.h \
   Services/GeometricPropertyDefinition.h \
   Services/GeometryProperty.h \
   Services/GeometryTypeInfo.h \
