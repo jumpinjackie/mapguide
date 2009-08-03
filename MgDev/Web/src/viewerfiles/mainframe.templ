@@ -177,28 +177,28 @@ var selectionAwareCmds = new Array();
 var orgTaskBarWidth = -1;
 function SetTaskBarWidth( width )
 {
-  var mainappFrame = document.getElementById("mainappFrame");
-  if(mainappFrame != null)
-  {
-    if(orgTaskBarWidth == -1)
+    var mainappFrame = document.getElementById("mainappFrame");
+    if(mainappFrame != null)
     {
-      orgTaskBarWidth = mainappFrame.cols;
+        if(orgTaskBarWidth == -1)
+        {
+            orgTaskBarWidth = mainappFrame.cols;
+        }
+        if(width != -1)
+        {
+            mainappFrame.cols = width;
+        }
     }
-    if(width != -1)
-    {
-      mainappFrame.cols = width;
-    }
-  }
 }
 
 function CloseTaskBar()
 {
-  SetTaskBarWidth(0);
+    SetTaskBarWidth(0);
 }
 
 function OpenTaskBar()
 {
-  SetTaskBarWidth(orgTaskBarWidth);
+    SetTaskBarWidth(orgTaskBarWidth);
 }
 
 function ZoomToView(x,y,scale,refresh)
@@ -283,7 +283,7 @@ function ExecuteCommand(index)
     var action = cmd.action;
     if(cmd.targetType != null && cmd.targetType == 1)
     {
-      OpenTaskBar();
+        OpenTaskBar();
     }
     if(action >= 1 && action <= 22)
         ExecuteMapAction(action);
