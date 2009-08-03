@@ -687,7 +687,9 @@ void MgConfiguration::ValidateValue(CREFSTRING section, CREFSTRING property,
 
     // Check for reserved characters, including those used in MgUtil::CheckXss.
     MgUtil::CheckReservedCharacters(value, sm_reservedCharacters);
+    MgUtil::CheckSpacesAtBeginEnd(property);
     MgUtil::CheckReservedCharacters(property, sm_reservedCharacters);
+    MgUtil::CheckSpacesAtBeginEnd(section);
     MgUtil::CheckReservedCharacters(section, sm_reservedCharacters);
 
     const MgConfigValidationInfo* validationInfo = GetConfigValidationInfo(

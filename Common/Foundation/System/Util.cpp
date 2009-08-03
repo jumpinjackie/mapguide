@@ -480,9 +480,6 @@ void MgUtil::CheckReservedCharacters(CREFSTRING str, CREFSTRING reservedChars, b
     int orgLen = (int)str.length();
     if ( orgLen > 0 )
     {
-        // There should not be spaces at start or end of string
-        CheckSpacesAtBeginEnd(str);
-
         if (anyOne)
             index = (int)str.find_first_of(reservedChars);
         else
