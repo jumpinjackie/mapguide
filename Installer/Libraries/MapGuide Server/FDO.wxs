@@ -13,7 +13,7 @@
       <CustomAction Execute="immediate" Id="FdoRegGdalCmd" Property="FdoRegGdal" Value="[FdoReg] -r &quot;OSGeo.Gdal.[FDO_VERSION_SMALL]&quot; &quot;!(loc.GdalProvider)&quot; &quot;!(loc.GdalProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\GRFPProvider.dll&quot;" />
       <CustomAction Execute="immediate" Id="FdoRegOgrCmd" Property="FdoRegOgr" Value="[FdoReg] -r &quot;OSGeo.OGR.[FDO_VERSION_SMALL]&quot; &quot;!(loc.OgrProvider)&quot; &quot;!(loc.OgrProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\OGRProvider.dll&quot;" />
       <CustomAction Execute="immediate" Id="FdoRegPostGisCmd" Property="FdoRegPostGis" Value="[FdoReg] -r &quot;OSGeo.PostGIS.[FDO_VERSION_SMALL]&quot; &quot;!(loc.PostGisProvider)&quot; &quot;!(loc.PostGisProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\PostGISProvider.dll&quot;" />
-      <CustomAction Execute="immediate" Id="FdoRegOracleCmd" Property="FdoRegOracle" Value="[FdoReg] -r &quot;OSGeo.KingOracle.[FDO_VERSION_SMALL]&quot; &quot;!(loc.KingOracleProvider)&quot; &quot;!(loc.KingOracleProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\KingOracleProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegOracleCmd" Property="FdoRegOracle" Value="[FdoReg] -r &quot;King.Oracle.[FDO_VERSION_SMALL]&quot; &quot;!(loc.KingOracleProvider)&quot; &quot;!(loc.KingOracleProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\KingOracleProvider.dll&quot;" />
       <CustomAction Execute="immediate" Id="FdoRegSqlServerCmd" Property="FdoRegSqlServer" Value="[FdoReg] -r &quot;OSGeo.SQLServerSpatial.[FDO_VERSION_SMALL]&quot; &quot;!(loc.SqlServerProvider)&quot; &quot;!(loc.SqlServerProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\SQLServerSpatialProvider.dll&quot;" />
       <CustomAction Execute="immediate" Id="FdoRegSltCmd" Property="FdoRegSlt" Value="[FdoReg] -r &quot;OSGeo.SQLite.[FDO_VERSION_SMALL]&quot; &quot;!(loc.SltProvider)&quot; &quot;!(loc.SltProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\SQLiteProvider.dll&quot;" />
 
@@ -41,7 +41,7 @@
       <CustomAction Execute="immediate" Id="FdoUnRegGdalCmd" Property="FdoUnRegGdal" Value="[FdoReg] -u &quot;OSGeo.Gdal.[FDO_VERSION_SMALL]&quot;" />
       <CustomAction Execute="immediate" Id="FdoUnRegOgrCmd" Property="FdoUnRegOgr" Value="[FdoReg] -u &quot;OSGeo.OGR.[FDO_VERSION_SMALL]&quot;" />
       <CustomAction Execute="immediate" Id="FdoUnRegPostGisCmd" Property="FdoUnRegPostGis" Value="[FdoReg] -u &quot;OSGeo.PostGIS.[FDO_VERSION_SMALL]&quot;" />
-      <CustomAction Execute="immediate" Id="FdoUnRegOracleCmd" Property="FdoUnRegOracle" Value="[FdoReg] -u &quot;OSGeo.KingOracle.[FDO_VERSION_SMALL]&quot;" />
+      <CustomAction Execute="immediate" Id="FdoUnRegOracleCmd" Property="FdoUnRegOracle" Value="[FdoReg] -u &quot;King.Oracle.[FDO_VERSION_SMALL]&quot;" />
       <CustomAction Execute="immediate" Id="FdoUnRegSqlServerCmd" Property="FdoUnRegSqlServer" Value="[FdoReg] -u &quot;OSGeo.SQLServerSpatial.[FDO_VERSION_SMALL]&quot;" />
       <CustomAction Execute="immediate" Id="FdoUnRegSltCmd" Property="FdoUnRegSlt" Value="[FdoReg] -u &quot;OSGeo.SQLite.[FDO_VERSION_SMALL]&quot;" />
 
