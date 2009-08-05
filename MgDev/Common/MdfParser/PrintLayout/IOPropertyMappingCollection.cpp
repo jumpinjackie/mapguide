@@ -21,12 +21,13 @@
 
 CREATE_ELEMENT_MAP;
 // Start Elements
-ELEM_MAP_ENTRY(1, PropertyMapping);
+ELEM_MAP_ENTRY(1, PropertyMappings);
 // Local Elements
-ELEM_MAP_ENTRY(2, TargetProperty);
-ELEM_MAP_ENTRY(3, SourceProperty);
-ELEM_MAP_ENTRY(4, SourceUnits);
-ELEM_MAP_ENTRY(5, ExtendedData1);
+ELEM_MAP_ENTRY(2, PropertyMapping);
+ELEM_MAP_ENTRY(3, TargetProperty);
+ELEM_MAP_ENTRY(4, SourceProperty);
+ELEM_MAP_ENTRY(5, SourceUnits);
+ELEM_MAP_ENTRY(6, ExtendedData1);
 
 IOPropertyMappingCollection::IOPropertyMappingCollection(PropertyMappingCollection* propMappings, Version& version) :
     SAX2ElementHandler(version),
@@ -47,8 +48,11 @@ void IOPropertyMappingCollection::StartElement(const wchar_t* name, HandlerStack
 
     switch (m_currElemId)
     {
-    case ePropertyMapping:
+    case ePropertyMappings:
         m_startElemName = name;
+        break;
+
+    case ePropertyMapping:
         m_currMapping.reset(new PropertyMapping());
         break;
 
@@ -83,12 +87,14 @@ void IOPropertyMappingCollection::EndElement(const wchar_t* name, HandlerStack* 
 {
     if (m_startElemName == name)
     {
-        m_currMapping->SetUnknownXml(m_unknownXml);
-        m_propMappings->Adopt(m_currMapping.release());
-
         m_startElemName = L"";
         handlerStack->pop();
         delete this;
+    }
+    else if (ePropertyMapping == _ElementIdFromName(name))
+    {
+        m_currMapping->SetUnknownXml(m_unknownXml);
+        m_propMappings->Adopt(m_currMapping.release());
     }
     else if (eExtendedData1 == _ElementIdFromName(name))
     {

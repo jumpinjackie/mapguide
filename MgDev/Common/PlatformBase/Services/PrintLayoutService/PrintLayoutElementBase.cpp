@@ -497,6 +497,7 @@ void MgPrintLayoutElementBase::PopulateFromResource(MdfModel::PrintLayoutElement
     m_propertyMappings->Clear();
 
     // Populate the data.
+    STRING resoureId = L"";
     assert(NULL != elementDef);
     if (NULL != elementDef)
     {
@@ -509,7 +510,12 @@ void MgPrintLayoutElementBase::PopulateFromResource(MdfModel::PrintLayoutElement
             m_featureClass = dataConf->GetFeatureClass();
             m_geometryName = dataConf->GetGeometry();
             m_filter = dataConf->GetFilter();
-            m_datasource = new MgResourceIdentifier(dataConf->GetResourceId());
+
+            resoureId = dataConf->GetResourceId();
+            if (resoureId == L"")
+                m_datasource = new MgResourceIdentifier();
+            else
+                m_datasource = new MgResourceIdentifier(resoureId);
 
             MdfModel::PropertyMappingCollection* propMappings = dataConf->GetPropertyMappings();
             if (NULL != propMappings)
@@ -531,9 +537,23 @@ void MgPrintLayoutElementBase::PopulateFromResource(MdfModel::PrintLayoutElement
         StylizationConfiguration* stylizationConf = elementDef->GetStylizationConfiguration();
         if (NULL != stylizationConf)
         {
-            m_stylization = new MgResourceIdentifier(stylizationConf->GetResourceId());
+            resoureId = stylizationConf->GetResourceId();
+            if (resoureId == L"")
+                m_stylization = new MgResourceIdentifier();
+            else
+                m_stylization = new MgResourceIdentifier(resoureId);
         }        
 
-        m_style = new MgResourceIdentifier(elementDef->GetResourceId());
+        resoureId = stylizationConf->GetResourceId();
+        if (resoureId == L"")
+            m_style = new MgResourceIdentifier();
+        else
+            m_style = new MgResourceIdentifier(resoureId);
+
+        resoureId = elementDef->GetResourceId();
+        if (resoureId == L"")
+            m_resourceId = new MgResourceIdentifier();
+        else
+            m_resourceId = new MgResourceIdentifier(resoureId);
     }
 }
