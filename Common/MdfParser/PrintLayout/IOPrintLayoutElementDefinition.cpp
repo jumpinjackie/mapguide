@@ -22,6 +22,8 @@
 #include "IODataConfiguration.h"
 
 CREATE_ELEMENT_MAP;
+// Start Elements
+ELEM_MAP_ENTRY(1, PrintLayoutElementDefinition);
 // Inherited Elements
 ELEM_MAP_ENTRY(2, Description);
 ELEM_MAP_ENTRY(3, ResourceId);
@@ -48,6 +50,10 @@ void IOPrintLayoutElementDefinition::StartElement(const wchar_t* name, HandlerSt
 
     switch (m_currElemId)
     {
+    case ePrintLayoutElementDefinition:
+        _ASSERT(false);
+        break;
+
     case eStylization:
         {
             IOStylizationConfiguration* IO = new IOStylizationConfiguration(m_layoutElemDef->GetStylizationConfiguration(), m_version);

@@ -24,14 +24,20 @@
 CREATE_ELEMENT_MAP;
 // Start Elements
 ELEM_MAP_ENTRY(1, MapViewportDefinition);
+// Inherited Elements
+ELEM_MAP_ENTRY(2, Description);
+ELEM_MAP_ENTRY(3, ResourceId);
+ELEM_MAP_ENTRY(4, Stylization);
+ELEM_MAP_ENTRY(5, Data);
+ELEM_MAP_ENTRY(6, ExtendedData1);
 // Local Elements
-ELEM_MAP_ENTRY(2, MapName);
-ELEM_MAP_ENTRY(3, VisibleLayerNames);
-ELEM_MAP_ENTRY(4, Locked);
-ELEM_MAP_ENTRY(5, On);
-ELEM_MAP_ENTRY(6, MapView);
+ELEM_MAP_ENTRY(7, MapName);
+ELEM_MAP_ENTRY(8, VisibleLayerNames);
+ELEM_MAP_ENTRY(9, Locked);
+ELEM_MAP_ENTRY(10, On);
+ELEM_MAP_ENTRY(11, MapView);
 // Sub Elements
-ELEM_MAP_ENTRY(7, Name);
+ELEM_MAP_ENTRY(12, Name);
 
 IOMapViewportDefinition::IOMapViewportDefinition(MapViewportDefinition* mapViewportDef, Version& version) :
     IOPrintLayoutElementDefinition(mapViewportDef, version)
