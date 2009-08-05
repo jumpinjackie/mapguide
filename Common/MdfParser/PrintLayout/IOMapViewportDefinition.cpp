@@ -75,6 +75,11 @@ void IOMapViewportDefinition::StartElement(const wchar_t* name, HandlerStack* ha
         }
         break;
     
+    case eMapName:
+    case eLocked:
+    case eOn:
+        break;
+
     default:
         IOPrintLayoutElementDefinition::StartElement(name, handlerStack);
         break;
