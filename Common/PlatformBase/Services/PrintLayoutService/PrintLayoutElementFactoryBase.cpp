@@ -33,7 +33,25 @@ MgPrintLayoutElementFactoryBase::~MgPrintLayoutElementFactoryBase()
 {
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Disposes this object.
+///
 void MgPrintLayoutElementFactoryBase::Dispose()
 {
     delete this;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Creates an MgPrintLayoutElementBase object.
+///
+/// \return
+/// Returns the MgPrintLayoutElementBase object.
+///
+MgPrintLayoutElementBase* MgPrintLayoutElementFactoryBase::CreateObject()
+{
+    // TODO: Make this method a pure virtual one.
+    return NULL;
+}
+

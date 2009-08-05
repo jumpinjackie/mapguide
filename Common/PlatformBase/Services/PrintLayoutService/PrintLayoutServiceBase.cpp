@@ -84,8 +84,8 @@ MgPrintLayoutElementBase* MgPrintLayoutServiceBase::RealizePrintLayoutElement(
             if (m_printLayoutElementFactories.end() != pIter)
             {
                 MgPrintLayoutElementFactoryBase* pElementFactory = pIter->second;
-                printLayoutElement = pElementFactory->CreateObject(
-                    this, resourceService, elementDef.get());
+                printLayoutElement = pElementFactory->CreateObject();
+                printLayoutElement->PopulateFromResource(elementDef.get());
             }
         }
     }

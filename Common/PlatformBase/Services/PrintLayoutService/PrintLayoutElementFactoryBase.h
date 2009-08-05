@@ -18,9 +18,9 @@
 #ifndef MGPRINTLAYOUTELEMENTFACTORYBASE_H_
 #define MGPRINTLAYOUTELEMENTFACTORYBASE_H_
 
-////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Defines the MgPrintLayoutElementFactoryBase abstract base.
+/// Defines the MgPrintLayoutElementFactoryBase abstract class.
 ///
 class MG_PLATFORMBASE_API MgPrintLayoutElementFactoryBase : public MgDisposable
 {
@@ -28,26 +28,33 @@ class MG_PLATFORMBASE_API MgPrintLayoutElementFactoryBase : public MgDisposable
 
 INTERNAL_API:
 
-    // Constructor
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Constructs an MgPrintLayoutElementFactoryBase object.
+    ///
     MgPrintLayoutElementFactoryBase();
 
-    // Destructor
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Destroys an MgPrintLayoutElementFactoryBase object.
+    ///
     virtual ~MgPrintLayoutElementFactoryBase();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Gets the print layout element definition from the XML model object
+    /// Creates an MgPrintLayoutElementBase object.
     ///
     /// \return
-    /// Returns an MgPrintLayoutElementBase pointer to the realized object.
+    /// Returns the MgPrintLayoutElementBase object.
     ///
-    virtual MgPrintLayoutElementBase* CreateObject(
-        MgPrintLayoutServiceBase* printLayoutService,
-        MgResourceService* resourceService,
-        PrintLayoutElementDefinition* resourceDef) = 0;
+    virtual MgPrintLayoutElementBase* CreateObject();
 
 protected:
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Disposes this object.
+    ///
     virtual void Dispose();
 };
 
