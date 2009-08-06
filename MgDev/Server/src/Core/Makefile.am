@@ -50,6 +50,7 @@ include_SOURCES = \
   ClientAcceptor.cpp \
   ConnectionTimeoutEventHandler.cpp \
   DataConnectionTimeoutEventHandler.cpp \
+  DataTransactionTimeoutEventHandler.cpp \
   EventTimer.cpp \
   EventTimerManager.cpp \
   FeatureServiceCacheTimeLimitEventHandler.cpp \
@@ -70,6 +71,7 @@ noinst_HEADERS = $(include_SOURCES) \
   ClientAcceptor.h \
   ConnectionTimeoutEventHandler.h \
   DataConnectionTimeoutEventHandler.h \
+  DataTransactionTimeoutEventHandler.h \
   EventTimer.h \
   EventTimerManager.h \
   FeatureServiceCacheTimeLimitEventHandler.h \

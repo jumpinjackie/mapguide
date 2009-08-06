@@ -99,6 +99,7 @@ include_SOURCES = \
   Services/SpatialContextData.cpp \
   Services/SpatialContextReader.cpp \
   Services/SqlDataReader.cpp \
+  Services/Transaction.cpp \
   Services/UnlockFeatures.cpp \
   Services/UpdateFeatures.cpp \
   Services/Warnings.cpp \
@@ -221,6 +222,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Services/SpatialContextExtentType.h \
   Services/SpatialContextReader.h \
   Services/SqlDataReader.h \
+  Services/Transaction.h \
   Services/UnlockFeatures.h \
   Services/UpdateFeatures.h \
   Services/Warnings.h \

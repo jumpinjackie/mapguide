@@ -87,6 +87,45 @@ void MgOpExecuteSqlQuery::Execute()
         // Write the response
         EndExecution((MgSqlDataReader*)sqlReader);
     }
+    else if (3 == m_packet.m_NumArguments)
+    {
+        // Get the feature source
+        Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
+
+        // Get the schema name
+        STRING sqlStatement;
+        m_stream->GetString(sqlStatement);
+
+        // Get the transaction id
+        STRING transactionId;
+        m_stream->GetString(transactionId);
+
+        BeginExecution();
+
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(sqlStatement.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(transactionId.c_str());
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+        Validate();
+
+        MgServerFeatureTransactionPool* transactionPool = MgServerFeatureTransactionPool::GetInstance();
+        CHECKNULL(transactionPool, L"MgOpExecuteSqlQuery.Execute")
+
+        transactionPool->ValidateTimeout(transactionId);
+
+        // Get the MgTransaction instance from the pool if one has been started for this resource.
+        Ptr<MgServerFeatureTransaction> transaction = transactionPool->GetTransaction(transactionId);
+
+        // Execute the operation
+        Ptr<MgSqlDataReader> sqlReader = m_service->ExecuteSqlQuery(resource, sqlStatement, (MgTransaction*)transaction.p);
+
+        // Write the response
+        EndExecution((MgSqlDataReader*)sqlReader);
+    }
     else
     {
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();

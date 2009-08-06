@@ -101,6 +101,7 @@ include_SOURCES = \
   Services/ProxyResourceService.cpp \
   Services/ProxySqlDataReader.cpp \
   Services/ProxyTileService.cpp \
+  Services/ProxyFeatureTransaction.cpp \
   Services/RenderingDefs.cpp \
   Services/RenderingOptions.cpp \
   Services/RenderingService.cpp \
@@ -221,6 +222,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Services/ProxyResourceService.h \
   Services/ProxySqlDataReader.h \
   Services/ProxyTileService.h \
+  Services/ProxyFeatureTransaction.h \
   Services/RenderingDefs.h \
   Services/RenderingOptions.h \
   Services/RenderingService.h \

@@ -20,6 +20,7 @@
 #include "ProxyFeatureReader.h"
 #include "ProxySqlDataReader.h"
 #include "ProxyDataReader.h"
+#include "ProxyFeatureTransaction.h"
 #include "Command.h"
 
 static const int Feature_Service = (int)MgPacketParser::msiFeature;
@@ -703,6 +704,75 @@ MgPropertyCollection* MgProxyFeatureService::UpdateFeatures(MgResourceIdentifier
     return SAFE_ADDREF((MgPropertyCollection*)propCol);
 }
 
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// It executes all the commands specified in command collection
+/// within the given transaction.
+/// </summary>
+/// <param name="resource">Input
+/// A resource identifier referring to connection string
+/// </param>
+/// <param name="commands">Input
+/// Collection of commands to be executed
+/// </param>
+/// <param name="transaction">Input
+/// The MgTransaction instance on which the commands
+/// will be executed.
+/// </param>
+/// <returns>
+/// Integer collection referring to result for each command
+/// Index of commandCollection and index of IntCollection would match the result.
+/// </returns>
+///
+/// EXCEPTIONS:
+/// MgInvalidResourceIdentifer
+MgPropertyCollection* MgProxyFeatureService::UpdateFeatures(MgResourceIdentifier* resource,
+                                                            MgFeatureCommandCollection* commands,
+                                                            MgTransaction* transaction)
+{
+    STRING transactionId = L"";
+    MgProxyFeatureTransaction* proxyTransaction = dynamic_cast<MgProxyFeatureTransaction*>(transaction);
+    if (NULL != proxyTransaction)
+    {
+        transactionId = proxyTransaction->GetTransactionId();
+    }
+
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+        MgCommand::knObject,                                        // Return type expected
+        MgFeatureServiceOpId::UpdateFeaturesWithTransaction_Id,     // Command Code
+        3,                                                          // No of arguments
+        Feature_Service,                                            // Service Id
+        BUILD_VERSION(1,0,0),                                       // Operation version
+        MgCommand::knObject, resource,                              // Argument#1
+        MgCommand::knObject, commands,                              // Argument#2
+        MgCommand::knString, transactionId,                         // Argument#3
+        MgCommand::knNone);                                         // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+
+    Ptr<MgPropertyCollection> propCol = (MgPropertyCollection*)cmd.GetReturnValue().val.m_obj;
+    if (propCol != NULL)
+    {
+        INT32 cnt = propCol->GetCount();
+        for (INT32 i=0; i < cnt; i++)
+        {
+            Ptr<MgProperty> prop = propCol->GetItem(i);
+            INT32 propType = prop->GetPropertyType();
+            if (propType == MgPropertyType::Feature)
+            {
+                MgFeatureProperty* featProp = ((MgFeatureProperty*)((MgProperty*)prop));
+                Ptr<MgProxyFeatureReader> reader = (MgProxyFeatureReader*)featProp->GetValue();
+                if (reader != NULL)
+                {
+                    reader->SetService(this);
+                }
+            }
+        }
+    }
+
+    return SAFE_ADDREF((MgPropertyCollection*)propCol);
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 /// <summary>
@@ -737,6 +807,47 @@ MgFeatureReader* MgProxyFeatureService::GetLockedFeatures( MgResourceIdentifier*
         __LINE__, __WFILE__, NULL, L"", NULL);
 
     return NULL; // to make some compiler happy
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// Starts a transaction on the specified feature source
+///
+/// NOTE:
+/// The returned MgTransaction instance has to be used along with ExecuteSqlQuery(),
+/// ExecuteSqlNonQuery() or UpdateFeatures() taking MgTransaction as a parameter.
+/// </summary>
+/// <param name="resource">Input
+/// A resource identifier referring to connection string
+/// </param>
+/// <returns>
+/// Returns an MgTransaction instance (or NULL).
+/// </returns>
+///
+/// EXCEPTIONS:
+/// MgFeatureServiceException
+/// MgInvalidArgumentException
+/// MgInvalidOperationException
+/// MgFdoException
+MgTransaction* MgProxyFeatureService::BeginTransaction( MgResourceIdentifier* resource )
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knObject,                         // Return type expected
+                       MgFeatureServiceOpId::BeginFeatureTransaction_Id,   // Command Code
+                       1,                                           // No of arguments
+                       Feature_Service,                             // Service Id
+                       BUILD_VERSION(1,0,0),                        // Operation version
+                       MgCommand::knObject, resource,               // Argument#1
+                       MgCommand::knNone);                          // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+
+    Ptr<MgProxyFeatureTransaction> featTransaction = (MgProxyFeatureTransaction*)cmd.GetReturnValue().val.m_obj;
+    if (featTransaction != NULL)
+        featTransaction->SetService(this); // Feature transaction on proxy side would store proxy service to call Commit() or Rollback()
+
+    return SAFE_ADDREF((MgProxyFeatureTransaction*)featTransaction);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -791,6 +902,69 @@ MgSqlDataReader* MgProxyFeatureService::ExecuteSqlQuery(MgResourceIdentifier* re
     return SAFE_ADDREF((MgProxySqlDataReader*)sqlReader);
 }
 
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// This method executes the SELECT SQL statement specified within a given transaction
+/// and returns a pointer to SqlDataReader instance. This instance can be used to 
+/// retrieve column information and related values.
+///
+/// NOTE:
+/// Serialize() method of SqlDataReader would be able to convert data returned
+/// to AWKFF or XML stream.
+/// </summary>
+/// <param name="resource">Input
+/// A resource identifier referring to connection string
+/// </param>
+/// <param name="sqlStatement">Input
+/// This would allow users to specify free format SQL SELECT statement like
+/// SELECT * FROM CLASSNAME WHERE COLOR = RED. This would return all rows
+/// from "CLASSNAME" where COLOR column has value RED.
+/// </param>
+/// <param name="transaction">Input
+/// The transaction object on which the sql statement will be executed.
+/// </param>
+/// <returns>
+/// SqlDataReader pointer, an instance of reader pointing to the actual reader
+/// from FdoProvider (or NULL).
+///
+/// If any statement other than SELECT is passed to this method, it would return failure.
+/// </returns>
+///
+/// EXCEPTIONS:
+/// MgInvalidResourceIdentifer
+/// MgInvalidSqlStatement
+/// MgSqlNotSupported
+MgSqlDataReader* MgProxyFeatureService::ExecuteSqlQuery(MgResourceIdentifier* resource,
+                                                        CREFSTRING sqlStatement,
+                                                        MgTransaction* transaction )
+{
+    STRING transactionId = L"";
+    MgProxyFeatureTransaction* proxyTransaction = dynamic_cast<MgProxyFeatureTransaction*>(transaction);
+    if (NULL != proxyTransaction)
+    {
+        transactionId = proxyTransaction->GetTransactionId();
+    }
+
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knObject,                         // Return type expected
+                       MgFeatureServiceOpId::ExecuteSqlQueryWithTransaction_Id,    // Command Code
+                       3,                                           // No of arguments
+                       Feature_Service,                             // Service Id
+                       BUILD_VERSION(1,0,0),                        // Operation version
+                       MgCommand::knObject, resource,               // Argument#1
+                       MgCommand::knString, &sqlStatement,          // Argument#2
+                       MgCommand::knString, &transactionId,         // Argument#3
+                       MgCommand::knNone);                          // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+
+    Ptr<MgProxySqlDataReader> sqlReader = (MgProxySqlDataReader*)cmd.GetReturnValue().val.m_obj;
+    if (sqlReader != NULL)
+        sqlReader->SetService(this); // Feature reader on proxy side would store proxy service to call GetFeatures()
+
+    return SAFE_ADDREF((MgProxySqlDataReader*)sqlReader);
+}
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -824,6 +998,57 @@ INT32 MgProxyFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knString, &sqlNonSelectStatement, // Argument#2
                        MgCommand::knNone);                          // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+
+    return cmd.GetReturnValue().val.m_i32;
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// This method executes all SQL statements supported by providers except SELECT
+/// within a given transaction.
+/// </summary>
+/// <param name="resource">Input
+/// A resource identifier referring to connection string
+/// </param>
+/// <param name="sqlNonSelectStatement">Input
+/// This would allow users to specify free format SQL statement like INSERT/UPDATE/DELETE/CREATE
+/// </param>
+/// <param name="transaction">Input
+/// The transaction object on which the sql statement will be executed.
+/// </param>
+/// <returns>
+/// An positive integer value indicating how many instances (rows) have been affected.
+///
+/// NOTE: It is possible that only few rows were affected than actually expected.
+/// In this scenario, warning object will contain the details on the failed records.
+/// </returns>
+///
+/// EXCEPTIONS:
+/// MgInvalidResourceIdentifer
+INT32 MgProxyFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
+                                                CREFSTRING sqlNonSelectStatement,
+                                                MgTransaction* transaction)
+{
+    STRING transactionId = L"";
+    MgProxyFeatureTransaction* proxyTransaction = dynamic_cast<MgProxyFeatureTransaction*>(transaction);
+    if (NULL != proxyTransaction)
+    {
+        transactionId = proxyTransaction->GetTransactionId();
+    }
+
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+        MgCommand::knInt32,                                         // Return type expected
+        MgFeatureServiceOpId::ExecuteSqlNonQueryWithTransaction_Id, // Command Code
+        3,                                                          // No of arguments
+        Feature_Service,                                            // Service Id
+        BUILD_VERSION(1,0,0),                                       // Operation version
+        MgCommand::knObject, resource,                              // Argument#1
+        MgCommand::knString, &sqlNonSelectStatement,                // Argument#2
+        MgCommand::knString, &transactionId,                        // Argument#3
+        MgCommand::knNone);                                         // End of argument
 
     SetWarning(cmd.GetWarningObject());
 
@@ -1373,3 +1598,36 @@ MgClassDefinition* MgProxyFeatureService::GetClassDefinition(MgResourceIdentifie
     return (MgClassDefinition*)cmd.GetReturnValue().val.m_obj;
 }
 
+bool MgProxyFeatureService::CommitTransaction(CREFSTRING transactionId)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                        // Connection
+                       MgCommand::knInt8,                                 // Return type expected
+                       MgFeatureServiceOpId::CommitFeatureTransaction_Id, // Command Code
+                       1,                                                 // No of arguments
+                       Feature_Service,                                   // Service Id
+                       BUILD_VERSION(1,0,0),                              // Operation version
+                       MgCommand::knString, &transactionId,               // Argument#1
+                       MgCommand::knNone);                                // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (bool)cmd.GetReturnValue().val.m_i8;
+}
+
+bool MgProxyFeatureService::RollbackTransaction(CREFSTRING transactionId)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                          // Connection
+                       MgCommand::knInt8,                                   // Return type expected
+                       MgFeatureServiceOpId::RollbackFeatureTransaction_Id, // Command Code
+                       1,                                                   // No of arguments
+                       Feature_Service,                                     // Service Id
+                       BUILD_VERSION(1,0,0),                                // Operation version
+                       MgCommand::knString, &transactionId,                 // Argument#1
+                       MgCommand::knNone);                                  // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (bool)cmd.GetReturnValue().val.m_i8;
+}

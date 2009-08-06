@@ -87,6 +87,10 @@ MgTimedEventHandler* MgTimedEventHandler::Create(MgEventTimer::Type type,
             eventHandler.reset(new MgFeatureServiceCacheTimeLimitEventHandler(timer));
             break;
 
+        case MgEventTimer::DataTransactionTimeout:
+            eventHandler.reset(new MgDataTransactionTimeoutEventHandler(timer));
+            break;
+
         default:
             throw new MgInvalidArgumentException(
                 L"MgTimedEventHandler.Create", __LINE__, __WFILE__, NULL, L"", NULL);

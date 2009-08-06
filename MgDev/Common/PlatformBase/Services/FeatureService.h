@@ -57,6 +57,7 @@
 
 class MgIntCollection;
 class MgBatchPropertyCollection;
+class MgTransaction;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -841,6 +842,79 @@ PUBLISHED_API:
                                                   MgFeatureCommandCollection* commands,
                                                   bool useTransaction ) = 0;
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Executes the MgDeleteFeatures, MgInsertFeatures,
+    /// MgUpdateFeatures, MgLockFeatures or MgUnlockFeatures commands
+    /// contained in the given MgFeatureCommandCollection object within 
+    /// the given transaction.
+    ///
+    /// \remarks
+    /// The XML returned by MgFeatureService::GetCapabilities says
+    /// whether a provider supports SQL commands. See \link ProviderCapabilities Provider Capabilities \endlink.
+    /// This API has to be used along with new APIs of BeginTransaction(...).
+    /// If passing NULL for transaction, it will work the same as UpdateFeatures(resource, commands, false).
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgPropertyCollection UpdateFeatures(MgResourceIdentifier resource, MgFeatureCommandCollection commands, MgTransaction transaction);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgPropertyCollection UpdateFeatures(MgResourceIdentifier resource, MgFeatureCommandCollection commands, MgTransaction transaction);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgPropertyCollection UpdateFeatures(MgResourceIdentifier resource, MgFeatureCommandCollection commands, MgTransaction transaction);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// A resource identifier for the feature
+    /// source.
+    /// \param commands (MgFeatureCommandCollection)
+    /// A collection of feature commands to be
+    /// executed.
+    /// \param useTransaction (boolean/bool)
+    /// If true and transactions are supported
+    /// by the Fdo provider, execute all
+    /// commands inside a transaction. If false,
+    /// do not use a transaction.
+    /// \param transaction (MgTransaction)
+    /// The MgTransaction instance on which the commands
+    /// will be executed.
+    ///
+    /// \return
+    /// Returns an MgPropertyCollection object. Each property in the
+    /// collection corresponds to a command in the
+    /// MgFeatureCommandCollection argument. The property name is the
+    /// index of the command in the feature command collection.
+    /// <ul>
+    ///   <li>If the command is of type MgDeleteFeatures, the property
+    ///     type is an MgPropertyType::Int32, and its value is the number
+    ///     of features deleted.</li>
+    ///   <li>If the command is of type MgInsertFeatures, the property
+    ///     type is an MgPropertyType::Feature, and its value is a
+    ///     MgFeatureReader object. The feature reader object contains
+    ///     the set of properties inserted into the datastore by the
+    ///     insert command.</li>
+    ///   <li>If the command is of type MgUpdateFeatures, the property
+    ///     type is MgPropertyType::Int32, and its value is the number of
+    ///     features updated.</li>
+    ///   <li>If the command is of type MgLockFeatures, the property
+    ///     type is MgPropertyType::Feature, and its value is the number
+    ///     of features locked.</li>
+    ///   <li>If the command is of type MgUnLockFeatures, the property
+    ///     type is MgPropertyType::Int32, and its value is the number of
+    ///     features unlocked.</li>
+    /// </ul>
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgInvalidOperationException
+    /// \exception MgFdoException
+    ///
+    virtual MgPropertyCollection* UpdateFeatures( MgResourceIdentifier* resource,
+                                                  MgFeatureCommandCollection* commands,
+                                                  MgTransaction* transaction ) = 0;
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the locked features
@@ -879,6 +953,37 @@ PUBLISHED_API:
     virtual MgFeatureReader* GetLockedFeatures( MgResourceIdentifier* resource,
                                                 CREFSTRING className,
                                                 MgFeatureQueryOptions* options ) = 0;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Starts a transaction on the specified feature source
+    ///
+    /// \remarks
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgTransaction BeginTransaction(MgResourceIdentifier resource);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgTransaction BeginTransaction(MgResourceIdentifier resource);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgTransaction BeginTransaction(MgResourceIdentifier resource);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// A resource identifier referring
+    /// to a feature source.
+    ///
+    /// \return
+    /// Returns an MgTransaction instance (or NULL).
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgInvalidOperationException
+    /// \exception MgFdoException
+    ///
+    virtual MgTransaction* BeginTransaction( MgResourceIdentifier* resource ) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -931,6 +1036,59 @@ PUBLISHED_API:
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
+    /// Executes the SQL SELECT statement on the specified feature
+    /// source within the given transaction.
+    ///
+    /// \remarks
+    /// The XML returned by MgFeatureService::GetCapabilities says
+    /// whether a provider supports SQL commands. See \link ProviderCapabilities Provider Capabilities \endlink.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgSqlDataReader ExecuteSqlQuery(MgResourceIdentifier resource, string sqlStatement);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgSqlDataReader ExecuteSqlQuery(MgResourceIdentifier resource, String sqlStatement);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgSqlDataReader ExecuteSqlQuery(MgResourceIdentifier resource, string sqlStatement);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// A resource identifier referring
+    /// to a feature source.
+    /// \param sqlStatement (String/string)
+    /// The SQL SELECT statement.
+    /// \param transaction (MgTransaction)
+    /// The MgTransaction instance on which the sql 
+    /// statement will be executed.
+    ///
+    /// \return
+    /// Returns an MgSqlDataReader instance (or NULL).
+    ///
+    /// \note
+    /// If any statement other than SELECT is passed to this method,
+    /// it will throw an MgFdoException.
+    ///
+    /// <!-- Example (PHP) -->
+    /// \htmlinclude PHPExampleTop.html
+    /// \code
+    /// $sql = "select featid,abyte from featclass where featid = 0";
+    /// $sqlDataReader = $featureService->ExecuteSqlQuery($activeFeatSrcResId, $sql);
+    /// \endcode
+    /// \htmlinclude ExampleBottom.html
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgInvalidOperationException
+    /// \exception MgFdoException
+    ///
+    virtual MgSqlDataReader* ExecuteSqlQuery( MgResourceIdentifier* resource,
+                                              CREFSTRING sqlStatement,
+                                              MgTransaction* transaction ) = 0;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
     /// Executes SQL statements NOT including SELECT statements.
     ///
     /// \remarks
@@ -974,6 +1132,57 @@ PUBLISHED_API:
     ///
     virtual INT32 ExecuteSqlNonQuery( MgResourceIdentifier* resource,
                                       CREFSTRING sqlNonSelectStatement ) = 0;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Executes SQL statements NOT including SELECT statements 
+    /// within the given transaction.
+    ///
+    /// \remarks
+    /// The XML returned by MgFeatureService::GetCapabilities says
+    /// whether a provider supports SQL commands. See \link ProviderCapabilities Provider Capabilities \endlink.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual int ExecuteSqlNonQuery(MgResourceIdentifier resource, string sqlNonSelectStatement);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual int ExecuteSqlNonQuery(MgResourceIdentifier resource, String sqlNonSelectStatement);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual int ExecuteSqlNonQuery(MgResourceIdentifier resource, string sqlNonSelectStatement);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// A resource identifier for a
+    /// feature source.
+    /// \param sqlNonSelectStatement (String/string)
+    /// The SQL statement that is NOT a
+    /// SELECT statement.
+    /// \param transaction (MgTransaction)
+    /// The MgTransaction instance on which the sql 
+    /// statement will be executed.
+    ///
+    /// \return
+    /// Returns a positive integer value indicating how many
+    /// instances (rows) have been affected.
+    ///
+    /// <!-- Example (PHP) -->
+    /// \htmlinclude PHPExampleTop.html
+    /// \code
+    /// $sql = "update featclass set abyte = 37 where featid = 0";
+    /// $numRows = $featureService->ExecuteSqlNonQuery($activeFeatSrcResId, $sql);
+    /// \endcode
+    /// \htmlinclude ExampleBottom.html
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgInvalidOperationException
+    /// \exception MgFdoException
+    ///
+    virtual INT32 ExecuteSqlNonQuery( MgResourceIdentifier* resource,
+                                      CREFSTRING sqlNonSelectStatement,
+                                      MgTransaction* transaction ) = 0;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1372,6 +1581,11 @@ INTERNAL_API:
                                                     CREFSTRING className,
                                                     bool serialize) = 0;
 
+    // Commit the transaction specified by the transaction id.
+    virtual bool CommitTransaction(CREFSTRING transactionId) = 0;
+
+    // Rollback the transaction specified by the transaction id. 
+    virtual bool RollbackTransaction(CREFSTRING transactionId) = 0;
 
 protected:
 

@@ -108,6 +108,7 @@
 #include  "Services/ProxyResourceService.cpp"
 #include  "Services/ProxySqlDataReader.cpp"
 #include  "Services/ProxyTileService.cpp"
+#include  "Services/ProxyFeatureTransaction.cpp"
 #include  "Services/RenderingDefs.cpp"
 #include  "Services/RenderingOptions.cpp"
 #include  "Services/RenderingService.cpp"

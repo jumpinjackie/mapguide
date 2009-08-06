@@ -33,6 +33,7 @@ public:
         RepositoryCheckpoint                = 50,
         ResourceChange                      = 60,
         FeatureServiceCacheTimeLimit        = 70,
+        DataTransactionTimeout              = 80,
     };
 
 /// Constructors/Destructor

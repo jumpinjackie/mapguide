@@ -134,6 +134,7 @@
 #include "Services/UpdateFeatures.h"
 #include "Services/LockFeatures.h"
 #include "Services/UnlockFeatures.h"
+#include "Services/Transaction.h"
 
 #include "Services/PrintLayoutService/MapView.h"
 #include "Services/PrintLayoutService/MapViewportBase.h"

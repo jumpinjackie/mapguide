@@ -595,6 +595,35 @@ INTERNAL_API:
                                      MgFeatureCommandCollection* commands,
                                      bool useTransaction );
 
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    ///
+    /// It executes all the commands specified in command collection
+    /// within the given transaction.
+    ///
+    /// \remarks
+    /// If passing NULL for transaction, it will work the same as UpdateFeatures(resource, commands, false).
+    /// 
+    /// \param resource
+    /// Input
+    /// A resource identifier referring to connection string
+    /// \param commands
+    /// Input
+    /// Collection of commands to be executed
+    /// \param transaction
+    /// Input
+    /// The MgTransaction instance on which the commands
+    /// will be executed.
+    ///
+    /// \return
+    /// Integer collection referring to result for each command
+    /// Index of commandCollection and index of IntCollection would match the result.
+    ///
+    /// \exception MgInvalidResourceIdentifier
+    MgPropertyCollection* UpdateFeatures( MgResourceIdentifier* resource,
+                                          MgFeatureCommandCollection* commands,
+                                          MgTransaction* transaction );
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the locked features
@@ -634,6 +663,28 @@ INTERNAL_API:
                                                 CREFSTRING className,
                                                 MgFeatureQueryOptions* options );
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Starts a transaction on the specified feature source
+    ///
+    /// NOTE:
+    /// The returned MgTransaction instance has to be used along with ExecuteSqlQuery(),
+    /// ExecuteSqlNonQuery() or UpdateFeatures taking MgTransaction as a parameter.
+    /// </summary>
+    /// <param name="resource">Input
+    /// A resource identifier referring to connection string
+    /// </param>
+    /// <returns>
+    /// Returns an MgTransaction instance (or NULL).
+    /// </returns>
+    ///
+    /// EXCEPTIONS:
+    /// MgFeatureServiceException
+    /// MgInvalidArgumentException
+    /// MgInvalidOperationException
+    /// MgFdoException
+    MgTransaction* BeginTransaction( MgResourceIdentifier* resource );
+
     /////////////////////////////////////////////////////////////////
     /// \brief
     /// This method executes the SELECT SQL statement specified and returns a pointer to
@@ -667,6 +718,38 @@ INTERNAL_API:
 
     /////////////////////////////////////////////////////////////////
     /// \brief
+    /// This method executes the SELECT SQL statement specified and returns a pointer to
+    /// SqlDataReader instance. This instance can be used to retrieve column information
+    /// and related values.
+    ///
+    /// \note
+    /// Serialize() method of SqlDataReader would be able to convert data returned
+    /// to AWKFF or XML stream.
+    ///
+    /// \param resource
+    /// Input
+    /// A resource identifier referring to connection string
+    /// \param sqlStatement
+    /// Input
+    /// This would allow users to specify free format SQL SELECT statement like
+    /// SELECT * FROM CLASSNAME WHERE COLOR = RED. This would return all rows
+    /// from "CLASSNAME" where COLOR column has value RED.
+    ///
+    /// \return
+    /// SqlDataReader pointer, an instance of reader pointing to the actual reader
+    /// from FdoProvider (or NULL).
+    /// If any statement other than SELECT is passed to this method, it would return failure.
+    ///
+    /// \exception MgInvalidResourceIdentifier
+    /// \exception MgInvalidSqlStatement
+    /// \exception MgSqlNotSupported
+    ///
+    MgSqlDataReader* ExecuteSqlQuery( MgResourceIdentifier* resource,
+                                      CREFSTRING sqlStatement,
+                                      MgTransaction* transaction );
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
     ///
     /// This method executes all SQL statements supported by providers except SELECT.
     ///
@@ -688,6 +771,31 @@ INTERNAL_API:
     ///
     INT32 ExecuteSqlNonQuery( MgResourceIdentifier* resource,
                               CREFSTRING sqlNonSelectStatement );
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    ///
+    /// This method executes all SQL statements supported by providers except SELECT.
+    ///
+    /// \param resource
+    /// Input
+    /// A resource identifier referring to connection string
+    /// \param sqlNonSelectStatement
+    /// Input
+    /// This would allow users to specify free format SQL statement like INSERT/UPDATE/DELETE/CREATE
+    ///
+    /// \return
+    /// An positive integer value indicating how many instances (rows) have been affected.
+    ///
+    /// \note
+    /// It is possible that only few rows were affected than actually expected.
+    /// In this scenario, warning object will contain the details on the failed records.
+    ///
+    /// \exception MgInvalidResourceIdentifier
+    ///
+    INT32 ExecuteSqlNonQuery( MgResourceIdentifier* resource,
+                              CREFSTRING sqlNonSelectStatement,
+                              MgTransaction* transaction );
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -974,6 +1082,11 @@ INTERNAL_API:
                                             CREFSTRING className,
                                             bool serialize);
 
+    // Commit the transaction specified by the transaction id.
+    bool CommitTransaction(CREFSTRING transactionId);
+
+    // Rollback the transaction specified by the transaction id. 
+    bool RollbackTransaction(CREFSTRING transactionId);
 
 protected:
 

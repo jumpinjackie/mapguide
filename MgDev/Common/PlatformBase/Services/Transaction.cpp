@@ -15,22 +15,36 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "ClientAcceptor.cpp"
-#include "ConnectionTimeoutEventHandler.cpp"
-#include "DataConnectionTimeoutEventHandler.cpp"
-#include "DataTransactionTimeoutEventHandler.cpp"
-#include "EventTimer.cpp"
-#include "EventTimerManager.cpp"
-#include "FeatureServiceCacheTimeLimitEventHandler.cpp"
-#include "main.cpp"
-#include "OperationThread.cpp"
-#include "RepositoryCheckpointEventHandler.cpp"
-#include "ResourceChangeEventHandler.cpp"
-#include "Server.cpp"
-#include "ServiceHandlerFactory.cpp"
-#include "ServiceRegistrationEventHandler.cpp"
-#include "SessionTimeoutEventHandler.cpp"
-#include "SignalHandler.cpp"
-#include "TimedEvent.cpp"
-#include "TimedEventHandler.cpp"
-#include "ServerFactory.cpp"
+#include "PlatformBase.h"
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Get the class Id
+/// </summary>
+/// <return>
+/// The integer value
+/// </return>
+//////////////////////////////////////////////////////////////////
+INT32 MgTransaction::GetClassId()
+{
+    return m_cls_id;
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Default Constructor
+/// </summary>
+MgTransaction::MgTransaction(void)
+{
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Destructor. This will clean up the transaction.
+/// </summary>
+/// <returns>
+/// Nothing
+/// </returns>
+MgTransaction::~MgTransaction(void)
+{
+}

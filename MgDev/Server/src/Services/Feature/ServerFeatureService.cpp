@@ -46,6 +46,7 @@
 #include "LogDetail.h"
 #include "ServerDataReader.h"
 #include "ServerSqlDataReader.h"
+#include "ServerFeatureTransaction.h"
 
 #include <Fdo/Xml/FeatureSerializer.h>
 #include <Fdo/Xml/FeatureWriter.h>
@@ -543,8 +544,8 @@ MgDataReader* MgServerFeatureService::SelectAggregate( MgResourceIdentifier* res
 /// EXCEPTIONS:
 /// MgInvalidResourceIdentifer
 MgPropertyCollection* MgServerFeatureService::UpdateFeatures( MgResourceIdentifier* resource,
-                                                         MgFeatureCommandCollection* commands,
-                                                         bool useTransaction )
+                                                              MgFeatureCommandCollection* commands,
+                                                              bool useTransaction )
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::UpdateFeatures()");
 
@@ -552,6 +553,37 @@ MgPropertyCollection* MgServerFeatureService::UpdateFeatures( MgResourceIdentifi
     return asuf.Execute(resource, commands, useTransaction);
 }
 
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// It executes all the commands specified in command collection
+/// within the given transaction.
+/// </summary>
+/// <param name="resource">Input
+/// A resource identifier referring to connection string
+/// </param>
+/// <param name="commands">Input
+/// Collection of commands to be executed
+/// </param>
+/// <param name="transaction">Input
+/// The MgTransaction instance on which the commands
+/// will be executed.
+/// </param>
+/// <returns>
+/// Integer collection referring to result for each command
+/// Index of commandCollection and index of IntCollection would match the result.
+/// </returns>
+///
+/// EXCEPTIONS:
+/// MgInvalidResourceIdentifer
+MgPropertyCollection* MgServerFeatureService::UpdateFeatures( MgResourceIdentifier* resource,
+                                                              MgFeatureCommandCollection* commands,
+                                                              MgTransaction* transaction )
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::UpdateFeatures()");
+
+    MgServerUpdateFeatures asuf;
+    return asuf.Execute(resource, commands, transaction);
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 /// <summary>
@@ -588,6 +620,33 @@ MgFeatureReader* MgServerFeatureService::GetLockedFeatures( MgResourceIdentifier
     return NULL; // to make some compiler happy
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// Starts a transaction on the specified feature source
+///
+/// NOTE:
+/// The returned MgTransaction instance has to be used along with ExecuteSqlQuery()
+/// or ExecuteSqlNonQuery()
+/// </summary>
+/// <param name="resource">Input
+/// A resource identifier referring to connection string
+/// </param>
+/// <returns>
+/// Returns an MgTransaction instance (or NULL).
+/// </returns>
+///
+/// EXCEPTIONS:
+/// MgFeatureServiceException
+/// MgInvalidArgumentException
+/// MgInvalidOperationException
+/// MgFdoException
+MgTransaction* MgServerFeatureService::BeginTransaction( MgResourceIdentifier* resource )
+{
+    MgServerFeatureTransactionPool* transactionPool = MgServerFeatureTransactionPool::GetInstance();
+    CHECKNULL(transactionPool, L"MgServerFeatureService.BeginTransaction");
+
+    return transactionPool->CreateTransaction(resource);
+}
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -619,14 +678,55 @@ MgFeatureReader* MgServerFeatureService::GetLockedFeatures( MgResourceIdentifier
 /// MgInvalidSqlStatement
 /// MgSqlNotSupported
 MgSqlDataReader* MgServerFeatureService::ExecuteSqlQuery( MgResourceIdentifier* resource,
-                                                         CREFSTRING sqlStatement )
+                                                          CREFSTRING sqlStatement )
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::ExecuteSqlQuery()");
 
     MgServerSqlCommand sqlCommand;
-    return sqlCommand.ExecuteQuery(resource, sqlStatement);
+    return sqlCommand.ExecuteQuery(resource, sqlStatement, NULL);
 }
 
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// This method executes the SELECT SQL statement specified within a given transaction
+/// and returns a pointer to SqlDataReader instance. This instance can be used to 
+/// retrieve column information and related values.
+///
+/// NOTE:
+/// Serialize() method of SqlDataReader would be able to convert data returned
+/// to AWKFF or XML stream.
+/// </summary>
+/// <param name="resource">Input
+/// A resource identifier referring to connection string
+/// </param>
+/// <param name="sqlStatement">Input
+/// This would allow users to specify free format SQL SELECT statement like
+/// SELECT * FROM CLASSNAME WHERE COLOR = RED. This would return all rows
+/// from "CLASSNAME" where COLOR column has value RED.
+/// </param>
+/// <param name="transaction">Input
+/// The MgTransaction instance on which the sql statement will be executed.
+/// </param>
+/// <returns>
+/// SqlDataReader pointer, an instance of reader pointing to the actual reader
+/// from FdoProvider (or NULL).
+///
+/// If any statement other than SELECT is passed to this method, it would return failure.
+/// </returns>
+///
+/// EXCEPTIONS:
+/// MgInvalidResourceIdentifer
+/// MgInvalidSqlStatement
+/// MgSqlNotSupported
+MgSqlDataReader* MgServerFeatureService::ExecuteSqlQuery( MgResourceIdentifier* resource,
+                                                          CREFSTRING sqlStatement,
+                                                          MgTransaction* transaction )
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::ExecuteSqlQuery()");
+
+    MgServerSqlCommand sqlCommand;
+    return sqlCommand.ExecuteQuery(resource, sqlStatement, transaction);
+}
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -648,14 +748,46 @@ MgSqlDataReader* MgServerFeatureService::ExecuteSqlQuery( MgResourceIdentifier* 
 /// EXCEPTIONS:
 /// MgInvalidResourceIdentifer
 INT32 MgServerFeatureService::ExecuteSqlNonQuery( MgResourceIdentifier* resource,
-                                                 CREFSTRING sqlNonSelectStatement )
+                                                  CREFSTRING sqlNonSelectStatement )
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::ExecuteSqlNonQuery()");
 
     MgServerSqlCommand sqlCommand;
-    return sqlCommand.ExecuteNonQuery(resource, sqlNonSelectStatement);
+    return sqlCommand.ExecuteNonQuery(resource, sqlNonSelectStatement, NULL);
 }
 
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// This method executes all SQL statements supported by providers except SELECT
+/// within a given transaction.
+/// </summary>
+/// <param name="resource">Input
+/// A resource identifier referring to connection string
+/// </param>
+/// <param name="sqlNonSelectStatement">Input
+/// This would allow users to specify free format SQL statement like INSERT/UPDATE/DELETE/CREATE
+/// </param>
+/// <param name="transaction">Input
+/// The MgTransaction instance on which the sql statement will be executed.
+/// </param>
+/// <returns>
+/// An positive integer value indicating how many instances (rows) have been affected.
+///
+/// NOTE: It is possible that only few rows were affected than actually expected.
+/// In this scenario, warning object will contain the details on the failed records.
+/// </returns>
+///
+/// EXCEPTIONS:
+/// MgInvalidResourceIdentifer
+INT32 MgServerFeatureService::ExecuteSqlNonQuery( MgResourceIdentifier* resource,
+                                                  CREFSTRING sqlNonSelectStatement,
+                                                  MgTransaction* transaction )
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::ExecuteSqlNonQuery()");
+
+    MgServerSqlCommand sqlCommand;
+    return sqlCommand.ExecuteNonQuery(resource, sqlNonSelectStatement, transaction);
+}
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -1534,6 +1666,22 @@ MgByteReader* MgServerFeatureService::GetSchemaMapping(CREFSTRING providerName, 
 void MgServerFeatureService::SetConnectionProperties(MgConnectionProperties*)
 {
     // Do nothing.  No connection properties are required for Server-side service objects.
+}
+
+bool MgServerFeatureService::CommitTransaction(CREFSTRING transactionId)
+{
+    MgServerFeatureTransactionPool* transactionPool = MgServerFeatureTransactionPool::GetInstance();
+    CHECKNULL(transactionPool, L"MgServerFeatureService.CommitTransaction");
+
+    return transactionPool->CommitTransaction(transactionId);
+}
+
+bool MgServerFeatureService::RollbackTransaction(CREFSTRING transactionId)
+{
+    MgServerFeatureTransactionPool* transactionPool = MgServerFeatureTransactionPool::GetInstance();
+    CHECKNULL(transactionPool, L"MgServerFeatureService.RollbackTransaction");
+
+    return transactionPool->RollbackTransaction(transactionId);
 }
 
 //////////////////////////////////////////////////////////////////
