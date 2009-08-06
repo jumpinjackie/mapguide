@@ -361,6 +361,35 @@ PUBLISHED_API:
 
     virtual void TransformCoordinate(MgCoordinate* coordinate)=0;
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Generates a MgCoordinateCollection which represents in the target
+    /// coordinate system the linear line segment provided in the source
+    /// coordinate system.
+    ///
+    /// \param fromPnt
+    /// The result of the transformation is returned here.  While the result
+    /// can be a single straight line segment, more often it will be a multi-
+    /// segment approximation of a complex curve.
+    /// \param fromPnt
+    /// The starting point of the linear segment in source system coordinates.
+    /// \param toPnt
+    /// The end point of the linear segment in source system coordinates.
+    /// \param chordValue
+    /// The returned line string is to segmented to the degree necessary such
+    /// that the distance between the LineString approximation of the true
+    /// cuve and the true curve is never more than this value.  Units must
+    /// be the same as the target coordinate system.
+    /// \param maxPoints
+    /// The generation algorithm will always quit after generating this
+    /// number of points in result.
+    /// \return
+    /// Status of the operation, nature of which is yet to be determined.
+    ///
+    virtual MgLineString* GridLine (MgCoordinate* fromPnt,MgCoordinate* toPnt,
+                                                          double curvePrecision,
+                                                          UINT32 maxPoints = 500) = 0;
+
     virtual bool IsValidSourcePoint(double x, double y)=0;
     virtual bool IsValidSourcePoint(double x, double y, double z)=0;
     virtual bool IsValidTargetPoint(double x, double y)=0;

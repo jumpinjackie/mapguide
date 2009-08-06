@@ -121,7 +121,6 @@
 #include "CoordinateSystem/CoordinateSystemCategoryDictionary.h"            //for MgCoordinateSystemCategoryDictionary
 #include "CoordinateSystem/CoordinateSystemDictionaryUtility.h"             //for MgCoordinateSystemDictionaryUtility
 #include "CoordinateSystem/CoordinateSystemCatalog.h"
-#include "CoordinateSystem/CoordinateSystemFactory.h"
 #include "CoordinateSystem/CoordinateSystemFilter.h"                        //for MgCoordinateSystemFilter
 #include "CoordinateSystem/CoordinateSystemEnum.h"                          //for MgCoordinateSystemEnum
 #include "CoordinateSystem/CoordinateSystemMathComparator.h"                //for MgCoordinateSystemMathComparator
@@ -140,6 +139,11 @@
 #include "CoordinateSystem/CoordinateSystemProjectionFormatType.h"          //for MgCoordinateSystemProjectionFormatType
 #include "CoordinateSystem/CoordinateSystemProjectionParameterType.h"       //for MgCoordinateSystemProjectionParameterType
 #include "CoordinateSystem/CoordinateSystemErrorCode.h"                     //for MgCoordinateSystemErrorCode
+#include "CoordinateSystem/CoordinateSystemGrids.h"                         //for MgCoordinateSystemGridSpecification
+#include "CoordinateSystem/CoordinateSystemMgrs.h"                          //for MgCoordinateSystemMgrs
+#include "CoordinateSystem/CoordinateSystemGridGeneric.h"                   //for MgCoordinateSystemGridGeneric
+#include "CoordinateSystem/CoordinateSystemMgrsLetteringScheme.h"           //for MgCoordinateSystemMgrsLetteringScheme
+#include "CoordinateSystem/CoordinateSystemFactory.h"
 
 #include "Exception/CoordinateSystemComputationFailedException.h"
 #include "Exception/CoordinateSystemConversionFailedException.h"

@@ -2649,11 +2649,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemGridGeneric.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemGrids.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CoordinateSystem\CoordinateSystemMathComparator.h"
 				>
 			</File>
 			<File
 				RelativePath=".\CoordinateSystem\CoordinateSystemMeasure.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemMgrs.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemMgrsLetteringScheme.h"
 				>
 			</File>
 			<File
@@ -2861,6 +2877,22 @@
 				>
 			</File>
 			<File
+				RelativePath="..\CoordinateSystem\CoordSysGridGeneric.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGridGeneric.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGrids.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGrids.h"
+				>
+			</File>
+			<File
 				RelativePath="..\CoordinateSystem\CoordSysMathComparator.cpp"
 				>
 			</File>
@@ -2874,6 +2906,22 @@
 			</File>
 			<File
 				RelativePath="..\CoordinateSystem\CoordSysMeasure.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysMgrs.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysMgrs.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysOneGrid.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysOneGrid.h"
 				>
 			</File>
 			<File

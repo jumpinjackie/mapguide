@@ -86,6 +86,12 @@ PUBLISHED_API:
     static const INT32 ELEVEL   = 254;    // Value supplied for elevated ellipsoid is outside acceptable range
     static const INT32 OSTN02   = 255;    // OSTN02.TXT grid shift file could not be located or opened with read access.
     static const INT32 TMKRG0   = 256;    // Transverse Mercator Kruger formulation requested with non-zero origin latitude.
+
+    static const INT32 Ok                   = 1000;
+    static const INT32 OutOfMemory          = 1001;
+    static const INT32 InitializationFailed = 1002;
+    static const INT32 ConversionFailed     = 1003;
+    static const INT32 NullArgument         = 1004;
 };
 /// \}
 

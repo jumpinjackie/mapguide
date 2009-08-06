@@ -31,6 +31,9 @@
 #include "CoordSysCatalog.h"            //for CCoordinateSystemCatalog
 #include "CoordSysTransform.h"          //for CCoordinateSystemTransform
 #include "CoordinateSystemCatalog.h"    //for MgCoordinateSystemCatalog
+#include "CoordSysGrids.h"              //for CCoordinateSystemGridBase, and others
+#include "CoordSysMgrs.h"               //for CCoordinateSystemMgrs
+#include "CoordSysGridGeneric.h"        //for CCoordinateSystemGridGeneric
 #include "CoordinateSystemFactory.h"    //for MgCoordinateSystemFactory
 #include "CoordinateSystemCache.h"
 
@@ -47,7 +50,6 @@ public:
 };
 
 static CInitCSC s_InitCSC;
-
 
 MgCoordinateSystemCatalog* MgCoordinateSystemFactory::sm_pCatalog = NULL;
 
@@ -556,4 +558,236 @@ bool MgCoordinateSystemFactory::IsValid(CREFSTRING wkt)
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.IsValid")
 
     return false;
+}
+
+///////////////////////////////////////////////////////////////////////////
+MgCoordinateSystemGridSpecification* MgCoordinateSystemFactory::GridSpecification ()
+{
+    MgCoordinateSystemGridSpecification* gridSpecification (0);
+    
+    gridSpecification = new CCoordinateSystemGridSpecification ();
+    return gridSpecification;
+}
+MgCoordinateSystemGridSpecification* MgCoordinateSystemFactory::GridSpecification (double increment,
+                                                                INT32 subdivisions,
+                                                                INT32 unitCode,
+                                                                double curvePrecision)
+{
+    Ptr<MgCoordinateSystemGridSpecification> gridSpecification;
+
+    MG_TRY ()
+        gridSpecification = new CCoordinateSystemGridSpecification ();
+        if (gridSpecification != NULL)
+        {
+            // TODO:  modify CCoordinateSystemGridSpecification to check
+            // all the parameters added and throw an exception if an error.
+            gridSpecification->SetGridBase (0.0,0.0);
+            gridSpecification->SetGridIncrement (increment,increment);
+            gridSpecification->SetGridIncrement (subdivisions,subdivisions);
+            gridSpecification->SetUnits (unitCode,MgCoordinateSystemUnitType::Linear);
+            gridSpecification->SetCurvePrecision (curvePrecision);
+        }
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.GridSpecification")
+    return gridSpecification.Detach ();
+}
+
+///////////////////////////////////////////////////////////////////////////
+MgCoordinateSystemGridBoundary* MgCoordinateSystemFactory::GridBoundary (MgCoordinate* southwest,
+                                                                         MgCoordinate* northeast)
+{
+    MgCoordinateSystemGridBoundary* rtnValue (0);
+    CCoordinateSystemGridBoundary* pGridBoundary;
+
+    MG_TRY()
+        pGridBoundary = new CCoordinateSystemGridBoundary (southwest,northeast);
+        if (pGridBoundary != NULL)
+        {
+            rtnValue = static_cast<MgCoordinateSystemGridBoundary*>(pGridBoundary);
+        }
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.GridBoundary")
+    return rtnValue;
+}
+MgCoordinateSystemGridBoundary* MgCoordinateSystemFactory::GridBoundary(MgPolygon& boundary)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////
+// nLetteringScheme is one of the values defined inside MgCoordinateSystemMgrsLetteringScheme
+//
+MgCoordinateSystemMgrs* MgCoordinateSystemFactory::GetMgrs(
+    double dEquatorialRadius, 
+    double dEccentricity, 
+    int nLetteringScheme,
+    bool bSetExceptionsOn)
+{
+    Ptr<CCoordinateSystemMgrs> pNew;
+    MG_TRY()
+    pNew=new CCoordinateSystemMgrs(nLetteringScheme, bSetExceptionsOn);
+    if (NULL == pNew)
+    {
+        if (bSetExceptionsOn)
+        {
+            throw new MgOutOfMemoryException(L"MgCoordinateSystemFactory.GetMgrs", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        else
+        {
+            return NULL;
+        }
+    }
+    pNew->Init(dEquatorialRadius, dEccentricity);
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.GetMgrs")
+
+    //And we're done!  Return success.
+    return pNew.Detach();
+}
+
+///////////////////////////////////////////////////////////////////////////
+// nLetteringScheme is one of the values defined inside MgCoordinateSystemMgrsLetteringScheme
+//
+MgCoordinateSystemMgrs* MgCoordinateSystemFactory::GetMgrsEllipsoid(
+    CREFSTRING sEllipsoidCode, 
+    int nLetteringScheme,
+    bool bSetExceptionsOn)
+{
+    Ptr<CCoordinateSystemMgrs> pNew;
+    MG_TRY()
+    pNew=new CCoordinateSystemMgrs(nLetteringScheme, bSetExceptionsOn);
+    if (NULL == pNew)
+    {
+        if (bSetExceptionsOn)
+        {
+            throw new MgOutOfMemoryException(L"MgCoordinateSystemFactory.GetMgrsEllipsoid", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        else
+        {
+            return NULL;
+        }
+    }
+    pNew->InitFromEllipsoid(sEllipsoidCode);
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.GetMgrsEllipsoid")
+
+    //And we're done!  Return success.
+    return pNew.Detach();
+}
+
+///////////////////////////////////////////////////////////////////////////
+// nLetteringScheme is one of the values defined inside
+// MgCoordinateSystemMgrsLetteringScheme
+//
+MgCoordinateSystemMgrs* MgCoordinateSystemFactory::GetMgrsDatum(CREFSTRING sDatumCode, 
+                                                                int nLetteringScheme,
+                                                                bool bSetExceptionsOn)
+{
+    Ptr<CCoordinateSystemMgrs> pNew;
+    MG_TRY()
+    pNew=new CCoordinateSystemMgrs(nLetteringScheme, bSetExceptionsOn);
+    if (NULL == pNew)
+    {
+        if (bSetExceptionsOn)
+        {
+            throw new MgOutOfMemoryException(L"MgCoordinateSystemFactory.GetMgrsDatum", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        else
+        {
+            return NULL;
+        }
+    }
+    pNew->InitFromDatum(sDatumCode);
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.GetMgrsDatum")
+
+    //And we're done!  Return success.
+    return pNew.Detach();
+}
+
+MgCoordinateSystemGridBase* MgCoordinateSystemFactory::MgrsGrid (CREFSTRING sFrameCs,
+                                                                 bool bUseTargetDatum,
+                                                                 int nLetteringScheme,
+                                                                 bool bSetExceptionsOn)
+{
+    Ptr<MgCoordinateSystemGridBase> pNewMgrs;
+    Ptr<MgCoordinateSystem> pFrameCs;
+
+    MG_TRY()
+        pFrameCs = CreateFromCode(sFrameCs);
+        pNewMgrs = MgrsGrid (pFrameCs,bUseTargetDatum,nLetteringScheme,bSetExceptionsOn);
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.GetMgrsDatum")
+
+    return pNewMgrs.Detach ();
+}
+
+MgCoordinateSystemGridBase* MgCoordinateSystemFactory::MgrsGrid (MgCoordinateSystem* pFrameCs,
+                                                                 bool bUseTargetDatum,
+                                                                 int nLetteringScheme,
+                                                                 bool bSetExceptionsOn)
+{
+    STRING sDatumCode;
+    Ptr<CCoordinateSystemMgrs> pNewMgrs;
+
+    MG_TRY()
+        pNewMgrs=new CCoordinateSystemMgrs(pFrameCs,nLetteringScheme,bSetExceptionsOn);
+        if (NULL == pNewMgrs)
+        {
+            if (bSetExceptionsOn)
+            {
+                throw new MgOutOfMemoryException(L"MgCoordinateSystemFactory.GetMgrsDatum", __LINE__, __WFILE__, NULL, L"", NULL);
+            }
+            else
+            {
+                return NULL;
+            }
+        }
+
+        if (bUseTargetDatum)
+        {
+            sDatumCode = pFrameCs->GetDatum ();
+        }
+        else
+        {
+            sDatumCode = L"WGS84";
+        }
+        pNewMgrs->InitFromDatum(sDatumCode);
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.GetMgrsDatum")
+
+    //And we're done!  Return success.
+    return static_cast<MgCoordinateSystemGridBase*>(pNewMgrs.Detach());
+}
+
+MgCoordinateSystemGridBase* MgCoordinateSystemFactory::GenericGrid (CREFSTRING sGridCs,
+                                                                    CREFSTRING sFrameCs,
+                                                                    bool bSetExceptionsOn)
+{
+    Ptr<MgCoordinateSystemGridBase> pGenericGrid;
+
+    MG_TRY()
+        Ptr<MgCoordinateSystem> pGridCs = CreateFromCode(sGridCs);
+        Ptr<MgCoordinateSystem> pFrameCs = CreateFromCode(sFrameCs);
+        pGenericGrid = GenericGrid (pGridCs,pFrameCs,bSetExceptionsOn);
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.GetMgrsDatum")
+
+    return pGenericGrid.Detach ();
+}
+
+MgCoordinateSystemGridBase* MgCoordinateSystemFactory::GenericGrid (MgCoordinateSystem* pGridCs,
+                                                                    MgCoordinateSystem* pFrameCs,
+                                                                    bool bSetExceptionsOn)
+{
+    Ptr<MgCoordinateSystemGridGeneric> pGenericGrid;
+
+    MG_TRY()
+        pGenericGrid=new CCoordinateSystemGridGeneric (pGridCs,pFrameCs,bSetExceptionsOn);
+        if (NULL == pGenericGrid)
+        {
+            if (bSetExceptionsOn)
+            {
+                throw new MgOutOfMemoryException(L"MgCoordinateSystemFactory.GetMgrsDatum", __LINE__, __WFILE__, NULL, L"", NULL);
+            }
+            else
+            {
+                return NULL;
+            }
+        }
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.GetMgrsDatum")
+
+    return static_cast<MgCoordinateSystemGridBase*>(pGenericGrid.Detach());
 }

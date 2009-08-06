@@ -138,7 +138,8 @@ PUBLISHED_API:
 
     //factory
     virtual MgCoordinateSystemCatalog* GetCatalog();
-    virtual MgCoordinateSystemTransform* GetTransform(MgCoordinateSystem* pSource, MgCoordinateSystem* pTarget);
+    virtual MgCoordinateSystemTransform* GetTransform(MgCoordinateSystem* pSource,
+                                                      MgCoordinateSystem* pTarget);
     virtual MgCoordinateSystem* CreateFromCode(CREFSTRING code);
     virtual STRING ConvertWktToCoordinateSystemCode(CREFSTRING wkt);
     virtual STRING ConvertCoordinateSystemCodeToWkt(CREFSTRING code);
@@ -148,6 +149,44 @@ PUBLISHED_API:
     virtual INT32 ConvertWktToEpsgCode(CREFSTRING wkt);
     virtual STRING GetBaseLibrary();
     virtual bool IsValid(CREFSTRING wkt);
+
+    // Grids and Graticules -- General
+    virtual MgCoordinateSystemGridBoundary* GridBoundary(MgCoordinate* southwest,
+                                                         MgCoordinate* northeast);
+    virtual MgCoordinateSystemGridBoundary* GridBoundary(MgPolygon& boundary);
+
+    virtual MgCoordinateSystemGridSpecification* GridSpecification (void);
+    virtual MgCoordinateSystemGridSpecification* GridSpecification (double increment,
+                                                                   INT32 subdivisions,
+                                                                   INT32 unitCode,
+                                                                   double curvePrecision);
+                                                                   
+    // Grids and Graticules -- Generic
+    virtual MgCoordinateSystemGridBase* GenericGrid (CREFSTRING sGridCs,
+                                                     CREFSTRING sFrameCs,
+                                                     bool bSetExceptionsOn);
+    virtual MgCoordinateSystemGridBase* GenericGrid (MgCoordinateSystem* pGridCs,
+                                                     MgCoordinateSystem* pFrameCs,
+                                                     bool bSetExceptionsOn);
+
+    // Grids and Graticules -- MGRS
+    virtual MgCoordinateSystemMgrs* GetMgrs(double dEquatorialRadius,double dEccentricity,
+                                                                     int nLetteringScheme,
+                                                                     bool bSetExceptionsOn);
+    virtual MgCoordinateSystemMgrs* GetMgrsEllipsoid(CREFSTRING sEllipsoidCode,
+                                                     int nLetteringScheme,
+                                                     bool bSetExceptionsOn);
+    virtual MgCoordinateSystemMgrs* GetMgrsDatum(CREFSTRING sDatumCode,
+                                                 int nLetteringScheme,
+                                                 bool bSetExceptionsOn);
+    virtual MgCoordinateSystemGridBase* MgrsGrid (MgCoordinateSystem* pFrameCs,
+                                                  bool bUseTargetDatum,
+                                                  int nLetteringScheme,
+                                                  bool bSetExceptionsOn);
+    virtual MgCoordinateSystemGridBase* MgrsGrid (CREFSTRING sFrameCs,
+                                                  bool bUseTargetDatum,
+                                                  int nLetteringScheme,
+                                                  bool bSetExceptionsOn);
 
 INTERNAL_API:
     virtual ~MgCoordinateSystemFactory();

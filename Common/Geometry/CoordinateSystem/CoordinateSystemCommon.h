@@ -52,6 +52,8 @@
 #include "CoordinateSystemProjectionFormatType.h"           //for MgCoordinateSystemProjectionFormatType
 #include "CoordinateSystemProjectionParameterType.h"        //for MgCoordinateSystemProjectionParameterType
 #include "CoordinateSystemErrorCode.h"                      //for MgCoordinateSystemErrorCode
+#include "CoordinateSystemMgrs.h"                           //for MgCoordinateSystemMgrs
+#include "CoordinateSystemMgrsLetteringScheme.h"            //for MgCoordinateSystemMgrsLetteringScheme
 
 #ifndef _WIN32
 //Linux: different naming for string functions
