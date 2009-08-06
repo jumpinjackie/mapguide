@@ -229,6 +229,13 @@ INTERNAL_API:
     static const STRING AlphaReleaseDetected;
     static const STRING BetaReleaseDetected;
     static const STRING PreviewReleaseDetected;
+    static const STRING InvalidLicense;
+    static const STRING LicenseAlreadyExists;
+    static const STRING LicenseNotFound;
+    static const STRING LicenseCheckoutCancel;
+    static const STRING LicenseCheckoutError;
+    static const STRING LicenseInvalidSerialNumber;
+
 
     static const STRING UsingDefaultResourceFile;
 
