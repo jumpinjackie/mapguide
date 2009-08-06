@@ -99,6 +99,18 @@
 #define CoordinateSystem_CoordinateSystemUnitInformation            GEOMETRY_COORDINATE_SYSTEM_ID+19
 #define CoordinateSystem_CoordinateSystemProjectionInformation      GEOMETRY_COORDINATE_SYSTEM_ID+20
 #define CoordinateSystem_CoordinateSystemDictionaryUtility          GEOMETRY_COORDINATE_SYSTEM_ID+21
+#define CoordinateSystem_CoordinateSystemMgrs                       GEOMETRY_COORDINATE_SYSTEM_ID+22
+
+#define CoordinateSystem_CoordinateSystemGridGeneric                GEOMETRY_COORDINATE_SYSTEM_ID+23
+#define CoordinateSystem_CoordinateSystemGridBoundary               GEOMETRY_COORDINATE_SYSTEM_ID+24
+#define CoordinateSystem_CoordinateSystemGridSpecification          GEOMETRY_COORDINATE_SYSTEM_ID+25
+#define CoordinateSystem_CoordinateSystemGridLineCollection         GEOMETRY_COORDINATE_SYSTEM_ID+26
+#define CoordinateSystem_CoordinateSystemGridRegionCollection       GEOMETRY_COORDINATE_SYSTEM_ID+27
+#define CoordinateSystem_CoordinateSystemGridTickCollection         GEOMETRY_COORDINATE_SYSTEM_ID+28
+#define CoordinateSystem_CoordinateSystemGridLine                   GEOMETRY_COORDINATE_SYSTEM_ID+29
+#define CoordinateSystem_CoordinateSystemGridRegion                 GEOMETRY_COORDINATE_SYSTEM_ID+30
+#define CoordinateSystem_CoordinateSystemGridTick                   GEOMETRY_COORDINATE_SYSTEM_ID+31
+
 
 // Exceptions
 #define Geometry_Exception_MgCoordinateSystemComputationFailedException     GEOMETRY_EXCEPTION_ID+0

@@ -1037,6 +1037,167 @@ void CCoordinateSystemTransform::TransformM(double x[], double y[], double z[], 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.TransformM")
 }
 
+///////////////////////////////////////////////////////////////////////////
+MgLineString* CCoordinateSystemTransform::GridLine (MgCoordinate* fromPnt,MgCoordinate* toPnt,
+                                                                          double curvePrecision,
+                                                                          UINT32 maxPoints)
+{
+    MgGeometryFactory factory;
+
+    Ptr<MgCoordinateCollection> coordinateCollection;
+    Ptr<MgLineString> lineString;
+    
+    struct rx_Linseg_
+    {
+        struct rx_Linseg_ *next;
+        double srcX;
+        double srcY;
+        double trgX;
+        double trgY;
+    };
+
+    unsigned segCnt;
+    struct rx_Linseg_ *segList = 0;
+    struct rx_Linseg_ *curPtr = 0;
+    struct rx_Linseg_ *nxtPtr = 0;
+
+    double num, denom;
+    double newX, newY;
+    double delX, delX2, delY, delY2;
+    double dist2, chord2, maxChord;
+
+    double wrkPntX, wrkPntY;
+    double midSrcX, midSrcY;
+    double midTrgX, midTrgY;
+
+    chord2 = curvePrecision * curvePrecision;
+
+    // Allocate and populate the first point in the segment list.
+    segList = new rx_Linseg_;
+    segList->next = NULL;
+
+    wrkPntX = segList->srcX = segList->trgX = fromPnt->GetX ();
+    wrkPntY = segList->srcY = segList->trgY = fromPnt->GetY ();
+    Transform (&segList->trgX,&segList->trgY);
+
+    // Allocate and populate the last point in the segment list.
+    curPtr = new rx_Linseg_;
+    curPtr->next = NULL;
+    segList->next = curPtr;
+
+    wrkPntX = curPtr->srcX = curPtr->trgX = toPnt->GetX ();
+    wrkPntY = curPtr->srcY = curPtr->trgY = toPnt->GetY ();
+    Transform (&curPtr->trgX,&curPtr->trgY);
+
+    // We now have the two end points of the line in the segment list.  Start a
+    // loop which will examine the segment list and add points where necessary
+    // to make sure the chord distance from the real point to the segment point
+    // is less than that required.
+    segCnt = 2;
+    do
+    {
+        // Loop through the list and bisect each segment as appropriate.
+        curPtr = segList;
+        maxChord = 0.0;
+        do
+        {
+            // Compute the midpoint of the segment in lin coordinates.
+            delX = curPtr->next->srcX - curPtr->srcX;
+            delY = curPtr->next->srcY - curPtr->srcY;
+            midTrgX = midSrcX = curPtr->srcX + delX * 0.5;
+            midTrgY = midSrcY = curPtr->srcY + delY * 0.5;
+            Transform (&midTrgX,&midTrgY);
+
+            // Compute the distance from the converted point to the line, doing all
+            // of this in dwg coordinates.  The result is the chord distance.
+            // The following algorithm was derived from taking the intersection of a
+            // line from the converted point perdendicular to the existing line.
+            delX = curPtr->next->trgX - curPtr->trgX;
+            delY = curPtr->next->trgY - curPtr->trgY;
+            delX2 = delX * delX;
+            delY2 = delY * delY;
+            denom = delX2 + delY2;
+
+            // Make sure we don't divide by zero.  denom is the sum of two
+            // squares, so it can't be negative.
+            if (denom > 0.0)
+            {
+                num = (delX2 * midTrgX) + (delY2 * curPtr->trgX) +
+                      (midTrgY - curPtr->trgY) * delX * delY;
+                newX = num / denom;
+                num = (delY2 * midTrgY) + (delX2 * curPtr->trgX) +
+                      (midTrgX - curPtr->trgX) * delX * delY;
+                newY = num / denom;
+                delX = newX - midTrgX;
+                delY = newY - midTrgY;
+                dist2 = delX * delX + delY * delY;
+            }
+            else
+            {
+                // This is overkill unless the drawing units are lat/longs or something
+                // else that is very weird.
+                delX = curPtr->trgX - midTrgX;
+                delY = curPtr->trgY - midTrgY;
+                dist2 = delX * delX + delY * delY;
+            }
+
+            // Accumulate the maximum chord distance so that we know when we are done.
+            if (dist2 > maxChord) maxChord = dist2;
+
+            // If the chord distance (it's not really a chord, but I don't know what
+            // the real name of this thing is) is greater than the requested maximum,
+            // we bisect this line segment.
+            if (dist2 > chord2)
+            {
+                // Allocate a new segment structure.
+                nxtPtr = new rx_Linseg_;
+                nxtPtr->next = NULL;
+
+                // Insert the computed mid point.  We have both the dwg and lin values
+                // available.
+                nxtPtr->trgX = midTrgX;
+                nxtPtr->trgY = midTrgY;
+                nxtPtr->srcX = midSrcX;
+                nxtPtr->srcY = midSrcY;
+
+                // Count this point.
+                segCnt += 1;
+
+                // Link this point into the list.
+                nxtPtr->next = curPtr->next;
+                curPtr->next = nxtPtr;
+
+                // Move on to the next segment.
+                curPtr = nxtPtr->next;
+            }
+            else
+            {
+                // Move on to the next segment.
+                curPtr = curPtr->next;
+            }
+        } while (curPtr->next != NULL);
+    } while (maxChord > chord2 && segCnt < maxPoints);
+
+    // Add all of our dwg points to the provided point array.
+    coordinateCollection = new MgCoordinateCollection ();
+    for (curPtr = segList;curPtr != NULL;curPtr = curPtr->next)
+    {
+        MgCoordinate* pntPtr = factory.CreateCoordinateXY (curPtr->trgX,curPtr->trgY);
+        coordinateCollection->Add (pntPtr);
+    }
+    lineString = factory.CreateLineString (coordinateCollection);
+
+    // Release all resources.
+    curPtr = segList;
+    while (curPtr != NULL)
+    {
+        nxtPtr = curPtr->next;
+        delete curPtr;
+        curPtr = nxtPtr;
+    }
+    return lineString.Detach ();
+}
+
 void CCoordinateSystemTransform::IgnoreDatumShiftWarning(bool bIgnoreDatumShiftWarning)
 {
     m_bIgnoreDatumShiftWarning = bIgnoreDatumShiftWarning;
