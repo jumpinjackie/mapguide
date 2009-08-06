@@ -33,7 +33,12 @@ libMgGeometry_la_SOURCES = \
   ../CoordinateSystem/CoordSysUtil.cpp \
   ../CoordinateSystem/MentorDictionary.cpp \
   ../CoordinateSystem/MentorUtil.cpp \
-  ../CoordinateSystem/CoordSysWktFailureCache.cpp
+  ../CoordinateSystem/CoordSysWktFailureCache.cpp \
+  ../CoordinateSystem/CoordSysGridGeneric.cpp \
+  ../CoordinateSystem/CoordSysGrids.cpp \
+  ../CoordinateSystem/CoordSysMgrs.cpp \
+  ../CoordinateSystem/CoordSysOneGrid.cpp
+  
 
 include_SOURCES = \
   AgfReaderWriter.cpp \
@@ -163,7 +168,12 @@ include_SOURCES = \
   ../CoordinateSystem/CoordSysUtil.cpp \
   ../CoordinateSystem/MentorDictionary.cpp \
   ../CoordinateSystem/MentorUtil.cpp \
-  ../CoordinateSystem/CoordSysWktFailureCache.cpp
+  ../CoordinateSystem/CoordSysWktFailureCache.cpp \
+  ../CoordinateSystem/CoordSysGridGeneric.cpp \
+  ../CoordinateSystem/CoordSysGrids.cpp \
+  ../CoordinateSystem/CoordSysMgrs.cpp \
+  ../CoordinateSystem/CoordSysOneGrid.cpp
+  
   
 noinst_HEADERS = $(include_SOURCES) \
   AgfReaderWriter.h \
@@ -310,6 +320,9 @@ noinst_HEADERS = $(include_SOURCES) \
   CoordinateSystem/CoordinateSystemUnitInformation.h \
   CoordinateSystem/CoordinateSystemUnitType.h \
   CoordinateSystem/CoordinateSystemWktFlavor.h \
+  CoordinateSystem/CoordinateSystemGrids.h \
+  CoordinateSystem/CoordinateSystemMgrs.h \
+  CoordinateSystem/CoordinateSystemGridGeneric.h \
   Exception/CoordinateSystemComputationFailedException.h \
   Exception/CoordinateSystemConversionFailedException.h \
   Exception/CoordinateSystemInitializationFailedException.h \
@@ -363,7 +376,13 @@ noinst_HEADERS = $(include_SOURCES) \
   ../CoordinateSystem/MentorDictionary.h \
   ../CoordinateSystem/MentorUtil.h \
   ../CoordinateSystem/namestruct.h \
-  ../CoordinateSystem/CoordSysWktFailureCache.h
+  ../CoordinateSystem/CoordSysWktFailureCache.h \
+  ../CoordinateSystem/CoordSysGridGeneric.h \
+  ../CoordinateSystem/CoordSysGrids.h \
+  ../CoordinateSystem/CoordSysMgrs.h \
+  ../CoordinateSystem/CoordSysOneGrid.h
+
+ 
 
 
 INCLUDES = \
