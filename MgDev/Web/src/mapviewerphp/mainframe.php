@@ -481,6 +481,7 @@ function BuildViewer($forDwf = true)
                     $title,
                     GetRootVirtualFolder() . "/mapagent/mapagent.fcgi",
                     $enablePingServer? 1: 0,
+                    $site->GetSite()->GetSessionTimeout(),
                     $locale,
                     $showToolbar? 1: 0,
                     $showStatusbar? 1: 0,

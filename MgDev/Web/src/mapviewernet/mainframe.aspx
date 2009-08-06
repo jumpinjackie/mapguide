@@ -485,6 +485,7 @@ NameValueCollection cmds = null;
                     webLayout.GetTitle(),
                     GetRootVirtualFolder(Request) + "/mapagent/mapagent.fcgi",
                     webLayout.GetEnablePingServer()? "1" : "0",
+                    site.GetSite().GetSessionTimeout().ToString(NumberFormatInfo.InvariantInfo),
                     locale,
                     showToolbar? "1" : "0",
                     showStatusbar? "1" : "0",

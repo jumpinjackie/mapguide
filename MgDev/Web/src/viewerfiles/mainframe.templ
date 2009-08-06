@@ -12,6 +12,7 @@
 var clientAgentName = 'Ajax Viewer';
 var webAgentAddress = '%s';
 var enablePingServer = %s;
+var serverSessionTimeout = %s;
 var locale = '%s';
 var hasToolbar = %s;
 var hasStatusbar = %s;
@@ -44,9 +45,6 @@ var ctxMenuItems = new Array();
 
 var intervalID;
 var pingServerFailTime;
-var isStartPingServer;
-var thousandSeparator = "__#THOUSANDSEPARATOR#__";
-var decimalSeparator = "__#DECIMALSEPARATOR#__";
 
 function BasicCommand(name, action, icon, iconDisabled, tooltip, description)
 {
@@ -427,31 +425,18 @@ function OnMapLoaded()
     OnSelectionChanged();
     DisplayMapSize();
     //ping server 
-    pingServerFailTime = 0;
-    isStartPingServer = false;
+    pingServerFailTime = 0;    
     if(enablePingServer)
     {    
-        GetServerSessionTimeout();
+        var pingServerInterval = serverSessionTimeout / 5 * 1000;  //Ping server 5 times each period. Timeout is returned in seconds. 
+        intervalID = window.setInterval(GetServerSessionTimeout, pingServerInterval);
     }
 }
 
 function handler() 
 {
-    if(this.readyState == 4 && this.status == 200) 
+    if(this.readyState == 4 && this.status != 200) 
     {    
-        if(!isStartPingServer)
-        {
-            var num = ParseLocalizedFloat(this.responseText);
-            if(!isNaN(num) && num != 0)
-            {
-                var pingServerInterval = num / 5 * 1000;  //Ping server 5 times each period. Timeout is returned in seconds. 
-                intervalID = window.setInterval(GetServerSessionTimeout, pingServerInterval);
-                isStartPingServer = true;
-            }
-        }
-    }
-    else if (this.readyState == 4 && this.status != 200) 
-    {        
         // error happens
         if(pingServerFailTime < 6)
         {
@@ -459,7 +444,6 @@ function handler()
         }
         else
         {
-            if(isStartPingServer)
                 window.clearInterval(intervalID);
         }
     }
