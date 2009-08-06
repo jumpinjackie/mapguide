@@ -33,8 +33,8 @@ public:
     void InitFromDatum(CREFSTRING sDatumCode);
 
 PUBLISHED_API:
-    virtual STRING ConvertFromLonLat(double dLongitude, double dLatitude, int nPrecision);
-    virtual STRING ConvertFromLonLat(MgCoordinate* pLonLat, int nPrecision);
+    STRING ConvertFromLonLat(double dLongitude, double dLatitude, int nPrecision);
+    STRING ConvertFromLonLat(MgCoordinate* pLonLat, int nPrecision);
     MgCoordinate* ConvertToLonLat(CREFSTRING sMgrs);
     INT8 GetLetteringScheme();
 
