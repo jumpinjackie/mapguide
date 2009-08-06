@@ -46,6 +46,13 @@ const STRING MgResources::EvaluationLicenseDetected     = L"Evaluation license d
 const STRING MgResources::AlphaReleaseDetected          = L"Alpha release detected.  Alpha version will expire in: %1 day(s).";
 const STRING MgResources::BetaReleaseDetected           = L"Beta release detected.  Beta version will expire in: %1 day(s).";
 const STRING MgResources::PreviewReleaseDetected        = L"Preview release detected.  Preview version will expire in: %1 day(s).";
+const STRING MgResources::InvalidLicense                = L"You have an invalid license.";
+const STRING MgResources::LicenseAlreadyExists          = L"Cannot create a new license, one already exists.";
+const STRING MgResources::LicenseCheckoutCancel         = L"The license checkout was canceled by the user.";
+const STRING MgResources::LicenseInvalidSerialNumber    = L"Invalid serial number.";
+const STRING MgResources::LicenseCheckoutError          = L"Generic license checkout error.";
+const STRING MgResources::LicenseNotFound               = L"The license was not found.";
+
 
 
 // The following resource strings are for the commandline options for the server. These are not in the resources file because
