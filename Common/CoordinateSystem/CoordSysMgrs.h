@@ -54,8 +54,8 @@ PUBLISHED_API:
     void SetExceptionsOn(bool bOn);
 
 INTERNAL_API:
-    INT32 ConvertFromLonLat(double dLongitude, double dLatitude, int nPrecision, REFSTRING sMgrs);
-    INT32 ConvertFromLonLat(MgCoordinate* pLonLat, int nPrecision, REFSTRING sMgrs);
+    INT32 ConvertFromLonLat(double dLongitude, double dLatitude, INT32 nPrecision, REFSTRING sMgrs);
+    INT32 ConvertFromLonLat(MgCoordinate* pLonLat, INT32 nPrecision, REFSTRING sMgrs);
     INT32 ConvertToLonLat(CREFSTRING sMgrs, MgCoordinate* pLonLat);
     INT32 ConvertToLonLat(CREFSTRING sMgrs, double& dLongitude, double& dLatitude);
 

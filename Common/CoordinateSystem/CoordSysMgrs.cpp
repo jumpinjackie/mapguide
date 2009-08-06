@@ -297,7 +297,7 @@ double CCoordinateSystemMgrs::GetProjectiveGridScale (MgCoordinate* location)
 
 //INTERNAL_API
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-INT32 CCoordinateSystemMgrs::ConvertFromLonLat(double dLongitude, double dLatitude, int nPrecision, REFSTRING sMgrs)
+INT32 CCoordinateSystemMgrs::ConvertFromLonLat(double dLongitude, double dLatitude, INT32 nPrecision, REFSTRING sMgrs)
 {
     if (!m_pCsMgrs)
     {
@@ -357,7 +357,7 @@ INT32 CCoordinateSystemMgrs::ConvertFromLonLat(double dLongitude, double dLatitu
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-INT32 CCoordinateSystemMgrs::ConvertFromLonLat(MgCoordinate* pLonLat, int nPrecision, REFSTRING sMgrs)
+INT32 CCoordinateSystemMgrs::ConvertFromLonLat(MgCoordinate* pLonLat, INT32 nPrecision, REFSTRING sMgrs)
 {
     if (!pLonLat)
     {
