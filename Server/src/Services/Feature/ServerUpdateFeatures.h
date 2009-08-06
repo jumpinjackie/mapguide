@@ -33,11 +33,15 @@ public:
     MgServerUpdateFeatures();
     ~MgServerUpdateFeatures();
     MgPropertyCollection* Execute(MgResourceIdentifier* resource,
-                             MgFeatureCommandCollection* commands,
-                             bool useTransaction);
+                                  MgFeatureCommandCollection* commands,
+                                  bool useTransaction);
+
+    MgPropertyCollection* Execute(MgResourceIdentifier* resource,
+                                  MgFeatureCommandCollection* commands,
+                                  MgTransaction* transaction);
 
 private:
-    void Connect(MgResourceIdentifier* resource);
+    void Connect(MgResourceIdentifier* resource, MgTransaction* transaction);
 
 private:
 

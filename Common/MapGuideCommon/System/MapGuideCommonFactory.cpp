@@ -109,6 +109,7 @@ bool InitializeStaticData()
     fact->Register(MapGuide_MappingService_MapPlotCollection, MgMapPlotCollection::CreateObject);
     fact->Register(MapGuide_RenderingService_FeatureInformation, MgFeatureInformation::CreateObject);
     fact->Register(MapGuide_RenderingService_RenderingOptions, MgRenderingOptions::CreateObject);
+    fact->Register(PlatformBase_FeatureService_FeatureTransaction, MgProxyFeatureTransaction::CreateObject);
 
     MgServiceRegistry* registry = MgServiceRegistry::GetInstance();
     registry->RegisterService(MgServiceType::DrawingService, MgProxyDrawingService::CreateService, sctRemoteServerToServer);

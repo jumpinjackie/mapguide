@@ -54,7 +54,10 @@
 #include "OpEnumerateDataStores.h"
 #include "OpGetSchemaMapping.h"
 #include "OpGetFdoCacheInfo.h"
-
+#include "OpBeginTransaction.h"
+#include "OpCommitTransaction.h"
+#include "OpRollbackTransaction.h"
+#include "OpUpdateFeaturesWithTransaction.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// <summary>
@@ -254,7 +257,31 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         }
         break;
 
+    case MgFeatureServiceOpId::ExecuteSqlQueryWithTransaction_Id:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(1,0):
+            handler.reset(new MgOpExecuteSqlQuery());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
     case MgFeatureServiceOpId::ExecuteSqlNonQuery_Id:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(1,0):
+            handler.reset(new MgOpExecuteSqlNonQuery());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgFeatureServiceOpId::ExecuteSqlNonQueryWithTransaction_Id:
         switch (VERSION_NO_PHASE(operationVersion))
         {
         case VERSION_SUPPORTED(1,0):
@@ -283,6 +310,18 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         {
         case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpUpdateFeatures());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgFeatureServiceOpId::UpdateFeaturesWithTransaction_Id:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(1,0):
+            handler.reset(new MgOpUpdateFeaturesWithTransaction());
             break;
         default:
             throw new MgInvalidOperationVersionException(
@@ -525,6 +564,42 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         {
         case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpApplySchema());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgFeatureServiceOpId::BeginFeatureTransaction_Id:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(1,0):
+            handler.reset(new MgOpBeginTransaction());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgFeatureServiceOpId::CommitFeatureTransaction_Id:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(1,0):
+            handler.reset(new MgOpCommitTransaction());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgFeatureServiceOpId::RollbackFeatureTransaction_Id:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(1,0):
+            handler.reset(new MgOpRollbackTransaction());
             break;
         default:
             throw new MgInvalidOperationVersionException(

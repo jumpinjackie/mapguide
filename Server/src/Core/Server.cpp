@@ -28,6 +28,7 @@
 #include "FontManager.h"
 #include "LongTransactionManager.h"
 #include "CacheManager.h"
+#include "ServerFeatureTransactionPool.h"
 
 #include "Stylizer.h"
 #include "Bounds.h"
@@ -984,6 +985,12 @@ int MgServer::open(void *args)
             MgEventTimer& dataConnectionTimer = m_eventTimerManager.GetEventTimer(MgEventTimer::DataConnectionTimeout);
             MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
             pFdoConnectionManager->Initialize(bDataConnectionPoolEnabled, nDataConnectionPoolSize, dataConnectionTimer.GetEventTimeout(), dataConnectionPoolExcludedProviders, dataConnectionPoolSizeCustom);
+
+            // Initialize the transaction pool
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Initializing transaction pool.\n")));
+            MgEventTimer& dataTransactionTimer = m_eventTimerManager.GetEventTimer(MgEventTimer::DataTransactionTimeout);
+            MgServerFeatureTransactionPool* pTransactionPool = MgServerFeatureTransactionPool::GetInstance();
+            pTransactionPool->Initialize(dataTransactionTimer.GetEventTimeout());
 
             // On startup, perform the service registration for the Site server.
             // Note that this event will be perfomed by a timer for the Support server.

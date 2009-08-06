@@ -55,6 +55,12 @@
 #define MG_CONFIG_MIN_TIMER_INTERVAL                    1
 #define MG_CONFIG_MAX_TIMER_INTERVAL                    MG_CONFIG_MAX_INT32
 
+#define MG_CONFIG_MIN_TRANSACTION_TIMEOUT               1
+#define MG_CONFIG_MAX_TRANSACTION_TIMEOUT               1800 // 30 minutes
+
+#define MG_CONFIG_MIN_TRANSACTION_TIMER_INTERVAL        1
+#define MG_CONFIG_MAX_TRANSACTION_TIMER_INTERVAL        1800 // 30 minutes
+
 #define MG_CONFIG_MIN_JOIN_QUERY_BATCH_SIZE             1
 #define MG_CONFIG_MAX_JOIN_QUERY_BATCH_SIZE             10000
 
@@ -252,6 +258,10 @@ const STRING MgConfigProperties::FeatureServicePropertyDataConnectionTimerInterv
 const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTimerInterval   = 60;
 const STRING MgConfigProperties::FeatureServicePropertyJoinQueryBatchSize                   = L"JoinQueryBatchSize";
 const INT32  MgConfigProperties::DefaultFeatureServicePropertyJoinQueryBatchSize            = 100;
+const STRING MgConfigProperties::FeatureServicePropertyDataTransactionTimeout               = L"DataTransactionTimeout";
+const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataTransactionTimeout        = 360;
+const STRING MgConfigProperties::FeatureServicePropertyDataTransactionTimerInterval         = L"DataTransactionTimerInterval";
+const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataTransactionTimerInterval  = 60;
 
 // ******************************************************************
 // Mapping Service Properties
@@ -560,6 +570,8 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviFeatureServiceProperties[
     { MgConfigProperties::FeatureServicePropertyDataConnectionTimeout               , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMEOUT                 , MG_CONFIG_MAX_TIMEOUT                 , L""                                       },
     { MgConfigProperties::FeatureServicePropertyDataConnectionTimerInterval         , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },
     { MgConfigProperties::FeatureServicePropertyJoinQueryBatchSize                  , MgPropertyType::Int32     , MG_CONFIG_MIN_JOIN_QUERY_BATCH_SIZE   , MG_CONFIG_MAX_JOIN_QUERY_BATCH_SIZE   , L""                                       },
+    { MgConfigProperties::FeatureServicePropertyDataTransactionTimeout              , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMEOUT                 , MG_CONFIG_MAX_TIMEOUT                 , L""                                       },
+    { MgConfigProperties::FeatureServicePropertyDataTransactionTimerInterval        , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 

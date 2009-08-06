@@ -159,6 +159,7 @@ extern long GetTickCount();
 #include "Services/ProxyResourceService.h"
 #include "Services/ProxySqlDataReader.h"
 #include "Services/ProxyTileService.h"
+#include "Services/ProxyFeatureTransaction.h"
 #include "Services/ServerAdmin.h"
 #include "Services/ServerAdminDefs.h"
 #include "Services/ServerConnection.h"

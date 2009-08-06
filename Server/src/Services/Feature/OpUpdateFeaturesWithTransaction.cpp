@@ -16,7 +16,7 @@
 //
 
 #include "ServerFeatureServiceDefs.h"
-#include "OpExecuteSqlNonQuery.h"
+#include "OpUpdateFeaturesWithTransaction.h"
 #include "ServerFeatureService.h"
 #include "LogManager.h"
 #include "ServerFeatureTransactionPool.h"
@@ -27,7 +27,7 @@
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-MgOpExecuteSqlNonQuery::MgOpExecuteSqlNonQuery()
+MgOpUpdateFeaturesWithTransaction::MgOpUpdateFeaturesWithTransaction()
 {
 }
 
@@ -37,7 +37,7 @@ MgOpExecuteSqlNonQuery::MgOpExecuteSqlNonQuery()
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-MgOpExecuteSqlNonQuery::~MgOpExecuteSqlNonQuery()
+MgOpUpdateFeaturesWithTransaction::~MgOpUpdateFeaturesWithTransaction()
 {
 }
 
@@ -51,11 +51,11 @@ MgOpExecuteSqlNonQuery::~MgOpExecuteSqlNonQuery()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-void MgOpExecuteSqlNonQuery::Execute()
+void MgOpUpdateFeaturesWithTransaction::Execute()
 {
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpExecuteSqlNonQuery::Execute()\n")));
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpUpdateFeaturesWithTransaction::Execute()\n")));
 
-    MG_LOG_OPERATION_MESSAGE(L"ExecuteSqlNonQuery");
+    MG_LOG_OPERATION_MESSAGE(L"MgOpUpdateFeaturesWithTransaction");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -63,39 +63,13 @@ void MgOpExecuteSqlNonQuery::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (2 == m_packet.m_NumArguments)
+    if (3 == m_packet.m_NumArguments)
     {
         // Get the feature source
         Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
 
-        // Get the schema name
-        STRING sqlNonSelectStatement;
-        m_stream->GetString(sqlNonSelectStatement);
-
-        BeginExecution();
-
-        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
-        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(sqlNonSelectStatement.c_str());
-        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
-
-        Validate();
-
-        // Execute the operation
-        INT32 rowsUpdated = m_service->ExecuteSqlNonQuery(resource, sqlNonSelectStatement);
-
-        // Write the response
-        EndExecution(rowsUpdated);
-    }
-    else if (3 == m_packet.m_NumArguments)
-    {
-        // Get the feature source
-        Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
-
-        // Get the schema name
-        STRING sqlNonSelectStatement;
-        m_stream->GetString(sqlNonSelectStatement);
+        // Get properties collection
+        Ptr<MgFeatureCommandCollection> commands = (MgFeatureCommandCollection*)m_stream->GetObject();
 
         // Get the transaction id
         STRING transactionId;
@@ -106,15 +80,16 @@ void MgOpExecuteSqlNonQuery::Execute()
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(sqlNonSelectStatement.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgFeatureCommandCollection");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(transactionId.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
         MgServerFeatureTransactionPool* transactionPool = MgServerFeatureTransactionPool::GetInstance();
-        CHECKNULL(transactionPool, L"MgOpExecuteSqlNonQuery.Execute")
+        CHECKNULL(transactionPool, L"MgOpUpdateFeaturesWithTransaction.Execute")
 
         transactionPool->ValidateTimeout(transactionId);
 
@@ -122,10 +97,10 @@ void MgOpExecuteSqlNonQuery::Execute()
         Ptr<MgServerFeatureTransaction> transaction = transactionPool->GetTransaction(transactionId);
 
         // Execute the operation
-        INT32 rowsUpdated = m_service->ExecuteSqlNonQuery(resource, sqlNonSelectStatement, (MgTransaction*)transaction.p);
+        Ptr<MgPropertyCollection> rowsAffected = m_service->UpdateFeatures(resource, commands, (MgTransaction*)transaction.p);
 
         // Write the response
-        EndExecution(rowsUpdated);
+        EndExecution(rowsAffected);
     }
     else
     {
@@ -135,14 +110,14 @@ void MgOpExecuteSqlNonQuery::Execute()
 
     if (!m_argsRead)
     {
-        throw new MgOperationProcessingException(L"MgOpExecuteSqlNonQuery.Execute",
+        throw new MgOperationProcessingException(L"MgOpUpdateFeaturesWithTransaction.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_FEATURE_SERVICE_CATCH(L"MgOpExecuteSqlNonQuery.Execute")
+    MG_FEATURE_SERVICE_CATCH(L"MgOpUpdateFeaturesWithTransaction.Execute")
 
     if (mgException != NULL)
     {

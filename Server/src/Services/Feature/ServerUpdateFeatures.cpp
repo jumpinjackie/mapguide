@@ -22,6 +22,7 @@
 #include "ServerFeatureUtil.h"
 #include "FeatureManipulationCommand.h"
 #include "CacheManager.h"
+#include "ServerFeatureTransaction.h"
 
 MgServerUpdateFeatures::MgServerUpdateFeatures()
 {
@@ -32,9 +33,18 @@ MgServerUpdateFeatures::~MgServerUpdateFeatures()
 {
 }
 
-void MgServerUpdateFeatures::Connect(MgResourceIdentifier* resource)
+void MgServerUpdateFeatures::Connect(MgResourceIdentifier* resource, MgTransaction* transaction)
 {
-    m_SrvrFeatConn = new MgServerFeatureConnection(resource);
+    if (NULL == transaction)
+    {
+        m_SrvrFeatConn = new MgServerFeatureConnection(resource);
+    }
+    else
+    {
+        MgServerFeatureTransaction* featTransaction = static_cast<MgServerFeatureTransaction*>(transaction);
+        m_SrvrFeatConn = featTransaction->GetServerFeatureConnection();
+    }
+
     if ((NULL != m_SrvrFeatConn.p) && ( !m_SrvrFeatConn->IsConnectionOpen() ))
     {
 
@@ -71,7 +81,7 @@ MgPropertyCollection* MgServerUpdateFeatures::Execute(MgResourceIdentifier* reso
     }
 
     // Connect to provider
-    Connect(resource);
+    Connect(resource, NULL);
 
     propCol = new MgPropertyCollection();
 
@@ -133,6 +143,79 @@ MgPropertyCollection* MgServerUpdateFeatures::Execute(MgResourceIdentifier* reso
     }
 
     MG_FEATURE_SERVICE_THROW()
+
+    return propCol.Detach();
+}
+
+// Executes the commands
+MgPropertyCollection* MgServerUpdateFeatures::Execute(MgResourceIdentifier* resource,
+                                                      MgFeatureCommandCollection* commands,
+                                                      MgTransaction* transaction)
+{
+    Ptr<MgPropertyCollection> propCol;
+
+    MG_FEATURE_SERVICE_TRY()
+
+    if (resource == NULL || commands == NULL)
+    {
+        throw new MgNullArgumentException(L"MgServerUpdateFeatures.UpdateFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    INT32 cnt = commands->GetCount();
+    if (cnt == 0)
+    {
+        MgStringCollection arguments;
+        arguments.Add(L"2");
+        arguments.Add(L"0");
+
+        throw new MgInvalidArgumentException(L"MgServerUpdateFeatures.UpdateFeatures",
+            __LINE__, __WFILE__, &arguments, L"MgCollectionEmpty", NULL);
+    }
+
+    // Connect to provider
+    Connect(resource, transaction);
+
+    propCol = new MgPropertyCollection();
+
+    for (INT32 i = 0; i < cnt; i++)
+    {
+        Ptr<MgProperty> result;
+        Ptr<MgFeatureCommand> command = commands->GetItem(i);
+        Ptr<MgFeatureManipulationCommand> fmServerCommand = MgFeatureManipulationCommand::CreateCommand(command, m_SrvrFeatConn, i);
+
+        MG_FEATURE_SERVICE_TRY()
+        // Execute the manipulation command
+        result = fmServerCommand->Execute();
+
+        MG_FEATURE_SERVICE_CATCH(L"MgServerUpdateFeatures.UpdateFeatures")
+
+        if (transaction != NULL)
+        {
+            MG_FEATURE_SERVICE_THROW() // rethrow if updates are done in transaction
+        }
+        else
+        {
+            if (mgException != NULL)
+            {
+                // When an exception is thrown, we need to communicate this back to user in non-transactional case.
+                // We can do this either by setting warnings or a string property. Making it as StringProperty would
+                // let users know exactly which ones failed and why.
+                STRING str;
+                MgUtil::Int32ToString(i, str);
+                STRING errMsg = mgException->GetDetails();
+
+                result = new MgStringProperty(str, errMsg);  // If there is an exception which means result would null from execute
+                mgException = NULL; // Release the pointer
+            }
+        }
+        // NULL property should not be added.
+        if (result != NULL)
+        {
+            propCol->Add(result);
+        }
+    }
+
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgServerUpdateFeatures.UpdateFeatures")
 
     return propCol.Detach();
 }

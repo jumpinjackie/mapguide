@@ -161,6 +161,7 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../../../Common/PlatformBase/Services/SqlDataReader.h" />
     <Header path="../../../../Common/PlatformBase/Services/UpdateFeatures.h" />
     <Header path="../../../../Common/PlatformBase/Services/Warnings.h" />
+    <Header path="../../../../Common/PlatformBase/Services/Transaction.h" />
 
     <Header path="../../../../Common/PlatformBase/MapLayer/LayerBase.h" />
     <Header path="../../../../Common/PlatformBase/MapLayer/LayerCollection.h" />

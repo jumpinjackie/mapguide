@@ -68,6 +68,13 @@ INTERNAL_API:
     static const int GetFdoCacheInfo_Id             = 0x1111ED25;
     static const int GetClassDefinition2_Id         = 0x1111ED26;
     static const int ApplySchema_Id                 = 0x1111ED27;
+    static const int BeginFeatureTransaction_Id           = 0x1111ED28;
+    static const int CommitFeatureTransaction_Id          = 0x1111ED29;
+    static const int RollbackFeatureTransaction_Id        = 0x1111ED2A;
+    static const int UpdateFeaturesWithTransaction_Id     = 0x1111ED2B;
+    static const int ExecuteSqlNonQueryWithTransaction_Id = 0x1111ED2C;
+    static const int ExecuteSqlQueryWithTransaction_Id    = 0x1111ED2D;
+    
 };
 /// \endcond
 

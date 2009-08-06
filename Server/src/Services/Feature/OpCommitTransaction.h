@@ -15,22 +15,19 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "ClientAcceptor.cpp"
-#include "ConnectionTimeoutEventHandler.cpp"
-#include "DataConnectionTimeoutEventHandler.cpp"
-#include "DataTransactionTimeoutEventHandler.cpp"
-#include "EventTimer.cpp"
-#include "EventTimerManager.cpp"
-#include "FeatureServiceCacheTimeLimitEventHandler.cpp"
-#include "main.cpp"
-#include "OperationThread.cpp"
-#include "RepositoryCheckpointEventHandler.cpp"
-#include "ResourceChangeEventHandler.cpp"
-#include "Server.cpp"
-#include "ServiceHandlerFactory.cpp"
-#include "ServiceRegistrationEventHandler.cpp"
-#include "SessionTimeoutEventHandler.cpp"
-#include "SignalHandler.cpp"
-#include "TimedEvent.cpp"
-#include "TimedEventHandler.cpp"
-#include "ServerFactory.cpp"
+#ifndef MG_OP_COMMITRANSACTION_H
+#define MG_OP_COMMITRANSACTION_H
+
+#include "FeatureOperation.h"
+
+class MgOpCommitTransaction : public MgFeatureOperation
+{
+    public:
+        MgOpCommitTransaction();
+        virtual ~MgOpCommitTransaction();
+
+    public:
+        virtual void Execute();
+};
+
+#endif

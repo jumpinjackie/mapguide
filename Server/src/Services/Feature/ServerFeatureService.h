@@ -450,6 +450,32 @@ public:
                                           MgFeatureCommandCollection* commands,
                                           bool useTransaction );
 
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// It executes all the commands specified in command collection 
+    /// within the given transaction.
+    /// </summary>
+    /// <param name="resource">Input
+    /// A resource identifier referring to connection string
+    /// </param>
+    /// <param name="commands">Input
+    /// Collection of commands to be executed
+    /// </param>
+    /// <param name="transaction">Input
+    /// The MgTransaction instance on which the commands
+    /// will be executed.
+    /// </param>
+    /// <returns>
+    /// Integer collection referring to result for each command
+    /// Index of commandCollection and index of IntCollection would match the result.
+    /// </returns>
+    ///
+    /// EXCEPTIONS:
+    /// MgInvalidResourceIdentifer
+    MgPropertyCollection* UpdateFeatures( MgResourceIdentifier* resource,
+                                          MgFeatureCommandCollection* commands,
+                                          MgTransaction* transaction );
+
     ////////////////////////////////////////////////////////////////////////////////////////
     /// <summary>
     /// Gets the locked features
@@ -477,6 +503,28 @@ public:
     MgFeatureReader* GetLockedFeatures( MgResourceIdentifier* resource,
                                         CREFSTRING className,
                                         MgFeatureQueryOptions* options );
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Starts a transaction on the specified feature source
+    ///
+    /// NOTE:
+    /// The returned MgTransaction instance has to be used along with ExecuteSqlQuery()
+    /// or ExecuteSqlNonQuery()
+    /// </summary>
+    /// <param name="resource">Input
+    /// A resource identifier referring to connection string
+    /// </param>
+    /// <returns>
+    /// Returns an MgTransaction instance (or NULL).
+    /// </returns>
+    ///
+    /// EXCEPTIONS:
+    /// MgFeatureServiceException
+    /// MgInvalidArgumentException
+    /// MgInvalidOperationException
+    /// MgFdoException
+    MgTransaction* BeginTransaction( MgResourceIdentifier* resource );
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -512,6 +560,46 @@ public:
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
+    /// This method executes the SELECT SQL statement specified and returns a pointer to
+    /// SqlDataReader instance within the given transaction. This instance can be used to
+    /// retrieve column information and related values.
+    ///
+    /// NOTE:
+    /// Serialize() method of SqlDataReader would be able to convert data returned
+    /// to AWKFF or XML stream.
+    /// </summary>
+    /// <remarks>
+    /// If passing in NULL for transaction, it will work the same
+    /// as before within no explicit transaction.
+    /// </remarks>
+    /// <param name="resource">Input
+    /// A resource identifier referring to connection string
+    /// </param>
+    /// <param name="sqlStatement">Input
+    /// This would allow users to specify free format SQL SELECT statement like
+    /// SELECT * FROM CLASSNAME WHERE COLOR = RED. This would return all rows
+    /// from "CLASSNAME" where COLOR column has value RED.
+    /// </param>
+    /// <param name="transaction">Input
+    /// The MgTransaction instance on which the sql statement will be executed.
+    /// </param>
+    /// <returns>
+    /// SqlDataReader pointer, an instance of reader pointing to the actual reader
+    /// from FdoProvider (or NULL).
+    ///
+    /// If any statement other than SELECT is passed to this method, it would return failure.
+    /// </returns>
+    ///
+    /// EXCEPTIONS:
+    /// MgInvalidResourceIdentifer
+    /// MgInvalidSqlStatement
+    /// MgSqlNotSupported
+    MgSqlDataReader* ExecuteSqlQuery( MgResourceIdentifier* resource,
+                                      CREFSTRING sqlStatement,
+                                      MgTransaction* transaction );
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
     /// This method executes all SQL statements supported by providers except SELECT.
     /// </summary>
     /// <param name="resource">Input
@@ -531,6 +619,37 @@ public:
     /// MgInvalidResourceIdentifer
     INT32 ExecuteSqlNonQuery( MgResourceIdentifier* resource,
                               CREFSTRING sqlNonSelectStatement );
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// This method executes all SQL statements supported by providers except SELECT
+    /// within the given transaction.
+    /// </summary>
+    /// <remarks>
+    /// If passing in NULL for transaction, it will work the same
+    /// as before within no explicit transaction.
+    /// </remarks>
+    /// <param name="resource">Input
+    /// A resource identifier referring to connection string
+    /// </param>
+    /// <param name="sqlNonSelectStatement">Input
+    /// This would allow users to specify free format SQL statement like INSERT/UPDATE/DELETE/CREATE
+    /// </param>
+    /// <param name="transaction">Input
+    /// The MgTransaction instance on which the sql statement will be executed.
+    /// </param>
+    /// <returns>
+    /// An positive integer value indicating how many instances (rows) have been affected.
+    ///
+    /// NOTE: It is possible that only few rows were affected than actually expected.
+    /// In this scenario, warning object will contain the details on the failed records.
+    /// </returns>
+    ///
+    /// EXCEPTIONS:
+    /// MgInvalidResourceIdentifer
+    INT32 ExecuteSqlNonQuery( MgResourceIdentifier* resource,
+                              CREFSTRING sqlNonSelectStatement,
+                              MgTransaction* transaction );
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -765,6 +884,12 @@ public:
     DECLARE_CREATE_SERVICE()
 
     void SetConnectionProperties(MgConnectionProperties* connProp);
+
+    // Commit the transaction specified by the transaction id.
+    bool CommitTransaction(CREFSTRING transactionId);
+
+    // Rollback the transaction specified by the transaction id. 
+    bool RollbackTransaction(CREFSTRING transactionId);
 
 private:
 

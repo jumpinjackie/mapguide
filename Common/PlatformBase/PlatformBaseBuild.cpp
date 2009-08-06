@@ -119,3 +119,4 @@
 #include "Services/PrintLayoutService/PrintLayoutServiceBase.cpp"
 #include "Services/PrintLayoutService/PropertyMapping.cpp"
 #include "Services/PrintLayoutService/PropertyMappingCollection.cpp"
+#include "Services/Transaction.cpp"

@@ -21,6 +21,7 @@
 #include "ServerFeatureConnection.h"
 #include "ServerSqlDataReader.h"
 #include "ServerFeatureUtil.h"
+#include "ServerFeatureTransaction.h"
 
 MgServerSqlCommand::MgServerSqlCommand()
 {
@@ -43,14 +44,14 @@ void MgServerSqlCommand::CloseConnection()
 }
 
 // Executes the describe schema command and serializes the schema to XML
-MgSqlDataReader* MgServerSqlCommand::ExecuteQuery(MgResourceIdentifier* resource, CREFSTRING sqlStatement)
+MgSqlDataReader* MgServerSqlCommand::ExecuteQuery(MgResourceIdentifier* resource, CREFSTRING sqlStatement, MgTransaction* transaction)
 {
     Ptr<MgSqlDataReader> mgSqlDataReader;
 
     MG_FEATURE_SERVICE_TRY()
 
     // If validation does succeeds, it will throw exception
-    Validate(resource, sqlStatement, FdoCommandType_SQLCommand);
+    Validate(resource, sqlStatement, FdoCommandType_SQLCommand, transaction);
 
     // Create the SQL command
     FdoPtr<FdoISQLCommand> fdoCommand = (FdoISQLCommand*)m_fdoConn->CreateCommand(FdoCommandType_SQLCommand);
@@ -71,14 +72,14 @@ MgSqlDataReader* MgServerSqlCommand::ExecuteQuery(MgResourceIdentifier* resource
 }
 
 // Executes the describe schema command and serializes the schema to XML
-INT32 MgServerSqlCommand::ExecuteNonQuery(MgResourceIdentifier* resource, CREFSTRING sqlStatement)
+INT32 MgServerSqlCommand::ExecuteNonQuery(MgResourceIdentifier* resource, CREFSTRING sqlStatement, MgTransaction* transaction)
 {
     INT32 rowsAffected = 0;
 
     MG_FEATURE_SERVICE_TRY()
 
     // If validation does succeeds, it will throw exception
-    Validate(resource, sqlStatement, FdoCommandType_SQLCommand);
+    Validate(resource, sqlStatement, FdoCommandType_SQLCommand, transaction);
 
     // Create the SQL command
     FdoPtr<FdoISQLCommand> fdoCommand = (FdoISQLCommand*)m_fdoConn->CreateCommand(FdoCommandType_SQLCommand);
@@ -95,7 +96,7 @@ INT32 MgServerSqlCommand::ExecuteNonQuery(MgResourceIdentifier* resource, CREFST
 }
 
 
-void MgServerSqlCommand::Validate(MgResourceIdentifier* resource, CREFSTRING sqlStatement, INT32 commandType)
+void MgServerSqlCommand::Validate(MgResourceIdentifier* resource, CREFSTRING sqlStatement, INT32 commandType, MgTransaction* transaction)
 {
     // SQL statement can not be empty
     if (resource == NULL)
@@ -117,7 +118,18 @@ void MgServerSqlCommand::Validate(MgResourceIdentifier* resource, CREFSTRING sql
     CloseConnection();
 
     // Connect to provider
-    m_featureConnection = new MgServerFeatureConnection(resource);
+    if (NULL != transaction)
+    {
+        // grab the connection used to start the transaction.
+        MgServerFeatureTransaction* featureTransaction = static_cast<MgServerFeatureTransaction*>(transaction);
+        m_featureConnection = featureTransaction->GetServerFeatureConnection();
+    }
+    else
+    {
+        // No transaction, grab the connection as usual.
+        m_featureConnection = new MgServerFeatureConnection(resource);
+    }
+
     if (m_featureConnection->IsConnectionOpen() )
     {
         m_fdoConn = m_featureConnection->GetConnection();

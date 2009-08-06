@@ -344,6 +344,8 @@ MgNoFeaturesForInsert                                 = No Features for Insert s
 MgOnlyOnePropertyAllowed                              = Only one aggregate function of this kind is supported
 MgOrderingOptionNotSupported                          = Ordering Option is not supported by provider
 MgPropertyNotEnumerable                               = Property specified is not enumerable.
+MgTransactionTimeout                                  = Transaction has timed out.
+MgTransactionNotSupported                             = Transaction is not supported.
 
 # *****************************************************************************
 # K M L  S E R V I C E

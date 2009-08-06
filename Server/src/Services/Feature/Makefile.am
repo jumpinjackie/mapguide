@@ -113,7 +113,13 @@ include_SOURCES = \
   JoinFeatureReader.cpp \
   FdoFeatureReader.cpp \
   FdoFilterCollection.cpp \
-  FdoReaderCollection.cpp
+  FdoReaderCollection.cpp \
+  OpBeginTransaction.cpp \
+  OpCommitTransaction.cpp \
+  OpRollbackTransaction.cpp \
+  OpUpdateFeaturesWithTransaction.cpp \
+  ServerFeatureTransaction.cpp \
+  ServerFeatureTransactionPool.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
   FeatureOperation.h \
@@ -215,7 +221,13 @@ noinst_HEADERS = $(include_SOURCES) \
   JoinFeatureReader.h \
   FdoFeatureReader.h \
   FdoFilterCollection.h \
-  FdoReaderCollection.h
+  FdoReaderCollection.h \
+  OpBeginTransaction.h \
+  OpCommitTransaction.h \
+  OpRollbackTransaction.h \
+  OpUpdateFeaturesWithTransaction.h \
+  ServerFeatureTransaction.h \
+  ServerFeatureTransactionPool.h
   
 
 libMgServerFeatureService_la_LIBADD = -lMgGwsCommon -lMgGwsQueryEngine
