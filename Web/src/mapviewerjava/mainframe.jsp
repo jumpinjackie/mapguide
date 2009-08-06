@@ -484,6 +484,7 @@ try
                       webLayout.GetTitle(),
                       GetRootVirtualFolder(request) + "/mapagent/mapagent.fcgi",
                       webLayout.GetEnablePingServer()? int1 : int0,
+                      String.valueOf(site.GetSite().GetSessionTimeout()),
                       locale,
                       showToolbar ? int1 : int0,
                       showStatusbar ? int1 : int0,
