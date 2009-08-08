@@ -159,7 +159,10 @@ void IOPrintLayoutDefinition::Write(MdfStream& fd, PrintLayoutDefinition* layout
 {
     _ASSERT(NULL != layoutDef);
 
-    fd << tab() << startStr(sPrintLayoutDefinition) << std::endl;
+    // Set the expected version
+    MdfString strVersion = L"2.0.0";
+
+    fd << tab() << "<PrintLayoutDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"PrintLayoutDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
     inctab();
 
     // Property: Name

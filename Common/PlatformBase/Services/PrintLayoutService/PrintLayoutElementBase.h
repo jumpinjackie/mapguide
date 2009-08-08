@@ -20,6 +20,7 @@
 
 // Forward Declarations
 BEGIN_NAMESPACE_MDFMODEL
+class PrintLayoutElement;
 class PrintLayoutElementDefinition;
 END_NAMESPACE_MDFMODEL
 
@@ -29,7 +30,7 @@ class MgPropertyMappingCollection;
 /// \brief
 /// Defines the MgPrintLayoutElementBase object.
 ///
-class MG_PLATFORMBASE_API MgPrintLayoutElementBase : public MgResource
+class MG_PLATFORMBASE_API MgPrintLayoutElementBase : public MgNamedSerializable
 {
     MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgPrintLayoutElementBase)
@@ -74,15 +75,15 @@ INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Gets the resource ID.
+    /// Gets the resource identifier of the print layout element definition.
     ///
-    virtual MgResourceIdentifier* GetResourceId();
+    virtual MgResourceIdentifier* GetPrintLayoutElementDefinition();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Sets the resource ID.
+    /// Sets the resource identifier of the print layout element definition.
     ///
-    virtual void SetResourceId(MgResourceIdentifier* resourceId);
+    virtual void SetPrintLayoutElementDefinition(MgResourceIdentifier* definition);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -240,12 +241,6 @@ INTERNAL_API:
     ///
     virtual MgPropertyMappingCollection* GetPropertyMappings();
 
-    ///////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Forces this element object to refresh itself from its resource
-    ///
-    virtual void ForceRefresh(MgResourceService* resourceService);
-
 INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
@@ -288,6 +283,12 @@ INTERNAL_API:
     ///
     virtual void PopulateFromResource(MdfModel::PrintLayoutElementDefinition *elementDef);
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Populates the print layout element from the MDF representation.
+    ///
+    virtual void PopulateFromResource(MdfModel::PrintLayoutElement *layoutDef);
+
 protected:
 
     ///////////////////////////////////////////////////////////////////////////
@@ -308,18 +309,12 @@ protected:
     ///
     virtual void Dispose();
 
-    ///////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Returns the name of the resource type.
-    ///
-    virtual const char* GetResourceTypeName();
-
 protected:
 
     // Data Members
     STRING m_type;
     STRING m_name;
-    Ptr<MgResourceIdentifier> m_resourceId;
+    Ptr<MgResourceIdentifier> m_definition;
     Ptr<MgPoint3D> m_center;
     double m_width;
     double m_height;

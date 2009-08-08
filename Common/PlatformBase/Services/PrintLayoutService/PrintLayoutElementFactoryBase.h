@@ -47,7 +47,7 @@ INTERNAL_API:
     /// \return
     /// Returns the MgPrintLayoutElementBase object.
     ///
-    virtual MgPrintLayoutElementBase* CreateObject();
+    virtual MgPrintLayoutElementBase* CreateObject() = 0;
 
 protected:
 

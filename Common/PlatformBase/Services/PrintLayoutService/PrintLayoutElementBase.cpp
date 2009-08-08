@@ -79,15 +79,6 @@ void MgPrintLayoutElementBase::Dispose()
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Returns the name of the resource type.
-///
-const char* MgPrintLayoutElementBase::GetResourceTypeName()
-{
-    return "PrintLayoutElementDefinition";
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
 /// Does it allow to set the name
 ///
 bool MgPrintLayoutElementBase::CanSetName()
@@ -116,7 +107,7 @@ void MgPrintLayoutElementBase::Serialize(MgStream* stream)
     stream->WriteString(m_filter);
 
     // Write associated objects
-    stream->WriteObject(m_resourceId);
+    stream->WriteObject(m_definition);
     stream->WriteObject(m_center);
     stream->WriteObject(m_references);
     stream->WriteObject(m_extent);
@@ -147,7 +138,7 @@ void MgPrintLayoutElementBase::Deserialize(MgStream* stream)
     stream->GetString(m_filter);
 
     // Read associated objects
-    m_resourceId = static_cast<MgResourceIdentifier*>(stream->GetObject());
+    m_definition = static_cast<MgResourceIdentifier*>(stream->GetObject());
     m_center = static_cast<MgPoint3D*>(stream->GetObject());
     m_references = static_cast<MgStringCollection*>(stream->GetObject());
     m_extent = static_cast<MgEnvelope*>(stream->GetObject());
@@ -186,20 +177,20 @@ void MgPrintLayoutElementBase::SetName(CREFSTRING name)
 
 ///////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Gets the resource ID.
+/// Gets the resource identifier of the print layout element definition.
 ///
-MgResourceIdentifier* MgPrintLayoutElementBase::GetResourceId()
+MgResourceIdentifier* MgPrintLayoutElementBase::GetPrintLayoutElementDefinition()
 {
-    return SAFE_ADDREF(m_resourceId.p);
+    return SAFE_ADDREF(m_definition.p);
 }
 
 ///////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Sets the resource ID.
+/// Sets the resource identifier of the print layout element definition.
 ///
-void MgPrintLayoutElementBase::SetResourceId(MgResourceIdentifier* resourceId)
+void MgPrintLayoutElementBase::SetPrintLayoutElementDefinition(MgResourceIdentifier* definition)
 {
-    m_resourceId = SAFE_ADDREF(resourceId);
+    m_definition = SAFE_ADDREF(definition);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -430,18 +421,6 @@ MgPropertyMappingCollection* MgPrintLayoutElementBase::GetPropertyMappings()
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Forces this object to refresh itself from the associated resource
-///
-void MgPrintLayoutElementBase::ForceRefresh(MgResourceService* resourceService)
-{
-    if (NULL != m_resourceId.p) 
-    {
-        this->Open(resourceService, m_resourceId);
-    }
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
 /// Populates the print layout element from the resource XML string.
 ///
 void MgPrintLayoutElementBase::PopulateFromResource(CREFSTRING elementXml)
@@ -475,21 +454,10 @@ void MgPrintLayoutElementBase::PopulateFromResource(CREFSTRING elementXml)
 void MgPrintLayoutElementBase::PopulateFromResource(MdfModel::PrintLayoutElementDefinition *elementDef)
 {
     // Reset the data.
-    m_name.clear();
-    m_width = 0.0;
-    m_height = 0.0;
-    m_rotation = 0.0;
-    m_units.clear();
-    m_visible = true;
-    m_opacity = 1.0;
     m_description.clear();
     m_featureClass.clear();
     m_geometryName.clear();
     m_filter.clear();
-
-    m_resourceId = NULL;
-    m_center = NULL;
-    m_references->Clear();
     m_extent = NULL;
     m_datasource = NULL;
     m_stylization = NULL;
@@ -497,10 +465,11 @@ void MgPrintLayoutElementBase::PopulateFromResource(MdfModel::PrintLayoutElement
     m_propertyMappings->Clear();
 
     // Populate the data.
-    STRING resoureId = L"";
     assert(NULL != elementDef);
     if (NULL != elementDef)
     {
+        STRING resourceId;
+        
         m_type = elementDef->GetType();
         m_description = elementDef->GetDescription();
 
@@ -511,11 +480,15 @@ void MgPrintLayoutElementBase::PopulateFromResource(MdfModel::PrintLayoutElement
             m_geometryName = dataConf->GetGeometry();
             m_filter = dataConf->GetFilter();
 
-            resoureId = dataConf->GetResourceId();
-            if (resoureId == L"")
+            resourceId = dataConf->GetResourceId();
+            if (resourceId.empty())
+            {
                 m_datasource = new MgResourceIdentifier();
+            }
             else
-                m_datasource = new MgResourceIdentifier(resoureId);
+            {
+                m_datasource = new MgResourceIdentifier(resourceId);
+            }
 
             MdfModel::PropertyMappingCollection* propMappings = dataConf->GetPropertyMappings();
             if (NULL != propMappings)
@@ -537,23 +510,83 @@ void MgPrintLayoutElementBase::PopulateFromResource(MdfModel::PrintLayoutElement
         StylizationConfiguration* stylizationConf = elementDef->GetStylizationConfiguration();
         if (NULL != stylizationConf)
         {
-            resoureId = stylizationConf->GetResourceId();
-            if (resoureId == L"")
+            resourceId = stylizationConf->GetResourceId();
+            if (resourceId.empty())
+            {
                 m_stylization = new MgResourceIdentifier();
+            }
             else
-                m_stylization = new MgResourceIdentifier(resoureId);
+            {
+                m_stylization = new MgResourceIdentifier(resourceId);
+            }
         }        
 
-        resoureId = stylizationConf->GetResourceId();
-        if (resoureId == L"")
+        resourceId = elementDef->GetResourceId();
+        if (resourceId.empty())
+        {
             m_style = new MgResourceIdentifier();
+        }
         else
-            m_style = new MgResourceIdentifier(resoureId);
+        {
+            m_style = new MgResourceIdentifier(resourceId);
+        }
+    }
+}
 
-        resoureId = elementDef->GetResourceId();
-        if (resoureId == L"")
-            m_resourceId = new MgResourceIdentifier();
+///////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Populates the print layout element from the MDF representation.
+///
+void MgPrintLayoutElementBase::PopulateFromResource(MdfModel::PrintLayoutElement *layoutDef)
+{
+    // Reset the data.
+    m_name.clear();
+    m_definition = NULL;
+    m_center = NULL;
+    m_width = 0.0;
+    m_height = 0.0;
+    m_rotation = 0.0;
+    m_units.clear();
+    m_visible = true;
+    m_opacity = 1.0;
+    m_references->Clear();
+
+    // Populate the data.
+    assert(NULL != layoutDef);
+    if (NULL != layoutDef)
+    {
+        m_name = layoutDef->GetName();
+
+        STRING resourceId = layoutDef->GetResourceId();
+        if (resourceId.empty())
+        {
+            m_definition = new MgResourceIdentifier();
+        }
         else
-            m_resourceId = new MgResourceIdentifier(resoureId);
+        {
+            m_definition = new MgResourceIdentifier(resourceId);
+        }
+
+        MdfModel::Point3D* center = layoutDef->GetCenter();
+        if (NULL != center)
+        {
+            m_center = new MgPoint3D(center->GetX(), center->GetY(), center->GetZ());
+        }
+
+        m_width = layoutDef->GetWidth();
+        m_height = layoutDef->GetHeight();
+        m_rotation = layoutDef->GetRotation();
+        m_units = layoutDef->GetUnits();
+        m_visible = layoutDef->GetIsVisible();
+        m_opacity = layoutDef->GetOpacity();
+
+        MdfModel::StringObjectCollection* references = layoutDef->GetReferences();
+        if (NULL != references)
+        {
+            for (int i = 0; i < references->GetCount(); ++i)
+            {
+                m_references->Add(references->GetAt(i)->GetString());
+            }
+        }
     }
 }
