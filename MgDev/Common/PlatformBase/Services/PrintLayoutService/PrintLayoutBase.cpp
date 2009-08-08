@@ -60,7 +60,7 @@ void MgPrintLayoutBase::Dispose()
 ///
 const char* MgPrintLayoutBase::GetResourceTypeName()
 {
-    return "PrintLayoutDefinition";
+    return "PrintLayout";
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -135,6 +135,18 @@ void MgPrintLayoutBase::OnPrintLayoutElementRemoved(MgPrintLayoutElementBase* el
 {
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Forces this object to refresh itself from the associated resource
+///
+void MgPrintLayoutBase::ForceRefresh(MgResourceService* resourceService)
+{
+    if (NULL != m_resId.p) 
+    {
+        this->Open(resourceService, m_resId);
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Populates the print layout from the resource XML string.
@@ -195,6 +207,7 @@ void MgPrintLayoutBase::PopulateFromResource(
                     Ptr<MgResourceIdentifier> resourceId = new MgResourceIdentifier(thisElement->GetResourceId());
                     Ptr<MgPrintLayoutElementBase> newElement = printLayoutService->CreatePrintLayoutElement(
                         resourceService, resourceId);
+                    newElement->PopulateFromResource(thisElement);
                     m_elements->Add(newElement);
                 }
             }

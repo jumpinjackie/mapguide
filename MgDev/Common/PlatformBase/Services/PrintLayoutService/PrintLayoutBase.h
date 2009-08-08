@@ -95,6 +95,12 @@ INTERNAL_API:
     ///
     virtual void OnPrintLayoutElementRemoved(MgPrintLayoutElementBase* element);
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Forces this element object to refresh itself from its resource
+    ///
+    virtual void ForceRefresh(MgResourceService* resourceService);
+
 INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
