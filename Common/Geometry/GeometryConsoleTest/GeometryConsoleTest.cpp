@@ -19,6 +19,7 @@ int _tmain(int argc, _TCHAR* argv[])
     
     double xx;
     double yy;
+    double value;
 
     MgCoordinateSystemFactory factory;
 
@@ -39,7 +40,7 @@ int _tmain(int argc, _TCHAR* argv[])
     pGridSpecification->SetGridIncrement (1.0);
     pGridSpecification->SetTickSubdivisions  (8,8);
     pGridSpecification->SetUnits (MgCoordinateSystemUnitCode::Degree,MgCoordinateSystemUnitType::Angular);
-    pGridSpecification->SetCurvePrecision (1.0);
+    pGridSpecification->SetCurvePrecision (1.0E-05);
 
     pGenericGrid = factory.GenericGrid (L"LL84",L"UTM83-13",true);
     pGridBoundary = factory.GridBoundary (southWestXY,northEastXY);
@@ -52,6 +53,7 @@ int _tmain(int argc, _TCHAR* argv[])
     for (index1 = 0;index1 < gridLineCount;index1 += 1)
     {
         pGridLine = pGridLines->GetItem (index1);
+        value = pGridLine->GetRealValue ();
         lineSegmentCount = pGridLine->GetCount ();
         for (index2 = 0;index2 < lineSegmentCount;index2 += 1)
         {
