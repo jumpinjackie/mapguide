@@ -72,6 +72,8 @@ MgCoordinate* CCoordinateSystemOneGrid::ConvertToFrame (MgCoordinate* gridCoordi
 }
 MgCoordinateSystemGridLineCollection* CCoordinateSystemOneGrid::GetGridLines (MgCoordinateSystemGridSpecification* specs)
 {
+    bool generateGridBoundary;
+
     double value;
     double delta;
     double increment;
@@ -95,55 +97,44 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemOneGrid::GetGridLines (Mg
 
         // If the boundary has not been converted yet, or if the precision
         // value has been changed, reproduce the m_GridBoundary
-        // member from the m_FrameBoundary member.
-        precision = specs->GetCurvePrecision ();
-        if (precision < 1.0E-12)        // i.e. == 0.0
+        // member from the m_FrameBoundary member.  At this point, we
+        // need the curve precision value in Grid system units.
+        generateGridBoundary = (m_GridBoundary == NULL);
+        if (!generateGridBoundary)
         {
-            // Calculate a precision which represents 25 centimeters in grid units.
-            precision = m_FrameCRS->GetUnitScale () * 0.25;
+            // This gets the user specifiation.
+            precision = specs->GetCurvePrecision ();
+            generateGridBoundary = (fabs (precision - m_BoundaryPrecision) < 1.0E-12);
         }
-        delta = fabs (precision - m_BoundaryPrecision);
-        if (m_GridBoundary == NULL || delta > 1.0E-12)
+        
+        if (generateGridBoundary)
         {
-            double gridBoundaryPrecision = 1.0;
-            //TODO:  need to convert precision from Frame to Grid.
-            if (!m_GridCRS->IsProtected ())
-            {
-                gridBoundaryPrecision = 1.0E-06;
-            }
-            if (!m_GridBoundary)
-            {
-                m_GridBoundary = NULL;
-            }
+            precision = specs->GetCurvePrecision (m_GridCRS);
             m_GridBoundary = new CCoordinateSystemGridBoundary ();
             m_GridBoundary->SetBoundaryExtents (m_FrameBoundary->GetBoundary(m_ToGridXform.p,precision));
         }
 
         // Get the extents of the frame boundary, and then convert them to
         // grid coordinates.  Doing this here _should_ elimiate the need to
-        // expand the grid boundary.
+        // arbitrarily expand the grid boundary.
         m_GridBoundary->GetBoundaryExtents (eastMin,eastMax,northMin,northMax);
-        //coordinate->SetX (eastMin);
-        //coordinate->SetY (northMin);
-        //coordinate = ConvertToGrid (coordinate);
-        //eastMin = coordinate->GetX ();
-        //northMin = coordinate->GetY ();
-
-        //coordinate->SetX (eastMax);
-        //coordinate->SetY (northMax);
-        //coordinate = ConvertToGrid (coordinate);
-        //eastMax = coordinate->GetX ();
-        //northMax = coordinate->GetY ();
         
-        // Adjust so the the grid limits are exact values with regard
-        // to the specified increment.  DO this in an expansive way
-        // so the the grid limts always get larger, never smaller.
-        eastMin  -= fmod (eastMin,specs->GetEastingIncrement());
-        northMin -= fmod (northMin,specs->GetNorthingIncrement());
-        eastMax  += (1.0 - fmod (eastMax,specs->GetEastingIncrement ()));
-        northMax += (1.0 - fmod (northMax,specs->GetNorthingIncrement ()));
+        // Adjust so the the grid limits are exact values with regard to the
+        // specified increments.  Do this in an expansive way so the the grid
+        // limits always get larger, never smaller.
+        increment = specs->GetEastingIncrement();
+        delta = fabs(fmod (eastMin,increment));
+        eastMin -= (eastMin >= 0.0) ? delta : (increment - delta);
+        delta = fabs(fmod (eastMax,increment));
+        eastMax += (eastMax >= 0.0) ? (increment - delta) : delta;
+ 
+        increment = specs->GetNorthingIncrement();
+        delta = fabs(fmod (northMin,increment));
+        northMin -= (northMin >= 0.0) ? delta : (increment - delta);
+        delta = fabs(fmod (northMax,increment));
+        northMax += (northMax >= 0.0) ? (increment - delta) : delta;
 
-        // Adjust for the base.
+        // Adjust for the base.  Again, we always enlarge, never shrink.
         if (specs->GetEastingBase () > 0.0)
         {
             increment = specs->GetEastingIncrement ();

@@ -15,6 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#include "Spatial/MathUtility.h"
 #include "GeometryCommon.h"
 #include "CoordSysCommon.h"
 #include "CoordSysUtil.h"
@@ -37,6 +38,9 @@ using namespace CSLibrary;
 // can be added without changing any calling sequences.  Note that the default
 // constructor constructs an invalid parameter structure.
 //
+// The default presision value is 1 meter (currently).  If the CurvePrecision
+// member is not set, this value will be used.
+const double CCoordinateSystemGridSpecification::m_DefaultPrecision = 1.0;
 CCoordinateSystemGridSpecification::CCoordinateSystemGridSpecification (void) : m_EastingBase              (0.0),
                                                                                 m_NorthingBase             (0.0),
                                                                                 m_EastingIncrement         (0.0),
@@ -262,6 +266,42 @@ double CCoordinateSystemGridSpecification::GetNorthingIncrement(MgCoordinateSyst
         unitConversion *= unitInfoPtr->GetAngularUnitScale (m_UnitCode);
     }
     return (m_NorthingIncrement * unitConversion);
+}
+double CCoordinateSystemGridSpecification::GetCurvePrecision (MgCoordinateSystem* gridCS)
+{
+    double precisionInCsUnits (1.0);
+    double precisionInMeters (1.0);
+    double toMeters;
+    double toDegrees;
+
+    MgCoordinateSystemCatalog* catalogPtr = gridCS->GetCatalog ();
+    MgCoordinateSystemUnitInformation* unitInfoPtr = catalogPtr->GetUnitInformation ();
+
+    // UnitConversion will convert the units of the coordinate system to
+    // meters by multiplication.  By inverting this, we have a value which
+    // will convert meters to coordinate system units by multiplication.
+    double csUnitConversion = 1.0 / gridCS->GetUnitScale ();
+
+    // If the curve precision has not been set by the user, this gets very easy.
+    if (m_CurvePrecision < 1.0E-24)     // i.e. == 0.0
+    {
+        precisionInMeters = m_DefaultPrecision;
+    }
+    else
+    {
+        if (m_UnitType == MgCoordinateSystemUnitType::Linear)
+        {
+            toMeters = unitInfoPtr->GetLinearUnitScale (m_UnitCode);
+        }
+        else
+        {
+            toDegrees = unitInfoPtr->GetAngularUnitScale (m_UnitCode);
+            toMeters = (6378137.0 * M_PI * 2.0 / 360.0) / toDegrees;
+        }
+        precisionInMeters = m_CurvePrecision * toMeters;
+    }
+    precisionInCsUnits = precisionInMeters * csUnitConversion;
+    return (precisionInCsUnits);
 }
 void CCoordinateSystemGridSpecification::Dispose ()
 {
@@ -749,7 +789,7 @@ INT32 CCoordinateSystemGridRegionCollection::GetCount () const
     itemCount = m_GridRegionCollection->GetCount ();
     return itemCount;
 }
-const MgCoordinateSystemGridRegion* CCoordinateSystemGridRegionCollection::GetItem (INT32 index) const
+MgCoordinateSystemGridRegion* CCoordinateSystemGridRegionCollection::GetItem (INT32 index) const
 {
     // The MgDisposableCollection object checks the index argument, and throws if appropriate.
     MgCoordinateSystemGridRegion* itemPtr = static_cast<MgCoordinateSystemGridRegion*>(m_GridRegionCollection->GetItem (index));
@@ -803,7 +843,7 @@ INT32 CCoordinateSystemGridTickCollection::GetCount () const
     INT32 itemCount = m_GridTickCollection->GetCount ();
     return itemCount;
 }
-const MgCoordinateSystemGridTick* CCoordinateSystemGridTickCollection::GetItem (INT32 index) const
+MgCoordinateSystemGridTick* CCoordinateSystemGridTickCollection::GetItem (INT32 index) const
 {
     MgCoordinateSystemGridTick *itemPtr = static_cast<MgCoordinateSystemGridTick*>(m_GridTickCollection->GetItem (index));
     return itemPtr; 

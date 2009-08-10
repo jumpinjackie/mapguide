@@ -101,12 +101,16 @@ PUBLISHED_API:
     virtual double GetNorthingIncrement(void)=0;        // the interval between northing grid lines
     virtual INT32 TickEastingSubdivisions(void)=0;      // number of tic subdivisions between grid increments in the east/west direction
     virtual INT32 TickNorthingSubdivisions(void)=0;     // number of tic subdivisions between grid increments in the north/south direction
-    virtual INT32 GetUnitType(void)=0;                  // a value from MgCoordinateSystemUnitType indicating the type of units of the base and interval specifications
-    virtual INT32 GetUnitCode(void)=0;                  // a value from MgCoordinateSystemUnitCode indicating the units of the base and interval specifications
+    virtual INT32 GetUnitType(void)=0;                  // a value from MgCoordinateSystemUnitType indicating the type of units of the
+                                                        // base and interval specifications
+    virtual INT32 GetUnitCode(void)=0;                  // a value from MgCoordinateSystemUnitCode indicating the units of the
+                                                        // base and interval specifications
     virtual bool IsSameAs(MgCoordinateSystemGridSpecification* specification)=0;
-    virtual double GetCurvePrecision(void)=0;           // the maximum difference between a complex curve and the polyline approximation thereof, in target system units
-                                                        // If left unspecified (i.e. zero) a value is automatically selected to be, approximately, the equivalent of
-                                                        // 25 centimeters in target system units.
+    virtual double GetCurvePrecision(void)=0;           // the maximum difference between true complex curve and the polyline
+                                                        // approximation thereof, in the same units used to specify the
+                                                        // base and increment values (i.e. UnitCode).
+                                                        // If left unspecified (or set to zero) a value is automatically selected to be,
+                                                        // approximately, the equivalent of 1 meter in target system units.
 
     virtual void SetGridBase(double eastingBase,double northingBase = 0.0) = 0;
     virtual void SetGridIncrement(double eastingIncrement,double northingIncrement = 0.0) = 0;
@@ -117,11 +121,13 @@ PUBLISHED_API:
 INTERNAL_API:
     // The following function identically to the published version, with the
     // exception that the value returned is converted to the units of the
-    // provided coordinate system.
+    // provided coordinate system.  Typically, the provided coordinate system
+    // is either the grid coordinate system OR the frame coordinate system.
     virtual double GetEastingBase (MgCoordinateSystem* gridCS)=0;
     virtual double GetNorthingBase (MgCoordinateSystem* gridCS)=0;
     virtual double GetEastingIncrement (MgCoordinateSystem* gridCS)=0;
     virtual double GetNorthingIncrement (MgCoordinateSystem* gridCS)=0;
+    virtual double GetCurvePrecision (MgCoordinateSystem* gridCS)=0;
 protected:
     INT32 GetClassId(){return m_cls_id;};
 CLASS_ID:
@@ -237,8 +243,8 @@ class MG_GEOMETRY_API MgCoordinateSystemGridTick : public MgGuardDisposable
 PUBLISHED_API:
     virtual INT32 GetTickOrientation () const= 0;
     virtual double GetValue () const = 0;
-    virtual const MgCoordinate* GetPosition () const = 0;
-    virtual const MgCoordinate* GetDirectionVector () const = 0;
+    virtual MgCoordinate* GetPosition () const = 0;
+    virtual MgCoordinate* GetDirectionVector () const = 0;
 INTERNAL_API:
 protected:
     INT32 GetClassId(){return m_cls_id;};
@@ -277,7 +283,7 @@ class MG_GEOMETRY_API MgCoordinateSystemGridRegionCollection : public MgGuardDis
 {
 PUBLISHED_API:
     virtual INT32 GetCount () const=0;
-    virtual const MgCoordinateSystemGridRegion* GetItem (INT32 index) const=0;
+    virtual MgCoordinateSystemGridRegion* GetItem (INT32 index) const=0;
     virtual void RemoveAt (INT32 index)=0;
     virtual void Clear()=0;
 INTERNAL_API:
@@ -298,7 +304,7 @@ class MG_GEOMETRY_API MgCoordinateSystemGridTickCollection : public MgGuardDispo
 {
 PUBLISHED_API:
     virtual INT32 GetCount () const=0;
-    virtual const MgCoordinateSystemGridTick* GetItem (INT32 index) const=0;
+    virtual MgCoordinateSystemGridTick* GetItem (INT32 index) const=0;
     virtual void RemoveAt (INT32 index)=0;
     virtual void Clear()=0;
 INTERNAL_API:

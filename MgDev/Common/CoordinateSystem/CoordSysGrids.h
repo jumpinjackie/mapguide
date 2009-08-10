@@ -32,6 +32,7 @@ public:
     ~CCoordinateSystemGridSpecification (void);
     CCoordinateSystemGridSpecification& operator= (const CCoordinateSystemGridSpecification& rhs);
 
+    const static double m_DefaultPrecision;
 PUBLISHED_API:
     double GetEastingBase(void);
     double GetNorthingBase(void);
@@ -58,11 +59,13 @@ INTERNAL_API:
     double GetNorthingBase (MgCoordinateSystem* gridCS);
     double GetEastingIncrement(MgCoordinateSystem* gridCS);
     double GetNorthingIncrement(MgCoordinateSystem* gridCS);
+    double GetCurvePrecision(MgCoordinateSystem* gridCS);
 
 protected:
     void Dispose (void);
-  
+
 private:
+
     double m_EastingBase;
     double m_NorthingBase;
     double m_EastingIncrement;
@@ -228,7 +231,7 @@ class CCoordinateSystemGridRegionCollection : public MgCoordinateSystemGridRegio
     ~CCoordinateSystemGridRegionCollection (void);
 
     INT32 GetCount () const;
-    const MgCoordinateSystemGridRegion* GetItem (INT32 index) const;
+    MgCoordinateSystemGridRegion* GetItem (INT32 index) const;
     void RemoveAt (INT32 index);
     void Clear();
 
@@ -254,7 +257,7 @@ class MG_GEOMETRY_API CCoordinateSystemGridTickCollection : public MgCoordinateS
     ~CCoordinateSystemGridTickCollection (void);
 
     INT32 GetCount () const;
-    const MgCoordinateSystemGridTick* GetItem (INT32 index) const;
+    MgCoordinateSystemGridTick* GetItem (INT32 index) const;
     void RemoveAt (INT32 index);
     void Clear()=0;
     void SetItem (INT32 index, MgCoordinateSystemGridTick* value);
