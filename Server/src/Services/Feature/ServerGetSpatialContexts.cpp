@@ -114,8 +114,38 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(
 
     STRING coordSysName = L"";
     FdoString* csName = spatialReader->GetCoordinateSystem();
-    if(NULL != csName)
+    
+    Ptr<MgCoordinateSystemFactory> csFactory;
+    // WKT for co-ordinate system
+    FdoString* csWkt = NULL;
+    STRING srsWkt = L"";
+
+    bool haveValidCoordSys = false;
+    if(NULL != csName && *csName != '\0')
+    {
         coordSysName = STRING(csName);
+    }
+    else
+    {
+        csWkt = spatialReader->GetCoordinateSystemWkt();
+        if (csWkt != NULL && *csWkt != '\0')
+        {
+            srsWkt = csWkt;
+            try
+            {
+                csFactory = new MgCoordinateSystemFactory();
+                coordSysName = csFactory->ConvertWktToCoordinateSystemCode(srsWkt);
+                haveValidCoordSys = (coordSysName.size() != 0);
+            }
+            catch (MgException* e)
+            {
+                SAFE_RELEASE(e);
+            }
+            catch(...)
+            {
+            }
+        }
+    }
 
     bool spatialContextDefined = !coordSysName.empty();
     bool coordSysOverridden = false;
@@ -134,14 +164,10 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(
         }
     }
 
-    if (csName != NULL)
+    if (csName != NULL && *csName != '\0')
     {
         spatialData->SetCoordinateSystem(STRING(csName));
     }
-
-    // WKT for co-ordinate system
-    FdoString* csWkt = NULL;
-    STRING srsWkt = L"";
 
     // Desc for spatial context
     STRING desc = L"";
@@ -156,48 +182,52 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(
     }
     else if (spatialContextDefined && !coordSysOverridden)
     {
-        csWkt = spatialReader->GetCoordinateSystemWkt();
-        if(NULL != csWkt)
-            srsWkt = csWkt;
-
-        if (srsWkt.empty())
+        // avoid looking one more time after CS in case we have a valid one...
+        if (!haveValidCoordSys)
         {
-            try
-            {
-                Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
+            csWkt = spatialReader->GetCoordinateSystemWkt();
+            if(NULL != csWkt && *csWkt != '\0')
+                srsWkt = csWkt;
 
-                // Check if the spatial context coordinate system data represents an EPSG
-                // code. If this is the case the WKT data for the EPSG code has to be
-                // retrieved.
-                if (IsEpsgCodeRepresentation(csName))
+            if (srsWkt.empty())
+            {
+                try
                 {
-                    // This is an EPSG code
-                    FdoString* p = NULL;
-                    if ((csName[0] == L'E') || (csName[0] == L'e'))
-                        p = csName+5;
+                    if (csFactory == NULL)
+                        csFactory = new MgCoordinateSystemFactory();
+
+                    // Check if the spatial context coordinate system data represents an EPSG
+                    // code. If this is the case the WKT data for the EPSG code has to be
+                    // retrieved.
+                    if (IsEpsgCodeRepresentation(csName))
+                    {
+                        // This is an EPSG code
+                        FdoString* p = NULL;
+                        if ((csName[0] == L'E') || (csName[0] == L'e'))
+                            p = csName+5;
+                        else
+                            p = csName;
+
+                        INT32 epsgCode = (INT32)wcstol(p, NULL, 10);
+
+                        // Convert the EPSG numerical code to WKT
+                        srsWkt = csFactory->ConvertEpsgCodeToWkt(epsgCode);
+                    }
                     else
-                        p = csName;
-
-                    INT32 epsgCode = (INT32)wcstol(p, NULL, 10);
-
-                    // Convert the EPSG numerical code to WKT
-                    srsWkt = csFactory->ConvertEpsgCodeToWkt(epsgCode);
+                    {
+                        srsWkt = csFactory->ConvertCoordinateSystemCodeToWkt(STRING(csName));
+                    }
                 }
-                else
+                catch (MgException* e)
                 {
-                    srsWkt = csFactory->ConvertCoordinateSystemCodeToWkt(STRING(csName));
+                    SAFE_RELEASE(e);
                 }
-            }
-            catch (MgException* e)
-            {
-                SAFE_RELEASE(e);
-            }
-            catch(...)
-            {
-                // Just use the empty WKT.
+                catch(...)
+                {
+                    // Just use the empty WKT.
+                }
             }
         }
-
         FdoString* fdoDesc = spatialReader->GetDescription();
         if(NULL != fdoDesc)
             desc = STRING(fdoDesc);
