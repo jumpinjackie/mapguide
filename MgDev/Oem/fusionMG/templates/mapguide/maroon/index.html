@@ -125,11 +125,13 @@ var fusionError = function(eventId, error) {
             var indexEnd = errorMessage.indexOf(' :', indexStart);
             if (indexEnd != -1) {
                 readableMessage = errorMessage.substring(indexStart, indexEnd);
+                readableMessage = readableMessage.replace(/\\\\n/g, '\n');
+                readableMessage = readableMessage.replace(/\\\\t/g, '\t');
             }
         }
     }
     if (readableMessage != '') {
-        alert('Fusion Error: \n' + readableMessage);
+        alert(readableMessage);
     }
     else {
         alert('Fusion Error: \n' + errorMessage);
