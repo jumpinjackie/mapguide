@@ -385,7 +385,7 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
     case MgSiteOpId::GetSessionTimeout:
         switch(VERSION_NO_PHASE(operationVersion))
         {
-        case VERSION_SUPPORTED(2,2):
+        case VERSION_SUPPORTED(1,0):
             handler.reset( new MgOpGetSessionTimeout() );
             break;
         default:
