@@ -301,7 +301,7 @@ INT32 MgSite::GetSessionTimeout()
             MgSiteOpId::GetSessionTimeout,          // Command Code
             0,                                  // No of arguments
             Site_Admin,                         // Service Id
-            BUILD_VERSION(2,2,0),               // Operation version
+            BUILD_VERSION(1,0,0),               // Operation version
             MgCommand::knNone );
 
         SetWarning( cmd.GetWarningObject() );

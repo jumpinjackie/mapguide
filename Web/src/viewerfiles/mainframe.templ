@@ -425,7 +425,7 @@ function OnMapLoaded()
     OnSelectionChanged();
     DisplayMapSize();
     //ping server 
-    pingServerFailTime = 0;    
+    pingServerFailTime = 0;
     if(enablePingServer)
     {    
         var pingServerInterval = serverSessionTimeout / 5 * 1000;  //Ping server 5 times each period. Timeout is returned in seconds. 
@@ -451,7 +451,7 @@ function handler()
 
 function GetServerSessionTimeout()
 {
-    var url = webAgentAddress + "?OPERATION=GETSESSIONTIMEOUT&VERSION=2.2.0&SESSION=" + GetMapFrame().GetSessionId() + "&LOCALE=" + locale + "&CLIENTAGENT=" + encodeComponent(clientAgentName) + "&REQUESTTIME=" + (new Date()).getTime();
+    var url = webAgentAddress + "?OPERATION=GETSESSIONTIMEOUT&VERSION=1.0.0&SESSION=" + GetMapFrame().GetSessionId() + "&LOCALE=" + locale + "&CLIENTAGENT=" + encodeComponent(clientAgentName) + "&REQUESTTIME=" + (new Date()).getTime();
     var request = new XMLHttpRequest();
     
     request.onreadystatechange = handler;
