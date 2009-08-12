@@ -56,12 +56,12 @@ INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Gets the names of the visible layers.
+    /// Gets the names of the hidden layers.
     ///
     /// \return
-    /// Returns an MgStringCollection object containing the names of the visible layers.
+    /// Returns an MgStringCollection object containing the names of the hidden layers.
     ///
-    virtual MgStringCollection* GetVisibleLayerNames();
+    virtual MgStringCollection* GetHiddenLayerNames();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -147,7 +147,7 @@ private:
     bool m_isLocked;
     STRING m_mapName;
     Ptr<MgMapView> m_view;
-    Ptr<MgStringCollection> m_visibleLayerNames;
+    Ptr<MgStringCollection> m_hiddenLayerNames;
 
 CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_PrintLayoutService_MapViewportBase;

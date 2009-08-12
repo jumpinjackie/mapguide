@@ -32,7 +32,7 @@ ELEM_MAP_ENTRY(5, Data);
 ELEM_MAP_ENTRY(6, ExtendedData1);
 // Local Elements
 ELEM_MAP_ENTRY(7, MapName);
-ELEM_MAP_ENTRY(8, VisibleLayerNames);
+ELEM_MAP_ENTRY(8, HiddenLayerNames);
 ELEM_MAP_ENTRY(9, Locked);
 ELEM_MAP_ENTRY(10, On);
 ELEM_MAP_ENTRY(11, MapView);
@@ -59,9 +59,9 @@ void IOMapViewportDefinition::StartElement(const wchar_t* name, HandlerStack* ha
         m_startElemName = name;
         break;
 
-    case eVisibleLayerNames:
+    case eHiddenLayerNames:
         {
-            IOStringObjectCollection* IO = new IOStringObjectCollection(GetMapViewportDefinition()->GetVisibleLayerNames(), m_version, sVisibleLayerNames, sName);
+            IOStringObjectCollection* IO = new IOStringObjectCollection(GetMapViewportDefinition()->GetHiddenLayerNames(), m_version, sHiddenLayerNames, sName);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -128,8 +128,8 @@ void IOMapViewportDefinition::Write(MdfStream& fd, MapViewportDefinition* mapVie
     fd << EncodeString(mapViewportDef->GetMapName());
     fd << endStr(sMapName) << std::endl;
 
-    // Property: VisibleLayerNames
-    IOStringObjectCollection::Write(fd, mapViewportDef->GetVisibleLayerNames(), version, sVisibleLayerNames, sName);
+    // Property: HiddenLayerNames
+    IOStringObjectCollection::Write(fd, mapViewportDef->GetHiddenLayerNames(), version, sHiddenLayerNames, sName);
 
     // Property: Locked
     fd << tab() << startStr(sLocked);

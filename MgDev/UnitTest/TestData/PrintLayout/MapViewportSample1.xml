@@ -24,9 +24,9 @@
 		</Data>
 		<ExtendedData1/>
 		<MapName>String</MapName>
-		<VisibleLayerNames>
+		<HiddenLayerNames>
 			<Name>String</Name>
-		</VisibleLayerNames>
+		</HiddenLayerNames>
 		<Locked>false</Locked>
 		<On>true</On>
 		<MapView>

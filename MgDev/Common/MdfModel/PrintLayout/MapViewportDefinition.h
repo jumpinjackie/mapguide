@@ -44,7 +44,7 @@ public:
     const MdfString& GetMapName() const;
     void SetMapName(const MdfString& mapName);
 
-    StringObjectCollection* GetVisibleLayerNames();
+    StringObjectCollection* GetHiddenLayerNames();
 
     bool GetIsLocked() const;
     void SetIsLocked(bool isLocked);
@@ -61,7 +61,7 @@ private:
 
     // Data Members
     MdfString m_mapName;
-    StringObjectCollection m_visibleLayerNames;
+    StringObjectCollection m_hiddenLayerNames;
     bool m_isLocked;
     bool m_isOn;
     MapView m_mapView;
@@ -73,9 +73,9 @@ inline const MdfString& MapViewportDefinition::GetMapName() const
     return m_mapName;
 }
 
-inline StringObjectCollection* MapViewportDefinition::GetVisibleLayerNames()
+inline StringObjectCollection* MapViewportDefinition::GetHiddenLayerNames()
 {
-    return &m_visibleLayerNames;
+    return &m_hiddenLayerNames;
 }
 
 inline bool MapViewportDefinition::GetIsLocked() const
