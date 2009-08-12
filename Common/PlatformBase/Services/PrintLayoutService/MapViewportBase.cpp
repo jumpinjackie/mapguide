@@ -28,7 +28,7 @@ MgMapViewportBase::MgMapViewportBase() :
     m_isOn(true),
     m_isLocked(false)
 {
-    m_visibleLayerNames = static_cast<MgStringCollection*>(MgStringCollection::CreateObject());
+    m_hiddenLayerNames = static_cast<MgStringCollection*>(MgStringCollection::CreateObject());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -70,7 +70,7 @@ void MgMapViewportBase::Serialize(MgStream* stream)
 
     // Write associated objects
     stream->WriteObject(m_view);
-    stream->WriteObject(m_visibleLayerNames);
+    stream->WriteObject(m_hiddenLayerNames);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -86,7 +86,7 @@ void MgMapViewportBase::Deserialize(MgStream* stream)
 
     // Read associated objects
     m_view = static_cast<MgMapView*>(stream->GetObject());
-    m_visibleLayerNames = static_cast<MgStringCollection*>(stream->GetObject());
+    m_hiddenLayerNames = static_cast<MgStringCollection*>(stream->GetObject());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -100,11 +100,11 @@ STRING MgMapViewportBase::GetMapName()
 
 ///////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Gets the names of the visible layers.
+/// Gets the names of the hidden layers.
 ///
-MgStringCollection* MgMapViewportBase::GetVisibleLayerNames()
+MgStringCollection* MgMapViewportBase::GetHiddenLayerNames()
 {
-    return SAFE_ADDREF(m_visibleLayerNames.p);
+    return SAFE_ADDREF(m_hiddenLayerNames.p);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -146,7 +146,7 @@ void MgMapViewportBase::PopulateFromResource(MdfModel::PrintLayoutElementDefinit
     m_isLocked = false;
     m_mapName.clear();
     m_view = NULL;
-    m_visibleLayerNames->Clear();
+    m_hiddenLayerNames->Clear();
 
     MdfModel::MapViewportDefinition* mapViewport = dynamic_cast<MdfModel::MapViewportDefinition*>(element);
     assert(NULL != mapViewport);
@@ -169,12 +169,12 @@ void MgMapViewportBase::PopulateFromResource(MdfModel::PrintLayoutElementDefinit
             m_view->PopulateFromResource(view);
         }
 
-        MdfModel::StringObjectCollection* visibleLayerNames = mapViewport->GetVisibleLayerNames();
-        if (NULL != visibleLayerNames)
+        MdfModel::StringObjectCollection* hiddenLayerNames = mapViewport->GetHiddenLayerNames();
+        if (NULL != hiddenLayerNames)
         {
-            for (int i = 0; i < visibleLayerNames->GetCount(); ++i)
+            for (int i = 0; i < hiddenLayerNames->GetCount(); ++i)
             {
-                m_visibleLayerNames->Add(visibleLayerNames->GetAt(i)->GetString());
+                m_hiddenLayerNames->Add(hiddenLayerNames->GetAt(i)->GetString());
             }
         }
     }
