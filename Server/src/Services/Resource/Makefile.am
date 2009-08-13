@@ -66,6 +66,7 @@ include_SOURCES = \
   OpGetRepositoryContent.cpp \
   OpGetRepositoryHeader.cpp \
   OpGetResourceContent.cpp \
+  OpGetResourceContents.cpp \
   OpGetResourceData.cpp \
   OpGetResourceHeader.cpp \
   OpGetResourceModifiedDate.cpp \
@@ -145,6 +146,7 @@ noinst_HEADERS = $(include_SOURCES) \
   OpGetRepositoryContent.h \
   OpGetRepositoryHeader.h \
   OpGetResourceContent.h \
+  OpGetResourceContents.h \
   OpGetResourceData.h \
   OpGetResourceHeader.h \
   OpGetResourceModifiedDate.h \

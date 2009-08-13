@@ -497,6 +497,31 @@ EXTERNAL_API:
     virtual MgByteReader* GetResourceContent(MgResourceIdentifier* resource,
         CREFSTRING preProcessTags);
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the contents of the specified resources.
+    ///
+    /// \param resources
+    /// A collection of resource identifiers describing the resources.
+    /// \param preProcessTags
+    /// Pre-processing to apply to resource before returning content.
+    /// If this parameter is NULL, it means no pre-processing.
+    /// If this parameter is not NULL, it must be a collection of pre-processing types, and it should be 
+    /// one to one matching the collection of parameter resources. 
+    /// See MgResourcePreProcessingType for a list of supported pre-processing tags.
+    ///
+    /// \return
+    /// MgStringCollection object representing the collection of corresponding resource contents.
+    ///
+    /// \exception MgInvalidRepositoryTypeException
+    /// \exception MgInvalidRepositoryNameException
+    /// \exception MgInvalidResourcePathException
+    /// \exception MgInvalidResourceNameException
+    /// \exception MgInvalidResourceTypeException
+    ///
+    virtual MgStringCollection* GetResourceContents(MgStringCollection* resources,
+        MgStringCollection* preProcessTags);
+
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the header associated with the specified resource.

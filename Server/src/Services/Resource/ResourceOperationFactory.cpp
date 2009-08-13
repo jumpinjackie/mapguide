@@ -34,6 +34,7 @@
 #include "OpMoveResource.h"
 #include "OpCopyResource.h"
 #include "OpGetResourceContent.h"
+#include "OpGetResourceContents.h"
 #include "OpGetResourceHeader.h"
 #include "OpGetResourceModifiedDate.h"
 #include "OpEnumerateResourceReferences.h"
@@ -271,6 +272,18 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         {
         case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetResourceContent());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgResourceOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgResourceService::opIdGetResourceContents:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(1,0):
+            handler.reset(new MgOpGetResourceContents());
             break;
         default:
             throw new MgInvalidOperationVersionException(
