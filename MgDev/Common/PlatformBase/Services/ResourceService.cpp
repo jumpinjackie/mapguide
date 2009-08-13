@@ -138,6 +138,16 @@ MgByteReader* MgResourceService::GetResourceContent(
     return GetResourceContent(resource, preProcessTags);
 }
 
+///////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Gets the contents of the specified resources.
+///
+MgStringCollection* MgResourceService::GetResourceContents(MgStringCollection* resources,
+                                        MgStringCollection* preProcessTags)
+{
+    throw new MgNotImplementedException(L"MgResourceService.GetResourceContents", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
 //////////////////////////////////////////////////////////////////
 /// <summary>
 /// Returns tagged data for the specified resource.

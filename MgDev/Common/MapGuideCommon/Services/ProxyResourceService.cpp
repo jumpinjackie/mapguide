@@ -544,6 +544,67 @@ MgByteReader* MgProxyResourceService::GetResourceContent(
     return byteReader.Detach();
 }
 
+///////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Gets the contents of the specified resources.
+///
+MgStringCollection* MgProxyResourceService::GetResourceContents(MgStringCollection* resources,
+                                               MgStringCollection* preProcessTags)
+{
+    Ptr<MgStringCollection> resourceContents;
+
+    MG_TRY()
+
+    MgCommand cmd;
+
+    cmd.ExecuteCommand(m_connProp,                      // Connection
+        MgCommand::knObject,                            // Return type expected
+        MgResourceService::opIdGetResourceContents,     // Command Code
+        2,                                              // Count of arguments
+        Resource_Service,                               // Service Id
+        BUILD_VERSION(1,0,0),                           // Operation version
+        MgCommand::knObject, resources,                 // Argument#1
+        MgCommand::knObject, preProcessTags,            // Argument#2
+        MgCommand::knNone);                             // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+
+    resourceContents = (MgStringCollection*)cmd.GetReturnValue().val.m_obj;
+
+    // Decrypt the document if Substitution pre-processing is required.
+    if(preProcessTags != NULL && resourceContents != NULL && preProcessTags->GetCount() == resourceContents->GetCount())
+    {
+        for(INT32 i = 0; i < resourceContents->GetCount(); i ++)
+        {
+            STRING tag = preProcessTags->GetItem(i);
+
+            if (MgResourcePreProcessingType::Substitution == tag)
+            {
+                STRING cipherContent = resourceContents->GetItem(i);
+
+                string cipherText, plainText;
+                MgUtil::WideCharToMultiByte(cipherContent, cipherText);
+
+                MG_CRYPTOGRAPHY_TRY()
+
+                MgCryptographyUtil cryptoUtil;
+
+                cryptoUtil.DecryptString(cipherText, plainText);
+
+                MG_CRYPTOGRAPHY_CATCH_AND_THROW(L"MgProxyResourceService.GetResourceContents")
+
+                STRING decryptedContent;
+                MgUtil::MultiByteToWideChar(plainText, decryptedContent);
+                resourceContents->SetItem(i, decryptedContent);
+            }
+        }
+    }
+
+    MG_CATCH_AND_THROW(L"MgProxyResourceService.GetResourceContents")
+
+    return resourceContents.Detach();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 /// <summary>
 /// Changes the owner of an existing resource.

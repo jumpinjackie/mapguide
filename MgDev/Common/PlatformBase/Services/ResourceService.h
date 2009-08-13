@@ -904,6 +904,32 @@ PUBLISHED_API:
     ///
     MgByteReader* GetResourceContent(MgResourceIdentifier* resource);
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the contents of the specified resources.
+    ///
+    /// \param resources
+    /// A collection of resource identifiers describing the resources.
+    /// \param preProcessTags
+    /// Pre-processing to apply to resource before returning content.
+    /// If this parameter is NULL, it means no pre-processing.
+    /// If this parameter is not NULL, it must be a collection of pre-processing types, and it should be 
+    /// one to one matching the collection of parameter resources. 
+    /// See MgResourcePreProcessingType for a list of supported pre-processing tags.
+    ///
+    /// \return
+    /// MgStringCollection object representing the collection of corresponding resource contents.
+    ///
+    /// \exception MgInvalidRepositoryTypeException
+    /// \exception MgInvalidRepositoryNameException
+    /// \exception MgInvalidResourcePathException
+    /// \exception MgInvalidResourceNameException
+    /// \exception MgInvalidResourceTypeException
+    ///
+    virtual MgStringCollection* GetResourceContents(MgStringCollection* resources,
+        MgStringCollection* preProcessTags);
+
+
     //////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the \link header header \endlink associated with
@@ -1921,6 +1947,7 @@ INTERNAL_API:
         opIdEnumerateUnmanagedData          = 0x1111EF1A,
         opIdResourceExists                  = 0x1111EF1B,
         opIdEnumerateResourceDocuments      = 0x1111EF1C,
+        opIdGetResourceContents             = 0x1111EF1D,
     };
 };
 

@@ -85,6 +85,8 @@ public:
         MgResourceIdentifier* destResource, bool overwrite);
     virtual MgByteReader* GetResourceContent(
         MgResourceIdentifier* resource, CREFSTRING preProcessTags);
+    virtual MgStringCollection* GetResourceContents(MgStringCollection* resources,
+        MgStringCollection* preProcessTags);
     virtual MgByteReader* GetResourceHeader(
         MgResourceIdentifier* resource);
     virtual MgDateTime* GetResourceModifiedDate(

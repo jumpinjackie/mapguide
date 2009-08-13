@@ -49,6 +49,7 @@
 #include "OpGetRepositoryContent.cpp"
 #include "OpGetRepositoryHeader.cpp"
 #include "OpGetResourceContent.cpp"
+#include "OpGetResourceContents.cpp"
 #include "OpGetResourceData.cpp"
 #include "OpGetResourceHeader.cpp"
 #include "OpGetResourceModifiedDate.cpp"

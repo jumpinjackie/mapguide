@@ -906,6 +906,57 @@ MgByteReader* MgServerResourceService::GetResourceContent(
     return byteReader.Detach();
 }
 
+MgStringCollection* MgServerResourceService::GetResourceContents(MgStringCollection* resources,
+                                       MgStringCollection* preProcessTags)
+{
+    Ptr<MgStringCollection> resourceContents = new MgStringCollection();
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    if (NULL == resources)
+    {
+        throw new MgNullArgumentException(
+            L"MgServerResourceService.GetResourceContents", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    bool hasPreprocess = (NULL != preProcessTags);
+    if(hasPreprocess && resources->GetCount() != preProcessTags->GetCount())
+    {
+        throw new MgInvalidArgumentException(
+            L"MgServerResourceService.GetResourceContents", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    MgLogDetail logDetail(MgServiceType::ResourceService, MgLogDetail::Trace, L"MgServerResourceService.GetResourceContents", mgStackParams);
+    logDetail.AddObject(L"Resources", resources);    
+    logDetail.AddObject(L"PreProcessTags", preProcessTags);
+    logDetail.Create();
+    
+    // Iterator resources to get the content
+    for(INT32 i = 0; i < resources->GetCount(); i ++)
+    {
+        STRING resource = resources->GetItem(i);
+        STRING preProcessTag = hasPreprocess ? (preProcessTags->GetItem(i)) : L"";
+
+        Ptr<MgResourceIdentifier> resourceId = new MgResourceIdentifier(resource);
+
+        Ptr<MgByteReader> byteReader;
+        auto_ptr<MgApplicationRepositoryManager> repositoryMan(
+            CreateApplicationRepositoryManager(resourceId));
+
+        MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
+
+        byteReader = repositoryMan->GetResourceContent(resourceId, preProcessTag);
+
+        MG_RESOURCE_SERVICE_END_OPERATION(sm_retryAttempts)
+
+        STRING plainText = byteReader->ToString();
+        resourceContents->Add(plainText);
+    }
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.GetResourceContents")
+
+    return resourceContents.Detach();
+}
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Gets the header associated with the specified resource.
