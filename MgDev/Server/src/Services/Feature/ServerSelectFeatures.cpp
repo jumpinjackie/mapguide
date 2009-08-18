@@ -235,6 +235,10 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
         if (executeSelectAggregate && m_customPropertyFound)
         {
             mgReader = this->GetCustomReader(reader);
+            // Ticket 1051 MapGuide exhausts FDO connections during Fusion selection
+            // We are done with "reader" but Close() is not called during the release
+            // Close it here to avoid the connection leak
+            reader->Close();
         }
         else
         {
