@@ -56,12 +56,12 @@ class MgCoordinateSystemGridTick;               // a position in viewport coordi
 class MgCoordinateSystemGridSpecializationType
 {
 PUBLISHED_API:
-    static const INT32 None              = 0;       // not specified as yet; initialize to this value
-    static const INT32 Generic           = 0x01;    // Generic grid of a specified coordinate system;
-                                                    // may be geographic or projected
-    static const INT32 MGRS              = 0x11;    // Military Grid Reference System
-    static const INT32 USNG              = 0x12;    // United States National Grid
-    static const INT32 Unknown           = 0x8000;  // indicates a failure of an algorithm
+    static const INT32 None              = 0;           // not specified as yet; initialize to this value
+    static const INT32 Generic           = (0 + 1);     // Generic grid of a specified coordinate system;
+                                                        // may be geographic or projected
+    static const INT32 MGRS              = (16 + 1);    // Military Grid Reference System
+    static const INT32 USNG              = (16 + 2);    // United States National Grid
+    static const INT32 Unknown           = (65366);     // indicates a failure of an algorithm
 };
 
 //=============================================================================
@@ -73,7 +73,7 @@ PUBLISHED_API:
 // have a specific value for either the easting or the northing.  It is this
 // value which indicates which.  Thus, a grid line which is classified as
 // having an "EastWest" orientation will be a isoline which is the locus of
-// points which sahre a common easting value, and the "m_Value" element of
+// points which share a common easting value, and the "m_Value" element of
 // that object will be an easting value.
 //
 class MgCoordinateSystemGridOrientation
@@ -99,8 +99,8 @@ PUBLISHED_API:
     virtual double GetNorthingBase (void)=0;            // the base value from which northing grid line values are computed.
     virtual double GetEastingIncrement(void)=0;         // the interval between easting grid lines
     virtual double GetNorthingIncrement(void)=0;        // the interval between northing grid lines
-    virtual INT32 TickEastingSubdivisions(void)=0;      // number of tic subdivisions between grid increments in the east/west direction
-    virtual INT32 TickNorthingSubdivisions(void)=0;     // number of tic subdivisions between grid increments in the north/south direction
+    virtual double GetTickEastingIncrement(void)=0;     // number of tic subdivisions between grid increments in the east/west direction
+    virtual double GetTickNorthingIncrement(void)=0;    // number of tic subdivisions between grid increments in the north/south direction
     virtual INT32 GetUnitType(void)=0;                  // a value from MgCoordinateSystemUnitType indicating the type of units of the
                                                         // base and interval specifications
     virtual INT32 GetUnitCode(void)=0;                  // a value from MgCoordinateSystemUnitCode indicating the units of the
@@ -112,10 +112,10 @@ PUBLISHED_API:
                                                         // If left unspecified (or set to zero) a value is automatically selected to be,
                                                         // approximately, the equivalent of 1 meter in target system units.
 
-    virtual void SetGridBase(double eastingBase,double northingBase = 0.0) = 0;
-    virtual void SetGridIncrement(double eastingIncrement,double northingIncrement = 0.0) = 0;
-    virtual void SetTickSubdivisions(INT32 eastingSubdivisions,INT32 northingSubdivisions = 0) = 0;
-    virtual void SetUnits (INT32 unitCode,INT32 unitType = MgCoordinateSystemUnitType::Linear) = 0;
+    virtual void SetGridBase(double eastingBase,double northingBase) = 0;
+    virtual void SetGridIncrement(double eastingIncrement,double northingIncrement) = 0;
+    virtual void SetTickIncrements(double eastingIncrement,double northingIncrement) = 0;
+    virtual void SetUnits (INT32 unitCode,INT32 unitType) = 0;
     virtual void SetCurvePrecision (double curvePrecision) = 0;
 
 INTERNAL_API:
@@ -147,8 +147,9 @@ PUBLISHED_API:
     virtual void SetBoundaryExtents (MgPolygon* boundary)=0;
     virtual MgPolygon* GetBoundary (void) const=0;
 INTERNAL_API:
+
     virtual void GetBoundaryExtents (double& eastMin,double& eastMax,double& northMin,double& northMax) const = 0;
-    virtual MgPolygon* GetBoundary (MgCoordinateSystemTransform* transformation,double precision = 1.0) = 0;
+    virtual MgPolygon* GetBoundary (MgCoordinateSystemTransform* transformation,double precision) = 0;
     virtual MgLineStringCollection* ClipLineString (MgLineString* lineString) const=0;
 protected:
     INT32 GetClassId(){return m_cls_id;};
@@ -189,6 +190,8 @@ PUBLISHED_API:
     virtual void SetExceptionsOn(bool bOn) = 0;
 INTERNAL_API:
 protected:
+CLASS_ID:
+    static const INT32 m_cls_id = CoordinateSystem_CoordinateSystemGridBase;
 };
 
 //=============================================================================
@@ -241,10 +244,10 @@ CLASS_ID:
 class MG_GEOMETRY_API MgCoordinateSystemGridTick : public MgGuardDisposable
 {
 PUBLISHED_API:
-    virtual INT32 GetTickOrientation () const= 0;
-    virtual double GetValue () const = 0;
-    virtual MgCoordinate* GetPosition () const = 0;
-    virtual MgCoordinate* GetDirectionVector () const = 0;
+    virtual INT32 GetTickOrientation () = 0;
+    virtual double GetValue () = 0;
+    virtual MgCoordinate* GetPosition () = 0;
+    virtual MgCoordinate* GetDirectionVector () = 0;
 INTERNAL_API:
 protected:
     INT32 GetClassId(){return m_cls_id;};
@@ -269,6 +272,7 @@ PUBLISHED_API:
 INTERNAL_API:
     virtual void SetItem (INT32 index, MgCoordinateSystemGridLine* value)=0;
     virtual void Add (MgCoordinateSystemGridLine* value)=0;
+    virtual void AddCollection (MgCoordinateSystemGridLineCollection* aGridLineCollection)=0;
 
 protected:
     INT32 GetClassId(){return m_cls_id;};

@@ -1070,6 +1070,8 @@ MgLineString* CCoordinateSystemTransform::GridLine (MgCoordinate* fromPnt,MgCoor
     double midSrcX, midSrcY;
     double midTrgX, midTrgY;
 
+//TODO: This algorithm calls Transform, which can and does throw.  There are no provisions for this in this algorithm.
+
     chord2 = curvePrecision * curvePrecision;
 
     // Allocate and populate the first point in the segment list.
@@ -1125,7 +1127,7 @@ MgLineString* CCoordinateSystemTransform::GridLine (MgCoordinate* fromPnt,MgCoor
                 num = (delX2 * midTrgX) + (delY2 * curPtr->trgX) +
                       (midTrgY - curPtr->trgY) * delX * delY;
                 newX = num / denom;
-                num = (delY2 * midTrgY) + (delX2 * curPtr->trgX) +
+                num = (delY2 * midTrgY) + (delX2 * curPtr->trgY) +
                       (midTrgX - curPtr->trgX) * delX * delY;
                 newY = num / denom;
                 delX = newX - midTrgX;
@@ -1197,7 +1199,111 @@ MgLineString* CCoordinateSystemTransform::GridLine (MgCoordinate* fromPnt,MgCoor
     }
     return lineString.Detach ();
 }
+// Returns integer status, two values currently supported.  Zero return
+// indicates that no position is returned for whatever reason.  Zero
+// return indicates that a position is returend.
+INT32 CCoordinateSystemTransform::PositionOfValue (MgCoordinate* position,double ordinateValue,INT32 orientation,MgCoordinate* from,MgCoordinate* to)
+{
+    INT32 status;
 
+    double ratio;
+    double xx, yy;
+    double deltaX, deltaY;
+    double minValue, maxValue;
+    double tmpDbl;
+
+    Ptr<MgCoordinate> gridFrom;
+    Ptr<MgCoordinate> gridTo;
+
+    MG_TRY ()
+        status = 0;
+
+        // Convert the from and to points to the grid coordinate system.
+        gridFrom = Transform (from);
+        gridTo = Transform (to);
+
+        // Extract the from and to ordinate values which will match the
+        // ordinate value we've been provided.
+        if (orientation == MgCoordinateSystemGridOrientation::EastWest)
+        {
+            // Here if value is a easting ordinate.
+            minValue = gridFrom->GetX ();
+            maxValue = gridTo->GetX ();
+        }
+        else if (orientation == MgCoordinateSystemGridOrientation::NorthSouth)
+        {
+            // Here if value is a northing ordinate.
+            minValue = gridFrom->GetY ();
+            maxValue = gridTo->GetY ();
+        }
+        else
+        {
+            // TODO: Parameter error.
+        }
+        if (minValue > maxValue)
+        {
+            // We swap the points and min/max values to preserve our sanity.
+            // This makes the rest of this code almost trivial.
+            tmpDbl = minValue;
+            minValue = maxValue;
+            maxValue = tmpDbl;
+
+            xx = gridFrom->GetX ();
+            gridFrom->SetX (gridTo->GetX ());
+            gridTo->SetX (xx);
+
+            yy = gridFrom->GetY ();
+            gridFrom->SetY (gridTo->GetY ());
+            gridTo->SetY (yy);
+        }
+
+        // To prevent duplicate tics, we place a tick at the minPoint if appropriate,
+        // but never on the max point.  If this 'if' fails, there are no instances of
+        // the provided ordinate value on the line provided.
+        if (ordinateValue >= minValue && ordinateValue < maxValue)
+        {
+            deltaX = gridTo->GetX () - gridFrom->GetX ();
+            deltaY = gridTo->GetY () - gridFrom->GetY ();
+            // We do not try to place northing ticks on a line which more horizontal than it
+            // is vertical; and vice versa.
+            if (deltaX > deltaY && orientation == MgCoordinateSystemGridOrientation::EastWest ||
+                deltaY > deltaX && orientation == MgCoordinateSystemGridOrientation::NorthSouth)
+            {
+                // Use some simple geomtery to calculate the approximate position of the
+                // the point on the provided line segment at which the indicated ordinate
+                // approximates the provided ordinate value.
+                ratio = (ordinateValue - minValue) / (maxValue - minValue);
+                xx = gridFrom->GetX () + deltaX * ratio;
+                yy = gridFrom->GetY () + deltaY * ratio;
+
+                // This object does not, currently, support this inverse
+                // function.  It does, however, have all the information
+                // necessary to support one.  So, next on the TODO list is
+                // to write a private TransformInverse function.
+                TransformInverse (xx,yy);
+
+                // Frame temp is now an approximation (usually a pretty good
+                // one) of the position of the provided ordinate value on the
+                // provided line in frame corodinates.  We _could_ tighten this
+                // up a little but here; but for know we'll just go with this
+                // approximation until such time as we decide we like this
+                // algorithm well enough to invest more resources in it.
+                position->SetX (xx);
+                position->SetY (yy);
+                status = 0;
+            }
+            else
+            {
+                status = 2;
+            }
+        }
+        else
+        {
+            status = 1;
+        }
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.TransformM")
+    return status;
+}
 void CCoordinateSystemTransform::IgnoreDatumShiftWarning(bool bIgnoreDatumShiftWarning)
 {
     m_bIgnoreDatumShiftWarning = bIgnoreDatumShiftWarning;
@@ -1350,4 +1456,32 @@ inline void CCoordinateSystemTransform::TransformPointInternal(double& x, double
     {
         throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystemTransform.TransformPointInternal", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemConversionExtentException", NULL);
     }
+}
+int CCoordinateSystemTransform::TransformInverse (double& xx,double& yy)
+{
+    int st;
+    double xy [3];
+    double ll [3];
+    
+    xy [0] = xx;
+    xy [1] = yy;
+    xy [2] = 0.0;
+    
+    st = CS_cs2ll (&m_dst,ll,xy);
+    if (st >= 0)
+    {
+        CriticalClass.Enter();
+        st = CS_dtcvt(m_pDtcprm,ll,ll);
+        CriticalClass.Leave();
+        if (st >= 0)
+        {
+            st = CS_ll2cs (&m_src,xy,ll);
+        }
+    }
+    if (st >= 0)
+    {
+        xx = xy [0];
+        yy = xy [1];
+    }
+    return st;
 }

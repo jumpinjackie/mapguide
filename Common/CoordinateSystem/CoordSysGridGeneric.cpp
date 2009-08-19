@@ -91,7 +91,8 @@ MgCoordinateSystemGridRegionCollection* CCoordinateSystemGridGeneric::GetGridReg
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 MgCoordinateSystemGridTickCollection* CCoordinateSystemGridGeneric::GetGridTicks (MgCoordinateSystemGridSpecification* specification)
 {
-    return NULL;
+    CCoordinateSystemGridTickCollection* gridTicks = m_TheGrid->GetBoundaryTicks (specification);
+    return static_cast<MgCoordinateSystemGridTickCollection*>(gridTicks);
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 double CCoordinateSystemGridGeneric::GetConvergenceAngle (MgCoordinate* location)

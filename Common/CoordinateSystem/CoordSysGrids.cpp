@@ -41,28 +41,28 @@ using namespace CSLibrary;
 // The default presision value is 1 meter (currently).  If the CurvePrecision
 // member is not set, this value will be used.
 const double CCoordinateSystemGridSpecification::m_DefaultPrecision = 1.0;
-CCoordinateSystemGridSpecification::CCoordinateSystemGridSpecification (void) : m_EastingBase              (0.0),
-                                                                                m_NorthingBase             (0.0),
-                                                                                m_EastingIncrement         (0.0),
-                                                                                m_NorthingIncrement        (0.0),
-                                                                                m_CurvePrecision           (0.0),
-                                                                                m_EastingTickSubdivisions  (0),
-                                                                                m_NorthingTickSubdivisions (0),
-                                                                                m_UnitType                 (MgCoordinateSystemUnitType::Linear),
-                                                                                m_UnitCode                 (MgCoordinateSystemUnitCode::Meter)
+CCoordinateSystemGridSpecification::CCoordinateSystemGridSpecification (void) : m_EastingBase           (0.0),
+                                                                                m_NorthingBase          (0.0),
+                                                                                m_EastingIncrement      (0.0),
+                                                                                m_NorthingIncrement     (0.0),
+                                                                                m_CurvePrecision        (0.0),
+                                                                                m_TickEastingIncrement  (0),
+                                                                                m_TickNorthingIncrement (0),
+                                                                                m_UnitType              (MgCoordinateSystemUnitType::Linear),
+                                                                                m_UnitCode              (MgCoordinateSystemUnitCode::Meter)
 {
 }
 CCoordinateSystemGridSpecification::CCoordinateSystemGridSpecification (const CCoordinateSystemGridSpecification& source)
                                                                              :
-                                                                        m_EastingBase              (source.m_EastingBase),
-                                                                        m_NorthingBase             (source.m_NorthingBase),
-                                                                        m_EastingIncrement         (source.m_EastingIncrement),
-                                                                        m_NorthingIncrement        (source.m_NorthingIncrement),
-                                                                        m_CurvePrecision           (source.m_CurvePrecision),
-                                                                        m_EastingTickSubdivisions  (source.m_EastingTickSubdivisions),
-                                                                        m_NorthingTickSubdivisions (source.m_NorthingTickSubdivisions),
-                                                                        m_UnitType                 (source.m_UnitType),
-                                                                        m_UnitCode                 (source.m_UnitCode)
+                                                                        m_EastingBase           (source.m_EastingBase),
+                                                                        m_NorthingBase          (source.m_NorthingBase),
+                                                                        m_EastingIncrement      (source.m_EastingIncrement),
+                                                                        m_NorthingIncrement     (source.m_NorthingIncrement),
+                                                                        m_CurvePrecision        (source.m_CurvePrecision),
+                                                                        m_TickEastingIncrement  (source.m_TickEastingIncrement),
+                                                                        m_TickNorthingIncrement (source.m_TickNorthingIncrement),
+                                                                        m_UnitType              (source.m_UnitType),
+                                                                        m_UnitCode              (source.m_UnitCode)
 {
 }
 CCoordinateSystemGridSpecification::~CCoordinateSystemGridSpecification (void)
@@ -72,15 +72,15 @@ CCoordinateSystemGridSpecification& CCoordinateSystemGridSpecification::operator
 {
     if (this != &rhs)
     {
-        m_EastingBase              = rhs.m_EastingBase;
-        m_NorthingBase             = rhs.m_NorthingBase;
-        m_EastingIncrement         = rhs.m_EastingIncrement;
-        m_NorthingIncrement        = rhs.m_NorthingIncrement;
-        m_CurvePrecision           = rhs.m_CurvePrecision;
-        m_EastingTickSubdivisions  = rhs.m_EastingTickSubdivisions;
-        m_NorthingTickSubdivisions = rhs.m_NorthingTickSubdivisions;
-        m_UnitType                 = rhs.m_UnitType;
-        m_UnitCode                 = rhs.m_UnitCode;
+        m_EastingBase           = rhs.m_EastingBase;
+        m_NorthingBase          = rhs.m_NorthingBase;
+        m_EastingIncrement      = rhs.m_EastingIncrement;
+        m_NorthingIncrement     = rhs.m_NorthingIncrement;
+        m_CurvePrecision        = rhs.m_CurvePrecision;
+        m_TickEastingIncrement  = rhs.m_TickEastingIncrement;
+        m_TickNorthingIncrement = rhs.m_TickNorthingIncrement;
+        m_UnitType              = rhs.m_UnitType;
+        m_UnitCode              = rhs.m_UnitCode;
     }
     return *this;
 }
@@ -100,13 +100,13 @@ double CCoordinateSystemGridSpecification::GetNorthingIncrement(void)
 {
     return m_NorthingIncrement;
 }
-INT32 CCoordinateSystemGridSpecification::TickEastingSubdivisions(void)
+double CCoordinateSystemGridSpecification::GetTickEastingIncrement(void)
 {
-    return m_EastingTickSubdivisions;
+    return m_TickEastingIncrement;
 }
-INT32 CCoordinateSystemGridSpecification::TickNorthingSubdivisions(void)
+double CCoordinateSystemGridSpecification::GetTickNorthingIncrement(void)
 {
-    return m_NorthingTickSubdivisions;
+    return m_TickNorthingIncrement;
 }
 INT32 CCoordinateSystemGridSpecification::GetUnitType(void)
 {
@@ -120,19 +120,21 @@ bool CCoordinateSystemGridSpecification::IsSameAs(MgCoordinateSystemGridSpecific
 {
     bool areTheSame (false);
     
-    double dblTol (1.0E-08);
+    double dblTol (1.0E-04);
     
     areTheSame  = fabs (specification->GetEastingBase()       - m_EastingBase)       < dblTol;
     areTheSame &= fabs (specification->GetNorthingBase()      - m_NorthingBase)      < dblTol;
     areTheSame &= fabs (specification->GetEastingIncrement()  - m_EastingIncrement)  < dblTol;
     areTheSame &= fabs (specification->GetNorthingIncrement() - m_NorthingIncrement) < dblTol;
-    areTheSame &= fabs (specification->GetCurvePrecision()    - m_CurvePrecision)    < dblTol;
-
-    areTheSame &= (specification->TickEastingSubdivisions()  == m_EastingTickSubdivisions);
-    areTheSame &= (specification->TickNorthingSubdivisions() == m_NorthingTickSubdivisions);
-    areTheSame &= (specification->GetUnitType()              == m_UnitType);
-    areTheSame &= (specification->GetUnitCode()              == m_UnitCode);
     
+    areTheSame &= fabs (specification->GetTickEastingIncrement()  - m_TickEastingIncrement)  < dblTol;
+    areTheSame &= fabs (specification->GetTickNorthingIncrement() - m_TickNorthingIncrement) < dblTol;
+
+    areTheSame &= (specification->GetUnitType() == m_UnitType);
+    areTheSame &= (specification->GetUnitCode() == m_UnitCode);
+
+    areTheSame &= fabs (specification->GetCurvePrecision()    - m_CurvePrecision)    < 1.0E-08;
+
     return areTheSame;
 }
 double CCoordinateSystemGridSpecification::GetCurvePrecision(void)
@@ -143,38 +145,17 @@ double CCoordinateSystemGridSpecification::GetCurvePrecision(void)
 void CCoordinateSystemGridSpecification::SetGridBase(double eastingBase,double northingBase)
 {
     m_EastingBase = eastingBase;
-    if (fabs (northingBase) >= 1.0E-08)
-    {
-        m_NorthingBase = northingBase;
-    }
-    else
-    {
-        m_NorthingBase = m_EastingBase;
-    }
+    m_NorthingBase = m_EastingBase;
 }
 void CCoordinateSystemGridSpecification::SetGridIncrement(double eastingIncrement,double northingIncrement)
 {
     m_EastingIncrement = eastingIncrement;
-    if (fabs (northingIncrement) >= 1.0E-08)
-    {
-        m_NorthingIncrement = northingIncrement;
-    }
-    else
-    {
-        m_NorthingIncrement = m_EastingIncrement;
-    }
+    m_NorthingIncrement = m_EastingIncrement;
 }
-void CCoordinateSystemGridSpecification::SetTickSubdivisions(INT32 eastingSubdivisions,INT32 northingSubdivisions)
+void CCoordinateSystemGridSpecification::SetTickIncrements(double eastingIncrement,double northingIncrement)
 {
-    m_EastingTickSubdivisions = eastingSubdivisions;
-    if (northingSubdivisions > 0)
-    {
-        m_NorthingTickSubdivisions = northingSubdivisions;
-    }
-    else
-    {
-        m_NorthingTickSubdivisions = m_EastingTickSubdivisions;
-    }
+    m_TickEastingIncrement = eastingIncrement;
+    m_TickNorthingIncrement = m_TickEastingIncrement;
 }
 void CCoordinateSystemGridSpecification::SetUnits (INT32 unitCode,INT32 unitType)
 {
@@ -319,8 +300,10 @@ void CCoordinateSystemGridSpecification::Dispose ()
 // be enforced by the constructors which are supported.  Expansion to support
 // more complex boundaries will be added by providing more constructors.
 //
+const INT32 CCoordinateSystemGridBoundary::MaxCurvePoints = 511;
 CCoordinateSystemGridBoundary::CCoordinateSystemGridBoundary () : MgCoordinateSystemGridBoundary (),
                                                                   m_Large                        (false),
+                                                                  m_MaxCurvePoints               (MaxCurvePoints),
                                                                   m_GridBoundary                 ()
 {
 }
@@ -329,9 +312,19 @@ CCoordinateSystemGridBoundary::CCoordinateSystemGridBoundary (MgCoordinate* sout
                                                                 :
                                                               MgCoordinateSystemGridBoundary (),
                                                               m_Large                        (false),
+                                                              m_MaxCurvePoints               (MaxCurvePoints),
                                                               m_GridBoundary                 ()
 {
    SetBoundaryExtents (southwest,northeast);
+}
+CCoordinateSystemGridBoundary::CCoordinateSystemGridBoundary (MgPolygon* boundary)
+                                                                :
+                                                              MgCoordinateSystemGridBoundary (),
+                                                              m_Large                        (false),
+                                                              m_MaxCurvePoints               (MaxCurvePoints),
+                                                              m_GridBoundary                 ()
+{
+    m_GridBoundary = SAFE_ADDREF (boundary);
 }
 CCoordinateSystemGridBoundary::~CCoordinateSystemGridBoundary (void)
 {
@@ -371,14 +364,14 @@ void CCoordinateSystemGridBoundary::SetBoundaryExtents (MgCoordinate* southwest,
         collection->Add (nePnt);
         collection->Add (nwPnt);
         collection->Add (clPnt);
-        
+
         MgLinearRing* ring = factory.CreateLinearRing (collection);
         m_GridBoundary = factory.CreatePolygon (ring,NULL);
     MG_CATCH_AND_THROW(L"MgCoordinateSystemGridBoundary.SetBoundaryExtents")
 }
 void CCoordinateSystemGridBoundary::SetBoundaryExtents (MgPolygon* boundary)
 {
-    m_GridBoundary = boundary;
+    m_GridBoundary = SAFE_ADDREF (boundary);
 }
 MgPolygon* CCoordinateSystemGridBoundary::GetBoundary (void) const
 {
@@ -515,7 +508,7 @@ MgLinearRing* CCoordinateSystemGridBoundary::TransformLinearRing (MgLinearRing* 
         {
             // Convert the current segment.
             curToPnt = ringItr->GetCurrent ();
-            convertedSegment = transform->GridLine (curFromPnt,curToPnt,curvePrecision);
+            convertedSegment = transform->GridLine (curFromPnt,curToPnt,curvePrecision,m_MaxCurvePoints);
             
             // Copy the converted segment to the target coordinate collection.
             lineItr = convertedSegment->GetCoordinates ();
@@ -612,8 +605,9 @@ CCoordinateSystemGridRegion::CCoordinateSystemGridRegion (STRING label,MgPolygon
                                     :
                                 MgCoordinateSystemGridRegion (),
                                 m_RegionLabel                (label),
-                                m_Polygon                    (polygon)
+                                m_Polygon                    ()
 {
+    m_Polygon = SAFE_ADDREF (polygon);
 }                                
 STRING CCoordinateSystemGridRegion::GetLabel ()
 {
@@ -764,6 +758,23 @@ void CCoordinateSystemGridLineCollection::Add (MgCoordinateSystemGridLine* value
     // The MgDIsposableCollection object does the "SAFE_ADDREF" operation.
     m_GridLineCollection->Add (value);
 }
+void CCoordinateSystemGridLineCollection::AddCollection (MgCoordinateSystemGridLineCollection* aGridLineCollection)
+{
+    INT32 index;
+    INT32 toAddCount;
+    Ptr<MgCoordinateSystemGridLine> aGridLine;
+    
+    MG_TRY ()
+        toAddCount = aGridLineCollection->GetCount ();
+        for (index = 0;index < toAddCount;index += 1)
+        {
+            aGridLine = aGridLineCollection->GetItem (index);
+            // This Add refers to the "this" object.
+            m_GridLineCollection->Add (aGridLine);
+        }
+    MG_CATCH_AND_THROW(L"CCoordinateSystemGridLineCollection::IndexOf")
+    return;
+}
 void CCoordinateSystemGridLineCollection::Dispose(void)
 {
     delete this;
@@ -816,6 +827,23 @@ void CCoordinateSystemGridRegionCollection::Add (MgCoordinateSystemGridRegion* v
     // The MgDisposableCollection object performs the "SAFE_ADDREF" operation.
     m_GridRegionCollection->Add (value);
 }
+void CCoordinateSystemGridRegionCollection::AddCollection (MgCoordinateSystemGridRegionCollection* aGridRegionCollection)
+{
+    INT32 index;
+    INT32 toAddCount;
+    Ptr<MgCoordinateSystemGridRegion> aGridRegion;
+    
+    MG_TRY ()
+        toAddCount = aGridRegionCollection->GetCount ();
+        for (index = 0;index < toAddCount;index += 1)
+        {
+            aGridRegion = aGridRegionCollection->GetItem (index);
+            // This Add refers to the "this" object.
+            m_GridRegionCollection->Add (aGridRegion);
+        }
+    MG_CATCH_AND_THROW(L"CCoordinateSystemGridRegionCollection::AddCollection")
+    return;
+}
 void CCoordinateSystemGridRegionCollection::Dispose (void)
 {
     // Destructor deletes the contents of the collection.
@@ -863,6 +891,22 @@ void CCoordinateSystemGridTickCollection::SetItem (INT32 index, MgCoordinateSyst
 void CCoordinateSystemGridTickCollection::Add (MgCoordinateSystemGridTick* value)
 {
     m_GridTickCollection->Add (value);
+}
+void CCoordinateSystemGridTickCollection::AddCollection (MgCoordinateSystemGridTickCollection* aGridTickCollection)
+{
+    INT32 index;
+    INT32 toAddCount;
+    Ptr<MgCoordinateSystemGridTick> aGridTick;
+    
+    MG_TRY ()
+        toAddCount = aGridTickCollection->GetCount ();
+        for (index = 0;index < toAddCount;index += 1)
+        {
+            aGridTick = aGridTickCollection->GetItem (index);
+            m_GridTickCollection->Add (aGridTick);
+        }
+    MG_CATCH_AND_THROW(L"CCoordinateSystemGridTickCollection::AddCollection")
+    return;
 }
 void CCoordinateSystemGridTickCollection::Dispose (void)
 {

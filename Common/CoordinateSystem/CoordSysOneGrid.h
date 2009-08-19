@@ -37,22 +37,40 @@ namespace CSLibrary
 // The object includes a STRING data member which can carry a label which users
 // may use at their convenience.  This object does nothing with the label
 // other than enable the user to set it and retrieve it.
-class CCoordinateSystemOneGrid
+
+class CCoordinateSystemOneGrid : public MgGuardDisposable
 {
 public:
+    static const INT32 MaxCurvePoints;
+    CCoordinateSystemOneGrid (void);
 	CCoordinateSystemOneGrid (MgCoordinateSystemGridBoundary* frameBoundary,
 	                          MgCoordinateSystem* gridCRS,
 	                          MgCoordinateSystem* frameCRS);
 	~CCoordinateSystemOneGrid (void);
 
+    void SetUp (MgCoordinateSystemGridBoundary* frameBoundary,
+                MgCoordinateSystem* gridCRS,
+                MgCoordinateSystem* frameCRS);
+
     STRING GetLabel (void);
-    void SetLabel (CREFSTRING label);
     MgCoordinate* ConvertToGrid (MgCoordinate* frameCoordinate);
     MgCoordinate* ConvertToFrame (MgCoordinate* gridCoordinate);
     MgCoordinateSystemGridLineCollection* GetGridLines (MgCoordinateSystemGridSpecification* specs);
-    MgCoordinateSystemGridTickCollection* GetBoundaryTicks (MgCoordinateSystemGridSpecification* specs);
-private:
-    STRING m_RegionLabel;                                // For user conveinence
+    CCoordinateSystemGridTickCollection* GetBoundaryTicks (MgCoordinateSystemGridSpecification* specs);
+
+    void SetLabel (CREFSTRING label);
+
+protected:
+    MgCoordinateSystem* GetFrameCRS (void);
+    MgCoordinateSystem* GetGridCRS (void);
+    void GenerateGridBoundary (double boundaryPrecision);
+    void GetGeographicExtents (double& longMin,double& longMax,double& latMin,double& latMax,double precision = 1.0E-05);
+    void GetGridExtents (double& eastMin,double& eastMax,double& northMin,double& northMax,double precision = 0.25);
+    void Dispose (void);
+
+    INT32 m_UserID;                                        // For user convenience (i.e. UTM zone)
+    INT32 m_MaxCurvePoints;
+    STRING m_RegionLabel;                                // For user conveinence (i.e. MGRS)
     Ptr<MgCoordinateSystem> m_GridCRS;                   // The grid coordinate system
     Ptr<MgCoordinateSystem> m_FrameCRS;                  // The frame coordinate system
     Ptr<MgCoordinateSystemTransform> m_ToFrameXform;     // Converts grid coordinates to frame coordinates
@@ -61,9 +79,40 @@ private:
     Ptr<MgCoordinateSystemGridBoundary> m_FrameBoundary; // Grid boundary in frame coordinates
     Ptr<MgCoordinateSystemGridBoundary> m_GridBoundary;  // Grid boundary in grid coordinates
 
+private:
     // Not implemented
     CCoordinateSystemOneGrid (const CCoordinateSystemOneGrid& source);
     CCoordinateSystemOneGrid& operator= (const CCoordinateSystemOneGrid& rhs);
+};
+
+//=============================================================================
+// This object was invented to carry multiple MGRS grids, but is no longer used
+// as there is now a CCoordinateSystemMgrsZone object and a related collection
+// object.  WHen we're ready for code complete and we don't seem to need this
+// for anything, we should delete it. 
+class CCoordinateSystemGridCollection : public MgGuardDisposable
+{
+public:
+    CCoordinateSystemGridCollection (void);
+    ~CCoordinateSystemGridCollection (void);
+
+    INT32 GetCount () const;
+    CCoordinateSystemOneGrid* GetItem (INT32 index) const;
+    void RemoveAt (INT32 index);
+    void Clear();
+    void SetItem (INT32 index, CCoordinateSystemOneGrid* value);
+    void Add (CCoordinateSystemOneGrid* value);
+
+protected:
+    void Dispose (void);
+
+private:
+    // Data Members
+    Ptr<MgDisposableCollection> m_OneGridCollection;
+
+    // Member functions not implemented.
+    CCoordinateSystemGridCollection  (const CCoordinateSystemGridCollection & source);
+    CCoordinateSystemGridCollection& operator= (const CCoordinateSystemGridCollection & rhs);
 };
 
 }   /* namespace CSLibrary */

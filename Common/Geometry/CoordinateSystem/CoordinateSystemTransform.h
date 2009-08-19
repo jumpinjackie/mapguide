@@ -363,32 +363,34 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Generates a MgCoordinateCollection which represents in the target
-    /// coordinate system the linear line segment provided in the source
-    /// coordinate system.
+    /// Generates a MgLineString which represents, in the target coordinate
+    /// system, the linear line segment provided in the source coordinate
+    /// system.
     ///
-    /// \param fromPnt
-    /// The result of the transformation is returned here.  While the result
-    /// can be a single straight line segment, more often it will be a multi-
-    /// segment approximation of a complex curve.
     /// \param fromPnt
     /// The starting point of the linear segment in source system coordinates.
     /// \param toPnt
     /// The end point of the linear segment in source system coordinates.
     /// \param chordValue
-    /// The returned line string is to segmented to the degree necessary such
+    /// The returned line string is segmented to the degree necessary such
     /// that the distance between the LineString approximation of the true
-    /// cuve and the true curve is never more than this value.  Units must
-    /// be the same as the target coordinate system.
+    /// curve and the true curve istself is never more than this value.  Units
+    /// must be the same as the target coordinate system.
     /// \param maxPoints
     /// The generation algorithm will always quit after generating this
-    /// number of points in result.
+    /// number of points in result.  A typical value is 500.  DO NOIT rely
+    /// on the algorithm stopping at exactly this value.  The typical value
+    /// of 500 can and will produce a LineString with as many of 750 points
+    /// before terminating.
     /// \return
-    /// Status of the operation, nature of which is yet to be determined.
+    /// The result of the transformation is returned in the form of a
+    /// disposable LineString object.  While the result can be as simple as
+    /// a single straight line segment, more often it will be a multi-segment
+    /// approximation of a complex curve.
     ///
     virtual MgLineString* GridLine (MgCoordinate* fromPnt,MgCoordinate* toPnt,
                                                           double curvePrecision,
-                                                          UINT32 maxPoints = 500) = 0;
+                                                          UINT32 maxPoints) = 0;
 
     virtual bool IsValidSourcePoint(double x, double y)=0;
     virtual bool IsValidSourcePoint(double x, double y, double z)=0;
@@ -550,6 +552,48 @@ INTERNAL_API:
     /// Nothing.
     ///
     virtual void TransformM(double x[], double y[], double z[], double m[], int arraySize)=0;
+    
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Give a line segement in coordinates of the source system via the the
+    /// fromPnt and toPnt parameters, this function returns the position of
+    /// a point on that line segment which, when converted to target
+    /// coordinates, will have an ordinate value equal to the ordinateValue
+    /// parameter.  Used, primarily, to locate the position of a tick line
+    /// on a map border.
+    ///
+    /// \param position
+    /// The result of the calculation is returned here.  This must be a
+    /// valid pointer to an exisitng MgCOordinate object.  THis function will
+    /// not alter the reference count status in any way.
+    /// \param ordinateValue
+    /// The specific value whose position is to be located.
+    /// \param orientation
+    /// A value of the MgCoordinateSystemGridOrientation class.  This parameter
+    /// indicates whether the ordinateValue parameter is an X ordinate or a Y
+    /// ordinate.
+    /// \param fromPnt
+    /// A two dimensional point given in coordinates of the source coordinate
+    /// system of this <b>Transform<\b> object which represents the starting
+    /// point of the line segment which is to be processed.
+    /// \param toPnt
+    /// A two dimensional point given in coordinates of the source coordinate
+    /// system of this <b>Transform<\b> object which represents the ending
+    /// point of the line segment which is to be processed.
+    /// \return
+    /// Will return a zero for success.  A positive non-zero return indicates
+    /// a failure to calculate a position for one of the normal reasons:
+    /// 1> for no such value on this line segment;
+    /// 2> line orientation is inappropriate for this ordinate
+    /// For failure of anyother type, and MgException is thrown.
+    /// \remarks
+    /// The order of the two points provided is immaterial.  This object
+    /// attempts to eliminate possible duplicate positions by ignoring
+    /// the to pont in the calculation of poosition.
+    virtual INT32 PositionOfValue (MgCoordinate* position,double ordinateValue,
+                                                          INT32 orientation,
+                                                          MgCoordinate* fromPnt,
+                                                          MgCoordinate* toPnt) = 0;
 
 protected:
     /////////////////////////////////////////////////////////////////

@@ -214,10 +214,54 @@ INTERNAL_API:
     /// number of points in result.
     /// \return
     /// Status of the operation, nature of which is yet to be determined.
-    ///
+    /// \remarks
+    /// Does not, currently, have code to deal with exceptions thrown by the
+    /// functions it calls.
     virtual MgLineString* GridLine (MgCoordinate* fromPnt,MgCoordinate* toPnt,
                                                           double curvePrecision,
                                                           UINT32 maxPoints = 500);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Give a line segement in coordinates of the source system via the the
+    /// fromPnt and toPnt parameters, this function returns the position of
+    /// a point on that line segment which, when converted to target
+    /// coordinates, will have an ordinate value equal to the ordinateValue
+    /// parameter.  Used, primarily, to locate the position of a tick line
+    /// on a map border.
+    ///
+    /// \param position
+    /// The result of the calculation is returned here.  This must be a
+    /// valid pointer to an exisitng MgCOordinate object.  THis function will
+    /// not alter the reference count status in any way.
+    /// \param ordinateValue
+    /// The specific value whose position is to be located.
+    /// \param orientation
+    /// A value of the MgCoordinateSystemGridOrientation class.  This parameter
+    /// indicates whether the ordinateValue parameter is an X ordinate or a Y
+    /// ordinate.
+    /// \param fromPnt
+    /// A two dimensional point given in coordinates of the source coordinate
+    /// system of this <b>Transform<\b> object which represents the starting
+    /// point of the line segment which is to be processed.
+    /// \param toPnt
+    /// A two dimensional point given in coordinates of the source coordinate
+    /// system of this <b>Transform<\b> object which represents the ending
+    /// point of the line segment which is to be processed.
+    /// \return
+    /// Will return a zero for success.  A positive non-zero return indicates
+    /// a failure to calculate a position for one of the normal reasons:
+    /// 1> for no such value on this line segment;
+    /// 2> line orientation is inappropriate for this ordinate
+    /// For failure of anyother type, and MgException is thrown.
+    /// \remarks
+    /// The order of the two points provided is immaterial.  This object
+    /// attempts to eliminate possible duplicate positions by ignoring
+    /// the to pont in the calculation of poosition.
+    virtual INT32 PositionOfValue (MgCoordinate* position,double ordinateValue,
+                                                          INT32 orientation,
+                                                          MgCoordinate* fromPnt,
+                                                          MgCoordinate* toPnt);
 
 protected:
     //MgDisposable
@@ -250,6 +294,7 @@ private:
 
     inline void TransformPointInternal(double& x, double& y, double *pdZ, bool isGeographic,
         double lonMin, double lonMax, double latMin, double latMax);
+    int TransformInverse (double& xx,double& yy);
 };
 
 } // End of namespace
