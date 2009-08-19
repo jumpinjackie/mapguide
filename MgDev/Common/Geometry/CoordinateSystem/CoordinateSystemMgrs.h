@@ -23,6 +23,7 @@ class MgCoordinateSystemMgrs : public MgCoordinateSystemGridBase
 PUBLISHED_API:
     virtual INT8 GetLetteringScheme()=0;
 
+INTERNAL_API:
     //section that reads/writes MGRS coordinates
     virtual INT32 ConvertFromLonLat(double dLongitude, double dLatitude, INT32 nPrecision, REFSTRING sMgrs)=0;
     virtual INT32 ConvertFromLonLat(MgCoordinate* pLonLat, INT32 nPrecision, REFSTRING sMgrs)=0;
@@ -34,6 +35,5 @@ protected:
 CLASS_ID:
     static const INT32 m_cls_id = CoordinateSystem_CoordinateSystemMgrs;
 };
-
 
 #endif //_MGCOORDINATESYSTEMMGRS_H_

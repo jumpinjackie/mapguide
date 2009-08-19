@@ -2917,6 +2917,18 @@
 				>
 			</File>
 			<File
+				RelativePath="..\CoordinateSystem\CoordSysMgrsGridScale.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysMgrsZone.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysMgrsZone.h"
+				>
+			</File>
+			<File
 				RelativePath="..\CoordinateSystem\CoordSysOneGrid.cpp"
 				>
 			</File>

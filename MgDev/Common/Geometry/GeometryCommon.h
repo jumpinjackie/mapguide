@@ -140,6 +140,7 @@
 #include "CoordinateSystem/CoordinateSystemProjectionParameterType.h"       //for MgCoordinateSystemProjectionParameterType
 #include "CoordinateSystem/CoordinateSystemErrorCode.h"                     //for MgCoordinateSystemErrorCode
 #include "CoordinateSystem/CoordinateSystemGrids.h"                         //for MgCoordinateSystemGridSpecification
+#include "CoordinateSystem/CoordinateSystemMgrsGridLevel.h"                 //for MgCoordinateSystemMgrsGridLevel
 #include "CoordinateSystem/CoordinateSystemMgrs.h"                          //for MgCoordinateSystemMgrs
 #include "CoordinateSystem/CoordinateSystemGridGeneric.h"                   //for MgCoordinateSystemGridGeneric
 #include "CoordinateSystem/CoordinateSystemMgrsLetteringScheme.h"           //for MgCoordinateSystemMgrsLetteringScheme

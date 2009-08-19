@@ -110,7 +110,7 @@
 #define CoordinateSystem_CoordinateSystemGridLine                   GEOMETRY_COORDINATE_SYSTEM_ID+29
 #define CoordinateSystem_CoordinateSystemGridRegion                 GEOMETRY_COORDINATE_SYSTEM_ID+30
 #define CoordinateSystem_CoordinateSystemGridTick                   GEOMETRY_COORDINATE_SYSTEM_ID+31
-
+#define CoordinateSystem_CoordinateSystemGridBase                   GEOMETRY_COORDINATE_SYSTEM_ID+32
 
 // Exceptions
 #define Geometry_Exception_MgCoordinateSystemComputationFailedException     GEOMETRY_EXCEPTION_ID+0

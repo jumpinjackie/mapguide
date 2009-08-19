@@ -50,7 +50,6 @@ protected:
     void Dispose();
 
     // Data Memebrs
-    INT8 m_nLetteringScheme;
     bool m_bExceptionsOn;
     INT32 m_nLastError;
     Ptr<MgCoordinateSystem> m_pCsSource;

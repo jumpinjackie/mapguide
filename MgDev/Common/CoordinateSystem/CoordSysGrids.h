@@ -33,25 +33,23 @@ public:
     CCoordinateSystemGridSpecification& operator= (const CCoordinateSystemGridSpecification& rhs);
 
     const static double m_DefaultPrecision;
-PUBLISHED_API:
     double GetEastingBase(void);
     double GetNorthingBase(void);
     double GetEastingIncrement(void);
     double GetNorthingIncrement(void);
-    INT32 TickEastingSubdivisions(void);
-    INT32 TickNorthingSubdivisions(void);
+    double GetTickEastingIncrement(void);
+    double GetTickNorthingIncrement(void);
     INT32 GetUnitType(void);
     INT32 GetUnitCode(void);
     bool IsSameAs(MgCoordinateSystemGridSpecification* specification);
     double GetCurvePrecision(void);
 
-    void SetGridBase(double eastingBase,double northingBase = 0.0);
-    void SetGridIncrement(double eastingIncrement,double northingIncrement = 0.0);
-    void SetTickSubdivisions(INT32 eastingSubdivisions,INT32 northingSubdivisions = 0);
+    void SetGridBase(double eastingBase,double northingBase);
+    void SetGridIncrement(double eastingIncrement,double northingIncrement);
+    void SetTickIncrements(double eastingIncrement,double northingIncrement);
     void SetUnits (INT32 unitCode,INT32 unitType = MgCoordinateSystemUnitType::Linear);
     void SetCurvePrecision (double curvePrecision);
 
-INTERNAL_API:
     // The following function identically to the published version, with the
     // exception that the value returned are always converted to the units of
     // the provided coordinate system.
@@ -65,14 +63,13 @@ protected:
     void Dispose (void);
 
 private:
-
     double m_EastingBase;
     double m_NorthingBase;
     double m_EastingIncrement;
     double m_NorthingIncrement;
     double m_CurvePrecision;
-    INT32 m_EastingTickSubdivisions;
-    INT32 m_NorthingTickSubdivisions;
+    double m_TickEastingIncrement;
+    double m_TickNorthingIncrement;
     INT32 m_UnitType;
     INT32 m_UnitCode;
 };
@@ -87,10 +84,12 @@ private:
 class CCoordinateSystemGridBoundary : public MgCoordinateSystemGridBoundary
 {
 public:
+    static const INT32 MaxCurvePoints;
     // Contrary to other envelope objects, the first of these overloads specifically
     // requires that the southwest argument indeed be southwest of the northeast
     // argument.  Necessary to support geographic coordinate systems (i.e. +/- 180).
     CCoordinateSystemGridBoundary (MgCoordinate* southwest,MgCoordinate* northeast);
+    CCoordinateSystemGridBoundary (MgPolygon* boundary);
     ~CCoordinateSystemGridBoundary (void);
 
     void SetBoundaryExtents (MgCoordinate* southwest,MgCoordinate* northeast);
@@ -110,6 +109,7 @@ private:
                                        MgCoordinateSystemTransform* transformation,
                                        double curvePrecision); 
     bool m_Large;
+    INT32 m_MaxCurvePoints;
     Ptr<MgPolygon> m_GridBoundary;
 };
 
@@ -148,6 +148,7 @@ protected:
 //
 class CCoordinateSystemGridRegion : public MgCoordinateSystemGridRegion
 {
+public:
     CCoordinateSystemGridRegion (STRING label,MgPolygon* polygon);
     
     virtual STRING GetLabel ();
@@ -214,6 +215,7 @@ public:
 
     void SetItem (INT32 index,MgCoordinateSystemGridLine* value);
     void Add (MgCoordinateSystemGridLine* value);
+    void AddCollection (MgCoordinateSystemGridLineCollection* aGridLineCollection);
 protected:
     void Dispose(void);
     Ptr<MgDisposableCollection> m_GridLineCollection;
@@ -227,6 +229,7 @@ private:
 // CCoordinateSystemGridRegion objects.
 class CCoordinateSystemGridRegionCollection : public MgCoordinateSystemGridRegionCollection
 {
+public:
     CCoordinateSystemGridRegionCollection (void);
     ~CCoordinateSystemGridRegionCollection (void);
 
@@ -237,6 +240,7 @@ class CCoordinateSystemGridRegionCollection : public MgCoordinateSystemGridRegio
 
     void SetItem (INT32 index, MgCoordinateSystemGridRegion* value);
     void Add (MgCoordinateSystemGridRegion* value);
+    void AddCollection (MgCoordinateSystemGridRegionCollection* aGridRegionCollection);
 
 protected:
     void Dispose (void);
@@ -251,17 +255,20 @@ private:
 // CCoordinateSystemGridTick objects.  CCoordinateSystemGridTickCollection
 // objects will contain MgCoordinateSystemGridTick objects for the entire
 // boundary or for an individual grid line.
-class MG_GEOMETRY_API CCoordinateSystemGridTickCollection : public MgCoordinateSystemGridTickCollection 
+class CCoordinateSystemGridTickCollection : public MgCoordinateSystemGridTickCollection 
 {
+public:
     CCoordinateSystemGridTickCollection (void);
     ~CCoordinateSystemGridTickCollection (void);
 
     INT32 GetCount () const;
     MgCoordinateSystemGridTick* GetItem (INT32 index) const;
     void RemoveAt (INT32 index);
-    void Clear()=0;
+    void Clear();
     void SetItem (INT32 index, MgCoordinateSystemGridTick* value);
     void Add (MgCoordinateSystemGridTick* value);
+    void AddCollection (MgCoordinateSystemGridTickCollection* aGridTickCollection);
+
 protected:
     void Dispose (void);
     Ptr<MgDisposableCollection> m_GridTickCollection;

@@ -153,13 +153,15 @@ PUBLISHED_API:
     // Grids and Graticules -- General
     virtual MgCoordinateSystemGridBoundary* GridBoundary(MgCoordinate* southwest,
                                                          MgCoordinate* northeast);
-    virtual MgCoordinateSystemGridBoundary* GridBoundary(MgPolygon& boundary);
+    virtual MgCoordinateSystemGridBoundary* GridBoundary(MgPolygon* boundary);
 
     virtual MgCoordinateSystemGridSpecification* GridSpecification (void);
     virtual MgCoordinateSystemGridSpecification* GridSpecification (double increment,
-                                                                   INT32 subdivisions,
-                                                                   INT32 unitCode,
-                                                                   double curvePrecision);
+                                                                    INT32 subdivisions,
+                                                                    INT32 unitCode,
+                                                                    double curvePrecision);
+    virtual MgCoordinateSystemGridSpecification* GridSpecification (INT32 gridType,
+                                                                    INT32 gridLevel);
                                                                    
     // Grids and Graticules -- Generic
     virtual MgCoordinateSystemGridBase* GenericGrid (CREFSTRING sGridCs,
@@ -171,21 +173,21 @@ PUBLISHED_API:
 
     // Grids and Graticules -- MGRS
     virtual MgCoordinateSystemMgrs* GetMgrs(double dEquatorialRadius,double dEccentricity,
-                                                                     int nLetteringScheme,
+                                                                     INT32 nLetteringScheme,
                                                                      bool bSetExceptionsOn);
     virtual MgCoordinateSystemMgrs* GetMgrsEllipsoid(CREFSTRING sEllipsoidCode,
-                                                     int nLetteringScheme,
+                                                     INT8 nLetteringScheme,
                                                      bool bSetExceptionsOn);
     virtual MgCoordinateSystemMgrs* GetMgrsDatum(CREFSTRING sDatumCode,
-                                                 int nLetteringScheme,
+                                                 INT8 nLetteringScheme,
                                                  bool bSetExceptionsOn);
     virtual MgCoordinateSystemGridBase* MgrsGrid (MgCoordinateSystem* pFrameCs,
                                                   bool bUseTargetDatum,
-                                                  int nLetteringScheme,
+                                                  INT8 nLetteringScheme,
                                                   bool bSetExceptionsOn);
     virtual MgCoordinateSystemGridBase* MgrsGrid (CREFSTRING sFrameCs,
                                                   bool bUseTargetDatum,
-                                                  int nLetteringScheme,
+                                                  INT8 nLetteringScheme,
                                                   bool bSetExceptionsOn);
 
 INTERNAL_API:

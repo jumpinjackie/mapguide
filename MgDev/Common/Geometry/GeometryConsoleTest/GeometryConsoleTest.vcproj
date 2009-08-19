@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MgGeometryd.lib MgFoundationd.lib CsMapd.lib ACE.lib"
+				AdditionalDependencies="MgGeometryd.lib MgFoundationd.lib CsMapd.lib ACEd.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(ProjectDir)$(ConfigurationName)&quot;;&quot;$(GISPLATFORMROOTDIR)\OS\Common\lib\$(ConfigurationName)&quot;;&quot;$(GISPLATFORMROOTDIR)\OS\Oem\CsMap\lib80\$(ConfigurationName)&quot;;&quot;$(GISPLATFORMROOTDIR)\OS\Oem\ACE\ACE_wrappers\lib&quot;"
 				GenerateDebugInformation="true"

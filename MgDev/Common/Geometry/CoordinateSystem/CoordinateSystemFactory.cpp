@@ -32,6 +32,8 @@
 #include "CoordSysTransform.h"          //for CCoordinateSystemTransform
 #include "CoordinateSystemCatalog.h"    //for MgCoordinateSystemCatalog
 #include "CoordSysGrids.h"              //for CCoordinateSystemGridBase, and others
+#include "CoordSysOneGrid.h"            //for CCoordinateSystemOneGrid
+#include "CoordSysMgrsZone.h"           //for CCoordinateSystemMgrsZone
 #include "CoordSysMgrs.h"               //for CCoordinateSystemMgrs
 #include "CoordSysGridGeneric.h"        //for CCoordinateSystemGridGeneric
 #include "CoordinateSystemFactory.h"    //for MgCoordinateSystemFactory
@@ -590,7 +592,27 @@ MgCoordinateSystemGridSpecification* MgCoordinateSystemFactory::GridSpecificatio
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.GridSpecification")
     return gridSpecification.Detach ();
 }
+MgCoordinateSystemGridSpecification* MgCoordinateSystemFactory::GridSpecification (INT32 gridType,
+                                                                                   INT32 gridLevel)
+{
+    Ptr<MgCoordinateSystemGridSpecification> gridSpecification;
 
+    MG_TRY ()
+        gridSpecification = new CCoordinateSystemGridSpecification ();
+        if (gridSpecification != NULL)
+        {
+            if (gridType == MgCoordinateSystemGridSpecializationType::MGRS)
+            {
+                CCoordinateSystemMgrs::InitMgrsSpecification (gridSpecification,gridLevel);
+            }
+            else
+            {
+                // Throw an exception
+            }
+        }
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.GridSpecification")
+    return gridSpecification.Detach ();
+}
 ///////////////////////////////////////////////////////////////////////////
 MgCoordinateSystemGridBoundary* MgCoordinateSystemFactory::GridBoundary (MgCoordinate* southwest,
                                                                          MgCoordinate* northeast)
@@ -607,9 +629,19 @@ MgCoordinateSystemGridBoundary* MgCoordinateSystemFactory::GridBoundary (MgCoord
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.GridBoundary")
     return rtnValue;
 }
-MgCoordinateSystemGridBoundary* MgCoordinateSystemFactory::GridBoundary(MgPolygon& boundary)
+MgCoordinateSystemGridBoundary* MgCoordinateSystemFactory::GridBoundary(MgPolygon* boundary)
 {
-    return NULL;
+    MgCoordinateSystemGridBoundary* rtnValue (0);
+    CCoordinateSystemGridBoundary* pGridBoundary;
+
+    MG_TRY()
+        pGridBoundary = new CCoordinateSystemGridBoundary (boundary);
+        if (pGridBoundary != NULL)
+        {
+            rtnValue = static_cast<MgCoordinateSystemGridBoundary*>(pGridBoundary);
+        }
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.GridBoundary")
+    return rtnValue;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -647,7 +679,7 @@ MgCoordinateSystemMgrs* MgCoordinateSystemFactory::GetMgrs(
 //
 MgCoordinateSystemMgrs* MgCoordinateSystemFactory::GetMgrsEllipsoid(
     CREFSTRING sEllipsoidCode, 
-    int nLetteringScheme,
+    INT8 nLetteringScheme,
     bool bSetExceptionsOn)
 {
     Ptr<CCoordinateSystemMgrs> pNew;
@@ -676,7 +708,7 @@ MgCoordinateSystemMgrs* MgCoordinateSystemFactory::GetMgrsEllipsoid(
 // MgCoordinateSystemMgrsLetteringScheme
 //
 MgCoordinateSystemMgrs* MgCoordinateSystemFactory::GetMgrsDatum(CREFSTRING sDatumCode, 
-                                                                int nLetteringScheme,
+                                                                INT8 nLetteringScheme,
                                                                 bool bSetExceptionsOn)
 {
     Ptr<CCoordinateSystemMgrs> pNew;
@@ -702,7 +734,7 @@ MgCoordinateSystemMgrs* MgCoordinateSystemFactory::GetMgrsDatum(CREFSTRING sDatu
 
 MgCoordinateSystemGridBase* MgCoordinateSystemFactory::MgrsGrid (CREFSTRING sFrameCs,
                                                                  bool bUseTargetDatum,
-                                                                 int nLetteringScheme,
+                                                                 INT8 nLetteringScheme,
                                                                  bool bSetExceptionsOn)
 {
     Ptr<MgCoordinateSystemGridBase> pNewMgrs;
@@ -718,7 +750,7 @@ MgCoordinateSystemGridBase* MgCoordinateSystemFactory::MgrsGrid (CREFSTRING sFra
 
 MgCoordinateSystemGridBase* MgCoordinateSystemFactory::MgrsGrid (MgCoordinateSystem* pFrameCs,
                                                                  bool bUseTargetDatum,
-                                                                 int nLetteringScheme,
+                                                                 INT8 nLetteringScheme,
                                                                  bool bSetExceptionsOn)
 {
     STRING sDatumCode;

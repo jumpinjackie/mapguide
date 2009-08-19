@@ -36,9 +36,9 @@ libMgGeometry_la_SOURCES = \
   ../CoordinateSystem/CoordSysWktFailureCache.cpp \
   ../CoordinateSystem/CoordSysGridGeneric.cpp \
   ../CoordinateSystem/CoordSysGrids.cpp \
+  ../CoordinateSystem/CoordSysMgrsZone.cpp \
   ../CoordinateSystem/CoordSysMgrs.cpp \
   ../CoordinateSystem/CoordSysOneGrid.cpp
-  
 
 include_SOURCES = \
   AgfReaderWriter.cpp \
@@ -171,6 +171,7 @@ include_SOURCES = \
   ../CoordinateSystem/CoordSysWktFailureCache.cpp \
   ../CoordinateSystem/CoordSysGridGeneric.cpp \
   ../CoordinateSystem/CoordSysGrids.cpp \
+  ../CoordinateSystem/CoordSysMgrsZone.cpp \
   ../CoordinateSystem/CoordSysMgrs.cpp \
   ../CoordinateSystem/CoordSysOneGrid.cpp
   
@@ -322,6 +323,7 @@ noinst_HEADERS = $(include_SOURCES) \
   CoordinateSystem/CoordinateSystemWktFlavor.h \
   CoordinateSystem/CoordinateSystemGrids.h \
   CoordinateSystem/CoordinateSystemMgrs.h \
+  CoordinateSystem/CoordinateSystemMgrsGridLevel.h \
   CoordinateSystem/CoordinateSystemGridGeneric.h \
   Exception/CoordinateSystemComputationFailedException.h \
   Exception/CoordinateSystemConversionFailedException.h \
@@ -379,6 +381,7 @@ noinst_HEADERS = $(include_SOURCES) \
   ../CoordinateSystem/CoordSysWktFailureCache.h \
   ../CoordinateSystem/CoordSysGridGeneric.h \
   ../CoordinateSystem/CoordSysGrids.h \
+  ../CoordinateSystem/CoordSysMgrsZone.h \
   ../CoordinateSystem/CoordSysMgrs.h \
   ../CoordinateSystem/CoordSysOneGrid.h
 
