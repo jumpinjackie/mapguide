@@ -213,11 +213,6 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::GetData(void* buffer,
 
             stat = ( bConnected ) ? MgStreamHelper::mssNotDone : MgStreamHelper::mssError;
         }
-        else if (res == 0)
-        {
-            // No longer connected
-            stat = MgStreamHelper::mssError;
-        }
         else
         {
             m_readBufEnd += res;
@@ -242,11 +237,6 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::GetData(void* buffer,
 #endif
 
                 stat = ( bConnected ) ? MgStreamHelper::mssNotDone : MgStreamHelper::mssError;
-            }
-            else if (res == 0)
-            {
-                // No longer connected
-                stat = MgStreamHelper::mssError;
             }
             else
             {
@@ -432,7 +422,7 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::WriteData(void* buffer,
         else
         {
             res = stream.send(buffer, size, MG_MSG_NOSIGNAL);
-        }
+        };
 
         //  check for failure
         if ( res >= 0 )
@@ -448,12 +438,12 @@ MgStreamHelper::MgStreamStatus MgAceStreamHelper::WriteData(void* buffer,
             else
             {
                 stat = blocking ? MgStreamHelper::mssError : MgStreamHelper::mssNotDone;
-            }
-        }
-    }
+            };
+        };
+    };
 
     return stat;
-}
+};
 
 //////////////////////////////////////////////////////////////////
 ///<summary>
@@ -558,7 +548,7 @@ void MgAceStreamHelper::Dispose()
 
 bool MgAceStreamHelper::IsConnected()
 {
-    bool bConnected = true;
+    bool bConnected = false;
     ACE_SOCK_Stream stream;
     stream.set_handle( m_handle );
     UINT8 dummy;
@@ -567,18 +557,12 @@ bool MgAceStreamHelper::IsConnected()
 
     if ( res < 0 )
     {
-        // Error or timeout occured
 #ifdef _WIN32
         int error = ::WSAGetLastError(); // errno doesn't work correctly on Windows
         bConnected = ( error == WSAEWOULDBLOCK || error == 0 );
 #else
         bConnected = ( errno == EWOULDBLOCK || errno == 0 || errno == ETIME );
 #endif
-    }
-    else if (res == 0)
-    {
-        // No longer connected
-        bConnected = false;
     }
 
     return bConnected;
