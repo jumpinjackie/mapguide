@@ -650,7 +650,7 @@ MgCoordinateSystemGridBoundary* MgCoordinateSystemFactory::GridBoundary(MgPolygo
 MgCoordinateSystemMgrs* MgCoordinateSystemFactory::GetMgrs(
     double dEquatorialRadius, 
     double dEccentricity, 
-    int nLetteringScheme,
+    INT8 nLetteringScheme,
     bool bSetExceptionsOn)
 {
     Ptr<CCoordinateSystemMgrs> pNew;

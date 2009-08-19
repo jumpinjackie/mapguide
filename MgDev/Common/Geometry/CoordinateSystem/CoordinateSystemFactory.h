@@ -173,7 +173,7 @@ PUBLISHED_API:
 
     // Grids and Graticules -- MGRS
     virtual MgCoordinateSystemMgrs* GetMgrs(double dEquatorialRadius,double dEccentricity,
-                                                                     INT32 nLetteringScheme,
+                                                                     INT8 nLetteringScheme,
                                                                      bool bSetExceptionsOn);
     virtual MgCoordinateSystemMgrs* GetMgrsEllipsoid(CREFSTRING sEllipsoidCode,
                                                      INT8 nLetteringScheme,
