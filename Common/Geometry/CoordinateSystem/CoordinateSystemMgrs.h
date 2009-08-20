@@ -21,6 +21,11 @@
 class MgCoordinateSystemMgrs : public MgCoordinateSystemGridBase
 {
 PUBLISHED_API:
+    //section that reads/writes MGRS coordinates
+    virtual STRING ConvertFromLonLat(double dLongitude, double dLatitude, INT32 nPrecision)=0;
+    virtual STRING ConvertFromLonLat(MgCoordinate* pLonLat, INT32 nPrecision)=0;
+    virtual MgCoordinate* ConvertToLonLat(CREFSTRING sMgrs)=0;
+
     virtual INT8 GetLetteringScheme()=0;
 
 INTERNAL_API:
