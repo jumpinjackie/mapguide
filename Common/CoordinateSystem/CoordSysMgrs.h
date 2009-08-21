@@ -70,8 +70,8 @@ public:
     void InitFromDatum(CREFSTRING sDatumCode);
 
 PUBLISHED_API:
-    STRING ConvertFromLonLat(double dLongitude, double dLatitude, int nPrecision);
-    STRING ConvertFromLonLat(MgCoordinate* pLonLat, int nPrecision);
+    STRING ConvertFromLonLat(double dLongitude, double dLatitude, INT32 nPrecision);
+    STRING ConvertFromLonLat(MgCoordinate* pLonLat, INT32 nPrecision);
     MgCoordinate* ConvertToLonLat(CREFSTRING sMgrs);
     INT8 GetLetteringScheme();
 
