@@ -211,7 +211,7 @@ short CCoordinateSystemMgrs::GetBesselFromLetteringScheme(INT8 nLetteringScheme)
 //PUBLISHED_API
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-STRING CCoordinateSystemMgrs::ConvertFromLonLat(double dLongitude, double dLatitude, int nPrecision)
+STRING CCoordinateSystemMgrs::ConvertFromLonLat(double dLongitude, double dLatitude, INT32 nPrecision)
 {
     STRING sMgrs;
     ConvertFromLonLat(dLongitude, dLatitude, nPrecision, sMgrs);
@@ -223,7 +223,7 @@ STRING CCoordinateSystemMgrs::ConvertFromLonLat(double dLongitude, double dLatit
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-STRING CCoordinateSystemMgrs::ConvertFromLonLat(MgCoordinate* pLonLat, int nPrecision)
+STRING CCoordinateSystemMgrs::ConvertFromLonLat(MgCoordinate* pLonLat, INT32 nPrecision)
 {
     STRING sMgrs;
     ConvertFromLonLat(pLonLat, nPrecision, sMgrs);
