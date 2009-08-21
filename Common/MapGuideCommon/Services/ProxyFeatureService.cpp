@@ -746,7 +746,7 @@ MgPropertyCollection* MgProxyFeatureService::UpdateFeatures(MgResourceIdentifier
         BUILD_VERSION(1,0,0),                                       // Operation version
         MgCommand::knObject, resource,                              // Argument#1
         MgCommand::knObject, commands,                              // Argument#2
-        MgCommand::knString, transactionId,                         // Argument#3
+        MgCommand::knString, &transactionId,                         // Argument#3
         MgCommand::knNone);                                         // End of argument
 
     SetWarning(cmd.GetWarningObject());
