@@ -27,6 +27,15 @@
 class MG_PLATFORMBASE_API MgFdoException : public MgThirdPartyException
 {
     DECLARE_CLASSNAME(MgFdoException)
+PUBLISHED_API:
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Retrieve the native error code of the underlying FDO exception.
+    ///
+    /// \return
+    /// native error code of an fdo exception
+    ///
+    INT64 GetNativeErrorCode();
 
 EXTERNAL_API:
 
@@ -53,6 +62,28 @@ EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
+    /// Construct a MgFdoException object.
+    ///
+    /// \param methodName
+    /// Name of the method where the exception occurred.
+    /// \param lineNumber
+    /// Line number where the exception occurred.
+    /// \param fileName
+    /// File name where the exception occurred.
+    /// \param whatArguments
+    /// Collection of arguments used to format the message that describes what the exception is.
+    /// \param whyMessageId
+    /// ID of the message that describes why the exception occurs.
+    /// \param whyArguments
+    /// Collection of arguments used to format the message that describes why the exception occurs.
+    ///
+    MgFdoException(CREFSTRING methodName, INT32 lineNumber,
+        CREFSTRING fileName, MgStringCollection* whatArguments,
+        CREFSTRING whyMessageId, MgStringCollection* whyArguments,
+        INT64 nativeErrorCode) throw();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
     /// Destructor for a MgFdoException object.
     ///
     virtual ~MgFdoException() throw();
@@ -64,6 +95,9 @@ INTERNAL_API:
 CLASS_ID:
 
     static const INT32 m_cls_id = PlatformBase_Exception_MgFdoException;
+
+private:
+    INT64 m_nativeErrorCode;
 };
 
 #endif
