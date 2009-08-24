@@ -1694,6 +1694,7 @@ MgClassDefinition* MgServerGwsFeatureReader::GetMgClassDefinition(bool bSerializ
                     STRING messageId;
                     MgStringCollection arguments;
                     wchar_t* buf = (wchar_t*)e->GetExceptionMessage();
+                    INT64 nativeErrorCode = e->GetNativeErrorCode();
 
                     if (NULL != buf)
                     {
@@ -1704,7 +1705,7 @@ MgClassDefinition* MgServerGwsFeatureReader::GetMgClassDefinition(bool bSerializ
                     FDO_SAFE_RELEASE(e);
 
                     throw new MgFdoException(L"MgServerGwsFeatureReader.GetMgClassDefinition",
-                        __LINE__, __WFILE__, NULL, messageId, &arguments);
+                        __LINE__, __WFILE__, NULL, messageId, &arguments, nativeErrorCode);
                 }
             }
 
