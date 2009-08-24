@@ -1134,6 +1134,7 @@ void MgMappingUtilExceptionTrap(FdoException* except, int line, wchar_t* file)
     STRING messageId;
     MgStringCollection arguments;
     wchar_t* buf = (wchar_t*)except->GetExceptionMessage();
+    INT64 nativeErrorCode = except->GetNativeErrorCode();
 
     if (NULL != buf)
     {
@@ -1141,7 +1142,7 @@ void MgMappingUtilExceptionTrap(FdoException* except, int line, wchar_t* file)
         arguments.Add(buf);
     }
 
-    mgException = new MgFdoException(L"MgStylizationUtil.ExceptionTrap", line, file, NULL, messageId, &arguments);
+    mgException = new MgFdoException(L"MgStylizationUtil.ExceptionTrap", line, file, NULL, messageId, &arguments, nativeErrorCode);
 
     MG_CATCH(L"MgStylizationUtil.ExceptionTrap")
 

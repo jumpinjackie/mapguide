@@ -33,6 +33,7 @@
         STRING messageId;                                                     \
         MgStringCollection arguments;                                         \
         wchar_t* buf = (wchar_t*)e->GetExceptionMessage();                    \
+        INT64 nativeErrorCode = e->GetNativeErrorCode();                      \
                                                                               \
         if (NULL != buf)                                                      \
         {                                                                     \
@@ -41,7 +42,7 @@
         }                                                                     \
                                                                               \
         FDO_SAFE_RELEASE(e);                                                  \
-        mgException = new MgFdoException(methodName, __LINE__, __WFILE__, NULL, messageId, &arguments); \
+        mgException = new MgFdoException(methodName, __LINE__, __WFILE__, NULL, messageId, &arguments, nativeErrorCode); \
                                                                               \
     MG_CATCH(methodName)                                                      \
 
@@ -80,6 +81,7 @@
         STRING messageId;                                                     \
         MgStringCollection arguments;                                         \
         wchar_t* buf = (wchar_t*)e->GetExceptionMessage();                    \
+        INT64 nativeErrorCode = e->GetNativeErrorCode();                      \
                                                                               \
         if (NULL != buf)                                                      \
         {                                                                     \
@@ -99,7 +101,7 @@
         }                                                                     \
                                                                               \
         FDO_SAFE_RELEASE(e);                                                  \
-        mgException = new MgFdoException(methodName, __LINE__, __WFILE__, NULL, messageId, &arguments); \
+        mgException = new MgFdoException(methodName, __LINE__, __WFILE__, NULL, messageId, &arguments, nativeErrorCode); \
                                                                               \
     MG_CATCH(methodName)                                                      \
 
