@@ -27,9 +27,23 @@ MgFdoException::MgFdoException(CREFSTRING methodName,
     INT32 lineNumber, CREFSTRING fileName, MgStringCollection* whatArguments,
     CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw() :
     MgThirdPartyException(methodName, lineNumber, fileName,
-        whatArguments, whyMessageId, whyArguments)
+        whatArguments, whyMessageId, whyArguments), m_nativeErrorCode(0)
 {
 }
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Construct a MgFdoException object.
+///
+MgFdoException::MgFdoException(CREFSTRING methodName,
+    INT32 lineNumber, CREFSTRING fileName, MgStringCollection* whatArguments,
+    CREFSTRING whyMessageId, MgStringCollection* whyArguments, INT64 nativeErrorCode) throw() :
+    MgThirdPartyException(methodName, lineNumber, fileName,
+        whatArguments, whyMessageId, whyArguments), 
+    m_nativeErrorCode(nativeErrorCode)
+{
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -37,4 +51,13 @@ MgFdoException::MgFdoException(CREFSTRING methodName,
 ///
 MgFdoException::~MgFdoException() throw()
 {
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Get the native error code.
+///
+INT64 MgFdoException::GetNativeErrorCode()
+{
+    return m_nativeErrorCode;
 }
