@@ -466,7 +466,7 @@ const wchar_t* RSMgFeatureReader::GetAsString(const wchar_t* propertyName)
             {
                 long long llVal = GetInt64(propertyName);
                 wchar_t temp[MAX_STRING];
-                swprintf(temp, MAX_STRING, L"%d", llVal);
+                swprintf(temp, MAX_STRING, L"%lld", llVal);
                 m_cachePropValue = temp;
             }
             break;
