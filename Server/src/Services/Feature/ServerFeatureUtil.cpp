@@ -601,7 +601,7 @@ void MgServerFeatureUtil::FillParameterCollection(FdoParameterValueCollection* s
     for (INT32 i = 0; i < cnt; i++)
     {
         FdoPtr<FdoParameterValue> fdoParam = source->GetItem(i);
-        FdoPtr<MgParameter> param = FdoParameterValueToMgParameter(fdoParam);
+        Ptr<MgParameter> param = FdoParameterValueToMgParameter(fdoParam);
         target->Add(param);
     }
 }
@@ -621,14 +621,14 @@ void MgServerFeatureUtil::UpdateParameterCollection(FdoParameterValueCollection*
     for (INT32 i = 0; i < cnt; i++)
     {
         FdoPtr<FdoParameterValue> fdoParam = source->GetItem(i);
-        FdoPtr<MgParameter> param = target->GetItem(i);
+        Ptr<MgParameter> param = target->GetItem(i);
         FdoParameterDirection fdoParamDirection = fdoParam->GetDirection();
         if (fdoParamDirection == FdoParameterDirection_InputOutput ||
             fdoParamDirection == FdoParameterDirection_Output ||
             fdoParamDirection == FdoParameterDirection_Return)
         {
-            FdoPtr<MgNullableProperty> prop = dynamic_cast<MgNullableProperty*>(FdoParameterValueToMgProperty(fdoParam));
-            param->SetProperty(prop);
+            Ptr<MgNullableProperty> prop = dynamic_cast<MgNullableProperty*>(FdoParameterValueToMgProperty(fdoParam));
+            param->SetProperty(prop.p);
         }
     }
 }
