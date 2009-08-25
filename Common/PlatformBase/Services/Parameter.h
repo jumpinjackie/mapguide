@@ -276,7 +276,7 @@ CLASS_ID:
 
 private:
     MgNullableProperty*         m_parameter;
-    int                         m_parameterDirection;
+    INT32                       m_parameterDirection;
 };
 /// \}
 
