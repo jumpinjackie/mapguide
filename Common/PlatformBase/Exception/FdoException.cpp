@@ -27,7 +27,8 @@ MgFdoException::MgFdoException(CREFSTRING methodName,
     INT32 lineNumber, CREFSTRING fileName, MgStringCollection* whatArguments,
     CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw() :
     MgThirdPartyException(methodName, lineNumber, fileName,
-        whatArguments, whyMessageId, whyArguments), m_nativeErrorCode(0)
+        whatArguments, whyMessageId, whyArguments),
+    m_nativeErrorCode(0)
 {
 }
 
