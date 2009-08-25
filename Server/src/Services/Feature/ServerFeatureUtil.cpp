@@ -624,7 +624,7 @@ void MgServerFeatureUtil::UpdateParameterCollection(FdoParameterValueCollection*
         FdoPtr<MgParameter> param = target->GetItem(i);
         FdoParameterDirection fdoParamDirection = fdoParam->GetDirection();
         if (fdoParamDirection == FdoParameterDirection_InputOutput ||
-            fdoParamDirection == FdoParameterDirection_Ouput ||
+            fdoParamDirection == FdoParameterDirection_Output ||
             fdoParamDirection == FdoParameterDirection_Return)
         {
             FdoPtr<MgNullableProperty> prop = dynamic_cast<MgNullableProperty*>(FdoParameterValueToMgProperty(fdoParam));
@@ -2656,7 +2656,7 @@ FdoParameterDirection MgServerFeatureUtil::GetFdoParameterDirection(INT32 paramD
         }
         case MgParameterDirection::Output:
         {
-            fdoParameterDirection = FdoParameterDirection_Ouput;
+            fdoParameterDirection = FdoParameterDirection_Output;
             break;
         }
         case MgParameterDirection::Return:
@@ -2697,7 +2697,7 @@ INT32 MgServerFeatureUtil::GetMgParameterDirection(FdoParameterDirection fdoPara
             parameterDirection = MgParameterDirection::InputOutput;
             break;
         }
-        case FdoParameterDirection_Ouput:
+        case FdoParameterDirection_Output:
         {
             parameterDirection = MgParameterDirection::Output;
             break;
