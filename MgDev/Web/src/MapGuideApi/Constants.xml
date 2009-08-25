@@ -90,6 +90,7 @@
   <Class name="MgFeatureCommandType" />
   <Class name="MgFeaturePropertyType" />
   <Class name="MgObjectPropertyType" />
+  <Class name="MgParameterDirection" />
   <Class name="MgSpatialContextExtentType" />
   <Class name="MgWebWidgetType" />
   <Class name="MgWebTaskButtonType" />
@@ -136,6 +137,7 @@
     <Header path="../../../Common/PlatformBase/Services/FeatureSpatialOperations.h" />
     <Header path="../../../Common/PlatformBase/Services/ObjectPropertyType.h" />
     <Header path="../../../Common/PlatformBase/Services/OrderingOption.h" />
+    <Header path="../../../Common/PlatformBase/Services/ParameterDirection.h" />
     <Header path="../../../Common/PlatformBase/Services/RasterTypes.h" />
     <Header path="../../../Common/PlatformBase/Services/ReaderType.h" />
     <Header path="../../../Common/PlatformBase/Services/ResourceDefs.h" />

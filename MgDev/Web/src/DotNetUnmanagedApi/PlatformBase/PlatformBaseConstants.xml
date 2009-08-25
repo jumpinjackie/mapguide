@@ -74,6 +74,7 @@
   <Class name="MgFeatureGeometricType" />
   <Class name="MgReaderType" />
   <Class name="MgOrderingOption" />
+  <Class name="MgParameterDirection" />
   <Class name="MgFeatureSpatialOperations" />
   <Class name="MgFeatureCommandType" />
   <Class name="MgObjectPropertyType" />
@@ -96,6 +97,7 @@
     <Header path="../../../../Common/PlatformBase/Services/FeatureSpatialOperations.h" />
     <Header path="../../../../Common/PlatformBase/Services/ObjectPropertyType.h" />
     <Header path="../../../../Common/PlatformBase/Services/OrderingOption.h" />
+    <Header path="../../../../Common/PlatformBase/Services/ParameterDirection.h" />
     <Header path="../../../../Common/PlatformBase/Services/RasterTypes.h" />
     <Header path="../../../../Common/PlatformBase/Services/ReaderType.h" />
     <Header path="../../../../Common/PlatformBase/Services/ResourceDefs.h" />

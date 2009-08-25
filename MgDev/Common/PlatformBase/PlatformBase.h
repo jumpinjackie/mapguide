@@ -88,6 +88,9 @@
 #include "Services/FeatureCommand.h"
 #include "Services/FeatureCommandType.h"
 #include "Services/FeatureQueryOptions.h"
+#include "Services/ParameterDirection.h"
+#include "Services/Parameter.h"
+#include "Services/ParameterCollection.h"
 
 #include "Services/BaseService.h"
 #include "Services/BaseServiceDefs.h"

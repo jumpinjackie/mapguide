@@ -71,9 +71,15 @@ public:
     static MgByteReader* GetRaster(FdoIReader* reader, CREFSTRING rasterPropName,INT32 xSize, INT32 ySize);
     static FdoPropertyValue* MgPropertyToFdoProperty(MgProperty* srcProp);
     static FdoParameterValue* MgPropertyToFdoParameter(MgProperty* srcProp);
+    static FdoParameterValue* MgParameterToFdoParameter(MgParameter* srcParam);
     static FdoLiteralValue* MgPropertyToFdoDataValue(MgProperty* srcProp);
+    static MgProperty* FdoParameterValueToMgProperty(FdoParameterValue* fdoParamValue);
+    static MgParameter* FdoParameterValueToMgParameter(FdoParameterValue* fdoParamValue);
     static FdoParameterValueCollection* CreateFdoParameterCollection(MgPropertyCollection* srcCol);
     static void FillFdoPropertyCollection(MgPropertyCollection* srcCol, FdoPropertyValueCollection* paramCol);
+    static void FillFdoParameterCollection(MgParameterCollection* source, FdoParameterValueCollection* target);
+    static void FillParameterCollection(FdoParameterValueCollection* source, MgParameterCollection* target);
+    static void UpdateParameterCollection(FdoParameterValueCollection* source, MgParameterCollection* target);
     static INT32 FdoOrderTypeToMgOrderingOption(FdoOrderType type);
     static FdoOrderType MgOrderingOptionToFdoOrderType(INT32 type);
     static INT32 FdoObjectTypeToMgObjectPropertyType(FdoObjectType type);
@@ -109,6 +115,8 @@ public:
     static FdoRasterPropertyDefinition* GetRasterPropertyDefinition(MgRasterPropertyDefinition* mgPropDef);
     static FdoDataType GetFdoDataType(INT32 awPropType);
     static FdoObjectPropertyDefinition* GetObjectPropertyDefinition(MgObjectPropertyDefinition* objPropDef, FdoClassCollection* fdoClassCol);
+    static FdoParameterDirection GetFdoParameterDirection(INT32 paramDirection);
+    static INT32 GetMgParameterDirection(FdoParameterDirection fdoParamDirection);
 
     static void UpdateFdoFeatureSchema(MgFeatureSchema* mgSchema, FdoFeatureSchema* fdoSchema);
     static void UpdateFdoClassCollection(MgClassDefinitionCollection* mgClassDefCol, FdoClassCollection* fdoClassCol);

@@ -1059,6 +1059,8 @@ PUBLISHED_API:
     /// to a feature source.
     /// \param sqlStatement (String/string)
     /// The SQL SELECT statement.
+    /// \param parameters (MgParameterCollection)
+    /// Parameters binded to the SQL statement.
     /// \param transaction (MgTransaction)
     /// The MgTransaction instance on which the sql 
     /// statement will be executed.
@@ -1073,8 +1075,14 @@ PUBLISHED_API:
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
     /// \code
-    /// $sql = "select featid,abyte from featclass where featid = 0";
-    /// $sqlDataReader = $featureService->ExecuteSqlQuery($activeFeatSrcResId, $sql);
+    /// $sql = "select featid,abyte from featclass where featid = :id";
+    /// $prop = new MgInt32Property("id", 150);
+    /// $param = new MgParameter($prop);
+    /// $params = new MgParameterCollection();
+    /// $params->Add($param);
+    /// $transaction = $featureService->BeginTransaction($activeFeatSrcResId);
+    /// $sqlDataReader = $featureService->ExecuteSqlQuery($activeFeatSrcResId, $sql, $params, $transaction);
+    /// $transaction->Commit();
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
@@ -1085,6 +1093,7 @@ PUBLISHED_API:
     ///
     virtual MgSqlDataReader* ExecuteSqlQuery( MgResourceIdentifier* resource,
                                               CREFSTRING sqlStatement,
+                                              MgParameterCollection* parameters,
                                               MgTransaction* transaction ) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1159,6 +1168,8 @@ PUBLISHED_API:
     /// \param sqlNonSelectStatement (String/string)
     /// The SQL statement that is NOT a
     /// SELECT statement.
+    /// \param parameters (MgParameterCollection)
+    /// Parameters binded to the SQL statement.
     /// \param transaction (MgTransaction)
     /// The MgTransaction instance on which the sql 
     /// statement will be executed.
@@ -1170,8 +1181,14 @@ PUBLISHED_API:
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
     /// \code
-    /// $sql = "update featclass set abyte = 37 where featid = 0";
-    /// $numRows = $featureService->ExecuteSqlNonQuery($activeFeatSrcResId, $sql);
+    /// $sql = "update featclass set abyte = 37 where featid = :id";
+    /// $prop = new MgInt32Property("id", 150);
+    /// $param = new MgParameter($prop);
+    /// $params = new MgParameterCollection();
+    /// $params->Add($param);
+    /// $transaction = $featureService->BeginTransaction($activeFeatSrcResId);
+    /// $numRows = $featureService->ExecuteSqlNonQuery($activeFeatSrcResId, $sql, $params, $transaction);
+    /// $transaction->Commit();
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
@@ -1182,6 +1199,7 @@ PUBLISHED_API:
     ///
     virtual INT32 ExecuteSqlNonQuery( MgResourceIdentifier* resource,
                                       CREFSTRING sqlNonSelectStatement,
+                                      MgParameterCollection* parameters,
                                       MgTransaction* transaction ) = 0;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

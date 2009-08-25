@@ -151,6 +151,8 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../../../Common/PlatformBase/Services/InsertFeatures.h" />
     <Header path="../../../../Common/PlatformBase/Services/LongTransactionReader.h" />
     <Header path="../../../../Common/PlatformBase/Services/ObjectPropertyDefinition.h" />
+    <Header path="../../../../Common/PlatformBase/Services/Parameter.h" />
+    <Header path="../../../../Common/PlatformBase/Services/ParameterCollection.h" />
     <Header path="../../../../Common/PlatformBase/Services/Raster.h" />
     <Header path="../../../../Common/PlatformBase/Services/RasterProperty.h" />
     <Header path="../../../../Common/PlatformBase/Services/RasterPropertyDefinition.h" />

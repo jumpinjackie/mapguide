@@ -734,6 +734,12 @@ INTERNAL_API:
     /// This would allow users to specify free format SQL SELECT statement like
     /// SELECT * FROM CLASSNAME WHERE COLOR = RED. This would return all rows
     /// from "CLASSNAME" where COLOR column has value RED.
+    /// \param params
+    /// Input&Output
+    /// Parameters binded to the SQL statement.
+    /// \param transaction
+    /// Input
+    /// The MgTransaction instance on which the sql statement will be executed.
     ///
     /// \return
     /// SqlDataReader pointer, an instance of reader pointing to the actual reader
@@ -746,6 +752,7 @@ INTERNAL_API:
     ///
     MgSqlDataReader* ExecuteSqlQuery( MgResourceIdentifier* resource,
                                       CREFSTRING sqlStatement,
+                                      MgParameterCollection* params,
                                       MgTransaction* transaction );
 
     /////////////////////////////////////////////////////////////////
@@ -783,6 +790,12 @@ INTERNAL_API:
     /// \param sqlNonSelectStatement
     /// Input
     /// This would allow users to specify free format SQL statement like INSERT/UPDATE/DELETE/CREATE
+    /// \param params
+    /// Input&Output
+    /// Parameters binded to the SQL statement.
+    /// \param transaction
+    /// Input
+    /// The MgTransaction instance on which the sql statement will be executed.
     ///
     /// \return
     /// An positive integer value indicating how many instances (rows) have been affected.
@@ -795,6 +808,7 @@ INTERNAL_API:
     ///
     INT32 ExecuteSqlNonQuery( MgResourceIdentifier* resource,
                               CREFSTRING sqlNonSelectStatement,
+                              MgParameterCollection* params,
                               MgTransaction* transaction );
 
     /////////////////////////////////////////////////////////////////

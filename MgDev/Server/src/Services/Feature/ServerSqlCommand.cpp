@@ -44,7 +44,7 @@ void MgServerSqlCommand::CloseConnection()
 }
 
 // Executes the describe schema command and serializes the schema to XML
-MgSqlDataReader* MgServerSqlCommand::ExecuteQuery(MgResourceIdentifier* resource, CREFSTRING sqlStatement, MgTransaction* transaction)
+MgSqlDataReader* MgServerSqlCommand::ExecuteQuery(MgResourceIdentifier* resource, CREFSTRING sqlStatement, MgParameterCollection* params, MgTransaction* transaction)
 {
     Ptr<MgSqlDataReader> mgSqlDataReader;
 
@@ -57,11 +57,24 @@ MgSqlDataReader* MgServerSqlCommand::ExecuteQuery(MgResourceIdentifier* resource
     FdoPtr<FdoISQLCommand> fdoCommand = (FdoISQLCommand*)m_fdoConn->CreateCommand(FdoCommandType_SQLCommand);
     CHECKNULL((FdoISQLCommand*)fdoCommand, L"MgServerSqlCommand.ExecuteQuery");
 
+    // Set SQL statement
     fdoCommand->SetSQLStatement((FdoString*)sqlStatement.c_str());
+
+    // Set parameters
+    FdoPtr<FdoParameterValueCollection> fdoParams = NULL;
+    if (NULL != params && params->GetCount() > 0)
+    {
+        fdoParams = fdoCommand->GetParameterValues();
+        MgServerFeatureUtil::FillFdoParameterCollection(params, fdoParams);
+    }
 
     // Execute the command
     FdoPtr<FdoISQLDataReader> sqlReader = fdoCommand->ExecuteReader();
     CHECKNULL((FdoISQLDataReader*)sqlReader, L"MgServerSqlCommand.ExecuteQuery");
+
+    // Update parameter whose direction is InputOutput, Output, or Return.
+    if (NULL != params && params->GetCount() > 0)
+        MgServerFeatureUtil::UpdateParameterCollection(fdoParams, params);
 
     mgSqlDataReader = new MgServerSqlDataReader(m_featureConnection, sqlReader, m_providerName);
     CHECKNULL((MgSqlDataReader*)mgSqlDataReader, L"MgServerSqlCommand.ExecuteQuery");
@@ -72,7 +85,7 @@ MgSqlDataReader* MgServerSqlCommand::ExecuteQuery(MgResourceIdentifier* resource
 }
 
 // Executes the describe schema command and serializes the schema to XML
-INT32 MgServerSqlCommand::ExecuteNonQuery(MgResourceIdentifier* resource, CREFSTRING sqlStatement, MgTransaction* transaction)
+INT32 MgServerSqlCommand::ExecuteNonQuery(MgResourceIdentifier* resource, CREFSTRING sqlStatement, MgParameterCollection* params, MgTransaction* transaction)
 {
     INT32 rowsAffected = 0;
 
@@ -85,7 +98,20 @@ INT32 MgServerSqlCommand::ExecuteNonQuery(MgResourceIdentifier* resource, CREFST
     FdoPtr<FdoISQLCommand> fdoCommand = (FdoISQLCommand*)m_fdoConn->CreateCommand(FdoCommandType_SQLCommand);
     CHECKNULL((FdoISQLCommand*)fdoCommand, L"MgServerSqlCommand.ExecuteQuery");
 
+    // Set SQL statement
     fdoCommand->SetSQLStatement((FdoString*)sqlStatement.c_str());
+
+    // Set parameters
+    FdoPtr<FdoParameterValueCollection> fdoParams = NULL;
+    if (NULL != params && params->GetCount() > 0)
+    {
+        fdoParams = fdoCommand->GetParameterValues();
+        MgServerFeatureUtil::FillFdoParameterCollection(params, fdoParams);
+    }
+
+    // Update parameter whose direction is InputOutput, Output, or Return.
+    if (NULL != params && params->GetCount() > 0)
+        MgServerFeatureUtil::UpdateParameterCollection(fdoParams, params);
 
     // Execute the command
     rowsAffected = fdoCommand->ExecuteNonQuery();

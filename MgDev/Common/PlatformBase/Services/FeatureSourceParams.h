@@ -28,7 +28,8 @@
 /// with MgFeatureSource::CreateFeatureSource. This class cannot
 /// be instantiated directly.
 /// \remarks
-/// Currently there is one concrete class: MgCreateSdfParams.
+/// Currently there are two concrete classes: MgCreateSdfParams
+/// and MgFileFeatureSourceParams.
 ///
 class MG_PLATFORMBASE_API MgFeatureSourceParams : public MgSerializable
 {

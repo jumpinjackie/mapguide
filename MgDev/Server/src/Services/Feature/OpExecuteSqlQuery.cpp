@@ -67,7 +67,7 @@ void MgOpExecuteSqlQuery::Execute()
         // Get the feature source
         Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
 
-        // Get the schema name
+        // Get the SQL statement
         STRING sqlStatement;
         m_stream->GetString(sqlStatement);
 
@@ -87,14 +87,17 @@ void MgOpExecuteSqlQuery::Execute()
         // Write the response
         EndExecution((MgSqlDataReader*)sqlReader);
     }
-    else if (3 == m_packet.m_NumArguments)
+    else if (4 == m_packet.m_NumArguments)
     {
         // Get the feature source
         Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
 
-        // Get the schema name
+        // Get the SQL statement
         STRING sqlStatement;
         m_stream->GetString(sqlStatement);
+
+        // Get parameters binded to the SQL statement
+        Ptr<MgParameterCollection> parameters = (MgParameterCollection*)m_stream->GetObject();
 
         // Get the transaction id
         STRING transactionId;
@@ -121,7 +124,7 @@ void MgOpExecuteSqlQuery::Execute()
         Ptr<MgServerFeatureTransaction> transaction = transactionPool->GetTransaction(transactionId);
 
         // Execute the operation
-        Ptr<MgSqlDataReader> sqlReader = m_service->ExecuteSqlQuery(resource, sqlStatement, (MgTransaction*)transaction.p);
+        Ptr<MgSqlDataReader> sqlReader = m_service->ExecuteSqlQuery(resource, sqlStatement, parameters, (MgTransaction*)transaction.p);
 
         // Write the response
         EndExecution((MgSqlDataReader*)sqlReader);

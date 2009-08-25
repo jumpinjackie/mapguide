@@ -93,6 +93,8 @@
 #include "Services/LongTransactionData.cpp"
 #include "Services/LongTransactionReader.cpp"
 #include "Services/ObjectPropertyDefinition.cpp"
+#include "Services/Parameter.cpp"
+#include "Services/ParameterCollection.cpp"
 #include "Services/Raster.cpp"
 #include "Services/RasterProperty.cpp"
 #include "Services/RasterPropertyDefinition.cpp"

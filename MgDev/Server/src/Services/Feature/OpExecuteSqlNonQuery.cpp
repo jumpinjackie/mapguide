@@ -68,7 +68,7 @@ void MgOpExecuteSqlNonQuery::Execute()
         // Get the feature source
         Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
 
-        // Get the schema name
+        // Get the SQL statement
         STRING sqlNonSelectStatement;
         m_stream->GetString(sqlNonSelectStatement);
 
@@ -88,14 +88,17 @@ void MgOpExecuteSqlNonQuery::Execute()
         // Write the response
         EndExecution(rowsUpdated);
     }
-    else if (3 == m_packet.m_NumArguments)
+    else if (4 == m_packet.m_NumArguments)
     {
         // Get the feature source
         Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
 
-        // Get the schema name
+        // Get the SQL statement
         STRING sqlNonSelectStatement;
         m_stream->GetString(sqlNonSelectStatement);
+
+        // Get parameters binded to the SQL statement
+        Ptr<MgParameterCollection> parameters = (MgParameterCollection*)m_stream->GetObject();
 
         // Get the transaction id
         STRING transactionId;
@@ -122,7 +125,7 @@ void MgOpExecuteSqlNonQuery::Execute()
         Ptr<MgServerFeatureTransaction> transaction = transactionPool->GetTransaction(transactionId);
 
         // Execute the operation
-        INT32 rowsUpdated = m_service->ExecuteSqlNonQuery(resource, sqlNonSelectStatement, (MgTransaction*)transaction.p);
+        INT32 rowsUpdated = m_service->ExecuteSqlNonQuery(resource, sqlNonSelectStatement, parameters, (MgTransaction*)transaction.p);
 
         // Write the response
         EndExecution(rowsUpdated);

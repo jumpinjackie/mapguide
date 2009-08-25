@@ -183,6 +183,26 @@ PUBLISHED_API:
     ///
     STRING GetQualifiedName();  /// __get, __set
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Marks the property definition for deletion.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// void Delete();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// void Delete();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// void Delete();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Returns nothing.
+    ///
+    void Delete();
+
 EXTERNAL_API:
 
     /////////////////////////////////////////////////////////////////
@@ -220,6 +240,16 @@ INTERNAL_API:
     ///
     virtual void Deserialize(MgStream* stream);
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Checks whether the property definition is marked as deleted.
+    ///
+    /// \return
+    /// Returns true if the property definition is marked as deleted,
+    /// false otherwise.
+    ///
+    bool IsDeleted();
+
 protected:
 
     /////////////////////////////////////////////////////////////////
@@ -256,6 +286,7 @@ private:
     STRING          m_qualifiedName;
     STRING          m_description;
     INT16           m_propertyType;
+    bool            m_isDeleted;
 
 CLASS_ID:
     static const INT32 m_cls_id = Foundation_Property_PropertyDefinition;

@@ -55,6 +55,7 @@ MgPropertyDefinition::MgPropertyDefinition(CREFSTRING name, INT16 type)
     }
 
     m_propertyType = type;
+    m_isDeleted = false;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -64,6 +65,7 @@ MgPropertyDefinition::MgPropertyDefinition(CREFSTRING name, INT16 type)
 MgPropertyDefinition::MgPropertyDefinition()
 {
     m_propertyType = MgPropertyType::Byte;
+    m_isDeleted = false;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -159,6 +161,7 @@ void MgPropertyDefinition::Serialize(MgStream* stream)
     stream->WriteString(GetDescription());
     stream->WriteString(GetQualifiedName());
     stream->WriteInt16((INT16)m_propertyType);
+    stream->WriteBoolean(m_isDeleted);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -172,6 +175,7 @@ void MgPropertyDefinition::Deserialize(MgStream* stream)
 {
     STRING str;
     INT16 type;
+    bool isDeleted;
 
     stream->GetString(str);
     SetName(str);
@@ -184,6 +188,34 @@ void MgPropertyDefinition::Deserialize(MgStream* stream)
 
     stream->GetInt16(type);
     m_propertyType = type;
+
+    stream->GetBoolean(isDeleted);
+    m_isDeleted = isDeleted;
+}
+
+/////////////////////////////////////////////////////////////////
+/// <summary>
+/// Marks the property definition for deletion.
+/// </summary>
+/// <returns>
+/// Returns nothing.
+/// </returns>
+void MgPropertyDefinition::Delete()
+{
+    m_isDeleted = true;
+}
+
+/////////////////////////////////////////////////////////////////
+/// <summary>
+/// Checks whether the property definition is marked as deleted.
+/// </summary>
+/// <returns>
+/// Returns true if the property definition is marked as deleted,
+/// false otherwise.
+/// </returns>
+bool MgPropertyDefinition::IsDeleted()
+{
+    return m_isDeleted;
 }
 
 /////////////////////////////////////////////////////////////////

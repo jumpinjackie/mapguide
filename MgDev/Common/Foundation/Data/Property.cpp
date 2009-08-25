@@ -23,7 +23,6 @@
 /// </summary>
 MgProperty::MgProperty()
 {
-    m_isDeleted = false;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -77,34 +76,10 @@ void MgProperty::SetName(CREFSTRING name)
     m_propertyName = name;
 }
 
-/////////////////////////////////////////////////////////////////
-/// <summary>
-/// Marks the property for deletion.
-/// </summary>
-/// <returns>
-/// Returns nothing.
-/// </returns>
-void MgProperty::Delete()
-{
-    m_isDeleted = true;
-}
-
-/////////////////////////////////////////////////////////////////
-/// <summary>
-/// Checks whether the property is marked as deleted.
-/// </summary>
-/// <returns>
-/// Returns true if the property is marked as deleted,
-/// false otherwise.
-/// </returns>
-bool MgProperty::IsDeleted()
-{
-    return m_isDeleted;
-}
-
 //////////////////////////////////////////////////////////////
+/// <summary>
 // Does it allow to set the name
-//
+/// </summary>
 bool MgProperty::CanSetName()
 {
     return true;
