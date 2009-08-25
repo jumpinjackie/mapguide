@@ -19,9 +19,9 @@
 
 MG_IMPL_DYNCREATE(MgParameter);
 
-#define CHECK_NULL_PARAMETER() \
+#define CHECK_NULL_PARAMETER(method_name) \
     if (NULL == m_parameter) \
-        throw new MgInvalidOperationException(WIDEN(__FUNCTION__), __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgInvalidOperationException(method_name, __LINE__, __WFILE__, NULL, L"", NULL);
 
 ///////////////////////////////////////////////////////////////////
 /// <summary>
@@ -116,7 +116,7 @@ INT32 MgParameter::GetDirection()
 /// </returns>
 STRING MgParameter::GetName()
 {
-    CHECK_NULL_PARAMETER();
+    CHECK_NULL_PARAMETER(L"MgParameter.GetName");
     return m_parameter->GetName();
 }
 
@@ -129,7 +129,7 @@ STRING MgParameter::GetName()
 /// </returns>
 void MgParameter::SetName(CREFSTRING name)
 {
-    CHECK_NULL_PARAMETER();
+    CHECK_NULL_PARAMETER(L"MgParameter.SetName");
     m_parameter->SetName(name);
 }
 
@@ -142,7 +142,7 @@ void MgParameter::SetName(CREFSTRING name)
 /// </param>
 void MgParameter::Serialize(MgStream* stream)
 {
-    CHECK_NULL_PARAMETER();
+    CHECK_NULL_PARAMETER(L"MgParameter.Serialize");
     m_parameter->Serialize(stream);
     stream->WriteInt32(m_parameterDirection);
 }
@@ -156,7 +156,7 @@ void MgParameter::Serialize(MgStream* stream)
 /// </param>
 void MgParameter::Deserialize(MgStream* stream)
 {
-    CHECK_NULL_PARAMETER();
+    CHECK_NULL_PARAMETER(L"MgParameter.Deserialize");
     m_parameter->Deserialize(stream);
     stream->GetInt32(m_parameterDirection);
 }
