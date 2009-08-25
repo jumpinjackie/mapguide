@@ -86,6 +86,8 @@ include_SOURCES = \
   Services/LongTransactionData.cpp \
   Services/LongTransactionReader.cpp \
   Services/ObjectPropertyDefinition.cpp \
+  Services/Parameter.cpp \
+  Services/ParameterCollection.cpp \
   Services/Raster.cpp \
   Services/RasterProperty.cpp \
   Services/RasterPropertyDefinition.cpp \
@@ -205,6 +207,9 @@ noinst_HEADERS = $(include_SOURCES) \
   Services/ObjectPropertyDefinition.h \
   Services/ObjectPropertyType.h \
   Services/OrderingOption.h \
+  Services/ParameterDirection.h \
+  Services/Parameter.h \
+  Services/ParameterCollection.h \
   Services/PlatformBaseClassId.h \
   Services/Raster.h \
   Services/RasterProperty.h \

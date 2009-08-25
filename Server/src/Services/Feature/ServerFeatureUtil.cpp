@@ -25,7 +25,7 @@ static std::map<FdoPropertyType, INT32>                 s_FdoPropertyType;
 static std::map<FdoDataType, INT32>                     s_FeatureUtilFdoDataType;
 static std::map<INT32, FdoOrderingOption>               s_FdoOrderingOption;
 static std::map<INT32, STRING>                          s_CustomFunctions;
-static std::map<INT32, FdoSpatialOperations> s_FdoSpatialOperation;
+static std::map<INT32, FdoSpatialOperations>            s_FdoSpatialOperation;
 
 bool MgServerFeatureUtil::m_isInitialized = MgServerFeatureUtil::Initialize();
 
@@ -578,6 +578,61 @@ MgByteReader* MgServerFeatureUtil::GetRaster(FdoIReader* reader, CREFSTRING rast
     return byteReader.Detach();
 }
 
+void MgServerFeatureUtil::FillFdoParameterCollection(MgParameterCollection* source, FdoParameterValueCollection* target)
+{
+    CHECKNULL(source, L"MgServerFeatureUtil.FillFdoParameterCollection")
+    CHECKNULL(target, L"MgServerFeatureUtil.FillFdoParameterCollection")
+
+    INT32 cnt = source->GetCount();
+    for (INT32 i = 0; i < cnt; i++)
+    {
+        Ptr<MgParameter> param = source->GetItem(i);
+        FdoPtr<FdoParameterValue> fdoParam = MgParameterToFdoParameter(param);
+        target->Add(fdoParam);
+    }
+}
+
+void MgServerFeatureUtil::FillParameterCollection(FdoParameterValueCollection* source, MgParameterCollection* target)
+{
+    CHECKNULL(source, L"MgServerFeatureUtil.FillParameterCollection")
+    CHECKNULL(target, L"MgServerFeatureUtil.FillParameterCollection")
+
+    INT32 cnt = source->GetCount();
+    for (INT32 i = 0; i < cnt; i++)
+    {
+        FdoPtr<FdoParameterValue> fdoParam = source->GetItem(i);
+        FdoPtr<MgParameter> param = FdoParameterValueToMgParameter(fdoParam);
+        target->Add(param);
+    }
+}
+
+void MgServerFeatureUtil::UpdateParameterCollection(FdoParameterValueCollection* source, MgParameterCollection* target)
+{
+    CHECKNULL(source, L"MgServerFeatureUtil.UpdateParameterCollection")
+    CHECKNULL(target, L"MgServerFeatureUtil.UpdateParameterCollection")
+
+    if (source->GetCount() != target->GetCount())
+    {
+        throw new MgInvalidArgumentException(L"MgServerFeatureUtil.UpdateParameterCollection",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    INT32 cnt = source->GetCount();
+    for (INT32 i = 0; i < cnt; i++)
+    {
+        FdoPtr<FdoParameterValue> fdoParam = source->GetItem(i);
+        FdoPtr<MgParameter> param = target->GetItem(i);
+        FdoParameterDirection fdoParamDirection = fdoParam->GetDirection();
+        if (fdoParamDirection == FdoParameterDirection_InputOutput ||
+            fdoParamDirection == FdoParameterDirection_Ouput ||
+            fdoParamDirection == FdoParameterDirection_Return)
+        {
+            FdoPtr<MgNullableProperty> prop = dynamic_cast<MgNullableProperty*>(FdoParameterValueToMgProperty(fdoParam));
+            param->SetProperty(prop);
+        }
+    }
+}
+
 void MgServerFeatureUtil::FillFdoPropertyCollection(MgPropertyCollection* srcCol, FdoPropertyValueCollection* paramCol)
 {
     CHECKNULL(srcCol, L"MgServerFeatureUtil.FillFdoPropertyCollection")
@@ -606,6 +661,235 @@ FdoParameterValueCollection* MgServerFeatureUtil::CreateFdoParameterCollection(M
     }
 
     return paramCol.Detach();
+}
+
+MgParameter* MgServerFeatureUtil::FdoParameterValueToMgParameter(FdoParameterValue* fdoParamValue)
+{
+    CHECKNULL(fdoParamValue, L"MgServerFeatureUtil.FdoParameterValueToMgParameter")
+    Ptr<MgNullableProperty> prop = dynamic_cast<MgNullableProperty*>(FdoParameterValueToMgProperty(fdoParamValue));
+    CHECKNULL(prop, L"MgServerFeatureUtil.FdoParameterValueToMgParameter")
+
+    Ptr<MgParameter> param = new MgParameter();
+    param->SetProperty(prop);
+
+    FdoParameterDirection fdoParamDirection = fdoParamValue->GetDirection();
+    INT32 mgParameterDirection = GetMgParameterDirection(fdoParamDirection);
+    param->SetDirection(mgParameterDirection);
+    return param.Detach();
+}
+
+MgProperty* MgServerFeatureUtil::FdoParameterValueToMgProperty(FdoParameterValue* fdoParamValue)
+{
+    CHECKNULL(fdoParamValue, L"MgServerFeatureUtil.FdoParameterValueToMgProperty")
+
+    FdoPtr<FdoLiteralValue> fdoLiteralValue = fdoParamValue->GetValue();
+    CHECKNULL(fdoLiteralValue, L"MgServerFeatureUtil.FdoParameterValueToMgProperty")
+
+    Ptr<MgNullableProperty> prop = NULL;
+    STRING paramName = fdoParamValue->GetName();
+    FdoLiteralValueType fdoValueType = fdoLiteralValue->GetLiteralValueType();
+    if (FdoLiteralValueType_Data == fdoValueType)
+    {
+        FdoDataValue* fdoDataValue = dynamic_cast<FdoDataValue*>(fdoLiteralValue.p);
+        FdoDataType fdoDataType = fdoDataValue->GetDataType();
+        bool isNull = fdoDataValue->IsNull();
+        switch (fdoDataType)
+        {
+            case FdoDataType_Boolean:
+                if (isNull)
+                {
+                    prop = new MgBooleanProperty();
+                    prop->SetName(paramName);
+                    prop->SetNull(true);
+                }
+                else
+                {
+                    FdoBooleanValue* value = dynamic_cast<FdoBooleanValue*>(fdoDataValue);
+                    prop = new MgBooleanProperty(paramName, value->GetBoolean());
+                }
+                break;
+
+            case FdoDataType_Byte:
+                if (isNull)
+                {
+                    prop = new MgByteProperty();
+                    prop->SetName(paramName);
+                    prop->SetNull(true);
+                }
+                else
+                {
+                    FdoByteValue* value = dynamic_cast<FdoByteValue*>(fdoDataValue);
+                    prop = new MgByteProperty(paramName, value->GetByte());
+                }
+                break;
+
+            case FdoDataType_DateTime:
+                if (isNull)
+                {
+                    prop = new MgDateTimeProperty();
+                    prop->SetName(paramName);
+                    prop->SetNull(true);
+                }
+                else
+                {
+                    FdoDateTimeValue* value = dynamic_cast<FdoDateTimeValue*>(fdoDataValue);
+                    FdoDateTime fdoDateTime = value->GetDateTime();
+                    Ptr<MgDateTime> dateTime = new MgDateTime(fdoDateTime.year, fdoDateTime.month, fdoDateTime.day,
+                                                              fdoDateTime.hour, fdoDateTime.minute, fdoDateTime.seconds);
+                    prop = new MgDateTimeProperty(paramName, dateTime);
+                }
+                break;
+
+            case FdoDataType_Decimal:
+                if (isNull)
+                {
+                    prop = new MgDoubleProperty();
+                    prop->SetName(paramName);
+                    prop->SetNull(true);
+                }
+                else
+                {
+                    FdoDecimalValue* value = dynamic_cast<FdoDecimalValue*>(fdoDataValue);
+                    prop = new MgDoubleProperty(paramName, value->GetDecimal());
+                }
+                break;
+
+            case FdoDataType_Double:
+                if (isNull)
+                {
+                    prop = new MgDoubleProperty();
+                    prop->SetName(paramName);
+                    prop->SetNull(true);
+                }
+                else
+                {
+                    FdoDoubleValue* value = dynamic_cast<FdoDoubleValue*>(fdoDataValue);
+                    prop = new MgDoubleProperty(paramName, value->GetDouble());
+                }
+                break;
+
+            case FdoDataType_Int16:
+                if (isNull)
+                {
+                    prop = new MgInt16Property();
+                    prop->SetName(paramName);
+                    prop->SetNull(true);
+                }
+                else
+                {
+                    FdoInt16Value* value = dynamic_cast<FdoInt16Value*>(fdoDataValue);
+                    prop = new MgInt16Property(paramName, value->GetInt16());
+                }
+                break;
+
+            case FdoDataType_Int32:
+                if (isNull)
+                {
+                    prop = new MgInt32Property();
+                    prop->SetName(paramName);
+                    prop->SetNull(true);
+                }
+                else
+                {
+                    FdoInt32Value* value = dynamic_cast<FdoInt32Value*>(fdoDataValue);
+                    prop = new MgInt32Property(paramName, value->GetInt32());
+                }
+                break;
+
+            case FdoDataType_Int64:
+                if (isNull)
+                {
+                    prop = new MgInt64Property();
+                    prop->SetName(paramName);
+                    prop->SetNull(true);
+                }
+                else
+                {
+                    FdoInt64Value* value = dynamic_cast<FdoInt64Value*>(fdoDataValue);
+                    prop = new MgInt64Property(paramName, value->GetInt64());
+                }
+                break;
+
+            case FdoDataType_Single:
+                if (isNull)
+                {
+                    prop = new MgSingleProperty();
+                    prop->SetName(paramName);
+                    prop->SetNull(true);
+                }
+                else
+                {
+                    FdoSingleValue* value = dynamic_cast<FdoSingleValue*>(fdoDataValue);
+                    prop = new MgSingleProperty(paramName, value->GetSingle());
+                }
+                break;
+
+            case FdoDataType_String:
+                if (isNull)
+                {
+                    prop = new MgStringProperty();
+                    prop->SetName(paramName);
+                    prop->SetNull(true);
+                }
+                else
+                {
+                    FdoStringValue* value = dynamic_cast<FdoStringValue*>(fdoDataValue);
+                    prop = new MgStringProperty(paramName, value->GetString());
+                }
+                break;
+
+            case FdoDataType_BLOB:
+                if (isNull)
+                {
+                    prop = new MgBlobProperty();
+                    prop->SetName(paramName);
+                    prop->SetNull(true);
+                }
+                else
+                {
+                    FdoBLOBValue* value = dynamic_cast<FdoBLOBValue*>(fdoDataValue);
+                    FdoPtr<FdoByteArray> fdoByteArray = value->GetData();
+                    Ptr<MgByteReader> mgReader = new MgByteReader( fdoByteArray->GetData(), fdoByteArray->GetCount(), MgMimeType::Binary);
+                    prop = new MgBlobProperty(paramName, mgReader);
+                }
+                break;
+
+            case FdoDataType_CLOB:
+                if (isNull)
+                {
+                    prop = new MgClobProperty();
+                    prop->SetName(paramName);
+                    prop->SetNull(true);
+                }
+                else
+                {
+                    FdoCLOBValue* value = dynamic_cast<FdoCLOBValue*>(fdoDataValue);
+                    FdoPtr<FdoByteArray> fdoByteArray = value->GetData();
+                    Ptr<MgByteReader> mgReader = new MgByteReader( fdoByteArray->GetData(), fdoByteArray->GetCount(), MgMimeType::Binary);
+                    prop = new MgClobProperty(paramName, mgReader);
+                }
+                break;
+        }
+    }
+    else if (FdoLiteralValueType_Geometry == fdoValueType)
+    {
+        FdoGeometryValue* fdoGeoVal = dynamic_cast<FdoGeometryValue*>(fdoLiteralValue.p);
+        bool isNull = fdoGeoVal->IsNull();
+        if (isNull)
+        {
+            prop = new MgGeometryProperty();
+            prop->SetName(paramName);
+            prop->SetNull(true);
+        }
+        else
+        {
+            FdoPtr<FdoByteArray> fdoByteArray = fdoGeoVal->GetGeometry();
+            Ptr<MgByteReader> mgReader = new MgByteReader(fdoByteArray->GetData(), fdoByteArray->GetCount(), MgMimeType::Agf);
+            prop = new MgGeometryProperty(paramName, mgReader);
+        }
+    }
+
+    return prop.Detach();
 }
 
 FdoLiteralValue* MgServerFeatureUtil::MgPropertyToFdoDataValue(MgProperty* srcProp)
@@ -830,6 +1114,17 @@ FdoParameterValue* MgServerFeatureUtil::MgPropertyToFdoParameter(MgProperty* src
     assert(!str.empty());
 
     return FdoParameterValue::Create(str.c_str(), fdoValue);
+}
+
+FdoParameterValue* MgServerFeatureUtil::MgParameterToFdoParameter(MgParameter* srcParam)
+{
+    Ptr<MgProperty> srcProp = srcParam->GetProperty();
+    assert(srcProp);
+
+    FdoPtr<FdoParameterValue> value = MgPropertyToFdoParameter(srcProp);
+    FdoParameterDirection paramDirection = GetFdoParameterDirection(srcParam->GetDirection());
+    value->SetDirection(paramDirection);
+    return value.Detach();
 }
 
 FdoPropertyValue* MgServerFeatureUtil::MgPropertyToFdoProperty(MgProperty* srcProp)
@@ -2342,6 +2637,92 @@ FdoDataType MgServerFeatureUtil::GetFdoDataType(INT32 awPropType)
     }
 
     return fdoDataType;
+}
+
+FdoParameterDirection MgServerFeatureUtil::GetFdoParameterDirection(INT32 paramDirection)
+{
+    FdoParameterDirection fdoParameterDirection;
+    switch(paramDirection)
+    {
+        case MgParameterDirection::Input:
+        {
+            fdoParameterDirection = FdoParameterDirection_Input;
+            break;
+        }
+        case MgParameterDirection::InputOutput:
+        {
+            fdoParameterDirection = FdoParameterDirection_InputOutput;
+            break;
+        }
+        case MgParameterDirection::Output:
+        {
+            fdoParameterDirection = FdoParameterDirection_Ouput;
+            break;
+        }
+        case MgParameterDirection::Return:
+        {
+            fdoParameterDirection = FdoParameterDirection_Return;
+            break;
+        }
+        default:
+        {
+            // We will probably never hit this code
+            STRING buffer;
+            MgUtil::Int32ToString(paramDirection, buffer);
+
+            MgStringCollection arguments;
+            arguments.Add(L"1");
+            arguments.Add(buffer);
+
+            throw new MgInvalidArgumentException(L"MgServerFeatureUtil.GetFdoParameterDirection",
+                __LINE__, __WFILE__, &arguments, L"", NULL);
+        }
+    }
+
+    return fdoParameterDirection;
+}
+
+INT32 MgServerFeatureUtil::GetMgParameterDirection(FdoParameterDirection fdoParamDirection)
+{
+    INT32 parameterDirection;
+    switch(fdoParamDirection)
+    {
+        case FdoParameterDirection_Input:
+        {
+            parameterDirection = MgParameterDirection::Input;
+            break;
+        }
+        case FdoParameterDirection_InputOutput:
+        {
+            parameterDirection = MgParameterDirection::InputOutput;
+            break;
+        }
+        case FdoParameterDirection_Ouput:
+        {
+            parameterDirection = MgParameterDirection::Output;
+            break;
+        }
+        case FdoParameterDirection_Return:
+        {
+            parameterDirection = MgParameterDirection::Return;
+            break;
+        }
+        default:
+        {
+            // We will probably never hit this code
+            STRING buffer;
+            MgUtil::Int32ToString(fdoParamDirection, buffer);
+
+            MgStringCollection arguments;
+            arguments.Add(L"1");
+            arguments.Add(buffer);
+
+            throw new MgInvalidArgumentException(L"MgServerFeatureUtil.GetMgParameterDirection",
+                __LINE__, __WFILE__, &arguments, L"", NULL);
+        }
+    }
+
+    return parameterDirection;
 }
 
 //////////////////////////////////////////////////////////////////

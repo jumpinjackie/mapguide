@@ -920,6 +920,9 @@ MgSqlDataReader* MgProxyFeatureService::ExecuteSqlQuery(MgResourceIdentifier* re
 /// SELECT * FROM CLASSNAME WHERE COLOR = RED. This would return all rows
 /// from "CLASSNAME" where COLOR column has value RED.
 /// </param>
+/// <param name="params">Input&Output
+/// Parameters binded to the SQL statement.
+/// </param>
 /// <param name="transaction">Input
 /// The transaction object on which the sql statement will be executed.
 /// </param>
@@ -936,6 +939,7 @@ MgSqlDataReader* MgProxyFeatureService::ExecuteSqlQuery(MgResourceIdentifier* re
 /// MgSqlNotSupported
 MgSqlDataReader* MgProxyFeatureService::ExecuteSqlQuery(MgResourceIdentifier* resource,
                                                         CREFSTRING sqlStatement,
+                                                        MgParameterCollection* params,
                                                         MgTransaction* transaction )
 {
     STRING transactionId = L"";
@@ -949,12 +953,13 @@ MgSqlDataReader* MgProxyFeatureService::ExecuteSqlQuery(MgResourceIdentifier* re
     cmd.ExecuteCommand(m_connProp,                                  // Connection
                        MgCommand::knObject,                         // Return type expected
                        MgFeatureServiceOpId::ExecuteSqlQueryWithTransaction_Id,    // Command Code
-                       3,                                           // No of arguments
+                       4,                                           // No of arguments
                        Feature_Service,                             // Service Id
                        BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knObject, resource,               // Argument#1
                        MgCommand::knString, &sqlStatement,          // Argument#2
-                       MgCommand::knString, &transactionId,         // Argument#3
+                       MgCommand::knObject, params,                 // Argument#3
+                       MgCommand::knString, &transactionId,         // Argument#4
                        MgCommand::knNone);                          // End of argument
 
     SetWarning(cmd.GetWarningObject());
@@ -1015,6 +1020,9 @@ INT32 MgProxyFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
 /// <param name="sqlNonSelectStatement">Input
 /// This would allow users to specify free format SQL statement like INSERT/UPDATE/DELETE/CREATE
 /// </param>
+/// <param name="params">Input&Output
+/// Parameters binded to the SQL statement.
+/// </param>
 /// <param name="transaction">Input
 /// The transaction object on which the sql statement will be executed.
 /// </param>
@@ -1029,6 +1037,7 @@ INT32 MgProxyFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
 /// MgInvalidResourceIdentifer
 INT32 MgProxyFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
                                                 CREFSTRING sqlNonSelectStatement,
+                                                MgParameterCollection* params,
                                                 MgTransaction* transaction)
 {
     STRING transactionId = L"";
@@ -1042,12 +1051,13 @@ INT32 MgProxyFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
     cmd.ExecuteCommand(m_connProp,                                  // Connection
         MgCommand::knInt32,                                         // Return type expected
         MgFeatureServiceOpId::ExecuteSqlNonQueryWithTransaction_Id, // Command Code
-        3,                                                          // No of arguments
+        4,                                                          // No of arguments
         Feature_Service,                                            // Service Id
         BUILD_VERSION(1,0,0),                                       // Operation version
         MgCommand::knObject, resource,                              // Argument#1
         MgCommand::knString, &sqlNonSelectStatement,                // Argument#2
-        MgCommand::knString, &transactionId,                        // Argument#3
+        MgCommand::knObject, params,                                // Argument#3
+        MgCommand::knString, &transactionId,                        // Argument#4
         MgCommand::knNone);                                         // End of argument
 
     SetWarning(cmd.GetWarningObject());

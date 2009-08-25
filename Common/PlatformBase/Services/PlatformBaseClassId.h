@@ -34,6 +34,7 @@
 #define PlatformBase_Collection_PropertyDefinitionCollection        PLATFORMBASE_COLLECTION_ID+1
 #define PlatformBase_Collection_SerializableCollection              PLATFORMBASE_COLLECTION_ID+2
 #define PlatformBase_Collection_StringPropertyCollection            PLATFORMBASE_COLLECTION_ID+3
+#define PlatformBase_Collection_ParameterCollection                 PLATFORMBASE_COLLECTION_ID+4
 
 // Platform Data
 #define PlatformBase_Data_Color                                     PLATFORMBASE_DATA_ID+0
@@ -136,6 +137,7 @@
 #define PlatformBase_FeatureService_GeometryTypeInfo                PLATFORMBASE_FEATURESERVICE_ID+35
 #define PlatformBase_FeatureService_FileFeatureSourceParams         PLATFORMBASE_FEATURESERVICE_ID+36
 #define PlatformBase_FeatureService_FeatureTransaction              PLATFORMBASE_FEATURESERVICE_ID+37
+#define PlatformBase_FeatureService_Parameter                       PLATFORMBASE_FEATURESERVICE_ID+38
 
 // Resource Service
 #define PlatformBase_ResourceService_ResourceIdentifier             PLATFORMBASE_RESOURCESERVICE_ID+0

@@ -579,6 +579,8 @@ public:
     /// This would allow users to specify free format SQL SELECT statement like
     /// SELECT * FROM CLASSNAME WHERE COLOR = RED. This would return all rows
     /// from "CLASSNAME" where COLOR column has value RED.
+    /// <param name="params">InputOutput
+    /// Parameters binded to the SQL statement.
     /// </param>
     /// <param name="transaction">Input
     /// The MgTransaction instance on which the sql statement will be executed.
@@ -596,6 +598,7 @@ public:
     /// MgSqlNotSupported
     MgSqlDataReader* ExecuteSqlQuery( MgResourceIdentifier* resource,
                                       CREFSTRING sqlStatement,
+                                      MgParameterCollection* params,
                                       MgTransaction* transaction );
 
     //////////////////////////////////////////////////////////////////
@@ -635,6 +638,9 @@ public:
     /// <param name="sqlNonSelectStatement">Input
     /// This would allow users to specify free format SQL statement like INSERT/UPDATE/DELETE/CREATE
     /// </param>
+    /// <param name="params">InputOutput
+    /// Parameters binded to the SQL statement.
+    /// </param>
     /// <param name="transaction">Input
     /// The MgTransaction instance on which the sql statement will be executed.
     /// </param>
@@ -649,6 +655,7 @@ public:
     /// MgInvalidResourceIdentifer
     INT32 ExecuteSqlNonQuery( MgResourceIdentifier* resource,
                               CREFSTRING sqlNonSelectStatement,
+                              MgParameterCollection* params,
                               MgTransaction* transaction );
 
     //////////////////////////////////////////////////////////////////

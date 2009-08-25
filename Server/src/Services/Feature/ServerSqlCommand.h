@@ -30,8 +30,8 @@ class MgServerSqlCommand
 public:
     MgServerSqlCommand();
     ~MgServerSqlCommand();
-    MgSqlDataReader* ExecuteQuery(MgResourceIdentifier* resource, CREFSTRING sqlStatement, MgTransaction* transaction);
-    INT32 ExecuteNonQuery(MgResourceIdentifier* resource, CREFSTRING sqlStatement, MgTransaction* transaction);
+    MgSqlDataReader* ExecuteQuery(MgResourceIdentifier* resource, CREFSTRING sqlStatement, MgParameterCollection* params, MgTransaction* transaction);
+    INT32 ExecuteNonQuery(MgResourceIdentifier* resource, CREFSTRING sqlStatement, MgParameterCollection* params, MgTransaction* transaction);
 
 private:
     void Validate(MgResourceIdentifier* resource, CREFSTRING sqlStatement, INT32 commandType, MgTransaction* transaction);

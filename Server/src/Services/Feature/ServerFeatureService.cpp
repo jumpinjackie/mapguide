@@ -683,7 +683,7 @@ MgSqlDataReader* MgServerFeatureService::ExecuteSqlQuery( MgResourceIdentifier* 
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::ExecuteSqlQuery()");
 
     MgServerSqlCommand sqlCommand;
-    return sqlCommand.ExecuteQuery(resource, sqlStatement, NULL);
+    return sqlCommand.ExecuteQuery(resource, sqlStatement, NULL, NULL);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -704,6 +704,9 @@ MgSqlDataReader* MgServerFeatureService::ExecuteSqlQuery( MgResourceIdentifier* 
 /// SELECT * FROM CLASSNAME WHERE COLOR = RED. This would return all rows
 /// from "CLASSNAME" where COLOR column has value RED.
 /// </param>
+/// <param name="params">InputOutput
+/// Parameters binded to the SQL statement.
+/// </param>
 /// <param name="transaction">Input
 /// The MgTransaction instance on which the sql statement will be executed.
 /// </param>
@@ -720,12 +723,13 @@ MgSqlDataReader* MgServerFeatureService::ExecuteSqlQuery( MgResourceIdentifier* 
 /// MgSqlNotSupported
 MgSqlDataReader* MgServerFeatureService::ExecuteSqlQuery( MgResourceIdentifier* resource,
                                                           CREFSTRING sqlStatement,
+                                                          MgParameterCollection* params,
                                                           MgTransaction* transaction )
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::ExecuteSqlQuery()");
 
     MgServerSqlCommand sqlCommand;
-    return sqlCommand.ExecuteQuery(resource, sqlStatement, transaction);
+    return sqlCommand.ExecuteQuery(resource, sqlStatement, params, transaction);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -753,7 +757,7 @@ INT32 MgServerFeatureService::ExecuteSqlNonQuery( MgResourceIdentifier* resource
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::ExecuteSqlNonQuery()");
 
     MgServerSqlCommand sqlCommand;
-    return sqlCommand.ExecuteNonQuery(resource, sqlNonSelectStatement, NULL);
+    return sqlCommand.ExecuteNonQuery(resource, sqlNonSelectStatement, NULL, NULL);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -766,6 +770,10 @@ INT32 MgServerFeatureService::ExecuteSqlNonQuery( MgResourceIdentifier* resource
 /// </param>
 /// <param name="sqlNonSelectStatement">Input
 /// This would allow users to specify free format SQL statement like INSERT/UPDATE/DELETE/CREATE
+/// </param>
+/// </param>
+/// <param name="params">InputOutput
+/// Parameters binded to the SQL statement.
 /// </param>
 /// <param name="transaction">Input
 /// The MgTransaction instance on which the sql statement will be executed.
@@ -781,12 +789,13 @@ INT32 MgServerFeatureService::ExecuteSqlNonQuery( MgResourceIdentifier* resource
 /// MgInvalidResourceIdentifer
 INT32 MgServerFeatureService::ExecuteSqlNonQuery( MgResourceIdentifier* resource,
                                                   CREFSTRING sqlNonSelectStatement,
+                                                  MgParameterCollection* params,
                                                   MgTransaction* transaction )
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::ExecuteSqlNonQuery()");
 
     MgServerSqlCommand sqlCommand;
-    return sqlCommand.ExecuteNonQuery(resource, sqlNonSelectStatement, transaction);
+    return sqlCommand.ExecuteNonQuery(resource, sqlNonSelectStatement, params, transaction);
 }
 
 //////////////////////////////////////////////////////////////////
