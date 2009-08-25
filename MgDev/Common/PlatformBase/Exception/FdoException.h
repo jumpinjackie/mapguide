@@ -76,6 +76,8 @@ EXTERNAL_API:
     /// ID of the message that describes why the exception occurs.
     /// \param whyArguments
     /// Collection of arguments used to format the message that describes why the exception occurs.
+    /// \param nativeErrorCode
+    /// Error code indicating specific underlying database error in the FDO component, if available.
     ///
     MgFdoException(CREFSTRING methodName, INT32 lineNumber,
         CREFSTRING fileName, MgStringCollection* whatArguments,
