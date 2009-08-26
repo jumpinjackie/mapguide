@@ -236,6 +236,7 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
 
     // Process the layers
     Ptr<MgLayerCollection> layers = map->GetLayers();
+    Ptr<MgStringCollection> layerIds = new MgStringCollection();
     for (int i = 0; i < layers->GetCount(); i++)
     {
         Ptr<MgLayerBase> mapLayer = layers->GetItem(i);
@@ -255,9 +256,34 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
         if (!bRequiredInLegend)
             continue;
 
+        layerIds->Add(mapLayer->GetLayerDefinition()->ToString());
+    }
+    if(layerIds->GetCount() != 0)
+    {
+        Ptr<MgStringCollection> layerContents = m_svcResource->GetResourceContents(layerIds, NULL);
+        for(int i = 0; i < layerIds->GetCount(); i ++)
+        {
+            for(int j = 0; j < layers->GetCount(); j ++)
+            {
+                Ptr<MgLayerBase> mapLayer = layers->GetItem(j);
+                if(mapLayer->GetLayerDefinition()->ToString() == layerIds->GetItem(i))
+                {
+                    mapLayer->SetLayerResourceContent(layerContents->GetItem(i));
+                    break;
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < layers->GetCount(); i++)
+    {
+        Ptr<MgLayerBase> mapLayer = layers->GetItem(i);
+
+        if(mapLayer->GetLayerResourceContent() == L"")
+            continue;
+
         // get layer definition
-        Ptr<MgResourceIdentifier> layerid = mapLayer->GetLayerDefinition();
-        auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(m_svcResource, layerid));
+        auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(mapLayer->GetLayerResourceContent()));
 
         // Get bitmaps for rules/themes
         MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
