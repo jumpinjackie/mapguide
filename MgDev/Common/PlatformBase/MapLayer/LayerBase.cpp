@@ -40,7 +40,9 @@ MgLayerBase::MgLayerBase()
       m_expandInLegend(false),
       m_needRefresh(false),
       m_layers(NULL),
-      m_displayOrder(0.0)
+      m_displayOrder(0.0),
+      m_resourceContent(L""),
+      m_forceReadFromServer(false)
 {
 }
 
@@ -58,13 +60,43 @@ MgLayerBase::MgLayerBase(MgResourceIdentifier* layerDefinition, MgResourceServic
       m_expandInLegend(false),
       m_needRefresh(false),
       m_layers(NULL),
-      m_displayOrder(0.)
+      m_displayOrder(0.0),
+      m_resourceContent(L""),
+      m_forceReadFromServer(false)
 {
     m_definition = layerDefinition;
     if(SAFE_ADDREF((MgResourceIdentifier*)m_definition) != NULL)
         m_name = m_definition->GetName();
 
     GetLayerInfoFromDefinition(resourceService);
+
+    //Generate a unique id for this layer
+    MgUtil::GenerateUuid(m_objectId);
+}
+
+//////////////////////////////////////////////////////////////
+// Creates an MgLayerBase object from a layer definition and init layer definition if required.
+//
+MgLayerBase::MgLayerBase(MgResourceIdentifier* layerDefinition, MgResourceService* resourceService, bool initLayerDefinition)
+    : m_type(MgLayerType::Dynamic),
+    m_group((MgLayerGroup*)NULL),
+    m_visible(true),
+    m_selectable(false),
+    m_hasTooltips(false),
+    m_displayInLegend(false),
+    m_expandInLegend(false),
+    m_needRefresh(false),
+    m_layers(NULL),
+    m_displayOrder(0.0),
+    m_resourceContent(L""),
+    m_forceReadFromServer(false)
+{
+    m_definition = layerDefinition;
+    if(SAFE_ADDREF((MgResourceIdentifier*)m_definition) != NULL)
+        m_name = m_definition->GetName();
+
+    if(initLayerDefinition)
+        GetLayerInfoFromDefinition(resourceService);
 
     //Generate a unique id for this layer
     MgUtil::GenerateUuid(m_objectId);
@@ -246,7 +278,6 @@ MgResourceIdentifier* MgLayerBase::GetLayerDefinition()
     return SAFE_ADDREF((MgResourceIdentifier*)m_definition);
 }
 
-
 //////////////////////////////////////////////////////////////
 // Sets the layer definition for this layer.
 // This method can be used to alter the definition of a layer, including the layers
@@ -268,7 +299,38 @@ void MgLayerBase::SetLayerDefinition(MgResourceIdentifier* layerDefinition, MgRe
     m_definition = SAFE_ADDREF((MgResourceIdentifier*)layerDefinition);
     m_name = m_definition->GetName();
 
-    GetLayerInfoFromDefinition(resourceService);
+    m_forceReadFromServer = true;
+    MgLayerBase::GetLayerInfoFromDefinition(resourceService);
+    m_forceReadFromServer = false;
+
+    if(m_layers != NULL)
+        m_layers->GetMap()->OnLayerDefinitionChanged(this);
+}
+
+//////////////////////////////////////////////////////////////////
+/// Gets the layer's resource content.
+///
+STRING MgLayerBase::GetLayerResourceContent()
+{
+    return m_resourceContent;
+}
+
+//////////////////////////////////////////////////////////////////
+/// Sets the resource content for this layer.
+///
+void MgLayerBase::SetLayerResourceContent(CREFSTRING resourceContent)
+{
+    if(resourceContent == L"")
+    {
+        throw new MgNullArgumentException(L"MgLayerBase.SetLayerResourceContent", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    if(m_resourceContent == resourceContent)
+        return;
+
+    m_resourceContent = resourceContent;
+
+    MgLayerBase::GetLayerInfoFromDefinition(NULL);
 
     if(m_layers != NULL)
         m_layers->GetMap()->OnLayerDefinitionChanged(this);
@@ -501,11 +563,34 @@ MdfModel::LayerDefinition* MgLayerBase::GetLayerDefinition(MgResourceService* sv
     Ptr<MgByteReader> reader = svcResource->GetResourceContent(resId, L"");
     Ptr<MgByteSink> sink = new MgByteSink(reader);
     Ptr<MgByte> bytes = sink->ToBuffer();
-
+ 
     assert(bytes->GetLength() > 0);
 
     MdfParser::SAX2Parser parser;
     parser.ParseString((const char*)bytes->Bytes(), bytes->GetLength());
+
+    if (!parser.GetSucceeded())
+    {
+        STRING errorMsg = parser.GetErrorMessage();
+        MgStringCollection arguments;
+        arguments.Add(errorMsg);
+        throw new MgInvalidLayerDefinitionException(L"MgLayerBase::GetLayerDefinition", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    // detach the feature layer definition from the parser - it's
+    // now the caller's responsibility to delete it
+    MdfModel::LayerDefinition* ldef = parser.DetachLayerDefinition();
+    assert(ldef != NULL);
+
+    return ldef;
+}
+
+//static method to create the layer definition
+MdfModel::LayerDefinition* MgLayerBase::GetLayerDefinition(CREFSTRING resourceContent)
+{
+    // get and parse the layer definition
+    MdfParser::SAX2Parser parser;
+    parser.ParseString(resourceContent.c_str(), resourceContent.length());
 
     if (!parser.GetSucceeded())
     {
@@ -536,7 +621,20 @@ void MgLayerBase::GetLayerInfoFromDefinition(MgResourceService* resourceService)
 
     MG_TRY()
 
-    auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(resourceService, m_definition));
+    auto_ptr<MdfModel::LayerDefinition> ldf;
+    if(!m_forceReadFromServer && m_resourceContent != L"")
+    {
+        ldf.reset(MgLayerBase::GetLayerDefinition(m_resourceContent));
+    }
+    else
+    {
+        ldf.reset(MgLayerBase::GetLayerDefinition(resourceService, m_definition));
+        //cache the resource content
+        MdfParser::SAX2Parser parser;
+        std::string content = parser.SerializeToXML(ldf.get(), NULL);
+        MgUtil::MultiByteToWideChar(content, m_resourceContent);
+    }
+
     if(ldf.get() != NULL)
     {
         m_featureSourceId = ldf->GetResourceID();

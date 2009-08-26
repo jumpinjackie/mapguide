@@ -49,6 +49,18 @@ MgLayer::MgLayer(MgResourceIdentifier* layerDefinition, MgResourceService* resou
     }
 }
 
+//////////////////////////////////////////////////////////////////
+/// Creates an MgLayerBase object from a layer definition, pulls identity properties if required, and init layer definition if required.
+///
+MgLayer::MgLayer(MgResourceIdentifier* layerDefinition, MgResourceService* resourceService, bool initIdProps, bool initLayerDefinition)
+    : MgLayerBase(layerDefinition, resourceService, initLayerDefinition)
+{
+    if (initIdProps)
+    {
+        GetLayerInfoFromDefinition(resourceService);
+    }
+}
+
 //////////////////////////////////////////////////////////////
 // Destruct a MgLayerBase object
 //

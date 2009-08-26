@@ -501,6 +501,59 @@ PUBLISHED_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
+    /// Gets the layer's resource content.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// string GetLayerResourceContent();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// String GetLayerResourceContent();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// string GetLayerResourceContent();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Returns the resource content of the layer.
+    ///
+    /// <!-- Example (PHP) -->
+    /// \htmlinclude PHPExampleTop.html
+    /// See \link MgMapBase MgMapBase class \endlink.
+    /// \htmlinclude ExampleBottom.html
+    ///
+    virtual STRING GetLayerResourceContent();  /// __get, __set
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the resource content for this layer.
+    ///
+    /// \note
+    /// If you change the layer's resource content, you must also
+    /// change the cached scale ranges and force an update of any
+    /// layer metadata held in the DWF Viewer's eMap.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// void SetLayerResourceContent(string resourceContent);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// void SetLayerResourceContent(String resourceContent);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// void SetLayerResourceContent(string resourceContent);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resourceContent (STRING)
+    /// The xml content of the layer's resource content.
+    ///
+    /// \return
+    /// Returns nothing.
+    ///
+    virtual void SetLayerResourceContent(CREFSTRING resourceContent);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
     /// Determines whether an entry for the layer should appear in
     /// the legend.
     ///
@@ -845,6 +898,7 @@ PUBLISHED_API:
 INTERNAL_API:
 
     static MdfModel::LayerDefinition* GetLayerDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId);
+    static MdfModel::LayerDefinition* GetLayerDefinition(CREFSTRING resourceContent);
 
     //////////////////////////////////////////////////////////////////
     /// Internal mapping of identifiers for selection purposes
@@ -862,6 +916,12 @@ INTERNAL_API:
     /// Creates an empty MgLayerBase object
     ///
     MgLayerBase();
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Creates an MgLayerBase object from a layer definition and init layer definition if required.
+    ///
+    MgLayerBase(MgResourceIdentifier* layerDefinition, MgResourceService* resourceService, bool initLayerDefinition);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -997,6 +1057,7 @@ CLASS_ID:
 
 protected:
     Ptr<MgResourceIdentifier> m_definition;
+    STRING                m_resourceContent;
     STRING                m_name;
     STRING                m_objectId;
     INT32                 m_type;
@@ -1016,6 +1077,7 @@ protected:
     STRING                m_schemaName;
     STRING                m_geometry;
     IdPropertyList        m_idProps;
+    bool                  m_forceReadFromServer;
 };
 /// \}
 
