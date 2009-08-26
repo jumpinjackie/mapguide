@@ -30,8 +30,9 @@ template class MG_PLATFORMBASE_API Ptr<MgPrintLayoutElementCollection>;
 /// \brief
 /// Manipulates collections of MgPrintLayoutElementBase objects.
 ///
-class MG_PLATFORMBASE_API MgPrintLayoutElementCollection : public MgGuardDisposable
+class MG_PLATFORMBASE_API MgPrintLayoutElementCollection : public MgCollection
 {
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgPrintLayoutElementCollection)
 
 PUBLISHED_API:
@@ -53,7 +54,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the number of print layout elements.
     ///
-    INT32 GetCount();
+    INT32 GetCount() const;
 
     //////////////////////////////////////////////////////////
     /// \brief
@@ -353,6 +354,33 @@ PUBLISHED_API:
     INT32 IndexOf(MgPrintLayoutElementBase* value);
 
 INTERNAL_API:
+
+    //////////////////////////////////////////////////////////
+    /// \brief
+    /// Creates an XML document representing the collection.
+    ///
+    /// \return
+    /// A pointer to an MgByteReader object.
+    ///
+    MgByteReader* ToXml();
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Serializes data to a TCP/IP stream.
+    ///
+    /// \param stream
+    /// Stream
+    ///
+    void Serialize(MgStream* stream);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Deserializes data from a TCP/IP stream.
+    ///
+    /// \param stream
+    /// Stream
+    ///
+    void Deserialize(MgStream* stream);
 
     /// \brief
     /// Constructs an empty MgPrintLayoutElementCollection object.

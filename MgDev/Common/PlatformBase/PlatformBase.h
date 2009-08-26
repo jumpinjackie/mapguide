@@ -33,6 +33,8 @@
 
 // Data types and Properties
 #include "Services/PlatformBaseClassId.h"
+#include "Data/Size2D.h"
+#include "Data/Margin.h"
 #include "Data/BlobProperty.h"
 #include "Data/BooleanProperty.h"
 #include "Data/ByteProperty.h"

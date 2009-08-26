@@ -57,19 +57,19 @@ void IOColor::ElementChars(const wchar_t* ch)
     switch (m_currElemId)
     {
     case eRed:
-        m_color->SetRed(wstrToDouble(ch));
+        m_color->SetRed(wstrToInt(ch));
         break;
 
     case eGreen:
-        m_color->SetGreen(wstrToDouble(ch));
+        m_color->SetGreen(wstrToInt(ch));
         break;
 
     case eBlue:
-        m_color->SetBlue(wstrToDouble(ch));
+        m_color->SetBlue(wstrToInt(ch));
         break;
 
     case eAlpha:
-        m_color->SetAlpha(wstrToDouble(ch));
+        m_color->SetAlpha(wstrToInt(ch));
         break;
     }
 }
@@ -93,22 +93,22 @@ void IOColor::Write(MdfStream& fd, Color* color, Version* version, const std::st
 
     // Property: Red
     fd << tab() << startStr(sRed);
-    fd << DoubleToStr(color->GetRed());
+    fd << IntToStr(color->GetRed());
     fd << endStr(sRed) << std::endl;
 
     // Property: Green
     fd << tab() << startStr(sGreen);
-    fd << DoubleToStr(color->GetGreen());
+    fd << IntToStr(color->GetGreen());
     fd << endStr(sGreen) << std::endl;
 
     // Property: Blue
     fd << tab() << startStr(sBlue);
-    fd << DoubleToStr(color->GetBlue());
+    fd << IntToStr(color->GetBlue());
     fd << endStr(sBlue) << std::endl;
 
     // Property: Alpha
     fd << tab() << startStr(sAlpha);
-    fd << DoubleToStr(color->GetAlpha());
+    fd << IntToStr(color->GetAlpha());
     fd << endStr(sAlpha) << std::endl;
 
     dectab();

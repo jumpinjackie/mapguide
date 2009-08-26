@@ -23,6 +23,8 @@ BEGIN_NAMESPACE_MDFMODEL
 class PrintLayoutDefinition;
 END_NAMESPACE_MDFMODEL
 
+class MgMargin;
+class MgSize2D;
 class MgPrintLayoutServiceBase;
 class MgPrintLayoutElementCollection;
 
@@ -82,6 +84,48 @@ INTERNAL_API:
     /// Gets the extent of the print layout.
     ///
     virtual MgEnvelope* GetExtent();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the paper size used by this print layout.
+    ///
+    virtual MgSize2D* GetPaperSize();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the name of the intended printing device.
+    ///
+    virtual STRING GetDeviceName();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the canonical name of the media e.g. Letter, A4, etc.
+    ///
+    virtual STRING GetMediaName();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the orientation setting. Supported values: Orientation0, Orientation90, Orientation180, Orientation270.
+    ///
+    virtual STRING GetOrientation();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the sizes of the paper margins.
+    ///
+    virtual MgMargin* GetPaperMargin();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the units of the paper dimensions.
+    ///
+    virtual STRING GetUnits();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the background color of the print layout - may not be supported in all output formats and devices.
+    ///
+    virtual MgColor* GetBackgroundColor();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -180,8 +224,16 @@ CLASS_ID:
 
 protected:
 
-    Ptr<MgPrintLayoutElementCollection> m_elements;
+    STRING m_name;
+    STRING m_units;
+    STRING m_mediaName;
+    STRING m_deviceName;
+    STRING m_orientation;
+    Ptr<MgColor> m_backgroundColor;
+    Ptr<MgSize2D> m_paperSize;
     Ptr<MgEnvelope> m_extent;
+    Ptr<MgMargin> m_paperMargin;
+    Ptr<MgPrintLayoutElementCollection> m_elements;
 };
 
 #endif

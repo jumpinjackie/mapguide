@@ -23,19 +23,20 @@
 
 CREATE_ELEMENT_MAP;
 // Start Elements
-ELEM_MAP_ENTRY(1, LayoutElement);
+ELEM_MAP_ENTRY(1, Elements);
 // Local Elements
-ELEM_MAP_ENTRY(2, Name);
-ELEM_MAP_ENTRY(3, ResourceId);
-ELEM_MAP_ENTRY(4, Center);
-ELEM_MAP_ENTRY(5, Width);
-ELEM_MAP_ENTRY(6, Height);
-ELEM_MAP_ENTRY(7, Rotation);
-ELEM_MAP_ENTRY(8, Units);
-ELEM_MAP_ENTRY(9, Visible);
-ELEM_MAP_ENTRY(10, Opacity);
-ELEM_MAP_ENTRY(11, References);
-ELEM_MAP_ENTRY(12, ExtendedData1);
+ELEM_MAP_ENTRY(2, LayoutElement);
+ELEM_MAP_ENTRY(3, Name);
+ELEM_MAP_ENTRY(4, ResourceId);
+ELEM_MAP_ENTRY(5, Center);
+ELEM_MAP_ENTRY(6, Width);
+ELEM_MAP_ENTRY(7, Height);
+ELEM_MAP_ENTRY(8, Rotation);
+ELEM_MAP_ENTRY(9, Units);
+ELEM_MAP_ENTRY(10, Visible);
+ELEM_MAP_ENTRY(11, Opacity);
+ELEM_MAP_ENTRY(12, References);
+ELEM_MAP_ENTRY(13, ExtendedData1);
 
 IOPrintLayoutElementCollection::IOPrintLayoutElementCollection(PrintLayoutElementCollection* layoutElems, Version& version) :
     SAX2ElementHandler(version),
@@ -56,8 +57,11 @@ void IOPrintLayoutElementCollection::StartElement(const wchar_t* name, HandlerSt
 
     switch (m_currElemId)
     {
-    case eLayoutElement:
+    case eElements:
         m_startElemName = name;
+        break;
+
+    case eLayoutElement:
         m_currElem.reset(new PrintLayoutElement());
         break;
 
@@ -128,12 +132,14 @@ void IOPrintLayoutElementCollection::EndElement(const wchar_t* name, HandlerStac
 {
     if (m_startElemName == name)
     {
-        m_currElem->SetUnknownXml(m_unknownXml);
-        m_layoutElems->Adopt(m_currElem.release());
-
         m_startElemName = L"";
         handlerStack->pop();
         delete this;
+    }
+    else if (eLayoutElement == _ElementIdFromName(name))
+    {
+        m_currElem->SetUnknownXml(m_unknownXml);
+        m_layoutElems->Adopt(m_currElem.release());
     }
     else if (eExtendedData1 == _ElementIdFromName(name))
     {

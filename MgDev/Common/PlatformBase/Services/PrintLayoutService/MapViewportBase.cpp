@@ -63,6 +63,9 @@ void MgMapViewportBase::Dispose()
 ///
 void MgMapViewportBase::Serialize(MgStream* stream)
 {
+    // Serialize Parent
+    MgPrintLayoutElementBase::Serialize(stream);
+
     // Write raw data members
     stream->WriteBoolean(m_isOn);
     stream->WriteBoolean(m_isLocked);
@@ -79,6 +82,9 @@ void MgMapViewportBase::Serialize(MgStream* stream)
 ///
 void MgMapViewportBase::Deserialize(MgStream* stream)
 {
+    // Deserialize Parent
+    MgPrintLayoutElementBase::Deserialize(stream);
+
     // Read raw data members
     stream->GetBoolean(m_isOn);
     stream->GetBoolean(m_isLocked);
