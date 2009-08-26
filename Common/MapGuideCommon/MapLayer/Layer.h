@@ -235,6 +235,12 @@ INTERNAL_API:
     MgLayer(MgResourceIdentifier* layerDefinition, MgResourceService* resourceService, bool initIdProps);
 
     //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Creates an MgLayerBase object from a layer definition, pulls identity properties if required, and init layer definition if required.
+    ///
+    MgLayer(MgResourceIdentifier* layerDefinition, MgResourceService* resourceService, bool initIdProps, bool initLayerDefinition);
+
+    //////////////////////////////////////////////////////////////////
     /// Parse the layer definition XML and extracts scale ranges,
     /// feature source and feature class from it
     void GetLayerInfoFromDefinition(MgResourceService* resourceService);

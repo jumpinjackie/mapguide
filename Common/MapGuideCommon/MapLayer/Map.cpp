@@ -249,6 +249,42 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
 
     double displayOrder = LAYER_ZORDER_TOP;
 
+    //Get all the layers (normal layer or base layer) and get the contents of them in a single request.
+    Ptr<MgStringCollection> layerIds = new MgStringCollection();
+    MapLayerCollection* normalLayers = mdef->GetLayers();
+    if(normalLayers)
+    {
+        for(int i = 0; i < normalLayers->GetCount(); i ++)
+        {
+            layerIds->Add(normalLayers->GetAt(i)->GetLayerResourceID());
+        }
+    }
+    BaseMapLayerGroupCollection* baseLayerGroups = mdef->GetBaseMapLayerGroups();
+    if(baseLayerGroups)
+    {
+        for(int i = 0; i < baseLayerGroups->GetCount(); i ++)
+        {
+            BaseMapLayerGroup* baseGroup = (BaseMapLayerGroup*)baseLayerGroups->GetAt(i);
+            BaseMapLayerCollection* baseLayers = baseGroup->GetLayers();
+            if(baseLayers)
+            {
+                for(int j = 0; j < baseLayers->GetCount(); j ++)
+                {
+                    layerIds->Add(baseLayers->GetAt(j)->GetLayerResourceID());
+                }
+            }
+        }
+    }
+    std::map<STRING, STRING> layerContentPair;
+    if(layerIds->GetCount() != 0)
+    {
+        Ptr<MgStringCollection> layerContents = m_resourceService->GetResourceContents(layerIds, NULL);        
+        for(int i = 0; i < layerIds->GetCount(); i ++)
+        {
+            layerContentPair.insert(std::pair<STRING, STRING>(layerIds->GetItem(i), layerContents->GetItem(i)));
+        }
+    }
+
     //build the runtime layers and attach them to their groups
     SCALERANGES scaleRanges;
     MapLayerCollection* layers = mdef->GetLayers();
@@ -260,7 +296,8 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
             //create a runtime layer from this layer and add it to the layer collection
             //pull identity properties as a batch process after the layers are created
             Ptr<MgResourceIdentifier> layerDefId = new MgResourceIdentifier(layer->GetLayerResourceID());
-            Ptr<MgLayerBase> rtLayer = new MgLayer(layerDefId, m_resourceService, false);
+            Ptr<MgLayerBase> rtLayer = new MgLayer(layerDefId, m_resourceService, false, false);
+            rtLayer->SetLayerResourceContent(layerContentPair[layerDefId->ToString()]);
             rtLayer->SetName(layer->GetName());
             rtLayer->SetVisible(layer->IsVisible());
             rtLayer->SetLayerType(MgLayerType::Dynamic);
@@ -344,7 +381,8 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
                     {
                         //create a runtime layer from this base layer and add it to the layer collection
                         Ptr<MgResourceIdentifier> layerDefId = new MgResourceIdentifier(baseLayer->GetLayerResourceID());
-                        Ptr<MgLayerBase> rtLayer = new MgLayer(layerDefId, m_resourceService);
+                        Ptr<MgLayerBase> rtLayer = new MgLayer(layerDefId, m_resourceService, true, false);
+                        rtLayer->SetLayerResourceContent(layerContentPair[layerDefId->ToString()]);
                         rtLayer->SetName(baseLayer->GetName());
                         rtLayer->SetVisible(true);
                         rtLayer->SetLayerType(MgLayerType::BaseMap);
