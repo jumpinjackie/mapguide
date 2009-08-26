@@ -17,6 +17,8 @@
 
 #include "PlatformBase.h"
 
+MG_IMPL_DYNCREATE(MgPrintLayoutElementCollection);
+
 // Constructs an empty MgPrintLayoutElementCollection object.
 //
 MgPrintLayoutElementCollection::MgPrintLayoutElementCollection(MgPrintLayoutBase* owner)
@@ -33,7 +35,7 @@ MgPrintLayoutElementCollection::MgPrintLayoutElementCollection()
 
 // Returns the number of items in the collection
 //
-INT32 MgPrintLayoutElementCollection::GetCount()
+INT32 MgPrintLayoutElementCollection::GetCount() const
 {
     return m_elements->GetCount();
 }
@@ -185,3 +187,34 @@ MgPrintLayoutBase* MgPrintLayoutElementCollection::GetPrintLayout()
 {
     return SAFE_ADDREF(m_owner.p);
 }
+
+// Serializes data to a TCP/IP stream.
+//
+void MgPrintLayoutElementCollection::Serialize(MgStream* stream)
+{
+    INT32 count = this->GetCount();
+    stream->WriteInt32(count);
+    for (INT32 i = 0; i < count; i++)
+        stream->WriteObject(Ptr<MgPrintLayoutElementBase>(this->GetItem(i)));
+}
+
+// Deserializes data from a TCP/IP stream.
+//
+void MgPrintLayoutElementCollection::Deserialize(MgStream* stream)
+{
+    INT32 count = 0;
+    stream->GetInt32(count);
+    for (INT32 i = 0; i < count; i++)
+    {
+        Ptr<MgPrintLayoutElementBase> prop;
+        prop = (MgPrintLayoutElementBase*)stream->GetObject();
+        this->Add(prop);
+    }
+}
+
+// Creates an XML document representing the collection.
+MgByteReader* MgPrintLayoutElementCollection::ToXml()
+{
+    throw new MgNotImplementedException(L"PrintLayoutElementCollection.ToXml", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+

@@ -105,9 +105,13 @@ bool InitializeStaticPlatformData()
     fact->Register(PlatformBase_Collection_PropertyDefinitionCollection, MgPropertyDefinitionCollection::CreateObject);
     fact->Register(PlatformBase_Collection_SerializableCollection, MgSerializableCollection::CreateObject);
     fact->Register(PlatformBase_Collection_StringPropertyCollection, MgStringPropertyCollection::CreateObject);
+
     fact->Register(PlatformBase_Data_Color, MgColor::CreateObject);
     fact->Register(PlatformBase_Data_Point3D, MgPoint3D::CreateObject);
+    fact->Register(PlatformBase_Data_Size2D, MgSize2D::CreateObject);
+    fact->Register(PlatformBase_Data_Margin, MgMargin::CreateObject);
     fact->Register(PlatformBase_Data_Vector3D, MgVector3D::CreateObject);
+
     fact->Register(PlatformBase_Property_PropertyDefinition, MgPropertyDefinition::CreateObject);
     fact->Register(PlatformBase_Property_BlobProperty, MgBlobProperty::CreateObject);
     fact->Register(PlatformBase_Property_BooleanProperty, MgBooleanProperty::CreateObject);
@@ -119,7 +123,9 @@ bool InitializeStaticPlatformData()
     fact->Register(PlatformBase_Property_Int32Property, MgInt32Property::CreateObject);
     fact->Register(PlatformBase_Property_Int64Property, MgInt64Property::CreateObject);
     fact->Register(PlatformBase_Property_SingleProperty, MgSingleProperty::CreateObject);
+
     fact->Register(PlatformBase_Service_Warning, MgWarnings::CreateObject);
+
     fact->Register(PlatformBase_FeatureService_ClassDefinition, MgClassDefinition::CreateObject);
     fact->Register(PlatformBase_FeatureService_DataPropertyDefinition, MgDataPropertyDefinition::CreateObject);
     fact->Register(PlatformBase_FeatureService_GeometricPropertyDefinition, MgGeometricPropertyDefinition::CreateObject);
@@ -146,6 +152,7 @@ bool InitializeStaticPlatformData()
     fact->Register(PlatformBase_FeatureService_FeatureSchemaCollection, MgFeatureSchemaCollection::CreateObject);
     fact->Register(PlatformBase_FeatureService_ClassDefinitionCollection, MgClassDefinitionCollection::CreateObject);
     fact->Register(PlatformBase_FeatureService_CreateSdfParams, MgCreateSdfParams::CreateObject);
+
     fact->Register(PlatformBase_ResourceService_ResourceIdentifier, MgResourceIdentifier::CreateObject);
 
     fact->Register(PlatformBase_MapLayer_MapBase, MgMapBase::CreateObject);
@@ -158,6 +165,8 @@ bool InitializeStaticPlatformData()
     fact->Register(PlatformBase_PrintLayoutService_MapViewportBase, MgMapViewportBase::CreateObject);
     fact->Register(PlatformBase_PrintLayoutService_MapView, MgMapView::CreateObject);
     fact->Register(PlatformBase_PrintLayoutService_PropertyMapping, MgPropertyMapping::CreateObject);
+    fact->Register(PlatformBase_PrintLayoutService_PrintLayoutElementCollection, MgPrintLayoutElementCollection::CreateObject);
+    fact->Register(PlatformBase_PrintLayoutService_PropertyMappingCollection, MgPropertyMappingCollection::CreateObject);
 
     EXCEPTION_CLASS_CREATOR(MgArrayTypeMismatchException)
     EXCEPTION_CLASS_CREATOR(MgDuplicateResourceDataException)

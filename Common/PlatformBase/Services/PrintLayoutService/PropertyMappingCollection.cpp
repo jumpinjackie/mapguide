@@ -17,6 +17,8 @@
 
 #include "PlatformBase.h"
 
+MG_IMPL_DYNCREATE(MgPropertyMappingCollection);
+
 //////////////////////////////////////////////////////////
 ///<summary>
 ///Constructs a PropertyMappingCollection.  The collection is initially empty.

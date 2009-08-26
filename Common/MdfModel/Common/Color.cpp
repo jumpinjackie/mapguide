@@ -36,7 +36,7 @@ Color::Color() :
 //-------------------------------------------------------------------------
 // PURPOSE: Construct and initialize an instance of the Color class.
 //-------------------------------------------------------------------------
-Color::Color(double red, double green, double blue, double alpha) :
+Color::Color(int red, int green, int blue, int alpha) :
     m_red(red),
     m_green(green),
     m_blue(blue),
@@ -54,22 +54,22 @@ Color::~Color()
 //-------------------------------------------------------------------------
 // PURPOSE: Manage properties of this Color object.
 //-------------------------------------------------------------------------
-void Color::SetRed(double red)
+void Color::SetRed(int red)
 {
     m_red = red;
 }
 
-void Color::SetGreen(double green)
+void Color::SetGreen(int green)
 {
     m_green = green;
 }
 
-void Color::SetBlue(double blue)
+void Color::SetBlue(int blue)
 {
     m_blue = blue;
 }
 
-void Color::SetAlpha(double alpha)
+void Color::SetAlpha(int alpha)
 {
     m_alpha = alpha;
 }

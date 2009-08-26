@@ -30,47 +30,47 @@ class MDFMODEL_API Color
 public:
     // Constructor(s)/Destructor
     Color();
-    Color(double red, double green, double blue, double alpha);
+    Color(int red, int green, int blue, int alpha);
     virtual ~Color();
 
     // Operations
-    double GetRed() const;
-    void SetRed(double red);
+    int GetRed() const;
+    void SetRed(int red);
 
-    double GetGreen() const;
-    void SetGreen(double green);
+    int GetGreen() const;
+    void SetGreen(int green);
 
-    double GetBlue() const;
-    void SetBlue(double blue);
+    int GetBlue() const;
+    void SetBlue(int blue);
 
-    double GetAlpha() const;
-    void SetAlpha(double alpha);
+    int GetAlpha() const;
+    void SetAlpha(int alpha);
 
 private:
     // Data Members
-    double m_red;
-    double m_green;
-    double m_blue;
-    double m_alpha;
+    int m_red;
+    int m_green;
+    int m_blue;
+    int m_alpha;
 };
 
 // Inline Methods
-inline double Color::GetRed() const
+inline int Color::GetRed() const
 {
     return m_red;
 }
 
-inline double Color::GetGreen() const
+inline int Color::GetGreen() const
 {
     return m_green;
 }
 
-inline double Color::GetBlue() const
+inline int Color::GetBlue() const
 {
     return m_blue;
 }
 
-inline double Color::GetAlpha() const
+inline int Color::GetAlpha() const
 {
     return m_alpha;
 }

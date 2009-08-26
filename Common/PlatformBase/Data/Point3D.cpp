@@ -84,6 +84,9 @@ void MgPoint3D::Dispose()
 ///
 void MgPoint3D::Serialize(MgStream* stream)
 {
+    stream->WriteDouble(x);
+    stream->WriteDouble(y);
+    stream->WriteDouble(z);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -92,6 +95,9 @@ void MgPoint3D::Serialize(MgStream* stream)
 ///
 void MgPoint3D::Deserialize(MgStream* stream)
 {
+    stream->GetDouble(x);
+    stream->GetDouble(y);
+    stream->GetDouble(z);
 }
 
 //-------------------------------------------------------

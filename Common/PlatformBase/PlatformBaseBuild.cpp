@@ -15,6 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#include "Data/Margin.cpp"
+#include "Data/Size2D.cpp"
 #include "Data/BlobProperty.cpp"
 #include "Data/BooleanProperty.cpp"
 #include "Data/ByteProperty.cpp"

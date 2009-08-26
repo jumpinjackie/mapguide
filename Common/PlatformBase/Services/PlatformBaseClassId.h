@@ -51,6 +51,8 @@
 #define PlatformBase_Property_SingleProperty                        PLATFORMBASE_DATA_ID+11
 #define PlatformBase_Data_Point3D                                   PLATFORMBASE_DATA_ID+12
 #define PlatformBase_Data_Vector3D                                  PLATFORMBASE_DATA_ID+13
+#define PlatformBase_Data_Size2D                                    PLATFORMBASE_DATA_ID+14
+#define PlatformBase_Data_Margin                                    PLATFORMBASE_DATA_ID+15
 
 // Platform Exceptions
 #define PlatformBase_Exception_MgArrayTypeMismatchException                 PLATFORMBASE_EXCEPTION_ID+0

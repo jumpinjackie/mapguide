@@ -37,6 +37,7 @@ template class MG_PLATFORMBASE_API Ptr<MgPropertyMappingCollection>;
 ///
 class MG_PLATFORMBASE_API MgPropertyMappingCollection : public MgCollection
 {
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgPropertyMappingCollection)
 
 INTERNAL_API:
