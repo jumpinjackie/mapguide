@@ -52,7 +52,7 @@ PUBLISHED_API:
     /// \brief
     /// Specifies that the parameter is a return parameter.
     ///
-    static const INT32 Return = 3;
+    static const INT32 Ret = 3;
 };
 /// \}
 
