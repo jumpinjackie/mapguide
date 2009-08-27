@@ -2659,7 +2659,7 @@ FdoParameterDirection MgServerFeatureUtil::GetFdoParameterDirection(INT32 paramD
             fdoParameterDirection = FdoParameterDirection_Output;
             break;
         }
-        case MgParameterDirection::Return:
+        case MgParameterDirection::Ret:
         {
             fdoParameterDirection = FdoParameterDirection_Return;
             break;
@@ -2704,7 +2704,7 @@ INT32 MgServerFeatureUtil::GetMgParameterDirection(FdoParameterDirection fdoPara
         }
         case FdoParameterDirection_Return:
         {
-            parameterDirection = MgParameterDirection::Return;
+            parameterDirection = MgParameterDirection::Ret;
             break;
         }
         default:
