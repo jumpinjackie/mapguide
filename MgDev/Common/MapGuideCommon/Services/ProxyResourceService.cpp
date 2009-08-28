@@ -427,6 +427,61 @@ void MgProxyResourceService::MoveResource(MgResourceIdentifier* sourceResource,
 
 ///////////////////////////////////////////////////////////////////////////////
 /// <summary>
+/// Moves an existing resource from this repository to another location.
+///
+/// This function can serve multiple purposes:
+///   - Move a resource if resource path and name are different.
+///   - Rename a resource if resource path is the same and name is different.
+/// </summary>
+/// <param name="sourceResource">
+/// Resource identifier for the resource to be moved/renamed.
+/// This resource can be a document or folder.
+/// </param>
+/// <param name="destResource">
+/// Resource identifier describing where/what the resource should be moved/renamed to.
+/// </param>
+/// <param name="overwrite">
+/// Flag to determine whether or not the destination
+/// resource should be overwritten if it exists.
+/// </param>
+/// <param name="cascade">
+/// Flag to determine whether or not the
+/// referencing resources should be updated.
+/// </param>
+/// <returns>
+/// Nothing.
+/// </returns>
+/// EXCEPTIONS:
+/// MgResourceNotFoundException
+/// MgDuplicateResourceException
+/// MgInvalidRepositoryTypeException
+/// MgInvalidRepositoryNameException
+/// MgInvalidResourcePathException
+/// MgInvalidResourceNameException
+/// MgInvalidResourceTypeException
+
+void MgProxyResourceService::MoveResource(MgResourceIdentifier* sourceResource,
+                                          MgResourceIdentifier* destResource, bool overwrite, bool cascade)
+{
+    MgCommand cmd;
+
+    cmd.ExecuteCommand(m_connProp,
+        MgCommand::knVoid,
+        MgResourceService::opIdMoveResource,
+        4,
+        Resource_Service,
+        BUILD_VERSION(2,2,0),
+        MgCommand::knObject, sourceResource,
+        MgCommand::knObject, destResource,
+        MgCommand::knInt8, (int)overwrite,
+        MgCommand::knInt8, (int)cascade,
+        MgCommand::knNone);
+
+    SetWarning(cmd.GetWarningObject());
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// <summary>
 /// Copies an existing resource to another location.
 /// </summary>
 /// <param name="sourceResource">

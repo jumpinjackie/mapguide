@@ -124,6 +124,67 @@ MgByteReader* MgApplicationResourceContentManager::EnumerateReferences(
     return byteReader.Detach();
 }
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Enumerates all resources which reference to a document or folder resource.
+/// </summary>
+///
+/// <exceptions>
+/// MgDbXmlException, MgDbException, MgUnauthorizedAccessException
+/// </exceptions>
+///----------------------------------------------------------------------------
+MgStringCollection* MgApplicationResourceContentManager::EnumerateAllReferences(MgResourceIdentifier* resource, const STRING permission)
+{
+    assert(NULL != resource);
+    Ptr<MgStringCollection> references = new MgStringCollection();
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    string resourceId;
+    MgUtil::WideCharToMultiByte(resource->ToString(), resourceId);
+
+    // Set up an XQuery.
+
+    string query = "collection('";
+    query += m_container.getName();
+    query += "')";
+    query += "//*/ResourceId[starts-with(.,\"";
+    query += resourceId;
+    query += "\")]";
+
+    // Execute the XQuery.
+
+    XmlManager& xmlMan = m_container.getManager();
+    XmlQueryContext queryContext = xmlMan.createQueryContext();
+    XmlResults results = IsTransacted() ?
+        xmlMan.query(GetXmlTxn(), query, queryContext, 0) :
+    xmlMan.query(query, queryContext, 0);
+
+    // Get the resource and populate the resource reference list.
+
+    // this XML follows the ResourceReferenceList-1.0.0.xsd schema
+    MgResourceIdentifier currResource;
+    XmlValue xmlValue;
+    
+    while (results.next(xmlValue)) // TODO: Need an XML writer
+    {
+        const XmlDocument& xmlDoc = xmlValue.asDocument();
+
+        // Check if the current user has a required permission.
+
+        currResource.SetResource(MgUtil::MultiByteToWideChar(xmlDoc.getName()));
+
+        if (CheckPermission(currResource, permission))
+        {
+            references->Add(currResource.ToString());
+        }
+    }
+
+    MG_RESOURCE_CONTAINER_CATCH_AND_THROW(L"MgApplicationResourceContentManager.EnumerateReferences")
+
+    return references.Detach();
+}
+
 ///////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Enumerate all the parent Map Definition resources of the specified

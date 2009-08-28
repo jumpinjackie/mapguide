@@ -784,7 +784,93 @@ PUBLISHED_API:
     /// left intact.
     ///
     virtual void MoveResource(MgResourceIdentifier* sourceResource,
-        MgResourceIdentifier* destResource, bool overwrite) = 0;
+        MgResourceIdentifier* destResource, bool overwrite);
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Moves an existing resource to another location.
+    ///
+    /// \remarks
+    /// You can also use this method to rename a resource.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual void MoveResource(MgResourceIdentifier sourceResource, MgResourceIdentifier destResource, bool overwrite, bool cascade);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual void MoveResource(MgResourceIdentifier sourceResource, MgResourceIdentifier destResource, boolean overwrite, boolean cascade);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual void MoveResource(MgResourceIdentifier sourceResource, MgResourceIdentifier destResource, bool overwrite, bool cascade);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param sourceResource (MgResourceIdentifier)
+    /// Resource to be moved. This can be a document
+    /// or folder.
+    /// <ul>
+    ///    <li>If it is a folder, this method also moves the contents of the folder and all folders below it.</li>
+    ///    <li>If it is a folder, you must include the trailing slash in the identifier.</li>
+    /// </ul>
+    /// \param destResource (MgResourceIdentifier)
+    /// Where the resource should be moved to.
+    /// \param overwrite (boolean/bool)
+    /// Flag to determine whether or not the
+    /// destination resource should be overwritten if
+    /// it exists.
+    /// \param cascade (boolean/bool)
+    /// Flag to determine whether or not the
+    /// referencing resources should be updated.
+    ///
+    /// \return
+    /// Returns nothing.
+    ///
+    /// <!-- Example (PHP) -->
+    /// \htmlinclude PHPExampleTop.html
+    /// This example moves the file
+    /// Library://Geography/World.MapDefinition to
+    /// Library://Atlas/Oceans.MapDefinition:
+    /// \code
+    /// // Assuming $resourceService has already been initialized
+    /// $oldPath = new MgResourceIdentifier("Library://Geography/World.MapDefinition");
+    /// $newPath = new MgResourceIdentifier("Library://Atlas/Oceans.MapDefinition");
+    /// $resourceService->MoveResource($oldPath, $newPath, true, true);
+    /// \endcode
+    ///
+    /// This example moves the folder Library://Geography/ to
+    /// Library://World Geography/:
+    /// \code
+    /// $oldPath = new MgResourceIdentifier("Library://Geography/");
+    /// $newPath = new MgResourceIdentifier("Library://World Geography/");
+    /// $resourceService->MoveResource($oldPath, $newPath, true, true);
+    /// \endcode
+    ///
+    /// This example renames Oceans.MapDefinition to Pacific
+    /// Ocean.MapDefinition:
+    /// \code
+    /// /**************************************************************************/
+    /// $oldPath = new MgResourceIdentifier("Library://Atlas/Oceans.MapDefinition");
+    /// $newPath = new MgResourceIdentifier("Library://Atlas/Pacific Ocean.MapDefinition");
+    /// $resourceService->MoveResource($oldPath, $newPath, true, false);
+    /// \endcode
+    /// \htmlinclude ExampleBottom.html
+    ///
+    /// \exception MgResourceNotFoundException
+    /// \exception MgDuplicateResourceException
+    /// \exception MgInvalidRepositoryTypeException
+    /// \exception MgInvalidRepositoryNameException
+    /// \exception MgInvalidResourcePathException
+    /// \exception MgInvalidResourceNameException
+    /// \exception MgInvalidResourceTypeException
+    ///
+    /// \note
+    /// When copying a folder with the "overwrite" flag turned on, if
+    /// the destination folder already exists, then only the children
+    /// in the destination folder that have the same names as those
+    /// in the source folder are overwritten. The rest should are
+    /// left intact.
+    ///
+    virtual void MoveResource(MgResourceIdentifier* sourceResource,
+        MgResourceIdentifier* destResource, bool overwrite, bool cascade);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief

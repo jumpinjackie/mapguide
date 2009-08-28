@@ -108,6 +108,24 @@ STRING MgResourceService::EnumerateResourceDocuments(
         __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Moves an existing resource to another location.
+///
+void MgResourceService::MoveResource(MgResourceIdentifier* sourceResource,
+                   MgResourceIdentifier* destResource, bool overwrite)
+{
+    throw new MgNotImplementedException(L"MgResourceService.MoveResource",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgResourceService::MoveResource(MgResourceIdentifier* sourceResource,
+                  MgResourceIdentifier* destResource, bool overwrite, bool cascade)
+{
+    throw new MgNotImplementedException(L"MgResourceService.MoveResource",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
 //////////////////////////////////////////////////////////////////
 /// <summary>
 /// Gets the content of the specified resource.

@@ -62,7 +62,7 @@ void MgOpMoveResource::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (3 == m_packet.m_NumArguments)
+    if (3 == m_packet.m_NumArguments || 4 == m_packet.m_NumArguments)
     {
         Ptr<MgResourceIdentifier> sourceResource =
             (MgResourceIdentifier*)m_stream->GetObject();
@@ -70,6 +70,11 @@ void MgOpMoveResource::Execute()
             (MgResourceIdentifier*)m_stream->GetObject();
         bool overwrite;
         m_stream->GetBoolean(overwrite);
+        bool cascade = false;
+        if(4 == m_packet.m_NumArguments)
+        {
+            m_stream->GetBoolean(cascade);
+        }
 
         BeginExecution();
 
@@ -79,11 +84,13 @@ void MgOpMoveResource::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == destResource) ? L"MgResourceIdentifier" : destResource->ToString().c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_BOOL(overwrite);
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_BOOL(cascade);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
-        m_service->MoveResource(sourceResource, destResource, overwrite);
+        m_service->MoveResource(sourceResource, destResource, overwrite, cascade);
 
         EndExecution();
     }

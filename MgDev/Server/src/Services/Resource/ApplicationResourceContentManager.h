@@ -45,7 +45,11 @@ public:
 
     // Resource Management APIs
 
+    // Enumerates all resources which reference the specified resource by ResourceId='***'
     MgByteReader* EnumerateReferences(MgResourceIdentifier* resource);
+    // Enumerates all resources which reference to a document or folder resource by starts-with(ResourceId,'***')
+    // If the reference resource doesn't have specific permission, through exception.
+    MgStringCollection* EnumerateAllReferences(MgResourceIdentifier* resource, const STRING permission);
     void EnumerateParentMapDefinitions(
         const set<string>& currSearchResources, set<string>& nextSearchResources,
         set<string>& childResources, set<STRING>& parentResources);

@@ -97,6 +97,7 @@ const STRING MgHttpResourceStrings::reqData = L"DATA";
 const STRING MgHttpResourceStrings::reqOldDataName = L"OLDDATANAME";
 const STRING MgHttpResourceStrings::reqNewDataName = L"NEWDATANAME";
 const STRING MgHttpResourceStrings::reqOverwrite = L"OVERWRITE";
+const STRING MgHttpResourceStrings::reqCascade = L"CASCADE";
 const STRING MgHttpResourceStrings::reqPackage = L"PACKAGE";
 const STRING MgHttpResourceStrings::reqOwner = L"OWNER";
 const STRING MgHttpResourceStrings::reqIncludeDescendants = L"INCLUDEDESCENDANTS";

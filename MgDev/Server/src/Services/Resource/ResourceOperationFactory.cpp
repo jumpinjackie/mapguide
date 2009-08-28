@@ -247,6 +247,7 @@ IMgOperationHandler* MgResourceOperationFactory::GetOperation(
         switch (VERSION_NO_PHASE(operationVersion))
         {
         case VERSION_SUPPORTED(1,0):
+        case VERSION_SUPPORTED(2,2):
             handler.reset(new MgOpMoveResource());
             break;
         default:

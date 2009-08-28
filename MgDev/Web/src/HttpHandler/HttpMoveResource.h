@@ -47,6 +47,7 @@ private:
     STRING m_sourceResourceId;
     STRING m_destResourceId;
     bool m_overwrite;
+    bool m_cascade;
 };
 
 #endif
