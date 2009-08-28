@@ -48,6 +48,12 @@ MgHttpMoveResource::MgHttpMoveResource(MgHttpRequest *hRequest)
     m_overwrite = ::atoi(MgUtil::WideCharToMultiByte(
         hrParam->GetParameterValue(
         MgHttpResourceStrings::reqOverwrite)).c_str()) != 0;
+
+    // In order to maintain backward compatibility, the Cascade flag
+    // will be set to false by default if it is not specified.
+    STRING cascadeParam = hrParam->GetParameterValue(MgHttpResourceStrings::reqCascade);
+
+    m_cascade = (!cascadeParam.empty() && 0 != MgUtil::StringToInt32(cascadeParam));
 }
 
 /// <summary>
@@ -76,7 +82,7 @@ void MgHttpMoveResource::Execute(MgHttpResponse& hResponse)
     MgResourceIdentifier mgrDestIdentifier(m_destResourceId);
 
     // Run API command
-    mgprService->MoveResource(&mgrSourceIdentifier, &mgrDestIdentifier, m_overwrite);
+    mgprService->MoveResource(&mgrSourceIdentifier, &mgrDestIdentifier, m_overwrite, m_cascade);
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpMoveResource.Execute")
 }

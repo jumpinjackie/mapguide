@@ -65,7 +65,7 @@ public:
     virtual MgByteReader* GetResourceHeader(
         MgResourceIdentifier* resource);
     void MoveResource(MgResourceIdentifier* sourceResource,
-        MgResourceIdentifier* destResource, bool overwrite);
+        MgResourceIdentifier* destResource, bool overwrite, bool cascade);
     void CopyResource(MgResourceIdentifier* sourceResource,
         MgResourceIdentifier* destResource, bool overwrite);
     MgByteReader* EnumerateReferences(MgResourceIdentifier* resource);

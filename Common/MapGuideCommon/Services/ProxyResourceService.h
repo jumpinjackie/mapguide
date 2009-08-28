@@ -449,6 +449,41 @@ EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
+    /// Moves an existing resource from this repository to another location.
+    ///
+    /// This function can serve multiple purposes:
+    ///   - Move a resource if resource path and name are different.
+    ///   - Rename a resource if resource path is the same and name is different.
+    ///
+    /// \param sourceResource
+    /// Resource identifier for the resource to be moved/renamed.
+    /// This resource can be a document or folder.
+    /// \param destResource
+    /// Resource identifier describing where/what the resource should be moved/renamed to.
+    /// \param overwrite
+    /// Flag to determine whether or not the destination
+    /// resource should be overwritten if it exists.
+    /// \param cascade
+    /// Flag to determine whether or not the
+    /// referencing resources should be updated.
+    ///
+    /// \return
+    /// Nothing.
+    ///
+    /// \exception MgResourceNotFoundException
+    /// \exception MgDuplicateResourceException
+    /// \exception MgInvalidRepositoryTypeException
+    /// \exception MgInvalidRepositoryNameException
+    /// \exception MgInvalidResourcePathException
+    /// \exception MgInvalidResourceNameException
+    /// \exception MgInvalidResourceTypeException
+    ///
+
+    virtual void MoveResource(MgResourceIdentifier* sourceResource,
+        MgResourceIdentifier* destResource, bool overwrite, bool cascade);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
     /// Copies an existing resource to another location.
     ///
     /// \param sourceResource

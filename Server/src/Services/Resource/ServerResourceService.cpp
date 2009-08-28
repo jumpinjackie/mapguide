@@ -797,9 +797,14 @@ void MgServerResourceService::DeleteResource(MgResourceIdentifier* resource)
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
+void MgServerResourceService::MoveResource(MgResourceIdentifier* sourceResource,
+     MgResourceIdentifier* destResource, bool overwrite)
+{
+    MoveResource(sourceResource, destResource, overwrite, false);
+}
 
 void MgServerResourceService::MoveResource(MgResourceIdentifier* sourceResource,
-    MgResourceIdentifier* destResource, bool overwrite)
+    MgResourceIdentifier* destResource, bool overwrite, bool cascade)
 {
     MG_RESOURCE_SERVICE_TRY()
 
@@ -816,7 +821,7 @@ void MgServerResourceService::MoveResource(MgResourceIdentifier* sourceResource,
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
-    repositoryMan->MoveResource(sourceResource, destResource, overwrite);
+    repositoryMan->MoveResource(sourceResource, destResource, overwrite, cascade);
 
     MG_RESOURCE_SERVICE_END_OPERATION(sm_retryAttempts)
 

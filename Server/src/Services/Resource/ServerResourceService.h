@@ -81,6 +81,8 @@ public:
     virtual void DeleteResource(MgResourceIdentifier* resource);
     virtual void MoveResource(MgResourceIdentifier* sourceResource,
         MgResourceIdentifier* destResource, bool overwrite);
+    virtual void MoveResource(MgResourceIdentifier* sourceResource,
+        MgResourceIdentifier* destResource, bool overwrite, bool cascade);
     virtual void CopyResource(MgResourceIdentifier* sourceResource,
         MgResourceIdentifier* destResource, bool overwrite);
     virtual MgByteReader* GetResourceContent(

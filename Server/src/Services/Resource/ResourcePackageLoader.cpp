@@ -356,6 +356,9 @@ void MgResourcePackageLoader::MoveResource(
     bool overwrite = ACE_OS::atoi(opInfo.GetParameter(
         MgOperationParameter::Overwrite, false).GetValue().c_str()) != 0;
 
+    CREFSTRING paramCascade = opInfo.GetParameter(MgOperationParameter::Overwrite, false).GetValue();
+    bool cascade = !paramCascade.empty() && (ACE_OS::atoi(paramCascade.c_str()) != 0);
+
     if (m_packageLogWriter != NULL)
     {
         MG_LOG_OPERATION_MESSAGE(L"MoveResource");
@@ -370,7 +373,7 @@ void MgResourcePackageLoader::MoveResource(
         m_packageLogWriter->AddOperation(operationMessage);
     }
 
-    m_repositoryManager.MoveResource(srcResource, destResource, overwrite);
+    m_repositoryManager.MoveResource(srcResource, destResource, overwrite, cascade);
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourcePackageLoader.MoveResource")
 }

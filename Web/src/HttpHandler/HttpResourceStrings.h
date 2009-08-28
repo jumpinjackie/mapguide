@@ -101,6 +101,7 @@ public:
     static const STRING reqOldDataName;
     static const STRING reqNewDataName;
     static const STRING reqOverwrite;
+    static const STRING reqCascade;
     static const STRING reqPackage;
     static const STRING reqOwner;
     static const STRING reqIncludeDescendants;

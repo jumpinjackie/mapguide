@@ -417,7 +417,7 @@ MgByteReader* MgApplicationRepositoryManager::GetResourceHeader(
 
 void MgApplicationRepositoryManager::MoveResource(
     MgResourceIdentifier* sourceResource, MgResourceIdentifier* destResource,
-    bool overwrite)
+    bool overwrite, bool cascade)
 {
     assert(NULL != sourceResource && NULL != destResource) ;
 
@@ -486,6 +486,15 @@ void MgApplicationRepositoryManager::MoveResource(
             __LINE__, __WFILE__, &arguments, L"MgResourcesIdentical", NULL);
     }
 
+    // If cascade update referencing resources, get the references and check permission. 
+    // An MgUnauthorizedAccessException will throw if current user doesn't have write permission to any referencing resource.
+    Ptr<MgStringCollection> referencingIds = NULL;
+    if(cascade)
+    {
+        MgApplicationResourceContentManager* resourceContentMan = GetApplicationResourceContentManager();
+        referencingIds = resourceContentMan->EnumerateAllReferences(sourceResource, MgResourcePermission::ReadWrite);
+    }
+
     // Move the resource and all of its children.
 
     MgResourceHeaderManager* resourceHeaderMan = GetResourceHeaderManager();
@@ -503,6 +512,38 @@ void MgApplicationRepositoryManager::MoveResource(
     ACE_ASSERT(NULL != resourceContentMan);
 
     resourceContentMan->MoveResource(sourceResource, destResource, overwrite);
+
+    // If cascade update referencing resources, update referencing resources' content, 
+    // setting ResourceId from sourceResource to destResource
+    if(cascade && referencingIds != NULL &&  referencingIds->GetCount() != 0)
+    {
+        STRING source = sourceResource->ToString();
+        STRING dest = destResource->ToString();
+        STRING prefix = L"<ResourceId>";
+        for(int i = 0; i < referencingIds->GetCount(); i ++)
+        {
+            STRING referencingId = referencingIds->GetItem(i);
+            if(referencingId.find(source) != STRING::npos)
+            {
+                referencingId = referencingId.replace(0, source.size(), dest);
+            }
+            Ptr<MgResourceIdentifier> referenceResource = new MgResourceIdentifier(referencingId);
+            Ptr<MgByteReader> contentReader = GetResourceContent(referenceResource, L"");
+            STRING mimeType = contentReader->GetByteSource()->GetMimeType();
+            STRING content = contentReader->ToString();
+            size_t pos = content.find(prefix + source);
+            if(pos != STRING::npos)
+            {
+                content = content.replace(pos + prefix.size(), source.size(), dest);
+            }
+            string utf8Text = MgUtil::WideCharToMultiByte(content);
+            Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)utf8Text.c_str(), (INT32)utf8Text.length());
+            byteSource->SetMimeType(mimeType);
+            contentReader = byteSource->GetReader();
+            Ptr<MgByteReader> headerReader = GetResourceHeader(referenceResource);
+            SetResource(referenceResource, contentReader, headerReader);
+        }
+    }
 
     UpdateDateModifiedResourceSet(sourceResource->GetFullPath(true));
     UpdateDateModifiedResourceSet(destResource->GetFullPath(true));
