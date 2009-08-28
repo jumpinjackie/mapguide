@@ -105,6 +105,7 @@ bool InitializeStaticPlatformData()
     fact->Register(PlatformBase_Collection_PropertyDefinitionCollection, MgPropertyDefinitionCollection::CreateObject);
     fact->Register(PlatformBase_Collection_SerializableCollection, MgSerializableCollection::CreateObject);
     fact->Register(PlatformBase_Collection_StringPropertyCollection, MgStringPropertyCollection::CreateObject);
+    fact->Register(PlatformBase_Collection_ParameterCollection, MgParameterCollection::CreateObject);
 
     fact->Register(PlatformBase_Data_Color, MgColor::CreateObject);
     fact->Register(PlatformBase_Data_Point3D, MgPoint3D::CreateObject);
@@ -131,6 +132,7 @@ bool InitializeStaticPlatformData()
     fact->Register(PlatformBase_FeatureService_GeometricPropertyDefinition, MgGeometricPropertyDefinition::CreateObject);
     fact->Register(PlatformBase_FeatureService_GeometryProperty, MgGeometryProperty::CreateObject);
     fact->Register(PlatformBase_FeatureService_ObjectPropertyDefinition, MgObjectPropertyDefinition::CreateObject);
+    fact->Register(PlatformBase_FeatureService_Parameter, MgParameter::CreateObject);
     fact->Register(PlatformBase_FeatureService_SpatialContextReader, MgSpatialContextReader::CreateObject);
     fact->Register(PlatformBase_FeatureService_FeatureSet, MgFeatureSet::CreateObject);
     fact->Register(PlatformBase_FeatureService_FeatureProperty, MgFeatureProperty::CreateObject);
@@ -152,6 +154,7 @@ bool InitializeStaticPlatformData()
     fact->Register(PlatformBase_FeatureService_FeatureSchemaCollection, MgFeatureSchemaCollection::CreateObject);
     fact->Register(PlatformBase_FeatureService_ClassDefinitionCollection, MgClassDefinitionCollection::CreateObject);
     fact->Register(PlatformBase_FeatureService_CreateSdfParams, MgCreateSdfParams::CreateObject);
+    fact->Register(PlatformBase_FeatureService_FileFeatureSourceParams, MgFileFeatureSourceParams::CreateObject);
 
     fact->Register(PlatformBase_ResourceService_ResourceIdentifier, MgResourceIdentifier::CreateObject);
 
