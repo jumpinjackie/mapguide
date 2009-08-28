@@ -60,11 +60,25 @@ void MgHttpGetIdentityProperties::Execute(MgHttpResponse& hResponse)
     STRING schema = hrParam->GetParameterValue(MgHttpResourceStrings::reqFeatSchema);
     STRING className = hrParam->GetParameterValue(MgHttpResourceStrings::reqFeatClass);
 
+    // Throw on empty class name
+    if (className.empty())
+    {
+        throw new MgClassNotFoundException(L"MgHttpGetIdentityProperties.Execute", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
     // Create Proxy Feature Service instance
     Ptr<MgFeatureService> service = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
 
     // call the C++ APIs
-    Ptr<MgPropertyDefinitionCollection> identityProps = service->GetIdentityProperties(&resId, schema, className);
+    Ptr<MgStringCollection> classNames = new MgStringCollection();
+    classNames->Add(className);
+    Ptr<MgClassDefinitionCollection> idClasses = service->GetIdentityProperties(&resId, schema, classNames);
+    if (idClasses.p == NULL || idClasses->GetCount() == 0)
+    {
+        throw new MgClassNotFoundException(L"MgHttpGetIdentityProperties.Execute", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    Ptr<MgClassDefinition> idClass = idClasses->GetItem(0);
+    Ptr<MgPropertyDefinitionCollection> identityProps = idClass->GetIdentityProperties();
     Ptr<MgByteReader> byteReader = identityProps->ToXml();
 
     //Convert to alternate response format, if necessary
