@@ -143,7 +143,7 @@ void MgParameter::SetName(CREFSTRING name)
 void MgParameter::Serialize(MgStream* stream)
 {
     CHECK_NULL_PARAMETER(L"MgParameter.Serialize");
-    m_parameter->Serialize(stream);
+    stream->WriteObject(m_parameter);
     stream->WriteInt32(m_parameterDirection);
 }
 
@@ -156,8 +156,8 @@ void MgParameter::Serialize(MgStream* stream)
 /// </param>
 void MgParameter::Deserialize(MgStream* stream)
 {
-    CHECK_NULL_PARAMETER(L"MgParameter.Deserialize");
-    m_parameter->Deserialize(stream);
+    SAFE_RELEASE(m_parameter);
+    m_parameter = (MgNullableProperty*)stream->GetObject();
     stream->GetInt32(m_parameterDirection);
 }
 
