@@ -62,6 +62,9 @@
 <Package>org.osgeo.mapguide</Package>
 
 <Classes>
+  <Class name="MgUser" />
+  <Class name="MgGroup" />
+  <Class name="MgRole" />
   <Class name="MgRepositoryType" />
   <Class name="MgServiceType" />
   <Class name="MgResourceType" />
