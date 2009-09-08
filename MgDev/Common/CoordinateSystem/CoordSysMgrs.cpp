@@ -337,7 +337,11 @@ INT32 CCoordinateSystemMgrs::GetSpecializationType ()
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void CCoordinateSystemMgrs::SetBoundary(MgCoordinateSystemGridBoundary* pGridBoundary)
 {
+    // Save the boundary.
     m_GridBoundary = SAFE_ADDREF (pGridBoundary);
+    
+    // Create a CCoordinateSystemOneGrid which is appropriate for generating
+    // MGRS graticule requests.
     m_ZoneCollection = FrameBoundaryToZones (m_GridBoundary,m_pCsTarget,m_bUseFrameDatum);
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -349,25 +353,52 @@ MgCoordinateSystemGridBoundary* CCoordinateSystemMgrs::GetBoundary(void)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 MgCoordinateSystemGridLineCollection* CCoordinateSystemMgrs::GetGridLines (MgCoordinateSystemGridSpecification* specification)
 {
+    bool specIsGrid;
+
     INT32 index;
+    INT32 unitType;
     INT32 zoneCount;
     Ptr<CCoordinateSystemMgrsZone> mgrsZoneGrid;
+    Ptr<MgCoordinateSystemGridLineCollection> aGridLineCollection;
     Ptr<CCoordinateSystemGridLineCollection> theGridLineCollection;
 
     MG_TRY ()
         theGridLineCollection = new CCoordinateSystemGridLineCollection ();
-        zoneCount = m_ZoneCollection->GetCount ();
-        for (index = 0;index < zoneCount;index += 1)
+        unitType = specification->GetUnitType();
+        specIsGrid = (unitType ==  MgCoordinateSystemUnitType::Linear);
+        if (specIsGrid)
         {
-            mgrsZoneGrid = m_ZoneCollection->GetItem (index);
-            Ptr<MgCoordinateSystemGridLineCollection> aGridLineCollection;
-            aGridLineCollection = mgrsZoneGrid->GetGridLines (specification);
-            theGridLineCollection->AddCollection (aGridLineCollection);
+            // The specification calls for a grid.
+            zoneCount = m_ZoneCollection->GetCount ();
+            for (index = 0;index < zoneCount;index += 1)
+            {
+                mgrsZoneGrid = m_ZoneCollection->GetItem (index);
+                aGridLineCollection = mgrsZoneGrid->GetGridLines (specification);
+                theGridLineCollection->AddCollection (aGridLineCollection);
+            }
+        }
+        else
+        {
+            // The specification calls for a graticule.
+            if (m_GraticuleUtm)
+            {
+                aGridLineCollection = m_GraticuleUtm->GetGridLines (specification);
+                theGridLineCollection->AddCollection (aGridLineCollection);
+            }
+            if (m_GraticuleUpsNorth)
+            {
+                aGridLineCollection = m_GraticuleUpsNorth->GetGridLines (specification);
+                theGridLineCollection->AddCollection (aGridLineCollection);
+            }
+            if (m_GraticuleUpsSouth)
+            {
+                aGridLineCollection = m_GraticuleUpsSouth->GetGridLines (specification);
+                theGridLineCollection->AddCollection (aGridLineCollection);
+            }
         }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemMgrs::GetGridLines")
     return static_cast<MgCoordinateSystemGridLineCollection*>(theGridLineCollection.Detach());
 }
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 MgCoordinateSystemGridRegionCollection* CCoordinateSystemMgrs::GetGridRegions (MgCoordinateSystemGridSpecification* specification)
 {
@@ -392,23 +423,50 @@ MgCoordinateSystemGridRegionCollection* CCoordinateSystemMgrs::GetGridRegions (M
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 MgCoordinateSystemGridTickCollection* CCoordinateSystemMgrs::GetGridTicks (MgCoordinateSystemGridSpecification* specification)
 {
+    bool specIsGrid;
+
     INT32 index;
+    INT32 unitType;
     INT32 zoneCount;
     Ptr<CCoordinateSystemMgrsZone> mgrsZoneGrid;
+    Ptr<MgCoordinateSystemGridTickCollection> aGridTickCollection;
     Ptr<CCoordinateSystemGridTickCollection> theGridTickCollection;
 
     MG_TRY ()
         theGridTickCollection = new CCoordinateSystemGridTickCollection ();
-        zoneCount = m_ZoneCollection->GetCount ();
-        for (index = 0;index < zoneCount;index += 1)
+        unitType = specification->GetUnitType();
+        specIsGrid = (unitType ==  MgCoordinateSystemUnitType::Linear);
+        if (specIsGrid)
         {
-            mgrsZoneGrid = m_ZoneCollection->GetItem (index);
-            Ptr<MgCoordinateSystemGridTickCollection> aGridTickCollection;
-            aGridTickCollection = mgrsZoneGrid->GetBoundaryTicks (specification);
-            theGridTickCollection->AddCollection (aGridTickCollection);
-            // TODO:  Need to remove from the collection any grid ticks which are
-            // internal to the m_GridBoundary object of this object. 
+            zoneCount = m_ZoneCollection->GetCount ();
+            for (index = 0;index < zoneCount;index += 1)
+            {
+                mgrsZoneGrid = m_ZoneCollection->GetItem (index);
+                aGridTickCollection = mgrsZoneGrid->GetBoundaryTicks (specification);
+                theGridTickCollection->AddCollection (aGridTickCollection);
+            }
         }
+        else
+        {
+            if (m_GraticuleUtm)
+            {
+                aGridTickCollection = m_GraticuleUtm->GetBoundaryTicks (specification);
+                theGridTickCollection->AddCollection (aGridTickCollection);
+            }
+            else if (m_GraticuleUtm)
+            {
+                aGridTickCollection = m_GraticuleUpsNorth->GetBoundaryTicks (specification);
+                theGridTickCollection->AddCollection (aGridTickCollection);
+            }
+            else if (m_GraticuleUtm)
+            {
+                aGridTickCollection = m_GraticuleUpsSouth->GetBoundaryTicks (specification);
+                theGridTickCollection->AddCollection (aGridTickCollection);
+            }
+        }
+        // TODO:  Need to remove from the collection any grid ticks which are
+        // internal to the m_GridBoundary object of this object.  This will be
+        // tricky, as the tick positions will usually be right on the boundary.
     MG_CATCH_AND_THROW(L"MgCoordinateSystemMgrs::GetGridRTicks")
     return static_cast<MgCoordinateSystemGridTickCollection*>(theGridTickCollection.Detach());
 }
@@ -606,9 +664,10 @@ void CCoordinateSystemMgrs::SetExceptionsOn(bool bOn)
 {
     m_bExceptionsOn = bOn;
 }
-// Returns a collection of CCoordinateSYstemMgrsZone objects.
-// These objects derive from OneGrid, so they have both coordinate systems in them.
-// 
+///////////////////////////////////////////////////////////////////////////////
+// This member returns a collection of CCoordinateSystemMgrsZone objects.
+// These objects derive from CCoordinateSystemOneGrid, so they have both
+// the grid and frame coordinate systems in them.
 CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones (MgCoordinateSystemGridBoundary* frameBoundary,
                                                                                   MgCoordinateSystem* frameCRS,
                                                                                   bool useFrameDatum)
@@ -619,18 +678,18 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
 
     double cm;                      // central meridian;
     double eastLimit, westLimit;    // limits of a UTM zone
-    double eastMin, eastMax;        // frame boundary extrema
-    double northMin, northMax;      // frame boundary extrema
+    double eastMin, eastMax;        // frame boundary extrema in 'LL84' (or 'LL')
+    double northMin, northMax;      // frame boundary extrema in 'LL84' (or 'LL')
 
     Ptr<MgPolygon> pPolygon;
     Ptr<MgCoordinate> pSouthwest;
     Ptr<MgCoordinate> pNortheast;
-    Ptr<MgCoordinateSystem> llCS;
+    Ptr<MgCoordinateSystem> llCRS;
     Ptr<MgCoordinateSystem> utmCRS;
-    Ptr<MgCoordinateSystemTransform> llTransform;
-    Ptr<MgCoordinateSystemTransform> utmTransform;
-    Ptr<MgCoordinateSystemGridBoundary> utmBoundary;
+    Ptr<MgCoordinateSystemTransform> toLlTransform;               // frame to 'LL' transform
+    Ptr<MgCoordinateSystemTransform> toFrameTransform;            // 'LL' to frame transform
     Ptr<MgCoordinateSystemGridBoundary> llBoundary;
+    Ptr<MgCoordinateSystemGridBoundary> reducedFrameBoundary;
     Ptr<CCoordinateSystemMgrsZone> mgrsZoneGrid;
     Ptr<CCoordinateSystemMgrsZoneCollection> zoneCollection;
     STRING utmCsCode;
@@ -643,9 +702,10 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
 
         // Convert the polygon portion of the Grid Boundary object to long/lat
         // coordinates and extract the min/max from the resulting polygon.
-        llCS = csFactory->CreateFromCode (L"LL");
-        llTransform = csFactory->GetTransform(frameCRS,llCS);
-        pPolygon = frameBoundary->GetBoundary (llTransform,1.0E-05);
+        llCRS = csFactory->CreateFromCode (useFrameDatum ? L"LL" : L"LL84");
+        toLlTransform = csFactory->GetTransform(frameCRS,llCRS);
+        toFrameTransform = csFactory->GetTransform(llCRS,frameCRS);
+        pPolygon = frameBoundary->GetBoundary (toLlTransform,1.0E-05);
         llBoundary = csFactory->GridBoundary (pPolygon);
         llBoundary->GetBoundaryExtents (eastMin,eastMax,northMin,northMax);
 
@@ -654,109 +714,122 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
         {
             // There is a portion of the frame boundary in the south polar region.
             zoneNbr = -61;
-            utmCsCode = ZoneNbrToUtmCs (zoneNbr);
-            utmCRS = csFactory->CreateFromCode (utmCsCode);
-            utmTransform = csFactory->GetTransform (llCS,utmCRS);
             pSouthwest->SetX (eastMin);
             pSouthwest->SetY (northMin);
             pNortheast->SetX (eastMax);
             pNortheast->SetY (-80.0);
             llBoundary = csFactory->GridBoundary (pSouthwest,pNortheast);
-            pPolygon = llBoundary->GetBoundary (utmTransform,1.0);
-            utmBoundary = csFactory->GridBoundary (pPolygon);
-            mgrsZoneGrid = new CCoordinateSystemMgrsZone (utmBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
+            pPolygon = llBoundary->GetBoundary (toFrameTransform,1.0);
+            reducedFrameBoundary = csFactory->GridBoundary (pPolygon);
+            mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
             zoneCollection->Add (mgrsZoneGrid);
+
+            // Construct the m_GraticuleUpsSouth member, it may be needed.
+            m_GraticuleUpsSouth = new CCoordinateSystemOneGrid (reducedFrameBoundary,llCRS,frameCRS);
         }
         if (northMax > 84.0)
         {
-            // There is a portion of the frame boundary in the south polar region.
+            // There is a portion of the frame boundary in the north polar region.
             zoneNbr = 61;
-            utmCsCode = ZoneNbrToUtmCs (zoneNbr);
-            utmCRS = csFactory->CreateFromCode (utmCsCode);
-            utmTransform = csFactory->GetTransform (llCS,utmCRS);
             pSouthwest->SetX (eastMin);
             pSouthwest->SetY (84.0);
             pNortheast->SetX (eastMax);
             pNortheast->SetY (northMax);
             llBoundary = csFactory->GridBoundary (pSouthwest,pNortheast);
-            pPolygon = llBoundary->GetBoundary (utmTransform,1.0);
-            utmBoundary = csFactory->GridBoundary (pPolygon);
-            mgrsZoneGrid = new CCoordinateSystemMgrsZone (utmBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
+            pPolygon = llBoundary->GetBoundary (toFrameTransform,1.0);
+            reducedFrameBoundary = csFactory->GridBoundary (pPolygon);
+            mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
             zoneCollection->Add (mgrsZoneGrid);
+
+            // Construct the m_GraticuleUpsNorth member, it may be needed.
+            m_GraticuleUpsNorth = new CCoordinateSystemOneGrid (reducedFrameBoundary,llCRS,frameCRS);
         }
         if (northMax > -80.0 && northMin < 84.0)
         {
-            // There is a portion of the frame boundary in the non-polar region
-            // covered by normal UTM zones.  These can be either northern zones,
-            // or southern zones; perhaps both.  We'll do the northern zones
-            // first.
+            // A portion of the frame boundary is in the region covered by the
+            // normal (i.e. non-polar) UTM zones.  Determine the particular UTM
+            // zones we need to generate.
+            zoneMin = ((static_cast<INT32>(eastMin) + 180) / 6) + 1;
+            zoneMax = ((static_cast<INT32>(eastMax) + 180) / 6) + 1;
+
             if (northMax > 0.0)
             {
-                // There are some northern zones.  The northMin and northMax
-                // are the same for all of these.  What changes is the central
-                // meridian which means the eastern and western limits change.
-                zoneMin = ((static_cast<INT32>(eastMin) + 180) / 6) + 1;
-                zoneMax = ((static_cast<INT32>(eastMax) + 180) / 6) + 1;
+                // There are some northern zones.
 
-                pSouthwest->SetY ((northMin <=  0.0) ?  0.0 : northMin);
-                pNortheast->SetY ((northMax >= 84.0) ? 84.0 : northMax);
+                // We will need to generate, for each UTM zone, the extents
+                // of that particular UTM zone trimmed to the extents of the
+                // provided frame boundary.  The north/south portions
+                // are the same for each zone, so we do that once here outside
+                // the loop.
+                pSouthwest->SetY ((northMin <  0.0) ?  0.0 : northMin);
+                pNortheast->SetY ((northMax > 84.0) ? 84.0 : northMax);
+
+                // OK, generate a CCoordinateSystemMgrsZone object for each
+                // UTM zone which intersects the frame boundary provided.
+                // Usually only one, but we must be able to handle the
+                // multiple zone case.
                 for (zoneNbr = zoneMin;zoneNbr <= zoneMax;zoneNbr += 1)
                 {
-                    // Here once for each normal UTM zone in the northern
-                    // hemisphere which intersects the provided frame grid
-                    // boundary.
-                    utmCsCode = ZoneNbrToUtmCs (zoneNbr);
-                    utmCRS = csFactory->CreateFromCode (utmCsCode);
-                    utmTransform = csFactory->GetTransform (llCS,utmCRS);
+                    // 1> Compute the 'LL' boundary of this UTM zone.
+                    //    North/South done above, here we need only deal
+                    //    with east/west.
                     cm = static_cast<double>((zoneNbr * 6) - 183);
                     westLimit = cm - 3.0;
-                    if (westLimit < eastMin) westLimit = eastMin;
                     eastLimit = cm + 3.0;
+
+                    // 2> Apply the extents of the provided frame boundary.
+                    if (westLimit < eastMin) westLimit = eastMin;
                     if (eastLimit > eastMax) eastLimit = eastMax;
+                    
+                    // 3> Create, in terms of LL coordinates, the frame
+                    //    boundary as is appropriate for this particular zone.
                     pSouthwest->SetX (westLimit);
                     pNortheast->SetX (eastLimit);
+
+                    // 4> Convert this reduced frame boundary back to frame
+                    //    coordinates.
+                    // TODO:  We should not use a hard coded curve precision value here.
                     llBoundary = csFactory->GridBoundary (pSouthwest,pNortheast);
-                    pPolygon = llBoundary->GetBoundary (utmTransform,1.0);
-                    utmBoundary = csFactory->GridBoundary (pPolygon);
-                    mgrsZoneGrid = new CCoordinateSystemMgrsZone (utmBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
+                    pPolygon = llBoundary->GetBoundary (toFrameTransform,1.0);
+                    reducedFrameBoundary = csFactory->GridBoundary (pPolygon);
+                    mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
                     zoneCollection->Add (mgrsZoneGrid);
-                }
+                 }
             }
             if (northMin < 0.0)
             {
-                // There are some southern zones.  The northMin and northMax
-                // are the same for all of these.  What changes is the central
-                // meridian which means the eastern and western limits change.
-                // There are some northern zones.  The northMin and northMax
-                // are the same for all of these.  What changes is the central
-                // meridian which means the eastern and western limits change.
-                zoneMin = ((static_cast<INT32>(eastMin) + 180) / 6) + 1;
-                zoneMax = ((static_cast<INT32>(eastMax) + 180) / 6) + 1;
-
+                // Pretty much the same as the northern zones processed
+                // above, but without the laborious comments.
                 pSouthwest->SetY ((northMin < -80.0) ? -80.0 : northMin);
                 pNortheast->SetY ((northMax >   0.0) ?   0.0 : northMax);
                 for (zoneNbr = zoneMin;zoneNbr <= zoneMax;zoneNbr += 1)
                 {
-                    // Here once for each normal UTM zone in the southern
-                    // hemisphere which intersects the provided frame grid
-                    // boundary.
-                    utmCsCode = ZoneNbrToUtmCs (-zoneNbr);
-                    utmCRS = csFactory->CreateFromCode (utmCsCode);
-                    utmTransform = csFactory->GetTransform (llCS,utmCRS);
                     cm = static_cast<double>((zoneNbr * 6) - 183);
                     westLimit = cm - 3.0;
-                    if (westLimit < eastMin) westLimit = eastMin;
                     eastLimit = cm + 3.0;
+                    if (westLimit < eastMin) westLimit = eastMin;
                     if (eastLimit > eastMax) eastLimit = eastMax;
                     pSouthwest->SetX (westLimit);
                     pNortheast->SetX (eastLimit);
+
                     llBoundary = csFactory->GridBoundary (pSouthwest,pNortheast);
-                    pPolygon = llBoundary->GetBoundary (utmTransform,1.0);
-                    utmBoundary = csFactory->GridBoundary (pPolygon);
-                    mgrsZoneGrid = new CCoordinateSystemMgrsZone (utmBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
+                    pPolygon = llBoundary->GetBoundary (toFrameTransform,1.0);
+                    reducedFrameBoundary = csFactory->GridBoundary (pPolygon);
+                    mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
                     zoneCollection->Add (mgrsZoneGrid);
                 }
             }
+
+            // Need a CCoordinateSystemOneGrid object which can produce the 6 x 8 graticule
+            // for the entire regon.
+            pSouthwest->SetX (eastMin);
+            pNortheast->SetX (eastMax);
+            pSouthwest->SetY ((northMin < -80.0) ? -80.0 : northMin);
+            pNortheast->SetY ((northMax >  84.0) ?  84.0 : northMax);
+            llBoundary = csFactory->GridBoundary (pSouthwest,pNortheast);
+            pPolygon = llBoundary->GetBoundary (toFrameTransform,1.0);
+            reducedFrameBoundary = csFactory->GridBoundary (pPolygon);
+            m_GraticuleUpsNorth = new CCoordinateSystemOneGrid (reducedFrameBoundary,llCRS,frameCRS);
         }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemOneGrid::GetGridLines")
     return zoneCollection.Detach ();

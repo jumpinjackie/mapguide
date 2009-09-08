@@ -43,22 +43,27 @@ class CCoordinateSystemOneGrid : public MgGuardDisposable
 public:
     static const INT32 MaxCurvePoints;
     CCoordinateSystemOneGrid (void);
-	CCoordinateSystemOneGrid (MgCoordinateSystemGridBoundary* frameBoundary,
-	                          MgCoordinateSystem* gridCRS,
-	                          MgCoordinateSystem* frameCRS);
-	~CCoordinateSystemOneGrid (void);
+    CCoordinateSystemOneGrid (MgCoordinateSystemGridBoundary* frameBoundary,
+                              MgCoordinateSystem* gridCRS,
+                              MgCoordinateSystem* frameCRS);
+    ~CCoordinateSystemOneGrid (void);
 
     void SetUp (MgCoordinateSystemGridBoundary* frameBoundary,
                 MgCoordinateSystem* gridCRS,
                 MgCoordinateSystem* frameCRS);
 
+    // Returns true if the grid coordinate system is geographic; use this to
+    // determine if this is a graticule (as opposed to a grid).
+    bool IsGeographic (void);
+    INT32 GetUserID (void);
     STRING GetLabel (void);
+    void SetUserID (INT32 userID);
+    void SetLabel (CREFSTRING label);
+
     MgCoordinate* ConvertToGrid (MgCoordinate* frameCoordinate);
     MgCoordinate* ConvertToFrame (MgCoordinate* gridCoordinate);
     MgCoordinateSystemGridLineCollection* GetGridLines (MgCoordinateSystemGridSpecification* specs);
     CCoordinateSystemGridTickCollection* GetBoundaryTicks (MgCoordinateSystemGridSpecification* specs);
-
-    void SetLabel (CREFSTRING label);
 
 protected:
     MgCoordinateSystem* GetFrameCRS (void);
@@ -68,9 +73,9 @@ protected:
     void GetGridExtents (double& eastMin,double& eastMax,double& northMin,double& northMax,double precision = 0.25);
     void Dispose (void);
 
-    INT32 m_UserID;                                        // For user convenience (i.e. UTM zone)
+    INT32 m_UserID;                                      // For user convenience (i.e. UTM zone)
     INT32 m_MaxCurvePoints;
-    STRING m_RegionLabel;                                // For user conveinence (i.e. MGRS)
+    STRING m_Label;                                      // For user conveinence (i.e. MGRS)
     Ptr<MgCoordinateSystem> m_GridCRS;                   // The grid coordinate system
     Ptr<MgCoordinateSystem> m_FrameCRS;                  // The frame coordinate system
     Ptr<MgCoordinateSystemTransform> m_ToFrameXform;     // Converts grid coordinates to frame coordinates

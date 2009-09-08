@@ -40,10 +40,12 @@ namespace CSLibrary
 // * If useFrameDatum is true, the Grid coordinate system will be adjusted
 //   to use the datum of the provided frame coordinate system.  Otherwise,
 //   the Grid datum is hardcoded to WGS84.
+// * Is used only to generate projected grids.  Graticules are handled
+//   separately.  Thus, the grid coordinate system is always a projected
+//   coordinate system.
 class CCoordinateSystemMgrsZone : public CCoordinateSystemOneGrid
 {
 public:
-    //
     CCoordinateSystemMgrsZone (MgCoordinateSystemGridBoundary* frameBoundary,
                                INT32 utmZoneNbr,
                                bool useFrameDatum,
@@ -52,12 +54,18 @@ public:
     ~CCoordinateSystemMgrsZone (void);
 
     CCoordinateSystemGridRegionCollection* GetGridRegions (MgCoordinateSystemGridSpecification* specification);
+    INT32 GetUtmZoneNbr (void);
+ 
 protected:
     void BuildRegionCollection (MgCoordinateSystemGridSpecification* specification);
 private:
     void BuildMajorRegions (double boundaryPrecision);
     void BuildMinorRegions (double boundaryPrecision);
+    ///////////////////////////////////////////////////////////////////////////
     // Data members
+    // m_UtmZoneNbr is positive for northern hemisphere, negative for the
+    // southern hemisphere.  Polar regions are assigned the value of 61.
+    // Zero is the uninitialized/unknown/error value.
     INT32 m_UtmZone;
     INT8 m_LetteringScheme;
     Ptr<CCoordinateSystemGridRegionCollection> m_RegionCollection;

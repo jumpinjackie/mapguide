@@ -57,6 +57,8 @@ public:
     double GetNorthingBase (MgCoordinateSystem* gridCS);
     double GetEastingIncrement(MgCoordinateSystem* gridCS);
     double GetNorthingIncrement(MgCoordinateSystem* gridCS);
+    double GetTickEastingIncrement(MgCoordinateSystem* gridCS);
+    double GetTickNorthingIncrement(MgCoordinateSystem* gridCS);
     double GetCurvePrecision(MgCoordinateSystem* gridCS);
 
 protected:
@@ -84,26 +86,148 @@ private:
 class CCoordinateSystemGridBoundary : public MgCoordinateSystemGridBoundary
 {
 public:
+   ////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Default value representing the limit at which curve generation will
+    /// always stop so as to reduce the possibility of an infinite loop.  The
+    /// limit is applied after each generation cycle, so the actual number of
+    /// points in a line may be as much as twice this value.  All GridBoundary
+    /// objects will have there m_MaxCurvePoints member variable initialized
+    /// to this value.
     static const INT32 MaxCurvePoints;
-    // Contrary to other envelope objects, the first of these overloads specifically
-    // requires that the southwest argument indeed be southwest of the northeast
-    // argument.  Necessary to support geographic coordinate systems (i.e. +/- 180).
-    CCoordinateSystemGridBoundary (MgCoordinate* southwest,MgCoordinate* northeast);
-    CCoordinateSystemGridBoundary (MgPolygon* boundary);
-    ~CCoordinateSystemGridBoundary (void);
 
-    void SetBoundaryExtents (MgCoordinate* southwest,MgCoordinate* northeast);
-    void SetBoundaryExtents (MgPolygon* boundary);
-    MgPolygon* GetBoundary (void) const;
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Default Constructor.  Use one of the two SetBoundary overlaods defined
+    /// below in order to create a valid GridBoundary object after using this
+    /// default constructor.
     CCoordinateSystemGridBoundary (void);
 
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Primary Constructor.  Contrary to other envelope objects, this
+    /// particular overload specifically requires that the southwest argument
+    /// indeed be southwest of the northeast argument.  (The assumption here is
+    /// that the X coordinate is the easting and the Y coordinate is the
+    /// northing.)  This is necessary to support geographic coordinate systems
+    /// (i.e. +/- 180).  To support future development plans, the boundary is
+    /// maintained as an arbitrary MgPolygon object.  In the initial release,
+    /// only rectangular boundaries will be tested and officially supported.
+    /// \param southwest
+    /// Southwest corner of the boundary in which a grid is to be drawn.  This
+    /// point must be southwest of the northeast location.
+    /// \param northeast
+    /// Northeast corner of the boundary in which a grid is to be drawn.
+    /// This point must be northeast of the southwest location.
+    /// \remarks
+    /// Externally, parameters are typically in frame coordinates; internally,
+    /// may be in internal coordinates (such as UTM when used internal to the
+    /// MGRS object).
+    CCoordinateSystemGridBoundary (MgCoordinate* southwest,MgCoordinate* northeast);
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Secondary Constructor.  This particular overload simply adds a reference
+    /// to provided polygon as the boundary.
+    CCoordinateSystemGridBoundary (MgPolygon* boundary);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Destructor, no surprises here.
+    ~CCoordinateSystemGridBoundary (void);
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Resets the grid boundary to that specified by the two arguments.
+    /// \param southwest
+    /// Southwest corner of the boundary in which a grid is to be drawn.  This
+    /// point must be southwest of the northeast location.
+    /// \param northeast
+    /// Northeast corner of the boundary in which a grid is to be drawn.
+    /// This point must be northeast of the southwest location.     
+    void SetBoundaryExtents (MgCoordinate* southwest,MgCoordinate* northeast);
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Resets the grid boundary to that specified by the polygon argument.
+    /// \param boundary
+    /// Polygon which defines the new grid boundary.
+    void SetBoundaryExtents (MgPolygon* boundary);
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the current grid boundary in the form of an MgPolygon object.
+    /// \remarks
+    /// While initially, grid boundaries are simple rectangels, during grid
+    /// generation a boundary may be converted from one coordinate system
+    /// to another.  In so doing, the straight lines of the initial rectangle
+    /// a often replaced with a complex curve representing the boundary in
+    /// the new coordinate system.
+    MgPolygon* GetBoundary (void) const;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the extents of the grid boundary.
+    /// \param eastMin
+    /// The minimum easting (i.e. X) ordinate value is returned here.
+    /// \param eastMax
+    /// The maximum easting (i.e. X) ordinate value is returned here.
+    /// \param northMin
+    /// The minimum northing (i.e. Y) ordinate value is returned here.
+    /// \param northMax
+    /// The maximum northing (i.e. Y) ordinate value is returned here.
+    /// \remarks
+    /// Especially useful after the internal boundary is converted to a
+    /// different coordinate system.
     void GetBoundaryExtents (double& eastMin,double& eastMax,double& northMin,double& northMax) const;
+    
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the internal grid boundary, in the form of an MgPolygon object,
+    /// after the boundary hbas been converted using the provided coordinate
+    /// system transform.
+    /// \param transform
+    /// The transformation used to convert the grid boundary.
+    /// \param precision
+    /// A value which indicates, in target coordinate system units, how
+    /// precisely any complex curve approximation generated must match the
+    /// the true complex curve. 
+    /// \remarks
+    /// The transformation must be a coordinate system transformation.  The
+    /// existing grid boundary is assumed to be defined in terms of the
+    /// transformation's source coordinate system, and is converted to the
+    /// transformation's target coordinate system.  In the conversion process,
+    /// a straight line segment is usually replaced with a multi-segment
+    /// approximation.  The maximum distance (in target system units) will
+    /// not exceed the value specified by the precision parameter.  Regardless
+    /// of the precision specification, the curve generation process shuts down
+    /// when the number of segments exceeds the value specified by the
+    /// m_MaxCurvePoints member variable.
     MgPolygon* GetBoundary (MgCoordinateSystemTransform* transform,double precision = 1.0);
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the result of clipping the provided line string to the internal
+    /// region (exterior ring) of the grid boundary.
+    /// \param lineString
+    /// A line string in the same coordinate system as the grid boundary.
+    /// \remarks
+    /// The result is a <b>collection</b> of line strings, thus supporting the
+    /// proper clipping of a line string which enters and leaves the grid
+    /// boundary more than once.  The algorithm is <b>slow</b> as it is written
+    /// to handle arbitrary polygons.  The algoirthm is designed to support
+    /// concave polygons, but this has not bee tested.  Interior rings in the
+    /// internal polygon object are ignored at this time.
     MgLineStringCollection* ClipLineString (MgLineString* lineString) const;
 protected:
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Satifies the pur virtual function of the MgDispose base class from which
+    /// this object is derived.  Essentially causes the destructor to be called.
     void Dispose (void);
 private:
-    // The transform used in the folloing function is more sophisicated than the
+    // The transform used in the following function is more sophisicated than the
     // standard Transform function.
     MgLinearRing* TransformLinearRing (MgLinearRing* linearString,
                                        MgCoordinateSystemTransform* transformation,

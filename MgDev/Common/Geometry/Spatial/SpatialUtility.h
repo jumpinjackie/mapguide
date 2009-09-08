@@ -109,6 +109,137 @@ public:
     static MgLinearRing* CurveRingToLinearRing(MgCurveRing* curveRing, double maxSpacing, double maxOffset);
     static MgLinearSegment* ArcSegmentToLinearSegment(MgArcSegment* segment, double maxSpacing, double maxOffset);
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Computes the intersection of two 2D line segments.  Intersection point,
+    /// if any, is returned in the provided result coordinate which (of course)
+    /// must already exist.
+    /// </summary>
+    /// <param name="result">
+    /// The calculated intersection point is returned in this variable which,
+    /// of course, must exist.
+    /// <param name="seg1From">
+    /// The initial point of the first line segment.
+    /// <param name="seg1To">
+    /// The end point of the first line segment.
+    /// <param name="seg2From">
+    /// The initial point of the second line segment.
+    /// <param name="seg2To">
+    /// The end point of the second line segment.
+    /// <returns>
+    /// Return status:
+    /// <list type="table">
+    /// <listheader>
+    ///     <term>Status</term>
+    ///     <description>Meaning</description>
+    /// </listheader>
+    /// <item>
+    ///     <term>-1</term>
+    ///     <description>no intersection, segments are parallel or collinear or
+    ///        a segemnt is of zero length; result remains unchanged
+    ///     </description>
+    /// </item>
+    /// <item><term> 0</term><desription>intersection exists, intersection point is not on either line</description></item>
+    /// <item><term> 1</term><desription>intersection exists, intersection point is on segment 1 only</description></item>
+    /// <item><term> 2</term><desription>intersection exists, intersection point is on segment 2 only</description></item>
+    /// <item><term> 3</term><desription>intersection exists, intersection point is on both segments</description></item>
+    /// </list>
+    /// <remarks>
+    /// In determining if the intersection point resides on a line, an intersection
+    /// point identical to the 'to' point is considered on the line, but an
+    /// intersection point identical to the 'from' point is _NOT_ considered to be
+    /// on the line.  Such a convention is necessary to avoid the appearance
+    /// of two intersections when indeed there is only one when processing a
+    /// a line string, for example.
+    /// </remarks>
+    /// <exception cref="MgNullReferenceException">
+    /// Thrown if any argument is null
+    /// </exception>
+    static INT32 SegmentIntersection (MgCoordinate* result,MgCoordinate* seg1From,
+                                                           MgCoordinate* seg1To,
+                                                           MgCoordinate* seg2From,
+                                                           MgCoordinate* seg2To);
+
+    ///////////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Returns a collection of coordinates with all of the intersection points of
+    /// the provided segment with the polygon provided by the first argument.
+    /// </summary>
+    /// <param name="polyItr">
+    /// An iterator of the closed ring to which the provided segment is
+    /// intersected.
+    /// </param>
+    /// <param name="segFrom">
+    /// The initial point of the line segment to be intersected with the provided
+    /// closed ring.
+    /// </param>
+    /// <param name="segTo">
+    /// The ending point of the line segment to be intersected with the provided
+    /// closed ring.
+    /// </param>
+    /// <returns>
+    /// A 2D coordinate collection of all intersection points; can and often is
+    /// an empty collection.
+    /// </returns>
+    /// <remarks>
+    /// This is a 2D function only, Z and M coordinates are ignored; the returned
+    /// point collection is a collection of <c>MgCoordinateXY</c> objects.<para>
+    /// Note that the first argument is a CoordinateIterator; so it doesn't have to be
+    /// an <c>MgPolygon</c>.  However, this function assumes that the iterator does indeed
+    /// point to a closed ring.
+    /// </remarks>
+    static MgCoordinateCollection* PolySegIntersection (MgCoordinateIterator* polyItr,
+                                                        MgCoordinate* segFrom,
+                                                        MgCoordinate* segTo);
+
+    ///////////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Determines if the provided point is inside (or actually on) the closed
+    /// ring provided bythe polyItr argument.
+    /// </summary>
+    /// <param name="polyItr">
+    /// An iterator of the closed ring which is the subject polygon.
+    /// </param>
+    /// <param name="queryPoint">
+    /// The 2D point whose status is to be determined.
+    /// </param>
+    /// <returns>
+    /// Returns true if the query point is inside or on the provided closed
+    /// ring.
+    /// </returns>
+    /// <remarks>
+    /// Currently, this function calculates the envelope of the provided closed
+    /// ring in order to determine a point which is known to be outside of the
+    /// closed ring.  An overloaded function which accepts a point known to be
+    /// outside the closed ring would be a lot faster.
+    /// </remarks>
+    static bool PointIsInPolygon (MgCoordinateIterator* polyItr,MgCoordinate* queryPoint);
+
+    ///////////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Clips a line string to an arbitrary polygon returning a collection of line
+    /// strings which represent the portions of the the provided line string which
+    /// are inside the provided closed ring.
+    /// </summary>
+    /// <param name="polyItr">
+    /// An iterator to the closed ring to which the provided line string is to be
+    /// clipped.
+    /// </param>
+    /// <param name="lineItr">
+    /// An iterator for the line string which is to be clipped.
+    /// </param>
+    /// <returns>
+    /// A collection of line string objects which represents the portions of the
+    /// provided line string which are inside of the provided closed ring.  This
+    /// collection may be empty.
+    /// </returns>
+    /// <remarks>
+    /// This is a pure 2D function.  The line strings generated will contain
+    /// collections of <c>MgCoordinateXY</c> objects.
+    /// </remarks>
+    static MgLineStringCollection* ClipStringToPolygon (MgCoordinateIterator* polyItr,
+                                                        MgCoordinateIterator* lineItr);
+                                                                                            
 protected:
 
     MgSpatialUtility() {};

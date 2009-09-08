@@ -45,17 +45,24 @@ CCoordinateSystemMgrsZone::CCoordinateSystemMgrsZone (MgCoordinateSystemGridBoun
     STRING utmZoneCode = CCoordinateSystemMgrs::ZoneNbrToUtmCs (m_UtmZone);
     utmZoneCRS = csFactory.CreateFromCode (utmZoneCode);
     SetUp (frameBoundary,utmZoneCRS,frameCRS);
+    
+    SetUserID (m_UtmZone);
 }
 CCoordinateSystemMgrsZone::~CCoordinateSystemMgrsZone (void)
 {
 }
-
 CCoordinateSystemGridRegionCollection* CCoordinateSystemMgrsZone::GetGridRegions (MgCoordinateSystemGridSpecification* specification)
 {
     BuildRegionCollection (specification);
     return SAFE_ADDREF(m_RegionCollection.p);
 }
-
+INT32 CCoordinateSystemMgrsZone::GetUtmZoneNbr (void)
+{
+    // m_UtmZoneNbr is positive for northern hemisphere, negative for the
+    // southern hemisphere.  Polar regions are assigned the value of 61.  Zero
+    // is the uninitialized/unknown/error value.
+    return m_UtmZone;
+}
 void CCoordinateSystemMgrsZone::BuildRegionCollection (MgCoordinateSystemGridSpecification* specification)
 {
     double curvePrecision;
@@ -114,7 +121,7 @@ void CCoordinateSystemMgrsZone::BuildMajorRegions (double curvePrecision)
             lngMax = centralMeridian + 3.0;
 
             // Need to account for the fact that the frame boundary may cross
-            // a MGRS Gris Zone Designation boundary (i.e. the 8 degree chunks
+            // an MGRS Grid Zone Designation boundary (i.e. the 8 degree chunks
             // of latitude).  Thus, there may be more than just one major region.
             delta = fabs (fmod (latMin,8.0));
             firstLat = static_cast<INT32>(latMin - ((latMin >= 0.0) ? delta : (8.0 - delta)));

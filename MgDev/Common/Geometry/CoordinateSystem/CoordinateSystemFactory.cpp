@@ -571,9 +571,9 @@ MgCoordinateSystemGridSpecification* MgCoordinateSystemFactory::GridSpecificatio
     return gridSpecification;
 }
 MgCoordinateSystemGridSpecification* MgCoordinateSystemFactory::GridSpecification (double increment,
-                                                                INT32 subdivisions,
-                                                                INT32 unitCode,
-                                                                double curvePrecision)
+                                                                                   double tickIncrement,
+                                                                                   INT32 unitCode,
+                                                                                   double curvePrecision)
 {
     Ptr<MgCoordinateSystemGridSpecification> gridSpecification;
 
@@ -585,7 +585,7 @@ MgCoordinateSystemGridSpecification* MgCoordinateSystemFactory::GridSpecificatio
             // all the parameters added and throw an exception if an error.
             gridSpecification->SetGridBase (0.0,0.0);
             gridSpecification->SetGridIncrement (increment,increment);
-            gridSpecification->SetGridIncrement (subdivisions,subdivisions);
+            gridSpecification->SetGridIncrement (tickIncrement,tickIncrement);
             gridSpecification->SetUnits (unitCode,MgCoordinateSystemUnitType::Linear);
             gridSpecification->SetCurvePrecision (curvePrecision);
         }

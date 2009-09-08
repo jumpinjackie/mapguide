@@ -15,11 +15,12 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "Spatial/MathUtility.h"
 #include "GeometryCommon.h"
 #include "CoordSysCommon.h"
 #include "CoordSysUtil.h"
 #include "CriticalSection.h"
+#include "Spatial/MathUtility.h"
+#include "Spatial/SpatialUtility.h"
 
 #include "CoordSys.h"
 #include "CoordSysGrids.h"
@@ -145,21 +146,29 @@ double CCoordinateSystemGridSpecification::GetCurvePrecision(void)
 void CCoordinateSystemGridSpecification::SetGridBase(double eastingBase,double northingBase)
 {
     m_EastingBase = eastingBase;
-    m_NorthingBase = m_EastingBase;
+    m_NorthingBase = northingBase;
 }
 void CCoordinateSystemGridSpecification::SetGridIncrement(double eastingIncrement,double northingIncrement)
 {
     m_EastingIncrement = eastingIncrement;
-    m_NorthingIncrement = m_EastingIncrement;
+    m_NorthingIncrement = northingIncrement;
 }
 void CCoordinateSystemGridSpecification::SetTickIncrements(double eastingIncrement,double northingIncrement)
 {
     m_TickEastingIncrement = eastingIncrement;
-    m_TickNorthingIncrement = m_TickEastingIncrement;
+    m_TickNorthingIncrement = northingIncrement;
 }
 void CCoordinateSystemGridSpecification::SetUnits (INT32 unitCode,INT32 unitType)
 {
-    //TODO:   Should verify the validty of the two parameters.
+    bool codeOk;
+    INT32 lclUnitType;
+
+    codeOk = GetUnitInfo(unitCode,&lclUnitType,NULL);
+    if (!codeOk || unitType != lclUnitType)
+    {
+        throw new MgInvalidCoordinateSystemUnitsException(L"MgCoordinateSystemGridSpecification.SetUnits", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
     m_UnitCode = unitCode;
     m_UnitType = unitType;
 }
@@ -168,85 +177,195 @@ void CCoordinateSystemGridSpecification::SetCurvePrecision (double curvePrecisio
     m_CurvePrecision = curvePrecision;
 }
 
-// The following function are identical to the published version, with the
+// The following functions are identical to the published version, with the
 // exception that the value returned are always converted to the units of
 // the provided coordinate system.  Typically, the coodinate system
 // provided as an argument will be that of the "grid" coordinate system.
 double CCoordinateSystemGridSpecification::GetEastingBase (MgCoordinateSystem* gridCS)
 {
+    INT32 gridUnitType;
+    INT32 gridCrsUnitCode;
+    double unitConversion;
+
     MgCoordinateSystemCatalog* catalogPtr = gridCS->GetCatalog ();
     MgCoordinateSystemUnitInformation* unitInfoPtr = catalogPtr->GetUnitInformation ();
+    gridCrsUnitCode = gridCS->GetUnitCode ();
+    
+    // Verify that the unit type of the specification match the unit type
+    // of the grid coordinate system of the grid object.
+    GetUnitInfo(gridCrsUnitCode,&gridUnitType,NULL);
+    if (gridUnitType != m_UnitType)
+    {
+        throw new MgInvalidCoordinateSystemUnitsException(L"MgCoordinateSystemGridSpecification.GetEastingBase", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
-    // TODO:
-    // Should verify that the unit types of the "this" object and the provided
-    // coordinate system are the same.
-    double unitConversion = 1.0 / gridCS->GetUnitScale ();
+    // Calculate the appropriate units conversion factor.
     if (m_UnitType == MgCoordinateSystemUnitType::Linear)
     {
-        unitConversion *= unitInfoPtr->GetLinearUnitScale (m_UnitCode);
+        unitConversion = unitInfoPtr->GetLinearUnitScale (m_UnitCode) /
+                         unitInfoPtr->GetLinearUnitScale (gridCrsUnitCode);
     }
     else
     {
-        unitConversion *= unitInfoPtr->GetAngularUnitScale (m_UnitCode);
+        unitConversion = unitInfoPtr->GetAngularUnitScale (m_UnitCode) /
+                         unitInfoPtr->GetAngularUnitScale (gridCrsUnitCode);
     }
     return (m_EastingBase * unitConversion);
 }
 double CCoordinateSystemGridSpecification::GetNorthingBase (MgCoordinateSystem* gridCS)
 {
+    INT32 gridUnitType;
+    INT32 gridCrsUnitCode;
+    double unitConversion;
+
     MgCoordinateSystemCatalog* catalogPtr = gridCS->GetCatalog ();
     MgCoordinateSystemUnitInformation* unitInfoPtr = catalogPtr->GetUnitInformation ();
+    gridCrsUnitCode = gridCS->GetUnitCode ();
 
-    // TODO:
-    // Should verify that the unit types of the "this" object and the provided
-    // coordinate system are the same.
-    double unitConversion = 1.0 / gridCS->GetUnitScale ();
+    // Verify that the unit type of the specification match the unit type
+    // of the grid coordinate system of the grid object.
+    GetUnitInfo(gridCrsUnitCode,&gridUnitType,NULL);
+    if (gridUnitType != m_UnitType)
+    {
+        throw new MgInvalidCoordinateSystemUnitsException(L"MgCoordinateSystemGridSpecification.GetNorthingBase", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    // Calculate the appropriate units conversion factor.
     if (m_UnitType == MgCoordinateSystemUnitType::Linear)
     {
-        unitConversion *= unitInfoPtr->GetLinearUnitScale (m_UnitCode);
+        unitConversion = unitInfoPtr->GetLinearUnitScale (m_UnitCode) /
+                         unitInfoPtr->GetLinearUnitScale (gridCrsUnitCode);
     }
     else
     {
-        unitConversion *= unitInfoPtr->GetAngularUnitScale (m_UnitCode);
+        unitConversion = unitInfoPtr->GetAngularUnitScale (m_UnitCode) /
+                         unitInfoPtr->GetAngularUnitScale (gridCrsUnitCode);
     }
     return (m_NorthingBase * unitConversion);
 }
 double CCoordinateSystemGridSpecification::GetEastingIncrement(MgCoordinateSystem* gridCS)
 {
+    INT32 gridUnitType;
+    INT32 gridCrsUnitCode;
+    double unitConversion;
+
     MgCoordinateSystemCatalog* catalogPtr = gridCS->GetCatalog ();
     MgCoordinateSystemUnitInformation* unitInfoPtr = catalogPtr->GetUnitInformation ();
+    gridCrsUnitCode = gridCS->GetUnitCode ();
 
-    // TODO:
-    // Should verify that the unit types of the "this" object and the provided
-    // coordinate system are the same.
-    double unitConversion = 1.0 / gridCS->GetUnitScale ();
+    // Verify that the unit type of the specification match the unit type
+    // of the grid coordinate system of the grid object.
+    GetUnitInfo(gridCrsUnitCode,&gridUnitType,NULL);
+    if (gridUnitType != m_UnitType)
+    {
+        throw new MgInvalidCoordinateSystemUnitsException(L"MgCoordinateSystemGridSpecification.GetEastingIncrement", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    // Calculate the appropriate units conversion factor.
     if (m_UnitType == MgCoordinateSystemUnitType::Linear)
     {
-        unitConversion *= unitInfoPtr->GetLinearUnitScale (m_UnitCode);
+        unitConversion = unitInfoPtr->GetLinearUnitScale (m_UnitCode) /
+                         unitInfoPtr->GetLinearUnitScale (gridCrsUnitCode);
     }
     else
     {
-        unitConversion *= unitInfoPtr->GetAngularUnitScale (m_UnitCode);
+        unitConversion = unitInfoPtr->GetAngularUnitScale (m_UnitCode) /
+                         unitInfoPtr->GetAngularUnitScale (gridCrsUnitCode);
     }
     return (m_EastingIncrement * unitConversion);
 }
 double CCoordinateSystemGridSpecification::GetNorthingIncrement(MgCoordinateSystem* gridCS)
 {
+    INT32 gridUnitType;
+    INT32 gridCrsUnitCode;
+    double unitConversion;
+
     MgCoordinateSystemCatalog* catalogPtr = gridCS->GetCatalog ();
     MgCoordinateSystemUnitInformation* unitInfoPtr = catalogPtr->GetUnitInformation ();
+    gridCrsUnitCode = gridCS->GetUnitCode ();
 
-    // TODO:
-    // Should verify that the unit types of the "this" object and the provided
-    // coordinate system are the same.
-    double unitConversion = 1.0 / gridCS->GetUnitScale ();
+    // Verify that the unit type of the specification match the unit type
+    // of the grid coordinate system of the grid object.
+    GetUnitInfo(gridCrsUnitCode,&gridUnitType,NULL);
+    if (gridUnitType != m_UnitType)
+    {
+        throw new MgInvalidCoordinateSystemUnitsException(L"MgCoordinateSystemGridSpecification.GetNorthingIncrement", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    // Calculate the appropriate units conversion factor.
     if (m_UnitType == MgCoordinateSystemUnitType::Linear)
     {
-        unitConversion *= unitInfoPtr->GetLinearUnitScale (m_UnitCode);
+        unitConversion = unitInfoPtr->GetLinearUnitScale (m_UnitCode) /
+                         unitInfoPtr->GetLinearUnitScale (gridCrsUnitCode);
     }
     else
     {
-        unitConversion *= unitInfoPtr->GetAngularUnitScale (m_UnitCode);
+        unitConversion = unitInfoPtr->GetAngularUnitScale (m_UnitCode) /
+                         unitInfoPtr->GetAngularUnitScale (gridCrsUnitCode);
     }
     return (m_NorthingIncrement * unitConversion);
+}
+double CCoordinateSystemGridSpecification::GetTickEastingIncrement(MgCoordinateSystem* gridCS)
+{
+    INT32 gridUnitType;
+    INT32 gridCrsUnitCode;
+    double unitConversion;
+
+    MgCoordinateSystemCatalog* catalogPtr = gridCS->GetCatalog ();
+    MgCoordinateSystemUnitInformation* unitInfoPtr = catalogPtr->GetUnitInformation ();
+    gridCrsUnitCode = gridCS->GetUnitCode ();
+
+    // Verify that the unit type of the specification match the unit type
+    // of the grid coordinate system of the grid object.
+    GetUnitInfo(gridCrsUnitCode,&gridUnitType,NULL);
+    if (gridUnitType != m_UnitType)
+    {
+        throw new MgInvalidCoordinateSystemUnitsException(L"MgCoordinateSystemGridSpecification.GetTickEastingIncremen", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    // Calculate the appropriate units conversion factor.
+    if (m_UnitType == MgCoordinateSystemUnitType::Linear)
+    {
+        unitConversion = unitInfoPtr->GetLinearUnitScale (m_UnitCode) /
+                         unitInfoPtr->GetLinearUnitScale (gridCrsUnitCode);
+    }
+    else
+    {
+        unitConversion = unitInfoPtr->GetAngularUnitScale (m_UnitCode) /
+                         unitInfoPtr->GetAngularUnitScale (gridCrsUnitCode);
+    }
+    return (m_TickEastingIncrement * unitConversion);
+}
+double CCoordinateSystemGridSpecification::GetTickNorthingIncrement(MgCoordinateSystem* gridCS)
+{
+    INT32 gridUnitType;
+    INT32 gridCrsUnitCode;
+    double unitConversion;
+
+    MgCoordinateSystemCatalog* catalogPtr = gridCS->GetCatalog ();
+    MgCoordinateSystemUnitInformation* unitInfoPtr = catalogPtr->GetUnitInformation ();
+    gridCrsUnitCode = gridCS->GetUnitCode ();
+
+    // Verify that the unit type of the specification match the unit type
+    // of the grid coordinate system of the grid object.
+    GetUnitInfo(gridCrsUnitCode,&gridUnitType,NULL);
+    if (gridUnitType != m_UnitType)
+    {
+        throw new MgInvalidCoordinateSystemUnitsException(L"MgCoordinateSystemGridSpecification.GetTickNorthingIncrement", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    // Calculate the appropriate units conversion factor.
+    if (m_UnitType == MgCoordinateSystemUnitType::Linear)
+    {
+        unitConversion = unitInfoPtr->GetLinearUnitScale (m_UnitCode) /
+                         unitInfoPtr->GetLinearUnitScale (gridCrsUnitCode);
+    }
+    else
+    {
+        unitConversion = unitInfoPtr->GetAngularUnitScale (m_UnitCode) /
+                         unitInfoPtr->GetAngularUnitScale (gridCrsUnitCode);
+    }
+    return (m_TickNorthingIncrement * unitConversion);
 }
 double CCoordinateSystemGridSpecification::GetCurvePrecision (MgCoordinateSystem* gridCS)
 {
@@ -289,17 +408,15 @@ void CCoordinateSystemGridSpecification::Dispose ()
     delete this;
 }
 
-//=============================================================================
-// CCoordinateSystemGridBoundary -- The boundary of the grid or graticule.
-//
-// In the case of geographic coordinates, internal longitude ordinates may
-// exceed 180 and latitude ordinates may exceed 90 to support wrap around in
-// a rational fashion.
-//
-// In this initial release, the boundary will be a rectangle, and this will
-// be enforced by the constructors which are supported.  Expansion to support
-// more complex boundaries will be added by providing more constructors.
-//
+///////////////////////////////////////////////////////////////////////////////
+///<summary>
+/// The boundary of the grid or graticule.  In the case of geographic
+/// coordinates, internal longitude ordinates may exceed 180 and latitude
+/// ordinates may exceed 90 to support wrap around in a rational fashion.
+/// In this initial release, the boundary will be a rectangle, and this will
+/// be enforced by the constructors which are supported.  Expansion to support
+/// more complex boundaries will be added by providing more constructors.
+///</summary>
 const INT32 CCoordinateSystemGridBoundary::MaxCurvePoints = 511;
 CCoordinateSystemGridBoundary::CCoordinateSystemGridBoundary () : MgCoordinateSystemGridBoundary (),
                                                                   m_Large                        (false),
@@ -449,17 +566,20 @@ MgPolygon* CCoordinateSystemGridBoundary::GetBoundary (MgCoordinateSystemTransfo
             }
         }
         result = new MgPolygon (exteriorRing,interiorRings);
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemGridBoundary.GetBoundaryExtents")
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemGridBoundary.GetBoundary")
     return result.Detach ();
 }
 MgLineStringCollection* CCoordinateSystemGridBoundary::ClipLineString (MgLineString* lineString) const
 {
     MgGeometryFactory factory;
     Ptr<MgLineStringCollection> collection;
+    Ptr<MgCoordinateIterator> polyItr;
+    Ptr<MgCoordinateIterator> lineItr;
 
     MG_TRY()
-        collection = new MgLineStringCollection ();
-        collection->Add (lineString);
+        polyItr = m_GridBoundary->GetCoordinates ();
+        lineItr = lineString->GetCoordinates ();
+        collection = MgSpatialUtility::ClipStringToPolygon (polyItr,lineItr);
     MG_CATCH_AND_THROW(L"MgCoordinateSystemGridBoundary.ClipLineString")
     return collection.Detach ();
 }
@@ -485,7 +605,7 @@ MgLinearRing* CCoordinateSystemGridBoundary::TransformLinearRing (MgLinearRing* 
     MG_TRY ()
         // NOTE:  Boundaries are required to proceed in a counterclockwise
         // direction, but this function will be used to transform both
-        // exterior and interior rings.  SO in this function we cannot count
+        // exterior and interior rings.  So in this function we cannot count
         // on any specific order.  We should be able to rely on the fact that
         // each ring presented to us is indeed closed.
 
@@ -493,31 +613,36 @@ MgLinearRing* CCoordinateSystemGridBoundary::TransformLinearRing (MgLinearRing* 
         // create an empty MgCoordinateCollection, and then spend most of our
         // time adding points to this collection.  The primary source of these
         // points will be the MgLineStrings returned by the
-        // MgCoordinateSystemTransform::GridLIne object.  Perhaps that function
+        // MgCoordinateSystemTransform::GridLine object.  Perhaps that function
         // should be modified to return an MgCoordinateCollection?  Probably
         // doesn't make much difference as you can't (at least at thie time)
         // add one coordinate collection to another.  Too Bad!!!
         targetCollection = new MgCoordinateCollection ();
-        
+
         ringItr = linearRing->GetCoordinates ();
         ringItr->MoveNext ();
-        curFromPnt = ringItr->GetCurrent ();
-        copyBufr = transform->Transform (curFromPnt);
+        curToPnt = ringItr->GetCurrent ();
+        copyBufr = transform->Transform (curToPnt);
         targetCollection->Add (copyBufr);
         while (ringItr->MoveNext ())
         {
             // Convert the current segment.
+            curFromPnt = curToPnt;
             curToPnt = ringItr->GetCurrent ();
             convertedSegment = transform->GridLine (curFromPnt,curToPnt,curvePrecision,m_MaxCurvePoints);
-            
+
             // Copy the converted segment to the target coordinate collection.
             lineItr = convertedSegment->GetCoordinates ();
-            
-            // To prevent duplicate points, we always skip adding the initial point
-            // of a converted line string.  We dealt with the initial point of the
-            // first segment above.
+
+            // To prevent duplicate points, we always skip adding the initial
+            // point of a converted line string.  We dealt with the initial
+            // point of the first segment above.  The first point of each
+            // additional line segment will have been processed as the "to"
+            // point of the last segment processed.  Always adding the last
+            // point of each segment means we don't need to worry about an
+            // extra point when we are done.
             lineItr->MoveNext ();
-            
+
             // Copy the remainder of the converted line segment.
             while (lineItr->MoveNext ())
             {
