@@ -17,9 +17,7 @@
 
 //=============================================================================
 // Class declararations
-class MgCoordinateSystemGridBoundary;           // MgPolygon based extents of the grid;
-                                                // currently only rectangles are
-                                                // supported.
+class MgCoordinateSystemGridBoundary;           // MgPolygon based extents of the grid
 class MgCoordinateSystemGridBase;               // abstract interface between grid generator
                                                 // and grid consumer
 class MgCoordinateSystemGridGeneric;            // derives from MgCoordinateSystemGridBase
@@ -49,10 +47,19 @@ class MgCoordinateSystemGridTick;               // a position in viewport coordi
                                                 // as a double
 
 
-//=============================================================================
-// An enumeration of the various types of specialized grids/graticules
-// currently supported.  A specialized grid is one for which specific standards
-// exist to which the results of this feature are compliant with.
+
+///////////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// An enumeration of the various types of specialized grids/graticules
+/// currently supported.  A specialized grid is one for which specific
+/// standards exist to which the results of this feature are compliant with.
+/// A generic grid is a simple non-standardized grid of a coordinate system
+/// drawn in a viewport based on another coordinate system. <p>
+/// The values assigned are intended to support grouping standardized grids
+/// with similar features and is currently entirely arbitrary.  Using a
+/// numeric literal instead of thes names of the defined constants is a sure
+/// way to write code that will get broken in the future.
+/// </summary>
 class MgCoordinateSystemGridSpecializationType
 {
 PUBLISHED_API:
@@ -64,18 +71,19 @@ PUBLISHED_API:
     static const INT32 Unknown           = (65366);     // indicates a failure of an algorithm
 };
 
-//=============================================================================
-// An enumeration of the supported values for the 'm_Orientation' member of
-// several objects related to grids and graticules.
-//
-// This value is used to qualify objects which are of the "iso" type.  I.e. a
-// grid line is referred to as an isoline as it is the locus of points which
-// have a specific value for either the easting or the northing.  It is this
-// value which indicates which.  Thus, a grid line which is classified as
-// having an "EastWest" orientation will be a isoline which is the locus of
-// points which share a common easting value, and the "m_Value" element of
-// that object will be an easting value.
-//
+///////////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// An enumeration of the supported values for the <c>m_Orientation</c> member
+/// of several objects related to grids and graticules. <p>
+/// This value is used to qualify objects which are of the "iso" type.  I.e. a
+/// grid line is referred to as an isoline as it is the locus of points which
+/// have a specific value for either the easting or the northing.  It is this
+/// value which indicates which.  Thus, a grid line which is classified as
+/// having an "EastWest" orientation will be a isoline which is the locus of
+/// points which share a common <b>easting</b> value, and the "m_Value" element
+/// of that object will be an <b>easting</b> value.  Note that in this example,
+/// the line is typically a vertical line.
+/// </summary>
 class MgCoordinateSystemGridOrientation
 {
 PUBLISHED_API:
@@ -85,51 +93,519 @@ PUBLISHED_API:
     static const INT8 Unknown = 3;          // indicates a failure of an algorithm
 };
 
-//=============================================================================
-// MgCoordinateSystemGridSpecification
-//
-// This object is used to convey all the parameters necessary for the
-// generation of a grid/graticule lumped into a single object for convenience.
-// Thus, adding a parameter determined to be necessary does not alter a lot of
-// calling sequences.
+///////////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// <c>MgCoordinateSystemGridSpecification</c> is an object that is used to
+/// convey all the parameters necessary for the generation of a grid/graticule
+/// lumped into a single object for convenience.  Thus, adding a parameter
+/// determined to be necessary at a later time does not alter a lot of calling
+/// sequences.<p>
+/// Note that this interface is an abstract interface.  There is code
+/// associated with the implementation of this interface which is used to
+/// handle the conversion of parameters between the various unit systems.
+/// Thus, one obtains a <c>MgCoordinateSystemGridSpecification</c> from the
+/// <c>MgCoordinateSystemFactory</c> object.<p>
+/// Note that all values are provided in the units specified within the object.
+/// The units used in this object do <b>not</b> need to be the same as any
+/// coordinate system involved in the generation of a grid, although the 
+/// <b>type</b> of unit must be consistent with the type of grid being drawn.
+/// That is, specifying a Angular unit type when drawing a UTM grid will cause
+/// an exception at the time the request for (say) grid lines is issued.
+/// </summary>
 class MG_GEOMETRY_API MgCoordinateSystemGridSpecification : public MgGuardDisposable
 {
 PUBLISHED_API:
-    virtual double GetEastingBase (void)=0;             // the base value from which easting grid line values are computed.
-    virtual double GetNorthingBase (void)=0;            // the base value from which northing grid line values are computed.
-    virtual double GetEastingIncrement(void)=0;         // the interval between easting grid lines
-    virtual double GetNorthingIncrement(void)=0;        // the interval between northing grid lines
-    virtual double GetTickEastingIncrement(void)=0;     // number of tic subdivisions between grid increments in the east/west direction
-    virtual double GetTickNorthingIncrement(void)=0;    // number of tic subdivisions between grid increments in the north/south direction
-    virtual INT32 GetUnitType(void)=0;                  // a value from MgCoordinateSystemUnitType indicating the type of units of the
-                                                        // base and interval specifications
-    virtual INT32 GetUnitCode(void)=0;                  // a value from MgCoordinateSystemUnitCode indicating the units of the
-                                                        // base and interval specifications
-    virtual bool IsSameAs(MgCoordinateSystemGridSpecification* specification)=0;
-    virtual double GetCurvePrecision(void)=0;           // the maximum difference between true complex curve and the polyline
-                                                        // approximation thereof, in the same units used to specify the
-                                                        // base and increment values (i.e. UnitCode).
-                                                        // If left unspecified (or set to zero) a value is automatically selected to be,
-                                                        // approximately, the equivalent of 1 meter in target system units.
+    ///////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Gets the easting base value.
+    /// </summary>
+    /// <returns>
+    /// Returns the current value of the easting base member.
+    /// </returns>
+    /// <remarks>
+    /// The base value is the base upon which grid values are determined.
+    /// Thus, a grid with and increment of, say, two degrees, can actually
+    /// start at one (the base) yielding grid lines at 1, 3, 5, 7, etc.
+    /// </remarks>
+    virtual double GetEastingBase (void)=0;
+    
+    ///////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Gets the northing base value.
+    /// </summary>
+    /// <returns>
+    /// Returns the current value of the northing base member.
+    /// </returns>
+    /// <remarks>
+    /// The base value is the base upon which grid values are determined.
+    /// Thus, a grid with and increment of, say, two degrees, can actually
+    /// start at one (the base) yielding grid lines at 1, 3, 5, 7, etc.
+    /// </remarks>
+    virtual double GetNorthingBase (void)=0;
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the easting increment value.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual double GetEastingIncrement ();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual double GetEastingIncrement ();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual double GetEastingIncrement ();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Returns the current value of the easting increment member.
+    ///
+    /// \remarks
+    /// The distance between grid lines representing easting values.
+    ///
+    virtual double GetEastingIncrement(void)=0;         // the interval between easting grid lines
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the northing increment value.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual double GetNorthingIncrement ();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual double GetNorthingIncrement ();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual double GetNorthingIncrement ();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Returns the current value of the northing increment member.
+    ///
+    /// \remarks
+    /// The distance between grid lines representing northing values.
+    ///
+    virtual double GetNorthingIncrement(void)=0;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the tick easting increment value.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual double GetTickEastingIncrement ();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual double GetTickEastingIncrement ();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual double GetTickEastingIncrement ();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Returns the current value of the tick easting increment member.
+    ///
+    /// \remarks
+    /// The distance between ticks representing specific easting values.
+    ///
+    virtual double GetTickEastingIncrement(void)=0;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the tick northing increment value.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual double GetTickNorthingIncrement ();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual double GetTickNorthingIncrement ();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual double GetTickNorthingIncrement ();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Returns the current value of the tick northing increment member.
+    ///
+    /// \remarks
+    /// The distance between ticks representing specific northing values.
+    ///
+    virtual double GetTickNorthingIncrement(void)=0;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the current unit type setting.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual int GetUnitType();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual int GetUnitType();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual int GetUnitType();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Returns the current unit type setting.
+    ///
+    /// \remarks
+    /// The value returned is one of the values defined in the
+    /// MgCoordinateSystemUnitType object and essentially specifies if the unit
+    /// specification is of the linear or angular type.
+    ///
+    virtual INT32 GetUnitType(void)=0;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the current unit code setting.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual int GetUnitCode();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual int GetUnitCode();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual int GetUnitCode();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Returns the current unit code setting.
+    ///
+    /// \remarks
+    /// The value returned is one of the values defined in the
+    /// MgCoordinateSystemUnitCode object and essentially specifies the unit in
+    /// which the base, increment (line and tick), and curve precision values
+    /// are specified. 
+    ///
+    virtual INT32 GetUnitCode(void)=0;
+    
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Determines if two MgCoordinateSystemGridSpecification objects are the
+    /// same.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual bool IsSameAs (MgCoordinateSystenGridSpecification secondObject);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual bool IsSameAs (MgCoordinateSystenGridSpecification secondObject);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual bool IsSameAs (MgCoordinateSystenGridSpecification secondObject);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param specification (MgCoordinateSystemGridSpecification)
+    /// The second object to which the host object is to be compared to.
+    ///
+    /// \return
+    /// Returns true if the objects are identical.
+    ///
+    /// \remarks
+    /// Objects with a different unit settings are automatically considered
+    /// different.  Therefore the intelligence necessary to compare values which
+    /// are identical in different units is <b>not</b> present.
+    ///
+    virtual bool IsSameAs(MgCoordinateSystemGridSpecification* specification)=0;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Get the current curve precision value.
+    /// same.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual double GetCurvePrecision ();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual double GetCurvePrecision ();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual double GetCurvePrecision ();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Returns the current curve precision value.
+    ///
+    /// \remarks
+    /// The curve precision value specifies the desired maximum distance between
+    /// a complex curve approximation and the actual complex curve.  This value
+    /// may be left at zero, and a suitable default value will be choosen by the
+    /// grid generation engine at grid line generation time.
+    ///
+    virtual double GetCurvePrecision(void)=0;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the easting and northing base values.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual void SetGridBase (double eastingBase, double northingBase);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual void SetGridBase (double eastingBase, double northingBase);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual void SetGridBase (double eastingBase, double northingBase);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param eastingBase (double)
+    /// The base value to be used in calculating the easting grid and tick
+    /// values.
+    ///
+    /// \param northingBase (double)
+    /// The base value to be used in calculating the northing grid and tick
+    /// values.
+    ///
+    /// \remarks
+    /// While the increment values determine the distance between grid lines
+    /// and ticks, the base value specifies the base value at which the
+    /// initial grid line/tick is positioned.  Actually, the base for any
+    /// grid is the algebraically highest value which is less than the
+    /// grid boundary minimum and which, when mod'ed with base, produces zero.
+    ///
+    /// That is, for example, an increment of 2 and a base of 1 will produce
+    /// grid values of 1, 3, 5, 7, etc.
+    ///
     virtual void SetGridBase(double eastingBase,double northingBase) = 0;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the easting and northing grid line increment values.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual void SetGridIncrement (double eastingIncrement, double northingIncrement);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual void SetGridIncrement (double eastingIncrement, double northingIncrement);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual void SetGridIncrement (double eastingIncrement, double northingIncrement);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param eastingIncrement (double)
+    /// The distance between easting grid lines.
+    ///
+    /// \param northingIncrement (double)
+    /// The distance between northing grid lines.
+    ///
+    /// \remarks
+    /// In this context, easting refers to grid lines which represent a specific
+    /// easting value; the resulting lines usually being vertical (i.e. south to
+    /// north) grid lines.  Northing refers to grid lines which represent a
+    /// specific northing value; the resulting lines usually being horizontal
+    /// (i.e. west to east).
+    ///
+    /// \bugs
+    /// This function should be named SetGridIncrements to be consistent with the
+    /// rest of the interface.
+    ///
     virtual void SetGridIncrement(double eastingIncrement,double northingIncrement) = 0;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the easting and northing tick increment values.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual void SetTickIncrements (double eastingIncrement, double northingIncrement);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual void SetTickIncrements (double eastingIncrement, double northingIncrement);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual void SetTickIncrements (double eastingIncrement, double northingIncrement);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param eastingIncrement (double)
+    /// The distance between easting tick marks.
+    ///
+    /// \param northingIncrement (double)
+    /// The distance between northing tick marks.
+    ///
     virtual void SetTickIncrements(double eastingIncrement,double northingIncrement) = 0;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the units used to define the desired grid.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual void SetUnits (int unitCode, int unitType);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual void SetUnits (int unitCode, int unitType);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual void SetUnits (int unitCode, int unitType);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param unitCode (int)
+    /// One of the integer values defined in the MgCoordinateSystemUnitCode
+    /// object which indicates the units used to define the grid parameters. 
+    ///
+    /// \param unitType (int)
+    /// One of the integer values defined in the MgCoordinateSystemUnitType
+    /// object which indicates the type of units (linear vs angular) used to
+    /// define the grid parameters.
+    ///
+    /// \remarks
+    /// The unitCode and unitType parameters must be consistent with each other
+    /// or an exception is thrown.  Also, the unit tyupe must be consistent
+    /// with the type of grid being requested or an exception will be thrown.
+    /// That is, you may not define a graticule (i.e. a grid of geographic
+    /// coordinates on a projected coordinate system map) using linear units.
+    /// SImilarly, you cannot use angular units to define a grid of a projected
+    /// coordinate system on a projected coordinate system map.
+    ///
     virtual void SetUnits (INT32 unitCode,INT32 unitType) = 0;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the desired precision of complecx curve approximations.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual void SetCurvePrecision (double curvePrecision);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual void SetCurvePrecision (double curvePrecision);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual void SetCurvePrecision (double curvePrecision);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param curvePrecision (double)
+    /// The desired maximum distance between an approximation of a complex curve
+    /// and the true curve.
+    ///
+    /// \remarks
+    /// Please note the term desired in this description.  The generation of a
+    /// complex curve approximation is also controlled by a variable usually
+    /// called the MaximumCurvePoints.  Thus, if this criteria is exceeded in 
+    /// the curve generation process, the curve precision can and will often be
+    /// less than that requested.  This provision is implemented to reduce the
+    /// probability of a runaway grid which consumes the entire machine.
+    ///
+    /// \bugs
+    /// The maximum curve point variable should be a part of this object.
+    ///
     virtual void SetCurvePrecision (double curvePrecision) = 0;
 
 INTERNAL_API:
-    // The following function identically to the published version, with the
-    // exception that the value returned is converted to the units of the
-    // provided coordinate system.  Typically, the provided coordinate system
-    // is either the grid coordinate system OR the frame coordinate system.
-    virtual double GetEastingBase (MgCoordinateSystem* gridCS)=0;
-    virtual double GetNorthingBase (MgCoordinateSystem* gridCS)=0;
-    virtual double GetEastingIncrement (MgCoordinateSystem* gridCS)=0;
-    virtual double GetNorthingIncrement (MgCoordinateSystem* gridCS)=0;
-    virtual double GetCurvePrecision (MgCoordinateSystem* gridCS)=0;
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the easting base value after conversion from the units
+    /// of this specification object to the units of the provided coordinate
+    /// system.
+    ///
+    /// \param gridCRS
+    /// The return value is converted to the units of this coordinate system.
+    ///
+    /// \return
+    /// Easting base value in units of the provided coordinate system.
+    ///
+    /// \exception
+    /// Will throw if the unit types of this specification and the provided
+    /// coordinate system are not the same.
+    ///
+    virtual double GetEastingBase (MgCoordinateSystem* gridCRS)=0;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the northing base value after conversion from the units
+    /// of this specification object to the units of the provided coordinate
+    /// system.
+    ///
+    /// \param gridCRS
+    /// The return value is converted to the units of this coordinate system.
+    ///
+    /// \return
+    /// Northing base value in units of the provided coordinate system.
+    ///
+    /// \exception
+    /// Will throw if the unit types of this specification and the provided
+    /// coordinate system are not the same.
+    ///
+    virtual double GetNorthingBase (MgCoordinateSystem* gridCRS)=0;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the easting grid increment value after conversion from the
+    /// units of this specification object to the units of the provided
+    /// coordinate system.
+    ///
+    /// \param gridCRS
+    /// The return value is converted to the units of this coordinate system.
+    ///
+    /// \return
+    /// Easting grid increment value in units of the provided coordinate system.
+    ///
+    /// \exception
+    /// Will throw if the unit types of this specification and the provided
+    /// coordinate system are not the same.
+    ///
+    virtual double GetEastingIncrement (MgCoordinateSystem* gridCRS)=0;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the northing grid increment value after conversion from the
+    /// units of this specification object to the units of the provided
+    /// coordinate system.
+    ///
+    /// \param gridCRS
+    /// The return value is converted to the units of this coordinate system.
+    ///
+    /// \return
+    /// Northing grid increment value in units of the provided coordinate system.
+    ///
+    /// \exception
+    /// Will throw if the unit types of this specification and the provided
+    /// coordinate system are not the same.
+    ///
+    virtual double GetNorthingIncrement (MgCoordinateSystem* gridCRS)=0;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the curve precision value after conversion from the units
+    /// of this specification object to the units of the provided coordinate
+    /// system.
+    ///
+    /// \param gridCRS
+    /// The return value is converted to the units of this coordinate system.
+    ///
+    /// \return
+    /// Curve precision value in units of the provided coordinate system.
+    ///
+    /// \exception
+    /// Will throw if the unit types of this specification and the provided
+    /// coordinate system are not the same.
+    ///
+    /// \remarks
+    /// If this specification object's curve precision value has not been set
+    /// or is otherwise set to zero, this function will manufacture a curve
+    /// precision value consistent with the coordinate system provided.  Note
+    /// that this default value will be more liberal than conservative.
+    ///
+    /// \bugs
+    /// The automatically calculated curve precision value should be a function
+    /// of the Grid Boundary object which known how much geography is to be
+    /// included in the grid and is thus in a better position to determine
+    /// what the default value should be.
+    ///
+    virtual double GetCurvePrecision (MgCoordinateSystem* gridCRS)=0;
+
 protected:
-    INT32 GetClassId(){return m_cls_id;};
+     INT32 GetClassId(){return m_cls_id;};
 CLASS_ID:
     static const INT32 m_cls_id = CoordinateSystem_CoordinateSystemGridSpecification;
 };
@@ -137,6 +613,17 @@ CLASS_ID:
 //=============================================================================
 // External to this interface, boundary objects are always in the viewport
 // (i.e. target) coordinate system.
+/// <summary>
+/// This object is used to maintain the definition of the boundary of a
+/// specific grid or graticule.  Externally, a
+/// <c>MgCoordinateSystemGridBoundary</c> object will be in viewport
+/// coordinates.  Internally, objects of this type are oftyen used to the
+/// carry grid boundaries in grid coordinates, and also greographic
+/// coordinates.<p>
+/// Grid boundaries iusually start out as rectangles, but are often converted
+/// to a series of complex curves approximated by multi-segment lines (i.e.
+/// line strings).
+/// </summsry>
 class MG_GEOMETRY_API MgCoordinateSystemGridBoundary : public MgGuardDisposable
 {
 PUBLISHED_API:

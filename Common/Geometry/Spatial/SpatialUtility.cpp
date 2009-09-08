@@ -514,3 +514,375 @@ MgGeometryComponent* MgSpatialUtility::TesselateGeometryComponent(MgGeometryComp
 
     return retGeomComp.Detach();
 }
+
+//////////////////////////////////////////////
+///<summary>
+/// Calculates the two dimensional intersection of two line segments.
+/// 
+///</summary>
+
+///////////////////////////////////////////////////////////////////////////////
+//
+INT32 MgSpatialUtility::SegmentIntersection (MgCoordinate* result,MgCoordinate* seg1From,
+                                                                  MgCoordinate* seg1To,
+                                                                  MgCoordinate* seg2From,
+                                                                  MgCoordinate* seg2To)
+{
+    INT32 status (-7);          // until we know different.
+
+    double delX1, delY1;
+    double delX2, delY2;
+    double denom1, denom2;
+    double num, denom;          // numerator and denominator
+
+    CHECKNULL(result,   L"MgSpatialUtility.SegmentIntersection")
+    CHECKNULL(seg1From, L"MgSpatialUtility.SegmentIntersection")
+    CHECKNULL(seg1To,   L"MgSpatialUtility.SegmentIntersection")
+    CHECKNULL(seg2From, L"MgSpatialUtility.SegmentIntersection")
+    CHECKNULL(seg2To,   L"MgSpatialUtility.SegmentIntersection")
+
+    // Compute the denominator which also tells us if the lines are collinear.
+    delX1 = seg1To->GetX () - seg1From->GetX ();
+    delY1 = seg1To->GetY () - seg1From->GetY ();
+    delX2 = seg2To->GetX () - seg2From->GetX ();
+    delY2 = seg2To->GetY () - seg2From->GetY ();
+    denom1 = delX2 * delY1;
+    denom2 = delX1 * delY2;
+    if (MgMathUtility::DblCmp (denom1,denom2))
+    {
+        // Collinear or parallel, there is no intersection.
+        status = -1;
+    }
+    else
+    {
+        // OK, we have a stable geometry and an intersection of some sort should exist.
+        // Compute the intersection point.
+        status = 0;
+        denom = denom1 - denom2;
+        num = delX1 * delX2 * (seg2From->GetY() - seg1From->GetY()) +
+              delX2 * delY1 *  seg1From->GetX() -
+              delX1 * delY2 *  seg2From->GetX();
+        result->SetX (num / denom);
+
+        num = delY1 * delY2 * (seg2From->GetX() - seg1From->GetX()) +
+              delY2 * delX1 *  seg1From->GetY() -
+              delY1 * delX2 *  seg2From->GetY();
+        result->SetY (num / -denom);
+
+        // Now to compute the location of the intersection point relative to the
+        // line segments involved. This is often very important.
+        if (fabs (delX1) > fabs (delY1))
+        {
+            // Segment one is more horizontal than vertical. We will use the X
+            // value to test if the resulting point is on the segment.  Notice
+            // that an interscetion point which resides (relatively) precisely
+            // on the 'to' point is not considered to be on the segment.
+            if (delX1 >= 0.0)
+            {
+                // X increases from the 'from' point to the 'to' point.
+                if (result->GetX() > seg1From->GetX() && result->GetX() <= seg1To->GetX())
+                {
+                    status |= 1;
+                }
+            }
+            else
+            {
+                // X decreases from the 'from' point to the 'to' point.
+                if (result->GetX() < seg1From->GetX() && result->GetX() >= seg1To->GetX())
+                {
+                    status |= 1;
+                }
+            }
+        }
+        else
+        {
+            // First segment is more verical than horizontal. We will use the y
+            // value to test if the resulting point is on the segment.
+            if (delY1 >= 0.0)
+            {
+                // Y increases from the 'from' point to the 'to' point.
+                if (result->GetY() > seg1From->GetY() && result->GetY() <= seg1To->GetY())
+                {
+                    status |= 1;
+                }
+            }
+            else
+            {
+                // Y increases from the 'from' point to the 'to' point.
+                if (result->GetY() < seg1From->GetY() && result->GetY() >= seg1To->GetY())
+                {
+                    status |= 1;
+                }
+            }
+        }
+
+        // Same stuff with the second segment, sans comments.
+        if (fabs (delX2) > fabs (delY2))
+        {
+            if (delX2 >= 0.0)
+            {
+                if (result->GetX() > seg2From->GetX() && result->GetX() <= seg2To->GetX())
+                {
+                    status |= 2;
+                }
+            }
+            else
+            {
+                if (result->GetX() < seg2From->GetX() && result->GetX() >= seg2To->GetX())
+                {
+                    status |= 2;
+                }
+            }
+        }
+        else
+        {
+            if (delY2 >= 0.0)
+            {
+                if (result->GetY() > seg2From->GetY() && result->GetY() <= seg2To->GetY())
+                {
+                    status |= 2;
+                }
+            }
+            else
+            {
+                if (result->GetY() < seg2From->GetY() && result->GetY() >= seg2To->GetY())
+                {
+                    status |= 2;
+                }
+            }
+        }
+    }
+    return status;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// Returns a list of coordinates with all of the intersection points of the
+/// provided segment with the polygon provided by the first argument.  Note
+/// that the first argument is a CoordinateIterator; so it doesn't have to be
+/// an MgPolygon.  However, this function ASSUMES that the iterator does indeed
+/// point to a closed ring.
+/// </summary>
+MgCoordinateCollection* MgSpatialUtility::PolySegIntersection (MgCoordinateIterator* polyItr,MgCoordinate* segFrom,
+                                                                                             MgCoordinate* segTo)
+{
+    int status;
+    Ptr<MgCoordinateCollection> coordinateCollection;
+    Ptr<MgCoordinate> intersection;
+    Ptr<MgCoordinate> polyFrom;
+    Ptr<MgCoordinate> polyTo;
+    
+    CHECKNULL(polyItr, L"MgSpatialUtility.PolySegIntersection")
+    CHECKNULL(segFrom, L"MgSpatialUtility.PolySegIntersection")
+    CHECKNULL(segTo,   L"MgSpatialUtility.PolySegIntersection")
+  
+    // Create the return object.  Quite often it gets returned empty, but we
+    // will always return a "new" object (i.e. refCount == 1).  Create a work
+    // point we can use.
+    coordinateCollection = new MgCoordinateCollection ();
+    intersection = new MgCoordinateXY ();
+
+    // Reset the iterator so we know for sure what its state is.
+    polyItr->Reset ();
+    polyItr->MoveNext ();
+
+    // Loop through each segment in the polygon.  If its an exterior ring,
+    // as is usually the case, it should be in counterclockwise order.
+    polyTo = polyItr->GetCurrent ();
+    while (polyItr->MoveNext ())
+    {
+        polyFrom = polyTo;
+        polyTo = polyItr->GetCurrent ();
+        status = SegmentIntersection (intersection,polyFrom,polyTo,segFrom,segTo);
+        if (status == 3)
+        {
+            // We have an intersection of interest to us.  We need to add a
+            // point which will still be on the heap when we are done, so we
+            // definitely do not want to add the intersection point.
+            Ptr<MgCoordinate> newPoint = new MgCoordinateXY (intersection->GetX(),intersection->GetY());
+            coordinateCollection->Add(newPoint);
+
+            // The line segment can, and often does, have more than one
+            // intersection point with the polygon.  SO we keep trucking.
+        }
+    }
+    
+    // We return the generated collection, which will often be empty.
+    return coordinateCollection.Detach ();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// Returns true if the provided query point is inside of, or on, the closed
+/// ring provided by the polyItr argument.
+/// </summary>
+bool MgSpatialUtility::PointIsInPolygon (MgCoordinateIterator* polyItr,MgCoordinate* queryPoint)
+{
+    bool isInside;
+
+    INT32 count;
+
+    double minX, maxX;
+    double minY, maxY;
+    double outX, outY;
+
+    Ptr<MgCoordinate> tmpCoord;
+    Ptr<MgCoordinate> outPoint;
+    Ptr<MgCoordinateCollection> coordinateCollection;
+
+    // Accunulate min/max;
+    polyItr->Reset ();
+    minX = minY = +9.9E+100;
+    maxX = maxY = -9.9E+100;
+    while (polyItr->MoveNext ())
+    {
+        tmpCoord = polyItr->GetCurrent ();
+        if (tmpCoord->GetX() < minX) minX = tmpCoord->GetX ();
+        if (tmpCoord->GetY() < minY) minY = tmpCoord->GetY ();
+        if (tmpCoord->GetX() > maxX) maxX = tmpCoord->GetX ();
+        if (tmpCoord->GetY() > maxY) maxY = tmpCoord->GetY ();
+    }
+
+    // Create a from point known to be outside of the polygon.
+    outX = (minX >= 0.0) ? -minX : minX * 2.0;
+    outY = (minY >= 0.0) ? -minY : minY * 2.0;
+    outPoint = new MgCoordinateXY (outX,outY);
+
+    // Get all the intersections between the "outPoint" amd the query Point.
+    coordinateCollection = PolySegIntersection (polyItr,outPoint,queryPoint);
+    count = coordinateCollection->GetCount ();
+
+    // If the number of intersections is odd, the query point is inside.
+    // Otherwise it is outside. (Zero is an even number, isn't it?)
+    isInside = ((count & 1) != 0);
+    
+    return isInside;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// Returns a collection of line strings which represents those portions of the
+/// provided line string which are inside of the provided closed ring.
+/// </summary>
+MgLineStringCollection* MgSpatialUtility::ClipStringToPolygon (MgCoordinateIterator* polyItr,
+                                                               MgCoordinateIterator* lineItr)
+{
+    bool inside;
+
+    INT32 index;
+
+    Ptr<MgCoordinate> lineFrom;
+    Ptr<MgCoordinate> lineTo;
+    Ptr<MgCoordinateCollection> curCollection;
+    Ptr<MgLineString> newLineString;
+    Ptr<MgLineStringCollection> lineCollection;
+
+    // Need to create an empty collections, the factory doesn't do this.
+    curCollection = new MgCoordinateCollection ();
+    lineCollection = new MgLineStringCollection ();
+
+    // Set up the line string iterator.  It is the primary control loop
+    // for this operation.
+    lineItr->Reset ();
+    lineItr->MoveNext ();
+    lineTo = lineItr->GetCurrent ();
+    
+    // We need to know in what state we are starting in.  lineTo currently
+    // has the coordinates of the first point, which will become the
+    // lineFrom point once the main loop gets started.
+    inside = PointIsInPolygon (polyItr,lineTo);
+    
+    // If we are starting inside the polgon, we push the first point
+    // onto the current point collection.
+    if (inside)
+    {
+        curCollection->Add (lineTo);
+    }
+
+    while (lineItr->MoveNext ())
+    {
+        lineFrom = lineTo;              // TODO: does this work without screwing up the reference counts.
+        lineTo = lineItr->GetCurrent ();
+        
+        // Intersect this segment with the polygon.
+        Ptr<MgCoordinateCollection> segCollection;
+        segCollection = PolySegIntersection (polyItr,lineFrom,lineTo);
+        INT32 segCount = segCollection->GetCount ();
+
+        // If the segment count is zero, there were no intersections.  If we were
+        // inside, we're still inside.
+        if (segCount == 0)
+        {
+            if (inside)
+            {
+                curCollection->Add (lineTo);
+            }
+        }
+        else
+        {
+            // There is at least one intersection, so there will some state changing going on here.
+            for (index = 0;index < segCount;index += 1)
+            {
+                Ptr<MgCoordinate> newPoint = segCollection->GetItem (index);
+
+                // Terminate the current state, and initate the new state.
+                // At this point, the state switches for each point in the
+                // intersection list.
+                if (inside)
+                {
+                    // We're inside.  Switch to outside state.  sewPoint is the
+                    // location where we left the inside of the polygon.
+                    curCollection->Add (newPoint);
+
+                    // Make a line string out of the current point collection,
+                    // and add it to the line string collection which contains
+                    // the clipped segments.
+                    newLineString = new MgLineString (curCollection);
+                    lineCollection->Add (newLineString);
+
+                    // Clear curCollection inpreparation for the nex segment if
+                    // there is one.
+                    curCollection->Clear ();
+
+                    // We're outside of the polygon now.
+                    inside = false;
+                }
+                else
+                {
+                    // We were outside the polgon.  The intersection point
+                    // is the point at which we reenterd the polygon.
+                    curCollection->Add (newPoint);
+
+                    // We're back inside now.
+                    inside = true;
+                }
+            }
+            // At this point, if we end up inside, there will be a point in
+            // curCollection which will be the point at which we re-entered
+            // the last time.  Since we are inside, we need to add the
+            // lineTo point to the collection.
+            if (inside)
+            {
+                curCollection->Add (lineTo);
+            }
+
+            // Now we do something which might appear strange: we leave the
+            // curCollection object alone.  In this manner, we should eliminate
+            // a lot of contiguous line strings in the line string collection.
+            // Hope it works out that way.  It should, as if we are inside now,
+            // the first point of the segment from the line string should also
+            // be inside.
+        }
+    }
+    
+    // If we ended this mess in the inside state, curCollection should _NOT_ be
+    // empty.  In this case, we need to add this final point collection as the
+    // final line stting in the line string collection.
+    if (inside)
+    {
+        lineCollection->Add (newLineString);
+    }
+    
+    // Looks pretty simple, maybe that means it will work good; often does.
+    return lineCollection.Detach ();
+}

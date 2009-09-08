@@ -122,6 +122,16 @@ protected:
     Ptr<MgCoordinateSystemGridBoundary> m_GridBoundary;
     Ptr<CCoordinateSystemMgrsZoneCollection> m_ZoneCollection;
 
+    // The following CCoordinateSystemOneGrid objects are used to generate
+    // graticules, and thus have a grid CRS which is geographic as opposed
+    // to projective.  Thus, these are somewhat special objects.  These
+    // pointers may be null if they are not needed which is usually the
+    // case for the polar regions.  The "need" is based on the frame
+    // boundary.
+    Ptr<CCoordinateSystemOneGrid> m_GraticuleUtm;
+    Ptr<CCoordinateSystemOneGrid> m_GraticuleUpsNorth;
+    Ptr<CCoordinateSystemOneGrid> m_GraticuleUpsSouth;
+
 private:
     CCoordinateSystemMgrs();
     CCoordinateSystemMgrs(const CCoordinateSystemMgrs&);

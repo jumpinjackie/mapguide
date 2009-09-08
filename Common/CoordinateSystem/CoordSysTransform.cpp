@@ -1266,8 +1266,8 @@ INT32 CCoordinateSystemTransform::PositionOfValue (MgCoordinate* position,double
             deltaY = gridTo->GetY () - gridFrom->GetY ();
             // We do not try to place northing ticks on a line which more horizontal than it
             // is vertical; and vice versa.
-            if (deltaX > deltaY && orientation == MgCoordinateSystemGridOrientation::EastWest ||
-                deltaY > deltaX && orientation == MgCoordinateSystemGridOrientation::NorthSouth)
+            if ((deltaX > deltaY) && (orientation == MgCoordinateSystemGridOrientation::EastWest) ||
+                (deltaY > deltaX) && (orientation == MgCoordinateSystemGridOrientation::NorthSouth))
             {
                 // Use some simple geomtery to calculate the approximate position of the
                 // the point on the provided line segment at which the indicated ordinate

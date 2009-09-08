@@ -52,7 +52,6 @@ public:
     virtual INT32 GetLastTransformStatus();
     virtual void ResetLastTransformStatus();
 
-
 INTERNAL_API:
     ///////////////////////////////////////////////////////////////////////////
     /// \brief

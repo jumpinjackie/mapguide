@@ -91,6 +91,24 @@ public:
     /// It is allowable to pass NaN for any parameter, in which case the return
     /// value is also a (quiet) NaN.
     static double LinearInterpolate(double start, double end, double proportion);
+
+    /////////////////////////////////////////////////////////////////////////// 
+    /// <summary>
+    /// Reliably compares two doubles, providing that neither of the two values
+    /// is a hard zero, ignoring differences in the least significant bits of
+    /// the mantissa which are unreliable if either of the values being
+    /// compared are the result of some serious calculations.
+    /// </summary>
+    /// <param name="first">
+    /// The first of two doubles to be compared.  Must not be a hard zero.
+    /// </param>
+    /// <param name="second">
+    /// The second of two doubles to be compared.  Must not be a hard zero.
+    /// </param>
+    /// <returns>
+    /// Returns <c>true</c> for "essentially equal".
+    /// </returns>
+    static bool DblCmp (double first,double second);
 };
 /// \endcond
 
