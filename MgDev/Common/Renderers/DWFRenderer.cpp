@@ -382,7 +382,7 @@ void DWFRenderer::EndMap()
 //
 // Indicates beginning of a map layer. This function creates a W2D for feature
 // data and a W2D for labeling. It also sets up selection support / object
-// deifnition. Labeling W2D is not opened -- it will only be opened if there
+// definition. Labeling W2D is not opened -- it will only be opened if there
 // are labels.
 //
 //-----------------------------------------------------------------------------
@@ -479,6 +479,11 @@ void DWFRenderer::StartLayer(RS_LayerUIInfo* layerInfo, RS_FeatureClassInfo* cla
 
     // initialize the pattern tracking flag
     m_linePatternActive = true;
+
+    // we must reset the cached symbol information each time we begin
+    // a to ensure that the necessary initial opcodes are added to the
+    // W2D for the layer
+    m_lastSymbol = RS_MarkerDef();
 }
 
 
