@@ -481,8 +481,8 @@ void DWFRenderer::StartLayer(RS_LayerUIInfo* layerInfo, RS_FeatureClassInfo* cla
     m_linePatternActive = true;
 
     // we must reset the cached symbol information each time we begin
-    // a to ensure that the necessary initial opcodes are added to the
-    // W2D for the layer
+    // a layer to ensure that the necessary initial opcodes are added
+    // to the W2D for the layer
     m_lastSymbol = RS_MarkerDef();
 }
 
