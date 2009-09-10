@@ -63,12 +63,23 @@ class MgCoordinateSystemGridTick;               // a position in viewport coordi
 class MgCoordinateSystemGridSpecializationType
 {
 PUBLISHED_API:
-    static const INT32 None              = 0;           // not specified as yet; initialize to this value
+    ///////////////////////////////////////////////////////////////////////////
+    /// /brief Not specified yet, initialize to this value.
+    static const INT32 None              = 0;
+    ///////////////////////////////////////////////////////////////////////////
+    /// /brief Generic grid of a specified coordinate system; may be
+    /// geographic or projected.
     static const INT32 Generic           = (0 + 1);     // Generic grid of a specified coordinate system;
                                                         // may be geographic or projected
-    static const INT32 MGRS              = (16 + 1);    // Military Grid Reference System
-    static const INT32 USNG              = (16 + 2);    // United States National Grid
-    static const INT32 Unknown           = (65366);     // indicates a failure of an algorithm
+    ///////////////////////////////////////////////////////////////////////////
+    /// /brief Specialized grid: MGRS (Military Grid Reference System)
+    static const INT32 MGRS              = (16 + 1);
+    ///////////////////////////////////////////////////////////////////////////
+    /// /brief Specialized grid: USNG (United States National Grid)
+    static const INT32 USNG              = (16 + 2);
+    ///////////////////////////////////////////////////////////////////////////
+    /// /brief Indicates the failure of an algorithm or other problem.
+    static const INT32 Unknown           = (65366);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -87,9 +98,17 @@ PUBLISHED_API:
 class MgCoordinateSystemGridOrientation
 {
 PUBLISHED_API:
-    static const INT8 None = 0;             // not specified as yet; initialize to this value
+    ///////////////////////////////////////////////////////////////////////////
+    /// /brief Not specified yet, initialize to this value.
+    static const INT8 None = 0;
+    ///////////////////////////////////////////////////////////////////////////
+    /// /brief The object represents a constant easting value.
     static const INT8 EastWest = 1;         // generally indicates a vertical grid line
+    ///////////////////////////////////////////////////////////////////////////
+    /// /brief The object represents a constant northing value.
     static const INT8 NorthSouth = 2;       // generally indicates a horizontal grid line
+    ///////////////////////////////////////////////////////////////////////////
+    /// /brief Indicates the failure of an algorithm or other problem.
     static const INT8 Unknown = 3;          // indicates a failure of an algorithm
 };
 
@@ -617,7 +636,7 @@ CLASS_ID:
 /// This object is used to maintain the definition of the boundary of a
 /// specific grid or graticule.  Externally, a
 /// <c>MgCoordinateSystemGridBoundary</c> object will be in viewport
-/// coordinates.  Internally, objects of this type are oftyen used to the
+/// coordinates.  Internally, objects of this type are often used to the
 /// carry grid boundaries in grid coordinates, and also greographic
 /// coordinates.<p>
 /// Grid boundaries iusually start out as rectangles, but are often converted
@@ -635,6 +654,7 @@ PUBLISHED_API:
     virtual MgPolygon* GetBoundary (void) const=0;
 INTERNAL_API:
 
+    virtual void SetMaxCurvePoints (INT32 maxPoints) = 0;
     virtual void GetBoundaryExtents (double& eastMin,double& eastMax,double& northMin,double& northMax) const = 0;
     virtual MgPolygon* GetBoundary (MgCoordinateSystemTransform* transformation,double precision) = 0;
     virtual MgLineStringCollection* ClipLineString (MgLineString* lineString) const=0;
@@ -712,7 +732,18 @@ class MG_GEOMETRY_API MgCoordinateSystemGridRegion : public MgGuardDisposable
 {
 PUBLISHED_API:
     virtual STRING GetLabel () = 0;
-    virtual MgPolygon* GetPolygon() = 0;
+    virtual MgCoordinate* GetRegionCenter (void) = 0;
+    virtual MgPolygon* GetRegionBoundary (void) = 0;
+
+    // The returns from the following members are clipped to the frame boundary
+    // of the grid object from which the region object was obtained.  Since it
+    // is possible (rare, but possible) that a region boundary line enters and
+    // leaves the frame boundary more than once.
+    virtual MgLineStringCollection* GetSouthLine (void) = 0;
+    virtual MgLineStringCollection* GetEastLine (void) = 0;
+    virtual MgLineStringCollection* GetNorthLine (void) = 0;
+    virtual MgLineStringCollection* GetWestLine (void) = 0;
+
 INTERNAL_API:
 protected:
     INT32 GetClassId(){return m_cls_id;};
@@ -731,6 +762,7 @@ CLASS_ID:
 class MG_GEOMETRY_API MgCoordinateSystemGridTick : public MgGuardDisposable
 {
 PUBLISHED_API:
+    virtual bool GetIsOnGridLine () = 0;
     virtual INT32 GetTickOrientation () = 0;
     virtual double GetValue () = 0;
     virtual MgCoordinate* GetPosition () = 0;

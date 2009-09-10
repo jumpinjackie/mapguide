@@ -153,34 +153,26 @@ PUBLISHED_API:
     // Grids and Graticules -- General
 
     ///////////////////////////////////////////////////////////////////////////
-    /// <summary>
-    /// Constructs a grid boundary object.  Externally, grid objects are in
-    /// viewport coordinates and define the extents of the region within
-    /// which a grid is to be drawn.  Such objects are often simple
-    /// rectangles, but his is not a requirement.
-    /// </summary>
-    /// <param name="southwest">
+    /// /brief
+    /// Constructs a grid boundary object.
+    /// /param southwest
     /// The coordinates of the the southwest corner of a rectangular region
     /// which represents the grid region.  This point <b>MUST</b> indeed be
-    /// sothwest of the coordinate provided by the <c>northeast</c> parameter.
-    /// </param>
-    /// <param name="northeast">
+    /// southwest of the coordinate provided by the <c>northeast</c> parameter.
+    /// /param northeast
     /// The coordinates of the the northeast corner of a rectangular region
     /// which represents the grid region.  This point <b>MUST</b> indeed be
     /// northeast of the coordinate provided by the <c>southwest</c> parameter.
-    /// </param>
-    /// <returns>
+    /// /return
     /// Returns the grid boundary in the ofrm used by the grid/graticule
     /// sub-system.
-    /// </returns>
-    /// <exception cref="MgOutOfMemoryException">
+    /// \exception MgOutOfMemoryException
     /// Thrown in the event of heap memory allocation failure.
-    /// </exception>
-    /// <remarks>
-    /// Internally, the grid boundary is maintained as an MgPolygon object
-    /// with no interior rings.  Otfen this is in the form of a rectangle,
-    /// but his should not be relied on.
-    /// </remarks>
+    /// /remarks
+    /// Externally, grid bundary objects are in viewport coordinates and
+    /// define the extents of the region within which a grid is to be drawn.
+    /// Such objects are often simple rectangles, but his is not a
+    /// requirement.
     virtual MgCoordinateSystemGridBoundary* GridBoundary(MgCoordinate* southwest,
                                                          MgCoordinate* northeast);
 
@@ -201,6 +193,8 @@ PUBLISHED_API:
     /// Thrown in the event of heap memory allocation failure.
     /// </exception>
     /// <remarks>
+    /// The <c>boundary</c> argument need not be a rectangle, but is assumed
+    /// to be closed.
     /// </remarks>
     virtual MgCoordinateSystemGridBoundary* GridBoundary(MgPolygon* boundary);
 
@@ -211,11 +205,16 @@ PUBLISHED_API:
     /// </summary>
     /// <returns>
     /// An object which carries all of the several parameter which determine
-    /// nature of a grid or graticule and any sub-feature tereof.
+    /// nature of a grid or graticule and any sub-feature thereof.
     /// </returns>
     /// <exception cref="std::bad_alloc">
     /// Thrown in the event of a heap memory allocation failure.
     /// </exception>
+    /// <remarks>
+    /// When manufactured by this overload, the consuming application must
+    /// set all values to valid values before using the returned object
+    /// in any way.
+    /// </remarks>
     virtual MgCoordinateSystemGridSpecification* GridSpecification (void);
 
     ///////////////////////////////////////////////////////////////////////////

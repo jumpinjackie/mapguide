@@ -51,9 +51,10 @@ CCoordinateSystemMgrsZone::CCoordinateSystemMgrsZone (MgCoordinateSystemGridBoun
 CCoordinateSystemMgrsZone::~CCoordinateSystemMgrsZone (void)
 {
 }
-CCoordinateSystemGridRegionCollection* CCoordinateSystemMgrsZone::GetGridRegions (MgCoordinateSystemGridSpecification* specification)
+CCoordinateSystemGridRegionCollection* CCoordinateSystemMgrsZone::GetGridRegions (MgCoordinateSystemGridBoundary* frameBoundary,
+                                                                                  MgCoordinateSystemGridSpecification* specification)
 {
-    BuildRegionCollection (specification);
+    BuildRegionCollection (frameBoundary,specification);
     return SAFE_ADDREF(m_RegionCollection.p);
 }
 INT32 CCoordinateSystemMgrsZone::GetUtmZoneNbr (void)
@@ -63,16 +64,19 @@ INT32 CCoordinateSystemMgrsZone::GetUtmZoneNbr (void)
     // is the uninitialized/unknown/error value.
     return m_UtmZone;
 }
-void CCoordinateSystemMgrsZone::BuildRegionCollection (MgCoordinateSystemGridSpecification* specification)
+void CCoordinateSystemMgrsZone::BuildRegionCollection (MgCoordinateSystemGridBoundary* frameBoundary,
+                                                       MgCoordinateSystemGridSpecification* specification)
 {
     double curvePrecision;
 
     curvePrecision = specification->GetCurvePrecision ();
-    BuildMajorRegions (curvePrecision);
-    BuildMinorRegions (curvePrecision);
+    BuildMajorRegions (frameBoundary,curvePrecision);
+    BuildMinorRegions (frameBoundary,curvePrecision);
 }
-void CCoordinateSystemMgrsZone::BuildMajorRegions (double curvePrecision)
+void CCoordinateSystemMgrsZone::BuildMajorRegions (MgCoordinateSystemGridBoundary* frameBoundary,double curvePrecision)
 {
+    const INT32 maxPoints = 512;
+
     wchar_t gridZoneLetter;
     INT32 utmZoneNbr;
     INT32 gridZoneIndex;
@@ -84,16 +88,15 @@ void CCoordinateSystemMgrsZone::BuildMajorRegions (double curvePrecision)
     STRING designation;
     wchar_t wcBufr [128];
  
-    MgCoordinateSystemFactory csFactory;
-    
     Ptr<MgCoordinate> southwest;
     Ptr<MgCoordinate> northeast;
-    Ptr<MgPolygon> pPolygon;
     Ptr<MgCoordinateSystem> llCRS;
     Ptr<MgCoordinateSystem> frameCRS;
     Ptr<MgCoordinateSystemTransform> toFrameTransform;
     Ptr<CCoordinateSystemGridBoundary> rgnBoundary;
     Ptr<CCoordinateSystemGridRegion> pMjrRegion;
+
+    MgCoordinateSystemFactory csFactory;
 
     MG_TRY ()
         southwest = new MgCoordinateXY ();
@@ -130,14 +133,15 @@ void CCoordinateSystemMgrsZone::BuildMajorRegions (double curvePrecision)
 
             for (latIdx = firstLat;latIdx < lastLat;latIdx += 8)
             {
+                // TODO: Need to adjust the region boundaries to account for
+                // the screwy stuff which happens in southern Norway and the
+                // Svaldberg Islands.
                 latMin = static_cast<double>(latIdx);
                 latMax = latMin + 8.0;
                 southwest->SetX (lngMin);
                 southwest->SetY (latMin);
                 northeast->SetX (lngMax);
                 northeast->SetY (latMax);
-                rgnBoundary = new CCoordinateSystemGridBoundary (southwest,northeast);
-                pPolygon = rgnBoundary->GetBoundary (toFrameTransform,curvePrecision);
 
                 // We have the polygon, we need the designation.
                 gridZoneIndex = CCoordinateSystemMgrs::GridZoneDesignationIndex (latMin + 1.0,centralMeridian);
@@ -146,14 +150,29 @@ void CCoordinateSystemMgrsZone::BuildMajorRegions (double curvePrecision)
                 STRING designation (wcBufr);
 
                 // Construct the region object and add it to the region collection.
-                pMjrRegion = new CCoordinateSystemGridRegion (designation,pPolygon);
+                pMjrRegion = new CCoordinateSystemGridRegion (designation,frameBoundary,
+                                                                          toFrameTransform,
+                                                                          southwest,
+                                                                          northeast,
+                                                                          curvePrecision,
+                                                                          maxPoints);
                 m_RegionCollection->Add (pMjrRegion);
             }
         }
+        else if (m_UtmZone == 61)
+        {
+            //TODO: need to generate regions for the north polar region.
+        }
+        else if (m_UtmZone == -61)
+        {
+            //TODO: need to generate regions for the south polar region.
+        }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemOneGrid::BuildMajorRegions")
 }
-void CCoordinateSystemMgrsZone::BuildMinorRegions (double curvePrecision)
+void CCoordinateSystemMgrsZone::BuildMinorRegions (MgCoordinateSystemGridBoundary* frameBoundary,double curvePrecision)
 {
+    const INT32 maxPoints = 512;
+
     INT32 beginEast, endEast;
     INT32 beginNorth, endNorth;
     INT32 eastIndex, northIndex;
@@ -164,11 +183,11 @@ void CCoordinateSystemMgrsZone::BuildMinorRegions (double curvePrecision)
 
     Ptr<MgCoordinate> southwest;
     Ptr<MgCoordinate> northeast;
-    Ptr<MgPolygon> pPolygon;
+    Ptr<MgCoordinateSystemTransform> gridToFrameXfrom;
     Ptr<CCoordinateSystemGridBoundary> rgnBoundary;
     Ptr<CCoordinateSystemGridRegion> pMnrRegion;
     MgCoordinateSystemFactory csFactory;
-    
+
     MG_TRY ()
         southwest = new MgCoordinateXY ();
         northeast = new MgCoordinateXY ();
@@ -176,6 +195,11 @@ void CCoordinateSystemMgrsZone::BuildMinorRegions (double curvePrecision)
         // This function is in the OneGrid base class.  We call it just in case
         // the grid boundary has not been generated for this object yet.
         GetGridExtents (eastMin,eastMax,northMin,northMax,curvePrecision);
+
+        // Generation of regions requires conversion of region boundaries to
+        // frame coordinates.  The OneGrid base class has this transformation
+        // available.
+        gridToFrameXfrom = GetGridToFrameXform ();
 
         // Expand the min/max values to the 100K boundaries of the minor regions.
         // A little overkill here as the extent values should never be negative.
@@ -201,12 +225,7 @@ void CCoordinateSystemMgrsZone::BuildMinorRegions (double curvePrecision)
                 northeast->SetX (static_cast<double>(eastIndex + 100000));
                 northeast->SetY (static_cast<double>(northIndex + 100000));
                 
-                // Convert it to a boundary which we can transform, and then to
-                // a MgPolygon which is what we really need..
-                rgnBoundary = new CCoordinateSystemGridBoundary (southwest,northeast);
-                pPolygon = rgnBoundary->GetBoundary (m_ToFrameXform,curvePrecision);
-
-                // Now we need the designation.  The comes from the MgCoordinateSystemMgrs object that knows about the lettering scheme.
+                 // Now we need the designation.  The comes from the MgCoordinateSystemMgrs object that knows about the lettering scheme.
                 // Unfortunately, we don't have a reference to the host Mgrs object, so we're going to have to know
                 /// about the lettering scheme.
                 STRING designation = CCoordinateSystemMgrs::GridSquareDesignation (m_UtmZone,static_cast<double>(eastIndex + 1),
@@ -214,7 +233,12 @@ void CCoordinateSystemMgrsZone::BuildMinorRegions (double curvePrecision)
                                                                                              m_LetteringScheme);
 
                 // Construct the region object and add it to the region collection.
-                pMnrRegion = new CCoordinateSystemGridRegion (designation,pPolygon);
+                pMnrRegion = new CCoordinateSystemGridRegion (designation,frameBoundary,
+                                                                          gridToFrameXfrom,
+                                                                          southwest,
+                                                                          northeast,
+                                                                          curvePrecision,
+                                                                          maxPoints);
                 m_RegionCollection->Add (pMnrRegion);
             }
         }

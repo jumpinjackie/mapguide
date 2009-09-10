@@ -414,7 +414,7 @@ MgCoordinateSystemGridRegionCollection* CCoordinateSystemMgrs::GetGridRegions (M
         {
             mgrsZoneGrid = m_ZoneCollection->GetItem (index);
             Ptr<MgCoordinateSystemGridRegionCollection> aGridRegionCollection;
-            aGridRegionCollection = mgrsZoneGrid->GetGridRegions (specification);
+            aGridRegionCollection = mgrsZoneGrid->GetGridRegions (m_GridBoundary,specification);
             theGridRegionCollection->AddCollection (aGridRegionCollection);
         }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemMgrs::GetGridRegions")
@@ -930,7 +930,7 @@ INT32 CCoordinateSystemMgrs::GridZoneDesignationIndex (double latitude,double lo
     }
     else
     {
-        index = (static_cast<INT32>(latitude) % 8) + 12;
+        index = (static_cast<INT32>(latitude) / 8) + 12;
         if (index == 22) index = 21;
     }
     return index;
