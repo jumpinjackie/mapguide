@@ -529,6 +529,10 @@ void CCoordinateSystemGridBoundary::GetBoundaryExtents (double& eastMin,double& 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemGridBoundary.GetBoundaryExtents")
     return;
 }
+void CCoordinateSystemGridBoundary::SetMaxCurvePoints (INT32 maxPoints)
+{
+    m_MaxCurvePoints = maxPoints;
+}
 // The Polygon returned by this function will not (usually) be a simple
 // rectangle, but a series of complex curves which (usually) approximate
 // a trapazoid.
@@ -726,21 +730,120 @@ void CCoordinateSystemGridLine::Dispose ()
 // CCoordinateSystemGridRegion -- Associates a label/designation with a
 //                                MgPolygon object.
 //
-CCoordinateSystemGridRegion::CCoordinateSystemGridRegion (STRING label,MgPolygon* polygon)
-                                    :
-                                MgCoordinateSystemGridRegion (),
-                                m_RegionLabel                (label),
-                                m_Polygon                    ()
+CCoordinateSystemGridRegion::CCoordinateSystemGridRegion (STRING label,
+                                                          MgCoordinateSystemGridBoundary* frameBoundary,
+                                                          MgCoordinateSystemTransform* gridToFrame,
+                                                          MgCoordinate* southwest,
+                                                          MgCoordinate* northeast,
+                                                          double curvePrecision,
+                                                          INT32 maxPoints)
+                                                               :
+                                                          MgCoordinateSystemGridRegion (),
+                                                          m_RegionLabel                (label),
+                                                          m_RegionCenter               (),
+                                                          m_RegionBoundary             (),
+                                                          m_SouthLine                  (),
+                                                          m_EastLine                   (),
+                                                          m_NorthLine                  (),
+                                                          m_WestLine                   ()
 {
-    m_Polygon = SAFE_ADDREF (polygon);
-}                                
+    double xx, yy;
+    double southLimit;
+    double northLimit;
+    double eastLimit;
+    double westLimit;
+
+    Ptr<MgCoordinate> southeast;
+    Ptr<MgCoordinate> northwest;
+    Ptr<MgCoordinate> centerPoint;
+    Ptr<MgLineString> lineString;
+    Ptr<MgCoordinateSystemGridBoundary> regionBoundaryInGridCrs;
+
+    MgGeometryFactory mgFactory;
+    MgCoordinateSystemFactory csFactory;
+
+    MG_TRY()
+        // Get the region limits in a convenient form.
+        westLimit = southwest->GetX ();
+        eastLimit = northeast->GetX ();
+        southLimit = southwest->GetY ();
+        northLimit = northeast->GetY ();
+        southeast = mgFactory.CreateCoordinateXY (eastLimit,southLimit);
+        northwest = mgFactory.CreateCoordinateXY (westLimit,northLimit);
+
+        // Calculate the center of the region and convert to frame coordinates.
+        xx = 0.5 * (eastLimit  + westLimit);
+        yy = 0.5 * (northLimit + southLimit);
+        gridToFrame->Transform (&xx,&yy);
+        m_RegionCenter = mgFactory.CreateCoordinateXY (xx,yy);
+
+        // Generate the polygon; then convert to frame coordinates.
+        regionBoundaryInGridCrs = csFactory.GridBoundary (southwest,northeast);
+        regionBoundaryInGridCrs->SetMaxCurvePoints (maxPoints);
+        m_RegionBoundary = regionBoundaryInGridCrs->GetBoundary (gridToFrame,curvePrecision);
+
+        // Generate and clip each of the four bounding lines.
+        lineString = gridToFrame->GridLine (southwest,southeast,curvePrecision,maxPoints);
+        m_SouthLine = frameBoundary->ClipLineString (lineString);
+        
+        lineString = gridToFrame->GridLine (southeast,northeast,curvePrecision,maxPoints);
+        m_EastLine = frameBoundary->ClipLineString (lineString);
+
+        lineString = gridToFrame->GridLine (northeast,northwest,curvePrecision,maxPoints);
+        m_NorthLine = frameBoundary->ClipLineString (lineString);
+
+        lineString = gridToFrame->GridLine (northwest,southwest,curvePrecision,maxPoints);
+        m_WestLine = frameBoundary->ClipLineString (lineString);
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemGridBoundary.SetBoundaryExtents")
+}
 STRING CCoordinateSystemGridRegion::GetLabel ()
 {
     return m_RegionLabel;
 }
-MgPolygon* CCoordinateSystemGridRegion::GetPolygon ()
+MgCoordinate* CCoordinateSystemGridRegion::GetRegionCenter (void)
 {
-    return SAFE_ADDREF(m_Polygon.p);
+    return SAFE_ADDREF(m_RegionCenter.p);
+}
+MgPolygon* CCoordinateSystemGridRegion::GetRegionBoundary ()
+{
+    return SAFE_ADDREF(m_RegionBoundary.p);
+}
+MgLineStringCollection* CCoordinateSystemGridRegion::GetSouthLine (void)
+{
+    return SAFE_ADDREF(m_SouthLine.p);
+}
+MgLineStringCollection* CCoordinateSystemGridRegion::GetEastLine (void)
+{
+    return SAFE_ADDREF(m_EastLine.p);
+}
+MgLineStringCollection* CCoordinateSystemGridRegion::GetNorthLine (void)
+{
+    return SAFE_ADDREF(m_NorthLine.p);
+}
+MgLineStringCollection* CCoordinateSystemGridRegion::GetWestLine (void)
+{
+    return SAFE_ADDREF(m_WestLine.p);
+}
+
+void CCoordinateSystemGridRegion::SetRegionBoundary (MgPolygon* boundary)
+{
+    m_RegionBoundary = SAFE_ADDREF (boundary);
+}
+void CCoordinateSystemGridRegion::SetSouthLine (MgLineStringCollection* southLine)
+{
+    m_SouthLine = SAFE_ADDREF(southLine);
+}
+void CCoordinateSystemGridRegion::SetEastLine (MgLineStringCollection* eastLine)
+{
+    m_EastLine = SAFE_ADDREF(eastLine);
+}
+void CCoordinateSystemGridRegion::SetNorthLine (MgLineStringCollection* northLine)
+{
+    m_NorthLine = SAFE_ADDREF(northLine);
+}
+void CCoordinateSystemGridRegion::SetWestLine (MgLineStringCollection* westLine)
+{
+    m_WestLine = SAFE_ADDREF(westLine);
 }
 void CCoordinateSystemGridRegion::Dispose ()
 {
@@ -758,6 +861,7 @@ void CCoordinateSystemGridRegion::Dispose ()
 CCoordinateSystemGridTick::CCoordinateSystemGridTick (INT32 orientation,double value)
                                                         :
                                                       MgCoordinateSystemGridTick (),
+                                                      m_OnGridLine               (false),
                                                       m_Orientation              (orientation),
                                                       m_Value                    (value),
                                                       m_Position                 (),
@@ -766,6 +870,10 @@ CCoordinateSystemGridTick::CCoordinateSystemGridTick (INT32 orientation,double v
 }                                                      
 CCoordinateSystemGridTick::~CCoordinateSystemGridTick ()
 {
+}
+void CCoordinateSystemGridTick::SetOnGridLine (bool isOnGridLine)
+{
+    m_OnGridLine = isOnGridLine;
 }
 void CCoordinateSystemGridTick::SetOrientation (INT32 orientation)
 {
@@ -782,6 +890,11 @@ void CCoordinateSystemGridTick::SetPosition (MgCoordinate* position)
 void CCoordinateSystemGridTick::SetDirection (MgCoordinate* direction)
 {
     m_Direction = SAFE_ADDREF(direction);
+}
+
+bool CCoordinateSystemGridTick::GetIsOnGridLine (void)
+{
+    return m_OnGridLine;
 }
 INT32 CCoordinateSystemGridTick::GetTickOrientation ()
 {

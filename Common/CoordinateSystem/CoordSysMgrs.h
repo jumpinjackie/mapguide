@@ -23,18 +23,11 @@ namespace CSLibrary
 
 class CCoordinateSystemMgrs : public MgCoordinateSystemMgrs
 {
-    //struct CCoordinateSystemUtmCodeMap
-    //{
-    //    INT32 ZoneNbr;
-    //    wchar_t ZoneCode [14];
-    //};
-    //static const CCordinateSystemUtmCodeMap UtmCodeMap [];
- 
-struct CCoordinateSystemMgrsSeries
-{
-	wchar_t easting [9];
-	wchar_t northing [21];
-};
+    struct CCoordinateSystemMgrsSeries
+    {
+	    wchar_t easting [9];
+	    wchar_t northing [21];
+    };
 
 public:
     // Static Constants, Variables (hopefully not), and Functions.
@@ -119,7 +112,7 @@ protected:
     INT32 m_nLastError;
     Ptr<MgCoordinateSystem> m_pCsTarget;
     struct cs_Mgrs_* m_pCsMgrs;
-    Ptr<MgCoordinateSystemGridBoundary> m_GridBoundary;
+    Ptr<MgCoordinateSystemGridBoundary> m_GridBoundary; // actually the frame boundary
     Ptr<CCoordinateSystemMgrsZoneCollection> m_ZoneCollection;
 
     // The following CCoordinateSystemOneGrid objects are used to generate

@@ -66,8 +66,11 @@ public:
     CCoordinateSystemGridTickCollection* GetBoundaryTicks (MgCoordinateSystemGridSpecification* specs);
 
 protected:
+    MgCoordinateSystemGridBoundary* GetFrameBoundary (void);
     MgCoordinateSystem* GetFrameCRS (void);
     MgCoordinateSystem* GetGridCRS (void);
+    MgCoordinateSystemTransform* GetGridToFrameXform (void);
+    MgCoordinateSystemTransform* GetFrameToGridXform (void);
     void GenerateGridBoundary (double boundaryPrecision);
     void GetGeographicExtents (double& longMin,double& longMax,double& latMin,double& latMax,double precision = 1.0E-05);
     void GetGridExtents (double& eastMin,double& eastMax,double& northMin,double& northMax,double precision = 0.25);

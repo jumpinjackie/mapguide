@@ -244,9 +244,12 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemOneGrid::GetGridLines (Mg
 }
 CCoordinateSystemGridTickCollection* CCoordinateSystemOneGrid::GetBoundaryTicks (MgCoordinateSystemGridSpecification* specs)
 {
+    bool isOnGridLine;
+
     INT32 status;
     INT32 orientation;
 
+    double tmpDbl;
     double delta;
     double increment;
     double segLength;
@@ -340,6 +343,10 @@ CCoordinateSystemGridTickCollection* CCoordinateSystemOneGrid::GetBoundaryTicks 
                     Ptr<MgCoordinate> unitVector = mgFactory.CreateCoordinateXY (deltaX / segLength,deltaY / segLength);
                     Ptr<CCoordinateSystemGridTick> tickPtr;
                     tickPtr = new CCoordinateSystemGridTick (orientation,ordinateValue);
+                    tmpDbl = (ordinateValue - specs->GetEastingBase ());
+                    tmpDbl = fmod (tmpDbl,specs->GetEastingIncrement ());
+                    isOnGridLine = fabs (tmpDbl) < 1.0E-08;
+                    tickPtr->SetOnGridLine (isOnGridLine);
                     tickPtr->SetDirection (unitVector);
                     tickPtr->SetPosition (tickPoint);
                     tickCollection->Add (tickPtr);
@@ -368,6 +375,9 @@ CCoordinateSystemGridTickCollection* CCoordinateSystemOneGrid::GetBoundaryTicks 
                     Ptr<MgCoordinate> unitVector = mgFactory.CreateCoordinateXY (deltaX / segLength,deltaY / segLength);
                     Ptr<CCoordinateSystemGridTick> tickPtr;
                     tickPtr = new CCoordinateSystemGridTick (orientation,ordinateValue);
+                    tmpDbl = (ordinateValue - specs->GetNorthingBase ());
+                    tmpDbl = fmod (tmpDbl,specs->GetNorthingIncrement ());
+                    isOnGridLine = fabs (tmpDbl) < 1.0E-08;
                     tickPtr->SetDirection (unitVector);
                     tickPtr->SetPosition (tickPoint);
                     tickCollection->Add (tickPtr);
@@ -377,6 +387,10 @@ CCoordinateSystemGridTickCollection* CCoordinateSystemOneGrid::GetBoundaryTicks 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemOneGrid::GetGridLines")
     return tickCollection.Detach ();
 }
+MgCoordinateSystemGridBoundary* CCoordinateSystemOneGrid::GetFrameBoundary (void)
+{
+    return SAFE_ADDREF (m_FrameBoundary.p);
+}
 MgCoordinateSystem* CCoordinateSystemOneGrid::GetFrameCRS ()
 {
     return SAFE_ADDREF (m_FrameCRS.p);
@@ -384,6 +398,14 @@ MgCoordinateSystem* CCoordinateSystemOneGrid::GetFrameCRS ()
 MgCoordinateSystem* CCoordinateSystemOneGrid::GetGridCRS ()
 {
     return SAFE_ADDREF (m_GridCRS.p);
+}
+MgCoordinateSystemTransform* CCoordinateSystemOneGrid::GetGridToFrameXform (void)
+{
+    return SAFE_ADDREF (m_ToFrameXform.p);
+}
+MgCoordinateSystemTransform* CCoordinateSystemOneGrid::GetFrameToGridXform (void)
+{
+    return SAFE_ADDREF (m_ToGridXform.p);
 }
 void CCoordinateSystemOneGrid::GenerateGridBoundary (double boundaryPrecision)
 {
@@ -415,7 +437,7 @@ void CCoordinateSystemOneGrid::GetGeographicExtents (double& longMin,double& lon
 
     MG_TRY ()
         llCRS = csFactory.CreateFromCode (L"LL");
-        llTransform = csFactory.GetTransform(m_GridCRS,llCRS);
+        llTransform = csFactory.GetTransform(m_FrameCRS,llCRS);
         pPolygon = m_FrameBoundary->GetBoundary (llTransform,precision);
         llBoundary = csFactory.GridBoundary (pPolygon);
         llBoundary->GetBoundaryExtents (longMin,longMax,latMin,latMax);
@@ -444,7 +466,7 @@ void CCoordinateSystemOneGrid::Dispose (void)
 //=============================================================================
 // This object was invented to carry multiple MGRS grids, but is no longer used
 // as there is now a CCoordinateSystemMgrsZone object and a related collection
-// object.  WHen we're ready for code complete and we don't seem to need this
+// object.  When we're ready for code complete and we don't seem to need this
 // for anything, we should delete it. 
 CCoordinateSystemGridCollection::CCoordinateSystemGridCollection (void)
                                         :

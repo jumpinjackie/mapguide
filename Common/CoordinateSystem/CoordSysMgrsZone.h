@@ -53,14 +53,16 @@ public:
                                INT8 letteringScheme);
     ~CCoordinateSystemMgrsZone (void);
 
-    CCoordinateSystemGridRegionCollection* GetGridRegions (MgCoordinateSystemGridSpecification* specification);
+    CCoordinateSystemGridRegionCollection* GetGridRegions (MgCoordinateSystemGridBoundary* frameBoundary,
+                                                           MgCoordinateSystemGridSpecification* specification);
     INT32 GetUtmZoneNbr (void);
  
 protected:
-    void BuildRegionCollection (MgCoordinateSystemGridSpecification* specification);
+    void BuildRegionCollection (MgCoordinateSystemGridBoundary* frameBoundary,
+                                MgCoordinateSystemGridSpecification* specification);
 private:
-    void BuildMajorRegions (double boundaryPrecision);
-    void BuildMinorRegions (double boundaryPrecision);
+    void BuildMajorRegions (MgCoordinateSystemGridBoundary* frameBoundary,double boundaryPrecision);
+    void BuildMinorRegions (MgCoordinateSystemGridBoundary* frameBoundary,double boundaryPrecision);
     ///////////////////////////////////////////////////////////////////////////
     // Data members
     // m_UtmZoneNbr is positive for northern hemisphere, negative for the
