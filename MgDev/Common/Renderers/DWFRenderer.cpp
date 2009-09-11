@@ -585,7 +585,7 @@ void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
 
         if (workbuffer->cntr_count() == 1)
         {
-            // just a polygon, no need for a contourset
+            // just a polygon, no need for a contour set
             WT_Polygon polygon(workbuffer->point_count(), m_wtPointBuffer, false);
             polygon.serialize(*m_w2dFile);
             IncrementDrawableCount();
@@ -593,6 +593,11 @@ void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
         else
         {
             // otherwise make a contour set
+
+            // ensure the contours are oriented per the DWF spec
+            OrientContours(workbuffer->cntr_count(), workbuffer->cntrs(), m_wtPointBuffer);
+
+            // now create the contour set
             WT_Contour_Set cset(*m_w2dFile, workbuffer->cntr_count(), (WT_Integer32*)workbuffer->cntrs(), workbuffer->point_count(), m_wtPointBuffer, true);
             cset.serialize(*m_w2dFile);
             IncrementDrawableCount();
@@ -675,9 +680,6 @@ void DWFRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
 
     WriteStroke(lsym);
 
-    LineBuffer* workbuffer = srclb->Optimize(m_drawingScale, m_pPool);
-    std::auto_ptr<LineBuffer> spLB(workbuffer);
-
     bool oldLinePatternActive = m_linePatternActive;
 
     //determine pattern to apply
@@ -720,6 +722,9 @@ void DWFRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
 
         m_w2dFile->desired_rendition().dash_pattern() = dpat;
     }
+
+    LineBuffer* workbuffer = srclb->Optimize(m_drawingScale, m_pPool);
+    std::auto_ptr<LineBuffer> spLB(workbuffer);
 
     WritePolylines(workbuffer);
 
@@ -2139,6 +2144,79 @@ int DWFRenderer::ConvertToDashPattern(const wchar_t* lineStyleName,
 }
 
 
+//----------------------------------------------------------------------------
+//
+// Used by ProcessPolygon and DrawScreenPolygon to ensure that contours in
+// contour sets are oriented according to the DWF spec.  The spec requires
+// that filled areas be specified by clockwise wound points, and holes be
+// specified by counter-clockwise wound points.  So in our context the first
+// contour needs to be CW, and the remaining ones CCW.  The implementation
+// assumes simple contours (no self-intersection).
+//
+//----------------------------------------------------------------------------
+void DWFRenderer::OrientContours(int numContours, int* contourCounts, WT_Logical_Point* wtPointBuffer)
+{
+    if (numContours == 1)
+        return;
+
+    int start_pt = 0;
+    int end_pt = 0;
+
+    // iterate over the contours
+    for (int j=0; j<numContours; ++j)
+    {
+        // get point range for current contour
+        start_pt = end_pt;
+        end_pt += contourCounts[j];
+
+        if (contourCounts[j] < 2)
+            continue;
+
+        // compute area of current contour
+        double x0;
+        double y0;
+        double x1 = wtPointBuffer[end_pt-1].m_x;
+        double y1 = wtPointBuffer[end_pt-1].m_y;
+        double area2 = 0.0;
+        for (int i=start_pt; i<end_pt; ++i)
+        {
+            x0 = x1;
+            y0 = y1;
+            x1 = wtPointBuffer[i].m_x;
+            y1 = wtPointBuffer[i].m_y;
+            area2 += x0*y1 - y0*x1;
+        }
+
+        // the first contour (outer ring) needs to be CW (area < 0), and the
+        // remaining ones CCW (area > 0)
+        bool flipContour = false;
+        if (j == 0)
+        {
+            if (area2 > 0.0)
+                flipContour = true;
+        }
+        else if (area2 < 0.0)
+            flipContour = true;
+
+        if (flipContour)
+        {
+            int halfCount = contourCounts[j] / 2;
+            for (int i=0; i<halfCount; ++i)
+            {
+                int pt0 = start_pt + i;
+                int pt1 = end_pt - i - 1;
+                WT_Integer32 xTmp = wtPointBuffer[pt0].m_x;
+                WT_Integer32 yTmp = wtPointBuffer[pt0].m_y;
+                wtPointBuffer[pt0].m_x = wtPointBuffer[pt1].m_x;
+                wtPointBuffer[pt0].m_y = wtPointBuffer[pt1].m_y;
+                wtPointBuffer[pt1].m_x = xTmp;
+                wtPointBuffer[pt1].m_y = yTmp;
+            }
+        }
+    }
+}
+
+
 void DWFRenderer::SetSymbolManager(RS_SymbolManager* manager)
 {
     m_symbolManager = manager;
@@ -2440,7 +2518,7 @@ void DWFRenderer::DrawScreenPolygon(LineBuffer* geom, const SE_Matrix* xform, un
 
     if (geom->cntr_count() == 1)
     {
-        // just a polygon, no need for a contourset
+        // just a polygon, no need for a contour set
         WT_Polygon polygon(geom->point_count(), m_wtPointBuffer, false);
         polygon.serialize(*file);
         IncrementDrawableCount();
@@ -2448,6 +2526,11 @@ void DWFRenderer::DrawScreenPolygon(LineBuffer* geom, const SE_Matrix* xform, un
     else
     {
         // otherwise make a contour set
+
+        // ensure the contours are oriented per the DWF spec
+        OrientContours(geom->cntr_count(), geom->cntrs(), m_wtPointBuffer);
+
+        // now create the contour set
         WT_Contour_Set cset(*file, geom->cntr_count(), (WT_Integer32*)geom->cntrs(), geom->point_count(), m_wtPointBuffer, true);
         cset.serialize(*file);
         IncrementDrawableCount();
