@@ -311,6 +311,10 @@ private:
                              WT_Dash_Pattern& dash,
                              WT_Line_Pattern& lpat);
 
+    // used by ProcessPolygon and DrawScreenPolygon to ensure that contours in
+    // contour sets are oriented according to the DWF spec
+    void OrientContours(int numContours, int* contourCounts, WT_Logical_Point* wtPointBuffer);
+
     unsigned int m_nObjectId;
     void* m_hObjNodes;
 

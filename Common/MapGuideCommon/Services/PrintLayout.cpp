@@ -692,11 +692,6 @@ void MgPrintLayout::ComputeMapOffsetAndSize(double mapScale, MgEnvelope* mapBoun
 //
 MgEnvelope* MgPrintLayout::DetermineLayoutMapExtents(MgMap* map, double metersPerUnit, double mapWidth, double mapHeight)
 {
-    // Initialize the layout map extents with the full map extent
-    Ptr<MgEnvelope> env = map->GetDataExtent();
-    Ptr<MgCoordinate> ll = env->GetLowerLeftCoordinate();
-    Ptr<MgCoordinate> ur = env->GetUpperRightCoordinate();
-
     // Compute the aspect ratio of the available map area
     double pageAR = mapWidth / mapHeight;
 
