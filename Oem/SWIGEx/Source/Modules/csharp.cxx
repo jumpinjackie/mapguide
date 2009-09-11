@@ -462,9 +462,15 @@ class CSHARP : public Language {
       for(map<string, int>::const_iterator it = clsIds.begin(); it != clsIds.end(); it++)
 	  {
         if(namespaceName != NULL)
+        {
             Printf(mapInitCode, "      classMap[%d] = Type.GetType(\"%s.%s\");\n", it->second, namespaceName, it->first.c_str());
+            Printf(mapInitCode, "      classNameMap[%d] = \"%s.%s\";\n", it->second, namespaceName, it->first.c_str());
+        }
         else
+        {
             Printf(mapInitCode, "      classMap[%d] = Type.GetType(\"%s\");\n", it->second, it->first.c_str());
+            Printf(mapInitCode, "      classNameMap[%d] = \"%s\";\n", it->second, it->first.c_str());
+        }
 	  }
       char* pmapInitCode = Char(mapInitCode);
       char* pimclass_class_code = Char(imclass_class_code);

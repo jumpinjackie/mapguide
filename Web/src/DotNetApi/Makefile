@@ -19,7 +19,7 @@ debug: $(OUTDIR)\MapGuideDotNetApid.dll
 release: $(OUTDIR)\MapGuideDotNetApi.dll
 
 $(OUTDIR)\MapGuideDotNetApid.dll:
-  csc.exe /debug+ /debug:full /optimize- /out:$(OUTDIR)\MapGuideDotNetApid.dll /pdb:$(OUTDIR)\MapGuideDotNetApid.pdb /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule;$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule;$(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.netmodule;$(OUTDIR)\OSGeo.MapGuide.Web.netmodule
+  csc.exe /debug+ /debug:full /optimize- /out:$(OUTDIR)\MapGuideDotNetApid.dll /target:library /reference:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll;$(OUTDIR)\OSGeo.MapGuide.Geometry.dll;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll;$(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.dll;$(OUTDIR)\OSGeo.MapGuide.Web.dll .\AssemblyInfo.cs
 
 $(OUTDIR)\MapGuideDotNetApi.dll:
-  csc.exe /debug+ /debug:pdbonly /optimize+ /out:$(OUTDIR)\MapGuideDotNetApi.dll /pdb:$(OUTDIR)\MapGuideDotNetApi.pdb /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule;$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule;$(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.netmodule;$(OUTDIR)\OSGeo.MapGuide.Web.netmodule
+  csc.exe /debug+ /debug:pdbonly /optimize+ /out:$(OUTDIR)\MapGuideDotNetApi.dll /target:library /reference:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll;$(OUTDIR)\OSGeo.MapGuide.Geometry.dll;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll;$(OUTDIR)\OSGeo.MapGuide.MapGuideCommon.dll;$(OUTDIR)\OSGeo.MapGuide.Web.dll .\AssemblyInfo.cs

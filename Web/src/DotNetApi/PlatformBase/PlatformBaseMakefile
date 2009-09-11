@@ -3,8 +3,6 @@ cleandebug:
   del /Q .\*Constants.cs
   del /Q .\*PINVOKE.cs
   del /Q .\*Api.cs
-  if exist $(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule
-  if exist $(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule.pdb del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule.pdb
   if exist $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll
   if exist $(OUTDIR)\OSGeo.MapGuide.PlatformBase.pdb del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.pdb
   if exist $(OUTDIR)\OSGeo.MapGuide.PlatformBase.Temp.dll del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.Temp.dll
@@ -14,8 +12,6 @@ cleanrelease:
   del /Q .\*Constants.cs
   del /Q .\*PINVOKE.cs
   del /Q .\*Api.cs
-  if exist $(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule
-  if exist $(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule.pdb del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule.pdb
   if exist $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll
   if exist $(OUTDIR)\OSGeo.MapGuide.PlatformBase.pdb del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.pdb
 
@@ -24,10 +20,8 @@ debug: $(OUTDIR)\OSGeo.MapGuide.PlatformBase.Temp.dll
 release: $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll
 
 $(OUTDIR)\OSGeo.MapGuide.PlatformBase.Temp.dll:
-  csc.exe /debug+ /debug:full /optimize- /out:$(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule /pdb:$(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule.pdb /target:module /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule;$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule .\*.cs
-  csc.exe /debug+ /debug:full /optimize- /out:$(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll /pdb:$(OUTDIR)\OSGeo.MapGuide.PlatformBase.pdb /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule;$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule
+  csc.exe /debug+ /debug:full /optimize- /out:$(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll /target:library /reference:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll;$(OUTDIR)\OSGeo.MapGuide.Geometry.dll .\*.cs
   copy /y $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll $(OUTDIR)\OSGeo.MapGuide.PlatformBase.Temp.dll
 
 $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll:
-  csc.exe /debug+ /debug:pdbonly /optimize+ /out:$(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule /pdb:$(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule.pdb /target:module /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule;$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule .\*.cs
-  csc.exe /debug+ /debug:pdbonly /optimize+ /out:$(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll /pdb:$(OUTDIR)\OSGeo.MapGuide.PlatformBase.pdb /target:library /addmodule:$(OUTDIR)\OSGeo.MapGuide.Foundation.netmodule;$(OUTDIR)\OSGeo.MapGuide.Geometry.netmodule;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.netmodule
+  csc.exe /debug+ /debug:pdbonly /optimize+ /out:$(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll /target:library /reference:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll;$(OUTDIR)\OSGeo.MapGuide.Geometry.dll .\*.cs

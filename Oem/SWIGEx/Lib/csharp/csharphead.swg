@@ -59,17 +59,31 @@ DllExport void SWIGSTDCALL SWIGRegisterCustomExceptionCallbacks_$module(SWIG_CSh
             Type type = Type.GetType(className);
             if(type == null)
             {
+              // Find the specified class in the pre-defined assemblies
+              System.Reflection.Assembly[] assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
+              foreach (System.Reflection.Assembly assem in assemblies)
+              {
+                  System.Reflection.AssemblyName assemblyName = new System.Reflection.AssemblyName(assem.FullName);
+                  String dllName = assemblyNameMap[assemblyName.Name] as String;
+                  if (!String.IsNullOrEmpty(dllName))
+                  {
+                        type = assem.GetType(className, false);
+                        if (type != null)
+                          break;
+                    }
+                }            
+            
                 foreach (System.Reflection.Assembly assem in System.AppDomain.CurrentDomain.GetAssemblies())
-			    {
-			        type = assem.GetType(className, false);
-			        if (type != null)
-			            break;
-			    }
-			}
-			if (type == null)
-			    exception = new Exception();
-			else
-			    exception = Activator.CreateInstance(type, parameters);
+                {
+                    type = assem.GetType(className, false);
+                    if (type != null)
+                        break;
+                }
+            }
+            if (type == null)
+                exception = new Exception();
+            else
+                exception = Activator.CreateInstance(type, parameters);
         }
         catch(Exception e)
         {
@@ -83,7 +97,15 @@ DllExport void SWIGSTDCALL SWIGRegisterCustomExceptionCallbacks_$module(SWIG_CSh
 
     static SWIGExceptionHelper() {
       SWIGRegisterCustomExceptionCallbacks_$module(customExceptionDelegate);
+      assemblyNameMap = new Hashtable();
+      assemblyNameMap["OSGeo.MapGuide.Foundation"] = "OSGeo.MapGuide.Foundation";
+      assemblyNameMap["OSGeo.MapGuide.Geometry"] = "OSGeo.MapGuide.Geometry";
+      assemblyNameMap["OSGeo.MapGuide.PlatformBase"] = "OSGeo.MapGuide.PlatformBase";
+      assemblyNameMap["OSGeo.MapGuide.MapGuideCommon"] = "OSGeo.MapGuide.MapGuideCommon";
+      assemblyNameMap["OSGeo.MapGuide.Web"] = "OSGeo.MapGuide.Web";
+      assemblyNameMap["Autodesk.Map.PlatformEx"] = "Autodesk.Map.PlatformEx";
     }
+    protected static Hashtable assemblyNameMap;
   }
 
   static SWIGExceptionHelper exceptionHelper = new SWIGExceptionHelper();
@@ -133,24 +155,56 @@ DllExport void SWIGSTDCALL SWIGRegisterStringCallback_$module(SWIG_CSharpStringH
   static $modulePINVOKE()
   {
       classMap = new Hashtable();
+      classNameMap = new Hashtable();
+      assemblyNameMap = new Hashtable();
+      assemblyNameMap["OSGeo.MapGuide.Foundation"] = "OSGeo.MapGuide.Foundation";
+      assemblyNameMap["OSGeo.MapGuide.Geometry"] = "OSGeo.MapGuide.Geometry";
+      assemblyNameMap["OSGeo.MapGuide.PlatformBase"] = "OSGeo.MapGuide.PlatformBase";
+      assemblyNameMap["OSGeo.MapGuide.MapGuideCommon"] = "OSGeo.MapGuide.MapGuideCommon";
+      assemblyNameMap["OSGeo.MapGuide.Web"] = "OSGeo.MapGuide.Web";
+      assemblyNameMap["Autodesk.Map.PlatformEx"] = "Autodesk.Map.PlatformEx";
 $initMap
   }
   static public object createObject(int id, IntPtr nameSpaceNamePtr, IntPtr classNamePtr, IntPtr cPtr, bool ownMemory)
   {
-      // Marshall strings in nameSpaceNamePtr and classNamePtr from unmanaged char * to managed strings  
-      String nameSpaceName = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(nameSpaceNamePtr);  
-      String className     = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(classNamePtr);  
-
       Type type = classMap[id] as Type;
       if(type == null)
       {
-          foreach (System.Reflection.Assembly assem in System.AppDomain.CurrentDomain.GetAssemblies())
+          String className = classNameMap[id] as String;
+          if (String.IsNullOrEmpty(className))
           {
-              type = assem.GetType(nameSpaceName + "." + className, false);
-              if (type != null)
+              // Marshall strings in nameSpaceNamePtr and classNamePtr from unmanaged char * to managed strings
+              String nameSpaceName = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(nameSpaceNamePtr);
+              className = nameSpaceName + "."  + System.Runtime.InteropServices.Marshal.PtrToStringAnsi(classNamePtr);
+          }
+          
+          // Find the specified class in the pre-defined assemblies
+          System.Reflection.Assembly[] assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
+          foreach (System.Reflection.Assembly assem in assemblies)
+          {
+              System.Reflection.AssemblyName assemblyName = new System.Reflection.AssemblyName(assem.FullName);
+              String dllName = assemblyNameMap[assemblyName.Name] as String;
+              if (!String.IsNullOrEmpty(dllName))
               {
-                  classMap[id] = type;
-                  break;
+                  type = assem.GetType(className, false);
+                  if (type != null)
+                  {
+                      classMap[id] = type;
+                      break;
+                  }
+              }
+          }
+
+          if (type == null)
+          {
+              foreach (System.Reflection.Assembly assem in assemblies)
+              {
+                  type = assem.GetType(className, false);
+                  if (type != null)
+                  {
+                      classMap[id] = type;
+                      break;
+                  }
               }
           }
       }
@@ -162,6 +216,8 @@ $initMap
       return Activator.CreateInstance(type, args);
   }
   protected static Hashtable classMap;
+  protected static Hashtable classNameMap;
+  protected static Hashtable assemblyNameMap;
 %}
     
 %insert(runtime) %{
