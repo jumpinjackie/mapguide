@@ -1739,6 +1739,7 @@ MgRasterPropertyDefinition* MgServerFeatureUtil::GetRasterPropertyDefinition(Fdo
     bool isNullable = fdoPropDef->GetNullable();
     FdoStringP qname = fdoPropDef->GetQualifiedName();
     bool isReadOnly = fdoPropDef->GetReadOnly();
+    FdoStringP spatialContextName = fdoPropDef->GetSpatialContextAssociation();
 
     // Set it for MapGuide
     if (desc != NULL)
@@ -1756,6 +1757,11 @@ MgRasterPropertyDefinition* MgServerFeatureUtil::GetRasterPropertyDefinition(Fdo
         propDef->SetQualifiedName(STRING(qualifiedName));
     }
     propDef->SetReadOnly(isReadOnly);
+
+    if (spatialContextName != NULL)
+    {
+        propDef->SetSpatialContextAssociation(STRING(spatialContextName));
+    }
 
     return propDef.Detach();
 }
@@ -2517,7 +2523,7 @@ FdoRasterPropertyDefinition* MgServerFeatureUtil::GetRasterPropertyDefinition(
     bool isNullable = mgPropDef->GetNullable();
     STRING qname = mgPropDef->GetQualifiedName();
     bool isReadOnly = mgPropDef->GetReadOnly();
-
+    STRING spatialContextName = mgPropDef->GetSpatialContextAssociation();
     //Set it for Fdo
     if (!desc.empty())
     {
@@ -2530,6 +2536,12 @@ FdoRasterPropertyDefinition* MgServerFeatureUtil::GetRasterPropertyDefinition(
 
     //Cannot set qualified name in fdo
     fdoPropDef->SetReadOnly(isReadOnly);
+
+    if(!spatialContextName.empty())
+    {
+        fdoPropDef->SetSpatialContextAssociation((FdoString*) spatialContextName.c_str());
+    }
+
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureUtil.GetRasterPropertyDefinition")
 
     return fdoPropDef.Detach();
@@ -3256,6 +3268,7 @@ void MgServerFeatureUtil::UpdateRasterPropertyDefinition(
     bool isNullable = mgPropDef->GetNullable();
     STRING qname = mgPropDef->GetQualifiedName();
     bool isReadOnly = mgPropDef->GetReadOnly();
+    STRING spatialContextName = mgPropDef->GetSpatialContextAssociation();
 
     //Set it for Fdo
     if (desc != fdoPropDef->GetDescription())
@@ -3273,6 +3286,9 @@ void MgServerFeatureUtil::UpdateRasterPropertyDefinition(
     //Cannot set qualified name in fdo
     if (isReadOnly != fdoPropDef->GetReadOnly())
         fdoPropDef->SetReadOnly(isReadOnly);
+
+    if (spatialContextName != fdoPropDef->GetSpatialContextAssociation())
+        fdoPropDef->SetSpatialContextAssociation((FdoString*)spatialContextName.c_str());
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureUtil.UpdateRasterPropertyDefinition")
 }
