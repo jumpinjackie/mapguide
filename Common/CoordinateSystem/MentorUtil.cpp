@@ -111,7 +111,7 @@ struct CCsPrjAdditionalInfo
 };
 
 static const CCsPrjAdditionalInfo s_prjInfo[] = {
-//      projtype            org_lng    org_lat    scl_red    quad    offset
+//      projtype                                      org_lng  org_lat  scl_red   quad     offset
     { MgCoordinateSystemProjectionCode::Alber,        true,    true,    false,    true,    true },
     { MgCoordinateSystemProjectionCode::Azede,        true,    true,    false,    true,    true},
     { MgCoordinateSystemProjectionCode::Azmea,        true,    true,    false,    true,    true },
@@ -179,6 +179,10 @@ static const CCsPrjAdditionalInfo s_prjInfo[] = {
     { MgCoordinateSystemProjectionCode::Winkl,        true,    false,   false,    true,    true},
     { MgCoordinateSystemProjectionCode::Nrthsrt,      false,   false,   false,    true,    true},
     { MgCoordinateSystemProjectionCode::Lmbrtaf,      true,    true,    false,    true,    true},
+    { MgCoordinateSystemProjectionCode::Sys34_01,     false,   false,   false,    true,    false },
+    { MgCoordinateSystemProjectionCode::EdcylE,       true,    true,    false,    true,    true },
+    { MgCoordinateSystemProjectionCode::PlateCarree,  true,    true,    false,    true,    true },
+    { MgCoordinateSystemProjectionCode::PvMercator,   false,   true,    false,    true,    true },
     { MgCoordinateSystemProjectionCode::Unknown,      false,   false,   false,    false,   false }
 };
 
