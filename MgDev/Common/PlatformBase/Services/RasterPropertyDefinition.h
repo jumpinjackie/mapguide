@@ -142,6 +142,31 @@ PUBLISHED_API:
     ///
     INT32 GetDefaultImageYSize();   /// __get, __set
 
+    ////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the Spatial Context name associated with this raster
+    /// property.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// string GetSpatialContextAssociation();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// String GetSpatialContextAssociation();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// string GetSpatialContextAssociation();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Returns a String value representing the Spatial Context
+    /// name. If the value is empty then the raster property is
+    /// associated with the active spatial context in the datastore.
+    ///
+    /// \see
+    /// MgFeatureService::GetSpatialContexts.
+    STRING GetSpatialContextAssociation();   /// __get, __set
+
     /////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Sets a Boolean value that specifies whether this property is
@@ -243,6 +268,35 @@ PUBLISHED_API:
     /// Returns nothing.
     ///
     void SetDefaultImageYSize (INT32 size);
+    
+    //////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets a Spatial Context association for this raster
+    /// property.
+    ///
+    /// \remarks
+    /// If not set, this name defaults to the Spatial Context name
+    /// active in the datastore.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// void SetSpatialContextAssociation(string spatialContextName);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// void SetSpatialContextAssociation(String spatialContextName);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// void SetSpatialContextAssociation(string spatialContextName);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param spatialContextName (String/string)
+    /// The Spatial Context name to
+    /// be set.
+    ///
+    /// \return
+    /// Returns nothing.
+    ///
+    void SetSpatialContextAssociation(CREFSTRING spatialContextName);
 
 INTERNAL_API:
 
@@ -258,6 +312,7 @@ private:
     bool         m_nullable;
     INT32        m_sizeX;
     INT32        m_sizeY;
+    STRING       m_associatedSCName;
     STRING       m_serializedXml;
 
 INTERNAL_API:

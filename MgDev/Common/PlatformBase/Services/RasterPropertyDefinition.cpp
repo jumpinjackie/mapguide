@@ -73,6 +73,19 @@ INT32 MgRasterPropertyDefinition::GetDefaultImageYSize()
 }
 
 /// <summary>
+/// Gets the Spatial Context name associated to this raster property.
+/// </summary>
+/// <returns>
+/// Returns a String value representing the Spatial Context name.
+/// If empty then the raster property is associated with the active Spatial Context
+/// in the datastore.
+/// </returns>
+STRING MgRasterPropertyDefinition::GetSpatialContextAssociation()
+{
+    return m_associatedSCName;
+}
+
+/// <summary>
 /// Sets a Boolean value that specifies whether this geometric property is read-only.
 /// </summary>
 /// <param name="value">
@@ -115,6 +128,19 @@ void MgRasterPropertyDefinition::SetDefaultImageYSize(INT32 size)
     m_sizeY = size;
 }
 
+/// <summary>
+/// Sets/add a Spatial Context association to this raster property.
+/// </summary>
+/// <param name="value">
+/// Input the Spatial Context name to be added/set.
+/// Defaults to the active Spatial Context.
+/// </param>
+/// <returns>Returns nothing</returns>
+void MgRasterPropertyDefinition::SetSpatialContextAssociation(CREFSTRING spatialContextName)
+{
+    m_associatedSCName = spatialContextName;
+}
+
 MgRasterPropertyDefinition::MgRasterPropertyDefinition()
 {
     Initialize();
@@ -146,6 +172,7 @@ void MgRasterPropertyDefinition::Initialize()
     m_nullable = false;
     m_sizeX = 0;
     m_sizeY = 0;
+    m_associatedSCName = L"";
 }
 
 void MgRasterPropertyDefinition::ToXml(string& xmlStr, bool includeType)
