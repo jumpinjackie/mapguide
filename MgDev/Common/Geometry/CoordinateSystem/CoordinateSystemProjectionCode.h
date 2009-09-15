@@ -39,7 +39,7 @@ PUBLISHED_API:
     static const INT32 Eckert4 = 25;        // Ekert Pseudocylindrical Projection; Number IV
     static const INT32 Eckert6 = 26;        // Ekert Pseudocylindrical Projection; Number VI
     static const INT32 Edcnc = 12;          // Equidistant Conic Projection; aka Simple Conic
-    static const INT32 Edcyl = 20;          // Equidistant Cylindrical Projection
+    static const INT32 Edcyl = 20;          // Equidistant Cylindrical Projection (Spherical only)
     static const INT32 GaussK = 46;         // Gauss-Kruger: Transverse Mercator without scale reduction parameter.
     static const INT32 Gnomonic = 19;       // Gnomonic Projection
     static const INT32 Goode = 28;          // Goode Homolosine Projection
@@ -96,6 +96,10 @@ PUBLISHED_API:
     static const INT32 Winkl = 63;          // Winkel-Tripel; variable standard latitude
     static const INT32 Nrthsrt = 64;        // Nerth with scale and rotation
     static const INT32 Lmbrtaf = 65;        // Lambert Conformal Conic with affine post-processor.
+    static const INT32 Sys34_01 = 66;       // Combination of Transverse Mercator and polynomial expansion used in Denmark.  Polynominals are of the 2001 vintage.
+    static const INT32 EdcylE = 67;         // Equidistant Cylindrical Projection, Ellipsoidal or Spherical
+    static const INT32 PlateCarree = 68;    // Inplementation of Plate Carree as a variation of the Equidistant Cylindrical
+    static const INT32 PvMercator = 69;     // Popular Visualization Pseudo Mercator (aka Google Earth)
     static const INT32 Unknown = 0;
 };
 /// \}
