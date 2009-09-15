@@ -254,6 +254,10 @@ MgCoordinate* CCoordinateSystemMgrs::ConvertToLonLat(CREFSTRING sMgrs)
                 return NULL;
             }
         }
+		else
+		{
+			return pLonLat;
+		}
     }
 
     //if exception mode is on and excetion is thrown internally we exit anyway
