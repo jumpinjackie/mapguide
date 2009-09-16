@@ -476,6 +476,14 @@ bool KmlRenderer::RequiresLabelClipping()
 }
 
 
+bool KmlRenderer::SupportsZ()
+{
+    // although KmlRenderer supports elevation, it ignores Z values
+    // in feature geometry
+    return false;
+}
+
+
 //Inserts the contents of a given DWF input stream
 //into the current output W2D. The given coord sys
 //transformation is applied and geometry will be clipped

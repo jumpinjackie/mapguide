@@ -1115,6 +1115,13 @@ bool AGGRenderer::RequiresLabelClipping()
 }
 
 
+bool AGGRenderer::SupportsZ()
+{
+    // Z values in feature geometry are ignored
+    return false;
+}
+
+
 bool AGGRenderer::SupportsTooltips()
 {
     // set to false to disable processing of tooltips

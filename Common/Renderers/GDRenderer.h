@@ -134,6 +134,8 @@ public:
 
     virtual bool RequiresLabelClipping();
 
+    virtual bool SupportsZ();
+
     virtual bool SupportsTooltips();
 
     virtual bool SupportsHyperlinks();

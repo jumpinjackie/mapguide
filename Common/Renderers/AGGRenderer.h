@@ -140,6 +140,8 @@ public:
 
     RENDERERS_API virtual bool RequiresLabelClipping();
 
+    RENDERERS_API virtual bool SupportsZ();
+
     RENDERERS_API virtual bool SupportsTooltips();
 
     RENDERERS_API virtual bool SupportsHyperlinks();

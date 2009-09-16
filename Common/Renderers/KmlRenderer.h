@@ -119,6 +119,8 @@ public:
 
     virtual bool RequiresLabelClipping();
 
+    virtual bool SupportsZ();
+
     ////////////////////////////////////////////////
     // SE_Renderer
     //

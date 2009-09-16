@@ -1540,7 +1540,7 @@ void LineBuffer::ClipPolygon(RS_Bounds& b, LineBuffer* dst)
 
     bool move = false;
 
-    // loop over all segments, MoveTos denote start of polygon
+    // loop over all segments, MoveTo's denote start of polygon
     // in a multipolygon
     for (int i=0; i<m_cur_types; ++i)
     {
@@ -1588,14 +1588,14 @@ void LineBuffer::ClipPolygon(RS_Bounds& b, LineBuffer* dst)
             // find the t values for x and y exit points
             if (deltaX != 0.0)
                 tOutX = (xOut - aline[0]) / deltaX;
-            else if (clipRect.minx<=aline[0] && aline[0]<=clipRect.maxx)
+            else if (clipRect.minx <= aline[0] && aline[0] <= clipRect.maxx)
                 tOutX = std::numeric_limits<double>::infinity();
             else
                 tOutX = -std::numeric_limits<double>::infinity();
 
             if (deltaY != 0.0)
                 tOutY = (yOut - aline[1]) / deltaY;
-            else if (clipRect.miny<=aline[1]&& aline[1]<=clipRect.maxy)
+            else if (clipRect.miny <= aline[1]&& aline[1] <= clipRect.maxy)
                 tOutY = std::numeric_limits<double>::infinity();
             else
                 tOutY = -std::numeric_limits<double>::infinity();
@@ -1634,7 +1634,7 @@ void LineBuffer::ClipPolygon(RS_Bounds& b, LineBuffer* dst)
                 // a possible turning vertex
                 if (tOut1 < tIn2)
                 {
-                    // if tOut1 > 0.0 and tOut1 < 1.0 then line crosses over
+                    // if tOut1 > 0.0 and tOut1 <= 1.0 then line crosses over
                     // intermediate corner region - generate turning vertex
                     if (tOut1 > 0.0 && tOut1 <= 1.0)
                     {
@@ -1780,7 +1780,7 @@ void LineBuffer::FinalizeContour()
 //                     structure pointed to contains the coordinates of the
 //                     corners of the clip rectangle.
 //         x         - passes the x coordinate of the clipped vertex.
-//         y         - passes the y coordiante of the clipped vertex.
+//         y         - passes the y coordinate of the clipped vertex.
 //
 // RETURNS: None.
 //
@@ -1798,8 +1798,8 @@ void LineBuffer::AppendLBClipVertex(RS_Bounds& clipRect, double x, double y, Lin
     // TODO: NOT Z AWARE
     bool degenerate = false;
 
-    // only line segments can be degenerate -- a move indicates the start of a new
-    // polygon, so it is not degenerate
+    // only line segments can be degenerate - a move indicates the start of a
+    // new polygon, so it is not degenerate
     int npts = move? 0 : lb->m_cntrs[lb->m_cur_cntr];
 
     if (npts > 1)
@@ -1816,8 +1816,8 @@ void LineBuffer::AppendLBClipVertex(RS_Bounds& clipRect, double x, double y, Lin
                       ((x <= x1 && x2 <= x1) || (x >= x1 && x2 >= x1)));
     }
 
-    // else if there is only one vertex, and the new vertex is identical, then
-    // flag as degenerate
+    // else if there is only one vertex, and the new vertex is identical,
+    // then flag as degenerate
     else if (npts == 1)
     {
         degenerate =   x == lb->x_coord(lb->point_count()-1)
@@ -1931,31 +1931,17 @@ int LineBuffer::ClipCode(RS_Bounds& b, double x, double y)
 //
 // FUNCTION: ClipLine().
 //
-// PURPOSE: Clip a line (given in application coordinates) against the
+// PURPOSE: Clips a line (given in application coordinates) against the
 //          specified clip rectangle using the Cohen-Sutherland clipping
-//          algorithm. Note - the clipped segment is guaranteed to have
+//          algorithm.  Note - the clipped segment is guaranteed to have
 //          the same directon as the original.
 //
 // PARAMETERS:
-//
-//     Input:
-//
-//         clipRect - passes a reference to an OpsFloatExtent structure; the
-//                    structure contains the coordinates of the corners of
-//                    the clip rectangle.
-//         endPt1   - passes a reference to an OpsFloatPoint structure; the
-//                    structure contains the coordinates of the first endpoint
-//                    of the line segment.
-//         endPt2   - passes a reference to an OpsFloatPoint structure; the
-//                    structure contains the coordinates of the second endpoint
-//                    of the line segment.
-//
-//     Output:
-//
-//         endPt1   - the coordinates of the (possibly clipped) first endpoint
-//                    are returned in the referenced structure.
-//         endPt2   - the coordinates of the (possibly clipped) second endpoint
-//                    are returned in the referenced structure.
+//     clipRect - the rectangle to clip against
+//     line     - an array of 4 doubles containing the x/y coordinates
+//                of the line segment's start and end points
+//     ret      - an array of 4 doubles which will contain the x/y
+//                coordinates of the line's clipped start and end points
 //
 // RETURNS: The method returns 0 if the line segment is not visible with respect
 //          the clip rectangle; 1 if the line segment is visible and the second
