@@ -93,18 +93,14 @@ window.onload = function() {
 var fusionError = function(eventId, error) {
     var errorMessage = error.toString();
     var readableMessage = '';
-    var xmlInvalid = 'xml2json: invalid XML document: ';
-    var indexXMLInvalid = errorMessage.indexOf(xmlInvalid);
-    if (indexXMLInvalid != -1) {
-        var indexStart = indexXMLInvalid + xmlInvalid.length;
-        if (indexStart < errorMessage.length) {
-            var indexEnd = errorMessage.indexOf(' :', indexStart);
-            if (indexEnd != -1) {
-                readableMessage = errorMessage.substring(indexStart, indexEnd);
-                readableMessage = readableMessage.replace(/\\\\n/g, '\n');
-                readableMessage = readableMessage.replace(/\\\\t/g, '\t');
-            }
-        }
+    var tagStart = '<h2>';
+    var tagEnd = '</h2>';
+    var indexStart = errorMessage.indexOf(tagStart);
+    var indexEnd = errorMessage.indexOf(tagEnd, tagStart);
+    if (indexStart != -1 && indexEnd != -1) {
+        readableMessage = errorMessage.substring(indexStart + tagStart.length, indexEnd);
+        readableMessage = readableMessage.replace(/\\\\n/g, '\n');
+        readableMessage = readableMessage.replace(/\\\\t/g, '\t');
     }
     if (readableMessage != '') {
         alert(readableMessage);
