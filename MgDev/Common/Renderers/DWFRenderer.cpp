@@ -2283,6 +2283,13 @@ bool DWFRenderer::RequiresLabelClipping()
 }
 
 
+bool DWFRenderer::SupportsZ()
+{
+    // Z values in feature geometry are ignored
+    return false;
+}
+
+
 double DWFRenderer::GetMapToW2DScale()
 {
     return m_scale;

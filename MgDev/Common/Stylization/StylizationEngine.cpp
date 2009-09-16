@@ -95,6 +95,9 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
     if (numTypeStyles == 0)
         return;
 
+    // ignore Z values if the renderer doesn't need them
+    bool ignoreZ = !se_renderer->SupportsZ();
+
     // we always start with rendering pass 0
     int instanceRenderingPass = 0;
     int symbolRenderingPass = 0;
@@ -129,7 +132,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
                 nFeatures++;
             #endif
 
-            LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pool, 8, FdoDimensionality_Z, false);
+            LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pool, 8, FdoDimensionality_Z, ignoreZ);
             if (!lb)
                 continue;
 

@@ -277,6 +277,9 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
     }
     RS_ElevationSettings* elevSettings = spElevSettings.get();
 
+    // ignore Z values if the renderer doesn't need them
+    bool ignoreZ = !renderer->SupportsZ();
+
     // create an expression engine with our custom functions
     // NOTE: We must create a new engine for each call to StylizeVLHelper.  The
     //       engine stores a weak reference to the RS_FeatureReader's internal
@@ -292,7 +295,7 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
         ++nFeatures;
         #endif
 
-        LineBuffer* lb = LineBufferPool::NewLineBuffer(&m_lbPool, 8, FdoDimensionality_Z, false);
+        LineBuffer* lb = LineBufferPool::NewLineBuffer(&m_lbPool, 8, FdoDimensionality_Z, ignoreZ);
         if (!lb)
             continue;
 

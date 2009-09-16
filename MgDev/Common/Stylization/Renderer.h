@@ -184,21 +184,21 @@ public:
     virtual RS_Bounds& GetBounds() = 0;
 
     //------------------------------------------------------
-    // Geometry clipping renderer options
+    // Geometry renderer settings
     //------------------------------------------------------
 
-    ///<summary>
-    /// Flags whether the geometry used to render the feature is clipped.
-    ///</summary>
+    // Flags whether the geometry used to render the feature is clipped.
     virtual bool RequiresClipping() = 0;
 
-    ///<summary>
-    /// Flags whether the geometry used to label the feature is clipped.
-    /// This only applies if geometry clipping is set to false.  By setting
-    /// label clipping to true, you can be assured of generating on-screen
-    /// labels even though the feature geometry is not clipped to the screen.
-    ///</summary>
+    // Flags whether the geometry used to label the feature is clipped.
+    // This only applies if geometry clipping is set to false.  By setting
+    // label clipping to true, you can be assured of generating on-screen
+    // labels even though the feature geometry is not clipped to the screen.
     virtual bool RequiresLabelClipping() = 0;
+
+    // Flags whether the renderer has rendering support for geometry
+    // containing Z values.
+    virtual bool SupportsZ() = 0;
 
     //------------------------------------------------------
     // Miscellaneous

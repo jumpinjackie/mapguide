@@ -159,6 +159,8 @@ public:
 
     virtual bool RequiresLabelClipping();
 
+    virtual bool SupportsZ();
+
     /////////////////////////////////////////////
     // DWFRenderer specific
     //

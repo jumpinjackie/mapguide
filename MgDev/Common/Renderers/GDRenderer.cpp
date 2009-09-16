@@ -1199,6 +1199,13 @@ bool GDRenderer::RequiresLabelClipping()
 }
 
 
+bool GDRenderer::SupportsZ()
+{
+    // Z values in feature geometry are ignored
+    return false;
+}
+
+
 bool GDRenderer::SupportsTooltips()
 {
     // set to false to disable processing of tooltips

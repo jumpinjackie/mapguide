@@ -467,6 +467,13 @@ bool FeatureInfoRenderer::RequiresLabelClipping()
 }
 
 
+bool FeatureInfoRenderer::SupportsZ()
+{
+    // Z values in feature geometry are ignored
+    return false;
+}
+
+
 bool FeatureInfoRenderer::RequiresCompositeLineStyleSeparation()
 {
     return false;
