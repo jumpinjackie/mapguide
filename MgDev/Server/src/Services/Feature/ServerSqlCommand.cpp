@@ -109,12 +109,12 @@ INT32 MgServerSqlCommand::ExecuteNonQuery(MgResourceIdentifier* resource, CREFST
         MgServerFeatureUtil::FillFdoParameterCollection(params, fdoParams);
     }
 
+    // Execute the command
+    rowsAffected = fdoCommand->ExecuteNonQuery();
+
     // Update parameter whose direction is InputOutput, Output, or Return.
     if (NULL != params && params->GetCount() > 0)
         MgServerFeatureUtil::UpdateParameterCollection(fdoParams, params);
-
-    // Execute the command
-    rowsAffected = fdoCommand->ExecuteNonQuery();
 
     MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgServerSqlCommand.ExecuteQuery")
 
