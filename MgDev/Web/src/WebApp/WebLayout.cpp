@@ -39,8 +39,8 @@ MgWebLayout::MgWebLayout(MgResourceService* resourceService, MgResourceIdentifie
     // get the resource service to query the web layout definition
     Ptr<MgByteReader> xmlWebLayout = resourceService->GetResourceContent(webLayoutId);
 
-    // The default value of enable ping server is true.
-    m_enablePingServer = true;
+    // The default value of enable ping server is false so existing web layout will not change behavior.
+    m_enablePingServer = false;
 
     ParseWebLayoutDefinition(xmlWebLayout);
 
