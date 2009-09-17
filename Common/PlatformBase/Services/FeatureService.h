@@ -1422,12 +1422,14 @@ PUBLISHED_API:
     /// \note1
     ///
     /// \remarks
-    /// MgFeatureSourceParams is an abstract class. Currently the
-    /// only concrete class is MgCreateSdfParams, and the only
-    /// feature source that can be created this way is an SDF file.
-    /// You can use this method to create an SDF file with the same
-    /// schema and spatial context definition as the provider that
-    /// you are connected to.
+    /// MgFeatureSourceParams is an abstract class. Currently there
+    /// are two concrete classes MgFileFeatureSourceParams and 
+    /// MgCreateSdfParams and SDF, SHP and SQLite feature source can 
+    /// be created only. If no well-know text format coordinate 
+    /// system is specified in argument sourceParams, this method 
+    /// will not create spatial context for the feature source. For
+    /// SHP feature source, a feature class must be specified.
+    /// Otherwise, an MgInvalidArgumentException will be thrown.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
