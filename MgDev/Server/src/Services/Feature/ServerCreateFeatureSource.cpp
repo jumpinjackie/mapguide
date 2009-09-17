@@ -41,14 +41,22 @@ void MgServerCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* reso
         Ptr<MgServerCreateFileFeatureSource> creator = NULL;
         STRING providerName = params->GetProviderName();
         if (providerName == L"OSGeo.SDF") // NOXLATE
+        {
             creator = new MgServerCreateSdfFeatureSource(resource, params);
+            creator->CreateFeatureSource(false, false);
+        }
         else if (providerName == L"OSGeo.SHP") // NOXLATE
+        {
             creator = new MgServerCreateShpFeatureSource(resource, params);
+            creator->CreateFeatureSource(true, false);
+        }
         else if (providerName == L"OSGeo.SQLite") // NOXLATE
+        {
             creator = new MgServerCreateSqliteFeatureSource(resource, params);
+            creator->CreateFeatureSource(false, false);
+        }
         else
             throw new MgInvalidArgumentException(L"MgServerCreateFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"", NULL);
-        creator->CreateFeatureSource();
     }
 
     MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgServerCreateFeatureSource.CreateFeatureSource")
@@ -71,7 +79,7 @@ MgServerCreateFileFeatureSource::~MgServerCreateFileFeatureSource()
     SAFE_RELEASE(m_params);
 }
 
-void MgServerCreateFileFeatureSource::CreateFeatureSource()
+void MgServerCreateFileFeatureSource::CreateFeatureSource(bool bCheckFeatureClass, bool bCheckSpatialContext)
 {
     //Some basic schema validation:
     //  A schema must be supplied
@@ -83,21 +91,27 @@ void MgServerCreateFileFeatureSource::CreateFeatureSource()
     if(schema == NULL)
         throw new MgInvalidArgumentException(L"MgServerCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"MgMissingSchema", NULL);
 
-    Ptr<MgClassDefinitionCollection> classes = schema->GetClasses();
-    if(classes == NULL || classes->GetCount() == 0)
-        throw new MgInvalidArgumentException(L"MgServerCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"MgMissingClassDef", NULL);
-
-    for(INT32 ci = 0; ci < classes->GetCount(); ci++)
+    if (bCheckFeatureClass)
     {
-        Ptr<MgClassDefinition> classDef = classes->GetItem(ci);
-        Ptr<MgPropertyDefinitionCollection> idProps = classDef->GetIdentityProperties();
-        if(idProps == NULL || idProps->GetCount() == 0)
-            throw new MgInvalidArgumentException(L"MgServerCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"MgClassWOIdentity", NULL);
+        Ptr<MgClassDefinitionCollection> classes = schema->GetClasses();
+        if(classes == NULL || classes->GetCount() == 0)
+            throw new MgInvalidArgumentException(L"MgServerCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"MgMissingClassDef", NULL);
+
+        for(INT32 ci = 0; ci < classes->GetCount(); ci++)
+        {
+            Ptr<MgClassDefinition> classDef = classes->GetItem(ci);
+            Ptr<MgPropertyDefinitionCollection> idProps = classDef->GetIdentityProperties();
+            if(idProps == NULL || idProps->GetCount() == 0)
+                throw new MgInvalidArgumentException(L"MgServerCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"MgClassWOIdentity", NULL);
+        }
     }
 
-    // A coordinate system must be defined
-    if(m_params->GetCoordinateSystemWkt().empty())
-        throw new MgInvalidArgumentException(L"MgServerCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"MgMissingSrs", NULL);
+    if (bCheckSpatialContext)
+    {
+        // A coordinate system must be defined
+        if(m_params->GetCoordinateSystemWkt().empty())
+            throw new MgInvalidArgumentException(L"MgServerCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"MgMissingSrs", NULL);
+    }
 
     // Connect to provider
     STRING connString = GetFirstConnectionString();
@@ -152,13 +166,16 @@ void MgServerCreateFileFeatureSource::ApplySchemaAndCreateSpatialContextInternal
     FdoIConnection* conn)
 {
     // Create the spatialcontext
-    FdoPtr<FdoICreateSpatialContext> spatialContext = (FdoICreateSpatialContext*)conn->CreateCommand(FdoCommandType_CreateSpatialContext);
-    spatialContext->SetCoordinateSystemWkt(m_params->GetCoordinateSystemWkt().c_str());
-    spatialContext->SetDescription(m_params->GetSpatialContextDescription().c_str());
-    spatialContext->SetName(m_params->GetSpatialContextName().c_str());
-    spatialContext->SetXYTolerance(m_params->GetXYTolerance());
-    spatialContext->SetZTolerance(m_params->GetZTolerance());
-    spatialContext->Execute();
+    if (!m_params->GetCoordinateSystemWkt().empty())
+    {
+        FdoPtr<FdoICreateSpatialContext> spatialContext = (FdoICreateSpatialContext*)conn->CreateCommand(FdoCommandType_CreateSpatialContext);
+        spatialContext->SetCoordinateSystemWkt(m_params->GetCoordinateSystemWkt().c_str());
+        spatialContext->SetDescription(m_params->GetSpatialContextDescription().c_str());
+        spatialContext->SetName(m_params->GetSpatialContextName().c_str());
+        spatialContext->SetXYTolerance(m_params->GetXYTolerance());
+        spatialContext->SetZTolerance(m_params->GetZTolerance());
+        spatialContext->Execute();
+    }
 
     // Create and set the schema
     Ptr<MgFeatureSchema> featureSchema = m_params->GetFeatureSchema();

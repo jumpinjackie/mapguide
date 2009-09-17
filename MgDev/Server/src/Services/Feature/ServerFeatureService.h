@@ -733,123 +733,133 @@ public:
                                                   bool bActiveOnly);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// \brief
+    /// <summary>
     /// Set the active long transaction name for a feature source.
-    ///
-    /// \remarks
-    /// The long transaction name is associated with the caller's session.  If
+    /// The long transaction name is associated with the caller's session. If
     /// no session is set then the method throws an MgSessionNotFoundException.
-    ///
-    /// \param featureSourceId (MgResourceIdentifier)
+    /// </summary>
+    /// <param name="featureSourceId">Input
     /// A resource identifier identifying a feature source in the repository.
-    /// \param longTransactionName (String/string)
+    /// </param>
+    /// <param name="longTransactionName">Input
     /// The long transaction name to set.
-    ///
-    /// \return
+    /// </param>
+    /// <returns>
     /// Returns true if the name was successfully set; otherwise
     /// returns false.
+    /// </returns>
     ///
-    /// \exception MgNullArgumentException
-    /// \exception MgInvalidResourceTypeException
-    /// \exception MgSessionNotFoundException
+    /// EXCEPTIONS:
+    /// MgNullArgumentException
+    /// MgInvalidResourceTypeException
+    /// MgSessionNotFoundException
     ///
     bool SetLongTransaction( MgResourceIdentifier* featureSourceId,
                              CREFSTRING longTransactionName);
 
     //////////////////////////////////////////////////////////////////
-    /// \brief
+    /// <summary>
     /// Retrieves schema information about a set of feature classes for a given feature source.
-    ///
-    /// <!-- Syntax in .Net, Java, and PHP -->
-    /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual MgByteReader CreateFeatureSource(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude JavaSyntaxTop.html
-    /// virtual MgByteReader CreateFeatureSource(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude PHPSyntaxTop.html
-    /// virtual MgByteReader CreateFeatureSource(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses);
-    /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \param featureSourceId (MgResourceIdentifier)
+    /// </summary>
+    /// <param name="featureSourceId">Input
     /// The resource identifier defining the
     /// location of the feature source in
     /// the repository.
-    /// \param featureClasses (MgStringCollection)
+    /// </param>
+    /// <param name="featureClasses">Input
     /// A collection of strings identifying the feature classes for which to
     /// retrieve schema information. If this collection is null or empty, information
     /// is returned for all feature classes.
-    ///
-    /// \return
+    /// </param>
+    /// <returns>
     /// Returns an MgByteReader containing the XML schema.
+    /// </returns>
     ///
     MgByteReader* DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId, MgStringCollection* featureClasses);
 
     //////////////////////////////////////////////////////////////////
-    /// \brief
+    /// <summary>
     /// Retrieves feature information based on the supplied criteria.
-    ///
-    /// <!-- Syntax in .Net, Java, and PHP -->
-    /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude JavaSyntaxTop.html
-    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, String featureClass, MgStringCollection requiredProperties, String srs, String filter, int maxFeatures);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude PHPSyntaxTop.html
-    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures);
-    /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \param featureSourceId (MgResourceIdentifier)
+    /// </summary>
+    /// <param name="featureSourceId">Input
     /// The resource identifier defining the
     /// location of the feature source in
     /// the repository.
-    /// \param featureClass (String/string)
+    /// </param>
+    /// <param name="featureClass">Input
     /// The feature class containing the features to retrieve.
-    /// \param requiredProperties (MgStringCollection)
+    /// </param>
+    /// <param name="requiredProperties">Input
     /// The collection of properties to retrieve for each feature. If the
     /// collection is null or empty, all properties will be retrieved.
-    /// \param srs (String/string)
-    /// The spatial reference system in which to return feature geometries
-    /// \param filter (String/string)
-    /// An XML string containing the definition for an OGC filter
-    /// \param filter (int)
+    /// </param>
+    /// <param name="srs">Input
+    /// The spatial reference system in which to return feature geometries.
+    /// </param>
+    /// <param name="filter">Input
+    /// An XML string containing the definition for an OGC filter.
+    /// </param>
+    /// <param name="maxFeatures">Input
     /// The maximum number of features to retrieve. If the value is less
     /// than or equal to zero, all features will be retrieved.
-    ///
-    /// \return
+    /// </param>
+    /// <returns>
     /// Returns an MgByteReader containing the requested feature information.
+    /// </returns>
     ///
     MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId, CREFSTRING featureClass,
         MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures);
 
     ////////////////////////////////////////////////////////////////////////////////
-    /// \brief
+    /// <summary>
     /// This method enumerates all the providers and if they are FDO enabled for
     /// the specified provider and partial connection string.
-    ///
-    /// \param providerName (String/string)
+    /// </summary>
+    /// <param name="providerName">Input
     /// The name of the Fdo feature provider.
-    /// \param partialConnString (String/string)
+    /// </param>
+    /// <param name="partialConnString">Input
     /// The partial connection string to the Fdo provider.
-    ///
-    /// \returns
+    /// </param>
+    /// <returns>
     /// Returns the list of data stores.
+    /// </returns>
+    ///
     MgByteReader* EnumerateDataStores(CREFSTRING providerName, CREFSTRING partialConnString);
 
     ////////////////////////////////////////////////////////////////////////////////
-    /// \brief
+    /// <summary>
     /// This method returns all of the logical to physical schema mappings for
     /// the specified provider and partial connection string.
-    ///
-    /// \param providerName (String/string)
+    /// </summary>
+    /// <param name="providerName">Input
     /// The name of the Fdo feature provider.
-    /// \param partialConnString (String/string)
+    /// </param>
+    /// <param name="partialConnString">Input
     /// The partial connection string to the Fdo provider.
-    ///
-    /// \returns
+    /// </param>
+    /// <returns>
     /// Returns the schema mapping.
+    /// </returns>
+    ///
     MgByteReader* GetSchemaMapping(CREFSTRING providerName, CREFSTRING partialConnString);
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Create a feature source using the given feature source parameters and identified by the
+    /// specified resource identifier.
+    /// </summary>
+    /// <param name="featureSourceId">Input
+    /// The resource identifier defining the location of the new feature source in the repository.
+    /// </param>
+    /// <param name="sourceParams">Input
+    /// The feature source parameters (feature schema and spatial context definitions).
+    /// </param>
+    /// <returns>
+    /// Returns nothing.
+    /// </returns>
+    ///
+    void CreateFeatureSource(MgResourceIdentifier* resource, MgFeatureSourceParams* sourceParams);
 
     // Feature
     MgBatchPropertyCollection* GetFeatures(CREFSTRING featureReader);
@@ -869,8 +879,6 @@ public:
 
     STRING SchemaToXml(MgFeatureSchemaCollection* schema);
     MgFeatureSchemaCollection* XmlToSchema(CREFSTRING xml);
-
-    void CreateFeatureSource(MgResourceIdentifier* resource, MgFeatureSourceParams* sourceParams);
 
     //////////////////////////////////////////////////////////////////
     /// \brief

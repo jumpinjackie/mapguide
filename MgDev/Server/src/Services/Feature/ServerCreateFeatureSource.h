@@ -34,7 +34,7 @@ class MgServerCreateFileFeatureSource: public MgGuardDisposable
 public:
     MgServerCreateFileFeatureSource(MgResourceIdentifier* resource, MgFileFeatureSourceParams* params);
     virtual ~MgServerCreateFileFeatureSource();
-    void CreateFeatureSource();
+    void CreateFeatureSource(bool bCheckFeatureClass = false, bool bCheckSpatialContext = false);
     virtual void Dispose();
 
 protected:
