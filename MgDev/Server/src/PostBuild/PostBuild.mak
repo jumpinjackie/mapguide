@@ -96,7 +96,7 @@ CopyFdoComponentsDebug : ..\..\..\Oem\FDO\*.*
     xcopy /r /d /y /s ..\..\..\Oem\FDO\bin\Release ..\..\bin\debug\FDO\
 
 CopyFdoProvidersDebug : ..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml
-    xcopy /r /d /y "..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml" ..\..\bin\debug\FDO\
+    xcopy /r /y "..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml" ..\..\bin\debug\FDO\
 
 CopySchemaDebug : ..\..\..\Common\Schema\*.xsd
     if NOT EXIST ..\..\bin\debug\Schema\nul mkdir ..\..\bin\debug\Schema
@@ -160,6 +160,7 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml \
         ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml \
         ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml \
+        ..\..\bin\UnitTestFiles\TEST.LayerDefinition \
         ..\..\bin\UnitTestFiles\TEST.FeatureSource \
         ..\..\bin\UnitTestFiles\TEST.sdf \
         ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
@@ -343,7 +344,7 @@ CopyFdoComponentsDebug64 : ..\..\..\Oem\FDO\*.*
     xcopy /r /d /y /s ..\..\..\Oem\FDO\bin\release64 ..\..\bin\debug64\FDO\
 
 CopyFdoProvidersDebug64 : ..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml
-    xcopy /r /d /y "..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml" ..\..\bin\debug64\FDO\
+    xcopy /r /y "..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml" ..\..\bin\debug64\FDO\
 
 CopySchemaDebug64 : ..\..\..\Common\Schema\*.xsd
     if NOT EXIST ..\..\bin\debug64\Schema\nul mkdir ..\..\bin\debug64\Schema
@@ -407,6 +408,7 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml \
         ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml \
         ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml \
+        ..\..\bin\UnitTestFiles\TEST.LayerDefinition \
         ..\..\bin\UnitTestFiles\TEST.FeatureSource \
         ..\..\bin\UnitTestFiles\TEST.sdf \
         ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
@@ -590,7 +592,7 @@ CopyFdoComponentsRelease : ..\..\..\Oem\FDO\*.*
     xcopy /r /d /y /s ..\..\..\Oem\FDO\bin\Release ..\..\bin\release\FDO\
 
 CopyFdoProvidersRelease : ..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml
-    xcopy /r /d /y "..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml" ..\..\bin\release\FDO\
+    xcopy /r /y "..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml" ..\..\bin\release\FDO\
 
 CopySchemaRelease : ..\..\..\Common\Schema\*.xsd
     if NOT EXIST ..\..\bin\release\Schema\nul mkdir ..\..\bin\release\Schema
@@ -654,6 +656,7 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml \
           ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml \
           ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml \
+          ..\..\bin\UnitTestFiles\TEST.LayerDefinition \
           ..\..\bin\UnitTestFiles\TEST.FeatureSource \
           ..\..\bin\UnitTestFiles\TEST.sdf \
           ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
@@ -837,7 +840,7 @@ CopyFdoComponentsRelease64 : ..\..\..\Oem\FDO\*.*
     xcopy /r /d /y /s ..\..\..\Oem\FDO\bin\release64 ..\..\bin\release64\FDO\
 
 CopyFdoProvidersRelease64 : ..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml
-    xcopy /r /d /y "..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml" ..\..\bin\release64\FDO\
+    xcopy /r /y "..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml" ..\..\bin\release64\FDO\
 
 CopySchemaRelease64 : ..\..\..\Common\Schema\*.xsd
     if NOT EXIST ..\..\bin\release64\Schema\nul mkdir ..\..\bin\release64\Schema
@@ -901,6 +904,7 @@ release64 : ..\..\bin\release64\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml \
           ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml \
           ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml \
+          ..\..\bin\UnitTestFiles\TEST.LayerDefinition \
           ..\..\bin\UnitTestFiles\TEST.FeatureSource \
           ..\..\bin\UnitTestFiles\TEST.sdf \
           ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
@@ -1021,6 +1025,7 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml   del /F ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml
     if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml     del /F ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml
     if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml    del /F ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml
+    if EXIST ..\..\bin\UnitTestFiles\TEST.LayerDefinition           del /F ..\..\bin\UnitTestFiles\TEST.LayerDefinition
     if EXIST ..\..\bin\UnitTestFiles\TEST.FeatureSource             del /F ..\..\bin\UnitTestFiles\TEST.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
@@ -1136,6 +1141,7 @@ cleandebug64:
     if EXIST ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml   del /F ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml
     if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml     del /F ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml
     if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml    del /F ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml
+    if EXIST ..\..\bin\UnitTestFiles\TEST.LayerDefinition           del /F ..\..\bin\UnitTestFiles\TEST.LayerDefinition
     if EXIST ..\..\bin\UnitTestFiles\TEST.FeatureSource             del /F ..\..\bin\UnitTestFiles\TEST.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
@@ -1251,6 +1257,7 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml   del /F ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml
     if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml     del /F ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml
     if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml    del /F ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml
+    if EXIST ..\..\bin\UnitTestFiles\TEST.LayerDefinition           del /F ..\..\bin\UnitTestFiles\TEST.LayerDefinition
     if EXIST ..\..\bin\UnitTestFiles\TEST.FeatureSource             del /F ..\..\bin\UnitTestFiles\TEST.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
@@ -1365,6 +1372,7 @@ cleanrelease64:
     if EXIST ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml   del /F ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml
     if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml     del /F ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml
     if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml    del /F ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml
+    if EXIST ..\..\bin\UnitTestFiles\TEST.LayerDefinition           del /F ..\..\bin\UnitTestFiles\TEST.LayerDefinition
     if EXIST ..\..\bin\UnitTestFiles\TEST.FeatureSource             del /F ..\..\bin\UnitTestFiles\TEST.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
@@ -1449,6 +1457,7 @@ cleanrelease64:
 "..\..\..\UnitTest\TestData\ResourceService\SampleRepositoryContent.xml" :
 "..\..\..\UnitTest\TestData\ResourceService\Shuttle.zip" :
 "..\..\..\UnitTest\TestData\ResourceService\World_Countries.sdf" :
+"..\..\..\UnitTest\TestData\ResourceService\TEST.LayerDefinition" :
 "..\..\..\UnitTest\TestData\FeatureService\SDF\TEST.FeatureSource" :
 "..\..\..\UnitTest\TestData\FeatureService\SDF\TEST.sdf" :
 "..\..\..\UnitTest\TestData\FeatureService\SDF\Sheboygan_Parcels.FeatureSource" :
@@ -1547,6 +1556,10 @@ cleanrelease64:
 ..\..\bin\UnitTestFiles\World_Countries.sdf : "..\..\..\UnitTest\TestData\ResourceService\World_Countries.sdf"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\ResourceService\World_Countries.sdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\ResourceService\World_Countries.sdf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\TEST.LayerDefinition : "..\..\..\UnitTest\TestData\ResourceService\TEST.LayerDefinition"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\ResourceService\TEST.LayerDefinition" xcopy /r /d /y "..\..\..\UnitTest\TestData\ResourceService\TEST.LayerDefinition" ..\..\bin\UnitTestFiles\
 
 ..\..\bin\UnitTestFiles\TEST.FeatureSource : "..\..\..\UnitTest\TestData\FeatureService\SDF\TEST.FeatureSource"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles

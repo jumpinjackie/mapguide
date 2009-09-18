@@ -1209,13 +1209,13 @@ void TestSiteService::TestCase_DestroySession()
         MgServiceManager* serviceManager = MgServiceManager::GetInstance();
         if(serviceManager == 0)
         {
-            throw new MgNullReferenceException(L"TestSiteService.TestCase_CreateSession", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgNullReferenceException(L"TestSiteService.TestCase_DestroySession", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         Ptr<MgServerSiteService> pService = dynamic_cast<MgServerSiteService*>(serviceManager->RequestService(MgServiceType::SiteService));
         if (pService == 0)
         {
-            throw new MgServiceNotAvailableException(L"TestSiteService.TestCase_CreateSession", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgServiceNotAvailableException(L"TestSiteService.TestCase_DestroySession", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         Ptr<MgUserInformation> userInfo;
@@ -1247,6 +1247,42 @@ void TestSiteService::TestCase_DestroySession()
     catch(MgException* e)
     {
         STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case get server session timeout.
+///----------------------------------------------------------------------------
+void TestSiteService::TestCase_GetSessionTimeout()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if(serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestSiteService.TestCase_GetSessionTimeout", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgServerSiteService> pService = dynamic_cast<MgServerSiteService*>(serviceManager->RequestService(MgServiceType::SiteService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestSiteService.TestCase_GetSessionTimeout", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        INT32 timeoutValue = pService->GetSessionTimeout();
+        CPPUNIT_ASSERT(timeoutValue == 1200);
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetStackTrace(userLocale);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
