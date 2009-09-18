@@ -39,6 +39,7 @@ MgResourceIdentifier resourceIdentifier(L"Library://UnitTests/Data/test-1.Featur
 MgResourceIdentifier resourceIdentifier2(L"Library://UnitTests/Data/test-2.FeatureSource"); // Used in copy and move
 MgResourceIdentifier resourceIdentifier3(L"Library://UnitTests/Data/World.DrawingSource"); // Added by package
 MgResourceIdentifier resourceNotExist(L"Library://UnitTests/Data/resourcedoesnotexist.FeatureSource");
+MgResourceIdentifier resourceIdentifier4(L"Library://UnitTests/Layer/test-1.LayerDefinition"); // For cascade move resource
 
 STRING resourceDataName = L"World_Countries.sdf";
 STRING resourceDataName2 = L"New_World_Countries.sdf";
@@ -47,12 +48,14 @@ STRING resourceDataName2 = L"New_World_Countries.sdf";
 STRING repositoryHeaderFileName = L"..\\UnitTestFiles\\SampleRepositoryHeader.xml";
 STRING repositoryContentFileName = L"..\\UnitTestFiles\\SampleRepositoryContent.xml";
 STRING resourceContentFileName = L"..\\UnitTestFiles\\TEST.FeatureSource";
+STRING resourceContentFileName2 = L"..\\UnitTestFiles\\TEST.LayerDefinition";
 STRING dataFileName = L"..\\UnitTestFiles\\World_Countries.sdf";
 STRING packageName = L"..\\UnitTestFiles\\Shuttle.zip";
 #else
 STRING repositoryHeaderFileName = L"../UnitTestFiles/SampleRepositoryHeader.xml";
 STRING repositoryContentFileName = L"../UnitTestFiles/SampleRepositoryContent.xml";
 STRING resourceContentFileName = L"../UnitTestFiles/TEST.FeatureSource";
+STRING resourceContentFileName2 = L"../UnitTestFiles/TEST.LayerDefinition";
 STRING dataFileName = L"../UnitTestFiles/World_Countries.sdf";
 STRING packageName = L"../UnitTestFiles/Shuttle.zip";
 #endif
@@ -696,6 +699,11 @@ void TestResourceService::TestCase_SetResource()
             contentSource = new MgByteSource(resourceContentFileName);
             contentReader = contentSource->GetReader();
             pService->SetResource(&resourceIdentifier, contentReader, NULL);
+
+            //Add another resource layer definition, which references to the feature source. This is for cascade MoveResource test.
+            contentSource = new MgByteSource(resourceContentFileName2);
+            contentReader = contentSource->GetReader();
+            pService->SetResource(&resourceIdentifier4, contentReader, NULL);
         }
 
         //Try to add resource while not an admin
@@ -751,15 +759,26 @@ void TestResourceService::TestCase_MoveResource()
 
 
             //Try to use NULL arguments
-            CPPUNIT_ASSERT_THROW_MG(pService->MoveResource(NULL, NULL, true), MgNullArgumentException*);
-            CPPUNIT_ASSERT_THROW_MG(pService->MoveResource(&resourceIdentifier, NULL, true), MgNullArgumentException*);
-            CPPUNIT_ASSERT_THROW_MG(pService->MoveResource(NULL, &resourceIdentifier, true), MgNullArgumentException*);
+            CPPUNIT_ASSERT_THROW_MG(pService->MoveResource(NULL, NULL, true, false), MgNullArgumentException*);
+            CPPUNIT_ASSERT_THROW_MG(pService->MoveResource(&resourceIdentifier, NULL, true, true), MgNullArgumentException*);
+            CPPUNIT_ASSERT_THROW_MG(pService->MoveResource(NULL, &resourceIdentifier, true, false), MgNullArgumentException*);
 
             //Try to move a resource that doesn't exist
-            CPPUNIT_ASSERT_THROW_MG(pService->MoveResource(&resourceNotExist, &resourceIdentifier2, false), MgResourceNotFoundException*);
+            CPPUNIT_ASSERT_THROW_MG(pService->MoveResource(&resourceNotExist, &resourceIdentifier2, false, true), MgResourceNotFoundException*);
 
-            //Move the resource that was added earlier
-            pService->MoveResource(&resourceIdentifier, &resourceIdentifier2, false);
+            //Move the resource that was added earlier with cascade = true, and check referencing resource.
+            pService->MoveResource(&resourceIdentifier, &resourceIdentifier2, false, true);
+            Ptr<MgByteReader> byteReader = pService->GetResourceContent(&resourceIdentifier4, L"");
+            STRING referenceContent = byteReader->ToString();
+            STRING featureIdTag = L"<ResourceId>Library://UnitTests/Data/test-2.FeatureSource</ResourceId>";
+            CPPUNIT_ASSERT(referenceContent.find(featureIdTag) != STRING::npos);
+
+            //Move the resource again with cascade = false, and check referencing resource.
+            pService->MoveResource(&resourceIdentifier2, &resourceIdentifier, false, false);
+            byteReader = pService->GetResourceContent(&resourceIdentifier4, L"");
+            referenceContent = byteReader->ToString();
+            featureIdTag = L"<ResourceId>Library://UnitTests/Data/test-2.FeatureSource</ResourceId>";
+            CPPUNIT_ASSERT(referenceContent.find(featureIdTag) != STRING::npos);
 
             //Try to move the resource into itself (ie. itself)
             CPPUNIT_ASSERT_THROW_MG(pService->MoveResource(&resourceIdentifier, &resourceIdentifier, false), MgInvalidArgumentException*);
@@ -818,14 +837,14 @@ void TestResourceService::TestCase_CopyResource()
 
             //Try to use NULL arguments
             CPPUNIT_ASSERT_THROW_MG(pService->CopyResource(NULL, NULL, true), MgNullArgumentException*);
-            CPPUNIT_ASSERT_THROW_MG(pService->CopyResource(&resourceIdentifier2, NULL, true), MgNullArgumentException*);
-            CPPUNIT_ASSERT_THROW_MG(pService->CopyResource(NULL, &resourceIdentifier, true), MgNullArgumentException*);
+            CPPUNIT_ASSERT_THROW_MG(pService->CopyResource(&resourceIdentifier, NULL, true), MgNullArgumentException*);
+            CPPUNIT_ASSERT_THROW_MG(pService->CopyResource(NULL, &resourceIdentifier2, true), MgNullArgumentException*);
 
             //Try to use source & destination as the same thing
-            CPPUNIT_ASSERT_THROW_MG(pService->CopyResource(&resourceIdentifier, &resourceIdentifier, false), MgInvalidArgumentException*);
+            CPPUNIT_ASSERT_THROW_MG(pService->CopyResource(&resourceIdentifier2, &resourceIdentifier2, false), MgInvalidArgumentException*);
 
-            //Copy the moved resource back to its original location
-            pService->CopyResource(&resourceIdentifier2, &resourceIdentifier, false);
+            //Copy the moved resource to another location
+            pService->CopyResource(&resourceIdentifier, &resourceIdentifier2, false);
 
             //Try to copy a resource to one that should now exist
             CPPUNIT_ASSERT_THROW_MG(pService->CopyResource(&resourceIdentifier2, &resourceIdentifier, false), MgDuplicateResourceException*);
@@ -886,6 +905,59 @@ void TestResourceService::TestCase_GetResourceContent()
         byteReader = pService->GetResourceContent(&resourceIdentifier, L"");
         STRING mimeType = byteReader->GetMimeType();
         CPPUNIT_ASSERT(wcscmp(mimeType.c_str(), MgMimeType::Xml.c_str()) == 0);
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+}
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case gets the contents of a collection of resources
+///----------------------------------------------------------------------------
+void TestResourceService::TestCase_GetResourceContents()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if(serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestResourceService.TestCase_GetResourceContents", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_GetResourceContents", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        // Set the user information for the current thread to be administrator.
+        Ptr<MgUserInformation> adminUserInfo = new MgUserInformation(adminName, adminPass);
+        MgUserInformation::SetCurrentUserInfo(adminUserInfo);
+
+        //Try to get the contents using NULL arguments
+        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceContents(NULL, NULL), MgNullArgumentException*);
+
+        //Try to get the content of a resource that doesn't exist
+        Ptr<MgStringCollection> resourceNotExistCol = new MgStringCollection();
+        resourceNotExistCol->Add(resourceNotExist.ToString());
+        resourceNotExistCol->Add(resourceIdentifier.ToString());
+        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceContents(resourceNotExistCol, NULL), MgResourceNotFoundException*);
+
+        //Get the content of the resource that was added in TestCase_SetResource
+        Ptr<MgStringCollection> resourceIds = new MgStringCollection();
+        resourceIds->Add(resourceIdentifier.ToString());
+        resourceIds->Add(resourceIdentifier4.ToString());
+        Ptr<MgStringCollection> ret = pService->GetResourceContents(resourceIds, NULL);
+        CPPUNIT_ASSERT(ret->GetCount() == 2);
+        for(int i = 0; i < ret->GetCount(); i ++)
+        {
+            CPPUNIT_ASSERT(!ret->GetItem(i).empty());
+        }        
     }
     catch(MgException* e)
     {

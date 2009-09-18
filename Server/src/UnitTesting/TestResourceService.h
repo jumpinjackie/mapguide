@@ -39,6 +39,7 @@ class TestResourceService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_MoveResource);
     CPPUNIT_TEST(TestCase_CopyResource);
     CPPUNIT_TEST(TestCase_GetResourceContent);
+    CPPUNIT_TEST(TestCase_GetResourceContents);
     CPPUNIT_TEST(TestCase_GetResourceHeader);
     CPPUNIT_TEST(TestCase_EnumerateReferences);
     CPPUNIT_TEST(TestCase_ChangeResourceOwner);
@@ -79,6 +80,7 @@ public:
     void TestCase_MoveResource();
     void TestCase_CopyResource();
     void TestCase_GetResourceContent();
+    void TestCase_GetResourceContents();
     void TestCase_GetResourceHeader();
     void TestCase_EnumerateReferences();
     void TestCase_ChangeResourceOwner();

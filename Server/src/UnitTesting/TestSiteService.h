@@ -56,6 +56,7 @@ class TestSiteService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_Authenticate);
     CPPUNIT_TEST(TestCase_CreateSession);
     CPPUNIT_TEST(TestCase_DestroySession);
+    CPPUNIT_TEST(TestCase_GetSessionTimeout);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
     CPPUNIT_TEST_SUITE_END();
@@ -100,6 +101,7 @@ public:
     void TestCase_Authenticate();
     void TestCase_CreateSession();
     void TestCase_DestroySession();
+    void TestCase_GetSessionTimeout();
 };
 
 #endif // _TESTSITESERVICE_H
