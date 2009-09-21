@@ -185,6 +185,7 @@ STRING CCoordinateSystemCatalog::GetDefaultDictionaryDir()
 
     bool bResult=false;
 #ifdef _WIN32
+    //prepares the default path for dictionary failes
 
     STRING sDirDefault;
 
@@ -203,7 +204,10 @@ STRING CCoordinateSystemCatalog::GetDefaultDictionaryDir()
             sDirDefault = szPath;
             sDirDefault += _T("\\Autodesk\\Geospatial Coordinate Systems"); //NOXLATE
             szPathVar = sDirDefault.c_str();
-        }
+        } 
+        //else {
+        //    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) CCoordinateSystemCatalog::GetDefaultDictionaryDir() - Could not read SpecialFolderPath from registry\n")));
+        //}
     }
 
     if(szPathVar)
@@ -242,7 +246,7 @@ STRING CCoordinateSystemCatalog::GetDefaultDictionaryDir()
 
     if (!bResult)
     {
-        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemCatalog.GetDefaultDictionaryDir", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemCatalog.GetDefaultDictionaryDir ", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     //And return success.
