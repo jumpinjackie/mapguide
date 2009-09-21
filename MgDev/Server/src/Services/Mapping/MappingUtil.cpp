@@ -30,10 +30,17 @@
 #include "StylizationUtil.h"
 #include "Fdo.h"
 
+#include <algorithm>
+
 //For logging
 #include "ServerManager.h"
 #include "LogManager.h"
 #include "LogDetail.h"
+
+typedef std::list<const MdfString> STRCOLORLIST;
+typedef STRCOLORLIST* PSTRCOLORLIST;
+
+#define myassert(COND,L,F) if (!(COND)){ printf ("(%d) failed assertion in %d %s", GetCurrentThreadId(), L,F); throw new exception();}
 
 #ifndef _WIN32
 #define _wcsnicmp wcsncasecmp
@@ -48,7 +55,7 @@ long GetTickCount()
 }
 #endif
 
-
+///----------------------------------------------------------------------------------------
 MdfModel::MapDefinition* MgMappingUtil::GetMapDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId)
 {
     //get and parse the mapdef
@@ -76,7 +83,7 @@ MdfModel::MapDefinition* MgMappingUtil::GetMapDefinition(MgResourceService* svcR
     return mdef;
 }
 
-
+///----------------------------------------------------------------------------------------
 RSMgFeatureReader* MgMappingUtil::ExecuteFeatureQuery(MgFeatureService* svcFeature,
                                                       RS_Bounds& extent,
                                                       MdfModel::VectorLayerDefinition* vl,
@@ -235,7 +242,7 @@ RSMgFeatureReader* MgMappingUtil::ExecuteFeatureQuery(MgFeatureService* svcFeatu
     return new RSMgFeatureReader(rdr.p, svcFeature, featResId.p, options, vl->GetGeometry());
 }
 
-
+///----------------------------------------------------------------------------------------
 RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeature,
                                                      RS_Bounds& extent,
                                                      MdfModel::GridLayerDefinition* gl,
@@ -346,7 +353,8 @@ RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeatur
     return new RSMgFeatureReader(rdr.p, svcFeature, featResId.p, options, L"clipped_raster");
 }
 
-
+///----------------------------------------------------------------------------------------
+/// this is called by the MgServerRenderingService::RenderMapInternal to render the layers
 void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                                   MgFeatureService* svcFeature,
                                   MgDrawingService* svcDrawing,
@@ -535,9 +543,39 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                         dr->StartLayer(&layerInfo, &fcinfo);
                         ds->StylizeVectorLayer(vl, dr, rsReader, xformer, scale, NULL, NULL);
                         dr->EndLayer();
+                        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                        // COLORPALETTE CODE from UV for Ticket #813
+                        // add the colors from this scaleRange and vectorlayer to the map colors
+                        // (overrideFilters == NULL could tells us 
+                        // that we have been called for rendering a map and not for selection)
+                        try {
+                            // the map object owns the color list so get a pointer from there
+                            PSTRCOLORLIST pStringColorPalette = map->GetColorPalette();
+                            PSTRCOLORLIST vLayerColors = scaleRange->GetUsedColorList();
+                            if (!vLayerColors->empty())
+                            {
+                                assert (pStringColorPalette);
+                                // add the vectorLayer's Colors to the map's color list
+                                STRCOLORLIST::iterator it = vLayerColors->begin();
+                                for(; it != vLayerColors->end(); it++)
+                                {	// uppercase the colorcodes (FFABDEFF) and filter empty strings
+                                    if (*it == L"") continue;
+                                    STRING upc = *it;
+                                    std::transform( upc.begin(), upc.end(), upc.begin(), towupper);
+                                    pStringColorPalette->push_back(upc);
+                                }
+                                assert (pStringColorPalette == map->GetColorPalette());
+                                // the property setter canonicalizes the palette
+                                map->SetColorPalette(pStringColorPalette);
+                            }
+                        } catch (exception e) {
+                            ACE_DEBUG((LM_DEBUG, L"(%t) %w caught in MappingUtil.ColorPaletteGeneration\n", e.what()));
+                            throw e;
+                        }
+                        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                     }
                 }
-                else
+                else  // not scaleRange
                 {
                     #ifdef _DEBUG
                     printf("  StylizeLayers() **NOT Stylizing - NO SCALE RANGE** Name:%S\n", (mapLayer->GetName()).c_str());
@@ -779,7 +817,10 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
             STRING stackTrace = exception->GetStackTrace(locale);
             MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
 
-#ifdef _DEBUG
+            // cleanup
+            TransformCache::Clear(transformCache);
+
+#if defined(_DEBUG) || defined(_DEBUG_PNG8)
             STRING details = mgException->GetDetails(locale);
 
             wstring err = L"\n %t Error during stylization of layer ";
@@ -790,8 +831,10 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
             err += L"\n";
             ACE_DEBUG( (LM_DEBUG, err.c_str()) );
 #endif
-        }
-    }
+            /// this exception can be thrown or not depending on a serverconfig setting
+            // throw exception;
+        } // if exception
+    } // for all layers
 
     #ifdef _DEBUG
     printf("StylizeLayers() **MAPDONE** Layers:%d  Total Time:%6.4f (s)\n\n", layers->GetCount(), (GetTickCount()-dwStart)/1000.0);
@@ -800,7 +843,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
     TransformCache::Clear(transformCache);
 }
 
-
+///----------------------------------------------------------------------------------------
 // When rendering a tile, we need to compute the extent used to determine
 // which features to render into it.  Features in adjacent tiles, but not
 // in the current tile, will potentially draw in this tile due to their
@@ -1054,7 +1097,7 @@ double MgMappingUtil::ComputeStylizationOffset(MgMap* map,
     return maxOffsetMCS;
 }
 
-
+///----------------------------------------------------------------------------------------
 // draws a given feature type style into an image
 MgByteReader* MgMappingUtil::DrawFTS(MgResourceService* svcResource,
                                      MdfModel::FeatureTypeStyle* fts,
@@ -1106,7 +1149,7 @@ MgEnvelope* MgMappingUtil::TransformExtent(MgEnvelope* extent, MgCoordinateSyste
     return ccPoly->Envelope();
 }
 
-
+///----------------------------------------------------------------------------------------
 // returns an MgPolygon from a given envelope
 MgPolygon* MgMappingUtil::GetPolygonFromEnvelope(MgEnvelope* env)
 {
@@ -1126,7 +1169,7 @@ MgPolygon* MgMappingUtil::GetPolygonFromEnvelope(MgEnvelope* env)
     return new MgPolygon(outer, NULL);
 }
 
-
+///----------------------------------------------------------------------------------------
 void MgMappingUtilExceptionTrap(FdoException* except, int line, wchar_t* file)
 {
     MG_TRY()
@@ -1155,7 +1198,7 @@ void MgMappingUtilExceptionTrap(FdoException* except, int line, wchar_t* file)
     MG_LOG_WARNING_ENTRY(MgServiceType::MappingService, message.c_str(), stackTrace.c_str());
 }
 
-
+///----------------------------------------------------------------------------------------
 void MgMappingUtil::InitializeStylizerCallback()
 {
     SetStylizerExceptionCallback(&MgMappingUtilExceptionTrap);
