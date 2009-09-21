@@ -35,8 +35,7 @@ STRING MgMap::m_layerGroupTag = L"LayerGroupData";
 MgMap::MgMap()
     : MgMapBase(),
     m_inSave(false),
-    m_unpackedLayersGroups(false),
-	m_colorPalette(new STRCOLORLIST())
+    m_unpackedLayersGroups(false)
 {
 }
 
@@ -47,8 +46,7 @@ MgMap::MgMap()
 MgMap::MgMap(MgSiteConnection* siteConnection)
     : MgMapBase(),
     m_inSave(false),
-    m_unpackedLayersGroups(false),
-	m_colorPalette(new STRCOLORLIST())
+    m_unpackedLayersGroups(false)
 {
     if (NULL == siteConnection)
     {
@@ -119,14 +117,6 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
 
     m_mapDefinitionId = SAFE_ADDREF(mapDefinition);
     m_name = mapName;
-
-	// dont forget to reset the colorlist from our layers if there are any left - you never know
-	if (m_colorPalette && !m_colorPalette->empty())
-    {
-		m_colorPalette->clear();
-        delete m_colorPalette;
-    }
-	m_colorPalette = new STRCOLORLIST();
 
     // generate a unique id for this map
     MgUtil::GenerateUuid(m_objectId);
@@ -267,7 +257,7 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
         for(int i = 0; i < layers->GetCount(); i++, displayOrder += LAYER_ZORDER_INCR)
         {
             MapLayer* layer = (MapLayer*)layers->GetAt(i);
-            //create a runtime layer from this layerDefinition and add it to the layer collection
+            //create a runtime layer from this layer and add it to the layer collection
             //pull identity properties as a batch process after the layers are created
             Ptr<MgResourceIdentifier> layerDefId = new MgResourceIdentifier(layer->GetLayerResourceID());
             Ptr<MgLayerBase> rtLayer = new MgLayer(layerDefId, m_resourceService, false);
@@ -371,7 +361,6 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
 
                         // attach the layer to its group
                         rtLayer->SetGroup(rtGroup);
-
                     }
                 }
             }
@@ -411,7 +400,6 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
     // there's nothing to unpack anymore in this case
     m_unpackedLayersGroups = true;
 
-
     MG_CATCH_AND_THROW(L"MgMap.Create")
 }
 
@@ -433,7 +421,6 @@ void MgMap::Create(CREFSTRING mapSRS, MgEnvelope* mapExtent, CREFSTRING mapName)
     m_name = mapName;
     MgMapBase::Create(mapSRS, mapExtent, mapName);
     m_unpackedLayersGroups = true;
-	m_colorPalette = NULL;
 }
 
 
@@ -610,15 +597,12 @@ void MgMap::Save()
 //
 MgMap::~MgMap()
 {
-	if (m_colorPalette != NULL) m_colorPalette->clear();  // clear the STL container
-    delete m_colorPalette;          // destroy the container
 }
 
 
 //////////////////////////////////////////////////////////////
 void MgMap::Dispose()
 {
-	if (m_colorPalette != NULL) m_colorPalette->clear();  // is this enough cleanup?
     delete this;
 }
 
@@ -1079,26 +1063,3 @@ void MgMap::BulkLoadIdentityProperties(MgFeatureService* featureService)
         }
     }
 }
-
-//////////////////////////////////////////////////////////////
-// ColorPalette Accessors
-// used for the map colors collected from the stylization of the visible layers
-PSTRCOLORLIST MgMap::GetColorPalette(CREFSTRING baseMapLayerGroupName)
-{
-	if (m_colorPalette == NULL)
-		m_colorPalette = new STRCOLORLIST();
-	return m_colorPalette;
-}
-/// setter does sort and prune the list also
-void MgMap::SetColorPalette(PSTRCOLORLIST newColorPalette, CREFSTRING baseMapLayerGroupName)
-{
-	// sort and delete duplicates if any coming in
-	if (newColorPalette != NULL && !newColorPalette->empty())
-	{
-		newColorPalette->sort();
-		newColorPalette->unique();
-	}
-	assert (m_colorPalette == newColorPalette); //make sure this is the same!
-	m_colorPalette =  newColorPalette;
-}
-

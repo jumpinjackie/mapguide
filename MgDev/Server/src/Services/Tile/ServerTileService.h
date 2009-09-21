@@ -68,8 +68,6 @@ private:
         CREFSTRING baseMapLayerGroupName, INT32 tileColumn, INT32 tileRow);
 
     void ClearMapCache(CREFSTRING mapName);
-    MgResourceService* GetResourceServiceForMapDef (MgResourceIdentifier* mapDefinition,
-                                                        CREFSTRING funcName);
 
     // member data
     Ptr<MgTileCache> m_tileCache;

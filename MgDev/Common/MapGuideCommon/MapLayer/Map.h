@@ -22,19 +22,21 @@
 /// \ingroup Maps_and_Layers_Module
 /// \{
 
+/*TSW remove
 #include "Foundation.h"
 #include <vector>
 #include <list>
 #include <map>
-//#include "LayerBase.h"
-//#include "LayerGroup.h"
-//#include "LayerCollection.h"
-//#include "LayerGroupCollection.h"
-//#include "MapCollection.h"
-//#include "ObjectChange.h"
-//#include "ChangeList.h"
-//#include "ReadOnlyLayerCollection.h"
-//#include "SelectionBase.h"
+#include "LayerBase.h"
+#include "LayerGroup.h"
+#include "LayerCollection.h"
+#include "LayerGroupCollection.h"
+#include "MapCollection.h"
+#include "ObjectChange.h"
+#include "ChangeList.h"
+#include "ReadOnlyLayerCollection.h"
+#include "SelectionBase.h"
+*/
 
 class MgMap;
 class MgSiteConnection;
@@ -44,8 +46,6 @@ template class MG_MAPGUIDE_API Ptr<MgMap>;
 #undef CreateService
 #endif
 
-// workaround for preprocessor include problems
-#include "../MdfModel/VectorLayerDefinition.h"
 
 /////////////////////////////////////////////////////////////////
 /// \brief
@@ -578,10 +578,6 @@ INTERNAL_API:
     ///
     virtual void OnLayerParentChanged(MgLayerBase* layer, CREFSTRING parentId);
 
-	/// accessor for the colors as defined in the baseMap with given name
-	PSTRCOLORLIST GetColorPalette(CREFSTRING baseMapLayerGroupName=L"");
-	void SetColorPalette(PSTRCOLORLIST newColorPalette, CREFSTRING baseMapLayerGroupName=L"" );
-
     //////////////////////////////////////////////////////////////////
     /// Bulk load identity properties
     ///
@@ -640,7 +636,6 @@ private:
     Ptr<MgResourceService> m_resourceService;
     bool m_inSave;
     bool m_unpackedLayersGroups;
-	PSTRCOLORLIST m_colorPalette;
 };
 /// \}
 
