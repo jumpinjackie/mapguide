@@ -18,6 +18,7 @@
 #ifndef MGSERVERRENDERINGSERVICE_H
 #define MGSERVERRENDERINGSERVICE_H
 
+#include "AGGRenderer.h"
 #include "ServerRenderingDllExport.h"
 
 class SE_Renderer;
@@ -203,6 +204,11 @@ private:
                                 bool requiresClipping,
                                 bool localOverposting = false,
                                 double tileExtentOffset = 0.0);
+	/// parse the expressions collected from xml definitions of all layer.
+	/// the map object has a list from all color entries found in the most recent Layerstylization
+    /// TODO currently they are interpreted as ffffffff 32 bit RGBA string values.
+    /// the color Palette passed to the renderer is a std::list<RSColor>
+    void ParseColorStrings (PRSCOLORS tileColorPalette, MgMap* map);
 
     // member data
     Ptr<MgFeatureService> m_svcFeature;
