@@ -1045,13 +1045,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual MgSqlDataReader ExecuteSqlQuery(MgResourceIdentifier resource, string sqlStatement);
+    /// virtual MgSqlDataReader ExecuteSqlQuery(MgResourceIdentifier resource, string sqlStatement, MgParameterCollection parameters, MgTransaction transaction);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual MgSqlDataReader ExecuteSqlQuery(MgResourceIdentifier resource, String sqlStatement);
+    /// virtual MgSqlDataReader ExecuteSqlQuery(MgResourceIdentifier resource, String sqlStatement, MgParameterCollection parameters, MgTransaction transaction);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual MgSqlDataReader ExecuteSqlQuery(MgResourceIdentifier resource, string sqlStatement);
+    /// virtual MgSqlDataReader ExecuteSqlQuery(MgResourceIdentifier resource, string sqlStatement, MgParameterCollection parameters, MgTransaction transaction);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param resource (MgResourceIdentifier)
