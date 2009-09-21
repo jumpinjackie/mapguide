@@ -23,6 +23,10 @@
 #include "FeatureTypeStyle.h"
 #include "ElevationSettings.h"
 #include "MdfRootObject.h"
+#include <list>
+
+typedef std::list<const MdfModel::MdfString> STRCOLORLIST;
+typedef STRCOLORLIST* PSTRCOLORLIST;
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -62,6 +66,9 @@ class MDFMODEL_API VectorScaleRange : public MdfRootObject
         ElevationSettings* GetElevationSettings();
         void AdoptElevationSettings(ElevationSettings* elevationSettings);
 
+        // Computed Property :  UsedColorList
+        PSTRCOLORLIST GetUsedColorList();
+
     private:
         // Hidden copy constructor and assignment operator.
         VectorScaleRange(const VectorScaleRange&);
@@ -79,6 +86,9 @@ class MDFMODEL_API VectorScaleRange : public MdfRootObject
 
         // Extended data
         ElevationSettings* m_elevationSettings;
+
+        // cached colorlist
+        PSTRCOLORLIST m_usedColorList;
     };
 
     typedef MdfOwnerCollection<VectorScaleRange> VectorScaleRangeCollection;
