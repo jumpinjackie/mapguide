@@ -52,7 +52,8 @@ FdoFunctionDefinition* ExpressionFunctionSession::GetFunctionDefinition()
                                                              funcDesc.c_str(),
                                                              FdoDataType_String,
                                                              args,
-                                                             FdoFunctionCategoryType_String);
+                                                             FdoFunctionCategoryType_String,
+                                                             false);
     }
 
     return FDO_SAFE_ADDREF(m_functionDefinition);
