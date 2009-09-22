@@ -1607,6 +1607,77 @@ INTERNAL_API:
     // Rollback the transaction specified by the transaction id. 
     virtual bool RollbackTransaction(CREFSTRING transactionId) = 0;
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Executes the SQL SELECT statement on the specified feature
+    /// source within the given transaction. For queries that return 
+    /// a large number of objects some feature sources support 
+    /// improving performance by setting fetch size in order to reduce
+    /// the number of database server round trips required to satisfy 
+    /// the selection criteria. Providers that do not use a fetch size 
+    /// will ignore the fetch size parameter.
+    ///
+    /// \remarks
+    /// The XML returned by MgFeatureService::GetCapabilities says
+    /// whether a provider supports SQL commands. See \link ProviderCapabilities Provider Capabilities \endlink.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgSqlDataReader ExecuteSqlQuery(MgResourceIdentifier resource, string sqlStatement, MgParameterCollection parameters, MgTransaction transaction, int fetchSize);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgSqlDataReader ExecuteSqlQuery(MgResourceIdentifier resource, String sqlStatement, MgParameterCollection parameters, MgTransaction transaction, int fetchSize);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgSqlDataReader ExecuteSqlQuery(MgResourceIdentifier resource, string sqlStatement, MgParameterCollection parameters, MgTransaction transaction, int fetchSize);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// A resource identifier referring
+    /// to a feature source.
+    /// \param sqlStatement (String/string)
+    /// The SQL SELECT statement.
+    /// \param parameters (MgParameterCollection)
+    /// Parameters binded to the SQL statement.
+    /// \param transaction (MgTransaction)
+    /// The MgTransaction instance on which the sql 
+    /// statement will be executed.
+    /// \param fetchSize (int)
+    /// The fetch size of query. This method returns all data 
+    /// of query if setting the fetch size to 0.
+    ///
+    /// \return
+    /// Returns an MgSqlDataReader instance (or NULL).
+    ///
+    /// \note
+    /// If any statement other than SELECT is passed to this method,
+    /// it will throw an MgFdoException.
+    ///
+    /// <!-- Example (PHP) -->
+    /// \htmlinclude PHPExampleTop.html
+    /// \code
+    /// $sql = "select featid,abyte from featclass where featid = :id";
+    /// $prop = new MgInt32Property("id", 150);
+    /// $param = new MgParameter($prop);
+    /// $params = new MgParameterCollection();
+    /// $params->Add($param);
+    /// $transaction = $featureService->BeginTransaction($activeFeatSrcResId);
+    /// $sqlDataReader = $featureService->ExecuteSqlQuery($activeFeatSrcResId, $sql, $params, $transaction, 0);
+    /// $transaction->Commit();
+    /// \endcode
+    /// \htmlinclude ExampleBottom.html
+    ///
+    /// \exception MgFeatureServiceException
+    /// \exception MgInvalidArgumentException
+    /// \exception MgInvalidOperationException
+    /// \exception MgFdoException
+    ///
+    virtual MgSqlDataReader* ExecuteSqlQuery( MgResourceIdentifier* resource,
+                                              CREFSTRING sqlStatement,
+                                              MgParameterCollection* parameters,
+                                              MgTransaction* transaction,
+                                              INT32 fetchSize ) = 0;
+
 protected:
 
     /////////////////////////////////////////////////////////////////

@@ -45,6 +45,7 @@ private:
     void  ApplyFilter();
     // void  ApplySpatialFilter();
     void  ApplyOrderingOptions();
+    void  ApplyFetchSize();
 
     //bool HasCustomProperty() { return m_customPropertyFound; }
     //FdoFunction* GetCustomFunction() { return FDO_SAFE_ADDREF(m_customFunction); }

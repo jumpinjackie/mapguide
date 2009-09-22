@@ -31,6 +31,9 @@ public:
     virtual void SetDistinct( bool value );
     virtual bool GetDistinct( );
 
+    virtual void SetFetchSize(FdoInt32 fetchSize);
+    virtual FdoInt32 GetFetchSize();
+
     virtual FdoIdentifierCollection* GetOrdering();
     virtual void SetOrderingOption( FdoOrderingOption  option );
     virtual FdoOrderingOption GetOrderingOption( );

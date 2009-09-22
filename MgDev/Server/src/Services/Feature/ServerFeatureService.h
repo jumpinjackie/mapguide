@@ -603,6 +603,54 @@ public:
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
+    /// This method executes the SELECT SQL statement specified and returns a pointer to
+    /// SqlDataReader instance within the given transaction. This instance can be used to
+    /// retrieve column information and related values.
+    ///
+    /// NOTE:
+    /// Serialize() method of SqlDataReader would be able to convert data returned
+    /// to AWKFF or XML stream.
+    /// </summary>
+    /// <remarks>
+    /// If passing in NULL for transaction, it will work the same
+    /// as before within no explicit transaction.
+    /// </remarks>
+    /// <param name="resource">Input
+    /// A resource identifier referring to connection string
+    /// </param>
+    /// <param name="sqlStatement">Input
+    /// This would allow users to specify free format SQL SELECT statement like
+    /// SELECT * FROM CLASSNAME WHERE COLOR = RED. This would return all rows
+    /// from "CLASSNAME" where COLOR column has value RED.
+    /// <param name="params">InputOutput
+    /// Parameters binded to the SQL statement.
+    /// </param>
+    /// <param name="transaction">Input
+    /// The MgTransaction instance on which the sql statement will be executed.
+    /// </param>
+    /// <param name="fetchSize">
+    /// The fetch size of query. This method returns all data of query if 
+    /// setting the fetch size to 0.
+    /// </param>
+    /// <returns>
+    /// SqlDataReader pointer, an instance of reader pointing to the actual reader
+    /// from FdoProvider (or NULL).
+    ///
+    /// If any statement other than SELECT is passed to this method, it would return failure.
+    /// </returns>
+    ///
+    /// EXCEPTIONS:
+    /// MgInvalidResourceIdentifer
+    /// MgInvalidSqlStatement
+    /// MgSqlNotSupported
+    MgSqlDataReader* ExecuteSqlQuery( MgResourceIdentifier* resource,
+                                      CREFSTRING sqlStatement,
+                                      MgParameterCollection* params,
+                                      MgTransaction* transaction,
+                                      INT32 fetchSize );
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
     /// This method executes all SQL statements supported by providers except SELECT.
     /// </summary>
     /// <param name="resource">Input

@@ -51,6 +51,8 @@ MgFeatureQueryOptions::MgFeatureQueryOptions()
     m_geometry = NULL;
 
     m_binaryOp = true;
+
+    m_fetchSize = 0;
 }
 
 //////////////////////////////////////////////////////////////////
@@ -204,6 +206,28 @@ void MgFeatureQueryOptions::SetOrderingFilter(MgStringCollection* orderByPropert
     m_orderOption = orderOption;
 }
 
+//////////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// For queries that return a large number of objects 
+/// some feature sources support improving performance by setting
+/// fetch size in order to reduce the number of database server
+/// round trips required to satisfy the selection criteria. 
+/// Providers that do not use a fetch size will ignore the fetch
+/// size parameter.  This does not affect the actual results of 
+/// queries as it is a performance tuning parameter.
+/// </summary>
+/// <param name="fetchSize">
+/// The fetch size of query. The query returns all of query
+/// results if setting the fetch size to 0.
+/// </param>
+/// <returns>
+/// Returns nothing.
+/// </returns>
+void MgFeatureQueryOptions::SetFetchSize(INT32 fetchSize)
+{
+    m_fetchSize = fetchSize;
+}
+
 //////////////////////////////////////////////////////////////////
 /// <summary>
 /// Removes class property.
@@ -295,6 +319,11 @@ INT32 MgFeatureQueryOptions::GetSpatialOperation()
     return m_operation;
 }
 
+INT32 MgFeatureQueryOptions::GetFetchSize()
+{
+    return m_fetchSize;
+}
+
 void MgFeatureQueryOptions::Serialize(MgStream* stream)
 {
     stream->WriteString(m_filterText);
@@ -310,6 +339,7 @@ void MgFeatureQueryOptions::Serialize(MgStream* stream)
     stream->WriteObject(m_geometry);
     stream->WriteBoolean(m_binaryOp);
 
+    stream->WriteInt32(m_fetchSize);
 }
 
 void MgFeatureQueryOptions::Deserialize(MgStream* stream)
@@ -333,6 +363,7 @@ void MgFeatureQueryOptions::Deserialize(MgStream* stream)
     m_geometry = (MgGeometry*)stream->GetObject();
 
     stream->GetBoolean(m_binaryOp);
+    stream->GetInt32(m_fetchSize);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -427,6 +458,10 @@ STRING MgFeatureQueryOptions::GetLogString()
         }
     }
 
+    tmp += L"{FetchSize=";
+    STRING intval;
+    MgUtil::Int32ToString(m_fetchSize ,intval);
+    tmp += intval;
     tmp += L"}";
 
     return tmp;

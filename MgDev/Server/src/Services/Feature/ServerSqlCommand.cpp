@@ -44,7 +44,12 @@ void MgServerSqlCommand::CloseConnection()
 }
 
 // Executes the describe schema command and serializes the schema to XML
-MgSqlDataReader* MgServerSqlCommand::ExecuteQuery(MgResourceIdentifier* resource, CREFSTRING sqlStatement, MgParameterCollection* params, MgTransaction* transaction)
+MgSqlDataReader* MgServerSqlCommand::ExecuteQuery(
+    MgResourceIdentifier* resource,
+    CREFSTRING sqlStatement,
+    MgParameterCollection* params,
+    MgTransaction* transaction,
+    INT32 fetchSize)
 {
     Ptr<MgSqlDataReader> mgSqlDataReader;
 
@@ -59,6 +64,9 @@ MgSqlDataReader* MgServerSqlCommand::ExecuteQuery(MgResourceIdentifier* resource
 
     // Set SQL statement
     fdoCommand->SetSQLStatement((FdoString*)sqlStatement.c_str());
+
+    // Set fetch size
+    fdoCommand->SetFetchSize(fetchSize);
 
     // Set parameters
     FdoPtr<FdoParameterValueCollection> fdoParams = NULL;
@@ -85,7 +93,11 @@ MgSqlDataReader* MgServerSqlCommand::ExecuteQuery(MgResourceIdentifier* resource
 }
 
 // Executes the describe schema command and serializes the schema to XML
-INT32 MgServerSqlCommand::ExecuteNonQuery(MgResourceIdentifier* resource, CREFSTRING sqlStatement, MgParameterCollection* params, MgTransaction* transaction)
+INT32 MgServerSqlCommand::ExecuteNonQuery(
+    MgResourceIdentifier* resource, 
+    CREFSTRING sqlStatement, 
+    MgParameterCollection* params, 
+    MgTransaction* transaction)
 {
     INT32 rowsAffected = 0;
 
