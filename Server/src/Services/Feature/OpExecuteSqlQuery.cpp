@@ -129,6 +129,54 @@ void MgOpExecuteSqlQuery::Execute()
         // Write the response
         EndExecution((MgSqlDataReader*)sqlReader);
     }
+    else if (5 == m_packet.m_NumArguments)
+    {
+        // Get the feature source
+        Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
+
+        // Get the SQL statement
+        STRING sqlStatement;
+        m_stream->GetString(sqlStatement);
+
+        // Get parameters binded to the SQL statement
+        Ptr<MgParameterCollection> parameters = (MgParameterCollection*)m_stream->GetObject();
+
+        // Get the transaction id
+        STRING transactionId;
+        m_stream->GetString(transactionId);
+
+        // Get query fetch size
+        INT32 fetchSize;
+        m_stream->GetInt32(fetchSize);
+
+        BeginExecution();
+
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(sqlStatement.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(transactionId.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(fetchSize);
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+        Validate();
+
+        MgServerFeatureTransactionPool* transactionPool = MgServerFeatureTransactionPool::GetInstance();
+        CHECKNULL(transactionPool, L"MgOpExecuteSqlQuery.Execute")
+
+        transactionPool->ValidateTimeout(transactionId);
+
+        // Get the MgTransaction instance from the pool if one has been started for this resource.
+        Ptr<MgServerFeatureTransaction> transaction = transactionPool->GetTransaction(transactionId);
+
+        // Execute the operation
+        Ptr<MgSqlDataReader> sqlReader = m_service->ExecuteSqlQuery(resource, sqlStatement, parameters, (MgTransaction*)transaction.p, fetchSize);
+
+        // Write the response
+        EndExecution((MgSqlDataReader*)sqlReader);
+    }
     else
     {
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();

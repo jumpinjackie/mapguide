@@ -264,6 +264,7 @@ void MgServerSelectFeatures::ApplyQueryOptions(bool isSelectAggregate)
         // ApplySpatialFilter();
         ApplyOrderingOptions();
         ApplyAggregateOptions(isSelectAggregate);
+        ApplyFetchSize();
     }
 }
 
@@ -349,6 +350,15 @@ void MgServerSelectFeatures::ApplyComputedProperties()
 //
 //    m_command->SetFilter(filterText.c_str());
 //}
+
+// Fetch size
+void MgServerSelectFeatures::ApplyFetchSize()
+{
+    CHECKNULL(m_options, L"MgServerSelectFeatures.ApplyFetchSize");
+    CHECKNULL(m_command, L"MgServerSelectFeatures.ApplyFetchSize");
+
+    m_command->SetFetchSize(m_options->GetFetchSize());
+}
 
 // Spatial Filter
 void MgServerSelectFeatures::ApplyFilter()

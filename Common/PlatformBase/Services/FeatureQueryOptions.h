@@ -471,6 +471,7 @@ INTERNAL_API:
 
     INT32 GetOrderOption();
     INT32 GetSpatialOperation();
+    INT32 GetFetchSize();
 
     virtual void Serialize(MgStream* stream);
     virtual void Deserialize(MgStream* stream);
@@ -480,6 +481,36 @@ INTERNAL_API:
     virtual void Dispose() { delete this; }
 
     void ValidateEmptyArgument(CREFSTRING value);
+
+    //////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// For queries that return a large number of objects 
+    /// some feature sources support improving performance by setting
+    /// fetch size in order to reduce the number of database server
+    /// round trips required to satisfy the selection criteria. 
+    /// Providers that do not use a fetch size will ignore the fetch
+    /// size parameter. This does not affect the actual results of 
+    /// queries as it is a performance tuning parameter.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// void SetFetchSize(int fetchSize);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// void SetFetchSize(int fetchSize);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// void SetFetchSize(int fetchSize);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param fetchSize (int)
+    /// The fetch size of query. The query returns all of query
+    /// results if setting the fetch size to 0.
+    ///
+    /// \return
+    /// Returns nothing.
+    ///
+    void SetFetchSize(INT32 fetchSize);
 
 private:
 
@@ -494,6 +525,7 @@ private:
     INT32 m_operation;                                  // Geometric operation to be applied
     Ptr<MgGeometry> m_geometry;                         // Actual geometry like Circle; Rectangle etc
     bool m_binaryOp;                                    // Binary operator between spatial and regular filter
+    INT32 m_fetchSize;                                  // The fetch size of query.
 
 CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_FeatureService_FeatureQueryOptions;

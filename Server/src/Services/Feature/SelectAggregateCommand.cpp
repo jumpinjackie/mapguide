@@ -68,6 +68,18 @@ bool MgSelectAggregateCommand::GetDistinct()
     return m_command->GetDistinct();
 }
 
+void MgSelectAggregateCommand::SetFetchSize(FdoInt32 fetchSize)
+{
+    CHECKNULL((FdoISelectAggregates*)m_command, L"MgSelectAggregateCommand.SetFetchSize");
+    m_command->SetFetchSize(fetchSize);
+}
+
+FdoInt32 MgSelectAggregateCommand::GetFetchSize()
+{
+    CHECKNULL((FdoISelectAggregates*)m_command, L"MgSelectAggregateCommand.GetFetchSize");
+    return m_command->GetFetchSize();
+}
+
 FdoIdentifierCollection* MgSelectAggregateCommand::GetOrdering()
 {
     CHECKNULL((FdoISelectAggregates*)m_command, L"MgSelectAggregateCommand.GetOrdering");
