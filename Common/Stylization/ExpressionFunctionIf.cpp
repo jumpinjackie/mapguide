@@ -102,7 +102,8 @@ FdoFunctionDefinition* ExpressionFunctionIf::GetFunctionDefinition()
                                                              funcDesc.c_str(),
                                                              false,
                                                              signatures,
-                                                             FdoFunctionCategoryType_Conversion);
+                                                             FdoFunctionCategoryType_Conversion,
+                                                             false);
     }
 
     return FDO_SAFE_ADDREF(m_functionDefinition);
