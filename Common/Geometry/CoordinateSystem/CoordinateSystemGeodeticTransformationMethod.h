@@ -64,7 +64,8 @@ PUBLISHED_API:
     static const INT32 DHDN = 23;           // DHDN<->ETRF89 via Grid Files
     static const INT32 ETRF89 = 24;         // Is ETRF89, no shift required
     static const INT32 Lclgrf = 99;         // Local Geodetic Reference System
-    static const INT32 Geocentric = 25;     // Three Parameter Transformation
+    static const INT32 Geocentric = 25;     // Geocentric Translation
+    static const INT32 CHENYX = 26          // Swiss Ch1903 to CH1903+
 };
 /// \}
 
