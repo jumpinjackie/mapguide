@@ -16,7 +16,7 @@
 //
 
 #ifndef _MGCOORDINATESYSTEMGEODETICTRANSFORMATIONMETHOD_H_
-#define _MGCOORDINATESYSTEMGEODETICTRANSFORMATIONMETHOD_H_69
+#define _MGCOORDINATESYSTEMGEODETICTRANSFORMATIONMETHOD_H_
 
 /// \defgroup MgCoordinateSystemGeodeticTransformationMethod MgCoordinateSystemGeodeticTransformationMethod
 /// \ingroup Coordinate_System_classes
