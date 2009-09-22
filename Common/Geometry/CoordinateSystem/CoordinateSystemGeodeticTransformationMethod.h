@@ -16,7 +16,7 @@
 //
 
 #ifndef _MGCOORDINATESYSTEMGEODETICTRANSFORMATIONMETHOD_H_
-#define _MGCOORDINATESYSTEMGEODETICTRANSFORMATIONMETHOD_H_
+#define _MGCOORDINATESYSTEMGEODETICTRANSFORMATIONMETHOD_H_69
 
 /// \defgroup MgCoordinateSystemGeodeticTransformationMethod MgCoordinateSystemGeodeticTransformationMethod
 /// \ingroup Coordinate_System_classes
@@ -65,7 +65,7 @@ PUBLISHED_API:
     static const INT32 ETRF89 = 24;         // Is ETRF89, no shift required
     static const INT32 Lclgrf = 99;         // Local Geodetic Reference System
     static const INT32 Geocentric = 25;     // Geocentric Translation
-    static const INT32 CHENYX = 26          // Swiss Ch1903 to CH1903+
+    static const INT32 CHENYX = 26;         // Swiss Ch1903 to CH1903+
 };
 /// \}
 
