@@ -94,6 +94,21 @@ window.onload = function() {
 var fusionError = function(eventId, error) {
     var errorMessage = error.toString();
     var readableMessage = '';
+
+    //Case 1: For dealing with Function: convertXML (fusion.js)
+    //******************************************
+    //        xml2json: function(callback, r, json) {
+    //      if (json) {
+    //        var o;
+    //        eval("o="+r.responseText);
+    //        callback(o);
+    //      } else {
+    //      if (r.status >= 400) {
+    //          Fusion.reportError(new Fusion.Error(Fusion.Error.FATAL,
+    //              'xml2json: invalid XML document: ' + r.transport.responseText + " : " + r.request.url));
+    //          return;
+    //      }
+    //******************************************
     var tagStart = '<h2>';
     var tagEnd = '</h2>';
     var indexStart = errorMessage.indexOf(tagStart);
@@ -103,6 +118,31 @@ var fusionError = function(eventId, error) {
         readableMessage = readableMessage.replace(/\\\\n/g, '\n');
         readableMessage = readableMessage.replace(/\\\\t/g, '\t');
     }
+
+    //Case 2: For dealing with Function: ajaxException. (fusion.js)
+    //******************************************
+    //        ajaxException: function(r, e) {
+    //        this.reportError(new Fusion.Error(Fusion.Error.WARNING, 
+    //            OpenLayers.i18n('ajaxError', {'exception':e.message, 
+    //                                          'filename':e.fileName, 
+    //                                          'line':e.lineNumber,
+    //                                          'response': r.transport.responseText
+    //                                          })));
+    //    },
+    //******************************************
+    if (readableMessage == '') {
+        var ajaxCallback = 'WARNING: Exception occurred in AJAX callback.';
+        var responseError = 'Response: ERROR: ';
+        var indexAjaxCallback = errorMessage.indexOf(ajaxCallback);
+        var indexResponseError = errorMessage.indexOf(responseError);
+        if (indexAjaxCallback != -1 && indexResponseError != -1) {
+            var indexReturn = errorMessage.indexOf('\n', indexResponseError);
+            if (indexReturn != -1) {
+                readableMessage = errorMessage.substring(indexResponseError + responseError.length, indexReturn);
+            }
+        }
+    }
+
     if (readableMessage != '') {
         alert(readableMessage);
     }
