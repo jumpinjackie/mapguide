@@ -914,6 +914,7 @@ MgEnvelope* MgSelectionBase::GetFeatureExtents(MgFeatureService* featureService,
                 featureSourceCoordsys = spatialContextReader->GetCoordinateSystemWkt();
             }
         }
+        spatialContextReader->Close();
     }
     if(!featureSourceCoordsys.empty())
     {
