@@ -252,7 +252,9 @@ bool CCoordinateSystemMathComparator::SameDatum(MgCoordinateSystemDatum *pDefini
         case cs_DTCTYP_ED50:
         case cs_DTCTYP_DHDN:
         case cs_DTCTYP_ETRF89:
-        case cs_DTCTYP_CHENYX:
+//      case cs_DTCTYP_CHENYX:      // commented out to fix build.
+                                    // put back in after cs_map catches up with MapGuide
+                                    // Not a problem as this is the same as "default" anyway.
         default:
             paramCount = 0;
             break;
