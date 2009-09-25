@@ -147,28 +147,137 @@ bool CCoordinateSystemMathComparator::SameDatum(MgCoordinateSystemDatum *pDefini
     assert(pDefinition1);
     assert(pDefinition2);
     if (!pDefinition1 || !pDefinition2) return false;
-
     bool bResult;
+    unsigned paramCount;
+    unsigned orgDeltaZeroCount;
+    
     cs_Dtdef_ def1, def2;
+
     bResult = BuildDtDefFromInterface(pDefinition1, def1);
     if (!bResult) return bResult;
     bResult = BuildDtDefFromInterface(pDefinition2, def2);
     if (!bResult) return bResult;
 
-    //??// the following should compare the actual ellipsoid definitions.  There are several ellipsoids
-    // which have different names yet are, essentially, the same ellipsoid.
-    if (0 != CS_stricmp(def1.ell_knm, def2.ell_knm)) return false;
-    // Delta values are always in meters.
-    if (!FloatEqual(def1.delta_X, def2.delta_X, kdEpsilonLinear)) return false;
-    if (!FloatEqual(def1.delta_Y, def2.delta_Y, kdEpsilonLinear)) return false;
-    if (!FloatEqual(def1.delta_Z, def2.delta_Z, kdEpsilonLinear)) return false;
-    // Rotations are always in arc-seconds.
-    if (!FloatEqual(def1.rot_X, def2.rot_X, kdEpsilonArcSec)) return false;
-    if (!FloatEqual(def1.rot_Y, def2.rot_Y, kdEpsilonArcSec)) return false;
-    if (!FloatEqual(def1.rot_Z, def2.rot_Z, kdEpsilonArcSec)) return false;
-    // Datum scale values are always in parts per million difference from unity.
-    if (!FloatEqual(def1.bwscale, def2.bwscale, kdEpsilonDatumScale)) return false;
+    // Check the ellipsoids for "numerical" equivalence.
+    Ptr<MgCoordinateSystemEllipsoid> pEllipsoid1 = pDefinition1->GetEllipsoidDefinition ();
+    Ptr<MgCoordinateSystemEllipsoid> pEllipsoid2 = pDefinition2->GetEllipsoidDefinition ();
+    if (!SameEllipsoid (pEllipsoid1,pEllipsoid2)) return false;
+
+    // Determine if the two definitions are both the null transformation.
+    orgDeltaZeroCount  = (def1.delta_X == 0.0);
+    orgDeltaZeroCount += (def1.delta_Y == 0.0);
+    orgDeltaZeroCount += (def1.delta_Z == 0.0);
+    bool def1IsNull = (def1.to84_via == cs_DTCTYP_WGS84  ||
+                       def1.to84_via == cs_DTCTYP_NAD83  ||
+                       def1.to84_via == cs_DTCTYP_GDA94  ||
+                       def1.to84_via == cs_DTCTYP_NZGD2K ||
+                       def1.to84_via == cs_DTCTYP_ETRF89 ||
+                       def1.to84_via == cs_DTCTYP_RGF93  ||
+                       (orgDeltaZeroCount == 3 &&
+                         (def1.to84_via == cs_DTCTYP_GEOCTR ||
+                          def1.to84_via == cs_DTCTYP_3PARM  ||
+                          def1.to84_via == cs_DTCTYP_MOLO
+                         )
+                       )
+                      );
+    orgDeltaZeroCount  = (def2.delta_X == 0.0);
+    orgDeltaZeroCount += (def2.delta_Y == 0.0);
+    orgDeltaZeroCount += (def2.delta_Z == 0.0);
+    bool def2IsNull = (def2.to84_via == cs_DTCTYP_WGS84  ||
+                       def2.to84_via == cs_DTCTYP_NAD83  ||
+                       def2.to84_via == cs_DTCTYP_GDA94  ||
+                       def2.to84_via == cs_DTCTYP_NZGD2K ||
+                       def2.to84_via == cs_DTCTYP_ETRF89 ||
+                       def2.to84_via == cs_DTCTYP_RGF93  ||
+                       (orgDeltaZeroCount == 3 &&
+                         (def2.to84_via == cs_DTCTYP_GEOCTR ||
+                          def2.to84_via == cs_DTCTYP_3PARM  ||
+                          def2.to84_via == cs_DTCTYP_MOLO
+                         )
+                        )
+                      );
+    if (def1IsNull && def2IsNull)
+    {
+        // Both definitions represent a null conversion; therefore, they
+        // are "numerically" identical.
+        return true;
+    }
+
+    // Determine if the conversion technique is "numerically" identical.
+    // The GEOCENTRIC and MOLODENSKY are essentially the same.  So, we
+    // convert the conversion technique to GEOCENTRIC.
+    if (def1.to84_via == cs_DTCTYP_MOLO)
+    {
+        def1.to84_via = cs_DTCTYP_GEOCTR;
+    }
+    if (def2.to84_via == cs_DTCTYP_MOLO)
+    {
+        def2.to84_via = cs_DTCTYP_GEOCTR;
+    }
     if (def1.to84_via != def2.to84_via) return false;
+
+    // Determine the number of parameters apply to this definition.
+    switch (def1.to84_via)
+    {
+        case cs_DTCTYP_MOLO:
+        case cs_DTCTYP_3PARM:
+        case cs_DTCTYP_GEOCTR:
+            paramCount = 3;
+            break;
+        case cs_DTCTYP_4PARM:
+            paramCount = 4;
+            break;
+        case cs_DTCTYP_6PARM:
+            paramCount = 6;
+            break;
+        case cs_DTCTYP_MREG:        // MREG will use paramaters for automatic fallback.
+        case cs_DTCTYP_BURS:
+        case cs_DTCTYP_7PARM:
+            paramCount = 7;
+            break;
+        case cs_DTCTYP_NAD27:
+        case cs_DTCTYP_NAD83:
+        case cs_DTCTYP_WGS84:
+        case cs_DTCTYP_WGS72:
+        case cs_DTCTYP_HPGN:
+        case cs_DTCTYP_AGD66:
+        case cs_DTCTYP_AGD84:
+        case cs_DTCTYP_NZGD49:
+        case cs_DTCTYP_ATS77:
+        case cs_DTCTYP_GDA94:
+        case cs_DTCTYP_NZGD2K:
+        case cs_DTCTYP_CSRS:
+        case cs_DTCTYP_TOKYO:
+        case cs_DTCTYP_RGF93:
+        case cs_DTCTYP_ED50:
+        case cs_DTCTYP_DHDN:
+        case cs_DTCTYP_ETRF89:
+        case cs_DTCTYP_CHENYX:
+        default:
+            paramCount = 0;
+            break;
+    }
+
+    // Check the appropriate number of parameters.
+    if (paramCount > 0)
+    {
+        // Delta values are always in meters.
+        if (!FloatEqual(def1.delta_X, def2.delta_X, kdEpsilonLinear)) return false;
+        if (!FloatEqual(def1.delta_Y, def2.delta_Y, kdEpsilonLinear)) return false;
+        if (!FloatEqual(def1.delta_Z, def2.delta_Z, kdEpsilonLinear)) return false;
+        if (paramCount == 4 || paramCount == 7)
+        {
+            // Datum scale values are always in parts per million difference from unity.
+            if (!FloatEqual(def1.bwscale, def2.bwscale, kdEpsilonDatumScale)) return false;
+        }
+        if (paramCount > 4)
+        {
+            // Rotations are always in arc-seconds.
+            if (!FloatEqual(def1.rot_X, def2.rot_X, kdEpsilonArcSec)) return false;
+            if (!FloatEqual(def1.rot_Y, def2.rot_Y, kdEpsilonArcSec)) return false;
+            if (!FloatEqual(def1.rot_Z, def2.rot_Z, kdEpsilonArcSec)) return false;
+        }
+    }
 #ifdef _DEBUG
     bResult = true;
 #endif
@@ -201,15 +310,43 @@ bool CCoordinateSystemMathComparator::SameCoordinateSystem(MgCoordinateSystem *p
     bResult = BuildCsDefFromInterface(pDefinition2, def2);
     if (!bResult) return bResult;
 
-    if (0 != CS_stricmp(def1.dat_knm, def2.dat_knm)) return false;
-    if (0 != CS_stricmp(def1.elp_knm, def2.elp_knm)) return false;
+    if (def1.dat_knm [0] != '\0' && def2.dat_knm [0] != '\0')
+    {
+        Ptr<MgCoordinateSystemDatum> pDatum1 = pDefinition1->GetDatumDefinition ();
+        Ptr<MgCoordinateSystemDatum> pDatum2 = pDefinition2->GetDatumDefinition ();
+        if (!SameDatum (pDatum1,pDatum2))
+        {
+            return false;
+        }
+    }
+    else if ((def1.dat_knm [0] == '\0' && def2.dat_knm [0] == '\0') &&
+             (def1.elp_knm [0] != '\0' && def2.elp_knm [0] != '\0'))
+    {
+        Ptr<MgCoordinateSystemEllipsoid> pEllipsoid1 = pDefinition1->GetEllipsoidDefinition ();
+        Ptr<MgCoordinateSystemEllipsoid> pEllipsoid2 = pDefinition2->GetEllipsoidDefinition ();
+        if (!SameEllipsoid (pEllipsoid1,pEllipsoid2))
+        {
+            return false;
+        }
+    }
+    else
+    {
+        // Type of reference differs.
+        return false;
+    }
+
+    //??// It is true that the unitsmust always match, but not necessarily
+    // true that the projection must match.  However, delaing with the
+    // various projection variations which are equivalent when certain
+    // parameters are present is a non-trivial issue which we cannot
+    // deal with at the current time.  SO we leave this alone for now.
 
     // projection and units must match
     if (0 != CS_stricmp(def1.prj_knm, def2.prj_knm)) return false;
     if (0 != CS_stricmp(def1.unit, def2.unit)) return false;
 
     // We have verified that the projections are the same.  Use def1
-    // to inofrmation aboutthe projection.
+    // to obtain information about the projection.
     pp=GetMentorProjectionObject(def1.prj_knm);
     if (pp == NULL)
     {
@@ -257,11 +394,11 @@ bool CCoordinateSystemMathComparator::SameCoordinateSystem(MgCoordinateSystem *p
                     case cs_PRMLTYP_ZNBR:             // UTM Zone Number
                         epsilon = 0.5;
                         break;
-                    case cs_PRMLTYP_GHGT:             // Geoid Height in meters
+                    case cs_PRMLTYP_GHGT:             // Geoid Height (always meters)
                         epsilon = kdEpsilonLinear;
                         break;
-                    case cs_PRMLTYP_ELEV:             // Elevation, system units.
-                    case cs_PRMLTYP_XYCRD:            // X/Y Coordinate
+                    case cs_PRMLTYP_ELEV:             // Elevation, in system units.
+                    case cs_PRMLTYP_XYCRD:            // X/Y Coordinate (always system units)
                         epsilon = kdEpsilonLinear * def1.unit_scl;
                         break;
                     case cs_PRMLTYP_SCALE:            // Scale value
@@ -277,26 +414,31 @@ bool CCoordinateSystemMathComparator::SameCoordinateSystem(MgCoordinateSystem *p
         }
     }
 
-    // The following are standard parameters which are standard for most, BUT
-    // NOT ALL, parameters.
+    // The following are standard parameters which are standard for most,
+    // BUT NOT ALL, parameters.
     if ((prj_flags & cs_PRJFLG_ORGLNG) == 0)
     {
+        // Always in degrees.
         if (!FloatEqual(def1.org_lng, def2.org_lng, kdEpsilonGeographic)) return false;
     }
     if ((prj_flags & cs_PRJFLG_ORGLAT) == 0)
     {
+        // Always in degrees.
         if (!FloatEqual(def1.org_lat, def2.org_lat, kdEpsilonGeographic)) return false;
     }
     if ((prj_flags & cs_PRJFLG_ORGFLS) == 0)
     {
+        // Always in system units.
         epsilon = kdEpsilonLinear * def1.unit_scl;
         if (!FloatEqual(def1.x_off, def2.x_off, epsilon)) return false;
         if (!FloatEqual(def1.y_off, def2.y_off, epsilon)) return false;
     }
     if ((prj_flags & cs_PRJFLG_SCLRED) != 0)
     {
+        // Always a simple ratio (i.e. 1:2500 == 0.9996)
         if (!FloatEqual(def1.scl_red, def2.scl_red, kdEpsilonScale)) return false;
     }
+    // Map scale is rarely (if ever) used and us usally set to unity.
     if (!FloatEqual(def1.map_scl, def2.map_scl, kdEpsilonScale)) return false;
 
     //If the units match, the unit scale matches.
