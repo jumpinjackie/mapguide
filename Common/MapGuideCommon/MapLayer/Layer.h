@@ -307,6 +307,8 @@ private:
 
     MgMapBase* GetMap();
 
+    bool m_initIdProps;
+
 CLASS_ID:
     static const INT32 m_cls_id = MapGuide_MapLayer_Layer;
 
