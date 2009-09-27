@@ -300,7 +300,7 @@ void MgLayerBase::SetLayerDefinition(MgResourceIdentifier* layerDefinition, MgRe
     m_name = m_definition->GetName();
 
     m_forceReadFromServer = true;
-    MgLayerBase::GetLayerInfoFromDefinition(resourceService);
+    GetLayerInfoFromDefinition(resourceService);
     m_forceReadFromServer = false;
 
     if(m_layers != NULL)
@@ -330,7 +330,7 @@ void MgLayerBase::SetLayerResourceContent(CREFSTRING resourceContent)
 
     m_resourceContent = resourceContent;
 
-    MgLayerBase::GetLayerInfoFromDefinition(NULL);
+    GetLayerInfoFromDefinition(NULL);
 
     if(m_layers != NULL)
         m_layers->GetMap()->OnLayerDefinitionChanged(this);

@@ -26,6 +26,7 @@ MG_IMPL_DYNCREATE(MgLayer)
 MgLayer::MgLayer()
     : MgLayerBase()
 {
+    m_initIdProps = true;
 }
 
 //////////////////////////////////////////////////////////////
@@ -34,6 +35,7 @@ MgLayer::MgLayer()
 MgLayer::MgLayer(MgResourceIdentifier* layerDefinition, MgResourceService* resourceService)
     : MgLayerBase(layerDefinition, resourceService)
 {
+    m_initIdProps = true;
     GetLayerInfoFromDefinition(resourceService);
 }
 
@@ -43,6 +45,7 @@ MgLayer::MgLayer(MgResourceIdentifier* layerDefinition, MgResourceService* resou
 MgLayer::MgLayer(MgResourceIdentifier* layerDefinition, MgResourceService* resourceService, bool initIdProps)
     : MgLayerBase(layerDefinition, resourceService)
 {
+    m_initIdProps = initIdProps;
     if (initIdProps)
     {
         GetLayerInfoFromDefinition(resourceService);
@@ -55,7 +58,8 @@ MgLayer::MgLayer(MgResourceIdentifier* layerDefinition, MgResourceService* resou
 MgLayer::MgLayer(MgResourceIdentifier* layerDefinition, MgResourceService* resourceService, bool initIdProps, bool initLayerDefinition)
     : MgLayerBase(layerDefinition, resourceService, initLayerDefinition)
 {
-    if (initIdProps)
+    m_initIdProps = initIdProps;
+    if (initIdProps && initLayerDefinition)
     {
         GetLayerInfoFromDefinition(resourceService);
     }
@@ -96,47 +100,51 @@ MgMapBase* MgLayer::GetMap()
 //
 void MgLayer::GetLayerInfoFromDefinition(MgResourceService* resourceService)
 {
-    MG_TRY()
+    MgLayerBase::GetLayerInfoFromDefinition(resourceService);
 
-    // Generate Id field information for feature sources
-    m_idProps.clear();
-    if (!m_featureName.empty())
+    if(m_initIdProps && resourceService != NULL)
     {
-        // If we cannot pull the identity properties, silently ignore it.
-        try
+        MG_TRY()
+
+        // Generate Id field information for feature sources
+        m_idProps.clear();
+        if (!m_featureName.empty())
         {
-            //TODO: Pull site connection directly from resource service
-            Ptr<MgUserInformation> userInfo = resourceService->GetUserInfo();
-            Ptr<MgSiteConnection> conn = new MgSiteConnection();
-            conn->Open(userInfo);
-
-            Ptr<MgFeatureService> featureService = dynamic_cast<MgFeatureService*>(conn->CreateService(MgServiceType::FeatureService));
-            Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(m_featureSourceId);
-
-            // If the class name is fully qualified (prefixed with a schema name),
-            // then use it to determine the schema name.
-            STRING className;
-            STRING schemaName;
-            ParseFeatureName(featureService, className, schemaName);
-
-            // Get the identity properties
-            Ptr<MgStringCollection> classNames = new MgStringCollection();
-            classNames->Add(className);
-            Ptr<MgClassDefinitionCollection> classDefs = featureService->GetIdentityProperties(resId, schemaName, classNames);
-            if (NULL != classDefs.p && classDefs->GetCount() == 1)
+            // If we cannot pull the identity properties, silently ignore it.
+            try
             {
-                Ptr<MgClassDefinition> classDef = classDefs->GetItem(0);
-                PopulateIdentityProperties(classDef);
+                //TODO: Pull site connection directly from resource service
+                Ptr<MgUserInformation> userInfo = resourceService->GetUserInfo();
+                Ptr<MgSiteConnection> conn = new MgSiteConnection();
+                conn->Open(userInfo);
+
+                Ptr<MgFeatureService> featureService = dynamic_cast<MgFeatureService*>(conn->CreateService(MgServiceType::FeatureService));
+                Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(m_featureSourceId);
+
+                // If the class name is fully qualified (prefixed with a schema name),
+                // then use it to determine the schema name.
+                STRING className;
+                STRING schemaName;
+                ParseFeatureName(featureService, className, schemaName);
+
+                // Get the identity properties
+                Ptr<MgStringCollection> classNames = new MgStringCollection();
+                classNames->Add(className);
+                Ptr<MgClassDefinitionCollection> classDefs = featureService->GetIdentityProperties(resId, schemaName, classNames);
+                if (NULL != classDefs.p && classDefs->GetCount() == 1)
+                {
+                    Ptr<MgClassDefinition> classDef = classDefs->GetItem(0);
+                    PopulateIdentityProperties(classDef);
+                }
+            }
+            catch (MgException* e)
+            {
+                e->Release();
+                // Do nothing here.  A failure to pull selection id's is not critical at this point
             }
         }
-        catch (MgException* e)
-        {
-            e->Release();
-            // Do nothing here.  A failure to pull selection id's is not critical at this point
-        }
+        MG_CATCH_AND_THROW(L"MgLayer.GetLayerInfoFromDefinition")
     }
-
-    MG_CATCH_AND_THROW(L"MgLayer.GetLayerInfoFromDefinition")
 }
 
 //////////////////////////////////////////////////////////////
