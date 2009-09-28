@@ -501,59 +501,6 @@ PUBLISHED_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Gets the layer's resource content.
-    ///
-    /// <!-- Syntax in .Net, Java, and PHP -->
-    /// \htmlinclude DotNetSyntaxTop.html
-    /// string GetLayerResourceContent();
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude JavaSyntaxTop.html
-    /// String GetLayerResourceContent();
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude PHPSyntaxTop.html
-    /// string GetLayerResourceContent();
-    /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \return
-    /// Returns the resource content of the layer.
-    ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// See \link MgMapBase MgMapBase class \endlink.
-    /// \htmlinclude ExampleBottom.html
-    ///
-    virtual STRING GetLayerResourceContent();  /// __get, __set
-
-    //////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Sets the resource content for this layer.
-    ///
-    /// \note
-    /// If you change the layer's resource content, you must also
-    /// change the cached scale ranges and force an update of any
-    /// layer metadata held in the DWF Viewer's eMap.
-    ///
-    /// <!-- Syntax in .Net, Java, and PHP -->
-    /// \htmlinclude DotNetSyntaxTop.html
-    /// void SetLayerResourceContent(string resourceContent);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude JavaSyntaxTop.html
-    /// void SetLayerResourceContent(String resourceContent);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude PHPSyntaxTop.html
-    /// void SetLayerResourceContent(string resourceContent);
-    /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \param resourceContent (STRING)
-    /// The xml content of the layer's resource content.
-    ///
-    /// \return
-    /// Returns nothing.
-    ///
-    virtual void SetLayerResourceContent(CREFSTRING resourceContent);
-
-    //////////////////////////////////////////////////////////////////
-    /// \brief
     /// Determines whether an entry for the layer should appear in
     /// the legend.
     ///
@@ -1019,7 +966,17 @@ INTERNAL_API:
     /// Returns id property list
     virtual IdPropertyList& GetIdPropertyList();
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the layer's resource content.
+    ///
+    virtual STRING GetLayerResourceContent();
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the resource content for this layer.
+    ///
+    virtual void SetLayerResourceContent(CREFSTRING resourceContent);
 
 protected:
     /// \brief
