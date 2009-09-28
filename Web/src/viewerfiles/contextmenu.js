@@ -66,7 +66,7 @@ function onEnterOption(e)
     var menuObj = this.menuObj;
     if(menuObj != null)
     {
-        var name = (firefox || safari3plus) ? this.attributes["name"].nodeValue: this.name;
+        var name = (chrome || firefox || safari3plus) ? this.attributes["name"].nodeValue : this.name;
         if(name.indexOf("Sub:") == 0)
         {
             var subMenu = menuObj.subMenus[name.substr(4)];
@@ -105,7 +105,7 @@ function onEnterOption(e)
                 catch(e) {}
             }
 
-            var enabled = (firefox || safari3plus) ? this.attributes["state"].nodeValue: this.state;
+            var enabled = (chrome || firefox || safari3plus) ? this.attributes["state"].nodeValue : this.state;
             if(!enabled || enabled == "false")
                 return true;
         }
@@ -133,10 +133,10 @@ function onLeaveOption(e)
             }
             catch(e) {}
         }
-        var name = (firefox || safari3plus) ? this.attributes["name"].nodeValue: this.name;
+        var name = (chrome || firefox || safari3plus) ? this.attributes["name"].nodeValue : this.name;
         if(name.indexOf("Sub:") != 0)
         {
-            var enabled = (firefox || safari3plus) ? this.attributes["state"].nodeValue: this.state;
+            var enabled = (chrome || firefox || safari3plus) ? this.attributes["state"].nodeValue : this.state;
             if(!enabled || enabled == "false")
                 return true;
         }
@@ -279,9 +279,9 @@ function PopupMouseDown(e)
     var menuObj = tgt == null? null: tgt.menuObj;
     if(menuObj != null)
     {
-       var state = (firefox || safari3plus) ? tgt.attributes["state"].nodeValue: tgt.state;
+        var state = (chrome || firefox || safari3plus) ? tgt.attributes["state"].nodeValue : tgt.state;
        if(!(!state || state == "false"))
-            executeOption(menuObj, (firefox || safari3plus) ? tgt.attributes["name"].nodeValue: tgt.name);
+           executeOption(menuObj, (chrome || firefox || safari3plus) ? tgt.attributes["name"].nodeValue : tgt.name);
         return true;
     }
     else
@@ -377,10 +377,10 @@ function showPopup(menuObj, optimizeWidth, x, y)
         if(obj == null)
             break;
 
-        var name = (firefox || safari3plus) ? obj.attributes["name"].nodeValue: obj.name;
+        var name = (chrome || firefox || safari3plus) ? obj.attributes["name"].nodeValue : obj.name;
         if(name.indexOf("Sub:") != 0)
         {
-            var state = (firefox || safari3plus) ? obj.attributes["state"].nodeValue: obj.state;
+            var state = (chrome || firefox || safari3plus) ? obj.attributes["state"].nodeValue : obj.state;
             var enabled = true;
             if(menuObj.owner)
             {
@@ -399,7 +399,7 @@ function showPopup(menuObj, optimizeWidth, x, y)
                 obj.style.color = enabled? "black": "#b4b4b4";
                 var iconElt = document.getElementById("PMI" + name);
                 if(iconElt)
-                    iconElt.src = enabled? ((firefox || safari3plus) ? obj.attributes["icon"].nodeValue: obj.icon): ((firefox || safari3plus) ? obj.attributes["icond"].nodeValue: obj.icond);
+                    iconElt.src = enabled ? ((chrome || firefox || safari3plus) ? obj.attributes["icon"].nodeValue : obj.icon) : ((chrome || firefox || safari3plus) ? obj.attributes["icond"].nodeValue : obj.icond);
             }
          }
 
