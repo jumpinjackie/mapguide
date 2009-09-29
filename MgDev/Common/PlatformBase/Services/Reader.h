@@ -564,7 +564,7 @@ PUBLISHED_API:
     virtual MgRaster* GetRaster(CREFSTRING propertyName) = 0;
 
 
-	/////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the index of the property with the specified property name.
     ///
@@ -573,7 +573,7 @@ PUBLISHED_API:
     /// virtual int GetPropertyIndex(string propertyName);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual int GetPropertyIndex(string propertyName);
+    /// virtual int GetPropertyIndex(String propertyName);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
     /// virtual int GetPropertyIndex(string propertyName);

@@ -811,7 +811,9 @@ public:
     virtual FdoIFeatureReader* GetFeatureObject(FdoInt32 index);
 
     // newly added methods to FdoIFeatureReader
+    GWS_QUERYENGINE_API
     virtual FdoString*      GetPropertyName(FdoInt32 index);
+    GWS_QUERYENGINE_API
     virtual FdoInt32        GetPropertyIndex(FdoString* propertyName);
 
     // returns unconverted geometry. Coordinate system transaformations are not applied
