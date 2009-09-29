@@ -132,6 +132,19 @@ STRING MgProxyDataReader::GetPropertyName(INT32 index)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
+/// Gets the index of the property with the specified name.
+/// </summary>
+/// <param name="propertyName">Input the name of the property.</param>
+/// <returns>Returns the property index</returns>
+INT32 MgProxyDataReader::GetPropertyIndex(CREFSTRING propertyName)
+{
+    CHECKNULL(m_propDefCol, L"MgProxyDataReader.GetPropertyIndex");
+
+    return m_propDefCol->IndexOf(propertyName);
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
 /// Gets the data type of the property with the specified name.
 /// </summary>
 /// <param name="propertyName">Input the property name.</param>
@@ -166,6 +179,26 @@ bool MgProxyDataReader::IsNull(CREFSTRING propertyName)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
+///  Returns true if the value of the specified property is null.
+/// </summary>
+/// <param name="index">Property index.</param>
+/// <returns>Returns true if the value is null.</returns>
+bool MgProxyDataReader::IsNull(INT32 index)
+{
+    bool isNull = false;
+
+    Ptr<MgNullableProperty> ptrProp = (MgNullableProperty*)GetProperty(index);
+
+    if (ptrProp != NULL)
+    {
+        isNull = ptrProp->IsNull();
+    }
+
+    return isNull;
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
 /// Gets the Boolean value of the specified property. No conversion is
 /// performed, thus the property must be a of boolean type the result
 /// is undertermined</summary>
@@ -176,6 +209,24 @@ bool MgProxyDataReader::GetBoolean(CREFSTRING propertyName)
     bool retVal = false;
 
     Ptr<MgBooleanProperty> ptrProp = (MgBooleanProperty*)GetProperty(propertyName, MgPropertyType::Boolean);
+    retVal = ptrProp->GetValue();
+
+    return retVal;
+
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Gets the Boolean value of the specified property. No conversion is
+/// performed, thus the property must be a of boolean type the result
+/// is undertermined</summary>
+/// <param name="index">Property index.</param>
+/// <returns>Returns the Boolean value.</returns>
+bool MgProxyDataReader::GetBoolean(INT32 index)
+{
+    bool retVal = false;
+
+    Ptr<MgBooleanProperty> ptrProp = (MgBooleanProperty*)GetProperty(index, MgPropertyType::Boolean);
     retVal = ptrProp->GetValue();
 
     return retVal;
@@ -202,6 +253,24 @@ BYTE MgProxyDataReader::GetByte(CREFSTRING propertyName)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
+/// Gets the Byte value of the specified property. No conversion is
+/// performed, thus the property must be a of byte type or the result
+/// is undertermined</summary>
+/// <param name="index">Property index.</param>
+/// <returns>Returns the Byte value.</returns>
+BYTE MgProxyDataReader::GetByte(INT32 index)
+{
+    BYTE retVal = 0;
+
+    Ptr<MgByteProperty> ptrProp = (MgByteProperty*)GetProperty(index, MgPropertyType::Byte);
+    retVal = ptrProp->GetValue();
+
+    return retVal;
+
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
 /// Gets the DTime value of the specified property. No conversion is
 /// performed, thus the property must be a of date type or the result
 /// is NULL</summary>
@@ -210,6 +279,22 @@ BYTE MgProxyDataReader::GetByte(CREFSTRING propertyName)
 MgDateTime* MgProxyDataReader::GetDateTime(CREFSTRING propertyName)
 {
     Ptr<MgDateTimeProperty> ptrProp = (MgDateTimeProperty*)GetProperty(propertyName, MgPropertyType::DateTime);
+    Ptr<MgDateTime> retVal = ptrProp->GetValue();
+
+    return SAFE_ADDREF((MgDateTime*)retVal);
+
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Gets the DTime value of the specified property. No conversion is
+/// performed, thus the property must be a of date type or the result
+/// is NULL</summary>
+/// <param name="index">Property index.</param>
+/// <returns>Returns the DTime value.</returns>
+MgDateTime* MgProxyDataReader::GetDateTime(INT32 index)
+{
+    Ptr<MgDateTimeProperty> ptrProp = (MgDateTimeProperty*)GetProperty(index, MgPropertyType::DateTime);
     Ptr<MgDateTime> retVal = ptrProp->GetValue();
 
     return SAFE_ADDREF((MgDateTime*)retVal);
@@ -236,6 +321,24 @@ float MgProxyDataReader::GetSingle(CREFSTRING propertyName)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
+/// Gets the Single value of the specified property. No conversion is
+/// performed, thus the property must be a of type single or the result
+/// is undetermined</summary>
+/// <param name="index">Property index.</param>
+/// <returns>Returns the single value.</returns>
+float MgProxyDataReader::GetSingle(INT32 index)
+{
+    float retVal = 0;
+
+    Ptr<MgSingleProperty> ptrProp = (MgSingleProperty*)GetProperty(index, MgPropertyType::Single);
+    retVal = ptrProp->GetValue();
+
+    return retVal;
+
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
 /// Gets the Double value of the specified property. No conversion is
 /// performed, thus the property must be a of type double or the result
 /// is undetermined</summary>
@@ -246,6 +349,24 @@ double MgProxyDataReader::GetDouble(CREFSTRING propertyName)
     double retVal = 0;
 
     Ptr<MgDoubleProperty> ptrProp = (MgDoubleProperty*)GetProperty(propertyName, MgPropertyType::Double);
+    retVal = ptrProp->GetValue();
+
+    return retVal;
+
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Gets the Double value of the specified property. No conversion is
+/// performed, thus the property must be a of type double or the result
+/// is undetermined</summary>
+/// <param name="index">Property index.</param>
+/// <returns>Returns the double value.</returns>
+double MgProxyDataReader::GetDouble(INT32 index)
+{
+    double retVal = 0;
+
+    Ptr<MgDoubleProperty> ptrProp = (MgDoubleProperty*)GetProperty(index, MgPropertyType::Double);
     retVal = ptrProp->GetValue();
 
     return retVal;
@@ -271,6 +392,23 @@ INT16 MgProxyDataReader::GetInt16(CREFSTRING propertyName)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
+/// Gets the integer 16 bits value of the specified property. No conversion is
+/// performed, thus the property must be a of type integer 16 bits or the result
+/// is undetermined</summary>
+/// <param name="index">Property index.</param>
+/// <returns>Returns the integer 16 bits value.</returns>
+INT16 MgProxyDataReader::GetInt16(INT32 index)
+{
+    INT16 retVal = 0;
+
+    Ptr<MgInt16Property> ptrProp = (MgInt16Property*)GetProperty(index, MgPropertyType::Int16);
+    retVal = ptrProp->GetValue();
+
+    return retVal;
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
 /// Gets the integer 32 bits value of the specified property. No conversion is
 /// performed, thus the property must be a of type integer 32 bits or the result
 /// is undetermined</summary>
@@ -281,6 +419,23 @@ INT32 MgProxyDataReader::GetInt32(CREFSTRING propertyName)
     INT32 retVal = 0;
 
     Ptr<MgInt32Property> ptrProp = (MgInt32Property*)GetProperty(propertyName, MgPropertyType::Int32);
+    retVal = ptrProp->GetValue();
+
+    return retVal;
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Gets the integer 32 bits value of the specified property. No conversion is
+/// performed, thus the property must be a of type integer 32 bits or the result
+/// is undetermined</summary>
+/// <param name="index">Property index.</param>
+/// <returns>Returns the integer 32 bits value.</returns>
+INT32 MgProxyDataReader::GetInt32(INT32 index)
+{
+    INT32 retVal = 0;
+
+    Ptr<MgInt32Property> ptrProp = (MgInt32Property*)GetProperty(index, MgPropertyType::Int32);
     retVal = ptrProp->GetValue();
 
     return retVal;
@@ -307,6 +462,25 @@ INT64 MgProxyDataReader::GetInt64(CREFSTRING propertyName)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
+/// Gets the integer 64 bits value of the specified property. No conversion is
+/// performed, thus the property must be a of type integer 64 bits or the result
+/// is NULL</summary>
+/// <param name="index">Property index.</param>
+/// <returns>Returns the integer 64 bits value.
+/// Note: INT64 is actually a pointer to an Integer64 object
+///</returns>
+INT64 MgProxyDataReader::GetInt64(INT32 index)
+{
+    INT64 retVal = 0;
+
+    Ptr<MgInt64Property> ptrProp = (MgInt64Property*)GetProperty(index, MgPropertyType::Int64);
+    retVal = ptrProp->GetValue();
+
+    return retVal;
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
 /// Gets the string value of the specified property. No conversion is
 /// performed, thus the property must be a of type string or the result
 /// is NULL</summary>
@@ -317,6 +491,23 @@ STRING MgProxyDataReader::GetString(CREFSTRING propertyName)
     STRING retVal = L"";
 
     Ptr<MgStringProperty> ptrProp = (MgStringProperty*)GetProperty(propertyName, MgPropertyType::String);
+    retVal = ptrProp->GetValue();
+
+    return retVal;
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Gets the string value of the specified property. No conversion is
+/// performed, thus the property must be a of type string or the result
+/// is NULL</summary>
+/// <param name="index">Property index.</param>
+/// <returns>Returns the string value.</returns>
+STRING MgProxyDataReader::GetString(INT32 index)
+{
+    STRING retVal = L"";
+
+    Ptr<MgStringProperty> ptrProp = (MgStringProperty*)GetProperty(index, MgPropertyType::String);
     retVal = ptrProp->GetValue();
 
     return retVal;
@@ -339,6 +530,21 @@ MgByteReader* MgProxyDataReader::GetBLOB(CREFSTRING propertyName)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
+/// Gets the BLOB value of the specified property. No conversion is
+/// performed, thus the property must be a of type BLOBs or the result
+/// is NULL</summary>
+/// <param name="index">Property index.</param>
+/// <returns>Returns the BLOB value.</returns>
+MgByteReader* MgProxyDataReader::GetBLOB(INT32 index)
+{
+    Ptr<MgBlobProperty> ptrProp = (MgBlobProperty*)GetProperty(index, MgPropertyType::Blob);
+    Ptr<MgByteReader> retVal = ptrProp->GetValue();
+
+    return SAFE_ADDREF((MgByteReader*)retVal);
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
 /// Gets the CLOB value of the specified property. No conversion is
 /// performed, thus the property must be a of type CLOB or the result
 /// is NULL</summary>
@@ -354,6 +560,21 @@ MgByteReader* MgProxyDataReader::GetCLOB(CREFSTRING propertyName)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
+/// Gets the CLOB value of the specified property. No conversion is
+/// performed, thus the property must be a of type CLOB or the result
+/// is NULL</summary>
+/// <param name="index">Property index.</param>
+/// <returns>Returns the CLOB value.</returns>
+MgByteReader* MgProxyDataReader::GetCLOB(INT32 index)
+{
+    Ptr<MgClobProperty> ptrProp = (MgClobProperty*)GetProperty(index, MgPropertyType::Clob);
+    Ptr<MgByteReader> retVal = ptrProp->GetValue();
+
+    return SAFE_ADDREF((MgByteReader*)retVal);
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
 /// Gets the Geometry for the specified property. No conversion is
 /// performed, thus the property must be a of type Geometry or the result
 /// is NULL</summary>
@@ -362,6 +583,21 @@ MgByteReader* MgProxyDataReader::GetCLOB(CREFSTRING propertyName)
 MgByteReader* MgProxyDataReader::GetGeometry(CREFSTRING propertyName)
 {
     Ptr<MgGeometryProperty> ptrProp = (MgGeometryProperty*)GetProperty(propertyName, MgPropertyType::Geometry);
+    Ptr<MgByteReader> retVal = ptrProp->GetValue();
+
+    return SAFE_ADDREF((MgByteReader*)retVal);
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Gets the Geometry for the specified property. No conversion is
+/// performed, thus the property must be a of type Geometry or the result
+/// is NULL</summary>
+/// <param name="index">Property index.</param>
+/// <returns>Returns a ByteReader object</returns>
+MgByteReader* MgProxyDataReader::GetGeometry(INT32 index)
+{
+    Ptr<MgGeometryProperty> ptrProp = (MgGeometryProperty*)GetProperty(index, MgPropertyType::Geometry);
     Ptr<MgByteReader> retVal = ptrProp->GetValue();
 
     return SAFE_ADDREF((MgByteReader*)retVal);
@@ -528,6 +764,45 @@ MgProperty* MgProxyDataReader::GetProperty(CREFSTRING propertyName)
     return SAFE_ADDREF((MgProperty*)ptrProp);
 }
 
+// Get the property for the specified name
+MgProperty* MgProxyDataReader::GetProperty(INT32 index, INT16 expectedType)
+{
+    Ptr<MgNullableProperty> ptrProp = (MgNullableProperty*)this->GetProperty(index);
+    CHECKNULL(ptrProp, L"MgProxyDataReader.GetProperty");
+
+    if (ptrProp->IsNull())
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgProxyDataReader.GetProperty",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    INT16 propType = ptrProp->GetPropertyType();
+    MG_CHECK_PROPERTY_TYPE(propType, expectedType, L"MgProxyDataReader.GetProperty");
+
+    return SAFE_ADDREF((MgProperty*)ptrProp);
+}
+
+// Get the property for the specified index
+MgProperty* MgProxyDataReader::GetProperty(INT32 index)
+{
+    CHECKNULL(m_set, L"MgProxyDataReader.GetProperty");
+    MG_CHECK_FEATURE_SET_COUNT(m_set, L"MgProxyDataReader.GetProperty");
+
+    Ptr<MgPropertyCollection> ptrCol = m_set->GetItem(m_currRecord-1);
+    CHECKNULL(ptrCol, L"MgProxyDataReader.GetProperty");
+
+    Ptr<MgProperty> ptrProp = ptrCol->GetItem(index);
+    CHECKNULL(ptrProp, L"MgProxyDataReader.GetProperty");
+
+    return SAFE_ADDREF((MgProperty*)ptrProp);
+}
+
 void MgProxyDataReader::UpdateCurrentSet(MgBatchPropertyCollection* bpCol)
 {
     CHECKNULL((MgBatchPropertyCollection*)m_set, L"MgProxyDataReader.UpdateCurrentSet");
@@ -559,6 +834,21 @@ MgRaster* MgProxyDataReader::GetRaster(CREFSTRING propertyName)
     return SAFE_ADDREF((MgRaster*)retVal);
 }
 
+/// <summary>Gets the raster object of the specified property.
+/// the property must be of Raster type; otherwise, an exception is thrown.
+/// </summary>
+/// <param name="index">Input the property index.</param>
+/// <returns>Returns the raster object.</returns>
+MgRaster* MgProxyDataReader::GetRaster(INT32 index)
+{
+    Ptr<MgRasterProperty> ptrProp = (MgRasterProperty*)GetProperty(index, MgPropertyType::Raster);
+    Ptr<MgRaster> retVal = ptrProp->GetValue();
+    retVal->SetMgService(m_service);
+    retVal->SetHandle(m_serverDataReader);
+
+    return SAFE_ADDREF((MgRaster*)retVal);
+}
+
 //////////////////////////////////////////////////////////////////
 /// <summary>
 /// Gets the string value of the specified property. No conversion is
@@ -569,6 +859,21 @@ MgRaster* MgProxyDataReader::GetRaster(CREFSTRING propertyName)
 const wchar_t* MgProxyDataReader::GetString(CREFSTRING propertyName, INT32& length)
 {
     STRING str = this->GetString(propertyName);
+    length = (INT32)str.size();
+
+    return str.c_str();
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Gets the string value of the specified property. No conversion is
+/// performed, thus the property must be a of type string or the result
+/// is NULL</summary>
+/// <param name="index">Property index.</param>
+/// <returns>Returns the string value.</returns>
+const wchar_t* MgProxyDataReader::GetString(INT32 index, INT32& length)
+{
+    STRING str = this->GetString(index);
     length = (INT32)str.size();
 
     return str.c_str();

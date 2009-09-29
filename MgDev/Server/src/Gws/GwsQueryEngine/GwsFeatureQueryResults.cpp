@@ -316,6 +316,17 @@ const CGwsPropertyDesc &
     return ((CGwsQueryResultDescriptors *) featDsc.p)->GetPropertyDescriptor (propname);
 }
 
+FdoString* CGwsFeatureIterator::GetPropertyName(FdoInt32 index)
+{
+    CheckReader ();
+    return m_reader->GetPropertyName(index);
+}
+
+FdoInt32 CGwsFeatureIterator::GetPropertyIndex(FdoString* propertyName)
+{
+    CheckReader ();
+    return m_reader->GetPropertyIndex(propertyName);
+}
 
 FdoString * CGwsFeatureIterator::GetString (FdoString * propname)
 {
@@ -323,6 +334,11 @@ FdoString * CGwsFeatureIterator::GetString (FdoString * propname)
     return m_reader->GetString (propname);
 }
 
+FdoString * CGwsFeatureIterator::GetString (FdoInt32 index)
+{
+    CheckReader ();
+    return m_reader->GetString (index);
+}
 
 bool CGwsFeatureIterator::GetBoolean(FdoString* propname)
 {
@@ -330,6 +346,11 @@ bool CGwsFeatureIterator::GetBoolean(FdoString* propname)
     return m_reader->GetBoolean (propname);
 }
 
+bool CGwsFeatureIterator::GetBoolean(FdoInt32 index)
+{
+    CheckReader ();
+    return m_reader->GetBoolean (index);
+}
 
 FdoByte CGwsFeatureIterator::GetByte(FdoString* propname)
 {
@@ -337,6 +358,11 @@ FdoByte CGwsFeatureIterator::GetByte(FdoString* propname)
     return m_reader->GetByte (propname);
 }
 
+FdoByte CGwsFeatureIterator::GetByte(FdoInt32 index)
+{
+    CheckReader ();
+    return m_reader->GetByte (index);
+}
 
 FdoDateTime CGwsFeatureIterator::GetDateTime(FdoString* propname)
 {
@@ -344,6 +370,11 @@ FdoDateTime CGwsFeatureIterator::GetDateTime(FdoString* propname)
     return m_reader->GetDateTime (propname);
 }
 
+FdoDateTime CGwsFeatureIterator::GetDateTime(FdoInt32 index)
+{
+    CheckReader ();
+    return m_reader->GetDateTime (index);
+}
 
 double CGwsFeatureIterator::GetDouble(FdoString* propname)
 {
@@ -351,6 +382,11 @@ double CGwsFeatureIterator::GetDouble(FdoString* propname)
     return m_reader->GetDouble (propname);
 }
 
+double CGwsFeatureIterator::GetDouble(FdoInt32 index)
+{
+    CheckReader ();
+    return m_reader->GetDouble (index);
+}
 
 FdoInt16 CGwsFeatureIterator::GetInt16(FdoString* propname)
 {
@@ -358,6 +394,11 @@ FdoInt16 CGwsFeatureIterator::GetInt16(FdoString* propname)
     return m_reader->GetInt16 (propname);
 }
 
+FdoInt16 CGwsFeatureIterator::GetInt16(FdoInt32 index)
+{
+    CheckReader ();
+    return m_reader->GetInt16 (index);
+}
 
 FdoInt32 CGwsFeatureIterator::GetInt32(FdoString* propname)
 {
@@ -365,6 +406,11 @@ FdoInt32 CGwsFeatureIterator::GetInt32(FdoString* propname)
     return m_reader->GetInt32 (propname);
 }
 
+FdoInt32 CGwsFeatureIterator::GetInt32(FdoInt32 index)
+{
+    CheckReader ();
+    return m_reader->GetInt32 (index);
+}
 
 FdoInt64 CGwsFeatureIterator::GetInt64(FdoString* propname)
 {
@@ -372,6 +418,11 @@ FdoInt64 CGwsFeatureIterator::GetInt64(FdoString* propname)
     return m_reader->GetInt64 (propname);
 }
 
+FdoInt64 CGwsFeatureIterator::GetInt64(FdoInt32 index)
+{
+    CheckReader ();
+    return m_reader->GetInt64 (index);
+}
 
 float CGwsFeatureIterator::GetSingle(FdoString* propname)
 {
@@ -379,6 +430,11 @@ float CGwsFeatureIterator::GetSingle(FdoString* propname)
     return m_reader->GetSingle (propname);
 }
 
+float CGwsFeatureIterator::GetSingle(FdoInt32 index)
+{
+    CheckReader ();
+    return m_reader->GetSingle (index);
+}
 
 FdoLOBValue * CGwsFeatureIterator::GetLOB(FdoString* propertyName)
 {
@@ -386,6 +442,11 @@ FdoLOBValue * CGwsFeatureIterator::GetLOB(FdoString* propertyName)
     return m_reader->GetLOB (propertyName);
 }
 
+FdoLOBValue * CGwsFeatureIterator::GetLOB(FdoInt32 index)
+{
+    CheckReader ();
+    return m_reader->GetLOB (index);
+}
 
 FdoIStreamReader* CGwsFeatureIterator::GetLOBStreamReader(const wchar_t* propertyName )
 {
@@ -393,6 +454,11 @@ FdoIStreamReader* CGwsFeatureIterator::GetLOBStreamReader(const wchar_t* propert
     return m_reader->GetLOBStreamReader (propertyName);
 }
 
+FdoIStreamReader* CGwsFeatureIterator::GetLOBStreamReader(FdoInt32 index)
+{
+    CheckReader ();
+    return m_reader->GetLOBStreamReader (index);
+}
 
 bool CGwsFeatureIterator::IsNull(FdoString* propertyName)
 {
@@ -400,6 +466,11 @@ bool CGwsFeatureIterator::IsNull(FdoString* propertyName)
     return m_reader->IsNull (propertyName);
 }
 
+bool CGwsFeatureIterator::IsNull(FdoInt32 index)
+{
+    CheckReader ();
+    return m_reader->IsNull (index);
+}
 
 FdoIRaster*  CGwsFeatureIterator::GetRaster(FdoString* propertyName)
 {
@@ -407,6 +478,11 @@ FdoIRaster*  CGwsFeatureIterator::GetRaster(FdoString* propertyName)
     return m_reader->GetRaster (propertyName);
 }
 
+FdoIRaster*  CGwsFeatureIterator::GetRaster(FdoInt32 index)
+{
+    CheckReader ();
+    return m_reader->GetRaster (index);
+}
 
 FdoDataValue * CGwsFeatureIterator::GetDataValue (FdoString* propertyName)
 {
@@ -456,11 +532,40 @@ const FdoByte * CGwsFeatureIterator::GetGeometry(
     return gvalue;
 }
 
+const FdoByte * CGwsFeatureIterator::GetGeometry(
+    FdoInt32 index,
+    FdoInt32  * count
+)
+{
+    CheckReader ();
+    FdoByte * gvalue = (FdoByte *) m_reader->GetGeometry (index, count);
+    if (m_converter != NULL && ! m_bGeometryConverted && gvalue) {
+        EGwsStatus stat = m_converter->ConvertForward (gvalue, * count);
+        if (IGWSException::IsError (stat))
+            GWS_THROW (stat);
+        m_bGeometryConverted = true;
+    }
+    return gvalue;
+}
+
 
 FdoByteArray* CGwsFeatureIterator::GetGeometry(FdoString* propertyName)
 {
     CheckReader ();
     FdoByteArray * gvalue = m_reader->GetGeometry (propertyName);
+    if (m_converter != NULL && ! m_bGeometryConverted && gvalue) {
+        EGwsStatus stat = m_converter->ConvertForward (gvalue);
+        if (IGWSException::IsError (stat))
+            GWS_THROW (stat);
+        m_bGeometryConverted = true;
+    }
+    return gvalue;
+}
+
+FdoByteArray* CGwsFeatureIterator::GetGeometry(FdoInt32 index)
+{
+    CheckReader ();
+    FdoByteArray * gvalue = m_reader->GetGeometry (index);
     if (m_converter != NULL && ! m_bGeometryConverted && gvalue) {
         EGwsStatus stat = m_converter->ConvertForward (gvalue);
         if (IGWSException::IsError (stat))
@@ -493,6 +598,11 @@ FdoIFeatureReader* CGwsFeatureIterator::GetFeatureObject(FdoString* propertyName
     return m_reader->GetFeatureObject (propertyName);
 }
 
+FdoIFeatureReader* CGwsFeatureIterator::GetFeatureObject(FdoInt32 index)
+{
+    CheckReader ();
+    return m_reader->GetFeatureObject (index);
+}
 
 bool CGwsFeatureIterator::ReadNext()
 {

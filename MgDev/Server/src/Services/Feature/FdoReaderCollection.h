@@ -25,15 +25,15 @@
 
 #include <FdoStd.h>
 
-class FdoIReader;
+class FdoIFeatureReader;
 
 /// \brief
-/// The MgFdoReaderCollection class represents a collection of FdoIReader objects.
-class MgFdoReaderCollection : public FdoCollection<FdoIReader, FdoException>
+/// The MgFdoReaderCollection class represents a collection of FdoIFeatureReader objects.
+class MgFdoReaderCollection : public FdoCollection<FdoIFeatureReader, FdoException>
 {
 protected:
 /// \cond DOXYGEN-IGNORE
-    MgFdoReaderCollection() : FdoCollection<FdoIReader, FdoException>()
+    MgFdoReaderCollection() : FdoCollection<FdoIFeatureReader, FdoException>()
     {
     }
 

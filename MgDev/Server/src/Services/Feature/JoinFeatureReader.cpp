@@ -20,6 +20,8 @@
 MgJoinFeatureReader::MgJoinFeatureReader(MgServerGwsFeatureReader* reader)
 {
     m_reader = SAFE_ADDREF(reader);
+
+    m_propertyNamesInitialized = false;
 }
 
 MgJoinFeatureReader::~MgJoinFeatureReader()
@@ -29,6 +31,27 @@ MgJoinFeatureReader::~MgJoinFeatureReader()
 void MgJoinFeatureReader::Dispose()
 {
     delete this;
+}
+
+FdoString* MgJoinFeatureReader::GetPropertyName(FdoInt32 index)
+{
+    InitializePropertyNames();
+
+    assert(index < m_propertyNames->GetCount());
+    if (index < m_propertyNames->GetCount())
+        return m_propertyNames->GetString(index);
+    else
+    {
+        assert(false);
+        return L"";
+    }
+}
+
+FdoInt32 MgJoinFeatureReader::GetPropertyIndex(FdoString* propertyName)
+{
+    InitializePropertyNames();
+
+    return m_propertyNames->IndexOf(propertyName, false);
 }
 
 bool MgJoinFeatureReader::GetBoolean(FdoString* propertyName)
@@ -602,6 +625,104 @@ FdoClassDefinition* MgJoinFeatureReader::GetFdoClassDefinition(MgClassDefinition
     return fdoClassDef.Detach();
 }
 
+const FdoByte * MgJoinFeatureReader::GetGeometry(FdoInt32 index, FdoInt32 * count)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetGeometry((FdoString*)propertyName, count);
+}
+
+FdoByteArray* MgJoinFeatureReader::GetGeometry(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetGeometry((FdoString*)propertyName);
+}
+
+
+FdoIFeatureReader*  MgJoinFeatureReader::GetFeatureObject(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetFeatureObject((FdoString*)propertyName);
+}
+
+
+bool MgJoinFeatureReader::GetBoolean(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetBoolean((FdoString*)propertyName);
+}
+
+FdoByte MgJoinFeatureReader::GetByte(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetByte((FdoString*)propertyName);
+}
+
+FdoDateTime MgJoinFeatureReader::GetDateTime(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetDateTime((FdoString*)propertyName);
+}
+
+double MgJoinFeatureReader::GetDouble(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetDouble((FdoString*)propertyName);
+}
+
+FdoInt16 MgJoinFeatureReader::GetInt16(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetInt16((FdoString*)propertyName);
+}
+
+FdoInt32 MgJoinFeatureReader::GetInt32(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetInt32((FdoString*)propertyName);
+}
+
+FdoInt64 MgJoinFeatureReader::GetInt64(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetInt64((FdoString*)propertyName);
+}
+
+float MgJoinFeatureReader::GetSingle(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetSingle((FdoString*)propertyName);
+}
+
+FdoString* MgJoinFeatureReader::GetString(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetString((FdoString*)propertyName);
+}
+
+FdoLOBValue* MgJoinFeatureReader::GetLOB(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetLOB((FdoString*)propertyName);
+}
+
+FdoIStreamReader* MgJoinFeatureReader::GetLOBStreamReader(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetLOBStreamReader((FdoString*)propertyName);
+}
+
+bool MgJoinFeatureReader::IsNull(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return IsNull((FdoString*)propertyName);
+}
+
+FdoIRaster* MgJoinFeatureReader::GetRaster(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetRaster((FdoString*)propertyName);
+}
+
 void MgJoinFeatureReader::GetClassProperties(FdoPropertyDefinitionCollection* fdoPropDefCol,
                                                 MgPropertyDefinitionCollection* propDefCol)
 {
@@ -1037,4 +1158,36 @@ FdoOrderType MgJoinFeatureReader::MgOrderingOptionToFdoOrderType(INT32 type)
         }
     }
     return orderType;
+}
+
+void MgJoinFeatureReader::InitializePropertyNames()
+{
+    if (m_propertyNamesInitialized)
+        return;
+
+    FdoPtr<FdoClassDefinition> classDef = this->GetClassDefinition();
+    CHECKNULL(classDef, L"MgJoinFeatureReader.InitializePropertyNames")
+
+    m_propertyNames = FdoStringCollection::Create();
+    FillProperties(classDef);
+
+    m_propertyNamesInitialized = true;
+}
+
+void MgJoinFeatureReader::FillProperties(FdoClassDefinition* classDef)
+{
+    if (classDef == NULL)
+        return;
+
+    FdoPtr<FdoClassDefinition> baseClassDef = classDef->GetBaseClass();
+    FillProperties(baseClassDef);
+
+    FdoPropertiesP props = classDef->GetProperties();
+    CHECKNULL(props, L"MgJoinFeatureReader.FillProperties")
+
+    for (int i = 0; i < props->GetCount(); i++)
+    {
+        FdoPtr<FdoPropertyDefinition> prop = props->GetItem(i);
+        m_propertyNames->Add(prop->GetName());
+    }
 }

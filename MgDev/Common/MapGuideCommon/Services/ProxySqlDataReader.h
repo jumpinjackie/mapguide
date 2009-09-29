@@ -72,6 +72,18 @@ EXTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
+    /// Gets the index of the property with the specified name.
+    ///
+    /// \param propertyName
+    /// Input the name of the property.
+    ///
+    /// \return
+    /// Returns the property index
+    ///
+    INT32 GetPropertyIndex(CREFSTRING propertyName);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
     /// Gets the data type of the property with the specified name.
     ///
     /// \param propertyName
@@ -279,6 +291,169 @@ EXTERNAL_API:
     /// \exception MgInvalidPropertyTypeException
     ///
     MgRaster* GetRaster(CREFSTRING propertyName);
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    ///  Returns true if the value of the property at the specified index is null.
+    /// </summary>
+    /// <param name="index">Property index.</param>
+    /// <returns>Returns true if the value is null.</returns>
+    bool IsNull(INT32 index);
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Gets the Boolean value of the property at the specified index. No conversion is
+    /// performed, thus the property must be a of boolean type the result
+    /// is undertermined</summary>
+    /// <param name="index">Property index.</param>
+    /// <returns>Returns the Boolean value.</returns>
+    /// EXCEPTIONS:
+    /// MgInvalidArgumentException if the property type is not boolean
+    bool GetBoolean(INT32 index);
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Gets the Byte value of the property at the specified index. No conversion is
+    /// performed, thus the property must be a of byte type or the result
+    /// is undertermined</summary>
+    /// <param name="index">Property index.</param>
+    /// <returns>Returns the Byte value.</returns>
+    /// EXCEPTIONS:
+    /// MgInvalidArgumentException if the property type is not byte
+    BYTE GetByte(INT32 index);
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Gets the DTime value of the property at the specified index. No conversion is
+    /// performed, thus the property must be a of date type or the result
+    /// is NULL</summary>
+    /// <param name="index">Property index.</param>
+    /// <returns>Returns the DTime value.</returns>
+    /// EXCEPTIONS:
+    /// MgInvalidArgumentException if the property type is not date/time
+    MgDateTime* GetDateTime(INT32 index);
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Gets the Single value of the property at the specified index. No conversion is
+    /// performed, thus the property must be a of type single or the result
+    /// is undetermined</summary>
+    /// <param name="index">Property index.</param>
+    /// <returns>Returns the single value.</returns>
+    /// EXCEPTIONS:
+    /// MgInvalidArgumentException if the property type is not float
+    float GetSingle(INT32 index);
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Gets the Double value of the property at the specified index. No conversion is
+    /// performed, thus the property must be a of type double or the result
+    /// is undetermined</summary>
+    /// <param name="index">Property index.</param>
+    /// <returns>Returns the double value.</returns>
+    /// EXCEPTIONS:
+    /// MgInvalidArgumentException if the property type is not double
+    double GetDouble(INT32 index);
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Gets the integer 16 bits value of the property at the specified index. No conversion is
+    /// performed, thus the property must be a of type integer 16 bits or the result
+    /// is undetermined</summary>
+    /// <param name="index">Property index.</param>
+    /// <returns>Returns the integer 16 bits value.</returns>
+    /// EXCEPTIONS:
+    /// MgInvalidArgumentException if the property type is not int16
+    INT16 GetInt16(INT32 index);
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Gets the integer 32 bits value of the property at the specified index. No conversion is
+    /// performed, thus the property must be a of type integer 32 bits or the result
+    /// is undetermined</summary>
+    /// <param name="index">Property index.</param>
+    /// <returns>Returns the integer 32 bits value.</returns>
+    /// EXCEPTIONS:
+    /// MgInvalidArgumentException if the property type is not int32
+    INT32 GetInt32(INT32 index);
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Gets the integer 64 bits value of the property at the specified index. No conversion is
+    /// performed, thus the property must be a of type integer 64 bits or the result
+    /// is NULL</summary>
+    /// <param name="index">Property index.</param>
+    /// <returns>Returns the integer 64 bits value.
+    /// Note: INT64 is actually a pointer to an Integer64 object
+    ///</returns>
+    /// EXCEPTIONS:
+    /// MgInvalidArgumentException if the property type is not int64
+    INT64 GetInt64(INT32 index);
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Gets the string value of the property at the specified index. No conversion is
+    /// performed, thus the property must be a of type string or the result
+    /// is NULL</summary>
+    /// <param name="index">Property index.</param>
+    /// <returns>Returns the string value.</returns>
+    /// EXCEPTIONS:
+    /// MgInvalidArgumentException if the property type is not a string
+    STRING GetString(INT32 index);
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Gets the BLOB value of the property at the specified index. No conversion is
+    /// performed, thus the property must be a of type BLOBs or the result
+    /// is NULL</summary>
+    /// <param name="index">Property index.</param>
+    /// <returns>Returns the BLOB value.</returns>
+    /// EXCEPTIONS:
+    /// MgInvalidArgumentException if the property type is not a BLOB
+    MgByteReader* GetBLOB(INT32 index);
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Gets the CLOB value of the property at the specified index. No conversion is
+    /// performed, thus the property must be a of type CLOB or the result
+    /// is NULL</summary>
+    /// <param name="index">Property index.</param>
+    /// <returns>Returns the CLOB value.</returns>
+    /// EXCEPTIONS:
+    /// MgInvalidArgumentException if the property type is not a CLOB
+    MgByteReader* GetCLOB(INT32 index);
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Gets the FeatureReader to access this object value.
+    /// The property must be of an object type; otherwise, the result is NULL.
+    /// </summary>
+    /// <param name="index">Property index.</param>
+    /// <returns>Returns the feature reader to access this object.</returns>
+    /// EXCEPTIONS:
+    /// MgInvalidArgumentException if the property type is not a feature
+    MgFeatureReader* GetFeatureObject(INT32 index);
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Gets the geometry value of the property at the specified index as a GeometryReader.
+    /// Because no conversion is performed, the property must be
+    /// of Geometric type; otherwise, the result is NULL.</summary>
+    /// <param name="index">Property index.</param>
+    /// <returns>Returns the Geometry object.</returns>
+    /// EXCEPTIONS:
+    /// MgInvalidArgumentException if the property type is not geometry
+    MgByteReader* GetGeometry(INT32 index);
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// </summary>
+    /// <param name="index">Property index.</param>
+    /// <returns>Returns the Raster object.</returns>
+    /// EXCEPTIONS:
+    /// MgInvalidArgumentException if the property type is not geometry
+    MgRaster* GetRaster(INT32 index);
+
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Closes the FeatureReader object, freeing any resources it may be holding.
@@ -311,6 +486,20 @@ INTERNAL_API:
     /// Returns the string value.
     ///
     const wchar_t* GetString(CREFSTRING propertyName, INT32& length);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the string value of the specified property. No conversion is
+    /// performed, thus the property must be a of type string or the result
+    /// is NULL
+    ///
+    /// \param index
+    /// Property index.
+    ///
+    /// \return
+    /// Returns the string value.
+    ///
+    const wchar_t* GetString(INT32 index, INT32& length);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -354,6 +543,11 @@ private:
     MgProperty* GetProperty(CREFSTRING propertyName, INT16 expectedType);
     /// Get the property for the specified name
     MgProperty* GetProperty(CREFSTRING propertyName);
+
+    MgProperty* GetProperty(INT32 index, INT16 expectedType);
+    /// Get the property for the specified index
+    MgProperty* GetProperty(INT32 index);
+
     void UpdateCurrentSet(MgBatchPropertyCollection* bpCol);
 
     Ptr<MgBatchPropertyCollection> m_set;

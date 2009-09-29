@@ -1135,3 +1135,101 @@ MgByteReader* MgServerFeatureReader::GetRaster(STRING rasterPropName, INT32 xSiz
 
     return byteReader.Detach();
 }
+
+// getter by index
+BYTE_ARRAY_OUT MgServerFeatureReader::GetGeometry(INT32 index, INT32& length)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetGeometry(propertyName, length);
+}
+
+MgByteReader* MgServerFeatureReader::GetGeometry(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetGeometry(propertyName);
+}
+
+MgFeatureReader*  MgServerFeatureReader::GetFeatureObject(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetFeatureObject(propertyName);
+}
+
+bool MgServerFeatureReader::GetBoolean(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetBoolean(propertyName);
+}
+
+BYTE MgServerFeatureReader::GetByte(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetByte(propertyName);
+}
+
+MgDateTime* MgServerFeatureReader::GetDateTime(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetDateTime(propertyName);
+}
+
+double MgServerFeatureReader::GetDouble(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetDouble(propertyName);
+}
+
+INT16 MgServerFeatureReader::GetInt16(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetInt16(propertyName);
+}
+
+INT32 MgServerFeatureReader::GetInt32(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetInt32(propertyName);
+}
+
+INT64 MgServerFeatureReader::GetInt64(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetInt64(propertyName);
+}
+
+float MgServerFeatureReader::GetSingle(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetSingle(propertyName);
+}
+
+STRING MgServerFeatureReader::GetString(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetString(propertyName);
+}
+
+MgByteReader* MgServerFeatureReader::GetBLOB(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetBLOB(propertyName);
+}
+
+MgByteReader* MgServerFeatureReader::GetCLOB(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetCLOB(propertyName);
+}
+
+bool MgServerFeatureReader::IsNull(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return IsNull(propertyName);
+}
+
+ MgRaster* MgServerFeatureReader::GetRaster(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetRaster(propertyName);
+}
+
