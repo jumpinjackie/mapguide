@@ -1031,6 +1031,103 @@ MgRaster* MgServerGwsFeatureReader::GetRaster(CREFSTRING propertyName)
     return retVal.Detach();
 }
 
+// getter by index
+BYTE_ARRAY_OUT MgServerGwsFeatureReader::GetGeometry(INT32 index, INT32& length)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetGeometry(propertyName, length);
+}
+
+MgByteReader* MgServerGwsFeatureReader::GetGeometry(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetGeometry(propertyName);
+}
+
+MgFeatureReader*  MgServerGwsFeatureReader::GetFeatureObject(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetFeatureObject(propertyName);
+}
+
+bool MgServerGwsFeatureReader::GetBoolean(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetBoolean(propertyName);
+}
+
+BYTE MgServerGwsFeatureReader::GetByte(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetByte(propertyName);
+}
+
+MgDateTime* MgServerGwsFeatureReader::GetDateTime(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetDateTime(propertyName);
+}
+
+double MgServerGwsFeatureReader::GetDouble(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetDouble(propertyName);
+}
+
+INT16 MgServerGwsFeatureReader::GetInt16(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetInt16(propertyName);
+}
+
+INT32 MgServerGwsFeatureReader::GetInt32(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetInt32(propertyName);
+}
+
+INT64 MgServerGwsFeatureReader::GetInt64(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetInt64(propertyName);
+}
+
+float MgServerGwsFeatureReader::GetSingle(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetSingle(propertyName);
+}
+
+STRING MgServerGwsFeatureReader::GetString(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetString(propertyName);
+}
+
+MgByteReader* MgServerGwsFeatureReader::GetBLOB(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetBLOB(propertyName);
+}
+
+MgByteReader* MgServerGwsFeatureReader::GetCLOB(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetCLOB(propertyName);
+}
+
+bool MgServerGwsFeatureReader::IsNull(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return IsNull(propertyName);
+}
+
+ MgRaster* MgServerGwsFeatureReader::GetRaster(INT32 index)
+{
+    STRING propertyName = GetPropertyName(index);
+    return GetRaster(propertyName);
+}
+
 void MgServerGwsFeatureReader::Serialize(MgStream* stream)
 {
     INT32 count = 1; // Get value from MgConfiguration

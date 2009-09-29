@@ -62,6 +62,34 @@ FdoInt32 MgServerFdoFeatureReader::GetDepth()
 }
 
 /// \brief
+/// Gets the name of the property at the given ordinal position.
+/// 
+/// \param index 
+/// Input the position of the property.
+/// 
+/// \return
+/// Returns the property name
+/// 
+FdoString* MgServerFdoFeatureReader::GetPropertyName(FdoInt32 index)
+{
+    return m_internalReader->GetPropertyName(index);
+}
+
+/// \brief
+/// Gets the index of the property with the specified name.
+/// 
+/// \param propertyName 
+/// Input the property name.
+/// 
+/// \return
+/// Returns the property index
+/// 
+FdoInt32 MgServerFdoFeatureReader::GetPropertyIndex(FdoString* propertyName)
+{
+    return m_internalReader->GetPropertyIndex(propertyName);
+}
+
+/// \brief
 /// Gets the geometry value of the specified property as a byte array in
 /// FGF format. Because no conversion is performed, the property must be
 /// of Geometric type; otherwise, an exception is thrown.
@@ -96,6 +124,43 @@ const FdoByte * MgServerFdoFeatureReader::GetGeometry(FdoString* propertyName, F
 }
 
 /// \brief
+/// Gets the geometry value of the property, at the specified index, 
+/// as a byte array in FGF format. Because no conversion is performed, 
+/// the property must be of Geometric type; otherwise, an exception is thrown. 
+/// This method is a language-specific performance optimization that returns a
+/// pointer to the array data, rather than to an object that encapsulates
+/// the array.  The array's memory area is only guaranteed to be valid
+/// until a call to ReadNext() or Close(), or the disposal of this reader
+/// object.
+/// 
+/// \param index 
+/// Input the index of the property.
+/// \param count 
+/// Output the number of bytes in the array.
+/// 
+/// \return
+/// Returns a pointer to the byte array in FGF format.
+/// 
+const FdoByte * MgServerFdoFeatureReader::GetGeometry(FdoInt32 index, FdoInt32 * count)
+{
+    if(m_internalReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetGeometry",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetGeometry(index, count);
+    }
+}
+
+/// \brief
 /// Gets the geometry value of the specified property as a byte array in
 /// FGF format. Because no conversion is performed, the property must be
 /// of Geometric type; otherwise, an exception is thrown.
@@ -119,6 +184,36 @@ FdoByteArray* MgServerFdoFeatureReader::GetGeometry(FdoString* propertyName)
     else
     {
         return m_internalReader->GetGeometry(propertyName);
+    }
+}
+
+/// \brief
+/// Gets the geometry value of the specified property, at the specified index, 
+/// as a byte array in FGF format. Because no conversion is performed, the property 
+/// must be of Geometric type; otherwise, an exception is thrown.
+/// 
+/// \param index 
+/// Input the index of the property.
+/// 
+/// \return
+/// Returns the byte array in FGF format.
+/// 
+FdoByteArray* MgServerFdoFeatureReader::GetGeometry(FdoInt32 index)
+{
+    if(m_internalReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetGeometry",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetGeometry(index);
     }
 }
 
@@ -150,6 +245,36 @@ FdoIFeatureReader* MgServerFdoFeatureReader::GetFeatureObject(FdoString* propert
 }
 
 /// \brief
+/// Gets a reference to an FdoIFeatureReader to read the data contained in
+/// the object or object collection property defined at the specified index 
+/// position. If the property is not an object property, an exception is thrown.
+/// 
+/// \param index 
+/// Input the index of the property.
+/// 
+/// \return
+/// Returns the nested feature reader
+/// 
+FdoIFeatureReader* MgServerFdoFeatureReader::GetFeatureObject(FdoInt32 index)
+{
+    if(m_internalReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetFeatureObject",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetFeatureObject(index);
+    }
+}
+
+/// \brief
 /// Gets the Boolean value of the specified property. No conversion is
 /// performed, thus the property must be FdoDataType_Boolean or an
 /// exception is thrown.
@@ -173,6 +298,36 @@ bool MgServerFdoFeatureReader::GetBoolean(FdoString* propertyName)
     else
     {
         return m_internalReader->GetBoolean(propertyName);
+    }
+}
+
+/// \brief
+/// Gets the Boolean value of the property specified at the index position. 
+/// No conversion is performed, thus the property must be FdoDataType_Boolean 
+/// or an exception is thrown.
+/// 
+/// \param index 
+/// Input the index of the property.
+/// 
+/// \return
+/// Returns the Boolean value.
+/// 
+bool MgServerFdoFeatureReader::GetBoolean(FdoInt32 index)
+{
+    if(m_internalReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetBoolean",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetBoolean(index);
     }
 }
 
@@ -204,6 +359,36 @@ FdoByte MgServerFdoFeatureReader::GetByte(FdoString* propertyName)
 }
 
 /// \brief
+/// Gets the Byte value of the property specified at the index position. 
+/// No conversion is performed, thus the property must be FdoDataType_Byte 
+/// or an exception is thrown.
+/// 
+/// \param index 
+/// Input the index of the property.
+/// 
+/// \return
+/// Returns the byte value.
+/// 
+FdoByte MgServerFdoFeatureReader::GetByte(FdoInt32 index)
+{
+    if(m_internalReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetByte",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetByte(index);
+    }
+}
+
+/// \brief
 ///  Gets the date and time value of the specified property. No conversion is
 /// performed, thus the property must be FdoDataType_DateTime or an
 /// exception is thrown.
@@ -227,6 +412,36 @@ FdoDateTime MgServerFdoFeatureReader::GetDateTime(FdoString* propertyName)
     else
     {
         return m_internalReader->GetDateTime(propertyName);
+    }
+}
+
+/// \brief
+/// Gets the date and time value of the of the property specified at 
+/// the index position. No conversion is performed, thus the property 
+/// must be FdoDataType_DateTime or an exception is thrown.
+/// 
+/// \param index 
+/// Input the index of the property.
+/// 
+/// \return
+/// Returns the date and time value.
+/// 
+FdoDateTime MgServerFdoFeatureReader::GetDateTime(FdoInt32 index)
+{
+    if(m_internalReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetDateTime",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetDateTime(index);
     }
 }
 
@@ -258,6 +473,36 @@ double MgServerFdoFeatureReader::GetDouble(FdoString* propertyName)
 }
 
 /// \brief
+/// Gets the double-precision floating point value of the property specified at 
+/// the index position. No conversion is performed, thus the property must be 
+/// FdoDataType_Double or an exception is thrown.
+/// 
+/// \param index 
+/// Input the index of the property.
+/// 
+/// \return
+/// Returns the double floating point value
+/// 
+double MgServerFdoFeatureReader::GetDouble(FdoInt32 index)
+{
+    if(m_internalReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetDouble",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetDouble(index);
+    }
+}
+
+/// \brief
 /// Gets the 16-bit integer value of the specified property. No conversion is
 /// performed, thus the property must be FdoDataType_Int16 or an exception
 /// is thrown.
@@ -281,6 +526,36 @@ FdoInt16 MgServerFdoFeatureReader::GetInt16(FdoString* propertyName)
     else
     {
         return m_internalReader->GetInt16(propertyName);
+    }
+}
+
+/// \brief
+/// Gets the 16-bit integer value of the property specified at 
+/// the index position. No conversion is performed, thus the 
+/// property must be FdoDataType_Int16 or an exception is thrown.
+/// 
+/// \param index 
+/// Input the index of the property.
+/// 
+/// \return
+/// Returns the FdoInt16 value.
+/// 
+FdoInt16 MgServerFdoFeatureReader::GetInt16(FdoInt32 index)
+{
+    if(m_internalReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetInt16",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetInt16(index);
     }
 }
 
@@ -312,6 +587,36 @@ FdoInt32 MgServerFdoFeatureReader::GetInt32(FdoString* propertyName)
 }
 
 /// \brief
+/// Gets the 32-bit integer value of the property specified at 
+/// the index position. No conversion is performed, thus the 
+/// property must be FdoDataType_Int32 or an exception is thrown.
+/// 
+/// \param index 
+/// Input the index of the property.
+/// 
+/// \return
+/// Returns the FdoInt32 value
+/// 
+FdoInt32 MgServerFdoFeatureReader::GetInt32(FdoInt32 index)
+{
+    if(m_internalReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetInt32",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetInt32(index);
+    }
+}
+
+/// \brief
 /// Gets the 64-bit integer value of the specified property. No conversion is
 /// performed, thus the property must be FdoDataType_Int64 or an exception
 /// is thrown.
@@ -335,6 +640,36 @@ FdoInt64 MgServerFdoFeatureReader::GetInt64(FdoString* propertyName)
     else
     {
         return m_internalReader->GetInt64(propertyName);
+    }
+}
+
+/// \brief
+/// Gets the 64-bit integer value of the property specified at 
+/// the index position. No conversion is performed, thus the 
+/// property must be FdoDataType_Int64 or an exception is thrown.
+/// 
+/// \param index 
+/// Input the index of the property.
+/// 
+/// \return
+/// Returns the FdoInt64 value.
+/// 
+FdoInt64 MgServerFdoFeatureReader::GetInt64(FdoInt32 index)
+{
+    if(m_internalReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetInt64",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetInt64(index);
     }
 }
 
@@ -366,6 +701,36 @@ float MgServerFdoFeatureReader::GetSingle(FdoString* propertyName)
 }
 
 /// \brief
+/// Gets the Single floating point value of the property specified at 
+/// the index position. No conversion is performed, thus the property 
+/// must be FdoDataType_Single or an exception is thrown.
+/// 
+/// \param index 
+/// Input the index of the property.
+/// 
+/// \return
+/// Returns the single value
+/// 
+float MgServerFdoFeatureReader::GetSingle(FdoInt32 index)
+{
+    if(m_internalReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetSingle",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetSingle(index);
+    }
+}
+
+/// \brief
 /// Gets the string value of the specified property. No conversion is
 /// performed, thus the property must be FdoDataType_String or an exception
 /// is thrown.
@@ -393,6 +758,36 @@ FdoString* MgServerFdoFeatureReader::GetString(FdoString* propertyName)
 }
 
 /// \brief
+/// Gets the string value of the property specified at the index
+/// position. No conversion is performed, thus the property must
+/// be FdoDataType_String or an exception is thrown.
+/// 
+/// \param index 
+/// Input the index of the property.
+/// 
+/// \return
+/// Returns the string value
+/// 
+FdoString* MgServerFdoFeatureReader::GetString(FdoInt32 index)
+{
+    if(m_internalReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetString",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetString(index);
+    }
+}
+
+/// \brief
 /// Gets a LOBValue reference. The LOB is fully read in and data available.
 /// Because no conversion is performed, the property must be FdoDataType_BLOB or
 /// FdoDataType_CLOB etc. (a LOB type)
@@ -416,6 +811,37 @@ FdoLOBValue* MgServerFdoFeatureReader::GetLOB(FdoString* propertyName)
     else
     {
         return m_internalReader->GetLOB(propertyName);
+    }
+}
+
+/// \brief
+/// Gets a LOBValue pointer to the property specified at the index
+/// position. The LOB is fully read in and data available.
+/// Because no conversion is performed, the property must be 
+/// FdoDataType_BLOB or FdoDataType_CLOB etc. (a LOB type)
+/// 
+/// \param index 
+/// Input the index of the property.
+/// 
+/// \return
+/// Returns the pointer to LOBValue
+/// 
+FdoLOBValue* MgServerFdoFeatureReader::GetLOB(FdoInt32 index)
+{
+    if(m_internalReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetLOB",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetLOB(index);
     }
 }
 
@@ -449,6 +875,39 @@ FdoIStreamReader* MgServerFdoFeatureReader::GetLOBStreamReader(const wchar_t* pr
 }
 
 /// \brief
+/// Gets a pointer to the specified LOB property, specified at the index
+/// position. The reference is returned as an FdoBLOBStreamReader or an 
+/// FdoCLOBStreamReader, to allow reading in blocks of data. Because 
+/// no conversion is performed, the property must be FdoDataType_BLOB 
+/// or FdoDataType_CLOB etc. (a LOB type) Cast the FdoIStreamReader 
+/// to the appropriate LOB Stream Reader.
+/// 
+/// \param index 
+/// Input the index of the property.
+/// 
+/// \return
+/// Returns a pointer to a LOB stream reader
+/// 
+FdoIStreamReader* MgServerFdoFeatureReader::GetLOBStreamReader(FdoInt32 index)
+{
+    if(m_internalReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetLOBStreamReader",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetLOBStreamReader(index);
+    }
+}
+
+/// \brief
 /// Returns true if the value of the specified property is null.
 ///
 /// \param propertyName
@@ -460,6 +919,21 @@ FdoIStreamReader* MgServerFdoFeatureReader::GetLOBStreamReader(const wchar_t* pr
 bool MgServerFdoFeatureReader::IsNull(FdoString* propertyName)
 {
     return m_internalReader->IsNull(propertyName);
+}
+
+/// \brief
+/// Returns true if the value of the property at the specified 
+/// index is null.
+/// 
+/// \param index 
+/// Input the index of the property.
+/// 
+/// \return
+/// Returns true if the value is null.
+/// 
+bool MgServerFdoFeatureReader::IsNull(FdoInt32 index)
+{
+    return m_internalReader->IsNull(index);
 }
 
 /// \brief
@@ -490,6 +964,40 @@ FdoIRaster* MgServerFdoFeatureReader::GetRaster(FdoString* propertyName)
     else
     {
         return m_internalReader->GetRaster(propertyName);
+    }
+}
+
+/// \brief
+/// Gets the raster object of the property at the specified index.
+/// Because no conversion is performed, the property must be
+/// of Raster type; otherwise, an exception is thrown.
+/// 
+/// \param index 
+/// Input the index of the property.
+/// 
+/// \return
+/// Returns the raster object.
+/// 
+FdoIRaster* MgServerFdoFeatureReader::GetRaster(FdoInt32 index)
+{
+    // TODO: The IsNull() check is returning true for WFS/WMS FDO providers when there is valid data.
+    //       In this case it should really be returning false so that the data can be retrieved.
+    //       For now the check will be commented out until this can be resolved in FDO.
+    if(false) // TODO: Force the exception throwing code to be skipped until issue is resolved.
+//    if(m_internalReader->IsNull(propertyName))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetRaster",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        return m_internalReader->GetRaster(index);
     }
 }
 

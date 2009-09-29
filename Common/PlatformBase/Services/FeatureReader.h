@@ -338,6 +338,44 @@ PUBLISHED_API:
     ///
     virtual MgFeatureReader* GetFeatureObject(CREFSTRING propertyName) = 0;
 
+	///////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Use this method to obtain the values of the properties
+    /// belonging to an object contained in the feature class
+    /// instance. Such an object is a property of the feature class
+    /// instance with a type of MgPropertyType::Feature.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgFeatureReader GetFeatureObject(int index);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgFeatureReader GetFeatureObject(int index);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgFeatureReader GetFeatureObject(int index);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param index (int)
+    /// The position of the property in the list of
+    /// properties belonging to the feature currently
+    /// being read.
+    ///
+    /// \return
+    /// Returns an MgFeatureReader object, which can be used to
+    /// access properties of an object contained in the feature
+    /// object.
+    ///
+    /// \exception MgInvalidArgumentException
+    ///  if the property type is not a
+    ///  feature.
+    /// \exception MgConnectionNotOpenException
+    /// \exception MgNullPropertyValueException
+    /// \exception MgFdoException
+    ///
+    virtual MgFeatureReader* GetFeatureObject(INT32 index) = 0;
+
+
 INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
@@ -353,6 +391,22 @@ INTERNAL_API:
     /// Returns a ByteReader object
     ///
     virtual BYTE_ARRAY_OUT GetGeometry(CREFSTRING propertyName, INT32& length) = 0;
+
+	//////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the Geometry for the specified property. No conversion is
+    /// performed, thus the property must be a of type Geometry or the result
+    /// is NULL
+    ///
+    /// \param index (int)
+    /// The position of the property in the list of
+    /// properties belonging to the feature currently
+    /// being read.
+    ///
+    /// \return
+    /// Returns a ByteReader object
+    ///
+    virtual BYTE_ARRAY_OUT GetGeometry(INT32 index, INT32& length) = 0;
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -374,6 +428,20 @@ INTERNAL_API:
     /// Returns the property name
     ///
     virtual STRING GetPropertyName(INT32 index);
+
+    /////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the index of the property with the specified property name.
+    ///
+    /// \param propertyName(string)
+    /// The name of the property in the list of
+    /// properties belonging to the feature currently
+    /// being read.
+    ///
+    /// \return
+    /// Returns the property index.
+    ///
+    virtual INT32 GetPropertyIndex(CREFSTRING propertyName);
 
     //////////////////////////////////////////////////////////////////
     /// \brief

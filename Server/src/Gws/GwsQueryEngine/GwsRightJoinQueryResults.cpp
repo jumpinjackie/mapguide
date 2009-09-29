@@ -30,6 +30,7 @@
 // class CGwsRightJoinQueryResults
 //
 /////////////////////////////////////////////////////////////////////
+#pragma message("TODO: to rewrite getters by the property index once m_usepool is enabled!")
 
 CGwsRightJoinQueryResults::CGwsRightJoinQueryResults   ()
 {

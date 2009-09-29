@@ -721,6 +721,27 @@ public:
     virtual FdoByteArray*       GetGeometry (FdoString * propertyName) = 0;
     virtual FdoIFeatureReader*  GetFeatureObject (FdoString * propertyName) = 0;
 
+    virtual bool                IsNull (FdoInt32 index) = 0;
+    virtual FdoString   *       GetString   (FdoInt32 index) = 0;
+    virtual bool                GetBoolean  (FdoInt32 index) = 0;
+    virtual FdoByte             GetByte     (FdoInt32 index) = 0;
+    virtual FdoDateTime         GetDateTime (FdoInt32 index) = 0;
+    virtual double              GetDouble   (FdoInt32 index) = 0;
+    virtual FdoInt16            GetInt16    (FdoInt32 index) = 0;
+    virtual FdoInt32            GetInt32    (FdoInt32 index) = 0;
+    virtual FdoInt64            GetInt64    (FdoInt32 index) = 0;
+    virtual float               GetSingle   (FdoInt32 index) = 0;
+    virtual FdoLOBValue*        GetLOB      (FdoInt32 index) = 0;
+    virtual FdoIStreamReader*   GetLOBStreamReader (FdoInt32 index) = 0;
+    virtual FdoIRaster*         GetRaster   (FdoInt32 index) = 0;
+    virtual const FdoByte *     GetGeometry (FdoInt32 index, FdoInt32 * count) = 0;
+    virtual FdoByteArray*       GetGeometry (FdoInt32 index) = 0;
+    virtual FdoIFeatureReader*  GetFeatureObject (FdoInt32 index) = 0;
+
+    // FdoIFeatureReader
+    virtual FdoString*          GetPropertyName(FdoInt32 index) = 0;
+    virtual FdoInt32            GetPropertyIndex(FdoString* propertyName) = 0;
+
     /// <summary>
     /// moves the current position on the next feture and returns it
     /// </summary>

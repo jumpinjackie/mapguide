@@ -738,7 +738,7 @@ public:
     GWS_QUERYENGINE_API
     virtual bool            IsNull      (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual FdoString   *   GetString   (FdoString * propname);
+    virtual FdoString   *   GetString   (FdoString* propertyName);
     GWS_QUERYENGINE_API
     virtual bool            GetBoolean  (FdoString* propertyName);
     GWS_QUERYENGINE_API
@@ -761,6 +761,7 @@ public:
     virtual FdoIStreamReader* GetLOBStreamReader(const wchar_t* propertyName );
     GWS_QUERYENGINE_API
     virtual FdoIRaster*     GetRaster   (FdoString* propertyName);
+
     GWS_QUERYENGINE_API
     virtual FdoInt32        GetDepth    ();
     GWS_QUERYENGINE_API
@@ -774,6 +775,44 @@ public:
     GWS_QUERYENGINE_API
     virtual FdoDataValueCollection *
         GetDataValues (FdoStringCollection* propertyNames);
+
+    // getters by the property index
+    GWS_QUERYENGINE_API
+    virtual bool            IsNull      (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoString   *   GetString   (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual bool            GetBoolean  (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoByte         GetByte     (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoDateTime     GetDateTime (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual double          GetDouble   (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoInt16        GetInt16    (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoInt32        GetInt32    (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoInt64        GetInt64    (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual float           GetSingle   (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoLOBValue*    GetLOB      (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoIStreamReader* GetLOBStreamReader(FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoIRaster*     GetRaster   (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual const FdoByte * GetGeometry (FdoInt32 index, FdoInt32 * count) ;
+    GWS_QUERYENGINE_API
+    virtual FdoByteArray*   GetGeometry (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoIFeatureReader* GetFeatureObject(FdoInt32 index);
+
+    // newly added methods to FdoIFeatureReader
+    virtual FdoString*      GetPropertyName(FdoInt32 index);
+    virtual FdoInt32        GetPropertyIndex(FdoString* propertyName);
 
     // returns unconverted geometry. Coordinate system transaformations are not applied
     GWS_QUERYENGINE_API
@@ -1456,6 +1495,40 @@ public:
     virtual FdoByteArray*   GetGeometry (FdoString* propertyName);
     GWS_QUERYENGINE_API
     virtual FdoIFeatureReader* GetFeatureObject(FdoString* propertyName);
+
+    GWS_QUERYENGINE_API
+    virtual bool            IsNull      (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoString   *   GetString   (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual bool            GetBoolean  (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoByte         GetByte     (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoDateTime     GetDateTime (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual double          GetDouble   (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoInt16        GetInt16    (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoInt32        GetInt32    (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoInt64        GetInt64    (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual float           GetSingle   (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoLOBValue*    GetLOB      (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoIStreamReader* GetLOBStreamReader(FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoIRaster*     GetRaster   (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual const FdoByte * GetGeometry (FdoInt32 index, FdoInt32 * count) ;
+    GWS_QUERYENGINE_API
+    virtual FdoByteArray*   GetGeometry (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoIFeatureReader* GetFeatureObject(FdoInt32 index);
+
     GWS_QUERYENGINE_API
     virtual FdoDataValue *  GetDataValue (FdoString* propertyName);
     GWS_QUERYENGINE_API
@@ -1555,10 +1628,16 @@ public:
     virtual EGwsLockType    GetCacheLockType ();
     GWS_QUERYENGINE_API
     virtual IGWSFeatureIterator* GetJoinedFeatures (int i);
+
+    GWS_QUERYENGINE_API
+    virtual FdoString*      GetPropertyName(FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoInt32        GetPropertyIndex(FdoString* propertyName);
+
     GWS_QUERYENGINE_API
     virtual bool            IsNull      (FdoString* propertyName);
     GWS_QUERYENGINE_API
-    virtual FdoString   *   GetString   (FdoString * propname);
+    virtual FdoString   *   GetString   (FdoString* propertyName);
     GWS_QUERYENGINE_API
     virtual bool            GetBoolean  (FdoString* propertyName);
     GWS_QUERYENGINE_API
@@ -1589,6 +1668,40 @@ public:
     virtual FdoByteArray*   GetGeometry (FdoString* propertyName);
     GWS_QUERYENGINE_API
     virtual FdoIFeatureReader* GetFeatureObject(FdoString* propertyName);
+
+    GWS_QUERYENGINE_API
+    virtual bool            IsNull      (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoString   *   GetString   (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual bool            GetBoolean  (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoByte         GetByte     (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoDateTime     GetDateTime (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual double          GetDouble   (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoInt16        GetInt16    (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoInt32        GetInt32    (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoInt64        GetInt64    (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual float           GetSingle   (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoLOBValue*    GetLOB      (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoIStreamReader* GetLOBStreamReader(FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoIRaster*     GetRaster   (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual const FdoByte * GetGeometry (FdoInt32 index, FdoInt32 * count) ;
+    GWS_QUERYENGINE_API
+    virtual FdoByteArray*   GetGeometry (FdoInt32 index);
+    GWS_QUERYENGINE_API
+    virtual FdoIFeatureReader* GetFeatureObject(FdoInt32 index);
+
     GWS_QUERYENGINE_API
     virtual FdoDataValue *  GetDataValue (FdoString* propertyName);
     GWS_QUERYENGINE_API

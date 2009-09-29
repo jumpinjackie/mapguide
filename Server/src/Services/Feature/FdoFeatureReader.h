@@ -55,6 +55,27 @@ public:
         virtual FdoByteArray* GetGeometry(const wchar_t* propertyName);
         virtual const FdoByte * GetGeometry(const wchar_t* propertyName, FdoInt32 * count);
         virtual FdoIRaster* GetRaster(const wchar_t* propertyName);
+
+        virtual bool                IsNull (FdoInt32 index);
+        virtual const wchar_t*      GetString   (FdoInt32 index);
+        virtual bool                GetBoolean  (FdoInt32 index);
+        virtual FdoByte             GetByte     (FdoInt32 index);
+        virtual FdoDateTime         GetDateTime (FdoInt32 index);
+        virtual double              GetDouble   (FdoInt32 index);
+        virtual short               GetInt16    (FdoInt32 index);
+        virtual int                 GetInt32    (FdoInt32 index);
+        virtual FdoInt64            GetInt64    (FdoInt32 index);
+        virtual float               GetSingle   (FdoInt32 index);
+        virtual FdoLOBValue*        GetLOB      (FdoInt32 index);
+        virtual FdoIStreamReader*   GetLOBStreamReader (FdoInt32 index);
+        virtual FdoIRaster*         GetRaster   (FdoInt32 index);
+        virtual const FdoByte *     GetGeometry (FdoInt32 index, FdoInt32 * count);
+        virtual FdoByteArray*       GetGeometry (FdoInt32 index);
+        virtual FdoIFeatureReader*  GetFeatureObject (FdoInt32 index);
+
+        virtual FdoString*          GetPropertyName(FdoInt32 index);
+        virtual FdoInt32            GetPropertyIndex(FdoString* propertyName);
+
         virtual bool     ReadNext( );
         virtual void     Close();
 

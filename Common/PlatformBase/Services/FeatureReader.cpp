@@ -56,6 +56,23 @@ STRING MgFeatureReader::GetPropertyName(INT32 index)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
+/// Gets the index of the property with the specified property name.
+/// </summary>
+/// <param name="propertyName">Input the name of the property.</param>
+/// <returns>Returns the property index</returns>
+INT32 MgFeatureReader::GetPropertyIndex(CREFSTRING propertyName)
+{
+    Ptr<MgClassDefinition> classDef = this->GetClassDefinition();
+    CHECKNULL((MgClassDefinition*)classDef, L"MgFeatureReader.GetPropertyIndex");
+
+    Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetProperties();
+    CHECKNULL((MgPropertyDefinitionCollection*)propDefCol, L"MgFeatureReader.GetPropertyIndex");
+
+    return propDefCol->IndexOf(propertyName);
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
 /// Gets the data type of the property with the specified name.
 /// Please refer to MgPropertyType for list of values
 /// </summary>

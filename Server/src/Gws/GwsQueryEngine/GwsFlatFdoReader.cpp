@@ -172,6 +172,19 @@ FdoInt32 CGwsFlatFdoReader::GetDepth()
     return 0;
 }
 
+FdoString* CGwsFlatFdoReader::GetPropertyName(FdoInt32 index)
+{
+    assert(index >= 0 && index < m_names->GetCount());
+    if (index < m_names->GetCount() && index >= 0)
+        return m_names->GetString(index);
+
+    return L""; // throw exception? 
+}
+
+FdoInt32 CGwsFlatFdoReader::GetPropertyIndex(FdoString* propertyName)
+{
+    return m_names->IndexOf(propertyName, false);
+}
 
 const FdoByte * CGwsFlatFdoReader::GetGeometry(FdoString* propertyName, FdoInt32 * count)
 {
@@ -188,7 +201,6 @@ const FdoByte * CGwsFlatFdoReader::GetGeometry(FdoString* propertyName, FdoInt32
 
     return freader->GetGeometry (name.c_str (), count);
 }
-
 
 FdoByteArray* CGwsFlatFdoReader::GetGeometry(FdoString* propertyName)
 {
@@ -388,6 +400,111 @@ FdoIRaster* CGwsFlatFdoReader::GetRaster(FdoString* propertyName)
     return freader->GetRaster (name.c_str ());
 }
 
+const FdoByte * CGwsFlatFdoReader::GetGeometry(FdoInt32 index, FdoInt32 * count)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetGeometry((FdoString*)propertyName, count);
+}
+
+FdoByteArray* CGwsFlatFdoReader::GetGeometry(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetGeometry((FdoString*)propertyName);
+}
+
+FdoIFeatureReader*  CGwsFlatFdoReader::GetFeatureObject(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetFeatureObject((FdoString*)propertyName);
+}
+
+
+bool CGwsFlatFdoReader::GetBoolean(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetBoolean((FdoString*)propertyName);
+}
+
+
+FdoByte CGwsFlatFdoReader::GetByte(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetByte((FdoString*)propertyName);
+}
+
+
+FdoDateTime CGwsFlatFdoReader::GetDateTime(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetDateTime((FdoString*)propertyName);
+}
+
+
+double CGwsFlatFdoReader::GetDouble(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetDouble((FdoString*)propertyName);
+}
+
+
+FdoInt16 CGwsFlatFdoReader::GetInt16(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetInt16((FdoString*)propertyName);
+}
+
+
+FdoInt32 CGwsFlatFdoReader::GetInt32(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetInt32((FdoString*)propertyName);
+}
+
+
+FdoInt64 CGwsFlatFdoReader::GetInt64(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetInt64((FdoString*)propertyName);
+}
+
+
+float CGwsFlatFdoReader::GetSingle(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetSingle((FdoString*)propertyName);
+}
+
+
+FdoString* CGwsFlatFdoReader::GetString(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetString((FdoString*)propertyName);
+}
+
+FdoLOBValue* CGwsFlatFdoReader::GetLOB(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetLOB((FdoString*)propertyName);
+}
+
+
+FdoIStreamReader* CGwsFlatFdoReader::GetLOBStreamReader(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetLOBStreamReader((FdoString*)propertyName);
+}
+
+bool CGwsFlatFdoReader::IsNull(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return IsNull((FdoString*)propertyName);
+}
+
+FdoIRaster* CGwsFlatFdoReader::GetRaster(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetRaster((FdoString*)propertyName);
+}
 
 bool CGwsFlatFdoReader::ReadNext()
 {

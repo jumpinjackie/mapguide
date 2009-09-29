@@ -72,7 +72,25 @@ int MgFdoFeatureReader::GetDepth()
     return m_currentReader->GetDepth();
 }
 
+FdoString* MgFdoFeatureReader::GetPropertyName(FdoInt32 index)
+{
+    if (m_currentReader == NULL)
+    {
+        Initialize();
+    }
 
+    return m_currentReader->GetPropertyName(index);
+}
+
+FdoInt32 MgFdoFeatureReader::GetPropertyIndex(FdoString* propertyName)
+{
+    if (m_currentReader == NULL)
+    {
+        Initialize();
+    }
+
+    return m_currentReader->GetPropertyIndex(propertyName);
+}
 
 FdoIFeatureReader* MgFdoFeatureReader::GetFeatureObject( const wchar_t* propertyName )
 {
@@ -82,6 +100,16 @@ FdoIFeatureReader* MgFdoFeatureReader::GetFeatureObject( const wchar_t* property
     }
 
     return m_currentReader->GetFeatureObject(propertyName);
+}
+
+FdoIFeatureReader* MgFdoFeatureReader::GetFeatureObject( FdoInt32 index )
+{
+    if (m_currentReader == NULL)
+    {
+        Initialize();
+    }
+
+    return m_currentReader->GetFeatureObject(index);
 }
 
 bool MgFdoFeatureReader::GetBoolean( const wchar_t *propertyName )
@@ -94,6 +122,16 @@ bool MgFdoFeatureReader::GetBoolean( const wchar_t *propertyName )
     return m_currentReader->GetBoolean(propertyName);
 }
 
+bool MgFdoFeatureReader::GetBoolean( FdoInt32 index )
+{
+    if (m_currentReader == NULL)
+    {
+        Initialize();
+    }
+
+    return m_currentReader->GetBoolean(index);
+}
+
 FdoByte MgFdoFeatureReader::GetByte( const wchar_t *propertyName )
 {
     if (m_currentReader == NULL)
@@ -104,6 +142,15 @@ FdoByte MgFdoFeatureReader::GetByte( const wchar_t *propertyName )
     return m_currentReader->GetByte(propertyName);
 }
 
+FdoByte MgFdoFeatureReader::GetByte( FdoInt32 index )
+{
+    if (m_currentReader == NULL)
+    {
+        Initialize();
+    }
+
+    return m_currentReader->GetByte(index);
+}
 
 FdoDateTime MgFdoFeatureReader::GetDateTime( const wchar_t *propertyName )
 {
@@ -115,6 +162,15 @@ FdoDateTime MgFdoFeatureReader::GetDateTime( const wchar_t *propertyName )
     return m_currentReader->GetDateTime(propertyName);
 }
 
+FdoDateTime MgFdoFeatureReader::GetDateTime( FdoInt32 index )
+{
+    if (m_currentReader == NULL)
+    {
+        Initialize();
+    }
+
+    return m_currentReader->GetDateTime(index);
+}
 
 double MgFdoFeatureReader::GetDouble( const wchar_t *propertyName )
 {
@@ -124,6 +180,16 @@ double MgFdoFeatureReader::GetDouble( const wchar_t *propertyName )
     }
 
     return m_currentReader->GetDouble(propertyName);
+}
+
+double MgFdoFeatureReader::GetDouble( FdoInt32 index )
+{
+    if (m_currentReader == NULL)
+    {
+        Initialize();
+    }
+
+    return m_currentReader->GetDouble(index);
 }
 
 const wchar_t* MgFdoFeatureReader::GetString( const wchar_t *propertyName )
@@ -137,6 +203,17 @@ const wchar_t* MgFdoFeatureReader::GetString( const wchar_t *propertyName )
 
 }
 
+const wchar_t* MgFdoFeatureReader::GetString( FdoInt32 index )
+{
+    if (m_currentReader == NULL)
+    {
+        Initialize();
+    }
+
+    return m_currentReader->GetString(index);
+
+}
+
 short MgFdoFeatureReader::GetInt16( const wchar_t *propertyName )
 {
     if (m_currentReader == NULL)
@@ -145,6 +222,16 @@ short MgFdoFeatureReader::GetInt16( const wchar_t *propertyName )
     }
 
     return m_currentReader->GetInt16(propertyName);
+}
+
+short MgFdoFeatureReader::GetInt16( FdoInt32 index )
+{
+    if (m_currentReader == NULL)
+    {
+        Initialize();
+    }
+
+    return m_currentReader->GetInt16(index);
 }
 
 int MgFdoFeatureReader::GetInt32( const wchar_t *propertyName )
@@ -157,6 +244,16 @@ int MgFdoFeatureReader::GetInt32( const wchar_t *propertyName )
     return m_currentReader->GetInt32(propertyName);
 }
 
+int MgFdoFeatureReader::GetInt32( FdoInt32 index )
+{
+    if (m_currentReader == NULL)
+    {
+        Initialize();
+    }
+
+    return m_currentReader->GetInt32(index);
+}
+
 FdoInt64 MgFdoFeatureReader::GetInt64( const wchar_t *propertyName )
 {
     if (m_currentReader == NULL)
@@ -167,6 +264,16 @@ FdoInt64 MgFdoFeatureReader::GetInt64( const wchar_t *propertyName )
     return m_currentReader->GetInt64(propertyName);
 }
 
+FdoInt64 MgFdoFeatureReader::GetInt64( FdoInt32 index )
+{
+    if (m_currentReader == NULL)
+    {
+        Initialize();
+    }
+
+    return m_currentReader->GetInt64(index);
+}
+
 float MgFdoFeatureReader::GetSingle( const wchar_t *propertyName )
 {
     if (m_currentReader == NULL)
@@ -175,6 +282,16 @@ float MgFdoFeatureReader::GetSingle( const wchar_t *propertyName )
     }
 
     return m_currentReader->GetSingle(propertyName);
+}
+
+float MgFdoFeatureReader::GetSingle( FdoInt32 index )
+{
+    if (m_currentReader == NULL)
+    {
+        Initialize();
+    }
+
+    return m_currentReader->GetSingle(index);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -188,6 +305,15 @@ FdoIStreamReader* MgFdoFeatureReader::GetLOBStreamReader(const wchar_t* property
     return m_currentReader->GetLOBStreamReader(propertyName);
 }
 
+FdoIStreamReader* MgFdoFeatureReader::GetLOBStreamReader(FdoInt32 index)
+{
+    if (m_currentReader == NULL)
+    {
+        Initialize();
+    }
+
+    return m_currentReader->GetLOBStreamReader(index);
+}
 ///////////////////////////////////////////////////////////////////////////////
 FdoLOBValue* MgFdoFeatureReader::GetLOB(const wchar_t* propertyName)
 {
@@ -197,6 +323,16 @@ FdoLOBValue* MgFdoFeatureReader::GetLOB(const wchar_t* propertyName)
     }
 
     return m_currentReader->GetLOB(propertyName);
+}
+
+FdoLOBValue* MgFdoFeatureReader::GetLOB(FdoInt32 index)
+{
+    if (m_currentReader == NULL)
+    {
+        Initialize();
+    }
+
+    return m_currentReader->GetLOB(index);
 }
 
 bool MgFdoFeatureReader::IsNull( const wchar_t *propertyName )
@@ -209,6 +345,16 @@ bool MgFdoFeatureReader::IsNull( const wchar_t *propertyName )
     return m_currentReader->IsNull(propertyName);
 }
 
+bool MgFdoFeatureReader::IsNull( FdoInt32 index )
+{
+    if (m_currentReader == NULL)
+    {
+        Initialize();
+    }
+
+    return m_currentReader->IsNull(index);
+}
+
 FdoByteArray* MgFdoFeatureReader::GetGeometry(const wchar_t* propertyName)
 {
     if (m_currentReader == NULL)
@@ -219,6 +365,15 @@ FdoByteArray* MgFdoFeatureReader::GetGeometry(const wchar_t* propertyName)
     return m_currentReader->GetGeometry(propertyName);
 }
 
+FdoByteArray* MgFdoFeatureReader::GetGeometry(FdoInt32 index)
+{
+    if (m_currentReader == NULL)
+    {
+        Initialize();
+    }
+
+    return m_currentReader->GetGeometry(index);
+}
 
 const FdoByte * MgFdoFeatureReader::GetGeometry(const wchar_t* propertyName, FdoInt32 * count)
 {
@@ -228,6 +383,16 @@ const FdoByte * MgFdoFeatureReader::GetGeometry(const wchar_t* propertyName, Fdo
     }
 
     return m_currentReader->GetGeometry(propertyName, count);
+}
+
+const FdoByte * MgFdoFeatureReader::GetGeometry(FdoInt32 index, FdoInt32 * count)
+{
+    if (m_currentReader == NULL)
+    {
+        Initialize();
+    }
+
+    return m_currentReader->GetGeometry(index, count);
 }
 
 /// <summary>Gets the raster object of the specified property.
@@ -245,6 +410,15 @@ FdoIRaster* MgFdoFeatureReader::GetRaster(FdoString* propertyName)
     return m_currentReader->GetRaster(propertyName);
 }
 
+FdoIRaster* MgFdoFeatureReader::GetRaster(FdoInt32 index)
+{
+    if (m_currentReader == NULL)
+    {
+        Initialize();
+    }
+
+    return m_currentReader->GetRaster(index);
+}
 
 bool MgFdoFeatureReader::ReadNext( )
 {
