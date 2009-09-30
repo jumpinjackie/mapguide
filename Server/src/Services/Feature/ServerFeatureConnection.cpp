@@ -179,5 +179,7 @@ bool MgServerFeatureConnection::SupportsCommand(INT32 commandType)
 
 void MgServerFeatureConnection::HasReader()
 {
+    if(! m_bCloseConnection)
+        FDO_SAFE_ADDREF(m_fdoConn);
     m_bCloseConnection = false;
 }
