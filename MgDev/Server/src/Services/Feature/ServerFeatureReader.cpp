@@ -38,7 +38,7 @@ MgServerFeatureReader::MgServerFeatureReader(MgServerFeatureConnection* connecti
     m_removeFromPoolOnDestruction = false;
 
     // The reader takes ownership of the FDO connection
-    m_connection->HasReader();
+    m_connection->OwnReader();
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.MgServerFeatureReader")
 }

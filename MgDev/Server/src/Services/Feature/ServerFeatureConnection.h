@@ -51,7 +51,7 @@ public:
 
     bool SupportsCommand(INT32 commandType);
 
-    void HasReader();
+    void OwnReader();
 
 private:
 

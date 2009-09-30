@@ -1927,7 +1927,7 @@ void MgServerGwsFeatureReader::OwnsConnections()
         MgServerFeatureConnection* conn = (*iter).second;
         if(conn)
         {
-            conn->HasReader();
+            conn->OwnReader();
         }
     }
 }
