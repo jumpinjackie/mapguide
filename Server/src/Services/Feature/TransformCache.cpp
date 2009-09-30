@@ -125,7 +125,7 @@ TransformCache* TransformCache::GetLayerToMapTransform(TransformCacheMap& cache,
         STRING csrName = L"";
         bool bHaveFirstSpatialContext = false;
 
-        while(csrdr->ReadNext())
+        while(csrdr.p != NULL && csrdr->ReadNext())
         {
             csrName = csrdr->GetName();
             if((!spatialContextAssociation.empty()) && (csrName == spatialContextAssociation))
@@ -142,6 +142,8 @@ TransformCache* TransformCache::GetLayerToMapTransform(TransformCacheMap& cache,
                 bHaveFirstSpatialContext = true;
             }
         }
+        if(csrdr.p != NULL)
+            csrdr->Close();
 
         // Create coordinate system transformer
         if (!srcwkt.empty())
