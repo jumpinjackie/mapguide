@@ -688,6 +688,9 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                             break;
                         }
                     }
+                    if(contextReader.p != NULL)
+                        contextReader->Close();
+
                     MG_CATCH_AND_RELEASE()
 
                     #ifdef _DEBUG

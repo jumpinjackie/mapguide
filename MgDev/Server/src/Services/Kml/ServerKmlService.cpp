@@ -581,6 +581,7 @@ MgEnvelope* MgServerKmlService::GetLayerExtent(MdfModel::LayerDefinition* layerD
                         }
                     }
                 }
+                scReader->Close();
             }
         }
         else if(dl != NULL)
@@ -784,6 +785,7 @@ MgCoordinateSystem* MgServerKmlService::GetCoordinateSystem(MgResourceIdentifier
             STRING layerCoordSysWkt = scReader->GetCoordinateSystemWkt();
             layerCs = (layerCoordSysWkt.empty()) ? NULL : m_csFactory->Create(layerCoordSysWkt);
         }
+        scReader->Close();
     }
     return SAFE_ADDREF(layerCs.p);
 }
@@ -864,9 +866,3 @@ STRING MgServerKmlService::GetSessionId()
     }
     return sessionId;
 }
-
-
-
-
-
-
