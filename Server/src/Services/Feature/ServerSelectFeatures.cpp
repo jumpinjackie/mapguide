@@ -1370,7 +1370,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
 
     MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(featureSourceIdentifier, L"MgServerSelectFeatures.JoinFeatures")
 
-    // Now that the reader has been created we will need to mark all of the connections it uses as HasReader() because the GWS reader will be
+    // Now that the reader has been created we will need to mark all of the connections it uses as OwnReader() because the GWS reader will be
     // taking ownership of the connections. We have to do it this late in the code in case an exception is thrown somewhere before this.
     // We want to avoid a deadlock of the connection :)
     gwsFeatureReader->OwnsConnections();

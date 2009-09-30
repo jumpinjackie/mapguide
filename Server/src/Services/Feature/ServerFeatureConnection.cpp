@@ -177,7 +177,7 @@ bool MgServerFeatureConnection::SupportsCommand(INT32 commandType)
     return supports;
 }
 
-void MgServerFeatureConnection::HasReader()
+void MgServerFeatureConnection::OwnReader()
 {
     if(! m_bCloseConnection)
         FDO_SAFE_ADDREF(m_fdoConn);
