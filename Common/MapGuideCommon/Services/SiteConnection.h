@@ -269,33 +269,6 @@ INTERNAL_API:
 
     ///////////////////////////////
     /// \brief
-    /// Sets the site connection for the current thread.  This
-    /// function uses thread local storage.
-    ///
-    /// \param siteConnection
-    /// Site connection to assign to the current thread
-    ///
-    /// \return
-    /// Nothing
-    ///
-    static void SetCurrentConnection(MgSiteConnection* siteConnection);
-
-    ///////////////////////////////
-    /// \brief
-    /// Gets the site connection for the current thread which was
-    /// set previously using SetCurrentConnection.  This
-    /// function uses thread local storage.
-    ///
-    /// \return
-    /// Site connection for currently executing thread
-    ///
-    /// \exception MgConnectionNotOpenException if the site connection has not been set
-    ///
-    static MgSiteConnection* GetCurrentConnection();
-
-
-    ///////////////////////////////
-    /// \brief
     /// Gets the user info for this site
     ///
     /// \return

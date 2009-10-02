@@ -76,6 +76,7 @@ MgClientHandler::~MgClientHandler()
         // clearing out buffer
     }
 
+    m_SockStream.close_reader();
     m_SockStream.close();
 
     m_pMessageQueue = NULL;
@@ -199,6 +200,8 @@ int MgClientHandler::handle_input(ACE_HANDLE handle)
         stream->WriteObject(mgException);
         stream->WriteStreamEnd();
 
+        m_SockStream.close_writer();
+        m_SockStream.close_reader();
         m_SockStream.close();
     }
 
@@ -258,6 +261,8 @@ int MgClientHandler::handle_close(ACE_HANDLE handle, ACE_Reactor_Mask mask)
 
     mask = ACE_Event_Handler::ALL_EVENTS_MASK | ACE_Event_Handler::DONT_CALL;
     reactor()->remove_handler(this, mask);
+    m_SockStream.close_writer();
+    m_SockStream.close_reader();
     m_SockStream.close();
 
     MgServerManager* pServerManager = MgServerManager::GetInstance();
