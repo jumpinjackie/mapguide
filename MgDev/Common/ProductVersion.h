@@ -18,6 +18,6 @@
 #ifndef PRODUCTVERSION_H_
 #define PRODUCTVERSION_H_
 
-const STRING ProductVersion = L"2.1.0.0";
+const STRING ProductVersion = L"2.2.0.0";
 
 #endif // PRODUCTVERSION_H_

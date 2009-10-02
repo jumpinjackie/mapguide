@@ -31,7 +31,7 @@ String locale;
 String titleBar = product + " Viewer";
 String serverTitle = product + " Server";
 String viewerTitle = product + " Viewer";
-String viewerVersion = "2.1.0.0";
+String viewerVersion = "2.2.0.0";
 String serverVersion;
 %>
 
