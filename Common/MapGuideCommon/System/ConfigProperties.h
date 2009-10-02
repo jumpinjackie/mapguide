@@ -133,7 +133,7 @@ EXTERNAL_API:
 INTERNAL_API:
 
     static const STRING GeneralPropertyWorkerThreadPoolSize;            /// value("WorkerThreadPoolSize")
-    static const INT32 DefaultGeneralPropertyWorkerThreadPoolSize;      /// value(10)
+    static const INT32 DefaultGeneralPropertyWorkerThreadPoolSize;      /// value(1)
 
 EXTERNAL_API:
 
