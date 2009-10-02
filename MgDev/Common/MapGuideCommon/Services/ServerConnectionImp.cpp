@@ -105,7 +105,14 @@ bool MgServerConnectionImp::Connect(const char* ipAddress, int portno)
     {
         int err = ACE_OS::last_error();
         MG_UNUSED_ARG(err);
-        // Could not connect
+
+        // We failed to connect so we must clean this up differently then just relying on the 
+        // desturctor because the Disconnect() method called by the destructor will try and 
+        // send a control packet which we don't want.
+        mServer->close_writer();
+        mServer->close_reader();
+        mServer->close();
+
         delete mServer;
         mServer = NULL;
         return false;
@@ -149,6 +156,7 @@ void MgServerConnectionImp::Disconnect()
         }
 
         // Long enough.  Bail.
+        mServer->close_reader();
         mServer->close();
 
         delete mServer;

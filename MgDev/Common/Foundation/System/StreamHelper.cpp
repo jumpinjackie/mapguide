@@ -79,6 +79,13 @@ MgStreamHelper::MgStreamStatus MgStreamHelper::GetString(REFSTRING wcStr)
 
     if (mssDone != stat) return stat;
 
+    // Check for 0 length string
+    if(len == 0)
+    {
+        wcStr = L"";
+        return stat;
+    }
+
     UINT8 currSize = sizeof(wchar_t);
     if (currSize == charSize)
     {

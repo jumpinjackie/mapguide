@@ -21,8 +21,6 @@
 #undef CreateService
 #endif
 
-static ACE_thread_key_t g_threadLocalSiteConnection = 0;
-
 //////////////////////////////////////////////////////////////////
 /// <summary>
 /// Creates a site connection.  The local site defined
@@ -570,55 +568,6 @@ MgSite* MgSiteConnection::GetSite()
     }
 
     return site.Detach();
-}
-
-///////////////////////////////
-///<summary>
-///Sets the site connection for the current thread.  This
-///function uses thread local storage.
-///</summary>
-void MgSiteConnection::SetCurrentConnection(MgSiteConnection* siteConnection)
-{
-    if (0 == g_threadLocalSiteConnection)
-    {
-        // Perform Double-Checked Locking Optimization.
-        ACE_MT (ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance ()));
-        if (0 == g_threadLocalSiteConnection)
-        {
-            if (ACE_OS::thr_keycreate(&g_threadLocalSiteConnection, NULL) < 0)
-            {
-                g_threadLocalSiteConnection = 0;
-            }
-        }
-    }
-
-    if (0 != g_threadLocalSiteConnection)
-    {
-        ACE_OS::thr_setspecific(g_threadLocalSiteConnection, siteConnection);
-    }
-}
-
-///////////////////////////////
-///<summary>
-///Gets the site connection for the current thread which was
-///set previously using SetCurrentConnection.  This
-///function uses thread local storage.
-///</summary>
-MgSiteConnection* MgSiteConnection::GetCurrentConnection()
-{
-    MgSiteConnection* connection = NULL;
-    if (0 != g_threadLocalSiteConnection)
-    {
-        ACE_OS::thr_getspecific(g_threadLocalSiteConnection, (void**) &connection);
-    }
-
-    if (NULL == connection)
-    {
-        // No site connection means that we not have opened the connection to the site server yet.
-        throw new MgConnectionNotOpenException(L"MgSiteConnection.GetCurrentConnection", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    return connection;
 }
 
 MgUserInformation* MgSiteConnection::GetUserInfo()

@@ -89,6 +89,7 @@ protected:
 private:
 
     bool m_opCompleted;
+    ACE_Recursive_Thread_Mutex m_mutex;
 };
 
 /// Inline Methods

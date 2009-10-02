@@ -62,6 +62,7 @@ MgServiceOperation::~MgServiceOperation()
                 m_currConnection->SetSessionId(L"");
             }
         }
+        m_currConnection = NULL;
     }
 
     MgUserInformation::SetCurrentUserInfo(NULL);
@@ -152,6 +153,7 @@ MgStringCollection* MgServiceOperation::GetRoles() const
 void MgServiceOperation::Initialize(MgStreamData* data,
     const MgOperationPacket& packet)
 {
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::Init()\n" )));
     ACE_ASSERT(NULL != data);
 
@@ -206,6 +208,7 @@ void MgServiceOperation::Initialize(MgStreamData* data,
 ///
 bool MgServiceOperation::HandleException(MgException* except)
 {
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
     ACE_ASSERT(!m_opCompleted);
 
     MG_TRY()
@@ -267,6 +270,7 @@ void MgServiceOperation::BeginExecution()
 
 void MgServiceOperation::EndExecution()
 {
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::EndExecution()\n" )));
     ACE_ASSERT(m_argsRead && !m_opCompleted && m_stream != NULL && NULL != m_currConnection);
 
@@ -276,7 +280,6 @@ void MgServiceOperation::EndExecution()
     ACE_ASSERT(NULL != serverStreamData);
     Ptr<MgClientHandler> clientHandler = serverStreamData->GetClientHandler();
     ACE_ASSERT(NULL != clientHandler.p);
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, clientHandler.p->m_mutex));
 
     MgService* service = GetService();
     assert(NULL != service);
@@ -311,6 +314,7 @@ void MgServiceOperation::EndExecution()
 
 void MgServiceOperation::EndExecution(bool value)
 {
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::EndExecution()\n" )));
     ACE_ASSERT(m_argsRead && !m_opCompleted && m_stream != NULL && NULL != m_currConnection);
 
@@ -320,7 +324,6 @@ void MgServiceOperation::EndExecution(bool value)
     ACE_ASSERT(NULL != serverStreamData);
     Ptr<MgClientHandler> clientHandler = serverStreamData->GetClientHandler();
     ACE_ASSERT(NULL != clientHandler.p);
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, clientHandler.p->m_mutex));
 
     MgService* service = GetService();
     assert(NULL != service);
@@ -357,6 +360,7 @@ void MgServiceOperation::EndExecution(bool value)
 
 void MgServiceOperation::EndExecution(INT32 value)
 {
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::EndExecution()\n" )));
     ACE_ASSERT(m_argsRead && !m_opCompleted && m_stream != NULL && NULL != m_currConnection);
 
@@ -366,7 +370,6 @@ void MgServiceOperation::EndExecution(INT32 value)
     ACE_ASSERT(NULL != serverStreamData);
     Ptr<MgClientHandler> clientHandler = serverStreamData->GetClientHandler();
     ACE_ASSERT(NULL != clientHandler.p);
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, clientHandler.p->m_mutex));
 
     MgService* service = GetService();
     assert(NULL != service);
@@ -403,6 +406,7 @@ void MgServiceOperation::EndExecution(INT32 value)
 
 void MgServiceOperation::EndExecution(INT64 value)
 {
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::EndExecution()\n" )));
     ACE_ASSERT(m_argsRead && !m_opCompleted && m_stream != NULL && NULL != m_currConnection);
 
@@ -412,7 +416,6 @@ void MgServiceOperation::EndExecution(INT64 value)
     ACE_ASSERT(NULL != serverStreamData);
     Ptr<MgClientHandler> clientHandler = serverStreamData->GetClientHandler();
     ACE_ASSERT(NULL != clientHandler.p);
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, clientHandler.p->m_mutex));
 
     MgService* service = GetService();
     assert(NULL != service);
@@ -449,6 +452,7 @@ void MgServiceOperation::EndExecution(INT64 value)
 
 void MgServiceOperation::EndExecution(STRING value)
 {
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::EndExecution()\n" )));
     ACE_ASSERT(m_argsRead && !m_opCompleted && m_stream != NULL && NULL != m_currConnection);
 
@@ -458,7 +462,6 @@ void MgServiceOperation::EndExecution(STRING value)
     ACE_ASSERT(NULL != serverStreamData);
     Ptr<MgClientHandler> clientHandler = serverStreamData->GetClientHandler();
     ACE_ASSERT(NULL != clientHandler.p);
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, clientHandler.p->m_mutex));
 
     MgService* service = GetService();
     assert(NULL != service);
@@ -495,6 +498,7 @@ void MgServiceOperation::EndExecution(STRING value)
 
 void MgServiceOperation::EndExecution(MgSerializable* obj)
 {
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::EndExecution()\n" )));
     // ACE_ASSERT(NULL != obj);
     ACE_ASSERT(m_argsRead && !m_opCompleted && m_stream != NULL && NULL != m_currConnection);
@@ -505,7 +509,6 @@ void MgServiceOperation::EndExecution(MgSerializable* obj)
     ACE_ASSERT(NULL != serverStreamData);
     Ptr<MgClientHandler> clientHandler = serverStreamData->GetClientHandler();
     ACE_ASSERT(NULL != clientHandler.p);
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, clientHandler.p->m_mutex));
 
     MgService* service = GetService();
     assert(NULL != service);
@@ -542,6 +545,7 @@ void MgServiceOperation::EndExecution(MgSerializable* obj)
 
 void MgServiceOperation::EndExecution(MgStringCollection* stringCollection)
 {
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::EndExecution()\n" )));
     // ACE_ASSERT(NULL != stringCollection);
     ACE_ASSERT(m_argsRead && !m_opCompleted && m_stream != NULL && NULL != m_currConnection);
@@ -552,7 +556,6 @@ void MgServiceOperation::EndExecution(MgStringCollection* stringCollection)
     ACE_ASSERT(NULL != serverStreamData);
     Ptr<MgClientHandler> clientHandler = serverStreamData->GetClientHandler();
     ACE_ASSERT(NULL != clientHandler.p);
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, clientHandler.p->m_mutex));
 
     MgService* service = GetService();
     assert(NULL != service);
@@ -589,6 +592,7 @@ void MgServiceOperation::EndExecution(MgStringCollection* stringCollection)
 
 void MgServiceOperation::EndExecution(MgException* except)
 {
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgServiceOperation::EndExecution()\n" )));
     ACE_ASSERT(NULL != except && m_argsRead && !m_opCompleted && m_stream != NULL);
 
@@ -598,7 +602,6 @@ void MgServiceOperation::EndExecution(MgException* except)
     ACE_ASSERT(NULL != serverStreamData);
     Ptr<MgClientHandler> clientHandler = serverStreamData->GetClientHandler();
     ACE_ASSERT(NULL != clientHandler.p);
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, clientHandler.p->m_mutex));
 
     if (NULL != m_currConnection)
     {
