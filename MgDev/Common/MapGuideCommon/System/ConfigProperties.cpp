@@ -158,7 +158,7 @@ const STRING MgConfigProperties::DefaultGeneralPropertyWfsDocumentPath          
 const STRING MgConfigProperties::GeneralPropertyWmsDocumentPath                             = L"WmsDocumentPath";
 const STRING MgConfigProperties::DefaultGeneralPropertyWmsDocumentPath                      = L"Wms/";
 const STRING MgConfigProperties::GeneralPropertyWorkerThreadPoolSize                        = L"WorkerThreadPoolSize"; // for internal use only
-const INT32  MgConfigProperties::DefaultGeneralPropertyWorkerThreadPoolSize                 = 10;
+const INT32  MgConfigProperties::DefaultGeneralPropertyWorkerThreadPoolSize                 = 1;
 const STRING MgConfigProperties::GeneralPropertyRenderer                                    = L"Renderer";
 const STRING MgConfigProperties::DefaultGeneralPropertyRenderer                             = L"GD";
 
