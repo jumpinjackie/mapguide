@@ -75,6 +75,14 @@ MgUserInformation::MgUserInformation(CREFSTRING userName, CREFSTRING password)
     m_apiVersion = MG_API_VERSION(1,0,0);
 }
 
+//////////////////////////////////////////////////////////////
+/// <summary>
+/// Copy constructor.
+/// </summary>
+MgUserInformation::MgUserInformation(const MgUserInformation& userInfo) 
+{
+    *this = userInfo;
+}
 
 ///////////////////////////////
 ///<summary>
@@ -85,6 +93,27 @@ MgUserInformation::MgUserInformation(CREFSTRING userName, CREFSTRING password)
 ///</returns>
 MgUserInformation::~MgUserInformation()
 {
+}
+
+//////////////////////////////////////////////////////////////
+/// <summary>
+/// Assignment operator.
+/// </summary>
+MgUserInformation& MgUserInformation::operator=(const MgUserInformation& userInfo) 
+{
+    if (&userInfo != this)
+    {
+        m_username = userInfo.m_username;
+        m_password = userInfo.m_password;
+        m_sessionId = userInfo.m_sessionId;
+        m_locale = userInfo.m_locale;
+        m_type = userInfo.m_type;
+        m_clientAgent = userInfo.m_clientAgent;
+        m_clientIp = userInfo.m_clientIp;
+        m_apiVersion = userInfo.m_apiVersion;
+    }
+
+    return *this;
 }
 
 ///////////////////////////////
@@ -155,14 +184,14 @@ void MgUserInformation::SetMgSessionId(CREFSTRING sessionId)
 {
     MgUtil::CheckXss(sessionId);
 
-    int sepChar = (int)sessionId.find(L"_");
+    size_t sepChar = sessionId.find(L"_");
 
-    if (sepChar > 0 && sepChar < (int)sessionId.length())
+    if (sepChar > 0 && sepChar < sessionId.length())
     {
         // the locale can be either in the form "en" or "en-US"
         STRING subStr = sessionId.substr(sepChar+1);
-        int dashChar = (int)subStr.find(L"-");
-        int secondSepChar = (int)subStr.find(L"_");
+        size_t dashChar = subStr.find(L"-");
+        size_t secondSepChar = subStr.find(L"_");
         if (ExtendedLocaleDashLocation == dashChar && ExtendedLocaleSecondSepLocation == secondSepChar)
         {
             SetLocale(sessionId.substr(sepChar+1, MG_EXTENDED_LOCALE_LENGTH));
@@ -201,7 +230,7 @@ void MgUserInformation::SetLocale(CREFSTRING locale)
 
     if (MG_EXTENDED_LOCALE_LENGTH == locale.length())
     {
-        int dashChar = (int)locale.find(L"-");
+        size_t dashChar = locale.find(L"-");
         if (ExtendedLocaleDashLocation != dashChar)
         {
             throw new MgLengthException(L"MgUserInformation.SetLocale",
@@ -339,6 +368,10 @@ void MgUserInformation::SetCurrentUserInfo(MgUserInformation* userInformation)
             {
                 g_threadLocalUserInformation = 0;
             }
+            else
+            {
+                ACE_OS::thr_setspecific(g_threadLocalUserInformation, NULL);
+            }
         }
     }
 
@@ -347,17 +380,19 @@ void MgUserInformation::SetCurrentUserInfo(MgUserInformation* userInformation)
         MgUserInformation* oldInfo = NULL;
         ACE_OS::thr_getspecific(g_threadLocalUserInformation, (void**) &oldInfo);
 
-        if (ACE_OS::thr_setspecific(g_threadLocalUserInformation, userInformation) >= 0)
+        // Allocate a new MgUserInformation
+        MgUserInformation* tempUserInformation = NULL;
+        if(userInformation != NULL)
         {
-            if (NULL != userInformation)
-            {
-                SAFE_ADDREF(userInformation);
-            }
+            tempUserInformation = new MgUserInformation(*userInformation);
         }
 
+        ACE_OS::thr_setspecific(g_threadLocalUserInformation, tempUserInformation);
+
+        // Clean up old one if applicable
         if (NULL != oldInfo)
         {
-            SAFE_RELEASE(oldInfo);
+            delete oldInfo;
         }
     }
 }

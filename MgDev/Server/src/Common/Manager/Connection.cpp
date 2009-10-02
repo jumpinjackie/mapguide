@@ -37,6 +37,15 @@ MgConnection::MgConnection() :
     Start();
 }
 
+//////////////////////////////////////////////////////////////
+/// <summary>
+/// Copy constructor.
+/// </summary>
+MgConnection::MgConnection(const MgConnection& connection)
+{
+    *this = connection;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 /// <summary>
 /// Destructor
@@ -45,6 +54,30 @@ MgConnection::~MgConnection()
 {
     // Perform cleanup and write MgConnection info to log.
     End();
+}
+
+//////////////////////////////////////////////////////////////
+/// <summary>
+/// Assignment operator.
+/// </summary>
+MgConnection& MgConnection::operator=(const MgConnection& connection)
+{
+    if (&connection != this)
+    {
+        m_busy = connection.m_busy;
+        m_clientAgent = connection.m_clientAgent;
+        m_clientIp = connection.m_clientIp;
+        m_userName = connection.m_userName;
+        m_sessionId = connection.m_sessionId;
+        m_startTime = connection.m_startTime;
+        m_lastUsageTime = connection.m_lastUsageTime;
+        m_nReceivedOperations = connection.m_nReceivedOperations;
+        m_nProcessedOperations = connection.m_nProcessedOperations;
+        m_currOperationStatus = connection.m_currOperationStatus;
+        m_currOperationTime = connection.m_currOperationTime;
+    }
+
+    return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -64,12 +97,30 @@ void MgConnection::SetCurrentConnection(MgConnection* connection)
             {
                 g_threadLocalConnection = 0;
             }
+            else
+            {
+                ACE_OS::thr_setspecific(g_threadLocalConnection, NULL);
+            }
         }
     }
 
     if (0 != g_threadLocalConnection)
     {
-        ACE_OS::thr_setspecific(g_threadLocalConnection, connection);
+        MgConnection* oldInfo = NULL;
+        ACE_OS::thr_getspecific(g_threadLocalConnection, (void**) &oldInfo);
+
+        MgConnection* tempConnection = NULL;
+        if(connection != NULL)
+        {
+            tempConnection = new MgConnection(*connection);
+        }
+
+        ACE_OS::thr_setspecific(g_threadLocalConnection, tempConnection);
+
+        if (NULL != oldInfo)
+        {
+            delete oldInfo;
+        }
     }
 }
 

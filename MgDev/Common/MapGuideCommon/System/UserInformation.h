@@ -397,6 +397,18 @@ INTERNAL_API:
     ///
     virtual void Deserialize(MgStream* stream);
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Copy constructor.
+    ///
+    MgUserInformation(const MgUserInformation& userInfo);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Assignment operator.
+    ///
+    MgUserInformation& operator=(const MgUserInformation& userInfo);
+
 protected:
 
     /////////////////////////////////////////////////////////////////

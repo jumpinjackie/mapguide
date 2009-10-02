@@ -51,6 +51,18 @@ public:
     MgConnection();
     ~MgConnection();
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Copy constructor.
+    ///
+    MgConnection(const MgConnection& connection);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Assignment operator.
+    ///
+    MgConnection& operator=(const MgConnection& connection);
+
 /// Methods
 
 public:
