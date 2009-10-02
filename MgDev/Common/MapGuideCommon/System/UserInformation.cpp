@@ -390,10 +390,7 @@ void MgUserInformation::SetCurrentUserInfo(MgUserInformation* userInformation)
         ACE_OS::thr_setspecific(g_threadLocalUserInformation, tempUserInformation);
 
         // Clean up old one if applicable
-        if (NULL != oldInfo)
-        {
-            delete oldInfo;
-        }
+        SAFE_RELEASE(oldInfo);
     }
 }
 
