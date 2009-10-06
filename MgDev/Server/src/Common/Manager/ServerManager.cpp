@@ -814,10 +814,11 @@ void MgServerManager::IncrementActiveConnections()
     // Increment the total connections
     m_totalConnections++;
 
-    // The limit for the current ACE reactor is 62.
+#ifdef _WIN32
+    // The limit for the current Windows ACE reactor is 62.
     // The only reason the value 55 is chosen is because it is slightly under this value and
     // so we can log an error as the # of active connections approaches the current ACE reactor limit.
-    // TODO: This error logging will need to be revisited if a different ACE reactor is used.
+    // TODO: This error logging will need to be revisited if a different ACE reactor is used on Windows.
     if(m_totalActiveConnections.value() > 55)
     {
         STRING strActiveConnections = L"";
@@ -829,6 +830,9 @@ void MgServerManager::IncrementActiveConnections()
         // We are dangerously close to exceeding the safe # of active connections for the current ACE reactor
         MG_LOG_ERROR_ENTRY(message.c_str());
     }
+#else
+    // Linux uses a different ACE reactor and so this error message doesn't apply.
+#endif
 }
 
 void MgServerManager::DecrementActiveConnections()
