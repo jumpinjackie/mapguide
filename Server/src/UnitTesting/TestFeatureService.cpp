@@ -1407,6 +1407,7 @@ void TestFeatureService::TestCase_SetLongTransaction()
 
         // now set a session
         userInfo->SetMgSessionId(userInfo->CreateMgSessionId());
+        MgUserInformation::SetCurrentUserInfo(userInfo);
         CPPUNIT_ASSERT(pService->SetLongTransaction(resource, longTransactionName));
 
         // setting the same LT name twice shouldn't matter
