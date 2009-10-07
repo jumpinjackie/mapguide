@@ -176,6 +176,10 @@ void MgServiceOperation::Initialize(MgStreamData* data,
     Ptr<MgUserInformation> currUserInfo = dynamic_cast<MgUserInformation*>(m_stream->GetObject());
     assert(currUserInfo != NULL);
 
+    // Update the API version
+    currUserInfo->SetApiVersion(m_packet.m_OperationVersion);
+
+    // Set the current MgUserInformation - this makes a TLS copy of the MgUserInformation object
     MgUserInformation::SetCurrentUserInfo(currUserInfo);
     m_packet.m_UserInfo = NULL;
 
@@ -185,7 +189,6 @@ void MgServiceOperation::Initialize(MgStreamData* data,
     m_currConnection->SetUserName(currUserInfo->GetUserName());
     m_currConnection->SetSessionId(currUserInfo->GetMgSessionId());
     m_currConnection->SetCurrentOperationStatus(MgConnection::OpUnknown);
-    currUserInfo->SetApiVersion(m_packet.m_OperationVersion);
 
     // Decrement number of arguments since we have pulled the first one.
     m_packet.m_NumArguments--;

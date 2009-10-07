@@ -50,11 +50,17 @@ TestRenderingService::TestRenderingService()
     Ptr<MgUserInformation> userInfo = new MgUserInformation(
         L"Administrator", L"admin");
     userInfo->SetLocale(TEST_LOCALE);
+
+    // Set the current MgUserInformation - this makes a TLS copy of the MgUserInformation object
+    // This must be done before calling CreateSession()
     MgUserInformation::SetCurrentUserInfo(userInfo);
 
     STRING session = svcSite->CreateSession();
     assert(!session.empty());
     userInfo->SetMgSessionId(session);
+
+    // Set the current MgUserInformation - this makes a TLS copy of the MgUserInformation object
+    MgUserInformation::SetCurrentUserInfo(userInfo);
 
     m_siteConnection = new MgSiteConnection();
     m_siteConnection->Open(userInfo);
