@@ -38,14 +38,7 @@
 #ifndef _WIN32
 #define _wcsnicmp wcsncasecmp
 
-// Linux version of GetTickCount()
-#include <sys/times.h>
-
-long GetTickCount()
-{
-    tms tm;
-    return times(&tm);
-}
+extern long GetTickCount();
 #endif
 
 

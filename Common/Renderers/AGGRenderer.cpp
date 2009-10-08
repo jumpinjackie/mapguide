@@ -74,12 +74,19 @@ using namespace DWFCore;
 #ifndef _WIN32
 
 // Linux version of GetTickCount()
+// Note: The Windows version of GetTickCount() returns the results in milliseconds.
 #include <sys/times.h>
 
 long GetTickCount()
 {
-    tms tm;
-    return times(&tm);
+    struct timeval time;
+    long mtime, seconds, useconds;
+
+    gettimeofday(&time, NULL);
+    seconds  = time.tv_sec;
+    useconds = time.tv_usec;
+    mtime = ((seconds) * 1000 + (long)(useconds/1000.0));
+    return mtime;
 }
 
 #endif
