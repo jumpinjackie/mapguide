@@ -26,15 +26,7 @@
 #include "GwsQueryEngineImp.h"
 
 #ifndef _WIN32
-
-// Linux version of GetTickCount()
-#include <sys/times.h>
-
-long GetTickCount()
-{
-    tms tm;
-    return times(&tm);
-}
+extern long GetTickCount();
 #endif
 
 

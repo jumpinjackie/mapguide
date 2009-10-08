@@ -22,14 +22,7 @@
 #ifndef _WIN32
 #define stricmp strcasecmp
 
-// Linux version of GetTickCount()
-#include <sys/times.h>
-
-long GetTickCount()
-{
-    tms tm;
-    return times(&tm);
-}
+extern long GetTickCount();
 #endif
 
 #ifdef _WIN32
@@ -117,6 +110,8 @@ void TestCoordinateSystem::TestCase_CheckCoordinateSystems()
         int nCoordinateSystemsTested = 0;
         int nCoordinateSystemsPassed = 0;
 
+        long lStart = GetTickCount();
+
         // Open the test file and read the OGC WKT.
         // If the test file cannot be opened return an error.
         FILE* stream = NULL;
@@ -186,6 +181,7 @@ void TestCoordinateSystem::TestCase_CheckCoordinateSystems()
         }
 
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTotal coordinate system OGC WKTs tested: %d/%d (Passed/Total)\n"), nCoordinateSystemsPassed, nCoordinateSystemsTested));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("Total Processing Time: = %6.4f (s)\n"), ((GetTickCount()-lStart)/1000.0)));
     }
     catch(MgException* e)
     {
@@ -322,6 +318,7 @@ void TestCoordinateSystem::TestCase_EnumerateCategories()
     {
         int nTotalCoordinateSystemsTested = 0;
         int nTotalCoordinateSystemsPassed = 0;
+        long lStart = GetTickCount();
 
         MgCoordinateSystemFactory factory;
         Ptr<MgStringCollection> categories;
@@ -399,6 +396,7 @@ void TestCoordinateSystem::TestCase_EnumerateCategories()
         }
 
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTotal coordinate systems tested: %d/%d (Passed/Total)\n"), nTotalCoordinateSystemsPassed, nTotalCoordinateSystemsTested));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("Total Processing Time: = %6.4f (s)\n"), ((GetTickCount()-lStart)/1000.0)));
     }
     catch(MgException* e)
     {
@@ -5826,6 +5824,8 @@ void TestCoordinateSystem::TestCase_EPSG()
         INT32 epsg = factory->ConvertWktToEpsgCode(EPSG_4326_Wkt);
         CPPUNIT_ASSERT(epsg == 4326);
 
+        long lStart = GetTickCount();
+
         // Test all supported EPSG codes
         // Open the test file and read the EPSG codes.
         // If the test file cannot be opened return an error.
@@ -5906,6 +5906,7 @@ void TestCoordinateSystem::TestCase_EPSG()
         }
 
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTotal EPSG codes tested: %d/%d (Passed/Total)\n"), nEpsgCodesPassed, nEpsgCodesTested));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("Total Processing Time: = %6.4f (s)\n"), ((GetTickCount()-lStart)/1000.0)));
     }
     catch(MgException* e)
     {
