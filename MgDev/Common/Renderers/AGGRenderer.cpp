@@ -75,7 +75,7 @@ using namespace DWFCore;
 
 // Linux version of GetTickCount()
 // Note: The Windows version of GetTickCount() returns the results in milliseconds.
-#include <sys/times.h>
+#include <sys/time.h>
 
 long GetTickCount()
 {
