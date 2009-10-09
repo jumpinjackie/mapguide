@@ -96,7 +96,7 @@ CopyFdoComponentsDebug : ..\..\..\Oem\FDO\*.*
     xcopy /r /d /y /s ..\..\..\Oem\FDO\bin\Release ..\..\bin\debug\FDO\
 
 CopyFdoProvidersDebug : ..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml
-    xcopy /r /y "..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml" ..\..\bin\debug\FDO\
+    xcopy /r /d /y "..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml" ..\..\bin\debug\FDO\
 
 CopySchemaDebug : ..\..\..\Common\Schema\*.xsd
     if NOT EXIST ..\..\bin\debug\Schema\nul mkdir ..\..\bin\debug\Schema
@@ -344,7 +344,7 @@ CopyFdoComponentsDebug64 : ..\..\..\Oem\FDO\*.*
     xcopy /r /d /y /s ..\..\..\Oem\FDO\bin\release64 ..\..\bin\debug64\FDO\
 
 CopyFdoProvidersDebug64 : ..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml
-    xcopy /r /y "..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml" ..\..\bin\debug64\FDO\
+    xcopy /r /d /y "..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml" ..\..\bin\debug64\FDO\
 
 CopySchemaDebug64 : ..\..\..\Common\Schema\*.xsd
     if NOT EXIST ..\..\bin\debug64\Schema\nul mkdir ..\..\bin\debug64\Schema
@@ -592,7 +592,7 @@ CopyFdoComponentsRelease : ..\..\..\Oem\FDO\*.*
     xcopy /r /d /y /s ..\..\..\Oem\FDO\bin\Release ..\..\bin\release\FDO\
 
 CopyFdoProvidersRelease : ..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml
-    xcopy /r /y "..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml" ..\..\bin\release\FDO\
+    xcopy /r /d /y "..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml" ..\..\bin\release\FDO\
 
 CopySchemaRelease : ..\..\..\Common\Schema\*.xsd
     if NOT EXIST ..\..\bin\release\Schema\nul mkdir ..\..\bin\release\Schema
@@ -840,7 +840,7 @@ CopyFdoComponentsRelease64 : ..\..\..\Oem\FDO\*.*
     xcopy /r /d /y /s ..\..\..\Oem\FDO\bin\release64 ..\..\bin\release64\FDO\
 
 CopyFdoProvidersRelease64 : ..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml
-    xcopy /r /y "..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml" ..\..\bin\release64\FDO\
+    xcopy /r /d /y "..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml" ..\..\bin\release64\FDO\
 
 CopySchemaRelease64 : ..\..\..\Common\Schema\*.xsd
     if NOT EXIST ..\..\bin\release64\Schema\nul mkdir ..\..\bin\release64\Schema
