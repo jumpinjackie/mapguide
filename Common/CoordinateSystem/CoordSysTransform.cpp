@@ -1186,6 +1186,7 @@ MgLineString* CCoordinateSystemTransform::GridLine (MgCoordinate* fromPnt,MgCoor
     {
         MgCoordinate* pntPtr = factory.CreateCoordinateXY (curPtr->trgX,curPtr->trgY);
         coordinateCollection->Add (pntPtr);
+        pntPtr->Release ();
     }
     lineString = factory.CreateLineString (coordinateCollection);
 

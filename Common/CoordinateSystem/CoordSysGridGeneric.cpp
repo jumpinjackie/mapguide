@@ -54,7 +54,7 @@ CCoordinateSystemGridGeneric::CCoordinateSystemGridGeneric(MgCoordinateSystem* p
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemGridGeneric::~CCoordinateSystemGridGeneric()
 {
-    delete m_TheGrid;
+    SAFE_RELEASE (m_TheGrid);
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 INT32 CCoordinateSystemGridGeneric::GetSpecializationType ()
@@ -75,7 +75,7 @@ MgCoordinateSystemGridBoundary* CCoordinateSystemGridGeneric::GetBoundary(void)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 MgCoordinateSystemGridLineCollection* CCoordinateSystemGridGeneric::GetGridLines (MgCoordinateSystemGridSpecification* specification)
 {
-    MgCoordinateSystemGridLineCollection* gridLines;
+    MgCoordinateSystemGridLineCollection* gridLines = 0;
 
     if (m_TheGrid != 0)
     {

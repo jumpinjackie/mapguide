@@ -462,7 +462,7 @@ void CCoordinateSystemOneGrid::Dispose (void)
 {
     delete this;
 }
-
+#pragma message ("Remove this code before code complete.")
 //=============================================================================
 // This object was invented to carry multiple MGRS grids, but is no longer used
 // as there is now a CCoordinateSystemMgrsZone object and a related collection

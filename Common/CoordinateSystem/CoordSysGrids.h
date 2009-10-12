@@ -261,7 +261,6 @@ class CCoordinateSystemGridLine : public MgCoordinateSystemGridLine
 {
 public:
     CCoordinateSystemGridLine (INT32 orientation,double value);
-    CCoordinateSystemGridLine (const CCoordinateSystemGridLine& source);
     ~CCoordinateSystemGridLine (void);
     
     INT32 GetGridOrientation(void);
@@ -281,6 +280,9 @@ protected:
     INT32 m_Orientation;
     double m_Value;
     Ptr<MgLineStringCollection> m_LineSegments;
+
+private:            // Not implemented
+    CCoordinateSystemGridLine (const CCoordinateSystemGridLine& source);
 };
 
 //=============================================================================
@@ -324,7 +326,7 @@ protected:
     Ptr<MgLineStringCollection> m_NorthLine;
     Ptr<MgLineStringCollection> m_WestLine;
 
-private:
+private:            // Not implemented
     CCoordinateSystemGridRegion (void);
     CCoordinateSystemGridRegion (const CCoordinateSystemGridRegion& source);
 };
@@ -337,9 +339,7 @@ class CCoordinateSystemGridTick : public MgCoordinateSystemGridTick
 {
 public:
     CCoordinateSystemGridTick (INT32 orientation,double value);
-    CCoordinateSystemGridTick (const CCoordinateSystemGridTick& source);
     ~CCoordinateSystemGridTick (void);
-    CCoordinateSystemGridTick& operator= (const CCoordinateSystemGridTick& rhs);
 
     void SetOnGridLine (bool isOnGridLine);
     void SetOrientation (INT32 orientation);
@@ -361,6 +361,10 @@ protected:
     double m_Value;
     Ptr<MgCoordinate> m_Position;
     Ptr<MgCoordinate> m_Direction;
+
+private:            // Not implemented
+    CCoordinateSystemGridTick (const CCoordinateSystemGridTick& source);
+    CCoordinateSystemGridTick& operator= (const CCoordinateSystemGridTick& rhs);
 };
 
 //=============================================================================

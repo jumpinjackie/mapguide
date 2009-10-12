@@ -224,10 +224,10 @@ void CCoordinateSystemMgrsZone::BuildMinorRegions (MgCoordinateSystemGridBoundar
                 southwest->SetY (static_cast<double>(northIndex));
                 northeast->SetX (static_cast<double>(eastIndex + 100000));
                 northeast->SetY (static_cast<double>(northIndex + 100000));
-                
-                 // Now we need the designation.  The comes from the MgCoordinateSystemMgrs object that knows about the lettering scheme.
+
+                // Now we need the designation.  The comes from the MgCoordinateSystemMgrs object that knows about the lettering scheme.
                 // Unfortunately, we don't have a reference to the host Mgrs object, so we're going to have to know
-                /// about the lettering scheme.
+                // about the lettering scheme.
                 STRING designation = CCoordinateSystemMgrs::GridSquareDesignation (m_UtmZone,static_cast<double>(eastIndex + 1),
                                                                                              static_cast<double>(northIndex + 1),
                                                                                              m_LetteringScheme);
