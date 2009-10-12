@@ -69,7 +69,10 @@ CCoordinateSystemMgrs::CCoordinateSystemMgrs(INT8 nLetteringScheme, bool bSetExc
                        m_pCsTarget (),
                        m_pCsMgrs (NULL),
                        m_GridBoundary (),
-                       m_ZoneCollection ()
+                       m_ZoneCollection (),
+                       m_GraticuleUtm (),
+                       m_GraticuleUpsNorth (),
+                       m_GraticuleUpsSouth ()
 {
 }
 CCoordinateSystemMgrs::CCoordinateSystemMgrs(MgCoordinateSystem* pTargetCs,INT8 nLetteringScheme,
@@ -82,7 +85,11 @@ CCoordinateSystemMgrs::CCoordinateSystemMgrs(MgCoordinateSystem* pTargetCs,INT8 
                        m_pCsTarget (),
                        m_pCsMgrs (NULL),
                        m_GridBoundary (),
-                       m_ZoneCollection ()
+                       m_ZoneCollection (),
+                       m_GraticuleUtm (),
+                       m_GraticuleUpsNorth (),
+                       m_GraticuleUpsSouth ()
+
 {
     m_pCsTarget = SAFE_ADDREF (pTargetCs);
 }
@@ -686,6 +693,7 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
     double northMin, northMax;      // frame boundary extrema in 'LL84' (or 'LL')
 
     Ptr<MgPolygon> pPolygon;
+    Ptr<MgPolygon> pPolygonIntersection;
     Ptr<MgCoordinate> pSouthwest;
     Ptr<MgCoordinate> pNortheast;
     Ptr<MgCoordinateSystem> llCRS;
@@ -724,7 +732,9 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
             pNortheast->SetY (-80.0);
             llBoundary = csFactory->GridBoundary (pSouthwest,pNortheast);
             pPolygon = llBoundary->GetBoundary (toFrameTransform,1.0);
-            reducedFrameBoundary = csFactory->GridBoundary (pPolygon);
+            Ptr<MgPolygon> pPolygonTemp = frameBoundary->GetBoundary ();
+            pPolygonIntersection = dynamic_cast<MgPolygon*>(pPolygon->Intersection (pPolygonTemp));
+            reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
             mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
             zoneCollection->Add (mgrsZoneGrid);
 
@@ -741,7 +751,9 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
             pNortheast->SetY (northMax);
             llBoundary = csFactory->GridBoundary (pSouthwest,pNortheast);
             pPolygon = llBoundary->GetBoundary (toFrameTransform,1.0);
-            reducedFrameBoundary = csFactory->GridBoundary (pPolygon);
+            Ptr<MgPolygon> pPolygonTemp = frameBoundary->GetBoundary ();
+            pPolygonIntersection = dynamic_cast<MgPolygon*>(pPolygon->Intersection (pPolygonTemp));
+            reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
             mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
             zoneCollection->Add (mgrsZoneGrid);
 
@@ -795,7 +807,9 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
                     // TODO:  We should not use a hard coded curve precision value here.
                     llBoundary = csFactory->GridBoundary (pSouthwest,pNortheast);
                     pPolygon = llBoundary->GetBoundary (toFrameTransform,1.0);
-                    reducedFrameBoundary = csFactory->GridBoundary (pPolygon);
+                    Ptr<MgPolygon> pPolygonTemp = frameBoundary->GetBoundary ();
+                    pPolygonIntersection = dynamic_cast<MgPolygon*>(pPolygon->Intersection (pPolygonTemp));
+                    reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
                     mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
                     zoneCollection->Add (mgrsZoneGrid);
                  }
@@ -818,7 +832,9 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
 
                     llBoundary = csFactory->GridBoundary (pSouthwest,pNortheast);
                     pPolygon = llBoundary->GetBoundary (toFrameTransform,1.0);
-                    reducedFrameBoundary = csFactory->GridBoundary (pPolygon);
+                    Ptr<MgPolygon> pPolygonTemp = frameBoundary->GetBoundary ();
+                    pPolygonIntersection = dynamic_cast<MgPolygon*>(pPolygon->Intersection (pPolygonTemp));
+                    reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
                     mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
                     zoneCollection->Add (mgrsZoneGrid);
                 }

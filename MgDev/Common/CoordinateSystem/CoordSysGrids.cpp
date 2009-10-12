@@ -249,8 +249,8 @@ double CCoordinateSystemGridSpecification::GetEastingIncrement(MgCoordinateSyste
     INT32 gridCrsUnitCode;
     double unitConversion;
 
-    MgCoordinateSystemCatalog* catalogPtr = gridCS->GetCatalog ();
-    MgCoordinateSystemUnitInformation* unitInfoPtr = catalogPtr->GetUnitInformation ();
+    Ptr<MgCoordinateSystemCatalog> catalogPtr = gridCS->GetCatalog ();
+    Ptr<MgCoordinateSystemUnitInformation> unitInfoPtr = catalogPtr->GetUnitInformation ();
     gridCrsUnitCode = gridCS->GetUnitCode ();
 
     // Verify that the unit type of the specification match the unit type
@@ -280,8 +280,8 @@ double CCoordinateSystemGridSpecification::GetNorthingIncrement(MgCoordinateSyst
     INT32 gridCrsUnitCode;
     double unitConversion;
 
-    MgCoordinateSystemCatalog* catalogPtr = gridCS->GetCatalog ();
-    MgCoordinateSystemUnitInformation* unitInfoPtr = catalogPtr->GetUnitInformation ();
+    Ptr<MgCoordinateSystemCatalog> catalogPtr = gridCS->GetCatalog ();
+    Ptr<MgCoordinateSystemUnitInformation> unitInfoPtr = catalogPtr->GetUnitInformation ();
     gridCrsUnitCode = gridCS->GetUnitCode ();
 
     // Verify that the unit type of the specification match the unit type
@@ -311,8 +311,8 @@ double CCoordinateSystemGridSpecification::GetTickEastingIncrement(MgCoordinateS
     INT32 gridCrsUnitCode;
     double unitConversion;
 
-    MgCoordinateSystemCatalog* catalogPtr = gridCS->GetCatalog ();
-    MgCoordinateSystemUnitInformation* unitInfoPtr = catalogPtr->GetUnitInformation ();
+    Ptr<MgCoordinateSystemCatalog> catalogPtr = gridCS->GetCatalog ();
+    Ptr<MgCoordinateSystemUnitInformation> unitInfoPtr = catalogPtr->GetUnitInformation ();
     gridCrsUnitCode = gridCS->GetUnitCode ();
 
     // Verify that the unit type of the specification match the unit type
@@ -342,8 +342,8 @@ double CCoordinateSystemGridSpecification::GetTickNorthingIncrement(MgCoordinate
     INT32 gridCrsUnitCode;
     double unitConversion;
 
-    MgCoordinateSystemCatalog* catalogPtr = gridCS->GetCatalog ();
-    MgCoordinateSystemUnitInformation* unitInfoPtr = catalogPtr->GetUnitInformation ();
+    Ptr<MgCoordinateSystemCatalog> catalogPtr = gridCS->GetCatalog ();
+    Ptr<MgCoordinateSystemUnitInformation> unitInfoPtr = catalogPtr->GetUnitInformation ();
     gridCrsUnitCode = gridCS->GetUnitCode ();
 
     // Verify that the unit type of the specification match the unit type
@@ -374,8 +374,8 @@ double CCoordinateSystemGridSpecification::GetCurvePrecision (MgCoordinateSystem
     double toMeters;
     double toDegrees;
 
-    MgCoordinateSystemCatalog* catalogPtr = gridCS->GetCatalog ();
-    MgCoordinateSystemUnitInformation* unitInfoPtr = catalogPtr->GetUnitInformation ();
+    Ptr<MgCoordinateSystemCatalog> catalogPtr = gridCS->GetCatalog ();
+    Ptr<MgCoordinateSystemUnitInformation> unitInfoPtr = catalogPtr->GetUnitInformation ();
 
     // UnitConversion will convert the units of the coordinate system to
     // meters by multiplication.  By inverting this, we have a value which
@@ -483,7 +483,13 @@ void CCoordinateSystemGridBoundary::SetBoundaryExtents (MgCoordinate* southwest,
         collection->Add (clPnt);
 
         MgLinearRing* ring = factory.CreateLinearRing (collection);
+        if (ring == 0)
+        {
+            throw new MgOutOfMemoryException(L"MgCoordinateSystemGridBoundary.SetBoundaryExtents",
+                                             __LINE__, __WFILE__, NULL, L"", NULL);
+        }
         m_GridBoundary = factory.CreatePolygon (ring,NULL);
+        ring->Release ();
     MG_CATCH_AND_THROW(L"MgCoordinateSystemGridBoundary.SetBoundaryExtents")
 }
 void CCoordinateSystemGridBoundary::SetBoundaryExtents (MgPolygon* boundary)
