@@ -581,13 +581,17 @@ MgCoordinateSystemGridSpecification* MgCoordinateSystemFactory::GridSpecificatio
         gridSpecification = new CCoordinateSystemGridSpecification ();
         if (gridSpecification != NULL)
         {
-            // TODO:  modify CCoordinateSystemGridSpecification to check
-            // all the parameters added and throw an exception if an error.
             gridSpecification->SetGridBase (0.0,0.0);
             gridSpecification->SetGridIncrement (increment,increment);
             gridSpecification->SetGridIncrement (tickIncrement,tickIncrement);
             gridSpecification->SetUnits (unitCode,MgCoordinateSystemUnitType::Linear);
             gridSpecification->SetCurvePrecision (curvePrecision);
+
+            // Check the consistency of all these parameters.
+            if (!gridSpecification->IsConsistent ())
+            {
+                throw new MgInvalidArgumentException(L"MgCoordinateSystemFactory.GridSpecification", __LINE__, __WFILE__, NULL, L"", NULL);
+            }
         }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.GridSpecification")
     return gridSpecification.Detach ();

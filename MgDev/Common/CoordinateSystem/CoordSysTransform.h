@@ -293,6 +293,8 @@ private:
 
     inline void TransformPointInternal(double& x, double& y, double *pdZ, bool isGeographic,
         double lonMin, double lonMax, double latMin, double latMax);
+
+    // Private function required to support the PositionOfValue function.
     int TransformInverse (double& xx,double& yy);
 };
 

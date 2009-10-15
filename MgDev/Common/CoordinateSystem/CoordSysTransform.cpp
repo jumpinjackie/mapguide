@@ -1046,7 +1046,7 @@ MgLineString* CCoordinateSystemTransform::GridLine (MgCoordinate* fromPnt,MgCoor
 
     Ptr<MgCoordinateCollection> coordinateCollection;
     Ptr<MgLineString> lineString;
-    
+
     struct rx_Linseg_
     {
         struct rx_Linseg_ *next;
@@ -1070,125 +1070,126 @@ MgLineString* CCoordinateSystemTransform::GridLine (MgCoordinate* fromPnt,MgCoor
     double midSrcX, midSrcY;
     double midTrgX, midTrgY;
 
-//TODO: This algorithm calls Transform, which can and does throw.  There are no provisions for this in this algorithm.
+    MG_TRY()
 
-    chord2 = curvePrecision * curvePrecision;
+        chord2 = curvePrecision * curvePrecision;
 
-    // Allocate and populate the first point in the segment list.
-    segList = new rx_Linseg_;
-    segList->next = NULL;
+        // Allocate and populate the first point in the segment list.
+        segList = new rx_Linseg_;
+        segList->next = NULL;
 
-    wrkPntX = segList->srcX = segList->trgX = fromPnt->GetX ();
-    wrkPntY = segList->srcY = segList->trgY = fromPnt->GetY ();
-    Transform (&segList->trgX,&segList->trgY);
+        wrkPntX = segList->srcX = segList->trgX = fromPnt->GetX ();
+        wrkPntY = segList->srcY = segList->trgY = fromPnt->GetY ();
+        Transform (&segList->trgX,&segList->trgY);
 
-    // Allocate and populate the last point in the segment list.
-    curPtr = new rx_Linseg_;
-    curPtr->next = NULL;
-    segList->next = curPtr;
+        // Allocate and populate the last point in the segment list.
+        curPtr = new rx_Linseg_;
+        curPtr->next = NULL;
+        segList->next = curPtr;
 
-    wrkPntX = curPtr->srcX = curPtr->trgX = toPnt->GetX ();
-    wrkPntY = curPtr->srcY = curPtr->trgY = toPnt->GetY ();
-    Transform (&curPtr->trgX,&curPtr->trgY);
+        wrkPntX = curPtr->srcX = curPtr->trgX = toPnt->GetX ();
+        wrkPntY = curPtr->srcY = curPtr->trgY = toPnt->GetY ();
+        Transform (&curPtr->trgX,&curPtr->trgY);
 
-    // We now have the two end points of the line in the segment list.  Start a
-    // loop which will examine the segment list and add points where necessary
-    // to make sure the chord distance from the real point to the segment point
-    // is less than that required.
-    segCnt = 2;
-    do
-    {
-        // Loop through the list and bisect each segment as appropriate.
-        curPtr = segList;
-        maxChord = 0.0;
+        // We now have the two end points of the line in the segment list.  Start a
+        // loop which will examine the segment list and add points where necessary
+        // to make sure the chord distance from the real point to the segment point
+        // is less than that required.
+        segCnt = 2;
         do
         {
-            // Compute the midpoint of the segment in lin coordinates.
-            delX = curPtr->next->srcX - curPtr->srcX;
-            delY = curPtr->next->srcY - curPtr->srcY;
-            midTrgX = midSrcX = curPtr->srcX + delX * 0.5;
-            midTrgY = midSrcY = curPtr->srcY + delY * 0.5;
-            Transform (&midTrgX,&midTrgY);
-
-            // Compute the distance from the converted point to the line, doing all
-            // of this in dwg coordinates.  The result is the chord distance.
-            // The following algorithm was derived from taking the intersection of a
-            // line from the converted point perdendicular to the existing line.
-            delX = curPtr->next->trgX - curPtr->trgX;
-            delY = curPtr->next->trgY - curPtr->trgY;
-            delX2 = delX * delX;
-            delY2 = delY * delY;
-            denom = delX2 + delY2;
-
-            // Make sure we don't divide by zero.  denom is the sum of two
-            // squares, so it can't be negative.
-            if (denom > 0.0)
+            // Loop through the list and bisect each segment as appropriate.
+            curPtr = segList;
+            maxChord = 0.0;
+            do
             {
-                num = (delX2 * midTrgX) + (delY2 * curPtr->trgX) +
-                      (midTrgY - curPtr->trgY) * delX * delY;
-                newX = num / denom;
-                num = (delY2 * midTrgY) + (delX2 * curPtr->trgY) +
-                      (midTrgX - curPtr->trgX) * delX * delY;
-                newY = num / denom;
-                delX = newX - midTrgX;
-                delY = newY - midTrgY;
-                dist2 = delX * delX + delY * delY;
-            }
-            else
-            {
-                // This is overkill unless the drawing units are lat/longs or something
-                // else that is very weird.
-                delX = curPtr->trgX - midTrgX;
-                delY = curPtr->trgY - midTrgY;
-                dist2 = delX * delX + delY * delY;
-            }
+                // Compute the midpoint of the segment in lin coordinates.
+                delX = curPtr->next->srcX - curPtr->srcX;
+                delY = curPtr->next->srcY - curPtr->srcY;
+                midTrgX = midSrcX = curPtr->srcX + delX * 0.5;
+                midTrgY = midSrcY = curPtr->srcY + delY * 0.5;
+                Transform (&midTrgX,&midTrgY);
 
-            // Accumulate the maximum chord distance so that we know when we are done.
-            if (dist2 > maxChord) maxChord = dist2;
+                // Compute the distance from the converted point to the line, doing all
+                // of this in dwg coordinates.  The result is the chord distance.
+                // The following algorithm was derived from taking the intersection of a
+                // line from the converted point perdendicular to the existing line.
+                delX = curPtr->next->trgX - curPtr->trgX;
+                delY = curPtr->next->trgY - curPtr->trgY;
+                delX2 = delX * delX;
+                delY2 = delY * delY;
+                denom = delX2 + delY2;
 
-            // If the chord distance (it's not really a chord, but I don't know what
-            // the real name of this thing is) is greater than the requested maximum,
-            // we bisect this line segment.
-            if (dist2 > chord2)
-            {
-                // Allocate a new segment structure.
-                nxtPtr = new rx_Linseg_;
-                nxtPtr->next = NULL;
+                // Make sure we don't divide by zero.  denom is the sum of two
+                // squares, so it can't be negative.
+                if (denom > 0.0)
+                {
+                    num = (delX2 * midTrgX) + (delY2 * curPtr->trgX) +
+                          (midTrgY - curPtr->trgY) * delX * delY;
+                    newX = num / denom;
+                    num = (delY2 * midTrgY) + (delX2 * curPtr->trgY) +
+                          (midTrgX - curPtr->trgX) * delX * delY;
+                    newY = num / denom;
+                    delX = newX - midTrgX;
+                    delY = newY - midTrgY;
+                    dist2 = delX * delX + delY * delY;
+                }
+                else
+                {
+                    // This is overkill unless the drawing units are lat/longs or something
+                    // else that is very weird.
+                    delX = curPtr->trgX - midTrgX;
+                    delY = curPtr->trgY - midTrgY;
+                    dist2 = delX * delX + delY * delY;
+                }
 
-                // Insert the computed mid point.  We have both the dwg and lin values
-                // available.
-                nxtPtr->trgX = midTrgX;
-                nxtPtr->trgY = midTrgY;
-                nxtPtr->srcX = midSrcX;
-                nxtPtr->srcY = midSrcY;
+                // Accumulate the maximum chord distance so that we know when we are done.
+                if (dist2 > maxChord) maxChord = dist2;
 
-                // Count this point.
-                segCnt += 1;
+                // If the chord distance (it's not really a chord, but I don't know what
+                // the real name of this thing is) is greater than the requested maximum,
+                // we bisect this line segment.
+                if (dist2 > chord2)
+                {
+                    // Allocate a new segment structure.
+                    nxtPtr = new rx_Linseg_;
+                    nxtPtr->next = NULL;
 
-                // Link this point into the list.
-                nxtPtr->next = curPtr->next;
-                curPtr->next = nxtPtr;
+                    // Insert the computed mid point.  We have both the dwg and lin values
+                    // available.
+                    nxtPtr->trgX = midTrgX;
+                    nxtPtr->trgY = midTrgY;
+                    nxtPtr->srcX = midSrcX;
+                    nxtPtr->srcY = midSrcY;
 
-                // Move on to the next segment.
-                curPtr = nxtPtr->next;
-            }
-            else
-            {
-                // Move on to the next segment.
-                curPtr = curPtr->next;
-            }
-        } while (curPtr->next != NULL);
-    } while (maxChord > chord2 && segCnt < maxPoints);
+                    // Count this point.
+                    segCnt += 1;
 
-    // Add all of our dwg points to the provided point array.
-    coordinateCollection = new MgCoordinateCollection ();
-    for (curPtr = segList;curPtr != NULL;curPtr = curPtr->next)
-    {
-        MgCoordinate* pntPtr = factory.CreateCoordinateXY (curPtr->trgX,curPtr->trgY);
-        coordinateCollection->Add (pntPtr);
-        pntPtr->Release ();
-    }
-    lineString = factory.CreateLineString (coordinateCollection);
+                    // Link this point into the list.
+                    nxtPtr->next = curPtr->next;
+                    curPtr->next = nxtPtr;
+
+                    // Move on to the next segment.
+                    curPtr = nxtPtr->next;
+                }
+                else
+                {
+                    // Move on to the next segment.
+                    curPtr = curPtr->next;
+                }
+            } while (curPtr->next != NULL);
+        } while (maxChord > chord2 && segCnt < maxPoints);
+
+        // Add all of our dwg points to the provided point array.
+        coordinateCollection = new MgCoordinateCollection ();
+        for (curPtr = segList;curPtr != NULL;curPtr = curPtr->next)
+        {
+            Ptr<MgCoordinate> pntPtr = factory.CreateCoordinateXY (curPtr->trgX,curPtr->trgY);
+            coordinateCollection->Add (pntPtr);
+        }
+        lineString = factory.CreateLineString (coordinateCollection);
+
+    MG_CATCH (L"MgCoordinateSystemTransform.GridLine")
 
     // Release all resources.
     curPtr = segList;
@@ -1198,6 +1199,9 @@ MgLineString* CCoordinateSystemTransform::GridLine (MgCoordinate* fromPnt,MgCoor
         delete curPtr;
         curPtr = nxtPtr;
     }
+    
+    MG_THROW ()
+
     return lineString.Detach ();
 }
 // Returns integer status, two values currently supported.  Zero return
@@ -1239,7 +1243,9 @@ INT32 CCoordinateSystemTransform::PositionOfValue (MgCoordinate* position,double
         }
         else
         {
-            // TODO: Parameter error.
+            // Invalid argument value.
+            throw new MgInvalidArgumentException(L"MgCoordinateSystemTransform.PositionOfValue",
+                                                 __LINE__, __WFILE__, NULL, L"", NULL);
         }
         if (minValue > maxValue)
         {
@@ -1265,6 +1271,7 @@ INT32 CCoordinateSystemTransform::PositionOfValue (MgCoordinate* position,double
         {
             deltaX = gridTo->GetX () - gridFrom->GetX ();
             deltaY = gridTo->GetY () - gridFrom->GetY ();
+            
             // We do not try to place northing ticks on a line which more horizontal than it
             // is vertical; and vice versa.
             if ((deltaX > deltaY) && (orientation == MgCoordinateSystemGridOrientation::EastWest) ||
@@ -1277,13 +1284,14 @@ INT32 CCoordinateSystemTransform::PositionOfValue (MgCoordinate* position,double
                 xx = gridFrom->GetX () + deltaX * ratio;
                 yy = gridFrom->GetY () + deltaY * ratio;
 
-                // This object does not, currently, support this inverse
-                // function.  It does, however, have all the information
-                // necessary to support one.  So, next on the TODO list is
-                // to write a private TransformInverse function.
+                // This member function was added as a private member as part
+                // of the RFC #76 development effort.  All the information to
+                // perform this functyion is present in this object.  It was
+                // made private as to do otherwise would change the public API,
+                // a change which was not approved as part of the RFC.
                 TransformInverse (xx,yy);
 
-                // Frame temp is now an approximation (usually a pretty good
+                // xx and yy are now an approximation (usually a pretty good
                 // one) of the position of the provided ordinate value on the
                 // provided line in frame corodinates.  We _could_ tighten this
                 // up a little but here; but for know we'll just go with this
@@ -1458,6 +1466,10 @@ inline void CCoordinateSystemTransform::TransformPointInternal(double& x, double
         throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystemTransform.TransformPointInternal", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemConversionExtentException", NULL);
     }
 }
+
+// Essentially the inverse of the Transform (double& xx,double& yy) function.
+// This is a private function used to greatly enhance the performance of the
+// PositionOfValue function defined above.
 int CCoordinateSystemTransform::TransformInverse (double& xx,double& yy)
 {
     int st;

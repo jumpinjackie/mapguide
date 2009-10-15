@@ -51,18 +51,27 @@ public:
     void SetCurvePrecision (double curvePrecision);
 
     // The following function identically to the published version, with the
-    // exception that the value returned are always converted to the units of
-    // the provided coordinate system.
-    double GetEastingBase (MgCoordinateSystem* gridCS);
-    double GetNorthingBase (MgCoordinateSystem* gridCS);
-    double GetEastingIncrement(MgCoordinateSystem* gridCS);
-    double GetNorthingIncrement(MgCoordinateSystem* gridCS);
-    double GetTickEastingIncrement(MgCoordinateSystem* gridCS);
-    double GetTickNorthingIncrement(MgCoordinateSystem* gridCS);
+    // exception that the value returned is always converted to the units
+    // specified by the provided units code.
+    double GetEastingBase (INT32 resultUnitCode);
+    double GetNorthingBase (INT32 resultUnitCode);
+    double GetEastingIncrement (INT32 resultUnitCode);
+    double GetNorthingIncrement (INT32 resultUnitCode);
+    double GetTickEastingIncrement (INT32 resultUnitCode);
+    double GetTickNorthingIncrement (INT32 resultUnitCode);
+
+    // This ufnction will generate a suitable value if the host application
+    // left the curve precision unspecified.
     double GetCurvePrecision(MgCoordinateSystem* gridCS);
+
+    // The following is used by the CoordinateSystemFactory object to verify
+    // that all of the information provided to it is consistent with the
+    // requirements of the object.
+    bool IsConsistent (void);
 
 protected:
     void Dispose (void);
+    double ConvertUnitsOfValue (double value,INT32 trgUnitCode);
 
 private:
     double m_EastingBase;

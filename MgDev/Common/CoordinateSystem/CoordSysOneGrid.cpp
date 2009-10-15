@@ -116,7 +116,8 @@ MgCoordinate* CCoordinateSystemOneGrid::ConvertToFrame (MgCoordinate* gridCoordi
 }
 MgCoordinateSystemGridLineCollection* CCoordinateSystemOneGrid::GetGridLines (MgCoordinateSystemGridSpecification* specs)
 {
-    INT32 lineStringCount;
+    INT32 gridCrsUnitCode;
+
     double value;
     double delta;
     double increment;
@@ -134,6 +135,8 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemOneGrid::GetGridLines (Mg
     Ptr<CCoordinateSystemGridLineCollection> gridLineCollection = new CCoordinateSystemGridLineCollection ();
 
     MG_TRY()
+        gridCrsUnitCode = m_GridCRS->GetUnitCode ();
+
         CCoordinateSystemGridSpecification* mySpecPtr = dynamic_cast<CCoordinateSystemGridSpecification*>(specs);
         coordinate = new MgCoordinateXY ();
         fromPnt    = new MgCoordinateXY ();
@@ -158,13 +161,13 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemOneGrid::GetGridLines (Mg
         // Note that we need to have the increments and base values in terms
         // of the grid coordinate system, regardless of the units used to
         // specify them.
-        increment = mySpecPtr->GetEastingIncrement(m_GridCRS);
+        increment = mySpecPtr->GetEastingIncrement(gridCrsUnitCode);
         delta = fabs(fmod (eastMin,increment));
         eastMin -= (eastMin >= 0.0) ? delta : (increment - delta);
         delta = fabs(fmod (eastMax,increment));
         eastMax += (eastMax >= 0.0) ? (increment - delta) : delta;
  
-        increment = mySpecPtr->GetNorthingIncrement(m_GridCRS);
+        increment = mySpecPtr->GetNorthingIncrement(gridCrsUnitCode);
         delta = fabs(fmod (northMin,increment));
         northMin -= (northMin >= 0.0) ? delta : (increment - delta);
         delta = fabs(fmod (northMax,increment));
@@ -173,15 +176,15 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemOneGrid::GetGridLines (Mg
         // Adjust for the base.  Again, we always enlarge, never shrink.
         if (mySpecPtr->GetEastingBase () > 0.0)
         {
-            increment = mySpecPtr->GetEastingIncrement (m_GridCRS);
-            delta = fmod (mySpecPtr->GetEastingBase(m_GridCRS),increment);
+            increment = mySpecPtr->GetEastingIncrement (gridCrsUnitCode);
+            delta = fmod (mySpecPtr->GetEastingBase(gridCrsUnitCode),increment);
             eastMin  += delta - increment;
             eastMax  += delta + increment;
         }
         if (mySpecPtr->GetNorthingBase () > 0.0)
         {
-            increment = mySpecPtr->GetNorthingIncrement (m_GridCRS);
-            delta = fmod (mySpecPtr->GetNorthingBase(m_GridCRS),increment);
+            increment = mySpecPtr->GetNorthingIncrement (gridCrsUnitCode);
+            delta = fmod (mySpecPtr->GetNorthingBase(gridCrsUnitCode),increment);
             northMin  += delta - increment;
             northMax  += delta + increment;
         }
@@ -189,7 +192,7 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemOneGrid::GetGridLines (Mg
         // Given the specification, we double loop, generating lines.
         // Forst loop, generatinf west/east lines starting at the southern edge
         // proceeding to the north.
-        increment = mySpecPtr->GetNorthingIncrement (m_GridCRS);
+        increment = mySpecPtr->GetNorthingIncrement (gridCrsUnitCode);
         for (value = northMin;value <= northMax;value += increment)
         {
             fromPnt->SetX (eastMin);
@@ -197,13 +200,12 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemOneGrid::GetGridLines (Mg
             toPnt->SetX (eastMax);
             toPnt->SetY (value);
             lineString = m_ToFrameXform->GridLine (fromPnt,toPnt,precision,m_MaxCurvePoints);
-            
+
             // Clip the line to the frame boundary.  The grid line may
             // actually leave, and then reenter, the grid boundary, so the
             // result can be a multi-line sting.
             lineStringCollection = m_FrameBoundary->ClipLineString (lineString);
-            lineStringCount = lineStringCollection->GetCount ();
-            if (lineStringCount > 0)
+            if (lineStringCollection)
             {
                 // Construct the Grid Line object and add it to the grid
                 // line collection object.
@@ -215,7 +217,7 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemOneGrid::GetGridLines (Mg
 
         // Second loop, the south/north lines, starting at the western edge
         // proceeding to the east.
-        increment = mySpecPtr->GetEastingIncrement (m_GridCRS);
+        increment = mySpecPtr->GetEastingIncrement (gridCrsUnitCode);
         for (value = eastMin;value <= eastMax;value += increment)
         {
             fromPnt->SetX (value);
@@ -228,8 +230,7 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemOneGrid::GetGridLines (Mg
             // actually leave, and then re-enter, the grid boundary, so the
             // result can be a multi-line string.
             lineStringCollection = m_FrameBoundary->ClipLineString (lineString);
-            lineStringCount = lineStringCollection->GetCount ();
-            if (lineStringCount > 0)
+            if (lineStringCollection)
             {
                 // Construct the Grid Line object and add it to the grid
                 // line collection object.
@@ -248,6 +249,7 @@ CCoordinateSystemGridTickCollection* CCoordinateSystemOneGrid::GetBoundaryTicks 
 
     INT32 status;
     INT32 orientation;
+    INT32 gridCrsUnitCode;
 
     double tmpDbl;
     double delta;
@@ -269,7 +271,9 @@ CCoordinateSystemGridTickCollection* CCoordinateSystemOneGrid::GetBoundaryTicks 
     MgGeometryFactory mgFactory;
 
     MG_TRY ()
-    
+
+        gridCrsUnitCode = m_GridCRS->GetUnitCode ();
+
         CCoordinateSystemGridSpecification* mySpecPtr = dynamic_cast<CCoordinateSystemGridSpecification*>(specs);
         tickCollection = new CCoordinateSystemGridTickCollection ();
 
@@ -279,13 +283,13 @@ CCoordinateSystemGridTickCollection* CCoordinateSystemOneGrid::GetBoundaryTicks 
 
         // Expand the extents to become the lowest and highest tick values
         // for each of the ordinates.
-        increment = mySpecPtr->GetTickEastingIncrement(m_GridCRS);
+        increment = mySpecPtr->GetTickEastingIncrement(gridCrsUnitCode);
         delta = fabs(fmod (eastMin,increment));
         eastMin -= (eastMin >= 0.0) ? delta : (increment - delta);
         delta = fabs(fmod (eastMax,increment));
         eastMax += (eastMax >= 0.0) ? (increment - delta) : delta;
 
-        increment = mySpecPtr->GetTickNorthingIncrement(m_GridCRS);
+        increment = mySpecPtr->GetTickNorthingIncrement(gridCrsUnitCode);
         delta = fabs(fmod (northMin,increment));
         northMin -= (northMin >= 0.0) ? delta : (increment - delta);
         delta = fabs(fmod (northMax,increment));
@@ -294,15 +298,15 @@ CCoordinateSystemGridTickCollection* CCoordinateSystemOneGrid::GetBoundaryTicks 
         // Adjust for the base.  Again, we always enlarge, never shrink.
         if (mySpecPtr->GetEastingBase () > 0.0)
         {
-            increment = mySpecPtr->GetEastingIncrement (m_GridCRS);
-            delta = fmod (mySpecPtr->GetEastingBase(m_GridCRS),increment);
+            increment = mySpecPtr->GetEastingIncrement (gridCrsUnitCode);
+            delta = fmod (mySpecPtr->GetEastingBase(gridCrsUnitCode),increment);
             eastMin  += delta - increment;
             eastMax  += delta + increment;
         }
         if (mySpecPtr->GetNorthingBase () > 0.0)
         {
-            increment = mySpecPtr->GetNorthingIncrement (m_GridCRS);
-            delta = fmod (mySpecPtr->GetNorthingBase(m_GridCRS),increment);
+            increment = mySpecPtr->GetNorthingIncrement (gridCrsUnitCode);
+            delta = fmod (mySpecPtr->GetNorthingBase(gridCrsUnitCode),increment);
             northMin  += delta - increment;
             northMax  += delta + increment;
         }
@@ -323,7 +327,7 @@ CCoordinateSystemGridTickCollection* CCoordinateSystemOneGrid::GetBoundaryTicks 
 
             // Do the easting ticks; that is tickmarks whose value is an
             // easting ordinate value.
-            increment = mySpecPtr->GetTickEastingIncrement (m_GridCRS);
+            increment = mySpecPtr->GetTickEastingIncrement (gridCrsUnitCode);
             orientation = MgCoordinateSystemGridOrientation::EastWest;
             for (ordinateValue = eastMin;ordinateValue <= eastMax;ordinateValue += increment)
             {
@@ -355,7 +359,7 @@ CCoordinateSystemGridTickCollection* CCoordinateSystemOneGrid::GetBoundaryTicks 
 
             // Do the northing ticks; that is tickmarks whose value is an
             // northing ordinate value.
-            increment = mySpecPtr->GetTickNorthingIncrement (m_GridCRS);
+            increment = mySpecPtr->GetTickNorthingIncrement (gridCrsUnitCode);
             orientation = MgCoordinateSystemGridOrientation::NorthSouth;
             for (ordinateValue = northMin;ordinateValue <= northMax;ordinateValue += increment)
             {
@@ -459,53 +463,6 @@ void CCoordinateSystemOneGrid::GetGridExtents (double& eastMin,double& eastMax,d
 }
 
 void CCoordinateSystemOneGrid::Dispose (void)
-{
-    delete this;
-}
-#pragma message ("Remove this code before code complete.")
-//=============================================================================
-// This object was invented to carry multiple MGRS grids, but is no longer used
-// as there is now a CCoordinateSystemMgrsZone object and a related collection
-// object.  When we're ready for code complete and we don't seem to need this
-// for anything, we should delete it. 
-CCoordinateSystemGridCollection::CCoordinateSystemGridCollection (void)
-                                        :
-                                     MgGuardDisposable   (),
-                                     m_OneGridCollection ()
-{
-    m_OneGridCollection = new MgDisposableCollection();
-}
-CCoordinateSystemGridCollection::~CCoordinateSystemGridCollection (void)
-{
-    m_OneGridCollection->Clear ();
-}
-INT32 CCoordinateSystemGridCollection::GetCount () const
-{
-    INT32 itemCount = m_OneGridCollection->GetCount ();
-    return itemCount;
-}
-CCoordinateSystemOneGrid* CCoordinateSystemGridCollection::GetItem (INT32 index) const
-{
-    CCoordinateSystemOneGrid *itemPtr = static_cast<CCoordinateSystemOneGrid*>(m_OneGridCollection->GetItem (index));
-    return itemPtr;
-}
-void CCoordinateSystemGridCollection::RemoveAt (INT32 index)
-{
-    m_OneGridCollection->RemoveAt (index);
-}
-void CCoordinateSystemGridCollection::Clear()
-{
-    m_OneGridCollection->Clear ();
-}
-void CCoordinateSystemGridCollection::SetItem (INT32 index, CCoordinateSystemOneGrid* value)
-{
-    m_OneGridCollection->SetItem (index,value);
-}
-void CCoordinateSystemGridCollection::Add (CCoordinateSystemOneGrid* value)
-{
-    m_OneGridCollection->Add (value);
-}
-void CCoordinateSystemGridCollection::Dispose (void)
 {
     delete this;
 }
