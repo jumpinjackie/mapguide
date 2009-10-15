@@ -453,9 +453,10 @@ int MgUnmanagedDataManager::SubstituteDataPathAliases(string& doc)
                     if (!MgFileUtil::EndsWithSlash(mappingDir))
                         MgFileUtil::AppendSlashToEndOfPath(mappingDir);
 
-                    size_t dirLen = mappingDir.length();
+                    string mappingDirStr = MgUtil::WideCharToMultiByte(mappingDir);
+                    size_t dirLen = mappingDirStr.length();
 
-                    doc.replace(startPos, len1 + nameLen + len2, MgUtil::WideCharToMultiByte(mappingDir), 0, dirLen);
+                    doc.replace(startPos, len1 + nameLen + len2, mappingDirStr, 0, dirLen);
                     currStartPos = startPos + dirLen;
                     aliasSubstituted = true;
                     ++count;
