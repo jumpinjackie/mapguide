@@ -20,6 +20,7 @@
 #include "CoordSysUtil.h"       //for Convert_Wide_To_Ascii
 #include "CriticalSection.h"    //for SmartCriticalClass
 
+#include "Spatial/MathUtility.h"
 #include "CoordSysGrids.h"
 #include "CoordSysOneGrid.h"
 #include "CoordSysMgrsZone.h"
@@ -68,10 +69,31 @@ void CCoordinateSystemMgrsZone::BuildRegionCollection (MgCoordinateSystemGridBou
                                                        MgCoordinateSystemGridSpecification* specification)
 {
     double curvePrecision;
+    double eastingIncrement;
+    double northingIncrement;
 
     curvePrecision = specification->GetCurvePrecision ();
-    BuildMajorRegions (frameBoundary,curvePrecision);
-    BuildMinorRegions (frameBoundary,curvePrecision);
+
+    if (specification->GetUnitType () == MgCoordinateSystemUnitType::Angular)
+    {
+        eastingIncrement = specification->GetEastingIncrement (MgCoordinateSystemUnitCode::Degree);
+        northingIncrement = specification->GetNorthingIncrement (MgCoordinateSystemUnitCode::Degree);
+        if (MgMathUtility::DblCmp (eastingIncrement,6.0) &&
+            MgMathUtility::DblCmp (northingIncrement,8.0))
+        {
+            BuildMajorRegions (frameBoundary,curvePrecision);
+        }
+    }
+    else if (specification->GetUnitType () == MgCoordinateSystemUnitType::Linear)
+    {
+        eastingIncrement = specification->GetEastingIncrement (MgCoordinateSystemUnitCode::Meter);
+        northingIncrement = specification->GetNorthingIncrement (MgCoordinateSystemUnitCode::Meter);
+        if (MgMathUtility::DblCmp (eastingIncrement,100000.0) &&
+            MgMathUtility::DblCmp (northingIncrement,100000.0))
+        {
+            BuildMinorRegions (frameBoundary,curvePrecision);
+        }
+    }
 }
 void CCoordinateSystemMgrsZone::BuildMajorRegions (MgCoordinateSystemGridBoundary* frameBoundary,double curvePrecision)
 {
@@ -109,16 +131,22 @@ void CCoordinateSystemMgrsZone::BuildMajorRegions (MgCoordinateSystemGridBoundar
         toFrameTransform = csFactory.GetTransform(llCRS,frameCRS);
 
         // Major regions are solely a function of the extents of the grid in
-        // terms of geographic coordinates.  So, we extract the extents of the
+        // terms of geographic coordinates.  So, we extract the extents of this
         // grid in geographic coordinate form, and work from there.
         GetGeographicExtents (lngMin,lngMax,latMin,latMax);
 
         if ((m_UtmZone) != 0 && (abs (m_UtmZone) <= 60))
         {
-            utmZoneNbr = abs (m_UtmZone);
+            // Here for a normal (i.e. non-polar) UTM zone.  Use some asserts
+            // to verify the assumption here that the boundary for this zone
+            // does not extend into the polar regions.
+            assert (latMin >= -80.0);
+            assert (latMax <=  84.0);
+
             // The grid boundary may have been shrunk to the limits of the frame
             // boundary, so we'll recompute the appropriate minLng and maxLng from
             // the utmZoneNbr data member.
+            utmZoneNbr = abs (m_UtmZone);
             centralMeridian = static_cast<double>(-183 + (utmZoneNbr * 6));
             lngMin = centralMeridian - 3.0;
             lngMax = centralMeridian + 3.0;
@@ -131,17 +159,84 @@ void CCoordinateSystemMgrsZone::BuildMajorRegions (MgCoordinateSystemGridBoundar
             delta = fabs (fmod (latMax,8.0));
             lastLat = static_cast<INT32>(latMax + ((latMax >= 0.0) ? (8.0 - delta) : -delta));
 
-            for (latIdx = firstLat;latIdx < lastLat;latIdx += 8)
+            // While the normal UTM zones extend up to 84 degrees
+            // north latitude, the northernmost band (Band X) is
+            // 12 degrees high (72 to 84 degrees latitude).  So there
+            // is no band beginning at 80.
+            if (lastLat > 72)
             {
-                // TODO: Need to adjust the region boundaries to account for
-                // the screwy stuff which happens in southern Norway and the
-                // Svaldberg Islands.
+                lastLat = 72;
+            }
+
+            for (latIdx = firstLat;latIdx <= lastLat;latIdx += 8)
+            {
+                // Calculate the envelope of the normal UTM zone.
                 latMin = static_cast<double>(latIdx);
                 latMax = latMin + 8.0;
                 southwest->SetX (lngMin);
                 southwest->SetY (latMin);
                 northeast->SetX (lngMax);
                 northeast->SetY (latMax);
+
+                // Band X (72 thru 84 north latitude includes 12 degrees of
+                // latitude.  Also, in this band, zones 32, 34, and 36 do not exist.
+                // and zones 31, 33, 35, and 37 have non-standard widths.  We
+                // adjust for all that now.
+                if (latIdx == 72)
+                {
+                    if (m_UtmZone == 32 || m_UtmZone == 34 || m_UtmZone == 36)
+                    {
+                        // These are regions which do not exist.
+                        continue;
+                    }
+
+                    // For all other regions in this band, the "height" is
+                    // 12 degrees.
+                    latMin = static_cast<double>(latIdx);
+                    latMax = latMin + 12.0;
+
+                    // There are two zones which are 9 degrees wide, and two that are
+                    // 12 degrees wide in this band.
+                    if (m_UtmZone == 31)
+                    {
+                        lngMin = centralMeridian - 3.0;
+                        lngMax = centralMeridian + 6.0;
+                    }
+                    else if (m_UtmZone == 33 || m_UtmZone == 35)
+                    {
+                        lngMin = centralMeridian - 6.0;
+                        lngMax = centralMeridian + 6.0;
+                    }
+                    else if (m_UtmZone == 37)
+                    {
+                        lngMin = centralMeridian - 6.0;
+                        lngMax = centralMeridian + 3.0;
+                    }
+                    southwest->SetX (lngMin);
+                    southwest->SetY (latMin);
+                    northeast->SetX (lngMax);
+                    northeast->SetY (latMax);
+                }
+
+                // One more kludge.  The following is necessary for a specific
+                // region south east of Norway.
+                if ((latIdx == 56) && (m_UtmZone == 31 || m_UtmZone == 32))
+                {
+                    if (m_UtmZone == 31)
+                    {
+                        lngMin = centralMeridian - 3.0;
+                        lngMax = centralMeridian;
+                    }
+                    else if (m_UtmZone == 32)
+                    {
+                        lngMin = centralMeridian - 6.0;
+                        lngMax = centralMeridian + 3.0;
+                    }
+                    southwest->SetX (lngMin);
+                    southwest->SetY (latMin);
+                    northeast->SetX (lngMax);
+                    northeast->SetY (latMax);
+                }
 
                 // We have the polygon, we need the designation.
                 gridZoneIndex = CCoordinateSystemMgrs::GridZoneDesignationIndex (latMin + 1.0,centralMeridian);

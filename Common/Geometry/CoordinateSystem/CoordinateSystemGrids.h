@@ -520,78 +520,145 @@ PUBLISHED_API:
     ///
     virtual void SetCurvePrecision (double curvePrecision) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Checks the internal contents of the object for consistency.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual bool IsConsistent ();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual bool IsConsistent ();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual bool IsConsistent ();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// returns true if the values set are consistent with a valid
+    /// specification block.
+    ///
+    /// \remarks
+    /// Will not throw.
+    virtual bool IsConsistent (void) = 0;
+
 INTERNAL_API:
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns the easting base value after conversion from the units
-    /// of this specification object to the units of the provided coordinate
-    /// system.
+    /// of this specification object to the units requested by the argument.
     ///
-    /// \param gridCRS
-    /// The return value is converted to the units of this coordinate system.
+    /// \param resultUnitCode
+    /// The return value is converted to the units indicated by this unit
+    /// code.
     ///
     /// \return
-    /// Easting base value in units of the provided coordinate system.
+    /// Easting base value in units indicated by the resultUnitCode
+    /// parameter.
     ///
     /// \exception
     /// Will throw if the unit types of this specification and the provided
-    /// coordinate system are not the same.
+    /// argument are not the same.
     ///
-    virtual double GetEastingBase (MgCoordinateSystem* gridCRS)=0;
+    virtual double GetEastingBase (INT32 resultUnitCode)=0;
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns the northing base value after conversion from the units
-    /// of this specification object to the units of the provided coordinate
-    /// system.
+    /// of this specification object to the units requested by the argument.
     ///
-    /// \param gridCRS
-    /// The return value is converted to the units of this coordinate system.
+    /// \param resultUnitCode
+    /// The return value is converted to the units indicated by this unit
+    /// code.
     ///
     /// \return
-    /// Northing base value in units of the provided coordinate system.
+    /// Northing base value in units indicated by the resultUnitCode
+    /// parameter.
     ///
     /// \exception
     /// Will throw if the unit types of this specification and the provided
-    /// coordinate system are not the same.
+    /// argument are not the same.
     ///
-    virtual double GetNorthingBase (MgCoordinateSystem* gridCRS)=0;
+    virtual double GetNorthingBase (INT32 resultUnitCode)=0;
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Returns the easting grid increment value after conversion from the
-    /// units of this specification object to the units of the provided
-    /// coordinate system.
+    /// Returns the easting increment value after conversion from the units
+    /// of this specification object to the units requested by the argument.
     ///
-    /// \param gridCRS
-    /// The return value is converted to the units of this coordinate system.
+    /// \param resultUnitCode
+    /// The return value is converted to the units indicated by this unit
+    /// code.
     ///
     /// \return
-    /// Easting grid increment value in units of the provided coordinate system.
+    /// Easting increment value in units indicated by the resultUnitCode
+    /// parameter.
     ///
     /// \exception
     /// Will throw if the unit types of this specification and the provided
-    /// coordinate system are not the same.
+    /// argument are not the same.
     ///
-    virtual double GetEastingIncrement (MgCoordinateSystem* gridCRS)=0;
+    virtual double GetEastingIncrement (INT32 resultUnitCode)=0;
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Returns the northing grid increment value after conversion from the
-    /// units of this specification object to the units of the provided
-    /// coordinate system.
+    /// Returns the northing increment value after conversion from the units
+    /// of this specification object to the units requested by the argument.
     ///
-    /// \param gridCRS
-    /// The return value is converted to the units of this coordinate system.
+    /// \param resultUnitCode
+    /// The return value is converted to the units indicated by this unit
+    /// code.
     ///
     /// \return
-    /// Northing grid increment value in units of the provided coordinate system.
+    /// Northing increment value in units indicated by the resultUnitCode
+    /// parameter.
     ///
     /// \exception
     /// Will throw if the unit types of this specification and the provided
-    /// coordinate system are not the same.
+    /// argument are not the same.
     ///
-    virtual double GetNorthingIncrement (MgCoordinateSystem* gridCRS)=0;
+    virtual double GetNorthingIncrement (INT32 resultUnitCode)=0;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the tick easting increment value after conversion from the
+    /// units of this specification object to the units requested by the
+    /// argument.
+    ///
+    /// \param resultUnitCode
+    /// The return value is converted to the units indicated by this unit
+    /// code.
+    ///
+    /// \return
+    /// Tick easting increment value in units indicated by the
+    /// resultUnitCode parameter.
+    ///
+    /// \exception
+    /// Will throw if the unit types of this specification and the provided
+    /// argument are not the same.
+    ///
+    virtual double GetTickEastingIncrement (INT32 resultUnitCode)=0;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the tick northing increment value after conversion from the
+    /// units of this specification object to the units requested by the
+    /// argument.
+    ///
+    /// \param resultUnitCode
+    /// The return value is converted to the units indicated by this unit
+    /// code.
+    ///
+    /// \return
+    /// Tick northing increment value in units indicated by the
+    /// resultUnitCode parameter.
+    ///
+    /// \exception
+    /// Will throw if the unit types of this specification and the provided
+    /// argument are not the same.
+    ///
+    virtual double GetTickNorthingIncrement (INT32 resultUnitCode)=0;
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief

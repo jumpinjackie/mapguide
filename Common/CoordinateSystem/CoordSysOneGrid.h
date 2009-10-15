@@ -83,7 +83,7 @@ protected:
     Ptr<MgCoordinateSystem> m_FrameCRS;                  // The frame coordinate system
     Ptr<MgCoordinateSystemTransform> m_ToFrameXform;     // Converts grid coordinates to frame coordinates
     Ptr<MgCoordinateSystemTransform> m_ToGridXform;      // Converts frame coordinates to grid coordinates
-    double m_BoundaryPrecision;                          // Precision at which the boundary conversion was perfromed
+    double m_BoundaryPrecision;                          // Precision at which the boundary conversion was performed
     Ptr<MgCoordinateSystemGridBoundary> m_FrameBoundary; // Grid boundary in frame coordinates
     Ptr<MgCoordinateSystemGridBoundary> m_GridBoundary;  // Grid boundary in grid coordinates
 
@@ -91,36 +91,6 @@ private:
     // Not implemented
     CCoordinateSystemOneGrid (const CCoordinateSystemOneGrid& source);
     CCoordinateSystemOneGrid& operator= (const CCoordinateSystemOneGrid& rhs);
-};
-
-//=============================================================================
-// This object was invented to carry multiple MGRS grids, but is no longer used
-// as there is now a CCoordinateSystemMgrsZone object and a related collection
-// object.  WHen we're ready for code complete and we don't seem to need this
-// for anything, we should delete it. 
-class CCoordinateSystemGridCollection : public MgGuardDisposable
-{
-public:
-    CCoordinateSystemGridCollection (void);
-    ~CCoordinateSystemGridCollection (void);
-
-    INT32 GetCount () const;
-    CCoordinateSystemOneGrid* GetItem (INT32 index) const;
-    void RemoveAt (INT32 index);
-    void Clear();
-    void SetItem (INT32 index, CCoordinateSystemOneGrid* value);
-    void Add (CCoordinateSystemOneGrid* value);
-
-protected:
-    void Dispose (void);
-
-private:
-    // Data Members
-    Ptr<MgDisposableCollection> m_OneGridCollection;
-
-    // Member functions not implemented.
-    CCoordinateSystemGridCollection  (const CCoordinateSystemGridCollection & source);
-    CCoordinateSystemGridCollection& operator= (const CCoordinateSystemGridCollection & rhs);
 };
 
 }   /* namespace CSLibrary */

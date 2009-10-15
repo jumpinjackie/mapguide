@@ -762,7 +762,8 @@ bool MgSpatialUtility::PointIsInPolygon (MgCoordinateIterator* polyItr,MgCoordin
 ///////////////////////////////////////////////////////////////////////////////
 /// <summary>
 /// Returns a collection of line strings which represents those portions of the
-/// provided line string which are inside of the provided closed ring.
+/// provided line string which are inside of the provided closed ring.  The null
+/// pointer is returned rather than an empty line string.
 /// </summary>
 MgLineStringCollection* MgSpatialUtility::ClipStringToPolygon (MgCoordinateIterator* polyItr,
                                                                MgCoordinateIterator* lineItr)
@@ -774,7 +775,6 @@ MgLineStringCollection* MgSpatialUtility::ClipStringToPolygon (MgCoordinateItera
     Ptr<MgCoordinate> lineFrom;
     Ptr<MgCoordinate> lineTo;
     Ptr<MgCoordinateCollection> curCollection;
-    Ptr<MgLineString> newLineString;
     Ptr<MgLineStringCollection> lineCollection;
 
     // Need to create an empty collections, the factory doesn't do this.
@@ -801,7 +801,7 @@ MgLineStringCollection* MgSpatialUtility::ClipStringToPolygon (MgCoordinateItera
 
     while (lineItr->MoveNext ())
     {
-        lineFrom = lineTo;              // TODO: does this work without screwing up the reference counts.
+        lineFrom = lineTo;
         lineTo = lineItr->GetCurrent ();
         
         // Intersect this segment with the polygon.
@@ -837,7 +837,7 @@ MgLineStringCollection* MgSpatialUtility::ClipStringToPolygon (MgCoordinateItera
                     // Make a line string out of the current point collection,
                     // and add it to the line string collection which contains
                     // the clipped segments.
-                    newLineString = new MgLineString (curCollection);
+                    Ptr<MgLineString> newLineString = new MgLineString (curCollection);
                     lineCollection->Add (newLineString);
 
                     // Clear curCollection inpreparation for the nex segment if
@@ -857,6 +857,7 @@ MgLineStringCollection* MgSpatialUtility::ClipStringToPolygon (MgCoordinateItera
                     inside = true;
                 }
             }
+
             // At this point, if we end up inside, there will be a point in
             // curCollection which will be the point at which we re-entered
             // the last time.  Since we are inside, we need to add the
@@ -874,15 +875,22 @@ MgLineStringCollection* MgSpatialUtility::ClipStringToPolygon (MgCoordinateItera
             // be inside.
         }
     }
-    
+
     // If we ended this mess in the inside state, curCollection should _NOT_ be
     // empty.  In this case, we need to add this final point collection as the
-    // final line stting in the line string collection.
+    // final line string in the line string collection.
     if (inside)
     {
+        Ptr<MgLineString> newLineString = new MgLineString (curCollection);
         lineCollection->Add (newLineString);
     }
-    
+
+    // Release the LineStringCollection object if it is empty.
+    if (lineCollection->GetCount () == 0)
+    {
+        lineCollection = 0;
+    }
+
     // Looks pretty simple, maybe that means it will work good; often does.
     return lineCollection.Detach ();
 }

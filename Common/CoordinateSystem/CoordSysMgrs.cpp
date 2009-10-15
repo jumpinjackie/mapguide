@@ -261,10 +261,10 @@ MgCoordinate* CCoordinateSystemMgrs::ConvertToLonLat(CREFSTRING sMgrs)
                 return NULL;
             }
         }
-		else
-		{
-			return pLonLat;
-		}
+        else
+        {
+            return pLonLat;
+        }
     }
 
     //if exception mode is on and excetion is thrown internally we exit anyway
@@ -337,7 +337,7 @@ void CCoordinateSystemMgrs::InitMgrsSpecification (MgCoordinateSystemGridSpecifi
         {
             // Parameter error
         }
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemMgrs::GetGridLines")
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemMgrs::InitMgrsSpecification")
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 INT32 CCoordinateSystemMgrs::GetSpecializationType ()
@@ -358,6 +358,8 @@ void CCoordinateSystemMgrs::SetBoundary(MgCoordinateSystemGridBoundary* pGridBou
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 MgCoordinateSystemGridBoundary* CCoordinateSystemMgrs::GetBoundary(void)
 {
+    // The following code should return NULL if the boundary has not been set.
+    // That is the desired result.
     return SAFE_ADDREF (m_GridBoundary.p);
 }
 
@@ -372,6 +374,13 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemMgrs::GetGridLines (MgCoo
     Ptr<CCoordinateSystemMgrsZone> mgrsZoneGrid;
     Ptr<MgCoordinateSystemGridLineCollection> aGridLineCollection;
     Ptr<CCoordinateSystemGridLineCollection> theGridLineCollection;
+
+    if (m_GridBoundary == 0)
+    {
+        // Proceeding without a grid boundary will cause a crash.
+        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemMgrs.GetGridLines",
+                                                                   __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     MG_TRY ()
         theGridLineCollection = new CCoordinateSystemGridLineCollection ();
@@ -418,6 +427,13 @@ MgCoordinateSystemGridRegionCollection* CCoordinateSystemMgrs::GetGridRegions (M
     Ptr<CCoordinateSystemMgrsZone> mgrsZoneGrid;
     Ptr<CCoordinateSystemGridRegionCollection> theGridRegionCollection;
 
+    if (m_GridBoundary == 0)
+    {
+        // Proceeding without a grid boundary will cause a crash.
+        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemMgrs.GetGridRegions",
+                                                                   __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
     MG_TRY ()
         theGridRegionCollection = new CCoordinateSystemGridRegionCollection ();
         zoneCount = m_ZoneCollection->GetCount ();
@@ -443,6 +459,13 @@ MgCoordinateSystemGridTickCollection* CCoordinateSystemMgrs::GetGridTicks (MgCoo
     Ptr<MgCoordinateSystemGridTickCollection> aGridTickCollection;
     Ptr<CCoordinateSystemGridTickCollection> theGridTickCollection;
 
+    if (m_GridBoundary == 0)
+    {
+        // Proceeding without a grid boundary will cause a crash.
+        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemMgrs.GetGridRegions",
+                                                                   __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
     MG_TRY ()
         theGridTickCollection = new CCoordinateSystemGridTickCollection ();
         unitType = specification->GetUnitType();
@@ -464,12 +487,12 @@ MgCoordinateSystemGridTickCollection* CCoordinateSystemMgrs::GetGridTicks (MgCoo
                 aGridTickCollection = m_GraticuleUtm->GetBoundaryTicks (specification);
                 theGridTickCollection->AddCollection (aGridTickCollection);
             }
-            else if (m_GraticuleUtm)
+            if (m_GraticuleUpsNorth)
             {
                 aGridTickCollection = m_GraticuleUpsNorth->GetBoundaryTicks (specification);
                 theGridTickCollection->AddCollection (aGridTickCollection);
             }
-            else if (m_GraticuleUtm)
+            if (m_GraticuleUpsSouth)
             {
                 aGridTickCollection = m_GraticuleUpsSouth->GetBoundaryTicks (specification);
                 theGridTickCollection->AddCollection (aGridTickCollection);
@@ -478,7 +501,7 @@ MgCoordinateSystemGridTickCollection* CCoordinateSystemMgrs::GetGridTicks (MgCoo
         // TODO:  Need to remove from the collection any grid ticks which are
         // internal to the m_GridBoundary object of this object.  This will be
         // tricky, as the tick positions will usually be right on the boundary.
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemMgrs::GetGridRTicks")
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemMgrs::GetGridTicks")
     return static_cast<MgCoordinateSystemGridTickCollection*>(theGridTickCollection.Detach());
 }
 
@@ -706,11 +729,33 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
     Ptr<CCoordinateSystemMgrsZoneCollection> zoneCollection;
     STRING utmCsCode;
 
+    // Maintenance Note: reducedFrameBoundary has the following properties:
+    // 1> It is in frame (i.e. viewport) coordinates.
+    // 2> It starts out as a boundary which defines the entire UTM zone
+    //    (polar or otherwise) which is being created.
+    // 3> It is reduced, by "Intersection" with, to the extents of the
+    //    frame (i.e. viewport).
+    // You could also describe this as object as "That portion of the
+    // viewport which is included in the specific UTM zone we are
+    // constructing an object for".
+    
+    // Maintenance Note: In extreme cases, the use of rectangular viewports
+    // to model a spherical world can lead to the consideration of a zone which
+    // does not intersect the viewport.  In such cases, the Intersection polygon
+    // will be empty.  By MapGuide conventions, that means the pPolygonIntersection
+    // pointer will be null.  In this case, we must not add the zone to the zone
+    // collection.
+
     MG_TRY ()
         Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory ();
         zoneCollection = new CCoordinateSystemMgrsZoneCollection ();
         pSouthwest = new MgCoordinateXY ();
         pNortheast = new MgCoordinateXY ();
+
+        // Release any graticule objects which may already exist.
+        m_GraticuleUtm = 0;
+        m_GraticuleUpsNorth = 0;
+        m_GraticuleUpsSouth = 0;
 
         // Convert the polygon portion of the Grid Boundary object to long/lat
         // coordinates and extract the min/max from the resulting polygon.
@@ -734,12 +779,15 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
             pPolygon = llBoundary->GetBoundary (toFrameTransform,1.0);
             Ptr<MgPolygon> pPolygonTemp = frameBoundary->GetBoundary ();
             pPolygonIntersection = dynamic_cast<MgPolygon*>(pPolygon->Intersection (pPolygonTemp));
-            reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
-            mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
-            zoneCollection->Add (mgrsZoneGrid);
+            if (pPolygonIntersection != 0)
+            {
+                reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
+                mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
+                zoneCollection->Add (mgrsZoneGrid);
 
-            // Construct the m_GraticuleUpsSouth member, it may be needed.
-            m_GraticuleUpsSouth = new CCoordinateSystemOneGrid (reducedFrameBoundary,llCRS,frameCRS);
+                // Construct the m_GraticuleUpsSouth member, it may be needed.
+                m_GraticuleUpsSouth = new CCoordinateSystemOneGrid (reducedFrameBoundary,llCRS,frameCRS);
+            }
         }
         if (northMax > 84.0)
         {
@@ -753,12 +801,15 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
             pPolygon = llBoundary->GetBoundary (toFrameTransform,1.0);
             Ptr<MgPolygon> pPolygonTemp = frameBoundary->GetBoundary ();
             pPolygonIntersection = dynamic_cast<MgPolygon*>(pPolygon->Intersection (pPolygonTemp));
-            reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
-            mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
-            zoneCollection->Add (mgrsZoneGrid);
+            if (pPolygonIntersection != 0)
+            {
+                reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
+                mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
+                zoneCollection->Add (mgrsZoneGrid);
 
-            // Construct the m_GraticuleUpsNorth member, it may be needed.
-            m_GraticuleUpsNorth = new CCoordinateSystemOneGrid (reducedFrameBoundary,llCRS,frameCRS);
+                // Construct the m_GraticuleUpsNorth member, it may be needed.
+                m_GraticuleUpsNorth = new CCoordinateSystemOneGrid (reducedFrameBoundary,llCRS,frameCRS);
+            }
         }
         if (northMax > -80.0 && northMin < 84.0)
         {
@@ -796,7 +847,7 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
                     // 2> Apply the extents of the provided frame boundary.
                     if (westLimit < eastMin) westLimit = eastMin;
                     if (eastLimit > eastMax) eastLimit = eastMax;
-                    
+
                     // 3> Create, in terms of LL coordinates, the frame
                     //    boundary as is appropriate for this particular zone.
                     pSouthwest->SetX (westLimit);
@@ -804,14 +855,16 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
 
                     // 4> Convert this reduced frame boundary back to frame
                     //    coordinates.
-                    // TODO:  We should not use a hard coded curve precision value here.
                     llBoundary = csFactory->GridBoundary (pSouthwest,pNortheast);
                     pPolygon = llBoundary->GetBoundary (toFrameTransform,1.0);
                     Ptr<MgPolygon> pPolygonTemp = frameBoundary->GetBoundary ();
                     pPolygonIntersection = dynamic_cast<MgPolygon*>(pPolygon->Intersection (pPolygonTemp));
-                    reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
-                    mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
-                    zoneCollection->Add (mgrsZoneGrid);
+                    if (pPolygonIntersection != 0)
+                    {
+                        reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
+                        mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
+                        zoneCollection->Add (mgrsZoneGrid);
+                    }
                  }
             }
             if (northMin < 0.0)
@@ -834,9 +887,12 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
                     pPolygon = llBoundary->GetBoundary (toFrameTransform,1.0);
                     Ptr<MgPolygon> pPolygonTemp = frameBoundary->GetBoundary ();
                     pPolygonIntersection = dynamic_cast<MgPolygon*>(pPolygon->Intersection (pPolygonTemp));
-                    reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
-                    mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
-                    zoneCollection->Add (mgrsZoneGrid);
+                    if (pPolygonIntersection != 0)
+                    {
+                        reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
+                        mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
+                        zoneCollection->Add (mgrsZoneGrid);
+                    }
                 }
             }
 
@@ -848,10 +904,15 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
             pNortheast->SetY ((northMax >  84.0) ?  84.0 : northMax);
             llBoundary = csFactory->GridBoundary (pSouthwest,pNortheast);
             pPolygon = llBoundary->GetBoundary (toFrameTransform,1.0);
-            reducedFrameBoundary = csFactory->GridBoundary (pPolygon);
-            m_GraticuleUpsNorth = new CCoordinateSystemOneGrid (reducedFrameBoundary,llCRS,frameCRS);
+            Ptr<MgPolygon> pPolygonTemp = frameBoundary->GetBoundary ();
+            pPolygonIntersection = dynamic_cast<MgPolygon*>(pPolygon->Intersection (pPolygonTemp));
+            if (pPolygonIntersection != 0)
+            {
+                reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
+                m_GraticuleUtm = new CCoordinateSystemOneGrid (reducedFrameBoundary,llCRS,frameCRS);
+            }
         }
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemOneGrid::GetGridLines")
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemMgrs::FrameBoundaryToZones")
     return zoneCollection.Detach ();
 }
 STRING CCoordinateSystemMgrs::GridSquareDesignation (INT32 utmZoneNbr,double easting,
@@ -912,11 +973,11 @@ STRING CCoordinateSystemMgrs::ZoneNbrToUtmCs (INT32 zoneNbr)
 
     if (zoneNbr == 61)
     {
-        utmCode = L"UPS-N";
+        utmCode = L"WGS84.UPSNorth";
     }
     else if (zoneNbr == -61)
     {
-        utmCode = L"UPS-S";
+        utmCode = L"WGS84.UPSSouth";
     }
     else if (zoneNbr > 0 &&zoneNbr < 61)
     {
