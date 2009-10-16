@@ -1204,42 +1204,77 @@ MgLineString* CCoordinateSystemTransform::GridLine (MgCoordinate* fromPnt,MgCoor
 
     return lineString.Detach ();
 }
-// Returns integer status, two values currently supported.  Zero return
-// indicates that no position is returned for whatever reason.  Zero
-// return indicates that a position is returend.
+// Given a straight line segment in source coordinate system coordinates, this
+// function retuns a position precisely on that line segment such that the
+// indicated ordinate in the target coordinate system equals (very closely) the
+// provided value.
+//
+// The function was devised to position tick marks on a viewport frame boundary
+// where the ordinate values selected are (of course) the ordinate values of the
+// grid coordinate system.  So, while rather general in nature, some of the
+// graticule/grid nomenclature has unavoidably crept into the comments describing
+// this function.
+//
+// Returns integer status, four values currently supported.
+//  0 ==> Success!  A point with the provided ordinate value did exists on the
+//        provided line segment and the position of that point has been returned
+//        in the 'position' argument.
+//  1 ==> The provided ordinate value did not occur within the domain of the line
+//        segment provided.
+//  2 ==> While the provided ordinate value did occur within the domain of the line
+//        segment provided, the slope of the line is such that calculation to
+//        determine the desired point would be unstable and was not attempted.
+// -1 ==> An exception was thrown during the calculation of the position,
+//        which _usually_ indicates that the data provided is inappropriate for
+//        one (or both) of the coordinates systems involved in this Transform.
+//
 INT32 CCoordinateSystemTransform::PositionOfValue (MgCoordinate* position,double ordinateValue,INT32 orientation,MgCoordinate* from,MgCoordinate* to)
 {
     INT32 status;
+    INT32 killer;
 
     double ratio;
+    double magicFactor;
     double xx, yy;
-    double deltaX, deltaY;
+    double srcLength, trgLength;
+    double deltaRatio;
+    double srcDeltaX, srcDeltaY;
+    double trgDeltaX, trgDeltaY;
+    double cosine, sine;
     double minValue, maxValue;
     double tmpDbl;
 
-    Ptr<MgCoordinate> gridFrom;
-    Ptr<MgCoordinate> gridTo;
+    MgCoordinate* srcFrom;
+    MgCoordinate* srcTo;
+
+    Ptr<MgCoordinate> trgFrom;
+    Ptr<MgCoordinate> trgTo;
+
+    status = -1;        // Until we know different.
+    
+    // We need copies of these pointers so we can swap then as necessary.
+    srcFrom = from;
+    srcTo = to;
 
     MG_TRY ()
-        status = 0;
-
+        // We begin our work in the target coordinate system realm.
         // Convert the from and to points to the grid coordinate system.
-        gridFrom = Transform (from);
-        gridTo = Transform (to);
+        trgFrom = Transform (from);
+        trgTo = Transform (to);
 
         // Extract the from and to ordinate values which will match the
         // ordinate value we've been provided.
         if (orientation == MgCoordinateSystemGridOrientation::EastWest)
         {
             // Here if value is a easting ordinate.
-            minValue = gridFrom->GetX ();
-            maxValue = gridTo->GetX ();
+            minValue = trgFrom->GetX ();
+            maxValue = trgTo->GetX ();
         }
         else if (orientation == MgCoordinateSystemGridOrientation::NorthSouth)
         {
             // Here if value is a northing ordinate.
-            minValue = gridFrom->GetY ();
-            maxValue = gridTo->GetY ();
+            minValue = trgFrom->GetY ();
+            maxValue = trgTo->GetY ();
         }
         else
         {
@@ -1247,21 +1282,22 @@ INT32 CCoordinateSystemTransform::PositionOfValue (MgCoordinate* position,double
             throw new MgInvalidArgumentException(L"MgCoordinateSystemTransform.PositionOfValue",
                                                  __LINE__, __WFILE__, NULL, L"", NULL);
         }
+
         if (minValue > maxValue)
         {
-            // We swap the points and min/max values to preserve our sanity.
-            // This makes the rest of this code almost trivial.
+            // The relationship between the source and target coordinate systems,
+            // with respect to the specific ordinate value we are seeking, is
+            // and inverse relationship.  To preserve our sanity, we adjust so
+            // that the relationship is direct and the algorithm below gets
+            // a lot simpler and thus (hopefully) more reliable.
             tmpDbl = minValue;
             minValue = maxValue;
             maxValue = tmpDbl;
 
-            xx = gridFrom->GetX ();
-            gridFrom->SetX (gridTo->GetX ());
-            gridTo->SetX (xx);
-
-            yy = gridFrom->GetY ();
-            gridFrom->SetY (gridTo->GetY ());
-            gridTo->SetY (yy);
+            srcFrom = to;
+            srcTo = from;
+            trgFrom = Transform (srcFrom);
+            trgTo = Transform (srcTo);
         }
 
         // To prevent duplicate tics, we place a tick at the minPoint if appropriate,
@@ -1269,48 +1305,106 @@ INT32 CCoordinateSystemTransform::PositionOfValue (MgCoordinate* position,double
         // the provided ordinate value on the line provided.
         if (ordinateValue >= minValue && ordinateValue < maxValue)
         {
-            deltaX = gridTo->GetX () - gridFrom->GetX ();
-            deltaY = gridTo->GetY () - gridFrom->GetY ();
-            
-            // We do not try to place northing ticks on a line which more horizontal than it
-            // is vertical; and vice versa.
-            if ((deltaX > deltaY) && (orientation == MgCoordinateSystemGridOrientation::EastWest) ||
-                (deltaY > deltaX) && (orientation == MgCoordinateSystemGridOrientation::NorthSouth))
+            // It appears that the desired ordinate value does indeed exist on this
+            // line segment.  Until we have successfully calculated a position, the
+            // return status will be 2, i.e. the thing exists but the determination
+            // of its position failed.
+            status = 2;
+
+            // Get the geometry of the provided segment in target terms.  You're right,
+            // assuming that this segment in target coordinates is a straight line is
+            // a very bad assumption.  That's what all the code below is about.
+            trgDeltaX = trgTo->GetX () - trgFrom->GetX ();
+            trgDeltaY = trgTo->GetY () - trgFrom->GetY ();
+            trgLength = sqrt (trgDeltaX * trgDeltaX + trgDeltaY * trgDeltaY);
+
+            // Compute the magic factor.  This is essentially the amount we will
+            // move along the source line for each unit of deviation from the
+            // the provided ordinate in the traget coordinate space.  The 0.75
+            // factor is to prevent an oscillation around the desired value and
+            // ensure convergence of the interative calculation.  This value
+            // will be the subject of fine tuning in the future.
+            if (orientation == MgCoordinateSystemGridOrientation::EastWest)
             {
-                // Use some simple geomtery to calculate the approximate position of the
-                // the point on the provided line segment at which the indicated ordinate
-                // approximates the provided ordinate value.
-                ratio = (ordinateValue - minValue) / (maxValue - minValue);
-                xx = gridFrom->GetX () + deltaX * ratio;
-                yy = gridFrom->GetY () + deltaY * ratio;
-
-                // This member function was added as a private member as part
-                // of the RFC #76 development effort.  All the information to
-                // perform this functyion is present in this object.  It was
-                // made private as to do otherwise would change the public API,
-                // a change which was not approved as part of the RFC.
-                TransformInverse (xx,yy);
-
-                // xx and yy are now an approximation (usually a pretty good
-                // one) of the position of the provided ordinate value on the
-                // provided line in frame corodinates.  We _could_ tighten this
-                // up a little but here; but for know we'll just go with this
-                // approximation until such time as we decide we like this
-                // algorithm well enough to invest more resources in it.
-                position->SetX (xx);
-                position->SetY (yy);
-                status = 0;
+                magicFactor = 0.75 * (trgDeltaX / trgLength) / trgLength;
             }
             else
             {
-                status = 2;
+                magicFactor = 0.75 * (trgDeltaY / trgLength) / trgLength;
+            }
+
+            srcDeltaX = srcTo->GetX () - srcFrom->GetX ();
+            srcDeltaY = srcTo->GetY () - srcFrom->GetY ();
+
+            // We do not try to place northing ticks on a line which more horizontal than it
+            // is vertical; and vice versa.
+            if ((trgDeltaX > trgDeltaY) && (orientation == MgCoordinateSystemGridOrientation::EastWest) ||
+                (trgDeltaY > trgDeltaX) && (orientation == MgCoordinateSystemGridOrientation::NorthSouth))
+            {
+                // Use some simple geomtery to calculate the approximate position of the
+                // the ordinateValue on the provided line segment at which the indicated
+                // ordinate approximates the provided ordinate value.
+                ratio = (ordinateValue - minValue) / (maxValue - minValue);
+
+                // Ratio is the magic number we will deal with in the following iterative
+                // loop.  Essentially, ratio indicates how far along the line between the
+                // source 'from' point and the source 'to' point is the current estimate of
+                // 'position'.  As we zero in on the desired point, we will be moving
+                // 'ratio' up and down.  The point here being, as long as ratio is between
+                // zero and one, we know that it represents a point which is precisely on
+                // the underlying line, which in this case is the provided line in the 
+                // source coordinate system.  Also, the ratio approach is unitless, thus
+                // this makes it easier to determine when to terminate the iterative loop.
+                // Currently, we use 1 part in a million.
+                killer = 12;
+                deltaRatio = 0.0;
+                do
+                {
+                    ratio += deltaRatio;
+                    // Calculate the new 'position' estimate based on the current value
+                    // of 'ratio'.  N
+                    xx = srcFrom->GetX () + srcDeltaX * ratio;
+                    yy = srcFrom->GetY () + srcDeltaY * ratio;
+
+                    // The TransformInverse function was added as a private member as part
+                    // of the RFC #76 development effort.  All the information to perform
+                    // this function is present in this object.  It was made private as to
+                    // do otherwise would change the public API, a change which was not
+                    // approved as part of the RFC.
+                    
+                    // Convert the proposed 'position' point back to the coordinates of
+                    // the target system (i.e. of the ordinate value argument).
+                    Transform (&xx,&yy);
+                    
+                    // Make an estimate as to how much, and what direction, we need to
+                    // move 'ratio' to achieve the desired result.
+                    if (orientation == MgCoordinateSystemGridOrientation::EastWest)
+                    {
+                        deltaRatio = (ordinateValue - xx) * magicFactor;
+                    }
+                    else
+                    {
+                        deltaRatio = (ordinateValue - yy) * magicFactor;
+                    }
+                    killer -= 1;
+                } while (fabs (deltaRatio) > 1.0E-08 && killer >= 0);
+
+                if (killer >= 0)
+                {
+                    xx = srcFrom->GetX () + srcDeltaX * ratio;
+                    yy = srcFrom->GetY () + srcDeltaY * ratio;
+                    position->SetX (xx);
+                    position->SetY (yy);
+                    status = 0;
+                }
             }
         }
         else
         {
             status = 1;
         }
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.TransformM")
+    MG_CATCH (L"MgCoordinateSystemTransform.PositionOfValue")
+
     return status;
 }
 void CCoordinateSystemTransform::IgnoreDatumShiftWarning(bool bIgnoreDatumShiftWarning)
