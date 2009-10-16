@@ -91,12 +91,15 @@ static void DrawPNG(Renderer* dr, unsigned char* data, int length, int width, in
     if (!drSE)
         return;
 
-    double cx = 0.5 * (extents.minx + extents.maxx);
-    double cy = 0.5 * (extents.miny + extents.maxy);
-    drSE->WorldToScreenPoint(cx, cy, cx, cy);
+    double minx, miny, maxx, maxy;
+    drSE->WorldToScreenPoint(extents.minx, extents.miny, minx, miny);
+    drSE->WorldToScreenPoint(extents.maxx, extents.maxy, maxx, maxy);
 
-    double imgDevW = extents.width();
-    double imgDevH = extents.height();
+    double cx = 0.5 * (minx + maxx);
+    double cy = 0.5 * (miny + maxy);
+    double imgDevW = fabs(maxx - minx);
+    double imgDevH = fabs(maxy - miny);
+
     drSE->DrawScreenRaster(data, length, RS_ImageFormat_PNG, width, height, cx, cy, imgDevW, imgDevH, 0.0);
 }
 
@@ -144,10 +147,10 @@ void MgLegendPlotUtil::AddLegendElement(double dMapScale, Renderer& dr, MgMap* m
     // Here is where we have to get the layers, rules, etc.
     // But first let's generate a box for the legend border...
     LineBuffer lb(4);
-    lb.MoveTo(legendOffsetX, legendOffsetY);
-    lb.LineTo(legendOffsetX, legendOffsetY + legendSpec->GetPaperHeight());
+    lb.MoveTo(legendOffsetX                              , legendOffsetY                               );
+    lb.LineTo(legendOffsetX                              , legendOffsetY + legendSpec->GetPaperHeight());
     lb.LineTo(legendOffsetX + legendSpec->GetPaperWidth(), legendOffsetY + legendSpec->GetPaperHeight());
-    lb.LineTo(legendOffsetX + legendSpec->GetPaperWidth(), legendOffsetY);
+    lb.LineTo(legendOffsetX + legendSpec->GetPaperWidth(), legendOffsetY                               );
     lb.Close();
 
     RS_LineStroke lineStroke;
@@ -234,7 +237,7 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
     //bottom of the legend -- where we stop drawing
     double bottomLimit = legendOffsetY + legendSpec->GetMarginBottom();
 
-    // Process the layers
+    // build the list of layers that need to be processed
     Ptr<MgLayerCollection> layers = map->GetLayers();
     Ptr<MgStringCollection> layerIds = new MgStringCollection();
     for (int i = 0; i < layers->GetCount(); i++)
@@ -256,17 +259,21 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
         if (!bRequiredInLegend)
             continue;
 
-        layerIds->Add(mapLayer->GetLayerDefinition()->ToString());
+        Ptr<MgResourceIdentifier> layerId = mapLayer->GetLayerDefinition();
+        layerIds->Add(layerId->ToString());
     }
-    if(layerIds->GetCount() != 0)
+
+    // get resource data
+    if (layerIds->GetCount() != 0)
     {
         Ptr<MgStringCollection> layerContents = m_svcResource->GetResourceContents(layerIds, NULL);
-        for(int i = 0; i < layerIds->GetCount(); i ++)
+        for (int i = 0; i < layerIds->GetCount(); i++)
         {
-            for(int j = 0; j < layers->GetCount(); j ++)
+            for (int j = 0; j < layers->GetCount(); j++)
             {
                 Ptr<MgLayerBase> mapLayer = layers->GetItem(j);
-                if(mapLayer->GetLayerDefinition()->ToString() == layerIds->GetItem(i))
+                Ptr<MgResourceIdentifier> layerId = mapLayer->GetLayerDefinition();
+                if (layerId->ToString() == layerIds->GetItem(i))
                 {
                     mapLayer->SetLayerResourceContent(layerContents->GetItem(i));
                     break;
@@ -275,15 +282,32 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
         }
     }
 
+    // process the layers
     for (int i = 0; i < layers->GetCount(); i++)
     {
         Ptr<MgLayerBase> mapLayer = layers->GetItem(i);
 
-        if(mapLayer->GetLayerResourceContent() == L"")
+        // layer is not currently visible -- don't add to legend
+        if (!mapLayer->IsVisible())
+            continue;
+
+        Ptr<MgLayerGroup> group = mapLayer->GetGroup();
+
+        bool bRequiredInLegend = false;
+        if (group == NULL && mggroup == NULL)
+            bRequiredInLegend = true;
+        else if (group.p && mggroup && group->GetObjectId() == mggroup->GetObjectId())
+            bRequiredInLegend = true;
+
+        if (!bRequiredInLegend)
+            continue;
+
+        STRING content = mapLayer->GetLayerResourceContent();
+        if (content.empty())
             continue;
 
         // get layer definition
-        auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(mapLayer->GetLayerResourceContent()));
+        auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(content));
 
         // Get bitmaps for rules/themes
         MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
