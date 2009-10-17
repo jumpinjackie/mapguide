@@ -154,6 +154,7 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../../../Common/Foundation/Exception/UnderflowException.h" />
     <Header path="../../../../Common/Foundation/Exception/XmlException.h" />
     <Header path="../../../../Common/Foundation/Exception/XmlParserException.h" />
+
 </Headers>
 
 </Parameters>
