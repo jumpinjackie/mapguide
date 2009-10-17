@@ -1236,11 +1236,10 @@ INT32 CCoordinateSystemTransform::PositionOfValue (MgCoordinate* position,double
     double ratio;
     double magicFactor;
     double xx, yy;
-    double srcLength, trgLength;
+    double trgLength;
     double deltaRatio;
     double srcDeltaX, srcDeltaY;
     double trgDeltaX, trgDeltaY;
-    double cosine, sine;
     double minValue, maxValue;
     double tmpDbl;
 
