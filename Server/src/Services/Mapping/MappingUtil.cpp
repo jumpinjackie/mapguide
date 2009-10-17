@@ -388,7 +388,8 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                 continue;
         }
 
-        layerIds->Add(mapLayer->GetLayerDefinition()->ToString());
+        Ptr<MgResourceIdentifier> mapLayerId = mapLayer->GetLayerDefinition();
+        layerIds->Add(mapLayerId->ToString());
     }
     if(layerIds->GetCount() != 0)
     {
@@ -398,7 +399,8 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
             for(int j = 0; j < layers->GetCount(); j ++)
             {
                 Ptr<MgLayerBase> mapLayer = layers->GetItem(j);
-                if(mapLayer->GetLayerDefinition()->ToString() == layerIds->GetItem(i))
+                Ptr<MgResourceIdentifier> mapLayerId = mapLayer->GetLayerDefinition();
+                if(mapLayerId->ToString() == layerIds->GetItem(i))
                 {
                     mapLayer->SetLayerResourceContent(layerContents->GetItem(i));
                     break;
