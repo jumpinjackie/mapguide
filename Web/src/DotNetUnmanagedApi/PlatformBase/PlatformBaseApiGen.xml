@@ -54,21 +54,21 @@ typedef wchar_t* STRINGPARAM;
   %include "language.i"   //typemaps specific for each language
   %include "../../../../Common/PlatformBase/Services/PlatformBaseClassId.h"
 
-  #if defined(PHPSWIG)
+#if defined(PHPSWIG)
   // We force UTF-8 encoding for PHP
   typedef char*         STRINGPARAM;
   typedef char*         STRING;
   typedef char*         BYTE_ARRAY_IN;
   typedef char*         BYTE_ARRAY_OUT;
   typedef unsigned char BYTE;
-  #elseif defined(JAVA)
+#elseif defined(JAVA)
   typedef std::wstring  STRINGPARAM;
   typedef signed char   BYTE;  //mapped to byte in Java
-  #else // .Net
+#else // .Net
   typedef char*         BYTE_ARRAY_IN;
   typedef char*         BYTE_ARRAY_OUT;
   typedef unsigned char BYTE;    //mapped to byte in C#
-  #endif
+#endif
 
   typedef int           STATUS;
   typedef short         INT8;
@@ -83,6 +83,7 @@ typedef wchar_t* STRINGPARAM;
    must also add them to Makefile.am in the JavaApi and PhpApi folders.
 -->
 <Headers>
+
     <!-- PlatformBase classes -->
 
     <Header path="../../../../Common/PlatformBase/Data/BlobProperty.h" />
@@ -161,9 +162,9 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../../../Common/PlatformBase/Services/ResourceService.h" />
     <Header path="../../../../Common/PlatformBase/Services/SpatialContextReader.h" />
     <Header path="../../../../Common/PlatformBase/Services/SqlDataReader.h" />
+    <Header path="../../../../Common/PlatformBase/Services/Transaction.h" />
     <Header path="../../../../Common/PlatformBase/Services/UpdateFeatures.h" />
     <Header path="../../../../Common/PlatformBase/Services/Warnings.h" />
-    <Header path="../../../../Common/PlatformBase/Services/Transaction.h" />
 
     <Header path="../../../../Common/PlatformBase/MapLayer/LayerBase.h" />
     <Header path="../../../../Common/PlatformBase/MapLayer/LayerCollection.h" />
