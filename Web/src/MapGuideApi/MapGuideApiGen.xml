@@ -231,8 +231,10 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemFilterInteger32.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemFormatConverter.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformation.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGrids.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemMathComparator.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemMeasure.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemMgrs.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionInformation.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemTransform.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemUnitInformation.h" />
@@ -324,6 +326,7 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../../Common/PlatformBase/Services/ResourceService.h" />
     <Header path="../../../Common/PlatformBase/Services/SpatialContextReader.h" />
     <Header path="../../../Common/PlatformBase/Services/SqlDataReader.h" />
+    <Header path="../../../Common/PlatformBase/Services/Transaction.h" />
     <Header path="../../../Common/PlatformBase/Services/UpdateFeatures.h" />
     <Header path="../../../Common/PlatformBase/Services/Warnings.h" />
 

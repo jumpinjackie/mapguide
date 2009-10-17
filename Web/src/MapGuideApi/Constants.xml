@@ -7,6 +7,7 @@
 -->
 <PHPTypeReplacements>
     <TypeReplacement oldtype="STRING" newtype="" />
+    <TypeReplacement oldtype="INT8" newtype="" />
     <TypeReplacement oldtype="INT16" newtype="" />
     <TypeReplacement oldtype="INT32" newtype="" />
     <TypeReplacement oldtype="int" newtype="" />
@@ -17,6 +18,7 @@
 </PHPTypeReplacements>
 <CSharpTypeReplacements>
     <TypeReplacement oldtype="STRING" newtype="string" />
+    <TypeReplacement oldtype="INT8" newtype="byte" />
     <TypeReplacement oldtype="INT16" newtype="short" />
     <TypeReplacement oldtype="INT32" newtype="int" />
     <TypeReplacement oldtype="int" newtype="int" />
@@ -27,6 +29,7 @@
 </CSharpTypeReplacements>
 <JavaTypeReplacements>
     <TypeReplacement oldtype="STRING" newtype="String" />
+    <TypeReplacement oldtype="INT8" newtype="short" />
     <TypeReplacement oldtype="INT16" newtype="short" />
     <TypeReplacement oldtype="INT32" newtype="int" />
     <TypeReplacement oldtype="int" newtype="int" />
@@ -103,6 +106,9 @@
   <Class name="MgCoordinateSystemCodeFormat" />
   <Class name="MgCoordinateSystemErrorCode" />
   <Class name="MgCoordinateSystemGeodeticTransformationMethod" />
+  <Class name="MgCoordinateSystemGridOrientation" />
+  <Class name="MgCoordinateSystemGridSpecializationType" />
+  <Class name="MgCoordinateSystemMgrsLetteringScheme" />
   <Class name="MgCoordinateSystemProjectionCode" />
   <Class name="MgCoordinateSystemProjectionFormatType" />
   <Class name="MgCoordinateSystemProjectionLogicalType" />
@@ -151,6 +157,9 @@
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemCodeFormat.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemErrorCode.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformationMethod.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGridOrientation.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGridSpecializationType.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemMgrsLetteringScheme.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionCode.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionFormatType.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionLogicalType.h" />
