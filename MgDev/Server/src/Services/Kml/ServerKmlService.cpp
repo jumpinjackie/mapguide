@@ -312,7 +312,8 @@ void MgServerKmlService::AppendLayer(MgLayer* layer,
     kmlContent.WriteString("<href>");
     kmlContent.WriteString(agentUri, false);
     kmlContent.WriteString("?OPERATION=GetLayerKml&amp;VERSION=1.0.0&amp;LAYERDEFINITION=", false);
-    kmlContent.WriteString(MgUtil::WideCharToMultiByte(layer->GetLayerDefinition()->ToString()), false);
+    Ptr<MgResourceIdentifier> resource = layer->GetLayerDefinition();
+    kmlContent.WriteString(MgUtil::WideCharToMultiByte(resource->ToString()), false);
     sprintf(buffer,"&amp;DRAWORDER=%d", drawOrder);
     kmlContent.WriteString(buffer, false);
     kmlContent.WriteString("&amp;FORMAT=", false);
@@ -351,7 +352,8 @@ void MgServerKmlService::AppendScaleRange(MgLayer* layer,
     kmlContent.WriteString("<href>");
     kmlContent.WriteString(agentUri, false);
     kmlContent.WriteString("?OPERATION=GetFeaturesKml&amp;VERSION=1.0.0&amp;LAYERDEFINITION=", false);
-    kmlContent.WriteString(MgUtil::WideCharToMultiByte(layer->GetLayerDefinition()->ToString()), false);
+    Ptr<MgResourceIdentifier> resource = layer->GetLayerDefinition();
+    kmlContent.WriteString(MgUtil::WideCharToMultiByte(resource->ToString()), false);
     sprintf(buffer,"&amp;DPI=%f", dpi);
     kmlContent.WriteString(buffer, false);
     sprintf(buffer,"&amp;DRAWORDER=%d", drawOrder);
@@ -401,7 +403,8 @@ void MgServerKmlService::AppendRasterScaleRange(MgLayer* layer,
     kmlContent.WriteString("<href>");
     kmlContent.WriteString(agentUri, false);
     kmlContent.WriteString("?OPERATION=GetFeaturesKml&amp;VERSION=1.0.0&amp;LAYERDEFINITION=", false);
-    kmlContent.WriteString(MgUtil::WideCharToMultiByte(layer->GetLayerDefinition()->ToString()), false);
+    Ptr<MgResourceIdentifier> resource = layer->GetLayerDefinition();
+    kmlContent.WriteString(MgUtil::WideCharToMultiByte(resource->ToString()), false);
     sprintf(buffer,"&amp;DPI=%f", dpi);
     kmlContent.WriteString(buffer, false);
     kmlContent.WriteString("&amp;FORMAT=", false);
