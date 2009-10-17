@@ -73,6 +73,8 @@
   <Class name="MgCoordinateSystemCodeFormat" />
   <Class name="MgCoordinateSystemErrorCode" />
   <Class name="MgCoordinateSystemGeodeticTransformationMethod" />
+  <Class name="MgCoordinateSystemGridOrientation" />
+  <Class name="MgCoordinateSystemGridSpecializationType" />
   <Class name="MgCoordinateSystemMgrsLetteringScheme" />
   <Class name="MgCoordinateSystemProjectionCode" />
   <Class name="MgCoordinateSystemProjectionFormatType" />
@@ -99,6 +101,8 @@
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemCodeFormat.h" />
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemErrorCode.h" />
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformationMethod.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGridOrientation.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGridSpecializationType.h" />
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemMgrsLetteringScheme.h" />
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionCode.h" />
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionFormatType.h" />

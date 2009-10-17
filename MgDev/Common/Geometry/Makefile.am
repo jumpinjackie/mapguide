@@ -174,8 +174,7 @@ include_SOURCES = \
   ../CoordinateSystem/CoordSysMgrsZone.cpp \
   ../CoordinateSystem/CoordSysMgrs.cpp \
   ../CoordinateSystem/CoordSysOneGrid.cpp
-  
-  
+
 noinst_HEADERS = $(include_SOURCES) \
   AgfReaderWriter.h \
   AgfStream.h \
@@ -321,10 +320,13 @@ noinst_HEADERS = $(include_SOURCES) \
   CoordinateSystem/CoordinateSystemUnitInformation.h \
   CoordinateSystem/CoordinateSystemUnitType.h \
   CoordinateSystem/CoordinateSystemWktFlavor.h \
+  CoordinateSystem/CoordinateSystemGridOrientation.h \
+  CoordinateSystem/CoordinateSystemGridSpecializationType.h \
   CoordinateSystem/CoordinateSystemGrids.h \
-  CoordinateSystem/CoordinateSystemMgrs.h \
-  CoordinateSystem/CoordinateSystemMgrsGridLevel.h \
   CoordinateSystem/CoordinateSystemGridGeneric.h \
+  CoordinateSystem/CoordinateSystemMgrsGridLevel.h \
+  CoordinateSystem/CoordinateSystemMgrsLetteringScheme.h \
+  CoordinateSystem/CoordinateSystemMgrs.h \
   Exception/CoordinateSystemComputationFailedException.h \
   Exception/CoordinateSystemConversionFailedException.h \
   Exception/CoordinateSystemInitializationFailedException.h \
@@ -385,9 +387,6 @@ noinst_HEADERS = $(include_SOURCES) \
   ../CoordinateSystem/CoordSysMgrs.h \
   ../CoordinateSystem/CoordSysOneGrid.h
 
- 
-
-
 INCLUDES = \
   -I../Security \
   -I../MdfParser \
@@ -411,4 +410,3 @@ libMgGeometry_la_LDFLAGS = -version-info 7:0:0 \
   -L../Foundation \
   -L../../Oem/CsMap \
   -L../../Common/CoordinateSystem
-  

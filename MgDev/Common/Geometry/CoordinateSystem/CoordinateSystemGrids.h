@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef _MGCOORDINATESYSTEMGRIDS_H_
+#define _MGCOORDINATESYSTEMGRIDS_H_
+
 //=============================================================================
 // Class declararations
 class MgCoordinateSystemGridBoundary;           // MgPolygon based extents of the grid
@@ -46,71 +49,6 @@ class MgCoordinateSystemGridRegion;             // a label and a MgPolygon which
 class MgCoordinateSystemGridTick;               // a position in viewport coordinates and a grid value
                                                 // as a double
 
-
-
-///////////////////////////////////////////////////////////////////////////////
-/// <summary>
-/// An enumeration of the various types of specialized grids/graticules
-/// currently supported.  A specialized grid is one for which specific
-/// standards exist to which the results of this feature are compliant with.
-/// A generic grid is a simple non-standardized grid of a coordinate system
-/// drawn in a viewport based on another coordinate system. <p>
-/// The values assigned are intended to support grouping standardized grids
-/// with similar features and is currently entirely arbitrary.  Using a
-/// numeric literal instead of thes names of the defined constants is a sure
-/// way to write code that will get broken in the future.
-/// </summary>
-class MgCoordinateSystemGridSpecializationType
-{
-PUBLISHED_API:
-    ///////////////////////////////////////////////////////////////////////////
-    /// /brief Not specified yet, initialize to this value.
-    static const INT32 None              = 0;
-    ///////////////////////////////////////////////////////////////////////////
-    /// /brief Generic grid of a specified coordinate system; may be
-    /// geographic or projected.
-    static const INT32 Generic           = (0 + 1);     // Generic grid of a specified coordinate system;
-                                                        // may be geographic or projected
-    ///////////////////////////////////////////////////////////////////////////
-    /// /brief Specialized grid: MGRS (Military Grid Reference System)
-    static const INT32 MGRS              = (16 + 1);
-    ///////////////////////////////////////////////////////////////////////////
-    /// /brief Specialized grid: USNG (United States National Grid)
-    static const INT32 USNG              = (16 + 2);
-    ///////////////////////////////////////////////////////////////////////////
-    /// /brief Indicates the failure of an algorithm or other problem.
-    static const INT32 Unknown           = (65366);
-};
-
-///////////////////////////////////////////////////////////////////////////////
-/// <summary>
-/// An enumeration of the supported values for the <c>m_Orientation</c> member
-/// of several objects related to grids and graticules. <p>
-/// This value is used to qualify objects which are of the "iso" type.  I.e. a
-/// grid line is referred to as an isoline as it is the locus of points which
-/// have a specific value for either the easting or the northing.  It is this
-/// value which indicates which.  Thus, a grid line which is classified as
-/// having an "EastWest" orientation will be a isoline which is the locus of
-/// points which share a common <b>easting</b> value, and the "m_Value" element
-/// of that object will be an <b>easting</b> value.  Note that in this example,
-/// the line is typically a vertical line.
-/// </summary>
-class MgCoordinateSystemGridOrientation
-{
-PUBLISHED_API:
-    ///////////////////////////////////////////////////////////////////////////
-    /// /brief Not specified yet, initialize to this value.
-    static const INT8 None = 0;
-    ///////////////////////////////////////////////////////////////////////////
-    /// /brief The object represents a constant easting value.
-    static const INT8 EastWest = 1;         // generally indicates a vertical grid line
-    ///////////////////////////////////////////////////////////////////////////
-    /// /brief The object represents a constant northing value.
-    static const INT8 NorthSouth = 2;       // generally indicates a horizontal grid line
-    ///////////////////////////////////////////////////////////////////////////
-    /// /brief Indicates the failure of an algorithm or other problem.
-    static const INT8 Unknown = 3;          // indicates a failure of an algorithm
-};
 
 ///////////////////////////////////////////////////////////////////////////////
 /// <summary>
@@ -905,3 +843,5 @@ protected:
 CLASS_ID:
     static const INT32 m_cls_id = CoordinateSystem_CoordinateSystemGridTickCollection;
 };
+
+#endif //_MGCOORDINATESYSTEMGRIDS_H_

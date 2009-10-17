@@ -2653,7 +2653,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemGridOrientation.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CoordinateSystem\CoordinateSystemGrids.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemGridSpecializationType.h"
 				>
 			</File>
 			<File
@@ -2666,6 +2674,10 @@
 			</File>
 			<File
 				RelativePath=".\CoordinateSystem\CoordinateSystemMgrs.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemMgrsGridLevel.h"
 				>
 			</File>
 			<File
