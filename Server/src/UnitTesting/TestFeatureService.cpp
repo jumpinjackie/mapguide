@@ -1288,9 +1288,43 @@ void TestFeatureService::TestCase_GetSpatialContexts()
         CPPUNIT_ASSERT_THROW_MG(pService->GetSpatialContexts(resource, activeOnly), MgInvalidResourceTypeException*);
 
         resource = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
+
+        // Get a valid spatial context reader
         Ptr<MgSpatialContextReader> reader = pService->GetSpatialContexts(resource, activeOnly);
+
+        // Advance to the 1st spatial context
         bool bResult = reader->ReadNext();
         CPPUNIT_ASSERT(bResult);
+
+        // Get the CS name and CS WKT
+        STRING csName = reader->GetName();
+        STRING csWkt = reader->GetCoordinateSystemWkt();
+        ACE_DEBUG((LM_DEBUG, ACE_TEXT("TestFeatureService::TestCase_GetSpatialContexts()\nName: %W\nWKT: %W\n"), csName.c_str(), csWkt.c_str()));
+
+        CPPUNIT_ASSERT(wcscmp(csName.c_str(), L"WGS84 Lat/Long's, Degre") == 0);
+        CPPUNIT_ASSERT(wcscmp(csWkt.c_str(), L"GEOGCS[\"WGS84 Lat/Long's, Degrees, -180 ==> +180\",DATUM[\"D_WGS_1984\",SPHEROID[\"World_Geodetic_System_of_1984\",6378137,298.257222932867]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]]") == 0);
+
+        // Close the reader
+        reader->Close();
+
+        // Force the reader to be cleaned up for the next operation
+        reader = NULL;
+
+        // Get a valid spatial context reader, this reader will be coming from the cache
+        reader = pService->GetSpatialContexts(resource, activeOnly);
+
+        // Advance to the 1st spatial context
+        bResult = reader->ReadNext();
+        CPPUNIT_ASSERT(bResult);
+
+        // Get the CS name and CS WKT
+        csName = reader->GetName();
+        csWkt = reader->GetCoordinateSystemWkt();
+        CPPUNIT_ASSERT(wcscmp(csName.c_str(), L"WGS84 Lat/Long's, Degre") == 0);
+        CPPUNIT_ASSERT(wcscmp(csWkt.c_str(), L"GEOGCS[\"WGS84 Lat/Long's, Degrees, -180 ==> +180\",DATUM[\"D_WGS_1984\",SPHEROID[\"World_Geodetic_System_of_1984\",6378137,298.257222932867]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]]") == 0);
+
+        // Close the reader
+        reader->Close();
     }
     catch(MgException* e)
     {
