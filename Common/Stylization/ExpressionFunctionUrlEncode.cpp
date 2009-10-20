@@ -129,7 +129,7 @@ FdoLiteralValue* ExpressionFunctionUrlEncode::Evaluate(FdoLiteralValueCollection
         size_t i, j;
         for (i=j=0; i<utf8lenbytes; ++i)
         {
-            char chr = sutf8[i];
+            unsigned char chr = (unsigned char)sutf8[i];
             if ((chr <= 0x20) || // a space or anything below it in value
                 (chr == 0x21) || // a ! (exclamation)
                 (chr == 0x22) || // a " (quotation mark)
@@ -165,19 +165,17 @@ FdoLiteralValue* ExpressionFunctionUrlEncode::Evaluate(FdoLiteralValueCollection
                 (chr == 0x7E) || // a ~ (tilde)
                 (chr == 0x7F) || // a control character
                 (chr >= 0x80))   // 8-bit (encoded)
-                j += sprintf(&sUrl[j], "%%%2X", (unsigned char)chr);
+                j += sprintf(&sUrl[j], "%%%2X", chr);
             else
                 sUrl[j++] = chr;
         }
 
         // finally, convert to a wide string
-        wchar_t* res = new wchar_t[j+1];
+        wchar_t* res = (wchar_t*)alloca((j+1) * sizeof(wchar_t));
         for (size_t k=0; k<=j; ++k)
             res[k] = (wchar_t)sUrl[k];
 
         m_urlEncodeValue->SetString(res);
-
-        delete [] res;
     }
     else
     {
