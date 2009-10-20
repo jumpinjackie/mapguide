@@ -39,17 +39,17 @@ PUBLISHED_API:
     ///////////////////////////////////////////////////////////////////////////
     /// /brief Generic grid of a specified coordinate system; may be
     /// geographic or projected.
-    static const INT32 Generic           = (0 + 1);     // Generic grid of a specified coordinate system;
+    static const INT32 Generic           = 1;           // Generic grid of a specified coordinate system;
                                                         // may be geographic or projected
     ///////////////////////////////////////////////////////////////////////////
     /// /brief Specialized grid: MGRS (Military Grid Reference System)
-    static const INT32 MGRS              = (16 + 1);
+    static const INT32 MGRS              = 17;
     ///////////////////////////////////////////////////////////////////////////
     /// /brief Specialized grid: USNG (United States National Grid)
-    static const INT32 USNG              = (16 + 2);
+    static const INT32 USNG              = 18;
     ///////////////////////////////////////////////////////////////////////////
     /// /brief Indicates the failure of an algorithm or other problem.
-    static const INT32 Unknown           = (65366);
+    static const INT32 Unknown           = 65366;
 };
 
 #endif //_MGCOORDINATESYSTEMGRIDSPECIALIZATIONTYPE_H_
