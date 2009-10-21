@@ -709,8 +709,9 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
     INT32 zoneNbr;
     INT32 zoneMin;
     INT32 zoneMax;
+    INT32 tmpInt32;
 
-    double cm;                      // central meridian;
+    double cm;                      // central meridian
     double eastLimit, westLimit;    // limits of a UTM zone
     double eastMin, eastMax;        // frame boundary extrema in 'LL84' (or 'LL')
     double northMin, northMax;      // frame boundary extrema in 'LL84' (or 'LL')
@@ -816,8 +817,10 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
             // A portion of the frame boundary is in the region covered by the
             // normal (i.e. non-polar) UTM zones.  Determine the particular UTM
             // zones we need to generate.
-            zoneMin = ((static_cast<INT32>(eastMin) + 180) / 6) + 1;
-            zoneMax = ((static_cast<INT32>(eastMax) + 180) / 6) + 1;
+            tmpInt32 = static_cast <INT32>(floor (eastMin));
+            zoneMin = ((tmpInt32 + 180) / 6) + 1;
+            tmpInt32 = static_cast <INT32>(ceil (eastMax));
+            zoneMax = ((tmpInt32 + 180) / 6) + 1;
 
             if (northMax > 0.0)
             {
