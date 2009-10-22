@@ -243,15 +243,17 @@ void CCoordinateSystemMgrsZone::BuildMajorRegions (MgCoordinateSystemGridBoundar
                 gridZoneLetter = CCoordinateSystemMgrs::GridZoneDesignationLetter (gridZoneIndex);
                 swprintf (wcBufr,128,L"%d%c",utmZoneNbr,gridZoneLetter);
                 STRING designation (wcBufr);
-
-                // Construct the region object and add it to the region collection.
-                pMjrRegion = new CCoordinateSystemGridRegion (designation,frameBoundary,
-                                                                          toFrameTransform,
-                                                                          southwest,
-                                                                          northeast,
-                                                                          curvePrecision,
-                                                                          maxPoints);
-                m_RegionCollection->Add (pMjrRegion);
+                if (!designation.empty ())
+                {
+                    // Construct the region object and add it to the region collection.
+                    pMjrRegion = new CCoordinateSystemGridRegion (designation,frameBoundary,
+                                                                              toFrameTransform,
+                                                                              southwest,
+                                                                              northeast,
+                                                                              curvePrecision,
+                                                                              maxPoints);
+                    m_RegionCollection->Add (pMjrRegion);
+                }
             }
         }
         else if (m_UtmZone == 61)
@@ -320,21 +322,24 @@ void CCoordinateSystemMgrsZone::BuildMinorRegions (MgCoordinateSystemGridBoundar
                 northeast->SetX (static_cast<double>(eastIndex + 100000));
                 northeast->SetY (static_cast<double>(northIndex + 100000));
 
-                // Now we need the designation.  The comes from the MgCoordinateSystemMgrs object that knows about the lettering scheme.
-                // Unfortunately, we don't have a reference to the host Mgrs object, so we're going to have to know
+                // Now we need the designation.  The comes from the MgCoordinateSystemMgrs
+                // object that knows about the lettering scheme.  Unfortunately, we don't
+                // have a reference to the host Mgrs object, so we're going to have to know
                 // about the lettering scheme.
                 STRING designation = CCoordinateSystemMgrs::GridSquareDesignation (m_UtmZone,static_cast<double>(eastIndex + 1),
                                                                                              static_cast<double>(northIndex + 1),
                                                                                              m_LetteringScheme);
-
-                // Construct the region object and add it to the region collection.
-                pMnrRegion = new CCoordinateSystemGridRegion (designation,frameBoundary,
-                                                                          gridToFrameXfrom,
-                                                                          southwest,
-                                                                          northeast,
-                                                                          curvePrecision,
-                                                                          maxPoints);
-                m_RegionCollection->Add (pMnrRegion);
+                if (!designation.empty ())
+                {
+                    // Construct the region object and add it to the region collection.
+                    pMnrRegion = new CCoordinateSystemGridRegion (designation,frameBoundary,
+                                                                              gridToFrameXfrom,
+                                                                              southwest,
+                                                                              northeast,
+                                                                              curvePrecision,
+                                                                              maxPoints);
+                    m_RegionCollection->Add (pMnrRegion);
+                }
             }
         }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemOneGrid::BuildMinorRegions")
