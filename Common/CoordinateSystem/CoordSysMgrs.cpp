@@ -946,7 +946,8 @@ STRING CCoordinateSystemMgrs::GridSquareDesignation (INT32 utmZoneNbr,double eas
         northIndex = static_cast<INT32>(iNorthing) / 100000;
         if (eastIndex < 9 && northIndex < 21)
         {
-            seriesIndex = abs (utmZoneNbr) % 6 - 1;
+//          seriesIndex = abs (utmZoneNbr) % 6 - 1;                 //BOGUS:: This does not work!!!!!
+            seriesIndex = (abs (utmZoneNbr) - 1) % 6;
             if (letteringScheme == MgCoordinateSystemMgrsLetteringScheme::Alternative)
             {
                 squareDesignation [0] = MgrsSeriesBessel[seriesIndex].easting[eastIndex];
