@@ -163,12 +163,12 @@ void CCoordinateSystemMgrsZone::BuildMajorRegions (MgCoordinateSystemGridBoundar
             // north latitude, the northernmost band (Band X) is
             // 12 degrees high (72 to 84 degrees latitude).  So there
             // is no band beginning at 80.
-            if (lastLat > 72)
+            if (lastLat > 80)
             {
-                lastLat = 72;
+                lastLat = 80;
             }
 
-            for (latIdx = firstLat;latIdx <= lastLat;latIdx += 8)
+            for (latIdx = firstLat;latIdx < lastLat;latIdx += 8)
             {
                 // Calculate the envelope of the normal UTM zone.
                 latMin = static_cast<double>(latIdx);
