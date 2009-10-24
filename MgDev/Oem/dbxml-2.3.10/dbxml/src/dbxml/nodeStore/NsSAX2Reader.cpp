@@ -1022,6 +1022,7 @@ void NsSAX2Reader::error(const unsigned int code,
 	s << "at line, " << lineNum;
 	s << ", char " << colNum;
 	s << ". Parser message: " << bufp;
+	fMemoryManager->deallocate(bufp);
 	// log warnings as info, and errors as warning.
 	// Neither is fatal to the program, and may be
 	// what is expected.
