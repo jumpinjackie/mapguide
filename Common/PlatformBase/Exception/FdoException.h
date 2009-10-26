@@ -91,6 +91,24 @@ EXTERNAL_API:
     virtual ~MgFdoException() throw();
 
 INTERNAL_API:
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Serialize data to TCP/IP stream.
+    ///
+    /// \param stream
+    /// Stream
+    ///
+    virtual void Serialize(MgStream* stream) throw();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Deserialize data from TCP/IP stream.
+    ///
+    /// \param stream
+    /// Stream
+    ///
+    virtual void Deserialize(MgStream* stream) throw();
+
 
     DECLARE_EXCEPTION_DEFAULTS(MgFdoException)
 
