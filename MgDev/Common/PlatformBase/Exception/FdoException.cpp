@@ -62,3 +62,24 @@ INT64 MgFdoException::GetNativeErrorCode()
 {
     return m_nativeErrorCode;
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Serialize data to TCP/IP stream.
+///
+void MgFdoException::Serialize(MgStream* stream) throw()
+{
+    MgThirdPartyException::Serialize(stream);
+    stream->WriteInt64(m_nativeErrorCode);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Deserialize data from TCP/IP stream.
+///
+void MgFdoException::Deserialize(MgStream* stream) throw()
+{
+    MgThirdPartyException::Deserialize(stream);
+    stream->GetInt64(m_nativeErrorCode);
+}
