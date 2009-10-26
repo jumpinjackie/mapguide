@@ -81,13 +81,34 @@ INT32 MgFeatureReader::GetPropertyIndex(CREFSTRING propertyName)
 INT32 MgFeatureReader::GetPropertyType(CREFSTRING propertyName)
 {
     Ptr<MgClassDefinition> classDef = this->GetClassDefinition();
-    CHECKNULL((MgClassDefinition*)classDef, L"MgFeatureReader.GetPropertyName");
+    CHECKNULL((MgClassDefinition*)classDef, L"MgFeatureReader.GetPropertyType");
 
     Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetProperties();
-    CHECKNULL((MgPropertyDefinitionCollection*)propDefCol, L"MgFeatureReader.GetPropertyName");
+    CHECKNULL((MgPropertyDefinitionCollection*)propDefCol, L"MgFeatureReader.GetPropertyType");
 
     Ptr<MgPropertyDefinition> propDef = propDefCol->GetItem(propertyName);
-    CHECKNULL((MgPropertyDefinition*)propDef, L"MgFeatureReader.GetPropertyName");
+    CHECKNULL((MgPropertyDefinition*)propDef, L"MgFeatureReader.GetPropertyType");
+
+    return GetMgPropertyType(propDef);
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Gets the data type of the property at the specified index.
+/// Please refer to MgPropertyType for list of values
+/// </summary>
+/// <param name="index">Input the property index.</param>
+/// <returns>Returns the type of the property.</returns>
+INT32 MgFeatureReader::GetPropertyType(INT32 index)
+{
+    Ptr<MgClassDefinition> classDef = this->GetClassDefinition();
+    CHECKNULL((MgClassDefinition*)classDef, L"MgFeatureReader.GetPropertyType");
+
+    Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetProperties();
+    CHECKNULL((MgPropertyDefinitionCollection*)propDefCol, L"MgFeatureReader.GetPropertyType");
+
+    Ptr<MgPropertyDefinition> propDef = propDefCol->GetItem(index);
+    CHECKNULL((MgPropertyDefinition*)propDef, L"MgFeatureReader.GetPropertyType");
 
     return GetMgPropertyType(propDef);
 }

@@ -87,6 +87,14 @@ EXTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
+    /// Gets the data type of the Property at the specified index.
+    /// </summary>
+    /// <param name="index">Input the Property index.</param>
+    /// <returns>Returns the type of the Property.</returns>
+    INT32 GetPropertyType(INT32 index);
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
     ///  Returns true if the value of the specified property is null.
     /// </summary>
     /// <param name="propertyName">Property name.</param>

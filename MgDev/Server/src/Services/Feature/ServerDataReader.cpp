@@ -204,6 +204,59 @@ INT32 MgServerDataReader::GetPropertyType(CREFSTRING propertyName)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
+/// Gets the data type of the Property at the specified index.
+/// </summary>
+/// <param name="index">Input the Property index.</param>
+/// <returns>Returns the type of the Property.</returns>
+INT32 MgServerDataReader::GetPropertyType(INT32 index)
+{
+    CHECKNULL(m_dataReader, L"MgServerDataReader.GetPropertyType");
+
+    INT32 type = MgPropertyType::Null;
+
+    MG_FEATURE_SERVICE_TRY()
+
+    FdoPropertyType propType = m_dataReader->GetPropertyType(index);
+
+    switch (propType)
+    {
+        // If geometric property, return geometric data type.
+        case FdoPropertyType_GeometricProperty:
+        {
+            type = MgPropertyType::Geometry;
+            break;
+        }
+        case FdoPropertyType_DataProperty:
+        {
+            FdoDataType dataType = m_dataReader->GetDataType(index);
+            if (FdoDataType(-1) == dataType)
+            {
+                throw new MgInvalidPropertyTypeException(L"MgServerDataReader.GetPropertyType",
+                    __LINE__, __WFILE__, NULL, L"", NULL);
+            }
+
+            type = MgServerFeatureUtil::GetMgPropertyType(dataType);
+            break;
+        }
+        case FdoPropertyType_RasterProperty:
+        {
+            type = MgPropertyType::Raster;
+            break;
+        }
+        default:
+        {
+            throw new MgInvalidPropertyTypeException(L"MgServerDataReader.GetPropertyType",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+    }
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetPropertyType")
+
+    return type;
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
 ///  Returns true if the value of the specified property is null.
 /// </summary>
 /// <param name="propertyName">Property name.</param>

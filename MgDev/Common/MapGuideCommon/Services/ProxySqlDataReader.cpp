@@ -159,6 +159,24 @@ INT32 MgProxySqlDataReader::GetPropertyType(CREFSTRING propertyName)
     CHECKNULL(m_propDefCol, L"MgProxySqlDataReader.GetPropertyType");
 
     Ptr<MgPropertyDefinition> propDef = m_propDefCol->GetItem(propertyName);
+    CHECKNULL((MgPropertyDefinition*)propDef, L"MgProxySqlDataReader.GetPropertyType");
+
+    return propDef->GetPropertyType();
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Gets the data type of the property at the specified index.
+/// </summary>
+/// <param name="index">Input the property index.</param>
+/// <returns>Returns the type of the property.</returns>
+INT32 MgProxySqlDataReader::GetPropertyType(INT32 index)
+{
+    CHECKNULL(m_propDefCol, L"MgProxySqlDataReader.GetPropertyType");
+
+    Ptr<MgPropertyDefinition> propDef = m_propDefCol->GetItem(index);
+    CHECKNULL((MgPropertyDefinition*)propDef, L"MgProxySqlDataReader.GetPropertyType");
+
     return propDef->GetPropertyType();
 }
 
