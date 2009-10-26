@@ -210,7 +210,7 @@ short CCoordinateSystemMgrs::GetBesselFromLetteringScheme(INT8 nLetteringScheme)
 
     if (MgCoordinateSystemMgrsLetteringScheme::Alternative==nLetteringScheme)
     {
-        nLetteringScheme=1;
+        sBessel=1;
     }
     return sBessel;
 }
