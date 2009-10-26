@@ -99,6 +99,18 @@ EXTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
+    /// Gets the data type of the property at the specified index.
+    ///
+    /// \param index
+    /// Input the property index.
+    ///
+    /// \return
+    /// Returns the type of the property.
+    ///
+    INT32 GetPropertyType(INT32 index);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
     ///  Returns true if the value of the specified property is null.
     ///
     /// \param propertyName

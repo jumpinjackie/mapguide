@@ -458,6 +458,19 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
+    /// Gets the data type of the property at the specified index.
+    /// Please refer to MgPropertyType for list of values
+    ///
+    /// \param index
+    /// Input the property index.
+    ///
+    /// \return
+    /// Returns the type of the property.
+    ///
+    virtual INT32 GetPropertyType(INT32 index);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
     /// Gets the type reader.
     /// Please refer to MgReaderType for list of values
     ///

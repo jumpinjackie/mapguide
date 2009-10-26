@@ -132,6 +132,30 @@ PUBLISHED_API:
     ///
     virtual INT32 GetPropertyType(CREFSTRING propertyName) = 0;
 
+        /////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the type of the property at the specified index. See
+    /// MgPropertyType for the list of possible values.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual int GetPropertyType(int index);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual int GetPropertyType(int index);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual int GetPropertyType(int index);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param index (index)
+    /// The property index.
+    ///
+    /// \return
+    /// Returns an MgPropertyType value.
+    ///
+    virtual INT32 GetPropertyType(INT32 index) = 0;
+
     /////////////////////////////////////////////////////////////////////
     /// \brief
     /// Determines whether the value of the specified property is
