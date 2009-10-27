@@ -667,6 +667,7 @@ MgCoordinateCollection* MgSpatialUtility::PolySegIntersection (MgCoordinateItera
                                                                                              MgCoordinate* segTo)
 {
     int status;
+    INT32 insertIndex;                      // for test and debug;
     Ptr<MgCoordinateCollection> coordinateCollection;
     Ptr<MgCoordinate> intersection;
     Ptr<MgCoordinate> polyFrom;
@@ -700,15 +701,69 @@ MgCoordinateCollection* MgSpatialUtility::PolySegIntersection (MgCoordinateItera
             // point which will still be on the heap when we are done, so we
             // definitely do not want to add the intersection point.
             Ptr<MgCoordinate> newPoint = new MgCoordinateXY (intersection->GetX(),intersection->GetY());
-            coordinateCollection->Add(newPoint);
+            insertIndex = AddToCoordinateCollection (coordinateCollection,newPoint,segFrom);
+            if (insertIndex != 0)
+            {
+                insertIndex = 0;
+            }
 
-            // The line segment can, and often does, have more than one
-            // intersection point with the polygon.  SO we keep trucking.
+            // The line segment can have more than one intersection point with
+            // the polygon.  So we keep trucking.
         }
     }
-    
+
     // We return the generated collection, which will often be empty.
     return coordinateCollection.Detach ();
+}
+
+// In the event that the PolySegIntersection function discovers two or more
+// intersection points for a single line segment, it is important that they
+// get added to the coordinate collection in the proper order.  This is a
+// brute force technique, but this situation is rather rare.
+INT32 MgSpatialUtility::AddToCoordinateCollection (MgCoordinateCollection* collection,MgCoordinate* newPoint,MgCoordinate* basePoint)
+{
+    INT32 index = 0;
+    double deltaX, deltaY;
+    double newDistance, indexDistance;
+
+    INT32 segCount = collection->GetCount ();
+    if (segCount == 0)
+    {
+        // This case happens so often that its worth having extra code to
+        // deal with this case very efficiently.
+        collection->Add (newPoint);
+    }
+    else
+    {
+        // This happens rather in frequently, but it can happen.  Need to
+        // insert the value into the collection such that when we are
+        // done, the points represent the same disrection as the original
+        // line segment.
+        
+        // Compute the distance from the basePoint to the newPoint.  To
+        // keep performance up we'll use the square of the distance
+        // rather than the distance itself;
+        deltaX = newPoint->GetX () - basePoint->GetX ();
+        deltaY = newPoint->GetY () - basePoint->GetY ();
+        newDistance = /*sqrt*/ (deltaX * deltaX + deltaY * deltaY);
+        
+        // Loop through all points in the collection and determine the index
+        // value of the first point whose distance from the base point is
+        // greater than the distance for the newPoint.
+        for (index = 0;index < segCount;index += 1)
+        {
+            Ptr<MgCoordinate> indexPoint = collection->GetItem (index);
+            deltaX = indexPoint->GetX () - basePoint->GetX ();
+            deltaY = indexPoint->GetY () - basePoint->GetY ();
+            indexDistance = /*sqrt*/ (deltaX * deltaX + deltaY * deltaY);
+            if (indexDistance > newDistance)
+            {
+                break;
+            }
+        }
+        collection->Insert (index,newPoint);
+    }
+    return index;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
