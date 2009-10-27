@@ -192,6 +192,39 @@ public:
                                                         MgCoordinate* segFrom,
                                                         MgCoordinate* segTo);
 
+
+    ///////////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Adds a coordinate to a coordinate collection such that the resulting
+    /// collection represents a collection of points in sequence from the
+    /// [rpvoded base point.
+    /// </summary>
+    /// <param name="collection">
+    /// The coordinate collection to which the <c>newPoint</c> is to be added.
+    /// </param>
+    /// <param name="newPoint">
+    /// The point to be added to the provided collection.
+    /// </param>
+    /// <param name="basePoint">
+    /// The base point which is used to order the collection.
+    /// </param>
+    /// <returns>
+    /// the index at which the insertion occurred.
+    /// </returns>
+    /// <remarks>
+    /// This is a 2D function only, Z and M coordinates are ignored; the provided
+    /// point collection is expected to be a collection of <c>MgCoordinateXY</c> objects.<para>
+    /// The purpose of this function is serve as a helper for the PolySegIntersection
+    /// function.  It enables PolySegIntersection to return a point collection such
+    /// that the points in the collection present an orderly sequence of points from
+    /// the provided base point.  Thus, if the original line segment provided to
+    /// PolySegIntersection proceeded in the south to north direction, the point
+    /// collection returned would also be returned in that order; regardless of the
+    /// shape of the polygon or the direction in which it proceeds.
+    /// </remarks>
+    static INT32 AddToCoordinateCollection (MgCoordinateCollection* collection,MgCoordinate* newPoint,
+                                                                        MgCoordinate* basePoint);
+
     ///////////////////////////////////////////////////////////////////////////////
     /// <summary>
     /// Determines if the provided point is inside (or actually on) the closed
