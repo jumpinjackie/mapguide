@@ -541,7 +541,7 @@ INT32 CCoordinateSystemMgrs::ConvertFromLonLat(double dLongitude, double dLatitu
     nPrecision = nPrecision>5 ? 5 : nPrecision;
     nPrecision = nPrecision<0 ? 0 : nPrecision;
 
-    int nResult=CScalcMgrsFromLl (m_pCsMgrs, szMgrs, (int)strlen(szMgrs), latLng, nPrecision);
+    int nResult=CScalcMgrsFromLl (m_pCsMgrs, szMgrs, sizeof(szMgrs), latLng, nPrecision);
     if (0==nResult)
     {
         //success, return the MGRS string
