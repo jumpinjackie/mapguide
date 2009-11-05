@@ -41,6 +41,7 @@ typedef struct {
     ACE_Time_Value lastUsed;
     bool bValid;
     bool bInUse;
+    INT32 nUseCount;    // Used by PerCommandThreaded/MultiThreaded providers
 } FdoConnectionCacheEntry;
 
 // FDO Connection Cache

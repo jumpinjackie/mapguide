@@ -604,11 +604,14 @@ FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING prov
                             if(pFdoConnectionCacheEntry->ltName == ltName)
                             {
                                 // We have a long transaction name match
-                                if(!pFdoConnectionCacheEntry->bInUse)
+                                if((!pFdoConnectionCacheEntry->bInUse) || 
+                                   (providerInfo->GetThreadModel() == FdoThreadCapability_PerCommandThreaded) ||
+                                   (providerInfo->GetThreadModel() == FdoThreadCapability_MultiThreaded))
                                 {
-                                    // It is not in use so claim it
+                                    // It is not in use or the provider is a PerCommandThreaded/MultiThreaded provider so claim it
                                     pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
                                     pFdoConnectionCacheEntry->bInUse = true;
+                                    pFdoConnectionCacheEntry->nUseCount++;  // Only used by PerCommandThreaded/MultiThreaded
 
                                     // Check to see if the key is blank which indicates a blank connection string was cached
                                     if(0 < key.size())
@@ -1089,6 +1092,7 @@ void MgFdoConnectionManager::CacheFdoConnection(FdoIConnection* pFdoConnection, 
             pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
             pFdoConnectionCacheEntry->bValid = true;
             pFdoConnectionCacheEntry->bInUse = true;
+            pFdoConnectionCacheEntry->nUseCount = 1;
 
             #ifdef _DEBUG_FDOCONNECTION_MANAGER
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("CacheFdoConnection:\nConnection: %@\nProvider = %W\nKey = %W\nVersion(LT) = %W\n\n"), (void*)pFdoConnection, provider.c_str(), key.c_str(), ltName.empty() ? L"(empty)" : ltName.c_str()));
@@ -1571,8 +1575,15 @@ void MgFdoConnectionManager::MakeFdoConnectionAvailable(FdoIConnection* connecti
                             // Are we supposed to release this provider from the cache?
                             if ((providerInfo->GetKeepCached()) && (pFdoConnectionCacheEntry->bValid))
                             {
-                                // Make the connection available
-                                pFdoConnectionCacheEntry->bInUse = false;
+                                // Try to make the connection available
+                                pFdoConnectionCacheEntry->nUseCount--;
+
+                                // If the provider was PerCommandThreaded/MultiThreaded the connection may still be in use
+                                if(0 >= pFdoConnectionCacheEntry->nUseCount)
+                                {
+                                    pFdoConnectionCacheEntry->bInUse = false;
+                                    pFdoConnectionCacheEntry->nUseCount = 0;
+                                }
                             }
                             else
                             {
@@ -1900,6 +1911,11 @@ STRING MgFdoConnectionManager::GetFdoCacheInfo()
                             info += L"<InUse>";
                             info += (pFdoConnectionCacheEntry->bInUse) ? L"True" : L"False";
                             info += L"</InUse>\n";
+
+                            info += L"<UseCount>";
+                            ACE_OS::itoa(pFdoConnectionCacheEntry->nUseCount, buffer, 10);
+                            info += buffer;
+                            info += L"</UseCount>\n";
 
                             info += L"<LongTransaction>";
                             info += pFdoConnectionCacheEntry->ltName;
