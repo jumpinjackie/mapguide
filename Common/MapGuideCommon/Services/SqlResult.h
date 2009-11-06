@@ -39,7 +39,7 @@ public:
     MgSqlResult(int rowAffected, MgParameterCollection * parameters, MgSqlDataReader * reader);
     ~MgSqlResult();
 
-    virtual int GetRowAffected();
+    virtual INT32 GetRowAffected();
 
     virtual MgParameterCollection * GetParameters();
 
@@ -68,7 +68,7 @@ protected:
 
 private:
 
-    int                         m_rowAffected;
+    INT32                       m_rowAffected;
     Ptr<MgParameterCollection>  m_parameters;
     Ptr<MgSqlDataReader>        m_reader;
 
@@ -78,3 +78,4 @@ CLASS_ID:
 };
 
 #endif
+
