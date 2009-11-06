@@ -240,7 +240,6 @@ MgHeaderDocumentNotEmpty                              = The header document is n
 MgInvalidAgfText                                      = The AGF text is invalid because it failed to parse into a valid geometry object.
 MgInvalidArgumentException                            = The argument is invalid.
 MgInvalidCollectionSize                               = The collection is invalid because the size was not what was expected.
-MgInvalidCoordinateSystemException                    = The coordinate system is invalid.
 MgInvalidDateDifference                               = The date is invalid because there cannot be more than a 24 hour difference.
 MgInvalidDataType                                     = The data type is invalid because it is not recognized.
 MgInvalidDay                                          = The day is invalid because it must be between 1 and 31.
