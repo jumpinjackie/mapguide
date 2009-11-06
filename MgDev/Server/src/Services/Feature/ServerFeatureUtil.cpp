@@ -1777,13 +1777,6 @@ MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qual
 
     Ptr<MgNullableProperty> prop;
 
-    STRING propName = qualifiedPropName.substr(qualifiedPropName.rfind(L".")+1);
-    // If not qualified name specified, take qualifiedPropName as property name
-    if (propName.empty())
-    {
-        propName = qualifiedPropName;
-    }
-
     switch(type)
     {
         case MgPropertyType::Boolean: /// Boolean true/false value
@@ -1791,13 +1784,13 @@ MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qual
             bool val = false;
             bool isNull = true;
 
-            if (!reader->IsNull(propName.c_str()))
+            if (!reader->IsNull(qualifiedPropName.c_str()))
             {
-                val = reader->GetBoolean(propName.c_str());
+                val = reader->GetBoolean(qualifiedPropName.c_str());
                 isNull = false;
             }
 
-            prop = new MgBooleanProperty(propName, val);
+            prop = new MgBooleanProperty(qualifiedPropName, val);
             prop->SetNull(isNull);
             break;
         }
@@ -1806,13 +1799,13 @@ MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qual
             FdoByte val = 0;
             bool isNull = true;
 
-            if (!reader->IsNull(propName.c_str()))
+            if (!reader->IsNull(qualifiedPropName.c_str()))
             {
-                val = reader->GetByte(propName.c_str());
+                val = reader->GetByte(qualifiedPropName.c_str());
                 isNull = false;
             }
 
-            prop = new MgByteProperty(propName, (BYTE)val);
+            prop = new MgByteProperty(qualifiedPropName, (BYTE)val);
             prop->SetNull(isNull);
             break;
         }
@@ -1821,13 +1814,13 @@ MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qual
             Ptr<MgDateTime> dateTime;
             bool isNull = true;
 
-            if (!reader->IsNull(propName.c_str()))
+            if (!reader->IsNull(qualifiedPropName.c_str()))
             {
-                dateTime = reader->GetDateTime(propName.c_str());
+                dateTime = reader->GetDateTime(qualifiedPropName.c_str());
                 isNull = false;
             }
 
-            prop = new MgDateTimeProperty(propName, dateTime);
+            prop = new MgDateTimeProperty(qualifiedPropName, dateTime);
             prop->SetNull(isNull);
             break;
         }
@@ -1836,13 +1829,13 @@ MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qual
             float val = 0.0f;
             bool isNull = true;
 
-            if (!reader->IsNull(propName.c_str()))
+            if (!reader->IsNull(qualifiedPropName.c_str()))
             {
-                val = reader->GetSingle(propName.c_str());
+                val = reader->GetSingle(qualifiedPropName.c_str());
                 isNull = false;
             }
 
-            prop = new MgSingleProperty(propName, (float)val);
+            prop = new MgSingleProperty(qualifiedPropName, (float)val);
             prop->SetNull(isNull);
             break;
         }
@@ -1851,13 +1844,13 @@ MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qual
             double val = 0.0;
             bool isNull = true;
 
-            if (!reader->IsNull(propName.c_str()))
+            if (!reader->IsNull(qualifiedPropName.c_str()))
             {
-                val = reader->GetDouble(propName.c_str());
+                val = reader->GetDouble(qualifiedPropName.c_str());
                 isNull = false;
             }
 
-            prop = new MgDoubleProperty(propName, (double)val);
+            prop = new MgDoubleProperty(qualifiedPropName, (double)val);
             prop->SetNull(isNull);
             break;
         }
@@ -1866,13 +1859,13 @@ MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qual
             FdoInt16 val = 0;
             bool isNull = true;
 
-            if (!reader->IsNull(propName.c_str()))
+            if (!reader->IsNull(qualifiedPropName.c_str()))
             {
-                val = reader->GetInt16(propName.c_str());
+                val = reader->GetInt16(qualifiedPropName.c_str());
                 isNull = false;
             }
 
-            prop = new MgInt16Property(propName, (INT16)val);
+            prop = new MgInt16Property(qualifiedPropName, (INT16)val);
             prop->SetNull(isNull);
             break;
         }
@@ -1881,13 +1874,13 @@ MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qual
             FdoInt32 val = 0;
             bool isNull = true;
 
-            if (!reader->IsNull(propName.c_str()))
+            if (!reader->IsNull(qualifiedPropName.c_str()))
             {
-                val = reader->GetInt32(propName.c_str());
+                val = reader->GetInt32(qualifiedPropName.c_str());
                 isNull = false;
             }
 
-            prop = new MgInt32Property(propName, (INT32)val);
+            prop = new MgInt32Property(qualifiedPropName, (INT32)val);
             prop->SetNull(isNull);
             break;
         }
@@ -1896,13 +1889,13 @@ MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qual
             FdoInt64 val = 0;
             bool isNull = true;
 
-            if (!reader->IsNull(propName.c_str()))
+            if (!reader->IsNull(qualifiedPropName.c_str()))
             {
-                val = reader->GetInt64(propName.c_str());
+                val = reader->GetInt64(qualifiedPropName.c_str());
                 isNull = false;
             }
 
-            prop = new MgInt64Property(propName, (INT64)val);
+            prop = new MgInt64Property(qualifiedPropName, (INT64)val);
             prop->SetNull(isNull);
             break;
         }
@@ -1911,7 +1904,7 @@ MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qual
             STRING val = L"";
             bool isNull = true;
 
-            if (!reader->IsNull(propName.c_str()))
+            if (!reader->IsNull(qualifiedPropName.c_str()))
             {
                 // A try/catch block is used here for case where the FDO computed
                 // property field is used.  When the property value is null, the computed
@@ -1920,7 +1913,7 @@ MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qual
                 // Instead, it will be handled by catching the exception and setting the isNull flag.
                 try
                 {
-                    val = reader->GetString(propName.c_str());
+                    val = reader->GetString(qualifiedPropName.c_str());
                     isNull = false;
                 }
                 catch (FdoException* e)
@@ -1939,7 +1932,7 @@ MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qual
                 }
             }
 
-            prop = new MgStringProperty(propName, val);
+            prop = new MgStringProperty(qualifiedPropName, val);
             prop->SetNull(isNull);
             break;
         }
@@ -1948,13 +1941,13 @@ MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qual
             Ptr<MgByteReader> val;
             bool isNull = true;
 
-            if (!reader->IsNull(propName.c_str()))
+            if (!reader->IsNull(qualifiedPropName.c_str()))
             {
                 isNull = false;
-                val = reader->GetBLOB(propName.c_str());
+                val = reader->GetBLOB(qualifiedPropName.c_str());
             }
 
-            prop = new MgBlobProperty(propName, val);
+            prop = new MgBlobProperty(qualifiedPropName, val);
             prop->SetNull(isNull);
             break;
         }
@@ -1963,13 +1956,13 @@ MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qual
             Ptr<MgByteReader> val;
             bool isNull = true;
 
-            if (!reader->IsNull(propName.c_str()))
+            if (!reader->IsNull(qualifiedPropName.c_str()))
             {
                 isNull = false;
-                val = reader->GetCLOB(propName.c_str());
+                val = reader->GetCLOB(qualifiedPropName.c_str());
             }
 
-            prop = new MgClobProperty(propName, val);
+            prop = new MgClobProperty(qualifiedPropName, val);
             prop->SetNull(isNull);
             break;
         }
@@ -1978,13 +1971,13 @@ MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qual
             Ptr<MgFeatureReader> val;
             bool isNull = true;
 
-            if (!reader->IsNull(propName.c_str()))
+            if (!reader->IsNull(qualifiedPropName.c_str()))
             {
                 isNull = false;
-                val = ((MgFeatureReader*)(reader))->GetFeatureObject(propName.c_str());
+                val = ((MgFeatureReader*)(reader))->GetFeatureObject(qualifiedPropName.c_str());
             }
 
-            prop = new MgFeatureProperty(propName, val);
+            prop = new MgFeatureProperty(qualifiedPropName, val);
             prop->SetNull(isNull);
             break;
         }
@@ -1993,13 +1986,13 @@ MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qual
             Ptr<MgByteReader> val;
             bool isNull = true;
 
-            if (!reader->IsNull(propName.c_str()))
+            if (!reader->IsNull(qualifiedPropName.c_str()))
             {
-                val = reader->GetGeometry(propName.c_str());
+                val = reader->GetGeometry(qualifiedPropName.c_str());
                 isNull = false;
             }
 
-            prop = new MgGeometryProperty(propName, val);
+            prop = new MgGeometryProperty(qualifiedPropName, val);
             prop->SetNull(isNull);
             break;
         }
@@ -2008,13 +2001,13 @@ MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qual
             Ptr<MgRaster> val;
             bool isNull = true;
 
-            if (!reader->IsNull(propName.c_str()))
+            if (!reader->IsNull(qualifiedPropName.c_str()))
             {
-                val = reader->GetRaster(propName.c_str());
+                val = reader->GetRaster(qualifiedPropName.c_str());
                 isNull = false;
             }
 
-            prop = new MgRasterProperty(propName, val);
+            prop = new MgRasterProperty(qualifiedPropName, val);
             prop->SetNull(isNull);
             break;
         }
