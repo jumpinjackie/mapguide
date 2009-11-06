@@ -19,6 +19,7 @@
 #include "OpExecuteSqlQuery.h"
 #include "ServerFeatureService.h"
 #include "LogManager.h"
+#include "Services/SqlResult.h"
 
 
 ///----------------------------------------------------------------------------
@@ -174,8 +175,10 @@ void MgOpExecuteSqlQuery::Execute()
         // Execute the operation
         Ptr<MgSqlDataReader> sqlReader = m_service->ExecuteSqlQuery(resource, sqlStatement, parameters, (MgTransaction*)transaction.p, fetchSize);
 
+        MgSqlResult result(0, parameters, sqlReader);
+
         // Write the response
-        EndExecution((MgSqlDataReader*)sqlReader);
+        EndExecution(&result);
     }
     else
     {

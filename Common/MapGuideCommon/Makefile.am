@@ -119,6 +119,7 @@ include_SOURCES = \
   Services/TileDefs.cpp \
   Services/TileService.cpp \
   Services/UnitType.cpp \
+  Services/SqlResult.cpp \
   System/ConfigProperties.cpp \
   System/MapGuideCommonFactory.cpp \
   System/MapGuideStream.cpp \
@@ -240,6 +241,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Services/TileDefs.h \
   Services/TileService.h \
   Services/UnitType.h \
+  Services/SqlResult.h \
   System/ConfigProperties.h \
   System/MapGuideCommonClassId.h \
   System/MapGuideStream.h \

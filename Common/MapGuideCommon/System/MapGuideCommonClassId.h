@@ -109,6 +109,7 @@
 #define MapGuide_Service_UserInformation                MAPGUIDE_SERVICE_ID+6
 #define MapGuide_Service_ServerAdmin                    MAPGUIDE_SERVICE_ID+7
 #define MapGuide_Service_SiteInfo                       MAPGUIDE_SERVICE_ID+8
+#define MapGuide_Service_SqlResult                      MAPGUIDE_SERVICE_ID+9
 
 // Drawing Service
 #define MapGuide_DrawingService_DrawingService          MAPGUIDE_DRAWINGSERVICE_ID+0

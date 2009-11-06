@@ -126,9 +126,11 @@
 #include  "Services/TileDefs.cpp"
 #include  "Services/TileService.cpp"
 #include  "Services/UnitType.cpp"
+#include  "Services/SqlResult.cpp"
 #include  "System/ConfigProperties.cpp"
 #include  "System/MapGuideCommonFactory.cpp"
 #include  "System/MapGuideStream.cpp"
 #include  "System/UserInformation.cpp"
 #include  "System/CryptographyManager.cpp"
 #include  "Util/IpUtil.cpp"
+
