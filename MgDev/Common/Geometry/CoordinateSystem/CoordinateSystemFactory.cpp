@@ -170,8 +170,8 @@ MgCoordinateSystem* MgCoordinateSystemFactory::CreateFromCode(CREFSTRING code)
 // <returns>Returns nothing</returns>
 void MgCoordinateSystemFactory::DeleteCatalog()
 {
-    ACE_MT (ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance()));
-
+    // there's no need to guard this call - it's only called when the module is unloaded
+//  ACE_MT (ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance()));
     if (sm_pCatalog)
     {
         sm_pCatalog->PrepareForDispose();
