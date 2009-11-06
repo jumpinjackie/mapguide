@@ -37,7 +37,7 @@ MgSqlResult::~MgSqlResult()
 {
 }
 
-int MgSqlResult::GetRowAffected()
+INT32 MgSqlResult::GetRowAffected()
 {
     return m_rowAffected;
 }
@@ -70,3 +70,4 @@ INT32 MgSqlResult::GetClassId()
 {
     return m_cls_id;
 }
+
