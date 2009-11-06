@@ -20,6 +20,7 @@
 #include "ServerFeatureService.h"
 #include "LogManager.h"
 #include "ServerFeatureTransactionPool.h"
+#include "Services/SqlResult.h"
 
 
 ///----------------------------------------------------------------------------
@@ -128,7 +129,8 @@ void MgOpExecuteSqlNonQuery::Execute()
         INT32 rowsUpdated = m_service->ExecuteSqlNonQuery(resource, sqlNonSelectStatement, parameters, (MgTransaction*)transaction.p);
 
         // Write the response
-        EndExecution(rowsUpdated);
+        MgSqlResult result(rowsUpdated, parameters, NULL);
+        EndExecution(&result);
     }
     else
     {

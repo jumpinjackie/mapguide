@@ -22,6 +22,7 @@
 #include "ProxyDataReader.h"
 #include "ProxyFeatureTransaction.h"
 #include "Command.h"
+#include "Services/SqlResult.h"
 
 static const int Feature_Service = (int)MgPacketParser::msiFeature;
 
@@ -1039,7 +1040,20 @@ MgSqlDataReader* MgProxyFeatureService::ExecuteSqlQuery(MgResourceIdentifier* re
 
     SetWarning(cmd.GetWarningObject());
 
-    Ptr<MgProxySqlDataReader> sqlReader = (MgProxySqlDataReader*)cmd.GetReturnValue().val.m_obj;
+    MgSqlResult * pResult = (MgSqlResult *)cmd.GetReturnValue().val.m_obj; 
+    if(params != NULL)
+    {
+        Ptr<MgParameterCollection> retParams = pResult->GetParameters();
+        for(int i = 0; i < retParams->GetCount(); i++)
+        {
+            Ptr<MgParameter> para = params->GetItem(i);
+            Ptr<MgParameter> newpara = retParams->GetItem(i);
+            Ptr<MgNullableProperty> prop = newpara->GetProperty();
+            para->SetProperty(prop);
+        }
+    }
+
+    Ptr<MgProxySqlDataReader> sqlReader = (MgProxySqlDataReader *)pResult->GetReader();
     if (sqlReader != NULL)
         sqlReader->SetService(this); // Feature reader on proxy side would store proxy service to call GetFeatures()
 
@@ -1124,7 +1138,7 @@ INT32 MgProxyFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
 
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                  // Connection
-        MgCommand::knInt32,                                         // Return type expected
+        MgCommand::knObject,                                         // Return type expected
         MgFeatureServiceOpId::ExecuteSqlNonQueryWithTransaction_Id, // Command Code
         4,                                                          // No of arguments
         Feature_Service,                                            // Service Id
@@ -1137,7 +1151,20 @@ INT32 MgProxyFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
 
     SetWarning(cmd.GetWarningObject());
 
-    return cmd.GetReturnValue().val.m_i32;
+    MgSqlResult * pResult = (MgSqlResult *)cmd.GetReturnValue().val.m_obj; 
+    if(params != NULL)
+    {
+        Ptr<MgParameterCollection> retParams = pResult->GetParameters();
+        for(int i = 0; i < retParams->GetCount(); i++)
+        {
+            Ptr<MgParameter> para = params->GetItem(i);
+            Ptr<MgParameter> newpara = retParams->GetItem(i);
+            Ptr<MgNullableProperty> prop = newpara->GetProperty();
+            para->SetProperty(prop);
+        }
+    }
+
+    return pResult->GetRowAffected();
 }
 
 
