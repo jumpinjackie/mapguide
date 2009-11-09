@@ -1083,7 +1083,7 @@ void MgServerFeatureReader::AddFeature(MgPropertyDefinitionCollection* propDefCo
     CHECKNULL((MgPropertyDefinitionCollection*)propDefCol, L"MgServerFeatureReader.AddFeature");
 
     //intentionally turn off duplicate checking for better performance
-    Ptr<MgPropertyCollection> propCol = new MgPropertyCollection(true, false);
+    Ptr<MgPropertyCollection> propCol = new MgPropertyCollection(true, true);
     INT32 cnt = propDefCol->GetCount();
 
     for (INT32 i=0; i < cnt; i++)
