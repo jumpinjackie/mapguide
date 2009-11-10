@@ -171,7 +171,6 @@ bool MgSpatialContextReader::ReadNext()
 /// </summary>
 void MgSpatialContextReader::Close()
 {
-    m_spatialContextCol.Clear();
 }
 
 //////////////////////////////////////////////////////////////
@@ -189,7 +188,7 @@ MgSpatialContextReader::MgSpatialContextReader() : m_currPos(-1)
 //////////////////////////////////////////////////////////////
 MgSpatialContextReader::~MgSpatialContextReader()
 {
-    this->Close();
+    m_spatialContextCol.Clear();
 }
 
 //////////////////////////////////////////////////////////////
