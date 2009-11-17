@@ -670,6 +670,26 @@ PUBLISHED_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
+    /// Gets the filter associated with this layer
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// string GetFilter();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// String GetFilter();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// string GetFilter();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Returns the filter or an empty string if this layer is not a feature layer or doesn't have filter.
+    ///
+    virtual STRING GetFilter();  /// __get
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
     /// Gets the geometry name associated with this layer which is part of
     /// class definition
     ///
@@ -1035,6 +1055,7 @@ protected:
     STRING                m_geometry;
     IdPropertyList        m_idProps;
     bool                  m_forceReadFromServer;
+    STRING                m_filter;
 };
 /// \}
 
