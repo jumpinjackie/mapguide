@@ -422,6 +422,14 @@ STRING MgLayerBase::GetFeatureClassName()
     return m_featureName;
 }
 
+//////////////////////////////////////////////////////////////
+// Gets the filter associated with this layer
+//
+STRING MgLayerBase::GetFilter()
+{
+    return m_filter;
+}
+
 
 //////////////////////////////////////////////////////////////
 // Serialize data to a stream
@@ -617,6 +625,7 @@ void MgLayerBase::GetLayerInfoFromDefinition(MgResourceService* resourceService)
     m_scaleRanges.clear();
     m_featureSourceId = L"";
     m_featureName = L"";
+    m_filter = L"";
     m_schemaName = L"";
 
     MG_TRY()
@@ -662,6 +671,9 @@ void MgLayerBase::GetLayerInfoFromDefinition(MgResourceService* resourceService)
             //get the feature name
             m_featureName = vl->GetFeatureName();
 
+            //get the filter
+            m_filter = vl->GetFilter();
+
             //get the geometry property
             m_geometry = vl->GetGeometry();
         }
@@ -686,6 +698,9 @@ void MgLayerBase::GetLayerInfoFromDefinition(MgResourceService* resourceService)
 
             //get the feature name
             m_featureName = gl->GetFeatureName();
+
+            //get the filter
+            m_filter = gl->GetFilter();
 
             //get the geometry property
             m_geometry = gl->GetGeometry();
