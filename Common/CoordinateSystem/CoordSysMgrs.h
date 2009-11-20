@@ -104,6 +104,9 @@ protected:          // Still INTERNAL API only.
 
 private:
     short GetBesselFromLetteringScheme(INT8 nLetteringScheme);
+    MgPolygon* ParallelPolygon (MgCoordinateSystemTransform* transformation,double latitude,
+                                                                            INT32 pointCount);
+    bool CanDoPoles (MgCoordinateSystem* frameCRS);
 
 protected:
     INT8 m_nLetteringScheme;

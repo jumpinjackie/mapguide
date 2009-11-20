@@ -79,7 +79,11 @@ void CCoordinateSystemOneGrid::SetUp (MgCoordinateSystemGridBoundary* frameBound
     m_GridCRS = SAFE_ADDREF (gridCRS);
     m_FrameCRS = SAFE_ADDREF (frameCRS);
     m_ToFrameXform = csFactory.GetTransform (m_GridCRS,m_FrameCRS);
+    m_ToFrameXform->IgnoreDatumShiftWarning (true);
+    m_ToFrameXform->IgnoreOutsideDomainWarning (true);
     m_ToGridXform = csFactory.GetTransform (m_FrameCRS,m_GridCRS);
+    m_ToGridXform->IgnoreDatumShiftWarning (true);
+    m_ToGridXform->IgnoreOutsideDomainWarning (true);
 }
 bool CCoordinateSystemOneGrid::IsGeographic (void)
 {
@@ -146,7 +150,7 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemOneGrid::GetGridLines (Mg
         // value has been changed, reproduce the m_GridBoundary
         // member from the m_FrameBoundary member.  At this point, we
         // need the curve precision value in Grid system units.
-        precision = mySpecPtr->GetCurvePrecision ();
+        precision = mySpecPtr->GetCurvePrecision (m_GridCRS);
         GenerateGridBoundary (precision);
 
         // Get the extents of the frame boundary, and then convert them to
@@ -202,8 +206,8 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemOneGrid::GetGridLines (Mg
             lineString = m_ToFrameXform->GridLine (fromPnt,toPnt,precision,m_MaxCurvePoints);
 
             // Clip the line to the frame boundary.  The grid line may
-            // actually leave, and then reenter, the grid boundary, so the
-            // result can be a multi-line sting.
+            // actually leave, and then re-enter, the grid boundary, so the
+            // result can be a multi-line string.
             lineStringCollection = m_FrameBoundary->ClipLineString (lineString);
             if (lineStringCollection)
             {
@@ -215,7 +219,7 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemOneGrid::GetGridLines (Mg
             }
         }
 
-        // Second loop, the south/north lines, starting at the western edge
+        // Second loop, the south/north lines, starting at the western edged
         // proceeding to the east.
         increment = mySpecPtr->GetEastingIncrement (gridCrsUnitCode);
         for (value = eastMin;value <= eastMax;value += increment)
@@ -442,6 +446,8 @@ void CCoordinateSystemOneGrid::GetGeographicExtents (double& longMin,double& lon
     MG_TRY ()
         llCRS = csFactory.CreateFromCode (L"LL");
         llTransform = csFactory.GetTransform(m_FrameCRS,llCRS);
+        llTransform->IgnoreDatumShiftWarning (true);
+        llTransform->IgnoreOutsideDomainWarning (true);
         pPolygon = m_FrameBoundary->GetBoundary (llTransform,precision);
         llBoundary = csFactory.GridBoundary (pPolygon);
         llBoundary->GetBoundaryExtents (longMin,longMax,latMin,latMax);

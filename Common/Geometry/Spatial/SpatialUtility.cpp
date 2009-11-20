@@ -528,7 +528,9 @@ INT32 MgSpatialUtility::SegmentIntersection (MgCoordinate* result,MgCoordinate* 
                                                                   MgCoordinate* seg2From,
                                                                   MgCoordinate* seg2To)
 {
-    INT32 status (-7);          // until we know different.
+    bool preciseFrom;
+    bool preciseTo;
+    INT32 status (-1);          // until we know different.
 
     double delX1, delY1;
     double delX2, delY2;
@@ -574,13 +576,14 @@ INT32 MgSpatialUtility::SegmentIntersection (MgCoordinate* result,MgCoordinate* 
         if (fabs (delX1) > fabs (delY1))
         {
             // Segment one is more horizontal than vertical. We will use the X
-            // value to test if the resulting point is on the segment.  Notice
-            // that an interscetion point which resides (relatively) precisely
-            // on the 'to' point is not considered to be on the segment.
+            // value to test if the resulting point is on the segment.
+            preciseFrom = MgMathUtility::DblCmp (result->GetX(),seg1From->GetX());
+            preciseTo = MgMathUtility::DblCmp (result->GetX(),seg1To->GetX());
             if (delX1 >= 0.0)
             {
                 // X increases from the 'from' point to the 'to' point.
-                if (result->GetX() > seg1From->GetX() && result->GetX() <= seg1To->GetX())
+                if ((result->GetX() >= seg1From->GetX() || preciseFrom) &&
+                    (result->GetX() <= seg1To->GetX()  || preciseTo))
                 {
                     status |= 1;
                 }
@@ -588,20 +591,32 @@ INT32 MgSpatialUtility::SegmentIntersection (MgCoordinate* result,MgCoordinate* 
             else
             {
                 // X decreases from the 'from' point to the 'to' point.
-                if (result->GetX() < seg1From->GetX() && result->GetX() >= seg1To->GetX())
+                if ((result->GetX() <= seg1From->GetX() || preciseFrom) &&
+                    (result->GetX() >= seg1To->GetX()   || preciseTo)) 
                 {
                     status |= 1;
                 }
             }
+            if (preciseFrom)
+            {
+                status |= 4;
+            }
+            if (preciseTo)
+            {
+                status |= 8;
+            }
         }
         else
         {
-            // First segment is more verical than horizontal. We will use the y
+            // First segment is more vertical than horizontal. We will use the Y
             // value to test if the resulting point is on the segment.
+            preciseFrom = MgMathUtility::DblCmp (result->GetY(),seg1From->GetY());
+            preciseTo = MgMathUtility::DblCmp (result->GetY(),seg1To->GetY());
             if (delY1 >= 0.0)
             {
                 // Y increases from the 'from' point to the 'to' point.
-                if (result->GetY() > seg1From->GetY() && result->GetY() <= seg1To->GetY())
+                if ((result->GetY() >= seg1From->GetY() || preciseFrom) &&
+                    (result->GetY() <= seg1To->GetY()   || preciseTo))
                 {
                     status |= 1;
                 }
@@ -609,46 +624,79 @@ INT32 MgSpatialUtility::SegmentIntersection (MgCoordinate* result,MgCoordinate* 
             else
             {
                 // Y increases from the 'from' point to the 'to' point.
-                if (result->GetY() < seg1From->GetY() && result->GetY() >= seg1To->GetY())
+                if ((result->GetY() <= seg1From->GetY() || preciseFrom) &&
+                    (result->GetY() >= seg1To->GetY()   || preciseTo))
                 {
                     status |= 1;
                 }
+            }
+            if (preciseFrom)
+            {
+                status |= 4;
+            }
+            if (preciseTo)
+            {
+                status |= 8;
             }
         }
 
         // Same stuff with the second segment, sans comments.
         if (fabs (delX2) > fabs (delY2))
         {
+            preciseFrom = MgMathUtility::DblCmp (result->GetX(),seg2From->GetX());
+            preciseTo = MgMathUtility::DblCmp (result->GetX(),seg2To->GetX());
             if (delX2 >= 0.0)
             {
-                if (result->GetX() > seg2From->GetX() && result->GetX() <= seg2To->GetX())
+                if ((result->GetX() >= seg2From->GetX() || preciseFrom) &&
+                    (result->GetX() <= seg2To->GetX()   || preciseTo))
                 {
                     status |= 2;
                 }
             }
             else
             {
-                if (result->GetX() < seg2From->GetX() && result->GetX() >= seg2To->GetX())
+                if ((result->GetX() <= seg2From->GetX() || preciseFrom) &&
+                    (result->GetX() >= seg2To->GetX()   || preciseTo))
                 {
                     status |= 2;
                 }
+            }
+            if (preciseFrom)
+            {
+                status |= 16;
+            }
+            if (preciseTo)
+            {
+                status |= 32;
             }
         }
         else
         {
+            preciseFrom = MgMathUtility::DblCmp (result->GetY(),seg2From->GetY());
+            preciseTo = MgMathUtility::DblCmp (result->GetY(),seg2To->GetY());
             if (delY2 >= 0.0)
             {
-                if (result->GetY() > seg2From->GetY() && result->GetY() <= seg2To->GetY())
+                if ((result->GetY() >= seg2From->GetY() || preciseFrom) &&
+                    (result->GetY() <= seg2To->GetY()   || preciseTo))
                 {
                     status |= 2;
                 }
             }
             else
             {
-                if (result->GetY() < seg2From->GetY() && result->GetY() >= seg2To->GetY())
+                if ((result->GetY() <= seg2From->GetY() || preciseFrom) &&
+                    (result->GetY() >= seg2To->GetY()   || preciseTo))
                 {
                     status |= 2;
                 }
+            }
+            if (preciseFrom)
+            {
+                status |= 16;
+            }
+            if (preciseTo)
+            {
+                status |= 32;
             }
         }
     }
@@ -695,11 +743,21 @@ MgCoordinateCollection* MgSpatialUtility::PolySegIntersection (MgCoordinateItera
         polyFrom = polyTo;
         polyTo = polyItr->GetCurrent ();
         status = SegmentIntersection (intersection,polyFrom,polyTo,segFrom,segTo);
-        if (status == 3)
+        
+        // If the intersection is precisely on the 'From' point of the polygon segment,
+        // we're not interested.  It will show up again when that point becomes a
+        // 'To' point on the polygon.
+        if ((status & 4) == 4)
         {
-            // We have an intersection of interest to us.  We need to add a
-            // point which will still be on the heap when we are done, so we
-            // definitely do not want to add the intersection point.
+            continue;
+        }
+        if ((status & 3) == 3)
+        {
+            // We have an intersection of interest to us.  That is, an intersection
+            // point which resides on both lines, but not presisely on the 'From"
+            // point of the polygon segment.  We need to add a point which will still
+            // be on the heap when we are done, so we definitely do not want to add
+            // the intersection point.
             Ptr<MgCoordinate> newPoint = new MgCoordinateXY (intersection->GetX(),intersection->GetY());
             insertIndex = AddToCoordinateCollection (coordinateCollection,newPoint,segFrom);
             if (insertIndex != 0)

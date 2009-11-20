@@ -375,6 +375,8 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemMgrs::GetGridLines (MgCoo
     Ptr<MgCoordinateSystemGridLineCollection> aGridLineCollection;
     Ptr<CCoordinateSystemGridLineCollection> theGridLineCollection;
 
+    MgCoordinateSystemFactory factory;
+
     if (m_GridBoundary == 0)
     {
         // Proceeding without a grid boundary will cause a crash.
@@ -384,36 +386,42 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemMgrs::GetGridLines (MgCoo
 
     MG_TRY ()
         theGridLineCollection = new CCoordinateSystemGridLineCollection ();
+
+        // Determine the grid type.
         unitType = specification->GetUnitType();
         specIsGrid = (unitType ==  MgCoordinateSystemUnitType::Linear);
-        if (specIsGrid)
+        
+        // Process each zone in our zone collection.  Originally, we thought
+        // we could just call the GetGridLines function of the OneGrid
+        // base class, but there are just too many special cases to deal with.
+        // So, rather than kludge a bunch of special stuff into OneGrid and
+        // compromise its generality, we have our own functions in this MGRS
+        // specific object which duplicates much of the functionality of the
+        // OneGrid objoect.
+        zoneCount = m_ZoneCollection->GetCount ();
+        for (index = 0;index < zoneCount;index += 1)
         {
-            // The specification calls for a grid.
-            zoneCount = m_ZoneCollection->GetCount ();
-            for (index = 0;index < zoneCount;index += 1)
+            mgrsZoneGrid = m_ZoneCollection->GetItem (index);
+            if (specIsGrid)
             {
-                mgrsZoneGrid = m_ZoneCollection->GetItem (index);
-                aGridLineCollection = mgrsZoneGrid->GetGridLines (specification);
-                theGridLineCollection->AddCollection (aGridLineCollection);
+                // The specification calls for a grid.  The following function
+                // is smart enough to deal with the special nature of zones
+                // 31 through 37 at the higher northern latitudes.
+                aGridLineCollection = mgrsZoneGrid->GetGridLines (m_GridBoundary,specification);
             }
-        }
-        else
-        {
-            // The specification calls for a graticule.
-            if (m_GraticuleUtm)
+            else
             {
-                aGridLineCollection = m_GraticuleUtm->GetGridLines (specification);
-                theGridLineCollection->AddCollection (aGridLineCollection);
+                // The specification calls for a graticule  This object is
+                // smart enough to deal with band X (which is 12 degrees high)
+                // and the special nature of zones 31 through 37 at the higher
+                // northern latitudes.
+                aGridLineCollection = mgrsZoneGrid->GetGraticuleLines (m_GridBoundary,specification);
             }
-            if (m_GraticuleUpsNorth)
+            if (aGridLineCollection != 0)
             {
-                aGridLineCollection = m_GraticuleUpsNorth->GetGridLines (specification);
+                // Add whatever we got to the collection we are accumulating.
                 theGridLineCollection->AddCollection (aGridLineCollection);
-            }
-            if (m_GraticuleUpsSouth)
-            {
-                aGridLineCollection = m_GraticuleUpsSouth->GetGridLines (specification);
-                theGridLineCollection->AddCollection (aGridLineCollection);
+                aGridLineCollection = 0;
             }
         }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemMgrs::GetGridLines")
@@ -706,6 +714,9 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
                                                                                   MgCoordinateSystem* frameCRS,
                                                                                   bool useFrameDatum)
 {
+    bool northPole (false);
+    bool southPole (false);
+
     INT32 zoneNbr;
     INT32 zoneMin;
     INT32 zoneMax;
@@ -713,8 +724,10 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
 
     double cm;                      // central meridian
     double eastLimit, westLimit;    // limits of a UTM zone
-    double eastMin, eastMax;        // frame boundary extrema in 'LL84' (or 'LL')
-    double northMin, northMax;      // frame boundary extrema in 'LL84' (or 'LL')
+    double lngMin, lngMax;          // frame boundary extrema in 'LL84' (or 'LL')
+    double latMin, latMax;          // frame boundary extrema in 'LL84' (or 'LL')
+    double eastMin, eastMax;        // frame boundary extrema in frame CRS
+    double northMin, northMax;      // frame boundary extrema in frame CRS
 
     Ptr<MgPolygon> pPolygon;
     Ptr<MgPolygon> pPolygonIntersection;
@@ -758,71 +771,158 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
         m_GraticuleUpsNorth = 0;
         m_GraticuleUpsSouth = 0;
 
+        // Get the min/max of the frame in frame coordinates.
+        frameBoundary->GetBoundaryExtents (eastMin,eastMax,northMin,northMax);
+
         // Convert the polygon portion of the Grid Boundary object to long/lat
         // coordinates and extract the min/max from the resulting polygon.
         llCRS = csFactory->CreateFromCode (useFrameDatum ? L"LL" : L"LL84");
         toLlTransform = csFactory->GetTransform(frameCRS,llCRS);
+        toLlTransform->IgnoreDatumShiftWarning (true);
+        toLlTransform->IgnoreOutsideDomainWarning (true);
         toFrameTransform = csFactory->GetTransform(llCRS,frameCRS);
+        toFrameTransform->IgnoreDatumShiftWarning (true);
+        toFrameTransform->IgnoreOutsideDomainWarning (true);
         pPolygon = frameBoundary->GetBoundary (toLlTransform,1.0E-05);
         llBoundary = csFactory->GridBoundary (pPolygon);
-        llBoundary->GetBoundaryExtents (eastMin,eastMax,northMin,northMax);
+        llBoundary->GetBoundaryExtents (lngMin,lngMax,latMin,latMax);
+
+        // The llBoundary object has been created using rectangular techniques.
+        // Since the earth is spherical, in certain rare cases the resulting
+        // extents can exclude either (or both, presumably) pole when inclusion
+        // is appropriate.  We try to deal with that issue here.  We use this
+        // technique only for projections which we believe can properly
+        // represent a pole for defensive purposes.
+
+        if (CanDoPoles (frameCRS))
+        {
+            // Use the toFrameXform object to convert the north pole to the frame
+            // coordinate system.  If the conversion is successful, and the result
+            // resides within the original cartesian frame boundary, we add the
+            // north pole to the extents generated by the GetBoundaryExtents
+            // function call.
+            if (latMax > 0.0)
+            {
+                Ptr<MgCoordinate> poleTest = new MgCoordinateXY (0.0,90.0);
+                poleTest = toFrameTransform->Transform (poleTest);
+                if (poleTest->GetX () >= eastMin  && poleTest->GetX () <= eastMax &&
+                    poleTest->GetY () >= northMin && poleTest->GetY () <= northMax)
+                {
+                    northPole = true;
+                }
+            }
+            if (latMin < 0.0)
+            {
+                Ptr<MgCoordinate> poleTest = new MgCoordinateXY (0.0,-90.0);
+                poleTest = toFrameTransform->Transform (poleTest);
+                if (poleTest->GetX () >= eastMin  && poleTest->GetX () <= eastMax &&
+                    poleTest->GetY () >= northMin && poleTest->GetY () <= northMax)
+                {
+                    southPole = true;
+                }
+            }
+        }
 
         // Use the latitude min/max to extract the UTM/UPS zones as necessary.
-        if (northMin < -80.0)
+        if (latMin < -80.0 || southPole)
         {
             // There is a portion of the frame boundary in the south polar region.
             zoneNbr = -61;
-            pSouthwest->SetX (eastMin);
-            pSouthwest->SetY (northMin);
-            pNortheast->SetX (eastMax);
-            pNortheast->SetY (-80.0);
-            llBoundary = csFactory->GridBoundary (pSouthwest,pNortheast);
-            pPolygon = llBoundary->GetBoundary (toFrameTransform,1.0);
-            Ptr<MgPolygon> pPolygonTemp = frameBoundary->GetBoundary ();
-            pPolygonIntersection = dynamic_cast<MgPolygon*>(pPolygon->Intersection (pPolygonTemp));
-            if (pPolygonIntersection != 0)
-            {
-                reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
-                mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
-                zoneCollection->Add (mgrsZoneGrid);
 
-                // Construct the m_GraticuleUpsSouth member, it may be needed.
-                m_GraticuleUpsSouth = new CCoordinateSystemOneGrid (reducedFrameBoundary,llCRS,frameCRS);
+            pPolygon = 0;
+            if (southPole)
+            {
+                // The south pole is included within the provided frame boundary.
+                // In this case, the rectangular technique used above would
+                // produce a closed polygon which will look like a circular pie
+                // with an infitessiammly smal slice in it.  This slice drives
+                // the clipper crazy.  So, we need to develop a simple
+                // circular closed boundary around, but not including the
+                // pole.
+
+                // Since we need to do the same thing for the northern pole as
+                // well, we have a function that will do that for us.  THis
+                // function will fail if the underlying frame CRS is not
+                // suitable for polar aspects.
+                pPolygon = ParallelPolygon (toFrameTransform,-80.0,720);
+            }
+            if (!pPolygon)
+            {
+                // The south pole is not within the frame boundary, the
+                // generation of a circular boundary representing a parallel
+                // failed, or the frame CRS is incapabale of representing
+                // the pole.  Therefore, we have to use the standard rectangular
+                // boundary technique and hope for the best.  This should work
+                // fine if the region does not actually include the pole, and
+                // the results should be decent in other cases.
+                pSouthwest->SetX (lngMin);
+                pSouthwest->SetY (latMin);
+                pNortheast->SetX (lngMax);
+                pNortheast->SetY (-80.0);
+                llBoundary = csFactory->GridBoundary (pSouthwest,pNortheast);
+                pPolygon = llBoundary->GetBoundary (toFrameTransform,1.0);
+            }
+            if (pPolygon)
+            {
+                Ptr<MgPolygon> pPolygonTemp = frameBoundary->GetBoundary ();
+                pPolygonIntersection = dynamic_cast<MgPolygon*>(pPolygon->Intersection (pPolygonTemp));
+                if (pPolygonIntersection != 0)
+                {
+                    reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
+                    mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
+                    zoneCollection->Add (mgrsZoneGrid);
+
+                    // Construct the m_GraticuleUpsSouth member, it may be needed.
+                    m_GraticuleUpsSouth = new CCoordinateSystemOneGrid (reducedFrameBoundary,llCRS,frameCRS);
+                }
             }
         }
-        if (northMax > 84.0)
+        if (latMax > 84.0 || northPole)
         {
             // There is a portion of the frame boundary in the north polar region.
             zoneNbr = 61;
-            pSouthwest->SetX (eastMin);
-            pSouthwest->SetY (84.0);
-            pNortheast->SetX (eastMax);
-            pNortheast->SetY (northMax);
-            llBoundary = csFactory->GridBoundary (pSouthwest,pNortheast);
-            pPolygon = llBoundary->GetBoundary (toFrameTransform,1.0);
-            Ptr<MgPolygon> pPolygonTemp = frameBoundary->GetBoundary ();
-            pPolygonIntersection = dynamic_cast<MgPolygon*>(pPolygon->Intersection (pPolygonTemp));
-            if (pPolygonIntersection != 0)
-            {
-                reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
-                mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
-                zoneCollection->Add (mgrsZoneGrid);
 
-                // Construct the m_GraticuleUpsNorth member, it may be needed.
-                m_GraticuleUpsNorth = new CCoordinateSystemOneGrid (reducedFrameBoundary,llCRS,frameCRS);
+            // Same as for the south pole, sans the laborious comments.
+            pPolygon = 0;
+            if (northPole)
+            {
+                pPolygon = ParallelPolygon (toFrameTransform,84.0,720);
+            }
+            if (pPolygon == 0)
+            {
+                pSouthwest->SetX (lngMin);
+                pSouthwest->SetY (84.0);
+                pNortheast->SetX (lngMax);
+                pNortheast->SetY (latMax);
+                llBoundary = csFactory->GridBoundary (pSouthwest,pNortheast);
+                pPolygon = llBoundary->GetBoundary (toFrameTransform,1.0);
+            }
+            if (pPolygon != 0)
+            {
+                Ptr<MgPolygon> pPolygonTemp = frameBoundary->GetBoundary ();
+                pPolygonIntersection = dynamic_cast<MgPolygon*>(pPolygon->Intersection (pPolygonTemp));
+                if (pPolygonIntersection != 0)
+                {
+                    reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
+                    mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
+                    zoneCollection->Add (mgrsZoneGrid);
+
+                    // Construct the m_GraticuleUpsNorth member, it may be needed.
+                    m_GraticuleUpsNorth = new CCoordinateSystemOneGrid (reducedFrameBoundary,llCRS,frameCRS);
+                }
             }
         }
-        if (northMax > -80.0 && northMin < 84.0)
+        if (latMax > -80.0 && latMin < 84.0)
         {
             // A portion of the frame boundary is in the region covered by the
             // normal (i.e. non-polar) UTM zones.  Determine the particular UTM
             // zones we need to generate.
-            tmpInt32 = static_cast <INT32>(floor (eastMin));
+            tmpInt32 = static_cast <INT32>(floor (lngMin));
             zoneMin = ((tmpInt32 + 180) / 6) + 1;
-            tmpInt32 = static_cast <INT32>(ceil (eastMax));
+            tmpInt32 = static_cast <INT32>(ceil (lngMax));
             zoneMax = ((tmpInt32 + 180) / 6) + 1;
 
-            if (northMax > 0.0)
+            if (latMax > 0.0)
             {
                 // There are some northern zones.
 
@@ -831,8 +931,8 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
                 // provided frame boundary.  The north/south portions
                 // are the same for each zone, so we do that once here outside
                 // the loop.
-                pSouthwest->SetY ((northMin <  0.0) ?  0.0 : northMin);
-                pNortheast->SetY ((northMax > 84.0) ? 84.0 : northMax);
+                pSouthwest->SetY ((latMin <  0.0) ?  0.0 : latMin);
+                pNortheast->SetY ((latMax > 84.0) ? 84.0 : latMax);
 
                 // OK, generate a CCoordinateSystemMgrsZone object for each
                 // UTM zone which intersects the frame boundary provided.
@@ -848,8 +948,8 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
                     eastLimit = cm + 3.0;
 
                     // 2> Apply the extents of the provided frame boundary.
-                    if (westLimit < eastMin) westLimit = eastMin;
-                    if (eastLimit > eastMax) eastLimit = eastMax;
+                    if (westLimit < lngMin) westLimit = lngMin;
+                    if (eastLimit > lngMax) eastLimit = lngMax;
 
                     // 3> Create, in terms of LL coordinates, the frame
                     //    boundary as is appropriate for this particular zone.
@@ -870,19 +970,19 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
                     }
                  }
             }
-            if (northMin < 0.0)
+            if (latMin < 0.0)
             {
                 // Pretty much the same as the northern zones processed
                 // above, but without the laborious comments.
-                pSouthwest->SetY ((northMin < -80.0) ? -80.0 : northMin);
-                pNortheast->SetY ((northMax >   0.0) ?   0.0 : northMax);
+                pSouthwest->SetY ((latMin < -80.0) ? -80.0 : latMin);
+                pNortheast->SetY ((latMax >   0.0) ?   0.0 : latMax);
                 for (zoneNbr = zoneMin;zoneNbr <= zoneMax;zoneNbr += 1)
                 {
                     cm = static_cast<double>((zoneNbr * 6) - 183);
                     westLimit = cm - 3.0;
                     eastLimit = cm + 3.0;
-                    if (westLimit < eastMin) westLimit = eastMin;
-                    if (eastLimit > eastMax) eastLimit = eastMax;
+                    if (westLimit < lngMin) westLimit = lngMin;
+                    if (eastLimit > lngMax) eastLimit = lngMax;
                     pSouthwest->SetX (westLimit);
                     pNortheast->SetX (eastLimit);
 
@@ -901,10 +1001,10 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
 
             // Need a CCoordinateSystemOneGrid object which can produce the 6 x 8 graticule
             // for the entire regon.
-            pSouthwest->SetX (eastMin);
-            pNortheast->SetX (eastMax);
-            pSouthwest->SetY ((northMin < -80.0) ? -80.0 : northMin);
-            pNortheast->SetY ((northMax >  84.0) ?  84.0 : northMax);
+            pSouthwest->SetX (lngMin);
+            pNortheast->SetX (lngMax);
+            pSouthwest->SetY ((latMin < -80.0) ? -80.0 : latMin);
+            pNortheast->SetY ((latMax >  84.0) ?  84.0 : latMax);
             llBoundary = csFactory->GridBoundary (pSouthwest,pNortheast);
             pPolygon = llBoundary->GetBoundary (toFrameTransform,1.0);
             Ptr<MgPolygon> pPolygonTemp = frameBoundary->GetBoundary ();
@@ -930,12 +1030,14 @@ STRING CCoordinateSystemMgrs::GridSquareDesignation (INT32 utmZoneNbr,double eas
     squareDesignation [0] = L'?';
     squareDesignation [1] = L'?';
     squareDesignation [2] = L'\0';
+    squareDesignation [3] = L'\0';
+
+    iEasting  = static_cast<INT32>(easting);
+    iNorthing = static_cast<INT32>(northing);
 
     // For now we assume there is no difference between the northern and southern hemisphere.
     if (utmZoneNbr != 0 && abs(utmZoneNbr) <= 60)
     {
-        iEasting  = static_cast<INT32>(easting);
-        iNorthing = static_cast<INT32>(northing);
         if (iEasting < 100000) iEasting = 100000;
         if (iEasting > 1000000) iEasting = 1000000;
         if (iNorthing < 0) iNorthing = 0;
@@ -946,7 +1048,6 @@ STRING CCoordinateSystemMgrs::GridSquareDesignation (INT32 utmZoneNbr,double eas
         northIndex = static_cast<INT32>(iNorthing) / 100000;
         if (eastIndex < 9 && northIndex < 21)
         {
-//          seriesIndex = abs (utmZoneNbr) % 6 - 1;                 //BOGUS:: This does not work!!!!!
             seriesIndex = (abs (utmZoneNbr) - 1) % 6;
             if (letteringScheme == MgCoordinateSystemMgrsLetteringScheme::Alternative)
             {
@@ -960,6 +1061,31 @@ STRING CCoordinateSystemMgrs::GridSquareDesignation (INT32 utmZoneNbr,double eas
             }
         }
     }
+    else if (utmZoneNbr == 61)
+    {
+        // North UPS region
+        eastIndex = (iEasting / 100000) - 13;
+        northIndex = (iNorthing / 100000) - 13;
+        if (eastIndex >= 0  && eastIndex  <= 13 &&
+            northIndex >= 0 && northIndex <= 13)
+        {
+            squareDesignation [0] = MgrsSeriesPolarNorth [0][eastIndex];
+            squareDesignation [1] = MgrsSeriesPolarNorth [1][northIndex];
+        }
+    }
+    else if (utmZoneNbr == -61)
+    {
+        // South UPS region
+        eastIndex = (iEasting / 100000) - 8;
+        northIndex = (iNorthing / 100000) - 8;
+        if (eastIndex >= 0  && eastIndex  <= 19 &&
+            northIndex >= 0 && northIndex <= 19)
+        {
+            squareDesignation [0] = MgrsSeriesPolarSouth [0][eastIndex];
+            squareDesignation [1] = MgrsSeriesPolarSouth [1][northIndex];
+        }
+    }
+
     STRING designation (squareDesignation);
     return designation;
 }
@@ -1033,5 +1159,115 @@ wchar_t CCoordinateSystemMgrs::GridZoneDesignationLetter (INT32 index)
         designationLetter = L'?';
     }
     return designationLetter;
+}
+
+// TODO:  This function probably should be a member of some other object, as
+// its product is of value outside the realm of MGRS.
+MgPolygon* CCoordinateSystemMgrs::ParallelPolygon (MgCoordinateSystemTransform* transformation,double latitude,
+                                                                                               INT32 pointCount)
+{
+    bool ok (true);
+    INT32 index;
+    INT32 status;
+
+    double deltaLng;
+    double currentLng;
+
+    Ptr<MgCoordinate> llPoint;
+    Ptr<MgCoordinate> xyPoint;
+    Ptr<MgCoordinate> firstPoint;
+    Ptr<MgCoordinateCollection> xyCollection;
+    Ptr<MgLinearRing> linearRing;
+    Ptr<MgPolygon> polyPtr;
+    MgPolygon* result;
+
+    result = 0;
+    if (pointCount < 3 || pointCount > 2048)
+    {
+        pointCount = 720;
+    }
+    deltaLng = 360.0 / static_cast<double>(pointCount);
+
+    currentLng = -180.0;
+    xyCollection = new MgCoordinateCollection ();
+    llPoint = new MgCoordinateXY (currentLng,latitude);
+    for (index = 0;ok && (index < pointCount);index += 1)
+    {
+        llPoint->SetX (currentLng);
+        xyPoint = transformation->Transform (llPoint);
+        status = transformation->GetLastTransformStatus ();
+        ok = status == MgCoordinateSystemTransform::TransformOk;
+        if (ok)
+        {
+            xyCollection->Add (xyPoint);
+            if (index == 0)
+            {
+                firstPoint = SAFE_ADDREF (xyPoint.p);
+            }
+        }
+        currentLng += deltaLng;
+    }
+
+    if (ok)
+    {
+        // Close the linear ring for sure.
+        xyCollection->Add (firstPoint);
+
+        linearRing = new MgLinearRing (xyCollection);
+        polyPtr = new MgPolygon (linearRing,0);
+        result = polyPtr.Detach ();
+    }
+    return result;
+}
+bool CCoordinateSystemMgrs::CanDoPoles (MgCoordinateSystem* frameCRS)
+{
+	// MENTOR_MAINTENANCE --> a new projection may need to be added to this list.
+    static INT32 polarCapable [] =
+    {
+        MgCoordinateSystemProjectionCode::Tm,
+        MgCoordinateSystemProjectionCode::Trmrs,
+        MgCoordinateSystemProjectionCode::Trmeraf,
+        MgCoordinateSystemProjectionCode::Sotrm,
+        MgCoordinateSystemProjectionCode::Alber,
+        MgCoordinateSystemProjectionCode::Azede,
+        MgCoordinateSystemProjectionCode::Azmea,
+        MgCoordinateSystemProjectionCode::Azmed,
+        MgCoordinateSystemProjectionCode::Cassini,
+        MgCoordinateSystemProjectionCode::Edcnc,
+        MgCoordinateSystemProjectionCode::GaussK,
+        MgCoordinateSystemProjectionCode::Hom1uv,
+        MgCoordinateSystemProjectionCode::Hom2uv,
+        MgCoordinateSystemProjectionCode::Hom1xy,
+        MgCoordinateSystemProjectionCode::Hom2xy,
+        MgCoordinateSystemProjectionCode::Krovak,
+        MgCoordinateSystemProjectionCode::Rskew,
+        MgCoordinateSystemProjectionCode::Rskewc,
+        MgCoordinateSystemProjectionCode::Rskewo,
+        MgCoordinateSystemProjectionCode::Lm1sp,
+        MgCoordinateSystemProjectionCode::Lm2sp,
+        MgCoordinateSystemProjectionCode::Lmblg,
+        MgCoordinateSystemProjectionCode::Lmbrtaf,
+        MgCoordinateSystemProjectionCode::Lmtan,
+        MgCoordinateSystemProjectionCode::Mstero,
+        MgCoordinateSystemProjectionCode::Obqcyl,
+        MgCoordinateSystemProjectionCode::Plycn,
+        MgCoordinateSystemProjectionCode::Pstro,
+        MgCoordinateSystemProjectionCode::Pstrosl,
+        MgCoordinateSystemProjectionCode::Unknown
+    };
+
+    bool canDoPoles (false);
+    INT32 index;
+    
+    INT32 prjCode = frameCRS->GetProjectionCode ();
+    for (index = 0;polarCapable [index] != MgCoordinateSystemProjectionCode::Unknown;index += 1)
+    {
+        if (prjCode == polarCapable [index])
+        {
+            canDoPoles = true;
+            break;
+        }
+    }
+    return canDoPoles;
 }
 //End of file.

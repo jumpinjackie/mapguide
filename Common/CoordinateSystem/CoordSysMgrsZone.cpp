@@ -24,7 +24,8 @@
 #include "CoordSysGrids.h"
 #include "CoordSysOneGrid.h"
 #include "CoordSysMgrsZone.h"
-#include "CoordSysMgrs.h"       //for CCoordinateSystemMgrs
+#include "CoordSysMgrs.h"
+#include "CoordSysMgrsMajorRegion.h"
 
 using namespace CSLibrary;
 
@@ -45,8 +46,8 @@ CCoordinateSystemMgrsZone::CCoordinateSystemMgrsZone (MgCoordinateSystemGridBoun
 
     STRING utmZoneCode = CCoordinateSystemMgrs::ZoneNbrToUtmCs (m_UtmZone);
     utmZoneCRS = csFactory.CreateFromCode (utmZoneCode);
+
     SetUp (frameBoundary,utmZoneCRS,frameCRS);
-    
     SetUserID (m_UtmZone);
 }
 CCoordinateSystemMgrsZone::~CCoordinateSystemMgrsZone (void)
@@ -57,6 +58,168 @@ CCoordinateSystemGridRegionCollection* CCoordinateSystemMgrsZone::GetGridRegions
 {
     BuildRegionCollection (frameBoundary,specification);
     return SAFE_ADDREF(m_RegionCollection.p);
+}
+CCoordinateSystemGridLineCollection* CCoordinateSystemMgrsZone::GetGridLines (MgCoordinateSystemGridBoundary* frameBoundary,
+                                                                              MgCoordinateSystemGridSpecification* specification)
+{
+    // For now, we just call the generic OneGrid grid line function.
+    // Later on we might need to add some special logic for zones 31
+    // through 37 in the higher northern longitudes.
+    MgCoordinateSystemGridLineCollection* gridLines = CCoordinateSystemOneGrid::GetGridLines (specification);
+    return dynamic_cast<CCoordinateSystemGridLineCollection*>(gridLines);
+}
+CCoordinateSystemGridLineCollection* CCoordinateSystemMgrsZone::GetGraticuleLines (MgCoordinateSystemGridBoundary* frameBoundary,
+                                                                                   MgCoordinateSystemGridSpecification* specification)
+{
+    const INT32 maxPoints = 512;
+
+    INT32 index;
+    INT32 regionCount;
+    double value;
+    double precision;
+    double lngMin, lngMax;
+    double latMin,latMax;
+    STRING designation;
+   
+    Ptr<MgCoordinateXY> fromPoint;
+    Ptr<MgCoordinateXY> toPoint;
+    Ptr<MgCoordinateSystem> llCRS;
+    Ptr<MgCoordinateSystem> frameCRS;
+    Ptr<MgCoordinateSystemTransform> toFrameTransform;
+    Ptr<CCoordinateSystemMgrsMajorRegion> regionPtr;
+    Ptr<CCoordinateSystemMgrsMajorRegionCollection> regionCollection;
+    Ptr<MgLineStringCollection> lineStrCollectionPtr;
+    Ptr<CCoordinateSystemMgrsZoneCollection> mjrZoneCollection;
+    Ptr<MgLineString> lineString;
+    Ptr<MgLineStringCollection> lineStringCollection;
+    Ptr<CCoordinateSystemGridLine> gridLine;
+
+    MgCoordinateSystemFactory csFactory;
+
+    Ptr<CCoordinateSystemGridLineCollection> gridLineCollection = new CCoordinateSystemGridLineCollection ();
+
+    MG_TRY ()
+        fromPoint = new MgCoordinateXY ();
+        toPoint = new MgCoordinateXY ();
+        CCoordinateSystemGridSpecification* mySpecPtr = dynamic_cast<CCoordinateSystemGridSpecification*>(specification);
+        precision = mySpecPtr->GetCurvePrecision (m_GridCRS);
+ 
+        // To be are successful, we'll need a Transform which will convert
+        // 'LL' to the frame coordinate system.
+        llCRS = csFactory.CreateFromCode (L"LL");
+        frameCRS = GetFrameCRS ();
+        toFrameTransform = csFactory.GetTransform(llCRS,frameCRS);
+
+        // Major regions are solely a function of the extents of the grid in
+        // terms of geographic coordinates.  So, we extract the extents of this
+        // grid in geographic coordinate form, and work from there.
+        GetGeographicExtents (lngMin,lngMax,latMin,latMax);
+        
+        regionCollection = new CCoordinateSystemMgrsMajorRegionCollection (m_UtmZone,latMin,latMax);
+        if (regionCollection != 0)
+        {
+            // Draw the east/west lines, i.e. the lines of constant latitude.
+            regionCount = regionCollection->GetCount ();
+            for (index = 0;index < regionCount;index += 1)
+            {
+                // We have a region.
+                regionPtr = regionCollection->GetItem (index);
+                value = regionPtr->GetSouthEdgeLat ();
+                fromPoint->SetX (regionPtr->GetWestEdgeLng ());
+                fromPoint->SetY (value);
+                toPoint->SetX (regionPtr->GetEastEdgeLng ());
+                toPoint->SetY (value);
+                lineString = toFrameTransform->GridLine (fromPoint,toPoint,precision,m_MaxCurvePoints);
+
+                // Clip the line to the frame boundary.  The grid line may
+                // actually leave, and then re-enter, the grid boundary, so the
+                // result can be a multi-line string.
+                lineStringCollection = frameBoundary->ClipLineString (lineString);
+                if (lineStringCollection)
+                {
+                    // Construct the Grid Line object and add it to the grid
+                    // line collection object.
+                    gridLine = new CCoordinateSystemGridLine (MgCoordinateSystemGridOrientation::NorthSouth,value);
+                    gridLine->SetSegmentCollection (lineStringCollection);
+                    gridLineCollection->Add (gridLine);
+                }
+                if (index == (regionCount - 1))
+                {
+                    value = regionPtr->GetNorthEdgeLat ();
+                    fromPoint->SetX (regionPtr->GetWestEdgeLng ());
+                    fromPoint->SetY (value);
+                    toPoint->SetX (regionPtr->GetEastEdgeLng ());
+                    toPoint->SetY (value);
+                    lineString = toFrameTransform->GridLine (fromPoint,toPoint,precision,m_MaxCurvePoints);
+
+                    // Clip the line to the frame boundary.
+                    lineStringCollection = frameBoundary->ClipLineString (lineString);
+                    if (lineStringCollection)
+                    {
+                        // Construct the Grid Line object and add it to the grid
+                        // line collection object.
+                        gridLine = new CCoordinateSystemGridLine (MgCoordinateSystemGridOrientation::NorthSouth,value);
+                        gridLine->SetSegmentCollection (lineStringCollection);
+                        gridLineCollection->Add (gridLine);
+                    }
+                }
+            }
+
+            // Draw the western north/south lines, i.e. the lines of constant
+            // longitude.
+            regionCount = regionCollection->GetCount ();
+            for (index = 0;index < regionCount;index += 1)
+            {
+                // We have a region.
+                regionPtr = regionCollection->GetItem (index);
+                value = regionPtr->GetWestEdgeLng ();
+                fromPoint->SetX (value);
+                fromPoint->SetY (regionPtr->GetSouthEdgeLat ());
+                toPoint->SetX (value);
+                toPoint->SetY (regionPtr->GetNorthEdgeLat ());
+                lineString = toFrameTransform->GridLine (fromPoint,toPoint,precision,m_MaxCurvePoints);
+
+                // Clip the line to the frame boundary.
+                lineStringCollection = frameBoundary->ClipLineString (lineString);
+                if (lineStringCollection)
+                {
+                    // Construct the Grid Line object and add it to the grid
+                    // line collection object.
+                    gridLine = new CCoordinateSystemGridLine (MgCoordinateSystemGridOrientation::EastWest,value);
+                    gridLine->SetSegmentCollection (lineStringCollection);
+                    gridLineCollection->Add (gridLine);
+                }
+            }
+
+            // Draw the north/south lines, i.e. the lines of constant longitude.
+            regionCount = regionCollection->GetCount ();
+            for (index = 0;index < regionCount;index += 1)
+            {
+                // We have a region.
+                regionPtr = regionCollection->GetItem (index);
+                value = regionPtr->GetEastEdgeLng ();
+                fromPoint->SetX (value);
+                fromPoint->SetY (regionPtr->GetSouthEdgeLat ());
+                toPoint->SetX (value);
+                toPoint->SetY (regionPtr->GetNorthEdgeLat ());
+                lineString = toFrameTransform->GridLine (fromPoint,toPoint,precision,m_MaxCurvePoints);
+
+                // Clip the line to the frame boundary.  The grid line may
+                // actually leave, and then re-enter, the grid boundary, so the
+                // result can be a multi-line string.
+                lineStringCollection = frameBoundary->ClipLineString (lineString);
+                if (lineStringCollection)
+                {
+                    // Construct the Grid Line object and add it to the grid
+                    // line collection object.
+                    gridLine = new CCoordinateSystemGridLine (MgCoordinateSystemGridOrientation::EastWest,value);
+                    gridLine->SetSegmentCollection (lineStringCollection);
+                    gridLineCollection->Add (gridLine);
+                }
+            }
+        }
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemMgrsZone::GetGraticuleLines")
+   return gridLineCollection.Detach ();
 }
 INT32 CCoordinateSystemMgrsZone::GetUtmZoneNbr (void)
 {
@@ -99,17 +262,11 @@ void CCoordinateSystemMgrsZone::BuildMajorRegions (MgCoordinateSystemGridBoundar
 {
     const INT32 maxPoints = 512;
 
-    wchar_t gridZoneLetter;
-    INT32 utmZoneNbr;
-    INT32 gridZoneIndex;
-    INT32 latIdx, firstLat, lastLat;
-    double delta;
-    double centralMeridian;
+    INT32 index;
     double lngMin, lngMax;
     double latMin,latMax;
     STRING designation;
-    wchar_t wcBufr [128];
- 
+
     Ptr<MgCoordinate> southwest;
     Ptr<MgCoordinate> northeast;
     Ptr<MgCoordinateSystem> llCRS;
@@ -117,6 +274,8 @@ void CCoordinateSystemMgrsZone::BuildMajorRegions (MgCoordinateSystemGridBoundar
     Ptr<MgCoordinateSystemTransform> toFrameTransform;
     Ptr<CCoordinateSystemGridBoundary> rgnBoundary;
     Ptr<CCoordinateSystemGridRegion> pMjrRegion;
+    Ptr<CCoordinateSystemMgrsMajorRegion> regionPtr;
+    Ptr<CCoordinateSystemMgrsMajorRegionCollection> regionCollection;
 
     MgCoordinateSystemFactory csFactory;
 
@@ -134,126 +293,27 @@ void CCoordinateSystemMgrsZone::BuildMajorRegions (MgCoordinateSystemGridBoundar
         // terms of geographic coordinates.  So, we extract the extents of this
         // grid in geographic coordinate form, and work from there.
         GetGeographicExtents (lngMin,lngMax,latMin,latMax);
-
-        if ((m_UtmZone) != 0 && (abs (m_UtmZone) <= 60))
+        
+        regionCollection = new CCoordinateSystemMgrsMajorRegionCollection (m_UtmZone,latMin,latMax);
+        if (regionCollection != 0)
         {
-            // Here for a normal (i.e. non-polar) UTM zone.  Use some asserts
-            // to verify the assumption here that the boundary for this zone
-            // does not extend into the polar regions.
-            assert (latMin >= -80.0);
-            assert (latMax <=  84.0);
-
-            // The grid boundary may have been shrunk to the limits of the frame
-            // boundary, so we'll recompute the appropriate minLng and maxLng from
-            // the utmZoneNbr data member.
-            utmZoneNbr = abs (m_UtmZone);
-            centralMeridian = static_cast<double>(-183 + (utmZoneNbr * 6));
-            lngMin = centralMeridian - 3.0;
-            lngMax = centralMeridian + 3.0;
-
-            // Need to account for the fact that the frame boundary may cross
-            // an MGRS Grid Zone Designation boundary (i.e. the 8 degree chunks
-            // of latitude).  Thus, there may be more than just one major region.
-            delta = fabs (fmod (latMin,8.0));
-            firstLat = static_cast<INT32>(latMin - ((latMin >= 0.0) ? delta : (8.0 - delta)));
-            delta = fabs (fmod (latMax,8.0));
-            lastLat = static_cast<INT32>(latMax + ((latMax >= 0.0) ? (8.0 - delta) : -delta));
-
-            // While the normal UTM zones extend up to 84 degrees
-            // north latitude, the northernmost band (Band X) is
-            // 12 degrees high (72 to 84 degrees latitude).  So there
-            // is no band beginning at 80.
-            if (lastLat > 80)
+            INT32 regionCount = regionCollection->GetCount ();
+            for (index = 0;index < regionCount;index += 1)
             {
-                lastLat = 80;
-            }
-
-            for (latIdx = firstLat;latIdx < lastLat;latIdx += 8)
-            {
-                // Calculate the envelope of the normal UTM zone.
-                latMin = static_cast<double>(latIdx);
-                latMax = latMin + 8.0;
-                southwest->SetX (lngMin);
-                southwest->SetY (latMin);
-                northeast->SetX (lngMax);
-                northeast->SetY (latMax);
-
-                // Band X (72 thru 84 north latitude includes 12 degrees of
-                // latitude.  Also, in this band, zones 32, 34, and 36 do not exist.
-                // and zones 31, 33, 35, and 37 have non-standard widths.  We
-                // adjust for all that now.
-                if (latIdx == 72)
-                {
-                    if (m_UtmZone == 32 || m_UtmZone == 34 || m_UtmZone == 36)
-                    {
-                        // These are regions which do not exist.
-                        continue;
-                    }
-
-                    // For all other regions in this band, the "height" is
-                    // 12 degrees.
-                    latMin = static_cast<double>(latIdx);
-                    latMax = latMin + 12.0;
-
-                    // There are two zones which are 9 degrees wide, and two that are
-                    // 12 degrees wide in this band.
-                    if (m_UtmZone == 31)
-                    {
-                        lngMin = centralMeridian - 3.0;
-                        lngMax = centralMeridian + 6.0;
-                    }
-                    else if (m_UtmZone == 33 || m_UtmZone == 35)
-                    {
-                        lngMin = centralMeridian - 6.0;
-                        lngMax = centralMeridian + 6.0;
-                    }
-                    else if (m_UtmZone == 37)
-                    {
-                        lngMin = centralMeridian - 6.0;
-                        lngMax = centralMeridian + 3.0;
-                    }
-                    southwest->SetX (lngMin);
-                    southwest->SetY (latMin);
-                    northeast->SetX (lngMax);
-                    northeast->SetY (latMax);
-                }
-
-                // One more kludge.  The following is necessary for a specific
-                // region south east of Norway.
-                if ((latIdx == 56) && (m_UtmZone == 31 || m_UtmZone == 32))
-                {
-                    if (m_UtmZone == 31)
-                    {
-                        lngMin = centralMeridian - 3.0;
-                        lngMax = centralMeridian;
-                    }
-                    else if (m_UtmZone == 32)
-                    {
-                        lngMin = centralMeridian - 6.0;
-                        lngMax = centralMeridian + 3.0;
-                    }
-                    southwest->SetX (lngMin);
-                    southwest->SetY (latMin);
-                    northeast->SetX (lngMax);
-                    northeast->SetY (latMax);
-                }
-
-                // We have the polygon, we need the designation.
-                gridZoneIndex = CCoordinateSystemMgrs::GridZoneDesignationIndex (latMin + 1.0,centralMeridian);
-                gridZoneLetter = CCoordinateSystemMgrs::GridZoneDesignationLetter (gridZoneIndex);
-                swprintf (wcBufr,128,L"%d%c",utmZoneNbr,gridZoneLetter);
-                STRING designation (wcBufr);
-                if (!designation.empty ())
-                {
-                    // Construct the region object and add it to the region collection.
-                    pMjrRegion = new CCoordinateSystemGridRegion (designation,frameBoundary,
-                                                                              toFrameTransform,
-                                                                              southwest,
-                                                                              northeast,
-                                                                              curvePrecision,
-                                                                              maxPoints);
-                    m_RegionCollection->Add (pMjrRegion);
-                }
+                // We have a region.
+                regionPtr = regionCollection->GetItem (index);
+                southwest->SetX (regionPtr->GetWestEdgeLng ());
+                southwest->SetY (regionPtr->GetSouthEdgeLat ());
+                northeast->SetX (regionPtr->GetEastEdgeLng ());
+                northeast->SetY (regionPtr->GetNorthEdgeLat ());
+                designation = regionPtr->GetDesignation ();
+                pMjrRegion = new CCoordinateSystemGridRegion (designation,frameBoundary,
+                                                                          toFrameTransform,
+                                                                          southwest,
+                                                                          northeast,
+                                                                          curvePrecision,
+                                                                          maxPoints);
+                m_RegionCollection->Add (pMjrRegion);
             }
         }
         else if (m_UtmZone == 61)

@@ -38,6 +38,7 @@ libMgGeometry_la_SOURCES = \
   ../CoordinateSystem/CoordSysGrids.cpp \
   ../CoordinateSystem/CoordSysMgrsZone.cpp \
   ../CoordinateSystem/CoordSysMgrs.cpp \
+  ../CoordinateSystem/CoordSysMgrsMajorRegion.cpp \
   ../CoordinateSystem/CoordSysOneGrid.cpp
 
 include_SOURCES = \
@@ -173,6 +174,7 @@ include_SOURCES = \
   ../CoordinateSystem/CoordSysGrids.cpp \
   ../CoordinateSystem/CoordSysMgrsZone.cpp \
   ../CoordinateSystem/CoordSysMgrs.cpp \
+  ../CoordinateSystem/CoordSysMgrsMajorRegion.cpp \
   ../CoordinateSystem/CoordSysOneGrid.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
@@ -385,6 +387,7 @@ noinst_HEADERS = $(include_SOURCES) \
   ../CoordinateSystem/CoordSysGrids.h \
   ../CoordinateSystem/CoordSysMgrsZone.h \
   ../CoordinateSystem/CoordSysMgrs.h \
+  ../CoordinateSystem/CoordSysMgrsMajorRegion.h \
   ../CoordinateSystem/CoordSysOneGrid.h
 
 INCLUDES = \
