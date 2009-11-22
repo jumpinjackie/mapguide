@@ -262,8 +262,8 @@ struct SE_SymbolInstance
     MdfModel::SizeContext sizeContext;
     MdfModel::SymbolInstance::GeometryContext geomContext;
     SE_Boolean drawLast;
-    SE_Boolean checkExclusionRegions;
-    SE_Boolean addToExclusionRegions;
+    SE_Boolean checkExclusionRegion;
+    SE_Boolean addToExclusionRegion;
     SE_String positioningAlgorithm;
     SE_Integer renderPass;
 

@@ -173,8 +173,8 @@ struct SE_RenderStyle
         : type(stype),
           renderPass(0),
           drawLast(false),
-          checkExclusionRegions(false),
-          addToExclusionRegions(false)
+          checkExclusionRegion(false),
+          addToExclusionRegion(false)
     {
         bounds[0].x = bounds[3].x = +DBL_MAX;
         bounds[1].x = bounds[2].x = -DBL_MAX;
@@ -218,8 +218,8 @@ struct SE_RenderStyle
     int renderPass;
 
     bool drawLast;
-    bool checkExclusionRegions;
-    bool addToExclusionRegions;
+    bool checkExclusionRegion;
+    bool addToExclusionRegion;
 };
 
 
