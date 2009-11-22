@@ -214,7 +214,7 @@ void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style,
         if (style->drawLast)
             AddLabel(featGeom, style, xform, angleRad);
         else
-            DrawSymbol(style->symbol, xform, angleRad, style->addToExclusionRegions);
+            DrawSymbol(style->symbol, xform, angleRad, style->addToExclusionRegion);
     }
 
     if (bounds)
@@ -371,7 +371,7 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
     {
         xform = xformbase;
         xform.translate(pos->x, pos->y);
-        DrawSymbol(style->symbol, xform, baserot, style->addToExclusionRegions);
+        DrawSymbol(style->symbol, xform, baserot, style->addToExclusionRegion);
     }
 
     LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
@@ -488,7 +488,7 @@ void SE_Renderer::AddLabel(LineBuffer* geom, SE_RenderStyle* style, const SE_Mat
     SE_RenderStyle* clonedStyle = CloneRenderStyle(style);
 
     SE_LabelInfo info(xform.x2, xform.y2, RS_Units_Device, angleRad, clonedStyle);
-    ProcessSELabelGroup(&info, 1, RS_OverpostType_AllFit, style->addToExclusionRegions, geom);
+    ProcessSELabelGroup(&info, 1, RS_OverpostType_AllFit, style->addToExclusionRegion, geom);
 }
 
 
@@ -566,10 +566,10 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
 
     // copy all the common properties
     memcpy(ret->bounds, symbol->bounds, sizeof(ret->bounds));
-    ret->addToExclusionRegions = symbol->addToExclusionRegions;
-    ret->checkExclusionRegions = symbol->checkExclusionRegions;
-    ret->drawLast              = symbol->drawLast;
-    ret->renderPass            = symbol->renderPass;
+    ret->addToExclusionRegion = symbol->addToExclusionRegion;
+    ret->checkExclusionRegion = symbol->checkExclusionRegion;
+    ret->drawLast             = symbol->drawLast;
+    ret->renderPass           = symbol->renderPass;
 
     // copy the graphics for the symbol
     for (size_t i=0; i<symbol->symbol.size(); ++i)
@@ -1201,7 +1201,7 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
 
                             // only draw symbols at the interior points
                             if (numDrawn > 0 && numDrawn < numSymbols-1)
-                                DrawSymbol(style->symbol, symxf, angleRad, style->addToExclusionRegions);
+                                DrawSymbol(style->symbol, symxf, angleRad, style->addToExclusionRegion);
 
                             // handle the centerline path at the group's end - only
                             // need to do this if we have at least one interior symbol
@@ -1633,7 +1633,7 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
                             if (style->drawLast)
                                 AddLabel(geometry, style, symxf, angleRad);
                             else
-                                DrawSymbol(style->symbol, symxf, angleRad, style->addToExclusionRegions);
+                                DrawSymbol(style->symbol, symxf, angleRad, style->addToExclusionRegion);
                         }
 
                         ++numDrawn;

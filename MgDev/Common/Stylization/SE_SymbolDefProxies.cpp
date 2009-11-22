@@ -892,7 +892,7 @@ void SE_LineStyle::evaluate(SE_EvalContext* ctx)
         if (rplist.size() == 1
             && rplist[0]->type == SE_RenderPrimitive_Polyline
             && !style->drawLast
-            && !style->addToExclusionRegions)
+            && !style->addToExclusionRegion)
         {
             SE_RenderPolyline* rp = (SE_RenderPolyline*)rplist[0];
             LineBuffer* lb = rp->geometry->xf_buffer();
@@ -1004,7 +1004,7 @@ void SE_AreaStyle::evaluate(SE_EvalContext* ctx)
         if (rplist.size() == 1
             && rplist[0]->type == SE_RenderPrimitive_Polygon
             && !style->drawLast
-            && !style->addToExclusionRegions)
+            && !style->addToExclusionRegion)
         {
             SE_RenderPolygon* rp = (SE_RenderPolygon*)rplist[0];
             LineBuffer* lb = rp->geometry->xf_buffer();

@@ -649,8 +649,8 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
                 }
 
                 // TODO: why are these in the symbol instance?
-                style->rstyle->addToExclusionRegions = sym->addToExclusionRegions.evaluate(exec);
-                style->rstyle->checkExclusionRegions = sym->checkExclusionRegions.evaluate(exec);
+                style->rstyle->addToExclusionRegion = sym->addToExclusionRegion.evaluate(exec);
+                style->rstyle->checkExclusionRegion = sym->checkExclusionRegion.evaluate(exec);
                 style->rstyle->drawLast = sym->drawLast.evaluate(exec);
 
                 const wchar_t* positioningAlgo = sym->positioningAlgorithm.evaluate(exec);
