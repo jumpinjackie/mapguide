@@ -473,7 +473,8 @@ void SE_PositioningAlgorithms::PathLabels(SE_ApplyContext* applyCtx,
         SE_RenderText* rt = (SE_RenderText*)rstyle->symbol[0];
 
         RS_LabelInfo info(0.0, 0.0, 0.0, 0.0, RS_Units_Device, rt->tdef);
-        return se_renderer->ProcessLabelGroup(&info, 1, rt->content, RS_OverpostType_AllFit, rstyle->addToExclusionRegion, geometry, 0.5);
+        RS_OverpostType overpostType = rstyle->checkExclusionRegion? RS_OverpostType_AllFit : RS_OverpostType_All;
+        return se_renderer->ProcessLabelGroup(&info, 1, rt->content, overpostType, rstyle->addToExclusionRegion, geometry, 0.5);
     }
 
     se_renderer->ProcessLineLabels(geometry, (SE_RenderLineStyle*)rstyle);
@@ -716,7 +717,8 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_ApplyContext*  applyCt
                         SE_RenderStyle* clonedStyle = se_renderer->CloneRenderStyle(rlStyle);
 
                         SE_LabelInfo info(symxf.x2, symxf.y2, RS_Units_Device, angleRad, clonedStyle);
-                        se_renderer->ProcessSELabelGroup(&info, 1, RS_OverpostType_AllFit, rlStyle->addToExclusionRegion, geometry);
+                        RS_OverpostType overpostType = rlStyle->checkExclusionRegion? RS_OverpostType_AllFit : RS_OverpostType_All;
+                        se_renderer->ProcessSELabelGroup(&info, 1, overpostType, rlStyle->addToExclusionRegion, geometry);
                     }
                     else
                     {
