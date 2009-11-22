@@ -488,7 +488,8 @@ void SE_Renderer::AddLabel(LineBuffer* geom, SE_RenderStyle* style, const SE_Mat
     SE_RenderStyle* clonedStyle = CloneRenderStyle(style);
 
     SE_LabelInfo info(xform.x2, xform.y2, RS_Units_Device, angleRad, clonedStyle);
-    ProcessSELabelGroup(&info, 1, RS_OverpostType_AllFit, style->addToExclusionRegion, geom);
+    RS_OverpostType overpostType = style->checkExclusionRegion? RS_OverpostType_AllFit : RS_OverpostType_All;
+    ProcessSELabelGroup(&info, 1, overpostType, style->addToExclusionRegion, geom);
 }
 
 
