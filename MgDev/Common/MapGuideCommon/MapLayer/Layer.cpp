@@ -178,6 +178,7 @@ void MgLayer::Serialize(MgStream* stream)
     }
     helper->WriteString(m_featureSourceId);
     helper->WriteString(m_featureName);
+    helper->WriteString(m_filter);
     helper->WriteString(m_schemaName);
     helper->WriteString(m_geometry);
 
@@ -227,6 +228,7 @@ void MgLayer::Deserialize(MgStream* stream)
 
     helper->GetString(m_featureSourceId);
     helper->GetString(m_featureName);
+    helper->GetString(m_filter);
     helper->GetString(m_schemaName);
     helper->GetString(m_geometry);
 
