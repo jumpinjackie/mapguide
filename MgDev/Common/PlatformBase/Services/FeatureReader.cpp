@@ -68,7 +68,16 @@ INT32 MgFeatureReader::GetPropertyIndex(CREFSTRING propertyName)
     Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetProperties();
     CHECKNULL((MgPropertyDefinitionCollection*)propDefCol, L"MgFeatureReader.GetPropertyIndex");
 
-    return propDefCol->IndexOf(propertyName);
+    INT32 index = propDefCol->IndexOf(propertyName);
+    if (-1 != index)
+    {
+        return index;
+    }
+    else
+    {
+        throw new MgObjectNotFoundException(L"MgFeatureReader.GetPropertyIndex", __LINE__, __WFILE__, NULL, L"", NULL);
+        return -1; // to suppress compiler warning.
+    }
 }
 
 //////////////////////////////////////////////////////////////////
