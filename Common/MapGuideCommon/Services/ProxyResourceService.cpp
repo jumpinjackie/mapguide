@@ -617,7 +617,7 @@ MgStringCollection* MgProxyResourceService::GetResourceContents(MgStringCollecti
         MgResourceService::opIdGetResourceContents,     // Command Code
         2,                                              // Count of arguments
         Resource_Service,                               // Service Id
-        BUILD_VERSION(1,0,0),                           // Operation version
+        BUILD_VERSION(2,2,0),                           // Operation version
         MgCommand::knObject, resources,                 // Argument#1
         MgCommand::knObject, preProcessTags,            // Argument#2
         MgCommand::knNone);                             // End of argument
