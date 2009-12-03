@@ -52,6 +52,7 @@ CGwsQueryResultDescriptors::CGwsQueryResultDescriptors (
     m_joinName = other.m_joinName;
     m_joinDelimiter = other.m_joinDelimiter;
     m_forceOneToOne = other.m_forceOneToOne;
+    m_leftOuterJoin = other.m_leftOuterJoin;
     CGwsQueryResultDescriptors & src = (CGwsQueryResultDescriptors &) other;
     for (int i = 0; i < src.GetCount (); i ++) {
         FdoPtr<IGWSExtendedFeatureDescription> fdsc = src.GetItem (i);
@@ -66,7 +67,8 @@ CGwsQueryResultDescriptors::CGwsQueryResultDescriptors (
     const FdoString        * joinName,
     const FdoString        * joinDelimiter,
     bool                     forceOneToOne,
-    FdoIdentifierCollection    * propnames
+    FdoIdentifierCollection    * propnames,
+    bool                     leftOuterJoin
 )
 {
     m_classDef = classDef;
@@ -78,6 +80,7 @@ CGwsQueryResultDescriptors::CGwsQueryResultDescriptors (
     if(NULL != joinDelimiter)
         m_joinDelimiter = joinDelimiter;
     m_forceOneToOne = forceOneToOne;
+    m_leftOuterJoin = leftOuterJoin;
     m_propertynames = FdoStringCollection::Create ();
     appendPropertyNames (propnames, classDef, m_propertynames, m_propdsc);
     if( propnames != NULL )

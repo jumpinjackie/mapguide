@@ -22,8 +22,27 @@
 #include "ServerFeatureServiceDefs.h"
 #include "GwsQueryEngine.h"
 
-typedef std::multimap<STRING, IGWSFeatureIterator*> GwsFeatureIteratorMap;
-typedef std::pair<STRING, IGWSFeatureIterator*> GwsFeatureIteratorPair;
+class GwsRightSideIterator
+{
+public:
+    GwsRightSideIterator(IGWSFeatureIterator* iter, bool b):m_iterator(iter), m_bHasData(b){}
+    
+    IGWSFeatureIterator * Iterator(){return m_iterator;};
+    bool HasData(){return m_bHasData;}
+
+private:
+    IGWSFeatureIterator* m_iterator;
+
+    // Fix ticket #1162
+    // When we are processing left-outer joins, this field is needed because we need the iterator
+    // to describe the right-side result. In the meanwhile, we need a flag to indicate that this
+    // iterator does not contains data, and we will return all null value for the right side
+    // features
+    bool                m_bHasData;
+};
+
+typedef std::multimap<STRING, GwsRightSideIterator> GwsFeatureIteratorMap;
+typedef std::pair<STRING, GwsRightSideIterator> GwsFeatureIteratorPair;
 
 class MgJoinFeatureReader;
 class FdoExpressionEngine;

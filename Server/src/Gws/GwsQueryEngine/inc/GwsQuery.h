@@ -180,7 +180,8 @@ public:
                                             const FdoString        * joinName,
                                             const FdoString        * joinDelimiter,
                                             bool                     forceOneToOne,
-                                            FdoIdentifierCollection    * propnames);
+                                            FdoIdentifierCollection    * propnames,
+                                            bool                   leftOuterJoin = false);
     GWS_QUERYENGINE_API             CGwsQueryResultDescriptors (const CGwsQueryResultDescriptors & other);
     GWS_QUERYENGINE_API
     virtual                         ~CGwsQueryResultDescriptors () throw();
@@ -229,6 +230,7 @@ public:
     void                             SetCSName (const GWSCoordinateSystem & csname);
 
     virtual bool                    ForceOneToOneJoin() { return m_forceOneToOne; }
+    virtual bool                    LeftOuterJoin() { return m_leftOuterJoin; };
 
 protected:
      void                           appendPropertyNames (
@@ -255,6 +257,7 @@ protected:
     WSTR                                m_joinName;
     WSTR                                m_joinDelimiter;
     bool                                m_forceOneToOne;
+    bool                                m_leftOuterJoin;
 
     // joined properties
     std::vector<IGWSExtendedFeatureDescription*>
