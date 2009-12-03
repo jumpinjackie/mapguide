@@ -169,7 +169,7 @@ EGwsStatus CGwsPreparedFeatureQuery::Init (
             m_resultDescriptor->Release();
         }
         if(jqd)
-            m_resultDescriptor = new CGwsQueryResultDescriptors (m_classDef, m_classname, jqd->JoinName(), jqd->JoinDelimiter(), jqd->ForceOneToOne(), sellist);
+            m_resultDescriptor = new CGwsQueryResultDescriptors (m_classDef, m_classname, jqd->JoinName(), jqd->JoinDelimiter(), jqd->ForceOneToOne(), sellist, qDef->Type() == eGwsQueryLeftOuterJoin);
         else
             m_resultDescriptor = new CGwsQueryResultDescriptors (m_classDef, m_classname, NULL, NULL, true, sellist);
         m_resultDescriptor->AddRef ();

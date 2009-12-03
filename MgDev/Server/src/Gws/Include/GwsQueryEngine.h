@@ -411,6 +411,12 @@ public:
     /// </summary>
     /// <returns>Returns the force one to one flag.</returns>
     virtual bool ForceOneToOneJoin() = 0;
+
+    /// </summary>
+    /// Returns whether the join is a left outer join.
+    /// </summary>
+    /// <returns>Returns whether the join is a left outer join.</returns>
+    virtual bool LeftOuterJoin() = 0;
 };
 
 

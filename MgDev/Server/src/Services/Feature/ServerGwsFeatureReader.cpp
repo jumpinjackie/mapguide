@@ -219,11 +219,23 @@ bool MgServerGwsFeatureReader::ReadNext()
                             {
                                 // Since key values in this Pair do not need to be unqiue, we will use it to store the delimiter string that is defined
                                 // for the extended properties that originate from this secondary feature source
-                                m_secondaryGwsFeatureIteratorMap.insert(GwsFeatureIteratorPair(attributeNameDelimiter, secondaryIter));
+                                m_secondaryGwsFeatureIteratorMap.insert(GwsFeatureIteratorPair(attributeNameDelimiter, GwsRightSideIterator(secondaryIter,true)));
                             }
                             else
                             {
-                                m_bAdvancePrimaryIterator = true;
+                                FdoPtr<IGWSExtendedFeatureDescription> pDesc = m_primaryExtendedFeatureDescription->GetItem(i);
+                                if(pDesc->LeftOuterJoin())
+                                {
+                                    // Fix ticket #1162
+                                    // If we are processing left-outer joins, we don't skip the left side feature even though
+                                    // there is no right side feature exists.
+                                    m_secondaryGwsFeatureIteratorMap.insert(GwsFeatureIteratorPair(attributeNameDelimiter, GwsRightSideIterator(secondaryIter,false)));
+                                    retVal = true;
+                                }
+                                else
+                                {
+                                    m_bAdvancePrimaryIterator = true;
+                                }
                             }
                         }
                         else
@@ -264,7 +276,7 @@ bool MgServerGwsFeatureReader::ReadNext()
                 if (m_secondaryGwsFeatureIteratorMap.size() > 0)
                 {
                     iter = m_secondaryGwsFeatureIteratorMap.begin();
-                    secondaryFeatureIter = iter->second;
+                    secondaryFeatureIter = iter->second.Iterator();
                     retVal = secondaryFeatureIter->ReadNext();
                 }
 
@@ -277,7 +289,7 @@ bool MgServerGwsFeatureReader::ReadNext()
                     if (m_secondaryGwsFeatureIteratorMap.size() > 0)
                     {
                         iter = m_secondaryGwsFeatureIteratorMap.begin();
-                        secondaryFeatureIter = iter->second;
+                        secondaryFeatureIter = iter->second.Iterator();
                         retVal = secondaryFeatureIter->ReadNext();
                     }
                 }
@@ -324,11 +336,23 @@ bool MgServerGwsFeatureReader::ReadNext()
                                     {
                                         // Since key values in this Pair do not need to be unqiue, we will use it to store the delimiter string that is defined
                                         // for the extended properties that originate from this secondary feature source
-                                        m_secondaryGwsFeatureIteratorMap.insert(GwsFeatureIteratorPair(attributeNameDelimiter, featureIter2));
+                                        m_secondaryGwsFeatureIteratorMap.insert(GwsFeatureIteratorPair(attributeNameDelimiter, GwsRightSideIterator(featureIter2,true)));
                                     }
                                     else
                                     {
-                                        m_bAdvancePrimaryIterator = true;
+                                        FdoPtr<IGWSExtendedFeatureDescription> pDesc = m_primaryExtendedFeatureDescription->GetItem(i);
+                                        if(pDesc->LeftOuterJoin())
+                                        {
+                                            // Fix ticket #1162
+                                            // If we are processing left-outer joins, we don't skip the left side feature even though
+                                            // there is no right side feature exists.
+                                            m_secondaryGwsFeatureIteratorMap.insert(GwsFeatureIteratorPair(attributeNameDelimiter, GwsRightSideIterator(featureIter2,false)));
+                                            retVal = true;
+                                        }
+                                        else
+                                        {
+                                            m_bAdvancePrimaryIterator = true;
+                                        }
                                     }
                                 }
                                 else
@@ -1232,7 +1256,7 @@ void MgServerGwsFeatureReader::Close()
              iter != m_secondaryGwsFeatureIteratorMap.end();
              iter++)
         {
-            IGWSFeatureIterator* pSecondaryFeatureIter = iter->second;
+            IGWSFeatureIterator* pSecondaryFeatureIter = iter->second.Iterator();
             if (pSecondaryFeatureIter)
             {
                 pSecondaryFeatureIter->Close();
@@ -1418,7 +1442,7 @@ void MgServerGwsFeatureReader::DeterminePropertyFeatureSource(CREFSTRING inputPr
              iter != m_secondaryGwsFeatureIteratorMap.end();
              iter++)
         {
-            secondaryFeatureIter = iter->second;
+            secondaryFeatureIter = iter->second.Iterator();
             CHECKNULL(secondaryFeatureIter, L"MgServerGwsFeatureReader.DeterminePropertyFeatureSource");
 
             FdoPtr<IGWSExtendedFeatureDescription> secondaryDesc;
@@ -1443,7 +1467,7 @@ void MgServerGwsFeatureReader::DeterminePropertyFeatureSource(CREFSTRING inputPr
 
                 if ( wcscmp(featureSource, relationName.c_str()) == 0 )
                 {
-                    *gwsFeatureIter = secondaryFeatureIter;
+                    *gwsFeatureIter = iter->second.HasData() ? secondaryFeatureIter : NULL;
                     className = (wchar_t*)fclassName;
                     iter = m_secondaryGwsFeatureIteratorMap.end();
                     iter--;
@@ -1746,7 +1770,7 @@ MgClassDefinition* MgServerGwsFeatureReader::GetMgClassDefinition(bool bSerializ
 
                         if (featureIter->ReadNext())
                         {
-                            m_secondaryGwsFeatureIteratorMap.insert(GwsFeatureIteratorPair(attributeNameDelimiter, featureIter));
+                            m_secondaryGwsFeatureIteratorMap.insert(GwsFeatureIteratorPair(attributeNameDelimiter, GwsRightSideIterator(featureIter,false)));
                             secFdoClassDefinition = featureIter->GetClassDefinition();
                         }
                         else
