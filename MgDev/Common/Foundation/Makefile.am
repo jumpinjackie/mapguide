@@ -41,6 +41,7 @@ include_SOURCES = \
   Exception/Exception.cpp \
   Exception/FileIoException.cpp \
   Exception/FileNotFoundException.cpp \
+  Exception/GridDensityException.cpp \
   Exception/IndexOutOfRangeException.cpp \
   Exception/InvalidArgumentException.cpp \
   Exception/InvalidCastException.cpp \
@@ -144,6 +145,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Exception/ExceptionDefs.h \
   Exception/FileIoException.h \
   Exception/FileNotFoundException.h \
+  Exception/GridDensityException.h \
   Exception/IndexOutOfRangeException.h \
   Exception/InvalidArgumentException.h \
   Exception/InvalidCastException.h \

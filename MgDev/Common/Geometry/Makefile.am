@@ -327,6 +327,7 @@ noinst_HEADERS = $(include_SOURCES) \
   CoordinateSystem/CoordinateSystemGrids.h \
   CoordinateSystem/CoordinateSystemGridGeneric.h \
   CoordinateSystem/CoordinateSystemMgrsGridLevel.h \
+  CoordinateSystem/CoordinateSystemMgrsGridSquarePosition.h \
   CoordinateSystem/CoordinateSystemMgrsLetteringScheme.h \
   CoordinateSystem/CoordinateSystemMgrs.h \
   Exception/CoordinateSystemComputationFailedException.h \

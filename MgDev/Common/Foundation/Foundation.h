@@ -147,6 +147,7 @@
 #include "Exception/DuplicateObjectException.h"
 #include "Exception/EncryptionException.h"
 #include "Exception/FileNotFoundException.h"
+#include "Exception/GridDensityException.h"
 #include "Exception/IndexOutOfRangeException.h"
 #include "Exception/InvalidArgumentException.h"
 #include "Exception/InvalidCastException.h"

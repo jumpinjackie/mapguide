@@ -25,9 +25,13 @@ class CCoordinateSystemMgrs : public MgCoordinateSystemMgrs
 {
     struct CCoordinateSystemMgrsSeries
     {
-	    wchar_t easting [9];
-	    wchar_t northing [21];
+        wchar_t easting [9];
+        wchar_t northing [21];
     };
+
+    static const INT32 m_GridLineExceptionLevelK;
+    static const INT32 m_GridRegionExceptionLevelK;
+    static const INT32 m_GridTickExceptionLevelK;
 
 public:
     // Static Constants, Variables (hopefully not), and Functions.
@@ -66,6 +70,7 @@ PUBLISHED_API:
     STRING ConvertFromLonLat(double dLongitude, double dLatitude, INT32 nPrecision);
     STRING ConvertFromLonLat(MgCoordinate* pLonLat, INT32 nPrecision);
     MgCoordinate* ConvertToLonLat(CREFSTRING sMgrs);
+    MgCoordinate* ConvertToLonLat(CREFSTRING sMgrs, INT32 grdSqrPosition);
     INT8 GetLetteringScheme();
 
     INT32 GetSpecializationType ();
@@ -78,6 +83,14 @@ PUBLISHED_API:
     double GetConvergenceAngle (MgCoordinate* location);
     double GetProjectiveGridScale (MgCoordinate* location);
 
+    INT32 ApproxGridLineMemoryUsage (MgCoordinateSystemGridSpecification* specification);
+    INT32 ApproxGridRegionMemoryUsage (MgCoordinateSystemGridSpecification* specification);
+    INT32 ApproxGridTickMemoryUsage (MgCoordinateSystemGridSpecification* specification);
+
+    INT32 SetGridLineExceptionLevel (INT32 memoryUseMax);
+    INT32 SetGridRegionExceptionLevel (INT32 memoryUseMax);
+    INT32 SetGridTickExceptionLevel (INT32 memoryUseMax);
+
     INT32 GetLastError();
     void ResetLastError();
     bool AreExceptionsOn();
@@ -86,8 +99,10 @@ PUBLISHED_API:
 INTERNAL_API:
     INT32 ConvertFromLonLat(double dLongitude, double dLatitude, INT32 nPrecision, REFSTRING sMgrs);
     INT32 ConvertFromLonLat(MgCoordinate* pLonLat, INT32 nPrecision, REFSTRING sMgrs);
-    INT32 ConvertToLonLat(CREFSTRING sMgrs, MgCoordinate* pLonLat);
-    INT32 ConvertToLonLat(CREFSTRING sMgrs, double& dLongitude, double& dLatitude);
+INT32 ConvertToLonLat(CREFSTRING sMgrs, MgCoordinate* pLonLat);
+INT32 ConvertToLonLat(CREFSTRING sMgrs, double& dLongitude, double& dLatitude);
+    INT32 ConvertToLonLat(CREFSTRING sMgrs, MgCoordinate* pLonLat, INT32 grdSqrPosition);
+    INT32 ConvertToLonLat(CREFSTRING sMgrs, double& dLongitude, double& dLatitude, INT32 grdSqrPosition);
 
 protected:          // Still INTERNAL API only.
     // Given a frame/viewport boundary, and the coordinate system thereof,
@@ -112,6 +127,9 @@ protected:
     INT8 m_nLetteringScheme;
     bool m_bExceptionsOn;
     bool m_bUseFrameDatum;
+    INT32 m_GridLineExceptionLevel;
+    INT32 m_GridRegionExceptionLevel;
+    INT32 m_GridTickExceptionLevel;
     INT32 m_nLastError;
     Ptr<MgCoordinateSystem> m_pCsTarget;
     struct cs_Mgrs_* m_pCsMgrs;

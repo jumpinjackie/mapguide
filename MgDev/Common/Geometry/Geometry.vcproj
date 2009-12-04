@@ -3298,6 +3298,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\CoordinateSystem\CoordinateSystemMgrsGridSquarePosition.h"
+			>
+		</File>
+		<File
 			RelativePath=".\CoordinateXY.cpp"
 			>
 			<FileConfiguration

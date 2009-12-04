@@ -40,6 +40,8 @@ namespace CSLibrary
 
 class CCoordinateSystemOneGrid : public MgGuardDisposable
 {
+    static const INT32 m_GridLineExceptionLevelK;
+    static const INT32 m_GridTickExceptionLevelK;
 public:
     static const INT32 MaxCurvePoints;
     CCoordinateSystemOneGrid (void);
@@ -54,6 +56,7 @@ public:
 
     // Returns true if the grid coordinate system is geographic; use this to
     // determine if this is a graticule (as opposed to a grid).
+    bool GridFrameCrsAreTheSame ();
     bool IsGeographic (void);
     INT32 GetUserID (void);
     STRING GetLabel (void);
@@ -64,6 +67,12 @@ public:
     MgCoordinate* ConvertToFrame (MgCoordinate* gridCoordinate);
     MgCoordinateSystemGridLineCollection* GetGridLines (MgCoordinateSystemGridSpecification* specs);
     CCoordinateSystemGridTickCollection* GetBoundaryTicks (MgCoordinateSystemGridSpecification* specs);
+
+    INT32 ApproxGridLineMemoryUsage (MgCoordinateSystemGridSpecification* specification);
+    INT32 ApproxGridTickMemoryUsage (MgCoordinateSystemGridSpecification* specification);
+
+    INT32 SetGridLineExceptionLevel (INT32 memoryUseMax);
+    INT32 SetGridTickExceptionLevel (INT32 memoryUseMax);
 
 protected:
     MgCoordinateSystemGridBoundary* GetFrameBoundary (void);
@@ -76,9 +85,12 @@ protected:
     void GetGridExtents (double& eastMin,double& eastMax,double& northMin,double& northMax,double precision = 0.25);
     void Dispose (void);
 
+    bool m_GridFrameCrsSame;
     INT32 m_UserID;                                      // For user convenience (i.e. UTM zone)
     INT32 m_MaxCurvePoints;
     STRING m_Label;                                      // For user conveinence (i.e. MGRS)
+    INT32 m_GridLineExceptionLevel;
+    INT32 m_GridTickExceptionLevel;
     Ptr<MgCoordinateSystem> m_GridCRS;                   // The grid coordinate system
     Ptr<MgCoordinateSystem> m_FrameCRS;                  // The frame coordinate system
     Ptr<MgCoordinateSystemTransform> m_ToFrameXform;     // Converts grid coordinates to frame coordinates

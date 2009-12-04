@@ -37,12 +37,10 @@ CCoordinateSystemMgrsZone::CCoordinateSystemMgrsZone (MgCoordinateSystemGridBoun
                                                         :
                                                       CCoordinateSystemOneGrid (),
                                                       m_UtmZone                (utmZoneNbr),
-                                                      m_LetteringScheme        (letteringScheme),
-                                                      m_RegionCollection       ()
+                                                      m_LetteringScheme        (letteringScheme)
 {
     MgCoordinateSystemFactory csFactory;
     Ptr<MgCoordinateSystem> utmZoneCRS;
-    m_RegionCollection = new CCoordinateSystemGridRegionCollection ();
 
     STRING utmZoneCode = CCoordinateSystemMgrs::ZoneNbrToUtmCs (m_UtmZone);
     utmZoneCRS = csFactory.CreateFromCode (utmZoneCode);
@@ -54,13 +52,19 @@ CCoordinateSystemMgrsZone::~CCoordinateSystemMgrsZone (void)
 {
 }
 CCoordinateSystemGridRegionCollection* CCoordinateSystemMgrsZone::GetGridRegions (MgCoordinateSystemGridBoundary* frameBoundary,
-                                                                                  MgCoordinateSystemGridSpecification* specification)
+                                                                                  MgCoordinateSystemGridSpecification* specification,
+                                                                                  INT32 exceptionLvl)
 {
-    BuildRegionCollection (frameBoundary,specification);
-    return SAFE_ADDREF(m_RegionCollection.p);
+    Ptr<CCoordinateSystemGridRegionCollection> regionCollection;
+
+    MG_TRY ()
+        regionCollection = BuildRegionCollection (frameBoundary,specification,exceptionLvl);
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemMgrsZone::GetGridRegions")
+    return SAFE_ADDREF(regionCollection.p);
 }
 CCoordinateSystemGridLineCollection* CCoordinateSystemMgrsZone::GetGridLines (MgCoordinateSystemGridBoundary* frameBoundary,
-                                                                              MgCoordinateSystemGridSpecification* specification)
+                                                                              MgCoordinateSystemGridSpecification* specification,
+                                                                              INT32 exceptionLvl)
 {
     // For now, we just call the generic OneGrid grid line function.
     // Later on we might need to add some special logic for zones 31
@@ -69,7 +73,8 @@ CCoordinateSystemGridLineCollection* CCoordinateSystemMgrsZone::GetGridLines (Mg
     return dynamic_cast<CCoordinateSystemGridLineCollection*>(gridLines);
 }
 CCoordinateSystemGridLineCollection* CCoordinateSystemMgrsZone::GetGraticuleLines (MgCoordinateSystemGridBoundary* frameBoundary,
-                                                                                   MgCoordinateSystemGridSpecification* specification)
+                                                                                   MgCoordinateSystemGridSpecification* specification,
+                                                                                   INT32 exceptionLvl)
 {
     const INT32 maxPoints = 512;
 
@@ -96,14 +101,14 @@ CCoordinateSystemGridLineCollection* CCoordinateSystemMgrsZone::GetGraticuleLine
 
     MgCoordinateSystemFactory csFactory;
 
-    Ptr<CCoordinateSystemGridLineCollection> gridLineCollection = new CCoordinateSystemGridLineCollection ();
+    Ptr<CCoordinateSystemGridLineCollection> gridLineCollection = new CCoordinateSystemGridLineCollection (exceptionLvl);
 
     MG_TRY ()
         fromPoint = new MgCoordinateXY ();
         toPoint = new MgCoordinateXY ();
         CCoordinateSystemGridSpecification* mySpecPtr = dynamic_cast<CCoordinateSystemGridSpecification*>(specification);
         precision = mySpecPtr->GetCurvePrecision (m_GridCRS);
- 
+
         // To be are successful, we'll need a Transform which will convert
         // 'LL' to the frame coordinate system.
         llCRS = csFactory.CreateFromCode (L"LL");
@@ -221,6 +226,79 @@ CCoordinateSystemGridLineCollection* CCoordinateSystemMgrsZone::GetGraticuleLine
     MG_CATCH_AND_THROW(L"MgCoordinateSystemMgrsZone::GetGraticuleLines")
    return gridLineCollection.Detach ();
 }
+INT32 CCoordinateSystemMgrsZone::ApproxGridRegionMemoryUsage (MgCoordinateSystemGridSpecification* specification)
+{
+    INT32 regionSize;
+    INT32 regionCount;
+    INT32 memoryGuess (0);
+
+    
+
+    // Estimate the size of a major region object.  Eventually, should include
+    // MaxPoints and curve precision from the specification object.
+    regionSize = (GridFrameCrsAreTheSame ()) ? 512 : 50000;
+
+    MG_TRY ()
+        if (specification->GetUnitType () == MgCoordinateSystemUnitType::Angular)
+        {
+            double eastingIncrement = specification->GetEastingIncrement (MgCoordinateSystemUnitCode::Degree);
+            double northingIncrement = specification->GetNorthingIncrement (MgCoordinateSystemUnitCode::Degree);
+            if (MgMathUtility::DblCmp (eastingIncrement,6.0) &&
+                MgMathUtility::DblCmp (northingIncrement,8.0))
+            {
+                double lngMin,lngMax;
+                double latMin,latMax;
+                Ptr<CCoordinateSystemMgrsMajorRegionCollection> mjrRegionCollection;
+
+                // Determine the number of regions included in the boundary.
+                GetGeographicExtents (lngMin,lngMax,latMin,latMax);
+                mjrRegionCollection = new CCoordinateSystemMgrsMajorRegionCollection (m_UtmZone,latMin,latMax);
+                regionCount = mjrRegionCollection->GetCount ();
+
+                // Make a guess at the amount of memory required.
+                memoryGuess = regionSize * regionCount;
+            }
+        }
+        else if (specification->GetUnitType () == MgCoordinateSystemUnitType::Linear)
+        {
+            double eastingIncrement = specification->GetEastingIncrement (MgCoordinateSystemUnitCode::Meter);
+            double northingIncrement = specification->GetNorthingIncrement (MgCoordinateSystemUnitCode::Meter);
+            if (MgMathUtility::DblCmp (eastingIncrement,100000.0) &&
+                MgMathUtility::DblCmp (northingIncrement,100000.0))
+            {
+                INT32 beginEast, endEast;
+                INT32 beginNorth, endNorth;
+
+                double delta;
+                double curvePrecision;
+                double  eastMin, eastMax;
+                double northMin, northMax;
+
+                curvePrecision = 1.0;
+                // Estimate the number of minor regions.
+                GetGridExtents (eastMin,eastMax,northMin,northMax,curvePrecision);
+ 
+                delta = fabs (fmod (eastMin,100000.0));
+                beginEast = static_cast<INT32>(eastMin - ((eastMin >= 0.0) ? delta : (100000.0 - delta)));
+                delta = fabs (fmod (eastMax,100000.0));
+                endEast = static_cast<INT32>(eastMax + ((eastMax >= 0.0) ? (100000.0 - delta) : -delta));
+
+                delta = fabs (fmod (northMin,100000.0));
+                beginNorth = static_cast<INT32>(northMin - ((northMin >= 0.0) ? delta : (100000.0 - delta)));
+                delta = fabs (fmod (northMax,100000.0));
+                endNorth = static_cast<INT32>(northMax + ((northMax >= 0.0) ? (100000.0 - delta) : -delta));
+
+                INT32 verticalCount   = (endNorth - beginNorth) / 100000;
+                INT32 horizontalCount = (endEast - beginEast) / 100000;
+                regionCount = horizontalCount * verticalCount;
+
+                memoryGuess = regionSize * regionCount;
+            }
+        }
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemMgrsZone::ApproxGridRegionMemoryUsage")
+
+    return memoryGuess;
+}
 INT32 CCoordinateSystemMgrsZone::GetUtmZoneNbr (void)
 {
     // m_UtmZoneNbr is positive for northern hemisphere, negative for the
@@ -228,37 +306,44 @@ INT32 CCoordinateSystemMgrsZone::GetUtmZoneNbr (void)
     // is the uninitialized/unknown/error value.
     return m_UtmZone;
 }
-void CCoordinateSystemMgrsZone::BuildRegionCollection (MgCoordinateSystemGridBoundary* frameBoundary,
-                                                       MgCoordinateSystemGridSpecification* specification)
+CCoordinateSystemGridRegionCollection* CCoordinateSystemMgrsZone::BuildRegionCollection (MgCoordinateSystemGridBoundary* frameBoundary,
+                                                                                         MgCoordinateSystemGridSpecification* specification,
+                                                                                         INT32 exceptionLvl)
 {
     double curvePrecision;
     double eastingIncrement;
     double northingIncrement;
+    Ptr<CCoordinateSystemGridRegionCollection> regionCollection;
 
-    curvePrecision = specification->GetCurvePrecision ();
-
-    if (specification->GetUnitType () == MgCoordinateSystemUnitType::Angular)
-    {
-        eastingIncrement = specification->GetEastingIncrement (MgCoordinateSystemUnitCode::Degree);
-        northingIncrement = specification->GetNorthingIncrement (MgCoordinateSystemUnitCode::Degree);
-        if (MgMathUtility::DblCmp (eastingIncrement,6.0) &&
-            MgMathUtility::DblCmp (northingIncrement,8.0))
+    MG_TRY ()
+        regionCollection = new CCoordinateSystemGridRegionCollection (exceptionLvl);
+        curvePrecision = specification->GetCurvePrecision ();
+        if (specification->GetUnitType () == MgCoordinateSystemUnitType::Angular)
         {
-            BuildMajorRegions (frameBoundary,curvePrecision);
+            eastingIncrement = specification->GetEastingIncrement (MgCoordinateSystemUnitCode::Degree);
+            northingIncrement = specification->GetNorthingIncrement (MgCoordinateSystemUnitCode::Degree);
+            if (MgMathUtility::DblCmp (eastingIncrement,6.0) &&
+                MgMathUtility::DblCmp (northingIncrement,8.0))
+            {
+                BuildMajorRegions (regionCollection,frameBoundary,curvePrecision);
+            }
         }
-    }
-    else if (specification->GetUnitType () == MgCoordinateSystemUnitType::Linear)
-    {
-        eastingIncrement = specification->GetEastingIncrement (MgCoordinateSystemUnitCode::Meter);
-        northingIncrement = specification->GetNorthingIncrement (MgCoordinateSystemUnitCode::Meter);
-        if (MgMathUtility::DblCmp (eastingIncrement,100000.0) &&
-            MgMathUtility::DblCmp (northingIncrement,100000.0))
+        else if (specification->GetUnitType () == MgCoordinateSystemUnitType::Linear)
         {
-            BuildMinorRegions (frameBoundary,curvePrecision);
+            eastingIncrement = specification->GetEastingIncrement (MgCoordinateSystemUnitCode::Meter);
+            northingIncrement = specification->GetNorthingIncrement (MgCoordinateSystemUnitCode::Meter);
+            if (MgMathUtility::DblCmp (eastingIncrement,100000.0) &&
+                MgMathUtility::DblCmp (northingIncrement,100000.0))
+            {
+                BuildMinorRegions (regionCollection,frameBoundary,curvePrecision);
+            }
         }
-    }
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemMgrsZone::GetGraticuleLines")
+    return regionCollection.Detach ();
 }
-void CCoordinateSystemMgrsZone::BuildMajorRegions (MgCoordinateSystemGridBoundary* frameBoundary,double curvePrecision)
+void CCoordinateSystemMgrsZone::BuildMajorRegions (CCoordinateSystemGridRegionCollection* regionCollection,
+                                                   MgCoordinateSystemGridBoundary* frameBoundary,
+                                                   double curvePrecision)
 {
     const INT32 maxPoints = 512;
 
@@ -275,7 +360,7 @@ void CCoordinateSystemMgrsZone::BuildMajorRegions (MgCoordinateSystemGridBoundar
     Ptr<CCoordinateSystemGridBoundary> rgnBoundary;
     Ptr<CCoordinateSystemGridRegion> pMjrRegion;
     Ptr<CCoordinateSystemMgrsMajorRegion> regionPtr;
-    Ptr<CCoordinateSystemMgrsMajorRegionCollection> regionCollection;
+    Ptr<CCoordinateSystemMgrsMajorRegionCollection> mjrRegionCollection;
 
     MgCoordinateSystemFactory csFactory;
 
@@ -294,14 +379,14 @@ void CCoordinateSystemMgrsZone::BuildMajorRegions (MgCoordinateSystemGridBoundar
         // grid in geographic coordinate form, and work from there.
         GetGeographicExtents (lngMin,lngMax,latMin,latMax);
         
-        regionCollection = new CCoordinateSystemMgrsMajorRegionCollection (m_UtmZone,latMin,latMax);
-        if (regionCollection != 0)
+        mjrRegionCollection = new CCoordinateSystemMgrsMajorRegionCollection (m_UtmZone,latMin,latMax);
+        if (mjrRegionCollection != 0)
         {
-            INT32 regionCount = regionCollection->GetCount ();
-            for (index = 0;index < regionCount;index += 1)
+            INT32 mjrRegionCount = mjrRegionCollection->GetCount ();
+            for (index = 0;index < mjrRegionCount;index += 1)
             {
                 // We have a region.
-                regionPtr = regionCollection->GetItem (index);
+                regionPtr = mjrRegionCollection->GetItem (index);
                 southwest->SetX (regionPtr->GetWestEdgeLng ());
                 southwest->SetY (regionPtr->GetSouthEdgeLat ());
                 northeast->SetX (regionPtr->GetEastEdgeLng ());
@@ -313,7 +398,7 @@ void CCoordinateSystemMgrsZone::BuildMajorRegions (MgCoordinateSystemGridBoundar
                                                                           northeast,
                                                                           curvePrecision,
                                                                           maxPoints);
-                m_RegionCollection->Add (pMjrRegion);
+                regionCollection->Add (pMjrRegion);
             }
         }
         else if (m_UtmZone == 61)
@@ -326,7 +411,9 @@ void CCoordinateSystemMgrsZone::BuildMajorRegions (MgCoordinateSystemGridBoundar
         }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemOneGrid::BuildMajorRegions")
 }
-void CCoordinateSystemMgrsZone::BuildMinorRegions (MgCoordinateSystemGridBoundary* frameBoundary,double curvePrecision)
+void CCoordinateSystemMgrsZone::BuildMinorRegions (CCoordinateSystemGridRegionCollection* regionCollection,
+                                                   MgCoordinateSystemGridBoundary* frameBoundary,
+                                                   double curvePrecision)
 {
     const INT32 maxPoints = 512;
 
@@ -398,7 +485,7 @@ void CCoordinateSystemMgrsZone::BuildMinorRegions (MgCoordinateSystemGridBoundar
                                                                               northeast,
                                                                               curvePrecision,
                                                                               maxPoints);
-                    m_RegionCollection->Add (pMnrRegion);
+                    regionCollection->Add (pMnrRegion);
                 }
             }
         }

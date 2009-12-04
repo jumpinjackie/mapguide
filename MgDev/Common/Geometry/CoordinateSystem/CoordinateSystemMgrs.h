@@ -76,8 +76,22 @@ PUBLISHED_API:
     /// The MGRS string to be converted.
     /// /returns
     /// The geographic coordinates of the location identified by the provided
-    /// MGRS string.
+    /// MGRS string (center of the grid sqaure).
     virtual MgCoordinate* ConvertToLonLat(CREFSTRING sMgrs)=0;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// /brief
+    /// Converts an MGRS string to geographic coordinates.
+    /// /param sMgrs
+    /// The MGRS string to be converted.
+    /// /param grdSqrPosition
+    /// A value from the MgCoordinateSystemMgrsGridSquarePosition enumeration
+    /// which indicates the position within the grid sqaure referenced by
+    /// the sMgrs argumjent which is to be returned.
+    /// /returns
+    /// The geographic coordinates of the location identified by the provided
+    /// MGRS string.
+    virtual MgCoordinate* ConvertToLonLat(CREFSTRING sMgrs, INT32 grdSqrPosition)=0;
 
     ///////////////////////////////////////////////////////////////////////////
     /// /brief
@@ -92,7 +106,7 @@ INTERNAL_API:
     //section that reads/writes MGRS coordinates
     virtual INT32 ConvertFromLonLat(double dLongitude, double dLatitude, INT32 nPrecision, REFSTRING sMgrs)=0;
     virtual INT32 ConvertFromLonLat(MgCoordinate* pLonLat, INT32 nPrecision, REFSTRING sMgrs)=0;
-    virtual INT32 ConvertToLonLat(CREFSTRING sMgrs, MgCoordinate* pLonLat)=0;
+    virtual INT32 ConvertToLonLat(CREFSTRING sMgrs, MgCoordinate* pLonLat, INT32 grdSqrPosition)=0;
 
 protected:
     INT32 GetClassId(){return m_cls_id;};

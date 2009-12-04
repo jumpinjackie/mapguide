@@ -25,6 +25,9 @@ class CCoordinateSystemOneGrid;
 
 class CCoordinateSystemGridGeneric : public MgCoordinateSystemGridGeneric
 {
+    static const INT32 m_GridLineExceptionLevelK;
+    static const INT32 m_GridRegionExceptionLevelK;
+    static const INT32 m_GridTickExceptionLevelK;
 public:
     CCoordinateSystemGridGeneric(bool bSetExceptionsOn);
     CCoordinateSystemGridGeneric(MgCoordinateSystem* pSourceCs,MgCoordinateSystem* pTargetCs,bool bSetExceptionsOn);
@@ -40,6 +43,14 @@ public:
     double GetConvergenceAngle (MgCoordinate* location);
     double GetProjectiveGridScale (MgCoordinate* location);
 
+    INT32 ApproxGridLineMemoryUsage (MgCoordinateSystemGridSpecification* specification);
+    INT32 ApproxGridRegionMemoryUsage (MgCoordinateSystemGridSpecification* specification);
+    INT32 ApproxGridTickMemoryUsage (MgCoordinateSystemGridSpecification* specification);
+
+    INT32 SetGridLineExceptionLevel (INT32 memoryUseMax);
+    INT32 SetGridRegionExceptionLevel (INT32 memoryUseMax);
+    INT32 SetGridTickExceptionLevel (INT32 memoryUseMax);
+
     INT32 GetLastError();
     void ResetLastError();
     bool AreExceptionsOn();
@@ -49,8 +60,15 @@ protected:
     //from MgDisposable
     void Dispose();
 
-    // Data Memebrs
+    // Data Memebers -- The m_GridRegionExcpetionLevel member is not really
+    // applicable to generic grids.  However, since the ApproxGridRegionMemoryUsage
+    // and SetGridRegionExceptionLevel functions are pure virtual functions in the
+    // interface, the functions need to exist.  So, for now we _pretend_ that
+    // the 'Region' memory limits are applicable to generic grids.
     bool m_bExceptionsOn;
+    INT32 m_GridLineExceptionLevel;
+    INT32 m_GridRegionExceptionLevel;
+    INT32 m_GridTickExceptionLevel;
     INT32 m_nLastError;
     Ptr<MgCoordinateSystem> m_pCsSource;
     Ptr<MgCoordinateSystem> m_pCsTarget;

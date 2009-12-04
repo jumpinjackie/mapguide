@@ -43,12 +43,14 @@ public:
     INT32 GetUnitCode(void);
     bool IsSameAs(MgCoordinateSystemGridSpecification* specification);
     double GetCurvePrecision(void);
+    INT32 GetMaxCurvePoints(void);
 
     void SetGridBase(double eastingBase,double northingBase);
     void SetGridIncrement(double eastingIncrement,double northingIncrement);
     void SetTickIncrements(double eastingIncrement,double northingIncrement);
     void SetUnits (INT32 unitCode,INT32 unitType = MgCoordinateSystemUnitType::Linear);
     void SetCurvePrecision (double curvePrecision);
+    void SetMaxCurvePoints (INT32 maxCurvePoints);
 
     // The following function identically to the published version, with the
     // exception that the value returned is always converted to the units
@@ -60,9 +62,14 @@ public:
     double GetTickEastingIncrement (INT32 resultUnitCode);
     double GetTickNorthingIncrement (INT32 resultUnitCode);
 
-    // This function will generate a suitable value if the host application
+    // These functions will generate a suitable value if the host application
     // left the curve precision unspecified.
     double GetCurvePrecision(MgCoordinateSystem* gridCS);
+    double GetCurvePrecision(MgCoordinateSystemGridBoundary* gridBoundary,MgCoordinateSystem* gridCS);
+
+    // This function will generate a suitable value if the host application
+    // left the max curve points unspecified.
+    double GetMaxCurvePoints (MgCoordinateSystemGridBoundary* frameBoundary,MgCoordinateSystem* frameCS);
 
     // The following is used by the CoordinateSystemFactory object to verify
     // that all of the information provided to it is consistent with the
@@ -83,6 +90,7 @@ private:
     double m_TickNorthingIncrement;
     INT32 m_UnitType;
     INT32 m_UnitCode;
+    INT32 m_MaxCurvePoints;
 };
 
 //=============================================================================
@@ -277,6 +285,7 @@ public:
     INT32 GetCount (void);
     MgLineString* GetSegment (INT32 index);
     MgLineStringCollection* GetSegmentCollection (void);
+    INT32 GetMemoryUsage (void);
 
     void SetGridOrientation (INT32 orientation);
     void SetRealValue (double realValue);
@@ -318,6 +327,7 @@ public:
     MgLineStringCollection* GetEastLine (void);
     MgLineStringCollection* GetNorthLine (void);
     MgLineStringCollection* GetWestLine (void);
+    INT32 GetMemoryUsage (void);
 
     void SetRegionBoundary (MgPolygon* boundary);
     void SetSouthLine (MgLineStringCollection* southLine);
@@ -335,7 +345,10 @@ protected:
     Ptr<MgLineStringCollection> m_NorthLine;
     Ptr<MgLineStringCollection> m_WestLine;
 
-private:            // Not implemented
+private:
+    INT32 PolygonMemoryUse (MgPolygon* polygon);
+    INT32 LineStringCollectionMemoryUse (MgLineStringCollection* lineCollection);
+    // Not implemented
     CCoordinateSystemGridRegion (void);
     CCoordinateSystemGridRegion (const CCoordinateSystemGridRegion& source);
 };
@@ -361,6 +374,7 @@ public:
     double GetValue (void);
     MgCoordinate* GetPosition (void);
     MgCoordinate* GetDirectionVector (void);
+    INT32 GetMemoryUsage (void);
 
 protected:
     void Dispose (void);
@@ -385,7 +399,7 @@ private:            // Not implemented
 class CCoordinateSystemGridLineCollection : public MgCoordinateSystemGridLineCollection
 {
 public:
-    CCoordinateSystemGridLineCollection (void);
+    CCoordinateSystemGridLineCollection (INT32 gridLineExceptionLevel);
     ~CCoordinateSystemGridLineCollection(void);
 
     INT32 GetCount () const;
@@ -397,10 +411,17 @@ public:
     void SetItem (INT32 index,MgCoordinateSystemGridLine* value);
     void Add (MgCoordinateSystemGridLine* value);
     void AddCollection (MgCoordinateSystemGridLineCollection* aGridLineCollection);
+    INT32 SetGridLineExceptionLevel (INT32 memoryUseMax);
+    INT32 GetMemoryUsage (void);
+
 protected:
     void Dispose(void);
+    INT32 m_MemoryUse;
+    INT32 m_GridLineExceptionLevel;
     Ptr<MgDisposableCollection> m_GridLineCollection;
+
 private:
+    // Not Implemented
     CCoordinateSystemGridLineCollection (const CCoordinateSystemGridLineCollection& source);
     CCoordinateSystemGridLineCollection& operator= (const CCoordinateSystemGridLineCollection& rhs);
 };
@@ -411,7 +432,7 @@ private:
 class CCoordinateSystemGridRegionCollection : public MgCoordinateSystemGridRegionCollection
 {
 public:
-    CCoordinateSystemGridRegionCollection (void);
+    CCoordinateSystemGridRegionCollection (INT32 gridRegionExceptionLevel);
     ~CCoordinateSystemGridRegionCollection (void);
 
     INT32 GetCount () const;
@@ -422,11 +443,17 @@ public:
     void SetItem (INT32 index, MgCoordinateSystemGridRegion* value);
     void Add (MgCoordinateSystemGridRegion* value);
     void AddCollection (MgCoordinateSystemGridRegionCollection* aGridRegionCollection);
+    INT32 SetGridRegionExceptionLevel (INT32 memoryUseMax);
+    INT32 GetMemoryUsage (void);
 
 protected:
     void Dispose (void);
+    INT32 m_MemoryUse;
+    INT32 m_GridRegionExceptionLevel;
     Ptr<MgDisposableCollection> m_GridRegionCollection;
+
 private:
+    // Not Implemented
     CCoordinateSystemGridRegionCollection (const CCoordinateSystemGridRegionCollection& source);
     CCoordinateSystemGridRegionCollection& operator= (const CCoordinateSystemGridRegionCollection& rhs);
 };
@@ -439,7 +466,7 @@ private:
 class CCoordinateSystemGridTickCollection : public MgCoordinateSystemGridTickCollection 
 {
 public:
-    CCoordinateSystemGridTickCollection (void);
+    CCoordinateSystemGridTickCollection (INT32 gridLineExceptionLevel);
     ~CCoordinateSystemGridTickCollection (void);
 
     INT32 GetCount () const;
@@ -449,12 +476,17 @@ public:
     void SetItem (INT32 index, MgCoordinateSystemGridTick* value);
     void Add (MgCoordinateSystemGridTick* value);
     void AddCollection (MgCoordinateSystemGridTickCollection* aGridTickCollection);
+    INT32 SetGridTickExceptionLevel (INT32 memoryUseMax);
+    INT32 GetMemoryUsage (void);
 
 protected:
     void Dispose (void);
+    INT32 m_MemoryUse;
+    INT32 m_GridTickExceptionLevel;
     Ptr<MgDisposableCollection> m_GridTickCollection;
 
 private:
+    // Not Implemented
     CCoordinateSystemGridTickCollection (const CCoordinateSystemGridTickCollection& source);
     CCoordinateSystemGridTickCollection& operator= (const CCoordinateSystemGridTickCollection& rhs);  
 };
