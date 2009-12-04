@@ -54,19 +54,28 @@ public:
     ~CCoordinateSystemMgrsZone (void);
 
     CCoordinateSystemGridLineCollection* GetGridLines (MgCoordinateSystemGridBoundary* frameBoundary,
-                                                       MgCoordinateSystemGridSpecification* specification);
+                                                       MgCoordinateSystemGridSpecification* specification,
+                                                       INT32 exceptionLvl);
     CCoordinateSystemGridLineCollection* GetGraticuleLines (MgCoordinateSystemGridBoundary* frameBoundary,
-                                                            MgCoordinateSystemGridSpecification* specification);
+                                                            MgCoordinateSystemGridSpecification* specification,
+                                                            INT32 exceptionLvl);
     CCoordinateSystemGridRegionCollection* GetGridRegions (MgCoordinateSystemGridBoundary* frameBoundary,
-                                                           MgCoordinateSystemGridSpecification* specification);
+                                                           MgCoordinateSystemGridSpecification* specification,
+                                                           INT32 exceptionLvl);
+    INT32 ApproxGridRegionMemoryUsage (MgCoordinateSystemGridSpecification* specification);
     INT32 GetUtmZoneNbr (void);
- 
+
 protected:
-    void BuildRegionCollection (MgCoordinateSystemGridBoundary* frameBoundary,
-                                MgCoordinateSystemGridSpecification* specification);
+    CCoordinateSystemGridRegionCollection* BuildRegionCollection (MgCoordinateSystemGridBoundary* frameBoundary,
+                                                                  MgCoordinateSystemGridSpecification* specification,
+                                                                  INT32 exceptionLvl);
 private:
-    void BuildMajorRegions (MgCoordinateSystemGridBoundary* frameBoundary,double boundaryPrecision);
-    void BuildMinorRegions (MgCoordinateSystemGridBoundary* frameBoundary,double boundaryPrecision);
+    void BuildMajorRegions (CCoordinateSystemGridRegionCollection* regionCollection,
+                            MgCoordinateSystemGridBoundary* frameBoundary,
+                            double boundaryPrecision);
+    void BuildMinorRegions (CCoordinateSystemGridRegionCollection* regionCollection,
+                            MgCoordinateSystemGridBoundary* frameBoundary,
+                            double boundaryPrecision);
     ///////////////////////////////////////////////////////////////////////////
     // Data members
     // m_UtmZoneNbr is positive for northern hemisphere, negative for the
@@ -74,7 +83,7 @@ private:
     // Zero is the uninitialized/unknown/error value.
     INT32 m_UtmZone;
     INT8 m_LetteringScheme;
-    Ptr<CCoordinateSystemGridRegionCollection> m_RegionCollection;
+//    Ptr<CCoordinateSystemGridRegionCollection> m_RegionCollection;
 
     // Not implemented
     CCoordinateSystemMgrsZone (const CCoordinateSystemMgrsZone& source);

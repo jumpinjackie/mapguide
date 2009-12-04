@@ -145,6 +145,7 @@
 #include "CoordinateSystem/CoordinateSystemGridGeneric.h"                   //for MgCoordinateSystemGridGeneric
 #include "CoordinateSystem/CoordinateSystemMgrsGridLevel.h"                 //for MgCoordinateSystemMgrsGridLevel
 #include "CoordinateSystem/CoordinateSystemMgrsLetteringScheme.h"           //for MgCoordinateSystemMgrsLetteringScheme
+#include "CoordinateSystem/CoordinateSystemMgrsGridSquarePosition.h"        //for MgCoordinateSystemMgrsGridSquarePosition
 #include "CoordinateSystem/CoordinateSystemMgrs.h"                          //for MgCoordinateSystemMgrs
 #include "CoordinateSystem/CoordinateSystemFactory.h"
 

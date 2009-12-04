@@ -27,6 +27,10 @@
 
 using namespace CSLibrary;
 
+const INT32 CCoordinateSystemMgrs::m_GridLineExceptionLevelK   =  50000000L;    //  50MB
+const INT32 CCoordinateSystemMgrs::m_GridRegionExceptionLevelK = 100000000L;    // 100MB
+const INT32 CCoordinateSystemMgrs::m_GridTickExceptionLevelK   =  20000000L;    //  20MB
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Static constants.
 const CCoordinateSystemMgrs::CCoordinateSystemMgrsSeries CCoordinateSystemMgrs::MgrsSeriesNormal [6] =
@@ -62,33 +66,39 @@ const wchar_t CCoordinateSystemMgrs::MgrsGridZoneDesignation [25] = L"ABCDEFGHJK
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemMgrs::CCoordinateSystemMgrs(INT8 nLetteringScheme, bool bSetExceptionsOn)
                             :
-                       m_nLetteringScheme(nLetteringScheme),
-                       m_bExceptionsOn (bSetExceptionsOn),
-                       m_bUseFrameDatum (false),
-                       m_nLastError (0),
-                       m_pCsTarget (),
-                       m_pCsMgrs (NULL),
-                       m_GridBoundary (),
-                       m_ZoneCollection (),
-                       m_GraticuleUtm (),
-                       m_GraticuleUpsNorth (),
-                       m_GraticuleUpsSouth ()
+                       m_nLetteringScheme         (nLetteringScheme),
+                       m_bExceptionsOn            (bSetExceptionsOn),
+                       m_bUseFrameDatum           (false),
+                       m_GridLineExceptionLevel   (m_GridLineExceptionLevelK),
+                       m_GridRegionExceptionLevel (m_GridRegionExceptionLevelK),
+                       m_GridTickExceptionLevel   (m_GridTickExceptionLevelK),
+                       m_nLastError               (0),
+                       m_pCsTarget                (),
+                       m_pCsMgrs                  (NULL),
+                       m_GridBoundary             (),
+                       m_ZoneCollection           (),
+                       m_GraticuleUtm             (),
+                       m_GraticuleUpsNorth        (),
+                       m_GraticuleUpsSouth        ()
 {
 }
 CCoordinateSystemMgrs::CCoordinateSystemMgrs(MgCoordinateSystem* pTargetCs,INT8 nLetteringScheme,
                                                                            bool bSetExceptionsOn)
                             :
-                       m_nLetteringScheme(nLetteringScheme),
-                       m_bExceptionsOn (bSetExceptionsOn),
-                       m_bUseFrameDatum (false),
-                       m_nLastError (0),
-                       m_pCsTarget (),
-                       m_pCsMgrs (NULL),
-                       m_GridBoundary (),
-                       m_ZoneCollection (),
-                       m_GraticuleUtm (),
-                       m_GraticuleUpsNorth (),
-                       m_GraticuleUpsSouth ()
+                       m_nLetteringScheme         (nLetteringScheme),
+                       m_bExceptionsOn            (bSetExceptionsOn),
+                       m_bUseFrameDatum           (false),
+                       m_GridLineExceptionLevel   (m_GridLineExceptionLevelK),
+                       m_GridRegionExceptionLevel (m_GridRegionExceptionLevelK),
+                       m_GridTickExceptionLevel   (m_GridTickExceptionLevelK),
+                       m_nLastError               (0),
+                       m_pCsTarget                (),
+                       m_pCsMgrs                  (NULL),
+                       m_GridBoundary             (),
+                       m_ZoneCollection           (),
+                       m_GraticuleUtm             (),
+                       m_GraticuleUpsNorth        (),
+                       m_GraticuleUpsSouth        ()
 
 {
     m_pCsTarget = SAFE_ADDREF (pTargetCs);
@@ -244,8 +254,15 @@ STRING CCoordinateSystemMgrs::ConvertFromLonLat(MgCoordinate* pLonLat, INT32 nPr
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 MgCoordinate* CCoordinateSystemMgrs::ConvertToLonLat(CREFSTRING sMgrs)
 {
+    MgCoordinate* lonLat;
+    lonLat = ConvertToLonLat(sMgrs,MgCoordinateSystemMgrsGridSquarePosition::Center);
+    return lonLat;
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+MgCoordinate* CCoordinateSystemMgrs::ConvertToLonLat(CREFSTRING sMgrs, INT32 grdSqrPosition)
+{
     double dLongitude, dLatitude;
-    INT32 nResult=ConvertToLonLat(sMgrs, dLongitude, dLatitude);
+    INT32 nResult=ConvertToLonLat(sMgrs, dLongitude, dLatitude, grdSqrPosition);
     if (MgCoordinateSystemErrorCode::Ok==nResult)
     {
         MgCoordinate* pLonLat=new MgCoordinateXY(dLongitude, dLatitude);
@@ -385,7 +402,7 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemMgrs::GetGridLines (MgCoo
     }
 
     MG_TRY ()
-        theGridLineCollection = new CCoordinateSystemGridLineCollection ();
+        theGridLineCollection = new CCoordinateSystemGridLineCollection (m_GridLineExceptionLevel);
 
         // Determine the grid type.
         unitType = specification->GetUnitType();
@@ -407,7 +424,7 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemMgrs::GetGridLines (MgCoo
                 // The specification calls for a grid.  The following function
                 // is smart enough to deal with the special nature of zones
                 // 31 through 37 at the higher northern latitudes.
-                aGridLineCollection = mgrsZoneGrid->GetGridLines (m_GridBoundary,specification);
+                aGridLineCollection = mgrsZoneGrid->GetGridLines (m_GridBoundary,specification,m_GridLineExceptionLevel);
             }
             else
             {
@@ -415,7 +432,7 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemMgrs::GetGridLines (MgCoo
                 // smart enough to deal with band X (which is 12 degrees high)
                 // and the special nature of zones 31 through 37 at the higher
                 // northern latitudes.
-                aGridLineCollection = mgrsZoneGrid->GetGraticuleLines (m_GridBoundary,specification);
+                aGridLineCollection = mgrsZoneGrid->GetGraticuleLines (m_GridBoundary,specification,m_GridLineExceptionLevel);
             }
             if (aGridLineCollection != 0)
             {
@@ -443,13 +460,13 @@ MgCoordinateSystemGridRegionCollection* CCoordinateSystemMgrs::GetGridRegions (M
     }
 
     MG_TRY ()
-        theGridRegionCollection = new CCoordinateSystemGridRegionCollection ();
+        theGridRegionCollection = new CCoordinateSystemGridRegionCollection (m_GridRegionExceptionLevel);
         zoneCount = m_ZoneCollection->GetCount ();
         for (index = 0;index < zoneCount;index += 1)
         {
             mgrsZoneGrid = m_ZoneCollection->GetItem (index);
             Ptr<MgCoordinateSystemGridRegionCollection> aGridRegionCollection;
-            aGridRegionCollection = mgrsZoneGrid->GetGridRegions (m_GridBoundary,specification);
+            aGridRegionCollection = mgrsZoneGrid->GetGridRegions (m_GridBoundary,specification,m_GridRegionExceptionLevel);
             theGridRegionCollection->AddCollection (aGridRegionCollection);
         }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemMgrs::GetGridRegions")
@@ -475,7 +492,7 @@ MgCoordinateSystemGridTickCollection* CCoordinateSystemMgrs::GetGridTicks (MgCoo
     }
 
     MG_TRY ()
-        theGridTickCollection = new CCoordinateSystemGridTickCollection ();
+        theGridTickCollection = new CCoordinateSystemGridTickCollection (m_GridTickExceptionLevel);
         unitType = specification->GetUnitType();
         specIsGrid = (unitType ==  MgCoordinateSystemUnitType::Linear);
         if (specIsGrid)
@@ -522,6 +539,88 @@ double CCoordinateSystemMgrs::GetConvergenceAngle (MgCoordinate* location)
 double CCoordinateSystemMgrs::GetProjectiveGridScale (MgCoordinate* location)
 {
     return 1.0;
+}
+
+INT32 CCoordinateSystemMgrs::ApproxGridLineMemoryUsage (MgCoordinateSystemGridSpecification* specification)
+{
+    INT32 index;
+    INT32 zoneCount;
+    INT32 memoryGuess (-1);
+
+    if (m_GridBoundary != 0)
+    {
+        memoryGuess = 0;
+        zoneCount = m_ZoneCollection->GetCount ();
+        for (index = 0;index < zoneCount;index += 1)
+        {
+            Ptr<CCoordinateSystemMgrsZone> mgrsZoneGrid = m_ZoneCollection->GetItem (index);
+            memoryGuess += mgrsZoneGrid->ApproxGridLineMemoryUsage (specification);
+        }
+    }
+    return memoryGuess;
+}
+INT32 CCoordinateSystemMgrs::ApproxGridRegionMemoryUsage (MgCoordinateSystemGridSpecification* specification)
+{
+    INT32 index;
+    INT32 zoneCount;
+    INT32 memoryGuess (-1);
+
+    if (m_GridBoundary != 0)
+    {
+        memoryGuess = 0;
+        zoneCount = m_ZoneCollection->GetCount ();
+        for (index = 0;index < zoneCount;index += 1)
+        {
+            Ptr<CCoordinateSystemMgrsZone> mgrsZoneGrid = m_ZoneCollection->GetItem (index);
+            memoryGuess += mgrsZoneGrid->ApproxGridRegionMemoryUsage (specification);
+        }
+    }
+    return memoryGuess;
+}
+INT32 CCoordinateSystemMgrs::ApproxGridTickMemoryUsage (MgCoordinateSystemGridSpecification* specification)
+{
+    INT32 index;
+    INT32 zoneCount;
+    INT32 memoryGuess (-1);
+
+    if (m_GridBoundary != 0)
+    {
+        memoryGuess = 0;
+        zoneCount = m_ZoneCollection->GetCount ();
+        for (index = 0;index < zoneCount;index += 1)
+        {
+            Ptr<CCoordinateSystemMgrsZone> mgrsZoneGrid = m_ZoneCollection->GetItem (index);
+            memoryGuess += mgrsZoneGrid->ApproxGridTickMemoryUsage (specification);
+        }
+    }
+    return memoryGuess;
+}
+INT32 CCoordinateSystemMgrs::SetGridLineExceptionLevel (INT32 memoryUseMax)
+{
+    INT32 rtnValue = m_GridLineExceptionLevel;
+    if (memoryUseMax > 0L)
+    {
+        m_GridLineExceptionLevel = memoryUseMax;
+    }
+    return rtnValue;
+}
+INT32 CCoordinateSystemMgrs::SetGridRegionExceptionLevel (INT32 memoryUseMax)
+{
+    INT32 rtnValue = m_GridRegionExceptionLevel;
+    if (memoryUseMax > 0L)
+    {
+        m_GridRegionExceptionLevel = memoryUseMax;
+    }
+    return rtnValue;
+}
+INT32 CCoordinateSystemMgrs::SetGridTickExceptionLevel (INT32 memoryUseMax)
+{
+    INT32 rtnValue = m_GridTickExceptionLevel;
+    if (memoryUseMax > 0L)
+    {
+        m_GridTickExceptionLevel = memoryUseMax;
+    }
+    return rtnValue;
 }
 
 //INTERNAL_API
@@ -604,9 +703,15 @@ INT32 CCoordinateSystemMgrs::ConvertFromLonLat(MgCoordinate* pLonLat, INT32 nPre
     //no need to check the dimension of the MgCoordinate as we only care about X and Y
     return ConvertFromLonLat(pLonLat->GetX(), pLonLat->GetY(), nPrecision, sMgrs);
 }
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 INT32 CCoordinateSystemMgrs::ConvertToLonLat(CREFSTRING sMgrs, MgCoordinate* pLonLat)
+{
+    INT32 nResult;
+    nResult = ConvertToLonLat(sMgrs,pLonLat,MgCoordinateSystemMgrsGridSquarePosition::Center);
+    return nResult;
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+INT32 CCoordinateSystemMgrs::ConvertToLonLat(CREFSTRING sMgrs, MgCoordinate* pLonLat, INT32 grdSqrPosition)
 {
     if (!pLonLat)
     {
@@ -624,7 +729,7 @@ INT32 CCoordinateSystemMgrs::ConvertToLonLat(CREFSTRING sMgrs, MgCoordinate* pLo
     //no need to check the dimension of the MgCoordinate as we only care about X and Y
     double dLongitude=pLonLat->GetX();
     double dLatitude=pLonLat->GetY();
-    INT32 nResult=ConvertToLonLat(sMgrs, dLongitude, dLatitude);
+    INT32 nResult=ConvertToLonLat(sMgrs, dLongitude, dLatitude, grdSqrPosition);
     if (nResult==MgCoordinateSystemErrorCode::Ok)
     {
         pLonLat->SetX(dLongitude);
@@ -632,9 +737,15 @@ INT32 CCoordinateSystemMgrs::ConvertToLonLat(CREFSTRING sMgrs, MgCoordinate* pLo
     }
     return nResult;
 }
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 INT32 CCoordinateSystemMgrs::ConvertToLonLat(CREFSTRING sMgrs, double& dLongitude, double& dLatitude)
+{
+    INT32 nResult;
+    nResult = ConvertToLonLat(sMgrs,dLongitude,dLatitude,MgCoordinateSystemMgrsGridSquarePosition::Center);
+    return nResult;
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+INT32 CCoordinateSystemMgrs::ConvertToLonLat(CREFSTRING sMgrs, double& dLongitude, double& dLatitude, INT32 grdSqrPosition)
 {
     if (!m_pCsMgrs)
     {
@@ -645,6 +756,20 @@ INT32 CCoordinateSystemMgrs::ConvertToLonLat(CREFSTRING sMgrs, double& dLongitud
         else
         {
             m_nLastError=MgCoordinateSystemErrorCode::InitializationFailed;
+            return m_nLastError;
+        }
+    }
+
+    if (grdSqrPosition <= MgCoordinateSystemMgrsGridSquarePosition::None ||
+        grdSqrPosition >= MgCoordinateSystemMgrsGridSquarePosition::Unknown)
+    {
+        if (m_bExceptionsOn)
+        {
+            throw new MgInvalidArgumentException(L"MgCoordinateSystemMgrs.ConvertToLonLat", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        else
+        {
+            m_nLastError=MgCoordinateSystemErrorCode::InvalidArgument;
             return m_nLastError;
         }
     }
@@ -665,7 +790,7 @@ INT32 CCoordinateSystemMgrs::ConvertToLonLat(CREFSTRING sMgrs, double& dLongitud
     }
 
     double latLng [2];
-    int nResult=CScalcLlFromMgrs (m_pCsMgrs, latLng, pMgrs);
+    int nResult=CScalcLlFromMgrsEx (m_pCsMgrs, latLng, pMgrs, grdSqrPosition);
 
     //Free the converted string
     delete [] pMgrs;
@@ -1221,7 +1346,7 @@ MgPolygon* CCoordinateSystemMgrs::ParallelPolygon (MgCoordinateSystemTransform* 
 }
 bool CCoordinateSystemMgrs::CanDoPoles (MgCoordinateSystem* frameCRS)
 {
-	// MENTOR_MAINTENANCE --> a new projection may need to be added to this list.
+    // MENTOR_MAINTENANCE --> a new projection may need to be added to this list.
     static INT32 polarCapable [] =
     {
         MgCoordinateSystemProjectionCode::Tm,

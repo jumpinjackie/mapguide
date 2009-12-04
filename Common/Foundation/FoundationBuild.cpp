@@ -52,6 +52,7 @@
 #include "Exception/Exception.cpp"
 #include "Exception/FileIoException.cpp"
 #include "Exception/FileNotFoundException.cpp"
+#include "Exception/GridDensityException.cpp"
 #include "Exception/IndexOutOfRangeException.cpp"
 #include "Exception/InvalidArgumentException.cpp"
 #include "Exception/InvalidCastException.cpp"

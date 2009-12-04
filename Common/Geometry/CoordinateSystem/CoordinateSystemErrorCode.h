@@ -92,6 +92,7 @@ PUBLISHED_API:
     static const INT32 InitializationFailed = 1002;
     static const INT32 ConversionFailed     = 1003;
     static const INT32 NullArgument         = 1004;
+    static const INT32 InvalidArgument      = 1005;
 };
 /// \}
 

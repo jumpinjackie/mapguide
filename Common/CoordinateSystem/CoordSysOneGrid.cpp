@@ -21,6 +21,7 @@
 #include "CriticalSection.h"
 
 #include "CoordSys.h"
+#include "CoordSysMathComparator.h"
 #include "CoordSysTransform.h"              //for CCoordinateSystemTransform
 #include "CoordSysGrids.h"
 #include "CoordSysOneGrid.h"
@@ -30,17 +31,23 @@ using namespace CSLibrary;
 //=============================================================================
 // CCoordinateSystemOneGrid
 const INT32 CCoordinateSystemOneGrid::MaxCurvePoints = 511;
-CCoordinateSystemOneGrid::CCoordinateSystemOneGrid () : MgGuardDisposable   (),
-                                                        m_UserID            (0),
-                                                        m_MaxCurvePoints    (MaxCurvePoints),
-                                                        m_Label             (),
-                                                        m_GridCRS           (),
-                                                        m_FrameCRS          (),
-                                                        m_ToFrameXform      (),
-                                                        m_ToGridXform       (),
-                                                        m_BoundaryPrecision (0.0),
-                                                        m_GridBoundary      (),
-                                                        m_FrameBoundary     ()
+const INT32 CCoordinateSystemOneGrid::m_GridLineExceptionLevelK = 50000000L;   // 50MB
+const INT32 CCoordinateSystemOneGrid::m_GridTickExceptionLevelK = 20000000L;   // 20MB
+
+CCoordinateSystemOneGrid::CCoordinateSystemOneGrid () : MgGuardDisposable        (),
+                                                        m_GridFrameCrsSame       (false),
+                                                        m_UserID                 (0),
+                                                        m_MaxCurvePoints         (MaxCurvePoints),
+                                                        m_Label                  (),
+                                                        m_GridLineExceptionLevel (m_GridLineExceptionLevelK),
+                                                        m_GridTickExceptionLevel (m_GridTickExceptionLevelK),
+                                                        m_GridCRS                (),
+                                                        m_FrameCRS               (),
+                                                        m_ToFrameXform           (),
+                                                        m_ToGridXform            (),
+                                                        m_BoundaryPrecision      (0.0),
+                                                        m_GridBoundary           (),
+                                                        m_FrameBoundary          ()
 {
     Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
 }
@@ -48,17 +55,20 @@ CCoordinateSystemOneGrid::CCoordinateSystemOneGrid (MgCoordinateSystemGridBounda
                                                     MgCoordinateSystem* gridCRS,
                                                     MgCoordinateSystem* frameCRS)
                                                         :
-                                                    MgGuardDisposable   (),
-                                                    m_UserID            (0),
-                                                    m_MaxCurvePoints    (MaxCurvePoints),
-                                                    m_Label             (),
-                                                    m_GridCRS           (),
-                                                    m_FrameCRS          (),
-                                                    m_ToFrameXform      (),
-                                                    m_ToGridXform       (),
-                                                    m_BoundaryPrecision (0.0),
-                                                    m_GridBoundary      (),
-                                                    m_FrameBoundary     ()
+                                                    MgGuardDisposable        (),
+                                                    m_GridFrameCrsSame       (false),
+                                                    m_UserID                 (0),
+                                                    m_MaxCurvePoints         (MaxCurvePoints),
+                                                    m_Label                  (),
+                                                    m_GridLineExceptionLevel (m_GridLineExceptionLevelK),
+                                                    m_GridTickExceptionLevel (m_GridTickExceptionLevelK),
+                                                    m_GridCRS                (),
+                                                    m_FrameCRS               (),
+                                                    m_ToFrameXform           (),
+                                                    m_ToGridXform            (),
+                                                    m_BoundaryPrecision      (0.0),
+                                                    m_GridBoundary           (),
+                                                    m_FrameBoundary          ()
 {
     SetUp (frameBoundary,gridCRS,frameCRS);
 }
@@ -74,16 +84,26 @@ void CCoordinateSystemOneGrid::SetUp (MgCoordinateSystemGridBoundary* frameBound
                                       MgCoordinateSystem* frameCRS)
 {
     MgCoordinateSystemFactory csFactory;
+    CCoordinateSystemMathComparator csMathComparator;
 
     m_FrameBoundary = SAFE_ADDREF (frameBoundary);
     m_GridCRS = SAFE_ADDREF (gridCRS);
     m_FrameCRS = SAFE_ADDREF (frameCRS);
+
     m_ToFrameXform = csFactory.GetTransform (m_GridCRS,m_FrameCRS);
     m_ToFrameXform->IgnoreDatumShiftWarning (true);
     m_ToFrameXform->IgnoreOutsideDomainWarning (true);
+
     m_ToGridXform = csFactory.GetTransform (m_FrameCRS,m_GridCRS);
     m_ToGridXform->IgnoreDatumShiftWarning (true);
     m_ToGridXform->IgnoreOutsideDomainWarning (true);
+
+    m_GridFrameCrsSame = csMathComparator.Same (gridCRS,frameCRS);
+
+}
+bool CCoordinateSystemOneGrid::GridFrameCrsAreTheSame ()
+{
+    return m_GridFrameCrsSame;
 }
 bool CCoordinateSystemOneGrid::IsGeographic (void)
 {
@@ -136,7 +156,7 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemOneGrid::GetGridLines (Mg
     Ptr<MgLineStringCollection> lineStringCollection;
     Ptr<CCoordinateSystemGridLine> gridLine;
 
-    Ptr<CCoordinateSystemGridLineCollection> gridLineCollection = new CCoordinateSystemGridLineCollection ();
+    Ptr<CCoordinateSystemGridLineCollection> gridLineCollection = new CCoordinateSystemGridLineCollection (m_GridLineExceptionLevel);
 
     MG_TRY()
         gridCrsUnitCode = m_GridCRS->GetUnitCode ();
@@ -279,7 +299,7 @@ CCoordinateSystemGridTickCollection* CCoordinateSystemOneGrid::GetBoundaryTicks 
         gridCrsUnitCode = m_GridCRS->GetUnitCode ();
 
         CCoordinateSystemGridSpecification* mySpecPtr = dynamic_cast<CCoordinateSystemGridSpecification*>(specs);
-        tickCollection = new CCoordinateSystemGridTickCollection ();
+        tickCollection = new CCoordinateSystemGridTickCollection (m_GridTickExceptionLevel);
 
         // Get the grid extents.
         curvePrecision = mySpecPtr->GetCurvePrecision();
@@ -394,6 +414,34 @@ CCoordinateSystemGridTickCollection* CCoordinateSystemOneGrid::GetBoundaryTicks 
         }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemOneGrid::GetGridLines")
     return tickCollection.Detach ();
+}
+
+INT32 CCoordinateSystemOneGrid::ApproxGridLineMemoryUsage (MgCoordinateSystemGridSpecification* specification)
+{
+    return 50000;
+}
+INT32 CCoordinateSystemOneGrid::ApproxGridTickMemoryUsage (MgCoordinateSystemGridSpecification* specification)
+{
+    return 10000;
+}
+
+INT32 CCoordinateSystemOneGrid::SetGridLineExceptionLevel (INT32 memoryUseMax)
+{
+    INT32 rtnValue = m_GridLineExceptionLevel;
+    if (memoryUseMax > 0L)
+    {
+        m_GridLineExceptionLevel = memoryUseMax;
+    }
+    return rtnValue;
+}
+INT32 CCoordinateSystemOneGrid::SetGridTickExceptionLevel (INT32 memoryUseMax)
+{
+    INT32 rtnValue = m_GridTickExceptionLevel;
+    if (memoryUseMax > 0L)
+    {
+        m_GridTickExceptionLevel = memoryUseMax;
+    }
+    return rtnValue;
 }
 MgCoordinateSystemGridBoundary* CCoordinateSystemOneGrid::GetFrameBoundary (void)
 {

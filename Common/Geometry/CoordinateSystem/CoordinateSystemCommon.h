@@ -52,6 +52,7 @@
 #include "CoordinateSystemProjectionFormatType.h"           //for MgCoordinateSystemProjectionFormatType
 #include "CoordinateSystemProjectionParameterType.h"        //for MgCoordinateSystemProjectionParameterType
 #include "CoordinateSystemErrorCode.h"                      //for MgCoordinateSystemErrorCode
+#include "CoordinateSystemMgrsGridSquarePosition.h"         //for MgCoordinateSystemMgrsGridSquarePosition
 #include "CoordinateSystemMgrs.h"                           //for MgCoordinateSystemMgrs
 #include "CoordinateSystemMgrsLetteringScheme.h"            //for MgCoordinateSystemMgrsLetteringScheme
 

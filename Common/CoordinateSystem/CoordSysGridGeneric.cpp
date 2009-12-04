@@ -26,10 +26,17 @@
 
 using namespace CSLibrary;
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const INT32 CCoordinateSystemGridGeneric::m_GridLineExceptionLevelK   =  50000000L;     //   50MB
+const INT32 CCoordinateSystemGridGeneric::m_GridRegionExceptionLevelK =  50000000L;      //  50MB
+const INT32 CCoordinateSystemGridGeneric::m_GridTickExceptionLevelK   =  20000000L;      //  20MB
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemGridGeneric::CCoordinateSystemGridGeneric(bool bSetExceptionsOn)
                             :
-                       m_bExceptionsOn (bSetExceptionsOn),
+                       m_bExceptionsOn            (bSetExceptionsOn),
+                       m_GridLineExceptionLevel   (m_GridLineExceptionLevelK),
+                       m_GridRegionExceptionLevel (m_GridRegionExceptionLevelK),
+                       m_GridTickExceptionLevel   (m_GridTickExceptionLevelK),
                        m_nLastError    (0),
                        m_pCsSource     (),
                        m_pCsTarget     (),
@@ -41,7 +48,10 @@ CCoordinateSystemGridGeneric::CCoordinateSystemGridGeneric(MgCoordinateSystem* p
                                                            MgCoordinateSystem* pTargetCs,
                                                            bool bSetExceptionsOn)
                             :
-                       m_bExceptionsOn (bSetExceptionsOn),
+                       m_bExceptionsOn            (bSetExceptionsOn),
+                       m_GridLineExceptionLevel   (m_GridLineExceptionLevelK),
+                       m_GridRegionExceptionLevel (m_GridRegionExceptionLevelK),
+                       m_GridTickExceptionLevel   (m_GridTickExceptionLevelK),
                        m_nLastError    (0),
                        m_pCsSource     (),
                        m_pCsTarget     (),
@@ -66,6 +76,8 @@ void CCoordinateSystemGridGeneric::SetBoundary(MgCoordinateSystemGridBoundary* p
 {
     m_FrameBoundary = SAFE_ADDREF (pFrameBoundary);
     m_TheGrid = new CCoordinateSystemOneGrid (m_FrameBoundary,m_pCsSource,m_pCsTarget);
+    m_TheGrid->SetGridLineExceptionLevel (m_GridLineExceptionLevel);
+    m_TheGrid->SetGridTickExceptionLevel (m_GridTickExceptionLevel);
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 MgCoordinateSystemGridBoundary* CCoordinateSystemGridGeneric::GetBoundary(void)
@@ -97,13 +109,90 @@ MgCoordinateSystemGridTickCollection* CCoordinateSystemGridGeneric::GetGridTicks
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 double CCoordinateSystemGridGeneric::GetConvergenceAngle (MgCoordinate* location)
 {
-    return 0.0;
+    double longitude;
+    double latitude;
+    double convergence;
+
+    longitude = location->GetX ();
+    latitude  = location->GetY ();
+    convergence = m_pCsTarget->GetConvergence (longitude,latitude);
+    return convergence;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 double CCoordinateSystemGridGeneric::GetProjectiveGridScale (MgCoordinate* location)
 {
-    return 1.0;
+    double longitude;
+    double latitude;
+    double scale;
+
+    longitude = location->GetX ();
+    latitude  = location->GetY ();
+    scale = m_pCsTarget->GetScale (longitude,latitude);
+    return scale;
 }
+INT32 CCoordinateSystemGridGeneric::ApproxGridLineMemoryUsage (MgCoordinateSystemGridSpecification* specification)
+{
+    INT32 memoryUse (-1);
+
+    if (m_FrameBoundary != 0)
+    {
+        memoryUse = m_TheGrid->ApproxGridLineMemoryUsage (specification);
+    }
+    return memoryUse;
+}
+INT32 CCoordinateSystemGridGeneric::ApproxGridRegionMemoryUsage (MgCoordinateSystemGridSpecification* specification)
+{
+    INT32 memoryUse;
+    
+    memoryUse = (m_FrameBoundary != 0) ? 0 : -1;
+    return memoryUse;
+}
+INT32 CCoordinateSystemGridGeneric::ApproxGridTickMemoryUsage (MgCoordinateSystemGridSpecification* specification)
+{
+    INT32 memoryUse (-1);
+
+    if (m_FrameBoundary != 0)
+    {
+        memoryUse = m_TheGrid->ApproxGridTickMemoryUsage (specification);
+    }
+    return memoryUse;
+}
+INT32 CCoordinateSystemGridGeneric::SetGridLineExceptionLevel (INT32 memoryUseMax)
+{
+    INT32 rtnValue = m_GridLineExceptionLevel;
+    if (memoryUseMax > 0)
+    {
+        m_GridLineExceptionLevel = memoryUseMax;
+        if (m_TheGrid != 0)
+        {
+            m_TheGrid->SetGridLineExceptionLevel (m_GridLineExceptionLevel);
+        }
+    }
+    return rtnValue;
+}
+INT32 CCoordinateSystemGridGeneric::SetGridRegionExceptionLevel (INT32 memoryUseMax)
+{
+    INT32 rtnValue = m_GridRegionExceptionLevel;
+    if (memoryUseMax > 0)
+    {
+        m_GridRegionExceptionLevel = memoryUseMax;
+    }
+    return rtnValue;
+}
+INT32 CCoordinateSystemGridGeneric::SetGridTickExceptionLevel (INT32 memoryUseMax)
+{
+    INT32 rtnValue = m_GridTickExceptionLevel;
+    if (memoryUseMax > 0)
+    {
+        m_GridTickExceptionLevel = memoryUseMax;
+        if (m_TheGrid != 0)
+        {
+            m_TheGrid->SetGridTickExceptionLevel (m_GridTickExceptionLevel);
+        }
+    }
+    return rtnValue;
+}
+
 INT32 CCoordinateSystemGridGeneric::GetLastError()
 {
     return m_nLastError;
