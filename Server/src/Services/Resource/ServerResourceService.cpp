@@ -2182,8 +2182,6 @@ void MgServerResourceService::CheckPermission(MgResourceIdentifier* resource,
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    MG_LOG_TRACE_ENTRY(L"MgServerResourceService::CheckPermission()");
-
     if (NULL == resource)
     {
         throw new MgNullArgumentException(
