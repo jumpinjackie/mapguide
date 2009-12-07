@@ -235,7 +235,7 @@ STRING CCoordinateSystemMgrs::ConvertFromLonLat(double dLongitude, double dLatit
 
     //if exception mode is on and excetion is thrown internally we exit anyway
     //so safe to return sMgrs here and not test the m_bExceptionsOn value
-    //m_nLastError is already set if a failure occured and m_bExceptionsOn=false
+    //m_nLastError is already set if a failure occurred and m_bExceptionsOn=false
     return sMgrs;
 }
 
@@ -247,7 +247,7 @@ STRING CCoordinateSystemMgrs::ConvertFromLonLat(MgCoordinate* pLonLat, INT32 nPr
 
     //if exception mode is on and excetion is thrown internally we exit anyway
     //so safe to return sMgrs here and not test the m_bExceptionsOn value
-    //m_nLastError is already set if a failure occured and m_bExceptionsOn=false
+    //m_nLastError is already set if a failure occurred and m_bExceptionsOn=false
     return sMgrs;
 }
 
@@ -286,7 +286,7 @@ MgCoordinate* CCoordinateSystemMgrs::ConvertToLonLat(CREFSTRING sMgrs, INT32 grd
 
     //if exception mode is on and excetion is thrown internally we exit anyway
     //so safe to return NULL here and not test the m_bExceptionsOn value
-    //m_nLastError is already set if a failure occured and m_bExceptionsOn=false
+    //m_nLastError is already set if a failure occurred and m_bExceptionsOn=false
     return NULL;
 }
 
