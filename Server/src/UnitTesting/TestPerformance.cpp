@@ -219,7 +219,7 @@ void TestPerformance::TestCase_BenchmarkSelectFeatures()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -569,7 +569,7 @@ void TestPerformance::TestCase_BenchmarkJoinFeatures()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
