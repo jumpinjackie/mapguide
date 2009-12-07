@@ -697,12 +697,14 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     int height = (int)(extent.height() * pixelsPerMapUnit + 0.5);
 
                     //perform the raster query
+                    FdoPtr<FdoIFeatureReader> fdoReader;
                     {
                         ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sg_fdoRfpMutex));
                         rsReader = ExecuteRasterQuery(svcFeature, extent, gl, overrideFilter.c_str(), dstCs, layerCs, width, height);
+                        fdoReader = (NULL == rsReader) ? NULL : rsReader->GetInternalReader();
                     }
 
-                    if (NULL != rsReader)
+                    if (NULL != fdoReader.p)
                     {
                         //stylize grid layer
                         dr->StartLayer(&layerInfo, &fcinfo);
