@@ -28,6 +28,14 @@
 
 using namespace CSLibrary;
 
+#if !defined (_DEBUG)
+    // Include heap overhead estinated at 12 bytes in release mode.
+    static const INT32 kMgSizeOfCoordinateXY = sizeof (MgCoordinateXY) + 12;
+#else
+    // Include heap overhead estinated at 48 bytes in release mode.
+    static const INT32 kMgSizeOfCoordinateXY = sizeof (MgCoordinateXY) + 48;
+#endif
+
 //=============================================================================
 // CCoordinateSystemOneGrid
 const INT32 CCoordinateSystemOneGrid::MaxCurvePoints = 511;
@@ -418,7 +426,85 @@ CCoordinateSystemGridTickCollection* CCoordinateSystemOneGrid::GetBoundaryTicks 
 
 INT32 CCoordinateSystemOneGrid::ApproxGridLineMemoryUsage (MgCoordinateSystemGridSpecification* specification)
 {
-    return 50000;
+    INT32 memoryUse (5000000);
+    INT32 lineSize;
+    INT32 lineCount;
+    INT32 gridCrsUnitCode;
+
+    double delta;
+    double increment;
+    double precision;
+    double eastMin, eastMax;
+    double northMin, northMax;
+
+    // We'll compute the number of grid lines which can be expected given the
+    // provided specification.  For now, we just make a guess at the size of
+    // each line based on the coordinate systems involved.
+    if (m_GridFrameCrsSame)
+    {
+        lineSize = sizeof (CCoordinateSystemGridLine) + sizeof (MgLineStringCollection) + 
+                                                        sizeof (MgLineString) +
+                                                        kMgSizeOfCoordinateXY * 2;
+    }
+    else
+    {
+        lineSize = sizeof (CCoordinateSystemGridLine) + sizeof (MgLineStringCollection) + 
+                                                        sizeof (MgLineString) * 2 +
+                                                        kMgSizeOfCoordinateXY * 511;
+    }
+
+    // TODO --> The folowing 40 or so lines of code are a cut and paste from
+    // the line generator code above.  This should be placed in a separate function
+    // to eliminate duplicate code.  For now, we jkust want to see how well all
+    // of this memory management stuff works.
+    MG_TRY ()
+        gridCrsUnitCode = m_GridCRS->GetUnitCode ();
+        CCoordinateSystemGridSpecification* mySpecPtr = dynamic_cast<CCoordinateSystemGridSpecification*>(specification);
+        precision = mySpecPtr->GetCurvePrecision (m_GridCRS);
+        // The following does not generate a boundary if it has already been
+        // generated.
+        GenerateGridBoundary (precision);
+
+        // Compute the range of the grid line generation.
+        m_GridBoundary->GetBoundaryExtents (eastMin,eastMax,northMin,northMax);
+        
+        // Expand the range to include all grid values at the extents.
+        increment = mySpecPtr->GetEastingIncrement(gridCrsUnitCode);
+        delta = fabs(fmod (eastMin,increment));
+        eastMin -= (eastMin >= 0.0) ? delta : (increment - delta);
+        delta = fabs(fmod (eastMax,increment));
+        eastMax += (eastMax >= 0.0) ? (increment - delta) : delta;
+ 
+        increment = mySpecPtr->GetNorthingIncrement(gridCrsUnitCode);
+        delta = fabs(fmod (northMin,increment));
+        northMin -= (northMin >= 0.0) ? delta : (increment - delta);
+        delta = fabs(fmod (northMax,increment));
+        northMax += (northMax >= 0.0) ? (increment - delta) : delta;
+
+        // Adjust for the base.  Again, we always enlarge, never shrink.
+        if (mySpecPtr->GetEastingBase () > 0.0)
+        {
+            increment = mySpecPtr->GetEastingIncrement (gridCrsUnitCode);
+            delta = fmod (mySpecPtr->GetEastingBase(gridCrsUnitCode),increment);
+            eastMin  += delta - increment;
+            eastMax  += delta + increment;
+        }
+        if (mySpecPtr->GetNorthingBase () > 0.0)
+        {
+            increment = mySpecPtr->GetNorthingIncrement (gridCrsUnitCode);
+            delta = fmod (mySpecPtr->GetNorthingBase(gridCrsUnitCode),increment);
+            northMin  += delta - increment;
+            northMax  += delta + increment;
+        }
+
+        // Compute the number of grid line objects we will need to create.
+        increment = mySpecPtr->GetEastingIncrement(gridCrsUnitCode);
+        lineCount = static_cast<INT32>(fabs (eastMax - eastMin) / increment);
+        increment = mySpecPtr->GetNorthingIncrement(gridCrsUnitCode);
+        lineCount += static_cast<INT32>(fabs (northMax - northMin) / increment);
+        memoryUse = lineCount * lineSize;
+    MG_CATCH_AND_RELEASE()
+    return memoryUse;
 }
 INT32 CCoordinateSystemOneGrid::ApproxGridTickMemoryUsage (MgCoordinateSystemGridSpecification* specification)
 {
