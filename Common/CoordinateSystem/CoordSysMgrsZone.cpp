@@ -29,6 +29,16 @@
 
 using namespace CSLibrary;
 
+#if !defined (_DEBUG)
+    // Include heap overhead estinated at 12 bytes in release mode.
+    static const INT32 kMgHeapOverhead = 12;
+    static const INT32 kMgSizeOfCoordinateXY = sizeof (MgCoordinateXY) + kMgHeapOverhead;
+#else
+    // Include heap overhead estinated at 48 bytes in release mode.
+    static const INT32 kMgHeapOverhead = 36;
+    static const INT32 kMgSizeOfCoordinateXY = sizeof (MgCoordinateXY) + kMgHeapOverhead;
+#endif
+
 CCoordinateSystemMgrsZone::CCoordinateSystemMgrsZone (MgCoordinateSystemGridBoundary* frameBoundary,
                                                       INT32 utmZoneNbr,
                                                       bool useFrameDatum,
@@ -232,11 +242,27 @@ INT32 CCoordinateSystemMgrsZone::ApproxGridRegionMemoryUsage (MgCoordinateSystem
     INT32 regionCount;
     INT32 memoryGuess (0);
 
-    
-
     // Estimate the size of a major region object.  Eventually, should include
-    // MaxPoints and curve precision from the specification object.
-    regionSize = (GridFrameCrsAreTheSame ()) ? 512 : 50000;
+    // MaxPoints and CurvePrecision from the specification object.  For now, we
+    // make some guesses based on the coordinate systems involved.
+    if (GridFrameCrsAreTheSame ())
+    {
+        // Here, for now, we assume that there are 4 lines at two points a piece, plus
+        // a polygon with 5 points.  In this case, several of these points are the
+        // same actual object in memory; so we reduce the point count by (an arbirtrary
+        // value) 3.
+        regionSize = sizeof (CCoordinateSystemGridRegion) + sizeof (MgPolygon) +
+                                                            sizeof (MgLineString) * 4 +
+                                                            kMgSizeOfCoordinateXY * 10;
+    }
+    else
+    {
+        // Here, for now, we assume that there are 4 lines at 511 points a piece, plus
+        // a polygon with (4 * 511) points; 4088 points altogether.
+        regionSize = sizeof (CCoordinateSystemGridRegion) + sizeof (MgPolygon) +
+                                                            sizeof (MgLineString) * 4 +
+                                                            kMgSizeOfCoordinateXY * 4088;
+    }
 
     MG_TRY ()
         if (specification->GetUnitType () == MgCoordinateSystemUnitType::Angular)
