@@ -251,6 +251,7 @@ EGwsStatus CGwsPreparedFeatureQuery::Init (
 
     } catch (FdoException * fdoEx) {
         PushFdoException (eGwsFdoProviderError, fdoEx);
+        fdoEx->Release ();
         stat = eGwsFdoProviderError;
     }
 
