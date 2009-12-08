@@ -134,14 +134,14 @@ try
 }
 catch(MgException e)
 {
-    String details = e.GetDetails();
+    String details = EscapeForHtml(e.GetDetails());
     writer = response.getWriter();
     writer.write(details);
     response.setContentLength(details.length());
 }
 catch(Exception ne)
 {
-    String msg = ne.getLocalizedMessage();
+    String msg = EscapeForHtml(ne.getLocalizedMessage());
     writer = response.getWriter();
     writer.write(msg);
     response.setContentLength(msg.length());

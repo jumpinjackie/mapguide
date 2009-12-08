@@ -100,12 +100,12 @@ function BuildViewer($forDwf = true)
         catch(MgException $e)
         {
             $shortError = $e->GetMessage();
-            $longError = $e->GetDetails();
+            $longErrorMsg = EscapeForHtml($e->GetDetails());
             header("HTTP/1.1 559 ");
             header('Content-Type: text/html; charset=utf-8');
             header("Status: 559 {$shortError}");
             echo "<html>\n<body>\n";
-            echo "<h2>{$shortError}</h2>\n{$longError}";
+            echo $longErrorMsg;
             echo "</body>\n</html>\n";
             return;
         }
@@ -526,17 +526,18 @@ function BuildViewer($forDwf = true)
         // in order to give a nice custom error message, it looks as
         // if we shortcut things by using a 200 status.
         $shortError = $e->GetMessage();
-        $longError = $e->GetDetails();
+        $longErrorMsg = EscapeForHtml($e->GetDetails());
         header("HTTP/1.1 200 ");
         header('Content-Type: text/html; charset=utf-8');
         header("Status: 200 {$shortError}");
         echo "<html>\n<body>\n";
-        echo "<h2>{$shortError}</h2>\n{$longError}";
+        echo $longErrorMsg;
         echo "</body>\n</html>\n";
     }
     catch(Exception $ne)
     {
-        echo $ne->GetMessage();
+        $errorMsg = EscapeForHtml($ne->GetMessage());
+        echo $errorMsg;
     }
 }
 

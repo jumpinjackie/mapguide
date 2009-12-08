@@ -159,9 +159,9 @@ String EscapeForHtml(String str)
 {
     str = str.Replace("'", "&#39;");
     str = str.Replace("\"", "&quot;");
-    str = str.Replace("\n", " ");
     str = str.Replace("<", "&lt;");
     str = str.Replace(">", "&gt;");
+    str = str.Replace("\\n", "<br>");
     return str;
 }
 

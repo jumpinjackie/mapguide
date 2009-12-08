@@ -58,7 +58,7 @@ try
 }
 catch(Exception ne)
 {
-    String msg = ne.getLocalizedMessage();
+    String msg = EscapeForHtml(ne.getLocalizedMessage());
     writer = response.getWriter();
     writer.write(msg);
     response.setContentLength(msg.length());

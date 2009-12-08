@@ -79,6 +79,7 @@ try
 }
 catch (MgException $e)
 {
-    echo $e->GetMessage();
+    $errorMsg = EscapeForHtml($e->GetMessage());
+    echo $errorMsg;
 }
 ?>

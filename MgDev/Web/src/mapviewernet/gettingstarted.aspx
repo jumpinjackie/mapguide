@@ -80,7 +80,8 @@ bool dwf = false;
             Response.Write(fixedupHtml);
     }
     catch(MgException mge) {
-        Response.Write(mge.GetDetails());
+        String errorMsg = EscapeForHtml(mge.GetDetails());
+        Response.Write(errorMsg);
     }
     catch(Exception e) {
     }

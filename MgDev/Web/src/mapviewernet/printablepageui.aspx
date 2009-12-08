@@ -63,7 +63,8 @@ String locale = "";
     }
     catch(Exception ne)
     {
-        Response.Write(ne.Message);
+        String errorMsg = EscapeForHtml(ne.Message);
+        Response.Write(errorMsg);
     }
 %>
 

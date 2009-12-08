@@ -537,13 +537,13 @@ NameValueCollection cmds = null;
     }
     catch (MgException e)
     {
-        Response.Write(e.GetMessage());
-        Response.Write("<br>");
-        Response.Write(e.GetDetails());
+        String errorMsg = EscapeForHtml(e.GetDetails());
+        Response.Write(errorMsg);
     }
     catch (Exception ne)
     {
-        Response.Write(ne.Message);
+        String errorMsg = EscapeForHtml(ne.Message);
+        Response.Write(errorMsg);
     }
 %>
 
