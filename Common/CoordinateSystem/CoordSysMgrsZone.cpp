@@ -30,11 +30,11 @@
 using namespace CSLibrary;
 
 #if !defined (_DEBUG)
-    // Include heap overhead estinated at 12 bytes in release mode.
+    // Include heap overhead estimated at 12 bytes in release mode.
     static const INT32 kMgHeapOverhead = 12;
     static const INT32 kMgSizeOfCoordinateXY = sizeof (MgCoordinateXY) + kMgHeapOverhead;
 #else
-    // Include heap overhead estinated at 48 bytes in release mode.
+    // Include heap overhead estimated at 36 bytes in release mode.
     static const INT32 kMgHeapOverhead = 36;
     static const INT32 kMgSizeOfCoordinateXY = sizeof (MgCoordinateXY) + kMgHeapOverhead;
 #endif
@@ -240,6 +240,7 @@ INT32 CCoordinateSystemMgrsZone::ApproxGridRegionMemoryUsage (MgCoordinateSystem
 {
     INT32 regionSize;
     INT32 regionCount;
+    INT32 maxRegions;
     INT32 memoryGuess (0);
 
     // Estimate the size of a major region object.  Eventually, should include
@@ -263,6 +264,7 @@ INT32 CCoordinateSystemMgrsZone::ApproxGridRegionMemoryUsage (MgCoordinateSystem
                                                             sizeof (MgLineString) * 4 +
                                                             kMgSizeOfCoordinateXY * 4088;
     }
+    maxRegions = 0x7FFF000 / regionSize;
 
     MG_TRY ()
         if (specification->GetUnitType () == MgCoordinateSystemUnitType::Angular)
@@ -282,7 +284,16 @@ INT32 CCoordinateSystemMgrsZone::ApproxGridRegionMemoryUsage (MgCoordinateSystem
                 regionCount = mjrRegionCollection->GetCount ();
 
                 // Make a guess at the amount of memory required.
-                memoryGuess = regionSize * regionCount;
+                if (regionCount < maxRegions)
+                {
+                    memoryGuess = regionSize * regionCount;
+                }
+                else
+                {
+                    // Who knows what MAXINT will be in various environments.  We know
+                    // that memoryGuess is an INT32, so we use our own hard coded value.
+                    memoryGuess = 0x7FFFFFFF;
+                }
             }
         }
         else if (specification->GetUnitType () == MgCoordinateSystemUnitType::Linear)
@@ -318,7 +329,17 @@ INT32 CCoordinateSystemMgrsZone::ApproxGridRegionMemoryUsage (MgCoordinateSystem
                 INT32 horizontalCount = (endEast - beginEast) / 100000;
                 regionCount = horizontalCount * verticalCount;
 
-                memoryGuess = regionSize * regionCount;
+                // Make a guess at the amount of memory required.
+                if (regionCount < maxRegions)
+                {
+                    memoryGuess = regionSize * regionCount;
+                }
+                else
+                {
+                    // Who knows what MAXINT will be in various environments.  We know
+                    // that memoryGuess is an INT32, so we use our own hard coded value.
+                    memoryGuess = 0x7FFFFFFF;
+                }
             }
         }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemMgrsZone::ApproxGridRegionMemoryUsage")

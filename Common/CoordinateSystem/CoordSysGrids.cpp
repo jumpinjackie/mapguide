@@ -31,11 +31,11 @@
 using namespace CSLibrary;
 
 #if !defined (_DEBUG)
-    // Include heap overhead estinated at 12 bytes in release mode.
+    // Include heap overhead estimated at 12 bytes in release mode.
     static const INT32 kMgHeapOverhead = 12;
     static const INT32 kMgSizeOfCoordinateXY = sizeof (MgCoordinateXY) + kMgHeapOverhead;
 #else
-    // Include heap overhead estinated at 48 bytes in release mode.
+    // Include heap overhead estimated at 36 bytes in release mode.
     static const INT32 kMgHeapOverhead = 36;
     static const INT32 kMgSizeOfCoordinateXY = sizeof (MgCoordinateXY) + kMgHeapOverhead;
 #endif
@@ -1107,8 +1107,16 @@ void CCoordinateSystemGridLineCollection::AddCollection (MgCoordinateSystemGridL
 {
     INT32 index;
     INT32 toAddCount;
+    INT32 maxValue;
+    INT32 memoryUse;
     Ptr<MgCoordinateSystemGridLine> aGridLine;
-    
+
+    maxValue = m_GridLineExceptionLevel - m_MemoryUse;
+    memoryUse = aGridLineCollection->GetMemoryUsage ();
+    if (memoryUse > maxValue)
+    {
+        throw new MgGridDensityException(L"CCoordinateSystemGridLineCollection.AddCollection", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
     MG_TRY ()
         toAddCount = aGridLineCollection->GetCount ();
         for (index = 0;index < toAddCount;index += 1)
@@ -1116,7 +1124,7 @@ void CCoordinateSystemGridLineCollection::AddCollection (MgCoordinateSystemGridL
             aGridLine = aGridLineCollection->GetItem (index);
             this->Add (aGridLine);
         }
-    MG_CATCH_AND_THROW(L"CCoordinateSystemGridLineCollection::IndexOf")
+    MG_CATCH_AND_THROW(L"CCoordinateSystemGridLineCollection::AddCollection")
     return;
 }
 INT32 CCoordinateSystemGridLineCollection::SetGridLineExceptionLevel (INT32 memoryUseMax)
@@ -1234,9 +1242,18 @@ void CCoordinateSystemGridRegionCollection::AddCollection (MgCoordinateSystemGri
 {
     INT32 index;
     INT32 toAddCount;
+    INT32 memoryUse;
+    INT32 maxValue;
     Ptr<MgCoordinateSystemGridRegion> aGridRegion;
-    
+
+    maxValue = m_GridRegionExceptionLevel - m_MemoryUse;
+    memoryUse = aGridRegionCollection->GetMemoryUsage ();
+    if (memoryUse > maxValue)
+    {
+        throw new MgGridDensityException(L"CCoordinateSystemGridRegionCollection.AddCollection", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
     MG_TRY ()
+        
         toAddCount = aGridRegionCollection->GetCount ();
         for (index = 0;index < toAddCount;index += 1)
         {
@@ -1364,8 +1381,16 @@ void CCoordinateSystemGridTickCollection::AddCollection (MgCoordinateSystemGridT
 {
     INT32 index;
     INT32 toAddCount;
+    INT32 maxValue;
+    INT32 memoryUse;
     Ptr<MgCoordinateSystemGridTick> aGridTick;
-    
+
+    maxValue = m_GridTickExceptionLevel - m_MemoryUse;
+    memoryUse = aGridTickCollection->GetMemoryUsage ();
+    if (memoryUse > maxValue)
+    {
+        throw new MgGridDensityException(L"CCoordinateSystemGridTickCollection.AddCollection", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
     MG_TRY ()
         toAddCount = aGridTickCollection->GetCount ();
         for (index = 0;index < toAddCount;index += 1)
