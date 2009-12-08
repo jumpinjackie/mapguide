@@ -29,11 +29,13 @@
 using namespace CSLibrary;
 
 #if !defined (_DEBUG)
-    // Include heap overhead estinated at 12 bytes in release mode.
-    static const INT32 kMgSizeOfCoordinateXY = sizeof (MgCoordinateXY) + 12;
+    // Include heap overhead estimated at 12 bytes in release mode.
+    static const INT32 kMgHeapOverhead = 12;
+    static const INT32 kMgSizeOfCoordinateXY = sizeof (MgCoordinateXY) + kMgHeapOverhead;
 #else
-    // Include heap overhead estinated at 48 bytes in release mode.
-    static const INT32 kMgSizeOfCoordinateXY = sizeof (MgCoordinateXY) + 48;
+    // Include heap overhead estimated at 36 bytes in release mode.
+    static const INT32 kMgHeapOverhead = 36;
+    static const INT32 kMgSizeOfCoordinateXY = sizeof (MgCoordinateXY) + kMgHeapOverhead;
 #endif
 
 //=============================================================================

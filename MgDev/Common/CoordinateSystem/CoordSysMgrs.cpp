@@ -27,9 +27,9 @@
 
 using namespace CSLibrary;
 
-const INT32 CCoordinateSystemMgrs::m_GridLineExceptionLevelK   =  50000000L;    //  50MB
-const INT32 CCoordinateSystemMgrs::m_GridRegionExceptionLevelK = 100000000L;    // 100MB
-const INT32 CCoordinateSystemMgrs::m_GridTickExceptionLevelK   =  20000000L;    //  20MB
+const INT32 CCoordinateSystemMgrs::m_GridLineExceptionLevelK   = 40000000L;    // 40MB
+const INT32 CCoordinateSystemMgrs::m_GridRegionExceptionLevelK = 60000000L;    // 60MB
+const INT32 CCoordinateSystemMgrs::m_GridTickExceptionLevelK   = 20000000L;    // 20MB
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Static constants.
@@ -388,6 +388,7 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemMgrs::GetGridLines (MgCoo
     INT32 index;
     INT32 unitType;
     INT32 zoneCount;
+    INT32 zoneExceptionLevel;
     Ptr<CCoordinateSystemMgrsZone> mgrsZoneGrid;
     Ptr<MgCoordinateSystemGridLineCollection> aGridLineCollection;
     Ptr<CCoordinateSystemGridLineCollection> theGridLineCollection;
@@ -418,13 +419,14 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemMgrs::GetGridLines (MgCoo
         zoneCount = m_ZoneCollection->GetCount ();
         for (index = 0;index < zoneCount;index += 1)
         {
+            zoneExceptionLevel = m_GridLineExceptionLevel - theGridLineCollection->GetMemoryUsage ();
             mgrsZoneGrid = m_ZoneCollection->GetItem (index);
             if (specIsGrid)
             {
                 // The specification calls for a grid.  The following function
                 // is smart enough to deal with the special nature of zones
                 // 31 through 37 at the higher northern latitudes.
-                aGridLineCollection = mgrsZoneGrid->GetGridLines (m_GridBoundary,specification,m_GridLineExceptionLevel);
+                aGridLineCollection = mgrsZoneGrid->GetGridLines (m_GridBoundary,specification,zoneExceptionLevel);
             }
             else
             {
@@ -432,7 +434,7 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemMgrs::GetGridLines (MgCoo
                 // smart enough to deal with band X (which is 12 degrees high)
                 // and the special nature of zones 31 through 37 at the higher
                 // northern latitudes.
-                aGridLineCollection = mgrsZoneGrid->GetGraticuleLines (m_GridBoundary,specification,m_GridLineExceptionLevel);
+                aGridLineCollection = mgrsZoneGrid->GetGraticuleLines (m_GridBoundary,specification,zoneExceptionLevel);
             }
             if (aGridLineCollection != 0)
             {
@@ -449,6 +451,7 @@ MgCoordinateSystemGridRegionCollection* CCoordinateSystemMgrs::GetGridRegions (M
 {
     INT32 index;
     INT32 zoneCount;
+    INT32 zoneExceptionLevel;
     Ptr<CCoordinateSystemMgrsZone> mgrsZoneGrid;
     Ptr<CCoordinateSystemGridRegionCollection> theGridRegionCollection;
 
@@ -464,9 +467,10 @@ MgCoordinateSystemGridRegionCollection* CCoordinateSystemMgrs::GetGridRegions (M
         zoneCount = m_ZoneCollection->GetCount ();
         for (index = 0;index < zoneCount;index += 1)
         {
+            zoneExceptionLevel = m_GridRegionExceptionLevel - theGridRegionCollection->GetMemoryUsage ();
             mgrsZoneGrid = m_ZoneCollection->GetItem (index);
             Ptr<MgCoordinateSystemGridRegionCollection> aGridRegionCollection;
-            aGridRegionCollection = mgrsZoneGrid->GetGridRegions (m_GridBoundary,specification,m_GridRegionExceptionLevel);
+            aGridRegionCollection = mgrsZoneGrid->GetGridRegions (m_GridBoundary,specification,zoneExceptionLevel);
             theGridRegionCollection->AddCollection (aGridRegionCollection);
         }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemMgrs::GetGridRegions")
@@ -563,6 +567,8 @@ INT32 CCoordinateSystemMgrs::ApproxGridRegionMemoryUsage (MgCoordinateSystemGrid
 {
     INT32 index;
     INT32 zoneCount;
+    INT32 memoryUse;
+    INT32 maxValue;
     INT32 memoryGuess (-1);
 
     if (m_GridBoundary != 0)
@@ -572,7 +578,17 @@ INT32 CCoordinateSystemMgrs::ApproxGridRegionMemoryUsage (MgCoordinateSystemGrid
         for (index = 0;index < zoneCount;index += 1)
         {
             Ptr<CCoordinateSystemMgrsZone> mgrsZoneGrid = m_ZoneCollection->GetItem (index);
-            memoryGuess += mgrsZoneGrid->ApproxGridRegionMemoryUsage (specification);
+            memoryUse = mgrsZoneGrid->ApproxGridRegionMemoryUsage (specification);
+            maxValue = 0x7FFF000 - memoryGuess;
+            if (memoryUse < maxValue)
+            {
+                memoryGuess += memoryUse;
+            }
+            else
+            {
+                memoryGuess = 0x7FFFFFFF;
+                break;
+            }
         }
     }
     return memoryGuess;

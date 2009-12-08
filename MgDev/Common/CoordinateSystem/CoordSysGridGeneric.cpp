@@ -27,7 +27,7 @@
 using namespace CSLibrary;
 
 const INT32 CCoordinateSystemGridGeneric::m_GridLineExceptionLevelK   =  50000000L;     //   50MB
-const INT32 CCoordinateSystemGridGeneric::m_GridRegionExceptionLevelK =  50000000L;      //  50MB
+const INT32 CCoordinateSystemGridGeneric::m_GridRegionExceptionLevelK =  30000000L;      //  30MB
 const INT32 CCoordinateSystemGridGeneric::m_GridTickExceptionLevelK   =  20000000L;      //  20MB
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
