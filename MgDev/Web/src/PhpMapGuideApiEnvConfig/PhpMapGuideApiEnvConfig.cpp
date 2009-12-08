@@ -42,7 +42,6 @@ BOOL PrepareServerPath()
     // Get the location of PHP
     HMODULE hModule;
     GetModuleHandleEx(0, L"php5ts.dll", &hModule);
-    wchar_t g_phpPath[MAX_PATH];
     GetModuleFileName(hModule, g_phpPath, MAX_PATH);
     wcsrchr(g_phpPath, '\\')[0] = '\0';
     FreeLibrary(hModule);
