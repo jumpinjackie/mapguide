@@ -123,11 +123,11 @@ public:
 
     virtual RS_Bounds& GetBounds();
 
-    virtual bool SupportsZ();
-
     virtual bool RequiresClipping();
 
     virtual bool RequiresLabelClipping();
+
+    virtual bool SupportsZ();
 
     virtual bool RequiresCompositeLineStyleSeparation();
 
