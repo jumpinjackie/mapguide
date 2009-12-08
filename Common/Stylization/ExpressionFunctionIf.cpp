@@ -146,7 +146,11 @@ FdoLiteralValue* ExpressionFunctionIf::Evaluate(FdoLiteralValueCollection* liter
                     FdoPtr<FdoFilter> filter = FdoFilter::Parse(condString);
                     condition = m_engine->ProcessFilter(filter);
                 }
-                catch (FdoException*) { } // value remains false
+                catch (FdoException* e)
+                {
+                    e->Release();
+                    // value remains false
+                }
             }
         }
     }
