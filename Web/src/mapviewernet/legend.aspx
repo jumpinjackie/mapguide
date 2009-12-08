@@ -129,9 +129,8 @@ String output = "\nvar layerData = new Array();\n";
     }
     catch(MgException mge)
     {
-        Response.Write(mge.GetMessage());
-        Response.Write("<br>");
-        Response.Write(mge.GetDetails());
+        String errorMsg = EscapeForHtml(mge.GetDetails());
+        Response.Write(errorMsg);
     }
 
 %>

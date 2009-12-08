@@ -538,13 +538,13 @@ catch(MgAuthenticationFailedException e)
 }
 catch(MgException e)
 {
-    String msg = e.GetMessage();
+    String msg = EscapeForHtml(e.GetMessage());
     response.getWriter().write(msg);
     response.setContentLength(msg.length());
 }
 catch(Exception ne)
 {
-    String msg = ne.getLocalizedMessage();
+    String msg = EscapeForHtml(ne.getLocalizedMessage());
     response.getWriter().write(msg);
     response.setContentLength(msg.length());
 }

@@ -157,7 +157,8 @@ else
     }
     catch(MgException $e)
     {
-        echo $e->GetDetails();
+        $errorMsg = EscapeForHtml($e->GetDetails());
+        echo $errorMsg;
     }
 }
 

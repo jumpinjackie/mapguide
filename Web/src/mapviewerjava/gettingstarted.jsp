@@ -80,10 +80,12 @@ boolean dwf;
             outStream.write(fixedupHtml);
     }
     catch(MgException mge) {
-        outStream.write(mge.GetDetails());
+        String errorMsg = EscapeForHtml(mge.GetDetails());
+        outStream.write(errorMsg);
     }
     catch(Exception e) {
-        outStream.write(e.getMessage());
+        String errorMsg = EscapeForHtml(e.getMessage());
+        outStream.write(errorMsg);
     }
 
 %>

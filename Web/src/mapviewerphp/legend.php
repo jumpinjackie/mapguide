@@ -105,7 +105,9 @@
     }
     catch(MgException $e)
     {
-        echo $e->GetMessage() . "<p>" . $e->GetStackTrace();
+        $errorMsg = EscapeForHtml($e->GetMessage());
+        $traceMsg = EscapeForHtml($e->GetStackTrace());
+        echo $errorMsg . "<p>" . $traceMsg;
         return;
     }
     catch(Exception $ne)

@@ -107,8 +107,8 @@ function GetClientOS() {
 
 function EscapeForHtml($str)
 {
-    $org = array("'", "\"", "\n", "<", ">");
-    $repl = array("&#39;", "&quot;", " ", "&lt;", "&gt;" );
+    $org = array("'", "\"", "<", ">", '\n');
+    $repl = array("&#39;", "&quot;", "&lt;", "&gt;", "<br>");
     return str_replace($org, $repl, $str);
 }
 
