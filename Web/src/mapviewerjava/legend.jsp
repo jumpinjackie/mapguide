@@ -29,11 +29,12 @@
 
 class TreeItem
 {
-    public TreeItem(String name, boolean isGroup, Object rtObject)
+    public TreeItem(String name, boolean isGroup, Object rtObject, String layerData)
     {
         this.name = name;
         this.isGroup = isGroup;
         this.rtObject = rtObject;
+        this.layerData = layerData;
         if(isGroup)
             this.children = new ArrayList();
         else
@@ -55,6 +56,7 @@ class TreeItem
     public ArrayList children;
     public String parentName;
     public TreeItem parent;
+    public String layerData;
 }
 
 String mapName = "";
@@ -103,7 +105,7 @@ try
 
     int updateType = -1;
 
-    ArrayList tree = BuildLayerTree(map);
+    ArrayList tree = BuildLayerTree(map, resourceSrvc);
     if(summary)
     {
         updateType = 0;
@@ -182,7 +184,7 @@ void GetRequestParameters(HttpServletRequest request)
 %>
 
 <%!
-ArrayList BuildLayerTree(MgMap map) throws MgException
+ArrayList BuildLayerTree(MgMap map, MgResourceService resSrvc) throws MgException
 {
     ArrayList tree = new ArrayList();
     HashMap knownGroups = new HashMap();
@@ -192,7 +194,7 @@ ArrayList BuildLayerTree(MgMap map) throws MgException
     for(int i = 0; i < groups.GetCount(); i++)
     {
         MgLayerGroup rtGroup = (MgLayerGroup)groups.GetItem(i);
-        TreeItem node = new TreeItem(rtGroup.GetName(), true, rtGroup);
+        TreeItem node = new TreeItem(rtGroup.GetName(), true, rtGroup, "null");
         knownGroups.put(node.name, node);
         MgLayerGroup parentGroup = rtGroup.GetGroup();
         if(parentGroup == null)
@@ -224,11 +226,23 @@ ArrayList BuildLayerTree(MgMap map) throws MgException
                 tree.add(node); //should not happen. place group in the root if parent is not known
         }
     }
+    // Get the layers
     MgLayerCollection layers = map.GetLayers();
+
+    // Get the resource Ids of the layers
+    MgStringCollection resIds = new MgStringCollection();
     for(int i = 0; i < layers.GetCount(); i++)
     {
         MgLayer rtLayer = (MgLayer) layers.GetItem(i);
-        TreeItem node = new TreeItem(rtLayer.GetName(), false, rtLayer);
+        MgResourceIdentifier resId = rtLayer.GetLayerDefinition();
+        resIds.Add(resId.ToString());
+    }
+    MgStringCollection layersData = resSrvc.GetResourceContents(resIds, null);
+
+    for(int i = 0; i < layers.GetCount(); i++)
+    {
+        MgLayer rtLayer = (MgLayer) layers.GetItem(i);
+        TreeItem node = new TreeItem(rtLayer.GetName(), false, rtLayer, (String)layersData.GetItem(i));
         MgLayerGroup parentGroup = rtLayer.GetGroup();
         if(parentGroup == null)
             tree.add(node);
@@ -326,6 +340,7 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                     if(fulldata)
                     {
                         MgResourceIdentifier resId = rtLayer.GetLayerDefinition();
+                        String layerData = node.layerData;
                         String layerName = "lyr" + (intermediateVar++);
                         String objectId = rtLayer.GetObjectId();
                         output = output + String.format("var %s = new LayerItem(\"%s\", \"%s\", %s, %s, %s, %s, %s, \"%s\", \"%s\", %s);\n",
@@ -349,7 +364,7 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
 
                         if(layerMap == null || !layerMap.containsKey(objectId))
                         {
-                            BuildLayerDefinitionData(resSrvc, resId, layerName);
+                            BuildLayerDefinitionData(layerData, layerName);
                         }
                     }
                     else
@@ -369,15 +384,14 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
 %>
 
 <%!
-void BuildLayerDefinitionData(MgResourceService resSrvc, MgResourceIdentifier resId, String layerVarName)
+void BuildLayerDefinitionData(String layerData, String layerVarName)
 {
     try
     {
-        MgByteReader layerByteReader = resSrvc.GetResourceContent(resId);
-        InputStream layerStream = ByteReaderToStream(layerByteReader);
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        Document doc = builder.parse(layerStream);
+        InputStream is = new ByteArrayInputStream(layerData.getBytes("UTF-8")); 
+        Document doc = builder.parse(is);
         int type = 0;
         NodeList scaleRanges = doc.getElementsByTagName("VectorScaleRange");
         if(scaleRanges.getLength() == 0) {
@@ -465,11 +479,6 @@ void BuildLayerDefinitionData(MgResourceService resSrvc, MgResourceIdentifier re
             }
         }
         output = output + String.format("%s.lyrtype = %d;\n", new Object[]{layerVarName, new Integer(type) });
-    }
-    catch(MgException e)
-    {
-        //broken layer definition. just don't create any info for that layer
-        return;
     }
     catch(Exception e)
     {

@@ -29,11 +29,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <script runat="server">
 class TreeItem
 {
-    public TreeItem(String name, bool isGroup, Object rtObject)
+    public TreeItem(String name, bool isGroup, Object rtObject, String layerData)
     {
         this.name = name;
         this.isGroup = isGroup;
         this.rtObject = rtObject;
+        this.layerData = layerData;
         if(isGroup)
             this.children = new ArrayList();
         else
@@ -55,6 +56,7 @@ class TreeItem
     public ArrayList children;
     public String parentName;
     public TreeItem parent;
+    public String layerData;
 }
 
 String mapName = "";
@@ -96,7 +98,7 @@ String output = "\nvar layerData = new Array();\n";
 
         int updateType = -1;
 
-        ArrayList tree = BuildLayerTree(map);
+        ArrayList tree = BuildLayerTree(map, resourceSrvc);
         if(summary)
         {
             updateType = 0;
@@ -189,7 +191,7 @@ String DoubleToString(double number)
     return number.ToString(NumberFormatInfo.InvariantInfo);
 }
 
-ArrayList BuildLayerTree(MgMap map)
+ArrayList BuildLayerTree(MgMap map, MgResourceService resSrvc)
 {
     ArrayList tree = new ArrayList();
     Hashtable knownGroups = new Hashtable();
@@ -199,7 +201,7 @@ ArrayList BuildLayerTree(MgMap map)
     for(int i = 0; i < groups.GetCount(); i++)
     {
         MgLayerGroup rtGroup = (MgLayerGroup)groups.GetItem(i);
-        TreeItem node = new TreeItem(rtGroup.GetName(), true, rtGroup);
+        TreeItem node = new TreeItem(rtGroup.GetName(), true, rtGroup, null);
         knownGroups.Add(node.name, node);
         MgLayerGroup parentGroup = rtGroup.GetGroup();
         if(parentGroup == null)
@@ -231,11 +233,23 @@ ArrayList BuildLayerTree(MgMap map)
                 tree.Add(node); //should not happen. place group in the root if parent is not known
         }
     }
+    // Get the layers
     MgLayerCollection layers = map.GetLayers();
+
+    // Get the resource Ids of the layers
+    MgStringCollection resIds = new MgStringCollection();
     for(int i = 0; i < layers.GetCount(); i++)
     {
         MgLayer rtLayer = (MgLayer) layers.GetItem(i);
-        TreeItem node = new TreeItem(rtLayer.GetName(), false, rtLayer);
+        MgResourceIdentifier resId = rtLayer.GetLayerDefinition();
+        resIds.Add(resId.ToString());
+    }
+    MgStringCollection layersData = resSrvc.GetResourceContents(resIds, null);
+
+    for(int i = 0; i < layers.GetCount(); i++)
+    {
+        MgLayer rtLayer = (MgLayer) layers.GetItem(i);
+        TreeItem node = new TreeItem(rtLayer.GetName(), false, rtLayer, (String)layersData.GetItem(i));
         MgLayerGroup parentGroup = rtLayer.GetGroup();
         if(parentGroup == null)
             tree.Add(node);
@@ -333,6 +347,7 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                     if(fulldata)
                     {
                         MgResourceIdentifier resId = rtLayer.GetLayerDefinition();
+                        String layerData = node.layerData;
                         String layerName = "lyr" + (intermediateVar++);
                         String objectId = rtLayer.GetObjectId();
                         output = output + String.Format("var {0} = new LayerItem(\"{1}\", \"{2}\", {3}, {4}, {5}, {6}, {7}, \"{8}\", \"{9}\", {10});\n",
@@ -356,7 +371,7 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
 
                         if(layerMap == null || !layerMap.ContainsKey(objectId))
                         {
-                            BuildLayerDefinitionData(resSrvc, resId, layerName);
+                            BuildLayerDefinitionData(layerData, layerName);
                         }
                     }
                     else
@@ -375,14 +390,12 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
 }
 
 
-void BuildLayerDefinitionData(MgResourceService resSrvc, MgResourceIdentifier resId, String layerVarName)
+void BuildLayerDefinitionData(String layerData, String layerVarName)
 {
     try
     {
-        MgByteReader layerByteReader = resSrvc.GetResourceContent(resId);
-        String layerDefString = layerByteReader.ToString();
         XmlDocument doc = new XmlDocument();
-        doc.LoadXml(layerDefString);
+        doc.LoadXml(layerData);
         int type = 0;
         XmlNodeList scaleRanges = doc.GetElementsByTagName("VectorScaleRange");
         if(scaleRanges.Count == 0)
@@ -463,11 +476,6 @@ void BuildLayerDefinitionData(MgResourceService resSrvc, MgResourceIdentifier re
             }
         }
         output = output + String.Format("{0}.lyrtype = {1};\n", layerVarName, type.ToString(NumberFormatInfo.InvariantInfo) );
-    }
-    catch(MgException e)
-    {
-        //broken layer definition. just don't create any info for that layer
-        return;
     }
     catch(Exception e)
     {

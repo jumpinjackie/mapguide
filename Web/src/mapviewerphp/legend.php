@@ -22,11 +22,12 @@
 
     class TreeItem
     {
-        public function __construct($name, $isGroup, $rtObject)
+        public function __construct($name, $isGroup, $rtObject, $layerData)
         {
             $this->name = $name;
             $this->isGroup = $isGroup;
             $this->rtObject = $rtObject;
+            $this->layerData = $layerData;
             if($isGroup)
                 $this->children = array();
             else
@@ -47,6 +48,7 @@
         public $rtObject;
         public $children;
         public $parentName;
+        public $layerData;
     }
 
     $mapName = "";
@@ -82,7 +84,7 @@
         $map->Open($resourceSrvc, $mapName);
 
         $layerMap = null;
-        $tree = BuildLayerTree($map);
+        $tree = BuildLayerTree($map, $resourceSrvc);
 
         if($summary)
         {
@@ -119,7 +121,7 @@
     $templ = file_get_contents("../viewerfiles/legendupdate.templ");
     printf($templ, $updateType, $output, GetSurroundVirtualPath() . "legend.php");
 
-function BuildLayerTree($map)
+function BuildLayerTree($map, $resSrvc)
 {
     $tree = array();
     $knownGroups = array();
@@ -129,7 +131,7 @@ function BuildLayerTree($map)
     for($i = 0; $i < $groups->GetCount(); $i++)
     {
         $rtGroup = $groups->GetItem($i);
-        $node = new TreeItem($rtGroup->GetName(), true, $rtGroup);
+        $node = new TreeItem($rtGroup->GetName(), true, $rtGroup, null);
         $knownGroups[$node->name] = $node;
 
         $parentGroup = $rtGroup->GetGroup();
@@ -161,11 +163,23 @@ function BuildLayerTree($map)
                 array_push($tree, $node); //should not happen. place group in the root if parent is not known
         }
     }
+    // Get the layers
     $layers = $map->GetLayers();
+
+    // Get the resource Ids of the layers
+    $resIds = new MgStringCollection();
     for($i = 0; $i < $layers->GetCount(); $i++)
     {
         $rtLayer = $layers->GetItem($i);
-        $node = new TreeItem($rtLayer->GetName(), false, $rtLayer);
+        $resId = $rtLayer->GetLayerDefinition();
+        $resIds->Add($resId->ToString());
+    }
+    $layersData = $resSrvc->GetResourceContents($resIds, null);
+
+    for($i = 0; $i < $layers->GetCount(); $i++)
+    {
+        $rtLayer = $layers->GetItem($i);
+        $node = new TreeItem($rtLayer->GetName(), false, $rtLayer, $layersData->GetItem($i));
         $parentGroup = $rtLayer->GetGroup();
         if($parentGroup == null)
             array_push($tree, $node);
@@ -247,6 +261,7 @@ function BuildClientSideTree($tree, $parent, $parentName, $fulldata, $container,
                     if($fulldata)
                     {
                         $resId = $node->rtObject->GetLayerDefinition();
+                        $layerData = $node->layerData;
                         $layerName = "lyr" . ($intermediateVar ++);
                         $objectId = $node->rtObject->GetObjectId();
                         $output = $output . sprintf("var %s = new LayerItem(\"%s\", \"%s\", %s, %s, %s, %s, %s, \"%s\", \"%s\", %s);\n",
@@ -267,7 +282,7 @@ function BuildClientSideTree($tree, $parent, $parentName, $fulldata, $container,
                         ++ $treeIndex;
 
                         if($layerMap == null || !isset($layerMap[$objectId]))
-                            BuildLayerDefinitionData($resSrvc, $resId, $layerName, $output);
+                            BuildLayerDefinitionData($layerData, $layerName, $output);
                     }
                     else
                     {
@@ -283,21 +298,11 @@ function BuildClientSideTree($tree, $parent, $parentName, $fulldata, $container,
     }
 }
 
-function BuildLayerDefinitionData($resSrvc, $resId, $layerVarName, &$output)
+function BuildLayerDefinitionData($layerData, $layerVarName, &$output)
 {
     global $intermediateVar;
 
-    $xmldoc = null;
-    try
-    {
-        $layerDef = $resSrvc->GetResourceContent($resId);
-        $xmldoc = DOMDocument::loadXML(ByteReaderToString($layerDef));
-    }
-    catch(MgException $e)
-    {
-        //broken layer definition. just don't create any info for that layer
-        return;
-    }
+    $xmldoc = DOMDocument::loadXML($layerData);
 
     $type = 0;
     $scaleRanges = $xmldoc->getElementsByTagName('VectorScaleRange');
