@@ -389,7 +389,8 @@ noinst_HEADERS = $(include_SOURCES) \
   ../CoordinateSystem/CoordSysMgrsZone.h \
   ../CoordinateSystem/CoordSysMgrs.h \
   ../CoordinateSystem/CoordSysMgrsMajorRegion.h \
-  ../CoordinateSystem/CoordSysOneGrid.h
+  ../CoordinateSystem/CoordSysOneGrid.h\
+  ../CoordinateSystem/CoordSysEnvVariable.h
 
 INCLUDES = \
   -I../Security \
