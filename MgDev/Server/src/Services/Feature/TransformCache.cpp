@@ -95,7 +95,7 @@ TransformCache* TransformCache::GetLayerToMapTransform(TransformCacheMap& cache,
     Ptr<MgClassDefinition> classDef = svcFeature->GetClassDefinition(resId, schemaName, className, false);
     Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetProperties();
 
-    // Find the spatial context for the geometric property. Use the first one if there are many defined.
+    // Find the spatial context for the geometric or raster property. Use the first one if there are many defined.
     for(int index=0;index<propDefCol->GetCount();index++)
     {
         Ptr<MgPropertyDefinition> propDef = propDefCol->GetItem(index);
@@ -106,6 +106,14 @@ TransformCache* TransformCache::GetLayerToMapTransform(TransformCacheMap& cache,
             spatialContextAssociation = geomProp->GetSpatialContextAssociation();
             break;
         }
+        else if(propDef->GetPropertyType () == MgFeaturePropertyType::RasterProperty)
+        {
+            // We found the raster property
+            MgRasterPropertyDefinition* rasterProp = static_cast<MgRasterPropertyDefinition*>(propDef.p);
+            spatialContextAssociation = rasterProp->GetSpatialContextAssociation();
+            break;
+        }
+
     }
 
     // We want all of the spatial contexts

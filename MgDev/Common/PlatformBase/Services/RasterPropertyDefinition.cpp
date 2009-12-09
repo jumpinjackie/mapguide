@@ -154,6 +154,7 @@ void MgRasterPropertyDefinition::Serialize(MgStream* stream)
     stream->WriteInt32(m_sizeX);
     stream->WriteInt32(m_sizeY);
     stream->WriteString(m_serializedXml);
+    stream->WriteString(m_associatedSCName);
 }
 
 void MgRasterPropertyDefinition::Deserialize(MgStream* stream)
@@ -164,6 +165,7 @@ void MgRasterPropertyDefinition::Deserialize(MgStream* stream)
     stream->GetInt32(m_sizeX);
     stream->GetInt32(m_sizeY);
     stream->GetString(m_serializedXml);
+    stream->GetString(m_associatedSCName);
 }
 
 void MgRasterPropertyDefinition::Initialize()
@@ -172,6 +174,7 @@ void MgRasterPropertyDefinition::Initialize()
     m_nullable = false;
     m_sizeX = 0;
     m_sizeY = 0;
+    m_serializedXml = L"";
     m_associatedSCName = L"";
 }
 
