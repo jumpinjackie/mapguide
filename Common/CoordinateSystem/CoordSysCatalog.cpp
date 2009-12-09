@@ -54,6 +54,10 @@
 #undef GetMessage
 #endif
 
+#ifndef _WIN32
+#include "CoordSysEnvVariable.h"
+#endif
+
 //Global variables needed from Mentor
 extern "C"
 {
@@ -224,7 +228,7 @@ STRING CCoordinateSystemCatalog::GetDefaultDictionaryDir()
     if (sDir.empty())
     {
         bResult = true;
-        sDir = L"/opt/Autodesk/mapguideenterprise2010/share/gis/coordsys";  // NOXLATE
+        sDir = LINUX_COORD_PATH;
     }
 
 #endif
