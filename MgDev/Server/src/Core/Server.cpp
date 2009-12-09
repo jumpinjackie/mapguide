@@ -891,11 +891,13 @@ int MgServer::open(void *args)
             INT32 nDataConnectionPoolSize = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize;
             STRING dataConnectionPoolExcludedProviders = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolExcludedProviders;
             STRING dataConnectionPoolSizeCustom = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSizeCustom;
+            STRING dataConnectionUseLimit = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionUseLimit;
 
             pConfiguration->GetBoolValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionPoolEnabled, bDataConnectionPoolEnabled, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolEnabled);
             pConfiguration->GetIntValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize, nDataConnectionPoolSize, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize);
             pConfiguration->GetStringValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionPoolExcludedProviders, dataConnectionPoolExcludedProviders, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolExcludedProviders);
             pConfiguration->GetStringValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionPoolSizeCustom, dataConnectionPoolSizeCustom, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSizeCustom);
+            pConfiguration->GetStringValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionUseLimit, dataConnectionUseLimit, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionUseLimit);
 
             // Add additional font mappings to the FontManager
             ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Adding Font Manager Mappings.\n")));
@@ -984,7 +986,7 @@ int MgServer::open(void *args)
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Initializing FDO Connection Manager.\n")));
             MgEventTimer& dataConnectionTimer = m_eventTimerManager.GetEventTimer(MgEventTimer::DataConnectionTimeout);
             MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
-            pFdoConnectionManager->Initialize(bDataConnectionPoolEnabled, nDataConnectionPoolSize, dataConnectionTimer.GetEventTimeout(), dataConnectionPoolExcludedProviders, dataConnectionPoolSizeCustom);
+            pFdoConnectionManager->Initialize(bDataConnectionPoolEnabled, nDataConnectionPoolSize, dataConnectionTimer.GetEventTimeout(), dataConnectionPoolExcludedProviders, dataConnectionPoolSizeCustom, dataConnectionUseLimit);
 
             // Initialize the transaction pool
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Initializing transaction pool.\n")));
