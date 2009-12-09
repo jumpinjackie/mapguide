@@ -322,6 +322,7 @@ const STRING MgHttpResourceStrings::opEnumerateUsers = L"ENUMERATEUSERS";
 const STRING MgHttpResourceStrings::opEnumerateGroups = L"ENUMERATEGROUPS";
 const STRING MgHttpResourceStrings::opGetSiteVersion = L"GETSITEVERSION";
 const STRING MgHttpResourceStrings::opGetSiteInfo = L"GETSITEINFO";
+const STRING MgHttpResourceStrings::opGetSiteStatus = L"GETSITESTATUS";
 
 // Other requests
 const STRING MgHttpResourceStrings::opCreateSession = L"CREATESESSION";

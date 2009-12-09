@@ -622,6 +622,63 @@ MgPropertyCollection* MgServerAdmin::GetInformationProperties()
 
 ///////////////////////////////////////////////////////////////////////////////////
 /// <summary>
+/// Gets the site version.
+/// </summary>
+/// <returns>
+/// The site version.
+/// </returns>
+///
+/// EXCEPTIONS:
+/// MgConnectionNotOpenException
+STRING MgServerAdmin::GetSiteVersion()
+{
+    MgCommand cmd;
+
+    cmd.ExecuteCommand(m_connProp,                                // Connection
+                        MgCommand::knString,                      // Return type expected
+                        MgServerAdminServiceOpId::GetSiteVersion, // Command Code
+                        0,                                        // No of arguments
+                        ServerAdmin_Service,                      // Service Id
+                        BUILD_VERSION(1,0,0),                     // Operation version
+                        MgCommand::knNone);
+
+    SetWarning(cmd.GetWarningObject());
+
+    STRING retVal = *(cmd.GetReturnValue().val.m_str);
+    delete cmd.GetReturnValue().val.m_str;
+
+    return retVal;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// Gets the status properties for the server.
+/// </summary>
+/// <returns>
+/// The collection of status properties.
+/// </returns>
+///
+/// EXCEPTIONS:
+/// MgConnectionNotOpenException
+MgPropertyCollection* MgServerAdmin::GetSiteStatus()
+{
+    MgCommand cmd;
+
+    cmd.ExecuteCommand(m_connProp,                               // Connection
+                        MgCommand::knObject,                     // Return type expected
+                        MgServerAdminServiceOpId::GetSiteStatus, // Command Code
+                        0,                                       // No of arguments
+                        ServerAdmin_Service,                     // Service Id
+                        BUILD_VERSION(2,2,0),                    // Operation version
+                        MgCommand::knNone);
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgPropertyCollection*)cmd.GetReturnValue().val.m_obj;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+/// <summary>
 /// Delete the specified package, if able.
 /// </summary>
 ///

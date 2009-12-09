@@ -327,6 +327,7 @@ public:
     static const STRING opEnumerateGroups;
     static const STRING opGetSiteVersion;
     static const STRING opGetSiteInfo;
+    static const STRING opGetSiteStatus;
 
     // Other requests
     static const STRING opCreateSession;

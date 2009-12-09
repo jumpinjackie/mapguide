@@ -15,10 +15,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _S_GET_SITE_VERSION_H
-#define _S_GET_SITE_VERSION_H
+#ifndef _S_GET_SITE_STATUS_H
+#define _S_GET_SITE_STATUS_H
 
-class MgHttpGetSiteVersion : public MgHttpRequestResponseHandler
+class MgHttpGetSiteStatus : public MgHttpRequestResponseHandler
 {
 HTTP_DECLARE_CREATE_OBJECT()
 
@@ -33,7 +33,7 @@ public:
     /// <returns>
     /// nothing
     /// </returns>
-    MgHttpGetSiteVersion(MgHttpRequest *hRequest);
+    MgHttpGetSiteStatus(MgHttpRequest *hRequest);
 
     /// <summary>
     /// Executes the specific request.
@@ -44,10 +44,9 @@ public:
     void Execute(MgHttpResponse& hResponse);
 
 private:
-    STRING GetXml(CREFSTRING version);
+    STRING GetXml(MgPropertyCollection* properties);
     STRING BeginXml();
     STRING EndXml();
-
 };
 
 #endif

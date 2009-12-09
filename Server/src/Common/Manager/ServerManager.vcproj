@@ -65,7 +65,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib FDO.lib FDOCommon.lib pdh.lib"
+				AdditionalDependencies="ACEd.lib FDO.lib FDOCommon.lib pdh.lib  psapi.lib"
 				OutputFile="$(OutDir)\MgServerManagerd.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\FDO\lib"
@@ -147,7 +147,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib FDO.lib FDOCommon.lib pdh.lib"
+				AdditionalDependencies="ACEd.lib FDO.lib FDOCommon.lib pdh.lib  psapi.lib"
 				OutputFile="$(OutDir)\MgServerManagerd.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\..\Oem\FDO\lib64"
@@ -225,7 +225,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib FDO.lib FDOCommon.lib pdh.lib"
+				AdditionalDependencies="ACE.lib FDO.lib FDOCommon.lib pdh.lib  psapi.lib"
 				OutputFile="$(OutDir)\MgServerManager.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\FDO\lib"
@@ -306,7 +306,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib FDO.lib FDOCommon.lib pdh.lib"
+				AdditionalDependencies="ACE.lib FDO.lib FDOCommon.lib pdh.lib  psapi.lib"
 				OutputFile="$(OutDir)\MgServerManager.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\..\Oem\FDO\lib64"

@@ -114,6 +114,8 @@ EXTERNAL_API:
     /// The server's version
     static const STRING ServerVersion;              /// value("ServerVersion")
 
+    /// The API version
+    static const STRING ApiVersion;                 /// value("ApiVersion")
 
     /// STATISTIC PROPERTIES SECTION -----------------------------------------------------------------------------------
 
@@ -156,6 +158,9 @@ EXTERNAL_API:
     /// Gets the server display name
     static const STRING DisplayName;                /// value("DisplayName")
 
+    /// Gets the server machine Ip
+    static const STRING MachineIp;                  /// value("MachineIp")
+
     /// Gets the total operations received
     static const STRING TotalReceivedOperations;    /// value("TotalReceivedOperations")
 
@@ -170,6 +175,18 @@ EXTERNAL_API:
 
     /// Gets the operating system version
     static const STRING OperatingSystemVersion;     /// value("OperatingSystemVersion")
+
+    /// Gets the process working set memory
+    static const STRING WorkingSet;                 /// value("WorkingSet")
+
+    /// Gets the process virtual memory
+    static const STRING VirtualMemory;              /// value("VirtualMemory")
+
+    /// Gets the current size of the server cache
+    static const STRING CacheSize;                  /// value("CacheSize")
+
+    /// Gets the number of dropped cache entries
+    static const STRING CacheDroppedEntries;        /// value("CacheDroppedEntries")
 };
 
 
@@ -209,6 +226,8 @@ INTERNAL_API:
     static const int NotifyResourcesChanged         = 0x1111EA1A;
     static const int MakePackage                    = 0x1111EA1B;
     static const int RemoveConfigurationProperties  = 0x1111EA1C;
+    static const int GetSiteVersion                 = 0x1111EA1D;
+    static const int GetSiteStatus                  = 0x1111EA1E;
 };
 
 /// \endcond

@@ -62,6 +62,8 @@ public:
     void SetDocument(CREFSTRING identifier, MgByteReader* data);
 
     MgPropertyCollection* GetInformationProperties();
+    MgPropertyCollection* GetSiteStatus();
+    STRING GetSiteVersion();
 
     // Service Management Methods
 

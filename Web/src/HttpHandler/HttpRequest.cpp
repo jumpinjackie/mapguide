@@ -353,6 +353,7 @@ bool InitializeStaticData()
     httpClassCreators[MgHttpResourceStrings::opEnumerateGroups] = MgHttpEnumerateGroups::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetSiteVersion] = MgHttpGetSiteVersion::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetSiteInfo] = MgHttpGetSiteInfo::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGetSiteStatus] = MgHttpGetSiteStatus::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetDrawingCoordinateSpace] = MgHttpGetDrawingCoordinateSpace::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opCreateSession] = MgHttpCreateSession::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetSessionTimeout] = MgHttpGetSessionTimeout::CreateObject;

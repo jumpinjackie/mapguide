@@ -85,6 +85,7 @@
 #include "HttpGetIdentityProperties.cpp"
 #include "HttpGetSchemaMapping.cpp"
 #include "HttpGetSiteInfo.cpp"
+#include "HttpGetSiteStatus.cpp"
 #include "HttpGetSiteVersion.cpp"
 #include "HttpGetSpatialContexts.cpp"
 #include "HttpGetTileImage.cpp"

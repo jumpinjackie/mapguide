@@ -23,6 +23,14 @@
 #include "WorkerThread.h"
 #include "WorkerThreadData.h"
 
+#ifdef _WIN32
+#include <Psapi.h>
+#else
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <unistd.h>
+#endif
+
 const STRING MgServerManager::DocumentExtension = L".awd";
 const STRING MgServerManager::DocumentPath      = L"DocumentPath";
 
@@ -444,8 +452,8 @@ MgPropertyCollection* MgServerManager::GetInformationProperties()
     pProperties->Add(pProperty);
 
     // Add the Uptime
-    INT32 nUptime = GetUptime();
-    pProperty = new MgInt32Property(MgServerInformationProperties::Uptime, nUptime);
+    time_t nUptime = GetUptime();
+    pProperty = new MgInt64Property(MgServerInformationProperties::Uptime, nUptime);
     pProperties->Add(pProperty);
 
     // Add the TotalPhysicalMemory
@@ -469,13 +477,13 @@ MgPropertyCollection* MgServerManager::GetInformationProperties()
     pProperties->Add(pProperty);
 
     // Add the TotalOperationTime
-    INT32 nTotalOperationTime = GetTotalOperationTime();
-    pProperty = new MgInt32Property(MgServerInformationProperties::TotalOperationTime, nTotalOperationTime);
+    time_t nTotalOperationTime = GetTotalOperationTime();
+    pProperty = new MgInt64Property(MgServerInformationProperties::TotalOperationTime, nTotalOperationTime);
     pProperties->Add(pProperty);
 
     // Add the AverageOperationTime
-    INT32 nAverageOperationTime = GetAverageOperationTime();
-    pProperty = new MgInt32Property(MgServerInformationProperties::AverageOperationTime, nAverageOperationTime);
+    time_t nAverageOperationTime = GetAverageOperationTime();
+    pProperty = new MgInt64Property(MgServerInformationProperties::AverageOperationTime, nAverageOperationTime);
     pProperties->Add(pProperty);
 
     // Add the server Version
@@ -484,6 +492,10 @@ MgPropertyCollection* MgServerManager::GetInformationProperties()
 
     // Add the DisplayName
     pProperty = new MgStringProperty(MgServerInformationProperties::DisplayName, m_displayName);
+    pProperties->Add(pProperty);
+
+    // Add the MachineIp
+    pProperty = new MgStringProperty(MgServerInformationProperties::MachineIp, m_localServerAddress);
     pProperties->Add(pProperty);
 
      // Add the Operations info
@@ -509,7 +521,101 @@ MgPropertyCollection* MgServerManager::GetInformationProperties()
     pProperty = new MgStringProperty(MgServerInformationProperties::OperatingSystemVersion, osVersion);
     pProperties->Add(pProperty);
 
+#ifdef _WIN32
+    HANDLE procHandle = GetCurrentProcess();
+    PROCESS_MEMORY_COUNTERS counters;
+    counters.cb = sizeof(counters);
+    BOOL ok = GetProcessMemoryInfo(procHandle, &counters, sizeof(counters));
+    if (ok)
+    {
+        pProperty = new MgInt64Property(MgServerInformationProperties::WorkingSet, counters.WorkingSetSize);
+        pProperties->Add(pProperty);
+        pProperty = new MgInt64Property(MgServerInformationProperties::VirtualMemory, counters.PagefileUsage);
+        pProperties->Add(pProperty);
+    }
+#else
+    // getrusage does not work on Linux so pull information directly
+    // from proc filesystem.
+    int pageSize = getpagesize();
+    char procName[256];
+    sprintf(procName,"/proc/%d/status",getpid());
+    FILE* fp = fopen(procName,"rb");
+    if (NULL != fp)
+    {
+        char buf[1024];
+        memset(buf,0,1024);
+        fread(buf, 1024, 1, fp);
+        fclose(fp);
+
+        char* strRss = "VmRSS:";
+        char* end = NULL;
+        char* loc = strstr(buf, strRss);
+        if (NULL != loc)
+        {
+            long kbytes = strtol(loc + strlen(strRss) + 1, &end, 10);
+            INT64 workingSet = kbytes * 1000;
+            pProperty = new MgInt64Property(MgServerInformationProperties::WorkingSet, workingSet);
+            pProperties->Add(pProperty);
+        }
+
+        char* strSize = "VmSize:";
+        loc = strstr(buf, strSize);
+        if (NULL != loc)
+        {
+            long kbytes = strtol(loc + strlen(strSize) + 1, &end, 10);
+            INT64 workingSet = kbytes * 1000;
+            pProperty = new MgInt64Property(MgServerInformationProperties::VirtualMemory, workingSet);
+            pProperties->Add(pProperty);
+        }
+    }
+#endif
+
     MG_CATCH_AND_THROW(L"MgServerManager.GetInformationProperties")
+
+    return pProperties.Detach();
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// Gets the site version.
+/// </summary>
+STRING MgServerManager::GetSiteVersion()
+{
+    return ProductVersion;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// Gets the status properties for the server.
+/// </summary>
+MgPropertyCollection* MgServerManager::GetSiteStatus()
+{
+    Ptr<MgPropertyCollection> pProperties;
+    pProperties = NULL;
+
+    MG_TRY()
+
+    MG_LOG_TRACE_ENTRY(L"MgServerManager::GetSiteStatus()");
+
+    pProperties = new MgPropertyCollection();
+
+    // Add the information properties
+    Ptr<MgProperty> pProperty;
+
+    // Add the DisplayName
+    pProperty = new MgStringProperty(MgServerInformationProperties::DisplayName, m_displayName);
+    pProperties->Add(pProperty);
+
+    // Add the Status
+    bool bOnline = IsOnline();
+    pProperty = new MgBooleanProperty(MgServerInformationProperties::Status, bOnline);
+    pProperties->Add(pProperty);
+
+    // Add the API Version
+    pProperty = new MgStringProperty(MgServerInformationProperties::ApiVersion, ApiVersion);
+    pProperties->Add(pProperty);
+
+    MG_CATCH_AND_THROW(L"MgServerManager.GetSiteStatus")
 
     return pProperties.Detach();
 }
@@ -711,12 +817,12 @@ INT32 MgServerManager::GetTotalProcessedOperations()
     return m_totalProcessedOperations.value();
 }
 
-INT32 MgServerManager::GetTotalOperationTime()
+time_t MgServerManager::GetTotalOperationTime()
 {
     return m_totalOperationTime.value();
 }
 
-void MgServerManager::IncrementOperationTime(INT32 operationTime)
+void MgServerManager::IncrementOperationTime(time_t operationTime)
 {
     m_totalOperationTime += operationTime;
 }
@@ -1022,7 +1128,7 @@ INT64 MgServerManager::GetAvailableVirtualMemory()
 ///
 /// EXCEPTIONS:
 /// MgConnectionNotOpenException
-INT32 MgServerManager::GetUptime()
+time_t MgServerManager::GetUptime()
 {
     ACE_Time_Value upTime(0);
 
@@ -1032,7 +1138,7 @@ INT32 MgServerManager::GetUptime()
 
     MG_CATCH_AND_THROW(L"MgServerManager.GetUptime");
 
-    return (INT32)upTime.sec();
+    return upTime.sec();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1045,7 +1151,7 @@ INT32 MgServerManager::GetUptime()
 ///
 /// EXCEPTIONS:
 /// MgConnectionNotOpenException
-INT32 MgServerManager::GetAverageOperationTime()
+time_t MgServerManager::GetAverageOperationTime()
 {
     double avgTime = 0.0;
 
@@ -1059,7 +1165,7 @@ INT32 MgServerManager::GetAverageOperationTime()
 
     MG_CATCH_AND_THROW(L"MgServerManager.GetAverageOperationTime")
 
-    return (INT32)avgTime;
+    return time_t(avgTime);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

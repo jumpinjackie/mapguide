@@ -35,6 +35,8 @@
 #include "OpGetLogFile.h"
 #include "OpGetPackageLog.h"
 #include "OpGetPackageStatus.h"
+#include "OpGetSiteStatus.h"
+#include "OpGetSiteVersion.h"
 #include "OpIsMaximumLogSizeEnabled.h"
 #include "OpIsOnline.h"
 #include "OpLoadPackage.h"
@@ -295,6 +297,28 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         {
         case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetInformationProperties());
+            break;
+        default:
+            break;
+        }
+        break;
+
+    case MgServerAdminServiceOpId::GetSiteVersion:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(1,0):    // Original 1.0 operation actually called GetInformationProperties
+            handler.reset(new MgOpGetSiteVersion());
+            break;
+        default:
+            break;
+        }
+        break;
+
+    case MgServerAdminServiceOpId::GetSiteStatus:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(2,2):
+            handler.reset(new MgOpGetSiteStatus());
             break;
         default:
             break;

@@ -52,13 +52,78 @@ void MgHttpGetSiteInfo::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
-    // Create ServerAdmin object
-    Ptr<MgServerAdmin> serverAdmin = new MgServerAdmin();
-    serverAdmin->Open(m_userInfo);
+    STRING xml;
+    xml += BeginXml();
 
-    // call the C++ APIs
-    Ptr<MgPropertyCollection> properties = serverAdmin->GetInformationProperties();
-    STRING xml = GetXml(properties);
+    if (m_userInfo->GetApiVersion() >= MG_API_VERSION(2,2,0))
+    {
+        MgSiteManager* siteManager = MgSiteManager::GetInstance();
+        if(siteManager)
+        {
+            MgSiteVector* sites = siteManager->GetSites();
+            if(sites)
+            {
+                for(size_t i=0;i<sites->size();i++)
+                {
+                    MgSiteInfo* siteInfo = sites->at(i);
+
+                    // Check the server status - though this status could be out of date and an exception might be thrown
+                    bool bHaveSiteInfo = false;
+                    STRING message = MgResources::Unknown;
+
+                    if (MgSiteInfo::Ok == siteInfo->GetStatus())
+                    {
+                        MG_HTTP_HANDLER_TRY()
+
+                        // Create ServerAdmin object
+                        Ptr<MgServerAdmin> serverAdmin = new MgServerAdmin();
+                        serverAdmin->Open(siteInfo->GetTarget(), m_userInfo);
+
+                        // call the C++ APIs
+                        Ptr<MgPropertyCollection> properties = serverAdmin->GetInformationProperties();
+                        xml += GetXml(properties);
+                        bHaveSiteInfo = true;
+
+                        MG_HTTP_HANDLER_CATCH(L"MgHttpGetSiteInfo.Execute")
+                        if (mgException != NULL)
+                        {
+                            message = mgException->GetMessage();
+                        }
+                    }
+
+                    if(!bHaveSiteInfo)
+                    {
+                        // This server is not available
+                        xml += L"\t<Server>\n";
+
+                        xml += L"\t\t<IpAddress>";
+                        xml += siteInfo->GetTarget();
+                        xml += L"</IpAddress>\n";
+                        xml += L"\t\t<DisplayName></DisplayName>\n";
+                        xml += L"\t\t<Status>";
+                        xml += message;
+                        xml += L"</Status>\n";
+                        xml += L"\t\t<Version></Version>\n";
+                        xml += L"\t\t<OperatingSystem></OperatingSystem>\n";
+                        xml += L"\t\t<Statistics></Statistics>\n";
+
+                        xml += L"\t</Server>\n";
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        // Create ServerAdmin object
+        Ptr<MgServerAdmin> serverAdmin = new MgServerAdmin();
+        serverAdmin->Open(m_userInfo);
+
+        // call the C++ APIs
+        Ptr<MgPropertyCollection> properties = serverAdmin->GetInformationProperties();
+        xml += GetXml(properties);
+    }
+    xml += EndXml();
 
     Ptr<MgHttpPrimitiveValue> value = new MgHttpPrimitiveValue(xml);
     if(!value)
@@ -67,6 +132,32 @@ void MgHttpGetSiteInfo::Execute(MgHttpResponse& hResponse)
     hResult->SetResultObject(value, MgMimeType::Xml);
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetSiteInfo.Execute")
+}
+
+STRING MgHttpGetSiteInfo::BeginXml()
+{
+    STRING xml = L"";
+
+    xml += L"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    if (m_userInfo->GetApiVersion() >= MG_API_VERSION(2,2,0))
+    {
+        xml += L"<SiteInformation xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"SiteInformation-2.2.0.xsd\">\n";
+    }
+    else
+    {
+        xml += L"<SiteInformation xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"SiteInformation-1.0.0.xsd\">\n";
+    }
+
+    return xml;
+}
+
+STRING MgHttpGetSiteInfo::EndXml()
+{
+    STRING xml = L"";
+
+    xml = L"</SiteInformation>\n";
+
+    return xml;
 }
 
 STRING MgHttpGetSiteInfo::GetXml(MgPropertyCollection* properties)
@@ -78,10 +169,22 @@ STRING MgHttpGetSiteInfo::GetXml(MgPropertyCollection* properties)
     Ptr<MgInt32Property> int32Prop;
     Ptr<MgBooleanProperty> boolProp;
 
-    // this XML follows the SiteInformation-1.0.0.xsd schema
-    xml += L"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-    xml += L"<SiteInformation xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"SiteInformation-1.0.0.xsd\">\n";
-    xml += L"\t<SiteServer>\n";
+    if (m_userInfo->GetApiVersion() >= MG_API_VERSION(2,2,0))
+    {
+        xml += L"\t<Server>\n";
+    }
+    else
+    {
+        xml += L"\t<SiteServer>\n";
+    }
+
+    if (m_userInfo->GetApiVersion() >= MG_API_VERSION(2,2,0))
+    {
+        xml += L"\t\t<IpAddress>";
+        strProp = (MgStringProperty*)properties->GetItem(MgServerInformationProperties::MachineIp);
+        xml += strProp->GetValue();
+        xml += L"</IpAddress>\n";
+    }
 
     xml += L"\t\t<DisplayName>";
     strProp = (MgStringProperty*)properties->GetItem(MgServerInformationProperties::DisplayName);
@@ -131,7 +234,10 @@ STRING MgHttpGetSiteInfo::GetXml(MgPropertyCollection* properties)
 
     xml += L"\t\t</OperatingSystem>\n";
 
-    xml += L"\t</SiteServer>\n";
+    if (m_userInfo->GetApiVersion() == MG_API_VERSION(1,0,0))
+    {
+        xml += L"\t</SiteServer>\n";
+    }
 
     xml += L"\t<Statistics>\n";
 
@@ -164,6 +270,21 @@ STRING MgHttpGetSiteInfo::GetXml(MgPropertyCollection* properties)
     MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
     xml += MgUtil::MultiByteToWideChar(tmpStr);
     xml += L"</CpuUtilization>\n";
+
+    if (m_userInfo->GetApiVersion() >= MG_API_VERSION(2,2,0))
+    {
+        xml += L"\t\t<WorkingSet>";
+        int64Prop = (MgInt64Property*)properties->GetItem(MgServerInformationProperties::WorkingSet);
+        MgUtil::Int64ToString(int64Prop->GetValue(), tmpStr);
+        xml += MgUtil::MultiByteToWideChar(tmpStr);
+        xml += L"</WorkingSet>\n";
+
+        xml += L"\t\t<VirtualMemory>";
+        int64Prop = (MgInt64Property*)properties->GetItem(MgServerInformationProperties::VirtualMemory);
+        MgUtil::Int64ToString(int64Prop->GetValue(), tmpStr);
+        xml += MgUtil::MultiByteToWideChar(tmpStr);
+        xml += L"</VirtualMemory>\n";
+    }
 
     xml += L"\t\t<TotalOperationTime>";
     int32Prop = (MgInt32Property*)properties->GetItem(MgServerInformationProperties::TotalOperationTime);
@@ -201,9 +322,27 @@ STRING MgHttpGetSiteInfo::GetXml(MgPropertyCollection* properties)
     xml += MgUtil::MultiByteToWideChar(tmpStr);
     xml += L"</Uptime>\n";
 
+    if (m_userInfo->GetApiVersion() >= MG_API_VERSION(2,2,0))
+    {
+        xml += L"\t\t<CacheSize>";
+        int32Prop = (MgInt32Property*)properties->GetItem(MgServerInformationProperties::CacheSize);
+        MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
+        xml += MgUtil::MultiByteToWideChar(tmpStr);
+        xml += L"</CacheSize>\n";
+
+        xml += L"\t\t<CacheDroppedEntries>";
+        int32Prop = (MgInt32Property*)properties->GetItem(MgServerInformationProperties::CacheDroppedEntries);
+        MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
+        xml += MgUtil::MultiByteToWideChar(tmpStr);
+        xml += L"</CacheDroppedEntries>\n";
+    }
+
     xml += L"\t</Statistics>\n";
 
-    xml += L"</SiteInformation>\n";
+    if (m_userInfo->GetApiVersion() >= MG_API_VERSION(2,2,0))
+    {
+        xml += L"\t</Server>\n";
+    }
 
     return xml;
 }
