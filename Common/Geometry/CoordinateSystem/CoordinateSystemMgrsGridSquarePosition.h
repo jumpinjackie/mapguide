@@ -31,7 +31,7 @@ class MG_GEOMETRY_API MgCoordinateSystemMgrsGridSquarePosition
 {
     // MENTOR_MAINTENANCE --> These enumeration values are assumed to be the
     // same as those used by CS-MAP.
-public:
+PUBLISHED_API:
     ///////////////////////////////////////////////////////////////////////////
     ///<summary>
     /// Specifies the grid square position is not set as yet.
