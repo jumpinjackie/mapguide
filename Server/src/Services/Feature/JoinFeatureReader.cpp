@@ -959,7 +959,7 @@ FdoGeometricPropertyDefinition* MgJoinFeatureReader::GetGeometricPropertyDefinit
     fdoPropDef->SetHasMeasure(hasMeasure);
 
     fdoPropDef->SetReadOnly(isReadOnly);
-    if(spatialContextName.empty())
+    if(!spatialContextName.empty())
     {
         fdoPropDef->SetSpatialContextAssociation((FdoString*)spatialContextName.c_str());
     }
@@ -989,6 +989,7 @@ FdoRasterPropertyDefinition* MgJoinFeatureReader::GetRasterPropertyDefinition(Mg
     bool isNullable = mgPropDef->GetNullable();
     STRING qname = mgPropDef->GetQualifiedName();
     bool isReadOnly = mgPropDef->GetReadOnly();
+    STRING spatialContextName = mgPropDef->GetSpatialContextAssociation();
 
     //Set it for Fdo
     if (!desc.empty())
@@ -1002,6 +1003,11 @@ FdoRasterPropertyDefinition* MgJoinFeatureReader::GetRasterPropertyDefinition(Mg
 
     //Cannot set qualified name in fdo
     fdoPropDef->SetReadOnly(isReadOnly);
+    if(!spatialContextName.empty())
+    {
+        fdoPropDef->SetSpatialContextAssociation((FdoString*)spatialContextName.c_str());
+    }
+
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgJoinFeatureReader.GetRasterPropertyDefinition")
 
     return fdoPropDef.Detach();
