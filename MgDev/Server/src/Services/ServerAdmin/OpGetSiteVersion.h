@@ -15,10 +15,22 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef PRODUCTVERSION_H_
-#define PRODUCTVERSION_H_
+#ifndef MGOPGETSITEVERSION_H_
+#define MGOPGETSITEVERSION_H_
 
-const STRING ProductVersion = L"2.2.0.0";
-const STRING ApiVersion     = L"2.2";  // Major.Minor only
+#include "ServerAdminOperation.h"
 
-#endif // PRODUCTVERSION_H_
+class MgOpGetSiteVersion : public MgServerAdminOperation
+{
+    public:
+        MgOpGetSiteVersion();
+        virtual ~MgOpGetSiteVersion();
+
+    public:
+        virtual void Execute();
+
+    protected:
+        virtual MgStringCollection* GetRoles() const;
+};
+
+#endif

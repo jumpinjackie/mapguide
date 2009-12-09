@@ -32,6 +32,8 @@
 #include "OpGetLogFile.cpp"
 #include "OpGetPackageLog.cpp"
 #include "OpGetPackageStatus.cpp"
+#include "OpGetSiteStatus.cpp"
+#include "OpGetSiteVersion.cpp"
 #include "OpIsOnline.cpp"
 #include "OpIsMaximumLogSizeEnabled.cpp"
 #include "OpLoadPackage.cpp"

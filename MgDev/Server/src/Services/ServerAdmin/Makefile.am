@@ -35,6 +35,8 @@ include_SOURCES = \
   OpGetLogFile.cpp \
   OpGetPackageLog.cpp \
   OpGetPackageStatus.cpp \
+  OpGetSiteStatus.cpp \
+  OpGetSiteVersion.cpp \
   OpIsMaximumLogSizeEnabled.cpp \
   OpIsOnline.cpp \
   OpLoadPackage.cpp \
@@ -69,6 +71,8 @@ noinst_HEADERS = $(include_SOURCES) \
   OpGetLogFile.h \
   OpGetPackageLog.h \
   OpGetPackageStatus.h \
+  OpGetSiteStatus.h \
+  OpGetSiteVersion.h \
   OpIsMaximumLogSizeEnabled.h \
   OpIsOnline.h \
   OpLoadPackage.h \

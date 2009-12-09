@@ -51,13 +51,71 @@ void MgHttpGetSiteVersion::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
-    // Create ServerAdmin object
-    Ptr<MgServerAdmin> serverAdmin = new MgServerAdmin();
-    serverAdmin->Open(m_userInfo);
+    STRING xml;
+    xml += BeginXml();
 
-    // call the C++ APIs
-    Ptr<MgPropertyCollection> properties = serverAdmin->GetInformationProperties();
-    STRING xml = GetXml(properties);
+    if (m_userInfo->GetApiVersion() >= MG_API_VERSION(2,2,0))
+    {
+        MgSiteManager* siteManager = MgSiteManager::GetInstance();
+        if(siteManager)
+        {
+            MgSiteVector* sites = siteManager->GetSites();
+            if(sites)
+            {
+                for(size_t i=0;i<sites->size();i++)
+                {
+                    MgSiteInfo* siteInfo = sites->at(i);
+
+                    // Check the server status - though this status could be out of date and an exception might be thrown
+                    bool bHaveSiteVersion = false;
+                    STRING message = MgResources::Unknown;
+
+                    if (MgSiteInfo::Ok == siteInfo->GetStatus())
+                    {
+                        MG_HTTP_HANDLER_TRY()
+
+                        // Create ServerAdmin object
+                        Ptr<MgServerAdmin> serverAdmin = new MgServerAdmin();
+                        serverAdmin->Open(siteInfo->GetTarget(), m_userInfo);
+
+                        // call the C++ APIs
+                        STRING version = serverAdmin->GetSiteVersion();
+                        xml += GetXml(version);
+                        bHaveSiteVersion = true;
+
+                        MG_HTTP_HANDLER_CATCH(L"MgHttpGetSiteInfo.Execute")
+                        if (mgException != NULL)
+                        {
+                            message = mgException->GetMessage();
+                        }
+                    }
+
+                    if(!bHaveSiteVersion)
+                    {
+                        // This server is not available
+                        xml += L"\t<Server>\n";
+
+                        xml += L"\t\t<Version>";
+                        xml += message;
+                        xml += L"</Version>\n";
+
+                        xml += L"\t</Server>\n";
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        // Create ServerAdmin object
+        Ptr<MgServerAdmin> serverAdmin = new MgServerAdmin();
+        serverAdmin->Open(m_userInfo);
+
+        // call the C++ APIs
+        STRING version = serverAdmin->GetSiteVersion();
+        xml += GetXml(version);
+    }
+    xml += EndXml();
 
     Ptr<MgHttpPrimitiveValue> value = new MgHttpPrimitiveValue(xml);
     if(!value)
@@ -68,18 +126,49 @@ void MgHttpGetSiteVersion::Execute(MgHttpResponse& hResponse)
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetSiteVersion.Execute")
 }
 
-STRING MgHttpGetSiteVersion::GetXml(MgPropertyCollection* properties)
+STRING MgHttpGetSiteVersion::BeginXml()
 {
-    Ptr<MgStringProperty> property = (MgStringProperty*)properties->GetItem(L"ServerVersion");
     STRING xml = L"";
 
-    // this XML follows the SiteVersion-1.0.0.xsd schema
-    xml += L"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-    xml += L"<SiteVersion xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"SiteVersion-1.0.0.xsd\">\n";
+    if (m_userInfo->GetApiVersion() >= MG_API_VERSION(2,2,0))
+    {
+        xml += L"<SiteVersion xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"SiteVersion-2.2.0.xsd\">\n";
+    }
+    else
+    {
+        xml += L"<SiteVersion xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"SiteVersion-1.0.0.xsd\">\n";
+    }
+
+    return xml;
+}
+
+STRING MgHttpGetSiteVersion::EndXml()
+{
+    STRING xml = L"";
+
+    xml += L"</SiteVersion>\n";
+
+    return xml;
+}
+
+STRING MgHttpGetSiteVersion::GetXml(CREFSTRING version)
+{
+    STRING xml = L"";
+
+    if (m_userInfo->GetApiVersion() >= MG_API_VERSION(2,2,0))
+    {
+        xml += L"\t<Server>\n";
+    }
+
     xml += L"\t<Version>";
-    xml += property->GetValue();
+    xml += version;
     xml += L"</Version>\n";
     xml += L"</SiteVersion>\n";
+
+    if (m_userInfo->GetApiVersion() >= MG_API_VERSION(2,2,0))
+    {
+        xml += L"\t</Server>\n";
+    }
 
     return xml;
 }

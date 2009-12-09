@@ -169,6 +169,13 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
         if (!bValid)
             bValid = params->GetXmlPostData().length() != 0;
 
+        // Certain operations do not require authentication
+        STRING operation = params->GetParameterValue(L"OPERATION");
+        if((_wcsicmp(operation.c_str(), L"GETSITESTATUS") == 0))
+        {
+            bValid = true;
+        }
+
         if (!bValid)
         {
             // Invalid authentication information is not fatal, we should continue.

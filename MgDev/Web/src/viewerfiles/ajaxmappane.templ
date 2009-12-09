@@ -1737,7 +1737,7 @@ function RequestMapImage(reqId, viewParams)
     url = webAgent + "?OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=PNG&VERSION=2.1.0&SESSION=" + sessionId + "&MAPNAME=" + encodeComponent(mapName) + "&SEQ=" + Math.random() + "&CLIENTAGENT=" + encodeComponent(clientAgent) + "&BEHAVIOR=2";
     url += viewParams;
     document.getElementById("overlay").innerHTML =
-            '<img class="mapImage" name="' + reqId + '" id="mapImage" src="' + url + '" width=' + mapDevW + ' height=' + mapDevH + ' border=0 vspace=0 hspace=0 style="visibility: hidden; width: ' + mapDevW + 'px; height: ' + mapDevH + 'px;" onload="return OnMapOverlayImageLoaded(event)">';
+            '<img class="mapImage" name="' + reqId + '" id="mapImage" src="' + url + '" width=' + mapDevW + ' height=' + mapDevH + ' border=0 vspace=0 hspace=0 style="visibility: hidden; width: ' + mapDevW + 'px; height: ' + mapDevH + 'px;" onload="return OnMapOverlayImageLoaded(event)" onerror="return OnMapOverlayImageLoadedError(event)">';
     if (opera)
         document.getElementById("mapImage").src = document.getElementById("mapImage").src;
 }
@@ -1747,7 +1747,7 @@ function RequestSelectionImage(reqId, viewParams)
     url = webAgent + "?OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=PNG&VERSION=2.1.0&SESSION=" + sessionId + "&MAPNAME=" + encodeComponent(mapName) + "&SEQ=" + Math.random() + "&CLIENTAGENT=" + encodeComponent(clientAgent) + "&BEHAVIOR=5&SELECTIONCOLOR=" + selectionColor;
     url += viewParams;
     document.getElementById('selOverlay').innerHTML =
-        '<img class="mapImage" name="' + reqId + '" id="selectionImage" src="' + url + '" width=' + mapDevW + ' height=' + mapDevH + ' border=0 vspace=0 hspace=0 style="visibility: hidden; width: ' + mapDevW + 'px; height: ' + mapDevH + 'px;" onload="return OnSelectionOverlayImageLoaded(event)">';
+        '<img class="mapImage" name="' + reqId + '" id="selectionImage" src="' + url + '" width=' + mapDevW + ' height=' + mapDevH + ' border=0 vspace=0 hspace=0 style="visibility: hidden; width: ' + mapDevW + 'px; height: ' + mapDevH + 'px;" onload="return OnSelectionOverlayImageLoaded(event)" onerror="return OnSelectionOverlayImageLoadedError(event)">';
     if (opera)
         document.getElementById("selectionImage").src = document.getElementById("selectionImage").src;
 }
@@ -1806,6 +1806,28 @@ function OnMapOverlayImageLoaded(e)
     return false;
 }
 
+function OnMapOverlayImageLoadedError(e)
+{
+    var frmParent = parent.frames["tbFrame"];
+    var objDivRefresh = frmParent.document.getElementById("divRefresh");
+    if(objDivRefresh != null)
+    {
+        objDivRefresh.style.display='none';
+    }
+    mapLoading = false;
+
+    var text = this.req.responseText;
+
+    var startPos = text.indexOf("<h2>");
+    startPos = startPos + 4;
+    var endPos = text.indexOf("</h2>", startPos);
+    var message = text.substring(startPos, endPos);
+
+    alert(message);
+
+    return false;
+}
+
 function OnSelectionOverlayImageLoaded(e)
 {
     if(msie)
@@ -1854,6 +1876,20 @@ function OnSelectionOverlayImageLoaded(e)
     return false;
 }
 
+function OnSelectionOverlayImageLoadedError(e)
+{
+    var text = this.req.responseText;
+    
+    var startPos = text.indexOf("<h2>");
+    startPos = startPos + 4;
+    var endPos = text.indexOf("</h2>", startPos);
+    var message = text.substring(startPos, endPos);
+
+    alert(message);
+
+    return false;
+}
+
 function OnAlternateImageLoaded()
 {
     altimg = document.getElementById(curimg == "mapImage1"? "mapImage2": "mapImage1");
@@ -1890,7 +1926,12 @@ function OnAlternateSelectionImageLoaded()
 
 function RequestFailed(text)
 {
-    //placeholder for debugging output
+    var startPos = text.indexOf("<h2>");
+    startPos = startPos + 4;
+    var endPos = text.indexOf("</h2>", startPos);
+    var message = text.substring(startPos, endPos);
+    
+    alert(message);
 }
 
 function DraggingShape(e)
@@ -2928,7 +2969,7 @@ function ZoomSelection()
     dr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     dr.send(reqParams);
 
-    if(dr.responseXML)
+    if(dr.status == 200)
     {
         var env = ParseEnvelope(dr.responseXML.documentElement);
         if(env != null)
@@ -2941,6 +2982,8 @@ function ZoomSelection()
             GotoView(centerX, centerY, scale, true, true);
         }
     }
+    else
+        RequestFailed(dr.responseText);
 }
 
 function ParseEnvelope(xmlRoot)

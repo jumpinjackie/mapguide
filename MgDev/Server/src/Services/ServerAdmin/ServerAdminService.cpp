@@ -550,6 +550,57 @@ MgPropertyCollection* MgServerAdminService::GetInformationProperties()
     return pProperties.Detach();
 }
 
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Gets the site version.
+/// </summary>
+STRING MgServerAdminService::GetSiteVersion()
+{
+    STRING version = L"";
+
+    MG_TRY()
+
+    MG_LOG_TRACE_ENTRY(L"MgServerAdminService::GetSiteVersion()");
+
+    MgServerManager* pMan = MgServerManager::GetInstance();
+    if (NULL == pMan)
+    {
+        throw new MgNullReferenceException(L"MgServerAdminService::GetSiteVersion", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    version = pMan->GetSiteVersion();
+
+    MG_CATCH_AND_THROW(L"MgServerAdminService.GetSiteVersion");
+
+    return version;
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Gets the status properties for the server.
+/// </summary>
+MgPropertyCollection* MgServerAdminService::GetSiteStatus()
+{
+    Ptr<MgPropertyCollection> pProperties;
+    pProperties = NULL;
+
+    MG_TRY()
+
+    MG_LOG_TRACE_ENTRY(L"MgServerAdminService::GetSiteStatus()");
+
+    MgServerManager* pMan = MgServerManager::GetInstance();
+    if (NULL == pMan)
+    {
+        throw new MgNullReferenceException(L"MgServerAdminService::GetSiteStatus", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    pProperties = pMan->GetSiteStatus();
+
+    MG_CATCH_AND_THROW(L"MgServerAdminService.GetSiteStatus");
+
+    return pProperties.Detach();
+}
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Registers services on the specified servers.

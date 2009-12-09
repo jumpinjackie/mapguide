@@ -365,6 +365,28 @@ EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////////////
     /// \brief
+    /// Gets the site version.
+    ///
+    /// \return
+    /// The site version.
+    ///
+    /// \exception MgConnectionNotOpenException
+    ///
+    STRING GetSiteVersion();
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the status properties for the server.
+    ///
+    /// \return
+    /// The collection of status properties.
+    ///
+    /// \exception MgConnectionNotOpenException
+    ///
+    MgPropertyCollection* GetSiteStatus();
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    /// \brief
     /// Delete the specified package, if able.
     ///
     /// \param packageName

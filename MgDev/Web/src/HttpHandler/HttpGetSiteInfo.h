@@ -46,6 +46,8 @@ public:
 private:
 
     STRING GetXml(MgPropertyCollection* properties);
+    STRING BeginXml();
+    STRING EndXml();
 };
 
 #endif
