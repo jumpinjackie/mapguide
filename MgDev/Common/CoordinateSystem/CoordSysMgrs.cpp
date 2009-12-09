@@ -579,7 +579,7 @@ INT32 CCoordinateSystemMgrs::ApproxGridRegionMemoryUsage (MgCoordinateSystemGrid
         {
             Ptr<CCoordinateSystemMgrsZone> mgrsZoneGrid = m_ZoneCollection->GetItem (index);
             memoryUse = mgrsZoneGrid->ApproxGridRegionMemoryUsage (specification);
-            maxValue = 0x7FFF000 - memoryGuess;
+            maxValue = 0x7FFF0000 - memoryGuess;
             if (memoryUse < maxValue)
             {
                 memoryGuess += memoryUse;

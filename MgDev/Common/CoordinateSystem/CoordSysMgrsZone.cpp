@@ -264,7 +264,7 @@ INT32 CCoordinateSystemMgrsZone::ApproxGridRegionMemoryUsage (MgCoordinateSystem
                                                             sizeof (MgLineString) * 4 +
                                                             kMgSizeOfCoordinateXY * 4088;
     }
-    maxRegions = 0x7FFF000 / regionSize;
+    maxRegions = 0x7FFF0000 / regionSize;
 
     MG_TRY ()
         if (specification->GetUnitType () == MgCoordinateSystemUnitType::Angular)
