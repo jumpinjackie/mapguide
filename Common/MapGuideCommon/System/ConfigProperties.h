@@ -311,6 +311,10 @@ EXTERNAL_API:
     static const STRING FeatureServicePropertyJoinQueryBatchSize;               /// value("JoinQueryBatchSize")
     static const INT32 DefaultFeatureServicePropertyJoinQueryBatchSize;         /// value(100)
 
+    /// Sets the number of uses for a FDO connection for a specific provider before it is released
+    static const STRING FeatureServicePropertyDataConnectionUseLimit;         /// value("DataConnectionUseLimit")
+    static const STRING DefaultFeatureServicePropertyDataConnectionUseLimit;  /// value("")
+
     /// Sets the maximum amount of time (in seconds) for an idle FDO transaction before the transaction is dropped
     static const STRING FeatureServicePropertyDataTransactionTimeout;            /// value("DataTransactionTimeout")
     static const INT32 DefaultFeatureServicePropertyDataTransactionTimeout;      /// value(360)

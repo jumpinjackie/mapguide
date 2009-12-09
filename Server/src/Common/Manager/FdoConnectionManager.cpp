@@ -97,7 +97,8 @@ void MgFdoConnectionManager::Initialize(bool bFdoConnectionPoolEnabled,
                                         INT32 nFdoConnectionPoolSize,
                                         INT32 nFdoConnectionTimeout,
                                         STRING excludedProviders,
-                                        STRING fdoConnectionPoolSizeCustom)
+                                        STRING fdoConnectionPoolSizeCustom,
+                                        STRING fdoConnectionUseLimit)
 {
     MG_FDOCONNECTION_MANAGER_TRY()
 
@@ -121,6 +122,8 @@ void MgFdoConnectionManager::Initialize(bool bFdoConnectionPoolEnabled,
 
     m_fdoConnectionPoolSizeCustomCol = MgStringCollection::ParseCollection(fdoConnectionPoolSizeCustom, L",");
 
+    m_fdoConnectionUseLimitCol = MgStringCollection::ParseCollection(fdoConnectionUseLimit, L",");
+
     // Update the provider cache size collection
     if (m_fdoConnectionPoolSizeCustomCol.p)
     {
@@ -142,10 +145,53 @@ void MgFdoConnectionManager::Initialize(bool bFdoConnectionPoolEnabled,
                 nCustomPoolSize = MgUtil::StringToInt32(value);
             }
 
-            ProviderInfo* providerInfo = new ProviderInfo(provider, nCustomPoolSize, (FdoThreadCapability)-1, (m_bFdoConnectionPoolEnabled & !IsExcludedProvider(provider)));
+            ProviderInfo* providerInfo = new ProviderInfo(provider, nCustomPoolSize, (FdoThreadCapability)-1, (m_bFdoConnectionPoolEnabled & !IsExcludedProvider(provider)), -1);
             if(providerInfo)
             {
                 m_ProviderInfoCollection.insert(ProviderInfoCacheEntry_Pair(provider, providerInfo));
+            }
+        }
+    }
+
+    // Update the provider cache size collection
+    if (m_fdoConnectionUseLimitCol.p)
+    {
+        for(INT32 i=0;i<m_fdoConnectionUseLimitCol->GetCount();i++)
+        {
+            STRING providerUseLimit =  m_fdoConnectionUseLimitCol->GetItem(i);
+
+            STRING provider = providerUseLimit;
+            INT32 useLimit = -1;   // No limit
+
+            // Parse the format: provider:useLimit
+            // Example: OSGeo.SDF:1000
+
+            size_t position = providerUseLimit.find(L":", 0); // NOXLATE
+            if(position != string::npos)
+            {
+                provider = providerUseLimit.substr(0, position);
+                STRING value = providerUseLimit.substr(position+1, providerUseLimit.size());
+                useLimit = MgUtil::StringToInt32(value);
+            }
+
+            ProviderInfoCollection::iterator iterProviderInfoCollection = m_ProviderInfoCollection.find(provider);
+            if(m_ProviderInfoCollection.end() != iterProviderInfoCollection)
+            {
+                ProviderInfo* providerInfo = iterProviderInfoCollection->second;
+                if(providerInfo)
+                {
+                    // Update the use limit
+                    providerInfo->SetUseLimit(useLimit);
+                }
+            }
+            else
+            {
+                // Not found so add it
+                ProviderInfo* providerInfo = new ProviderInfo(provider, nFdoConnectionPoolSize, (FdoThreadCapability)-1, (m_bFdoConnectionPoolEnabled & !IsExcludedProvider(provider)), useLimit);
+                if(providerInfo)
+                {
+                    m_ProviderInfoCollection.insert(ProviderInfoCacheEntry_Pair(provider, providerInfo));
+                }
             }
         }
     }
@@ -432,9 +478,10 @@ void MgFdoConnectionManager::RemoveExpiredFdoConnections()
                     if(pFdoConnectionCacheEntry)
                     {
                         INT32 time = now.sec() - pFdoConnectionCacheEntry->lastUsed.sec();
-                        if((time > m_nFdoConnectionTimeout) || (!pFdoConnectionCacheEntry->bValid))
+                        INT32 useLimit = providerInfo->GetUseLimit();
+                        if((time > m_nFdoConnectionTimeout) || (!pFdoConnectionCacheEntry->bValid) || (useLimit != -1 && pFdoConnectionCacheEntry->nUseTotal >= useLimit))
                         {
-                            // Connection has expired or is no longer valid so close it and remove it
+                            // Connection has expired or is no longer valid or has reached the use limit so close it and remove it
                             if (pFdoConnectionCacheEntry->pFdoConnection)
                             {
                                 // Is it in use?
@@ -604,29 +651,34 @@ FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING prov
                             if(pFdoConnectionCacheEntry->ltName == ltName)
                             {
                                 // We have a long transaction name match
-                                if((!pFdoConnectionCacheEntry->bInUse) || 
-                                   (providerInfo->GetThreadModel() == FdoThreadCapability_PerCommandThreaded) ||
-                                   (providerInfo->GetThreadModel() == FdoThreadCapability_MultiThreaded))
+                                INT32 useLimit = providerInfo->GetUseLimit();
+                                if (useLimit == -1 || pFdoConnectionCacheEntry->nUseTotal <= useLimit)
                                 {
-                                    // It is not in use or the provider is a PerCommandThreaded/MultiThreaded provider so claim it
-                                    pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
-                                    pFdoConnectionCacheEntry->bInUse = true;
-                                    pFdoConnectionCacheEntry->nUseCount++;  // Only used by PerCommandThreaded/MultiThreaded
-
-                                    // Check to see if the key is blank which indicates a blank connection string was cached
-                                    if(0 < key.size())
+                                    if((!pFdoConnectionCacheEntry->bInUse) || 
+                                       (providerInfo->GetThreadModel() == FdoThreadCapability_PerCommandThreaded) ||
+                                       (providerInfo->GetThreadModel() == FdoThreadCapability_MultiThreaded))
                                     {
-                                        // The key was not blank so check if we need to open it
-                                        if (FdoConnectionState_Closed == pFdoConnectionCacheEntry->pFdoConnection->GetConnectionState())
+                                        // It is not in use or the provider is a PerCommandThreaded/MultiThreaded provider so claim it
+                                        pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
+                                        pFdoConnectionCacheEntry->bInUse = true;
+                                        pFdoConnectionCacheEntry->nUseCount++;  // Only used by PerCommandThreaded/MultiThreaded
+                                        pFdoConnectionCacheEntry->nUseTotal++;
+
+                                        // Check to see if the key is blank which indicates a blank connection string was cached
+                                        if(0 < key.size())
                                         {
-                                            pFdoConnectionCacheEntry->pFdoConnection->Open();
-                                            #ifdef _DEBUG_FDOCONNECTION_MANAGER
-                                            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("SearchFdoConnectionCache() - Had to reopen connection!!\n")));
-                                            #endif
+                                            // The key was not blank so check if we need to open it
+                                            if (FdoConnectionState_Closed == pFdoConnectionCacheEntry->pFdoConnection->GetConnectionState())
+                                            {
+                                                pFdoConnectionCacheEntry->pFdoConnection->Open();
+                                                #ifdef _DEBUG_FDOCONNECTION_MANAGER
+                                                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("SearchFdoConnectionCache() - Had to reopen connection!!\n")));
+                                                #endif
+                                            }
                                         }
+                                        pFdoConnection = FDO_SAFE_ADDREF(pFdoConnectionCacheEntry->pFdoConnection);
+                                        break;
                                     }
-                                    pFdoConnection = FDO_SAFE_ADDREF(pFdoConnectionCacheEntry->pFdoConnection);
-                                    break;
                                 }
                             }
                         }
@@ -1093,6 +1145,7 @@ void MgFdoConnectionManager::CacheFdoConnection(FdoIConnection* pFdoConnection, 
             pFdoConnectionCacheEntry->bValid = true;
             pFdoConnectionCacheEntry->bInUse = true;
             pFdoConnectionCacheEntry->nUseCount = 1;
+            pFdoConnectionCacheEntry->nUseTotal = 1;
 
             #ifdef _DEBUG_FDOCONNECTION_MANAGER
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("CacheFdoConnection:\nConnection: %@\nProvider = %W\nKey = %W\nVersion(LT) = %W\n\n"), (void*)pFdoConnection, provider.c_str(), key.c_str(), ltName.empty() ? L"(empty)" : ltName.c_str()));
@@ -1255,7 +1308,7 @@ ProviderInfo* MgFdoConnectionManager::AcquireFdoConnection(CREFSTRING provider)
     else
     {
         // Provider information has not been cached yet so a connection will be available.
-        providerInfo = new ProviderInfo(provider, m_nFdoConnectionPoolSize, (FdoThreadCapability)-1, (m_bFdoConnectionPoolEnabled & !IsExcludedProvider(provider)));
+        providerInfo = new ProviderInfo(provider, m_nFdoConnectionPoolSize, (FdoThreadCapability)-1, (m_bFdoConnectionPoolEnabled & !IsExcludedProvider(provider)), -1);
         if(providerInfo)
         {
             m_ProviderInfoCollection.insert(ProviderInfoCacheEntry_Pair(provider, providerInfo));
@@ -1459,7 +1512,7 @@ ProviderInfo* MgFdoConnectionManager::GetProviderInformation(CREFSTRING provider
     if(NULL == providerInfo)
     {
         // Create new entry
-        providerInfo = new ProviderInfo(provider, m_nFdoConnectionPoolSize, (FdoThreadCapability)-1, (m_bFdoConnectionPoolEnabled & !IsExcludedProvider(provider)));
+        providerInfo = new ProviderInfo(provider, m_nFdoConnectionPoolSize, (FdoThreadCapability)-1, (m_bFdoConnectionPoolEnabled & !IsExcludedProvider(provider)), -1);
         if(providerInfo)
         {
             m_ProviderInfoCollection.insert(ProviderInfoCacheEntry_Pair(provider, providerInfo));

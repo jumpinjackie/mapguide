@@ -258,6 +258,8 @@ const STRING MgConfigProperties::FeatureServicePropertyDataConnectionTimerInterv
 const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTimerInterval   = 60;
 const STRING MgConfigProperties::FeatureServicePropertyJoinQueryBatchSize                   = L"JoinQueryBatchSize";
 const INT32  MgConfigProperties::DefaultFeatureServicePropertyJoinQueryBatchSize            = 100;
+const STRING MgConfigProperties::FeatureServicePropertyDataConnectionUseLimit               = L"DataConnectionUseLimit";
+const STRING MgConfigProperties::DefaultFeatureServicePropertyDataConnectionUseLimit        = L"";
 const STRING MgConfigProperties::FeatureServicePropertyDataTransactionTimeout               = L"DataTransactionTimeout";
 const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataTransactionTimeout        = 360;
 const STRING MgConfigProperties::FeatureServicePropertyDataTransactionTimerInterval         = L"DataTransactionTimerInterval";
@@ -570,6 +572,7 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviFeatureServiceProperties[
     { MgConfigProperties::FeatureServicePropertyDataConnectionTimeout               , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMEOUT                 , MG_CONFIG_MAX_TIMEOUT                 , L""                                       },
     { MgConfigProperties::FeatureServicePropertyDataConnectionTimerInterval         , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },
     { MgConfigProperties::FeatureServicePropertyJoinQueryBatchSize                  , MgPropertyType::Int32     , MG_CONFIG_MIN_JOIN_QUERY_BATCH_SIZE   , MG_CONFIG_MAX_JOIN_QUERY_BATCH_SIZE   , L""                                       },
+    { MgConfigProperties::FeatureServicePropertyDataConnectionUseLimit              , MgPropertyType::String    , MG_CONFIG_MIN_FS_CP_EXCLUDED_LENGTH   , MG_CONFIG_MAX_FS_CP_EXCLUDED_LENGTH   , L""                                       },
     { MgConfigProperties::FeatureServicePropertyDataTransactionTimeout              , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMEOUT                 , MG_CONFIG_MAX_TIMEOUT                 , L""                                       },
     { MgConfigProperties::FeatureServicePropertyDataTransactionTimerInterval        , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }

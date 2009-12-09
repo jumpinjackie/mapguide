@@ -42,6 +42,7 @@ typedef struct {
     bool bValid;
     bool bInUse;
     INT32 nUseCount;    // Used by PerCommandThreaded/MultiThreaded providers
+    INT32 nUseTotal;    // Total number of times this connection has been used
 } FdoConnectionCacheEntry;
 
 // FDO Connection Cache
@@ -55,12 +56,14 @@ public:
     ProviderInfo(STRING provider,
                  INT32 poolSize,
                  FdoThreadCapability threadModel,
-                 bool bKeepCached)
+                 bool bKeepCached,
+                 INT32 useLimit)
     {
         m_provider = provider;
         m_poolSize = poolSize;
         m_threadModel = threadModel;
         m_bKeepCached = bKeepCached;
+        m_useLimit = useLimit;
 
         m_currentConnections = 0;
     }
@@ -154,6 +157,18 @@ public:
 
     STRING GetProviderName()                        { return m_provider; }
 
+    INT32 GetUseLimit()
+    {
+        ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, -1));
+        return m_useLimit;
+    }
+
+    void SetUseLimit(INT32 useLimit)
+    {
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+        m_useLimit = useLimit;
+    }
+
 private:
     // The name of the provider
     STRING m_provider;
@@ -172,6 +187,9 @@ private:
 
     // The flag indicating if the FDO connections for this provider should be cached
     bool m_bKeepCached;
+
+    // The # of times this FDO connections can be used before it is released
+    INT32 m_useLimit;
 
     static ACE_Recursive_Thread_Mutex sm_mutex;
 };
@@ -197,7 +215,8 @@ public:
                     INT32 nFdoConnectionPoolSize,
                     INT32 nFdoConnectionTimeout,
                     STRING excludedProviders,
-                    STRING fdoConnectionPoolSizeCustom);
+                    STRING fdoConnectionPoolSizeCustom,
+                    STRING fdoConnectionUseLimit);
 
     static void Terminate();
     void ClearCache();
@@ -258,6 +277,7 @@ private:
     INT32 m_nFdoConnectionTimeout;
     Ptr<MgStringCollection> m_excludedProviders;
     Ptr<MgStringCollection> m_fdoConnectionPoolSizeCustomCol;
+    Ptr<MgStringCollection> m_fdoConnectionUseLimitCol;
 };
 
 #endif
