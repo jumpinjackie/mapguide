@@ -34,6 +34,8 @@ void MgCommand::ExecuteCommand(MgConnectionProperties* connProp, DataTypes retTy
         //TODO:  Parse url and pull machine name into target
     }
 
+    MG_TRY()
+
     Ptr<MgUserInformation> userInfo = connProp->GetUserInfo();
     Ptr<MgServerConnection> serviceConn = MgServerConnection::Acquire(userInfo, connProp);
     Ptr<MgStream> stream = serviceConn->GetStream();
@@ -114,6 +116,29 @@ void MgCommand::ExecuteCommand(MgConnectionProperties* connProp, DataTypes retTy
     stream->WriteStreamEnd();
 
     GetResponse(serviceConn, retType);
+
+    MG_CATCH(L"MgCommand.ExecuteCommand")
+
+    if (NULL != mgException)
+    {
+        if (mgException->IsOfClass(MapGuide_Exception_MgConnectionFailedException))
+        {
+            // The server didn't respond so it needs to be marked as unavailable in the list of servers.
+            // We will check to see if it can be made available later.
+            MgSiteManager* siteManager = MgSiteManager::GetInstance();
+            Ptr<MgSiteInfo> badSite = siteManager->GetSiteInfo(connProp->GetTarget(), connProp->GetPort());
+            if(NULL != badSite.p)
+            {
+                // Update the status of the failed server
+                badSite->SetStatus(MgSiteInfo::UnableToConnect);
+            }
+
+            // Need to remove the server connection from the pool
+            MgServerConnection::Remove(connProp);
+        }
+
+        MG_THROW();
+    }
 }
 
 //////////////////////////////////////////////////////////////////

@@ -135,6 +135,10 @@ INTERNAL_API:
     static const STRING GeneralPropertyWorkerThreadPoolSize;            /// value("WorkerThreadPoolSize")
     static const INT32 DefaultGeneralPropertyWorkerThreadPoolSize;      /// value(1)
 
+    /// Sets the failover retry time
+    static const STRING GeneralPropertyFailoverRetryTime;               /// value("FailoverRetryTime")
+    static const INT32 DefaultGeneralPropertyFailoverRetryTime;         /// value(60)
+
 EXTERNAL_API:
 
     /// ADMINISTRATIVE CONNECTION PROPERTIES SECTION ---------------------------------------------------------------------
