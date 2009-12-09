@@ -2873,6 +2873,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\CoordinateSystem\CoordSysEnvVariable.h"
+				>
+			</File>
+			<File
 				RelativePath="..\CoordinateSystem\CoordSysFormatConverter.cpp"
 				>
 			</File>
