@@ -275,10 +275,10 @@ ACE_Time_Value* MgServerConnection::LastUsed()
 /// </summary>
 ///
 /// <param name="userInformation">
-/// User information to authenticate against
+/// User information to authenticate against.
 /// </param>
-/// <param name="target">
-/// Target server.  NULL or "" indicates local server
+/// <param name="connProp">
+/// Connection properties for the server to connect to.
 /// </param>
 /// <returns>
 /// Nothing
@@ -342,3 +342,28 @@ MgServerConnection* MgServerConnection::Acquire(MgUserInformation* userInformati
     return msc.Detach();
 }
 
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Removes a connection to a Mg server
+/// </summary>
+///
+/// <param name="connProp">
+/// Connection properties of the server to remove.
+/// </param>
+/// <returns>
+/// Nothing
+/// </returns>
+/// EXCEPTIONS:
+/// AuthorizationFailed
+/// TargetNotFound
+void MgServerConnection::Remove(MgConnectionProperties* connProp)
+{
+    CHECKNULL((MgConnectionProperties*)connProp, L"MgServerConnection.Remove");
+
+    {
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+
+        wstring hash = connProp->Hash();
+        g_connectionPool->pool.erase(hash);
+    }
+}

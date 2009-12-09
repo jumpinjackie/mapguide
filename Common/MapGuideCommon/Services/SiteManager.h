@@ -21,6 +21,13 @@
 class MgSiteInfo;
 typedef std::vector<MgSiteInfo*> MgSiteVector;
 
+// Data structure which is passed to thread
+struct SMThreadData
+{
+    ACE_thread_t threadId;
+    INT32 failoverRetryTime;
+};
+
 class MG_MAPGUIDE_API MgSiteManager : public MgGuardDisposable
 {
 DECLARE_CLASSNAME(MgSiteManager)
@@ -63,8 +70,15 @@ public:
 
     MgSiteInfo* GetSiteInfo(INT32 index);
     MgSiteInfo* GetSiteInfo(CREFSTRING target, INT32 port);
+    MgSiteInfo* GetSiteInfo(CREFSTRING hexString);
 
     INT32 GetSiteCount();
+
+    MgSiteVector* GetSites();
+    ACE_Recursive_Thread_Mutex m_mutex;
+
+    bool GetCheckServersThreadDone();
+    void SetCheckServersThreadDone(bool bDone);
 
 private:
 
@@ -79,9 +93,10 @@ private:
 
     static Ptr<MgSiteManager> sm_siteManager;
 
-    ACE_Recursive_Thread_Mutex m_mutex;
     INT32 m_index;
     MgSiteVector m_sites;
+    SMThreadData m_threadData;
+    bool m_bCheckServersThreadDone;
 };
 
 #endif // MG_SITEMANAGER_H_

@@ -161,6 +161,8 @@ const STRING MgConfigProperties::GeneralPropertyWorkerThreadPoolSize            
 const INT32  MgConfigProperties::DefaultGeneralPropertyWorkerThreadPoolSize                 = 1;
 const STRING MgConfigProperties::GeneralPropertyRenderer                                    = L"Renderer";
 const STRING MgConfigProperties::DefaultGeneralPropertyRenderer                             = L"GD";
+const STRING MgConfigProperties::GeneralPropertyFailoverRetryTime                           = L"FailoverRetryTime"; // for internal use only
+const INT32  MgConfigProperties::DefaultGeneralPropertyFailoverRetryTime                    = 60;
 
 // ******************************************************************
 // Administrative Connection Properties
@@ -505,6 +507,7 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviGeneralProperties[] =
     { MgConfigProperties::GeneralPropertyWfsDocumentPath                            , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
     { MgConfigProperties::GeneralPropertyWmsDocumentPath                            , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
     { MgConfigProperties::GeneralPropertyWorkerThreadPoolSize                       , MgPropertyType::Int32     , MG_CONFIG_MIN_THREAD_POOL_SIZE        , MG_CONFIG_MAX_THREAD_POOL_SIZE        , L""                                       },
+    { MgConfigProperties::GeneralPropertyFailoverRetryTime                          , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 

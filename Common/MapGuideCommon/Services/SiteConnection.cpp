@@ -129,7 +129,8 @@ void MgSiteConnection::Open(MgUserInformation* userInformation)
 
     if (m_connProp == NULL)
     {
-        throw new MgLogicException(L"MgSiteConnection.Open",
+        // There might not be any MapGuide servers running for the site
+        throw new MgConnectionFailedException(L"MgSiteConnection.Open",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 

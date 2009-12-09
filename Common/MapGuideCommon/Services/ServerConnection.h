@@ -105,6 +105,19 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
+    /// Removes the TCP/IP connection to a MapGuide server from the
+    /// internal connection pool.
+    ///
+    /// \param connProp
+    /// Connection properties for target server
+    ///
+    /// \return
+    /// Nothing
+    ///
+    static void Remove(MgConnectionProperties* connProp);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
     /// Internal method used for getting stream helper
     /// which will then be used in serialize/deserialize
     ///
