@@ -130,6 +130,7 @@ STRING MgHttpGetSiteVersion::BeginXml()
 {
     STRING xml = L"";
 
+    xml += L"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     if (m_userInfo->GetApiVersion() >= MG_API_VERSION(2,2,0))
     {
         xml += L"<SiteVersion xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"SiteVersion-2.2.0.xsd\">\n";
@@ -163,7 +164,6 @@ STRING MgHttpGetSiteVersion::GetXml(CREFSTRING version)
     xml += L"\t<Version>";
     xml += version;
     xml += L"</Version>\n";
-    xml += L"</SiteVersion>\n";
 
     if (m_userInfo->GetApiVersion() >= MG_API_VERSION(2,2,0))
     {
