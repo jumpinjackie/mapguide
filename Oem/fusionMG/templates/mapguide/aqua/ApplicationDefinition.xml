@@ -695,7 +695,7 @@
     <Widget xsi:type="UiWidgetType">
       <Name>menuMeasure</Name>
       <Type>Measure</Type>
-      <StatusItem>Measure distances on the map.</StatusItem>
+      <StatusItem>Measure distances and areas on the map.</StatusItem>
       <Extension xsi:type="CustomContentType">
         <Type>both</Type>
         <MeasureTooltipContainer>MeasureResult</MeasureTooltipContainer>
@@ -835,7 +835,7 @@
     <Widget xsi:type="UiWidgetType">
       <Name>toolbarMeasure</Name>
       <Type>Measure</Type>
-      <StatusItem>Measure distances on the map.</StatusItem>
+      <StatusItem>Measure distances and areas on the map.</StatusItem>
       <Extension xsi:type="CustomContentType">
         <Type>both</Type>
         <MeasureTooltipContainer>MeasureResult</MeasureTooltipContainer>
