@@ -85,8 +85,8 @@ include_SOURCES = \
   HttpGetSchemas.cpp \
   HttpGetSessionTimeout.cpp \
   HttpGetSiteInfo.cpp \
-  HttpGetSiteVersion.cpp \
   HttpGetSiteStatus.cpp \
+  HttpGetSiteVersion.cpp \
   HttpGetSpatialContexts.cpp \
   HttpGetTileImage.cpp \
   HttpGetVisibleMapExtent.cpp \
@@ -207,8 +207,8 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpGetSchemas.h \
   HttpGetSessionTimeout.h \
   HttpGetSiteInfo.h \
-  HttpGetSiteVersion.h \
   HttpGetSiteStatus.h \
+  HttpGetSiteVersion.h \
   HttpGetSpatialContexts.h \
   HttpGetTileImage.h \
   HttpGetVisibleMapExtent.h \
