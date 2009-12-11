@@ -883,7 +883,7 @@ INT32 MgServerManager::GetClientOperationsQueueCount()
 {
     int nOperationQueueCount = -1;
 
-    if(m_pAdminMessageQueue)
+    if(m_pClientMessageQueue)
     {
         nOperationQueueCount = m_pClientMessageQueue->message_count();
     }
@@ -895,7 +895,7 @@ INT32 MgServerManager::GetSiteOperationsQueueCount()
 {
     int nOperationQueueCount = -1;
 
-    if(m_pAdminMessageQueue)
+    if(m_pSiteMessageQueue)
     {
         nOperationQueueCount = m_pSiteMessageQueue->message_count();
     }
