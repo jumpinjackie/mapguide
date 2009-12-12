@@ -50,25 +50,26 @@ public:
                                INT32 utmZoneNbr,
                                bool useFrameDatum,
                                MgCoordinateSystem* frameCS,
-                               INT8 letteringScheme);
+                               INT8 letteringScheme,
+                               INT64 gridLineMemoryThreshold,
+                               INT64 gridTickMemoryThreshold,
+                               INT64 gridRegionMemoryThreshold);
     ~CCoordinateSystemMgrsZone (void);
 
     CCoordinateSystemGridLineCollection* GetGridLines (MgCoordinateSystemGridBoundary* frameBoundary,
-                                                       MgCoordinateSystemGridSpecification* specification,
-                                                       INT32 exceptionLvl);
+                                                       MgCoordinateSystemGridSpecification* specification);
     CCoordinateSystemGridLineCollection* GetGraticuleLines (MgCoordinateSystemGridBoundary* frameBoundary,
-                                                            MgCoordinateSystemGridSpecification* specification,
-                                                            INT32 exceptionLvl);
+                                                            MgCoordinateSystemGridSpecification* specification);
     CCoordinateSystemGridRegionCollection* GetGridRegions (MgCoordinateSystemGridBoundary* frameBoundary,
-                                                           MgCoordinateSystemGridSpecification* specification,
-                                                           INT32 exceptionLvl);
+                                                           MgCoordinateSystemGridSpecification* specification);
     INT32 ApproxGridRegionMemoryUsage (MgCoordinateSystemGridSpecification* specification);
     INT32 GetUtmZoneNbr (void);
 
+    void ResetGridRegionMemoryThreshold(INT64 memThreshold);
+
 protected:
     CCoordinateSystemGridRegionCollection* BuildRegionCollection (MgCoordinateSystemGridBoundary* frameBoundary,
-                                                                  MgCoordinateSystemGridSpecification* specification,
-                                                                  INT32 exceptionLvl);
+                                                                  MgCoordinateSystemGridSpecification* specification);
 private:
     void BuildMajorRegions (CCoordinateSystemGridRegionCollection* regionCollection,
                             MgCoordinateSystemGridBoundary* frameBoundary,
@@ -83,6 +84,7 @@ private:
     // Zero is the uninitialized/unknown/error value.
     INT32 m_UtmZone;
     INT8 m_LetteringScheme;
+    INT64 m_GridRegionMemoryThreshold;
 //    Ptr<CCoordinateSystemGridRegionCollection> m_RegionCollection;
 
     // Not implemented

@@ -670,28 +670,6 @@ MgLineStringCollection* CCoordinateSystemGridLine::GetSegmentCollection (void)
 {
     return SAFE_ADDREF(m_LineSegments.p);
 }
-INT32 CCoordinateSystemGridLine::GetMemoryUsage ()
-{
-    INT32 lineIndex;
-    INT32 lineCount;
-    INT32 memoryUse = sizeof (CCoordinateSystemGridLine) + kMgHeapOverhead;
-
-    lineCount = m_LineSegments->GetCount ();
-    for (lineIndex = 0;lineIndex < lineCount;lineIndex += 1)
-    {
-        Ptr<MgLineString> lineStringPtr = m_LineSegments->GetItem (lineIndex);
-        if (lineStringPtr != 0)
-        {
-            memoryUse += sizeof (MgLineString) + kMgHeapOverhead;
-            Ptr<MgCoordinateIterator> pointItr = lineStringPtr->GetCoordinates ();
-            while (pointItr->MoveNext ())
-            {
-                memoryUse += kMgSizeOfCoordinateXY;
-            }
-        }
-    }
-    return memoryUse;
-}
 void CCoordinateSystemGridLine::SetSegmentCollection (MgLineStringCollection* segmentCollection)
 {
     m_LineSegments = SAFE_ADDREF (segmentCollection);
@@ -814,26 +792,6 @@ MgLineStringCollection* CCoordinateSystemGridRegion::GetWestLine (void)
 {
     return SAFE_ADDREF(m_WestLine.p);
 }
-INT32 CCoordinateSystemGridRegion::GetMemoryUsage ()
-{
-    INT32 memoryUse;
-
-    memoryUse  = sizeof (CCoordinateSystemGridRegion) + kMgHeapOverhead;
-    memoryUse += sizeof (STRING);
-    memoryUse += m_RegionLabel.capacity () * sizeof (wchar_t);
-    memoryUse += kMgSizeOfCoordinateXY;
-    memoryUse += PolygonMemoryUse (m_RegionBoundary.p);
-    memoryUse += LineStringCollectionMemoryUse (m_SouthLine.p);
-    memoryUse += LineStringCollectionMemoryUse (m_EastLine.p);
-    memoryUse += LineStringCollectionMemoryUse (m_NorthLine.p);
-    memoryUse += LineStringCollectionMemoryUse (m_WestLine.p);
-
-    // Testing has shown the above calculation to be about 20% low.
-    // This is assumed to be because collections have a capacity and a useage,
-    // and while we measure usage above, we can't measure capacity.
-    memoryUse += memoryUse / 5;
-    return memoryUse;
-}
 void CCoordinateSystemGridRegion::SetRegionBoundary (MgPolygon* boundary)
 {
     m_RegionBoundary = SAFE_ADDREF (boundary);
@@ -857,50 +815,6 @@ void CCoordinateSystemGridRegion::SetWestLine (MgLineStringCollection* westLine)
 void CCoordinateSystemGridRegion::Dispose ()
 {
     delete this;
-}
-INT32 CCoordinateSystemGridRegion::PolygonMemoryUse (MgPolygon* polygon)
-{
-    // While MgPolygon objects support holes, there are no holes in a Region
-    // (so far anyway); so we only evaluate the exterior ring.
-
-    INT32 memoryUse;
-
-    memoryUse = sizeof (MgPolygon) + kMgHeapOverhead;
-    if (polygon != 0)
-    {
-        Ptr<MgCoordinateIterator> pointItr = polygon->GetCoordinates ();
-        while (pointItr->MoveNext ())
-        {
-            memoryUse += kMgSizeOfCoordinateXY;
-        }
-    }
-    return memoryUse;
-}
-INT32 CCoordinateSystemGridRegion::LineStringCollectionMemoryUse (MgLineStringCollection* lineCollection)
-{
-    INT32 memoryUse (0);
-    INT32 lineCount;
-    INT32 lineIndex;
-
-    if (lineCollection != 0)
-    {
-        memoryUse += sizeof (MgLineStringCollection) + kMgHeapOverhead;
-        lineCount = lineCollection->GetCount ();
-        for (lineIndex = 0;lineIndex < lineCount;lineIndex += 1)
-        {
-            Ptr<MgLineString> lineStringPtr = lineCollection->GetItem (lineIndex);
-            if (lineStringPtr != 0)
-            {
-                memoryUse += sizeof (MgLineString) + kMgHeapOverhead;
-                Ptr<MgCoordinateIterator> pointItr = lineStringPtr->GetCoordinates ();
-                while (pointItr->MoveNext ())
-                {
-                    memoryUse += kMgSizeOfCoordinateXY;
-                }
-            }
-        }
-    }
-    return memoryUse;
 }
 //=============================================================================
 // CCoordinateSystemGridTick -- Defines the location of a grid tick mark.
@@ -965,12 +879,6 @@ MgCoordinate* CCoordinateSystemGridTick::GetDirectionVector ()
 {
     return SAFE_ADDREF(m_Direction.p);
 }
-INT32 CCoordinateSystemGridTick::GetMemoryUsage ()
-{
-    INT32 memoryUse = sizeof (CCoordinateSystemGridTick) + kMgHeapOverhead;
-    memoryUse += (kMgSizeOfCoordinateXY + kMgSizeOfCoordinateXY);
-    return memoryUse;
-}
 void CCoordinateSystemGridTick::Dispose ()
 {
     delete this;
@@ -981,14 +889,12 @@ void CCoordinateSystemGridTick::Dispose ()
 // appear first in ascending order by grid value (easting in this case);
 // followed by grid vertical lines in ascending order by grid value (northing
 // in this case).
-CCoordinateSystemGridLineCollection::CCoordinateSystemGridLineCollection (INT32 gridLineExceptionLevel)
+CCoordinateSystemGridLineCollection::CCoordinateSystemGridLineCollection (INT64 memoryThreshold)
                                         :
                                      MgCoordinateSystemGridLineCollection (),
-                                     m_MemoryUse                          (),
-                                     m_GridLineExceptionLevel             (gridLineExceptionLevel),
+                                     m_MemoryThreshold                    (memoryThreshold),
                                      m_GridLineCollection                 ()
 {
-    m_MemoryUse = sizeof (MgCoordinateSystemGridLineCollection) + sizeof (MgDisposableCollection);
     m_GridLineCollection = new MgDisposableCollection();
 }
 CCoordinateSystemGridLineCollection::~CCoordinateSystemGridLineCollection(void)
@@ -1038,67 +944,26 @@ INT32 CCoordinateSystemGridLineCollection::IndexOf (INT32 gridOrientation,double
 }
 void CCoordinateSystemGridLineCollection::RemoveAt (INT32 index)
 {
-    INT32 memoryUse (0);
-
     // The MgDisposableCollection object checks the index argument, and throws if appropriate.
     // The MgDisposableCollection object performs the "SAFE_RELEASE" operation.
-
-    if (index >= 0 && index < GetCount ())
-    {
-        // We don't want an invalid index exception thrown from this GetItem,
-        // we leave that to the RemoveAt function.  Also, this releases the
-        // pointer we get before the exception is thrown.
-        Ptr<MgCoordinateSystemGridLine> gridLinePtr = GetItem (index);
-        if (gridLinePtr != 0)
-        {
-            memoryUse = gridLinePtr->GetMemoryUsage ();
-        }
-    }
     m_GridLineCollection->RemoveAt (index);
-    m_MemoryUse -= memoryUse;
 }
 void CCoordinateSystemGridLineCollection::Clear()
 {
     // The MgDisposableCollection object performs the "SAFE_RELEASE" operation.
     m_GridLineCollection->Clear ();
-    m_MemoryUse = sizeof (MgCoordinateSystemGridLineCollection) + sizeof (MgDisposableCollection);
 }
 void CCoordinateSystemGridLineCollection::SetItem (INT32 index,MgCoordinateSystemGridLine* value)
 {
-    INT32 memoryUse (0);
-
-    memoryUse = value->GetMemoryUsage ();
-    if (index >= 0 && index < GetCount ())
-    {
-        Ptr<MgCoordinateSystemGridLine> oldGridLine = GetItem (index);
-        if (oldGridLine != 0)
-        {
-            memoryUse -= oldGridLine->GetMemoryUsage ();
-        }
-    }
-    if ((m_MemoryUse + memoryUse) < m_GridLineExceptionLevel)
-    {
-        m_GridLineCollection->SetItem (index,value);
-    }
-    else
-    {
+    if (GetAvailableMemory() < m_MemoryThreshold)
         throw new MgGridDensityException(L"CCoordinateSystemGridLineCollection.SetItem", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+
+    m_GridLineCollection->SetItem (index,value);
 }
 void CCoordinateSystemGridLineCollection::Add (MgCoordinateSystemGridLine* value)
 {
-    INT32 memoryUse;
-
-    memoryUse = value->GetMemoryUsage ();
-    if ((memoryUse + m_MemoryUse) < m_GridLineExceptionLevel)
-    {
-        m_GridLineCollection->Add (value);
-        m_MemoryUse += memoryUse;
-    }
-    else
-    {
+    if (GetAvailableMemory() < m_MemoryThreshold)
         throw new MgGridDensityException(L"CCoordinateSystemGridLineCollection.Add", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
 
     // The MgDIsposableCollection object does the "SAFE_ADDREF" operation.
     m_GridLineCollection->Add (value);
@@ -1107,16 +972,9 @@ void CCoordinateSystemGridLineCollection::AddCollection (MgCoordinateSystemGridL
 {
     INT32 index;
     INT32 toAddCount;
-    INT32 maxValue;
-    INT32 memoryUse;
     Ptr<MgCoordinateSystemGridLine> aGridLine;
 
-    maxValue = m_GridLineExceptionLevel - m_MemoryUse;
-    memoryUse = aGridLineCollection->GetMemoryUsage ();
-    if (memoryUse > maxValue)
-    {
-        throw new MgGridDensityException(L"CCoordinateSystemGridLineCollection.AddCollection", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    // Memory check is done inside Add()
     MG_TRY ()
         toAddCount = aGridLineCollection->GetCount ();
         for (index = 0;index < toAddCount;index += 1)
@@ -1127,19 +985,6 @@ void CCoordinateSystemGridLineCollection::AddCollection (MgCoordinateSystemGridL
     MG_CATCH_AND_THROW(L"CCoordinateSystemGridLineCollection::AddCollection")
     return;
 }
-INT32 CCoordinateSystemGridLineCollection::SetGridLineExceptionLevel (INT32 memoryUseMax)
-{
-    INT32 rtnValue = m_GridLineExceptionLevel;
-    if (memoryUseMax > 0L)
-    {
-        m_GridLineExceptionLevel = memoryUseMax;
-    }
-    return rtnValue;
-}
-INT32 CCoordinateSystemGridLineCollection::GetMemoryUsage (void)
-{
-    return m_MemoryUse;
-}
 void CCoordinateSystemGridLineCollection::Dispose(void)
 {
     delete this;
@@ -1148,14 +993,12 @@ void CCoordinateSystemGridLineCollection::Dispose(void)
 //=============================================================================
 // A CCoordinateSystemGridRegionCollection is collection of
 // CCoordinateSystemGridRegion objects.
-CCoordinateSystemGridRegionCollection::CCoordinateSystemGridRegionCollection (INT32 gridRegionExceptionLevel)
+CCoordinateSystemGridRegionCollection::CCoordinateSystemGridRegionCollection (INT64 memoryThreshold)
                                          :
                                        MgCoordinateSystemGridRegionCollection (),
-                                       m_MemoryUse                            (),
-                                       m_GridRegionExceptionLevel             (gridRegionExceptionLevel),
+                                       m_MemoryThreshold                      (memoryThreshold),
                                        m_GridRegionCollection                 ()
 {
-    m_MemoryUse = sizeof (CCoordinateSystemGridRegionCollection) + sizeof (MgDisposableCollection);
     m_GridRegionCollection = new MgDisposableCollection();
 }
 CCoordinateSystemGridRegionCollection::~CCoordinateSystemGridRegionCollection (void)
@@ -1176,82 +1019,35 @@ MgCoordinateSystemGridRegion* CCoordinateSystemGridRegionCollection::GetItem (IN
 }
 void CCoordinateSystemGridRegionCollection::RemoveAt (INT32 index)
 {
-    INT32 memoryUse (0);
-
     // The MgDisposableCollection object checks the index argument, and throws if appropriate.
     // The MgDisposableCollection object performs the "SAFE_RELEASE" operation.
-
-    if (index >= 0 && index < GetCount ())
-    {
-        // We don't want an invalid index exception thrown from this GetItem,
-        // we leave that to the RemoveAt function.  Also, this releases the
-        // pointer we get before the exception is thrown.
-        Ptr<MgCoordinateSystemGridRegion> gridRegionPtr = GetItem (index);
-        if (gridRegionPtr != 0)
-        {
-            memoryUse = gridRegionPtr->GetMemoryUsage ();
-        }
-    }
     m_GridRegionCollection->RemoveAt (index);
-    m_MemoryUse -= memoryUse;
 }
 void CCoordinateSystemGridRegionCollection::Clear()
 {
     m_GridRegionCollection->Clear ();
-    m_MemoryUse = sizeof (CCoordinateSystemGridRegionCollection) + sizeof (MgDisposableCollection);
 }
 void CCoordinateSystemGridRegionCollection::SetItem (INT32 index, MgCoordinateSystemGridRegion* value)
 {
-    INT32 memoryUse;
-
-    memoryUse = value->GetMemoryUsage ();
-    if (index >= 0 && index < GetCount ())
-    {
-        Ptr<MgCoordinateSystemGridRegion> currentPtr = GetItem (index);
-        if (currentPtr != 0)
-        {
-            memoryUse -= currentPtr->GetMemoryUsage ();
-        }
-    }
-    if ((m_MemoryUse + memoryUse) < m_GridRegionExceptionLevel)
-    {
-        m_GridRegionCollection->SetItem (index,value);
-        m_MemoryUse += memoryUse;
-    }
-    else
-    {
+    if (GetAvailableMemory() < m_MemoryThreshold)
         throw new MgGridDensityException(L"CCoordinateSystemGridRegionCollection.SetItem", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+
+    m_GridRegionCollection->SetItem (index,value);
 }
 void CCoordinateSystemGridRegionCollection::Add (MgCoordinateSystemGridRegion* value)
 {
-    INT32 memoryUse;
-
-    memoryUse = value->GetMemoryUsage ();
-    if ((memoryUse + m_MemoryUse) < m_GridRegionExceptionLevel)
-    {
-        m_GridRegionCollection->Add (value);
-        m_MemoryUse += memoryUse;
-    }
-    else
-    {
+    if (GetAvailableMemory() < m_MemoryThreshold)
         throw new MgGridDensityException(L"CCoordinateSystemGridRegionCollection.Add", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+
+    m_GridRegionCollection->Add (value);
 }
 void CCoordinateSystemGridRegionCollection::AddCollection (MgCoordinateSystemGridRegionCollection* aGridRegionCollection)
 {
     INT32 index;
     INT32 toAddCount;
-    INT32 memoryUse;
-    INT32 maxValue;
     Ptr<MgCoordinateSystemGridRegion> aGridRegion;
 
-    maxValue = m_GridRegionExceptionLevel - m_MemoryUse;
-    memoryUse = aGridRegionCollection->GetMemoryUsage ();
-    if (memoryUse > maxValue)
-    {
-        throw new MgGridDensityException(L"CCoordinateSystemGridRegionCollection.AddCollection", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    // Memory check is done inside Add()
     MG_TRY ()
         
         toAddCount = aGridRegionCollection->GetCount ();
@@ -1264,19 +1060,6 @@ void CCoordinateSystemGridRegionCollection::AddCollection (MgCoordinateSystemGri
     MG_CATCH_AND_THROW(L"CCoordinateSystemGridRegionCollection::AddCollection")
     return;
 }
-INT32 CCoordinateSystemGridRegionCollection::SetGridRegionExceptionLevel (INT32 memoryUseMax)
-{
-    INT32 rtnValue = m_GridRegionExceptionLevel;
-    if (memoryUseMax > 0L)
-    {
-        m_GridRegionExceptionLevel = memoryUseMax;
-    }
-    return rtnValue;
-}
-INT32 CCoordinateSystemGridRegionCollection::GetMemoryUsage (void)
-{
-    return m_MemoryUse;
-}
 void CCoordinateSystemGridRegionCollection::Dispose (void)
 {
     // Destructor deletes the contents of the collection.
@@ -1288,14 +1071,12 @@ void CCoordinateSystemGridRegionCollection::Dispose (void)
 // CCoordinateSystemGridTick objects.  CCoordinateSystemGridTickCollection
 // objects will contain MgCoordinateSystemGridTick objects for the entire
 // boundary or for an individual grid line.
-CCoordinateSystemGridTickCollection::CCoordinateSystemGridTickCollection (INT32 gridTickExceptionLevel)
+CCoordinateSystemGridTickCollection::CCoordinateSystemGridTickCollection (INT64 memoryThreshold)
                                         :
                                      MgCoordinateSystemGridTickCollection (),
-                                     m_MemoryUse                          (),
-                                     m_GridTickExceptionLevel             (gridTickExceptionLevel),
+                                     m_MemoryThreshold                    (memoryThreshold),
                                      m_GridTickCollection                 ()
 {
-    m_MemoryUse = sizeof (CCoordinateSystemGridTickCollection) + sizeof (MgDisposableCollection);
     m_GridTickCollection = new MgDisposableCollection();
 }
 CCoordinateSystemGridTickCollection::~CCoordinateSystemGridTickCollection (void)
@@ -1314,83 +1095,35 @@ MgCoordinateSystemGridTick* CCoordinateSystemGridTickCollection::GetItem (INT32 
 }
 void CCoordinateSystemGridTickCollection::RemoveAt (INT32 index)
 {
-    INT32 memoryUse (0);
-
     // The MgDisposableCollection object checks the index argument, and throws if appropriate.
     // The MgDisposableCollection object performs the "SAFE_RELEASE" operation.
-
-    if (index >= 0 && index < GetCount ())
-    {
-        // We don't want an invalid index exception thrown from this GetItem,
-        // we leave that to the RemoveAt function.  Also, this releases the
-        // pointer we get before the exception is thrown.
-        Ptr<MgCoordinateSystemGridTick> gridTickPtr = GetItem (index);
-        if (gridTickPtr != 0)
-        {
-            memoryUse = gridTickPtr->GetMemoryUsage ();
-        }
-    }
     m_GridTickCollection->RemoveAt (index);
-    m_MemoryUse -= memoryUse;
 }
 void CCoordinateSystemGridTickCollection::Clear()
 {
     m_GridTickCollection->Clear ();
-    m_MemoryUse = sizeof (CCoordinateSystemGridTickCollection) + sizeof (MgDisposableCollection);
 }
 void CCoordinateSystemGridTickCollection::SetItem (INT32 index, MgCoordinateSystemGridTick* value)
 {
-    INT32 memoryUse;
-
-    memoryUse = value->GetMemoryUsage ();
-    if (index >= 0 && index < GetCount ())
-    {
-        Ptr<MgCoordinateSystemGridTick> currentPtr = GetItem (index);
-        if (currentPtr != 0)
-        {
-            memoryUse -= currentPtr->GetMemoryUsage ();
-        }
-    }
-    if ((m_MemoryUse + memoryUse) < m_GridTickExceptionLevel)
-    {
-        m_GridTickCollection->SetItem (index,value);
-        m_MemoryUse += memoryUse;
-    }
-    else
-    {
+    if (GetAvailableMemory() < m_MemoryThreshold)
         throw new MgGridDensityException(L"CCoordinateSystemGridTickCollection.SetItem", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
 
+    m_GridTickCollection->SetItem (index,value);
 }
 void CCoordinateSystemGridTickCollection::Add (MgCoordinateSystemGridTick* value)
 {
-    INT32 memoryUse;
-
-    memoryUse = value->GetMemoryUsage ();
-    if ((memoryUse + m_MemoryUse) < m_GridTickExceptionLevel)
-    {
-        m_GridTickCollection->Add (value);
-        m_MemoryUse += memoryUse;
-    }
-    else
-    {
+    if (GetAvailableMemory() < m_MemoryThreshold)
         throw new MgGridDensityException(L"CCoordinateSystemGridTickCollection.Add", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+
+    m_GridTickCollection->Add (value);
 }
 void CCoordinateSystemGridTickCollection::AddCollection (MgCoordinateSystemGridTickCollection* aGridTickCollection)
 {
     INT32 index;
     INT32 toAddCount;
-    INT32 maxValue;
-    INT32 memoryUse;
     Ptr<MgCoordinateSystemGridTick> aGridTick;
 
-    maxValue = m_GridTickExceptionLevel - m_MemoryUse;
-    memoryUse = aGridTickCollection->GetMemoryUsage ();
-    if (memoryUse > maxValue)
-    {
-        throw new MgGridDensityException(L"CCoordinateSystemGridTickCollection.AddCollection", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    // Memory check is done in Add()
     MG_TRY ()
         toAddCount = aGridTickCollection->GetCount ();
         for (index = 0;index < toAddCount;index += 1)
@@ -1400,19 +1133,6 @@ void CCoordinateSystemGridTickCollection::AddCollection (MgCoordinateSystemGridT
         }
     MG_CATCH_AND_THROW(L"CCoordinateSystemGridTickCollection::AddCollection")
     return;
-}
-INT32 CCoordinateSystemGridTickCollection::SetGridTickExceptionLevel (INT32 memoryUseMax)
-{
-    INT32 rtnValue = m_GridTickExceptionLevel;
-    if (memoryUseMax > 0L)
-    {
-        m_GridTickExceptionLevel = memoryUseMax;
-    }
-    return rtnValue;
-}
-INT32 CCoordinateSystemGridTickCollection::GetMemoryUsage ()
-{
-    return m_MemoryUse;
 }
 void CCoordinateSystemGridTickCollection::Dispose (void)
 {

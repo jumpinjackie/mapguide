@@ -776,7 +776,6 @@ PUBLISHED_API:
     virtual MgLineStringCollection* GetSegmentCollection(void)= 0;
     virtual void SetSegmentCollection (MgLineStringCollection* segmentCollection) = 0;
 INTERNAL_API:
-    virtual INT32 GetMemoryUsage (void) = 0;
 protected:
     INT32 GetClassId(){return m_cls_id;};
 CLASS_ID:
@@ -804,7 +803,6 @@ PUBLISHED_API:
     virtual MgLineStringCollection* GetWestLine (void) = 0;
 
 INTERNAL_API:
-    virtual INT32 GetMemoryUsage (void) = 0;
 protected:
     INT32 GetClassId(){return m_cls_id;};
 CLASS_ID:
@@ -828,7 +826,6 @@ PUBLISHED_API:
     virtual MgCoordinate* GetPosition () = 0;
     virtual MgCoordinate* GetDirectionVector () = 0;
 INTERNAL_API:
-    virtual INT32 GetMemoryUsage (void) = 0;
 protected:
     INT32 GetClassId(){return m_cls_id;};
 CLASS_ID:
@@ -853,7 +850,6 @@ INTERNAL_API:
     virtual void SetItem (INT32 index, MgCoordinateSystemGridLine* value)=0;
     virtual void Add (MgCoordinateSystemGridLine* value)=0;
     virtual void AddCollection (MgCoordinateSystemGridLineCollection* aGridLineCollection)=0;
-    virtual INT32 GetMemoryUsage (void) = 0;
 
 protected:
     INT32 GetClassId(){return m_cls_id;};
@@ -874,7 +870,6 @@ PUBLISHED_API:
 INTERNAL_API:
     virtual void SetItem (INT32 index, MgCoordinateSystemGridRegion* value)=0;
     virtual void Add (MgCoordinateSystemGridRegion* value)=0;
-    virtual INT32 GetMemoryUsage (void) = 0;
 
 protected:
     INT32 GetClassId(){return m_cls_id;};
@@ -897,7 +892,6 @@ PUBLISHED_API:
 INTERNAL_API:
     virtual void SetItem (INT32 index, MgCoordinateSystemGridTick* value)=0;
     virtual void Add (MgCoordinateSystemGridTick* value)=0;
-    virtual INT32 GetMemoryUsage (void) = 0;
 
 protected:
     INT32 GetClassId(){return m_cls_id;};

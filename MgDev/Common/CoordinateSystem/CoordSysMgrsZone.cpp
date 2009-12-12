@@ -43,11 +43,16 @@ CCoordinateSystemMgrsZone::CCoordinateSystemMgrsZone (MgCoordinateSystemGridBoun
                                                       INT32 utmZoneNbr,
                                                       bool useFrameDatum,
                                                       MgCoordinateSystem* frameCRS,
-                                                      INT8 letteringScheme)
+                                                      INT8 letteringScheme,
+                                                      INT64 gridLineMemoryThreshold,
+                                                      INT64 gridTickMemoryThreshold,
+                                                      INT64 gridRegionMemoryThreshold)
                                                         :
-                                                      CCoordinateSystemOneGrid (),
+                                                      CCoordinateSystemOneGrid (gridLineMemoryThreshold,
+                                                                                gridTickMemoryThreshold),
                                                       m_UtmZone                (utmZoneNbr),
-                                                      m_LetteringScheme        (letteringScheme)
+                                                      m_LetteringScheme        (letteringScheme),
+                                                      m_GridRegionMemoryThreshold(gridRegionMemoryThreshold)
 {
     MgCoordinateSystemFactory csFactory;
     Ptr<MgCoordinateSystem> utmZoneCRS;
@@ -62,19 +67,17 @@ CCoordinateSystemMgrsZone::~CCoordinateSystemMgrsZone (void)
 {
 }
 CCoordinateSystemGridRegionCollection* CCoordinateSystemMgrsZone::GetGridRegions (MgCoordinateSystemGridBoundary* frameBoundary,
-                                                                                  MgCoordinateSystemGridSpecification* specification,
-                                                                                  INT32 exceptionLvl)
+                                                                                  MgCoordinateSystemGridSpecification* specification)
 {
     Ptr<CCoordinateSystemGridRegionCollection> regionCollection;
 
     MG_TRY ()
-        regionCollection = BuildRegionCollection (frameBoundary,specification,exceptionLvl);
+        regionCollection = BuildRegionCollection (frameBoundary,specification);
     MG_CATCH_AND_THROW(L"MgCoordinateSystemMgrsZone::GetGridRegions")
     return SAFE_ADDREF(regionCollection.p);
 }
 CCoordinateSystemGridLineCollection* CCoordinateSystemMgrsZone::GetGridLines (MgCoordinateSystemGridBoundary* frameBoundary,
-                                                                              MgCoordinateSystemGridSpecification* specification,
-                                                                              INT32 exceptionLvl)
+                                                                              MgCoordinateSystemGridSpecification* specification)
 {
     // For now, we just call the generic OneGrid grid line function.
     // Later on we might need to add some special logic for zones 31
@@ -83,8 +86,7 @@ CCoordinateSystemGridLineCollection* CCoordinateSystemMgrsZone::GetGridLines (Mg
     return dynamic_cast<CCoordinateSystemGridLineCollection*>(gridLines);
 }
 CCoordinateSystemGridLineCollection* CCoordinateSystemMgrsZone::GetGraticuleLines (MgCoordinateSystemGridBoundary* frameBoundary,
-                                                                                   MgCoordinateSystemGridSpecification* specification,
-                                                                                   INT32 exceptionLvl)
+                                                                                   MgCoordinateSystemGridSpecification* specification)
 {
     const INT32 maxPoints = 512;
 
@@ -111,7 +113,7 @@ CCoordinateSystemGridLineCollection* CCoordinateSystemMgrsZone::GetGraticuleLine
 
     MgCoordinateSystemFactory csFactory;
 
-    Ptr<CCoordinateSystemGridLineCollection> gridLineCollection = new CCoordinateSystemGridLineCollection (exceptionLvl);
+    Ptr<CCoordinateSystemGridLineCollection> gridLineCollection = new CCoordinateSystemGridLineCollection (m_GridLineMemoryThreshold);
 
     MG_TRY ()
         fromPoint = new MgCoordinateXY ();
@@ -130,6 +132,10 @@ CCoordinateSystemGridLineCollection* CCoordinateSystemMgrsZone::GetGraticuleLine
         // grid in geographic coordinate form, and work from there.
         GetGeographicExtents (lngMin,lngMax,latMin,latMax);
         
+        // MajorRegions do not do their own memory checks.  They do all their allocation
+        // in their ctor and it is estimated that the largest potential collection is about
+        // 40Mb.  The first following call to lineCollection->Add() will check, so it would
+        // be redundant to add an additional check here.
         regionCollection = new CCoordinateSystemMgrsMajorRegionCollection (m_UtmZone,latMin,latMax);
         if (regionCollection != 0)
         {
@@ -353,9 +359,12 @@ INT32 CCoordinateSystemMgrsZone::GetUtmZoneNbr (void)
     // is the uninitialized/unknown/error value.
     return m_UtmZone;
 }
+void CCoordinateSystemMgrsZone::ResetGridRegionMemoryThreshold(INT64 memThreshold)
+{
+    m_GridRegionMemoryThreshold = memThreshold;
+}
 CCoordinateSystemGridRegionCollection* CCoordinateSystemMgrsZone::BuildRegionCollection (MgCoordinateSystemGridBoundary* frameBoundary,
-                                                                                         MgCoordinateSystemGridSpecification* specification,
-                                                                                         INT32 exceptionLvl)
+                                                                                         MgCoordinateSystemGridSpecification* specification)
 {
     double curvePrecision;
     double eastingIncrement;
@@ -363,7 +372,7 @@ CCoordinateSystemGridRegionCollection* CCoordinateSystemMgrsZone::BuildRegionCol
     Ptr<CCoordinateSystemGridRegionCollection> regionCollection;
 
     MG_TRY ()
-        regionCollection = new CCoordinateSystemGridRegionCollection (exceptionLvl);
+        regionCollection = new CCoordinateSystemGridRegionCollection (m_GridRegionMemoryThreshold);
         curvePrecision = specification->GetCurvePrecision ();
         if (specification->GetUnitType () == MgCoordinateSystemUnitType::Angular)
         {

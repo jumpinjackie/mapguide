@@ -130,6 +130,9 @@ protected:
     INT32 m_GridLineExceptionLevel;
     INT32 m_GridRegionExceptionLevel;
     INT32 m_GridTickExceptionLevel;
+    INT64 m_GridLineMemoryThreshold;
+    INT64 m_GridRegionMemoryThreshold;
+    INT64 m_GridTickMemoryThreshold;
     INT32 m_nLastError;
     Ptr<MgCoordinateSystem> m_pCsTarget;
     struct cs_Mgrs_* m_pCsMgrs;
