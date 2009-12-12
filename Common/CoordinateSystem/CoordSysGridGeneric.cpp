@@ -43,6 +43,10 @@ CCoordinateSystemGridGeneric::CCoordinateSystemGridGeneric(bool bSetExceptionsOn
                        m_FrameBoundary (),
                        m_TheGrid       (0)
 {
+    INT64 availableMemory = GetAvailableMemory();
+    m_GridLineMemoryThreshold = (availableMemory > m_GridLineExceptionLevel) ? availableMemory - m_GridLineExceptionLevel : 0L;
+    m_GridRegionMemoryThreshold = (availableMemory > m_GridRegionExceptionLevel) ? availableMemory - m_GridRegionExceptionLevel : 0L;
+    m_GridTickMemoryThreshold = (availableMemory > m_GridTickExceptionLevel) ? availableMemory - m_GridTickExceptionLevel : 0L;
 }
 CCoordinateSystemGridGeneric::CCoordinateSystemGridGeneric(MgCoordinateSystem* pSourceCs,
                                                            MgCoordinateSystem* pTargetCs,
@@ -60,6 +64,11 @@ CCoordinateSystemGridGeneric::CCoordinateSystemGridGeneric(MgCoordinateSystem* p
 {
     m_pCsSource = SAFE_ADDREF (pSourceCs);      // Grid coordinate system
     m_pCsTarget = SAFE_ADDREF (pTargetCs);      // Viewport coordinate system
+
+    INT64 availableMemory = GetAvailableMemory();
+    m_GridLineMemoryThreshold = (availableMemory > m_GridLineExceptionLevel) ? availableMemory - m_GridLineExceptionLevel : 0L;
+    m_GridRegionMemoryThreshold = (availableMemory > m_GridRegionExceptionLevel) ? availableMemory - m_GridRegionExceptionLevel : 0L;
+    m_GridTickMemoryThreshold = (availableMemory > m_GridTickExceptionLevel) ? availableMemory - m_GridTickExceptionLevel : 0L;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemGridGeneric::~CCoordinateSystemGridGeneric()
@@ -75,9 +84,8 @@ INT32 CCoordinateSystemGridGeneric::GetSpecializationType ()
 void CCoordinateSystemGridGeneric::SetBoundary(MgCoordinateSystemGridBoundary* pFrameBoundary)
 {
     m_FrameBoundary = SAFE_ADDREF (pFrameBoundary);
-    m_TheGrid = new CCoordinateSystemOneGrid (m_FrameBoundary,m_pCsSource,m_pCsTarget);
-    m_TheGrid->SetGridLineExceptionLevel (m_GridLineExceptionLevel);
-    m_TheGrid->SetGridTickExceptionLevel (m_GridTickExceptionLevel);
+    m_TheGrid = new CCoordinateSystemOneGrid (m_FrameBoundary,m_pCsSource,m_pCsTarget,
+                                              m_GridLineMemoryThreshold,m_GridTickMemoryThreshold);
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 MgCoordinateSystemGridBoundary* CCoordinateSystemGridGeneric::GetBoundary(void)
@@ -163,10 +171,12 @@ INT32 CCoordinateSystemGridGeneric::SetGridLineExceptionLevel (INT32 memoryUseMa
     if (memoryUseMax > 0)
     {
         m_GridLineExceptionLevel = memoryUseMax;
-        if (m_TheGrid != 0)
-        {
-            m_TheGrid->SetGridLineExceptionLevel (m_GridLineExceptionLevel);
-        }
+    }
+    INT64 availableMemory = GetAvailableMemory();
+    m_GridLineMemoryThreshold = (availableMemory > m_GridLineExceptionLevel) ? availableMemory - m_GridLineExceptionLevel : 0L;
+    if (m_TheGrid != 0)
+    {
+        m_TheGrid->ResetGridLineMemoryThreshold(m_GridLineMemoryThreshold);
     }
     return rtnValue;
 }
@@ -177,6 +187,8 @@ INT32 CCoordinateSystemGridGeneric::SetGridRegionExceptionLevel (INT32 memoryUse
     {
         m_GridRegionExceptionLevel = memoryUseMax;
     }
+    INT64 availableMemory = GetAvailableMemory();
+    m_GridRegionMemoryThreshold = (availableMemory > m_GridRegionExceptionLevel) ? availableMemory - m_GridRegionExceptionLevel : 0L;
     return rtnValue;
 }
 INT32 CCoordinateSystemGridGeneric::SetGridTickExceptionLevel (INT32 memoryUseMax)
@@ -185,10 +197,12 @@ INT32 CCoordinateSystemGridGeneric::SetGridTickExceptionLevel (INT32 memoryUseMa
     if (memoryUseMax > 0)
     {
         m_GridTickExceptionLevel = memoryUseMax;
-        if (m_TheGrid != 0)
-        {
-            m_TheGrid->SetGridTickExceptionLevel (m_GridTickExceptionLevel);
-        }
+    }
+    INT64 availableMemory = GetAvailableMemory();
+    m_GridTickMemoryThreshold = (availableMemory > m_GridTickExceptionLevel) ? availableMemory - m_GridTickExceptionLevel : 0L;
+    if (m_TheGrid != 0)
+    {
+        m_TheGrid->ResetGridTickMemoryThreshold(m_GridTickMemoryThreshold);
     }
     return rtnValue;
 }

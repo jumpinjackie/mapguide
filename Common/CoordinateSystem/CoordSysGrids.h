@@ -285,7 +285,6 @@ public:
     INT32 GetCount (void);
     MgLineString* GetSegment (INT32 index);
     MgLineStringCollection* GetSegmentCollection (void);
-    INT32 GetMemoryUsage (void);
 
     void SetGridOrientation (INT32 orientation);
     void SetRealValue (double realValue);
@@ -327,7 +326,6 @@ public:
     MgLineStringCollection* GetEastLine (void);
     MgLineStringCollection* GetNorthLine (void);
     MgLineStringCollection* GetWestLine (void);
-    INT32 GetMemoryUsage (void);
 
     void SetRegionBoundary (MgPolygon* boundary);
     void SetSouthLine (MgLineStringCollection* southLine);
@@ -346,8 +344,6 @@ protected:
     Ptr<MgLineStringCollection> m_WestLine;
 
 private:
-    INT32 PolygonMemoryUse (MgPolygon* polygon);
-    INT32 LineStringCollectionMemoryUse (MgLineStringCollection* lineCollection);
     // Not implemented
     CCoordinateSystemGridRegion (void);
     CCoordinateSystemGridRegion (const CCoordinateSystemGridRegion& source);
@@ -374,7 +370,6 @@ public:
     double GetValue (void);
     MgCoordinate* GetPosition (void);
     MgCoordinate* GetDirectionVector (void);
-    INT32 GetMemoryUsage (void);
 
 protected:
     void Dispose (void);
@@ -399,7 +394,7 @@ private:            // Not implemented
 class CCoordinateSystemGridLineCollection : public MgCoordinateSystemGridLineCollection
 {
 public:
-    CCoordinateSystemGridLineCollection (INT32 gridLineExceptionLevel);
+    CCoordinateSystemGridLineCollection (INT64 memoryThreshold);
     ~CCoordinateSystemGridLineCollection(void);
 
     INT32 GetCount () const;
@@ -411,13 +406,10 @@ public:
     void SetItem (INT32 index,MgCoordinateSystemGridLine* value);
     void Add (MgCoordinateSystemGridLine* value);
     void AddCollection (MgCoordinateSystemGridLineCollection* aGridLineCollection);
-    INT32 SetGridLineExceptionLevel (INT32 memoryUseMax);
-    INT32 GetMemoryUsage (void);
 
 protected:
     void Dispose(void);
-    INT32 m_MemoryUse;
-    INT32 m_GridLineExceptionLevel;
+    INT64 m_MemoryThreshold;
     Ptr<MgDisposableCollection> m_GridLineCollection;
 
 private:
@@ -432,7 +424,7 @@ private:
 class CCoordinateSystemGridRegionCollection : public MgCoordinateSystemGridRegionCollection
 {
 public:
-    CCoordinateSystemGridRegionCollection (INT32 gridRegionExceptionLevel);
+    CCoordinateSystemGridRegionCollection (INT64 memoryThreshold);
     ~CCoordinateSystemGridRegionCollection (void);
 
     INT32 GetCount () const;
@@ -443,13 +435,10 @@ public:
     void SetItem (INT32 index, MgCoordinateSystemGridRegion* value);
     void Add (MgCoordinateSystemGridRegion* value);
     void AddCollection (MgCoordinateSystemGridRegionCollection* aGridRegionCollection);
-    INT32 SetGridRegionExceptionLevel (INT32 memoryUseMax);
-    INT32 GetMemoryUsage (void);
 
 protected:
     void Dispose (void);
-    INT32 m_MemoryUse;
-    INT32 m_GridRegionExceptionLevel;
+    INT64 m_MemoryThreshold;
     Ptr<MgDisposableCollection> m_GridRegionCollection;
 
 private:
@@ -466,7 +455,7 @@ private:
 class CCoordinateSystemGridTickCollection : public MgCoordinateSystemGridTickCollection 
 {
 public:
-    CCoordinateSystemGridTickCollection (INT32 gridLineExceptionLevel);
+    CCoordinateSystemGridTickCollection (INT64 memoryThreshold);
     ~CCoordinateSystemGridTickCollection (void);
 
     INT32 GetCount () const;
@@ -476,13 +465,10 @@ public:
     void SetItem (INT32 index, MgCoordinateSystemGridTick* value);
     void Add (MgCoordinateSystemGridTick* value);
     void AddCollection (MgCoordinateSystemGridTickCollection* aGridTickCollection);
-    INT32 SetGridTickExceptionLevel (INT32 memoryUseMax);
-    INT32 GetMemoryUsage (void);
 
 protected:
     void Dispose (void);
-    INT32 m_MemoryUse;
-    INT32 m_GridTickExceptionLevel;
+    INT64 m_MemoryThreshold;
     Ptr<MgDisposableCollection> m_GridTickCollection;
 
 private:

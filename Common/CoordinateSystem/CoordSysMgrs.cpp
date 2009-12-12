@@ -81,6 +81,10 @@ CCoordinateSystemMgrs::CCoordinateSystemMgrs(INT8 nLetteringScheme, bool bSetExc
                        m_GraticuleUpsNorth        (),
                        m_GraticuleUpsSouth        ()
 {
+    INT64 availableMemory = GetAvailableMemory();
+    m_GridLineMemoryThreshold = (availableMemory > m_GridLineExceptionLevel) ? availableMemory - m_GridLineExceptionLevel : 0L;
+    m_GridRegionMemoryThreshold = (availableMemory > m_GridRegionExceptionLevel) ? availableMemory - m_GridRegionExceptionLevel : 0L;
+    m_GridTickMemoryThreshold = (availableMemory > m_GridTickExceptionLevel) ? availableMemory - m_GridTickExceptionLevel : 0L;
 }
 CCoordinateSystemMgrs::CCoordinateSystemMgrs(MgCoordinateSystem* pTargetCs,INT8 nLetteringScheme,
                                                                            bool bSetExceptionsOn)
@@ -102,6 +106,11 @@ CCoordinateSystemMgrs::CCoordinateSystemMgrs(MgCoordinateSystem* pTargetCs,INT8 
 
 {
     m_pCsTarget = SAFE_ADDREF (pTargetCs);
+
+    INT64 availableMemory = GetAvailableMemory();
+    m_GridLineMemoryThreshold = (availableMemory > m_GridLineExceptionLevel) ? availableMemory - m_GridLineExceptionLevel : 0L;
+    m_GridRegionMemoryThreshold = (availableMemory > m_GridRegionExceptionLevel) ? availableMemory - m_GridRegionExceptionLevel : 0L;
+    m_GridTickMemoryThreshold = (availableMemory > m_GridTickExceptionLevel) ? availableMemory - m_GridTickExceptionLevel : 0L;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemMgrs::~CCoordinateSystemMgrs()
@@ -274,7 +283,7 @@ MgCoordinate* CCoordinateSystemMgrs::ConvertToLonLat(CREFSTRING sMgrs, INT32 grd
             }
             else
             {
-                m_nLastError=m_nLastError=MgCoordinateSystemErrorCode::OutOfMemory;
+                m_nLastError=MgCoordinateSystemErrorCode::OutOfMemory;
                 return NULL;
             }
         }
@@ -388,7 +397,6 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemMgrs::GetGridLines (MgCoo
     INT32 index;
     INT32 unitType;
     INT32 zoneCount;
-    INT32 zoneExceptionLevel;
     Ptr<CCoordinateSystemMgrsZone> mgrsZoneGrid;
     Ptr<MgCoordinateSystemGridLineCollection> aGridLineCollection;
     Ptr<CCoordinateSystemGridLineCollection> theGridLineCollection;
@@ -403,7 +411,7 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemMgrs::GetGridLines (MgCoo
     }
 
     MG_TRY ()
-        theGridLineCollection = new CCoordinateSystemGridLineCollection (m_GridLineExceptionLevel);
+        theGridLineCollection = new CCoordinateSystemGridLineCollection (m_GridLineMemoryThreshold);
 
         // Determine the grid type.
         unitType = specification->GetUnitType();
@@ -419,14 +427,13 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemMgrs::GetGridLines (MgCoo
         zoneCount = m_ZoneCollection->GetCount ();
         for (index = 0;index < zoneCount;index += 1)
         {
-            zoneExceptionLevel = m_GridLineExceptionLevel - theGridLineCollection->GetMemoryUsage ();
             mgrsZoneGrid = m_ZoneCollection->GetItem (index);
             if (specIsGrid)
             {
                 // The specification calls for a grid.  The following function
                 // is smart enough to deal with the special nature of zones
                 // 31 through 37 at the higher northern latitudes.
-                aGridLineCollection = mgrsZoneGrid->GetGridLines (m_GridBoundary,specification,zoneExceptionLevel);
+                aGridLineCollection = mgrsZoneGrid->GetGridLines (m_GridBoundary,specification);
             }
             else
             {
@@ -434,7 +441,7 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemMgrs::GetGridLines (MgCoo
                 // smart enough to deal with band X (which is 12 degrees high)
                 // and the special nature of zones 31 through 37 at the higher
                 // northern latitudes.
-                aGridLineCollection = mgrsZoneGrid->GetGraticuleLines (m_GridBoundary,specification,zoneExceptionLevel);
+                aGridLineCollection = mgrsZoneGrid->GetGraticuleLines (m_GridBoundary,specification);
             }
             if (aGridLineCollection != 0)
             {
@@ -451,7 +458,6 @@ MgCoordinateSystemGridRegionCollection* CCoordinateSystemMgrs::GetGridRegions (M
 {
     INT32 index;
     INT32 zoneCount;
-    INT32 zoneExceptionLevel;
     Ptr<CCoordinateSystemMgrsZone> mgrsZoneGrid;
     Ptr<CCoordinateSystemGridRegionCollection> theGridRegionCollection;
 
@@ -463,14 +469,13 @@ MgCoordinateSystemGridRegionCollection* CCoordinateSystemMgrs::GetGridRegions (M
     }
 
     MG_TRY ()
-        theGridRegionCollection = new CCoordinateSystemGridRegionCollection (m_GridRegionExceptionLevel);
+        theGridRegionCollection = new CCoordinateSystemGridRegionCollection (m_GridRegionMemoryThreshold);
         zoneCount = m_ZoneCollection->GetCount ();
         for (index = 0;index < zoneCount;index += 1)
         {
-            zoneExceptionLevel = m_GridRegionExceptionLevel - theGridRegionCollection->GetMemoryUsage ();
             mgrsZoneGrid = m_ZoneCollection->GetItem (index);
             Ptr<MgCoordinateSystemGridRegionCollection> aGridRegionCollection;
-            aGridRegionCollection = mgrsZoneGrid->GetGridRegions (m_GridBoundary,specification,zoneExceptionLevel);
+            aGridRegionCollection = mgrsZoneGrid->GetGridRegions (m_GridBoundary,specification);
             theGridRegionCollection->AddCollection (aGridRegionCollection);
         }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemMgrs::GetGridRegions")
@@ -496,7 +501,7 @@ MgCoordinateSystemGridTickCollection* CCoordinateSystemMgrs::GetGridTicks (MgCoo
     }
 
     MG_TRY ()
-        theGridTickCollection = new CCoordinateSystemGridTickCollection (m_GridTickExceptionLevel);
+        theGridTickCollection = new CCoordinateSystemGridTickCollection (m_GridTickMemoryThreshold);
         unitType = specification->GetUnitType();
         specIsGrid = (unitType ==  MgCoordinateSystemUnitType::Linear);
         if (specIsGrid)
@@ -618,6 +623,32 @@ INT32 CCoordinateSystemMgrs::SetGridLineExceptionLevel (INT32 memoryUseMax)
     {
         m_GridLineExceptionLevel = memoryUseMax;
     }
+    INT64 availableMemory = GetAvailableMemory();
+    m_GridLineMemoryThreshold = (availableMemory > m_GridLineExceptionLevel) ? availableMemory - m_GridLineExceptionLevel : 0L;
+
+    if (m_ZoneCollection != 0)
+    {
+        INT32 index;
+        INT32 zoneCount;
+        zoneCount = m_ZoneCollection->GetCount ();
+        for (index = 0;index < zoneCount;index += 1)
+        {
+            Ptr<CCoordinateSystemMgrsZone> mgrsZoneGrid = m_ZoneCollection->GetItem (index);
+            mgrsZoneGrid->ResetGridLineMemoryThreshold(m_GridLineMemoryThreshold);
+        }
+    }
+    if (m_GraticuleUtm != 0)
+    {
+        m_GraticuleUtm->ResetGridLineMemoryThreshold(m_GridLineMemoryThreshold);
+    }
+    if (m_GraticuleUpsNorth != 0)
+    {
+        m_GraticuleUpsNorth->ResetGridLineMemoryThreshold(m_GridLineMemoryThreshold);
+    }
+    if (m_GraticuleUpsSouth != 0)
+    {
+        m_GraticuleUpsSouth->ResetGridLineMemoryThreshold(m_GridLineMemoryThreshold);
+    }
     return rtnValue;
 }
 INT32 CCoordinateSystemMgrs::SetGridRegionExceptionLevel (INT32 memoryUseMax)
@@ -627,6 +658,20 @@ INT32 CCoordinateSystemMgrs::SetGridRegionExceptionLevel (INT32 memoryUseMax)
     {
         m_GridRegionExceptionLevel = memoryUseMax;
     }
+    INT64 availableMemory = GetAvailableMemory();
+    m_GridRegionMemoryThreshold = (availableMemory > m_GridRegionExceptionLevel) ? availableMemory - m_GridRegionExceptionLevel : 0L;
+
+    if (m_ZoneCollection != 0)
+    {
+        INT32 index;
+        INT32 zoneCount;
+        zoneCount = m_ZoneCollection->GetCount ();
+        for (index = 0;index < zoneCount;index += 1)
+        {
+            Ptr<CCoordinateSystemMgrsZone> mgrsZoneGrid = m_ZoneCollection->GetItem (index);
+            mgrsZoneGrid->ResetGridRegionMemoryThreshold(m_GridRegionMemoryThreshold);
+        }
+    }
     return rtnValue;
 }
 INT32 CCoordinateSystemMgrs::SetGridTickExceptionLevel (INT32 memoryUseMax)
@@ -635,6 +680,32 @@ INT32 CCoordinateSystemMgrs::SetGridTickExceptionLevel (INT32 memoryUseMax)
     if (memoryUseMax > 0L)
     {
         m_GridTickExceptionLevel = memoryUseMax;
+    }
+    INT64 availableMemory = GetAvailableMemory();
+    m_GridTickMemoryThreshold = (availableMemory > m_GridTickExceptionLevel) ? availableMemory - m_GridTickExceptionLevel : 0L;
+    
+    if (m_ZoneCollection != 0)
+    {
+        INT32 index;
+        INT32 zoneCount;
+        zoneCount = m_ZoneCollection->GetCount ();
+        for (index = 0;index < zoneCount;index += 1)
+        {
+            Ptr<CCoordinateSystemMgrsZone> mgrsZoneGrid = m_ZoneCollection->GetItem (index);
+            mgrsZoneGrid->ResetGridTickMemoryThreshold(m_GridTickMemoryThreshold);
+        }
+    }
+    if (m_GraticuleUtm != 0)
+    {
+        m_GraticuleUtm->ResetGridTickMemoryThreshold(m_GridTickMemoryThreshold);
+    }
+    if (m_GraticuleUpsNorth != 0)
+    {
+        m_GraticuleUpsNorth->ResetGridTickMemoryThreshold(m_GridTickMemoryThreshold);
+    }
+    if (m_GraticuleUpsSouth != 0)
+    {
+        m_GraticuleUpsSouth->ResetGridTickMemoryThreshold(m_GridTickMemoryThreshold);
     }
     return rtnValue;
 }
@@ -1010,11 +1081,13 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
                 if (pPolygonIntersection != 0)
                 {
                     reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
-                    mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
+                    mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme,
+                                                                  m_GridLineMemoryThreshold,m_GridTickMemoryThreshold,m_GridRegionMemoryThreshold);
                     zoneCollection->Add (mgrsZoneGrid);
 
                     // Construct the m_GraticuleUpsSouth member, it may be needed.
-                    m_GraticuleUpsSouth = new CCoordinateSystemOneGrid (reducedFrameBoundary,llCRS,frameCRS);
+                    m_GraticuleUpsSouth = new CCoordinateSystemOneGrid (reducedFrameBoundary,llCRS,frameCRS,
+                                                                        m_GridLineMemoryThreshold,m_GridTickMemoryThreshold);
                 }
             }
         }
@@ -1045,11 +1118,13 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
                 if (pPolygonIntersection != 0)
                 {
                     reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
-                    mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
+                    mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme,
+                                                                  m_GridLineMemoryThreshold,m_GridTickMemoryThreshold,m_GridRegionMemoryThreshold);
                     zoneCollection->Add (mgrsZoneGrid);
 
                     // Construct the m_GraticuleUpsNorth member, it may be needed.
-                    m_GraticuleUpsNorth = new CCoordinateSystemOneGrid (reducedFrameBoundary,llCRS,frameCRS);
+                    m_GraticuleUpsNorth = new CCoordinateSystemOneGrid (reducedFrameBoundary,llCRS,frameCRS,
+                                                                        m_GridLineMemoryThreshold,m_GridTickMemoryThreshold);
                 }
             }
         }
@@ -1106,7 +1181,8 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
                     if (pPolygonIntersection != 0)
                     {
                         reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
-                        mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
+                        mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme,
+                                                                      m_GridLineMemoryThreshold,m_GridTickMemoryThreshold,m_GridRegionMemoryThreshold);
                         zoneCollection->Add (mgrsZoneGrid);
                     }
                  }
@@ -1134,7 +1210,8 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
                     if (pPolygonIntersection != 0)
                     {
                         reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
-                        mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme);
+                        mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme,
+                                                                      m_GridLineMemoryThreshold,m_GridTickMemoryThreshold,m_GridRegionMemoryThreshold);
                         zoneCollection->Add (mgrsZoneGrid);
                     }
                 }
@@ -1153,7 +1230,8 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
             if (pPolygonIntersection != 0)
             {
                 reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
-                m_GraticuleUtm = new CCoordinateSystemOneGrid (reducedFrameBoundary,llCRS,frameCRS);
+                m_GraticuleUtm = new CCoordinateSystemOneGrid (reducedFrameBoundary,llCRS,frameCRS,
+                                                               m_GridLineMemoryThreshold,m_GridTickMemoryThreshold);
             }
         }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemMgrs::FrameBoundaryToZones")

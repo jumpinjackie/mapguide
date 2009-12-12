@@ -229,4 +229,7 @@ private:
     char *m_pszCurLocale;
 };
 
+// Returns approximate remaining memory for the current process
+INT64 GetAvailableMemory();
+
 #endif //_CCOORDINATESYSTEMUTIL_H_

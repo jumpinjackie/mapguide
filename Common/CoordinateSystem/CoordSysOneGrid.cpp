@@ -41,16 +41,17 @@ using namespace CSLibrary;
 //=============================================================================
 // CCoordinateSystemOneGrid
 const INT32 CCoordinateSystemOneGrid::MaxCurvePoints = 511;
-const INT32 CCoordinateSystemOneGrid::m_GridLineExceptionLevelK = 50000000L;   // 50MB
-const INT32 CCoordinateSystemOneGrid::m_GridTickExceptionLevelK = 20000000L;   // 20MB
 
-CCoordinateSystemOneGrid::CCoordinateSystemOneGrid () : MgGuardDisposable        (),
+CCoordinateSystemOneGrid::CCoordinateSystemOneGrid (INT64 gridLineMemoryThreshold,
+                                                    INT64 gridTickMemoryThreshold) 
+                                                        : 
+                                                        MgGuardDisposable        (),
                                                         m_GridFrameCrsSame       (false),
                                                         m_UserID                 (0),
                                                         m_MaxCurvePoints         (MaxCurvePoints),
                                                         m_Label                  (),
-                                                        m_GridLineExceptionLevel (m_GridLineExceptionLevelK),
-                                                        m_GridTickExceptionLevel (m_GridTickExceptionLevelK),
+                                                        m_GridLineMemoryThreshold(gridLineMemoryThreshold),
+                                                        m_GridTickMemoryThreshold(gridTickMemoryThreshold),
                                                         m_GridCRS                (),
                                                         m_FrameCRS               (),
                                                         m_ToFrameXform           (),
@@ -63,15 +64,17 @@ CCoordinateSystemOneGrid::CCoordinateSystemOneGrid () : MgGuardDisposable       
 }
 CCoordinateSystemOneGrid::CCoordinateSystemOneGrid (MgCoordinateSystemGridBoundary* frameBoundary,
                                                     MgCoordinateSystem* gridCRS,
-                                                    MgCoordinateSystem* frameCRS)
+                                                    MgCoordinateSystem* frameCRS,
+                                                    INT64 gridLineMemoryThreshold,
+                                                    INT64 gridTickMemoryThreshold)
                                                         :
                                                     MgGuardDisposable        (),
                                                     m_GridFrameCrsSame       (false),
                                                     m_UserID                 (0),
                                                     m_MaxCurvePoints         (MaxCurvePoints),
                                                     m_Label                  (),
-                                                    m_GridLineExceptionLevel (m_GridLineExceptionLevelK),
-                                                    m_GridTickExceptionLevel (m_GridTickExceptionLevelK),
+                                                    m_GridLineMemoryThreshold(gridLineMemoryThreshold),
+                                                    m_GridTickMemoryThreshold(gridTickMemoryThreshold),
                                                     m_GridCRS                (),
                                                     m_FrameCRS               (),
                                                     m_ToFrameXform           (),
@@ -166,7 +169,7 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemOneGrid::GetGridLines (Mg
     Ptr<MgLineStringCollection> lineStringCollection;
     Ptr<CCoordinateSystemGridLine> gridLine;
 
-    Ptr<CCoordinateSystemGridLineCollection> gridLineCollection = new CCoordinateSystemGridLineCollection (m_GridLineExceptionLevel);
+    Ptr<CCoordinateSystemGridLineCollection> gridLineCollection = new CCoordinateSystemGridLineCollection (m_GridLineMemoryThreshold);
 
     MG_TRY()
         gridCrsUnitCode = m_GridCRS->GetUnitCode ();
@@ -309,7 +312,7 @@ CCoordinateSystemGridTickCollection* CCoordinateSystemOneGrid::GetBoundaryTicks 
         gridCrsUnitCode = m_GridCRS->GetUnitCode ();
 
         CCoordinateSystemGridSpecification* mySpecPtr = dynamic_cast<CCoordinateSystemGridSpecification*>(specs);
-        tickCollection = new CCoordinateSystemGridTickCollection (m_GridTickExceptionLevel);
+        tickCollection = new CCoordinateSystemGridTickCollection (m_GridTickMemoryThreshold);
 
         // Get the grid extents.
         curvePrecision = mySpecPtr->GetCurvePrecision();
@@ -512,24 +515,13 @@ INT32 CCoordinateSystemOneGrid::ApproxGridTickMemoryUsage (MgCoordinateSystemGri
 {
     return 10000;
 }
-
-INT32 CCoordinateSystemOneGrid::SetGridLineExceptionLevel (INT32 memoryUseMax)
+void CCoordinateSystemOneGrid::ResetGridLineMemoryThreshold(INT64 memThreshold)
 {
-    INT32 rtnValue = m_GridLineExceptionLevel;
-    if (memoryUseMax > 0L)
-    {
-        m_GridLineExceptionLevel = memoryUseMax;
-    }
-    return rtnValue;
+    m_GridLineMemoryThreshold = memThreshold;
 }
-INT32 CCoordinateSystemOneGrid::SetGridTickExceptionLevel (INT32 memoryUseMax)
+void CCoordinateSystemOneGrid::ResetGridTickMemoryThreshold(INT64 memThreshold)
 {
-    INT32 rtnValue = m_GridTickExceptionLevel;
-    if (memoryUseMax > 0L)
-    {
-        m_GridTickExceptionLevel = memoryUseMax;
-    }
-    return rtnValue;
+    m_GridTickMemoryThreshold = memThreshold;
 }
 MgCoordinateSystemGridBoundary* CCoordinateSystemOneGrid::GetFrameBoundary (void)
 {

@@ -40,14 +40,15 @@ namespace CSLibrary
 
 class CCoordinateSystemOneGrid : public MgGuardDisposable
 {
-    static const INT32 m_GridLineExceptionLevelK;
-    static const INT32 m_GridTickExceptionLevelK;
 public:
     static const INT32 MaxCurvePoints;
-    CCoordinateSystemOneGrid (void);
+    CCoordinateSystemOneGrid (INT64 gridLineMemoryThreshold,
+                              INT64 gridTickMemoryThreshold);
     CCoordinateSystemOneGrid (MgCoordinateSystemGridBoundary* frameBoundary,
                               MgCoordinateSystem* gridCRS,
-                              MgCoordinateSystem* frameCRS);
+                              MgCoordinateSystem* frameCRS,
+                              INT64 gridLineMemoryThreshold,
+                              INT64 gridTickMemoryThreshold);
     ~CCoordinateSystemOneGrid (void);
 
     void SetUp (MgCoordinateSystemGridBoundary* frameBoundary,
@@ -71,8 +72,8 @@ public:
     INT32 ApproxGridLineMemoryUsage (MgCoordinateSystemGridSpecification* specification);
     INT32 ApproxGridTickMemoryUsage (MgCoordinateSystemGridSpecification* specification);
 
-    INT32 SetGridLineExceptionLevel (INT32 memoryUseMax);
-    INT32 SetGridTickExceptionLevel (INT32 memoryUseMax);
+    void ResetGridLineMemoryThreshold(INT64 memThreshold);
+    void ResetGridTickMemoryThreshold(INT64 memThreshold);
 
 protected:
     MgCoordinateSystemGridBoundary* GetFrameBoundary (void);
@@ -89,8 +90,8 @@ protected:
     INT32 m_UserID;                                      // For user convenience (i.e. UTM zone)
     INT32 m_MaxCurvePoints;
     STRING m_Label;                                      // For user conveinence (i.e. MGRS)
-    INT32 m_GridLineExceptionLevel;
-    INT32 m_GridTickExceptionLevel;
+    INT64 m_GridLineMemoryThreshold;
+    INT64 m_GridTickMemoryThreshold;
     Ptr<MgCoordinateSystem> m_GridCRS;                   // The grid coordinate system
     Ptr<MgCoordinateSystem> m_FrameCRS;                  // The frame coordinate system
     Ptr<MgCoordinateSystemTransform> m_ToFrameXform;     // Converts grid coordinates to frame coordinates
