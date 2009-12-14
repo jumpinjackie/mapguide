@@ -145,79 +145,95 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
         if (bFeatureJoinProperties)
         {
             // Perform feature join to obtain the joined properties
+            // Note: this gwsFeatureReader is just for temporary use. it will not be returned
+            // to the web-tier. Therefore this object must be closed to avoid connection leak
+            // I put the following code in a try-catch block just to make sure the gwsFeaturereader
+            // gets chance to be closed in case that an exception is thrown from underneath
             Ptr<MgServerGwsFeatureReader> gwsFeatureReader = JoinFeatures(resource, className, NULL);
-
-            // Get the requested property name from the MgFeatureServiceCommandObject.  This property name may be
-            // prefixed by the relation name if it is from a secondary resource.
-            FdoPtr<FdoIdentifierCollection> fic = m_command->GetPropertyNames();
-            int nFicCnt = fic->GetCount();
-            if (nFicCnt <= 0)
+            try
             {
-                // throw invalid argument exception because the properties the m_command is empty
-                MgStringCollection arguments;
-                arguments.Add(L"1");
-                arguments.Add(L"MgFeatureServiceCommand");
+                // Get the requested property name from the MgFeatureServiceCommandObject.  This property name may be
+                // prefixed by the relation name if it is from a secondary resource.
+                FdoPtr<FdoIdentifierCollection> fic = m_command->GetPropertyNames();
+                int nFicCnt = fic->GetCount();
+                if (nFicCnt <= 0)
+                {
+                    // throw invalid argument exception because the properties the m_command is empty
+                    MgStringCollection arguments;
+                    arguments.Add(L"1");
+                    arguments.Add(L"MgFeatureServiceCommand");
 
-                throw new MgInvalidArgumentException(L"MgServerSelectFeatures::SelectFeatures()",
-                    __LINE__, __WFILE__, &arguments, L"MgCollectionEmpty", NULL);
+                    throw new MgInvalidArgumentException(L"MgServerSelectFeatures::SelectFeatures()",
+                        __LINE__, __WFILE__, &arguments, L"MgCollectionEmpty", NULL);
 
+                }
+
+                FdoPtr<FdoIdentifier> fi = fic->GetItem(0);
+                STRING propName = fi->GetName();
+
+                // Parse the relation name from the property name by determining which source the property is from
+                STRING relationName;
+                STRING secClassName;
+                STRING parsedPropertyName;
+                IGWSFeatureIterator* gwsFeatureIter = NULL;
+                gwsFeatureReader->ReadNext();
+                gwsFeatureReader->DeterminePropertyFeatureSource(propName, &gwsFeatureIter, relationName, secClassName, parsedPropertyName);
+
+                Ptr<MgResourceIdentifier> resId;
+
+                // Get the resource id associated with the relation name
+                if (relationName.empty())
+                {
+                    // this is the primary resource
+                    resId = SAFE_ADDREF(resource);
+                }
+                else
+                {
+                    // this is a secondary resource
+                    resId = GetSecondaryResourceIdentifier(resource, className, relationName);
+                }
+
+                // Create new command to execute against the desired resource in defined by the join
+                m_customPropertyFound = false;
+                CreateCommand(resId, isSelectAggregate);
+                // Set feature class name (either primary or secondary class)
+                m_command->SetFeatureClassName((FdoString*)secClassName.c_str());
+                // Set options
+                m_options = SAFE_ADDREF(options);
+
+                // Update the value of the computed property.  Since the joined property may be prefixed by the relation name
+                // i.e. Join1PropA, this needs to be parsed into it individual relation and property components.
+                Ptr<MgStringPropertyCollection> computedProperties = m_options->GetComputedProperties();
+
+                // Can only have one computed property for custom functions
+                assert(computedProperties->GetCount() == 1);
+                STRING aliasName = computedProperties->GetName(0);
+                STRING expression = computedProperties->GetValue(0);
+
+                STRING::size_type nPropLength = propName.length();
+                STRING::size_type nPropStart = expression.rfind(propName);
+                STRING::size_type nPropEnd = expression.find(L")", nPropStart + 1);
+
+                STRING newExpression = expression.substr(0, nPropStart);
+                newExpression += parsedPropertyName;
+                newExpression += expression.substr(nPropStart + nPropLength);
+                computedProperties->SetValue(aliasName, newExpression);
+
+                // Apply options to FDO command
+                ApplyQueryOptions(isSelectAggregate);
+                if (bFeatureCalculation)
+                    UpdateCommandOnJoinCalculation(resource, className);
+            }
+            catch(...)
+            {
+                // Close the reader to avoid connection leak
+                gwsFeatureReader->Close();
+                throw;
             }
 
-            FdoPtr<FdoIdentifier> fi = fic->GetItem(0);
-            STRING propName = fi->GetName();
-
-            // Parse the relation name from the property name by determining which source the property is from
-            STRING relationName;
-            STRING secClassName;
-            STRING parsedPropertyName;
-            IGWSFeatureIterator* gwsFeatureIter = NULL;
-            gwsFeatureReader->ReadNext();
-            gwsFeatureReader->DeterminePropertyFeatureSource(propName, &gwsFeatureIter, relationName, secClassName, parsedPropertyName);
-
-            Ptr<MgResourceIdentifier> resId;
-
-            // Get the resource id associated with the relation name
-            if (relationName.empty())
-            {
-                // this is the primary resource
-                resId = SAFE_ADDREF(resource);
-            }
-            else
-            {
-                // this is a secondary resource
-                resId = GetSecondaryResourceIdentifier(resource, className, relationName);
-            }
-
-            // Create new command to execute against the desired resource in defined by the join
-            m_customPropertyFound = false;
-            CreateCommand(resId, isSelectAggregate);
-            // Set feature class name (either primary or secondary class)
-            m_command->SetFeatureClassName((FdoString*)secClassName.c_str());
-            // Set options
-            m_options = SAFE_ADDREF(options);
-
-            // Update the value of the computed property.  Since the joined property may be prefixed by the relation name
-            // i.e. Join1PropA, this needs to be parsed into it individual relation and property components.
-            Ptr<MgStringPropertyCollection> computedProperties = m_options->GetComputedProperties();
-
-            // Can only have one computed property for custom functions
-            assert(computedProperties->GetCount() == 1);
-            STRING aliasName = computedProperties->GetName(0);
-            STRING expression = computedProperties->GetValue(0);
-
-            STRING::size_type nPropLength = propName.length();
-            STRING::size_type nPropStart = expression.rfind(propName);
-            STRING::size_type nPropEnd = expression.find(L")", nPropStart + 1);
-
-            STRING newExpression = expression.substr(0, nPropStart);
-            newExpression += parsedPropertyName;
-            newExpression += expression.substr(nPropStart + nPropLength);
-            computedProperties->SetValue(aliasName, newExpression);
-
-            // Apply options to FDO command
-            ApplyQueryOptions(isSelectAggregate);
-            if (bFeatureCalculation)
-                UpdateCommandOnJoinCalculation(resource, className);
+            // gwsFeatureReader will not be returned to the webtier. Therefore, we have to close it here since
+            // it is no longer neened. If we don't do this, the connection it owns will leak.
+            gwsFeatureReader->Close();
         }
         else if (bFeatureCalculation && !bFeatureJoinProperties)
             UpdateCommandOnCalculation(resource, className);
