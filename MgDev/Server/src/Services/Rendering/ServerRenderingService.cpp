@@ -227,7 +227,7 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
 
     // initialize the renderer (set clipping to false so that we label
     // the unclipped geometry)
-    SE_Renderer* dr = CreateRenderer(width, height, bgColor, false, true, tileExtentOffset);
+    auto_ptr<SE_Renderer> dr(CreateRenderer(width, height, bgColor, false, true, tileExtentOffset));
 
     // create a temporary collection containing all the layers for the base group
     Ptr<MgLayerCollection> layers = map->GetLayers();
@@ -245,9 +245,7 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
     baseGroup->SetVisible(true);
 
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, NULL, roLayers, dr, width, height, format, scale, extent, true, true);
-
-    delete dr;
+    ret = RenderMapInternal(map, NULL, roLayers, dr.get(), width, height, format, scale, extent, true, true);
 
     // restore the base group's visibility
     baseGroup->SetVisible(groupVisible);
@@ -321,7 +319,7 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
     bgColor.alpha() = 0;
 
     // initialize the renderer
-    SE_Renderer* dr = CreateRenderer(width, height, bgColor, true);
+    auto_ptr<SE_Renderer> dr(CreateRenderer(width, height, bgColor, true));
 
     // create a temporary collection containing all the dynamic layers
     Ptr<MgLayerCollection> layers = map->GetLayers();
@@ -335,9 +333,7 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
     }
 
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, selection, roLayers, dr, width, height, scale, extent, false, options);
-
-    delete dr;
+    ret = RenderMapInternal(map, selection, roLayers, dr.get(), width, height, scale, extent, false, options);
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderDynamicOverlay")
 
@@ -490,12 +486,10 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
     // initialize the renderer with the rendering canvas size - in this
     // case it is not necessarily the same size as the requested image
     // size due to support for non-square pixels
-    SE_Renderer* dr = CreateRenderer(drawWidth, drawHeight, bgcolor, false);
+    auto_ptr<SE_Renderer> dr(CreateRenderer(drawWidth, drawHeight, bgcolor, false));
 
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, selection, NULL, dr, width, height, format, scale, b, false, bKeepSelection);
-
-    delete dr;
+    ret = RenderMapInternal(map, selection, NULL, dr.get(), width, height, format, scale, b, false, bKeepSelection);
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMap")
 
@@ -576,12 +570,10 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                      backgroundColor->GetAlpha());
 
     // initialize the appropriate map renderer
-    SE_Renderer* dr = CreateRenderer(width, height, bgcolor, bClip);
+    auto_ptr<SE_Renderer> dr(CreateRenderer(width, height, bgcolor, bClip));
 
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, selection, NULL, dr, width, height, format, scale, b, false, bKeepSelection);
-
-    delete dr;
+    ret = RenderMapInternal(map, selection, NULL, dr.get(), width, height, format, scale, b, false, bKeepSelection);
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMap")
 
@@ -623,7 +615,7 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap* map,
 
     double point_buf[2];
     double* point = NULL;
-    SE_Renderer* impRenderer = NULL;
+    auto_ptr<SE_Renderer> impRenderer;
     if (geometry && maxFeatures == 1)
     {
         MgPolygon* polygon = dynamic_cast<MgPolygon*>(geometry);
@@ -657,17 +649,14 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap* map,
                 point = point_buf;
 
                 RS_Color bgColor; // not used
-                impRenderer = CreateRenderer(1, 1, bgColor, false);
+                impRenderer.reset(CreateRenderer(1, 1, bgColor, false));
             }
         }
     }
 
-    FeatureInfoRenderer fir(sel, maxFeatures, map->GetViewScale(), point, impRenderer);
+    FeatureInfoRenderer fir(sel, maxFeatures, map->GetViewScale(), point, impRenderer.get());
 
     RenderForSelection(map, layerNames, geometry, selectionVariant, featureFilter, maxFeatures, layerAttributeFilter, &fir);
-
-    if (impRenderer)
-        delete impRenderer;
 
     //fill out the output object with the info we collected
     //in the FeatureInfoRenderer for the first feature we hit
@@ -962,7 +951,7 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
                      backgroundColor->GetAlpha());
 
     //initialize a renderer
-    Renderer* dr = CreateRenderer(width, height, bgcolor, false, false, 0.0);
+    auto_ptr<Renderer> dr(CreateRenderer(width, height, bgcolor, false, false, 0.0));
 
     RS_Bounds b(0,0,width,height);
 
@@ -993,9 +982,9 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
     auto_ptr<RS_ByteData> data;
 
     if (wcscmp(m_rendererName.c_str(), L"AGG") == 0)
-        data.reset(((AGGRenderer*)dr)->Save(format, width, height));
+        data.reset(((AGGRenderer*)dr.get())->Save(format, width, height));
     else
-        data.reset(((GDRenderer*)dr)->Save(format, width, height));
+        data.reset(((GDRenderer*)dr.get())->Save(format, width, height));
 
     if (NULL != data.get())
     {
@@ -1013,8 +1002,6 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
 
         ret = bs->GetReader();
     }
-
-    delete dr;
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMapLegend")
 
