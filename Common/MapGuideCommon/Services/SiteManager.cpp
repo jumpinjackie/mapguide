@@ -325,7 +325,7 @@ MgConnectionProperties* MgSiteManager::GetConnectionProperties(
                 length - MgSiteInfo::HexStringLength, MgSiteInfo::HexStringLength);
             Ptr<MgSiteInfo> siteInfo = GetSiteInfo(siteHexString);
 
-            if (MgSiteInfo::Ok == siteInfo->GetStatus())
+			if ((NULL != siteInfo.p) && (MgSiteInfo::Ok == siteInfo->GetStatus()))
             {
                 connProps = GetConnectionProperties(userInfo, siteInfo, portType);
             }
