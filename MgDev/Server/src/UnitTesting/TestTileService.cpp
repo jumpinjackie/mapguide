@@ -423,18 +423,18 @@ void TestTileService::TestCase_GetTile()
                 break;
 
             // under Linux we get a deadlock if we don't call this every once in a while
-            if (nRequest % 25 == 0)
+            /*if (nRequest % 25 == 0)
                 manager->wait();
             else
-            {
+            {*/
                 // pause briefly (10ms) before checking again
                 ACE_Time_Value t(0, 10000);
                 ACE_OS::sleep(t);
-            }
+            /*}*/
         }
 
         // make sure the manager is in a good state
-        manager->wait();
+        //manager->wait();
 
         // done with the tile indices
         delete [] tileRows;
@@ -618,18 +618,18 @@ void TestTileService::TestCase_SetTile()
                 break;
 
             // under Linux we get a deadlock if we don't call this every once in a while
-            if (nRequest % 25 == 0)
+            /*if (nRequest % 25 == 0)
                 manager->wait();
             else
-            {
+            {*/
                 // pause briefly (10ms) before checking again
                 ACE_Time_Value t(0, 10000);
                 ACE_OS::sleep(t);
-            }
+            //}
         }
 
         // make sure the manager is in a good state
-        manager->wait();
+        //manager->wait();
 
         // At this point all the tiles in the cache should be set.
         // Let's now randomly replace these tiles.
@@ -681,18 +681,18 @@ void TestTileService::TestCase_SetTile()
                 break;
 
             // under Linux we get a deadlock if we don't call this every once in a while
-            if (nRequest % 25 == 0)
+            /*if (nRequest % 25 == 0)
                 manager->wait();
             else
-            {
+            {*/
                 // pause briefly (10ms) before checking again
                 ACE_Time_Value t(0, 10000);
                 ACE_OS::sleep(t);
-            }
+            //}
         }
 
         // make sure the manager is in a good state
-        manager->wait();
+        //manager->wait();
 
         // done with the tile indices
         delete [] tileRows;
@@ -816,18 +816,18 @@ void TestTileService::TestCase_GetSetTile()
                 break;
 
             // under Linux we get a deadlock if we don't call this every once in a while
-            if (nRequest % 25 == 0)
+            /*if (nRequest % 25 == 0)
                 manager->wait();
             else
-            {
+            {*/
                 // pause briefly (10ms) before checking again
                 ACE_Time_Value t(0, 10000);
                 ACE_OS::sleep(t);
-            }
+            //}
         }
 
         // make sure the manager is in a good state
-        manager->wait();
+        //manager->wait();
 
         // done with the tile indices
         delete [] tileRows;
