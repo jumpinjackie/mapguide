@@ -599,6 +599,7 @@ void MgServerGetProviderCapabilities::CreateExpressionCapabilities2()
                 m_xmlCap->AddTextNode(funcDefNode, "Description", strDesc);
                 m_xmlCap->AddTextNode(funcDefNode, "CategoryType",  strFunctionCategoryType.c_str());
                 m_xmlCap->AddTextNode(funcDefNode, "IsAggregate",  ffd->IsAggregate());
+                m_xmlCap->AddTextNode(funcDefNode, "IsSupportsVariableArgumentsList",  ffd->SupportsVariableArgumentsList());
 
                 delete[] strName;
                 delete[] strDesc;
