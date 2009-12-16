@@ -348,6 +348,7 @@
                           </xs:simpleType>
                         </xs:element>
                         <xs:element name="IsAggregate" type="xs:boolean"/>
+                        <xs:element name="IsSupportsVariableArgumentsList" type="xs:boolean" minOccurs="0"/>                        
                         <xs:element name="SignatureDefinitionCollection" minOccurs="0">
                           <xs:complexType>
                             <xs:sequence>
