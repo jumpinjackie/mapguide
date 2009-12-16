@@ -1529,6 +1529,7 @@ ul.jxSubMenu span.jxMenuSeparator {
   overflow: hidden;
   /*margin: 5px;*/
   background-color: #f0f0f0;
+  z-index: -1;
 }
 
 /* the content panel inside a panel */
@@ -2580,4 +2581,5 @@ li.jxToolItem  .separator {
 .jxTreeBranchLast input {
     vertical-align: middle;
 }
+
 
