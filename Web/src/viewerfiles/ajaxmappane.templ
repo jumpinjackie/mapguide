@@ -322,7 +322,7 @@ var finscale = true;
 var slidercourse = 78;
 var slidertop = 44;
 var showSlider=%s;
-var selTtipText = safari ? "__#ENDSELSAFARI#__" : "__#ENDSEL#__";
+var selTtipText = macOS ? "__#ENDSELMAC#__" : "__#ENDSEL#__";
 var curimg = "mapImage1";
 var curSelImg = "selImage1";
 var ovimgloaded = false;
@@ -331,7 +331,7 @@ var digihandler = null;
 var digitizing = false;
 var cancelTgt;
 var locale = '%s';
-var openHlinkText = safari ? "__#OPENHYPERLINKSAFARI#__" : "__#OPENHYPERLINK#__";
+var openHlinkText = macOS ? "__#OPENHYPERLINKMAC#__" : "__#OPENHYPERLINK#__";
 var selectionColor = '0x0000FFFF'; // Blue
 var lastLegendScaleUpdate = curScale;
 %s
@@ -894,7 +894,9 @@ function OnMouseDown(e)
     if(!processed)
     {
         HideHyperlinkTip();
-        if(tool != 6 && e.ctrlKey)
+
+	// Ctrl + Click to open URL except MacOS, which using Command + Click
+        if(tool != 6 && ((e.ctrlKey && !macOS) || (e.metaKey && macOS )))
         {
             if(hlData.url != "")
                 ExecuteHyperlink(hlData.url);
@@ -925,7 +927,11 @@ function OnMouseDown(e)
                     StartToolFeedback(x, y, CIRCLE);
                     break;
                 case 6:
-                    if(!e.ctrlKey)
+		    if((e.ctrlKey && !macOS) || (e.metaKey && macOS))
+		    {
+			EndPolygonSelection(x, y);
+		    }
+                    else
                     {
                         if(polySel.xs.length == 0)
                             StartToolFeedback(x, y, POLY);
@@ -937,9 +943,6 @@ function OnMouseDown(e)
                             ToolFeedback(x, y);
                         }
                     }
-                    else
-                        EndPolygonSelection(x, y);
-
                     break;
             }
         }
@@ -962,11 +965,6 @@ function OnContextMenu(e)
         InformationContextMenu(x,y);
     else
     {
-        if(safari && tool == 6)
-        {
-            EndPolygonSelection(x - mapPosX, y);
-            return false;
-        }
         if(parent.IsContextMenu())
             ContextMenu(x, y);
     }

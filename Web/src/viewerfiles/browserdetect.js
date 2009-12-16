@@ -7,6 +7,9 @@ var safariIndex = agent.indexOf("safari");
 var safari1or2 = false;
 var safari3plus = false;
 var safari = false;
+
+var macOS = navigator.appVersion.indexOf("Mac")!=-1;
+
 if(!chrome && safariIndex != -1)
 {
     safari = true;
