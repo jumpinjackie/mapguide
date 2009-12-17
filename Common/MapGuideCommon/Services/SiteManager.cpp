@@ -532,6 +532,9 @@ MgSiteInfo* MgSiteManager::GetSiteInfo(CREFSTRING hexString)
         }
     }
 
+    if (matchingSiteInfo == NULL)
+        matchingSiteInfo = new MgSiteInfo(hexString);
+
     return SAFE_ADDREF(matchingSiteInfo);
 }
 
