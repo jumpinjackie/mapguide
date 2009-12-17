@@ -1236,6 +1236,10 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
             bool bForceOneToOne = true;
             Ptr<MgStringCollection> attributeNameDelimiters = new MgStringCollection();
 
+            //Store all the secondary's name, and if the filter property doesn't contain secondary's name, 
+            //it applies only to the primary.
+            Ptr<MgStringCollection> secondaryNames = new MgStringCollection();
+
             // For each join (attributeRelate) to a secondary source need to do the following
             for (int attributeRelateIndex = 0; attributeRelateIndex < attributeRelates->GetCount(); attributeRelateIndex++)
             {
@@ -1248,6 +1252,9 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
                 // Get the name for the join relationship
                 STRING attributeRelateName = (STRING)attributeRelate->GetName();
                 STRING secondaryConnectionName = attributeRelateName;
+
+                if(!secondaryNames->Contains(attributeRelateName))
+                    secondaryNames->Add(attributeRelateName);
 
                 // Get the RelateType (join type).  Default is Left Outer join.
                 MdfModel::AttributeRelate::RelateType relateType = attributeRelate->GetRelateType();
@@ -1364,7 +1371,17 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
                 FdoString* filterText = filter->ToString();
                 if(NULL != filterText)
                 {
-                    if(NULL == wcsstr(filterText, name.c_str()))
+                    bool match = false;
+                    for(int i = 0; i < secondaryNames->GetCount(); i ++)
+                    {
+                        STRING secondaryName = secondaryNames->GetItem(i);
+                        if(NULL != wcsstr(filterText, secondaryName.c_str()))
+                        {
+                            match = true;
+                            break;
+                        }
+                    }
+                    if(!match)
                     {
                         // Add the filter to the query because it only applies to the primary
                         query->SetFilter(filter);
