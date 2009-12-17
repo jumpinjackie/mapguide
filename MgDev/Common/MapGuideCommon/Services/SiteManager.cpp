@@ -471,7 +471,7 @@ MgSiteInfo* MgSiteManager::GetSiteInfo(CREFSTRING target, INT32 port)
 {
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
-    MgSiteInfo* matchingSiteInfo = NULL;
+    Ptr<MgSiteInfo> matchingSiteInfo;
 
     for (INT32 i = 0; i < (INT32)m_sites.size(); i++)
     {
@@ -482,12 +482,12 @@ MgSiteInfo* MgSiteManager::GetSiteInfo(CREFSTRING target, INT32 port)
                 siteInfo->GetPort(MgSiteInfo::Client) == port ||
                 siteInfo->GetPort(MgSiteInfo::Admin)  == port))
         {
-            matchingSiteInfo = siteInfo;
+            matchingSiteInfo = SAFE_ADDREF(siteInfo);
             break;
         }
     }
 
-    return SAFE_ADDREF(matchingSiteInfo);
+    return matchingSiteInfo.Detach();
 }
 
 ///----------------------------------------------------------------------------
@@ -498,7 +498,7 @@ MgSiteInfo* MgSiteManager::GetSiteInfo(CREFSTRING target, INT32 port)
 ///----------------------------------------------------------------------------
 MgSiteInfo* MgSiteManager::GetSiteInfo(CREFSTRING hexString)
 {
-    MgSiteInfo* matchingSiteInfo = NULL;
+    Ptr<MgSiteInfo> matchingSiteInfo;
 
     if(hexString.length() >= MgSiteInfo::HexStringLength)
     {
@@ -526,7 +526,7 @@ MgSiteInfo* MgSiteManager::GetSiteInfo(CREFSTRING hexString)
                     siteInfo->GetPort(MgSiteInfo::Client) == clientPort ||
                     siteInfo->GetPort(MgSiteInfo::Admin)  == adminPort))
             {
-                matchingSiteInfo = siteInfo;
+                matchingSiteInfo = SAFE_ADDREF(siteInfo);
                 break;
             }
         }
@@ -535,7 +535,7 @@ MgSiteInfo* MgSiteManager::GetSiteInfo(CREFSTRING hexString)
     if (matchingSiteInfo == NULL)
         matchingSiteInfo = new MgSiteInfo(hexString);
 
-    return SAFE_ADDREF(matchingSiteInfo);
+    return matchingSiteInfo.Detach();
 }
 
 MgSiteVector* MgSiteManager::GetSites()
