@@ -43,3 +43,7 @@ img.zoom-full { background-position: -656px 0px; }
 img.zoom-in-fixed { background-position: -672px 0px; }
 img.zoom-in { background-position: -688px 0px; }
 img.zoom-out-fixed { background-position: -704px 0px; }
+img.redline { background-position: -720px 0px; }
+img.query { background-position: -736px 0px; }
+img.featureinfo { background-position: -752px 0px; }
+img.theme { background-position: -784px 0px; }
