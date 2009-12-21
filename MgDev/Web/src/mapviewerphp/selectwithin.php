@@ -94,7 +94,7 @@ function MultiGeometryFromSelection($featureSrvc, $map, $selText)
     $selLayers = $sel->GetLayers();
     $geomColl = new MgGeometryCollection();
     $agfRW = new MgAgfReaderWriter();
-    $polyOnly = true;
+    $simplyPolygonOnly = true;
 
     for($i = 0; $i < $selLayers->GetCount(); $i++)
     {
@@ -109,22 +109,19 @@ function MultiGeometryFromSelection($featureSrvc, $map, $selText)
             $classDef = $features->GetClassDefinition();
             $geomPropName = $classDef->GetDefaultGeometryPropertyName();
             $j = 0;
-            $isPoly = true;
             while($features->ReadNext())
             {
                 $geomReader = $features->GetGeometry($geomPropName);
                 $geom = $agfRW->Read($geomReader);
-                if($j ++ == 0)
+
+                $type = $geom->GetGeometryType();
+                if($type == MgGeometryType::MultiPolygon || $type == MgGeometryType::CurvePolygon || $type == MgGeometryType::MultiCurvePolygon)
                 {
-                    $type = $geom->GetGeometryType();
-                    if($type == MgGeometryType::MultiPolygon || $type == MgGeometryType::CurvePolygon || $type == MgGeometryType::MultiCurvePolygon)
-                    {
-                        $isPoly = false;
-                        $polyOnly = false;
-                    }
-                    else if($type != MgGeometryType::Polygon)
-                        break;
+                    $simplyPolygonOnly = false;
                 }
+                else if($type != MgGeometryType::Polygon)
+                    continue;
+
                 $geomColl->Add($geom);
             }
         }
@@ -133,7 +130,7 @@ function MultiGeometryFromSelection($featureSrvc, $map, $selText)
         return null;
 
     $gf = new MgGeometryFactory();
-    if($polyOnly)
+    if($simplyPolygonOnly)
     {
         $polyColl = new MgPolygonCollection();
         for($i = 0; $i < $geomColl->GetCount(); $i++)

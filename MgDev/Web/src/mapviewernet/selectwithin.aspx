@@ -108,7 +108,7 @@ MgGeometry MultiGeometryFromSelection(MgFeatureService featureSrvc, MgMap map, S
         return null;
     MgGeometryCollection geomColl = new MgGeometryCollection();
     MgAgfReaderWriter agfRW = new MgAgfReaderWriter();
-    bool polyOnly = true;
+    bool simplyPolygonOnly = true;
 
     for(int i = 0; i < selLayers.GetCount(); i++)
     {
@@ -124,24 +124,18 @@ MgGeometry MultiGeometryFromSelection(MgFeatureService featureSrvc, MgMap map, S
         {
             MgClassDefinition classDef = features.GetClassDefinition();
             String geomPropName = classDef.GetDefaultGeometryPropertyName();
-            int j = 0;
-            bool isPoly = true;
             while(features.ReadNext())
             {
                 MgByteReader geomReader = features.GetGeometry(geomPropName);
                 MgGeometry geom = agfRW.Read(geomReader);
-                if(j++ == 0)
+                int type = geom.GetGeometryType();
+                if(type == MgGeometryType.MultiPolygon || type == MgGeometryType.CurvePolygon || type == MgGeometryType.MultiCurvePolygon)
                 {
-                    int type = geom.GetGeometryType();
-                    if(type == MgGeometryType.MultiPolygon || type == MgGeometryType.CurvePolygon || type == MgGeometryType.MultiCurvePolygon)
-                    {
-                        isPoly = false;
-                        polyOnly = false;
-                    }
-                    else if(type != MgGeometryType.Polygon)
-                    {
-                        break;
-                    }
+                    simplyPolygonOnly = false;
+                }
+                else if(type != MgGeometryType.Polygon)
+                {
+                    continue;
                 }
                 geomColl.Add(geom);
             }
@@ -155,7 +149,7 @@ MgGeometry MultiGeometryFromSelection(MgFeatureService featureSrvc, MgMap map, S
     }
 
     MgGeometryFactory gf = new MgGeometryFactory();
-    if(polyOnly)
+    if(simplyPolygonOnly)
     {
         MgPolygonCollection polyColl = new MgPolygonCollection();
         for(int j = 0; j < geomColl.GetCount(); j++)
