@@ -75,6 +75,8 @@
         if($clear)
         {
             $total = 0;
+            if($layer != null)
+                $layers->Remove($layer);
             if(DataSourceExists($resourceSrvc, $dataSourceId))
                 ClearDataSource($featureSrvc, $dataSourceId, $featureName);
         }
@@ -157,22 +159,22 @@
 
                     //Create the layer definition
                     $layerDefContent = BuildLayerDefinitionContent($dataSource, $featureName, $tip);
-                    $resourceSrvc->SetResource($layerDefId, $layerDefContent, null);
-
-                    //Add the layer to the map, if it's not already in it
-                    if($layer == null)
-                    {
-                        $legendName = GetLocalizedString("MEASURELAYER", $locale);
-                        $layer = new MgLayer($layerDefId, $resourceSrvc);
-                        $layer->SetDisplayInLegend(true);
-                        $layer->SetLegendLabel($legendName);
-                        $layers->Insert(0, $layer);
-                    }
+                    $resourceSrvc->SetResource($layerDefId, $layerDefContent, null); 
                 }
                 else
                 {
                     //data source already exist. clear its content
                     ClearDataSource($featureSrvc, $dataSourceId, $featureName);
+                }
+                
+                //Add the layer to the map, if it's not already in it
+                if($layer == null)
+                {
+                    $legendName = GetLocalizedString("MEASURELAYER", $locale);
+                    $layer = new MgLayer($layerDefId, $resourceSrvc);
+                    $layer->SetDisplayInLegend(true);
+                    $layer->SetLegendLabel($legendName);
+                    $layers->Insert(0, $layer);
                 }
             }
             // create a feature representing this segment and insert it into the data source

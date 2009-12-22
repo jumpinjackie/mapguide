@@ -105,6 +105,8 @@ String dataSource;
         if(clear)
         {
             total = 0;
+            if(layer != null)
+                layers.Remove(layer);
             if(DataSourceExists(resourceSrvc, dataSourceId))
                 ClearDataSource(featureSrvc, dataSourceId, featureName);
         }
@@ -189,21 +191,21 @@ String dataSource;
                     //Create the layer definition
                     MgByteReader layerDefContent = BuildLayerDefinitionContent(dataSource, featureName, tip);
                     resourceSrvc.SetResource(layerDefId, layerDefContent, null);
-
-                    //Add the layer to the map, if it's not already in it
-                    if(layer == null)
-                    {
-                        legendName = MgLocalizer.GetString("MEASURELAYER", locale);
-                        layer = new MgLayer(layerDefId, resourceSrvc);
-                        layer.SetDisplayInLegend(true);
-                        layer.SetLegendLabel(legendName);
-                        layers.Insert(0, layer);
-                    }
                 }
                 else
                 {
                     //data source already exist. clear its content
                     ClearDataSource(featureSrvc, dataSourceId, featureName);
+                }
+                
+                //Add the layer to the map, if it's not already in it
+                if(layer == null)
+                {
+                    legendName = MgLocalizer.GetString("MEASURELAYER", locale);
+                    layer = new MgLayer(layerDefId, resourceSrvc);
+                    layer.SetDisplayInLegend(true);
+                    layer.SetLegendLabel(legendName);
+                    layers.Insert(0, layer);
                 }
             }
             // create a feature representing this segment and insert it into the data source
