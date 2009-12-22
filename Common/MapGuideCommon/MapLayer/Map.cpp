@@ -500,9 +500,9 @@ void MgMap::Open(MgResourceService* resourceService, CREFSTRING mapName)
     }
 
     Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(L"Session:" + sessionId + L"//" + mapName + L"." + MgResourceType::Map);
-
-    m_name = mapName;
+    
     MgResource::Open(m_resourceService, resId);
+    m_name = mapName;
 
     //Note: Layers and Groups are loaded on demand by UnpackLayersAndGroups
 
