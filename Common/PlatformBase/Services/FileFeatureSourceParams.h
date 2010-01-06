@@ -76,7 +76,7 @@ PUBLISHED_API:
     //////////////////////////////////////////////////
     /// \brief
     /// Constructs an MgFileFeatureSourceParams object
-    /// with the sepcified FDO provider name.
+    /// with the specified FDO provider name.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
