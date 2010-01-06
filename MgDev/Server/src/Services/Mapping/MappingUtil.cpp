@@ -17,18 +17,22 @@
 
 #include "MappingUtil.h"
 
-#include "SAX2Parser.h"
-#include "Bounds.h"
-#include "Renderer.h"
 #include "AGGRenderer.h"
+#include "Bounds.h"
+#include "DefaultStylizer.h"
+#include "Fdo.h"
+#include "Renderer.h"
+#include "SAX2Parser.h"
+#include "SEMgSymbolManager.h"
+#include "SE_StyleVisitor.h"
+#include "SLDSymbols.h"
+#include "StylizationUtil.h"
 #include "Stylizer.h"
 #include "SymbolVisitor.h"
-#include "SLDSymbols.h"
-#include "SE_StyleVisitor.h"
-#include "SEMgSymbolManager.h"
+#include "SymbolDefinition.h"
 #include "TransformCache.h"
-#include "StylizationUtil.h"
-#include "Fdo.h"
+
+#include <algorithm>
 
 //For logging
 #include "ServerManager.h"
@@ -42,6 +46,7 @@ extern long GetTickCount();
 #endif
 
 
+///////////////////////////////////////////////////////////////////////////////
 MdfModel::MapDefinition* MgMappingUtil::GetMapDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId)
 {
     //get and parse the mapdef
@@ -70,6 +75,7 @@ MdfModel::MapDefinition* MgMappingUtil::GetMapDefinition(MgResourceService* svcR
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 RSMgFeatureReader* MgMappingUtil::ExecuteFeatureQuery(MgFeatureService* svcFeature,
                                                       RS_Bounds& extent,
                                                       MdfModel::VectorLayerDefinition* vl,
@@ -229,6 +235,7 @@ RSMgFeatureReader* MgMappingUtil::ExecuteFeatureQuery(MgFeatureService* svcFeatu
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeature,
                                                      RS_Bounds& extent,
                                                      MdfModel::GridLayerDefinition* gl,
@@ -340,6 +347,9 @@ RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeatur
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+// This is called by the MgServerRenderingService::RenderMapInternal to
+// render the layers.
 void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                                   MgFeatureService* svcFeature,
                                   MgDrawingService* svcDrawing,
@@ -353,7 +363,8 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                                   bool expandExtents,
                                   bool checkRefreshFlag,
                                   double scale,
-                                  bool selection)
+                                  bool selection,
+                                  bool extractColors)
 {
     #ifdef _DEBUG
     long dwStart = GetTickCount();
@@ -365,7 +376,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
     TransformCacheMap transformCache;
 
     Ptr<MgStringCollection> layerIds = new MgStringCollection();
-    // Get the layers' resource content in a single request
+    // Get the layers' resource content in a single request by adding them to a collection
     for (int i = layers->GetCount()-1; i >= 0; i--)
     {
         Ptr<MgLayerBase> mapLayer = layers->GetItem(i);
@@ -391,6 +402,8 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
         Ptr<MgResourceIdentifier> mapLayerId = mapLayer->GetLayerDefinition();
         layerIds->Add(mapLayerId->ToString());
     }
+
+    // request the collection from resource service and add ResourceContent to the individual layers
     if(layerIds->GetCount() != 0)
     {
         Ptr<MgStringCollection> layerContents = svcResource->GetResourceContents(layerIds, NULL);
@@ -409,6 +422,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
         }
     }
 
+    // cycle over the layers and do stylization
     for (int i = layers->GetCount()-1; i >= 0; i--)
     {
         auto_ptr<MdfModel::LayerDefinition> ldf;
@@ -425,7 +439,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 
         MG_SERVER_MAPPING_SERVICE_TRY()
 
-            //get layer definition
+            // get layer definition using SAX XML Parser
             ldf.reset(MgLayerBase::GetLayerDefinition(mapLayer->GetLayerResourceContent()));
 
             Ptr<MgLayerGroup> group = mapLayer->GetGroup();
@@ -459,7 +473,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
             MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
             MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(ldf.get());
 
-            if (vl)
+            if (vl) //############################################################################ vector layer
             {
                 #ifdef _DEBUG
                 long dwLayerStart = GetTickCount();
@@ -546,6 +560,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 
                     // create the reader we'll use
                     rsReader = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, layerCs, item);
+                    // create an automatic FdoPtr around the reader
                     FdoPtr<FdoIFeatureReader> fdoReader = (NULL == rsReader) ? NULL : rsReader->GetInternalReader();
 
                     #ifdef _DEBUG
@@ -558,9 +573,21 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                         dr->StartLayer(&layerInfo, &fcinfo);
                         ds->StylizeVectorLayer(vl, dr, rsReader, xformer, scale, NULL, NULL);
                         dr->EndLayer();
+
+                        // color extraction for RFC60 only when needed
+                        if (extractColors)
+                        {
+                            #ifdef _DEBUG
+                            printf("  StylizeLayers() //ExtractColors// -Vector- Name:%S  Time:%6.4f (s)\n\n", (mapLayer->GetName()).c_str(), (GetTickCount()-dwLayerStart)/1000.0);
+                            #endif
+                            ExtractColors(map, scaleRange, ds);
+                            #ifdef _DEBUG
+                            printf("  StylizeLayers() ##ExtractColors## -Vector- Name:%S  Time:%6.4f (s)\n\n", (mapLayer->GetName()).c_str(), (GetTickCount()-dwLayerStart)/1000.0);
+                            #endif
+                        }
                     }
                 }
-                else
+                else  // not scaleRange
                 {
                     #ifdef _DEBUG
                     printf("  StylizeLayers() **NOT Stylizing - NO SCALE RANGE** Name:%S\n", (mapLayer->GetName()).c_str());
@@ -571,7 +598,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                 printf("  StylizeLayers() **LAYEREND** -Vector- Name:%S  Time:%6.4f (s)\n\n", (mapLayer->GetName()).c_str(), (GetTickCount()-dwLayerStart)/1000.0);
                 #endif
             }
-            else if (gl)
+            else if (gl) //############################################################################ grid layer
             {
                 // TODO: FDO RFP - Make FdoPtr's reference counter thread-safe.
                 static ACE_Recursive_Thread_Mutex sg_fdoRfpMutex;
@@ -717,7 +744,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                 printf("  StylizeLayers() **LAYEREND** -Grid- Name:%S  Time:%6.4f (s)\n\n", (mapLayer->GetName()).c_str(), (GetTickCount()-dwLayerStart)/1000.0);
                 #endif
             }
-            else if (dl) //drawing layer
+            else if (dl) //############################################################################ drawing layer
             {
                 #ifdef _DEBUG
                 long dwLayerStart = GetTickCount();
@@ -779,7 +806,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                 #ifdef _DEBUG
                 printf("  StylizeLayers() **LAYEREND** -Drawing- Name:%S  Time = %6.4f (s)\n\n", (mapLayer->GetName()).c_str(), (GetTickCount()-dwLayerStart)/1000.0);
                 #endif
-            }
+            } // end layer switch
 
         MG_SERVER_MAPPING_SERVICE_CATCH(L"MgMappingUtil.StylizeLayers");
 
@@ -807,7 +834,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
             STRING stackTrace = exception->GetStackTrace(locale);
             MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEBUG_PNG8)
             STRING details = mgException->GetDetails(locale);
 
             wstring err = L"\n %t Error during stylization of layer ";
@@ -818,8 +845,10 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
             err += L"\n";
             ACE_DEBUG( (LM_DEBUG, err.c_str()) );
 #endif
-        }
-    }
+            // TODO could throw here depending on a serverconfig setting (RFC64)
+//          throw exception;
+        } // if exception
+    } // for all layers
 
     #ifdef _DEBUG
     printf("StylizeLayers() **MAPDONE** Layers:%d  Total Time:%6.4f (s)\n\n", layers->GetCount(), (GetTickCount()-dwStart)/1000.0);
@@ -829,6 +858,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // When rendering a tile, we need to compute the extent used to determine
 // which features to render into it.  Features in adjacent tiles, but not
 // in the current tile, will potentially draw in this tile due to their
@@ -1083,6 +1113,7 @@ double MgMappingUtil::ComputeStylizationOffset(MgMap* map,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // draws a given feature type style into an image
 MgByteReader* MgMappingUtil::DrawFTS(MgResourceService* svcResource,
                                      MdfModel::FeatureTypeStyle* fts,
@@ -1125,6 +1156,7 @@ MgByteReader* MgMappingUtil::DrawFTS(MgResourceService* svcResource,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // transforms a given extent and returns the new extent in the new cs
 MgEnvelope* MgMappingUtil::TransformExtent(MgEnvelope* extent, MgCoordinateSystemTransform* xform)
 {
@@ -1135,6 +1167,7 @@ MgEnvelope* MgMappingUtil::TransformExtent(MgEnvelope* extent, MgCoordinateSyste
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // returns an MgPolygon from a given envelope
 MgPolygon* MgMappingUtil::GetPolygonFromEnvelope(MgEnvelope* env)
 {
@@ -1155,6 +1188,7 @@ MgPolygon* MgMappingUtil::GetPolygonFromEnvelope(MgEnvelope* env)
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 void MgMappingUtilExceptionTrap(FdoException* except, int line, wchar_t* file)
 {
     MG_TRY()
@@ -1185,7 +1219,295 @@ void MgMappingUtilExceptionTrap(FdoException* except, int line, wchar_t* file)
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 void MgMappingUtil::InitializeStylizerCallback()
 {
     SetStylizerExceptionCallback(&MgMappingUtilExceptionTrap);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// PURPOSE: Accessor method for the base colors defined in this Layer and
+//          scaleRange.  Used for RFC60.
+// RETURNS: A pointer to the list of colors of the collected colors (maybe
+//          empty but not null)
+///////////////////////////////////////////////////////////////////////////////
+void MgMappingUtil::GetUsedColorsFromScaleRange(ColorStringList& usedColorList,
+                                                MdfModel::VectorScaleRange* scaleRange,
+                                                SE_SymbolManager* sman)
+{
+    // compute new color list by iterating through the featuretypecollection
+    FeatureTypeStyleCollection* pftsColl = scaleRange->GetFeatureTypeStyles();
+    int ftsccount = pftsColl->GetCount();
+    for (int j=0; j<ftsccount; ++j)
+    {
+        FeatureTypeStyle* pfts = pftsColl->GetAt(j);
+
+        // iterate through the rulecollection
+        RuleCollection* ruleColl = pfts->GetRules();
+        int rccount = ruleColl->GetCount();
+        for (int k=0; k<rccount; ++k)
+        {
+            Rule* rule = ruleColl->GetAt(k);
+
+            // get the label which will be the key in the color map
+            Label* label = rule->GetLabel();
+            if (label)
+            {
+                // add colors of txtsymbols
+                TextSymbol* txtsym = label->GetSymbol();
+                if (txtsym)
+                {
+                    // create copies of all strings so we can safely delete the resulting list later
+                    usedColorList.push_back(txtsym->GetForegroundColor().substr());
+                    usedColorList.push_back(txtsym->GetBackgroundColor().substr());
+                }
+            }
+
+            // Do the casting to access the relevant members.  This is bad style
+            // (instead of using the visitor pattern of the MdfModel) but it keeps
+            // it nice and compact and documents the structure better...
+            AreaRule* paRule = dynamic_cast<AreaRule*>(rule);
+            LineRule* plRule = dynamic_cast<LineRule*>(rule);
+            PointRule* ppRule = dynamic_cast<PointRule*>(rule);
+            CompositeRule* pcRule = dynamic_cast<CompositeRule*>(rule);  // used for new stylization
+
+            // AreaRule symbolization...
+            if (paRule != NULL)
+            {
+                AreaSymbolization2D* pasym = paRule->GetSymbolization();
+                if (pasym && pasym->GetFill() != NULL)
+                {
+                    // create copies of all strings so we can safely delete the resulting list later
+                    usedColorList.push_back(pasym->GetFill()->GetForegroundColor().substr());
+                    usedColorList.push_back(pasym->GetFill()->GetBackgroundColor().substr());
+                }
+                if (pasym && pasym->GetEdge() != NULL)
+                    usedColorList.push_back(pasym->GetEdge()->GetColor().substr());
+            }
+
+            // LineRule Symbolization...
+            if (plRule != NULL)
+            {
+                LineSymbolizationCollection* plsymcol = plRule->GetSymbolizations();
+
+                // iterate through the linesymbolizations
+                int lsccount = plsymcol->GetCount();
+                for (int l=0; l < lsccount; l++)
+                {
+                    LineSymbolization2D* plsym = plsymcol->GetAt(l);
+                    if (plsym && plsym->GetStroke() != NULL)
+                        usedColorList.push_back(plsym->GetStroke()->GetColor().substr());
+                }
+            }
+
+            // PointRule Symbolization...
+            if (ppRule != NULL)
+            {
+                PointSymbolization2D* ppsym = ppRule->GetSymbolization();
+                if (ppsym)
+                {
+                    Symbol* sym = ppsym->GetSymbol();
+                    MdfModel::BlockSymbol* blockSymbol = dynamic_cast<MdfModel::BlockSymbol*>(sym);
+                    MdfModel::FontSymbol* fontSymbol = dynamic_cast<MdfModel::FontSymbol*>(sym);
+                    MdfModel::MarkSymbol* markSymbol = dynamic_cast<MdfModel::MarkSymbol*>(sym);
+                    MdfModel::TextSymbol* textSymbol = dynamic_cast<MdfModel::TextSymbol*>(sym);
+                    MdfModel::W2DSymbol* w2dSymbol = dynamic_cast<MdfModel::W2DSymbol*>(sym);
+                    if (blockSymbol != NULL)
+                    {
+                        usedColorList.push_back(blockSymbol->GetBlockColor().substr());
+                        usedColorList.push_back(blockSymbol->GetLayerColor().substr());
+                    }
+                    if (fontSymbol != NULL)
+                    {
+                        usedColorList.push_back(fontSymbol->GetForegroundColor().substr());
+                    }
+                    if (markSymbol != NULL)
+                    {
+                        if (markSymbol->GetEdge() != NULL)
+                            usedColorList.push_back(markSymbol->GetEdge()->GetColor().substr());
+                        if (markSymbol->GetFill() != NULL)
+                        {
+                            usedColorList.push_back(markSymbol->GetFill()->GetForegroundColor().substr());
+                            usedColorList.push_back(markSymbol->GetFill()->GetBackgroundColor().substr());
+                        }
+                    }
+                    if (textSymbol != NULL)
+                    {
+                        usedColorList.push_back(textSymbol->GetForegroundColor().substr());
+                        usedColorList.push_back(textSymbol->GetBackgroundColor().substr());
+                    }
+                    if (w2dSymbol != NULL)
+                    {
+                        usedColorList.push_back(w2dSymbol->GetFillColor().substr());
+                        usedColorList.push_back(w2dSymbol->GetLineColor().substr());
+                        usedColorList.push_back(w2dSymbol->GetTextColor().substr());
+                    }
+                }
+            }
+
+            // CompositeRule Symbolization...
+            if (pcRule != NULL)
+            {
+                CompositeSymbolization* pcsym = pcRule->GetSymbolization();
+                SymbolInstanceCollection* sic = pcsym->GetSymbolCollection();
+                int nInstances = sic->GetCount();
+                for (int i=0; i<nInstances; ++i)
+                {
+                    SymbolInstance* instance = sic->GetAt(i);
+                    // get the symbol definition, either inlined or by reference
+                    SymbolDefinition* symdef = instance->GetSymbolDefinition();
+                    if (symdef) // inline
+                        FindColorInSymDefHelper(usedColorList, symdef);
+                    else
+                    {
+                        // resourceId
+                        const MdfString& symref = instance->GetResourceId(); // symbol reference
+                        if (sman)
+                        {
+                            // if we have a symbolmanager do the lookup
+                            MdfModel::SymbolDefinition* symdef = sman->GetSymbolDefinition(symref.c_str());
+                            FindColorInSymDefHelper(usedColorList, symdef);
+                        }
+                    }
+                } // for sym instances
+            } // for CompositeRule
+        } // for GetRules
+    } // for GetFeatureTypeStyles
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Extract colors from the scalerange, lookup the referenceIds, and store
+// them with the map.
+void MgMappingUtil::ExtractColors(MgMap* map, MdfModel::VectorScaleRange* scaleRange, Stylizer* stylizer)
+{
+    // add the colors from this scaleRange and vectorlayer to the map colors
+    try
+    {
+        DefaultStylizer* ds = dynamic_cast<DefaultStylizer*>(stylizer);
+        SE_SymbolManager* sman = ds? ds->GetSymbolManager() : NULL;
+        // stack based
+        ColorStringList vLayerColors;
+        // parse the scalerange
+        GetUsedColorsFromScaleRange(vLayerColors, scaleRange, sman);
+        map->AddColorsToPalette(vLayerColors);
+    }
+    catch (exception e)
+    {
+        ACE_DEBUG((LM_DEBUG, L"(%t) %w caught in MappingUtil.ExtractColors\n", e.what()));
+        throw e;
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// overloaded helper for SimpleSymbolDefinition
+inline void MgMappingUtil::FindColorInSymDefHelper(ColorStringList& colorList, MdfModel::SimpleSymbolDefinition* symdef)
+{
+    // the visitor for the graphics
+    class GraphicElementVisitorImpl : public MdfModel::IGraphicElementVisitor
+    {
+    public:
+        ColorStringList* colorList;
+        void VisitPath (Path& path)
+        {
+            colorList->push_back(path.GetLineColor().substr());
+            colorList->push_back(path.GetFillColor().substr());
+        };
+        // TODO - other visitors for VisitImage and VisitText to be added here on a needed basis
+        void VisitImage(Image& image) {};
+        void VisitText(Text& text) {};
+    } visitor;
+
+    if (symdef)
+    {
+        MdfModel::LineUsage* lineUsage = symdef->GetLineUsage();
+        if (lineUsage)
+        {
+            MdfModel::Path* path = lineUsage->GetDefaultPath();
+            if (path)
+            {
+                colorList.push_back(path->GetLineColor().substr());
+                colorList.push_back(path->GetFillColor().substr());
+            }
+        }
+
+        MdfModel::GraphicElementCollection* graphElems = symdef->GetGraphics();
+        int gInstances = graphElems->GetCount();
+        for (int i=0; i < gInstances; ++i)
+        {
+            MdfModel::GraphicElement* graphics = graphElems->GetAt(i);
+            if (graphics)
+            {
+                visitor.colorList = &colorList; // use injection to pass reference to list
+                graphics->AcceptVisitor(visitor);
+            }
+        }
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// overloaded helper for CompoundSymbolDefinition
+inline void MgMappingUtil::FindColorInSymDefHelper(ColorStringList& colorList, MdfModel::CompoundSymbolDefinition* symdef)
+{
+    if (symdef)
+    {
+        MdfModel::SimpleSymbolCollection* simSymCol = symdef->GetSymbols();
+        int kInstances = simSymCol->GetCount();
+        for (int i=0; i<kInstances; ++i)
+        {
+            MdfModel::SimpleSymbol* simsym = simSymCol->GetAt(i);
+            if (simsym)
+            {
+                MdfModel::SimpleSymbolDefinition* simplesymdef = simsym->GetSymbolDefinition();
+                if (simplesymdef) // inline
+                    FindColorInSymDefHelper(colorList, simplesymdef);
+                else
+                {
+                    // TODO - resourceId
+                }
+            }
+        }
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// overloaded helper for SymbolDefinition
+inline void MgMappingUtil::FindColorInSymDefHelper(ColorStringList& colorList, MdfModel::SymbolDefinition* symdef)
+{
+    FindColorInSymDefHelper(colorList, dynamic_cast<MdfModel::SimpleSymbolDefinition*>(symdef));
+    FindColorInSymDefHelper(colorList, dynamic_cast<MdfModel::CompoundSymbolDefinition*>(symdef));
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+//-------------------------------------------------------
+// RFC60 code for colormapped tiles by UV
+//-------------------------------------------------------
+// We examine the expressions collected from xml definitions of all layers.
+// The color Palette for the renderer is a vector<RS_Color>.  The map object
+// has a list from all color entries found in the most recent layer stylization.
+// TODO - currently they are interpreted as ffffffff 32 bit RGBA string values.
+// Adding expressions and other interpretations could be done here.
+void MgMappingUtil::ParseColorStrings (RS_ColorVector* tileColorPalette, MgMap* map)
+{
+    assert(tileColorPalette);
+    assert(map);
+    ColorStringList& mapColorList = map->GetColorPalette(); // sorted and uniquified
+    if (!mapColorList.empty()) // add them if they are available
+    {
+        ColorStringList::iterator it = mapColorList.begin();
+        for (; it != mapColorList.end(); it++)
+        {
+            // string color reader for 0xAARRGGBB   "%10X" XML color strings
+            // this is parsed and converted using the MgColor(string) ctor which also uses rgba order
+            // but it is in argb order ergo => r=a, g=r, b=g, a=b
+            MgColor c(*it);
+            // set the RS_Color(r,g,b,a) assign the crossed over colors
+            tileColorPalette->push_back(RS_Color(c.GetGreen(), c.GetBlue(), c.GetAlpha(), c.GetRed()));
+        }
+    }
 }

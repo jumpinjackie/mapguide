@@ -25,15 +25,17 @@ class RasterAdapter;
 class StylizationEngine;
 class SE_SymbolManager;
 
-//-----------------------------------------------------------------------------
+//////////////////////////////////////////////////////////////////////////////
 // Stylizer used for all types of layers which do not have special
 // Stylizer implementation, which is currently all of them.
-//-----------------------------------------------------------------------------
+//////////////////////////////////////////////////////////////////////////////
 class DefaultStylizer : public Stylizer
 {
 public:
     STYLIZATION_API DefaultStylizer(SE_SymbolManager* sman);
     STYLIZATION_API virtual ~DefaultStylizer();
+
+    STYLIZATION_API SE_SymbolManager* GetSymbolManager();
 
     STYLIZATION_API virtual void StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
                                                     Renderer*                        renderer,
@@ -79,6 +81,9 @@ private:
 
     //composite stylizer
     StylizationEngine* m_styleEngine;
+
+    // keep a handle on the symbolmanager
+    SE_SymbolManager* m_symbolmanager;
 
     SE_BufferPool m_lbPool;
 };

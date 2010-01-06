@@ -30,13 +30,16 @@
 #include "ExpressionHelper.h"
 
 
+//////////////////////////////////////////////////////////////////////////////
 DefaultStylizer::DefaultStylizer(SE_SymbolManager* sman)
 {
     m_pRasterAdapter = NULL;
+    m_symbolmanager = sman;
     m_styleEngine = new StylizationEngine(sman, &m_lbPool);
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 DefaultStylizer::~DefaultStylizer()
 {
     // free geom adapters -- not strictly needed here but just
@@ -47,6 +50,14 @@ DefaultStylizer::~DefaultStylizer()
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
+SE_SymbolManager* DefaultStylizer::GetSymbolManager()
+{
+    return m_symbolmanager;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
 void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
                                          Renderer*                        renderer,
                                          RS_FeatureReader*                features,
@@ -218,6 +229,7 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
                                      MdfModel::VectorScaleRange*      scaleRange,
                                      Renderer*                        renderer,
@@ -348,6 +360,7 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void DefaultStylizer::StylizeGridLayer(MdfModel::GridLayerDefinition* layer,
                                        Renderer*                      renderer,
                                        RS_FeatureReader*              features,
@@ -411,6 +424,7 @@ void DefaultStylizer::StylizeGridLayer(MdfModel::GridLayerDefinition* layer,
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void DefaultStylizer::StylizeDrawingLayer(MdfModel::DrawingLayerDefinition* layer,
                                           Renderer*                         renderer,
                                           RS_InputStream*                   dwfin,
@@ -430,6 +444,7 @@ void DefaultStylizer::StylizeDrawingLayer(MdfModel::DrawingLayerDefinition* laye
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 // WARNING: given pointer to the new stylizer will be destroyed
 // by the stylizer (in its destructor)
 void DefaultStylizer::SetGeometryAdapter(FdoGeometryType type, GeometryAdapter* stylizer)
@@ -443,6 +458,7 @@ void DefaultStylizer::SetGeometryAdapter(FdoGeometryType type, GeometryAdapter* 
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 GeometryAdapter* DefaultStylizer::FindGeomAdapter(int geomType)
 {
     GeometryAdapter* adapter = m_hGeomStylizers[geomType];
@@ -492,6 +508,7 @@ GeometryAdapter* DefaultStylizer::FindGeomAdapter(int geomType)
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void DefaultStylizer::ClearAdapters()
 {
     std::map<int, GeometryAdapter*>::iterator sgiter = m_hGeomStylizers.begin();

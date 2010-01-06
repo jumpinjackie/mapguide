@@ -15,6 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#include "RendererStyles.h"
 #include "MapGuideCommon.h"
 #include "ServerKmlService.h"
 #include "Services/KmlDefs.h"

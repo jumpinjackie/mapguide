@@ -35,7 +35,7 @@ MG_IMPL_DYNCREATE(MgRenderingOptions)
 /// Selection color, including filling color and boundary color
 /// </param>
 MgRenderingOptions::MgRenderingOptions(CREFSTRING format, INT32 behavior, MgColor* selectionColor)
-: m_format(format),
+: m_format(MgUtil::ToUpper(format)),
   m_behavior(behavior)
 {
     m_selectionColor = SAFE_ADDREF(selectionColor);
@@ -47,7 +47,7 @@ MgRenderingOptions::MgRenderingOptions(CREFSTRING format, INT32 behavior, MgColo
 /// Get the image format
 /// </summary>
 /// <returns>
-/// The string value
+/// The string value (is in upper case from CTOR)
 /// </returns>
 STRING MgRenderingOptions::GetImageFormat()
 {

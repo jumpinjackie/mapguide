@@ -69,6 +69,8 @@ private:
 
     void ClearMapCache(CREFSTRING mapName);
 
+    MgResourceService* GetResourceServiceForMapDef(MgResourceIdentifier* mapDefinition, CREFSTRING funcName);
+
     // member data
     Ptr<MgTileCache> m_tileCache;
 

@@ -19,7 +19,6 @@
 #include "MdfModel.h"
 #include "SAX2Parser.h"
 #include <map>
-#include <vector>
 
 using namespace std;
 
@@ -35,7 +34,8 @@ STRING MgMap::m_layerGroupTag = L"LayerGroupData";
 MgMap::MgMap()
     : MgMapBase(),
     m_inSave(false),
-    m_unpackedLayersGroups(false)
+    m_unpackedLayersGroups(false),
+    m_colorPalette(NULL)        // lazy instantiation
 {
 }
 
@@ -46,7 +46,8 @@ MgMap::MgMap()
 MgMap::MgMap(MgSiteConnection* siteConnection)
     : MgMapBase(),
     m_inSave(false),
-    m_unpackedLayersGroups(false)
+    m_unpackedLayersGroups(false),
+    m_colorPalette(NULL)        // lazy instantiation
 {
     if (NULL == siteConnection)
     {
@@ -117,6 +118,10 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
 
     m_mapDefinitionId = SAFE_ADDREF(mapDefinition);
     m_name = mapName;
+
+    // reset the colorlist from our layers (std::list dtor clears the list)
+    delete m_colorPalette;
+    m_colorPalette = NULL;  // initialize to empty (lazy as its only used for 8bit color)
 
     // generate a unique id for this map
     MgUtil::GenerateUuid(m_objectId);
@@ -293,7 +298,7 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
         for(int i = 0; i < layers->GetCount(); i++, displayOrder += LAYER_ZORDER_INCR)
         {
             MapLayer* layer = (MapLayer*)layers->GetAt(i);
-            //create a runtime layer from this layer and add it to the layer collection
+            //create a runtime layer from this layerDefinition and add it to the layer collection
             //pull identity properties as a batch process after the layers are created
             Ptr<MgResourceIdentifier> layerDefId = new MgResourceIdentifier(layer->GetLayerResourceID());
             Ptr<MgLayerBase> rtLayer = new MgLayer(layerDefId, m_resourceService, false, false);
@@ -459,6 +464,10 @@ void MgMap::Create(CREFSTRING mapSRS, MgEnvelope* mapExtent, CREFSTRING mapName)
     m_name = mapName;
     MgMapBase::Create(mapSRS, mapExtent, mapName);
     m_unpackedLayersGroups = true;
+
+    // reset the colorlist from our layers (std::list dtor clears the list)
+    delete m_colorPalette;
+    m_colorPalette = NULL;  // initialize to empty (lazy as its only used for 8bit color)
 }
 
 
@@ -635,6 +644,8 @@ void MgMap::Save()
 //
 MgMap::~MgMap()
 {
+    // reset the colorlist from our layers (std::list dtor clears the list)
+    delete m_colorPalette;
 }
 
 
@@ -1098,6 +1109,44 @@ void MgMap::BulkLoadIdentityProperties(MgFeatureService* featureService)
         catch (MgException* e)
         {
             e->Release();
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////
+// RFC60 ColorPalette Accessor uses lazy instantiation as it's not used
+// for truecolor tiles.  It's used for the map colors collected from the
+// stylization of the visible layers.
+ColorStringList& MgMap::GetColorPalette()
+{
+    if (m_colorPalette == NULL)
+        m_colorPalette = new ColorStringList();
+    else
+    {
+        m_colorPalette->sort();
+        m_colorPalette->unique();
+    }
+    return *m_colorPalette;
+}
+
+////////////////////////////////////////////////////////////////////////
+// RFC60 setter adds list.
+void MgMap::AddColorsToPalette(ColorStringList& newColorPalette)
+{
+    if (NULL == m_colorPalette)
+        GetColorPalette();  // lazy instantiation
+
+    if (!newColorPalette.empty())
+    {
+        ColorStringList::iterator it = newColorPalette.begin();
+        for (; it != newColorPalette.end(); it++)
+        {
+            if (*it != L"")    // filter empty strings
+            {
+                // uppercase the colorcodes (FFABDEFF)
+                std::transform((*it).begin(), (*it).end(), (*it).begin(), towupper);
+                m_colorPalette->push_back(*it);
+            }
         }
     }
 }

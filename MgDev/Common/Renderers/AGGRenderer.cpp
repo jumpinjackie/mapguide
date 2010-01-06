@@ -96,6 +96,7 @@ bool AGGRenderer::s_bClampPoints    = false;
 bool AGGRenderer::s_bGeneralizeData = false;
 
 
+//////////////////////////////////////////////////////////////////////////////
 // constructor that allows a backbuffer
 AGGRenderer::AGGRenderer(int width,
                          int height,
@@ -138,6 +139,7 @@ m_lastFont(NULL)
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 //default constructor
 AGGRenderer::AGGRenderer(int width,
                          int height,
@@ -192,6 +194,7 @@ m_lastFont(NULL)
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 AGGRenderer::~AGGRenderer()
 {
     delete m_context;
@@ -203,6 +206,7 @@ AGGRenderer::~AGGRenderer()
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::UpdateBackBuffer(int width, int height, unsigned int* backbuffer)
 {
     if (m_bownbuffer)
@@ -219,6 +223,7 @@ void AGGRenderer::UpdateBackBuffer(int width, int height, unsigned int* backbuff
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 unsigned int* AGGRenderer::GetBackBuffer(int &width, int& height)
 {
     width = m_width;
@@ -227,30 +232,42 @@ unsigned int* AGGRenderer::GetBackBuffer(int &width, int& height)
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
+// This one writes into a file not returning a bytestream using
+// default parameters for the width and height.
 void AGGRenderer::Save(const RS_String& filename, const RS_String& format)
 {
     Save(filename, format, m_width, m_height);
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
+// This one writes into a file not returning a bytestream.
 void AGGRenderer::Save(const RS_String& filename, const RS_String& format, int width, int height)
 {
     AGGImageIO::Save(filename, format, m_rows, m_width, m_height, width, height, m_bgcolor);
 }
 
 
-RS_ByteData* AGGRenderer::Save(const RS_String& format, int width, int height)
+//////////////////////////////////////////////////////////////////////////////
+// Return the rendered image passed in via the imagebuffer (m_rows) as
+// a bytestream in the given image format using the provided colorPalette
+// if given.
+RS_ByteData* AGGRenderer::Save(const RS_String& format, int width, int height,
+                               RS_ColorVector* baseColorPalette)
 {
-    return AGGImageIO::Save(format, m_rows, m_width, m_height, width, height, m_bgcolor);
+    return AGGImageIO::Save(format, m_rows, m_width, m_height, width, height, m_bgcolor, baseColorPalette);
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::Combine(const RS_String& fileIn1, const RS_String& fileIn2, const RS_String& fileOut)
 {
     AGGImageIO::Combine(fileIn1, fileIn2, fileOut);
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::StartMap(RS_MapUIInfo* mapInfo,
                            RS_Bounds&    extents,
                            double        mapScale,
@@ -308,6 +325,7 @@ void AGGRenderer::StartMap(RS_MapUIInfo* mapInfo,
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::EndMap()
 {
     // turn off selection mode so the labels draw normal
@@ -321,6 +339,7 @@ void AGGRenderer::EndMap()
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::StartLayer(RS_LayerUIInfo*      legendInfo,
                              RS_FeatureClassInfo* classInfo)
 {
@@ -330,6 +349,7 @@ void AGGRenderer::StartLayer(RS_LayerUIInfo*      legendInfo,
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::EndLayer()
 {
     // clear the layer/feature info
@@ -338,6 +358,7 @@ void AGGRenderer::EndLayer()
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::StartFeature(RS_FeatureReader* /*feature*/,
                                bool              /*initialPass*/,
                                const RS_String*  /*tooltip*/,
@@ -350,6 +371,7 @@ void AGGRenderer::StartFeature(RS_FeatureReader* /*feature*/,
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
 {
     _ASSERT(NULL != lb);
@@ -494,6 +516,7 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym)
 {
     _ASSERT(NULL != lb);
@@ -603,6 +626,7 @@ void AGGRenderer::ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym)
     printf("      width = %6.4f height = %6.4f\n", ext.width(), ext.height());
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::ProcessRaster(unsigned char* data,
                                 int length,
                                 RS_ImageFormat format,
@@ -633,6 +657,7 @@ void AGGRenderer::ProcessRaster(unsigned char* data,
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds)
 {
     RS_MarkerDef use_mdef = mdef;
@@ -658,6 +683,7 @@ void AGGRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allo
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds)
 {
     RS_InputStream* symbol = NULL;
@@ -1038,6 +1064,7 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
                                     int              nlabels,
                                     const RS_String& text,
@@ -1055,66 +1082,77 @@ void AGGRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::SetSymbolManager(RS_SymbolManager* manager)
 {
     m_symbolManager = manager;
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 RS_MapUIInfo* AGGRenderer::GetMapInfo()
 {
     return m_mapInfo;
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 RS_LayerUIInfo* AGGRenderer::GetLayerInfo()
 {
     return m_layerInfo;
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 RS_FeatureClassInfo* AGGRenderer::GetFeatureClassInfo()
 {
     return m_fcInfo;
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 double AGGRenderer::GetMapScale()
 {
     return m_mapScale;
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 double AGGRenderer::GetDrawingScale()
 {
     return m_drawingScale;
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 RS_Bounds& AGGRenderer::GetBounds()
 {
     return m_extents;
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 double AGGRenderer::GetDpi()
 {
     return m_dpi;
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 double AGGRenderer::GetMetersPerUnit()
 {
     return m_metersPerUnit;
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 bool AGGRenderer::RequiresClipping()
 {
     return m_bRequiresClipping;
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 bool AGGRenderer::RequiresLabelClipping()
 {
     // always the same value as RequiresClipping
@@ -1122,6 +1160,7 @@ bool AGGRenderer::RequiresLabelClipping()
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 bool AGGRenderer::SupportsZ()
 {
     // Z values in feature geometry are ignored
@@ -1129,6 +1168,7 @@ bool AGGRenderer::SupportsZ()
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 bool AGGRenderer::SupportsTooltips()
 {
     // set to false to disable processing of tooltips
@@ -1136,6 +1176,7 @@ bool AGGRenderer::SupportsTooltips()
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 bool AGGRenderer::SupportsHyperlinks()
 {
     // set to false to disable processing of hyperlinks
@@ -1143,12 +1184,14 @@ bool AGGRenderer::SupportsHyperlinks()
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 bool AGGRenderer::UseLocalOverposting()
 {
     return m_bLocalOverposting;
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 // WARNING: caller responsible for deleting resulting line buffer
 LineBuffer* AGGRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, double lineWidthPixels, double drawingScale, double dpi)
 {
@@ -1338,10 +1381,9 @@ LineBuffer* AGGRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, d
 }
 
 
-//-----------------------------------------------------------------------------
+//////////////////////////////////////////////////////////////////////////////
 // scale an input number in meters to a mapping
 // space number given a device or mapping space unit.
-//-----------------------------------------------------------------------------
 double AGGRenderer::_MeterToMapSize(RS_Units unit, double number)
 {
     double scale_factor;
@@ -1355,12 +1397,14 @@ double AGGRenderer::_MeterToMapSize(RS_Units unit, double number)
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::SetRenderSelectionMode(bool mode)
 {
     SetRenderSelectionMode(mode, 0x0000FF00);
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::SetRenderSelectionMode(bool mode, int rgba)
 {
     SE_Renderer::SetRenderSelectionMode(mode, rgba);
@@ -1382,6 +1426,7 @@ void AGGRenderer::SetRenderSelectionMode(bool mode, int rgba)
 //////////////////////////////////////////////////////////////////////////////
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::DrawString(const RS_String& s,
                              double           x,
                              double           y,
@@ -1398,6 +1443,7 @@ void AGGRenderer::DrawString(const RS_String& s,
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::DrawString(agg_context*     cxt,
                              const RS_String& s,
                              double           x,
@@ -1649,6 +1695,9 @@ const RS_Font* AGGRenderer::FindFont(RS_FontDef& def)
 // SE_Renderer implementation
 /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth)
 {
     c()->bPolyClip = false;
@@ -1757,6 +1806,7 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth)
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 // Called when applying a line style on a feature geometry.  Line styles can
 // only be applied to linestring and polygon feature geometry types.
 void AGGRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
@@ -1789,6 +1839,7 @@ void AGGRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 // Called when applying an area style on a feature geometry.  Area styles can
 // can only be applied to polygon feature geometry types.
 void AGGRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
@@ -1840,6 +1891,7 @@ void AGGRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::_TransferPoints(agg_context* c, LineBuffer* srcLB, const SE_Matrix* xform, unsigned int* pathids, bool isPolygon)
 {
     if (s_bClampPoints)
@@ -1945,6 +1997,7 @@ void AGGRenderer::_TransferPoints(agg_context* c, LineBuffer* srcLB, const SE_Ma
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::_TransferPointsClamped(agg_context* c, LineBuffer* srcLB, const SE_Matrix* xform, unsigned int* pathids, bool isPolygon)
 {
     c->ps.remove_all();
@@ -2089,12 +2142,14 @@ void AGGRenderer::_TransferPointsClamped(agg_context* c, LineBuffer* srcLB, cons
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::DrawScreenPolyline(LineBuffer* srclb, const SE_Matrix* xform, const SE_LineStroke& lineStroke)
 {
     DrawScreenPolyline(c(), srclb, xform, lineStroke);
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 // copied from WritePolylines, except it doesn't do to screen transform - we should refactor
 void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE_Matrix* xform, const SE_LineStroke& lineStroke)
 {
@@ -2169,12 +2224,14 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int color)
 {
     DrawScreenPolygon(c(), polygon, xform, color);
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::DrawScreenPolygon(agg_context* c, LineBuffer* polygon, const SE_Matrix* xform, unsigned int color)
 {
     if ((color & 0xFF000000) == 0)
@@ -2203,18 +2260,21 @@ void AGGRenderer::DrawScreenPolygon(agg_context* c, LineBuffer* polygon, const S
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 bool AGGRenderer::YPointsUp()
 {
     return true;
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::GetWorldToScreenTransform(SE_Matrix& xform)
 {
     xform = m_xform;
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::SetWorldToScreenTransform(SE_Matrix& xform)
 {
     m_xform = xform;
@@ -2222,18 +2282,21 @@ void AGGRenderer::SetWorldToScreenTransform(SE_Matrix& xform)
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy)
 {
     m_xform.transform(inx, iny, ox, oy);
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy)
 {
     m_ixform.transform(inx, iny, ox, oy);
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 // returns number of pixels per millimeter device
 double AGGRenderer::GetScreenUnitsPerMillimeterDevice()
 {
@@ -2241,6 +2304,7 @@ double AGGRenderer::GetScreenUnitsPerMillimeterDevice()
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 // returns number of pixels per millimeter world
 double AGGRenderer::GetScreenUnitsPerMillimeterWorld()
 {
@@ -2248,6 +2312,7 @@ double AGGRenderer::GetScreenUnitsPerMillimeterWorld()
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 // screen units are pixels
 double AGGRenderer::GetScreenUnitsPerPixel()
 {
@@ -2255,18 +2320,21 @@ double AGGRenderer::GetScreenUnitsPerPixel()
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 RS_FontEngine* AGGRenderer::GetRSFontEngine()
 {
     return this;
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::AddExclusionRegion(RS_F_Point* fpts, int npts)
 {
     m_labeler->AddExclusionRegion(fpts, npts);
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 // labeling - this is the entry API for adding SE labels
 // to the label mananger
 void AGGRenderer::ProcessSELabelGroup(SE_LabelInfo*   labels,
@@ -2284,6 +2352,7 @@ void AGGRenderer::ProcessSELabelGroup(SE_LabelInfo*   labels,
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::DrawScreenRaster(unsigned char* data, int length,
                                    RS_ImageFormat format, int native_width, int native_height,
                                    double x, double y, double w, double h, double angledeg)
@@ -2292,6 +2361,7 @@ void AGGRenderer::DrawScreenRaster(unsigned char* data, int length,
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int length,
                                    RS_ImageFormat format, int native_width, int native_height,
                                    double x, double y, double w, double h, double angledeg)
@@ -2377,6 +2447,7 @@ void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int le
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::DrawScreenRasterTransform(agg_context* cxt, unsigned char* data, int length,
                                             RS_ImageFormat format, int native_width, int native_height,
                                             double x, double y, double w, double h,
@@ -2435,6 +2506,7 @@ void AGGRenderer::DrawScreenRasterTransform(agg_context* cxt, unsigned char* dat
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 // Renders the mesh rectangle defined by the point mappings at the four supplied mesh indices
 void AGGRenderer::RenderTransformMeshRectangle(mg_rendering_buffer& src, agg_context* cxt,
                                                RS_ImageFormat format, TransformMesh* transformMesh,
@@ -2458,6 +2530,7 @@ void AGGRenderer::RenderTransformMeshRectangle(mg_rendering_buffer& src, agg_con
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 // Renders the triangle in the source image defined by the three source points into
 // the triangle in the supplied context defined by the three destination points.
 void AGGRenderer::RenderTransformedTriangle(mg_rendering_buffer& src, agg_context* cxt, RS_ImageFormat format,
@@ -2486,6 +2559,7 @@ void AGGRenderer::RenderTransformedTriangle(mg_rendering_buffer& src, agg_contex
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 // Renders the source image to the destination context, using the specified
 // affine transformation matrix.
 void AGGRenderer::RenderWithTransform(mg_rendering_buffer& src, agg_context* cxt,
@@ -2559,6 +2633,7 @@ void AGGRenderer::RenderWithTransform(mg_rendering_buffer& src, agg_context* cxt
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::DrawScreenText(const RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy,
                                  RS_F_Point* path, int npts, double param_position)
 {
@@ -2595,6 +2670,7 @@ void AGGRenderer::DrawScreenText(const RS_TextMetrics& tm, RS_TextDef& tdef, dou
 //////////////////////////////////////////////////////////////
 
 
+//////////////////////////////////////////////////////////////////////////////
 // Inserts the contents of a given DWF input stream into the current
 // output W2D.  The given coord sys transformation is applied and geometry
 // will be clipped to the RS_Bounds context of the DWFRenderer.
@@ -2720,6 +2796,7 @@ void AGGRenderer::AddDWFContent(RS_InputStream*  in,
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::AddW2DContent(RS_InputStream* in, CSysTransformer* xformer, const RS_String& w2dfilter)
 {
     WT_Result result;
@@ -2761,6 +2838,7 @@ void AGGRenderer::AddW2DContent(RS_InputStream* in, CSysTransformer* xformer, co
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::SetActions(WT_File& file)
 {
     file.set_stream_open_action (agr_open);
@@ -2842,6 +2920,7 @@ void AGGRenderer::SetActions(WT_File& file)
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 // Given an array of points in W2D logical coordinates, this function:
 // 1. Transforms W2D logical coords into their model space using the
 //    W2D file's units structure
@@ -2965,6 +3044,7 @@ LineBuffer* AGGRenderer::ProcessW2DPoints(WT_File&          file,
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 // This function scales a W2D space related value from source W2D space
 // to destination.  Since the source W2D file can fit into a small piece
 // of the destination DWF or be much larger, we need to take that scaling
@@ -2996,6 +3076,7 @@ double AGGRenderer::ScaleW2DNumber(WT_File& file, WT_Integer32 number)
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
 {
     _ASSERT(m_xformer);
