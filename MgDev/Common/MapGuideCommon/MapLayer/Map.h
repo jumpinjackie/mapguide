@@ -27,7 +27,7 @@
 #include <list>
 #include <map>
 
-typedef std::list<const MdfModel::MdfString> ColorStringList;
+typedef std::list<MdfModel::MdfString> ColorStringList;
 
 class MgMap;
 class MgSiteConnection;
