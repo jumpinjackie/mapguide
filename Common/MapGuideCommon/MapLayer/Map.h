@@ -22,21 +22,12 @@
 /// \ingroup Maps_and_Layers_Module
 /// \{
 
-/*TSW remove
 #include "Foundation.h"
 #include <vector>
 #include <list>
 #include <map>
-#include "LayerBase.h"
-#include "LayerGroup.h"
-#include "LayerCollection.h"
-#include "LayerGroupCollection.h"
-#include "MapCollection.h"
-#include "ObjectChange.h"
-#include "ChangeList.h"
-#include "ReadOnlyLayerCollection.h"
-#include "SelectionBase.h"
-*/
+
+typedef std::list<const MdfModel::MdfString> ColorStringList;
 
 class MgMap;
 class MgSiteConnection;
@@ -579,6 +570,13 @@ INTERNAL_API:
     virtual void OnLayerParentChanged(MgLayerBase* layer, CREFSTRING parentId);
 
     //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// RFC60 ColorPalette accessors
+    ///
+    ColorStringList& GetColorPalette();
+    void AddColorsToPalette(ColorStringList& newColorPalette);
+
+    //////////////////////////////////////////////////////////////////
     /// Bulk load identity properties
     ///
     ///
@@ -636,6 +634,7 @@ private:
     Ptr<MgResourceService> m_resourceService;
     bool m_inSave;
     bool m_unpackedLayersGroups;
+    ColorStringList* m_colorPalette;
 };
 /// \}
 

@@ -15,6 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+//#define _DEBUG_PNG8
 #include "stdafx.h"
 #include "RendererStyles.h"
 #include "AGGImageIO.h"
@@ -29,8 +30,21 @@
 
 #include "GDUtils.h"
 
+#include <assert.h>
+
+#ifdef _DEBUG_PNG8
+#define myassert(COND,L,F) if (!(COND)){ printf("(%d) failed assertion in %d %s", GetCurrentThreadId(), L,F); throw new exception(); }
+#else
+#define myassert(COND,L,F) (COND)
+#endif
+
 #pragma warning(disable : 4611)
 
+enum MS_RETURN_VALUE {MS_SUCCESS, MS_FAILURE, MS_DONE};
+
+// in-memory switch to permit disabling colormapping at runtime
+// (could be in debug ifdefs but will be optimized away in release build anyway)
+static bool s_bUseColorMap = true;
 
 struct png_write_context
 {
@@ -653,17 +667,229 @@ int read_png(png_write_context* cxt, int& retwidth, int& retheight, unsigned cha
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
+/******************************************************************************
+ * mapgd.c 7803 2008-07-09 05:17:40Z sdlime
+ * Project:  MapServer
+ * Purpose:  GD rendering and other GD related functions.
+ * Author:   Steve Lime and the MapServer team.
+ ******************************************************************************/
+/// copied from mapserver source tree --------> mapgd.c line 3248 - 3463, UV  25.02.2009
+ // copy src to dst using dst's palette
+ // src must be a truecolor image
+ // dst must be a paletted image
+ // method is to fine tune the caching used to lookup color values in the palette:
+ //  -0 is the default method, which allocates cache memory when needed
+ //  -1 is a memory conservative method, that uses very little caching but is much slower
+ //  -2 is a memory hungry caching method (allocates 32MB on the heap) but is the fastest for large images
+ // see bug #2422 for some benchmark timings of these methods
+ //
+static int ImageCopyForcePaletteGD(gdImagePtr src, gdImagePtr dst, int method)
+{
+#ifdef _DEBUG_PNG8
+    long icfp = GetTickCount();  // for performance evaluation
+#endif
+    int x, y;
+    int w, h;
+    int c, r, g, b,color;
+    if(!src || !dst) return MS_FAILURE;
+    // input images have different sizes
+    if(gdImageSX(src) != gdImageSX(dst) || gdImageSY(src) != gdImageSY(dst)) return MS_FAILURE;
+    if(!gdImageTrueColor(src) || gdImageTrueColor(dst)) return MS_FAILURE; /* 24-bit to 8-bit */
+    w = gdImageSX(src);
+    h = gdImageSY(src);
+    if(method==0) {
+        /*default caching strategy*/
+        unsigned short ***cols=(unsigned short***)calloc(256,sizeof(unsigned short**));
+
+        /*pointer to cache, pointed by red component, indexed by green component*/
+        unsigned short **data=(unsigned short**)calloc(256*256,sizeof(unsigned short*));
+
+       for(r=0;r<256;r++) {
+        /*populate the cache*/
+        cols[r]=&(data[r*256]);
+
+        for (y = 0; (y < h); y++) {
+            for (x = 0; (x < w); x++) {
+                c = gdImageGetPixel(src, x, y);
+                r = gdTrueColorGetRed(c);
+                g = gdTrueColorGetGreen(c);
+                b = gdTrueColorGetBlue(c);
+
+                if(cols[r][g]==NULL) {
+                    /*this is the first time we see this r,g couple.
+                     *allocate bytes for the blue component*/
+                    cols[r][g]=(unsigned short*)calloc(256,sizeof(unsigned short));
+                }
+
+                if(!cols[r][g][b]) {
+                    /*this r,g,b triplet was never seen before
+                     * compute its index in the palette and cache the result
+                     */
+                    color = gdImageColorClosest(dst, r, g, b);
+                    dst->pixels[y][x] = color;
+                    /*the cache data was calloc'ed to avoid initialization
+                     * store 'index+1' so we are sure the test for cols[r][g][b]
+                     * returns true, i.e that this color was cached*/
+                    cols[r][g][b]=color+1;
+                }
+                else {
+                    /*the cache data was calloc'ed to avoid initialization
+                     * the cache contains 'index+1' so we must subtract
+                     * 1 to get the real color index*/
+                    dst->pixels[y][x] = cols[r][g][b]-1;
+                } // if
+            } // for x
+        } // for y
+       } // for r
+        for(r=0;r<256;r++)
+            for(g=0;g<256;g++)
+                if(cols[r][g]) /*only free the row if it was used*/
+                    free(cols[r][g]);
+        free(data);
+        free(cols);
+    }
+    else if(method==1) {
+        /*memory conservative method, does not allocate mem on the heap*/
+        int R[10], G[10], B[10], C[10];
+        int i, color, nCache = 0, iCache =0, maxCache=10;
+
+        for (y = 0; (y < h); y++) {
+            for (x = 0; (x < w); x++) {
+                c = gdImageGetPixel(src, x, y);
+                r =  gdTrueColorGetRed(c);
+                g = gdTrueColorGetGreen(c);
+                b = gdTrueColorGetBlue(c);
+                color = -1;
+
+                /* adding a simple cache to keep colors instead of always calling gdImageColorClosest
+               seems to reduce significantly the time passed in this function
+               spcially with large images (bug 2096)*/
+                for (i=0; i<nCache; i++)
+                {
+                    if (R[i] == r)
+                    {
+                        if (G[i] == g && B[i] == b)
+                        {
+                            color = C[i];
+                            break;
+                        }
+                    }
+                }
+
+                if (color == -1)
+                {
+                    color = gdImageColorClosest(dst, r, g, b);
+                    R[iCache] = r;
+                    G[iCache] = g;
+                    B[iCache] = b;
+                    C[iCache] = color;
+                    nCache++;
+                    if (nCache >= maxCache)
+                        nCache = maxCache;
+
+                    iCache++;
+                    if (iCache == maxCache)
+                        iCache = 0;
+                }
+
+                gdImageSetPixel(dst, x, y, color);
+            }
+        }
+    }
+    else if(method==2) {
+        /*memory hungry method, fastest for very large images*/
+
+        /*use a cache for every possible r,g,b triplet
+         * this is usually a full 32MB (when short is 2 bytes) */
+        short *cache=(short*)calloc(16777216,sizeof(short));
+
+        for (y = 0; (y < h); y++) {
+            for (x = 0; (x < w); x++) {
+                int index;
+                c = gdImageGetPixel(src, x, y);
+                index=c&0xFFFFFF; /*use r,g,b for the cache index, i.e. remove alpha*/
+                if(!cache[index]) {
+                    r =  gdTrueColorGetRed(c);
+                    g = gdTrueColorGetGreen(c);
+                    b = gdTrueColorGetBlue(c);
+                    color = gdImageColorClosest(dst, r, g, b);
+                    cache[index]=color+1;
+                    dst->pixels[y][x] = color;
+                }
+                else
+                    dst->pixels[y][x] = cache[index]-1;
+            }
+        }
+        free(cache);
+    }
+#ifdef _DEBUG_PNG8
+    printf("\n(%d) ########################### ImageCopyForcePaletteGD: Time:%6.4f (s)\n", GetCurrentThreadId(), (GetTickCount()-icfp)/1000.0);
+#endif
+
+    if(gdImageTrueColor(dst)) return MS_FAILURE; /* result is not 8-bit */
+    return MS_SUCCESS;
+}
 
 
+////////////////////////////////////////////////////////////////////////////////////////
+// helper function to create an empty image with a palette provided in std::list<MgColor>
+// inParam: 24bit image, filename of palette file, imagesixeX, imagesizeY
+// return: 8bit image using given palette if provided ...
+static gdImagePtr CreateGdImageWithPalette(gdImagePtr img24, RS_ColorVector* baseColorPalette, int sx, int sy)
+{
+    myassert(sx > 0 && sy > 0, __LINE__, __WFILE__);
+
+    /// allow empty default parameter
+    int ncolors = baseColorPalette? baseColorPalette->size() : 0;
+
+    // create new empty palette image
+    gdImagePtr gdPPalette = gdImageCreatePalette(sx, sy);
+    myassert(gdPPalette, __LINE__, __WFILE__);
+
+    // if the palette file contains less than 256, fill the rest with colors generated
+    // by gd - those can include the base colors
+    if (ncolors < 256)
+    {
+        gdImagePtr gdPPaletteFromImg24 = gdImageCreatePaletteFromTrueColor(img24, 1, 255-ncolors);
+        myassert(gdPPaletteFromImg24, __LINE__, __WFILE__);
+
+        // copy colors from palette into new empty gdpalette
+        for (int c = 0; c < gdPPaletteFromImg24->colorsTotal; c++)
+        {
+            gdImageColorAllocate(gdPPalette,gdPPaletteFromImg24->red[c],
+                                            gdPPaletteFromImg24->green[c],
+                                            gdPPaletteFromImg24->blue[c]);
+        }
+        gdImageDestroy(gdPPaletteFromImg24);
+    }
+#ifdef _DEBUG_PNG8
+    printf("\n(%d) ########################### CreateGdImageWithPalette colors: %d\n", GetCurrentThreadId(), ncolors);
+#endif
+
+    if (baseColorPalette)
+    {
+        // add colors from the colorpalette (duplicate color entries make the used palette less than 256)
+        RS_ColorVector::iterator it;
+        for (it = baseColorPalette->begin();it != baseColorPalette->end(); it++)
+        {
+            gdImageColorAllocate(gdPPalette, (*it).red(), (*it).green(), (*it).blue());
+        }
+    }
+
+    myassert(gdImageTrueColor(gdPPalette) == 0, __LINE__, __WFILE__);   // result is not a 8-bit paletted image
+    return gdPPalette;  // this is an empty image with the right color palette
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+// create an image using the other Save method and store it at filename
 bool AGGImageIO::Save(const RS_String& filename, const RS_String& format,
                  unsigned int* src, int src_width, int src_height,
                  int dst_width, int dst_height, RS_Color& bgColor)
@@ -701,9 +927,13 @@ bool AGGImageIO::Save(const RS_String& filename, const RS_String& format,
 }
 
 
+////////////////////////////////////////////////////////////////////////////////////////
+// convert imagebuffer src into the desired format using the provided baseColorPalette for 8bit 
+// (the baseColorPalette is a default parameter NULL)
 RS_ByteData* AGGImageIO::Save(const RS_String& format,
                   unsigned int* src, int src_width, int src_height,
-                  int dst_width, int dst_height, RS_Color& bgColor)
+                  int dst_width, int dst_height, RS_Color& bgColor, 
+                  RS_ColorVector* baseColorPalette)
 {
     bool drop_alpha = bgColor.alpha() == 255;
 
@@ -750,76 +980,97 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
         }
         else if (format == L"JPG" || format == L"GIF" || format == L"PNG8")
         {
-            gdImagePtr gdimg = gdImageCreateTrueColor(dst_width, dst_height);
+            // gdimg24 contains the 24bit image
+            gdImagePtr gdimg24 = gdImageCreateTrueColor(dst_width, dst_height);
 
-            int bgc = ConvertColor(gdimg, bgColor);
+            int bgc = ConvertColor(gdimg24, bgColor);
 
             // initialize the destination image to the bg color (temporarily turn
             // off alpha blending so the fill has the supplied alpha)
-            gdImageAlphaBlending(gdimg, 0);
-            gdImageFilledRectangle(gdimg, 0, 0, gdImageSX(gdimg)-1, gdImageSY(gdimg)-1, bgc);
+            gdImageAlphaBlending(gdimg24, 0);
+            gdImageFilledRectangle(gdimg24, 0, 0, gdImageSX(gdimg24)-1, gdImageSY(gdimg24)-1, bgc);
 
             // set any transparent color
             if (bgColor.alpha() != 255)
-                gdImageColorTransparent(gdimg, bgc);
+                gdImageColorTransparent(gdimg24, bgc);
 
+            // copy the src data into the gdImage
             unsigned int* ptr = src;
             for (int j=0; j<dst_height; j++)
             {
                 for(int i=0; i<dst_width; i++)
                 {
                     //TODO: can be optimized
-
                     unsigned int c = *ptr++;
                     int a = c >> 24;
-                    int b = (c >> 16) & 0xff;
-                    int g = (c >> 8) & 0xff;
-                    int r = c & 0xff;
-
                     // skip any fully transparent pixels so a transparent
                     // background color will show through
                     if (a != 0)
                     {
-                        int gdc = gdImageColorAllocateAlpha(gdimg, r, g, b, a);
-                        gdImageSetPixel(gdimg, i, j, gdc);
+                        int b = (c >> 16) & 0xff;  // some simple optimization ;-)
+                        int g = (c >> 8) & 0xff;
+                        int r = c & 0xff;
+
+                        int gdc = gdImageColorAllocateAlpha(gdimg24, r, g, b, a);
+                        gdImageSetPixel(gdimg24, i, j, gdc);
                     }
                 }
             }
 
-            gdImageAlphaBlending(gdimg, 1);
+            gdImageAlphaBlending(gdimg24, 1);
 
             // Make output image non-interlaced --- it's a little faster to compress that way.
-            gdImageInterlace(gdimg, 0);
+            gdImageInterlace(gdimg24, 0);
 
             // Make sure the alpha values get saved -- but only if required
             // it is faster not to save them and makes a smaller PNG
-            if (bgColor.alpha() != 255)
-                gdImageSaveAlpha(gdimg, 1);
-            else
-                gdImageSaveAlpha(gdimg, 0);
+            gdImageSaveAlpha(gdimg24, (bgColor.alpha() != 255)? 1 : 0);
 
-            //convert to 256 color paletted image for PNG8, GIF
-            if (format == L"GIF" || format == L"PNG8")
-                gdImageTrueColorToPalette(gdimg, 0, 256);
+            // convert to 256 color paletted image for PNG8, GIF
+            gdImagePtr gdImgPalette = NULL;
+            if (format == L"GIF" || format == L"PNG8") 
+            {
+                /// skip color quantization if no palette given or empty
+                if (baseColorPalette && !baseColorPalette->empty() && s_bUseColorMap) // memory based switch
+                {
+                    gdImgPalette = CreateGdImageWithPalette(gdimg24, baseColorPalette,
+                                                            gdImageSX(gdimg24), gdImageSY(gdimg24));
+                    myassert(gdImgPalette, __LINE__, __WFILE__);
+
+                    // methods are described above - we use method 1 as default????? TODO what's best???
+                    myassert(ImageCopyForcePaletteGD(gdimg24, gdImgPalette, 1) == MS_SUCCESS, __LINE__, __WFILE__);
+
+                    // forced palette GD image now in gdimgPalette
+                }
+                else
+                {
+                    gdImageTrueColorToPalette(gdimg24, 0, 256);  // in place conversion
+                    gdImgPalette = gdimg24;
+                }
+            }
 
             //get an in-memory image stream
             int size = 0;
             unsigned char* data = NULL;
 
             if (format == L"GIF")       // MgImageFormats::Gif
-                data = (unsigned char*)gdImageGifPtr(gdimg, &size);
+                data = (unsigned char*)gdImageGifPtr(gdImgPalette, &size);
+            else if (format == L"PNG8") // MgImageFormats::Png8
+                data = (unsigned char*)gdImagePngPtr(gdImgPalette, &size);
             else if (format == L"JPG")  // MgImageFormats::Jpeg
-                data = (unsigned char*)gdImageJpegPtr(gdimg, &size, 75);
-            else if (format == L"PNG8")   // MgImageFormats::Png8
-                data = (unsigned char*)gdImagePngPtr(gdimg, &size);
+                data = (unsigned char*)gdImageJpegPtr(gdimg24, &size, 75);
 
             std::auto_ptr<RS_ByteData> byteData;
             byteData.reset((NULL == data)? NULL : new RS_ByteData(data, size));
 
             gdFree(data);
 
-            //if we allocated a temporary image to stretch-blit, destroy it
-            gdImageDestroy(gdimg);
+            if (gdimg24 == gdImgPalette)
+                gdimg24 = NULL;     // reset pointer so destructor is not called twice -> exception!!!
+            else    //if we allocated a temporary image to stretch-blit, destroy it
+                gdImageDestroy(gdimg24);
+            //if we allocated a paletted image, destroy it (very likely that is)
+            gdImageDestroy(gdImgPalette);
 
             return byteData.release();
         }
@@ -829,6 +1080,8 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
     _ASSERT(false);
     return NULL;
 }
+
+//---------------------------------------------------------------------------
 
 //TODO: This routine should be rewritten to use agg to blend PNGs more accurately
 void AGGImageIO::Combine(const RS_String& src1, const RS_String& src2, const RS_String& dst)

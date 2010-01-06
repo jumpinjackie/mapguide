@@ -34,6 +34,13 @@ class MgMap;
 class MgCoordinateSystem;
 class RSMgFeatureReader;
 class TransformCache;
+class SE_SymbolManager;
+namespace MdfModel
+{
+    class SymbolDefinition;
+    class CompoundSymbolDefinition;
+    class SimpleSymbolDefinition;
+}
 
 //Common stylization utility code -- used by both the mapping and rendering services
 class MG_SERVER_MAPPING_API MgMappingUtil
@@ -52,9 +59,10 @@ public:
                               bool expandExtents,
                               bool checkRefreshFlag,
                               double scale,
-                              bool selection = false);
+                              bool selection = false,
+                              bool extractColors = false);
 
-    static RSMgFeatureReader * ExecuteFeatureQuery(MgFeatureService* svcFeature,
+    static RSMgFeatureReader* ExecuteFeatureQuery(MgFeatureService* svcFeature,
                                                  RS_Bounds& extent,
                                                  MdfModel::VectorLayerDefinition* vl,
                                                  const wchar_t* overrideFilter,
@@ -62,7 +70,7 @@ public:
                                                  MgCoordinateSystem* layerCs,
                                                  TransformCache* cache);
 
-    static RSMgFeatureReader * ExecuteRasterQuery(MgFeatureService* svcFeature,
+    static RSMgFeatureReader* ExecuteRasterQuery(MgFeatureService* svcFeature,
                                                 RS_Bounds& extent,
                                                 MdfModel::GridLayerDefinition* gl,
                                                 const wchar_t* overrideFilter,
@@ -80,6 +88,21 @@ public:
 
     static void InitializeStylizerCallback();
     static MgPolygon* GetPolygonFromEnvelope(MgEnvelope* extent);
+
+    // RFC60 addition
+    static void ExtractColors(MgMap* map, MdfModel::VectorScaleRange* scaleRange, Stylizer* stylizer);
+    static void GetUsedColorsFromScaleRange(ColorStringList& usedColorList, MdfModel::VectorScaleRange* scaleRange, SE_SymbolManager* sman);
+
+    // helpers
+    static void FindColorInSymDefHelper(ColorStringList& colorList, MdfModel::SymbolDefinition* symdef);
+    static void FindColorInSymDefHelper(ColorStringList& colorList, MdfModel::CompoundSymbolDefinition* symdef);
+    static void FindColorInSymDefHelper(ColorStringList& colorList, MdfModel::SimpleSymbolDefinition* symdef);
+
+    // Parse the expressions collected from xml definitions of all layers.  The map
+    // object has a list from all color entries found in the most recent layer stylization.
+    // TODO: currently they are interpreted as ffffffff 32 bit RGBA string values.
+    // The color palette passed to the renderer is a std::vector<RS_Color>
+    static void ParseColorStrings(RS_ColorVector* tileColorPalette, MgMap* map);
 };
 
 #endif

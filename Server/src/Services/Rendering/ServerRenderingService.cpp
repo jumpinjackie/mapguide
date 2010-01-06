@@ -36,8 +36,15 @@ static const INT32 FILTER_VISIBLE = 1;
 static const INT32 FILTER_SELECTABLE = 2;
 static const INT32 FILTER_HASTOOLTIPS = 4;
 
+inline bool hasColorMap (STRING format)
+{
+    return format == L"PNG8" || format == L"GIF";
+}
+
 IMPLEMENT_CREATE_SERVICE(MgServerRenderingService)
 
+
+///////////////////////////////////////////////////////////////////////////////
 // used when we want to process a given number of features
 bool StylizeThatMany(void* data)
 {
@@ -49,6 +56,7 @@ bool StylizeThatMany(void* data)
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 MgServerRenderingService::MgServerRenderingService() : MgRenderingService()
 {
     m_pCSFactory = new MgCoordinateSystemFactory();
@@ -111,11 +119,13 @@ MgServerRenderingService::MgServerRenderingService() : MgRenderingService()
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 MgServerRenderingService::~MgServerRenderingService()
 {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
                                                    CREFSTRING baseMapLayerGroupName,
                                                    INT32 tileColumn,
@@ -188,6 +198,8 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+/// render a map using all layers from the baseGroup
 MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
                                                    MgLayerGroup* baseGroup,
                                                    INT32 scaleIndex,
@@ -256,6 +268,8 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+// default arg bKeepSelection = true
 MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
                                                              MgSelection* selection,
                                                              CREFSTRING format)
@@ -265,6 +279,8 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+// default arg bKeepSelection = true
 MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
                                                              MgSelection* selection,
                                                              CREFSTRING format,
@@ -277,6 +293,8 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+// called from API (first call of AjaxPgPViewerSampleApplication)
 MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
                                                              MgSelection* selection,
                                                              MgRenderingOptions* options)
@@ -341,6 +359,8 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+// default arg bKeepSelection = true
 MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                                                   MgSelection* selection,
                                                   CREFSTRING format)
@@ -350,6 +370,8 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+// default arg bClip = false
 MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                                                   MgSelection* selection,
                                                   CREFSTRING format,
@@ -359,6 +381,10 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+// render complete map around center point in given scale using map's background
+// color and display sizes as default arguments to call the real rendermap method
+// default arg (bKeepSelection = true, bClip = false)
 MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                                                   MgSelection* selection,
                                                   CREFSTRING format,
@@ -390,6 +416,8 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+// default arg bKeepSelection = true
 MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                                                   MgSelection* selection,
                                                   MgEnvelope* extents,
@@ -403,6 +431,9 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+// render the provided extent of the map and align aspect ratios to the provided window
+// default arg bKeepSelection = true
 MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                                                   MgSelection* selection,
                                                   MgEnvelope* extents,
@@ -497,6 +528,8 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+// default argument bKeepSelection = true
 MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                                                   MgSelection* selection,
                                                   MgCoordinate* center,
@@ -511,6 +544,8 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+// default arguments bClip = false
 MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                                                   MgSelection* selection,
                                                   MgCoordinate* center,
@@ -525,6 +560,10 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+// render map around center point in given scale
+// default args bKeepSelection = true, bClip = false, backgroundColor = map->backgroundColor,
+// width = map->getDisplayWidth, height = map->getDisplayHeight
 MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                                                   MgSelection* selection,
                                                   MgCoordinate* center,
@@ -581,7 +620,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
 }
 
 
-
+///////////////////////////////////////////////////////////////////////////////
 MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap* map,
                                                               MgStringCollection* layerNames,
                                                               MgGeometry* geometry,
@@ -593,6 +632,7 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap* map,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap* map,
                                                               MgStringCollection* layerNames,
                                                               MgGeometry* geometry,
@@ -681,6 +721,7 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap* map,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties(MgMap* map,
                                                                             MgStringCollection* layerNames,
                                                                             MgGeometry* filterGeometry,
@@ -692,6 +733,7 @@ MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties(MgMa
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties(MgMap* map,
                                                                             MgStringCollection* layerNames,
                                                                             MgGeometry* filterGeometry,
@@ -722,6 +764,9 @@ MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties(MgMa
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+// pack options into object and forward call (select Selection AND Layers)
+// maybe keepSelection called by RenderTile
 MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                                                           MgSelection* selection,
                                                           MgReadOnlyLayerCollection* roLayers,
@@ -740,6 +785,14 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+// called from (indirectly):
+//      RenderMap(complete), RenderMap(extent)(roLayers == NULL)
+//      RenderTile (selection == NULL)
+// render the map using from the provided rolayers
+// (this is the baseGroup layers for rendering tiles)
+// render map using provided options object from before
+// this is called for tiles and for dynamic overlays
 MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                                                           MgSelection* selection,
                                                           MgReadOnlyLayerCollection* roLayers,
@@ -788,14 +841,18 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
 
     RS_Color bgcolor(0, 0, 0, 255); //not used -- GDRenderer is already initialized to the correct bgcolor
 
+    STRING format = options->GetImageFormat();
+
     RS_MapUIInfo mapInfo(sessionId, map->GetName(), map->GetObjectId(), srs, units, bgcolor);
 
     // begin map stylization
     dr->StartMap(&mapInfo, b, scale, map->GetDisplayDpi(), map->GetMetersPerUnit(), NULL);
 
+    MG_TRY()
+
         // if no layer collection is supplied, then put all layers in a temporary collection
         Ptr<MgReadOnlyLayerCollection> tempLayers = SAFE_ADDREF(roLayers);
-        if (tempLayers == NULL)
+        if (tempLayers == NULL)  // if called from renderMap not RenderTile
         {
             tempLayers = new MgReadOnlyLayerCollection();
             Ptr<MgLayerCollection> layers = map->GetLayers();
@@ -807,13 +864,14 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
         }
 
         INT32 behavior = options->GetBehavior();
-        if (behavior & MgRenderingOptions::RenderLayers)
+        if (behavior & MgRenderingOptions::RenderLayers)    // this is for tiles so observer colormaps
         {
             MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
-                                         tempLayers, NULL, &ds, dr, dstCs, expandExtents, false, scale);
+                                         tempLayers, NULL, &ds, dr, dstCs, expandExtents, false, scale,
+                                         false, hasColorMap(format));
         }
 
-        // now we need to stylize the selection on top
+        // now we need to stylize the selection on top (this is not for tiles!)
         if (selection && (behavior & MgRenderingOptions::RenderSelection))
         {
             Ptr<MgReadOnlyLayerCollection> selLayers = selection->GetLayers();
@@ -867,7 +925,11 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
             }
         }
 
+    MG_CATCH(L"MgServerRenderingService.RenderMapInternal")
+
     dr->EndMap();
+
+    MG_THROW()  // to skip a faulty tile we need to rethrow the exception which could be thrown in StylizeLayers
 /*
     //-------------------------------------------------------
     // draw a border around the tile - used for debugging
@@ -894,14 +956,37 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
     // get a byte representation of the image
     auto_ptr<RS_ByteData> data;
 
-    STRING imageFormat = options->GetImageFormat();
-    // Both AGG and GD expect the format to be an uppercase string
-    STRING format = MgUtil::ToUpper(imageFormat);
-
-    if (wcscmp(m_rendererName.c_str(), L"AGG") == 0)
-        data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight));
-    else
-        data.reset(((GDRenderer*)dr)->Save(format, saveWidth, saveHeight));
+    try
+    {
+        // call the image renderer to create the image
+        if (wcscmp(m_rendererName.c_str(), L"AGG") == 0)
+        {
+            //-------------------------------------------------------
+            /// RFC60 code to correct colormaps by UV
+            //-------------------------------------------------------
+            // we examine the expressions collected from xml definitions of all layers.
+            // the map object has a list from all color entries found in the most recent layer stylization
+            // TODO currently they are interpreted as ffffffff 32 bit RGBA string values.
+            // adding expresssions and other interpretations should be done in ParseColorStrings.
+            // the color Palette for the renderer is a vector<RS_Color>
+            if (hasColorMap(format))
+            {
+                RS_ColorVector tileColorPalette;
+                MgMappingUtil::ParseColorStrings(&tileColorPalette, map);
+//              printf("<<<<<<<<<<<<<<<<<<<<< MgServerRenderingService::ColorPalette->size(): %d\n", tileColorPalette.size());
+                data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight, &tileColorPalette));
+            }
+            else
+                data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight, NULL));
+        }
+        else
+            data.reset(((GDRenderer*)dr)->Save(format, saveWidth, saveHeight));
+    }
+    catch (exception e)
+    {
+        ACE_DEBUG((LM_DEBUG, L"(%t) %w caught in RenderingService ColorPaletteGeneration\n", e.what()));
+        throw e;
+    }
 
     if (NULL != data.get())
     {
@@ -919,11 +1004,14 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
 
         ret = bs->GetReader();
     }
+    else
+        throw new MgNullReferenceException(L"MgServerRenderingService.RenderMapInternal", __LINE__, __WFILE__, NULL, L"MgNoDataFromRenderer", NULL);
 
     return ret.Detach();
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
                                                         INT32 width,
                                                         INT32 height,
@@ -1009,6 +1097,7 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 // A helper function that does most of the work for QueryFeatures
 // and QueryFeatureProperties.  Basically runs a rendering loop with
 // a custom renderer supplied by the caller that accumulates selection
@@ -1367,12 +1456,14 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 void MgServerRenderingService::SetConnectionProperties(MgConnectionProperties*)
 {
     // Do nothing.  No connection properties are required for server-side service objects.
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
 SE_Renderer* MgServerRenderingService::CreateRenderer(int width,
                                                       int height,
                                                       RS_Color& bgColor,

@@ -26,7 +26,8 @@ public:
 
     static RS_ByteData* Save(const RS_String& format,
                       unsigned int* src, int src_width, int src_height,
-                      int dst_width, int dst_height, RS_Color& bgColor);
+                      int dst_width, int dst_height, RS_Color& bgColor,
+                      RS_ColorVector* baseColorPalette = NULL);
 
     static void Combine(const RS_String& src1, const RS_String& src2, const RS_String& dst);
 
