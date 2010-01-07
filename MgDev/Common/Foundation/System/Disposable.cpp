@@ -85,10 +85,10 @@ INT32 MgDisposable::Release()
 
         m_refCountFlag = true;
 
-        if (0 == m_refCount)
+        if (0 >= m_refCount)
         {
 #ifdef _DEBUG
-            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) ************ Error in MgDisposable::Release(). Class Name: %W. Called with Reference Count = 0.\n"), GetClassName().c_str()));
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) ************ Error in MgDisposable::Release(). Class Name: %W. Called with Reference Count <= 0.\n"), GetClassName().c_str()));
 #endif
 
             throw new MgLogicException(L"MgDisposable.Release", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -109,6 +109,20 @@ INT32 MgDisposable::Release()
 
 
 //////////////////////////////////////////////////////////////
+void MgDisposable::SetRefCountFlag()
+{
+    m_refCountFlag = true;
+}
+
+
+//////////////////////////////////////////////////////////////
+void MgDisposable::ResetRefCountFlag()
+{
+    m_refCountFlag = false;
+}
+
+
+//////////////////////////////////////////////////////////////
 MgDisposable::MgDisposable() :
     m_refCount(1),
     m_refCountFlag(false)
@@ -120,7 +134,7 @@ MgDisposable::MgDisposable() :
 MgDisposable::~MgDisposable()
 {
 #ifdef _DEBUG
-   if ((m_refCountFlag) && (m_refCount != 0))
+    if ((m_refCountFlag) && (m_refCount != 0))
     {
         ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) ************ Error in MgDisposable::~MgDisposable(). Class Name: %W. Actual Reference Count: %d. Expected Reference Count: 0. This object should have been created on the heap instead of on the stack.\n"), GetClassName().c_str(), m_refCount));
     }

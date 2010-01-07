@@ -52,12 +52,13 @@ INT32 MgGuardDisposable::Release()
 {
     {
         ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, -1));
+
         m_refCountFlag = true;
 
-        if (0 == m_refCount)
+        if (0 >= m_refCount)
         {
 #ifdef _DEBUG
-            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) ************ Error in MgGuardDisposable::Release(). Class Name: %W. Called with Reference Count = 0.\n"), GetClassName().c_str()));
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) ************ Error in MgGuardDisposable::Release(). Class Name: %W. Called with Reference Count <= 0.\n"), GetClassName().c_str()));
 #endif
 
             throw new MgLogicException(L"MgGuardDisposable.Release", __LINE__, __WFILE__, NULL, L"", NULL);
