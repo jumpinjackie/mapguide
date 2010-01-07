@@ -79,6 +79,8 @@ public:
 
     bool GetCheckServersThreadDone();
     void SetCheckServersThreadDone(bool bDone);
+    void StartCheckServersThread();
+    void StopCheckServersThread();
 
 private:
 

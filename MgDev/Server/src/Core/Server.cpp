@@ -545,6 +545,10 @@ int MgServer::svc()
                                     nResult = siteThreads.Activate();
                                     if(nResult == 0)
                                     {
+                                        // Let the site manager know that the check servers background thread needs to start
+                                        MgSiteManager* siteManager = MgSiteManager::GetInstance();
+                                        siteManager->StartCheckServersThread();
+
                                         MG_LOG_TRACE_ENTRY(L"MgServer::svc() - Before Event Loop");
                                         nResult = ACE_Reactor::instance()->run_reactor_event_loop();
                                         MG_LOG_TRACE_ENTRY(L"MgServer::svc() - After Event Loop");
@@ -578,6 +582,9 @@ int MgServer::svc()
                                         clientThreads.close();
                                         adminThreads.close();
                                         siteThreads.close();
+
+                                        // Let the site manager know that the check servers background thread needs to stop
+                                        siteManager->StopCheckServersThread();
 
                                         // Ensure the thread manager waits until all operation threads are done before closing
                                         threadManager.wait();

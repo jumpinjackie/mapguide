@@ -98,10 +98,18 @@ ACE_THR_FUNC_RETURN CheckServers(void* param)
         }
 
         // Sleep the thread as thread resume/suspend is not supported on all platforms
-        ACE_OS::sleep(sleepTime);
+        for(size_t i=0;i<sleepTime;i++)
+        {
+            ACE_OS::sleep(1);
 
-        // Update whether we are done or not
-        bDone = siteManager->GetCheckServersThreadDone();
+            // Update whether we are done or not
+            bDone = siteManager->GetCheckServersThreadDone();
+            if(bDone)
+            {
+                // We don't want to sleep anymore as we need to shutdown this thread ASAP
+                break;
+            }
+        }
     }
 
     return 0;
@@ -282,12 +290,6 @@ void MgSiteManager::Initialize()
     m_threadData.failoverRetryTime = failoverRetryTime;
 
     m_bCheckServersThreadDone = false;
-
-    // Need a thread manager
-    ACE_Thread_Manager* manager = ACE_Thread_Manager::instance();
-    
-    // Create the background thread
-    manager->spawn(ACE_THR_FUNC(CheckServers), &m_threadData);
 
     MG_CATCH_AND_THROW(L"MgSiteManager.Initialize")
 }
@@ -552,4 +554,18 @@ void MgSiteManager::SetCheckServersThreadDone(bool bDone)
 {
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
     m_bCheckServersThreadDone = bDone;
+}
+
+void MgSiteManager::StartCheckServersThread()
+{
+    // Need a thread manager
+    ACE_Thread_Manager* manager = ACE_Thread_Manager::instance();
+    
+    // Create the background thread
+    manager->spawn(ACE_THR_FUNC(CheckServers), &m_threadData);
+}
+
+void MgSiteManager::StopCheckServersThread()
+{
+    SetCheckServersThreadDone(true);
 }
