@@ -25,9 +25,9 @@ class TestKmlService : public CppUnit::TestFixture
     CPPUNIT_TEST_SUITE(TestKmlService);
     CPPUNIT_TEST(TestStart); // This must be the very first unit test
 
-    //CPPUNIT_TEST(TestCase_GetMapKml);
-    //CPPUNIT_TEST(TestCase_GetMapKmz);
-    //CPPUNIT_TEST(TestCase_GetLayerKml);
+    CPPUNIT_TEST(TestCase_GetMapKml);
+    CPPUNIT_TEST(TestCase_GetMapKmz);
+    CPPUNIT_TEST(TestCase_GetLayerKml);
     CPPUNIT_TEST(TestCase_GetFeaturesKml);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
