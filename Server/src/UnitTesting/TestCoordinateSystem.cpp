@@ -333,14 +333,23 @@ void TestCoordinateSystem::TestCase_EnumerateCategories()
             Ptr<MgBatchPropertyCollection> coordSystems;
             STRING category = categories->GetItem(i);
             ACE_DEBUG((LM_INFO, ACE_TEXT("  Checking %W - "), category.c_str()));
+            int nCoordinateSystems = 0;
 
-            coordSystems = factory.EnumerateCoordinateSystems(category);
+            try
+            {
+                coordSystems = factory.EnumerateCoordinateSystems(category);
 
-            // Get the # of coordinate systems for this category
-            int nCoordinateSystems = coordSystems->GetCount();
+                // Get the # of coordinate systems for this category
+                nCoordinateSystems = coordSystems->GetCount();
 
-            nTotalCoordinateSystemsTested += nCoordinateSystems;
-            ACE_DEBUG((LM_INFO, ACE_TEXT("%d (Coordinate Systems)\n"), nCoordinateSystems));
+                nTotalCoordinateSystemsTested += nCoordinateSystems;
+                ACE_DEBUG((LM_INFO, ACE_TEXT("%d (Coordinate Systems)\n"), nCoordinateSystems));
+            }
+            catch(MgException* e)
+            {
+                SAFE_RELEASE(e);
+                ACE_DEBUG((LM_INFO, ACE_TEXT("Skipped\n")));
+            }
 
             for(int j=0;j<nCoordinateSystems;j++)
             {
