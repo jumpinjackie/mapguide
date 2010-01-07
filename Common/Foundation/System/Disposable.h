@@ -72,12 +72,14 @@ INTERNAL_API:
     ///
     virtual INT32 Release();
 
-INTERNAL_API:
-
-    void SetRefCountFlag()
-    {
-        m_refCountFlag = true;
-    }
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the ref count flag for this object to true.
+    ///
+    /// \return
+    /// Returns nothing
+    ///
+    void SetRefCountFlag();
 
 protected:
 
@@ -99,10 +101,14 @@ protected:
     ///
     virtual void Dispose() = 0;
 
-    void ResetRefCountFlag()
-    {
-        m_refCountFlag = false;
-    }
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Resets the ref count flag for this object to false.
+    ///
+    /// \return
+    /// Returns nothing
+    ///
+    void ResetRefCountFlag();
 
 private:
 
