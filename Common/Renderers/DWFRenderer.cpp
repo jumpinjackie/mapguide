@@ -1781,9 +1781,8 @@ void DWFRenderer::WriteStroke(RS_LineStroke & stroke)
 {
     m_w2dFile->desired_rendition().color() = Util_ConvertColor(stroke.color());
 
+    //convert thickness to W2D units
     double thickness = stroke.width();
-
-    //convert thickness to equivalent mapping space width
     int line_weight = (int)(_MeterToMapSize(stroke.units(), fabs(thickness)) * m_scale);
 
     m_w2dFile->desired_rendition().line_weight() = WT_Line_Weight(line_weight);

@@ -1228,18 +1228,14 @@ void GDRenderer::WritePolylines(LineBuffer* srclb, RS_LineStroke& stroke, bool a
 
     double thickness = stroke.width();
 
-    //convert thickness to equivalent mapping space width
+    //convert thickness to pixels
     int line_weight = (int)(_MeterToMapSize(stroke.units(), fabs(thickness)) * m_scale);
     if (line_weight > m_maxLineWidth)
-    {
         line_weight = m_maxLineWidth;
-    }
-    gdImagePtr brush1 = NULL;
 
+    gdImagePtr brush1 = NULL;
     if (line_weight > 1)
-    {
         brush1 = rs_gdImageThickLineBrush(line_weight, stroke.color());
-    }
 
     //draw the lines
     for (int i=0; i<srclb->cntr_count(); i++)
@@ -2375,13 +2371,12 @@ void GDRenderer::DrawScreenPolyline(LineBuffer* srclb, const SE_Matrix* xform, c
     //line width is always device space and units are meters.
     //so convert to equivalent pixel width
     int line_weight = (int)lineStroke.weight;
+    if (line_weight > m_maxLineWidth)
+        line_weight = m_maxLineWidth;
 
     gdImagePtr brush1 = NULL;
-
     if (line_weight > 1)
-    {
         brush1 = rs_gdImageThickLineBrush(line_weight, c);
-    }
 
     //draw the lines
     for (int i=0; i<srclb->cntr_count(); i++)
@@ -2395,7 +2390,7 @@ void GDRenderer::DrawScreenPolyline(LineBuffer* srclb, const SE_Matrix* xform, c
         {
             //draw antialiased only if thickness is single pixel
             if (line_weight <= 1)
-                gdImageOpenPolygon((gdImagePtr)m_imout, (gdPointPtr)m_wtPointBuffer, cntr_size, gdAntiAliased/*gdc*/);
+                gdImageOpenPolygon((gdImagePtr)m_imout, (gdPointPtr)m_wtPointBuffer, cntr_size, gdAntiAliased);
             else
             {
                 gdImageSetBrush((gdImagePtr)m_imout, brush1);
