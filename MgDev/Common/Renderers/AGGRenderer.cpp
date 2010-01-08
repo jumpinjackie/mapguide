@@ -504,7 +504,7 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
     {
         m_lineStroke.color = use_lsym.color().argb();
 
-        // convert thickness to equivalent mapping space width
+        // convert thickness to pixels
         double thickness = use_lsym.width();
         m_lineStroke.weight = max(1.0, _MeterToMapSize(use_lsym.units(), fabs(thickness)) * m_xform.x0);
 
@@ -610,7 +610,7 @@ void AGGRenderer::ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym)
     {
         m_lineStroke.color = use_lsym->color().argb();
 
-        // convert thickness to equivalent mapping space width
+        // convert thickness to pixels
         double thickness = use_lsym->width();
         m_lineStroke.weight = max(1.0, _MeterToMapSize(use_lsym->units(), fabs(thickness)) * m_xform.x0);
 
