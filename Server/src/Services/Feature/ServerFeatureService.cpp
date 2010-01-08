@@ -90,7 +90,7 @@ MgByteReader* MgServerFeatureService::GetFeatureProviders()
 
     MgServerGetFeatureProviders msgfp;
     return msgfp.GetFeatureProviders();
-    }
+}
 
 
 //////////////////////////////////////////////////////////////////
@@ -196,9 +196,16 @@ bool MgServerFeatureService::TestConnection(CREFSTRING providerName, CREFSTRING 
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::TestConnection()");
 
-    MgServerFeatureConnection msfc(providerName, connectionString);
+    bool result = false;
 
-    return msfc.IsConnectionOpen();
+    MG_FEATURE_SERVICE_TRY()
+
+    MgServerFeatureConnection msfc(providerName, connectionString);
+    result = msfc.IsConnectionOpen();
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.TestConnection")
+
+    return result;
 }
 
 
@@ -216,9 +223,16 @@ bool MgServerFeatureService::TestConnection( MgResourceIdentifier* resource )
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::TestConnection()");
 
-    MgServerFeatureConnection msfc(resource);
+    bool result = false;
 
-    return msfc.IsConnectionOpen();
+    MG_FEATURE_SERVICE_TRY()
+
+    MgServerFeatureConnection msfc(resource);
+    result = msfc.IsConnectionOpen();
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.TestConnection")
+
+    return result;
 }
 
 
@@ -285,7 +299,7 @@ MgFeatureSchemaCollection* MgServerFeatureService::DescribeSchema(MgResourceIden
 {
     Ptr<MgFeatureSchemaCollection> schemas;
 
-    MG_TRY()
+    MG_FEATURE_SERVICE_TRY()
 
     if (NULL == resource)
     {
@@ -302,7 +316,7 @@ MgFeatureSchemaCollection* MgServerFeatureService::DescribeSchema(MgResourceIden
     MgServerDescribeSchema msds;
     schemas = msds.DescribeSchema(resource, schemaName, classNames);
 
-    MG_CATCH_AND_THROW(L"MgServerFeatureService.DescribeSchema");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.DescribeSchema");
 
     return schemas.Detach();
 }
@@ -327,7 +341,7 @@ STRING MgServerFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resourc
 {
     STRING schemaXml;
 
-    MG_TRY()
+    MG_FEATURE_SERVICE_TRY()
 
     if (NULL == resource)
     {
@@ -344,7 +358,7 @@ STRING MgServerFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resourc
     MgServerDescribeSchema msds;
     schemaXml = msds.DescribeSchemaAsXml(resource, schemaName, classNames);
 
-    MG_CATCH_AND_THROW(L"MgServerFeatureService.DescribeSchemaAsXml");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.DescribeSchemaAsXml");
 
     return schemaXml;
 }
@@ -399,7 +413,7 @@ MgFeatureReader* MgServerFeatureService::SelectFeatures( MgResourceIdentifier* r
 
     Ptr<MgFeatureReader> reader;
 
-    MG_TRY()
+    MG_FEATURE_SERVICE_TRY()
 
     if (NULL == resource)
     {
@@ -416,7 +430,7 @@ MgFeatureReader* MgServerFeatureService::SelectFeatures( MgResourceIdentifier* r
     MgServerSelectFeatures mssf;
     reader = (MgFeatureReader*)mssf.SelectFeatures(resource, className, options, false);
 
-    MG_CATCH_AND_THROW(L"MgServerFeatureService.SelectFeatures")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.SelectFeatures")
 
     return reader.Detach();
 }
@@ -517,8 +531,16 @@ MgDataReader* MgServerFeatureService::SelectAggregate( MgResourceIdentifier* res
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::SelectAggregate()");
 
+    Ptr<MgDataReader> reader;
+
+    MG_FEATURE_SERVICE_TRY()
+
     MgServerSelectFeatures mssf;
-    return (MgDataReader*)mssf.SelectFeatures(resource, className, options, true);
+    reader = (MgDataReader*)mssf.SelectFeatures(resource, className, options, true);
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.SelectAggregate");
+
+    return reader.Detach();
 }
 
 
@@ -642,10 +664,20 @@ MgFeatureReader* MgServerFeatureService::GetLockedFeatures( MgResourceIdentifier
 /// MgFdoException
 MgTransaction* MgServerFeatureService::BeginTransaction( MgResourceIdentifier* resource )
 {
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::BeginTransaction()");
+
+    Ptr<MgTransaction> transaction;
+
+    MG_FEATURE_SERVICE_TRY()
+
     MgServerFeatureTransactionPool* transactionPool = MgServerFeatureTransactionPool::GetInstance();
     CHECKNULL(transactionPool, L"MgServerFeatureService.BeginTransaction");
 
-    return transactionPool->CreateTransaction(resource);
+    transaction = transactionPool->CreateTransaction(resource);
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.BeginTransaction")
+
+    return transaction.Detach();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -889,7 +921,7 @@ MgSpatialContextReader* MgServerFeatureService::GetSpatialContexts( MgResourceId
 {
     Ptr<MgSpatialContextReader> reader;
 
-    MG_TRY()
+    MG_FEATURE_SERVICE_TRY()
 
     if (NULL == resource)
     {
@@ -905,7 +937,7 @@ MgSpatialContextReader* MgServerFeatureService::GetSpatialContexts( MgResourceId
     MgServerGetSpatialContexts msgsc;
     reader = msgsc.GetSpatialContexts(resource);
 
-    MG_CATCH_AND_THROW(L"MgServerFeatureService.GetSpatialContexts")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.GetSpatialContexts")
 
     return reader.Detach();
 }
@@ -1118,6 +1150,12 @@ void MgServerFeatureService::FindClassDefinition(Ptr<MgFeatureSchemaCollection>&
 ///
 MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId, MgStringCollection* featureClasses)
 {
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::DescribeWfsFeatureType()");
+
+    Ptr<MgByteReader> byteReader;
+
+    MG_FEATURE_SERVICE_TRY()
+
     STRING schemaName;
     Ptr<MgStringCollection> schemaNames = new MgStringCollection();
     Ptr<MgStringCollection> classNames = new MgStringCollection();
@@ -1206,7 +1244,11 @@ MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifie
     Ptr<MgByteSource> bs = new MgByteSource((unsigned char*)utfsch.c_str(), (INT32)utfsch.length());
     bs->SetMimeType(MgMimeType::Xml);
 
-    return bs->GetReader();
+    byteReader = bs->GetReader();
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.DescribeWfsFeatureType")
+
+    return byteReader.Detach();
 }
 
 
@@ -1235,6 +1277,12 @@ void MgServerFeatureService::FeatureSourceToString(MgResourceIdentifier* resourc
 //////////////////////////////////////////////////////////////////
 MgBatchPropertyCollection* MgServerFeatureService::GetFeatures(CREFSTRING featureReader)
 {
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetFeatures()");
+
+    Ptr<MgBatchPropertyCollection> bpCol;
+
+    MG_FEATURE_SERVICE_TRY()
+
     MgServerFeatureReaderPool* featPool = MgServerFeatureReaderPool::GetInstance();
     CHECKNULL(featPool, L"MgServerFeatureService.GetFeatures");
 
@@ -1265,8 +1313,19 @@ MgBatchPropertyCollection* MgServerFeatureService::GetFeatures(CREFSTRING featur
 
     CHECKNULL((MgFeatureSet*)featSet, L"MgServerFeatureService.GetFeatures");
 
-    Ptr<MgBatchPropertyCollection> bpCol = featSet->GetFeatures();
+    bpCol = featSet->GetFeatures();
     CHECKNULL((MgBatchPropertyCollection*)bpCol, L"MgServerFeatureService.GetFeatures");
+
+    MG_FEATURE_SERVICE_CATCH(L"MgServerFeatureService.GetFeatures")
+    if(NULL != mgException.p)
+    {
+        // Cleanup the reader as an exception has occured
+        MG_FEATURE_SERVICE_TRY()
+        CloseFeatureReader(featureReader);
+        MG_FEATURE_SERVICE_CATCH(L"MgServerFeatureService.GetFeatures")
+    }
+
+    MG_FEATURE_SERVICE_THROW()
 
     return (bpCol->GetCount() > 0)? bpCol.Detach() : NULL;
 }
@@ -1275,7 +1334,11 @@ MgBatchPropertyCollection* MgServerFeatureService::GetFeatures(CREFSTRING featur
 //////////////////////////////////////////////////////////////////
 bool MgServerFeatureService::CloseFeatureReader(CREFSTRING featureReader)
 {
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::CloseFeatureReader()");
+
     bool retVal = false;
+
+    MG_FEATURE_SERVICE_TRY()
 
     MgServerFeatureReaderPool* featPool = MgServerFeatureReaderPool::GetInstance();
     CHECKNULL(featPool, L"MgServerFeatureService.CloseFeatureReader");
@@ -1288,6 +1351,8 @@ bool MgServerFeatureService::CloseFeatureReader(CREFSTRING featureReader)
 
     retVal = featPool->Remove(featureReader);
 
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.CloseFeatureReader")
+
     return retVal;
 }
 
@@ -1295,6 +1360,8 @@ bool MgServerFeatureService::CloseFeatureReader(CREFSTRING featureReader)
 //////////////////////////////////////////////////////////////////
 MgStringCollection* MgServerFeatureService::GetSchemas( MgResourceIdentifier* resource )
 {
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetSchemas()");
+
     MgServerDescribeSchema msds;
     return msds.GetSchemas(resource);
 }
@@ -1303,6 +1370,8 @@ MgStringCollection* MgServerFeatureService::GetSchemas( MgResourceIdentifier* re
 //////////////////////////////////////////////////////////////////
 MgStringCollection* MgServerFeatureService::GetClasses( MgResourceIdentifier* resource, CREFSTRING schemaName )
 {
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetClasses()");
+
     MgServerDescribeSchema msds;
     return msds.GetClasses(resource, schemaName);
 }
@@ -1313,6 +1382,8 @@ MgClassDefinition* MgServerFeatureService::GetClassDefinition(  MgResourceIdenti
                                                                 CREFSTRING schemaName,
                                                                 CREFSTRING className)
 {
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetClassDefinition()");
+
     MgServerDescribeSchema msds;
     return msds.GetClassDefinition(resource, schemaName, className, true);
 }
@@ -1323,6 +1394,8 @@ MgClassDefinition* MgServerFeatureService::GetClassDefinition(  MgResourceIdenti
                                                                 CREFSTRING className,
                                                                 bool serialize)
 {
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetClassDefinition()");
+
     MgServerDescribeSchema msds;
     return msds.GetClassDefinition(resource, schemaName, className, serialize);
 }
@@ -1331,6 +1404,8 @@ MgClassDefinition* MgServerFeatureService::GetClassDefinition(  MgResourceIdenti
 //////////////////////////////////////////////////////////////////
 STRING MgServerFeatureService::SchemaToXml(MgFeatureSchemaCollection* schema)
 {
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::SchemaToXml()");
+
     MgServerDescribeSchema msds;
     return msds.SchemaToXml(schema);
 }
@@ -1339,6 +1414,8 @@ STRING MgServerFeatureService::SchemaToXml(MgFeatureSchemaCollection* schema)
 //////////////////////////////////////////////////////////////////
 MgFeatureSchemaCollection* MgServerFeatureService::XmlToSchema(CREFSTRING xml)
 {
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::XmlToSchema()");
+
     MgServerDescribeSchema msds;
     return msds.XmlToSchema(xml);
 }
@@ -1347,7 +1424,11 @@ MgFeatureSchemaCollection* MgServerFeatureService::XmlToSchema(CREFSTRING xml)
 //////////////////////////////////////////////////////////////////
 MgByteReader* MgServerFeatureService::GetRaster(CREFSTRING reader, INT32 xSize, INT32 ySize, STRING propName)
 {
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetRaster()");
+
     Ptr<MgByteReader> byteReader;
+
+    MG_FEATURE_SERVICE_TRY()
 
     MgServerFeatureReaderPool* featPool = MgServerFeatureReaderPool::GetInstance();
     CHECKNULL(featPool, L"MgServerFeatureService.GetRaster");
@@ -1375,6 +1456,8 @@ MgByteReader* MgServerFeatureService::GetRaster(CREFSTRING reader, INT32 xSize, 
             __LINE__, __WFILE__, &arguments, L"MgReaderIdNotFound", NULL);
     }
 
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.GetRaster")
+
     return byteReader.Detach();
 }
 
@@ -1382,6 +1465,12 @@ MgByteReader* MgServerFeatureService::GetRaster(CREFSTRING reader, INT32 xSize, 
 //////////////////////////////////////////////////////////////////
 MgBatchPropertyCollection* MgServerFeatureService::GetSqlRows(CREFSTRING sqlReader)
 {
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetSqlRows()");
+
+    Ptr<MgBatchPropertyCollection> bpCol;
+
+    MG_FEATURE_SERVICE_TRY()
+
     MgServerSqlDataReaderPool* sqlDataReaderPool = MgServerSqlDataReaderPool::GetInstance();
     CHECKNULL(sqlDataReaderPool, L"MgServerFeatureService.GetSqlRows");
 
@@ -1407,8 +1496,19 @@ MgBatchPropertyCollection* MgServerFeatureService::GetSqlRows(CREFSTRING sqlRead
                         count,
                         MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize);
 
-    Ptr<MgBatchPropertyCollection> bpCol = sqlDataReader->GetRows(count);
+    bpCol = sqlDataReader->GetRows(count);
     CHECKNULL((MgBatchPropertyCollection*)bpCol, L"MgServerFeatureService.GetSqlRows");
+
+    MG_FEATURE_SERVICE_CATCH(L"MgServerFeatureService.GetSqlRows")
+    if(NULL != mgException.p)
+    {
+        // Cleanup the reader as an exception has occured
+        MG_FEATURE_SERVICE_TRY()
+        CloseSqlReader(sqlReader);
+        MG_FEATURE_SERVICE_CATCH(L"MgServerFeatureService.GetSqlRows")
+    }
+
+    MG_FEATURE_SERVICE_THROW()
 
     return (bpCol->GetCount() > 0)? bpCol.Detach() : NULL;
 }
@@ -1417,7 +1517,11 @@ MgBatchPropertyCollection* MgServerFeatureService::GetSqlRows(CREFSTRING sqlRead
 //////////////////////////////////////////////////////////////////
 bool MgServerFeatureService::CloseSqlReader(CREFSTRING sqlReader)
 {
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::CloseSqlReader()");
+
     bool retVal = false;
+
+    MG_FEATURE_SERVICE_TRY()
 
     MgServerSqlDataReaderPool* sqlDataReaderPool = MgServerSqlDataReaderPool::GetInstance();
     CHECKNULL(sqlDataReaderPool, L"MgServerFeatureService.CloseSqlReader");
@@ -1430,6 +1534,8 @@ bool MgServerFeatureService::CloseSqlReader(CREFSTRING sqlReader)
 
     retVal = sqlDataReaderPool->Remove(sqlReader);
 
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.CloseSqlReader")
+
     return retVal;
 }
 
@@ -1437,6 +1543,12 @@ bool MgServerFeatureService::CloseSqlReader(CREFSTRING sqlReader)
 //////////////////////////////////////////////////////////////////
 MgBatchPropertyCollection* MgServerFeatureService::GetDataRows(CREFSTRING dataReader)
 {
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetDataRows()");
+
+    Ptr<MgBatchPropertyCollection> bpCol;
+
+    MG_FEATURE_SERVICE_TRY()
+
     MgServerDataReaderPool* dataReaderPool = MgServerDataReaderPool::GetInstance();
     CHECKNULL(dataReaderPool, L"MgServerFeatureService.GetDataRows");
 
@@ -1462,8 +1574,19 @@ MgBatchPropertyCollection* MgServerFeatureService::GetDataRows(CREFSTRING dataRe
                         count,
                         MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize);
 
-    Ptr<MgBatchPropertyCollection> bpCol = reader->GetRows(count);
+    bpCol = reader->GetRows(count);
     CHECKNULL((MgBatchPropertyCollection*)bpCol, L"MgServerFeatureService.GetDataRows");
+
+    MG_FEATURE_SERVICE_CATCH(L"MgServerFeatureService.GetDataRows")
+    if(NULL != mgException.p)
+    {
+        // Cleanup the reader as an exception has occured
+        MG_FEATURE_SERVICE_TRY()
+        CloseDataReader(dataReader);
+        MG_FEATURE_SERVICE_CATCH(L"MgServerFeatureService.GetDataRows")
+    }
+
+    MG_FEATURE_SERVICE_THROW()
 
     return (bpCol->GetCount() > 0)? bpCol.Detach() : NULL;
 }
@@ -1472,7 +1595,11 @@ MgBatchPropertyCollection* MgServerFeatureService::GetDataRows(CREFSTRING dataRe
 //////////////////////////////////////////////////////////////////
 bool MgServerFeatureService::CloseDataReader(CREFSTRING dataReader)
 {
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::CloseDataReader()");
+
     bool retVal = false;
+
+    MG_FEATURE_SERVICE_TRY()
 
     MgServerDataReaderPool* dataReaderPool = MgServerDataReaderPool::GetInstance();
     CHECKNULL(dataReaderPool, L"MgServerFeatureService.CloseDataReader");
@@ -1485,6 +1612,8 @@ bool MgServerFeatureService::CloseDataReader(CREFSTRING dataReader)
 
     retVal = dataReaderPool->Remove(dataReader);
 
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.CloseDataReader")
+
     return retVal;
 }
 
@@ -1492,8 +1621,10 @@ bool MgServerFeatureService::CloseDataReader(CREFSTRING dataReader)
 //////////////////////////////////////////////////////////////////
 void MgServerFeatureService::CreateFeatureSource(MgResourceIdentifier* resource, MgFeatureSourceParams* sourceParams)
 {
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::CreateFeatureSource()");
+
     MgServerCreateFeatureSource msds;
-    return msds.CreateFeatureSource(resource, sourceParams);
+    msds.CreateFeatureSource(resource, sourceParams);
 }
 
 
@@ -1504,6 +1635,8 @@ MgClassDefinitionCollection* MgServerFeatureService::GetIdentityProperties(MgRes
                                                                               CREFSTRING schemaName,
                                                                               MgStringCollection* classNames)
 {
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetIdentityProperties()");
+
     MgServerDescribeSchema msds;
     return msds.GetIdentityProperties(resource, schemaName, classNames);
 }
@@ -1551,6 +1684,8 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
                                                      CREFSTRING wfsFilter,
                                                      INT32 maxFeatures)
 {
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetWfsFeature()");
+
     Ptr<MgByteReader> byteReader;
     TransformCacheMap transformCache;
 
@@ -1672,7 +1807,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     src->SetMimeType(MgMimeType::Xml);
     byteReader = src->GetReader();
 
-    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(fs, L"MgServerFeatureService.GetWfsFeature")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH(fs, L"MgServerFeatureService.GetWfsFeature")
 
     TransformCache::Clear(transformCache);
 
@@ -1699,8 +1834,7 @@ MgByteReader* MgServerFeatureService::EnumerateDataStores(CREFSTRING providerNam
 
     MgServerEnumerateDataStores mseds;
     return mseds.EnumerateDataStores(providerName, partialConnString);
-    }
-
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -1730,18 +1864,38 @@ void MgServerFeatureService::SetConnectionProperties(MgConnectionProperties*)
 
 bool MgServerFeatureService::CommitTransaction(CREFSTRING transactionId)
 {
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::CommitTransaction()");
+
+    bool bResult = false;
+
+    MG_FEATURE_SERVICE_TRY()
+
     MgServerFeatureTransactionPool* transactionPool = MgServerFeatureTransactionPool::GetInstance();
     CHECKNULL(transactionPool, L"MgServerFeatureService.CommitTransaction");
 
-    return transactionPool->CommitTransaction(transactionId);
+    bResult = transactionPool->CommitTransaction(transactionId);
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.CommitTransaction")
+
+    return bResult;
 }
 
 bool MgServerFeatureService::RollbackTransaction(CREFSTRING transactionId)
 {
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::RollbackTransaction()");
+
+    bool bResult = false;
+
+    MG_FEATURE_SERVICE_TRY()
+
     MgServerFeatureTransactionPool* transactionPool = MgServerFeatureTransactionPool::GetInstance();
     CHECKNULL(transactionPool, L"MgServerFeatureService.RollbackTransaction");
 
-    return transactionPool->RollbackTransaction(transactionId);
+    bResult = transactionPool->RollbackTransaction(transactionId);
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.RollbackTransaction")
+
+    return bResult;
 }
 
 //////////////////////////////////////////////////////////////////
