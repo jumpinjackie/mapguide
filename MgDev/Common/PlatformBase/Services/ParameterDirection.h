@@ -24,8 +24,8 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// The MgParameterDirection defines integer constants used to signify the 
-/// direction in which a parameter value will be used within the context of a 
+/// The MgParameterDirection defines integer constants used to signify the
+/// direction in which a parameter value will be used within the context of a
 /// FDO Command.
 class MG_FOUNDATION_API MgParameterDirection
 {

@@ -97,7 +97,7 @@ CCoordinateSystemGridLineCollection* CCoordinateSystemMgrsZone::GetGraticuleLine
     double lngMin, lngMax;
     double latMin,latMax;
     STRING designation;
-   
+
     Ptr<MgCoordinateXY> fromPoint;
     Ptr<MgCoordinateXY> toPoint;
     Ptr<MgCoordinateSystem> llCRS;
@@ -131,7 +131,7 @@ CCoordinateSystemGridLineCollection* CCoordinateSystemMgrsZone::GetGraticuleLine
         // terms of geographic coordinates.  So, we extract the extents of this
         // grid in geographic coordinate form, and work from there.
         GetGeographicExtents (lngMin,lngMax,latMin,latMax);
-        
+
         // MajorRegions do not do their own memory checks.  They do all their allocation
         // in their ctor and it is estimated that the largest potential collection is about
         // 40Mb.  The first following call to lineCollection->Add() will check, so it would
@@ -320,7 +320,7 @@ INT32 CCoordinateSystemMgrsZone::ApproxGridRegionMemoryUsage (MgCoordinateSystem
                 curvePrecision = 1.0;
                 // Estimate the number of minor regions.
                 GetGridExtents (eastMin,eastMax,northMin,northMax,curvePrecision);
- 
+
                 delta = fabs (fmod (eastMin,100000.0));
                 beginEast = static_cast<INT32>(eastMin - ((eastMin >= 0.0) ? delta : (100000.0 - delta)));
                 delta = fabs (fmod (eastMax,100000.0));
@@ -423,7 +423,7 @@ void CCoordinateSystemMgrsZone::BuildMajorRegions (CCoordinateSystemGridRegionCo
     MG_TRY ()
         southwest = new MgCoordinateXY ();
         northeast = new MgCoordinateXY ();
- 
+
         // To be are successful, we'll need a Transform which will convert
         // 'LL' to the frame coordinate system.
         llCRS = csFactory.CreateFromCode (L"LL");
@@ -434,7 +434,7 @@ void CCoordinateSystemMgrsZone::BuildMajorRegions (CCoordinateSystemGridRegionCo
         // terms of geographic coordinates.  So, we extract the extents of this
         // grid in geographic coordinate form, and work from there.
         GetGeographicExtents (lngMin,lngMax,latMin,latMax);
-        
+
         mjrRegionCollection = new CCoordinateSystemMgrsMajorRegionCollection (m_UtmZone,latMin,latMax);
         if (mjrRegionCollection != 0)
         {

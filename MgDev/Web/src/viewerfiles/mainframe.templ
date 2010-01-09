@@ -424,19 +424,19 @@ function OnMapLoaded()
     RestoreView();
     OnSelectionChanged();
     DisplayMapSize();
-    //ping server 
+    //ping server
     pingServerFailTime = 0;
     if(enablePingServer)
-    {    
-        var pingServerInterval = serverSessionTimeout / 5 * 1000;  //Ping server 5 times each period. Timeout is returned in seconds. 
+    {
+        var pingServerInterval = serverSessionTimeout / 5 * 1000;  //Ping server 5 times each period. Timeout is returned in seconds.
         intervalID = window.setInterval(GetServerSessionTimeout, pingServerInterval);
     }
 }
 
-function handler() 
+function handler()
 {
-    if(this.readyState == 4 && this.status != 200) 
-    {    
+    if(this.readyState == 4 && this.status != 200)
+    {
         // error happens
         if(pingServerFailTime < 6)
         {
@@ -453,9 +453,7 @@ function GetServerSessionTimeout()
 {
     var url = webAgentAddress + "?OPERATION=GETSESSIONTIMEOUT&VERSION=1.0.0&SESSION=" + GetMapFrame().GetSessionId() + "&LOCALE=" + locale + "&CLIENTAGENT=" + encodeComponent(clientAgentName) + "&REQUESTTIME=" + (new Date()).getTime();
     var request = new XMLHttpRequest();
-    
     request.onreadystatechange = handler;
-    
     request.open('GET', url);
     request.send(null);
 }
@@ -904,7 +902,7 @@ function GetMapUnitsType()
         mapUnitsType = GetMapFrame().GetMapUnitsType();
     return mapUnitsType;
 }
-        
+
 function FormatLocalizedDecimal(numberValue, decimalPlaces)
 {
     var unlocalized = numberValue.toFixed(decimalPlaces);

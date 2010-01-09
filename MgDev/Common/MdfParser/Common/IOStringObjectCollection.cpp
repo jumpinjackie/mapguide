@@ -36,7 +36,7 @@ IOStringObjectCollection::~IOStringObjectCollection()
 void IOStringObjectCollection::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
-    
+
     if (m_currElemName == m_colName)
     {
         m_startElemName = name;

@@ -327,7 +327,7 @@ MgConnectionProperties* MgSiteManager::GetConnectionProperties(
                 length - MgSiteInfo::HexStringLength, MgSiteInfo::HexStringLength);
             Ptr<MgSiteInfo> siteInfo = GetSiteInfo(siteHexString);
 
-			if ((NULL != siteInfo.p) && (MgSiteInfo::Ok == siteInfo->GetStatus()))
+            if ((NULL != siteInfo.p) && (MgSiteInfo::Ok == siteInfo->GetStatus()))
             {
                 connProps = GetConnectionProperties(userInfo, siteInfo, portType);
             }
@@ -560,7 +560,7 @@ void MgSiteManager::StartCheckServersThread()
 {
     // Need a thread manager
     ACE_Thread_Manager* manager = ACE_Thread_Manager::instance();
-    
+
     // Create the background thread
     manager->spawn(ACE_THR_FUNC(CheckServers), &m_threadData);
 }

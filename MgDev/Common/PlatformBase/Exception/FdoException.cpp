@@ -40,7 +40,7 @@ MgFdoException::MgFdoException(CREFSTRING methodName,
     INT32 lineNumber, CREFSTRING fileName, MgStringCollection* whatArguments,
     CREFSTRING whyMessageId, MgStringCollection* whyArguments, INT64 nativeErrorCode) throw() :
     MgThirdPartyException(methodName, lineNumber, fileName,
-        whatArguments, whyMessageId, whyArguments), 
+        whatArguments, whyMessageId, whyArguments),
     m_nativeErrorCode(nativeErrorCode)
 {
 }

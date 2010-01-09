@@ -25,7 +25,7 @@
 #include "CoordSysDatumDictionary.h"    //for CCoordinateSystemDatumDictionary
 
 #include "CoordSysUtil.h"               //for Convert_Wide_To_Ascii
-#include "MentorUtil.h"		            //for OpenDictionaryFile()
+#include "MentorUtil.h"                 //for OpenDictionaryFile()
 #include "MentorDictionary.h"
 #include "cs_map.h"
 

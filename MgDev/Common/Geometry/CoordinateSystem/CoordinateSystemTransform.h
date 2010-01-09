@@ -552,7 +552,7 @@ INTERNAL_API:
     /// Nothing.
     ///
     virtual void TransformM(double x[], double y[], double z[], double m[], int arraySize)=0;
-    
+
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Give a line segement in coordinates of the source system via the the

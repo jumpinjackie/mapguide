@@ -187,7 +187,7 @@ String dataSource = "";
                     layer.SetLegendLabel(legendName);
                     layers.Insert(0,layer);
                 }
-                
+
                 // create a feature representing this segment and insert it into the data source
                 //
                 MgPropertyCollection measureProps = new MgPropertyCollection();

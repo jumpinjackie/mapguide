@@ -20,10 +20,10 @@
 // Several places in the public API code require working with STL sets, lists, or
 // maps of strings, wherein the strings have two important properties:
 //
-//	1.	They're fixed-length (can't be over a certain fixed size)
+//  1.  They're fixed-length (can't be over a certain fixed size)
 //
-//	2.	They need to be sorted in a particular way (alphabetically,
-//		case-insensitive.
+//  2.  They need to be sorted in a particular way (alphabetically,
+//      case-insensitive.
 //
 // For this reason, instead of trying to work with char *'s that are
 // dynamically allocated and freed, it's much more convenient to work
@@ -44,7 +44,7 @@
 
 #include <list>
 #include <map>
-#include "cs_map.h"	//for cs_KEYNM_DEF
+#include "cs_map.h" //for cs_KEYNM_DEF
 
 //Disable silly warning that comes when we use template stuff
 #pragma warning(disable: 4786)

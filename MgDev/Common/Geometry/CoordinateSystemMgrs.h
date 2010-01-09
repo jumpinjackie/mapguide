@@ -29,60 +29,60 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 // New stuff for Grid/Graticule generally.
 enum EmgGridLineType { lnDirNone = 0,
-					   lnDirEastWest,
-					   lnDirNorthSouth,
-					   lnDirUnknown
-					 };
+                       lnDirEastWest,
+                       lnDirNorthSouth,
+                       lnDirUnknown
+                     };
 
 enum EmgGridLineTerm { lnTrmNone = 0,
-					   lnTrmEast,
-					   lnTrmWest,
-					   lnTrmNorth,
-					   lnTrmSouth,
-					   lnTrmInternal,
-					   lnTrmUnknown
-					 };
+                       lnTrmEast,
+                       lnTrmWest,
+                       lnTrmNorth,
+                       lnTrmSouth,
+                       lnTrmInternal,
+                       lnTrmUnknown
+                     };
 
 class MgGridCoordinateCollection : public MgCoordinateCollection
 {
 public:
-	MgGridCoordinateCollection (EmgGridLineType lnDir,double isoValue,double chord = 0.0);
-	
-	MgGridCoordinateCollection (const MgGridCoordinateCollection& rhs);		//???//
-	MgGridCoordinateCollection operator= (const MgGridCoordinateCollection& rhs);	//???//
+    MgGridCoordinateCollection (EmgGridLineType lnDir,double isoValue,double chord = 0.0);
 
-	EmgGridLineType GetLineType (void);
-	double GetIsoValue (void) const;
-	double GetChord (void) const;
-	EmgGridLineTerm FirstPoint;
-	EmgGridLineTerm LastPoint;
+    MgGridCoordinateCollection (const MgGridCoordinateCollection& rhs);     //???//
+    MgGridCoordinateCollection operator= (const MgGridCoordinateCollection& rhs);   //???//
+
+    EmgGridLineType GetLineType (void);
+    double GetIsoValue (void) const;
+    double GetChord (void) const;
+    EmgGridLineTerm FirstPoint;
+    EmgGridLineTerm LastPoint;
 
 private:
-	EmgGridLineType LineType;		// Essentially indicates if the IsoValue is an
-									// easting/longitude or a northing/latitude
-	double IsoValue;				// value represented by the line
-	double ChordValue;				// an indication of the accuracy of representation
-									// not really used, but will be available at
-									// contsruction time and cannot reconstructed.
+    EmgGridLineType LineType;       // Essentially indicates if the IsoValue is an
+                                    // easting/longitude or a northing/latitude
+    double IsoValue;                // value represented by the line
+    double ChordValue;              // an indication of the accuracy of representation
+                                    // not really used, but will be available at
+                                    // contsruction time and cannot reconstructed.
 };
 
 class MgMgrsCoordinateCollection : public MgGridCoordinateCOllection
 {
-	MgMgrsCoordinateCollection (INT32 utmZone,wchar_t quadEast,wchar_t quadWest);
+    MgMgrsCoordinateCollection (INT32 utmZone,wchar_t quadEast,wchar_t quadWest);
 
-	INT32 GetUtmZone (void);
-	STRING GetQuadDesignation (void);
-	INT32 GetMGRSLabelValue (void);
+    INT32 GetUtmZone (void);
+    STRING GetQuadDesignation (void);
+    INT32 GetMGRSLabelValue (void);
 
 private:
-	INT32 UtmZone;					// 0 = invalid,
-									// > 0 means northern hemisphere
-									// < 0 means southern hemisphere
-									// value of 61 indicates polar region
-	wchar_t QuadDesignation [2];	// Easting portion of the Quad designation
-	wchar_t QuadNorth;				// Northing portion of the Quad Designation
-	double QuadBaseEasting;			// The base UTM easting value of the quad.
-	double QuadBaseNorthing;		// The base UTM northing value of the quad.
+    INT32 UtmZone;                  // 0 = invalid,
+                                    // > 0 means northern hemisphere
+                                    // < 0 means southern hemisphere
+                                    // value of 61 indicates polar region
+    wchar_t QuadDesignation [2];    // Easting portion of the Quad designation
+    wchar_t QuadNorth;              // Northing portion of the Quad Designation
+    double QuadBaseEasting;         // The base UTM easting value of the quad.
+    double QuadBaseNorthing;        // The base UTM northing value of the quad.
 };
 
 //
@@ -108,15 +108,15 @@ private:
 class MgCoordinateSystemFactory : public MgGuardDisposable
 {
 ...
-	virtual MgCoordinateSystemMgrs* GetMgrs(
+    virtual MgCoordinateSystemMgrs* GetMgrs(
         CREFSTRING sTargetCsCode,           //system used for input and output coordinates
-        bool bUseTargetDatum,               //true to have the MGRS use the datum of pTargetCs. false to use WGS84 
+        bool bUseTargetDatum,               //true to have the MGRS use the datum of pTargetCs. false to use WGS84
         int nLetteringScheme,               //a value from MgCoordinateSystemMgrsLetteringScheme
         bool bSetExceptionsOn);             //true to repport errors as MgExceptions. false to use MgCoordinateSystemMgrs::GetLastError
 
-	virtual MgCoordinateSystemMgrs* GetMgrs(
+    virtual MgCoordinateSystemMgrs* GetMgrs(
         MgCoordinateSystem *pTargetCs,      //system used for input and output coordinates
-        bool bUseTargetDatum,               //true to have the MGRS use the datum of pTargetCs. false to use WGS84 
+        bool bUseTargetDatum,               //true to have the MGRS use the datum of pTargetCs. false to use WGS84
         int nLetteringScheme,               //a value from MgCoordinateSystemMgrsLetteringScheme
         bool bSetExceptionsOn);             //true to repport errors as MgExceptions. false to use MgCoordinateSystemMgrs::GetLastError
 
@@ -282,7 +282,7 @@ PUBLISHED_API:
     //returns a list of MgCoordinateSystemMgrsDoubleLabel for other MgCoordinateSystemMgrsPrecision values
     virtual MgCoordinateSystemMgrsLabelCollection* GetGridRightLabels(
         const MgCoordinateSystemBoundary& extents,                          //extents of the area of interest defined in the MGRS coordinate system
-        INT8 nMgrsPrecision); 
+        INT8 nMgrsPrecision);
 
     //precision of the grid to be labeled, a value from MgCoordinateSystemMgrsPrecision
     //get all the grid line labels that can positioned on the outside bottom of a given area
@@ -291,7 +291,7 @@ PUBLISHED_API:
     //returns a list of MgCoordinateSystemMgrsDoubleLabel for other MgCoordinateSystemMgrsPrecision values
     virtual MgCoordinateSystemMgrsLabelCollection* GetGridBottomLabels(
         const MgCoordinateSystemBoundary& extents,                          //extents of the area of interest defined in the MGRS coordinate system
-        INT8 nMgrsPrecision); 
+        INT8 nMgrsPrecision);
 
     //precision of the grid to be labeled, a value from MgCoordinateSystemMgrsPrecision
     //get all the grid line labels that can positioned on the outside left of a given area

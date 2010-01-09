@@ -1048,7 +1048,7 @@ STRING MgFileUtil::GenerateTempPath()
     STRING tempPathname;
 
     MG_TRY()
-    
+
     tempPathname = GetTempPath();
 
     STRING uuid;

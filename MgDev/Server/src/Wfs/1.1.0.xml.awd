@@ -7,10 +7,10 @@
 
  <!-- This defines the format any given feature type will take when enumerated -->
  <Define item="Feature.xml">
-  <!-- 
+  <!--
        Feature class #&Feature.iteration;
     -->
-  <wfs:FeatureType 
+  <wfs:FeatureType
      xmlns:ns="&Feature.namespace;">
    <wfs:Name>&Feature.name;</wfs:Name>
    <wfs:Title>&Feature.Title;</wfs:Title>
@@ -77,9 +77,9 @@
  <Define item="Feature.Bounds.east">180</Define>
 
 
- <Define item="DescribeFeature.EnumDelim.xml">  
+ <Define item="DescribeFeature.EnumDelim.xml">
    <!-- &Enum.iteration; -->
-   <?EnumDelim list="&Enum.item;" sep=":" subset="1" using="&DescribeFeature.Import.xml;"?> 
+   <?EnumDelim list="&Enum.item;" sep=":" subset="1" using="&DescribeFeature.Import.xml;"?>
  </Define>
  <Define item="DescribeFeature.EnumFeature.xml">
    <!-- &Feature.iteration; -->
@@ -107,8 +107,8 @@
 
 -->
 <Response request="GetCapabilities" content-type="text/xml">
-<wfs:WFS_Capabilities 
-  xmlns:ows="http://www.opengis.net/ows" 
+<wfs:WFS_Capabilities
+  xmlns:ows="http://www.opengis.net/ows"
   xmlns:ogc="http://www.opengis.net/ogc"
   xmlns:wfs="http://www.opengis.net/wfs"
   xmlns:gml="http://www.opengis.net/gml"
@@ -155,7 +155,7 @@
         <ows:OnlineResource xlink:href="&URL.OnlineResource;"/>
         <ows:HoursOfService>24x7</ows:HoursOfService>
         <ows:ContactInstructions>&Service.Contact.Instructions;</ows:ContactInstructions>
-      </ows:ContactInfo> 
+      </ows:ContactInfo>
       <ows:Role>PointOfContact</ows:Role>
     </ows:ServiceContact>
   </ows:ServiceProvider>
@@ -235,7 +235,6 @@
   <wfs:FeatureTypeList>
    <?EnumFeatureTypes using="&Feature.xml;"?>
   </wfs:FeatureTypeList>
- 
 
   <!-- ================================================================== -->
   <!-- FILTER CAPABILITIES SECTION                                        -->
@@ -285,7 +284,7 @@
 
 -->
 <Response request="DescribeFeatureType" content-type="text/xml; subtype=gml/2.1.2">
- <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+ <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
             elementFormDefault="qualified" attributeFormDefault="unqualified">
  <?Ifdef item="Request.typename"?>
  <?EnumDelim list="&Request.typename;" using="&DescribeFeature.EnumDelim.xml;"?>

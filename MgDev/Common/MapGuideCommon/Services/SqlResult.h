@@ -62,7 +62,7 @@ protected:
         delete this;
     }
 
-    
+
     void Deserialize(MgStream* stream);
     void Serialize(MgStream* stream);
 

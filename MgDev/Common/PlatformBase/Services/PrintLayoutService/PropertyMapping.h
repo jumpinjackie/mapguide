@@ -68,7 +68,7 @@ INTERNAL_API:
     /// \brief
     /// Gets the target property in this class.
     ///
-    STRING GetTargetProperty();  
+    STRING GetTargetProperty();
 
 INTERNAL_API:
 

@@ -34,7 +34,7 @@
       <xs:element name="CenterY" type="xs:double"/>
       <xs:element name="Scale" type="xs:double"/>
     </xs:sequence>
-  </xs:complexType>  
+  </xs:complexType>
   <xs:complexType name="MapType">
     <xs:sequence>
       <xs:element name="Type" type="xs:string" />

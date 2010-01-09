@@ -39,7 +39,7 @@ mapagent_LDADD = -lACE \
                  -lMgPlatformBase \
                  -lMgMdfModel \
                  -lMgMdfParser \
-                 -lMgHttpHandler 
+                 -lMgHttpHandler
 
 mapagent_LDFLAGS = \
             -L../../../Oem/ACE/ACE_wrappers/ace \

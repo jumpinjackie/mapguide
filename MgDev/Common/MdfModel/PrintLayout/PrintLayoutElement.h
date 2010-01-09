@@ -76,7 +76,7 @@ private:
     double m_width;
     double m_height;
     double m_rotation;
-    MdfString m_units;  
+    MdfString m_units;
     bool m_isVisible;
     double m_opacity;
     StringObjectCollection m_references;

@@ -1199,7 +1199,7 @@ MgLineString* CCoordinateSystemTransform::GridLine (MgCoordinate* fromPnt,MgCoor
         delete curPtr;
         curPtr = nxtPtr;
     }
-    
+
     MG_THROW ()
 
     return lineString.Detach ();
@@ -1250,7 +1250,7 @@ INT32 CCoordinateSystemTransform::PositionOfValue (MgCoordinate* position,double
     Ptr<MgCoordinate> trgTo;
 
     status = -1;        // Until we know different.
-    
+
     // We need copies of these pointers so we can swap then as necessary.
     srcFrom = from;
     srcTo = to;
@@ -1351,7 +1351,7 @@ INT32 CCoordinateSystemTransform::PositionOfValue (MgCoordinate* position,double
                 // 'position'.  As we zero in on the desired point, we will be moving
                 // 'ratio' up and down.  The point here being, as long as ratio is between
                 // zero and one, we know that it represents a point which is precisely on
-                // the underlying line, which in this case is the provided line in the 
+                // the underlying line, which in this case is the provided line in the
                 // source coordinate system.  Also, the ratio approach is unitless, thus
                 // this makes it easier to determine when to terminate the iterative loop.
                 // Currently, we use 1 part in a million.
@@ -1370,11 +1370,11 @@ INT32 CCoordinateSystemTransform::PositionOfValue (MgCoordinate* position,double
                     // this function is present in this object.  It was made private as to
                     // do otherwise would change the public API, a change which was not
                     // approved as part of the RFC.
-                    
+
                     // Convert the proposed 'position' point back to the coordinates of
                     // the target system (i.e. of the ordinate value argument).
                     Transform (&xx,&yy);
-                    
+
                     // Make an estimate as to how much, and what direction, we need to
                     // move 'ratio' to achieve the desired result.
                     if (orientation == MgCoordinateSystemGridOrientation::EastWest)
@@ -1568,11 +1568,11 @@ int CCoordinateSystemTransform::TransformInverse (double& xx,double& yy)
     int st;
     double xy [3];
     double ll [3];
-    
+
     xy [0] = xx;
     xy [1] = yy;
     xy [2] = 0.0;
-    
+
     st = CS_cs2ll (&m_dst,ll,xy);
     if (st >= 0)
     {

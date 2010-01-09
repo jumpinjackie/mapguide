@@ -571,7 +571,7 @@ MdfModel::LayerDefinition* MgLayerBase::GetLayerDefinition(MgResourceService* sv
     Ptr<MgByteReader> reader = svcResource->GetResourceContent(resId, L"");
     Ptr<MgByteSink> sink = new MgByteSink(reader);
     Ptr<MgByte> bytes = sink->ToBuffer();
- 
+
     assert(bytes->GetLength() > 0);
 
     MdfParser::SAX2Parser parser;

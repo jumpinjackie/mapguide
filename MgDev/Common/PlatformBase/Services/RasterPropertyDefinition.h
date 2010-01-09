@@ -268,7 +268,7 @@ PUBLISHED_API:
     /// Returns nothing.
     ///
     void SetDefaultImageYSize (INT32 size);
-    
+
     //////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Sets a Spatial Context association for this raster

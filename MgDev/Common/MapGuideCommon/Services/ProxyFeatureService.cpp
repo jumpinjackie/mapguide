@@ -906,7 +906,7 @@ MgSqlDataReader* MgProxyFeatureService::ExecuteSqlQuery(MgResourceIdentifier* re
 //////////////////////////////////////////////////////////////////
 /// <summary>
 /// This method executes the SELECT SQL statement specified within a given transaction
-/// and returns a pointer to SqlDataReader instance. This instance can be used to 
+/// and returns a pointer to SqlDataReader instance. This instance can be used to
 /// retrieve column information and related values.
 ///
 /// NOTE:
@@ -975,7 +975,7 @@ MgSqlDataReader* MgProxyFeatureService::ExecuteSqlQuery(MgResourceIdentifier* re
 //////////////////////////////////////////////////////////////////
 /// <summary>
 /// This method executes the SELECT SQL statement specified within a given transaction
-/// and returns a pointer to SqlDataReader instance. This instance can be used to 
+/// and returns a pointer to SqlDataReader instance. This instance can be used to
 /// retrieve column information and related values.
 ///
 /// NOTE:
@@ -997,7 +997,7 @@ MgSqlDataReader* MgProxyFeatureService::ExecuteSqlQuery(MgResourceIdentifier* re
 /// The transaction object on which the sql statement will be executed.
 /// </param>
 /// <param name="fetchSize">Input
-/// The fetch size of query. This method returns all data of query if 
+/// The fetch size of query. This method returns all data of query if
 /// setting the fetch size to 0.
 /// </param>
 /// <returns>
@@ -1040,7 +1040,7 @@ MgSqlDataReader* MgProxyFeatureService::ExecuteSqlQuery(MgResourceIdentifier* re
 
     SetWarning(cmd.GetWarningObject());
 
-    MgSqlResult * pResult = (MgSqlResult *)cmd.GetReturnValue().val.m_obj; 
+    MgSqlResult * pResult = (MgSqlResult *)cmd.GetReturnValue().val.m_obj;
     if(params != NULL)
     {
         Ptr<MgParameterCollection> retParams = pResult->GetParameters();
@@ -1151,7 +1151,7 @@ INT32 MgProxyFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
 
     SetWarning(cmd.GetWarningObject());
 
-    MgSqlResult * pResult = (MgSqlResult *)cmd.GetReturnValue().val.m_obj; 
+    MgSqlResult * pResult = (MgSqlResult *)cmd.GetReturnValue().val.m_obj;
     if(params != NULL)
     {
         Ptr<MgParameterCollection> retParams = pResult->GetParameters();

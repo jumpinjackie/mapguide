@@ -205,9 +205,9 @@ enum EFileValidity
 };
 bool ValidateFile(
     const wchar_t *kpFile, //the file name to validate
-    bool bExists,		//if true, function fails if file doesn't exist
-    bool bIsDir,		//if true, function fails if file isn't a dir
-    bool bCanWrite,		//if true, function fails if file isn't writable
+    bool bExists,       //if true, function fails if file doesn't exist
+    bool bIsDir,        //if true, function fails if file isn't a dir
+    bool bCanWrite,     //if true, function fails if file isn't writable
     EFileValidity *pReason = NULL); //if not NULL store result code
 
 bool IsValidDictionaryName(CREFSTRING sName);

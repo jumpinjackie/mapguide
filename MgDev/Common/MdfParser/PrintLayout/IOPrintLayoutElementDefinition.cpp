@@ -61,7 +61,7 @@ void IOPrintLayoutElementDefinition::StartElement(const wchar_t* name, HandlerSt
             IO->StartElement(name, handlerStack);
         }
         break;
-    
+
     case eData:
         {
             IODataConfiguration* IO = new IODataConfiguration(m_layoutElemDef->GetDataConfiguration(), m_version);

@@ -11,7 +11,6 @@ noinst_HEADERS = \
   GwsResource.h \
   GwsResourceLinux.h
 
-INCLUDES = -I../INCLUDE 
+INCLUDES = -I../INCLUDE
 
 libMgGwsResource_la_LDFLAGS = -version-info 1:0:0
-

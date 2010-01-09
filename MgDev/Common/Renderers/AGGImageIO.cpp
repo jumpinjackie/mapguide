@@ -928,11 +928,11 @@ bool AGGImageIO::Save(const RS_String& filename, const RS_String& format,
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
-// convert imagebuffer src into the desired format using the provided baseColorPalette for 8bit 
+// convert imagebuffer src into the desired format using the provided baseColorPalette for 8bit
 // (the baseColorPalette is a default parameter NULL)
 RS_ByteData* AGGImageIO::Save(const RS_String& format,
                   unsigned int* src, int src_width, int src_height,
-                  int dst_width, int dst_height, RS_Color& bgColor, 
+                  int dst_width, int dst_height, RS_Color& bgColor,
                   RS_ColorVector* baseColorPalette)
 {
     bool drop_alpha = bgColor.alpha() == 255;
@@ -1028,7 +1028,7 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
 
             // convert to 256 color paletted image for PNG8, GIF
             gdImagePtr gdImgPalette = NULL;
-            if (format == L"GIF" || format == L"PNG8") 
+            if (format == L"GIF" || format == L"PNG8")
             {
                 /// skip color quantization if no palette given or empty
                 if (baseColorPalette && !baseColorPalette->empty() && s_bUseColorMap) // memory based switch

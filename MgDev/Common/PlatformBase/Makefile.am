@@ -258,7 +258,7 @@ libMgPlatformBase_la_LIBADD = \
   -lMgMdfModel \
   -lMgMdfParser \
   -lMgFoundation \
-  -lMgGeometry 
+  -lMgGeometry
 
 libMgPlatformBase_la_LDFLAGS = -version-info 7:0:0 \
   -L../../Oem/ACE/ACE_wrappers/ace \
@@ -267,4 +267,3 @@ libMgPlatformBase_la_LDFLAGS = -version-info 7:0:0 \
   -L../../Common/CoordinateSystem \
   -L../MdfParser \
   -L../MdfModel
-  

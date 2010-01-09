@@ -69,7 +69,7 @@ inline const MdfString& DataConfiguration::GetResourceId() const
 
 inline const MdfString& DataConfiguration::GetFeatureClass() const
 {
-    return m_featureClass;                              
+    return m_featureClass;
 }
 
 inline const MdfString& DataConfiguration::GetGeometry() const

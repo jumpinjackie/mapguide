@@ -51,7 +51,7 @@ void MgServerFeatureTransaction::Commit()
 
     m_fdoTransaction->Commit();
 
-    // close it as this transaction object is obsolete now. 
+    // close it as this transaction object is obsolete now.
     Close();
 }
 
@@ -66,7 +66,7 @@ void MgServerFeatureTransaction::Rollback()
 
     m_fdoTransaction->Rollback();
 
-    // close it as this transaction object is obsolete now. 
+    // close it as this transaction object is obsolete now.
     Close();
 }
 

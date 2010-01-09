@@ -97,7 +97,7 @@ CCoordinateSystemMgrsMajorRegion::CCoordinateSystemMgrsMajorRegion (INT32 utmZon
             }
         }
         else if (bandIndex == 19)
-        {        
+        {
             if (m_UtmZoneNbr == 31)
             {
                 m_WestLng = m_CentralMeridian - 3.0;
@@ -209,7 +209,7 @@ CCoordinateSystemMgrsMajorRegionCollection::CCoordinateSystemMgrsMajorRegionColl
     else if (minLat > 84.0)
     {
         // The southern limit is in the north UPS regions (i.e. YZ).
-        m_NorthPolar = true;   
+        m_NorthPolar = true;
         intMinLat = 84;
         southernBandIndex = 22;
     }

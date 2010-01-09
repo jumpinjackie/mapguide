@@ -52,7 +52,7 @@ PUBLISHED_API:
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param name (MgNullableProperty)
-    /// An MgNullableProperty instance which contains 
+    /// An MgNullableProperty instance which contains
     /// the name and value of the parameter.
     ///
     MgParameter(MgNullableProperty* prop);
@@ -74,7 +74,7 @@ PUBLISHED_API:
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param name (MgNullableProperty)
-    /// An MgNullableProperty instance which contains 
+    /// An MgNullableProperty instance which contains
     /// the name and value of the parameter.
     /// \param value (int)
     /// The function direction of the parameter value.
@@ -95,14 +95,14 @@ PUBLISHED_API:
     /// \htmlinclude PHPSyntaxTop.html
     /// void SetProperty(MgNullableProperty prop);
     /// \htmlinclude SyntaxBottom.html
-    /// 
-    /// \param value 
-    /// Input an MgNullableProperty instance which contains 
+    ///
+    /// \param value
+    /// Input an MgNullableProperty instance which contains
     /// the name and value of the parameter.
-    /// 
+    ///
     /// \return
     /// Returns nothing
-    /// 
+    ///
     void SetProperty(MgNullableProperty* prop);
 
     ///////////////////////////////////////////////////////////////////
@@ -119,11 +119,11 @@ PUBLISHED_API:
     /// \htmlinclude PHPSyntaxTop.html
     /// MgNullableProperty GetProperty();
     /// \htmlinclude SyntaxBottom.html
-    /// 
+    ///
     /// \return
-    /// Returns an MgNullableProperty instance which contains 
+    /// Returns an MgNullableProperty instance which contains
     /// the name and value of the parameter.
-    /// 
+    ///
     MgNullableProperty* GetProperty();
 
     ///////////////////////////////////////////////////////////////////
@@ -141,13 +141,13 @@ PUBLISHED_API:
     /// \htmlinclude PHPSyntaxTop.html
     /// void SetDirection(int value);
     /// \htmlinclude SyntaxBottom.html
-    /// 
-    /// \param value 
+    ///
+    /// \param value
     /// Input the direction value.
-    /// 
+    ///
     /// \return
     /// Returns nothing.
-    /// 
+    ///
     void SetDirection(INT32 value);
 
     ///////////////////////////////////////////////////////////////////
@@ -165,10 +165,10 @@ PUBLISHED_API:
     /// \htmlinclude PHPSyntaxTop.html
     /// int GetDirection();
     /// \htmlinclude SyntaxBottom.html
-    /// 
+    ///
     /// \return
     /// Returns the direction value defined in MgParameterDirection.
-    /// 
+    ///
     INT32 GetDirection();
 
     //////////////////////////////////////////////////////////////////

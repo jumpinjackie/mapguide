@@ -67,7 +67,7 @@ MgPrintLayoutElementBase* MgPrintLayoutServiceBase::RealizePrintLayoutElement(
 {
     assert(NULL != resourceService && !resourceXml.empty());
     Ptr<MgPrintLayoutElementBase> printLayoutElement;
-    
+
     // Parse the resource XML.
     string strXml = MgUtil::WideCharToMultiByte(resourceXml);
     MdfParser::SAX2Parser parser;

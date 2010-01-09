@@ -48,7 +48,7 @@ void IOExtent3D::StartElement(const wchar_t* name, HandlerStack* handlerStack)
     case eExtent:
         m_startElemName = name;
         break;
-    
+
     case eMin:
         {
             IOPoint3D* IO = new IOPoint3D(m_extent->GetMinimumPoint(), m_version);
@@ -56,7 +56,7 @@ void IOExtent3D::StartElement(const wchar_t* name, HandlerStack* handlerStack)
             IO->StartElement(name, handlerStack);
         }
         break;
-    
+
     case eMax:
         {
             IOPoint3D* IO = new IOPoint3D(m_extent->GetMaximumPoint(), m_version);

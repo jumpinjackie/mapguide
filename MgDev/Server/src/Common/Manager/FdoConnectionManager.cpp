@@ -654,7 +654,7 @@ FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING prov
                                 INT32 useLimit = providerInfo->GetUseLimit();
                                 if (useLimit == -1 || pFdoConnectionCacheEntry->nUseTotal <= useLimit)
                                 {
-                                    if((!pFdoConnectionCacheEntry->bInUse) || 
+                                    if((!pFdoConnectionCacheEntry->bInUse) ||
                                        (providerInfo->GetThreadModel() == FdoThreadCapability_PerCommandThreaded) ||
                                        (providerInfo->GetThreadModel() == FdoThreadCapability_MultiThreaded))
                                     {

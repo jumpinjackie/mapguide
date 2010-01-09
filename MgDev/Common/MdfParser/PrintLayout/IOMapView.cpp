@@ -54,7 +54,7 @@ void IOMapView::StartElement(const wchar_t* name, HandlerStack* handlerStack)
     case eMapView:
         m_startElemName = name;
         break;
-    
+
     case eCenter:
         {
             IOPoint3D* IO = new IOPoint3D(m_mapView->GetCenter(), m_version);
@@ -62,7 +62,7 @@ void IOMapView::StartElement(const wchar_t* name, HandlerStack* handlerStack)
             IO->StartElement(name, handlerStack);
         }
         break;
-    
+
     case eViewDirection:
         {
             IOVector3D* IO = new IOVector3D(m_mapView->GetViewDirection(), m_version);
@@ -70,7 +70,7 @@ void IOMapView::StartElement(const wchar_t* name, HandlerStack* handlerStack)
             IO->StartElement(name, handlerStack);
         }
         break;
-    
+
     case eExtendedData1:
         m_procExtData = true;
         break;

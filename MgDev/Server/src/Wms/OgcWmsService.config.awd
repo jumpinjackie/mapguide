@@ -2,10 +2,10 @@
 <Configuration>
 <Definitions>
 
- <!-- This definition enumerates the WMS versions we will support. 
-      Note that each version below must be backed by a like-named  
-      template file (ie, 1.0.0.xml.awd) in order to work.          
-      These must appear in increasing order!                       
+ <!-- This definition enumerates the WMS versions we will support.
+      Note that each version below must be backed by a like-named
+      template file (ie, 1.0.0.xml.awd) in order to work.
+      These must appear in increasing order!
       Also, anything other than a <Version> element is ignored.    -->
  <Define item="SupportedVersions">
    <Version number="1.0.0"/>
@@ -53,21 +53,21 @@
  </Define>
 
 
- <!-- Enumerates an element in a dictionary for HTML  
+ <!-- Enumerates an element in a dictionary for HTML
       (Used chiefly for debugging, and in exceptions) -->
  <Define item="EnumDictionary.html"><tr><td class="name">&EnumDictionary.Name;</td><td><?Escape text="&EnumDictionary.Value;"?></td></tr>
  </Define>
 
- <!-- This is the HTML stylesheet, which should be referenced by anything returning HTML      
-      Note: one could substitute this with an out-of-band stylesheet link to an external doc, 
-      that is to say, replacing this with:                                                    
-           <link rel="stylesheet" href="http://your-url-to-a/stylesheet.css" />               
+ <!-- This is the HTML stylesheet, which should be referenced by anything returning HTML
+      Note: one could substitute this with an out-of-band stylesheet link to an external doc,
+      that is to say, replacing this with:
+           <link rel="stylesheet" href="http://your-url-to-a/stylesheet.css" />
       and then maintaining that document somewhere on your webserver.                         -->
  <Define item="html.stylesheet">
 <style>
 body {
   font-family: arial,
-} 
+}
 table {
   font-family: arial,
 }
@@ -91,7 +91,7 @@ table {
  </Define>
 
  <!-- This is the default definition for a layer in GetCapabilities as text/xml
-      Some versions may override this definition with a like-named definition  
+      Some versions may override this definition with a like-named definition
       of their own; any version-specific definition supercedes this one.        -->
  <Define item="EnumLayer.xml">
   <Layer queryable="&Layer.queryable;" transparent="&Layer.transparent;">
@@ -116,16 +116,16 @@ table {
  <!-- This is the default definition for a reference system (SRS, or CRS) -->
  <Define item="RS.xml"><SRS>&Enum.item;</SRS></Define>
 
- <!-- You can control the formats supported by various  
-      WMS responses by (a) modifying these lists and    
-      (b) adding (if necessary) the appropriate         
-      <Response> element in the corresponding version   
-      template files.  You can locally override the     
-      supported formats by copying one of these         
-      definitions and modifying it to suit; in this     
+ <!-- You can control the formats supported by various
+      WMS responses by (a) modifying these lists and
+      (b) adding (if necessary) the appropriate
+      <Response> element in the corresponding version
+      template files.  You can locally override the
+      supported formats by copying one of these
+      definitions and modifying it to suit; in this
       case, the mods only apply to that version.        -->
 
- <!-- These are the supported (Get)Capabilities formats 
+ <!-- These are the supported (Get)Capabilities formats
       Specific version templates can override these     -->
  <Define item="Formats.GetCapabilities">
    <item>text/xml</item>
@@ -133,7 +133,7 @@ table {
    <item>text/plain</item>
  </Define>
 
- <!-- These are the supported (Get)Map formats      
+ <!-- These are the supported (Get)Map formats
       Specific version templates can override these -->
  <Define item="Formats.GetMap">
    <item>image/png</item>
@@ -173,7 +173,7 @@ table {
   <translate from="LL84">EPSG:4326</translate>
  </Define>
 
- <!-- These are the supported (Get)FeatureInfo formats 
+ <!-- These are the supported (Get)FeatureInfo formats
       Specific version templates can override these    -->
  <Define item="Formats.GetFeatureInfo">
    <item>text/xml</item>
@@ -181,7 +181,7 @@ table {
    <item>text/plain</item>
  </Define>
 
- <!-- These are the supported Exception formats     
+ <!-- These are the supported Exception formats
       Specific version templates can override these -->
  <Define item="Formats.Exception">
    <item>application/vnd.ogc.se_xml</item>
@@ -215,8 +215,8 @@ table {
  <Define item="Layer.Opaque">0</Define>
  <Define item="Layer.Title">&Layer.Title;</Define>
 
- <!-- Hack!- these are guard values in case the Layer.Bounds property 
-      is not well formed; Studio is offering zero data validation on 
+ <!-- Hack!- these are guard values in case the Layer.Bounds property
+      is not well formed; Studio is offering zero data validation on
       its input via the UI.  Of course, this isn't a perfect solution
       either, but it guards against the most likely cases.  If somebody
       types in a badly-formed <Bounds /> element that isn't EPSG:4326
@@ -233,7 +233,7 @@ table {
  <!-- troublesome SRS to some appropriate WKT.                  -->
  <Define item="SRS.WKT.map">
   <!-- This example fixes a problem with EPSG:21781 not         -->
-       finding the WKT for EPSG:21781 in the CS library. 
+       finding the WKT for EPSG:21781 in the CS library.
        -->
   <translate from="EPSG:21781">PROJCS["CH1903.LV03",GEOGCS["LLCH1903",DATUM["CH-1903",SPHEROID["BESSEL",6377397.155,299.15281535],TOWGS84[660.0770,13.5510,369.3440,0.804816,0.577692,0.952236,5.66000000]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Swiss_Oblique_Cylindrical"],PARAMETER["central_meridian",7.43958333333333],PARAMETER["latitude_of_origin",46.95240555555556],PARAMETER["false_easting",600000.000],PARAMETER["false_northing",200000.000],UNIT["Meter",1.00000000000000],AXIS["Y",NORTH],AXIS["X",EAST]]"</translate>
 
@@ -242,13 +242,13 @@ table {
 </Definitions>
 
 
-<!--  This is the exception of last resort, and is used if   
-      no exception Response is found in the version-specific 
-      template (or if an error occurs before a version can   
-      be established.)                                       
-      By this declaration, we say the default response shall 
-      be html.  Of course, any appropriate <Response/> in    
-      the template file will supercede this.                 
+<!--  This is the exception of last resort, and is used if
+      no exception Response is found in the version-specific
+      template (or if an error occurs before a version can
+      be established.)
+      By this declaration, we say the default response shall
+      be html.  Of course, any appropriate <Response/> in
+      the template file will supercede this.
 -->
 
 <Exception content-type="text/html">

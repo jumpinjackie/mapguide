@@ -390,7 +390,7 @@ void BuildLayerDefinitionData(String layerData, String layerVarName)
     {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        InputStream is = new ByteArrayInputStream(layerData.getBytes("UTF-8")); 
+        InputStream is = new ByteArrayInputStream(layerData.getBytes("UTF-8"));
         Document doc = builder.parse(is);
         int type = 0;
         NodeList scaleRanges = doc.getElementsByTagName("VectorScaleRange");

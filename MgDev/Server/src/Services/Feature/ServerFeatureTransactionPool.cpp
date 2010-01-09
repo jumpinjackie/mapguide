@@ -79,7 +79,7 @@ void MgServerFeatureTransactionPool::RemoveExpiredTransaction()
             {
                 try
                 {
-                    // Set timeout for this transaction object. It will release the internal FdoITransaction object. 
+                    // Set timeout for this transaction object. It will release the internal FdoITransaction object.
                     featTransaction->SetTimeout();
                 }
                 catch (FdoException* e)
@@ -142,7 +142,7 @@ MgServerFeatureTransaction* MgServerFeatureTransactionPool::CreateTransaction(Mg
 {
     Ptr<MgServerFeatureTransaction> tran = new MgServerFeatureTransaction(resource);
 
-    // Add it to the pool. 
+    // Add it to the pool.
     AddTransaction(tran);
 
     return tran.Detach();

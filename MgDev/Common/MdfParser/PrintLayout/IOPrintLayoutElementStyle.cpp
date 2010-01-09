@@ -52,7 +52,7 @@ void IOPrintLayoutElementStyle::StartElement(const wchar_t* name, HandlerStack* 
     case eNorthArrowStyle:
         m_startElemName = name;
         break;
-    
+
     case eExtendedData1:
         m_procExtData = true;
         break;

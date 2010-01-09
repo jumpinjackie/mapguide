@@ -603,7 +603,7 @@ INTERNAL_API:
     ///
     /// \remarks
     /// If passing NULL for transaction, it will work the same as UpdateFeatures(resource, commands, false).
-    /// 
+    ///
     /// \param resource
     /// Input
     /// A resource identifier referring to connection string
@@ -781,7 +781,7 @@ INTERNAL_API:
     /// The MgTransaction instance on which the sql statement will be executed.
     /// \param fetchSize
     /// Input
-    /// The fetch size of query. This method returns all data 
+    /// The fetch size of query. This method returns all data
     /// of query if setting the fetch size to 0.
     ///
     /// \return
@@ -1143,7 +1143,7 @@ INTERNAL_API:
     // Commit the transaction specified by the transaction id.
     bool CommitTransaction(CREFSTRING transactionId);
 
-    // Rollback the transaction specified by the transaction id. 
+    // Rollback the transaction specified by the transaction id.
     bool RollbackTransaction(CREFSTRING transactionId);
 
 protected:

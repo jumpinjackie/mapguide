@@ -72,7 +72,7 @@ void IOPrintLayoutElementCollection::StartElement(const wchar_t* name, HandlerSt
             IO->StartElement(name, handlerStack);
         }
         break;
-    
+
     case eReferences:
         {
             IOStringObjectCollection* IO = new IOStringObjectCollection(m_currElem->GetReferences(), m_version, sReferences, sName);
@@ -80,7 +80,7 @@ void IOPrintLayoutElementCollection::StartElement(const wchar_t* name, HandlerSt
             IO->StartElement(name, handlerStack);
         }
         break;
-    
+
     case eExtendedData1:
         m_procExtData = true;
         break;
@@ -207,7 +207,7 @@ void IOPrintLayoutElementCollection::Write(MdfStream& fd, PrintLayoutElementColl
 
         // Property: References
         IOStringObjectCollection::Write(fd, layoutElem->GetReferences(), version, sReferences, sName);
-    
+
         // Write any unknown XML / extended data
         IOUnknown::Write(fd, layoutElem->GetUnknownXml(), version);
 

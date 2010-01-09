@@ -486,7 +486,7 @@ void MgApplicationRepositoryManager::MoveResource(
             __LINE__, __WFILE__, &arguments, L"MgResourcesIdentical", NULL);
     }
 
-    // If cascade update referencing resources, get the references and check permission. 
+    // If cascade update referencing resources, get the references and check permission.
     // An MgUnauthorizedAccessException will throw if current user doesn't have write permission to any referencing resource.
     Ptr<MgStringCollection> referencingIds = NULL;
     if(cascade)
@@ -513,7 +513,7 @@ void MgApplicationRepositoryManager::MoveResource(
 
     resourceContentMan->MoveResource(sourceResource, destResource, overwrite);
 
-    // If cascade update referencing resources, update referencing resources' content, 
+    // If cascade update referencing resources, update referencing resources' content,
     // setting ResourceId from sourceResource to destResource
     if(cascade && referencingIds != NULL &&  referencingIds->GetCount() != 0)
     {

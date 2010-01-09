@@ -66,7 +66,7 @@ void IOMapViewportDefinition::StartElement(const wchar_t* name, HandlerStack* ha
             IO->StartElement(name, handlerStack);
         }
         break;
-    
+
     case eMapView:
         {
             IOMapView* IO = new IOMapView(GetMapViewportDefinition()->GetMapView(), m_version);
@@ -74,7 +74,7 @@ void IOMapViewportDefinition::StartElement(const wchar_t* name, HandlerStack* ha
             IO->StartElement(name, handlerStack);
         }
         break;
-    
+
     case eMapName:
     case eLocked:
     case eOn:

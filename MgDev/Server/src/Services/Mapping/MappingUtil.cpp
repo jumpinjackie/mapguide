@@ -433,7 +433,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
         #ifdef _DEBUG
         printf("  StylizeLayers() **LAYERSTART** Name:%S  VAS:%S\n", (mapLayer->GetName()).c_str(), mapLayer->IsVisibleAtScale(scale)? L"True" : L"False");
         #endif
-        
+
         if(mapLayer->GetLayerResourceContent() == L"")
             continue;
 

@@ -25,8 +25,8 @@ class MgFeatureService;
 /// \cond INTERNAL
 /////////////////////////////////////////////////////////////////
 /// <summary>
-/// MgProxyFeatureTransaction represents a transaction to be performed in 
-/// a DataStore. If the transaction is time out, commit or rollback a 
+/// MgProxyFeatureTransaction represents a transaction to be performed in
+/// a DataStore. If the transaction is time out, commit or rollback a
 /// transaction will result in one exception MgFeatureServiceException thrown.
 /// </summary>
 class MG_MAPGUIDE_API  MgProxyFeatureTransaction : public MgTransaction

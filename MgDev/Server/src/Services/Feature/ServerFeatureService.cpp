@@ -721,7 +721,7 @@ MgSqlDataReader* MgServerFeatureService::ExecuteSqlQuery( MgResourceIdentifier* 
 //////////////////////////////////////////////////////////////////
 /// <summary>
 /// This method executes the SELECT SQL statement specified within a given transaction
-/// and returns a pointer to SqlDataReader instance. This instance can be used to 
+/// and returns a pointer to SqlDataReader instance. This instance can be used to
 /// retrieve column information and related values.
 ///
 /// NOTE:
@@ -767,7 +767,7 @@ MgSqlDataReader* MgServerFeatureService::ExecuteSqlQuery( MgResourceIdentifier* 
 //////////////////////////////////////////////////////////////////
 /// <summary>
 /// This method executes the SELECT SQL statement specified within a given transaction
-/// and returns a pointer to SqlDataReader instance. This instance can be used to 
+/// and returns a pointer to SqlDataReader instance. This instance can be used to
 /// retrieve column information and related values.
 ///
 /// NOTE:
@@ -789,7 +789,7 @@ MgSqlDataReader* MgServerFeatureService::ExecuteSqlQuery( MgResourceIdentifier* 
 /// The MgTransaction instance on which the sql statement will be executed.
 /// </param>
 /// <param name="fetchSize">
-/// The fetch size of query. This method returns all data of query if 
+/// The fetch size of query. This method returns all data of query if
 /// setting the fetch size to 0.
 /// </param>
 /// <returns>

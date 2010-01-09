@@ -29,7 +29,7 @@ MG_IMPL_DYNCREATE(MgParameter);
 /// name, value, and direction.
 /// </summary>
 /// <param name="prop">
-/// An MgNullableProperty instance which contains 
+/// An MgNullableProperty instance which contains
 /// the name and value of the parameter.
 /// </param>
 /// <param name="direction">
@@ -48,7 +48,7 @@ MgParameter::MgParameter(MgNullableProperty* prop, INT32 direction)
 /// is input.
 /// </summary>
 /// <param name="prop">
-/// An MgNullableProperty instance which contains 
+/// An MgNullableProperty instance which contains
 /// the name and value of the parameter.
 /// </param>
 MgParameter::MgParameter(MgNullableProperty* prop)
@@ -175,7 +175,7 @@ bool MgParameter::CanSetName()
 /// Gets the name and value of the parameter.
 /// </summary>
 /// <returns>
-/// Returns an MgNullableProperty instance which contains 
+/// Returns an MgNullableProperty instance which contains
 /// the name and value of the parameter.
 /// </returns>
 MgNullableProperty* MgParameter::GetProperty()
@@ -189,7 +189,7 @@ MgNullableProperty* MgParameter::GetProperty()
 /// Sets the name and value of the parameter.
 /// </summary>
 /// <param name="value">
-/// Input an MgNullableProperty instance which contains 
+/// Input an MgNullableProperty instance which contains
 /// the name and value of the parameter.
 /// </param>
 /// <returns>

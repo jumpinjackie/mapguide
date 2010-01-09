@@ -22,8 +22,8 @@
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
-/// MgServerFeatureTransaction represents a transaction to be performed in 
-/// a DataStore. If the transaction is time out, commit or rollback a 
+/// MgServerFeatureTransaction represents a transaction to be performed in
+/// a DataStore. If the transaction is time out, commit or rollback a
 /// transaction will result in one exception MgFeatureServiceException thrown.
 /// </summary>
 class MG_SERVER_FEATURE_API MgServerFeatureTransaction : public MgTransaction

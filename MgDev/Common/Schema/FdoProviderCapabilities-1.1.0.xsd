@@ -135,7 +135,7 @@
                   </xs:sequence>
                 </xs:complexType>
              </xs:element>
-            <xs:element name="SupportsSchemaModification" type="xs:boolean"/>          
+            <xs:element name="SupportsSchemaModification" type="xs:boolean"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -348,7 +348,7 @@
                           </xs:simpleType>
                         </xs:element>
                         <xs:element name="IsAggregate" type="xs:boolean"/>
-                        <xs:element name="IsSupportsVariableArgumentsList" type="xs:boolean" minOccurs="0"/>                        
+                        <xs:element name="IsSupportsVariableArgumentsList" type="xs:boolean" minOccurs="0"/>
                         <xs:element name="SignatureDefinitionCollection" minOccurs="0">
                           <xs:complexType>
                             <xs:sequence>
@@ -391,11 +391,11 @@
                                         </xs:restriction>
                                       </xs:simpleType>
                                     </xs:element>
-                                    <xs:element name="ArgumentDefinitionList" minOccurs="0">     
+                                    <xs:element name="ArgumentDefinitionList" minOccurs="0">
                                         <xs:complexType>
                                           <xs:sequence>
                                             <xs:element name="Name" type="xs:string"/>
-                                            <xs:element name="Description" type="xs:string" minOccurs="0"/>                                            
+                                            <xs:element name="Description" type="xs:string" minOccurs="0"/>
                                             <xs:element name="ArgumentDefinition" maxOccurs="unbounded">
                                               <xs:complexType>
                                               <xs:sequence>
@@ -442,7 +442,7 @@
                                                     <xs:sequence>
                                                       <xs:element name="Value" type="xs:string" maxOccurs="unbounded">
                                                       </xs:element>
-                                                    </xs:sequence> 
+                                                    </xs:sequence>
                                                   </xs:complexType>
                                                 </xs:element>
                                               </xs:sequence>
@@ -483,13 +483,13 @@
                                                     <xs:enumeration value="UniqueID"/>
                                                   </xs:restriction>
                                                 </xs:simpleType>
-                                            </xs:element>                                            
+                                            </xs:element>
                                           </xs:sequence>
                                         </xs:complexType>
                                        </xs:element>
-                                  </xs:sequence>  
+                                  </xs:sequence>
                                 </xs:complexType>
-                              </xs:element>  
+                              </xs:element>
                             </xs:sequence>
                           </xs:complexType>
                         </xs:element>

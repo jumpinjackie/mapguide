@@ -846,7 +846,7 @@ PUBLISHED_API:
     /// \brief
     /// Executes the MgDeleteFeatures, MgInsertFeatures,
     /// MgUpdateFeatures, MgLockFeatures or MgUnlockFeatures commands
-    /// contained in the given MgFeatureCommandCollection object within 
+    /// contained in the given MgFeatureCommandCollection object within
     /// the given transaction.
     ///
     /// \remarks
@@ -1062,7 +1062,7 @@ PUBLISHED_API:
     /// \param parameters (MgParameterCollection)
     /// Parameters binded to the SQL statement.
     /// \param transaction (MgTransaction)
-    /// The MgTransaction instance on which the sql 
+    /// The MgTransaction instance on which the sql
     /// statement will be executed.
     ///
     /// \return
@@ -1144,7 +1144,7 @@ PUBLISHED_API:
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Executes SQL statements NOT including SELECT statements 
+    /// Executes SQL statements NOT including SELECT statements
     /// within the given transaction.
     ///
     /// \remarks
@@ -1171,7 +1171,7 @@ PUBLISHED_API:
     /// \param parameters (MgParameterCollection)
     /// Parameters binded to the SQL statement.
     /// \param transaction (MgTransaction)
-    /// The MgTransaction instance on which the sql 
+    /// The MgTransaction instance on which the sql
     /// statement will be executed.
     ///
     /// \return
@@ -1423,10 +1423,10 @@ PUBLISHED_API:
     ///
     /// \remarks
     /// MgFeatureSourceParams is an abstract class. Currently there
-    /// are two concrete classes MgFileFeatureSourceParams and 
-    /// MgCreateSdfParams and SDF, SHP and SQLite feature source can 
-    /// be created only. If no well-know text format coordinate 
-    /// system is specified in argument sourceParams, this method 
+    /// are two concrete classes MgFileFeatureSourceParams and
+    /// MgCreateSdfParams and SDF, SHP and SQLite feature source can
+    /// be created only. If no well-know text format coordinate
+    /// system is specified in argument sourceParams, this method
     /// will not create spatial context for the feature source. For
     /// SHP feature source, a feature class must be specified.
     /// Otherwise, an MgInvalidArgumentException will be thrown.
@@ -1604,17 +1604,17 @@ INTERNAL_API:
     // Commit the transaction specified by the transaction id.
     virtual bool CommitTransaction(CREFSTRING transactionId) = 0;
 
-    // Rollback the transaction specified by the transaction id. 
+    // Rollback the transaction specified by the transaction id.
     virtual bool RollbackTransaction(CREFSTRING transactionId) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Executes the SQL SELECT statement on the specified feature
-    /// source within the given transaction. For queries that return 
-    /// a large number of objects some feature sources support 
+    /// source within the given transaction. For queries that return
+    /// a large number of objects some feature sources support
     /// improving performance by setting fetch size in order to reduce
-    /// the number of database server round trips required to satisfy 
-    /// the selection criteria. Providers that do not use a fetch size 
+    /// the number of database server round trips required to satisfy
+    /// the selection criteria. Providers that do not use a fetch size
     /// will ignore the fetch size parameter.
     ///
     /// \remarks
@@ -1640,10 +1640,10 @@ INTERNAL_API:
     /// \param parameters (MgParameterCollection)
     /// Parameters binded to the SQL statement.
     /// \param transaction (MgTransaction)
-    /// The MgTransaction instance on which the sql 
+    /// The MgTransaction instance on which the sql
     /// statement will be executed.
     /// \param fetchSize (int)
-    /// The fetch size of query. This method returns all data 
+    /// The fetch size of query. This method returns all data
     /// of query if setting the fetch size to 0.
     ///
     /// \return

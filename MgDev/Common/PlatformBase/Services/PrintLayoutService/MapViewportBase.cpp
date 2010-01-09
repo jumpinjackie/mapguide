@@ -163,7 +163,7 @@ void MgMapViewportBase::PopulateFromResource(MdfModel::PrintLayoutElementDefinit
             throw new MgInvalidResourceTypeException(L"MgMapViewportBase.PopulateFromResource",
                 __LINE__, __WFILE__, NULL, L"", NULL);
         }
-        
+
         m_isOn = mapViewport->GetIsOn();
         m_isLocked = mapViewport->GetIsLocked();
         m_mapName = mapViewport->GetMapName();

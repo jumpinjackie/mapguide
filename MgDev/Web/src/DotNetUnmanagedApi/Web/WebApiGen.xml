@@ -4,11 +4,11 @@
    Module section.
 -->
 <Module name="MapGuideApi" />
-  
+
 <!--
    Custom file path.
 -->
-<CustomFile path="./WebCustom" />  
+<CustomFile path="./WebCustom" />
 
 <!--
    Target section.

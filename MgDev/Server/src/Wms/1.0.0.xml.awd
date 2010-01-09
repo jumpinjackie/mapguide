@@ -3,7 +3,7 @@
 
 <Definitions>
 
-  <!-- This defines the format of each individual layer 
+  <!-- This defines the format of each individual layer
       advertised by GetCapabilities                    -->
   <!-- Note: Studio published the following metadata fields                                -->
   <!-- Layer.Name      - The canonical machine-readable name for a layer                   -->
@@ -51,7 +51,7 @@
  <Define item="Layer.BoundingBox.default">
   <Bounds SRS="EPSG:4326" west="-180" south="-90" east="180" north="90"/>
  </Define>
- 
+
  <!-- This pair of definitions works around a current limitation that -->
  <!-- <?If...?><?Endif?> cannot be nested.                            -->
  <Define item="LatLonBoundingBox.xml"><?Translate text="&Enum.item.SRS;" with="&LatLonBoundingBox.translate.xml;"?></Define>
@@ -59,7 +59,7 @@
    <translate from="EPSG:4326" ?><LatLonBoundingBox minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/></translate>
    <translate></translate>
  </Define>
- 
+
  <Define item="BoundingBox.xml">
   <BoundingBox SRS="&Enum.item.SRS;" minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/>
  </Define>
@@ -145,7 +145,7 @@
   <?Translate text="&Enum.Item;" with="&Formats.translate;"?>
  </Define>
 
- <!-- Overrides of default Exception formats     
+ <!-- Overrides of default Exception formats
   specific to this version template -->
  <Define item="Formats.Exception">
   <item>text/xml</item>
@@ -180,7 +180,7 @@
     </Keywords>
   <?Endif?>
   <OnlineResource>&Url.OnlineResource;</OnlineResource>
-  <!-- 
+  <!--
        Contact Information
        ===================
        &Service.Contact.Name;

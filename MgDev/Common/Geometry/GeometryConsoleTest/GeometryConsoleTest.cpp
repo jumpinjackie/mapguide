@@ -20,7 +20,7 @@ int _tmain(int argc, _TCHAR* argv[])
     INT32 regionCount;
     INT32 gridLineCount;
     INT32 lineSegmentCount;
-    
+
     double xx;
     double yy;
     double uu;
@@ -82,10 +82,10 @@ int _tmain(int argc, _TCHAR* argv[])
             coordItr->Release ();
             pLineString->Release ();
         }
-        pGridLine->Release ();        
+        pGridLine->Release ();
     }
     pGridLines->Release ();
-    
+
     pGridTicks = pGenericGrid->GetGridTicks (pGridSpecification);
     tickCount = pGridTicks->GetCount ();
     for (index4 = 0;index4 < tickCount;index4 += 1)
@@ -103,7 +103,7 @@ int _tmain(int argc, _TCHAR* argv[])
         pCoordinate->Release ();
         pGridTick->Release ();
     }
-    pGridTicks->Release ();    
+    pGridTicks->Release ();
 
     pGenericGrid->Release ();
     pGridSpecification->Release ();

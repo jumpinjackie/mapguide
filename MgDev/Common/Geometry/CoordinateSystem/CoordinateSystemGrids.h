@@ -64,7 +64,7 @@ class MgCoordinateSystemGridTick;               // a position in viewport coordi
 /// <c>MgCoordinateSystemFactory</c> object.<p>
 /// Note that all values are provided in the units specified within the object.
 /// The units used in this object do <b>not</b> need to be the same as any
-/// coordinate system involved in the generation of a grid, although the 
+/// coordinate system involved in the generation of a grid, although the
 /// <b>type</b> of unit must be consistent with the type of grid being drawn.
 /// That is, specifying a Angular unit type when drawing a UTM grid will cause
 /// an exception at the time the request for (say) grid lines is issued.
@@ -85,7 +85,7 @@ PUBLISHED_API:
     /// start at one (the base) yielding grid lines at 1, 3, 5, 7, etc.
     /// </remarks>
     virtual double GetEastingBase (void)=0;
-    
+
     ///////////////////////////////////////////////////////////////////////////
     /// <summary>
     /// Gets the northing base value.
@@ -239,10 +239,10 @@ PUBLISHED_API:
     /// The value returned is one of the values defined in the
     /// MgCoordinateSystemUnitCode object and essentially specifies the unit in
     /// which the base, increment (line and tick), and curve precision values
-    /// are specified. 
+    /// are specified.
     ///
     virtual INT32 GetUnitCode(void)=0;
-    
+
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Determines if two MgCoordinateSystemGridSpecification objects are the
@@ -408,7 +408,7 @@ PUBLISHED_API:
     ///
     /// \param unitCode (int)
     /// One of the integer values defined in the MgCoordinateSystemUnitCode
-    /// object which indicates the units used to define the grid parameters. 
+    /// object which indicates the units used to define the grid parameters.
     ///
     /// \param unitType (int)
     /// One of the integer values defined in the MgCoordinateSystemUnitType
@@ -448,7 +448,7 @@ PUBLISHED_API:
     /// \remarks
     /// Please note the term desired in this description.  The generation of a
     /// complex curve approximation is also controlled by a variable usually
-    /// called the MaximumCurvePoints.  Thus, if this criteria is exceeded in 
+    /// called the MaximumCurvePoints.  Thus, if this criteria is exceeded in
     /// the curve generation process, the curve precision can and will often be
     /// less than that requested.  This provision is implemented to reduce the
     /// probability of a runaway grid which consumes the entire machine.

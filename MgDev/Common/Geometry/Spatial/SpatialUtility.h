@@ -272,7 +272,7 @@ public:
     /// </remarks>
     static MgLineStringCollection* ClipStringToPolygon (MgCoordinateIterator* polyItr,
                                                         MgCoordinateIterator* lineItr);
-                                                                                            
+
 protected:
 
     MgSpatialUtility() {};

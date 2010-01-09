@@ -61,7 +61,7 @@ EXPIMP_TEMPLATE template class MDFMODEL_API MdfOwnerCollection<PropertyMapping>;
 // Inline Methods
 inline const MdfString& PropertyMapping::GetTargetProperty() const
 {
-    return m_targetProperty;                              
+    return m_targetProperty;
 }
 
 inline const MdfString& PropertyMapping::GetSourceProperty() const

@@ -2,10 +2,10 @@
 <Configuration>
 <Definitions>
 
- <!-- This definition enumerates the WFS versions we will support. 
-      Note that each version below must be backed by a like-named  
-      template file (ie, 1.0.0.xml.awd) in order to work.          
-      These must appear in increasing order!                       
+ <!-- This definition enumerates the WFS versions we will support.
+      Note that each version below must be backed by a like-named
+      template file (ie, 1.0.0.xml.awd) in order to work.
+      These must appear in increasing order!
       Also, anything other than a <Version> element is ignored.    -->
  <Define item="SupportedVersions">
    <Version number="1.0.0"/>
@@ -47,21 +47,21 @@
  <Define item="Service.Keywords"><item>GIS</item><item>WFS</item><item>Server</item></Define>
 
 
- <!-- Enumerates an element in a dictionary for HTML  
+ <!-- Enumerates an element in a dictionary for HTML
       (Used chiefly for debugging, and in exceptions) -->
  <Define item="EnumDictionary.html"><tr><td class="name">&EnumDictionary.Name;</td><td><?Escape text="&EnumDictionary.Value;"?></td></tr>
  </Define>
 
- <!-- This is the HTML stylesheet, which should be referenced by anything returning HTML      
-      Note: one could substitute this with an out-of-band stylesheet link to an external doc, 
-      that is to say, replacing this with:                                                    
-           <link rel="stylesheet" href="http://your-url-to-a/stylesheet.css" />               
+ <!-- This is the HTML stylesheet, which should be referenced by anything returning HTML
+      Note: one could substitute this with an out-of-band stylesheet link to an external doc,
+      that is to say, replacing this with:
+           <link rel="stylesheet" href="http://your-url-to-a/stylesheet.css" />
       and then maintaining that document somewhere on your webserver.                         -->
  <Define item="html.stylesheet">
 <style>
 body {
   font-family: arial,
-} 
+}
 table {
   font-family: arial,
 }
@@ -82,7 +82,7 @@ table {
  </Define>
 
  <!-- This is the default definition for a layer in GetCapabilities as text/xml
-      Some versions may override this definition with a like-named definition  
+      Some versions may override this definition with a like-named definition
       of their own; any version-specific definition supercedes this one.        -->
  <Define item="EnumLayer.xml">
   <Layer queryable="&Layer.queryable;" transparent="&Layer.transparent;">
@@ -110,16 +110,16 @@ table {
 
 
 
- <!-- You can control the formats supported by various  
-      WFS responses by (a) modifying these lists and    
-      (b) adding (if necessary) the appropriate         
-      <Response> element in the corresponding version   
-      template files.  You can locally override the     
-      supported formats by copying one of these         
-      definitions and modifying it to suit; in this     
+ <!-- You can control the formats supported by various
+      WFS responses by (a) modifying these lists and
+      (b) adding (if necessary) the appropriate
+      <Response> element in the corresponding version
+      template files.  You can locally override the
+      supported formats by copying one of these
+      definitions and modifying it to suit; in this
       case, the mods only apply to that version.        -->
 
- <!-- These are the supported (Get)Capabilities formats 
+ <!-- These are the supported (Get)Capabilities formats
       Specific version templates can override these     -->
  <Define item="Formats.GetCapabilities">
    <item>text/xml</item>
@@ -127,7 +127,7 @@ table {
    <item>text/plain</item>
  </Define>
 
- <!-- These are the supported DescribeFeatureType formats      
+ <!-- These are the supported DescribeFeatureType formats
       Specific version templates can override these -->
  <Define item="Formats.DescribeFeatureType">
    <item>text/xml; subtype=gml/2.1.2</item>
@@ -143,16 +143,16 @@ table {
   <translate from="XMLSCHEMA">text/xml; subtype=gml/2.1.2</translate>
  </Define>
 
- <!-- These are the supported GetFeature formats 
+ <!-- These are the supported GetFeature formats
       Specific version templates can override these    -->
  <Define item="Formats.GetFeature">
    <item>text/xml; subtype=gml/2.1.2</item>
    <!--item>text/xml; subtype=gml/3.1.1</item-->
  </Define>
-    
+
  <Define item="Formats.GetFeature.default">text/xml; subtype=gml/2.1.2</Define>
 
- <!-- These are the supported Exception formats     
+ <!-- These are the supported Exception formats
       Specific version templates can override these -->
  <Define item="Formats.Exception">
    <item>application/vnd.ogc.se_xml</item>
@@ -257,13 +257,13 @@ table {
 </Definitions>
 
 
-<!--  This is the exception of last resort, and is used if   
-      no exception Response is found in the version-specific 
-      template (or if an error occurs before a version can   
-      be established.)                                       
-      By this declaration, we say the default response shall 
-      be html.  Of course, any appropriate <Response/> in    
-      the template file will supercede this.                 
+<!--  This is the exception of last resort, and is used if
+      no exception Response is found in the version-specific
+      template (or if an error occurs before a version can
+      be established.)
+      By this declaration, we say the default response shall
+      be html.  Of course, any appropriate <Response/> in
+      the template file will supercede this.
 -->
 
 <Exception content-type="text/html">

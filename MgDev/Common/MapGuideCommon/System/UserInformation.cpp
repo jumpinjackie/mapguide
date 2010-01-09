@@ -79,7 +79,7 @@ MgUserInformation::MgUserInformation(CREFSTRING userName, CREFSTRING password)
 /// <summary>
 /// Copy constructor.
 /// </summary>
-MgUserInformation::MgUserInformation(const MgUserInformation& userInfo) 
+MgUserInformation::MgUserInformation(const MgUserInformation& userInfo)
 {
     *this = userInfo;
 }
@@ -99,7 +99,7 @@ MgUserInformation::~MgUserInformation()
 /// <summary>
 /// Assignment operator.
 /// </summary>
-MgUserInformation& MgUserInformation::operator=(const MgUserInformation& userInfo) 
+MgUserInformation& MgUserInformation::operator=(const MgUserInformation& userInfo)
 {
     if (&userInfo != this)
     {

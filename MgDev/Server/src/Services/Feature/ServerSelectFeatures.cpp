@@ -1236,7 +1236,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
             bool bForceOneToOne = true;
             Ptr<MgStringCollection> attributeNameDelimiters = new MgStringCollection();
 
-            //Store all the secondary's name, and if the filter property doesn't contain secondary's name, 
+            //Store all the secondary's name, and if the filter property doesn't contain secondary's name,
             //it applies only to the primary.
             Ptr<MgStringCollection> secondaryNames = new MgStringCollection();
 

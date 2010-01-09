@@ -3,8 +3,8 @@
 
 <Definitions>
 
-  <!-- This defines the format of each individual layer 
-      advertised by GetCapabilities                    --> 
+  <!-- This defines the format of each individual layer
+      advertised by GetCapabilities                    -->
   <!-- Note: Studio published the following metadata fields                                -->
   <!-- Layer.Name      - The canonical machine-readable name for a layer                   -->
   <!-- Layer.Abstract  - Free-form human readable description for the layer                -->
@@ -94,19 +94,19 @@
  <Define item="FeatureInfo.text">
   FeatureInfo:
   <?EnumFeatureProperties using="&FeatureProperty.text;" ?>
-  
+
  </Define>
- 
+
  <Define item="FeatureProperty.xml">
   <Property name="&FeatureProperty.Name;" value="&FeatureProperty.Value;"></Property>
  </Define>
- 
+
  <Define item="FeatureProperty.html">
   <tr><td class="name">&FeatureProperty.Name;</td><td>&FeatureProperty.Value;</td></tr>
  </Define>
- 
+
  <Define item="FeatureProperty.text">
-  &FeatureProperty.Name;=&FeatureProperty.Value; 
+  &FeatureProperty.Name;=&FeatureProperty.Value;
  </Define>
 
  <!-- We're currently not supporting child layers... -->
@@ -116,13 +116,13 @@
  <Define item="Service.Keywords.xml"><Keyword>&Enum.item;</Keyword>
  </Define>
 
- <!-- Overrides of default Exception formats     
+ <!-- Overrides of default Exception formats
   specific to this version template -->
  <Define item="Formats.Exception">
   <item>application/vnd.ogc.se_xml</item>
  </Define>
 
- <!-- These are the supported (Get)Capabilities formats 
+ <!-- These are the supported (Get)Capabilities formats
   for version 1.1.1.     -->
  <Define item="Formats.GetCapabilities">
   <item>text/xml</item>

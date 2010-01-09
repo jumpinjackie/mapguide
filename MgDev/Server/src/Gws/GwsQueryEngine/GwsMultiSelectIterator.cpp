@@ -296,14 +296,14 @@ const CGwsPropertyDesc &
 
 FdoString * CGwsMultiSelectIterator::GetPropertyName(FdoInt32 index)
 {
-	CheckIterator ();
-	return m_iter->GetPropertyName(index);
+    CheckIterator ();
+    return m_iter->GetPropertyName(index);
 }
 
 FdoInt32 CGwsMultiSelectIterator::GetPropertyIndex(FdoString* propertyName)
 {
-	CheckIterator ();
-	return m_iter->GetPropertyIndex(propertyName);
+    CheckIterator ();
+    return m_iter->GetPropertyIndex(propertyName);
 }
 
 FdoString * CGwsMultiSelectIterator::GetString (FdoString * propname)

@@ -283,7 +283,7 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
     std::map<STRING, STRING> layerContentPair;
     if(layerIds->GetCount() != 0)
     {
-        Ptr<MgStringCollection> layerContents = m_resourceService->GetResourceContents(layerIds, NULL);        
+        Ptr<MgStringCollection> layerContents = m_resourceService->GetResourceContents(layerIds, NULL);
         for(int i = 0; i < layerIds->GetCount(); i ++)
         {
             layerContentPair.insert(std::pair<STRING, STRING>(layerIds->GetItem(i), layerContents->GetItem(i)));
@@ -509,7 +509,7 @@ void MgMap::Open(MgResourceService* resourceService, CREFSTRING mapName)
     }
 
     Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(L"Session:" + sessionId + L"//" + mapName + L"." + MgResourceType::Map);
-    
+
     MgResource::Open(m_resourceService, resId);
     m_name = mapName;
 

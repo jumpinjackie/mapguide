@@ -43,8 +43,8 @@
 extern "C"
 {
     extern double cs_Km360;
-    extern double cs_One;				/* 1.0                */
-    extern double cs_Two_pi;		    /* 2 pi */
+    extern double cs_One;               /* 1.0                */
+    extern double cs_Two_pi;            /* 2 pi */
 }
 
 using namespace CSLibrary;
@@ -153,7 +153,7 @@ void CCoordinateSystem::InitFromCatalog(const cs_Csdef_& csdef)
 
         //We've got a datum object.  Complete the initialization.
         return SetDatumDefinition(dynamic_cast<MgCoordinateSystemDatum*>(pDatum.p));
-    }	//if it's geodetic
+    }   //if it's geodetic
     else
     {
         //It's cartographic.  We need an ellipsoid definition.
@@ -175,7 +175,7 @@ void CCoordinateSystem::InitFromCatalog(const cs_Csdef_& csdef)
 
         //We've got the ellipsoid definition.  Complete the initialization.
         return SetEllipsoidDefinition(dynamic_cast<MgCoordinateSystemEllipsoid*>(pEllipsoid.p));
-    }	//if it's cartographic
+    }   //if it's cartographic
 
     MG_CATCH(L"MgCoordinateSystem.InitFromCatalog")
     if (mgException != NULL)
@@ -1447,7 +1447,7 @@ bool CCoordinateSystem::IsUsable(MgCoordinateSystemCatalog *pCatalog)
 
         //Check to see if the datum is there
         bIsUsable = pDtDict->Has(strDt);
-    }	//if it's geodetic
+    }   //if it's geodetic
     else
     {
         //It's cartographic (not geodetic), so make sure
@@ -1471,7 +1471,7 @@ bool CCoordinateSystem::IsUsable(MgCoordinateSystemCatalog *pCatalog)
 
         //Check to see if the ellipsoid is there
         bIsUsable = pElDict->Has(pStrEl);
-    }	//if it's cartographic
+    }   //if it's cartographic
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystem.IsUsable")
 
@@ -1498,7 +1498,7 @@ bool CCoordinateSystem::IsSameAs(MgGuardDisposable *pDef)
     MgCoordinateSystem* pCsDef=dynamic_cast<MgCoordinateSystem*>(pDef);
     if (!pCsDef)
     {
-        return false;	//not a coordsys def!
+        return false;   //not a coordsys def!
     }
 
     //Build a Mentor struct from the other datum interface
@@ -3061,7 +3061,7 @@ void CCoordinateSystem::SetProjectionDefaults()
             //Set it to zero.
             pdParms[i] = 0.0;
         }
-    }	//for each of the knCsNumParams parameters
+    }   //for each of the knCsNumParams parameters
 }
 
 //-------------------- Private member functions ---------------------

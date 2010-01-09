@@ -338,7 +338,7 @@ PUBLISHED_API:
     ///
     virtual MgFeatureReader* GetFeatureObject(CREFSTRING propertyName) = 0;
 
-	///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     /// \brief
     /// Use this method to obtain the values of the properties
     /// belonging to an object contained in the feature class
@@ -392,7 +392,7 @@ INTERNAL_API:
     ///
     virtual BYTE_ARRAY_OUT GetGeometry(CREFSTRING propertyName, INT32& length) = 0;
 
-	//////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the Geometry for the specified property. No conversion is
     /// performed, thus the property must be a of type Geometry or the result

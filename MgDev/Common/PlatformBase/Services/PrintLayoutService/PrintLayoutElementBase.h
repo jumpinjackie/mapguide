@@ -36,7 +36,7 @@ class MG_PLATFORMBASE_API MgPrintLayoutElementBase : public MgNamedSerializable
     DECLARE_CLASSNAME(MgPrintLayoutElementBase)
 
 INTERNAL_API:
-    
+
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Constructs an MgPrintLayoutElementBase object.
@@ -138,7 +138,7 @@ INTERNAL_API:
     /// Gets the units.
     ///
     virtual STRING GetUnits();
-    
+
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Sets the units.
@@ -174,19 +174,19 @@ INTERNAL_API:
     /// Gets the references.
     ///
     virtual MgStringCollection* GetReferences();
-    
+
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Sets the references.
     ///
     virtual void SetReferences(MgStringCollection* references);
-    
+
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the description of this element
     ///
     virtual STRING GetDescription();
-    
+
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the resource ID of this element's element style resource
@@ -212,14 +212,14 @@ INTERNAL_API:
     /// feature data
     ///
     virtual MgResourceIdentifier* GetFeatureSource();
-    
+
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the fully qualified feature class name used to retrieve feature
     /// data for this element
     ///
     virtual STRING GetFeatureClass();
-    
+
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the geometry property to use to retrieve features from the feature

@@ -151,7 +151,7 @@ INT32 CCoordinateSystemGridGeneric::ApproxGridLineMemoryUsage (MgCoordinateSyste
 INT32 CCoordinateSystemGridGeneric::ApproxGridRegionMemoryUsage (MgCoordinateSystemGridSpecification* specification)
 {
     INT32 memoryUse;
-    
+
     memoryUse = (m_FrameBoundary != 0) ? 0 : -1;
     return memoryUse;
 }
