@@ -1,7 +1,7 @@
 <?php
 
 //
-//  Copyright (C) 2004-2009 by Autodesk, Inc.
+//  Copyright (C) 2004-2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -28,7 +28,7 @@
 
     define( 'SERVER_TITLE',     "MapGuide Server" );
 
-    define( 'ABOUT_TEXT',       '<br>This product is made available subject to the terms of GNU Lesser General Public License Version 2.1 ("LGPL").  A copy of the LGPL, as well as additional copyright notices and license terms applicable to portions of this product are set forth in the <a href="license.htm">license</a> file.<br><br>All trademarks and registered trademarks mentioned herein are the property of their respective owners.<br><br>Copyright 2006-2009 by Autodesk, Inc.<br>' );
+    define( 'ABOUT_TEXT',       '<br>This product is made available subject to the terms of GNU Lesser General Public License Version 2.1 ("LGPL").  A copy of the LGPL, as well as additional copyright notices and license terms applicable to portions of this product are set forth in the <a href="license.htm">license</a> file.<br><br>All trademarks and registered trademarks mentioned herein are the property of their respective owners.<br><br>Copyright 2006-2010 by Autodesk, Inc.<br>' );
 
     require_once 'msgs.php';
     require_once 'serverdatafunctions.php';
