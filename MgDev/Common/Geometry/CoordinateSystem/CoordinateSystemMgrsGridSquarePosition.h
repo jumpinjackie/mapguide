@@ -39,7 +39,7 @@ PUBLISHED_API:
     static const INT32 None = 0;
     ///<summary>
     /// Specifies the center of the grid square; the default previous to this
-    /// reivison (Dec 2009).
+    /// revision (Dec 2009).
     ///</summary>
     static const INT32 Center = 1;
     ///<summary>
