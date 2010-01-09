@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2009 by Autodesk, Inc.
+//  Copyright (C) 2004-2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -288,7 +288,7 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
 {
     // Call updated RenderDynamicOverlay API
     MgRenderingOptions options(format, MgRenderingOptions::RenderSelection |
-        MgRenderingOptions::RenderLayers | (bKeepSelection ? MgRenderingOptions::KeepSelection : 0), NULL);
+        MgRenderingOptions::RenderLayers | (bKeepSelection? MgRenderingOptions::KeepSelection : 0), NULL);
     return RenderDynamicOverlay(map, selection, &options);
 }
 
@@ -712,7 +712,7 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap* map,
 
     #ifdef _DEBUG
     Ptr<MgReadOnlyLayerCollection> selLayers = sel->GetLayers();
-    ACE_DEBUG((LM_ERROR, ACE_TEXT("MgServerRenderingService::QueryFeatures() Selection Size:%d\n"), selLayers.p ? selLayers->GetCount() : 0));
+    ACE_DEBUG((LM_ERROR, ACE_TEXT("MgServerRenderingService::QueryFeatures() Selection Size:%d\n"), selLayers.p? selLayers->GetCount() : 0));
     #endif
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.QueryFeatures")
@@ -780,7 +780,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                                                           bool bKeepSelection)
 {
     MgRenderingOptions options(format, MgRenderingOptions::RenderSelection |
-        MgRenderingOptions::RenderLayers | (bKeepSelection ? MgRenderingOptions::KeepSelection : 0), NULL);
+        MgRenderingOptions::RenderLayers | (bKeepSelection? MgRenderingOptions::KeepSelection : 0), NULL);
     return RenderMapInternal(map, selection, roLayers, dr, saveWidth, saveHeight, scale, b, expandExtents, &options);
 }
 
@@ -788,8 +788,8 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
 ///////////////////////////////////////////////////////////////////////////////
 // called from (indirectly):
 //      RenderMap(complete), RenderMap(extent)(roLayers == NULL)
-//      RenderTile (selection == NULL)
-// render the map using from the provided rolayers
+//      RenderTile(selection == NULL)
+// render the map using the provided rolayers
 // (this is the baseGroup layers for rendering tiles)
 // render map using provided options object from before
 // this is called for tiles and for dynamic overlays
@@ -824,7 +824,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
         }
     }
 
-    RS_String units = (dstCs.p) ? dstCs->GetUnits() : L"";
+    RS_String units = dstCs.p? dstCs->GetUnits() : L"";
 
     // get the session ID
     STRING sessionId;
@@ -877,7 +877,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
             Ptr<MgReadOnlyLayerCollection> selLayers = selection->GetLayers();
 
             #ifdef _DEBUG
-            printf("MgServerRenderingService::RenderMapInternal() - Layers:%d  Selection Layers:%d\n", tempLayers.p ? tempLayers->GetCount() : 0, selLayers.p ? selLayers->GetCount() : 0);
+            printf("MgServerRenderingService::RenderMapInternal() - Layers:%d  Selection Layers:%d\n", tempLayers.p? tempLayers->GetCount() : 0, selLayers.p? selLayers->GetCount() : 0);
             #endif
 
             if (selLayers.p && selLayers->GetCount() > 0)
@@ -911,7 +911,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                     // generate a filter for the selected features
                     Ptr<MgStringCollection> filters = selection->GenerateFilters(
                     selLayer, selLayer->GetFeatureClassName(), m_renderSelectionBatchSize);
-                    INT32 numFilter = (NULL == filters) ? 0 : filters->GetCount();
+                    INT32 numFilter = (NULL == filters)? 0 : filters->GetCount();
 
                     for (INT32 i = 0; i < numFilter; ++i)
                     {
@@ -964,11 +964,12 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
             //-------------------------------------------------------
             /// RFC60 code to correct colormaps by UV
             //-------------------------------------------------------
-            // we examine the expressions collected from xml definitions of all layers.
-            // the map object has a list from all color entries found in the most recent layer stylization
-            // TODO currently they are interpreted as ffffffff 32 bit RGBA string values.
-            // adding expresssions and other interpretations should be done in ParseColorStrings.
-            // the color Palette for the renderer is a vector<RS_Color>
+            // We examine the expressions collected from xml definitions of all layers.
+            // The map object has a list from all color entries found in the most recent
+            // layer stylization.
+            // * TODO - currently they are interpreted as ffffffff 32-bit RGBA string values
+            // * adding expresssions and other interpretations should be done in ParseColorStrings
+            // * the color Palette for the renderer is a vector<RS_Color>
             if (hasColorMap(format))
             {
                 RS_ColorVector tileColorPalette;
@@ -1246,7 +1247,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
             Ptr<MgResourceIdentifier> featResId = new MgResourceIdentifier(layer->GetFeatureSourceId());
 
             //get a transform from layer coord sys to map coord sys
-            Ptr<MgCoordinateSystem> mapCs = (srs.empty()) ? NULL : m_pCSFactory->Create(srs);
+            Ptr<MgCoordinateSystem> mapCs = srs.empty()? NULL : m_pCSFactory->Create(srs);
             TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, vl->GetFeatureName(), featResId, mapCs, m_pCSFactory, m_svcFeature);
             Ptr<MgCoordinateSystemTransform> trans = item? item->GetMgTransform() : NULL;
 
