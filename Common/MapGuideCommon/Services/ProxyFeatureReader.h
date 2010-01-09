@@ -523,7 +523,7 @@ INTERNAL_API:
     ///
     BYTE_ARRAY_OUT GetGeometry(CREFSTRING propertyName, INT32& length);
 
-	//////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the Geometry for the specified property. No conversion is
     /// performed, thus the property must be a of type Geometry or the result
@@ -551,7 +551,7 @@ INTERNAL_API:
     ///
     const wchar_t* GetString(CREFSTRING propertyName, INT32& length);
 
-	//////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the string value of the specified property. No conversion is
     /// performed, thus the property must be a of type string or the result

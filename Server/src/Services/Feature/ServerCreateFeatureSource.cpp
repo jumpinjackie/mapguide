@@ -279,7 +279,7 @@ void MgServerCreateFileFeatureSource::Dispose()
 }
 
 MgServerCreateSdfFeatureSource::MgServerCreateSdfFeatureSource(
-    MgResourceIdentifier* resource, 
+    MgResourceIdentifier* resource,
     MgFileFeatureSourceParams* params):
     MgServerCreateFileFeatureSource(resource, params)
 {
@@ -305,7 +305,7 @@ STRING MgServerCreateSdfFeatureSource::GetFeatureSourceParameterString() const
 }
 
 MgServerCreateShpFeatureSource::MgServerCreateShpFeatureSource(
-    MgResourceIdentifier* resource, 
+    MgResourceIdentifier* resource,
     MgFileFeatureSourceParams* params):
     MgServerCreateFileFeatureSource(resource, params)
 {
@@ -347,7 +347,7 @@ void MgServerCreateShpFeatureSource::SetResourceData(
 
 STRING MgServerCreateShpFeatureSource::GetFirstConnectionString()
 {
-    // For SHP feature source, m_tempFileName saves a temporary path 
+    // For SHP feature source, m_tempFileName saves a temporary path
     // instead of a temporary file name.
     m_tempFileName = MgFileUtil::GenerateTempPath();
     STRING connstr = m_connectParamName + L"=" + m_tempFileName;  // NOXLATE
@@ -371,7 +371,7 @@ STRING MgServerCreateShpFeatureSource::GetFeatureSourceParameterString() const
 }
 
 MgServerCreateSqliteFeatureSource::MgServerCreateSqliteFeatureSource(
-    MgResourceIdentifier* resource, 
+    MgResourceIdentifier* resource,
     MgFileFeatureSourceParams* params):
     MgServerCreateFileFeatureSource(resource, params)
 {

@@ -407,7 +407,7 @@ install-data-hook:
 	@echo 'export LD_LIBRARY_PATH=$(fdodir):"$$LD_LIBRARY_PATH"' >> ${prefix}/bin/mgserver.sh
 	@echo 'ulimit -s 1024' >> ${prefix}/bin/mgserver.sh
 	@echo 'pushd ${prefix}/bin' >> ${prefix}/bin/mgserver.sh
-	@cp -f ${prefix}/bin/mgserver.sh ${prefix}/bin/mgserverd.sh 
+	@cp -f ${prefix}/bin/mgserver.sh ${prefix}/bin/mgserverd.sh
 	@echo './mgserver run' >> ${prefix}/bin/mgserver.sh
 	@echo './mgserver daemon' >> ${prefix}/bin/mgserverd.sh
 	@echo 'popd' >> ${prefix}/bin/mgserver.sh

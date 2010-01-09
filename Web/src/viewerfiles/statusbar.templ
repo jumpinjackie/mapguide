@@ -124,14 +124,14 @@ function SetFieldText(msg, index)
     }
 }
 
-function CalcKeyCode(aChar) 
+function CalcKeyCode(aChar)
 {
     var character = aChar.substring(0,1);
     var code = aChar.charCodeAt(0);
     return code;
 }
 
-function KeyboardController(val) 
+function KeyboardController(val)
 {
     var strPass = val.value;
     var strLength = strPass.length;
@@ -146,9 +146,9 @@ function KeyboardController(val)
     return false;
 }
 
-function SetZoomToScale(val) 
+function SetZoomToScale(val)
 {
-    if (val.value == "") 
+    if (val.value == "")
     {
         val.value = origScaleValue;
         return;
@@ -162,7 +162,7 @@ function SetZoomToScale(val)
 
 function OnScaleFieldKeyDown(event)
 {
-    if(event.keyCode==13) 
+    if(event.keyCode==13)
     {
         document.getElementById("4").focus();
     }
@@ -173,14 +173,14 @@ function OnScaleFieldFocus()
     var scaleField = GetScaleField();
     origScaleFieldBackground = scaleField.style.backgroundColor;
     scaleField.style.backgroundColor = 'lightyellow';
-    origScaleValue = scaleField.value; 
+    origScaleValue = scaleField.value;
     scaleField.value='';
 }
 
 function OnBlurScaleField()
 {
     var scaleField = GetScaleField();
-    scaleField.style.backgroundColor = origScaleFieldBackground; 
+    scaleField.style.backgroundColor = origScaleFieldBackground;
     SetZoomToScale(scaleField);
 }
 

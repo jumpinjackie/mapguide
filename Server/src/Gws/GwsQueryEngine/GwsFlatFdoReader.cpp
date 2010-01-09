@@ -170,7 +170,7 @@ FdoString* CGwsFlatFdoReader::GetPropertyName(FdoInt32 index)
     if (index < m_names->GetCount() && index >= 0)
         return m_names->GetString(index);
 
-    return L""; // throw exception? 
+    return L""; // throw exception?
 }
 
 FdoInt32 CGwsFlatFdoReader::GetPropertyIndex(FdoString* propertyName)

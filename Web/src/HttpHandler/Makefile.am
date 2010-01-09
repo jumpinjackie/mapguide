@@ -12,7 +12,7 @@ INCLUDES    = -I../../../Common/MdfModel \
               -I../../../Oem/ACE/ACE_wrappers \
               -I../../../Oem/dbxml-2.3.10/xerces-c-src/src \
               -I../../../Oem/jsoncpp/include
-              
+
 lib_LTLIBRARIES = libMgHttpHandler.la
 
 libMgHttpHandler_la_SOURCES = HttpHandlerBuild.cpp
@@ -286,4 +286,3 @@ libMgHttpHandler_la_LDFLAGS = -version-info 7:0:0 \
     -L../../../Common/PlatformBase \
     -L../../../Common/MapGuideCommon \
     -L../../../Oem/jsoncpp/lib
-    

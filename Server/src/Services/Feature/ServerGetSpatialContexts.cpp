@@ -114,7 +114,7 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(
 
     STRING coordSysName = L"";
     FdoString* csName = spatialReader->GetCoordinateSystem();
-    
+
     Ptr<MgCoordinateSystemFactory> csFactory;
     // WKT for co-ordinate system
     FdoString* csWkt = NULL;

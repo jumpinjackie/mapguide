@@ -159,14 +159,14 @@
 
                     //Create the layer definition
                     $layerDefContent = BuildLayerDefinitionContent($dataSource, $featureName, $tip);
-                    $resourceSrvc->SetResource($layerDefId, $layerDefContent, null); 
+                    $resourceSrvc->SetResource($layerDefId, $layerDefContent, null);
                 }
                 else
                 {
                     //data source already exist. clear its content
                     ClearDataSource($featureSrvc, $dataSourceId, $featureName);
                 }
-                
+
                 //Add the layer to the map, if it's not already in it
                 if($layer == null)
                 {

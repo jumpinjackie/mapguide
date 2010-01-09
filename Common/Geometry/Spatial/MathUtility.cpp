@@ -214,39 +214,39 @@ double MgMathUtility::LinearInterpolate(double start, double end, double proport
 
 bool MgMathUtility::DblCmp (double first,double second)
 {
-	int exp1, exp2;
-	int deltaExp;
-	double mant1,mant2;
+    int exp1, exp2;
+    int deltaExp;
+    double mant1,mant2;
 
-	mant1 = frexp (first ,&exp1);
-	mant2 = frexp (second,&exp2);
-	deltaExp = exp1 - exp2;
-	if (abs (deltaExp) >= 2) return false;
+    mant1 = frexp (first ,&exp1);
+    mant2 = frexp (second,&exp2);
+    deltaExp = exp1 - exp2;
+    if (abs (deltaExp) >= 2) return false;
 
-	// Need to deal with the case where the difference between the exponents
-	// is +/-1.  This is necessary as the two values may be infinitesimally
-	// greater and less than an even true binary value like 0.5.  In this
-	// case, they would be equal, but the exponents would not be the same.
-	if (deltaExp == 1)
-	{
-		// exp of first is bigger than exp of second.   Adjust exp2 and mant2
-		// so that they still represent the same value, but exp2 is now the
-		// same as exp1.  Note, this de-normalizes the numbers,  but that
-		// does not affect the comparison result in any way.
-		exp2 += 1;
-		mant2 *= 0.5;
-	}
-	else if (deltaExp == -1)
-	{
-		exp1 += 1;
-		mant1 *= 0.5;
-	}
+    // Need to deal with the case where the difference between the exponents
+    // is +/-1.  This is necessary as the two values may be infinitesimally
+    // greater and less than an even true binary value like 0.5.  In this
+    // case, they would be equal, but the exponents would not be the same.
+    if (deltaExp == 1)
+    {
+        // exp of first is bigger than exp of second.   Adjust exp2 and mant2
+        // so that they still represent the same value, but exp2 is now the
+        // same as exp1.  Note, this de-normalizes the numbers,  but that
+        // does not affect the comparison result in any way.
+        exp2 += 1;
+        mant2 *= 0.5;
+    }
+    else if (deltaExp == -1)
+    {
+        exp1 += 1;
+        mant1 *= 0.5;
+    }
 
-	// Now, if the exponents are not equal, obviously the original values
-	// are not equal; not even close.
-	if (exp1 != exp2) return false;
+    // Now, if the exponents are not equal, obviously the original values
+    // are not equal; not even close.
+    if (exp1 != exp2) return false;
 
-	// Since the exponents are equal, then we can simply compare the mantissas.
-	// We ignore any difference in the last few bits.
-	return (fabs (mant1 - mant2) < 5.0E-13);
+    // Since the exponents are equal, then we can simply compare the mantissas.
+    // We ignore any difference in the last few bits.
+    return (fabs (mant1 - mant2) < 5.0E-13);
 }

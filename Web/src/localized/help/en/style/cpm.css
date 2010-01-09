@@ -557,9 +557,9 @@ color: #0000cc;
 p.entryField {
 font-style: normal;
 font-weight: bold;
-} 	/* The same as 'uis-entryField'? */
+}   /* The same as 'uis-entryField'? */
 
-span.keyboardEntry { } 	/* The same as 'charspan-keyboardEntry'? */
+span.keyboardEntry { }  /* The same as 'charspan-keyboardEntry'? */
 
 span.keyCaps {
 font-style: normal;

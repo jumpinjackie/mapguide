@@ -141,14 +141,14 @@ INT32 CCoordinateSystemGridSpecification::GetMaxCurvePoints(void)
 bool CCoordinateSystemGridSpecification::IsSameAs(MgCoordinateSystemGridSpecification* specification)
 {
     bool areTheSame (false);
-    
+
     double dblTol (1.0E-04);
-    
+
     areTheSame  = fabs (specification->GetEastingBase()       - m_EastingBase)       < dblTol;
     areTheSame &= fabs (specification->GetNorthingBase()      - m_NorthingBase)      < dblTol;
     areTheSame &= fabs (specification->GetEastingIncrement()  - m_EastingIncrement)  < dblTol;
     areTheSame &= fabs (specification->GetNorthingIncrement() - m_NorthingIncrement) < dblTol;
-    
+
     areTheSame &= fabs (specification->GetTickEastingIncrement()  - m_TickEastingIncrement)  < dblTol;
     areTheSame &= fabs (specification->GetTickNorthingIncrement() - m_TickNorthingIncrement) < dblTol;
 
@@ -348,7 +348,7 @@ double CCoordinateSystemGridSpecification::ConvertUnitsOfValue (double value,INT
     MgCoordinateSystemFactory csFactory;
     Ptr<MgCoordinateSystemCatalog> catalogPtr = csFactory.GetCatalog ();
     Ptr<MgCoordinateSystemUnitInformation> unitInfoPtr = catalogPtr->GetUnitInformation ();
-    
+
     // Verify that the unit type of the specification match the unit type
     // to which we are to convert.
     GetUnitInfo(trgUnitCode,&trgUnitType,NULL);
@@ -426,7 +426,7 @@ void CCoordinateSystemGridBoundary::SetBoundaryExtents (MgCoordinate* southwest,
         nePnt = factory.CreateCoordinateXY(northeast->GetX(),northeast->GetY());
         nwPnt = factory.CreateCoordinateXY(southwest->GetX(),northeast->GetY());
         clPnt = factory.CreateCoordinateXY(southwest->GetX(),southwest->GetY());
-        
+
         if (!swPnt|| !swPnt || !nePnt || !nwPnt ||!clPnt)
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystemGridBoundary.SetBoundaryExtents",
@@ -469,13 +469,13 @@ void CCoordinateSystemGridBoundary::GetBoundaryExtents (double& eastMin,double& 
     Ptr<MgLinearRing> outerRing;
     Ptr<MgCoordinateIterator> ringItr;
     Ptr<MgCoordinate> coordPtr;
-    
+
     MG_TRY ()
         // Set up the accumulation values so we will always capture the first
         // values encountered in the actual polygon.
         eastMin = northMin = 1.0E+300;
         eastMax = northMax = -1.0E+300;
-        
+
         // We loop through theouter ring of the polygon.  For the purpose of this function,
         // the first ordinate in each coordinate is considered the easting and the
         // second ordinate in each coordinate is considered the northing.
@@ -529,7 +529,7 @@ MgPolygon* CCoordinateSystemGridBoundary::GetBoundary (MgCoordinateSystemTransfo
             // Create the repository for the interior rings, now that we know
             // there are some (this is rare).
             interiorRings = new MgLinearRingCollection ();
-            
+
             for (index = 0;index < interiorRingCount;index += 1)
             {
                 sourceRing = m_GridBoundary->GetInteriorRing (index);
@@ -629,7 +629,7 @@ MgLinearRing* CCoordinateSystemGridBoundary::TransformLinearRing (MgLinearRing* 
         // a linear ring which is our required return type.
         result = new MgLinearRing (targetCollection);
     MG_CATCH_AND_THROW(L"MgCoordinateSystemGridBoundary.TransformLinearRing")
-    
+
     return result.Detach ();
 }
 //=============================================================================
@@ -753,7 +753,7 @@ CCoordinateSystemGridRegion::CCoordinateSystemGridRegion (STRING label,
         // Generate and clip each of the four bounding lines.
         lineString = gridToFrame->GridLine (southwest,southeast,curvePrecision,maxPoints);
         m_SouthLine = frameBoundary->ClipLineString (lineString);
-        
+
         lineString = gridToFrame->GridLine (southeast,northeast,curvePrecision,maxPoints);
         m_EastLine = frameBoundary->ClipLineString (lineString);
 
@@ -834,7 +834,7 @@ CCoordinateSystemGridTick::CCoordinateSystemGridTick (INT32 orientation,double v
                                                       m_Position                 (),
                                                       m_Direction                ()
 {
-}                                                      
+}
 CCoordinateSystemGridTick::~CCoordinateSystemGridTick ()
 {
 }
@@ -905,7 +905,7 @@ CCoordinateSystemGridLineCollection::~CCoordinateSystemGridLineCollection(void)
 INT32 CCoordinateSystemGridLineCollection::GetCount () const
 {
     INT32 lineCount;
-    
+
     lineCount = m_GridLineCollection->GetCount();
     return lineCount;
 }
@@ -1049,7 +1049,7 @@ void CCoordinateSystemGridRegionCollection::AddCollection (MgCoordinateSystemGri
 
     // Memory check is done inside Add()
     MG_TRY ()
-        
+
         toAddCount = aGridRegionCollection->GetCount ();
         for (index = 0;index < toAddCount;index += 1)
         {
@@ -1091,7 +1091,7 @@ INT32 CCoordinateSystemGridTickCollection::GetCount () const
 MgCoordinateSystemGridTick* CCoordinateSystemGridTickCollection::GetItem (INT32 index) const
 {
     MgCoordinateSystemGridTick *itemPtr = static_cast<MgCoordinateSystemGridTick*>(m_GridTickCollection->GetItem (index));
-    return itemPtr; 
+    return itemPtr;
 }
 void CCoordinateSystemGridTickCollection::RemoveAt (INT32 index)
 {

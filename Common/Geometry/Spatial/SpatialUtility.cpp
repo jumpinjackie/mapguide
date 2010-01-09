@@ -518,7 +518,7 @@ MgGeometryComponent* MgSpatialUtility::TesselateGeometryComponent(MgGeometryComp
 //////////////////////////////////////////////
 ///<summary>
 /// Calculates the two dimensional intersection of two line segments.
-/// 
+///
 ///</summary>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -592,7 +592,7 @@ INT32 MgSpatialUtility::SegmentIntersection (MgCoordinate* result,MgCoordinate* 
             {
                 // X decreases from the 'from' point to the 'to' point.
                 if ((result->GetX() <= seg1From->GetX() || preciseFrom) &&
-                    (result->GetX() >= seg1To->GetX()   || preciseTo)) 
+                    (result->GetX() >= seg1To->GetX()   || preciseTo))
                 {
                     status |= 1;
                 }
@@ -720,11 +720,11 @@ MgCoordinateCollection* MgSpatialUtility::PolySegIntersection (MgCoordinateItera
     Ptr<MgCoordinate> intersection;
     Ptr<MgCoordinate> polyFrom;
     Ptr<MgCoordinate> polyTo;
-    
+
     CHECKNULL(polyItr, L"MgSpatialUtility.PolySegIntersection")
     CHECKNULL(segFrom, L"MgSpatialUtility.PolySegIntersection")
     CHECKNULL(segTo,   L"MgSpatialUtility.PolySegIntersection")
-  
+
     // Create the return object.  Quite often it gets returned empty, but we
     // will always return a "new" object (i.e. refCount == 1).  Create a work
     // point we can use.
@@ -743,7 +743,7 @@ MgCoordinateCollection* MgSpatialUtility::PolySegIntersection (MgCoordinateItera
         polyFrom = polyTo;
         polyTo = polyItr->GetCurrent ();
         status = SegmentIntersection (intersection,polyFrom,polyTo,segFrom,segTo);
-        
+
         // If the intersection is precisely on the 'From' point of the polygon segment,
         // we're not interested.  It will show up again when that point becomes a
         // 'To' point on the polygon.
@@ -797,14 +797,14 @@ INT32 MgSpatialUtility::AddToCoordinateCollection (MgCoordinateCollection* colle
         // insert the value into the collection such that when we are
         // done, the points represent the same disrection as the original
         // line segment.
-        
+
         // Compute the distance from the basePoint to the newPoint.  To
         // keep performance up we'll use the square of the distance
         // rather than the distance itself;
         deltaX = newPoint->GetX () - basePoint->GetX ();
         deltaY = newPoint->GetY () - basePoint->GetY ();
         newDistance = /*sqrt*/ (deltaX * deltaX + deltaY * deltaY);
-        
+
         // Loop through all points in the collection and determine the index
         // value of the first point whose distance from the base point is
         // greater than the distance for the newPoint.
@@ -868,7 +868,7 @@ bool MgSpatialUtility::PointIsInPolygon (MgCoordinateIterator* polyItr,MgCoordin
     // If the number of intersections is odd, the query point is inside.
     // Otherwise it is outside. (Zero is an even number, isn't it?)
     isInside = ((count & 1) != 0);
-    
+
     return isInside;
 }
 
@@ -899,12 +899,12 @@ MgLineStringCollection* MgSpatialUtility::ClipStringToPolygon (MgCoordinateItera
     lineItr->Reset ();
     lineItr->MoveNext ();
     lineTo = lineItr->GetCurrent ();
-    
+
     // We need to know in what state we are starting in.  lineTo currently
     // has the coordinates of the first point, which will become the
     // lineFrom point once the main loop gets started.
     inside = PointIsInPolygon (polyItr,lineTo);
-    
+
     // If we are starting inside the polgon, we push the first point
     // onto the current point collection.
     if (inside)
@@ -916,7 +916,7 @@ MgLineStringCollection* MgSpatialUtility::ClipStringToPolygon (MgCoordinateItera
     {
         lineFrom = lineTo;
         lineTo = lineItr->GetCurrent ();
-        
+
         // Intersect this segment with the polygon.
         Ptr<MgCoordinateCollection> segCollection;
         segCollection = PolySegIntersection (polyItr,lineFrom,lineTo);

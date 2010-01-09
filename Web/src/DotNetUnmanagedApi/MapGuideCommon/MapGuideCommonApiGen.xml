@@ -4,11 +4,11 @@
    Module section.
 -->
 <Module name="MapGuideCommonApi" />
-  
+
 <!--
    Custom file path.
 -->
-<CustomFile path="./MapGuideCommonCustom" />  
+<CustomFile path="./MapGuideCommonCustom" />
 
 <!--
    Target section.

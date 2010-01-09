@@ -94,9 +94,9 @@ MgSqlDataReader* MgServerSqlCommand::ExecuteQuery(
 
 // Executes the describe schema command and serializes the schema to XML
 INT32 MgServerSqlCommand::ExecuteNonQuery(
-    MgResourceIdentifier* resource, 
-    CREFSTRING sqlStatement, 
-    MgParameterCollection* params, 
+    MgResourceIdentifier* resource,
+    CREFSTRING sqlStatement,
+    MgParameterCollection* params,
     MgTransaction* transaction)
 {
     INT32 rowsAffected = 0;

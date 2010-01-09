@@ -26,7 +26,7 @@ class GwsRightSideIterator
 {
 public:
     GwsRightSideIterator(IGWSFeatureIterator* iter, bool b):m_iterator(iter), m_bHasData(b){}
-    
+
     IGWSFeatureIterator * Iterator(){return m_iterator;};
     bool HasData(){return m_bHasData;}
 

@@ -957,7 +957,7 @@ void TestResourceService::TestCase_GetResourceContents()
         for(int i = 0; i < ret->GetCount(); i ++)
         {
             CPPUNIT_ASSERT(!ret->GetItem(i).empty());
-        }        
+        }
     }
     catch(MgException* e)
     {

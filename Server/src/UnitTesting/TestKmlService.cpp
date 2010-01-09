@@ -246,7 +246,7 @@ void TestKmlService::TestCase_GetMapKml()
             SAFE_RELEASE(e);
             ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestCase_GetMapKml skipped because unable to connect to test server.\n")));
 
-            // We need to update the mapguide server status so that it can be used again because we have used the 
+            // We need to update the mapguide server status so that it can be used again because we have used the
             // same exception class for servers outside the one actually executing this code.
             MgSiteManager* siteManager = MgSiteManager::GetInstance();
             Ptr<MgSiteInfo> siteInfo = siteManager->GetSiteInfo(0);
@@ -297,7 +297,7 @@ void TestKmlService::TestCase_GetMapKmz()
             SAFE_RELEASE(e);
             ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestCase_GetMapKmz skipped because unable to connect to test server.\n")));
 
-            // We need to update the mapguide server status so that it can be used again because we have used the 
+            // We need to update the mapguide server status so that it can be used again because we have used the
             // same exception class for servers outside the one actually executing this code.
             MgSiteManager* siteManager = MgSiteManager::GetInstance();
             Ptr<MgSiteInfo> siteInfo = siteManager->GetSiteInfo(0);
@@ -347,7 +347,7 @@ void TestKmlService::TestCase_GetLayerKml()
             SAFE_RELEASE(e);
             ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestCase_GetLayerKml skipped because unable to connect to test server.\n")));
 
-            // We need to update the mapguide server status so that it can be used again because we have used the 
+            // We need to update the mapguide server status so that it can be used again because we have used the
             // same exception class for servers outside the one actually executing this code.
             MgSiteManager* siteManager = MgSiteManager::GetInstance();
             Ptr<MgSiteInfo> siteInfo = siteManager->GetSiteInfo(0);

@@ -63,7 +63,7 @@ void MgOpGetResourceContents::Execute()
     ACE_ASSERT(m_stream != NULL);
 
     if (2 == m_packet.m_NumArguments)
-    {        
+    {
         Ptr<MgStringCollection> resources = (MgStringCollection*)m_stream->GetObject();
         Ptr<MgStringCollection> preProcessTags = (MgStringCollection*)m_stream->GetObject();
 
@@ -92,7 +92,7 @@ void MgOpGetResourceContents::Execute()
 
                     MgCryptographyManager cryptoManager;
                     STRING cipherText = cryptoManager.EncryptString(plainText);
-                    
+
                     resourceContents->SetItem(i, cipherText);
                 }
             }

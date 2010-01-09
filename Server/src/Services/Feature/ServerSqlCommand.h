@@ -37,9 +37,9 @@ public:
                         MgTransaction* transaction,
                         INT32 fetchSize = 0);
     INT32 ExecuteNonQuery(
-                        MgResourceIdentifier* resource, 
-                        CREFSTRING sqlStatement, 
-                        MgParameterCollection* params, 
+                        MgResourceIdentifier* resource,
+                        CREFSTRING sqlStatement,
+                        MgParameterCollection* params,
                         MgTransaction* transaction);
 
 private:

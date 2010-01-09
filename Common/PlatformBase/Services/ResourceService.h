@@ -999,8 +999,8 @@ PUBLISHED_API:
     /// \param preProcessTags
     /// Pre-processing to apply to resource before returning content.
     /// If this parameter is NULL, it means no pre-processing.
-    /// If this parameter is not NULL, it must be a collection of pre-processing types, and it should be 
-    /// one to one matching the collection of parameter resources. 
+    /// If this parameter is not NULL, it must be a collection of pre-processing types, and it should be
+    /// one to one matching the collection of parameter resources.
     /// See MgResourcePreProcessingType for a list of supported pre-processing tags.
     ///
     /// \return

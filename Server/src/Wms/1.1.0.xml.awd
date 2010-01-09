@@ -3,7 +3,7 @@
 
 <Definitions>
 
-  <!-- This defines the format of each individual layer 
+  <!-- This defines the format of each individual layer
       advertised by GetCapabilities                    -->
   <!-- Note: Studio published the following metadata fields                                -->
   <!-- Layer.Name      - The canonical machine-readable name for a layer                   -->
@@ -49,11 +49,11 @@
     <?Endif?>
    </Layer>
  </Define>
- 
+
  <Define item="Layer.BoundingBox.default">
   <Bounds SRS="EPSG:4326" west="-180" south="-90" east="180" north="90"/>
  </Define>
- 
+
  <!-- This pair of definitions works around a current limitation that -->
  <!-- <?If...?><?Endif?> cannot be nested.                            -->
  <Define item="LatLonBoundingBox.xml"><?Translate text="&Enum.item.SRS;" with="&LatLonBoundingBox.translate.xml;"?></Define>
@@ -61,7 +61,7 @@
    <translate from="EPSG:4326" ?><LatLonBoundingBox minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/></translate>
    <translate></translate>
  </Define>
- 
+
  <Define item="BoundingBox.xml">
   <BoundingBox SRS="&Enum.item.SRS;" minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/>
  </Define>
@@ -110,7 +110,7 @@
  <Define item="FeatureProperty.text">
   &FeatureProperty.Name;=&FeatureProperty.Value;
  </Define>
- 
+
  <!-- DUMMY DEFINITIONS - to be removed once this metadata is provided by the server -->
  <Define item="Layer.Queryable">1</Define>
  <Define item="Layer.Cascaded">0</Define>
@@ -125,18 +125,18 @@
 
  <!-- We're currently not supporting child layers... -->
  <Define item="Layer.Sublayers"></Define>
- 
+
  <!-- In this version, keywords are enumerated enclosed in Keyword elements -->
  <Define item="Service.Keywords.xml"><Keyword>&Enum.item;</Keyword>
  </Define>
 
- <!-- Overrides of default Exception formats     
+ <!-- Overrides of default Exception formats
   specific to this version template -->
  <Define item="Formats.Exception">
   <item>application/vnd.ogc.se_xml</item>
  </Define>
 
- <!-- These are the supported (Get)Capabilities formats 
+ <!-- These are the supported (Get)Capabilities formats
   for version 1.1.1.     -->
  <Define item="Formats.GetCapabilities">
   <item>text/xml</item>
@@ -288,7 +288,7 @@
 <Response request="GetCapabilities" content-type="application/vnd.ogc.wms_xml">
  &GetCapabilities.xml;
 </Response>
- 
+
 <!--
 
   WMS GetCapabilities  - HTML

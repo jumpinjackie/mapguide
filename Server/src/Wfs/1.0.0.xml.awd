@@ -19,7 +19,7 @@
  <!--                                                                                     -->
  <!--  Feature.PrimarySRS    - Unused.  Reserved for future use. DO NOT USE.              -->
  <Define item="Feature.xml">
-  <!-- 
+  <!--
        Feature class #&Feature.iteration;
     -->
     <FeatureType xmlns:&Feature.Prefix;="&Feature.Resource;">
@@ -102,7 +102,7 @@
  <Define item="OtherSRS.xml"><wfs:OtherSRS>&Enum.item;</wfs:OtherSRS></Define>
  <Define item="Format.xml"><ows:Format>&Enum.item;</ows:Format></Define>
 
- <Define item="DescribeFeature.EnumDelim.xml">  
+ <Define item="DescribeFeature.EnumDelim.xml">
    <!-- &Enum.iteration; -->
    <xs:import schemaLocation="&Url.DescribeFeatureType;?request=DescribeFeatureType&amp;service=WFS&amp;typeName=&Enum.item;"/>
  </Define>
@@ -127,12 +127,12 @@
   WFS GetCapabilities  - XML
 
 -->
-<Response request="GetCapabilities" content-type="text/xml"><WFS_Capabilities version="1.0.0" 
+<Response request="GetCapabilities" content-type="text/xml"><WFS_Capabilities version="1.0.0"
           xmlns="http://www.opengis.net/wfs"
                   xmlns:myns="http://www.someserver.com/myns"
                   xmlns:ogc="http://www.opengis.net/ogc"
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                  xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengeospatial.net/wfs/1.0.0/WFS-capabilities.xsd"> 
+                  xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengeospatial.net/wfs/1.0.0/WFS-capabilities.xsd">
   <!-- ================================================================== -->
   <!-- SERVICE IDENTIFICATION SECTION                                     -->
   <!-- ================================================================== -->
@@ -242,7 +242,7 @@
 
 -->
 <Response request="DescribeFeatureType" content-type="text/xml; subtype=gml/2.1.2">
- <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+ <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
             elementFormDefault="qualified" attributeFormDefault="unqualified">
  <?EnumFeatureTypes using="&DescribeFeature.EnumFeature.xml;" ?>
  </xs:schema>

@@ -161,7 +161,7 @@ public:
     /// point must be southwest of the northeast location.
     /// \param northeast
     /// Northeast corner of the boundary in which a grid is to be drawn.
-    /// This point must be northeast of the southwest location.     
+    /// This point must be northeast of the southwest location.
     void SetBoundaryExtents (MgCoordinate* southwest,MgCoordinate* northeast);
 
     ////////////////////////////////////////////////////////////////////////////
@@ -223,7 +223,7 @@ public:
     /// \param precision
     /// A value which indicates, in target coordinate system units, how
     /// precisely any complex curve approximation generated must match the
-    /// the true complex curve. 
+    /// the true complex curve.
     /// \remarks
     /// The transformation must be a coordinate system transformation.  The
     /// existing grid boundary is assumed to be defined in terms of the
@@ -264,7 +264,7 @@ private:
     // standard Transform function.
     MgLinearRing* TransformLinearRing (MgLinearRing* linearString,
                                        MgCoordinateSystemTransform* transformation,
-                                       double curvePrecision); 
+                                       double curvePrecision);
     bool m_Large;
     INT32 m_MaxCurvePoints;
     Ptr<MgPolygon> m_GridBoundary;
@@ -279,7 +279,7 @@ class CCoordinateSystemGridLine : public MgCoordinateSystemGridLine
 public:
     CCoordinateSystemGridLine (INT32 orientation,double value);
     ~CCoordinateSystemGridLine (void);
-    
+
     INT32 GetGridOrientation(void);
     double GetRealValue(void);
     INT32 GetCount (void);
@@ -352,7 +352,7 @@ private:
 //=============================================================================
 // CCoordinateSystemGridTick  --  Implements MgCoordinateSystemGridTick
 //
-// 
+//
 class CCoordinateSystemGridTick : public MgCoordinateSystemGridTick
 {
 public:
@@ -452,7 +452,7 @@ private:
 // CCoordinateSystemGridTick objects.  CCoordinateSystemGridTickCollection
 // objects will contain MgCoordinateSystemGridTick objects for the entire
 // boundary or for an individual grid line.
-class CCoordinateSystemGridTickCollection : public MgCoordinateSystemGridTickCollection 
+class CCoordinateSystemGridTickCollection : public MgCoordinateSystemGridTickCollection
 {
 public:
     CCoordinateSystemGridTickCollection (INT64 memoryThreshold);
@@ -474,7 +474,7 @@ protected:
 private:
     // Not Implemented
     CCoordinateSystemGridTickCollection (const CCoordinateSystemGridTickCollection& source);
-    CCoordinateSystemGridTickCollection& operator= (const CCoordinateSystemGridTickCollection& rhs);  
+    CCoordinateSystemGridTickCollection& operator= (const CCoordinateSystemGridTickCollection& rhs);
 };
 
 }   /* namespace CSLibrary */

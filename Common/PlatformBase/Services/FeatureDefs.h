@@ -74,7 +74,7 @@ INTERNAL_API:
     static const int UpdateFeaturesWithTransaction_Id     = 0x1111ED2B;
     static const int ExecuteSqlNonQueryWithTransaction_Id = 0x1111ED2C;
     static const int ExecuteSqlQueryWithTransaction_Id    = 0x1111ED2D;
-    
+
 };
 /// \endcond
 

@@ -278,5 +278,4 @@ libMgMapGuideCommon_la_LDFLAGS = -version-info 7:0:0 \
   -L../Geometry \
   -L../Security \
   -L../MdfParser \
-  -L../MdfModel 
-  
+  -L../MdfModel

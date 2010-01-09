@@ -931,10 +931,10 @@ MgStringCollection* MgServerResourceService::GetResourceContents(MgStringCollect
     }
 
     MgLogDetail logDetail(MgServiceType::ResourceService, MgLogDetail::Trace, L"MgServerResourceService.GetResourceContents", mgStackParams);
-    logDetail.AddObject(L"Resources", resources);    
+    logDetail.AddObject(L"Resources", resources);
     logDetail.AddObject(L"PreProcessTags", preProcessTags);
     logDetail.Create();
-    
+
     // Iterator resources to get the content
     for(INT32 i = 0; i < resources->GetCount(); i ++)
     {

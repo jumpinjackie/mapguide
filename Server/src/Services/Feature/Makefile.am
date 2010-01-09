@@ -24,7 +24,7 @@ INCLUDES = \
   -I../../Common/Base \
   -I../../Common/Cache \
   -I../../Common/Manager \
-  -I../../Common/ServerUtil 
+  -I../../Common/ServerUtil
 
 lib_LTLIBRARIES = libMgServerFeatureService.la
 
@@ -228,7 +228,6 @@ noinst_HEADERS = $(include_SOURCES) \
   OpUpdateFeaturesWithTransaction.h \
   ServerFeatureTransaction.h \
   ServerFeatureTransactionPool.h
-  
 
 libMgServerFeatureService_la_LIBADD = -lMgGwsCommon -lMgGwsQueryEngine
 

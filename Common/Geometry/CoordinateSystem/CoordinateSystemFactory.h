@@ -293,7 +293,7 @@ PUBLISHED_API:
     /// </remarks>
     virtual MgCoordinateSystemGridSpecification* GridSpecification (INT32 gridType,
                                                                     INT32 gridLevel);
-                                                                   
+
     // Grids and Graticules -- Generic
     ///////////////////////////////////////////////////////////////////////////
     /// <summary>

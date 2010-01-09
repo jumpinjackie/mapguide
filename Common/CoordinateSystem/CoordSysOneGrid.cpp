@@ -43,8 +43,8 @@ using namespace CSLibrary;
 const INT32 CCoordinateSystemOneGrid::MaxCurvePoints = 511;
 
 CCoordinateSystemOneGrid::CCoordinateSystemOneGrid (INT64 gridLineMemoryThreshold,
-                                                    INT64 gridTickMemoryThreshold) 
-                                                        : 
+                                                    INT64 gridTickMemoryThreshold)
+                                                        :
                                                         MgGuardDisposable        (),
                                                         m_GridFrameCrsSame       (false),
                                                         m_UserID                 (0),
@@ -124,7 +124,7 @@ bool CCoordinateSystemOneGrid::IsGeographic (void)
     INT32 projectionCode;
 
     projectionCode = m_GridCRS->GetProjectionCode ();
-    isGeographic = (projectionCode == MgCoordinateSystemProjectionCode::LL);    
+    isGeographic = (projectionCode == MgCoordinateSystemProjectionCode::LL);
     return isGeographic;
 }
 INT32 CCoordinateSystemOneGrid::GetUserID (void)
@@ -190,7 +190,7 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemOneGrid::GetGridLines (Mg
         // grid coordinates.  Doing this here _should_ elimiate the need to
         // arbitrarily expand the grid boundary.
         m_GridBoundary->GetBoundaryExtents (eastMin,eastMax,northMin,northMax);
-        
+
         // Adjust so the the grid limits are exact values with regard to the
         // specified increments.  Do this in an expansive way so the the grid
         // limits always get larger, never smaller.
@@ -203,7 +203,7 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemOneGrid::GetGridLines (Mg
         eastMin -= (eastMin >= 0.0) ? delta : (increment - delta);
         delta = fabs(fmod (eastMax,increment));
         eastMax += (eastMax >= 0.0) ? (increment - delta) : delta;
- 
+
         increment = mySpecPtr->GetNorthingIncrement(gridCrsUnitCode);
         delta = fabs(fmod (northMin,increment));
         northMin -= (northMin >= 0.0) ? delta : (increment - delta);
@@ -447,13 +447,13 @@ INT32 CCoordinateSystemOneGrid::ApproxGridLineMemoryUsage (MgCoordinateSystemGri
     // each line based on the coordinate systems involved.
     if (m_GridFrameCrsSame)
     {
-        lineSize = sizeof (CCoordinateSystemGridLine) + sizeof (MgLineStringCollection) + 
+        lineSize = sizeof (CCoordinateSystemGridLine) + sizeof (MgLineStringCollection) +
                                                         sizeof (MgLineString) +
                                                         kMgSizeOfCoordinateXY * 2;
     }
     else
     {
-        lineSize = sizeof (CCoordinateSystemGridLine) + sizeof (MgLineStringCollection) + 
+        lineSize = sizeof (CCoordinateSystemGridLine) + sizeof (MgLineStringCollection) +
                                                         sizeof (MgLineString) * 2 +
                                                         kMgSizeOfCoordinateXY * 511;
     }
@@ -472,14 +472,14 @@ INT32 CCoordinateSystemOneGrid::ApproxGridLineMemoryUsage (MgCoordinateSystemGri
 
         // Compute the range of the grid line generation.
         m_GridBoundary->GetBoundaryExtents (eastMin,eastMax,northMin,northMax);
-        
+
         // Expand the range to include all grid values at the extents.
         increment = mySpecPtr->GetEastingIncrement(gridCrsUnitCode);
         delta = fabs(fmod (eastMin,increment));
         eastMin -= (eastMin >= 0.0) ? delta : (increment - delta);
         delta = fabs(fmod (eastMax,increment));
         eastMax += (eastMax >= 0.0) ? (increment - delta) : delta;
- 
+
         increment = mySpecPtr->GetNorthingIncrement(gridCrsUnitCode);
         delta = fabs(fmod (northMin,increment));
         northMin -= (northMin >= 0.0) ? delta : (increment - delta);

@@ -566,7 +566,7 @@ bool MgCoordinateSystemFactory::IsValid(CREFSTRING wkt)
 MgCoordinateSystemGridSpecification* MgCoordinateSystemFactory::GridSpecification ()
 {
     MgCoordinateSystemGridSpecification* gridSpecification (0);
-    
+
     gridSpecification = new CCoordinateSystemGridSpecification ();
     return gridSpecification;
 }
@@ -652,8 +652,8 @@ MgCoordinateSystemGridBoundary* MgCoordinateSystemFactory::GridBoundary(MgPolygo
 // nLetteringScheme is one of the values defined inside MgCoordinateSystemMgrsLetteringScheme
 //
 MgCoordinateSystemMgrs* MgCoordinateSystemFactory::GetMgrs(
-    double dEquatorialRadius, 
-    double dEccentricity, 
+    double dEquatorialRadius,
+    double dEccentricity,
     INT8 nLetteringScheme,
     bool bSetExceptionsOn)
 {
@@ -682,7 +682,7 @@ MgCoordinateSystemMgrs* MgCoordinateSystemFactory::GetMgrs(
 // nLetteringScheme is one of the values defined inside MgCoordinateSystemMgrsLetteringScheme
 //
 MgCoordinateSystemMgrs* MgCoordinateSystemFactory::GetMgrsEllipsoid(
-    CREFSTRING sEllipsoidCode, 
+    CREFSTRING sEllipsoidCode,
     INT8 nLetteringScheme,
     bool bSetExceptionsOn)
 {
@@ -711,7 +711,7 @@ MgCoordinateSystemMgrs* MgCoordinateSystemFactory::GetMgrsEllipsoid(
 // nLetteringScheme is one of the values defined inside
 // MgCoordinateSystemMgrsLetteringScheme
 //
-MgCoordinateSystemMgrs* MgCoordinateSystemFactory::GetMgrsDatum(CREFSTRING sDatumCode, 
+MgCoordinateSystemMgrs* MgCoordinateSystemFactory::GetMgrsDatum(CREFSTRING sDatumCode,
                                                                 INT8 nLetteringScheme,
                                                                 bool bSetExceptionsOn)
 {

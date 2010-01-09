@@ -35,31 +35,31 @@ const INT32 CCoordinateSystemMgrs::m_GridTickExceptionLevelK   = 20000000L;    /
 // Static constants.
 const CCoordinateSystemMgrs::CCoordinateSystemMgrsSeries CCoordinateSystemMgrs::MgrsSeriesNormal [6] =
 {
-	{	L"ABCDEFGH", L"ABCDEFGHJKLMNPQRSTUV" },
-	{	L"JKLMNPQR", L"FGHJKLMNPQRSTUVABCDE" },
-	{	L"STUVWXYZ", L"ABCDEFGHJKLMNPQRSTUV" },
-	{	L"ABCDEFGH", L"FGHJKLMNPQRSTUVABCDE" },
-	{	L"JKLMNPQR", L"ABCDEFGHJKLMNPQRSTUV" },
-	{	L"STUVWXYZ", L"FGHJKLMNPQRSTUVABCDE" }
+    {L"ABCDEFGH", L"ABCDEFGHJKLMNPQRSTUV" },
+    {L"JKLMNPQR", L"FGHJKLMNPQRSTUVABCDE" },
+    {L"STUVWXYZ", L"ABCDEFGHJKLMNPQRSTUV" },
+    {L"ABCDEFGH", L"FGHJKLMNPQRSTUVABCDE" },
+    {L"JKLMNPQR", L"ABCDEFGHJKLMNPQRSTUV" },
+    {L"STUVWXYZ", L"FGHJKLMNPQRSTUVABCDE" }
 };
 const CCoordinateSystemMgrs::CCoordinateSystemMgrsSeries CCoordinateSystemMgrs::MgrsSeriesBessel [6] =
 {
-	{	L"ABCDEFGH", L"LMNPQRSTUVABCDEFGHJK" },
-	{	L"JKLMNPQR", L"RSTUVABCDEFGHJKLMNPQ" },
-	{	L"STUVWXYZ", L"LMNPQRSTUVABCDEFGHJK" },
-	{	L"ABCDEFGH", L"RSTUVABCDEFGHJKLMNPQ" },
-	{	L"JKLMNPQR", L"LMNPQRSTUVABCDEFGHJK" },
-	{	L"STUVWXYZ", L"RSTUVABCDEFGHJKLMNPQ" }
+    {L"ABCDEFGH", L"LMNPQRSTUVABCDEFGHJK" },
+    {L"JKLMNPQR", L"RSTUVABCDEFGHJKLMNPQ" },
+    {L"STUVWXYZ", L"LMNPQRSTUVABCDEFGHJK" },
+    {L"ABCDEFGH", L"RSTUVABCDEFGHJKLMNPQ" },
+    {L"JKLMNPQR", L"LMNPQRSTUVABCDEFGHJK" },
+    {L"STUVWXYZ", L"RSTUVABCDEFGHJKLMNPQ" }
 };
 const wchar_t CCoordinateSystemMgrs::MgrsSeriesPolarSouth [2][25] =
 {
-	{L"JKLPQRSTUXYZABCFGHJKLPQR" },
-	{L"ABCDEFGHJKLMNPQRSTUVWXYZ" }
+    {L"JKLPQRSTUXYZABCFGHJKLPQR" },
+    {L"ABCDEFGHJKLMNPQRSTUVWXYZ" }
 };
 const wchar_t CCoordinateSystemMgrs::MgrsSeriesPolarNorth [2][15] =
 {
-	{L"RSTUXYZABCFGHJ" },
-	{L"ABCDEFGHJKLMNP" }
+    {L"RSTUXYZABCFGHJ" },
+    {L"ABCDEFGHJKLMNP" }
 };
 const wchar_t CCoordinateSystemMgrs::MgrsGridZoneDesignation [25] = L"ABCDEFGHJKLMNPQRSTUVWXYZ";
 
@@ -376,7 +376,7 @@ void CCoordinateSystemMgrs::SetBoundary(MgCoordinateSystemGridBoundary* pGridBou
 {
     // Save the boundary.
     m_GridBoundary = SAFE_ADDREF (pGridBoundary);
-    
+
     // Create a CCoordinateSystemOneGrid which is appropriate for generating
     // MGRS graticule requests.
     m_ZoneCollection = FrameBoundaryToZones (m_GridBoundary,m_pCsTarget,m_bUseFrameDatum);
@@ -416,7 +416,7 @@ MgCoordinateSystemGridLineCollection* CCoordinateSystemMgrs::GetGridLines (MgCoo
         // Determine the grid type.
         unitType = specification->GetUnitType();
         specIsGrid = (unitType ==  MgCoordinateSystemUnitType::Linear);
-        
+
         // Process each zone in our zone collection.  Originally, we thought
         // we could just call the GetGridLines function of the OneGrid
         // base class, but there are just too many special cases to deal with.
@@ -683,7 +683,7 @@ INT32 CCoordinateSystemMgrs::SetGridTickExceptionLevel (INT32 memoryUseMax)
     }
     INT64 availableMemory = GetAvailableMemory();
     m_GridTickMemoryThreshold = (availableMemory > m_GridTickExceptionLevel) ? availableMemory - m_GridTickExceptionLevel : 0L;
-    
+
     if (m_ZoneCollection != 0)
     {
         INT32 index;
@@ -964,7 +964,7 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
     // You could also describe this as object as "That portion of the
     // viewport which is included in the specific UTM zone we are
     // constructing an object for".
-    
+
     // Maintenance Note: In extreme cases, the use of rectangular viewports
     // to model a spherical world can lead to the consideration of a zone which
     // does not intersect the viewport.  In such cases, the Intersection polygon
@@ -1244,7 +1244,7 @@ STRING CCoordinateSystemMgrs::GridSquareDesignation (INT32 utmZoneNbr,double eas
     INT32 iEasting, iNorthing;
     INT32 eastIndex, northIndex;
     INT32 seriesIndex;
-    wchar_t squareDesignation [4]; 
+    wchar_t squareDesignation [4];
 
     squareDesignation [0] = L'?';
     squareDesignation [1] = L'?';
@@ -1368,7 +1368,7 @@ INT32 CCoordinateSystemMgrs::GridZoneDesignationIndex (double latitude,double lo
 wchar_t CCoordinateSystemMgrs::GridZoneDesignationLetter (INT32 index)
 {
     wchar_t designationLetter;
-    
+
     if (index >= 0 && index < 24)
     {
         designationLetter = MgrsGridZoneDesignation [index];
@@ -1477,7 +1477,7 @@ bool CCoordinateSystemMgrs::CanDoPoles (MgCoordinateSystem* frameCRS)
 
     bool canDoPoles (false);
     INT32 index;
-    
+
     INT32 prjCode = frameCRS->GetProjectionCode ();
     for (index = 0;polarCapable [index] != MgCoordinateSystemProjectionCode::Unknown;index += 1)
     {

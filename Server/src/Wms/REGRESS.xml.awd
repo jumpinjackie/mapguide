@@ -139,8 +139,8 @@
 
  <Test name="Response.xml">
   <Purpose>Verifies that the response is XML, verifies that Definitions and Expansions work, and establishes that the &lt;?If ?&gt; Processing Instruction functions using the "eq"uality operator -- fundamental functionality that needs to be in place to perform the remainder of the tests</Purpose>
-  <!-- 
-  Each test enumerates those aspects of the OgcServer engine that they exercise 
+  <!--
+  Each test enumerates those aspects of the OgcServer engine that they exercise
   and/or rely on to complete.  A failure of any given test should call into question
   the items enumerated here.  A failure of several tests should call into question
   the intersection of each test's <Exercises> set.
@@ -157,8 +157,8 @@
   <Expected>&Response.Xml.Expected;</Expected>
   <!-- The test actually generated the following result -->
   <Actual>&Response.Xml.Actual;</Actual>
-  <!-- 
-  The results are success or failure, based on the 
+  <!--
+  The results are success or failure, based on the
   equality of the two results above
   -->
   <Results>
@@ -167,9 +167,9 @@
  </Test>
 
  <Test name="VersionNegotiation">
-  <Purpose>Exercises the version negotiation code, to make sure it complies with the OGC spec: 
+  <Purpose>Exercises the version negotiation code, to make sure it complies with the OGC spec:
            (1) "If a version lower than any of those known to the server, then the server shall send the lowest version it supports."
-           (2) "If a version unknown to the server and higher than the lowest supported version, the server shall send the highest 
+           (2) "If a version unknown to the server and higher than the lowest supported version, the server shall send the highest
                version it supports that is less than the requested version"
 </Purpose>
   <Exercises>

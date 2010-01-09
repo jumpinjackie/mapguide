@@ -150,7 +150,7 @@ bool CCoordinateSystemMathComparator::SameDatum(MgCoordinateSystemDatum *pDefini
     bool bResult;
     unsigned paramCount;
     unsigned orgDeltaZeroCount;
-    
+
     cs_Dtdef_ def1, def2;
 
     bResult = BuildDtDefFromInterface(pDefinition1, def1);

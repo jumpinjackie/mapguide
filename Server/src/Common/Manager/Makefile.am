@@ -64,7 +64,6 @@ include_SOURCES = \
   UserInfo.cpp \
   WorkerThread.cpp \
   WorkerThreadData.cpp
-  
 
 noinst_HEADERS = $(include_SOURCES) \
   CacheManager.h \

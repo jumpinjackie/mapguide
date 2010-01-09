@@ -31,8 +31,8 @@ template class MG_PLATFORMBASE_API Ptr<MgParameterCollection>;
 /// All parameters contained in an instance of a parameter
 /// collection are objects whose base class is MgParameter.
 /// A call to a parameter object's GetType() method returns one
-/// of the integer constants defined in class MgPropertyType. 
-/// This collection does not allow duplicate key names. 
+/// of the integer constants defined in class MgPropertyType.
+/// This collection does not allow duplicate key names.
 ///
 /// \note
 /// Collections are <i>not</i> thread safe and ordered in the sequence of add operation.
@@ -45,7 +45,7 @@ class MG_PLATFORMBASE_API MgParameterCollection : public MgCollection
 PUBLISHED_API:
     //////////////////////////////////////////////////////////
     /// \brief
-    /// Constructs a MgParameterCollection. 
+    /// Constructs a MgParameterCollection.
     /// The collection is initially empty.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->

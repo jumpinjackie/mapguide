@@ -116,7 +116,7 @@
                 <xs:sequence>
                   <xs:element name="Name" maxOccurs="unbounded">
                     <xs:annotation>
-                      <xs:documentation>Following is the possible list of commands 
+                      <xs:documentation>Following is the possible list of commands
                         Select,Insert,Delete,Update,DescribeSchema,ApplySchema,DestroySchema,ActivateSpatialContext,CreateSpatialContext,DestroySpatialContext,GetSpatialContexts,
                         CreateMeasureUnit,DestroyMeasureUnit,GetMeasureUnits,SQLCommand,AcquireLock,GetLockInfo,GetLockedObjects,GetLockOwners,ReleaseLock,
                         ActivateLongTransaction,CommitLongTransaction,CreateLongTransaction,GetLongTransactions,FreezeLongTransaction,RollbackLongTransaction,

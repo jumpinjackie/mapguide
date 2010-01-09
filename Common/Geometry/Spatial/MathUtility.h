@@ -92,7 +92,7 @@ public:
     /// value is also a (quiet) NaN.
     static double LinearInterpolate(double start, double end, double proportion);
 
-    /////////////////////////////////////////////////////////////////////////// 
+    ///////////////////////////////////////////////////////////////////////////
     /// <summary>
     /// Reliably compares two doubles, providing that neither of the two values
     /// is a hard zero, ignoring differences in the least significant bits of

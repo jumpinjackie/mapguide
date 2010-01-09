@@ -327,7 +327,7 @@ MgStringCollection* MgPrintLayoutElementBase::GetReferences()
 {
     return SAFE_ADDREF(m_references.p);
 }
-    
+
 ///////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Sets the references.
@@ -336,7 +336,7 @@ void MgPrintLayoutElementBase::SetReferences(MgStringCollection* references)
 {
     m_references = SAFE_ADDREF(references);
 }
-    
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Gets the description.
@@ -345,7 +345,7 @@ STRING MgPrintLayoutElementBase::GetDescription()
 {
     return m_description;
 }
-    
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Gets the fully qualified feature class from which to retrieve data.
@@ -411,7 +411,7 @@ MgResourceIdentifier* MgPrintLayoutElementBase::GetStyle()
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Gets the property mappings between feature class properties and print layout 
+/// Gets the property mappings between feature class properties and print layout
 /// element properties.
 ///
 MgPropertyMappingCollection* MgPrintLayoutElementBase::GetPropertyMappings()
@@ -432,7 +432,7 @@ void MgPrintLayoutElementBase::PopulateFromResource(CREFSTRING elementXml)
     MdfParser::SAX2Parser parser;
     parser.ParseString(strXml.c_str(), strXml.length());
 
-    if (!parser.GetSucceeded()) 
+    if (!parser.GetSucceeded())
     {
         STRING errorMsg = parser.GetErrorMessage();
         MgStringCollection arguments;
@@ -469,7 +469,7 @@ void MgPrintLayoutElementBase::PopulateFromResource(MdfModel::PrintLayoutElement
     if (NULL != elementDef)
     {
         STRING resourceId;
-        
+
         m_type = elementDef->GetType();
         m_description = elementDef->GetDescription();
 
@@ -505,7 +505,7 @@ void MgPrintLayoutElementBase::PopulateFromResource(MdfModel::PrintLayoutElement
                     }
                 }
             }
-        }        
+        }
 
         StylizationConfiguration* stylizationConf = elementDef->GetStylizationConfiguration();
         if (NULL != stylizationConf)
@@ -519,7 +519,7 @@ void MgPrintLayoutElementBase::PopulateFromResource(MdfModel::PrintLayoutElement
             {
                 m_stylization = new MgResourceIdentifier(resourceId);
             }
-        }        
+        }
 
         resourceId = elementDef->GetResourceId();
         if (resourceId.empty())

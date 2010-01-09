@@ -895,7 +895,7 @@ function OnMouseDown(e)
     {
         HideHyperlinkTip();
 
-	// Ctrl + Click to open URL except MacOS, which using Command + Click
+        // Ctrl + Click to open URL except MacOS, which using Command + Click
         if(tool != 6 && ((e.ctrlKey && !macOS) || (e.metaKey && macOS )))
         {
             if(hlData.url != "")
@@ -927,10 +927,10 @@ function OnMouseDown(e)
                     StartToolFeedback(x, y, CIRCLE);
                     break;
                 case 6:
-		    if((e.ctrlKey && !macOS) || (e.metaKey && macOS))
-		    {
-			EndPolygonSelection(x, y);
-		    }
+                    if((e.ctrlKey && !macOS) || (e.metaKey && macOS))
+                    {
+                        EndPolygonSelection(x, y);
+                    }
                     else
                     {
                         if(polySel.xs.length == 0)
@@ -1877,7 +1877,7 @@ function OnSelectionOverlayImageLoaded(e)
 function OnSelectionOverlayImageLoadedError(e)
 {
     var text = this.req.responseText;
-    
+
     var startPos = text.indexOf("<h2>");
     startPos = startPos + 4;
     var endPos = text.indexOf("</h2>", startPos);
@@ -1928,7 +1928,7 @@ function RequestFailed(text)
     startPos = startPos + 4;
     var endPos = text.indexOf("</h2>", startPos);
     var message = text.substring(startPos, endPos);
-    
+
     alert(message);
 }
 

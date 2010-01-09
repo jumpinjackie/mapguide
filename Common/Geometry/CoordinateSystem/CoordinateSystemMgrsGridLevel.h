@@ -33,8 +33,8 @@ PUBLISHED_API:
     static const INT32 Mgrs1Km     =  5;
     static const INT32 Mgrs100m    =  6;
     static const INT32 Mgrs10m     =  7;
-    static const INT32 Mgrs1m      =  8;  
-    static const INT32 MgrsUnknown = 99;  
+    static const INT32 Mgrs1m      =  8;
+    static const INT32 MgrsUnknown = 99;
 };
 
 #endif //_MGCOORDINATESYSTEMMGRSGRIDLEVEL_H_

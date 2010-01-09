@@ -165,7 +165,7 @@ MgStringCollection* MgApplicationResourceContentManager::EnumerateAllReferences(
     // this XML follows the ResourceReferenceList-1.0.0.xsd schema
     MgResourceIdentifier currResource;
     XmlValue xmlValue;
-    
+
     while (results.next(xmlValue)) // TODO: Need an XML writer
     {
         const XmlDocument& xmlDoc = xmlValue.asDocument();

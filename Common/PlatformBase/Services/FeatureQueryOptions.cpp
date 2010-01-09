@@ -208,12 +208,12 @@ void MgFeatureQueryOptions::SetOrderingFilter(MgStringCollection* orderByPropert
 
 //////////////////////////////////////////////////////////////////////////////
 /// <summary>
-/// For queries that return a large number of objects 
+/// For queries that return a large number of objects
 /// some feature sources support improving performance by setting
 /// fetch size in order to reduce the number of database server
-/// round trips required to satisfy the selection criteria. 
+/// round trips required to satisfy the selection criteria.
 /// Providers that do not use a fetch size will ignore the fetch
-/// size parameter.  This does not affect the actual results of 
+/// size parameter.  This does not affect the actual results of
 /// queries as it is a performance tuning parameter.
 /// </summary>
 /// <param name="fetchSize">

@@ -130,7 +130,7 @@ protected:
     ///
     virtual void Dispose();
 
-    virtual MgPrintLayoutBase* RealizePrintLayout(MgResourceService* resourceService, 
+    virtual MgPrintLayoutBase* RealizePrintLayout(MgResourceService* resourceService,
         CREFSTRING resourceXml) = 0;
 
     virtual MgPrintLayoutElementBase* RealizePrintLayoutElement(MgResourceService* resourceService,

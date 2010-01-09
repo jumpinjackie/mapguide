@@ -54,7 +54,7 @@ PUBLISHED_API:
     /// /returns
     /// The MGRs representation for the given point.
     virtual STRING ConvertFromLonLat(double dLongitude, double dLatitude, INT32 nPrecision)=0;
-    
+
     ///////////////////////////////////////////////////////////////////////////
     /// /brief
     /// Converts a geographic coordinate to MGRS string form.

@@ -173,7 +173,7 @@ void MgPrintLayoutBase::Serialize(MgStream* stream)
     stream->WriteString(m_mediaName);
     stream->WriteString(m_deviceName);
     stream->WriteString(m_orientation);
-    
+
     stream->WriteObject(m_backgroundColor);
     stream->WriteObject(m_paperSize);
     stream->WriteObject(m_paperMargin);
@@ -222,7 +222,7 @@ void MgPrintLayoutBase::OnPrintLayoutElementRemoved(MgPrintLayoutElementBase* el
 ///
 void MgPrintLayoutBase::ForceRefresh(MgResourceService* resourceService)
 {
-    if (NULL != m_resId.p) 
+    if (NULL != m_resId.p)
     {
         this->Open(resourceService, m_resId);
     }
@@ -244,7 +244,7 @@ void MgPrintLayoutBase::PopulateFromResource(
     MdfParser::SAX2Parser parser;
     parser.ParseString(strXml.c_str(), strXml.length());
 
-    if (!parser.GetSucceeded()) 
+    if (!parser.GetSucceeded())
     {
         STRING errorMsg = parser.GetErrorMessage();
         MgStringCollection arguments;
@@ -336,7 +336,7 @@ void MgPrintLayoutBase::PopulateFromResource(
 
         Ptr<MgCoordinateXYZ> lowerLeft  = new MgCoordinateXYZ(minPt->GetX(), minPt->GetY(), minPt->GetZ());
         Ptr<MgCoordinateXYZ> upperRight = new MgCoordinateXYZ(maxPt->GetX(), maxPt->GetY(), maxPt->GetZ());
-    
+
         m_extent = new MgEnvelope(lowerLeft, upperRight);
     }
 }

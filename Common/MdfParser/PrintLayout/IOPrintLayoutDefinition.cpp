@@ -62,7 +62,7 @@ void IOPrintLayoutDefinition::StartElement(const wchar_t* name, HandlerStack* ha
     case ePrintLayoutDefinition:
         m_startElemName = name;
         break;
-    
+
     case eExtent:
         {
             IOExtent3D* IO = new IOExtent3D(m_layoutDef->GetExtent(), m_version);
@@ -70,7 +70,7 @@ void IOPrintLayoutDefinition::StartElement(const wchar_t* name, HandlerStack* ha
             IO->StartElement(name, handlerStack);
         }
         break;
-    
+
     case eElements:
         {
             IOPrintLayoutElementCollection* IO = new IOPrintLayoutElementCollection(m_layoutDef->GetElements(), m_version);
@@ -78,7 +78,7 @@ void IOPrintLayoutDefinition::StartElement(const wchar_t* name, HandlerStack* ha
             IO->StartElement(name, handlerStack);
         }
         break;
-    
+
     case ePaperSize:
         {
             IOSize2D* IO = new IOSize2D(m_layoutDef->GetPaperSize(), m_version);
@@ -86,7 +86,7 @@ void IOPrintLayoutDefinition::StartElement(const wchar_t* name, HandlerStack* ha
             IO->StartElement(name, handlerStack);
         }
         break;
-    
+
     case ePaperMargin:
         {
             IOThickness* IO = new IOThickness(m_layoutDef->GetPaperMargin(), m_version);
@@ -94,7 +94,7 @@ void IOPrintLayoutDefinition::StartElement(const wchar_t* name, HandlerStack* ha
             IO->StartElement(name, handlerStack);
         }
         break;
-    
+
     case eBackgroundColor:
         {
             IOColor* IO = new IOColor(m_layoutDef->GetBackgroundColor(), m_version);
@@ -102,7 +102,7 @@ void IOPrintLayoutDefinition::StartElement(const wchar_t* name, HandlerStack* ha
             IO->StartElement(name, handlerStack);
         }
         break;
-    
+
     case eExtendedData1:
         m_procExtData = true;
         break;

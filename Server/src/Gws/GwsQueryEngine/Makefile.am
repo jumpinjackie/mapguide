@@ -69,7 +69,6 @@ INCLUDES = \
   -I$(map_fdo_include)/ExpressionEngine \
   -I../Include \
   -I../GwsCommon/inc \
-  -I./inc 
+  -I./inc
 
 libMgGwsQueryEngine_la_LDFLAGS = -version-info 1:0:0
-

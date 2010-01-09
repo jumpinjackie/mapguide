@@ -197,7 +197,7 @@ String dataSource;
                     //data source already exist. clear its content
                     ClearDataSource(featureSrvc, dataSourceId, featureName);
                 }
-                
+
                 //Add the layer to the map, if it's not already in it
                 if(layer == null)
                 {
