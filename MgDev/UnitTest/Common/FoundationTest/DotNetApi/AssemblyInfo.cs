@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2009 by Autodesk, Inc.
+//  Copyright (C) 2004-2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -28,7 +28,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Open Source Geospatial Foundation")]
 [assembly: AssemblyProduct("MapGuide Open Source")]
-[assembly: AssemblyCopyright("Copyright (C) 2006-2009 by Autodesk, Inc.")]
+[assembly: AssemblyCopyright("Copyright (C) 2006-2010 by Autodesk, Inc.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
