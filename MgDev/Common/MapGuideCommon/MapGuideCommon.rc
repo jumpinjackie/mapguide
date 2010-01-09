@@ -67,7 +67,7 @@ BEGIN
             VALUE "FileDescription", "MapGuideCommon Dynamic Link Library"
             VALUE "FileVersion", "2, 2, 0, 0"
             VALUE "InternalName", "MgMapGuideCommon"
-            VALUE "LegalCopyright", "Copyright (C) 2006-2009 by Autodesk, Inc."
+            VALUE "LegalCopyright", "Copyright (C) 2006-2010 by Autodesk, Inc."
             VALUE "OriginalFilename", "MgMapGuideCommon.dll"
             VALUE "ProductName", "MapGuide Open Source"
             VALUE "ProductVersion", "2, 2, 0, 0"
