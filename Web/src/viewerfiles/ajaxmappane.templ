@@ -895,7 +895,7 @@ function OnMouseDown(e)
     {
         HideHyperlinkTip();
 
-        // Ctrl + Click to open URL except MacOS, which using Command + Click
+	// Ctrl + Click to open URL except MacOS, which using Command + Click
         if(tool != 6 && ((e.ctrlKey && !macOS) || (e.metaKey && macOS )))
         {
             if(hlData.url != "")
@@ -927,10 +927,10 @@ function OnMouseDown(e)
                     StartToolFeedback(x, y, CIRCLE);
                     break;
                 case 6:
-                    if((e.ctrlKey && !macOS) || (e.metaKey && macOS))
-                    {
-                        EndPolygonSelection(x, y);
-                    }
+		    if((e.ctrlKey && !macOS) || (e.metaKey && macOS))
+		    {
+			EndPolygonSelection(x, y);
+		    }
                     else
                     {
                         if(polySel.xs.length == 0)
@@ -1815,11 +1815,17 @@ function OnMapOverlayImageLoadedError(e)
     mapLoading = false;
 
     var text = this.req.responseText;
+    
+    var message = text;
 
     var startPos = text.indexOf("<h2>");
-    startPos = startPos + 4;
-    var endPos = text.indexOf("</h2>", startPos);
-    var message = text.substring(startPos, endPos);
+    if(startPos != -1)
+    {
+        startPos = startPos + 4;
+        var endPos = text.indexOf("</h2>", startPos);
+        if(endPos != -1)
+            message = text.substring(startPos, endPos);
+    }
 
     alert(message);
 
@@ -1877,13 +1883,20 @@ function OnSelectionOverlayImageLoaded(e)
 function OnSelectionOverlayImageLoadedError(e)
 {
     var text = this.req.responseText;
-
+    
+    var messageErr = "";
     var startPos = text.indexOf("<h2>");
-    startPos = startPos + 4;
-    var endPos = text.indexOf("</h2>", startPos);
-    var message = text.substring(startPos, endPos);
+    if(startPos != -1)
+    {
+        startPos = startPos + 4;
+        var endPos = text.indexOf("</h2>", startPos);
+        if(endPos != -1)
+            messageErr = text.substring(startPos, endPos);
+    }
+    if(messageErr == "")
+        messageErr = "No feature available.";
 
-    alert(message);
+    alert(messageErr);
 
     return false;
 }
@@ -1924,11 +1937,15 @@ function OnAlternateSelectionImageLoaded()
 
 function RequestFailed(text)
 {
+    var message = text;
     var startPos = text.indexOf("<h2>");
-    startPos = startPos + 4;
-    var endPos = text.indexOf("</h2>", startPos);
-    var message = text.substring(startPos, endPos);
-
+    if(startPos != -1)
+    {
+        startPos = startPos + 4;
+        var endPos = text.indexOf("</h2>", startPos);
+        if(endPos != -1)
+            message = text.substring(startPos, endPos);
+    }
     alert(message);
 }
 
@@ -2760,7 +2777,12 @@ function QueryFeatureInfo(geom, append, maxfeatures, which)
         ProcessFeatureInfo(selRequest.responseXML.documentElement, append, which);
     }
     else
-        RequestFailed("No response");
+    {
+        if(selRequest.responseText != "")
+            RequestFailed(selRequest.responseText);
+        else
+            RequestFailed("No response");
+    }
 }
 
 function CompareProperties(p1, p2)
