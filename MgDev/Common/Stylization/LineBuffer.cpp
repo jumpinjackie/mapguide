@@ -2037,7 +2037,7 @@ int LineBuffer::ClipLine(RS_Bounds& clipRect, double* line, double* RESTRICT ret
 ///////////////////////////////////////////////////////////////////////////////
 
 
-void LineBuffer::Centroid(GeomOperationType type, double* x, double* y, double* slope)
+void LineBuffer::Centroid(GeomOperationType type, double* x, double* y, double* slope) const
 {
     switch (type)
     {
@@ -2058,7 +2058,7 @@ void LineBuffer::Centroid(GeomOperationType type, double* x, double* y, double* 
 }
 
 
-void LineBuffer::PolygonCentroid(int cntr, double* cx, double* cy)
+void LineBuffer::PolygonCentroid(int cntr, double* cx, double* cy) const
 {
     // for polygons, we just consider the outer ring and ignore any holes
 
@@ -2105,7 +2105,7 @@ void LineBuffer::PolygonCentroid(int cntr, double* cx, double* cy)
 }
 
 
-void LineBuffer::PolygonCentroidTAW(int cntr, double* cx, double* cy)
+void LineBuffer::PolygonCentroidTAW(int cntr, double* cx, double* cy) const
 {
     double x1, x2, y1, y2, xt1(0.0), xt2(0.0), yt1(0.0), yt2(0.0);
     const int dpv = 3;  // triplets
@@ -2147,7 +2147,7 @@ void LineBuffer::PolygonCentroidTAW(int cntr, double* cx, double* cy)
 }
 
 
-void LineBuffer::PolygonCentroidBVM(int cntr, double* cx, double* cy)
+void LineBuffer::PolygonCentroidBVM(int cntr, double* cx, double* cy) const
 {
     const int dpv = 3;  // triplets
     double* pts = m_pts[contour_start_point(cntr)];
@@ -2169,7 +2169,7 @@ void LineBuffer::PolygonCentroidBVM(int cntr, double* cx, double* cy)
 }
 
 
-void LineBuffer::PolygonCentroidWMC(int cntr, double* cx, double* cy)
+void LineBuffer::PolygonCentroidWMC(int cntr, double* cx, double* cy) const
 {
     const int dpv = 3;  // triplets
     double* pts = m_pts[contour_start_point(cntr)];
@@ -2202,7 +2202,7 @@ void LineBuffer::PolygonCentroidWMC(int cntr, double* cx, double* cy)
 
 
 // computes the length of a polyline
-double LineBuffer::PolylineLength(int cntr)
+double LineBuffer::PolylineLength(int cntr) const
 {
     // pointer arithmetic looks ugly, and can be difficult to follow
     // but it produces tighter asm and this routine is called a lot
@@ -2230,7 +2230,7 @@ double LineBuffer::PolylineLength(int cntr)
 
 // computes the squared length of a polyline - fast for relative length testing
 // same algorithm as PolylineLength without sqrt call
-double LineBuffer::PolylineLengthSqr(int cntr)
+double LineBuffer::PolylineLengthSqr(int cntr) const
 {
     // pointer arithmetic looks ugly, and can be difficult to follow
     // but it produces tighter asm and this routine is called a lot
@@ -2256,7 +2256,7 @@ double LineBuffer::PolylineLengthSqr(int cntr)
 }
 
 
-double LineBuffer::PolygonArea(int cntr)
+double LineBuffer::PolygonArea(int cntr) const
 {
     // pointer arithmetic looks ugly, and can be difficult to follow
     // but it produces tighter asm and this routine is called a lot
@@ -2284,7 +2284,7 @@ double LineBuffer::PolygonArea(int cntr)
 }
 
 
-void LineBuffer::MultiPolygonCentroid(double* cx, double* cy)
+void LineBuffer::MultiPolygonCentroid(double* cx, double* cy) const
 {
     // Computes the centroid of a MultiPolygon.  This is defined to
     // be the centroid of the largest polygon (polygon whose outer
@@ -2319,7 +2319,7 @@ void LineBuffer::MultiPolygonCentroid(double* cx, double* cy)
 }
 
 
-void LineBuffer::MultiPolylineCentroid(double* cx, double* cy, double* slope)
+void LineBuffer::MultiPolylineCentroid(double* cx, double* cy, double* slope) const
 {
     // Computes the centroid of a MultiPolyline.  This is defined to
     // be the centroid of the longest polyline.
@@ -2355,7 +2355,7 @@ void LineBuffer::MultiPolylineCentroid(double* cx, double* cy, double* slope)
 }
 
 
-void LineBuffer::PolylineCentroid(int cntr, double* cx, double* cy, double* slope)
+void LineBuffer::PolylineCentroid(int cntr, double* cx, double* cy, double* slope) const
 {
     if ((m_cur_cntr < cntr) || (0 == m_cntrs[cntr]))
     {
@@ -2405,7 +2405,7 @@ void LineBuffer::PolylineCentroid(int cntr, double* cx, double* cy, double* slop
 }
 
 
-void LineBuffer::MultiPointCentroid(double* cx, double* cy)
+void LineBuffer::MultiPointCentroid(double* cx, double* cy) const
 {
     int len = point_count();
     if (len == 0)
@@ -2435,7 +2435,7 @@ void LineBuffer::MultiPointCentroid(double* cx, double* cy)
 
 
 // point in specific contour
-bool LineBuffer::PointInPolygon(int contour, double& x, double& y)
+bool LineBuffer::PointInPolygon(int contour, double& x, double& y) const
 {
     if (m_cur_cntr < contour)
     {
@@ -2500,7 +2500,7 @@ bool LineBuffer::PointInPolygon(int contour, double& x, double& y)
 
 
 // even-odd test for point containment
-bool LineBuffer::PointInPolygon(double& x, double& y)
+bool LineBuffer::PointInPolygon(double& x, double& y) const
 {
     bool ret = false;
 
