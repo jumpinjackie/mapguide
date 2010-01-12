@@ -136,9 +136,14 @@ public:
 
     // checks for a point in any contour
     STYLIZATION_API bool PointInPolygon(double& x, double& y) const;
+    STYLIZATION_API bool PointInPolygon(int cntr, double& x, double& y) const; // point in specific contour
 
     // sets the drawing scale (used for arc tessellation)
     STYLIZATION_API void SetDrawingScale(double drawingScale);
+
+    STYLIZATION_API double PolygonArea(int cntr) const;
+    STYLIZATION_API double PolylineLength(int cntr) const;
+    STYLIZATION_API double PolylineLengthSqr(int cntr) const;
 
     // the inline stuff
     inline unsigned char point_type(int n) const;
@@ -240,10 +245,7 @@ protected:
     void MultiPointCentroid(double* cx, double* cy) const;
     void MultiPolygonCentroid(double* cx, double* cy) const;
     void MultiPolylineCentroid(double* cx, double* cy, double* slope) const;
-    bool PointInPolygon(int cntr, double& x, double& y) const; // point in specific contour
-    double PolygonArea(int cntr) const;
-    double PolylineLength(int cntr) const;
-    double PolylineLengthSqr(int cntr) const;
+    
 
     void ResizePoints(int n);    // new size of array # of points
     void ResizeContours(int n);

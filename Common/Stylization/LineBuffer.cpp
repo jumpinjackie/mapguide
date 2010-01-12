@@ -1203,13 +1203,24 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
             int num_geoms = m_cur_geom + 1;
             if (is_multi)
             {
-                //write number of geometries
-                WRITE_INT(os, num_geoms);
+                if (m_geom_type == FdoGeometryType_MultiPoint)
+                {
+                    //write number of geometries -- for multipoint the
+                    //number of contours (i.e. MoveTos) is equal to the
+                    //number of point geometries in the multipoint
+                    WRITE_INT(os, m_num_geomcntrs[0]);
+                    num_geoms = m_num_geomcntrs[0];
+                }
+                else
+                {
+                    //write number of geometries
+                    WRITE_INT(os, num_geoms);
+                }
             }
 
             for (int q=0; q<num_geoms; ++q)
             {
-                // skip past geometry type of subgeometry
+                // write geometry type of subgeometry
                 // we know it is LineString or Polygon or Point respectively
                 if (is_multi)
                 {
@@ -1244,8 +1255,7 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
                 int contour_count = 1; //for linestrings
 
                 if (m_geom_type == FdoGeometryType_MultiPolygon ||
-                    m_geom_type == FdoGeometryType_Polygon ||
-                    m_geom_type == FdoGeometryType_MultiPoint)
+                    m_geom_type == FdoGeometryType_Polygon )
                 {
                     contour_count = m_num_geomcntrs[q];
                     WRITE_INT(os, contour_count);
