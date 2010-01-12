@@ -1244,7 +1244,8 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
                 int contour_count = 1; //for linestrings
 
                 if (m_geom_type == FdoGeometryType_MultiPolygon ||
-                    m_geom_type == FdoGeometryType_Polygon)
+                    m_geom_type == FdoGeometryType_Polygon ||
+                    m_geom_type == FdoGeometryType_MultiPoint)
                 {
                     contour_count = m_num_geomcntrs[q];
                     WRITE_INT(os, contour_count);
