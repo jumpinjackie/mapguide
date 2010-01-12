@@ -117,7 +117,7 @@ public:
     // the cool stuff
     STYLIZATION_API LineBuffer* Optimize(double drawingScale, LineBufferPool* lbp);
     STYLIZATION_API LineBuffer* Clip(RS_Bounds& b, GeomOperationType clipType, LineBufferPool* lbp);
-    STYLIZATION_API void Centroid(GeomOperationType type, double* x, double * y, double* slope);
+    STYLIZATION_API void Centroid(GeomOperationType type, double* x, double * y, double* slope) const;
 
     // clears the buffer for reuse
     STYLIZATION_API void Reset(FdoDimensionality dimensionality = FdoDimensionality_XY, bool bIgnoreZ = true);
@@ -135,7 +135,7 @@ public:
     STYLIZATION_API void NewGeometry();
 
     // checks for a point in any contour
-    STYLIZATION_API bool PointInPolygon(double& x, double& y);
+    STYLIZATION_API bool PointInPolygon(double& x, double& y) const;
 
     // sets the drawing scale (used for arc tessellation)
     STYLIZATION_API void SetDrawingScale(double drawingScale);
@@ -187,7 +187,7 @@ protected:
     inline void increment_contour();
     inline void increment_contour_pts();
 
-private:
+protected:
     unsigned char* m_types;     // segment types array (SegType)
     double (*m_pts)[3];         // raw point arry - triplets x, y, z
     int* m_cntrs;               // contour array
@@ -232,18 +232,18 @@ private:
     static void AppendLBClipVertex(RS_Bounds& clipRect, double x, double y, LineBuffer* lb, bool move);
     void FinalizeContour();
 
-    void PolygonCentroid(int cntr, double* cx, double* cy); // centroid of specific contour
-    void PolygonCentroidTAW(int cntr, double* cx, double* cy);
-    void PolygonCentroidBVM(int cntr, double* cx, double* cy);
-    void PolygonCentroidWMC(int cntr, double* cx, double* cy);
-    void PolylineCentroid(int cntr, double* cx, double* cy, double* slope);
-    void MultiPointCentroid(double* cx, double* cy);
-    void MultiPolygonCentroid(double* cx, double* cy);
-    void MultiPolylineCentroid(double* cx, double* cy, double* slope);
-    bool PointInPolygon(int cntr, double& x, double& y); // point in specific contour
-    double PolygonArea(int cntr);
-    double PolylineLength(int cntr);
-    double PolylineLengthSqr(int cntr);
+    void PolygonCentroid(int cntr, double* cx, double* cy) const; // centroid of specific contour
+    void PolygonCentroidTAW(int cntr, double* cx, double* cy) const;
+    void PolygonCentroidBVM(int cntr, double* cx, double* cy) const;
+    void PolygonCentroidWMC(int cntr, double* cx, double* cy) const;
+    void PolylineCentroid(int cntr, double* cx, double* cy, double* slope) const;
+    void MultiPointCentroid(double* cx, double* cy) const;
+    void MultiPolygonCentroid(double* cx, double* cy) const;
+    void MultiPolylineCentroid(double* cx, double* cy, double* slope) const;
+    bool PointInPolygon(int cntr, double& x, double& y) const; // point in specific contour
+    double PolygonArea(int cntr) const;
+    double PolylineLength(int cntr) const;
+    double PolylineLengthSqr(int cntr) const;
 
     void ResizePoints(int n);    // new size of array # of points
     void ResizeContours(int n);
