@@ -2681,6 +2681,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemMgrsGridSquarePosition.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CoordinateSystem\CoordinateSystemMgrsLetteringScheme.h"
 				>
 			</File>
@@ -3299,10 +3303,6 @@
 		</File>
 		<File
 			RelativePath=".\CoordinateIterator.h"
-			>
-		</File>
-		<File
-			RelativePath=".\CoordinateSystem\CoordinateSystemMgrsGridSquarePosition.h"
 			>
 		</File>
 		<File
