@@ -421,6 +421,19 @@ const STRING MgConfigProperties::ErrorLogPropertyParameters                     
 const STRING MgConfigProperties::DefaultErrorLogPropertyParameters                          = L"";
 
 // ******************************************************************
+// Performance Log Properties
+// ******************************************************************
+const STRING MgConfigProperties::PerformanceLogPropertiesSection                            = L"PerformanceLogProperties";
+const STRING MgConfigProperties::PerformanceLogPropertyEnabled                              = L"Enabled";
+const bool   MgConfigProperties::DefaultPerformanceLogPropertyEnabled                       = false;
+const STRING MgConfigProperties::PerformanceLogPropertyFilename                             = L"Filename";
+const STRING MgConfigProperties::DefaultPerformanceLogPropertyFilename                      = L"Performance.log";
+const STRING MgConfigProperties::PerformanceLogPropertyParameters                           = L"Parameters";
+const STRING MgConfigProperties::DefaultPerformanceLogPropertyParameters                    = L"";
+const STRING MgConfigProperties::PerformanceLogPropertyInterval                             = L"Interval";
+const INT32  MgConfigProperties::DefaultPerformanceLogPropertyInterval                      = 300;
+
+// ******************************************************************
 // Session Log Properties
 // ******************************************************************
 const STRING MgConfigProperties::SessionLogPropertiesSection                                = L"SessionLogProperties";
@@ -670,6 +683,15 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviErrorLogProperties[] =
     { MgConfigProperties::ErrorLogPropertyEnabled                                   , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
     { MgConfigProperties::ErrorLogPropertyFilename                                  , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
     { MgConfigProperties::ErrorLogPropertyParameters                                , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviPerformanceLogProperties[] =
+{
+    { MgConfigProperties::PerformanceLogPropertyEnabled                             , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::PerformanceLogPropertyFilename                            , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
+    { MgConfigProperties::PerformanceLogPropertyParameters                          , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
+    { MgConfigProperties::PerformanceLogPropertyInterval                            , MgPropertyType::Int32     , 0                                     , 60000                                 , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 

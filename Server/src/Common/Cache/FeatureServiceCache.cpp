@@ -22,7 +22,8 @@
 /// \brief
 /// Construct the object.
 ///
-MgFeatureServiceCache::MgFeatureServiceCache()
+MgFeatureServiceCache::MgFeatureServiceCache() :
+    m_nDroppedEntries(0)
 {
     Initialize(MgConfigProperties::DefaultFeatureServicePropertyCacheSize,
         MgConfigProperties::DefaultFeatureServicePropertyCacheTimeLimit);
@@ -216,6 +217,7 @@ void MgFeatureServiceCache::RemoveOldEntry()
     {
         SAFE_RELEASE(oldEntry->second);
         m_featureServiceCacheEntries.erase(oldEntry);
+        m_nDroppedEntries++;
     }
 }
 
@@ -509,4 +511,27 @@ MgPropertyDefinitionCollection* MgFeatureServiceCache::GetClassIdentityPropertie
     }
 
     return data.Detach();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Returns the size of the cache.
+///
+INT32 MgFeatureServiceCache::GetCacheSize()
+{
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, -1));
+
+    INT32 size = (INT32)m_featureServiceCacheEntries.size();
+    return size;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Returns the # of dropped cache entries.
+///
+INT32 MgFeatureServiceCache::GetDroppedEntriesCount()
+{
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, -1));
+
+    return m_nDroppedEntries;
 }

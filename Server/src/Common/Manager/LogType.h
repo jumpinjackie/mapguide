@@ -26,7 +26,8 @@ enum MgLogType
     mltAuthentication,
     mltError,
     mltSession,
-    mltTrace
+    mltTrace,
+    mltPerformance
 };
 
 #endif

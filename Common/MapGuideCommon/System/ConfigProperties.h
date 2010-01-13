@@ -717,6 +717,28 @@ EXTERNAL_API:
     static const STRING ErrorLogPropertyParameters;                 /// value("Parameters")
     static const STRING DefaultErrorLogPropertyParameters;          /// value("")
 
+    /// PERFORMANCE LOG PROPERTIES SECTION -------------------------------------------------------------------------------------
+
+    /// Performance Log properties.  This log records all server statistical information.
+    static const STRING PerformanceLogPropertiesSection;                  /// value("PerformanceLogProperties")
+
+    /// Enables/disables the Performance log
+    static const STRING PerformanceLogPropertyEnabled;                    /// value("Enabled")
+    static const bool DefaultPerformanceLogPropertyEnabled;               /// value(false)
+
+    /// The Performance log's file name.  NOTE: As with the Access Log, the special characters: %d,
+    /// %m, %y may be used in the filename.
+    static const STRING PerformanceLogPropertyFilename;                   /// value("Filename")
+    static const STRING DefaultPerformanceLogPropertyFilename;            /// value("Performance.log")
+
+    /// The Performance log's parameters
+    static const STRING PerformanceLogPropertyParameters;                 /// value("Parameters")
+    static const STRING DefaultPerformanceLogPropertyParameters;          /// value("")
+
+    /// Sets the time duration (in seconds) between logging performance statistics
+    static const STRING PerformanceLogPropertyInterval;                   /// value("Interval")
+    static const INT32 DefaultPerformanceLogPropertyInterval;             /// value(300)
+
     /// SESSION LOG PROPERTIES SECTION -----------------------------------------------------------------------------------
 
     /// Session Log properties.  This log records state information for each connection
@@ -854,6 +876,7 @@ public:
     static const MgConfigValidationInfo sm_cviAdminLogProperties[];
     static const MgConfigValidationInfo sm_cviAuthenticationLogProperties[];
     static const MgConfigValidationInfo sm_cviErrorLogProperties[];
+    static const MgConfigValidationInfo sm_cviPerformanceLogProperties[];
     static const MgConfigValidationInfo sm_cviSessionLogProperties[];
     static const MgConfigValidationInfo sm_cviTraceLogProperties[];
 

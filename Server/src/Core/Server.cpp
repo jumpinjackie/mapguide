@@ -168,6 +168,7 @@ int MgServer::fini()
     ACE_DEBUG ((LM_INFO, ACE_TEXT("(%t) %W\n"), message.c_str()));
     MG_LOG_SYSTEM_ENTRY(LM_INFO, message.c_str());
     MG_LOG_ERROR_ENTRY(message.c_str());
+    MG_LOG_PERFORMANCE_STRING_ENTRY(message.c_str());
     MG_LOG_TRACE_ENTRY(L"MgServer::fini() - End");
 
 #ifdef _WIN32
@@ -534,6 +535,7 @@ int MgServer::svc()
                             ACE_DEBUG ((LM_INFO, ACE_TEXT("(%t) %W\n"), message.c_str()));
                             MG_LOG_SYSTEM_ENTRY(LM_INFO, message.c_str());
                             MG_LOG_ERROR_ENTRY(message.c_str());
+                            MG_LOG_PERFORMANCE_STRING_ENTRY(message.c_str());
 
                             // Start up the thread pools
                             nResult = clientThreads.Activate();

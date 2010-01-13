@@ -56,6 +56,7 @@ include_SOURCES = \
   FeatureServiceCacheTimeLimitEventHandler.cpp \
   main.cpp \
   OperationThread.cpp \
+  PerformanceLoggingEventHandler.cpp \
   RepositoryCheckpointEventHandler.cpp \
   ResourceChangeEventHandler.cpp \
   Server.cpp \
@@ -76,6 +77,7 @@ noinst_HEADERS = $(include_SOURCES) \
   EventTimerManager.h \
   FeatureServiceCacheTimeLimitEventHandler.h \
   OperationThread.h \
+  PerformanceLoggingEventHandler.h \
   RepositoryCheckpointEventHandler.h \
   ResourceChangeEventHandler.h \
   Server.h \
