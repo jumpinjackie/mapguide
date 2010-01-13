@@ -20,7 +20,7 @@
 
 class MgTimedEventHandler;
 
-const int MG_MAX_EVENT_TIMERS = 8;
+const int MG_MAX_EVENT_TIMERS = 9;
 
 class MgEventTimer
 {
@@ -38,6 +38,7 @@ public:
         ResourceChange                      = 5,
         FeatureServiceCacheTimeLimit        = 6,
         DataTransactionTimeout              = 7,
+        PerformanceLogging                  = 8,
     };
 
 /// Constructors/Destructor

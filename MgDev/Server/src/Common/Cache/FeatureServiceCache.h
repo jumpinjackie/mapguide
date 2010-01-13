@@ -78,6 +78,9 @@ public:
     void SetClassIdentityProperties(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className, MgPropertyDefinitionCollection* idProperties);
     MgPropertyDefinitionCollection* GetClassIdentityProperties(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className);
 
+    INT32 GetCacheSize();
+    INT32 GetDroppedEntriesCount();
+
 protected:
 
     void Compact();
@@ -94,6 +97,7 @@ private:
 
     typedef std::map<STRING, MgFeatureServiceCacheEntry*> MgFeatureServiceCacheEntries;
     MgFeatureServiceCacheEntries m_featureServiceCacheEntries;
+    INT32 m_nDroppedEntries;
 };
 
 #endif

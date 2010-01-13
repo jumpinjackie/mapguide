@@ -36,6 +36,7 @@ const STRING MgLogManager::DefaultAccessLogFileName         = L"Access.log";
 const STRING MgLogManager::DefaultAdminLogFileName          = L"Admin.log";
 const STRING MgLogManager::DefaultAuthenticationLogFileName = L"Authentication.log";
 const STRING MgLogManager::DefaultErrorLogFileName          = L"Error.log";
+const STRING MgLogManager::DefaultPerformanceLogFileName    = L"Performance.log";
 const STRING MgLogManager::DefaultSessionLogFileName        = L"Session.log";
 const STRING MgLogManager::DefaultTraceLogFileName          = L"Trace.log";
 
@@ -55,6 +56,23 @@ const STRING MgLogManager::StackTraceParam      = L"STACKTRACE";
 const STRING MgLogManager::StartTimeParam       = L"STARTTIME";
 const STRING MgLogManager::UserParam            = L"USER";
 
+// Performance Log parameters
+const STRING MgLogManager::PerformanceAdminOperationsQueueCount  = L"ADMINOPQCOUNT";
+const STRING MgLogManager::PerformanceClientOperationsQueueCount = L"CLIENTOPQCOUNT";
+const STRING MgLogManager::PerformanceSiteOperationsQueueCount   = L"SITEOPQCOUNT";
+const STRING MgLogManager::PerformanceAverageOperationTime       = L"AVGOPTIME";
+const STRING MgLogManager::PerformanceCpuUtilization             = L"CPU";
+const STRING MgLogManager::PerformanceWorkingSet                 = L"WORKINGSET";
+const STRING MgLogManager::PerformanceVirtualMemory              = L"VIRTUALMEMORY";
+const STRING MgLogManager::PerformanceTotalOperationTime         = L"TOTALOPTIME";
+const STRING MgLogManager::PerformanceTotalActiveConnections     = L"TOTALACTIVECONNECTIONS";
+const STRING MgLogManager::PerformanceTotalConnections           = L"TOTALCONNECTIONS";
+const STRING MgLogManager::PerformanceTotalProcessedOperations   = L"TOTALPROCESSEDOP";
+const STRING MgLogManager::PerformanceTotalReceivedOperations    = L"TOTALRECEIVEDOP";
+const STRING MgLogManager::PerformanceUptime                     = L"UPTIME";
+const STRING MgLogManager::PerformanceCacheSize                  = L"CACHESIZE";
+const STRING MgLogManager::PerformanceCacheDroppedEntries        = L"CACHEDROPPEDENTRIES";
+
 // Header line prefix strings
 const STRING MgLogManager::HeaderLine1          = L"# Log Type:";
 const STRING MgLogManager::HeaderLine2          = L"# Log Parameters:";
@@ -64,6 +82,7 @@ const STRING MgLogManager::AccessLog            = L"Access Log";
 const STRING MgLogManager::AdminLog             = L"Admin Log";
 const STRING MgLogManager::AuthenticationLog    = L"Authentication Log";
 const STRING MgLogManager::ErrorLog             = L"Error Log";
+const STRING MgLogManager::PerformanceLog       = L"Performance Log";
 const STRING MgLogManager::SessionLog           = L"Session Log";
 const STRING MgLogManager::TraceLog             = L"Trace Log";
 const STRING MgLogManager::UnspecifiedLog       = L"Unspecified";
@@ -92,6 +111,9 @@ MgLogManager::MgLogManager() :
     m_bErrorLogEnabled(true),
     m_bErrorLogHeader(false),
     m_ErrorLogFileName(MgLogManager::DefaultErrorLogFileName),
+    m_bPerformanceLogEnabled(false),
+    m_bPerformanceLogHeader(false),
+    m_PerformanceLogFileName(MgLogManager::DefaultPerformanceLogFileName),
     m_bSessionLogEnabled(true),
     m_bSessionLogHeader(false),
     m_SessionLogFileName(MgLogManager::DefaultSessionLogFileName),
@@ -127,6 +149,11 @@ MgLogManager::~MgLogManager()
     if(m_errorLogStream.is_open())
     {
         m_errorLogStream.close();
+    }
+
+    if(m_performanceLogStream.is_open())
+    {
+        m_performanceLogStream.close();
     }
 
     if(m_sessionLogStream.is_open())
@@ -264,6 +291,14 @@ void MgLogManager::LoadConfigurationProperties()
     m_ErrorLogParameters = logParameters;
     m_ErrorLogFileName = ValidateLogFileName(logFileName);
     SetErrorLogEnabled(bLogEnabled);
+
+    // Performance Log
+    pConfiguration->GetBoolValue(MgConfigProperties::PerformanceLogPropertiesSection, MgConfigProperties::PerformanceLogPropertyEnabled, bLogEnabled, MgConfigProperties::DefaultPerformanceLogPropertyEnabled);
+    pConfiguration->GetStringValue(MgConfigProperties::PerformanceLogPropertiesSection, MgConfigProperties::PerformanceLogPropertyFilename, logFileName, MgConfigProperties::DefaultPerformanceLogPropertyFilename);
+    pConfiguration->GetStringValue(MgConfigProperties::PerformanceLogPropertiesSection, MgConfigProperties::PerformanceLogPropertyParameters, logParameters, MgConfigProperties::DefaultPerformanceLogPropertyParameters);
+    m_PerformanceLogParameters = logParameters;
+    m_PerformanceLogFileName = ValidateLogFileName(logFileName);
+    SetPerformanceLogEnabled(bLogEnabled);
 
     // Session Log
     pConfiguration->GetBoolValue(MgConfigProperties::SessionLogPropertiesSection, MgConfigProperties::SessionLogPropertyEnabled, bLogEnabled, MgConfigProperties::DefaultSessionLogPropertyEnabled);
@@ -998,6 +1033,177 @@ MgByteReader* MgLogManager::GetErrorLog(MgDateTime* fromDate, MgDateTime* toDate
     return byteReader.Detach();
 }
 
+void MgLogManager::SetPerformanceLogInfo(bool bEnabled, CREFSTRING filename, CREFSTRING parameters)
+{
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    // Disable existing log in use if there is one
+    DisableLog(mltError);
+
+    SetPerformanceLogParameters(parameters);
+    SetPerformanceLogFileName(filename);
+    SetPerformanceLogEnabled(bEnabled);
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetPerformanceLogInfo");
+}
+
+bool MgLogManager::IsPerformanceLogEnabled()
+{
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
+    return m_bPerformanceLogEnabled;
+}
+
+void MgLogManager::SetPerformanceLogEnabled(bool bEnabled)
+{
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    m_bPerformanceLogEnabled = bEnabled;
+    if(m_bPerformanceLogEnabled)
+    {
+        ValidateLogHeaders(mltPerformance);
+        EnableLog(mltPerformance);
+    }
+    else
+    {
+        DisableLog(mltPerformance);
+    }
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetPerformanceLogEnabled")
+}
+
+STRING MgLogManager::GetPerformanceLogFileName()
+{
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
+
+    return m_PerformanceLogFileName;
+}
+
+void MgLogManager::SetPerformanceLogFileName(CREFSTRING filename)
+{
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    DisableLog(mltPerformance);
+    m_PerformanceLogFileName = ValidateLogFileName(filename);
+    EnableLog(mltPerformance);
+}
+
+STRING MgLogManager::GetPerformanceLogParameters()
+{
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
+
+    return m_PerformanceLogParameters;
+}
+
+void MgLogManager::SetPerformanceLogParameters(CREFSTRING parameters)
+{
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    if (0 != parameters.compare(m_PerformanceLogParameters))
+    {
+        ArchiveLog(mltPerformance);
+    }
+    m_PerformanceLogParameters = parameters;
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetPerformanceLogParameters")
+}
+
+bool MgLogManager::ClearPerformanceLog()
+{
+    bool bResult = false;
+
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltPerformance);
+
+    // Get the performance log filename and path
+    STRING filename = BuildFileName(m_PerformanceLogFileName);
+    bResult = RemoveLogFile(filename);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltPerformance);
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.ClearPerformanceLog")
+
+    return bResult;
+}
+
+MgByteReader* MgLogManager::GetPerformanceLog()
+{
+    Ptr<MgByteReader> byteReader;
+
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltPerformance);
+
+    // Get the performance log filename and path
+    STRING filename = BuildFileName(m_PerformanceLogFileName);
+    byteReader = GetLogContents(filename);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltPerformance);
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.GetPerformanceLog")
+
+    return byteReader.Detach();
+}
+
+MgByteReader* MgLogManager::GetPerformanceLog(INT32 numEntries)
+{
+    Ptr<MgByteReader> byteReader;
+
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltPerformance);
+
+    // Get the performance log filename and path
+    STRING filename = BuildFileName(m_PerformanceLogFileName);
+    byteReader = GetLogContents(filename, numEntries);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltPerformance);
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.GetPerformanceLog")
+
+    return byteReader.Detach();
+}
+
+MgByteReader* MgLogManager::GetPerformanceLog(MgDateTime* fromDate, MgDateTime* toDate)
+{
+    Ptr<MgByteReader> byteReader;
+
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    // Disable the log which closes the log for us
+    DisableLog(mltPerformance);
+
+    byteReader = GetLogContents(mltPerformance, fromDate, toDate);
+
+    // Enable the log which opens the log for us
+    EnableLog(mltPerformance);
+
+    MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.GetPerformanceLog")
+
+    return byteReader.Detach();
+}
+
 void MgLogManager::SetSessionLogInfo(bool bEnabled, CREFSTRING filename, CREFSTRING parameters)
 {
     MG_LOGMANAGER_TRY()
@@ -1681,6 +1887,171 @@ void MgLogManager::LogErrorEntry(CREFSTRING entry, CREFSTRING client, CREFSTRING
     QueueLogEntry(mltError, logEntry, LM_ERROR);
 }
 
+void MgLogManager::LogPerformanceEntry(MgPropertyCollection* entry)
+{
+    // Message to be entered into the log
+    STRING logEntry;
+
+    MG_LOGMANAGER_TRY()
+
+    // Parse parameter string into an MgStringCollection
+    Ptr<MgStringCollection> paramList = MgStringCollection::ParseCollection(
+        GetPerformanceLogParameters().c_str(), L",");
+
+    // Go through parameter list and add the information appropriately
+    if (paramList != NULL)
+    {
+        std::string tmpStr;
+        Ptr<MgStringProperty> strProp;
+        Ptr<MgInt64Property> int64Prop;
+        Ptr<MgInt32Property> int32Prop;
+        Ptr<MgBooleanProperty> boolProp;
+        INT32 numParams = paramList->GetCount();
+        STRING param;
+
+        for (INT32 i = 0; i < numParams; ++i)
+        {
+            param = paramList->GetItem(i);
+
+            if (MgLogManager::PerformanceAdminOperationsQueueCount == param)
+            {
+                AddDelimiter(logEntry);
+
+                int32Prop = (MgInt32Property*)entry->GetItem(MgServerInformationProperties::AdminOperationsQueueCount);
+                MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
+                logEntry += MgUtil::MultiByteToWideChar(tmpStr);
+            }
+            else if (MgLogManager::PerformanceClientOperationsQueueCount == param)
+            {
+                AddDelimiter(logEntry);
+
+                int32Prop = (MgInt32Property*)entry->GetItem(MgServerInformationProperties::ClientOperationsQueueCount);
+                MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
+                logEntry += MgUtil::MultiByteToWideChar(tmpStr);
+            }
+            else if (MgLogManager::PerformanceSiteOperationsQueueCount == param)
+            {
+                AddDelimiter(logEntry);
+
+                int32Prop = (MgInt32Property*)entry->GetItem(MgServerInformationProperties::SiteOperationsQueueCount);
+                MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
+                logEntry += MgUtil::MultiByteToWideChar(tmpStr);
+            }
+            else if (MgLogManager::PerformanceAverageOperationTime == param)
+            {
+                AddDelimiter(logEntry);
+
+                int32Prop = (MgInt32Property*)entry->GetItem(MgServerInformationProperties::AverageOperationTime);
+                MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
+                logEntry += MgUtil::MultiByteToWideChar(tmpStr);
+            }
+            else if (MgLogManager::PerformanceCpuUtilization == param)
+            {
+                AddDelimiter(logEntry);
+
+                int32Prop = (MgInt32Property*)entry->GetItem(MgServerInformationProperties::CpuUtilization);
+                MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
+                logEntry += MgUtil::MultiByteToWideChar(tmpStr);
+            }
+            else if (MgLogManager::PerformanceWorkingSet == param)
+            {
+                AddDelimiter(logEntry);
+
+                int64Prop = (MgInt64Property*)entry->GetItem(MgServerInformationProperties::WorkingSet);
+                MgUtil::Int64ToString(int64Prop->GetValue(), tmpStr);
+                logEntry += MgUtil::MultiByteToWideChar(tmpStr);
+            }
+            else if (MgLogManager::PerformanceVirtualMemory == param)
+            {
+                AddDelimiter(logEntry);
+
+                int64Prop = (MgInt64Property*)entry->GetItem(MgServerInformationProperties::VirtualMemory);
+                MgUtil::Int64ToString(int64Prop->GetValue(), tmpStr);
+                logEntry += MgUtil::MultiByteToWideChar(tmpStr);
+            }
+            else if (MgLogManager::PerformanceTotalOperationTime == param)
+            {
+                AddDelimiter(logEntry);
+
+                int32Prop = (MgInt32Property*)entry->GetItem(MgServerInformationProperties::TotalOperationTime);
+                MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
+                logEntry += MgUtil::MultiByteToWideChar(tmpStr);
+            }
+            else if (MgLogManager::PerformanceTotalActiveConnections == param)
+            {
+                AddDelimiter(logEntry);
+
+                int32Prop = (MgInt32Property*)entry->GetItem(MgServerInformationProperties::TotalActiveConnections);
+                MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
+                logEntry += MgUtil::MultiByteToWideChar(tmpStr);
+            }
+            else if (MgLogManager::PerformanceTotalConnections == param)
+            {
+                AddDelimiter(logEntry);
+
+                int32Prop = (MgInt32Property*)entry->GetItem(MgServerInformationProperties::TotalConnections);
+                MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
+                logEntry += MgUtil::MultiByteToWideChar(tmpStr);
+            }
+            else if (MgLogManager::PerformanceTotalProcessedOperations == param)
+            {
+                AddDelimiter(logEntry);
+
+                int32Prop = (MgInt32Property*)entry->GetItem(MgServerInformationProperties::TotalProcessedOperations);
+                MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
+                logEntry += MgUtil::MultiByteToWideChar(tmpStr);
+            }
+            else if (MgLogManager::PerformanceTotalReceivedOperations == param)
+            {
+                AddDelimiter(logEntry);
+
+                int32Prop = (MgInt32Property*)entry->GetItem(MgServerInformationProperties::TotalReceivedOperations);
+                MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
+                logEntry += MgUtil::MultiByteToWideChar(tmpStr);
+            }
+            else if (MgLogManager::PerformanceUptime == param)
+            {
+                AddDelimiter(logEntry);
+
+                int32Prop = (MgInt32Property*)entry->GetItem(MgServerInformationProperties::Uptime);
+                MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
+                logEntry += MgUtil::MultiByteToWideChar(tmpStr);
+            }
+            else if (MgLogManager::PerformanceCacheSize == param)
+            {
+                AddDelimiter(logEntry);
+
+                int32Prop = (MgInt32Property*)entry->GetItem(MgServerInformationProperties::CacheSize);
+                MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
+                logEntry += MgUtil::MultiByteToWideChar(tmpStr);
+            }
+            else if (MgLogManager::PerformanceCacheDroppedEntries == param)
+            {
+                AddDelimiter(logEntry);
+
+                int32Prop = (MgInt32Property*)entry->GetItem(MgServerInformationProperties::CacheDroppedEntries);
+                MgUtil::Int32ToString(int32Prop->GetValue(), tmpStr);
+                logEntry += MgUtil::MultiByteToWideChar(tmpStr);
+            }
+        }
+    }
+
+    MG_LOGMANAGER_CATCH(L"MgLogManager.LogPerformanceEntry")
+
+    if (mgException != NULL)
+    {
+        // Use default message with just the given info.
+        logEntry = mgException->GetMessage();
+    }
+
+    QueueLogEntry(mltPerformance, logEntry, LM_INFO);
+}
+
+void MgLogManager::LogPerformanceEntry(CREFSTRING entry)
+{
+    QueueLogEntry(mltPerformance, entry, LM_INFO);
+}
+
 void MgLogManager::LogSessionEntry(const MgSessionInfo& sessionInfo)
 {
     // Message to be entered into the log
@@ -2133,6 +2504,14 @@ void MgLogManager::WriteLogMessage(enum MgLogType logType, CREFSTRING message, A
             pLogStream = &m_errorLogStream;
             bEnabled = m_bErrorLogEnabled;
             break;
+        case mltPerformance:
+            // Get the performance log filename and path
+            filename = BuildFileName(m_PerformanceLogFileName);
+            logTypeName = MgLogManager::PerformanceLog;
+            logParameters = GetPerformanceLogParameters();
+            pLogStream = &m_performanceLogStream;
+            bEnabled = m_bPerformanceLogEnabled;
+            break;
         case mltSession:
             // Get the session log filename and path
             filename = BuildFileName(m_SessionLogFileName);
@@ -2298,6 +2677,9 @@ MgByteReader* MgLogManager::GetLogHeader(enum MgLogType logType)
         break;
     case mltError:
         filename = BuildFileName(m_ErrorLogFileName);
+        break;
+    case mltPerformance:
+        filename = BuildFileName(m_PerformanceLogFileName);
         break;
     case mltSession:
         filename = BuildFileName(m_SessionLogFileName);
@@ -2818,6 +3200,9 @@ MgStringCollection* MgLogManager::DeterminePotentialFileNames(enum MgLogType log
         // Get the error log filename and path
         rawFilename = m_ErrorLogFileName;
         break;
+    case mltPerformance:
+        rawFilename = m_PerformanceLogFileName;
+        break;
     case mltSession:
         rawFilename = m_SessionLogFileName;
         break;
@@ -3320,6 +3705,10 @@ void MgLogManager::ArchiveLog(enum MgLogType logType)
             logFileName = BuildFileName(m_ErrorLogFileName);
             pLogStream = &m_errorLogStream;
             break;
+        case mltPerformance:
+            logFileName = BuildFileName(m_PerformanceLogFileName);
+            pLogStream = &m_performanceLogStream;
+            break;
         case mltSession:
             logFileName = BuildFileName(m_SessionLogFileName);
             pLogStream = &m_sessionLogStream;
@@ -3443,6 +3832,13 @@ void MgLogManager::ValidateLogHeaders(enum MgLogType logType)
                 ArchiveLog(logType);
             }
             break;
+        case mltPerformance:
+            // Check Performance Log
+            if (!ValidatePerformanceLogHeader())
+            {
+                ArchiveLog(logType);
+            }
+            break;
         case mltSession:
             // Check Session Log
             if (!ValidateSessionLogHeader())
@@ -3556,6 +3952,27 @@ bool MgLogManager::ValidateErrorLogHeader()
     return bValid;
 }
 
+bool MgLogManager::ValidatePerformanceLogHeader()
+{
+    bool bValid = false;
+
+    MG_LOGMANAGER_TRY()
+
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
+
+    // Compare the log file parameters list with the current logging parameters
+    STRING logFileParameters = ReadParametersFromLogFile(mltPerformance);
+    STRING currentLogParams = GetPerformanceLogParameters();
+    if (0 == logFileParameters.compare(currentLogParams))
+    {
+        bValid = true;
+    }
+
+    MG_LOGMANAGER_CATCH(L"MgLogManager.ValidatePerformanceLogHeader")
+
+    return bValid;
+}
+
 bool MgLogManager::ValidateSessionLogHeader()
 {
     bool bValid = false;
@@ -3658,6 +4075,9 @@ STRING MgLogManager::ReadParametersFromLogFile(enum MgLogType logType)
         case mltError:
             logParameters = m_ErrorLogParameters;
             break;
+        case mltPerformance:
+            logParameters = m_PerformanceLogParameters;
+            break;
         case mltSession:
             logParameters = m_SessionLogParameters;
             break;
@@ -3745,6 +4165,10 @@ STRING MgLogManager::DetermineLogFileStatus(CREFSTRING logFilename, CREFSTRING l
     else if (0 == logFileType.compare(MgLogManager::ErrorLog))
     {
         currentLogName = GetErrorLogFileName();
+    }
+    else if (0 == logFileType.compare(MgLogManager::PerformanceLog))
+    {
+        currentLogName = GetPerformanceLogFileName();
     }
     else if (0 == logFileType.compare(MgLogManager::SessionLog))
     {
@@ -3876,6 +4300,10 @@ bool MgLogManager::CheckArchiveFrequency(enum MgLogType logType, CREFSTRING logF
         rawFilename = m_ErrorLogFileName;
         logTimestamp = m_cacheErrorLogTimestamp;
         break;
+    case mltPerformance:
+        rawFilename = m_PerformanceLogFileName;
+        logTimestamp = m_cachePerformanceLogTimestamp;
+        break;
     case mltSession:
         rawFilename = m_SessionLogFileName;
         logTimestamp = m_cacheSessionLogTimestamp;
@@ -3982,6 +4410,11 @@ bool MgLogManager::IsLogFileInUse(CREFSTRING filename, enum MgLogType& logType)
         // Match
         logType = mltError;
     }
+    else if(filename.compare(m_PerformanceLogFileName) == 0)
+    {
+        // Match
+        logType = mltPerformance;
+    }
     else if(filename.compare(m_SessionLogFileName) == 0)
     {
         // Match
@@ -4021,6 +4454,9 @@ bool MgLogManager::IsLogInUse(enum MgLogType& logType)
             break;
         case mltError:
             bResult = m_bErrorLogEnabled;
+            break;
+        case mltPerformance:
+            bResult = m_bPerformanceLogEnabled;
             break;
         case mltSession:
             bResult = m_bSessionLogEnabled;
@@ -4067,6 +4503,13 @@ void MgLogManager::DisableLog(enum MgLogType logType)
             {
                 // Close the file
                 m_errorLogStream.close();
+            }
+            break;
+        case mltPerformance:
+            if(m_performanceLogStream.is_open())
+            {
+                // Close the file
+                m_performanceLogStream.close();
             }
             break;
         case mltSession:
@@ -4126,6 +4569,14 @@ void MgLogManager::EnableLog(enum MgLogType logType)
                 m_errorLogStream.open(MgUtil::WideCharToMultiByte(filename).c_str(), ios::out | ios::app | ios::binary);
             }
             break;
+        case mltPerformance:
+            if(!m_performanceLogStream.is_open())
+            {
+                // Open the file
+                STRING filename = BuildFileName(m_PerformanceLogFileName);
+                m_performanceLogStream.open(MgUtil::WideCharToMultiByte(filename).c_str(), ios::out | ios::app | ios::binary);
+            }
+            break;
         case mltSession:
             if(!m_sessionLogStream.is_open())
             {
@@ -4167,6 +4618,9 @@ void MgLogManager::SetLogHasHeader(enum MgLogType logType, bool bHeader)
         case mltError:
             m_bErrorLogHeader = bHeader;
             break;
+        case mltPerformance:
+            m_bPerformanceLogHeader = bHeader;
+            break;
         case mltSession:
             m_bSessionLogHeader = bHeader;
             break;
@@ -4197,6 +4651,9 @@ bool MgLogManager::LogHasHeader(enum MgLogType logType)
             break;
         case mltError:
             bResult = m_bErrorLogHeader;
+            break;
+        case mltPerformance:
+            bResult = m_bPerformanceLogHeader;
             break;
         case mltSession:
             bResult = m_bSessionLogHeader;
@@ -4250,6 +4707,16 @@ void MgLogManager::UpdateLogFilesTimestampCache()
         if (MgFileUtil::PathnameExists(errorLogFileName))
         {
             m_cacheErrorLogTimestamp = MgFileUtil::GetFileModificationTime(errorLogFileName);
+        }
+    }
+
+    // mltPerformance:
+    if (IsPerformanceLogEnabled())
+    {
+        STRING performanceLogFileName = BuildFileName(m_PerformanceLogFileName);
+        if (MgFileUtil::PathnameExists(performanceLogFileName))
+        {
+            m_cachePerformanceLogTimestamp = MgFileUtil::GetFileModificationTime(performanceLogFileName);
         }
     }
 

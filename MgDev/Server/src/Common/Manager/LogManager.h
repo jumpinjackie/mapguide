@@ -129,6 +129,24 @@ class MgLogThread;
     } \
   } while (0)
 
+#define MG_LOG_PERFORMANCE_PROPERTIES_ENTRY(Entry) \
+  do { \
+    MgLogManager* pMan = MgLogManager::GetInstance(); \
+    if(pMan->IsPerformanceLogEnabled()) \
+    { \
+        pMan->LogPerformanceEntry(Entry); \
+    } \
+  } while (0)
+
+#define MG_LOG_PERFORMANCE_STRING_ENTRY(Entry) \
+  do { \
+    MgLogManager* pMan = MgLogManager::GetInstance(); \
+    if(pMan->IsPerformanceLogEnabled()) \
+    { \
+        pMan->LogPerformanceEntry(Entry); \
+    } \
+  } while (0)
+
 #define MG_LOG_OPERATION_MESSAGE(Operation) \
     wchar_t bufferConversion[255]; \
     bufferConversion[0] = 0; \
@@ -288,6 +306,8 @@ public:
     void LogAdminEntry(CREFSTRING opId, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName);
     void LogAuthenticationEntry(CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName);
     void LogErrorEntry(CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName, CREFSTRING stackTrace, CREFSTRING type);
+    void LogPerformanceEntry(MgPropertyCollection* entry);
+    void LogPerformanceEntry(CREFSTRING entry);
     void LogSessionEntry(const MgSessionInfo& sessionInfo);
     void LogTraceEntry(CREFSTRING entry, CREFSTRING client, CREFSTRING clientIp, CREFSTRING userName, CREFSTRING stackTrace = L"", CREFSTRING type = L"");
     void LogSystemErrorEntry(MgException* except);
@@ -344,6 +364,19 @@ public:
     MgByteReader* GetErrorLog(INT32 numEntries);
     MgByteReader* GetErrorLog(MgDateTime* fromDate, MgDateTime* toDate);
 
+    // Performance log methods
+    void SetPerformanceLogInfo(bool bEnabled, CREFSTRING filename, CREFSTRING parameters);
+    bool IsPerformanceLogEnabled();
+    void SetPerformanceLogEnabled(bool bEnabled);
+    STRING GetPerformanceLogFileName();
+    void SetPerformanceLogFileName(CREFSTRING filename);
+    STRING GetPerformanceLogParameters();
+    void SetPerformanceLogParameters(CREFSTRING parameters);
+    bool ClearPerformanceLog();
+    MgByteReader* GetPerformanceLog();
+    MgByteReader* GetPerformanceLog(INT32 numEntries);
+    MgByteReader* GetPerformanceLog(MgDateTime* fromDate, MgDateTime* toDate);
+
     // Session log methods
     void SetSessionLogInfo(bool bEnabled, CREFSTRING filename, CREFSTRING parameters);
     bool IsSessionLogEnabled();
@@ -380,6 +413,7 @@ public:
     static const STRING DefaultAdminLogFileName;
     static const STRING DefaultAuthenticationLogFileName;
     static const STRING DefaultErrorLogFileName;
+    static const STRING DefaultPerformanceLogFileName;
     static const STRING DefaultSessionLogFileName;
     static const STRING DefaultTraceLogFileName;
 
@@ -415,6 +449,23 @@ private:
     static const STRING StartTimeParam;
     static const STRING UserParam;
 
+    // Strings that represent the parameters that are used for the performance log
+    static const STRING PerformanceAdminOperationsQueueCount;
+    static const STRING PerformanceClientOperationsQueueCount;
+    static const STRING PerformanceSiteOperationsQueueCount;
+    static const STRING PerformanceAverageOperationTime;
+    static const STRING PerformanceCpuUtilization;
+    static const STRING PerformanceWorkingSet;
+    static const STRING PerformanceVirtualMemory;
+    static const STRING PerformanceTotalOperationTime;
+    static const STRING PerformanceTotalActiveConnections;
+    static const STRING PerformanceTotalConnections;
+    static const STRING PerformanceTotalProcessedOperations;
+    static const STRING PerformanceTotalReceivedOperations;
+    static const STRING PerformanceUptime;
+    static const STRING PerformanceCacheSize;
+    static const STRING PerformanceCacheDroppedEntries;
+
     // Strings that represent the prefix of the header lines in the log files
     static const STRING HeaderLine1;
     static const STRING HeaderLine2;
@@ -424,6 +475,7 @@ private:
     static const STRING AdminLog;
     static const STRING AuthenticationLog;
     static const STRING ErrorLog;
+    static const STRING PerformanceLog;
     static const STRING SessionLog;
     static const STRING TraceLog;
     static const STRING UnspecifiedLog;
@@ -443,6 +495,7 @@ private:
     std::ofstream m_adminLogStream;
     std::ofstream m_authenticationLogStream;
     std::ofstream m_errorLogStream;
+    std::ofstream m_performanceLogStream;
     std::ofstream m_sessionLogStream;
     std::ofstream m_traceLogStream;
     ACE_OSTREAM_TYPE* m_outputStream;
@@ -508,6 +561,7 @@ private:
     bool ValidateAdminLogHeader();
     bool ValidateAuthenticationLogHeader();
     bool ValidateErrorLogHeader();
+    bool ValidatePerformanceLogHeader();
     bool ValidateSessionLogHeader();
     bool ValidateTraceLogHeader();
 
@@ -566,6 +620,12 @@ private:
     STRING m_ErrorLogFileName;
     STRING m_ErrorLogParameters;
 
+    // Performance Log
+    bool m_bPerformanceLogEnabled;
+    bool m_bPerformanceLogHeader;
+    STRING m_PerformanceLogFileName;
+    STRING m_PerformanceLogParameters;
+
     // Session Log
     bool m_bSessionLogEnabled;
     bool m_bSessionLogHeader;
@@ -587,6 +647,7 @@ private:
     MgDateTime m_cacheAdminLogTimestamp;
     MgDateTime m_cacheAuthenticationLogTimestamp;
     MgDateTime m_cacheErrorLogTimestamp;
+    MgDateTime m_cachePerformanceLogTimestamp;
     MgDateTime m_cacheSessionLogTimestamp;
     MgDateTime m_cacheTraceLogTimestamp;
 };

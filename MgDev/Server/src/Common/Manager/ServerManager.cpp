@@ -570,6 +570,21 @@ MgPropertyCollection* MgServerManager::GetInformationProperties()
     }
 #endif
 
+    // Add cache information
+    MgCacheManager* cacheManager = MgCacheManager::GetInstance();
+    if(cacheManager)
+    {
+        MgFeatureServiceCache* fsCache = cacheManager->GetFeatureServiceCache();
+        INT32 fsCacheSize = fsCache->GetCacheSize();
+        INT32 fsCacheDroppedEntries = fsCache->GetDroppedEntriesCount();
+
+        pProperty = new MgInt32Property(MgServerInformationProperties::CacheSize, fsCacheSize);
+        pProperties->Add(pProperty);
+
+        pProperty = new MgInt32Property(MgServerInformationProperties::CacheDroppedEntries, fsCacheDroppedEntries);
+        pProperties->Add(pProperty);
+    }
+
     MG_CATCH_AND_THROW(L"MgServerManager.GetInformationProperties")
 
     return pProperties.Detach();

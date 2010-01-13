@@ -164,7 +164,7 @@ void MgConnection::End()
     double connectionTime = GetConnectionTime();
 
     // Log connection info (to the screen)
-    ACE_DEBUG ((LM_DEBUG, "Ended connection.  Operations processed: %d/%d, Connect Time: %f msec\n",
+    ACE_DEBUG ((LM_DEBUG, "Ended connection.  Ops processed: %d/%d, Connect Time: %f msec\n",
         m_nProcessedOperations, m_nReceivedOperations, connectionTime));
 }
 

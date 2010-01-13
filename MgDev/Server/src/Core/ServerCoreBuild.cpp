@@ -24,6 +24,7 @@
 #include "FeatureServiceCacheTimeLimitEventHandler.cpp"
 #include "main.cpp"
 #include "OperationThread.cpp"
+#include "PerformanceLoggingEventHandler.cpp"
 #include "RepositoryCheckpointEventHandler.cpp"
 #include "ResourceChangeEventHandler.cpp"
 #include "Server.cpp"
