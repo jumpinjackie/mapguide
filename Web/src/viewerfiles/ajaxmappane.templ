@@ -3704,8 +3704,7 @@ function HandleMouseWheelEvent(delta, event)
     if(wheelZoomDelta == null)
     {
         //Determine the cursor position
-        wheelZoomCursor = new Point(msie ? event.clientX - mapPosX : event.screenX - mapPosX,
-            msie ? event.clientY : event.screenY);
+        wheelZoomCursor = new Point(event.clientX - mapPosX, event.clientY);
         if(wheelZoomCursor.X < 0)
         {
             //Do not process wheel events in the property or legend area
