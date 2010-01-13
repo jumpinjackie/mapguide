@@ -2,7 +2,7 @@
 
 function encodeComponent(str) {
     op = /\(/g; cp = /\)/g;
-    return encodeURIComponent(str).replace(op, "%%28").replace(cp, "%%29");
+    return encodeURIComponent(str).replace(op, "%28").replace(cp, "%29");
 }
 
 function ParseLocalizedFloat(floatString) {
