@@ -1,5 +1,4 @@
 //
-//
 //  Copyright (C) 2004-2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
@@ -15,6 +14,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
+
 #include "stdafx.h"
 #include "FdoFilterCollection.h"
 
@@ -22,4 +22,3 @@
 {
     return new MgFdoFilterCollection();
 }
-
