@@ -21,6 +21,7 @@
 #include "Envelope.h"
 #include "ServiceManager.h"
 #include "ServerFeatureUtil.h"
+
 //////////////////////////////////////////////////////////////////
 ///<summary>
 /// Construct a MgServerFeatureReader object from a byte source
@@ -1232,4 +1233,3 @@ bool MgServerFeatureReader::IsNull(INT32 index)
     STRING propertyName = GetPropertyName(index);
     return GetRaster(propertyName);
 }
-

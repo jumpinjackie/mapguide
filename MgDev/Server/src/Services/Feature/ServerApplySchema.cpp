@@ -105,5 +105,3 @@ void MgServerApplySchema::ApplySchema(MgResourceIdentifier* resource,
 
     MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgServerDescribeSchema.ApplySchema")
 }
-
-

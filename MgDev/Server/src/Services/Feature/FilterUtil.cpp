@@ -921,4 +921,3 @@ STRING MgOgcFilterUtil::xform_coords(CREFSTRING coords)
 
     return ret;
 }
-

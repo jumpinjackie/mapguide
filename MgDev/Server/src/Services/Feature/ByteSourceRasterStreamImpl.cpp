@@ -20,6 +20,7 @@
 #include "MapGuideCommon.h"
 #include "ServerFeatureServiceDefs.h"
 #include "ByteSourceRasterStreamImpl.h"
+
 //////////////////////////////////////////////////////////////////
 ///<summary>
 /// Construct a ByteSourceRasterStreamImpl object

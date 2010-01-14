@@ -1,5 +1,3 @@
-#ifndef _BINARYREADER_H
-#define _BINARYREADER_H
 //
 //  Copyright (C) 2004-2010 by Autodesk, Inc.
 //
@@ -15,6 +13,10 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
+
+#ifndef _BINARYREADER_H
+#define _BINARYREADER_H
 
 #ifdef _WIN32
 #include <hash_map>

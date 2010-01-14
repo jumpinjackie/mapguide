@@ -1,20 +1,19 @@
-/*
- * Copyright (C) 2007-2010 by Autodesk, Inc. All Rights Reserved.
- *
- * By using this code, you are agreeing to the terms and conditions of
- * the License Agreement included in the documentation for this code.
- *
- * AUTODESK MAKES NO WARRANTIES, EXPRESS OR IMPLIED, AS TO THE
- * CORRECTNESS OF THIS CODE OR ANY DERIVATIVE WORKS WHICH INCORPORATE
- * IT. AUTODESK PROVIDES THE CODE ON AN "AS-IS" BASIS AND EXPLICITLY
- * DISCLAIMS ANY LIABILITY, INCLUDING CONSEQUENTIAL AND INCIDENTAL
- * DAMAGES FOR ERRORS, OMISSIONS, AND OTHER PROBLEMS IN THE CODE.
- *
- * Use, duplication, or disclosure by the U.S. Government is subject
- * to restrictions set forth in FAR 52.227-19 (Commercial Computer
- * Software Restricted Rights) and DFAR 252.227-7013(c)(1)(ii)
- * (Rights in Technical Data and Computer Software), as applicable.
- */
+//
+//  Copyright (C) 2007-2010 by Autodesk, Inc.
+//
+//  This library is free software; you can redistribute it and/or
+//  modify it under the terms of version 2.1 of the GNU Lesser
+//  General Public License as published by the Free Software Foundation.
+//
+//  This library is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//  Lesser General Public License for more details.
+//
+//  You should have received a copy of the GNU Lesser General Public
+//  License along with this library; if not, write to the Free Software
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
 
 #ifndef EXPRESSION_FUNCTION_LOOKUP_H_
 #define EXPRESSION_FUNCTION_LOOKUP_H_

@@ -30,7 +30,6 @@ typedef MgGwsConnectionMap::iterator  MgGwsConnectionIter;
 typedef MgGwsConnectionMap::value_type MgGwsConnectionMapValue;
 
 
-
 class MgGwsConnectionPool : public IGWSConnectionPool
 {
 public:

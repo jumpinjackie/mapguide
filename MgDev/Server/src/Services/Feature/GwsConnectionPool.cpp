@@ -141,5 +141,3 @@ void MgGwsConnectionPool::RemoveConnection (FdoString * name)
     }
     m_connections.erase (iter);
 }
-
-

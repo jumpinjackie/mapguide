@@ -1,5 +1,3 @@
-#ifndef _PERFORMANCEOPTIONS_H_
-#define _PERFORMANCEOPTIONS_H_
 //
 //  Copyright (C) 2004-2010 by Autodesk, Inc.
 //
@@ -17,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-
-
+#ifndef _PERFORMANCEOPTIONS_H_
+#define _PERFORMANCEOPTIONS_H_
 
 // FOR DEBUGGING A CERTAIN POLYGON BUFFERING FAILURE, SET THE FOLLOWING:
 //----------------------------------------------------------------------
