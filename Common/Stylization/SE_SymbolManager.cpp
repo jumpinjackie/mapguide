@@ -25,6 +25,9 @@
 // and the default implementation of this method converts the base64 data to
 // PNG format.  Override this method if you want to convert the base64 data
 // to a different image format.
+//
+// The converted image data is stored in the supplied ImageData parameter,
+// and should not be cached by the symbol manager.
 bool SE_SymbolManager::GetImageData(const wchar_t* base64Data, const int size, ImageData& imageData)
 {
     // strip out any non-base64 characters - you'll get these if the image

@@ -547,10 +547,17 @@ void SE_StyleVisitor::VisitImage(Image& image)
 
     if (image.GetContent().size())
     {
+        // we have inlined image data
         const MdfModel::MdfString& src_u = image.GetContent();
 
         if (m_resources)
+        {
             m_resources->GetImageData(src_u.c_str(), (int)src_u.size(), primitive->imageData);
+
+            // the symbol manager call above does not cache the image data - the raster
+            // primitive must therefore take ownership of the data
+            primitive->ownPtr = true;
+        }
     }
     else
     {
@@ -583,8 +590,8 @@ void SE_StyleVisitor::VisitImage(Image& image)
 
     ParseDoubleExpression(image.GetPositionX(), primitive->position[0], 0.0);
     ParseDoubleExpression(image.GetPositionY(), primitive->position[1], 0.0);
-    ParseDoubleExpression(image.GetSizeX(), primitive->extent[0], 5.0);
-    ParseDoubleExpression(image.GetSizeY(), primitive->extent[1], 5.0);
+    ParseDoubleExpression(image.GetSizeX(), primitive->extent[0], 1.0);
+    ParseDoubleExpression(image.GetSizeY(), primitive->extent[1], 1.0);
     ParseDoubleExpression(image.GetAngle(), primitive->angleDeg, 0.0);
     ParseBooleanExpression(image.GetSizeScalable(), primitive->sizeScalable, true);
     ParseStringExpression(image.GetResizeControl(), primitive->resizeControl, GraphicElement::sResizeControlDefault, GraphicElement::sResizeControlValues);
