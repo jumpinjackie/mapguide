@@ -21,6 +21,7 @@
 #include "CriticalSection.h"    //for SmartCriticalClass
 
 #include "Spatial/MathUtility.h"
+#include "Spatial/SpatialUtility.h"
 #include "CoordSysGrids.h"
 #include "CoordSysOneGrid.h"
 #include "CoordSysMgrsZone.h"
@@ -471,7 +472,14 @@ void CCoordinateSystemMgrsZone::BuildMinorRegions (CCoordinateSystemGridRegionCo
                                                    MgCoordinateSystemGridBoundary* frameBoundary,
                                                    double curvePrecision)
 {
-    const INT32 maxPoints = 512;
+    static const INT32 iK100Km = 100000;
+    static const double rK100Km = 100000.0;
+    const INT32 maxPoints = 254;
+
+    bool swPntIsIn;
+    bool sePntIsIn;
+    bool nePntIsIn;
+    bool nwPntIsIn;
 
     INT32 beginEast, endEast;
     INT32 beginNorth, endNorth;
@@ -481,17 +489,14 @@ void CCoordinateSystemMgrsZone::BuildMinorRegions (CCoordinateSystemGridRegionCo
     double eastMin, eastMax;
     double northMin, northMax;
 
-    Ptr<MgCoordinate> southwest;
-    Ptr<MgCoordinate> northeast;
     Ptr<MgCoordinateSystemTransform> gridToFrameXfrom;
-    Ptr<CCoordinateSystemGridBoundary> rgnBoundary;
+    Ptr<MgCoordinateSystemGridBoundary> rgnBoundary;
     Ptr<CCoordinateSystemGridRegion> pMnrRegion;
+
     MgCoordinateSystemFactory csFactory;
+    MgGeometryFactory mgFactory;
 
     MG_TRY ()
-        southwest = new MgCoordinateXY ();
-        northeast = new MgCoordinateXY ();
-
         // This function is in the OneGrid base class.  We call it just in case
         // the grid boundary has not been generated for this object yet.
         GetGridExtents (eastMin,eastMax,northMin,northMax,curvePrecision);
@@ -503,27 +508,32 @@ void CCoordinateSystemMgrsZone::BuildMinorRegions (CCoordinateSystemGridRegionCo
 
         // Expand the min/max values to the 100K boundaries of the minor regions.
         // A little overkill here as the extent values should never be negative.
-        delta = fabs (fmod (eastMin,100000.0));
-        beginEast = static_cast<INT32>(eastMin - ((eastMin >= 0.0) ? delta : (100000.0 - delta)));
-        delta = fabs (fmod (eastMax,100000.0));
-        endEast = static_cast<INT32>(eastMax + ((eastMax >= 0.0) ? (100000.0 - delta) : -delta));
+        delta = fabs (fmod (eastMin,rK100Km));
+        beginEast = static_cast<INT32>(eastMin - ((eastMin >= 0.0) ? delta : (rK100Km - delta)));
+        delta = fabs (fmod (eastMax,rK100Km));
+        endEast = static_cast<INT32>(eastMax + ((eastMax >= 0.0) ? (rK100Km - delta) : -delta));
 
-        delta = fabs (fmod (northMin,100000.0));
-        beginNorth = static_cast<INT32>(northMin - ((northMin >= 0.0) ? delta : (100000.0 - delta)));
-        delta = fabs (fmod (northMax,100000.0));
-        endNorth = static_cast<INT32>(northMax + ((northMax >= 0.0) ? (100000.0 - delta) : -delta));
+        delta = fabs (fmod (northMin,rK100Km));
+        beginNorth = static_cast<INT32>(northMin - ((northMin >= 0.0) ? delta : (rK100Km - delta)));
+        delta = fabs (fmod (northMax,rK100Km));
+        endNorth = static_cast<INT32>(northMax + ((northMax >= 0.0) ? (rK100Km - delta) : -delta));
 
         // We'll move from south to north, doing each west to east row in turn.
-        for (northIndex = beginNorth;northIndex < endNorth;northIndex += 100000)
+        for (northIndex = beginNorth;northIndex < endNorth;northIndex += iK100Km)
         {
-            for (eastIndex = beginEast;eastIndex < endEast;eastIndex += 100000)
+            for (eastIndex = beginEast;eastIndex < endEast;eastIndex += iK100Km)
             {
+                Ptr<MgCoordinate> southwest;
+                Ptr<MgCoordinate> southeast;
+                Ptr<MgCoordinate> northeast;
+                Ptr<MgCoordinate> northwest;
+
                 // Use the current eastIndex and northIndex values to generate
                 // a 100KM sqaure.
-                southwest->SetX (static_cast<double>(eastIndex));
-                southwest->SetY (static_cast<double>(northIndex));
-                northeast->SetX (static_cast<double>(eastIndex + 100000));
-                northeast->SetY (static_cast<double>(northIndex + 100000));
+                southwest = mgFactory.CreateCoordinateXY (static_cast<double>(eastIndex),static_cast<double>(northIndex));
+                southeast = mgFactory.CreateCoordinateXY (static_cast<double>(eastIndex + iK100Km),static_cast<double>(northIndex));
+                northeast = mgFactory.CreateCoordinateXY (static_cast<double>(eastIndex + iK100Km),static_cast<double>(northIndex + iK100Km));
+                northwest = mgFactory.CreateCoordinateXY (static_cast<double>(eastIndex),static_cast<double>(northIndex + iK100Km));
 
                 // Now we need the designation.  The comes from the MgCoordinateSystemMgrs
                 // object that knows about the lettering scheme.  Unfortunately, we don't
@@ -535,12 +545,59 @@ void CCoordinateSystemMgrsZone::BuildMinorRegions (CCoordinateSystemGridRegionCo
                 if (!designation.empty ())
                 {
                     // Construct the region object and add it to the region collection.
-                    pMnrRegion = new CCoordinateSystemGridRegion (designation,frameBoundary,
-                                                                              gridToFrameXfrom,
-                                                                              southwest,
-                                                                              northeast,
-                                                                              curvePrecision,
-                                                                              maxPoints);
+                    pMnrRegion = new CCoordinateSystemGridRegion (designation);
+
+                    double xx = static_cast<double>(eastIndex + (iK100Km / 2));
+                    double yy = static_cast<double>(northIndex + (iK100Km / 2));
+                    gridToFrameXfrom->Transform (&xx,&yy);
+                    Ptr<MgCoordinate> rgnCenter = mgFactory.CreateCoordinateXY (xx,yy);
+                    pMnrRegion->SetRegionCenter (rgnCenter);
+
+                    // Generate the region boundary polygon; then convert to frame coordinates.
+                    rgnBoundary = csFactory.GridBoundary (southwest,northeast);
+                    rgnBoundary->SetMaxCurvePoints (maxPoints);
+                    Ptr<MgPolygon> rgnPolygon = rgnBoundary->GetBoundary (gridToFrameXfrom,curvePrecision);
+                    pMnrRegion->SetRegionBoundary (rgnPolygon);
+
+                    // Get a coordinate iterator which represents the grid boundary.
+                    // Note, that this boundary is the Intersection of the UTM zone
+                    // boundary and the viewport frame boundary.
+                    Ptr<MgCoordinateSystemGridBoundary> gridBoundary = GetGridBoundary ();
+                    Ptr<MgPolygon> gridPolygon = gridBoundary->GetBoundary ();
+                    Ptr<MgLinearRing> gridExteriorRing = gridPolygon->GetExteriorRing ();
+                    Ptr<MgCoordinateIterator> gridBoundaryItr = gridExteriorRing->GetCoordinates ();
+
+                    // Generate the four lines.
+                    swPntIsIn = MgSpatialUtility::PointIsInPolygon (gridBoundaryItr,southwest);
+                    sePntIsIn = MgSpatialUtility::PointIsInPolygon (gridBoundaryItr,southeast);
+                    nePntIsIn = MgSpatialUtility::PointIsInPolygon (gridBoundaryItr,northeast);
+                    nwPntIsIn = MgSpatialUtility::PointIsInPolygon (gridBoundaryItr,northwest);
+
+                    if (swPntIsIn || sePntIsIn)
+                    {
+                        Ptr<MgLineString> lineString = gridToFrameXfrom->GridLine (southwest,southeast,curvePrecision,maxPoints);
+                        Ptr<MgLineStringCollection> rgnLine = frameBoundary->ClipLineString (lineString);
+                        pMnrRegion->SetSouthLine (rgnLine);
+                    }
+                    if (sePntIsIn || nePntIsIn)
+                    {
+                        Ptr<MgLineString> lineString = gridToFrameXfrom->GridLine (southeast,northeast,curvePrecision,maxPoints);
+                        Ptr<MgLineStringCollection> rgnLine = frameBoundary->ClipLineString (lineString);
+                        pMnrRegion->SetEastLine (rgnLine);
+                    }
+                    if (nePntIsIn || nwPntIsIn)
+                    {
+                        Ptr<MgLineString> lineString = gridToFrameXfrom->GridLine (northeast,northwest,curvePrecision,maxPoints);
+                        Ptr<MgLineStringCollection> rgnLine = frameBoundary->ClipLineString (lineString);
+                        pMnrRegion->SetNorthLine (rgnLine);
+                    }
+                    if (nwPntIsIn || swPntIsIn)
+                    {
+                        Ptr<MgLineString> lineString = gridToFrameXfrom->GridLine (northwest,southwest,curvePrecision,maxPoints);
+                        Ptr<MgLineStringCollection> rgnLine = frameBoundary->ClipLineString (lineString);
+                        pMnrRegion->SetWestLine (rgnLine);
+                    }
+
                     regionCollection->Add (pMnrRegion);
                 }
             }

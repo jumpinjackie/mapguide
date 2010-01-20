@@ -527,6 +527,10 @@ MgCoordinateSystemGridBoundary* CCoordinateSystemOneGrid::GetFrameBoundary (void
 {
     return SAFE_ADDREF (m_FrameBoundary.p);
 }
+MgCoordinateSystemGridBoundary* CCoordinateSystemOneGrid::GetGridBoundary (void)
+{
+    return SAFE_ADDREF (m_GridBoundary.p);
+}
 MgCoordinateSystem* CCoordinateSystemOneGrid::GetFrameCRS ()
 {
     return SAFE_ADDREF (m_FrameCRS.p);
