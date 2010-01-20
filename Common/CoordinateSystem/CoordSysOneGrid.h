@@ -77,6 +77,7 @@ public:
 
 protected:
     MgCoordinateSystemGridBoundary* GetFrameBoundary (void);
+    MgCoordinateSystemGridBoundary* GetGridBoundary (void);
     MgCoordinateSystem* GetFrameCRS (void);
     MgCoordinateSystem* GetGridCRS (void);
     MgCoordinateSystemTransform* GetGridToFrameXform (void);

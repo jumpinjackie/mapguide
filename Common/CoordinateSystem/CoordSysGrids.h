@@ -305,9 +305,13 @@ private:            // Not implemented
 //=============================================================================
 // CCoordinateSystemGridregion  --  Implements MgCoordinateSystemGridRegion
 //
+// This API has been found to be problematical in the initial release.  It
+// will be deprecated in the next release.
+//
 class CCoordinateSystemGridRegion : public MgCoordinateSystemGridRegion
 {
 public:
+    CCoordinateSystemGridRegion (STRING label);
     CCoordinateSystemGridRegion (STRING label,MgCoordinateSystemGridBoundary* frameBoundary,
                                               MgCoordinateSystemTransform* gridToFrame,
                                               MgCoordinate* southwest,
@@ -327,6 +331,7 @@ public:
     MgLineStringCollection* GetNorthLine (void);
     MgLineStringCollection* GetWestLine (void);
 
+    void SetRegionCenter (MgCoordinate* regionCenter);
     void SetRegionBoundary (MgPolygon* boundary);
     void SetSouthLine (MgLineStringCollection* southLine);
     void SetEastLine (MgLineStringCollection* eastLine);

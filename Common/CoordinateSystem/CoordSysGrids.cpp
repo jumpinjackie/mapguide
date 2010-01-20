@@ -698,6 +698,22 @@ void CCoordinateSystemGridLine::Dispose ()
 // CCoordinateSystemGridRegion -- Associates a label/designation with a
 //                                MgPolygon object.
 //
+// This API has been found to be problematical in the initial release.  It
+// will be deprecated in the next release.
+CCoordinateSystemGridRegion::CCoordinateSystemGridRegion (STRING label)
+                                                               :
+                                                          MgCoordinateSystemGridRegion (),
+                                                          m_RegionLabel                (label),
+                                                          m_RegionCenter               (),
+                                                          m_RegionBoundary             (),
+                                                          m_SouthLine                  (),
+                                                          m_EastLine                   (),
+                                                          m_NorthLine                  (),
+                                                          m_WestLine                   ()
+{
+}
+// This API has been found to be problematical in the initial release.  It
+// will be deprecated in the next release.
 CCoordinateSystemGridRegion::CCoordinateSystemGridRegion (STRING label,
                                                           MgCoordinateSystemGridBoundary* frameBoundary,
                                                           MgCoordinateSystemTransform* gridToFrame,
@@ -776,21 +792,33 @@ MgPolygon* CCoordinateSystemGridRegion::GetRegionBoundary ()
 {
     return SAFE_ADDREF(m_RegionBoundary.p);
 }
+// This API has been found to be problematical in the initial release.  It
+// will be deprecated in the next release.
 MgLineStringCollection* CCoordinateSystemGridRegion::GetSouthLine (void)
 {
     return SAFE_ADDREF(m_SouthLine.p);
 }
+// This API has been found to be problematical in the initial release.  It
+// will be deprecated in the next release.
 MgLineStringCollection* CCoordinateSystemGridRegion::GetEastLine (void)
 {
     return SAFE_ADDREF(m_EastLine.p);
 }
+// This API has been found to be problematical in the initial release.  It
+// will be deprecated in the next release.
 MgLineStringCollection* CCoordinateSystemGridRegion::GetNorthLine (void)
 {
     return SAFE_ADDREF(m_NorthLine.p);
 }
+// This API has been found to be problematical in the initial release.  It
+// will be deprecated in the next release.
 MgLineStringCollection* CCoordinateSystemGridRegion::GetWestLine (void)
 {
     return SAFE_ADDREF(m_WestLine.p);
+}
+void CCoordinateSystemGridRegion::SetRegionCenter (MgCoordinate* regionCenter)
+{
+    m_RegionCenter = SAFE_ADDREF (regionCenter);
 }
 void CCoordinateSystemGridRegion::SetRegionBoundary (MgPolygon* boundary)
 {
