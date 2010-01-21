@@ -639,6 +639,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\Oem\agg-2.4\src\agg_vcgen_contour.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\Oem\agg-2.4\src\agg_vcgen_stroke.cpp"
 				>
 			</File>

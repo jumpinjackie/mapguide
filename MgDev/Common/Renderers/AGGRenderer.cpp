@@ -1457,11 +1457,18 @@ void AGGRenderer::DrawString(agg_context*     cxt,
     if (NULL == font)
         return;
 
-    // Don't draw the text if height > 16384 pixels, since memory usage when
-    // evaluating the glyphs will get too large.  16394 pixels should be
-    // more than enough (e.g. this allows 13" high text on a 1200dpi device).
+    // Don't draw the text if height > 16384 pixels, since performance will be
+    // poor.  16394 pixels should be more than enough (e.g. this allows 13" high
+    // text on a 1200dpi device).
     if (height > 16384.0)
         return;
+
+    // For the best performance we want to cache images of glyphs as much as
+    // possible.  But when the font height gets large the memory size of the
+    // cached images starts to become an issue, especially if many different
+    // glyphs get cached.  So when height > 1024 switch to caching glyph outlines,
+    // since memory use is then independent of height (at least for scalable fonts).
+    agg::glyph_rendering glyph_type = (height > 1024.0)? agg::glyph_ren_outline : agg::glyph_ren_agg_gray8;
 
     bool font_changed = false;
     if (cxt->last_font != font)
@@ -1473,14 +1480,28 @@ void AGGRenderer::DrawString(agg_context*     cxt,
         DWFCore::DWFString::EncodeUTF8(font->m_filename.c_str(), lenf * sizeof(wchar_t), futf8, lenbytesf);
 
         // load the font
-        bool res = cxt->feng.load_font(futf8, 0, agg::glyph_ren_agg_gray8);
+        bool res = cxt->feng.load_font(futf8, 0, glyph_type);
         cxt->feng.char_map(FT_ENCODING_UNICODE);
 
         if (!res)
             return;
 
         cxt->last_font = font;
+        cxt->last_glyph_type = glyph_type;
         font_changed = true;
+    }
+    else if (cxt->last_glyph_type != glyph_type)
+    {
+        // reload the font using the new glyph caching type - since the
+        // font was previously loaded this call is fast
+        bool res = cxt->feng.load_font(cxt->feng.name(), 0, glyph_type);
+//      cxt->feng.char_map(FT_ENCODING_UNICODE); // this should not be necessary
+
+        if (!res)
+            return;
+
+        cxt->last_glyph_type = glyph_type;
+//      font_changed = true; // this should not be necessary
     }
 
     if (font_changed || cxt->last_font_height != height)
@@ -1488,8 +1509,6 @@ void AGGRenderer::DrawString(agg_context*     cxt,
         cxt->feng.height(height);
         cxt->last_font_height = height;
     }
-
-//  double width = cxt->feng.width();
 
     agg::trans_affine mtx;
     mtx *= agg::trans_affine_rotation(angleRad);
@@ -1516,18 +1535,43 @@ void AGGRenderer::DrawString(agg_context*     cxt,
 #endif
 
     unsigned int* p = text;
-    while (*p)
+    if (glyph_type == agg::glyph_ren_agg_gray8)
     {
-        const agg::glyph_cache* glyph = cxt->fman.glyph(*p++);
+        while (*p)
+        {
+            const agg::glyph_cache* glyph = cxt->fman.glyph(*p++);
+            cxt->fman.add_kerning(&x, &y);
+            cxt->fman.init_embedded_adaptors(glyph, x, y);
 
-        cxt->fman.add_kerning(&x, &y);
+            agg::render_scanlines(cxt->fman.gray8_adaptor(), cxt->fman.gray8_scanline(), ren_aa_solid);
 
-        cxt->fman.init_embedded_adaptors(glyph, x, y);
+            x += glyph->advance_x;
+            y += glyph->advance_y;
+        }
+    }
+    else
+    {
+        font_curve_type curves(cxt->fman.path_adaptor());
+        font_contour_type contour(curves);
 
-        agg::render_scanlines(cxt->fman.gray8_adaptor(), cxt->fman.gray8_scanline(), ren_aa_solid);
+        cxt->ras.filling_rule(agg::fill_non_zero);
 
-        x += glyph->advance_x;
-        y += glyph->advance_y;
+        while (*p)
+        {
+            const agg::glyph_cache* glyph = cxt->fman.glyph(*p++);
+            cxt->fman.add_kerning(&x, &y);
+            cxt->fman.init_embedded_adaptors(glyph, x, y);
+
+            cxt->ras.reset();
+            cxt->ras.add_path(contour);
+
+            agg::render_scanlines(cxt->ras, cxt->sl, ren_aa_solid);
+
+            x += glyph->advance_x;
+            y += glyph->advance_y;
+        }
+
+        cxt->ras.filling_rule(agg::fill_even_odd);
     }
 }
 
@@ -1540,9 +1584,10 @@ void AGGRenderer::MeasureString(const RS_String& s,
                                 RS_F_Point*      res,       // assumes length equals 4 points
                                 float*           offsets)   // assumes length equals length of string
 {
-    // If the supplied font height is too large AGG will run out of memory.  We'll
-    // use a reasonable font height for measuring, and then scale the result.
-    double measureHeight = rs_min(5000.0, height);
+    // If the supplied font height is too large AGG will run out of memory
+    // when it tries to cache images of the glyphs.  So restrict the height
+    // to 1024 for measuring, and then scale the result if necessary.
+    double measureHeight = rs_min(1024.0, height);
     double measureScale = height / measureHeight;
 
     // load the font
@@ -1562,6 +1607,7 @@ void AGGRenderer::MeasureString(const RS_String& s,
             return;
 
         c()->last_font = font;
+        c()->last_glyph_type = agg::glyph_ren_agg_gray8;
         font_changed = true;
     }
 
@@ -1578,8 +1624,6 @@ void AGGRenderer::MeasureString(const RS_String& s,
         c()->feng.height(measureHeight);
         c()->last_font_height = measureHeight;
     }
-
-//  double width = c()->feng.width();
 
     // Do any BIDI conversion.  If the offset array is supplied (i.e. for path
     // text) then assume the conversion was already performed on the input string.
