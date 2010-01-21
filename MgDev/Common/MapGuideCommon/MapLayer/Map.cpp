@@ -328,21 +328,6 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
                 rtLayer->SetGroup(itKg->second);
             }
         }
-
-        Ptr<MgSiteConnection> siteConn;
-        if (m_siteConnection.p != NULL)
-        {
-            siteConn = SAFE_ADDREF((MgSiteConnection*)m_siteConnection);
-        }
-        else
-        {
-            Ptr<MgUserInformation> userInfo = m_resourceService->GetUserInfo();
-            siteConn = new MgSiteConnection();
-            siteConn->Open(userInfo);
-        }
-        Ptr<MgFeatureService> featureService = dynamic_cast<MgFeatureService*>(siteConn->CreateService(MgServiceType::FeatureService));
-
-        BulkLoadIdentityProperties(featureService);
     }
 
     //done with this list
@@ -409,6 +394,22 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
             }
         }
     }
+
+    // Now that we've added all the layers (dynamic and base map) to the m_layers collection,
+	// bulk load the identity properties for all layers
+	Ptr<MgSiteConnection> siteConn;
+    if (m_siteConnection.p != NULL)
+    {
+        siteConn = SAFE_ADDREF((MgSiteConnection*)m_siteConnection);
+    }
+    else
+    {
+        Ptr<MgUserInformation> userInfo = m_resourceService->GetUserInfo();
+        siteConn = new MgSiteConnection();
+        siteConn->Open(userInfo);
+    }
+    Ptr<MgFeatureService> featureService = dynamic_cast<MgFeatureService*>(siteConn->CreateService(MgServiceType::FeatureService));
+    BulkLoadIdentityProperties(featureService);
 
     // build the sorted list of finite display scales
     SORTEDSCALES sortedScales;
