@@ -90,6 +90,8 @@ typedef agg::rasterizer_scanline_aa<>                                   mg_ras_a
 // font types
 typedef agg::font_engine_freetype_int32                                 font_engine_type;
 typedef agg::font_cache_manager<font_engine_type>                       font_manager_type;
+typedef agg::conv_curve<font_manager_type::path_adaptor_type>           font_curve_type;
+typedef agg::conv_contour<font_curve_type>                              font_contour_type;
 
 // alpha mask pixel format
 typedef agg::renderer_base<agg::pixfmt_gray8>                           mg_alpha_mask_rb_type;
@@ -137,6 +139,7 @@ public:
         feng.transform(agg::trans_affine());
         last_font_height = 0.0;
         last_font = NULL;
+        last_glyph_type = agg::glyph_ren_agg_gray8;
 
         // polygon clip buffer
         bPolyClip = false;
@@ -197,6 +200,7 @@ public:
     double last_font_height;
     const RS_Font* last_font;
     agg::trans_affine last_font_transform;
+    agg::glyph_rendering last_glyph_type;
 };
 
 #endif
