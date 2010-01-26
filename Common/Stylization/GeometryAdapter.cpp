@@ -104,7 +104,6 @@ bool GeometryAdapter::EvalBoolean(const MdfModel::MdfString& exprstr, bool& res)
     }
     catch (FdoException* e)
     {
-        _ASSERT(false);
         ProcessStylizerException(e, __LINE__, __WFILE__);
     }
     catch (...)
@@ -165,7 +164,6 @@ bool GeometryAdapter::EvalDouble(const MdfModel::MdfString& exprstr, double& res
     }
     catch (FdoException* e)
     {
-        _ASSERT(false);
         ProcessStylizerException(e, __LINE__, __WFILE__);
     }
     catch (...)
@@ -280,7 +278,6 @@ bool GeometryAdapter::EvalColor(const MdfModel::MdfString& exprstr, RS_Color& rs
         }
         catch (FdoException* e)
         {
-            _ASSERT(false);
             ProcessStylizerException(e, __LINE__, __WFILE__);
             rscolor = RS_Color(0x000000FF);
             return false;
