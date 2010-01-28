@@ -18,6 +18,10 @@
 #ifndef _MGCOORDINATESYSTEMMGRS_H_
 #define _MGCOORDINATESYSTEMMGRS_H_
 
+/// \defgroup MgCoordinateSystemMgrs MgCoordinateSystemMgrs
+/// \ingroup Coordinate_System_classes
+/// \{
+
 ///////////////////////////////////////////////////////////////////////////////
 /// This object carries most, if not all, intelligence specific to the MGRS
 /// (Military Grid Reference System) grid standard.  It can be used at two
@@ -114,5 +118,7 @@ protected:
 CLASS_ID:
     static const INT32 m_cls_id = CoordinateSystem_CoordinateSystemMgrs;
 };
+
+/// \}
 
 #endif //_MGCOORDINATESYSTEMMGRS_H_
