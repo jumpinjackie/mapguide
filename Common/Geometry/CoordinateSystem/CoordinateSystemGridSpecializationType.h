@@ -18,6 +18,10 @@
 #ifndef _MGCOORDINATESYSTEMGRIDSPECIALIZATIONTYPE_H_
 #define _MGCOORDINATESYSTEMGRIDSPECIALIZATIONTYPE_H_
 
+/// \defgroup MgCoordinateSystemGridSpecializationType MgCoordinateSystemGridSpecializationType
+/// \ingroup Coordinate_System_classes
+/// \{
+
 ///////////////////////////////////////////////////////////////////////////////
 /// <summary>
 /// An enumeration of the various types of specialized grids/graticules
@@ -51,5 +55,7 @@ PUBLISHED_API:
     /// /brief Indicates the failure of an algorithm or other problem.
     static const INT32 Unknown           = 65366;
 };
+
+/// \}
 
 #endif //_MGCOORDINATESYSTEMGRIDSPECIALIZATIONTYPE_H_

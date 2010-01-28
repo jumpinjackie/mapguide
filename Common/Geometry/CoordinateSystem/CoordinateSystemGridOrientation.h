@@ -18,6 +18,10 @@
 #ifndef _MGCOORDINATESYSTEMGRIDORIENTATION_H_
 #define _MGCOORDINATESYSTEMGRIDORIENTATION_H_
 
+/// \defgroup MgCoordinateSystemGridOrientation MgCoordinateSystemGridOrientation
+/// \ingroup Coordinate_System_classes
+/// \{
+
 ///////////////////////////////////////////////////////////////////////////////
 /// <summary>
 /// An enumeration of the supported values for the <c>m_Orientation</c> member
@@ -47,5 +51,7 @@ PUBLISHED_API:
     /// /brief Indicates the failure of an algorithm or other problem.
     static const INT8 Unknown = 3;          // indicates a failure of an algorithm
 };
+
+/// \}
 
 #endif //_MGCOORDINATESYSTEMGRIDORIENTATION_H_

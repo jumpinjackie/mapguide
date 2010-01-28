@@ -49,6 +49,9 @@ class MgCoordinateSystemGridRegion;             // a label and a MgPolygon which
 class MgCoordinateSystemGridTick;               // a position in viewport coordinates and a grid value
                                                 // as a double
 
+/// \defgroup MgCoordinateSystemGridSpecification MgCoordinateSystemGridSpecification
+/// \ingroup Coordinate_System_classes
+/// \{
 
 ///////////////////////////////////////////////////////////////////////////////
 /// <summary>
@@ -666,6 +669,11 @@ protected:
 CLASS_ID:
     static const INT32 m_cls_id = CoordinateSystem_CoordinateSystemGridSpecification;
 };
+/// \}
+
+/// \defgroup MgCoordinateSystemGridBoundary MgCoordinateSystemGridBoundary
+/// \ingroup Coordinate_System_classes
+/// \{
 
 //=============================================================================
 // External to this interface, boundary objects are always in the viewport
@@ -701,6 +709,12 @@ protected:
 CLASS_ID:
     static const INT32 m_cls_id = CoordinateSystem_CoordinateSystemGridBoundary;
 };
+
+/// \}
+
+/// \defgroup MgCoordinateSystemGridBase MgCoordinateSystemGridBase
+/// \ingroup Coordinate_System_classes
+/// \{
 
 //=============================================================================
 // Abstract base class for all grid generation objects (generic and
@@ -758,6 +772,11 @@ protected:
 CLASS_ID:
     static const INT32 m_cls_id = CoordinateSystem_CoordinateSystemGridBase;
 };
+/// \}
+
+/// \defgroup MgCoordinateSystemGridLine MgCoordinateSystemGridLine
+/// \ingroup Coordinate_System_classes
+/// \{
 
 //=============================================================================
 // An MgCoordinateSystemGridLine object is a grid value (as a double) and a
@@ -781,11 +800,25 @@ protected:
 CLASS_ID:
     static const INT32 m_cls_id = CoordinateSystem_CoordinateSystemGridLine;
 };
+/// \}
+
+/// \defgroup MgCoordinateSystemGridRegion MgCoordinateSystemGridRegion
+/// \ingroup Coordinate_System_classes
+/// \{
 
 //=============================================================================
 // An MgCoordinateSystemGridRegion object consists of a label and a polygon.
 // The polygon is always in the viewport coordinate system.  Such an object
 // is used, for example, to label and delineate an MGRS 100Km UTM grid zone.
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+// This API has been found to be problematical in the initial release.  It   //
+// will be deprecated in the next release.                                   //
+//                                                                           //
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 class MG_GEOMETRY_API MgCoordinateSystemGridRegion : public MgGuardDisposable
 {
 PUBLISHED_API:
@@ -808,7 +841,12 @@ protected:
 CLASS_ID:
     static const INT32 m_cls_id = CoordinateSystem_CoordinateSystemGridRegion;
 };
+/// \}
 
+
+/// \defgroup MgCoordinateSystemGridTick MgCoordinateSystemGridTick
+/// \ingroup Coordinate_System_classes
+/// \{
 //=============================================================================
 // An MgCoordinateSystemGridTick object consists of a grid value, a tick
 // location point in viewport coordinates, and a 2D unit direction vector.
@@ -831,7 +869,11 @@ protected:
 CLASS_ID:
     static const INT32 m_cls_id = CoordinateSystem_CoordinateSystemGridTick;
 };
+/// \}
 
+/// \defgroup MgCoordinateSystemGridLineCollection MgCoordinateSystemGridLineCollection
+/// \ingroup Coordinate_System_classes
+/// \{
 //=============================================================================
 // An MgCoordinateSystemGridLineCollection is collection of
 // MgCoordinateSystemGridLine objects.  As manufactured, grid horizontal lines
@@ -856,7 +898,11 @@ protected:
 CLASS_ID:
     static const INT32 m_cls_id = CoordinateSystem_CoordinateSystemGridLineCollection;
 };
+/// \}
 
+/// \defgroup MgCoordinateSystemGridRegionCollection MgCoordinateSystemGridRegionCollection
+/// \ingroup Coordinate_System_classes
+/// \{
 //=============================================================================
 // An MgCoordinateSystemGridRegionCollection is collection of
 // MgCoordinateSystemGridRegion objects.
@@ -876,7 +922,11 @@ protected:
 CLASS_ID:
     static const INT32 m_cls_id = CoordinateSystem_CoordinateSystemGridRegionCollection;
 };
+/// \}
 
+/// \defgroup MgCoordinateSystemGridTickCollection MgCoordinateSystemGridTickCollection
+/// \ingroup Coordinate_System_classes
+/// \{
 //=============================================================================
 // An MgCoordinateSystemGridTickCollection is collection of
 // MgCoordinateSystemGridTick objects.  MgCoordinateSystemGridTickCollection
@@ -898,5 +948,6 @@ protected:
 CLASS_ID:
     static const INT32 m_cls_id = CoordinateSystem_CoordinateSystemGridTickCollection;
 };
+/// \}
 
 #endif //_MGCOORDINATESYSTEMGRIDS_H_

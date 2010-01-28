@@ -18,6 +18,10 @@
 #ifndef _MGCOORDINATESYSTEMMGRSGRIDLEVEL_H_
 #define _MGCOORDINATESYSTEMMGRSGRIDLEVEL_H_
 
+/// \defgroup MgCoordinateSystemMgrsGridLevel MgCoordinateSystemMgrsGridLevel
+/// \ingroup Coordinate_System_classes
+/// \{
+
 ///////////////////////////////////////////////////////////////
 /// \brief
 /// Defines constants used to indicate the MGRS grid level
@@ -36,5 +40,7 @@ PUBLISHED_API:
     static const INT32 Mgrs1m      =  8;
     static const INT32 MgrsUnknown = 99;
 };
+
+/// \}
 
 #endif //_MGCOORDINATESYSTEMMGRSGRIDLEVEL_H_
