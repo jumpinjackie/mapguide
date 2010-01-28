@@ -1210,7 +1210,7 @@ CCoordinateSystemMgrsZoneCollection* CCoordinateSystemMgrs::FrameBoundaryToZones
                     if (pPolygonIntersection != 0)
                     {
                         reducedFrameBoundary = csFactory->GridBoundary (pPolygonIntersection);
-                        mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme,
+                        mgrsZoneGrid = new CCoordinateSystemMgrsZone (reducedFrameBoundary,-zoneNbr,useFrameDatum,frameCRS,m_nLetteringScheme,
                                                                       m_GridLineMemoryThreshold,m_GridTickMemoryThreshold,m_GridRegionMemoryThreshold);
                         zoneCollection->Add (mgrsZoneGrid);
                     }
@@ -1335,7 +1335,7 @@ STRING CCoordinateSystemMgrs::ZoneNbrToUtmCs (INT32 zoneNbr)
     }
     else if (zoneNbr < 0 && zoneNbr > -61)
     {
-        swprintf (wcBufr,64,L"UTM84-%dS",zoneNbr);
+        swprintf (wcBufr,64,L"UTM84-%dS",-zoneNbr);
         utmCode = wcBufr;
     }
     else
