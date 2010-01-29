@@ -991,6 +991,9 @@ int MgServer::open(void *args)
                      __LINE__, __WFILE__, NULL, L"MgFailedToLoadFdoLibrary", NULL);
             }
 
+            // Initialize the FdoIDisposable global thread locking
+            FdoIDisposable::EnableGlobalThreadLocking(true);
+
             // Initialize the FDO Connection Manager
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Initializing FDO Connection Manager.\n")));
             MgEventTimer& dataConnectionTimer = m_eventTimerManager.GetEventTimer(MgEventTimer::DataConnectionTimeout);

@@ -64,10 +64,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib xerces-c_2D.lib"
+				AdditionalDependencies="ACEd.lib xerces-c_2D.lib  FdoCommon.lib"
 				OutputFile="$(OutDir)\mgserver.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml-2.3.10\lib"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\..\Oem\dbxml-2.3.10\lib&quot;;..\..\..\Oem\FDO\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\mgserver.pdb"
 				SubSystem="1"
@@ -144,10 +144,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib xerces-c_2D.lib"
+				AdditionalDependencies="ACEd.lib xerces-c_2D.lib  FdoCommon.lib"
 				OutputFile="$(OutDir)\mgserver.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\Oem\dbxml-2.3.10\lib64"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64;&quot;..\..\..\Oem\dbxml-2.3.10\lib64&quot;;..\..\..\Oem\FDO\lib64"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\mgserver.pdb"
 				SubSystem="1"
@@ -224,10 +224,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib xerces-c_2.lib"
+				AdditionalDependencies="ACE.lib xerces-c_2.lib  FdoCommon.lib"
 				OutputFile="$(OutDir)\mgserver.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml-2.3.10\lib"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\..\Oem\dbxml-2.3.10\lib&quot;;..\..\..\Oem\FDO\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\mgserver.pdb"
 				SubSystem="1"
@@ -306,10 +306,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib xerces-c_2.lib"
+				AdditionalDependencies="ACE.lib xerces-c_2.lib  FdoCommon.lib"
 				OutputFile="$(OutDir)\mgserver.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\Oem\dbxml-2.3.10\lib64"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64;&quot;..\..\..\Oem\dbxml-2.3.10\lib64&quot;;..\..\..\Oem\FDO\lib64"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\mgserver.pdb"
 				SubSystem="1"
