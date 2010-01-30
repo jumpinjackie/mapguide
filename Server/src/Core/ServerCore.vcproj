@@ -64,15 +64,17 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib xerces-c_2D.lib  FdoCommon.lib"
+				AdditionalDependencies="ACEd.lib xerces-c_2D.lib FDOCommon.lib"
 				OutputFile="$(OutDir)\mgserver.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\..\Oem\dbxml-2.3.10\lib&quot;;..\..\..\Oem\FDO\lib"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml-2.3.10\lib;..\..\..\Oem\FDO\lib"
+				DelayLoadDLLs="FDOCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\mgserver.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				ImportLibrary="..\..\lib\debug\MgServer.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -144,15 +146,17 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib xerces-c_2D.lib  FdoCommon.lib"
+				AdditionalDependencies="ACEd.lib xerces-c_2D.lib FDOCommon.lib"
 				OutputFile="$(OutDir)\mgserver.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64;&quot;..\..\..\Oem\dbxml-2.3.10\lib64&quot;;..\..\..\Oem\FDO\lib64"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\Oem\dbxml-2.3.10\lib64;..\..\..\Oem\FDO\lib64"
+				DelayLoadDLLs="FDOCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\mgserver.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				ImportLibrary="..\..\lib\debug64\MgServer.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -224,16 +228,18 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib xerces-c_2.lib  FdoCommon.lib"
+				AdditionalDependencies="ACE.lib xerces-c_2.lib FDOCommon.lib"
 				OutputFile="$(OutDir)\mgserver.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\..\Oem\dbxml-2.3.10\lib&quot;;..\..\..\Oem\FDO\lib"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml-2.3.10\lib;..\..\..\Oem\FDO\lib"
+				DelayLoadDLLs="FDOCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\mgserver.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				FixedBaseAddress="1"
 				DataExecutionPrevention="0"
+				ImportLibrary="..\..\lib\release\MgServer.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -306,16 +312,18 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib xerces-c_2.lib  FdoCommon.lib"
+				AdditionalDependencies="ACE.lib xerces-c_2.lib FDOCommon.lib"
 				OutputFile="$(OutDir)\mgserver.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64;&quot;..\..\..\Oem\dbxml-2.3.10\lib64&quot;;..\..\..\Oem\FDO\lib64"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\Oem\dbxml-2.3.10\lib64;..\..\..\Oem\FDO\lib64"
+				DelayLoadDLLs="FDOCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\mgserver.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				FixedBaseAddress="1"
 				DataExecutionPrevention="0"
+				ImportLibrary="..\..\lib\release64\MgServer.lib"
 				TargetMachine="17"
 			/>
 			<Tool
