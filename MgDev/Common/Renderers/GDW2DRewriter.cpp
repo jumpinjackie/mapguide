@@ -32,20 +32,20 @@
 //------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////
 
-WT_Result gdr_open (WT_File & /*file*/)
+WT_Result gdr_open(WT_File & /*file*/)
 {
     return WT_Result::Success;
 }
 
 
-WT_Result gdr_close (WT_File & file)
+WT_Result gdr_close(WT_File & file)
 {
     file.set_stream_user_data(WD_Null);
     return WT_Result::Success;
 }
 
 
-WT_Result gdr_read (WT_File & file, int desired_bytes, int & bytes_read, void * buffer)
+WT_Result gdr_read(WT_File & file, int desired_bytes, int & bytes_read, void * buffer)
 {
     bytes_read = (int)((GDRenderer*)file.stream_user_data())->_GetInputStream()->read(buffer, desired_bytes);
 
@@ -74,7 +74,7 @@ WT_Result gdr_seek(WT_File & file, int distance, int & amount_seeked)
 ////////////////////////////////////////////////////////////////////
 
 
-WT_Result gdr_process_units (WT_Units & units, WT_File & file)
+WT_Result gdr_process_units(WT_Units & units, WT_File & file)
 {
     GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
     //do not write the units -- the destination W2D has different units
@@ -90,7 +90,7 @@ WT_Result gdr_process_units (WT_Units & units, WT_File & file)
 }
 
 
-WT_Result gdr_process_color (WT_Color & color, WT_File & file)
+WT_Result gdr_process_color(WT_Color & color, WT_File & file)
 {
     GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
 
@@ -107,7 +107,7 @@ WT_Result gdr_process_color (WT_Color & color, WT_File & file)
 }
 
 
-WT_Result gdr_process_lineWeight (WT_Line_Weight & lineWeight, WT_File & file)
+WT_Result gdr_process_lineWeight(WT_Line_Weight & lineWeight, WT_File & file)
 {
     //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
 
@@ -119,7 +119,7 @@ WT_Result gdr_process_lineWeight (WT_Line_Weight & lineWeight, WT_File & file)
 }
 
 
-WT_Result gdr_process_viewport (WT_Viewport & viewport, WT_File & file)
+WT_Result gdr_process_viewport(WT_Viewport & viewport, WT_File & file)
 {
     GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
 
@@ -146,14 +146,14 @@ WT_Result gdr_process_viewport (WT_Viewport & viewport, WT_File & file)
 }
 
 
-WT_Result gdr_process_colorMap (WT_Color_Map & colorMap, WT_File & file)
+WT_Result gdr_process_colorMap(WT_Color_Map & colorMap, WT_File & file)
 {
     file.rendition().color_map() = colorMap;
     return WT_Result::Success;
 }
 
 
-WT_Result gdr_process_contourSet (WT_Contour_Set & contourSet, WT_File & file)
+WT_Result gdr_process_contourSet(WT_Contour_Set & contourSet, WT_File & file)
 {
     if (file.rendition().visibility().visible() == WD_False)
         return WT_Result::Success;
@@ -180,8 +180,7 @@ WT_Result gdr_process_contourSet (WT_Contour_Set & contourSet, WT_File & file)
     WT_Integer32* cntrcounts = contourSet.counts();
     int totalPts = contourSet.total_points();
 
-    const RS_D_Point* dst_cntr = rewriter->ProcessW2DPoints(
-        file, (WT_Logical_Point*)contourSet.points(), totalPts, true);
+    const RS_D_Point* dst_cntr = rewriter->ProcessW2DPoints(file, (WT_Logical_Point*)contourSet.points(), totalPts, true);
 
     if (dst_cntr)
     {
@@ -199,14 +198,14 @@ WT_Result gdr_process_contourSet (WT_Contour_Set & contourSet, WT_File & file)
 }
 
 
-WT_Result gdr_process_fill (WT_Fill & fill, WT_File & file)
+WT_Result gdr_process_fill(WT_Fill & fill, WT_File & file)
 {
     file.rendition().fill() = fill;
     return WT_Result::Success;
 }
 
 
-WT_Result gdr_process_font (WT_Font & font, WT_File & file)
+WT_Result gdr_process_font(WT_Font & font, WT_File & file)
 {
     /*GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();*/
 
@@ -215,7 +214,7 @@ WT_Result gdr_process_font (WT_Font & font, WT_File & file)
 }
 
 
-WT_Result gdr_process_gouraudPolyline (WT_Gouraud_Polyline & /*gouraudPolyline*/, WT_File & /*file*/)
+WT_Result gdr_process_gouraudPolyline(WT_Gouraud_Polyline & /*gouraudPolyline*/, WT_File & /*file*/)
 {
     //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
     //TODO: if the polyline is clipped, the colors will be wrong
@@ -225,7 +224,7 @@ WT_Result gdr_process_gouraudPolyline (WT_Gouraud_Polyline & /*gouraudPolyline*/
 }
 
 
-WT_Result gdr_process_gouraudPolytriangle (WT_Gouraud_Polytriangle & /*gouraudPolytriangle*/, WT_File & /*file*/)
+WT_Result gdr_process_gouraudPolytriangle(WT_Gouraud_Polytriangle & /*gouraudPolytriangle*/, WT_File & /*file*/)
 {
     //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
     //TODO: clipping for polytriangles is needed
@@ -234,7 +233,7 @@ WT_Result gdr_process_gouraudPolytriangle (WT_Gouraud_Polytriangle & /*gouraudPo
 }
 
 
-WT_Result gdr_process_image (WT_Image & image, WT_File & file)
+WT_Result gdr_process_image(WT_Image & image, WT_File & file)
 {
     if (file.rendition().visibility().visible() == WD_False)
         return WT_Result::Success;
@@ -370,7 +369,7 @@ WT_Result gdr_process_image (WT_Image & image, WT_File & file)
 }
 
 
-WT_Result gdr_process_origin (WT_Origin & origin, WT_File & file)
+WT_Result gdr_process_origin(WT_Origin & origin, WT_File & file)
 {
     GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
 
@@ -389,7 +388,7 @@ WT_Result gdr_process_origin (WT_Origin & origin, WT_File & file)
 }
 
 
-WT_Result gdr_process_filledEllipse (WT_Filled_Ellipse & filledEllipse, WT_File & file)
+WT_Result gdr_process_filledEllipse(WT_Filled_Ellipse & filledEllipse, WT_File & file)
 {
     if (file.rendition().visibility().visible() == WD_False)
         return WT_Result::Success;
@@ -413,8 +412,7 @@ WT_Result gdr_process_filledEllipse (WT_Filled_Ellipse & filledEllipse, WT_File 
 
     WT_Logical_Point oldpos = filledEllipse.position();
 
-    const RS_D_Point* dstpts = rewriter->ProcessW2DPoints(
-        file, (WT_Logical_Point*)&oldpos, 1, false);
+    const RS_D_Point* dstpts = rewriter->ProcessW2DPoints(file, (WT_Logical_Point*)&oldpos, 1, false);
 
     int major = ROUND(rewriter->ScaleW2DNumber(file, filledEllipse.major()));
     int minor = ROUND(rewriter->ScaleW2DNumber(file, filledEllipse.minor()));
@@ -449,7 +447,7 @@ WT_Result gdr_process_filledEllipse (WT_Filled_Ellipse & filledEllipse, WT_File 
 }
 
 
-WT_Result gdr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_File & file)
+WT_Result gdr_process_outlineEllipse(WT_Outline_Ellipse & outlineEllipse, WT_File & file)
 {
     if (file.rendition().visibility().visible() == WD_False)
         return WT_Result::Success;
@@ -473,8 +471,7 @@ WT_Result gdr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
 
     WT_Logical_Point oldpos = outlineEllipse.position();
 
-    const RS_D_Point* dstpts = rewriter->ProcessW2DPoints(
-        file, (WT_Logical_Point*)&oldpos, 1, false);
+    const RS_D_Point* dstpts = rewriter->ProcessW2DPoints(file, (WT_Logical_Point*)&oldpos, 1, false);
 
     int major = ROUND(rewriter->ScaleW2DNumber(file, outlineEllipse.major()));
     int minor = ROUND(rewriter->ScaleW2DNumber(file, outlineEllipse.minor()));
@@ -531,7 +528,7 @@ WT_Result gdr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
 }
 
 
-WT_Result gdr_process_polygon (WT_Polygon & polygon, WT_File & file)
+WT_Result gdr_process_polygon(WT_Polygon & polygon, WT_File & file)
 {
     if (file.rendition().visibility().visible() == WD_False)
         return WT_Result::Success;
@@ -571,7 +568,7 @@ WT_Result gdr_process_polygon (WT_Polygon & polygon, WT_File & file)
 }
 
 
-WT_Result gdr_process_polytriangle (WT_Polytriangle & polytriangle, WT_File & file)
+WT_Result gdr_process_polytriangle(WT_Polytriangle & polytriangle, WT_File & file)
 {
     if (file.rendition().visibility().visible() == WD_False)
         return WT_Result::Success;
@@ -614,7 +611,7 @@ WT_Result gdr_process_polytriangle (WT_Polytriangle & polytriangle, WT_File & fi
 }
 
 
-WT_Result gdr_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_File & file)
+WT_Result gdr_process_pngGroup4Image(WT_PNG_Group4_Image & pngGroup4Image, WT_File & file)
 {
     if (file.rendition().visibility().visible() == WD_False)
         return WT_Result::Success;
@@ -704,7 +701,7 @@ WT_Result gdr_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_F
 }
 
 
-WT_Result gdr_process_polyline (WT_Polyline & polyline, WT_File & file)
+WT_Result gdr_process_polyline(WT_Polyline & polyline, WT_File & file)
 {
     if (file.rendition().visibility().visible() == WD_False)
         return WT_Result::Success;
@@ -770,7 +767,7 @@ WT_Result gdr_process_polyline (WT_Polyline & polyline, WT_File & file)
 }
 
 
-WT_Result gdr_process_text (WT_Text & text, WT_File & file)
+WT_Result gdr_process_text(WT_Text & text, WT_File & file)
 {
     if (file.rendition().visibility().visible() == WD_False)
         return WT_Result::Success;
@@ -840,7 +837,7 @@ WT_Result gdr_process_text (WT_Text & text, WT_File & file)
 }
 
 
-WT_Result gdr_process_visibility (WT_Visibility & visibility, WT_File & file)
+WT_Result gdr_process_visibility(WT_Visibility & visibility, WT_File & file)
 {
     //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
     file.rendition().visibility() = visibility;
@@ -848,7 +845,7 @@ WT_Result gdr_process_visibility (WT_Visibility & visibility, WT_File & file)
 }
 
 
-WT_Result gdr_process_codePage (WT_Code_Page & /*codePage*/, WT_File & /*file*/)
+WT_Result gdr_process_codePage(WT_Code_Page & /*codePage*/, WT_File & /*file*/)
 {
     //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
     //(*rewriter->GetW2DTargetImage()).desired_rendition().code_page() = codePage;
@@ -856,7 +853,7 @@ WT_Result gdr_process_codePage (WT_Code_Page & /*codePage*/, WT_File & /*file*/)
 }
 
 
-WT_Result gdr_process_plotInfo (WT_Plot_Info & /*plotInfo*/, WT_File & /*file*/)
+WT_Result gdr_process_plotInfo(WT_Plot_Info & /*plotInfo*/, WT_File & /*file*/)
 {
     //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
     //plotInfo.serialize(*rewriter->GetW2DTargetImage());
@@ -864,7 +861,7 @@ WT_Result gdr_process_plotInfo (WT_Plot_Info & /*plotInfo*/, WT_File & /*file*/)
 }
 
 
-WT_Result gdr_process_background (WT_Background & /*background*/, WT_File & /*file*/)
+WT_Result gdr_process_background(WT_Background & /*background*/, WT_File & /*file*/)
 {
     //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
     //background.serialize(*rewriter->GetW2DTargetImage());
@@ -872,7 +869,7 @@ WT_Result gdr_process_background (WT_Background & /*background*/, WT_File & /*fi
 }
 
 
-WT_Result gdr_process_polymarker (WT_Polymarker & polymarker, WT_File & file)
+WT_Result gdr_process_polymarker(WT_Polymarker & polymarker, WT_File & file)
 {
     GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
 
@@ -887,7 +884,7 @@ WT_Result gdr_process_polymarker (WT_Polymarker & polymarker, WT_File & file)
 }
 
 
-WT_Result gdr_process_markerSize (WT_Marker_Size & /*markerSize*/, WT_File & /*file*/)
+WT_Result gdr_process_markerSize(WT_Marker_Size & /*markerSize*/, WT_File & /*file*/)
 {
     //GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
 
@@ -899,66 +896,66 @@ WT_Result gdr_process_markerSize (WT_Marker_Size & /*markerSize*/, WT_File & /*f
 }
 
 
-WT_Result gdr_process_markerSymbol (WT_Marker_Symbol & /*markerSymbol*/, WT_File & /*file*/)
+WT_Result gdr_process_markerSymbol(WT_Marker_Symbol & /*markerSymbol*/, WT_File & /*file*/)
 {
     return WT_Result::Success;
 }
 
 
-WT_Result gdr_process_mergeControl (WT_Merge_Control & /*mergeControl*/, WT_File & /*file*/)
+WT_Result gdr_process_mergeControl(WT_Merge_Control & /*mergeControl*/, WT_File & /*file*/)
 {
     return WT_Result::Success;
 }
 
 
-WT_Result gdr_process_projection (WT_Projection & /*projection*/, WT_File & /*file*/)
+WT_Result gdr_process_projection(WT_Projection & /*projection*/, WT_File & /*file*/)
 {
     return WT_Result::Success;
 }
 
 
-WT_Result gdr_process_inkedArea (WT_Inked_Area & /*inkedArea*/, WT_File & /*file*/)
+WT_Result gdr_process_inkedArea(WT_Inked_Area & /*inkedArea*/, WT_File & /*file*/)
 {
     return WT_Result::Success;
 }
 
 
-WT_Result gdr_process_alignment (WT_Alignment & /*alignment*/, WT_File & /*file*/)
+WT_Result gdr_process_alignment(WT_Alignment & /*alignment*/, WT_File & /*file*/)
 {
     return WT_Result::Success;
 }
 
 
-WT_Result gdr_process_penPattern (WT_Pen_Pattern & /*penPattern*/, WT_File & /*file*/)
+WT_Result gdr_process_penPattern(WT_Pen_Pattern & /*penPattern*/, WT_File & /*file*/)
 {
     return WT_Result::Success;
 }
 
 
-WT_Result gdr_process_linePattern (WT_Line_Pattern & /*linePattern*/, WT_File & /*file*/)
+WT_Result gdr_process_linePattern(WT_Line_Pattern & /*linePattern*/, WT_File & /*file*/)
 {
     return WT_Result::Success;
 }
 
 
-WT_Result gdr_process_fillPattern (WT_Fill_Pattern & /*fillPattern*/, WT_File & /*file*/)
+WT_Result gdr_process_fillPattern(WT_Fill_Pattern & /*fillPattern*/, WT_File & /*file*/)
 {
     return WT_Result::Success;
 }
 
 
-WT_Result gdr_process_dashPattern (WT_Dash_Pattern & /*dashPattern*/, WT_File & /*file*/)
+WT_Result gdr_process_dashPattern(WT_Dash_Pattern & /*dashPattern*/, WT_File & /*file*/)
 {
     return WT_Result::Success;
 }
 
 
-WT_Result gdr_process_lineStyle (WT_Line_Style & /*lineStyle*/, WT_File & /*file*/)
+WT_Result gdr_process_lineStyle(WT_Line_Style & /*lineStyle*/, WT_File & /*file*/)
 {
     return WT_Result::Success;
 }
 
-WT_Result gdr_process_layer (WT_Layer & layer, WT_File & file)
+WT_Result gdr_process_layer(WT_Layer & layer, WT_File & file)
 {
     GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
 
