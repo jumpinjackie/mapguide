@@ -191,9 +191,7 @@ WT_Result agr_process_contourSet (WT_Contour_Set & contourSet, WT_File & file)
         }
 
         if (color.alpha() != 0)
-        {
             AGGRenderer::DrawScreenPolygon((agg_context*)rewriter->GetW2DTargetImage(), lb, NULL, color.argb());
-        }
 
         LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), spLB.release());
         LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), spDstLB.release());
@@ -515,24 +513,43 @@ WT_Result agr_process_polytriangle (WT_Polytriangle & polytriangle, WT_File & fi
 
     WT_Logical_Point* srcpts = polytriangle.points();
 
-    LineBuffer* dstpts = rewriter->ProcessW2DPoints(file, srcpts, polytriangle.count(), true);
+    int numPoints = polytriangle.count();
+    if (numPoints <= 2)
+        return WT_Result::Success;
+
+    LineBuffer* dstpts = rewriter->ProcessW2DPoints(file, srcpts, numPoints, true);
     std::auto_ptr<LineBuffer> spDstLB(dstpts);
 
     if (dstpts)
     {
-        LineBuffer lb(4);
+        //
+        //          # of triangles
+        //
+        //      even                 odd
+        //  1   3   5   7        1   3   5
+        //  *---*---*---*        *---*---*
+        //  |\  |\  |\  |        |\  |\  |\
+        //  | \ | \ | \ |   or   | \ | \ | \
+        //  |  \|  \|  \|        |  \|  \|  \
+        //  *---*---*---*        *---*---*---*
+        //  0   2   4   6        0   2   4   6
+        //
+        LineBuffer lb(numPoints+1);
 
-        for (int i=2; i < polytriangle.count(); i++)
-        {
-            lb.MoveTo(dstpts->x_coord(i-2), dstpts->y_coord(i-2));
-            lb.LineTo(dstpts->x_coord(i-1), dstpts->y_coord(i-1));
-            lb.LineTo(dstpts->x_coord(i  ), dstpts->y_coord(i  ));
-            lb.Close();
+        lb.MoveTo(dstpts->x_coord(0), dstpts->y_coord(0));
 
-            AGGRenderer::DrawScreenPolygon((agg_context*)rewriter->GetW2DTargetImage(), &lb, NULL, color.argb());
+        // add the edge with even numbered points (lower edge in diagram above)
+        for (int i=2; i<numPoints; i += 2)
+            lb.LineTo(dstpts->x_coord(i), dstpts->y_coord(i));
 
-            lb.Reset();
-        }
+        // add the edge with odd numbered points (upper edge in diagram above)
+        int oddMax = (numPoints % 2)? numPoints-2 : numPoints-1;
+        for (int i=oddMax; i>=1; i -= 2)
+            lb.LineTo(dstpts->x_coord(i), dstpts->y_coord(i));
+
+        lb.Close();
+
+        AGGRenderer::DrawScreenPolygon((agg_context*)rewriter->GetW2DTargetImage(), &lb, NULL, color.argb());
 
         LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), spDstLB.release());
     }
