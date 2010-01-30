@@ -61,7 +61,6 @@ class MG_SERVER_DRAWING_API MgServerDrawingServiceUtil
     private:
 
         // Unimplemented Methods
-
         MgServerDrawingServiceUtil(const MgServerDrawingServiceUtil& util);
         MgServerDrawingServiceUtil& operator=(const MgServerDrawingServiceUtil& util);
 
@@ -69,9 +68,9 @@ class MG_SERVER_DRAWING_API MgServerDrawingServiceUtil
 
     public:
 
-        static WT_Result MgWt_open (WT_File &file);
-        static WT_Result MgWt_close (WT_File &file);
-        static WT_Result MgWt_read (WT_File &file, int desired_bytes, int &bytes_read, void * buffer);
+        static WT_Result MgWt_open(WT_File &file);
+        static WT_Result MgWt_close(WT_File &file);
+        static WT_Result MgWt_read(WT_File &file, int desired_bytes, int &bytes_read, void * buffer);
         static WT_Result MgWt_process_layer(WT_Layer &layer, WT_File &file);
 
         static WT_Result MgWt_process_color(WT_Color &color, WT_File &file);

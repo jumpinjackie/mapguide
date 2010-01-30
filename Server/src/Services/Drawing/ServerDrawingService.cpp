@@ -102,8 +102,7 @@ MgByteReader* MgServerDrawingService::DescribeDrawing(MgResourceIdentifier* reso
 
     if (0 == resource)
     {
-        throw new MgNullArgumentException(
-            L"MgServerDrawingService.DescribeDrawing", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgServerDrawingService.DescribeDrawing", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     else
     {
@@ -191,8 +190,7 @@ MgByteReader* MgServerDrawingService::GetSection(MgResourceIdentifier* resource,
 
     if (0 == resource)
     {
-        throw new MgNullArgumentException(
-            L"MgServerDrawingService.GetSection", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgServerDrawingService.GetSection", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     else if (sectionName.empty())
     {
@@ -535,7 +533,8 @@ MgStringCollection* MgServerDrawingService::EnumerateLayers(MgResourceIdentifier
         do
         {
             result = file.process_next_object();
-        } while (WT_Result::Success == result);
+        }
+        while (WT_Result::Success == result);
 
         // Finished processing the W2D
         file.close();
@@ -727,7 +726,8 @@ MgByteReader* MgServerDrawingService::GetLayer( MgResourceIdentifier* resource, 
         do
         {
             result = infile.process_next_object();
-        } while (WT_Result::Success == result);
+        }
+        while (WT_Result::Success == result);
 
         // Finished processing the W2D file
         outfile.close();

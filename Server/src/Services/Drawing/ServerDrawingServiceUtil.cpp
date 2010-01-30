@@ -43,7 +43,7 @@ MgServerDrawingServiceUtil::~MgServerDrawingServiceUtil()
 }
 
 
-WT_Result MgServerDrawingServiceUtil::MgWt_read (WT_File &file, int desired_bytes, int &bytes_read, void * buffer)
+WT_Result MgServerDrawingServiceUtil::MgWt_read(WT_File &file, int desired_bytes, int &bytes_read, void * buffer)
 {
     FILE * fp = (FILE *) file.stream_user_data();
     if (feof(fp))
@@ -57,13 +57,13 @@ WT_Result MgServerDrawingServiceUtil::MgWt_read (WT_File &file, int desired_byte
 }
 
 
-WT_Result MgServerDrawingServiceUtil::MgWt_open (WT_File &)
+WT_Result MgServerDrawingServiceUtil::MgWt_open(WT_File &)
 {
     return WT_Result::Success;
 }
 
 
-WT_Result MgServerDrawingServiceUtil::MgWt_close (WT_File &file)
+WT_Result MgServerDrawingServiceUtil::MgWt_close(WT_File &file)
 {
     FILE * fp = (FILE *) file.stream_user_data();
     fclose (fp);
