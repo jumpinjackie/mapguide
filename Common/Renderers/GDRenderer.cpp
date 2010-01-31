@@ -68,9 +68,6 @@ using namespace DWFCore;
 // maximum allowed size for images
 #define IMAGE_SIZE_MAX 2048.0*2048.0
 
-//using this in contructor
-#pragma warning(disable:4355)
-
 
 // Dummy class used to automate initialization/uninitialization of GD.
 class CInitGD
@@ -757,7 +754,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
 
                 //default bounds of symbol data in W2D
                 //for symbols created by MapGuide Studio
-                RS_Bounds src(0, 0, SYMBOL_MAX, SYMBOL_MAX);
+                RS_Bounds src(0.0, 0.0, SYMBOL_MAX, SYMBOL_MAX);
                 SymbolTrans st = SymbolTrans(src, dst, refX, refY, angleRad);
 
                 if (m_imsym)
@@ -769,7 +766,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                     //also we will use a slight boundary offset
                     //hardcoded to 1 pixel so that geometry exactly on the edge
                     //draws just inside the image
-                    RS_Bounds dst1(1, 1, (double)(imsymw-1), (double)(imsymh-1));
+                    RS_Bounds dst1(1.0, 1.0, (double)(imsymw-1), (double)(imsymh-1));
                     st = SymbolTrans(src, dst1, 0.0, 0.0, 0.0);
 
                     m_imw2d = m_imsym;
@@ -880,8 +877,8 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                         tempx = poly[i].x;
                         tempy = poly[i].y;
 
-                        pts[i].x = (int)(tempx * (superw - 10.) + 5.);
-                        pts[i].y = (int)((superh - 10.) - tempy * (superh - 10.) + 5.);
+                        pts[i].x = (int)(tempx * (superw - 10.0) + 5.0);
+                        pts[i].y = (int)((superh - 10.0) - tempy * (superh - 10.0) + 5.0);
                     }
 
                     // initialize the temporary supersampled symbol image to a transparent background
@@ -994,16 +991,16 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
             //construct transformer from cached image space
             //to rotated map space -- we need this in order to
             //take into account the insertion point
-            RS_Bounds src(0, 0, imsymw, imsymh);
+            RS_Bounds src(0.0, 0.0, imsymw, imsymh);
             SymbolTrans trans(src, dst, refX, refY, angleRad);
 
             //initialize 4 corner points of symbol -- we will
             //destructively transform this array to destination map space
             RS_F_Point b[4];
-            b[0].x = 0.0; b[0].y = 0.0;
-            b[1].x = imsymw; b[1].y = 0.0;
+            b[0].x =    0.0; b[0].y =    0.0;
+            b[1].x = imsymw; b[1].y =    0.0;
             b[2].x = imsymw; b[2].y = imsymh;
-            b[3].x = 0.0; b[3].y = imsymh;
+            b[3].x =    0.0; b[3].y = imsymh;
 
             for (int i=0; i<4; i++)
             {
@@ -1063,17 +1060,17 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
 
         //default bounds of symbol data in W2D
         //for symbols created by MapGuide Studio
-        RS_Bounds src(0, 0, SYMBOL_MAX, SYMBOL_MAX);
+        RS_Bounds src(0.0, 0.0, SYMBOL_MAX, SYMBOL_MAX);
 
         //a square that we will transform into the dst bounds
-        RS_F_Point box[5];
-        box[0].x = 0;
-        box[0].y = 0;
+        RS_F_Point box[4];
+        box[0].x = 0.0;
+        box[0].y = 0.0;
         box[1].x = SYMBOL_MAX;
-        box[1].y = 0;
+        box[1].y = 0.0;
         box[2].x = SYMBOL_MAX;
         box[2].y = SYMBOL_MAX;
-        box[3].x = 0;
+        box[3].x = 0.0;
         box[3].y = SYMBOL_MAX;
 
         //construct transformer -- same as the
@@ -2543,6 +2540,9 @@ void GDRenderer::DrawScreenRaster(unsigned char* data, int length,
                                   RS_ImageFormat format, int native_width, int native_height,
                                   double x, double y, double w, double h, double angleDeg)
 {
+    if (format == RS_ImageFormat_Unknown)
+        return;
+
     // compute the scaled / rotated size
     double rotatedW = w;
     double rotatedH = h;
@@ -2562,6 +2562,9 @@ void GDRenderer::DrawScreenRaster(unsigned char* data, int length,
     gdImagePtr src = NULL;
     if (format == RS_ImageFormat_ABGR)
     {
+        if (native_width < 0 || native_height < 0)
+            return;
+
         src = gdImageCreateTrueColor(native_width, native_height);
 
         //TODO: figure out a way to do this without copying the whole thing
@@ -2584,6 +2587,9 @@ void GDRenderer::DrawScreenRaster(unsigned char* data, int length,
     }
     else if (format == RS_ImageFormat_ARGB)
     {
+        if (native_width < 0 || native_height < 0)
+            return;
+
         src = gdImageCreateTrueColor(native_width, native_height);
 
         //TODO: figure out a way to do this without copying the whole thing

@@ -687,10 +687,10 @@ void LineBuffer::CircularArcTo2D(double x0, double y0, double x1, double y1, dou
 
     // if it's almost a straight line, avoid numeric instability
     // by just adding two lines instead of tessellating a curve
-    double minx = rs_min(x0, rs_min (x1, x2));
-    double maxx = rs_max(x0, rs_max (x1, x2));
-    double miny = rs_min(y0, rs_min (y1, y2));
-    double maxy = rs_max(y0, rs_max (y1, y2));
+    double minx = rs_min(x0, rs_min(x1, x2));
+    double maxx = rs_max(x0, rs_max(x1, x2));
+    double miny = rs_min(y0, rs_min(y1, y2));
+    double maxy = rs_max(y0, rs_max(y1, y2));
 
     double boxArea = (maxx - minx) * (maxy - miny);
 

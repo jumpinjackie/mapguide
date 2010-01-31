@@ -434,7 +434,8 @@ WT_Result agr_process_outlineEllipse(WT_Outline_Ellipse & outlineEllipse, WT_Fil
     double end = outlineEllipse.end_degree() * (M_PI / 180.0);
 
     //get W2D line weight
-    double thick = rs_max(1.0, rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value()));
+    double weightpx = rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value());
+    weightpx = rs_max(1.0, weightpx);
 
     LineBuffer* ell = LineBufferPool::NewLineBuffer(rewriter->GetBufferPool(), 20);
     std::auto_ptr<LineBuffer> spEllLB(ell);
@@ -443,7 +444,7 @@ WT_Result agr_process_outlineEllipse(WT_Outline_Ellipse & outlineEllipse, WT_Fil
     ell->MoveTo(dstpts->x_coord(0) + major * cos(start), dstpts->y_coord(0) + minor * sin(start));
     ell->ArcTo(dstpts->x_coord(0), dstpts->y_coord(0), major, minor, start, end);
 
-    SE_LineStroke lineStroke(color.argb(), thick);
+    SE_LineStroke lineStroke(color.argb(), weightpx);
     AGGRenderer::DrawScreenPolyline((agg_context*)rewriter->GetW2DTargetImage(), ell, NULL, lineStroke);
 
     LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), spDstLB.release());
@@ -655,8 +656,9 @@ WT_Result agr_process_polyline(WT_Polyline & polyline, WT_File & file)
 
     if (dstpts)
     {
-        double thick = rs_max(1.0, rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value()));
-        SE_LineStroke lineStroke(color.argb(), thick);
+        double weightpx = rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value());
+        weightpx = rs_max(1.0, weightpx);
+        SE_LineStroke lineStroke(color.argb(), weightpx);
         AGGRenderer::DrawScreenPolyline((agg_context*)rewriter->GetW2DTargetImage(), dstpts, NULL, lineStroke);
         LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), spDstLB.release());
     }

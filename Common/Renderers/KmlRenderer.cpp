@@ -23,9 +23,6 @@
 #include "UnicodeString.h"
 #include "PolygonUtils.h"
 
-//using this in contructor
-#pragma warning(disable:4355)
-
 const double ELEV_FACTOR = 0.1;
 
 
