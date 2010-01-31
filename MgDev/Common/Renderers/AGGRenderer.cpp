@@ -292,16 +292,16 @@ void AGGRenderer::StartMap(RS_MapUIInfo* mapInfo,
         scale = (double)m_width / m_extents.width();
 
     m_xform.x0 = scale;
-    m_xform.x1 = 0;
+    m_xform.x1 = 0.0;
     m_xform.x2 = -scale * m_extents.minx;
-    m_xform.y0 = 0;
+    m_xform.y0 = 0.0;
     m_xform.y1 = scale;
     m_xform.y2 = -scale * m_extents.miny;
 
     m_ixform.x0 = 1.0 / scale;
-    m_ixform.x1 = 0;
+    m_ixform.x1 = 0.0;
     m_ixform.x2 = m_extents.minx;
-    m_ixform.y0 = 0;
+    m_ixform.y0 = 0.0;
     m_ixform.y1 = m_ixform.x0;
     m_ixform.y2 = m_extents.miny;
 
@@ -506,7 +506,8 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
 
         // convert thickness to pixels
         double thickness = use_lsym.width();
-        m_lineStroke.weight = max(1.0, _MeterToMapSize(use_lsym.units(), fabs(thickness)) * m_xform.x0);
+        double weightpx = _MeterToMapSize(use_lsym.units(), fabs(thickness)) * m_xform.x0;
+        m_lineStroke.weight = rs_max(1.0, weightpx);
 
         DrawScreenPolyline(workbuffer, &m_xform, m_lineStroke);
 
@@ -612,7 +613,8 @@ void AGGRenderer::ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym)
 
         // convert thickness to pixels
         double thickness = use_lsym->width();
-        m_lineStroke.weight = max(1.0, _MeterToMapSize(use_lsym->units(), fabs(thickness)) * m_xform.x0);
+        double weightpx = _MeterToMapSize(use_lsym->units(), fabs(thickness)) * m_xform.x0;
+        m_lineStroke.weight = rs_max(1.0, weightpx);
 
         DrawScreenPolyline(workbuffer, &m_xform, m_lineStroke);
 
@@ -2204,7 +2206,7 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
     if (srclb->geom_count() == 0)
         return;
 
-    double weightpx = max(1.0, lineStroke.weight);
+    double weightpx = rs_max(1.0, lineStroke.weight);
 
     // add to the agg path storage - here it doesn't matter
     // how many geometries there are in the line buffer,
@@ -2410,6 +2412,9 @@ void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int le
                                    RS_ImageFormat format, int native_width, int native_height,
                                    double x, double y, double w, double h, double angledeg)
 {
+    if (format == RS_ImageFormat_Unknown)
+        return;
+
     // if it's PNG, decode it and come back around
     if (format == RS_ImageFormat_PNG)
     {
@@ -2420,6 +2425,9 @@ void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int le
         delete [] decoded;
         return;
     }
+
+    if (native_width < 0 || native_height < 0)
+        return;
 
     // set up the image insertion transformation
     agg::trans_affine img_mtx;
