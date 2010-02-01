@@ -389,6 +389,13 @@ ATOM::Status MTextParseInstance::Parse_S_OverUnder(TextRunElement& Run,ATOM::StR
     if(eOldJustification != ATOM::Justification::keCentered)
         Run.Style().AddDelta(ATOM::JustificationStyleParticle(ATOM::Justification::keCentered));
 
+    // also get the current underline / overline settings
+    ATOM::UnderlineStyleParticle* pOldUnderline = (ATOM::UnderlineStyleParticle*)(Run.Style().GetDescriptionParticle(ATOM::StyleParticle::keUnderline));
+    ATOM::TextLine::Type eOldUnderline = (pOldUnderline != NULL)? pOldUnderline->Value() : ATOM::TextLine::keNone;
+
+    ATOM::OverlineStyleParticle* pOldOverline = (ATOM::OverlineStyleParticle*)(Run.Style().GetDescriptionParticle(ATOM::StyleParticle::keOverline));
+    ATOM::TextLine::Type eOldOverline = (pOldOverline != NULL)? pOldOverline->Value() : ATOM::TextLine::keNone;
+
     bool bHasNumer = sNumer.Length() > 0;
     bool bHasDenom = sDenom.Length() > 0;
 
@@ -411,7 +418,7 @@ ATOM::Status MTextParseInstance::Parse_S_OverUnder(TextRunElement& Run,ATOM::StR
 
             // Short-term hack, instead of relying on BorderLineStyleParticle.
             // See the OverlineStyleParticle in the corresponding code below for notes.
-            if(sDenom.Length() < sNumer.Length()) {
+            if(sDenom.Length() < sNumer.Length() && eOldUnderline != ATOM::TextLine::keSingle) {
                 Run.Style().AddDelta(ATOM::UnderlineStyleParticle(ATOM::TextLine::keSingle));
                 bNumerLine = true;
             }
@@ -434,6 +441,13 @@ ATOM::Status MTextParseInstance::Parse_S_OverUnder(TextRunElement& Run,ATOM::StR
         //
         // Prepare for what follows
         //
+
+        // Disable any underline from the short-term hack
+        if(bNumerLine)
+        {
+            Run.Style().AddDelta(ATOM::UnderlineStyleParticle(eOldUnderline));
+            bNumerLine = false;
+        }
 
         // End of superscript
         Run.Location().AddSemantic(ATOM::ILocation::keEndSuperscript);
@@ -462,9 +476,9 @@ ATOM::Status MTextParseInstance::Parse_S_OverUnder(TextRunElement& Run,ATOM::StR
             // ... instead, we temporarily do this.  We assume, based on some use-case knowledge
             // of the stacked fraction, that these are likely to be numeric, and numbers are usually
             // fixed-width, even in variable-width fonts.
-            if(sDenom.Length() >= sNumer.Length()) {
-              Run.Style().AddDelta(ATOM::OverlineStyleParticle(ATOM::TextLine::keSingle));
-              bDenomLine = true;
+            if(sDenom.Length() >= sNumer.Length() && eOldOverline != ATOM::TextLine::keSingle) {
+                Run.Style().AddDelta(ATOM::OverlineStyleParticle(ATOM::TextLine::keSingle));
+                bDenomLine = true;
             }
         }
 
@@ -485,6 +499,13 @@ ATOM::Status MTextParseInstance::Parse_S_OverUnder(TextRunElement& Run,ATOM::StR
         // Prepare for what follows
         //
 
+        // Disable any overline from the short-term hack
+        if(bDenomLine)
+        {
+            Run.Style().AddDelta(ATOM::OverlineStyleParticle(eOldOverline));
+            bDenomLine = false;
+        }
+
         // End of subscript
         Run.Location().AddSemantic(ATOM::ILocation::keEndSubscript);
         // This location stuff is subject to some fiddling (part 4)
@@ -500,15 +521,8 @@ ATOM::Status MTextParseInstance::Parse_S_OverUnder(TextRunElement& Run,ATOM::StR
             // End the line
             // Removed, for now.  See above.
             //Run.Style().AddDelta(ATOM::TopBorderLineStyleParticle(ATOM::BorderLine::keNoBorder));
-            // ... instead, we disable the hacked Under/Over
-            if(bNumerLine)
-                Run.Style().AddDelta(ATOM::UnderlineStyleParticle(ATOM::TextLine::keNone));
-            if(bDenomLine)
-                Run.Style().AddDelta(ATOM::OverlineStyleParticle(ATOM::TextLine::keNone));
-
         }
     }
-
 
     if(eOldJustification != ATOM::Justification::keCentered)
         Run.Style().AddDelta(ATOM::JustificationStyleParticle(eOldJustification));
