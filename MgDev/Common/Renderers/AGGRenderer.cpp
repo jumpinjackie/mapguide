@@ -1687,10 +1687,14 @@ void AGGRenderer::MeasureString(const RS_String& s,
         xpos += glyph->advance_x;
         ypos += glyph->advance_y;
 
+        // don't include this inside the is_valid check - spaces have
+        // is_valid false, yet we still need to adjust the right edge
+        // of the bounds to account for them
+        if (xpos > right)
+            right = xpos;
+
         if (glyph->bounds.is_valid())
         {
-            if (xpos > right)
-                right = xpos;
             if (top < glyph->bounds.y2)
                 top = glyph->bounds.y2;
             if (bottom > glyph->bounds.y1)
