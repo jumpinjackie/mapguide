@@ -192,6 +192,7 @@ UnitTestFiles :
 	@cp -f ../../../UnitTest/TestData/ResourceService/Shuttle.zip ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/ResourceService/Shuttle.zip ../UnitTestFiles/World.mgp
 	@cp -f ../../../UnitTest/TestData/ResourceService/World_Countries.sdf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/ResourceService/TEST.LayerDefinition ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/FeatureService/SDF/TEST.FeatureSource ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/FeatureService/SDF/TEST.sdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/FeatureService/SDF/Sheboygan_Parcels.FeatureSource ../UnitTestFiles
@@ -261,8 +262,8 @@ UnitTestFiles :
 	@cp -f ../../../UnitTest/TestData/TileService/UT_VotingDistricts.ldf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/TileService/UT_VotingDistricts.sdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/ServerAdmin/1.1.1.mgd ../UnitTestFiles
-	@cp -f ../../../UnitTest/TestData/CoordinateSystems/ogcwkts.txt ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/CoordinateSystems/epsgcodes.txt ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/CoordinateSystems/ogcwkts.txt ../UnitTestFiles
 	@chmod +w ../UnitTestFiles/*.sdf
 
 TESTS = unittest.sh
