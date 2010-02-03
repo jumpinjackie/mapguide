@@ -125,6 +125,7 @@ MgSiteManager::MgSiteManager() :
     m_index(0)
 {
     Initialize();
+    StartCheckServersThread();
 }
 
 ///----------------------------------------------------------------------------
