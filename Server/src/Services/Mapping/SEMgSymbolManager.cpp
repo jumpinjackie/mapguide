@@ -188,6 +188,7 @@ bool SEMgSymbolManager::GetImageData(const wchar_t* resourceId, const wchar_t* r
         // an error and don't try to get it again.
         imageData.size = 0;
         imageData.data = IMAGE_ERROR;
+        imageData.format = RS_ImageFormat_Unknown;
     }
 
     m_mImageCache[uniqueName] = imageData;
