@@ -152,7 +152,7 @@ void TestTransformMesh::TestCase_TransformMesh_LL84_to_WAG()
         TransformMesh xformMesh(gridSize, minGridSize, gridSizeOverride, srcExt, srcWidth, srcHeight, destExt, destWidth, destHeight, &xformer);
 
         CPPUNIT_ASSERT(CheckTransformMeshSize(srcWidth, srcHeight, &xformMesh));
-        CPPUNIT_ASSERT(xformMesh.IsYAxisInverted() == TRUE);
+        CPPUNIT_ASSERT(xformMesh.IsYAxisInverted() == true);
 
         CPPUNIT_ASSERT(true);
     }
