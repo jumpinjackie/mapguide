@@ -2490,7 +2490,7 @@ span.jxTabLabel {
 .jxBarBottom .jxBarScroller {
   position: absolute;
   /* much bigger than its container */
-  width: 10000%;
+  width: 100%;
   overflow: hidden;
 }
 
