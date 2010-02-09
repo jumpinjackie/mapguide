@@ -652,7 +652,7 @@ void RS_FontEngine::DrawBlockText(const RS_TextMetrics& tm, RS_TextDef& tdef, do
 
     // truncate the offset to the nearest pixel so we get uniform ghosting around
     // the string (the same number of pixels on each side after rendering)
-    double screenUnitsPerPixel = MILLIMETERS_PER_INCH * m_pSERenderer->GetScreenUnitsPerMillimeterDevice() / m_pSERenderer->GetDpi();
+    double screenUnitsPerPixel = m_pSERenderer->GetScreenUnitsPerPixel();
     offset -= fmod(offset, screenUnitsPerPixel);
 
     // finally, make sure we have at least one pixel's worth of offset
@@ -904,7 +904,7 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
 
     // truncate the offset to the nearest pixel so we get uniform ghosting around
     // the string (the same number of pixels on each side after rendering)
-    double screenUnitsPerPixel = MILLIMETERS_PER_INCH * m_pSERenderer->GetScreenUnitsPerMillimeterDevice() / m_pSERenderer->GetDpi();
+    double screenUnitsPerPixel = m_pSERenderer->GetScreenUnitsPerPixel();
     offset -= fmod(offset, screenUnitsPerPixel);
 
     // finally, make sure we have at least one pixel's worth of offset

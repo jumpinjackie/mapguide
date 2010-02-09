@@ -249,43 +249,60 @@ void FontManager::init_font_list()
             // do we have a file?
             if (!(FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
             {
-                wstring entryName(fontdir);
-                entryName += L"\\";
-                entryName += FindFileData.cFileName;
-
-                // ok, load up the face information
-                FT_Face face = NULL;
-                FT_Long index = 0;
-                FT_Long num_faces = 0;
-
-                do
+                // skip special Windows files
+                if (wcscmp(FindFileData.cFileName, L"desktop.ini") != 0)
                 {
-                    string en;
-                    UnicodeString::WideCharToMultiByte(entryName.c_str(), en);
-                    error = FT_New_Face(m_library, en.c_str(), index, &face);
+                    wstring entryName(fontdir);
+                    entryName += L"\\";
+                    entryName += FindFileData.cFileName;
 
-                    if (!error)
+                    // ok, load up the face information
+                    FT_Face face = NULL;
+                    FT_Long index = 0;
+                    FT_Long num_faces = 0;
+
+                    do
                     {
-                        // init num_faces if necessary
-                        if (!num_faces)
-                            num_faces = face->num_faces;
+                        string en;
+                        UnicodeString::WideCharToMultiByte(entryName.c_str(), en);
+                        error = FT_New_Face(m_library, en.c_str(), index, &face);
+
+                        if (!error)
+                        {
+                            // init num_faces if necessary
+                            if (!num_faces)
+                                num_faces = face->num_faces;
+                        }
+
+                        create_font(face, index, entryName.c_str());
+
+                        // dispose of face
+                        FT_Done_Face(face);
+
+                        // increment our face index
+                        index++;
                     }
-
-                    create_font(face, index, entryName.c_str());
-
-                    // dispose of face
-                    FT_Done_Face(face);
-
-                    // increment our face index
-                    index++;
+                    while (!error && index < num_faces);
                 }
-                while (!error && index < num_faces);
             }
 
             bOK = FindNextFile(hFile, &FindFileData);
         }
 
         FindClose(hFile);
+    }
+
+    // The font matching code iterates over the font list, and the first font in the
+    // list always becomes the one to beat.  In the case where none of the fonts match
+    // (they all have the same score), this first font ends up winning.  So make sure
+    // a reasonably good font, like Arial, is the first one in the list.
+    wstring lowerName = L"arial"; // use lower-case
+    RS_Font* font = (RS_Font*)FindFont(lowerName, false, false);
+    if (font && font->m_fullname == lowerName)
+    {
+        // we found Arial - move it to the front
+        m_fontlist.remove(font);
+        m_fontlist.push_front(font);
     }
 }
 #else
