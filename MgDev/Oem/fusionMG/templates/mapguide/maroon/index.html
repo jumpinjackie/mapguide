@@ -140,6 +140,7 @@ var fusionError = function(eventId, error) {
         readableMessage = errorMessage.substring(indexStart + tagStart.length, indexEnd);
         readableMessage = readableMessage.replace(/\\n/g, '\n');
         readableMessage = readableMessage.replace(/\\t/g, '\t');
+        readableMessage = readableMessage.replace(/\\'/g, '\'');
     }
 
     //Case 2: For dealing with Function: ajaxException. (fusion.js)
@@ -164,6 +165,7 @@ var fusionError = function(eventId, error) {
                 readableMessage = errorMessage.substring(indexResponseError + responseError.length, indexReturn);
                 readableMessage = readableMessage.replace(/\\n/g, '\n');
                 readableMessage = readableMessage.replace(/\\t/g, '\t');
+                readableMessage = readableMessage.replace(/\\'/g, '\'');
             }
         }
     }
