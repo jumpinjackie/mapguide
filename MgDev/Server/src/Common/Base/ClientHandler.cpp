@@ -146,7 +146,7 @@ int MgClientHandler::handle_input(ACE_HANDLE handle)
 
     INT32 ret = -1;
 
-    ACE_DEBUG ((LM_DEBUG, "(%t) MgClientHandler::handle_input()\n"));
+//    ACE_DEBUG ((LM_DEBUG, "(%t) MgClientHandler::handle_input()\n"));
 
     MgServerManager* pServerManager = MgServerManager::GetInstance();
 

@@ -81,7 +81,6 @@ zend_function_entry CustomExtModule_functions[] = {
 
 PHP_MINIT_FUNCTION(CustomExtModule)
 {
-    zend_printf("The name of the current function is %s<br>", get_active_function_name(TSRMLS_C));
     return SUCCESS;
 }
 
