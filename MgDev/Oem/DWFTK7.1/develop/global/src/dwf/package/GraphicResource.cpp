@@ -531,6 +531,10 @@ DWFImageResource::DWFImageResource( const DWFString& zTitle,
                                     const DWFString& zModificationTime )
 throw()
                 : DWFGraphicResource( zTitle, zRole, zMIME, zAuthor, zDescription, zCreationTime, zModificationTime )
+                , _bScanned( false )
+                , _bInvertColors ( false )
+                , _nColorDepth( 0 )
+                , _nScannedResolution( 0 )
 {
     _anOriginalExtents[0] = _anOriginalExtents[1] = _anOriginalExtents[2] = _anOriginalExtents[3] = 0.0f;
 }
