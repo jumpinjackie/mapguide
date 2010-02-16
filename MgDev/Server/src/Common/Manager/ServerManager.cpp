@@ -936,10 +936,14 @@ void MgServerManager::IncrementActiveConnections()
     m_totalConnections++;
 
 #ifdef _WIN32
-    // The limit for the current Windows ACE reactor is 62.
+    // The ACE SELECT reactor does not have the same handle limit as the ACE WFMO reactor.
+    // The code below is left as is, but commented out in case the ACE WFMO reactor is ever used in the future.
+
+    // The limit for the default Windows ACE WFMO reactor is 62 handles this is due to the 64 handle limit of 
+    // the Windows WaitForMultipleObjects() API, but ACE uses 2 handles internally leaving only 62 handles for the application.
     // The only reason the value 55 is chosen is because it is slightly under this value and
     // so we can log an error as the # of active connections approaches the current ACE reactor limit.
-    // TODO: This error logging will need to be revisited if a different ACE reactor is used on Windows.
+/*
     if(m_totalActiveConnections.value() > 55)
     {
         STRING strActiveConnections = L"";
@@ -951,6 +955,7 @@ void MgServerManager::IncrementActiveConnections()
         // We are dangerously close to exceeding the safe # of active connections for the current ACE reactor
         MG_LOG_ERROR_ENTRY(message.c_str());
     }
+*/
 #else
     // Linux uses a different ACE reactor and so this error message doesn't apply.
 #endif
