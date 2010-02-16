@@ -45,7 +45,7 @@
       <Value>Description4</Value>
     </PropertyMapping>
     <Geometry>SHPGEOM</Geometry>
-    <ToolTip>concat(&quot;Parcel\nName: &quot;, concat(RNAME, concat(&quot;\nAddress: &quot;, RBILAD)))</ToolTip>
+    <ToolTip>concat(&apos;Parcel\nName: &apos;, concat(RNAME, concat(&apos;\nAddress: &apos;, RBILAD)))</ToolTip>
     <VectorScaleRange>
       <MaxScale>13000</MaxScale>
       <AreaTypeStyle>
