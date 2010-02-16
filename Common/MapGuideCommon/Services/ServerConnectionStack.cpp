@@ -42,11 +42,16 @@ MgServerConnectionStack::MgServerConnectionStack(INT32 port)
         MgConfigProperties::SiteConnectionPropertyPort, sitePort,
         MgConfigProperties::DefaultSiteConnectionPropertyPort);
 
+    // Note: The comment below only applies if using the ACE WFMO reactor on Windows.
+    //       The ACE config.h file has been updated to use the ACE SELECT reactor on 
+    //       Windows which is the default reactor used on Linux.
+    //       ie: #define ACE_USE_SELECT_REACTOR_FOR_REACTOR_IMPL
+    //
     // Assign an appropriate number of connections for each connection type.  On Windows
     // we are limited to 62 connections and will typically have one mapagent and one
     // API process running.  Limiting the number of connections to 20 per process should give
     // adequate headroom to handle CLOSE_WAIT states.  Twelve actively processing client connections
-    // should easily saturate an eight core machine.
+    // should easily saturate a quad core machine depending on load.
     if (port == adminPort)
     {
         // Pull max connections from admin section.  Default to 2 admin connections if not present.
