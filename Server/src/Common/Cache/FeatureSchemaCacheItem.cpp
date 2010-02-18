@@ -121,26 +121,6 @@ STRING MgFeatureSchemaCacheItem::GetSchemaXml(CREFSTRING classNames)
     return data;
 }
 
-void MgFeatureSchemaCacheItem::SetFdoSchemas(CREFSTRING classNames, FdoFeatureSchemaCollection* schemas)
-{
-    Ptr<MgFeatureClassCacheItem> item = SetFeatureClassCacheItem(classNames);
-
-    item->SetFdoSchemas(schemas);
-}
-
-FdoFeatureSchemaCollection* MgFeatureSchemaCacheItem::GetFdoSchemas(CREFSTRING classNames)
-{
-    FdoPtr<FdoFeatureSchemaCollection> data;
-    Ptr<MgFeatureClassCacheItem> item = GetFeatureClassCacheItem(classNames);
-
-    if (NULL != item.p)
-    {
-        data = item->GetFdoSchemas();
-    }
-
-    return data.Detach();
-}
-
 void MgFeatureSchemaCacheItem::SetSchemas(CREFSTRING classNames, bool serialized, MgFeatureSchemaCollection* schemas)
 {
     Ptr<MgFeatureClassCacheItem> item = SetFeatureClassCacheItem(classNames);

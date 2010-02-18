@@ -43,9 +43,6 @@ public:
     void SetSchemaXml(CREFSTRING schemaXml);
     STRING GetSchemaXml();
 
-    void SetFdoSchemas(FdoFeatureSchemaCollection* schemas);
-    FdoFeatureSchemaCollection* GetFdoSchemas();
-
     void SetSchemas(bool serialized, MgFeatureSchemaCollection* schemas);
     MgFeatureSchemaCollection* GetSchemas(bool serialized);
 
@@ -61,7 +58,6 @@ private:
 
     STRING m_schemaXml;
 
-    FdoPtr<FdoFeatureSchemaCollection> m_fdoSchemas; // not thread-safe
     Ptr<MgFeatureSchemaCollection> m_serializedSchemas;
     Ptr<MgFeatureSchemaCollection> m_unserializedSchemas;
 

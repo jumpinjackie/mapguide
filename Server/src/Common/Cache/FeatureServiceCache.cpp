@@ -415,32 +415,6 @@ STRING MgFeatureServiceCache::GetSchemaXml(MgResourceIdentifier* resource, CREFS
     return data;
 }
 
-void MgFeatureServiceCache::SetFdoSchemas(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames, bool classNameHintUsed, FdoFeatureSchemaCollection* schemas)
-{
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
-
-    Ptr<MgFeatureServiceCacheEntry> entry = SetEntry(resource);
-
-    entry->SetFdoSchemas(schemaName, classNames, classNameHintUsed, schemas);
-}
-
-FdoFeatureSchemaCollection* MgFeatureServiceCache::GetFdoSchemas(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames, bool& classNameHintUsed)
-{
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
-
-    FdoPtr<FdoFeatureSchemaCollection> data;
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
-
-    classNameHintUsed = true;
-
-    if (NULL != entry.p)
-    {
-        data = entry->GetFdoSchemas(schemaName, classNames, classNameHintUsed);
-    }
-
-    return data.Detach();
-}
-
 void MgFeatureServiceCache::SetSchemas(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames, bool serialized, MgFeatureSchemaCollection* schemas)
 {
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));

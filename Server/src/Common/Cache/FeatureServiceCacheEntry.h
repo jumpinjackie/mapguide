@@ -60,9 +60,6 @@ public:
     void SetSchemaXml(CREFSTRING schemaName, MgStringCollection* classNames, CREFSTRING schemaXml);
     STRING GetSchemaXml(CREFSTRING schemaName, MgStringCollection* classNames);
 
-    void SetFdoSchemas(CREFSTRING schemaName, MgStringCollection* classNames, bool classNameHintUsed, FdoFeatureSchemaCollection* schemas);
-    FdoFeatureSchemaCollection* GetFdoSchemas(CREFSTRING schemaName, MgStringCollection* classNames, bool& classNameHintUsed);
-
     void SetSchemas(CREFSTRING schemaName, MgStringCollection* classNames, bool serialized, MgFeatureSchemaCollection* schemas);
     MgFeatureSchemaCollection* GetSchemas(CREFSTRING schemaName, MgStringCollection* classNames, bool serialized);
 

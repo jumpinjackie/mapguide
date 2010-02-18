@@ -48,42 +48,6 @@ STRING MgFeatureClassCacheItem::GetSchemaXml()
     return m_schemaXml;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Cache an FDO Feature Schema collection.
-/// FDO Feature Schemas are not thread-safe (e.g. reference count) so the cache
-/// must take ownership via one thread at a time.
-///
-/// Note that this cache item is used to to improve the Feature Service
-/// performance where providers do not support a Class Name hint for the
-/// Describe Schema command.
-///
-void MgFeatureClassCacheItem::SetFdoSchemas(FdoFeatureSchemaCollection* schemas)
-{
-    m_fdoSchemas = FDO_SAFE_ADDREF(schemas);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Return an FDO Feature Schema collection from the cache.
-/// FDO Feature Schemas are not thread-safe (e.g. reference count) so the caller
-/// must take ownership via one thread at a time.
-/// Remove the FDO Feature Schema collection from the cache so that they won't
-/// be given to any other thread that calls this function.
-/// Caller is responsible for putting this schemas back in the cache when
-/// done with them.
-/// This prevents a race condition that would occur if the caller does a release
-/// at the same time another thread tries to retrieve the schemas from this cache.
-///
-/// Note that this cache item is used to to improve the Feature Service
-/// performance where providers do not support a class name hint for the
-/// Describe Schema command.
-///
-FdoFeatureSchemaCollection* MgFeatureClassCacheItem::GetFdoSchemas()
-{
-    return m_fdoSchemas.Detach();
-}
-
 void MgFeatureClassCacheItem::SetSchemas(bool serialized, MgFeatureSchemaCollection* schemas)
 {
     if (serialized)
