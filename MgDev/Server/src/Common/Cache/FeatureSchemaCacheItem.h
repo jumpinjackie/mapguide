@@ -45,9 +45,6 @@ public:
     void SetSchemaXml(CREFSTRING classNames, CREFSTRING schemaXml);
     STRING GetSchemaXml(CREFSTRING classNames);
 
-    void SetFdoSchemas(CREFSTRING classNames, FdoFeatureSchemaCollection* schemas);
-    FdoFeatureSchemaCollection* GetFdoSchemas(CREFSTRING classNames);
-
     void SetSchemas(CREFSTRING classNames, bool serialized, MgFeatureSchemaCollection* schemas);
     MgFeatureSchemaCollection* GetSchemas(CREFSTRING classNames, bool serialized);
 

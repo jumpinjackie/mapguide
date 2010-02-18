@@ -464,36 +464,6 @@ STRING MgFeatureServiceCacheEntry::GetSchemaXml(CREFSTRING schemaName, MgStringC
     return data;
 }
 
-void MgFeatureServiceCacheEntry::SetFdoSchemas(CREFSTRING schemaName, MgStringCollection* classNames, bool classNameHintUsed, FdoFeatureSchemaCollection* schemas)
-{
-    m_classNameHintUsed = classNameHintUsed;
-
-    STRING schemaKey, classKey;
-    FormatKeys(m_classNameHintUsed, schemaName, classNames, schemaKey, classKey);
-
-    Ptr<MgFeatureSchemaCacheItem> item = SetFeatureSchemaCacheItem(schemaKey);
-
-    item->SetFdoSchemas(classKey, schemas);
-}
-
-FdoFeatureSchemaCollection* MgFeatureServiceCacheEntry::GetFdoSchemas(CREFSTRING schemaName, MgStringCollection* classNames, bool& classNameHintUsed)
-{
-    classNameHintUsed = m_classNameHintUsed;
-
-    STRING schemaKey, classKey;
-    FormatKeys(m_classNameHintUsed, schemaName, classNames, schemaKey, classKey);
-
-    FdoPtr<FdoFeatureSchemaCollection> data;
-    Ptr<MgFeatureSchemaCacheItem> item = GetFeatureSchemaCacheItem(schemaKey);
-
-    if (NULL != item.p)
-    {
-        data = item->GetFdoSchemas(classKey);
-    }
-
-    return data.Detach();
-}
-
 void MgFeatureServiceCacheEntry::SetSchemas(CREFSTRING schemaName, MgStringCollection* classNames, bool serialized, MgFeatureSchemaCollection* schemas)
 {
     STRING schemaKey, classKey;
