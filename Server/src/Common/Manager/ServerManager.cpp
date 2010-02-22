@@ -533,6 +533,14 @@ MgPropertyCollection* MgServerManager::GetInformationProperties()
         pProperty = new MgInt64Property(MgServerInformationProperties::VirtualMemory, counters.PagefileUsage);
         pProperties->Add(pProperty);
     }
+    else
+    {
+        // Failed to get required information
+        pProperty = new MgInt64Property(MgServerInformationProperties::WorkingSet, -1);
+        pProperties->Add(pProperty);
+        pProperty = new MgInt64Property(MgServerInformationProperties::VirtualMemory, -1);
+        pProperties->Add(pProperty);
+    }
 #else
     // getrusage does not work on Linux so pull information directly
     // from proc filesystem.
@@ -557,16 +565,36 @@ MgPropertyCollection* MgServerManager::GetInformationProperties()
             pProperty = new MgInt64Property(MgServerInformationProperties::WorkingSet, workingSet);
             pProperties->Add(pProperty);
         }
+        else
+        {
+            // Failed to get required information
+            pProperty = new MgInt64Property(MgServerInformationProperties::WorkingSet, -1);
+            pProperties->Add(pProperty);
+        }
 
         char* strSize = "VmSize:";
         loc = strstr(buf, strSize);
         if (NULL != loc)
         {
             long kbytes = strtol(loc + strlen(strSize) + 1, &end, 10);
-            INT64 workingSet = kbytes * 1000;
-            pProperty = new MgInt64Property(MgServerInformationProperties::VirtualMemory, workingSet);
+            INT64 virtualMemory = kbytes * 1000;
+            pProperty = new MgInt64Property(MgServerInformationProperties::VirtualMemory, virtualMemory);
             pProperties->Add(pProperty);
         }
+        else
+        {
+            // Failed to get required information
+            pProperty = new MgInt64Property(MgServerInformationProperties::VirtualMemory, -1);
+            pProperties->Add(pProperty);
+        }
+    }
+    else
+    {
+        // Failed to get required information
+        pProperty = new MgInt64Property(MgServerInformationProperties::WorkingSet, -1);
+        pProperties->Add(pProperty);
+        pProperty = new MgInt64Property(MgServerInformationProperties::VirtualMemory, -1);
+        pProperties->Add(pProperty);
     }
 #endif
 
@@ -582,6 +610,15 @@ MgPropertyCollection* MgServerManager::GetInformationProperties()
         pProperties->Add(pProperty);
 
         pProperty = new MgInt32Property(MgServerInformationProperties::CacheDroppedEntries, fsCacheDroppedEntries);
+        pProperties->Add(pProperty);
+    }
+    else
+    {
+        // Failed to get required information
+        pProperty = new MgInt32Property(MgServerInformationProperties::CacheSize, -1);
+        pProperties->Add(pProperty);
+
+        pProperty = new MgInt32Property(MgServerInformationProperties::CacheDroppedEntries, -1);
         pProperties->Add(pProperty);
     }
 

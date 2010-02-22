@@ -113,5 +113,8 @@ void MgOpGetInformationProperties::Execute()
     // Add admin log entry for operation
     MG_LOG_OPERATION_MESSAGE_ADMIN_ENTRY();
 
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
     MG_THROW()
 }
