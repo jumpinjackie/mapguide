@@ -146,6 +146,13 @@ var fusionError = function(eventId, error) {
 
 var fusionInitialized = function() {
     $('AppContainer').resize({forceResize: true});
+    var mapWidget = Fusion.getMapById('Map');
+    mapWidget.registerForEvent(Fusion.Event.MAP_LOADED, initPanelHandler);
+}
+
+var initPanelHandler = function() {
+    //register this with MAP_LOADED so that the initial layout will remain
+    Fusion.registerForEvent(Fusion.Event.TASK_PANE_LOADED, showTaskPane);
 }
 
 var showOverviewMap = function() {

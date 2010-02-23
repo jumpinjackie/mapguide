@@ -82,10 +82,10 @@ window.onload = function() {
     });
     dOverviewMap.content.id = 'OverviewMap';
     main.addEvent('sizeChange', function(){
-		if (dOverviewMap.domObj.getStyle('display') != 'none'){
-			dOverviewMap.show();
-		}
-	});
+      if (dOverviewMap.domObj.getStyle('display') != 'none'){
+        dOverviewMap.show();
+      }
+    });
     main.resize();
 
     Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, fusionInitialized);
@@ -162,6 +162,13 @@ var fusionError = function(eventId, error) {
 
 var fusionInitialized = function() {
     $('AppContainer').resize({forceResize: true});
+    var mapWidget = Fusion.getMapById('Map');
+    mapWidget.registerForEvent(Fusion.Event.MAP_LOADED, initPanelHandler);
+}
+
+var initPanelHandler = function() {
+    //register this with MAP_LOADED so that the initial layout will remain
+    Fusion.registerForEvent(Fusion.Event.TASK_PANE_LOADED, showTaskPane);
 }
 
 var showOverviewMap = function() {
