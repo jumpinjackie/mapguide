@@ -50,7 +50,14 @@
         -->
         <Property Id="SITE_ID" Secure="yes" Value="1" />
         <Property Id="VIRTUALDIR" Secure="yes" Value="mapguide" />
-        <Property Id="MG_WEBSITE" Secure="yes" Value="Default Web Site" />
+        <Property Id="MG_WEBSITE" Secure="yes" Value="Default Web Site">
+            <RegistrySearch
+            Id="MgWebsiteRs"
+            Type="raw"
+            Root="HKLM"
+            Key="$(var.MgRegKey)"
+            Name="MG_WEBSITE"  />
+        </Property>
 
         <!-- Add Remove Programs metadata -->
         <Property Id="ARPHELPLINK" Value="http://mapguide.osgeo.org" />
@@ -280,7 +287,7 @@
                 <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.CancelButtonText)" />
             </Dialog>
 
-            <!-- Dialog to configure IIS6 specific things: web-site installation and application pool -->
+            <!-- Dialog to configure IIS6 specific things: web-site installation and application pool (w/ Trac #361 enhancements) -->
             <Dialog Id="IIS6ConfigDlg" Width="370" Height="270" Title="!(loc.InstallerTitle)">
                 <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}!(loc.IIS6ConfigDlg_Title)" />
                 <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.IIS6ConfigDlg_Description)" />
@@ -288,15 +295,19 @@
                 <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
                 <!-- 
                 
+                Install Web Extensions to the following website:
+                ________________________________________________|V|
                 Create an application pool: ___________________________
                 
                 It is recommended to create an application pool if you are running mixed 
                 ASP.net application environments on your web server.
                 
                 -->
-                <Control Id="LblAppPool" Type="Text" Text="!(loc.IIS6ConfigDlg_AppPool)" X="20" Y="80" Width="240" Height="15" />
-                <Control Id="TxtAppPool" Type="Edit" Property="APP_POOL_NAME" X="20" Y="100" Width="240" Height="15" />
-                <Control Id="LblAppPoolDescription" Type="Text" Text="!(loc.IIS6ConfigDlg_AppPoolDescription)" X="20" Y="120" Width="240" Height="45" />
+                <Control Id="LblWebSite" Type="Text" Text="!(loc.IIS6ConfigDlg_InstallTo)" X="20" Y="80" Width="240" Height="15" />
+                <Control Id="LstWebSite" Type="ListBox" Property="MG_WEBSITE" X="20" Y="100" Width="240" Height="60" />
+                <Control Id="LblAppPool" Type="Text" Text="!(loc.IIS6ConfigDlg_AppPool)" X="20" Y="170" Width="240" Height="15" />
+                <Control Id="TxtAppPool" Type="Edit" Property="APP_POOL_NAME" X="20" Y="190" Width="140" Height="15" />
+                <Control Id="LblAppPoolDescription" Type="Text" Text="!(loc.IIS6ConfigDlg_AppPoolDescription)" X="20" Y="210" Width="240" Height="30" />
 
                 <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
                 <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
@@ -494,6 +505,11 @@
             <ProgressText Action="RemoveApacheServiceCA">!(loc.RemoveApacheServiceCA)</ProgressText>
 
         </UI>
+
+        <!-- Trac #361: Run our custom CA as part of the UI install sequence -->
+        <InstallUISequence>
+            <Custom Action="EnumerateIIS6WebSites" After="CostFinalize" Overridable="yes">NOT Installed AND IISVERSIONMAJOR=&quot;#6&quot;</Custom>
+        </InstallUISequence>
 
         <InstallExecuteSequence>
 

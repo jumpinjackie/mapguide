@@ -5,7 +5,7 @@
     http://msdn.microsoft.com/en-us/library/system.globalization.cultureinfo(vs.80).aspx
     -->
     <String Id="LANG">3082</String>
-    <String Id="ProductName">MapGuide Open Source 2.1</String>
+    <String Id="ProductName">MapGuide Open Source 2.2</String>
     <String Id="ProductManufacturer">Open Source Geospatial Foundation</String>
 
     <String Id="InstallerTitle">Instalación de [ProductName]</String>
@@ -43,6 +43,7 @@
 
     <String Id="IIS6ConfigDlg_Title">Configuración de IIS 6.0</String>
     <String Id="IIS6ConfigDlg_Description">Configurar IIS 6.0 Configuración</String>
+    <String Id="IIS6ConfigDlg_InstallTo">Instalación de extensiones Web de sitio web la siguiente</String>
     <String Id="IIS6ConfigDlg_AppPool">Crear un grupo de aplicaciones</String>
     <String Id="IIS6ConfigDlg_AppPoolDescription">Un grupo de aplicaciones MapGuide permite a las aplicaciones ser aislado de otras aplicaciones que se ejecutan en el servidor web</String>
 

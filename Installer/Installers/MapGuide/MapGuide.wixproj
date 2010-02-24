@@ -5,7 +5,7 @@
     <ProductVersion>3.0</ProductVersion>
     <ProjectGuid>{12c62f60-6f52-4112-84ab-0fa8ed44ee77}</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName Condition=" '$(OutputName)' == '' ">MapGuideOpenSource-2.1.0-Unofficial</OutputName>
+    <OutputName Condition=" '$(OutputName)' == '' ">MapGuideOpenSource</OutputName>
     <OutputType>Package</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.0\Wix.targets</WixTargetsPath>
     <Name>MapGuide</Name>
