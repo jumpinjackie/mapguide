@@ -43,11 +43,13 @@ rem ==================================================
 SET TYPEACTION=build
 SET TYPEBUILD=Release
 SET CULTURE=en-US
-SET INSTALLER_NAME=MapGuideOpenSource-2.1.0-Unofficial-%CULTURE%-%TYPEBUILD%
-SET INSTALLER_VERSION=2.1.0.0
-SET INSTALLER_TITLE="MapGuide OS 2.1 Unofficial (%TYPEBUILD%)"
+SET INSTALLER_NAME=MapGuideOpenSource-2.2.0-Trunk-%CULTURE%-%TYPEBUILD%
+SET INSTALLER_VERSION=2.2.0.0
+SET INSTALLER_TITLE="MapGuide Open Source 2.2 Trunk (%TYPEBUILD%)"
 SET MG_SOURCE=%CD%\..\MgDev\%TYPEBUILD%
 SET MG_SOURCE_INC=
+rem Set to NO to build installers quicker (at the expense of file size)
+SET MAX_COMPRESSION=YES
 
 rem ==================================================
 rem MapGuide Installer vars
@@ -400,15 +402,27 @@ if "%errorlevel%"=="1" goto error
 pushd "%INSTALLER_DEV_BOOTSTRAP%"
 echo [bootstrap]: Creating
 %MSBUILD% /p:TargetFile=%INSTALLER_NAME%.msi Bootstrap.proj
-if "%errorlevel%"=="1" goto error
-echo [bootstrap]: Create self-extracting package
-makensis /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DCULTURE=%CULTURE% /DMAXCOMPRESSION Setup.nsi
-rem Use this line instead if you value build speed over compression
-rem makensis /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DCULTURE=%CULTURE% Setup.nsi
-if "%errorlevel%"=="1" goto error
 popd
-echo [build]: Installer created at %INSTALLER_OUTPUT%\%INSTALLER_NAME%.exe
+if "%errorlevel%"=="1" goto error
+if "%MAX_COMPRESSION%"=="YES" goto build_max_compress
+goto build_min_compress
 
+:build_min_compress
+pushd "%INSTALLER_DEV_BOOTSTRAP%"
+echo [bootstrap]: Create self-extracting package
+makensis /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DCULTURE=%CULTURE% /DMG_VERSION=%INSTALLER_VERSION% Setup.nsi
+popd
+if "%errorlevel%"=="1" goto error
+echo [build]: Installer created at %INSTALLER_OUTPUT%\%INSTALLER_NAME%.exe
+goto quit
+
+:build_max_compress
+pushd "%INSTALLER_DEV_BOOTSTRAP%"
+echo [bootstrap]: Create self-extracting package (MAX compression)
+makensis /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DCULTURE=%CULTURE% /DMAXCOMPRESSION /DMG_VERSION=%INSTALLER_VERSION% Setup.nsi
+popd
+if "%errorlevel%"=="1" goto error
+echo [build]: Installer created at %INSTALLER_OUTPUT%\%INSTALLER_NAME%.exe
 goto quit
 
 :error_mg_server_not_found

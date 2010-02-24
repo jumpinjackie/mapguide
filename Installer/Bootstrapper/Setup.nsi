@@ -7,13 +7,11 @@ FileBufSize 256
 
 !endif
 
-!define MG_VERSION "2.1.0"
-
-VIProductVersion "${MG_VERSION}.0"
+VIProductVersion "${MG_VERSION}"
 VIAddVersionKey "FileVersion" "1.0.0.0"
 VIAddVersionKey "CompanyName" "Open Source Geospatial Foundation"
 VIAddVersionKey "FileDescription" "Installer Bootstrapper package for MapGuide Open Source"
-VIAddVersionKey "LegalCopyright" "2009 Open Source Geospatial Foundation"
+VIAddVersionKey "LegalCopyright" "2010 Open Source Geospatial Foundation"
 
 !ifndef CULTURE
 !define CULTURE "en-us"
