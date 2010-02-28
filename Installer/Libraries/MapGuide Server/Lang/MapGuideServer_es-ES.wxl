@@ -34,6 +34,8 @@
     <String Id="OgrProviderDesc">Proveedor de OGR</String>
     <String Id="PostGisProvider">PostGIS Proveedor</String>
     <String Id="PostGisProviderDesc">Proveedor FDO para PostGIS (requiere libpq.dll)</String>
+    <String Id="PostgreSqlProvider">PostgreSQL/PostGIS Proveedor</String>
+    <String Id="PostgreSqlProviderDesc">De lectura / escritura de acceso a PostgreSQL / PostGIS datos basados en la tienda. Soporta los tipos de datos espaciales y las operaciones espaciales de la consulta.</String>
     <String Id="SdfProvider">SDF Proveedor</String>
     <String Id="SdfProviderDesc">De lectura / escritura a Autodesk espacial del formato de base de datos, un archivo basado en Geodatabase personales que soporta múltiples características y atributos, indexación espacial, y el archivo de bloqueo.</String>
     <String Id="ShpProvider">SHP Proveedor</String>
