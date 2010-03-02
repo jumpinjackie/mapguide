@@ -109,6 +109,28 @@ public:
     /// Returns <c>true</c> for "essentially equal".
     /// </returns>
     static bool DblCmp (double first,double second);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Reliably compares two doubles ignoring differences in the least
+    /// significant bits of the mantissa which are unreliable if either of
+    /// the values being compared are the result of some serious calculations.
+    /// </summary>
+    /// <param name="first">
+    /// The first of two doubles to be compared.
+    /// </param>
+    /// <param name="second">
+    /// The second of two doubles to be compared.
+    /// </param>
+    /// <param name="tolerance">
+    /// If the difference between the two values is euqal to or less than
+    /// this value, the function returns true.
+    /// </param>
+    /// <returns>
+    /// Returns <c>true</c> for "essentially equal".
+    /// </returns>
+    static bool DblCmp (double first,double second,double tolerance);
+
 };
 /// \endcond
 

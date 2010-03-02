@@ -212,6 +212,9 @@ double MgMathUtility::LinearInterpolate(double start, double end, double proport
     return interpolated;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// This overload of DblCmp __MUST NOT__ be used if either argument can
+// be a hard zero.
 bool MgMathUtility::DblCmp (double first,double second)
 {
     int exp1, exp2;
@@ -249,4 +252,15 @@ bool MgMathUtility::DblCmp (double first,double second)
     // Since the exponents are equal, then we can simply compare the mantissas.
     // We ignore any difference in the last few bits.
     return (fabs (mant1 - mant2) < 5.0E-13);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Use this overload of DblCmp if either argument can be expected to be a
+// hard zero.
+bool MgMathUtility::DblCmp (double first,double second,double tolerance)
+{
+    bool equal;
+    
+    equal = (fabs (first - second) < tolerance);
+    return equal;
 }
