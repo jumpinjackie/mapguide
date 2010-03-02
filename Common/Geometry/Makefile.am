@@ -349,6 +349,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Parse/yyAwkt.h \
   Spatial/MathUtility.h \
   Spatial/SpatialUtility.h \
+  Spatial/SpatialUtilityStatus.h \
   Spatial/SpatialUtilityCircularArc.h \
   Spatial/SpatialUtilityVectorAngle.h \
   ../CoordinateSystem/ArbitraryCoordsys.h \
