@@ -276,7 +276,7 @@ public:
     /// Returns an <c>MgCoordinateXY</c> point which is guaranteed to be ooutside
     /// the provided polygon.
     /// </returns>
-    static MgCoordinate* MgSpatialUtility::PointOutsidePolygon (MgCoordinateIterator* polyItr);
+    static MgCoordinate* PointOutsidePolygon (MgCoordinateIterator* polyItr);
 
     ///////////////////////////////////////////////////////////////////////////////
     /// <summary>
