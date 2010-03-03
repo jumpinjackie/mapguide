@@ -1098,7 +1098,7 @@ INT32 MgSpatialUtility::PointIsInPolygon (MgCoordinateIterator* polyItr,MgCoordi
 INT32 MgSpatialUtility::PointIsInPolygon (MgCoordinateIterator* polyItr,MgCoordinate* queryPoint)
 {
     INT32 pointStatus;
-    MgCoordinate* outsidePoint;
+    Ptr<MgCoordinate> outsidePoint;
 
     outsidePoint = PointOutsidePolygon (polyItr);
     pointStatus = PointIsInPolygon (polyItr,outsidePoint,queryPoint);
