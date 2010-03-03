@@ -1,0 +1,12 @@
+OSGeo.MapGuide.Foundation.dll
+OSGeo.MapGuide.Geometry.dll
+OSGeo.MapGuide.MapGuideCommon.dll
+OSGeo.MapGuide.PlatformBase.dll
+OSGeo.MapGuide.Web.dll
+FoundationUnmanagedApi.dll
+GeometryUnmanagedApi.dll
+MapGuideCommonUnmanagedApi.dll
+PlatformBaseUnmanagedApi.dll
+WebUnmanagedApi.dll
+MapGuideDotNetApi.dll
+MapGuideUnmanagedApi.dll
