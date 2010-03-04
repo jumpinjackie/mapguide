@@ -91,7 +91,7 @@
             $updateType = 0;
             // return only the layer structure, that is mainly groups/layers/layer-ids. Do not parse layer definitions.
             //
-            BuildClientSideTree($tree, null, "null", false, "layerData", null);
+            BuildClientSideTree($tree, null, "null", false, "layerData", null, null);
         }
         else
         {
