@@ -180,11 +180,12 @@ function SetTaskBarWidth( width )
     {
         if(orgTaskBarWidth == -1)
         {
-            orgTaskBarWidth = mainappFrame.cols;
+            orgTaskBarWidth = mainappFrame.cols.substring(2);;
         }
         if(width != -1)
         {
-            mainappFrame.cols = width;
+            
+            mainappFrame.cols = "*," + width;
         }
     }
 }

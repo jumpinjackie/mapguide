@@ -149,6 +149,21 @@ function ToggleButton(eltId)
     active = eltId;
 }
 
+function CloseTaskPane()
+{
+    var tbframe = parent.frames["tbFrame"];
+    var openTaskbarBtn = tbframe.document.getElementById("divOpenTaskbarBtn");
+    if(openTaskbarBtn != null)
+    {
+        openTaskbarBtn.style.display='block';
+    }
+    
+    var divRefresh = tbframe.document.getElementById("divRefresh");
+    divRefresh.className = "cssRefreshWithOpenBtn";
+    
+    parent.CloseTaskBar();
+}
+
 function OpenTaskMenu()
 {
     try
@@ -182,7 +197,7 @@ function GetTextLen(text)
     <table height=30 border=0 cellpadding=0 cellspacing=0>
         <tr height=30>
           <td align=center valign=center>
-            <span class="btn" id="btnClose" style="position: absolute; left: 5px;" onmouseover="HoverButton('btnClose', '')" onmouseout="LeaveButton('btnClose', '')" onclick="parent.CloseTaskBar()">
+            <span class="btn" id="btnClose" style="position: absolute; left: 5px;" onmouseover="HoverButton('btnClose', '')" onmouseout="LeaveButton('btnClose', '')" onclick="CloseTaskPane()">
               <img class="btnImg" id="imgClose" title="" src="../stdicons/transparentpixel.gif" width=16 height=16>
             </span>
           </td>

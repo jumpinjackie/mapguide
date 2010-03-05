@@ -30,11 +30,17 @@
         /* font-family: __#@font#__; */
         /* font-size: __#@fontsize#__; */
     }
-    div.cssRefresh
+    div.cssOpenTaskbarBtn
     {
         position: absolute;
-        right:10px;
-        top:4px;
+        right:5px;
+        top:3px;
+        width: 26;
+        height:25;
+        border-width: 1px;
+        border-style: solid;
+        border-color: #f0f0f0;
+        cursor: pointer;
     }
 
 </style>
@@ -108,7 +114,11 @@ function HoverButton(eltId, cmdId)
 
     document.getElementById(eltId).style.border = "solid #a0a0a0 1px";
     hovered = eltId;
-    parent.SetStatusMsg(cmdId!=null? parent.commands[cmdId].description: '');
+    
+    if(eltId == 'divOpenTaskbarBtn')
+        parent.SetStatusMsg("__#TASKBAROPENBUTTONDESC#__");
+    else
+        parent.SetStatusMsg(cmdId!=null? parent.commands[cmdId].description: '');
 }
 
 function LeaveButton(eltId)
@@ -145,6 +155,20 @@ function ToggleButton(eltId)
         }
     }
     active = eltId;
+}
+
+function OpenTaskPane()
+{
+    var openTaskbarBtn = document.getElementById("divOpenTaskbarBtn");
+    if(openTaskbarBtn != null)
+    {
+        openTaskbarBtn.style.display='none';
+    }
+    
+    var divRefresh = document.getElementById("divRefresh");
+    divRefresh.className = "cssRefresh";
+    
+    parent.OpenTaskBar();
 }
 
 function ExecuteCommand(index, toggle, eltId)
@@ -244,6 +268,9 @@ function OpenFlyout(elt, tbItemIndex)
 <body class="Toolbar" onload="InitDocument()" leftmargin="10" topmargin="0" rightmargin="0" bottommargin="0" marginwidth="0">
     <div id="divRefresh" name="divRefresh" class="cssRefresh" style="display:none;">
         <img alt="loading" src="../stdicons/icon_loading.gif">
+    </div>
+    <div id="divOpenTaskbarBtn" name="divOpenTaskbarBtn" class="cssOpenTaskbarBtn" style="display:none;" onmouseover="HoverButton('divOpenTaskbarBtn', null)" onmouseout="LeaveButton('divOpenTaskbarBtn')" onclick="OpenTaskPane()">
+        <img id="imgOpen" title="__#TASKBAROPENBUTTONTEXT#__" src="../stdicons/openButton.gif" style="margin: 4px 0px 0px 5px;" width=16 height=16>
     </div>
     <span id="ToolbarContent">
     </span>
