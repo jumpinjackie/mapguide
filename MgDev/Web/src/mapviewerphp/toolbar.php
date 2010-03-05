@@ -17,6 +17,13 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+    include 'common.php';
+
+    $locale = "";
+    GetRequestParameters();
+
+    SetLocalizedFilesPath(GetLocalizationPath());
+
     // pass diferent button height depending on the browser
     // to achieve a similar rendering, as there is no cross-browser conditional CSS
     //
@@ -28,7 +35,23 @@
 
     // return the HTML template
     //
-    $templ = file_get_contents("../viewerfiles/toolbar.templ");
+    $templ = Localize(file_get_contents("../viewerfiles/toolbar.templ"), $locale, GetClientOS());
     printf($templ, $btnHeight);
+
+function GetParameters($params)
+{
+    global $locale;
+
+    if(isset($params['LOCALE']))
+        $locale = $params['LOCALE'];
+}
+
+function GetRequestParameters()
+{
+    if($_SERVER['REQUEST_METHOD'] == "POST")
+        GetParameters($_POST);
+    else
+        GetParameters($_GET);
+}
 
 ?>

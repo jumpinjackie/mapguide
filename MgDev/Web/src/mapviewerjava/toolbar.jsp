@@ -23,8 +23,24 @@
 <%@ page import="javax.servlet.http.*" %>
 <%@ include file="common.jsp" %>
 
+<%!
+String locale;
+%>
+
 <%
+    locale = "";
     response.setContentType("text/html; charset=UTF-8");
     request.setCharacterEncoding("UTF-8");
-    response.getWriter().write(LoadTemplate("/viewerfiles/toolbar.templ"));
+
+    MgLocalizer.SetLocalizedFilesPath(getServletContext().getRealPath("/") + "localized/");
+    GetRequestParameters(request);
+
+    response.getWriter().write(MgLocalizer.Localize(LoadTemplate("/viewerfiles/toolbar.templ"), locale, GetClientOS(request)));
+%>
+
+<%!
+void GetRequestParameters(HttpServletRequest request)
+{
+    locale = GetParameter(request, "LOCALE");
+}
 %>

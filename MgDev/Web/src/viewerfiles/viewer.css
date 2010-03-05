@@ -97,7 +97,18 @@ div.TextMetricsDiv
     position: absolute;
     top: 50px;
 }
-
+div.cssRefresh
+{
+    position: absolute;
+    right:10px;
+    top:8px;
+}
+div.cssRefreshWithOpenBtn
+{
+    position: absolute;
+    right:35px;
+    top:8px;
+}
 /*
    Statusbar styles
 */

@@ -17,10 +17,36 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ Page language="c#" %>
 <%@ Import Namespace="System" %>
 <%@ Import Namespace="System.IO" %>
+<%@ Import Namespace="OSGeo.MapGuide" %>
 
 <!-- #Include File="common.aspx -->
 
+<script runat="server">
+String locale;
+</script>
+
 <%
+    locale = "";
     Response.Charset = "utf-8";
-    Response.Write(LoadTemplate(Request, "../viewerfiles/toolbar.templ"));
+    GetRequestParameters();
+
+    MgLocalizer.SetLocalizedFilesPath(Request.ServerVariables["APPL_PHYSICAL_PATH"] + "..\\localized\\");
+
+    Response.Write(MgLocalizer.Localize(LoadTemplate(Request, "../viewerfiles/toolbar.templ"), locale, GetClientOS(Request)));
 %>
+
+<script runat="server">
+void GetRequestParameters()
+{
+    if (Request.HttpMethod == "POST")
+        GetParameters(Request.Form);
+    else
+        GetParameters(Request.QueryString);
+}
+
+void GetParameters(NameValueCollection parameters)
+{
+    locale = GetParameter(parameters, "LOCALE");
+}
+
+</script>
