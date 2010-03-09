@@ -23,6 +23,7 @@
 <%@ page import="javax.servlet.http.*" %>
 <%@ include file="common.jsp" %>
 <%@ include file="product.jsp" %>
+<%@ page isThreadSafe="false" %>
 
 <%!
 String sessionId;
