@@ -22,6 +22,7 @@
 <%@ page import="javax.servlet.jsp.*" %>
 <%@ page import="javax.servlet.http.*" %>
 <%@ include file="common.jsp" %>
+<%@ page isThreadSafe="false" %>
 
 <%!
 String mapDefinition;

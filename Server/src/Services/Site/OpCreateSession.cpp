@@ -84,6 +84,9 @@ void MgOpCreateSession::Execute()
         Validate();
 
         STRING sessionId = m_service->CreateSession();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"Session:");
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(sessionId.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" ");
 
         EndExecution(sessionId);
     }

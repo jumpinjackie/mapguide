@@ -24,6 +24,7 @@
 <%@ page import="javax.xml.parsers.*" %>
 <%@ page import="org.w3c.dom.*" %>
 <%@ include file="common.jsp" %>
+<%@ page isThreadSafe="false" %>
 
 <%!
 

@@ -21,6 +21,7 @@
 <%@ page import="java.net.*" %>
 <%@ page import="javax.servlet.jsp.*" %>
 <%@ page import="javax.servlet.http.*" %>
+<%@ page isThreadSafe="false" %>
 
 <%!
 void InitializeWebTier() throws MgException

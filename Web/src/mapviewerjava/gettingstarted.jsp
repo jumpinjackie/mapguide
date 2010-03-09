@@ -17,6 +17,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="org.osgeo.mapguide.*" %>
 <%@ include file="common.jsp" %>
+<%@ page isThreadSafe="false" %>
 
 <%!
 String cmdListPage = "WS1a9193826455f5ff9110c71085341391d-2e28.htm";
