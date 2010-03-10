@@ -43,7 +43,7 @@ FdoExpressionEngineFunctionCollection* ExpressionHelper::GetExpressionEngineFunc
 
     // common functions
     RS_FeatureClassInfo* featInfo = renderer? renderer->GetFeatureClassInfo() : NULL;
-    const RS_String& featCls = (featInfo != NULL)?  featInfo->name() : s_Empty;
+    const RS_String& featCls = (featInfo != NULL)? featInfo->name() : s_Empty;
 
     FdoPtr<ExpressionFunctionArgb> funcArgb = ExpressionFunctionArgb::Create();
     FdoPtr<ExpressionFunctionDecap> funcDecap = ExpressionFunctionDecap::Create();

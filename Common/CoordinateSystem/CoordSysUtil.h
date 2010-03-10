@@ -28,11 +28,11 @@
 
 #include <algorithm>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include "windows.h"
 // To undefine GetMessage macro defined in windows
 #undef GetMessage
-#endif // WIN32 defined
+#endif
 
 // Mentor specific information
 extern "C" struct cs_Prjtab_ cs_Prjtab[];   // Mentor projection table

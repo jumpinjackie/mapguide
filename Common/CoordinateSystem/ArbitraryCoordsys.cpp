@@ -24,7 +24,7 @@
 
 extern "C" struct cs_Unittab_ cs_Unittab[]; // Mentor unit table
 
-#ifndef WIN32
+#ifndef _WIN32
 #include <dlfcn.h>
 #endif
 

@@ -159,7 +159,7 @@ MgStringCollection* CCoordinateSystemEnumInteger32::Next(UINT32 ulCount)
             continue;
         }
         wchar_t wszINT32[255];
-        #ifdef WIN32
+        #ifdef _WIN32
         _itow(m_pnValues[m_ulPos], wszINT32, 10);
         #else
         swprintf(wszINT32, 255, L"%d", m_pnValues[m_ulPos]);
