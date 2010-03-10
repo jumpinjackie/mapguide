@@ -105,7 +105,6 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TargetEnvironment="3"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
@@ -176,7 +175,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				AdditionalIncludeDirectories="..\..\..\Common\MdfModel;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;ZEND_DEBUG=0;COMPILE_DL_TEST_API;ZTS=1;ZEND_WIN32;PHP_WIN32"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_WINDOWS;ZEND_DEBUG=0;COMPILE_DL_TEST_API;ZTS=1;ZEND_WIN32;PHP_WIN32"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
 				WarningLevel="3"
@@ -234,13 +233,12 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TargetEnvironment="3"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				AdditionalIncludeDirectories="..\..\..\Common\MdfModel;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;ZEND_DEBUG=0;COMPILE_DL_TEST_API;ZTS=1;ZEND_WIN32;PHP_WIN32"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_WINDOWS;ZEND_DEBUG=0;COMPILE_DL_TEST_API;ZTS=1;ZEND_WIN32;PHP_WIN32"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
 				WarningLevel="3"
