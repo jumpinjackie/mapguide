@@ -121,7 +121,6 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TargetEnvironment="3"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
@@ -287,7 +286,6 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TargetEnvironment="3"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
@@ -298,7 +296,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="false"
 				AdditionalIncludeDirectories="..\MdfModel;..\Foundation;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\FDO\inc;..\..\Oem\FDO\inc\ExpressionEngine"
-				PreprocessorDefinitions="WIN32;_NDEBUG;_WINDOWS;_USRDLL;STYLIZATION_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;STYLIZATION_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
 				WarningLevel="3"
