@@ -127,7 +127,7 @@
 				AdditionalOptions="$(USRCFLAGS)"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\MdfModel;..\Stylization;..\..\Oem\FDO\inc;..\..\Oem\FDO\inc\ExpressionEngine;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\gd\gd;..\..\Oem\gd\freetype\include;&quot;..\..\Oem\agg-2.4\include&quot;;&quot;..\..\Oem\agg-2.4\font_freetype&quot;;..\..\Oem\gd\lpng;..\..\Oem\gd\zlib"
-				PreprocessorDefinitions="WIN32;WIN64;_DEBUG;_WINDOWS;_USRDLL;RENDERERS_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;RENDERERS_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
 				BasicRuntimeChecks="3"
