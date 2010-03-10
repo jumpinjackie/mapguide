@@ -1028,7 +1028,6 @@ INT32 MgSpatialUtility::AddToCoordinateCollection (MgCoordinateCollection* colle
 MgCoordinate* MgSpatialUtility::PointOutsidePolygon (MgCoordinateIterator* polyItr)
 {
     Ptr<MgCoordinate> outPoint;
-    Ptr<MgCoordinate> tmpCoord;
 
     double outX, outY;
     double magnitude;
@@ -1326,7 +1325,7 @@ MgCoordinateCollection* MgSpatialUtility::StringClipPhaseOne (MgCoordinateIterat
                        MgSpatialUtilityStatus::IntersectIsSeg1End;
                 if ((status & mask) == 0)
                 {
-//TODO: A performance improvement is possibile here.  Since this transition
+// TODO: A performance improvement is possible here.  Since this transition
 // point is an intersection point, we know it to reside on the boundary.  We
 // could set the M value to indicate that and eliminate the need to determine
 // this point's status in Phase Two.  We'll do this after we know all this
@@ -1377,7 +1376,7 @@ MgCoordinateCollection* MgSpatialUtility::StringClipPhaseOne (MgCoordinateIterat
                 if (collinearStatus == seg1StartA || collinearStatus == seg1StartB || collinearStatus == seg1Both)
                 {
                     // Insert the polygon "From" point.
-//TODO: A performance improvement is possibile here.  Since this transition
+// TODO: A performance improvement is possible here.  Since this transition
 // point is an intersection point, we know it to reside on the boundary.  We
 // could set the M value to indicate that and eliminate the need to determine
 // this point's status in Phase Two.  We'll do this after we know all this
@@ -1390,7 +1389,7 @@ MgCoordinateCollection* MgSpatialUtility::StringClipPhaseOne (MgCoordinateIterat
                 if (collinearStatus == seg1EndA || collinearStatus == seg1EndB || collinearStatus == seg1Both)
                 {
                     // Insert the polygon "To" point.
-//TODO: A performance improvement is possibile here.  Since this transition
+// TODO: A performance improvement is possible here.  Since this transition
 // point is an intersection point, we know it to reside on the boundary.  We
 // could set the M value to indicate that and eliminate the need to determine
 // this point's status in Phase Two.  We'll do this after we know all this
