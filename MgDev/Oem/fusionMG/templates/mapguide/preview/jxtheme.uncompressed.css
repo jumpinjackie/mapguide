@@ -1224,7 +1224,6 @@ ul.jxSubMenu span.jxMenuSeparator {
   overflow: hidden;
   /*margin: 5px;*/
   background-color: #f0f0f0;
-  z-index: -1;
 }
 
 /* the content panel inside a panel */
@@ -1493,6 +1492,17 @@ ul.jxSubMenu span.jxMenuSeparator {
   overflow: hidden;
   z-index: 0;
 }
+
+.jxSplitterMask { 
+  position: absolute; 
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-image: url(images/a_pixel.png);
+  z-index: 1; 
+} 
 
 .jxSplitBarDrag {
   background-color: #eee;
