@@ -134,16 +134,19 @@ echo Apache Httpd build completed
 # Apache shutdown  procedure
 # Notes: none
 #**********************************************************
-echo Attempting to shutdown Apache
-pushd $INSTALLWEB/apache2/bin
-./apachectl stop
-popd
-echo Attempting to remove old Apache and Php
-pushd $INSTALLWEB
-rm -rf apache2
-rm -rf php
-popd
-echo Completed uninstall of Apache and Php
+echo Checking for existing Apache install
+if [ -d $INSTALLWEB/apache2/bin ]; then
+  echo Attempting to shutdown Apache
+  pushd $INSTALLWEB/apache2/bin
+  ./apachectl stop
+  popd
+  echo Attempting to remove old Apache and Php
+  pushd $INSTALLWEB
+  rm -rf apache2
+  rm -rf php
+  popd
+  echo Completed uninstall of Apache and Php
+fi
 
 #**********************************************************
 # Apache install procedure
