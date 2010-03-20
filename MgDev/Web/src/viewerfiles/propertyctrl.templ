@@ -60,9 +60,15 @@ function SetProperties(count, properties)
     {
         var text;
         if(count == 0)
+        {
             text = "__#PROPERTIESNONE#__";
+            GetMapFrame().SetPropertyPaneToolbarVisibility(false);
+        }
         else
+        {
             text = GetMainFrame().FormatMessage("__#PROPERTIESITEMSEL#__", new Array(count, "unused"));
+            GetMapFrame().SetPropertyPaneToolbarVisibility(true);
+        }
         code = '<table id="Grid" cellspacing=0 cellpadding=0 border=0><tr><td class="Info" align="center">' + text + '</td></tr></table>';
     }
     else
@@ -71,15 +77,26 @@ function SetProperties(count, properties)
         for(var i=0; i < properties.length; i++)
             code += '<tr class="GridCell"><td><span style="font-family: __#@font#__; font-size: __#@fontsize#__;">&nbsp;' + properties[i].name + '</span></td><td></td><td><span style="font-family: __#@font#__; font-size: __#@fontsize#__;">' + properties[i].value + '</span></td></tr>';
         code += '</table>';
+        GetMapFrame().SetPropertyPaneToolbarVisibility(true);
     }
 
-    var content = document.getElementById("Content");
-    content.innerHTML = code; //SAFARI
-    OnResizeGrid();
+    SetContent(code);
 }
 
 // private functions -----------------------------------------------
 //
+function Clear()
+{
+    SetContent("");
+}
+
+function SetContent(html)
+{
+    var content = document.getElementById("Content");
+    content.innerHTML = html; //SAFARI
+    OnResizeGrid();
+}
+
 function InitDocument()
 {
     document.onmousedown = OnMouseDown;

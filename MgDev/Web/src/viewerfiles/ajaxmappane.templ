@@ -334,6 +334,7 @@ var locale = '%s';
 var openHlinkText = macOS ? "__#OPENHYPERLINKMAC#__" : "__#OPENHYPERLINK#__";
 var selectionColor = '0x0000FFFF'; // Blue
 var lastLegendScaleUpdate = curScale;
+var featureRequestUrl = '%s';
 %s
 
 
@@ -551,6 +552,9 @@ function InitDocument()
     cancelTgt = document.getElementById("KeyTarget");
 
     initTimer = setInterval(delayedInit, 200);
+    
+    var btn = document.getElementById("imgZoomFeature");
+    btn.title = "__#ZOOMSELECTEDFEATUREDESC#__";
 }
 
 function delayedInit()
@@ -2877,26 +2881,17 @@ function ProcessFeatureInfo(xmlIn, append, which)
     }
     if(which & 2)
     {
-        properties = new Array();
-        if(selection.count == 1)
+        if (IsPropertyCtrlVisible())
         {
-            try
+            if (selection.count > 0)
             {
-                var props = xmlIn.getElementsByTagName("Property");
-                if(props != null)
-                {
-                    for(var i=0; i < props.length; i++)
-                    {
-                        var name = props[i].getAttribute("name");
-                        var value = props[i].getAttribute("value");
-                        properties.push(new Property(name, value));
-                    }
-                }
+                RequestSelectedFeatureProperties();
             }
-            catch(e) {}
+            else
+            {
+                ResetPropertyPane();
+            }
         }
-        properties.sort(CompareProperties);
-        GetPropertyCtrl().SetProperties(selection.count, properties);
     }
     if(which & 4)
     {
@@ -3824,6 +3819,202 @@ function OnMouseWheel(event)
     }
 }
 
+//--- Property Pane Toolbar ---//
+var selFeatureZoom = 200;
+var hovered = "";
+var active = "";
+var selFeatures = {};
+
+function RequestSelectedFeatureProperties()
+{
+    var mapname = GetMapName();
+    var session = GetSessionId();
+    var selRequest = CreateRequestHandler();
+    var reqParams = "MAPNAME="+mapname+"&SESSION="+session+"&LOCALE="+locale+"&SEQ="+Math.random();
+    selRequest.open("POST", featureRequestUrl, false);
+    selRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    selRequest.send(reqParams);
+    
+    var respText = selRequest.responseText;
+    if (respText && respText.length > 0)
+    {
+        var resp = eval('(' + respText + ')');
+        //If an error occurred server-side, it is written as the error property of the JSON response
+        if (resp.Error)
+            RequestFailed(resp.Error.Message + "\n\n__#ERRORSTACKTRACE#__:\n\n" + resp.Error.StackTrace);
+        else
+            ProcessSelectedFeatureSet(resp);
+    }
+    else
+        RequestFailed("__#NOFEATSELECTRESPONSE#__");
+}
+
+function ProcessSelectedFeatureSet(resp)
+{
+    selFeatures = {};
+    if (!resp)
+        return;
+        
+    var selLayers = document.getElementById("selLayers");
+    selLayers.length = 0;
+    GetPropertyCtrl().Clear();
+    
+    //Construct layer list
+    for(var layerName in resp)
+    {
+        var opt = new Option();
+        opt.text = layerName;
+        opt.value = layerName;
+        
+        if(msie)
+            selLayers.add(opt);
+        else
+            selLayers.add(opt, null);
+ 
+        //Associates the selected features on layer
+        selFeatures[layerName] = resp[layerName];
+    }
+    
+    if (selLayers.length > 0)
+    {
+        SetPropertyPaneToolbarVisibility(true);
+        //Set to first result on the layer list
+        selLayers.selectedIndex = 0;
+        OnSelectedFeatureLayerChanged();
+    }
+}
+
+function IsPropertyCtrlVisible()
+{
+    return GetPropertyCtrl().width > 0;
+}
+
+function ResetPropertyPane()
+{
+    var selLayers = document.getElementById("selLayers");
+    selLayers.length = 0;
+    var selFeature = document.getElementById("selFeature");
+    selFeature.length = 0;
+    SetPropertyPaneToolbarVisibility(false);
+    GetPropertyCtrl().SetProperties(0);
+}
+
+function OnSelectedFeatureLayerChanged()
+{
+    var sLayer = document.getElementById("selLayers");
+    var layerIdx = sLayer.selectedIndex;
+    var layerName = sLayer.options[layerIdx].value;
+    var count = selFeatures[layerName].length;
+    
+    //Clear feature dropdown and repopulate by numerical index (offset by 1)
+    var sFeature = document.getElementById("selFeature");
+    sFeature.length = 0;
+    
+    for (var i = 1; i <= count; i++)
+    {
+        //This is just for display purposes. The selected index
+        //gives use the matching feature
+        var opt = new Option();
+        opt.text = i;
+        opt.value = 1;
+        
+        if (msie)
+            sFeature.add(opt);
+        else
+            sFeature.add(opt, null);    
+    }
+    
+    if (count > 0)
+    {
+        sFeature.selectedIndex = 0;
+        OnSelectedFeatureChanged();
+    }
+}
+
+function OnSelectedFeatureChanged()
+{
+    var sLayer = document.getElementById("selLayers");
+    var layerIdx = sLayer.selectedIndex;
+    var sFeature = document.getElementById("selFeature");
+    var featureIdx = sFeature.selectedIndex;
+    
+    //Get matching selected feature from array
+    var layerName = sLayer.options[layerIdx].value;
+    var feat = selFeatures[layerName][featureIdx];
+    
+    //Show feature
+    GetPropertyCtrl().SetProperties(1, feat.values);
+}
+
+function GetFeatureZoomLevel()
+{
+    return selFeatureZoom;
+}
+
+function ZoomSelectedFeature()
+{
+    var sLayer = document.getElementById("selLayers");
+    var layerIdx = sLayer.selectedIndex;
+    var sFeature = document.getElementById("selFeature");
+    var featureIdx = sFeature.selectedIndex;
+    
+    //Get matching selected feature from array
+    var layerName = sLayer.options[layerIdx].value;
+    var feat = selFeatures[layerName][featureIdx];
+    
+    //Get the zoom component of the selected feature, and zoom to that view
+    if (feat.zoom)
+        ZoomToView(feat.zoom.x, feat.zoom.y, GetFeatureZoomLevel(), true);
+}
+
+function HoverButton(eltId, description)
+{
+    if (hovered != "")
+        document.getElementById(hovered).style.border = "solid #f0f0f0 1px";
+    
+    document.getElementById(eltId).style.border = "solid #99B5CA 1px";
+    hovered = eltId;
+    parent.SetStatusMsg(description);
+}
+
+function LeaveButton(eltId)
+{
+    if (eltId == active)
+        document.getElementById(eltId).style.border = "solid #99B5CA 1px";
+    else
+        document.getElementById(eltId).style.border = "solid #f0f0f0 1px";
+    hovered = "";
+    parent.SetStatusMsg('');
+}
+
+function SetPropertyPaneToolbarVisibility(visible)
+{
+    var tb = document.getElementById("PropertyPaneToolbar");
+    tb.style.display = visible ? "block" : "none";
+}
+
+function OnResizeToolbar(e)
+{
+    var tb = document.getElementById("PropertyPaneToolbar");
+    if (tb)
+    {
+        width = msie ? document.body.clientWidth : window.innerWidth - 2;
+        height = 32;
+        tb.style.width = width + "px";
+        tb.style.height = height + "px";
+    }
+    return true;
+}
+
+function OnPropertyPaneDropDownClick(e)
+{
+    if(msie)
+        e.cancelBubble = true;
+    else
+        e.stopPropagation();
+    return true;
+}
+
 </script>
 
 </head>
@@ -3854,6 +4045,23 @@ function OnMouseWheel(event)
            </table>
          </div>
          <div class="propertyCtrl" id="PropertyCtrlDiv"  style="visibility: hidden;">
+           <div id="PropertyPaneToolbar" class="Toolbar" style="display:none">
+             <table width=100 height=30 border=0 cellpadding=0 cellspacing=0>
+               <tr height=30>
+                 <td align=center valign=center>
+                   <select id="selLayers" onchange="OnSelectedFeatureLayerChanged()" onmousedown="return OnPropertyPaneDropDownClick(event)"></select>
+                 </td>
+                 <td align=center valign=center>
+                   <select id="selFeature" onchange="OnSelectedFeatureChanged()" onmousedown="return OnPropertyPaneDropDownClick(event)"></select>
+                 </td>
+                 <td align=right>
+                   <span class="btn" id="btnZoomSelectedFeature" style="position: absolute; right: 2px;" onmouseover="HoverButton('btnZoomSelectedFeature', '')" onmouseout="LeaveButton('btnZoomSelectedFeature', '')" onclick="ZoomSelectedFeature()">
+                     <img class="btnImg" id="imgZoomFeature" title="" src="../stdicons/icon_zoomselect.gif" width=16 height=16>
+                   </span>
+                 </td>
+               </tr>
+             </table>
+           </div>
            <iframe id="PropertyCtrl" name="PropertyCtrl" src="%s?LOCALE=%s" frameborder="0" width="0">
            </iframe>
          </div>

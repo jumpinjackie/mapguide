@@ -176,6 +176,7 @@ String hlTgtName;
                     vpath + "setselection.jsp",
                     showSlider != 0? "true": "false",
                     locale,
+                    vpath + "getselectedfeatures.jsp",
                     scaleCreationCode,
                     vpath + "ajaxviewerabout.jsp",
                     vpath + "legendctrl.jsp",

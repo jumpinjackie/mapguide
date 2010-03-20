@@ -178,6 +178,7 @@ String hlTgtName;
                         vpath + "setselection.aspx",
                         showSlider != 0? "true": "false",
                         locale,
+                        vpath + "getselectedfeatures.aspx",
                         scaleCreationCode,
                         vpath + "ajaxviewerabout.aspx",
                         vpath + "legendctrl.aspx",
