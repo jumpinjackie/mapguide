@@ -247,3 +247,11 @@ MEASALREADYRUNNING      = Cannot execute digitization: A measure is in progress.
 
 # Localized Icon Files
 POWEREDBYICON           = PoweredBy_en.gif
+
+# Property Pane Toolbar
+ZOOMSELECTEDFEATUREDESC = Zoom to this feature
+NOFEATSELECTRESPONSE    = No response from feature selection request
+
+# Multiple Property Processing
+SERVERERROR             = Server Error
+ERRORSTACKTRACE         = Stack Trace

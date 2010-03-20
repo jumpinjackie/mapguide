@@ -145,6 +145,7 @@ else
                     $vpath . "setselection.php",
                     $showSlider? "true": "false",
                     $locale,
+                    $vpath . "getselectedfeatures.php",
                     $scaleCreationCode,
                     $vpath . "ajaxviewerabout.php",
                     $vpath . "legendctrl.php",
