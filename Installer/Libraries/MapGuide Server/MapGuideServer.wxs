@@ -6,6 +6,30 @@
 
         <DirectoryRef Id="ServerParentFolder">
             <Directory Id="SERVERROOTLOCATION" Name="Server">
+                <Component Id="ServerPortConfigComponent" Guid="68F33B54-F8C2-4BF5-AD25-3E549C73075C" Feature="ServerFeature">
+                    <CreateFolder />
+                    <IniFile Id="INISETSERVERADMINPORT"
+                             Action="addLine"
+                             Directory="SERVERBINLOCATION"
+                             Key="Port"
+                             Name="serverconfig.ini"
+                             Section="AdministrativeConnectionProperties"
+                             Value="[MG_ADMIN_PORT]"/>
+                    <IniFile Id="INISETSERVERCLIENTPORT"
+                             Action="addLine"
+                             Directory="SERVERBINLOCATION"
+                             Key="Port"
+                             Name="serverconfig.ini"
+                             Section="ClientConnectionProperties"
+                             Value="[MG_CLIENT_PORT]"/>
+                    <IniFile Id="INISETSERVERSITEPORT"
+                             Action="addLine"
+                             Directory="SERVERBINLOCATION"
+                             Key="Port"
+                             Name="serverconfig.ini"
+                             Section="SiteConnectionProperties"
+                             Value="[MG_SITE_PORT]"/>
+                </Component>
                 <Directory Id="SERVERBINLOCATION" Name="Bin" />
                 <Directory Id="SERVERLOGSLOCATION" Name="Logs">
                     <Component Id="ServerLogsComponent" Guid="B8107569-201D-4FAC-B1B1-BB3AC7207782" Feature="ServerLogsFeature">

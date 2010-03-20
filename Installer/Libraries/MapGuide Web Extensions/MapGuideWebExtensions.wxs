@@ -9,6 +9,30 @@
       
         <DirectoryRef Id="WebParentFolder">
             <Directory Id="WEBEXTENSIONSLOCATION" Name="Web">
+                <Component Id="WebPortConfigComponent" Guid="3C8FE0E1-3161-423D-9E08-0983B7075C4C" Feature="WebExtensionsFeature">
+                    <CreateFolder />
+                    <IniFile Id="INISETWEBADMINPORT"
+                             Action="addLine"
+                             Directory="WEBROOTLOCATION"
+                             Key="Port"
+                             Name="webconfig.ini"
+                             Section="AdministrativeConnectionProperties"
+                             Value="[MG_ADMIN_PORT]"/>
+                    <IniFile Id="INISETWEBCLIENTPORT"
+                             Action="addLine"
+                             Directory="WEBROOTLOCATION"
+                             Key="Port"
+                             Name="webconfig.ini"
+                             Section="ClientConnectionProperties"
+                             Value="[MG_CLIENT_PORT]"/>
+                    <IniFile Id="INISETWEBSITEPORT"
+                             Action="addLine"
+                             Directory="WEBROOTLOCATION"
+                             Key="Port"
+                             Name="webconfig.ini"
+                             Section="SiteConnectionProperties"
+                             Value="[MG_SITE_PORT]"/>
+                </Component>
                 <Component Id="WebExtensionsComponent" Guid="AE77C8EB-284D-4410-903F-92AD516DEA93">
                   <RegistryKey Id="MapGuideKey" Action="create" Root="HKLM" Key="$(var.MgRegKey)">
                     <RegistryValue Id="IisApiType" Action="write" Type="string" Name="IIS_API_TYPE" Value="[IIS_API_TYPE]" />

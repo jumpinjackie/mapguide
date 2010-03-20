@@ -23,6 +23,12 @@
     <String Id="DisabledFeaturesDialog_DotNet">The .NET Framework 2.0 was not found, so the .NET Web Extensions for IIS will not be available</String>
     <String Id="DisabledFeaturesDialog_Instructions">If you want to use these features, click on cancel and correct the problem before proceeding with installation</String>
 
+    <String Id="ServerConfigDlg_Title">Server Port Configuration</String>
+    <String Id="ServerConfigDlg_Description">MapGuide Server will be installed using the following port numbers. The Server and Web Tier configuration files will be set to use the specified port numbers below.</String>
+    <String Id="ServerConfigDlg_AdminPortNo">Admin Connection Port</String>
+    <String Id="ServerConfigDlg_ClientPortNo">Client Connection Port</String>
+    <String Id="ServerConfigDlg_SitePortNo">Site Connection Port</String>
+    
     <String Id="WebServerConfigDlg_Title">Select configuration type</String>
     <String Id="WebServerConfigDlg_Description">Select the type of web server configuration you want</String>
     <String Id="WebServerConfigDlg_Apache">Bundled Configuration</String>

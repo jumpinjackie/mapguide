@@ -23,6 +23,12 @@
     <String Id="DisabledFeaturesDialog_DotNet">Dot Net Framework 2.0 no se ha encontrado, por lo que el Asp.Net Web Extensiones no estará disponible</String>
     <String Id="DisabledFeaturesDialog_Instructions">Si desea utilizar estas funciones, haga clic en cancelar y corregir el problema antes de proceder con la instalación</String>
 
+    <String Id="ServerConfigDlg_Title">Puerto del servidor de configuración</String>
+    <String Id="ServerConfigDlg_Description">MapGuide Server se instala utilizando los números de puerto siguiente. El servidor de Web y los archivos de configuración de nivel se establece para utilizar los números de puerto se especifica a continuación.</String>
+    <String Id="ServerConfigDlg_AdminPortNo">Administrador de Puerto de conexión</String>
+    <String Id="ServerConfigDlg_ClientPortNo">Puerto de conexión de cliente</String>
+    <String Id="ServerConfigDlg_SitePortNo">Sitio Puerto de conexión</String>
+
     <String Id="WebServerConfigDlg_Title">Seleccione el tipo de configuración</String>
     <String Id="WebServerConfigDlg_Description">Seleccione el tipo de configuración del servidor Web que desea</String>
     <String Id="WebServerConfigDlg_Apache">Paquete de configuración</String>

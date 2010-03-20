@@ -40,6 +40,10 @@
         <Property Id="APACHE_PORT" Secure="yes" Value="8008" />
         <Property Id="APACHE_VERSION" Secure="yes" Value="2.2.4" />
         <Property Id="PHP_VERSION" Secure="yes" Value="5.2.5" />
+        <!-- Server Port Settings  -->
+        <Property Id="MG_ADMIN_PORT" Secure="yes" Value="2810" />
+        <Property Id="MG_CLIENT_PORT" Secure="yes" Value="2811" />
+        <Property Id="MG_SITE_PORT" Secure="yes" Value="2812" />
         <!-- Used by FdoRegUtil.exe -->
         <Property Id="FDO_VERSION" Secure="yes" Value="3.5.0.0" />
         <Property Id="FDO_VERSION_SMALL" Secure="yes" Value="3.5" />
@@ -231,6 +235,36 @@
                 <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.CancelButtonText)" />
             </Dialog>
 
+            <Dialog Id="ServerConfigDlg" Width="370" Height="270" Title="!(loc.InstallerTitle)">
+                <!--
+                
+                MapGuide Server will be installed using the following port numbers. The Server and Web Tier configuration
+                files will be set to use the specified port numbers below.
+                
+                Admin Connection Port: _______
+                Client Connection Port: _______
+                Site Connection Port: _______
+                
+                -->
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}!(loc.ServerConfigDlg_Title)" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.WebServerConfigDlg_Description)" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+
+                <Control Id="LblDescription" Type="Text" X="20" Y="60" Text="{\WixUI_Font_Title}!(loc.ServerConfigDlg_Description)" Width="320" Height="30" />
+
+                <Control Id="LblAdminPort" Type="Text" X="20" Y="100" Text="{\WixUI_Font_Title}!(loc.ServerConfigDlg_AdminPortNo)" Width="140" Height="15" />
+                <Control Id="NumAdminPort" Type="Edit" Property="MG_ADMIN_PORT" X="170" Y="100" Width="80" Height="15" />
+                <Control Id="LblClientPort" Type="Text" X="20" Y="120" Text="{\WixUI_Font_Title}!(loc.ServerConfigDlg_ClientPortNo)" Width="140" Height="15" />
+                <Control Id="NumClientPort" Type="Edit" Property="MG_CLIENT_PORT" X="170" Y="120" Width="80" Height="15" />
+                <Control Id="LblSitePort" Type="Text" X="20" Y="140" Text="{\WixUI_Font_Title}!(loc.ServerConfigDlg_SitePortNo)" Width="140" Height="15" />
+                <Control Id="NumSitePort" Type="Edit" Property="MG_SITE_PORT" X="170" Y="140" Width="80" Height="15" />
+
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.CancelButtonText)" />
+            </Dialog>
+            
             <!-- Dialog to configure Apache settings: Port, PHP/Java -->
             <Dialog Id="ApacheConfigDlg" Width="370" Height="270" Title="!(loc.InstallerTitle)">
                 <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}!(loc.ApacheConfigDlg_Title)" />
@@ -371,13 +405,17 @@
             <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
             
             <Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
-            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="1">LicenseAccepted=&quot;1&quot; AND (NOT IISVERSIONMAJOR=&quot;#0&quot;)</Publish>
+            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="ServerConfigDlg" Order="1">LicenseAccepted=&quot;1&quot;</Publish>
             <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="DisabledFeaturesDialog" Order="2">LicenseAccepted=&quot;1&quot; AND (IISVERSIONMAJOR=&quot;#0&quot; OR (NOT NETFRAMEWORK20))</Publish>
 
-            <Publish Dialog="DisabledFeaturesDialog" Control="Next" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="1">NOT IISVERSIONMAJOR=&quot;#0&quot;</Publish>
-            <Publish Dialog="DisabledFeaturesDialog" Control="Next" Event="NewDialog" Value="WebServerConfigDlgNoIIS" Order="2">IISVERSIONMAJOR=&quot;#0&quot;</Publish>
+            <Publish Dialog="DisabledFeaturesDialog" Control="Next" Event="NewDialog" Value="ServerConfigDlg" Order="1">1</Publish>
             <Publish Dialog="DisabledFeaturesDialog" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
             <Publish Dialog="DisabledFeaturesDialog" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+
+            <Publish Dialog="ServerConfigDlg" Control="Next" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="1">NOT IISVERSIONMAJOR=&quot;#0&quot;</Publish>
+            <Publish Dialog="ServerConfigDlg" Control="Next" Event="NewDialog" Value="WebServerConfigDlgNoIIS" Order="2">IISVERSIONMAJOR=&quot;#0&quot;</Publish>
+            <Publish Dialog="ServerConfigDlg" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg" Order="2">1</Publish>
+            <Publish Dialog="ServerConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="DoAction" Value="MgWeb_Config_From_IIS_CA" Order="1">1</Publish>
             <!-- This "resets" the feature tree in case someone starts down a path then changes their mind -->
