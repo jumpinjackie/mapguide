@@ -7,7 +7,7 @@
       Return="ignore" 
       Id="MgServerInstallCA" 
       FileKey="file_SRVBINFILES_26"
-      ExeCommand="install &quot;MapGuide Server 2.1&quot;" />
+      ExeCommand="install &quot;MapGuide Server [MG_VERSION_MAJOR_MINOR]&quot;" />
 
     <CustomAction
       Execute="immediate"

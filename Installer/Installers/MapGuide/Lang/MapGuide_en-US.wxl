@@ -24,7 +24,8 @@
     <String Id="DisabledFeaturesDialog_Instructions">If you want to use these features, click on cancel and correct the problem before proceeding with installation</String>
 
     <String Id="ServerConfigDlg_Title">Server Port Configuration</String>
-    <String Id="ServerConfigDlg_Description">MapGuide Server will be installed using the following port numbers. The Server and Web Tier configuration files will be set to use the specified port numbers below.</String>
+    <String Id="ServerConfigDlg_Description">Set up the listening ports for MapGuide Server</String>
+    <String Id="ServerConfigDlg_Prompt">MapGuide Server will be installed using the following port numbers. The Server and Web Tier configuration files will be set to use the specified port numbers below.</String>
     <String Id="ServerConfigDlg_AdminPortNo">Admin Connection Port</String>
     <String Id="ServerConfigDlg_ClientPortNo">Client Connection Port</String>
     <String Id="ServerConfigDlg_SitePortNo">Site Connection Port</String>
