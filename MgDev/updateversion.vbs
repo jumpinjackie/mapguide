@@ -2,7 +2,7 @@ Option explicit
 On Error Goto 0
 
 ' This script allows quick updates to the server version across all files that store it.
-' Usage:  cscript updateversion.vbs /major:2 /minor:1 /point:0
+' Usage:  cscript updateversion.vbs /major:2 /minor:1 /point:0 /build:4245
 
 ' Simple four-part version... Somebody went a little overboard playing with VBS classes.
 Class VersionInfo
@@ -96,61 +96,31 @@ End Class
 Sub CheckArguments(cArgs)
 
   Dim sUsage
-  sUsage = vbCrLf & "Usage: cscript " & Wscript.ScriptName & " /major:2 /minor:1 /point:0"
+  sUsage = vbCrLf & "Usage: cscript " & Wscript.ScriptName & " /major:2 /minor:1 /point:0 /build:4245"
   
-  If cArgs.Count <> 3 Then
+  If cArgs.Count <> 4 Then
     Err.Raise 1, "Not enough arguments", sUsage
     Exit Sub
   End If
   
   If ( Not cArgs.Named.Exists("major") ) Or _
      ( Not cArgs.Named.Exists("minor") ) Or _
-     ( Not cArgs.Named.Exists("point") ) Then
+     ( Not cArgs.Named.Exists("point") ) Or _
+     ( Not cArgs.Named.Exists("build") ) Then
     Err.Raise 1, "Incorrect arguments", sUsage
     Exit Sub
   End If
   
   If ( Not cArgs.Named.Item("major") = CStr(CInt(cArgs.Named.Item("major"))) ) Or _
      ( Not cArgs.Named.Item("minor") = CStr(CInt(cArgs.Named.Item("minor")))) Or _
-     ( Not cArgs.Named.Item("point") = CStr(CInt(cArgs.Named.Item("point")))) Then
+     ( Not cArgs.Named.Item("point") = CStr(CInt(cArgs.Named.Item("point")))) Or _
+     ( Not cArgs.Named.Item("build") = CStr(CInt(cArgs.Named.Item("build")))) Then
     Err.Raise 1, "Version numbers must be integers", sUsage
     Exit Sub
   End If
 
 End Sub
 
-' This just runs an "svn info" command, readlines the output, and extracts the Revision
-Function GetSvnRevision(sPath)
-
-  Dim bMatched
-  Dim oExec
-  Dim oShell
-  Dim sCommand
-  Dim sLine
-  Dim sRevision
-  
-  bMatched = false
-  sLine = ""
-  sRevision = ""
-  
-  sCommand = "svn info " & sPath
-  
-  Set oShell = CreateObject("Wscript.Shell")
-  Set oExec = oShell.Exec(sCommand)
-  
-  Do Until oExec.StdOut.AtEndOfStream Or bMatched
-    sLine = oExec.StdOut.ReadLine()
-    If Left(sLine,InStr(sLine," ") - 1) = "Revision:" Then
-      If CStr(CInt(Right(sLine,(Len(sLine) - InStr(sLine," "))))) = Right(sLine,(Len(sLine) - InStr(sLine," "))) Then
-        sRevision = CStr(CInt(Right(sLine,(Len(sLine) - InStr(sLine," ")))))
-        bMatched = true
-      End If
-    End If
-  Loop
-  
-  GetSvnRevision = sRevision
-  
-End Function
 
 Sub FixRcFile(sFileName, oVersion)
 
@@ -298,7 +268,11 @@ Sub FixRcFiles (oVersion)
   "/UnitTest/Common/FoundationTest/DotNetUnmanagedApi/DotNetUnmanagedApi.rc", _
   "/Web/src/ApacheAgent/ApacheAgent.rc", _
   "/Web/src/CgiAgent/CgiAgent.rc", _
-  "/Web/src/DotNetUnmanagedApi/DotNetUnmanagedApi.rc", _
+  "/Web/src/DotNetUnmanagedApi/Foundation/FoundationApi.rc", _
+  "/Web/src/DotNetUnmanagedApi/Geometry/GeometryApi.rc", _
+  "/Web/src/DotNetUnmanagedApi/MapGuideCommon/MapGuideCommonApi.rc", _
+  "/Web/src/DotNetUnmanagedApi/PlatformBase/PlatformBaseApi.rc", _
+  "/Web/src/DotNetUnmanagedApi/Web/WebApi.rc", _
   "/Web/src/HttpHandler/HttpHandler.rc", _
   "/Web/src/IsapiAgent/IsapiAgent.rc", _
   "/Web/src/JavaApi/JavaApi.rc", _
@@ -328,7 +302,7 @@ With oVersionInfo
   .Major = WScript.Arguments.Named.Item("major")
   .Minor = WScript.Arguments.Named.Item("minor")
   .Point = WScript.Arguments.Named.Item("point")
-  .Build = GetSvnRevision (".") Mod 32767
+  .Build = WScript.Arguments.Named.Item("build") Mod 32767
 End With
 
 FixVersionFiles (oVersionInfo)
