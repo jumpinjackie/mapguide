@@ -24,9 +24,10 @@
 
 class MG_MAPGUIDE_API MgServerConnection;
 class MG_MAPGUIDE_API MgConnectionProperties;
-class MgServerConnectionEventHandler;
 
 #endif
+
+class MgServerConnectionEventHandler;
 
 #include <map>
 #include "MapGuideCommon.h"
