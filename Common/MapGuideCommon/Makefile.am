@@ -108,6 +108,7 @@ include_SOURCES = \
   Services/ServerAdmin.cpp \
   Services/ServerAdminDefs.cpp \
   Services/ServerConnection.cpp \
+  Services/ServerConnectionEventHandler.cpp \
   Services/ServerConnectionImp.cpp \
   Services/ServerConnectionPool.cpp \
   Services/ServerConnectionStack.cpp \
@@ -230,6 +231,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Services/ServerAdmin.h \
   Services/ServerAdminDefs.h \
   Services/ServerConnection.h \
+  Services/ServerConnectionEventHandler.h \
   Services/ServerConnectionImp.h \
   Services/ServerConnectionPool.h \
   Services/ServerConnectionStack.h \

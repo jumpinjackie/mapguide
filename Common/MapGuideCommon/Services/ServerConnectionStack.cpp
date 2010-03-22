@@ -145,20 +145,6 @@ MgServerConnection* MgServerConnectionStack::Pop()
 
     ACE_Time_Value now = ACE_High_Res_Timer::gettimeofday();
 
-    // Remove a stale connection from the back of the queue
-    if (m_queue->size() > 0)
-    {
-        conn = m_queue->back();
-
-        if (NULL != conn && conn->IsStale(&now))
-        {
-            m_queue->pop_back();
-            SAFE_RELEASE(conn);
-            conn = NULL;
-        }
-    }
-
-
     // Pull a connection from the front of the queue and make sure it's valid.
     conn = NULL;
     while (NULL == conn && m_queue->size() > 0)
@@ -214,4 +200,27 @@ void MgServerConnectionStack::InUse(MgServerConnection* connection)
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
     SAFE_ADDREF(connection);
     m_inUse->push_back(connection);
+}
+
+void MgServerConnectionStack::CloseStaleConnections(ACE_Time_Value* timeValue) 
+{
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    // Remove a stale connection from the back of the queue
+    // Work from the back of the queue until the connections are not stale
+    while (m_queue->size() > 0)
+    {
+        MgServerConnection* conn = m_queue->back();
+
+        if (NULL != conn && conn->IsStale(timeValue))
+        {
+            m_queue->pop_back();
+            SAFE_RELEASE(conn);
+            conn = NULL;
+        }
+        else
+        {
+            break;
+        }
+    }
 }

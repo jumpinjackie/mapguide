@@ -65,20 +65,6 @@ MgClientHandler::MgClientHandler()
 /// </summary>
 MgClientHandler::~MgClientHandler()
 {
-    // close writer and listen for ack
-    m_SockStream.close_writer();
-
-    char buf[256];
-
-    ssize_t len = 0;
-    while ((len = m_SockStream.recv((void*)buf, 256, MG_MSG_NOSIGNAL)) > 0)
-    {
-        // clearing out buffer
-    }
-
-    m_SockStream.close_reader();
-    m_SockStream.close();
-
     m_pMessageQueue = NULL;
 
     if (m_pConnection != NULL)
@@ -264,6 +250,7 @@ int MgClientHandler::handle_close(ACE_HANDLE handle, ACE_Reactor_Mask mask)
     m_SockStream.close_writer();
     m_SockStream.close_reader();
     m_SockStream.close();
+    m_pMessageQueue->flush();
 
     MgServerManager* pServerManager = MgServerManager::GetInstance();
     if(pServerManager)

@@ -133,17 +133,6 @@ void MgServerConnectionImp::Disconnect()
 {
     if (mServer != NULL)
     {
-        // Send a control packet to the server to dump the connection early
-        Ptr<MgAceStreamHelper> streamHelper = new MgAceStreamHelper(mServer->get_handle());
-        MgStream stream(streamHelper);
-
-        MgControlPacket packet;
-        packet.m_PacketHeader = MgPacketParser::mphControl;
-        packet.m_PacketVersion = 1;
-        packet.m_ControlID = MgPacketParser::mciClose;
-
-        stream.WriteControlPacket(packet);
-
         // close the writer and attempt to gracefully leave
         mServer->close_writer();
 

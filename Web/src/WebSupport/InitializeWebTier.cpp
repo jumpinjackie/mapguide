@@ -16,6 +16,7 @@
 //
 
 #include "MapGuideCommon.h"
+#include "Services/ServerConnectionPool.h"
 
 
 // Initialize only once per process
@@ -64,6 +65,9 @@ void MgUninitializeWebTierInternal()
 
     if (!m_bInitialized)
         return;
+
+    // Close all open connections before we drop ACE
+    MgServerConnectionPool::CloseConnections();
 
     // Uninitialize ACE
     ACE::fini();
