@@ -13,9 +13,10 @@ rmdir /S /Q %INSTALLROOT%
 
 call "C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
 
-rem TODO get build number from Subversion
+svn info svn://svn.bld.mgproto.net/mapguide/trunk/MgDev | perl revnum.pl > revision.txt
+set /p REVISION= < revision.txt
 
-svn export svn://svn.bld.mgproto.net/mapguide/trunk/MgDev %MGSOURCE%
+svn export -r %REVISION%  svn://svn.bld.mgproto.net/mapguide/trunk/MgDev %MGSOURCE%
 svn export svn://svn.bld.mgproto.net/metacrs/csmap/trunk/CsMapDev %MGSOURCE%\Oem\CsMap
 svn export svn://svn.bld.mgproto.net/fusion/trunk %MGSOURCE%\Oem\fusion
 svn export svn://svn.bld.mgproto.net/mapguide/trunk/Installer %MGINSTALL% 
@@ -44,6 +45,6 @@ call build.bat -a=install
 cd %MGINSTALL%
 call build.bat -source=%INSTALLROOT% -a=prepare
 call build.bat -source=%INSTALLROOT% -a=generate 
-call build.bat -source=%INSTALLROOT% -version=2.2.0.0 -name=MapGuideOpenSource-2.2.0-Beta1 -title="MapGuide Open Source 2.2 Beta 1"
+call build.bat -source=%INSTALLROOT% -version=2.2.0.%REVISION% -name=MapGuideOpenSource-2.2.0.%REVISION%-Beta1 -title="MapGuide Open Source 2.2 Beta 1"
 
 cd %STARTDIR%
