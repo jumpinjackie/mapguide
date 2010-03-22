@@ -24,10 +24,15 @@
 
 class MG_MAPGUIDE_API MgServerConnection;
 class MG_MAPGUIDE_API MgConnectionProperties;
+class MgServerConnectionEventHandler;
 
 #endif
 
 #include <map>
+#include "MapGuideCommon.h"
+#include "ace/Reactor.h"
+#include "ace/Timer_Queue_Adapters.h"
+#include "ace/Timer_Heap.h"
 
 class MgServerConnectionPool;
 template class MG_MAPGUIDE_API Ptr<MgServerConnectionPool>;
@@ -54,6 +59,21 @@ INTERNAL_API:
     ///
     virtual ~MgServerConnectionPool();
 
+    /// \brief
+    /// Return global instance
+    ///
+    static MgServerConnectionPool* GetInstance();
+
+    /// \brief
+    /// Close expired connections
+    ///
+    static void CloseStaleConnections(ACE_Time_Value* timeValue);
+
+    /// \brief
+    /// Close global instance and release all connections
+    ///
+    static void CloseConnections();
+
     typedef std::map<wstring, MgServerConnectionStack*> ConnectionPool;
 
     ConnectionPool pool;
@@ -61,6 +81,13 @@ INTERNAL_API:
 protected:
 
     void Dispose();
+
+private:
+
+    ACE_Thread_Timer_Queue_Adapter<ACE_Timer_Heap> m_timer;
+    long m_id;
+    MgServerConnectionEventHandler* m_eventHandler;
+    static MgServerConnectionPool* sm_pool;
 };
 /// \endcond
 

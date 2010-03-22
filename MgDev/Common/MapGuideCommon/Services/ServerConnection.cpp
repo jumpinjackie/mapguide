@@ -28,8 +28,7 @@
 #include <dlfcn.h>
 #endif
 
-static Ptr<MgServerConnectionPool> g_connectionPool = new MgServerConnectionPool();
-const time_t MgServerConnection::sm_kStaleTime = 60; // in seconds
+const time_t MgServerConnection::sm_kStaleTime = 120; // in seconds
 ACE_Recursive_Thread_Mutex MgServerConnection::sm_mutex;
 
 //////////////////////////////////////////////////////////////////
@@ -292,6 +291,9 @@ MgServerConnection* MgServerConnection::Acquire(MgUserInformation* userInformati
     CHECKNULL((MgUserInformation*)userInformation, L"MgServerConnection.Acquire");
     CHECKNULL((MgConnectionProperties*)connProp, L"MgServerConnection.Acquire");
 
+    MgServerConnectionPool* connectionPool = MgServerConnectionPool::GetInstance();
+    CHECKNULL(connectionPool, L"MgServerConnection.Acquire");
+
     Ptr<MgServerConnection> msc;
     MgServerConnectionStack* stack = NULL;
 
@@ -300,9 +302,9 @@ MgServerConnection* MgServerConnection::Acquire(MgUserInformation* userInformati
         ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
 
         wstring hash = connProp->Hash();
-        MgServerConnectionPool::ConnectionPool::iterator iter = g_connectionPool->pool.find(hash);
+        MgServerConnectionPool::ConnectionPool::iterator iter = connectionPool->pool.find(hash);
 
-        if (iter != g_connectionPool->pool.end())
+        if (iter != connectionPool->pool.end())
         {
             stack = iter->second;
         }
@@ -310,7 +312,7 @@ MgServerConnection* MgServerConnection::Acquire(MgUserInformation* userInformati
         if (stack == NULL)
         {
             stack = new MgServerConnectionStack(connProp->GetPort());
-            (g_connectionPool->pool)[hash] = stack;
+            (connectionPool->pool)[hash] = stack;
         }
     }
 
@@ -364,6 +366,7 @@ void MgServerConnection::Remove(MgConnectionProperties* connProp)
         ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
         wstring hash = connProp->Hash();
-        g_connectionPool->pool.erase(hash);
+        MgServerConnectionPool* connectionPool = MgServerConnectionPool::GetInstance();
+        connectionPool->pool.erase(hash);
     }
 }

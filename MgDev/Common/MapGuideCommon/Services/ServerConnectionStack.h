@@ -82,6 +82,11 @@ INTERNAL_API:
     ///
     void InUse(MgServerConnection* connection);
 
+    /// \brief
+    /// Close stale connections
+    ///
+    void CloseStaleConnections(ACE_Time_Value* timeValue);
+
 private:
 
     typedef std::deque<MgServerConnection*> ConnectionQueue;

@@ -115,6 +115,7 @@
 #include  "Services/ServerAdmin.cpp"
 #include  "Services/ServerAdminDefs.cpp"
 #include  "Services/ServerConnection.cpp"
+#include  "Services/ServerConnectionEventHandler.cpp"
 #include  "Services/ServerConnectionImp.cpp"
 #include  "Services/ServerConnectionPool.cpp"
 #include  "Services/ServerConnectionStack.cpp"
