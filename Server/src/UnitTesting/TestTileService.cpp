@@ -27,10 +27,13 @@
 // determines the number of requests to make, as a factor of the number of tiles
 #define REQUEST_FACTOR 20
 
+// define thread group for tiling tests
+#define THREAD_GROUP 65535
+
 #ifdef _WIN32
 static const INT32 MG_TEST_THREADS = 4;
 #else
-static const INT32 MG_TEST_THREADS = 2;
+static const INT32 MG_TEST_THREADS = 4;
 #endif
 
 const STRING TEST_LOCALE = L"en";
@@ -407,8 +410,8 @@ void TestTileService::TestCase_GetTile()
                         threadData[i].tileRow  = tileRows[nTile];
                         threadData[i].tileCol  = tileCols[nTile];
 
-                        // spawn a new thread
-                        int thid = manager->spawn(ACE_THR_FUNC(GetTileWorker), &threadData[i]);
+                        // spawn a new thread using a specific group id
+                        int thid = manager->spawn(ACE_THR_FUNC(GetTileWorker), &threadData[i], 0, NULL, NULL, 0, THREAD_GROUP);
                         nRequest++;
                     }
 
@@ -422,19 +425,14 @@ void TestTileService::TestCase_GetTile()
             if (dc == numThreads)
                 break;
 
-            // under Linux we get a deadlock if we don't call this every once in a while
-            if (nRequest % 25 == 0)
-                manager->wait();
-            else
-            {
-                // pause briefly (10ms) before checking again
-                ACE_Time_Value t(0, 10000);
-                ACE_OS::sleep(t);
-            }
+            // wait 20ms or until all threads have finished
+            ACE_Time_Value t(0, 20000);
+            ACE_Time_Value future = ACE_OS::gettimeofday() + t;
+            manager->wait(&future);
         }
 
-        // make sure the manager is in a good state
-        manager->wait();
+        // make sure all threads in the group have completed
+        manager->wait_grp(THREAD_GROUP);
 
         // done with the tile indices
         delete [] tileRows;
@@ -602,8 +600,8 @@ void TestTileService::TestCase_SetTile()
                         threadData[i].tileRow = tileRows[nRequest];
                         threadData[i].tileCol = tileCols[nRequest];
 
-                        // spawn a new thread
-                        int thid = manager->spawn(ACE_THR_FUNC(SetTileWorker), &threadData[i]);
+                        // spawn a new thread using a specific group id
+                        int thid = manager->spawn(ACE_THR_FUNC(SetTileWorker), &threadData[i], 0, NULL, NULL, 0, THREAD_GROUP);
                         nRequest++;
                     }
 
@@ -617,19 +615,14 @@ void TestTileService::TestCase_SetTile()
             if (dc == numThreads)
                 break;
 
-            // under Linux we get a deadlock if we don't call this every once in a while
-            if (nRequest % 25 == 0)
-                manager->wait();
-            else
-            {
-                // pause briefly (10ms) before checking again
-                ACE_Time_Value t(0, 10000);
-                ACE_OS::sleep(t);
-            }
+            // wait 20ms or until all threads have finished
+            ACE_Time_Value t(0, 20000);
+            ACE_Time_Value future = ACE_OS::gettimeofday() + t;
+            manager->wait(&future);
         }
 
-        // make sure the manager is in a good state
-        manager->wait();
+        // make sure all threads in the group have completed
+        manager->wait_grp(THREAD_GROUP);
 
         // At this point all the tiles in the cache should be set.
         // Let's now randomly replace these tiles.
@@ -665,8 +658,8 @@ void TestTileService::TestCase_SetTile()
                         threadData[i].tileRow = tileRows[nTile];
                         threadData[i].tileCol = tileCols[nTile];
 
-                        // spawn a new thread
-                        int thid = manager->spawn(ACE_THR_FUNC(SetTileWorker), &threadData[i]);
+                        // spawn a new thread using a specific group id
+                        int thid = manager->spawn(ACE_THR_FUNC(SetTileWorker), &threadData[i], 0, NULL, NULL, 0, THREAD_GROUP);
                         nRequest++;
                     }
 
@@ -680,19 +673,14 @@ void TestTileService::TestCase_SetTile()
             if (dc == numThreads)
                 break;
 
-            // under Linux we get a deadlock if we don't call this every once in a while
-            if (nRequest % 25 == 0)
-                manager->wait();
-            else
-            {
-                // pause briefly (10ms) before checking again
-                ACE_Time_Value t(0, 10000);
-                ACE_OS::sleep(t);
-            }
+            // wait 20ms or until all threads have finished
+            ACE_Time_Value t(0, 20000);
+            ACE_Time_Value future = ACE_OS::gettimeofday() + t;
+            manager->wait(&future);
         }
 
-        // make sure the manager is in a good state
-        manager->wait();
+        // make sure all threads in the group have completed
+        manager->wait_grp(THREAD_GROUP);
 
         // done with the tile indices
         delete [] tileRows;
@@ -799,9 +787,9 @@ void TestTileService::TestCase_GetSetTile()
                         // spawn a new thread - 75% of the calls are gets, 25% are sets
                         int thid;
                         if ((double)rand() < 0.75 * (double)RAND_MAX)
-                            thid = manager->spawn(ACE_THR_FUNC(GetTileWorker), &threadData[i]);
+                            thid = manager->spawn(ACE_THR_FUNC(GetTileWorker), &threadData[i], 0, NULL, NULL, 0, THREAD_GROUP);
                         else
-                            thid = manager->spawn(ACE_THR_FUNC(SetTileWorker), &threadData[i]);
+                            thid = manager->spawn(ACE_THR_FUNC(SetTileWorker), &threadData[i], 0, NULL, NULL, 0, THREAD_GROUP);
                         nRequest++;
                     }
 
@@ -815,19 +803,14 @@ void TestTileService::TestCase_GetSetTile()
             if (dc == numThreads)
                 break;
 
-            // under Linux we get a deadlock if we don't call this every once in a while
-            if (nRequest % 25 == 0)
-                manager->wait();
-            else
-            {
-                // pause briefly (10ms) before checking again
-                ACE_Time_Value t(0, 10000);
-                ACE_OS::sleep(t);
-            }
+            // wait 20ms or until all threads have finished
+            ACE_Time_Value t(0, 20000);
+            ACE_Time_Value future = ACE_OS::gettimeofday() + t;
+            manager->wait(&future);
         }
 
-        // make sure the manager is in a good state
-        manager->wait();
+        // make sure all threads in the group have completed
+        manager->wait_grp(THREAD_GROUP);
 
         // done with the tile indices
         delete [] tileRows;
