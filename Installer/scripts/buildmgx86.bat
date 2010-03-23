@@ -21,6 +21,10 @@ svn export svn://svn.bld.mgproto.net/metacrs/csmap/trunk/CsMapDev %MGSOURCE%\Oem
 svn export svn://svn.bld.mgproto.net/fusion/trunk %MGSOURCE%\Oem\fusion
 svn export svn://svn.bld.mgproto.net/mapguide/trunk/Installer %MGINSTALL% 
 
+cd %MGSOURCE%
+cscript updateversion.vbs /major:2 /minor:2 /point:0 /build:%REVISION%
+
+
 mkdir %OEMFDO%\Bin\Release
 xcopy /Y /E %FDOBUILD%\Bin\* %OEMFDO%\Bin\Release
 xcopy /E /I %FDOBUILD%\Inc %OEMFDO%\Inc
