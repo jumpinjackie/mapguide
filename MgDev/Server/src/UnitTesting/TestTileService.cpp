@@ -30,11 +30,7 @@
 // define thread group for tiling tests
 #define THREAD_GROUP 65535
 
-#ifdef _WIN32
 static const INT32 MG_TEST_THREADS = 4;
-#else
-static const INT32 MG_TEST_THREADS = 4;
-#endif
 
 const STRING TEST_LOCALE = L"en";
 
@@ -425,10 +421,15 @@ void TestTileService::TestCase_GetTile()
             if (dc == numThreads)
                 break;
 
-            // wait 20ms or until all threads have finished
-            ACE_Time_Value t(0, 20000);
-            ACE_Time_Value future = ACE_OS::gettimeofday() + t;
-            manager->wait(&future);
+            // under Linux we get a deadlock if we don't call this every once in a while
+            if (nRequest % 25 == 0)
+                manager->wait_grp(THREAD_GROUP);
+            else
+            {
+                // pause briefly (10ms) before checking again
+                ACE_Time_Value t(0, 10000);
+                ACE_OS::sleep(t);
+            }
         }
 
         // make sure all threads in the group have completed
@@ -615,10 +616,15 @@ void TestTileService::TestCase_SetTile()
             if (dc == numThreads)
                 break;
 
-            // wait 20ms or until all threads have finished
-            ACE_Time_Value t(0, 20000);
-            ACE_Time_Value future = ACE_OS::gettimeofday() + t;
-            manager->wait(&future);
+            // under Linux we get a deadlock if we don't call this every once in a while
+            if (nRequest % 25 == 0)
+                manager->wait_grp(THREAD_GROUP);
+            else
+            {
+                // pause briefly (10ms) before checking again
+                ACE_Time_Value t(0, 10000);
+                ACE_OS::sleep(t);
+            }
         }
 
         // make sure all threads in the group have completed
@@ -673,10 +679,15 @@ void TestTileService::TestCase_SetTile()
             if (dc == numThreads)
                 break;
 
-            // wait 20ms or until all threads have finished
-            ACE_Time_Value t(0, 20000);
-            ACE_Time_Value future = ACE_OS::gettimeofday() + t;
-            manager->wait(&future);
+            // under Linux we get a deadlock if we don't call this every once in a while
+            if (nRequest % 25 == 0)
+                manager->wait_grp(THREAD_GROUP);
+            else
+            {
+                // pause briefly (10ms) before checking again
+                ACE_Time_Value t(0, 10000);
+                ACE_OS::sleep(t);
+            }
         }
 
         // make sure all threads in the group have completed
@@ -803,10 +814,15 @@ void TestTileService::TestCase_GetSetTile()
             if (dc == numThreads)
                 break;
 
-            // wait 20ms or until all threads have finished
-            ACE_Time_Value t(0, 20000);
-            ACE_Time_Value future = ACE_OS::gettimeofday() + t;
-            manager->wait(&future);
+            // under Linux we get a deadlock if we don't call this every once in a while
+            if (nRequest % 25 == 0)
+                manager->wait_grp(THREAD_GROUP);
+            else
+            {
+                // pause briefly (10ms) before checking again
+                ACE_Time_Value t(0, 10000);
+                ACE_OS::sleep(t);
+            }
         }
 
         // make sure all threads in the group have completed
