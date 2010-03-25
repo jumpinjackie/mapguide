@@ -1196,7 +1196,7 @@ function OnMouseMove(e)
             {
                 if(!parent.InMeasure())
                 {
-                    if(safari)
+                    if(safari || chrome)
                         document.getElementById("tbMap").style.cursor = (x < 0 && x > -6? "w-resize" : "arrow");
                     if(x >= 0)
                     {
@@ -1738,8 +1738,15 @@ function RequestMapImage(reqId, viewParams)
 {
     url = webAgent + "?OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=PNG&VERSION=2.1.0&SESSION=" + sessionId + "&MAPNAME=" + encodeComponent(mapName) + "&SEQ=" + Math.random() + "&CLIENTAGENT=" + encodeComponent(clientAgent) + "&BEHAVIOR=2";
     url += viewParams;
-    document.getElementById("overlay").innerHTML =
-            '<img class="mapImage" name="' + reqId + '" id="mapImage" src="' + url + '" width=' + mapDevW + ' height=' + mapDevH + ' border=0 vspace=0 hspace=0 style="visibility: hidden; width: ' + mapDevW + 'px; height: ' + mapDevH + 'px;" onload="return OnMapOverlayImageLoaded(event)" onerror="return OnMapOverlayImageLoadedError(event)">';
+    if(safari || chrome)
+    {
+        LoadAlternateImage(url, reqId);
+    }
+    else
+    {
+        document.getElementById("overlay").innerHTML =
+                '<img class="mapImage" name="' + reqId + '" id="mapImage" src="' + url + '" width=' + mapDevW + ' height=' + mapDevH + ' border=0 vspace=0 hspace=0 style="visibility: hidden; width: ' + mapDevW + 'px; height: ' + mapDevH + 'px;" onload="return OnMapOverlayImageLoaded(event)" onerror="return OnMapOverlayImageLoadedError(event)">';
+    }
     if (opera)
         document.getElementById("mapImage").src = document.getElementById("mapImage").src;
 }
@@ -1748,8 +1755,15 @@ function RequestSelectionImage(reqId, viewParams)
 {
     url = webAgent + "?OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=PNG&VERSION=2.1.0&SESSION=" + sessionId + "&MAPNAME=" + encodeComponent(mapName) + "&SEQ=" + Math.random() + "&CLIENTAGENT=" + encodeComponent(clientAgent) + "&BEHAVIOR=5&SELECTIONCOLOR=" + selectionColor;
     url += viewParams;
-    document.getElementById('selOverlay').innerHTML =
-        '<img class="mapImage" name="' + reqId + '" id="selectionImage" src="' + url + '" width=' + mapDevW + ' height=' + mapDevH + ' border=0 vspace=0 hspace=0 style="visibility: hidden; width: ' + mapDevW + 'px; height: ' + mapDevH + 'px;" onload="return OnSelectionOverlayImageLoaded(event)" onerror="return OnSelectionOverlayImageLoadedError(event)">';
+    if(safari || chrome)
+    {
+        LoadAlternateSelectionImage(url, reqId);
+    }
+    else
+    {
+        document.getElementById('selOverlay').innerHTML =
+            '<img class="mapImage" name="' + reqId + '" id="selectionImage" src="' + url + '" width=' + mapDevW + ' height=' + mapDevH + ' border=0 vspace=0 hspace=0 style="visibility: hidden; width: ' + mapDevW + 'px; height: ' + mapDevH + 'px;" onload="return OnSelectionOverlayImageLoaded(event)" onerror="return OnSelectionOverlayImageLoadedError(event)">';
+    }
     if (opera)
         document.getElementById("selectionImage").src = document.getElementById("selectionImage").src;
 }
@@ -1762,13 +1776,10 @@ function OnMapOverlayImageLoaded(e)
         e.cancelBubble = true;
     else
         e.stopPropagation();
-    overlayimg = document.getElementById("mapImage");
-    if(safari)
-        altimg = document.getElementById(curimg == "mapImage1"? "mapImage2": "mapImage1");
-    else
-        img = document.getElementById(curimg);
-
-    imgdiv = document.getElementById("img1");
+    
+    var overlayimg = document.getElementById("mapImage");
+    var img = document.getElementById(curimg);
+    var imgdiv = document.getElementById("img1");
 
     if(parseInt(overlayimg.name) != mapId || moveType == PANNING || wheelZoomTimer != 0)
         return;
@@ -1782,25 +1793,14 @@ function OnMapOverlayImageLoaded(e)
     }
     else
     {
-        if(safari)
-        {
-            altimg.src = overlayimg.src;
-            altimg.onload = OnAlternateImageLoaded;
-        }
-        else
-        {
-            img.src = overlayimg.src;
-            img.style.position = "absolute";
-            img.style.visibility = "visible";
-            img.style.width = mapDevW;
-            img.style.height = mapDevH;
-            img.style.left = 0;
-            img.style.top = 0;
-        }
+        img.src = overlayimg.src;
+        img.style.position = "absolute";
+        img.style.visibility = "visible";
+        img.style.width = mapDevW;
+        img.style.height = mapDevH;
+        img.style.left = 0;
+        img.style.top = 0;
     }
-    if(safari)
-        curimg = (curimg == "mapImage1"? "mapImage2": "mapImage1");
-
     imgdiv.style.display = "block";
 
     OnMapLoaded();
@@ -1842,13 +1842,10 @@ function OnSelectionOverlayImageLoaded(e)
         e.cancelBubble = true;
     else
         e.stopPropagation();
-    selectionOverlayImg = document.getElementById("selectionImage");
-    if(safari)
-        altSelImg = document.getElementById(curSelImg == "selImage1"? "selImage2": "selImage1");
-    else
-        selImg = document.getElementById(curSelImg);
-
-    selImgDiv = document.getElementById("selImg1");
+    
+    var selectionOverlayImg = document.getElementById("selectionImage");
+    var selImg = document.getElementById(curSelImg);
+    var selImgDiv = document.getElementById("selImg1");
 
     if(parseInt(selectionOverlayImg.name) != selMapId || moveType == PANNING || wheelZoomTimer != 0)
         return;
@@ -1860,24 +1857,14 @@ function OnSelectionOverlayImageLoaded(e)
     }
     else
     {
-        if(safari)
-        {
-            altSelImg.src = selectionOverlayImg.src;
-            altSelImg.onload = OnAlternateSelectionImageLoaded;
-        }
-        else
-        {
-            selImg.src = selectionOverlayImg.src;
-            selImg.style.position = "absolute";
-            selImg.style.width = mapDevW;
-            selImg.style.height = mapDevH;
-            selImg.style.left = 0;
-            selImg.style.top = 0;
-            selImg.style.visibility = "visible";
-        }
+        selImg.src = selectionOverlayImg.src;
+        selImg.style.position = "absolute";
+        selImg.style.width = mapDevW;
+        selImg.style.height = mapDevH;
+        selImg.style.left = 0;
+        selImg.style.top = 0;
+        selImg.style.visibility = "visible";
     }
-    if(safari)
-        curSelImg = (curSelImg == "selImage1"? "selImage2": "selImage1");
 
     selImgDiv.style.display = "block";
 
@@ -1905,20 +1892,64 @@ function OnSelectionOverlayImageLoadedError(e)
     return false;
 }
 
+function LoadAlternateImage(url, reqId)
+{
+    // If we're in the process of loading a map, or panning or mouse-wheel zooming
+    // go no further.
+    if(parseInt(reqId) != mapId || moveType == PANNING || wheelZoomTimer != 0)
+        return;
+
+    // Set the alternate image source URL so that it can load offscreen
+    var altimg = document.getElementById(curimg == "mapImage1"? "mapImage2": "mapImage1");
+    altimg.src = url;
+    altimg.onload = OnAlternateImageLoaded;
+    
+    // Set the "current" image to point to the one that is loading the new map
+    curimg = (curimg == "mapImage1"? "mapImage2": "mapImage1");
+    
+    return false;
+}
+
+function LoadAlternateSelectionImage(url, reqId)
+{
+    // If we're in the process of loading a map, or panning or mouse-wheel zooming
+    // go no further.
+    if(parseInt(reqId) != selMapId || moveType == PANNING || wheelZoomTimer != 0)
+        return;
+
+    // Set the alternate selection image source URL so that it can load offscreen
+    var altSelImg = document.getElementById(curSelImg == "selImage1"? "selImage2": "selImage1");
+    altSelImg.src = url;
+    altSelImg.onload = OnAlternateSelectionImageLoaded;
+        
+    // Set the "current" image to point to the one that is loading the new selection
+    curSelImg = (curSelImg == "selImage1"? "selImage2": "selImage1");
+
+    return false;
+}
+
 function OnAlternateImageLoaded()
 {
-    altimg = document.getElementById(curimg == "mapImage1"? "mapImage2": "mapImage1");
-    img = document.getElementById(curimg);
+    var img = document.getElementById(curimg);
+    var altimg = document.getElementById(curimg == "mapImage1"? "mapImage2": "mapImage1");
 
+    // Show the newly loaded image
     img.style.position = "absolute";
     img.style.visibility = "visible";
     img.style.width = mapDevW;
     img.style.height = mapDevH;
     img.style.left = 0;
     img.style.top = 0;
+    
+    // Hide the previous image
     altimg.style.visibility = "hidden";
     altimg.style.left = 0;
     altimg.style.top = 0;
+    
+    ovimgloaded = true;
+    lastMapRcv = mapId;
+    OnMapLoaded();
+
     return false;
 }
 
@@ -1927,15 +1958,19 @@ function OnAlternateSelectionImageLoaded()
     altSelImg = document.getElementById(curSelImg == "selImage1"? "selImage2": "selImage1");
     selImg = document.getElementById(curSelImg);
 
+    // Show the newly loaded selection
     selImg.style.position = "absolute";
     selImg.style.visibility = "visible";
     selImg.style.width = mapDevW;
     selImg.style.height = mapDevH;
     selImg.style.left = 0;
     selImg.style.top = 0;
+    
+    // Hide the previous selection image
     altSelImg.style.visibility = "hidden";
     altSelImg.style.left = 0;
     altSelImg.style.top = 0;
+    
     return false;
 }
 
