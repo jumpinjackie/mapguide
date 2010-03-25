@@ -3,7 +3,8 @@
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   <Fragment>
     <DirectoryRef Id="ProgramMenuFolder">
-      <Directory Id="MapGuideOpenSourceMenuLocation" Name="MapGuide Open Source">
+      <!-- HACK: For some reason the MG_VERSION_MAJOR_MINOR property doesn't evaluate, so hardcode it for now -->
+      <Directory Id="MapGuideOpenSourceMenuLocation" Name="MapGuide Open Source 2.2">
         <Component Id="GenericShortcutComponent" Guid="243CE0F3-D6BC-476B-910E-6F34DA54A2E2">
           <CreateFolder />
           <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\GenericShortcut">
@@ -20,7 +21,7 @@
           <util:InternetShortcut Id="ApacheWebApi"
                                  Directory="MapGuideOpenSourceMenuLocation"
                                  Name="!(loc.Shortcut_WebAPI)"
-                                 Target="http://localhost:[APACHE_PORT]/mapguide/help/index.htm" />
+                                 Target="http://localhost:[APACHE_PORT]/[VIRTUALDIR]/help/webapi/index.htm" />
           <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\ApacheWebApiShortcut">
             <RegistryValue
                     Value="Installed"
@@ -28,16 +29,30 @@
                     KeyPath="yes" />
           </RegistryKey>
         </Component>
+        <Component Id="ApacheViewerApiShortcutComponent" Guid="4AABF916-33FC-440D-9D6F-8CE95F2ADE7A">
+            <Condition>MGWEB_CONFIG=&quot;APACHE&quot;</Condition>
+            <CreateFolder />
+            <util:InternetShortcut Id="ApacheViewerApi"
+                                   Directory="MapGuideOpenSourceMenuLocation"
+                                   Name="!(loc.Shortcut_ViewerAPI)"
+                                   Target="http://localhost:[APACHE_PORT]/[VIRTUALDIR]/help/viewerapi/index.htm" />
+            <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\ApacheViewerApiShortcut">
+                <RegistryValue
+                        Value="Installed"
+                        Type="string"
+                        KeyPath="yes" />
+            </RegistryKey>
+        </Component>
         <Component Id="WebApacheShortcutComponent" Guid="2EBC8176-07C5-40A9-97F9-C3E83836637E">
           <Condition>MGWEB_CONFIG=&quot;APACHE&quot;</Condition>
           <util:InternetShortcut Id="ApacheSiteAdmin"
                                  Directory="MapGuideOpenSourceMenuLocation"
                                  Name="!(loc.Shortcut_SiteAdmin)"
-                                 Target="http://localhost:[APACHE_PORT]/mapguide/mapadmin/login.php" />
+                                 Target="http://localhost:[APACHE_PORT]/[VIRTUALDIR]/mapadmin/login.php" />
           <util:InternetShortcut Id="ApacheMapAgent"
                                  Directory="MapGuideOpenSourceMenuLocation"
                                  Name="!(loc.Shortcut_MapAgent)"
-                                 Target="http://localhost:[APACHE_PORT]/mapguide/mapagent/index.html" />
+                                 Target="http://localhost:[APACHE_PORT]/[VIRTUALDIR]/mapagent/index.html" />
           <util:InternetShortcut Id="ApacheGetMaestro"
                                  Directory="MapGuideOpenSourceMenuLocation"
                                  Name="!(loc.Shortcut_GetMaestro)"
@@ -55,7 +70,7 @@
           <util:InternetShortcut Id="IISWebApi"
                                  Directory="MapGuideOpenSourceMenuLocation"
                                  Name="!(loc.Shortcut_WebAPI)"
-                                 Target="http://localhost/mapguide/help/index.htm" />
+                                 Target="http://localhost/[VIRTUALDIR]/help/webapi/index.htm" />
           <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\IISWebApiShortcut">
             <RegistryValue
                     Value="Installed"
@@ -63,16 +78,30 @@
                     KeyPath="yes" />
           </RegistryKey>
         </Component>
+          <Component Id="IISViewerApiShortcutComponent" Guid="F2CCA279-4C99-48CE-9F79-7465449E2B33">
+              <Condition>MGWEB_CONFIG=&quot;IIS&quot;</Condition>
+              <CreateFolder />
+              <util:InternetShortcut Id="IISViewerApi"
+                                     Directory="MapGuideOpenSourceMenuLocation"
+                                     Name="!(loc.Shortcut_ViewerAPI)"
+                                     Target="http://localhost/[VIRTUALDIR]/help/viewerapi/index.htm" />
+              <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\IISViewerApiShortcut">
+                  <RegistryValue
+                          Value="Installed"
+                          Type="string"
+                          KeyPath="yes" />
+              </RegistryKey>
+          </Component>
         <Component Id="WebIISShortcutComponent" Guid="F59A450A-84DE-4E2E-B942-BD416CDEBBF3">
           <Condition>MGWEB_CONFIG=&quot;IIS&quot;</Condition>
           <util:InternetShortcut Id="IISSiteAdmin"
                                  Directory="MapGuideOpenSourceMenuLocation"
                                  Name="!(loc.Shortcut_SiteAdmin)"
-                                 Target="http://localhost/mapguide/mapadmin/login.php" />
+                                 Target="http://localhost/[VIRTUALDIR]/mapadmin/login.php" />
           <util:InternetShortcut Id="IISMapAgent"
                                  Directory="MapGuideOpenSourceMenuLocation"
                                  Name="!(loc.Shortcut_MapAgent)"
-                                 Target="http://localhost/mapguide/mapagent/index.html" />
+                                 Target="http://localhost/[VIRTUALDIR]/mapagent/index.html" />
           <util:InternetShortcut Id="IISGetMaestro"
                                  Directory="MapGuideOpenSourceMenuLocation"
                                  Name="!(loc.Shortcut_GetMaestro)"

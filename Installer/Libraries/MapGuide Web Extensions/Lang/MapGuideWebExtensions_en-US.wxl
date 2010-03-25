@@ -37,7 +37,8 @@
     <String Id="WebTempFeature">Temp Directory</String>
     <String Id="WebTempFeature_Description">You may choose a location where MapGuide will store temporary files.</String>
 
-  <String Id="Shortcut_WebAPI">Web API Documentation</String>
+    <String Id="Shortcut_WebAPI">Web API Documentation</String>
+    <String Id="Shortcut_ViewerAPI">Viewer API Documentation</String>
     <String Id="Shortcut_SiteAdmin">MapGuide Site Administrator</String>
     <String Id="Shortcut_MapAgent">MapAgent Test Pages</String>
     <String Id="Shortcut_GetMaestro">Get MapGuide Maestro</String>

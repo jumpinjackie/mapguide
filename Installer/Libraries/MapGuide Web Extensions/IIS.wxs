@@ -67,7 +67,7 @@
             <Component Id="IIS5PhpViewerComponent" Guid="1E56B410-1305-4406-BDFB-1252E159B746" Directory="WEBEXTENSIONSLOCATION">
                 <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#5&quot;</Condition>
                 <CreateFolder />
-                <iis:WebVirtualDir Id="IIS5PhpViewerVDir" Alias="mapguide/mapviewerajax" Directory="dir_mapviewerphp_0" WebSite="IISDefaultWebSite">
+                <iis:WebVirtualDir Id="IIS5PhpViewerVDir" Alias="[VIRTUALDIR]/mapviewerajax" Directory="dir_mapviewerphp_0" WebSite="IISDefaultWebSite">
                     <iis:WebDirProperties Id="IIS5PhpViewerDocument" DefaultDocuments="ajaxviewer.php" AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no"/>
                 </iis:WebVirtualDir>
             </Component>
@@ -76,7 +76,7 @@
             <Component Id="IIS5DotNetViewerComponent" Guid="EC460125-D5D4-4596-BD03-B8D920F02E7F" Directory="WEBEXTENSIONSLOCATION">
                 <Condition>NETFRAMEWORK20 AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#5&quot;</Condition>
                 <CreateFolder />
-                <iis:WebVirtualDir Id="IIS5DotNetViewerVDir" Alias="mapguide/mapviewerajax" Directory="dir_mapviewernet_0" WebSite="IISDefaultWebSite">
+                <iis:WebVirtualDir Id="IIS5DotNetViewerVDir" Alias="[VIRTUALDIR]/mapviewerajax" Directory="dir_mapviewernet_0" WebSite="IISDefaultWebSite">
                     <iis:WebDirProperties Id="IIS5DotNetViewerDocument" DefaultDocuments="ajaxviewer.aspx"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
                     <iis:WebApplication Id="IIS5MapViewerWebApp" Name="mapviewerajax" />
                 </iis:WebVirtualDir>
@@ -125,7 +125,7 @@
             <Component Id="IIS6PhpViewerComponent" Guid="6CDC8E73-B6B1-4A2E-98E3-953C399D1D0D" Directory="WEBEXTENSIONSLOCATION">
                 <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Condition>
                 <CreateFolder />
-                <iis:WebVirtualDir Id="IIS6PhpViewerVDir" Alias="mapguide/mapviewerajax" Directory="dir_mapviewerphp_0" WebSite="IISDefaultWebSite">
+                <iis:WebVirtualDir Id="IIS6PhpViewerVDir" Alias="[VIRTUALDIR]/mapviewerajax" Directory="dir_mapviewerphp_0" WebSite="IISDefaultWebSite">
                     <iis:WebDirProperties Id="IIS6PhpViewerDocument" DefaultDocuments="ajaxviewer.php"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
                 </iis:WebVirtualDir>
             </Component>
@@ -134,7 +134,7 @@
             <Component Id="IIS6DotNetViewerComponent" Guid="357E1C68-9E29-474F-A783-6F8FD8BCEAB4" Directory="WEBEXTENSIONSLOCATION">
                 <Condition>NETFRAMEWORK20 AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Condition>
                 <CreateFolder />
-                <iis:WebVirtualDir Id="IIS6DotNetViewerVDir" Alias="mapguide/mapviewerajax" Directory="dir_mapviewernet_0" WebSite="IISDefaultWebSite">
+                <iis:WebVirtualDir Id="IIS6DotNetViewerVDir" Alias="[VIRTUALDIR]/mapviewerajax" Directory="dir_mapviewernet_0" WebSite="IISDefaultWebSite">
                     <iis:WebDirProperties Id="IIS6DotNetViewerDocument" DefaultDocuments="ajaxviewer.aspx"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
                     <iis:WebApplication Id="IIS6MapViewerWebApp" Name="mapviewerajax" WebAppPool="IIS6MapGuideAppPool" />
                 </iis:WebVirtualDir>

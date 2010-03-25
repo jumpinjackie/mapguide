@@ -41,12 +41,14 @@
 
     <String Id="ApacheConfigDlg_Title">Paquete de ajustes de configuración</String>
     <String Id="ApacheConfigDlg_Description">Configure el entorno de desarrollo</String>
-    <String Id="ApacheConfigDlg_PortNo">número de puerto del servidor web:</String>
-    <String Id="ApacheConfigDlg_DevEnv">Entorno de desarrollo:</String>
+    <String Id="ApacheConfigDlg_PortNo">número de puerto del servidor web</String>
+    <String Id="ApacheConfigDlg_DevEnv">Entorno de desarrollo</String>
+    <String Id="ApacheConfigDlg_VDirName">Nombre del directorio virtual</String>
 
     <String Id="IISLangConfigDlg_Title">Ajustes de configuración de IIS</String>
     <String Id="IISLangConfigDlg_Description">Configure el entorno de desarrollo</String>
-    <String Id="IISLangConfigDlg_DevEnv">Entorno de desarrollo:</String>
+    <String Id="IISLangConfigDlg_DevEnv">Entorno de desarrollo</String>
+    <String Id="IISLangConfigDlg_VDirName">Nombre del directorio virtual</String>
 
     <String Id="IIS6ConfigDlg_Title">Configuración de IIS 6.0</String>
     <String Id="IIS6ConfigDlg_Description">Configurar IIS 6.0 Configuración</String>

@@ -41,12 +41,14 @@
 
     <String Id="ApacheConfigDlg_Title">Bundled Configuration Settings</String>
     <String Id="ApacheConfigDlg_Description">Set up the development environment</String>
-    <String Id="ApacheConfigDlg_PortNo">Web Server Port Number:</String>
-    <String Id="ApacheConfigDlg_DevEnv">Development Environment:</String>
+    <String Id="ApacheConfigDlg_PortNo">Web Server Port Number</String>
+    <String Id="ApacheConfigDlg_DevEnv">Development Environment</String>
+    <String Id="ApacheConfigDlg_VDirName">Virtual Directory Name</String>
 
     <String Id="IISLangConfigDlg_Title">IIS Configuration Settings</String>
     <String Id="IISLangConfigDlg_Description">Set up the development environment</String>
-    <String Id="IISLangConfigDlg_DevEnv">Development Environment:</String>
+    <String Id="IISLangConfigDlg_DevEnv">Development Environment</String>
+    <String Id="IISLangConfigDlg_VDirName">Virtual Directory Name</String>
 
     <String Id="IIS6ConfigDlg_Title">IIS 6.0 Configuration</String>
     <String Id="IIS6ConfigDlg_Description">Configure IIS 6.0 Settings</String>

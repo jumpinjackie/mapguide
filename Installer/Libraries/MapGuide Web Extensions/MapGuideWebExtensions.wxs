@@ -145,6 +145,8 @@
                 <ComponentGroupRef Id="group_HELPFILES" />
                 <ComponentRef Id="ApacheWebApiShortcutComponent"/>
                 <ComponentRef Id="IISWebApiShortcutComponent"/>
+                <ComponentRef Id="ApacheViewerApiShortcutComponent"/>
+                <ComponentRef Id="IISViewerApiShortcutComponent"/>
             </Feature>
             <Feature Id="WebExtMapViewerFeature" Title="!(loc.WebExtMapViewerFeature)" Display="hidden" Level="1" Description="!(loc.WebExtMapViewerFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
                 <ComponentGroupRef Id="group_MAPVIEWERFILES"/>

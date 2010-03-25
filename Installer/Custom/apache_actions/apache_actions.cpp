@@ -248,6 +248,7 @@ UpdateApacheConfig(MSIHANDLE hMSI)
 	CHAR    szApacheDir[MAX_BUFFER];
 	CHAR    szPhpDir[MAX_BUFFER];
 	CHAR    szWebDir[MAX_BUFFER];
+	CHAR	szVirtualDir[MAX_BUFFER];
 	CHAR    szApiType[MAX_BUFFER];
 	CHAR    szServerPort[MAX_BUFFER];
 	CHAR    szFile[MAX_BUFFER];
@@ -305,6 +306,12 @@ UpdateApacheConfig(MSIHANDLE hMSI)
 		if(tok)
 		{
 			strcpy(szWebDir, tok);
+			tok = strtok(NULL, ";");
+		}
+		//[VIRTUALDIR]
+		if(tok)
+		{
+			strcpy(szVirtualDir, tok);
 		}
 	}
 
@@ -363,6 +370,11 @@ UpdateApacheConfig(MSIHANDLE hMSI)
 		strcpy(szReplace, szApacheDir);
 		csBuff.Replace(szFind, szReplace);
 
+		// Replace %MG_VIRTUAL_DIR%
+		strcpy(szFind, "%MG_VIRTUAL_DIR%");
+		strcpy(szReplace, szVirtualDir);
+		csBuff.Replace(szFind, szReplace);
+
 		// If java, then include the tomcat configuration
 		strcpy(szFind, "%MG_INCLUDE_TOMCAT%");
 		csBuff.Replace(szFind, bJava ? "Include conf/tomcat.conf" : "#Uncomment to enable the Java API\n#Include conf/tomcat.conf");
@@ -388,6 +400,7 @@ UpdateApacheConfig(MSIHANDLE hMSI)
 		cfOutFile.Close();
 	}
 
+	//Check if the tomcat.conf file was included in httpd.conf, if so we need to do placeholder substitution there too.
 	strcpy(szFile, szApacheDir);
 	strcat(szFile, "\\conf\\tomcat.conf");
 
@@ -409,6 +422,11 @@ UpdateApacheConfig(MSIHANDLE hMSI)
 		strcpy(szFind,"%MG_WEB_APACHE%");
 		strcpy(szReplace, szApacheDir);
 		csBuff.Replace(szFind,szReplace);
+
+		// Replace %MG_VIRTUAL_DIR%
+		strcpy(szFind, "%MG_VIRTUAL_DIR%");
+		strcpy(szReplace, szVirtualDir);
+		csBuff.Replace(szFind, szReplace);
 
 		CFile cfOutFile(szFile, CFile::modeWrite);
 

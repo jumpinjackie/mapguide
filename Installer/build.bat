@@ -43,9 +43,11 @@ rem ==================================================
 SET TYPEACTION=build
 SET TYPEBUILD=Release
 SET CULTURE=en-US
-SET INSTALLER_NAME=MapGuideOpenSource-2.2.0-Trunk-%CULTURE%-%TYPEBUILD%
-SET INSTALLER_VERSION=2.2.0.0
+SET INSTALLER_VERSION_MAJOR_MINOR_REV=2.2.0
+SET INSTALLER_NAME=MapGuideOpenSource-%INSTALLER_VERSION_MAJOR_MINOR_REV%-Trunk-%CULTURE%-%TYPEBUILD%
+SET INSTALLER_VERSION=%INSTALLER_VERSION_MAJOR_MINOR_REV%.0
 SET INSTALLER_TITLE="MapGuide Open Source 2.2 Trunk (%TYPEBUILD%)"
+SET MG_REG_KEY=Software\OSGeo\MapGuide\%INSTALLER_VERSION_MAJOR_MINOR_REV%
 SET MG_SOURCE=%CD%\..\MgDev\%TYPEBUILD%
 SET MG_SOURCE_INC=
 rem Set to NO to build installers quicker (at the expense of file size)
@@ -176,6 +178,7 @@ echo CPU cores: %CPU_CORES%
 echo Installer Output Directory: %INSTALLER_OUTPUT%
 echo MG Source Directory: %MG_SOURCE%
 echo Locale: %CULTURE%
+echo Registry Root: %MG_REG_KEY%
 echo ===================================================
 
 if "%TYPEACTION%"=="build" goto build
@@ -394,7 +397,7 @@ goto quit
 
 :build
 echo [build]: Installer
-SET RUN_BUILD=%MSBUILD% /p:OutputName=%INSTALLER_NAME%;MgCulture=%CULTURE%;MgTitle=%INSTALLER_TITLE%;MgVersion=%INSTALLER_VERSION%
+SET RUN_BUILD=%MSBUILD% /p:OutputName=%INSTALLER_NAME%;MgCulture=%CULTURE%;MgTitle=%INSTALLER_TITLE%;MgVersion=%INSTALLER_VERSION%;MgRegKey=%MG_REG_KEY%
 if not ""=="%MG_SOURCE_INC%" set RUN_BUILD=%RUN_BUILD%;MgSource=%MG_SOURCE_INC%
 set RUN_BUILD=%RUN_BUILD% Installer.sln
 %RUN_BUILD% 

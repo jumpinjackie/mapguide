@@ -2,14 +2,10 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 	<Fragment>
         <Binary Id="ApacheActions" SourceFile="..\..\Custom\bin\apache_actions.dll" />
-        <CustomAction Id="UpdateApacheConfig.SetValues" Property="UpdateApacheConfig" Value="[WEBEXTENSIONSLOCATION];[APACHE_API_TYPE];[APACHE_PORT];[APACHELOCATION];[PHPLOCATION];[WEBROOTLOCATION]" />
+        <CustomAction Id="UpdateApacheConfig.SetValues" Property="UpdateApacheConfig" Value="[WEBEXTENSIONSLOCATION];[APACHE_API_TYPE];[APACHE_PORT];[APACHELOCATION];[PHPLOCATION];[WEBROOTLOCATION];[VIRTUALDIR]" />
         <CustomAction Id="UpdateApacheConfig" Return="check" BinaryKey="ApacheActions" Execute="deferred"  DllEntry="UpdateApacheConfig" />
         <CustomAction Id="UpdatePhpIni.SetValues" Property="UpdatePhpIni" Value='[PHPLOCATION];2;[WEBTEMPLOCATION]' />
         <CustomAction Id="UpdatePhpIni" Return="check" BinaryKey="ApacheActions" Execute="deferred" DllEntry="UpdatePhpIni" />
-        <!--
-        <CustomAction Id="GetApacheDir.SetValues" Property="GetApacheDir" Value="[APACHE_VERSION]" />
-        <CustomAction Id="GetApacheDir" Return="check" BinaryKey="ApacheActions" Execute="deferred" DllEntry="GetApacheDir" />
-        -->
         <CustomAction Id="RemoveApacheServiceCA" Execute="immediate" Return="ignore" FileKey="file_APACHEFILES_13" ExeCommand="-k uninstall -n &quot;ApacheMapGuide[MG_VERSION_MAJOR_MINOR]&quot;" />
         <CustomAction Id="InstallApacheServiceCA" Execute="deferred" Return="ignore" FileKey="file_APACHEFILES_13" ExeCommand="-k install -n &quot;ApacheMapGuide[MG_VERSION_MAJOR_MINOR]&quot;" />
 	</Fragment>

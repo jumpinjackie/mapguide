@@ -38,6 +38,7 @@
     <String Id="WebTempFeature_Description">Usted puede elegir un lugar donde MapGuide almacenará los archivos temporales</String>
 
     <String Id="Shortcut_WebAPI">Web de documentación de la API</String>
+    <String Id="Shortcut_ViewerAPI">Visor de Documentación de la API</String>
     <String Id="Shortcut_SiteAdmin">MapGuide administrador del sitio</String>
     <String Id="Shortcut_MapAgent">MapAgent Páginas de prueba</String>
     <String Id="Shortcut_GetMaestro">Obtener MapGuide Maestro</String>
