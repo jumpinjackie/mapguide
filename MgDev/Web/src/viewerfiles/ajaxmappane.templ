@@ -3417,6 +3417,14 @@ function RequestTile(col, row, tilex, tiley)
             return 0;
         cell.loaded = "1";
         url = webAgent + "?OPERATION=GETTILEIMAGE&VERSION=1.2.0&SESSION=" + sessionId + "&MAPDEFINITION=" + encodeComponent(mapDefinitionName) + "&BASEMAPLAYERGROUPNAME=" + encodeComponent(baseGroups[k]) + "&TILECOL=" + tilex + "&TILEROW=" + tiley + "&SCALEINDEX=" + sci + "&CLIENTAGENT=" + encodeComponent(clientAgent);
+        
+        // Defect in the way Chrome 4.0 caches images.
+        if(chrome)
+        {
+            var timestamp = new Date().getTime();
+            url += ('&TS=' + timestamp);
+        }
+        
         tag = '<img id="' + (imgId) + '" width=' + TILECX + ' height=' + TILECY + ' border=0 vspace=0 hspace=0 src="' + url + '" style="visibility: hidden; width: ' + TILECX + 'px; height: ' + TILECY + 'px;" onload="OnTileLoaded(\'' + imgId + '\')">';
         imgId ++;
         cell.innerHTML = tag;
