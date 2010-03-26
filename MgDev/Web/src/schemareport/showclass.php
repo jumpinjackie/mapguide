@@ -65,7 +65,9 @@
                 $schemaName = substr(strrchr($schemaName, "/"), 1);
                 $classDef = $featureSrvc->GetClassDefinition($resId, $schemaName, $className);
                 $geomName = $classDef->GetDefaultGeometryPropertyName();
-                $featureReader = $featureSrvc->SelectFeatures($resId, $className, null);
+
+                $qualifiedClassName = $schemaName . ":" . $className;
+                $featureReader = $featureSrvc->SelectFeatures($resId, $qualifiedClassName, null);
 
                 // Calculate total number of entries.
                 while($featureReader->ReadNext())
@@ -104,7 +106,7 @@
 
                 try
                 {
-                    $featureReader = $featureSrvc->SelectFeatures($resId, $className, null);
+                    $featureReader = $featureSrvc->SelectFeatures($resId, $qualifiedClassName, null);
 
                     // Find the correct index on featureReader
                     $count = $index;

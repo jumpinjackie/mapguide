@@ -75,7 +75,7 @@
                 $geomProp = $classDef->GetProperties()->GetItem($geomName);
                 $spatialContext = $geomProp->GetSpatialContextAssociation();
 
-                $featureReader = $featureSrvc->SelectFeatures($featuresId, $className, null);
+                $featureReader = $featureSrvc->SelectFeatures($featuresId, $featureName, null);
                 while($featureReader->ReadNext())
                     $totalEntries++;
                 $featureReader->Close();
