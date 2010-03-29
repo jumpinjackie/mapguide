@@ -408,19 +408,55 @@ MgCoordinate* CCoordinateSystemTransform::Transform(MgCoordinate* coordinate)
 
 ///////////////////////////////////////////////////////////////////////////
 ///<summary>
-/// Transforms the specified source envelope and returns a new envelope
-/// if the target envelope is NULL, otherwise updates and returns the
-/// target envelope with the values of the transformed source envelope.
+/// Transforms the specified source envelope and returns a new envelope.
 ///</summary>
 ///<param name="envelope">
-/// The input MgEnvelope to transform.
+/// The MgEnvelope to be transformed.
 ///</param>
 ///<returns>
 /// A new MgEnvelope transformed from the specified envelope.
 ///</returns>
+///<remarks>
+///By its definition, an envelope is a rectangle whose sides are parallel
+///to the X and Y axes of the coordinate system to which the coordinate
+///values are reference the extents of which define the extents of the
+///collection of geometries associated with the envelope.  The transformed
+///geometry is an approximation (a very good one we hope) of an envelope
+///in a new and different coordinate system.  Since a transformation may
+///include some rotation (among other transofrmation affects), the resulting
+///envelop is often enlarged to meet the above described requirements.
+///</remarks>
 MgEnvelope* CCoordinateSystemTransform::Transform(MgEnvelope* envelope)
 {
-    MgEnvelope* pEnvelope = NULL;
+    // The following value puts limit on the number of points generated
+    // by the GridLine function which is used below.  The value is not an
+    // actual limit, but more a threshold which when exceeded the algorithm
+    // start a clean shut down.  Thus, there may be as many as twice this
+    // number of points in a line returned by GridLine.  To increase the
+    // accuracy of this function, increase the value of this constant.  Of
+    // course, you'll pay a penalty in performance and memory usage.
+    static const INT32 maxPoints = 127;
+
+    INT32 dimension;
+
+    double tmpDbl;
+    double magnitude;
+    double xMax = -HUGE_VAL;
+    double yMax = -HUGE_VAL;
+    double zMax = -HUGE_VAL;
+    double xMin = HUGE_VAL;
+    double yMin = HUGE_VAL;
+    double zMin = HUGE_VAL;
+
+    Ptr<MgEnvelope> pEnvelope;
+    Ptr<MgCoordinate> xyPoint;
+    Ptr<MgLineString> lineString;
+    Ptr<MgCoordinateIterator> stringItr;
+
+    // Leave commented except for temporary debugging.  The printf output gets
+    // sent to stdout and ends up being included in the web-tier HTTP response.
+    // printf("\nTransform(envelope) -- Source: %S  Dest: %S\n", m_pCsSource->GetCode().c_str(), m_pCsTarget->GetCode().c_str());
+
     MG_TRY()
 
     if(NULL == envelope)
@@ -428,287 +464,123 @@ MgEnvelope* CCoordinateSystemTransform::Transform(MgEnvelope* envelope)
         throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    Ptr<MgCoordinate> lowerLeft = envelope->GetLowerLeftCoordinate();
+    // Extract the two defining corners of this envelope.
+    Ptr<MgCoordinate> lowerLeft  = envelope->GetLowerLeftCoordinate();
     Ptr<MgCoordinate> upperRight = envelope->GetUpperRightCoordinate();
-
-    Ptr<MgCoordinate> lowerLeftTarget;
-    Ptr<MgCoordinate> upperRightTarget;
-
-    // Leave commented except for temporary debugging.  The printf output gets
-    // sent to stdout and ends up being included in the web-tier HTTP response.
-//  printf("\nTransform(envelope) -- Source: %S  Dest: %S\n", m_pCsSource->GetCode().c_str(), m_pCsTarget->GetCode().c_str());
-
-    if((m_pCsSource->GetType() == MgCoordinateSystemType::Projected) && (m_pCsTarget->GetType() == MgCoordinateSystemType::Geographic))
+    
+    // Determine if this is a 3D envelope.  Don't know that this is possible,
+    // but the code I modified handles 3D envelopes, so I will too.
+    dimension = upperRight->GetDimension();
+    if (dimension == MgCoordinateDimension::XYZ)
     {
-        // This is a projected to geographic transform.
-        double ptUpperRightX = upperRight->GetX();
-        double ptUpperRightY = upperRight->GetY();
-        double ptUpperRightZ = upperRight->GetZ();
-        double ptLowerLeftX = lowerLeft->GetX();
-        double ptLowerLeftY = lowerLeft->GetY();
-        double ptLowerLeftZ = lowerLeft->GetZ();
+        // Extract the Z minimum and maximum.
+        tmpDbl = lowerLeft->GetZ ();
+        if (tmpDbl < zMin) zMin = tmpDbl;
+        if (tmpDbl > zMax) zMax = tmpDbl;
 
-        int dimension = upperRight->GetDimension();
-
-        double ptNWX = ptLowerLeftX;
-        double ptNWY = ptUpperRightY;
-        double ptSEX = ptUpperRightX;
-        double ptSEY = ptLowerLeftY;
-
-        double xMax = -HUGE_VAL;
-        double yMax = -HUGE_VAL;
-        double xMin = HUGE_VAL;
-        double yMin = HUGE_VAL;
-
-        int i;
-
-        // compute the max and min longitude along the top and bottom borders
-
-        double xInc = (ptNWX - ptSEX) / 100.0;
-        double tempX;
-        double tempY;
-
-        for (i = 0; i <= 100; i++)
-        {
-            tempX = ptSEX + i * xInc;
-            tempY = ptNWY;
-
-            Transform(&tempX, &tempY);
-
-            xMax = max(tempX, xMax);
-            xMin = min(tempX, xMin);
-            yMax = max(tempY, yMax);
-            yMin = min(tempY, yMin);
-        }
-
-        xInc = (ptNWX - ptSEX) / 100.0;
-
-        for (i = 0; i <= 100; i++)
-        {
-            tempX = ptSEX + i * xInc;
-            tempY = ptSEY;
-
-            Transform(&tempX, &tempY);
-
-            xMax = max(tempX, xMax);
-            xMin = min(tempX, xMin);
-            yMax = max(tempY, yMax);
-            yMin = min(tempY, yMin);
-        }
-
-        // compute the max and min longitude along the left and right borders
-
-        double yInc = (ptNWY - ptSEY) / 100.0;
-
-        for (i = 0; i <= 100; i++)
-        {
-            tempX = ptNWX;
-            tempY = ptSEY + i * yInc;
-
-            Transform(&tempX, &tempY);
-
-            xMax = max(tempX, xMax);
-            xMin = min(tempX, xMin);
-            yMax = max(tempY, yMax);
-            yMin = min(tempY, yMin);
-        }
-
-        yInc = (ptNWY - ptSEY) / 100.0;
-
-        for (i = 0; i <= 100; i++)
-        {
-            tempX = ptSEX;
-            tempY = ptSEY + i * yInc;
-
-            Transform(&tempX, &tempY);
-
-            xMax = max(tempX, xMax);
-            xMin = min(tempX, xMin);
-            yMax = max(tempY, yMax);
-            yMin = min(tempY, yMin);
-        }
-
-        if(dimension == MgCoordinateDimension::XYZ)
-        {
-            double zMax = 0.0;
-            double zMin = 0.0;
-
-            zMax = max(ptUpperRightZ, ptLowerLeftZ);
-            zMin = min(ptUpperRightZ, ptLowerLeftZ);
-
-            lowerLeftTarget = new MgCoordinateXYZ(xMin, yMin, zMin);
-            upperRightTarget = new MgCoordinateXYZ(xMax, yMax, zMax);
-        }
-        else
-        {
-            lowerLeftTarget = new MgCoordinateXY(xMin, yMin);
-            upperRightTarget = new MgCoordinateXY(xMax, yMax);
-        }
-
-        pEnvelope = new MgEnvelope(lowerLeftTarget, upperRightTarget);
-    }
-    else if((m_pCsSource->GetType() == MgCoordinateSystemType::Geographic) && (m_pCsTarget->GetType() == MgCoordinateSystemType::Projected))
-    {
-        // This is a geographic to projected transform.
-        double ptUpperRightX = upperRight->GetX();
-        double ptUpperRightY = upperRight->GetY();
-        double ptUpperRightZ = upperRight->GetZ();
-        double ptLowerLeftX = lowerLeft->GetX();
-        double ptLowerLeftY = lowerLeft->GetY();
-        double ptLowerLeftZ = lowerLeft->GetZ();
-
-        int dimension = upperRight->GetDimension();
-
-        double ptNWX = ptLowerLeftX;
-        double ptNWY = ptUpperRightY;
-        double ptSEX = ptUpperRightX;
-        double ptSEY = ptLowerLeftY;
-
-        double lon = (ptSEX + ptNWX) / 2.0;
-        double lat = (ptSEY + ptNWY) / 2.0;
-        double xDist = ::fabs(ptSEX - ptNWX);
-
-        double tempX = 0.0;
-        double tempY = 0.0;
-
-        // Bottom center
-        tempX = lon;
-        tempY = ptSEY;
-        Transform(&tempX, &tempY);
-
-        double xMax = tempX;
-        double xMin = tempX;
-        double yMax = tempY;
-        double yMin = tempY;
-
-        // Bottom right
-        tempX = (lon + xDist / 2);
-        tempY = ptSEY;
-        Transform(&tempX, &tempY);
-
-        xMax = max(tempX, xMax);
-        xMin = min(tempX, xMin);
-        yMax = max(tempY, yMax);
-        yMin = min(tempY, yMin);
-
-        // Bottom left
-        tempX = (lon - xDist / 2);
-        tempY = ptSEY;
-        Transform(&tempX, &tempY);
-
-        xMax = max(tempX, xMax);
-        xMin = min(tempX, xMin);
-        yMax = max(tempY, yMax);
-        yMin = min(tempY, yMin);
-
-        // Top center
-        tempX = lon;
-        tempY = ptNWY;
-        Transform(&tempX, &tempY);
-
-        xMax = max(tempX, xMax);
-        xMin = min(tempX, xMin);
-        yMax = max(tempY, yMax);
-        yMin = min(tempY, yMin);
-
-        // Top right
-        tempX = (lon + xDist / 2);
-        tempY = ptNWY;
-        Transform(&tempX, &tempY);
-
-        xMax = max(tempX, xMax);
-        xMin = min(tempX, xMin);
-        yMax = max(tempY, yMax);
-        yMin = min(tempY, yMin);
-
-        // Top left
-        tempX = (lon - xDist / 2);
-        tempY = ptNWY;
-        Transform(&tempX, &tempY);
-
-        xMax = max(tempX, xMax);
-        xMin = min(tempX, xMin);
-        yMax = max(tempY, yMax);
-        yMin = min(tempY, yMin);
-
-        // Middle center
-        tempX = lon;
-        tempY = lat;
-        Transform(&tempX, &tempY);
-
-        xMax = max(tempX, xMax);
-        xMin = min(tempX, xMin);
-        yMax = max(tempY, yMax);
-        yMin = min(tempY, yMin);
-
-        // Middle right
-        tempX = (lon + xDist / 2);
-        tempY = lat;
-        Transform(&tempX, &tempY);
-
-        xMax = max(tempX, xMax);
-        xMin = min(tempX, xMin);
-        yMax = max(tempY, yMax);
-        yMin = min(tempY, yMin);
-
-        // Middle left
-        tempX = (lon - xDist / 2);
-        tempY = lat;
-        Transform(&tempX, &tempY);
-
-        xMax = max(tempX, xMax);
-        xMin = min(tempX, xMin);
-        yMax = max(tempY, yMax);
-        yMin = min(tempY, yMin);
-
-        if(dimension == MgCoordinateDimension::XYZ)
-        {
-            double zMax = 0.0;
-            double zMin = 0.0;
-
-            zMax = max(ptUpperRightZ, ptLowerLeftZ);
-            zMin = min(ptUpperRightZ, ptLowerLeftZ);
-
-            lowerLeftTarget = new MgCoordinateXYZ(xMin, yMin, zMin);
-            upperRightTarget = new MgCoordinateXYZ(xMax, yMax, zMax);
-        }
-        else
-        {
-            lowerLeftTarget = new MgCoordinateXY(xMin, yMin);
-            upperRightTarget = new MgCoordinateXY(xMax, yMax);
-        }
-
-        pEnvelope = new MgEnvelope(lowerLeftTarget, upperRightTarget);
-
-    }
-    else
-    {
-        lowerLeftTarget = Transform(lowerLeft);
-        upperRightTarget = Transform(upperRight);
-
-        pEnvelope = new MgEnvelope(lowerLeftTarget, upperRightTarget);
+        tmpDbl = upperRight->GetZ ();
+        if (tmpDbl < zMin) zMin = tmpDbl;
+        if (tmpDbl > zMax) zMax = tmpDbl;
     }
 
-    if (!pEnvelope)
+    // Determine a value which represents a good tolerance value for the
+    // GridLine function.  A smaller value will provide greater accuracy
+    // at the expense of performance.
+    xyPoint = Transform (lowerLeft);
+    magnitude = fabs (xyPoint->GetX ());
+    tmpDbl = fabs (xyPoint->GetY ());
+    if (tmpDbl > magnitude) magnitude = tmpDbl;
+    xyPoint = Transform (upperRight);
+    tmpDbl = fabs (xyPoint->GetX ());
+    if (tmpDbl > magnitude) magnitude = tmpDbl;
+    tmpDbl = fabs (xyPoint->GetY ());
+    if (tmpDbl > magnitude) magnitude = tmpDbl;
+    magnitude *= 1.0E-07;               // Make this constant even smaller if more accuracy is required.
+
+    // Extract the other two corners of the envelope.
+    Ptr<MgCoordinate> upperLeft  = new MgCoordinateXY (lowerLeft->GetX (),upperRight->GetY ());
+    Ptr<MgCoordinate> lowerRight = new MgCoordinateXY (upperRight->GetX (),lowerLeft->GetY ());
+
+    // Generate line strings from one corner to the next.  Magnitude is the
+    // maximum distance between the real line and the multi-segment
+    // approximation returned by GridLine.  Thus, this is a measure of the
+    // accuracy.  To prevent a serious looping problem, the maxPoints
+    // argument sets an upper limit on the number of points generated in the
+    // the returned line string.
+    lineString = GridLine (lowerLeft,lowerRight,magnitude,maxPoints);
+    stringItr = lineString->GetCoordinates ();
+    while (stringItr->MoveNext ())
     {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
+        xyPoint = stringItr->GetCurrent ();
+        if (xyPoint->GetX () < xMin) xMin = xyPoint->GetX ();
+        if (xyPoint->GetX () > xMax) xMax = xyPoint->GetX ();
+        if (xyPoint->GetY () < yMin) yMin = xyPoint->GetY ();
+        if (xyPoint->GetY () > yMax) yMax = xyPoint->GetY ();
+    }
+
+    lineString = GridLine (lowerRight,upperRight,magnitude,maxPoints);
+    stringItr = lineString->GetCoordinates ();
+    while (stringItr->MoveNext ())
+    {
+        xyPoint = stringItr->GetCurrent ();
+        if (xyPoint->GetX () < xMin) xMin = xyPoint->GetX ();
+        if (xyPoint->GetX () > xMax) xMax = xyPoint->GetX ();
+        if (xyPoint->GetY () < yMin) yMin = xyPoint->GetY ();
+        if (xyPoint->GetY () > yMax) yMax = xyPoint->GetY ();
+    }
+
+    lineString = GridLine (upperRight,upperLeft,magnitude,maxPoints);
+    stringItr = lineString->GetCoordinates ();
+    while (stringItr->MoveNext ())
+    {
+        xyPoint = stringItr->GetCurrent ();
+        if (xyPoint->GetX () < xMin) xMin = xyPoint->GetX ();
+        if (xyPoint->GetX () > xMax) xMax = xyPoint->GetX ();
+        if (xyPoint->GetY () < yMin) yMin = xyPoint->GetY ();
+        if (xyPoint->GetY () > yMax) yMax = xyPoint->GetY ();
+    }
+
+    lineString = GridLine (upperLeft,lowerLeft,magnitude,maxPoints);
+    stringItr = lineString->GetCoordinates ();
+    while (stringItr->MoveNext ())
+    {
+        xyPoint = stringItr->GetCurrent ();
+        if (xyPoint->GetX () < xMin) xMin = xyPoint->GetX ();
+        if (xyPoint->GetX () > xMax) xMax = xyPoint->GetX ();
+        if (xyPoint->GetY () < yMin) yMin = xyPoint->GetY ();
+        if (xyPoint->GetY () > yMax) yMax = xyPoint->GetY ();
+    }
+
+    // Construct an evelope of the appropriate dimensions.
+    if (dimension != MgCoordinateDimension::XYZ)    // 2D
+    {
+        Ptr<MgCoordinate> xyLowerLeft = new MgCoordinateXY (xMin,yMin);
+        Ptr<MgCoordinate> xyUpperRight = new MgCoordinateXY (xMax,yMax);
+        pEnvelope = new MgEnvelope (xyLowerLeft,xyUpperRight);
+    }
+    else                                            // 3D
+    {
+        Ptr<MgCoordinate> xyzLowerLeft = new MgCoordinateXYZ (xMin,yMin,zMin);
+        Ptr<MgCoordinate> xyzUpperRight = new MgCoordinateXYZ (xMax,yMax,zMax);
+        pEnvelope = new MgEnvelope (xyzLowerLeft,xyzUpperRight);
     }
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.Transform")
 
     // Leave commented except for temporary debugging.  The printf output gets
     // sent to stdout and ends up being included in the web-tier HTTP response.
-/*
-    Ptr<MgCoordinate> ll = envelope->GetLowerLeftCoordinate();
-    Ptr<MgCoordinate> ur = envelope->GetUpperRightCoordinate();
-    printf("Transform(envelope) -- Source: %f,%f to %f,%f\n", ll->GetX(), ll->GetY(), ur->GetX(), ur->GetY());
+    /*
+        Ptr<MgCoordinate> ll = envelope->GetLowerLeftCoordinate();
+        Ptr<MgCoordinate> ur = envelope->GetUpperRightCoordinate();
+        printf("Transform(envelope) -- Source: %f,%f to %f,%f\n", ll->GetX(), ll->GetY(), ur->GetX(), ur->GetY());
 
-    ll = pEnvelope->GetLowerLeftCoordinate();
-    ur = pEnvelope->GetUpperRightCoordinate();
-    printf("Transform(envelope) -- Dest  : %f,%f to %f,%f\n", ll->GetX(), ll->GetY(), ur->GetX(), ur->GetY());
-*/
+        ll = pEnvelope->GetLowerLeftCoordinate();
+        ur = pEnvelope->GetUpperRightCoordinate();
+        printf("Transform(envelope) -- Dest  : %f,%f to %f,%f\n", ll->GetX(), ll->GetY(), ur->GetX(), ur->GetY());
+    */
 
-    return pEnvelope;
+    // Return the computed envelope.
+    return pEnvelope.Detach ();
 }
 
 //MgDisposable
