@@ -195,7 +195,6 @@ ALLUNSELECTABLE         = All Unselectable
 TASKS                   = Tasks
 TASKBARCLOSEBUTTONTEXT  = Close the task pane
 TASKBARCLOSEBUTTONDESC  = Close the task pane
-TASKBARCLOSEBUTTONICON  = ../stdicons/closeButton.gif
 TASKBAROPENBUTTONTEXT   = Open the task pane
 TASKBAROPENBUTTONDESC   = Open the task pane
 
