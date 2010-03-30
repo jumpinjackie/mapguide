@@ -1085,7 +1085,10 @@ INT32 MgSpatialUtility::PointIsInPolygon (MgCoordinateIterator* polyItr,MgCoordi
             // The query point is not on the polygon, so its inside/outside
             // status can be determined by the number of intersections.  An
             // odd number of intersections says the point is inside.
-            pointStatus = ((count % 2) == 1) ? MgSpatialUtilityStatus::PointIsInside : MgSpatialUtilityStatus::PointIsOutside;
+            // This rather strange sequence of code is required to overcome
+            // a glitch in the Linux build tools.
+            INT32 xxx = MgSpatialUtilityStatus::PointIsOutside;
+            pointStatus = ((count % 2) == 1) ? MgSpatialUtilityStatus::PointIsInside : xxx;
         }
     }
     return pointStatus;
