@@ -54,10 +54,6 @@
 #undef GetMessage
 #endif
 
-#ifndef _WIN32
-#include "CoordSysEnvVariable.h"
-#endif
-
 //Global variables needed from Mentor
 extern "C"
 {
@@ -223,12 +219,6 @@ STRING CCoordinateSystemCatalog::GetDefaultDictionaryDir()
     {
         bResult = true;
         MgUtil::MultiByteToWideChar(string(szPath), sDir);
-    }
-
-    if (sDir.empty())
-    {
-        bResult = true;
-        sDir = LINUX_COORD_PATH;
     }
 
 #endif
