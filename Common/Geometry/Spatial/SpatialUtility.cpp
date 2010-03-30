@@ -1053,10 +1053,13 @@ MgCoordinate* MgSpatialUtility::PointOutsidePolygon (MgCoordinateIterator* polyI
 INT32 MgSpatialUtility::PointIsInPolygon (MgCoordinateIterator* polyItr,MgCoordinate* outsidePoint,
                                                                         MgCoordinate* queryPoint)
 {
-    INT32 pointStatus (MgSpatialUtilityStatus::PointIsOutside);
+    INT32 pointStatus;
 
     Ptr<MgCoordinateXYM> lastIntersection;
     Ptr<MgCoordinateCollection> intersectionCollection;
+
+    // Until we know different.
+    pointStatus = MgSpatialUtilityStatus::PointIsOutside;
 
     // Get all the intersections between the "outPoint" amd the query Point.
     intersectionCollection = PolySegIntersection (polyItr,outsidePoint,queryPoint);
