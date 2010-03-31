@@ -299,17 +299,17 @@ RewriteEngine On
 
 # mapviewerajax to mapviewerphp rewrite rules
 # comment out for java api/viewer
-RewriteRule ^/mapguide/mapviewerajax/([^\?])(.*)$ /mapguide/mapviewerphp/$1$2 [PT]
-RewriteRule ^/mapguide/mapviewerajax/(.*)$ /mapguide/mapviewerphp/ajaxviewer.php$1 [PT]
-RewriteRule ^/mapguide/mapviewerdwf/([^\?])(.*)$ /mapguide/mapviewerphp/$1$2 [PT]
-RewriteRule ^/mapguide/mapviewerdwf/(.*)$ /mapguide/mapviewerphp/dwfviewer.php$1 [PT]
+RewriteRule ^/mapguide/mapviewerajax/([^\?])(.*)$ /mapguide/mapviewerphp/\$1\$2 [PT]
+RewriteRule ^/mapguide/mapviewerajax/(.*)$ /mapguide/mapviewerphp/ajaxviewer.php\$1 [PT]
+RewriteRule ^/mapguide/mapviewerdwf/([^\?])(.*)$ /mapguide/mapviewerphp/\$1\$2 [PT]
+RewriteRule ^/mapguide/mapviewerdwf/(.*)$ /mapguide/mapviewerphp/dwfviewer.php\$1 [PT]
 
 # mapviewerajax to mapviewerjava aliases
 # uncomment for java api/viewer
-#RewriteRule ^/mapguide/mapviewerajax/([^\?])(.*)$ /mapguide/mapviewerjava/$1$2 [PT]
-#RewriteRule ^/mapguide/mapviewerajax/(.*)$ /mapguide/mapviewerjava/ajaxviewer.jsp$1 [PT]
-#RewriteRule ^/mapguide/mapviewerdwf/([^\?])(.*)$ /mapguide/mapviewerjava/$1$2 [PT]
-#RewriteRule ^/mapguide/mapviewerdwf/(.*)$ /mapguide/mapviewerjava/dwfviewer.jsp$1 [PT]
+#RewriteRule ^/mapguide/mapviewerajax/([^\?])(.*)$ /mapguide/mapviewerjava/\$1\$2 [PT]
+#RewriteRule ^/mapguide/mapviewerajax/(.*)$ /mapguide/mapviewerjava/ajaxviewer.jsp\$1 [PT]
+#RewriteRule ^/mapguide/mapviewerdwf/([^\?])(.*)$ /mapguide/mapviewerjava/\$1\$2 [PT]
+#RewriteRule ^/mapguide/mapviewerdwf/(.*)$ /mapguide/mapviewerjava/dwfviewer.jsp\$1 [PT]
 
 Alias /mapguide "$INSTALLWEB/www/"
 
@@ -322,6 +322,7 @@ Alias /mapguide "$INSTALLWEB/www/"
   AddHandler php5-script .php
   AddHandler mgmapagent_handler fcgi
 
+  RewriteEngine on
   RewriteRule .* - [E=REMOTE_USER:%{HTTP:Authorization},L]
 </Directory>
 
