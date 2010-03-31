@@ -280,7 +280,7 @@ libMgHttpHandler_la_LIBADD = \
     -lMgMapGuideCommon \
     -llib_json
 
-libMgHttpHandler_la_LDFLAGS = -version-info 7:0:0 \
+libMgHttpHandler_la_LDFLAGS = -release $(PACKAGE_VERSION) \
     -L../../../Common/Foundation \
     -L../../../Common/Geometry \
     -L../../../Common/PlatformBase \

@@ -71,4 +71,4 @@ INCLUDES = \
   -I../GwsCommon/inc \
   -I./inc
 
-libMgGwsQueryEngine_la_LDFLAGS = -version-info 1:0:0
+libMgGwsQueryEngine_la_LDFLAGS = -release $(PACKAGE_VERSION)

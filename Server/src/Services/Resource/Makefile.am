@@ -201,7 +201,7 @@ noinst_HEADERS = $(include_SOURCES) \
 
 libMgServerResourceService_la_LIBADD = -lMgFoundation -lMgGeometry -lMgPlatformBase -lMgMapGuideCommon -lMgServerBase -lMgServerCache -lMgServerManager -lxerces-c -lxqilla -ldb_cxx -ldbxml
 
-libMgServerResourceService_la_LDFLAGS = -version-info 7:0:0 \
+libMgServerResourceService_la_LDFLAGS = -release $(PACKAGE_VERSION) \
   -L../../../../Common/Foundation \
   -L../../../../Common/Geometry \
   -L../../../../Common/PlatformBase \

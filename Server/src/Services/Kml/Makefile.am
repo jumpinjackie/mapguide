@@ -51,4 +51,4 @@ noinst_HEADERS = $(include_SOURCES) \
   OpGetLayerKml.h \
   OpGetFeaturesKml.h
 
-libMgServerKmlService_la_LDFLAGS = -version-info 7:0:0
+libMgServerKmlService_la_LDFLAGS = -release $(PACKAGE_VERSION)

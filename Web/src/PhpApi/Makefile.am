@@ -42,7 +42,7 @@ libphp_MapGuideApi_la_LIBADD = \
     -lxerces-c \
     -lMgWebApp
 
-libphp_MapGuideApi_la_LDFLAGS = -version-info 7:0:0 \
+libphp_MapGuideApi_la_LDFLAGS = -release $(PACKAGE_VERSION) \
     -L../../../Oem/ACE/ACE_wrappers/ace \
     -L../../../Common/MdfModel \
     -L../../../Common/MdfParser \

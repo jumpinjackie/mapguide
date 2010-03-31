@@ -231,6 +231,6 @@ noinst_HEADERS = $(include_SOURCES) \
 
 libMgServerFeatureService_la_LIBADD = -lMgGwsCommon -lMgGwsQueryEngine
 
-libMgServerFeatureService_la_LDFLAGS = -version-info 7:0:0 \
+libMgServerFeatureService_la_LDFLAGS = -release $(PACKAGE_VERSION) \
   -L../../Gws/GwsCommon \
   -L../../Gws/GwsQueryEngine

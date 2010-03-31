@@ -33,4 +33,4 @@ noinst_HEADERS = $(include_SOURCES) \
   ServerStreamData.h \
   ServiceOperation.h
 
-libMgServerBase_la_LDFLAGS = -version-info 7:0:0
+libMgServerBase_la_LDFLAGS = -release $(PACKAGE_VERSION)

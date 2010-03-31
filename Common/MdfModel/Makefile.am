@@ -201,4 +201,4 @@ noinst_HEADERS = \
   W2DSymbol.h \
   stdafx.h
 
-libMgMdfModel_la_LDFLAGS = -version-info 7:0:0
+libMgMdfModel_la_LDFLAGS = -release $(PACKAGE_VERSION)

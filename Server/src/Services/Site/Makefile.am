@@ -90,4 +90,4 @@ noinst_HEADERS = $(include_SOURCES) \
   SiteServiceHandler.h \
   SiteServiceUtil.h
 
-libMgServerSiteService_la_LDFLAGS = -version-info 7:0:0
+libMgServerSiteService_la_LDFLAGS = -release $(PACKAGE_VERSION)

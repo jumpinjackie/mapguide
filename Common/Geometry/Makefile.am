@@ -410,7 +410,7 @@ libMgGeometry_la_LIBADD = \
   ../../Oem/CsMap/.libs/libCsmap.a \
   ../../Oem/geos-2.2.0/source/geom/.libs/libgeos.a
 
-libMgGeometry_la_LDFLAGS = -version-info 7:0:0 \
+libMgGeometry_la_LDFLAGS = -release $(PACKAGE_VERSION) \
   -L../../Oem/ACE/ACE_wrappers/ace \
   -L../Foundation \
   -L../../Oem/CsMap \

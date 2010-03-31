@@ -66,7 +66,7 @@ noinst_HEADERS = $(include_SOURCES) \
 
 libMgServerDrawingService_la_LIBADD = -lMgFoundation -lMgGeometry -lMgPlatformBase -lMgMapGuideCommon -lxerces-c
 
-libMgServerDrawingService_la_LDFLAGS = -version-info 7:0:0 \
+libMgServerDrawingService_la_LDFLAGS = -release $(PACKAGE_VERSION) \
   -L../../../../Oem/dbxml-2.3.10/install/lib \
   -L../../../../Common/Foundation \
   -L../../../../Common/Geometry \

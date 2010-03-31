@@ -205,4 +205,4 @@ noinst_HEADERS = \
 
 libMgStylization_la_LIBADD =
 
-libMgStylization_la_LDFLAGS = -version-info 7:0:0
+libMgStylization_la_LDFLAGS = -release $(PACKAGE_VERSION)

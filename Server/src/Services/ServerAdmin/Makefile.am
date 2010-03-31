@@ -94,4 +94,4 @@ noinst_HEADERS = $(include_SOURCES) \
   ServerAdminServiceHandler.h \
   ../../../../Common/PlatformBase/Services/Service.h
 
-libMgServerAdminService_la_LDFLAGS = -version-info 7:0:0
+libMgServerAdminService_la_LDFLAGS = -release $(PACKAGE_VERSION)
