@@ -44,5 +44,5 @@ INCLUDES = \
   -I../../../../Common/Foundation \
   -I../../../../Common/Geometry
 
-libMgGwsCommon_la_LDFLAGS = -version-info 1:0:0
+libMgGwsCommon_la_LDFLAGS = -release $(PACKAGE_VERSION)
 

@@ -13,4 +13,4 @@ noinst_HEADERS = \
 
 INCLUDES = -I../INCLUDE
 
-libMgGwsResource_la_LDFLAGS = -version-info 1:0:0
+libMgGwsResource_la_LDFLAGS = -release $(PACKAGE_VERSION)

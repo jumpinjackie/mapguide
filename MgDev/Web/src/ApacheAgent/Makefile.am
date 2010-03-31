@@ -43,7 +43,7 @@ mod_mgmapagent_la_LIBADD = -lMgFoundation \
                  -lMgMdfParser \
                  -lMgHttpHandler
 
-mod_mgmapagent_la_LDFLAGS = -version-info 7:0:0 \
+mod_mgmapagent_la_LDFLAGS = -release $(PACKAGE_VERSION) \
             -L../../../Oem/ACE/ACE_wrappers/ace \
             -L../../../Oem/dbxml-2.3.10/install/lib \
             -L../../../Common/CoordinateSystem \

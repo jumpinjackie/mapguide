@@ -99,4 +99,4 @@ noinst_HEADERS = $(include_SOURCES) \
   WorkerThread.h \
   WorkerThreadData.h
 
-libMgServerManager_la_LDFLAGS = -version-info 7:0:0
+libMgServerManager_la_LDFLAGS = -release $(PACKAGE_VERSION)

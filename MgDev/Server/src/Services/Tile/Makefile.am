@@ -45,4 +45,4 @@ noinst_HEADERS = $(include_SOURCES) \
   TileOperationFactory.h \
   TileServiceHandler.h
 
-libMgServerTileService_la_LDFLAGS = -version-info 7:0:0
+libMgServerTileService_la_LDFLAGS = -release $(PACKAGE_VERSION)

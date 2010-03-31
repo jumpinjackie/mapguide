@@ -25,4 +25,4 @@ noinst_HEADERS = $(include_SOURCES) \
   ThreadBase.h \
   ServerThreadDllExport.h
 
-libMgServerThread_la_LDFLAGS = -version-info 7:0:0
+libMgServerThread_la_LDFLAGS = -release $(PACKAGE_VERSION)

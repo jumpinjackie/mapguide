@@ -74,5 +74,5 @@ noinst_HEADERS = \
 
 libMgUnitTesting_la_LIBADD = -lcppunit
 
-libMgUnitTesting_la_LDFLAGS = -rpath /createshared -version-info 7:0:0 \
+libMgUnitTesting_la_LDFLAGS = -rpath /createshared -release $(PACKAGE_VERSION) \
   -L../../../Oem/CppUnit-1.9.14/src/cppunit

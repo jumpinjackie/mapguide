@@ -273,7 +273,7 @@ libMgMapGuideCommon_la_LIBADD = \
   -lMgGeometry \
   -lMgSecurity
 
-libMgMapGuideCommon_la_LDFLAGS = -version-info 7:0:0 \
+libMgMapGuideCommon_la_LDFLAGS = -release $(PACKAGE_VERSION) \
   -L../../Oem/ACE/ACE_wrappers/ace \
   -L../PlatformBase \
   -L../Foundation \

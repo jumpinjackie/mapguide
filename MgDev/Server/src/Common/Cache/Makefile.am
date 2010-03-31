@@ -41,4 +41,4 @@ noinst_HEADERS = $(include_SOURCES) \
   FeatureSourceCacheItem.h \
   SpatialContextCacheItem.h
 
-libMgServerCache_la_LDFLAGS = -version-info 7:0:0
+libMgServerCache_la_LDFLAGS = -release $(PACKAGE_VERSION)

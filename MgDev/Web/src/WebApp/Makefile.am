@@ -84,7 +84,7 @@ INCLUDES = -I../../../Common/MdfModel \
 
 libMgWebApp_la_LIBADD = -lxerces-c -lMgFoundation -lMgGeometry -lMgPlatformBase -lMgMapGuideCommon
 
-libMgWebApp_la_LDFLAGS = -version-info 7:0:0 \
+libMgWebApp_la_LDFLAGS = -release $(PACKAGE_VERSION) \
             -L../../../Oem/dbxml-2.3.10/install/lib \
             -L../../../Common/Foundation \
             -L../../../Common/Geometry \

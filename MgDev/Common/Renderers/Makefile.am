@@ -86,4 +86,4 @@ libMgRenderers_la_LIBADD = \
   ../../Oem/gd/lpng/libpng.a \
   ../../Oem/agg-2.4/src/libagg.a
 
-libMgRenderers_la_LDFLAGS = -version-info 7:0:0
+libMgRenderers_la_LDFLAGS = -release $(PACKAGE_VERSION)
