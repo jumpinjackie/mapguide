@@ -250,7 +250,6 @@ int MgClientHandler::handle_close(ACE_HANDLE handle, ACE_Reactor_Mask mask)
     m_SockStream.close_writer();
     m_SockStream.close_reader();
     m_SockStream.close();
-    m_pMessageQueue->flush();
 
     MgServerManager* pServerManager = MgServerManager::GetInstance();
     if(pServerManager)
