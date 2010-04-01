@@ -518,8 +518,8 @@ bool MgSelectionBase::Contains(MgLayerBase* layer, CREFSTRING className)
 MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
     CREFSTRING className, INT32 selectionSize)
 {
+    const INT32 OR_TEXT_SIZE = 4; // ie: " OR "
     Ptr<MgStringCollection> filters;
-    INT32 selectionCount = 0;
     STRING filter;
     bool filterReserved = false;
 
@@ -542,14 +542,7 @@ MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
         {
             m_stream->FromBase64(*sIter);
 
-            if (bFirstSel)
-            {
-                selText = L"(";
-            }
-            else
-            {
-                selText = L" OR (";
-            }
+            selText = L"(";
 
             bool bFirstProp = true;
             MgLayerBase::IdPropertyList::iterator idIter;
@@ -686,20 +679,24 @@ MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
                 filterReserved = true;
             }
 
-            filter.append(selText);
-            ++selectionCount;
-
-            if (selectionSize > 0 && selectionCount >= selectionSize)
+            if ((selectionSize > 0) && ((filter.length() + selText.length() + OR_TEXT_SIZE) >= selectionSize))
             {
-                bFirstSel = true;
                 filters->Add(filter);
                 filter.clear();
-                selectionCount = 0;
             }
             else
             {
+                // Check if the "OR" needs to be added
+                if (!bFirstSel)
+                {
+                    filter.append(L" OR ");
+                }
+
                 bFirstSel = false;
             }
+
+            // Add the selection
+            filter.append(selText);
         }
 
         if (!filter.empty())
