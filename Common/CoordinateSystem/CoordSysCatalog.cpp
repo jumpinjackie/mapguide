@@ -194,7 +194,10 @@ STRING CCoordinateSystemCatalog::GetDefaultDictionaryDir()
     //if not set then try the default location
     if(!szPathVar)
     {
+        #ifdef _DEBUG
+        // This debug statement appears in the Apache log even under release builds. Wrapping this in an #ifdef will ensure it doesn't appear in RELEASE builds
         ACE_DEBUG((LM_DEBUG, ACE_TEXT("\n(%t) CCoordinateSystemCatalog::GetDefaultDictionaryDir() - environment variable MENTOR_DICTIONARY_PATH not set.\n")));
+        #endif
 
         TCHAR szPath[MAX_PATH];
         if(SHGetSpecialFolderPath(NULL, szPath, CSIDL_COMMON_APPDATA, FALSE))
