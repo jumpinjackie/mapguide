@@ -98,7 +98,7 @@ ACE_THR_FUNC_RETURN CheckServers(void* param)
         }
 
         // Sleep the thread as thread resume/suspend is not supported on all platforms
-        for(size_t i=0;i<sleepTime;i++)
+        for(INT32 i=0;i<sleepTime;i++)
         {
             ACE_OS::sleep(1);
 
