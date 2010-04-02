@@ -679,7 +679,7 @@ MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
                 filterReserved = true;
             }
 
-            if ((selectionSize > 0) && ((filter.length() + selText.length() + OR_TEXT_SIZE) >= selectionSize))
+            if ((selectionSize > 0) && (((INT32)filter.length() + (INT32)selText.length() + OR_TEXT_SIZE) >= selectionSize))
             {
                 filters->Add(filter);
                 filter.clear();
