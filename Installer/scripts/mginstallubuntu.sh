@@ -7,6 +7,22 @@ MGVER=2.2.0-4724_i386
 mkdir -p ${TEMPDIR}
 pushd ${TEMPDIR}
 
+# Install required packages 
+apt-get -y install libexpat1 libssl0.9.8 odbcinst1debian1 unixodbc libmysqlclient15off
+
+# Resolve CentOS 5.4 / Ubuntu 9.10 shared lib differences with symlinks
+if [ ! -e /lib/libcrypto.so.6 ]; then
+  ln -s /lib/libcrypto.so.0.9.8 /lib/libcrypto.so.6
+fi
+
+if [ ! -e /lib/libssl.so.6 ]; then
+  ln -s /lib/libssl.so.0.9.8 /lib/libssl.so.6
+fi
+
+if [ ! -e /lib/libexpat.so.0 ]; then
+  ln -s /lib/libexpat.so.1 /lib/libexpat.so.0
+fi
+
 # Download Ubuntu packages for FDO
 for file in core gdal kingoracle ogr postgis rdbms sdf shp sqlite wfs wms
 do
@@ -32,20 +48,4 @@ do
 done
 
 popd
-
-# Install required packages missed due CentOS 5.4 / Ubuntu 9.10 differences
-apt-get install expat libssl0.9.8
-
-# Resolve CentOS 5.4 / Ubuntu 9.10 shared lib differences with symlinks
-if [ ! -e /lib/libcrypto.so.6 ]; then
-  ln -s /lib/libcrypto.so.0.9.8 /lib/libcrypto.so.6
-fi
-
-if [ ! -e /lib/libssl.so.6 ]; then
-  ln -s /lib/libssl.so.0.9.8 /lib/libssl.so.6
-fi
-
-if [ ! -e /lib/libexpat.so.0 ]; then
-  ln -s /lib/libexpat.so.1 /lib/libexpat.so.0
-fi
 
