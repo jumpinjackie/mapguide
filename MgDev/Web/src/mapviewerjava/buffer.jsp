@@ -38,9 +38,9 @@ double distance;
 String units;
 String linestyle;
 String fillstyle;
-String thickness;
+double thickness;
 int merge;
-int foretrans;
+double foretrans;
 String selText;
 String srs;
 String featureName = "Buffer";
@@ -62,7 +62,7 @@ String locale;
     units = "";
     linestyle = "";
     fillstyle = "";
-    thickness = "";
+    thickness = 0;
     merge = 0;
     foretrans = 50;
     selText = "";
@@ -387,30 +387,31 @@ String locale;
 <%!
 void GetRequestParameters(HttpServletRequest request)
 {
-    mapName = GetParameter(request, "MAPNAME");
-    sessionId = GetParameter(request, "SESSION");
+    sessionId = ValidateSessionId(GetParameter(request, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(request, "LOCALE"));
+    mapName = ValidateMapName(GetParameter(request, "MAPNAME"));
     popup = GetIntParameter(request, "POPUP");
-    bufferName = GetParameter(request, "BUFFER");
-    layersParam = GetParameter(request, "LAYERS");
-    lcolor = GetParameter(request, "LCOLOR");
-    ffcolor = GetParameter(request, "FFCOLOR");
-    fbcolor = GetParameter(request, "FBCOLOR");
-    foretrans = GetIntParameter(request, "FORETRANS");
-    transparent = GetIntParameter(request, "TRANSPARENT");
-    locale = GetParameter(request, "LOCALE");
-    distance = GetLocalizedDoubleParameter(request, "DISTANCE", locale);
-    units = GetParameter(request, "UNITS");
-    linestyle = GetParameter(request, "LINESTYLE");
-    fillstyle = GetParameter(request, "FILLSTYLE");
-    thickness = GetParameter(request, "THICKNESS");
-    selText = GetParameter(request, "SELECTION");
-    if(IsParameter(request, "MERGE"))
-         merge = 1;
-
+    lcolor = ValidateColorString(GetParameter(request, "LCOLOR"));
+    ffcolor = ValidateColorString(GetParameter(request, "FFCOLOR"));
+    fbcolor = ValidateColorString(GetParameter(request, "FBCOLOR"));
+    foretrans = GetDoubleParameter(request, "FORETRANS");
     if(foretrans < 0 || foretrans > 100)
     {
         foretrans = 50;
     }
+    transparent = GetIntParameter(request, "TRANSPARENT");
+    distance = GetLocalizedDoubleParameter(request, "DISTANCE", locale);
+    if(IsParameter(request, "MERGE"))
+         merge = 1;
+    
+    bufferName = GetParameter(request, "BUFFER");
+    layersParam = GetParameter(request, "LAYERS");
+    units = GetParameter(request, "UNITS");
+    linestyle = GetParameter(request, "LINESTYLE");
+    fillstyle = GetParameter(request, "FILLSTYLE");
+    thickness = GetDoubleParameter(request, "THICKNESS");
+    selText = GetParameter(request, "SELECTION");
+
 }
 
 
@@ -433,7 +434,7 @@ MgLayer FindLayer(MgLayerCollection layers, String layerName) throws MgException
 MgByteReader BuildLayerDefinitionContent() throws MgException, Exception
 {
     String layerTempl = LoadTemplate("/viewerfiles/arealayerdef.templ");
-    String xtrans = String.format("%02x", new Object[]{new Integer(255 * foretrans / 100)});
+    String xtrans = String.format("%02x", new Object[]{new Integer((int)(255 * foretrans / 100))});
     String[] vals = {
                 dataSource,
                 featureName,
@@ -442,7 +443,7 @@ MgByteReader BuildLayerDefinitionContent() throws MgException, Exception
                 xtrans + ffcolor,
                 (0 != transparent? ("ff" + fbcolor): ("00" + fbcolor)),
                 linestyle,
-                thickness,
+                String.valueOf(thickness),
                 lcolor };
     layerTempl = Substitute(layerTempl, vals);
     byte[] bytes = layerTempl.getBytes("UTF-8");

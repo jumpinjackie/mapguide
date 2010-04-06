@@ -72,12 +72,12 @@ response.flushBuffer();
 <%!
 void GetRequestParameters(HttpServletRequest request)
 {
-    mapName = GetParameter(request, "MAPNAME");
-    sessionId = GetParameter(request, "SESSION");
+    sessionId = ValidateSessionId(GetParameter(request, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(request, "LOCALE"));
+    mapName = ValidateMapName(GetParameter(request, "MAPNAME"));
     if(IsParameter(request, "MAPFRAME"))
-        mapFrame = GetParameter(request, "MAPFRAME");
+        mapFrame = ValidateFrameName(GetParameter(request, "MAPFRAME"));
     else
         mapFrame = "parent";
-    locale = GetParameter(request, "LOCALE");
 }
 %>

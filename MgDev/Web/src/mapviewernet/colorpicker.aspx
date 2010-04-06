@@ -56,10 +56,10 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
-    locale = GetParameter(parameters, "LOCALE");
-    clr = GetParameter(parameters, "CLR");
+    locale = ValidateLocaleString(GetParameter(parameters, "LOCALE"));
     allowTransparency = GetIntParameter(parameters, "ALLOWTRANS");
     transparent = GetIntParameter(parameters, "TRANS");
+    clr = ValidateColorString(GetParameter(parameters, "CLR"));
 }
 
 </script>

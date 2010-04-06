@@ -56,6 +56,6 @@ response.flushBuffer();
 <%!
 void GetRequestParameters(HttpServletRequest request)
 {
-     locale = GetParameter(request, "LOCALE");
+     locale = ValidateLocaleString(GetParameter(request, "LOCALE"));
 }
 %>

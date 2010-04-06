@@ -24,10 +24,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <!-- #Include File="common.aspx -->
 
-<script runat="server">
-String templFile = "";
-</script>
-
 <%
     try
     {

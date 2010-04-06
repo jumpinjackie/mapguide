@@ -214,40 +214,19 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
-    type = GetParameter(parameters, "TYPE");
+    type = GetParameter(parameters, "TYPE"); // "DWF" or other
+    sessionId = ValidateSessionId(GetParameter(parameters, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(parameters, "LOCALE"));
+    hlTgt = ValidateHyperlinkTargetValue(GetParameter(parameters, "HLTGT"));
+    hlTgtName = ValidateFrameName(GetParameter(parameters, "HLTGTNAME"));
 
-    locale = GetParameter(parameters, "LOCALE");
-    if(locale == "")
-        locale = GetDefaultLocale();
+    infoWidth = GetIntParameter(parameters, "INFOWIDTH");
+    showLegend = GetIntParameter(parameters, "SHOWLEGEND");
+    showProperties = GetIntParameter(parameters, "SHOWPROP");
+    showSlider = GetIntParameter(parameters, "SHOWSLIDER");
 
-    hlTgt = GetParameter(parameters, "HLTGT");
-    hlTgtName = GetParameter(parameters, "HLTGTNAME");
-
-    if (IsParameter(parameters, "INFOWIDTH"))
-    {
-        infoWidth = Convert.ToInt32(GetParameter(parameters, "INFOWIDTH"));
+    mapDefinition = ValidateResourceId(GetParameter(parameters, "MAPDEFINITION"));
     }
-    if (IsParameter(parameters, "SHOWLEGEND"))
-    {
-        showLegend = Convert.ToInt32(GetParameter(parameters, "SHOWLEGEND"));
-    }
-    if (IsParameter(parameters, "SHOWPROP"))
-    {
-        showProperties = Convert.ToInt32(GetParameter(parameters, "SHOWPROP"));
-    }
-    if (IsParameter(parameters, "MAPDEFINITION"))
-    {
-        mapDefinition = GetParameter(parameters, "MAPDEFINITION");
-    }
-    if (IsParameter(parameters, "SESSION"))
-    {
-        sessionId = GetParameter(parameters, "SESSION");
-    }
-    if (IsParameter(parameters, "SHOWSLIDER"))
-    {
-        showSlider = Convert.ToInt32(GetParameter(parameters, "SHOWSLIDER"));
-    }
-}
 
 String IntToString(int number)
 {

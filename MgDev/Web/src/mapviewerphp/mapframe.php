@@ -35,9 +35,6 @@ $showSlider = true;
 
 GetRequestParameters();
 
-if($locale == "")
-    $locale = GetDefaultLocale();
-
 SetLocalizedFilesPath(GetLocalizationPath());
 
 if($type == "DWF")
@@ -170,30 +167,17 @@ function GetParameters($params)
     global $infoWidth, $showLegend, $showProperties, $sessionId;
     global $locale, $hlTgt, $hlTgtName, $showSlider;
 
-    $type = $params['TYPE'];
-    $hlTgt = $params['HLTGT'];
-    $hlTgtName = $params['HLTGTNAME'];
 
-    if(isset($params['LOCALE']))
-        $locale = $params['LOCALE'];
-
-    if(isset($params['INFOWIDTH']))
-        $infoWidth = $params['INFOWIDTH'];
-
-    if(isset($params['SHOWLEGEND']))
-        $showLegend = $params['SHOWLEGEND'];
-
-    if(isset($params['SHOWPROP']))
-        $showProperties = $params['SHOWPROP'];
-
-    if(isset($params['MAPDEFINITION']))
-        $mapDefinition = $params['MAPDEFINITION'];
-
-    if(isset($params['SESSION']))
-        $sessionId = $params['SESSION'];
-
-    if(isset($params['SHOWSLIDER']))
-        $showSlider = $params['SHOWSLIDER'] == "1";
+    $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
+    $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
+    $hlTgt = ValidateHyperlinkTargetValue(GetParameter($params, 'HLTGT'));
+    $hlTgtName = ValidateFrameName(GetParameter($params, 'HLTGTNAME'));
+    $mapDefinition = ValidateResourceId(GetParameter($params, 'MAPDEFINITION'));
+	$showLegend = (GetIntParameter($params, 'SHOWLEGEND') == 1);
+    $showProperties = (GetIntParameter($params, 'SHOWPROP') == 1);
+    $showSlider = (GetIntParameter($params, 'SHOWSLIDER') == 1);
+    $infoWidth = GetIntParameter($params, 'INFOWIDTH');
+    $type = GetParameter($params, 'TYPE');
 }
 
 function GetRequestParameters()

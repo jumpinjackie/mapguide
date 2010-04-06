@@ -277,17 +277,13 @@ String searchError;
 <%!
 void GetRequestParameters(HttpServletRequest request)
 {
-    userInput = GetParameter(request, "USERINPUT");
+    sessionId = ValidateSessionId(GetParameter(request, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(request, "LOCALE"));
+    mapName = ValidateMapName(GetParameter(request, "MAPNAME"));
     target = GetIntParameter(request, "TGT");
     popup = GetIntParameter(request, "POPUP");
-    layerName = GetParameter(request, "LAYER");
-    mapName = GetParameter(request, "MAPNAME");
-    sessionId = GetParameter(request, "SESSION");
-    filter = GetParameter(request, "FILTER");
     matchLimit = GetIntParameter(request, "MR");
     int colCount = GetIntParameter(request, "COLS");
-    locale = GetParameter(request, "LOCALE");
-
     if(colCount > 0)
     {
         for(int i = 0; i < colCount; i++)
@@ -296,6 +292,9 @@ void GetRequestParameters(HttpServletRequest request)
             resProps.add(GetParameter(request, "CP" + i));
         }
     }
+    userInput = GetParameter(request, "USERINPUT");
+    layerName = GetParameter(request, "LAYER");
+    filter = GetParameter(request, "FILTER");
 }
 
 void OnError(String title, String msg, PrintWriter outStream, HttpServletRequest request) throws FileNotFoundException, IOException

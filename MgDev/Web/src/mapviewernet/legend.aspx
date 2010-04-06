@@ -63,7 +63,6 @@ String mapName = "";
 String sessionId = "";
 bool summary = false;
 int layerCount = 0;
-String[] layerIds = null;
 int intermediateVar = 0;
 String output = "\nvar layerData = new Array();\n";
 </script>
@@ -153,31 +152,15 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
-    if (IsParameter(parameters, "MAPNAME"))
-    {
-        mapName = GetParameter(parameters, "MAPNAME");
-    }
-    if (IsParameter(parameters, "SESSION"))
-    {
-        sessionId = GetParameter(parameters, "SESSION");
-    }
+    sessionId = ValidateSessionId(GetParameter(parameters, "SESSION"));
+    mapName = ValidateMapName(GetParameter(parameters, "MAPNAME"));
     if (IsParameter(parameters, "SUMMARY"))
     {
         summary = true;
     }
     else
     {
-        if (IsParameter(parameters, "LC"))
-        {
-            layerCount = Convert.ToInt32(GetParameter(parameters, "LC"));
-        }
-        if (layerCount > 0 && IsParameter(parameters, "LAYERS"))
-        {
-            String layers = GetParameter(parameters, "LAYERS");
-
-            char[] delimiter = {','};
-            layerIds = layers.Split(delimiter);
-        }
+        layerCount = GetIntParameter(parameters, "LC");
     }
 }
 

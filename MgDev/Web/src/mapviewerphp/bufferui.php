@@ -48,11 +48,11 @@ function GetParameters($params)
 {
     global $target, $cmdIndex, $clientWidth, $mapName, $sessionId, $popup, $us, $locale;
 
-    $locale = $params['LOCALE'];
-    $mapName = $params['MAPNAME'];
-    $sessionId = $params['SESSION'];
-    $popup = $params['POPUP'];
-    $us = $params['US'];
+    $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
+    $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
+    $mapName = ValidateMapName(GetParameter($params, 'MAPNAME'));
+    $popup = GetIntParameter($params, 'POPUP');
+    $us = GetParameter($params, 'US');
 }
 
 function GetRequestParameters()

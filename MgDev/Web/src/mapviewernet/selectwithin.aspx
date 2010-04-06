@@ -29,7 +29,6 @@ String mapName = "";
 String sessionId = "";
 String layers = "";
 String inputSel = "";
-String dwf = "";
 </script>
 
 <%
@@ -174,11 +173,10 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
-    mapName = GetParameter(parameters, "MAPNAME");
-    sessionId = GetParameter(parameters, "SESSION");
+    sessionId = ValidateSessionId(GetParameter(parameters, "SESSION"));
+    mapName = ValidateMapName(GetParameter(parameters, "MAPNAME"));
     inputSel = GetParameter(parameters, "SELECTION");
     layers = GetParameter(parameters, "LAYERS");
-    dwf = GetParameter(parameters, "DWF");
 }
 
 </script>

@@ -261,11 +261,11 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
-    mapName = GetParameter(parameters, "MAPNAME");
-    sessionId = GetParameter(parameters, "SESSION");
+    sessionId = ValidateSessionId(GetParameter(parameters, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(parameters, "LOCALE"));
+    mapName = ValidateMapName(GetParameter(parameters, "MAPNAME"));
     target = GetIntParameter(parameters, "TGT");
     popup = GetIntParameter(parameters, "POPUP");
-    locale = GetParameter(parameters, "LOCALE");
     if(IsParameter(parameters, "CLEAR"))
         clear = true;
     else

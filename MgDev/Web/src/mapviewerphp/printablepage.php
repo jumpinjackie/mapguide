@@ -23,14 +23,14 @@
     $locale = "";
     $mapName = "";
     $sessionId = "";
-    $isTitle = "";
-    $isLegend = "";
-    $isArrow = "";
+    $isTitle = 0;
+    $isLegend = 0;
+    $isArrow = 0;
     $title = "";
-    $scale = "";
-    $centerX = "";
-    $centerY = "";
-    $dpi = "";
+    $scale = 0;
+    $centerX = 0;
+    $centerY = 0;
+    $dpi = 0;
 
     GetRequestParameters();
 
@@ -50,7 +50,7 @@
                   $isTitle,
                   $isLegend,
                   $isArrow,
-                  $isTitle == "1"? $title: "",
+                  $isTitle == 1 ? EscapeForHtml($title) : "",
                   $agent,
                   $mapName,
                   $sessionId
@@ -62,18 +62,17 @@ function GetParameters($params)
     global $scale, $centerX, $centerY, $dpi;
     global $isTitle, $isLegend, $isArrow;
 
-    if(isset($params['LOCALE']))
-        $locale = $params['LOCALE'];
-    $mapName = $params['MAPNAME'];
-    $sessionId = $params['SESSION'];
-    $isTitle = $params['ISTITLE'];
-    $isLegend = $params['ISLEGEND'];
-    $isArrow = $params['ISARROW'];
-    $title = $params['TITLE'];
-    $scale = $params['SCALE'];
-    $centerX = $params['CENTERX'];
-    $centerY = $params['CENTERY'];
-    $dpi = $params['DPI'];
+    $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
+    $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
+    $mapName = ValidateMapName(GetParameter($params, 'MAPNAME'));
+    $isTitle = GetIntParameter($params, 'ISTITLE');
+    $isLegend = GetIntParameter($params, 'ISLEGEND');
+    $isArrow = GetIntParameter($params, 'ISARROW');
+    $dpi = GetIntParameter($params, 'DPI');
+    $scale = GetDoubleParameter($params, 'SCALE');
+    $centerX = GetDoubleParameter($params, 'CENTERX');
+    $centerY = GetDoubleParameter($params, 'CENTERY');
+    $title = GetParameter($params, 'TITLE');
 }
 
 function GetRequestParameters()

@@ -280,17 +280,12 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
-    locale = GetParameter(parameters, "LOCALE");
-    userInput = GetParameter(parameters, "USERINPUT");
+    sessionId = ValidateSessionId(GetParameter(parameters, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(parameters, "LOCALE"));
     target = GetIntParameter(parameters, "TGT");
     popup = GetIntParameter(parameters, "POPUP");
-    layerName = GetParameter(parameters, "LAYER");
-    mapName = GetParameter(parameters, "MAPNAME");
-    sessionId = GetParameter(parameters, "SESSION");
-    filter = GetParameter(parameters, "FILTER");
     matchLimit = GetIntParameter(parameters, "MR");
     int colCount = GetIntParameter(parameters, "COLS");
-
     if(colCount > 0)
     {
         for(int i = 0; i < colCount; i++)
@@ -299,6 +294,10 @@ void GetParameters(NameValueCollection parameters)
             resProps.Add(parameters["CP" + i]);
         }
     }
+    mapName = ValidateMapName(GetParameter(parameters, "MAPNAME"));
+    layerName = GetParameter(parameters, "LAYER");
+    filter = GetParameter(parameters, "FILTER");
+    userInput = GetParameter(parameters, "USERINPUT");
 }
 
 void OnError(String title, String msg)

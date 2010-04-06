@@ -29,12 +29,12 @@
     $lcolor = "";
     $ffcolor = "";
     $fbcolor = "";
-    $transparent = "";
+    $transparent = 0;
     $distance = 0;
     $units = "";
     $linestyle = "";
     $fillstyle = "";
-    $thickness = "";
+    $thickness = 0;
     $merge = 0;
     $foretrans = 50;
     $selText = "";
@@ -362,27 +362,27 @@ function GetParameters()
     global $mapName, $sessionId, $bufferName, $lcolor, $ffcolor, $fbcolor, $layersParam, $popup;
     global $transparent, $distance, $units, $linestyle, $fillstyle, $thickness, $merge, $foretrans;
 
-    if(isset($params['LOCALE']))
-        $locale = $params['LOCALE'];
+    $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
+    $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
+    $mapName = ValidateMapName(GetParameter($params, 'MAPNAME'));
 
-    $mapName = $params['MAPNAME'];
-    $sessionId = $params['SESSION'];
-    $popup = $params['POPUP'];
-    $bufferName = $params['BUFFER'];
-    $layersParam = $params['LAYERS'];
-    $lcolor = $params['LCOLOR'];
-    $ffcolor = $params['FFCOLOR'];
-    $fbcolor = $params['FBCOLOR'];
-    $foretrans = $params['FORETRANS'];
-    $transparent = $params['TRANSPARENT'];
-    $distance = GetDecimalFromLocalizedString($params['DISTANCE'], $locale);
-    $units = $params['UNITS'];
-    $linestyle = $params['LINESTYLE'];
-    $fillstyle = $params['FILLSTYLE'];
-    $thickness = $params['THICKNESS'];
+    $lcolor = ValidateColorString(GetParameter($params, 'LCOLOR'));
+    $ffcolor = ValidateColorString(GetParameter($params, 'FFCOLOR'));
+    $fbcolor = ValidateColorString(GetParameter($params, 'FBCOLOR'));
+    $popup = GetIntParameter($params, 'POPUP');
+    $transparent = GetIntParameter($params, 'TRANSPARENT');
+    $distance = GetDecimalFromLocalizedString(GetParameter($params, 'DISTANCE'), $locale);
     if(isset($params['MERGE']))
         $merge = 1;
-    $selText = $params['SELECTION'];
+    $foretrans = GetDoubleParameter($params, 'FORETRANS');
+    $thickness = GetDoubleParameter($params, 'THICKNESS');
+    $bufferName = GetParameter($params, 'BUFFER');
+    
+    $layersParam = GetParameter($params, 'LAYERS');
+    $units = GetParameter($params, 'UNITS');
+    $linestyle = GetParameter($params, 'LINESTYLE');
+    $fillstyle = GetParameter($params, 'FILLSTYLE');
+    $selText = GetParameter($params, 'SELECTION');
 
     //unescape strings
     //

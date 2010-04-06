@@ -63,20 +63,12 @@ double total = 0;
 <%!
 void GetRequestParameters(HttpServletRequest request)
 {
-    String localeParam = GetParameter(request, "LOCALE");
-    if(localeParam != null && localeParam.length() > 0)
-    {
-        locale = localeParam;
-    }
-    else
-    {
-        locale = ""; // Default
-    }
+    sessionId = ValidateSessionId(GetParameter(request, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(request, "LOCALE"));
     target = GetIntParameter(request, "TGT");
     popup = GetIntParameter(request, "POPUP");
     cmdIndex = GetIntParameter(request, "CMDINDEX");
-    mapName = GetParameter(request, "MAPNAME");
-    sessionId = GetParameter(request, "SESSION");
+    mapName = ValidateMapName(GetParameter(request, "MAPNAME"));
     total = GetDoubleParameter(request, "TOTAL");
 }
 %>

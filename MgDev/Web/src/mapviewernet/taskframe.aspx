@@ -1,5 +1,5 @@
 <%--
-Copyright (C) 2004-2010 by Autodesk, Inc.
+Copyright (C) 2004-2009 by Autodesk, Inc.
 This library is free software; you can redistribute it and/or
 modify it under the terms of version 2.1 of the GNU Lesser
 General Public License as published by the Free Software Foundation.
@@ -24,44 +24,79 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <!-- #Include File="common.aspx -->
 
 <script runat="server">
-String taskPane = "";
-String session = "";
-String webLayout = "";
-String dwf = "";
+String sessionId = "";
+String webLayoutId = "";
+int dwf = 0;
 String locale = "";
 </script>
 
 <%
     Response.Charset = "utf-8";
+    MgLocalizer.SetLocalizedFilesPath(Request.ServerVariables["APPL_PHYSICAL_PATH"] + "..\\localized\\");
 
     GetRequestParameters();
 
-    String url = HttpUtility.UrlDecode(taskPane);
-    int index = url.IndexOf("?");
-
-    if(index > 0)
+    try
     {
-        String path = url.Substring(0, index);
-        String query = url.Substring(index+1);
+        InitializeWebTier();
 
-        if(query.Length > 0)
-            url = String.Format("{0}?SESSION={1}&WEBLAYOUT={2}&DWF={3}&LOCALE={4}&{5}", path, session, HttpUtility.UrlEncode(webLayout), dwf, locale, query);
+        MgUserInformation cred = new MgUserInformation(sessionId);
+        cred.SetClientIp(GetClientIp(Request));
+        cred.SetClientAgent(GetClientAgent());
+
+        //connect to the site and get a feature service and a resource service instances
+        MgSiteConnection site = new MgSiteConnection();
+        site.Open(cred);
+        
+        //Get the MgWebLayout object
+        MgResourceService resourceSrvc = (MgResourceService)site.CreateService(MgServiceType.ResourceService);
+        MgResourceIdentifier webLayoutResId = new MgResourceIdentifier(webLayoutId);
+        MgWebLayout webLayout = new MgWebLayout(resourceSrvc, webLayoutResId);
+        MgWebTaskPane taskPane = webLayout.GetTaskPane();
+        String taskPaneUrl = taskPane.GetInitialTaskUrl();
+        String vpath = GetSurroundVirtualPath(Request);
+        if (taskPaneUrl == null || taskPaneUrl.Length == 0)
+        {
+            taskPaneUrl = "gettingstarted.aspx";
+        }
+
+        String url = HttpUtility.UrlDecode(taskPaneUrl);
+        int index = url.IndexOf("?");
+
+        if(index > 0)
+        {
+            String path = url.Substring(0, index);
+            String query = url.Substring(index+1);
+
+            if(query.Length > 0)
+                url = String.Format("{0}?SESSION={1}&WEBLAYOUT={2}&DWF={3}&LOCALE={4}&{5}", path, sessionId, HttpUtility.UrlEncode(webLayoutId), dwf, locale, query);
+            else
+                url = String.Format("{0}?SESSION={1}&WEBLAYOUT={2}&DWF={3}&LOCALE={4}", path, sessionId, HttpUtility.UrlEncode(webLayoutId), dwf, locale);
+
+        }
         else
-            url = String.Format("{0}?SESSION={1}&WEBLAYOUT={2}&DWF={3}&LOCALE={4}", path, session, HttpUtility.UrlEncode(webLayout), dwf, locale);
-
-    }
-    else
-    {
-        url = String.Format("{0}?SESSION={1}&WEBLAYOUT={2}&DWF={3}&LOCALE={4}", taskPane, session, HttpUtility.UrlEncode(webLayout), dwf, locale);
-    }
-    String templ = LoadTemplate(Request, "../viewerfiles/taskframe.templ");
-    String[] vals = {
-                    GetSurroundVirtualPath(Request) + "tasklist.aspx",
+        {
+            url = String.Format("{0}?SESSION={1}&WEBLAYOUT={2}&DWF={3}&LOCALE={4}", taskPaneUrl, sessionId, HttpUtility.UrlEncode(webLayoutId), dwf, locale);
+        }
+        String templ = LoadTemplate(Request, "../viewerfiles/taskframe.templ");
+        String[] vals = {
+                    vpath + "tasklist.aspx",
                     locale,
                     url
                     };
 
-    Response.Write(Substitute(templ, vals));
+        Response.Write(Substitute(templ, vals));
+    }
+    catch (MgException exc)
+    {
+        OnError(MgLocalizer.GetString("TASKS", locale), exc.GetMessage());
+        return;
+    }
+    catch (Exception ne)
+    {
+        OnError(MgLocalizer.GetString("TASKS", locale), ne.Message);
+        return;
+    }
 %>
 
 <script runat="server">
@@ -75,11 +110,17 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
-    taskPane = GetParameter(parameters, "TASK");
-    session = GetParameter(parameters, "SESSION");
-    webLayout = GetParameter(parameters, "WEBLAYOUT");
-    dwf = GetParameter(parameters, "DWF");
-    locale = GetParameter(parameters, "LOCALE");
+    sessionId = ValidateSessionId(GetParameter(parameters, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(parameters, "LOCALE"));
+    webLayoutId = ValidateResourceId(GetParameter(parameters, "WEBLAYOUT"));
+    dwf = GetIntParameter(parameters, "DWF");
+}
+
+void OnError(String title, String msg)
+{
+    String templ = MgLocalizer.Localize(LoadTemplate(Request, "../viewerfiles/errorpage.templ"), locale, GetClientOS(Request));
+    String[] vals = { "0", title, msg };
+    Response.Write(Substitute(templ, vals));
 }
 
 </script>

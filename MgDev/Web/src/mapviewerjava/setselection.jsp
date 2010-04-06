@@ -114,16 +114,9 @@ catch(Exception e)
 <%!
 void GetRequestParameters(HttpServletRequest request)
 {
-    if(IsParameter(request, "MAPNAME"))
-        mapName = GetParameter(request, "MAPNAME");
-
-    if(IsParameter(request, "SESSION"))
-        sessionId = GetParameter(request, "SESSION");
-
-    if(IsParameter(request, "SELECTION"))
-        selText = GetParameter(request, "SELECTION");
-
-    if(IsParameter(request, "QUERYINFO"))
-        queryInfo = GetParameter(request, "QUERYINFO").equals("1");
+    sessionId = ValidateSessionId(GetParameter(request, "SESSION"));
+    mapName = ValidateMapName(GetParameter(request, "MAPNAME"));
+    queryInfo = (GetIntParameter(request, "QUERYINFO") == 1);
+    selText = GetParameter(request, "SELECTION");
 }
 %>
