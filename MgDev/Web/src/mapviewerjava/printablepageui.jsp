@@ -25,13 +25,13 @@
 
 <%!
 int popup;
-String clientWidth;
+int clientWidth;
 String mapName;
 String sessionId;
-String scale;
-String centerX;
-String centerY;
-String dpi;
+double scale;
+double centerX;
+double centerY;
+int dpi;
 String locale;
 %>
 
@@ -42,8 +42,10 @@ PrintWriter writer = response.getWriter();
 try
 {
     popup = 0;
-    clientWidth = mapName = sessionId = scale = "";
-    centerX = centerY = dpi = "";
+    clientWidth = 0;
+    mapName = sessionId = "";
+    scale = centerX = centerY = 0;
+    dpi = 0;
 
     MgLocalizer.SetLocalizedFilesPath(getServletContext().getRealPath("/") + "localized/");
 
@@ -53,13 +55,13 @@ try
 
     String templ = MgLocalizer.Localize(LoadTemplate("/viewerfiles/printablepageui.templ"), locale, GetClientOS(request));
     String vals[] = { String.valueOf(popup),
-         clientWidth,
+         String.valueOf(clientWidth),
          sessionId,
          mapName,
-         scale,
-         centerX,
-         centerY,
-         dpi,
+         String.valueOf(scale),
+         String.valueOf(centerX),
+         String.valueOf(centerY),
+         String.valueOf(dpi),
          GetSurroundVirtualPath(request) + "printablepage.jsp"};
     response.getWriter().write(Substitute(templ, vals));
 }
@@ -78,30 +80,14 @@ response.flushBuffer();
 <%!
 void GetRequestParameters(HttpServletRequest request)
 {
-    if(IsParameter(request, "POPUP"))
-        popup = Integer.parseInt(GetParameter(request, "POPUP"));
-
-    if(IsParameter(request, "WIDTH"))
-        clientWidth = GetParameter(request, "WIDTH");
-
-    if(IsParameter(request, "MAPNAME"))
-        mapName = GetParameter(request, "MAPNAME");
-
-    if(IsParameter(request, "SESSION"))
-        sessionId = GetParameter(request, "SESSION");
-
-    if(IsParameter(request, "SCALE"))
-        scale = GetParameter(request, "SCALE");
-
-    if(IsParameter(request, "CENTERX"))
-        centerX = GetParameter(request, "CENTERX");
-
-    if(IsParameter(request, "CENTERY"))
-        centerY = GetParameter(request, "CENTERY");
-
-    if(IsParameter(request, "DPI"))
-        dpi = GetParameter(request, "DPI");
-
-    locale = GetParameter(request, "LOCALE");
+    sessionId = ValidateSessionId(GetParameter(request, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(request, "LOCALE"));
+    mapName = ValidateMapName(GetParameter(request, "MAPNAME"));
+    popup = GetIntParameter(request, "POPUP");
+    clientWidth = GetIntParameter(request, "WIDTH");
+    dpi = GetIntParameter(request, "DPI");
+    scale = GetDoubleParameter(request, "SCALE");
+    centerX = GetDoubleParameter(request, "CENTERX");
+    centerY = GetDoubleParameter(request, "CENTERY");
 }
 %>

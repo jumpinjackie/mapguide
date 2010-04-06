@@ -31,11 +31,11 @@ String locale = "";
 int isTitle = 0;
 int isLegend = 0;
 int isArrow = 0;
+int dpi = 0;
 String title = "";
-String scale = "";
-String centerX = "";
-String centerY = "";
-String dpi = "";
+double scale = 0;
+double centerX = 0;
+double centerY = 0;
 </script>
 
 <%
@@ -53,16 +53,16 @@ String dpi = "";
         String[] vals = {
             mapName,
             agent,
-            scale,
-            centerX,
-            centerY,
-            dpi,
+            scale.ToString(NumberFormatInfo.InvariantInfo),
+            centerX.ToString(NumberFormatInfo.InvariantInfo),
+            centerY.ToString(NumberFormatInfo.InvariantInfo),
+            dpi.ToString(NumberFormatInfo.InvariantInfo),
             mapName,
             sessionId,
             isTitle.ToString(NumberFormatInfo.InvariantInfo),
             isLegend.ToString(NumberFormatInfo.InvariantInfo),
             isArrow.ToString(NumberFormatInfo.InvariantInfo),
-            isTitle == 1 ? title : "",
+            isTitle == 1 ? EscapeForHtml(title) : "",
             agent,
             mapName,
             sessionId };
@@ -91,47 +91,18 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
-    locale =  GetParameter(parameters, "LOCALE");
-    if(IsParameter(parameters, "MAPNAME"))
-    {
-        mapName = GetParameter(parameters, "MAPNAME");
-    }
-    if(IsParameter(parameters, "SESSION"))
-    {
-        sessionId = GetParameter(parameters, "SESSION");
-    }
-    if(IsParameter(parameters, "ISTITLE"))
-    {
-        isTitle = Convert.ToInt32(GetParameter(parameters, "ISTITLE"));
-    }
-    if(IsParameter(parameters, "ISLEGEND"))
-    {
-        isLegend = Convert.ToInt32(GetParameter(parameters, "ISLEGEND"));
-    }
-    if(IsParameter(parameters, "ISARROW"))
-    {
-       isArrow = Convert.ToInt32(GetParameter(parameters, "ISARROW"));
-    }
-    if(IsParameter(parameters, "TITLE"))
-    {
-        title = GetParameter(parameters, "TITLE");
-    }
-    if(IsParameter(parameters, "SCALE"))
-    {
-        scale = GetParameter(parameters, "SCALE");
-    }
-    if(IsParameter(parameters, "CENTERX"))
-    {
-       centerX = GetParameter(parameters, "CENTERX");
-    }
-    if(IsParameter(parameters, "CENTERY"))
-    {
-        centerY = GetParameter(parameters, "CENTERY");
-    }
-    if(IsParameter(parameters, "DPI"))
-    {
-        dpi = GetParameter(parameters, "DPI");
-    }
+    sessionId = ValidateSessionId(GetParameter(parameters, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(parameters, "LOCALE"));
+    isTitle = GetIntParameter(parameters, "ISTITLE");
+    isLegend = GetIntParameter(parameters, "ISLEGEND");
+    isArrow = GetIntParameter(parameters, "ISARROW");
+    dpi = GetIntParameter(parameters, "DPI");
+    mapName = ValidateMapName(GetParameter(parameters, "MAPNAME"));
+    scale = GetDoubleParameter(parameters, "SCALE");
+    centerX = GetDoubleParameter(parameters, "CENTERX");
+    centerY = GetDoubleParameter(parameters, "CENTERY");
+
+    title = GetParameter(parameters, "TITLE");
 }
 
 </script>

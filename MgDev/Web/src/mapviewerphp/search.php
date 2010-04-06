@@ -34,7 +34,7 @@
 
     $locale = "";
     $userInput = "";
-    $target = "";
+    $target = 0;
     $popup = 0;
     $layerName = "";
     $mapName = "";
@@ -42,7 +42,7 @@
     $filter = "";
     $resNames = array();
     $resProps = array();
-    $matchLimit = "";
+    $matchLimit = 0;
 
     GetRequestParameters();
     SetLocalizedFilesPath(GetLocalizationPath());
@@ -263,25 +263,24 @@ function GetParameters($params)
     global $userInput, $target, $layerName, $popup, $locale;
     global $mapName, $sessionId, $filter, $resNames, $resProps, $matchLimit;
 
-    if(isset($params['LOCALE']))
-        $locale = $params['LOCALE'];
-    $userInput = $params['USERINPUT'];
-    $target = $params['TGT'];
-    $popup = $params['POPUP'];
-    $layerName = $params['LAYER'];
-    $mapName = $params['MAPNAME'];
-    $sessionId = $params['SESSION'];
-    $filter = $params['FILTER'];
-    $matchLimit = $params['MR'];
-    $colCount = $params['COLS'];
+    $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
+    $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
+    $mapName = ValidateMapName(GetParameter($params, 'MAPNAME'));
+    $target = GetIntParameter($params, 'TGT');
+    $popup = GetIntParameter($params, 'POPUP');
+    $matchLimit = GetIntParameter($params, 'MR');
+    $colCount = GetIntParameter($params, 'COLS');
     if($colCount > 0)
     {
         for($i = 0; $i < $colCount; $i++)
         {
-            array_push($resNames, $params['CN' . $i]);
-            array_push($resProps, $params['CP' . $i]);
+            array_push($resNames, GetParameter($params, 'CN' . $i));
+            array_push($resProps, GetParameter($params, 'CP' . $i));
         }
     }
+    $userInput = GetParameter($params, 'USERINPUT');
+    $layerName = GetParameter($params, 'LAYER');
+    $filter = GetParameter($params, 'FILTER');
 }
 
 function GetRequestParameters()

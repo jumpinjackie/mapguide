@@ -26,13 +26,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <script runat="server">
 int popup = 0;
-String clientWidth = "";
+int clientWidth = 0;
+int dpi = 96;
 String mapName = "";
 String sessionId = "";
-String scale = "";
-String centerX = "";
-String centerY = "";
-String dpi = "";
+double scale = 0;
+double centerX = 0;
+double centerY = 0;
 String locale = "";
 </script>
 
@@ -50,13 +50,13 @@ String locale = "";
 
         String[] vals = {
             popup.ToString(NumberFormatInfo.InvariantInfo),
-            clientWidth,
+            clientWidth.ToString(NumberFormatInfo.InvariantInfo),
             sessionId,
             mapName,
-            scale,
-            centerX,
-            centerY,
-            dpi,
+            scale.ToString(NumberFormatInfo.InvariantInfo),
+            centerX.ToString(NumberFormatInfo.InvariantInfo),
+            centerY.ToString(NumberFormatInfo.InvariantInfo),
+            dpi.ToString(NumberFormatInfo.InvariantInfo),
             GetSurroundVirtualPath(Request) + "printablepage.aspx"};
 
         Response.Write(Substitute(templ, vals));
@@ -83,39 +83,15 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
-    locale =  GetParameter(parameters, "LOCALE");
-    if(IsParameter(parameters, "POPUP"))
-    {
-        popup = Convert.ToInt32(GetParameter(parameters, "POPUP"));
-    }
-    if(IsParameter(parameters, "WIDTH"))
-    {
-        clientWidth = GetParameter(parameters, "WIDTH");
-    }
-    if(IsParameter(parameters, "MAPNAME"))
-    {
-        mapName = GetParameter(parameters, "MAPNAME");
-    }
-    if(IsParameter(parameters, "SESSION"))
-    {
-        sessionId = GetParameter(parameters, "SESSION");
-    }
-    if(IsParameter(parameters, "SCALE"))
-    {
-        scale = GetParameter(parameters, "SCALE");
-    }
-    if(IsParameter(parameters, "CENTERX"))
-    {
-       centerX = GetParameter(parameters, "CENTERX");
-    }
-    if(IsParameter(parameters, "CENTERY"))
-    {
-        centerY = GetParameter(parameters, "CENTERY");
-    }
-    if(IsParameter(parameters, "DPI"))
-    {
-        dpi = GetParameter(parameters, "DPI");
-    }
+    sessionId = ValidateSessionId(GetParameter(parameters, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(parameters, "LOCALE"));
+    popup = GetIntParameter(parameters, "POPUP");
+    clientWidth = GetIntParameter(parameters, "WIDTH");
+    dpi = GetIntParameter(parameters, "DPI");
+    mapName = ValidateMapName(GetParameter(parameters, "MAPNAME"));
+    scale = GetDoubleParameter(parameters, "SCALE");
+    centerX = GetDoubleParameter(parameters, "CENTERX");
+    centerY = GetDoubleParameter(parameters, "CENTERY");
 }
 
 </script>

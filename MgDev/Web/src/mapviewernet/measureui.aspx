@@ -70,12 +70,12 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
-    locale = GetParameter(parameters, "LOCALE");
+    sessionId = ValidateSessionId(GetParameter(parameters, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(parameters, "LOCALE"));
+    mapName = ValidateMapName(GetParameter(parameters, "MAPNAME"));
     target = GetIntParameter(parameters, "TGT");
     popup = GetIntParameter(parameters, "POPUP");
     cmdIndex = GetIntParameter(parameters, "CMDINDEX");
-    mapName = GetParameter(parameters, "MAPNAME");
-    sessionId = GetParameter(parameters, "SESSION");
     total = GetDoubleParameter(parameters, "TOTAL");
 }
 

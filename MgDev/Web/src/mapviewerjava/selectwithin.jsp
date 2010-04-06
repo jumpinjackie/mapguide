@@ -28,7 +28,6 @@ String mapName = "";
 String sessionId = "";
 String layers = "";
 String inputSel = "";
-String dwf = "";
 %>
 
 <%
@@ -174,10 +173,9 @@ MgGeometry MultiGeometryFromSelection(MgFeatureService featureSrvc, MgMap map, S
 
 void GetRequestParameters(HttpServletRequest request)
 {
-    mapName = GetParameter(request, "MAPNAME");
-    sessionId = GetParameter(request, "SESSION");
+    sessionId = ValidateSessionId(GetParameter(request, "SESSION"));
+    mapName = ValidateMapName(GetParameter(request, "MAPNAME"));
     inputSel = GetParameter(request, "SELECTION");
     layers = GetParameter(request, "LAYERS");
-    dwf = GetParameter(request, "DWF");
 }
 %>

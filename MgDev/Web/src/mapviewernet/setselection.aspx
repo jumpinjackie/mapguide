@@ -117,11 +117,11 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
-    mapName = GetParameter(parameters, "MAPNAME");
-    sessionId = GetParameter(parameters, "SESSION");
-    selText = GetParameter(parameters, "SELECTION");
+    sessionId = ValidateSessionId(GetParameter(parameters, "SESSION"));
+    mapName = ValidateMapName(GetParameter(parameters, "MAPNAME"));
     if(IsParameter(parameters, "QUERYINFO"))
-        queryInfo = GetParameter(parameters, "QUERYINFO") == "1";
+        queryInfo = GetIntParameter(parameters, "QUERYINFO") == 1;
+    selText = GetParameter(parameters, "SELECTION");
 }
 
 </script>

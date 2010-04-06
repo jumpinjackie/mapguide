@@ -61,7 +61,6 @@ String mapName = "";
 String sessionId = "";
 boolean summary = false;
 int layerCount = 0;
-String[] layerIds = null;
 int intermediateVar = 0;
 String output = "\nvar layerData = new Array();\n";
 
@@ -154,11 +153,8 @@ response.flushBuffer();
 <%!
 void GetRequestParameters(HttpServletRequest request)
 {
-    if(IsParameter(request, "MAPNAME"))
-        mapName = GetParameter(request, "MAPNAME");
-
-    if(IsParameter(request, "SESSION"))
-        sessionId = GetParameter(request, "SESSION");
+    sessionId = ValidateSessionId(GetParameter(request, "SESSION"));
+    mapName = ValidateMapName(GetParameter(request, "MAPNAME"));
 
     if(IsParameter(request, "SUMMARY"))
     {
@@ -167,16 +163,7 @@ void GetRequestParameters(HttpServletRequest request)
     else
     {
         summary = false;
-        if(IsParameter(request, "LC"))
-        {
-            layerCount = Integer.parseInt(GetParameter(request, "LC"));
-        }
-
-        if(layerCount > 0 && IsParameter(request, "LAYERS"))
-        {
-            String layers = GetParameter(request, "LAYERS");
-            layerIds = layers.split(",");
-        }
+        layerCount = GetIntParameter(request, "LC");
     }
 }
 %>

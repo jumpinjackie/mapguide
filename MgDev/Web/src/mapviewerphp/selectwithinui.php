@@ -24,7 +24,7 @@
     $popup = 0;
     $mapName = "";
     $sessionId = "";
-    $dwf = "";
+    $dwf = 0;
 
     GetRequestParameters();
 
@@ -38,12 +38,12 @@ function GetParameters($params)
 {
     global $mapName, $sessionId, $dwf, $locale;
 
-    if(isset($params['LOCALE']))
-        $locale = $params['LOCALE'];
-    $popup = $params['POPUP'];
-    $mapName = $params['MAPNAME'];
-    $sessionId = $params['SESSION'];
-    $dwf = $params['DWF'];
+    $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
+    $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
+    $mapName = ValidateMapName(GetParameter($params, 'MAPNAME'));
+
+    $popup = GetIntParameter($params, 'POPUP');
+    $dwf = GetIntParameter($params, 'DWF');
 }
 
 function GetRequestParameters()

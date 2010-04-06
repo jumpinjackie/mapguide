@@ -57,7 +57,7 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
-    locale =  GetParameter(parameters, "LOCALE");
+    locale =  ValidateLocaleString(GetParameter(parameters, "LOCALE"));
 }
 
 </script>

@@ -18,36 +18,71 @@
 //
 
 include 'common.php';
+include 'constants.php';
 
-$taskPane = "";
-$session = "";
-$webLayout = "";
-$dwf = "";
+$sessionId = "";
+$webLayoutId = "";
+$dwf = 0;
 $locale = "";
 
 GetRequestParameters();
+SetLocalizedFilesPath(GetLocalizationPath());
 
-//If there is an initial url, it will be encoded, so parse the decoded url.
-$comp = parse_url(urldecode($taskPane));
+try
+{
+	InitializeWebTier();
 
-//If there is a query component to the initial url, append it to the end of the full url string
-if(!isset($comp["query"]) || strlen($comp["query"]) == 0)
-	$url = sprintf("%s?SESSION=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s", $comp["path"], $session, urlencode($webLayout), $dwf, $locale);
-else
-	$url = sprintf("%s?SESSION=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s&%s", $comp["path"], $session, urlencode($webLayout), $dwf, $locale, $comp["query"]);
+	$cred = new MgUserInformation($sessionId);
+	$cred->SetClientIp(GetClientIp());
+	$cred->SetClientAgent(GetClientAgent());
 
-$templ = file_get_contents("../viewerfiles/taskframe.templ");
-print sprintf($templ, GetSurroundVirtualPath()."tasklist.php", $locale, $url);
+	//Connect to the site
+	$site = new MgSiteConnection();
+	$site->Open($cred);
+
+	//Get the MgWebLayout object
+	$resourceSrvc = $site->CreateService(MgServiceType::ResourceService);
+	$webLayoutResId = new MgResourceIdentifier($webLayoutId);
+	$webLayout = new MgWebLayout($resourceSrvc, $webLayoutResId);
+	$taskPane = $webLayout->GetTaskPane();
+	$taskPaneUrl = $taskPane->GetInitialTaskUrl();
+	$vpath = GetSurroundVirtualPath();
+	if ($taskPaneUrl == null || strlen($taskPaneUrl) == 0)
+	{
+		$taskPaneUrl = "gettingstarted.php";
+	}
+
+    //If there is an initial url, it will be encoded, so parse the decoded url.
+    $comp = parse_url(urldecode($taskPaneUrl));
+
+    //If there is a query component to the initial url, append it to the end of the full url string
+    if(!isset($comp["query"]) || strlen($comp["query"]) == 0)
+        $url = sprintf("%s?SESSION=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s", $comp["path"], $sessionId, urlencode($webLayoutId), $dwf, $locale);
+    else
+        $url = sprintf("%s?SESSION=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s&%s", $comp["path"], $sessionId, urlencode($webLayoutId), $dwf, $locale, $comp["query"]);
+
+    $templ = file_get_contents("../viewerfiles/taskframe.templ");
+    print sprintf($templ, $vpath."tasklist.php", $locale, $url);
+}
+catch(MgException $e)
+{
+    OnError(GetLocalizedString( "TASKS", $locale ), $e->GetDetails());
+    return;
+}
+catch(Exception $ne)
+{
+    OnError(GetLocalizedString( "TASKS", $locale ), $ne->getMessage());
+    return;
+}
 
 function GetParameters($params)
 {
-    global $taskPane, $session, $webLayout, $dwf, $locale;
+    global $taskPane, $sessionId, $webLayoutId, $dwf, $locale;
 
-    $taskPane = $params['TASK'];
-    $session = $params['SESSION'];
-    $webLayout = $params['WEBLAYOUT'];
-    $locale = $params['LOCALE'];
-    $dwf = $params['DWF'];
+    $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
+    $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
+    $webLayoutId = ValidateResourceId(GetParameter($params, 'WEBLAYOUT'));
+    $dwf = GetIntParameter($params, 'DWF');
 }
 
 function GetRequestParameters()
@@ -56,6 +91,13 @@ function GetRequestParameters()
         GetParameters($_POST);
     else
         GetParameters($_GET);
+}
+
+function OnError($title, $msg)
+{
+    global $target;
+    $templ = Localize(file_get_contents("../viewerfiles/errorpage.templ"), $locale, GetClientOS());
+    print sprintf($templ, "0", $title, $msg);
 }
 
 ?>

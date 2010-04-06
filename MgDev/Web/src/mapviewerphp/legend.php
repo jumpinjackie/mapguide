@@ -53,7 +53,6 @@
     $sessionId = "";
     $summary = false;
     $layerCount = 0;
-    $layerIds = array();
     $intermediateVar = 0;
 
     GetRequestParameters();
@@ -402,20 +401,15 @@ function BuildLayerMap($map)
 
 function GetParameters($params)
 {
-    global $mapName, $sessionId, $summary, $layerCount, $layerIds;
+    global $mapName, $sessionId, $summary, $layerCount;
 
-    $mapName = $params['MAPNAME'];
-    $sessionId = $params['SESSION'];
+    $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
+    $mapName = ValidateMapName(GetParameter($params, 'MAPNAME'));
     if(isset($params['SUMMARY']))
         $summary = true;
     else
     {
-        $layerCount = $params['LC'];
-        if($layerCount > 0)
-        {
-            $layers = $params['LAYERS'];
-            $layerIds = explode(",", $layers);
-        }
+        $layerCount = GetIntParameter($params, 'LC');
     }
 }
 

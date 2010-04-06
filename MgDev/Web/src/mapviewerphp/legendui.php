@@ -32,7 +32,7 @@ function GetParameters($params)
 {
     global $locale;
 
-    $locale = $params['LOCALE'];
+    $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
 }
 
 function GetRequestParameters()

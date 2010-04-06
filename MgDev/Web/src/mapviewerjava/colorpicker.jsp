@@ -52,9 +52,9 @@
 <%!
 void GetRequestParameters(HttpServletRequest request)
 {
-    clr = GetParameter(request, "CLR");
+    locale = ValidateLocaleString(GetParameter(request, "LOCALE"));
+    clr = ValidateColorString(GetParameter(request, "CLR"));
     allowTransparency = GetIntParameter(request, "ALLOWTRANS");
     transparent = GetIntParameter(request, "TRANS");
-    locale = GetParameter(request, "LOCALE");
 }
 %>

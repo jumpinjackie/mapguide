@@ -150,7 +150,7 @@ NameValueCollection cmds = null;
         //
         String srcToolbar = showToolbar ? ("src=\"" + vpath + "toolbar.aspx?LOCALE=" + locale + "\"") : "";
         String srcStatusbar = showStatusbar ? ("src=\"" + vpath + "statusbar.aspx?LOCALE=" + locale + "\"") : "";
-        String srcTaskFrame = showTaskPane ? ("src=\"" + vpath + "taskframe.aspx?TASK=" + taskPaneUrl + "&WEBLAYOUT=" + HttpUtility.UrlEncode(webLayoutDefinition) + "&DWF=" + (forDwf != 0 ? "1" : "0") + "&SESSION=" + (sessionId != "" ? sessionId : "") + "&LOCALE=" + locale + "\"") : "";
+        String srcTaskFrame = showTaskPane ? ("src=\"" + vpath + "taskframe.aspx?WEBLAYOUT=" + HttpUtility.UrlEncode(webLayoutDefinition) + "&DWF=" + (forDwf != 0 ? "1" : "0") + "&SESSION=" + (sessionId != "" ? sessionId : "") + "&LOCALE=" + locale + "\"") : "";
         String srcTaskBar = "src=\"" + vpath + "taskbar.aspx?LOCALE=" + locale + "\"";
 
         //view center
@@ -595,28 +595,19 @@ String DeclareUiItems(MgWebWidgetCollection coll, String varname)
 
 void GetParameters(NameValueCollection parameters)
 {
-    webLayoutDefinition = parameters["WEBLAYOUT"];
-    String localeParam = parameters["LOCALE"];
-    if (localeParam != null && localeParam.Length > 0)
-    {
-        locale = localeParam;
-    }
-    else
-    {
-        locale = GetDefaultLocale();
-    }
-    sessionId = parameters["SESSION"];
+    locale = ValidateLocaleString(GetParameter(parameters, "LOCALE"));
+    sessionId = ValidateSessionId(GetParameter(parameters, "SESSION"));
+    webLayoutDefinition = ValidateResourceId(GetParameter(parameters, "WEBLAYOUT"));
     if (sessionId != null && sessionId.Length > 0)
     {
-        sessionId = parameters["SESSION"];
         orgSessionId = sessionId;
     }
     else
     {
-        username = parameters["USERNAME"];
+        username = GetParameter(parameters, "USERNAME");
         if (null != username && username.Length > 0)
         {
-            password = parameters["PASSWORD"];
+            password = GetParameter(parameters, "PASSWORD");
             if (null == password)
             {
                 password = "";
@@ -625,11 +616,10 @@ void GetParameters(NameValueCollection parameters)
         }
 
         //Check in server variables for username and password
-        if (Request.ServerVariables["AUTH_USER"].Length>0)
+        if (Request.ServerVariables["AUTH_USER"].Length > 0)
         {
             username = Request.ServerVariables["AUTH_USER"];
-
-            if (Request.ServerVariables["AUTH_PASSWORD"].Length>0)
+            if (Request.ServerVariables["AUTH_PASSWORD"].Length > 0)
             {
                 password = Request.ServerVariables["AUTH_PASSWORD"];
             }
@@ -640,7 +630,7 @@ void GetParameters(NameValueCollection parameters)
         //If one exist use base64 decoding to get the username:password pair
         if(null != Request.Headers.Get("Authorization"))
         {
-            String usernamePassword =Request.Headers["Authorization"];
+            String usernamePassword = Request.Headers["Authorization"];
             usernamePassword = base64Decode(usernamePassword.Substring(6));
             String [] authPair = usernamePassword.Split(':');
             username = authPair[0];

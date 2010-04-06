@@ -91,13 +91,11 @@ boolean dwf;
 <%!
 void GetRequestParameters(HttpServletRequest request)
 {
-    sessionId = GetParameter(request, "SESSION");
-    webLayout = GetParameter(request, "WEBLAYOUT");
+    sessionId = ValidateSessionId(GetParameter(request, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(request, "LOCALE"));
+    webLayout = ValidateResourceId(GetParameter(request, "WEBLAYOUT"));
+    dwf = (GetIntParameter(request, "DWF") == 1);
     pageName = GetParameter(request, "PAGE");
-    dwf = GetParameter(request, "DWF").equals("1");
-    locale = GetParameter(request, "LOCALE");
-    if(locale.length() == 0)
-        locale = GetDefaultLocale();
 }
 
 String FixupPageReferences(String html, String webLayout, boolean dwf, String vpath) throws UnsupportedEncodingException {

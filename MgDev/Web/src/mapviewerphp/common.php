@@ -158,4 +158,127 @@ function GetClientAgent()
     return "Ajax Viewer";
 }
 
+function ValidateSessionId($proposedSessionId)
+{
+    // 00000000-0000-0000-0000-000000000000_aa_00000000000000000000
+    $validSessionId = "";
+    if($proposedSessionId != null &&
+        preg_match('/^[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}_[A-Za-z]{2}_[A-Fa-f0-9]{20}$/', $proposedSessionId))
+    {
+        $validSessionId = $proposedSessionId;
+    }
+    return $validSessionId;
+}
+
+function ValidateLocaleString($proposedLocaleString)
+{
+    // aa or aa-aa
+    $validLocaleString = GetDefaultLocale(); // Default
+    if($proposedLocaleString != null &&
+        (preg_match('/^[A-Za-z]{2}$/', $proposedLocaleString) || preg_match('/^[A-Za-z]{2}-[A-Za-z]{2}$/', $proposedLocaleString)))
+    {
+        $validLocaleString = $proposedLocaleString;
+    }
+    return $validLocaleString;
+}
+
+function ValidateHyperlinkTargetValue($proposedHyperlinkTarget)
+{
+    // 1, 2 or 3
+    $validHyperlinkTarget = "1"; // Default
+    if($proposedHyperlinkTarget != null && preg_match('/^[1-3]$/', $proposedHyperlinkTarget))
+    {
+        $validHyperlinkTarget = $proposedHyperlinkTarget;
+    }
+    return $validHyperlinkTarget;
+}
+
+function ValidateFrameName($proposedFrameName)
+{
+    // Allowing alphanumeric characters and underscores in the frame name
+    $validFrameName = "";
+    if($proposedFrameName != null && preg_match('/^[a-zA-Z0-9_]*$/', $proposedFrameName))
+    {
+        $validFrameName = $proposedFrameName;
+    }
+    return $validFrameName;
+}
+
+function ValidateIntegerString($proposedNumberString)
+{
+    // Allow numeric characters only
+    $validNumberString = "";
+    if($proposedNumberString != null && preg_match('/^[0-9]*$/', $proposedNumberString))
+    {
+        $validNumberString = $proposedNumberString;
+    }
+    return $validNumberString;
+}
+
+function ValidateResourceId($proposedResourceId)
+{
+    $validResourceId = "";
+    try
+    {
+        $resId = new MgResourceIdentifier($proposedResourceId);
+        $validResourceId = $resId->ToString();
+    }
+    catch(MgException $ex)
+    {
+        $validResourceId = "";
+    }
+    return $validResourceId;
+}
+
+function ValidateMapName($proposedMapName)
+{
+    $validMapName = "";
+    if (strcspn($proposedMapName, "*:|?<'&\">=") == strlen($proposedMapName))
+    {
+        $validMapName = $proposedMapName;
+    }
+    return $validMapName;
+}
+
+function ValidateColorString($proposedColorString)
+{
+    $validColorString = "000000";
+    if ($proposedColorString != null && preg_match('/^[A-Fa-f0-9]{6}$/', $proposedColorString))
+    {
+        $validColorString = $proposedColorString;
+    }
+    return $validColorString;
+}
+
+function GetParameter($params, $paramName)
+{
+	$paramValue = "";
+
+	if(isset($params[$paramName]))
+	{
+		$paramValue = $params[$paramName];
+	}
+	return $paramValue;
+}
+
+function GetIntParameter($params, $paramName)
+{
+	$paramValue = 0;
+	if(isset($params[$paramName]) && is_numeric($params[$paramName]))
+	{
+		$paramValue = intval($params[$paramName]);
+	}
+	return $paramValue;
+}
+
+function GetDoubleParameter($params, $paramName)
+{
+	$paramValue = 0.0;
+	if(isset($params[$paramName]) && is_numeric($params[$paramName]))
+	{
+		$paramValue = doubleval($params[$paramName]);
+	}
+	return $paramValue;
+}
+
 ?>

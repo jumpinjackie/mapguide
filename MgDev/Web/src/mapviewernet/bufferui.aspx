@@ -66,11 +66,11 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
-    mapName = GetParameter(parameters, "MAPNAME");
-    sessionId = GetParameter(parameters, "SESSION");
+    sessionId = ValidateSessionId(GetParameter(parameters, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(parameters, "LOCALE"));
     popup = GetIntParameter(parameters, "POPUP");
     us = GetIntParameter(parameters, "US");
-    locale = GetParameter(parameters, "LOCALE");
+    mapName = ValidateMapName(GetParameter(parameters, "MAPNAME"));
 }
 
 </script>

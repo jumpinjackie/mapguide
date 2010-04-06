@@ -67,7 +67,7 @@ String locale;
                     String.valueOf(cmdIndex),
                     String.valueOf(target),
                     String.valueOf(popup),
-                    layerId,
+                    EscapeForHtml(layerId),
                     mapName,
                     sessionId,
                     EscapeForHtml(filter),
@@ -80,15 +80,15 @@ String locale;
 
 void GetRequestParameters(HttpServletRequest request)
 {
+    sessionId = ValidateSessionId(GetParameter(request, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(request, "LOCALE"));
+    mapName = ValidateMapName(GetParameter(request, "MAPNAME"));
     cmdIndex = GetIntParameter(request, "CMDINDEX");
     target = GetIntParameter(request, "TGT");
     popup = GetIntParameter(request, "POPUP");
     clientWidth = GetIntParameter(request, "WIDTH");
-    layerId = GetParameter(request, "LAYER");
-    mapName = GetParameter(request, "MAPNAME");
-    sessionId = GetParameter(request, "SESSION");
-    filter = GetParameter(request, "FILTER");
     matchLimit = GetIntParameter(request, "MR");
-    locale = GetParameter(request, "LOCALE");
+    layerId = GetParameter(request, "LAYER");
+    filter = GetParameter(request, "FILTER");
 }
 %>

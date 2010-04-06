@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ Import Namespace="System.Globalization" %>
 <%@ Import Namespace="OSGeo.MapGuide" %>
 
-<script runat="server">
+<script language="C#" runat="server">
 
 void InitializeWebTier()
 {
@@ -186,4 +186,98 @@ String GetClientAgent()
 {
     return "Ajax Viewer";
 }
+
+String ValidateSessionId(String proposedSessionId)
+{
+    // 00000000-0000-0000-0000-000000000000_aa_00000000000000000000
+    String validSessionId = "";
+    if(proposedSessionId != null && System.Text.RegularExpressions.Regex.IsMatch(proposedSessionId, 
+        "^[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}_[A-Za-z]{2}_[A-Fa-f0-9]{20}$"))
+    {
+        validSessionId = proposedSessionId;
+    }
+    return validSessionId;
+}
+
+String ValidateLocaleString(String proposedLocaleString)
+{
+    // aa or aa-aa
+    String validLocaleString = GetDefaultLocale(); // Default
+    if(proposedLocaleString != null && (System.Text.RegularExpressions.Regex.IsMatch(proposedLocaleString, "^[A-Za-z]{2}$") || 
+        System.Text.RegularExpressions.Regex.IsMatch(proposedLocaleString, "^[A-Za-z]{2}-[A-Za-z]{2}$")))
+    {
+        validLocaleString = proposedLocaleString;
+    }
+    return validLocaleString;
+}
+
+String ValidateHyperlinkTargetValue(String proposedHyperlinkTarget)
+{
+    // 1, 2 or 3
+    String validHyperlinkTarget = "1"; // Default
+    if(proposedHyperlinkTarget != null && System.Text.RegularExpressions.Regex.IsMatch(proposedHyperlinkTarget, "^[1-3]$"))
+    {
+        validHyperlinkTarget = proposedHyperlinkTarget;
+    }
+    return validHyperlinkTarget;
+}
+
+String ValidateFrameName(String proposedFrameName)
+{
+    // Allowing alphanumeric characters and underscores in the frame name
+    String validFrameName = "";
+    if(proposedFrameName != null && System.Text.RegularExpressions.Regex.IsMatch(proposedFrameName, "^[a-zA-Z0-9_]*$"))
+    {
+        validFrameName = proposedFrameName;
+    }
+    return validFrameName;
+}
+
+String ValidateIntegerString(String proposedNumberString)
+{
+    // Allow numeric characters only
+    String validNumberString = "";
+    if(proposedNumberString != null && System.Text.RegularExpressions.Regex.IsMatch(proposedNumberString, "^[0-9]*$"))
+    {
+        validNumberString = proposedNumberString;
+    }
+    return validNumberString;    
+}
+
+String ValidateResourceId(String proposedResourceId)
+{
+    String validResourceId = "";
+    try
+    {
+        MgResourceIdentifier resId = new MgResourceIdentifier(proposedResourceId);
+        validResourceId = resId.ToString();
+    }
+    catch(MgException)
+    {
+        validResourceId = "";
+    }
+    return validResourceId;
+}
+
+String ValidateMapName(String proposedMapName)
+{
+    String validMapName = "";
+    if (proposedMapName.IndexOfAny("*:|?<'&\">=".ToCharArray()) < 0)
+    {
+        validMapName = proposedMapName;
+    }
+    return validMapName;
+}
+
+String ValidateColorString(String proposedColorString)
+{
+    String validColorString = "000000";
+    if (proposedColorString != null && 
+        System.Text.RegularExpressions.Regex.IsMatch(proposedColorString, "^[A-Fa-f0-9]{6}$"))
+    {
+        validColorString = proposedColorString;
+    }
+    return validColorString;
+}
+
 </script>

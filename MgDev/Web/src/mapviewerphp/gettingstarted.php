@@ -90,15 +90,11 @@ function GetParameters($params)
 {
     global $sessionId, $webLayout, $pageName, $dwf, $locale;
 
-    $sessionId = $params['SESSION'];
-    $webLayout = $params['WEBLAYOUT'];
-    if(isset($params['PAGE']))
-        $pageName = $params['PAGE'];
-    $dwf = $params['DWF'] == "1";
-    if(isset($params['LOCALE']))
-        $locale = $params['LOCALE'];
-    else
-        $locale = GetDefaultLocale();
+    $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
+    $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
+    $webLayout = ValidateResourceId(GetParameter($params, 'WEBLAYOUT'));
+    $dwf = (GetIntParameter($params, 'DWF') == 1);
+    $pageName = GetParameter($params, 'PAGE');
 }
 
 function GetRequestParameters()

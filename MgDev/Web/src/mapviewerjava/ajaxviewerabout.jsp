@@ -92,7 +92,7 @@ response.flushBuffer();
 <%!
 void GetRequestParameters(HttpServletRequest request)
 {
-    sessionId = GetParameter(request, "SESSION");
-    locale = GetParameter(request, "LOCALE");
+    sessionId = ValidateSessionId(GetParameter(request, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(request, "LOCALE"));
 }
 %>

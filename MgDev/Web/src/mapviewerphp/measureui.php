@@ -22,8 +22,8 @@
     $target = 0;
     $locale = "";
     $popup = 0;
-    $cmdIndex = "";
-    $clientWidth = "";
+    $cmdIndex = 0;
+    $clientWidth = 0;
     $mapName = "";
     $sessionId = "";
     $total = 0;
@@ -42,15 +42,14 @@ function GetParameters($params)
 {
     global $target, $cmdIndex, $clientWidth, $mapName, $sessionId, $total, $popup, $locale;
 
-    if(isset($params['LOCALE']))
-        $locale = $params['LOCALE'];
-    $target = $params['TGT'];
-    $popup = $params['POPUP'];
-    $cmdIndex = $params['CMDINDEX'];
-    $clientWidth = $params['WIDTH'];
-    $mapName = $params['MAPNAME'];
-    $sessionId = $params['SESSION'];
-    $total = $params['TOTAL'];
+    $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
+    $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
+    $mapName = ValidateMapName(GetParameter($params, 'MAPNAME'));    
+	$target = GetIntParameter($params, 'TGT');
+    $popup = GetIntParameter($params, 'POPUP');
+    $cmdIndex = GetIntParameter($params, 'CMDINDEX');
+    $clientWidth = GetIntParameter($params, 'WIDTH');
+    $total = GetDoubleParameter($params, 'TOTAL');
 }
 
 function GetRequestParameters()

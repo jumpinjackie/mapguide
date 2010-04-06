@@ -35,10 +35,10 @@ function GetParameters($params)
 {
     global $tgt, $popup, $dwf, $locale;
 
-    $tgt = $params['TGT'];
-    $popup = $params['POPUP'];
-    $dwf = $params['DWF'];
-    $locale = $params['LOCALE'];
+    $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
+    $tgt = GetIntParameter($params, 'TGT');
+    $popup = GetIntParameter($params, 'POPUP');
+    $dwf = GetIntParameter($params, 'DWF');
 }
 
 function GetRequestParameters()

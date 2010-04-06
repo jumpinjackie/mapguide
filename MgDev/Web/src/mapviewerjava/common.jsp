@@ -17,6 +17,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="org.osgeo.mapguide.*" %>
 <%@ page import="java.util.*" %>
+<%@ page import="java.util.regex.*" %>
 <%@ page import="java.io.*" %>
 <%@ page import="java.net.*" %>
 <%@ page import="javax.servlet.jsp.*" %>
@@ -191,6 +192,99 @@ String GetClientIp(HttpServletRequest request)
 String GetClientAgent()
 {
     return "Ajax Viewer";
+}
+
+String ValidateSessionId(String proposedSessionId)
+{
+    // 00000000-0000-0000-0000-000000000000_aa_00000000000000000000
+    String validSessionId = "";
+    if(proposedSessionId != null && 
+        Pattern.matches("^[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}_[A-Za-z]{2}_[A-Fa-f0-9]{20}$", proposedSessionId))
+    {
+        validSessionId = proposedSessionId;
+    }
+    return validSessionId;
+}
+
+String ValidateLocaleString(String proposedLocaleString)
+{
+    // aa or aa-aa
+    String validLocaleString = GetDefaultLocale(); // Default
+    if(proposedLocaleString != null && 
+        (Pattern.matches("^[A-Za-z]{2}$", proposedLocaleString) || Pattern.matches("^[A-Za-z]{2}-[A-Za-z]{2}$", proposedLocaleString)))
+    {
+        validLocaleString = proposedLocaleString;
+    }
+    return validLocaleString;
+}
+
+String ValidateHyperlinkTargetValue(String proposedHyperlinkTarget)
+{
+    // 1, 2 or 3
+    String validHyperlinkTarget = "1"; // Default
+    if(proposedHyperlinkTarget != null && Pattern.matches("^[1-3]$", proposedHyperlinkTarget))
+    {
+        validHyperlinkTarget = proposedHyperlinkTarget;
+    }
+    return validHyperlinkTarget;
+}
+
+String ValidateFrameName(String proposedFrameName)
+{
+    // Allowing alphanumeric characters and underscores in the frame name
+    String validFrameName = "";
+    if(proposedFrameName != null && Pattern.matches("^[a-zA-Z0-9_]*$", proposedFrameName))
+    {
+        validFrameName = proposedFrameName;
+    }
+    return validFrameName;
+}
+
+String ValidateIntegerString(String proposedNumberString)
+{
+    // Allow numeric characters only
+    String validNumberString = "";
+    if(proposedNumberString != null && Pattern.matches("^[0-9]*$", proposedNumberString))
+    {
+        validNumberString = proposedNumberString;
+    }
+    return validNumberString;    
+}
+
+String ValidateResourceId(String proposedResourceId)
+{
+    String validResourceId = "";
+    try
+    {
+        MgResourceIdentifier resId = new MgResourceIdentifier(proposedResourceId);
+        validResourceId = resId.ToString();
+    }
+    catch(MgException e)
+    {
+        validResourceId = "";
+    }
+    return validResourceId;
+}
+
+String ValidateMapName(String proposedMapName)
+{
+    String validMapName = "";
+    if (proposedMapName != null && Pattern.matches("^[^\\*:|\\?<'&\">=]*$", proposedMapName))
+    {
+        validMapName = proposedMapName;
+    }
+    return validMapName;
+}
+
+String ValidateColorString(String proposedColorString)
+{
+    String validColorString = "000000";
+    if (proposedColorString != null && 
+        Pattern.matches("^[A-Fa-f0-9]{6}$", proposedColorString))
+    {
+        validColorString = proposedColorString;
+    }
+    return validColorString;
 }
 
 %>

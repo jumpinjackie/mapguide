@@ -268,11 +268,11 @@ String dataSource;
 <%!
 void GetRequestParameters(HttpServletRequest request)
 {
-    mapName = GetParameter(request, "MAPNAME");
-    sessionId = GetParameter(request, "SESSION");
+    sessionId = ValidateSessionId(GetParameter(request, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(request, "LOCALE"));
+    mapName = ValidateMapName(GetParameter(request, "MAPNAME"));
     target = GetIntParameter(request, "TGT");
     popup = GetIntParameter(request, "POPUP");
-    locale = GetParameter(request, "LOCALE");
     if(IsParameter(request, "CLEAR"))
     {
         clear = true;

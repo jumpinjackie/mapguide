@@ -146,7 +146,7 @@ try
     //
     String srcToolbar = showToolbar ? ( "src=\"" + vpath + "toolbar.jsp?LOCALE=" + locale + "\"" ) : "";
     String srcStatusbar = showStatusbar ? ( "src=\"" + vpath + "statusbar.jsp?LOCALE=" + locale + "\"" ) : "";
-    String srcTaskFrame = showTaskPane? ("src=\"" + vpath + "taskframe.jsp?TASK=" + taskPaneUrl + "&WEBLAYOUT=" + URLEncoder.encode(webLayoutDefinition, "UTF-8") + "&DWF=" + (forDwf!=0? "1": "0") + "&SESSION=" + (sessionId != ""? sessionId: "") + "&LOCALE=" + locale + "\"") : "";
+    String srcTaskFrame = showTaskPane? ("src=\"" + vpath + "taskframe.jsp?WEBLAYOUT=" + URLEncoder.encode(webLayoutDefinition, "UTF-8") + "&DWF=" + (forDwf!=0? "1": "0") + "&SESSION=" + (sessionId != ""? sessionId: "") + "&LOCALE=" + locale + "\"") : "";
     String srcTaskBar = "src=\"" + vpath + "taskbar.jsp?LOCALE=" + locale + "\"";
 
     //view center
@@ -601,28 +601,19 @@ String DeclareUiItems(MgWebWidgetCollection coll, String varname) throws MgExcep
 
 void GetRequestParameters(HttpServletRequest request)
 {
-    webLayoutDefinition = request.getParameter("WEBLAYOUT");
-    String localeParam = request.getParameter("LOCALE");
-    if (localeParam != null && localeParam.length() > 0)
-    {
-        locale = localeParam;
-    }
-    else
-    {
-        locale = GetDefaultLocale();
-    }
-    sessionId = request.getParameter("SESSION");
+    webLayoutDefinition = ValidateResourceId(GetParameter(request, "WEBLAYOUT"));
+    sessionId = ValidateSessionId(GetParameter(request, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(request, "LOCALE"));
     if (sessionId != null && sessionId.length() > 0)
     {
-        sessionId = request.getParameter("SESSION");
         orgSessionId = sessionId;
     }
     else
     {
-        username = request.getParameter("USERNAME");
+        username = GetParameter(request, "USERNAME");
         if (username != null && username.length() > 0)
         {
-            password = request.getParameter( "PASSWORD");
+            password = GetParameter(request, "PASSWORD");
             if(password == null)
                 password = "";
             return;

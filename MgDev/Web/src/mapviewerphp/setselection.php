@@ -97,11 +97,12 @@ function GetParameters($params)
 {
     global $mapName, $sessionId, $selText, $queryInfo;
 
-    $mapName = $params['MAPNAME'];
-    $sessionId = $params['SESSION'];
-    $selText = UnescapeMagicQuotes($params['SELECTION']);
+    $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
+    $mapName = ValidateMapName(GetParameter($params, 'MAPNAME'));
     if(isset($params['QUERYINFO']))
-        $queryInfo = $params['QUERYINFO'] == "1";
+        $queryInfo = (GetIntParameter($params, 'QUERYINFO') == 1);
+
+    $selText = UnescapeMagicQuotes(GetParameter($params, 'SELECTION'));
 }
 
 function UnescapeMagicQuotes($str)

@@ -38,9 +38,9 @@ double distance = 0;
 String units = "";
 String linestyle = "";
 String fillstyle = "";
-String thickness = "";
+double thickness = 0;
 int merge = 0;
-int foretrans = 50;
+double foretrans = 50;
 String selText = "";
 String srs = "";
 String featureName = "Buffer";
@@ -386,31 +386,29 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
-    mapName = GetParameter(parameters, "MAPNAME");
-    sessionId = GetParameter(parameters, "SESSION");
+    sessionId = ValidateSessionId(GetParameter(parameters, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(parameters, "LOCALE"));
+    mapName = ValidateMapName(GetParameter(parameters, "MAPNAME"));
     popup = GetIntParameter(parameters, "POPUP");
-    bufferName = GetParameter(parameters, "BUFFER");
-    layersParam = GetParameter(parameters, "LAYERS");
-    lcolor = GetParameter(parameters, "LCOLOR");
-    ffcolor = GetParameter(parameters, "FFCOLOR");
-    fbcolor = GetParameter(parameters, "FBCOLOR");
-    foretrans = GetIntParameter(parameters, "FORETRANS");
-    transparent = GetIntParameter(parameters, "TRANSPARENT");
-    locale = GetParameter(parameters, "LOCALE");
-    distance = GetLocalizedDoubleParameter(parameters, "DISTANCE", locale);
-    units = GetParameter(parameters, "UNITS");
-    linestyle = GetParameter(parameters, "LINESTYLE");
-    fillstyle = GetParameter(parameters, "FILLSTYLE");
-    thickness = GetParameter(parameters, "THICKNESS");
-    selText = GetParameter(parameters, "SELECTION");
-    if(IsParameter(parameters, "MERGE"))
-        merge = 1;
-
-    if(foretrans < 0 || foretrans > 100)
+    foretrans = GetDoubleParameter(parameters, "FORETRANS");
+    if (foretrans < 0 || foretrans > 100)
     {
         foretrans = 50;
     }
-
+    transparent = GetIntParameter(parameters, "TRANSPARENT");
+    distance = GetLocalizedDoubleParameter(parameters, "DISTANCE", locale);
+    if(IsParameter(parameters, "MERGE"))
+        merge = 1;
+    lcolor = ValidateColorString(GetParameter(parameters, "LCOLOR"));
+    ffcolor = ValidateColorString(GetParameter(parameters, "FFCOLOR"));
+    fbcolor = ValidateColorString(GetParameter(parameters, "FBCOLOR"));
+    thickness = GetDoubleParameter(parameters, "THICKNESS");
+    bufferName = GetParameter(parameters, "BUFFER");
+    layersParam = GetParameter(parameters, "LAYERS");
+    units = GetParameter(parameters, "UNITS");
+    linestyle = GetParameter(parameters, "LINESTYLE");
+    fillstyle = GetParameter(parameters, "FILLSTYLE");
+    selText = GetParameter(parameters, "SELECTION");
 }
 
 MgLayer FindLayer(MgLayerCollection layers, String layerName)
@@ -433,7 +431,7 @@ MgLayer FindLayer(MgLayerCollection layers, String layerName)
 MgByteReader BuildLayerDefinitionContent()
 {
     String layerTempl = LoadTemplate(Request, "../viewerfiles/arealayerdef.templ");
-    String xtrans = String.Format("{0:x2}", (255 * foretrans / 100));
+    String xtrans = String.Format("{0:x2}", ((int)(255 * foretrans / 100)));
     String[] vals = {
                     dataSource,
                     featureName,
@@ -442,7 +440,7 @@ MgByteReader BuildLayerDefinitionContent()
                     xtrans + ffcolor,
                     (0!=transparent)? "ff" + fbcolor: "00" + fbcolor,
                     linestyle,
-                    thickness,
+                    thickness.ToString(NumberFormatInfo.InvariantInfo),
                     lcolor
                     };
     layerTempl = Substitute(layerTempl, vals);
