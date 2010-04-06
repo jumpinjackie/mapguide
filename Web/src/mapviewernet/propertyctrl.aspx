@@ -49,9 +49,9 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
-    locale =  GetParameter(parameters, "LOCALE");
+    locale =  ValidateLocaleString(GetParameter(parameters, "LOCALE"));
     if(IsParameter(parameters, "MAPFRAME"))
-        mapFrame = GetParameter(parameters, "MAPFRAME");
+        mapFrame = ValidateFrameName(GetParameter(parameters, "MAPFRAME"));
     else
         mapFrame = "parent";
 }

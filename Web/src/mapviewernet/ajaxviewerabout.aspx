@@ -94,8 +94,8 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
-    sessionId = GetParameter(parameters, "SESSION");
-    locale = GetParameter(parameters, "LOCALE");
+    sessionId = ValidateSessionId(GetParameter(parameters, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(parameters, "LOCALE"));
 }
 
 </script>

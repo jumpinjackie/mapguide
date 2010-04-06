@@ -100,13 +100,11 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
-    sessionId = GetParameter(parameters, "SESSION");
-    webLayout = GetParameter(parameters, "WEBLAYOUT");
+    sessionId = ValidateSessionId(GetParameter(parameters, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(parameters, "LOCALE"));
+    dwf = GetIntParameter(parameters, "DWF") == 1;
+    webLayout = ValidateResourceId(GetParameter(parameters, "WEBLAYOUT"));
     pageName = GetParameter(parameters, "PAGE");
-    dwf = GetParameter(parameters, "DWF") == "1";
-    locale = GetParameter(parameters, "LOCALE");
-    if(locale == "")
-        locale = GetDefaultLocale();
 }
 
 String FixupPageReferences(String html, String webLayout, bool dwf, String vpath) {

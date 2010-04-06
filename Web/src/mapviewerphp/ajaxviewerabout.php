@@ -70,8 +70,8 @@ function GetParameters($params)
 {
     global $sessionId, $locale;
 
-    $sessionId = $params['SESSION'];
-    $locale = $params['LOCALE'];
+    $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
+    $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
 }
 
 function GetRequestParameters()

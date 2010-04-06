@@ -58,7 +58,7 @@ int matchLimit = 0;
                     cmdIndex.ToString(NumberFormatInfo.InvariantInfo),
                     target.ToString(NumberFormatInfo.InvariantInfo),
                     popup.ToString(NumberFormatInfo.InvariantInfo),
-                    layerId,
+                    EscapeForHtml(layerId),
                     mapName,
                     sessionId,
                     EscapeForHtml(filter),
@@ -79,16 +79,17 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
-    locale =  GetParameter(parameters, "LOCALE");
+    sessionId = ValidateSessionId(GetParameter(parameters, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(parameters, "LOCALE"));
     cmdIndex = GetIntParameter(parameters, "CMDINDEX");
     target = GetIntParameter(parameters, "TGT");
     popup = GetIntParameter(parameters, "POPUP");
     clientWidth = GetIntParameter(parameters, "WIDTH");
-    layerId = GetParameter(parameters, "LAYER");
-    mapName = GetParameter(parameters, "MAPNAME");
-    sessionId = GetParameter(parameters, "SESSION");
-    filter = GetParameter(parameters, "FILTER");
     matchLimit = GetIntParameter(parameters, "MR");
+    mapName = ValidateMapName(GetParameter(parameters, "MAPNAME"));
+
+    layerId = GetParameter(parameters, "LAYER");
+    filter = GetParameter(parameters, "FILTER");
 }
 
 </script>

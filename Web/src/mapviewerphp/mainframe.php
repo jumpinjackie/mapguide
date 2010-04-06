@@ -168,7 +168,7 @@ function BuildViewer($forDwf = true)
         //
         $srcToolbar = $showToolbar? ('src="' . $vpath . 'toolbar.php?LOCALE=' . $locale . '"'): '';
         $srcStatusbar = $showStatusbar? ('src="' . $vpath . 'statusbar.php?LOCALE=' . $locale . '"') : "";
-        $srcTaskFrame = $showTaskPane? ('src="' . $vpath . 'taskframe.php?TASK=' . $taskPaneUrl . '&WEBLAYOUT=' . urlencode($webLayoutDefinition) . '&DWF=' . ($forDwf? "1": "0") . '&SESSION=' . ($sessionId != ""? $sessionId: "") . '&LOCALE=' . $locale . '"') : '';
+        $srcTaskFrame = $showTaskPane? ('src="' . $vpath . 'taskframe.php?WEBLAYOUT=' . urlencode($webLayoutDefinition) . '&DWF=' . ($forDwf? "1": "0") . '&SESSION=' . ($sessionId != ""? $sessionId: "") . '&LOCALE=' . $locale . '"') : '';
         $srcTaskBar = 'src="' . $vpath . 'taskbar.php?LOCALE=' . $locale . '"';
 
         //view center
@@ -581,25 +581,21 @@ function GetParameters($params)
     global $debug, $webLayoutDefinition;
     global $sessionId, $username, $password, $orgSessionId, $locale;
 
-    $webLayoutDefinition = $params['WEBLAYOUT'];
-
-    if(isset($params['LOCALE']))
-        $locale = $params['LOCALE'];
-    else
-        $locale = GetDefaultLocale();
+	$sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
+    $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
+    $webLayoutDefinition = ValidateResourceId(GetParameter($params, 'WEBLAYOUT'));
 
     if(isset($params['SESSION']))
     {
-        $sessionId = $params['SESSION'];
         $orgSessionId = $sessionId;
     }
     else
     {
         if(isset($params['USERNAME']))
         {
-            $username = $params['USERNAME'];
+            $username = GetParameter($params, 'USERNAME');
             if(isset($params['PASSWORD']))
-                $password = $params['PASSWORD'];
+                $password = GetParameter($params, 'PASSWORD');
             return;
         }
 

@@ -150,7 +150,7 @@ NameValueCollection cmds = null;
         //
         String srcToolbar = showToolbar ? ("src=\"" + vpath + "toolbar.aspx?LOCALE=" + locale + "\"") : "";
         String srcStatusbar = showStatusbar ? ("src=\"" + vpath + "statusbar.aspx?LOCALE=" + locale + "\"") : "";
-        String srcTaskFrame = showTaskPane ? ("src=\"" + vpath + "taskframe.aspx?TASK=" + taskPaneUrl + "&WEBLAYOUT=" + HttpUtility.UrlEncode(webLayoutDefinition) + "&DWF=" + (forDwf != 0 ? "1" : "0") + "&SESSION=" + (sessionId != "" ? sessionId : "") + "&LOCALE=" + locale + "\"") : "";
+        String srcTaskFrame = showTaskPane ? ("src=\"" + vpath + "taskframe.aspx?WEBLAYOUT=" + HttpUtility.UrlEncode(webLayoutDefinition) + "&DWF=" + (forDwf != 0 ? "1" : "0") + "&SESSION=" + (sessionId != "" ? sessionId : "") + "&LOCALE=" + locale + "\"") : "";
         String srcTaskBar = "src=\"" + vpath + "taskbar.aspx?LOCALE=" + locale + "\"";
 
         //view center
@@ -598,31 +598,19 @@ String DeclareUiItems(MgWebWidgetCollection coll, String varname)
 
 void GetParameters(NameValueCollection parameters)
 {
-    webLayoutDefinition = parameters["WEBLAYOUT"];
-    if (webLayoutDefinition == null)
-        webLayoutDefinition = "";
-
-    String localeParam = parameters["LOCALE"];
-    if (localeParam != null && localeParam.Length > 0)
-    {
-        locale = localeParam;
-    }
-    else
-    {
-        locale = GetDefaultLocale();
-    }
-    sessionId = parameters["SESSION"];
+    locale = ValidateLocaleString(GetParameter(parameters, "LOCALE"));
+    sessionId = ValidateSessionId(GetParameter(parameters, "SESSION"));
+    webLayoutDefinition = ValidateResourceId(GetParameter(parameters, "WEBLAYOUT"));
     if (sessionId != null && sessionId.Length > 0)
     {
-        sessionId = parameters["SESSION"];
         orgSessionId = sessionId;
     }
     else
     {
-        username = parameters["USERNAME"];
+        username = GetParameter(parameters, "USERNAME");
         if (null != username && username.Length > 0)
         {
-            password = parameters["PASSWORD"];
+            password = GetParameter(parameters, "PASSWORD");
             if (null == password)
             {
                 password = "";

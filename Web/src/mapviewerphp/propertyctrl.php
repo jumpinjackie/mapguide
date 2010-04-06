@@ -34,10 +34,9 @@ function GetParameters($params)
 {
     global $locale, $mapFrame;
 
-    if(isset($params['LOCALE']))
-        $locale = $params['LOCALE'];
+    $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
     if(isset($params['MAPFRAME']))
-        $mapFrame = $params['MAPFRAME'];
+        $mapFrame = ValidateFrameName(GetParameter($params, 'MAPFRAME'));
     else
         $mapFrame = "parent";
 }

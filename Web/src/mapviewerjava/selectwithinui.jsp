@@ -28,7 +28,7 @@
 int popup = 0;
 String mapName;
 String sessionId;
-String dwf;
+int dwf;
 String locale;
 %>
 
@@ -38,7 +38,7 @@ String locale;
     popup = 0;
     mapName = "";
     sessionId = "";
-    dwf = "";
+    dwf = 0;
     locale = "";
 
     MgLocalizer.SetLocalizedFilesPath(getServletContext().getRealPath("/") + "localized/");
@@ -50,7 +50,7 @@ String locale;
                     GetSurroundVirtualPath(request) + "selectwithin.jsp",
                     mapName,
                     sessionId,
-                    dwf
+                    String.valueOf(dwf)
                     };
     response.getWriter().write(Substitute(templ, vals));
 %>
@@ -58,10 +58,10 @@ String locale;
 <%!
 void GetRequestParameters(HttpServletRequest request)
 {
+    sessionId = ValidateSessionId(GetParameter(request, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(request, "LOCALE"));
+    mapName = ValidateMapName(GetParameter(request, "MAPNAME"));
     popup = GetIntParameter(request, "POPUP");
-    mapName = GetParameter(request, "MAPNAME");
-    sessionId = GetParameter(request, "SESSION");
-    dwf = GetParameter(request, "DWF");
-    locale = GetParameter(request, "LOCALE");
+    dwf = GetIntParameter(request, "DWF");
 }
 %>

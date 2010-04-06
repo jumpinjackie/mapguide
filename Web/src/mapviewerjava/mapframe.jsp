@@ -193,37 +193,15 @@ String hlTgtName;
 <%!
 void GetRequestParameters(HttpServletRequest request)
 {
+    sessionId = ValidateSessionId(GetParameter(request, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(request, "LOCALE"));
+    mapDefinition = ValidateResourceId(GetParameter(request, "MAPDEFINITION"));
+    hlTgt = ValidateHyperlinkTargetValue(GetParameter(request, "HLTGT"));
+    hlTgtName = ValidateFrameName(GetParameter(request, "HLTGTNAME"));
+    infoWidth = GetIntParameter(request, "INFOWIDTH");
+    showLegend = GetIntParameter(request, "SHOWLEGEND");
+    showProperties = GetIntParameter(request, "SHOWPROP");
+    showSlider = GetIntParameter(request, "SHOWSLIDER");
     type = GetParameter(request, "TYPE");
-
-    String localeParam = GetParameter(request, "LOCALE");
-    if(localeParam != null && localeParam.length() > 0)
-    {
-        locale = localeParam;
-    }
-    else
-    {
-        locale = GetDefaultLocale();
-    }
-
-    hlTgt = GetParameter(request, "HLTGT");
-    hlTgtName = GetParameter(request, "HLTGTNAME");
-
-    if(IsParameter(request, "INFOWIDTH"))
-        infoWidth = Integer.parseInt(GetParameter(request, "INFOWIDTH"));
-
-    if(IsParameter(request, "SHOWLEGEND"))
-        showLegend = Integer.parseInt(GetParameter(request, "SHOWLEGEND"));
-
-    if(IsParameter(request, "SHOWPROP"))
-        showProperties = Integer.parseInt(GetParameter(request, "SHOWPROP"));
-
-    if(IsParameter(request, "MAPDEFINITION"))
-        mapDefinition = GetParameter(request, "MAPDEFINITION");
-
-    if(IsParameter(request, "SESSION"))
-        sessionId = GetParameter(request, "SESSION");
-
-    if(IsParameter(request, "SHOWSLIDER"))
-        showSlider = Integer.parseInt(GetParameter(request, "SHOWSLIDER"));
 }
 %>

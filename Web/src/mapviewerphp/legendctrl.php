@@ -41,13 +41,13 @@ function GetParameters($params)
 {
     global $mapName, $sessionId, $mapFrame, $locale;
 
-    $mapName = $params['MAPNAME'];
-    $sessionId = $params['SESSION'];
+    $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
+    $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
+    $mapName = ValidateMapName(GetParameter($params, 'MAPNAME'));
     if(isset($params['MAPFRAME']))
-        $mapFrame = $params['MAPFRAME'];
+        $mapFrame = ValidateFrameName(GetParameter($params, 'MAPFRAME'));
     else
         $mapFrame = "parent";
-    $locale = $params['LOCALE'];
 }
 
 function GetRequestParameters()

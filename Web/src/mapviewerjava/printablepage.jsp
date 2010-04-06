@@ -31,10 +31,10 @@ int isTitle;
 int isLegend;
 int isArrow;
 String title;
-String scale;
-String centerX;
-String centerY;
-String dpi;
+double scale;
+double centerX;
+double centerY;
+int dpi;
 String templFile;
 String locale;
 %>
@@ -46,10 +46,10 @@ isTitle = 0;
 isLegend = 0;
 isArrow = 0;
 title = "";
-scale = "";
-centerX = "";
-centerY = "";
-dpi = "";
+scale = 0;
+centerX = 0;
+centerY = 0;
+dpi = 0;
 templFile = "";
 locale = "";
 
@@ -67,16 +67,16 @@ try
     String agent = GetRootVirtualFolder(request) + "/mapagent/mapagent.fcgi";
     String vals[] = { mapName,
         agent,
-        scale,
-        centerX,
-        centerY,
-        dpi,
+        String.valueOf(scale),
+        String.valueOf(centerX),
+        String.valueOf(centerY),
+        String.valueOf(dpi),
         mapName,
         sessionId,
         String.valueOf(isTitle),
         String.valueOf(isLegend),
         String.valueOf(isArrow),
-        isTitle == 1 ? title : "",
+        isTitle == 1 ? EscapeForHtml(title) : "",
         agent,
         mapName,
         sessionId };
@@ -98,36 +98,16 @@ response.flushBuffer();
 <%!
 void GetRequestParameters(HttpServletRequest request)
 {
-    if(IsParameter(request, "MAPNAME"))
-        mapName = GetParameter(request, "MAPNAME");
-
-    if(IsParameter(request, "SESSION"))
-        sessionId = GetParameter(request, "SESSION");
-
-    if(IsParameter(request, "ISTITLE"))
-        isTitle = Integer.parseInt(GetParameter(request, "ISTITLE"));
-
-    if(IsParameter(request, "ISLEGEND"))
-        isLegend = Integer.parseInt(GetParameter(request, "ISLEGEND"));
-
-    if(IsParameter(request, "ISARROW"))
-        isArrow = Integer.parseInt(GetParameter(request, "ISARROW"));
-
-    if(IsParameter(request, "TITLE"))
-        title = GetParameter(request, "TITLE");
-
-    if(IsParameter(request, "SCALE"))
-        scale = GetParameter(request, "SCALE");
-
-    if(IsParameter(request, "CENTERX"))
-        centerX = GetParameter(request, "CENTERX");
-
-    if(IsParameter(request, "CENTERY"))
-        centerY = GetParameter(request, "CENTERY");
-
-    if(IsParameter(request, "DPI"))
-        dpi = GetParameter(request, "DPI");
-
-    locale = GetParameter(request, "LOCALE");
+    sessionId = ValidateSessionId(GetParameter(request, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(request, "LOCALE"));
+    mapName = ValidateMapName(GetParameter(request, "MAPNAME"));
+    isTitle = GetIntParameter(request, "ISTITLE");
+    isLegend = GetIntParameter(request, "ISLEGEND");
+    isArrow = GetIntParameter(request, "ISARROW");
+    dpi = GetIntParameter(request, "DPI");
+    scale = GetDoubleParameter(request, "SCALE");
+    centerX = GetDoubleParameter(request, "CENTERX");
+    centerY = GetDoubleParameter(request, "CENTERY");
+    title = GetParameter(request, "TITLE");
 }
 %>

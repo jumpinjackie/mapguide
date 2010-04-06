@@ -51,9 +51,9 @@ String locale;
 <%!
 void GetRequestParameters(HttpServletRequest request)
 {
+    locale = ValidateLocaleString(GetParameter(request, "LOCALE"));
     target = GetIntParameter(request, "TGT");
     popup = GetIntParameter(request, "POPUP");
     dwf = GetIntParameter(request, "DWF");
-    locale = GetParameter(request, "LOCALE");
 }
 %>

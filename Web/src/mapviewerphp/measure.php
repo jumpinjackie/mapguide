@@ -285,23 +285,23 @@ function GetParameters($params)
     global $mapName, $sessionId, $x1, $y1, $x2, $y2, $popup;
     global $total, $clear, $us, $segId, $target, $locale;
 
-    if(isset($params['LOCALE']))
-        $locale = $params['LOCALE'];
-    $mapName = $params['MAPNAME'];
-    $sessionId = $params['SESSION'];
-    $target = $params['TGT'];
-    $popup = $params['POPUP'];
+    $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
+    $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
+    $mapName = ValidateMapName(GetParameter($params, 'MAPNAME'));
+
+    $target = GetIntParameter($params, 'TGT');
+    $popup = GetIntParameter($params, 'POPUP');
     if(isset($params['CLEAR']))
         $clear = true;
     else
     {
-        $x1 = $params['X1'];
-        $y1 = $params['Y1'];
-        $x2 = $params['X2'];
-        $y2 = $params['Y2'];
-        $total = $params['TOTAL'];
-        $us = $params['US'];
-        $segId = $params['SEGID'];
+        $us = GetIntParameter($params, 'US');
+        $segId = GetIntParameter($params, 'SEGID');
+        $x1 = GetDoubleParameter($params, 'X1');
+        $y1 = GetDoubleParameter($params, 'Y1');
+        $x2 = GetDoubleParameter($params, 'X2');
+        $y2 = GetDoubleParameter($params, 'Y2');
+        $total = GetDoubleParameter($params, 'TOTAL');
     }
 }
 

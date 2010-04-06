@@ -22,26 +22,25 @@
 
     $locale = "";
     $clr = "000000";
-    $allowTransparency = 0;
-    $transparent = 0;
+    $allowTransparency = false;
+    $transparent = false;
 
     GetRequestParameters();
 
     $templ = file_get_contents("../viewerfiles/colorpicker.templ");
     SetLocalizedFilesPath(GetLocalizationPath());
     $templ = Localize($templ, $locale, GetClientOS());
-    print sprintf($templ, $clr, $allowTransparency? "true": "false", $transparent? "true": "false");
+    print sprintf($templ, $clr, $allowTransparency ? "true": "false", $transparent ? "true": "false");
 
 
 function GetParameters($params)
 {
     global $clr, $allowTransparency, $transparent, $locale;
 
-    if(isset($params['LOCALE']))
-        $locale = $params['LOCALE'];
-    $clr = $params['CLR'];
-    $allowTransparency = $params['ALLOWTRANS'];
-    $transparent = $params['TRANS'];
+    $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
+    $clr = ValidateColorString(GetParameter($params, 'CLR'));
+    $allowTransparency = (GetIntParameter($params, 'ALLOWTRANS') == 1);
+    $transparent = (GetIntParameter($params, 'TRANS') == 1);
 }
 
 function GetRequestParameters()

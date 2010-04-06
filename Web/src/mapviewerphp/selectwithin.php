@@ -24,7 +24,7 @@
     $sessionId = "";
     $inputSel = "";
     $layers = null;
-    $dwf = "";
+    $dwf = 0;
 
     GetRequestParameters();
 
@@ -145,11 +145,12 @@ function GetParameters($params)
 {
     global $inputSel, $layers, $mapName, $sessionId, $dwf;
 
-    $mapName = $params['MAPNAME'];
-    $sessionId = $params['SESSION'];
-    $inputSel = UnescapeMagicQuotes($params['SELECTION']);
-    $layers = $params['LAYERS'];
-    $dwf = $params['DWF'];
+    $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
+    $mapName = ValidateMapName(GetParameter($params, 'MAPNAME'));
+    $dwf = GetIntParameter($params, 'DWF');
+    
+	$inputSel = UnescapeMagicQuotes(GetParameter($params, 'SELECTION'));
+    $layers = GetParameter($params, 'LAYERS');
 }
 
 function UnescapeMagicQuotes($str)

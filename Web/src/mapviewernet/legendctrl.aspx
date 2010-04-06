@@ -76,13 +76,14 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
-    mapName = GetParameter(parameters, "MAPNAME");
-    sessionId = GetParameter(parameters, "SESSION");
+    sessionId = ValidateSessionId(GetParameter(parameters, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(parameters, "LOCALE"));
+    mapName = ValidateMapName(GetParameter(parameters, "MAPNAME"));
+
     if(IsParameter(parameters, "MAPFRAME"))
-        mapFrame = GetParameter(parameters, "MAPFRAME");
+        mapFrame = ValidateFrameName(GetParameter(parameters, "MAPFRAME"));
     else
         mapFrame = "parent";
-    locale = GetParameter(parameters, "LOCALE");
 }
 
 </script>

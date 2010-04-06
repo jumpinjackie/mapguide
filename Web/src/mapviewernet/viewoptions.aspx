@@ -60,10 +60,10 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
+    locale = ValidateLocaleString(GetParameter(parameters, "LOCALE"));
     tgt = GetIntParameter(parameters, "TGT");
     popup = GetIntParameter(parameters, "POPUP");
     dwf = GetIntParameter(parameters, "DWF");
-    locale = GetParameter(parameters, "LOCALE");
 }
 
 </script>

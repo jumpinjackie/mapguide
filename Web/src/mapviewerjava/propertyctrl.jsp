@@ -59,9 +59,9 @@ response.flushBuffer();
 <%!
 void GetRequestParameters(HttpServletRequest request)
 {
-     locale = GetParameter(request, "LOCALE");
+    locale = ValidateLocaleString(GetParameter(request, "LOCALE"));
     if(IsParameter(request, "MAPFRAME"))
-        mapFrame = GetParameter(request, "MAPFRAME");
+        mapFrame = ValidateFrameName(GetParameter(request, "MAPFRAME"));
     else
         mapFrame = "parent";
 }

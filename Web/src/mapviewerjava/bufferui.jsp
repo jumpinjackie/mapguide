@@ -61,10 +61,10 @@ int us;
 <%!
 void GetRequestParameters(HttpServletRequest request)
 {
-    mapName = GetParameter(request, "MAPNAME");
-    sessionId = GetParameter(request, "SESSION");
+    sessionId = ValidateSessionId(GetParameter(request, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(request, "LOCALE"));
+    mapName = ValidateMapName(GetParameter(request, "MAPNAME"));
     popup = GetIntParameter(request, "POPUP");
     us = GetIntParameter(request, "US");
-    locale = GetParameter(request, "LOCALE");
 }
 %>

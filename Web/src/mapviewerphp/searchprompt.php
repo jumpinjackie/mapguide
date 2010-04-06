@@ -21,15 +21,15 @@
     include 'constants.php';
 
     $locale = "";
-    $cmdIndex = "";
+    $cmdIndex = 0;
     $target = 0;
     $popup = 0;
-    $clientWidth = "";
+    $clientWidth = 0;
     $layerId = "";
     $mapName = "";
     $sessionId = "";
     $filter = "";
-    $matchLimit = "";
+    $matchLimit = 0;
 
     GetRequestParameters();
 
@@ -46,7 +46,7 @@
                   $cmdIndex,
                   $target,
                   $popup,
-                  $layerId,
+                  EscapeForHtml($layerId),
                   $mapName,
                   $sessionId,
                   EscapeForHtml($filter),
@@ -57,17 +57,16 @@ function GetParameters($params)
     global $cmdIndex, $target, $clientWidth, $layerId, $popup, $locale;
     global $mapName, $sessionId, $filter, $matchLimit;
 
-    if(isset($params['LOCALE']))
-        $locale = $params['LOCALE'];
-    $cmdIndex = $params['CMDINDEX'];
-    $target = $params['TGT'];
-    $popup = $params['POPUP'];
-    $clientWidth = $params['WIDTH'];
-    $layerId = $params['LAYER'];
-    $mapName = $params['MAPNAME'];
-    $sessionId = $params['SESSION'];
-    $filter = $params['FILTER'];
-    $matchLimit = $params['MR'];
+    $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
+    $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
+    $mapName = ValidateMapName(GetParameter($params, 'MAPNAME'));
+    $cmdIndex = GetIntParameter($params, 'CMDINDEX');
+    $target = GetIntParameter($params, 'TGT');
+    $popup = GetIntParameter($params, 'POPUP');
+    $clientWidth = GetIntParameter($params, 'WIDTH');
+    $matchLimit = GetIntParameter($params, 'MR');
+    $layerId = GetParameter($params, 'LAYER');
+    $filter = GetParameter($params, 'FILTER');
 }
 
 function GetRequestParameters()

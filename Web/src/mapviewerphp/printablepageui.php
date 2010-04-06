@@ -22,14 +22,14 @@
 
     $locale = "";
     $popup = 0;
-    $clientWidth = "";
+    $clientWidth = 0;
     $layerId = "";
     $mapName = "";
     $sessionId = "";
     $scale = "";
     $centerX = "";
     $centerY = "";
-    $dpi = "";
+    $dpi = 0;
 
     GetRequestParameters();
 
@@ -54,16 +54,15 @@ function GetParameters($params)
     global $mapName, $sessionId;
     global $scale, $centerX, $centerY, $dpi;
 
-    if(isset($params['LOCALE']))
-        $locale = $params['LOCALE'];
-    $popup = $params['POPUP'];
-    $clientWidth = $params['WIDTH'];
-    $mapName = $params['MAPNAME'];
-    $sessionId = $params['SESSION'];
-    $scale = $params['SCALE'];
-    $centerX = $params['CENTERX'];
-    $centerY = $params['CENTERY'];
-    $dpi = $params['DPI'];
+    $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
+    $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
+    $mapName = ValidateMapName(GetParameter($params, 'MAPNAME'));    
+	$popup = GetIntParameter($params, 'POPUP');
+    $clientWidth = GetIntParameter($params, 'WIDTH');
+    $dpi = GetIntParameter($params, 'DPI');
+    $scale = GetDoubleParameter($params, 'SCALE');
+    $centerX = GetDoubleParameter($params, 'CENTERX');
+    $centerY = GetDoubleParameter($params, 'CENTERY');
 }
 
 function GetRequestParameters()

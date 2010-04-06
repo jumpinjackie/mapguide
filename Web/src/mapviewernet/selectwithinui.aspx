@@ -24,9 +24,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <script runat="server">
 int popup = 0;
+int dwf = 0;
 String mapName = "";
 String sessionId = "";
-String dwf = "";
 String locale = "";
 </script>
 
@@ -47,7 +47,7 @@ String locale = "";
                     GetSurroundVirtualPath(Request) + "selectwithin.aspx",
                     mapName,
                     sessionId,
-                    dwf
+                    dwf.ToString(NumberFormatInfo.InvariantInfo)
                     };
     Response.Write(Substitute(templ, vals));
 %>
@@ -64,11 +64,11 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
-    locale =  GetParameter(parameters, "LOCALE");
+    sessionId = ValidateSessionId(GetParameter(parameters, "SESSION"));
+    locale = ValidateLocaleString(GetParameter(parameters, "LOCALE"));
+    dwf = GetIntParameter(parameters, "DWF");
     popup = GetIntParameter(parameters, "POPUP");
-    mapName = GetParameter(parameters, "MAPNAME");
-    sessionId = GetParameter(parameters, "SESSION");
-    dwf = GetParameter(parameters, "DWF");
+    mapName = ValidateMapName(GetParameter(parameters, "MAPNAME"));
 }
 
 </script>
