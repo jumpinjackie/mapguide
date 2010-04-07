@@ -83,7 +83,7 @@ class DrawingServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -110,7 +110,7 @@ class DrawingServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -144,7 +144,7 @@ class DrawingServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
     function GetDrawingLayer($paramSet)
@@ -180,7 +180,7 @@ class DrawingServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -211,7 +211,7 @@ class DrawingServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -238,7 +238,7 @@ class DrawingServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
 
     }
@@ -270,7 +270,7 @@ class DrawingServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -301,7 +301,7 @@ class DrawingServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 

@@ -69,7 +69,7 @@ class ResourceServiceHttpRequests
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -102,7 +102,7 @@ class ResourceServiceHttpRequests
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -120,7 +120,7 @@ class ResourceServiceHttpRequests
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -141,7 +141,7 @@ class ResourceServiceHttpRequests
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -159,7 +159,7 @@ class ResourceServiceHttpRequests
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -177,7 +177,7 @@ class ResourceServiceHttpRequests
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -198,7 +198,7 @@ class ResourceServiceHttpRequests
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -229,7 +229,7 @@ class ResourceServiceHttpRequests
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -253,7 +253,7 @@ class ResourceServiceHttpRequests
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -274,7 +274,7 @@ class ResourceServiceHttpRequests
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -295,7 +295,7 @@ class ResourceServiceHttpRequests
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -318,7 +318,7 @@ class ResourceServiceHttpRequests
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -350,7 +350,7 @@ class ResourceServiceHttpRequests
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -368,7 +368,7 @@ class ResourceServiceHttpRequests
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -386,7 +386,7 @@ class ResourceServiceHttpRequests
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -404,7 +404,7 @@ class ResourceServiceHttpRequests
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -425,7 +425,7 @@ class ResourceServiceHttpRequests
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -446,7 +446,7 @@ class ResourceServiceHttpRequests
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -464,7 +464,7 @@ class ResourceServiceHttpRequests
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 }

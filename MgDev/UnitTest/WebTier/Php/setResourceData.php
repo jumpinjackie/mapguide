@@ -38,13 +38,13 @@ try
 }
 catch (MgException $exc)
 {
-    header("HTTP/1.1 559".$exc->GetMessage());
-    $hdr = "Status: 559 ".$exc->GetMessage();
+    header("HTTP/1.1 559".$exc->GetExceptionMessage());
+    $hdr = "Status: 559 ".$exc->GetExceptionMessage();
     header($hdr);
     echo "<html>\n";
     echo "<body>\n";
     echo $hdr."\n";
-    echo $exc->GetMessage()."\n";
+    echo $exc->GetExceptionMessage()."\n";
     echo $exc->GetDetails()."\n";
     echo "</body>\n";
     echo "</html>\n";

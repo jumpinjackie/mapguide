@@ -34,7 +34,7 @@ try
 }
 catch (MgException $exc)
 {
-    echo $exc->GetMessage()."\n";
+    echo $exc->GetExceptionMessage()."\n";
     echo $exc->GetDetails()."\n";
     return;
 }
@@ -86,7 +86,7 @@ try
 }
 catch (MgException $exc)
 {
-    echo $exc->GetMessage()."\n";
+    echo $exc->GetExceptionMessage()."\n";
     echo $exc->GetDetails()."\n";
     return;
 }
@@ -170,7 +170,7 @@ try
 catch (MgException $exc)
 {
     echo "First failure on insert... caught...\n";
-    echo $exc->GetMessage()."\n";
+    echo $exc->GetExceptionMessage()."\n";
     echo $exc->GetDetails()."\n";
     echo $exc->GetStackTrace()."\n";
 }

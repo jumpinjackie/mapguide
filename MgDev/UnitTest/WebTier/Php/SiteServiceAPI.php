@@ -81,7 +81,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -97,7 +97,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -120,7 +120,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -168,7 +168,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -199,7 +199,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -232,7 +232,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
 
     }
@@ -255,7 +255,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -280,7 +280,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
     function RevokeRoleMembershipsFromUsers($paramSet)
@@ -304,7 +304,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -329,7 +329,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -354,7 +354,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -379,7 +379,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
 
     }
@@ -417,7 +417,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
 
     }
@@ -455,7 +455,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
 
     }
@@ -481,7 +481,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -509,7 +509,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -531,7 +531,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -556,7 +556,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -581,7 +581,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -606,7 +606,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -625,7 +625,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -653,7 +653,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -684,7 +684,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -706,7 +706,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -729,7 +729,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -754,7 +754,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -779,7 +779,7 @@ class SiteServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 }

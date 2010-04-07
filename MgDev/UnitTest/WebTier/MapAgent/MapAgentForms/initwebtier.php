@@ -37,7 +37,7 @@
     }
     catch ( MgException $e )
     {
-        $errorMsg = $e->GetMessage();
+        $errorMsg = $e->GetExceptionMessage();
         echo $errorMsg;
     }
     catch ( Exception $e )

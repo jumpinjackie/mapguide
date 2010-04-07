@@ -119,12 +119,12 @@ class Run
         }
         catch (MgException $e)
         {
-            print $e->GetMessage('en');
+            print $e->GetExceptionMessage('en');
             return false;
         }
         catch (SqliteException $s)
         {
-            print $s->GetMessage();
+            print $s->GetExceptionMessage();
             return false;
         }
     }
@@ -142,11 +142,11 @@ class Run
         }
         catch (MgException $e)
         {
-            print $e->GetMessage('en');
+            print $e->GetExceptionMessage('en');
         }
         catch (SqliteException $s)
         {
-            print $s->GetMessage();
+            print $s->GetExceptionMessage();
         }
     }
 
@@ -225,11 +225,11 @@ class Run
         }
         catch (MgException $e)
         {
-            print $e->GetMessage("en")."\n";
+            print $e->GetExceptionMessage("en")."\n";
         }
         catch (SqliteException $s)
         {
-            print $s->GetMessage()."\n";
+            print $s->GetExceptionMessage()."\n";
         }
     }
 

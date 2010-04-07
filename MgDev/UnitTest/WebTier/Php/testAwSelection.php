@@ -265,7 +265,7 @@ try
 }
 catch (MgException $exc)
 {
-    echo $exc->GetMessage()."\n";
+    echo $exc->GetExceptionMessage()."\n";
     echo $exc->GetDetails()."\n";
 }
 echo "Done.\n";

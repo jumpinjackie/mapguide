@@ -91,7 +91,7 @@ class MappingServiceHttpRequests
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage().$this->unitTestParamVm->GetErrMsg(), "text/plain");
+            return new Result($s->GetExceptionMessage().$this->unitTestParamVm->GetErrMsg(), "text/plain");
         }
     }
 }
