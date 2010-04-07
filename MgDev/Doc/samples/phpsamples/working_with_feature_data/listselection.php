@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
 //  Copyright (C) 2004-2010 by Autodesk, Inc.
 //
@@ -66,7 +66,7 @@
       else
       $layers = 0;
       // ---------------------------------------------------------
-      
+
       // ---------------------------------------------------------
       // Use the following code for AJAX Viewers only.
       // This does not require passing selection data via HTTP POST.
@@ -77,7 +77,7 @@
       // ---------------------------------------------------------
 
       if ($layers)
-      { 
+      {
         $queryOptions = new MgFeatureQueryOptions();
         for ($i = 0; $i < $layers->GetCount(); $i++)
         {
@@ -121,7 +121,7 @@
     }
     catch (MgException $e)
     {
-      echo '<p>' . $e->GetMessage() . '</p>';
+      echo '<p>' . $e->GetExceptionMessage() . '</p>';
       echo '<p>' . $e->GetDetails() . '</p>';
     }
     ?>

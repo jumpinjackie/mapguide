@@ -139,7 +139,7 @@
         }
 
         // Check each layer in the selection.
-        
+
         for ($i = 0; $i < $selectedLayers->GetCount(); $i++)
         {
           // Only check selected features in the Parcels layer.
@@ -150,7 +150,7 @@
           {
 
             echo 'Marking all parcels inside the buffer that are of type "MFG"';
-            
+
             // Create a filter containing the IDs of the selected features on this layer
 
             $layerClassName = $layer->GetFeatureClassName();
@@ -184,7 +184,7 @@
             $mergedGeometries = $geometryFactory->CreateMultiGeometry($inputGeometries);
 
             // Create a buffer from the merged geometries
-            
+
             $bufferDist = $srs->ConvertMetersToCoordinateSystemUnits($bufferRingSize);
             $bufferGeometry = $mergedGeometries->Buffer($bufferDist, $srsMeasure);
 
@@ -209,7 +209,7 @@
             $parcelMarkerCommands = new MgFeatureCommandCollection();
             while ($featureReader->ReadNext())
             {
-              
+
                 $byteReader = $featureReader->GetGeometry('SHPGEOM');
 
                 $geometry = $agfReaderWriter->Read($byteReader);
@@ -218,7 +218,7 @@
                 // Create an insert command for this parcel.
 
                 $properties = new MgPropertyCollection();
-                
+
                 $properties->Add(new MgGeometryProperty('ParcelLocation', $agfReaderWriter->Write($point)));
                 $parcelMarkerCommands->Add(new MgInsertFeatures('ParcelMarkerClass', $properties));
 
@@ -245,7 +245,7 @@
             $featureService->UpdateFeatures($bufferFeatureResId, $commands, false);
 
             // Ensure that the buffer layer is visible and in the legend.
-            
+
             $bufferLayer->SetVisible(true);
             $bufferLayer->ForceRefresh();
             $bufferLayer->SetDisplayInLegend(true);
@@ -264,7 +264,7 @@
     }
     catch (MgException $e)
     {
-      echo '<p>' . $e->GetMessage() . '</p>';
+      echo '<p>' . $e->GetExceptionMessage() . '</p>';
       echo '<p>' . $e->GetDetails() . '</p>';
     }
     ?>

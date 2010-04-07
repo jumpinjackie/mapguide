@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
 //  Copyright (C) 2004-2010 by Autodesk, Inc.
 //
@@ -76,7 +76,7 @@ try
     $xpath = new DOMXPath($domDocument);
     $query = '//AreaRule/Filter';
     // Get a list of all the <AreaRule><Filter> elements in
-    // the XML.   
+    // the XML.
     $nodes = $xpath->query($query);
     // Find the correct node and change it
     foreach ($nodes as $node )
@@ -103,7 +103,7 @@ try
 
     // --------------------------------------------------//
   // ...
-  
+
     // Add the layer to the map
     $layerDefinition = $domDocument->saveXML();
     $newLayer = add_layer_definition_to_map($layerDefinition, "RecentlyBuilt", "Built after 1980", $sessionId, $resourceService, $map);
@@ -130,7 +130,7 @@ try
         $recentlyBuiltLayer = $layerCollection->GetItem("RecentlyBuilt");
         $recentlyBuiltLayer->SetVisible(true);
     }
-    
+
     // --------------------------------------------------//
     //  Save the map back to the session repository
     $sessionIdName = "Session:$sessionId//$mapName.Map";
@@ -145,7 +145,7 @@ try
 catch (MgException $e)
 {
   echo "<script language=\"javascript\" type=\"text/javascript\"> \n";
-  $message = $e->GetMessage();
+  $message = $e->GetExceptionMessage();
   $message = str_replace("\n", " ", $message);
   echo "    alert(\" " . $message . " \"); \n";
   echo "</script> \n";

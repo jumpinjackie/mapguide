@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
 //  Copyright (C) 2004-2010 by Autodesk, Inc.
 //
@@ -34,10 +34,10 @@
 </head>
 
 <body onLoad="OnPageLoad()">
-	
+
 <?php
 require_once('../common/common.php');
-require_once($webExtensionsDirectory . 'www/mapviewerphp/layerdefinitionfactory.php');	
+require_once($webExtensionsDirectory . 'www/mapviewerphp/layerdefinitionfactory.php');
 require_once('layer_functions.php');
 try
 {
@@ -60,26 +60,26 @@ try
 	// ...
     //---------------------------------------------------//
     // Create a new layer
-    
+
 	$factory = new LayerDefinitionFactory();
-	    
+
     // Create a line rule.
     $legendLabel = '';
     $filter = '';
     $color = 'FF0000FF';
 	$lineRule = $factory->CreateLineRule(
 	  $legendLabel, $filter, $color);
-	
+
     // Create a line type style.
     $lineTypeStyle = $factory->
       CreateLineTypeStyle($lineRule);
-      
+
     // Create a scale range.
     $minScale = '0';
     $maxScale = '1000000000000';
     $lineScaleRange = $factory->
-      CreateScaleRange($minScale, $maxScale, 
-      $lineTypeStyle);   
+      CreateScaleRange($minScale, $maxScale,
+      $lineTypeStyle);
 
     // Create the layer definiton.
     $featureClass = 'Library://Samples/Sheboygan/Data/'
@@ -87,16 +87,16 @@ try
     $featureName = 'SHP_Schema:HydrographicLines';
     $geometry = 'SHPGEOM';
 	$layerDefinition = $factory->
-	  CreateLayerDefinition($featureClass, $featureName, 
+	  CreateLayerDefinition($featureClass, $featureName,
 	  $geometry, $lineScaleRange);
-    
-    //---------------------------------------------------//  
-    // ... 
-          
+
+    //---------------------------------------------------//
+    // ...
+
     // Add the layer to the map
     $newLayer = add_layer_definition_to_map($layerDefinition, "Hydro", "Hydro", $sessionId, $resourceService, $map);
     add_layer_to_group($newLayer, "Analysis", "Analysis", $map);
-	
+
     // --------------------------------------------------//
     // Turn on the visibility of this layer.
     // (If the layer does not already exist in the map, it will be visible by default when it is added.
@@ -107,7 +107,7 @@ try
         $squareFootageLayer =$layerCollection->GetItem("Hydro");
         $squareFootageLayer->SetVisible(true);
     }
-    	
+
     //---------------------------------------------------//
     //  Save the map back to the session repository
     $sessionIdName = "Session:$sessionId//$mapName.Map";
@@ -121,7 +121,7 @@ try
 catch (MgException $e)
 {
 	echo "<script language=\"javascript\" type=\"text/javascript\"> \n";
-	echo "    alert(\" " . $e->GetMessage() . " \"); \n";
+	echo "    alert(\" " . $e->GetExceptionMessage() . " \"); \n";
 	echo "</script> \n";
 }
 ?>

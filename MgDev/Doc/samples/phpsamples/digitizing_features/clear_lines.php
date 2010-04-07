@@ -19,11 +19,11 @@
   <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
     <title>Clear Lines</title>
-        
+
     <meta http-equiv="content-style-type" content="text/css">
     <link href="../styles/globalStyles.css" rel="stylesheet"  type="text/css">
     <link href="../styles/otherStyles.css" rel="stylesheet" type="text/css">
-    <meta http-equiv="content-script-type" content="text/javascript"> 
+    <meta http-equiv="content-script-type" content="text/javascript">
     <script language="javascript" type="text/javascript">
       function OnPageLoad()
       {
@@ -33,39 +33,39 @@
   </head>
 
   <body onLoad="OnPageLoad()">
-    <?php 
-      require_once('../common/common.php');  
+    <?php
+      require_once('../common/common.php');
       try
       {
         // --------------------------------------------------//
         // Basic initialization
         MgInitializeWebTier($webconfigFilePath);
-        
+
         // Get the information passed from the viewer
         $sessionId = ($_SERVER['REQUEST_METHOD'] == "POST")?$_POST['SESSION']: $_GET['SESSION'];
         $mapName = ($_SERVER['REQUEST_METHOD'] == "POST")?$_POST['MAPNAME']: $_GET['MAPNAME'];
-           
+
         // Get the user information using the session id
-        // and set up a connection to the site server  
+        // and set up a connection to the site server
         $userInfo = new MgUserInformation($sessionId);
         $siteConnection = new MgSiteConnection();
         $siteConnection->Open($userInfo);
-        
+
         // Get an instance of the required service(s)
-        $resourceService = $siteConnection->CreateService(MgServiceType::ResourceService);    
-      
-        // --------------------------------------------------//   
-        $featureSourceName = "Session:$sessionId//TemporaryLines.FeatureSource"; 
+        $resourceService = $siteConnection->CreateService(MgServiceType::ResourceService);
+
+        // --------------------------------------------------//
+        $featureSourceName = "Session:$sessionId//TemporaryLines.FeatureSource";
         $resourceID = new MgResourceIdentifier($featureSourceName);
-        
+
         $resourceService->DeleteResource($resourceID);
       }
       catch (MgException $e)
       {
         echo "<script language=\"javascript\" type=\"text/javascript\"> \n";
-        echo "    alert(\" " . $e->GetMessage() . " \"); \n";
+        echo "    alert(\" " . $e->GetExceptionMessage() . " \"); \n";
         echo "</script> \n";
-      }   
+      }
     ?>
   </body>
 </html>

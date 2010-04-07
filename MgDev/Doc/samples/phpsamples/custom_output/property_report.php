@@ -81,7 +81,7 @@ try
           $queryOptions->SetFilter($selectionString);
           $featureReader = $featureService->SelectFeatures($layerFeatureResource, $layerClassName, $queryOptions);
 
-          // Create the report details using the first selected parcel. Position the image so the 
+          // Create the report details using the first selected parcel. Position the image so the
           // centroid of the selected parcel is in the center of the map.
 
           $featureReader->ReadNext();
@@ -91,7 +91,7 @@ try
           $centroid = $featureGeometry->GetCentroid();
           $mapCenterX = $centroid->GetCoordinate()->GetX();
           $mapCenterY = $centroid->GetCoordinate()->GetY();
-          
+
           $owner = $featureReader->GetString('RNAME');
           $address = $featureReader->GetString('RPROPAD');
           $billingAddress = $featureReader->GetString('RBILAD');
@@ -105,7 +105,7 @@ try
 }
 catch (MgException $e)
 {
-  echo '<p>' . $e->GetMessage() . '</p>';
+  echo '<p>' . $e->GetExceptionMessage() . '</p>';
   echo '<p>' . $e->GetDetails() . '</p>';
 }
 $selectionEncoded = urlencode($xmlSelection);
