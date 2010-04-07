@@ -247,7 +247,7 @@ String searchError;
                 // Close the feature reader
                 features.Close();
             }
-            OnError(searchError, ae.GetMessage() + "<br>" + ae.GetStackTrace());
+            OnError(searchError, ae.GetExceptionMessage() + "<br>" + ae.GetStackTrace());
         }
         catch (SearchError exc)
         {

@@ -357,7 +357,7 @@ NameValueCollection cmds = null;
                     StrEscape(invokeScriptCmd.GetDescription(), false),
                     scriptCmdIndex);
 
-                userCode = userCode + "\nfunction UserFunc" + scriptCmdIndex + "()\n{\n" + invokeScriptCmd.GetCode() + "\n}\n";
+                userCode = userCode + "\nfunction UserFunc" + scriptCmdIndex + "()\n{\n" + invokeScriptCmd.GetScriptCode() + "\n}\n";
                 userCodeCalls = userCodeCalls + String.Format("case {0}: UserFunc{1}(); break;\n", scriptCmdIndex, scriptCmdIndex);
 
                 scriptCmdIndex++;

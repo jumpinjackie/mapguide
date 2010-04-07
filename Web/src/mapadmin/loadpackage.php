@@ -62,7 +62,7 @@ try
 catch ( MgException $e )
 {
     CheckForFatalMgException( $e );
-    $packageLoadErrorMsg = $e->GetMessage();
+    $packageLoadErrorMsg = $e->GetExceptionMessage();
 }
 catch ( Exception $e )
 {

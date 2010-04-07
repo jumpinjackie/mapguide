@@ -89,7 +89,7 @@ String locale = "";
     }
     catch (MgException exc)
     {
-        OnError(MgLocalizer.GetString("TASKS", locale), exc.GetMessage());
+        OnError(MgLocalizer.GetString("TASKS", locale), exc.GetExceptionMessage());
         return;
     }
     catch (Exception ne)

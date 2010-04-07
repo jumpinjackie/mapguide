@@ -123,7 +123,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     }
     catch (MgException $e)
     {
-         print $e->GetMessage('eng');
+         print $e->GetExceptionMessage('eng');
          print $e->GetDetails('eng');
     }
 ?>

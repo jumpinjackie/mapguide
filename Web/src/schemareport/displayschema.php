@@ -123,7 +123,7 @@
             }
             catch (MgException $e)
             {
-                $errorMsg = $e->GetMessage();
+                $errorMsg = $e->GetExceptionMessage();
                 $errorMsg = str_replace('\n', '<br>', $errorMsg);
                 echo $errorMsg;
             }

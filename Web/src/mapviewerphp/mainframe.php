@@ -99,7 +99,7 @@ function BuildViewer($forDwf = true)
         }
         catch(MgException $e)
         {
-            $shortError = $e->GetMessage();
+            $shortError = $e->GetExceptionMessage();
             $longErrorMsg = EscapeForHtml($e->GetDetails());
             header("HTTP/1.1 559 ");
             header('Content-Type: text/html; charset=utf-8');
@@ -362,7 +362,7 @@ function BuildViewer($forDwf = true)
                                         StrEscape($cmd->GetDescription()),
                 $scriptCmdIndex);
 
-                $userCode = $userCode . "\nfunction UserFunc" . $scriptCmdIndex . "()\n{\n". $cmd->GetCode() . "\n}\n";
+                $userCode = $userCode . "\nfunction UserFunc" . $scriptCmdIndex . "()\n{\n". $cmd->GetScriptCode() . "\n}\n";
                 $userCodeCalls = $userCodeCalls . sprintf("case %d: UserFunc%d(); break;\n", $scriptCmdIndex, $scriptCmdIndex);
 
                 $scriptCmdIndex++;
@@ -525,7 +525,7 @@ function BuildViewer($forDwf = true)
         // This should be a 500 error of some sort, but
         // in order to give a nice custom error message, it looks as
         // if we shortcut things by using a 200 status.
-        $shortError = $e->GetMessage();
+        $shortError = $e->GetExceptionMessage();
         $longErrorMsg = EscapeForHtml($e->GetDetails());
         header("HTTP/1.1 200 ");
         header('Content-Type: text/html; charset=utf-8');

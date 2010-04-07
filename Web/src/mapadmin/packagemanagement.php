@@ -160,7 +160,7 @@ try
         {
             CheckForFatalMgException( $e );
             if ( empty( $packageLoadErrorMsg ) )
-                $packageLoadErrorMsg = $e->GetMessage();
+                $packageLoadErrorMsg = $e->GetExceptionMessage();
         }
         catch ( Exception $e )
         {
@@ -182,7 +182,7 @@ catch ( MgException $e )
 {
     CheckForFatalMgException( $e );
     if ( empty( $packageLoadErrorMsg ) )
-        $packageLoadErrorMsg = $e->GetMessage();
+        $packageLoadErrorMsg = $e->GetExceptionMessage();
 }
 catch ( Exception $e )
 {

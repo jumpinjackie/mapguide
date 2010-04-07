@@ -130,7 +130,7 @@ private void Page_Load(object sender, System.EventArgs e)
     }
     catch (MgException mge)
     {
-        Response.Write(mge.GetMessage());
+        Response.Write(mge.GetExceptionMessage());
         Response.Write(mge.GetDetails());
     }
 }
