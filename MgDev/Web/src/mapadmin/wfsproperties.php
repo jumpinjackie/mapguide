@@ -58,7 +58,7 @@ try
 catch ( MgException $e )
 {
     CheckForFatalMgException( $e );
-    $errorMsg = $e->GetMessage();
+    $errorMsg = $e->GetExceptionMessage();
 }
 catch ( Exception $e )
 {

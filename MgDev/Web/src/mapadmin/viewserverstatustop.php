@@ -63,7 +63,7 @@
     {
         CheckForFatalMgException( $e );
         if ( empty( $errorMsg ) )
-            $errorMsg = $e->GetMessage();
+            $errorMsg = $e->GetExceptionMessage();
     }
     catch ( Exception $e )
     {

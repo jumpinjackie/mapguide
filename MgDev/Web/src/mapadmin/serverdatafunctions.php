@@ -1874,7 +1874,7 @@
             }
             catch ( MgException $e )
             {
-                $this->status = sprintf( $errCannotGetPackageStatus, $e->GetMessage() );
+                $this->status = sprintf( $errCannotGetPackageStatus, $e->GetExceptionMessage() );
             }
         }
     }

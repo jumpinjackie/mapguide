@@ -98,7 +98,7 @@ try
 catch ( MgException $e )
 {
     CheckForFatalMgException( $e );
-    $packageMakeErrorMsg = sprintf( $errCannotCreatePackage, $packageName, $folderName ).$e->GetMessage();
+    $packageMakeErrorMsg = sprintf( $errCannotCreatePackage, $packageName, $folderName ).$e->GetExceptionMessage();
 }
 catch ( Exception $e )
 {

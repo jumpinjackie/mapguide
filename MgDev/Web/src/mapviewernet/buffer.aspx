@@ -358,7 +358,7 @@ String dataSource = "";
     }
     catch (MgException exc)
     {
-        OnError(MgLocalizer.GetString("BUFFERERROR", locale), exc.GetMessage());
+        OnError(MgLocalizer.GetString("BUFFERERROR", locale), exc.GetExceptionMessage());
         return;
     }
     catch (Exception ne)

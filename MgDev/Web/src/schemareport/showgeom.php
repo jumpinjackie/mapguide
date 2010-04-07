@@ -198,7 +198,7 @@
             catch (MgException $mge)
             {
                 $validSession = 0;
-                echo $mge->GetMessage();
+                echo $mge->GetExceptionMessage();
             }
             catch (Exception $e)
             {

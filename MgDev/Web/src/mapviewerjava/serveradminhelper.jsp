@@ -142,7 +142,7 @@
     }
     catch (MgException mge)
     {
-        outStream.write(mge.GetMessage());
+        outStream.write(mge.GetExceptionMessage());
         outStream.write(mge.GetDetails());
     }
 

@@ -114,7 +114,7 @@ class CaptureRequest
         }
         catch (SqliteException $s)
         {
-            print $s->GetMessage('eng');
+            print $s->GetExceptionMessage('eng');
         }
     }
 

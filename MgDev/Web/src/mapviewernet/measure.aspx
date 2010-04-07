@@ -218,7 +218,7 @@ String dataSource = "";
         }
         catch (MgException exc)
         {
-            OnError(MgLocalizer.GetString("MEASUREERROR", locale), exc.GetMessage());
+            OnError(MgLocalizer.GetString("MEASUREERROR", locale), exc.GetExceptionMessage());
             return;
         }
         catch (Exception ne)

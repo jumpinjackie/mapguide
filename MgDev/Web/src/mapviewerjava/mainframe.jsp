@@ -354,7 +354,7 @@ try
                                     new Integer( scriptCmdIndex ) };
             cmdObject = MessageFormat.format("commands[{0,number,integer}] = new InvokeScriptCommand(\"{1}\", {2,number,integer}, \"{3}\", \"{4}\", \"{5}\", \"{6}\", {7,number,integer});\n", formatArgs);
 
-            userCode = userCode + "\nfunction UserFunc" + scriptCmdIndex + "()\n{\n" + invokeScriptCmd.GetCode() + "\n}\n";
+            userCode = userCode + "\nfunction UserFunc" + scriptCmdIndex + "()\n{\n" + invokeScriptCmd.GetScriptCode() + "\n}\n";
             Object[] formatArgs2 = { new Integer(scriptCmdIndex), new Integer(scriptCmdIndex) };
             userCodeCalls = userCodeCalls + MessageFormat.format("case {0,number,integer}: UserFunc{0,number,integer}(); break;\n", formatArgs2);
 
@@ -539,7 +539,7 @@ catch(MgAuthenticationFailedException e)
 }
 catch(MgException e)
 {
-    String msg = EscapeForHtml(e.GetMessage());
+    String msg = EscapeForHtml(e.GetExceptionMessage());
     response.getWriter().write(msg);
     response.setContentLength(msg.length());
 }
