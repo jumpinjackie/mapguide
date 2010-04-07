@@ -42,7 +42,7 @@ ExecuteErrorException::~ExecuteErrorException() throw()
 /// <param name="nLocale">The locale identifier to format the message text.</param>
 /// </summary>
 ///
-STRING ExecuteErrorException::GetMessage() throw()
+STRING ExecuteErrorException::GetExceptionMessage() throw()
 {
     STRING wsMessage = L"Error executing a query.\n";
     return wsMessage;

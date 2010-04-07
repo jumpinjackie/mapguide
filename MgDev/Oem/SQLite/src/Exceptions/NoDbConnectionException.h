@@ -45,7 +45,7 @@ EXTERNAL_API:
     /// <param name="nLocale">The locale identifier to format the message text.</param>
     /// </summary>
     ///
-    STRING GetMessage() throw();
+    STRING GetExceptionMessage() throw();
 
 INTERNAL_API:
     DECLARE_EXCEPTION_DEFAULTS(NoDbConnectionException)

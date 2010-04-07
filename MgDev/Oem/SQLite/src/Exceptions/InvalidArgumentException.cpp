@@ -42,7 +42,7 @@ InvalidArgumentException::~InvalidArgumentException() throw()
 /// <param name="nLocale">The locale identifier to format the message text.</param>
 /// </summary>
 ///
-STRING InvalidArgumentException::GetMessage() throw()
+STRING InvalidArgumentException::GetExceptionMessage() throw()
 {
     STRING wsMessage = L"The argument supplied is invalid.\n";
     return wsMessage;

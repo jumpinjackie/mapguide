@@ -42,7 +42,7 @@ OutOfMemoryException::~OutOfMemoryException() throw()
 /// <param name="nLocale">The locale identifier to format the message text.</param>
 /// </summary>
 ///
-STRING OutOfMemoryException::GetMessage() throw()
+STRING OutOfMemoryException::GetExceptionMessage() throw()
 {
     STRING wsMessage = L"Out of memory.\n";
     return wsMessage;

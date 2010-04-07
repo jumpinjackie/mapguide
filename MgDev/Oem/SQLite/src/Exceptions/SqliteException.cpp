@@ -34,7 +34,7 @@ SqliteException::SqliteException(CREFSTRING methodName, UINT32 lineNumber, CREFS
 }
 
 
-STRING SqliteException::GetMessage() throw()
+STRING SqliteException::GetExceptionMessage() throw()
 {
     return m_message;
 }

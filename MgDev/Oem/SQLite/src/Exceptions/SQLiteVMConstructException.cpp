@@ -42,7 +42,7 @@ SQLiteVMConstructException::~SQLiteVMConstructException() throw()
 /// <param name="nLocale">The locale identifier to format the message text.</param>
 /// </summary>
 ///
-STRING SQLiteVMConstructException::GetMessage() throw()
+STRING SQLiteVMConstructException::GetExceptionMessage() throw()
 {
     STRING wsMessage = L"Error constructing virtual machine.\n";
     return wsMessage;

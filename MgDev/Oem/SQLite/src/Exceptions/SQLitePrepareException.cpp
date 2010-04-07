@@ -42,7 +42,7 @@ SQLitePrepareException::~SQLitePrepareException() throw()
 /// <param name="nLocale">The locale identifier to format the message text.</param>
 /// </summary>
 ///
-STRING SQLitePrepareException::GetMessage() throw()
+STRING SQLitePrepareException::GetExceptionMessage() throw()
 {
     STRING wsMessage = L"Error while creating virtual machine.\n";
     return wsMessage;
