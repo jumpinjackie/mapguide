@@ -161,7 +161,7 @@ INTERNAL_API:
     /// \return
     /// The formatted message string.
     ///
-    STRING GetMessage(CREFSTRING section, CREFSTRING resourceId,
+    STRING GetResourceMessage(CREFSTRING section, CREFSTRING resourceId,
         MgStringCollection* arguments);
 
     /// Resource Components

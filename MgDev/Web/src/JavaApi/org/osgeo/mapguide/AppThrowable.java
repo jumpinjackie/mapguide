@@ -31,7 +31,7 @@ class AppThrowable extends Exception
     {
         try
         {
-            return ((MgException)this).GetMessage();
+            return ((MgException)this).GetExceptionMessage();
         }
         catch (MgException e)
         {

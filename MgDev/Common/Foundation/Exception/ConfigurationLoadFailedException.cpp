@@ -43,7 +43,7 @@ MgConfigurationLoadFailedException::~MgConfigurationLoadFailedException() throw(
 /// \brief
 /// Retrieve the formatted exception message for the specified locale.
 ///
-STRING MgConfigurationLoadFailedException::GetMessage(CREFSTRING locale) throw()
+STRING MgConfigurationLoadFailedException::GetExceptionMessage(CREFSTRING locale) throw()
 {
-    return MgException::GetMessage(locale, MgResources::FailedToLoadConfigurationFile);
+    return MgException::GetExceptionMessage(locale, MgResources::FailedToLoadConfigurationFile);
 }

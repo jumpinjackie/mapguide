@@ -151,7 +151,7 @@ int MgOperationThread::svc()
         MgServerManager* serverManager = MgServerManager::GetInstance();
         STRING locale = (NULL == serverManager) ?
             MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
-        STRING message = mgException->GetMessage(locale);
+        STRING message = mgException->GetExceptionMessage(locale);
         STRING details = mgException->GetDetails(locale);
         STRING stackTrace = mgException->GetStackTrace(locale);
 
@@ -281,7 +281,7 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessMessage( ACE_Messag
             MgServerManager* serverManager = MgServerManager::GetInstance();
             STRING locale = (NULL == serverManager) ?
                 MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
-            STRING message = mgException->GetMessage(locale);
+            STRING message = mgException->GetExceptionMessage(locale);
             STRING details = mgException->GetDetails(locale);
             STRING stackTrace = mgException->GetStackTrace(locale);
 
@@ -435,7 +435,7 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessOperation( MgServer
         MgServerManager* serverManager = MgServerManager::GetInstance();
         STRING locale = (NULL == serverManager) ?
             MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
-        STRING message = mgException->GetMessage(locale);
+        STRING message = mgException->GetExceptionMessage(locale);
         STRING details = mgException->GetDetails(locale);
         STRING stackTrace = mgException->GetStackTrace(locale);
 

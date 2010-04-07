@@ -153,7 +153,7 @@ void MgTimedEventHandler::LogException(MgException& e)
         CREFSTRING locale = serverManager->GetDefaultMessageLocale();
 
         ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), e.GetDetails(locale).c_str()));
-        MG_LOG_EXCEPTION_ENTRY(e.GetMessage(locale).c_str(), e.GetStackTrace(locale).c_str());
+        MG_LOG_EXCEPTION_ENTRY(e.GetExceptionMessage(locale).c_str(), e.GetStackTrace(locale).c_str());
     }
 
     MG_CATCH_AND_RELEASE()

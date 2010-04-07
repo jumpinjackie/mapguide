@@ -59,26 +59,26 @@ void CCoordinateSystemEllipsoid::SetString(CREFSTRING sSrc, char* pDest, int nMa
 
     if (NULL==pDest)
     {
-        throw new MgNullArgumentException(L"MgCoordinateSystemEllipsoidEllipsoid.SetString", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgCoordinateSystemEllipsoid.SetString", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     if (Protected())
     {
         //Can't modify a read-only object.
-        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemEllipsoidEllipsoid.SetString", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemEllipsoidProtectedException", NULL);
+        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemEllipsoid.SetString", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemEllipsoidProtectedException", NULL);
     }
 
     if (!IsLegalString(sSrc.c_str(), nMaxSize))
     {
         //Can't set string, caller gave us an illegal value
-        throw new MgInvalidArgumentException(L"MgCoordinateSystemEllipsoidEllipsoid.SetString", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgInvalidArgumentException(L"MgCoordinateSystemEllipsoid.SetString", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     //Convert to a C++ string, for Mentor's sake
     char *pStr = Convert_Wide_To_Ascii(sSrc.c_str()); //need to delete[] pStr
     if (NULL == pStr)
     {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemEllipsoidEllipsoid.SetString", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemEllipsoid.SetString", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     //Copy it in
@@ -87,7 +87,7 @@ void CCoordinateSystemEllipsoid::SetString(CREFSTRING sSrc, char* pDest, int nMa
 
     //Clean up and return success.
     delete [] pStr;
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemEllipsoidEllipsoid.SetString")
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemEllipsoid.SetString")
 }
 
 //Private function that evaluates the protect data member of m_def
@@ -111,7 +111,7 @@ void CCoordinateSystemEllipsoid::Dispose()
 //
 //Corresponds to cs_Eldef_::key_nm.
 //
-STRING CCoordinateSystemEllipsoid::GetCode()
+STRING CCoordinateSystemEllipsoid::GetElCode()
 {
     STRING sName;
 
@@ -120,11 +120,11 @@ STRING CCoordinateSystemEllipsoid::GetCode()
     wchar_t *pName = Convert_Ascii_To_Wide(m_def.key_nm);
     if (NULL == pName)
     {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemEllipsoidEllipsoid.GetCode", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemEllipsoid.GetElCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     sName=pName;
     delete[] pName;
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemEllipsoidEllipsoid.SetProjectionCode")
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemEllipsoid.GetElCode")
 
     return sName;
 }
@@ -132,26 +132,26 @@ STRING CCoordinateSystemEllipsoid::GetCode()
 //Sets the key name of the ellipsoid.
 //Throws an exception if the provided string is not
 //a legal ellipsoid name.
-void CCoordinateSystemEllipsoid::SetCode(CREFSTRING sCode)
+void CCoordinateSystemEllipsoid::SetElCode(CREFSTRING sCode)
 {
     MG_TRY()
 
     if (Protected())
     {
         //Can't modify a read-only object.
-        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemEllipsoid.SetCode", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemEllipsoidProtectedException", NULL);
+        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemEllipsoid.SetElCode", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemEllipsoidProtectedException", NULL);
     }
 
     if (sCode.empty())
     {
-        throw new MgInvalidArgumentException(L"MgCoordinateSystemEllipsoid.SetCode", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgInvalidArgumentException(L"MgCoordinateSystemEllipsoid.SetElCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     //Convert to a C++ string, for Mentor's sake
     char *pStr = Convert_Wide_To_Ascii(sCode.c_str()); //need to delete[] pStr
     if (NULL == pStr)
     {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemEllipsoid.SetCode", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemEllipsoid.SetElCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     //Try to make a legal name.  CS_nampp() legalizes the
@@ -163,7 +163,7 @@ void CCoordinateSystemEllipsoid::SetCode(CREFSTRING sCode)
     {
         //illegal string
         delete [] pStr;
-        throw new MgInvalidArgumentException(L"MgCoordinateSystemEllipsoid.SetCode", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgInvalidArgumentException(L"MgCoordinateSystemEllipsoid.SetElCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     //Copy into the definition
@@ -174,11 +174,11 @@ void CCoordinateSystemEllipsoid::SetCode(CREFSTRING sCode)
     delete [] pStr;
 
     //And we're done!
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemEllipsoid.SetCode")
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemEllipsoid.SetElCode")
 }
 
 //Checks whether the specified string is a legal ellipsoid key name.
-bool CCoordinateSystemEllipsoid::IsLegalCode(CREFSTRING sCode)
+bool CCoordinateSystemEllipsoid::IsLegalElCode(CREFSTRING sCode)
 {
     return IsLegalMentorName(sCode.c_str());
 }
@@ -599,13 +599,13 @@ double CCoordinateSystemEllipsoid::EquatorialRadiusFromPolarRadiusFlatteningRati
     assert(dFlatteningRatio < 1.0);
     if ((dFlatteningRatio < 0.0) || (dFlatteningRatio >= 1.0))
     {
-        throw new MgInvalidArgumentException(L"MgCoordinateSystemEllipsoid.EquatorialFromPolarFlat", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgInvalidArgumentException(L"MgCoordinateSystemEllipsoid.EquatorialRadiusFromPolarRadiusFlatteningRatio", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     dEquatorialRadius = dPolarRadius / (1.0 - dFlatteningRatio);
     assert(FloatEqual(dFlatteningRatio, FlatteningRatio(dEquatorialRadius, dPolarRadius)));
 
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemEllipsoid.EquatorialFromPolarFlat")
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemEllipsoid.EquatorialRadiusFromPolarRadiusFlatteningRatio")
 
     return dEquatorialRadius;
 }
@@ -624,13 +624,13 @@ double CCoordinateSystemEllipsoid::PolarRadiusFromEquatorialRadiusFlatteningRati
     assert(dFlatteningRatio < 1.0);
     if ((dFlatteningRatio < 0.0) || (dFlatteningRatio >= 1.0))
     {
-        throw new MgInvalidArgumentException(L"MgCoordinateSystemEllipsoid.PolarFromEquatorialFlat", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgInvalidArgumentException(L"MgCoordinateSystemEllipsoid.PolarRadiusFromEquatorialRadiusFlatteningRatio", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     dPolarRadius = dEquatorialRadius * (1.0 - dFlatteningRatio);
     assert(FloatEqual(dFlatteningRatio, FlatteningRatio(dEquatorialRadius, dPolarRadius)));
 
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemEllipsoid.PolarFromEquatorialFlat")
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemEllipsoid.PolarRadiusFromEquatorialRadiusFlatteningRatio")
 
     return dPolarRadius;
 }

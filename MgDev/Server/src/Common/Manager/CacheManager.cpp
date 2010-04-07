@@ -234,7 +234,7 @@ MgFeatureSourceCacheItem* MgCacheManager::GetFeatureSourceCacheItem(MgResourceId
         {
             MgResources* resources = MgResources::GetInstance();
             ACE_ASSERT(NULL != resources);
-            STRING message = resources->GetMessage(MgResources::FeatureService,
+            STRING message = resources->GetResourceMessage(MgResources::FeatureService,
                 L"MgInvalidFdoProvider", NULL);
             MgStringCollection arguments;
             arguments.Add(message);

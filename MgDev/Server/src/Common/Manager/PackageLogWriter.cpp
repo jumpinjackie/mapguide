@@ -53,7 +53,7 @@ void MgPackageLogWriter::SetError(MgException* except)
     else
     {
         m_statusInfo.SetStatusCode(MgPackageStatusCode::Failed);
-        m_statusInfo.SetErrorMessage(except->GetMessage());
+        m_statusInfo.SetErrorMessage(except->GetExceptionMessage());
         m_statusInfo.SetStackTrace(except->GetStackTrace());
     }
 }

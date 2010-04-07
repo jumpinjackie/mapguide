@@ -39,7 +39,7 @@ namespace OSGeo.MapGuide
         {
             get
             {
-                return ((MgException)this).GetMessage();
+                return ((MgException)this).GetExceptionMessage();
             }
         }
 

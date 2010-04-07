@@ -178,7 +178,7 @@ int MgClientHandler::handle_input(ACE_HANDLE handle)
         stream = new MgMapGuideStream( m_pStreamHelper );
 
         // TODO: use locale from client connection
-        mgException->GetMessage(MgResources::DefaultMessageLocale);
+        mgException->GetExceptionMessage(MgResources::DefaultMessageLocale);
         mgException->GetDetails(MgResources::DefaultMessageLocale);
         mgException->GetStackTrace(MgResources::DefaultMessageLocale);
 

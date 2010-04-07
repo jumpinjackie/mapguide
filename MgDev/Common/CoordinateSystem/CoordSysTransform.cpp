@@ -455,7 +455,7 @@ MgEnvelope* CCoordinateSystemTransform::Transform(MgEnvelope* envelope)
 
     // Leave commented except for temporary debugging.  The printf output gets
     // sent to stdout and ends up being included in the web-tier HTTP response.
-    // printf("\nTransform(envelope) -- Source: %S  Dest: %S\n", m_pCsSource->GetCode().c_str(), m_pCsTarget->GetCode().c_str());
+    // printf("\nTransform(envelope) -- Source: %S  Dest: %S\n", m_pCsSource->GetCsCode().c_str(), m_pCsTarget->GetCsCode().c_str());
 
     MG_TRY()
 

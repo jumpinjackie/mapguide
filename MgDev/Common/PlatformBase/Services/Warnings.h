@@ -22,11 +22,6 @@
 /// \ingroup Common_Module
 /// \{
 
-// To undefine GetMessage macro defined in windows
-#ifdef _WIN32
-    #undef GetMessage
-#endif
-
 class MgWarnings;
 template class MG_PLATFORMBASE_API Ptr<MgWarnings>;
 

@@ -45,7 +45,7 @@ MgInvalidArgumentException::~MgInvalidArgumentException() throw()
 /// <param name="nLocale">The locale identifier to format the message text.</param>
 ///
 ///
-STRING MgInvalidArgumentException::GetMessage(CREFSTRING locale) throw()
+STRING MgInvalidArgumentException::GetExceptionMessage(CREFSTRING locale) throw()
 {
     //
     // Format:

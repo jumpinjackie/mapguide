@@ -18,10 +18,6 @@
 #include "PlatformBase.h"
 #include <assert.h>
 
-// To undefine GetMessage macro defined in windows
-#ifdef _WIN32
-    #undef GetMessage
-#endif
 
 MG_IMPL_DYNCREATE(MgWarnings);
 

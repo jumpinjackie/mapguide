@@ -30,9 +30,9 @@ public:
     void GetMentorDef(cs_Eldef_& def){def=m_def;};
 
     //MgCoordinateSystemEllipsoid
-    virtual STRING GetCode();  /// __get
-    virtual void SetCode(CREFSTRING sCode);
-    virtual bool IsLegalCode(CREFSTRING sCode);
+    virtual STRING GetElCode();  /// __get
+    virtual void SetElCode(CREFSTRING sCode);
+    virtual bool IsLegalElCode(CREFSTRING sCode);
     virtual bool IsValid();
     virtual bool IsUsable();
     virtual bool IsSameAs(MgGuardDisposable *pDef);

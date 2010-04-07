@@ -620,7 +620,7 @@ void MgServerTileService::ClearMapCache(CREFSTRING mapDefinition)
         resources = MgResources::GetInstance();
         if (NULL != resources)
         {
-            message = resources->GetMessage(MgResources::ErrorDescription, L"MgMapCacheCleared", NULL);
+            message = resources->GetResourceMessage(MgResources::ErrorDescription, L"MgMapCacheCleared", NULL);
             MG_LOG_ERROR_ENTRY(message.c_str());
         }
         MG_CATCH_AND_RELEASE()

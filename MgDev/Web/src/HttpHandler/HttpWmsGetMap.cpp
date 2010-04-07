@@ -33,7 +33,7 @@ extern CPSZ kpszDefineSupportedFormats; // borrowed. TODO: publish as member var
 //                                      |                 |                  |           //
 #define CATCH_MGEXCEPTION_HANDLE_AS_OGC(mg_exception_type,ogc_exception_code,ogc_server)  \
         catch (mg_exception_type* e) {                                                    \
-            STRING sReport = e->GetMessage();                                             \
+            STRING sReport = e->GetExceptionMessage();                                    \
             sReport += _("<details>");                                                    \
             sReport += e->GetDetails();                                                   \
             sReport += _("</details>");                                                   \

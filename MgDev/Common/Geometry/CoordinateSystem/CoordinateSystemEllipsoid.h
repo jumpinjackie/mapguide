@@ -23,9 +23,9 @@ class MgCoordinateSystemEllipsoid : public MgGuardDisposable
     DECLARE_CLASSNAME(MgCoordinateSystemEllipsoid)
 
 PUBLISHED_API:
-    virtual STRING GetCode()=0;  /// __get
-    virtual void SetCode(CREFSTRING sCode)=0;
-    virtual bool IsLegalCode(CREFSTRING sCode)=0;
+    virtual STRING GetElCode()=0;  /// __get
+    virtual void SetElCode(CREFSTRING sCode)=0;
+    virtual bool IsLegalElCode(CREFSTRING sCode)=0;
     virtual bool IsValid()=0;
     virtual bool IsUsable()=0;
     virtual bool IsSameAs(MgGuardDisposable *pDef)=0;

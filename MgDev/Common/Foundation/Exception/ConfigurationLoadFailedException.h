@@ -68,7 +68,7 @@ EXTERNAL_API:
     /// \return
     /// Formatted exception message
     ///
-    virtual STRING GetMessage(CREFSTRING locale) throw();
+    virtual STRING GetExceptionMessage(CREFSTRING locale) throw();
 
 INTERNAL_API:
 

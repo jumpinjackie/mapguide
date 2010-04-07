@@ -246,7 +246,7 @@ STRING MgPackageStatusInformation::GetStatusMessage()
     }
     else
     {
-        statusMessage = resources->GetMessage(MgResources::ResourceService,
+        statusMessage = resources->GetResourceMessage(MgResources::ResourceService,
             resourceId, &arguments);
     }
 

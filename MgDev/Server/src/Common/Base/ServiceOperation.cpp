@@ -233,7 +233,7 @@ bool MgServiceOperation::HandleException(MgException* except)
             }
         }
 
-        STRING message = except->GetMessage(locale);
+        STRING message = except->GetExceptionMessage(locale);
         STRING details = except->GetDetails(locale);
         STRING stackTrace = except->GetStackTrace(locale);
 
@@ -609,7 +609,7 @@ void MgServiceOperation::EndExecution(MgException* except)
         m_currConnection->SetCurrentOperationStatus(MgConnection::OpFailed);
     }
 
-    except->GetMessage();
+    except->GetExceptionMessage();
     except->GetDetails();
     except->GetStackTrace();
 

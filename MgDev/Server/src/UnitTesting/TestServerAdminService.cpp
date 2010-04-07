@@ -578,7 +578,7 @@ void TestServerAdminService::TestCase_EnumeratePackages()
     }
     catch(MgException* e)
     {
-        STRING message = e->GetMessage(TEST_LOCALE);
+        STRING message = e->GetExceptionMessage(TEST_LOCALE);
         message += e->GetStackTrace(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
@@ -640,7 +640,7 @@ void TestServerAdminService::TestCase_LoadPackage()
     }
     catch(MgException* e)
     {
-        STRING message = e->GetMessage(TEST_LOCALE);
+        STRING message = e->GetExceptionMessage(TEST_LOCALE);
         message += e->GetStackTrace(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
@@ -715,7 +715,7 @@ void TestServerAdminService::TestCase_MakePackage()
     }
     catch(MgException* e)
     {
-        STRING message = e->GetMessage(TEST_LOCALE);
+        STRING message = e->GetExceptionMessage(TEST_LOCALE);
         message += e->GetStackTrace(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
@@ -768,7 +768,7 @@ void TestServerAdminService::TestCase_GetPackageLog()
     }
     catch(MgException* e)
     {
-        STRING message = e->GetMessage(TEST_LOCALE);
+        STRING message = e->GetExceptionMessage(TEST_LOCALE);
         message += e->GetStackTrace(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
@@ -822,7 +822,7 @@ void TestServerAdminService::TestCase_GetPackageStatus()
     }
     catch(MgException* e)
     {
-        STRING message = e->GetMessage(TEST_LOCALE);
+        STRING message = e->GetExceptionMessage(TEST_LOCALE);
         message += e->GetStackTrace(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
@@ -877,7 +877,7 @@ void TestServerAdminService::TestCase_DeletePackage()
     }
     catch(MgException* e)
     {
-        STRING message = e->GetMessage(TEST_LOCALE);
+        STRING message = e->GetExceptionMessage(TEST_LOCALE);
         message += e->GetStackTrace(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));

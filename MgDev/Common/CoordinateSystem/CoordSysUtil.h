@@ -30,8 +30,6 @@
 
 #ifdef _WIN32
 #include "windows.h"
-// To undefine GetMessage macro defined in windows
-#undef GetMessage
 #endif
 
 // Mentor specific information

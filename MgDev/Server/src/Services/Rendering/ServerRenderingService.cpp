@@ -1436,7 +1436,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                 //is to select all features which appear on the screen and then
                 //do our own geometry math.
                 #ifdef _DEBUG
-                STRING error = e->GetMessage();
+                STRING error = e->GetExceptionMessage();
                 ACE_DEBUG((LM_ERROR, ACE_TEXT("RenderForSelection() - Error: %S\n"), error.c_str()));
                 #endif
 

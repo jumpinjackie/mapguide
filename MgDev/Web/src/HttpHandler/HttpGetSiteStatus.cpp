@@ -82,7 +82,7 @@ void MgHttpGetSiteStatus::Execute(MgHttpResponse& hResponse)
                     MG_HTTP_HANDLER_CATCH(L"MgHttpGetSiteStatus.Execute")
                     if (mgException != NULL)
                     {
-                        message = mgException->GetMessage();
+                        message = mgException->GetExceptionMessage();
                     }
                 }
 

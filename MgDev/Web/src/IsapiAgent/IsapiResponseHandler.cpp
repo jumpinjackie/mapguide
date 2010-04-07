@@ -184,7 +184,7 @@ void IsapiResponseHandler::SendResponse(MgHttpResponse* response)
 void IsapiResponseHandler::SendError(MgException* e)
 {
     MG_TRY()
-    STRING shortError = e->GetMessage();
+    STRING shortError = e->GetExceptionMessage();
     STRING longError = e->GetDetails();
     STRING statusMessage = e->GetClassName();
     DWORD status = 559;

@@ -31,7 +31,7 @@
                        catch (MgException* ex)                                              \
                        {                                                                    \
                            STRING message;                                                  \
-                           message = ex->GetMessage();                                      \
+                           message = ex->GetExceptionMessage();                             \
                            ex->Release();                                                   \
                            throw FdoException::Create(message.c_str());                     \
                        }
@@ -281,7 +281,7 @@ const wchar_t* RSMgFeatureReader::GetString(const wchar_t* propertyName)
     catch (MgException* ex)
     {
         STRING message;
-        message = ex->GetMessage();
+        message = ex->GetExceptionMessage();
 
         bool shouldThrow = (NULL == dynamic_cast<MgFdoException*>(ex));
         ex->Release();

@@ -402,7 +402,7 @@ MgBatchPropertyCollection* MgCoordinateSystemFactory::EnumerateCoordinateSystems
 
         // Coordinate system properties
         // Add the Code
-        pProperty = new MgStringProperty(CCoordinateSystem::CoordinateSystemCode, pCsDef->GetCode());
+        pProperty = new MgStringProperty(CCoordinateSystem::CoordinateSystemCode, pCsDef->GetCsCode());
         pCoordSysProperties->Add(pProperty);
 
         // Add the Description

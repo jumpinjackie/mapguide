@@ -68,7 +68,6 @@
 #include "ace/Process_Manager.h"
 #include "ace/Date_Time.h"
 
-#undef GetMessage
 #undef GetObject
 #include "FoundationDefs.h"
 #include "System/FoundationClassId.h"

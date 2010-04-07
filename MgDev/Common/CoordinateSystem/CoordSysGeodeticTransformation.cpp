@@ -402,7 +402,7 @@ bool CCoordinateSystemGeodeticTransformation::GetDefinitionForGeodeticTransforma
         return false;
     }
     //if not WGS84 for the target system, bye bye!
-    if (m_pDtTarget->GetCode()!=kpWGS84Datum)
+    if (m_pDtTarget->GetDtCode()!=kpWGS84Datum)
     {
         return false;
     }
@@ -491,7 +491,7 @@ void CCoordinateSystemGeodeticTransformation::SetOffset(double x, double y, doub
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemGeodeticTransformation.SetOffset", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     //if not WGS84 for the target system, bye bye!
-    if (m_pDtTarget->GetCode()!=kpWGS84Datum)
+    if (m_pDtTarget->GetDtCode()!=kpWGS84Datum)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemGeodeticTransformation.SetOffset", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemMismatchException", NULL);
     }
@@ -630,7 +630,7 @@ void CCoordinateSystemGeodeticTransformation::SetBursaWolfeTransform(double dRot
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemGeodeticTransformation.SetBursaWolfeTransform", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     //if not WGS84 for the target system, bye bye!
-    if (m_pDtTarget->GetCode()!=kpWGS84Datum)
+    if (m_pDtTarget->GetDtCode()!=kpWGS84Datum)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemGeodeticTransformation.SetBursaWolfeTransform", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemMismatchException", NULL);
     }
@@ -712,7 +712,7 @@ void CCoordinateSystemGeodeticTransformation::SetGeodeticTransformationMethod(IN
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemGeodeticTransformation.SetGeodeticTransformationMethod", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     //if not WGS84 for the target system, bye bye!
-    if (m_pDtTarget->GetCode()!=kpWGS84Datum)
+    if (m_pDtTarget->GetDtCode()!=kpWGS84Datum)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemGeodeticTransformation.SetGeodeticTransformationMethod", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemMismatchException", NULL);
     }

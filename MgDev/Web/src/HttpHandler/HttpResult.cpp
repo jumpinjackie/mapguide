@@ -18,9 +18,6 @@
 #include "HttpHandler.h"
 #include "HttpResult.h"
 
-#ifdef _WIN32
-    #undef GetMessage
-#endif
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -211,7 +208,7 @@ void MgHttpResult::SetErrorInfo(MgHttpRequest* awRequest,
         // Map Mg exception to HTTP result.
 
         httpStatusMessage = mgException->GetClassName();
-        errorMessage = mgException->GetMessage();
+        errorMessage = mgException->GetExceptionMessage();
         detailedMessage = mgException->GetDetails();
 
 #ifdef _DEBUG

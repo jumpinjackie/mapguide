@@ -1121,7 +1121,7 @@ int MgServer::open(void *args)
         MgServerManager* serverManager = MgServerManager::GetInstance();
         STRING locale = (NULL == serverManager) ?
             MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
-        STRING message = mgException->GetMessage(locale);
+        STRING message = mgException->GetExceptionMessage(locale);
         STRING details = mgException->GetDetails(locale);
         STRING stackTrace = mgException->GetStackTrace(locale);
 

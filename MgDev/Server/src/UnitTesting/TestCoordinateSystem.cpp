@@ -148,7 +148,7 @@ void TestCoordinateSystem::TestCase_CheckCoordinateSystems()
                         if(NULL != pCoordinateSystem)
                         {
                             #ifdef _DEBUG
-                            string strMessage = MG_WCHAR_TO_CHAR(pCoordinateSystem->GetCode());
+                            string strMessage = MG_WCHAR_TO_CHAR(pCoordinateSystem->GetCsCode());
                             printf("%s - %lf, %lf, %lf, %lf\n", strMessage.c_str(), pCoordinateSystem->GetMinX(), pCoordinateSystem->GetMinY(), pCoordinateSystem->GetMaxX(), pCoordinateSystem->GetMaxY());
                             #endif
 
@@ -374,7 +374,7 @@ void TestCoordinateSystem::TestCase_EnumerateCategories()
                             catch(MgException* e)
                             {
                                 #ifdef _DEBUG
-                                STRING message = e->GetMessage(TEST_LOCALE);
+                                STRING message = e->GetExceptionMessage(TEST_LOCALE);
 
                                 // Extract the reason out of the message
                                 size_t index = message.find(L"\n");
@@ -513,7 +513,7 @@ void TestCoordinateSystem::TestCase_ValidateCoordinateSystemArbitrary()
         Ptr<MgCoordinateSystem> pCoordinateSystemAlt = factory.Create(pCoordinateSystem->ToString());
         CPPUNIT_ASSERT(pCoordinateSystemAlt);
 
-        CPPUNIT_ASSERT(pCoordinateSystem->GetCode() == pCoordinateSystemAlt->GetCode());
+        CPPUNIT_ASSERT(pCoordinateSystem->GetCsCode() == pCoordinateSystemAlt->GetCsCode());
     }
     catch(MgException* e)
     {
@@ -1120,7 +1120,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_GetMaxY()
     }
 }
 
-void TestCoordinateSystem::TestCase_Arbitrary_GetCode()
+void TestCoordinateSystem::TestCase_Arbitrary_GetCsCode()
 {
     try
     {
@@ -1129,28 +1129,28 @@ void TestCoordinateSystem::TestCase_Arbitrary_GetCode()
         Ptr<MgCoordinateSystem> pCoordinateSystem = factory.Create(ogcWkt);
         CPPUNIT_ASSERT(pCoordinateSystem);
 
-        STRING value = pCoordinateSystem->GetCode();
+        STRING value = pCoordinateSystem->GetCsCode();
         CPPUNIT_ASSERT(_wcsicmp(L"XY-MI", value.c_str()) == 0);
 
         ogcWkt = ArbitraryWkt_Alternate1;
         pCoordinateSystem = factory.Create(ogcWkt);
         CPPUNIT_ASSERT(pCoordinateSystem);
 
-        value = pCoordinateSystem->GetCode();
+        value = pCoordinateSystem->GetCsCode();
         CPPUNIT_ASSERT(_wcsicmp(L"XY-MI", value.c_str()) == 0);
 
         ogcWkt = ArbitraryWkt_Alternate2;
         pCoordinateSystem = factory.Create(ogcWkt);
         CPPUNIT_ASSERT(pCoordinateSystem);
 
-        value = pCoordinateSystem->GetCode();
+        value = pCoordinateSystem->GetCsCode();
         CPPUNIT_ASSERT(_wcsicmp(L"XY-MI", value.c_str()) == 0);
 
         ogcWkt = ArbitraryWkt_Meter;
         pCoordinateSystem = factory.Create(ogcWkt);
         CPPUNIT_ASSERT(pCoordinateSystem);
 
-        value = pCoordinateSystem->GetCode();
+        value = pCoordinateSystem->GetCsCode();
         CPPUNIT_ASSERT(_wcsicmp(L"XY-M", value.c_str()) == 0);
     }
     catch(MgException* e)
@@ -2437,7 +2437,7 @@ void TestCoordinateSystem::TestCase_Geographic_GetMaxY()
     }
 }
 
-void TestCoordinateSystem::TestCase_Geographic_GetCode()
+void TestCoordinateSystem::TestCase_Geographic_GetCsCode()
 {
     try
     {
@@ -2446,7 +2446,7 @@ void TestCoordinateSystem::TestCase_Geographic_GetCode()
         Ptr<MgCoordinateSystem> pCoordinateSystem = factory.Create(ogcWkt);
         CPPUNIT_ASSERT(pCoordinateSystem);
 
-        STRING value = pCoordinateSystem->GetCode();
+        STRING value = pCoordinateSystem->GetCsCode();
         CPPUNIT_ASSERT(_wcsicmp(L"LL84", value.c_str()) == 0);
     }
     catch(MgException* e)
@@ -2916,7 +2916,7 @@ void TestCoordinateSystem::TestCase_Projected_GetMaxY()
     }
 }
 
-void TestCoordinateSystem::TestCase_Projected_GetCode()
+void TestCoordinateSystem::TestCase_Projected_GetCsCode()
 {
     try
     {
@@ -2925,7 +2925,7 @@ void TestCoordinateSystem::TestCase_Projected_GetCode()
         Ptr<MgCoordinateSystem> pCoordinateSystem = factory.Create(ogcWkt);
         CPPUNIT_ASSERT(pCoordinateSystem);
 
-        STRING value = pCoordinateSystem->GetCode();
+        STRING value = pCoordinateSystem->GetCsCode();
         CPPUNIT_ASSERT(_wcsicmp(L"GA-W", value.c_str()) == 0);
     }
     catch(MgException* e)
