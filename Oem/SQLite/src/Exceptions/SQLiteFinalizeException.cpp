@@ -42,7 +42,7 @@ SQLiteFinalizeException::~SQLiteFinalizeException() throw()
 /// <param name="nLocale">The locale identifier to format the message text.</param>
 /// </summary>
 ///
-STRING SQLiteFinalizeException::GetMessage() throw()
+STRING SQLiteFinalizeException::GetExceptionMessage() throw()
 {
     STRING wsMessage = L"Error while finalizing virtual machine.\n";
     return wsMessage;

@@ -42,7 +42,7 @@ TypeMismatchException::~TypeMismatchException() throw()
 /// <param name="nLocale">The locale identifier to format the message text.</param>
 /// </summary>
 ///
-STRING TypeMismatchException::GetMessage() throw()
+STRING TypeMismatchException::GetExceptionMessage() throw()
 {
     STRING wsMessage = L"Type mismatch.\n";
     return wsMessage;

@@ -42,7 +42,7 @@ ColumnNotFoundException::~ColumnNotFoundException() throw()
 /// <param name="nLocale">The locale identifier to format the message text.</param>
 /// </summary>
 ///
-STRING ColumnNotFoundException::GetMessage() throw()
+STRING ColumnNotFoundException::GetExceptionMessage() throw()
 {
     STRING wsMessage = L"The specified column was not found.\n";
     return wsMessage;

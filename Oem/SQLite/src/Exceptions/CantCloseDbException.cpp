@@ -42,7 +42,7 @@ CantCloseDbException::~CantCloseDbException() throw()
 /// <param name="nLocale">The locale identifier to format the message text.</param>
 /// </summary>
 ///
-STRING CantCloseDbException::GetMessage() throw()
+STRING CantCloseDbException::GetExceptionMessage() throw()
 {
     STRING wsMessage = L"Cannot close database file.\n";
     return wsMessage;

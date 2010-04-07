@@ -18,11 +18,6 @@
 #ifndef _SQLITE_EXCEPTION_H_
 #define _SQLITE_EXCEPTION_H_
 
-// To undefine GetMessage macro defined in windows
-#ifdef WIN32
-    #undef GetMessage
-#endif
-
 #define DECLARE_EXCEPTION_ABSTRACT(className) \
     virtual INT32 GetClassId(); \
     virtual void Raise() = 0; \
@@ -53,7 +48,7 @@ EXTERNAL_API:
     /// <returns>
     /// Localized exception message
     /// </returns>
-    virtual STRING GetMessage() throw();
+    virtual STRING GetExceptionMessage() throw();
 
 INTERNAL_API:
 

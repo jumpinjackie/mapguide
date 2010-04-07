@@ -42,7 +42,7 @@ NoDbConnectionException::~NoDbConnectionException() throw()
 /// <param name="nLocale">The locale identifier to format the message text.</param>
 /// </summary>
 ///
-STRING NoDbConnectionException::GetMessage() throw()
+STRING NoDbConnectionException::GetExceptionMessage() throw()
 {
     STRING wsMessage = L"No connection to database detected.\n";
     return wsMessage;

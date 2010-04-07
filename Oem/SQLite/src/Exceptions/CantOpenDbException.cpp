@@ -42,7 +42,7 @@ CantOpenDbException::~CantOpenDbException() throw()
 /// <param name="nLocale">The locale identifier to format the message text.</param>
 /// </summary>
 ///
-STRING CantOpenDbException::GetMessage() throw()
+STRING CantOpenDbException::GetExceptionMessage() throw()
 {
     return L"Cannot Open database";
 }
