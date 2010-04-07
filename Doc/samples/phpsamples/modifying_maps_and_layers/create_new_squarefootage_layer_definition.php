@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
 //  Copyright (C) 2004-2010 by Autodesk, Inc.
 //
@@ -34,10 +34,10 @@
 </head>
 
 <body onLoad="OnPageLoad()">
-    
+
 <?php
 require_once('../common/common.php');
-require_once($webExtensionsDirectory . 'www/mapviewerphp/layerdefinitionfactory.php');	
+require_once($webExtensionsDirectory . 'www/mapviewerphp/layerdefinitionfactory.php');
 require_once('layer_functions.php');
 try
 {
@@ -47,7 +47,7 @@ try
     $args = ($_SERVER['REQUEST_METHOD'] == "POST") ? $_POST : $_GET;
     $sessionId = $args['SESSION'];
     $mapName = $args['MAPNAME'];
-    
+
     $userInfo = new MgUserInformation($sessionId);
     $siteConnection = new MgSiteConnection();
     $siteConnection->Open($userInfo);
@@ -62,22 +62,22 @@ try
 	// ...
     //---------------------------------------------------//
     // Create a new layer
-    
+
     $factory = new LayerDefinitionFactory();
-    
+
     /// Create three area rules for three different
-    // scale ranges.    
-    $areaRule1 = $factory->CreateAreaRule(    '1 to 800', 
+    // scale ranges.
+    $areaRule1 = $factory->CreateAreaRule(    '1 to 800',
       'SQFT &gt;= 1 AND SQFT &lt; 800',     'FFFFFF00');
-    $areaRule2 = $factory->CreateAreaRule( '800 to 1600', 
+    $areaRule2 = $factory->CreateAreaRule( '800 to 1600',
       'SQFT &gt;= 800 AND SQFT &lt; 1600',  'FFFFBF20');
-    $areaRule3 = $factory->CreateAreaRule('1600 to 2400', 
+    $areaRule3 = $factory->CreateAreaRule('1600 to 2400',
       'SQFT &gt;= 1600 AND SQFT &lt; 2400', 'FFFF8040');
-    
-    // Create an area type style.   
+
+    // Create an area type style.
     $areaTypeStyle = $factory->CreateAreaTypeStyle(
       $areaRule1 . $areaRule2 . $areaRule3);
-    
+
     // Create a scale range.
     $minScale = '0';
     $maxScale = '10000';
@@ -90,12 +90,12 @@ try
     $featureName = 'SHP_Schema:Parcels';
     $geometry = 'SHPGEOM';
     $layerDefinition = $factory->CreateLayerDefinition(
-      $featureClass, $featureName, $geometry, 
+      $featureClass, $featureName, $geometry,
       $areaScaleRange);
-    
+
     //---------------------------------------------------//
     // ...
-        
+
     // Add the layer to the map
     $newLayer = add_layer_definition_to_map($layerDefinition, "SquareFootage", "Square Footage", $sessionId, $resourceService, $map);
     add_layer_to_group($newLayer, "Analysis", "Analysis", $map);
@@ -119,7 +119,7 @@ try
         $squareFootageLayer =$layerCollection->GetItem("SquareFootage");
         $squareFootageLayer->SetVisible(true);
     }
-    
+
     //---------------------------------------------------//
     //  Save the map back to the session repository
     $sessionIdName = "Session:$sessionId//$mapName.Map";
@@ -132,7 +132,7 @@ try
 catch (MgException $e)
 {
 	echo "<script language=\"javascript\" type=\"text/javascript\"> \n";
-	echo "    alert(\" " . $e->GetMessage() . " \"); \n";
+	echo "    alert(\" " . $e->GetExceptionMessage() . " \"); \n";
 	echo "</script> \n";
 }
 ?>

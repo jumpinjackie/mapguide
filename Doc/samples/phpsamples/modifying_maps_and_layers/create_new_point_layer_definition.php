@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
 //  Copyright (C) 2004-2010 by Autodesk, Inc.
 //
@@ -32,11 +32,11 @@
     </script>
 </head>
 
-<body onLoad="OnPageLoad()"> 
-	
+<body onLoad="OnPageLoad()">
+
 <?php
 require_once('../common/common.php');
-require_once($webExtensionsDirectory . 'www/mapviewerphp/layerdefinitionfactory.php');	
+require_once($webExtensionsDirectory . 'www/mapviewerphp/layerdefinitionfactory.php');
 require_once('layer_functions.php');
 try
 {
@@ -50,8 +50,8 @@ try
     $siteConnection = new MgSiteConnection();
     $siteConnection->Open($userInfo);
     $resourceService = $siteConnection->CreateService(MgServiceType::ResourceService);
-    $featureService = $siteConnection->CreateService(MgServiceType::FeatureService);      
-           
+    $featureService = $siteConnection->CreateService(MgServiceType::FeatureService);
+
     //---------------------------------------------------//
     // Open the map
     $map = new MgMap();
@@ -61,46 +61,46 @@ try
     // Create a feature source with point data.
     // (The Sheboygan sample data does not contain such data,
     // so we'll create it.)
-    
+
 	// Create a feature class definition for the new feature source
 	$classDefinition = new MgClassDefinition();
 	$classDefinition->SetName("Points");
 	$classDefinition->SetDescription("Feature class with point data.");
 	$classDefinition->SetDefaultGeometryPropertyName("GEOM");
-	
+
 	// Create an identify property
 	$identityProperty = new MgDataPropertyDefinition("KEY");
 	$identityProperty->SetDataType(MgPropertyType::Int32);
 	$identityProperty->SetAutoGeneration(true);
-	$identityProperty->SetReadOnly(true);	
+	$identityProperty->SetReadOnly(true);
 	// Add the identity property to the class definition
 	$classDefinition->GetIdentityProperties()->Add($identityProperty);
 	$classDefinition->GetProperties()->Add($identityProperty);
-	
+
 	// Create a name property
 	$nameProperty = new MgDataPropertyDefinition("NAME");
-	$nameProperty->SetDataType(MgPropertyType::String);	
+	$nameProperty->SetDataType(MgPropertyType::String);
 	// Add the name property to the class definition
 	$classDefinition->GetProperties()->Add($nameProperty);
-	
+
 	// Create a geometry property
 	$geometryProperty = new MgGeometricPropertyDefinition("GEOM");
-	$geometryProperty->SetGeometryTypes(MgFeatureGeometricType::Surface);	
+	$geometryProperty->SetGeometryTypes(MgFeatureGeometricType::Surface);
 	// Add the geometry property to the class definition
 	$classDefinition->GetProperties()->Add($geometryProperty);
-	
+
 	// Create a feature schema
 	$featureSchema = new MgFeatureSchema("PointSchema", "Point schema");
 	// Add the feature schema to the class definition
-	$featureSchema->GetClasses()->Add($classDefinition);             
-	
+	$featureSchema->GetClasses()->Add($classDefinition);
+
 	// Create the feature source
-	$featureSourceName = 'Library://Samples/DevGuide/Data/points.FeatureSource'; 
+	$featureSourceName = 'Library://Samples/DevGuide/Data/points.FeatureSource';
 	$resourceIdentifier = new MgResourceIdentifier($featureSourceName);
 	$wkt = "LOCALCS[\"*XY-MT*\",LOCAL_DATUM[\"*X-Y*\",10000],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
 	$sdfParams = new MgCreateSdfParams("ArbitraryXY", $wkt, $featureSchema);
     $featureService->CreateFeatureSource($resourceIdentifier, $sdfParams);
-	
+
 	// We need to add some data to the sdf before using it.  The spatial context
 	// reader must have an extent.
 	$batchPropertyCollection = new MgBatchPropertyCollection();
@@ -108,37 +108,37 @@ try
 	$agfReaderWriter = new MgAgfReaderWriter();
 	$geometryFactory = new MgGeometryFactory();
 
-    // Make four points 	
+    // Make four points
 	$propertyCollection = MakePoint("Point A", -87.727, 43.748);
 	$batchPropertyCollection->Add($propertyCollection);
-	unset($propertyCollection);	
-	
+	unset($propertyCollection);
+
 	$propertyCollection = MakePoint("Point B", -87.728, 43.730);
 	$batchPropertyCollection->Add($propertyCollection);
-	unset($propertyCollection);	
-			
+	unset($propertyCollection);
+
 	$propertyCollection = MakePoint("Point C", -87.726, 43.750);
 	$batchPropertyCollection->Add($propertyCollection);
-	unset($propertyCollection);	
+	unset($propertyCollection);
 
 	$propertyCollection = MakePoint("Point D", -87.728, 43.750);
 	$batchPropertyCollection->Add($propertyCollection);
-	unset($propertyCollection);	
-		
+	unset($propertyCollection);
+
 	// Add the batch property collection to the feature source
-	$cmd = new MgInsertFeatures("Points", $batchPropertyCollection); 
+	$cmd = new MgInsertFeatures("Points", $batchPropertyCollection);
 	$featureCommandCollection = new MgFeatureCommandCollection();
 	$featureCommandCollection->Add($cmd);
-	
+
 	// Execute the "add" commands
-	$featureService->UpdateFeatures($resourceIdentifier, $featureCommandCollection, false);    
-	
+	$featureService->UpdateFeatures($resourceIdentifier, $featureCommandCollection, false);
+
     // ...
     //---------------------------------------------------//
     // Create a new layer
-    
+
     $factory = new LayerDefinitionFactory();
- 
+
     // Create a mark symbol
     $resourceId = 'Library://Samples/Sheboygan/'
       . 'Symbols/BasicSymbols.SymbolLibrary';
@@ -146,41 +146,41 @@ try
     $width = '24';  // unit = points
     $height = '24'; // unit = points
     $color = 'FFFF0000';
-    $markSymbol = $factory->CreateMarkSymbol($resourceId, 
-      $symbolName, $width, $height, $color);   
-    
+    $markSymbol = $factory->CreateMarkSymbol($resourceId,
+      $symbolName, $width, $height, $color);
+
     // Create a text symbol
     $text = "ID";
     $fontHeight="12";
     $foregroundColor = 'FF000000';
-    $textSymbol = $factory->CreateTextSymbol($text, 
+    $textSymbol = $factory->CreateTextSymbol($text,
       $fontHeight, $foregroundColor);
 
     // Create a point rule.
     $legendLabel = 'trees';
     $filter = '';
-    $pointRule = $factory->CreatePointRule($legendLabel, 
+    $pointRule = $factory->CreatePointRule($legendLabel,
       $filter, $textSymbol, $markSymbol);
-      
+
     // Create a point type style.
     $pointTypeStyle = $factory->
       CreatepointTypeStyle($pointRule);
-      
+
     // Create a scale range.
     $minScale = '0';
     $maxScale = '1000000000000';
     $pointScaleRange = $factory->CreateScaleRange(
-      $minScale, $maxScale, $pointTypeStyle);      
+      $minScale, $maxScale, $pointTypeStyle);
 
     // Create the layer definiton.
     $featureName = 'PointSchema:Points';
     $geometry = 'GEOM';
     $layerDefinition = $factory->
-      CreateLayerDefinition($featureSourceName, 
+      CreateLayerDefinition($featureSourceName,
       $featureName, $geometry, $pointScaleRange);
     //---------------------------------------------------//
     // ...
-    
+
     // Add the layer to the map
     $newLayer = add_layer_definition_to_map($layerDefinition, "Points", "Points of Interest", $sessionId, $resourceService, $map);
     add_layer_to_group($newLayer, "Analysis", "Analysis", $map);
@@ -208,7 +208,7 @@ try
 catch (MgException $e)
 {
 	echo "<script language=\"javascript\" type=\"text/javascript\"> \n";
-	echo "    alert(\" " . $e->GetMessage() . " \"); \n";
+	echo "    alert(\" " . $e->GetExceptionMessage() . " \"); \n";
 	echo "</script> \n";
 }
 
@@ -218,15 +218,15 @@ function MakePoint($name, $x, $y)
 	$propertyCollection = new MgPropertyCollection();
 	$nameProperty = new MgStringProperty("NAME", $name);
 	$propertyCollection->Add($nameProperty);
-	
+
 	$wktReaderWriter = new MgWktReaderWriter();
-	$agfReaderWriter = new MgAgfReaderWriter();	
-	
-	$geometry = $wktReaderWriter->Read("POINT XY ($x $y)"); 
-	$geometryByteReader = $agfReaderWriter->Write($geometry); 
+	$agfReaderWriter = new MgAgfReaderWriter();
+
+	$geometry = $wktReaderWriter->Read("POINT XY ($x $y)");
+	$geometryByteReader = $agfReaderWriter->Write($geometry);
 	$geometryProperty = new MgGeometryProperty("GEOM", $geometryByteReader);
 	$propertyCollection->Add($geometryProperty);
-	
+
 	return $propertyCollection;
 }
 ?>

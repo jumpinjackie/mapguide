@@ -33,18 +33,18 @@ catch (MgException $e)
     echo "Could not connect to the MapGuide site server. Please contact the MapGuide site administrator.";
     die();
 }
-    
+
 try
 {
     $sessionId = $site->CreateSession();
-    
+
     // Define some constants
     $webLayout     = "Library://Samples/DevGuidePHP/modifying_maps_and_layers.WebLayout";
     $title         = "Modifying Maps and Layers";
 }
 catch (MgException $e)
 {
-    echo "ERROR: " . $e->GetMessage("eng") . "\n";
+    echo "ERROR: " . $e->GetExceptionMessage("eng") . "\n";
     echo $e->GetStackTrace("eng") . "\n";
 }
 ?>
@@ -57,12 +57,12 @@ catch (MgException $e)
     <meta http-equiv="content-style-type" content="text/css">
     <link href="../styles/globalStyles.css" rel="stylesheet" type="text/css">
   </head>
-  
+
   <frameset rows="110,*">
     <frame src="Title.php?TitleText=<?= $title ?>" name="TitleFrame" scrolling="NO" noresize>
     <frame
       src="/mapguide/mapviewerdwf/?
         SESSION=<?= $sessionId ?>&
-        WEBLAYOUT=<?= $webLayout ?>" name="ViewerFrame">   
+        WEBLAYOUT=<?= $webLayout ?>" name="ViewerFrame">
   </frameset>
 </html>

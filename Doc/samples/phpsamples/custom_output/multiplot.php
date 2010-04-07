@@ -86,7 +86,7 @@ try
 }
 catch (MgException $e)
 {
-  $result = $e->GetMessage() . "<br><br>" . $e->GetDetails();
+  $result = $e->GetExceptionMessage() . "<br><br>" . $e->GetDetails();
 
   header('Content-Type: text/html');
   header('Content-Length: ' . strlen($result));

@@ -42,14 +42,14 @@ try
   $siteConnection->Open($userInfo);
 
   // Create the necessary services.
-  
+
   $resourceService = $siteConnection->
     CreateService(MgServiceType::ResourceService);
   $renderingService = $siteConnection->
     CreateService(MgServiceType::RenderingService);
 
   // Open the map and get its SRS
-  
+
   $map = new MgMap();
   $map->Open($resourceService, $mapName);
   $srsWkt = $map->GetMapSRS();
@@ -73,22 +73,22 @@ try
 
   // Convert the height in pixels to map units.
   // Create an envelope that contains the image area to display.
-  
+
   $displayInInches = $imageHeight / 96;
   $displayInMeters = $displayInInches * .0254;
   $mapHeightInMeters = $displayInMeters * $mapScale;
   $mapHeightInMapUnits = $srs->ConvertMetersToCoordinateSystemUnits($mapHeightInMeters);
   $envelopeOffsetY = $mapHeightInMapUnits / 2;
   $envelopeOffsetX = $imageWidth / $imageHeight * $envelopeOffsetY;
-  $envelope = new MgEnvelope($mapCenterX - $envelopeOffsetX, 
-    $mapCenterY - $envelopeOffsetY, $mapCenterX + $envelopeOffsetX, 
+  $envelope = new MgEnvelope($mapCenterX - $envelopeOffsetX,
+    $mapCenterY - $envelopeOffsetY, $mapCenterX + $envelopeOffsetX,
     $mapCenterY + $envelopeOffsetY);
 
   // Render the image and send it to the browser.
-  
-  $byteReader = $renderingService->RenderMap($map, $selection, 
+
+  $byteReader = $renderingService->RenderMap($map, $selection,
     $envelope, $imageWidth, $imageHeight, $color, 'PNG');
-  
+
   header("Content-type: " . $byteReader->GetMimeType() );
 
   $buffer = '';
@@ -99,7 +99,7 @@ try
 }
 catch (MgException $e)
 {
-  echo '<p>' . $e->GetMessage() . '</p>';
+  echo '<p>' . $e->GetExceptionMessage() . '</p>';
   echo '<p>' . $e->GetDetails() . '</p>';
 }
 

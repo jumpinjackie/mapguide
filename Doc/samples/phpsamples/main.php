@@ -33,7 +33,7 @@ catch (MgException $e)
     echo "Could not connect to the MapGuide site server. Please contact the MapGuide site administrator.";
     die();
 }
-    
+
 try
 {
     $sessionId = $site->CreateSession();
@@ -44,7 +44,7 @@ try
 }
 catch (MgException $e)
 {
-    echo "ERROR: " . $e->GetMessage("eng") . "\n";
+    echo "ERROR: " . $e->GetExceptionMessage("eng") . "\n";
     echo $e->GetStackTrace("eng") . "\n";
 }
 ?>

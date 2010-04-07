@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<!-- 
+<!--
 //  Copyright (C) 2004-2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
@@ -156,8 +156,8 @@
 
             // Add buffer features to the temporary feature source.
             // Create multiple concentric buffers to show area.
-            // If the stylization for the layer draws the features 
-            // partially transparent, the concentric rings will be 
+            // If the stylization for the layer draws the features
+            // partially transparent, the concentric rings will be
             // progressively darker towards the center.
             // The stylization is set in the layer template file, which
             // is used in function CreateBufferLayer().
@@ -191,11 +191,11 @@
     }
     catch (MgException $e)
     {
-      echo '<p>' . $e->GetMessage() . '</p>';
+      echo '<p>' . $e->GetExceptionMessage() . '</p>';
       echo '<p>' . $e->GetDetails() . '</p>';
     }
     ?>
-    
+
     <p>The buffer has been created.</p>
 
   </body>
