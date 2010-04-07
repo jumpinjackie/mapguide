@@ -78,7 +78,7 @@ ACE_THR_FUNC_RETURN CheckServers(void* param)
                     if(NULL != mgException.p)
                     {
                         // Exception was thrown
-                        STRING message = mgException->GetMessage();
+                        STRING message = mgException->GetExceptionMessage();
                     }
                 }
             }

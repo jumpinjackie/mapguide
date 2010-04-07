@@ -40,7 +40,7 @@ public:
     GWS_COMMON_API
     EGwsStatus      GetStatus  () const ;
     GWS_COMMON_API
-    FdoString*      GetMessage    () const;
+    FdoString*      GetErrorMessage    () const;
 
     // get diagnostincs parameters
     GWS_COMMON_API

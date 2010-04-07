@@ -75,7 +75,7 @@ EGwsStatus CGwsStatus::GetStatus() const
     return m_status;
 }
 
-FdoString *CGwsStatus::GetMessage () const
+FdoString *CGwsStatus::GetErrorMessage () const
 {
     if (m_message.empty ()) {
         CGwsResourceModule::GwsStatusMessage (m_status, ((CGwsStatus *)this)->m_message);

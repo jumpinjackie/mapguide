@@ -253,7 +253,7 @@ RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeatur
     Ptr<MgCoordinate> ur = new MgCoordinateXY(extent.maxx, extent.maxy);
     Ptr<MgEnvelope> mapExt = new MgEnvelope(ll, ur);
     Ptr<MgEnvelope> rasterExt;
-    if (NULL != layerCs && NULL != mapCs && layerCs->GetCode() != mapCs->GetCode())
+    if (NULL != layerCs && NULL != mapCs && layerCs->GetCsCode() != mapCs->GetCsCode())
     {
         Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
 
@@ -641,7 +641,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     MgCSTrans* xformer = item? item->GetTransform() : NULL;
 
                     // Test if layer and map are using the same coordinate systems
-                    if (NULL == layerCs.p || NULL == dstCs || layerCs->GetCode() == dstCs->GetCode())
+                    if (NULL == layerCs.p || NULL == dstCs || layerCs->GetCsCode() == dstCs->GetCsCode())
                     {
                         // No transform required
                         xformer = NULL;
@@ -825,12 +825,12 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 
             // Get the reason why the layer failed to stylize
             MgStringCollection argumentsWhy;
-            argumentsWhy.Add(mgException->GetMessage(locale));
+            argumentsWhy.Add(mgException->GetExceptionMessage(locale));
 
             Ptr<MgStylizeLayerFailedException> exception;
             exception = new MgStylizeLayerFailedException(L"MgMappingUtil.StylizeLayers", __LINE__, __WFILE__, &arguments, L"MgFormatInnerExceptionMessage", &argumentsWhy);
 
-            STRING message = exception->GetMessage(locale);
+            STRING message = exception->GetExceptionMessage(locale);
             STRING stackTrace = exception->GetStackTrace(locale);
             MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
 
@@ -1211,7 +1211,7 @@ void MgMappingUtilExceptionTrap(FdoException* except, int line, wchar_t* file)
     MgServerManager* serverManager = MgServerManager::GetInstance();
     STRING locale = (NULL == serverManager) ?
         MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
-    STRING message = mgException->GetMessage(locale);
+    STRING message = mgException->GetExceptionMessage(locale);
     STRING details = mgException->GetDetails(locale);
     STRING stackTrace = mgException->GetStackTrace(locale);
 

@@ -106,12 +106,12 @@ void CGwsException::Dispose()
 
 FdoString* CGwsException::GetExceptionMessage()
 {
-    return m_status.GetMessage ();
+    return m_status.GetErrorMessage ();
 }
 
 FdoString* CGwsException::ToString()
 {
-    return m_status.GetMessage ();
+    return m_status.GetErrorMessage ();
 }
 
 

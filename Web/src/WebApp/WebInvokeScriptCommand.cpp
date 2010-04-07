@@ -28,7 +28,7 @@ MgWebInvokeScriptCommand::MgWebInvokeScriptCommand()
 ///////////////////////////////////////////////////////////////////////////
 // Returns the script code necessary to invoke the desired function
 //
-STRING MgWebInvokeScriptCommand::GetCode()
+STRING MgWebInvokeScriptCommand::GetScriptCode()
 {
     return m_code;
 }
@@ -36,7 +36,7 @@ STRING MgWebInvokeScriptCommand::GetCode()
 ///////////////////////////////////////////////////////////////////////////
 // Set the javascript code
 //
-void MgWebInvokeScriptCommand::SetCode(CREFSTRING code)
+void MgWebInvokeScriptCommand::SetScriptCode(CREFSTRING code)
 {
     m_code = code;
 }

@@ -31,7 +31,7 @@ PUBLISHED_API:
     /// <returns>
     /// Javascript code
     /// </returns>
-    STRING GetCode();
+    STRING GetScriptCode();
 
 INTERNAL_API:
 
@@ -40,7 +40,7 @@ INTERNAL_API:
     ///////////////////////////////////////////////////////////////////////////
     // Set the javascript code
     //
-    void SetCode(CREFSTRING code);
+    void SetScriptCode(CREFSTRING code);
 
 CLASS_ID:
     static const INT32 m_cls_id = WebApp_InvokeScriptCommand;

@@ -49,7 +49,7 @@ PUBLISHED_API:
     virtual double GetMinY()=0;  /// __get
     virtual double GetMaxX()=0;  /// __get
     virtual double GetMaxY()=0;  /// __get
-    virtual STRING GetCode()=0;  /// __get
+    virtual STRING GetCsCode()=0;  /// __get
     virtual STRING GetDescription()=0;  /// __get
     virtual STRING GetProjection()=0;  /// __get
     virtual STRING GetProjectionDescription()=0;  /// __get
@@ -61,8 +61,8 @@ PUBLISHED_API:
     virtual MgCoordinateSystemMeasure* GetMeasure()=0;
     virtual MgStringCollection* GetCategories()=0;
     virtual MgCoordinateSystemCatalog* GetCatalog()=0;
-    virtual void SetCode(CREFSTRING sCode)=0;
-    virtual bool IsLegalCode(CREFSTRING sCode)=0;
+    virtual void SetCsCode(CREFSTRING sCode)=0;
+    virtual bool IsLegalCsCode(CREFSTRING sCode)=0;
     virtual bool IsValid()=0;
     virtual bool IsUsable(MgCoordinateSystemCatalog *pCatalog)=0;
     virtual bool IsSameAs(MgGuardDisposable *pDef)=0;

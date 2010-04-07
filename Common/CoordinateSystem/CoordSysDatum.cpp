@@ -187,7 +187,7 @@ void CCoordinateSystemDatum::Dispose()
 //
 //Corresponds to cs_Dtdef_::key_nm.
 //
-STRING CCoordinateSystemDatum::GetCode()
+STRING CCoordinateSystemDatum::GetDtCode()
 {
     STRING sCode;
 
@@ -195,11 +195,11 @@ STRING CCoordinateSystemDatum::GetCode()
     wchar_t* pName = Convert_Ascii_To_Wide(m_DtDef.key_nm);
     if (NULL == pName)
     {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetCode", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetDtCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     sCode=pName;
     delete[] pName;
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemDatum.GetCode")
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemDatum.GetDtCode")
 
     return sCode;
 }
@@ -209,27 +209,27 @@ STRING CCoordinateSystemDatum::GetCode()
 //if the provided string is not
 //a legal datum name.
 //
-void CCoordinateSystemDatum::SetCode(CREFSTRING sCode)
+void CCoordinateSystemDatum::SetDtCode(CREFSTRING sCode)
 {
     MG_TRY()
 
     if (Protected())
     {
         //Can't modify a read-only object.
-        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemDatum.SetCode", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemDatumProtectedException", NULL);
+        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemDatum.SetDtCode", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemDatumProtectedException", NULL);
     }
 
     if (sCode.empty())
     {
         //null pointer is obviously not legal...
-        throw new MgInvalidArgumentException(L"MgCoordinateSystemDatum.SetCode", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgInvalidArgumentException(L"MgCoordinateSystemDatum.SetDtCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     //Convert to a C++ string, for Mentor's sake
     char *pStr = Convert_Wide_To_Ascii(sCode.c_str()); //need to delete[] pStr
     if (NULL == pStr)
     {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.SetCode", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.SetDtCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     //Try to make a legal name.  CS_nampp() legalizes the
@@ -241,7 +241,7 @@ void CCoordinateSystemDatum::SetCode(CREFSTRING sCode)
     {
         //illegal string
         delete [] pStr;
-        throw new MgInvalidArgumentException(L"MgCoordinateSystemDatum.SetCode", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgInvalidArgumentException(L"MgCoordinateSystemDatum.SetDtCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     //Copy into the definitions, dtdef and cs_datum_ must be in synch
@@ -255,12 +255,12 @@ void CCoordinateSystemDatum::SetCode(CREFSTRING sCode)
     delete [] pStr;
 
     //And we're done!
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemDatum.SetCode")
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemDatum.SetDtCode")
 }
 
 //Checks whether the specified string is a legal datum key name.
 //
-bool CCoordinateSystemDatum::IsLegalCode(CREFSTRING sCode)
+bool CCoordinateSystemDatum::IsLegalDtCode(CREFSTRING sCode)
 {
     return IsLegalMentorName(sCode.c_str());
 }
@@ -808,7 +808,7 @@ void CCoordinateSystemDatum::SetEllipsoidDefinition(MgCoordinateSystemEllipsoid 
         throw new MgNullArgumentException(L"MgCoordinateSystemDatum.SetEllipsoidDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    STRING sEllipsoid=pEllipsoidDef->GetCode();
+    STRING sEllipsoid=pEllipsoidDef->GetElCode();
 
     //Make sure it's a legal datum name
     if (!IsLegalMentorName(sEllipsoid.c_str()))

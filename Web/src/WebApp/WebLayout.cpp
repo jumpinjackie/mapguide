@@ -858,7 +858,7 @@ void MgWebLayout::ParseInvokeScriptCommand(DOMNode* node, MgWebInvokeScriptComma
             }
             else if (strName == L"Script") // NOXLATE
             {
-                cmd->SetCode(GetStringFromElement(elt));
+                cmd->SetScriptCode(GetStringFromElement(elt));
             }
             else
             {

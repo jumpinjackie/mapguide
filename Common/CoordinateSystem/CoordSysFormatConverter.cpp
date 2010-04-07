@@ -300,7 +300,7 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::WktToDefinition(INT32 nWkt
 
             if (NULL != pCsFromDict.p)
             {
-                sCsNameFromDict=pCsFromDict->GetCode();
+                sCsNameFromDict=pCsFromDict->GetCsCode();
                 sDtNameFromDict=pCsFromDict->GetDatum();
                 sElNameFromDict=pCsFromDict->GetEllipsoid();
 
@@ -744,7 +744,7 @@ STRING CCoordinateSystemFormatConverter::DefinitionToCode(MgCoordinateSystem* pS
     }
 
     //get the name of the source system
-    STRING sCsSource=pSource->GetCode();
+    STRING sCsSource=pSource->GetCsCode();
     if (sCsSource.empty())
     {
         throw new MgInvalidArgumentException(L"MgCoordinateSystemFormatConverter.DefinitionToCode", __LINE__, __WFILE__, NULL, L"", NULL);

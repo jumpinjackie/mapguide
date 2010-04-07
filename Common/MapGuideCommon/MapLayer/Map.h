@@ -119,7 +119,7 @@ template class MG_MAPGUIDE_API Ptr<MgMap>;
 /// }
 /// catch (MgException $e)
 /// {
-///     echo "ERROR: " . $e->GetMessage() . "n";
+///     echo "ERROR: " . $e->GetExceptionMessage() . "n";
 ///     echo $e->GetDetails() . "n";
 ///     echo $e->GetStackTrace() . "n";
 /// }

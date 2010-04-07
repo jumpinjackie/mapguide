@@ -43,7 +43,7 @@ MgResourcesLoadFailedException::~MgResourcesLoadFailedException() throw()
 /// \brief
 /// Retrieve the formatted exception message for the specified locale.
 ///
-STRING MgResourcesLoadFailedException::GetMessage(CREFSTRING locale) throw()
+STRING MgResourcesLoadFailedException::GetExceptionMessage(CREFSTRING locale) throw()
 {
-    return MgException::GetMessage(locale, MgResources::FailedToLoadResourcesFile);
+    return MgException::GetExceptionMessage(locale, MgResources::FailedToLoadResourcesFile);
 }

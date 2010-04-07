@@ -592,7 +592,7 @@ bool MgResources::ParseFile(CREFSTRING strResourceFileName, ResourceFile* pResou
 /// \return
 /// The formatted message string.
 ///
-STRING MgResources::GetMessage(CREFSTRING section, CREFSTRING resourceId,
+STRING MgResources::GetResourceMessage(CREFSTRING section, CREFSTRING resourceId,
     MgStringCollection* arguments)
 {
     STRING message;
@@ -616,7 +616,7 @@ STRING MgResources::GetMessage(CREFSTRING section, CREFSTRING resourceId,
 
     message = FormatMessage(resourceStr, arguments);
 
-    MG_RESOURCES_CATCH_AND_THROW(L"MgResources.GetMessage")
+    MG_RESOURCES_CATCH_AND_THROW(L"MgResources.GetResourceMessage")
 
     return message;
 }

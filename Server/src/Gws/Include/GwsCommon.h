@@ -641,7 +641,7 @@ public:
     /// Gets the message associated with the error if any.
     /// </summary>
     /// <returns>Returns the error message.</returns>
-    virtual FdoString*      GetMessage() const = 0;
+    virtual FdoString*      GetErrorMessage() const = 0;
 
     /// <summary>
     /// Gets the name value pair at index. These values may be the name of the

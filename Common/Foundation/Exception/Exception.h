@@ -20,11 +20,6 @@
 
 /// \ingroup Exceptions_Module
 
-// To undefine GetMessage macro defined in windows
-#ifdef _WIN32
-    #undef GetMessage
-#endif
-
 class MgByteReader;
 class MgStringCollection;
 
@@ -45,20 +40,20 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// string GetMessage() throw();
+    /// string GetExceptionMessage() throw();
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// String GetMessage() throw();
+    /// String GetExceptionMessage() throw();
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// string GetMessage() throw();
+    /// string GetExceptionMessage() throw();
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \return
     /// Localized exception message.  See MgSiteConnection for information on specifying
     /// the locale.
     ///
-    STRING GetMessage() throw();
+    STRING GetExceptionMessage() throw();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -120,7 +115,7 @@ EXTERNAL_API:
     /// \return
     /// Formatted exception message
     ///
-    virtual STRING GetMessage(CREFSTRING locale) throw();
+    virtual STRING GetExceptionMessage(CREFSTRING locale) throw();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -274,7 +269,7 @@ protected:
     /// This method should be called for critical errors when the configuration
     /// or resource file has not been loaded.
     ///
-    STRING GetMessage(CREFSTRING locale, CREFSTRING resourceStr) throw();
+    STRING GetExceptionMessage(CREFSTRING locale, CREFSTRING resourceStr) throw();
 
 private:
 

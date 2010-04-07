@@ -172,7 +172,7 @@ void ApacheResponseHandler::SendResponse(MgHttpResponse *response)
 void ApacheResponseHandler::SendError(MgException *e)
 {
     MG_TRY()
-    STRING shortError = e->GetMessage();
+    STRING shortError = e->GetExceptionMessage();
     STRING longError = e->GetDetails();
     STRING statusMessage = e->GetClassName();
 

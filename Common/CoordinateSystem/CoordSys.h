@@ -63,7 +63,7 @@ public:
     virtual double GetMinY();  /// __get
     virtual double GetMaxX();  /// __get
     virtual double GetMaxY();  /// __get
-    virtual STRING GetCode();  /// __get
+    virtual STRING GetCsCode();  /// __get
     virtual STRING GetDescription();  /// __get
     virtual STRING GetProjection();  /// __get
     virtual STRING GetProjectionDescription();  /// __get
@@ -76,8 +76,8 @@ public:
     virtual MgStringCollection* GetCategories();
     virtual MgCoordinateSystemCatalog* GetCatalog();
     virtual void SetCatalog(MgCoordinateSystemCatalog* pCatalog);
-    virtual void SetCode(CREFSTRING sCode);
-    virtual bool IsLegalCode(CREFSTRING sCode);
+    virtual void SetCsCode(CREFSTRING sCode);
+    virtual bool IsLegalCsCode(CREFSTRING sCode);
     virtual bool IsValid();
     virtual bool IsUsable(MgCoordinateSystemCatalog *pCatalog);
     virtual bool IsSameAs(MgGuardDisposable *pDef);

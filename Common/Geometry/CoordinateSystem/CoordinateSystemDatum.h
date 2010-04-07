@@ -26,9 +26,9 @@ class MgCoordinateSystemDatum : public MgGuardDisposable
     DECLARE_CLASSNAME(MgCoordinateSystemDatum)
 
 PUBLISHED_API:
-    virtual STRING GetCode()=0;
-    virtual void SetCode(CREFSTRING sCode)=0;
-    virtual bool IsLegalCode(CREFSTRING sCode)=0;
+    virtual STRING GetDtCode()=0;
+    virtual void SetDtCode(CREFSTRING sCode)=0;
+    virtual bool IsLegalDtCode(CREFSTRING sCode)=0;
     virtual bool IsValid()=0;
     virtual bool IsUsable(MgCoordinateSystemCatalog *pCatalog)=0;
     virtual bool IsSameAs(MgGuardDisposable *pDef)=0;

@@ -2041,7 +2041,7 @@ void MgLogManager::LogPerformanceEntry(MgPropertyCollection* entry)
     if (mgException != NULL)
     {
         // Use default message with just the given info.
-        logEntry = mgException->GetMessage();
+        logEntry = mgException->GetExceptionMessage();
     }
 
     QueueLogEntry(mltPerformance, logEntry, LM_INFO);
@@ -2198,7 +2198,7 @@ void MgLogManager::LogSystemErrorEntry(MgException* except)
         ACE_ASSERT(NULL != serverManager);
 
         STRING locale = serverManager->GetDefaultMessageLocale();
-        STRING message = except->GetMessage(locale);
+        STRING message = except->GetExceptionMessage(locale);
         STRING details = except->GetDetails(locale);
         STRING stackTrace = except->GetStackTrace(locale);
 

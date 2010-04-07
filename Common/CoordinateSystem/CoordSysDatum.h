@@ -30,9 +30,9 @@ public:
     void InitFromCatalog(const cs_Dtdef_& def);
     void GetMentorDef(cs_Dtdef_& def){def=m_DtDef;};
 
-    virtual STRING GetCode();
-    virtual void SetCode(CREFSTRING sCode);
-    virtual bool IsLegalCode(CREFSTRING sCode);
+    virtual STRING GetDtCode();
+    virtual void SetDtCode(CREFSTRING sCode);
+    virtual bool IsLegalDtCode(CREFSTRING sCode);
     virtual bool IsValid();
     virtual bool IsUsable(MgCoordinateSystemCatalog *pCatalog);
     virtual bool IsSameAs(MgGuardDisposable *pDef);

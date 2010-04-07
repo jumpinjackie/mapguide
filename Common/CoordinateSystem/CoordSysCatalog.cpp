@@ -42,16 +42,10 @@
 #include "csNameMapper.hpp"                 //for csReleaseNameMapper
 
 #ifdef _WIN32
-#ifdef UNICODE
-#define GetMessage  GetMessageW
-#else
-#define GetMessage  GetMessageA
-#endif // !UNICODE
 #include <atlbase.h>
 #include <atlconv.h>
 #include <tchar.h>                          //for _tsplitpath
 #include <shlobj.h>                         //for SHGetFolderPath
-#undef GetMessage
 #endif
 
 //Global variables needed from Mentor

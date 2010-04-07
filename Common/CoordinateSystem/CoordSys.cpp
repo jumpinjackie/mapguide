@@ -934,7 +934,7 @@ double CCoordinateSystem::GetMaxY()
 //
 //Corresponds to cs_Csdef_::key_nm.
 //
-STRING CCoordinateSystem::GetCode()
+STRING CCoordinateSystem::GetCsCode()
 {
     STRING sName;
 
@@ -942,11 +942,11 @@ STRING CCoordinateSystem::GetCode()
     wchar_t* pName = Convert_Ascii_To_Wide(m_csprm.csdef.key_nm);
     if (NULL == pName)
     {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetCode", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetCsCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     sName=pName;
     delete[] pName;
-    MG_CATCH_AND_THROW(L"MgCoordinateSystem.GetCode")
+    MG_CATCH_AND_THROW(L"MgCoordinateSystem.GetCsCode")
 
     return sName;
 }
@@ -956,27 +956,27 @@ STRING CCoordinateSystem::GetCode()
 //Throws an exception MgInvalidArgumentException if the provided string is not
 //a legal coordinate system name.
 //
-void CCoordinateSystem::SetCode(CREFSTRING sCode)
+void CCoordinateSystem::SetCsCode(CREFSTRING sCode)
 {
     MG_TRY()
 
     if (Protected())
     {
         //Can't modify a read-only object.
-        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.SetCode", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemProtectedException", NULL);
+        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.SetCsCode", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemProtectedException", NULL);
     }
 
     if (sCode.empty())
     {
         //null pointer is obviously not legal...
-        throw new MgInvalidArgumentException(L"MgCoordinateSystem.SetCode", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgInvalidArgumentException(L"MgCoordinateSystem.SetCsCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     //Convert to a C++ string, for Mentor's sake
     char *pStr = Convert_Wide_To_Ascii(sCode.c_str()); //need to delete[] pStr
     if (NULL == pStr)
     {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystem.SetCode", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgOutOfMemoryException(L"MgCoordinateSystem.SetCsCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     //Try to make a legal name.  CS_nampp() legalizes the
@@ -988,7 +988,7 @@ void CCoordinateSystem::SetCode(CREFSTRING sCode)
     {
         //illegal string
         delete [] pStr;
-        throw new MgInvalidArgumentException(L"MgCoordinateSystem.SetCode", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgInvalidArgumentException(L"MgCoordinateSystem.SetCsCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     //Copy into the definition
@@ -999,13 +999,13 @@ void CCoordinateSystem::SetCode(CREFSTRING sCode)
     delete [] pStr;
 
     //And we're done!
-    MG_CATCH_AND_THROW(L"MgCoordinateSystem.SetCode")
+    MG_CATCH_AND_THROW(L"MgCoordinateSystem.SetCsCode")
 }
 
 //Checks whether the specified string is a legal
 //coordinate system key name.
 //
-bool CCoordinateSystem::IsLegalCode(CREFSTRING sCode)
+bool CCoordinateSystem::IsLegalCsCode(CREFSTRING sCode)
 {
     return IsLegalMentorName(sCode.c_str());
 }
@@ -1309,7 +1309,7 @@ MgStringCollection* CCoordinateSystem::GetCategories()
         {
             Ptr<MgStringCollection> pCsNameColl=pEnumSystemsInCategory->NextName(1);
             if (1 != pCsNameColl->GetCount()) break;
-            if (GetCode()==pCsNameColl->GetItem(0))
+            if (GetCsCode()==pCsNameColl->GetItem(0))
             {
                 //we are in this category, let's get it and move on to the next category
                 pCategoryNames->Add(pCtDef->GetName());

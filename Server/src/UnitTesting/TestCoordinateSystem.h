@@ -51,7 +51,7 @@ class TestCoordinateSystem : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_Arbitrary_GetMinY);
     CPPUNIT_TEST(TestCase_Arbitrary_GetMaxX);
     CPPUNIT_TEST(TestCase_Arbitrary_GetMaxY);
-    CPPUNIT_TEST(TestCase_Arbitrary_GetCode);
+    CPPUNIT_TEST(TestCase_Arbitrary_GetCsCode);
     CPPUNIT_TEST(TestCase_Arbitrary_GetDescription);
     CPPUNIT_TEST(TestCase_Arbitrary_GetProjection);
     CPPUNIT_TEST(TestCase_Arbitrary_GetProjectionDescription);
@@ -79,7 +79,7 @@ class TestCoordinateSystem : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_Geographic_GetMinY);
     CPPUNIT_TEST(TestCase_Geographic_GetMaxX);
     CPPUNIT_TEST(TestCase_Geographic_GetMaxY);
-    CPPUNIT_TEST(TestCase_Geographic_GetCode);
+    CPPUNIT_TEST(TestCase_Geographic_GetCsCode);
     CPPUNIT_TEST(TestCase_Geographic_GetDescription);
     CPPUNIT_TEST(TestCase_Geographic_GetProjection);
     CPPUNIT_TEST(TestCase_Geographic_GetProjectionDescription);
@@ -107,7 +107,7 @@ class TestCoordinateSystem : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_Projected_GetMinY);
     CPPUNIT_TEST(TestCase_Projected_GetMaxX);
     CPPUNIT_TEST(TestCase_Projected_GetMaxY);
-    CPPUNIT_TEST(TestCase_Projected_GetCode);
+    CPPUNIT_TEST(TestCase_Projected_GetCsCode);
     CPPUNIT_TEST(TestCase_Projected_GetDescription);
     CPPUNIT_TEST(TestCase_Projected_GetProjection);
     CPPUNIT_TEST(TestCase_Projected_GetProjectionDescription);
@@ -261,7 +261,7 @@ public:
     void TestCase_Arbitrary_GetMinY();
     void TestCase_Arbitrary_GetMaxX();
     void TestCase_Arbitrary_GetMaxY();
-    void TestCase_Arbitrary_GetCode();
+    void TestCase_Arbitrary_GetCsCode();
     void TestCase_Arbitrary_GetDescription();
     void TestCase_Arbitrary_GetProjection();
     void TestCase_Arbitrary_GetProjectionDescription();
@@ -289,7 +289,7 @@ public:
     void TestCase_Geographic_GetMinY();
     void TestCase_Geographic_GetMaxX();
     void TestCase_Geographic_GetMaxY();
-    void TestCase_Geographic_GetCode();
+    void TestCase_Geographic_GetCsCode();
     void TestCase_Geographic_GetDescription();
     void TestCase_Geographic_GetProjection();
     void TestCase_Geographic_GetProjectionDescription();
@@ -317,7 +317,7 @@ public:
     void TestCase_Projected_GetMinY();
     void TestCase_Projected_GetMaxX();
     void TestCase_Projected_GetMaxY();
-    void TestCase_Projected_GetCode();
+    void TestCase_Projected_GetCsCode();
     void TestCase_Projected_GetDescription();
     void TestCase_Projected_GetProjection();
     void TestCase_Projected_GetProjectionDescription();

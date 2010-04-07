@@ -17,10 +17,6 @@
 
 #include "Foundation.h"
 
-// To undefine GetMessage macro defined in windows
-#ifdef _WIN32
-    #undef GetMessage
-#endif
 
 IMPLEMENT_EXCEPTION_ABSTRACT(MgException)
 
@@ -437,7 +433,7 @@ STRING MgException::FormatDetails(CREFSTRING locale) throw()
 /// This method should be called for critical errors when the configuration
 /// or resource file has not been loaded.
 ///
-STRING MgException::GetMessage(CREFSTRING locale, CREFSTRING resourceStr) throw()
+STRING MgException::GetExceptionMessage(CREFSTRING locale, CREFSTRING resourceStr) throw()
 {
     //
     // Format:
@@ -475,7 +471,7 @@ STRING MgException::GetMessage(CREFSTRING locale, CREFSTRING resourceStr) throw(
 /// \brief
 /// Retrieve the formatted exception message for the specified locale.
 ///
-STRING MgException::GetMessage(CREFSTRING locale) throw()
+STRING MgException::GetExceptionMessage(CREFSTRING locale) throw()
 {
     //
     // Format:
@@ -535,7 +531,7 @@ STRING MgException::GetDetails(CREFSTRING locale) throw()
 
     if (m_details.empty())
     {
-        m_details = GetMessage(locale);
+        m_details = GetExceptionMessage(locale);
         m_details += L"\n";
         m_details += FormatDetails(locale);
     }
@@ -579,9 +575,9 @@ STRING MgException::GetStackTrace(CREFSTRING locale) throw()
 /// \brief
 /// Retrieve the formatted exception message for the specified locale.
 ///
-STRING MgException::GetMessage() throw()
+STRING MgException::GetExceptionMessage() throw()
 {
-    return GetMessage(GetLocale());
+    return GetExceptionMessage(GetLocale());
 }
 
 ///////////////////////////////////////////////////////////////////////////////

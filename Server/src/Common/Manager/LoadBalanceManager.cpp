@@ -678,7 +678,7 @@ bool MgLoadBalanceManager::RegisterServices(MgServerInformation* newServerInfo,
 
             ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), e->GetDetails(locale).c_str()));
             MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
-            MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
+            MG_LOG_EXCEPTION_ENTRY(e->GetExceptionMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
 
             SAFE_RELEASE(e);
         }
@@ -768,7 +768,7 @@ void MgLoadBalanceManager::UnregisterServices(MgServerInformation* removedServer
 
             ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), e->GetDetails(locale).c_str()));
             MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
-            MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
+            MG_LOG_EXCEPTION_ENTRY(e->GetExceptionMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
 
             SAFE_RELEASE(e);
         }
@@ -973,7 +973,7 @@ void MgLoadBalanceManager::DispatchResourceChangeNotifications(
 
                 ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), e->GetDetails(locale).c_str()));
                 MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
-                MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
+                MG_LOG_EXCEPTION_ENTRY(e->GetExceptionMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
 
                 SAFE_RELEASE(e);
             }
@@ -1579,7 +1579,7 @@ void MgLoadBalanceManager::UnregisterServicesOnServers(
 
                 ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), e->GetDetails(locale).c_str()));
                 MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
-                MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
+                MG_LOG_EXCEPTION_ENTRY(e->GetExceptionMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
 
                 SAFE_RELEASE(e);
             }
@@ -1649,7 +1649,7 @@ bool MgLoadBalanceManager::RegisterServices()
 
                     ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), e->GetDetails(locale).c_str()));
                     MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
-                    MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
+                    MG_LOG_EXCEPTION_ENTRY(e->GetExceptionMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
 
                     SAFE_RELEASE(e);
                 }
@@ -1751,7 +1751,7 @@ void MgLoadBalanceManager::UnregisterServices()
 
                 ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), e->GetDetails(locale).c_str()));
                 MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
-                MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
+                MG_LOG_EXCEPTION_ENTRY(e->GetExceptionMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
 
                 SAFE_RELEASE(e);
             }
@@ -1778,7 +1778,7 @@ void MgLoadBalanceManager::UnregisterServices()
 
             ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), e->GetDetails(locale).c_str()));
             MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
-            MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
+            MG_LOG_EXCEPTION_ENTRY(e->GetExceptionMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
 
             SAFE_RELEASE(e);
         }
@@ -1845,7 +1845,7 @@ void MgLoadBalanceManager::EnableServices(INT32 serviceFlags)
 
                 ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), e->GetDetails(locale).c_str()));
                 MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
-                MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
+                MG_LOG_EXCEPTION_ENTRY(e->GetExceptionMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
 
                 SAFE_RELEASE(e);
             }
@@ -1873,7 +1873,7 @@ void MgLoadBalanceManager::EnableServices(INT32 serviceFlags)
 
             ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), e->GetDetails(locale).c_str()));
             MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
-            MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
+            MG_LOG_EXCEPTION_ENTRY(e->GetExceptionMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
 
             SAFE_RELEASE(e);
         }

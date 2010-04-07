@@ -170,7 +170,7 @@ void CgiResponseHandler::SendResponse(MgHttpResponse* response)
 void CgiResponseHandler::SendError(MgException* e)
 {
     MG_TRY()
-    STRING shortError = e->GetMessage();
+    STRING shortError = e->GetExceptionMessage();
     STRING longError = e->GetDetails();
     STRING statusMessage = e->GetClassName();
 
