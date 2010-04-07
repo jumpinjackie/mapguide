@@ -165,6 +165,11 @@
 }
 typedef char* CHAR_PTR_NOCOPY;
 
+%pragma(php) phpinfo=
+"    php_info_print_table_start();\n"\
+"    php_info_print_table_row(2, \"MapGuideApi\", \"enabled\");\n"\
+"    php_info_print_table_end();"
+
 ///////////////////////////////////////////////////////////
 // Global functions
 //

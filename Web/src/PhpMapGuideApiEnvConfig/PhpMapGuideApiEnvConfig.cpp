@@ -16,18 +16,10 @@
 //
 
 #pragma once
+
 /* PHP Extension headers */
-/* include zend win32 config first */
-#ifdef _WIN64
-//#include "zend_config.w64.h" // x64 configuration doesn't exist yet
-#else
-#include "zend_config.w32.h"
-#endif
-
-/* include standard header */
 #include "php.h"
-
-#include <windows.h>
+#include "ext/standard/info.h"
 
 #pragma warning(disable: 4996)
 
@@ -35,23 +27,20 @@
 #define GETENV GetEnvironmentVariable
 #define SETENV SetEnvironmentVariable
 
-wchar_t g_phpPath[MAX_PATH] = L"";
-
 BOOL PrepareServerPath()
 {
+    wchar_t phpPath[MAX_PATH] = L"";
+
     // Get the location of PHP
     HMODULE hModule;
-    GetModuleHandleEx(0, L"php5ts.dll", &hModule);
-    GetModuleFileName(hModule, g_phpPath, MAX_PATH);
-    wcsrchr(g_phpPath, '\\')[0] = '\0';
-    FreeLibrary(hModule);
+    hModule = GetModuleHandle(L"php5ts.dll");
+    GetModuleFileName(hModule, phpPath, MAX_PATH);
+    wcsrchr(phpPath, '\\')[0] = '\0';
+    //    FreeLibrary(hModule);  -- DO NOT CALL FreeLibrary() when using GetModuleHandle() as the reference count is not increased
 
     // Prepend to process PATH environment string
-    wchar_t srvPath[MAX_PATH] = L"";
-    wcscpy(srvPath, g_phpPath);
-
-    wchar_t ePath[1024*4] = {0};
-    wcscpy(ePath, srvPath);
+    wchar_t ePath[1024*4] = L"";  
+    wcscpy(ePath, phpPath);
     wcscat(ePath, L";");
     DWORD dw = (DWORD)wcslen(ePath);
     return (GETENV(L"PATH", &ePath[dw], sizeof(ePath)-dw) &&
@@ -71,72 +60,43 @@ BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD dwReason, LPVOID)
 }
 
 
-ZEND_FUNCTION(LoadMgDlls);
 /* compiled function list so Zend knows what's in this module */
-zend_function_entry CustomExtModule_functions[] = {
-    ZEND_FE(LoadMgDlls, NULL)
+zend_function_entry MapGuideApiEnvConfig_functions[] = {
     {NULL, NULL, NULL}
 };
 
 
-PHP_MINIT_FUNCTION(CustomExtModule)
+PHP_MINIT_FUNCTION(MapGuideApiEnvConfig)
 {
     return SUCCESS;
 }
 
+PHP_MSHUTDOWN_FUNCTION(MapGuideApiEnvConfig)  
+{  
+    return SUCCESS;  
+}  
+
+PHP_MINFO_FUNCTION(MapGuideApiEnvConfig)  
+{  
+    php_info_print_table_start();  
+    php_info_print_table_row(2, "MapGuideApiEnvConfig", "enabled");  
+    php_info_print_table_end();  
+}  
 
 /* compiled module information */
-zend_module_entry CustomExtModule_module_entry = {
+zend_module_entry MapGuideApiEnvConfig_module_entry = {
     STANDARD_MODULE_HEADER,
-    "MapGuideApiEnvConfig Module",
-    CustomExtModule_functions,
-    PHP_MINIT(CustomExtModule), NULL, NULL, NULL, NULL,
-    NO_VERSION_YET, STANDARD_MODULE_PROPERTIES
+    "MapGuideApiEnvConfig",  
+    MapGuideApiEnvConfig_functions,  
+    PHP_MINIT(MapGuideApiEnvConfig),  
+    PHP_MSHUTDOWN(MapGuideApiEnvConfig),  
+    NULL,  
+    NULL,  
+    PHP_MINFO(MapGuideApiEnvConfig),  
+    NO_VERSION_YET,  
+    STANDARD_MODULE_PROPERTIES  
 };
 
 
 /* implement standard "stub" routine to introduce ourselves to Zend */
-ZEND_GET_MODULE(CustomExtModule)
-
-
-/* LoadMgDlls function */
-ZEND_FUNCTION(LoadMgDlls)
-{
-    long theValue = 0;
-
-    SetDllDirectory(g_phpPath);
-
-    // Load the dependent dlls
-
-#ifdef _DEBUG
-
-    LoadLibrary(L"ACEd.dll");
-    LoadLibrary(L"lib_jsond.dll");
-    LoadLibrary(L"MgFoundationd.dll");
-    LoadLibrary(L"MgGeometryd.dll");
-    LoadLibrary(L"MgHttpHandlerd.dll");
-    LoadLibrary(L"MgMapGuideCommond.dll");
-    LoadLibrary(L"MgMdfModeld.dll");
-    LoadLibrary(L"MgMdfParserd.dll");
-    LoadLibrary(L"MgPlatformBased.dll");
-    LoadLibrary(L"MgWebAppd.dll");
-    LoadLibrary(L"xerces-c_2_7d.dll");
-
-#else
-
-    LoadLibrary(L"ACE.dll");
-    LoadLibrary(L"lib_json.dll");
-    LoadLibrary(L"MgFoundation.dll");
-    LoadLibrary(L"MgGeometry.dll");
-    LoadLibrary(L"MgHttpHandler.dll");
-    LoadLibrary(L"MgMapGuideCommon.dll");
-    LoadLibrary(L"MgMdfModel.dll");
-    LoadLibrary(L"MgMdfParser.dll");
-    LoadLibrary(L"MgPlatformBase.dll");
-    LoadLibrary(L"MgWebApp.dll");
-    LoadLibrary(L"xerces-c_2_7.dll");
-
-#endif
-
-    RETURN_LONG(theValue);
-}
+ZEND_GET_MODULE(MapGuideApiEnvConfig)
