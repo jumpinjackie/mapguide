@@ -67,7 +67,7 @@ class HtmlPrinter
         }
         catch (SqliteException $s)
         {
-            print $s->GetMessage();
+            print $s->GetExceptionMessage();
         }
         self::printTableEnd();
     }

@@ -76,7 +76,7 @@ class FeatureServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -98,7 +98,7 @@ class FeatureServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -126,7 +126,7 @@ class FeatureServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -158,7 +158,7 @@ class FeatureServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -220,7 +220,7 @@ class FeatureServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -260,7 +260,7 @@ class FeatureServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -293,7 +293,7 @@ class FeatureServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -336,7 +336,7 @@ class FeatureServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -379,7 +379,7 @@ class FeatureServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -422,7 +422,7 @@ class FeatureServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -465,7 +465,7 @@ class FeatureServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -494,7 +494,7 @@ class FeatureServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 
@@ -526,7 +526,7 @@ class FeatureServiceAPI
         }
         catch (SqliteException $s)
         {
-            return new Result($s->GetMessage(), "text/plain");
+            return new Result($s->GetExceptionMessage(), "text/plain");
         }
     }
 }

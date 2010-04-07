@@ -138,7 +138,7 @@ function ExecuteTest($requestType, $dumpFileName, &$testsRun, $file, $ent)
     }
     catch (SqliteException $s)
     {
-        print $s->GetMessage();
+        print $s->GetExceptionMessage();
         return 1;
     }
 }

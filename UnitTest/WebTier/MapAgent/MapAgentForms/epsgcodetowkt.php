@@ -22,7 +22,7 @@
     }
     catch ( MgException $e )
     {
-        $errorMsg = $e->GetMessage();
+        $errorMsg = $e->GetExceptionMessage();
         $status = "Fail";
     }
     catch ( Exception $e )
