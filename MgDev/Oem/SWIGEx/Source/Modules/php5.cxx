@@ -329,6 +329,7 @@ public:
       Printf(s_wrappers, "\t\tobject_init_ex(obj,ptr_ce_swig_%s);\n", e->name.c_str());
       Printf(s_wrappers, "\t\tadd_property_zval(obj,\"_cPtr\",_cPtr);\n");
       Printf(s_wrappers, "\t\tEG(exception) = obj;\n");
+      Printf(s_wrappers, "\t\tzend_throw_exception_object(EG(exception) TSRMLS_CC);\n");
 
 	  Printf(s_wrappers, "\t}\n");
   }
@@ -2055,7 +2056,7 @@ virtual int functionWrapper(Node *n) {
         Printf(s_oinit,"if (! (ptr_ce_swig_%s=zend_register_internal_class_ex(&ce_swig_%s,ptr_ce_swig_%s,NULL TSRMLS_CC))) zend_error(E_ERROR,\"Error registering wrapper for class %s\");\n",
           shadow_classname,shadow_classname,GetChar(base.item, "sym:name"), shadow_classname);
       } else {
-        Printf(s_oinit,"if (! (ptr_ce_swig_%s=zend_register_internal_class_ex(&ce_swig_%s,NULL,NULL TSRMLS_CC))) zend_error(E_ERROR,\"Error registering wrapper for class %s\");\n",
+        Printf(s_oinit,"if (! (ptr_ce_swig_%s=zend_register_internal_class_ex(&ce_swig_%s,zend_exception_get_default(TSRMLS_C),NULL TSRMLS_CC))) zend_error(E_ERROR,\"Error registering wrapper for class %s\");\n", 
           shadow_classname,shadow_classname, shadow_classname);
       }
 	  if(enableRuntimeTypeChecking)

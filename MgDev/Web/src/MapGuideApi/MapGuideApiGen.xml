@@ -241,6 +241,8 @@ typedef wchar_t* STRINGPARAM;
 
     <Header path="../../../Common/Geometry/Exception/CoordinateSystemComputationFailedException.h" />
     <Header path="../../../Common/Geometry/Exception/CoordinateSystemConversionFailedException.h" />
+    <Header path="../../../Common/Geometry/Exception/CoordinateSystemInitializationFailedException.h" />
+    <Header path="../../../Common/Geometry/Exception/CoordinateSystemLoadFailedException.h" />
     <Header path="../../../Common/Geometry/Exception/CoordinateSystemMeasureFailedException.h" />
     <Header path="../../../Common/Geometry/Exception/CoordinateSystemTransformFailedException.h" />
     <Header path="../../../Common/Geometry/Exception/GeometryException.h" />
