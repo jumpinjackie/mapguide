@@ -44,10 +44,9 @@ if [ ! -d tmp ]; then
   mkdir debian >& /dev/null
 else
 # clean out existing build tree
-   echo Fix me later
-#  rm -rf tmp/*
-#  rm -rf bin/*
-#  rm -rf debian/*
+  rm -rf tmp/*
+  rm -rf bin/*
+  rm -rf debian/*
 fi
 
 
@@ -125,15 +124,14 @@ CURRTIME=`date -R`
 cat > debian/changelog <<END-OF-CHANGELOG
 mapguideopensource-src (${MGBUILD}-${BUILDNUM}) experimental; urgency=low
 
-  * Pre-release build.
+  * Beta build.
 
  -- MapGuide Internals Mail List <mapguide-internals@lists.osgeo.org>  ${CURRTIME}
 END-OF-CHANGELOG
 
 
 # Pull copyright file from Subversion vault 
-# TODO: Create a copyright file for MapGuide, use FDO for now
-wget -N http://svn.osgeo.org/fdo/branches/3.5/License_README.txt -O tmp/copyright
+wget -N http://svn.osgeo.org/mapguide/trunk/MgDev/License.txt -O tmp/copyright
 iconv -f ISO-8859-1 -t UTF-8 tmp/copyright > debian/copyright
 
 PACKAGENAME=mapguideopensource-common
@@ -142,7 +140,7 @@ DIRLIST="lib share"
 REMOVELIST="\.a\$ \.la\$"
 STRIPLIST="\.so\$ libdwf"
 
-# source ./dpkgbuild.sh
+source ./dpkgbuild.sh
 
 MGINST=usr/local/mapguideopensource-${MGBUILD}/server
 ROOT=${BUILDROOT}/debian/mapguideserver
@@ -154,7 +152,7 @@ DIRLIST="bin lib Logs Packages Repositories RepositoryAdmin Resources Schema Tem
 REMOVELIST="\.a\$ \.la\$"
 STRIPLIST="\.so\$"
 
-# source ./dpkgbuild.sh
+source ./dpkgbuild.sh
 
 MGINST=usr/local/mapguideopensource-${MGBUILD}/webserverextensions
 ROOT=${BUILDROOT}/debian/mapguidewebextensions
@@ -166,7 +164,7 @@ DIRLIST="bin lib www"
 REMOVELIST="\.a\$ \.la\$"
 STRIPLIST="\.so\$"
 
-#source ./dpkgbuild.sh
+source ./dpkgbuild.sh
 
 MGINST=usr/local/mapguideopensource-${MGBUILD}/webserverextensions
 ROOT=${BUILDROOT}/debian/mapguidehttpd

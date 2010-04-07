@@ -3,12 +3,15 @@ TEMPDIR=/tmp/build_mapguide
 URL="http://download.osgeo.org/mapguide/testing"
 FDOVER=3.5.0-5343_i386
 MGVER=2.2.0-4724_i386
+MAESTROVER=2.0.0-4650_i386
 # Create temporary download directory
 mkdir -p ${TEMPDIR}
 pushd ${TEMPDIR}
 
 # Install required packages 
-apt-get -y install libexpat1 libssl0.9.8 odbcinst1debian1 unixodbc libmysqlclient15off
+apt-get -y install libexpat1 libssl0.9.8 odbcinst1debian1 unixodbc
+apt-get -y install mono-runtime libmono-winforms2.0-cil
+apt-get -y install libmysqlclient15off
 
 # Resolve CentOS 5.4 / Ubuntu 9.10 shared lib differences with symlinks
 if [ ! -e /lib/libcrypto.so.6 ]; then
@@ -35,6 +38,9 @@ do
   wget -N ${URL}/mapguideopensource-${file}_${MGVER}.deb
 done
 
+# Download Ubuntu package for Maestro
+wget -N ${URL}/mapguideopensource-maestro_${MAESTROVER}.deb
+
 # Install Ubuntu packages for FDO
 for file in core gdal kingoracle ogr postgis rdbms sdf shp sqlite wfs wms
 do
@@ -46,6 +52,9 @@ for file in common server webextensions httpd
 do
   dpkg -E -G --install mapguideopensource-${file}_${MGVER}.deb
 done
+
+# Install Ubuntu Package for Maestro
+dpkg -E -G --install mapguideopensource-maestro_${MAESTROVER}.deb
 
 popd
 
