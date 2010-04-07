@@ -11,6 +11,7 @@ extern "C" {
 #include "zend.h"
 #include "zend_API.h"
 #include "php.h"
+#include "zend_exceptions.h"
 
 #ifdef _WIN32
 #include <typeinfo.h>
