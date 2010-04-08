@@ -3400,10 +3400,10 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Arbitrary_Transform_EnvelopeXYZ
 
         CPPUNIT_ASSERT(MgUtil::ValuesEqual(32.80833333, ur->GetX()));
         CPPUNIT_ASSERT(MgUtil::ValuesEqual(16.40416667, ur->GetY()));
-        CPPUNIT_ASSERT(MgUtil::ValuesEqual(6.561666667, ur->GetZ()));
+        CPPUNIT_ASSERT(MgUtil::ValuesEqual(2.0, ur->GetZ()));
         CPPUNIT_ASSERT(MgUtil::ValuesEqual(0.0, ll->GetX()));
         CPPUNIT_ASSERT(MgUtil::ValuesEqual(3.280833333, ll->GetY()));
-        CPPUNIT_ASSERT(MgUtil::ValuesEqual(3.280833333, ll->GetZ()));
+        CPPUNIT_ASSERT(MgUtil::ValuesEqual(1.0, ll->GetZ()));
     }
     catch(MgException* e)
     {
@@ -5634,10 +5634,10 @@ void TestCoordinateSystem::TestCase_Projected_To_Projected_Transform_EnvelopeXYZ
 
         CPPUNIT_ASSERT(MgUtil::ValuesEqual(410983.0, ur->GetX()));
         CPPUNIT_ASSERT(MgUtil::ValuesEqual(1415115.0, ur->GetY()));
-        CPPUNIT_ASSERT(MgUtil::ValuesEqual(1.0, ur->GetZ()));
+        CPPUNIT_ASSERT(MgUtil::ValuesEqual(2.0, ur->GetZ()));
         CPPUNIT_ASSERT(MgUtil::ValuesEqual(410000.0, ll->GetX()));
         CPPUNIT_ASSERT(MgUtil::ValuesEqual(1415000.0, ll->GetY()));
-        CPPUNIT_ASSERT(MgUtil::ValuesEqual(2.0, ll->GetZ()));
+        CPPUNIT_ASSERT(MgUtil::ValuesEqual(1.0, ll->GetZ()));
     }
     catch(MgException* e)
     {
