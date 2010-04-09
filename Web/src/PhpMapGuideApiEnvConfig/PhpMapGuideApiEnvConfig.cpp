@@ -36,10 +36,10 @@ BOOL PrepareServerPath()
     hModule = GetModuleHandle(L"php5ts.dll");
     GetModuleFileName(hModule, phpPath, MAX_PATH);
     wcsrchr(phpPath, '\\')[0] = '\0';
-    //    FreeLibrary(hModule);  -- DO NOT CALL FreeLibrary() when using GetModuleHandle() as the reference count is not increased
+//    FreeLibrary(hModule);  -- DO NOT CALL FreeLibrary() when using GetModuleHandle() as the reference count is not increased
 
     // Prepend to process PATH environment string
-    wchar_t ePath[1024*4] = L"";  
+    wchar_t ePath[1024*4] = L"";
     wcscpy(ePath, phpPath);
     wcscat(ePath, L";");
     DWORD dw = (DWORD)wcslen(ePath);
@@ -71,30 +71,30 @@ PHP_MINIT_FUNCTION(MapGuideApiEnvConfig)
     return SUCCESS;
 }
 
-PHP_MSHUTDOWN_FUNCTION(MapGuideApiEnvConfig)  
-{  
-    return SUCCESS;  
-}  
+PHP_MSHUTDOWN_FUNCTION(MapGuideApiEnvConfig)
+{
+    return SUCCESS;
+}
 
-PHP_MINFO_FUNCTION(MapGuideApiEnvConfig)  
-{  
-    php_info_print_table_start();  
-    php_info_print_table_row(2, "MapGuideApiEnvConfig", "enabled");  
-    php_info_print_table_end();  
-}  
+PHP_MINFO_FUNCTION(MapGuideApiEnvConfig)
+{
+    php_info_print_table_start();
+    php_info_print_table_row(2, "MapGuideApiEnvConfig", "enabled");
+    php_info_print_table_end();
+}
 
 /* compiled module information */
 zend_module_entry MapGuideApiEnvConfig_module_entry = {
     STANDARD_MODULE_HEADER,
-    "MapGuideApiEnvConfig",  
-    MapGuideApiEnvConfig_functions,  
-    PHP_MINIT(MapGuideApiEnvConfig),  
-    PHP_MSHUTDOWN(MapGuideApiEnvConfig),  
-    NULL,  
-    NULL,  
-    PHP_MINFO(MapGuideApiEnvConfig),  
-    NO_VERSION_YET,  
-    STANDARD_MODULE_PROPERTIES  
+    "MapGuideApiEnvConfig",
+    MapGuideApiEnvConfig_functions,
+    PHP_MINIT(MapGuideApiEnvConfig),
+    PHP_MSHUTDOWN(MapGuideApiEnvConfig),
+    NULL,
+    NULL,
+    PHP_MINFO(MapGuideApiEnvConfig),
+    NO_VERSION_YET,
+    STANDARD_MODULE_PROPERTIES
 };
 
 
