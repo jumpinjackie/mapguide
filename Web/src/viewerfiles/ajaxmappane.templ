@@ -2730,7 +2730,9 @@ function ExecuteCircleTool()
     var tgt = ScreenToMapUnits(rcx2, rcy2);
     var dx = tgt.X - center.X, dy = tgt.Y - center.Y;
     var r = Math.sqrt(dx*dx + dy*dy);
-
+    
+    if(r == 0)
+        return;
     RequestCircleSelection(center.X, center.Y, r, appending);
 }
 
