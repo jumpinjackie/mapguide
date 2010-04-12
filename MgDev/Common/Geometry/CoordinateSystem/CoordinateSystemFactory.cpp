@@ -507,7 +507,7 @@ INT32 MgCoordinateSystemFactory::ConvertWktToEpsgCode(CREFSTRING wkt)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.ConvertWktToEpsgCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    STRING strEpsgCode=pConverter->WktToCode(MgCoordinateSystemWktFlavor::Ogc, wkt, MgCoordinateSystemCodeFormat::Epsg);
+    STRING strEpsgCode=pConverter->WktToCode(MgCoordinateSystemWktFlavor::Unknown, wkt, MgCoordinateSystemCodeFormat::Epsg);
     nEpsg = (INT32)wcstol(strEpsgCode.c_str(), NULL, 10);
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.ConvertWktToEpsgCode")
 
