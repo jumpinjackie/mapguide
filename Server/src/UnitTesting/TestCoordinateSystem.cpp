@@ -5876,17 +5876,13 @@ void TestCoordinateSystem::TestCase_EPSG()
                             else
                             {
                                 // Failed Round trip
-                                #ifdef _DEBUG
-                                printf("%d != %d - Failed!\n", code, epsg);
-                                #endif
+                                printf("%6d - Round trip Failed! Round trip code = %d\n", code, epsg);
                             }
                         }
                         else
                         {
                             // Failed
-                            #ifdef _DEBUG
-                            printf("%d - Failed!\n", code);
-                            #endif
+                            printf("%6d - EPSG to WKT Failed!\n", code);
                         }
                     }
                     catch(MgException* e)
