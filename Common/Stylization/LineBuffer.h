@@ -161,6 +161,8 @@ public:
     inline void EnsureContours(int n);
     inline void EnsureArcsSpArray(int n);
     inline void EnsureCloseSegArray(int n);
+    inline void StoreArcStartIndex();
+    inline void StoreArcEndIndex();
     inline int contour_start_point(int contour) const;
     inline int contour_end_point(int contour) const;
     inline int arcs_sp_length() const;
@@ -380,6 +382,23 @@ void LineBuffer::EnsureCloseSegArray(int n)
     // existing array not large enough
     if (needed > m_closeseg_len)
         ResizeCloseSegArray(2 * needed);
+}
+
+
+// Store off arc start point index, consistent with ArcTo().
+void LineBuffer::StoreArcStartIndex()
+{
+    EnsureArcsSpArray(1);
+    m_arcs_sp[++m_cur_arcs_sp] = m_cur_types - 1;
+}
+
+
+// Store off arc end point index (want index of start point of last segment),
+// consistent with ArcTo().
+void LineBuffer::StoreArcEndIndex()
+{
+    EnsureArcsSpArray(1);
+    m_arcs_sp[++m_cur_arcs_sp] = m_cur_types - 2;
 }
 
 
