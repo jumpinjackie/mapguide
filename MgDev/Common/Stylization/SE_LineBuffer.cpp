@@ -275,6 +275,10 @@ void SE_LineBuffer::PopulateXFBuffer()
 
                 // add the segments
                 m_xf_buf->EnsurePoints(nSegs);
+
+                // store off arc start point index
+                m_xf_buf->StoreArcStartIndex();
+
                 for (int i=1; i<=nSegs; ++i)
                 {
                     double ang = sAng + i*dAng;
@@ -288,6 +292,9 @@ void SE_LineBuffer::PopulateXFBuffer()
 
                     m_xf_buf->UnsafeLineTo(x, y);
                 }
+
+                // store off arc end point index
+                m_xf_buf->StoreArcEndIndex();
 
                 break;
             }
