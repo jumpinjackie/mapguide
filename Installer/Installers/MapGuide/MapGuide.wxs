@@ -38,8 +38,8 @@
         <Property Id="APP_POOL_NAME" Secure="yes" Value="MapGuideAppPool" />
         <Property Id="MGSERVER_IP" Secure="yes" Value="127.0.0.1" />
         <Property Id="APACHE_PORT" Secure="yes" Value="8008" />
-        <Property Id="APACHE_VERSION" Secure="yes" Value="2.2.4" />
-        <Property Id="PHP_VERSION" Secure="yes" Value="5.2.5" />
+        <Property Id="APACHE_VERSION" Secure="yes" Value="2.2.11" />
+        <Property Id="PHP_VERSION" Secure="yes" Value="5.3.2" />
         <Property Id="MG_VERSION_MAJOR_MINOR" Secure="yes" Value="2.2" />
         <!-- Server Port Settings  -->
         <Property Id="MG_ADMIN_PORT" Secure="yes" Value="2810" />

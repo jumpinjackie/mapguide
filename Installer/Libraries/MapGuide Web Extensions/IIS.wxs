@@ -42,7 +42,7 @@
                 <iis:WebVirtualDir Id="IIS5MapGuideVDir" Alias="[VIRTUALDIR]" Directory="WEBROOTLOCATION" WebSite="IISDefaultWebSite">
                     <iis:WebDirProperties Id="IIS5MapGuideDocuments" DefaultDocuments="index.php,index.html,index.htm,default.aspx,index.aspx,default.htm,default.html" AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no"/>
                     <iis:WebApplication Id="IIS5MapGuideWebApp" Name="[VIRTUALDIR]">
-                        <iis:WebApplicationExtension Extension="php" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="[!file_PHPFILES_39]" />
+                        <iis:WebApplicationExtension Extension="php" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="[!file_PHPFILES_42]" />
                     </iis:WebApplication>
                     <iis:WebVirtualDir Id="IIS5MapAgentVDir" Alias="mapagent" Directory="dir_mapagent_0" >
                         <iis:WebDirProperties Id="IIS5MapAgentProperties" DefaultDocuments="index.html" AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no"/>
@@ -54,7 +54,7 @@
                         <iis:WebError ErrorCode="401" SubCode="5" />
                         <iis:WebApplication Id="IIS5MapAgentWebApp" Name="mapagent" >
                             <iis:WebApplicationExtension Extension="fcgi" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="[!file_MAPAGENTFILES_98]" />
-                            <iis:WebApplicationExtension Extension="php" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="[!file_PHPFILES_39]" />
+                            <iis:WebApplicationExtension Extension="php" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="[!file_PHPFILES_42]" />
                         </iis:WebApplication>
                     </iis:WebVirtualDir>
                     <iis:WebVirtualDir Id="IIS5MapAdminVDir" Alias="mapadmin" Directory="dir_mapadmin_0" >
@@ -94,13 +94,13 @@
                 <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Condition>
                 <CreateFolder />
                 <iis:WebAppPool Id="IIS6MapGuideAppPool" Name="[APP_POOL_NAME]" />
-                <iis:WebServiceExtension Id="IIS6PhpWebServiceExt" Allow="yes" Description="MapGuide PHP ISAPI Extension" File="[!file_PHPFILES_39]" />
+                <iis:WebServiceExtension Id="IIS6PhpWebServiceExt" Allow="yes" Description="MapGuide PHP ISAPI Extension" File="[!file_PHPFILES_42]" />
                 <iis:WebServiceExtension Id="IIS6MapGuideWebServiceExt" Allow="yes" Description="MapGuide MapAgent ISAPI Extension" File="[!file_MAPAGENTFILES_98]" />
                 <iis:WebVirtualDir Id="IIS6MapGuideVDir" Alias="[VIRTUALDIR]" Directory="WEBROOTLOCATION" WebSite="IISDefaultWebSite" >
                     <iis:WebDirProperties Id="IIS6MapGuideDocuments" DefaultDocuments="index.php,index.html,index.htm,default.aspx,index.aspx,default.htm,default.html"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
                     <iis:MimeMap Id="IIS6JsonMimeType" Type="application/json" Extension =".json" />
                     <iis:WebApplication Id="IIS6MapGuideWebApp" Name="[VIRTUALDIR]" WebAppPool="IIS6MapGuideAppPool" >
-                        <iis:WebApplicationExtension Extension="php" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="[!file_PHPFILES_39]" />
+                        <iis:WebApplicationExtension Extension="php" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="[!file_PHPFILES_42]" />
                     </iis:WebApplication>
                     <iis:WebVirtualDir Id="IIS6MapAgentVDir" Alias="mapagent" Directory="dir_mapagent_0" >
                         <iis:WebDirProperties Id="IIS6MapAgentProperties" DefaultDocuments="index.html" AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
@@ -112,7 +112,7 @@
                         <iis:WebError ErrorCode="401" SubCode="5" />
                         <iis:WebApplication Id="IIS6MapAgentWebApp" Name="mapagent" WebAppPool="IIS6MapGuideAppPool">
                             <iis:WebApplicationExtension Extension="fcgi" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="[!file_MAPAGENTFILES_98]" />
-                            <iis:WebApplicationExtension Extension="php" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="[!file_PHPFILES_39]" />
+                            <iis:WebApplicationExtension Extension="php" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="[!file_PHPFILES_42]" />
                         </iis:WebApplication>
                     </iis:WebVirtualDir>
                     <iis:WebVirtualDir Id="IIS6MapAdminVDir" Alias="mapadmin" Directory="dir_mapadmin_0" >

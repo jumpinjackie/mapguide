@@ -41,6 +41,7 @@ rem Command Line Option Defaults
 rem ==================================================
 
 SET TYPEACTION=build
+SET CPUTYPE=x86
 SET TYPEBUILD=Release
 SET CULTURE=en-US
 SET INSTALLER_VERSION_MAJOR_MINOR_REV=2.2.0
@@ -221,11 +222,11 @@ copy %INSTALLER_FDO_REG_UTIL%\%TYPEBUILD%\FdoRegUtil.exe %MG_SOURCE%\Server\FDO
 popd
 rem copy support files into server and web directories
 echo [prepare] Tomcat
-%XCOPY% "%INSTALLER_DEV%\Support\Web\Tomcat" "%MG_SOURCE%\Web\Tomcat" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\Tomcat" "%MG_SOURCE%\Web\Tomcat" /EXCLUDE:svn_excludes.txt
 echo [prepare] Php
-%XCOPY% "%INSTALLER_DEV%\Support\Web\Php" "%MG_SOURCE%\Web\Php" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\Php" "%MG_SOURCE%\Web\Php" /EXCLUDE:svn_excludes.txt
 echo [prepare] Apache2
-%XCOPY% "%INSTALLER_DEV%\Support\Web\Apache2" "%MG_SOURCE%\Web\Apache2" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\Apache2" "%MG_SOURCE%\Web\Apache2" /EXCLUDE:svn_excludes.txt
 
 goto quit
 
