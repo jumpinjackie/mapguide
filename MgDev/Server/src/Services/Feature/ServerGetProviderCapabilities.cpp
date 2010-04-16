@@ -473,7 +473,7 @@ void MgServerGetProviderCapabilities::CreateExpressionCapabilities()
         if (funcCnt > 0)
         {
             // Add function definition collection element if there are any functions available
-            DOMElement* funcDefColNode = m_xmlCap->AddChildNode(expressionNode, "FunctionDefinitionCollection");
+            DOMElement* funcDefColNode = m_xmlCap->AddChildNode(expressionNode, "FunctionDefinitionList");
             CHECKNULL(funcDefColNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
 
             for (FdoInt32 i=0; i < funcCnt; i++)
@@ -506,7 +506,7 @@ void MgServerGetProviderCapabilities::CreateExpressionCapabilities()
                     if (argCnt > 0)
                     {
                         // Add ArgumentDefinitionCollection if there are arguments
-                        DOMElement* argDefColNode = m_xmlCap->AddChildNode(funcDefNode, "ArgumentDefinitionCollection");
+                        DOMElement* argDefColNode = m_xmlCap->AddChildNode(funcDefNode, "ArgumentDefinitionList");
                         CHECKNULL(argDefColNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
 
                         for (FdoInt32 j=0; j < argCnt; j++)
