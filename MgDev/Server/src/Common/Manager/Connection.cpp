@@ -97,30 +97,12 @@ void MgConnection::SetCurrentConnection(MgConnection* connection)
             {
                 g_threadLocalConnection = 0;
             }
-            else
-            {
-                ACE_OS::thr_setspecific(g_threadLocalConnection, NULL);
-            }
         }
     }
 
     if (0 != g_threadLocalConnection)
     {
-        MgConnection* oldInfo = NULL;
-        ACE_OS::thr_getspecific(g_threadLocalConnection, (void**) &oldInfo);
-
-        MgConnection* tempConnection = NULL;
-        if(connection != NULL)
-        {
-            tempConnection = new MgConnection(*connection);
-        }
-
-        ACE_OS::thr_setspecific(g_threadLocalConnection, tempConnection);
-
-        if (NULL != oldInfo)
-        {
-            delete oldInfo;
-        }
+        ACE_OS::thr_setspecific(g_threadLocalConnection, connection);
     }
 }
 
