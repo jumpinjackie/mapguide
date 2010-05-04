@@ -63,8 +63,8 @@ fi
 
 check_apache_build ()
 {
-  if [ $? -ne 0 ]; then
-    error=$?
+  error=$?
+  if [ $error -ne 0 ]; then
     echo "Apache build failed ($error)."
     exit $error
   fi
@@ -72,8 +72,8 @@ check_apache_build ()
 
 check_php_build ()
 {
-  if [ $? -ne 0 ]; then
-    error=$?
+  error=$?
+  if [ $error -ne 0 ]; then
     echo "Php build failed ($error)."
     exit $error
   fi
@@ -81,8 +81,8 @@ check_php_build ()
 
 check_apache_install ()
 {
-  if [ $? -ne 0 ]; then
-    error=$?
+  error=$?
+  if [ $error -ne 0 ]; then
     echo "Apache install failed ($error)."
     exit $error
   fi
@@ -90,8 +90,8 @@ check_apache_install ()
 
 check_php_install ()
 {
-  if [ $? -ne 0 ]; then
-    error=$?
+  error=$?
+  if [ $error -ne 0 ]; then
     echo "Php install failed ($error)."
     exit $error
   fi
@@ -99,8 +99,8 @@ check_php_install ()
 
 check_tomcat_build ()
 {
-  if [ $? -ne 0 ]; then
-    error=$?
+  error=$?
+  if [ $error -ne 0 ]; then
     echo "Tomcat build failed ($error)."
     exit $error
   fi
@@ -108,8 +108,8 @@ check_tomcat_build ()
 
 check_tomcat_install ()
 {
-  if [ $? -ne 0 ]; then
-    error=$?
+  error=$?
+  if [ $error -ne 0 ]; then
     echo "Tomcat install failed ($error)."
     exit $error
   fi
@@ -120,9 +120,10 @@ check_tomcat_install ()
 # Notes: none
 #**********************************************************
 echo Apache Httpd build started
+tar -zxf httpd-2.2.4.tar.gz
 pushd httpd-2.2.4
 ./configure --prefix=$INSTALLWEB/apache2 --enable-mods-shared=all \
---with-included-apr --with-port=$PORT
+--enable-ldap --with-ldap --enable-authnz-ldap --with-included-apr --with-port=$PORT
 check_apache_build
 make
 check_apache_build
@@ -133,16 +134,19 @@ echo Apache Httpd build completed
 # Apache shutdown  procedure
 # Notes: none
 #**********************************************************
-echo Attempting to shutdown Apache
-pushd $INSTALLWEB/apache2/bin
-./apachectl stop
-popd
-echo Attempting to remove old Apache and Php
-pushd $INSTALLWEB
-rm -rf apache2
-rm -rf php
-popd
-echo Completed uninstall of Apache and Php
+echo Checking for existing Apache install
+if [ -d $INSTALLWEB/apache2/bin ]; then
+  echo Attempting to shutdown Apache
+  pushd $INSTALLWEB/apache2/bin
+  ./apachectl stop
+  popd
+  echo Attempting to remove old Apache and Php
+  pushd $INSTALLWEB
+  rm -rf apache2
+  rm -rf php
+  popd
+  echo Completed uninstall of Apache and Php
+fi
 
 #**********************************************************
 # Apache install procedure
@@ -173,11 +177,19 @@ END-OF-CONFIGURATION
 
 popd
 
-# Create symlink for agent.
+# Create dummy mapagent.fcgi and symlinks for module.
 mkdir -p $INSTALLWEB/www/mapagent
 mkdir $INSTALLWEB/bin
 pushd $INSTALLWEB/www/mapagent
-ln -s ../../bin/mapagent mapagent.fcgi
+cat > mapagent.fcgi <<END-OF-FCGI
+// Empty file.  IIS application mappings and Apache script aliases are
+used to bind this file to the actual MapAgent binaries
+END-OF-FCGI
+popd
+
+mkdir -p $INSTALLWEB/lib
+pushd $INSTALLWEB/apache2/modules
+ln -s ../../lib/mod_mgmapagent.so mod_mgmapagent.so
 popd
 
 #**********************************************************
@@ -212,6 +224,7 @@ echo Php install completed
 #**********************************************************
 if [ "$TOMCAT" = "1" ]; then
 echo Tomcat connector build/install started
+tar -zxf tomcat-connectors-1.2.25-src.tar.gz
 pushd tomcat-connectors-1.2.25-src/native
 
 ./configure --with-apxs=$INSTALLWEB/apache2/bin/apxs
@@ -255,15 +268,25 @@ cat httpd.conf.mgorig_ tempfile > httpd.conf
 rm httpd.conf.mgorig_
 popd
 
+# Required modifications for envvars
+pushd $INSTALLWEB/apache2/bin
+cat >> envvars <<END-OF-ENVVARS
+export LD_LIBRARY_PATH=$INSTALLWEB/lib:$INSTALLWEB/php/lib:$INSTALLDIR/lib
+export MENTOR_DICTIONARY_PATH=$INSTALLDIR/share/gis/coordsys
+END-OF-ENVVARS
+popd
+
 # Required modifications to httpd.conf, append to mapguide.conf
 pushd $INSTALLWEB/apache2/conf
 cat >> mapguide.conf <<END-OF-CONFIGURATION
+
 # Environment variables for MapGuide
 SetEnv LD_LIBRARY_PATH "$INSTALLWEB/lib:$INSTALLWEB/php/lib:$INSTALLDIR/lib"
-SetEnv GDAL_DATA $INSTALLDIR/share/gdal
-SetEnv PROJ_LIB $INSTALLDIR/share/proj
+SetEnv MENTOR_DICTIONARY_PATH "$INSTALLDIR/share/gis/coordsys"
 
-#LoadModule mgmapagent_module modules/mod_mgmapagent.so
+LoadModule mgmapagent_module modules/mod_mgmapagent.so
+
+RewriteEngine On
 
 #START NormalCGI PHP configuration
 #ScriptAlias /php/ "$INSTALLWEB/php/bin/"
@@ -271,25 +294,38 @@ SetEnv PROJ_LIB $INSTALLDIR/share/proj
 #AddType application/x-httpd-php .php
 #END NormalCGI PHP configuration
 
-# MapViewer to MapViewerPhp aliases
-ScriptAlias /mapguide/mapagent/mapagent "$INSTALLWEB/www/mapagent/mapagent"
-AliasMatch ^/mapguide/mapviewerajax/([^\?])(.*)$ "$INSTALLWEB/www/mapviewerphp/\$1\$2"
-AliasMatch ^/mapguide/mapviewerajax/(.*)$ "$INSTALLWEB/www/mapviewerphp/ajaxviewer.php\$1"
-AliasMatch ^/mapguide/mapviewerdwf/([^\?])(.*)$ "$INSTALLWEB/www/mapviewerphp/\$1\$2"
-AliasMatch ^/mapguide/mapviewerdwf/(.*)$ "$INSTALLWEB/www/mapviewerphp/dwfviewer.php\$1"
+# CGI agent alias
+#ScriptAlias /mapguide/mapagent/mapagent.fcgi "$INSTALLWEB/www/mapagent/mapagent"
+
+# mapviewerajax to mapviewerphp rewrite rules
+# comment out for java api/viewer
+RewriteRule ^/mapguide/mapviewerajax/([^\?])(.*)$ /mapguide/mapviewerphp/\$1\$2 [PT]
+RewriteRule ^/mapguide/mapviewerajax/(.*)$ /mapguide/mapviewerphp/ajaxviewer.php\$1 [PT]
+RewriteRule ^/mapguide/mapviewerdwf/([^\?])(.*)$ /mapguide/mapviewerphp/\$1\$2 [PT]
+RewriteRule ^/mapguide/mapviewerdwf/(.*)$ /mapguide/mapviewerphp/dwfviewer.php\$1 [PT]
+
+# mapviewerajax to mapviewerjava aliases
+# uncomment for java api/viewer
+#RewriteRule ^/mapguide/mapviewerajax/([^\?])(.*)$ /mapguide/mapviewerjava/\$1\$2 [PT]
+#RewriteRule ^/mapguide/mapviewerajax/(.*)$ /mapguide/mapviewerjava/ajaxviewer.jsp\$1 [PT]
+#RewriteRule ^/mapguide/mapviewerdwf/([^\?])(.*)$ /mapguide/mapviewerjava/\$1\$2 [PT]
+#RewriteRule ^/mapguide/mapviewerdwf/(.*)$ /mapguide/mapviewerjava/dwfviewer.jsp\$1 [PT]
+
 Alias /mapguide "$INSTALLWEB/www/"
+
 <Directory "$INSTALLWEB/www/">
   AllowOverride All
   Options All
   Order allow,deny
   Allow from all
 
-AddHandler php5-script .php
-#AddHandler mgmapagent_handler fcgi
+  AddHandler php5-script .php
+  AddHandler mgmapagent_handler fcgi
 
   RewriteEngine on
   RewriteRule .* - [E=REMOTE_USER:%{HTTP:Authorization},L]
 </Directory>
+
 END-OF-CONFIGURATION
 popd
 
@@ -303,9 +339,8 @@ if [ "$TOMCAT" = "1" ]; then
 echo Tomcat configuration started
 pushd $INSTALLWEB/apache2/conf
 cat >> mapguide.conf <<END-OF-CONFIGURATION
-#Tomcat Integration
-#Taken from http://tomcat.apache.org/connectors-doc/howto/quick.html
 
+#Tomcat Integration
 # Load mod_jk module
 # Update this path to match your modules location
 LoadModule    jk_module  modules/mod_jk.so
@@ -328,6 +363,7 @@ JkRequestLogFormat     "%w %V %T"
 # Send everything for context /examples to worker named worker1 (ajp13)
 JkMount  /mapguide/mapviewerjava/* worker1
 JkMount  /mapguide/javaviewersample/* worker1
+
 END-OF-CONFIGURATION
 
 cat > workers.properties <<END-OF-CONFIGURATION
@@ -345,6 +381,11 @@ worker.worker1.recycle_timeout=300
 END-OF-CONFIGURATION
 
 popd
+
+if [ ! -d $INSTALLWEB/tomcat/conf/Catalina/localhost ]; then
+mkdir -p $INSTALLWEB/tomcat/conf/Catalina/localhost
+fi
+
 pushd $INSTALLWEB/tomcat/conf/Catalina/localhost
 cat > mapguide.xml <<END_OF_CONFIGURATION
 <!--
@@ -370,6 +411,23 @@ popd
 
 mv -f $INSTALLWEB/tomcat/conf/server.xml $INSTALLWEB/tomcat/conf/server_orig.xml
 cp -f server.xml $INSTALLWEB/tomcat/conf
+
+pushd $INSTALLWEB/tomcat/bin
+if [ ! -e startup.sh.orig ]; then
+mv startup.sh startup.sh.orig
+fi
+
+LIB_PATH=$INSTALLWEB/lib:$INSTALLDIR/lib
+cat > startup.sh <<END_OF_CONFIGURATION
+#!/bin/bash
+export LD_LIBRARY_PATH=$LIB_PATH
+export MENTOR_DICTIONARY_PATH=$INSTALLDIR/share/gis/coordsys
+export JAVA_OPTS="-Djava.library.path=$LIB_PATH"
+END_OF_CONFIGURATION
+
+cat startup.sh.orig >> startup.sh
+chmod 755 startup.sh
+popd
 
 echo Tomcat configuration completed
 fi
@@ -431,8 +489,6 @@ echo "Apache is now online."
 if [ "$TOMCAT" = "1" ]; then
 echo Tomcat startup 
 pushd $INSTALLWEB/tomcat/bin
-export LD_LIBRARY_PATH=$INSTALLWEB/lib:$INSTALLDIR/lib:$LD_LIBRARY_PATH
-export JAVA_OPTS="-Djava.library.path=$LD_LIBRARY_PATH"
 ./startup.sh
 popd
 
