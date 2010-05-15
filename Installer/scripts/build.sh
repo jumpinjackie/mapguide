@@ -2,6 +2,7 @@
 BUILDNUM=2.2.0
 BUILDROOT=`pwd`
 INSTALLROOT=/usr/local/mapguideopensource-${BUILDNUM}
+LOCKFILEDIR=/var/lock/mgserver
 MGSOURCE=${BUILDROOT}/mgdev
 SVNROOT="svn://svn.bld.mgproto.net"
 #SVNROOT="http://svn.osgeo.org"
@@ -60,5 +61,5 @@ pushd ${BUILDROOT}
 if [ ! -d bin ]; then
    mkdir -p bin
 fi
-tar -zcf bin/mapguideopensource-${BUILDNUM}.${REVISION}.tgz ${INSTALLROOT}
+tar -zcf bin/mapguideopensource-${BUILDNUM}.${REVISION}.tgz ${INSTALLROOT} ${LOCKFILEDIR}
 popd
