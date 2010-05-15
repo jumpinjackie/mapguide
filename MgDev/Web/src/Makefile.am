@@ -41,6 +41,7 @@ install-data-local:
 	@cp -fp PhpApi/constants.php $(mapadmindir)
 	@cp -fp ../../Common/MapGuideCommon/Resources/mapguide_en.res $(resourcesdir)
 	@cp -rfp ../../Oem/fusion/build/* $(fusiondir)
+	@cp -rfp ../../Oem/fusionMG/* $(fusiondir)
 	@cp -rfp mapviewerphp/* $(mapviewerphpdir)
 	@cp -fp PhpApi/constants.php $(mapviewerphpdir)
 	@find mapviewerjava -maxdepth 1 -type f -exec cp -fp {} $(mapviewerjavadir) \;
