@@ -142,11 +142,8 @@ const MgUserInfo* MgSecurityCache::GetUserInfo(CREFSTRING user,
     }
     else if (strict)
     {
-        MgStringCollection arguments;
-        arguments.Add(user);
-
-        throw new MgUserNotFoundException(L"MgSecurityCache.GetUserInfo",
-            __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgAuthenticationFailedException(L"MgSecurityCache.GetUserInfo",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     return userInfo;
