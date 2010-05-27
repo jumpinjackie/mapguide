@@ -1,15 +1,15 @@
 #!/bin/bash
 TEMPDIR=/tmp/build_mapguide
-URL="http://download.osgeo.org/mapguide/testing"
-FDOVER=3.5.0-5343_i386
-MGVER=2.2.0-4724_i386
+URL="http://download.osgeo.org/mapguide/releases/2.2.0"
+FDOVER=3.5.0-5460_i386
+MGVER=2.2.0-4898_i386
 MAESTROVER=2.0.0-4650_i386
 # Create temporary download directory
 mkdir -p ${TEMPDIR}
 pushd ${TEMPDIR}
 
 # Install required packages 
-apt-get -y install libexpat1 libssl0.9.8 odbcinst1debian1 unixodbc libcurl3
+apt-get -y install libexpat1 libssl0.9.8 odbcinst1debian1 unixodbc libcurl3 libxslt1.1
 apt-get -y install mono-runtime libmono-winforms2.0-cil
 apt-get -y install libmysqlclient15off
 
@@ -25,6 +25,15 @@ fi
 if [ ! -e /lib/libexpat.so.0 ]; then
   ln -s /lib/libexpat.so.1.5.2 /lib/libexpat.so.0
 fi
+
+if [ ! -e /usr/lib/libldap-2.3.so.0 ]; then
+  ln -s /usr/lib/libldap-2.4.so.2 /usr/lib/libldap-2.3.so.0
+fi
+
+if [ ! -e /usr/lib/liblber-2.3.so.0 ]; then
+  ln -s /usr/lib/liblber-2.4.so.2 /usr/lib/liblber-2.3.so.0
+fi
+
 
 # Download Ubuntu packages for FDO
 for file in core gdal kingoracle ogr postgis rdbms sdf shp sqlite wfs wms
