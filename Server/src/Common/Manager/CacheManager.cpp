@@ -313,3 +313,48 @@ MgSpatialContextCacheItem* MgCacheManager::GetSpatialContextCacheItem(MgResource
 
     return cacheItem.Detach();
 }
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Determine if a cache notification is needed for the specified resource
+/// if it has been changed.
+///
+bool MgCacheManager::IsResourceChangeNotificationNeeded(MgResourceIdentifier* resource)
+{
+    bool notificationNeeded = false; 
+
+    // Note that the filter below may be changed in the future or whenever
+    // a new resource type is supported.
+    // Currently, the cache manager only needs to know if the following types
+    // of resources have been changed:
+    //
+    // Feature Service cache:
+    //      MgResourceType::FeatureSource
+    // Tile cache:
+    //      MgResourceType::MapDefinition
+    //      MgResourceType::LayerDefinition
+    //      MgResourceType::DrawingSource
+    //      MgResourceType::FeatureSource
+    //      MgResourceType::SymbolDefinition
+    //      MgResourceType::SymbolLibrary
+
+    if (NULL != resource)
+    {
+        STRING resourceType = resource->GetResourceType();
+
+        if (MgResourceType::Map                          != resourceType
+         && MgResourceType::Folder                       != resourceType
+         && MgResourceType::LoadProcedure                != resourceType
+         && MgResourceType::PrintLayout                  != resourceType
+         && MgResourceType::Selection                    != resourceType
+         && MgResourceType::WebLayout                    != resourceType
+         && MgResourceType::ApplicationDefinition        != resourceType
+         && MgResourceType::PrintLayoutDefinition        != resourceType
+         && MgResourceType::PrintLayoutElementDefinition != resourceType)
+        {
+            notificationNeeded = true; 
+        }
+    }
+
+    return notificationNeeded; 
+}
