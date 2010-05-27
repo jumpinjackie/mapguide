@@ -9,7 +9,7 @@ mkdir -p ${TEMPDIR}
 pushd ${TEMPDIR}
 
 # Install required packages 
-apt-get -y install libexpat1 libssl0.9.8 odbcinst1debian1 unixodbc
+apt-get -y install libexpat1 libssl0.9.8 odbcinst1debian1 unixodbc libcurl3
 apt-get -y install mono-runtime libmono-winforms2.0-cil
 apt-get -y install libmysqlclient15off
 
@@ -23,7 +23,7 @@ if [ ! -e /lib/libssl.so.6 ]; then
 fi
 
 if [ ! -e /lib/libexpat.so.0 ]; then
-  ln -s /lib/libexpat.so.1 /lib/libexpat.so.0
+  ln -s /lib/libexpat.so.1.5.2 /lib/libexpat.so.0
 fi
 
 # Download Ubuntu packages for FDO
