@@ -62,6 +62,8 @@ public:
     MgFeatureSourceCacheItem* GetFeatureSourceCacheItem(MgResourceIdentifier* resource);
     MgSpatialContextCacheItem* GetSpatialContextCacheItem(MgResourceIdentifier* resource);
 
+    bool IsResourceChangeNotificationNeeded(MgResourceIdentifier* resource);
+
 /// Data Members
 
 private:

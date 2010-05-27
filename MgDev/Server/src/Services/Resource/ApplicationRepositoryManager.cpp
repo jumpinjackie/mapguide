@@ -152,21 +152,13 @@ MgApplicationResourceContentManager* MgApplicationRepositoryManager::GetApplicat
 void MgApplicationRepositoryManager::NotifyResourceChanged(
     MgResourceIdentifier& resource)
 {
-    STRING resourceType = resource.GetResourceType();
+    MgCacheManager* cacheManager = MgCacheManager::GetInstance();
 
-    // Note that the filter below may be changed in the future. Currently,
-    // the cache manager only needs to know if the following types of
-    // resources have been changed:
-    if (MgResourceType::MapDefinition    == resourceType
-     || MgResourceType::LayerDefinition  == resourceType
-     || MgResourceType::DrawingSource    == resourceType
-     || MgResourceType::FeatureSource    == resourceType
-     || MgResourceType::SymbolDefinition == resourceType
-     || MgResourceType::SymbolLibrary    == resourceType)
+    if (cacheManager->IsResourceChangeNotificationNeeded(&resource))
     {
         // Request the cache manager to release the lock on the resource/data
         // file that may be currently opened by the FDO connection manager.
-        MgCacheManager::GetInstance()->NotifyResourceChanged(&resource);
+        cacheManager->NotifyResourceChanged(&resource);
 
         // Insert the specified resource into the changed resource set.
         m_changedResources.insert(resource.ToString());
