@@ -118,14 +118,15 @@ void MgBooleanProperty::ToXml(string &str, bool includeType, string rootElmName)
         str += "<Type>boolean</Type>";
     }
 
-    str += "<Value>";
-
-    if( this->GetValue())
-        str += "true" ;
-    else
-        str += "false" ;
-
-    str += "</Value>";
+    if (!this->IsNull())
+    {
+        str += "<Value>";
+        if( this->GetValue())
+            str += "true" ;
+        else
+            str += "false" ;
+        str += "</Value>";
+    }
 
     str += "</" + rootElmName + ">";
 }

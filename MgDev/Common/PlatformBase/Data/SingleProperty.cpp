@@ -125,7 +125,12 @@ void MgSingleProperty::ToXml(string &str, bool includeType, string rootElmName)
     string singleStr = "";
     MgUtil::DoubleToString(m_value, singleStr);
 
-    str += "<Value>" + singleStr + "</Value>";
+    if (!this->IsNull())
+    {
+        str += "<Value>";
+        str += singleStr;
+        str += "</Value>";
+    }
 
     str += "</" + rootElmName + ">";
 }

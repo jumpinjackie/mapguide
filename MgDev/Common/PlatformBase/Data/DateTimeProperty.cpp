@@ -118,15 +118,18 @@ void MgDateTimeProperty::ToXml(string &str, bool includeType, string rootElmName
         str += "<Type>datetime</Type>";
     }
 
-    str += "<Value>";
-    char buf[128]; buf[0] = 0;
-    Ptr<MgDateTime> dtPtr = this->GetValue();
-    if (dtPtr != NULL)
+    if (!this->IsNull())
     {
-        STRING dateStr = dtPtr->ToString();
-        str += MgUtil::WideCharToMultiByte(dateStr);
+        str += "<Value>";
+        char buf[128]; buf[0] = 0;
+        Ptr<MgDateTime> dtPtr = this->GetValue();
+        if (dtPtr != NULL)
+        {
+            STRING dateStr = dtPtr->ToString();
+            str += MgUtil::WideCharToMultiByte(dateStr);
+        }
+        str += "</Value>";
     }
-    str += "</Value>";
 
     str += "</" + rootElmName + ">";
 }

@@ -124,9 +124,13 @@ void MgByteProperty::ToXml(string &str, bool includeType, string rootElmName)
     {
         str += "<Type>byte</Type>";
     }
-    str += "<Value>";
-    str += MgUtil::Char2Hex(this->GetValue());
-    str += "</Value>";
+    
+    if (!this->IsNull())
+    {
+        str += "<Value>";
+        str += MgUtil::Char2Hex(this->GetValue());
+        str += "</Value>";
+    }
 
     str += "</" + rootElmName + ">";
 }

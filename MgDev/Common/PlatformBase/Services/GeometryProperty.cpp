@@ -118,30 +118,42 @@ void MgGeometryProperty::ToXml(string &str, bool includeType, string rootElmName
     {
         str += "<Type>geometry</Type>";
     }
-    str += "<Value>";
 
-    Ptr<MgByteReader> byteReader = this->GetValue();
-
-    if (byteReader != NULL)
+    if (!this->IsNull())
     {
-        MgAgfReaderWriter agfReader;
-        Ptr<MgGeometry> geom = agfReader.Read(byteReader);
-
-        // geom->ToXml(str); // TODO: we need this method
-        STRING awktStr = L"";
-        if (geom != NULL)
+        string valueXml = "";
+        try 
         {
-            awktStr = geom->ToAwkt(false);
-            assert(!awktStr.empty());
-        }
+            valueXml += "<Value>";
+            Ptr<MgByteReader> byteReader = this->GetValue();
 
-        if (!awktStr.empty())
-        {
-            str += MgUtil::WideCharToMultiByte(awktStr);
+            if (byteReader != NULL)
+            {
+                MgAgfReaderWriter agfReader;
+                Ptr<MgGeometry> geom = agfReader.Read(byteReader);
+
+                // geom->ToXml(str); // TODO: we need this method
+                STRING awktStr = L"";
+                if (geom != NULL)
+                {
+                    awktStr = geom->ToAwkt(false);
+                    assert(!awktStr.empty());
+                }
+
+                if (!awktStr.empty())
+                {
+                    valueXml += MgUtil::WideCharToMultiByte(awktStr);
+                }
+            }
+            valueXml += "</Value>";
         }
+        catch(MgException* ex) //Can happen if the geometry is invalid
+        {
+            SAFE_RELEASE(ex);
+            valueXml = ""; //Treat an invalid geometry as a NULL geometry
+        }
+        str += valueXml;
     }
-
-    str += "</Value>";
 
     str += "</" + rootElmName + ">";
 }

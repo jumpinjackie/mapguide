@@ -127,7 +127,14 @@ void MgStringProperty::ToXml(string &str, bool onlyKey, bool includeType, string
         {
             str += "<Type>string</Type>";
         }
-        str += "<Value>" + MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(this->GetValue())) + "</Value>";
+
+        if (!this->IsNull())
+        {
+            str += "<Value>"; 
+            str += MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(this->GetValue())); 
+            str += "</Value>";
+        }
+
         str += "</" + rootElmName + ">";
     }
     else

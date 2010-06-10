@@ -132,13 +132,13 @@ void MgBlobProperty::ToXml(string &str, bool includeType, string rootElmName)
         str += "<Type>blob</Type>";
     }
 
-    str += "<Value>";
-    if (m_value != NULL)
+    if (m_value != NULL || !this->IsNull())
     {
+        str += "<Value>";
         Ptr<MgByteReader> reader = this->GetValue();
         str += MgUtil::GetStringFromReader(reader);
+        str += "</Value>";
     }
-    str += "</Value>";
 
     str += "</" + rootElmName + ">";
 }
