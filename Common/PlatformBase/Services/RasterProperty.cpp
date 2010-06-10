@@ -126,9 +126,14 @@ void MgRasterProperty::ToXml(string &str, bool includeType, string rootElmName)
     {
         str += "<Type>raster</Type>";
     }
-    str += "<Value>";
-//  Ptr<MgByteReader> reader = this->GetValue();
-    str += /* MgUtil::GetStringFromReader(reader) +*/  "</Value></Property>";
+
+    if (!this->IsNull())
+    {
+        str += "<Value>";
+    //  Ptr<MgByteReader> reader = this->GetValue();
+        str += /* MgUtil::GetStringFromReader(reader) +*/ "</Value>";
+    }
+    str += "</Property>";
 }
 
 //////////////////////////////////////////////////////////////////

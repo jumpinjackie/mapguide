@@ -121,16 +121,19 @@ void MgInt32Property::ToXml(string &str, bool includeType, string rootElmName)
         str += "<Type>int32</Type>";
     }
 
-    str += "<Value>";
+    if (!this->IsNull())
+    {
+        str += "<Value>";
+        char buf[128]; buf[0] = 0;
+        #ifdef _WIN32
+        itoa(this->GetValue(), buf, 10);
+        #else
+        snprintf(buf, 128, "%li", this->GetValue());
+        #endif
 
-    char buf[128]; buf[0] = 0;
-    #ifdef _WIN32
-    itoa(this->GetValue(), buf, 10);
-    #else
-    snprintf(buf, 128, "%li", this->GetValue());
-    #endif
-
-    str += std::string(buf) + "</Value>";
+        str += std::string(buf);
+        str += "</Value>";
+    }
 
     str += "</" + rootElmName + ">";
 }

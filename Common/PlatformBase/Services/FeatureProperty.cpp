@@ -114,22 +114,25 @@ void MgFeatureProperty::ToXml(string &str, bool includeType, string rootElmName)
     {
         str += "<Type>feature</Type>";
     }
-    str += "<Value>";
 
-    std::string featureXml;
-
-    Ptr<MgByteReader> reader = m_value->ToXml();
-    MgByteSink sink(reader);
-    sink.ToStringUtf8(featureXml);
-
-    size_t idx = featureXml.find("?>");
-    if (idx >= 0)
+    if (!this->IsNull())
     {
-        featureXml = featureXml.substr(idx+2);
-    }
+        str += "<Value>";
+        std::string featureXml;
 
-    str += featureXml;
-    str += "</Value>";
+        Ptr<MgByteReader> reader = m_value->ToXml();
+        MgByteSink sink(reader);
+        sink.ToStringUtf8(featureXml);
+
+        size_t idx = featureXml.find("?>");
+        if (idx >= 0)
+        {
+            featureXml = featureXml.substr(idx+2);
+        }
+
+        str += featureXml;
+        str += "</Value>";
+    }
 
     str += "</" + rootElmName + ">";
 }
