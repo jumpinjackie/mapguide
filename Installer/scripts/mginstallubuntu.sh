@@ -1,6 +1,6 @@
 #!/bin/bash
 TEMPDIR=/tmp/build_mapguide
-URL="http://download.osgeo.org/mapguide/releases/2.2.0"
+URL="http://download.osgeo.org/mapguide/releases/2.2.0/Beta"
 FDOVER=3.5.0-5460_i386
 MGVER=2.2.0-4898_i386
 MAESTROVER=2.0.0-4650_i386
