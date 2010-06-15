@@ -733,8 +733,8 @@
             <Custom
                 Action="RemoveApacheServiceCA"
                 Before="RemoveFiles">MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtApacheFeature=2</Custom>
-
-            <ScheduleReboot After="InstallFinalize">NOT Installed AND &amp;CSMapFeature&gt;2</ScheduleReboot> 
+            <!-- 502 = Windows Server 2003 -->
+            <ScheduleReboot After="InstallFinalize">VersionNT&lt;502 AND NOT Installed AND &amp;CSMapFeature&gt;2</ScheduleReboot> 
         </InstallExecuteSequence>
     </Product>
 </Wix>
