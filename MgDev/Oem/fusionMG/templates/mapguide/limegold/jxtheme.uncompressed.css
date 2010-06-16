@@ -1191,6 +1191,7 @@ body, table {
 #Statusbar .spanViewSize,
 #Statusbar .spanSelectionInfo {
   padding: 4px 10px;
+  color: #000000;
 }
 
 .inputEditableScale {
