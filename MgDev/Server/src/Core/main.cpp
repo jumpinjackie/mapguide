@@ -71,6 +71,11 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
     // we need initialize Xerces before BDB
     XMLPlatformUtils::Initialize();
 
+#ifndef _WIN32
+    // Set memory checking to report only and not abort
+    mallopt(M_CHECK_ACTION, 1);
+#endif
+
     MG_TRY()
 
     {
