@@ -454,7 +454,7 @@ MgPropertyCollection* MgServerManager::GetInformationProperties()
     pProperties->Add(pProperty);
 
     // Add the Uptime
-    time_t nUptime = GetUptime();
+    INT64 nUptime = GetUptime();
     pProperty = new MgInt64Property(MgServerInformationProperties::Uptime, nUptime);
     pProperties->Add(pProperty);
 
@@ -479,12 +479,13 @@ MgPropertyCollection* MgServerManager::GetInformationProperties()
     pProperties->Add(pProperty);
 
     // Add the TotalOperationTime
-    time_t nTotalOperationTime = GetTotalOperationTime();
+    // This value needs to be returned in seconds according to the schema
+    INT64 nTotalOperationTime = GetTotalOperationTime() / 1000;
     pProperty = new MgInt64Property(MgServerInformationProperties::TotalOperationTime, nTotalOperationTime);
     pProperties->Add(pProperty);
 
     // Add the AverageOperationTime
-    time_t nAverageOperationTime = GetAverageOperationTime();
+    INT64 nAverageOperationTime = GetAverageOperationTime();
     pProperty = new MgInt64Property(MgServerInformationProperties::AverageOperationTime, nAverageOperationTime);
     pProperties->Add(pProperty);
 
@@ -871,12 +872,12 @@ INT32 MgServerManager::GetTotalProcessedOperations()
     return m_totalProcessedOperations.value();
 }
 
-time_t MgServerManager::GetTotalOperationTime()
+INT64 MgServerManager::GetTotalOperationTime()
 {
     return m_totalOperationTime.value();
 }
 
-void MgServerManager::IncrementOperationTime(time_t operationTime)
+void MgServerManager::IncrementOperationTime(INT64 operationTime)
 {
     m_totalOperationTime += operationTime;
 }
@@ -1187,7 +1188,7 @@ INT64 MgServerManager::GetAvailableVirtualMemory()
 ///
 /// EXCEPTIONS:
 /// MgConnectionNotOpenException
-time_t MgServerManager::GetUptime()
+INT64 MgServerManager::GetUptime()
 {
     ACE_Time_Value upTime(0);
 
@@ -1197,7 +1198,7 @@ time_t MgServerManager::GetUptime()
 
     MG_CATCH_AND_THROW(L"MgServerManager.GetUptime");
 
-    return upTime.sec();
+    return (INT64)upTime.sec();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1210,7 +1211,7 @@ time_t MgServerManager::GetUptime()
 ///
 /// EXCEPTIONS:
 /// MgConnectionNotOpenException
-time_t MgServerManager::GetAverageOperationTime()
+INT64 MgServerManager::GetAverageOperationTime()
 {
     double avgTime = 0.0;
 
@@ -1218,13 +1219,13 @@ time_t MgServerManager::GetAverageOperationTime()
 
     if (GetTotalProcessedOperations() > 0)
     {
-        avgTime = ((double)(GetTotalOperationTime()) * 1000.0) / (double)(GetTotalProcessedOperations());
+        avgTime = ((double)(GetTotalOperationTime())) / (double)(GetTotalProcessedOperations());
     }
 
 
     MG_CATCH_AND_THROW(L"MgServerManager.GetAverageOperationTime")
 
-    return time_t(avgTime);
+    return (INT64)avgTime;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

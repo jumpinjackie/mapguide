@@ -36,7 +36,7 @@
 class MgWorkerThread;
 
 typedef ACE_Atomic_Op<ACE_Thread_Mutex, INT32>  SAFE_INT32;
-typedef ACE_Atomic_Op<ACE_Thread_Mutex, time_t>  SAFE_TIME_T;
+typedef ACE_Atomic_Op<ACE_Thread_Mutex, INT64>  SAFE_INT64;
 
 class MG_SERVER_MANAGER_API MgServerManager : public MgGuardDisposable
 {
@@ -100,9 +100,9 @@ public:
     ACE_Time_Value GetStartTime();
     INT32 GetTotalReceivedOperations();
     INT32 GetTotalProcessedOperations();
-    time_t GetTotalOperationTime();
+    INT64 GetTotalOperationTime();
 
-    void IncrementOperationTime(time_t operationTime);
+    void IncrementOperationTime(INT64 operationTime);
     void IncrementReceivedOperations();
     void IncrementProcessedOperations();
 
@@ -117,8 +117,8 @@ public:
     INT32 GetClientOperationsQueueCount();
     INT32 GetSiteOperationsQueueCount();
 
-    time_t GetUptime();
-    time_t GetAverageOperationTime();
+    INT64 GetUptime();
+    INT64 GetAverageOperationTime();
 
     INT64 GetTotalPhysicalMemory();
     INT64 GetAvailablePhysicalMemory();
@@ -176,7 +176,7 @@ private:
     INT32 m_nSiteThreads;
 
     ACE_Time_Value m_startTime;
-    SAFE_TIME_T m_totalOperationTime;        // This value is tracked in seconds
+    SAFE_INT64 m_totalOperationTime;        // This value is tracked in milliseconds
     SAFE_INT32 m_totalReceivedOperations;
     SAFE_INT32 m_totalProcessedOperations;
 
