@@ -309,7 +309,8 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessOperation( MgServer
     MG_TRY()
 
     {
-        ACE_Time_Value operationTime(0);
+        ACE_Time_Value operationStartTime(0);
+        operationStartTime = ACE_OS::gettimeofday();
         ACE_ASSERT( pData );
         if ( pData )
         {
@@ -396,6 +397,8 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessOperation( MgServer
                     stat = pServiceHandler->ProcessOperation();
 
                     m_timer.stop();
+                    ACE_Time_Value operationTime(0);
+                    operationTime = ACE_OS::gettimeofday() - operationStartTime;
                     m_timer.elapsed_time(operationTime);
 
                     delete pServiceHandler;
@@ -408,7 +411,10 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessOperation( MgServer
             // We increment operations processed for successful operations only.
             if (IMgServiceHandler::mpsDone == stat)
             {
-                time_t opTime = operationTime.sec();
+                ACE_Time_Value operationTime(0);
+                operationTime = ACE_OS::gettimeofday() - operationStartTime;
+                
+                unsigned long opTime = operationTime.msec();
 
                 pConnection->IncrementProcessedOperations();
                 pConnection->SetCurrentOperationTime(opTime);
