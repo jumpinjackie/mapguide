@@ -377,20 +377,13 @@ void MgUserInformation::SetCurrentUserInfo(MgUserInformation* userInformation)
 
     if (0 != g_threadLocalUserInformation)
     {
+        // Clean up old one if applicable
         MgUserInformation* oldInfo = NULL;
         ACE_OS::thr_getspecific(g_threadLocalUserInformation, (void**) &oldInfo);
-
-        // Allocate a new MgUserInformation
-        MgUserInformation* tempUserInformation = NULL;
-        if(userInformation != NULL)
-        {
-            tempUserInformation = new MgUserInformation(*userInformation);
-        }
-
-        ACE_OS::thr_setspecific(g_threadLocalUserInformation, tempUserInformation);
-
-        // Clean up old one if applicable
         SAFE_RELEASE(oldInfo);
+
+        SAFE_ADDREF(userInformation);
+        ACE_OS::thr_setspecific(g_threadLocalUserInformation, userInformation);
     }
 }
 
