@@ -410,6 +410,8 @@ void MgServerManager::RemoveConfigurationProperties(CREFSTRING propertySection,
 /// </summary>
 MgPropertyCollection* MgServerManager::GetInformationProperties()
 {
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance (), NULL));
+
     Ptr<MgPropertyCollection> pProperties;
     pProperties = NULL;
 
