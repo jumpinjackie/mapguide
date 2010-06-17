@@ -403,7 +403,7 @@ function OnScaleChanged(scale)
 {
     curScale = scale;
     DisplayMapSize();
-    if(hasStatusbar == 1)
+    if(hasStatusbar == 1 && sbFrame.SetMapScaleMsg != null)
         sbFrame.SetMapScaleMsg("1: " + FormatScale(scale));
 }
 
@@ -568,7 +568,7 @@ function ClickMap(x, y)
 function OnSelectionChanged()
 {
     var selCount = GetMapFrame().GetSelectedCount();
-    if(hasStatusbar == 1)
+    if(hasStatusbar == 1 && sbFrame.SetMapScaleMsg != null)
     {
         var selLayers = GetMapFrame().GetSelectedLayers();
         if(selLayers != null && selLayers.length == 1)
@@ -683,7 +683,11 @@ function DisplayMapSize()
     }
 
     var text = FormatLocalizedDecimal(w, 2) + " x " + FormatLocalizedDecimal(h, 2) + " (" + u + ")";
-    sbFrame.SetMapSizeMsg(text);
+
+    if(sbFrame.SetMapSizeMsg !=null)
+    {
+        sbFrame.SetMapSizeMsg(text);
+    }
 }
 
 function SetOptions(engUnit, latLonUnit)
