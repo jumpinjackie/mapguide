@@ -26,6 +26,20 @@ struct SE_Bounds;
 class SE_BufferPool;
 
 
+// Ellipse definition
+struct SE_EllipseDef
+{
+    double cx;    // X center
+    double cy;    // Y center
+    double rx;    // major radius
+    double ry;    // minor radius
+    double sAng;  // start angle
+    double eAng;  // start angle
+    double rot;   // rotation
+    SE_Matrix xf; // scale matrix
+};
+
+
 class SE_LineBuffer
 {
 friend class SE_BufferPool;
@@ -70,6 +84,18 @@ public:
     }
 
     STYLIZATION_API SE_LineBuffer* Clone(bool keepPool = true);
+
+    // Retrieve the elliptical arc parameters
+    //   index - the index of the arc in the symbol, zero-based
+    //
+    // E.g. for a buffer with:
+    //     M L L M A0 M A1
+    //     M=MoveTo, L=LineTo, A=ArcTo
+    // GetEllipseDefinition would return arc segment A0 for index=0,
+    // and arc segment A1 for index=1.
+    //
+    // Caller has to check for NULL and delete the returned object.
+    STYLIZATION_API SE_EllipseDef* GetEllipseDefinition(int index);
 
 private:
     SE_Bounds* GetSEBounds(RS_Bounds& bounds);
