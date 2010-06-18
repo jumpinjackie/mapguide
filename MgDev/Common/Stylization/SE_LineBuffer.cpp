@@ -305,6 +305,55 @@ void SE_LineBuffer::PopulateXFBuffer()
 }
 
 
+SE_EllipseDef* SE_LineBuffer::GetEllipseDefinition(int index)
+{
+    SE_LB_SegType* endseg = m_segs + m_nsegs;
+    SE_LB_SegType* curseg = m_segs;
+
+    SE_EllipseDef*  arc_def = NULL; // output
+    int             arc_idx = 0;    // elliptical arcs counter
+
+    int src_idx = 0;
+
+    // Locate the arc start in the array of points
+    while (curseg != endseg && arc_idx <= index)
+    {
+        switch (*curseg++)
+        {
+        case SegType_MoveTo:
+        case SegType_LineTo:
+            src_idx += 2;
+            break;
+
+        case SegType_EllipticalArc:
+            {
+                if (arc_idx == index)
+                {
+                    // Arc found
+                    arc_def = new SE_EllipseDef;
+
+                    arc_def->cx = m_pts[src_idx++];
+                    arc_def->cy = m_pts[src_idx++];
+                    arc_def->rx = m_pts[src_idx++];
+                    arc_def->ry = m_pts[src_idx++];
+                    arc_def->sAng = m_pts[src_idx++];
+                    arc_def->eAng = m_pts[src_idx++];
+                    arc_def->rot = m_pts[src_idx++];
+                    arc_def->xf = m_xf;
+                }
+                else
+                    src_idx += 7;   // continue
+
+                arc_idx++;
+            }
+            break;
+        }
+    }
+
+    return arc_def;
+}
+
+
 void SE_LineBuffer::Transform(const SE_Matrix& xform, double tolerance)
 {
     if (m_xf_bounds)
