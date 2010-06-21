@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #
 #  Copyright (C) 2010 by Autodesk, Inc.
 #
@@ -16,6 +15,15 @@
 #  License along with this library; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
+
+# About:
+# ====
+# This script will install MapGuide 
+
+# Running:
+# =======
+# sudo ./install_mapguide.sh
+
 
 TEMPDIR=/tmp/build_mapguide
 URL="http://download.osgeo.org/mapguide/releases/2.2.0/Beta"
