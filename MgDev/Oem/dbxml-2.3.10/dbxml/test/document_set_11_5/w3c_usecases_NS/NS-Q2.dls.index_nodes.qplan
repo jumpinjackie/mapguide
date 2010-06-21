@@ -1,0 +1,16 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="Q2" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <LookupIndex container="11.5.1.dbxml">
+        <DocumentQP index="node-metadata-equality-string" operation="eq" child="name:http://www.sleepycat.com/2002/dbxml" value="auction.xml">
+          <PresenceQP index="node-element-presence-none" operation="eq" child="title:http://www.example.org/music/records"/>
+        </DocumentQP>
+      </LookupIndex>
+    </Children>
+  </DOMConstructor>
+</XQuery>

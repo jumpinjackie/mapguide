@@ -1,0 +1,37 @@
+<XQuery>
+  <Module targetNamespace="http://test.module4">
+    <FunctionDefinition name="{http://test.module4}:function">
+      <DocumentOrder>
+        <DbXmlNav>
+          <Variable name="arg"/>
+          <DbXmlStep axis="descendant" name="category" nodeType="element">
+            <RQPlan>P(category)</RQPlan>
+          </DbXmlStep>
+          <DbXmlFilter>
+            <DbXmlNav>
+              <DbXmlStep axis="attribute" name="id" nodeType="attribute">
+                <RQPlan>P(category.@id)</RQPlan>
+              </DbXmlStep>
+              <DbXmlCompare name="equal" join="self">
+                <RQPlan>V(string,category.@id,=,'49-1127912719803')</RQPlan>
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="49-1127912719803" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+                </Sequence>
+              </DbXmlCompare>
+            </DbXmlNav>
+          </DbXmlFilter>
+        </DbXmlNav>
+      </DocumentOrder>
+    </FunctionDefinition>
+  </Module>
+  <UserFunction name="{http://test.module4}:function">
+    <Binding name="{}:arg">
+      <TreatAs>
+        <QueryPlanFunction result="collection" container="11.7.4.dbxml">
+          <OQPlan>U</OQPlan>
+        </QueryPlanFunction>
+        <SequenceType occurrence="one_to_many" testType="node"/>
+      </TreatAs>
+    </Binding>
+  </UserFunction>
+</XQuery>

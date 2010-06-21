@@ -1,0 +1,7 @@
+base referer
+rect $XMLErrorCodes_8hpp.html 173,8 319,32
+rect $XMLValidityCodes_8hpp.html 166,56 326,80
+rect $XMLDOMMsg_8hpp.html 179,104 313,128
+rect $XMLValidator_8hpp.html 375,56 506,80
+rect $SAX2XMLReader_8hpp.html 555,56 710,80
+rect $SAX2XMLFilter_8hpp.html 759,56 901,80

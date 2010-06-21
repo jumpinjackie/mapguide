@@ -1,0 +1,27 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="result" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <DbXmlNav>
+        <QueryPlanFunction result="document" container="11.5.5.dbxml">
+          <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'sgml.xml',n(V(node-element-substring-string,title,substring,'is SGML'),P(edge-element-presence-none,prefix,section)))</OQPlan>
+        </QueryPlanFunction>
+        <DbXmlStep axis="descendant" name="section" nodeType="element">
+          <OQPlan>P(edge-element-presence-none,prefix,section)</OQPlan>
+        </DbXmlStep>
+        <DbXmlFilter>
+          <DbXmlContains join="descendant" name="title" nodeType="element">
+            <OQPlan>V(node-element-substring-string,title,substring,'is SGML')</OQPlan>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="is SGML" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+            </Sequence>
+          </DbXmlContains>
+        </DbXmlFilter>
+      </DbXmlNav>
+    </Children>
+  </DOMConstructor>
+</XQuery>

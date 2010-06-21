@@ -1,0 +1,54 @@
+=head1 NAME
+
+XmlModify - A Perl interface to the DbXml XmlModify Class
+
+=head1 SYNOPSIS
+
+    use Sleepycat::DbXml;
+
+    my $manager = new XmlManager();
+    my $mod = $manager->createModify();
+
+    $mod->addAppendStep($selectionExpr, $type, $name, $content [, $location]);
+    $mod->addInsertAfterStep($selectionExpr, $type, $name, $content);
+    $mod->addInsertBeforeStep($selectionExpr, $type, $name, $content);
+    $mod->addInsertRemoveStep($selectionExpr);
+    $mod->addInsertRenameStep($selectionExpr, $newName);
+    $mod->addInsertUpdateStep($selectionExpr, $content);
+
+    $mod->execute([$txn,] $toModify, $context, $uc);
+
+    $mod->setNewEncoding($newEncoding);
+
+=head1 DESCRIPTION
+
+
+
+=head1 CONFORMANCE to C++ API
+
+The Perl interface to XMlValue is identical to the C++ API.
+
+=head1 Constructor
+
+The constructor for XmlModify can takes the following form:
+
+    my $manager = new XmlManager();
+    my $mod = $manager->createModify();
+
+
+=head1 Methods
+
+=head2 $mod->setNewEncoding($newEncoding);
+
+=head1 NOTES
+
+
+
+=head1 EXAMPLES
+
+=head1 SEE ALSO
+
+
+=head1 AUTHOR
+
+Paul Marquess

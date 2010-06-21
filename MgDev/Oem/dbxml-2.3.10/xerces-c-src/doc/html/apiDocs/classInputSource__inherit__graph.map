@@ -1,0 +1,7 @@
+base referer
+rect $classLocalFileInputSource.html 8,158 160,182
+rect $classMemBufInputSource.html 184,158 330,182
+rect $classStdInInputSource.html 354,158 482,182
+rect $classURLInputSource.html 506,158 629,182
+rect $classWrapper4DOMInputSource.html 653,158 840,182
+rect $classXMemory.html 377,9 460,33

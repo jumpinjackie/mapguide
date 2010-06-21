@@ -1,0 +1,21 @@
+<XQuery>
+  <Module targetNamespace="http://test.module3">
+    <FunctionDefinition name="{http://test.module3}:function">
+      <DocumentOrder>
+        <DbXmlNav>
+          <Variable name="arg"/>
+          <DbXmlStep axis="descendant" name="category" nodeType="element">
+            <RQPlan>P(category)</RQPlan>
+          </DbXmlStep>
+        </DbXmlNav>
+      </DocumentOrder>
+    </FunctionDefinition>
+  </Module>
+  <UserFunction name="{http://test.module3}:function">
+    <Binding name="{}:arg">
+      <QueryPlanFunction result="collection" container="11.7.4.dbxml">
+        <OQPlan>U</OQPlan>
+      </QueryPlanFunction>
+    </Binding>
+  </UserFunction>
+</XQuery>

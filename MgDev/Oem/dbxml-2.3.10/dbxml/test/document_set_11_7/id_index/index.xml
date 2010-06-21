@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test id="11.7.3">
+  <category>xquery</category>
+  <description>Attribute index on "id"</description>
+  <program name='dbxml_test_driver' />
+
+  <!-- stuff that applies to the entire test -->
+  <indexSpecification>
+    <node>id</node>
+    <index>edge-attribute-equality-double</index>
+  </indexSpecification>
+  <indexSpecification>
+    <node>name</node>
+    <index>node-attribute-equality-string</index>
+  </indexSpecification>
+  <indexSpecification>
+    <node>name</node>
+    <index>node-attribute-substring-string</index>
+  </indexSpecification>
+  <document>part1.xml</document>
+  <document>part2.xml</document>
+  <document>part3.xml</document>
+  <document>part4.xml</document>
+  <document>part5.xml</document>
+  <document>part6.xml</document>
+  <document>part7.xml</document>
+  <document>part8.xml</document>
+  <document>part9.xml</document>
+  <document>part10.xml</document>
+
+  <!-- individual tests -->
+  <base>
+    <query>IDS-Q1.xquery</query>
+    <query>IDS-Q2.xquery</query>
+    <query>IDS-Q3.xquery</query>
+    <query>IDS-Q4.xquery</query>
+    <query>IDS-Q5.xquery</query>
+  </base>
+</test>
+

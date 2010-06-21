@@ -1,0 +1,21 @@
+<XQuery>
+  <DocumentOrder>
+    <DbXmlNav>
+      <LookupIndex container="11.8.4.dbxml">
+        <ValueQP index="node-element-equality-string" operation="eq" child="hw" value="or"/>
+      </LookupIndex>
+      <Join type="ancestor" return="argument">
+        <DbXmlNav>
+          <QueryPlanFunction result="collection" container="11.8.4.dbxml">
+            <OQPlan>n(P(node-element-presence-none,=,qt),V(node-element-equality-string,hw,=,'or'))</OQPlan>
+          </QueryPlanFunction>
+          <DbXmlStep axis="child" name="dictionary" nodeType="element"/>
+          <DbXmlStep axis="child" name="e" nodeType="element"/>
+        </DbXmlNav>
+      </Join>
+      <DbXmlStep axis="descendant" name="qt" nodeType="element">
+        <OQPlan>P(node-element-presence-none,=,qt)</OQPlan>
+      </DbXmlStep>
+    </DbXmlNav>
+  </DocumentOrder>
+</XQuery>

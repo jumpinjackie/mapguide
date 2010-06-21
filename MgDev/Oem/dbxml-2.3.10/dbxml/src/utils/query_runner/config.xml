@@ -1,0 +1,968 @@
+<xqueryrunner database="benchmark">
+<group name ="TC-MD">
+<containers>
+<!--
+<container>TC-MD-miniscule-wholedoc.dbxml</container>
+<container>TC-MD-miniscule-node.dbxml</container>
+-->
+<container>TC-MD-tiny-wholedoc.dbxml</container>
+<container>TC-MD-tiny-node.dbxml</container>
+<container>TC-MD-small-wholedoc.dbxml</container>
+<container>TC-MD-small-node.dbxml</container>
+<!--
+<container>TC-MD-medium-wholedoc.dbxml</container>
+<container>TC-MD-medium-node.dbxml</container>
+<container>TC-MD-large-wholedoc.dbxml</container>
+<container>TC-MD-large-node.dbxml</container>
+-->
+</containers>
+<queries>
+<!-- Queries for XQuery Use Cases from UoW XBench (TC-MD group) -->
+<query>
+<description>  TC/MD_Q1 Return the title of the article that has matching id attribute value (1).</description>
+<action><![CDATA[
+
+for $art in input()/article[@id="1"]
+return
+    $art/prolog/title
+
+]]></action>
+</query>
+<query>
+<description> TC/MD_Q2 Find the title of the article authored by (Ben Yang).</description>
+<action><![CDATA[
+
+for $prolog in input()/article/prolog
+where
+    $prolog/authors/author/name="Ben Yang"
+return
+    $prolog/title
+
+]]></action>
+</query>
+<!-- 2004-10-08 ARW misuse of text() removed -->
+<query>
+<description> TC/MD_Q3 Group articles by date and calculate the total number of articles in each group.</description>
+<action><![CDATA[
+
+for $a in distinct-values (input()/article/prolog/dateline/date)
+let $b := input()/article/prolog/dateline[date=$a]
+return
+    <Output>
+        <Date>{$a}</Date>
+        <NumberOfArticles>{count($b)}</NumberOfArticles>
+    </Output>
+
+]]></action>
+</query>
+<!-- 2004-10-07 SR #11154
+<query>
+<description> TC/MD_Q4 Find the heading of the section following the section entitled ``Introduction" in a certain article with id attribute value (8).</description>
+<action><![CDATA[
+
+for $a in input()/article[@id="8"]/body/section
+    [@heading="introduction"],
+    $p in input()/article[@id="8"]/body/section
+    [. >> $a][1]
+return
+    <HeadingOfSection>
+        {$p/@heading}
+    </HeadingOfSection>
+
+]]></action>
+</query>
+-->
+<query>
+<description> TC/MD_Q5 Return the headings of the first section of a certain article with id attribute value (9).</description>
+<action><![CDATA[
+
+for $a in input()/article[@id="9"]
+return
+    <HeadingOfSection>
+        {$a/body/section[1]/@heading}
+    </HeadingOfSection>
+
+]]></action>
+</query>
+<query>
+<description> TC/MD_Q6 Find titles of articles where both keywords (``the" and ``hockey") are mentioned in the same paragraph of abstracts.</description>
+<action><![CDATA[
+
+for $a in input()/article
+where some $b in $a/body/abstract/p satisfies
+    (contains($b, "the") and contains($b, "hockey"))
+return
+    $a/prolog/title
+
+]]></action>
+</query>
+<query>
+<description> TC/MD_Q7 Find titles of articles where a keyword (``hockey") is mentioned in every paragraph of abstract.</description>
+<action><![CDATA[
+
+for $a in input()/article
+where every $b in $a/body/abstract/p satisfies
+    contains($b, "hockey")
+return
+    $a/prolog/title
+
+]]></action>
+</query>
+<query>
+<description> TC/MD_Q8 Return the names of all authors (one element name unknown) of the article with matching id attribute value (2).</description>
+<action><![CDATA[
+
+for $art in input()/article[@id="2"]
+return
+    $art/prolog/*/author/name
+
+]]></action>
+</query>
+<query>
+<description> TC/MD_Q9 Return all author names (several consecutive element unknown) of the article with matching id attribute value (3).</description>
+<action><![CDATA[
+
+for $art in input()/article[@id="3"]
+return
+    $art//author/name
+
+]]></action>
+</query>
+<query>
+<description> TC/MD_Q10 List the titles of articles sorted by country.</description>
+<action><![CDATA[
+
+for $a in input()/article/prolog
+order by $a/dateline/country
+return
+    <Output>
+        {$a/title}
+        {$a/dateline/country}
+    </Output>
+
+]]></action>
+</query>
+<query>
+<description> TC/MD_Q11 List the titles of articles that have a matching country element type (Canada), sorted by date.</description>
+<action><![CDATA[
+
+for $a in input()/article/prolog
+where $a/dateline/country="Canada"
+order by $a/dateline/date
+return
+    <Output>
+        {$a/title}
+        {$a/dateline/date}
+    </Output>
+
+]]></action>
+</query>
+<query>
+<description> TC/MD_Q12 Retrieve the body of the article that has a matching id attribute value (4).</description>
+<action><![CDATA[
+
+for $a in input()/article[@id="4"]
+return
+    <Article>
+        {$a/body}
+    </Article>
+
+]]></action>
+</query>
+<query>
+<description> TC/MD_Q13 Construct a brief information on the article that has a matching id attribute value (5), including title, the name of first author, date and abstract.</description>
+<action><![CDATA[
+
+for $a in input()/article[@id="5"]
+return
+    <Output>
+        {$a/prolog/title}
+        {$a/prolog/authors/author[1]/name}
+        {$a/prolog/dateline/date}
+        {$a/body/abstract}
+    </Output>
+
+]]></action>
+</query>
+<query>
+<description> TC/MD_Q14 List article title that doesn't have genre element.</description>
+<action><![CDATA[
+
+for $a in input()/article/prolog
+where empty ($a/genre)
+return
+    <NoGenre>
+        {$a/title}
+    </NoGenre>
+
+]]></action>
+</query>
+<query>
+<description> TC/MD_Q15 List author names whose contact elements are empty in articles.</description>
+<action><![CDATA[
+
+for $a in input()/article/prolog/authors/author
+where empty($a/contact/text())
+return
+    <NoContact>
+        {$a/name}
+    </NoContact>
+
+]]></action>
+</query>
+<query>
+<description> TC/MD_Q16 Get the article by its id attribute value (6).</description>
+<action><![CDATA[
+
+for $a in input()/article[@id="6"]
+return
+    $a
+
+]]></action>
+</query>
+<query>
+<description> TC/MD_Q17 Return the titles of articles which contain a certain word (``hockey").</description>
+<action><![CDATA[
+
+for $a in input()/article
+where some $p in $a//p satisfies contains($p, "hockey")
+return
+    $a/prolog/title
+
+]]></action>
+</query>
+<query>
+<description> TC/MD_Q18 List the titles and abstracts of articles which contain a given phrase (``the hockey").</description>
+<action><![CDATA[
+
+for $a in input()/article
+where some $p in $a//p satisfies contains ($p, "the hockey")
+return
+    <Output>
+        {$a/prolog/title}
+        {$a/body/abstract}
+    </Output>
+
+]]></action>
+</query>
+<query>
+<description> TC/MD_Q19 List the names of articles cited by an article with a certain id attribute value (7).</description>
+<action><![CDATA[
+
+for $a in input()/article[@id='7']/epilog/references/a_id,
+    $b in input()/article
+where $a = $b/@id
+return
+    <Output>
+        {$b/prolog/title}
+    </Output>
+
+]]></action>
+</query>
+
+</queries>
+</group>
+<group name ="TC-SD">
+<containers>
+<!--
+<container>TC-SD-miniscule-wholedoc.dbxml</container>
+<container>TC-SD-miniscule-node.dbxml</container>
+-->
+<container>TC-SD-tiny-wholedoc.dbxml</container>
+<container>TC-SD-tiny-node.dbxml</container>
+<container>TC-SD-small-wholedoc.dbxml</container>
+<container>TC-SD-small-node.dbxml</container>
+<!--
+<container>TC-SD-medium-wholedoc.dbxml</container>
+<container>TC-SD-medium-node.dbxml</container>
+<container>TC-SD-large-wholedoc.dbxml</container>
+<container>TC-SD-large-node.dbxml</container>
+-->
+</containers>
+<queries>
+<!-- Queries for XQuery Use Cases from UoW XBench (TC-SD group) -->
+<!-- 2004-10-08 ARW bad XPath '/:' corrected in all TC-SD queries -->
+<query>
+<description>  TC/SD_Q1 Return the entry that has matching headword (``the").</description>
+<action><![CDATA[
+
+for $ent in input()/dictionary/e
+where $ent/hwg/hw="the"
+return
+    $ent
+
+]]></action>
+</query>
+<query>
+<description> TC/SD_Q2 Find the headword of the entry which has matching quotation year (1900).</description>
+<action><![CDATA[
+
+for $ent in input()/dictionary/e
+where $ent/ss/s/qp/q/qd="1900"
+return
+    $ent/hwg/hw
+
+]]></action>
+</query>
+<!-- 2004-10-08 ARW misuse of text() removed -->
+<query>
+<description> TC/SD_Q3 Group entries by quotation location in a certain quotation year (1900) and calculate the total number entries in each group.</description>
+<action><![CDATA[
+
+for $a in distinct-values
+    (input()/dictionary/e/ss/s/qp/q[qd="1900"]/loc)
+let $b := input()/dictionary/e/ss/s/qp/q[loc=$a]
+return
+    <Output>
+        <Location>{$a}</Location>
+        <NumberOfEntries>{count($b)}</NumberOfEntries>
+    </Output>
+
+]]></action>
+</query>
+
+<!-- 2004-10-07 SR #11154
+<query>
+<description> TC/SD_Q4 List the headword of the previous entry of a matching headword (``you").</description>
+<action><![CDATA[
+
+let $ent := input()/dictionary/e[hwg/hw="you"]
+for $prevEnt in input()/dictionary/e[hwg/hw << $ent]
+    [position() = last()]
+return
+    <Output>
+        <CurrentEntry>{$ent/hwg/hw/text()}</CurrentEntry>
+        <PreviousEntry>{$prevEnt/hwg/hw/text()}</PreviousEntry>
+    </Output>
+
+]]></action>
+</query>
+
+-->
+
+<query>
+<description> TC/SD_Q5 Return the first sense of a matching headword (``that").</description>
+<action><![CDATA[
+
+for $a in input()/dictionary/e
+where $a/hwg/hw="that"
+return
+    $a/ss/s[1]
+
+]]></action>
+</query>
+<query>
+<description> TC/SD_Q6 Return the words where some quotations were quoted in a certain year (1900).</description>
+<action><![CDATA[
+
+for $word in input()/dictionary/e
+where some $item in $word/ss/s/qp/q
+    satisfies $item/qd eq "1900"
+return
+    $word
+
+]]></action>
+</query>
+<query>
+<description> TC/SD_Q7 Return the words where all quotations were quoted in a certain year (1900).</description>
+<action><![CDATA[
+
+for $word in input()/dictionary/e
+where every $item in $word/ss/s/qp/q
+    satisfies $item/qd eq "1900"
+return
+    $word
+
+]]></action>
+</query>
+<query>
+<description> TC/SD_Q8 Return Quotation Text (one element name unknown) of a word (``and").</description>
+<action><![CDATA[
+
+for $ent in input()/dictionary/e
+where $ent/*/hw = "and"
+return
+    $ent/ss/s/qp/*/qt
+
+]]></action>
+</query>
+<query>
+<description> TC/SD_Q9 Return Quotation Text (several consecutive element names unknown) of a word (``and").</description>
+<action><![CDATA[
+
+for $ent in input()/dictionary/e
+where $ent//hw = "or"
+return
+    $ent//qt
+
+]]></action>
+</query>
+<!-- 2004-10-11 ordering by $a/hwg/hw removed since multiple elements will cause an error-->
+<query>
+<description> TC/SD_Q10 List the words and their pronunciation, alphabetically, quoted in a certain year (1900).</description>
+<action><![CDATA[
+
+for $a in input()/dictionary/e
+where $a/ss/s/qp/q/qd = "1900"
+return
+    <Output>
+        {$a/hwg/hw}
+        {$a/hwg/pr}
+    </Output>
+
+]]></action>
+</query>
+<query>
+<description> TC/SD_Q11 List the quotation locations and quotation dates, sorted by date, for a word (``word").</description>
+<action><![CDATA[
+
+for $a in input()/dictionary/e
+    [hwg/hw="the"]/ss/s/qp/q
+order by $a/qd
+return
+    <Output>
+        {$a/a}
+        {$a/qd}
+    </Output>
+
+]]></action>
+</query>
+<query>
+<description> TC/SD_Q12 Retrieve the senses of a word (``his").</description>
+<action><![CDATA[
+
+for $a in input()/dictionary/e
+where $a/hwg/hw="his"
+return
+    <Entry>
+        {$a/ss}
+    </Entry>
+
+]]></action>
+</query>
+<query>
+<description> TC/SD_Q13 Construct a brief information on a word (``his"), including: headword, pronunciation, part_of_speech, first etymology and first sense definition.</description>
+<action><![CDATA[
+
+for $a in input()/dictionary/e
+where $a/hwg/hw="his"
+return
+    <Output>
+        {$a/hwg/hw}
+        {$a/hwg/pr}
+        {$a/hwg/pos}
+        {$a/etymology/cr[1]}
+        {$a/ss/s[1]/def}
+    </Output>
+
+]]></action>
+</query>
+<query>
+<description> TC/SD_Q14 List the ids of entries that do not have variant form lists and etymologies.</description>
+<action><![CDATA[
+
+for $a in input()/dictionary/e
+where empty($a/vfl) and empty($a/et)
+return
+    <NoVFLnET>
+        {$a/@id}
+    </NoVFLnET>
+
+]]></action>
+</query>
+<query>
+<description> TC/SD_Q17 Return the headwords of the entries which contain a certain word (``hockey").</description>
+<action><![CDATA[
+
+for $a in input()/dictionary/e
+where contains ($a, "hockey")
+return
+    $a/hwg/hw
+
+]]></action>
+</query>
+<query>
+<description> TC/SD_Q18 List the headwords of entries which contain a given phrase (``the hockey").</description>
+<action><![CDATA[
+
+for $a in input()/dictionary/e
+where contains($a, "the hockey")
+return
+    $a/hwg/hw
+
+]]></action>
+</query>
+<query>
+<description> TC/SD_Q19 Retrieve the headwords of entries cited, in etymology part, by certain entry with id attribute value (E1).</description>
+<action><![CDATA[
+
+for $ent in input()/dictionary/e[@id="E1"],
+    $related in input()/dictionary/e
+where $ent/et/cr = $related/@id
+return
+    <Output>
+        {$related/hwg/hw}
+    </Output>
+
+]]></action>
+</query>
+
+</queries>
+</group>
+<group name ="DC-MD">
+<containers>
+<!--
+<container>DC-MD-miniscule-wholedoc.dbxml</container>
+<container>DC-MD-miniscule-node.dbxml</container>
+-->
+<container>DC-MD-tiny-wholedoc.dbxml</container>
+<container>DC-MD-tiny-node.dbxml</container>
+<container>DC-MD-small-wholedoc.dbxml</container>
+<container>DC-MD-small-node.dbxml</container>
+<!--
+<container>DC-MD-medium-wholedoc.dbxml</container>
+<container>DC-MD-medium-node.dbxml</container>
+<container>DC-MD-large-wholedoc.dbxml</container>
+<container>DC-MD-large-node.dbxml</container>
+-->
+</containers>
+<queries>
+<!-- Queries for XQuery Use Cases from UoW XBench (DC-MD group) -->
+<query>
+<description>  DC/MD_Q1 Return the customer id of the order that has matching id attribute value (1).</description>
+<action><![CDATA[
+
+for $order in input()/order[@id="1"]
+return
+    $order/customer_id
+
+
+]]></action>
+</query>
+<!-- 2004-10-08 ARW misuse of text() removed -->
+<query>
+<description> DC/MD_Q3 Group orders with total amount bigger than a certain number (11000.0), by customer id and calculate the total number of each group.</description>
+<action><![CDATA[
+
+for $a in distinct-values (input()/order
+    [total > 11000.0]/customer_id)
+let $b := input()/order[customer_id=$a]
+return
+    <Output>
+        <CustKey>{$a}</CustKey>
+        <NumberOfOrders>{count($b)}</NumberOfOrders>
+    </Output>
+
+]]></action>
+</query>
+<!-- 2004-10-07 SR #11154 (also, bad XPath '/:' corrected)
+<query>
+<description> DC/MD_Q4 List the item id of the previous item of a matching item with id attribute value (8).</description>
+<action><![CDATA[
+
+let $item := input()/items/item[@id="8"]
+for $prevItem in input()/items/item
+    [. << $item][position() = last()]
+return
+    <Output>
+        <CurrentItem>{$item/@id}</CurrentItem>
+        <PreviousItem>{$prevItem/@id}</PreviousItem>
+    </Output>
+
+]]></action>
+</query>
+-->
+<query>
+<description> DC/MD_Q5 Return the first order line item of a certain order with id attribute value (2).</description>
+<action><![CDATA[
+
+for $a in input()/order[@id="2"]
+return
+    $a/order_lines/order_line[1]
+
+]]></action>
+</query>
+<!-- 2004-10-08 ARW changed "gt N" to "> xs:decimal('N')" -->
+<query>
+<description> DC/MD_Q6 Return invoice where some discount rates of sub-line items are higher than a certain number (0.02).</description>
+<action><![CDATA[
+
+for $ord in input()/order
+where some $item in $ord/order_lines/order_line
+    satisfies $item/discount_rate > xs:decimal("0.02")
+return
+    $ord
+
+]]></action>
+</query>
+<!-- 2004-10-08 ARW changed "gt N" to "> xs:decimal('N')" -->
+<query>
+<description> DC/MD_Q7 Return invoice where all discount rates of sub-line items are higher than a certain number (0.02).</description>
+<action><![CDATA[
+
+for $ord in input()/order
+where every $item in $ord/order_lines/order_line
+    satisfies $item/discount_rate > xs:decimal("0.02")
+return
+    $ord
+
+]]></action>
+</query>
+<query>
+<description> DC/MD_Q8 Return the order line item ids of an order with an attribute value (3).</description>
+<action><![CDATA[
+
+for $a in input()/order[@id="3"]
+return
+    $a/*/order_line/item_id
+
+]]></action>
+</query>
+<query>
+<description> DC/MD_Q9 Return the item ids of an order with id attribute value (4).</description>
+<action><![CDATA[
+
+for $a in input()/order[@id="4"]
+return
+    $a//item_id
+
+]]></action>
+</query>
+<!-- 2004-10-08 ARW changed "gt N" to "> xs:decimal('N')" -->
+<query>
+<description> DC/MD_Q10 List the orders (order id, order date and ship type), with total amount larger than a certain number (11000.0), ordered alphabetically by ship type.</description>
+<action><![CDATA[
+
+for $a in input()/order
+where $a/total > xs:decimal("11000.0")
+order by $a/ship_type
+return
+    <Output>
+        {$a/@id}
+        {$a/order_date}
+        {$a/ship_type}
+    </Output>
+
+]]></action>
+</query>
+<!-- 2004-10-08 ARW changed "gt N" to "> xs:decimal('N')" -->
+<query>
+<description> DC/MD_Q11 List the orders (order id, order date and order total), with total amount larger than a certain number (11000.0), in descending order by total amount.</description>
+<action><![CDATA[
+
+for $a in input()/order
+where $a/total > xs:decimal("11000.0")
+order by $a/total descending
+return
+    <Output>
+        {$a/@id}
+        {$a/order_date}
+        {$a/total}
+    </Output>
+
+]]></action>
+</query>
+<query>
+<description> DC/MD_Q12 List all order lines of a certain order with id attribute value (5).</description>
+<action><![CDATA[
+
+for $a in input()/order[@id="5"]
+return
+    <Output>
+        {$a/order_lines}
+    </Output>
+
+]]></action>
+</query>
+<query>
+<description> DC/MD_Q14 List the ids of orders that only have one order line.</description>
+<action><![CDATA[
+
+for $a in input()/order
+where empty($a/order_lines/order_line[2])
+return
+    <OneItemLine>
+        {$a/@id}
+    </OneItemLine>
+
+]]></action>
+</query>
+<query>
+<description> DC/MD_Q16 Retrieve one whole order document with certain id attribute value (6).</description>
+<action><![CDATA[
+
+for $a in input()/order[@id="6"]
+return
+    $a
+
+]]></action>
+</query>
+<query>
+<description> DC/MD_Q17 Return the ids of authors whose biographies contain a certain word (``hockey").</description>
+<action><![CDATA[
+
+for $a in input()/authors/author
+where contains ($a/biography, "hockey")
+return
+<Output>
+    {$a/@id}
+</Output>
+
+]]></action>
+</query>
+<query>
+<description> DC/MD_Q19 For a particular order with id attribute value (7), get its customer name and phone, and its order status.</description>
+<action><![CDATA[
+
+for $order in input()/order,
+    $cust in input()/customers/customer
+where $order/customer_id = $cust/@id
+    and $order/@id = "7"
+return
+    <Output>
+        {$order/@id}
+        {$order/order_status}
+        {$cust/first_name}
+        {$cust/last_name}
+        {$cust/phone_number}
+    </Output>
+
+]]></action>
+</query>
+
+</queries>
+</group>
+<group name ="DC-SD">
+<containers>
+<!--
+<container>DC-SD-miniscule-wholedoc.dbxml</container>
+<container>DC-SD-miniscule-node.dbxml</container>
+-->
+<container>DC-SD-tiny-wholedoc.dbxml</container>
+<container>DC-SD-tiny-node.dbxml</container>
+<container>DC-SD-small-wholedoc.dbxml</container>
+<container>DC-SD-small-node.dbxml</container>
+<!--
+<container>DC-SD-medium-wholedoc.dbxml</container>
+<container>DC-SD-medium-node.dbxml</container>
+<container>DC-SD-large-wholedoc.dbxml</container>
+<container>DC-SD-large-node.dbxml</container>
+-->
+</containers>
+<queries>
+<!-- Queries for XQuery Use Cases from UoW XBench (DC-SD group) -->
+<query>
+<description>  DC/SD_Q1 Return the item that has matching item id attribute value (I1).</description>
+<action><![CDATA[
+
+for $item in input()/catalog/item[@id="I1"]
+return
+    $item
+
+]]></action>
+</query>
+<query>
+<description> DC/SD_Q2 Find the title of the item which has matching author first name (Ben).</description>
+<action><![CDATA[
+
+for $item in input()/catalog/item
+where $item/authors/author/name/first_name = "Ben"
+return
+    $item/title
+
+]]></action>
+</query>
+<!-- 2004-10-08 ARW misuse of text() removed -->
+<query>
+<description> DC/SD_Q3 Group items released in a certain year (1990), by publisher name and calculate the total number of items for each group.</description>
+<action><![CDATA[
+
+for $a in distinct-values (input()/catalog/item
+    [date_of_release >= "1990-01-01"]
+    [date_of_release < "1991-01-01"]/publisher/name)
+let $b := input()/catalog/item/publisher[name=$a]
+return
+    <Output>
+        <Publisher>{$a}</Publisher>
+        <NumberOfItems>{count($b)}</NumberOfItems>
+    </Output>
+
+]]></action>
+</query>
+<!-- 2004-10-07 SR #11154
+<query>
+<description> DC/SD_Q4 List the item id of the previous item of a matching item with id attribute value (I2).</description>
+<action><![CDATA[
+
+let $item := input()/catalog/item[@id="I2"]
+for  $prevItem in input()/catalog/item
+    [. << $item][position() = last()]
+return
+    <Output>
+        <CurrentItem>{$item/@id}</CurrentItem>
+        <PreviousItem>{$prevItem/@id}</PreviousItem>
+    </Output>
+
+]]></action>
+</query>
+-->
+<query>
+<description> DC/SD_Q5 Return the information about the first author of item with a matching id attribute value (I3).</description>
+<action><![CDATA[
+
+for $a in input()/catalog/item[@id="I3"]
+return
+    $a/authors/author[1]
+
+]]></action>
+</query>
+<query>
+<description> DC/SD_Q6 Return item information where some authors are from certain country (Canada).</description>
+<action><![CDATA[
+
+for $item in input()/catalog/item
+where some $auth in
+    $item/authors/author/contact_information/mailing_address
+satisfies $auth/name_of_country = "Canada"
+return
+    $item
+
+]]></action>
+</query>
+<query>
+<description> DC/SD_Q7 Return item information where all its authors are from certain country (Canada).</description>
+<action><![CDATA[
+
+for $item in input()/catalog/item
+where every $add in
+    $item/authors/author/contact_information/mailing_address
+satisfies $add/name_of_country = "Canada"
+return
+    $item
+
+]]></action>
+</query>
+<query>
+<description> DC/SD_Q8 Return the publisher of an item with id attribute value (I4).</description>
+<action><![CDATA[
+
+for $a in input()/catalog/*[@id="I4"]
+return
+    $a/publisher
+
+]]></action>
+</query>
+<query>
+<description> DC/SD_Q9 Return the ISBN of an item with id attribute value (I5).</description>
+<action><![CDATA[
+
+for $a in input()/catalog/item
+where $a/@id="I5"
+return
+    $a//ISBN/text()
+
+]]></action>
+</query>
+<query>
+<description> DC/SD_Q10 List the item titles ordered alphabetically by publisher name, with release date within a certain time period (from 1990-01-01 to 1995-01-01).</description>
+<action><![CDATA[
+
+for $a in input()/catalog/item
+where $a/date_of_release gt "1990-01-01" and
+    $a/date_of_release lt "1995-01-01"
+order by $a/publisher/name
+return
+    <Output>
+        {$a/title}
+        {$a/publisher}
+    </Output>
+
+]]></action>
+</query>
+<query>
+<description> DC/SD_Q11 List the item titles in descending order by date of release with date of release within a certain time range (from 1990-01-01 to 1995-01-01.</description>
+<action><![CDATA[
+
+for $a in input()/catalog/item
+where $a/date_of_release gt "1990-01-01" and
+    $a/date_of_release lt "1995-01-01"
+order by $a/data_of_release descending
+return
+    <Output>
+        {$a/title}
+        {$a/date_of_release}
+    </Output>
+
+]]></action>
+</query>
+<query>
+<description> DC/SD_Q12 Get the mailing address of the first author of certain item with id attribute value (I6).</description>
+<action><![CDATA[
+
+for $a in input()/catalog/item[@id="I6"]
+return
+    <Output>
+        {$a/authors/author[1]/contact_information/mailing_address}
+    </Output>
+
+]]></action>
+</query>
+<query>
+<description> DC/SD_Q14 Return the names of publishers who publish books between a period of time (from 1990-01-01 to 1991-01-01) but do not have FAX number.</description>
+<action><![CDATA[
+
+for $a in input()/catalog/item
+where $a/date_of_release gt "1990-01-01" and
+           $a/date_of_release lt "1991-01-01" and
+           empty($a/publisher/contact_information/FAX_number)
+return
+      <Output>
+        {$a/publisher/name}
+      </Output>
+
+]]></action>
+</query>
+<query>
+<description> DC/SD_Q17 Return the ids of items whose descriptions contain a certain word (``hockey").</description>
+<action><![CDATA[
+
+for $a in input()/catalog/item
+where contains ($a/description, "hockey")
+return
+<Output>
+    {$a/@id}
+</Output>
+
+]]></action>
+</query>
+<query>
+<description> DC/SD_Q19 Retrieve the item titles related by certain item with id attribute value (I7).</description>
+<action><![CDATA[
+
+for $item in input()/catalog/item[@id="I7"],
+    $related in input()/catalog/item
+where $item/related_items/related_item/item_id = $related/@id
+return
+    <Output>
+        {$related/title}
+    </Output>
+
+]]></action>
+</query>
+<query>
+<description> DC/SD_Q20 Retrieve the item title whose size (length*width*height) is bigger than certain number (500000).</description>
+<action><![CDATA[
+
+for $size in input()/catalog/item/attributes/size_of_book
+where $size/length*$size/width*$size/height > 500000
+return
+    <Output>
+        {$size/../../title}
+    </Output>
+
+]]></action>
+</query>
+
+</queries>
+</group>
+</xqueryrunner>

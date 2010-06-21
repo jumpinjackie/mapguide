@@ -1,0 +1,83 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="result" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <ForBinding name="i">
+          <DbXmlNav>
+            <LookupIndex container="11.5.3.dbxml">
+              <DocumentQP index="node-metadata-equality-string" operation="eq" child="name:http://www.sleepycat.com/2002/dbxml" value="items.xml">
+                <ValueQP index="node-element-equality-date" operation="gte" child="end_date" value="1999-01-31"/>
+              </DocumentQP>
+            </LookupIndex>
+            <Join type="parent-of-child" return="argument">
+              <DbXmlNav>
+                <QueryPlanFunction result="document" container="11.5.3.dbxml">
+                  <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'items.xml',n(V(node-element-substring-string,description,substring,'Bicycle'),V(node-element-equality-date,start_date,<=,'1999-01-31'),V(node-element-equality-date,end_date,>=,'1999-01-31')))</OQPlan>
+                </QueryPlanFunction>
+                <DbXmlStep axis="descendant" name="item_tuple" nodeType="element"/>
+                <Join type="child" return="context_item">
+                  <LookupIndex container="11.5.3.dbxml">
+                    <ValueQP index="node-element-equality-date" operation="lte" child="start_date" value="1999-01-31"/>
+                  </LookupIndex>
+                </Join>
+              </DbXmlNav>
+            </Join>
+            <Join type="child" return="context_item">
+              <DbXmlNav>
+                <LookupIndex container="11.5.3.dbxml">
+                  <ValueQP index="node-element-substring-string" operation="substring" child="description" value="Bicycle"/>
+                </LookupIndex>
+                <DbXmlContains join="self">
+                  <Sequence>
+                    <AnyAtomicTypeConstructor value="Bicycle" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+                  </Sequence>
+                </DbXmlContains>
+              </DbXmlNav>
+            </Join>
+          </DbXmlNav>
+        </ForBinding>
+        <Sort>
+          <Specification modifier="ascending|empty_least">
+            <TreatAs>
+              <PromoteUntyped uri="http://www.w3.org/2001/XMLSchema" name="string">
+                <Atomize>
+                  <DbXmlNav>
+                    <Variable name="i"/>
+                    <DbXmlStep axis="child" name="itemno" nodeType="element">
+                      <OQPlan>P(edge-element-equality-string,prefix,item_tuple.itemno)</OQPlan>
+                    </DbXmlStep>
+                  </DbXmlNav>
+                </Atomize>
+              </PromoteUntyped>
+              <SequenceType occurrence="zero_or_one" testType="anything"/>
+            </TreatAs>
+          </Specification>
+        </Sort>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="item_tuple" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <DbXmlNav>
+              <Variable name="i"/>
+              <DbXmlStep axis="child" name="itemno" nodeType="element">
+                <OQPlan>P(edge-element-equality-string,prefix,item_tuple.itemno)</OQPlan>
+              </DbXmlStep>
+            </DbXmlNav>
+            <DbXmlNav>
+              <Variable name="i"/>
+              <DbXmlStep axis="child" name="description" nodeType="element"/>
+            </DbXmlNav>
+          </Children>
+        </DOMConstructor>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

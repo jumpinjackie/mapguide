@@ -1,0 +1,14 @@
+<XQuery>
+  <Module targetNamespace="http://test.module2">
+    <FunctionDefinition name="{http://test.module2}:function">
+      <DbXmlNav>
+        <QueryPlanFunction result="collection" container="11.7.4.dbxml">
+          <OQPlan>P(node-element-presence-none,=,category)</OQPlan>
+        </QueryPlanFunction>
+        <DbXmlStep axis="descendant" name="category" nodeType="element"/>
+      </DbXmlNav>
+    </FunctionDefinition>
+  </Module>
+  <UserFunction name="{http://test.module2}:function">
+  </UserFunction>
+</XQuery>

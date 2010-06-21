@@ -1,0 +1,26 @@
+<XQuery>
+  <DbXmlNav>
+    <QueryPlanFunction result="collection" container="11.7.2.dbxml">
+      <OQPlan>n(P(node-element-presence-none,=,c),P(node-element-presence-none,=,b),P(node-element-presence-none,=,a))</OQPlan>
+    </QueryPlanFunction>
+    <DbXmlFilter>
+      <DocumentOrder>
+        <DbXmlNav>
+          <TreatAs>
+            <Function name="{http://www.w3.org/2005/xpath-functions}:root"/>
+            <SequenceType occurrence="exactly_one" testType="document"/>
+          </TreatAs>
+          <DbXmlStep axis="descendant" name="a" nodeType="element">
+            <OQPlan>P(node-element-presence-none,=,a)</OQPlan>
+          </DbXmlStep>
+          <DbXmlStep axis="child" name="b" nodeType="element">
+            <OQPlan>P(node-element-presence-none,=,b)</OQPlan>
+          </DbXmlStep>
+          <DbXmlStep axis="child" name="c" nodeType="element">
+            <OQPlan>P(node-element-presence-none,=,c)</OQPlan>
+          </DbXmlStep>
+        </DbXmlNav>
+      </DocumentOrder>
+    </DbXmlFilter>
+  </DbXmlNav>
+</XQuery>

@@ -1,0 +1,19 @@
+<XQuery>
+  <DbXmlNav>
+    <LookupIndex container="11.8.1.dbxml">
+      <ValueQP index="node-element-equality-double" operation="gt" child="discount_rate" value="0.02"/>
+    </LookupIndex>
+    <DbXmlStep axis="parent-of-child" name="order_line" nodeType="element"/>
+    <DbXmlStep axis="parent-of-child" name="order_lines" nodeType="element"/>
+    <Join type="parent-of-child" return="argument">
+      <DbXmlNav>
+        <QueryPlanFunction result="collection" container="11.8.1.dbxml">
+          <OQPlan>n(P(edge-element-presence-none,=,root:http://www.sleepycat.com/2002/dbxml.order),V(node-element-equality-double,discount_rate,>,'0.02'))</OQPlan>
+        </QueryPlanFunction>
+        <DbXmlStep axis="child" name="order" nodeType="element">
+          <OQPlan>P(edge-element-presence-none,=,root:http://www.sleepycat.com/2002/dbxml.order)</OQPlan>
+        </DbXmlStep>
+      </DbXmlNav>
+    </Join>
+  </DbXmlNav>
+</XQuery>

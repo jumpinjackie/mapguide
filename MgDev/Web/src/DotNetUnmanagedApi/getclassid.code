@@ -1,0 +1,15 @@
+
+DllExport int getClassId(void* ptrObj)
+{
+  return ((MgObject*)ptrObj)->GetClassId();
+}
+
+DllExport char* getClassName(void* ptrObj)
+{
+  return ((MgObject*)ptrObj)->GetMultiByteClassName();
+}
+
+DllExport char* getNameSpace(void* ptrObj)
+{
+  return ((MgObject*)ptrObj)->GetNameSpace();
+}

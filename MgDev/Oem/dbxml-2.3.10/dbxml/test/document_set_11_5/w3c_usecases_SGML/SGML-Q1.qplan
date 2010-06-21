@@ -1,0 +1,24 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="result" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <DocumentOrder>
+        <DbXmlNav>
+          <QueryPlanFunction result="document" container="11.5.5.dbxml">
+            <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'sgml.xml',n(P(node-element-presence-none,=,report),P(edge-element-presence-none,prefix,para)))</OQPlan>
+          </QueryPlanFunction>
+          <DbXmlStep axis="descendant" name="report" nodeType="element">
+            <OQPlan>P(node-element-presence-none,=,report)</OQPlan>
+          </DbXmlStep>
+          <DbXmlStep axis="descendant" name="para" nodeType="element">
+            <OQPlan>P(edge-element-presence-none,prefix,para)</OQPlan>
+          </DbXmlStep>
+        </DbXmlNav>
+      </DocumentOrder>
+    </Children>
+  </DOMConstructor>
+</XQuery>

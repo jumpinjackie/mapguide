@@ -1,0 +1,5 @@
+base referer
+rect $PSVIItem_8hpp.html 187,32 443,56
+rect $PlatformUtils_8hpp.html 493,32 695,56
+rect $XMLException_8hpp.html 745,8 955,32
+rect $PanicHandler_8hpp.html 747,56 953,80

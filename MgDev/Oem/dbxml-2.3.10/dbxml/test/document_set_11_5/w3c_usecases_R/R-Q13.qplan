@@ -1,0 +1,122 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="result" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <ForBinding name="uid">
+          <Function name="{http://www.w3.org/2005/xpath-functions}:distinct-values">
+            <Atomize>
+              <DbXmlNav>
+                <QueryPlanFunction result="document" container="11.5.3.dbxml">
+                  <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'bids.xml',P(edge-element-equality-string,prefix,userid))</OQPlan>
+                </QueryPlanFunction>
+                <DbXmlStep axis="descendant" name="userid" nodeType="element">
+                  <OQPlan>P(edge-element-equality-string,prefix,userid)</OQPlan>
+                </DbXmlStep>
+              </DbXmlNav>
+            </Atomize>
+          </Function>
+        </ForBinding>
+        <ForBinding name="u">
+          <DbXmlNav>
+            <QueryPlanFunction result="document" container="11.5.3.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'users.xml',V(edge-element-equality-string,user_tuple.userid,=,'[to be calculated]'))</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="descendant" name="user_tuple" nodeType="element"/>
+            <DbXmlFilter>
+              <DbXmlCompare name="equal" join="child" name="userid" nodeType="element">
+                <OQPlan>V(edge-element-equality-string,user_tuple.userid,=,'[to be calculated]')</OQPlan>
+                <Variable name="uid"/>
+              </DbXmlCompare>
+            </DbXmlFilter>
+          </DbXmlNav>
+        </ForBinding>
+        <LetBinding name="b">
+          <DbXmlNav>
+            <QueryPlanFunction result="document" container="11.5.3.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'bids.xml',V(edge-element-equality-string,bid_tuple.userid,=,'[to be calculated]'))</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="descendant" name="bid_tuple" nodeType="element"/>
+            <DbXmlFilter>
+              <DbXmlCompare name="equal" join="child" name="userid" nodeType="element">
+                <OQPlan>V(edge-element-equality-string,bid_tuple.userid,=,'[to be calculated]')</OQPlan>
+                <Variable name="uid"/>
+              </DbXmlCompare>
+            </DbXmlFilter>
+          </DbXmlNav>
+        </LetBinding>
+        <Sort>
+          <Specification modifier="ascending|empty_least">
+            <TreatAs>
+              <PromoteUntyped uri="http://www.w3.org/2001/XMLSchema" name="string">
+                <Atomize>
+                  <DbXmlNav>
+                    <Variable name="u"/>
+                    <DbXmlStep axis="child" name="userid" nodeType="element">
+                      <OQPlan>P(edge-element-equality-string,prefix,user_tuple.userid)</OQPlan>
+                    </DbXmlStep>
+                  </DbXmlNav>
+                </Atomize>
+              </PromoteUntyped>
+              <SequenceType occurrence="zero_or_one" testType="anything"/>
+            </TreatAs>
+          </Specification>
+        </Sort>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="bidder" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <DbXmlNav>
+              <Variable name="u"/>
+              <DbXmlStep axis="child" name="userid" nodeType="element">
+                <OQPlan>P(edge-element-equality-string,prefix,user_tuple.userid)</OQPlan>
+              </DbXmlStep>
+            </DbXmlNav>
+            <DbXmlNav>
+              <Variable name="u"/>
+              <DbXmlStep axis="child" name="name" nodeType="element"/>
+            </DbXmlNav>
+            <DOMConstructor type="element">
+              <Name>
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="bidcount" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+                </Sequence>
+              </Name>
+              <Children>
+                <Function name="{http://www.w3.org/2005/xpath-functions}:count">
+                  <Variable name="b"/>
+                </Function>
+              </Children>
+            </DOMConstructor>
+            <DOMConstructor type="element">
+              <Name>
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="avgbid" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+                </Sequence>
+              </Name>
+              <Children>
+                <Function name="{http://www.w3.org/2005/xpath-functions}:avg">
+                  <Atomize>
+                    <DocumentOrder>
+                      <DbXmlNav>
+                        <Variable name="b"/>
+                        <DbXmlStep axis="child" name="bid" nodeType="element"/>
+                      </DbXmlNav>
+                    </DocumentOrder>
+                  </Atomize>
+                </Function>
+              </Children>
+            </DOMConstructor>
+          </Children>
+        </DOMConstructor>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

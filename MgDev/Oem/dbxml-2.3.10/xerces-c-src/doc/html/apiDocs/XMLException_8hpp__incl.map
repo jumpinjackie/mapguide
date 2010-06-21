@@ -1,0 +1,7 @@
+base referer
+rect $XMemory_8hpp.html 245,8 426,32
+rect $XMLUni_8hpp.html 250,104 421,128
+rect $XMLErrorReporter_8hpp.html 196,152 476,176
+rect $XercesDefs_8hpp.html 526,104 721,128
+rect $XercesVersion_8hpp.html 770,80 984,104
+rect $AutoSense_8hpp.html 781,128 973,152

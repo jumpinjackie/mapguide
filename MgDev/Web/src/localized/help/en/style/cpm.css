@@ -1,0 +1,1091 @@
+/* 07/28/2008 Anant Trivedi - Implementation started for Autodesk theme and tri-color banner*/
+
+/* 01/12/2007 Bill Crawford - Implemented gray banners. */
+
+/* 02/02/2007 Bill Crawford - Fixed breadcrumbs not visible until you mouse over */
+
+/* 02/06/2007 Bill Crawford - Edited 'body' to reduce margin-bottom from 1200px
+/*            to 20pt to reduce deep blank region at ends of topics. */
+
+/* 02/11/2007 Bill Crawford - Added 'div.codeBlock' and 'div.codeBlock
+/*            pre.codeLine' to eliminate unwanted space between lines in code
+/*            blocks and provide a code block background color */
+
+/* 09/27/2007 Bill Crawford - Appended rules for workflow tables. */
+
+/* 10/02/2007 Bill Crawford - Defect fixes for workflow tables. */
+
+/* 10/12/2007 Bill Crawford - Added ul.bullet_no selector. <ul> elements are */
+/*            assigned to this class when the 'bullet' attribute of the */
+/*            corresponding UList element in Framemaker is set to "no". */
+
+/* 10/12/2007 Bill Crawford - Added 'ul ul' and 'ul ul ul' selectors to allow
+              explicit control over bullet style in nested bullet lists. */
+
+/* 12/03/2007 Bill Crawford - Added font attributes to 'div.task-title' and
+              removed all font attribs but font-weight from 'div.task-title a'
+              and 'div.task-title-last a' so that font style of task titles
+              match whether they are links or not. */
+
+/* 10/31/2008 François Masselot - Added td.task-title-top  and td.task-title-bottom
+              to support adjustable cells in height. Changed td.task-title
+              (height and background image)
+
+/* 12/12/2008 Bill Crawford - Cleaned up some formatting. */
+
+/* 12/19/2008 Bill Crawford - Added #3d3d3d to background of div.collapseexpand. Added 'px'
+                              to unitless dimension values. */
+
+body {
+background-color: #ffffff;
+font-family: Verdana;
+font-size: 10pt;
+font-style: normal;
+font-weight: normal;
+color: #000000;
+letter-spacing: normal;
+word-spacing: normal;
+text-align: left;
+text-indent: 0pt;
+margin-bottom: 20pt;
+margin-left: 12pt;
+margin-right: 12pt;
+margin-top: 0pt;
+}
+
+p {
+margin-top: 10pt;
+margin-bottom: 0px;
+}
+
+/* ----------------------------------------------------------------------------
+                                        Link styles
+ ---------------------------------------------------------------------------- */
+a {
+color: #03b;
+font-size: 10pt;
+font-weight: normal;
+text-decoration: underline;
+}
+
+a:link {
+color: #03b;
+}
+
+a:visited {
+color: #03b;
+}
+
+/* ----------------------------------------------------------------------------
+                                        Table styles
+ ---------------------------------------------------------------------------- */
+p.table-title {
+font-weight: bold;
+}
+
+table.table {
+font-family: Arial, Helvetica, sans-serif;
+font-size: 10pt;
+font-style: normal;
+font-weight: normal;
+color: #000000;
+background-color: transparent;
+letter-spacing: normal;
+text-align: left;
+text-indent: 0pt;
+word-spacing: normal;
+margin-top: 5pt;
+}
+
+p.table-title + table.table{
+margin-top: -5pt;
+} /* Table after it's title should have small top margin */
+
+table.table th {
+background-color: #ccc;
+font-weight: bold;
+}
+
+/*Head row cells*/
+table.table tr td {
+vertical-align: top;
+} /*Body cells*/
+
+table.Ruled, table.RuledWide {
+border-top: 1px solid #3D3D3D;
+border-bottom: 2px solid #3D3D3D;
+}
+
+table.Ruled th, table.RuledWide th {
+padding-bottom: 6pt;
+}
+
+table.Ruled td, table.RuledWide td {
+padding-bottom: 6pt;
+}
+
+tr.RuledHeading, tr.RuledWideHeading {
+background-color: transparent;
+}
+
+tr.RuledEvenRow, tr.RuledWideEvenRow {
+background-color: transparent;
+}
+
+tr.RuledOddRow, tr.RuledWideOddRow {
+background-color: transparent;
+}
+
+th.table-heading {
+font-size: 10pt;
+text-align: left;
+font-weight: bold;
+color: #3D3D3D;
+}
+
+p.table-body {} /* Paragraph within table body */
+p.table-heading {} /* Paragraph within table body */
+p.table-footing {} /* Paragraph within table body */
+
+/* ----------------------------------------------------------------------------
+                                        List styles
+ ---------------------------------------------------------------------------- */
+
+ul {
+margin-bottom: 0pt;
+margin-left: 12pt;
+margin-top: 6pt;
+list-style-type: disc;
+}
+
+ul p {
+margin-top: 6pt;
+}
+
+ul li {
+margin-bottom: 0pt;
+margin-top: 10pt;
+padding-left: 6pt;
+}
+
+ul.bullet_no {
+list-style-type: none;
+}
+
+ol {
+margin-bottom: 0pt;
+margin-left: 18pt;
+margin-top: 6pt;
+}
+
+ol p {
+margin-top: 6pt;
+}
+
+ol li {
+margin-bottom: 0pt;
+margin-top: 10pt;
+padding-left: 0pt;
+}
+
+div.single_step_instruction ol {
+list-style-image: url(../images/ac.menuaro.gif);
+}
+
+div.see-also ul ul {
+margin-left: 0px;
+}
+
+div.see-also li {
+margin-top: 4pt;
+}
+
+div.topic-list li {
+margin-top: 4pt;
+}
+
+div.dl_section {
+margin-left: 30pt;
+}
+
+/* section titles (break heads within topics) */
+div.dl_section p.title,
+div.dl_section p.section_title_h1,
+div.section p.section_title_h1 {
+background-color: #959595;
+font-weight: bold;
+font-size: 10pt;
+color: #FFFFFF;
+padding-top: 2pt;
+padding-bottom: 3pt;
+padding-left: 4pt;
+padding-right: 6pt;
+margin-top: 20pt;
+}
+
+@media print {
+
+    div.dl_section p.title,
+    div.dl_section p.section_title_h1,
+    div.section p.section_title_h1 {
+    background-color: transparent;
+    padding-left: 0pt;
+    }
+
+}
+
+dl {}
+
+dl p {
+margin-top: 6pt;
+}
+
+dt {
+margin-top: 12pt;
+margin-bottom: 0px;
+}
+
+dd {
+margin-top: 0pt;
+margin-bottom: 0px;
+}
+
+ul.jumplist {
+margin-left: 10pt;
+margin-bottom: 10pt;
+}
+
+ol[start] {
+margin-top: 2pt
+} /* continued list */
+
+div.list-intro {
+font-size: 10pt;
+margin-bottom: 5pt;
+font-weight: bold;
+color: #990000;
+}
+
+div.enclosed-list {
+margin-top: -5pt;
+padding-left: 15pt;
+padding-bottom: 0pt;
+} /* Block to indent enclosed lists */
+
+div.enclosed-list div.list-intro {
+padding-top: 10pt;
+} /* Subsequent list into */
+
+div.enclosed-list ul {
+margin-top: 0pt;
+margin-bottom: 0pt;
+}
+
+div.enclosed-list ol {
+margin-top: 0pt;
+margin-bottom: 0pt;
+}
+
+div.topic-list h4.related {
+font-weight: bold;
+font-size: 10pt;
+color: #338;
+margin-top: 16pt;
+margin-bottom: 8pt;
+}
+
+/* ----------------------------------------------------------------------------
+                                        Note styles
+ ---------------------------------------------------------------------------- */
+
+div.note-note,
+div.note-warning,
+div.note-tip,
+div.note-related,
+div.note-important,
+div.note-bestpractice {
+margin-top: 10pt;
+margin-bottom: 0px;
+}
+
+/* Notes within table */
+table.table div.note-note,
+table.table div.note-warning,
+table.table div.note-tip,
+table.table div.note-related,
+table.table div.note-important,
+table.table div.note-bestpractice {
+padding-top: 5px;
+padding-bottom: 5px;
+font-size: 9pt;
+}
+/* Notes within lists */
+
+li div.note-note,
+li div.note-warning,
+li div.note-tip,
+li div.note-related,
+li div.note-important,
+li div.note-bestpractice {
+margin-left: 0pt;
+margin-top: 2pt;
+margin-bottom: 8pt;
+}
+
+/*  Note label styles */
+div.note-important span.label {
+color: #c00;
+font-size: 9pt;
+font-weight: bold;
+padding-right: 5px;
+}
+
+div.note-warning span.label {
+color: #c00;
+font-size: 9pt;
+font-weight: bold;
+padding-right: 5px;
+}
+
+div.note-note span.label {
+color: #338;
+font-size: 9pt;
+font-weight: bold;
+padding-right: 5px;
+}
+
+div.note-tip span.label {
+color: #338;
+font-size: 9pt;
+font-weight: bold;
+padding-right: 5px;
+}
+
+div.note-related span.label {
+color: #027;
+font-size: 9pt;
+font-weight: bold;
+padding-right: 5px;
+}
+
+div.note-important span.label {
+color: #c00;
+font-size: 9pt;
+font-weight: bold;
+padding-right: 5px;
+}
+
+div.note-bestpractice span.label {
+color: #c00;
+font-size: 9pt;
+font-weight: bold;
+padding-right: 5px;
+}
+
+/* ---------------------------------------------------------------------------------------------
+                                        Code elements
+ --------------------------------------------------------------------------------------------- */
+span.code,
+div.codeBlock,
+p.codeLine,
+p.codeComment,
+span.codeLiteral {
+font-family: "Courier New", Courier, monospace;
+font-size: 10pt;
+font-style: normal;
+font-weight: normal;
+}
+
+span.code {}
+
+div.codeBlock div.codeBlock {
+margin-left: 30pt;
+} /* Only descendant code blocks should have indents */
+
+p.codeLine,
+p.codeComment {
+padding: 1px;
+margin: 1px;
+}
+
+p.codeSpace {}
+
+span.codeLiteral {}
+
+div.codeBlock {
+margin-top: 8pt;
+padding: 8pt;
+background: #feb;
+}
+
+div.codeBlock pre.codeLine {
+margin-top: 0pt;
+margin-bottom: 0pt;
+}
+
+@media print {
+
+    div.codeBlock {
+    background: #fff;
+    border: 1px solid #000;
+    }
+
+} /* @media print */
+
+
+/* ---------------------------------------------------------------------------------------------
+                            Charspan
+--------------------------------------------------------------------------------------------- */
+span.charspan-keyboardEntry {}
+
+span.charspan-strong {
+font-weight: bold;
+}
+
+span.charspan-special {}
+
+/*
+Note that CharSpan[@class='Emphasis'], CharSpan[@class='Subscript'] and CharSpan[@class='Superscript'] elements
+are being formatted as <em>, <sub> and <sub> html elements so please change element css definitions instead of class
+*/
+
+/* ---------------------------------------------------------------------------------------------
+                            Emphasis
+--------------------------------------------------------------------------------------------- */
+em, em.mild {
+font-style: italic;
+}
+
+em.strong {
+font-style: normal;
+font-weight: bold;
+}
+
+em.extreme {
+font-style: italic;
+font-weight: bold;
+}
+
+/* ---------------------------------------------------------------------------------------------
+                            UIString
+--------------------------------------------------------------------------------------------- */
+span.uis-promptMessage {
+font-style: normal;
+font-weight: bold;
+}
+
+span.uis-dialogCaption {
+font-style: normal;
+font-weight: bold;
+}
+
+span.uis-entryField {
+font-style: normal;
+font-weight: bold;
+}
+
+span.uis-menuText {}
+
+span.uis-stringTable {}
+
+span.uis-unspecified {}
+
+/* -------------------------------------------------------------------------------------------
+                            Comments
+------------------------------------------------------------------------------------------- */
+div.comments-editor {
+font-weight: bold;
+color: red;
+}
+
+div.comments-localizer {
+font-weight: bold;
+color: red;
+}
+
+div.comments-special {
+font-weight: bold;
+color: red;
+}
+
+div.comments-author {
+color: #cc0000;
+margin-left: 24pt;
+margin-right: 48pt;
+}
+
+/* ------------------------------------------------------------------------------------------
+                            Misc
+------------------------------------------------------------------------------------------ */
+.title,
+.list-intro {
+font-weight: bold;
+color: #990000;
+margin-top: 10pt;
+margin-bottom: -5pt;
+}
+
+p.title {
+font-weight: bold;
+font-size: 10pt;
+color: #338;
+margin-top: 16pt;
+margin-bottom: 0pt;
+}
+
+p.section_title_h1 {
+font-weight: bold;
+font-size: 10pt;
+color: #338;
+margin-top: 16pt;
+margin-bottom: 0pt;
+}
+
+p.list-intro {
+font-weight: bold;
+font-size: 10pt;
+color: #338;
+margin-top: 16pt;
+margin-bottom: 0pt;
+}
+
+p.prompt {
+margin-left: 12pt;
+color: #0000cc;
+}
+
+p.entryField {
+font-style: normal;
+font-weight: bold;
+}   /* The same as 'uis-entryField'? */
+
+span.keyboardEntry { }  /* The same as 'charspan-keyboardEntry'? */
+
+span.keyCaps {
+font-style: normal;
+font-weight: bold;
+}
+
+span.filePath {
+font-style: italic;
+}
+
+span.appSetting {}
+
+span.bookTitle {}
+
+span.coord {}
+
+span.codeIdentifier {}
+
+span.dialogCaption{
+font-style: italic;
+}
+
+span.menuText{
+font-style: normal;
+font-weight: bold;
+}
+
+span.glyphCopyright {}
+
+span.glyphTM {}
+
+span.glyphArrow {}
+
+span.glyphEllipsis {}
+
+span.glyphSpecial {}
+
+span.glyphRegistered {}
+
+span.glyph_additional {
+font-family: Symbol;
+}
+span.glyph_square {
+font-family: Wingdings;
+}
+
+a.webLink {}
+
+span.fileName {}
+
+span.term {
+font-size: 10pt;
+font-weight: bold;
+color: #36c;
+}
+
+dd div.definition { }
+
+dd div.brief_example {
+font-size: 9pt;
+color: #000;
+background-color : #77aacc;
+padding-top: 7pt;
+padding-bottom: 7pt;
+padding-left: 15pt;
+padding-right: 15pt;
+margin-right: 0pt;
+margin-left: 0pt;
+}
+
+div.section {}
+
+p.summary {}
+
+/* -----------------------------------------------------------------------------------------------
+                                expand all features
+ ----------------------------------------------------------------------------------------------- */
+
+img.expandcollapse_img {
+cursor: pointer;
+white-space: nowrap;
+}
+
+span.expandcollapse {
+color: white;
+cursor: pointer;
+white-space: nowrap;
+font-size: 10px;
+}
+
+span.expandcollapse_description {
+color: white;
+white-space: nowrap;
+visibility: hidden;
+font-size: 9px;
+text-align: right;
+}
+
+div.collapseexpandAllSection {
+display:none;
+vertical-align:middle;
+text-align:right;
+font-size:small;
+}
+
+
+div.collapseexpand {
+background-image: url(../images/collapseexpand.png);
+background-color: #3d3d3d;
+}
+
+table.head-text_table table td {
+text-align:right;
+}
+
+/* -----------------------------------------------------------------------------------------------
+                                Topic heading elements
+ ----------------------------------------------------------------------------------------------- */
+
+/* head region */
+div.head {
+background-color: #000000;
+margin-left: -12pt;
+margin-right: -12pt;
+background-image: url(../images/product_name.gif);
+background-repeat: no-repeat;
+background-position: 15px 14px;
+}
+
+@media print {
+
+   div.head {
+   background-image: none;
+   }
+
+} /* @media print */
+
+/* head block - sets head region margins */
+div.head-block {
+padding-top: 2pt;
+}
+
+/* nav group - aw search and browse buttons */
+div.nav-group {
+position: relative;
+height: 0px;
+padding-left: 1px;
+}
+
+@media print {
+
+   div.nav-group {
+   display: none;
+   }
+
+} /* @media print */
+
+/* ask-me stuff */
+
+form.ask-me {
+width: 275px;
+padding-top: 0px;
+padding-bottom: 0px;
+margin-top: 0px;
+margin-bottom: 0px;
+height: 0px;
+float: left;
+}
+
+input.ask-me-image {
+cursor: hand;
+margin-bottom: 2pt;
+margin-top: 2pt;
+height: 21px;
+}
+
+input.ask-me-text {
+padding-left: 5px;
+width: 160pt;
+padding-top: 1pt;
+height: 23px;
+margin-bottom: 2pt;
+}
+
+/* link to parent topic */
+
+div.head-parent-link span.head-parent-link {
+font-weight: normal;
+font-style: normal;
+font-family: verdana;
+font-size: 8pt;
+}
+
+div.head-parent-link a {
+color: #347;
+text-decoration: underline;
+}
+
+div.head-parent-link a:hover {
+color: #347;
+text-decoration: underline;
+}
+
+div.head-parent-link a:visited {
+color: #347;
+text-decoration: underline;
+}
+
+/* browse button set */
+
+div.browse {
+position: relative;
+text-align: right;
+width: 0px;
+float: right;
+padding-top: 10px;
+padding-right: 15px;
+}
+
+/* browse button images */
+div.browse img {
+margin-left: 2px;
+}
+
+/* browse button info */
+div.button-info {
+text-align: right;
+}
+
+/* where browse button titles display onmouseover */
+span#infoline {
+padding-right: 15px;
+padding-top: 1px;
+padding-bottom: 1px;
+font-size: 9px;
+visibility: hidden;
+color: #959595;
+width: 100%;
+text-align: right;
+}
+
+/* bread crumbs */
+
+div.ancestry {
+color: #959595;
+background-color: #212121;
+padding-top: 2px;
+padding-bottom: 2px;
+padding-left: 12px;
+}
+
+div.ancestry a {
+color: #959595;
+text-decoration: none;
+font-size: 8pt;
+}
+
+div.ancestry a:link {
+color: #959595;
+text-decoration: none;
+font-size: 8pt;
+}
+
+div.ancestry a:visited {
+color: #959595;
+text-decoration: none;
+font-size: 8pt;
+}
+
+/* head-text region */
+div.head-text {
+background-color: #3d3d3d;
+padding-left: 12px;
+}
+
+/* head-text */
+div.head-text span {
+color: #ffffff;
+font-size: 16pt;
+line-height: 1.2em;
+width: 100%;
+padding-bottom: 5px;
+padding-top: 5px;
+}
+
+@media print {
+
+   div.head-text span {
+   font-size: 18pt;
+   color: #666;
+   filter: glow-off;
+   }
+
+} /* @media print */
+
+/* -----------------------------------------------------------------------------------------------
+                                Topic footing (comments section) elements
+ ----------------------------------------------------------------------------------------------- */
+
+div.footer-block {
+margin-top: 25pt;
+margin-bottom: 20pt;
+border-top: 2px #959595 solid;
+border-bottom: 2px #959595 solid;
+text-align: right;
+padding-right: 15px;
+padding-top: 8px;
+padding-bottom: 14px;
+display: block;
+}
+
+span.comments-link {
+font-size: 8pt;
+}
+
+@media print {
+
+   div.footer-block {
+   display: none;
+   }
+
+}  /* @media print */
+
+/* -----------------------------------------------------------------------------------------------
+                                Art related elements
+ ----------------------------------------------------------------------------------------------- */
+
+p.figure-title {
+margin-top: 6pt;
+margin-bottom: 16pt;
+padding-top: 4pt;
+padding-bottom: 5pt;
+padding-left: 0px;
+padding-right: 8pt;
+font-size: 8pt;
+font-weight: bold;
+color: black;
+}
+
+div.figure-anchor {
+margin-top: 16pt;
+}
+
+/* -----------------------------------------------------------------------------------------------
+                                                DynamicHelp elements
+ ----------------------------------------------------------------------------------------------- */
+
+span.AltContentHidden {
+display: none;
+}
+
+span.RelatedContentHidden {
+display: none;
+}
+
+span.DefaultContentHidden {
+display: none;
+}
+
+/* -----------------------------------------------------------------------------------------------
+   Workflow tables
+----------------------------------------------------------------------------------------------- */
+
+table.workflow {
+text-align: center;
+border-collapse: collapse;
+margin-top: 10pt;
+margin-right: 15pt;
+}
+
+tr.task {
+vertical-align: center;
+height: 1px;
+}
+
+/* set min width of columns */
+div.task-title-min-width {
+height: 1px;
+width: 257px;
+}
+
+div.task-summary-min-width {
+width: 300px;
+}
+
+/* task-title column */
+td.task-title {
+height: 56px;
+background-image: url(../images/task-button-middle.png);
+background-repeat: repeat;
+padding-left: 10px;
+padding-right: 17px;
+padding-bottom: 10px;
+}
+
+td.task-title-top {
+height: 18px;
+background-image: url(../images/task-button-top.png);
+background-repeat: no-repeat;
+padding-left: 10px;
+padding-right: 17px;
+padding-bottom: 10px;
+font-size: 10pt;
+}
+
+td.task-title-bottom {
+height: 25px;
+background-image: url(../images/task-button-bottom.png);
+background-repeat: no-repeat;
+padding-left: 10px;
+padding-right: 17px;
+padding-bottom: 10px;
+font-size: 10pt;
+}
+
+td.task-title-last {
+height: 56px;
+background-image: url(../images/task-button-middle.png);
+background-repeat: repeat;
+padding-left: 10px;
+padding-right: 17px;
+padding-bottom: 10px;
+}
+
+div.task-title {
+font-family: helvetica, arial;
+font-size: 10pt;
+line-height: 11pt;
+font-weight: bold;
+color: #383838;
+}
+
+div.task-title a,
+div.task-title-last a {
+/* div.task-title-last selectors, here and in the next four rules, are    */
+/* compensating for an xsl defect - delete them when the defect is fixed  */
+font-weight: bold;
+display: block;
+}
+
+div.task-title a:link,
+div.task-title-last a:link {
+color: #46a;
+text-decoration: none;
+}
+
+div.task-title a:visited,
+div.task-title-last a:visited {
+color: #46a;
+text-decoration: none;
+}
+
+div.task-title a:hover,
+div.task-title-last a:hover {
+text-decoration: underline;
+}
+
+div.task-title a:active,
+div.task-title-last a:active {
+color: #e24;
+text-decoration: none;
+}
+
+/* task-link column */
+td.task-link {
+width: 30px;
+}
+
+td.task-link img {
+position: relative;
+top: -1px;
+}
+
+/* task-summary column */
+td.task-summary {
+padding-top: 4pt;
+padding-bottom: 4pt;
+padding-left: 10pt;
+padding-right: 10pt;
+background: #e6eada;
+text-align: left;
+width: 100%;
+}
+
+span.task-summary {
+font-family: helvetica, arial;
+font-size: 10pt;
+line-height: 11pt;
+}
+
+/* task-arrow */
+tr.task-arrow {
+font-size: 8pt;
+}
+
+td.task-arrow-left img {
+position: relative;
+left: -2px;
+}
+
+.hilite {
+background-color: #ff0;
+}
+
+.hilite1 {
+background-color: #f3f;
+}
+
+.anchor_wrapper {
+display: none;
+}
+
+div.section p.section_title_h2 {
+margin-left: 0pt;
+font-size: 10pt;
+font-weight: bold;
+color: #990000;
+margin-top: 10pt;
+margin-bottom: 6pt;
+}
+
+div.section p.section_title_h3 {
+margin-left: 0pt;
+font-size: 10pt;
+font-weight: bold;
+color: #990000;
+margin-top: 10pt;
+margin-bottom: 6pt;
+}

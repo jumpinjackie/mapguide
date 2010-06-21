@@ -1,0 +1,18 @@
+<XQuery>
+  <Module targetNamespace="http://test.module">
+    <FunctionDefinition name="{http://test.module}:function">
+      <DbXmlNav>
+        <QueryPlanFunction result="collection" container="11.7.4.dbxml">
+          <OQPlan>P(unique-node-metadata-equality-string,prefix,metadata::name:http://www.sleepycat.com/2002/dbxml)</OQPlan>
+        </QueryPlanFunction>
+        <Function name="{http://www.sleepycat.com/2002/dbxml}:metadata">
+          <Sequence>
+            <AnyAtomicTypeConstructor value="dbxml:name" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+          </Sequence>
+        </Function>
+      </DbXmlNav>
+    </FunctionDefinition>
+  </Module>
+  <UserFunction name="{http://test.module}:function">
+  </UserFunction>
+</XQuery>

@@ -1,0 +1,16 @@
+base referer
+rect $classXSAnnotation.html 310,8 417,32
+rect $classXSAttributeDeclaration.html 282,56 445,80
+rect $classXSAttributeGroupDefinition.html 269,104 458,128
+rect $classXSAttributeUse.html 305,152 422,176
+rect $classXSElementDeclaration.html 282,200 445,224
+rect $classXSFacet.html 326,248 401,272
+rect $classXSIDCDefinition.html 302,296 425,320
+rect $classXSModelGroup.html 305,344 422,368
+rect $classXSModelGroupDefinition.html 277,392 450,416
+rect $classXSMultiValueFacet.html 294,440 433,464
+rect $classXSNotationDeclaration.html 282,488 445,512
+rect $classXSParticle.html 320,536 408,560
+rect $classXSTypeDefinition.html 300,584 428,608
+rect $classXSWildcard.html 317,632 410,656
+rect $classXMemory.html 8,320 90,344

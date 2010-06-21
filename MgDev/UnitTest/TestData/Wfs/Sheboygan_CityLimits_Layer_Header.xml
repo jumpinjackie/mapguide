@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ResourceDocumentHeader xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ResourceDocumentHeader-1.0.0.xsd">
+  <General>
+    <IconName>LayerDefinitionVector</IconName>
+  </General>
+  <Security xsi:noNamespaceSchemaLocation="ResourceSecurity-1.0.0.xsd">
+    <Inherited>true</Inherited>
+  </Security>
+  <Metadata>
+    <Simple>
+      <Property xsi:noNamespaceSchemaLocation="Property-1.0.0.xsd">
+        <Name>_Queryable</Name>
+        <Value>1</Value>
+      </Property>
+      <Property xsi:noNamespaceSchemaLocation="Property-1.0.0.xsd">
+        <Name>_Abstract</Name>
+        <Value>City limits</Value>
+      </Property>
+      <Property xsi:noNamespaceSchemaLocation="Property-1.0.0.xsd">
+        <Name>_Bounds</Name>
+        <Value>&lt;Bounds SRS="EPSG:4326" west="-87.74" south="43.68" east="-87.69" north="43.815"/&gt;</Value>
+      </Property>
+      <Property xsi:noNamespaceSchemaLocation="Property-1.0.0.xsd">
+        <Name>_Title</Name>
+        <Value>CityLimits</Value>
+      </Property>
+      <Property xsi:noNamespaceSchemaLocation="Property-1.0.0.xsd">
+        <Name>_Opaque</Name>
+        <Value>0</Value>
+      </Property>
+      <Property xsi:noNamespaceSchemaLocation="Property-1.0.0.xsd">
+        <Name>_IsPublished</Name>
+        <Value>1</Value>
+      </Property>
+    </Simple>
+  </Metadata>
+</ResourceDocumentHeader>

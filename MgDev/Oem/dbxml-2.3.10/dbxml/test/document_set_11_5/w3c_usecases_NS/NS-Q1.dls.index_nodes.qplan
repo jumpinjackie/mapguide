@@ -1,0 +1,56 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="Q1" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <ForBinding name="n">
+          <Function name="{http://www.w3.org/2005/xpath-functions}:distinct-values">
+            <FLWOR>
+              <ForBinding name="i">
+                <DocumentOrder>
+                  <Operator name="union">
+                    <DbXmlNav>
+                      <QueryPlanFunction result="document" container="11.5.1.dbxml">
+                        <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'auction.xml',U)</OQPlan>
+                      </QueryPlanFunction>
+                      <DbXmlStep axis="descendant" uri="*" name="*" nodeType="element"/>
+                    </DbXmlNav>
+                    <DocumentOrder>
+                      <DbXmlNav>
+                        <QueryPlanFunction result="document" container="11.5.1.dbxml">
+                          <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'auction.xml',U)</OQPlan>
+                        </QueryPlanFunction>
+                        <DbXmlStep axis="descendant-or-self" uri="*" name="*" nodeType="element"/>
+                        <DbXmlStep axis="attribute" uri="*" name="*" nodeType="attribute"/>
+                      </DbXmlNav>
+                    </DocumentOrder>
+                  </Operator>
+                </DocumentOrder>
+              </ForBinding>
+              <Function name="{http://www.w3.org/2005/xpath-functions}:namespace-uri">
+                <TreatAs>
+                  <Variable name="i"/>
+                  <SequenceType occurrence="zero_or_one" testType="node"/>
+                </TreatAs>
+              </Function>
+            </FLWOR>
+          </Function>
+        </ForBinding>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="ns" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Variable name="n"/>
+          </Children>
+        </DOMConstructor>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

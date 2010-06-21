@@ -1,0 +1,38 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="word">
+      <DbXmlNav>
+        <QueryPlanFunction result="collection" container="11.8.4.dbxml">
+          <OQPlan>V(node-element-equality-string,qd,=,'1900')</OQPlan>
+        </QueryPlanFunction>
+        <DbXmlStep axis="child" name="dictionary" nodeType="element"/>
+        <DbXmlStep axis="child" name="e" nodeType="element"/>
+      </DbXmlNav>
+      <Where>
+        <EveryFLWOR>
+          <ForBinding name="item">
+            <DocumentOrder>
+              <DbXmlNav>
+                <Variable name="word"/>
+                <DbXmlStep axis="child" name="ss" nodeType="element"/>
+                <DbXmlStep axis="child" name="s" nodeType="element"/>
+                <DbXmlStep axis="child" name="qp" nodeType="element"/>
+                <DbXmlStep axis="child" name="q" nodeType="element"/>
+              </DbXmlNav>
+            </DocumentOrder>
+          </ForBinding>
+          <DbXmlNav>
+            <Variable name="item"/>
+            <DbXmlCompare name="equal" join="child" name="qd" nodeType="element">
+              <OQPlan>V(node-element-equality-string,qd,=,'1900')</OQPlan>
+              <Sequence>
+                <AnyAtomicTypeConstructor value="1900" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+              </Sequence>
+            </DbXmlCompare>
+          </DbXmlNav>
+        </EveryFLWOR>
+      </Where>
+    </ForBinding>
+    <Variable name="word"/>
+  </FLWOR>
+</XQuery>

@@ -1,0 +1,244 @@
+4.5.0:
+
+  * Adds supports for compiling and linking with BerkeleyDB 4.5
+  * Python Bug #1599782: Fix segfault on bsddb.db.DB().type() due to
+    releasing the GIL when it shouldn't.  (nnorowitz)
+  * Fixes a bug with bsddb.DB.stat where the flags and txn keyword
+    arguments are transposed.
+  * change test cases to use tempfile.gettempdir()
+
+4.4.5:
+
+  * pybsddb Bug #1527939: bsddb module DBEnv dbremove and dbrename
+    methods now allow their database parameter to be None as the
+    sleepycat API allows.
+
+4.4.4:
+
+  * fix DBCursor.pget() bug with keyword argument names when no data= is
+    supplied [SF pybsddb bug #1477863]
+  * add support for DBSequence objects [patch #1466734]
+  * support DBEnv.log_stat() method on BerkeleyDB >= 4.0 [patch #1494885]
+  * support DBEnv.lsn_reset() method on BerkeleyDB >= 4.4 [patch #1494902]
+  * add DB_ARCH_REMOVE flag and fix DBEnv.log_archive() to accept it without
+    potentially following an uninitialized pointer.
+
+4.4.3:
+
+  * fix DBEnv.set_tx_timestamp to not crash on Win64 platforms (thomas.wouters)
+  * tons of memory leak fixes all over the code (thomas.wouters)
+  * fixes ability to unpickle DBError (and children) exceptions
+
+4.4.2:
+
+  * Wrap the DBEnv.set_tx_timeout method
+  * fix problem when DBEnv deleted before Txn sf bug #1413192 (Neal Norwitz)
+
+4.4.1:
+
+  * sf.net patch 1407992 - fixes associate tests on BerkeleyDB 3.3 thru 4.1
+    (contributed by Neal Norwitz)
+
+4.4.0:
+
+  * Added support for compiling and linking with BerkeleyDB 4.4.20.
+
+4.3.3:
+
+ * NOTICE: set_bt_compare() callback function arguments CHANGED to only
+   require two arguments (left, right) rather than (db, left, right).
+ * DB.associate() would crash when a DBError occurred.  fixed.
+   [pybsddb SF bug id 1215432].
+
+4.3.2:
+
+ * the has_key() method was not raising a DBError when a database error
+   had occurred. [SF patch id 1212590]
+ * added a wrapper for the DBEnv.set_lg_regionmax method [SF patch id 1212590]
+ * DBKeyEmptyError now derives from KeyError just like DBNotFoundError.
+ * internally everywhere DB_NOTFOUND was checked for has been updated
+   to also check for DB_KEYEMPTY.  This fixes the semantics of a couple
+   operations on recno and queue databases to be more intuitive and results
+   in less unexpected DBKeyEmptyError exceptions being raised.
+
+4.3.1:
+
+ * Added support for DB.set_bt_compare() method to use a user
+   supplied python comparison function taking (db, left, right)
+   args as the database's B-Tree comparison function.
+
+4.3.0:
+
+ * Added support for building properly against BerkeleyDB 4.3.21.
+ * fixed bug introduced in 4.2.8 that prevent the module from
+   compiling against BerkeleyDB 3.2 (which doesn't support pget).
+ * setup.py was cleaned up a bit to search for and find the latest
+   version of the correct combo of db.h and libdb.
+
+4.2.9:
+
+ * DB keys() values() and items() methods were ignoring their optional
+   txn parameter.  This would lead to deadlocks in applications
+   needing those to be transaction protected.
+
+4.2.8:
+
+ * Adds support for DB and DBCursor pget methods.  Based on a patch
+   submitted to the mailing list by Ian Ward <ian@arevco.ca>
+ * Added weakref support to all bsddb.db objects.
+ * Make DBTxn objects automatically call abort() in their destructor if 
+   not yet finalized and raise a RuntimeWarning to that effect.
+
+4.2.7:
+
+ * fix an error with the legacy interface relying on the DB_TRUNCATE
+   flag that changed behaviour to not work in a locking environment
+   with BerkeleyDB 4.2.52.  [SF bug id 897820]
+ * fixed memory leaks in DB.get, DBC.set_range and potentially several
+   other methods that would occur primarily when using queue | recno
+   format databases with integer keys. [SF patch id 967763]
+
+4.2.6:
+
+ * the DB.has_key method was not honoring its txn parameter to perform
+   its lookup within the specified (optional) transaction.  fixed.
+   [SF bug id 914019]
+
+4.2.5:
+
+ * Fixed a bug in the compatibility interface set_location() method
+   where it would not properly search to the next nearest key when
+   used on BTree databases.  [SF bug id 788421]
+ * Fixed a bug in the compatibility interface set_location() method
+   where it could crash when looking up keys in a hash or recno
+   format database due to an incorrect free().
+
+4.2.4:
+
+ * changed DB and DBEnv set_get_returns_none() default from 1 to 2.
+ * cleaned up compatibility iterator interface.
+
+4.2.3:
+
+ * the legacy compatibility dict-like interface now support iterators
+   and generators and allows multithreaded access to the database.
+ * fixed a tuple memory leak when raising "object has been closed"
+   exceptions for DB, DBEnv and DBCursor objects.  I doubt much
+   previous code triggered this.
+ * use of a closed DBCursor now raises a DBCursorClosedError exception
+   subclass of DBError rather than a boring old DBError.
+
+4.2.2:
+
+ * added DBCursor.get_current_size() method to return the length in bytes
+   of the value pointed to by the cursor without reading the actual data.
+
+4.2.1:
+
+ * Standalone pybsddb builds now use a _pybsddb dynamic/shared library
+   rather than _bsddb.  This allows for pybsddb to be built, installed
+   and used on python >= 2.3 which includes an older version of pybsddb
+   as its bsddb library.
+
+4.2.0:
+
+ * Can now compile and link with BerkeleyDB 4.2.x (when its released).
+ * the legacy bsddb module supports the iterator interface on python 2.3.
+
+4.1.x:
+
+ * Support the DBEnv.set_shm_key() method.
+ * Fixed setup.py include/{db4,db3} header file searching (SF bug #789740).
+
+4.1.6:
+
+ * Extended DB & DBEnv set_get_returns_none functionality to take a
+   "level" instead of a boolean flag.  The boolean 0 and 1 values still
+   have the same effect.  A value of 2 extends the "return None instead
+   of raising an exception" behaviour to the DBCursor set methods.
+   This will become the default behaviour in pybsddb 4.2.
+ * Updated documentation for set_get_returns_none.  Regenerated the
+   stale html docs from the text documentation.
+ * Fixed a typo in DBCursor.join_item method that made it crash instead
+   of returning a value.  Obviously nobody uses it.  Wrote a test case
+   for join and join_item.
+ * Added the dbobj wrapper for DBEnv set_timeout method.
+ * Updated README.txt 
+
+4.1.5:
+
+ * Added the DBEnv.set_timeout method.
+
+4.1.4:
+ 
+ * rebuilt the windows 4.1.3 package, the original package was corrupt due
+   to bad ram on my build host.
+
+4.1.3 - 2003-02-02:
+
+ * code cleanup to use python 2.x features in .py files
+ * the standalone pybsddb distribution will install a module
+   called bsddb3 while the module included with python >= 2.3
+   will be known as bsddb.
+
+4.1.2 - 2003-01-17:
+
+ * Shared all .py and .c source with the Python project.
+ * Fixed DBTxn objects to raise an exception if they are used after
+   the underlying DB_TXN handle becomes invalid. (rather than
+   potentially causing a segfault)
+ * Fixed module to work when compiled against a python without thread
+   support.
+ * Do not attempt to double-close DB cursor's whos underlying DB
+   has already been closed (fixes a segfault).
+ * Close DB objects when DB.open fails to prevent an exception about
+   databases still being open when calling DBEnv.close.
+	
+4.1.1 - 2002-12-20:
+
+ * Fixed a memory leak when raising exceptions from the database
+   library.  Debugged and fixed by Josh Hoyt <josh@janrain.com>.  Thanks!
+   (sourceforge patch 656517)
+
+4.1.0 - 2002-12-13:
+
+ * Updated our version number to track the latest BerkeleyDB interface
+   version that we support.
+ * Simplified the build and test process.  Now you should just be able
+   to say "python setup.py build" and "python setup.py install".  Also
+   added a nice test.py harness.  Do "python test.py -h" for details.
+ * The windows binary is build against BerkeleyDB 4.1.24 with current
+   eight patches issued by Sleepycat applied.
+ * REMINDER: BerkeleyDB 4.1 requires code changes if you use database
+   transactions.  See the upgrade docs on http://www.sleepycat.com/.
+
+3.4.3 - 2002-10-18:
+
+ * added support for BerkeleyDB 4.1:  DB.open and DB.associate
+   will now accept a txn keyword argument when using BerkeleyDB 4.1.
+   DBEnv.dbremove, DBEnv.dbrename, DBEnv.set_encrypt and DB.set_encrypt
+   methods have been exposed for 4.1.
+
+3.4.2 - 2002-08-14:
+
+ * dbtables.py: serious bug fix.  The Select, Modify and Delete methods could
+   all act upon rows that did not match all of the conditions.  (bug # 590449)
+   A test case was added.
+ * dbutils.py: updated DeadlockWrap
+ * test_threads.py: fixed to use dbutils.DeadlockWrap to catch and avoid
+   DBLockDeadlockError exceptions during simple threading tests.
+
+3.4.1:
+
+ * fixed typo cut and paste bugs in test_dbsimple.py and test_threads.py
+ * fixed bug with cursors where calling DBCursor.close() would cause
+   the object's destructor __del__() method to raise an exception when
+   it was called by the gc.
+ * fixed a bug in associated callbacks that could cause a null pointer
+   dereference when python threading had not yet been initialized.
+
+3.4.0:
+ 
+ * many bugfixes, its been a long while since a new package was created.
+ * ChangeLog started.
+

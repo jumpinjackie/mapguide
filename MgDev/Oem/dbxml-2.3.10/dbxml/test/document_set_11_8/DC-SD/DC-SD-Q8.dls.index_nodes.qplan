@@ -1,0 +1,19 @@
+<XQuery>
+  <DocumentOrder>
+    <DbXmlNav>
+      <LookupIndex container="11.8.2.dbxml">
+        <ValueQP index="node-attribute-equality-string" operation="eq" child="id" value="I4"/>
+      </LookupIndex>
+      <Join type="parent-of-attribute" return="argument">
+        <DbXmlNav>
+          <QueryPlanFunction result="collection" container="11.8.2.dbxml">
+            <OQPlan>V(node-attribute-equality-string,@id,=,'I4')</OQPlan>
+          </QueryPlanFunction>
+          <DbXmlStep axis="child" name="catalog" nodeType="element"/>
+          <DbXmlStep axis="child" uri="*" name="*" nodeType="element"/>
+        </DbXmlNav>
+      </Join>
+      <DbXmlStep axis="child" name="publisher" nodeType="element"/>
+    </DbXmlNav>
+  </DocumentOrder>
+</XQuery>

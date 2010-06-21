@@ -1,0 +1,11 @@
+<XQuery>
+  <Module targetNamespace="http://test.module2">
+    <FunctionDefinition name="{http://test.module2}:function">
+      <LookupIndex container="11.7.4.dbxml">
+        <PresenceQP index="node-element-presence-none" operation="eq" child="category"/>
+      </LookupIndex>
+    </FunctionDefinition>
+  </Module>
+  <UserFunction name="{http://test.module2}:function">
+  </UserFunction>
+</XQuery>

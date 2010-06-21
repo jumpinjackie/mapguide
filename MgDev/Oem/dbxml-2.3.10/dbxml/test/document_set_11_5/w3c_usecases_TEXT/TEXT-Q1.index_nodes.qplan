@@ -1,0 +1,17 @@
+<XQuery>
+  <DbXmlNav>
+    <LookupIndex container="11.5.6.dbxml">
+      <DocumentQP index="node-metadata-equality-string" operation="eq" child="name:http://www.sleepycat.com/2002/dbxml" value="string.xml">
+        <ValueQP index="edge-element-substring-string" operation="substring" parent="news_item" child="title" value="Foobar Corporation"/>
+      </DocumentQP>
+    </LookupIndex>
+    <DbXmlContains join="self">
+      <Sequence>
+        <AnyAtomicTypeConstructor value="Foobar Corporation" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+      </Sequence>
+    </DbXmlContains>
+    <DbXmlFilter>
+      <DbXmlStep axis="parent-of-child" name="news_item" nodeType="element"/>
+    </DbXmlFilter>
+  </DbXmlNav>
+</XQuery>

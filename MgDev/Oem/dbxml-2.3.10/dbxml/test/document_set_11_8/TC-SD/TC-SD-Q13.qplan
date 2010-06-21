@@ -1,0 +1,80 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="a">
+      <DbXmlNav>
+        <QueryPlanFunction result="collection" container="11.8.4.dbxml">
+          <OQPlan>V(node-element-equality-string,hw,=,'his')</OQPlan>
+        </QueryPlanFunction>
+        <DbXmlStep axis="child" name="dictionary" nodeType="element"/>
+        <DbXmlStep axis="child" name="e" nodeType="element"/>
+        <DbXmlFilter>
+          <DbXmlNav>
+            <DbXmlStep axis="child" name="hwg" nodeType="element"/>
+            <DbXmlCompare name="equal" join="child" name="hw" nodeType="element">
+              <Sequence>
+                <AnyAtomicTypeConstructor value="his" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+              </Sequence>
+            </DbXmlCompare>
+          </DbXmlNav>
+        </DbXmlFilter>
+      </DbXmlNav>
+    </ForBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="Output" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <DocumentOrder>
+          <DbXmlNav>
+            <Variable name="a"/>
+            <DbXmlStep axis="child" name="hwg" nodeType="element"/>
+            <DbXmlStep axis="child" name="hw" nodeType="element"/>
+          </DbXmlNav>
+        </DocumentOrder>
+        <DocumentOrder>
+          <DbXmlNav>
+            <Variable name="a"/>
+            <DbXmlStep axis="child" name="hwg" nodeType="element"/>
+            <DbXmlStep axis="child" name="pr" nodeType="element"/>
+          </DbXmlNav>
+        </DocumentOrder>
+        <DocumentOrder>
+          <DbXmlNav>
+            <Variable name="a"/>
+            <DbXmlStep axis="child" name="hwg" nodeType="element"/>
+            <DbXmlStep axis="child" name="pos" nodeType="element"/>
+          </DbXmlNav>
+        </DocumentOrder>
+        <DocumentOrder>
+          <DbXmlNav>
+            <Variable name="a"/>
+            <DbXmlStep axis="child" name="etymology" nodeType="element"/>
+            <Predicate>
+              <DbXmlStep axis="child" name="cr" nodeType="element">
+                <OQPlan>P(node-element-equality-string,prefix,cr)</OQPlan>
+              </DbXmlStep>
+              <Sequence>
+                <AnyAtomicTypeConstructor value="1" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+              </Sequence>
+            </Predicate>
+          </DbXmlNav>
+        </DocumentOrder>
+        <DocumentOrder>
+          <DbXmlNav>
+            <Variable name="a"/>
+            <DbXmlStep axis="child" name="ss" nodeType="element"/>
+            <Predicate>
+              <DbXmlStep axis="child" name="s" nodeType="element"/>
+              <Sequence>
+                <AnyAtomicTypeConstructor value="1" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+              </Sequence>
+            </Predicate>
+            <DbXmlStep axis="child" name="def" nodeType="element"/>
+          </DbXmlNav>
+        </DocumentOrder>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

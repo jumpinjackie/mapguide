@@ -1,0 +1,77 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="a">
+      <DbXmlNav>
+        <QueryPlanFunction result="collection" container="11.8.3.dbxml">
+          <OQPlan>V(node-attribute-equality-string,@id,=,'8')</OQPlan>
+        </QueryPlanFunction>
+        <DbXmlStep axis="child" name="article" nodeType="element"/>
+        <DbXmlFilter>
+          <DbXmlCompare name="equal" join="attribute" name="id" nodeType="attribute">
+            <Sequence>
+              <AnyAtomicTypeConstructor value="8" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+            </Sequence>
+          </DbXmlCompare>
+        </DbXmlFilter>
+        <DbXmlStep axis="child" name="body" nodeType="element"/>
+        <DbXmlStep axis="child" name="section" nodeType="element"/>
+        <DbXmlFilter>
+          <DbXmlCompare name="equal" join="attribute" name="heading" nodeType="attribute">
+            <Sequence>
+              <AnyAtomicTypeConstructor value="introduction" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+            </Sequence>
+          </DbXmlCompare>
+        </DbXmlFilter>
+      </DbXmlNav>
+    </ForBinding>
+    <ForBinding name="p">
+      <DbXmlNav>
+        <QueryPlanFunction result="collection" container="11.8.3.dbxml">
+          <OQPlan>V(node-attribute-equality-string,@id,=,'8')</OQPlan>
+        </QueryPlanFunction>
+        <DbXmlStep axis="child" name="article" nodeType="element"/>
+        <DbXmlFilter>
+          <DbXmlCompare name="equal" join="attribute" name="id" nodeType="attribute">
+            <Sequence>
+              <AnyAtomicTypeConstructor value="8" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+            </Sequence>
+          </DbXmlCompare>
+        </DbXmlFilter>
+        <DbXmlStep axis="child" name="body" nodeType="element"/>
+        <Predicate>
+          <DbXmlNav>
+            <DbXmlStep axis="child" name="section" nodeType="element"/>
+            <DbXmlFilter>
+              <Operator name="node-order">
+                <TreatAs>
+                  <ContextItem/>
+                  <SequenceType occurrence="zero_or_one" testType="node"/>
+                </TreatAs>
+                <TreatAs>
+                  <Variable name="a"/>
+                  <SequenceType occurrence="zero_or_one" testType="node"/>
+                </TreatAs>
+              </Operator>
+            </DbXmlFilter>
+          </DbXmlNav>
+          <Sequence>
+            <AnyAtomicTypeConstructor value="1" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+          </Sequence>
+        </Predicate>
+      </DbXmlNav>
+    </ForBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="HeadingOfSection" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <DbXmlNav>
+          <Variable name="p"/>
+          <DbXmlStep axis="attribute" name="heading" nodeType="attribute"/>
+        </DbXmlNav>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

@@ -1,0 +1,23 @@
+<XQuery>
+  <DocumentOrder>
+    <DbXmlNav>
+      <LookupIndex container="11.8.3.dbxml">
+        <ValueQP index="node-element-equality-string" operation="eq" child="name" value="Ben Yang"/>
+      </LookupIndex>
+      <DbXmlStep axis="parent-of-child" name="author" nodeType="element">
+        <OQPlan>P(node-element-presence-none,=,author)</OQPlan>
+      </DbXmlStep>
+      <DbXmlStep axis="parent-of-child" name="authors" nodeType="element"/>
+      <Join type="parent-of-child" return="argument">
+        <DbXmlNav>
+          <QueryPlanFunction result="collection" container="11.8.3.dbxml">
+            <OQPlan>n(V(node-element-equality-string,name,=,'Ben Yang'),P(node-element-presence-none,=,author))</OQPlan>
+          </QueryPlanFunction>
+          <DbXmlStep axis="child" name="article" nodeType="element"/>
+          <DbXmlStep axis="child" name="prolog" nodeType="element"/>
+        </DbXmlNav>
+      </Join>
+      <DbXmlStep axis="child" name="title" nodeType="element"/>
+    </DbXmlNav>
+  </DocumentOrder>
+</XQuery>

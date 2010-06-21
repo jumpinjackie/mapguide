@@ -1,0 +1,44 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="a">
+      <DbXmlNav>
+        <LookupIndex container="11.8.1.dbxml">
+          <PresenceQP index="edge-element-presence-none" operation="eq" parent="root:http://www.sleepycat.com/2002/dbxml" child="authors"/>
+        </LookupIndex>
+        <Join type="parent-of-child" return="context_item">
+          <QueryPlanFunction result="collection" container="11.8.1.dbxml">
+            <OQPlan>n(P(edge-element-presence-none,=,root:http://www.sleepycat.com/2002/dbxml.authors),V(node-element-substring-string,biography,substring,'hockey'))</OQPlan>
+          </QueryPlanFunction>
+        </Join>
+        <DbXmlStep axis="child" name="author" nodeType="element"/>
+        <Join type="child" return="context_item">
+          <DbXmlNav>
+            <LookupIndex container="11.8.1.dbxml">
+              <ValueQP index="node-element-substring-string" operation="substring" child="biography" value="hockey"/>
+            </LookupIndex>
+            <DbXmlContains join="self">
+              <Sequence>
+                <AnyAtomicTypeConstructor value="hockey" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+              </Sequence>
+            </DbXmlContains>
+          </DbXmlNav>
+        </Join>
+      </DbXmlNav>
+    </ForBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="Output" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <DbXmlNav>
+          <Variable name="a"/>
+          <DbXmlStep axis="attribute" name="id" nodeType="attribute">
+            <OQPlan>P(edge-attribute-equality-string,prefix,author.@id)</OQPlan>
+          </DbXmlStep>
+        </DbXmlNav>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

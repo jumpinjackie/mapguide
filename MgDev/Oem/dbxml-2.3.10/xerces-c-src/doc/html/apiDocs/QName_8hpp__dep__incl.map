@@ -1,0 +1,11 @@
+base referer
+rect $XMLAttr_8hpp.html 185,56 283,80
+rect $XMLContentModel_8hpp.html 153,104 315,128
+rect $XMLDocumentHandler_8hpp.html 366,8 553,32
+rect $XMLElementDecl_8hpp.html 382,56 537,80
+rect $XMLValidator_8hpp.html 394,104 525,128
+rect $AbstractDOMParser_8hpp.html 603,8 774,32
+rect $SAXParser_8hpp.html 631,56 746,80
+rect $XercesDOMParser_8hpp.html 825,8 987,32
+rect $SAX2XMLReader_8hpp.html 611,104 766,128
+rect $SAX2XMLFilter_8hpp.html 835,104 977,128

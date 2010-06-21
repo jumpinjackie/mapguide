@@ -1,0 +1,15 @@
+<XQuery>
+  <DocumentOrder>
+    <DbXmlNav>
+      <QueryPlanFunction result="collection" container="11.7.3.dbxml">
+        <OQPlan>V(node-attribute-substring-string,@name,substring,'boa')</OQPlan>
+      </QueryPlanFunction>
+      <DbXmlStep axis="descendant-or-self" uri="*" name="*" nodeType="element"/>
+      <DbXmlContains join="attribute" name="name" nodeType="attribute">
+        <Sequence>
+          <AnyAtomicTypeConstructor value="boa" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+        </Sequence>
+      </DbXmlContains>
+    </DbXmlNav>
+  </DocumentOrder>
+</XQuery>

@@ -1,0 +1,17 @@
+Oracle: Berkeley DB XML 2.3.10: (January 30, 2007)
+
+This is version 2.3.10 of Berkeley DB XML from Oracle.
+To view the release documentation, see
+    dbxml/docs/index.html
+
+For build instructions, see
+    dbxml/docs/ref_xml/xml_unix/intro.html for UNIX-like platforms
+ or dbxml/docs/ref_xml/xml_win/intro.html for Microsoft Windows
+
+To see a summary of changes in this release, as well as the
+lastest patches, and known issues, see
+   http://www.oracle.com/technology/products/berkeley-db/
+
+Visit the Berkeley DB XML forum on the Oracle Technology Network
+for additional information and support:
+  http://forums.oracle.com/forums/forum.jspa?forumID=274

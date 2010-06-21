@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MapDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="MapDefinition-1.0.0.xsd">
+  <Name>Annotation3</Name>
+  <CoordinateSystem>LOCAL_CS[&quot;Non-Earth (Meter)&quot;,LOCAL_DATUM[&quot;Local Datum&quot;,0],UNIT[&quot;Meter&quot;, 1],AXIS[&quot;X&quot;,EAST],AXIS[&quot;Y&quot;,NORTH]]</CoordinateSystem>
+  <Extents>
+    <MinX>-123.35832214355469</MinX>
+    <MaxX>-52.732315063476562</MaxX>
+    <MinY>43.701606750488281</MinY>
+    <MaxY>53.588245391845703</MaxY>
+  </Extents>
+  <BackgroundColor>FFFFFFFF</BackgroundColor>
+  <MapLayer>
+    <Name>Capitals</Name>
+    <ResourceId>Library://UnitTests/Layers/UT_Annotation3.LayerDefinition</ResourceId>
+    <Selectable>true</Selectable>
+    <ShowInLegend>true</ShowInLegend>
+    <LegendLabel>Capitals</LegendLabel>
+    <ExpandInLegend>true</ExpandInLegend>
+    <Visible>true</Visible>
+    <Group/>
+  </MapLayer>
+</MapDefinition>

@@ -1,0 +1,43 @@
+<xqueryrunner database="dbxml">
+
+  <group name="TC-SD" >
+
+<!-- the queries in the querries element will be run on each container 
+nested in the containers element below -->
+    <containers >
+      <container>TC-SD-small</container>
+    </containers>
+
+    <queries>
+<query>
+<description>  TC/SD_Q1 Return the entry that has matching headword (``the").</description>
+<action><![CDATA[
+
+
+for $ent in input()/dictionary/e
+where $ent/hwg/hw="the"
+return
+    $ent
+
+
+]]></action>
+</query>
+<query>
+<description> TC/SD_Q2 Find the headword of the entry which has matching quotation year (1900).</description>
+<action><![CDATA[
+
+
+for $ent in input()/dictionary/e
+where $ent/ss/s/qp/q/qd="1900"
+return
+    $ent/hwg/hw
+
+]]></action>
+</query>
+
+
+</queries>
+  </group>
+
+
+</xqueryrunner>

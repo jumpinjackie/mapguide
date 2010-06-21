@@ -1,0 +1,16 @@
+# $Id: RELEASE,v 1.75.2.3 2007/01/30 15:34:38 gmf Exp $
+
+DBXML_VERSION_MAJOR=2
+DBXML_VERSION_MINOR=3
+DBXML_VERSION_PATCH=10
+DBXML_VERSION="$DBXML_VERSION_MAJOR.$DBXML_VERSION_MINOR.$DBXML_VERSION_PATCH"
+
+DBXML_RELEASE_DATE=`date "+%B %e, %Y"`
+DBXML_VERSION_STRING="Oracle: Berkeley DB XML $DBXML_VERSION: ($DBXML_RELEASE_DATE)"
+
+# enable forward declaration of Xerces symbols
+# must change this.  Files affected if version changes:
+#  DbXmlFwd.hpp, XmlValue.hpp, XmlDocument.hpp, src/dbxml/nodeStore/NsTypes.hpp
+# the last three must be modified by hand.
+XERCES_VERSION_MAJOR=2
+XERCES_VERSION_MINOR=7

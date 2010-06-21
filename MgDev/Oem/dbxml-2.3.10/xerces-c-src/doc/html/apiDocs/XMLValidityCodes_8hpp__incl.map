@@ -1,0 +1,6 @@
+base referer
+rect $XMLErrorReporter_8hpp.html 220,7 500,31
+rect $XercesDefs_8hpp.html 550,57 745,81
+rect $DOMError_8hpp.html 264,106 456,130
+rect $XercesVersion_8hpp.html 794,33 1008,57
+rect $AutoSense_8hpp.html 805,81 997,105

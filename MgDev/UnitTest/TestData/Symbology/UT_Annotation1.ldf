@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LayerDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="LayerDefinition-1.2.0.xsd" version="1.2.0">
+  <VectorLayerDefinition>
+    <ResourceId>Library://UnitTests/Data/Capitals.FeatureSource</ResourceId>
+    <FeatureName>SDF_2_Schema:CN_Capitals</FeatureName>
+    <FeatureNameType>FeatureClass</FeatureNameType>
+    <PropertyMapping>
+      <Name>Name</Name>
+      <Value>Name</Value>
+    </PropertyMapping>
+    <PropertyMapping>
+      <Name>Url</Name>
+      <Value>Url</Value>
+    </PropertyMapping>
+    <PropertyMapping>
+      <Name>Key</Name>
+      <Value>Key</Value>
+    </PropertyMapping>
+    <Geometry>Data</Geometry>
+    <VectorScaleRange>
+      <CompositeTypeStyle>
+        <CompositeRule>
+          <LegendLabel>
+          </LegendLabel>
+          <CompositeSymbolization>
+            <SymbolInstance>
+              <SimpleSymbolDefinition>
+                <Name>Rich Text</Name>
+                <Description>Rich Text Annotation</Description>
+                <Graphics>
+                  <Text>
+                    <Content>%CONTENT%</Content>
+                    <FontName>'Arial'</FontName>
+                    <Markup>%MARKUP%</Markup>
+                  </Text>
+                </Graphics>
+                <PointUsage>
+                  <Angle>%ROTATION%</Angle>
+                </PointUsage>
+                <ParameterDefinition>
+                  <Parameter>
+                    <Identifier>CONTENT</Identifier>
+                    <DefaultValue>'text'</DefaultValue>
+                    <DisplayName>Content</DisplayName>
+                    <Description>Rich text content</Description>
+                    <DataType>Content</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>MARKUP</Identifier>
+                    <DefaultValue>
+                    </DefaultValue>
+                    <DisplayName>Markup</DisplayName>
+                    <Description>Markup format</Description>
+                    <DataType>Markup</DataType>
+                  </Parameter>
+                  <Parameter>
+                    <Identifier>ROTATION</Identifier>
+                    <DefaultValue>0.0</DefaultValue>
+                    <DisplayName>Rotation</DisplayName>
+                    <Description>Rotation in degrees</Description>
+                    <DataType>Angle</DataType>
+                  </Parameter>
+                </ParameterDefinition>
+              </SimpleSymbolDefinition>
+              <ParameterOverrides>
+                <Override>
+                  <SymbolName>Rich Text</SymbolName>
+                  <ParameterIdentifier>CONTENT</ParameterIdentifier>
+                  <ParameterValue>'This is text, \Sand a^stack; \Pfollowed by {\H0.5x;\A2;Superscripted}Text, \Pthen {\H0.5x;\A1;Centered}and \PNormal Text.'</ParameterValue>
+                </Override>
+                <Override>
+                  <SymbolName>Rich Text</SymbolName>
+                  <ParameterIdentifier>MARKUP</ParameterIdentifier>
+                  <ParameterValue>'MTEXT'</ParameterValue>
+                </Override>
+                <Override>
+                  <SymbolName>Rich Text</SymbolName>
+                  <ParameterIdentifier>ROTATION</ParameterIdentifier>
+                  <ParameterValue>0</ParameterValue>
+                </Override>
+              </ParameterOverrides>
+              <AddToExclusionRegion>true</AddToExclusionRegion>
+            </SymbolInstance>
+          </CompositeSymbolization>
+        </CompositeRule>
+      </CompositeTypeStyle>
+    </VectorScaleRange>
+  </VectorLayerDefinition>
+</LayerDefinition>

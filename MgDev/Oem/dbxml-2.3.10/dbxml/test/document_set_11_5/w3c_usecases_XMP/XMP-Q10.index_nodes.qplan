@@ -1,0 +1,86 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="results" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <LetBinding name="doc">
+          <QueryPlanFunction result="document" container="11.5.8.dbxml">
+            <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'prices.xml',P(edge-element-equality-string,prefix,book.title))</OQPlan>
+          </QueryPlanFunction>
+        </LetBinding>
+        <ForBinding name="t">
+          <Function name="{http://www.w3.org/2005/xpath-functions}:distinct-values">
+            <Atomize>
+              <DocumentOrder>
+                <DbXmlNav>
+                  <Variable name="doc"/>
+                  <DbXmlStep axis="descendant" name="book" nodeType="element"/>
+                  <DbXmlStep axis="child" name="title" nodeType="element">
+                    <OQPlan>P(edge-element-equality-string,prefix,book.title)</OQPlan>
+                  </DbXmlStep>
+                </DbXmlNav>
+              </DocumentOrder>
+            </Atomize>
+          </Function>
+        </ForBinding>
+        <LetBinding name="p">
+          <DocumentOrder>
+            <DbXmlNav>
+              <LookupIndex container="11.5.8.dbxml">
+                <ValueQP index="edge-element-equality-string" operation="eq" parent="book" child="title">
+                  <Variable name="t"/>
+                </ValueQP>
+              </LookupIndex>
+              <Join type="parent-of-child" return="argument">
+                <DbXmlNav>
+                  <Variable name="doc"/>
+                  <DbXmlStep axis="descendant" name="book" nodeType="element"/>
+                </DbXmlNav>
+              </Join>
+              <DbXmlStep axis="child" name="price" nodeType="element"/>
+            </DbXmlNav>
+          </DocumentOrder>
+        </LetBinding>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="minprice" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Attributes>
+            <DOMConstructor type="attribute">
+              <Name>
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="title" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+                </Sequence>
+              </Name>
+              <Children>
+                <Variable name="t"/>
+              </Children>
+            </DOMConstructor>
+          </Attributes>
+          <Children>
+            <DOMConstructor type="element">
+              <Name>
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="price" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+                </Sequence>
+              </Name>
+              <Children>
+                <Function name="{http://www.w3.org/2005/xpath-functions}:min">
+                  <Atomize>
+                    <Variable name="p"/>
+                  </Atomize>
+                </Function>
+              </Children>
+            </DOMConstructor>
+          </Children>
+        </DOMConstructor>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

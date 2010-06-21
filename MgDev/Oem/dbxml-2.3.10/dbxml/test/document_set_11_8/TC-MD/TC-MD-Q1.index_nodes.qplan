@@ -1,0 +1,19 @@
+<XQuery>
+  <DocumentOrder>
+    <DbXmlNav>
+      <LookupIndex container="11.8.3.dbxml">
+        <ValueQP index="node-attribute-equality-string" operation="eq" child="id" value="1"/>
+      </LookupIndex>
+      <Join type="parent-of-attribute" return="argument">
+        <DbXmlNav>
+          <QueryPlanFunction result="collection" container="11.8.3.dbxml">
+            <OQPlan>V(node-attribute-equality-string,@id,=,'1')</OQPlan>
+          </QueryPlanFunction>
+          <DbXmlStep axis="child" name="article" nodeType="element"/>
+        </DbXmlNav>
+      </Join>
+      <DbXmlStep axis="child" name="prolog" nodeType="element"/>
+      <DbXmlStep axis="child" name="title" nodeType="element"/>
+    </DbXmlNav>
+  </DocumentOrder>
+</XQuery>
