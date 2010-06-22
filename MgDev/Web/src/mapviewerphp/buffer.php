@@ -77,7 +77,7 @@
         $layers = $map->GetLayers();
         $layer = FindLayer($layers, $bufferName);
 
-        $layerNames = split(",", $layersParam);
+        $layerNames = preg_split(",", $layersParam);
 
         // convert distance to meters
         if($units == "mi")              //miles
