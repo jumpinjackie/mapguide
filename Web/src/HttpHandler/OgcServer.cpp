@@ -1661,10 +1661,15 @@ CPSZ MgOgcServer::NegotiatedVersion(CPSZ pszRequested)
                     if(bLowest) {
                         // OGC spec: "If a version lower than any of those known to the server
                         // then the server shall send the lowest version it supports."
-                        if(pszRequested <= sVersion) {
-                            m_sNegotiatedVersion = sVersion;
+                        
+                        // This fixed a potential issue for an unknown request version which just 
+                        // greater than the lowest version and lower than any other supported 
+                        // versions, then we should return the loweset version.
+                        m_sNegotiatedVersion = sVersion;
+
+                        if(pszRequested <= sVersion)
                             break;
-                        }
+
                         bLowest = false;
                     }
                     else {
@@ -1685,11 +1690,6 @@ CPSZ MgOgcServer::NegotiatedVersion(CPSZ pszRequested)
                 }
             }
         }
-
-        // Still not found?  requested version is too new for us.
-        // Tell them about the latest we've got.
-        if(m_sNegotiatedVersion.length() == 0)
-            m_sNegotiatedVersion = sVersion; // the last version we found.
     }
 
     AddDefinition(kpszDictionaryTemplateVersion,m_sNegotiatedVersion.c_str());
