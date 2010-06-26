@@ -105,7 +105,7 @@ public:
     // the fancy stuff
     STYLIZATION_API void CircularArcTo(double midx, double midy, double endx, double endy);
     STYLIZATION_API void CircularArcTo(double midx, double midy, double midz, double endx, double endy, double endz);
-    STYLIZATION_API void ArcTo(double cx, double cy, double a, double b, double startRad, double endRad);
+    STYLIZATION_API void ArcTo(double cx, double cy, double a, double b, double startRad, double endRad, double rotRad = 0.0);
 //  STYLIZATION_API void QuadTo(double x2, double y2, double x3, double y3);
 //  STYLIZATION_API void CubicTo(double x2, double y2, double x3, double y3, double x4, double y4);
 //  STYLIZATION_API void AddEllipse(double cx, double cy, double a, double b);

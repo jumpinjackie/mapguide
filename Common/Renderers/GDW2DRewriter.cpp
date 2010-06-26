@@ -410,37 +410,93 @@ WT_Result gdr_process_filledEllipse(WT_Filled_Ellipse & filledEllipse, WT_File &
             color = override;
     }
 
-    WT_Logical_Point oldpos = filledEllipse.position();
+    WT_Logical_Point center = filledEllipse.position();
 
-    const RS_D_Point* dstpts = rewriter->ProcessW2DPoints(file, (WT_Logical_Point*)&oldpos, 1, false);
+    const RS_D_Point* dstpts = rewriter->ProcessW2DPoints(file, (WT_Logical_Point*)&center, 1, false);
 
-    int major = ROUND(rewriter->ScaleW2DNumber(file, filledEllipse.major()));
-    int minor = ROUND(rewriter->ScaleW2DNumber(file, filledEllipse.minor()));
+    //negate because GD is left-handed coords
+    double tilt = -filledEllipse.tilt_radian();
 
-    //simple bounds check before we draw
-    if ( !(dstpts[0].x + major < 0
-        || dstpts[0].x - major > ((gdImagePtr)rewriter->GetW2DTargetImage())->sx
-        || dstpts[0].y + minor < 0
-        || dstpts[0].x - minor > ((gdImagePtr)rewriter->GetW2DTargetImage())->sy))
+    if (tilt == 0.0)
     {
-        //negate because GD is left-handed coords
-        float end   = 360.f - filledEllipse.start_degree();
-        float start = 360.f - filledEllipse.end_degree();
+        // case where ellipse is unrotated
 
-        //gd does not like negative angles (it's sin/cos lookup table doesn't)
-        while (start < 0.f)
+        int major = ROUND(rewriter->ScaleW2DNumber(file, filledEllipse.major()));
+        int minor = ROUND(rewriter->ScaleW2DNumber(file, filledEllipse.minor()));
+
+        //simple bounds check before we draw
+        if ( !(dstpts[0].x + major < 0
+            || dstpts[0].x - major > ((gdImagePtr)rewriter->GetW2DTargetImage())->sx
+            || dstpts[0].y + minor < 0
+            || dstpts[0].x - minor > ((gdImagePtr)rewriter->GetW2DTargetImage())->sy))
         {
-            start += 360.f;
-            end   += 360.f;
-        }
+            //negate because GD is left-handed coords
+            float end   = 360.f - filledEllipse.start_degree();
+            float start = 360.f - filledEllipse.end_degree();
 
-        //TODO: tilt. Need to tesselate into a line buffer in order to rotate.
-        int gdc = ConvertColor((gdImagePtr)rewriter->GetW2DTargetImage(), color);
-        gdImageFilledArc((gdImagePtr)rewriter->GetW2DTargetImage(),
-                                dstpts[0].x, dstpts[0].y,
-                                major, minor,
-                                (int)start, (int)end, //negate because GD is left-handed coords
-                                gdc, gdArc);
+            //gd does not like negative angles (its sin/cos lookup table doesn't)
+            while (start < 0.f)
+            {
+                start += 360.f;
+                end   += 360.f;
+            }
+
+            int gdc = ConvertColor((gdImagePtr)rewriter->GetW2DTargetImage(), color);
+            gdImageFilledArc((gdImagePtr)rewriter->GetW2DTargetImage(),
+                                    dstpts[0].x, dstpts[0].y,
+                                    major * 2, minor * 2,
+                                    (int)start, (int)end,
+                                    gdc, gdArc);
+        }
+    }
+    else
+    {
+        // case where ellipse is rotated
+        double rcos = cos(tilt);
+        double rsin = sin(tilt);
+
+        double major = rewriter->ScaleW2DNumber(file, filledEllipse.major());
+        double minor = rewriter->ScaleW2DNumber(file, filledEllipse.minor());
+
+        // the half-width / half-height of the bounding box for the rotated ellipse
+        int wid2 = (int)sqrt(major*major*rcos*rcos + minor*minor*rsin*rsin) + 1;
+        int hgt2 = (int)sqrt(major*major*rsin*rsin + minor*minor*rcos*rcos) + 1;
+
+        //simple bounds check before we draw
+        if ( !(dstpts[0].x + wid2 < 0
+            || dstpts[0].x - wid2 > ((gdImagePtr)rewriter->GetW2DTargetImage())->sx
+            || dstpts[0].y + hgt2 < 0
+            || dstpts[0].x - hgt2 > ((gdImagePtr)rewriter->GetW2DTargetImage())->sy))
+        {
+            //negate because GD is left-handed coords
+            double start = -filledEllipse.start_radian();
+            double end = -filledEllipse.end_radian();
+
+            // compute start point
+            double tx = major * cos(start);
+            double ty = minor * sin(start);
+            double startX = dstpts[0].x + tx*rcos - ty*rsin;
+            double startY = dstpts[0].y + ty*rcos + tx*rsin;
+
+            // use a line buffer to tessellate the arc
+            LineBuffer* ell = LineBufferPool::NewLineBuffer(rewriter->GetBufferPool(), 20);
+            std::auto_ptr<LineBuffer> spEllLB(ell);
+
+            ell->SetDrawingScale(1.0);
+            ell->MoveTo(startX, startY);
+            ell->ArcTo(dstpts[0].x, dstpts[0].y, major, minor, start, end, tilt);
+
+            int numpts = ell->point_count();
+            const RS_D_Point* dstpts = rewriter->FillPointBuffer(ell);
+
+            LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), spEllLB.release());
+
+            int gdc = ConvertColor((gdImagePtr)rewriter->GetW2DTargetImage(), color);
+            gdImageFilledPolygon((gdImagePtr)rewriter->GetW2DTargetImage(),
+                                (gdPointPtr)dstpts,
+                                numpts,
+                                gdc);
+        }
     }
 
     return WT_Result::Success;
@@ -469,62 +525,134 @@ WT_Result gdr_process_outlineEllipse(WT_Outline_Ellipse & outlineEllipse, WT_Fil
             color = override;
     }
 
-    WT_Logical_Point oldpos = outlineEllipse.position();
+    WT_Logical_Point center = outlineEllipse.position();
 
-    const RS_D_Point* dstpts = rewriter->ProcessW2DPoints(file, (WT_Logical_Point*)&oldpos, 1, false);
+    const RS_D_Point* dstpts = rewriter->ProcessW2DPoints(file, (WT_Logical_Point*)&center, 1, false);
 
-    int major = ROUND(rewriter->ScaleW2DNumber(file, outlineEllipse.major()));
-    int minor = ROUND(rewriter->ScaleW2DNumber(file, outlineEllipse.minor()));
+    //negate because GD is left-handed coords
+    double tilt = -outlineEllipse.tilt_radian();
 
-    //simple bounds check before we draw
-    if ( !(dstpts[0].x + major < 0
-        || dstpts[0].x - major > ((gdImagePtr)rewriter->GetW2DTargetImage())->sx
-        || dstpts[0].y + minor < 0
-        || dstpts[0].x - minor > ((gdImagePtr)rewriter->GetW2DTargetImage())->sy))
+    if (tilt == 0.0)
     {
-        //negate because GD is left-handed coords
-        float end = 360.f - outlineEllipse.start_degree();
-        float start = 360.f - outlineEllipse.end_degree();
+        // case where ellipse is unrotated
 
-        //gd does not like negative angles (it's sin/cos lookup table doesn't)
-        while (start < 0.f)
+        int major = ROUND(rewriter->ScaleW2DNumber(file, outlineEllipse.major()));
+        int minor = ROUND(rewriter->ScaleW2DNumber(file, outlineEllipse.minor()));
+
+        //simple bounds check before we draw
+        if ( !(dstpts[0].x + major < 0
+            || dstpts[0].x - major > ((gdImagePtr)rewriter->GetW2DTargetImage())->sx
+            || dstpts[0].y + minor < 0
+            || dstpts[0].x - minor > ((gdImagePtr)rewriter->GetW2DTargetImage())->sy))
         {
-            start += 360.f;
-            end   += 360.f;
+            //negate because GD is left-handed coords
+            float end   = 360.f - outlineEllipse.start_degree();
+            float start = 360.f - outlineEllipse.end_degree();
+
+            //gd does not like negative angles (its sin/cos lookup table doesn't)
+            while (start < 0.f)
+            {
+                start += 360.f;
+                end   += 360.f;
+            }
+
+            ////////////////////////
+            // handle thickness
+
+            //get W2D line weight
+            int thick = ROUND(rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value()));
+            gdImagePtr brush1 = NULL;
+
+            if (thick > 1)
+            {
+                brush1 = rs_gdImageThickLineBrush(thick, color);
+                gdImageSetBrush((gdImagePtr)rewriter->GetW2DTargetImage(), brush1);
+            }
+
+            int gdc = ConvertColor((gdImagePtr)rewriter->GetW2DTargetImage(), color);
+            gdImageArc((gdImagePtr)rewriter->GetW2DTargetImage(),
+                                    dstpts[0].x, dstpts[0].y,
+                                    major * 2, minor * 2,
+                                    (int)start, (int)end,
+                                    brush1 ? gdBrushed : gdc);
+
+            if (brush1)
+            {
+                gdImageSetBrush((gdImagePtr)rewriter->GetW2DTargetImage(), NULL);
+                gdImageDestroy(brush1);
+            }
         }
+    }
+    else
+    {
+        // case where ellipse is rotated
+        double rcos = cos(tilt);
+        double rsin = sin(tilt);
 
-        //TODO: tilt. Need to tesselate into a line buffer in order to rotate.
-        int gdc = ConvertColor((gdImagePtr)rewriter->GetW2DTargetImage(), color);
+        double major = rewriter->ScaleW2DNumber(file, outlineEllipse.major());
+        double minor = rewriter->ScaleW2DNumber(file, outlineEllipse.minor());
 
-        ////////////////////////
-        // handle thickness
+        // the half-width / half-height of the bounding box for the rotated ellipse
+        int wid2 = (int)sqrt(major*major*rcos*rcos + minor*minor*rsin*rsin) + 1;
+        int hgt2 = (int)sqrt(major*major*rsin*rsin + minor*minor*rcos*rcos) + 1;
 
-        //get W2D line weight
-        int thick = ROUND(rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value()));
-
-        gdImagePtr brush1 = NULL;
-
-        if (thick > 1)
+        //simple bounds check before we draw
+        if ( !(dstpts[0].x + wid2 < 0
+            || dstpts[0].x - wid2 > ((gdImagePtr)rewriter->GetW2DTargetImage())->sx
+            || dstpts[0].y + hgt2 < 0
+            || dstpts[0].x - hgt2 > ((gdImagePtr)rewriter->GetW2DTargetImage())->sy))
         {
-            brush1 = rs_gdImageThickLineBrush(thick, color);
-            gdImageSetBrush((gdImagePtr)rewriter->GetW2DTargetImage(), brush1);
-        }
+            //negate because GD is left-handed coords
+            double start = -outlineEllipse.start_radian();
+            double end = -outlineEllipse.end_radian();
 
-        gdImageArc((gdImagePtr)rewriter->GetW2DTargetImage(),
-                                dstpts[0].x, dstpts[0].y,
-                                major * 2, minor * 2,
-                                (int)start, (int)end,
-                                brush1 ? gdBrushed : gdc);
+            // compute start point
+            double tx = major * cos(start);
+            double ty = minor * sin(start);
+            double startX = dstpts[0].x + tx*rcos - ty*rsin;
+            double startY = dstpts[0].y + ty*rcos + tx*rsin;
 
-        if (brush1)
-        {
-            gdImageSetBrush((gdImagePtr)rewriter->GetW2DTargetImage(), NULL);
-            gdImageDestroy(brush1);
+            // use a line buffer to tessellate the arc
+            LineBuffer* ell = LineBufferPool::NewLineBuffer(rewriter->GetBufferPool(), 20);
+            std::auto_ptr<LineBuffer> spEllLB(ell);
+
+            ell->SetDrawingScale(1.0);
+            ell->MoveTo(startX, startY);
+            ell->ArcTo(dstpts[0].x, dstpts[0].y, major, minor, start, end, tilt);
+
+            int numpts = ell->point_count();
+            const RS_D_Point* dstpts = rewriter->FillPointBuffer(ell);
+
+            LineBufferPool::FreeLineBuffer(rewriter->GetBufferPool(), spEllLB.release());
+
+            ////////////////////////
+            // handle thickness
+
+            //get W2D line weight
+            int thick = ROUND(rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value()));
+            gdImagePtr brush1 = NULL;
+
+            if (thick > 1)
+            {
+                brush1 = rs_gdImageThickLineBrush(thick, color);
+                gdImageSetBrush((gdImagePtr)rewriter->GetW2DTargetImage(), brush1);
+            }
+
+            int gdc = ConvertColor((gdImagePtr)rewriter->GetW2DTargetImage(), color);
+            gdImageOpenPolygon((gdImagePtr)rewriter->GetW2DTargetImage(),
+                            (gdPointPtr)dstpts,
+                            numpts,
+                            brush1 ? gdBrushed : gdc);
+
+            if (brush1)
+            {
+                gdImageSetBrush((gdImagePtr)rewriter->GetW2DTargetImage(), NULL);
+                gdImageDestroy(brush1);
+            }
         }
     }
 
     return WT_Result::Success;
-
 }
 
 

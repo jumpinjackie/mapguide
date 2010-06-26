@@ -2204,6 +2204,15 @@ double GDRenderer::ScaleW2DNumber(WT_File& file, WT_Integer32 number)
 }
 
 
+// Fills and returns the point buffer using the supplied line buffer.
+// No transformations are applied.
+const RS_D_Point* GDRenderer::FillPointBuffer(LineBuffer* lb)
+{
+    _TransferPoints(lb, NULL);
+    return m_wtPointBuffer;
+}
+
+
 void GDRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
 {
     _ASSERT(m_xformer);
