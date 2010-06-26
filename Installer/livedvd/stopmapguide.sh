@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #
 #  Copyright (C) 2010 by Autodesk, Inc.
 #
@@ -16,18 +15,12 @@
 #  License along with this library; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
+# About:
+# ===
+# This script will start the MapGuide Server and Apache on the LiveDVD
+# Usage (as user with sudo rights):
+# ./stopmapguide.sh
+#
 
-# Remove Ubuntu packages for MapGuide
-for file in server webextensions httpd common
-do
-  dpkg --remove mapguideopensource-${file}
-done
-
-# Remove Ubuntu packages for FDO
-for file in wms wfs sqlite shp sdf postgis ogr kingoracle gdal core
-do
-  dpkg --remove fdo-${file}
-done
-
-dpkg --remove mapguideopensource-maestro
-
+MGPID=`ps -C mgserver -o pid=`
+sudo /bin/bash -c "echo Stopping Apache...;sleep 1;/usr/local/mapguideopensource-2.2.0/webserverextensions/apache2/bin/apachectl stop; echo Stopping MapGuide...; sleep 2; kill -SIGKILL $MGPID; sleep 3"
