@@ -27,8 +27,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake -f GeometryMakefile OUTDIR=&quot;$(OutDir)&quot; debug"
-				ReBuildCommandLine="nmake -a -f GeometryMakefile OUTDIR=&quot;$(OutDir)&quot; debug"
+				BuildCommandLine="nmake -f GeometryMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; debug"
+				ReBuildCommandLine="nmake -a -f GeometryMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; debug"
 				CleanCommandLine="nmake -f GeometryMakefile OUTDIR=&quot;$(OutDir)&quot; cleandebug"
 				Output="$(OutDir)\GeometryDotNetApid.dll"
 				PreprocessorDefinitions=""
@@ -47,8 +47,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake -f GeometryMakefile OUTDIR=&quot;$(OutDir)&quot; debug"
-				ReBuildCommandLine="nmake -a -f GeometryMakefile OUTDIR=&quot;$(OutDir)&quot; debug"
+				BuildCommandLine="nmake -f GeometryMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; debug"
+				ReBuildCommandLine="nmake -a -f GeometryMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; debug"
 				CleanCommandLine="nmake -f GeometryMakefile OUTDIR=&quot;$(OutDir)&quot; cleandebug"
 				Output="$(OutDir)\GeometryDotNetApid.dll"
 				PreprocessorDefinitions=""
@@ -67,8 +67,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake -f GeometryMakefile OUTDIR=&quot;$(OutDir)&quot; release"
-				ReBuildCommandLine="nmake -a -f GeometryMakefile OUTDIR=&quot;$(OutDir)&quot; release"
+				BuildCommandLine="nmake -f GeometryMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; release"
+				ReBuildCommandLine="nmake -a -f GeometryMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; release"
 				CleanCommandLine="nmake -f GeometryMakefile OUTDIR=&quot;$(OutDir)&quot; cleanrelease"
 				Output="$(OutDir)\GeometryDotNetApi.dll"
 				PreprocessorDefinitions=""
@@ -87,8 +87,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake -f GeometryMakefile OUTDIR=&quot;$(OutDir)&quot; release"
-				ReBuildCommandLine="nmake -a -f GeometryMakefile OUTDIR=&quot;$(OutDir)&quot; release"
+				BuildCommandLine="nmake -f GeometryMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; release"
+				ReBuildCommandLine="nmake -a -f GeometryMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; release"
 				CleanCommandLine="nmake -f GeometryMakefile OUTDIR=&quot;$(OutDir)&quot; cleanrelease"
 				Output="$(OutDir)\GeometryDotNetApi.dll"
 				PreprocessorDefinitions=""
