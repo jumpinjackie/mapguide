@@ -404,7 +404,7 @@ install-data-hook:
              -e 's#^ResourceSchemaFilePath.*=.*#ResourceSchemaFilePath             = ${prefix}/Schema/#' \
              -e 's#^ResourceDataFileTrashFolderName.*=.*#ResourceDataFileTrashFolderName    = Trash#' \
            serverconfig.ini > ${prefix}/bin/serverconfig.ini
-	@echo '#!/bin/sh' > ${prefix}/bin/mgserver.sh
+	@echo '#!/bin/bash' > ${prefix}/bin/mgserver.sh
 	@echo '' >> ${prefix}/bin/mgserver.sh
 	@echo 'export MENTOR_DICTIONARY_PATH=$(mentor_dict_install_dir)' >> ${prefix}/bin/mgserver.sh
 	@echo 'export LD_LIBRARY_PATH=$(fdodir):"$$LD_LIBRARY_PATH"' >> ${prefix}/bin/mgserver.sh
