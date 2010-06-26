@@ -27,8 +27,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake -f WebMakefile OUTDIR=&quot;$(OutDir)&quot; debug"
-				ReBuildCommandLine="nmake -a -f WebMakefile OUTDIR=&quot;$(OutDir)&quot; debug"
+				BuildCommandLine="nmake -f WebMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; debug"
+				ReBuildCommandLine="nmake -a -f WebMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; debug"
 				CleanCommandLine="nmake -f WebMakefile OUTDIR=&quot;$(OutDir)&quot; cleandebug"
 				Output="$(OutDir)\WebDotNetApid.dll"
 				PreprocessorDefinitions=""
@@ -47,8 +47,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake -f WebMakefile OUTDIR=&quot;$(OutDir)&quot; debug"
-				ReBuildCommandLine="nmake -a -f WebMakefile OUTDIR=&quot;$(OutDir)&quot; debug"
+				BuildCommandLine="nmake -f WebMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; debug"
+				ReBuildCommandLine="nmake -a -f WebMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; debug"
 				CleanCommandLine="nmake -f WebMakefile OUTDIR=&quot;$(OutDir)&quot; cleandebug"
 				Output="$(OutDir)\WebDotNetApid.dll"
 				PreprocessorDefinitions=""
@@ -67,8 +67,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake -f WebMakefile OUTDIR=&quot;$(OutDir)&quot; release"
-				ReBuildCommandLine="nmake -a -f WebMakefile OUTDIR=&quot;$(OutDir)&quot; release"
+				BuildCommandLine="nmake -f WebMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; release"
+				ReBuildCommandLine="nmake -a -f WebMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; release"
 				CleanCommandLine="nmake -f WebMakefile OUTDIR=&quot;$(OutDir)&quot; cleanrelease"
 				Output="$(OutDir)\WebDotNetApi.dll"
 				PreprocessorDefinitions=""
@@ -87,8 +87,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake -f WebMakefile OUTDIR=&quot;$(OutDir)&quot; release"
-				ReBuildCommandLine="nmake -a -f WebMakefile OUTDIR=&quot;$(OutDir)&quot; release"
+				BuildCommandLine="nmake -f WebMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; release"
+				ReBuildCommandLine="nmake -a -f WebMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; release"
 				CleanCommandLine="nmake -f WebMakefile OUTDIR=&quot;$(OutDir)&quot; cleanrelease"
 				Output="$(OutDir)\WebDotNetApi.dll"
 				PreprocessorDefinitions=""

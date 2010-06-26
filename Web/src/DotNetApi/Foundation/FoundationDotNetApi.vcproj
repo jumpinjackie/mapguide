@@ -27,8 +27,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake -f FoundationMakefile OUTDIR=&quot;$(OutDir)&quot; debug"
-				ReBuildCommandLine="nmake -a -f FoundationMakefile OUTDIR=&quot;$(OutDir)&quot; debug"
+				BuildCommandLine="nmake -f FoundationMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; debug"
+				ReBuildCommandLine="nmake -a -f FoundationMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; debug"
 				CleanCommandLine="nmake -f FoundationMakefile OUTDIR=&quot;$(OutDir)&quot; cleandebug"
 				Output="$(OutDir)\FoundationDotNetApid.dll"
 				PreprocessorDefinitions=""
@@ -47,8 +47,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake -f FoundationMakefile OUTDIR=&quot;$(OutDir)&quot; debug"
-				ReBuildCommandLine="nmake -a -f FoundationMakefile OUTDIR=&quot;$(OutDir)&quot; debug"
+				BuildCommandLine="nmake -f FoundationMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; debug"
+				ReBuildCommandLine="nmake -a -f FoundationMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; debug"
 				CleanCommandLine="nmake -f FoundationMakefile OUTDIR=&quot;$(OutDir)&quot; cleandebug"
 				Output="$(OutDir)\FoundationDotNetApid.dll"
 				PreprocessorDefinitions=""
@@ -67,8 +67,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake -f FoundationMakefile OUTDIR=&quot;$(OutDir)&quot; release"
-				ReBuildCommandLine="nmake -a -f FoundationMakefile OUTDIR=&quot;$(OutDir)&quot; release"
+				BuildCommandLine="nmake -f FoundationMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; release"
+				ReBuildCommandLine="nmake -a -f FoundationMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; release"
 				CleanCommandLine="nmake -f FoundationMakefile OUTDIR=&quot;$(OutDir)&quot; cleanrelease"
 				Output="$(OutDir)\FoundationDotNetApi.dll"
 				PreprocessorDefinitions=""
@@ -87,8 +87,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake -f FoundationMakefile OUTDIR=&quot;$(OutDir)&quot; release"
-				ReBuildCommandLine="nmake -a -f FoundationMakefile OUTDIR=&quot;$(OutDir)&quot; release"
+				BuildCommandLine="nmake -f FoundationMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; release"
+				ReBuildCommandLine="nmake -a -f FoundationMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; release"
 				CleanCommandLine="nmake -f FoundationMakefile OUTDIR=&quot;$(OutDir)&quot; cleanrelease"
 				Output="$(OutDir)\FoundationDotNetApi.dll"
 				PreprocessorDefinitions=""

@@ -27,8 +27,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake -f PlatformBaseMakefile OUTDIR=&quot;$(OutDir)&quot; debug"
-				ReBuildCommandLine="nmake -a -f PlatformBaseMakefile OUTDIR=&quot;$(OutDir)&quot; debug"
+				BuildCommandLine="nmake -f PlatformBaseMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; debug"
+				ReBuildCommandLine="nmake -a -f PlatformBaseMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; debug"
 				CleanCommandLine="nmake -f PlatformBaseMakefile OUTDIR=&quot;$(OutDir)&quot; cleandebug"
 				Output="$(OutDir)\PlatformBaseDotNetApid.dll"
 				PreprocessorDefinitions=""
@@ -47,8 +47,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake -f PlatformBaseMakefile OUTDIR=&quot;$(OutDir)&quot; debug"
-				ReBuildCommandLine="nmake -a -f PlatformBaseMakefile OUTDIR=&quot;$(OutDir)&quot; debug"
+				BuildCommandLine="nmake -f PlatformBaseMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; debug"
+				ReBuildCommandLine="nmake -a -f PlatformBaseMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; debug"
 				CleanCommandLine="nmake -f PlatformBaseMakefile OUTDIR=&quot;$(OutDir)&quot; cleandebug"
 				Output="$(OutDir)\PlatformBaseDotNetApid.dll"
 				PreprocessorDefinitions=""
@@ -67,8 +67,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake -f PlatformBaseMakefile OUTDIR=&quot;$(OutDir)&quot; release"
-				ReBuildCommandLine="nmake -a -f PlatformBaseMakefile OUTDIR=&quot;$(OutDir)&quot; release"
+				BuildCommandLine="nmake -f PlatformBaseMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; release"
+				ReBuildCommandLine="nmake -a -f PlatformBaseMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; release"
 				CleanCommandLine="nmake -f PlatformBaseMakefile OUTDIR=&quot;$(OutDir)&quot; cleanrelease"
 				Output="$(OutDir)\PlatformBaseDotNetApi.dll"
 				PreprocessorDefinitions=""
@@ -87,8 +87,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake -f PlatformBaseMakefile OUTDIR=&quot;$(OutDir)&quot; release"
-				ReBuildCommandLine="nmake -a -f PlatformBaseMakefile OUTDIR=&quot;$(OutDir)&quot; release"
+				BuildCommandLine="nmake -f PlatformBaseMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; release"
+				ReBuildCommandLine="nmake -a -f PlatformBaseMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; release"
 				CleanCommandLine="nmake -f PlatformBaseMakefile OUTDIR=&quot;$(OutDir)&quot; cleanrelease"
 				Output="$(OutDir)\PlatformBaseDotNetApi.dll"
 				PreprocessorDefinitions=""

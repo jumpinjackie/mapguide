@@ -27,8 +27,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake -f MapGuideCommonMakefile OUTDIR=&quot;$(OutDir)&quot; debug"
-				ReBuildCommandLine="nmake -a -f MapGuideCommonMakefile OUTDIR=&quot;$(OutDir)&quot; debug"
+				BuildCommandLine="nmake -f MapGuideCommonMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; debug"
+				ReBuildCommandLine="nmake -a -f MapGuideCommonMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; debug"
 				CleanCommandLine="nmake -f MapGuideCommonMakefile OUTDIR=&quot;$(OutDir)&quot; cleandebug"
 				Output="$(OutDir)\MapGuideCommonDotNetApid.dll"
 				PreprocessorDefinitions=""
@@ -47,8 +47,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake -f MapGuideCommonMakefile OUTDIR=&quot;$(OutDir)&quot; debug"
-				ReBuildCommandLine="nmake -a -f MapGuideCommonMakefile OUTDIR=&quot;$(OutDir)&quot; debug"
+				BuildCommandLine="nmake -f MapGuideCommonMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; debug"
+				ReBuildCommandLine="nmake -a -f MapGuideCommonMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; debug"
 				CleanCommandLine="nmake -f MapGuideCommonMakefile OUTDIR=&quot;$(OutDir)&quot; cleandebug"
 				Output="$(OutDir)\MapGuideCommonDotNetApid.dll"
 				PreprocessorDefinitions=""
@@ -67,8 +67,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake -f MapGuideCommonMakefile OUTDIR=&quot;$(OutDir)&quot; release"
-				ReBuildCommandLine="nmake -a -f MapGuideCommonMakefile OUTDIR=&quot;$(OutDir)&quot; release"
+				BuildCommandLine="nmake -f MapGuideCommonMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; release"
+				ReBuildCommandLine="nmake -a -f MapGuideCommonMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; release"
 				CleanCommandLine="nmake -f MapGuideCommonMakefile OUTDIR=&quot;$(OutDir)&quot; cleanrelease"
 				Output="$(OutDir)\MapGuideCommonDotNetApi.dll"
 				PreprocessorDefinitions=""
@@ -87,8 +87,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake -f MapGuideCommonMakefile OUTDIR=&quot;$(OutDir)&quot; release"
-				ReBuildCommandLine="nmake -a -f MapGuideCommonMakefile OUTDIR=&quot;$(OutDir)&quot; release"
+				BuildCommandLine="nmake -f MapGuideCommonMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; release"
+				ReBuildCommandLine="nmake -a -f MapGuideCommonMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; release"
 				CleanCommandLine="nmake -f MapGuideCommonMakefile OUTDIR=&quot;$(OutDir)&quot; cleanrelease"
 				Output="$(OutDir)\MapGuideCommonDotNetApi.dll"
 				PreprocessorDefinitions=""
