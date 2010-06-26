@@ -1469,7 +1469,6 @@ void MgLegendPlotUtil::AddLayoutElements(MgPrintLayout* layout, STRING mapName, 
 
         ComputeLegendOffsetAndSize(layout, dMapScale, dr, map, legendOffsetX, legendOffsetY, legendWidth, legendHeight);
 
-        MgDwfVersion dwfVersion;
         float legendMargin = (float)(defaultLegendMargin*convertUnits);
         MgPlotSpecification legendSpec((float)legendWidth, float(legendHeight), pageUnits, legendMargin, legendMargin, legendMargin, legendMargin);
 
