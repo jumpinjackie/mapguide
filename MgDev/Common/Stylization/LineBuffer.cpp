@@ -755,7 +755,7 @@ void LineBuffer::CircularArcTo2D(double x0, double y0, double x1, double y1, dou
 }
 
 
-void LineBuffer::ArcTo(double cx, double cy, double a, double b, double startRad, double endRad)
+void LineBuffer::ArcTo(double cx, double cy, double a, double b, double startRad, double endRad, double rotRad)
 {
     // store off arc start point index
     EnsureArcsSpArray(2);
@@ -798,6 +798,10 @@ void LineBuffer::ArcTo(double cx, double cy, double a, double b, double startRad
     // get the angular separation corresponding to the number of segments
     double dRad = extent / nSegs;
 
+    // account for the overall arc rotation
+    double rcos = cos(rotRad);
+    double rsin = sin(rotRad);
+
     // add the segments
     EnsurePoints(nSegs);
     for (int i=1; i<=nSegs; ++i)
@@ -806,8 +810,8 @@ void LineBuffer::ArcTo(double cx, double cy, double a, double b, double startRad
         double tx = a * cos(ang);
         double ty = b * sin(ang);
 
-        double x = cx + tx;
-        double y = cy + ty;
+        double x = cx + tx*rcos - ty*rsin;
+        double y = cy + ty*rcos + tx*rsin;
 
         LineTo(x, y);
     }
