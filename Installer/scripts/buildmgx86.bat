@@ -8,8 +8,8 @@ SET SOLUTIONCONFIG="Release|Win32"
 SET OEMFDO=%MGSOURCE%\Oem\FDO
 SET STARTDIR=%CD%
 
-rmdir /S /Q %BUILDROOT%
-rmdir /S /Q %INSTALLROOT%
+rmdir /S /Q %MGSOURCE%
+rmdir /S /Q %MGINSTALL%
 
 call "C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
 

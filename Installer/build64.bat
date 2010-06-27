@@ -257,7 +257,7 @@ goto quit
 :regen
 echo [regen]: MapGuide Installer
 
-SET PARAFFIN=paraffin.exe -update 
+SET PARAFFIN=paraffin.exe -update -Win64
 
 SET WIX_INC_SERVER="%INSTALLER_DEV%\Libraries\MapGuide Server\FileIncludes"
 SET WIX_INC_WEB="%INSTALLER_DEV%\Libraries\MapGuide Web Extensions\FileIncludes"
