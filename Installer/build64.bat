@@ -41,7 +41,7 @@ rem Command Line Option Defaults
 rem ==================================================
 
 SET TYPEACTION=build
-SET CPUTYPE=x86
+SET CPUTYPE=x64
 SET TYPEBUILD=Release64
 SET CONFIGURATION=Release
 SET PLATFORM=x64

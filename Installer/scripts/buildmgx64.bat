@@ -12,13 +12,10 @@ rmdir /S /Q %INSTALLROOT%
 
 call "C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
 
-svn info svn://svn.bld.mgproto.net/mapguide/trunk/MgDev | perl revnum.pl > revision.txt
+svn info svn://svn.bld.mgproto.net/mapguide/branches/2.2/MgDev | perl revnum.pl > revision.txt
 set /p REVISION= < revision.txt
-set REVISION=4829
 
-svn export -r %REVISION%  svn://svn.bld.mgproto.net/mapguide/trunk/MgDev %MGSOURCE%
-
-
+svn export -r %REVISION%  svn://svn.bld.mgproto.net/mapguide/branches/2.2/MgDev %MGSOURCE%
 svn export svn://svn.bld.mgproto.net/mapguide/trunk/Installer %MGINSTALL% 
 
 cd %MGSOURCE%
@@ -38,6 +35,6 @@ call build64.bat -a=install
 cd %MGINSTALL%
 call build64.bat -source=%INSTALLROOT% -a=prepare
 call build64.bat -source=%INSTALLROOT% -a=generate 
-call build64.bat -source=%INSTALLROOT% -version=2.2.0.%REVISION% -name=MapGuideOpenSource-2.2.0.%REVISION%-Beta1-x64 -title="MapGuide Open Source 2.2 x64 Beta 1"
+call build64.bat -source=%INSTALLROOT% -version=2.2.0.%REVISION% -name=MapGuideOpenSource-2.2.0.%REVISION%-Beta2-x64 -title="MapGuide Open Source 2.2 x64 Beta 2"
 
 cd %STARTDIR%
