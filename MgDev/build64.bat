@@ -450,7 +450,7 @@ echo [install]: Web Tier - fusion templates
 %XCOPY% "%MG_OEM%\fusionMG" "%MG_OUTPUT_WEB%\www\fusion" /EXCLUDE:svn_excludes.txt+%CONFIGURATION%_excludes.txt
 echo [install]: Web Tier - Apache module
 if not exist "%MG_OUTPUT_WEB%\Apache2\modules" mkdir "%MG_OUTPUT_WEB%\Apache2\modules"
-%XCOPY% /F "%MG_WEB_SRC%\mapagent\mod_mgmapagent.so" "%MG_OUTPUT_WEB%\Apache2\modules"
+%XCOPY% /F "%MG_WEB_SRC%\mapagent64\mod_mgmapagent.so" "%MG_OUTPUT_WEB%\Apache2\modules"
 echo [install]: Web Tier - fusion
 call %ANT% deploy -Ddeploy.home="%MG_OUTPUT_WEB%\www\fusion" -f "%MG_OEM%\fusion\build.xml"
 if "%TYPECOMPONENT%"=="server" goto quit
