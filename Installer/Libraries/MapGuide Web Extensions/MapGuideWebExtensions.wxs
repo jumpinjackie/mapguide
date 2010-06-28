@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+    <?if "$(var.MgPlatform)" = "x64" ?>
+      <?define Win64 = "yes" ?>
+      <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+    <?else ?>
+       <?define Win64 = "no" ?>
+       <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+    <?endif ?>
     <Fragment>
 
         <PropertyRef Id="NETFRAMEWORK20"/>
@@ -9,7 +16,7 @@
       
         <DirectoryRef Id="WebParentFolder">
             <Directory Id="WEBEXTENSIONSLOCATION" Name="Web">
-                <Component Id="WebPortConfigComponent" Guid="3C8FE0E1-3161-423D-9E08-0983B7075C4C" Feature="WebExtensionsFeature">
+                <Component Id="WebPortConfigComponent" Win64="$(var.Win64)" Guid="3C8FE0E1-3161-423D-9E08-0983B7075C4C" Feature="WebExtensionsFeature">
                     <CreateFolder />
                     <IniFile Id="INISETWEBADMINPORT"
                              Action="addLine"
@@ -33,7 +40,7 @@
                              Section="SiteConnectionProperties"
                              Value="[MG_SITE_PORT]"/>
                 </Component>
-                <Component Id="WebExtensionsComponent" Guid="AE77C8EB-284D-4410-903F-92AD516DEA93">
+                <Component Id="WebExtensionsComponent" Win64="$(var.Win64)" Guid="AE77C8EB-284D-4410-903F-92AD516DEA93">
                   <RegistryKey Id="MapGuideKey" Action="create" Root="HKLM" Key="$(var.MgRegKey)">
                     <RegistryValue Id="IisApiType" Action="write" Type="string" Name="IIS_API_TYPE" Value="[IIS_API_TYPE]" />
                     <RegistryValue Id="MgWebConfig" Action="write" Type="string" Name="MGWEB_CONFIG" Value="[MGWEB_CONFIG]" />
@@ -41,7 +48,7 @@
                   <CreateFolder />
                 </Component>
                 <Directory Id="WEBTEMPLOCATION" Name="Temp">
-                    <Component Id="WebTempComponent" Guid="38C3E0A5-88F8-4A98-896D-CCB5DADCC566" Feature="WebTempFeature">
+                    <Component Id="WebTempComponent" Win64="$(var.Win64)" Guid="38C3E0A5-88F8-4A98-896D-CCB5DADCC566" Feature="WebTempFeature">
                         <CreateFolder>
                             <util:PermissionEx User="Everyone" GenericAll="yes" />
                         </CreateFolder>
@@ -49,7 +56,7 @@
                 </Directory>
                 <Directory Id="APACHELOCATION" Name="Apache2" />
                 <Directory Id="PHPLOCATION" Name="Php">
-                    <Component Id="WebExtPhpComponent" Guid="88814E96-07DC-4fb7-A993-F31FC1E000CB" Feature="WebExtPhpFeature">
+                    <Component Id="WebExtPhpComponent" Win64="$(var.Win64)" Guid="88814E96-07DC-4fb7-A993-F31FC1E000CB" Feature="WebExtPhpFeature">
                         <CreateFolder />
                         <Environment Id="PhpEnvVar"
                                      Action="set"
@@ -78,7 +85,7 @@
                 </Directory>
                 <Directory Id="WEBROOTLOCATION" Name="www">
                   <Directory Id="HELPLOCATION" Name="help" />
-                  <Component Id="WebRootComponent" Guid="A84579E6-285D-4869-9F04-AA47FB1ACFD5" Feature="WebExtensionsFeature">
+                  <Component Id="WebRootComponent" Win64="$(var.Win64)" Guid="A84579E6-285D-4869-9F04-AA47FB1ACFD5" Feature="WebExtensionsFeature">
                     <CreateFolder />
                     <RemoveFile Id="MapGuideWebConfig" On="uninstall" Name="web.config" Property="WEBROOTLOCATION" />
                       <RemoveFile Id="MapAgentWebConfig" On="uninstall" Name="web.config" Property="dir_mapagent_0" />
@@ -171,7 +178,7 @@
             </Feature>
             <Feature Id="WebTempFeature" Title="!(loc.WebTempFeature)" Level="1" ConfigurableDirectory="WEBTEMPLOCATION" Description="!(loc.WebTempFeature_Description)" Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" />
             <Feature Id="WebExtSamplesFeature" Title="!(loc.WebExtSamplesFeature)" Level="1" Description="!(loc.WebExtSamplesFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
-              <Component Id="WebExtSamplesComponent" Guid="525BAE2A-F8E4-415F-A095-91DDD17FD5E6" Directory="WEBEXTENSIONSLOCATION" >
+              <Component Id="WebExtSamplesComponent" Win64="$(var.Win64)" Guid="525BAE2A-F8E4-415F-A095-91DDD17FD5E6" Directory="WEBEXTENSIONSLOCATION" >
                 <!-- This is required because a UI bug displays the feature as network-installable if there are no folders or files. -->
                 <CreateFolder />
               </Component>

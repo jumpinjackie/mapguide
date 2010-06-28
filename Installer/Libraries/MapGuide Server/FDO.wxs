@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?if "$(var.MgPlatform)" = "x64" ?>
+    <?define Win64 = "yes" ?>
+    <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+  <?else ?>
+     <?define Win64 = "no" ?>
+     <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+  <?endif ?>
   <Fragment>
       <CustomAction Id="FdoRegCmd" Property="FdoReg" Execute="immediate" Value="&quot;[FDOLOCATION]FdoRegUtil.exe&quot;" />
       
@@ -66,13 +73,13 @@
       <DirectoryRef Id="SERVERROOTLOCATION">
       <Directory Id="FDOLOCATION" Name="Fdo">
           <Directory Id="FDOCOMLOCATION" Name="com">
-              <Component Id="FdoComComponent" Guid="2318F3DF-88E4-46EB-B2A7-86A17202D9CB">
+              <Component Id="FdoComComponent" Win64="$(var.Win64)" Guid="2318F3DF-88E4-46EB-B2A7-86A17202D9CB">
                   <File Id="FdoSysSql" Checksum="yes" Source="$(var.MgSource)\Server\FDO\com\fdo_sys.sql" />
                   <File Id="FdoSysIdxSql" Checksum="yes" Source="$(var.MgSource)\Server\FDO\com\fdo_sys_idx.sql" />
                   <File Id="FdoSysSysSql" Checksum="yes" Source="$(var.MgSource)\Server\FDO\com\fdosys_sys.sql" />
               </Component>
           </Directory>
-          <Component Id="FdoComponent" Guid="EC356C4B-8AD8-472C-8D3B-90AC4E77BDB0">
+          <Component Id="FdoComponent" Win64="$(var.Win64)" Guid="EC356C4B-8AD8-472C-8D3B-90AC4E77BDB0">
             <CreateFolder />
             <IniFile Id="INISETFDOPATH"
                      Action="addLine"
@@ -83,7 +90,7 @@
                      Value="[FDOLOCATION]" />
           </Component>
           <!-- FDO Core -->
-          <Component Id="FdoCoreCompnent" Guid="90F4CB26-524F-499B-AA22-BD17036B167D">
+          <Component Id="FdoCoreCompnent" Win64="$(var.Win64)" Guid="90F4CB26-524F-499B-AA22-BD17036B167D">
               <File Id="FdoRegUtil" Checksum="yes" Source="$(var.MgSource)\Server\FDO\FdoRegUtil.exe" />
               <File Id="FdoBoostDateTime" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_date_time-vc90-mt-1_34_1.dll" />
               <File Id="FdoBoostThread" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_thread-vc90-mt-1_34_1.dll" />
@@ -104,76 +111,76 @@
               <File Id="SmMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\SmMessage.dll" />
           </Component>
           <!-- ArcSDE Provider -->
-          <Component Id="FdoArcSdeComponent" Guid="73E0719B-243F-49E9-BF74-F1B7CF7EA35F">
+          <Component Id="FdoArcSdeComponent" Win64="$(var.Win64)" Guid="73E0719B-243F-49E9-BF74-F1B7CF7EA35F">
               <File Id="ArcSdeMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ArcSDEMessage.dll" />
               <File Id="ArcSdeProvider91" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ArcSdeProvider91.dll" />
               <File Id="ArcSdeProvider92" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ArcSdeProvider92.dll" />
               <File Id="ArcSdeProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ArcSdeProvider.dll" />
           </Component>
           <!-- GDAL Provider -->
-          <Component Id="FdoGdalProviderComponent" Guid="B1D7539F-865E-4A32-B82A-96E76012780B">
+          <Component Id="FdoGdalProviderComponent" Win64="$(var.Win64)" Guid="B1D7539F-865E-4A32-B82A-96E76012780B">
               <File Id="GrfpMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\GRFPMessage.dll" />
               <File Id="GrfpOverrides" Checksum="yes" Source="$(var.MgSource)\Server\FDO\GRFPOverrides.dll" />
               <File Id="GrfpProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\GRFPProvider.dll" />
           </Component>
           <!-- King Oracle Provider -->
-          <Component Id="FdoKingOracleProviderComponent" Guid="A383085F-5531-4E31-9F74-0CDDF154FCAA">
+          <Component Id="FdoKingOracleProviderComponent" Win64="$(var.Win64)" Guid="A383085F-5531-4E31-9F74-0CDDF154FCAA">
               <File Id="KingOracleMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\KingOracleMessage.dll" />
               <File Id="KingOracleOverrides" Checksum="yes" Source="$(var.MgSource)\Server\FDO\KingOracleOverrides.dll" />
               <File Id="KingOracleProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\KingOracleProvider.dll" />
           </Component>
           <!-- MySQL Provider -->
-          <Component Id="FdoMySqlProviderComponent" Guid="26D8BA03-9BFE-4E89-BFBB-026284A38A6C">
+          <Component Id="FdoMySqlProviderComponent" Win64="$(var.Win64)" Guid="26D8BA03-9BFE-4E89-BFBB-026284A38A6C">
               <File Id="MySqlOverrides" Checksum="yes" Source="$(var.MgSource)\Server\FDO\MySQLOverrides.dll" />
               <File Id="MySqlProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\MySQLProvider.dll" />
           </Component>
           <!-- ODBC Provider -->
-          <Component Id="FdoOdbcProviderComponent" Guid="DB266999-621F-4503-B27C-F5F2B5AE2187">
+          <Component Id="FdoOdbcProviderComponent" Win64="$(var.Win64)" Guid="DB266999-621F-4503-B27C-F5F2B5AE2187">
               <File Id="OdbcOverrides" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ODBCOverrides.dll" />
               <File Id="OdbcProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ODBCProvider.dll" />
           </Component>
           <!-- OGR Provider -->
-          <Component Id="FdoOgrProviderComponent" Guid="7FB890D4-8824-478E-83F6-E14DF2A3F949">
+          <Component Id="FdoOgrProviderComponent" Win64="$(var.Win64)" Guid="7FB890D4-8824-478E-83F6-E14DF2A3F949">
               <File Id="OgrProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\OGRProvider.dll" />
           </Component>
           <!-- PostGIS (legacy) Provider -->
-          <Component Id="FdoPostGisProviderComponent" Guid="1D51342F-3ECC-4053-8475-F70333B4B22D">
+          <Component Id="FdoPostGisProviderComponent" Win64="$(var.Win64)" Guid="1D51342F-3ECC-4053-8475-F70333B4B22D">
               <File Id="PostGisMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\PostGISMessage.dll" />
               <File Id="PostGisOverrides" Checksum="yes" Source="$(var.MgSource)\Server\FDO\PostGISOverrides.dll" />
               <File Id="PostGisProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\PostGISProvider.dll" />
           </Component>
           <!-- PostGIS (new) Provider -->
-          <Component Id="FdoPostgreSqlProviderComponent" Guid="550B6CA0-10F8-444B-B51B-8569FF23B8C2">
+          <Component Id="FdoPostgreSqlProviderComponent" Win64="$(var.Win64)" Guid="550B6CA0-10F8-444B-B51B-8569FF23B8C2">
               <File Id="PostgreSqlOverrides" Checksum="yes" Source="$(var.MgSource)\Server\FDO\PostgreSQLOverrides.dll" />
               <File Id="PostgreSqlProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\PostgreSQLProvider.dll" />
           </Component>
           <!-- SDF Provider -->
-          <Component Id="FdoSdfProviderComponent" Guid="F0976038-9F62-42E7-AA6E-B37C33744C6F">
+          <Component Id="FdoSdfProviderComponent" Win64="$(var.Win64)" Guid="F0976038-9F62-42E7-AA6E-B37C33744C6F">
               <File Id="SdfMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\SDFMessage.dll" />
               <File Id="SdfProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\SDFProvider.dll" />
           </Component>
           <!-- SHP Provider -->
-          <Component Id="FdoShpProviderComponent" Guid="AE77DBB1-1453-4528-A6F3-D8B58DEC90B1">
+          <Component Id="FdoShpProviderComponent" Win64="$(var.Win64)" Guid="AE77DBB1-1453-4528-A6F3-D8B58DEC90B1">
               <File Id="ShpMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\SHPMessage.dll" />
               <File Id="ShpOverrides" Checksum="yes" Source="$(var.MgSource)\Server\FDO\SHPOverrides.dll" />
               <File Id="ShpProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\SHPProvider.dll" />
           </Component>
           <!-- SQLite Provider -->
-          <Component Id="FdoSltProviderComponent" Guid="B08D37EF-BE05-486B-ACE5-E1C4CF15112E">
+          <Component Id="FdoSltProviderComponent" Win64="$(var.Win64)" Guid="B08D37EF-BE05-486B-ACE5-E1C4CF15112E">
               <File Id="SltProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\SQLiteProvider.dll" />
           </Component>
           <!-- SQL Server Spatial Provider -->
-          <Component Id="FdoSqlServerSpatialProviderComponent" Guid="C7BBA455-5885-4207-953E-C5C6455FF7FB">
+          <Component Id="FdoSqlServerSpatialProviderComponent" Win64="$(var.Win64)" Guid="C7BBA455-5885-4207-953E-C5C6455FF7FB">
               <File Id="SqlServerSpatialOverrides" Checksum="yes" Source="$(var.MgSource)\Server\FDO\SQLServerSpatialOverrides.dll" />
               <File Id="SqlServerSpatialProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\SQLServerSpatialProvider.dll" />
           </Component>
           <!-- WFS Provider -->
-          <Component Id="FdoWfsProviderComponent" Guid="FE44D851-BBE6-4D72-811F-0BAA1B81A29B">
+          <Component Id="FdoWfsProviderComponent" Win64="$(var.Win64)" Guid="FE44D851-BBE6-4D72-811F-0BAA1B81A29B">
               <File Id="WfsMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\WFSMessage.dll" />
               <File Id="WfsProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\WFSProvider.dll" />
           </Component>
           <!-- WMS Provider -->
-          <Component Id="FdoWmsProviderComponent" Guid="97C77CE8-4F97-49E3-B6D8-E4A40DB02190">
+          <Component Id="FdoWmsProviderComponent" Win64="$(var.Win64)" Guid="97C77CE8-4F97-49E3-B6D8-E4A40DB02190">
               <File Id="WmsMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\WMSMessage.dll" />
               <File Id="WmsOverrides" Checksum="yes" Source="$(var.MgSource)\Server\FDO\WMSOverrides.dll" />
               <File Id="WmsProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\WMSProvider.dll" />

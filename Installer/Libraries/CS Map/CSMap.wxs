@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?if "$(var.MgPlatform)" = "x64" ?>
+    <?define Win64 = "yes" ?>
+    <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+  <?else ?>
+     <?define Win64 = "no" ?>
+     <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+  <?endif ?>
 	<Fragment>
     <DirectoryRef Id="CsMapParentFolder">
       <Directory Id="CSMAPLOCATION" Name="CS-Map">
-        <Component Id="CsMapComponent" Guid="552EAF5E-2420-4C2A-A52C-62B456EE1F64">
+        <Component Id="CsMapComponent" Win64="$(var.Win64)" Guid="552EAF5E-2420-4C2A-A52C-62B456EE1F64">
           <CreateFolder />
           <Environment Id="CsMapEnvVar"
              Action="set"

@@ -2,11 +2,18 @@
 <Wix 
   xmlns="http://schemas.microsoft.com/wix/2006/wi"
   xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" >
+    <?if "$(var.MgPlatform)" = "x64" ?>
+      <?define Win64 = "yes" ?>
+      <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+    <?else ?>
+       <?define Win64 = "no" ?>
+       <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+    <?endif ?>
     <Fragment>
 
         <DirectoryRef Id="ServerParentFolder">
             <Directory Id="SERVERROOTLOCATION" Name="Server">
-                <Component Id="ServerPortConfigComponent" Guid="68F33B54-F8C2-4BF5-AD25-3E549C73075C" Feature="ServerFeature">
+                <Component Id="ServerPortConfigComponent" Win64="$(var.Win64)" Guid="68F33B54-F8C2-4BF5-AD25-3E549C73075C" Feature="ServerFeature">
                     <CreateFolder />
                     <IniFile Id="INISETSERVERADMINPORT"
                              Action="addLine"
@@ -32,7 +39,7 @@
                 </Component>
                 <Directory Id="SERVERBINLOCATION" Name="Bin" />
                 <Directory Id="SERVERLOGSLOCATION" Name="Logs">
-                    <Component Id="ServerLogsComponent" Guid="B8107569-201D-4FAC-B1B1-BB3AC7207782" Feature="ServerLogsFeature">
+                    <Component Id="ServerLogsComponent" Win64="$(var.Win64)" Guid="B8107569-201D-4FAC-B1B1-BB3AC7207782" Feature="ServerLogsFeature">
                         <CreateFolder />
                         <IniFile Id="INISETLOGPATH"
                                  Action="addLine"
@@ -44,7 +51,7 @@
                     </Component>
                 </Directory>
                 <Directory Id="SERVERPACKAGESLOCATION" Name="Packages">
-                    <Component Id="ServerPackagesComponent" Guid="58B60D26-35CB-4343-9854-EBC766C775B2" Feature="ServerPackagesFeature">
+                    <Component Id="ServerPackagesComponent" Win64="$(var.Win64)" Guid="58B60D26-35CB-4343-9854-EBC766C775B2" Feature="ServerPackagesFeature">
                         <CreateFolder />
                         <IniFile Id="INISETPACKAGESPATH"
                                  Action="addLine"
@@ -56,11 +63,11 @@
                     </Component>
                 </Directory>
                 <Directory Id="SERVERREPOSITORIESLOCATION" Name="Repositories">
-                    <Component Id="ServerRepositoriesComponent" Guid="2D89F4D5-4D13-434D-86DE-F34768DE46FA" Feature="ServerRepositoriesFeature">
+                    <Component Id="ServerRepositoriesComponent" Win64="$(var.Win64)" Guid="2D89F4D5-4D13-434D-86DE-F34768DE46FA" Feature="ServerRepositoriesFeature">
                         <CreateFolder />
                     </Component>
                     <Directory Id="SERVERREPOSITORIESLIBRARYLOCATION" Name="Library">
-                        <Component Id="ServerRepositoriesLibraryComponent" Guid="1ABDE417-D567-42cd-AC0F-78A7C444DB4A" Feature="ServerRepositoriesLibraryFeature">
+                        <Component Id="ServerRepositoriesLibraryComponent" Win64="$(var.Win64)" Guid="1ABDE417-D567-42cd-AC0F-78A7C444DB4A" Feature="ServerRepositoriesLibraryFeature">
                             <CreateFolder />
                             <IniFile Id="INISETREPOSITORIESLIBRARYPATH"
                                      Action="addLine"
@@ -71,7 +78,7 @@
                                      Value="[SERVERREPOSITORIESLIBRARYLOCATION]" />
                         </Component>
                         <Directory Id="SERVERREPOSITORIESLIBRARYDATAFILESLOCATION" Name="DataFiles">
-                            <Component Id="ServerRepositoriesLibraryDataFilesComponent" Guid="12998202-7FEE-448B-9371-42193B12EC7E" Feature="ServerRepositoriesLibraryFeature">
+                            <Component Id="ServerRepositoriesLibraryDataFilesComponent" Win64="$(var.Win64)" Guid="12998202-7FEE-448B-9371-42193B12EC7E" Feature="ServerRepositoriesLibraryFeature">
                                 <CreateFolder />
                                 <IniFile Id="INISETREPOSITORIESLIBRARYDATAFILESPATH"
                                      Action="addLine"
@@ -84,7 +91,7 @@
                         </Directory>
                     </Directory>
                     <Directory Id="SERVERREPOSITORIESSESSIONLOCATION" Name="Session">
-                        <Component Id="ServerRepositoriesSessionComponent" Guid="BB476765-5FA5-4CB0-AA63-1CCDE8867F7E" Feature="ServerRepositoriesSessionFeature">
+                        <Component Id="ServerRepositoriesSessionComponent" Win64="$(var.Win64)" Guid="BB476765-5FA5-4CB0-AA63-1CCDE8867F7E" Feature="ServerRepositoriesSessionFeature">
                             <CreateFolder/>
                             <IniFile Id="INISETREPOSITORIESSESSIONPATH"
                                    Action="addLine"
@@ -95,7 +102,7 @@
                                    Value="[SERVERREPOSITORIESSESSIONLOCATION]" />
                         </Component>
                         <Directory Id="SERVERREPOSITORIESSESSIONDATAFILESLOCATION" Name="DataFiles">
-                            <Component Id="ServerRepositoriesSessionDataFilesComponent" Guid="28C0B4C0-7516-43C5-94D4-8AAF4C0DB6EE"  Feature="ServerRepositoriesSessionFeature">
+                            <Component Id="ServerRepositoriesSessionDataFilesComponent" Win64="$(var.Win64)" Guid="28C0B4C0-7516-43C5-94D4-8AAF4C0DB6EE"  Feature="ServerRepositoriesSessionFeature">
                                 <CreateFolder />
                                 <IniFile Id="INISETREPOSITORIESSESSIONDATAFILESPATH"
                                      Action="addLine"
@@ -108,7 +115,7 @@
                         </Directory>
                     </Directory>
                     <Directory Id="SERVERREPOSITORIESSITELOCATION" Name="Site">
-                        <Component Id="ServerRepositoriesSiteComponent" Guid="FAD5C161-00B2-4A26-A0B1-9F82DE049E0B" Feature="ServerRepositoriesSiteFeature">
+                        <Component Id="ServerRepositoriesSiteComponent" Win64="$(var.Win64)" Guid="FAD5C161-00B2-4A26-A0B1-9F82DE049E0B" Feature="ServerRepositoriesSiteFeature">
                             <CreateFolder />
                             <IniFile Id="INISETREPOSITORIESSITEPATH"
                                    Action="addLine"
@@ -120,7 +127,7 @@
                         </Component>
                     </Directory>
                     <Directory Id="SERVERREPOSITORIESTILECACHELOCATION" Name="TileCache">
-                        <Component Id="ServerRepositoriesTileCacheComponent" Guid="902988DA-F9F8-4827-9CC0-63756A4BEE2E" Feature="ServerRepositoriesTileCacheFeature">
+                        <Component Id="ServerRepositoriesTileCacheComponent" Win64="$(var.Win64)" Guid="902988DA-F9F8-4827-9CC0-63756A4BEE2E" Feature="ServerRepositoriesTileCacheFeature">
                             <CreateFolder />
                             <IniFile Id="INISETREPOSITORIESTILECACHEPATH"
                                    Action="addLine"
@@ -133,7 +140,7 @@
                     </Directory>
                 </Directory>
                 <Directory Id="SERVERRESOURCESLOCATION" Name="Resources">
-                    <Component Id="ServerResourcesComponent" Guid="73D633D6-F358-4DED-A9A7-0A55B133F8EA">
+                    <Component Id="ServerResourcesComponent" Win64="$(var.Win64)" Guid="73D633D6-F358-4DED-A9A7-0A55B133F8EA">
                         <CreateFolder />
                         <IniFile Id="INISETRESOURCESPATH"
                                  Action="addLine"
@@ -145,7 +152,7 @@
                     </Component>
                 </Directory>
                 <Directory Id="SERVERSCHEMALOCATION" Name="Schema">
-                    <Component Id="ServerSchemaComponent" Guid="4839A32B-CB9F-4FCC-8F40-0139C8E1FB3A">
+                    <Component Id="ServerSchemaComponent" Win64="$(var.Win64)" Guid="4839A32B-CB9F-4FCC-8F40-0139C8E1FB3A">
                         <CreateFolder />
                         <IniFile Id="INISETSCHEMAPATH"
                                Action="addLine"
@@ -157,7 +164,7 @@
                     </Component>
                 </Directory>
                 <Directory Id="SERVERTEMPLOCATION" Name="Temp">
-                    <Component Id="ServerTempComponent" Guid="8FEBC0F2-A1CA-43D5-B7EF-C11907B9A67D" Feature="ServerTempFeature">
+                    <Component Id="ServerTempComponent" Win64="$(var.Win64)" Guid="8FEBC0F2-A1CA-43D5-B7EF-C11907B9A67D" Feature="ServerTempFeature">
                         <CreateFolder>
                           <util:PermissionEx User="Everyone" GenericAll="yes" />
                         </CreateFolder>
@@ -171,7 +178,7 @@
                     </Component>
                 </Directory>
                 <Directory Id="SERVERWFSLOCATION" Name="Wfs">
-                    <Component Id="ServerWfsComponent" Guid="A27AF9DB-C72E-477C-83BD-ECD40601C5FC">
+                    <Component Id="ServerWfsComponent" Win64="$(var.Win64)" Guid="A27AF9DB-C72E-477C-83BD-ECD40601C5FC">
                         <CreateFolder />
                         <IniFile Id="INISETWFSPATH"
                              Action="addLine"
@@ -183,7 +190,7 @@
                     </Component>
                 </Directory>
                 <Directory Id="SERVERWMSLOCATION" Name="Wms">
-                    <Component Id="ServerWmsComponent" Guid="AB35AD62-B06B-4D1D-90DB-FC8A6B49078F">
+                    <Component Id="ServerWmsComponent" Win64="$(var.Win64)" Guid="AB35AD62-B06B-4D1D-90DB-FC8A6B49078F">
                         <CreateFolder />
                         <IniFile Id="INISETWMSPATH"
                              Action="addLine"

@@ -2,9 +2,22 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:iis="http://schemas.microsoft.com/wix/IIsExtension"
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+    <?if "$(var.MgPlatform)" = "x64" ?>
+      <?define Win64 = "yes" ?>
+      <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+    <?else ?>
+       <?define Win64 = "no" ?>
+       <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+    <?endif ?>
     <Fragment>
         <Property Id="FRAMEWORKDIR">
-            <RegistrySearch Id="DotNetSearch" Root="HKLM" Key="Software\Microsoft\.NETFramework" Name="InstallRoot" Type="directory" />
+            <RegistrySearch
+            Id="DotNetSearch"
+            Root="HKLM"
+            Win64="$(var.Win64)"
+            Key="Software\Microsoft\.NETFramework"
+            Name="InstallRoot"
+            Type="directory" />
         </Property>
         <PropertyRef Id="MGWEB_CONFIG"/>
         <PropertyRef Id="IISVERSIONMAJOR"/>
@@ -36,7 +49,7 @@
         <Feature Id="IISSetupFeature" Level="1" Display="hidden" >
 
             <!-- IIS5 Base component -->
-            <Component Id="IIS5BaseMapGuideComponent" Guid="4174B322-8449-4299-813F-E2B1FCB4ECB4" Directory="WEBEXTENSIONSLOCATION">
+            <Component Id="IIS5BaseMapGuideComponent" Win64="$(var.Win64)" Guid="4174B322-8449-4299-813F-E2B1FCB4ECB4" Directory="WEBEXTENSIONSLOCATION">
                 <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#5&quot;</Condition>
                 <CreateFolder />
                 <iis:WebVirtualDir Id="IIS5MapGuideVDir" Alias="[VIRTUALDIR]" Directory="WEBROOTLOCATION" WebSite="IISDefaultWebSite">
@@ -64,7 +77,7 @@
             </Component>
 
             <!-- IIS5 PHP MapViewer component -->
-            <Component Id="IIS5PhpViewerComponent" Guid="1E56B410-1305-4406-BDFB-1252E159B746" Directory="WEBEXTENSIONSLOCATION">
+            <Component Id="IIS5PhpViewerComponent" Win64="$(var.Win64)" Guid="1E56B410-1305-4406-BDFB-1252E159B746" Directory="WEBEXTENSIONSLOCATION">
                 <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#5&quot;</Condition>
                 <CreateFolder />
                 <iis:WebVirtualDir Id="IIS5PhpViewerVDir" Alias="[VIRTUALDIR]/mapviewerajax" Directory="dir_mapviewerphp_0" WebSite="IISDefaultWebSite">
@@ -73,7 +86,7 @@
             </Component>
 
             <!-- IIS5 DotNet MapViewer component -->
-            <Component Id="IIS5DotNetViewerComponent" Guid="EC460125-D5D4-4596-BD03-B8D920F02E7F" Directory="WEBEXTENSIONSLOCATION">
+            <Component Id="IIS5DotNetViewerComponent" Win64="$(var.Win64)" Guid="EC460125-D5D4-4596-BD03-B8D920F02E7F" Directory="WEBEXTENSIONSLOCATION">
                 <Condition>NETFRAMEWORK20 AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#5&quot;</Condition>
                 <CreateFolder />
                 <iis:WebVirtualDir Id="IIS5DotNetViewerVDir" Alias="[VIRTUALDIR]/mapviewerajax" Directory="dir_mapviewernet_0" WebSite="IISDefaultWebSite">
@@ -83,14 +96,14 @@
             </Component>
             
             <!-- Trac #361 -->
-            <Component Id="PersistWebsiteSelection" Guid="0C0CBB26-C99B-486a-9367-15D49AC9726B" Directory="WEBEXTENSIONSLOCATION">
+            <Component Id="PersistWebsiteSelection" Win64="$(var.Win64)" Guid="0C0CBB26-C99B-486a-9367-15D49AC9726B" Directory="WEBEXTENSIONSLOCATION">
                 <RegistryKey Root="HKLM" Key="$(var.MgRegKey)">
                     <RegistryValue Name="MG_WEBSITE" Type="string" Value="[MG_WEBSITE]" />
                 </RegistryKey>
             </Component>
             
             <!-- IIS6 Base component -->
-            <Component Id="IIS6BaseMapGuideComponent" Guid="BC77760D-55D5-4111-BC1D-50CEC0482D60" Directory="WEBEXTENSIONSLOCATION">
+            <Component Id="IIS6BaseMapGuideComponent" Win64="$(var.Win64)" Guid="BC77760D-55D5-4111-BC1D-50CEC0482D60" Directory="WEBEXTENSIONSLOCATION">
                 <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Condition>
                 <CreateFolder />
                 <iis:WebAppPool Id="IIS6MapGuideAppPool" Name="[APP_POOL_NAME]" />
@@ -122,7 +135,7 @@
             </Component>
 
             <!-- IIS6 PHP MapViewer component -->
-            <Component Id="IIS6PhpViewerComponent" Guid="6CDC8E73-B6B1-4A2E-98E3-953C399D1D0D" Directory="WEBEXTENSIONSLOCATION">
+            <Component Id="IIS6PhpViewerComponent" Win64="$(var.Win64)" Guid="6CDC8E73-B6B1-4A2E-98E3-953C399D1D0D" Directory="WEBEXTENSIONSLOCATION">
                 <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Condition>
                 <CreateFolder />
                 <iis:WebVirtualDir Id="IIS6PhpViewerVDir" Alias="[VIRTUALDIR]/mapviewerajax" Directory="dir_mapviewerphp_0" WebSite="IISDefaultWebSite">
@@ -131,7 +144,7 @@
             </Component>
 
             <!-- IIS6 DotNet MapViewer component -->
-            <Component Id="IIS6DotNetViewerComponent" Guid="357E1C68-9E29-474F-A783-6F8FD8BCEAB4" Directory="WEBEXTENSIONSLOCATION">
+            <Component Id="IIS6DotNetViewerComponent" Win64="$(var.Win64)" Guid="357E1C68-9E29-474F-A783-6F8FD8BCEAB4" Directory="WEBEXTENSIONSLOCATION">
                 <Condition>NETFRAMEWORK20 AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Condition>
                 <CreateFolder />
                 <iis:WebVirtualDir Id="IIS6DotNetViewerVDir" Alias="[VIRTUALDIR]/mapviewerajax" Directory="dir_mapviewernet_0" WebSite="IISDefaultWebSite">

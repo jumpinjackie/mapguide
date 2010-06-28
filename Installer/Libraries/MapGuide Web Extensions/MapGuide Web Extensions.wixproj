@@ -14,12 +14,12 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug;MgRegKey=$(MgRegKey);MgSource=$(MgSource)</DefineConstants>
+    <DefineConstants>Debug;MgRegKey=$(MgRegKey);MgSource=$(MgSource);MgPlatform=$(MgPlatform)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>MgRegKey=$(MgRegKey);MgSource=$(MgSource)</DefineConstants>
+    <DefineConstants>MgRegKey=$(MgRegKey);MgSource=$(MgSource);MgPlatform=$(MgPlatform)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Apache.wxs" />

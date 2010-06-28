@@ -4,6 +4,13 @@
   xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
   xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension"
   >
+    <?if "$(var.MgPlatform)" = "x64" ?>
+      <?define Win64 = "yes" ?>
+      <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+    <?else ?>
+      <?define Win64 = "no" ?>
+      <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+    <?endif ?>
     <Product
            Id="*"
            UpgradeCode="5D9A7D8D-485E-43E0-A4C8-3582E4D80051"
@@ -23,6 +30,7 @@
             Id="MgWebConfigRs"
             Type="raw"
             Root="HKLM"
+            Win64="$(var.Win64)"
             Key="$(var.MgRegKey)"
             Name="MGWEB_CONFIG" />
         </Property>
@@ -32,6 +40,7 @@
             Id="IisApiTypeRs"
             Type="raw"
             Root="HKLM"
+            Win64="$(var.Win64)"
             Key="$(var.MgRegKey)"
             Name="IIS_API_TYPE"  />
         </Property>
@@ -60,6 +69,7 @@
             Id="MgWebsiteRs"
             Type="raw"
             Root="HKLM"
+            Win64="$(var.Win64)"
             Key="$(var.MgRegKey)"
             Name="MG_WEBSITE"  />
         </Property>
@@ -74,7 +84,13 @@
         <!-- we need to know what version of IIS is installed (if any) to see what options to offer during install UI, and
              which custom actions to run during installation -->
         <Property Id="IISVERSIONMAJOR" Value="#0" Secure="yes">
-            <RegistrySearch Id="SearchRegIISVERSIONMAJOR" Root="HKLM" Key="Software\Microsoft\InetStp" Name="MajorVersion" Type="raw" />
+            <RegistrySearch
+            Id="SearchRegIISVERSIONMAJOR"
+            Root="HKLM"
+            Win64="$(var.Win64)"
+            Key="Software\Microsoft\InetStp"
+            Name="MajorVersion"
+            Type="raw" />
         </Property>
 
         <Icon Id="OSGeo.ico" SourceFile="..\..\Support\Graphics\OSGeo.ico" />
@@ -82,7 +98,7 @@
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramMenuFolder" Name="Programs"/>
             <Directory Id="DesktopFolder" Name="Desktop"/>
-            <Directory Id="ProgramFilesFolder">
+            <Directory Id="$(var.PlatformProgramFilesFolder)">
                 <Directory Id="OSGeoFolder" Name="OSGeo">
                     <Directory Id="INSTALLLOCATION" Name="MapGuide">
                         <!-- These are "aliases", set in the individual feature libraries.-->

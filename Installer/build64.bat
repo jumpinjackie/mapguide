@@ -352,7 +352,7 @@ goto quit
 :generate
 echo [generate]: MapGuide Installer
 
-SET PARAFFIN=paraffin.exe -guids -direXclude .svn 
+SET PARAFFIN=paraffin.exe -Win64 -guids -direXclude .svn 
 
 SET WIX_INC_SERVER="%INSTALLER_DEV%\Libraries\MapGuide Server\FileIncludes"
 SET WIX_INC_WEB="%INSTALLER_DEV%\Libraries\MapGuide Web Extensions\FileIncludes"

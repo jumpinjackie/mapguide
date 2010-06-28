@@ -15,13 +15,13 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug;MgRegKey=$(MgRegKey);MgSource=$(MgSource)</DefineConstants>
+    <DefineConstants>Debug;MgRegKey=$(MgRegKey);MgSource=$(MgSource);MgPlatform=$(MgPlatform)</DefineConstants>
     <LibBindFiles>True</LibBindFiles>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>MgCulture=$(MgCulture);MgRegKey=$(MgRegKey);MgSource=$(MgSource)</DefineConstants>
+    <DefineConstants>MgCulture=$(MgCulture);MgRegKey=$(MgRegKey);MgSource=$(MgSource);MgPlatform=$(MgPlatform)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="FDO.wxs" />
