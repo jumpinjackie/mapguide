@@ -18,7 +18,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug;MgTitle=$(MgTitle);MgVersion=$(MgVersion);MgRegKey=$(MgRegKey);MgSource=$(MgSource)</DefineConstants>
+    <DefineConstants>Debug;MgTitle=$(MgTitle);MgVersion=$(MgVersion);MgRegKey=$(MgRegKey);MgSource=$(MgSource);MgPlatform=$(MgPlatform)</DefineConstants>
     <Cultures>$(MgCulture)</Cultures>
     <SuppressIces>ICE47</SuppressIces>
   </PropertyGroup>
@@ -27,7 +27,7 @@
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <SuppressValidation>False</SuppressValidation>
     <SuppressPdbOutput>True</SuppressPdbOutput>
-    <DefineConstants>MgTitle=$(MgTitle);MgVersion=$(MgVersion);MgRegKey=$(MgRegKey);MgSource=$(MgSource)</DefineConstants>
+    <DefineConstants>MgTitle=$(MgTitle);MgVersion=$(MgVersion);MgRegKey=$(MgRegKey);MgSource=$(MgSource);MgPlatform=$(MgPlatform)</DefineConstants>
     <Cultures>$(MgCulture)</Cultures>
     <SuppressIces>ICE47</SuppressIces>
   </PropertyGroup>

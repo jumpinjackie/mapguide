@@ -12,7 +12,7 @@
            Manufacturer="!(loc.ProductManufacturer)"
            Language="!(loc.LANG)" >
 
-        <Package InstallerVersion="300" Compressed="yes" />
+        <Package InstallerVersion="300" Compressed="yes" Platform="$(var.MgPlatform)" />
 
         <Media Id="1" Cabinet="MapGuideOpenSource.cab" EmbedCab="yes" CompressionLevel="none" />
 
