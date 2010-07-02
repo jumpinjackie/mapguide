@@ -5,7 +5,7 @@
     <Target Name="BuildBootstrapper">
         <GenerateBootstrapper
             ApplicationFile="$(TargetFile)"
-            ApplicationName="MapGuide Open Source 2.1"
+            ApplicationName="MapGuide Open Source"
             BootstrapperItems="@(BootstrapperFile)"
 			CopyComponents="true"
 			ComponentsLocation="Relative"

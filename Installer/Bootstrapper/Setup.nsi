@@ -42,8 +42,11 @@ Section Main
 	SetOverwrite On
 	File "${INSTALLER_OUTPUT}\${OUTNAME}.msi"
 	File "${INSTALLER_OUTPUT}\setup.exe"
+!if ${CPU} = "x64"
+	File /r "${INSTALLER_OUTPUT}\vcredist_x64"
+!else
 	File /r "${INSTALLER_OUTPUT}\vcredist_x86"
-	
+!endif
 	Banner::destroy
 	ExecWait '"$OUTDIR\setup.exe"'
 SectionEnd

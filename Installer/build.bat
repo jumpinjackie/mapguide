@@ -45,7 +45,7 @@ SET CPUTYPE=x86
 SET TYPEBUILD=Release
 SET CULTURE=en-US
 SET INSTALLER_VERSION_MAJOR_MINOR_REV=2.2.0
-SET INSTALLER_NAME=MapGuideOpenSource-%INSTALLER_VERSION_MAJOR_MINOR_REV%-Trunk-%CULTURE%-%TYPEBUILD%
+SET INSTALLER_NAME=MapGuideOpenSource-%INSTALLER_VERSION_MAJOR_MINOR_REV%-Trunk-%CULTURE%-%TYPEBUILD%-%CPUTYPE%
 SET INSTALLER_VERSION=%INSTALLER_VERSION_MAJOR_MINOR_REV%.0
 SET INSTALLER_TITLE="MapGuide Open Source 2.2 Trunk (%TYPEBUILD%)"
 SET MG_REG_KEY=Software\OSGeo\MapGuide\%INSTALLER_VERSION_MAJOR_MINOR_REV%
@@ -174,6 +174,7 @@ goto custom_error
 :start_build
 echo ===================================================
 echo Configuration is [%TYPEBUILD%]
+echo CPU type is: [%CPUTYPE%]
 echo Action is [%TYPEACTION%]
 echo CPU cores: %CPU_CORES%
 echo Installer Output Directory: %INSTALLER_OUTPUT%
@@ -405,7 +406,7 @@ set RUN_BUILD=%RUN_BUILD% Installer.sln
 if "%errorlevel%"=="1" goto error
 pushd "%INSTALLER_DEV_BOOTSTRAP%"
 echo [bootstrap]: Creating
-%MSBUILD% /p:TargetFile=%INSTALLER_NAME%.msi Bootstrap.proj
+%MSBUILD% /p:TargetFile=%INSTALLER_NAME%.msi Bootstrap-x86.proj
 popd
 if "%errorlevel%"=="1" goto error
 if "%MAX_COMPRESSION%"=="YES" goto build_max_compress
@@ -414,7 +415,7 @@ goto build_min_compress
 :build_min_compress
 pushd "%INSTALLER_DEV_BOOTSTRAP%"
 echo [bootstrap]: Create self-extracting package
-makensis /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DCULTURE=%CULTURE% /DMG_VERSION=%INSTALLER_VERSION% Setup.nsi
+makensis /DCPU=x86 /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DCULTURE=%CULTURE% /DMG_VERSION=%INSTALLER_VERSION% Setup.nsi
 popd
 if "%errorlevel%"=="1" goto error
 echo [build]: Installer created at %INSTALLER_OUTPUT%\%INSTALLER_NAME%.exe
@@ -423,7 +424,7 @@ goto quit
 :build_max_compress
 pushd "%INSTALLER_DEV_BOOTSTRAP%"
 echo [bootstrap]: Create self-extracting package (MAX compression)
-makensis /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DCULTURE=%CULTURE% /DMAXCOMPRESSION /DMG_VERSION=%INSTALLER_VERSION% Setup.nsi
+makensis /DCPU=x86 /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DCULTURE=%CULTURE% /DMAXCOMPRESSION /DMG_VERSION=%INSTALLER_VERSION% Setup.nsi
 popd
 if "%errorlevel%"=="1" goto error
 echo [build]: Installer created at %INSTALLER_OUTPUT%\%INSTALLER_NAME%.exe

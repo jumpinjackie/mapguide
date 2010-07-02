@@ -41,13 +41,12 @@ rem Command Line Option Defaults
 rem ==================================================
 
 SET TYPEACTION=build
-SET CPUTYPE=x64
 SET TYPEBUILD=Release64
 SET CONFIGURATION=Release
 SET PLATFORM=x64
 SET CULTURE=en-US
 SET INSTALLER_VERSION_MAJOR_MINOR_REV=2.2.0
-SET INSTALLER_NAME=MapGuideOpenSource-%INSTALLER_VERSION_MAJOR_MINOR_REV%-Trunk-%CULTURE%-%TYPEBUILD%
+SET INSTALLER_NAME=MapGuideOpenSource-%INSTALLER_VERSION_MAJOR_MINOR_REV%-Trunk-%CULTURE%-%TYPEBUILD%-%PLATFORM%
 SET INSTALLER_VERSION=%INSTALLER_VERSION_MAJOR_MINOR_REV%.0
 SET INSTALLER_TITLE="MapGuide Open Source 2.2 Trunk (%TYPEBUILD%)"
 SET MG_REG_KEY=Software\OSGeo\MapGuide\%INSTALLER_VERSION_MAJOR_MINOR_REV%
@@ -198,6 +197,7 @@ goto custom_error
 :start_build
 echo ===================================================
 echo Configuration is [%TYPEBUILD%]
+echo CPU type is: [%PLATFORM%]
 echo Action is [%TYPEACTION%]
 echo CPU cores: %CPU_CORES%
 echo Installer Output Directory: %INSTALLER_OUTPUT%
@@ -246,11 +246,11 @@ copy %INSTALLER_FDO_REG_UTIL%\%TYPEBUILD%\FdoRegUtil.exe %MG_SOURCE%\Server\FDO
 popd
 rem copy support files into server and web directories
 echo [prepare] Tomcat
-%XCOPY% "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\Tomcat" "%MG_SOURCE%\Web\Tomcat" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%INSTALLER_DEV%\Support\Web\%PLATFORM%\Tomcat" "%MG_SOURCE%\Web\Tomcat" /EXCLUDE:svn_excludes.txt
 echo [prepare] Php
-%XCOPY% "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\Php" "%MG_SOURCE%\Web\Php" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%INSTALLER_DEV%\Support\Web\%PLATFORM%\Php" "%MG_SOURCE%\Web\Php" /EXCLUDE:svn_excludes.txt
 echo [prepare] Apache2
-%XCOPY% "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\Apache2" "%MG_SOURCE%\Web\Apache2" /EXCLUDE:svn_excludes.txt
+%XCOPY% "%INSTALLER_DEV%\Support\Web\%PLATFORM%\Apache2" "%MG_SOURCE%\Web\Apache2" /EXCLUDE:svn_excludes.txt
 
 goto quit
 
@@ -422,14 +422,14 @@ goto quit
 
 :build
 echo [build]: Installer
-SET RUN_BUILD=%MSBUILD% /p:OutputName=%INSTALLER_NAME%;MgCulture=%CULTURE%;MgTitle=%INSTALLER_TITLE%;MgVersion=%INSTALLER_VERSION%;MgRegKey=%MG_REG_KEY%;MgPlatform=%CPUTYPE%
+SET RUN_BUILD=%MSBUILD% /p:OutputName=%INSTALLER_NAME%;MgCulture=%CULTURE%;MgTitle=%INSTALLER_TITLE%;MgVersion=%INSTALLER_VERSION%;MgRegKey=%MG_REG_KEY%;MgPlatform=%PLATFORM%
 if not ""=="%MG_SOURCE_INC%" set RUN_BUILD=%RUN_BUILD%;MgSource=%MG_SOURCE_INC%
 set RUN_BUILD=%RUN_BUILD% Installer.sln
 %RUN_BUILD% 
 if "%errorlevel%"=="1" goto error
 pushd "%INSTALLER_DEV_BOOTSTRAP%"
 echo [bootstrap]: Creating
-%MSBUILD% /p:TargetFile=%INSTALLER_NAME%.msi Bootstrap.proj
+%MSBUILD% /p:TargetFile=%INSTALLER_NAME%.msi Bootstrap-x64.proj
 popd
 if "%errorlevel%"=="1" goto error
 if "%MAX_COMPRESSION%"=="YES" goto build_max_compress
@@ -438,7 +438,7 @@ goto build_min_compress
 :build_min_compress
 pushd "%INSTALLER_DEV_BOOTSTRAP%"
 echo [bootstrap]: Create self-extracting package
-makensis /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DCULTURE=%CULTURE% /DMG_VERSION=%INSTALLER_VERSION% Setup.nsi
+makensis /DCPU=x64 /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DCULTURE=%CULTURE% /DMG_VERSION=%INSTALLER_VERSION% Setup.nsi
 popd
 if "%errorlevel%"=="1" goto error
 echo [build]: Installer created at %INSTALLER_OUTPUT%\%INSTALLER_NAME%.exe
@@ -447,7 +447,7 @@ goto quit
 :build_max_compress
 pushd "%INSTALLER_DEV_BOOTSTRAP%"
 echo [bootstrap]: Create self-extracting package (MAX compression)
-makensis /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DCULTURE=%CULTURE% /DMAXCOMPRESSION /DMG_VERSION=%INSTALLER_VERSION% Setup.nsi
+makensis /DCPU=x64 /DINSTALLER_ROOT=%INSTALLER_DEV% /DNSISDIR=%NSIS% /DOUTNAME=%INSTALLER_NAME% /DCULTURE=%CULTURE% /DMAXCOMPRESSION /DMG_VERSION=%INSTALLER_VERSION% Setup.nsi
 popd
 if "%errorlevel%"=="1" goto error
 echo [build]: Installer created at %INSTALLER_OUTPUT%\%INSTALLER_NAME%.exe
