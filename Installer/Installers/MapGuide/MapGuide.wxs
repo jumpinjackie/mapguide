@@ -741,6 +741,9 @@
                 Action="InstallApacheServiceCA"
                 Before="InstallFinalize">MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtApacheFeature&gt;2</Custom>
             <Custom
+                Action="StartApacheServiceCA"
+                After="InstallApacheServiceCA">MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtApacheFeature&gt;2</Custom>
+            <Custom
                 Action="MgServerInstallCA"
                 Before="InstallFinalize">&amp;ServerFeature&gt;2</Custom>
             <Custom

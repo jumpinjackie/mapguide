@@ -8,5 +8,6 @@
         <CustomAction Id="UpdatePhpIni" Return="check" BinaryKey="ApacheActions" Execute="deferred" DllEntry="UpdatePhpIni" />
         <CustomAction Id="RemoveApacheServiceCA" Execute="immediate" Return="ignore" FileKey="file_APACHEFILES_18" ExeCommand="-k uninstall -n &quot;ApacheMapGuide[MG_VERSION_MAJOR_MINOR]&quot;" />
         <CustomAction Id="InstallApacheServiceCA" Execute="deferred" Return="ignore" FileKey="file_APACHEFILES_18" ExeCommand="-k install -n &quot;ApacheMapGuide[MG_VERSION_MAJOR_MINOR]&quot;" />
+        <CustomAction Id="StartApacheServiceCA" Execute="deferred" Return="ignore" FileKey="file_APACHEFILES_18" ExeCommand="-k start -n &quot;ApacheMapGuide[MG_VERSION_MAJOR_MINOR]&quot;" />
 	</Fragment>
 </Wix>
