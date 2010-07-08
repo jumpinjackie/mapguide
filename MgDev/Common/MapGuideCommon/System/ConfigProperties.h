@@ -828,6 +828,22 @@ EXTERNAL_API:
     /// Disables Http operations used for OGC Wms
     static const STRING AgentDisableWms;                                /// value("DisableWms")
 
+    /// Agent error log enabled
+    static const STRING AgentErrorLogEnabled;                           /// value("ErrorLogEnabled")
+    static const bool DefaultAgentErrorLogEnabled;                      /// value(false)
+
+    /// Agent error log filename
+    static const STRING AgentErrorLogFilename;                          /// value("ErrorLogFilename")
+    static const STRING DefaultAgentErrorLogFilename;                   /// value("Error.log")
+
+    /// Agent request log enabled
+    static const STRING AgentRequestLogEnabled;                         /// value("RequestLogEnabled")
+    static const bool DefaultAgentRequestLogEnabled;                    /// value(false)
+
+    /// Agent error log filename
+    static const STRING AgentRequestLogFilename;                        /// value("RequestLogFilename")
+    static const STRING DefaultAgentRequestLogFilename;                 /// value("Request.log")
+
     /// OGC PROPERTIES SECTION -------------------------------------------------------------------------------------------
 
     /// Ogc properties

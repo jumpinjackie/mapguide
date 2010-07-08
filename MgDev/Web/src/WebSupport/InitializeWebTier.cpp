@@ -51,6 +51,16 @@ void MgInitializeWebTierInternal(CREFSTRING configFile)
 
         resources->Initialize(resourcesPath);
         resources->LoadResources(locale);
+
+        // Get the logs path
+        STRING path = L"";
+        config->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyLogsPath, path, MgConfigProperties::DefaultGeneralPropertyLogsPath);
+
+        // Check if path ends with a '/' if not, add one if needed
+        MgFileUtil::AppendSlashToEndOfPath(path);
+
+        // Try and create the directory. If it already exists this will error and not a problem
+        ACE_OS::mkdir(MG_WCHAR_TO_TCHAR(path));
     }
 
     m_bInitialized = true;
