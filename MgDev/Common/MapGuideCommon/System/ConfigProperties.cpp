@@ -481,6 +481,14 @@ const INT32  MgConfigProperties::DefaultAgentDebugPause                         
 const STRING MgConfigProperties::AgentDisableAuthoring                                      = L"DisableAuthoring";
 const STRING MgConfigProperties::AgentDisableWfs                                            = L"DisableWfs";
 const STRING MgConfigProperties::AgentDisableWms                                            = L"DisableWms";
+const STRING MgConfigProperties::AgentErrorLogEnabled                                       = L"ErrorLogEnabled";
+const bool   MgConfigProperties::DefaultAgentErrorLogEnabled                                = false;
+const STRING MgConfigProperties::AgentErrorLogFilename                                      = L"ErrorLogFilename";
+const STRING MgConfigProperties::DefaultAgentErrorLogFilename                               = L"Error.log";
+const STRING MgConfigProperties::AgentRequestLogEnabled                                     = L"RequestLogEnabled";
+const bool   MgConfigProperties::DefaultAgentRequestLogEnabled                              = false;
+const STRING MgConfigProperties::AgentRequestLogFilename                                    = L"RequestLogFilename";
+const STRING MgConfigProperties::DefaultAgentRequestLogFilename                             = L"Request.log";
 
 // ******************************************************************
 // OGC Properties
@@ -723,6 +731,10 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviAgentProperties[] =
     { MgConfigProperties::AgentDisableAuthoring                                     , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
     { MgConfigProperties::AgentDisableWfs                                           , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
     { MgConfigProperties::AgentDisableWms                                           , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::AgentErrorLogEnabled                                      , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::AgentErrorLogFilename                                     , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
+    { MgConfigProperties::AgentRequestLogEnabled                                    , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::AgentRequestLogFilename                                   , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 

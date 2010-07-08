@@ -37,6 +37,7 @@ public:
         STRING& paramName, STRING& paramType, MgHttpRequestParam* params, bool& bIsFile);
 
     static void DeleteTempFiles(MgHttpRequestParam* params);
+    static void LogRequest(CREFSTRING client, CREFSTRING clientIp, std::string &url, std::string &requestMethod, std::string &postData, std::string &query);
 };
 
 #endif

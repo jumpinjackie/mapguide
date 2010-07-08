@@ -25,15 +25,20 @@
 
 #define MG_HTTP_HANDLER_CATCH(methodName)                                     \
     MG_CATCH(methodName)                                                      \
+    MgHttpUtil::LogException(mgException);                                    \
 
 #define MG_HTTP_HANDLER_THROW()                                               \
+    MgHttpUtil::LogException(mgException);                                    \
     MG_THROW()                                                                \
 
 #define MG_HTTP_HANDLER_CATCH_AND_THROW(methodName)                           \
-    MG_CATCH_AND_THROW(methodName)                                            \
+    MG_CATCH(methodName)                                                      \
+    MgHttpUtil::LogException(mgException);                                    \
+    MG_THROW()                                                                \
 
 #define MG_HTTP_HANDLER_CATCH_AND_THROW_EX(methodName)                        \
     MG_CATCH(methodName)                                                      \
+    MgHttpUtil::LogException(mgException);                                    \
                                                                               \
     if (mgException != NULL)                                                  \
     {                                                                         \
@@ -48,6 +53,7 @@
 
 #define MG_HTTP_HANDLER_CATCH_AND_THROW_EX2(methodName, hResult, hRequest)    \
     MG_CATCH(methodName)                                                      \
+    MgHttpUtil::LogException(mgException);                                    \
                                                                               \
     if (mgException != NULL)                                                  \
     {                                                                         \
@@ -59,5 +65,14 @@
         (*mgException).AddRef();                                              \
         mgException->Raise();                                                 \
     }                                                                         \
+
+class MgHttpUtil
+{
+public:
+    MgHttpUtil();
+    ~MgHttpUtil();
+
+    static void LogException(MgException* exception);
+};
 
 #endif

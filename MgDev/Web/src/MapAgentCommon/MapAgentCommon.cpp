@@ -287,3 +287,54 @@ void MapAgentCommon::DeleteTempFiles(MgHttpRequestParam* params)
         }
     }
 }
+
+void MapAgentCommon::LogRequest(CREFSTRING client, CREFSTRING clientIp, std::string &url, std::string &requestMethod, std::string &postData, std::string &query)
+{
+    // Log request information
+    ACE_MT (ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance()));
+    static INT32 requestId = 1;
+
+    MgConfiguration* cfg = MgConfiguration::GetInstance();
+
+    // Is log enabled?
+    bool bLogEnabled = false;
+    cfg->GetBoolValue(MgConfigProperties::AgentPropertiesSection, MgConfigProperties::AgentRequestLogEnabled, bLogEnabled, MgConfigProperties::DefaultAgentRequestLogEnabled);
+
+    if(bLogEnabled)
+    {
+        // Get the logs path
+        STRING path = L"";
+        cfg->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyLogsPath, path, MgConfigProperties::DefaultGeneralPropertyLogsPath);
+
+        // Check if path ends with a '/' if not, add one if needed
+        MgFileUtil::AppendSlashToEndOfPath(path);
+
+        STRING filename = L"";
+        cfg->GetStringValue(MgConfigProperties::AgentPropertiesSection, MgConfigProperties::AgentRequestLogFilename, filename, MgConfigProperties::DefaultAgentRequestLogFilename);
+        filename = path + filename;
+
+        FILE* fp = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(filename), ACE_TEXT("a+"));
+        if (fp)
+        {
+            MgDateTime currentTime;
+            STRING strCurrentTime = currentTime.ToXmlString(false);
+
+            ACE_OS::fprintf(fp, ACE_TEXT("<%s> %d\t%s\t%s\t%s\t%s\n"), MG_WCHAR_TO_TCHAR(strCurrentTime), requestId, MG_WCHAR_TO_TCHAR(client), MG_WCHAR_TO_TCHAR(clientIp), MG_WCHAR_TO_TCHAR(MgUtil::MultiByteToWideChar(requestMethod)), MG_WCHAR_TO_TCHAR(MgUtil::MultiByteToWideChar(url)));
+
+            if (!postData.empty())  // NOXLATE
+            {
+                ACE_OS::fprintf(fp, ACE_TEXT(" Postdata: %s\n"), MG_WCHAR_TO_TCHAR(MgUtil::MultiByteToWideChar(postData)));
+            }
+
+            if (!query.empty())
+            {
+                ACE_OS::fprintf(fp, ACE_TEXT(" Query   : %s\n"), MG_WCHAR_TO_TCHAR(MgUtil::MultiByteToWideChar(query)));
+            }
+
+            ACE_OS::fclose(fp);
+        }
+    }
+
+    // Increment the request Id
+    requestId++;
+}
