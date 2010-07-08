@@ -345,16 +345,19 @@ bool IsLiteral(const wchar_t* str)
     // string must start with a single quote
     if (*str++ == sExprSingleQuote)
     {
-        while (*str != L'\0' && *str != sExprSingleQuote)
-            str++;
+        // make sure we have at least one more character
+        if (*str++ == L'\0')
+            return false;
+
+        // move to the end of the string
+        while (*str++ != L'\0');
+
+        // back up one character
+        str--;
 
         // string must have a matching closing single quote
-        if (*str++ == sExprSingleQuote)
-        {
-            // closing single quote must be the last character of the string
-            if (*str == L'\0')
-                return true;
-        }
+        if (*str == sExprSingleQuote)
+            return true;
     }
 
     return false;
