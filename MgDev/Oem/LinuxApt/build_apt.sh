@@ -123,7 +123,9 @@ echo Apache Httpd build started
 tar -zxf httpd-2.2.11.tar.gz
 pushd httpd-2.2.11
 ./configure --prefix=$INSTALLWEB/apache2 --enable-mods-shared=all \
---enable-ldap --with-ldap --enable-authnz-ldap --with-included-apr --with-port=$PORT
+--enable-cache --enable-mem-cache --enable-disk-cache --enable-file-cache \
+--enable-ldap --with-ldap --enable-authnz-ldap \
+--with-included-apr --with-port=$PORT
 check_apache_build
 make
 check_apache_build
