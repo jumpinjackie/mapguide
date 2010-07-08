@@ -119,24 +119,25 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
 
     // check for CLIENTIP, if it's not there (and it shouldn't be),
     // add it in using httpClientIp. httpXFF or remoteAddr
+    STRING clientIp = L"";
     if (!params->ContainsParameter(L"CLIENTIP")) // NOXLATE
     {
         if (bHttpClientIp && NULL != httpClientIp && strlen(httpClientIp) > 0
             && _stricmp(httpClientIp, MapAgentStrings::Unknown) != 0)
         {
-            STRING wHttpClientIp = MgUtil::MultiByteToWideChar(httpClientIp);
-            params->AddParameter(L"CLIENTIP", wHttpClientIp); // NOXLATE
+            clientIp = MgUtil::MultiByteToWideChar(httpClientIp);
+            params->AddParameter(L"CLIENTIP", clientIp); // NOXLATE
         }
         else if (bHttpXFF && NULL != httpXFF && strlen(httpXFF) > 0
             && _stricmp(httpXFF, MapAgentStrings::Unknown) != 0)
         {
-            STRING wHttpXFF = MgUtil::MultiByteToWideChar(httpXFF);
-            params->AddParameter(L"CLIENTIP", wHttpXFF); // NOXLATE
+            clientIp = MgUtil::MultiByteToWideChar(httpXFF);
+            params->AddParameter(L"CLIENTIP", clientIp); // NOXLATE
         }
         else if (bRemoteAddr && NULL != remoteAddr && strlen(remoteAddr) > 0)
         {
-            STRING wRemoteAddr = MgUtil::MultiByteToWideChar(remoteAddr);
-            params->AddParameter(L"CLIENTIP", wRemoteAddr); // NOXLATE
+            clientIp = MgUtil::MultiByteToWideChar(remoteAddr);
+            params->AddParameter(L"CLIENTIP", clientIp); // NOXLATE
         }
     }
 
@@ -153,6 +154,17 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
         pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::HttpRemoteUser, auth, &size);
         gotAuth = MapAgentCommon::ParseAuth(auth, params);
     }
+
+    // Log request information
+    string postData = "";
+    if (requestMethod && _stricmp(requestMethod, "POST") == 0)  // NOXLATE
+    {
+        // Get the post xml data
+        postData = params->GetXmlPostData();
+    }
+
+    STRING client = params->GetParameterValue(MgHttpResourceStrings::reqClientAgent);
+    MapAgentCommon::LogRequest(client, clientIp, url, std::string(requestMethod), postData, std::string(query));
 
     Ptr<MgPropertyCollection> paramList = params->GetParameters()->GetPropertyCollection();
     if (paramList != NULL)
