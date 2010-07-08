@@ -455,33 +455,6 @@ PUBLISHED_API:
     ///
     void RemoveComputedProperty(CREFSTRING aliasName);
 
-INTERNAL_API:
-
-    virtual ~MgFeatureQueryOptions();
-
-    MgStringCollection* GetClassProperties();
-    MgStringPropertyCollection* GetComputedProperties();
-    MgStringCollection* GetOrderingProperties();
-
-    STRING GetFilter();
-    bool GetBinaryOperator();
-
-    STRING GetGeometryProperty();
-    MgGeometry* GetGeometry();
-
-    INT32 GetOrderOption();
-    INT32 GetSpatialOperation();
-    INT32 GetFetchSize();
-
-    virtual void Serialize(MgStream* stream);
-    virtual void Deserialize(MgStream* stream);
-    STRING GetLogString();
-
-    virtual INT32 GetClassId() { return m_cls_id; }
-    virtual void Dispose() { delete this; }
-
-    void ValidateEmptyArgument(CREFSTRING value);
-
     //////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// For queries that return a large number of objects
@@ -511,6 +484,33 @@ INTERNAL_API:
     /// Returns nothing.
     ///
     void SetFetchSize(INT32 fetchSize);
+
+INTERNAL_API:
+
+    virtual ~MgFeatureQueryOptions();
+
+    MgStringCollection* GetClassProperties();
+    MgStringPropertyCollection* GetComputedProperties();
+    MgStringCollection* GetOrderingProperties();
+
+    STRING GetFilter();
+    bool GetBinaryOperator();
+
+    STRING GetGeometryProperty();
+    MgGeometry* GetGeometry();
+
+    INT32 GetOrderOption();
+    INT32 GetSpatialOperation();
+    INT32 GetFetchSize();
+
+    virtual void Serialize(MgStream* stream);
+    virtual void Deserialize(MgStream* stream);
+    STRING GetLogString();
+
+    virtual INT32 GetClassId() { return m_cls_id; }
+    virtual void Dispose() { delete this; }
+
+    void ValidateEmptyArgument(CREFSTRING value);
 
 private:
 
