@@ -611,6 +611,7 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
                 SE_RenderText* dt = new SE_RenderText();
                 rpc = dt;
 
+                dt->expression  = st->expression;
                 dt->content     = st->content;
                 dt->position[0] = st->position[0];
                 dt->position[1] = st->position[1];
