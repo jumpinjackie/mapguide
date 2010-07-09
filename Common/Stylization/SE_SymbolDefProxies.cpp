@@ -309,7 +309,8 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* ctx)
         ret->resizeControl = SE_ResizeControl_AdjustToResizeBox;
     else // default is ResizeNone
         ret->resizeControl = SE_ResizeControl_ResizeNone;
-
+    if(NULL != content.expression)
+        ret->expression  = content.expression->ToString();
     ret->content     = content.evaluate(ctx->exec);
     ret->position[0] = position[0].evaluate(ctx->exec);
     ret->position[1] = position[1].evaluate(ctx->exec);

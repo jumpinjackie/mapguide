@@ -142,6 +142,7 @@ struct SE_RenderText : public SE_RenderPrimitive
     }
 
     std::wstring content;
+    std::wstring expression;
     double position[2];
     RS_TextDef tdef;
     RS_TextMetrics tm;
