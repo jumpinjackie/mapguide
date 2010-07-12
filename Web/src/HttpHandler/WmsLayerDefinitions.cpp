@@ -268,6 +268,11 @@ bool MgWmsLayerDefinitions::LayerSupportsReferenceSystem(CPSZ pszLayerList,CPSZ 
     sSRS += pszSRS;
     sSRS += _("\"");
 
+    // WMS 1.3.0 spec changed "SRS" to "CRS"
+    STRING sCRS(_("CRS=\""));
+    sCRS += pszSRS;
+    sCRS += _("\"");
+
     // Gotta rewind things, in case somebody's already called us.
     Reset();
     while(Next()) {
@@ -286,7 +291,7 @@ bool MgWmsLayerDefinitions::LayerSupportsReferenceSystem(CPSZ pszLayerList,CPSZ 
                 CPSZ pszBounds = oLayerDefinitions[_("Layer.Bounds")];
                 if(pszBounds != NULL) {
                     STRING sBounds(pszBounds);
-                    if(sBounds.find(sSRS) != STRING::npos)
+                    if(sBounds.find(sSRS) != STRING::npos || sBounds.find(sCRS) != STRING::npos)
                         return true;
                 }
             }
