@@ -263,13 +263,13 @@ void MgOgcWmsServer::GetCapabilitiesResponse()
     // or we were unable to honor the requested format. So we try the
     // default format instead.
 
-    // Default mime type for version 1.1.0 and higher
-    CPSZ pszDefaultFormat = kpszMimeTypeApplicationWmsXml;
+    // Default mime type for version 1.0.0, 1.3.0 and higher
+    CPSZ pszDefaultFormat = kpszMimeTypeXml;
     CPSZ pszVersion = NegotiatedVersion();
-    if(pszVersion != NULL && SZ_EQI(pszVersion, _("1.0.0")))
+    if(pszVersion != NULL && (SZ_EQI(pszVersion, _("1.1.0")) || SZ_EQI(pszVersion, _("1.1.1"))))
     {
-        // Default mime type for 1.0.0 requests
-        pszDefaultFormat = kpszMimeTypeXml;
+        // Default mime type for 1.1.0 and 1.1.1 requests
+        pszDefaultFormat = kpszMimeTypeApplicationWmsXml;
     }
 
     // Make a request for the default format
