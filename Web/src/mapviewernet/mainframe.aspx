@@ -474,8 +474,8 @@ NameValueCollection cmds = null;
             frameset = Substitute(frameset, vals);
         }
 
-        String homePageUrl = taskPaneUrl;
-        if (String.Compare(homePageUrl.Substring(0, 7), "http://", true) != 0)
+        String homePageUrl = taskPane.GetInitialTaskUrl();
+        if (homePageUrl.Length < 8 || String.Compare(homePageUrl.Substring(0, 7), "http://", true) != 0)
             homePageUrl = vpath + homePageUrl;
 
         //load the HTML template and format it
