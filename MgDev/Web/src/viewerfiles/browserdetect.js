@@ -41,3 +41,14 @@ if(msieIndex != -1)
         msie6minus = true;
     }
 }
+
+function getAttributeNodeValue(obj,attr){
+    try 
+    {   
+        return (opera || chrome || firefox || safari3plus) ? obj.attributes[attr].nodeValue : obj[attr];
+    }
+    catch(e) 
+    {
+        return obj.attributes[attr].nodeValue;
+    } 
+}
