@@ -116,14 +116,14 @@ function OnEnterItem(obj)
     var bgcolor = "#dcdcdc";
     var color = "black";
 
-    var name = (chrome || firefox || safari3plus) ? obj.attributes["name"].nodeValue: obj.name;
+    var name = getAttributeNodeValue(obj,"name");
     try
     {
         owner.OnCommandSelected(name);
     }
     catch(e) {}
 
-    var enabled = ((chrome || firefox || safari3plus) ? obj.attributes["state"].nodeValue: obj.state) != "false";
+    var enabled = getAttributeNodeValue(obj,"state") != "false";
     if(!enabled)
     {
         bgcolor = "#f0f0f0";
@@ -150,7 +150,7 @@ function OnLeaveItem(obj)
         owner.OnCommandSelected(-1);
     } catch(e) {}
 
-    var enabled = ((chrome || firefox || safari3plus) ? obj.attributes["state"].nodeValue: obj.state) != "false";
+    var enabled = getAttributeNodeValue(obj,"state") != "false";
     if(!enabled)
     {
         bgcolor = "#f0f0f0";
@@ -239,7 +239,7 @@ function enableArrow(enabled, up)
 
 function OnClickItem(obj)
 {
-    var name = (chrome || firefox || safari3plus) ? obj.attributes["name"].nodeValue: obj.name;
+    var name = getAttributeNodeValue(obj,"name");
     try
     {
         owner.ExecuteCommand(name);
