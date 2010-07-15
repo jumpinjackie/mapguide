@@ -85,6 +85,7 @@ CPSZ kpszExceptionMessageMissingBoundingBox   = _("The bounding box for the map 
 CPSZ kpszExceptionMessageInvalidBoundingBox   = _("The bounding box for the map must be specified using four numerical values in the order: minX,minY,maxX,maxY. (Found BBOX=&Request.bbox;)"); // Localize
 CPSZ kpszExceptionMessageInvalidImageFormat   = _("The request uses an unsupported image format. (Found FORMAT=&Request.format;)"); // Localize
 CPSZ kpszExceptionMessageMissingImageFormat   = _("The request must contain a FORMAT parameter to specify the required image format."); // Localize
+CPSZ kpszExceptionMessageMissingInfoFormat    = _("The request must contain an INFO_FORMAT parameter to specify the format of feature information (MIME type)."); // Localize
 // END LOCALIZATION
 
 CPSZ kpszPiEnumLayers                      = _("EnumLayers");
@@ -616,6 +617,22 @@ bool MgOgcWmsServer::ValidateGetFeatureInfoParameters()
     // The ValidateMapParameters method will check that the map parameters in the
     // request are valid, and populate our list of queryable layers.
     bool bValid = ValidateMapParameters(queryableLayers);
+    if(bValid)
+    {
+        // INFO_FORMAT becomes a mandatory parameter since WMS1.3.0
+        STRING sVersion = RequestParameter(kpszQueryStringVersion);
+        // Note: lexical comparison, not numerical one;
+        if(!sVersion.empty() && sVersion >= _("1.3.0"))
+        {
+            CPSZ pszFormat = RequestParameter(kpszQueryStringInfoFormat);
+            if(pszFormat == NULL)
+            {
+                ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszMissingInfoFormat,
+                                                         kpszExceptionMessageMissingInfoFormat));
+                bValid = false;
+            }
+        }
+    }
     if(bValid)
     {
         // Make sure we have a query point specified by I and J parameters
