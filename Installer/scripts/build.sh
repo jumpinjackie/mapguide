@@ -10,11 +10,10 @@ SVNROOT="svn://svn.bld.mgproto.net"
 rm -rf ${MGSOURCE}
 rm -rf ${INSTALLROOT}
 
-REVISION=`svn info ${SVNROOT}/mapguide/trunk/MgDev | perl revnum.pl`
+REVISION=`svn info ${SVNROOT}/mapguide/branches/2.2/MgDev | perl revnum.pl`
+echo ${REVISION} > revnum.txt
 echo "Building Revision ${BUILDNUM}.${REVISION}" 
-svn export -r ${REVISION} ${SVNROOT}/mapguide/trunk/MgDev ${MGSOURCE}
-svn export ${SVNROOT}/metacrs/csmap/trunk/CsMapDev ${MGSOURCE}/Oem/CsMap
-svn export ${SVNROOT}/fusion/trunk ${MGSOURCE}/Oem/fusion
+svn export -r ${REVISION} ${SVNROOT}/mapguide/branches/2.2/MgDev ${MGSOURCE}
 
 cd ${MGSOURCE}
 
@@ -61,5 +60,5 @@ pushd ${BUILDROOT}
 if [ ! -d bin ]; then
    mkdir -p bin
 fi
-tar -zcf bin/mapguideopensource-${BUILDNUM}.${REVISION}.tgz ${INSTALLROOT} ${LOCKFILEDIR}
+tar -zcf bin/mapguideopensource-${BUILDNUM}.${REVISION}.tar.gz ${INSTALLROOT} ${LOCKFILEDIR}
 popd
