@@ -607,7 +607,14 @@
           <!-- IIS7 Base deferred CAs -->
             <Custom Action="MapGuideIIS7_I_CreateAppPool" After="InstallFiles">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_SetAppPoolProp" After="MapGuideIIS7_I_CreateAppPool">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            
+            <?if "$(var.MgPlatform)" = "x64" ?>
             <Custom Action="MapGuideIIS7_I_UnlockSrvHandlers" After="MapGuideIIS7_I_SetAppPoolProp">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <?else ?>
+            <Custom Action="MapGuideIIS7_I_Set32BitAppPool" After="MapGuideIIS7_I_SetAppPoolProp">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockSrvHandlers" After="MapGuideIIS7_I_Set32BitAppPool">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <?endif ?>
+            
             <Custom Action="MapGuideIIS7_I_UnlockSiteHandlers" After="MapGuideIIS7_I_UnlockSrvHandlers">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_CreateMapGuideApp" After="MapGuideIIS7_I_UnlockSiteHandlers">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_CreatePhpScriptMapping" After="MapGuideIIS7_I_CreateMapGuideApp">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
@@ -752,8 +759,27 @@
             <Custom
                 Action="RemoveApacheServiceCA"
                 Before="RemoveFiles">MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtApacheFeature=2</Custom>
-            <!-- 502 = Windows Server 2003 -->
-            <ScheduleReboot After="InstallFinalize">VersionNT&lt;502 AND NOT Installed AND &amp;CSMapFeature&gt;2</ScheduleReboot> 
+
+            <!--
+            64-bit IIS requires a machine reboot in order for MENTOR_DICTIONARY_PATH to be picked up by the Web Extensions
+            
+            You can technically avoid this reboot by using IIS environment variable overrides as described here:
+            http://www.teachout.com/Blog/tabid/165/EntryId/246/Windows-Environment-Variables-Overrides-for-IIS6.aspx
+            
+            If you follow this approach, just say "no" at the reboot prompt.
+            
+            Read the below condition as:
+            
+            REBOOT if:
+                (("Configuration is IIS" AND "This is a 64-bit windows") OR ("Windows XP or older"))
+                AND "Not installed" AND "CS-Map is freshly installed"
+            
+            The 64-bit condition is tested first before the "Windows XP or older" condition
+            
+            502 is the VersionNT value for Windows Server 2003
+            
+            -->
+            <ScheduleReboot After="InstallFinalize">((VersionNT64 AND MGWEB_CONFIG=&quot;IIS&quot;) OR VersionNT&lt;502) AND NOT Installed AND &amp;CSMapFeature&gt;2</ScheduleReboot> 
         </InstallExecuteSequence>
     </Product>
 </Wix>
