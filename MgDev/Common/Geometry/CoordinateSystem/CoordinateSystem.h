@@ -58,6 +58,10 @@ PUBLISHED_API:
     virtual STRING GetEllipsoid()=0;  /// __get
     virtual STRING GetEllipsoidDescription()=0;  /// __get
 
+    virtual INT32 GetEpsgCode (void)=0;  /// __get
+    virtual INT32 GetSridCode (void)=0;  /// __get
+    virtual INT16 GetEpsgQuadrant (void)=0;   /// __get
+
     virtual MgCoordinateSystemMeasure* GetMeasure()=0;
     virtual MgStringCollection* GetCategories()=0;
     virtual MgCoordinateSystemCatalog* GetCatalog()=0;

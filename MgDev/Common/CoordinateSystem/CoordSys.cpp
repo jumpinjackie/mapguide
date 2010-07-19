@@ -1268,7 +1268,37 @@ STRING CCoordinateSystem::GetEllipsoidDescription()
     }
     return m_pEllipsoid->GetDescription();
 }
-
+/////////////////////////////////////////////////////////////////
+/// <summary>
+/// Returns the EPSG code for this system, else zero.
+/// </summary>
+INT32 CCoordinateSystem::GetEpsgCode (void)
+{
+     return static_cast<INT32>(m_csprm.csdef.epsgNbr);
+}
+/////////////////////////////////////////////////////////////////
+/// <summary>
+/// Returns the Oracle SRID code for this system, else zero.
+/// </summary>
+INT32 CCoordinateSystem::GetSridCode (void)
+{
+     return static_cast<INT32>(m_csprm.csdef.srid);
+}
+/////////////////////////////////////////////////////////////////
+/// <summary>
+/// Returns the quadrant specification in the EPSG data set for
+/// this definition.  The returned value is zero if the system
+/// does not have an EPSG equivalent.  The format of the
+/// returned value is in the same form as the CS-MAP quad value,
+/// but the value may be different.  CS-MAP definitions often
+/// ignore the swapping of axes as is indicated in the EPSG
+/// database.  Not doing so produces rotated and mirroed displays
+/// which are _NOT_ what the customer desires or expects.
+/// </summary>
+INT16 CCoordinateSystem::GetEpsgQuadrant (void)
+{
+     return static_cast<INT16>(m_csprm.csdef.epsg_qd);
+}
 ///////////////////////////////////////////////////////////////////////////
 MgStringCollection* CCoordinateSystem::GetCategories()
 {
@@ -3025,7 +3055,7 @@ void CCoordinateSystem::SetProjectionDefaults()
     }
     m_csprm.csdef.quad = 1;
     m_csprm.csdef.order = m_csprm.csdef.zones = 0;
-    m_csprm.csdef.auto_geoid = m_csprm.csdef.elev_tech = 0;
+    m_csprm.csdef.epsgNbr = m_csprm.csdef.srid = m_csprm.csdef.epsg_qd = 0;
 
     //Set defaults specifically according to the current projection
     //type.  If the current projection type is undefined, set to zero.
