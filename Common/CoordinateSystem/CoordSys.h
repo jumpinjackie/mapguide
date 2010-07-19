@@ -72,6 +72,10 @@ public:
     virtual STRING GetEllipsoid();  /// __get
     virtual STRING GetEllipsoidDescription();  /// __get
 
+    virtual INT32 GetEpsgCode (void);  /// __get
+    virtual INT32 GetSridCode (void);  /// __get
+    virtual INT16 GetEpsgQuadrant (void);   /// __get
+
     virtual MgCoordinateSystemMeasure* GetMeasure();
     virtual MgStringCollection* GetCategories();
     virtual MgCoordinateSystemCatalog* GetCatalog();
