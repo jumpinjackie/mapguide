@@ -200,11 +200,24 @@ class MgLogThread;
         operationMessage += L"false"; \
     }
 
+#ifdef _DEBUG
+#define MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY() \
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) %W\n"), operationMessage.c_str())); \
+    MG_LOG_ACCESS_ENTRY(operationMessage.c_str(), connInfoClient.c_str(), connInfoClientIp.c_str(), connInfoUserName.c_str());
+#else
 #define MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY() \
     MG_LOG_ACCESS_ENTRY(operationMessage.c_str(), connInfoClient.c_str(), connInfoClientIp.c_str(), connInfoUserName.c_str());
+#endif
 
+#ifdef _DEBUG
+#define MG_LOG_OPERATION_MESSAGE_ADMIN_ENTRY() \
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) %W\n"), operationMessage.c_str())); \
+    MG_LOG_ADMIN_ENTRY(operationMessage.c_str(), connInfoClient.c_str(), connInfoClientIp.c_str(), connInfoUserName.c_str());
+#else
 #define MG_LOG_OPERATION_MESSAGE_ADMIN_ENTRY() \
     MG_LOG_ADMIN_ENTRY(operationMessage.c_str(), connInfoClient.c_str(), connInfoClientIp.c_str(), connInfoUserName.c_str());
+#endif
+
 
 #define MG_CONNECTION_INFO \
     STRING connInfoClient = L""; \
