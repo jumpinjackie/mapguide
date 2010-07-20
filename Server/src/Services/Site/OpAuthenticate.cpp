@@ -54,12 +54,16 @@ void MgOpAuthenticate::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpAuthenticate::Execute()\n")));
 
-    // Disabled logging this operation because it is called very often
-//  MG_LOG_OPERATION_MESSAGE(L"Authenticate");
+    // Only log this operation for DEBUG builds because it is called very often
+#ifdef _DEBUG
+    MG_LOG_OPERATION_MESSAGE(L"Authenticate");
+#endif
 
     MG_SITE_SERVICE_TRY()
 
-//  MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
+#ifdef _DEBUG
+    MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
+#endif
 
     ACE_ASSERT(m_stream != NULL);
 
@@ -74,14 +78,15 @@ void MgOpAuthenticate::Execute()
 
         BeginExecution();
 
-//      MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-//      MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgUserInformation");
-//      MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-//      MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgStringCollection");
-//      MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-//      MG_LOG_OPERATION_MESSAGE_ADD_BOOL(returnAssignedRoles);
-//      MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
-
+#ifdef _DEBUG
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgUserInformation");
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgStringCollection");
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_BOOL(returnAssignedRoles);
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+#endif
         // Validate() not called here since this is the operation that performs authentication.
 
         Ptr<MgStringCollection> assignedRoles = m_service->Authenticate(userInfo,
@@ -91,8 +96,10 @@ void MgOpAuthenticate::Execute()
     }
     else
     {
-//      MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-//      MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+#ifdef _DEBUG
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+#endif
     }
 
     if (!m_argsRead)
@@ -102,18 +109,24 @@ void MgOpAuthenticate::Execute()
     }
 
     // Successful operation
-//  MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+#ifdef _DEBUG
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+#endif
 
     MG_SITE_SERVICE_CATCH(L"MgOpAuthenticate.Execute")
 
     if (mgException != NULL)
     {
         // Failed operation
-//      MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+#ifdef _DEBUG
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+#endif
     }
 
     // Add admin log entry for operation
-//  MG_LOG_OPERATION_MESSAGE_ADMIN_ENTRY();
+#ifdef _DEBUG
+    MG_LOG_OPERATION_MESSAGE_ADMIN_ENTRY();
+#endif
 
     MG_SITE_SERVICE_THROW()
 }
