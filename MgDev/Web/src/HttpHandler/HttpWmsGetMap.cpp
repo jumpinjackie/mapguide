@@ -100,6 +100,10 @@ void MgHttpWmsGetMap::InitializeRequestParameters(MgOgcWmsServer& oServer)
     // Get the requested styles
     m_bbox = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsBbox);
 
+    if(m_version >= _("1.3.0"))
+    {
+        MgWmsMapUtil::ProcessBoundingBoxAxes(m_crs,m_bbox);
+    }
     // Get width and convert to integer
     STRING sParameter;
     sParameter = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsWidth);

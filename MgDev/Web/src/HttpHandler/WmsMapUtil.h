@@ -41,6 +41,12 @@ public:
     static void SrsToWktMapping(MgOgcServer& oWms,STRING sSrs,REFSTRING sWkt);
     // Converts srs (ostensibly an "EPSG:xxxx" string) into WKT.
     static bool UserDefinedSrsToWktMapping(MgOgcServer& oWms,STRING sSrs,REFSTRING sWkt);
+    // Handle the CRS(SRS) which have their axis orientation changed
+    static void ProcessBoundingBoxAxes(STRING sSrs,REFSTRING bbox);
+    // Help method to swap coordinates in boundingbox
+    static void SwapCoords(double(& coord)[4]);
+    // Help method to make coordinates about-turn
+    static void ReverseCoords(double& coord1, double& coord2);
 };
 
 #endif  // _FS_WMS_MAP_UTIL_H

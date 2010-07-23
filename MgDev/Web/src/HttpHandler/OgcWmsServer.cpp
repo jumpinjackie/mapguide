@@ -557,7 +557,18 @@ bool MgOgcWmsServer::ValidateMapParameters(MgStringCollection* queryableLayers)
         }
         else
         {
-            Ptr<MgStringCollection> bboxParams = MgStringCollection::ParseCollection(bbox, _(","));
+            STRING sVersion = RequestParameter(kpszQueryStringVersion);
+            STRING sBBox(bbox);
+            if(sVersion >= _("1.3.0"))
+            {
+                CPSZ crs = RequestParameter(kpszQueryStringCrs);
+                if(crs == NULL || szlen(crs) == 0)
+                {
+                    crs = RequestParameter(kpszQueryStringSrs);
+                }
+                MgWmsMapUtil::ProcessBoundingBoxAxes(crs,sBBox);
+            }
+            Ptr<MgStringCollection> bboxParams = MgStringCollection::ParseCollection(sBBox, _(","));
             if(bboxParams != NULL && bboxParams->GetCount() == 4)
             {
                 double minX = MgUtil::StringToDouble(bboxParams->GetItem(0));

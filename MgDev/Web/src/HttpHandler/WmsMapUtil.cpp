@@ -220,6 +220,83 @@ bool MgWmsMapUtil::UserDefinedSrsToWktMapping(MgOgcServer& oWms,STRING sSrs,REFS
     return (oWms.MapValue(_("SRS.WKT.map"),sSrs.c_str(),sWkt));
 }
 
+void MgWmsMapUtil::ProcessBoundingBoxAxes(STRING sSrs,REFSTRING bbox)
+{
+    if(sSrs.empty() || bbox.empty())
+        return;
+
+    Ptr<MgCoordinateSystemFactory> factory = new MgCoordinateSystemFactory();
+    STRING wkt = factory->ConvertCoordinateSystemCodeToWkt(sSrs);
+    Ptr<MgCoordinateSystem> cs = factory->Create(wkt);
+
+    INT16 quadrant = cs->GetEpsgQuadrant();
+
+    //X increases to the East,  Y increases to the North 
+    if(0 == quadrant || 1 == quadrant)
+        return;
+
+    Ptr<MgStringCollection> bounds = MgStringCollection::ParseCollection(bbox, L",");
+    if(bounds->GetCount() == 4)
+    {
+        double coords[4];
+        for(INT32 i = 0; i < bounds->GetCount(); i++)
+        {
+            coords[i] = MgUtil::StringToDouble(bounds->GetItem(i));
+        }
+        
+        switch(quadrant)
+        {
+            //X increases to the West,  Y increases to the North
+            case 2: 
+                ReverseCoords(coords[0],coords[2]);
+                break;
+            //X increases to the West,  Y increases to the South
+            case 3:
+                ReverseCoords(coords[0],coords[2]);
+                ReverseCoords(coords[1],coords[3]);
+                break;
+            //X increases to the East,  Y increases to the South
+            case 4:
+                ReverseCoords(coords[1],coords[3]);
+                break;
+            //X increases to the North, Y increases to the East
+            case -1:
+                SwapCoords(coords);
+                break;
+            //X increases to the North, Y increases to the West
+            case -2:
+                SwapCoords(coords);
+                ReverseCoords(coords[0],coords[2]);
+                break;
+            //X increases to the South, Y increases to the West
+            case -3:
+                SwapCoords(coords);
+                ReverseCoords(coords[0],coords[2]);
+                ReverseCoords(coords[1],coords[3]);
+                break;
+            //X increases to the South, Y increases to the East
+            case -4:
+                SwapCoords(coords);
+                ReverseCoords(coords[1],coords[3]);
+                break;
+            //X increases to the East,  Y increases to the North
+            case 1:
+            case 0:
+            default:
+                break;
+        }
+       
+        bbox.clear();
+        for(INT32 i=0;i<4;i++)
+        {
+            STRING doubleStr;
+            MgUtil::DoubleToString(coords[i], doubleStr);
+            bbox.append(doubleStr);
+            if(i != 3)
+                bbox.append(_(","));
+        }
+    }
+}
 /*
 STRING MgWmsMapUtil::SrsToWkt(CREFSTRING srs)
 {
@@ -227,4 +304,19 @@ STRING MgWmsMapUtil::SrsToWkt(CREFSTRING srs)
     return srsMappings[srs];
 }
 */
+void MgWmsMapUtil::SwapCoords(double(& coord)[4])
+{
+    double temp = coord[0];
+    coord[0] = coord[1];
+    coord[1] = temp;
 
+    temp = coord[2];
+    coord[2] = coord[3];
+    coord[3] = temp;
+}
+
+void MgWmsMapUtil::ReverseCoords(double& coord1, double& coord2)
+{
+    coord1 = 0.0- coord1;
+    coord2 = 0.0- coord2;
+}
