@@ -77,6 +77,10 @@ void MgHttpWmsGetFeatureInfo::InitializeRequestParameters(MgOgcWmsServer& oServe
 
     // Get the requested bounds
     m_bbox = GetRequestParameter(oServer,MgHttpResourceStrings::reqWmsBbox);
+    if(m_version >= _("1.3.0"))
+    {
+        MgWmsMapUtil::ProcessBoundingBoxAxes(m_crs,m_bbox);
+    }
 
     // Get width and convert to integer
     m_width = GetRequestParameterInt32(oServer,MgHttpResourceStrings::reqWmsWidth);
