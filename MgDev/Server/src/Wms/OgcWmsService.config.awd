@@ -190,6 +190,10 @@ table {
    <item>application/vnd.ogc.se_blank</item>
    <item>text/html</item>
    <item>text/plain</item>
+   <item>XML</item>
+   <item>INIMAGE</item>
+   <item>BLANK</item>
+
  </Define>
 
 
