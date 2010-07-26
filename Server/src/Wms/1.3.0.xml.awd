@@ -396,7 +396,7 @@
   Exception format - XML
 
 -->
-<Response request="Exception" content-type="text/xml">
+<Response request="Exception" content-type="XML">
 <ServiceExceptionReport version="&TemplateVersion;">
  <ServiceException code="&Exception.Type;">
   &Exception.message;
