@@ -423,10 +423,6 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
         {
             SE_RenderText* tp = (SE_RenderText*)primitive;
 
-            // skip text elements which are empty
-            if (tp->content.length() == 0)
-                continue;
-
             // update the extents with this primitive's bounds
             for (int j=0; j<4; ++j)
                 extents.add_point(primitive->bounds[j]);

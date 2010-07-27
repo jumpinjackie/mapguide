@@ -350,7 +350,8 @@ bool IsLiteral(const wchar_t* str)
             return false;
 
         // move to the end of the string
-        while (*str++ != L'\0');
+        while (*str != L'\0')
+            str++;
 
         // back up one character
         str--;

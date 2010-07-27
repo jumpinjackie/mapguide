@@ -300,6 +300,11 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* ctx)
     if (ctx->fonte == NULL)
         return NULL;
 
+    // don't bother creating a primitive if there's no content
+    const wchar_t* contentStr = content.evaluate(ctx->exec);
+    if (wcslen(contentStr) == 0)
+        return NULL;
+
     SE_RenderText* ret = new SE_RenderText();
 
     const wchar_t* sResizeCtrl = resizeControl.evaluate(ctx->exec);
@@ -311,7 +316,7 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* ctx)
         ret->resizeControl = SE_ResizeControl_ResizeNone;
     if(NULL != content.expression)
         ret->expression  = content.expression->ToString();
-    ret->content     = content.evaluate(ctx->exec);
+    ret->content     = contentStr;
     ret->position[0] = position[0].evaluate(ctx->exec);
     ret->position[1] = position[1].evaluate(ctx->exec);
 
