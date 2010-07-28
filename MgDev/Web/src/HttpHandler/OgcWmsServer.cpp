@@ -86,6 +86,7 @@ CPSZ kpszExceptionMessageInvalidBoundingBox   = _("The bounding box for the map 
 CPSZ kpszExceptionMessageInvalidImageFormat   = _("The request uses an unsupported image format. (Found FORMAT=&Request.format;)"); // Localize
 CPSZ kpszExceptionMessageMissingImageFormat   = _("The request must contain a FORMAT parameter to specify the required image format."); // Localize
 CPSZ kpszExceptionMessageMissingInfoFormat    = _("The request must contain an INFO_FORMAT parameter to specify the format of feature information (MIME type)."); // Localize
+CPSZ kpszExceptionMessageMissingVersion       = _("The request must contain a VERSION parameter to specify the WMS version."); // Localize
 // END LOCALIZATION
 
 CPSZ kpszPiEnumLayers                      = _("EnumLayers");
@@ -350,36 +351,48 @@ bool MgOgcWmsServer::ValidateMapParameters(MgStringCollection* queryableLayers)
 {
     bool bValid = true;
 
+    //  Search for a VERSION= parameter
+    STRING version = GetRequestVersion();
+    if(version.empty())
+    {
+        ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszMissingVersion,
+                                       kpszExceptionMessageMissingVersion));
+        bValid = false;
+    }
+
     //
     //  Search for a FORMAT= parameter, and verify that its value is supported.
     //
     CPSZ imageFormat = RequestParameter(kpszQueryStringFormat);
-    if(imageFormat != NULL && szlen(imageFormat) > 0)
+    if(bValid)
     {
-        // We're expecting a supported formats definition.  There's a hard-coded
-        // default, but the templates can also define one.
-        CPSZ pszMap = this->Definition(kpszDefineSupportedFormats);
-        if(pszMap) {
-            MgXmlParser Xml(pszMap);
-            STRING sTo;
-            if(!MapValue(Xml,imageFormat,sTo) || sTo.length() == 0) {
-                ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszInvalidFormat,
-                                                                 kpszExceptionMessageInvalidImageFormat));
+        if(imageFormat != NULL && szlen(imageFormat) > 0)
+        {
+            // We're expecting a supported formats definition.  There's a hard-coded
+            // default, but the templates can also define one.
+            CPSZ pszMap = this->Definition(kpszDefineSupportedFormats);
+            if(pszMap) {
+                MgXmlParser Xml(pszMap);
+                STRING sTo;
+                if(!MapValue(Xml,imageFormat,sTo) || sTo.length() == 0) {
+                    ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszInvalidFormat,
+                                                                     kpszExceptionMessageInvalidImageFormat));
+                    bValid = false;
+                }
+            }
+            else {
+                this->m_pTopOfDefinitions->AddDefinition(kpszDefinitionInitServerError,kpszDefineSupportedFormats);
+                InternalError(kpszInternalErrorMissingDefinition);
                 bValid = false;
             }
         }
-        else {
-            this->m_pTopOfDefinitions->AddDefinition(kpszDefinitionInitServerError,kpszDefineSupportedFormats);
-            InternalError(kpszInternalErrorMissingDefinition);
+        else
+        {
+            // The required FORMAT parameter is missing
+            ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszInvalidFormat,
+                                                             kpszExceptionMessageMissingImageFormat));
             bValid = false;
         }
-    }
-    else
-    {
-        // The required FORMAT parameter is missing
-        ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszInvalidFormat,
-                                                         kpszExceptionMessageMissingImageFormat));
-        bValid = false;
     }
 
     //
@@ -557,9 +570,8 @@ bool MgOgcWmsServer::ValidateMapParameters(MgStringCollection* queryableLayers)
         }
         else
         {
-            STRING sVersion = RequestParameter(kpszQueryStringVersion);
             STRING sBBox(bbox);
-            if(sVersion >= _("1.3.0"))
+            if(version >= _("1.3.0"))
             {
                 CPSZ crs = RequestParameter(kpszQueryStringCrs);
                 if(crs == NULL || szlen(crs) == 0)
@@ -631,9 +643,9 @@ bool MgOgcWmsServer::ValidateGetFeatureInfoParameters()
     if(bValid)
     {
         // INFO_FORMAT becomes a mandatory parameter since WMS1.3.0
-        STRING sVersion = RequestParameter(kpszQueryStringVersion);
+        STRING version = GetRequestVersion();
         // Note: lexical comparison, not numerical one;
-        if(!sVersion.empty() && sVersion >= _("1.3.0"))
+        if(!version.empty() && version >= _("1.3.0"))
         {
             CPSZ pszFormat = RequestParameter(kpszQueryStringInfoFormat);
             if(pszFormat == NULL)
@@ -822,3 +834,18 @@ void MgOgcWmsServer::SetLayerDefs(MgWmsLayerDefinitions* pLayerDefs)
     m_pLayers = SAFE_ADDREF(pLayerDefs);
 }
 
+// Get WMS request version
+STRING MgOgcWmsServer::GetRequestVersion()
+{
+    CPSZ version = RequestParameter(kpszQueryStringVersion);
+    if(version == NULL)
+    {
+        // In WMS version 1.0.0, the name of this parameter was "WMTVER".
+        // That name is now deprecated, but for backwards compatibility and 
+        // version negotiation a post-1.0.0 server should accept 
+        // either form without issuing a Service Exception.
+        version = RequestParameter(kpszQueryStringVersion);
+    }
+
+    return STRING(version? version : _(""));
+}

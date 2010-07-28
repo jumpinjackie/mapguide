@@ -55,6 +55,9 @@ InvalidDimensionValue Request contains an invalid sample dimension value.
 OperationNotSupported Request is for an optional operation that is not supported by the
                       server.
 MissingBoundingBox    Request does not contain a required bounding box parameter.
+InvalidBoundingBox    Request contains an invalid bounding box value.
+MissingInfoFormat     Request does not contain a required info format parameter.
+MissingVersion        Request does not contain a required version parameter.
 */
 
     static CPSZ kpszInvalidFormat;
@@ -74,6 +77,7 @@ MissingBoundingBox    Request does not contain a required bounding box parameter
     static CPSZ kpszMissingBoundingBox;
     static CPSZ kpszInvalidBoundingBox;
     static CPSZ kpszMissingInfoFormat;
+    static CPSZ kpszMissingVersion;
 };
 
 #endif//_OgcWmsException_h
