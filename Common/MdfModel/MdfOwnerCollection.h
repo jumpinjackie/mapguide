@@ -79,9 +79,8 @@ BEGIN_NAMESPACE_MDFMODEL
         {
             OBJ* pRetValue = NULL;
             if (nIndex < m_nSize &&  nIndex >= 0)
-            {
-                    pRetValue = m_objArray[nIndex];
-            }
+                pRetValue = m_objArray[nIndex];
+
             return pRetValue;
         }
 
