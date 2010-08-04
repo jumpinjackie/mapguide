@@ -272,7 +272,16 @@ MgByteReader* MgServerFeatureService::GetCapabilities( CREFSTRING providerName )
             L"MgServerFeatureService.GetCapabilities", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    MgServerGetProviderCapabilities msgpc(providerName);
+    STRING connectionString = L"";
+    MgServerGetProviderCapabilities msgpc(providerName, connectionString);
+    return msgpc.GetProviderCapabilities();
+}
+
+MgByteReader* MgServerFeatureService::GetCapabilities( CREFSTRING providerName, CREFSTRING connectionString )
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetCapabilities()");
+
+    MgServerGetProviderCapabilities msgpc(providerName, connectionString);
     return msgpc.GetProviderCapabilities();
 }
 

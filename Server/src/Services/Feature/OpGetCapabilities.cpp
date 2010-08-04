@@ -82,6 +82,30 @@ void MgOpGetCapabilities::Execute()
         // Write the response
         EndExecution(byteReader);
     }
+    else if (2 == m_packet.m_NumArguments)
+    {
+        // Get property name
+        STRING providerName;
+        m_stream->GetString(providerName);
+        STRING connectionString;
+        m_stream->GetString(connectionString);
+
+        BeginExecution();
+
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(providerName.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(connectionString.c_str());
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+        Validate();
+
+        // Execute the operation
+        Ptr<MgByteReader> byteReader = m_service->GetCapabilities(providerName, connectionString);
+
+        // Write the response
+        EndExecution(byteReader);
+    }
     else
     {
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();

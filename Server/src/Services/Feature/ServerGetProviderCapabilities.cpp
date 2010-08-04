@@ -38,7 +38,7 @@ static std::map<FdoGeometryComponentType,  std::string>    s_FdoGeometryComponen
 bool MgServerGetProviderCapabilities::m_isInitialized = MgServerGetProviderCapabilities::Initialize();
 
 
-MgServerGetProviderCapabilities::MgServerGetProviderCapabilities(CREFSTRING providerName)
+MgServerGetProviderCapabilities::MgServerGetProviderCapabilities(CREFSTRING providerName, CREFSTRING connectionString)
 {
     if (providerName.empty())
     {
@@ -64,6 +64,16 @@ MgServerGetProviderCapabilities::MgServerGetProviderCapabilities(CREFSTRING prov
     // TODO: Should this connection be cached?
     // use a smart pointer until the end in case there's an exception
     FdoPtr<FdoIConnection> fdoConn = connManager->CreateConnection(providerNoVersion.c_str());
+
+    // Note: WFS doesn't return the proper capabilities if a connection is not opened to the actual server using a connection string.
+
+    // Check if a connection string was specified
+    if(!connectionString.empty())
+    {
+        fdoConn->SetConnectionString(connectionString.c_str());
+        fdoConn->Open();
+    }
+
     CHECKNULL(fdoConn, L"MgServerGetProviderCapabilities.MgServerGetProviderCapabilities");
 
     m_xmlUtil = new MgXmlUtil();
@@ -80,6 +90,12 @@ MgServerGetProviderCapabilities::MgServerGetProviderCapabilities(CREFSTRING prov
 
 MgServerGetProviderCapabilities::~MgServerGetProviderCapabilities()
 {
+    // Check if the connection needs to be closed
+    if(m_fdoConn->GetConnectionState() == FdoConnectionState_Open)
+    {
+        m_fdoConn->Close();
+    }
+
     m_fdoConn = NULL;
 
     if (NULL != m_xmlUtil)

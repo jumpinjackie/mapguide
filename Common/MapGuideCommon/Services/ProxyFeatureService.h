@@ -207,6 +207,39 @@ INTERNAL_API:
 
     /////////////////////////////////////////////////////////////////
     /// \brief
+    /// This method returns capabilities of the provider applicable for the
+    /// specified connection string.
+    ///
+    /// \remarks
+    /// This would provide details on the following
+    /// capabilities:
+    /// <ol>
+    /// <li>Connection</li>
+    /// <li>Schema</li>
+    /// <li>Command</li>
+    /// <li>Filter</li>
+    /// <li>Expression</li>
+    /// </ol>
+    /// \n
+    /// Schema Definition: FeatureProviderCapabilities.xsd
+    /// Sample XML:        FeatureProviderCapabilities.xml
+    ///
+    /// \param providerName
+    /// Input
+    /// Name of provider for which capabilities are requested
+    /// \param connectionString
+    /// Input
+    /// The connection string to use
+    ///
+    /// \return
+    /// Byte array representing XML (or NULL)
+    ///
+    /// \exception MgInvalidProviderNameException
+    ///
+    MgByteReader* GetCapabilities(CREFSTRING providerName, CREFSTRING connectionString);
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
     /// This method returns list of ALL schemas names available with
     /// with the provider
     ///

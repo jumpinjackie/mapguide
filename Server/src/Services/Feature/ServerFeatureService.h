@@ -187,6 +187,34 @@ public:
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
+    /// This method returns capabilities of the provider applicable for the
+    /// connection. This would provide details on the following
+    /// capabilities:
+    /// 1. Connection
+    /// 2. Schema
+    /// 3. Command
+    /// 4. Filter
+    /// 5. Expression
+    ///
+    /// Schema Definition: FeatureProviderCapabilities.xsd
+    /// Sample XML:        FeatureProviderCapabilities.xml
+    /// </summary>
+    /// <param name="providerName">Input
+    /// Name of provider for which capabilities are being requested
+    /// </param>
+    /// <returns>
+    /// <param name="connectionString">Input
+    /// The connection string to use
+    /// </param>
+    /// Byte array representing XML (or NULL)
+    /// </returns>
+    ///
+    /// EXCEPTIONS:
+    /// MgInvalidProviderNameException
+    MgByteReader* GetCapabilities(CREFSTRING providerName, CREFSTRING connectionString);
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
     /// This method returns list of ALL schemas names available with
     /// with the provider
     /// </summary>
