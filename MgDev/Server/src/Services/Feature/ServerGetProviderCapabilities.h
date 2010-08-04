@@ -26,7 +26,7 @@
 class MgServerGetProviderCapabilities
 {
 public:
-    MgServerGetProviderCapabilities(CREFSTRING providerName);
+    MgServerGetProviderCapabilities(CREFSTRING providerName, CREFSTRING connectionString);
     ~MgServerGetProviderCapabilities();
     MgByteReader* GetProviderCapabilities();
 

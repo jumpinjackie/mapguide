@@ -35,7 +35,8 @@ MgHttpGetCapabilities::MgHttpGetCapabilities(MgHttpRequest *hRequest)
     InitializeCommonParameters(hRequest);
 
     Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
-    this->m_providerName = params->GetParameterValue(MgHttpResourceStrings::reqFeatProvider);
+    m_providerName = params->GetParameterValue(MgHttpResourceStrings::reqFeatProvider);
+    m_connectionString = params->GetParameterValue(MgHttpResourceStrings::reqFeatConnectionString);
 }
 
 /// <summary>
@@ -58,7 +59,7 @@ void MgHttpGetCapabilities::Execute(MgHttpResponse& hResponse)
     Ptr<MgFeatureService> service = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
 
     // call the C++ API
-    Ptr<MgByteReader> byteReader = service->GetCapabilities(m_providerName);
+    Ptr<MgByteReader> byteReader = service->GetCapabilities(m_providerName, m_connectionString);
 
     // Convert to requested response format, if necessary
     ProcessFormatConversion(byteReader);

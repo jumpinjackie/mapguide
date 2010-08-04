@@ -349,6 +349,46 @@ PUBLISHED_API:
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
+    /// Gets the capabilities of an FDO Provider expressed in XML
+    /// according to the \link FdoProviderCapabilities_schema FdoProviderCapabilities \endlink schema.
+    ///
+    /// \remarks
+    /// MgFeatureService derives most of its capabilities from the
+    /// FDO Provider to which it is connected. Capabilities vary
+    /// among providers. For example, the FDO Provider for ArcSDE
+    /// supports all of the spatial operators, and the FDO Provider
+    /// for Oracle supports only a subset. For a fuller discussion,
+    /// see \link ProviderCapabilities Provider Capabilities \endlink.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgByteReader GetCapabilities(string providerName);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgByteReader GetCapabilities(String providerName);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgByteReader GetCapabilities(string providerName);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param providerName (String/string)
+    /// The name of the FDO provider. Get the exact
+    /// form of the name from
+    /// MgFeatureService::GetFeatureProviders.
+    /// \param connectionString (String/string)
+    /// The connection string to use.
+    ///
+    /// \return
+    /// Returns an MgByteReader containing the capabilities in XML
+    /// format (or NULL).
+    ///
+    /// \exception MgInvalidArgumentException
+    /// \exception MgFdoException
+    ///
+    virtual MgByteReader* GetCapabilities(CREFSTRING providerName, CREFSTRING connectionString) = 0;
+
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
     /// Creates or updates a feature schema within the specified feature source.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
