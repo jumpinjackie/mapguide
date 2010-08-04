@@ -178,7 +178,7 @@ void MgServiceOperation::Initialize(MgStreamData* data,
     // Update the API version
     currUserInfo->SetApiVersion(m_packet.m_OperationVersion);
 
-    // Set the current MgUserInformation - this makes a TLS copy of the MgUserInformation object
+    // Set the current MgUserInformation
     MgUserInformation::SetCurrentUserInfo(currUserInfo);
     m_packet.m_UserInfo = NULL;
 

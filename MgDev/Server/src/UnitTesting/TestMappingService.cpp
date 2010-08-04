@@ -51,7 +51,7 @@ TestMappingService::TestMappingService()
         L"Administrator", L"admin");
     userInfo->SetLocale(TEST_LOCALE);
 
-    // Set the current MgUserInformation - this makes a TLS copy of the MgUserInformation object
+    // Set the current MgUserInformation
     // This must be done before calling CreateSession()
     MgUserInformation::SetCurrentUserInfo(userInfo);
 
@@ -59,7 +59,7 @@ TestMappingService::TestMappingService()
     assert(!session.empty());
     userInfo->SetMgSessionId(session);
 
-    // Set the current MgUserInformation - this makes a TLS copy of the MgUserInformation object
+    // Set the current MgUserInformation
     MgUserInformation::SetCurrentUserInfo(userInfo);
 
     m_siteConnection = new MgSiteConnection();
