@@ -42,8 +42,6 @@
 #include "csNameMapper.hpp"                 //for csReleaseNameMapper
 
 #ifdef _WIN32
-#include <atlbase.h>
-#include <atlconv.h>
 #include <tchar.h>                          //for _tsplitpath
 #include <shlobj.h>                         //for SHGetFolderPath
 #endif
