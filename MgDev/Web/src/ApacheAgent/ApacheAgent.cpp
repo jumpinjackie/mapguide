@@ -112,6 +112,9 @@ static int mgmapagent_handler (request_rec *r)
     }
 
     Initialize(r);
+    ApacheResponseHandler responseHandler(r);
+
+    MG_TRY()
 
     // Construct self Url.  It is embedded into the output stream
     // of some requests (like GetMap).  Use a fully qualified URL.
@@ -202,8 +205,6 @@ static int mgmapagent_handler (request_rec *r)
     Ptr<MgPropertyCollection> paramList = params->GetParameters()->GetPropertyCollection();
     if (paramList != NULL)
     {
-        ApacheResponseHandler responseHandler(r);
-
         // Check to be sure that we have some kind of credentials before continuing.  Either
         // username/password or sessionid.
         bool bValid = paramList->Contains(MgHttpResourceStrings::reqSession);
@@ -231,6 +232,13 @@ static int mgmapagent_handler (request_rec *r)
         Ptr<MgHttpResponse> response = request->Execute();
 
         responseHandler.SendResponse(response);
+    }
+
+    MG_CATCH(L"ApacheAgent.mgmapagent_handler");
+
+    if (mgException != NULL)
+    {
+        responseHandler.SendError(mgException);
     }
 
     return OK;

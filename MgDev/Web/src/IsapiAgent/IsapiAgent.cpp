@@ -50,6 +50,10 @@ BOOL WINAPI GetExtensionVersion(HSE_VERSION_INFO *pVer)
 
 DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
 {
+    IsapiResponseHandler responseHandler(pECB);
+
+    MG_TRY()
+
     Initialize(pECB);
 
     // Construct self Url.  It is embedded into the output stream
@@ -169,8 +173,6 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
     Ptr<MgPropertyCollection> paramList = params->GetParameters()->GetPropertyCollection();
     if (paramList != NULL)
     {
-        IsapiResponseHandler responseHandler(pECB);
-
         // Check to be sure that we have some kind of credentials before continuing.  Either
         // username/password or sessionid.
         bool bValid = paramList->Contains(MgHttpResourceStrings::reqSession);
@@ -204,6 +206,13 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
         // NOTE: temporary files are deleted when we execute the request
 
         responseHandler.SendResponse(response);
+    }
+
+    MG_CATCH(L"IsapiAgent.HttpExtensionProc");
+
+    if (mgException != NULL)
+    {
+        responseHandler.SendError(mgException);
     }
 
     return HSE_STATUS_SUCCESS;
