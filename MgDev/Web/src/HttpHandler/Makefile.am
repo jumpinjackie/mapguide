@@ -57,6 +57,8 @@ include_SOURCES = \
   HttpGetClassDefinition.cpp \
   HttpGetClasses.cpp \
   HttpGetConnectionPropertyValues.cpp \
+  HttpGetDefaultTileSizeX.cpp \
+  HttpGetDefaultTileSizeY.cpp \
   HttpGetDrawing.cpp \
   HttpGetDrawingCoordinateSpace.cpp \
   HttpGetDrawingLayer.cpp \
@@ -179,6 +181,8 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpGetClassDefinition.h \
   HttpGetClasses.h \
   HttpGetConnectionPropertyValues.h \
+  HttpGetDefaultTileSizeX.h \
+  HttpGetDefaultTileSizeY.h \
   HttpGetDrawing.h \
   HttpGetDrawingCoordinateSpace.h \
   HttpGetDrawingLayer.h \
