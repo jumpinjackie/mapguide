@@ -56,6 +56,8 @@
 #include "HttpExecuteSqlQuery.cpp"
 #include "HttpGetCapabilities.cpp"
 #include "HttpGetConnectionPropertyValues.cpp"
+#include "HttpGetDefaultTileSizeX.cpp"
+#include "HttpGetDefaultTileSizeY.cpp"
 #include "HttpGetDrawing.cpp"
 #include "HttpGetDrawingCoordinateSpace.cpp"
 #include "HttpGetDrawingLayer.cpp"

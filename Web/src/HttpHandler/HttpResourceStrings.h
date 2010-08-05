@@ -304,6 +304,8 @@ public:
     // Tile services
     static const STRING opGetTileImage;
     static const STRING opClearTileCache;
+    static const STRING opGetDefaultTileSizeX;
+    static const STRING opGetDefaultTileSizeY;
 
     // Kml services
     static const STRING opGetMapKml;

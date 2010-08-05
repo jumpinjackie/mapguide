@@ -398,6 +398,8 @@ bool InitializeStaticData()
     httpClassCreators[MgHttpResourceStrings::opEnumerateApplicationTemplates] = MgHttpEnumerateApplicationTemplates::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opEnumerateApplicationWidgets] = MgHttpEnumerateApplicationWidgets::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opEnumerateApplicationContainers] = MgHttpEnumerateApplicationContainers::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGetDefaultTileSizeX] = MgHttpGetDefaultTileSizeX::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGetDefaultTileSizeY] = MgHttpGetDefaultTileSizeY::CreateObject;
 
     httpPostHandlerCreators.push_back(MgHttpWfsGetCapabilities::ProcessPostRequest);
     httpPostHandlerCreators.push_back(MgHttpWfsDescribeFeatureType::ProcessPostRequest);
