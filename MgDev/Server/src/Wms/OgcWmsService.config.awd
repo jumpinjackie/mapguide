@@ -242,7 +242,7 @@ table {
        finding the WKT for EPSG:21781 in the CS library.
   -->
   <translate from="EPSG:21781">PROJCS["CH1903.LV03/01",GEOGCS["LLCH1903",DATUM["CH-1903",SPHEROID["BESSEL",6377397.155,299.15281535],TOWGS84[660.0770,13.5510,369.3440,0.804816,0.577692,0.952236,5.66000000]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Swiss_Oblique_Cylindrical"],PARAMETER["false_easting",600000.000],PARAMETER["false_northing",200000.000],PARAMETER["latitude_of_origin",46.95240555555556],PARAMETER["central_meridian",7.43958333333333],UNIT["Meter",1.00000000000000]]</translate>
-
+  <translate from="CRS:84">GEOGCS["LL84",DATUM["WGS84",SPHEROID["WGS84",6378137.000,298.25722293]],PRIMEM["Greenwich",0],UNIT["Degree",0.01745329251994]]</translate>
  </Define>
 
 </Definitions>
