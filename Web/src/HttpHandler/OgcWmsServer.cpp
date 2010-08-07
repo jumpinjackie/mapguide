@@ -86,6 +86,7 @@ CPSZ kpszExceptionMessageInvalidBoundingBox   = _("The bounding box for the map 
 CPSZ kpszExceptionMessageInvalidImageFormat   = _("The request uses an unsupported image format. (Found FORMAT=&Request.format;)"); // Localize
 CPSZ kpszExceptionMessageMissingImageFormat   = _("The request must contain a FORMAT parameter to specify the required image format."); // Localize
 CPSZ kpszExceptionMessageMissingInfoFormat    = _("The request must contain an INFO_FORMAT parameter to specify the format of feature information (MIME type)."); // Localize
+CPSZ kpszExceptionMessageInvalidInfoFormat    = _("The request uses an unsupported info format. (Found INFO_FORMAT=&Request.info_format;)"); // Localize
 CPSZ kpszExceptionMessageMissingVersion       = _("The request must contain a VERSION parameter to specify the WMS version."); // Localize
 // END LOCALIZATION
 
@@ -652,6 +653,31 @@ bool MgOgcWmsServer::ValidateGetFeatureInfoParameters()
             {
                 ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszMissingInfoFormat,
                                                          kpszExceptionMessageMissingInfoFormat));
+                bValid = false;
+            }
+
+            CPSZ pszSupportedFormats = this->Definition(_("Formats.GetFeatureInfo")); //NOXLATE
+            bool bSupport = false;
+
+            if(pszSupportedFormats != NULL)
+            {
+                MgXmlParser SupportedFormats(pszSupportedFormats);
+                
+                while(SupportedFormats.Next())
+                {
+                    MgXmlNode& node = SupportedFormats.Current();
+                    if(node.Contents() == pszFormat)
+                    {
+                        bSupport = true;
+                        break;
+                    }
+                }
+            }
+
+            if(!bSupport)
+            {
+                ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszInvalidFormat,
+                                                         kpszExceptionMessageInvalidInfoFormat));
                 bValid = false;
             }
         }

@@ -222,7 +222,7 @@ bool MgWmsMapUtil::UserDefinedSrsToWktMapping(MgOgcServer& oWms,STRING sSrs,REFS
 
 void MgWmsMapUtil::ProcessBoundingBoxAxes(STRING sSrs,REFSTRING bbox)
 {
-    if(sSrs.empty() || bbox.empty())
+    if(sSrs.empty() || bbox.empty() ||sSrs == _("CRS:84")) //Workaround
         return;
 
     Ptr<MgCoordinateSystemFactory> factory = new MgCoordinateSystemFactory();
