@@ -1070,7 +1070,8 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
             else    //if we allocated a temporary image to stretch-blit, destroy it
                 gdImageDestroy(gdimg24);
             //if we allocated a paletted image, destroy it (very likely that is)
-            gdImageDestroy(gdImgPalette);
+            if(NULL != gdImgPalette)
+                gdImageDestroy(gdImgPalette);
 
             return byteData.release();
         }
