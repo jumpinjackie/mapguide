@@ -50,6 +50,7 @@
 
 
  <!-- Routine Enum formats, in xml -->
+ <Define item="ServiceTypeVersion.xml"><ows:ServiceTypeVersion>&Enum.item.number;</ows:ServiceTypeVersion></Define>
  <Define item="Keywords.xml"><ows:Keyword>&Enum.item;</ows:Keyword></Define>
  <Define item="ParameterValue.xml"><ows:Value>&Enum.item;</ows:Value></Define>
  <Define item="ParameterValue.Version.xml"><ows:Value>&Enum.item.number;</ows:Value></Define>
@@ -120,11 +121,11 @@
   <!-- ================================================================== -->
   <ows:ServiceIdentification>
     <ows:ServiceType>WFS</ows:ServiceType>
-    <ows:ServiceTypeVersion>1.1.0</ows:ServiceTypeVersion>
+    <?Enum list="&SupportedVersions;" using="&ServiceTypeVersion.xml;" item="Version"?>
     <ows:Title>&Service.Title;</ows:Title>
-    <ows:Abstract>&Service.Abstract</ows:Abstract>
+    <ows:Abstract>&Service.Abstract;</ows:Abstract>
     <ows:Keywords>
-      <?EnumDelim list="&Service.Keywords;"   using="&Keywords.xml;" ?>
+      <?Enum list="&Service.Keywords;" using="&Keywords.xml;"?>
     </ows:Keywords>
     <ows:Fees>&Service.Fees;</ows:Fees>
     <ows:AccessConstraints>&Service.AccessConstraints;</ows:AccessConstraints>
@@ -134,8 +135,8 @@
   <!-- SERVICE PROVIDER SECTION                                           -->
   <!-- ================================================================== -->
   <ows:ServiceProvider>
-    <ows:ProviderName></ows:ProviderName>
-    <ows:ProviderSite/>
+    <ows:ProviderName>&Service.Contact.ProviderName;</ows:ProviderName>
+    <ows:ProviderSite>&Service.Contact.ProviderSite;</ows:ProviderSite>
     <ows:ServiceContact>
       <ows:IndividualName>&Service.Contact.Name;</ows:IndividualName>
       <ows:PositionName>&Service.Contact.Position;</ows:PositionName>
@@ -153,10 +154,10 @@
           <ows:ElectronicMailAddress>&Service.Contact.Email;</ows:ElectronicMailAddress>
         </ows:Address>
         <ows:OnlineResource xlink:href="&URL.OnlineResource;"/>
-        <ows:HoursOfService>24x7</ows:HoursOfService>
+        <ows:HoursOfService>&Service.Contact.HoursOfService;</ows:HoursOfService>
         <ows:ContactInstructions>&Service.Contact.Instructions;</ows:ContactInstructions>
       </ows:ContactInfo>
-      <ows:Role>PointOfContact</ows:Role>
+      <ows:Role>&Service.Contact.Role;</ows:Role>
     </ows:ServiceContact>
   </ows:ServiceProvider>
 

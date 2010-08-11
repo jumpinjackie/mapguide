@@ -9,6 +9,7 @@
       Also, anything other than a <Version> element is ignored.    -->
  <Define item="SupportedVersions">
    <Version number="1.0.0"/>
+   <Version number="1.1.0"/>
  </Define>
 
  <!-- These are edited by the Site Administration tool, though you
@@ -19,6 +20,8 @@
  <Define item="Service.Abstract">MapGuide WFS Server</Define>
  <Define item="Service.AccessConstraints">none</Define>
  <!-- Who to contact -->
+ <Define item="Service.Contact.ProviderName"></Define>
+ <Define item="Service.Contact.ProviderSite"></Define>
  <Define item="Service.Contact.Name"></Define>
  <Define item="Service.Contact.Organization"></Define>
  <Define item="Service.Contact.Position"></Define>
@@ -31,8 +34,9 @@
  <Define item="Service.Contact.Phone"></Define>
  <Define item="Service.Contact.Fax"></Define>
  <Define item="Service.Contact.Email"></Define>
+ <Define item="Service.Contact.HoursOfService">24x7</Define>
  <Define item="Service.Contact.Instructions"></Define>
-
+ <Define item="Service.Contact.Role"></Define>
  <!-- The URL elements.  Change to suit, as this is reported -->
  <Define item="SERVER_NAME">localhost:8008</Define>
  <Define item="SCRIPT_NAME">/mapguide/mapagent/mapagent.fcgi</Define>
@@ -44,7 +48,7 @@
  <Define item="Url.GetFeature">http://&SERVER_NAME;&SCRIPT_NAME;</Define>
 
  <!-- List the keywords to be associated with the WFS - pick what describes your data -->
- <Define item="Service.Keywords"><item>GIS</item><item>WFS</item><item>Server</item></Define>
+ <Define item="Service.Keywords"><item>GIS WFS Server</item></Define>
 
 
  <!-- Enumerates an element in a dictionary for HTML
