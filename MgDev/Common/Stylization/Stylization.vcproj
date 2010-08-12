@@ -684,10 +684,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SE_LineRenderer.h"
-				>
-			</File>
-			<File
 				RelativePath=".\SE_Matrix.cpp"
 				>
 			</File>
