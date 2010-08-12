@@ -659,7 +659,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
                     // don't call style->apply() since we do some special processing
                     // to make the point symbol fill the preview image
 
-                    SE_RenderPointStyle* ptStyle = (SE_RenderPointStyle*)(rStyle);
+                    SE_RenderPointStyle* ptStyle = (SE_RenderPointStyle*)rStyle;
 
                     // get the center of the scaled point symbol
                     double symCtrX = 0.5*(symBounds.minx + symBounds.maxx) * scale;
@@ -721,6 +721,18 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
                             lb.Close();
                             break;
                         }
+                    }
+
+                    // if the the line style uses parametric units control reconfigure
+                    // it so you just get one symbol at the middle
+                    SE_RenderLineStyle* lnStyle = (SE_RenderLineStyle*)rStyle;
+                    if (lnStyle->unitsControl == SE_UnitsControl_Parametric)
+                    {
+                        if (lnStyle->repeat > 0.0)
+                            lnStyle->repeat = 0.5;
+
+                        lnStyle->startOffset = rs_min(lnStyle->startOffset, 0.0);
+                        lnStyle->endOffset = rs_min(lnStyle->endOffset, 0.0);
                     }
 
                     // just apply the style to the preview geometry
@@ -829,6 +841,9 @@ void StylizationUtil::GetCompositeSymbolizationPreviewBounds(std::vector<SE_Symb
             // look the same when scaled.  We therefore don't want these to be a contributing
             // factor in the scaling, and therefore don't add their bounds to the returned
             // bounds.
+            //
+            // Another example is line styles which have parametric-based units control
+            // enabled.
             bool addBounds = true;
 
             SE_RenderStyle* rStyle = style->rstyle;
@@ -836,7 +851,7 @@ void StylizationUtil::GetCompositeSymbolizationPreviewBounds(std::vector<SE_Symb
             {
                 case SE_RenderStyle_Point:
                 {
-                    SE_RenderPointStyle* ptStyle = (SE_RenderPointStyle*)(rStyle);
+                    SE_RenderPointStyle* ptStyle = (SE_RenderPointStyle*)rStyle;
 
                     // point usage offset (already scaled)
                     xformStyle.translate(ptStyle->offset[0], ptStyle->offset[1]);
@@ -853,10 +868,10 @@ void StylizationUtil::GetCompositeSymbolizationPreviewBounds(std::vector<SE_Symb
 
                 case SE_RenderStyle_Line:
                 {
-                    SE_RenderLineStyle* lnStyle = (SE_RenderLineStyle*)(rStyle);
+                    SE_RenderLineStyle* lnStyle = (SE_RenderLineStyle*)rStyle;
 
                     // see comment above the addBounds declaration
-                    if (lnStyle->solidLine)
+                    if (lnStyle->solidLine || lnStyle->unitsControl == SE_UnitsControl_Parametric)
                         addBounds = false;
 
                     // make the preview bounds width include two repetitions of the symbol
@@ -874,7 +889,7 @@ void StylizationUtil::GetCompositeSymbolizationPreviewBounds(std::vector<SE_Symb
 
                 case SE_RenderStyle_Area:
                 {
-                    SE_RenderAreaStyle* arStyle = (SE_RenderAreaStyle*)(rStyle);
+                    SE_RenderAreaStyle* arStyle = (SE_RenderAreaStyle*)rStyle;
 
                     // see comment above the addBounds declaration
                     if (arStyle->solidFill)
@@ -1019,7 +1034,7 @@ void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Sym
             {
                 case SE_RenderStyle_Point:
                 {
-                    SE_RenderPointStyle* ptStyle = (SE_RenderPointStyle*)(rStyle);
+                    SE_RenderPointStyle* ptStyle = (SE_RenderPointStyle*)rStyle;
 
                     // point usage offset (already scaled)
                     xformStyle.translate(ptStyle->offset[0], ptStyle->offset[1]);
@@ -1036,7 +1051,7 @@ void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Sym
 
                 case SE_RenderStyle_Line:
                 {
-                    SE_RenderLineStyle* lnStyle = (SE_RenderLineStyle*)(rStyle);
+                    SE_RenderLineStyle* lnStyle = (SE_RenderLineStyle*)rStyle;
 
                     // line usage rotation - assume geometry angle is zero
                     xformStyle.rotate(lnStyle->angleRad);
@@ -1046,7 +1061,7 @@ void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Sym
 
                 case SE_RenderStyle_Area:
                 {
-                    SE_RenderAreaStyle* arStyle = (SE_RenderAreaStyle*)(rStyle);
+                    SE_RenderAreaStyle* arStyle = (SE_RenderAreaStyle*)rStyle;
 
                     // area usage rotation - assume geometry angle is zero
                     xformStyle.rotate(arStyle->angleRad);
