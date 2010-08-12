@@ -179,7 +179,6 @@ noinst_HEADERS = \
   SE_BufferPool.h \
   SE_ExpressionBase.h \
   SE_LineBuffer.h \
-  SE_LineRenderer.h \
   SE_Matrix.h \
   SE_PositioningAlgorithms.h \
   SE_Renderer.h \

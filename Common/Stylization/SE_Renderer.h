@@ -23,13 +23,13 @@
 #include "SE_SymbolDefProxies.h"
 #include "SE_RenderProxies.h"
 
+// forward declare
 class RS_FontEngine;
+struct HotSpot;
 
 
 class SE_Renderer : public Renderer
 {
-    friend class SE_LineRenderer;
-
 public:
     STYLIZATION_API SE_Renderer();
     STYLIZATION_API virtual ~SE_Renderer();
@@ -114,7 +114,7 @@ public:
     // angles are in radians CCW
     void AddLabel(LineBuffer* geom, SE_RenderStyle* style, const SE_Matrix& xform, double angleRad);
 
-    // helper methods
+    // helper method
     void ProcessLineLabels(LineBuffer* geometry, SE_RenderLineStyle* style);
 
     // Indicates whether rendering optimization is used by this renderer.  For example, we are rendering text and
@@ -123,13 +123,23 @@ public:
     STYLIZATION_API virtual bool OptimizeGeometry();
 
 private:
+    void ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyle* style);
+    void ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyle* style);
+    void ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineStyle* style);
+
+    int ConfigureHotSpots(LineBuffer* geometry, int cur_contour, SE_RenderLineStyle* style, RS_Bounds& styleBounds, HotSpot* hotspots);
+    int ComputePoints(LineBuffer* geometry, int cur_contour, HotSpot* hotspots);
+    void ChopLineBuffer(LineBuffer* inBuffer, LineBuffer* outBuffer);
+    LineBuffer* ClipPolyline(LineBufferPool* lbp, LineBuffer& geometry, double zMin, double zMax);
+    LineBuffer* ClipPolygon(LineBufferPool* lbp, LineBuffer& geometry, double zMin, double zMax);
+    int ClipLine(double zMin, double zMax, double* line, double* ret);
+    int ClipCode(double zMin, double zMax, double z);
+
     void ComputeSegmentLengths(LineBuffer* geometry, double* segLens);
     void ComputeGroupLengths(double* segLens, int numGroups, int* segGroups, double* groupLens);
     int ComputeSegmentGroups(LineBuffer* geometry, int contour, double vertexAngleLimit, double* segLens, int* segGroups);
     void ComputeGroupDistribution(double groupLen, double startOffset, double endOffset, double repeat, double symWidth,
                                   double& startPos, double& gap, int& numSymbols);
-    void ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyle* style);
-    void ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineStyle* style);
 
 protected:
     SE_BufferPool* m_pPool;
