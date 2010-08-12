@@ -804,21 +804,33 @@ void SE_LineStyle::evaluate(SE_EvalContext* ctx)
 
     style->angleRad = fmod(angleDeg.evaluate(ctx->exec), 360.0) * M_PI180;
 
-    // scale by xform->x0 and xform->y1 instead of mm2su, because these encompass
-    // mm2su as well as scaleX and scaleY
-    style->startOffset = startOffset.evaluate(ctx->exec) * fabs(ctx->xform->x0);
-    style->endOffset   = endOffset.evaluate(ctx->exec)   * fabs(ctx->xform->x0);
-    style->repeat      = repeat.evaluate(ctx->exec)      * fabs(ctx->xform->x0);
-    double origRepeat  = style->repeat;
+    style->startOffset = startOffset.evaluate(ctx->exec);
+    style->endOffset   = endOffset.evaluate(ctx->exec);
+    style->repeat      = repeat.evaluate(ctx->exec);
 
-    // It makes no sense to distribute symbols using a repeat value which is much
-    // less than one pixel.  We'll scale up any value less than 0.25 to 0.5.
-    if (style->repeat > 0.0 && style->repeat < 0.25*ctx->px2su)
+    // with parametric units control the repeat / offsets will be scaled
+    // later on by each contour length, which includes the transform
+    double origRepeat = -1.0;
+    if (style->unitsControl == SE_UnitsControl_Absolute)
     {
-        // just increase it by an integer multiple so the overall distribution
-        // isn't affected
-        int factor = (int)(0.5*ctx->px2su / style->repeat);
-        style->repeat *= factor;
+        // scale by xform->x0 and xform->y1 instead of mm2su, because
+        // these include mm2su as well as scaleX and scaleY
+        style->startOffset *= fabs(ctx->xform->x0);
+        style->endOffset   *= fabs(ctx->xform->x0);
+        style->repeat      *= fabs(ctx->xform->x0);
+
+        origRepeat = style->repeat;
+
+        // It makes no sense to distribute symbols using a repeat value
+        // which is much less than one pixel.  We'll scale up any value
+        // less than 0.25 to 0.5.
+        if (style->repeat > 0.0 && style->repeat < 0.25*ctx->px2su)
+        {
+            // just increase it by an integer multiple so the overall
+            // distribution isn't affected
+            int factor = (int)(0.5*ctx->px2su / style->repeat);
+            style->repeat *= factor;
+        }
     }
 
     double angleLimit = vertexAngleLimit.evaluate(ctx->exec);
@@ -982,16 +994,17 @@ void SE_AreaStyle::evaluate(SE_EvalContext* ctx)
     double origRepeatX = style->repeat[0];
     double origRepeatY = style->repeat[1];
 
-    // It makes no sense to distribute symbols using repeat values which are much
-    // less than one pixel.  We'll scale up any values less than 0.25 to 0.5.
+    // It makes no sense to distribute symbols using repeat values which
+    // are much less than one pixel.  We'll scale up any values less than
+    // 0.25 to 0.5.
     for (int i=0; i<=1; ++i)
     {
         // work with absolute value in case repeat is negative
         double repeat = fabs(style->repeat[i]);
         if (repeat > 0.0 && repeat < 0.25*ctx->px2su)
         {
-            // just increase it by an integer multiple so the overall distribution
-            // isn't affected
+            // just increase it by an integer multiple so the overall
+            // distribution isn't affected
             int factor = (int)(0.5*ctx->px2su / repeat);
             style->repeat[i] *= factor;
         }

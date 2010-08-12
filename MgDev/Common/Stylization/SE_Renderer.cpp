@@ -959,6 +959,7 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
 
     SE_Matrix symxf;
     bool yUp = YPointsUp();
+    double px2su = GetScreenUnitsPerPixel();
 
     double baseAngleRad = style->angleRad;
 
@@ -987,7 +988,6 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
     double segX0, segY0, segX1, segY1;
 
     // this is the same for all contours / groups
-    double repeat = style->repeat;
     double leftEdge = style->bounds[0].x;
     double rightEdge = style->bounds[1].x;
 
@@ -1022,11 +1022,33 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
         if (segLens[start_seg_contour] == 0.0)
             continue;
 
+        // get the distribution for the current contour
+        double repeat = style->repeat;
+        double startOffset = style->startOffset;
+        double endOffset = style->endOffset;
+        if (style->unitsControl == SE_UnitsControl_Parametric)
+        {
+            repeat *= segLens[start_seg_contour];
+            startOffset *= segLens[start_seg_contour];
+            endOffset *= segLens[start_seg_contour];
+
+            // It makes no sense to distribute symbols using a repeat value
+            // which is much less than one pixel.  We'll scale up any value
+            // less than 0.25 to 0.5.
+            if (repeat > 0.0 && repeat < 0.25*px2su)
+            {
+                // just increase it by an integer multiple so the overall
+                // distribution isn't affected
+                int factor = (int)(0.5*px2su / repeat);
+                repeat *= factor;
+            }
+        }
+
         // check if:
         // - the start offset goes beyond the end of the contour
         // - the end offset goes beyond the beginning of the contour
         // - the start offset goes beyond the end offset
-        double offsetSum = rs_max(style->startOffset, 0.0) + rs_max(style->endOffset, 0.0);
+        double offsetSum = rs_max(startOffset, 0.0) + rs_max(endOffset, 0.0);
         if (offsetSum > segLens[start_seg_contour])
             continue;
 
@@ -1039,8 +1061,8 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
         ComputeGroupLengths(segLens, numGroups, segGroups, groupLens);
 
         // for this vertex control option we set the offsets to zero if they're unspecified
-        double startOffset = rs_max(style->startOffset, 0.0);
-        double endOffset = rs_max(style->endOffset, 0.0);
+        startOffset = rs_max(startOffset, 0.0);
+        endOffset = rs_max(endOffset, 0.0);
 
         // compute the starting group based on the style's start offset
         int start_group = 0;
@@ -1431,6 +1453,7 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
 
     SE_Matrix symxf;
     bool yUp = YPointsUp();
+    double px2su = GetScreenUnitsPerPixel();
 
     double baseAngleRad = style->angleRad;
 
@@ -1458,9 +1481,6 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
     // screen coordinates of current line segment
     double segX0, segY0, segX1, segY1;
 
-    // this is the same for all contours / groups
-    double repeat = style->repeat;
-
     // get segment lengths
     double* segLens = (double*)alloca(sizeof(double)*geometry->point_count());
     ComputeSegmentLengths(geometry, segLens);
@@ -1479,11 +1499,33 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
         if (segLens[start_seg_contour] == 0.0)
             continue;
 
+        // get the distribution for the current contour
+        double repeat = style->repeat;
+        double startOffset = style->startOffset;
+        double endOffset = style->endOffset;
+        if (style->unitsControl == SE_UnitsControl_Parametric)
+        {
+            repeat *= segLens[start_seg_contour];
+            startOffset *= segLens[start_seg_contour];
+            endOffset *= segLens[start_seg_contour];
+
+            // It makes no sense to distribute symbols using a repeat value
+            // which is much less than one pixel.  We'll scale up any value
+            // less than 0.25 to 0.5.
+            if (repeat > 0.0 && repeat < 0.25*px2su)
+            {
+                // just increase it by an integer multiple so the overall
+                // distribution isn't affected
+                int factor = (int)(0.5*px2su / repeat);
+                repeat *= factor;
+            }
+        }
+
         // check if:
         // - the start offset goes beyond the end of the contour
         // - the end offset goes beyond the beginning of the contour
         // - the start offset goes beyond the end offset
-        double offsetSum = rs_max(style->startOffset, 0.0) + rs_max(style->endOffset, 0.0);
+        double offsetSum = rs_max(startOffset, 0.0) + rs_max(endOffset, 0.0);
         if (offsetSum > segLens[start_seg_contour])
             continue;
 
@@ -1497,7 +1539,6 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
 
         // compute the starting group based on the style's start offset
         int start_group = 0;
-        double startOffset = style->startOffset;
         if (startOffset > 0.0)
         {
             for (int k=0; k<numGroups; ++k)
@@ -1515,7 +1556,6 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
 
         // compute the ending group based on the style's end offset
         int end_group = numGroups-1;
-        double endOffset = style->endOffset;
         if (endOffset > 0.0)
         {
             for (int k=numGroups-1; k>=0; --k)

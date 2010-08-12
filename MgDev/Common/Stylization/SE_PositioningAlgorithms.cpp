@@ -499,6 +499,12 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_ApplyContext*  applyCt
     if (rstyle->type != SE_RenderStyle_Line)
         return;
 
+    SE_RenderLineStyle* rlStyle = (SE_RenderLineStyle*)rstyle;
+
+    // ... and the units control must be absolute
+    if (rlStyle->unitsControl != SE_UnitsControl_Absolute)
+        return;
+
     // highway info format:  countryCode|type1|num1|type2|num2|type3|num3|...
     // example:              US|2|101|3|1
     StringOfTokens highwayInfo(featureReader->GetString(L"Url"), L"|");
@@ -507,7 +513,6 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_ApplyContext*  applyCt
     if (shieldCount < 1)
         return;
 
-    SE_RenderLineStyle* rlStyle = (SE_RenderLineStyle*)rstyle;
     double startOffset = rlStyle->startOffset;
     double increment = rlStyle->repeat;
 

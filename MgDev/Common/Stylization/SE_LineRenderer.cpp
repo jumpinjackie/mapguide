@@ -212,11 +212,15 @@ const double OPTIMIZE_DISTANCE_SQ = 1.96;
 
 void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* geometry, SE_RenderLineStyle* style)
 {
+    _ASSERT(style->repeat > 0.0);
+
     SE_BufferPool* lbp = renderer->GetBufferPool();
 
     SE_RenderPrimitiveList& rs = style->symbol;
 
     RS_FontEngine* fe = renderer->GetRSFontEngine();
+
+    double px2su = renderer->GetScreenUnitsPerPixel();
 
     RS_Bounds styleBounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
     styleBounds.add_point(style->bounds[0]);
@@ -226,12 +230,6 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
 
     double affected_height = rs_max(fabs(styleBounds.miny), fabs(styleBounds.maxy));
     double affected_height_inv = (affected_height > 0.0)? 1.0 / affected_height : 0.0;
-
-    double increment = style->repeat;
-    _ASSERT(increment > 0.0);
-
-    double startOffsetMax = rs_max(style->startOffset, 0.0);
-    double endOffsetMax   = rs_max(style->endOffset, 0.0);
 
     bool roundJoin = (style->vertexJoin == SE_LineJoin_Round);
 
@@ -337,6 +335,31 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
             int ptCount = SE_LineRenderer::ConfigureHotSpots(renderer, geometry, cur_contour, style, styleBounds, hotspots);
             double total_length = hotspots[ptCount-1].mid;
 
+            // get the distribution for the current contour
+            double repeat = style->repeat;
+            double startOffset = style->startOffset;
+            double endOffset = style->endOffset;
+            if (style->unitsControl == SE_UnitsControl_Parametric)
+            {
+                repeat *= total_length;
+                startOffset *= total_length;
+                endOffset *= total_length;
+
+                // It makes no sense to distribute symbols using a repeat value
+                // which is much less than one pixel.  We'll scale up any value
+                // less than 0.25 to 0.5.
+                if (repeat > 0.0 && repeat < 0.25*px2su)
+                {
+                    // just increase it by an integer multiple so the overall
+                    // distribution isn't affected
+                    int factor = (int)(0.5*px2su / repeat);
+                    repeat *= factor;
+                }
+            }
+
+            double startOffsetMax = rs_max(startOffset, 0.0);
+            double endOffsetMax   = rs_max(endOffset, 0.0);
+
             // check if:
             // - the start offset goes beyond the end of the contour
             // - the end offset goes beyond the beginning of the contour
@@ -353,22 +376,22 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
             // calculate the initial draw position
             double drawpos  = startpos;
 
-            if (style->startOffset < 0.0 && style->endOffset >= 0.0)
+            if (startOffset < 0.0 && endOffset >= 0.0)
             {
                 // only end offset is specified - adjust the draw position so we
-                // have: endpos = drawpos + i*increment
-                drawpos = fmod(endpos, increment);
+                // have: endpos = drawpos + i*repeat
+                drawpos = fmod(endpos, repeat);
 
-                // reduce the draw position by one increment if the initial style would
+                // reduce the draw position by one repeat if the initial style would
                 // still display
-                if (drawpos - increment + styleBounds.maxx >= 0.0)
-                    drawpos -= increment;
+                if (drawpos - repeat + styleBounds.maxx >= 0.0)
+                    drawpos -= repeat;
 
                 // Roundoff error can lead to the final symbol position being slightly
                 // greater than endpos, which could lead to additional undesireable
                 // clipping of the final symbol.  Prevent this by reducing drawpos
-                // slightly (a fraction of the increment).
-                drawpos -= 1.0e-10 * increment;
+                // slightly (a fraction of the repeat).
+                drawpos -= 1.0e-10 * repeat;
             }
 
             // cache these for later use
@@ -413,7 +436,7 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
                     // Just put the pedal to the metal and draw an unwarped symbol.
                     renderer->DrawSymbol(rs, xformStart, next_hotspot->angle_start);
 
-                    drawpos += increment;
+                    drawpos += repeat;
                     sym_minx = drawpos + styleBounds.minx;
                     sym_maxx = drawpos + styleBounds.maxx;
                 }
@@ -942,7 +965,7 @@ void SE_LineRenderer::ProcessLineOverlapWrap(SE_Renderer* renderer, LineBuffer* 
                     }
 
                     // we're finally done with the symbol draw, so move forward by the repeat amount
-                    drawpos += increment;
+                    drawpos += repeat;
                     sym_minx = drawpos + styleBounds.minx;
                     sym_maxx = drawpos + styleBounds.maxx;
 
