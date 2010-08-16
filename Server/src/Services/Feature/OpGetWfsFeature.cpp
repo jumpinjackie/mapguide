@@ -111,6 +111,61 @@ void MgOpGetWfsFeature::Execute()
         // Write the response
         EndExecution(byteReader);
     }
+    else if (7 == m_packet.m_NumArguments)
+    {
+        // Get the feature source
+        Ptr<MgResourceIdentifier> featureSourceId = (MgResourceIdentifier*)m_stream->GetObject();
+
+        // Get the schema name
+        STRING featureClass;
+        m_stream->GetString(featureClass);
+
+        // Get the required properties
+        Ptr<MgStringCollection> requiredProperties = (MgStringCollection*)m_stream->GetObject();
+
+        // Get the srs
+        STRING srs;
+        m_stream->GetString(srs);
+
+        // Get the filter
+        STRING filter;
+        m_stream->GetString(filter);
+
+        // Get the max features to return
+        INT32 maxFeatures;
+        m_stream->GetInt32(maxFeatures);
+
+        // Get the output format
+        STRING outputFormat;
+        m_stream->GetString(outputFormat);
+
+        BeginExecution();
+
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(featureSourceId->ToString().c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(featureClass.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgStringCollection");
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(srs.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(filter.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(maxFeatures);
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(outputFormat.c_str());
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+        Validate();
+
+        // Execute the operation
+        Ptr<MgByteReader> byteReader = m_service->GetWfsFeature(featureSourceId, featureClass,
+            requiredProperties, srs, filter, maxFeatures,outputFormat);
+
+        // Write the response
+        EndExecution(byteReader);
+    }
     else
     {
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();

@@ -1261,6 +1261,49 @@ MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifie
 }
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Retrieves schema informationabout a set of feature classes for a given feature source  with specified format.
+///
+///
+/// <!-- Syntax in .Net, Java, and PHP -->
+/// \htmlinclude DotNetSyntaxTop.html
+/// virtual MgByteReader DescribeWfsFeatureType(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses, string outputFormat);
+/// \htmlinclude SyntaxBottom.html
+/// \htmlinclude JavaSyntaxTop.html
+/// virtual MgByteReader DescribeWfsFeatureType(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses, string outputFormat);
+/// \htmlinclude SyntaxBottom.html
+/// \htmlinclude PHPSyntaxTop.html
+/// virtual MgByteReader DescribeWfsFeatureType(MgResourceIdentifier featureSourceId, MgStringCollection featureClasse, string outputFormats);
+/// \htmlinclude SyntaxBottom.html
+///
+/// \param featureSourceId (MgResourceIdentifier)
+/// The resource identifier defining the
+/// location of the feature source in
+/// the repository.
+/// \param featureClasses (MgStringCollection)
+/// A collection of strings identifying the feature classes for which to
+/// retrieve schema information. If this collection is null or empty, information
+/// is returned for all feature classes.
+/// \param outputFormat (String/string)
+/// A string identifying the output format of 
+/// the retrieved schema information.
+/// The supported values of output format are specified in OpenGIS Web Feature Service (WFS) Implementation Specification - section 8.2
+/// http://portal.opengeospatial.org/files/?artifact_id=8339
+///
+/// \return
+/// Returns an MgByteReader containing the XML schema.
+///
+MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId, MgStringCollection* featureClasses,CREFSTRING outputFormat)
+{
+    throw new MgNotImplementedException(
+    L"MgServerFeatureService::DescribeWfsFeatureType",
+    __LINE__, __WFILE__, NULL, L"", NULL);
+
+    return NULL; // to make some compiler happy
+}
+
+
 //////////////////////////////////////////////////////////////////
 // Helper private method
 void MgServerFeatureService::FeatureSourceToString(MgResourceIdentifier* resource, string& resourceContent)
@@ -1825,6 +1868,61 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     return byteReader.Detach();
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Retrieves feature information based on the supplied criteria with specified format.
+///
+///
+/// <!-- Syntax in .Net, Java, and PHP -->
+/// \htmlinclude DotNetSyntaxTop.html
+/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string outputFormat);
+/// \htmlinclude SyntaxBottom.html
+/// \htmlinclude JavaSyntaxTop.html
+/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, String featureClass, MgStringCollection requiredProperties, String srs, String filter, int maxFeatures, string outputFormat);
+/// \htmlinclude SyntaxBottom.html
+/// \htmlinclude PHPSyntaxTop.html
+/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string outputFormat);
+/// \htmlinclude SyntaxBottom.html
+///
+/// \param featureSourceId (MgResourceIdentifier)
+/// The resource identifier defining the
+/// location of the feature source in
+/// the repository.
+/// \param featureClass (String/string)
+/// The feature class containing the features to retrieve.
+/// \param requiredProperties (MgStringCollection)
+/// The collection of properties to retrieve for each feature. If the
+/// collection is null or empty, all properties will be retrieved.
+/// \param srs (String/string)
+/// The spatial reference system in which to return feature geometries
+/// \param filter (String/string)
+/// An XML string containing the definition for an OGC filter
+/// \param maxFeatures (int)
+/// The maximum number of features to retrieve. If the value is less
+/// than or equal to zero, all features will be retrieved.
+/// \param outputFormat (String/string)
+/// A string identifying the output format of 
+/// the retrieved feature information.
+/// The supported values of output format are specified in OpenGIS Web Feature Service (WFS) Implementation Specification - section 9.2
+/// http://portal.opengeospatial.org/files/?artifact_id=8339
+///
+/// \return
+/// Returns an MgByteReader containing the requested feature information.
+///
+MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
+                                                     CREFSTRING featureClass,
+                                                     MgStringCollection* propNames, 
+                                                     CREFSTRING srs, 
+                                                     CREFSTRING wfsFilter, 
+                                                     INT32 maxFeatures,
+                                                     CREFSTRING outputFormat)
+{
+    throw new MgNotImplementedException(
+    L"MgServerFeatureService::GetWfsFeature",
+    __LINE__, __WFILE__, NULL, L"", NULL);
+
+    return NULL; // to make some compiler happy
+}
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// This method enumerates all the providers and if they are FDO enabled for

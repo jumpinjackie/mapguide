@@ -83,6 +83,10 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
     {
         featureTypeList = MgStringCollection::ParseCollection(sFeatureTypes, L",");
     }
+    
+    // Determine required output format
+    CPSZ pszOutputFormat = Wfs.RequestParameter(MgHttpResourceStrings::reqWfsOutputFormat.c_str());
+    STRING sOutputFormat = pszOutputFormat? pszOutputFormat : _("");
 
     Ptr<MgResourceService> pResourceService = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
     Ptr<MgFeatureService> pFeatureService = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
@@ -111,6 +115,7 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
                 pFeatureClasses->Add(((sSchemaHash.size()==0) ? sClass : sSchemaHash + _(":") + sClass)); //NOXLATE
 
                 Ptr<MgByteReader> response  = pFeatureService->DescribeWfsFeatureType(&idResource,pFeatureClasses);
+                //Ptr<MgByteReader> response  = pFeatureService->DescribeWfsFeatureType(&idResource,pFeatureClasses,sOutputFormat);
 
                 // Set the result
                 hResult->SetResultObject(response, response->GetMimeType());

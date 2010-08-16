@@ -91,6 +91,10 @@ WfsGetFeatureParams::WfsGetFeatureParams(MgOgcWfsServer& oServer/*MgHttpRequestP
         // Return all features by default
         m_maxFeatures = -1;
     }
+
+    // Get the requested output format
+    m_outputFormat = GetRequestParameter(oServer,MgHttpResourceStrings::reqWfsOutputFormat);
+
 }
 
 WfsGetFeatureParams::~WfsGetFeatureParams()
@@ -327,6 +331,16 @@ INT32 WfsGetFeatureParams::GetMaxFeatures()
 STRING WfsGetFeatureParams::GetSrs()
 {
     return m_srs;
+}
+/// <summary>
+/// Retrieves the output format of the feautre information
+/// </summary>
+/// <returns>
+/// A STRING defining the output format
+/// </returns>
+STRING WfsGetFeatureParams::GetOutputFormat()
+{
+    return m_outputFormat;
 }
 
 /// <summary>

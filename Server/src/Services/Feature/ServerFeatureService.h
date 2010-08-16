@@ -855,6 +855,31 @@ public:
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
+    /// Retrieves schema information about a set of feature classes for a given feature source with specified output format.
+    /// </summary>
+    /// <param name="featureSourceId">Input
+    /// The resource identifier defining the
+    /// location of the feature source in
+    /// the repository.
+    /// </param>
+    /// <param name="featureClasses">Input
+    /// A collection of strings identifying the feature classes for which to
+    /// retrieve schema information. If this collection is null or empty, information
+    /// is returned for all feature classes.
+    /// </param>
+    /// <param name="outputFormat">Input
+    /// A string identifying the output format of the retrieved schema information.
+	/// The supported values of output format are specified in OpenGIS Web Feature Service (WFS) Implementation Specification - section 8.2
+	/// http://portal.opengeospatial.org/files/?artifact_id=8339
+    /// </param>
+    /// <returns>
+    /// Returns an MgByteReader containing the XML schema.
+    /// </returns>
+    ///
+    MgByteReader* DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId, MgStringCollection* featureClasses, CREFSTRING outputFormat);
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
     /// Retrieves feature information based on the supplied criteria.
     /// </summary>
     /// <param name="featureSourceId">Input
@@ -885,6 +910,44 @@ public:
     ///
     MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId, CREFSTRING featureClass,
         MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures);
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Retrieves feature information based on the supplied criteria with specified output format.
+    /// </summary>
+    /// <param name="featureSourceId">Input
+    /// The resource identifier defining the
+    /// location of the feature source in
+    /// the repository.
+    /// </param>
+    /// <param name="featureClass">Input
+    /// The feature class containing the features to retrieve.
+    /// </param>
+    /// <param name="requiredProperties">Input
+    /// The collection of properties to retrieve for each feature. If the
+    /// collection is null or empty, all properties will be retrieved.
+    /// </param>
+    /// <param name="srs">Input
+    /// The spatial reference system in which to return feature geometries.
+    /// </param>
+    /// <param name="filter">Input
+    /// An XML string containing the definition for an OGC filter.
+    /// </param>
+    /// <param name="maxFeatures">Input
+    /// The maximum number of features to retrieve. If the value is less
+    /// than or equal to zero, all features will be retrieved.
+    /// </param>
+    /// <param name="outputFormat">Input
+    /// A string identifying the output format of the retrieved feature information.
+    /// The supported values of output format are specified in OpenGIS Web Feature Service (WFS) Implementation Specification - section 9.2
+    /// http://portal.opengeospatial.org/files/?artifact_id=8339
+    /// </param>
+    /// <returns>
+    /// Returns an MgByteReader containing the requested feature information.
+    /// </returns>
+    ///
+    MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId, CREFSTRING featureClass,
+        MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures, CREFSTRING outputFormat);
 
     ////////////////////////////////////////////////////////////////////////////////
     /// <summary>
