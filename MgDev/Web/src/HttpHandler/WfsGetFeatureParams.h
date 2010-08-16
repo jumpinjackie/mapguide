@@ -102,6 +102,14 @@ public:
     STRING GetSrs();
 
     /// <summary>
+    /// Retrieves the output format of the feature information
+    /// </summary>
+    /// <returns>
+    /// A STRING defining the output format
+    /// </returns>
+    STRING GetOutputFormat();
+
+    /// <summary>
     /// Performs a minimum amount of request parsing in order to determine
     /// whether this class can handle the specified XML request
     /// </summary>
@@ -152,6 +160,7 @@ private:
     MgXmlNamespaceManager*  m_pNamespaces; // collect namespaces (ns#) namespaces
     INT32 m_maxFeatures;
     STRING m_srs;
+    STRING m_outputFormat;
 };
 
 #endif  // _FS_WFS_GET_FEATURE_PARAMS_H

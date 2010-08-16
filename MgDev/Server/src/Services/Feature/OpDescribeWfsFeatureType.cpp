@@ -86,6 +86,36 @@ void MgOpDescribeWfsFeatureType::Execute()
         // Write the response
         EndExecution(byteReader);
     }
+    else if (3 == m_packet.m_NumArguments)
+    {
+        // Get the feature source
+        Ptr<MgResourceIdentifier> featureSourceId = (MgResourceIdentifier*)m_stream->GetObject();
+
+        // Get the feature class collection
+        Ptr<MgStringCollection> featureClasses = (MgStringCollection*)m_stream->GetObject();
+
+        // Get the output format
+        STRING outputFormat;
+        m_stream->GetString(outputFormat);
+
+        BeginExecution();
+
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(featureSourceId->ToString().c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgStringCollection");
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(outputFormat.c_str());
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+        Validate();
+
+        // Execute the operation
+        Ptr<MgByteReader> byteReader = m_service->DescribeWfsFeatureType(featureSourceId, featureClasses,outputFormat);
+
+        // Write the response
+        EndExecution(byteReader);
+    }
     else
     {
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();

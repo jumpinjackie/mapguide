@@ -1343,6 +1343,28 @@ MgByteReader* MgProxyFeatureService::DescribeWfsFeatureType(MgResourceIdentifier
     return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
 
+//////////////////////////////////////////////////////////////////
+// Retrieves WFS schema information for the specified feature classes with specified format
+MgByteReader* MgProxyFeatureService::DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId,
+                                                            MgStringCollection* featureClasses,
+                                                            CREFSTRING outputFormat)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knObject,                         // Return type expected
+                       MgFeatureServiceOpId::DescribeWfsFeatureType_Id, // Command Code
+                       3,                                           // No of arguments
+                       Feature_Service,                             // Service Id
+                       BUILD_VERSION(2,3,0),                        // Operation version
+                       MgCommand::knObject, featureSourceId,        // Argument#1
+                       MgCommand::knObject, featureClasses,         // Argument#2
+                       MgCommand::knString, &outputFormat,          // Argument#3
+                       MgCommand::knNone);                          // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}
 
 //////////////////////////////////////////////////////////////////
 // Retrieves feature information in WFS format, based on the specified criteria
@@ -1373,6 +1395,36 @@ MgByteReader* MgProxyFeatureService::GetWfsFeature(MgResourceIdentifier* feature
     return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
 
+//////////////////////////////////////////////////////////////////
+// Retrieves feature information in with specified WFS format, based on the specified criteria
+MgByteReader* MgProxyFeatureService::GetWfsFeature(MgResourceIdentifier* featureSourceId,
+                                                   CREFSTRING featureClass,
+                                                   MgStringCollection* requiredProperties,
+                                                   CREFSTRING srs,
+                                                   CREFSTRING filter,
+                                                   INT32 maxFeatures,
+                                                   CREFSTRING outputFormat)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knObject,                         // Return type expected
+                       MgFeatureServiceOpId::GetWfsFeature_Id,      // Command Code
+                       7,                                           // No of arguments
+                       Feature_Service,                             // Service Id
+                       BUILD_VERSION(2,3,0),                        // Operation version
+                       MgCommand::knObject, featureSourceId,        // Argument#1
+                       MgCommand::knString, &featureClass,          // Argument#2
+                       MgCommand::knObject, requiredProperties,     // Argument#3
+                       MgCommand::knString, &srs,                   // Argument#4
+                       MgCommand::knString, &filter,                // Argument#5
+                       MgCommand::knInt32,  maxFeatures,            // Argument#6
+                       MgCommand::knString, &outputFormat,          // Argument#7
+                       MgCommand::knNone);                          // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}
 
 //////////////////////////////////////////////////////////////////
 MgBatchPropertyCollection* MgProxyFeatureService::GetFeatures(CREFSTRING featureReader)
