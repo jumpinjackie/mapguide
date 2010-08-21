@@ -49,6 +49,10 @@
         <Feature Id="IISSetupFeature" Level="1" Display="hidden" >
 
             <!-- IIS5 Base component -->
+            <!-- 
+            NOTE: Always check the file offsets whenever PHP is updated and/or the mapagent is updated, because we may be creating script
+            maps to files that have moved up or down, and thus the offset is no longer valid
+            -->
             <Component Id="IIS5BaseMapGuideComponent" Win64="$(var.Win64)" Guid="4174B322-8449-4299-813F-E2B1FCB4ECB4" Directory="WEBEXTENSIONSLOCATION">
                 <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#5&quot;</Condition>
                 <CreateFolder />
@@ -103,6 +107,10 @@
             </Component>
             
             <!-- IIS6 Base component -->
+            <!-- 
+            NOTE: Always check the file offsets whenever PHP is updated and/or the mapagent is updated, because we may be creating script
+            maps to files that have moved up or down, and thus the offset is no longer valid
+            -->
             <Component Id="IIS6BaseMapGuideComponent" Win64="$(var.Win64)" Guid="BC77760D-55D5-4111-BC1D-50CEC0482D60" Directory="WEBEXTENSIONSLOCATION">
                 <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Condition>
                 <CreateFolder />
