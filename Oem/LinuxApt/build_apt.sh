@@ -243,10 +243,10 @@ fi
 #**********************************************************
 if [ "$TOMCAT" = "1" ]; then
 echo Tomcat install started
-tar -zxf apache-tomcat-6.0.24.tar.gz -C $INSTALLWEB
+tar -zxf apache-tomcat-6.0.29.tar.gz -C $INSTALLWEB
 check_tomcat_install
 pushd $INSTALLWEB
-mv apache-tomcat-6.0.24 tomcat
+mv apache-tomcat-6.0.29 tomcat
 check_tomcat_install
 popd
 echo Tomcat install completed
