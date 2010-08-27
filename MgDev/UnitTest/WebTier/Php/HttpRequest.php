@@ -60,7 +60,6 @@ class HttpRequest
 
         curl_setopt($this->ch, CURLOPT_URL, $httpRequest);
         curl_setopt($this->ch, CURLOPT_HEADER, true);
-        curl_setopt($this->ch, CURLOPT_NOBODY, false);
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->ch, CURLOPT_USERPWD, "Administrator:admin");
 
