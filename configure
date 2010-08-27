@@ -20068,13 +20068,13 @@ else
 fi;
 
 if test $with_php = "no"; then
-    { echo "$as_me:$LINENO: Using php 5.2.5 from included Oem Directory" >&5
-echo "$as_me: Using php 5.2.5 from included Oem Directory" >&6;}
+    { echo "$as_me:$LINENO: Using php 5.3.1 from included Oem Directory" >&5
+echo "$as_me: Using php 5.3.1 from included Oem Directory" >&6;}
 else
     { echo "$as_me:$LINENO: \"WARNING!!: Using custom specified php include dir is not supported in this release.\"" >&5
 echo "$as_me: \"WARNING!!: Using custom specified php include dir is not supported in this release.\"" >&6;}
-    { echo "$as_me:$LINENO: Using php 5.2.5 from included Oem Directory" >&5
-echo "$as_me: Using php 5.2.5 from included Oem Directory" >&6;}
+    { echo "$as_me:$LINENO: Using php 5.3.1 from included Oem Directory" >&5
+echo "$as_me: Using php 5.3.1 from included Oem Directory" >&6;}
 fi
 
 # custom Fdo path specification
