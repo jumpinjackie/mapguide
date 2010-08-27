@@ -31,6 +31,7 @@ function main()
     $isEnterprise = false;
     $file = fopen("UnitTests.log", "w");
 
+    date_default_timezone_set("GMT-0");
     $str = sprintf("Run started: %s\n\n",date("D M j G:i:s T Y"));
 
     echo $str;
