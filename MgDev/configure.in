@@ -36,7 +36,7 @@ map_opt_oem_subdirs="CsMap"
 map_opt_oem_distsubdirs=""
 
 dnl *******************************************************
-dnl PHP 5.2.5 Configuration
+dnl PHP 5.3.1 Configuration
 dnl *******************************************************
 # Check for php
 # Note : Not yet implemented
@@ -47,10 +47,10 @@ AC_ARG_WITH([php],
         [with_php=no])
 
 if test $with_php = "no"; then
-    AC_MSG_NOTICE([Using php 5.2.5 from included Oem Directory])
+    AC_MSG_NOTICE([Using php 5.3.1 from included Oem Directory])
 else
     AC_MSG_NOTICE(["WARNING!!: Using custom specified php include dir is not supported in this release."])
-    AC_MSG_NOTICE([Using php 5.2.5 from included Oem Directory])
+    AC_MSG_NOTICE([Using php 5.3.1 from included Oem Directory])
 fi
 
 dnl *******************************************************
