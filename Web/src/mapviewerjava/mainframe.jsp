@@ -507,7 +507,7 @@ try
                       userCode,
                       taskItemTexts,
                       selAwareCmds,
-                      vpath + "printablepageui.jsp",
+                      vpath + "quickplotpanel.jsp",
                       vpath + "measureui.jsp",
                       vpath + "searchprompt.jsp",
                       vpath + "bufferui.jsp",

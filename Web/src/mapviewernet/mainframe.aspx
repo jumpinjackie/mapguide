@@ -507,7 +507,7 @@ NameValueCollection cmds = null;
                     userCode,
                     taskItemTexts,
                     selAwareCmds,
-                    vpath + "printablepageui.aspx",
+                    vpath + "quickplotpanel.aspx",
                     vpath + "measureui.aspx",
                     vpath + "searchprompt.aspx",
                     vpath + "bufferui.aspx",

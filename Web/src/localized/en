@@ -254,3 +254,22 @@ NOFEATSELECTRESPONSE    = No response from feature selection request
 # Multiple Property Processing
 SERVERERROR             = Server Error
 ERRORSTACKTRACE         = Stack Trace
+
+# Quick Plot
+QUICKPLOT_HEADER        = Quick Plot
+QUICKPLOT_TITLE         = Title
+QUICKPLOT_SUBTITLE      = Sub title
+QUICKPLOT_PAPER_SIZE    = Paper size
+QUICKPLOT_SCALING       = Scaling
+QUICKPLOT_DPI           = Print DPI
+QUICKPLOT_GENERATE      = Generate
+QUICKPLOT_ADVANCED_OPTIONS = Advanced options
+QUICKPLOT_PRINT         = Print
+QUICKPLOT_CANCEL        = Cancel
+QUICKPLOT_PREVIEW_ERROR = The application resources required to generate the plot exceed the settings defined by the administrator
+QUICKPLOT_RESOLUTION_WARNING = The current settings exceed the map resolution. Zooming out or increasing the scaling will help create a more legible plot
+QUICKPLOT_SCALE_LABEL   = Scale
+
+# Multiple Property Processing
+SERVERERROR             = Server Error
+ERRORSTACKTRACE         = Stack Trace
