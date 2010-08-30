@@ -503,7 +503,7 @@ function BuildViewer($forDwf = true)
                     $userCode,
                     $taskItemTexts,
                     $selAwareCmds,
-                    $vpath . "printablepageui.php",
+                    $vpath . "quickplotpanel.php",
                     $vpath . "measureui.php",
                     $vpath . "searchprompt.php",
                     $vpath . "bufferui.php",

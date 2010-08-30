@@ -2,6 +2,44 @@ function Point(x, y)
 {
     this.X = x;
     this.Y = y;
+    
+    this.rotate = function(angle, origin)
+    {
+        angle     *= Math.PI / 180;
+        var radius = this.distanceTo(origin);
+        var theta  = angle + Math.atan2(this.Y - origin.Y, this.X - origin.X);
+        this.X     = origin.X + radius * Math.cos(theta);
+        this.Y     = origin.Y + radius * Math.sin(theta);
+        
+        return this;
+    };
+
+    this.move = function(x, y)
+    {
+        this.X += x;
+        this.Y += y;
+        
+        return this;
+    };
+
+    this.resize = function(scale, origin, ratio)
+    {
+        ratio = (ratio == undefined) ? 1 : ratio;
+        this.X = origin.X + (scale * ratio * (this.X - origin.X));
+        this.Y = origin.Y + (scale * (this.Y - origin.Y));
+        
+        return this;
+    };
+
+    this.distanceTo = function(point)
+    {
+        return Math.sqrt(Math.pow(this.X - point.X, 2) + Math.pow(this.Y - point.Y, 2));
+    };
+
+    this.clone = function()
+    {
+        return new Point(this.X, this.Y);
+    };
 }
 
 function LineString()
@@ -21,6 +59,56 @@ function LineString()
             return null;
         return this.points[i];
     }
+    
+    this.rotate = function (angle, origin)
+    {
+        for (var i = 0; i < this.points.length; ++i)
+        {
+            this.points[i].rotate(angle, origin);
+        }
+        
+        return this;
+    };
+    
+    this.move = function (x, y)
+    {
+        for (var i = 0; i < this.points.length; ++i)
+        {
+            this.points[i].move(x, y);
+        }
+        
+        return this;
+    };
+
+    
+    this.resize = function(scale, origin, ratio)
+    {
+        for (var i = 0; i < this.points.length; ++i)
+        {
+            this.points[i].resize(scale, origin, ratio);
+        }
+        
+        return this;
+    };
+    
+    this.getBounds = function()
+    {
+        var xs = [];
+        var ys = [];
+        for (var i = 0; i < this.points.length; ++i)
+        {
+            xs.push(this.points[i].X);
+            ys.push(this.points[i].Y);
+        }
+        
+        var left   = xs.min();
+        var right  = xs.max();
+        var top    = ys.min();
+        var bottom = ys.max();
+        var size   = {width: right - left, height: bottom - top};
+        
+        return {left: left, right: right, top: top, bottom: bottom, size: size};
+    };
 }
 
 function Circle()
@@ -46,6 +134,53 @@ function Polygon()
 {
     this.LineStringInfo = LineString;
     this.LineStringInfo();
+
+    this.clone = function()
+    {
+        var c = new Polygon();
+        
+        for (var i = 0; i < this.points.length; ++i)
+        {
+            c.AddPoint(this.points[i].clone());
+        }
+        
+        return c;
+    };
+
+    this.getCentroid = function()
+    {
+        var sumX = 0.0;
+        var sumY = 0.0;
+        
+        for (var i = 0; i < this.points.length - 1; ++i)
+        {
+            var b = this.points[i];
+            var c = this.points[i + 1];
+            
+            sumX += (b.X + c.X) * (b.X * c.Y - c.X * b.Y);
+            sumY += (b.Y + c.Y) * (b.X * c.Y - c.X * b.Y);
+        }
+        
+        var area = -1 * this.getArea();
+        var x = sumX / (6 * area);
+        var y = sumY / (6 * area);
+        
+        return new Point(x, y);
+    };
+
+    this.getArea = function()
+    {
+        var sum  = 0.0;
+        
+        for (var i = 0; i < this.points.length - 1; ++i)
+        {
+            var b = this.points[i];
+            var c = this.points[i + 1];
+            sum  += (b.X + c.X) * (c.Y - b.Y);
+        }
+        
+        return -sum / 2.0;
+    };
 }
 
 function Digitizer(handler, cnvfunc, cancelTgt, fbShape, fbDiv, fbColor, fbPos, fbW, fbH, tiphandler, tiptext)
