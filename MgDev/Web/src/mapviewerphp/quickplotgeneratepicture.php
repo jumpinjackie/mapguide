@@ -99,7 +99,7 @@
         // Get the correct port number
         $mapAgent .= "://" . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"];
         // Get the correct virtual directory
-        $mapAgent .= substr($_SERVER["URL"], 0, strpos($_SERVER["URL"], "/", 1) + 1);
+        $mapAgent .= substr($_SERVER["REQUEST_URI"], 0, strpos($_SERVER["REQUEST_URI"], "/", 1));
         $mapAgent .="/mapagent/mapagent.fcgi?VERSION=1.0.0&OPERATION=GETMAPIMAGE" .
                     "&SESSION=$sessionID" .  
                     "&MAPNAME=$mapName" .
@@ -111,6 +111,7 @@
                     "&SETDISPLAYWIDTH=$toSize->width" . 
                     "&SETDISPLAYHEIGHT=$toSize->height" . 
                     "&CLIP=0";
+
         $image = imagecreatefrompng($mapAgent);
         // Rotate the picture back to be normalized
         $normalizedImg = imagerotate($image, -$rotation, 0);
