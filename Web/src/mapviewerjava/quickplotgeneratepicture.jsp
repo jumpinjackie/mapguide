@@ -201,8 +201,9 @@ String GetMapAgentPath(HttpServletRequest request)
     // Get the correct http protocol
     StringBuilder mapAgent = new StringBuilder(request.getScheme());
     mapAgent.append("://");
-    // Get the server name
-    mapAgent.append(request.getServerName()).append(":");
+    // Just use the 127.0.0.1 specificly to point to localhost. Because the WebExtension will
+    // be always on the same server with map agent. 
+    mapAgent.append("127.0.0.1").append(":");
     // Get the correct port number;
     mapAgent.append(request.getServerPort());
     // Get the correct virtual directory
