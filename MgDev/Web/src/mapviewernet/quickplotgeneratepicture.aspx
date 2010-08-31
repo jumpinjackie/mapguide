@@ -117,7 +117,9 @@ void GenerateMap(Size size)
     // Get the correct http protocol
     StringBuilder mapAgent = new StringBuilder(Request.IsSecureConnection ? "https://" : "http://");
     // Get the correct port number
-    mapAgent.Append(Request.ServerVariables["SERVER_NAME"]).Append(":").Append(Request.ServerVariables["SERVER_PORT"]);
+    // Just use the 127.0.0.1 specificly to point to localhost. Because the WebExtension will
+    // be always on the same server with map agent. 
+    mapAgent.Append("127.0.0.1").Append(":").Append(Request.ServerVariables["SERVER_PORT"]);
 
     // Get the correct virtual directory
     string url = Request.ServerVariables["URL"];

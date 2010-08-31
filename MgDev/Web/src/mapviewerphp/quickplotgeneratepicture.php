@@ -97,7 +97,9 @@
             $mapAgent .= "s";
         }
         // Get the correct port number
-        $mapAgent .= "://" . $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"];
+        // Just use the 127.0.0.1 specificly to point to localhost. Because the WebExtension will
+        // be always on the same server with map agent. 
+        $mapAgent .= "://127.0.0.1:" . $_SERVER["SERVER_PORT"];
         // Get the correct virtual directory
         $mapAgent .= substr($_SERVER["REQUEST_URI"], 0, strpos($_SERVER["REQUEST_URI"], "/", 1));
         $mapAgent .="/mapagent/mapagent.fcgi?VERSION=1.0.0&OPERATION=GETMAPIMAGE" .
