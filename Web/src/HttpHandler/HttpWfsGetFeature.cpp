@@ -149,7 +149,13 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
                 int numFeaturesRetrieved = 0;
                 int maxFeatures = m_getFeatureParams->GetMaxFeatures();
 
+                STRING sVersion = m_getFeatureParams->GetVersion();
                 STRING sOutputFormat = m_getFeatureParams->GetOutputFormat();
+                if(sOutputFormat.empty())
+                {
+                    // get the default output format
+                    sOutputFormat = wfsServer->GetDefaultOutputFormat(sVersion);
+                }
 
                 for(int i = 0; i < featureTypeList->GetCount(); i++)
                 {
@@ -222,9 +228,7 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
 
                             // Call the C++ API
                             Ptr<MgByteReader> resultReader = featureService->GetWfsFeature(featureSourceId, ((sSchemaHash.size()==0) ? sClass : sSchemaHash + _(":") + sClass),
-                                requiredProperties, m_getFeatureParams->GetSrs(), filter, numFeaturesToRetrieve);
-                            //Ptr<MgByteReader> resultReader = featureService->GetWfsFeature(featureSourceId, ((sSchemaHash.size()==0) ? sClass : sSchemaHash + _(":") + sClass),
-                            //    requiredProperties, m_getFeatureParams->GetSrs(), filter, numFeaturesToRetrieve, sOutputFormat);
+                                requiredProperties, m_getFeatureParams->GetSrs(), filter, numFeaturesToRetrieve, sVersion, sOutputFormat);
 
                             // TODO How to determine number of features retrieved...?
                             // Note: for now, maxFeatures is managed by the MgWfsFeatures object. - TMT 2006-3-20

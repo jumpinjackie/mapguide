@@ -95,6 +95,9 @@ WfsGetFeatureParams::WfsGetFeatureParams(MgOgcWfsServer& oServer/*MgHttpRequestP
     // Get the requested output format
     m_outputFormat = GetRequestParameter(oServer,MgHttpResourceStrings::reqWfsOutputFormat);
 
+    // Get the wfs version 
+    m_version = GetRequestParameter(oServer,MgHttpResourceStrings::reqWfsVersion);
+
 }
 
 WfsGetFeatureParams::~WfsGetFeatureParams()
@@ -332,6 +335,7 @@ STRING WfsGetFeatureParams::GetSrs()
 {
     return m_srs;
 }
+
 /// <summary>
 /// Retrieves the output format of the feautre information
 /// </summary>
@@ -341,6 +345,17 @@ STRING WfsGetFeatureParams::GetSrs()
 STRING WfsGetFeatureParams::GetOutputFormat()
 {
     return m_outputFormat;
+}
+
+/// <summary>
+/// Retrieves the wfs request version
+/// </summary>
+/// <returns>
+/// A STRING defining the wfs version
+/// </returns>
+STRING WfsGetFeatureParams::GetVersion()
+{
+    return m_version;
 }
 
 /// <summary>

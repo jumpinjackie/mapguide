@@ -135,27 +135,30 @@ table {
       Specific version templates can override these -->
  <Define item="Formats.DescribeFeatureType">
    <item>text/xml; subtype=gml/2.1.2</item>
-   <!--item>text/xml; subtype=gml/3.1.1</item-->
+   <item>text/xml; subtype=gml/3.1.1</item>
  </Define>
 
- <Define item="Formats.DescribeFeatureType.default">text/xml; subtype=gml/2.1.2</Define>
-
+ <Define item="Formats.DescribeFeatureType.default.1.0.0">text/xml; subtype=gml/2.1.2</Define>
+ <Define item="Formats.DescribeFeatureType.default.1.1.0">text/xml; subtype=gml/3.1.1</Define>
+ 
  <!-- For historic reasons, we need to accept these output formats, -->
  <!-- which we convert into the indicated notations                 -->
  <Define item="Parameter.OutputFormat.ValueMap">
   <translate from="GML2">text/xml; subtype=gml/2.1.2</translate>
   <translate from="XMLSCHEMA">text/xml; subtype=gml/2.1.2</translate>
+  <translate from="GML3">text/xml; subtype=gml/3.1.1</translate>
  </Define>
 
  <!-- These are the supported GetFeature formats
       Specific version templates can override these    -->
  <Define item="Formats.GetFeature">
    <item>text/xml; subtype=gml/2.1.2</item>
-   <!--item>text/xml; subtype=gml/3.1.1</item-->
+   <item>text/xml; subtype=gml/3.1.1</item>
  </Define>
 
- <Define item="Formats.GetFeature.default">text/xml; subtype=gml/2.1.2</Define>
-
+ <Define item="Formats.GetFeature.default.1.0.0">text/xml; subtype=gml/2.1.2</Define>
+ <Define item="Formats.GetFeature.default.1.1.0">text/xml; subtype=gml/3.1.1</Define>
+ 
  <!-- These are the supported Exception formats
       Specific version templates can override these -->
  <Define item="Formats.Exception">

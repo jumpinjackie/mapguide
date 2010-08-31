@@ -32,6 +32,7 @@ public:
     void SetFeatures(MgWfsFeatures* pFeatures);
     void SetGetFeatureRequestParams(WfsGetFeatureParams* pGetFeatureParams);
     void SetFeatureDefinitions(MgWfsFeatureDefinitions* pFeatureDefs);
+	STRING GetDefaultOutputFormat(CREFSTRING sVersion);
 
 protected:
     virtual void RespondToRequest();

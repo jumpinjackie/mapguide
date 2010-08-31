@@ -1055,8 +1055,8 @@ INTERNAL_API:
     /// A string identifying the output format of 
     /// the retrieved schema information.
     /// The supported values of output format are specified in OpenGIS Web Feature Service (WFS) Implementation Specification - section 8.2
-	/// http://portal.opengeospatial.org/files/?artifact_id=8339
-	/// 
+    /// http://portal.opengeospatial.org/files/?artifact_id=8339
+    /// 
     /// \return
     /// Returns an MgByteReader containing the XML schema.
     ///
@@ -1106,13 +1106,13 @@ INTERNAL_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string outputFormat);
+    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, String featureClass, MgStringCollection requiredProperties, String srs, String filter, int maxFeatures, string outputFormat);
+    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, String featureClass, MgStringCollection requiredProperties, String srs, String filter, int maxFeatures, string wfsVersion, string outputFormat);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string outputFormat);
+    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param featureSourceId (MgResourceIdentifier)
@@ -1131,6 +1131,8 @@ INTERNAL_API:
     /// \param maxFeatures (int)
     /// The maximum number of features to retrieve. If the value is less
     /// than or equal to zero, all features will be retrieved.
+    /// \param wfsVersion (String/string)
+    /// A string identifying the wfs version
     /// \param outputFormat (String/string)
     /// A string identifying the output format of 
     /// the retrieved feature information.
@@ -1140,8 +1142,11 @@ INTERNAL_API:
     /// \return
     /// Returns an MgByteReader containing the requested feature information.
     ///
+    ///
+    /// \exception MgInvalidArgumentException
+    ///
     MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId, CREFSTRING featureClass,
-        MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures,CREFSTRING outputFormat);
+        MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures,CREFSTRING wfsVersion, CREFSTRING outputFormat);
 
     ////////////////////////////////////////////////////////////////////////////////
     /// \brief

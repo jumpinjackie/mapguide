@@ -111,7 +111,7 @@ void MgOpGetWfsFeature::Execute()
         // Write the response
         EndExecution(byteReader);
     }
-    else if (7 == m_packet.m_NumArguments)
+    else if (8 == m_packet.m_NumArguments)
     {
         // Get the feature source
         Ptr<MgResourceIdentifier> featureSourceId = (MgResourceIdentifier*)m_stream->GetObject();
@@ -135,6 +135,10 @@ void MgOpGetWfsFeature::Execute()
         INT32 maxFeatures;
         m_stream->GetInt32(maxFeatures);
 
+        // Get the wfs version
+        STRING wfsVersion;
+        m_stream->GetString(wfsVersion);
+
         // Get the output format
         STRING outputFormat;
         m_stream->GetString(outputFormat);
@@ -154,6 +158,8 @@ void MgOpGetWfsFeature::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(maxFeatures);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(wfsVersion.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(outputFormat.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
@@ -161,7 +167,7 @@ void MgOpGetWfsFeature::Execute()
 
         // Execute the operation
         Ptr<MgByteReader> byteReader = m_service->GetWfsFeature(featureSourceId, featureClass,
-            requiredProperties, srs, filter, maxFeatures,outputFormat);
+            requiredProperties, srs, filter, maxFeatures, wfsVersion, outputFormat);
 
         // Write the response
         EndExecution(byteReader);

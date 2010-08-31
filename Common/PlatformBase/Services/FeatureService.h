@@ -1610,13 +1610,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string outputFormat);
+    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, String featureClass, MgStringCollection requiredProperties, String srs, String filter, int maxFeatures, string outputFormat);
+    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, String featureClass, MgStringCollection requiredProperties, String srs, String filter, int maxFeatures, string wfsVersion, string outputFormat);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string outputFormat);
+    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param featureSourceId (MgResourceIdentifier)
@@ -1635,6 +1635,8 @@ PUBLISHED_API:
     /// \param maxFeatures (int)
     /// The maximum number of features to retrieve. If the value is less
     /// than or equal to zero, all features will be retrieved.
+    /// \param wfsVersion (String/string)
+    /// A string identifying the wfs version
     /// \param outputFormat (String/string)
     /// A string identifying the output format of 
     /// the retrieved feature information.
@@ -1644,8 +1646,10 @@ PUBLISHED_API:
     /// \return
     /// Returns an MgByteReader containing the requested feature information.
     ///
+    /// \exception MgInvalidArgumentException
+    ///
     virtual MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId, CREFSTRING featureClass,
-        MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures,CREFSTRING outputFormat) = 0;
+        MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures,CREFSTRING wfsVersion, CREFSTRING outputFormat) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////
     /// \brief
