@@ -35,7 +35,8 @@ CPSZ kpszPiEnumFeaturesDefaultFormat       = _("&Feature.Name;\n");
 CPSZ kpszPiDefinitionFeatureIteration      = _("Feature.iteration");
 
 CPSZ kpszQueryValueGetFeature                = _("GetFeature");
-CPSZ kpszQueryStringGetFeatureOutputFormatDefault    = _("Formats.GetFeature.default");
+CPSZ kpszQueryStringGetFeatureOutputFormatDefault_1_0_0    = _("Formats.GetFeature.default.1.0.0");
+CPSZ kpszQueryStringGetFeatureOutputFormatDefault_1_1_0    = _("Formats.GetFeature.default.1.1.0");
 CPSZ kpszPiGetFeatureCollection              = _("GetFeatureCollection");
 CPSZ kpszPiGetFeatureCollectionDefaultFormat = _("&GetFeatureCollection.xml;");
 
@@ -240,9 +241,14 @@ void MgOgcWfsServer::GetFeatureResponse()
     {
         // See what format they requested the GetFeature response in...
         CPSZ pszFormat = RequestParameter(kpszQueryStringOutputFormat);
-        if(pszFormat == NULL)
-          pszFormat = this->Definition(kpszQueryStringGetFeatureOutputFormatDefault);
+        STRING sOutputFormat;
 
+        if(pszFormat == NULL)
+        {
+            CPSZ pszVersion = RequestParameter(MgHttpResourceStrings::reqWfsVersion.c_str());
+            sOutputFormat = this->GetDefaultOutputFormat(pszVersion);
+            pszFormat = sOutputFormat.c_str();
+        }
         // Generate a response to the GetFeature request
         if(GenerateResponse(kpszQueryValueGetFeature,pszFormat))
         {
@@ -414,6 +420,21 @@ void MgOgcWfsServer::SetGetFeatureRequestParams(WfsGetFeatureParams* pGetFeature
 void MgOgcWfsServer::SetFeatureDefinitions(MgWfsFeatureDefinitions* pFeatureDefs)
 {
     m_pFeatures = pFeatureDefs;
+}
+
+// Help method to get the default output format
+STRING MgOgcWfsServer::GetDefaultOutputFormat(CREFSTRING sVersion)
+{
+    if(_("1.0.0") == sVersion)
+    {
+        CPSZ psz = this->Definition(kpszQueryStringGetFeatureOutputFormatDefault_1_0_0);
+        return STRING(psz? psz : _(""));
+    }
+    else
+    {
+        CPSZ psz = this->Definition(kpszQueryStringGetFeatureOutputFormatDefault_1_1_0);
+        return STRING(psz? psz : _(""));
+    }
 }
 
 

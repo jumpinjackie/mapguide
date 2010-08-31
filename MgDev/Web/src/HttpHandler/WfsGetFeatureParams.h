@@ -110,6 +110,14 @@ public:
     STRING GetOutputFormat();
 
     /// <summary>
+    /// Retrieves the wfs request version
+    /// </summary>
+    /// <returns>
+    /// A STRING defining the wfs version
+    /// </returns>
+    STRING GetVersion();
+
+    /// <summary>
     /// Performs a minimum amount of request parsing in order to determine
     /// whether this class can handle the specified XML request
     /// </summary>
@@ -161,6 +169,7 @@ private:
     INT32 m_maxFeatures;
     STRING m_srs;
     STRING m_outputFormat;
+    STRING m_version;
 };
 
 #endif  // _FS_WFS_GET_FEATURE_PARAMS_H

@@ -1693,20 +1693,20 @@ MgClassDefinitionCollection* MgServerFeatureService::GetIdentityProperties(MgRes
     return msds.GetIdentityProperties(resource, schemaName, classNames);
 }
 
-
-//////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Retrieves feature information based on the supplied criteria.
+/// Retrieves feature information based on the supplied criteria with specified format.
+///
 ///
 /// <!-- Syntax in .Net, Java, and PHP -->
 /// \htmlinclude DotNetSyntaxTop.html
-/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures);
+/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string outputFormat);
 /// \htmlinclude SyntaxBottom.html
 /// \htmlinclude JavaSyntaxTop.html
-/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, String featureClass, MgStringCollection requiredProperties, String srs, String filter, int maxFeatures);
+/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, String featureClass, MgStringCollection requiredProperties, String srs, String filter, int maxFeatures, string outputFormat);
 /// \htmlinclude SyntaxBottom.html
 /// \htmlinclude PHPSyntaxTop.html
-/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures);
+/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string outputFormat);
 /// \htmlinclude SyntaxBottom.html
 ///
 /// \param featureSourceId (MgResourceIdentifier)
@@ -1722,19 +1722,30 @@ MgClassDefinitionCollection* MgServerFeatureService::GetIdentityProperties(MgRes
 /// The spatial reference system in which to return feature geometries
 /// \param filter (String/string)
 /// An XML string containing the definition for an OGC filter
-/// \param filter (int)
+/// \param maxFeatures (int)
 /// The maximum number of features to retrieve. If the value is less
 /// than or equal to zero, all features will be retrieved.
+/// \param wfsVersion (String/string)
+/// A string identifying the wfs version
+/// \param outputFormat (String/string)
+/// A string identifying the output format of 
+/// the retrieved feature information.
+/// The supported values of output format are specified in OpenGIS Web Feature Service (WFS) Implementation Specification - section 9.2
+/// http://portal.opengeospatial.org/files/?artifact_id=8339
 ///
 /// \return
 /// Returns an MgByteReader containing the requested feature information.
 ///
+/// EXCEPTIONS:
+/// MgInvalidArgumentException
 MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
                                                      CREFSTRING featureClass,
-                                                     MgStringCollection* propNames,
-                                                     CREFSTRING srs,
-                                                     CREFSTRING wfsFilter,
-                                                     INT32 maxFeatures)
+                                                     MgStringCollection* propNames, 
+                                                     CREFSTRING srs, 
+                                                     CREFSTRING wfsFilter, 
+                                                     INT32 maxFeatures,
+                                                     CREFSTRING wfsVersion,
+                                                     CREFSTRING outputFormat)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetWfsFeature()");
 
@@ -1821,6 +1832,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     MgServerFdoFeatureReader maxFeatureReader(fdoReader);
     maxFeatureReader.SetMaxFeatures(maxFeatures);
 
+
     //generate a file name to serialize wfs data
     STRING fileName = MgFileUtil::GenerateTempFileName(false, L"wfs", L"xml");
 
@@ -1832,11 +1844,40 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     flags->SetMemberName(L"featureMember");
     flags->SetMemberUri(L"http://www.opengis.net/gml");
 
-    // set schemaLocations
-    // gml schema location
-    flags->SetSchemaLocation(L"http://www.opengis.net/gml", L"http://schemas.opengis.net/gml/2.1.2/feature.xsd");
+    // set schemaLocations 
+
+    // gml schema location and version
+    if(L"text/xml; subtype=gml/2.1.2" == outputFormat)
+    {
+        flags->SetSchemaLocation(L"http://www.opengis.net/gml", L"http://schemas.opengis.net/gml/2.1.2/feature.xsd");
+        flags->SetGmlVersion(FdoGmlVersion::FdoGmlVersion_212);
+    }
+    else if(L"text/xml; subtype=gml/3.1.1" == outputFormat)
+    {
+        flags->SetSchemaLocation(L"http://www.opengis.net/gml", L"http://schemas.opengis.net/gml/3.1.1/feature.xsd");
+        flags->SetGmlVersion(FdoGmlVersion::FdoGmlVersion_311);
+    }
+    else
+    {
+        throw new MgInvalidArgumentException(L"MgServerFeatureService.GetWfsFeature",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    
     // wfs schema location
-    flags->SetSchemaLocation(L"http://www.opengis.net/wfs", L"http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd");
+    if(L"1.0.0" == wfsVersion)
+    {
+        flags->SetSchemaLocation(L"http://www.opengis.net/wfs", L"http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd");
+    }
+    else if(L"1.1.0" == wfsVersion)
+    {
+        flags->SetSchemaLocation(L"http://www.opengis.net/wfs", L"http://schemas.opengis.net/wfs/1.1.0/WFS-basic.xsd");
+    }
+    else
+    {
+        throw new MgInvalidArgumentException(L"MgServerFeatureService.GetWfsFeature",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    
     // default namespace schema location
     flags->SetSchemaLocation(L"http://www.mynamespace.com/myns", L"http://www.mynamespace.com/myns/myns.xsd");
     // set the default namespace
@@ -1844,7 +1885,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
 
     //create the FDO xml serializer stack and write out the features
     FdoPtr<FdoXmlWriter> xmlWriter = FdoXmlWriter::Create(fileName.c_str(), false);
-    FdoPtr<FdoXmlFeaturePropertyWriter> propWriter = FdoXmlFeaturePropertyWriter::Create(xmlWriter);
+    FdoPtr<FdoXmlFeaturePropertyWriter> propWriter = FdoXmlFeaturePropertyWriter::Create(xmlWriter,flags);
     FdoPtr<FdoXmlFeatureWriter> featWriter = FdoXmlFeatureWriter::Create(propWriter, flags);
 
     FdoXmlFeatureSerializer::XmlSerialize(&maxFeatureReader, featWriter, flags);
@@ -1868,61 +1909,21 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     return byteReader.Detach();
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Retrieves feature information based on the supplied criteria with specified format.
-///
-///
-/// <!-- Syntax in .Net, Java, and PHP -->
-/// \htmlinclude DotNetSyntaxTop.html
-/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string outputFormat);
-/// \htmlinclude SyntaxBottom.html
-/// \htmlinclude JavaSyntaxTop.html
-/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, String featureClass, MgStringCollection requiredProperties, String srs, String filter, int maxFeatures, string outputFormat);
-/// \htmlinclude SyntaxBottom.html
-/// \htmlinclude PHPSyntaxTop.html
-/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string outputFormat);
-/// \htmlinclude SyntaxBottom.html
-///
-/// \param featureSourceId (MgResourceIdentifier)
-/// The resource identifier defining the
-/// location of the feature source in
-/// the repository.
-/// \param featureClass (String/string)
-/// The feature class containing the features to retrieve.
-/// \param requiredProperties (MgStringCollection)
-/// The collection of properties to retrieve for each feature. If the
-/// collection is null or empty, all properties will be retrieved.
-/// \param srs (String/string)
-/// The spatial reference system in which to return feature geometries
-/// \param filter (String/string)
-/// An XML string containing the definition for an OGC filter
-/// \param maxFeatures (int)
-/// The maximum number of features to retrieve. If the value is less
-/// than or equal to zero, all features will be retrieved.
-/// \param outputFormat (String/string)
-/// A string identifying the output format of 
-/// the retrieved feature information.
-/// The supported values of output format are specified in OpenGIS Web Feature Service (WFS) Implementation Specification - section 9.2
-/// http://portal.opengeospatial.org/files/?artifact_id=8339
-///
-/// \return
-/// Returns an MgByteReader containing the requested feature information.
+
+///////////////////////////////////////////////////////////////////////////
+/// This method has been deprecated. Use the above method.
 ///
 MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
                                                      CREFSTRING featureClass,
-                                                     MgStringCollection* propNames, 
-                                                     CREFSTRING srs, 
-                                                     CREFSTRING wfsFilter, 
-                                                     INT32 maxFeatures,
-                                                     CREFSTRING outputFormat)
+                                                     MgStringCollection* propNames,
+                                                     CREFSTRING srs,
+                                                     CREFSTRING wfsFilter,
+                                                     INT32 maxFeatures)
 {
-    throw new MgNotImplementedException(
-    L"MgServerFeatureService::GetWfsFeature",
-    __LINE__, __WFILE__, NULL, L"", NULL);
-
-    return NULL; // to make some compiler happy
+    return GetWfsFeature(fs, featureClass, propNames, srs, wfsFilter, maxFeatures, L"1.0.0", L"2.1.2");
 }
+
+
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// This method enumerates all the providers and if they are FDO enabled for

@@ -11,8 +11,8 @@
        Feature class #&Feature.iteration;
     -->
   <wfs:FeatureType
-     xmlns:ns="&Feature.namespace;">
-   <wfs:Name>&Feature.name;</wfs:Name>
+     xmlns:&Feature.Prefix;="&Feature.Resource;">
+   <wfs:Name>&Feature.FullName;</wfs:Name>
    <wfs:Title>&Feature.Title;</wfs:Title>
    <wfs:Abstract>&Feature.Abstract;</wfs:Abstract>
    <?Ifdef item="Feature.KeywordList"?>
@@ -59,7 +59,7 @@
  <Define item="ComparisonOperators.xml"><ogc:ComparisonOperator>&Enum.item;</ogc:ComparisonOperator></Define>
  <Define item="FunctionNames.xml"><ogc:FunctionName nArgs="&Enum.item.args;">&Enum.item;</ogc:FunctionName></Define>
  <Define item="OtherSRS.xml"><wfs:OtherSRS>&Enum.item;</wfs:OtherSRS></Define>
- <Define item="Format.xml"><ows:Format>&Enum.item;</ows:Format></Define>
+ <Define item="Format.xml"><Format>&Enum.item;</Format></Define>
  <Define item="BoundingBox.xml">
    <ows:LowerCorner>&Enum.item.west; &Enum.item.south;</ows:LowerCorner>
    <ows:UpperCorner>&Enum.item.east; &Enum.item.north;</ows:UpperCorner>
@@ -70,7 +70,7 @@
  <Define item="Feature.namespace">http://fdo.osgeo.org/schemas</Define>
  <Define item="Feature.Abstract">Abstract for this layer</Define>
  <Define item="Feature.KeywordList"></Define>
- <Define item="Feature.DefaultSRS">EPSG:4326</Define>
+ <Define item="Feature.DefaultSRS">urn:x-ogc:def:crs:EPSG:4326</Define>
  <!--Define item="Feature.OtherSRS"></Define-->
  <Define item="Feature.Bounds.north">90</Define>
  <Define item="Feature.Bounds.south">-90</Define>
@@ -109,24 +109,28 @@
 -->
 <Response request="GetCapabilities" content-type="text/xml">
 <wfs:WFS_Capabilities
-  xmlns:ows="http://www.opengis.net/ows"
-  xmlns:ogc="http://www.opengis.net/ogc"
-  xmlns:wfs="http://www.opengis.net/wfs"
   xmlns:gml="http://www.opengis.net/gml"
+  xmlns:wfs="http://www.opengis.net/wfs"
+  xmlns:ows="http://www.opengis.net/ows"
   xmlns:xlink="http://www.w3.org/1999/xlink"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.opengis.net/wfs ../wfs.xsd" version="1.1.0" updateSequence="0">
+  xmlns:ogc="http://www.opengis.net/ogc"
+  xmlns="http://www.opengis.net/wfs"
+  version="1.1.0" 
+  updateSequence="0"
+  xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"
+ >
   <!-- ================================================================== -->
   <!-- SERVICE IDENTIFICATION SECTION                                     -->
   <!-- ================================================================== -->
   <ows:ServiceIdentification>
-    <ows:ServiceType>WFS</ows:ServiceType>
-    <?Enum list="&SupportedVersions;" using="&ServiceTypeVersion.xml;" item="Version"?>
-    <ows:Title>&Service.Title;</ows:Title>
-    <ows:Abstract>&Service.Abstract;</ows:Abstract>
+	<ows:Title>&Service.Title;</ows:Title>
+	<ows:Abstract>&Service.Abstract;</ows:Abstract>
     <ows:Keywords>
       <?Enum list="&Service.Keywords;" using="&Keywords.xml;"?>
     </ows:Keywords>
+	<ows:ServiceType>WFS</ows:ServiceType>
+	<?Enum list="&SupportedVersions;" using="&ServiceTypeVersion.xml;" item="Version"?>
     <ows:Fees>&Service.Fees;</ows:Fees>
     <ows:AccessConstraints>&Service.AccessConstraints;</ows:AccessConstraints>
   </ows:ServiceIdentification>
@@ -260,7 +264,7 @@
         <ogc:SimpleArithmetic/>
         <ogc:Functions>
           <ogc:FunctionNames>
-            <?Enum list="Query.FunctionNames" using="FunctionNames.xml"?>
+            <?Enum list="&Query.FunctionNames" using="&FunctionNames.xml"?>
           </ogc:FunctionNames>
         </ogc:Functions>
       </ogc:ArithmeticOperators>
@@ -273,11 +277,6 @@
 
  </wfs:WFS_Capabilities>
 </Response>
-
-
-
-
-
 
 <!--
 
@@ -297,10 +296,37 @@
 
 <!--
 
+  WFS DescribeFeatureType - XML, GML 3.1.1
+
+-->
+<Response request="DescribeFeatureType" content-type="text/xml; subtype=gml/3.1.1">
+ <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            elementFormDefault="qualified" attributeFormDefault="unqualified">
+ <?Ifdef item="Request.typename"?>
+ <?EnumDelim list="&Request.typename;" using="&DescribeFeature.EnumDelim.xml;"?>
+ <?Else?>
+ <?EnumFeatureTypes using="&DescribeFeature.EnumFeature.xml;" ?>
+ <?Endif?>
+ </xs:schema>
+</Response>
+
+<!--
+
   WFS GetFeature - XML, GML 2.1.2
 
 -->
 <Response request="GetFeature" content-type="text/xml; subtype=gml/2.1.2">
+ <wfs:FeatureCollection xmlns:gml="http://www.opengis.net/gml" xmlns:wfs="http://www.opengis.net/wfs">
+  <?EnumFeatures using="&GetFeature.xml;" ?>
+ </wfs:FeatureCollection>
+</Response>
+
+<!--
+
+  WFS GetFeature - XML, GML 3.1.1
+
+-->
+<Response request="GetFeature" content-type="text/xml; subtype=gml/3.1.1">
  <wfs:FeatureCollection xmlns:gml="http://www.opengis.net/gml" xmlns:wfs="http://www.opengis.net/wfs">
   <?EnumFeatures using="&GetFeature.xml;" ?>
  </wfs:FeatureCollection>

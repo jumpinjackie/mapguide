@@ -302,6 +302,7 @@ const STRING MgHttpResourceStrings::opWmsMap = L"WMS.MAP";
 const STRING MgHttpResourceStrings::opWmsGetFeatureInfo = L"WMS.GETFEATUREINFO";
 
 // Predefined Web Feature Service Request Parameters
+const STRING MgHttpResourceStrings::reqWfsVersion = L"VERSION";
 const STRING MgHttpResourceStrings::reqWfsPropertyName = L"PROPERTYNAME";
 const STRING MgHttpResourceStrings::reqWfsMaxFeatures = L"MAXFEATURES";
 const STRING MgHttpResourceStrings::reqWfsSrsName = L"SRSNAME";

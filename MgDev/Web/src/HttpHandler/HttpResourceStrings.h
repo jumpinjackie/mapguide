@@ -214,6 +214,7 @@ public:
     static const STRING reqWmsFeatureCount;
 
     // PREDEFINED WEB FEATURE SERVICE REQUEST PARAMETERS
+    static const STRING reqWfsVersion;
     static const STRING reqWfsPropertyName;
     static const STRING reqWfsMaxFeatures;
     static const STRING reqWfsSrsName;
