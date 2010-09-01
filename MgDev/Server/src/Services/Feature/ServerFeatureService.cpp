@@ -1850,12 +1850,12 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     if(L"text/xml; subtype=gml/2.1.2" == outputFormat)
     {
         flags->SetSchemaLocation(L"http://www.opengis.net/gml", L"http://schemas.opengis.net/gml/2.1.2/feature.xsd");
-        flags->SetGmlVersion(FdoGmlVersion::FdoGmlVersion_212);
+        flags->SetGmlVersion(FdoGmlVersion_212);
     }
     else if(L"text/xml; subtype=gml/3.1.1" == outputFormat)
     {
         flags->SetSchemaLocation(L"http://www.opengis.net/gml", L"http://schemas.opengis.net/gml/3.1.1/feature.xsd");
-        flags->SetGmlVersion(FdoGmlVersion::FdoGmlVersion_311);
+        flags->SetGmlVersion(FdoGmlVersion_311);
     }
     else
     {
