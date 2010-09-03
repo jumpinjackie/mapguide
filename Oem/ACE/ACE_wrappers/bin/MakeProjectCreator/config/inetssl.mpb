@@ -1,0 +1,5 @@
+// -*- MPC -*-
+// $Id: inetssl.mpb 91229 2010-07-29 10:48:29Z msmit $
+
+feature(inet_ssl) : ssl {
+}
