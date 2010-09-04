@@ -1,0 +1,11 @@
+// -*- MPC -*-
+// $Id: inet.mpb 90872 2010-06-25 16:25:12Z mcorino $
+
+project : acelib {
+  avoids   += wince
+  avoids   += old_stdstream
+  after    += INet
+  libs     += ACE_INet
+  includes += $(ACE_ROOT)/protocols
+}
+ 
