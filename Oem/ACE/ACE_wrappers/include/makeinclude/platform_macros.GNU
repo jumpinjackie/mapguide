@@ -1,1 +1,1 @@
-../../ace/SSL/platform_macros.GNU
+include $(ACE_ROOT)/include/makeinclude/platform_linux.GNU
