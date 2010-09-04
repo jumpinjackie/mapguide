@@ -254,7 +254,7 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=".;..\lib"
-				GenerateDebugInformation="false"
+				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -342,7 +342,7 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=".;..\lib"
-				GenerateDebugInformation="false"
+				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -2869,11 +2869,11 @@
 				>
 			</File>
 			<File
-				RelativePath="OS_Errno.h"
+				RelativePath="os_include\os_errno.h"
 				>
 			</File>
 			<File
-				RelativePath="os_include\os_errno.h"
+				RelativePath="OS_Errno.h"
 				>
 			</File>
 			<File
@@ -3257,11 +3257,11 @@
 				>
 			</File>
 			<File
-				RelativePath="OS_String.h"
+				RelativePath="os_include\os_string.h"
 				>
 			</File>
 			<File
-				RelativePath="os_include\os_string.h"
+				RelativePath="OS_String.h"
 				>
 			</File>
 			<File
@@ -3305,11 +3305,11 @@
 				>
 			</File>
 			<File
-				RelativePath="os_include\sys\os_time.h"
+				RelativePath="os_include\os_time.h"
 				>
 			</File>
 			<File
-				RelativePath="os_include\os_time.h"
+				RelativePath="os_include\sys\os_time.h"
 				>
 			</File>
 			<File
