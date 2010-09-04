@@ -1,6 +1,0 @@
-// $Id: bmake.features 87952 2009-12-07 07:40:27Z johnnyw $
-
-ssl=0
-qos=1
-rwho=0
-sctp=0
