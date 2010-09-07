@@ -54,7 +54,7 @@ else
 fi
 
 dnl *******************************************************
-dnl FDO 3.5.0 Configuration
+dnl FDO 3.6.0 Configuration
 dnl Include / lib paths
 dnl *******************************************************
 # custom Fdo path specification
@@ -65,9 +65,9 @@ AC_ARG_WITH([fdo-include],
         [custom_inc=DEFAULT])
 
 if test $custom_inc = "DEFAULT"; then
-    map_fdo_include="/usr/local/fdo-3.5.0/include"
+    map_fdo_include="/usr/local/fdo-3.6.0/include"
     if test -d $map_fdo_include; then
-        AC_MSG_NOTICE([Building with default location of FDO include files at /usr/local/fdo-3.5.0/include])
+        AC_MSG_NOTICE([Building with default location of FDO include files at /usr/local/fdo-3.6.0/include])
     else
         AC_MSG_ERROR([the default FDO include path $map_fdo_include is not a valid directory. Please use the custom option])
     fi
@@ -87,9 +87,9 @@ AC_ARG_WITH([fdo-lib],
         [custom_lib=DEFAULT])
 
 if test $custom_lib = "DEFAULT"; then
-    map_fdo_lib="/usr/local/fdo-3.5.0/lib"
+    map_fdo_lib="/usr/local/fdo-3.6.0/lib"
     if test -d $map_fdo_lib; then
-        AC_MSG_NOTICE([Building with default location of FDO libraries at /usr/local/fdo-3.5.0/lib])
+        AC_MSG_NOTICE([Building with default location of FDO libraries at /usr/local/fdo-3.6.0/lib])
     else
         AC_MSG_ERROR([the default FDO lib path $map_fdo_lib is not a valid directory. Please use the custom option])
     fi
