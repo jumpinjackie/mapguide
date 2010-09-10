@@ -100,6 +100,12 @@
   &Feature.OuterXml;
  </Define>
 
+ <Define item="GetFeatureCollection.xml">
+    <wfs:FeatureCollection &FeatureCollection.Namespaces;>
+        <?EnumFeatures using="&GetFeature.xml;" ?> 
+    </wfs:FeatureCollection>
+ </Define>
+ 
 </Definitions>
 
 <!--
@@ -316,9 +322,7 @@
 
 -->
 <Response request="GetFeature" content-type="text/xml; subtype=gml/2.1.2">
- <wfs:FeatureCollection xmlns:gml="http://www.opengis.net/gml" xmlns:wfs="http://www.opengis.net/wfs">
-  <?EnumFeatures using="&GetFeature.xml;" ?>
- </wfs:FeatureCollection>
+ <?GetFeatureCollection using="&GetFeatureCollection.xml;" ?>
 </Response>
 
 <!--
@@ -327,9 +331,7 @@
 
 -->
 <Response request="GetFeature" content-type="text/xml; subtype=gml/3.1.1">
- <wfs:FeatureCollection xmlns:gml="http://www.opengis.net/gml" xmlns:wfs="http://www.opengis.net/wfs">
-  <?EnumFeatures using="&GetFeature.xml;" ?>
- </wfs:FeatureCollection>
+  <?GetFeatureCollection using="&GetFeatureCollection.xml;" ?>
 </Response>
 
 <!--

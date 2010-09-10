@@ -85,13 +85,11 @@ private:
     // ?>
     void ProcedureEnumFeatureTypes(MgXmlProcessingInstruction& PIEnum);
 
-    // Soon to be deprecated.
     void ProcedureGetFeatureCollection(MgXmlProcessingInstruction& PIEnum);
 
     // <?EnumFeatures
     //
     void ProcedureEnumFeatures(MgXmlProcessingInstruction& PIEnum);
-
 
     CPSZ ServiceExceptionReportElement();
 
