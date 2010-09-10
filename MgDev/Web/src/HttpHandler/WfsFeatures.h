@@ -31,7 +31,7 @@ public:
 
     bool Next();
     void GenerateDefinitions(MgUtilDictionary& Dictionary);
-
+    bool GenerateNamespacesDefinition(MgUtilDictionary& Dictionary);
     virtual void Dispose(){delete this;}
 
 private:
@@ -39,6 +39,7 @@ private:
     MgXmlNamespaceManager m_Namespaces;
     MgXmlParser m_XmlInput;
     STRING m_sCurrentFeature;                 // just the current feature.
+    STRING m_sFeatureCollectionNamespaces;    // the namespaces in <wfs:FeatureCollection>
     STRING::size_type m_iCurrentInnerContent; // index to start of content after <gml:featureMember>
     STRING::size_type m_iCurrentInnerLength;  // length of content between <gml:featureMember> and </gml:featureMember>
     bool m_bOk;

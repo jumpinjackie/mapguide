@@ -20,6 +20,7 @@
 
 
 CPSZ gszElementNameFeatureMember = _("http://www.opengis.net/gml:featureMember");
+CPSZ gszElementNameFeatureCollection = _("http://www.opengis.net/wfs:FeatureCollection");
 
 MgWfsFeatures::MgWfsFeatures(CPSZ szInputXml,int iMaxFeatures)
 :   m_sFeatureCollection(szInputXml)
@@ -81,6 +82,12 @@ bool MgWfsFeatures::Next()
                         // And tell the caller we've got a hit.
                         return m_bOk;
                     }
+                    else if(m_Namespaces.QualifiedName(Begin) == gszElementNameFeatureCollection){
+                        MgXmlAttribute& attributes = Begin.Attributes();
+                        m_sFeatureCollectionNamespaces = attributes.Contents();
+                        m_XmlInput.Next();
+                        return m_bOk;
+                    }
                     else {
                         m_XmlInput.Next();
                     }
@@ -118,5 +125,15 @@ void MgWfsFeatures::GenerateDefinitions(MgUtilDictionary& Dictionary)
         Dictionary.AddDefinition(L"Feature.EndElement",  m_sCurrentFeature.substr(m_iCurrentInnerContent+m_iCurrentInnerLength));
         Dictionary.AddDefinition(L"Feature.BeginElement",m_sCurrentFeature.substr(0,m_iCurrentInnerContent));
     }
+}
+
+bool MgWfsFeatures::GenerateNamespacesDefinition(MgUtilDictionary& Dictionary)
+{
+    if(m_bOk && !m_sFeatureCollectionNamespaces.empty()) {
+        Dictionary.AddDefinition(L"FeatureCollection.Namespaces", m_sFeatureCollectionNamespaces);
+        return true;
+    }
+
+    return false;
 }
 

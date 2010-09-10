@@ -321,7 +321,7 @@ bool MgOgcWfsServer::ProcessOtherInstruction(CREFSTRING sProc,MgXmlProcessingIns
     {
         ProcedureEnumFeatures(PI);
     }
-    else if(sProc == kpszPiGetFeatureCollection) // DEPRECATED
+    else if(sProc == kpszPiGetFeatureCollection)
     {
         ProcedureGetFeatureCollection(PI);
     }
@@ -401,10 +401,26 @@ void MgOgcWfsServer::GenerateTypeNameException(CREFSTRING sTypeName)
                                                      kpszExceptionMessageUnknownTypeName));
 }
 
-// This will enumerate all features
-void MgOgcWfsServer::ProcedureGetFeatureCollection(MgXmlProcessingInstruction& instruction)
+void MgOgcWfsServer::ProcedureGetFeatureCollection(MgXmlProcessingInstruction& PI)
 {
-    ProcessExpandableText(_("<!-- GetFeatureCollection PI is deprecated; use EnumFeatures -->"));
+    STRING sFormat;
+    if(!PI.GetAttribute(kpszPiAttributeUsing,sFormat))
+        sFormat = kpszPiGetFeatureCollectionDefaultFormat;
+
+    STRING sSubset;
+    if(!PI.GetAttribute(kpszPiAttributeSubset,sSubset))
+        sSubset = kpszEmpty;
+    ProcessExpandableTextIntoString(sSubset,sSubset);
+
+    bool bHasNamespace = false;
+
+    if(m_pFeatureSet != NULL) {
+        while(!bHasNamespace && m_pFeatureSet->Next()) {
+            bHasNamespace = m_pFeatureSet->GenerateNamespacesDefinition(*m_pTopOfDefinitions);
+        }
+    }
+
+    ProcessExpandableText(sFormat);
 }
 
 void MgOgcWfsServer::SetFeatures(MgWfsFeatures* pFeatures)
