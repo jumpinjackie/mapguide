@@ -218,10 +218,27 @@ MgHttpResponse* MgHttpRequest::Execute()
             }
             else
             {
-                sParamValue = L"WMS";
+                sParamValue = L"WFS";
             }
             sParamValue.append(L".");
             sParamValue.append(sRequestValue);
+        }
+        else
+        {
+            // Error handling for OGC certification.
+            // MapGuide should generate an WFS exception while receiveing following request:
+            // http://locahost/mapguide/mapagent/mapagent.fcgi??request~GetCapabilities!service~WFS!version~1.1.0
+            Ptr<MgStringCollection> parameterNames = m_requestParam->GetParameterNames();
+            for(int i = 0; i < parameterNames->GetCount(); i++)
+            {
+                STRING parameterName = parameterNames->GetItem(i);
+                if(parameterName.find(L"WFS") != STRING::npos)
+                {
+                    sParamValue = L"WFS";
+                    sParamValue.append(L".");
+                    sParamValue.append(L"GETCAPABILITIES");
+                }
+            }
         }
     }
     if(sParamValue.length() > 0)

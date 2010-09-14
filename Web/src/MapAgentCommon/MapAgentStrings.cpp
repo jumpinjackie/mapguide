@@ -43,7 +43,7 @@ const char* MapAgentStrings::BasicAuth = "Basic ";
 const char* MapAgentStrings::WWWAuth = "WWW-Authenticate: Basic realm=\"%s\"\r\n";
 const char* MapAgentStrings::UnauthorizedHeader = "Status: 401 Unauthorized\r\n";
 const char* MapAgentStrings::Unauthorized = "401 Unauthorized";
-const char* MapAgentStrings::ContentTypeHeader = "Content-type: %s%s\r\n";
+const char* MapAgentStrings::ContentTypeHeader = "Content-Type: %s%s\r\n";
 const char* MapAgentStrings::Utf8Text = "; charset=utf-8";
 const char* MapAgentStrings::ContentLengthHeader = "Content-Length: %d\r\n";
 const char* MapAgentStrings::StatusHeader = "Status: %d %s\r\n";

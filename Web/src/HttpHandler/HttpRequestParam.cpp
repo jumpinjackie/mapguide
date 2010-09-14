@@ -46,7 +46,9 @@ MgHttpRequestParam::MgHttpRequestParam()
 /// </returns>
 bool MgHttpRequestParam::AddParameter(CREFSTRING name, CREFSTRING value)
 {
-    if (value.length()!=0 && !m_reqParamCollection->Contains(name))
+    // Empty string is valid parameter value.
+    //if (value.length()!=0 && !m_reqParamCollection->Contains(name))
+    if (!m_reqParamCollection->Contains(name))
     {
         m_reqParamCollection->Add(name, value);
         return true;

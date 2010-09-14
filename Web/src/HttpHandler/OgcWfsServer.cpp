@@ -39,8 +39,12 @@ CPSZ kpszQueryStringGetFeatureOutputFormatDefault_1_0_0    = _("Formats.GetFeatu
 CPSZ kpszQueryStringGetFeatureOutputFormatDefault_1_1_0    = _("Formats.GetFeature.default.1.1.0");
 CPSZ kpszPiGetFeatureCollection              = _("GetFeatureCollection");
 CPSZ kpszPiGetFeatureCollectionDefaultFormat = _("&GetFeatureCollection.xml;");
+CPSZ kpszQueryStringAcceptVersions           = _("acceptversions");
 
-extern CPSZ kpszPiAttributeSubset;      // = _("subset");
+extern CPSZ kpszPiAttributeSubset;            // = _("subset");
+extern CPSZ kpszElementVersion;               // = _("Version");
+extern CPSZ kpszAttributeNumber;              //= _("number");
+extern CPSZ kpszDictionarySupportedVersions;  //= _("SupportedVersions");
 
 // Localize
 CPSZ kpszExceptionMessageMissingServiceWfs = _("Expected required SERVICE=WFS argument."); // Localize
@@ -49,6 +53,7 @@ CPSZ kpszExceptionMessageWfsUnknownRequest = _("Expected valid REQUEST= argument
 CPSZ kpszExceptionMessageUnknownOutputFormat = _("Expected valid outputFormat argument, as enumerated by GetCapabilities. (Instead, found outputFormat='&Request.OutputFormat;'.)"); // Localize
 CPSZ kpszExceptionMessageUnknownTypeName   = _("Expected valid typeName argument, as enumerated by GetCapabilities. (Instead, found typeName='&Request.TypeName;'.)"); // Localize
 CPSZ kpszExceptionMessageWfsGetFeatureMissingFeatureType = _("A WFS GetFeature request requires at least one feature type to be specified."); // Localize
+CPSZ kpszExceptionMessageWfsVersionNegotiationFailed = _("Requested version is supported in AcceptVersions"); //Localize
 
 CPSZ kpszInternalErrorMissingGetFeatureRequestParams   = _("Internal Error: Missing WFS GetFeature request parameters."); // Localize
 //
@@ -101,7 +106,7 @@ void MgOgcWfsServer::RespondToRequest()
         }
         default:
         {
-            ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWfsException::kpszOperationNotSupported,
+            ServiceExceptionReportResponse(MgOgcWfsException(MgOgcWfsException::kpszOperationNotSupported,
                                                          kpszExceptionMessageWfsUnknownRequest));
             break;
         }
@@ -117,9 +122,9 @@ bool MgOgcWfsServer::ValidateRequest()
     CPSZ pService = RequestParameter(kpszQueryStringService);
     if(pService == NULL || SZ_NEI(pService,kpszQueryValueWfs))
     {
-        // TODO: verify that kpszOperationNotSupported is the right one to send back.
-        ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszOperationNotSupported,
-                                                         kpszExceptionMessageMissingServiceWfs));
+        ServiceExceptionReportResponse(MgOgcWfsException(MgOgcWfsException::kpszMissingRequestParameter,
+                                                         kpszExceptionMessageMissingServiceWfs,
+                                                         kpszQueryStringService));
         bValid = false;
     }
 
@@ -129,9 +134,9 @@ bool MgOgcWfsServer::ValidateRequest()
         CPSZ pszRequest = RequestParameter(kpszQueryStringRequest);
         if(pszRequest == NULL)
         {
-            // TODO: verify that kpszOperationNotSupported is the right one to send back.
-            ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWfsException::kpszOperationNotSupported,
-                                                             kpszExceptionMessageWfsMissingRequest));
+            ServiceExceptionReportResponse(MgOgcWfsException(MgOgcWfsException::kpszMissingRequestParameter,
+                                                             kpszExceptionMessageWfsMissingRequest,
+                                                             kpszQueryStringRequest));
             bValid = false;
         }
     }
@@ -160,9 +165,48 @@ bool MgOgcWfsServer::ValidateRequest()
             }
             default:
             {
-                ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszOperationNotSupported,
+                ServiceExceptionReportResponse(MgOgcWfsException(MgOgcWmsException::kpszOperationNotSupported,
                                                              kpszExceptionMessageUnknownRequest));
                 break;
+            }
+        }
+    }
+
+    if(bValid)
+    {
+        // Check that we have a acceptVersions parameter
+        CPSZ pszAcceptVersions = RequestParameter(kpszQueryStringAcceptVersions);
+        if(pszAcceptVersions != NULL)
+        {
+            STRING sAcceptVersions(pszAcceptVersions);
+            CPSZ pszSupportedVersions = Definition(kpszDictionarySupportedVersions);
+            // Pass out a NULL, which caller must use to tickle an exception.
+            if(pszSupportedVersions == NULL)
+                return false;
+
+            MgXmlParser SupportedVersions(pszSupportedVersions);
+
+            STRING sVersion;
+            bool bSupported = false;
+            while(SupportedVersions.Next()) {
+                if(SupportedVersions.Current().Type() == keBeginElement)
+                {
+                    MgXmlBeginElement& Begin = (MgXmlBeginElement&)SupportedVersions.Current();
+                    if(Begin.Name() == kpszElementVersion && Begin.GetAttribute(kpszAttributeNumber,sVersion))
+                    {
+                        if(sAcceptVersions.find(sVersion) != STRING::npos)
+                        {
+                            bSupported = true;
+                        }
+                    }    
+                }
+            }
+            if(!bSupported)
+            {
+                ServiceExceptionReportResponse(MgOgcWfsException(MgOgcWfsException::kpszVersionNegotiationFailed,
+                                                                 kpszExceptionMessageWfsVersionNegotiationFailed,
+                                                                 kpszQueryStringVersion));
+                bValid = false;
             }
         }
     }
@@ -227,7 +271,8 @@ bool MgOgcWfsServer::ValidateGetFeatureRequest()
     if(pFeatureTypes == NULL || pFeatureTypes->GetCount() == 0)
     {
         ServiceExceptionReportResponse(MgOgcWfsException(MgOgcWfsException::kpszMissingRequestParameter,
-                                                 kpszExceptionMessageWfsGetFeatureMissingFeatureType));
+                                                 kpszExceptionMessageWfsGetFeatureMissingFeatureType,
+                                                 MgHttpResourceStrings::reqWfsTypeName.c_str()));
         return false;
     }
 
@@ -265,7 +310,8 @@ void MgOgcWfsServer::GetFeatureResponse()
 
     // If we get to here, we were unable to generate a response for the requested format
     ServiceExceptionReportResponse(MgOgcWfsException(MgOgcWfsException::kpszUnknownParameterValue,
-                                                     kpszExceptionMessageUnknownOutputFormat));
+                                                     kpszExceptionMessageUnknownOutputFormat,
+                                                     MgHttpResourceStrings::reqWfsOutputFormat.c_str()));
 }
 
 // Implements the WMS GetCapabilities response.
@@ -306,8 +352,9 @@ void MgOgcWfsServer::DescribeFeatureTypeResponse()
 
     // Conformance test wfs/1.0.0/basic/describefeaturetype/get/3
     // requires that we provide a specific exception report.
-    ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWfsException::kpszUnknownParameterValue,
-                                                     kpszExceptionMessageUnknownOutputFormat));
+    ServiceExceptionReportResponse(MgOgcWfsException(MgOgcWfsException::kpszUnknownParameterValue,
+                                                     kpszExceptionMessageUnknownOutputFormat,
+                                                     MgHttpResourceStrings::reqWfsOutputFormat.c_str()));
 }
 
 
@@ -397,8 +444,9 @@ void MgOgcWfsServer::ProcedureEnumFeatures(MgXmlProcessingInstruction& PIEnum)
 void MgOgcWfsServer::GenerateTypeNameException(CREFSTRING sTypeName)
 {
     sTypeName; // RESERVED FOR FUTURE USE; unused for now... to provide this info in exception body.
-    ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWfsException::kpszUnknownParameterValue,
-                                                     kpszExceptionMessageUnknownTypeName));
+    ServiceExceptionReportResponse(MgOgcWfsException(MgOgcWfsException::kpszUnknownParameterValue,
+                                                     kpszExceptionMessageUnknownTypeName,
+                                                     MgHttpResourceStrings::reqWfsTypeName.c_str()));
 }
 
 void MgOgcWfsServer::ProcedureGetFeatureCollection(MgXmlProcessingInstruction& PI)

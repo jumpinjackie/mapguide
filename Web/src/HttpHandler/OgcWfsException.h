@@ -23,8 +23,8 @@
 class MgOgcWfsException: public MgOgcException
 {
 public:
-    MgOgcWfsException(CPSZ pszType,CPSZ pszMessage)
-    : MgOgcException(_("ServiceException"),pszType,pszMessage)
+    MgOgcWfsException(CPSZ pszType,CPSZ pszMessage,CPSZ pszLocator = _(""))
+    : MgOgcException(_("ServiceException"),pszType,pszMessage,pszLocator)
     {
     }
 
@@ -38,6 +38,7 @@ Exception Code        Meaning
     static CPSZ kpszUnknownParameterValue;   // Specified a parameter value that is unknown.
     static CPSZ kpszMissingRequestParameter; // A required request parameter was not specified.
     static CPSZ kpszProcessingError;         // An error occurred while processing the request
+    static CPSZ kpszVersionNegotiationFailed; // None of the requested versions are supported
 };
 
 #endif//_OgcWfsException_h

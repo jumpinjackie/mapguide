@@ -24,6 +24,7 @@ CPSZ MgOgcWfsException::kpszOperationNotSupported = _("OperationNotSupported");
 CPSZ MgOgcWfsException::kpszUnknownParameterValue  = _("UnknownParameterValue");
 CPSZ MgOgcWfsException::kpszMissingRequestParameter  = _("MissingParameterValue");
 CPSZ MgOgcWfsException::kpszProcessingError  = _("RequestProcessingError");
+CPSZ MgOgcWfsException::kpszVersionNegotiationFailed = _("VersionNegotiationFailed");
 
 
 void MgOgcWfsException::WriteTo(CStream& Response) const
