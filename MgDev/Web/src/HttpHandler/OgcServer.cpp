@@ -100,6 +100,7 @@ CPSZ kpszDefinitionExceptionType     = _("Exception.Type");
 CPSZ kpszDefinitionExceptionMessage  = _("Exception.Message");
 CPSZ kpszDefinitionExceptionElement  = _("Exception.Element");
 CPSZ kpszDefinitionExceptionContents = _("Exception.Contents");
+CPSZ kpszDefinitionExceptionLocator  = _("Exception.Locator");
 CPSZ kpszDefinitionEnumItem          = _("Enum.item");
 CPSZ kpszDefinitionEnumItemPrefix    = _("Enum.item.");
 CPSZ kpszDefinitionEnumIteration     = _("Enum.iteration");
@@ -442,6 +443,8 @@ void MgOgcServer::DefineExceptionValues(const MgOgcException& Exception)
     AddDefinition(kpszDefinitionExceptionType,Exception.Type());
     AddDefinition(kpszDefinitionExceptionMessage,Exception.Message());
     AddDefinition(kpszDefinitionExceptionElement,Exception.ElementName());
+    AddDefinition(kpszDefinitionExceptionLocator,Exception.Locator());
+
     CStringStream Out;
     Exception.WriteTo(Out);
     AddDefinition(kpszDefinitionExceptionContents,Out.Contents());

@@ -23,8 +23,8 @@
 class MgOgcWmsException: public MgOgcException
 {
 public:
-    MgOgcWmsException(CPSZ pszType,CPSZ pszMessage)
-    : MgOgcException(_("ServiceException"),pszType,pszMessage)
+    MgOgcWmsException(CPSZ pszType,CPSZ pszMessage,CPSZ pszLocator = _(""))
+    : MgOgcException(_("ServiceException"),pszType,pszMessage,pszLocator)
     {
     }
 

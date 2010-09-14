@@ -64,7 +64,7 @@ void ApacheResponseHandler::SendResponse(MgHttpResponse *response)
             ap_rprintf(m_r, "\r\n"
                 "<html>\n<head>\n"
                 "<title>%s</title>\n"
-                "<meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\">\n"
+                "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
                 "</head>\n"
                 "<body>\n<h2>%s</h2>\n%s\n</body>\n</html>\n",
                 MG_WCHAR_TO_CHAR(statusMessage),

@@ -45,7 +45,7 @@ int EchoTest()
     char *contentLength = getenv("CONTENT_LENGTH");
     int len;
 
-    printf("Content-type: text/html\r\n"
+    printf("Content-Type: text/html\r\n"
         "\r\n"
         "<title>FastCGI echo</title>"
         "<h1>FastCGI echo</h1>\n"
