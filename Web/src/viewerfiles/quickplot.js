@@ -332,6 +332,8 @@ MapCapturer.prototype =
     
     onMouseMove : function(evt, originalHandler)
     {
+        var result = false;
+        
         if (this.active)
         {
             var point  = this.getMousePosition(evt);
@@ -361,9 +363,11 @@ MapCapturer.prototype =
         {
             if (originalHandler != null)
             {
-                originalHandler.apply(this.mapWindow, Array.prototype.slice.call(arguments, 0, arguments.length - 1));
+                result = originalHandler.apply(this.mapWindow, Array.prototype.slice.call(arguments, 0, arguments.length - 1));
             }
         }
+
+        return result;
     },
     
     panFeedback : function(evt, originalHandler)
