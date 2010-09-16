@@ -214,9 +214,12 @@ void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyl
 {
     _ASSERT(style->repeat > 0.0);
 
-    SE_BufferPool* lbp = GetBufferPool();
+    // the style needs to contain at least one primitive
+    SE_RenderPrimitiveList& prims = style->symbol;
+    if (prims.size() == 0)
+        return;
 
-    SE_RenderPrimitiveList& rs = style->symbol;
+    SE_BufferPool* lbp = GetBufferPool();
 
     RS_FontEngine* fe = GetRSFontEngine();
 
@@ -255,11 +258,11 @@ void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyl
         // in the symbol.  We need this because straight lines become curved when
         // the warping is applied.
         int maxChoppedSize = 0;
-        choppedBuffers = (LineBuffer**)alloca(rs.size() * sizeof(LineBuffer*));
-        memset(choppedBuffers, 0, rs.size() * sizeof(LineBuffer*));
-        for (unsigned cur_prim=0; cur_prim<rs.size(); ++cur_prim)
+        choppedBuffers = (LineBuffer**)alloca(prims.size() * sizeof(LineBuffer*));
+        memset(choppedBuffers, 0, prims.size() * sizeof(LineBuffer*));
+        for (unsigned cur_prim=0; cur_prim<prims.size(); ++cur_prim)
         {
-            SE_RenderPrimitive* primitive = rs[cur_prim];
+            SE_RenderPrimitive* primitive = prims[cur_prim];
 
             if (primitive->type == SE_RenderPrimitive_Polygon || primitive->type == SE_RenderPrimitive_Polyline)
             {
@@ -434,7 +437,7 @@ void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyl
                 {
                     // We're not yet in danger of a corner (or the start/end of the distribution).
                     // Just put the pedal to the metal and draw an unwarped symbol.
-                    DrawSymbol(rs, xformStart, next_hotspot->angle_start);
+                    DrawSymbol(prims, xformStart, next_hotspot->angle_start);
 
                     drawpos += repeat;
                     sym_minx = drawpos + styleBounds.minx;
@@ -448,9 +451,9 @@ void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyl
                     double last_angleRad = 0.0;
 
                     // loop over the symbol's primitive elements - we will handle them one by one
-                    for (unsigned cur_prim=0; cur_prim<rs.size(); ++cur_prim)
+                    for (unsigned cur_prim=0; cur_prim<prims.size(); ++cur_prim)
                     {
-                        SE_RenderPrimitive* primitive = rs[cur_prim];
+                        SE_RenderPrimitive* primitive = prims[cur_prim];
 
                         // initialize our work buffer to the chopped line buffer
                         geom = *choppedBuffers[cur_prim];
@@ -986,7 +989,7 @@ void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyl
     // free the chopped line buffers
     if (choppedBuffers)
     {
-        for (unsigned cur_prim=0; cur_prim<rs.size(); ++cur_prim)
+        for (unsigned cur_prim=0; cur_prim<prims.size(); ++cur_prim)
         {
             if (choppedBuffers[cur_prim] != NULL)
                 LineBufferPool::FreeLineBuffer(lbp, choppedBuffers[cur_prim]);
@@ -1863,6 +1866,11 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
 {
     _ASSERT(style->repeat > 0.0);
 
+    // the style needs to contain at least one primitive
+    SE_RenderPrimitiveList& prims = style->symbol;
+    if (prims.size() == 0)
+        return;
+
     SE_Matrix symxf;
     bool yUp = YPointsUp();
     double px2su = GetScreenUnitsPerPixel();
@@ -2131,7 +2139,7 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
 
                             // only draw symbols at the interior points
                             if (numDrawn > 0 && numDrawn < numSymbols-1)
-                                DrawSymbol(style->symbol, symxf, angleRad, style->addToExclusionRegion);
+                                DrawSymbol(prims, symxf, angleRad, style->addToExclusionRegion);
 
                             // handle the centerline path at the group's end - only
                             // need to do this if we have at least one interior symbol
@@ -2214,6 +2222,11 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
 void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineStyle* style)
 {
     _ASSERT(style->repeat > 0.0);
+
+    // the style needs to contain at least one primitive
+    SE_RenderPrimitiveList& prims = style->symbol;
+    if (prims.size() == 0)
+        return;
 
     SE_Matrix symxf;
     bool yUp = YPointsUp();
@@ -2439,7 +2452,7 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
                             if (style->drawLast)
                                 AddLabel(geometry, style, symxf, angleRad);
                             else
-                                DrawSymbol(style->symbol, symxf, angleRad, style->addToExclusionRegion);
+                                DrawSymbol(prims, symxf, angleRad, style->addToExclusionRegion);
                         }
 
                         ++numDrawn;
@@ -2474,6 +2487,11 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
 // Distributes feature labels along a polyline.
 void SE_Renderer::ProcessLineLabels(LineBuffer* geometry, SE_RenderLineStyle* style)
 {
+    // the style needs to contain at least one primitive
+    SE_RenderPrimitiveList& prims = style->symbol;
+    if (prims.size() == 0)
+        return;
+
     SE_Matrix symxf;
     bool yUp = YPointsUp();
 

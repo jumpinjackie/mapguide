@@ -77,6 +77,11 @@ void UpdateStyleBounds(SE_RenderStyle* st, SE_Renderer* se_renderer)
 void SE_PositioningAlgorithms::Default(SE_ApplyContext* applyCtx,
                                        SE_RenderStyle*  rstyle)
 {
+    // the style needs to contain at least one primitive
+    SE_RenderPrimitiveList& prims = rstyle->symbol;
+    if (prims.size() == 0)
+        return;
+
     SE_Renderer* se_renderer = applyCtx->renderer;
     LineBuffer* geometry = applyCtx->geometry;
     SE_Matrix& xform = *applyCtx->xform;
@@ -184,11 +189,12 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
     if (rstyle->type != SE_RenderStyle_Point)
         return;
 
-    SE_RenderPointStyle* rpstyle = (SE_RenderPointStyle*)rstyle;
-
-    // the point style needs to contain at least one graphic element
-    if (rpstyle->symbol.size() == 0)
+    // the style needs to contain at least one primitive
+    SE_RenderPrimitiveList& prims = rstyle->symbol;
+    if (prims.size() == 0)
         return;
+
+    SE_RenderPointStyle* rpstyle = (SE_RenderPointStyle*)rstyle;
 
     // get actual feature point and transform to screen space
     // TODO: in the case of a multi-point feature we get the average of all the points;
@@ -327,9 +333,9 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
 
     // check if the incoming point style contains just a single text element
     bool foundSingleText = false;
-    if (rpstyle->symbol.size() == 1)
+    if (prims.size() == 1)
     {
-        if (rpstyle->symbol[0]->type == SE_RenderPrimitive_Text)
+        if (prims[0]->type == SE_RenderPrimitive_Text)
             foundSingleText = true;
     }
 
@@ -465,12 +471,17 @@ void SE_PositioningAlgorithms::PathLabels(SE_ApplyContext* applyCtx,
     if (rstyle->type == SE_RenderStyle_Area)
         return;
 
+    // the style needs to contain at least one primitive
+    SE_RenderPrimitiveList& prims = rstyle->symbol;
+    if (prims.size() == 0)
+        return;
+
     // If the symbol contains just a single text element then add the
     // text as a regular path label (non-symbol).  Use 0.5 as the
     // default value for the scale limit.
-    if (rstyle->symbol.size() == 1 && rstyle->symbol[0]->type == SE_RenderPrimitive_Text)
+    if (prims.size() == 1 && prims[0]->type == SE_RenderPrimitive_Text)
     {
-        SE_RenderText* rt = (SE_RenderText*)rstyle->symbol[0];
+        SE_RenderText* rt = (SE_RenderText*)prims[0];
 
         RS_LabelInfo info(0.0, 0.0, 0.0, 0.0, RS_Units_Device, rt->tdef);
         RS_OverpostType overpostType = rstyle->checkExclusionRegion? RS_OverpostType_AllFit : RS_OverpostType_All;
