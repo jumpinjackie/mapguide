@@ -22,6 +22,13 @@
 // Initialize only once per process
 static bool m_bInitialized = false;
 
+#if defined(_WIN32) || defined(__CYGWIN32__)
+#  define DllExport   __declspec( dllexport )
+#  define SWIGSTDCALL __stdcall
+#else
+#  define DllExport  
+#  define SWIGSTDCALL
+#endif 
 
 void MgInitializeWebTierInternal(CREFSTRING configFile)
 {
@@ -88,7 +95,7 @@ void MgUninitializeWebTierInternal()
 }
 
 
-void MgInitializeWebTier(CREFSTRING configFile)
+DllExport void MgInitializeWebTier(CREFSTRING configFile)
 {
     MG_TRY()
 
@@ -98,7 +105,7 @@ void MgInitializeWebTier(CREFSTRING configFile)
 }
 
 
-void MgUninitializeWebTier()
+DllExport void MgUninitializeWebTier()
 {
     // ACE::fini removes the thread mutex so we cannot use it to protect this call.
     MG_TRY()
@@ -108,7 +115,7 @@ void MgUninitializeWebTier()
     MG_CATCH_AND_THROW(L"MgInitializeWebTier")
 }
 
-bool IsWebTierInitialized()
+DllExport bool IsWebTierInitialized()
 {
     return m_bInitialized;
 }

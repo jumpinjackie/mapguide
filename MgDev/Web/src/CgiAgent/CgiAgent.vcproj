@@ -64,9 +64,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="ACEd.lib"
 				OutputFile="$(OutDir)\MapAgent.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MapAgent.pdb"
 				SubSystem="1"
@@ -141,9 +142,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="ACEd.lib"
 				OutputFile="$(OutDir)\MapAgent.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MapAgent.pdb"
 				SubSystem="1"
@@ -216,9 +218,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="ACE.lib"
 				OutputFile="$(OutDir)\MapAgent.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MapAgent.pdb"
 				SubSystem="1"
@@ -293,9 +296,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="ACE.lib"
 				OutputFile="$(OutDir)\MapAgent.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MapAgent.pdb"
 				SubSystem="1"
