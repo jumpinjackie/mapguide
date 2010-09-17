@@ -41,6 +41,7 @@ class IOGridLayerDefinition : public SAX2ElementHandler
         static void Write(MdfStream& fd, GridLayerDefinition* gridLayer, Version* version);
 
     private:
+        static bool GetWatermarkVersion(Version* ldfVersion, Version& wmVersion);
         GridLayerDefinition* m_layer;
 };
 

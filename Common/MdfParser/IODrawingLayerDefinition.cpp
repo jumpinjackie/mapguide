@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "IODrawingLayerDefinition.h"
 #include "VectorScaleRange.h"
+#include "IOWatermarkInstance.h"
 #include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
@@ -33,6 +34,8 @@ ELEM_MAP_ENTRY(5, LayerFilter);
 ELEM_MAP_ENTRY(6, MinScale);
 ELEM_MAP_ENTRY(7, MaxScale);
 ELEM_MAP_ENTRY(8, ExtendedData1);
+ELEM_MAP_ENTRY(9, Watermarks);
+ELEM_MAP_ENTRY(10, Watermark);
 
 
 IODrawingLayerDefinition::IODrawingLayerDefinition(Version& version) : SAX2ElementHandler(version)
@@ -61,6 +64,20 @@ void IODrawingLayerDefinition::StartElement(const wchar_t* name, HandlerStack* h
     {
     case eDrawingLayerDefinition:
         this->m_startElemName = name;
+        break;
+
+    case eWatermark:
+        {
+            Version wdVersion;
+            if (!IODrawingLayerDefinition::GetWatermarkVersion(
+                &this->m_version, wdVersion))
+                return;
+            WatermarkInstance* layerWatermark = new WatermarkInstance(L"", L"");
+            this->m_layer->GetWatermarks()->Adopt(layerWatermark);
+            IOWatermarkInstance* IO = new IOWatermarkInstance(layerWatermark, wdVersion);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
         break;
 
     case eExtendedData1:
@@ -122,6 +139,14 @@ void IODrawingLayerDefinition::EndElement(const wchar_t* name, HandlerStack* han
     }
 }
 
+// Determine which WatermarkDefinition schema version to use based
+// on the supplied LDF version:
+// * LDF version <= 1.4.0  =>  WD version 1.0.0
+bool IODrawingLayerDefinition::GetWatermarkVersion(Version* ldfVersion, Version& wmVersion)
+{
+    wmVersion = Version(1, 0, 0);
+    return true;
+}
 
 void IODrawingLayerDefinition::Write(MdfStream& fd, DrawingLayerDefinition* drawingLayer, Version* version)
 {
@@ -134,9 +159,9 @@ void IODrawingLayerDefinition::Write(MdfStream& fd, DrawingLayerDefinition* draw
             // LDF in MapGuide 2006
             strVersion = L"1.0.0";
         }
-        else if ((*version >= Version(1, 0, 0)) && (*version <= Version(1, 3, 0)))
+        else if ((*version >= Version(1, 0, 0)) && (*version <= Version(1, 4, 0)))
         {
-            // LDF in MapGuide 2007 / 2008 / 2009 / 2010
+            // LDF in MapGuide 2007 / 2008 / 2009 / 2010 / 2012
             strVersion = version->ToString();
         }
         else
@@ -150,7 +175,7 @@ void IODrawingLayerDefinition::Write(MdfStream& fd, DrawingLayerDefinition* draw
     else
     {
         // use the current highest version
-        strVersion = L"1.3.0";
+        strVersion = L"1.4.0";
     }
 
     fd << tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
@@ -170,6 +195,21 @@ void IODrawingLayerDefinition::Write(MdfStream& fd, DrawingLayerDefinition* draw
         fd << tab() << startStr(sOpacity);
         fd << DoubleToStr(drawingLayer->GetOpacity());
         fd << endStr(sOpacity) << std::endl;
+    }
+
+    //Property: LayerWatermark (Optional)
+    if(*version >= Version(1, 4, 0))
+    {
+        int watermarkCount = drawingLayer->GetWatermarks()->GetCount();
+        if(watermarkCount != 0)
+        {
+            fd << tab() << startStr(sWatermarks) << std::endl; // NOXLATE
+            inctab();
+            for (int i=0; i<watermarkCount; ++i)
+                IOWatermarkInstance::Write(fd, drawingLayer->GetWatermarks()->GetAt(i), version);
+            dectab();
+            fd << endStr(sWatermarks) << std::endl; // NOXLATE
+        }
     }
 
     // Property: Sheet

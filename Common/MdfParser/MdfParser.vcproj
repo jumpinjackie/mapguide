@@ -1015,6 +1015,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\IOTileWatermarkPosition.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOTileWatermarkPosition.h"
+			>
+		</File>
+		<File
 			RelativePath=".\IOUnknown.cpp"
 			>
 		</File>
@@ -1052,6 +1060,62 @@
 		</File>
 		<File
 			RelativePath=".\IOW2DSymbol.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOWatermarkAppearance.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOWatermarkAppearance.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOWatermarkDefinition.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOWatermarkDefinition.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOWatermarkInstance.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOWatermarkInstance.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOWatermarkOffsetUnit.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOWatermarkOffsetUnit.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOWatermarkXOffset.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOWatermarkXOffset.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOWatermarkYOffset.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOWatermarkYOffset.h"
+			>
+		</File>
+		<File
+			RelativePath=".\IOXYWatermarkPosition.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOXYWatermarkPosition.h"
 			>
 		</File>
 		<File

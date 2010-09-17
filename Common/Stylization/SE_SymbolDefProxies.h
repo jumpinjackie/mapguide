@@ -150,9 +150,12 @@ struct SE_Raster : public SE_Primitive
     SE_Double extent[2];
     SE_Boolean sizeScalable;
     SE_Double angleDeg; // degrees CCW
+    SE_Double opacity;
 
     SE_INLINE SE_Raster() : ownPtr(false)
-    {}
+    {
+        opacity.value = opacity.defValue = 1;
+    }
 
     ~SE_Raster()
     {

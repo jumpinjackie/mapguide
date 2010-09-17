@@ -79,6 +79,7 @@
 #define PlatformBase_Exception_MgServiceNotAvailableException               PLATFORMBASE_EXCEPTION_ID+21
 #define PlatformBase_Exception_MgServiceNotSupportedException               PLATFORMBASE_EXCEPTION_ID+22
 #define PlatformBase_Exception_MgUserNotFoundException                      PLATFORMBASE_EXCEPTION_ID+23
+#define PlatformBase_Exception_MgInvalidWatermarkDefinitionException            PLATFORMBASE_EXCEPTION_ID+24
 
 // MapLayer API
 #define PlatformBase_MapLayer_MapBase                               PLATFORMBASE_MAPLAYER_ID+0

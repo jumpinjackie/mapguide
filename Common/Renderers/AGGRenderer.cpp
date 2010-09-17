@@ -62,6 +62,8 @@
 #include "DWFRSInputStream.h"
 #include "RSDWFInputStream.h"
 
+#include "RenderUtil.h"
+
 using namespace DWFToolkit;
 using namespace DWFCore;
 
@@ -2500,6 +2502,17 @@ void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int le
 
     // render the data
     RenderWithTransform(src, cxt, img_mtx, format);
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+void AGGRenderer::DrawScreenRaster(unsigned char* data, int length,
+                                   RS_ImageFormat format, int native_width, int native_height,
+                                   double x, double y, double w, double h, double angledeg,
+                                   double alpha)
+{
+    RenderUtil::DrawScreenRaster(this, data, length, format, native_width, native_height,
+                                 x, y, w, h, angledeg, alpha);
 }
 
 

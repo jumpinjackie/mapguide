@@ -169,24 +169,30 @@ private:
                                     MgSelection* selection,
                                     MgReadOnlyLayerCollection* roLayers,
                                     SE_Renderer* dr,
+                                    INT32 drawWidth,
+                                    INT32 drawHeight,
                                     INT32 saveWidth,
                                     INT32 saveHeight,
                                     CREFSTRING format,
                                     double scale,
                                     RS_Bounds& b,
                                     bool expandExtents,
-                                    bool bKeepSelection);
+                                    bool bKeepSelection,
+                                    bool renderingWatermark);
 
     MgByteReader* RenderMapInternal(MgMap* map,
                                     MgSelection* selection,
                                     MgReadOnlyLayerCollection* roLayers,
                                     SE_Renderer* dr,
+                                    INT32 drawWidth,
+                                    INT32 drawHeight,
                                     INT32 saveWidth,
                                     INT32 saveHeight,
                                     double scale,
                                     RS_Bounds& b,
                                     bool expandExtents,
-                                    MgRenderingOptions* options);
+                                    MgRenderingOptions* options,
+                                    bool renderingWatermark);
 
     void RenderForSelection(MgMap* map,
                          MgStringCollection* layerNames,

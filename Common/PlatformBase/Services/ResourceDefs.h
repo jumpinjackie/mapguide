@@ -282,6 +282,17 @@ INTERNAL_API:
     ///
     static const STRING PrintLayoutElementDefinition;        ///\if INTERNAL value("PrintLayoutElementDefinition") \endif
 
+    ////////////////////////////////////////////////////////////////
+    /// \brief
+    /// This resource is a watermark definition.
+    ///
+    /// \remarks
+    /// It represents the watermark rendered in map.
+    ///
+    /// \see \ref WatermarkDefinition_schema "WatermarkDefinition schema"
+    ///
+    static const STRING WatermarkDefinition;    ///\if INTERNAL value("WatermarkDefinition") \endif
+
 
 INTERNAL_API:
     static const STRING User;           /// User definition

@@ -35,7 +35,8 @@ MgMap::MgMap()
     : MgMapBase(),
     m_inSave(false),
     m_unpackedLayersGroups(false),
-    m_colorPalette(NULL)        // lazy instantiation
+    m_colorPalette(NULL),        // lazy instantiation
+    m_watermarkUsage(Viewer)
 {
 }
 
@@ -47,7 +48,8 @@ MgMap::MgMap(MgSiteConnection* siteConnection)
     : MgMapBase(),
     m_inSave(false),
     m_unpackedLayersGroups(false),
-    m_colorPalette(NULL)        // lazy instantiation
+    m_colorPalette(NULL),        // lazy instantiation
+    m_watermarkUsage(Viewer)
 {
     if (NULL == siteConnection)
     {
@@ -891,6 +893,9 @@ void MgMap::Serialize(MgStream* stream)
         }
     }
 
+    //watermark usage
+    stream->WriteInt32(m_watermarkUsage);
+
     // Serialize Layers and Groups as a blob.
     if (m_inSave)
     {
@@ -1008,6 +1013,9 @@ void MgMap::Deserialize(MgStream* stream)
     }
 
     m_changeLists->SetCheckForDuplicates(true);
+
+    //watermark usage
+    streamReader->GetInt32(m_watermarkUsage);
 
     //blob for layers and groups
     INT32 nBytes = 0;
@@ -1150,4 +1158,14 @@ void MgMap::AddColorsToPalette(ColorStringList& newColorPalette)
             }
         }
     }
+}
+
+INT32 MgMap::GetWatermarkUsage()
+{
+    return m_watermarkUsage;
+}
+
+void MgMap::SetWatermarkUsage(INT32 watermarkUsage)
+{
+    m_watermarkUsage = watermarkUsage;
 }

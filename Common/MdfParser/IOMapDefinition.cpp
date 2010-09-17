@@ -21,6 +21,7 @@
 #include "IOFill.h"
 #include "IOMapLayer.h"
 #include "IOMapLayerGroup.h"
+#include "IOWatermarkInstance.h"
 #include "IOBaseMapDefinition.h"
 
 using namespace XERCES_CPP_NAMESPACE;
@@ -73,6 +74,18 @@ void IOMapDefinition::StartElement(const wchar_t* name, HandlerStack* handlerSta
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
+        else if (this->m_currElemName == L"Watermark") // NOXLATE
+        {
+            Version wdVersion;
+            if (!IOMapDefinition::GetWatermarkVersion(
+                &this->m_version, wdVersion))
+                return;
+            WatermarkInstance* mapWatermark = new WatermarkInstance(L"", L"");
+            this->m_map->GetWatermarks()->Adopt(mapWatermark);
+            IOWatermarkInstance* IO = new IOWatermarkInstance(mapWatermark, wdVersion);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
         else if (this->m_currElemName == L"BaseMapDefinition") // NOXLATE
         {
             IOBaseMapDefinition* IO = new IOBaseMapDefinition(this->m_map, this->m_version);
@@ -107,10 +120,26 @@ void IOMapDefinition::EndElement(const wchar_t* name, HandlerStack* handlerStack
     }
 }
 
+// Determine which WatermarkDefinition schema version to use based
+// on the supplied LDF version:
+// * MDF version <= 1.1.0  =>  WD version 1.0.0
+bool IOMapDefinition::GetWatermarkVersion(Version* mdfVersion, Version& wmVersion)
+{
+    wmVersion = Version(1, 0, 0);
+    return true;
+}
 
 void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version)
 {
-    fd << tab() << "<MapDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"MapDefinition-1.0.0.xsd\">" << std::endl; // NOXLATE
+    MdfString strVersion = version ? version->ToString() : L"1.1.0";
+    if(*version <= Version(1, 0, 0))
+    {
+        fd << tab() << "<MapDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"MapDefinition-1.0.0.xsd\">" << std::endl; // NOXLATE
+    }
+    else
+    {
+        fd << tab() << "<MapDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"MapDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
+    }
     inctab();
 
     // Property: Name
@@ -149,6 +178,21 @@ void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version)
     // Property: BaseMapDefinition
     if (map->GetFiniteDisplayScales()->GetCount() > 0)
         IOBaseMapDefinition::Write(fd, map, version);
+
+    //Property: MapWatermark (Optional)
+    if(*version >= Version(1, 1, 0))
+    {
+        int watermarkCount = map->GetWatermarks()->GetCount();
+        if(watermarkCount != 0)
+        {
+            fd << tab() << startStr("Watermarks") << std::endl; // NOXLATE
+            inctab();
+            for (int i=0; i<watermarkCount; ++i)
+                IOWatermarkInstance::Write(fd, map->GetWatermarks()->GetAt(i), version);
+            dectab();
+            fd << endStr("Watermarks") << std::endl; // NOXLATE
+        }
+    }
 
     dectab();
     fd << tab() << "</MapDefinition>" << std::endl; // NOXLATE

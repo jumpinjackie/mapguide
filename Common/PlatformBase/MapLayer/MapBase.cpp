@@ -776,3 +776,55 @@ MgService* MgMapBase::GetService(INT32 serviceType)
     throw new MgNotImplementedException(L"MgMapBase.GetService",
         __LINE__, __WFILE__, NULL, L"", NULL);
 }
+
+//static method to create the map definition
+MdfModel::MapDefinition* MgMapBase::GetMapDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId)
+{
+    // get and parse the map definition
+    Ptr<MgByteReader> reader = svcResource->GetResourceContent(resId, L"");
+    Ptr<MgByteSink> sink = new MgByteSink(reader);
+    Ptr<MgByte> bytes = sink->ToBuffer();
+
+    assert(bytes->GetLength() > 0);
+
+    MdfParser::SAX2Parser parser;
+    parser.ParseString((const char*)bytes->Bytes(), bytes->GetLength());
+
+    if (!parser.GetSucceeded())
+    {
+        STRING errorMsg = parser.GetErrorMessage();
+        MgStringCollection arguments;
+        arguments.Add(errorMsg);
+        throw new MgInvalidMapDefinitionException(L"MgMapBase::GetMapDefinition", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    // detach the map definition from the parser - it's
+    // now the caller's responsibility to delete it
+    MdfModel::MapDefinition* mdef = parser.DetachMapDefinition();
+    assert(mdef != NULL);
+
+    return mdef;
+}
+
+//static method to create the map definition
+MdfModel::MapDefinition* MgMapBase::GetMapDefinition(CREFSTRING resourceContent)
+{
+    // get and parse the map definition
+    MdfParser::SAX2Parser parser;
+    parser.ParseString(resourceContent.c_str(), resourceContent.length());
+
+    if (!parser.GetSucceeded())
+    {
+        STRING errorMsg = parser.GetErrorMessage();
+        MgStringCollection arguments;
+        arguments.Add(errorMsg);
+        throw new MgInvalidMapDefinitionException(L"MgMapBase::GetMapDefinition", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    // detach the map definition from the parser - it's
+    // now the caller's responsibility to delete it
+    MdfModel::MapDefinition* mdef = parser.DetachMapDefinition();
+    assert(mdef != NULL);
+
+    return mdef;
+}

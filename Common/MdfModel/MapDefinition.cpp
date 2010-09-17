@@ -190,6 +190,16 @@ MapLayerGroupCollection* MapDefinition::GetLayerGroups()
 }
 
 //-------------------------------------------------------------------------
+// PURPOSE: Accessor method for a list of WatermarkInstance objects that represent
+//          the Watermarks property.
+// RETURNS: A pointer to a modifiable WatermarkInstanceCollection.
+//-------------------------------------------------------------------------
+WatermarkInstanceCollection* MapDefinition::GetWatermarks()
+{
+    return &this->m_listWatermarks;
+}
+
+//-------------------------------------------------------------------------
 // PURPOSE: Accessor method for a collection of doubles that
 //          represent the scales that the base map tiles can be displayed at.
 // RETURNS: A pointer to a modifiable LayerGroupCollection.

@@ -224,6 +224,20 @@ class MG_MAPGUIDE_API MgMap : public MgMapBase
 
 PUBLISHED_API:
 
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Watermark usage environment.
+    /// \n
+    /// \c WMS - Usage WMS watermark.
+    /// \n
+    /// \c Viewer - Use Viewer watermark.
+    ///
+    enum
+    {
+        WMS = 1,
+        Viewer = 2
+    };
+
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Constructs an empty un-initialized MgMap object.
@@ -518,6 +532,15 @@ PUBLISHED_API:
     ///
     void Save();
 
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Get the watermark usage
+    ///
+    /// \return
+    /// The integer value
+    ///
+    INT32 GetWatermarkUsage();
+
 INTERNAL_API:
 
     /// \brief
@@ -582,6 +605,14 @@ INTERNAL_API:
     ///
     void BulkLoadIdentityProperties(MgFeatureService* featureService);
 
+    /// \brief
+    /// Sets the watermark usage
+    ///
+    /// \param dpi
+    /// Watermark usage
+    ///
+    virtual void SetWatermarkUsage(INT32 watermarkUsage);
+
 protected:
 
     //////////////////////////////////////////////////////////////////
@@ -635,6 +666,8 @@ private:
     bool m_inSave;
     bool m_unpackedLayersGroups;
     ColorStringList* m_colorPalette;
+
+    INT32 m_watermarkUsage;
 };
 /// \}
 

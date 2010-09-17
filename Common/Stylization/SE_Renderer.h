@@ -87,6 +87,13 @@ public:
     virtual void DrawScreenRaster(unsigned char* data, int length,
                                   RS_ImageFormat format, int native_width, int native_height,
                                   double x, double y, double w, double h, double angleDeg) = 0;
+    // Draw screen raster with alpha
+    // Alpha is a value between 0 and 1.
+    // 0 means completely transparent, while 1 means completely opaque.
+    virtual void DrawScreenRaster(unsigned char* data, int length,
+                                  RS_ImageFormat format, int native_width, int native_height,
+                                  double x, double y, double w, double h, double angleDeg,
+                                  double alpha) = 0;
     virtual void DrawScreenText(const RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy,
                                 RS_F_Point* path, int npts, double param_position) = 0;
 

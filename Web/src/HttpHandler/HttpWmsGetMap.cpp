@@ -172,6 +172,7 @@ void MgHttpWmsGetMap::Execute(MgHttpResponse& hResponse)
             // Get a map object corresponding to the request parameters
             Ptr<MgMap> map = MgWmsMapUtil::GetMap(wms, m_layerDefIds, m_bbox, m_crs,
                 m_width, m_height, resourceService);
+            map->SetWatermarkUsage(MgMap::WMS);
 
             // Get the image format
             // Note: should be valid, since this mapping has already happened

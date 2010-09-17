@@ -161,6 +161,7 @@ struct SE_RenderRaster : public SE_RenderPrimitive
     double position[2];
     double extent[2];
     double angleRad; // radians CCW
+    double opacity;
 };
 
 

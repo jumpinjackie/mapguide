@@ -20,6 +20,7 @@
 
 #include "MdfModel.h"
 #include "MdfRootObject.h"
+#include "WatermarkInstance.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -48,6 +49,10 @@ class MDFMODEL_API LayerDefinition : public MdfRootObject
         const double GetOpacity() const;
         void SetOpacity(const double opacity);
 
+        // Property : Watermarks
+        // The List of watermark instance in this layer.
+        WatermarkInstanceCollection* GetWatermarks();
+
     private:
         // Data members
         // The ID of the DataSource used by this layer
@@ -58,6 +63,8 @@ class MDFMODEL_API LayerDefinition : public MdfRootObject
 
         // The opacity value
         double m_opacity;
+
+        WatermarkInstanceCollection m_listWatermarks;
     };
 
 END_NAMESPACE_MDFMODEL

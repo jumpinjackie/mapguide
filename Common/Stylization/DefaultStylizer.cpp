@@ -228,6 +228,17 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
     m_styleEngine->ClearCache();
 }
 
+void DefaultStylizer::StylizeWatermark(Renderer* renderer,
+                                       MdfModel::WatermarkDefinition* watermark,
+                                       INT32 drawWidth,
+                                       INT32 drawHeight,
+                                       INT32 saveWidth,
+                                       INT32 saveHeight)
+{
+    m_styleEngine->StylizeWatermark((SE_Renderer*)renderer, watermark, drawWidth, drawHeight, saveWidth, saveHeight);
+    m_styleEngine->ClearCache();
+}
+
 
 //////////////////////////////////////////////////////////////////////////////
 int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,

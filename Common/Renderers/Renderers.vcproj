@@ -694,6 +694,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\RenderUtil.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\RenderUtil.h"
+			>
+		</File>
+		<File
 			RelativePath=".\stdafx.h"
 			>
 		</File>

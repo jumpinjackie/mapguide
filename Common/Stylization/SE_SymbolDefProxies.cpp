@@ -527,6 +527,8 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* ctx)
 
     ret->angleRad = fmod(angleDeg.evaluate(ctx->exec), 360.0) * M_PI180;
 
+    ret->opacity = opacity.evaluate(ctx->exec);
+
     SE_Matrix rxf;
     rxf.rotate(ret->angleRad);
     rxf.translate(ret->position[0], ret->position[1]);
