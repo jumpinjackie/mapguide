@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -21,8 +21,8 @@
 // WatermarkXOffset class is to define the offset of watermark at one dimension.
 //-------------------------------------------------------------------------
 
-#include <cmath>
 #include "stdafx.h"
+#include <cmath>
 #include "WatermarkXOffset.h"
 
 using namespace MDFMODEL_NAMESPACE;
@@ -33,9 +33,10 @@ const double WatermarkXOffset::doubleTolerance = 0.01;
 // PURPOSE: Construct and initialize an instance of the WatermarkXOffset class.
 //-------------------------------------------------------------------------
 WatermarkXOffset::WatermarkXOffset()
-: m_unit(WatermarkOffset::Pixels)
-, m_alignment(Center)
 {
+    this->m_offset = 0.0;
+    this->m_unit = WatermarkOffset::Points;
+    this->m_alignment = Center;
 }
 
 //-------------------------------------------------------------------------
@@ -46,19 +47,19 @@ WatermarkXOffset::~WatermarkXOffset()
 }
 
 //-------------------------------------------------------------------------
-// Get the offset length 
+// Get the offset length.
 //-------------------------------------------------------------------------
-double WatermarkXOffset::GetLength() const
+double WatermarkXOffset::GetOffset() const
 {
-    return this->m_length;
+    return this->m_offset;
 }
 
 //-------------------------------------------------------------------------
-// Set the offset length 
+// Set the offset length.
 //-------------------------------------------------------------------------
-void WatermarkXOffset::SetLength(const double& dLength)
+void WatermarkXOffset::SetOffset(const double& dOffset)
 {
-    this->m_length = dLength;
+    this->m_offset = dOffset;
 }
 
 //-------------------------------------------------------------------------
@@ -99,12 +100,15 @@ void WatermarkXOffset::SetAlignment(WatermarkXOffset::HorizontalAlignment alignm
     this->m_alignment = alignment;
 }
 
+//-------------------------------------------------------------------------
+// Determines whether this offset is the same as the supplied one.
+//-------------------------------------------------------------------------
 bool WatermarkXOffset::Equals(WatermarkXOffset* another)
 {
-    return another
-            && fabs(this->m_length - another->m_length) < doubleTolerance
-            && this->m_unit == another->m_unit
-            && this->m_alignment == another->m_alignment;
+    return another &&
+           fabs(this->m_offset - another->m_offset) < doubleTolerance &&
+           this->m_unit == another->m_unit &&
+           this->m_alignment == another->m_alignment;
 }
 
 #ifdef _WIN32

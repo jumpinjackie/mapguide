@@ -105,7 +105,7 @@ void IOWatermarkInstance::ElementChars(const wchar_t* ch)
         break;
 
     case eResourceId:
-        this->m_watermark->SetWatermarkResourceID(ch);
+        this->m_watermark->SetResourceId(ch);
         break;
     case eUsage:
         if (::wcscmp(ch, L"WMS") == 0) // NOXLATE
@@ -113,7 +113,7 @@ void IOWatermarkInstance::ElementChars(const wchar_t* ch)
         else if (::wcscmp(ch, L"Viewer") == 0) // NOXLATE
             this->m_watermark->SetUsage(WatermarkInstance::Viewer);
         else
-            this->m_watermark->SetUsage(WatermarkInstance::ALL);  //Treat as "ALL" if string is incorrect
+            this->m_watermark->SetUsage(WatermarkInstance::All);  //Treat as "All" if string is incorrect
         break;
     }
 }
@@ -140,7 +140,7 @@ void IOWatermarkInstance::Write(MdfStream& fd, WatermarkInstance* watermark, Ver
     fd << EncodeString(watermark->GetName());
     fd << endStr(sName) << std::endl;
     fd << tab() << startStr(sResourceId);
-    fd << EncodeString(watermark->GetWatermarkResourceID());
+    fd << EncodeString(watermark->GetResourceId());
     fd << endStr(sResourceId) << std::endl;
 
     fd << tab() << startStr(sUsage);

@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -31,9 +31,9 @@ using namespace MDFMODEL_NAMESPACE;
 // PURPOSE: Construct and initialize an instance of the XYWatermarkPosition class.
 //-------------------------------------------------------------------------
 XYWatermarkPosition::XYWatermarkPosition()
-: m_XPosition(NULL)
-, m_YPosition(NULL)
 {
+    this->m_XPosition = NULL;
+    this->m_YPosition = NULL;
 }
 
 //-------------------------------------------------------------------------
@@ -73,7 +73,7 @@ WatermarkXOffset* XYWatermarkPosition::GetXPosition()
 //          pXPosition - Adopted WatermarkXOffset object that is created on the heap.
 //                             It may be NULL.
 //-------------------------------------------------------------------------
-void XYWatermarkPosition::AdoptXPosition(WatermarkXOffset *pXPosition)
+void XYWatermarkPosition::AdoptXPosition(WatermarkXOffset* pXPosition)
 {
     if (this->m_XPosition != pXPosition)
     {
@@ -122,7 +122,7 @@ WatermarkYOffset* XYWatermarkPosition::GetYPosition()
 //          pYPosition - Adopted WatermarkYOffset object that is created on the heap.
 //                             It may be NULL.
 //-------------------------------------------------------------------------
-void XYWatermarkPosition::AdoptYPosition(WatermarkYOffset *pYPosition)
+void XYWatermarkPosition::AdoptYPosition(WatermarkYOffset* pYPosition)
 {
     if (this->m_YPosition != pYPosition)
     {
@@ -143,26 +143,35 @@ WatermarkYOffset* XYWatermarkPosition::OrphanYPosition()
     return pRet;
 }
 
+//-------------------------------------------------------------------------
+// Determines whether this position is the same as the supplied one.
+//-------------------------------------------------------------------------
 bool XYWatermarkPosition::Equals(WatermarkPosition* another)
 {
     XYWatermarkPosition* anotherPosition = dynamic_cast<XYWatermarkPosition*>(another);
-    if(!anotherPosition) return false;
+    if (!anotherPosition)
+        return false;
     
-    if(!this->m_XPosition)
+    // check X position
+    if (!this->m_XPosition)
     {
-        if(anotherPosition->m_XPosition) return false;
+        if (anotherPosition->m_XPosition)
+            return false;
     }
-    else if(!this->m_XPosition->Equals(anotherPosition->m_XPosition))
+    else if (!this->m_XPosition->Equals(anotherPosition->m_XPosition))
         return false;
 
-    if(!this->m_YPosition)
+    // check Y position
+    if (!this->m_YPosition)
     {
-        return !anotherPosition->m_YPosition;
+        if (anotherPosition->m_YPosition)
+            return false;
     }
-    else
-    {
-        return this->m_YPosition->Equals(anotherPosition->m_YPosition);
-    }
+    else if (!this->m_YPosition->Equals(anotherPosition->m_YPosition))
+        return false;
+
+    // all checks passed
+    return true;
 }
 
 #ifdef _WIN32

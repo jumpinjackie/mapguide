@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -33,7 +33,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // reference of a WatermarkDefinition object. It is the user's responsibility to ensure
     // that duplicated WatermarkDefinitions are deleted.
     //------------------------------------------------------------------------
-class MDFMODEL_API WatermarkInstance
+    class MDFMODEL_API WatermarkInstance
     {
     public:
 
@@ -42,7 +42,7 @@ class MDFMODEL_API WatermarkInstance
         {
             WMS = 1,
             Viewer = 2,
-            ALL = WMS | Viewer
+            All = WMS | Viewer
         };
 
         // Construction, destruction, initialization.
@@ -50,38 +50,39 @@ class MDFMODEL_API WatermarkInstance
         virtual ~WatermarkInstance();
 
         // Operations
+
         // Property : Name
-        // The name of WatermarkInstance. Must be a unique WatermarkInstance name.
+        // The name of WatermarkInstance.  Must be a unique WatermarkInstance name.
         const MdfString& GetName() const;
         void SetName(const MdfString& strName);
 
-        //Property : WatermarkResourceID
-        // The Watermark ResourceID that this WatermarkInstance refers to for its WatermarkDefinition object
-        const MdfString& GetWatermarkResourceID() const;
-        void SetWatermarkResourceID(const MdfString& strWaterResourceID);
+        // Property : ResourceId
+        // The Watermark resource ID that this WatermarkInstance refers to for its WatermarkDefinition object.
+        const MdfString& GetResourceId() const;
+        void SetResourceId(const MdfString& strResourceId);
 
         // Property: Usage
         const Usage GetUsage() const;
         void SetUsage(Usage usage);
 
-        // Property : WatermarkDefinition
-        // WatermarkDefinition that this WatermarkInstance refers to.
-        const WatermarkDefinition* GetWatermarkDefinition() const;
-        WatermarkDefinition* GetWatermarkDefinition();
-        void AdoptWatermarkDefinition(WatermarkDefinition *pWatermarkDefinition);
-        WatermarkDefinition* OrphanWatermarkDefinition();
-
         // Property: AppearanceOverride
         const WatermarkAppearance* GetAppearanceOverride() const;
         WatermarkAppearance* GetAppearanceOverride();
-        void AdoptAppearanceOverride(WatermarkAppearance *pAppearanceOverride);
+        void AdoptAppearanceOverride(WatermarkAppearance* pAppearanceOverride);
         WatermarkAppearance* OrphanAppearanceOverride();
 
         // Property: PositionOverride
         const WatermarkPosition* GetPositionOverride() const;
         WatermarkPosition* GetPositionOverride();
-        void AdoptPositionOverride(WatermarkPosition *pPositionOverride);
+        void AdoptPositionOverride(WatermarkPosition* pPositionOverride);
         WatermarkPosition* OrphanPositionOverride();
+
+        // Property : WatermarkDefinition
+        // WatermarkDefinition that this WatermarkInstance refers to.
+        const WatermarkDefinition* GetWatermarkDefinition() const;
+        WatermarkDefinition* GetWatermarkDefinition();
+        void AdoptWatermarkDefinition(WatermarkDefinition* pWatermarkDefinition);
+        WatermarkDefinition* OrphanWatermarkDefinition();
 
         bool Equals(WatermarkInstance* another);
 
@@ -94,17 +95,17 @@ class MDFMODEL_API WatermarkInstance
 
     private:
         // Hidden WatermarkInstance copy constructor and assignment operator.
-         WatermarkInstance(const WatermarkInstance&);
-         WatermarkInstance& operator=(const WatermarkInstance&);
+        WatermarkInstance(const WatermarkInstance&);
+        WatermarkInstance& operator=(const WatermarkInstance&);
 
         // Data members
         // See corresponding properties for descriptions
-         MdfString m_strName;
-         MdfString m_strWatermarkResourceID;
-         Usage m_usage;
-         WatermarkDefinition* m_pWatermarkDefinition;
-         WatermarkAppearance* m_appearanceOverride;
-         WatermarkPosition* m_positionOverride;
+        MdfString m_strName;
+        MdfString m_strResourceId;
+        Usage m_usage;
+        WatermarkAppearance* m_appearanceOverride;
+        WatermarkPosition* m_positionOverride;
+        WatermarkDefinition* m_pWatermarkDefinition;
     };
 
     typedef MdfOwnerCollection<WatermarkInstance> WatermarkInstanceCollection;

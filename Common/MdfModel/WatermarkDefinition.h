@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // The WatermarkDefinition class is the root document node of the MdfModel. Through its
     // interface, one can get access to all the data in the WatermarkDefinition.
     //------------------------------------------------------------------------
-class MDFMODEL_API WatermarkDefinition: public MdfRootObject
+    class MDFMODEL_API WatermarkDefinition: public MdfRootObject
     {
     public:
         // Construction, destruction, initialization.
@@ -43,19 +43,19 @@ class MDFMODEL_API WatermarkDefinition: public MdfRootObject
         // Property: Source
         const SymbolDefinition* GetSource() const;
         SymbolDefinition* GetSource();
-        void AdoptSource(SymbolDefinition *pSource);
+        void AdoptSource(SymbolDefinition* pSource);
         SymbolDefinition* OrphanSource();
         
         // Property: Appearance
         const WatermarkAppearance* GetAppearance() const;
         WatermarkAppearance* GetAppearance();
-        void AdoptAppearance(WatermarkAppearance *pAppearance);
+        void AdoptAppearance(WatermarkAppearance* pAppearance);
         WatermarkAppearance* OrphanAppearance();
         
         // Property: Position
         const WatermarkPosition* GetPosition() const;
         WatermarkPosition* GetPosition();
-        void AdoptPosition(WatermarkPosition *pPosition);
+        void AdoptPosition(WatermarkPosition* pPosition);
         WatermarkPosition* OrphanPosition();
 
 //#ifdef _WIN32
@@ -67,14 +67,14 @@ class MDFMODEL_API WatermarkDefinition: public MdfRootObject
 
     private:
         // Hidden WatermarkDefinition copy constructor and assignment operator.
-         WatermarkDefinition(const WatermarkDefinition&);
-         WatermarkDefinition& operator=(const WatermarkDefinition&);
+        WatermarkDefinition(const WatermarkDefinition&);
+        WatermarkDefinition& operator=(const WatermarkDefinition&);
 
         // Data members
         // See corresponding properties for descriptions
-         SymbolDefinition* m_source;
-         WatermarkAppearance* m_appearance;
-         WatermarkPosition* m_position;
+        SymbolDefinition* m_source;
+        WatermarkAppearance* m_appearance;
+        WatermarkPosition* m_position;
     };
 
 END_NAMESPACE_MDFMODEL

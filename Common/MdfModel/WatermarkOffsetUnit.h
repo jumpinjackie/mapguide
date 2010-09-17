@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -20,14 +20,14 @@
 
 #include "MdfModel.h"
 
+BEGIN_NAMESPACE_MDFMODEL
 
-namespace MdfModel{
-    namespace WatermarkOffset {
-
+    namespace WatermarkOffset
+    {
         //-------------------------------------------------------------------------
         // DESCRIPTION:
-        // The WatermarkOffsetUnit enum is to describe the content of the Unit property
-        // in watermark offset.
+        // The WatermarkOffsetUnit enum is to describe the content of the Unit
+        // property in watermark offset.
         //------------------------------------------------------------------------
         enum WatermarkOffsetUnit
         {
@@ -38,5 +38,6 @@ namespace MdfModel{
             Points
         };
     }
-}
+
+END_NAMESPACE_MDFMODEL
 #endif // WATERMARKOFFSETUNIT_H_

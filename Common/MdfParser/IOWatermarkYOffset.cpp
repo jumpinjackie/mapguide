@@ -70,7 +70,7 @@ void IOWatermarkYOffset::ElementChars(const wchar_t* ch)
     switch (this->m_currElemId)
     {
     case eOffset:
-        this->m_YOffset->SetLength(wstrToDouble(ch));
+        this->m_YOffset->SetOffset(wstrToDouble(ch));
         break;
 
     case eAlignment:
@@ -107,7 +107,7 @@ void IOWatermarkYOffset::Write(MdfStream& fd, WatermarkYOffset* yOffset, Version
     inctab();
 
     fd << tab() << startStr(sOffset);
-    fd << DoubleToStr(yOffset->GetLength());
+    fd << DoubleToStr(yOffset->GetOffset());
     fd << endStr(sOffset) << std::endl;
 
     IOWatermarkOffsetUnit::Write(fd, yOffset->GetUnit());

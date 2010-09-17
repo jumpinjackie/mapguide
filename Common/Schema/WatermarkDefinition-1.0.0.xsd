@@ -15,7 +15,7 @@
   </xs:element>
   <xs:simpleType name="UnitType">
     <xs:annotation>
-      <xs:documentation>Unit for watermark</xs:documentation>
+      <xs:documentation>Unit for a watermark.</xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
       <xs:enumeration value="Inches"/>
@@ -27,7 +27,7 @@
   </xs:simpleType>
   <xs:simpleType name="HorizontalAlignmentType">
     <xs:annotation>
-      <xs:documentation>Horizontal alignment for watermark</xs:documentation>
+      <xs:documentation>Horizontal alignment for a watermark.</xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
       <xs:enumeration value="Left"/>
@@ -37,7 +37,7 @@
   </xs:simpleType>
   <xs:complexType name="HorizontalPositionType">
     <xs:annotation>
-      <xs:documentation>Horizontal position of watermark</xs:documentation>
+      <xs:documentation>Horizontal position of a watermark.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
       <xs:element name="Offset" type="xs:double" default="0">
@@ -59,7 +59,7 @@
   </xs:complexType>
   <xs:simpleType name="VerticalAlignmentType">
     <xs:annotation>
-      <xs:documentation>Vertical alignment for watermark</xs:documentation>
+      <xs:documentation>Vertical alignment for a watermark.</xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
       <xs:enumeration value="Top"/>
@@ -69,7 +69,7 @@
   </xs:simpleType>
   <xs:complexType name="VerticalPositionType">
     <xs:annotation>
-      <xs:documentation>Vertical position of watermark</xs:documentation>
+      <xs:documentation>Vertical position of a watermark.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
       <xs:element name="Offset" type="xs:double" default="0">
@@ -79,7 +79,7 @@
       </xs:element>
       <xs:element name="Unit" type="UnitType" default="Points">
         <xs:annotation>
-          <xs:documentation>Vertical for horizontal offset</xs:documentation>
+          <xs:documentation>Unit for vertical offset</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="Alignment" type="VerticalAlignmentType"  default="Center">
@@ -91,7 +91,7 @@
   </xs:complexType>
   <xs:complexType name="PositionType" abstract="true">
     <xs:annotation>
-      <xs:documentation>Abstract position type for watermark.</xs:documentation>
+      <xs:documentation>Abstract position type for a watermark.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
     </xs:sequence>
@@ -150,12 +150,12 @@
   </xs:complexType>
   <xs:complexType name="WatermarkAppearanceType">
     <xs:annotation>
-      <xs:documentation>Appearance of watermark</xs:documentation>
+      <xs:documentation>Appearance of a watermark.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
       <xs:element name="Transparency" minOccurs="0" default="0">
         <xs:annotation>
-          <xs:documentation>The transparency of watermark (0 -100). The default value is 0 (opaque).</xs:documentation>
+          <xs:documentation>The transparency of a watermark (0 -100).  The default value is 0 (opaque).</xs:documentation>
         </xs:annotation>
         <xs:simpleType>
           <xs:restriction base="xs:double">
@@ -166,7 +166,7 @@
       </xs:element>
       <xs:element name="Rotation" minOccurs="0" default="0">
         <xs:annotation>
-          <xs:documentation>The rotation of watermark (0-360). The default value is 0</xs:documentation>
+          <xs:documentation>The rotation of a watermark (0-360), in degrees.  The default value is 0</xs:documentation>
         </xs:annotation>
         <xs:simpleType>
           <xs:restriction base="xs:double">
@@ -179,7 +179,7 @@
   </xs:complexType>
   <xs:complexType name="WatermarkDefinitionType">
     <xs:annotation>
-      <xs:documentation>Watermark definition contains content and position of watermark</xs:documentation>
+      <xs:documentation>Watermark definition contains content and position of watermark.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
       <xs:element name="WatermarkSource">
@@ -203,18 +203,18 @@
       </xs:element>
       <xs:element name="Appearance" type="WatermarkAppearanceType">
         <xs:annotation>
-          <xs:documentation>The appearance of watermark.</xs:documentation>
+          <xs:documentation>The appearance of the watermark.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="Position">
         <xs:annotation>
-          <xs:documentation>Position of watermark</xs:documentation>
+          <xs:documentation>The position of the watermark</xs:documentation>
         </xs:annotation>
         <xs:complexType>
           <xs:choice>
             <xs:element name="XYPosition" type="XYPositionType">
               <xs:annotation>
-                <xs:documentation>A X-Y position</xs:documentation>
+                <xs:documentation>X-Y position</xs:documentation>
               </xs:annotation>
             </xs:element>
             <xs:element name="TilePosition" type="TilePositionType">
@@ -230,7 +230,7 @@
   </xs:complexType>
   <xs:simpleType name="UsageType">
     <xs:annotation>
-      <xs:documentation>The situation that watermark can be used.</xs:documentation>
+      <xs:documentation>The context in which the watermark can be used.</xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
       <xs:enumeration value="WMS">
@@ -245,7 +245,7 @@
       </xs:enumeration>
       <xs:enumeration value="ALL">
         <xs:annotation>
-          <xs:documentation>Watermark can show in all situation.</xs:documentation>
+          <xs:documentation>Watermark can show in all situations.</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
     </xs:restriction>
@@ -265,9 +265,9 @@
           <xs:documentation>A reference to an existing watermark definition.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="Usage" type="UsageType" minOccurs="0" default="ALL">
+      <xs:element name="Usage" type="UsageType" minOccurs="0" default="All">
         <xs:annotation>
-          <xs:documentation>The situation that watermark can be used. The default value is ALL.</xs:documentation>
+          <xs:documentation>The context in which the watermark can be used.  The default value is All.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="AppearanceOverrides" type="WatermarkAppearanceType" minOccurs="0">
@@ -299,7 +299,7 @@
   </xs:complexType>
   <xs:complexType name="WatermarkInstanceCollectionType">
     <xs:annotation>
-      <xs:documentation>A collection of watermark used by map or layer.</xs:documentation>
+      <xs:documentation>A collection of watermarks used by a map or layer.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
       <xs:element name="Watermark" type="WatermarkType" minOccurs="0" maxOccurs="unbounded">
