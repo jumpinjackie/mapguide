@@ -345,9 +345,9 @@ const STRING MgConfigProperties::DefaultResourceServicePropertySiteRepositoryPat
 const STRING MgConfigProperties::ResourceServicePropertyResourceValidationEnabled               = L"ResourceValidationEnabled"; // for internal use only
 const bool   MgConfigProperties::DefaultResourceServicePropertyResourceValidationEnabled        = true;
 const STRING MgConfigProperties::ResourceServicePropertyRetryAttempts                           = L"RetryAttempts";             // for internal use only
-const INT32  MgConfigProperties::DefaultResourceServicePropertyRetryAttempts                    = 10;
+const INT32  MgConfigProperties::DefaultResourceServicePropertyRetryAttempts                    = 50;
 const STRING MgConfigProperties::ResourceServicePropertyRetryInterval                           = L"RetryInterval";             // for internal use only
-const INT32  MgConfigProperties::DefaultResourceServicePropertyRetryInterval                    = 10;
+const INT32  MgConfigProperties::DefaultResourceServicePropertyRetryInterval                    = 25;
 
 // ******************************************************************
 // Site Service Properties

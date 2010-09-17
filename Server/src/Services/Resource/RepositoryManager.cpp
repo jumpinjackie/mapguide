@@ -468,12 +468,16 @@ void MgRepositoryManager::ValidateTransaction()
 
 void MgRepositoryManager::CommitTransaction()
 {
+    MG_RESOURCE_SERVICE_TRY()
+
     if (NULL != m_dbTxn)
     {
         m_dbTxn->commit(0);
         m_dbTxn = NULL;
         m_xmlTxn.reset();
     }
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgRepositoryManager.CommitTransaction")
 
     m_transacted = false;
 }
