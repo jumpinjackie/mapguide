@@ -287,7 +287,7 @@ INTERNAL_API:
     /// This resource is a watermark definition.
     ///
     /// \remarks
-    /// It represents the watermark rendered in map.
+    /// It represents the watermark rendered in a map.
     ///
     /// \see \ref WatermarkDefinition_schema "WatermarkDefinition schema"
     ///

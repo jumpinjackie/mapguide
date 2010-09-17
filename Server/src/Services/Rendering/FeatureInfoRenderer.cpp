@@ -287,10 +287,11 @@ void FeatureInfoRenderer::DrawScreenRaster(unsigned char* data, int length,
     }
 }
 
+
 void FeatureInfoRenderer::DrawScreenRaster(unsigned char* data, int length,
-                                  RS_ImageFormat format, int native_width, int native_height,
-                                  double x, double y, double w, double h, double angleDeg,
-                                  double alpha)
+                                           RS_ImageFormat format, int native_width, int native_height,
+                                           double x, double y, double w, double h, double angleDeg,
+                                           double alpha)
 {
     DrawScreenRaster(data, length, format, native_width, native_height, x, y, w, h, angleDeg);
 }

@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2007-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -29,13 +29,12 @@ void RenderUtil::DrawScreenRaster(SE_Renderer* render,
     if (format == RS_ImageFormat_Unknown)
         return;
 
-    if(alpha <= 0) return;
+    if (alpha <= 0.0)
+        return;
 
-    if(alpha >=1)
+    if (alpha >= 1.0)
     {
-        render->DrawScreenRaster(
-            data, length, format, native_width, native_height, 
-            x, y, w, h, angledeg);
+        render->DrawScreenRaster(data, length, format, native_width, native_height, x, y, w, h, angledeg);
         return;
     }
 
@@ -58,21 +57,17 @@ void RenderUtil::DrawScreenRaster(SE_Renderer* render,
 
         delete [] decoded;
     }
-    else if(format == RS_ImageFormat_ABGR || format == RS_ImageFormat_ARGB)
+    else if (format == RS_ImageFormat_ABGR || format == RS_ImageFormat_ARGB)
     {
-        //Set alpha value for each pixel
+        // set alpha value for each pixel
         unsigned char* end = data + 4 * native_width * native_height;
-        for(unsigned char* pixel = data; pixel < end; pixel += 4)
+        for (unsigned char* pixel = data; pixel < end; pixel += 4)
             pixel[3] = (unsigned char)((float)pixel[3] * (float)alpha);
-        render->DrawScreenRaster(
-            data, length, format, native_width, native_height, 
-            x, y, w, h, angledeg);
+        render->DrawScreenRaster(data, length, format, native_width, native_height, x, y, w, h, angledeg);
     }
     else
     {
-        //TODO: Set alpha for other format
-        render->DrawScreenRaster(
-            data, length, format, native_width, native_height, 
-            x, y, w, h, angledeg);
+        // TODO: set alpha for other format
+        render->DrawScreenRaster(data, length, format, native_width, native_height, x, y, w, h, angledeg);
     }
 }

@@ -199,6 +199,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
     #endif
 }
 
+
 // opaque is a double between 0 and 1.
 // 0 means totally transparent, while 1 means totally opaque.
 // The caller should be responsible for validating opaque value.
@@ -208,6 +209,7 @@ inline unsigned int TransparentColor(unsigned int argb, double opaque)
     return argb & 0xFFFFFF 
         | (((unsigned int)(((argb >> 24) & 0xFF)* opaque)) << 24);
 }
+
 
 // Unit can't be Pixels.
 // The caller should be responsible for not input pixel
@@ -233,6 +235,10 @@ inline double GetUnitPerMeter(WatermarkOffset::WatermarkOffsetUnit unit)
     }
 }
 
+
+// THIS METHOD NEEDS TO BE CLEANED UP
+// ** unnecessary object creation using new (allocated n the stack instead)
+// ** compiler warnings being generated
 void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
                                          WatermarkDefinition* watermark,
                                          INT32 drawWidth,
@@ -255,16 +261,16 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
     
     std::auto_ptr<SE_Rule> rule(new SE_Rule());
 
-    //Translate watermark source into SE_SymbolInstance list.
-    //As the source is adopted into symbol, we need to detach them after the rendering is done.
-    std::auto_ptr<CompositeSymbolization> symbols(new CompositeSymbolization());
+    // Translate watermark source into SE_SymbolInstance list.
+    // As the source is adopted into symbol, we need to detach them after the rendering is done.
+    CompositeSymbolization symbols;
 
     std::auto_ptr<SymbolInstance> instance(new SymbolInstance());
     instance->AdoptSymbolDefinition(watermark->GetSource());
     instance->SetUsageContext(SymbolInstance::ucPoint);
-    symbols->GetSymbolCollection()->Adopt(instance.release());
+    symbols.GetSymbolCollection()->Adopt(instance.release());
 
-    m_visitor->Convert(rule->symbolInstances, symbols.get());
+    m_visitor->Convert(rule->symbolInstances, &symbols);
     _ASSERT(rule->symbolInstances.size() == 1u);
     
     // Translate appearance (transparency / rotation) into symbol instance
@@ -316,7 +322,7 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
             }
             else if(rasterPri)
             {
-                rasterPri->opacity.value = rasterPri->opacity.defValue = opacity;
+                rasterPri->opacity = opacity;
             }
         }
     }
@@ -746,9 +752,10 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
     // Detach symbol definition from the created composite symbol so that
     // it will not be finalized when composite symbol is finalized. 
     // The code is sure there is only one symbol instance.
-    _ASSERT(symbols->GetSymbolCollection()->GetCount() == 1);
-    symbols->GetSymbolCollection()->GetAt(0)->OrphanSymbolDefinition();
+    _ASSERT(symbols.GetSymbolCollection()->GetCount() == 1);
+    symbols.GetSymbolCollection()->GetAt(0)->OrphanSymbolDefinition();
 }
+
 
 void StylizationEngine::Stylize(RS_FeatureReader* reader,
                                 FdoExpressionEngine* exec,
@@ -1348,10 +1355,7 @@ void StylizationEngine::LayoutCustomLabel(const wchar_t* positioningAlgo, SE_App
     }
     else if (wcscmp(positioningAlgo, L"MultipleHighwayShields") == 0)
     {
-        if(m_reader)
-        {
-            SE_PositioningAlgorithms::MultipleHighwaysShields(applyCtx, rstyle, mm2su, m_reader, m_resources);
-        }
+        SE_PositioningAlgorithms::MultipleHighwaysShields(applyCtx, rstyle, mm2su, m_reader, m_resources);
     }
     else if (wcscmp(positioningAlgo, L"Default") == 0)
     {

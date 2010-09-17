@@ -228,6 +228,8 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
     m_styleEngine->ClearCache();
 }
 
+
+//////////////////////////////////////////////////////////////////////////////
 void DefaultStylizer::StylizeWatermark(Renderer* renderer,
                                        MdfModel::WatermarkDefinition* watermark,
                                        INT32 drawWidth,
