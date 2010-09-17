@@ -64,28 +64,18 @@ SAX2Parser::SAX2Parser() : DefaultHandler()
 
 SAX2Parser::~SAX2Parser()
 {
-    if (m_handlerStack != NULL)
-        delete m_handlerStack;
-    if (m_parser != NULL)
-        delete m_parser;
-    if (m_map != NULL)
-        delete m_map;
-    if (m_vLayer != NULL)
-        delete m_vLayer;
-    if (m_dLayer != NULL)
-        delete m_dLayer;
-    if (m_gLayer != NULL)
-        delete m_gLayer;
-    if (m_sSymbol != NULL)
-        delete m_sSymbol;
-    if (m_cSymbol != NULL)
-        delete m_cSymbol;
-    if (m_printLayout != NULL)
-        delete m_printLayout;
-    if (m_mapViewport != NULL)
-        delete m_mapViewport;
-    if (m_watermark != NULL)
-        delete m_watermark;
+    delete m_handlerStack;
+    delete m_parser;
+
+    delete m_map;
+    delete m_vLayer;
+    delete m_dLayer;
+    delete m_gLayer;
+    delete m_sSymbol;
+    delete m_cSymbol;
+    delete m_printLayout;
+    delete m_mapViewport;
+    delete m_watermark;
 }
 
 
@@ -253,12 +243,13 @@ SymbolDefinition* SAX2Parser::DetachSymbolDefinition()
     return NULL;
 }
 
+
 // Returns a reference to the parser's watermark definition
 // After this call the parser no longer owns the object.
 WatermarkDefinition* SAX2Parser::DetachWatermarkDefinition()
 {
     WatermarkDefinition* ret = m_watermark;
-    m_watermark= NULL;
+    m_watermark = NULL;
     return ret;
 }
 
@@ -412,6 +403,7 @@ void SAX2Parser::WriteToFile(std::string name, SymbolDefinition* symbol, Version
     fd.close();
 }
 
+
 void SAX2Parser::WriteToFile(std::string name, WatermarkDefinition* watermark, Version* version)
 {
     std::ofstream fd;
@@ -496,6 +488,7 @@ std::string SAX2Parser::SerializeToXML(SymbolDefinition* symbol, Version* versio
 
     return fd.str();
 }
+
 
 std::string SAX2Parser::SerializeToXML(WatermarkDefinition* watermark, Version* version)
 {
@@ -615,6 +608,7 @@ void SAX2Parser::startElement(const XMLCh* const uri,
         {
             // set the version
             SetWatermarkDefinitionVersion(attributes);
+
             _ASSERT(m_watermark == NULL); // otherwise we leak
             m_watermark = new WatermarkDefinition();
             IOWatermarkDefinition* IO = new IOWatermarkDefinition(m_watermark, m_version);
@@ -670,13 +664,14 @@ const MdfModel::Version& SAX2Parser::GetVersion()
     return m_version;
 }
 
+
 void SAX2Parser::SetMapDefinitionVersion(const Attributes& attributes)
 {
     // check for a version attribute
     int index = attributes.getIndex(W2X(L"version"));
     const XMLCh* verValue = (index >= 0)? attributes.getValue(index) : NULL;
 
-    // according to the schema map definition elements require a version
+    // according to the latest schema map definition elements require a version
     // attribute, but users may generate XML which is missing this attribute
     if (verValue)
     {
@@ -693,6 +688,7 @@ void SAX2Parser::SetMapDefinitionVersion(const Attributes& attributes)
         m_version = MdfModel::Version(1, 1, 0);
     }
 }
+
 
 void SAX2Parser::SetLayerDefinitionVersion(const Attributes& attributes)
 {
@@ -714,11 +710,13 @@ void SAX2Parser::SetLayerDefinitionVersion(const Attributes& attributes)
             m_version = MdfModel::Version(1, 2, 0);
         else if (_wcsicmp(version.c_str(), L"1.3.0") == 0)
             m_version = MdfModel::Version(1, 3, 0);
+        else if (_wcsicmp(version.c_str(), L"1.4.0") == 0)
+            m_version = MdfModel::Version(1, 4, 0);
     }
     else
     {
         // assume the latest version if the attribute is missing
-        m_version = MdfModel::Version(1, 3, 0);
+        m_version = MdfModel::Version(1, 4, 0);
     }
 }
 
@@ -747,6 +745,7 @@ void SAX2Parser::SetSymbolDefinitionVersion(const Attributes& attributes)
     }
 }
 
+
 void SAX2Parser::SetPrintLayoutDefinitionVersion(const Attributes& attributes)
 {
     // check for a version attribute
@@ -765,6 +764,7 @@ void SAX2Parser::SetPrintLayoutDefinitionVersion(const Attributes& attributes)
         m_version = MdfModel::Version(2, 0, 0);
     }
 }
+
 
 void SAX2Parser::SetPrintLayoutElementDefinitionVersion(const Attributes& attributes)
 {
@@ -785,14 +785,17 @@ void SAX2Parser::SetPrintLayoutElementDefinitionVersion(const Attributes& attrib
     }
 }
 
+
 void SAX2Parser::SetWatermarkDefinitionVersion(const Attributes& attributes)
 {
-    //Although right now we only have 1.0.0 here, this function is still needed for future expandation.
+    // Although right now we only have 1.0.0 here, this function is still
+    // needed for future expansion.
+
     // check for a version attribute
     int index = attributes.getIndex(W2X(L"version"));
     const XMLCh* verValue = (index >= 0)? attributes.getValue(index) : NULL;
 
-    // according to the schema layer definition elements require a version
+    // according to the schema watermark definition elements require a version
     // attribute, but users may generate XML which is missing this attribute
     if (verValue)
     {
@@ -807,6 +810,7 @@ void SAX2Parser::SetWatermarkDefinitionVersion(const Attributes& attributes)
         m_version = MdfModel::Version(1, 0, 0);
     }
 }
+
 
 MapDefinition* SAX2Parser::CreateClone(MapDefinition* map)
 {
@@ -881,6 +885,7 @@ SymbolDefinition* SAX2Parser::CreateClone(SymbolDefinition* symbol)
 
     return parser.DetachSymbolDefinition();
 }
+
 
 WatermarkDefinition* SAX2Parser::CreateClone(WatermarkDefinition* watermark)
 {

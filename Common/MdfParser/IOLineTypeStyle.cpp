@@ -127,10 +127,10 @@ void IOLineTypeStyle::Write(MdfStream& fd, LineTypeStyle* lineTypeStyle, Version
         fd << BoolToStr(lineTypeStyle->IsShowInLegend());
         fd << endStr(sShowInLegend) << std::endl;
     }
-    else
+    else if (*version >= Version(1, 0, 0))
     {
+        // save ShowInLegend as extended data for LDF versions 1.0.0, 1.1.0, and 1.2.0
         inctab();
-        // earlier version - save ShowInLegend to ExtendedData1
         fdExtData << tab() << startStr(sShowInLegend);
         fdExtData << BoolToStr(lineTypeStyle->IsShowInLegend());
         fdExtData << endStr(sShowInLegend) << std::endl;
