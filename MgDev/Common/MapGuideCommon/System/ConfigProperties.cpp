@@ -301,6 +301,10 @@ const STRING MgConfigProperties::RenderingServicePropertyClampPoints            
 const bool   MgConfigProperties::DefaultRenderingServicePropertyClampPoints                 = false;
 const STRING MgConfigProperties::RenderingServicePropertyGeneralizeData                     = L"GeneralizeData";
 const bool   MgConfigProperties::DefaultRenderingServicePropertyGeneralizeData              = false;
+const STRING MgConfigProperties::RenderingServicePropertyMaxRasterImageWidth                = L"MaxRasterImageWidth";
+const INT32  MgConfigProperties::DefaultRenderingServicePropertyMaxRasterImageWidth         = 2048;
+const STRING MgConfigProperties::RenderingServicePropertyMaxRasterImageHeight               = L"MaxRasterImageHeight";
+const INT32  MgConfigProperties::DefaultRenderingServicePropertyMaxRasterImageHeight        = 2048;
 
 // ******************************************************************
 // Font Alias Mappings section
@@ -620,7 +624,9 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviRenderingServicePropertie
     { MgConfigProperties::RenderingServicePropertyRasterGridSizeForPlot             , MgPropertyType::Int32     , 1                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
     { MgConfigProperties::RenderingServicePropertyMinRasterGridSizeForPlot          , MgPropertyType::Int32     , 1                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
     { MgConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatioForPlot, MgPropertyType::Double    , 0.0                                   , 1.0                                   , L""                                       },
-    { MgConfigProperties::RenderingServicePropertyRenderSelectionBatchSize          , MgPropertyType::Int32     , MG_CONFIG_MIN_RENDER_SELECTION_SIZE   , MG_CONFIG_MAX_RENDER_SELECTION_SIZE   , L""                                    },
+    { MgConfigProperties::RenderingServicePropertyRenderSelectionBatchSize          , MgPropertyType::Int32     , MG_CONFIG_MIN_RENDER_SELECTION_SIZE   , MG_CONFIG_MAX_RENDER_SELECTION_SIZE   , L""                                       },
+    { MgConfigProperties::RenderingServicePropertyMaxRasterImageWidth               , MgPropertyType::Int32     , 1                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
+    { MgConfigProperties::RenderingServicePropertyMaxRasterImageHeight              , MgPropertyType::Int32     , 1                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 

@@ -381,6 +381,15 @@ EXTERNAL_API:
     static const STRING RenderingServicePropertyGeneralizeData;                 /// value("GeneralizeData")
     static const bool DefaultRenderingServicePropertyGeneralizeData;            /// value(false)
 
+    /// Sets the max width for raster image
+    static const STRING MgConfigProperties::RenderingServicePropertyMaxRasterImageWidth;           /// value("MaxRasterImageWidth")
+    static const INT32  MgConfigProperties::DefaultRenderingServicePropertyMaxRasterImageWidth;    /// value(2048)
+
+    /// Sets the max height for raster image
+    static const STRING MgConfigProperties::RenderingServicePropertyMaxRasterImageHeight;          /// value("MaxRasterImageHeight")
+    static const INT32  MgConfigProperties::DefaultRenderingServicePropertyMaxRasterImageHeight;   /// value(2048)
+
+
     /// FONT ALIASES SECTION -----------------------------------------------------------------------------
 
     /// font alias mappings
