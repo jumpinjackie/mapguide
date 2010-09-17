@@ -38,6 +38,7 @@ libMgRenderers_la_SOURCES = \
   KmlPolyStyle.cpp \
   KmlRenderer.cpp \
   ObservationMesh.cpp \
+  RenderUtil.cpp \
   RS_ByteData.cpp \
   SymbolTrans.cpp \
   W2DRewriter.cpp \
@@ -67,6 +68,7 @@ noinst_HEADERS = \
   KmlRenderer.h \
   ObservationMesh.h \
   Renderers.h \
+  RenderUtil.h \
   RS_ByteData.h \
   RSDWFInputStream.h \
   RSDWFOutputStream.h \

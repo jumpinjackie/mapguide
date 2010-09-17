@@ -93,11 +93,19 @@ libMgMdfParser_la_SOURCES = \
   IOText.cpp \
   IOTextFrame.cpp \
   IOThemeLabel.cpp \
+  IOTileWatermarkPosition.cpp \
   IOUnknown.cpp \
   IOUtil.cpp \
   IOVectorLayerDefinition.cpp \
   IOVectorScaleRange.cpp \
   IOW2DSymbol.cpp \
+  IOWatermarkAppearance.cpp \
+  IOWatermarkDefinition.cpp \
+  IOWatermarkInstance.cpp \
+  IOWatermarkOffsetUnit.cpp \
+  IOWatermarkXOffset.cpp \
+  IOWatermarkYOffset.cpp \
+  IOXYWatermarkPosition.cpp \
   MdfParser.cpp \
   SAX2ElementHandler.cpp \
   SAX2Parser.cpp
@@ -186,11 +194,19 @@ noinst_HEADERS = \
   IOText.h \
   IOTextFrame.h \
   IOThemeLabel.h \
+  IOTileWatermarkPosition.h \
   IOUnknown.h \
   IOUtil.h \
   IOVectorLayerDefinition.h \
   IOVectorScaleRange.h \
   IOW2DSymbol.h \
+  IOWatermarkAppearance.h \
+  IOWatermarkDefinition.h \
+  IOWatermarkInstance.h \
+  IOWatermarkOffsetUnit.h \
+  IOWatermarkXOffset.h \
+  IOWatermarkYOffset.h \
+  IOXYWatermarkPosition.h \
   MdfParser.h \
   SAX2ElementHandler.h \
   SAX2Parser.h \
