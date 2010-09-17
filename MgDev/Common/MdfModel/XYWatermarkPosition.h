@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -30,7 +30,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // The XYWatermarkPosition class is one concrete implementation of WatermarkPosition.
     // It uses X-Y as the position of watermark.
     //------------------------------------------------------------------------
-class MDFMODEL_API XYWatermarkPosition: public WatermarkPosition
+    class MDFMODEL_API XYWatermarkPosition: public WatermarkPosition
     {
     public:
         // Construction, destruction, initialization.
@@ -42,13 +42,13 @@ class MDFMODEL_API XYWatermarkPosition: public WatermarkPosition
         // Property: XPosition
         const WatermarkXOffset* GetXPosition() const;
         WatermarkXOffset* GetXPosition();
-        void AdoptXPosition(WatermarkXOffset *pXPosition);
+        void AdoptXPosition(WatermarkXOffset* pXPosition);
         WatermarkXOffset* OrphanXPosition();
         
         // Property: YPosition
         const WatermarkYOffset* GetYPosition() const;
         WatermarkYOffset* GetYPosition();
-        void AdoptYPosition(WatermarkYOffset *pYPosition);
+        void AdoptYPosition(WatermarkYOffset* pYPosition);
         WatermarkYOffset* OrphanYPosition();
 
         virtual bool Equals(WatermarkPosition* another);
@@ -62,13 +62,13 @@ class MDFMODEL_API XYWatermarkPosition: public WatermarkPosition
 
     private:
         // Hidden XYWatermarkPosition copy constructor and assignment operator.
-         XYWatermarkPosition(const XYWatermarkPosition&);
-         XYWatermarkPosition& operator=(const XYWatermarkPosition&);
+        XYWatermarkPosition(const XYWatermarkPosition&);
+        XYWatermarkPosition& operator=(const XYWatermarkPosition&);
 
         // Data members
         // See corresponding properties for descriptions
-         WatermarkXOffset* m_XPosition;
-         WatermarkYOffset* m_YPosition;
+        WatermarkXOffset* m_XPosition;
+        WatermarkYOffset* m_YPosition;
     };
 
 END_NAMESPACE_MDFMODEL

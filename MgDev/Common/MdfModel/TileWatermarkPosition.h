@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -28,10 +28,10 @@ BEGIN_NAMESPACE_MDFMODEL
     //-------------------------------------------------------------------------
     // DESCRIPTION:
     // The TileWatermarkPosition class is one concrete implementation of WatermarkPosition.
-    // It will repeat the source both in X and Y dimension. Tile is the unit of repeat.
+    // It will repeat the source both in X and Y dimension.  Tile is the unit of repeat.
     // Within tile it uses X-Y as the position of watermark.
     //------------------------------------------------------------------------
-class MDFMODEL_API TileWatermarkPosition: public WatermarkPosition
+    class MDFMODEL_API TileWatermarkPosition: public WatermarkPosition
     {
     public:
         // Construction, destruction, initialization.
@@ -51,13 +51,13 @@ class MDFMODEL_API TileWatermarkPosition: public WatermarkPosition
         // Property: HorizontalPosition
         const WatermarkXOffset* GetHorizontalPosition() const;
         WatermarkXOffset* GetHorizontalPosition();
-        void AdoptHorizontalPosition(WatermarkXOffset *pHorizontalPosition);
+        void AdoptHorizontalPosition(WatermarkXOffset* pHorizontalPosition);
         WatermarkXOffset* OrphanHorizontalPosition();
         
         // Property: VerticalPosition
         const WatermarkYOffset* GetVerticalPosition() const;
         WatermarkYOffset* GetVerticalPosition();
-        void AdoptVerticalPosition(WatermarkYOffset *pVerticalPosition);
+        void AdoptVerticalPosition(WatermarkYOffset* pVerticalPosition);
         WatermarkYOffset* OrphanVerticalPosition();
 
         virtual bool Equals(WatermarkPosition* another);
@@ -71,15 +71,15 @@ class MDFMODEL_API TileWatermarkPosition: public WatermarkPosition
 
     private:
         // Hidden TileWatermarkPosition copy constructor and assignment operator.
-         TileWatermarkPosition(const TileWatermarkPosition&);
-         TileWatermarkPosition& operator=(const TileWatermarkPosition&);
+        TileWatermarkPosition(const TileWatermarkPosition&);
+        TileWatermarkPosition& operator=(const TileWatermarkPosition&);
 
         // Data members
         // See corresponding properties for descriptions
-         double m_tileWidth;
-         double m_tileHeight;
-         WatermarkXOffset* m_horizontalPosition;
-         WatermarkYOffset* m_verticalPosition;
+        double m_tileWidth;
+        double m_tileHeight;
+        WatermarkXOffset* m_horizontalPosition;
+        WatermarkYOffset* m_verticalPosition;
 
         static const double doubleTolerance;
     };

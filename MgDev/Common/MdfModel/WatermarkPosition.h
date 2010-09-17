@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -27,7 +27,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // The WatermarkPosition class is the abstract class of position.
     // It doesn't contain any field inside itself.
     //------------------------------------------------------------------------
-class MDFMODEL_API WatermarkPosition
+    class MDFMODEL_API WatermarkPosition
     {
     public:
         // Destruction
@@ -35,7 +35,6 @@ class MDFMODEL_API WatermarkPosition
 
         virtual bool Equals(WatermarkPosition* another) = 0;
 
-    private:
     protected:
         // Construction, initialization
         // Default constructor is protected to make this class abstract.

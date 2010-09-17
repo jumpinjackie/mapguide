@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -34,8 +34,11 @@ const double TileWatermarkPosition::doubleTolerance = 0.01;
 // PURPOSE: Construct and initialize an instance of the TileWatermarkPosition class.
 //-------------------------------------------------------------------------
 TileWatermarkPosition::TileWatermarkPosition()
-    :m_horizontalPosition(NULL), m_verticalPosition(NULL)
 {
+    this->m_tileWidth = 150.0;
+    this->m_tileHeight = 150.0;
+    this->m_horizontalPosition = NULL;
+    this->m_verticalPosition = NULL;
 }
 
 //-------------------------------------------------------------------------
@@ -79,7 +82,6 @@ void TileWatermarkPosition::SetTileHeight(const double& dTileHeight)
     this->m_tileHeight = dTileHeight;
 }
 
-
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the HorizontalPosition property.
 //          The WatermarkXOffset is the type of offset used in the position of watermark.
@@ -108,7 +110,7 @@ WatermarkXOffset* TileWatermarkPosition::GetHorizontalPosition()
 //          pXPosition - Adopted WatermarkXOffset object that is created on the heap.
 //                             It may be NULL.
 //-------------------------------------------------------------------------
-void TileWatermarkPosition::AdoptHorizontalPosition(WatermarkXOffset *pHorizontalPosition)
+void TileWatermarkPosition::AdoptHorizontalPosition(WatermarkXOffset* pHorizontalPosition)
 {
     if (this->m_horizontalPosition != pHorizontalPosition)
     {
@@ -157,7 +159,7 @@ WatermarkYOffset* TileWatermarkPosition::GetVerticalPosition()
 //          pYPosition - Adopted WatermarkYOffset object that is created on the heap.
 //                             It may be NULL.
 //-------------------------------------------------------------------------
-void TileWatermarkPosition::AdoptVerticalPosition(WatermarkYOffset *pVerticalPosition)
+void TileWatermarkPosition::AdoptVerticalPosition(WatermarkYOffset* pVerticalPosition)
 {
     if (this->m_verticalPosition != pVerticalPosition)
     {
@@ -179,33 +181,40 @@ WatermarkYOffset* TileWatermarkPosition::OrphanVerticalPosition()
 }
 
 //-------------------------------------------------------------------------
-// Whether this position is the same as given one
+// Determines whether this position is the same as the supplied one.
 //-------------------------------------------------------------------------
 bool TileWatermarkPosition::Equals(WatermarkPosition* another)
 {
     TileWatermarkPosition* anotherPosition = dynamic_cast<TileWatermarkPosition*>(another);
-    if(!anotherPosition) return false;
-
-    if(fabs(this->m_tileWidth - anotherPosition->m_tileWidth) > doubleTolerance)
+    if (!anotherPosition)
         return false;
-    if(fabs(this->m_tileHeight - anotherPosition->m_tileHeight) > doubleTolerance)
+
+    // check width / height
+    if (fabs(this->m_tileWidth - anotherPosition->m_tileWidth) > doubleTolerance)
+        return false;
+    if (fabs(this->m_tileHeight - anotherPosition->m_tileHeight) > doubleTolerance)
         return false;
     
-    if(!this->m_horizontalPosition)
+    // check horizontal position
+    if (!this->m_horizontalPosition)
     {
-        if(anotherPosition->m_horizontalPosition) return false;
+        if (anotherPosition->m_horizontalPosition)
+            return false;
     }
-    else if(!this->m_horizontalPosition->Equals(anotherPosition->m_horizontalPosition))
+    else if (!this->m_horizontalPosition->Equals(anotherPosition->m_horizontalPosition))
         return false;
 
-    if(!this->m_verticalPosition)
+    // check vertical position
+    if (!this->m_verticalPosition)
     {
-        return !anotherPosition->m_verticalPosition;
+        if (anotherPosition->m_verticalPosition)
+            return false;
     }
-    else
-    {
-        return this->m_verticalPosition->Equals(anotherPosition->m_verticalPosition);
-    }
+    else if (!this->m_verticalPosition->Equals(anotherPosition->m_verticalPosition))
+        return false;
+
+    // all checks passed
+    return true;
 }
 
 #ifdef _WIN32

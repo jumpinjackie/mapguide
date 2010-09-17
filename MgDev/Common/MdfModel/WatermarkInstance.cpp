@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -30,16 +30,16 @@ using namespace MDFMODEL_NAMESPACE;
 // PARAMETERS:
 //     Input:
 //          strName - the unique WatermarkInstance name. Cannot be an empty string.
-//          strWatermarkResourceID - the resource ID for the watermark definition.
+//          strResourceId - the resource ID for the watermark definition.
 //-------------------------------------------------------------------------
-WatermarkInstance::WatermarkInstance(const MdfString& strName, const MdfString& strWatermarkResourceID)
-: m_strName(strName)
-, m_strWatermarkResourceID(strWatermarkResourceID)
-, m_usage(ALL)
-, m_pWatermarkDefinition(NULL)
-, m_appearanceOverride(NULL)
-, m_positionOverride(NULL)
+WatermarkInstance::WatermarkInstance(const MdfString& strName, const MdfString& strResourceId)
 {
+    this->m_strName = strName;
+    this->m_strResourceId = strResourceId;
+    this->m_usage = All;
+    this->m_appearanceOverride = NULL;
+    this->m_positionOverride = NULL;
+    this->m_pWatermarkDefinition = NULL;
 }
 
 //-------------------------------------------------------------------------
@@ -47,9 +47,9 @@ WatermarkInstance::WatermarkInstance(const MdfString& strName, const MdfString& 
 //-------------------------------------------------------------------------
 WatermarkInstance::~WatermarkInstance()
 {
-    delete this->m_pWatermarkDefinition;
     delete this->m_appearanceOverride;
     delete this->m_positionOverride;
+    delete this->m_pWatermarkDefinition;
 }
 
 //-------------------------------------------------------------------------
@@ -64,33 +64,31 @@ const MdfString& WatermarkInstance::GetName() const
 // PURPOSE: Accessor to the WatermarkInstance name.
 // PARAMETERS:
 //     Input:
-//          strName - unique WatermarkInstance name that is not a blank string.
+//          strName - unique WatermarkInstance name
 //-------------------------------------------------------------------------
 void WatermarkInstance::SetName(const MdfString& strName)
 {
-    if (strName.length() > 0)
-        this->m_strName = strName;
+    this->m_strName = strName;
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor for the WatermarkDefinition resourceID that this WatermarkInstance references.
+// PURPOSE: Accessor for the WatermarkDefinition resource ID that this WatermarkInstance references.
 // RETURNS:
 //-------------------------------------------------------------------------
-const MdfString& WatermarkInstance::GetWatermarkResourceID() const
+const MdfString& WatermarkInstance::GetResourceId() const
 {
-    return this->m_strWatermarkResourceID;
+    return this->m_strResourceId;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor to the WatermarkDefinition Uri that this WatermarkInstance references.
 // PARAMETERS:
 //      Input:
-//          strWatermarkResourceID - the watermark resourceID for this WatermarkInstance.Cannot be an empty
+//          strResourceId - the watermark resource ID for this WatermarkInstance
 //-------------------------------------------------------------------------
-void WatermarkInstance::SetWatermarkResourceID(const MdfString& strWatermarkResourceID)
+void WatermarkInstance::SetResourceId(const MdfString& strResourceId)
 {
-    if (strWatermarkResourceID.length() > 0)
-        this->m_strWatermarkResourceID = strWatermarkResourceID;
+    this->m_strResourceId = strResourceId;
 }
 
 //-------------------------------------------------------------------------
@@ -110,55 +108,6 @@ const WatermarkInstance::Usage WatermarkInstance::GetUsage() const
 void WatermarkInstance::SetUsage(WatermarkInstance::Usage usage)
 {
     this->m_usage = usage;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE: Accessor method for the watermark definition property.
-//          The WatermarkDefinition is the type of watermark definition.
-// RETURNS: The pointer of watermark definition.
-//-------------------------------------------------------------------------
-const WatermarkDefinition* WatermarkInstance::GetWatermarkDefinition() const
-{
-    return this->m_pWatermarkDefinition;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE: Accessor method for the watermark definition property.
-//          The WatermarkDefinition is the type of watermark definition.
-// RETURNS: The pointer of watermark definition.
-//-------------------------------------------------------------------------
-WatermarkDefinition* WatermarkInstance::GetWatermarkDefinition()
-{
-    return this->m_pWatermarkDefinition;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE: Accessor method for the watermark definition property.
-//          The WatermarkDefinition is the type of watermark definition.
-// PARAMETERS:
-//        Input:
-//          pWatermarkDefinition - Adopted WatermarkDefinition object that is created on the heap.
-//                             It may be NULL.
-//-------------------------------------------------------------------------
-void WatermarkInstance::AdoptWatermarkDefinition(WatermarkDefinition *pWatermarkDefinition)
-{
-    if (this->m_pWatermarkDefinition != pWatermarkDefinition)
-    {
-        delete this->m_pWatermarkDefinition;
-        this->m_pWatermarkDefinition = pWatermarkDefinition;
-    }
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE: Accessor method for the watermark definition property.
-//          The WatermarkDefinition is the type of watermark definition.
-// RETURNS: The pointer to the orphaned WatermarkDefinition object. It may be NULL.
-//-------------------------------------------------------------------------
-WatermarkDefinition* WatermarkInstance::OrphanWatermarkDefinition()
-{
-    WatermarkDefinition* pRet = this->m_pWatermarkDefinition;
-    this->m_pWatermarkDefinition = NULL;
-    return pRet;
 }
 
 //-------------------------------------------------------------------------
@@ -189,7 +138,7 @@ WatermarkAppearance* WatermarkInstance::GetAppearanceOverride()
 //          pAppearanceOverride - Adopted WatermarkAppearance object that is created on the heap.
 //                             It may be NULL.
 //-------------------------------------------------------------------------
-void WatermarkInstance::AdoptAppearanceOverride(WatermarkAppearance *pAppearanceOverride)
+void WatermarkInstance::AdoptAppearanceOverride(WatermarkAppearance* pAppearanceOverride)
 {
     if (this->m_appearanceOverride != pAppearanceOverride)
     {
@@ -238,7 +187,7 @@ WatermarkPosition* WatermarkInstance::GetPositionOverride()
 //          pPosition - Adopted WatermarkPosition object that is created on the heap.
 //                             It may be NULL.
 //-------------------------------------------------------------------------
-void WatermarkInstance::AdoptPositionOverride(WatermarkPosition *pPositionOverride)
+void WatermarkInstance::AdoptPositionOverride(WatermarkPosition* pPositionOverride)
 {
     if (this->m_positionOverride != pPositionOverride)
     {
@@ -259,27 +208,87 @@ WatermarkPosition* WatermarkInstance::OrphanPositionOverride()
     return pRet;
 }
 
+//-------------------------------------------------------------------------
+// PURPOSE: Accessor method for the watermark definition property.
+//          The WatermarkDefinition is the type of watermark definition.
+// RETURNS: The pointer of watermark definition.
+//-------------------------------------------------------------------------
+const WatermarkDefinition* WatermarkInstance::GetWatermarkDefinition() const
+{
+    return this->m_pWatermarkDefinition;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE: Accessor method for the watermark definition property.
+//          The WatermarkDefinition is the type of watermark definition.
+// RETURNS: The pointer of watermark definition.
+//-------------------------------------------------------------------------
+WatermarkDefinition* WatermarkInstance::GetWatermarkDefinition()
+{
+    return this->m_pWatermarkDefinition;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE: Accessor method for the watermark definition property.
+//          The WatermarkDefinition is the type of watermark definition.
+// PARAMETERS:
+//        Input:
+//          pWatermarkDefinition - Adopted WatermarkDefinition object that is created on the heap.
+//                             It may be NULL.
+//-------------------------------------------------------------------------
+void WatermarkInstance::AdoptWatermarkDefinition(WatermarkDefinition* pWatermarkDefinition)
+{
+    if (this->m_pWatermarkDefinition != pWatermarkDefinition)
+    {
+        delete this->m_pWatermarkDefinition;
+        this->m_pWatermarkDefinition = pWatermarkDefinition;
+    }
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE: Accessor method for the watermark definition property.
+//          The WatermarkDefinition is the type of watermark definition.
+// RETURNS: The pointer to the orphaned WatermarkDefinition object. It may be NULL.
+//-------------------------------------------------------------------------
+WatermarkDefinition* WatermarkInstance::OrphanWatermarkDefinition()
+{
+    WatermarkDefinition* pRet = this->m_pWatermarkDefinition;
+    this->m_pWatermarkDefinition = NULL;
+    return pRet;
+}
+
+//-------------------------------------------------------------------------
+// Determines whether this instance is the same as the supplied one.
+//-------------------------------------------------------------------------
 bool WatermarkInstance::Equals(WatermarkInstance* another)
 {
-    if(!another) return false;
-    if(::wcscmp(this->m_strWatermarkResourceID.c_str(), 
-        another->m_strWatermarkResourceID.c_str())) 
-        return false;
-    if(!this->m_appearanceOverride)
-    {
-        if(another->m_appearanceOverride) return false;
-    }
-    else if(!this->m_appearanceOverride->Equals(another->m_appearanceOverride))
+    if (!another)
         return false;
 
-    if(!this->m_positionOverride)
+    // check resource ID
+    if (::wcscmp(this->m_strResourceId.c_str(), another->m_strResourceId.c_str())) 
+        return false;
+
+    // check appearance
+    if (!this->m_appearanceOverride)
     {
-        return !(another->m_positionOverride);
+        if (another->m_appearanceOverride)
+            return false;
     }
-    else
+    else if (!this->m_appearanceOverride->Equals(another->m_appearanceOverride))
+        return false;
+
+    // check position
+    if (!this->m_positionOverride)
     {
-        return this->m_positionOverride->Equals(another->m_positionOverride);
+        if (another->m_positionOverride)
+            return false;
     }
+    else if (!this->m_positionOverride->Equals(another->m_positionOverride))
+        return false;
+
+    // all checks passed
+    return true;
 }
 
 #ifdef _WIN32

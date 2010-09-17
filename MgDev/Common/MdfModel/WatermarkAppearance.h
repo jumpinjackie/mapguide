@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -26,7 +26,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // DESCRIPTION:
     // The WatermarkAppearance class is to define the appearance of watermark.
     //------------------------------------------------------------------------
-class MDFMODEL_API WatermarkAppearance
+    class MDFMODEL_API WatermarkAppearance
     {
     public:
         // Construction, destruction, initialization.
@@ -53,8 +53,8 @@ class MDFMODEL_API WatermarkAppearance
 
     private:
         // Hidden WatermarkAppearance copy constructor and assignment operator.
-         WatermarkAppearance(const WatermarkAppearance&);
-         WatermarkAppearance& operator=(const WatermarkAppearance&);
+        WatermarkAppearance(const WatermarkAppearance&);
+        WatermarkAppearance& operator=(const WatermarkAppearance&);
 
         // Data members
         // See corresponding properties for descriptions

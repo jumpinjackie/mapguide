@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -18,15 +18,19 @@
 //-------------------------------------------------------------------------
 // DESCRIPTION:
 // The WatermarkDefinition class implementation.
-// All the data objects in the WatermarkDefinition (Content, Appearance, Position etc) 
-// are accessible. While unfettered access to all the stored objects in provided, 
-// these data are still owned by the WatermarkDefinition object.
-// Methods that have a prefix of "Adopt", imply that the object passed to them
-// has to be created on the heap and the WaterDefinition object is now responsible 
-// for its deletion. Methods that have a prefix of "Orphan" imply that the pointer
-// returned, points to an object on the heap and its is the caller who is responsible
-// for its deletion. Methods that have a "Get" prefix simply give access without
-// a change of ownership.
+//
+// All the data objects in the WatermarkDefinition (Source, Appearance,
+// Position, etc.) are accessible.  While unfettered access to all the stored
+// objects is provided, these data are still owned by the WatermarkDefinition
+// object.
+//   * Methods that have a prefix of "Adopt" imply that the object passed
+//     to them has to be created on the heap and the WaterDefinition object
+//     is now responsible for their deletion.
+//   * Methods that have a prefix of "Orphan" imply that the returned pointer
+//     points to an object on the heap and it's the caller's responsibility
+//     to delete it.
+//   * Methods that have a "Get" prefix simply give access without a change
+//     of ownership.
 //-------------------------------------------------------------------------
 
 #include "stdafx.h"
@@ -38,8 +42,10 @@ using namespace MDFMODEL_NAMESPACE;
 // PURPOSE: Construct and initialize an instance of the WatermarkDefinition class.
 //-------------------------------------------------------------------------
 WatermarkDefinition::WatermarkDefinition()
-    :m_source(NULL), m_appearance(NULL), m_position(NULL)
 {
+    this->m_source = NULL;
+    this->m_appearance = NULL;
+    this->m_position = NULL;
 }
 
 //-------------------------------------------------------------------------
@@ -49,8 +55,8 @@ WatermarkDefinition::~WatermarkDefinition()
 {
     delete this->m_source;
     delete this->m_appearance;
+    delete this->m_position;
 }
-
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the source property.
@@ -80,7 +86,7 @@ SymbolDefinition* WatermarkDefinition::GetSource()
 //          pSource - Adopted SymbolDefinition object that is created on the heap.
 //                             It may be NULL.
 //-------------------------------------------------------------------------
-void WatermarkDefinition::AdoptSource(SymbolDefinition *pSource)
+void WatermarkDefinition::AdoptSource(SymbolDefinition* pSource)
 {
     if (this->m_source != pSource)
     {
@@ -129,7 +135,7 @@ WatermarkAppearance* WatermarkDefinition::GetAppearance()
 //          pAppearance - Adopted WatermarkAppearance object that is created on the heap.
 //                             It may be NULL.
 //-------------------------------------------------------------------------
-void WatermarkDefinition::AdoptAppearance(WatermarkAppearance *pAppearance)
+void WatermarkDefinition::AdoptAppearance(WatermarkAppearance* pAppearance)
 {
     if (this->m_appearance != pAppearance)
     {
@@ -178,7 +184,7 @@ WatermarkPosition* WatermarkDefinition::GetPosition()
 //          pPosition - Adopted WatermarkPosition object that is created on the heap.
 //                             It may be NULL.
 //-------------------------------------------------------------------------
-void WatermarkDefinition::AdoptPosition(WatermarkPosition *pPosition)
+void WatermarkDefinition::AdoptPosition(WatermarkPosition* pPosition)
 {
     if (this->m_position != pPosition)
     {

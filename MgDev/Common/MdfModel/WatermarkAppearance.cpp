@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -21,8 +21,8 @@
 // WatermarkAppearance class is to define the appearance of watermark.
 //-------------------------------------------------------------------------
 
-#include <cmath>
 #include "stdafx.h"
+#include <cmath>
 #include "WatermarkAppearance.h"
 
 using namespace MDFMODEL_NAMESPACE;
@@ -34,6 +34,8 @@ const double WatermarkAppearance::doubleTolerance = 0.01;
 //-------------------------------------------------------------------------
 WatermarkAppearance::WatermarkAppearance()
 {
+    this->m_transparency = 0.0;
+    this->m_rotation = 0.0;
 }
 
 //-------------------------------------------------------------------------
@@ -44,8 +46,8 @@ WatermarkAppearance::~WatermarkAppearance()
 }
 
 //-------------------------------------------------------------------------
-// Returns the transparency (0 - 100). O means totally opaque. 100 means totally
-// transparent. 
+// Returns the transparency (0 - 100).  Zero means fully opaque, and 100
+// means fully transparent. 
 //-------------------------------------------------------------------------
 double WatermarkAppearance::GetTransparency() const
 {
@@ -53,18 +55,23 @@ double WatermarkAppearance::GetTransparency() const
 }
 
 //-------------------------------------------------------------------------
-// Set the transparency (0 - 100). O means totally opaque. 100 means totally
-// transparent. If the parameter is more than 100, treat it as 100. If the
-// parameter is less than 0, treat it as 0.
+// Set the transparency (0 - 100).  Zero means fully opaque, and 100
+// means fully transparent.  If the parameter is more than 100, treat it
+// as 100.  If the parameter is less than 0, treat it as 0.
 //-------------------------------------------------------------------------
 void WatermarkAppearance::SetTransparency(const double& dTransparency)
 {
-    this->m_transparency = (dTransparency > 100) ? 100 : (dTransparency < 0 ? 0 : dTransparency);
+    if (dTransparency > 100.0)
+        this->m_transparency = 100.0;
+    else if (dTransparency < 0.0)
+        this->m_transparency = 0.0;
+    else
+        this->m_transparency = dTransparency;
 }
 
 //-------------------------------------------------------------------------
-// Returns the rotation (0 - 360). O means no rotation. 90 means rotating 90 degree
-// anticlockwise. 360 should be the same as 0 as it turns a whole circle.
+// Returns the rotation (0 - 360).  Zero means no rotation, while 90 means
+// rotating 90 degrees anticlockwise.
 //-------------------------------------------------------------------------
 double WatermarkAppearance::GetRotation() const
 {
@@ -72,21 +79,28 @@ double WatermarkAppearance::GetRotation() const
 }
 
 //-------------------------------------------------------------------------
-// Set the rotation (0 - 360). O means no rotation. 90 means rotating 90 degree
-// anticlockwise. 360 should be the same as 0 as it turns a whole circle. 
-// If the parameter is more than 360, treat it as 360. If the
-// parameter is less than 0, treat it as 0.
+// Set the rotation (0 - 360).  Zero means no rotation, while 90 means
+// rotating 90 degrees anticlockwise.  If the parameter is more than 360,
+// treat it as 360.  If the parameter is less than 0, treat it as 0.
 //-------------------------------------------------------------------------
 void WatermarkAppearance::SetRotation(const double& dRotation)
 {
-    this->m_rotation = (dRotation > 360) ? 360 : (dRotation < 0 ? 0 : dRotation);
+    if (dRotation > 360.0)
+        this->m_rotation = 360.0;
+    else if (dRotation < 0.0)
+        this->m_rotation = 0.0;
+    else
+        this->m_rotation = dRotation;
 }
 
+//-------------------------------------------------------------------------
+// Determines whether this appearance is the same as the supplied one.
+//-------------------------------------------------------------------------
 bool WatermarkAppearance::Equals(WatermarkAppearance* another)
 {
-    return another
-            && fabs(this->m_transparency - another->m_transparency) < doubleTolerance
-            && fabs(this->m_rotation - another->m_rotation) < doubleTolerance;
+    return another &&
+           fabs(this->m_transparency - another->m_transparency) < doubleTolerance &&
+           fabs(this->m_rotation - another->m_rotation) < doubleTolerance;
 }
 
 #ifdef _WIN32

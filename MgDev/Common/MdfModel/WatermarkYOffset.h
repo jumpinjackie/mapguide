@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -25,7 +25,7 @@ BEGIN_NAMESPACE_MDFMODEL
 
     //-------------------------------------------------------------------------
     // DESCRIPTION:
-    // The WatermarkOffest class is to define the offset in Y-axis of the watermark.
+    // The WatermarkYOffest class is to define the offset in Y-axis of the watermark.
     //------------------------------------------------------------------------
     class MDFMODEL_API WatermarkYOffset
     {
@@ -44,9 +44,9 @@ BEGIN_NAMESPACE_MDFMODEL
         virtual ~WatermarkYOffset();
 
         // Operations
-        // Property: Length
-        double GetLength() const;
-        void SetLength(const double& dLength);
+        // Property: Offset
+        double GetOffset() const;
+        void SetOffset(const double& dOffset);
 
         // Property : Unit
         WatermarkOffset::WatermarkOffsetUnit GetUnit() const;
@@ -67,19 +67,18 @@ BEGIN_NAMESPACE_MDFMODEL
 
     private:
         // Hidden WatermarkYOffset copy constructor and assignment operator.
-         WatermarkYOffset(const WatermarkYOffset&);
-         WatermarkYOffset& operator=(const WatermarkYOffset&);
-
+        WatermarkYOffset(const WatermarkYOffset&);
+        WatermarkYOffset& operator=(const WatermarkYOffset&);
 
         // Data members
         // See corresponding properties for descriptions
-         double m_length;
+        double m_offset;
 
         // The meaning of the string in the Unit property.
-         WatermarkOffset::WatermarkOffsetUnit m_unit;
+        WatermarkOffset::WatermarkOffsetUnit m_unit;
 
         // The meaning of the string in the Alignment property.
-         VerticalAlignment m_alignment;
+        VerticalAlignment m_alignment;
 
         static const double doubleTolerance;
     };

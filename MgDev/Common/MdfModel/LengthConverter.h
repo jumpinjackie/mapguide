@@ -33,7 +33,7 @@ BEGIN_NAMESPACE_MDFMODEL
         Feet,
         Yards,
         Miles,
-        Points,
+        Points
     };
 
     class MDFMODEL_API LengthConverter
