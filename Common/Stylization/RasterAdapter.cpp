@@ -99,7 +99,7 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
         int devW = (int)(mapExt.width() * pixelsPerMapUnit);
         int devH = (int)(mapExt.height() * pixelsPerMapUnit);
 
-        while (imgW >= 2048 || imgH >= 2048)
+        while (imgW >= renderer->GetMaxRasterImageWidth() || imgH >= renderer->GetMaxRasterImageHeight())
         {
             imgW >>= 1;
             imgH >>= 1;

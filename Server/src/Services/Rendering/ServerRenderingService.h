@@ -217,6 +217,8 @@ private:
     INT32 m_minRasterGridSize;
     double m_rasterGridSizeOverrideRatio;
     INT32 m_renderSelectionBatchSize;
+    INT32 m_maxRasterImageWidth;
+    INT32 m_maxRasterImageHeight;
 };
 
 #endif

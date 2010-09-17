@@ -100,6 +100,16 @@ MgServerRenderingService::MgServerRenderingService() : MgRenderingService()
                           m_renderSelectionBatchSize,
                           MgConfigProperties::DefaultRenderingServicePropertyRenderSelectionBatchSize);
 
+    pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
+                          MgConfigProperties::RenderingServicePropertyMaxRasterImageWidth,
+                          m_maxRasterImageWidth,
+                          MgConfigProperties::DefaultRenderingServicePropertyMaxRasterImageWidth);
+
+    pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
+                          MgConfigProperties::RenderingServicePropertyMaxRasterImageHeight,
+                          m_maxRasterImageHeight,
+                          MgConfigProperties::DefaultRenderingServicePropertyMaxRasterImageHeight);
+
     // there should only be one instance of this class, so it's safe to
     // directly set these static variables
     bool bClampPoints;
@@ -1483,6 +1493,8 @@ SE_Renderer* MgServerRenderingService::CreateRenderer(int width,
         renderer->SetRasterGridSize(m_rasterGridSize);
         renderer->SetMinRasterGridSize(m_minRasterGridSize);
         renderer->SetRasterGridSizeOverrideRatio(m_rasterGridSizeOverrideRatio);
+        renderer->SetMaxRasterImageWidth(m_maxRasterImageWidth);
+        renderer->SetMaxRasterImageHeight(m_maxRasterImageHeight);
     }
 
     return renderer;

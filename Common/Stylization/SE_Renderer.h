@@ -46,6 +46,12 @@ public:
     STYLIZATION_API virtual double GetRasterGridSizeOverrideRatio();
     STYLIZATION_API virtual void SetRasterGridSizeOverrideRatio(double ratio);
 
+    STYLIZATION_API virtual double GetMaxRasterImageWidth();
+    STYLIZATION_API virtual void SetMaxRasterImageWidth(int width);
+
+    STYLIZATION_API virtual double GetMaxRasterImageHeight();
+    STYLIZATION_API virtual void SetMaxRasterImageHeight(int height);
+
     STYLIZATION_API virtual bool SupportsTooltips();
     STYLIZATION_API virtual bool SupportsHyperlinks();
 
@@ -152,6 +158,8 @@ protected:
     int m_rasterGridSize;
     int m_minRasterGridSize;
     double m_rasterGridSizeOverrideRatio;
+    int m_maxRasterImageWidth;
+    int m_maxRasterImageHeight;
 
 private:
     RS_F_Point m_lastSymbolExtent[4];
