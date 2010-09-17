@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0.0">
+  <xs:include schemaLocation="SymbolDefinition-1.1.0.xsd"/>
+  <xs:element name="WatermarkDefinition">
+    <xs:annotation>
+      <xs:documentation>The specification of the watermark.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="WatermarkDefinitionType">
+          <xs:attribute name="version" type="xs:string" use="required" fixed="1.0.0"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:simpleType name="UnitType">
+    <xs:annotation>
+      <xs:documentation>Unit for watermark</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Inches"/>
+      <xs:enumeration value="Centimeters"/>
+      <xs:enumeration value="Millimeters"/>
+      <xs:enumeration value="Pixels"/>
+      <xs:enumeration value="Points"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="HorizontalAlignmentType">
+    <xs:annotation>
+      <xs:documentation>Horizontal alignment for watermark</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Left"/>
+      <xs:enumeration value="Center"/>
+      <xs:enumeration value="Right"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="HorizontalPositionType">
+    <xs:annotation>
+      <xs:documentation>Horizontal position of watermark</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Offset" type="xs:double" default="0">
+        <xs:annotation>
+          <xs:documentation>Horizontal offset</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Unit" type="UnitType" default="Points">
+        <xs:annotation>
+          <xs:documentation>Unit for horizontal offset</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Alignment" type="HorizontalAlignmentType" default="Center">
+        <xs:annotation>
+          <xs:documentation>Horizontal alignment</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="VerticalAlignmentType">
+    <xs:annotation>
+      <xs:documentation>Vertical alignment for watermark</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Top"/>
+      <xs:enumeration value="Center"/>
+      <xs:enumeration value="Bottom"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="VerticalPositionType">
+    <xs:annotation>
+      <xs:documentation>Vertical position of watermark</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Offset" type="xs:double" default="0">
+        <xs:annotation>
+          <xs:documentation>Vertical offset</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Unit" type="UnitType" default="Points">
+        <xs:annotation>
+          <xs:documentation>Vertical for horizontal offset</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Alignment" type="VerticalAlignmentType"  default="Center">
+        <xs:annotation>
+          <xs:documentation>Vertical alignment</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="PositionType" abstract="true">
+    <xs:annotation>
+      <xs:documentation>Abstract position type for watermark.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="XYPositionType">
+    <xs:annotation>
+      <xs:documentation>X/Y position</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="PositionType">
+        <xs:sequence>
+          <xs:element name="XPosition" type="HorizontalPositionType">
+            <xs:annotation>
+              <xs:documentation>X position</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="YPosition" type="VerticalPositionType">
+            <xs:annotation>
+              <xs:documentation>Y position</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="TilePositionType">
+    <xs:annotation>
+      <xs:documentation>TiledPosition</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="PositionType">
+        <xs:sequence>
+          <xs:element name="TileWidth" type="xs:double" default="150">
+            <xs:annotation>
+              <xs:documentation>Width of tile</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="TileHeight" type="xs:double" default="150">
+            <xs:annotation>
+              <xs:documentation>Height of tile</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="HorizontalPosition" type="HorizontalPositionType">
+            <xs:annotation>
+              <xs:documentation>Horizontal position within tile</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="VerticalPosition" type="VerticalPositionType">
+            <xs:annotation>
+              <xs:documentation>Vertical position within tile</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="WatermarkAppearanceType">
+    <xs:annotation>
+      <xs:documentation>Appearance of watermark</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Transparency" minOccurs="0" default="0">
+        <xs:annotation>
+          <xs:documentation>The transparency of watermark (0 -100). The default value is 0 (opaque).</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:double">
+            <xs:minInclusive value="0"/>
+            <xs:maxInclusive value="100"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="Rotation" minOccurs="0" default="0">
+        <xs:annotation>
+          <xs:documentation>The rotation of watermark (0-360). The default value is 0</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:double">
+            <xs:minInclusive value="0"/>
+            <xs:maxInclusive value="360"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WatermarkDefinitionType">
+    <xs:annotation>
+      <xs:documentation>Watermark definition contains content and position of watermark</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="WatermarkSource">
+        <xs:annotation>
+          <xs:documentation>Content source of watermark</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:choice>
+            <xs:element name="SimpleSymbolDefinition" type="SimpleSymbolDefinition">
+              <xs:annotation>
+                <xs:documentation>An inlined SimpleSymbolDefinition.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="CompoundSymbolDefinition" type="CompoundSymbolDefinition">
+              <xs:annotation>
+                <xs:documentation>An inlined CompoundSymbolDefinition.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+          </xs:choice>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Appearance" type="WatermarkAppearanceType">
+        <xs:annotation>
+          <xs:documentation>The appearance of watermark.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Position">
+        <xs:annotation>
+          <xs:documentation>Position of watermark</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:choice>
+            <xs:element name="XYPosition" type="XYPositionType">
+              <xs:annotation>
+                <xs:documentation>A X-Y position</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="TilePosition" type="TilePositionType">
+              <xs:annotation>
+                <xs:documentation>Tile position.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+          </xs:choice>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="ExtendedData" type="ExtendedDataType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="UsageType">
+    <xs:annotation>
+      <xs:documentation>The situation that watermark can be used.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="WMS">
+        <xs:annotation>
+          <xs:documentation>Watermark can show in WMS.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Viewer">
+        <xs:annotation>
+          <xs:documentation>Watermark can show in AJAX viewer or Fusion viewer.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="ALL">
+        <xs:annotation>
+          <xs:documentation>Watermark can show in all situation.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="WatermarkType">
+    <xs:annotation>
+      <xs:documentation>Watermark instance used in map definition / layer definition.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>The name of watermark.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ResourceId" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>A reference to an existing watermark definition.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Usage" type="UsageType" minOccurs="0" default="ALL">
+        <xs:annotation>
+          <xs:documentation>The situation that watermark can be used. The default value is ALL.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="AppearanceOverrides" type="WatermarkAppearanceType" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>The configuration here will override appearance configuration in watermark definition</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="PositionOverrides" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>The configuration here will override position configuration in watermark definition</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:choice>
+            <xs:element name="XYPosition" type="XYPositionType">
+              <xs:annotation>
+                <xs:documentation>A X-Y position</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="TilePosition" type="TilePositionType">
+              <xs:annotation>
+                <xs:documentation>Tile position.</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+          </xs:choice>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="ExtendedData" type="ExtendedDataType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WatermarkInstanceCollectionType">
+    <xs:annotation>
+      <xs:documentation>A collection of watermark used by map or layer.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Watermark" type="WatermarkType" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:documentation>A single watermark in the map definition or layer definition.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

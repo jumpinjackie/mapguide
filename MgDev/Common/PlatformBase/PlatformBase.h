@@ -62,6 +62,7 @@
 #include "Exception/FeatureServiceException.h"
 #include "Exception/InvalidLayerDefinitionException.h"
 #include "Exception/InvalidMapDefinitionException.h"
+#include "Exception/InvalidWatermarkDefinitionException.h"
 #include "Exception/InvalidRepositoryNameException.h"
 #include "Exception/InvalidRepositoryTypeException.h"
 #include "Exception/InvalidResourceDataNameException.h"
@@ -162,5 +163,6 @@
 #include "MapLayer/MapCollection.h"
 #include "MapLayer/ReadOnlyLayerCollection.h"
 #include "MapLayer/SelectionBase.h"
+#include "MapLayer/Watermark.h"
 
 #endif

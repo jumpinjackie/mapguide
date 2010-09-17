@@ -41,6 +41,7 @@ class IOVectorLayerDefinition : public SAX2ElementHandler
         static void Write(MdfStream& fd, VectorLayerDefinition* vectorLayer, Version* version);
 
     private:
+        static bool GetWatermarkVersion(Version* ldfVersion, Version& wmVersion);
         VectorLayerDefinition* m_layer;
 };
 

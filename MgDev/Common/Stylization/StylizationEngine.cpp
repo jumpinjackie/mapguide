@@ -199,6 +199,556 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
     #endif
 }
 
+// opaque is a double between 0 and 1.
+// 0 means totally transparent, while 1 means totally opaque.
+// The caller should be responsible for validating opaque value.
+inline unsigned int TransparentColor(unsigned int argb, double opaque)
+{
+    //unsigned int alpha = (unsigned int)(((argb >> 24) & 0xFF) * opaque);
+    return argb & 0xFFFFFF 
+        | (((unsigned int)(((argb >> 24) & 0xFF)* opaque)) << 24);
+}
+
+// Unit can't be Pixels.
+// The caller should be responsible for not input pixel
+inline double GetUnitPerMeter(WatermarkOffset::WatermarkOffsetUnit unit)
+{
+    switch(unit)
+    {
+    case WatermarkOffset::Centimeters:
+        return LengthConverter::MetersToUnit(MdfModel::Centimeters, 1);
+        break;
+    case WatermarkOffset::Inches:
+        return LengthConverter::MetersToUnit(MdfModel::Inches, 1);
+        break;
+    case WatermarkOffset::Millimeters:
+        return LengthConverter::MetersToUnit(MdfModel::Millimeters, 1);
+        break;
+    case WatermarkOffset::Points:
+        return LengthConverter::MetersToUnit(MdfModel::Points, 1);
+        break;
+    default:
+        return 1;
+        break;
+    }
+}
+
+void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
+                                         WatermarkDefinition* watermark,
+                                         INT32 drawWidth,
+                                         INT32 drawHeight,
+                                         INT32 saveWidth,
+                                         INT32 saveHeight)
+{
+    m_serenderer = se_renderer;
+    m_reader = NULL;
+
+    double drawingScale = m_serenderer->GetDrawingScale();
+
+    // get tooltip and url for the layer
+    SE_String seTip;
+    SE_String seUrl;
+    if (se_renderer->SupportsTooltips())
+        m_visitor->ParseStringExpression(L"", seTip, L"");
+    if (se_renderer->SupportsHyperlinks())
+        m_visitor->ParseStringExpression(L"", seUrl, L"");
+    
+    std::auto_ptr<SE_Rule> rule(new SE_Rule());
+
+    //Translate watermark source into SE_SymbolInstance list.
+    //As the source is adopted into symbol, we need to detach them after the rendering is done.
+    std::auto_ptr<CompositeSymbolization> symbols(new CompositeSymbolization());
+
+    std::auto_ptr<SymbolInstance> instance(new SymbolInstance());
+    instance->AdoptSymbolDefinition(watermark->GetSource());
+    instance->SetUsageContext(SymbolInstance::ucPoint);
+    symbols->GetSymbolCollection()->Adopt(instance.release());
+
+    m_visitor->Convert(rule->symbolInstances, symbols.get());
+    _ASSERT(rule->symbolInstances.size() == 1u);
+    
+    // Translate appearance (transparency / rotation) into symbol instance
+    // Prepare values
+    double transparency = watermark->GetAppearance()->GetTransparency();
+    transparency = (transparency < 0) ? 0 : ((transparency > 100) ? 100 : transparency);
+    double opacity = 1 - transparency / 100;
+    double rotation = watermark->GetAppearance()->GetRotation();
+    rotation = (rotation < 0) ? 0 : ((rotation > 360) ? 360 : rotation);
+
+    SE_SymbolInstance* sym = rule->symbolInstances[0];
+    size_t nStyles = sym->styles.size();
+    for (size_t styleIx=0; styleIx<nStyles; ++styleIx)
+    {
+        SE_PointStyle* style = (SE_PointStyle*)(sym->styles[styleIx]);
+        style->angleDeg.value = style->angleDeg.defValue = style->angleDeg.defValue + rotation;
+        if(style->symbol.size() == 0) continue;
+        
+        if(1 - opacity < 0.0001) continue;    //The opaque is 1.
+        size_t nPrimitives = style->symbol.size();
+        for (size_t primitiveIx=0; primitiveIx<nPrimitives; ++primitiveIx)
+        {
+            SE_Primitive* primitive = style->symbol[primitiveIx];
+            SE_Text* textPri = dynamic_cast<SE_Text*>(primitive);
+            SE_Polygon* polygonPri = dynamic_cast<SE_Polygon*>(primitive);
+            SE_Polyline* linePri = dynamic_cast<SE_Polyline*>(primitive);
+            SE_Raster* rasterPri = dynamic_cast<SE_Raster*>(primitive);
+            if(textPri)
+            {
+                //Text need to change color
+                textPri->textColor.value.argb = textPri->textColor.defValue.argb
+                    = TransparentColor(textPri->textColor.defValue.argb, opacity);
+                textPri->ghostColor.value.argb = textPri->ghostColor.defValue.argb
+                    = TransparentColor(textPri->ghostColor.defValue.argb, opacity);
+                textPri->frameLineColor.value.argb = textPri->frameLineColor.defValue.argb
+                    = TransparentColor(textPri->frameLineColor.defValue.argb, opacity);
+                textPri->frameFillColor.value.argb = textPri->frameFillColor.defValue.argb
+                    = TransparentColor(textPri->frameFillColor.defValue.argb, opacity);
+            }
+            else if(linePri)
+            {
+                linePri->color.value.argb = linePri->color.defValue.argb
+                    = TransparentColor(linePri->color.defValue.argb, opacity);
+                if(polygonPri)
+                {
+                    polygonPri->fill.value.argb = polygonPri->fill.defValue.argb
+                        = TransparentColor(polygonPri->fill.defValue.argb, opacity);
+                }
+            }
+            else if(rasterPri)
+            {
+                rasterPri->opacity.value = rasterPri->opacity.defValue = opacity;
+            }
+        }
+    }
+    
+    //Prepare some rendering context variable
+    double mm2sud = m_serenderer->GetScreenUnitsPerMillimeterDevice();
+    double mm2suw = m_serenderer->GetScreenUnitsPerMillimeterWorld();
+    double px2su  = m_serenderer->GetScreenUnitsPerPixel();
+    bool yUp = m_serenderer->YPointsUp();
+
+    // the factor to convert screen units to mapping units
+    double su2wu = 0.001 / (mm2suw * m_serenderer->GetMetersPerUnit());
+
+    //Prepare the position list
+    XYWatermarkPosition* xyPosition = dynamic_cast<XYWatermarkPosition*>(
+        watermark->GetPosition());
+    TileWatermarkPosition* tilePosition = dynamic_cast<TileWatermarkPosition*>(
+        watermark->GetPosition());
+    WatermarkXOffset::HorizontalAlignment hAlignment = WatermarkXOffset::Center;
+    WatermarkYOffset::VerticalAlignment vAlignment = WatermarkYOffset::Center;
+    WatermarkOffset::WatermarkOffsetUnit hUnit, vUnit;
+    double suPerhUnit, suPervUnit, xOffset, yOffset;
+    if(xyPosition)
+    {
+        hAlignment = xyPosition->GetXPosition()->GetAlignment();
+        vAlignment = xyPosition->GetYPosition()->GetAlignment();
+        hUnit = xyPosition->GetXPosition()->GetUnit();
+        vUnit = xyPosition->GetYPosition()->GetUnit();
+        xOffset = xyPosition->GetXPosition()->GetLength();      //In watermark unit
+        yOffset = xyPosition->GetYPosition()->GetLength();      //In watermark unit
+    }
+    else if(tilePosition)
+    {
+        hAlignment = tilePosition->GetHorizontalPosition()->GetAlignment();
+        vAlignment = tilePosition->GetVerticalPosition()->GetAlignment();
+        hUnit = tilePosition->GetHorizontalPosition()->GetUnit();
+        vUnit = tilePosition->GetVerticalPosition()->GetUnit();
+        xOffset = tilePosition->GetHorizontalPosition()->GetLength();      //In watermark unit
+        yOffset = tilePosition->GetVerticalPosition()->GetLength();        //In watermark unit
+    }
+    double pixelPerMeterDevice = 1000*mm2sud/px2su;
+    suPerhUnit = ((hUnit == WatermarkOffset::Pixels) 
+                    ? 1
+                    : pixelPerMeterDevice / GetUnitPerMeter(hUnit)) * px2su;
+    suPervUnit = ((vUnit == WatermarkOffset::Pixels) 
+                    ? 1
+                    : pixelPerMeterDevice / GetUnitPerMeter(vUnit)) * px2su;
+    xOffset *= suPerhUnit;      //In screen unit
+    yOffset *= suPervUnit;      //In screen unit
+
+
+    std::vector<double> watermarkPosList;
+    if(xyPosition)
+    {
+        switch(hAlignment)
+        {
+        case WatermarkXOffset::Right:
+            xOffset = saveWidth - xOffset;
+            break;
+        case WatermarkXOffset::Left:
+            break;
+        default:
+            xOffset += saveWidth/2;
+            break;
+        }
+        switch(vAlignment)
+        {
+        case WatermarkYOffset::Bottom:
+            yOffset = yUp ? yOffset : saveHeight - yOffset;
+            break;
+        case WatermarkYOffset::Top:
+            yOffset = yUp ? saveHeight - yOffset : yOffset;
+            break;
+        default:
+            yOffset = saveHeight/2 + (yUp ? yOffset : (-yOffset));
+            break;
+        }
+        xOffset *= drawWidth / saveWidth;
+        yOffset *= drawHeight / saveHeight;
+        double mapPosX, mapPosY;
+        m_serenderer->ScreenToWorldPoint(xOffset, yOffset, mapPosX, mapPosY);
+        watermarkPosList.push_back(mapPosX);
+        watermarkPosList.push_back(mapPosY);
+    }
+    else if(tilePosition)
+    {
+        double tileWidth = tilePosition->GetTileWidth()*px2su, 
+            tileHeight = tilePosition->GetTileHeight()*px2su;
+        switch(hAlignment)
+        {
+        case WatermarkXOffset::Right:
+            xOffset = tileWidth - xOffset;
+            break;
+        case WatermarkXOffset::Left:
+            break;
+        default:
+            xOffset += tileWidth/2;
+            break;
+        }
+        switch(vAlignment)
+        {
+        case WatermarkYOffset::Bottom:
+            yOffset = yUp ? yOffset : tileHeight - yOffset;
+            break;
+        case WatermarkYOffset::Top:
+            yOffset = yUp ? tileHeight - yOffset : yOffset;
+            break;
+        default:
+            yOffset = tileHeight/2 + (yUp ? yOffset : (-yOffset));
+            break;
+        }
+        double drawPosX, drawPosY, mapPosX, mapPosY;
+        for(int i = 0; i<= (int)(saveWidth/tileWidth); i++)
+        {
+            for(int j = 0; j <= (int)(saveHeight/tileHeight); j++)
+            {
+                drawPosX = i*tileWidth+xOffset;
+                drawPosY = yUp ? (saveHeight-(j+1)*tileHeight+yOffset) : j*tileHeight+yOffset;
+                xOffset *= drawWidth / saveWidth;
+                yOffset *= drawHeight / saveHeight;
+                m_serenderer->ScreenToWorldPoint(drawPosX, drawPosY, mapPosX, mapPosY);
+                watermarkPosList.push_back(mapPosX);
+                watermarkPosList.push_back(mapPosY);
+            }
+        }
+    }
+
+    // we always start with rendering pass 0
+    int symbolRenderingPass = 0;
+    int nextSymbolRenderingPass = -1;
+
+    // main loop over feature data
+    int numPasses = 0;
+    while (symbolRenderingPass >= 0)
+    {
+        ++numPasses;
+
+        // create an expression engine with our custom functions
+        // NOTE: We must create a new engine with each rendering pass.  The engine
+        //       stores a weak reference to the RS_FeatureReader's internal
+        //       FdoIFeatureReader, and this internal reader is different for each
+        //       pass.
+        FdoPtr<FdoExpressionEngine> exec = ExpressionHelper::GetExpressionEngine(se_renderer, NULL);
+
+        std::auto_ptr<LineBuffer> spLB;
+        size_t nPos = watermarkPosList.size();
+        for (size_t posIx=0; posIx<nPos; posIx+=2)
+        {
+            //Get geometry
+            LineBuffer* lb = LineBufferPool::NewLineBuffer(
+                m_pool, 8, FdoDimensionality_Z);
+            spLB.reset(lb);
+            lb->MoveTo(watermarkPosList[posIx], watermarkPosList[posIx+1]);
+            // tell line buffer the current drawing scale (used for arc tessellation)
+            lb->SetDrawingScale(drawingScale);
+
+            //Render line buffer
+            
+            // -------------------------------------------------------------------------
+            //
+            // Here's a description of how the transforms work for point symbols.
+            //
+            // =============
+            // Point Symbols
+            // =============
+            //
+            // For point symbols we have the following transform stack:
+            //
+            //   [T_fe] [S_mm] [T_si] [R_pu] [S_si] [T_pu] {Geom}
+            //
+            // where:
+            //   T_pu = point usage origin offset (a translation)
+            //   S_si = symbol instance scaling
+            //   R_pu = point usage rotation
+            //   T_si = symbol instance insertion offset
+            //   S_mm = scaling converting mm to screen units (also includes inverting y, if necessary)
+            //   T_fe = translation to the point feature
+            //
+            // This can be rewritten as:
+            //
+            //   [T_fe] [T_si*] [R_pu*] [T_pu*] [S_mm] [S_si] {Geom}
+            //
+            // where:
+            //   T_si* = symbol instance insertion offset, using offsets scaled by S_mm
+            //   R_pu* = point usage rotation, with angle accounting for y-up or y-down
+            //   T_pu* = point usage origin offset, using offsets scaled by S_mm and S_si
+            //
+            // We store [S_mm] [S_si] in xformScale below, and apply it to the symbol geometry
+            // during symbol evaluation.  The remaining transforms get applied in SE_Renderer::
+            // ProcessPoint.
+            // -------------------------------------------------------------------------
+
+            // TODO: Obey the indices - get rid of the indices altogther - single pass!
+
+            // For now always clip using the new stylization - the performance impact of not
+            // clipping is too high.  We also need a better approach to clipping.  Instead
+            // of clipping the feature geometry we need to calculate where to start/stop
+            // drawing symbols.
+            bool bClip = true;  //m_serenderer->RequiresClipping();
+            double clipOffsetSU = 0.0;
+
+            // Make a pass over all the instances.  During this pass we:
+            // - evaluate the active styles
+            // - compute the overall clip offset
+
+            SE_Matrix xformScale;
+            xformScale.scale(sym->scale[0].evaluate(exec),
+                             sym->scale[1].evaluate(exec));
+
+            // The symbol geometry needs to be inverted if the y coordinate in the renderer
+            // points down.  This is so that in symbol definitions y points up consistently
+            // no matter what the underlying renderer is doing.  Normally we could just apply
+            // the world to screen transform to everything, but in some cases we only apply
+            // it to the position of the symbol and then offset the symbol geometry from
+            // there - so the symbol geometry needs to be pre-inverted.
+            double mm2suX = (sym->sizeContext == MappingUnits)? mm2suw : mm2sud;
+            double mm2suY = yUp? mm2suX : -mm2suX;
+            xformScale.scale(mm2suX, mm2suY);
+
+            // initialize the style evaluation context
+            SE_EvalContext evalCtx;
+            evalCtx.exec = exec;
+            evalCtx.mm2su = mm2suX;
+            evalCtx.mm2sud = mm2sud;
+            evalCtx.mm2suw = mm2suw;
+            evalCtx.px2su = px2su;
+            evalCtx.pool = m_pool;
+            evalCtx.fonte = m_serenderer->GetRSFontEngine();
+            evalCtx.xform = &xformScale;
+            evalCtx.resources = m_resources;
+
+            // iterate over all styles in the instance
+            for (size_t styIx=0; styIx<nStyles; ++styIx)
+            {
+                SE_Style* style = sym->styles[styIx];
+
+                // process the symbol rendering pass - negative rendering passes are
+                // rendered with pass 0
+                int symbolRenderPass = style->renderPass.evaluate(exec);
+                if (symbolRenderPass < 0)
+                    symbolRenderPass = 0;
+
+                // if the rendering pass for the style doesn't match the current pass
+                // then don't render using it
+                if (symbolRenderPass != symbolRenderingPass)
+                    continue;
+
+                // evaluate the style (all expressions inside it) and convert to a
+                // constant screen space render style
+                style->evaluate(&evalCtx);
+            }
+
+            // Adjust the offset according to watermark position
+            // For example, the watermark is on top/left, the original offset is enough.
+            // However, if the watermark is on bottom/right, the symbols has to be added
+            // an offset to make the bottom/right of their bounds to be the position.
+            RS_F_Point bounds[4];
+            bounds[0].x = bounds[3].x = +DBL_MAX;
+            bounds[1].x = bounds[2].x = -DBL_MAX;
+            bounds[0].y = bounds[1].y = +DBL_MAX;
+            bounds[2].y = bounds[3].y = -DBL_MAX;
+            for (size_t styIx=0; styIx<nStyles; ++styIx)
+            {
+                SE_RenderPointStyle* ptStyle = (SE_RenderPointStyle*)(
+                    sym->styles[styIx]->rstyle);
+                SE_Matrix xformStyle;
+
+                // point usage offset (already scaled)
+                xformStyle.translate(ptStyle->offset[0], ptStyle->offset[1]);
+                // point usage rotation - assume geometry angle is zero
+                xformStyle.rotate(ptStyle->angleRad);
+                // compute the offset
+                for (int i=0; i<4; ++i)
+                {
+                    // account for the style-specific transform
+                    RS_F_Point pt = ptStyle->bounds[i];
+                    xformStyle.transform(pt.x, pt.y);
+                    bounds[0].x = bounds[3].x = rs_min(bounds[0].x, pt.x);
+                    bounds[1].x = bounds[2].x = rs_max(bounds[2].x, pt.x);
+                    bounds[0].y = bounds[1].y = rs_min(bounds[0].y, pt.y);
+                    bounds[2].y = bounds[3].y = rs_max(bounds[2].y, pt.y);
+                }
+            }
+            // bounds[0].x is left, bounds[1].x is right
+            switch(hAlignment)
+            {
+            case WatermarkXOffset::Right:
+                sym->absOffset[0].value = sym->absOffset[0].defValue 
+                                        = -bounds[1].x / mm2suX;
+                break;
+            case WatermarkXOffset::Left:
+                sym->absOffset[0].value = sym->absOffset[0].defValue 
+                                        = -bounds[0].x / mm2suX;
+                break;
+            default:
+                sym->absOffset[0].value = sym->absOffset[0].defValue 
+                                        = -(bounds[0].x + bounds[1].x) / 2 / mm2suX;
+                break;
+            }
+            // bounds[1].y is bottom, bounds[2].y is top
+            switch(vAlignment)
+            {
+            case WatermarkYOffset::Bottom:
+                sym->absOffset[1].value = sym->absOffset[1].defValue 
+                                        = (yUp ? (-bounds[1].y) : bounds[1].y) / mm2suY;
+                break;
+            case WatermarkYOffset::Top:
+                sym->absOffset[1].value = sym->absOffset[1].defValue 
+                                        = (yUp ? (-bounds[2].y) : bounds[2].y) / mm2suY;
+                break;
+            default:
+                sym->absOffset[1].value = sym->absOffset[1].defValue 
+                    = (yUp ? -1: 1)*((bounds[1].y + bounds[2].y) / 2 / mm2suY);
+                break;
+            }
+
+            // prepare the geometry on which we will apply the styles
+
+            if (bClip)
+            {
+                // compute offset to apply to the clipping bounds
+                for (size_t styIx=0; styIx<nStyles; ++styIx)
+                {
+                    SE_Style* style = sym->styles[styIx];
+                    double styleClipOffsetSU = GetClipOffset(sym, style, exec, mm2suX, mm2suY);
+                    clipOffsetSU = rs_max(styleClipOffsetSU, clipOffsetSU);
+                }
+
+                // compute the clip region to use - start with the map request extents
+                RS_Bounds clip = m_serenderer->GetBounds();
+
+                // add one pixel's worth to handle any roundoff
+                clipOffsetSU += px2su;
+
+                // limit the offset to something reasonable
+                if (clipOffsetSU > MAX_CLIPOFFSET_IN_MM * mm2sud)
+                    clipOffsetSU = MAX_CLIPOFFSET_IN_MM * mm2sud;
+
+                // expand clip region by the offset
+                double clipOffsetWU = clipOffsetSU * su2wu;
+                clip.minx -= clipOffsetWU;
+                clip.miny -= clipOffsetWU;
+                clip.maxx += clipOffsetWU;
+                clip.maxy += clipOffsetWU;
+
+                // clip geometry to given extents
+                LineBuffer* lbc = lb->Clip(clip, LineBuffer::ctAGF, m_pool);
+                if (lbc != lb)
+                {
+                    // if the clipped buffer is NULL (completely clipped) just move on to
+                    // the next feature
+                    if (!lbc) continue;
+
+                    // otherwise continue processing with the clipped buffer
+                    lb = lbc;
+                    spLB.reset(lb);
+                }
+            }
+
+            // Make another pass over all the instances.  During this pass we:
+            // - compute the next symbol rendering pass
+            // - apply the styles to the geometry (original or clipped)
+
+            // initialize the style application context
+            SE_Matrix xformTrans;
+            xformTrans.translate(sym->absOffset[0].evaluate(exec) * mm2suX,
+                                 sym->absOffset[1].evaluate(exec) * mm2suY);
+
+            SE_ApplyContext applyCtx;
+            applyCtx.geometry = lb;
+            applyCtx.renderer = m_serenderer;
+            applyCtx.xform = &xformTrans;
+
+            for (size_t styIx=0; styIx<nStyles; ++styIx)
+            {
+                SE_Style* style = sym->styles[styIx];
+
+                // process the symbol rendering pass - negative rendering passes are
+                // rendered with pass 0
+                int symbolRenderPass = style->renderPass.evaluate(exec);
+                if (symbolRenderPass < 0)
+                    symbolRenderPass = 0;
+
+                // If the rendering pass for the style doesn't match the current pass
+                // then don't render using it.
+                if (symbolRenderPass != symbolRenderingPass)
+                {
+                    // if the style's rendering pass is greater than the current pass,
+                    // then update nextRenderingPass to account for it
+                    if (symbolRenderPass > symbolRenderingPass)
+                    {
+                        // update nextRenderingPass if it hasn't yet been set, or if
+                        // the style's pass is less than the current next pass
+                        if (nextSymbolRenderingPass == -1 || symbolRenderPass < nextSymbolRenderingPass)
+                            nextSymbolRenderingPass = symbolRenderPass;
+                    }
+
+                    continue;
+                }
+
+                // TODO: why are these in the symbol instance?
+                style->rstyle->addToExclusionRegion = sym->addToExclusionRegion.evaluate(exec);
+                style->rstyle->checkExclusionRegion = sym->checkExclusionRegion.evaluate(exec);
+                style->rstyle->drawLast = sym->drawLast.evaluate(exec);
+
+                const wchar_t* positioningAlgo = sym->positioningAlgorithm.evaluate(exec);
+                if (wcslen(positioningAlgo) > 0)
+                {
+                    LayoutCustomLabel(positioningAlgo, &applyCtx, style->rstyle, mm2suX);
+                }
+                else
+                {
+                    // apply the style to the geometry using the renderer
+                    style->apply(&applyCtx);
+                }
+            }
+
+
+            if(spLB.get())
+                LineBufferPool::FreeLineBuffer(m_pool, spLB.release());
+        }
+        // switch to the next symbol rendering pass
+        symbolRenderingPass = nextSymbolRenderingPass;
+        nextSymbolRenderingPass = -1;
+    }
+
+    // Detach symbol definition from the created composite symbol so that
+    // it will not be finalized when composite symbol is finalized. 
+    // The code is sure there is only one symbol instance.
+    _ASSERT(symbols->GetSymbolCollection()->GetCount() == 1);
+    symbols->GetSymbolCollection()->GetAt(0)->OrphanSymbolDefinition();
+}
 
 void StylizationEngine::Stylize(RS_FeatureReader* reader,
                                 FdoExpressionEngine* exec,
@@ -798,7 +1348,10 @@ void StylizationEngine::LayoutCustomLabel(const wchar_t* positioningAlgo, SE_App
     }
     else if (wcscmp(positioningAlgo, L"MultipleHighwayShields") == 0)
     {
-        SE_PositioningAlgorithms::MultipleHighwaysShields(applyCtx, rstyle, mm2su, m_reader, m_resources);
+        if(m_reader)
+        {
+            SE_PositioningAlgorithms::MultipleHighwaysShields(applyCtx, rstyle, mm2su, m_reader, m_resources);
+        }
     }
     else if (wcscmp(positioningAlgo, L"Default") == 0)
     {

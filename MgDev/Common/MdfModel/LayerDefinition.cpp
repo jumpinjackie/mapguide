@@ -99,3 +99,13 @@ void LayerDefinition::SetOpacity(const double opacity)
 {
     this->m_opacity = opacity;
 }
+
+//-------------------------------------------------------------------------
+// PURPOSE: Accessor method for a list of WatermarkInstance objects that represent
+//          the Watermarks property.
+// RETURNS: A pointer to a modifiable WatermarkInstanceCollection.
+//-------------------------------------------------------------------------
+WatermarkInstanceCollection* LayerDefinition::GetWatermarks()
+{
+    return &this->m_listWatermarks;
+}

@@ -53,6 +53,7 @@ const STRING MgResourceType::WebLayout              = L"WebLayout";
 const STRING MgResourceType::ApplicationDefinition  = L"ApplicationDefinition";
 const STRING MgResourceType::PrintLayoutDefinition  = L"PrintLayoutDefinition";
 const STRING MgResourceType::PrintLayoutElementDefinition   = L"PrintLayoutElementDefinition";
+const STRING MgResourceType::WatermarkDefinition    = L"WatermarkDefinition";
 
 
 const STRING MgResourceType::User                   = L"User";

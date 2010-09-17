@@ -69,6 +69,14 @@ public:
                             CancelStylization                cancel,
                             void*                            userData);
 
+    //Stylize the supplied watermark
+    void StylizeWatermark(SE_Renderer* se_renderer,
+                          WatermarkDefinition* watermark,
+                          INT32 drawWidth,
+                          INT32 drawHeight,
+                          INT32 saveWidth,
+                          INT32 saveHeight);
+
     // Stylizes the current feature on the reader using the supplied composite type style.
     void Stylize(RS_FeatureReader* reader,
                  FdoExpressionEngine* exec,

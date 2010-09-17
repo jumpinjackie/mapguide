@@ -69,6 +69,16 @@
 #include "Text.h"
 #include "Override.h"
 
+#include "WatermarkDefinition.h"
+#include "WatermarkAppearance.h"
+#include "WatermarkInstance.h"
+#include "WatermarkPosition.h"
+#include "XYWatermarkPosition.h"
+#include "TileWatermarkPosition.h"
+#include "WatermarkXOffset.h"
+#include "WatermarkYOffset.h"
+#include "WatermarkOffsetUnit.h"
+
 #include "Base64.h"
 
 // FDO headers

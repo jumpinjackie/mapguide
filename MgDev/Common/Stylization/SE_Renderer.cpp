@@ -485,7 +485,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                 xform.transform(rp->position[0], rp->position[1], x, y);
                 double angleDeg = (rp->angleRad + angleRad) * M_180PI;
 
-                DrawScreenRaster(imgData.data, imgData.size, imgData.format, imgData.width, imgData.height, x, y, rp->extent[0], rp->extent[1], angleDeg);
+                DrawScreenRaster(imgData.data, imgData.size, imgData.format, imgData.width, imgData.height, x, y, rp->extent[0], rp->extent[1], angleDeg, rp->opacity);
             }
         }
     }
@@ -672,7 +672,6 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
 
     return ret;
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 // Indicates whether rendering optimization is used by this renderer.  For example, if we are rendering text and

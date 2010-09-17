@@ -267,7 +267,7 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
     baseGroup->SetVisible(true);
 
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, NULL, roLayers, dr.get(), width, height, format, scale, extent, true, true);
+    ret = RenderMapInternal(map, NULL, roLayers, dr.get(), width, height, width, height, format, scale, extent, true, true, false);
 
     // restore the base group's visibility
     baseGroup->SetVisible(groupVisible);
@@ -361,7 +361,7 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
     }
 
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, selection, roLayers, dr.get(), width, height, scale, extent, false, options);
+    ret = RenderMapInternal(map, selection, roLayers, dr.get(), width, height, width, height, scale, extent, false, options, true);
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderDynamicOverlay")
 
@@ -530,7 +530,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
     auto_ptr<SE_Renderer> dr(CreateRenderer(drawWidth, drawHeight, bgcolor, false));
 
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, selection, NULL, dr.get(), width, height, format, scale, b, false, bKeepSelection);
+    ret = RenderMapInternal(map, selection, NULL, dr.get(), drawWidth, drawHeight, width, height, format, scale, b, false, bKeepSelection, true);
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMap")
 
@@ -622,7 +622,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
     auto_ptr<SE_Renderer> dr(CreateRenderer(width, height, bgcolor, bClip));
 
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, selection, NULL, dr.get(), width, height, format, scale, b, false, bKeepSelection);
+    ret = RenderMapInternal(map, selection, NULL, dr.get(), width, height, width, height, format, scale, b, false, bKeepSelection, true);
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMap")
 
@@ -781,19 +781,21 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                                                           MgSelection* selection,
                                                           MgReadOnlyLayerCollection* roLayers,
                                                           SE_Renderer* dr,
+                                                          INT32 drawWidth,
+                                                          INT32 drawHeight,
                                                           INT32 saveWidth,
                                                           INT32 saveHeight,
                                                           CREFSTRING format,
                                                           double scale,
                                                           RS_Bounds& b,
                                                           bool expandExtents,
-                                                          bool bKeepSelection)
+                                                          bool bKeepSelection,
+                                                          bool renderingWatermark)
 {
     MgRenderingOptions options(format, MgRenderingOptions::RenderSelection |
         MgRenderingOptions::RenderLayers | (bKeepSelection? MgRenderingOptions::KeepSelection : 0), NULL);
-    return RenderMapInternal(map, selection, roLayers, dr, saveWidth, saveHeight, scale, b, expandExtents, &options);
+    return RenderMapInternal(map, selection, roLayers, dr, drawWidth, drawHeight, saveWidth, saveHeight, scale, b, expandExtents, &options, renderingWatermark);
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // called from (indirectly):
@@ -807,12 +809,15 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                                                           MgSelection* selection,
                                                           MgReadOnlyLayerCollection* roLayers,
                                                           SE_Renderer* dr,
+                                                          INT32 drawWidth,
+                                                          INT32 drawHeight,
                                                           INT32 saveWidth,
                                                           INT32 saveHeight,
                                                           double scale,
                                                           RS_Bounds& b,
                                                           bool expandExtents,
-                                                          MgRenderingOptions* options)
+                                                          MgRenderingOptions* options,
+                                                          bool renderingWatermark)
 {
     // set the map scale to the requested scale
     map->SetViewScale(scale);
@@ -932,6 +937,128 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
 
                 MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
                     modLayers, overrideFilters, &ds, dr, dstCs, false, false, scale, (behavior & MgRenderingOptions::KeepSelection) != 0);
+            }
+        }
+
+        if(renderingWatermark)
+        {
+            //Rendering watermark
+            Ptr<MgStringCollection> watermarkIds = new MgStringCollection(); //ID list to load watermark definition
+            auto_ptr<WatermarkInstanceCollection> watermarkInstances(
+                new WatermarkInstanceCollection());     //Watermark list to render
+            auto_ptr<WatermarkInstanceCollection> tempWatermarkInstances(
+                new WatermarkInstanceCollection());    //Used to reverse list
+            auto_ptr<WatermarkInstance> tempInstance;
+
+            //Get watermark instance in map
+            Ptr<MgResourceIdentifier> mapId = map->GetMapDefinition();
+            if(mapId.p)
+            {
+                auto_ptr<MapDefinition> mdef(
+                    MgMapBase::GetMapDefinition(m_svcResource, mapId));
+                WatermarkInstanceCollection* mapWatermarks = mdef->GetWatermarks();
+                for(int i = mapWatermarks->GetCount()-1; i>=0; i--)
+                    tempWatermarkInstances->Adopt(mapWatermarks->OrphanAt(i));
+                for(int i = tempWatermarkInstances->GetCount()-1; i>=0; i--)
+                {
+                    tempInstance.reset(tempWatermarkInstances->OrphanAt(i));
+                    if(!tempInstance.get()) continue;
+                    if(((map->GetWatermarkUsage() & MgMap::Viewer) != 0
+                        && (tempInstance->GetUsage() & WatermarkInstance::Viewer) == 0) 
+                        || ((map->GetWatermarkUsage() & MgMap::WMS) != 0
+                        && (tempInstance->GetUsage() & WatermarkInstance::WMS) == 0))
+                        continue;
+                    bool alreadyInList = false;
+                    for(int j = watermarkInstances->GetCount()-1; j >=0; j--)
+                    {
+                        if(tempInstance->Equals(watermarkInstances->GetAt(j)))
+                        {
+                            alreadyInList = true;
+                            break;
+                        }
+                    }
+                    if(!alreadyInList)
+                    {
+                        watermarkIds->Add(tempInstance->GetWatermarkResourceID().c_str());
+                        watermarkInstances->Adopt(tempInstance.release());
+                    }
+                }
+            }
+
+            //Get watermark instance in layer
+            const int layerCount = tempLayers->GetCount();
+            auto_ptr<LayerDefinition> ldf;
+            for(int i = 0; i < layerCount; i++)
+            {
+                Ptr<MgLayerBase> mapLayer(tempLayers->GetItem(i));
+
+                //The layer resource content should be set during stylization.
+                if(mapLayer->GetLayerResourceContent() == L"")
+                    continue;
+
+                ldf.reset(MgLayerBase::GetLayerDefinition(mapLayer->GetLayerResourceContent()));
+                
+                WatermarkInstanceCollection* layerWatermarks = ldf->GetWatermarks();
+                for(int j = layerWatermarks->GetCount()-1; j>=0; j--)
+                    tempWatermarkInstances->Adopt(layerWatermarks->OrphanAt(j));
+                for(int j = tempWatermarkInstances->GetCount()-1; j>=0; j--)
+                {
+                    tempInstance.reset(tempWatermarkInstances->OrphanAt(j));
+                    if(!tempInstance.get()) continue;
+                    if(((map->GetWatermarkUsage() & MgMap::Viewer) != 0
+                        && (tempInstance->GetUsage() & WatermarkInstance::Viewer) == 0) 
+                        || ((map->GetWatermarkUsage() & MgMap::WMS) != 0
+                        && (tempInstance->GetUsage() & WatermarkInstance::WMS) == 0))
+                        continue;
+                    bool alreadyInList = false;
+                    for(int k = watermarkInstances->GetCount()-1; k >=0; k--)
+                    {
+                        if(tempInstance->Equals(watermarkInstances->GetAt(k)))
+                        {
+                            alreadyInList = true;
+                            break;
+                        }
+                    }
+                    if(!alreadyInList)
+                    {
+                        watermarkIds->Add(tempInstance->GetWatermarkResourceID().c_str());
+                        watermarkInstances->Adopt(tempInstance.release());
+                    }
+                }
+            }
+            assert(tempWatermarkInstances->GetCount() == 0);
+
+            //Load watermark source
+            if(watermarkIds->GetCount() != 0)
+            {
+                Ptr<MgStringCollection> wdefs = m_svcResource->GetResourceContents(watermarkIds, NULL);
+                for(int i = watermarkIds->GetCount() - 1; i >= 0; i--)
+                {
+                    for(int j = watermarkInstances->GetCount() - 1; j >= 0; j--)
+                    {
+                        WatermarkInstance* instance = watermarkInstances->GetAt(j);
+                        if(instance->GetWatermarkResourceID() == watermarkIds->GetItem(i))
+                        {
+                            instance->AdoptWatermarkDefinition(
+                                MgWatermark::GetWatermarkDefinition(wdefs->GetItem(i)));
+                        }
+                    }
+                }
+            }
+
+            for(int i = watermarkInstances->GetCount()-1; i>=0; i--)
+            {
+                WatermarkInstance* instance = watermarkInstances->GetAt(i);
+                WatermarkDefinition* wdef = instance->GetWatermarkDefinition();
+                if(instance->GetPositionOverride())
+                {
+                    wdef->AdoptPosition(instance->OrphanPositionOverride());
+                }
+                if(instance->GetAppearanceOverride())
+                {
+                    wdef->AdoptAppearance(instance->GetAppearanceOverride());
+                }
+                ds.StylizeWatermark(dr, wdef, drawWidth, drawHeight, saveWidth, saveHeight);
             }
         }
 

@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef AGGIMAGEIO_H
+#define AGGIMAGEIO_H
+
 class RS_ByteData;
 
 class AGGImageIO
@@ -41,3 +44,5 @@ private:
     static unsigned char* ReadFile(const RS_String& fname, size_t& len);
     static void UnmultiplyAlpha(unsigned int* argb, int len);
 };
+
+#endif      //AGGIMAGEIO_H

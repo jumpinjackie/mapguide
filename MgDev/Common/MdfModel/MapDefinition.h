@@ -23,6 +23,7 @@
 #include "MapLayer.h"
 #include "MapLayerGroup.h"
 #include "BaseMapLayerGroup.h"
+#include "WatermarkInstance.h"
 #include "DisplayScale.h"
 
 BEGIN_NAMESPACE_MDFMODEL
@@ -73,6 +74,10 @@ BEGIN_NAMESPACE_MDFMODEL
         // The collection of LayerGroups.
         MapLayerGroupCollection* GetLayerGroups();
 
+        // Property : MapWatermarks
+        // The List of watermark instances.
+        WatermarkInstanceCollection* GetWatermarks();
+
         // Property : FiniteDisplayScales
         // The scales that the base map tiles can be displayed at
         DisplayScaleCollection* GetFiniteDisplayScales();
@@ -98,6 +103,7 @@ BEGIN_NAMESPACE_MDFMODEL
         MdfString m_strBkGrnd;
         MapLayerCollection m_listLayers;
         MapLayerGroupCollection m_collLayerGroups;
+        WatermarkInstanceCollection m_listWatermarks;
         MdfString m_strName;
         MdfString m_strMetadata;
         MdfString m_strCoordSys;

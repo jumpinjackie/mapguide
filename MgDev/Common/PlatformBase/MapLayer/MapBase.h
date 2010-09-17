@@ -36,6 +36,10 @@
 #include "ReadOnlyLayerCollection.h"
 #include "SelectionBase.h"
 
+BEGIN_NAMESPACE_MDFMODEL
+class MapDefinition;
+END_NAMESPACE_MDFMODEL
+
 class MgPoint;
 class MgMapBase;
 template class MG_PLATFORMBASE_API Ptr<MgMapBase>;
@@ -548,6 +552,9 @@ EXTERNAL_API:
     virtual STRING GetBackgroundColor();
 
 INTERNAL_API:
+
+    static MdfModel::MapDefinition* GetMapDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId);
+    static MdfModel::MapDefinition* GetMapDefinition(CREFSTRING resourceContent);
 
     //////////////////////////////////////////////////////////////////
     /// \brief

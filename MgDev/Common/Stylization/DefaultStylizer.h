@@ -59,6 +59,13 @@ public:
                                                      CSysTransformer*                  xformer,
                                                      double                            mapScale);
 
+    STYLIZATION_API virtual void StylizeWatermark(Renderer* renderer,
+                                                  MdfModel::WatermarkDefinition* watermark,
+                                                  INT32 drawWidth,
+                                                  INT32 drawHeight,
+                                                  INT32 saveWidth,
+                                                  INT32 saveHeight);
+
     STYLIZATION_API virtual void SetGeometryAdapter(FdoGeometryType type, GeometryAdapter* stylizer);
 
 private:

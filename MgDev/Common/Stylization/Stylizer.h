@@ -76,6 +76,16 @@ public:
                                      double                            mapScale) = 0;
 
     ///<summary>
+    /// Stylizes a watermark.
+    ///</summary>
+    virtual void StylizeWatermark(Renderer* renderer,
+                                  MdfModel::WatermarkDefinition* watermark,
+                                  INT32 drawWidth,
+                                  INT32 drawHeight,
+                                  INT32 saveWidth,
+                                  INT32 saveHeight) = 0;
+
+    ///<summary>
     /// Allows a user to set a custom stylization object for a given geometry type.
     ///</summary>
     virtual void SetGeometryAdapter(FdoGeometryType type, GeometryAdapter* stylizer) = 0;

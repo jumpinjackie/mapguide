@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "IOGridLayerDefinition.h"
 #include "IOGridScaleRange.h"
+#include "IOWatermarkInstance.h"
 #include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
@@ -33,6 +34,8 @@ ELEM_MAP_ENTRY(5, Geometry);
 ELEM_MAP_ENTRY(6, Filter);
 ELEM_MAP_ENTRY(7, GridScaleRange);
 ELEM_MAP_ENTRY(8, ExtendedData1);
+ELEM_MAP_ENTRY(9, Watermarks);
+ELEM_MAP_ENTRY(10, Watermark);
 
 
 IOGridLayerDefinition::IOGridLayerDefinition(Version& version) : SAX2ElementHandler(version)
@@ -61,6 +64,20 @@ void IOGridLayerDefinition::StartElement(const wchar_t* name, HandlerStack* hand
     {
     case eGridLayerDefinition:
         this->m_startElemName = name;
+        break;
+
+    case eWatermark:
+        {
+            Version wdVersion;
+            if (!IOGridLayerDefinition::GetWatermarkVersion(
+                &this->m_version, wdVersion))
+                return;
+            WatermarkInstance* layerWatermark = new WatermarkInstance(L"", L"");
+            this->m_layer->GetWatermarks()->Adopt(layerWatermark);
+            IOWatermarkInstance* IO = new IOWatermarkInstance(layerWatermark, wdVersion);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
         break;
 
     case eGridScaleRange:
@@ -126,6 +143,14 @@ void IOGridLayerDefinition::EndElement(const wchar_t* name, HandlerStack* handle
     }
 }
 
+// Determine which WatermarkDefinition schema version to use based
+// on the supplied LDF version:
+// * LDF version <= 1.4.0  =>  WD version 1.0.0
+bool IOGridLayerDefinition::GetWatermarkVersion(Version* ldfVersion, Version& wmVersion)
+{
+    wmVersion = Version(1, 0, 0);
+    return true;
+}
 
 void IOGridLayerDefinition::Write(MdfStream& fd, GridLayerDefinition* gridLayer, Version* version)
 {
@@ -138,9 +163,9 @@ void IOGridLayerDefinition::Write(MdfStream& fd, GridLayerDefinition* gridLayer,
             // LDF in MapGuide 2006
             strVersion = L"1.0.0";
         }
-        else if ((*version >= Version(1, 0, 0)) && (*version <= Version(1, 3, 0)))
+        else if ((*version >= Version(1, 0, 0)) && (*version <= Version(1, 4, 0)))
         {
-            // LDF in MapGuide 2007 / 2008 / 2009 / 2010
+            // LDF in MapGuide 2007 / 2008 / 2009 / 2010 / 2012
             strVersion = version->ToString();
         }
         else
@@ -154,7 +179,7 @@ void IOGridLayerDefinition::Write(MdfStream& fd, GridLayerDefinition* gridLayer,
     else
     {
         // use the current highest version
-        strVersion = L"1.3.0";
+        strVersion = L"1.4.0";
     }
 
     fd << tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
@@ -174,6 +199,21 @@ void IOGridLayerDefinition::Write(MdfStream& fd, GridLayerDefinition* gridLayer,
         fd << tab() << startStr(sOpacity);
         fd << DoubleToStr(gridLayer->GetOpacity());
         fd << endStr(sOpacity) << std::endl;
+    }
+
+    //Property: LayerWatermark (Optional)
+    if(*version >= Version(1, 4, 0))
+    {
+        int watermarkCount = gridLayer->GetWatermarks()->GetCount();
+        if(watermarkCount != 0)
+        {
+            fd << tab() << startStr(sWatermarks) << std::endl; // NOXLATE
+            inctab();
+            for (int i=0; i<watermarkCount; ++i)
+                IOWatermarkInstance::Write(fd, gridLayer->GetWatermarks()->GetAt(i), version);
+            dectab();
+            fd << endStr(sWatermarks) << std::endl; // NOXLATE
+        }
     }
 
     // Property: FeatureName
