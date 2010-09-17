@@ -25,6 +25,13 @@
 
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestResourceService, "TestResourceService");
 
+// define thread group for tiling tests
+#define THREAD_GROUP 65530
+
+#define TESTREQUESTS 500
+
+static const INT32 MG_TEST_THREADS = 8; // Adjust this to get failures!
+
 const STRING adminName = L"Administrator";
 const STRING adminPass = L"admin";
 const STRING userLocale = L"en";
@@ -1633,5 +1640,184 @@ void TestResourceService::TestCase_EnumerateUnmanagedData()
         STRING message = e->GetDetails(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+}
+
+// data structure which is passed to each thread
+struct ThreadData
+{
+    INT32 threadId;
+    INT32 command;
+    bool success;
+    bool done;
+};
+
+// the method which gets executed by the ACE worker thread
+ACE_THR_FUNC_RETURN RepositoryWorker(void* param)
+{
+    // get the data for this thread
+    ThreadData* threadData = (ThreadData*)param;
+    INT32 threadId = threadData->threadId;
+    INT32 command = threadData->command;
+    ACE_DEBUG((LM_INFO, ACE_TEXT("> thread %d started\n"), threadId));
+
+    try
+    {
+        // set user info
+        Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
+        userInfo->SetLocale(TEST_LOCALE);
+        MgUserInformation::SetCurrentUserInfo(userInfo);
+
+        // get the tile service instance
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        Ptr<MgResourceService> svcResource = dynamic_cast<MgResourceService*>(
+            serviceManager->RequestService(MgServiceType::ResourceService));
+        assert(svcResource != NULL);
+
+        switch (command)
+        {
+        case 0:
+            {
+            //Set the resource
+            Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(L"Library://UnitTests/Data/test-1.FeatureSource");
+            Ptr<MgByteSource> contentSource = new MgByteSource(resourceContentFileName);
+            Ptr<MgByteReader> contentReader = contentSource->GetReader();
+            svcResource->SetResource(resId, contentReader, NULL);
+            }
+        case 1:
+            {
+            //Set the resource data
+            Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(L"Library://UnitTests/Data/test-1.FeatureSource");
+            Ptr<MgByteSource> dataSource = new MgByteSource(dataFileName);
+            Ptr<MgByteReader> dataReader = dataSource->GetReader();
+            svcResource->SetResourceData(resId, resourceDataName, L"File", dataReader);
+            }
+            // Need to add a case that updates the session with runtime map
+        }
+
+        MgUserInformation::SetCurrentUserInfo(NULL);
+        threadData->success = true;
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        message += L"\n";
+        message += e->GetStackTrace(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        ACE_DEBUG((LM_INFO, ACE_TEXT("RepositoryWorker - Exception:\n%W\n"), message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+
+    // clear the user info to prevent leaks - if an exception happens and this is not called it leaks about 500 bytes!
+    MgUserInformation::SetCurrentUserInfo(NULL);
+
+    ACE_DEBUG((LM_INFO, ACE_TEXT("> thread %d done\n"), threadId));
+
+    threadData->done = true;
+    return 0;
+}
+
+void TestResourceService::TestCase_RepositoryBusy()
+{
+    // specify the number of threads to use
+    const INT32 numThreads = MG_TEST_THREADS;
+    ThreadData threadData[numThreads];
+
+    try
+    {
+        long lStart = GetTickCount();
+
+        // get the tile service instance
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        Ptr<MgResourceService> svcResource = dynamic_cast<MgResourceService*>(
+            serviceManager->RequestService(MgServiceType::ResourceService));
+        assert(svcResource != NULL);
+
+        // set user info
+        Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
+        userInfo->SetLocale(TEST_LOCALE);
+        MgUserInformation::SetCurrentUserInfo(userInfo);
+
+        // Initialize the resource
+        Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(L"Library://UnitTests/Data/test-1.FeatureSource");
+        Ptr<MgByteSource> contentSource = new MgByteSource(resourceContentFileName);
+        Ptr<MgByteReader> contentReader = contentSource->GetReader();
+        svcResource->SetResource(resId, contentReader, NULL);
+
+        // need a thread manager
+        ACE_Thread_Manager* manager = ACE_Thread_Manager::instance();
+
+        // initialize the thread data
+        for (INT32 i=0; i<numThreads; i++)
+        {
+            threadData[i].threadId = i;
+            threadData[i].success  = false;
+            threadData[i].done     = true;
+        }
+
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestCase_RepositoryBusy\nThreads: %d  Requests: %d\n\n"), numThreads, TESTREQUESTS));
+
+        INT32 nRequest = 0;
+        INT32 nSuccessful = 0;
+        bool bExceptionOcurred = false;
+        for (;;)
+        {
+            INT32 dc = 0;
+            for (INT32 i=0; i<numThreads; i++)
+            {
+                // check if the thread is available
+                if (threadData[i].done)
+                {
+                    if(threadData[i].success)
+                        nSuccessful++;
+
+                    threadData[i].success = false;
+                    threadData[i].done    = false;
+                    threadData[i].command = i%2;
+
+                    // spawn a new thread using a specific group id
+                    int thid = manager->spawn(ACE_THR_FUNC(RepositoryWorker), &threadData[i], 0, NULL, NULL, 0, THREAD_GROUP);
+                    nRequest++;
+                }
+            }
+
+            // move on if all threads are done
+            if ((nRequest > TESTREQUESTS) || (bExceptionOcurred))
+                break;
+
+            // under Linux we get a deadlock if we don't call this every once in a while
+            if (nRequest % 25 == 0)
+                manager->wait_grp(THREAD_GROUP);
+            else
+            {
+                // pause briefly (10ms) before checking again
+                ACE_Time_Value t(0, 10000);
+                ACE_OS::sleep(t);
+            }
+        }
+
+        // make sure all threads in the group have completed
+        manager->wait_grp(THREAD_GROUP);
+
+        for (INT32 i=0; i<numThreads; i++)
+        {
+            if(threadData[i].success)
+                nSuccessful++;
+        }
+
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\nRequests: %d/%d - Execution Time: = %6.4f (s)\n"), nSuccessful, nRequest, ((GetTickCount()-lStart)/1000.0)));
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
     }
 }

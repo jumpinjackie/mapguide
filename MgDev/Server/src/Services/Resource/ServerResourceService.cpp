@@ -28,7 +28,7 @@
 #include "UnmanagedDataManager.h"
 #include "LogDetail.h"
 
-INT32 MgServerResourceService::sm_retryAttempts = 10;
+INT32 MgServerResourceService::sm_retryAttempts = 50;
 ACE_Time_Value MgServerResourceService::sm_retryInterval;
 
 MgSiteRepository*    MgServerResourceService::sm_siteRepository    = NULL;
@@ -42,50 +42,61 @@ IMPLEMENT_CREATE_SERVICE(MgServerResourceService)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Server Resource Service retry macros.
-/// This pauses briefly (about 10 ms) before trying the operation again.
+/// This pauses briefly before trying the operation again.
 ///
 #define MG_RESOURCE_SERVICE_BEGIN_OPERATION(transacted)                       \
-    int numRetries = 0;                                                       \
-                                                                              \
-    while (true)                                                              \
-    {                                                                         \
-        try                                                                   \
-        {                                                                     \
-            repositoryMan->Initialize(transacted);                            \
+    MG_RESOURCE_SERVICE_BEGIN_RETRY()                                         \
+    repositoryMan->Initialize(transacted);                                    \
 
 #define MG_RESOURCE_SERVICE_END_OPERATION(maxRetries)                         \
-            break;                                                            \
-        }                                                                     \
-        catch (MgException* e)                                                \
-        {                                                                     \
-            ++numRetries;                                                     \
+    MG_RESOURCE_SERVICE_END_RETRY(maxRetries)                                 \
+    MG_RESOURCE_SERVICE_BEGIN_RETRY()                                         \
+        repositoryMan->Terminate();                                           \
+    MG_RESOURCE_SERVICE_END_RETRY(maxRetries)                                 \
+
+#define MG_RESOURCE_SERVICE_BEGIN_RETRY()                                     \
+    {                                                                         \
+        int numRetries = 0;                                                   \
                                                                               \
-            if ((e->IsOfClass(MapGuide_Exception_MgDbXmlException) || e->IsOfClass(MapGuide_Exception_MgDbException)) \
-             && (DB_LOCK_DEADLOCK == (static_cast<MgThirdPartyException*>(e))->GetErrorCode())) \
+        while (true)                                                          \
+        {                                                                     \
+            try                                                               \
             {                                                                 \
-                if (numRetries < maxRetries)                                  \
+
+#define MG_RESOURCE_SERVICE_END_RETRY(maxRetries)                             \
+                break;                                                        \
+            }                                                                 \
+            catch (MgException* e)                                            \
+            {                                                                 \
+                ++numRetries;                                                 \
+                                                                              \
+                if ((e->IsOfClass(MapGuide_Exception_MgDbXmlException) || e->IsOfClass(MapGuide_Exception_MgDbException)) \
+                 && (DB_LOCK_DEADLOCK == (static_cast<MgThirdPartyException*>(e))->GetErrorCode())) \
                 {                                                             \
-                    SAFE_RELEASE(e);                                          \
+                    if (numRetries < maxRetries)                              \
+                    {                                                         \
+                        SAFE_RELEASE(e);                                      \
+                    }                                                         \
+                    else                                                      \
+                    {                                                         \
+                        throw e;                                              \
+                    }                                                         \
                 }                                                             \
                 else                                                          \
                 {                                                             \
                     throw e;                                                  \
                 }                                                             \
             }                                                                 \
-            else                                                              \
+            catch (...)                                                       \
             {                                                                 \
-                throw e;                                                      \
+                throw;                                                        \
             }                                                                 \
-        }                                                                     \
-        catch (...)                                                           \
-        {                                                                     \
-            throw;                                                            \
-        }                                                                     \
                                                                               \
-        ACE_OS::sleep(sm_retryInterval);                                      \
-    }                                                                         \
-                                                                              \
-    repositoryMan->Terminate();                                               \
+            ACE_Time_Value sleepTime;                                         \
+            sleepTime.msec((long)(sm_retryInterval.msec() + ((ACE_OS::rand()%10)+1))); \
+            ACE_OS::sleep(sleepTime);                                         \
+        }                                                                     \
+    }
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -123,7 +134,7 @@ void MgServerResourceService::OpenRepositories()
 
     // Initialize performance tuning settings.
 
-    INT32 retryInterval = 10; // in milliseconds
+    INT32 retryInterval = 25; // in milliseconds
     MgConfiguration* configuration = MgConfiguration::GetInstance();
     assert(NULL != configuration);
 
@@ -729,6 +740,7 @@ void MgServerResourceService::SetResource(MgResourceIdentifier* resource,
         maxRetries = 0;
     }
 
+    set<STRING> changedResources;
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(true)
 
     if (NULL != content && content->IsRewindable())
@@ -743,10 +755,11 @@ void MgServerResourceService::SetResource(MgResourceIdentifier* resource,
 
     repositoryMan->SetResource(resource, content, header);
 
+    changedResources = repositoryMan->GetChangedResources();
     MG_RESOURCE_SERVICE_END_OPERATION(maxRetries)
 
     // Update the current set of changed resources.
-    UpdateChangedResources(repositoryMan->GetChangedResources());
+    UpdateChangedResources(changedResources);
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.SetResource")
 }

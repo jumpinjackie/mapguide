@@ -79,11 +79,18 @@ void MgLibraryRepositoryManager::UpdateDateModifiedResourceSet(
 
 void MgLibraryRepositoryManager::CommitTransaction()
 {
+    MG_RESOURCE_SERVICE_TRY()
+
+    // TODO: Updating the modified dates and doing the actual commit can cause DB_BUSY errors.
+    //       Ensure that only the Library updates the modified dates as the session does not need them. Check that this is true?
+    //       The root issue might be that 2 transactions are done here 1)Modified dates and 2)Repository Changes - can these be combined into a single transaction?
     m_resourceHeaderMan->UpdateResourceModifiedDates(m_dateModifiedResources);
 
     MgApplicationRepositoryManager::CommitTransaction();
 
     m_resourceHeaderMan->UpdatePermissionCache();
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgLibraryRepositoryManager.CommitTransaction")
 }
 
 ///----------------------------------------------------------------------------

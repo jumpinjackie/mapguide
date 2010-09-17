@@ -443,11 +443,11 @@ INTERNAL_API:
 
     /// Sets the number of retry attempts per operation
     static const STRING ResourceServicePropertyRetryAttempts;                   /// value("RetryAttempts")
-    static const INT32 DefaultResourceServicePropertyRetryAttempts;             /// value(10)
+    static const INT32 DefaultResourceServicePropertyRetryAttempts;             /// value(50)
 
     /// Sets the time duration (in milliseconds) between retry attempts
     static const STRING ResourceServicePropertyRetryInterval;                   /// value("RetryInterval")
-    static const INT32 DefaultResourceServicePropertyRetryInterval;             /// value(10)
+    static const INT32 DefaultResourceServicePropertyRetryInterval;             /// value(25)
 
 EXTERNAL_API:
 
