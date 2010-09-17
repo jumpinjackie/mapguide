@@ -74,9 +74,9 @@ void IOVectorLayerDefinition::StartElement(const wchar_t* name, HandlerStack* ha
     case eWatermark:
         {
             Version wdVersion;
-            if (!IOVectorLayerDefinition::GetWatermarkVersion(
-                &this->m_version, wdVersion))
+            if (!IOVectorLayerDefinition::GetWatermarkVersion(&this->m_version, wdVersion))
                 return;
+
             WatermarkInstance* layerWatermark = new WatermarkInstance(L"", L"");
             this->m_layer->GetWatermarks()->Adopt(layerWatermark);
             IOWatermarkInstance* IO = new IOWatermarkInstance(layerWatermark, wdVersion);
@@ -171,6 +171,7 @@ void IOVectorLayerDefinition::EndElement(const wchar_t* name, HandlerStack* hand
     }
 }
 
+
 // Determine which WatermarkDefinition schema version to use based
 // on the supplied LDF version:
 // * LDF version <= 1.4.0  =>  WD version 1.0.0
@@ -194,7 +195,7 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vector
         }
         else if ((*version >= Version(1, 0, 0)) && (*version <= Version(1, 4, 0)))
         {
-            // LDF in MapGuide 2007 / 2008 / 2009 / 2010 / 2012
+            // LDF in MapGuide 2007 - 2012
             strVersion = version->ToString();
         }
         else
@@ -217,6 +218,8 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vector
     fd << tab() << startStr(sVectorLayerDefinition) << std::endl;
     inctab();
 
+    MdfStringStream fdExtData;
+
     // Property: ResourceId
     fd << tab() << startStr(sResourceId);
     fd << EncodeString(vectorLayer->GetResourceID());
@@ -230,18 +233,33 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vector
         fd << endStr(sOpacity) << std::endl;
     }
 
-    //Property: LayerWatermark (Optional)
-    if(*version >= Version(1, 4, 0))
+    // Property: LayerWatermark (Optional)
+    int watermarkCount = vectorLayer->GetWatermarks()->GetCount();
+    if (watermarkCount != 0)
     {
-        int watermarkCount = vectorLayer->GetWatermarks()->GetCount();
-        if(watermarkCount != 0)
+        if (!version || (*version >= Version(1, 4, 0)))
         {
-            fd << tab() << startStr(sWatermarks) << std::endl; // NOXLATE
+            // only write LayerWatermark if the LDF version is 1.4.0 or greater
+            fd << tab() << startStr(sWatermarks) << std::endl;
             inctab();
             for (int i=0; i<watermarkCount; ++i)
                 IOWatermarkInstance::Write(fd, vectorLayer->GetWatermarks()->GetAt(i), version);
             dectab();
-            fd << endStr(sWatermarks) << std::endl; // NOXLATE
+            fd << endStr(sWatermarks) << std::endl;
+        }
+        else if (*version >= Version(1, 0, 0))
+        {
+            // save LayerWatermark as extended data for LDF versions 1.0.0, 1.1.0, and 1.2.0
+            inctab();
+
+            fdExtData << tab() << startStr(sWatermarks) << std::endl;
+            inctab();
+            for (int i=0; i<watermarkCount; ++i)
+                IOWatermarkInstance::Write(fdExtData, vectorLayer->GetWatermarks()->GetAt(i), version);
+            dectab();
+            fdExtData << endStr(sWatermarks) << std::endl;
+
+            dectab();
         }
     }
 
@@ -296,7 +314,7 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vector
         IOVectorScaleRange::Write(fd, vectorLayer->GetScaleRanges()->GetAt(i), version);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, vectorLayer->GetUnknownXml(), version);
+    IOUnknown::Write(fd, vectorLayer->GetUnknownXml(), fdExtData.str(), version);
 
     dectab();
     fd << tab() << endStr(sVectorLayerDefinition) << std::endl;
