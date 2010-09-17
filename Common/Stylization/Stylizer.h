@@ -22,6 +22,7 @@
 #include "Bounds.h"
 #include "RS_InputStream.h"
 #include "RS_FeatureReader.h"
+#include "Foundation.h"
 
 //forward declare
 class Renderer;

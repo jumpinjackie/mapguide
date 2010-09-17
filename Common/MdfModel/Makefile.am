@@ -92,11 +92,19 @@ libMgMdfModel_la_SOURCES = \
   TextFrame.cpp \
   TextSymbol.cpp \
   ThemeLabel.cpp \
+  TileWatermarkPosition.cpp \
   UnicodeString.cpp \
   VectorLayerDefinition.cpp \
   VectorScaleRange.cpp \
   Version.cpp \
-  W2DSymbol.cpp
+  W2DSymbol.cpp \
+  WatermarkAppearance.cpp \
+  WatermarkDefinition.cpp \
+  WatermarkInstance.cpp \
+  WatermarkPosition.cpp \
+  WatermarkXOffset.cpp \
+  WatermarkYOffset.cpp \
+  XYWatermarkPosition.cpp
 
 noinst_HEADERS = \
   Common/Color.h \
@@ -194,11 +202,20 @@ noinst_HEADERS = \
   TextFrame.h \
   TextSymbol.h \
   ThemeLabel.h \
+  TileWatermarkPosition.h \
   UnicodeString.h \
   VectorLayerDefinition.h \
   VectorScaleRange.h \
   Version.h \
   W2DSymbol.h \
+  WatermarkAppearance.h \
+  WatermarkDefinition.h \
+  WatermarkInstance.h \
+  WatermarkOffsetUnit.h \
+  WatermarkPosition.h \
+  WatermarkXOffset.h \
+  WatermarkYOffset.h \
+  XYWatermarkPosition.h \
   stdafx.h
 
 libMgMdfModel_la_LDFLAGS = -release $(PACKAGE_VERSION)
