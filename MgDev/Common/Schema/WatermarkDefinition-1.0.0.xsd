@@ -155,7 +155,7 @@
     <xs:sequence>
       <xs:element name="Transparency" minOccurs="0" default="0">
         <xs:annotation>
-          <xs:documentation>The transparency of a watermark (0 -100).  The default value is 0 (opaque).</xs:documentation>
+          <xs:documentation>The transparency of a watermark (0-100).  The default value is 0 (opaque).</xs:documentation>
         </xs:annotation>
         <xs:simpleType>
           <xs:restriction base="xs:double">
@@ -208,7 +208,7 @@
       </xs:element>
       <xs:element name="Position">
         <xs:annotation>
-          <xs:documentation>The position of the watermark</xs:documentation>
+          <xs:documentation>The position of the watermark.</xs:documentation>
         </xs:annotation>
         <xs:complexType>
           <xs:choice>
@@ -219,7 +219,7 @@
             </xs:element>
             <xs:element name="TilePosition" type="TilePositionType">
               <xs:annotation>
-                <xs:documentation>Tile position.</xs:documentation>
+                <xs:documentation>Tile position</xs:documentation>
               </xs:annotation>
             </xs:element>
           </xs:choice>
@@ -243,7 +243,7 @@
           <xs:documentation>Watermark can show in AJAX viewer or Fusion viewer.</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
-      <xs:enumeration value="ALL">
+      <xs:enumeration value="All">
         <xs:annotation>
           <xs:documentation>Watermark can show in all situations.</xs:documentation>
         </xs:annotation>
