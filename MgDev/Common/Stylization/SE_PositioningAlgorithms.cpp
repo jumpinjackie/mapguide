@@ -503,6 +503,9 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_ApplyContext*  applyCt
                                                        RS_FeatureReader* featureReader,
                                                        SE_SymbolManager* symbolManager)
 {
+    if (featureReader == NULL)
+        return;
+
     SE_Renderer* se_renderer = applyCtx->renderer;
     LineBuffer* geometry = applyCtx->geometry;
 
