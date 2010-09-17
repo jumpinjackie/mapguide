@@ -337,10 +337,8 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
     double su2wu = 0.001 / (mm2suw * m_serenderer->GetMetersPerUnit());
 
     //Prepare the position list
-    XYWatermarkPosition* xyPosition = dynamic_cast<XYWatermarkPosition*>(
-        watermark->GetPosition());
-    TileWatermarkPosition* tilePosition = dynamic_cast<TileWatermarkPosition*>(
-        watermark->GetPosition());
+    XYWatermarkPosition* xyPosition = dynamic_cast<XYWatermarkPosition*>(watermark->GetPosition());
+    TileWatermarkPosition* tilePosition = dynamic_cast<TileWatermarkPosition*>(watermark->GetPosition());
     WatermarkXOffset::HorizontalAlignment hAlignment = WatermarkXOffset::Center;
     WatermarkYOffset::VerticalAlignment vAlignment = WatermarkYOffset::Center;
     WatermarkOffset::WatermarkOffsetUnit hUnit, vUnit;
@@ -351,8 +349,8 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
         vAlignment = xyPosition->GetYPosition()->GetAlignment();
         hUnit = xyPosition->GetXPosition()->GetUnit();
         vUnit = xyPosition->GetYPosition()->GetUnit();
-        xOffset = xyPosition->GetXPosition()->GetLength();      //In watermark unit
-        yOffset = xyPosition->GetYPosition()->GetLength();      //In watermark unit
+        xOffset = xyPosition->GetXPosition()->GetOffset();      //In watermark unit
+        yOffset = xyPosition->GetYPosition()->GetOffset();      //In watermark unit
     }
     else if(tilePosition)
     {
@@ -360,8 +358,8 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
         vAlignment = tilePosition->GetVerticalPosition()->GetAlignment();
         hUnit = tilePosition->GetHorizontalPosition()->GetUnit();
         vUnit = tilePosition->GetVerticalPosition()->GetUnit();
-        xOffset = tilePosition->GetHorizontalPosition()->GetLength();      //In watermark unit
-        yOffset = tilePosition->GetVerticalPosition()->GetLength();        //In watermark unit
+        xOffset = tilePosition->GetHorizontalPosition()->GetOffset();      //In watermark unit
+        yOffset = tilePosition->GetVerticalPosition()->GetOffset();        //In watermark unit
     }
     double pixelPerMeterDevice = 1000*mm2sud/px2su;
     suPerhUnit = ((hUnit == WatermarkOffset::Pixels) 
