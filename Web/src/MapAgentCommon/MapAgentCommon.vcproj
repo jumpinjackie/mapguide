@@ -63,7 +63,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="ACEd.lib"
 				OutputFile="$(OutDir)\MapAgentCommond.lib"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -126,7 +128,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="ACEd.lib"
 				OutputFile="$(OutDir)\MapAgentCommond.lib"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -187,7 +191,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="ACE.lib"
 				OutputFile="$(OutDir)\MapAgentCommon.lib"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -247,7 +253,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="ACE.lib"
 				OutputFile="$(OutDir)\MapAgentCommon.lib"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64"
 			/>
 			<Tool
 				Name="VCALinkTool"

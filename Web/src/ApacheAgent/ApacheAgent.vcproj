@@ -65,10 +65,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libhttpd.lib libapr-1.lib libaprutil-1.lib"
+				AdditionalDependencies="libhttpd.lib libapr-1.lib libaprutil-1.lib ACEd.lib"
 				OutputFile="$(OutDir)/mod_mgmapagent.so"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;..\..\..\Oem\LinuxApt\httpd-2.2.15\lib&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\..\Oem\LinuxApt\httpd-2.2.15\lib&quot;;..\..\..\Oem\ACE\ACE_wrappers\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/mod_mgmapagent.pdb"
 				SubSystem="2"
@@ -145,10 +145,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libhttpd.lib libapr-1.lib libaprutil-1.lib"
+				AdditionalDependencies="libhttpd.lib libapr-1.lib libaprutil-1.lib ACEd.lib"
 				OutputFile="$(OutDir)/mod_mgmapagent.so"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;..\..\..\Oem\LinuxApt\httpd-2.2-x64\lib&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\..\Oem\LinuxApt\httpd-2.2-x64\lib&quot;;..\..\..\Oem\ACE\ACE_wrappers\lib64"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/mod_mgmapagent.pdb"
 				SubSystem="2"
@@ -188,7 +188,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="cd ..\..\..\Oem\LinuxApt&#x0D;&#x0A;if NOT EXIST httpd-2.2.15.tar ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2.15.tar.gz&#x0D;&#x0A;if NOT EXIST httpd-2.2.15 ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2.15.tar&#x0D;&#x0A;type .\httpd-2.2.15\srclib\apr\include\apr.hw &gt; .\httpd-2.2.15\srclib\apr\include\apr.h&#x0D;&#x0A;type .\httpd-2.2.15\srclib\apr-util\include\apu.hw &gt; .\httpd-2.2.15\srclib\apr-util\include\apu.h"
+				CommandLine="cd ..\..\..\Oem\LinuxApt&#x0D;&#x0A;if NOT EXIST httpd-2.2.15.tar ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2.15.tar.gz&#x0D;&#x0A;if NOT EXIST httpd-2.2.15 ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2.15.tar&#x0D;&#x0A;type .\httpd-2.2.15\srclib\apr\include\apr.hw &gt; .\httpd-2.2.15\srclib\apr\include\apr.h&#x0D;&#x0A;type .\httpd-2.2.15\srclib\apr-util\include\apu.hw &gt; .\httpd-2.2.15\srclib\apr-util\include\apu.h&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -223,10 +223,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libhttpd.lib libapr-1.lib libaprutil-1.lib"
+				AdditionalDependencies="libhttpd.lib libapr-1.lib libaprutil-1.lib ACE.lib"
 				OutputFile="$(OutDir)/mod_mgmapagent.so"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;..\..\..\Oem\LinuxApt\httpd-2.2.15\lib&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\..\Oem\LinuxApt\httpd-2.2.15\lib&quot;;..\..\..\Oem\ACE\ACE_wrappers\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/mod_mgmapagent.pdb"
 				SubSystem="2"
@@ -303,10 +303,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libhttpd.lib libapr-1.lib libaprutil-1.lib"
+				AdditionalDependencies="libhttpd.lib libapr-1.lib libaprutil-1.lib ACE.lib"
 				OutputFile="$(OutDir)/mod_mgmapagent.so"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;..\..\..\Oem\LinuxApt\httpd-2.2-x64\lib&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\..\Oem\LinuxApt\httpd-2.2-x64\lib&quot;;..\..\..\Oem\ACE\ACE_wrappers\lib64"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/mod_mgmapagent.pdb"
 				SubSystem="2"
