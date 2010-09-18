@@ -37,9 +37,7 @@ class IOMapLayerGroupCommon : public SAX2ElementHandler
         IOMapLayerGroupCommon(MapDefinition* map, Version& version);
         virtual ~IOMapLayerGroupCommon();
 
-        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);
-        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
         static void Write(MdfStream& fd, MapLayerGroupCommon* layerGroup, Version* version);
 

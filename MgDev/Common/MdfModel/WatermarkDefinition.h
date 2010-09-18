@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // The WatermarkDefinition class is the root document node of the MdfModel. Through its
     // interface, one can get access to all the data in the WatermarkDefinition.
     //------------------------------------------------------------------------
-    class MDFMODEL_API WatermarkDefinition: public MdfRootObject
+    class MDFMODEL_API WatermarkDefinition : public MdfRootObject
     {
     public:
         // Construction, destruction, initialization.
@@ -40,11 +40,11 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Operations
         
-        // Property: Source
-        const SymbolDefinition* GetSource() const;
-        SymbolDefinition* GetSource();
-        void AdoptSource(SymbolDefinition* pSource);
-        SymbolDefinition* OrphanSource();
+        // Property: Content
+        const SymbolDefinition* GetContent() const;
+        SymbolDefinition* GetContent();
+        void AdoptContent(SymbolDefinition* pContent);
+        SymbolDefinition* OrphanContent();
         
         // Property: Appearance
         const WatermarkAppearance* GetAppearance() const;
@@ -72,7 +72,7 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Data members
         // See corresponding properties for descriptions
-        SymbolDefinition* m_source;
+        SymbolDefinition* m_content;
         WatermarkAppearance* m_appearance;
         WatermarkPosition* m_position;
     };

@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -26,26 +26,26 @@ using namespace MDFPARSER_NAMESPACE;
 
 CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, TilePosition);
-ELEM_MAP_ENTRY(2, HorizontalPosition);
-ELEM_MAP_ENTRY(3, VerticalPosition);
-ELEM_MAP_ENTRY(4, TileWidth);
-ELEM_MAP_ENTRY(5, TileHeight);
+ELEM_MAP_ENTRY(2, TileWidth);
+ELEM_MAP_ENTRY(3, TileHeight);
+ELEM_MAP_ENTRY(4, HorizontalPosition);
+ELEM_MAP_ENTRY(5, VerticalPosition);
 
-IOTileWatermarkPosition::IOTileWatermarkPosition(Version& version)
-: SAX2ElementHandler(version), m_position(NULL)
+
+IOTileWatermarkPosition::IOTileWatermarkPosition(Version& version) : SAX2ElementHandler(version)
 {
+    this->m_position = NULL;
 }
 
 
-IOTileWatermarkPosition::IOTileWatermarkPosition(TileWatermarkPosition* position, Version& version)
-: SAX2ElementHandler(version), m_position(position)
+IOTileWatermarkPosition::IOTileWatermarkPosition(TileWatermarkPosition* position, Version& version) : SAX2ElementHandler(version)
 {
+    this->m_position = position;
 }
 
 
 IOTileWatermarkPosition::~IOTileWatermarkPosition()
 {
-    delete this->m_position;
 }
 
 
@@ -59,23 +59,29 @@ void IOTileWatermarkPosition::StartElement(const wchar_t* name, HandlerStack* ha
     case eTilePosition:
         this->m_startElemName = name;
         break;
+
     case eHorizontalPosition:
         {
-            WatermarkXOffset* horizontalOffset = new WatermarkXOffset();
-            this->m_position->AdoptHorizontalPosition(horizontalOffset);
-            IOWatermarkXOffset* IO = new IOWatermarkXOffset(horizontalOffset, this->m_version);
+            WatermarkXOffset* xOffset = new WatermarkXOffset();
+            this->m_position->AdoptHorizontalPosition(xOffset);
+            IOWatermarkXOffset* IO = new IOWatermarkXOffset(xOffset, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
         break;
+
     case eVerticalPosition:
         {
-            WatermarkYOffset* verticalOffset = new WatermarkYOffset();
-            this->m_position->AdoptVerticalPosition(verticalOffset);
-            IOWatermarkYOffset* IO = new IOWatermarkYOffset(verticalOffset, this->m_version);
+            WatermarkYOffset* yOffset = new WatermarkYOffset();
+            this->m_position->AdoptVerticalPosition(yOffset);
+            IOWatermarkYOffset* IO = new IOWatermarkYOffset(yOffset, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -100,6 +106,8 @@ void IOTileWatermarkPosition::EndElement(const wchar_t* name, HandlerStack* hand
 {
     if (this->m_startElemName == name)
     {
+        this->m_position->SetUnknownXml(this->m_unknownXml);
+
         this->m_position = NULL;
         this->m_startElemName = L"";
         handlerStack->pop();
@@ -113,15 +121,21 @@ void IOTileWatermarkPosition::Write(MdfStream& fd, TileWatermarkPosition* positi
     fd << tab() << startStr(sTilePosition) << std::endl;
     inctab();
 
+    // Property: TileWidth
     fd << tab() << startStr(sTileWidth);
     fd << DoubleToStr(position->GetTileWidth());
     fd << endStr(sTileWidth) << std::endl;
+
+    // Property: TileHeight
     fd << tab() << startStr(sTileHeight);
     fd << DoubleToStr(position->GetTileHeight());
     fd << endStr(sTileHeight) << std::endl;
 
-    IOWatermarkXOffset::Write(fd, position->GetHorizontalPosition(), version, sHorizontalPosition);
-    IOWatermarkYOffset::Write(fd, position->GetVerticalPosition(), version, sVerticalPosition);
+    // Property: HorizontalPosition
+    IOWatermarkXOffset::Write(fd, position->GetHorizontalPosition(), sHorizontalPosition, version);
+
+    // Property: VerticalPosition
+    IOWatermarkYOffset::Write(fd, position->GetVerticalPosition(), sVerticalPosition, version);
 
     dectab();
     fd << tab() << endStr(sTilePosition) << std::endl;

@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -30,21 +30,21 @@ ELEM_MAP_ENTRY(3, Offset);
 ELEM_MAP_ENTRY(4, Unit);
 ELEM_MAP_ENTRY(5, Alignment);
 
-IOWatermarkXOffset::IOWatermarkXOffset(Version& version)
-: SAX2ElementHandler(version), m_XOffset(NULL)
+
+IOWatermarkXOffset::IOWatermarkXOffset(Version& version) : SAX2ElementHandler(version)
 {
+    this->m_XOffset = NULL;
 }
 
 
-IOWatermarkXOffset::IOWatermarkXOffset(WatermarkXOffset* xOffset, Version& version)
-: SAX2ElementHandler(version), m_XOffset(xOffset)
+IOWatermarkXOffset::IOWatermarkXOffset(WatermarkXOffset* xOffset, Version& version) : SAX2ElementHandler(version)
 {
+    this->m_XOffset = xOffset;
 }
 
 
 IOWatermarkXOffset::~IOWatermarkXOffset()
 {
-    delete this->m_XOffset;
 }
 
 
@@ -58,8 +58,13 @@ void IOWatermarkXOffset::StartElement(const wchar_t* name, HandlerStack* handler
     case eXPosition:
         this->m_startElemName = name;
         break;
+
     case eHorizontalPosition:
         this->m_startElemName = name;
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -73,17 +78,17 @@ void IOWatermarkXOffset::ElementChars(const wchar_t* ch)
         this->m_XOffset->SetOffset(wstrToDouble(ch));
         break;
 
+    case eUnit:
+        this->m_XOffset->SetUnit(IOWatermarkOffsetUnit::ParseWatermarkOffsetUnit(ch));
+        break;
+
     case eAlignment:
         if (::wcscmp(ch, L"Left") == 0) // NOXLATE
             this->m_XOffset->SetAlignment(WatermarkXOffset::Left);
         else if (::wcscmp(ch, L"Right") == 0) // NOXLATE
             this->m_XOffset->SetAlignment(WatermarkXOffset::Right);
         else
-            this->m_XOffset->SetAlignment(WatermarkXOffset::Center);  //Treat as "Center" if string is incorrect
-        break;
-    
-    case eUnit:
-        this->m_XOffset->SetUnit(IOWatermarkOffsetUnit::ParseWatermarkOffsetUnit(ch));
+            this->m_XOffset->SetAlignment(WatermarkXOffset::Center); // treat as "Center" if string is incorrect
         break;
     }
 }
@@ -93,6 +98,8 @@ void IOWatermarkXOffset::EndElement(const wchar_t* name, HandlerStack* handlerSt
 {
     if (this->m_startElemName == name)
     {
+        this->m_XOffset->SetUnknownXml(this->m_unknownXml);
+
         this->m_XOffset = NULL;
         this->m_startElemName = L"";
         handlerStack->pop();
@@ -101,25 +108,28 @@ void IOWatermarkXOffset::EndElement(const wchar_t* name, HandlerStack* handlerSt
 }
 
 
-void IOWatermarkXOffset::Write(MdfStream& fd, WatermarkXOffset* xOffset, Version* version, const std::string& name)
+void IOWatermarkXOffset::Write(MdfStream& fd, WatermarkXOffset* xOffset, const std::string& name, Version* version)
 {
     fd << tab() << startStr(name) << std::endl;
     inctab();
 
+    // Property: Offset
     fd << tab() << startStr(sOffset);
     fd << DoubleToStr(xOffset->GetOffset());
     fd << endStr(sOffset) << std::endl;
 
+    // Property: Unit
     IOWatermarkOffsetUnit::Write(fd, xOffset->GetUnit());
 
+    // Property: Alignment
     fd << tab() << startStr(sAlignment);
     WatermarkXOffset::HorizontalAlignment alignment = xOffset->GetAlignment();
-    if(alignment == WatermarkXOffset::Left)
+    if (alignment == WatermarkXOffset::Left)
         fd << "Left"; // NOXLATE
-    else if(alignment == WatermarkXOffset::Right)
+    else if (alignment == WatermarkXOffset::Right)
         fd << "Right"; // NOXLATE
-    else    //Treat "Center" as default value
-        fd << "Center";      // NOXLATE
+    else // treat "Center" as default value
+        fd << "Center"; // NOXLATE
     fd << endStr(sAlignment) << std::endl;
 
     dectab();

@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -29,21 +29,21 @@ ELEM_MAP_ENTRY(1, XYPosition);
 ELEM_MAP_ENTRY(2, XPosition);
 ELEM_MAP_ENTRY(3, YPosition);
 
-IOXYWatermarkPosition::IOXYWatermarkPosition(Version& version)
-: SAX2ElementHandler(version), m_position(NULL)
+
+IOXYWatermarkPosition::IOXYWatermarkPosition(Version& version) : SAX2ElementHandler(version)
 {
+    this->m_position = NULL;
 }
 
 
-IOXYWatermarkPosition::IOXYWatermarkPosition(XYWatermarkPosition* position, Version& version)
-: SAX2ElementHandler(version), m_position(position)
+IOXYWatermarkPosition::IOXYWatermarkPosition(XYWatermarkPosition* position, Version& version) : SAX2ElementHandler(version)
 {
+    this->m_position = position;
 }
 
 
 IOXYWatermarkPosition::~IOXYWatermarkPosition()
 {
-    delete this->m_position;
 }
 
 
@@ -57,6 +57,7 @@ void IOXYWatermarkPosition::StartElement(const wchar_t* name, HandlerStack* hand
     case eXYPosition:
         this->m_startElemName = name;
         break;
+
     case eXPosition:
         {
             WatermarkXOffset* xOffset = new WatermarkXOffset();
@@ -66,6 +67,7 @@ void IOXYWatermarkPosition::StartElement(const wchar_t* name, HandlerStack* hand
             IO->StartElement(name, handlerStack);
         }
         break;
+
     case eYPosition:
         {
             WatermarkYOffset* yOffset = new WatermarkYOffset();
@@ -74,6 +76,10 @@ void IOXYWatermarkPosition::StartElement(const wchar_t* name, HandlerStack* hand
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -88,6 +94,8 @@ void IOXYWatermarkPosition::EndElement(const wchar_t* name, HandlerStack* handle
 {
     if (this->m_startElemName == name)
     {
+        this->m_position->SetUnknownXml(this->m_unknownXml);
+
         this->m_position = NULL;
         this->m_startElemName = L"";
         handlerStack->pop();
@@ -101,8 +109,11 @@ void IOXYWatermarkPosition::Write(MdfStream& fd, XYWatermarkPosition* position, 
     fd << tab() << startStr(sXYPosition) << std::endl;
     inctab();
 
-    IOWatermarkXOffset::Write(fd, position->GetXPosition(), version, sXPosition);
-    IOWatermarkYOffset::Write(fd, position->GetYPosition(), version, sYPosition);
+    // Property: XPosition
+    IOWatermarkXOffset::Write(fd, position->GetXPosition(), sXPosition, version);
+
+    // Property: YPosition
+    IOWatermarkYOffset::Write(fd, position->GetYPosition(), sYPosition, version);
 
     dectab();
     fd << tab() << endStr(sXYPosition) << std::endl;

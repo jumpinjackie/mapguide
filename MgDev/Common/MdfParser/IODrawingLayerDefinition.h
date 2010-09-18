@@ -41,7 +41,7 @@ class IODrawingLayerDefinition : public SAX2ElementHandler
         static void Write(MdfStream& fd, DrawingLayerDefinition* drawingLayer, Version* version);
 
     private:
-        static bool GetWatermarkVersion(Version* ldfVersion, Version& wmVersion);
+        static bool GetWatermarkDefinitionVersion(Version* ldfVersion, Version& wdVersion);
         DrawingLayerDefinition* m_layer;
 };
 

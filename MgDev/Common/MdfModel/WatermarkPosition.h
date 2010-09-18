@@ -19,6 +19,7 @@
 #define WATERMARKPOSITION_H_
 
 #include "MdfModel.h"
+#include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -27,7 +28,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // The WatermarkPosition class is the abstract class of position.
     // It doesn't contain any field inside itself.
     //------------------------------------------------------------------------
-    class MDFMODEL_API WatermarkPosition
+    class MDFMODEL_API WatermarkPosition : public MdfRootObject
     {
     public:
         // Destruction

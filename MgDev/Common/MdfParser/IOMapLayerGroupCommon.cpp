@@ -42,14 +42,6 @@ IOMapLayerGroupCommon::~IOMapLayerGroupCommon()
 }
 
 
-void IOMapLayerGroupCommon::StartElement(const wchar_t* name, HandlerStack* handlerStack)
-{
-#ifdef _NDEBUG
-    _ASSERT(false);
-#endif
-}
-
-
 void IOMapLayerGroupCommon::ElementChars(const wchar_t* ch)
 {
     if (this->m_currElemName == L"Name") // NOXLATE
@@ -62,14 +54,6 @@ void IOMapLayerGroupCommon::ElementChars(const wchar_t* ch)
         this->m_layerGroup->SetExpandInLegend(wstrToBool(ch));
     else if (this->m_currElemName == L"LegendLabel") // NOXLATE
         this->m_layerGroup->SetLegendLabel(ch);
-}
-
-
-void IOMapLayerGroupCommon::EndElement(const wchar_t* name, HandlerStack* handlerStack)
-{
-#ifdef _NDEBUG
-    _ASSERT(false);
-#endif
 }
 
 

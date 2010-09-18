@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -23,8 +23,7 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-WatermarkOffset::WatermarkOffsetUnit IOWatermarkOffsetUnit::ParseWatermarkOffsetUnit(
-    const wchar_t* ch)
+WatermarkOffset::WatermarkOffsetUnit IOWatermarkOffsetUnit::ParseWatermarkOffsetUnit(const wchar_t* ch)
 {
     if (::wcscmp(ch, L"Inches") == 0) // NOXLATE
         return WatermarkOffset::Inches;
@@ -34,14 +33,16 @@ WatermarkOffset::WatermarkOffsetUnit IOWatermarkOffsetUnit::ParseWatermarkOffset
         return WatermarkOffset::Millimeters;
     else if (::wcscmp(ch, L"Points") == 0) // NOXLATE
         return WatermarkOffset::Points;
-    else    // Treat as "Pixels" if string is incorrect
+    else // treat as "Pixels" if string is incorrect
         return WatermarkOffset::Pixels;    
 }
 
+
 void IOWatermarkOffsetUnit::Write(MdfStream& fd, WatermarkOffset::WatermarkOffsetUnit offsetUnit)
 {
+    // Property: Unit
     fd << tab() << startStr("Unit"); // NOXLATE
-    if(offsetUnit == WatermarkOffset::Inches)
+    if (offsetUnit == WatermarkOffset::Inches)
         fd << "Inches"; // NOXLATE
     else if (offsetUnit == WatermarkOffset::Centimeters)
         fd << "Centimeters"; // NOXLATE
@@ -49,7 +50,7 @@ void IOWatermarkOffsetUnit::Write(MdfStream& fd, WatermarkOffset::WatermarkOffse
         fd << "Millimeters"; // NOXLATE
     else if (offsetUnit == WatermarkOffset::Points)
         fd << "Points"; // NOXLATE
-    else    // Treat "Pixels" as default one
+    else  // treat "Pixels" as default value
         fd << "Pixels"; // NOXLATE
     fd << endStr("Unit") << std::endl; // NOXLATE
 }

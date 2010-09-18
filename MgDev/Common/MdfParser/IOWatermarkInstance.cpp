@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -20,6 +20,7 @@
 #include "IOWatermarkAppearance.h"
 #include "IOXYWatermarkPosition.h"
 #include "IOTileWatermarkPosition.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -34,22 +35,23 @@ ELEM_MAP_ENTRY(5, AppearanceOverride);
 ELEM_MAP_ENTRY(6, PositionOverride);
 ELEM_MAP_ENTRY(7, XYPosition);
 ELEM_MAP_ENTRY(8, TilePosition);
-ELEM_MAP_ENTRY(9, ExtendedData);
+ELEM_MAP_ENTRY(9, ExtendedData1);
 
-IOWatermarkInstance::IOWatermarkInstance(Version& version)
-: SAX2ElementHandler(version), m_watermark(NULL)
+
+IOWatermarkInstance::IOWatermarkInstance(Version& version) : SAX2ElementHandler(version)
 {
+    this->m_watermark = NULL;
 }
 
 
-IOWatermarkInstance::IOWatermarkInstance(WatermarkInstance* watermark, Version& version) : SAX2ElementHandler(version), m_watermark(watermark)
+IOWatermarkInstance::IOWatermarkInstance(WatermarkInstance* watermark, Version& version) : SAX2ElementHandler(version)
 {
+    this->m_watermark = watermark;
 }
 
 
 IOWatermarkInstance::~IOWatermarkInstance()
 {
-    delete this->m_watermark;
 }
 
 
@@ -63,6 +65,7 @@ void IOWatermarkInstance::StartElement(const wchar_t* name, HandlerStack* handle
     case eWatermark:
         this->m_startElemName = name;
         break;
+
     case eAppearanceOverride:
         {
             WatermarkAppearance* appearance = new WatermarkAppearance();
@@ -72,6 +75,7 @@ void IOWatermarkInstance::StartElement(const wchar_t* name, HandlerStack* handle
             IO->StartElement(name, handlerStack);
         }
         break;
+
     case eXYPosition:
         {
             XYWatermarkPosition* position = new XYWatermarkPosition();
@@ -81,6 +85,7 @@ void IOWatermarkInstance::StartElement(const wchar_t* name, HandlerStack* handle
             IO->StartElement(name, handlerStack);
         }
         break;
+
     case eTilePosition:
         {
             TileWatermarkPosition* position = new TileWatermarkPosition();
@@ -90,11 +95,17 @@ void IOWatermarkInstance::StartElement(const wchar_t* name, HandlerStack* handle
             IO->StartElement(name, handlerStack);
         }
         break;
-    case eExtendedData:
+
+    case eExtendedData1:
         this->m_procExtData = true;
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
+
 
 void IOWatermarkInstance::ElementChars(const wchar_t* ch)
 {
@@ -107,13 +118,14 @@ void IOWatermarkInstance::ElementChars(const wchar_t* ch)
     case eResourceId:
         this->m_watermark->SetResourceId(ch);
         break;
+
     case eUsage:
         if (::wcscmp(ch, L"WMS") == 0) // NOXLATE
             this->m_watermark->SetUsage(WatermarkInstance::WMS);
         else if (::wcscmp(ch, L"Viewer") == 0) // NOXLATE
             this->m_watermark->SetUsage(WatermarkInstance::Viewer);
         else
-            this->m_watermark->SetUsage(WatermarkInstance::All);  //Treat as "All" if string is incorrect
+            this->m_watermark->SetUsage(WatermarkInstance::All); // treat as "All" if string is incorrect
         break;
     }
 }
@@ -123,10 +135,16 @@ void IOWatermarkInstance::EndElement(const wchar_t* name, HandlerStack* handlerS
 {
     if (this->m_startElemName == name)
     {
+        this->m_watermark->SetUnknownXml(this->m_unknownXml);
+
         this->m_watermark = NULL;
         this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
+    }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
     }
 }
 
@@ -136,31 +154,36 @@ void IOWatermarkInstance::Write(MdfStream& fd, WatermarkInstance* watermark, Ver
     fd << tab() << startStr(sWatermark) << std::endl;
     inctab();
 
+    // Property: Name
     fd << tab() << startStr(sName);
     fd << EncodeString(watermark->GetName());
     fd << endStr(sName) << std::endl;
+
+    // Property: ResourceId
     fd << tab() << startStr(sResourceId);
     fd << EncodeString(watermark->GetResourceId());
     fd << endStr(sResourceId) << std::endl;
 
-    fd << tab() << startStr(sUsage);
+    // Property: Usage (optional)
     WatermarkInstance::Usage usage = watermark->GetUsage();
-    if(usage == WatermarkInstance::WMS)
-        fd << "WMS"; // NOXLATE
-    else if(usage == WatermarkInstance::Viewer)
-        fd << "Viewer"; // NOXLATE
-    else
-        fd << "ALL";     //Treat "ALL" as default value
-    fd << endStr(sUsage) << std::endl;
-
-    WatermarkAppearance* appearanceOverride = watermark->GetAppearanceOverride();
-    if(appearanceOverride)
+    if (usage != WatermarkInstance::All)
     {
-        IOWatermarkAppearance::Write(fd, appearanceOverride, version, sAppearanceOverride);
+        fd << tab() << startStr(sUsage);
+        if (usage == WatermarkInstance::WMS)
+            fd << "WMS"; // NOXLATE
+        else if (usage == WatermarkInstance::Viewer)
+            fd << "Viewer"; // NOXLATE
+        fd << endStr(sUsage) << std::endl;
     }
+
+    // Property: AppearanceOverride (optional)
+    WatermarkAppearance* appearanceOverride = watermark->GetAppearanceOverride();
+    if (appearanceOverride)
+        IOWatermarkAppearance::Write(fd, appearanceOverride, version, sAppearanceOverride);
     
+    // Property: PositionOverride (optional)
     WatermarkPosition* positionOverride = watermark->GetPositionOverride();
-    if(positionOverride)
+    if (positionOverride)
     {
         fd << tab() << startStr(sPositionOverride) << std::endl;
         inctab();
@@ -176,6 +199,9 @@ void IOWatermarkInstance::Write(MdfStream& fd, WatermarkInstance* watermark, Ver
         dectab();
         fd << endStr(sPositionOverride) << std::endl;
     }
+
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, watermark->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << endStr(sWatermark) << std::endl;

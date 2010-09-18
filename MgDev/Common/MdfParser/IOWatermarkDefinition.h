@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -41,7 +41,7 @@ class IOWatermarkDefinition : public SAX2ElementHandler
         static void Write(MdfStream& fd, WatermarkDefinition* watermark, Version* version);
 
     private:
-        static bool GetSymbolDefinitionVersion(Version* wdfVersion, Version& sdVersion);
+        static bool GetSymbolDefinitionVersion(Version* wdVersion, Version& sdVersion);
 
     private:
         WatermarkDefinition* m_watermark;

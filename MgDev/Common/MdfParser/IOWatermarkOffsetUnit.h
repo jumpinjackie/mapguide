@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -18,9 +18,7 @@
 #ifndef _IOWATERMARKOFFSETUNIT_H
 #define _IOWATERMARKOFFSETUNIT_H
 
-#include "SAX2ElementHandler.h"
 #include "WatermarkOffsetUnit.h"
-#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -30,8 +28,7 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOWatermarkOffsetUnit
 {
     public:
-        static WatermarkOffset::WatermarkOffsetUnit ParseWatermarkOffsetUnit(
-            const wchar_t* ch);
+        static WatermarkOffset::WatermarkOffsetUnit ParseWatermarkOffsetUnit(const wchar_t* ch);
 
         static void Write(MdfStream& fd, WatermarkOffset::WatermarkOffsetUnit offsetUnit);
 };

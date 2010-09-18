@@ -211,7 +211,7 @@
       </xs:element>
       <xs:element name="Watermarks" type="WatermarkInstanceCollectionType" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>A group of watermarks that is used in the current map.</xs:documentation>
+          <xs:documentation>The collection of watermarks used in the map.</xs:documentation>
         </xs:annotation>
       </xs:element>
     </xs:sequence>
