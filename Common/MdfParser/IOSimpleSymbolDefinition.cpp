@@ -119,13 +119,13 @@ void IOSimpleSymbolDefinition::Write(MdfStream& fd, SimpleSymbolDefinition* symb
 {
     if (writeAsRootElement)
     {
-        // verify the LDF version
+        // verify the SymbolDefinition version
         MdfString strVersion;
         if (version)
         {
             if ((*version >= Version(1, 0, 0)) && (*version <= Version(1, 1, 0)))
             {
-                // SymbolDefinition in MapGuide 2008 / 2009
+                // SymbolDefinition in MapGuide 2008 - current
                 strVersion = version->ToString();
             }
             else

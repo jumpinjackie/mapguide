@@ -29,7 +29,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // Layer that specifies a wholly encapsulated data source of stylizable
     // geometric features and their associated data attributes.
     //-------------------------------------------------------------------------
-    class MDFMODEL_API VectorLayerDefinition :public LayerDefinition
+    class MDFMODEL_API VectorLayerDefinition : public LayerDefinition
     {
     public:
 

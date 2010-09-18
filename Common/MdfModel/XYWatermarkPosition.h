@@ -30,7 +30,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // The XYWatermarkPosition class is one concrete implementation of WatermarkPosition.
     // It uses X-Y as the position of watermark.
     //------------------------------------------------------------------------
-    class MDFMODEL_API XYWatermarkPosition: public WatermarkPosition
+    class MDFMODEL_API XYWatermarkPosition : public WatermarkPosition
     {
     public:
         // Construction, destruction, initialization.

@@ -322,7 +322,7 @@ void IOLabel::Write(MdfStream& fd, Label* label, Version* version)
             fd << endStr(sUnderlined) << std::endl;
         }
 
-        // Property: AdvancePlacement
+        // Property: AdvancedPlacement
         fd << tab() << startStr(sAdvancedPlacement) << std::endl;
         inctab();
         fd << tab() << startStr(sScaleLimit);

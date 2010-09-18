@@ -69,12 +69,12 @@ void IOGridLayerDefinition::StartElement(const wchar_t* name, HandlerStack* hand
     case eWatermark:
         {
             Version wdVersion;
-            if (!IOGridLayerDefinition::GetWatermarkVersion(&this->m_version, wdVersion))
+            if (!IOGridLayerDefinition::GetWatermarkDefinitionVersion(&this->m_version, wdVersion))
                 return;
 
-            WatermarkInstance* layerWatermark = new WatermarkInstance(L"", L"");
-            this->m_layer->GetWatermarks()->Adopt(layerWatermark);
-            IOWatermarkInstance* IO = new IOWatermarkInstance(layerWatermark, wdVersion);
+            WatermarkInstance* watermark = new WatermarkInstance(L"", L"");
+            this->m_layer->GetWatermarks()->Adopt(watermark);
+            IOWatermarkInstance* IO = new IOWatermarkInstance(watermark, wdVersion);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -147,9 +147,9 @@ void IOGridLayerDefinition::EndElement(const wchar_t* name, HandlerStack* handle
 // Determine which WatermarkDefinition schema version to use based
 // on the supplied LDF version:
 // * LDF version <= 1.4.0  =>  WD version 1.0.0
-bool IOGridLayerDefinition::GetWatermarkVersion(Version* ldfVersion, Version& wmVersion)
+bool IOGridLayerDefinition::GetWatermarkDefinitionVersion(Version* ldfVersion, Version& wdVersion)
 {
-    wmVersion = Version(1, 0, 0);
+    wdVersion = Version(1, 0, 0);
     return true;
 }
 
@@ -167,7 +167,7 @@ void IOGridLayerDefinition::Write(MdfStream& fd, GridLayerDefinition* gridLayer,
         }
         else if ((*version >= Version(1, 0, 0)) && (*version <= Version(1, 4, 0)))
         {
-            // LDF in MapGuide 2007 - 2012
+            // LDF in MapGuide 2007 - current
             strVersion = version->ToString();
         }
         else
@@ -205,13 +205,13 @@ void IOGridLayerDefinition::Write(MdfStream& fd, GridLayerDefinition* gridLayer,
         fd << endStr(sOpacity) << std::endl;
     }
 
-    // Property: LayerWatermark (Optional)
+    // Property: Watermarks (optional)
     int watermarkCount = gridLayer->GetWatermarks()->GetCount();
     if (watermarkCount != 0)
     {
         if (!version || (*version >= Version(1, 4, 0)))
         {
-            // only write LayerWatermark if the LDF version is 1.4.0 or greater
+            // only write Watermarks if the LDF version is 1.4.0 or greater
             fd << tab() << startStr(sWatermarks) << std::endl;
             inctab();
             for (int i=0; i<watermarkCount; ++i)
@@ -221,7 +221,7 @@ void IOGridLayerDefinition::Write(MdfStream& fd, GridLayerDefinition* gridLayer,
         }
         else if (*version >= Version(1, 0, 0))
         {
-            // save LayerWatermark as extended data for LDF versions 1.0.0, 1.1.0, and 1.2.0
+            // save Watermarks as extended data for LDF versions 1.0.0, 1.1.0, and 1.2.0
             inctab();
 
             fdExtData << tab() << startStr(sWatermarks) << std::endl;

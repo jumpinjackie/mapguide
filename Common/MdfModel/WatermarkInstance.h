@@ -19,6 +19,7 @@
 #define WATERMARKINSTANCE_H_
 
 #include "MdfModel.h"
+#include "MdfRootObject.h"
 #include "MdfOwnerCollection.h"
 #include "WatermarkDefinition.h"
 #include "WatermarkAppearance.h"
@@ -33,7 +34,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // reference of a WatermarkDefinition object. It is the user's responsibility to ensure
     // that duplicated WatermarkDefinitions are deleted.
     //------------------------------------------------------------------------
-    class MDFMODEL_API WatermarkInstance
+    class MDFMODEL_API WatermarkInstance : public MdfRootObject
     {
     public:
 

@@ -19,7 +19,7 @@
 // DESCRIPTION:
 // The WatermarkDefinition class implementation.
 //
-// All the data objects in the WatermarkDefinition (Source, Appearance,
+// All the data objects in the WatermarkDefinition (Content, Appearance,
 // Position, etc.) are accessible.  While unfettered access to all the stored
 // objects is provided, these data are still owned by the WatermarkDefinition
 // object.
@@ -43,7 +43,7 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 WatermarkDefinition::WatermarkDefinition()
 {
-    this->m_source = NULL;
+    this->m_content = NULL;
     this->m_appearance = NULL;
     this->m_position = NULL;
 }
@@ -53,57 +53,57 @@ WatermarkDefinition::WatermarkDefinition()
 //-------------------------------------------------------------------------
 WatermarkDefinition::~WatermarkDefinition()
 {
-    delete this->m_source;
+    delete this->m_content;
     delete this->m_appearance;
     delete this->m_position;
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor method for the source property.
+// PURPOSE: Accessor method for the content property.
 //          The SymbolDefinition is the type of source content used in watermark.
 // RETURNS: The pointer of symbol definition.
 //-------------------------------------------------------------------------
-const SymbolDefinition* WatermarkDefinition::GetSource() const
+const SymbolDefinition* WatermarkDefinition::GetContent() const
 {
-    return this->m_source;
+    return this->m_content;
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor method for the source property.
+// PURPOSE: Accessor method for the content property.
 //          The SymbolDefinition is the type of source content used in watermark.
 // RETURNS: The pointer of symbol definition.
 //-------------------------------------------------------------------------
-SymbolDefinition* WatermarkDefinition::GetSource()
+SymbolDefinition* WatermarkDefinition::GetContent()
 {
-    return this->m_source;
+    return this->m_content;
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor method for the source property.
+// PURPOSE: Accessor method for the content property.
 //          The SymbolDefinition is the type of source content used in watermark.
 // PARAMETERS:
 //        Input:
-//          pSource - Adopted SymbolDefinition object that is created on the heap.
+//          pContent - Adopted SymbolDefinition object that is created on the heap.
 //                             It may be NULL.
 //-------------------------------------------------------------------------
-void WatermarkDefinition::AdoptSource(SymbolDefinition* pSource)
+void WatermarkDefinition::AdoptContent(SymbolDefinition* pContent)
 {
-    if (this->m_source != pSource)
+    if (this->m_content != pContent)
     {
-        delete this->m_source;
-        this->m_source = pSource;
+        delete this->m_content;
+        this->m_content = pContent;
     }
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor method for the source property.
+// PURPOSE: Accessor method for the content property.
 //          The SymbolDefinition is the type of source content used in watermark.
 // RETURNS: The pointer to the orphaned SymbolDefinition object. It may be NULL.
 //-------------------------------------------------------------------------
-SymbolDefinition* WatermarkDefinition::OrphanSource()
+SymbolDefinition* WatermarkDefinition::OrphanContent()
 {
-    SymbolDefinition* pRet = this->m_source;
-    this->m_source = NULL;
+    SymbolDefinition* pRet = this->m_content;
+    this->m_content = NULL;
     return pRet;
 }
 

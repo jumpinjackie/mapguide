@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -22,6 +22,7 @@
 #include "IOWatermarkAppearance.h"
 #include "IOXYWatermarkPosition.h"
 #include "IOTileWatermarkPosition.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -29,30 +30,30 @@ using namespace MDFPARSER_NAMESPACE;
 
 CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, WatermarkDefinition);
-ELEM_MAP_ENTRY(2, WatermarkSource);
+ELEM_MAP_ENTRY(2, Content);
 ELEM_MAP_ENTRY(3, SimpleSymbolDefinition);
 ELEM_MAP_ENTRY(4, CompoundSymbolDefinition);
 ELEM_MAP_ENTRY(5, Appearance);
 ELEM_MAP_ENTRY(6, Position);
 ELEM_MAP_ENTRY(7, XYPosition);
 ELEM_MAP_ENTRY(8, TilePosition);
-ELEM_MAP_ENTRY(9, ExtendedData);
+ELEM_MAP_ENTRY(9, ExtendedData1);
 
-IOWatermarkDefinition::IOWatermarkDefinition(Version& version) 
-: SAX2ElementHandler(version), m_watermark(NULL)
+
+IOWatermarkDefinition::IOWatermarkDefinition(Version& version) : SAX2ElementHandler(version)
 {
+    this->m_watermark = NULL;
 }
 
 
-IOWatermarkDefinition::IOWatermarkDefinition(WatermarkDefinition* watermark, Version& version)
-: SAX2ElementHandler(version), m_watermark(watermark)
+IOWatermarkDefinition::IOWatermarkDefinition(WatermarkDefinition* watermark, Version& version) : SAX2ElementHandler(version)
 {
+    this->m_watermark = watermark;
 }
 
 
 IOWatermarkDefinition::~IOWatermarkDefinition()
 {
-    delete this->m_watermark;
 }
 
 
@@ -67,67 +68,65 @@ void IOWatermarkDefinition::StartElement(const wchar_t* name, HandlerStack* hand
         this->m_startElemName = name;
         break;
 
-        //TODO: Other elements
     case eSimpleSymbolDefinition:
         {
             Version sdVersion;
-            if (!IOWatermarkDefinition::GetSymbolDefinitionVersion(
-                &this->m_version, sdVersion))
+            if (!IOWatermarkDefinition::GetSymbolDefinitionVersion(&this->m_version, sdVersion))
                 return;
 
             SimpleSymbolDefinition* simpleSymbol = new SimpleSymbolDefinition();
-            this->m_watermark->AdoptSource(simpleSymbol);
+            this->m_watermark->AdoptContent(simpleSymbol);
             IOSimpleSymbolDefinition* IO = new IOSimpleSymbolDefinition(simpleSymbol, sdVersion);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
         break;
+
     case eCompoundSymbolDefinition:
         {
             Version sdVersion;
-            if (!IOWatermarkDefinition::GetSymbolDefinitionVersion(
-                &this->m_version, sdVersion))
+            if (!IOWatermarkDefinition::GetSymbolDefinitionVersion(&this->m_version, sdVersion))
                 return;
+
             CompoundSymbolDefinition* compoundSymbol = new CompoundSymbolDefinition();
-            this->m_watermark->AdoptSource(compoundSymbol);
-            IOCompoundSymbolDefinition* IO = new IOCompoundSymbolDefinition(
-                compoundSymbol, sdVersion);
-            handlerStack->push(IO);
-            IO->StartElement(name, handlerStack);
-        }
-        break;
-    case eAppearance:
-        {
-            WatermarkAppearance* appearance = new WatermarkAppearance();
-            this->m_watermark->AdoptAppearance(appearance);
-            IOWatermarkAppearance* IO = new IOWatermarkAppearance(
-                appearance, this->m_version);
-            handlerStack->push(IO);
-            IO->StartElement(name, handlerStack);
-        }
-        break;
-    case eXYPosition:
-        {
-            XYWatermarkPosition* position = new XYWatermarkPosition();
-            this->m_watermark->AdoptPosition(position);
-            IOXYWatermarkPosition* IO = new IOXYWatermarkPosition(
-                position, this->m_version);
-            handlerStack->push(IO);
-            IO->StartElement(name, handlerStack);
-        }
-        break;
-    case eTilePosition:
-        {
-            TileWatermarkPosition* position = new TileWatermarkPosition();
-            this->m_watermark->AdoptPosition(position);
-            IOTileWatermarkPosition* IO = new IOTileWatermarkPosition(
-                position, this->m_version);
+            this->m_watermark->AdoptContent(compoundSymbol);
+            IOCompoundSymbolDefinition* IO = new IOCompoundSymbolDefinition(compoundSymbol, sdVersion);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
         break;
 
-    case eExtendedData:
+    case eAppearance:
+        {
+            WatermarkAppearance* appearance = new WatermarkAppearance();
+            this->m_watermark->AdoptAppearance(appearance);
+            IOWatermarkAppearance* IO = new IOWatermarkAppearance(appearance, this->m_version);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eXYPosition:
+        {
+            XYWatermarkPosition* position = new XYWatermarkPosition();
+            this->m_watermark->AdoptPosition(position);
+            IOXYWatermarkPosition* IO = new IOXYWatermarkPosition(position, this->m_version);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eTilePosition:
+        {
+            TileWatermarkPosition* position = new TileWatermarkPosition();
+            this->m_watermark->AdoptPosition(position);
+            IOTileWatermarkPosition* IO = new IOTileWatermarkPosition(position, this->m_version);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eExtendedData1:
         this->m_procExtData = true;
         break;
 
@@ -154,16 +153,17 @@ void IOWatermarkDefinition::EndElement(const wchar_t* name, HandlerStack* handle
         handlerStack->pop();
         delete this;
     }
-    else if (eExtendedData == _ElementIdFromName(name))
+    else if (eExtendedData1 == _ElementIdFromName(name))
     {
         this->m_procExtData = false;
     }
 }
 
+
 // Determine which SymbolDefinition schema version to use based
-// on the supplied WDF version:
-// * WDF version <= 1.0.0  =>  SD version 1.1.0
-bool IOWatermarkDefinition::GetSymbolDefinitionVersion(Version* wmVersion, Version& sdVersion)
+// on the supplied WaterDefinition version:
+// * WD version <= 1.0.0  =>  SD version 1.1.0
+bool IOWatermarkDefinition::GetSymbolDefinitionVersion(Version* wdVersion, Version& sdVersion)
 {
     sdVersion = Version(1, 1, 0);
     return true;
@@ -172,14 +172,37 @@ bool IOWatermarkDefinition::GetSymbolDefinitionVersion(Version* wmVersion, Versi
 
 void IOWatermarkDefinition::Write(MdfStream& fd, WatermarkDefinition* watermark, Version* version)
 {
-    MdfString strVersion = version->ToString();
+    // verify the WatermarkDefinition version
+    MdfString strVersion;
+    if (version)
+    {
+        if (*version == Version(1, 0, 0))
+        {
+            // WatermarkDefinition in MapGuide 2012
+            strVersion = version->ToString();
+        }
+        else
+        {
+            // unsupported WatermarkDefinition version
+            // TODO - need a way to return error information
+            _ASSERT(false);
+            return;
+        }
+    }
+    else
+    {
+        // use the current highest version
+        strVersion = L"1.0.0";
+    }
+
     fd << tab() << "<WatermarkDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"WatermarkDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
     inctab();
 
-    fd << tab() << startStr(sWatermarkSource) << std::endl;
+    // Property: Content
+    fd << tab() << startStr(sContent) << std::endl;
     inctab();
 
-    SymbolDefinition* symbol = watermark->GetSource();
+    SymbolDefinition* symbol = watermark->GetContent();
     Version sdVersion;
     if (IOWatermarkDefinition::GetSymbolDefinitionVersion(version, sdVersion))
     {
@@ -193,10 +216,12 @@ void IOWatermarkDefinition::Write(MdfStream& fd, WatermarkDefinition* watermark,
     }
 
     dectab();
-    fd << endStr(sWatermarkSource) << std::endl;
+    fd << endStr(sContent) << std::endl;
 
+    // Property: Appearance
     IOWatermarkAppearance::Write(fd, watermark->GetAppearance(), version, sAppearance);
 
+    // Property: Position
     fd << tab() << startStr(sPosition) << std::endl;
     inctab();
 
@@ -212,7 +237,8 @@ void IOWatermarkDefinition::Write(MdfStream& fd, WatermarkDefinition* watermark,
     dectab();
     fd << endStr(sPosition) << std::endl;
 
-    //Position
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, watermark->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</WatermarkDefinition>" << std::endl; // NOXLATE

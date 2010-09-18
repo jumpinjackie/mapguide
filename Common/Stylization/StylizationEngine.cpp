@@ -266,7 +266,7 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
     CompositeSymbolization symbols;
 
     std::auto_ptr<SymbolInstance> instance(new SymbolInstance());
-    instance->AdoptSymbolDefinition(watermark->GetSource());
+    instance->AdoptSymbolDefinition(watermark->GetContent());
     instance->SetUsageContext(SymbolInstance::ucPoint);
     symbols.GetSymbolCollection()->Adopt(instance.release());
 

@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -38,7 +38,7 @@ class IOWatermarkYOffset : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, WatermarkYOffset* xOffset, Version* version, const std::string& name);
+        static void Write(MdfStream& fd, WatermarkYOffset* xOffset, const std::string& name, Version* version);
 
     private:
         WatermarkYOffset* m_YOffset;

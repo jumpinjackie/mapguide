@@ -132,6 +132,7 @@ void IOLineRule::Write(MdfStream& fd, LineRule* lineRule, Version* version)
     fd << tab() << startStr(sLineRule) << std::endl;
     inctab();
 
+    // Property: LegendLabel
     fd << tab() << startStr(sLegendLabel);
     fd << EncodeString(lineRule->GetLegendLabel());
     fd << endStr(sLegendLabel) << std::endl;

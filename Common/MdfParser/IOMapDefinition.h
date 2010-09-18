@@ -41,7 +41,7 @@ class IOMapDefinition : public SAX2ElementHandler
         static void Write(MdfStream& fd, MapDefinition* map, Version* version);
 
     private:
-        static bool GetWatermarkVersion(Version* mdfVersion, Version& wmVersion);
+        static bool GetWatermarkDefinitionVersion(Version* mdfVersion, Version& wdVersion);
         MapDefinition* m_map;
 };
 

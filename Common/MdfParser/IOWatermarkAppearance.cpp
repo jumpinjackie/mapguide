@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -28,21 +28,21 @@ ELEM_MAP_ENTRY(2, AppearanceOverride);
 ELEM_MAP_ENTRY(3, Transparency);
 ELEM_MAP_ENTRY(4, Rotation);
 
-IOWatermarkAppearance::IOWatermarkAppearance(Version& version)
-: SAX2ElementHandler(version), m_appearance(NULL)
+
+IOWatermarkAppearance::IOWatermarkAppearance(Version& version) : SAX2ElementHandler(version)
 {
+    this->m_appearance = NULL;
 }
 
 
-IOWatermarkAppearance::IOWatermarkAppearance(WatermarkAppearance* appearance, Version& version)
-: SAX2ElementHandler(version), m_appearance(appearance)
+IOWatermarkAppearance::IOWatermarkAppearance(WatermarkAppearance* appearance, Version& version) : SAX2ElementHandler(version)
 {
+    this->m_appearance = appearance;
 }
 
 
 IOWatermarkAppearance::~IOWatermarkAppearance()
 {
-    delete this->m_appearance;
 }
 
 
@@ -56,8 +56,13 @@ void IOWatermarkAppearance::StartElement(const wchar_t* name, HandlerStack* hand
     case eAppearance:
         this->m_startElemName = name;
         break;
+
     case eAppearanceOverride:
         this->m_startElemName = name;
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -82,6 +87,8 @@ void IOWatermarkAppearance::EndElement(const wchar_t* name, HandlerStack* handle
 {
     if (this->m_startElemName == name)
     {
+        this->m_appearance->SetUnknownXml(this->m_unknownXml);
+
         this->m_appearance = NULL;
         this->m_startElemName = L"";
         handlerStack->pop();
@@ -94,12 +101,23 @@ void IOWatermarkAppearance::Write(MdfStream& fd, WatermarkAppearance* appearance
 {
     fd << tab() << startStr(name) << std::endl;
     inctab();
-    fd << tab() << startStr(sTransparency);
-    fd << DoubleToStr(appearance->GetTransparency());
-    fd << endStr(sTransparency) << std::endl;
-    fd << tab() << startStr(sRotation);
-    fd << DoubleToStr(appearance->GetRotation());
-    fd << endStr(sRotation) << std::endl;
+
+    // Property: Transparency (optional)
+    if (appearance->GetTransparency() != 0.0)
+    {
+        fd << tab() << startStr(sTransparency);
+        fd << DoubleToStr(appearance->GetTransparency());
+        fd << endStr(sTransparency) << std::endl;
+    }
+
+    // Property: Rotation (optional)
+    if (appearance->GetRotation() != 0.0)
+    {
+        fd << tab() << startStr(sRotation);
+        fd << DoubleToStr(appearance->GetRotation());
+        fd << endStr(sRotation) << std::endl;
+    }
+
     dectab();
     fd << tab() << endStr(name) << std::endl;
 }

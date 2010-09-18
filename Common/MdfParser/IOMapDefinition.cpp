@@ -77,12 +77,12 @@ void IOMapDefinition::StartElement(const wchar_t* name, HandlerStack* handlerSta
         else if (this->m_currElemName == L"Watermark") // NOXLATE
         {
             Version wdVersion;
-            if (!IOMapDefinition::GetWatermarkVersion(&this->m_version, wdVersion))
+            if (!IOMapDefinition::GetWatermarkDefinitionVersion(&this->m_version, wdVersion))
                 return;
 
-            WatermarkInstance* mapWatermark = new WatermarkInstance(L"", L"");
-            this->m_map->GetWatermarks()->Adopt(mapWatermark);
-            IOWatermarkInstance* IO = new IOWatermarkInstance(mapWatermark, wdVersion);
+            WatermarkInstance* watermark = new WatermarkInstance(L"", L"");
+            this->m_map->GetWatermarks()->Adopt(watermark);
+            IOWatermarkInstance* IO = new IOWatermarkInstance(watermark, wdVersion);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -124,9 +124,9 @@ void IOMapDefinition::EndElement(const wchar_t* name, HandlerStack* handlerStack
 // Determine which WatermarkDefinition schema version to use based
 // on the supplied MDF version:
 // * MDF version <= 1.1.0  =>  WD version 1.0.0
-bool IOMapDefinition::GetWatermarkVersion(Version* mdfVersion, Version& wmVersion)
+bool IOMapDefinition::GetWatermarkDefinitionVersion(Version* mdfVersion, Version& wdVersion)
 {
-    wmVersion = Version(1, 0, 0);
+    wdVersion = Version(1, 0, 0);
     return true;
 }
 
@@ -139,7 +139,7 @@ void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version)
     {
         if ((*version >= Version(1, 0, 0)) && (*version <= Version(1, 1, 0)))
         {
-            // MDF in MapGuide 2007 - 2012
+            // MDF in MapGuide 2006 - current
             strVersion = version->ToString();
         }
         else
@@ -167,6 +167,7 @@ void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version)
     fd << EncodeString(map->GetName());
     fd << "</Name>" << std::endl; // NOXLATE
 
+    // Property: CoordinateSystem
     fd << tab() << "<CoordinateSystem>"; // NOXLATE
     fd << EncodeString(map->GetCoordinateSystem());
     fd << "</CoordinateSystem>" << std::endl; // NOXLATE
@@ -199,10 +200,11 @@ void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version)
     if (map->GetFiniteDisplayScales()->GetCount() > 0)
         IOBaseMapDefinition::Write(fd, map, version);
 
-    // Property: MapWatermark (Optional)
+    // Property: Watermarks (optional)
     int watermarkCount = map->GetWatermarks()->GetCount();
     if (watermarkCount != 0)
     {
+        // only write Watermarks if the MDF version is 1.1.0 or greater
         if (*version >= Version(1, 1, 0))
         {
             fd << tab() << startStr("Watermarks") << std::endl; // NOXLATE

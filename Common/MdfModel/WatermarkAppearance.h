@@ -19,6 +19,7 @@
 #define WATERMARKAPPEARANCE_H_
 
 #include "MdfModel.h"
+#include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -26,7 +27,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // DESCRIPTION:
     // The WatermarkAppearance class is to define the appearance of watermark.
     //------------------------------------------------------------------------
-    class MDFMODEL_API WatermarkAppearance
+    class MDFMODEL_API WatermarkAppearance : public MdfRootObject
     {
     public:
         // Construction, destruction, initialization.

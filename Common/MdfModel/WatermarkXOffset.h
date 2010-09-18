@@ -19,6 +19,7 @@
 #define WATERMARKXOFFSET_H_
 
 #include "MdfModel.h"
+#include "MdfRootObject.h"
 #include "WatermarkOffsetUnit.h"
 
 BEGIN_NAMESPACE_MDFMODEL
@@ -27,7 +28,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // DESCRIPTION:
     // The WatermarkXOffest class is to define the offset in X-axis of the watermark.
     //------------------------------------------------------------------------
-    class MDFMODEL_API WatermarkXOffset
+    class MDFMODEL_API WatermarkXOffset : public MdfRootObject
     {
     public:
 
@@ -36,7 +37,7 @@ BEGIN_NAMESPACE_MDFMODEL
         {
             Left,
             Center,
-            Right,
+            Right
         };
 
         // Construction, destruction, initialization.

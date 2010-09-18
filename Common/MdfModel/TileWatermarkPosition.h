@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // It will repeat the source both in X and Y dimension.  Tile is the unit of repeat.
     // Within tile it uses X-Y as the position of watermark.
     //------------------------------------------------------------------------
-    class MDFMODEL_API TileWatermarkPosition: public WatermarkPosition
+    class MDFMODEL_API TileWatermarkPosition : public WatermarkPosition
     {
     public:
         // Construction, destruction, initialization.

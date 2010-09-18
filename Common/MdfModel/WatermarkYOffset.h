@@ -19,6 +19,7 @@
 #define WATERMARKYOFFSET_H_
 
 #include "MdfModel.h"
+#include "MdfRootObject.h"
 #include "WatermarkOffsetUnit.h"
 
 BEGIN_NAMESPACE_MDFMODEL
@@ -27,7 +28,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // DESCRIPTION:
     // The WatermarkYOffest class is to define the offset in Y-axis of the watermark.
     //------------------------------------------------------------------------
-    class MDFMODEL_API WatermarkYOffset
+    class MDFMODEL_API WatermarkYOffset : public MdfRootObject
     {
     public:
 
