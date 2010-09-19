@@ -34,11 +34,12 @@ public:
 Exception Code        Meaning
 --------------------- -------------------------------------------------------------
 */
-    static CPSZ kpszOperationNotSupported;   // Requested a Request= operation that is unknown
-    static CPSZ kpszUnknownParameterValue;   // Specified a parameter value that is unknown.
-    static CPSZ kpszMissingRequestParameter; // A required request parameter was not specified.
-    static CPSZ kpszProcessingError;         // An error occurred while processing the request
+    static CPSZ kpszOperationNotSupported;    // Requested a Request= operation that is unknown
+    static CPSZ kpszUnknownParameterValue;    // Specified a parameter value that is unknown.
+    static CPSZ kpszMissingRequestParameter;  // A required request parameter was not specified.
+    static CPSZ kpszProcessingError;          // An error occurred while processing the request
     static CPSZ kpszVersionNegotiationFailed; // None of the requested versions are supported
+    static CPSZ kpszInvalidParameterValue;    // request parameter is invalid
 };
 
 #endif//_OgcWfsException_h

@@ -64,7 +64,10 @@
    <ows:LowerCorner>&Enum.item.west; &Enum.item.south;</ows:LowerCorner>
    <ows:UpperCorner>&Enum.item.east; &Enum.item.north;</ows:UpperCorner>
  </Define>
-
+ <Define item="Formats.GetCapabilities">
+   <item>text/xml</item>
+ </Define>
+ 
  <!-- TODO: these will need to come from the full Feature metadata store -->
  <!-- for now, these are operating defaults. -->
  <Define item="Feature.namespace">http://fdo.osgeo.org/schemas</Define>
@@ -123,13 +126,14 @@
   xmlns:ogc="http://www.opengis.net/ogc"
   xmlns="http://www.opengis.net/wfs"
   version="1.1.0" 
-  updateSequence="0"
   xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"
  >
-  <!-- ================================================================== -->
-  <!-- SERVICE IDENTIFICATION SECTION                                     -->
-  <!-- ================================================================== -->
-  <ows:ServiceIdentification>
+ 
+  <?Ifdef item="Section.ServiceIdentification"?>
+    <!-- ================================================================== -->
+    <!-- SERVICE IDENTIFICATION SECTION                                     -->
+    <!-- ================================================================== -->
+    <ows:ServiceIdentification>
 	<ows:Title>&Service.Title;</ows:Title>
 	<ows:Abstract>&Service.Abstract;</ows:Abstract>
     <ows:Keywords>
@@ -140,11 +144,13 @@
     <ows:Fees>&Service.Fees;</ows:Fees>
     <ows:AccessConstraints>&Service.AccessConstraints;</ows:AccessConstraints>
   </ows:ServiceIdentification>
-
-  <!-- ================================================================== -->
-  <!-- SERVICE PROVIDER SECTION                                           -->
-  <!-- ================================================================== -->
-  <ows:ServiceProvider>
+  <?Endif?>
+  
+  <?Ifdef item="Section.ServiceProvider"?>
+    <!-- ================================================================== -->
+    <!-- SERVICE PROVIDER SECTION                                           -->
+    <!-- ================================================================== -->
+    <ows:ServiceProvider>
     <ows:ProviderName>&Service.Contact.ProviderName;</ows:ProviderName>
     <ows:ProviderSite>&Service.Contact.ProviderSite;</ows:ProviderSite>
     <ows:ServiceContact>
@@ -170,11 +176,13 @@
       <ows:Role>&Service.Contact.Role;</ows:Role>
     </ows:ServiceContact>
   </ows:ServiceProvider>
-
-  <!-- ================================================================== -->
-  <!-- OPERATIONS METADATA SECTION                                        -->
-  <!-- ================================================================== -->
-  <ows:OperationsMetadata>
+  <?Endif?>
+  
+  <?Ifdef item="Section.OperationsMetadata"?>
+    <!-- ================================================================== -->
+    <!-- OPERATIONS METADATA SECTION                                        -->
+    <!-- ================================================================== -->
+    <ows:OperationsMetadata>
 
     <!-- GetCapabilities -->
     <ows:Operation name="GetCapabilities">
@@ -239,14 +247,17 @@
     </ows:Constraint>
 
   </ows:OperationsMetadata>
-
-  <!-- ================================================================== -->
-  <!-- FEATURE TYPE LIST SECTION                                          -->
-  <!-- ================================================================== -->
-  <wfs:FeatureTypeList>
-   <?EnumFeatureTypes using="&Feature.xml;"?>
-  </wfs:FeatureTypeList>
-
+  <?Endif?>
+  
+  <?Ifdef item="Section.FeatureTypeList"?>
+     <!-- ================================================================== -->
+     <!-- FEATURE TYPE LIST SECTION                                          -->
+     <!-- ================================================================== -->
+     <wfs:FeatureTypeList>
+       <?EnumFeatureTypes using="&Feature.xml;"?>
+     </wfs:FeatureTypeList>
+  <?Endif?>
+ 
   <!-- ================================================================== -->
   <!-- FILTER CAPABILITIES SECTION                                        -->
   <!-- ================================================================== -->

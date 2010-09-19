@@ -35,8 +35,11 @@ bool MapAgentCommon::IsOgcRequest(MgHttpRequestParam* params)
             return true;
     }
 
-    // Nope, doesn't look like it to me.
-    return false;
+    MgConfiguration* cfg = MgConfiguration::GetInstance();
+    bool bCITEWfsEnabled = false;
+    cfg->GetBoolValue(MgConfigProperties::OgcPropertiesSection, MgConfigProperties::CITEWfsEnabled, bCITEWfsEnabled, MgConfigProperties::DefaultCITEWfsEnabled);
+    
+    return bCITEWfsEnabled;
 }
 
 
@@ -85,8 +88,8 @@ bool MapAgentCommon::ParseAuth(char* auth, MgHttpRequestParam* params)
 
 bool MapAgentCommon::AuthenticateOgcRequest(MgHttpRequestParam* params)
 {
-    bool isWms = true;
-
+    bool isWms = false;
+    bool isWfs = false;
     // Determine with the optional service parameter if the request is WMS or WFS
     // If the service is present and specifies something else than WMS or WFS, refuse
     // authentication as MapGuide only supports these 2 services.
@@ -96,9 +99,9 @@ bool MapAgentCommon::AuthenticateOgcRequest(MgHttpRequestParam* params)
     if(serviceValue.length() != 0)
     {
         if(serviceValue == L"WFS")
-            isWms = false;
-        else if(serviceValue != L"WMS")
-            return false;
+            isWfs = true;
+        else if(serviceValue == L"WMS")
+            isWms = true;
     }
     else // Look for possible POST-method with content payload.
     {
@@ -129,15 +132,39 @@ bool MapAgentCommon::AuthenticateOgcRequest(MgHttpRequestParam* params)
                 return false; // abandon the authentication attempt
 
             isWms = bWms;
+            isWfs = bWfs;
         }
+    }
+
+    MgConfiguration* cfg = MgConfiguration::GetInstance();
+
+    // OGC CITE: Test wfs:wfs-1.1.0-Basic-GetCapabilities-tc16.2 (s0012/d1e34887_1/d1e732_1/d1e25171_1/d1e903_1)
+    // Assertion: 
+    // In the event that a GetCapabilities request cannot be processed for any reason, 
+    // the response entity shall include an exception report. The exception code must 
+    // be one of those listed in Table 5.
+    if(!isWms && !isWfs)
+    {
+        cfg->GetBoolValue(MgConfigProperties::OgcPropertiesSection, MgConfigProperties::CITEWfsEnabled, isWfs, MgConfigProperties::DefaultCITEWfsEnabled);
     }
 
     // Get WMS/WFS password from configuration.
     STRING username, password;
-    MgConfiguration* cfg = MgConfiguration::GetInstance();
 
-    username = isWms ? MgUser::WmsUser : MgUser::WfsUser;
-    cfg->GetStringValue(MgConfigProperties::OgcPropertiesSection, isWms? MgConfigProperties::WmsPassword: MgConfigProperties::WfsPassword, password, L"");
+    if(isWms)
+    {
+        username = MgUser::WmsUser;
+        cfg->GetStringValue(MgConfigProperties::OgcPropertiesSection, MgConfigProperties::WmsPassword, password, L"");
+    }
+    else if(isWfs)
+    {
+        username = MgUser::WfsUser;
+        cfg->GetStringValue(MgConfigProperties::OgcPropertiesSection, MgConfigProperties::WfsPassword, password, L"");
+    }
+    else
+    {
+        return false;
+    }
 
     //feed these values in as parameters
     params->AddParameter(MgHttpResourceStrings::reqUsername, username);
