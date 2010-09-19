@@ -64,7 +64,12 @@ public:
     /// </returns>
     MgRequestClassification GetRequestClassification() { return MgHttpRequestResponseHandler::mrcWfs; }
 
+    // IMgOgcDataAccessor method
+    virtual void AcquireValidationData(MgOgcServer* ogcServer);
+
 private:
+
+    void InitializeRequestParameters(MgOgcWfsServer& oServer);
 };
 
 #endif  // _FS_WFS_GET_CAPABILITIES_H

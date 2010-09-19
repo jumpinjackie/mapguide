@@ -22,6 +22,17 @@
 #include "XmlParser.h"
 #include "OgcWfsServer.h"
 
+extern CPSZ kpszQueryStringSections;                        // = _("sections");
+extern CPSZ kpszOmittedValue;                               //= _("(omitted)"); if any dictionary value needs to be omitted...
+extern CPSZ kpszDefinitionSectionServiceIdentification;     //= _("Section.ServiceIdentification")
+extern CPSZ kpszDefinitionSectionServiceProvider;           //= _("Section.ServiceProvider")
+extern CPSZ kpszDefinitionSectionOperationsMetadata;        //= _("Section.OperationsMetadata")
+extern CPSZ kpszDefinitionSectionFeatureTypeList;           //= _("Section.FeatureTypeList")
+const STRING kpszServiceIdentification      = _("serviceidentification");
+const STRING kpszServiceProvider            = _("serviceprovider");
+const STRING kpszOperationsMetadata         = _("operationsmetadata");
+const STRING kpszSectionFeatureTypeList     = _("featuretypelist");
+
 HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpWfsGetCapabilities)
 
 /// <summary>
@@ -108,4 +119,51 @@ bool MgHttpWfsGetCapabilities::ProcessPostRequest(MgHttpRequest *hRequest, MgHtt
     //Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
     //TODO Parse params->GetXmlPostData();
     return false;
+}
+
+void MgHttpWfsGetCapabilities::AcquireValidationData(MgOgcServer* ogcServer)
+{
+    MgOgcWfsServer* wfsServer = (MgOgcWfsServer*)ogcServer;
+    if(wfsServer != NULL)
+    {
+        // The initialization that used to happen in the ctor is deferred until now
+        // (when we need it) since now we have access to a server object.
+        InitializeRequestParameters(*wfsServer);
+    }
+}
+
+void MgHttpWfsGetCapabilities::InitializeRequestParameters(MgOgcWfsServer& oServer)
+{
+    // OGC CITE: Test wfs:wfs-1.1.0-Basic-GetCapabilities-tc19.2 (s0012/d1e34887_1/d1e732_1/d1e25171_1/d1e949_1)
+    // Assertion: 
+    // The response to a GetCapabilities request that includes a sections parameter
+    // listing optional elements shall include only the requested elements in the
+    // response entity.
+    CPSZ pszSections = oServer.RequestParameter(kpszQueryStringSections);
+    if(pszSections)
+    {
+        STRING sSections = MgUtil::ToLower(STRING(pszSections));
+        
+        if(sSections.find(kpszServiceIdentification) != STRING::npos)
+        {
+            oServer.SetGetCapabilitiesSection(kpszDefinitionSectionServiceIdentification);
+        }
+        if(sSections.find(kpszServiceProvider) != STRING::npos)
+        {
+            oServer.SetGetCapabilitiesSection(kpszDefinitionSectionServiceProvider);
+        }
+        if(sSections.find(kpszOperationsMetadata) != STRING::npos)
+        {
+            oServer.SetGetCapabilitiesSection(kpszDefinitionSectionOperationsMetadata);
+        }
+        if(sSections.find(kpszSectionFeatureTypeList) != STRING::npos)
+        {
+            oServer.SetGetCapabilitiesSection(kpszDefinitionSectionFeatureTypeList);
+        }
+    }
+    else
+    {
+        // All sections in GetCapabilities document should be displayed
+        oServer.SetGetCapabilitiesSection(_(""));
+    }
 }

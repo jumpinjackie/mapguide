@@ -212,9 +212,9 @@ MgHttpResponse* MgHttpRequest::Execute()
         if(sRequestValue.length() != 0)
         {
             STRING sServiceValue = m_requestParam->GetParameterValue(MgHttpResourceStrings::reqWmsService);
-            if(sServiceValue.length() != 0)
+            if(sServiceValue.length() != 0 && (wcsicmp(L"WFS",sServiceValue.c_str()) == 0 || wcsicmp(L"WMS",sServiceValue.c_str()) == 0))
             {
-                sParamValue = sServiceValue;
+                    sParamValue = sServiceValue;
             }
             else
             {
@@ -228,16 +228,13 @@ MgHttpResponse* MgHttpRequest::Execute()
             // Error handling for OGC certification.
             // MapGuide should generate an WFS exception while receiveing following request:
             // http://locahost/mapguide/mapagent/mapagent.fcgi??request~GetCapabilities!service~WFS!version~1.1.0
-            Ptr<MgStringCollection> parameterNames = m_requestParam->GetParameterNames();
-            for(int i = 0; i < parameterNames->GetCount(); i++)
+            MgConfiguration* cfg = MgConfiguration::GetInstance();
+            bool bCITEWfsEnabled = false;
+
+            cfg->GetBoolValue(MgConfigProperties::OgcPropertiesSection, MgConfigProperties::CITEWfsEnabled, bCITEWfsEnabled, MgConfigProperties::DefaultCITEWfsEnabled);
+            if(bCITEWfsEnabled)
             {
-                STRING parameterName = parameterNames->GetItem(i);
-                if(parameterName.find(L"WFS") != STRING::npos)
-                {
-                    sParamValue = L"WFS";
-                    sParamValue.append(L".");
-                    sParamValue.append(L"GETCAPABILITIES");
-                }
+                sParamValue = L"WFS.GETCAPABILITIES";
             }
         }
     }

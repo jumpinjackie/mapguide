@@ -39,7 +39,14 @@ CPSZ kpszQueryStringGetFeatureOutputFormatDefault_1_0_0    = _("Formats.GetFeatu
 CPSZ kpszQueryStringGetFeatureOutputFormatDefault_1_1_0    = _("Formats.GetFeature.default.1.1.0");
 CPSZ kpszPiGetFeatureCollection              = _("GetFeatureCollection");
 CPSZ kpszPiGetFeatureCollectionDefaultFormat = _("&GetFeatureCollection.xml;");
+
 CPSZ kpszQueryStringAcceptVersions           = _("acceptversions");
+CPSZ kpszQueryStringSections                 = _("sections");
+
+CPSZ kpszDefinitionSectionServiceIdentification     = _("Section.ServiceIdentification");
+CPSZ kpszDefinitionSectionServiceProvider           = _("Section.ServiceProvider");
+CPSZ kpszDefinitionSectionOperationsMetadata        = _("Section.OperationsMetadata");
+CPSZ kpszDefinitionSectionFeatureTypeList           = _("Section.FeatureTypeList");
 
 extern CPSZ kpszPiAttributeSubset;            // = _("subset");
 extern CPSZ kpszElementVersion;               // = _("Version");
@@ -53,7 +60,8 @@ CPSZ kpszExceptionMessageWfsUnknownRequest = _("Expected valid REQUEST= argument
 CPSZ kpszExceptionMessageUnknownOutputFormat = _("Expected valid outputFormat argument, as enumerated by GetCapabilities. (Instead, found outputFormat='&Request.OutputFormat;'.)"); // Localize
 CPSZ kpszExceptionMessageUnknownTypeName   = _("Expected valid typeName argument, as enumerated by GetCapabilities. (Instead, found typeName='&Request.TypeName;'.)"); // Localize
 CPSZ kpszExceptionMessageWfsGetFeatureMissingFeatureType = _("A WFS GetFeature request requires at least one feature type to be specified."); // Localize
-CPSZ kpszExceptionMessageWfsVersionNegotiationFailed = _("Requested version is supported in AcceptVersions"); //Localize
+CPSZ kpszExceptionMessageWfsVersionNegotiationFailed = _("Requested version is unsupported in AcceptVersions"); //Localize
+CPSZ kpszExceptionMessageWfsInvalidService = _("Invalid parameter value for SERVICE"); //Localize
 
 CPSZ kpszInternalErrorMissingGetFeatureRequestParams   = _("Internal Error: Missing WFS GetFeature request parameters."); // Localize
 //
@@ -120,10 +128,17 @@ bool MgOgcWfsServer::ValidateRequest()
 
     // Check for SERVICE=WFS -- otherwise, we're not prepared to service the request
     CPSZ pService = RequestParameter(kpszQueryStringService);
-    if(pService == NULL || SZ_NEI(pService,kpszQueryValueWfs))
+    if(pService == NULL)
     {
         ServiceExceptionReportResponse(MgOgcWfsException(MgOgcWfsException::kpszMissingRequestParameter,
                                                          kpszExceptionMessageMissingServiceWfs,
+                                                         kpszQueryStringService));
+        bValid = false;
+    }
+    else if(SZ_NEI(pService,kpszQueryValueWfs))
+    {
+        ServiceExceptionReportResponse(MgOgcWfsException(MgOgcWfsException::kpszInvalidParameterValue,
+                                                         kpszExceptionMessageWfsInvalidService,
                                                          kpszQueryStringService));
         bValid = false;
     }
@@ -384,6 +399,15 @@ bool MgOgcWfsServer::ProcessOtherInstruction(CREFSTRING sProc,MgXmlProcessingIns
 //
 void MgOgcWfsServer::ProcedureEnumFeatureTypes(MgXmlProcessingInstruction& PIEnum)
 {
+    // OGC CITE: Test wfs:wfs-1.1.0-Basic-GetCapabilities-tc19.2 (s0012/d1e34887_1/d1e732_1/d1e25171_1/d1e949_1)
+    // Assertion: 
+    // The response to a GetCapabilities request that includes a sections parameter
+    // listing optional elements shall include only the requested elements in the
+    // response entity.
+    CPSZ psz = this->Definition(kpszDefinitionSectionFeatureTypeList);
+    if(!psz)
+        return;
+
     STRING sFormat;
     if(!PIEnum.GetAttribute(kpszPiAttributeUsing,sFormat))
         sFormat = kpszPiEnumFeaturesDefaultFormat;
@@ -484,6 +508,22 @@ void MgOgcWfsServer::SetGetFeatureRequestParams(WfsGetFeatureParams* pGetFeature
 void MgOgcWfsServer::SetFeatureDefinitions(MgWfsFeatureDefinitions* pFeatureDefs)
 {
     m_pFeatures = pFeatureDefs;
+}
+
+
+void MgOgcWfsServer::SetGetCapabilitiesSection(CREFSTRING sSection)
+{
+    if(!sSection.empty())
+    {
+        AddDefinition(sSection.c_str(),kpszOmittedValue);
+    }
+    else
+    {
+        AddDefinition(kpszDefinitionSectionServiceIdentification,kpszOmittedValue);
+        AddDefinition(kpszDefinitionSectionServiceProvider,kpszOmittedValue);
+        AddDefinition(kpszDefinitionSectionOperationsMetadata,kpszOmittedValue);
+        AddDefinition(kpszDefinitionSectionFeatureTypeList,kpszOmittedValue);
+    }
 }
 
 // Help method to get the default output format

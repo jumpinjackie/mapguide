@@ -32,7 +32,11 @@ public:
     void SetFeatures(MgWfsFeatures* pFeatures);
     void SetGetFeatureRequestParams(WfsGetFeatureParams* pGetFeatureParams);
     void SetFeatureDefinitions(MgWfsFeatureDefinitions* pFeatureDefs);
-	STRING GetDefaultOutputFormat(CREFSTRING sVersion);
+
+    // The the section which displays in the GetCapabilities response document
+    void SetGetCapabilitiesSection(CREFSTRING sSection);
+
+    STRING GetDefaultOutputFormat(CREFSTRING sVersion);
 
 protected:
     virtual void RespondToRequest();
