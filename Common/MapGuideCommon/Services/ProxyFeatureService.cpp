@@ -289,7 +289,7 @@ MgByteReader* MgProxyFeatureService::GetCapabilities(CREFSTRING providerName, CR
                        MgFeatureServiceOpId::GetCapabilities_Id,    // Command Code
                        2,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       BUILD_VERSION(1,0,0),                        // Operation version
+                       m_connProp->GetUserInfo()->GetApiVersion(),                        // Operation version
                        MgCommand::knString, &providerName,          // Argument#1
                        MgCommand::knString, &connectionString,      // Argument#2
                        MgCommand::knNone);                          // End of argument
