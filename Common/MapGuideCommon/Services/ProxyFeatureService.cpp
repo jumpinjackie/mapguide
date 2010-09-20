@@ -283,13 +283,15 @@ MgByteReader* MgProxyFeatureService::GetCapabilities(CREFSTRING providerName)
 
 MgByteReader* MgProxyFeatureService::GetCapabilities(CREFSTRING providerName, CREFSTRING connectionString)
 {
+    Ptr<MgUserInformation> userInfo = m_connProp->GetUserInfo();
+
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                  // Connection
                        MgCommand::knObject,                         // Return type expected
                        MgFeatureServiceOpId::GetCapabilities_Id,    // Command Code
                        2,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       m_connProp->GetUserInfo()->GetApiVersion(),                        // Operation version
+                       userInfo->GetApiVersion(),                   // Operation version
                        MgCommand::knString, &providerName,          // Argument#1
                        MgCommand::knString, &connectionString,      // Argument#2
                        MgCommand::knNone);                          // End of argument
