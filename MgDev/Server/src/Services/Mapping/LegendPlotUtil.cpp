@@ -190,18 +190,19 @@ void MgLegendPlotUtil::BuildLegendContent(MgMap* map, double scale, MgPlotSpecif
         Ptr<MgLayerGroup> mggroup = mggroups->GetItem(k);
 
         // Count number of visible layers in this group.
-        int visibleLayerCount = 0;
+        bool hasVisibleLayers = false;
         for (int l = 0; l < layers->GetCount(); l++)
         {
             Ptr<MgLayerBase> layer = layers->GetItem(l);
             Ptr<MgLayerGroup> layerGroup = layer->GetGroup();
             if ((layer->IsVisible()) && (layerGroup.p == mggroup.p))
             {
-                visibleLayerCount++;
+                hasVisibleLayers = true;
+                break;
             }
         }
-        if (visibleLayerCount == 0)
-        continue;
+        if (!hasVisibleLayers)
+            continue;
 
         if (mggroup == NULL)
         {
