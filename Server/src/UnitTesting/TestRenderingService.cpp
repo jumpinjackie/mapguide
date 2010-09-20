@@ -539,6 +539,40 @@ void TestRenderingService::TestCase_RenderLegend()
         map->SetViewScale(12000.0);
         Ptr<MgByteReader> rdr2 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, L"PNG");
         rdr2->ToFile(L"../UnitTestFiles/RenderLegend12k.png");
+
+        // add a layer group
+        Ptr<MgLayerGroupCollection> layerGroups = map->GetLayerGroups();
+        Ptr<MgLayerCollection> layers = map->GetLayers();
+
+        Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(L"Library://UnitTests/Layers/Parcels.LayerDefinition");
+
+        Ptr<MgLayerGroup> group = new MgLayerGroup(L"Can't see me");
+        group->SetLegendLabel(L"Can't see me");
+        group->SetDisplayInLegend(true);
+        layerGroups->Add(group);
+
+        Ptr<MgLayer> layer = new MgLayer(resId, m_svcResource);
+        layer->SetName(L"MyParcels");
+        layer->SetLegendLabel(L"Parcels");
+        layer->SetGroup(group);
+        layer->SetDisplayInLegend(true);
+
+        layers->Add(layer);
+
+        //Re-draw at 75k. Layer group should not be there because it has no visible layers
+        map->SetViewScale(75000.0);
+        Ptr<MgByteReader> rdr3 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, L"PNG");
+        rdr3->ToFile(L"../UnitTestFiles/RenderLegend75kWithEmptyLayerGroup.png");
+
+        //Re-draw at 14000. Layer group should still not be there because it has no visible layers
+        map->SetViewScale(14000.0);
+        Ptr<MgByteReader> rdr4 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, L"PNG");
+        rdr4->ToFile(L"../UnitTestFiles/RenderLegend14kWithEmptyLayerGroup.png");
+
+        //Re-draw at 12000. Layer group should now be there because its child layer (Parcels) should be visible
+        map->SetViewScale(12000.0);
+        Ptr<MgByteReader> rdr5 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, L"PNG");
+        rdr5->ToFile(L"../UnitTestFiles/RenderLegend12kWithLayerGroup.png");
     }
     catch (MgException* e)
     {

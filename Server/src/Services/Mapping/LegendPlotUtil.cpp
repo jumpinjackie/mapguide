@@ -182,11 +182,27 @@ void MgLegendPlotUtil::BuildLegendContent(MgMap* map, double scale, MgPlotSpecif
 
     // do layer groups
     Ptr<MgLayerGroupCollection> mggroups = map->GetLayerGroups();
+    Ptr<MgLayerCollection> layers = map->GetLayers();
 
     // iterate over groups and draw each group's layers
     for (int k = 0; k < mggroups->GetCount(); k++)
     {
         Ptr<MgLayerGroup> mggroup = mggroups->GetItem(k);
+
+        // Count number of visible layers in this group.
+        int visibleLayerCount = 0;
+        for (int l = 0; l < layers->GetCount(); l++)
+        {
+            Ptr<MgLayerBase> layer = layers->GetItem(l);
+            Ptr<MgLayerGroup> layerGroup = layer->GetGroup();
+            if ((layer->IsVisible()) && (layerGroup.p == mggroup.p))
+            {
+                visibleLayerCount++;
+            }
+        }
+        if (visibleLayerCount == 0)
+        continue;
+
         if (mggroup == NULL)
         {
             throw new MgNullReferenceException(L"MgLegendPlotUtil.AddLegendElement", __LINE__, __WFILE__, NULL, L"", NULL);
