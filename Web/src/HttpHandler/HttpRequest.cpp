@@ -212,7 +212,7 @@ MgHttpResponse* MgHttpRequest::Execute()
         if(sRequestValue.length() != 0)
         {
             STRING sServiceValue = m_requestParam->GetParameterValue(MgHttpResourceStrings::reqWmsService);
-            if(sServiceValue.length() != 0 && (wcsicmp(L"WFS",sServiceValue.c_str()) == 0 || wcsicmp(L"WMS",sServiceValue.c_str()) == 0))
+            if(sServiceValue.length() != 0 && (L"WFS" == MgUtil::ToUpper(sServiceValue) || L"WMS" == MgUtil::ToUpper(sServiceValue)))
             {
                     sParamValue = sServiceValue;
             }
