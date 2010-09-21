@@ -22,6 +22,12 @@
 #include "RS_Font.h"    // for FontList
 #include "CriticalSection.h"
 
+// FreeType includes
+#include "ft2build.h"
+#include FT_FREETYPE_H
+#include FT_GLYPH_H
+#include FT_CACHE_H
+#include FT_CACHE_MANAGER_H
 
 #include <map>
 
@@ -56,10 +62,10 @@ class FontManager
         ~FontManager();
 
     public:
+        int get_face(const char* filename, FT_Long index, FT_Face* face);
 
-        RENDERERS_API void init_font_list(const wchar_t* specificName = NULL);
-
-        void create_font(void* face, long index, wchar_t const* filename);
+        void init_font_list();
+        void create_font(FT_Face face, FT_Long index, wchar_t const* filename);
 
         RENDERERS_API void AddFontAlias(const wchar_t* alias, const wchar_t* asciiName);
 
@@ -72,10 +78,10 @@ class FontManager
 
     private:
         FaceMapEntryType* load_file(const char* filename);
-        bool CacheFont(wchar_t const* fileName);
 
     private:
-        void*  m_library;
+        FT_Library  m_library;
+        FaceMap     m_facemap;
         FontList    m_fontlist;
         FontMap     m_fontAliases;
 
@@ -83,7 +89,6 @@ class FontManager
 
         static CustomThreadMutex sm_mutex;
         static FontManager sm_manager;
-        static bool sm_init;
 };
 
 #endif
