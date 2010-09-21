@@ -22,7 +22,6 @@
 #include "Bounds.h"
 #include "RS_InputStream.h"
 #include "RS_FeatureReader.h"
-#include "Foundation.h"
 
 //forward declare
 class Renderer;
@@ -81,10 +80,10 @@ public:
     ///</summary>
     virtual void StylizeWatermark(Renderer* renderer,
                                   MdfModel::WatermarkDefinition* watermark,
-                                  INT32 drawWidth,
-                                  INT32 drawHeight,
-                                  INT32 saveWidth,
-                                  INT32 saveHeight) = 0;
+                                  int drawWidth,
+                                  int drawHeight,
+                                  int saveWidth,
+                                  int saveHeight) = 0;
 
     ///<summary>
     /// Allows a user to set a custom stylization object for a given geometry type.

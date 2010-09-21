@@ -17,7 +17,6 @@
 
 #include "stdafx.h"
 #include "ThemeParameters.h"
-#include "Foundation.h"
 
 static const wchar_t* sEmpty = L"";
 

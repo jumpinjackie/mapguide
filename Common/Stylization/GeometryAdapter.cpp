@@ -21,7 +21,6 @@
 #include "SymbolVisitor.h"
 #include "SLDSymbols.h"
 #include "ExpressionHelper.h"
-#include "Foundation.h"
 
 
 extern void ProcessStylizerException(FdoException* exception, int line, wchar_t* file);

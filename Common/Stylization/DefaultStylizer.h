@@ -61,10 +61,10 @@ public:
 
     STYLIZATION_API virtual void StylizeWatermark(Renderer* renderer,
                                                   MdfModel::WatermarkDefinition* watermark,
-                                                  INT32 drawWidth,
-                                                  INT32 drawHeight,
-                                                  INT32 saveWidth,
-                                                  INT32 saveHeight);
+                                                  int drawWidth,
+                                                  int drawHeight,
+                                                  int saveWidth,
+                                                  int saveHeight);
 
     STYLIZATION_API virtual void SetGeometryAdapter(FdoGeometryType type, GeometryAdapter* stylizer);
 

@@ -18,10 +18,7 @@
 #include "stdafx.h"
 #include "SE_ExpressionBase.h"
 #include "StylizationEngine.h"
-#include "Foundation.h"
-
 #include "SimpleSymbolDefinition.h"
-
 #include <wctype.h>
 
 using namespace MDFMODEL_NAMESPACE;
