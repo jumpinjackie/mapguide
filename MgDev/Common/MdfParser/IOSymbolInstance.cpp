@@ -154,7 +154,7 @@ void IOSymbolInstance::EndElement(const wchar_t* name, HandlerStack* handlerStac
 
 // Determine which SymbolDefinition schema version to use based
 // on the supplied LDF version:
-// * LDF version == 1.4.0  =>  SD version 1.1.0
+// * LDF version == 2.3.0  =>  SD version 1.1.0
 // * LDF version == 1.3.0  =>  SD version 1.1.0
 // * LDF version == 1.2.0  =>  SD version 1.1.0
 // * LDF version <= 1.1.0  =>  SD version 1.0.0

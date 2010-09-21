@@ -679,13 +679,13 @@ void SAX2Parser::SetMapDefinitionVersion(const Attributes& attributes)
 
         if (_wcsicmp(version.c_str(), L"1.0.0") == 0)
             m_version = MdfModel::Version(1, 0, 0);
-        else if (_wcsicmp(version.c_str(), L"1.1.0") == 0)
-            m_version = MdfModel::Version(1, 1, 0);
+        else if (_wcsicmp(version.c_str(), L"2.3.0") == 0)
+            m_version = MdfModel::Version(2, 3, 0);
     }
     else
     {
         // assume the latest version if the attribute is missing
-        m_version = MdfModel::Version(1, 1, 0);
+        m_version = MdfModel::Version(2, 3, 0);
     }
 }
 
@@ -710,13 +710,13 @@ void SAX2Parser::SetLayerDefinitionVersion(const Attributes& attributes)
             m_version = MdfModel::Version(1, 2, 0);
         else if (_wcsicmp(version.c_str(), L"1.3.0") == 0)
             m_version = MdfModel::Version(1, 3, 0);
-        else if (_wcsicmp(version.c_str(), L"1.4.0") == 0)
-            m_version = MdfModel::Version(1, 4, 0);
+        else if (_wcsicmp(version.c_str(), L"2.3.0") == 0)
+            m_version = MdfModel::Version(2, 3, 0);
     }
     else
     {
         // assume the latest version if the attribute is missing
-        m_version = MdfModel::Version(1, 4, 0);
+        m_version = MdfModel::Version(2, 3, 0);
     }
 }
 
@@ -801,13 +801,13 @@ void SAX2Parser::SetWatermarkDefinitionVersion(const Attributes& attributes)
     {
         std::wstring version = X2W(verValue);
 
-        if (_wcsicmp(version.c_str(), L"1.0.0") == 0)
-            m_version = MdfModel::Version(1, 0, 0);
+        if (_wcsicmp(version.c_str(), L"2.3.0") == 0)
+            m_version = MdfModel::Version(2, 3, 0);
     }
     else
     {
         // assume the latest version if the attribute is missing
-        m_version = MdfModel::Version(1, 0, 0);
+        m_version = MdfModel::Version(2, 3, 0);
     }
 }
 

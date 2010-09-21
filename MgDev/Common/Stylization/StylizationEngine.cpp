@@ -259,7 +259,7 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
     if (se_renderer->SupportsHyperlinks())
         m_visitor->ParseStringExpression(L"", seUrl, L"");
     
-    std::auto_ptr<SE_Rule> rule(new SE_Rule());
+    SE_Rule rule;
 
     // Translate watermark source into SE_SymbolInstance list.
     // As the source is adopted into symbol, we need to detach them after the rendering is done.
@@ -270,8 +270,8 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
     instance->SetUsageContext(SymbolInstance::ucPoint);
     symbols.GetSymbolCollection()->Adopt(instance.release());
 
-    m_visitor->Convert(rule->symbolInstances, &symbols);
-    _ASSERT(rule->symbolInstances.size() == 1u);
+    m_visitor->Convert(rule.symbolInstances, &symbols);
+    _ASSERT(rule.symbolInstances.size() == 1u);
     
     // Translate appearance (transparency / rotation) into symbol instance
     // Prepare values
@@ -281,7 +281,7 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
     double rotation = watermark->GetAppearance()->GetRotation();
     rotation = (rotation < 0) ? 0 : ((rotation > 360) ? 360 : rotation);
 
-    SE_SymbolInstance* sym = rule->symbolInstances[0];
+    SE_SymbolInstance* sym = rule.symbolInstances[0];
     size_t nStyles = sym->styles.size();
     for (size_t styleIx=0; styleIx<nStyles; ++styleIx)
     {

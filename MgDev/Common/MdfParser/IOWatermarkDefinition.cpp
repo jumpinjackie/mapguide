@@ -162,7 +162,7 @@ void IOWatermarkDefinition::EndElement(const wchar_t* name, HandlerStack* handle
 
 // Determine which SymbolDefinition schema version to use based
 // on the supplied WaterDefinition version:
-// * WD version <= 1.0.0  =>  SD version 1.1.0
+// * WD version <= 2.3.0  =>  SD version 1.1.0
 bool IOWatermarkDefinition::GetSymbolDefinitionVersion(Version* wdVersion, Version& sdVersion)
 {
     sdVersion = Version(1, 1, 0);
@@ -176,9 +176,9 @@ void IOWatermarkDefinition::Write(MdfStream& fd, WatermarkDefinition* watermark,
     MdfString strVersion;
     if (version)
     {
-        if (*version == Version(1, 0, 0))
+        if ((*version >= Version(1, 0, 0)) && (*version <= Version(2, 3, 0)))
         {
-            // WatermarkDefinition in MapGuide 2012
+            // WDF in MapGuide 2012 - current
             strVersion = version->ToString();
         }
         else
@@ -192,7 +192,7 @@ void IOWatermarkDefinition::Write(MdfStream& fd, WatermarkDefinition* watermark,
     else
     {
         // use the current highest version
-        strVersion = L"1.0.0";
+        strVersion = L"2.3.0";
     }
 
     fd << tab() << "<WatermarkDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"WatermarkDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE

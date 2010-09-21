@@ -123,10 +123,10 @@ void IOMapDefinition::EndElement(const wchar_t* name, HandlerStack* handlerStack
 
 // Determine which WatermarkDefinition schema version to use based
 // on the supplied MDF version:
-// * MDF version <= 1.1.0  =>  WD version 1.0.0
+// * MDF version <= 2.3.0  =>  WD version 2.3.0
 bool IOMapDefinition::GetWatermarkDefinitionVersion(Version* mdfVersion, Version& wdVersion)
 {
-    wdVersion = Version(1, 0, 0);
+    wdVersion = Version(2, 3, 0);
     return true;
 }
 
@@ -137,7 +137,7 @@ void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version)
     MdfString strVersion;
     if (version)
     {
-        if ((*version >= Version(1, 0, 0)) && (*version <= Version(1, 1, 0)))
+        if ((*version >= Version(1, 0, 0)) && (*version <= Version(2, 3, 0)))
         {
             // MDF in MapGuide 2006 - current
             strVersion = version->ToString();
@@ -153,10 +153,10 @@ void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version)
     else
     {
         // use the current highest version
-        strVersion = L"1.1.0";
+        strVersion = L"2.3.0";
     }
 
-    if (!version || (*version >= Version(1, 1, 0)))
+    if (!version || (*version > Version(1, 0, 0)))
         fd << tab() << "<MapDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"MapDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
     else
         fd << tab() << "<MapDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"MapDefinition-1.0.0.xsd\">" << std::endl; // NOXLATE
@@ -204,8 +204,8 @@ void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version)
     int watermarkCount = map->GetWatermarks()->GetCount();
     if (watermarkCount != 0)
     {
-        // only write Watermarks if the MDF version is 1.1.0 or greater
-        if (*version >= Version(1, 1, 0))
+        // only write Watermarks if the MDF version is 2.3.0 or greater
+        if (!version || (*version >= Version(2, 3, 0)))
         {
             fd << tab() << startStr("Watermarks") << std::endl; // NOXLATE
             inctab();
