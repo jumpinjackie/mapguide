@@ -253,7 +253,7 @@ void CCoordinateSystemGeodeticTransformDef::SetParameters(MgCoordinateSystemGeod
     }
 
     //otherwise: make sure, we've been passed non null paramaters...
-    ENSURE_NOT_NULL(parameters, CCoordinateSystemGeodeticTransformDef::SetParameters);
+    ENSURE_NOT_NULL(parameters, L"CCoordinateSystemGeodeticTransformDef.SetParameters");
     
     INT32 paramsMethodCode = 0x0;
 

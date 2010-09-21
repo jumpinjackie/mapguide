@@ -21,6 +21,7 @@
 
 #include "GeometryCommon.h"
 #include "CoordSysCommon.h"
+#include "CriticalSection.h"
 
 #include "CoordSysUtil.h"               //for Convert_Wide_To_Ascii
 #include "MentorUtil.h"                 //for OpenDictionaryFile()
@@ -59,14 +60,14 @@ void CCoordinateSystemGeodeticTransformGridFile::ReleaseInstance()
 {
     if (NULL != this->gridFileDesc)
     {
-        delete this->gridFileDesc;
+        CS_free(this->gridFileDesc);        
         this->gridFileDesc = NULL;
     }
 }
 
 void CCoordinateSystemGeodeticTransformGridFile::CopyTo(csGeodeticXfromParmsFile_* destGridFile) const
 {
-    ENSURE_NOT_NULL(destGridFile, CCoordinateSystemGeodeticTransformGridFile::CopyTo);
+    ENSURE_NOT_NULL(destGridFile, L"CCoordinateSystemGeodeticTransformGridFile.CopyTo");
     *destGridFile = *this->gridFileDesc;
 }
 

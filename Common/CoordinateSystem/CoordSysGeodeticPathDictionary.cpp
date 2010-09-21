@@ -56,13 +56,15 @@ extern DefinitionAccess<CCoordinateSystemGeodeticPath, cs_GeodeticPath_> definit
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemGeodeticPathDictionary::CCoordinateSystemGeodeticPathDictionary(MgCoordinateSystemCatalog *pCatalog)
-   : m_pDictionary(new CCoordinateSystemDictionaryBase<CCoordinateSystemGeodeticPath, cs_GeodeticPath_, &definitionAccess, true, cs_GPDEF_MAGIC, DICTIONARY_FILE_NAME(GeodeticPath)>(pCatalog))
+    : m_pDictionary(NULL)
 {
+    this->m_pDictionary = new CCoordinateSystemDictionaryBase<CCoordinateSystemGeodeticPath, cs_GeodeticPath_,
+        &definitionAccess, true, cs_GPDEF_MAGIC, DICTIONARY_FILE_NAME(GeodeticPath)>(pCatalog);
 }
 
 CCoordinateSystemGeodeticPathDictionary::~CCoordinateSystemGeodeticPathDictionary()
 {
-    this->m_pDictionary = NULL;
+    SAFE_RELEASE(this->m_pDictionary)
 }
 
 const char* CCoordinateSystemGeodeticPathDictionary::ReadName(const cs_GeodeticPath_& definition)
@@ -106,8 +108,8 @@ bool CCoordinateSystemGeodeticPathDictionary::SetupCsGeodeticPathStruct(CCoordin
 
 void CCoordinateSystemGeodeticPathDictionary::FullInitialize(CCoordinateSystemGeodeticPath* mgGeodeticPath, cs_GeodeticPath_* csPath, MgCoordinateSystemCatalog* catalog)
 {
-    ENSURE_NOT_NULL(mgGeodeticPath, CCoordinateSystemGeodeticPathDictionary::FullInitialize);
-    ENSURE_NOT_NULL(csPath, CCoordinateSystemGeodeticPathDictionary::FullInitialize);
+    ENSURE_NOT_NULL(mgGeodeticPath, L"CCoordinateSystemGeodeticPathDictionary.FullInitialize");
+    ENSURE_NOT_NULL(csPath, L"CCoordinateSystemGeodeticPathDictionary.FullInitialize");
 
     _ASSERT(NULL != catalog);
 

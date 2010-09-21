@@ -59,8 +59,7 @@ namespace CSLibrary
 
     protected:
 
-        Ptr<CCoordinateSystemDictionaryBase<CCoordinateSystemGeodeticTransformDef, cs_GeodeticTransform_, \
-            &transformDefinitionAccess, true, cs_GXDEF_MAGIC, DICTIONARY_FILE_NAME(GeodeticTransformation)>> m_pDictionary;
+        CCoordinateSystemDictionaryBase<CCoordinateSystemGeodeticTransformDef, cs_GeodeticTransform_, &transformDefinitionAccess, true, cs_GXDEF_MAGIC, DICTIONARY_FILE_NAME(GeodeticTransformation)>* m_pDictionary;
 
     public:
         

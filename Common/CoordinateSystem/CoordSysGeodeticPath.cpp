@@ -181,7 +181,7 @@ void CCoordinateSystemGeodeticPath::SetPathElements(MgDisposableCollection* path
     VERIFY_INITIALIZED(L"CCoordinateSystemGeodeticPath.SetPathElements");
     VERIFY_NOT_PROTECTED(L"CCoordinateSystemGeodeticPath.SetPathElements");
 
-    ENSURE_NOT_NULL(pathElements, CCoordinateSystemGeodeticPath::SetPathElements);
+    ENSURE_NOT_NULL(pathElements, L"CCoordinateSystemGeodeticPath.SetPathElements");
 
     const INT32 pathElementCount = pathElements->GetCount();
     if (0 == pathElementCount || pathElementCount > csPATH_MAXXFRM)

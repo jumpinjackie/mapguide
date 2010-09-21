@@ -20,7 +20,9 @@
 
 //make sure to have CS_MAP_DEF_VARIABLE defined before including this header; this is used by VERIFY_INITIALIZED(x)
     
-    #define MAKE_L_STRING(x) L## #x
+#define MAKE_L_STRING(x) L## #x
+
+#define MAKE_QUALIFIED_MEMBER_STRING(className,member) MAKE_L_STRING(className.member)
 
 #ifdef CS_MAP_DEF_VARIABLE   
     #define VERIFY_INITIALIZED(x)   if (NULL == CS_MAP_DEF_VARIABLE) \
@@ -32,20 +34,24 @@
 #define VERIFY_NOT_PROTECTED(x) if (this->IsProtected()) \
     throw new MgCoordinateSystemInitializationFailedException(x, __LINE__, __WFILE__, NULL, L"MgCoordinateSystemProtectedException", NULL);
 
+#define ENSURE_NOT_NULL(param,method) \
+    if (NULL == param) \
+        throw new MgNullArgumentException(method, __LINE__, __WFILE__, NULL, L"", NULL)
+
 #define DEFINE_GET_STRING(x,y) STRING x::Get##y()
 #define DEFINE_SET_STRING(x,y) void x::Set##y(CREFSTRING propertyValue)
 
 #define DEFINE_GET_SET_STRING(className,propertyName,charBuffer) \
     DEFINE_GET_STRING(className,propertyName) \
     { \
-        VERIFY_INITIALIZED(MAKE_L_STRING(className##.Get##propertyName)); \
+        VERIFY_INITIALIZED(MAKE_QUALIFIED_MEMBER_STRING(className,Get##propertyName)); \
         return MentorReadString(charBuffer); \
     } \
     DEFINE_SET_STRING(className,propertyName) \
     { \
-        VERIFY_INITIALIZED(MAKE_L_STRING(className##.Set##propertyName)); \
+        VERIFY_INITIALIZED(MAKE_QUALIFIED_MEMBER_STRING(className,Set##propertyName)); \
         if (this->IsProtected()) \
-            throw new MgCoordinateSystemInitializationFailedException(L"SetString", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemProtectedException", NULL); \
+            throw new MgCoordinateSystemInitializationFailedException(MAKE_QUALIFIED_MEMBER_STRING(className,Set##propertyName), __LINE__, __WFILE__, NULL, L"MgCoordinateSystemProtectedException", NULL); \
         \
         MentorSetString(propertyValue, charBuffer /* target buffer */, sizeof(charBuffer)); \
     }
@@ -59,14 +65,14 @@
 #define DEFINE_GET_SET_NUMERIC(className, propertyName,targetType,target) \
     DEFINE_GET_NUMERIC(className,propertyName,targetType) \
     { \
-        VERIFY_INITIALIZED(MAKE_L_STRING(className##.Get##propertyName)); \
+        VERIFY_INITIALIZED(MAKE_QUALIFIED_MEMBER_STRING(className,Get##propertyName)); \
         return target; \
     } \
     DEFINE_SET_NUMERIC(className,propertyName,targetType) \
     { \
-        VERIFY_INITIALIZED(MAKE_L_STRING(className##.Set##propertyName)); \
+        VERIFY_INITIALIZED(MAKE_QUALIFIED_MEMBER_STRING(className,Set##propertyName)); \
         if (this->IsProtected()) \
-            throw new MgCoordinateSystemInitializationFailedException(L"SetValue", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemProtectedException", NULL); \
+            throw new MgCoordinateSystemInitializationFailedException(MAKE_QUALIFIED_MEMBER_STRING(className,Set##propertyName), __LINE__, __WFILE__, NULL, L"MgCoordinateSystemProtectedException", NULL); \
         \
         target = propertyValue;\
     }
@@ -74,26 +80,22 @@
 #define DEFINE_GET_SET_NUMERIC_IDX(className, propertyName,targetType,target,maxIdx) \
     DEFINE_GET_NUMERIC_IDX(className,propertyName,targetType) \
     { \
-        VERIFY_INITIALIZED(MAKE_L_STRING(className##.Get##propertyName)); \
+        VERIFY_INITIALIZED(MAKE_QUALIFIED_MEMBER_STRING(className,Get##propertyName)); \
         if (index < 0 || index > maxIdx) \
-            throw new MgArgumentOutOfRangeException(L"GetValue", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemProtectedException", NULL); \
+            throw new MgArgumentOutOfRangeException(MAKE_QUALIFIED_MEMBER_STRING(className,Get##propertyName), __LINE__, __WFILE__, NULL, L"MgCoordinateSystemProtectedException", NULL); \
         \
         return target[index]; \
     } \
     DEFINE_SET_NUMERIC_IDX(className,propertyName,targetType) \
     { \
-        VERIFY_INITIALIZED(MAKE_L_STRING(className##.Set##propertyName)); \
+        VERIFY_INITIALIZED(MAKE_QUALIFIED_MEMBER_STRING(className,Set##propertyName)); \
         if (this->IsProtected()) \
-            throw new MgCoordinateSystemInitializationFailedException(L"SetValue", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemProtectedException", NULL); \
+            throw new MgCoordinateSystemInitializationFailedException(MAKE_QUALIFIED_MEMBER_STRING(className,Set##propertyName), __LINE__, __WFILE__, NULL, L"MgCoordinateSystemProtectedException", NULL); \
         \
         if (index < 0 || index > maxIdx) \
-            throw new MgArgumentOutOfRangeException(L"GetValue", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemProtectedException", NULL); \
+            throw new MgArgumentOutOfRangeException(MAKE_QUALIFIED_MEMBER_STRING(className,Get##propertyName), __LINE__, __WFILE__, NULL, L"MgCoordinateSystemProtectedException", NULL); \
         \
         target[index] = propertyValue;\
     }
-
-#define ENSURE_NOT_NULL(param,method) \
-    if (NULL == param) \
-        throw new MgNullArgumentException(L# method, __LINE__, __WFILE__, NULL, L"", NULL)
 
 #endif //_MG_COORDSYSMACRO_H_

@@ -55,13 +55,15 @@ extern DefinitionAccess<CCoordinateSystemGeodeticTransformDef, cs_GeodeticTransf
     CCoordinateSystemGeodeticTransformDefDictionary::GetFileOpenMode);
 
 CCoordinateSystemGeodeticTransformDefDictionary::CCoordinateSystemGeodeticTransformDefDictionary(MgCoordinateSystemCatalog *pCatalog)
-    : m_pDictionary(new CCoordinateSystemDictionaryBase<CCoordinateSystemGeodeticTransformDef, cs_GeodeticTransform_,
-        &transformDefinitionAccess, true, cs_GXDEF_MAGIC, DICTIONARY_FILE_NAME(GeodeticTransformation)>(pCatalog))
+    : m_pDictionary(NULL)
 {
+    this->m_pDictionary = new CCoordinateSystemDictionaryBase<CCoordinateSystemGeodeticTransformDef, cs_GeodeticTransform_,
+        &transformDefinitionAccess, true, cs_GXDEF_MAGIC, DICTIONARY_FILE_NAME(GeodeticTransformation)>(pCatalog);
 }
 
 CCoordinateSystemGeodeticTransformDefDictionary::~CCoordinateSystemGeodeticTransformDefDictionary()
 {
+    SAFE_RELEASE(this->m_pDictionary)
 }
 
 
@@ -169,7 +171,7 @@ int CCoordinateSystemGeodeticTransformDefDictionary::UpdateGeodeticTransformDef(
 
 bool CCoordinateSystemGeodeticTransformDefDictionary::SetupCsStructFromMgTransformDef(CCoordinateSystemGeodeticTransformDef* mgGeodeticTransformDef, cs_GeodeticTransform_& csTransformDef)
 {
-    ENSURE_NOT_NULL(mgGeodeticTransformDef, CCoordinateSystemGeodeticTransformDefDictionary::SetupCsStructFromMgTransformDef);
+    ENSURE_NOT_NULL(mgGeodeticTransformDef, L"CCoordinateSystemGeodeticTransformDefDictionary.SetupCsStructFromMgTransformDef");
 
     //copy the struct values from [mgGeodeticTransformDef] to [csTransformDef]; will throw an exception, if [mgGeodeticTransformDef] hasn't been yet initialized
     mgGeodeticTransformDef->CopyTo(csTransformDef);
@@ -180,8 +182,8 @@ void CCoordinateSystemGeodeticTransformDefDictionary::FullInitialize(CCoordinate
                                                                      cs_GeodeticTransform_* csTransformDef,
                                                                      MgCoordinateSystemCatalog* catalog)
 {
-    ENSURE_NOT_NULL(mgGeodeticTransformDef, CCoordinateSystemGeodeticTransformDefDictionary::FullInitialize);
-    ENSURE_NOT_NULL(csTransformDef, CCoordinateSystemGeodeticTransformDefDictionary::FullInitialize);
+    ENSURE_NOT_NULL(mgGeodeticTransformDef, L"CCoordinateSystemGeodeticTransformDefDictionary.FullInitialize");
+    ENSURE_NOT_NULL(csTransformDef, L"CCoordinateSystemGeodeticTransformDefDictionary.FullInitialize");
 
     mgGeodeticTransformDef->Initialize(*csTransformDef);
 
