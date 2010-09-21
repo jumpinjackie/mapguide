@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2008 by Autodesk, Inc.
+//  Copyright (C) 2004-2010 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -125,6 +125,8 @@ FontManager* FontManager::Instance()
         {
             sm_manager.init_font_list();
         }
+
+        sm_init = true;
     }
 
     return &sm_manager;
@@ -258,7 +260,9 @@ void FontManager::init_font_list(const wchar_t* specificName)
                 //are we searching for a specific font
                 if (!searchString.empty())
                 {
-                    wstring lowerFileName = ToLower(FindFileData.cFileName);
+                    wstring wFilename; 
+                    UnicodeString::MultiByteToWideChar(entryName.c_str(), wFilename);
+                    wstring lowerFileName = ToLower(wFilename);
 
                     if (!wcsstr(lowerFileName.c_str(), searchString.c_str()))
                         continue;
