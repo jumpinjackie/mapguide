@@ -174,10 +174,10 @@ void IOVectorLayerDefinition::EndElement(const wchar_t* name, HandlerStack* hand
 
 // Determine which WatermarkDefinition schema version to use based
 // on the supplied LDF version:
-// * LDF version <= 1.4.0  =>  WD version 1.0.0
+// * LDF version <= 2.3.0  =>  WD version 2.3.0
 bool IOVectorLayerDefinition::GetWatermarkDefinitionVersion(Version* ldfVersion, Version& wdVersion)
 {
-    wdVersion = Version(1, 0, 0);
+    wdVersion = Version(2, 3, 0);
     return true;
 }
 
@@ -193,7 +193,7 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vector
             // LDF in MapGuide 2006
             strVersion = L"1.0.0";
         }
-        else if ((*version >= Version(1, 0, 0)) && (*version <= Version(1, 4, 0)))
+        else if ((*version >= Version(1, 0, 0)) && (*version <= Version(2, 3, 0)))
         {
             // LDF in MapGuide 2007 - current
             strVersion = version->ToString();
@@ -209,7 +209,7 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vector
     else
     {
         // use the current highest version
-        strVersion = L"1.4.0";
+        strVersion = L"2.3.0";
     }
 
     fd << tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
@@ -237,9 +237,9 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vector
     int watermarkCount = vectorLayer->GetWatermarks()->GetCount();
     if (watermarkCount != 0)
     {
-        if (!version || (*version >= Version(1, 4, 0)))
+        if (!version || (*version >= Version(2, 3, 0)))
         {
-            // only write Watermarks if the LDF version is 1.4.0 or greater
+            // only write Watermarks if the LDF version is 2.3.0 or greater
             fd << tab() << startStr(sWatermarks) << std::endl;
             inctab();
             for (int i=0; i<watermarkCount; ++i)
@@ -249,7 +249,7 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vector
         }
         else if (*version >= Version(1, 0, 0))
         {
-            // save Watermarks as extended data for LDF versions 1.0.0, 1.1.0, and 1.2.0
+            // save Watermarks as extended data for LDF versions 1.0.0 - 1.3.0
             inctab();
 
             fdExtData << tab() << startStr(sWatermarks) << std::endl;

@@ -790,11 +790,11 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                                                           RS_Bounds& b,
                                                           bool expandExtents,
                                                           bool bKeepSelection,
-                                                          bool renderingWatermark)
+                                                          bool renderWatermark)
 {
     MgRenderingOptions options(format, MgRenderingOptions::RenderSelection |
         MgRenderingOptions::RenderLayers | (bKeepSelection? MgRenderingOptions::KeepSelection : 0), NULL);
-    return RenderMapInternal(map, selection, roLayers, dr, drawWidth, drawHeight, saveWidth, saveHeight, scale, b, expandExtents, &options, renderingWatermark);
+    return RenderMapInternal(map, selection, roLayers, dr, drawWidth, drawHeight, saveWidth, saveHeight, scale, b, expandExtents, &options, renderWatermark);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -817,7 +817,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                                                           RS_Bounds& b,
                                                           bool expandExtents,
                                                           MgRenderingOptions* options,
-                                                          bool renderingWatermark)
+                                                          bool renderWatermark)
 {
     // set the map scale to the requested scale
     map->SetViewScale(scale);
@@ -940,16 +940,13 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
             }
         }
 
-        if (renderingWatermark)
+        if (renderWatermark)
         {
             // Rendering watermark
 
-            // TODO: Don't allocate objects on heap if unnecessary!!!!!!!!!!!!!!
-            Ptr<MgStringCollection> watermarkIds = new MgStringCollection(); //ID list to load watermark definition
-            auto_ptr<WatermarkInstanceCollection> watermarkInstances(
-                new WatermarkInstanceCollection());     //Watermark list to render
-            auto_ptr<WatermarkInstanceCollection> tempWatermarkInstances(
-                new WatermarkInstanceCollection());    //Used to reverse list
+            MgStringCollection watermarkIds;      //ID list to load watermark definition
+            WatermarkInstanceCollection watermarkInstances;   //Watermark list to render
+            WatermarkInstanceCollection tempWatermarkInstances;    //Used to reverse list
             auto_ptr<WatermarkInstance> tempInstance;
 
             // Get watermark instance in map
@@ -959,10 +956,10 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                 auto_ptr<MapDefinition> mdef(MgMapBase::GetMapDefinition(m_svcResource, mapId));
                 WatermarkInstanceCollection* mapWatermarks = mdef->GetWatermarks();
                 for (int i=mapWatermarks->GetCount()-1; i>=0; i--)
-                    tempWatermarkInstances->Adopt(mapWatermarks->OrphanAt(i));
-                for (int i=tempWatermarkInstances->GetCount()-1; i>=0; i--)
+                    tempWatermarkInstances.Adopt(mapWatermarks->OrphanAt(i));
+                for (int i=tempWatermarkInstances.GetCount()-1; i>=0; i--)
                 {
-                    tempInstance.reset(tempWatermarkInstances->OrphanAt(i));
+                    tempInstance.reset(tempWatermarkInstances.OrphanAt(i));
                     if (!tempInstance.get())
                         continue;
                     if (((map->GetWatermarkUsage() & MgMap::Viewer) != 0
@@ -972,9 +969,9 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                         continue;
 
                     bool alreadyInList = false;
-                    for (int j=watermarkInstances->GetCount()-1; j >=0; j--)
+                    for (int j=watermarkInstances.GetCount()-1; j >=0; j--)
                     {
-                        if (tempInstance->Equals(watermarkInstances->GetAt(j)))
+                        if (tempInstance->Equals(watermarkInstances.GetAt(j)))
                         {
                             alreadyInList = true;
                             break;
@@ -983,8 +980,8 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
 
                     if (!alreadyInList)
                     {
-                        watermarkIds->Add(tempInstance->GetResourceId().c_str());
-                        watermarkInstances->Adopt(tempInstance.release());
+                        watermarkIds.Add(tempInstance->GetResourceId().c_str());
+                        watermarkInstances.Adopt(tempInstance.release());
                     }
                 }
             }
@@ -1004,10 +1001,10 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                 
                 WatermarkInstanceCollection* layerWatermarks = ldf->GetWatermarks();
                 for (int j=layerWatermarks->GetCount()-1; j>=0; j--)
-                    tempWatermarkInstances->Adopt(layerWatermarks->OrphanAt(j));
-                for (int j=tempWatermarkInstances->GetCount()-1; j>=0; j--)
+                    tempWatermarkInstances.Adopt(layerWatermarks->OrphanAt(j));
+                for (int j=tempWatermarkInstances.GetCount()-1; j>=0; j--)
                 {
-                    tempInstance.reset(tempWatermarkInstances->OrphanAt(j));
+                    tempInstance.reset(tempWatermarkInstances.OrphanAt(j));
                     if (!tempInstance.get())
                         continue;
                     if (((map->GetWatermarkUsage() & MgMap::Viewer) != 0
@@ -1017,9 +1014,9 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                         continue;
 
                     bool alreadyInList = false;
-                    for (int k=watermarkInstances->GetCount()-1; k>=0; k--)
+                    for (int k=watermarkInstances.GetCount()-1; k>=0; k--)
                     {
-                        if (tempInstance->Equals(watermarkInstances->GetAt(k)))
+                        if (tempInstance->Equals(watermarkInstances.GetAt(k)))
                         {
                             alreadyInList = true;
                             break;
@@ -1028,23 +1025,23 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
 
                     if (!alreadyInList)
                     {
-                        watermarkIds->Add(tempInstance->GetResourceId().c_str());
-                        watermarkInstances->Adopt(tempInstance.release());
+                        watermarkIds.Add(tempInstance->GetResourceId().c_str());
+                        watermarkInstances.Adopt(tempInstance.release());
                     }
                 }
             }
-            assert(tempWatermarkInstances->GetCount() == 0);
+            assert(tempWatermarkInstances.GetCount() == 0);
 
             // load watermark source
-            if (watermarkIds->GetCount() != 0)
+            if (watermarkIds.GetCount() != 0)
             {
-                Ptr<MgStringCollection> wdefs = m_svcResource->GetResourceContents(watermarkIds, NULL);
-                for (int i=watermarkIds->GetCount()-1; i>=0; i--)
+                Ptr<MgStringCollection> wdefs = m_svcResource->GetResourceContents(&watermarkIds, NULL);
+                for (int i=watermarkIds.GetCount()-1; i>=0; i--)
                 {
-                    for (int j=watermarkInstances->GetCount()-1; j>=0; j--)
+                    for (int j=watermarkInstances.GetCount()-1; j>=0; j--)
                     {
-                        WatermarkInstance* instance = watermarkInstances->GetAt(j);
-                        if (instance->GetResourceId() == watermarkIds->GetItem(i))
+                        WatermarkInstance* instance = watermarkInstances.GetAt(j);
+                        if (instance->GetResourceId() == watermarkIds.GetItem(i))
                         {
                             instance->AdoptWatermarkDefinition(MgWatermark::GetWatermarkDefinition(wdefs->GetItem(i)));
                         }
@@ -1052,9 +1049,9 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                 }
             }
 
-            for (int i=watermarkInstances->GetCount()-1; i>=0; i--)
+            for (int i=watermarkInstances.GetCount()-1; i>=0; i--)
             {
-                WatermarkInstance* instance = watermarkInstances->GetAt(i);
+                WatermarkInstance* instance = watermarkInstances.GetAt(i);
                 WatermarkDefinition* wdef = instance->GetWatermarkDefinition();
                 if (instance->GetPositionOverride())
                 {

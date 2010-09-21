@@ -232,7 +232,7 @@ PUBLISHED_API:
     /// \n
     /// \c Viewer - Use Viewer watermark.
     ///
-    enum
+    enum WatermarkUsageType
     {
         WMS = 1,
         Viewer = 2

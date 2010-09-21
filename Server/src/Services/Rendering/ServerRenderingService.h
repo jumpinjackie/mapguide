@@ -178,7 +178,7 @@ private:
                                     RS_Bounds& b,
                                     bool expandExtents,
                                     bool bKeepSelection,
-                                    bool renderingWatermark);
+                                    bool renderWatermark);
 
     MgByteReader* RenderMapInternal(MgMap* map,
                                     MgSelection* selection,
@@ -192,7 +192,7 @@ private:
                                     RS_Bounds& b,
                                     bool expandExtents,
                                     MgRenderingOptions* options,
-                                    bool renderingWatermark);
+                                    bool renderWatermark);
 
     void RenderForSelection(MgMap* map,
                          MgStringCollection* layerNames,

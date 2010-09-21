@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.1.0">
-  <xs:include schemaLocation="WatermarkDefinition-1.0.0.xsd"/>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2.3.0">
+  <xs:include schemaLocation="WatermarkDefinition-2.3.0.xsd"/>
   <xs:complexType name="Box2DType">
     <xs:annotation>
       <xs:documentation>Box2D encapsulates the the coordinates of a box in 2-D space</xs:documentation>
@@ -223,7 +223,7 @@
     <xs:complexType>
       <xs:complexContent>
         <xs:extension base="MapDefinitionType">
-          <xs:attribute name="version" type="xs:string" use="required" fixed="1.1.0"/>
+          <xs:attribute name="version" type="xs:string" use="required" fixed="2.3.0"/>
         </xs:extension>
       </xs:complexContent>
     </xs:complexType>
