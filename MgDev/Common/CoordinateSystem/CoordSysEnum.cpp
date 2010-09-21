@@ -110,7 +110,7 @@ MgDisposableCollection* CCoordinateSystemEnum::Next(UINT32 ulCount)
             //success
             return pOutput.Detach();
         }
-        const char *kpName = (*m_iter).first.name;
+        const char *kpName = (*m_iter).first.Name();
         wchar_t* pStr = Convert_Ascii_To_Wide(kpName);
         if (NULL == pStr)
         {
@@ -160,7 +160,7 @@ MgStringCollection* CCoordinateSystemEnum::NextName(UINT32 ulCount)
             //success
             return pOutput.Detach();
         }
-        const char *kpName = (*m_iter).first.name;
+        const char *kpName = (*m_iter).first.Name();
         if (IsFilteredOut(kpName))
         {
             continue;
@@ -195,11 +195,11 @@ MgStringCollection* CCoordinateSystemEnum::NextDescription(UINT32 ulCount)
             //success
             return pOutput.Detach();
         }
-        if (IsFilteredOut((*m_iter).first.name))
+        if (IsFilteredOut((*m_iter).first.Name()))
         {
             continue;
         }
-        const char *kpDecsription = (*m_iter).second.name;
+        const char *kpDecsription = (*m_iter).second.Name();
         wchar_t *pwDecsription = Convert_Ascii_To_Wide(kpDecsription);
         if (NULL == pwDecsription)
         {
@@ -229,7 +229,7 @@ void CCoordinateSystemEnum::Skip(UINT32 ulSkipCount)
             //success
             return;
         }
-        const char *kpName = (*m_iter).first.name;
+        const char *kpName = (*m_iter).first.Name();
         if (IsFilteredOut(kpName))
         {
             continue;

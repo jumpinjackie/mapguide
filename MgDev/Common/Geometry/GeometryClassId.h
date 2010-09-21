@@ -112,6 +112,22 @@
 #define CoordinateSystem_CoordinateSystemGridTick                   GEOMETRY_COORDINATE_SYSTEM_ID+31
 #define CoordinateSystem_CoordinateSystemGridBase                   GEOMETRY_COORDINATE_SYSTEM_ID+32
 
+#define CoordinateSystem_CoordinateSystemGeodeticPath               GEOMETRY_COORDINATE_SYSTEM_ID+33
+#define CoordinateSystem_CoordinateSystemGeodeticPathElement        GEOMETRY_COORDINATE_SYSTEM_ID+34
+#define CoordinateSystem_CoordinateSystemGeodeticPathDictionary     GEOMETRY_COORDINATE_SYSTEM_ID+35
+
+#define CoordinateSystem_CoordinateSystemGeodeticTransformDef                       GEOMETRY_COORDINATE_SYSTEM_ID+36
+#define CoordinateSystem_CoordinateSystemGeodeticAnalyticalTransformDef             GEOMETRY_COORDINATE_SYSTEM_ID+37
+#define CoordinateSystem_CoordinateSystemGeodeticInterpolationTransformDef          GEOMETRY_COORDINATE_SYSTEM_ID+38
+#define CoordinateSystem_CoordinateSystemGeodeticMultipleRegressionTransformDef     GEOMETRY_COORDINATE_SYSTEM_ID+39
+#define CoordinateSystem_CoordinateSystemGeodeticTransformDefDictionary             GEOMETRY_COORDINATE_SYSTEM_ID+40
+
+#define CoordinateSystem_CoordinateSystemGeodeticTransformDefParams                     GEOMETRY_COORDINATE_SYSTEM_ID+41
+#define CoordinateSystem_CoordinateSystemGeodeticAnalyticalTransformDefParams           GEOMETRY_COORDINATE_SYSTEM_ID+42
+#define CoordinateSystem_CoordinateSystemGeodeticInterpolationTransformDefParams        GEOMETRY_COORDINATE_SYSTEM_ID+43
+#define CoordinateSystem_CoordinateSystemGeodeticMultipleRegressionTransformDefParams   GEOMETRY_COORDINATE_SYSTEM_ID+44
+#define CoordinateSystem_CoordinateSystemGeodeticTransformGridFile                      GEOMETRY_COORDINATE_SYSTEM_ID+45
+
 // Exceptions
 #define Geometry_Exception_MgCoordinateSystemComputationFailedException     GEOMETRY_EXCEPTION_ID+0
 #define Geometry_Exception_MgCoordinateSystemConversionFailedException      GEOMETRY_EXCEPTION_ID+1

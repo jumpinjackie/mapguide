@@ -147,12 +147,15 @@ void MentorDictionary::SetFileName(
     /*[in]*/ CsDictionaryOpenMode (*ValidMagic)(long),
     /*[in]*/ CREFSTRING sDirectory,
     /*[in]*/ CREFSTRING sFileName,
-    /*[in]*/ REFSTRING sFileNameSet,
+    /*[IN/OUT]*/ REFSTRING sFileNameSet,
     /*[in]*/ const wchar_t* kpMethodName)
 {
     MG_TRY()
 
-    if (!sFileName.empty())
+    _ASSERT(!sFileName.empty());
+
+    //ABA: don't understand the rational behind the logic here - if the file name is empty we're doing nothing?
+    if (!sFileName.empty()) //ABA: should it be rather [sDirectory]; if filename is given, also a path must have been given?
     {
         if (sDirectory.empty())
         {
@@ -182,6 +185,8 @@ void MentorDictionary::SetFileName(
     }//if dictionary is specified
 
     //ok, so, save the file name
+    //ABA: sFileName is never touched - same with sFileNameSet; why would a caller wanted us to that
+    //is it rather [sFileNameSet = sPath]?
     sFileNameSet=sFileName;
 
     MG_CATCH_AND_THROW(kpMethodName)

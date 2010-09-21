@@ -69,7 +69,13 @@ const char * CsDesc(const cs_Csdef_& def);
 const char * CsDesc05(const struct cs_Csdef05_& def);
 const char * CsDesc06(const struct cs_Csdef06_& def);
 
-
+const char * DtKey(const cs_Dtdef_& def);
+const char * DtKey05(const cs_Dtdef05_& def);
+const char * DtKey06(const cs_Dtdef06_& def);
+const char * CsKey(const cs_Csdef_& def);
+const char * CsKey05(const cs_Csdef05_& def);
+const char * CsKey06(const cs_Csdef06_& def);
+const char * ElKey(const cs_Eldef_& def);
 
 //Returns whether the specified string is legal as a Mentor
 //key name (for coordinate system, datum, or ellipsoid).
@@ -203,6 +209,12 @@ bool CsdefIsGeodetic(const cs_Csdef_& def);
 //for success, eError for total failure, or eWarning for partial success.
 INT32 GeodeticTransformationPoint(cs_Dtcprm_ *pDtcprm, double& dLongitude, double& dLatitude, double *pZ);
 
+//utility method to be used by any CS dictionary implementation that has a SetFileName() method in it
+void SetDictionaryFileName(CREFSTRING sFileName, CREFSTRING dictionaryPath, INT32& magicNumber,
+                           CsDictionaryOpenMode (*MagicNumberCallback)(long),
+                           void (*FileNameTarget)(const char* newTargetName),
+                           const wchar_t* context);
+
 //Opens a Mentor dictionary, verifies magic value, and positions read
 //pointer at start of first record.  Returns true for success, false
 //for failure.
@@ -236,6 +248,13 @@ void DecryptBuffer(char *pBuf, unsigned char ucKey, INT32 nBufSize);
 //(i.e. '_' > letters).  Note:  may modify input buffers.
 int Mentor6Strnicmp(char *pBuf1, char *pBuf2, INT32 nLen);
 
+//reads a const char* and returns the STRING class object for it
+STRING MentorReadString(const char* mentorString = NULL);
+
+//writes a string into the destination char buffer specified through pDest; this method has no idea
+//where the target buffer is, i.e. the caller must have checked the target item's protection
+//level first; usually [Mg*Item::IsProtected()]
+void MentorSetString(CREFSTRING sSrc, char *pDest, UINT32 nMaxSize);
 
 //Macro which defines comparison function, suitable for use with CS_bins,
 //which compares two Mentor structs a la CS_cscmp() et al.

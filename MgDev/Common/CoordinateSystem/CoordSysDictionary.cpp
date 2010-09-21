@@ -49,19 +49,25 @@ struct csCsrup_
 #undef cs_Csdef08_
 
 
+//FIXME (CS_rlsUodt.c isn't built anymore)
+//
 //Externs from Mentor
+/*
 extern "C"
 {
     int CScsrupReadOld (csFILE *oldStrm,struct csCsrup_ *csrup,int old_lvl);
     int CScsrupRead05 (csFILE *oldStrm,struct csCsrup_ *csrup);
     int CScsrupRead06 (csFILE *oldStrm,struct csCsrup_ *csrup);
 }
+*/
 
 
-
+//FIXME (CS_rlsUodt.c isn't built anymore)
+//
 //Function which works like CS_csrd(), except that it reads version
 //5 coordsys structs.
 //
+/*
 static int
 CS_csrd05(
     csFILE *oldStrm,
@@ -100,7 +106,7 @@ CS_csrd06(
     }
     return nStatus;
 }
-
+*/
 
 
 //Function which returns whether the specified "magic number" is
@@ -260,8 +266,14 @@ cs_Csdef_ * CCoordinateSystemDictionary::csdef(const char *kpName)
         return pDef;
     }
 
+    throw new MgInvalidOperationException(L"CCoordinateSystemDictionary.csdef", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    //FIXME (CS_rlsUodt.c isn't built anymore)
+    //
+
     //It's an old version.  We need to do a special search
     //in the file, and then, if found, update it to a current struct.
+    /*
     UINT32 nStructSize, nNameSize;
     GetCoordinateSystemSizeInfo(m_lMagic, nStructSize, nNameSize);
     if (strlen(kpName) > nNameSize-1) return NULL;
@@ -322,6 +334,7 @@ cs_Csdef_ * CCoordinateSystemDictionary::csdef(const char *kpName)
     }
 
     return pDef;
+    */
 }
 
 //------------------------------------------------------------------------
@@ -380,11 +393,11 @@ void CCoordinateSystemDictionary::SetFileName(CREFSTRING sFileName)
 
     //Okay, everybody opened all right, so update Mentor's global
     //variables appropriately.
-    char* szCs=Convert_Wide_To_Ascii(sFileName.c_str());
+    char* szCs=Convert_Wide_To_Ascii(sFileName.c_str()); //ABA: why use sFileName here?
     CriticalClass.Enter();
     CS_csfnm(szCs);
     CriticalClass.Leave();
-    delete[] szCs;
+    delete[] szCs; //ABA: where is that deleted in case of an exception
 
     if (m_pmapSystemNameDescription)
     {
@@ -470,7 +483,9 @@ void CCoordinateSystemDictionary::Add(MgGuardDisposable *pDefinition)
 
     MentorDictionary::UpdateDef<cs_Csdef_, MgCoordinateSystem>(
         m_pmapSystemNameDescription,
+        CsKey,
         CsDesc,
+        &MgCoordinateSystem::IsValid,
         CS_csdef,
         CS_csupd,
         BuildCsDefFromInterface,
@@ -518,7 +533,9 @@ void CCoordinateSystemDictionary::Modify(MgGuardDisposable *pDefinition)
 
     MentorDictionary::UpdateDef<cs_Csdef_, MgCoordinateSystem>(
         m_pmapSystemNameDescription,
+        CsKey,
         CsDesc,
+        &MgCoordinateSystem::IsValid,
         CS_csdef,
         CS_csupd,
         BuildCsDefFromInterface,
@@ -664,6 +681,8 @@ CCoordinateSystemEnum* CCoordinateSystemDictionary::GetEnumImp()
         assert(nVersion > 0);
         switch (nVersion)
         {
+        //FIXME (CS_rlsUpdt.c isn't built anymore)
+            /*
         case 5:
             //Generate summary for version 5 coordsys file.
             m_pmapSystemNameDescription = MentorDictionary::GenerateSystemNameDescriptionMap<cs_Csdef05_>(
@@ -678,11 +697,13 @@ CCoordinateSystemEnum* CCoordinateSystemDictionary::GetEnumImp()
                 CsDesc06,
                 CS_csrd06);
             break;
+            */
         case 7:
         case 8:
             //Generate summary for version 7 or 8 coordsys file.
             m_pmapSystemNameDescription = MentorDictionary::GenerateSystemNameDescriptionMap<cs_Csdef_>(
                 pFile,
+                CsKey,
                 CsDesc,
                 CS_csrd);
             break;

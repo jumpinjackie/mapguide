@@ -111,7 +111,7 @@ MgDisposableCollection* CCoordinateSystemEnumCoordinateSystemInCategory::Next(UI
         }
 
         //get the coordinate system name from the category
-        const char *kpName = (*m_iter).name;
+        const char *kpName = (*m_iter).Name();
 
         assert(IsLegalMentorName(kpName));
         pstr = Convert_Ascii_To_Wide(kpName);
@@ -163,7 +163,7 @@ MgStringCollection* CCoordinateSystemEnumCoordinateSystemInCategory::NextName(UI
             //success
             return pOutput.Detach();
         }
-        const char *kpName = (*m_iter).name;
+        const char *kpName = (*m_iter).Name();
 
         if (IsFilteredOut(kpName))
         {
@@ -213,7 +213,7 @@ MgStringCollection* CCoordinateSystemEnumCoordinateSystemInCategory::NextDescrip
             return pOutput.Detach();
         }
         //get the coordinate system name from the category
-        const char *kpName = (*m_iter).name;
+        const char *kpName = (*m_iter).Name();
 
         assert(IsLegalMentorName(kpName));
         pstr = Convert_Ascii_To_Wide(kpName);
@@ -264,7 +264,7 @@ void CCoordinateSystemEnumCoordinateSystemInCategory::Skip(UINT32 ulSkipCount)
             return;
         }
         //get the coordinate system name from the category
-        const char *kpName = (*m_iter).name;
+        const char *kpName = (*m_iter).Name();
         if (IsFilteredOut(kpName))
         {
             continue;

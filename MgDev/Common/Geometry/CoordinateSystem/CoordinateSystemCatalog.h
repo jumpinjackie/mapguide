@@ -23,6 +23,8 @@ class MgCoordinateSystemDatumDictionary;
 class MgCoordinateSystemEllipsoidDictionary;
 class MgCoordinateSystemCategoryDictionary;
 class MgCoordinateSystemGeodeticTransformation;
+class MgCoordinateSystemGeodeticPathDictionary;
+class MgCoordinateSystemGeodeticTransformDefDictionary;
 class MgCoordinateSystemMathComparator;
 class MgCoordinateSystemFormatConverter;
 class MgCoordinateSystemProjectionInformation;
@@ -53,6 +55,8 @@ PUBLISHED_API:
     virtual MgCoordinateSystemDictionary* GetCoordinateSystemDictionary()=0;
     virtual MgCoordinateSystemDatumDictionary* GetDatumDictionary()=0;
     virtual MgCoordinateSystemEllipsoidDictionary* GetEllipsoidDictionary()=0;
+    virtual MgCoordinateSystemGeodeticPathDictionary* GetGeodeticPathDictionary()=0;
+    virtual MgCoordinateSystemGeodeticTransformDefDictionary* GetGeodeticTransformDefDictionary()=0;
     virtual MgDisposableCollection* GetGeodeticTransformations(MgCoordinateSystemDatum* pSource, MgCoordinateSystemDatum *pTarget)=0;
     virtual MgCoordinateSystemMathComparator* GetMathComparator()=0;
     virtual MgCoordinateSystemFormatConverter* GetFormatConverter()=0;

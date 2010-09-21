@@ -57,17 +57,41 @@
 #endif
 #endif
 
-template<int nSize>
+#define MAX_STRING_LENGTH 256
+
 struct TNameStruct
 {
-    //data members
-    char name[nSize];
-    //member functions
+public:
+    // construction / destruction
     TNameStruct(const char *kpName = NULL);
+    TNameStruct(const TNameStruct& other);
+
+    ~TNameStruct();
+
+    //comparison
     bool operator<(const TNameStruct& other) const;
     bool operator>(const TNameStruct& other) const;
     bool operator==(const TNameStruct&) const;
     bool operator!=(const TNameStruct&) const;
+
+    //assignment
+    TNameStruct& operator=(const TNameStruct&);
+    
+    //assignment
+    TNameStruct& operator=(const char* newName);
+
+    //misc. methods
+    const char* Name() const;
+    void Reset();
+
+private:
+    //methods
+    void Init(const char *kpName = NULL);
+    void Release();
+
+private:
+    //data members
+    char* name;
 };
 
 //This struct holds a summary of a definition (just name and description,
@@ -79,8 +103,8 @@ struct TNameStruct
 //coordinate system dictionary shows that that wouldn't save much space;
 //description strings take up, on average, around 2/3 of the space available
 //for them, so the savings wouldn't be much.
-typedef TNameStruct<cs_KEYNM_DEF> CSystemName;
-typedef TNameStruct<64> CSystemDescription;
+typedef TNameStruct CSystemName;
+typedef TNameStruct CSystemDescription;
 
 //Handy typedef for working with sets of CSystemName objects.
 typedef std::list<CSystemName> CSystemNameList;
@@ -100,66 +124,9 @@ typedef std::pair<CSystemName, CSystemDescription> CSystemNameDescriptionPair;
 //which were created using a different number.
 const int knMaxCategoryNameLen = 128;
 
-typedef TNameStruct<knMaxCategoryNameLen> CCategoryName;
+typedef TNameStruct CCategoryName;
 typedef std::map<CCategoryName, long> CCategoryNameIndexMap;
 typedef std::list<CCategoryName> CCategoryNameList;
-
-//Constructor.  Initializes to a specified string
-//(if one is provided) or to all zeroes (if not).
-//
-template<int nSize>
-TNameStruct<nSize>::TNameStruct(const char *kpName)
-{
-    if (NULL == kpName)
-    {
-        memset(name, 0, sizeof(name));
-    }
-    else
-    {
-        strncpy(name, kpName, nSize);
-        name[nSize-1] = '\0';
-    }
-}
-
-
-//Comparison operator (alphabetic, case-insensitive).
-//
-template<int nSize>
-bool
-TNameStruct<nSize>::operator<(const TNameStruct& other) const
-{
-    return (_stricmp(name, other.name) < 0);
-}
-
-
-//Comparison operator (alphabetic, case-insensitive).
-//
-template<int nSize>
-bool
-TNameStruct<nSize>::operator>(const TNameStruct& other) const
-{
-    return (_stricmp(name, other.name) > 0);
-}
-
-
-//Equality operator (alphabetic, case-insensitive).
-//
-template<int nSize>
-bool
-TNameStruct<nSize>::operator==(const TNameStruct& other) const
-{
-    return (_stricmp(name, other.name) == 0);
-}
-
-
-//Inequality operator (alphabetic, case-insensitive).
-//
-template<int nSize>
-bool
-TNameStruct<nSize>::operator!=(const TNameStruct& other) const
-{
-    return (_stricmp(name, other.name) != 0);
-}
 
 #endif //MG_NAMESTRUCT_H
 

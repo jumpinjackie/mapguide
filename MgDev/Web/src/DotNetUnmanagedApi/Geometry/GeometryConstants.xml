@@ -86,6 +86,10 @@
   <Class name="MgCoordinateSystemUnitCode" />
   <Class name="MgCoordinateSystemUnitType" />
   <Class name="MgCoordinateSystemWktFlavor" />
+  <Class name="MgCoordinateSystemGeodeticTransformDefType" />
+  <Class name="MgCoordinateSystemGeodeticAnalyticalTransformationMethod" />
+  <Class name="MgCoordinateSystemGeodeticMultipleRegressionTransformationMethod"/>
+  <Class name="MgCoordinateSystemGeodeticTransformGridFileFormat"/>
 </Classes>
 
 <!--
@@ -116,6 +120,10 @@
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemUnitCode.h" />
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemUnitType.h" />
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemWktFlavor.h" />
+	 <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformDefType.h" />
+	 <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticAnalyticalTransformationMethod.h" />
+	 <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticMultipleRegressionTransformationMethod.h" />
+	 <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformGridFileFormat.h" />
 
 </Headers>
 

@@ -21,6 +21,14 @@
 namespace CSLibrary
 {
 
+    class CCoordinateSystemGeodeticTransformDefDictionary;
+    class CCoordinateSystemDictionary;
+    class CCoordinateSystemDatumDictionary;
+    class CCoordinateSystemEllipsoidDictionary;
+    class CCoordinateSystemCategoryDictionary;
+    class CCoordinateSystemGeodeticPathDictionary;
+    class CCoordinateSystemGeodeticTransformDefDictionary;
+
 class CCoordinateSystemCatalog : public MgCoordinateSystemCatalog
 {
 EXTERNAL_API:
@@ -39,6 +47,8 @@ EXTERNAL_API:
     virtual MgCoordinateSystemDictionary* GetCoordinateSystemDictionary();
     virtual MgCoordinateSystemDatumDictionary* GetDatumDictionary();
     virtual MgCoordinateSystemEllipsoidDictionary* GetEllipsoidDictionary();
+    virtual MgCoordinateSystemGeodeticPathDictionary* GetGeodeticPathDictionary();
+    virtual MgCoordinateSystemGeodeticTransformDefDictionary* GetGeodeticTransformDefDictionary();
     virtual MgDisposableCollection* GetGeodeticTransformations(MgCoordinateSystemDatum* pSource, MgCoordinateSystemDatum *pTarget);
     virtual MgCoordinateSystemMathComparator* GetMathComparator();
     virtual MgCoordinateSystemFormatConverter* GetFormatConverter();
@@ -71,6 +81,8 @@ protected:
     Ptr<CCoordinateSystemDatumDictionary> m_pDtDict;
     Ptr<CCoordinateSystemEllipsoidDictionary> m_pElDict;
     Ptr<CCoordinateSystemCategoryDictionary> m_pCtDict;
+    Ptr<CCoordinateSystemGeodeticPathDictionary> m_pGpDict;
+    Ptr<CCoordinateSystemGeodeticTransformDefDictionary> m_pGxDict;
 
     LibraryStatus m_libraryStatus;
 
