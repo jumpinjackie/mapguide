@@ -77,7 +77,7 @@ void CCoordinateSystemGeodeticInterpolationTransformDefParams::SetGridFiles(MgDi
     VERIFY_NOT_PROTECTED(L"CCoordinateSystemGeodeticInterpolationTransformDefParams.SetGridFiles");
 
     //we don't take ownership over fileNames
-    ENSURE_NOT_NULL(gridFiles, CCoordinateSystemGeodeticInterpolationTransformDefParams::SetGridFileNames);
+    ENSURE_NOT_NULL(gridFiles, L"CCoordinateSystemGeodeticInterpolationTransformDefParams.SetGridFileNames");
     const INT32 fileNamesCount = gridFiles->GetCount();
     if (fileNamesCount > csGRIDI1_FILEMAX)
         throw new MgInvalidArgumentException(L"CCoordinateSystemGeodeticInterpolationTransformDefParams.SetGridFiles", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -182,7 +182,7 @@ DEFINE_GET_SET_STRING(CCoordinateSystemGeodeticInterpolationTransformDefParams,F
 
 void CCoordinateSystemGeodeticInterpolationTransformDefParams::CopyTo(void* target) const
 {
-    ENSURE_NOT_NULL(target, CCoordinateSystemGeodeticInterpolationTransformDefParams::CopyTo);
+    ENSURE_NOT_NULL(target, L"CCoordinateSystemGeodeticInterpolationTransformDefParams.CopyTo");
     
     memcpy(target, this->gridFileParams, sizeof(csGridFileXformParams));
 }

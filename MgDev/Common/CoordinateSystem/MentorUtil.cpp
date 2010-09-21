@@ -37,7 +37,7 @@
 #include "CoordSysEnum.h"           //for CCoordinateSystemEnum
 #include "CoordSysDictionary.h"     //for CCoordinateSystemDictionary
 
-#include <cs_legacy.h>
+#include <cs_Legacy.h>
 
 using namespace CSLibrary;
 

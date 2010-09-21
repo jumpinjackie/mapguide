@@ -21,6 +21,9 @@ int _tmain(int argc, _TCHAR* argv[])
     INT32 gridLineCount;
     INT32 lineSegmentCount;
 
+	clock_t startTime;
+	clock_t endTime;
+
     double xx;
     double yy;
     double uu;
@@ -28,6 +31,13 @@ int _tmain(int argc, _TCHAR* argv[])
     double value;
 
     MgCoordinateSystemFactory factory;
+    MgCoordinateSystemCatalog* catalog;
+	MgCoordinateSystemCategoryDictionary* categoryDict;
+	MgCoordinateSystemEnum* categoryEnum;
+	MgCoordinateSystemDictionary* coordsysDict;
+	MgCoordinateSystemEnum* coordsysEnum;
+	MgDisposableCollection* coordsysCollection;
+	MgStringCollection* stringCollection;
 
     MgCoordinate* pCoordinate;
     MgCoordinateIterator* coordItr;
@@ -43,12 +53,53 @@ int _tmain(int argc, _TCHAR* argv[])
     MgCoordinateSystemGridTick* pGridTick;
     MgCoordinateSystemGridTickCollection* pGridTicks;
 
+startTime = clock ();
+catalog = factory.GetCatalog ();
+categoryDict = catalog->GetCategoryDictionary ();
+categoryEnum = categoryDict->GetEnum ();
+coordsysDict = catalog->GetCoordinateSystemDictionary ();
+coordsysEnum = coordsysDict->GetEnum ();
+do
+{
+	stringCollection = coordsysEnum->NextName (1);
+	if (stringCollection->GetCount () > 0)
+	{
+		STRING code = stringCollection->GetItem (0);
+		Ptr<MgCoordinateSystem> coordSysPtr = factory.CreateFromCode (code);
+	}
+} while (stringCollection->GetCount () > 0);
+endTime = clock ();
+printf ("Dictionary enumeration time = %ld milliseconds.\n",endTime - startTime);
+
+wchar_t wktTest [2048] = L"PROJCS[\"UTM83-10F\",GEOGCS[\"LL83\",DATUM[\"NAD83\",SPHEROID[\"GRS1980\",6378137.000,298.25722210]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"false_easting\",1640416.667],PARAMETER[\"false_northing\",0.000],PARAMETER[\"central_meridian\",-123.00000000000000],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"latitude_of_origin\",0.000],UNIT[\"Foot_US\",0.30480060960122]]";
+//wchar_t wktTest [2048] = L"PROJCS[\"WGS84.PseudoMercator\",GEOGCS[\"LL84\",DATUM[\"WGS84\",SPHEROID[\"WGS84\",6378137.000,298.25722293]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Popular Visualisation Pseudo Mercator\"],PARAMETER[\"false_easting\",0.000],PARAMETER[\"false_northing\",0.000],PARAMETER[\"central_meridian\",0.00000000000000],UNIT[\"Meter\",1.00000000000000]]";
+startTime = clock ();
+INT32 epsgCode = factory.ConvertWktToEpsgCode (wktTest);
+endTime = clock ();
+printf ("ConvertWktToEpsgCode time = %ld milliseconds.\n",endTime - startTime);
+exit (0);
+
     pGridSpecification = factory.GridSpecification ();
     pGridSpecification->SetGridBase (0.0,0.0);
     pGridSpecification->SetGridIncrement (1.0,1.0);
     pGridSpecification->SetTickIncrements  (0.25,0.25);
     pGridSpecification->SetUnits (MgCoordinateSystemUnitCode::Degree,MgCoordinateSystemUnitType::Angular);
     pGridSpecification->SetCurvePrecision (1.0E-05);
+
+    {
+        MgCoordinateSystem* pTestSource = factory.CreateFromCode(L"CA83-IIF");
+        MgCoordinateSystem* pTestTarget = factory.CreateFromCode(L"LL84");
+        MgCoordinateSystemTransform* pTestTransform = factory.GetTransform(pTestSource,pTestTarget);
+        MgCoordinate* southWestXYZ = new MgCoordinateXYZ (6.49E+06,1.99E+06,300.0);
+        MgCoordinate* northEastXYZ = new MgCoordinateXYZ (6.61E+06,2.11E+06,100.0);
+        MgEnvelope* pTestEnvelopeSource = new MgEnvelope (northEastXYZ,southWestXYZ);
+        MgEnvelope* pTestEnvelopeTarget = pTestEnvelopeSource->Transform (pTestTransform);
+        pTestTransform->Release ();
+        pTestSource->Release ();
+        pTestTarget->Release ();
+        pTestEnvelopeSource->Release ();
+        pTestEnvelopeTarget->Release ();
+    }
 
     pGenericGrid = factory.GenericGrid (L"LL84",L"CA83-IIF",true);
 

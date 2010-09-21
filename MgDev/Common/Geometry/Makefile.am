@@ -7,6 +7,7 @@ lib_LTLIBRARIES = libMgGeometry.la
 libMgGeometry_la_SOURCES = \
   GeometryBuild.cpp \
   ../CoordinateSystem/ArbitraryCoordsys.cpp \
+  ../CoordinateSystem/CoordSysDictionaryBase.cpp \
   ../CoordinateSystem/CoordSys.cpp \
   ../CoordinateSystem/CoordSysCatalog.cpp \
   ../CoordinateSystem/CoordSysCategory.cpp \
@@ -22,7 +23,17 @@ libMgGeometry_la_SOURCES = \
   ../CoordinateSystem/CoordSysEnumDatum.cpp \
   ../CoordinateSystem/CoordSysEnumEllipsoid.cpp \
   ../CoordinateSystem/CoordSysFormatConverter.cpp \
-  ../CoordinateSystem/CoordSysGeodeticTransformation.cpp \
+  ../CoordinateSystem/CoordSysGeodeticAnalyticalTransformDefParams.cpp\
+  ../CoordinateSystem/CoordSysGeodeticInterpolationTransformDefParams.cpp\
+  ../CoordinateSystem/CoordSysGeodeticMultipleRegressionTransformDefParams.cpp\
+  ../CoordinateSystem/CoordSysGeodeticPath.cpp\
+  ../CoordinateSystem/CoordSysGeodeticPathDictionary.cpp\
+  ../CoordinateSystem/CoordSysGeodeticPathElement.cpp\
+  ../CoordinateSystem/CoordSysGeodeticTransformation.cpp\
+  ../CoordinateSystem/CoordSysGeodeticTransformDef.cpp\
+  ../CoordinateSystem/CoordSysGeodeticTransformDefDictionary.cpp\
+  ../CoordinateSystem/CoordSysGeodeticTransformDefParams.cpp\
+  ../CoordinateSystem/CoordSysGeodeticTransformGridFile.cpp\
   ../CoordinateSystem/CoordSysMeasure.cpp \
   ../CoordinateSystem/CoordSysTransform.cpp \
   ../CoordinateSystem/CoordSysDictionaryUtility.cpp \
@@ -158,7 +169,17 @@ include_SOURCES = \
   ../CoordinateSystem/CoordSysEnumDatum.cpp \
   ../CoordinateSystem/CoordSysEnumEllipsoid.cpp \
   ../CoordinateSystem/CoordSysFormatConverter.cpp \
-  ../CoordinateSystem/CoordSysGeodeticTransformation.cpp \
+  ../CoordinateSystem/CoordSysGeodeticAnalyticalTransformDefParams.cpp\
+  ../CoordinateSystem/CoordSysGeodeticInterpolationTransformDefParams.cpp\
+  ../CoordinateSystem/CoordSysGeodeticMultipleRegressionTransformDefParams.cpp\
+  ../CoordinateSystem/CoordSysGeodeticPath.cpp\
+  ../CoordinateSystem/CoordSysGeodeticPathDictionary.cpp\
+  ../CoordinateSystem/CoordSysGeodeticPathElement.cpp\
+  ../CoordinateSystem/CoordSysGeodeticTransformation.cpp\
+  ../CoordinateSystem/CoordSysGeodeticTransformDef.cpp\
+  ../CoordinateSystem/CoordSysGeodeticTransformDefDictionary.cpp\
+  ../CoordinateSystem/CoordSysGeodeticTransformDefParams.cpp\
+  ../CoordinateSystem/CoordSysGeodeticTransformGridFile.cpp\
   ../CoordinateSystem/CoordSysMeasure.cpp \
   ../CoordinateSystem/CoordSysTransform.cpp \
   ../CoordinateSystem/CoordSysDictionaryUtility.cpp \
@@ -354,6 +375,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Spatial/SpatialUtilityVectorAngle.h \
   ../CoordinateSystem/ArbitraryCoordsys.h \
   ../CoordinateSystem/CoordSys.h \
+  ../CoordinateSystem/CoordSysDictionaryBase.h \
   ../CoordinateSystem/CoordSysCatalog.h \
   ../CoordinateSystem/CoordSysCategory.h \
   ../CoordinateSystem/CoordSysCategoryDictionary.h \
@@ -369,7 +391,17 @@ noinst_HEADERS = $(include_SOURCES) \
   ../CoordinateSystem/CoordSysEnumDatum.h \
   ../CoordinateSystem/CoordSysEnumEllipsoid.h \
   ../CoordinateSystem/CoordSysFormatConverter.h \
-  ../CoordinateSystem/CoordSysGeodeticTransformation.h \
+  ../CoordinateSystem/CoordSysGeodeticAnalyticalTransformDefParams.h\
+  ../CoordinateSystem/CoordSysGeodeticInterpolationTransformDefParams.h\
+  ../CoordinateSystem/CoordSysGeodeticMultipleRegressionTransformDefParams.h\
+  ../CoordinateSystem/CoordSysGeodeticPath.h\
+  ../CoordinateSystem/CoordSysGeodeticPathDictionary.h\
+  ../CoordinateSystem/CoordSysGeodeticPathElement.h\
+  ../CoordinateSystem/CoordSysGeodeticTransformation.h\
+  ../CoordinateSystem/CoordSysGeodeticTransformDef.h\
+  ../CoordinateSystem/CoordSysGeodeticTransformDefDictionary.h\
+  ../CoordinateSystem/CoordSysGeodeticTransformDefParams.h\
+  ../CoordinateSystem/CoordSysGeodeticTransformGridFile.h\
   ../CoordinateSystem/CoordSysMeasure.h \
   ../CoordinateSystem/CoordSysTransform.h \
   ../CoordinateSystem/CoordSysType.h \
@@ -378,6 +410,7 @@ noinst_HEADERS = $(include_SOURCES) \
   ../CoordinateSystem/CoordSysDictionaryUtility.h \
   ../CoordinateSystem/CoordSysEnumInteger32.h \
   ../CoordinateSystem/CoordSysMathComparator.h \
+  ../CoordinateSystem/CoordSysMacro.h\
   ../CoordinateSystem/CoordSysProjectionInformation.h \
   ../CoordinateSystem/CoordSysUnitInformation.h \
   ../CoordinateSystem/CsmapVersion.h \
@@ -415,3 +448,4 @@ libMgGeometry_la_LDFLAGS = -release $(PACKAGE_VERSION) \
   -L../Foundation \
   -L../../Oem/CsMap \
   -L../../Common/CoordinateSystem
+

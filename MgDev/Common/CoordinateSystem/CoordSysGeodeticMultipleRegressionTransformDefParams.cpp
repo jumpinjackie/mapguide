@@ -74,7 +74,7 @@ void CCoordinateSystemGeodeticMultipleRegressionTransformDefParams::ReleaseInsta
 
 void CCoordinateSystemGeodeticMultipleRegressionTransformDefParams::CopyTo(void* target) const
 {
-    ENSURE_NOT_NULL(target, CCoordinateSystemGeodeticMultipleRegressionTransformDefParams::CopyTo);
+    ENSURE_NOT_NULL(target, L"CCoordinateSystemGeodeticMultipleRegressionTransformDefParams.CopyTo");
     
     memcpy(target, this->mulRegParams, sizeof(csMultipleRegressionXformParams));
 }

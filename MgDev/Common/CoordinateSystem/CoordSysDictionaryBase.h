@@ -22,8 +22,8 @@
 
 #define MAP_CS_DEFAULT_FILE_NAME(x) L## x //builds the wchar_t default filename from the #define found in cs_map.h, e.g. from [cs_GP_NAME]
 #define DICTIONARY_FILE_NAME(x) DefaultDictName##x //defines the name of the extern variable we need to initialize each template class with
-#define DECLARE_DICTIONARY_FILE_NAME(x) extern const ACE_TCHAR DefaultDictName##x[] //declares(!) the extern variable we need for the template class
-#define DEFINE_DICTIONARY_FILE_NAME(x,y) extern const ACE_TCHAR DefaultDictName##x[] = MAP_CS_DEFAULT_FILE_NAME(y) //defines(!) the extern variable we need for the template class
+#define DECLARE_DICTIONARY_FILE_NAME(x) extern const wchar_t DefaultDictName##x[] //declares(!) the extern variable we need for the template class
+#define DEFINE_DICTIONARY_FILE_NAME(x,y) const wchar_t DefaultDictName##x[] = MAP_CS_DEFAULT_FILE_NAME(y) //defines(!) the extern variable we need for the template class
 
 //typedef of the callback that's being invoked, when a dictionary file is being opened; the invoked method 
 //has to specify the open mode the target dictionary file has to be opened with; the [long] parameter is the magic header number
