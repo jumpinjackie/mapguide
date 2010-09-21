@@ -176,7 +176,7 @@ MgDisposableCollection* CCoordinateSystemEnumCategory::Next(UINT32 ulCount)
         }
 
         //get the category definition for the next name in the list
-        const char *kpName = (*(m_iter)).name;
+        const char *kpName = (*(m_iter)).Name();
         pStr = Convert_Ascii_To_Wide(kpName);
         if (NULL == pStr)
         {
@@ -229,7 +229,7 @@ MgStringCollection* CCoordinateSystemEnumCategory::NextName(UINT32 ulCount)
             return pOutput.Detach();
         }
 
-        const char *kpName = (*m_iter).name;
+        const char *kpName = (*m_iter).Name();
         if (IsFilteredOut(kpName))
         {
             continue;
@@ -270,7 +270,7 @@ void CCoordinateSystemEnumCategory::Skip(UINT32 ulSkipCount)
             //success
             return;
         }
-        const char *kpName = (*m_iter).name;
+        const char *kpName = (*m_iter).Name();
         if (IsFilteredOut(kpName))
         {
             continue;

@@ -18,19 +18,11 @@
 #include "GeometryCommon.h"
 #include "CoordSysCommon.h"
 #include "CriticalSection.h"
-
-#include "CoordSysEnum.h"                   //for CCoordinateSystemEnum
-#include "CoordSysEnumDatum.h"              //for CCoordinateSystemEnumDatum
-#include "CoordSysEnumEllipsoid.h"          //for CCoordinateSystemEnumEllipsoid
-#include "CoordSysDictionary.h"             //for CCoordinateSystemDictionary
-#include "CoordSysDatumDictionary.h"        //for CCoordinateSystemDatumDictionary
-#include "CoordSysEllipsoidDictionary.h"    //for CCoordinateSystemEllipsoidDictionary
 #include "CoordSysUtil.h"                   //for Convert_Wide_To_Ascii, CsDictionaryOpenMode
-#include "CoordSysCategoryDictionary.h"     //for CCoordinateSystemCategoryDictionary
-#include "CoordSysCatalog.h"                //for CCoordinateSystemCatalog
-#include "CoordSysGeodeticTransformation.h" //for CCoordinateSystemGeodeticTransformation
+#include "MentorUtil.h"                     //for BuildDtDefFromInterface + various utilities
+
 #include "CoordSysDatum.h"                  //for CCoordinateSystemDatum
-#include "MentorUtil.h"                     //for BuildDtDefFromInterface
+#include "CoordSysGeodeticTransformation.h" //for CCoordinateSystemGeodeticTransformation
 
 using namespace CSLibrary;
 
@@ -45,6 +37,23 @@ CCoordinateSystemGeodeticTransformation::CCoordinateSystemGeodeticTransformation
 {
     SetCatalog(pCatalog);
     SetSourceAndTarget(pSource, pTarget);
+}
+
+//-----------------------------------------------------------------------------
+CCoordinateSystemGeodeticTransformation::CCoordinateSystemGeodeticTransformation(MgCoordinateSystemCatalog* pCatalog, MgCoordinateSystemGeodeticTransformDef* transformationDef, bool createInversed)
+: m_pDtcprm(NULL), m_pDtSource(NULL), m_pDtTarget(NULL)
+{
+    if (NULL == pCatalog || NULL == transformationDef)
+        throw new MgNullArgumentException(L"CCoordinateSystemGeodeticTransformation.ctor", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    //this->Uninitialize(); //not needed - this does release the resourced held by this instance; we haven't set anything yet
+
+    this->SetCatalog(pCatalog);
+    
+    //now - setup ourselves from the [MgCoordinateSystemGeodeticTransformDef] we've been passed
+    //we'll not pass a source and a target datum to CS Map so it constructs the cs_Dtcprm_ struct
+    //but we'll do that because we already have a transformation
+    this->SetupFromTransformationDef(transformationDef, createInversed);
 }
 
 //-----------------------------------------------------------------------------
@@ -343,6 +352,44 @@ void CCoordinateSystemGeodeticTransformation::Uninitialize()
     SAFE_RELEASE(m_pDtTarget);
 
     assert(!IsInitialized());
+}
+
+//Initializes this transformation instance from an [MgCoordinateSystemGeodeticTransformDef] object;
+//That is, we don't let CS Map find the appropriate transformation based on a source and a target
+//datum but will instruct CS Map to use the transformation defition we pass to it
+//
+void CCoordinateSystemGeodeticTransformation::SetupFromTransformationDef(MgCoordinateSystemGeodeticTransformDef* transformationDef, bool createInversed)
+{
+    char* transformName = Convert_Wide_To_Ascii(transformationDef->GetTransformName().c_str());
+    
+    MG_TRY()
+    
+    
+    //protect the call to the lib files; the calls to the [datumDictionary] below
+    //we also enter the critical section but on the same thread - i.e. no problem;
+    //putting the check here saves us from [enter, leave, enter leave]
+    SmartCriticalClass criticalSection(true);
+
+    //ask CS_Map for the transformation
+    cs_Dtcprm_* datumTransform = CSdtcsu1(transformName, createInversed ? cs_DTCDIR_INV : cs_DTCDIR_FWD, cs_DTCFLG_BLK_W);
+
+    if (NULL == datumTransform)
+        throw new MgInvalidArgumentException(L"CCoordinateSystemGeodeticTransformation.SetupFromTransformationDef", __LINE__, __WFILE__, NULL, L"", NULL);
+    
+    Ptr<MgCoordinateSystemDatumDictionary> datumDictionary = this->m_pCatalog->GetDatumDictionary();
+    Ptr<MgCoordinateSystemDatum> srcDatum = datumDictionary->GetDatum(transformationDef->GetSourceDatum());
+    Ptr<MgCoordinateSystemDatum> trgDatum = datumDictionary->GetDatum(transformationDef->GetTargetDatum());
+
+    this->m_pDtcprm = datumTransform;
+    this->m_pDtSource = srcDatum.Detach();  //m_pDtSource is no auto pointer
+    this->m_pDtTarget = trgDatum.Detach();  //m_pDtTarget is no auto pointer
+
+    MG_CATCH(L"CCoordinateSystemGeodeticTransformation.SetupFromTransformationDef")
+
+    if (NULL != transformName)
+        delete[] transformName;
+
+    MG_THROW()
 }
 
 //-----------------------------------------------------------------------------

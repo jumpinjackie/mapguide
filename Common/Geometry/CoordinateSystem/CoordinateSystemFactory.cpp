@@ -17,16 +17,18 @@
 
 #include "GeometryCommon.h"
 #include "CoordSysCommon.h"             //for COORDINATE_SYSTEM_API
+#include "CoordSysUtil.h"                   //for Convert_Wide_To_Ascii, CsDictionaryOpenMode
 #include "CoordinateSystem.h"           //for MgCoordinateSystem
 #include "CoordSys.h"                   //for CCoordinateSystem
 #include "CoordSysEnum.h"               //for CCoordinateSystemEnum
-#include "CoordSysEnum.h"               //for CCoordinateSystemEnum
 #include "CoordSysEnumDatum.h"          //for CCoordinateSystemEnumDatum
+#include "CoordSysGeodeticPath.h"           //for CCoordinateSystemGeodeticPath
 #include "CoordSysEnumEllipsoid.h"      //for CCoordinateSystemEnumEllipsoid
+#include "CoordSysDictionaryBase.h"         //for CCoordinateSystemDictionaryBase
 #include "CoordSysDictionary.h"         //for CCoordinateSystemDictionary
 #include "CoordSysDatumDictionary.h"    //for CCoordinateSystemDatumDictionary
 #include "CoordSysEllipsoidDictionary.h"//for CCoordinateSystemEllipsoidDictionary
-#include "CoordSysUtil.h"               //for Convert_Wide_To_Ascii, CsDictionaryOpenMode
+#include "CoordSysGeodeticPathDictionary.h" //for CCoordinateSystemGeodeticPathDictionary
 #include "CoordSysCategoryDictionary.h" //for CCoordinateSystemCategoryDictionary
 #include "CoordSysCatalog.h"            //for CCoordinateSystemCatalog
 #include "CoordSysTransform.h"          //for CCoordinateSystemTransform

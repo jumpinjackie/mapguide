@@ -15,6 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#include "CoordSysMacro.h"
+
 #include "GeometryCommon.h"
 #include "CoordSysCommon.h"
 #include "CriticalSection.h"
@@ -561,6 +563,10 @@ void CCoordinateSystemDatum::SetSource(CREFSTRING sSource)
 {
     SetString(sSource, &m_DtDef.source[0], sizeof(m_DtDef.source));
 }
+
+//Gets/Sets the EPSG code
+//
+DEFINE_GET_SET_NUMERIC(CCoordinateSystemDatum,EpsgCode,INT16,this->m_DtDef.epsgNbr)
 
 //Returns whether the specified string is a legal source string
 //

@@ -32,6 +32,8 @@
 #include "MentorUtil.h"
 #include "Foundation.h"
 
+#define DICTIONARY_SYS_DEF 1
+
 namespace MentorDictionary
 {
     void SetFileName(INT32& lMagic, CsDictionaryOpenMode (*ValidMagic)(long), CREFSTRING sDirectory, CREFSTRING sFileName, REFSTRING sFileNameSet, const wchar_t* kpMethodName);
@@ -49,6 +51,7 @@ namespace MentorDictionary
     CSystemNameDescriptionMap *
     GenerateSystemNameDescriptionMap(
         csFILE *pFile,
+        const char* (*CS_Tkey)(const T&),
         const char * (*description)(const T&),
         int (*CS_Trd)(csFILE*, T *, int *))
     {
@@ -72,9 +75,11 @@ namespace MentorDictionary
         {
             while ((nResult = CS_Trd(pFile, &def, &nCrypt)) > 0)
             {
+                const char* keyName = CS_Tkey(def);
+
                 pmapSystemNameDescription->insert(
                     CSystemNameDescriptionPair(
-                        CSystemName(def.key_nm),
+                        CSystemName(keyName),
                         CSystemDescription(description(def))
                     )
                 );
@@ -96,7 +101,7 @@ namespace MentorDictionary
         return pmapSystemNameDescription;
     }
 
-
+    #define CALL_MEMBER_FN(object,ptrToMember)  ((object)->*(ptrToMember))
 
     //Template function for updating a def in a dictionary.
     //Works for ellipsoids, datums, and coordinate systems.
@@ -109,7 +114,9 @@ namespace MentorDictionary
     template <class T, class Tinterface>
     void UpdateDef(
         CSystemNameDescriptionMap *pmapSystemNameDescription,
+        const char * (*key)(const T&),
         const char * (*description)(const T&),
+        bool (Tinterface::*isValid)(),
         T * (*CS_Tdef)(const char *),
         int (*CS_Tupd)(T *, int),
         bool (*BuildDefFromInterface)(Tinterface *, T&),
@@ -123,7 +130,7 @@ namespace MentorDictionary
         }
 
         //Make sure the def they've given us is valid
-        if (!kpDef->IsValid())
+        if (NULL != isValid && CALL_MEMBER_FN(kpDef, isValid)())
         {
             throw new MgInvalidArgumentException(L"MentorDictionary.UpdateDef", __LINE__, __WFILE__, NULL, L"", NULL);
         }
@@ -136,11 +143,16 @@ namespace MentorDictionary
             throw new MgCoordinateSystemInitializationFailedException(L"MentorDictionary.UpdateDef", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
+        const char* keyName = key(def);
+
         //Look in the dictionary
         bool bActuallyExists = false;
         INT16 sProtect = 0;
+        
+        //make sure, we've exclusive access to the file(s)
         SmartCriticalClass critical(true);
-        T *pDef = CS_Tdef(def.key_nm);
+        
+        T *pDef = CS_Tdef(keyName);
         if (NULL != pDef)
         {
             bActuallyExists = true;
@@ -153,7 +165,7 @@ namespace MentorDictionary
         CSystemNameDescriptionMap::iterator iter;
         if (NULL != pmapSystemNameDescription)
         {
-            iter = pmapSystemNameDescription->find(CSystemName(def.key_nm));
+            iter = pmapSystemNameDescription->find(CSystemName(keyName));
             assert(bActuallyExists == (iter != pmapSystemNameDescription->end()));
         }
 
@@ -167,7 +179,7 @@ namespace MentorDictionary
         else if (!bActuallyExists && bAlreadyExists)
         {
             //It doesn't exist, but it's supposed to.
-            STRING message = MgUtil::MultiByteToWideChar(string(def.key_nm));
+            STRING message = MgUtil::MultiByteToWideChar(string(keyName));
             MgStringCollection arguments;
             arguments.Add(message);
             throw new MgCoordinateSystemLoadFailedException(L"MentorDictionary.UpdateDef", __LINE__, __WFILE__, &arguments, L"", NULL);
@@ -203,7 +215,7 @@ namespace MentorDictionary
                 {
                     pmapSystemNameDescription->insert(
                         CSystemNameDescriptionPair(
-                            CSystemName(def.key_nm),
+                            CSystemName(keyName),
                             CSystemDescription(description(def))
                         )
                     );
@@ -232,7 +244,7 @@ namespace MentorDictionary
                 //it.  (We can't just change the key in-place by
                 //modifying (*iter).first, since the key in a std::map
                 //pair is a const object.)
-                if (0 == strcmp(def.key_nm, (*iter).first.name))
+                if (0 == strcmp(keyName, (*iter).first.Name()))
                 {
                     //The key name is unchanged; we can just update
                     //the summary.
@@ -242,13 +254,13 @@ namespace MentorDictionary
                 {
                     //The name changed (case changed only).  We need
                     //to delete the item and re-insert it.
-                    assert(0 == CS_stricmp(def.key_nm, (*iter).first.name));
+                    assert(0 == CS_stricmp(keyName, (*iter).first.Name()));
                     try
                     {
                         pmapSystemNameDescription->erase(iter);
                         pmapSystemNameDescription->insert(
                             CSystemNameDescriptionPair(
-                                CSystemName(def.key_nm),
+                                CSystemName(keyName),
                                 CSystemDescription(description(def))
                             )
                         );

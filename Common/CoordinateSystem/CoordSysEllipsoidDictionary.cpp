@@ -52,11 +52,14 @@ struct csElrup_
 
 
 
+//FIXME (CS_rlsUodt.c isn't built anymore)
 //Externs from Mentor
+/*
 extern "C"
 {
     int CSelrupReadOld (csFILE *oldStrm,struct csElrup_ *elrup,int old_lvl);
 }
+*/
 
 
 
@@ -190,8 +193,14 @@ cs_Eldef_ * CCoordinateSystemEllipsoidDictionary::eldef(const char *kpName) cons
         return CS_eldef(kpName);
     }
 
+    throw new MgInvalidOperationException(L"CCoordinateSystemEllipsoidDictionary.eldef", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    //FIXME (CS_rlsUodt.c isn't built anymore)
+    //
     //It's an old version.  We need to do a special search
     //in the file, and then, if found, update it to a current struct.
+    
+    /*
     UINT32 nStructSize, nNameSize;
     GetEllipsoidSizeInfo(m_lMagic, nStructSize, nNameSize);
     if (strlen(kpName) > nNameSize-1) return NULL;
@@ -241,6 +250,7 @@ cs_Eldef_ * CCoordinateSystemEllipsoidDictionary::eldef(const char *kpName) cons
     }
     CS_fclose(pFile);
     return pDef;
+    */
 }
 
 //-----------------------------------------------------------------------------
@@ -388,7 +398,9 @@ void CCoordinateSystemEllipsoidDictionary::Add(MgGuardDisposable *pDefinition)
 
     MentorDictionary::UpdateDef<cs_Eldef_, MgCoordinateSystemEllipsoid>(
         m_pmapSystemNameDescription,
+        ElKey,
         ElDesc,
+        &MgCoordinateSystemEllipsoid::IsValid,
         CS_eldef,
         CS_elupd,
         BuildElDefFromInterface,
@@ -439,7 +451,9 @@ void CCoordinateSystemEllipsoidDictionary::Modify(MgGuardDisposable *pDefinition
 
     MentorDictionary::UpdateDef<cs_Eldef_, MgCoordinateSystemEllipsoid>(
         m_pmapSystemNameDescription,
+        ElKey,
         ElDesc,
+        &MgCoordinateSystemEllipsoid::IsValid,
         CS_eldef,
         CS_elupd,
         BuildElDefFromInterface,
@@ -572,6 +586,7 @@ CCoordinateSystemEnumEllipsoid* CCoordinateSystemEllipsoidDictionary::GetEnumImp
     {
         m_pmapSystemNameDescription = MentorDictionary::GenerateSystemNameDescriptionMap<cs_Eldef_>(
             pFile,
+            ElKey,
             ElDesc,
             CS_elrd);
         if (NULL == m_pmapSystemNameDescription)

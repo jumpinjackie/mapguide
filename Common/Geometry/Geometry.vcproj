@@ -2643,11 +2643,67 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemGeodeticAnalyticalTransformationMethod.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemGeodeticAnalyticalTransformDefParams.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemGeodeticInterpolationTransformDefParams.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemGeodeticMultipleRegressionTransformationMethod.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemGeodeticMultipleRegressionTransformDefParams.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemGeodeticPath.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemGeodeticPathDictionary.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemGeodeticPathElement.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CoordinateSystem\CoordinateSystemGeodeticTransformation.h"
 				>
 			</File>
 			<File
 				RelativePath=".\CoordinateSystem\CoordinateSystemGeodeticTransformationMethod.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemGeodeticTransformDef.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemGeodeticTransformDefDictionary.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemGeodeticTransformDefParams.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemGeodeticTransformDefType.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemGeodeticTransformGridFile.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemGeodeticTransformGridFileFormat.h"
 				>
 			</File>
 			<File
@@ -2807,6 +2863,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\CoordinateSystem\CoordSysDictionaryBase.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysDictionaryBase.h"
+				>
+			</File>
+			<File
 				RelativePath="..\CoordinateSystem\CoordSysDictionaryUtility.cpp"
 				>
 			</File>
@@ -2887,11 +2951,91 @@
 				>
 			</File>
 			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticAnalyticalTransformDefParams.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticAnalyticalTransformDefParams.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticInterpolationTransformDefParams.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticInterpolationTransformDefParams.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticMultipleRegressionTransformDefParams.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticMultipleRegressionTransformDefParams.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticPath.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticPath.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticPathDictionary.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticPathDictionary.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticPathElement.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticPathElement.h"
+				>
+			</File>
+			<File
 				RelativePath="..\CoordinateSystem\CoordSysGeodeticTransformation.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\CoordinateSystem\CoordSysGeodeticTransformation.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticTransformDef.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticTransformDef.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticTransformDefDictionary.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticTransformDefDictionary.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticTransformDefParams.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticTransformDefParams.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticTransformGridFile.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticTransformGridFile.h"
 				>
 			</File>
 			<File
@@ -2908,6 +3052,10 @@
 			</File>
 			<File
 				RelativePath="..\CoordinateSystem\CoordSysGrids.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysMacro.h"
 				>
 			</File>
 			<File
@@ -3008,6 +3156,10 @@
 			</File>
 			<File
 				RelativePath="..\CoordinateSystem\MentorUtil.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\namestruct.cpp"
 				>
 			</File>
 			<File

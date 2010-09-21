@@ -44,6 +44,8 @@ public:
     virtual bool IsLegalGroup(CREFSTRING sGroup);
     virtual STRING GetSource();
     virtual void SetSource(CREFSTRING sSource);
+    virtual INT16 GetEpsgCode();
+    virtual void SetEpsgCode(INT16 epsgCode);
     virtual bool IsLegalSource(CREFSTRING sSource);
     virtual bool IsProtected();
     virtual INT16 GetAge();

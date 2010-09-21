@@ -26,7 +26,7 @@
 #include "CoordSysCommon.h"
 #include "CriticalSection.h"
 #include "CoordSysUtil.h"           //for Convert_Wide_To_Ascii, CsDictionaryOpenMode
-#include "MentorUtil.h"
+#include "MentorDictionary.h"
 #ifdef _WIN32
 #include <io.h>                        //for _dup()
 #endif
@@ -36,6 +36,8 @@
 #include "CoordSysEllipsoid.h"      //for CCoordinateSystemEllipsoid
 #include "CoordSysEnum.h"           //for CCoordinateSystemEnum
 #include "CoordSysDictionary.h"     //for CCoordinateSystemDictionary
+
+#include <cs_legacy.h>
 
 using namespace CSLibrary;
 
@@ -72,9 +74,13 @@ const char * CsDesc(const cs_Csdef_& def) { return def.desc_nm; }
 const char * CsDesc05(const struct cs_Csdef05_& def) { return def.desc_nm; }
 const char * CsDesc06(const struct cs_Csdef06_& def) { return def.desc_nm; }
 
-
-
-
+const char * DtKey(const cs_Dtdef_& def) { return def.key_nm; }
+const char * DtKey05(const cs_Dtdef05_& def) { return def.key_nm; }
+const char * DtKey06(const cs_Dtdef06_& def) { return def.key_nm; }
+const char * CsKey(const cs_Csdef_& def) { return def.key_nm; }
+const char * CsKey05(const cs_Csdef05_& def) { return def.key_nm; }
+const char * CsKey06(const cs_Csdef06_& def) { return def.key_nm; }
+const char * ElKey(const cs_Eldef_& def) { return def.key_nm; }
 
 //MENTOR_MAINTENANCE
 //The public API needs a programmatic way for clients to ask whether a
@@ -1355,7 +1361,10 @@ INT32 GeodeticTransformationPoint(cs_Dtcprm_ *pDtcprm, double& dLongitude, doubl
 
     // Skip datum transformation if we have a null transformation
     // We have a null transform if the first transform type is dtcTypNone
-    if (dtcTypNone != pDtcprm->xforms[0].xfrmType)
+    
+    // FIXME
+    if (NULL != pDtcprm->xforms[0])
+    //if (dtcTypNone != pDtcprm->xforms[0].xfrmType) <-- doesn't compile
     {
         double dZ=0.;
         if (pdZ)
@@ -1384,6 +1393,68 @@ INT32 GeodeticTransformationPoint(cs_Dtcprm_ *pDtcprm, double& dLongitude, doubl
         }
     }
     return nResult;
+}
+
+//method that set the current file name of a dictionary in CS Map
+void SetDictionaryFileName(CREFSTRING sFileName /* no directory information must be included */,
+                           CREFSTRING dictionaryPath, /* the directory; no file information */
+                           INT32& magicNumber, /* will be set */
+                           CsDictionaryOpenMode (*MagicNumberCallback)(long),
+                           void (*FileNameTarget)(const char* newFileName),
+                           const wchar_t* context)
+{
+    if (NULL == MagicNumberCallback || NULL == FileNameTarget)
+        throw new MgNullArgumentException(L"MentorUtil.SetDictionaryFileName", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    if (sFileName.empty() || dictionaryPath.empty())
+    {
+        MgStringCollection arguments;
+        arguments.Add(sFileName);
+
+        throw new MgArgumentOutOfRangeException(L"MentorUtil.SetDictionaryFileName", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    char* szCs = NULL;
+    bool entered = false;
+    
+    MG_TRY()
+
+    //Make local variables to hold converted strings
+    bool bResult = IsValidDictionaryName(sFileName);
+    if (!bResult)
+    {
+        MgStringCollection arguments;
+        arguments.Add(sFileName);
+        throw new MgFileIoException(/*context */ L"MentorUtil.SetDictionaryFileName", __LINE__, __WFILE__, &arguments, L"MgInvalidArgumentException", NULL);
+    }
+
+    STRING fileNameSet;
+    MentorDictionary::SetFileName(
+        magicNumber,
+        MagicNumberCallback,
+        dictionaryPath,
+        sFileName,
+        fileNameSet,
+        L"MentorUtil.SetDictionaryFileName");
+
+    //Okay, everybody opened all right, so update Mentor's global
+    //variables appropriately.
+    szCs = Convert_Wide_To_Ascii(fileNameSet.c_str());
+    
+    CriticalClass.Enter();
+    entered = true;
+
+    //the target function in CS map that sets the current active dictionary file name
+    FileNameTarget(szCs);
+    
+    MG_CATCH(L"MentorUtil.SetDictionaryFileName")
+    
+    if (entered)
+        CriticalClass.Leave();
+    
+    delete[] szCs;
+
+    MG_THROW()
 }
 
 //Opens a Mentor dictionary, verifies magic value, and positions read
@@ -1543,6 +1614,71 @@ int Mentor6Strnicmp(char *pBuf1, char *pBuf2, INT32 nLen)
     STRING sBuf2 = MgUtil::ToUpper(MgUtil::MultiByteToWideChar(pBuf2));
 
     return wcsncmp(sBuf1.c_str(), sBuf2.c_str(), nLen);
+}
+
+//reads a const char* and returns the STRING class object for it
+STRING MentorReadString(const char* mentorString)
+{
+    if (NULL == mentorString)
+        return L"";
+
+    STRING readString;
+    wchar_t* pString = NULL;
+
+    MG_TRY()
+    
+    pString = Convert_Ascii_To_Wide(mentorString);
+    if (NULL == pString) //ABA: this cannot be null, can it?
+        throw new MgOutOfMemoryException(L"MentorUtil.ReadString", __LINE__, __WFILE__, NULL, L"", NULL);
+    
+    MG_CATCH(L"MentorUtil.ReadString")
+
+    readString = pString;
+    delete[] pString;
+
+    MG_THROW()
+
+    return readString;
+}
+
+void MentorSetString(CREFSTRING sSrc, char *pDest, UINT32 nMaxSize)
+{
+    //make sure to have checked the Protection level before calling this method
+    
+    char *pStr = NULL;
+
+    MG_TRY()
+
+    assert(NULL != pDest);
+
+    if (NULL==pDest)
+    {
+        throw new MgNullArgumentException(L"MentorSetString", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    if (!IsLegalString(sSrc.c_str(), nMaxSize))
+    {
+        //Can't set string, caller gave us an illegal value
+        throw new MgInvalidArgumentException(L"MentorSetString", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    //Convert to a C++ string, for Mentor's sake
+    pStr = Convert_Wide_To_Ascii(sSrc.c_str()); //need to delete[] pStr
+    if (NULL == pStr)
+    {
+        throw new MgOutOfMemoryException(L"MentorSetString", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    //Copy it in
+    memset(pDest, 0, nMaxSize);
+    strncpy(pDest, pStr, nMaxSize);
+
+    MG_CATCH(L"MentorSetString")
+
+    //Clean up and return success.
+    delete [] pStr;
+
+    MG_THROW()
 }
 
 //End of file.

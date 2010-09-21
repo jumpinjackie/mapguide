@@ -25,6 +25,7 @@ class CCoordinateSystemGeodeticTransformation : public MgCoordinateSystemGeodeti
 {
 public:
     CCoordinateSystemGeodeticTransformation(MgCoordinateSystemCatalog* pCatalog, MgCoordinateSystemDatum* pSource, MgCoordinateSystemDatum *pTarget);
+    CCoordinateSystemGeodeticTransformation(MgCoordinateSystemCatalog* pCatalog, MgCoordinateSystemGeodeticTransformDef* transformationDef, bool createInversed);
     virtual ~CCoordinateSystemGeodeticTransformation();
 
     virtual void SetSourceAndTarget(MgCoordinateSystemDatum *pSource, MgCoordinateSystemDatum *pTarget);
@@ -66,6 +67,7 @@ protected:
     void SetCatalog(MgCoordinateSystemCatalog* pCatalog);
     bool GetDefinitionForGeodeticTransformationParameter(cs_Dtdef_& def);
     MgCoordinateSystemDatum* GetWGS84();
+    void SetupFromTransformationDef(MgCoordinateSystemGeodeticTransformDef* transformationDef, bool createInversed);
 
 protected:
     //Data members

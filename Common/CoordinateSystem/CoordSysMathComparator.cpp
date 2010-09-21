@@ -22,6 +22,8 @@
 #include "CoordSysUtil.h"               //for FloatEqual
 #include "MentorUtil.h"                 //for IsLegalMentorName
 
+#include <cs_Legacy.h>
+
 using namespace CSLibrary;
 
 const double CCoordinateSystemMathComparator::kdEpsilonGeographic  = 1.0E-12;      // latitude & longitude

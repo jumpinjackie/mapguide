@@ -18,6 +18,7 @@
 #include "GeometryCommon.h"
 #include "CoordSysCommon.h"
 #include "CriticalSection.h"
+#include "CoordSysUtil.h"                   //for Convert_Wide_To_Ascii, CsDictionaryOpenMode
 
 #include "CoordSysCategory.h"               //for CCategoryName
 #include "CoordSysTransform.h"              //for CCoordinateSystemTransform
@@ -25,9 +26,18 @@
 #include "CoordSysDictionary.h"             //for CCoordinateSystemDictionary
 #include "CoordSysEnumDatum.h"              //for CCoordinateSystemEnumDatum
 #include "CoordSysEnumEllipsoid.h"          //for CCoordinateSystemEnumEllipsoid
+#include "CoordSysDictionaryBase.h"                 //for CCoordinateSystemDictionaryBase
+#include "CoordSysGeodeticPath.h"                   //for CCoordinateSystemGeodeticPath
+#include "CoordSysGeodeticTransformDefParams.h"     //for CCoordinateSystemGeodeticTransformDefParams
+#include "CoordSysGeodeticAnalyticalTransformDefParams.h"
+#include "CoordSysGeodeticInterpolationTransformDefParams.h"
+#include "CoordSysGeodeticMultipleRegressionTransformDefParams.h"
+#include "CoordSysGeodeticTransformGridFile.h"
+#include "CoordSysGeodeticTransformDef.h"           //for CCoordinateSystemGeodeticTransformDef
 #include "CoordSysDatumDictionary.h"        //for CCoordinateSystemDatumDictionary
 #include "CoordSysEllipsoidDictionary.h"    //for CCoordinateSystemEllipsoidDictionary
-#include "CoordSysUtil.h"                   //for Convert_Wide_To_Ascii, CsDictionaryOpenMode
+#include "CoordSysGeodeticPathDictionary.h"         //for CCoordinateSystemGeodeticPathDictionary
+#include "CoordSysGeodeticTransformDefDictionary.h" //for CCoordinateSystemGeodeticTransformDefDictionary
 #include "CoordSysCategoryDictionary.h"     //for CCoordinateSystemCategoryDictionary
 #include "CoordSysMathComparator.h"         //for CCoordinateSystemMathComparator
 #include "CoordSysFormatConverter.h"        //for CCoordinateSystemFormatConverter
@@ -40,6 +50,7 @@
 #include "CoordSysGeodeticTransformation.h" //for CCoordinateSystemGeodeticTransformation
 
 #include "csNameMapper.hpp"                 //for csReleaseNameMapper
+#include "cs_map.h"
 
 #ifdef _WIN32
 #include <tchar.h>                          //for _tsplitpath
@@ -65,8 +76,10 @@ CCoordinateSystemCatalog::CCoordinateSystemCatalog() :
     m_pDtDict = new CCoordinateSystemDatumDictionary(this);
     m_pElDict = new CCoordinateSystemEllipsoidDictionary(this);
     m_pCtDict = new CCoordinateSystemCategoryDictionary(this);
+	m_pGpDict = new CCoordinateSystemGeodeticPathDictionary(this);
+    m_pGxDict = new CCoordinateSystemGeodeticTransformDefDictionary(this);
 
-    if (!m_pCsDict || !m_pDtDict || !m_pElDict || !m_pCtDict)
+    if (!m_pCsDict || !m_pDtDict || !m_pElDict || !m_pCtDict || !m_pGpDict || !m_pGxDict)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.MgCoordinateSystemCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -110,6 +123,8 @@ CCoordinateSystemCatalog::CCoordinateSystemCatalog() :
         m_pDtDict = NULL;
         m_pElDict = NULL;
         m_pCtDict = NULL;
+		m_pGpDict = NULL;
+        m_pGxDict = NULL;
 
         //NOTE: the following behavior happens only in DEBUG if we do not reset the countFlag
         //If an exception is thrown from within the constructor of this MgDisposable derived class
@@ -142,6 +157,8 @@ void CCoordinateSystemCatalog::PrepareForDispose()
     m_pDtDict = NULL;
     m_pElDict = NULL;
     m_pCtDict = NULL;
+	m_pGpDict = NULL;
+    m_pGxDict = NULL;
 }
 
 //-----------------------------------------------------------------------------------
@@ -166,6 +183,18 @@ MgCoordinateSystemEllipsoidDictionary* CCoordinateSystemCatalog::GetEllipsoidDic
 MgCoordinateSystemCategoryDictionary* CCoordinateSystemCatalog::GetCategoryDictionary()
 {
     return SAFE_ADDREF(m_pCtDict.p);
+}
+
+//-----------------------------------------------------------------------------------
+MgCoordinateSystemGeodeticPathDictionary* CCoordinateSystemCatalog::GetGeodeticPathDictionary()
+{
+    return SAFE_ADDREF(m_pGpDict.p);
+}
+
+//-----------------------------------------------------------------------------------
+MgCoordinateSystemGeodeticTransformDefDictionary* CCoordinateSystemCatalog::GetGeodeticTransformDefDictionary()
+{
+    return SAFE_ADDREF(m_pGxDict.p);
 }
 
 //-----------------------------------------------------------------------------------
@@ -277,6 +306,11 @@ void CCoordinateSystemCatalog::SetDictionaryDir(CREFSTRING sDirPath)
     wchar_t* pNewDir=NULL;
     if ((_tcslen(szFname) > 0) || (_tcslen(szExt) > 0))
     {
+		//ABA: don't understand: if a filename or an extension has been found,
+        //we concatenate the filename to the directory + then the extension;
+        //Then, we call makepath() what will give us a full path information incl.
+        //the file name; 
+        //
         //Nope, not properly terminated, need to fix it.
         assert(_tcslen(szDir) + _tcslen(szFname) + _tcslen(szExt) < _MAX_DIR);
         _tcscat(szDir, szFname);
@@ -325,6 +359,8 @@ void CCoordinateSystemCatalog::SetDictionaryDir(CREFSTRING sDirPath)
     STRING sDt=m_pDtDict->GetFileName();
     STRING sEl=m_pElDict->GetFileName();
     STRING sCt=m_pCtDict->GetFileName();
+	STRING sGp=m_pGpDict->GetFileName();
+    STRING sGx=m_pGxDict->GetFileName();
 
     //Set the dictionary file names
     //this will perform a validation of the existence of the files inside the directory
@@ -332,6 +368,8 @@ void CCoordinateSystemCatalog::SetDictionaryDir(CREFSTRING sDirPath)
     m_pDtDict->SetFileName(sDt);
     m_pElDict->SetFileName(sEl);
     m_pCtDict->SetFileName(sCt);
+	m_pGpDict->SetFileName(sGp);
+    m_pGxDict->SetFileName(sGx);
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemCatalog.SetDictionaryDir")
 }
@@ -349,7 +387,9 @@ bool CCoordinateSystemCatalog::AreDictionaryFilesWritable()
         || !m_pCsDict || m_pCsDict->GetFileName().empty()
         || !m_pDtDict || m_pDtDict->GetFileName().empty()
         || !m_pElDict || m_pElDict->GetFileName().empty()
-        || !m_pCtDict || m_pCtDict->GetFileName().empty())
+        || !m_pCtDict || m_pCtDict->GetFileName().empty()
+        || !m_pGpDict || m_pGpDict->GetFileName().empty()
+        || !m_pGxDict || m_pGxDict->GetFileName().empty())
     {
         //Directory hasn't been specified yet.
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemCatalog.AreDictionaryFilesWritable", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNotReadyException", NULL);
@@ -399,6 +439,28 @@ bool CCoordinateSystemCatalog::AreDictionaryFilesWritable()
     {
         return false;
     }
+	
+	sPath=m_pGpDict->GetPath();
+    if (!ValidateFile(
+        sPath.c_str(),          //file name
+        true,                   //must exist
+        false,                  //mustn't be directory
+        true,                   //neeed write access?
+        &reason))
+    {
+        return false;
+    }
+
+    sPath=m_pGxDict->GetPath();
+    if (!ValidateFile(
+        sPath.c_str(),          //file name
+        true,                   //must exist
+        false,                  //mustn't be directory
+        true,                   //neeed write access?
+        &reason))
+    {
+        return false;
+    }
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemCatalog.AreDictionaryFilesWritable")
     return true;
@@ -420,6 +482,8 @@ void CCoordinateSystemCatalog::SetDefaultDictionaryDirAndFileNames()
     STRING sDt=m_pDtDict->GetDefaultFileName();
     STRING sEl=m_pElDict->GetDefaultFileName();
     STRING sCt=m_pCtDict->GetDefaultFileName();
+	STRING sGp=m_pGpDict->GetDefaultFileName();
+    STRING sGx=m_pGxDict->GetDefaultFileName();
 
     //sets the path to the dictionaries
     //this will perform a validation of the existence of the directory
@@ -431,6 +495,8 @@ void CCoordinateSystemCatalog::SetDefaultDictionaryDirAndFileNames()
     m_pDtDict->SetFileName(sDt);
     m_pElDict->SetFileName(sEl);
     m_pCtDict->SetFileName(sCt);
+	m_pGpDict->SetFileName(sGp);
+    m_pGxDict->SetFileName(sGx);
 
     m_libraryStatus=lsInitialized;
 

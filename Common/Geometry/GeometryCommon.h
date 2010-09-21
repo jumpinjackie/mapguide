@@ -108,6 +108,17 @@
 
 #include "CoordinateSystem/CoordinateSystem.h"
 #include "CoordinateSystem/CoordinateSystemDatum.h"
+#include "CoordinateSystem/CoordinateSystemGeodeticTransformGridFile.h"
+#include "CoordinateSystem/CoordinateSystemGeodeticTransformDefParams.h"
+#include "CoordinateSystem/CoordinateSystemGeodeticInterpolationTransformDefParams.h"
+#include "CoordinateSystem/CoordinateSystemGeodeticMultipleRegressionTransformDefParams.h"
+#include "CoordinateSystem/CoordinateSystemGeodeticAnalyticalTransformDefParams.h"
+#include "CoordinateSystem/CoordinateSystemGeodeticTransformDefType.h"
+#include "CoordinateSystem/CoordinateSystemGeodeticAnalyticalTransformationMethod.h"
+#include "CoordinateSystem/CoordinateSystemGeodeticMultipleRegressionTransformationMethod.h"
+#include "CoordinateSystem/CoordinateSystemGeodeticTransformDef.h"
+#include "CoordinateSystem/CoordinateSystemGeodeticPathElement.h"
+#include "CoordinateSystem/CoordinateSystemGeodeticPath.h"
 #include "CoordinateSystem/CoordinateSystemGeodeticTransformation.h"
 #include "CoordinateSystem/CoordinateSystemEllipsoid.h"
 #include "CoordinateSystem/CoordinateSystemCategory.h"
@@ -119,6 +130,8 @@
 #include "CoordinateSystem/CoordinateSystemDatumDictionary.h"               //for MgCoordinateSystemDatumDictionary
 #include "CoordinateSystem/CoordinateSystemEllipsoidDictionary.h"           //for MgCoordinateSystemEllipsoidDictionary
 #include "CoordinateSystem/CoordinateSystemCategoryDictionary.h"            //for MgCoordinateSystemCategoryDictionary
+#include "CoordinateSystem/CoordinateSystemGeodeticTransformDefDictionary.h"    //for MgCoordinateSystemGeodeticTransformDefDictionary
+#include "CoordinateSystem/CoordinateSystemGeodeticPathDictionary.h"            //for MgCoordinateSystemGeodeticPathDictionary
 #include "CoordinateSystem/CoordinateSystemDictionaryUtility.h"             //for MgCoordinateSystemDictionaryUtility
 #include "CoordinateSystem/CoordinateSystemCatalog.h"
 #include "CoordinateSystem/CoordinateSystemFilter.h"                        //for MgCoordinateSystemFilter

@@ -46,7 +46,7 @@ void CCoordinateSystemCategory::Dispose()
 //
 char * CCoordinateSystemCategory::Name()
 {
-    return m_categoryName.name;
+    return const_cast<char*>(m_categoryName.Name());
 }
 
 //Saves the object to a file.  Purpose of the ulMinSize parameter:
@@ -102,7 +102,7 @@ void CCoordinateSystemCategory::SaveToFstream(csFILE *pFile, UINT32 ulMinSize)
     // 5. Blank space (if ulMinSize > size)
 
     //Name.
-    CS_fwrite(m_categoryName.name, sizeof(m_categoryName.name), 1, pFile);
+    CS_fwrite(m_categoryName.Name(), sizeof(char), knMaxCategoryNameLen, pFile);
 
     //Size.
     CS_fwrite(reinterpret_cast<char *>(&ulSize), sizeof(ulSize), 1, pFile);
@@ -114,7 +114,7 @@ void CCoordinateSystemCategory::SaveToFstream(csFILE *pFile, UINT32 ulMinSize)
     CSystemNameList::const_iterator iter;
     for (iter=m_listCoordinateSystemNames.begin(); iter!=m_listCoordinateSystemNames.end(); iter++)
     {
-        CS_fwrite((*iter).name, sizeof((*iter).name), 1, pFile);
+        CS_fwrite((*iter).Name(), sizeof(char), cs_KEYNM_DEF, pFile);
     }
 
     //Blank space, if needed
@@ -131,7 +131,7 @@ void CCoordinateSystemCategory::SaveToFstream(csFILE *pFile, UINT32 ulMinSize)
         CSystemName dummy(/*NOXLATE*/"fnord");
         for (UINT32 i=0; i<ulDiff; i++)
         {
-            CS_fwrite(dummy.name, sizeof(dummy.name), 1, pFile);
+            CS_fwrite(dummy.Name(), sizeof(char), cs_KEYNM_DEF, pFile);
         }
     }
 
@@ -185,12 +185,19 @@ void CCoordinateSystemCategory::LoadFromFstream(csFILE *pFile)
     // 5. Blank space (if ulMinSize > size)
 
     //Name.
-    size_t nRead=CS_fread(m_categoryName.name, sizeof(m_categoryName.name), 1, pFile);
-    if (1!=nRead)
+    char tempCharBuffer[knMaxCategoryNameLen] = { '\0' };
+    const size_t expectedReadCount = sizeof(tempCharBuffer) / sizeof(char);
+    size_t nRead=CS_fread(tempCharBuffer, sizeof(char), expectedReadCount, pFile);
+    if (expectedReadCount != nRead)
     {
+        _ASSERT(0 == nRead); //otherwise something else is going on here...
+
         //we reached the end of the file
         throw new MgFileIoException(L"MgCoordinateSystemCategory.LoadFromFstream", __LINE__, __WFILE__, NULL, L"", NULL);
     }
+
+    //copy the category name into our [m_categoryName] TNameStruct
+    m_categoryName = tempCharBuffer;
 
     //Size.
     UINT32 ulSize;
@@ -213,18 +220,23 @@ void CCoordinateSystemCategory::LoadFromFstream(csFILE *pFile)
         throw new MgFileIoException(L"MgCoordinateSystemCategory.LoadFromFstream", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
+    char keyNameBuffer[cs_KEYNM_DEF]  = { '\0' };
+    const size_t expectedBufferCountRead = sizeof(keyNameBuffer) / sizeof(char);
     //Coordinate system names.
     for (UINT32 i=0; i<ulSize; i++)
     {
-        nRead=CS_fread(member.name, sizeof(member.name), 1, pFile);
-        if (1!=nRead)
+        keyNameBuffer[0] = '\0';
+        nRead=CS_fread(keyNameBuffer, sizeof(char), expectedBufferCountRead, pFile);
+        if (expectedBufferCountRead != nRead)
         {
             throw new MgFileIoException(L"MgCoordinateSystemCategory.LoadFromFstream", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
+        member = keyNameBuffer;
+
         // TODO - WORKAROUND TO SKIP BAD COORDINATE SYSTEMS IN CURRENT DICTIONARIES
-        if((strcmp(member.name, "IGN63/Hiva") != 0) &&
-           (strcmp(member.name, "Phoenix") != 0))
+        if((strcmp(member.Name(), "IGN63/Hiva") != 0) &&
+           (strcmp(member.Name(), "Phoenix") != 0))
         {
             m_listCoordinateSystemNames.push_back(member);
         }
@@ -235,7 +247,7 @@ void CCoordinateSystemCategory::LoadFromFstream(csFILE *pFile)
     ulDiff = ulMinSize - ulSize;
     if (ulDiff > 0)
     {
-        CS_fseek(pFile, CS_ftell(pFile) + ulDiff * sizeof(member.name), SEEK_SET);
+        CS_fseek(pFile, CS_ftell(pFile) + ulDiff * (sizeof(keyNameBuffer) / sizeof(char)), SEEK_SET);
     }
     if (ferror(pFile))
     {
@@ -297,7 +309,7 @@ STRING CCoordinateSystemCategory::GetName()
     STRING sName;
 
     MG_TRY()
-    wchar_t *pName = Convert_Ascii_To_Wide(m_categoryName.name);
+    wchar_t *pName = Convert_Ascii_To_Wide(m_categoryName.Name());
     if (!pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.GetName", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -326,7 +338,10 @@ void CCoordinateSystemCategory::SetName(CREFSTRING sName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.SetName", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    strcpy(m_categoryName.name, pName);
+    
+    //assign the name to our internal [TNameStruct]
+    m_categoryName = pName;
+
     delete [] pName;
     MG_CATCH_AND_THROW(L"MgCoordinateSystemCategory.SetName")
 }
@@ -346,7 +361,7 @@ void CCoordinateSystemCategory::SetName(CREFSTRING sName)
 //
 bool CCoordinateSystemCategory::IsValid()
 {
-    return IsLegalName(m_categoryName.name);
+    return IsLegalName(m_categoryName.Name());
 }
 
 //Private member function which returns whether the specified string
@@ -546,7 +561,7 @@ MgStringCollection* CCoordinateSystemCategory::GetCoordinateSystems()
     CSystemNameList::const_iterator iter;
     for (iter=m_listCoordinateSystemNames.begin(); iter!=m_listCoordinateSystemNames.end(); iter++)
     {
-        wchar_t *pName = Convert_Ascii_To_Wide((*iter).name);    //need to delete [] pName
+        wchar_t *pName = Convert_Ascii_To_Wide((*iter).Name());    //need to delete [] pName
         if (NULL == pName)
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.GetCoordinateSystems", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -670,7 +685,7 @@ bool CCoordinateSystemCategory::HasCoordinateSystem(CREFSTRING sName)
 //
 void CCoordinateSystemCategory::Clear()
 {
-    memset(m_categoryName.name, 0, knMaxCategoryNameLen);
+    m_categoryName = "\0";
     m_listCoordinateSystemNames.clear();
 }
 
