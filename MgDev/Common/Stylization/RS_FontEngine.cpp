@@ -20,7 +20,6 @@
 #include "RS_FontEngine.h"
 #include "RichTextEngine.h"
 #include "SE_Renderer.h"
-#include "Foundation.h"
 
 
 //////////////////////////////////////////////////////////////////////////////

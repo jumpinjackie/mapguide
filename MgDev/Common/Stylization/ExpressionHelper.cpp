@@ -28,7 +28,6 @@
 #include "ExpressionFunctionIf.h"
 #include "ExpressionFunctionLookup.h"
 #include "ExpressionFunctionRange.h"
-#include "Foundation.h"
 
 
 const RS_String s_Empty(L"");

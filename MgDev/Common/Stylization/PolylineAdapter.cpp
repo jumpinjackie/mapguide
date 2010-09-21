@@ -20,7 +20,6 @@
 #include "PolylineAdapter.h"
 #include "LineBuffer.h"
 #include "FeatureTypeStyleVisitor.h"
-#include "Foundation.h"
 
 
 //////////////////////////////////////////////////////////////////////////////

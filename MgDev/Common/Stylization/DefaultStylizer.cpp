@@ -232,10 +232,10 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
 //////////////////////////////////////////////////////////////////////////////
 void DefaultStylizer::StylizeWatermark(Renderer* renderer,
                                        MdfModel::WatermarkDefinition* watermark,
-                                       INT32 drawWidth,
-                                       INT32 drawHeight,
-                                       INT32 saveWidth,
-                                       INT32 saveHeight)
+                                       int drawWidth,
+                                       int drawHeight,
+                                       int saveWidth,
+                                       int saveHeight)
 {
     m_styleEngine->StylizeWatermark((SE_Renderer*)renderer, watermark, drawWidth, drawHeight, saveWidth, saveHeight);
     m_styleEngine->ClearCache();

@@ -241,10 +241,10 @@ inline double GetUnitPerMeter(WatermarkOffset::WatermarkOffsetUnit unit)
 // ** compiler warnings being generated
 void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
                                          WatermarkDefinition* watermark,
-                                         INT32 drawWidth,
-                                         INT32 drawHeight,
-                                         INT32 saveWidth,
-                                         INT32 saveHeight)
+                                         int drawWidth,
+                                         int drawHeight,
+                                         int saveWidth,
+                                         int saveHeight)
 {
     m_serenderer = se_renderer;
     m_reader = NULL;

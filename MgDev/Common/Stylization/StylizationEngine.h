@@ -72,10 +72,10 @@ public:
     //Stylize the supplied watermark
     void StylizeWatermark(SE_Renderer* se_renderer,
                           WatermarkDefinition* watermark,
-                          INT32 drawWidth,
-                          INT32 drawHeight,
-                          INT32 saveWidth,
-                          INT32 saveHeight);
+                          int drawWidth,
+                          int drawHeight,
+                          int saveWidth,
+                          int saveHeight);
 
     // Stylizes the current feature on the reader using the supplied composite type style.
     void Stylize(RS_FeatureReader* reader,

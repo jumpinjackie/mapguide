@@ -21,7 +21,6 @@
 #include "SE_SymbolManager.h"
 #include "SE_Bounds.h"
 #include "RS_FontEngine.h"
-#include "Foundation.h"
 
 
 // Recomputes the bounds of an SE_RenderStyle that contains a text

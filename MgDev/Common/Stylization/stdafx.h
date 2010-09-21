@@ -28,4 +28,11 @@
 // when aggressive inlining is turned on in the project file.
 #define __ACE_INLINE__ 0
 
+#else
+
+#define _wcsicmp  wcscasecmp
+#define _wcsnicmp wcsncasecmp
+
+#define _isnan    isnan
+
 #endif
