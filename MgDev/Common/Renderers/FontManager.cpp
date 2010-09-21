@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2004-2008 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -34,6 +34,13 @@
 #include <wctype.h>
 #endif
 
+// FreeType includes
+#include "ft2build.h"
+#include FT_FREETYPE_H
+#include FT_GLYPH_H
+#include FT_CACHE_H
+#include FT_CACHE_MANAGER_H
+
 
 //  local functions
 wstring ToLower(const wstring& source)
@@ -47,6 +54,10 @@ wstring ToLower(const wstring& source)
 //  static initializations
 CustomThreadMutex FontManager::sm_mutex;
 FontManager FontManager::sm_manager;
+bool FontManager::sm_init = false;
+
+//Option whether to preload or delay load all fonts
+static bool DELAY_LOAD_FONTS = false;
 
 
 //-------------------------------------------------------------------------
@@ -56,11 +67,7 @@ FontManager FontManager::sm_manager;
 
 FontManager::FontManager()
 {
-    AutoMutexLocker autoLocker(sm_mutex);
-
-    FT_Init_FreeType(&m_library);  //  TODO:  check error code
-
-    sm_manager.init_font_list();
+    
 }
 
 
@@ -68,52 +75,36 @@ FontManager::~FontManager()
 {
     AutoMutexLocker autoLocker(sm_mutex);
 
-    FaceMapIterator it;
-    FaceMapEntryType* pEntry = NULL;
-    char* pData = NULL;
-
-    it = m_facemap.begin();
-
-    // clean up entries
-    while (it != m_facemap.end())
+    if (sm_init)
     {
-        pEntry = (FaceMapEntryType*)(*it).second;
-        pData = pEntry->pData;
-        free(pData);
-        delete pEntry;
-        ++it;
+        // free up font map entries
+        for (FontMapIterator fmi = m_fontAliases.begin(); fmi != m_fontAliases.end(); fmi++)
+        {
+            delete (*fmi).first;
+            delete (*fmi).second;
+        }
+
+        m_fontAliases.clear();
+
+        // clean up fontlist
+        FontListIterator it_font;
+        RS_Font* font = NULL;
+
+        it_font = m_fontlist.begin();
+
+        while (it_font != m_fontlist.end())
+        {
+            font = (RS_Font*)(*it_font);
+            delete font;
+            ++it_font;
+        }
+
+        // clean fontlist
+        m_fontlist.clear();
+
+        // clean up the library
+        FT_Done_FreeType((FT_Library)m_library);
     }
-
-    // free up font map entries
-    for (FontMapIterator fmi = m_fontAliases.begin(); fmi != m_fontAliases.end(); fmi++)
-    {
-        delete (*fmi).first;
-        delete (*fmi).second;
-    }
-
-    m_fontAliases.clear();
-
-    // clear map
-    m_facemap.clear();
-
-    // clean up fontlist
-    FontListIterator it_font;
-    RS_Font* font = NULL;
-
-    it_font = m_fontlist.begin();
-
-    while (it_font != m_fontlist.end())
-    {
-        font = (RS_Font*)(*it_font);
-        delete font;
-        ++it_font;
-    }
-
-    // clean fontlist
-    m_fontlist.clear();
-
-    // clean up the library
-    FT_Done_FreeType(m_library);
 }
 
 
@@ -124,107 +115,66 @@ FontManager::~FontManager()
 
 FontManager* FontManager::Instance()
 {
+    AutoMutexLocker autoLocker(sm_mutex);
+
+    if (!sm_init)
+    {
+        FT_Init_FreeType((FT_Library*)(&sm_manager.m_library));  //  TODO:  check error code
+
+        if (!DELAY_LOAD_FONTS)
+        {
+            sm_manager.init_font_list();
+        }
+    }
+
     return &sm_manager;
 }
 
-
-int FontManager::get_face(const char* filename, FT_Long index, FT_Face* face)
+//Caches the fonts/faces within a single given font file
+bool FontManager::CacheFont(wchar_t const* filename)
 {
     AutoMutexLocker autoLocker(sm_mutex);
 
-    int ret = 0;                      //  our return error code
-    FaceMapIterator it;               //  an interator
-    FaceMapEntryType* pEntry = NULL;  //  pointer to loaded font data
+    // ok, load up the face information
+    int error = 0;
+    FT_Face face = NULL;
+    FT_Long index = 0;
+    FT_Long num_faces = 0;
 
-    // look for face in map
-    it = m_facemap.find(filename);
-
-    if (it != m_facemap.end())
+    do
     {
-        // found an entry
-        pEntry = (FaceMapEntryType*)(*it).second;
+        string en;
+        UnicodeString::WideCharToMultiByte(filename, en);
+        error = FT_New_Face((FT_Library)m_library, en.c_str(), index, &face);
 
-        // create a new face
-        ret = FT_New_Memory_Face(m_library, (FT_Byte*)pEntry->pData, (FT_Long)pEntry->length, index, face);
-    }
-    else
-    {
-        // ok, we have to load it
-//      ret = FT_New_Face(m_library, filename, index, face);
-
-        pEntry = load_file(filename);
-
-        if (pEntry)
+        if (!error)
         {
-            // insert the entry into the map
-            m_facemap.insert(FaceMapPair(filename, pEntry));
+            // init num_faces if necessary
+            if (!num_faces)
+                num_faces = face->num_faces;
+        }
 
-            // create a new face
-            ret = FT_New_Memory_Face(m_library, (FT_Byte*)pEntry->pData, (FT_Long)pEntry->length, index, face);
-        }
-        else
-        {
-            face = NULL;
-            ret = -1;
-        }
+        create_font(face, index, filename);
+
+        // dispose of face
+        FT_Done_Face(face);
+
+        // increment our face index
+        index++;
     }
+    while (!error && index < num_faces);
 
-    return ret;
+    return !error;
 }
 
-
-FaceMapEntryType* FontManager::load_file(const char* filename)
-{
-    AutoMutexLocker autoLocker(sm_mutex);
-
-    int errcode = 0;                  //  an error code
-    FaceMapEntryType* pEntry = NULL;  //  pointer to return value
-    char* pData = NULL;               //  pointer to loaded font file
-    size_t length = 0;                //  length of buffer
-    size_t count = 0;                 //  length of file (obviously should be equal to above)
-
-    FILE* pFile = fopen(filename, "rb");
-
-    if (pFile)
-    {
-        errcode = fseek(pFile, 0L, SEEK_END);
-        if (!errcode)
-        {
-            length = (unsigned long)ftell(pFile);
-
-            errcode = fseek(pFile, 0L, SEEK_SET);
-            if (!errcode)
-            {
-                pData = (char*)malloc(sizeof(char) * length);
-                if (pData)
-                {
-                    count = fread(pData, sizeof(char), length, pFile);
-
-                    if (ferror(pFile) == 0 && count == length)
-                        errcode = fclose(pFile);
-                }
-            }
-        }
-    }
-
-    if (pData)
-    {
-        pEntry = new FaceMapEntryType();
-        pEntry->pData = pData;
-        pEntry->length = length;
-    }
-
-    return pEntry;
-}
 
 
 #ifdef _WIN32
-// initialize the font list
-void FontManager::init_font_list()
+// initialize the font list -- if a non-null argument is passed, only fonts
+// having the given string in their name will be cached
+void FontManager::init_font_list(const wchar_t* specificName)
 {
     AutoMutexLocker autoLocker(sm_mutex);
-
-    int error = 0;
 
     // look for the windows font directory
     wchar_t fontpath[MAX_PATH];
@@ -233,6 +183,10 @@ void FontManager::init_font_list()
     wstring fontdir;
     if (S_OK == hres)
         fontdir = fontpath;
+
+    wstring searchString;
+    if (specificName)
+       searchString = ToLower(specificName);
 
     // enum fonts
     if (!fontdir.empty())
@@ -249,72 +203,40 @@ void FontManager::init_font_list()
             // do we have a file?
             if (!(FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
             {
-                // skip special Windows files
-                if (wcscmp(FindFileData.cFileName, L"desktop.ini") != 0)
+                wstring entryName(fontdir);
+                entryName += L"\\";
+                entryName += FindFileData.cFileName;
+
+                //are we searching for a specific font
+                if (!searchString.empty())
                 {
-                    wstring entryName(fontdir);
-                    entryName += L"\\";
-                    entryName += FindFileData.cFileName;
+                    wstring lowerFileName = ToLower(FindFileData.cFileName);
 
-                    // ok, load up the face information
-                    FT_Face face = NULL;
-                    FT_Long index = 0;
-                    FT_Long num_faces = 0;
-
-                    do
-                    {
-                        string en;
-                        UnicodeString::WideCharToMultiByte(entryName.c_str(), en);
-                        error = FT_New_Face(m_library, en.c_str(), index, &face);
-
-                        if (!error)
-                        {
-                            // init num_faces if necessary
-                            if (!num_faces)
-                                num_faces = face->num_faces;
-                        }
-
-                        create_font(face, index, entryName.c_str());
-
-                        // dispose of face
-                        FT_Done_Face(face);
-
-                        // increment our face index
-                        index++;
-                    }
-                    while (!error && index < num_faces);
+                    if (!wcsstr(lowerFileName.c_str(), searchString.c_str()))
+                        goto keepgoing;
                 }
-            }
 
+                CacheFont(entryName.c_str());
+            }
+keepgoing:
             bOK = FindNextFile(hFile, &FindFileData);
         }
 
         FindClose(hFile);
     }
-
-    // The font matching code iterates over the font list, and the first font in the
-    // list always becomes the one to beat.  In the case where none of the fonts match
-    // (they all have the same score), this first font ends up winning.  So make sure
-    // a reasonably good font, like Arial, is the first one in the list.
-    wstring lowerName = L"arial"; // use lower-case
-    RS_Font* font = (RS_Font*)FindFont(lowerName, false, false);
-    if (font && font->m_fullname == lowerName)
-    {
-        // we found Arial - move it to the front
-        m_fontlist.remove(font);
-        m_fontlist.push_front(font);
-    }
 }
 #else
 // initialize the font list
-void FontManager::init_font_list()
+void FontManager::init_font_list(const wchar_t* specificName)
 {
     AutoMutexLocker autoLocker(sm_mutex);
 
-    int error = 0;
-
     string dirname(".");
     DIR* pCurrent = opendir(dirname.c_str());
+
+    wstring searchString;
+    if (specificName)
+       searchString = ToLower(specificName);
 
     while (pCurrent)
     {
@@ -330,36 +252,19 @@ void FontManager::init_font_list()
             struct stat st;
             if (stat(entryName.c_str(), &st) == 0)
             {
-                // ok, load up the face information
-                FT_Face face = NULL;
-                FT_Long index = 0;
-                FT_Long num_faces = 0;
+                wstring en; 
+                UnicodeString::MultiByteToWideChar(entryName.c_str(), en);
 
-                do
+                //are we searching for a specific font
+                if (!searchString.empty())
                 {
-                    error = FT_New_Face(m_library, entryName.c_str(), index, &face);
+                    wstring lowerFileName = ToLower(FindFileData.cFileName);
 
-                    // TODO:  revisit using the font manager here
-//                  error = m_FM->get_face(entryName.c_str(), index, &face);
-
-                    if (!error)
-                    {
-                        // init num_faces if necessary
-                        if (!num_faces)
-                            num_faces = face->num_faces;
-                    }
-
-                    wstring en;
-                    UnicodeString::MultiByteToWideChar(entryName.c_str(), en);
-                    create_font(face, index, en.c_str());
-
-                    // dispose of face
-                    FT_Done_Face(face);
-
-                    // increment our face index
-                    index++;
+                    if (!wcsstr(lowerFileName.c_str(), searchString.c_str()))
+                        continue;
                 }
-                while (!error && index < num_faces);
+
+                CacheFont(en.c_str());                
             }
         }
         else
@@ -374,8 +279,10 @@ void FontManager::init_font_list()
 
 
 // create a font with the given face information
-void FontManager::create_font(FT_Face face, FT_Long index, wchar_t const* filename)
+void FontManager::create_font(void* facePtr, FT_Long index, wchar_t const* filename)
 {
+    FT_Face face = (FT_Face)facePtr;
+
     // do we have a valid face?
     if (!face)
         return;
@@ -500,6 +407,12 @@ const RS_Font* FontManager::FindFont(const wstring& sfontname, bool bold, bool i
     if (entry.stylearray[index])
         return entry.stylearray[index];
 
+    //If we are delay loading, attempt to cache the specific font
+    if (DELAY_LOAD_FONTS)
+    {
+        init_font_list(sfontname.c_str());
+    }
+
     const wchar_t* fontname = sfontname.c_str();
 
     // if there is an alias for the font use that instead
@@ -513,7 +426,7 @@ const RS_Font* FontManager::FindFont(const wstring& sfontname, bool bold, bool i
         }
     }
 
-    wstring lowername = ToLower(fontname);
+    wstring lowername = ToLower(sfontname);
     const wchar_t* buf = lowername.c_str();
 
     int score = 0;
