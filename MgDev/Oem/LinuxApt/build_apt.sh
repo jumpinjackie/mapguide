@@ -120,8 +120,8 @@ check_tomcat_install ()
 # Notes: none
 #**********************************************************
 echo Apache Httpd build started
-tar -zxf httpd-2.2.11.tar.gz
-pushd httpd-2.2.11
+tar -zxf httpd-2.2.15.tar.gz
+pushd httpd-2.2.15
 ./configure --prefix=$INSTALLWEB/apache2 --enable-mods-shared=all \
 --enable-cache --enable-mem-cache --enable-disk-cache --enable-file-cache \
 --enable-ldap --with-ldap --enable-authnz-ldap \
@@ -155,7 +155,7 @@ fi
 # Notes: none
 #**********************************************************
 echo Apache install started
-pushd httpd-2.2.11
+pushd httpd-2.2.15
 make install
 check_apache_install
 popd
@@ -226,8 +226,8 @@ echo Php install completed
 #**********************************************************
 if [ "$TOMCAT" = "1" ]; then
 echo Tomcat connector build/install started
-tar -zxf tomcat-connectors-1.2.25-src.tar.gz
-pushd tomcat-connectors-1.2.25-src/native
+tar -zxf tomcat-connectors-1.2.30-src.tar.gz
+pushd tomcat-connectors-1.2.30-src/native
 
 ./configure --with-apxs=$INSTALLWEB/apache2/bin/apxs
 check_tomcat_build
@@ -245,10 +245,11 @@ fi
 #**********************************************************
 if [ "$TOMCAT" = "1" ]; then
 echo Tomcat install started
-tar -zxf apache-tomcat-6.0.14.tar.gz -C $INSTALLWEB
+tar -zxf apache-tomcat-6.0.26.tar.gz -C $INSTALLWEB
 check_tomcat_install
 pushd $INSTALLWEB
-mv apache-tomcat-6.0.14 tomcat
+rm -rf tomcat
+mv apache-tomcat-6.0.26 tomcat
 check_tomcat_install
 popd
 echo Tomcat install completed
