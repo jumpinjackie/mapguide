@@ -468,7 +468,7 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
 
     // get the session ID
     STRING sessionId;
-    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
+    Ptr<MgUserInformation> userInfo = MgUserInformation::GetCurrentUserInfo();
     if (userInfo != NULL)
         sessionId = userInfo->GetMgSessionId();
 
@@ -1203,7 +1203,7 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
 
         // Get the session ID
         STRING sessionId;
-        MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
+        Ptr<MgUserInformation> userInfo = MgUserInformation::GetCurrentUserInfo();
         if (userInfo != NULL)
             sessionId = userInfo->GetMgSessionId();
 

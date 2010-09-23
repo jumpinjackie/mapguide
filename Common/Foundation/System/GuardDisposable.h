@@ -67,6 +67,15 @@ INTERNAL_API:
     ///
     virtual INT32 Release();
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the refcount flag for this object to true
+    ///
+    /// \return
+    /// Returns nothing
+    ///
+    void SetRefCountFlag();
+
 protected:
 
     //////////////////////////////////////////////////////////////////

@@ -76,7 +76,7 @@ bool MgLongTransactionManager::GetLongTransactionName(MgResourceIdentifier* feat
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
 
     STRING sessionId;
-    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
+    Ptr<MgUserInformation> userInfo = MgUserInformation::GetCurrentUserInfo();
     if (userInfo != NULL)
         sessionId = userInfo->GetMgSessionId();
 

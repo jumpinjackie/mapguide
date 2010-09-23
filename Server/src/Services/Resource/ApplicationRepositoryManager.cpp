@@ -54,7 +54,7 @@ MgApplicationRepositoryManager::MgApplicationRepositoryManager(
     // up based on the current session ID.
 
     m_currUserInfo = new MgUserInformation;
-    MgUserInformation* currUserInfo = MgUserInformation::GetCurrentUserInfo();
+    Ptr<MgUserInformation> currUserInfo = MgUserInformation::GetCurrentUserInfo();
     assert(NULL != currUserInfo);
     STRING sessionId = currUserInfo->GetMgSessionId();
     STRING userName = currUserInfo->GetUserName();

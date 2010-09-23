@@ -843,7 +843,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
 
     // get the session ID
     STRING sessionId;
-    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
+    Ptr<MgUserInformation> userInfo = MgUserInformation::GetCurrentUserInfo();
     if (userInfo != NULL)
         sessionId = userInfo->GetMgSessionId();
 
@@ -1277,7 +1277,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
 
     // get the session ID
     STRING sessionId;
-    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
+    Ptr<MgUserInformation> userInfo = MgUserInformation::GetCurrentUserInfo();
     if (userInfo != NULL)
         sessionId = userInfo->GetMgSessionId();
 

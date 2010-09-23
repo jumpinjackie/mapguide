@@ -24,6 +24,14 @@
 //  Operation Response Packet Wrapper Structure
 struct MgOperationResponsePacket : public MgBasicPacket
 {
+    MgOperationResponsePacket()
+    : 
+    m_PacketVersion(0),
+    m_ECode(0),
+    m_NumReturnValues(0)
+    {
+    }
+
     UINT32 m_PacketVersion;
     UINT32 m_ECode;
     UINT32 m_NumReturnValues;

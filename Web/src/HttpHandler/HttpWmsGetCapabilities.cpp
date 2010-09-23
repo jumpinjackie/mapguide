@@ -46,7 +46,7 @@ MgHttpWmsGetCapabilities::MgHttpWmsGetCapabilities(MgHttpRequest *hRequest)
 bool GetDocument(CPSZ pszDoc,REFSTRING sRet)
 {
     //TODO: Remove dependency on thread local storage
-    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
+    Ptr<MgUserInformation> userInfo = MgUserInformation::GetCurrentUserInfo();
     Ptr<MgServerAdmin> serverAdmin = new MgServerAdmin();
     serverAdmin->Open(userInfo);
 
